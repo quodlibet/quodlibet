@@ -1298,7 +1298,7 @@ def text_parse(*args):
     config.set("memory", "query", text)
     text = text.decode("utf-8").strip()
     orig_text = text
-    if text and "=" not in text and "/" not in text:
+    if text and "#" not in text and "=" not in text and "/" not in text:
         # A simple search, not regexp-based.
         parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
         text = "&(" + ",".join(parts) + ")"
@@ -1343,7 +1343,7 @@ def filter_on_header(header, songs = None):
 def test_filter(textbox):
     if not config.state("color"): return
     text = textbox.get_text()
-    if "=" not in text and "/" not in text: color = "blue"
+    if "=" not in text and "#" not in text and "/" not in text: color = "blue"
     elif parser.is_valid(text): color = "dark green"
     else: color = "red"
     gtk.idle_add(set_entry_color, textbox, color)

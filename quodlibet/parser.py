@@ -95,7 +95,7 @@ class QueryLexer(object):
         else:
             start = self.i
             while (self.i < len(self.string) and
-                   self.string[self.i] not in '),=/!|#&'):
+                   self.string[self.i] not in self.table.keys()):
                 self.i += 1
             return QueryLexeme(TAG, self.string[start:self.i].strip())
 
@@ -137,9 +137,10 @@ class QueryParser(object):
         if self.lookahead.type == UNION: return self.QueryUnion()
         elif self.lookahead.type == INTERSECT: return self.QueryInter()
         elif self.lookahead.type == NEGATION: return self.QueryNeg()
+        elif self.lookahead.type == NUMCMP: return self.QueryNumcmp()
         elif self.lookahead.type == TAG: return self.QueryPart()
         else:
-            raise ParseError("The expected symbol should be |, &, !, or "
+            raise ParseError("The expected symbol should be |, &, !, #, or "
                              "a tag name, but was %s" % self.lookahead.lexeme)
 
     def StartQuery(self):
@@ -157,8 +158,23 @@ class QueryParser(object):
     def QueryUnion(self):
         return self._match_parened(UNION, match.Union, self.QueryList)
 
+    def QueryNumcmp(self):
+        return self._match_parened(NUMCMP, match.Union, self.NumcmpList)
+
     def QueryList(self):
         return self._match_list(self.Query)
+
+    def NumcmpList(self):
+        return self._match_list(self.Numcmp)
+
+    def Numcmp(self):
+        tag = self.lookahead.lexeme
+        self.match(TAG)
+        op = self.lookahead.lexeme
+        self.match(RELOP, EQUALS)
+        value = self.lookahead.lexeme
+        self.match(TAG)
+        return match.Numcmp(tag, op, value)
 
     def _match_string(self):
         s = self.lookahead.lexeme
@@ -210,12 +226,12 @@ class QueryParser(object):
         except sre.error:
             raise ParseError("The regular expression /%s/ is invalid." % re)
 
-    def match(self, token):
-        if token != EOF and self.lookahead.type == EOF:
+    def match(self, *tokens):
+        if tokens == [EOF] and self.lookahead.type == EOF:
             raise ParseError("The search string ended, but more "
                              "tokens were expected.")
         try:
-            if self.lookahead.type == token:
+            if self.lookahead.type in tokens:
                 self.lookahead = self.tokens.next()
             else:
                 raise ParseError("The token '%s' is not the type exected." %(
