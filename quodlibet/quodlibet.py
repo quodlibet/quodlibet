@@ -379,8 +379,9 @@ class MultiInstanceWidget(object):
                 path = ref.get_path()
                 song.write()
                 if path is not None:
-                    widgets.songs[path] = ([song.get(h, "") for h in HEADERS]+
-                                           [song, 400])
+                    row = widgets.songs[path]
+                    for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
+
             saved += 1
             progress.set_fraction(saved / float(len(self.songrefs)))
             label.set_text("%d/%d songs saved" % (saved, len(self.songrefs)))
