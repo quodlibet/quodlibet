@@ -9,7 +9,7 @@
 
 import os, sys
 import gc, sre, time, shutil, signal
-import gtk, pango
+import gtk, pango, gobject
 import qltk
 
 import config, const, util, player, parser
@@ -62,17 +62,19 @@ class AboutWindow(gtk.Window):
         contrib = gtk.Label(const.CREDITS[0])
         contrib.set_justify(gtk.JUSTIFY_CENTER)
         vbox.pack_start(contrib)
-        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.destroy)
+        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button.connect_object('clicked', gtk.Window.destroy, self)
         vbox.pack_start(l2)
         hbox = gtk.HButtonBox()
         hbox.set_layout(gtk.BUTTONBOX_SPREAD)
         hbox.pack_start(button)
         vbox.pack_start(hbox)
-        gtk.timeout_add(4000, self.pick_name, list(const.CREDITS), contrib)
+        self.timeout_id = gobject.timeout_add(
+            4000, self.pick_name, list(const.CREDITS), contrib)
         self.alive = True
         self.add(vbox)
         self.set_property('border-width', 12)
-        self.connect('destroy', self.destroy)
+        self.connect_object('destroy', AboutWindow._cleanup, self)
         self.set_transient_for(parent)
         self.child.show_all()
         self.show()
@@ -82,8 +84,8 @@ class AboutWindow(gtk.Window):
         contrib.set_text(credits[0])
         return hasattr(widgets, 'about')
 
-    def destroy(self, *args):
-        gtk.Window.destroy(self)
+    def _cleanup(self):
+        gobject.source_remove(self.timeout_id)
         try: del(widgets.about)
         except AttributeError: pass
 
@@ -576,8 +578,7 @@ class TrayIcon(object):
     tooltip = property(None, set_tooltip)
 
 class PlaylistWindow(object):
-    from weakref import WeakValueDictionary
-    list_windows = WeakValueDictionary()
+    list_windows = {}
     def __new__(cls, name, *args, **kwargs):
         win = cls.list_windows.get(name, None)
         if win is None:
@@ -607,15 +608,14 @@ class PlaylistWindow(object):
         self.name = PlayList.normalize_name(name)
         self.win.set_title('Quod Libet Playlist: %s' % name)
 
-    def destroy(self, *w):
+    def _destroy(self, *w):
+        del(self.list_windows[self.prettyname])
         if not len(self.view.view.get_model()):
             def remove_matching(model, path, iter, name):
                 if model[iter][1] == name:
                     model.remove(iter)
                     return True
             PlayList.lists_model().foreach(remove_matching, self.name)
-        self.win.destroy()
-        self.view.destroy()
 
     def initialize_window(self, name):
         win = self.win = gtk.Window()
@@ -647,9 +647,8 @@ class PlaylistWindow(object):
         swin.add(view)
 
         self.set_name(name)
-        self.win.connect('delete-event', self.destroy)
-        self.win.connect('destroy', self.destroy)
-        self.close.connect('clicked', self.destroy)
+        self.win.connect('destroy', self._destroy)
+        self.close.connect_object('clicked', gtk.Window.destroy, self.win)
         self.win.show_all()
 
     def add_query_results(self, text, sort):
@@ -659,7 +658,6 @@ class PlaylistWindow(object):
            songs.sort()
            self.view.append_songs(songs)
         except ValueError: pass
-
 
 # A tray icon aware of UI policy -- left click shows/hides, right
 # click makes a callback.
@@ -848,8 +846,7 @@ class SearchBar(EmptyBar):
         b.pack_start(gtk.Label(_("Search")))
         search.add(b)
         self.tips.set_tip(search, _("Search your audio library"))
-        search.connect_object('clicked', self.text_parse, combo)
-        self.button = qltk.Button(button, cb = self.text_parse)
+        search.connect_object('clicked', self.text_parse, combo.child)
         combo.child.connect('activate', self.text_parse)
         combo.child.connect('changed', self.test_filter)
         self.pack_start(combo)
@@ -857,17 +854,22 @@ class SearchBar(EmptyBar):
         self.pack_start(search, expand = False)
         self.show_all()
 
+        self.connect('destroy', self._destroy, combo)
+
     def clear(self, button, combo):
         combo.child.set_text("")
 
     def activate(self):
-        self.text_parse(self.get_children()[0])
+        self.text_parse(self.get_children()[0].child)
 
     def set_text(self, text):
         self.get_children()[0].child.set_text(text)
 
-    def text_parse(self, combo):
-        text = combo.child.get_text()
+    def _destroy(self, widget, combo):
+        combo.set_model(None)
+
+    def text_parse(self, entry):
+        text = entry.get_text()
         if (parser.is_valid(text) or
             ("#" not in text and "=" not in text and "/" not in text)):
             SearchBar.model.prepend([text])
@@ -1824,8 +1826,7 @@ class MainWindow(gtk.Window):
 
 class SongList(object):
     """Wrap a treeview that works like a songlist"""
-    from weakref import WeakKeyDictionary
-    songlistviews = WeakKeyDictionary()
+    songlistviews = {}
     headers = []
 
     def __init__(self, view, recall = 0):
@@ -1834,6 +1835,7 @@ class SongList(object):
         self.songlistviews[self] = None     # register self
         self.recall_size = recall
         self.set_column_headers(self.headers)
+        self.view.connect_object('destroy', SongList._destroy, self)
 
     def set_all_column_headers(cls, headers):
         cls.headers = headers
@@ -1914,6 +1916,9 @@ class SongList(object):
                 render.set_property('xalign', 1.0)
             self.view.append_column(column)
 
+    def _destroy(self):
+        del(self.songlistviews[self])
+
     def _set_column_settings(self, column):
         column.set_visible(True)
 
@@ -1966,6 +1971,8 @@ class PlayList(SongList):
         prop.connect('activate', self.song_properties)
         self.menu.append(prop)
         self.menu.show_all()
+        self.view.connect_object('destroy', gtk.Menu.destroy, self.menu)
+        self.view.connect_object('destroy', PlayList._destroy, self)
 
     def append_songs(self, songs):
         model = self.model
@@ -2006,8 +2013,8 @@ class PlayList(SongList):
         self.menu.popup(None, None, None, event.button, event.time)
         return True
 
-    def destroy(self):
-        self.menu.destroy()
+    def _destroy(self):
+        self.view.set_model(None)
 
 class MainSongList(SongList):
 

@@ -9,7 +9,8 @@ class Mock(object):
 # well-tested code
 import test_util, test_audio
 # not well-tested code
-import test_library, test_match, test_parser, test_player, test_qltk
+import test_parser, test_leaks, test_qltk
+import test_library, test_match, test_player
 
 class Result(unittest.TestResult):
 
