@@ -10,6 +10,7 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - Tag By Pattern values can be edited before being saved.
  - Right-clicking on the status icon brings up a menu.
  - --play, --pause, --seek-to, --query, --play-file.
+ - GNOME OSD (gosd) support, thanks to Iñigo Serna.
 
 0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).

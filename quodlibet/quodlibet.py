@@ -1,6 +1,7 @@
 #!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 
-# Copyright 2004 Joe Wreschnig, Michael Urman
+# Copyright 2004 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -280,6 +281,51 @@ class MmKeys(object):
             map(self.keys.connect, *zip(*cbs.items()))
             print _("Initialized multimedia key support.")
 
+class GnomeOsd(object):
+    def __init__(self):
+        try:
+            import gosd
+            self.gosd = gosd
+            self.level = 0
+            self.window = None
+            print _("Initialized GNOME OSD.")
+        except:
+            self.gosd = None
+            print _("W: Failed to initialize GNOME OSD.")
+
+    def show_osd(self, song):
+        if not self.gosd: return
+        if self.window: self.window.destroy()
+
+        msg = "\xe2\x99\xaa <span foreground='yellow'>%s</span>" %(
+            util.escape(song.get("title", "")))
+        if song['~length']:
+            msg += " <span size='smaller'>(%s)</span> " % song["~length"]
+        msg += "\xe2\x99\xaa\n<span size='smaller'>"
+        for key in ["artist", "album", "tracknumber"]:
+            if key in song:
+                msg += ("<span size='smaller' style='italic'>%s</span>"
+                        " <span foreground='yellow'>%s</span>   " %(
+                    (_(HEADERS_FILTER.get(key, key)).title(),
+                     util.escape(song[key]))))
+        msg = msg.strip() + "</span>"
+        if isinstance(msg, unicode):
+            msg = msg.encode("utf-8")
+
+        self.window = self.gosd.osd(msg, "black", "yellow",
+                                    pango.FontDescription("sans 16"),
+                                    use_markup = True)
+        self.window.move(gtk.gdk.screen_width()/2-self.window.width/2, 5)
+        self.window.show()
+        self.level += 1
+        gtk.timeout_add(10000, self.unshow)
+
+    def unshow(self):
+        self.level -= 1
+        if self.level == 0 and self.window:
+            self.window.destroy()
+            self.window = None
+
 class MainWindow(MultiInstanceWidget):
     def __init__(self):
         MultiInstanceWidget.__init__(self, widget = "main_window")
@@ -364,6 +410,7 @@ class MainWindow(MultiInstanceWidget):
         self.keys = MmKeys({"mm_prev": self.previous_song,
                             "mm_next": self.next_song,
                             "mm_playpause": self.play_pause})
+        self.osd = GnomeOsd()
 
     def restore_size(self):
        w, h = map(int, config.get("memory", "size").split())
@@ -475,6 +522,7 @@ class MainWindow(MultiInstanceWidget):
         if song:
             self.text.set_markup(song.to_markup())
             self.icon.tooltip = song.to_short()
+            self.osd.show_osd(song)
         else:
             s = _("Not playing")
             self.text.set_markup("<span size='xx-large'>%s</span>" % s)
@@ -1867,7 +1915,7 @@ if __name__ == "__main__":
     # Initialize GTK/Glade.
     import pygtk
     pygtk.require('2.0')
-    import gtk
+    import gtk, pango
     if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 4):
         print _("E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet.")
         print _("E: You have GTK+ %s and PyGTK %s.") % (
