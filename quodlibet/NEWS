@@ -1,7 +1,9 @@
 0.6
  - Once again the library format has changed incompatibly; your library will
    start out empty when you load the program. (This change is in preparation
-   for advanced searching like "not listened to in 10 days".)
+   for advanced searching like "not listened to in 10 days".) Sorry again,
+   but every time we break the library we make efforts to mitigate
+   future breakage of the same kind!
  - Mass-set track numbers.
  - Fix a race condition on startup resulting in a crash. (I think.)
  - Tag by Pattern can replace or add new tags.

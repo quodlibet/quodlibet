@@ -3,6 +3,7 @@ Doable by whomever, whenever:
 - RPM spec/package.
 - Additional format support.
 - Additional tag-editing modes/operations.
+- Support for whatever tags are popular with kids these days.
 
 Stuff that I probably have to do:
 - More unit tests.
