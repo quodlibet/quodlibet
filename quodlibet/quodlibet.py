@@ -388,10 +388,6 @@ class Osd(object):
     def show_osd(self, song):
         if not self.gosd: return
         elif config.getint("settings", "osd") == 0: return
-        elif "~title~version" not in song: # FIXME: Remove after 0.7.
-            print "W: You need to reload your library to use the OSD."
-            return
-
         color1, color2 = config.get("settings", "osdcolors").split()
         font = config.get("settings", "osdfont")
 
