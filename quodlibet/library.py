@@ -48,10 +48,10 @@ class MP3File(AudioFile):
             "TIT2": "title",
             "TIT3": "version",
             "TPE1": "artist",
-            "TPE4": ("artist", "performer"),
+            "TPE4": ["artist", "performer"],
             "TCOM": "artist",
             "TEXT": "artist",
-            "TPE2": ("artist", "performer"),
+            "TPE2": ["artist", "performer"],
             "TPE3": "performer",
             "TLAN": "language",
             "TALB": "album",
@@ -61,13 +61,13 @@ class MP3File(AudioFile):
             "TDRC": "date",
             "TDOR": "date",
             "TORY": "date",
-            "TCOP": ("copyright", "license"),
+            "TCOP": ["copyright", "license"],
             "TPUB": "organization",
             "WOAF": "contact",
             "WOAR": "contact",
             "WOAS": "contact",
-            "WCOP": ("copyright", "license"),
-            "USER": ("copyright", "license"),
+            "WCOP": ["copyright", "license"],
+            "USER": ["copyright", "license"],
             }
             
     def __init__(self, filename):
@@ -77,8 +77,9 @@ class MP3File(AudioFile):
         tag = pyid3lib.tag(filename)
 
         for frame in tag:
-            name = self.IDS.get(frame["frameid"])
-            if name:
+            names = self.IDS.get(frame["frameid"])
+            if not isinstance(names, list): names = [names]
+            for name in names:
                 try:
                     name = unicode(name.lower())
                     text = frame["text"]
@@ -120,8 +121,8 @@ def load_cache():
             nsongs.append(library[song['filename']])
     return nsongs
 
-def save_cache(songs):
-    songs = filter(None, songs)
+def save_cache():
+    songs = library.values()
     fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     if not os.path.isdir(os.path.split(fn)[0]):
         os.mkdir(os.path.split(fn)[0])

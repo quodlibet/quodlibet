@@ -190,6 +190,6 @@ def main():
     gtk.threads_init()
     thread.start_new_thread(player.play, (widgets["currentsong"],))
     gtk.main()
-    library.save_cache([row[0] for row in widgets.songs])
+    library.save_cache()
 
 if __name__ == "__main__": main()
