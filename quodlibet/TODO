@@ -7,15 +7,17 @@ Use less Glade
 MainWindow and PrefsWindow should be in Python, and new windows should
 probably be written in Python from the start.
 
-Port iFP PMP driver to PyIFP
-----------------------------
-James Evans recently posted Python bindings for libifp to the
-ifp-driver-common list. They'd be much much nicer to use, especially
-if progress callbacks are working.
+UI Tweaking
+-----------
+Continue HIGification, handle very long titles/filenames better.
 
 Remember browser information
 ----------------------------
 Browsers need a way to properly save and reinitialize themselves.
+
+Jukebox mode
+------------
+Where songs keep adding themselves to the playlist.
 
 GStreamer backend
 -----------------
@@ -64,6 +66,10 @@ the device would be tracked with HAL/DBUS.
 Another way would be to store an "alternate filenames" list with each
 song. This would let you use multiple devices/filesystems at once, but
 I don't think that's a common enough use case to justify the complexity.
+
+James Evans recently posted Python bindings for libifp to the
+ifp-driver-common list. They'd be much much nicer to use, especially
+if progress callbacks are working.
 
 HAL/DBUS
 --------

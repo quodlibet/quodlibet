@@ -5,6 +5,8 @@
 # in English in the file. So to get "licence" to appear in your custom
 # headers, you must add "license" to your header list.
 
+_("title")
+_("length")
 _("artist")
 _("album")
 _("disc")

@@ -43,32 +43,6 @@ def re_esc(str):
         lambda a: (a in "/.^$*+?{,}\\[]|()<>#=!:" and "\\" + a) or a, str))
 sre.escape = re_esc
 
-# Check whether or not we can support various formats.
-def check_mp3():
-    try: import pyid3lib, mad
-    except ImportError: return False
-    else: return True
-
-def check_ogg():
-    try: import ogg.vorbis
-    except ImportError: return False
-    else: return True
-
-def check_flac():
-    try: import flac.decoder
-    except ImportError: return False
-    else: return True
-
-def check_mod():
-    try: import modplug
-    except ImportError: return False
-    else: return True
-
-def check_mpc():
-    try: import musepack
-    except ImportError: return False
-    else: return True
-
 def parse_time(timestr):
     try:
         return reduce(lambda s, a: s * 60 + int(a),
@@ -129,19 +103,26 @@ def fscoding():
         else: return "utf-8"
     else: return "utf-8"
 
-def decode(s):
-    try: return s.decode("utf-8")
-    except UnicodeError:
-        try:
-            return s.decode("utf-8", "replace") + " " + _("[Invalid Unicode]")
-        except UnicodeError: return _("[Invalid Unicode]")
+def fsdecode(s):
+    if isinstance(s, unicode): return s
+    else: return decode(s, fscoding())
 
-def encode(s):
-    try: return s.encode("utf-8")
+def decode(s, charset = "utf-8"):
+    try: return s.decode(charset)
     except UnicodeError:
         try:
-            return s.encode("utf-8", "replace") + " " + _("[Invalid Unicode]")
-        except UnicodeError: return _("[Invalid Unicode]")
+            return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
+        # FIXME: Can this happen?
+        except UnicodeError: return _("[Invalid Encoding]")
+
+def encode(s, charset = "utf-8"):
+    try: return s.encode(charset)
+    # FIXME: Can *this* happen?
+    except UnicodeError:
+        try:
+            return (s+" " + _("[Invalid Encoding]")).encode(charset, "replace")
+        # Can *THIS* happen?
+        except UnicodeError: return _("[Invalid Encoding]")
 
 def title(string):
     if not string: return ""

@@ -42,7 +42,7 @@ class UtilTests(TestCase):
     def test_unicode(self):
         self.failUnlessEqual(decode(""), "")
         self.failUnlessEqual(decode("foo!"), "foo!")
-        self.failUnlessEqual(decode("foo\xde"), u'foo\ufffd [Invalid Unicode]')
+        self.failUnlessEqual(decode("foo\xde"), u'foo\ufffd [Invalid Encoding]')
         self.failUnlessEqual(encode(u"abcde"), "abcde")
 
     def test_iscommand(self):

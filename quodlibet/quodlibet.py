@@ -306,18 +306,19 @@ class DeleteDialog(object):
         vbox = gtk.VBox(spacing = 6)
         if len(files) == 1:
             l = _("Permanently delete this file?")
-            exp = gtk.Expander("%s" % os.path.basename(files[0]))
+            exp = gtk.Expander("%s"%util.fsdecode(os.path.basename(files[0])))
         else:
             l = _("Permanently delete these files?")
             exp = gtk.Expander(_("%s and %d more...") %(
-                os.path.basename(files[0]), len(files) - 1))
+                util.fsdecode(os.path.basename(files[0])), len(files) - 1))
 
         lab = gtk.Label()
         lab.set_markup("<big><b>%s</b></big>" % l)
         lab.set_property('xalign', 0.0)
         vbox.pack_start(lab, expand = False)
 
-        lab = gtk.Label("\n".join(map(util.unexpand, files)))
+        lab = gtk.Label("\n".join(
+            map(util.fsdecode, map(util.unexpand, files))))
         lab.set_property('xalign', 0.1)
         lab.set_property('yalign', 0.0)
         exp.add(gtk.ScrolledWindow())
@@ -1985,7 +1986,7 @@ class SongProperties(object):
             changed = ftime(song["~#mtime"])
             size = util.format_size(os.path.getsize(song["~filename"]))
             tim = util.format_time_long(song["~#length"])
-            fn = util.unexpand(song["~filename"])
+            fn = util.fsdecode(util.unexpand(song["~filename"]))
             tbl = [(_("Play count:"), playcount),
                    (_("Skip count:"), skipcount),
                    (_("Song length:"), tim),
@@ -3084,7 +3085,7 @@ class SongProperties(object):
             else:
                 self.widget.set_sensitive(True)
             for song in songs:
-                basename = song("~basename").decode(util.fscoding(),"replace")
+                basename = util.fsdecode(song("~basename"))
                 self.model.append(row = [song, basename, song("tracknumber")])
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
@@ -3142,7 +3143,9 @@ class SongProperties(object):
 
         for song in songrefs:
             self.fbasemodel.append(
-                row = [song, song("~basename"), song("~dirname"),
+                row = [song,
+                       util.fsdecode(song("~basename")),
+                       util.fsdecode(song("~dirname")),
                        song["~filename"]])
 
         if len(songrefs) > 1: selection.select_all()
@@ -3208,8 +3211,8 @@ def tag(name):
         if name[0] == "~":
             if name[1] == "#": name = name[2:]
             else: name = name[1:]
-        return " / ".join([HEADERS_FILTER.get(n, n) for n
-                           in name.split("~")]).title()
+        return " / ".join([_(HEADERS_FILTER.get(n, n)) for n
+                             in name.split("~")]).title()
     except IndexError:
         return _("Invalid tag name")
 
