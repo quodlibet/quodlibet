@@ -848,25 +848,13 @@ class MainWindow(MultiInstanceWidget):
         accelgroup.connect('accel-changed',
                 lambda *args: gtk.accel_map_save(const.ACCELS))
 
-        # Oft-used pixmaps -- play/pause and small versions of the same.
-        # FIXME: Switching to GTK 2.6 we can use the stock icons.
-        self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
-        self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
-        self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
-        self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
-
-        self.pp = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
-        self.widgets["prev_menu"].get_image().set_from_pixbuf(self.pp)
-
-        self.pn = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
-        self.widgets["next_menu"].get_image().set_from_pixbuf(self.pn)
-        self.widgets["play_menu"].get_image().set_from_pixbuf(self.pause_s)
-
-        # Set up the tray icon; initialize the menu widget even if we
-        # don't end up using it for simplicity.
+        #self.widgets["play_menu"].get_image().set_from_stock(
+        #    'gtk-media-play', gtk.ICON_SIZE_MENU)
 
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
         
+        # Set up the tray icon; initialize the menu widget even if we
+        # don't end up using it for simplicity.
         self.icon = HIGTrayIcon(p, self.window, cbs = {
             2: self.play_pause,
             3: self.tray_popup,
@@ -920,21 +908,22 @@ class MainWindow(MultiInstanceWidget):
         if player.playlist.paused:
             b = gtk.ImageMenuItem(_("_Play"))
             tray_menu_play = b.get_image()
-            tray_menu_play.set_from_pixbuf(self.pause_s)
+            tray_menu_play.set_from_stock('gtk-media-play', gtk.ICON_SIZE_MENU)
         else:
             b = gtk.ImageMenuItem(_("_Pause"))
             tray_menu_play = b.get_image()
-            tray_menu_play.set_from_pixbuf(self.play_s)
+            tray_menu_play.set_from_stock('gtk-media-pause',
+                                          gtk.ICON_SIZE_MENU)
         b.connect('activate', self.play_pause)
         tray_menu.append(b)
         tray_menu.append(gtk.SeparatorMenuItem())
         b = gtk.ImageMenuItem(_("Pre_vious"))
         b.connect('activate', self.previous_song)
-        b.get_image().set_from_pixbuf(self.pp)
+        b.get_image().set_from_stock('gtk-media-previous', gtk.ICON_SIZE_MENU)
         tray_menu.append(b)
         b = gtk.ImageMenuItem(_("_Next"))
         b.connect('activate', self.next_song)
-        b.get_image().set_from_pixbuf(self.pn)
+        b.get_image().set_from_stock('gtk-media-next', gtk.ICON_SIZE_MENU)
         tray_menu.append(b)
         tray_menu.append(gtk.SeparatorMenuItem())
         b = gtk.ImageMenuItem(gtk.STOCK_QUIT)
@@ -1028,12 +1017,16 @@ class MainWindow(MultiInstanceWidget):
 
     def _update_paused(self, paused):
         if paused:
-            self.widgets["play_image"].set_from_pixbuf(self.paused)
-            self.widgets["play_menu"].get_image().set_from_pixbuf(self.pause_s)
+            self.widgets["play_image"].set_from_stock(
+                'gtk-media-play', gtk.ICON_SIZE_LARGE_TOOLBAR)
+            self.widgets["play_menu"].get_image().set_from_stock(
+                'gtk-media-play', gtk.ICON_SIZE_MENU)
             self.widgets["play_menu"].child.set_text(_("Play _song"))
         else:
-            self.widgets["play_image"].set_from_pixbuf(self.playing)
-            self.widgets["play_menu"].get_image().set_from_pixbuf(self.play_s)
+            self.widgets["play_image"].set_from_stock(
+                'gtk-media-pause', gtk.ICON_SIZE_LARGE_TOOLBAR)
+            self.widgets["play_menu"].get_image().set_from_stock(
+                'gtk-media-pause', gtk.ICON_SIZE_MENU)
             self.widgets["play_menu"].child.set_text(_("Pause _song"))
         self.widgets["play_menu"].child.set_use_underline(True)
 

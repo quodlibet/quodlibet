@@ -7,11 +7,6 @@ Use less Glade
 MainWindow and PrefsWindow should be in Python, and new windows should
 probably be written in Python from the start.
 
-Better tray icon
-----------------
-Find out why it doesn't work in vertical GNOME panels. Add pause/volume
-control features.
-
 Song rating system
 ------------------
 Don't tell anyone, but the ~#rating key exists already. It just needs UI.

@@ -48,7 +48,7 @@
 		      <signal name="activate" handler="open_chooser" last_modification_time="Fri, 08 Oct 2004 01:26:46 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1315">
+			<widget class="GtkImage" id="image1491">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -69,7 +69,7 @@
 		      <signal name="activate" handler="new_playlist" last_modification_time="Sun, 16 Jan 2005 04:49:36 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1316">
+			<widget class="GtkImage" id="image1492">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-new</property>
 			  <property name="icon_size">1</property>
@@ -112,7 +112,7 @@
 		      <signal name="activate" handler="rebuild" last_modification_time="Thu, 18 Nov 2004 04:04:04 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1317">
+			<widget class="GtkImage" id="image1493">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -134,7 +134,7 @@
 		      <signal name="activate" handler="rebuild_hard" last_modification_time="Thu, 18 Nov 2004 04:06:19 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1318">
+			<widget class="GtkImage" id="image1494">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -184,7 +184,7 @@
 		      <signal name="activate" handler="random_genre" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1319">
+			<widget class="GtkImage" id="image1495">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-question</property>
 			  <property name="icon_size">1</property>
@@ -206,7 +206,7 @@
 		      <signal name="activate" handler="random_artist" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1320">
+			<widget class="GtkImage" id="image1496">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-question</property>
 			  <property name="icon_size">1</property>
@@ -228,7 +228,7 @@
 		      <signal name="activate" handler="random_album" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1321">
+			<widget class="GtkImage" id="image1497">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-question</property>
 			  <property name="icon_size">1</property>
@@ -255,7 +255,7 @@
 		      <signal name="activate" handler="lastplayed_day" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1322">
+			<widget class="GtkImage" id="image1498">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -276,7 +276,7 @@
 		      <signal name="activate" handler="lastplayed_week" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1323">
+			<widget class="GtkImage" id="image1499">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -297,7 +297,7 @@
 		      <signal name="activate" handler="lastplayed_month" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1324">
+			<widget class="GtkImage" id="image1500">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -318,7 +318,7 @@
 		      <signal name="activate" handler="lastplayed_never" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1325">
+			<widget class="GtkImage" id="image1501">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -346,7 +346,7 @@
 		      <signal name="activate" handler="top40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1326">
+			<widget class="GtkImage" id="image1502">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-top</property>
 			  <property name="icon_size">1</property>
@@ -368,7 +368,7 @@
 		      <signal name="activate" handler="bottom40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1327">
+			<widget class="GtkImage" id="image1503">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-bottom</property>
 			  <property name="icon_size">1</property>
@@ -402,9 +402,9 @@
 		      <signal name="activate" handler="previous_song" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1328">
+			<widget class="GtkImage" id="image1504">
 			  <property name="visible">True</property>
-			  <property name="stock">gtk-go-back</property>
+			  <property name="stock">gtk-media-previous</property>
 			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
@@ -423,9 +423,9 @@
 		      <signal name="activate" handler="play_pause" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1329">
+			<widget class="GtkImage" id="image1505">
 			  <property name="visible">True</property>
-			  <property name="stock">gtk-yes</property>
+			  <property name="stock">gtk-media-play</property>
 			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
@@ -444,9 +444,9 @@
 		      <signal name="activate" handler="next_song" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1330">
+			<widget class="GtkImage" id="image1506">
 			  <property name="visible">True</property>
-			  <property name="stock">gtk-go-forward</property>
+			  <property name="stock">gtk-media-forward</property>
 			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
@@ -471,7 +471,7 @@
 		      <signal name="activate" handler="cur_genre_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1331">
+			<widget class="GtkImage" id="image1507">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -492,7 +492,7 @@
 		      <signal name="activate" handler="cur_artist_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1332">
+			<widget class="GtkImage" id="image1508">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -513,7 +513,7 @@
 		      <signal name="activate" handler="cur_album_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1333">
+			<widget class="GtkImage" id="image1509">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -556,7 +556,7 @@
 		      <signal name="activate" handler="jump_to_current" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1334">
+			<widget class="GtkImage" id="image1510">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -613,7 +613,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_Search library</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">disable_browsing1</property>
 		      <signal name="activate" handler="show_search" last_modification_time="Sun, 16 Jan 2005 07:07:40 GMT"/>
 		    </widget>
@@ -624,7 +624,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_Playlists</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">disable_browsing1</property>
 		      <signal name="activate" handler="show_listselect" last_modification_time="Sun, 16 Jan 2005 07:07:40 GMT"/>
 		    </widget>
@@ -644,10 +644,10 @@
 		<widget class="GtkMenu" id="HelpMenu_menu">
 
 		  <child>
-		    <widget class="GtkMenuItem" id="about1">
+		    <widget class="GtkImageMenuItem" id="about1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_About</property>
-		      <property name="use_underline">True</property>
+		      <property name="label">gtk-about</property>
+		      <property name="use_stock">True</property>
 		      <signal name="activate" handler="show_about" last_modification_time="Sun, 17 Oct 2004 07:45:57 GMT"/>
 		    </widget>
 		  </child>
@@ -688,7 +688,7 @@
 		      <property name="visible">True</property>
 		      <property name="n_rows">2</property>
 		      <property name="n_columns">3</property>
-		      <property name="homogeneous">False</property>
+		      <property name="homogeneous">True</property>
 		      <property name="row_spacing">3</property>
 		      <property name="column_spacing">3</property>
 
@@ -756,96 +756,6 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkButton" id="prev_button">
-			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Play previous song</property>
-			  <property name="can_focus">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <signal name="clicked" handler="previous_song" last_modification_time="Sun, 07 Nov 2004 00:59:44 GMT"/>
-
-			  <child>
-			    <widget class="GtkImage" id="image33">
-			      <property name="visible">True</property>
-			      <property name="pixbuf">previous.png</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			    </widget>
-			  </child>
-			</widget>
-			<packing>
-			  <property name="left_attach">0</property>
-			  <property name="right_attach">1</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkButton" id="play_button">
-			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Pause/resume the current song</property>
-			  <property name="can_focus">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <signal name="clicked" handler="play_pause" last_modification_time="Sun, 07 Nov 2004 01:00:00 GMT"/>
-
-			  <child>
-			    <widget class="GtkImage" id="play_image">
-			      <property name="visible">True</property>
-			      <property name="pixbuf">play.png</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			    </widget>
-			  </child>
-			</widget>
-			<packing>
-			  <property name="left_attach">1</property>
-			  <property name="right_attach">2</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkButton" id="next_button">
-			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Play next song</property>
-			  <property name="can_focus">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <signal name="clicked" handler="next_song" last_modification_time="Sun, 07 Nov 2004 01:00:09 GMT"/>
-
-			  <child>
-			    <widget class="GtkImage" id="image32">
-			      <property name="visible">True</property>
-			      <property name="pixbuf">next.png</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			    </widget>
-			  </child>
-			</widget>
-			<packing>
-			  <property name="left_attach">2</property>
-			  <property name="right_attach">3</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
 			<widget class="GtkButton" id="prop_button">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">View and edit tags in the playing song</property>
@@ -873,6 +783,99 @@
 			  <property name="bottom_attach">2</property>
 			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkButton" id="prev_button">
+			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Play previous song</property>
+			  <property name="can_focus">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <signal name="clicked" handler="previous_song" last_modification_time="Sun, 07 Nov 2004 00:59:44 GMT"/>
+
+			  <child>
+			    <widget class="GtkImage" id="image1335">
+			      <property name="visible">True</property>
+			      <property name="stock">gtk-media-previous</property>
+			      <property name="icon_size">3</property>
+			      <property name="xalign">0.5</property>
+			      <property name="yalign">0.5</property>
+			      <property name="xpad">0</property>
+			      <property name="ypad">0</property>
+			    </widget>
+			  </child>
+			</widget>
+			<packing>
+			  <property name="left_attach">0</property>
+			  <property name="right_attach">1</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options">fill</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkButton" id="next_button">
+			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Play next song</property>
+			  <property name="can_focus">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <signal name="clicked" handler="next_song" last_modification_time="Sun, 07 Nov 2004 01:00:09 GMT"/>
+
+			  <child>
+			    <widget class="GtkImage" id="image32">
+			      <property name="visible">True</property>
+			      <property name="stock">gtk-media-next</property>
+			      <property name="icon_size">3</property>
+			      <property name="xalign">0.5</property>
+			      <property name="yalign">0.5</property>
+			      <property name="xpad">0</property>
+			      <property name="ypad">0</property>
+			    </widget>
+			  </child>
+			</widget>
+			<packing>
+			  <property name="left_attach">2</property>
+			  <property name="right_attach">3</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options">fill</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkButton" id="play_button">
+			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Pause/resume the current song</property>
+			  <property name="can_focus">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <signal name="clicked" handler="play_pause" last_modification_time="Sun, 07 Nov 2004 01:00:00 GMT"/>
+
+			  <child>
+			    <widget class="GtkImage" id="play_image">
+			      <property name="visible">True</property>
+			      <property name="stock">gtk-media-play</property>
+			      <property name="icon_size">3</property>
+			      <property name="xalign">0.5</property>
+			      <property name="yalign">0.5</property>
+			      <property name="xpad">0</property>
+			      <property name="ypad">0</property>
+			    </widget>
+			  </child>
+			</widget>
+			<packing>
+			  <property name="left_attach">1</property>
+			  <property name="right_attach">2</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options">fill</property>
 			</packing>
 		      </child>
 		    </widget>

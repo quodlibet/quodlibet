@@ -15,6 +15,7 @@ numeric tag (its value will be 0).
  - Tray icon now pauses/unpauses on middle click, adjusts volume on
    scroll wheel, and skips songs on buttons 6/7 (plus bug fixes).
  - Middle click pastes current PRIMARY clipboard text in Edit Tags.
+ - Depends on GTK 2.6 for new media icons.
 
 0.8.1 - Our story takes a sudden dive..
  - Fix a crash when encoding information is not available.

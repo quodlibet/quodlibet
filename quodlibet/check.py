@@ -18,7 +18,7 @@ if __name__ == "__main__":
         import pygtk
         pygtk.require('2.0')
         import gtk
-        if gtk.pygtk_version < (2, 4, 1) or gtk.gtk_version < (2, 4):
+        if gtk.pygtk_version < (2, 4, 1) or gtk.gtk_version < (2, 6):
             raise ImportError
         import gtk.glade
     except ImportError:
