@@ -2205,7 +2205,7 @@ class SongProperties(object):
             if albums:
                 self.box.pack_start(
                     self.Frame("%s (%d)" %(
-                    util.title(_("albums (%d)"), alcount)),
+                    util.title(_("albums (%d)")), alcount),
                                self.Label(albums)),
                                expand = False)
 
