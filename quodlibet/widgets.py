@@ -367,8 +367,8 @@ class PreferencesWindow(gtk.Window):
             e.set_text(util.fsdecode(config.get("settings", "masked")))
             f.get_label_widget().set_mnemonic_widget(e)
             hb.pack_start(e)
-            hb.pack_start(b, expand = False)
-            vb.pack_start(hb, expand = False)
+            hb.pack_start(b, expand=False)
+            vb.pack_start(hb, expand=False)
             if os.path.exists("/media"): dir = "/media"
             elif os.path.exists("/mnt"): dir = "/mnt"
             else: dir = "/"
@@ -463,8 +463,8 @@ class DeleteDialog(gtk.Dialog):
         i.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_DIALOG)
         i.set_padding(12, 0)
         i.set_alignment(0.5, 0.0)
-        hbox.pack_start(i, expand = False)
-        vbox = gtk.VBox(spacing = 6)
+        hbox.pack_start(i, expand=False)
+        vbox = gtk.VBox(spacing=6)
         base = os.path.basename(files[0])
         if len(files) == 1:
             l = _("Permanently delete this file?")
@@ -477,7 +477,7 @@ class DeleteDialog(gtk.Dialog):
         lab = gtk.Label()
         lab.set_markup("<big><b>%s</b></big>" % l)
         lab.set_alignment(0.0, 0.5)
-        vbox.pack_start(lab, expand = False)
+        vbox.pack_start(lab, expand=False)
 
         lab = gtk.Label("\n".join(
             map(util.fsdecode, map(util.unexpand, files))))
@@ -631,7 +631,7 @@ class TrayIcon(object):
             self.__icon.show_all()
             print to(_("Initialized status icon."))
 
-    def __event(self, widget, event, button = None):
+    def __event(self, widget, event, button=None):
         c = self.__cbs.get(button or event.button)
         if callable(c): c(event)
 
@@ -751,16 +751,15 @@ class MmKeys(object):
             import mmkeys
         except: pass
         else:
-            self.keys = mmkeys.MmKeys()
-            map(self.keys.connect, *zip(*cbs.items()))
+            self.__keys = mmkeys.MmKeys()
+            map(self.__keys.connect, *zip(*cbs.items()))
             print to(_("Initialized multimedia key support."))
 
 class Osd(object):
     def __init__(self):
-        try:
-            import gosd
+        try: import gosd
         except:
-            self.gosd = None
+            self.__gosd = None
         else:
             self.__gosd = gosd
             self.__level = 0
@@ -839,9 +838,9 @@ class PanedBrowser(Browser, gtk.HBox):
             column.set_fixed_width(50)
             self.child.append_column(column)
             self.tag = mytag
-            self.next = next
-            self._songs = []
-            self._selected_items = []
+            self.__next = next
+            self.__songs = []
+            self.__selected_items = []
             self.child.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
             self.child.connect_object('destroy', self.child.set_model, None)
             self.__sig = self.child.get_selection().connect(
@@ -854,21 +853,21 @@ class PanedBrowser(Browser, gtk.HBox):
                 player.playlist.next()
                 player.playlist.reset()
 
-        def __selection_changed(self, selection, check = True, jump = False):
+        def __selection_changed(self, selection, check=True, jump=False):
             if check: # verify we've actually changed...
                 model, rows = selection.get_selected_rows()
                 selected_items = [model[row][0] for row in rows]
                 if rows == []: rows = [(0,)]
-                if self._selected_items == selected_items: return
-                else: self._selected_items = selected_items
+                if self.__selected_items == selected_items: return
+                else: self.__selected_items = selected_items
             if jump:
                 model, rows = selection.get_selected_rows()
                 if rows: self.child.scroll_to_cell(rows[0])
             # pass on the remaining songs to the next pane
-            self.next.fill(
-                filter(parser.parse(self.query()).search, self._songs))
+            self.__next.fill(
+                filter(parser.parse(self.query()).search, self.__songs))
 
-        def select(self, values, escape = True):
+        def select(self, values, escape=True):
             selection = self.child.get_selection()
             selection.handler_block(self.__sig)
             selection.unselect_all()
@@ -885,10 +884,10 @@ class PanedBrowser(Browser, gtk.HBox):
                 if selection.count_selected_rows() == 0:
                     selection.select_path((0,))
             selection.handler_unblock(self.__sig)
-            self.__selection_changed(selection, check = False, jump = True)
+            self.__selection_changed(selection, check=False, jump=True)
 
-        def fill(self, songs, handle_pending = True):
-            self._songs = songs
+        def fill(self, songs, handle_pending=True):
+            self.__songs = songs
             # get values from song list
             complete = True
             values = set()
@@ -919,7 +918,7 @@ class PanedBrowser(Browser, gtk.HBox):
             for i in to_select: selection.select_path((i,))
             selection.handler_unblock(self.__sig)
             while handle_pending and gtk.events_pending(): gtk.main_iteration()
-            self.__selection_changed(selection, check = False, jump = True)
+            self.__selection_changed(selection, check=False, jump=True)
 
         def query(self):
             selection = self.child.get_selection()
@@ -932,44 +931,44 @@ class PanedBrowser(Browser, gtk.HBox):
                 if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
                     selected.pop()
                     selected.append("!/./")
-                return ("%s = |(%s)" % (self.tag, ", ".join(selected))).decode(
-                    "utf-8")
+                return ("%s = |(%s)" %(
+                    self.tag, ", ".join(selected))).decode("utf-8")
 
     def __init__(self, cb):
-        gtk.HBox.__init__(self, spacing = 3)
+        gtk.HBox.__init__(self, spacing=3)
         self.__cb = cb
-        self.refresh_panes(restore = False)
+        self.refresh_panes(restore=False)
         self.set_homogeneous(True)
         self.set_size_request(100, 100)
 
-    def refresh_panes(self, restore = True):
+    def refresh_panes(self, restore=True):
         for c in self.get_children(): c.destroy()
         # fill in the pane list. the last pane reports back to us.
-        self._panes = [self]
+        self.__panes = [self]
         panes = config.get("browsers", "panes").split(); panes.reverse()
         for pane in panes:
-            self._panes.insert(0, self.Pane(pane, self._panes[0]))
-        self._panes.pop() # remove self
-        map(self.pack_start, self._panes)
+            self.__panes.insert(0, self.Pane(pane, self.__panes[0]))
+        self.__panes.pop() # remove self
+        map(self.pack_start, self.__panes)
         self.__inhibit = True
-        self._panes[0].fill(library.values())
+        self.__panes[0].fill(library.values())
         if restore: self.restore()
         self.show_all()
 
     def can_filter(self, key):
-        return key in [pane.tag for pane in self._panes]
+        return key in [pane.tag for pane in self.__panes]
 
     def filter(self, key, values):
-        for pane in self._panes:
+        for pane in self.__panes:
             self.__inhibit = True
             pane.select(None)
 
-        pane = self._panes[[pane.tag for pane in self._panes].index(key)]
+        pane = self.__panes[[pane.tag for pane in self.__panes].index(key)]
         pane.select(values)
 
     def save(self):
         selected = []
-        for pane in self._panes:
+        for pane in self.__panes:
             selection = pane.child.get_selection()
             model, rows = selection.get_selected_rows()
             selected.append("\t".join([model[row][0] for row in rows]))
@@ -981,24 +980,24 @@ class PanedBrowser(Browser, gtk.HBox):
                           config.get("browsers", "pane_selection").split("\n")]
         except Exception: pass
         else:
-            if len(selections) == len(self._panes):
-                for sel, pane in zip(selections, self._panes):
+            if len(selections) == len(self.__panes):
+                for sel, pane in zip(selections, self.__panes):
                     self.__inhibit = True
-                    pane.select(sel, escape = False)
+                    pane.select(sel, escape=False)
 
     def activate(self):
         self.fill(None)
 
     def update(self):
         self.__inhibit = True
-        self._panes[0].fill(library.values())
+        self.__panes[0].fill(library.values())
 
     def fill(self, songs):
         if self.__inhibit: self.__inhibit = False
         else:
             self.save()
             self.__cb(
-                "&(%s)" % ", ".join(map(self.Pane.query, self._panes)), None)
+                "&(%s)" % ", ".join(map(self.Pane.query, self.__panes)), None)
 
 class PlaylistBar(Browser, gtk.HBox):
     def __init__(self, cb):
@@ -1017,20 +1016,20 @@ class PlaylistBar(Browser, gtk.HBox):
                                              gtk.ICON_SIZE_MENU))
         edit.set_sensitive(False)
         refresh.set_sensitive(False)
-        self.pack_start(edit, expand = False)
-        self.pack_start(refresh, expand = False)
-        edit.connect_object('clicked', self.edit_current, combo)
-        combo.connect('changed', self.list_selected, edit, refresh)
-        refresh.connect_object('clicked', self.list_selected, combo,
-                               edit, refresh)
+        self.pack_start(edit, expand=False)
+        self.pack_start(refresh, expand=False)
+        edit.connect_object('clicked', self.__edit_current, combo)
+        combo.connect('changed', self.__list_selected, edit, refresh)
+        refresh.connect_object(
+            'clicked', self.__list_selected, combo, edit, refresh)
 
-        self.cb = cb
+        self.__cb = cb
         tips = gtk.Tooltips()
         tips.set_tip(edit, _("Edit the current playlist"))
         tips.set_tip(refresh, _("Refresh the current playlist"))
         self.show_all()
-        self.connect_object('destroy', gtk.ComboBoxEntry.set_model,
-                            combo, None)
+        self.connect_object(
+            'destroy', gtk.ComboBoxEntry.set_model, combo, None)
 
     def save(self):
         combo = self.get_children()[0]
@@ -1051,33 +1050,33 @@ class PlaylistBar(Browser, gtk.HBox):
             model.foreach(find_key, key)
 
     def activate(self):
-        self.list_selected(*self.get_children())
+        self.__list_selected(*self.get_children())
 
-    def list_selected(self, combo, edit, refresh):
+    def __list_selected(self, combo, edit, refresh):
         active = combo.get_active()
         edit.set_sensitive(active != 0)
         refresh.set_sensitive(active != 0)
         self.save()
         if active == 0:
-            self.cb("", None)
+            self.__cb("", None)
         else:
             playlist = "playlist_" + combo.get_model()[active][1]
-            self.cb("#(%s > 0)" % playlist, "~#"+playlist)
+            self.__cb("#(%s > 0)" % playlist, "~#"+playlist)
 
-    def edit_current(self, combo):
+    def __edit_current(self, combo):
         active = combo.get_active()
         if active > 0: PlaylistWindow(combo.get_model()[active][0])
 
 class CoverImage(gtk.Frame):
-    def __init__(self, size = [100, 100]):
+    def __init__(self, size=None):
         gtk.Frame.__init__(self)
         self.add(gtk.EventBox())
         self.child.add(gtk.Image())
-        self.child.child.set_size_request(-1, size[1])
-        self.child.connect_object('button-press-event',
-                                  CoverImage.__show_cover, self)
+        self.__size = size or [100, 100]
+        self.child.child.set_size_request(-1, self.__size[1])
+        self.child.connect_object(
+            'button-press-event', CoverImage.__show_cover, self)
         self.child.show_all()
-        self.__size = size
         self.__albumfn = None
 
     def set_song(self, song):
@@ -1116,21 +1115,21 @@ class CoverImage(gtk.Frame):
 class EmptyBar(Browser, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
-        self.text = ""
-        self.cb = cb
+        self.__text = ""
+        self._cb = cb
 
     def set_text(self, text):
-        self.text = text
+        self.__text = text
 
     def save(self):
-        config.set("browsers", "query_text", self.text)
+        config.set("browsers", "query_text", self.__text)
 
     def restore(self):
         try: self.set_text(config.get("browsers", "query_text"))
         except Exception: pass
 
     def activate(self):
-        self.cb(self.text, None)
+        self._cb(self.__text, None)
         self.save()
 
     def can_filter(self, key):
@@ -1148,61 +1147,60 @@ class EmptyBar(Browser, gtk.HBox):
         self.activate()
 
 class SearchBar(EmptyBar):
-    def __init__(self, cb, button = gtk.STOCK_FIND):
+    def __init__(self, cb, button=gtk.STOCK_FIND):
         EmptyBar.__init__(self, cb)
 
         tips = gtk.Tooltips()
         combo = qltk.ComboBoxEntrySave(
-            const.QUERIES, model = "searchbar", count = 15)
+            const.QUERIES, model="searchbar", count=15)
         clear = gtk.Button()
         clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
         tips.set_tip(clear, _("Clear search text"))
-        clear.connect('clicked', self.clear, combo)
+        clear.connect('clicked', self.__clear, combo)
                   
         search = gtk.Button()
-        b = gtk.HBox(spacing = 2)
+        b = gtk.HBox(spacing=2)
         b.pack_start(gtk.image_new_from_stock(button, gtk.ICON_SIZE_MENU))
         b.pack_start(gtk.Label(_("Search")))
         search.add(b)
         tips.set_tip(search, _("Search your audio library"))
-        search.connect_object('clicked', self.text_parse, combo.child)
-        combo.child.connect('activate', self.text_parse)
-        combo.child.connect('changed', self.test_filter)
+        search.connect_object('clicked', self.__text_parse, combo.child)
+        combo.child.connect('activate', self.__text_parse)
+        combo.child.connect('changed', self.__test_filter)
         self.pack_start(combo)
-        self.pack_start(clear, expand = False)
-        self.pack_start(search, expand = False)
+        self.pack_start(clear, expand=False)
+        self.pack_start(search, expand=False)
         self.show_all()
 
-    def clear(self, button, combo):
+    def __clear(self, button, combo):
         combo.child.set_text("")
 
     def activate(self):
-        self.text_parse(self.get_children()[0].child)
+        self.__text_parse(self.get_children()[0].child)
 
     def set_text(self, text):
         self.get_children()[0].child.set_text(text)
 
-    def text_parse(self, entry):
+    def __text_parse(self, entry):
         text = entry.get_text()
-        if (parser.is_valid(text) or
-            ("#" not in text and "=" not in text and "/" not in text)):
-            self.text = text
+        if (parser.is_valid(text) or ("#" not in text and "=" not in text)):
+            self.__text = text
             self.get_children()[0].prepend_text(text)
-        self.cb(text, None)
+        self._cb(text, None)
         self.save()
         self.get_children()[0].write(const.QUERIES)
 
-    def test_filter(self, textbox):
+    def __test_filter(self, textbox):
         if not config.state('color'): return
         text = textbox.get_text()
-        if "=" not in text and "#" not in text and "/" not in text:
+        if "=" not in text and "#" not in text:
             color = "blue"
         elif parser.is_valid(text): color = "dark green"
         else: color = "red"
-        gobject.idle_add(self.set_entry_color, textbox, color)
+        gobject.idle_add(self.__set_entry_color, textbox, color)
 
     # Set the color of some text.
-    def set_entry_color(self, entry, color):
+    def __set_entry_color(self, entry, color):
         layout = entry.get_layout()
         text = layout.get_text()
         markup = '<span foreground="%s">%s</span>' %(
@@ -1529,7 +1527,7 @@ class MainWindow(gtk.Window):
         config.set("memory", "browser", str(current))
         Browser = [EmptyBar, SearchBar, PlaylistBar, PanedBrowser][current]
         if self.browser: self.browser.destroy()
-        self.browser = Browser(self.text_parse)
+        self.browser = Browser(self.__browser_cb)
         self.child.pack_start(self.browser, self.browser.expand)
         self.__hide_menus()
 
@@ -1815,18 +1813,14 @@ class MainWindow(gtk.Window):
     def seek_slider(self, slider, v):
         gobject.idle_add(player.playlist.seek, v)
 
-    def random_artist(self, menuitem):
-        if self.browser.can_filter('artist'):
-            self.browser.filter('artist', [library.random("artist")])
+    def __random(self, key):
+        if self.browser.can_filter(key):
+            value = library.random(key)
+            if value is not None: self.browser.filter(key, [value])
 
-    def random_album(self, menuitem):
-        if self.browser.can_filter('album'):
-            self.browser.filter('album', [library.random("album")])
-            self.shuffle.set_active(False)
-
-    def random_genre(self, menuitem):
-        if self.browser.can_filter('genre'):
-            self.browser.filter('genre', [library.random("genre")])
+    def random_artist(self, menuitem): self.__random('artist')
+    def random_album(self, menuitem): self.__random('album')
+    def random_genre(self, menuitem): self.__random('genre')
 
     def lastplayed_day(self, menuitem):
         self.make_query("#(lastplayed > today)")
@@ -2104,12 +2098,12 @@ class MainWindow(gtk.Window):
             for widget in widgets:
                 self.ui.get_widget(widget).set_property('visible', c)
 
-    def text_parse(self, text, sort):
+    def __browser_cb(self, text, sort):
         if isinstance(text, str): text = text.decode("utf-8")
         text = text.strip()
         if player.playlist.playlist_from_filter(text):
             if sort:
-                self.songlist.set_sort_by(None, tag = sort, refresh = False)
+                self.songlist.set_sort_by(None, tag=sort, refresh=False)
             self.refresh_songlist()
 
     def filter_on_header(self, header, songs = None):
