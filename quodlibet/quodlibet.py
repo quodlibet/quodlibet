@@ -453,7 +453,8 @@ class MultiInstanceWidget(object):
 
     def songprop_close(self, *args):
         self.fview.set_model(None)
-        self.fmodel.clear()
+        self.fbasemodel.clear()
+        self.fmodel.clear_cache()
         self.model.clear()
         self.window.destroy()
         self.menu.destroy()
@@ -604,6 +605,8 @@ class MultiInstanceWidget(object):
     def songprop_files_changed(self, selection):
         songrefs = []
         def get_songrefs(model, path, iter, songrefs):
+            path = model.convert_path_to_child_path(path)
+            model = model.get_model()
             songrefs.append([model[path][0], model[path][1]])
         selection.selected_foreach(get_songrefs, songrefs)
         if len(songrefs): self.songrefs = songrefs
@@ -773,6 +776,57 @@ class MultiInstanceWidget(object):
         self.save.set_sensitive(False)
         self.revert.set_sensitive(False)
 
+        self.songprop_tbp_preview()
+        self.songprop_nbp_preview()
+
+    def songprop_nbp_preview(self, *args):
+        self.nbp_model.clear()
+        pattern = self.nbp_entry.get_text().decode('utf-8')
+        try:
+            pattern = util.FileFromPattern(pattern)
+        except ValueError: 
+            make_error(_("Pattern with subdirectories is not absolute"),
+                       _("The pattern\n<b>%s</b>\ncontains / but does not "
+                         "start from root. This results in bad renaming, so "
+                         "is not supported.") % util.escape(pattern),
+                       gtk.BUTTONS_OK)
+            return
+            
+        for song, ref in self.songrefs:
+            newname = pattern.match(song)
+            self.nbp_model.append(row=[song, ref, song['=basename'], newname])
+
+
+    def songprop_tbp_preview(self, *args):
+        self.tbp_view.set_model(None)
+        self.tbp_model.clear()
+
+        # build the pattern
+        pattern_text = self.tbp_entry.get_text().decode('utf-8')
+        pattern = util.PatternFromFile(pattern_text)
+
+        # create model to store the matches, and view to match
+        self.tbp_model = gtk.ListStore(object, object, str,
+                *([str] * len(pattern.headers)))
+
+        for col in self.tbp_view.get_columns(): self.tbp_view.remove_column(col)
+        col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
+        self.tbp_view.append_column(col)
+        for i, header in enumerate(pattern.headers):
+            col = gtk.TreeViewColumn(header, gtk.CellRendererText(), text=i+3)
+            self.tbp_view.append_column(col)
+
+        # get info for all matches
+        for song, ref in self.songrefs:
+            row = [song, ref, song['=basename']]
+            match = pattern.match(song)
+            row.extend([match.get(h, '') for h in pattern.headers])
+            self.tbp_model.append(row=row)
+
+        # save for last to potentially save time
+        self.tbp_view.set_model(self.tbp_model)
+
+
 def make_song_properties(songrefs):
     dlg = MultiInstanceWidget(widget="properties_window")
     dlg.window = dlg.widgets.get_widget('properties_window')
@@ -810,18 +864,40 @@ def make_song_properties(songrefs):
     # select active files
     dlg.fview = dlg.widgets.get_widget('songprop_files')
     dlg.fview_scroll = dlg.widgets.get_widget('songprop_files_scroll')
-    dlg.fmodel = gtk.ListStore(object, object, str, str)
+    dlg.fbasemodel = gtk.ListStore(object, object, str, str, str)
+    dlg.fmodel = gtk.TreeModelSort(dlg.fbasemodel)
     dlg.fview.set_model(dlg.fmodel)
     selection = dlg.fview.get_selection()
     selection.set_mode(gtk.SELECTION_MULTIPLE)
     selection.connect('changed', dlg.songprop_files_changed)
     column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
+    column.set_sort_column_id(2)
     dlg.fview.append_column(column)
     column = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=3)
+    column.set_sort_column_id(4)
     dlg.fview.append_column(column)
     for song, ref in songrefs:
-        dlg.fmodel.append(row=[song, ref,
-                song.get('=basename',''), song.get('=dirname','')])
+        dlg.fbasemodel.append(row=[song, ref, song.get('=basename',''),
+                song.get('=dirname',''), song['=filename']])
+
+
+    # tag by pattern
+    dlg.tbp_combo = dlg.widgets.get_widget("songprop_tbp_combo")
+    dlg.tbp_entry = dlg.tbp_combo.child
+    dlg.tbp_view = dlg.widgets.get_widget("songprop_tbp_view")
+    dlg.tbp_model = gtk.ListStore(int) # fake first one
+    dlg.tbp_headers = []
+
+    # rename by pattern
+    dlg.nbp_combo = dlg.widgets.get_widget("songprop_nbp_combo")
+    dlg.nbp_entry = dlg.nbp_combo.child
+    dlg.nbp_view = dlg.widgets.get_widget("songprop_nbp_view")
+    dlg.nbp_model = gtk.ListStore(object, object, str, str)
+    dlg.nbp_view.set_model(dlg.nbp_model)
+    column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
+    dlg.nbp_view.append_column(column)
+    column = gtk.TreeViewColumn(_('New Name'), gtk.CellRendererText(), text=3)
+    dlg.nbp_view.append_column(column)
 
     # select all files, causing selection update to fill the info
     selection.select_all()

@@ -3,6 +3,7 @@ from tests import registerCase
 
 from util import escape, unescape, re_esc, encode, decode, mkdir, iscommand
 from util import find_subtitle, split_album, split_title, split_value
+from util import PatternFromFile, FileFromPattern
 
 import os
 
@@ -66,5 +67,107 @@ class UtilTests(TestCase):
         self.failUnlessEqual(split_album("foo Disk 2"), ("foo", "2"))
         self.failUnlessEqual(split_album("foo ~Disk 3~"), ("foo", "3"))
         self.failUnlessEqual(split_album("disk 2"), ("disk 2", None))
+
+    def test_pattern_from_file(self):
+        f1 = '/path/Artist/Album/01 - Title.mp3'
+        f2 = '/path/Artist - Album/01. Title.mp3'
+        f3 = '/path/01 - Artist - Title.mp3'
+        b1 = '/path/01 - Title'
+        b2 = '/path/01 - Artist - Title'
+
+        nomatch = {}
+        pat = PatternFromFile('')
+        self.assertEquals(pat.match(f1), nomatch)
+        self.assertEquals(pat.match(f2), nomatch)
+        self.assertEquals(pat.match(f3), nomatch)
+        self.assertEquals(pat.match(b1), nomatch)
+        self.assertEquals(pat.match(b2), nomatch)
+
+        tracktitle = {'tracknumber': '01', 'title': 'Title' }
+        btracktitle = {'tracknumber': '01', 'title': 'Artist - Title' }
+        pat = PatternFromFile('<tracknumber> - <title>')
+        self.assertEquals(pat.match(f1), tracktitle)
+        self.assertEquals(pat.match(f2), nomatch)
+        self.assertEquals(pat.match(f3), btracktitle)
+        self.assertEquals(pat.match(b1), nomatch)
+        self.assertEquals(pat.match(b2), nomatch)
+
+        albumtracktitle = tracktitle.copy(); albumtracktitle['album']='Album'
+        balbumtracktitle = btracktitle.copy(); balbumtracktitle['album']='path'
+        pat = PatternFromFile('<album>/<tracknumber> - <title>')
+        self.assertEquals(pat.match(f1), albumtracktitle)
+        self.assertEquals(pat.match(f2), nomatch)
+        self.assertEquals(pat.match(f3), balbumtracktitle)
+        self.assertEquals(pat.match(b1), nomatch)
+        self.assertEquals(pat.match(b2), nomatch)
+
+        all = albumtracktitle.copy(); all['artist']='Artist'
+        pat = PatternFromFile('<artist>/<album>/<tracknumber> - <title>')
+        self.assertEquals(pat.match(f1), all)
+        self.assertEquals(pat.match(f2), nomatch)
+        self.assertEquals(pat.match(f3), nomatch)
+        self.assertEquals(pat.match(b1), nomatch)
+        self.assertEquals(pat.match(b2), nomatch)
+
+        btracktitle = {'tracknumber': '01', 'title': 'Titl' }
+        vbtracktitle = {'tracknumber': '01', 'title': 'Artist - Titl' }
+        pat = PatternFromFile('<tracknumber> - <title>e')
+        self.assertEquals(pat.match(f1), btracktitle)
+        self.assertEquals(pat.match(f2), nomatch)
+        self.assertEquals(pat.match(f3), vbtracktitle)
+        self.assertEquals(pat.match(b1), btracktitle)
+        self.assertEquals(pat.match(b2), vbtracktitle)
+
+        pat = PatternFromFile('<=#> - <title>')
+        self.assertEquals(pat.match(f1), nomatch)
+        self.assertEquals(pat.match(f2), nomatch)
+        self.assertEquals(pat.match(f3), nomatch)
+        self.assertEquals(pat.match(b1), nomatch)
+        self.assertEquals(pat.match(b2), nomatch)
+
+    def test_file_from_pattern(self):
+        class mocksong(dict):
+            def comma(self, key):
+                v = self.get(key, '')
+                if not isinstance(v, list): return v
+                else: return ', '.join(v)
+
+        s1 = { '=#':5, 'artist':'Artist', 'title':'Title5', '=basename':'a.mp3' }
+        s2 = { '=#':6, 'artist':'Artist', 'title':'Title6', '=basename':'b.ogg' }
+        s3 = { 'title': 'test/subdir', 'genre':['/','/'], '=basename':'a.flac' }
+        s1 = mocksong(s1); s2 = mocksong(s2); s3 = mocksong(s3);
+
+        pat = FileFromPattern('<tracknumber>. <title>')
+        self.assertEquals(pat.match(s1), '05. Title5.mp3')
+        self.assertEquals(pat.match(s2), '06. Title6.ogg')
+        self.assertEquals(pat.match(s3), '. test_subdir.flac')
+
+        pat = FileFromPattern('<<tracknumber>>. <title>')
+        self.assertEquals(pat.match(s1), '<05>. Title5.mp3')
+        self.assertEquals(pat.match(s2), '<06>. Title6.ogg')
+        self.assertEquals(pat.match(s3), '<>. test_subdir.flac')
+
+        pat = FileFromPattern('<tracknumber>. <title>.')
+        self.assertEquals(pat.match(s1), '05. Title5..mp3')
+        self.assertEquals(pat.match(s2), '06. Title6..ogg')
+        self.assertEquals(pat.match(s3), '. test_subdir..flac')
+
+        pat = FileFromPattern('<tracknumber>. <title>.flac')
+        self.assertEquals(pat.match(s1), '05. Title5.flac')
+        self.assertEquals(pat.match(s2), '06. Title6.flac')
+        self.assertEquals(pat.match(s3), '. test_subdir.flac')
+
+        pat = FileFromPattern('<tracknumber>. <genre>')
+        self.assertEquals(pat.match(s1), '05. .mp3')
+        self.assertEquals(pat.match(s2), '06. .ogg')
+        self.assertEquals(pat.match(s3), '. _, _.flac')
+
+        pat = FileFromPattern('<=#>. <genre> mu')
+        self.assertEquals(pat.match(s1), '<=#>.  mu.mp3')
+        self.assertEquals(pat.match(s2), '<=#>.  mu.ogg')
+        self.assertEquals(pat.match(s3), '<=#>. _, _ mu.flac')
+
+        self.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
+        FileFromPattern('/<a>/<b>')
 
 registerCase(UtilTests)

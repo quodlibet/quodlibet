@@ -50,7 +50,8 @@ class AudioFile(dict):
                       self.keys())
 
     def comma(self, key):
-        return self.get(key, "").replace("\n", ", ")
+        if isinstance(self.get(key), int): return self.get(key)
+        else: return self.get(key, "").replace("\n", ", ")
 
     def list(self, key):
         if key in self: return self[key].split("\n")

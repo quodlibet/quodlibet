@@ -135,3 +135,93 @@ def unexpand(filename):
     if filename.startswith(os.environ["HOME"]):
         filename = filename.replace(os.environ["HOME"], "~", 1)
     return filename
+
+class PatternFromFile(object):
+    def __init__(self, pattern):
+        self.compile(pattern)
+
+    def compile(self, pattern):
+        self.headers = []
+        self.slashes = len(pattern) - len(pattern.replace('/','')) + 1
+        self.pattern = None
+        # patterns look like <tagname> non regexy stuff <tagname> ...
+        pieces = sre.split(r'(<\w+>)', pattern)
+        override = { '<tracknumber>': r'\d+', '<discnumber>': r'\d+' }
+        for i, piece in enumerate(pieces):
+            if not piece: continue
+            if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
+                piece = piece.lower()   # canonicalize to lowercase tag names
+                pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+'))
+                self.headers.append(piece[1:-1])
+            else:
+                pieces[i] = re_esc(piece)
+
+        # some slight magic to anchor searches "nicely"
+        # nicely means if it starts with a <tag>, anchor with a /
+        # if it ends with a <tag>, anchor with .xxx$
+        # but if it's a <tagnumber>, don't bother as \d+ is sufficient
+        # and if it's not a tag, trust the user
+        if pattern.startswith('<') and not pattern.startswith('<tracknumber>')\
+                and not pattern.startswith('<discnumber>'):
+            pieces.insert(0, '/')
+        if pattern.endswith('>') and not pattern.endswith('<tracknumber>')\
+                and not pattern.endswith('<discnumber>'):
+            pieces.append(r'(?:\.\w+)$')
+
+        self.pattern = sre.compile(''.join(pieces))
+
+    def match(self, song):
+        if isinstance(song, dict):
+            song = song['=filename']
+        # only match on the last n pieces of a filename, dictated by pattern
+        # this means no pattern may effectively cross a /, despite .* doing so
+        matchon = '/'+'/'.join(song.split('/')[-self.slashes:])
+        match = self.pattern.search(matchon)
+
+        # dicts for all!
+        if match is None: return {}
+        else: return match.groupdict()
+
+    def apply(self, song, replace=False):
+        match = self.match(song)
+        for tag, value in match.iteritems():
+            if replace: pass
+                # remove tags as present
+                # add them
+            else: pass
+                # add them if identical is not present
+
+class FileFromPattern(object):
+    def __init__(self, pattern):
+        if '/' in pattern and not pattern.startswith('/'):
+            raise ValueError("Pattern %r is not rooted" % pattern)
+        self.pattern = pattern
+        self.pieces = sre.split(r'(<\w+>)', pattern)
+
+    def match(self, song):
+        format = { '<tracknumber>': '%02d' }
+        override = { '<tracknumber>': '=#' }
+        newname = []
+        for piece in self.pieces:
+            if not piece: continue
+            if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
+                text = song.comma(override.get(piece, piece[1:-1]))
+                try: text = format.get(piece, '%s') % text
+                except TypeError: pass
+                newname.append(text.replace('/', '_'))
+            else:
+                newname.append(piece)
+
+        # simple magic to decide whether to append the extension
+        # if the pattern has no . in it, or if it has a > (probably a tag)
+        #   after the last . or if the last character is the . append .foo
+        pat = self.pattern
+        if pat and ('.' not in pat or pat.endswith('.') or
+                '>' in pat[pat.rfind('.'):]):
+            oldname = song['=basename']
+            newname.append(oldname[oldname.rfind('.'):])
+        return ''.join(newname)
+
+    def apply(self, song):
+        pass
+        # smart mv song['=filename'], self.match(song)
