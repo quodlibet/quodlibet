@@ -2007,6 +2007,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	    <widget class="GtkButton" id="okbutton1">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
+	      <property name="has_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-add</property>
 	      <property name="use_stock">True</property>
