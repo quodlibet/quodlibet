@@ -2003,7 +2003,7 @@ class MainWindow(gtk.Window):
             song["~#rating"] = value
 
     def prep_main_popup(self, header, button, time):
-        if "~" in header[1:]: header = header.split("~")[0]
+        if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
         menu = gtk.Menu()
 
         if header == "~#rating":
@@ -2034,7 +2034,8 @@ class MainWindow(gtk.Window):
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
             menu.append(b)
         if (header not in ["genre", "artist", "album"] and
-            self.browser.can_filter(header)):
+            self.browser.can_filter(header) and
+            (header[0] != "~" or header[1] == "#")):
             b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
             b.connect('activate', self.filter_proxy, header)
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
