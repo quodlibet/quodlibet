@@ -1907,7 +1907,9 @@ def songref_update_view(song, ref):
 HEADERS = ["~#track", "title", "album", "artist"]
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
+                   "~album~part": "album",
                    "album~part": "album",
+                   "~title~version": "title",
                    "title~version": "title",
                    "lastplayed": "last played", "filename": "full name",
                    "playcount": "play count", "basename": "filename",
