@@ -268,9 +268,9 @@ class MP3Player(AudioPlayer):
         self.audio = mad.MadFile(filename)
         self.audio.read()
         self.dev.set_info(self.audio.samplerate(), 2)
+        self.audio = mad.MadFile(filename)
         self.length = self.audio.total_time()
         self.replay_gain(song)
-        self.audio.seek_time(0)
 
     def __iter__(self): return self
 
