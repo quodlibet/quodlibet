@@ -16,3 +16,6 @@ clean:
 
 distclean: clean
 	rm -f *~ */*~
+
+test:
+	@python -c "import tests; tests.unit()"

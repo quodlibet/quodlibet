@@ -203,7 +203,7 @@ static PyMemberDef MPCFile_members[] = {
      "number of channels in the file"},
     {"samples", T_UINT, offsetof(MPCFile, samples), 0,
      "number of samples in the file"},
-    {"bitrate", T_DOUBLE, offsetof(MPCFile, samples), 0,
+    {"bitrate", T_DOUBLE, offsetof(MPCFile, bitrate), 0,
      "average bitrate of the file"},
 
     {"stream_version", T_INT, offsetof(MPCFile, stream_version), 0,
@@ -215,7 +215,7 @@ static PyMemberDef MPCFile_members[] = {
 
     {"profile", T_INT, offsetof(MPCFile, profile), 0,
      "audio encoding profile ('quality')"},
-    {"profile_name", T_STRING, offsetof(MPCFile, encoder), 0,
+    {"profile_name", T_STRING, offsetof(MPCFile, profile_name), 0,
      "audio encoding profile name, in English"},
 
     {"gain_radio", T_INT, offsetof(MPCFile, gain_radio), 0,
