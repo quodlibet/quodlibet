@@ -2,4 +2,5 @@
 library.py
 quodlibet.glade
 quodlibet.py
+pmp.py
 po/tag-names.py

@@ -6,7 +6,7 @@ PO_DIR ?= /usr/share/locale
 all: quodlibet.pot
 	for F in $(ALL_LINGUAS); do make $$F.mo; done
 
-quodlibet.pot: ../quodlibet.glade ../quodlibet.py ../library.py tag-names.py
+quodlibet.pot: ../quodlibet.glade ../quodlibet.py ../library.py ../pmp.py tag-names.py
 	intltool-update --pot --gettext-package=$(NAME)
 
 %.mo: %.po quodlibet.pot
