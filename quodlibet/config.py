@@ -6,6 +6,8 @@
 #
 # $Id$
 
+# Simple proxy to a Python ConfigParser.
+
 import os
 from ConfigParser import SafeConfigParser as ConfigParser
 
@@ -15,6 +17,7 @@ set = _config.set
 getboolean = _config.getboolean
 
 def init(rc_file):
+    # So far we only have/need one section...
     _config.add_section("settings")
     _config.set("settings", "scan", "")
     _config.set("settings", "cover", "true")

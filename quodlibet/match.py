@@ -6,6 +6,7 @@
 #
 # $Id$
 
+# True if the object matches any of its REs.
 class Union(object):
     def __init__(self, res):
         self.res = res
@@ -18,6 +19,7 @@ class Union(object):
     def __repr__(self):
         return "<Union \n " + "\n ".join(map(repr, self.res)) + ">"
 
+# True if the object matches all of its REs.
 class Inter(object):
     def __init__(self, res):
         self.res = res
@@ -30,6 +32,7 @@ class Inter(object):
     def __repr__(self):
         return "<Inter \n " + "\n ".join(map(repr, self.res)) + ">"
 
+# True if the object doesn't match its RE.
 class Neg(object):
     def __init__(self, re):
         self.re = re
@@ -40,7 +43,10 @@ class Neg(object):
     def __repr__(self):
         return "<Neg " + repr(self.re) + ">"
 
+# See if a property of the object matches its RE.
 class Tag(object):
+
+    # Shorthand for common tags.
     ABBRS = { "a": "artist",
               "b": "album",
               "v": "version",

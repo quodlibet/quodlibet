@@ -6,13 +6,19 @@
 #
 # $Id$
 
+# A simple top-down parser for the query grammar. It's basically textbook,
+# but it could use some cleaning up. It builds the requisite match.*
+# objects as it goes, which is where the interesting stuff will happen.
+
 import string
 import match
 import sre
 
+# Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
  CLOSERE, REMODS, COMMA, TAG, RE, EOF) = range(13)
 
+# Iterator for tokenized input.
 class QueryLexer(object):
     _reverse = { NEGATION: "NEGATION", INTERSECT: "INTERSECT",
                  OPENRE: "OPENRE", CLOSERE: "CLOSERE", REMODS: "REMODS",
@@ -97,6 +103,7 @@ class QueryLexeme(object):
                 str(QueryLexer._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
 
+# Parse the input. One lookahead token, start symbol is Query.
 class QueryParser(object):
     def __init__(self, tokens):
         self.lookahead = tokens.next()
@@ -191,15 +198,5 @@ class QueryParser(object):
                 raise ValueError("Parse error!")
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
-
-if __name__ == "__main__":
-    import os.path, sys
-    name = os.path.basename(__file__)
-    name = "test_" + name
-    if os.path.exists(name): os.execlp(sys.argv[0], sys.argv[0], name)
-    else: print "W: No tests found for " + name[5:] + "."
-#import sys
-#while not sys.stdin.closed:
-#    print repr(QueryParser(QueryLexer(sys.stdin.readline())).Query())
 
     
