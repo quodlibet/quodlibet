@@ -56,7 +56,23 @@ class AudioFile(dict):
         return (self.exists() and
                 self.get("=mtime") == int(
             os.stat(self['=filename'])[stat.ST_MTIME]))
-    
+
+    def website(self):
+        if "website" in self: return self["website"]
+        cont = self.get("contact", "").lower()
+        if (cont.startswith("http://") or cont.startswith("https://") or
+            cont.startswith("www.")): return self["contact"]
+        else:
+            artist = util.escape("+".join(self["artist"].split()))
+            album = util.escape("+".join(self["album"].split()))
+            text = "http://www.google.com/search?q="
+            artist = util.encode(artist)
+            album = util.encode(album)
+            artist = "%22" + artist + "%22"
+            album = "%22" + album + "%22"
+            text += artist + "+" + album + "&ie=UTF8"
+            return text
+
     # Sanity-check all sorts of things...
     def sanitize(self, filename = None):
         # File in our filename, either from what we were given or
@@ -428,10 +444,10 @@ class AudioFileGroup(dict):
                 else:
                     value = self.PartialUnsharedComment(first[comment])
             else:
-                if all[comment]:
-                    value = self.SharedComment(first[comment])
-                else:
-                    value = self.UnsharedComment(first[comment])
+                decoded = first[comment]
+                if isinstance(decoded, str): decoded = util.decode(decoded)
+                if all[comment]: value = self.SharedComment(decoded)
+                else: value = self.UnsharedComment(decoded)
             value.have = count
             value.total = total
             value.missing = total - count

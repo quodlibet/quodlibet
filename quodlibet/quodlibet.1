@@ -102,17 +102,19 @@ library.
 .IP ~/.quodlibet/config
 Quod Libet's configuration file. At the time of this writing, all
 options in here can also be accessed from the GUI.
+.IP ~/.quodlibet/current
+A "key=value" file containing information about the currently playing song.
 .SH KNOWN BUGS
 .BR ( JZig )
 The inevitable result of enabling smart searching is that people realize how lousy their data is
-.br
+.PP
 Newlines are not supported within tags.
-.br
+.PP
 FLAC support is horrible.
-.br
-Window size is not saved on exit.
-.br
-Error handling leaves much to be desired.
+.PP
+Filenames not in UTF-8 aren't read properly. This likely won't ever work
+right. \fBAlways use UTF-8 in cases where the encoding can't be known,
+like filesystems.\fR
 .SH SEE ALSO
 http://www.sacredchao.net/~piman/software/quodlibet.shtml,
 .BR regex (7),

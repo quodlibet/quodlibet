@@ -384,11 +384,11 @@ class MultiInstanceWidget(object):
         self.widgets.signal_autoconnect(self)
 
     def songprop_close(self, *args):
-        for song, ref in self.songrefs: ref.free()
+        self.fmodel.clear()
+        self.model.clear()
         self.window.destroy()
 
     def songprop_save_click(self, button):
-
         updated = {}
         deleted = {}
         added = {}
