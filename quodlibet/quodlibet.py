@@ -486,7 +486,6 @@ class TrayIcon(object):
             import statusicon
         except:
             self.icon = None
-            print to(_("W: Failed to initialize status icon."))
         else:
             self.icon = statusicon.StatusIcon(pixbuf)
             self.icon.connect("activate", activate_cb)
@@ -605,8 +604,7 @@ class MmKeys(object):
     def __init__(self, cbs):
         try:
             import mmkeys
-        except:
-            print to(_("W: Failed to initialize multimedia key support."))
+        except: pass
         else:
             self.keys = mmkeys.MmKeys()
             map(self.keys.connect, *zip(*cbs.items()))
@@ -2738,9 +2736,9 @@ def print_playing(fstring = DEF_PP):
             val = "=".join(parts[1:])
             if key in data: data[key] += "\n" + val
             else: data[key] = val
-        try: print util.format_string(fstring, data)
+        try: print to(util.format_string(fstring, data))
         except (IndexError, ValueError):
-            print util.format_string(DEF_PP, data)
+            print to(util.format_string(DEF_PP, data))
         raise SystemExit
     except (OSError, IOError):
         print to(_("No song is currently playing."))

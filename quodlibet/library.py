@@ -275,7 +275,7 @@ class Library(dict):
 
 def init(cache_fn = None):
     global library
-    print to(_("Supported:")),
+    print to(_("Supported formats:")),
     print ", ".join([os.path.basename(name) for name, mod in formats.modules
                      if mod.extensions])
     library = Library(config.get("settings", "masked").split(":"))

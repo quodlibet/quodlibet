@@ -24,9 +24,7 @@ util.fscoding for the way to get the encoding.
 
 Clean up properties
 -------------------
-Don't enable widgets unless we're reasonably sure they can be used. This
-means detecting unwriteable files both at the can_change level and at
-the OS permissions level.
+Don't enable widgets unless can_change says we can use them.
 
 Remember UI element states
 --------------------------
@@ -97,9 +95,9 @@ Others
 ------
 RPM spec/package, Gentoo ebuild, whatever.
 
-Not Interested
---------------
-Streaming. It doesn't fit well into our library model, and it might never.
+Not Interested Yet
+------------------
+Streaming. It doesn't fit well into our library model yet, and it might never.
 
 Transcoding, ripping, burning, better PMP management. Get a separate
 program, and we'll integrate with it.

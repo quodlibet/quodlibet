@@ -95,8 +95,10 @@ class AudioFile(dict):
                 self["~#mtime"] == os.path.mtime(self["~filename"]))
 
     def can_change(self, k = None):
-        if k is None: return True
-        else: return (k and k != "vendor" and "=" not in k and "~" not in k)
+        if k is None:
+            return os.access(self["~filename"], os.W_OK)
+        else: return (k and k != "vendor" and "=" not in k and "~" not in k
+                      and os.access(self["~filename"], os.W_OK))
 
     def rename(self, newname):
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
