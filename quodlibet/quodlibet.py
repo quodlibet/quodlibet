@@ -8,7 +8,7 @@
 #
 # $Id$
 
-VERSION = "0.2"
+VERSION = "0.3"
 
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
