@@ -646,20 +646,23 @@ class TrayIcon(object):
         self.__event(widget, event, button)
 
 
-    def set_tooltip(self, tooltip):
+    def __set_tooltip(self, tooltip):
         if self.__icon: self.__tips.set_tip(self.__icon, tooltip)
 
-    tooltip = property(None, set_tooltip)
+    tooltip = property(None, __set_tooltip)
 
 class PlaylistWindow(gtk.Window):
-    list_windows = {}
+
+    # If we open a playlist whose window is already displayed, bring it
+    # to the forefront rather than make a new one.
+    __list_windows = {}
     def __new__(klass, name, *args, **kwargs):
-        win = klass.list_windows.get(name, None)
+        win = klass.__list_windows.get(name, None)
         if win is None:
             win = super(PlaylistWindow, klass).__new__(
                 klass, name, *args, **kwargs)
-            win.initialize_window(name)
-            klass.list_windows[name] = win
+            win.__initialize_window(name)
+            klass.__list_windows[name] = win
             # insert sorted, unless present
             def insert_sorted(model, path, iter, last_try):
                 if model[iter][1] == win.__plname:
@@ -683,7 +686,7 @@ class PlaylistWindow(gtk.Window):
         self.set_title('Quod Libet Playlist: %s' % name)
 
     def __destroy(self, view):
-        del(self.list_windows[self.__prettyname])
+        del(self.__list_windows[self.__prettyname])
         if not len(view.get_model()):
             def remove_matching(model, path, iter, name):
                 if model[iter][1] == name:
@@ -691,7 +694,7 @@ class PlaylistWindow(gtk.Window):
                     return True
             PlayList.lists_model().foreach(remove_matching, self.__plname)
 
-    def initialize_window(self, name):
+    def __initialize_window(self, name):
         gtk.Window.__init__(self)
         self.set_destroy_with_parent(True)
         self.set_default_size(400, 400)
@@ -2346,7 +2349,7 @@ class MainSongList(SongList):
         column.connect('notify::width', self.save_widths)
 
     # Resort based on the header clicked.
-    def set_sort_by(self, header, tag = None, refresh = True, order = None):
+    def set_sort_by(self, header, tag=None, refresh=True, order=None):
         s = gtk.SORT_ASCENDING
         if header and tag is None: tag = header.header_name
 
@@ -2392,16 +2395,16 @@ class MainSongList(SongList):
         return i, length
 
 class GetStringDialog(gtk.Dialog):
-    def __init__(self, parent, title, text, options = []):
+    def __init__(self, parent, title, text, options=[]):
         gtk.Dialog.__init__(self, title, parent)
         self.set_border_width(6)        
         self.set_resizable(False)
         self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                gtk.STOCK_OPEN, gtk.RESPONSE_OK)
+                         gtk.STOCK_OPEN, gtk.RESPONSE_OK)
         self.vbox.set_spacing(6)
         self.set_default_response(gtk.RESPONSE_OK)
 
-        box = gtk.VBox(spacing = 6)
+        box = gtk.VBox(spacing=6)
         lab = gtk.Label(text)
         box.set_border_width(6)
         lab.set_line_wrap(True)
@@ -2409,21 +2412,21 @@ class GetStringDialog(gtk.Dialog):
         box.pack_start(lab)
 
         if options:
-            self.entry = gtk.combo_box_entry_new_text()
-            for o in options: self.entry.append_text(o)
-            self.val = self.entry.child
-            box.pack_start(self.entry)
+            self.__entry = gtk.combo_box_entry_new_text()
+            for o in options: self.__entry.append_text(o)
+            self.__val = self.__entry.child
+            box.pack_start(self.__entry)
         else:
-            self.val = gtk.Entry()
-            box.pack_start(self.val)
+            self.__val = gtk.Entry()
+            box.pack_start(self.__val)
         self.vbox.pack_start(box)
         self.child.show_all()
 
     def run(self):
         self.show()
-        self.val.set_text("")
-        self.val.set_activates_default(True)
-        self.val.grab_focus()
+        self.__val.set_text("")
+        self.__val.set_activates_default(True)
+        self.__val.grab_focus()
         resp = gtk.Dialog.run(self)
         if resp == gtk.RESPONSE_OK:
             value = self.val.get_text()
@@ -2443,7 +2446,7 @@ class AddTagDialog(gtk.Dialog):
         self.set_border_width(6)
         self.set_resizable(False)
         self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        self.add = self.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
+        add = self.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
         self.vbox.set_spacing(6)
         self.set_default_response(gtk.RESPONSE_OK)
         table = gtk.Table(2, 2)
@@ -2452,73 +2455,77 @@ class AddTagDialog(gtk.Dialog):
         table.set_border_width(6)
 
         if can_change == True:
-            self.tag = gtk.combo_box_entry_new_text()
-            for tag in can: self.tag.append_text(tag)
+            self.__tag = gtk.combo_box_entry_new_text()
+            for tag in can: self.__tag.append_text(tag)
         else:
-            self.tag = gtk.combo_box_new_text()
-            for tag in can: self.tag.append_text(tag)
-            self.tag.set_active(0)
-        self.tag.connect('changed', self.validate, validators)
+            self.__tag = gtk.combo_box_new_text()
+            for tag in can: self.__tag.append_text(tag)
+            self.__tag.set_active(0)
 
         label = gtk.Label()
         label.set_alignment(0.0, 0.5)
         label.set_text(_("_Tag:"))
         label.set_use_underline(True)
-        label.set_mnemonic_widget(self.tag)
+        label.set_mnemonic_widget(self.__tag)
         table.attach(label, 0, 1, 0, 1)
-        table.attach(self.tag, 1, 2, 0, 1)
+        table.attach(self.__tag, 1, 2, 0, 1)
 
-        self.val = gtk.Entry()
-        self.val.connect('changed', self.validate, validators)
+        self.__val = gtk.Entry()
         label = gtk.Label()
         label.set_text(_("_Value:"))
         label.set_alignment(0.0, 0.5)
         label.set_use_underline(True)
-        label.set_mnemonic_widget(self.val)
-        self.valuebox = gtk.EventBox()
+        label.set_mnemonic_widget(self.__val)
+        valuebox = gtk.EventBox()
         table.attach(label, 0, 1, 1, 2)
-        table.attach(self.valuebox, 1, 2, 1, 2)
+        table.attach(valuebox, 1, 2, 1, 2)
         hbox = gtk.HBox()
-        self.valuebox.add(hbox)
-        hbox.pack_start(self.val)
+        valuebox.add(hbox)
+        hbox.pack_start(self.__val)
         hbox.set_spacing(6)
+        invalid = gtk.image_new_from_stock(
+            gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        hbox.pack_start(invalid)
 
         self.vbox.pack_start(table)
         self.child.show_all()
-        self.valuebox.tips = gtk.Tooltips()
-        self.invalid = gtk.image_new_from_stock(gtk.STOCK_DIALOG_WARNING,
-                                                gtk.ICON_SIZE_SMALL_TOOLBAR)
-        hbox.pack_start(self.invalid)
+        invalid.hide()
+
+        tips = gtk.Tooltips()
+        for entry in [self.__tag, self.__val]:
+            entry.connect(
+                'changed', self.__validate, validators, add, invalid, tips,
+                valuebox)
 
     def get_tag(self):
-        try: return self.tag.child.get_text().lower().strip()
+        try: return self.__tag.child.get_text().lower().strip()
         except AttributeError:
-            return self.tag.get_model()[self.tag.get_active()][0]
+            return self.__tag.get_model()[self.__tag.get_active()][0]
 
     def get_value(self):
-        return self.val.get_text().decode("utf-8")
+        return self.__val.get_text().decode("utf-8")
 
-    def validate(self, editable, validators):
+    def __validate(self, editable, validators, add, invalid, tips, box):
         tag = self.get_tag()
         try: validator, message = validators.get(tag)
         except TypeError: valid = True
         else: valid = bool(validator(self.get_value()))
 
-        self.add.set_sensitive(valid)
+        add.set_sensitive(valid)
         if valid:
-            self.invalid.hide()
-            self.valuebox.tips.disable()
+            invalid.hide()
+            tips.disable()
         else:
-            self.invalid.show()
-            self.valuebox.tips.set_tip(self.valuebox, message)
-            self.valuebox.tips.enable()
+            invalid.show()
+            tips.set_tip(box, message)
+            tips.enable()
 
     def run(self):
         self.show()
-        try: self.tag.child.set_activates_default(True)
+        try: self.__tag.child.set_activates_default(True)
         except AttributeError: pass
-        self.val.set_activates_default(True)
-        self.tag.grab_focus()
+        self.__val.set_activates_default(True)
+        self.__tag.grab_focus()
         return gtk.Dialog.run(self)
 
 class SongProperties(gtk.Window):
@@ -3897,7 +3904,7 @@ class DirectoryTree(gtk.TreeView):
         cell.set_property('text', os.path.basename(model[iter][0]) or "/")
     cell_data = staticmethod(cell_data)
 
-    def __init__(self, initial = None):
+    def __init__(self, initial=None):
         gtk.TreeView.__init__(self, gtk.TreeStore(str))
         column = gtk.TreeViewColumn(_("Folders"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -3973,7 +3980,7 @@ class FileSelector(gtk.VPaned):
                                  gobject.TYPE_NONE, (gtk.TreeSelection,))
                      }
 
-    def __init__(self, initial = None, filter = formats.filter):
+    def __init__(self, initial=None, filter=formats.filter):
         gtk.VPaned.__init__(self)
         self.__filter = filter
 
@@ -4007,13 +4014,13 @@ class FileSelector(gtk.VPaned):
         sw.add(dirlist)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.pack1(sw, resize = True)
+        self.pack1(sw, resize=True)
 
         sw = gtk.ScrolledWindow()
         sw.add(filelist)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.pack2(sw, resize = True)
+        self.pack2(sw, resize=True)
 
     def rescan(self):
         self.get_child1().child.get_selection().emit('changed')
@@ -4044,7 +4051,7 @@ class FileSelector(gtk.VPaned):
 gobject.type_register(FileSelector)
 
 class ExFalsoWindow(gtk.Window):
-    def __init__(self, dir = None):
+    def __init__(self, dir=None):
         gtk.Window.__init__(self)
         self.set_title("Ex Falso")
         self.set_icon_from_file("exfalso.png")
@@ -4052,14 +4059,14 @@ class ExFalsoWindow(gtk.Window):
         self.set_default_size(700, 500)
         self.add(gtk.HPaned())
         fs = FileSelector(dir)
-        self.child.pack1(fs, resize = True)
+        self.child.pack1(fs, resize=True)
         nb = qltk.Notebook()
         for Page in [SongProperties.EditTags,
                      SongProperties.TagByFilename,
                      SongProperties.RenameFiles,
                      SongProperties.TrackNumbers]:
             nb.append_page(Page(self, self.__files_changed))
-        self.child.pack2(nb, resize = False, shrink = False)
+        self.child.pack2(nb, resize = False, shrink=False)
         fs.connect('changed', self.__changed, nb)
         self.__cache = {}
         self.connect('destroy', gtk.main_quit)
@@ -4068,7 +4075,7 @@ class ExFalsoWindow(gtk.Window):
     def refill(self): pass
     def update(self): pass
 
-    def __files_changed(self, song, error = False):
+    def __files_changed(self, song, error=False):
         if song is None: self.child.get_child1().rescan()
 
     def __changed(self, selector, selection, notebook):
@@ -4105,7 +4112,7 @@ class WritingWindow(WaitLoadWindow):
 # Return a 'natural' version of the tag for human-readable bits.
 # Strips ~ and ~# from the start and runs it through a map (which
 # the user can configure).
-def tag(name, cap = True):
+def tag(name, cap=True):
     try:
         if name[0] == "~":
             if name[1] == "#": name = name[2:]

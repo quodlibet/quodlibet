@@ -1,7 +1,7 @@
 from unittest import TestCase
 from tests import registerCase, Mock
 import os, gtk
-from widgets import DirectoryTree, EmptyBar, SearchBar
+from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList
 import config
 
 class TestDirTree(TestCase):
@@ -87,7 +87,21 @@ class TestSearchBar(TestCase):
     def tearDown(self):
         self._bar.destroy()
 
+class TestPlayList(TestCase):
+    def test_normalize_safe(self):
+        for string in ["", "foo", "bar", "a_title", "some_keys"]:
+            self.failUnlessEqual(string, PlayList.normalize_name(string))
+
+    def test_normalize_unsafe(self):
+        for string in ["%%%", "bad_ string", "<woo>", "|%more%20&tests",
+                       "% % % %", "   ", ":=)", "#!=", "mixed # strings",
+                       "".join(PlayList.BAD)]:
+            nstring = PlayList.normalize_name(string)
+            self.failIfEqual(string, nstring)
+            self.failUnlessEqual(string, PlayList.prettify_name(nstring))
+
 registerCase(TestDirTree)
 registerCase(TestEmptyBar)
 registerCase(TestSearchBar)
+registerCase(TestPlayList)
 
