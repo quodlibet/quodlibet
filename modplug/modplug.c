@@ -45,32 +45,46 @@ static int ModFile_init(ModFile *self, PyObject *args, PyObject *kwds) {
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &filename))
     return -1;
   
-  if (stat(filename, &st) != 0) return -1;
+  if (stat(filename, &st) != 0) {
+    PyErr_SetFromErrno(PyExc_OSError);
+    return -1;
+  }
   size = st.st_size;
 
   fd = open(filename, O_RDONLY);
-  if (fd == -1) return -1;
+  if (fd == -1) {
+    PyErr_SetFromErrno(PyExc_OSError);
+    return -1;
+  }
 
   self->mem = (void *)malloc(size);
-  read(fd, self->mem, size);
+  if (read(fd, self->mem, size) != size) {
+    PyErr_SetString(PyExc_IOError, "read operation interrupted");
+    return -1;
+  }
 
-  self->mf = ModPlug_Load(self->mem, size);
+  if ((self->mf = ModPlug_Load(self->mem, size)) == NULL) {
+    PyErr_SetString(PyExc_IOError, "file is not in a recognized format");
+    return -1;
+  }
 
   self->title = ModPlug_GetName(self->mf);
   self->length = ModPlug_GetLength(self->mf);
   self->filename = strdup(filename);
 
   /* if no title is available, use the filename */
-  if (!strcmp(self->title, "")) self->title = basename(self->filename);
+  if (!strcmp(self->title, ""))
+      self->title = basename(self->filename);
 
   close(fd);
   return 0;
 }
 
 static void ModFile_dealloc(ModFile *self) {
-  ModPlug_Unload(self->mf);
-  free(self->mem);
-  free(self->filename);
+  if (self == NULL) return;
+  if (self->mf) ModPlug_Unload(self->mf);
+  if (self->mem) free(self->mem);
+  if (self->filename) free(self->filename);
   self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -87,7 +101,7 @@ static PyObject *ModFile_read(ModFile *self, PyObject *args, PyObject *kwds) {
   int buffer_size, buffer_len;
   char *buffer;
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &buffer_size))
-    return -1;
+    return NULL;
 
   buffer = (char *)malloc(buffer_size);
   buffer_len = ModPlug_Read(self->mf, buffer, buffer_size);
@@ -108,12 +122,16 @@ static PyObject *ModFile_seek(ModFile *self, PyObject *args, PyObject *kwds) {
   static char *kwlist[] = {"position", NULL};
   int ms;
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &ms))
-    return -1;
-  ModPlug_Seek(self->mf, ms);
-  self->position = ms;
-  return Py_BuildValue("");
+    return NULL;
+  if (ms < self->length) {
+    ModPlug_Seek(self->mf, ms);
+    self->position = ms;
+    return Py_BuildValue("");
+  } else {
+    PyErr_SetString(PyExc_IOError, "attempt to seek past end of file");
+    return NULL;
+  }
 }
-
 
 static PyMethodDef ModFile_methods[] = {
   {"read", (PyCFunction)ModFile_read, METH_KEYWORDS,
@@ -124,7 +142,6 @@ static PyMethodDef ModFile_methods[] = {
     },
     {NULL}
 };
-
 
 static PyTypeObject ModFileType = {
   PyObject_HEAD_INIT(NULL)

@@ -56,8 +56,8 @@ class Numcmp(object):
             if self.op == ">": self.op = "<"
             elif self.op == "<": self.op = ">"
 
-        if value in ["now"]: value = 0
-        elif value in ["today"]: value = 24 * 60 * 60
+        if value in ["now"]: value = int(time.time())
+        elif value in ["today"]: value = int(time.time() - 24 * 60 * 60)
         else:
             parts = value.split()
             try: value = int(parts[0])
