@@ -531,27 +531,27 @@ class MultiInstanceWidget(object):
     def split_into_list(self, *args):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
-        vals = util.split_value(row[1])
-        if vals[0] != row[1]:
-            row[1] = vals[0]
+        vals = util.split_value(util.unescape(row[1]))
+        if vals[0] != util.unscape(row[1]):
+            row[1] = util.escape(vals[0])
             row[2] = True
             for val in vals[1:]: self.add_new_tag(row[0], val)
 
     def split_title(self, *args):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
-        title, versions = util.split_title(row[1])
-        if title != row[1]:
-            row[1] = title
+        title, versions = util.split_title(util.unescape(row[1]))
+        if title != util.unescape(row[1]):
+            row[1] = util.escape(title)
             row[2] = True
             for val in versions: self.add_new_tag("version", val)
 
     def split_album(self, *args):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
-        album, disc = util.split_album(row[1])
-        if album != row[1]:
-            row[1] = album
+        album, disc = util.split_album(util.unescape(row[1]))
+        if album != util.unescape(row[1]):
+            row[1] = util.escape(album)
             row[2] = True
             self.add_new_tag("discnumber", disc)
 
