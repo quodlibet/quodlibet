@@ -21,9 +21,7 @@
  *	Mark McLoughlin <mark@skynet.ie>
  */
 
-#include <config.h>
 #include <string.h>
-#include <libintl.h>
 
 #include "eggstatusicon.h"
 

@@ -1,3 +1,5 @@
+; Copyright 2004 Joe Wreschnig. Released under the terms of the GNU LGPL.
+
 (define-object StatusIcon
   (in-module "Egg")
   (parent "GtkPlug")

@@ -1,3 +1,5 @@
+; Copyright 2004 Joe Wreschnig. Released under the terms of the GNU GPL.
+
 (define-object MmKeys
   (in-module "MM")
   (parent "GtkPlug")

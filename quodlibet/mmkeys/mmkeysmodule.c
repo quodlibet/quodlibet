@@ -1,23 +1,20 @@
-/* include this first, before NO_IMPORT_PYGOBJECT is defined */
+/* Copyright 2004 Joe Wreschnig. Released under the terms of the GNU GPL. */
+
 #include <pygobject.h>
 
-void mmkeys_register_classes (PyObject *d);
+void mmkeys_register_classes(PyObject *d);
 
 extern PyMethodDef mmkeys_functions[];
 
-DL_EXPORT(void)
-initmmkeys(void)
-{
+DL_EXPORT(void) initmmkeys(void) {
     PyObject *m, *d;
 	
-    init_pygobject ();
+    init_pygobject();
 
-    m = Py_InitModule ("mmkeys", mmkeys_functions);
-    d = PyModule_GetDict (m);
+    m = Py_InitModule("mmkeys", mmkeys_functions);
+    d = PyModule_GetDict(m);
 	
-    mmkeys_register_classes (d);
+    mmkeys_register_classes(d);
 
-    if (PyErr_Occurred ()) {
-	Py_FatalError ("can't initialise module mmkeys");
-    }
+    if (PyErr_Occurred()) Py_FatalError("can't initialise module mmkeys");
 }

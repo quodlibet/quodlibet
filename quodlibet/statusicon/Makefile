@@ -1,8 +1,9 @@
-# Set the C flags to include the GTK+ and Python libraries
-CFLAGS = `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I/usr/include/python2.3/ -I.
+# Copyright 2004 Joe Wreschnig. Released under the terms of the GNU LGPL.
+
+PYTHON_DIR = /usr/include/python2.3
+CFLAGS = `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I$(PYTHON_DIR)
 LDFLAGS = `pkg-config --libs gtk+-2.0 pygtk-2.0`
 
-# Build the shared object
 statusicon.so: statusicon.o eggstatusicon.o eggtrayicon.o statusiconmodule.o eggmarshalers.o
 	$(CC) $(LDFLAGS) -shared $^ -o $@
 
@@ -16,10 +17,8 @@ eggmarshalers.c: eggmarshalers.list
 	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --body > gen-tmp
 	mv gen-tmp $@
 
-# The path to the GTK+ python types
 DEFS=`pkg-config --variable=defsdir pygtk-2.0`
 
-# Generate the C wrapper from the defs and our override file
 statusicon.c: statusicon.defs statusicon.override
 	pygtk-codegen-2.0 --prefix statusicon \
 	--register $(DEFS)/gdk-types.defs \
@@ -28,7 +27,6 @@ statusicon.c: statusicon.defs statusicon.override
 	statusicon.defs > gen-tmp
 	mv gen-tmp $@
 
-# A rule to clean the generated files
 clean:
 	rm -f statusicon.so *.o statusicon.c eggmarshalers.c eggmarshalers.h gen-tmp
 

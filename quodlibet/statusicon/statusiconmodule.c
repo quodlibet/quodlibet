@@ -1,23 +1,20 @@
-/* include this first, before NO_IMPORT_PYGOBJECT is defined */
+/* Copyright 2004 Joe Wreschnig. Released under the terms of the GNU LGPL. */
+
 #include <pygobject.h>
 
-void statusicon_register_classes (PyObject *d);
+void statusicon_register_classes(PyObject *d);
 
 extern PyMethodDef statusicon_functions[];
 
-DL_EXPORT(void)
-initstatusicon(void)
-{
+DL_EXPORT(void) initstatusicon(void) {
     PyObject *m, *d;
 	
-    init_pygobject ();
+    init_pygobject();
 
-    m = Py_InitModule ("statusicon", statusicon_functions);
-    d = PyModule_GetDict (m);
+    m = Py_InitModule("statusicon", statusicon_functions);
+    d = PyModule_GetDict(m);
 	
-    statusicon_register_classes (d);
+    statusicon_register_classes(d);
 
-    if (PyErr_Occurred ()) {
-	Py_FatalError ("can't initialise module statusicon");
-    }
+    if (PyErr_Occurred()) Py_FatalError("can't initialise module statusicon");
 }
