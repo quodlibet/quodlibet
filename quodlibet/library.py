@@ -21,7 +21,7 @@ class AudioFile(dict):
         if not hasattr(other, "get"): return -1
         return (cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("album"), other.get("album")) or
-                cmp(self.get("tracknumber"), other.get("tracknumber")) or
+                cmp(self.get("#"), other.get("#")) or
                 cmp(self.get("title"), other.get("title")))
     
     def to_markup(self):
@@ -106,6 +106,9 @@ class MP3File(AudioFile):
             if hasattr(tag, i):
                 self.setdefault(i, getattr(tag, i))
             if not self.get(i): self[i] = "Unknown"
+        if "tracknumber" in self:
+            try: self["#"] = int(self["tracknumber"].split("/")[0])
+            except: pass
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -119,6 +122,9 @@ class OggFile(AudioFile):
             self[k.lower()] = v
         for i in ["title", "artist", "album"]:
             if not self.get(i): self[i] = "Unknown"
+        if "tracknumber" in self:
+            try: self["#"] = int(self["tracknumber"].split("/")[0])
+            except: pass
 
 class Library(dict):
     def __init__(self, initial = {}):

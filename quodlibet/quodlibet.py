@@ -193,7 +193,8 @@ def refresh_songlist():
 
 widgets = Widgets("quodlibet.glade")
 
-HEADERS = ["artist", "title", "album"]
+HEADERS = ["#", "title", "album", "artist"]
+HEADERS_FILTER = { "#": "Track", "tracknumber": "Track" }
 
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
@@ -220,7 +221,7 @@ def main():
     widgets["volume"].set_value(player.device.volume)
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(t.title(), renderer, text=i, weight=len(HEADERS))
+        column = gtk.TreeViewColumn(HEADERS_FILTER.get(t, t).title(), renderer, text=i, weight=len(HEADERS))
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)
