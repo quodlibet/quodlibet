@@ -170,7 +170,6 @@ class PreferencesWindow(MultiInstanceWidget):
             except ValueError: pass
 
         new_h.extend(self.widgets["extra_headers"].get_text().split())
-        HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))
         widgets.main.set_column_headers(new_h)
 
@@ -499,7 +498,7 @@ class MainWindow(MultiInstanceWidget):
         # Set up the main song list store.
         self.songlist = self.widgets["songlist"]
         self.songlist.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        widgets.songs = gtk.ListStore(object)
+        widgets.songs = gtk.ListStore(object, int)
 
         # Build a model and view for our ComboBoxEntry.
         liststore = gtk.ListStore(str)
@@ -701,7 +700,7 @@ class MainWindow(MultiInstanceWidget):
         # Update the currently-playing song in the list by bolding it.
         last_song = self.current_song
         self.current_song = song
-        col = len(HEADERS)
+        col = 0
 
         def update_if_last_or_current(model, path, iter):
             if model[iter][col] is song:
@@ -865,7 +864,7 @@ class MainWindow(MultiInstanceWidget):
     def pmp_upload(self, *args):
         selection = self.songlist.get_selection()
         model, rows = selection.get_selected_rows()
-        songs = [model[row][len(HEADERS)] for row in rows]
+        songs = [model[row][0] for row in rows]
         try:
             window = WaitLoadWindow(self.window, len(songs),
                                     _("Uploading song %d/%d"),
@@ -884,7 +883,7 @@ class MainWindow(MultiInstanceWidget):
 
     def select_song(self, tree, indices, col):
         iter = widgets.songs.get_iter(indices)
-        song = widgets.songs.get_value(iter, len(HEADERS))
+        song = widgets.songs.get_value(iter, 0)
         player.playlist.go_to(song)
         player.playlist.paused = False
 
@@ -920,24 +919,21 @@ class MainWindow(MultiInstanceWidget):
         selection = view.get_selection()
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
-        coln = view.get_columns().index(col)
-        header = HEADERS[coln]
+        header = col.header_name
         self.prep_main_popup(header)
         self.cmenu.popup(None,None,None, event.button, event.time)
         return True
 
     def songs_popup_menu(self, view):
         path, col = view.get_cursor()
-        coln = view.get_columns().index(col)
-        header = HEADERS[coln]
+        header = col.header_name
         self.prep_main_popup(header)
         self.cmenu.popup(None, None, None, 1, 0)
 
     def song_col_filter(self, item):
         view = self.songlist
         path, col = view.get_cursor()
-        coln = view.get_columns().index(col)
-        header = HEADERS[coln]
+        header = col.header_name
         self.filter_on_header(header)
 
     def artist_filter(self, item): self.filter_on_header('artist')
@@ -958,7 +954,7 @@ class MainWindow(MultiInstanceWidget):
         rows.sort()
         rows.reverse()
         for row in rows:
-            song = model[row][len(HEADERS)]
+            song = model[row][0]
             iter = widgets.songs.get_iter(row)
             widgets.songs.remove(iter)
             library.remove(song)
@@ -968,7 +964,7 @@ class MainWindow(MultiInstanceWidget):
         view = self.songlist
         selection = self.songlist.get_selection()
         model, rows = selection.get_selected_rows()
-        songs = [model[r][len(HEADERS)] for r in rows]
+        songs = [model[r][0] for r in rows]
         filenames = [song["~filename"] for song in songs]
         filenames.sort()
         d = DeleteDialog(self.window, filenames)
@@ -1015,7 +1011,7 @@ class MainWindow(MultiInstanceWidget):
     def song_properties(self, item):
         selection = self.songlist.get_selection()
         model, rows = selection.get_selected_rows()
-        songrefs = [ (model[row][len(HEADERS)],
+        songrefs = [ (model[row][0],
                       gtk.TreeRowReference(model, row)) for row in rows]
         SongProperties(songrefs)
 
@@ -1068,7 +1064,7 @@ class MainWindow(MultiInstanceWidget):
         if songs is None:
             selection = self.songlist.get_selection()
             model, rows = selection.get_selected_rows()
-            songs = [model[row][len(HEADERS)] for row in rows]
+            songs = [model[row][0] for row in rows]
 
         if header.startswith("~#"):
             nheader = header[2:]
@@ -1088,7 +1084,7 @@ class MainWindow(MultiInstanceWidget):
 
     def cols_changed(self, view):        
         headers = [col.header_name for col in view.get_columns()]
-        if len(headers) == len(HEADERS):
+        if len(headers) == len(config.get("settings", "headers").split()):
             # Not an addition or removal (handled separately)
             config.set("settings", "headers", " ".join(headers))
 
@@ -1136,7 +1132,7 @@ class MainWindow(MultiInstanceWidget):
         length = 0
         for song in player.playlist:
             wgt = ((song is self.current_song and 700) or 400)
-            widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
+            widgets.songs.append([song, wgt])
             length += song["~#length"]
         i = len(list(player.playlist))
         if i != 1: statusbar.set_text(
@@ -1162,13 +1158,17 @@ class MainWindow(MultiInstanceWidget):
             
         self.songlist.set_model(None)
         widgets.songs.clear()
-        widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
         for c in self.songlist.get_columns(): self.songlist.remove_column(c)
+
+        def cell_data(column, cell, model, iter):
+            cell.set_property('text',
+                              model[iter][0].get(column.header_name, ""))
+        
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
             title = tag(t)
-            column = gtk.TreeViewColumn(title, render, text = i,
-                                        weight = len(headers)+1)
+            column = gtk.TreeViewColumn(title, render,
+                                        weight = 1)
             column.header_name = t
             column.set_resizable(True)
             if t in SHORT_COLS or t.startswith("~#"):
@@ -1181,6 +1181,7 @@ class MainWindow(MultiInstanceWidget):
             column.set_sort_indicator(False)
             column.connect('clicked', self.set_sort_by, t)
             column.connect('notify::width', self.save_widths)
+            column.set_cell_data_func(render, cell_data)
             self.songlist.append_column(column)
         self.refresh_songlist()
         self.songlist.set_model(widgets.songs)
@@ -1917,9 +1918,8 @@ def songref_update_view(song, ref):
     path = ref.get_path()
     if path is not None:
         row = widgets.songs[path]
-        for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
+        row[0] = row[0]
 
-HEADERS = ["~#track", "title", "album", "artist"]
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
                    "album~part": "album",
@@ -1943,10 +1943,8 @@ def save_config():
     f.close()
 
 def main():
-    HEADERS[:] = config.get("settings", "headers").split()
-    if HEADERS == []:
+    if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
-       HEADERS[:] = ["title"]
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
         print opt, val
