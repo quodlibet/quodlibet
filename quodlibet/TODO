@@ -1,3 +1,4 @@
+- Lock database on load, save.
 - Stress-testing
 - Artist URL detection
 - Remember window size, position (more importantly, why this isn't working)

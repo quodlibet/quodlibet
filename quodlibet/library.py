@@ -100,7 +100,8 @@ class AudioFile(dict):
                 try:
                     s += "%s=%s\n" % (k, v2)
                 except UnicodeDecodeError:
-                    s += "%s=[Invalid Unicode]" % k
+                    v2 = v2.encode("utf-8", 'replace')
+                    s += "%s=%s [Invalid Unicode]" % (k, v2)
                 except: pass
         return s
 
