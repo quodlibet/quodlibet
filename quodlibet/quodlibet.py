@@ -34,8 +34,8 @@ def save_and_quit(thread):
     config.write(const.CONFIG)
     cleanup()
 
-def print_help():
-    print to(_("""\
+def print_help(out = sys.stdout):
+    out.write(to(_("""\
 Quod Libet - a music library and player
 Options:
   --help, -h        Display this help message
@@ -58,11 +58,11 @@ Options:
     Play this file, adding it to the library if necessary.
 
 For more information, see the manual page (`man 1 quodlibet').
-"""))
+""")))
 
-    raise SystemExit
+    raise SystemExit(out == sys.stderr)
 
-def print_version():
+def print_version(out = sys.stdout):
     print to(_("""\
 Quod Libet %s - <quodlibet@lists.sacredchao.net>
 Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
@@ -70,7 +70,7 @@ Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
 """)) % const.VERSION
-    raise SystemExit
+    raise SystemExit(out == sys.stderr)
 
 def refresh_cache():
     if isrunning():
@@ -193,10 +193,12 @@ if __name__ == "__main__":
                 try: print_playing(opts[i+1])
                 except IndexError: print_playing()
             else:
-                print to(_("E: Unknown command line option: %s") % command)
+                sys.stderr.write(
+                    to(_("E: Unknown command line option: %s") % command)+"\n")
                 raise SystemExit(to(_("E: Try %s --help") % sys.argv[0]))
     except IndexError:
-        print to(_("E: Option `%s' requires an argument.") % command)
+        sys.stderr.write(
+            to(_("E: Option `%s' requires an argument.") % command) + "\n")
         raise SystemExit(to(_("E: Try %s --help") % sys.argv[0]))
 
     if os.path.exists(const.CONTROL):
@@ -210,11 +212,12 @@ if __name__ == "__main__":
     pygtk.require('2.0')
     import gtk
     if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 6):
-        print to(
+        sys.stderr.write(to(
             _("E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."))
-        print to(_("E: You have GTK+ %s and PyGTK %s.") % (
+                         + "\n")
+        sys.stderr.write(to(_("E: You have GTK+ %s and PyGTK %s.") % (
             ".".join(map(str, gtk.gtk_version)),
-            ".".join(map(str, gtk.pygtk_version))))
+            ".".join(map(str, gtk.pygtk_version)))) + "\n")
         raise SystemExit(to(_("E: Please upgrade GTK+/PyGTK.")))
 
     import util; from util import to

@@ -17,7 +17,7 @@ Usage: %s [directory]
 
 For more information, see the manual page (`man 1 exfalso').
 """)) % sys.argv[0])
-    raise SystemExit(output != sys.stdout)
+    raise SystemExit(output == sys.stderr)
 
 def print_version(output = sys.stdout):
     output.write(to(_("""\
@@ -27,7 +27,7 @@ Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 """)) % const.VERSION)
-    raise SystemExit(output != sys.stdout)
+    raise SystemExit(output == sys.stderr)
 
 if __name__ == "__main__":
     import locale, gettext
