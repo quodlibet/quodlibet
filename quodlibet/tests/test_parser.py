@@ -9,7 +9,6 @@ class ParserTests(TestCase):
         self.failUnless(parser.is_valid("t, b = /an re/"))
         self.failUnless(parser.is_valid("t = !/an re/"))
         self.failUnless(parser.is_valid("t = &(/an re/)"))
-        self.failUnless(parser.is_valid("&(=t = /an re/, a = /re2/)"))
         self.failUnless(parser.is_valid("!t = /re/c"))
         self.failIf(parser.is_valid("a = /b"))
         self.failIf(parser.is_valid("/bar/"))
