@@ -2436,7 +2436,7 @@ class GetStringDialog(gtk.Dialog):
         self.__val.grab_focus()
         resp = gtk.Dialog.run(self)
         if resp == gtk.RESPONSE_OK:
-            value = self.val.get_text()
+            value = self.__val.get_text()
         else: value = None
         self.destroy()
         return value
