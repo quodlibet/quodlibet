@@ -149,7 +149,7 @@ class PreferencesWindow(gtk.Window):
                 buttons["album"].set_active(True)
                 aip.set_active(True)
                 checks.remove("~album~part")
-            fip = gtk.CheckButton(_("Filename includes _directory"))
+            fip = gtk.CheckButton(_("Filename includes _folder"))
             if "~filename" in checks:
                 buttons["~basename"].set_active(True)
                 fip.set_active(True)
@@ -448,7 +448,7 @@ class DeleteDialog(gtk.Dialog):
         # The FreeDesktop spec is complicated and I'm not sure it's
         # actually used by anything.
         if os.path.isdir(os.path.expanduser("~/.Trash")):
-            b = qltk.Button(_("Move to Trash"), image = gtk.STOCK_DELETE)
+            b = qltk.Button(_("_Move to Trash"), image = gtk.STOCK_DELETE)
             self.add_action_widget(b, 0)
 
         self.add_button(gtk.STOCK_CANCEL, 1)
@@ -478,7 +478,7 @@ class DeleteDialog(gtk.Dialog):
 
         lab = gtk.Label("\n".join(
             map(util.fsdecode, map(util.unexpand, files))))
-        lab.set_alignment(0.1, 0,0)
+        lab.set_alignment(0.1, 0.0)
         exp.add(gtk.ScrolledWindow())
         exp.child.add_with_viewport(lab)
         exp.child.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -2586,7 +2586,7 @@ class SongProperties(gtk.Window):
 
             text = []
             text.append("<b>%s</b>" % util.escape(song.comma("album")))
-            if "date" in song: text[-1] += "(%s)" % util.escape(song["date"])
+            if "date" in song: text[-1] += " (%s)" % util.escape(song["date"])
             secondary = []
             if "discnumber" in song:
                 secondary.append(_("Disc %s") % song("~#disc"))
