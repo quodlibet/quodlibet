@@ -1,4 +1,4 @@
-pyflac (0.0.2-0.1) unstable; urgency=low
+pyflac (0.0.2-1) unstable; urgency=low
 
   * Use new distutils-using build method.
   * Upload to Debian. (Closes: #292106)

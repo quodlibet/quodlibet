@@ -33,7 +33,7 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	./setup.py install --prefix debian/python-musepack
+	./setup.py install --prefix debian/python-musepack/usr
 
 binary-arch: build install
 	dh_testdir
