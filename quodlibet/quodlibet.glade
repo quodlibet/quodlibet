@@ -64,9 +64,9 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="new_playlist1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">New Playlist...</property>
+		      <property name="label" translatable="yes">_New Playlist...</property>
 		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_new_playlist1_activate" last_modification_time="Sun, 16 Jan 2005 04:49:36 GMT"/>
+		      <signal name="activate" handler="new_playlist" last_modification_time="Sun, 16 Jan 2005 04:49:36 GMT"/>
 
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image1316">

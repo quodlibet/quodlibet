@@ -958,6 +958,13 @@ class MainWindow(MultiInstanceWidget):
     def save_size(self, widget, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
+    def new_playlist(self, activator):
+        name = GetStringDialog(self.window, _("New Playlist..."),
+                               _("Enter a playlist name to edit. If it does "
+                                 "not exist, it will be created.")).run()
+        if name:
+            PlaylistWindow(name)
+
     def showhide_widget(self, box, on):
         width, height = self.window.get_size()
         if on:
@@ -1274,6 +1281,7 @@ class MainWindow(MultiInstanceWidget):
                 self.widgets["query_hbox"].remove(child)
             self.browser = SearchBar(self.widgets["query_hbox"],
                                      self.text_parse)
+            self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser.set_text(config.get("memory", "query"))
 
     def hide_browser(self, *args):
@@ -1517,6 +1525,42 @@ class MainSongList(SongList):
 
         i = len(list(player.playlist))
         return i, length
+
+class GetStringDialog(object):
+    def __init__(self, parent, title, text):
+        self.dialog = gtk.Dialog(parent = parent, title = title)
+        self.dialog.connect('close', self.destroy)
+        self.dialog.set_property('border-width', 12)
+        self.dialog.set_resizable(False)
+        self.dialog.add_buttons('gtk-cancel', gtk.RESPONSE_CANCEL,
+                                'gtk-new', gtk.RESPONSE_OK)
+        self.dialog.vbox.set_property('spacing', 9)
+        self.dialog.set_default_response(gtk.RESPONSE_OK)
+
+        self.val = gtk.Entry()
+        box = gtk.VBox()
+        box.set_property('spacing', 6)
+        lab = gtk.Label(text)
+        lab.set_line_wrap(True)
+        lab.set_justify(gtk.JUSTIFY_CENTER)
+        box.pack_start(lab)
+        box.pack_start(self.val)
+        self.dialog.vbox.pack_start(box)
+
+    def run(self):
+        self.dialog.show_all()
+        self.val.set_text("")
+        self.val.set_activates_default(True)
+        self.val.grab_focus()
+        resp = self.dialog.run()
+        if resp == gtk.RESPONSE_OK:
+            value = self.val.get_text()
+        else: value = None
+        self.destroy()
+        return value
+
+    def destroy(self, *args):
+        self.dialog.destroy()
 
 class AddTagDialog(object):
     def __init__(self, parent, can_change):
