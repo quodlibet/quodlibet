@@ -103,6 +103,8 @@ class ParserTests(TestCase):
             { "album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
               "~filename": "something.mp3", "tracknumber": "12/15" })
 
+        self.s3 = self.AF({"artist": "piman\nmu"})
+
     def test_empty(self):
         self.failIf(parser.parse("foobar = /./").search(self.s1))
 
@@ -158,6 +160,12 @@ class ParserTests(TestCase):
         self.failUnless(parser.parse("album = |(/ate/,/est/)").search(self.s1))
         self.failUnless(parser.parse("album = |(/ate/,/ets/)").search(self.s1))
         self.failIf(parser.parse("album = |(/tate/, /ets/)").search(self.s1))
+
+    def test_newlines(self):
+        self.failUnless(parser.parse("a = /\n/").search(self.s3))
+        self.failUnless(parser.parse("a = /\\n/").search(self.s3))
+        self.failIf(parser.parse("a = /\n/").search(self.s2))
+        self.failIf(parser.parse("a = /\\n/").search(self.s2))
 
     def test_exp_and(self):
         self.failUnless(parser.parse(
