@@ -27,6 +27,9 @@ class Widgets(object):
 class GladeHandlers(object):
     def gtk_main_quit(*args): gtk.main_quit()
 
+    def play_pause(*args):
+        player.paused ^= True
+
     def select_song(tree, indices, col):
         iter = widgets.sorted.get_iter(indices)
         iter = widgets.sorted.convert_iter_to_child_iter(None, iter)
@@ -182,6 +185,7 @@ def main():
     sl.set_model(widgets.sorted)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
+    player.paused = True
     gtk.timeout_add(500, update_timer, ())
     gtk.threads_init()
     thread.start_new_thread(player.play, ())

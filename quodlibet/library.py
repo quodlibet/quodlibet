@@ -7,6 +7,8 @@ def MusicFile(filename):
     elif filename.lower().endswith(".mp3"): return MP3File(filename)
     else: return None
 
+library = {}
+
 class MP3File(dict):
 
     # http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
@@ -80,9 +82,10 @@ def load_cache():
     mtime = os.stat(fn)[stat.ST_MTIME] - 1
     for song in songs:
         if song and os.path.exists(song['filename']):
+            library[song['filename']] = song
             if os.stat(song['filename'])[stat.ST_MTIME] > mtime:
-                yield MusicFile(fn)
-            else: yield song
+                library[song['filename']] = MusicFile(fn)
+            yield library[song['filename']]
 
 def save_cache(songs):
     songs = filter(None, songs)
@@ -98,18 +101,10 @@ def load(dirs):
         print "Checking", d
         d = os.path.expanduser(d)
         for path, dnames, fnames in os.walk(d):
-            for cvr in ["cover", "Cover"]:
-                for ext in ["png", "PNG", "jpg", "JPG"]:
-                    cover = os.path.join(path, cvr + "." + ext)
-                    if os.path.exists(cover):
-                        img = cover
-                        break
-                else: continue
-                break
-            else: img = None
-
             for fn in fnames:
-                m = MusicFile(os.path.join(path, fn))
+                m_fn = os.path.join(path, fn)
+                if m_fn in library: continue
+                m = MusicFile(m_fn)
                 if m:
-                    if img: m['cover'] = img
+                    library[m_fn] = m
                     yield m
