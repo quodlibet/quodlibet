@@ -1067,14 +1067,11 @@ class MainWindow(MultiInstanceWidget):
         if song:
             self.widgets["song_pos"].set_range(0, player.length)
             self.widgets["song_pos"].set_value(0)
-            cover_f = None
             cover = song.find_cover()
-            if hasattr(cover, "write"):
-                cover_f = cover
-                cover = cover.name
-            if cover != self.albumfn:
+            if cover and cover.name != self.albumfn:
                 try:
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(
+                        cover.name, 100, 100)
                 except:
                     self.image.set_from_pixbuf(None)
                     self.disable_cover()
@@ -1082,11 +1079,10 @@ class MainWindow(MultiInstanceWidget):
                 else:
                     self.image.set_from_pixbuf(p)
                     if config.state("cover"): self.enable_cover()
-                    self.albumfn = cover
+                    self.albumfn = cover.name
             for h in ['genre', 'artist', 'album']:
                 self.widgets["filter_%s_menu"%h].set_sensitive(
                     not song.unknown(h))
-            if cover_f: cover_f.close()
 
             self.update_markup(song)
         else:
@@ -1247,10 +1243,7 @@ class MainWindow(MultiInstanceWidget):
         if (self.current_song and event.button == 1 and
             event.type == gtk.gdk._2BUTTON_PRESS):
             cover = self.current_song.find_cover()
-            if hasattr(cover, "write"):
-                cover_f = cover
-                cover = cover.name
-            BigCenteredImage(self.current_song.comma("album"), cover)
+            BigCenteredImage(self.current_song.comma("album"), cover.name)
 
     def rebuild(self, activator, hard = False):
         window = WaitLoadWindow(self.window, len(library) // 7,
@@ -1902,7 +1895,6 @@ class SongProperties(object):
             self.title = _("Information")
             self.widget = gtk.ScrolledWindow()
             self.widget.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-            self.widget.set_size_request(10, 10)
             self.widget.add(gtk.Viewport())
             self.widget.child.set_shadow_type(gtk.SHADOW_NONE)
             self.box = gtk.VBox(spacing = 12)
@@ -1966,10 +1958,7 @@ class SongProperties(object):
             if cover:
                 try:
                     hb = gtk.HBox(spacing = 12)
-                    if hasattr(cover, "write"):
-                        cover_f = cover
-                        cover = cover.name
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 70, 70)
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70,70)
                     i = gtk.Image()
                     i.set_from_pixbuf(p)
                     hb.pack_start(i, expand = False)
@@ -2048,6 +2037,7 @@ class SongProperties(object):
             l.set_markup(str)
             l.set_alignment(0, 0)
             l.set_selectable(True)
+            l.set_line_wrap(True)
             return l
 
         def destroy(self):
@@ -2062,22 +2052,61 @@ class SongProperties(object):
 
         def _update_album(self, songs):
             songs.sort()
-            album = songs[0]["album"]
+            album = songs[0]("~album~date")
             self.box.pack_start(self.Label(
                 "<b><span size='x-large'>%s</span></b>" % util.escape(album)),
                                 expand = False)
 
+            song = songs[0]
+
             text = []
-            cur_disc = 0
+            if "organization" in song:
+                t = util.escape(song.comma("organization"))
+                if "labelid" in song: t += " - %s" %(
+                    util.escape(song.comma("labelid")))
+                text.append(t)
+
+            if "producer" in song:
+                text.append("Produced by %s" %(
+                    util.escape(song.comma("producer"))))
+
+            w = self.Label("\n".join(text))
+
+            cover = songs[0].find_cover()
+            if cover:
+                try:
+                    hb = gtk.HBox(spacing = 12)
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70,70)
+                    i = gtk.Image()
+                    i.set_from_pixbuf(p)
+                    hb.pack_start(i, expand = False)
+                    hb.pack_start(w)
+                    self.box.pack_start(hb, expand = False)
+                except:
+                    self.box.pack_start(w, expand = False)
+            else:
+                self.box.pack_start(w, expand = False)
+
+            artists = set()
+            for song in songs: artists.update(song.list("artist"))
+            artists = list(artists)
+            artists.sort()
+            self.box.pack_start(
+                self.Frame(util.title(_("artists")),
+                           self.Label(util.escape(", ".join(artists)))),
+                expand = False)
+
+            text = []
+            cur_disc = songs[0]("~#disc", 1) - 1
             cur_part = None
-            cur_track = 0
+            cur_track = songs[0]("~#track", 1) - 1
             for song in songs:
                 track = song("~#track", 0)
                 disc = song("~#disc", 0)
                 part = song.get("part")
                 if disc != cur_disc:
                     if cur_disc: text.append("")
-                    cur_track = 0
+                    cur_track = song("~#track", 1) - 1
                     cur_part = None
                     cur_disc = disc
                     if disc:
@@ -2159,9 +2188,10 @@ class SongProperties(object):
             if noartist: artists.append(_("%d songs with no artist")%noartist)
             artists = util.escape("\n".join(artists))
             if artists:
-                self.box.pack_start(self.Frame(_("Artists (%d)") % arcount,
-                                               self.Label(artists)),
-                                    expand = False)
+                self.box.pack_start(
+                    self.Frame("%s (%d)" % (util.title(_("artists"), arcount)),
+                                            self.Label(artists)),
+                               expand = False)
 
             albums = list(albums)
             albums.sort()
@@ -2169,9 +2199,11 @@ class SongProperties(object):
             if noalbum: albums.append(_("%d songs with no album") % noalbum)
             albums = util.escape("\n".join(albums))
             if albums:
-                self.box.pack_start(self.Frame(_("Albums (%d)") % alcount,
-                                               self.Label(albums)),
-                                    expand = False)
+                self.box.pack_start(
+                    self.Frame("%s (%d)" %(
+                    util.title(_("albums (%d)"), alcount)),
+                               self.Label(albums)),
+                               expand = False)
 
         def update(self, songs):
             for c in self.box.get_children():

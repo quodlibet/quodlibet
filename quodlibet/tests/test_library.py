@@ -98,18 +98,9 @@ class AudioFileTest(TestCase):
         song1.sanitize()
         song2 = AudioFile({ "~filename": "tests/foo.ogg" })
         song2.sanitize()
-        self.failUnlessEqual(song1.find_cover(),
+        self.failUnlessEqual(song1.find_cover().name,
                              "tests/data/frontcoverjacket.png")
         self.failIf(song2.find_cover())
-
-    def test_get_played(self):
-        song1 = AudioFile({"~#playcount": 0})
-        song2 = AudioFile({"~#playcount": 4,
-                           "~#lastplayed": 1099509099 })
-        self.failUnlessEqual(song1.get_played(), "Never")
-        # This test will fail unless you are in CST.
-        self.failUnlessEqual(song2.get_played(),
-                             "4 times, recently on 2004-11-03, 13:11:39")
 
 class TestFileTypes(TestCase):
     def setUp(self):

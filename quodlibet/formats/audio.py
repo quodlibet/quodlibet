@@ -62,7 +62,8 @@ class AudioFile(dict):
             v = dict.get(self, "title")
             if v is None:
                 return "%s [%s]" %(
-                    os.path.basename(self["~filename"]), UNKNOWN)
+                    os.path.basename(self["~filename"]).decode(
+                    util.fscoding(), "replace"), UNKNOWN)
             else: return v
         elif (key == "artist" or key == "album"):
             v = dict.get(self, key)
@@ -259,7 +260,7 @@ class AudioFile(dict):
                 score = len(matches)
                 if score: images.append((score, os.path.join(base, fn)))
         # Highest score wins.
-        if images: return max(images)[1]
+        if images: return file(max(images)[1], "rb")
         elif "~picture" in self:
             # Otherwise, we might have a picture stored in the metadata...
             import pyid3lib
@@ -269,6 +270,7 @@ class AudioFile(dict):
                 if frame["frameid"] == "APIC":
                     f.write(frame["data"])
                     f.flush()
+                    f.seek(0, 0)
                     return f
             else:
                 f.close()

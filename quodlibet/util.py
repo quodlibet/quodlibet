@@ -20,7 +20,7 @@ def to(string, frm = "utf-8"):
         return string.decode(frm).encode(enc, "replace")
 
 def mtime(filename):
-    try: return os.stat(filename)[stat.ST_MTIME]
+    try: return os.path.getmtime(filename)
     except OSError: return 0
 os.path.mtime = mtime
 
