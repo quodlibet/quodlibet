@@ -240,10 +240,15 @@ class PreferencesWindow(MultiInstanceWidget):
             self.widgets["title_t"].set_active(True)
             self.widgets["titleversion_t"].set_active(True)
             headers.remove("~title~version")
+        else:
+            self.widgets["titleversion_t"].set_active(False)
+
         if "~album~part" in headers:
             self.widgets["album_t"].set_active(True)
             self.widgets["albumpart_t"].set_active(True)
             headers.remove("~album~part")
+        else:
+            self.widgets["albumpart_t"].set_active(False)
 
         # Remove the standard headers, and put the rest in the list.
         for t in ["~#disc", "~#track", "album", "artist", "genre", "date",
@@ -406,8 +411,7 @@ class Osd(object):
             if key in song:
                 msg += ("<span foreground='%s' size='xx-small' style='italic'>"
                         "%s</span> %s   "%(
-                    (color2, _(HEADERS_FILTER.get(key, key)).title(),
-                     util.escape(song.comma(key)))))
+                    (color2, tag(key), util.escape(song.comma(key)))))
         msg = msg.strip() + "</span>"
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
@@ -1030,7 +1034,7 @@ class MainWindow(MultiInstanceWidget):
             self.cmenu_w["filter_column"].show()
             if header.startswith("~#"): header = header[2:]
             elif header.startswith("~"): header = header[1:]
-            header = HEADERS_FILTER.get(header, header)
+            header = tag(header)
             self.cmenu_w["filter_column"].child.set_text(
                 _("_Filter on this column (%s)") % _(header))
             self.cmenu_w["filter_column"].child.set_use_underline(True)
@@ -1166,8 +1170,7 @@ class MainWindow(MultiInstanceWidget):
         for c in self.songlist.get_columns(): self.songlist.remove_column(c)
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
-            t2 = t.lstrip("~#")
-            title = util.title(_(HEADERS_FILTER.get(t2, t2)))
+            title = tag(t)
             column = gtk.TreeViewColumn(title, render, text = i,
                                         weight = len(headers)+1)
             column.header_name = t
@@ -1898,6 +1901,22 @@ class WritingWindow(WaitLoadWindow):
     def step(self):
         return WaitLoadWindow.step(self, self.current + 1, self.count)
 
+# Return a 'natural' version of the tag for human-readable bits.
+# Strips ~ and ~# from the start and runs it through a map (which
+# the user can configure).
+def tag(name):
+    try:
+        if name[0] == "~":
+            if name[1] == "#": name = name[2:]
+            else: name = name[1:]
+        if "~" in name:
+            return " / ".join([HEADERS_FILTER.get(n, n).title() for n
+                             in name.split("~")])
+        else:
+            return HEADERS_FILTER.get(name, name).title()
+    except IndexError:
+        return _("Invalid tag name")
+
 def songref_update_view(song, ref):
     path = ref.get_path()
     if path is not None:
@@ -1907,9 +1926,7 @@ def songref_update_view(song, ref):
 HEADERS = ["~#track", "title", "album", "artist"]
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
-                   "~album~part": "album",
                    "album~part": "album",
-                   "~title~version": "title",
                    "title~version": "title",
                    "lastplayed": "last played", "filename": "full name",
                    "playcount": "play count", "basename": "filename",
@@ -1934,11 +1951,12 @@ def main():
     if HEADERS == []:
        config.set("settings", "headers", "title")
        HEADERS[:] = ["title"]
-    setup_ui()
-
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
+        print opt, val
         HEADERS_FILTER[opt] = val
+
+    setup_ui()
 
     from threading import Thread
     t = Thread(target = player.playlist.play, args = (widgets.main,))

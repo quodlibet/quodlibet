@@ -1,8 +1,6 @@
 0.8
 An unintrusive clear button.
-Cleanups re. tag name normalization.
 Try out cell-data-funcs again.
-Proxy requests for tag names and generate more on the fly.
 Remember hidden UI element states
 Fix grammar on UI elements (1 days, 1 times played, etc.)
 (mu) has the list of tags in the add tag dialog ever been "fixed"?  not that i

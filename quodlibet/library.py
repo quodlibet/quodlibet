@@ -56,6 +56,30 @@ class AudioFile(dict):
                                 not self.unknown(s),
                       self.keys())
 
+    def get(self, key, default = None):
+        try: return self[key]
+        except KeyError: return default
+
+    def __getitem__(self, key):
+        if key and key[0] == "~":
+            if key == "~basename": return os.path.basename(self["~filename"])
+            elif key == "~dirname": return os.path.dirname(self["~filename"])
+            elif key == "~#track":
+                try: return int(self["tracknumber"].split("/")[0])
+                except (ValueError, TypeError): raise KeyError
+            elif key == "~#disc":
+                try: return int(self["discnumber"].split("/")[0])
+                except (ValueError, TypeError): raise KeyError
+            elif key[1] == "#" and key not in self:
+                try: return int(self[key[2:]])
+                except (ValueError, TypeError): raise KeyError
+
+            elif "~" in key[1:]:
+                parts = [self.get(p, "") for p in key[1:].split("~") if p]
+                return " - ".join(filter(None, parts))
+            else: return dict.__getitem__(self, key)
+        else: return dict.__getitem__(self, key)
+
     def comma(self, key):
         if isinstance(self.get(key), int): return self.get(key)
         else: return self.get(key, "").replace("\n", ", ")
@@ -108,8 +132,6 @@ class AudioFile(dict):
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
-        self["~basename"] = os.path.basename(self['~filename'])
-        self["~dirname"] = os.path.dirname(self['~filename'])
         self.setdefault("title", Unknown(util.decode(self['~basename'])))
         for i in ["artist", "album"]:
             self.setdefault(i, Unknown(_("Unknown")))
@@ -117,35 +139,14 @@ class AudioFile(dict):
         self.setdefault("~#playcount", 0)
         self.setdefault("~#length", 0)
 
-        # Derive disc and track numbers.
-        try: self["~#track"] = int(self["tracknumber"].split("/")[0])
-        except (ValueError, KeyError):
-            if "~#track" in self: del(self["~#track"])
-        try: self["~#disc"] = int(self["discnumber"].split("/")[0])
-        except (ValueError, KeyError):
-            if "~#disc" in self: del(self["~#disc"])
-
         # Clean up Vorbis garbage.
         try: del(self["vendor"])
         except KeyError: pass
 
-        # mtime...
-        try: self["~#mtime"] = os.path.mtime(self['~filename'])
-        except OSError: self["~#mtime"] = 0 # this shouldn't happen.
-
-        try: self["~#bpm"] = float(self["bpm"])
-        except (KeyError, ValueError): self["~#bpm"] = 0
+        self["~#mtime"] = os.path.mtime(self['~filename'])
 
         # time format
         self["~length"] = util.format_time(self.get('~#length', 0))
-
-        if "version" in self:
-            self["~title~version"] = "%s - %s" %(self["title"],self['version'])
-        else: self["~title~version"] = self["title"]
-
-        if "part" in self:
-            self["~album~part"] = "%s - %s" %(self["album"], self['part'])
-        else: self["~album~part"] = self["album"]
 
     # Construct the text seen in the player window
     def to_markup(self):
