@@ -8,9 +8,12 @@
 #
 # $Id$
 
-VERSION = "0.6"
+VERSION = "0.7"
 
 import os, sys
+
+# Give us a namespace for now.. FIXME: We need to remove this later.
+class widgets(object): pass
 
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(object):
@@ -31,9 +34,6 @@ class FileChooser(object):
         fns = self.dialog.get_filenames()
         self.dialog.destroy()
         return resp, fns
-
-# Give us a namespace for now..
-class widgets(object): pass
 
 class Message(object):
     def __init__(self, kind, parent, title, description, buttons = None):
@@ -547,7 +547,7 @@ class MainWindow(MultiInstanceWidget):
             window.show()
 
     def tray_popup(self, *args):
-        self.tray_menu["tray_popup"].popup(None, None, None, 1, 0)
+        self.tray_menu["tray_popup"].popup(None, None, None, 3, 0)
 
     def gtk_main_quit(self, *args):
         gtk.main_quit()
@@ -931,8 +931,9 @@ class MainWindow(MultiInstanceWidget):
                 render.set_fixed_size(-1, -1)
             else: render.set_fixed_size(width, -1)
             t2 = t.lstrip("~#")
-            column = gtk.TreeViewColumn(util.title(_(HEADERS_FILTER.get(t2, t2))),
-                                        render, text = i, weight = len(headers)+1)
+            title = util.title(_(HEADERS_FILTER.get(t2, t2)))
+            column = gtk.TreeViewColumn(title, render, text = i,
+                                        weight = len(headers)+1)
             column.set_resizable(True)
             column.set_clickable(True)
             column.set_sort_indicator(False)
@@ -1646,7 +1647,7 @@ HEADERS_FILTER = { "tracknumber": "track",
                    "playcount": "play count", "basename": "filename",
                    "dirname": "directory"}
 
-def setup_nonglade():
+def setup_ui():
     widgets.main = MainWindow()
     player.playlist.info = widgets.main
     gtk.threads_init()
@@ -1663,7 +1664,7 @@ def save_config():
 def main():
     HEADERS[:] = config.get("settings", "headers").split()
     if "title" not in HEADERS: HEADERS.append("title")
-    setup_nonglade()
+    setup_ui()
     player.playlist.sort_by(HEADERS[0])
 
     for opt in config.options("header_maps"):
