@@ -3,7 +3,9 @@ NAME = quodlibet
 ALL_LINGUAS = en_GB en_CA
 PO_DIR ?= /usr/share/locale
 
-all: quodlibet.pot
+all:
+
+po: quodlibet.pot
 	for F in $(ALL_LINGUAS); do make $$F.mo; done
 
 quodlibet.pot: ../quodlibet.glade ../quodlibet.py ../library.py ../pmp.py tag-names.py ../util.py
@@ -14,7 +16,7 @@ quodlibet.pot: ../quodlibet.glade ../quodlibet.py ../library.py ../pmp.py tag-na
 	msgfmt -o $@ $<
 
 clean:
-	rm -f quodlibet.pot quodlibet.glade.h *.mo
+	rm -f quodlibet.pot quodlibet.glade.h
 	for F in $(ALL_LINGUAS); do rm -rf $$F; done
 
 distclean: clean

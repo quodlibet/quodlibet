@@ -26,7 +26,7 @@ install:
 
 clean:
 	rm -f *.pyc */*.pyc $(NAME).zip $(EXTENSIONS)
-	rm -f messages.pot quodlibet.glade.h
+	rm -f quodlibet.glade.h
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean
@@ -43,4 +43,4 @@ test:
 	python -c "import tests; tests.unit()"
 
 po-data:
-	cd po && make
+	cd po && make po
