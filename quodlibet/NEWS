@@ -13,128 +13,129 @@ A change in the ID3 reader could cause genres in many of your MP3
 files may disappear on reload, and new ones to appear.
 
 0.10
- - --seek supports +/- prefix to seek relative to the current position.
- - Added Ex Falso, a tag editor based on QL (without audio playback).
- - Switched MP3 genres from TIT1 to TCON.
- - Tag by Pattern/Rename Files save patterns used.
- - Adding tags with specific formats ('date') is less prone to error.
- - Several display bugs and non-HIG windows were fixed.
- - Pane-based (Rhythmbox/iTunes-style) library browser.
- - Tag by Pattern/Rename Files previews can be manually edited before saving.
- - Kind of browser (none, search, playlists, paned), song list sort order,
+ * --seek supports +/- prefix to seek relative to the current position.
+ * Added Ex Falso, a tag editor based on QL (without audio playback).
+ * Switched MP3 genres from TIT1 to TCON.
+ * The library is saved automatically every 15 minutes.
+ * Tag by Pattern/Rename Files save patterns used.
+ * Adding tags with specific formats ('date') is less prone to error.
+ * Several display bugs and non-HIG windows were fixed.
+ * Pane-based (Rhythmbox/iTunes-style) library browser.
+ * Tag by Pattern/Rename Files previews can be manually edited before saving.
+ * Kind of browser (none, search, playlists, paned), song list sort order,
    and what you were browsing are remembered when you exit.
- - At least one lockup-causing bug was fixed.
- - Song ratings, on a 0 to 4 scale.
- - Masked directories work again.
- - No more dependency on Glade.
- - A new icon and website.
+ * At least one lockup-causing bug was fixed.
+ * Song ratings, on a 0 to 4 scale.
+ * Masked directories work again.
+ * No more dependency on Glade.
+ * A new icon and website.
 
 0.9 - I don't want any trouble, cephalopods!
- - Major updates to the Properties dialog:
+ * Major updates to the Properties dialog:
    - A new detailed 'Information' tab was added.
    - Middle click pastes current PRIMARY clipboard text in 'Edit Tags'.
    - Text in the 'Rename Files' dialog can be conditionalized.
- - Non-UTF-8 filesystem encodings support (via CHARSET/G_BROKEN_FILENAMES).
- - New numeric keys "added" and "skipcount" can be searched on.
- - The --print-playing format string syntax has changed to match the one
+ * Non-UTF-8 filesystem encodings support (via CHARSET/G_BROKEN_FILENAMES).
+ * New numeric keys "added" and "skipcount" can be searched on.
+ * The --print-playing format string syntax has changed to match the one
    now used in 'Rename Files'.
- - New query language enhancements (ternary relation operators, string
+ * New query language enhancements (ternary relation operators, string
    comparisons, and Lynx-like case-sensitivity).
- - The tray icon now pauses/unpauses on middle click, adjusts volume with
+ * The tray icon now pauses/unpauses on middle click, adjusts volume with
    the scroll wheel, and skips forward/backward on buttons 6/7.
- - This release depends on GTK 2.6 for its new media icons.
- - PMP support was removed.
- - Updated German translation (thanks, Bastian!)
+ * This release depends on GTK 2.6 for its new media icons.
+ * PMP support was removed.
+ * Updated German translation (thanks, Bastian!)
 
 0.8.1 - Our story takes a sudden dive...
- - Fix a crash when encoding information is not available.
+ * Fix a crash when encoding information is not available.
 
 0.8 - I make jokes about whomever I please!
- - New/reloaded libraries take 20% less disk space.
- - Double-clicking an album cover displays it in a larger window.
- - --shuffle, --repeat, and --volume (--volume-up and --volume-down are
+ * New/reloaded libraries take 20% less disk space.
+ * Double-clicking an album cover displays it in a larger window.
+ * --shuffle, --repeat, and --volume (--volume-up and --volume-down are
    deprecated and will be removed).
- - Any tag name can be written to (and read from) an MP3 file.
- - Playlists containing arbitrary songs can be created.
- - The libmodplug Python wrapper must be downloaded separately.
- - The MPC/MP+ format is supported (with a separate wrapper).
- - FLAC supports ReplayGain.
- - Internal changes made some things faster and others slower.
- - Polish translation, thanks to Michal Nowikowski.
- - German translation, thanks to Bastian Kleineidam.
+ * Any tag name can be written to (and read from) an MP3 file.
+ * Playlists containing arbitrary songs can be created.
+ * The libmodplug Python wrapper must be downloaded separately.
+ * The MPC/MP+ format is supported (with a separate wrapper).
+ * FLAC supports ReplayGain.
+ * Internal changes made some things faster and others slower.
+ * Polish translation, thanks to Michal Nowikowski.
+ * German translation, thanks to Bastian Kleineidam.
 
 0.7 - I'm going to ho-ho-hoard all these nuts!
- - Default to proper 'alsa09' driver (rather than 'alsa').
- - "Random Foo" searches are now anchored with ^...$.
- - Tag By Pattern values can be edited before being saved.
- - Right-clicking on the status icon brings up a menu.
- - --play, --pause, --seek-to, --query, --play-file.
- - OSD (gosd) support, thanks to Iñigo Serna and Gustavo J. A. M. Carneiro.
+ * Default to proper 'alsa09' driver (rather than 'alsa').
+ * "Random Foo" searches are now anchored with ^...$.
+ * Tag By Pattern values can be edited before being saved.
+ * Right-clicking on the status icon brings up a menu.
+ * --play, --pause, --seek-to, --query, --play-file.
+ * OSD (gosd) support, thanks to Iñigo Serna and Gustavo J. A. M. Carneiro.
    A library reload is needed to use it.
- - FreeDesktop-style .folder.png files supported for album covers.
- - Playlist/search UI elements can be hidden.
- - Dragging playlist columns reorders them.
- - Library rebuilds no longer lose play counts.
- - Configurable menu accelerators when gtk-can-change-accels is set.
- - Delete songs (or move them to the trash) from the player.
+ * FreeDesktop-style .folder.png files supported for album covers.
+ * Playlist/search UI elements can be hidden.
+ * Dragging playlist columns reorders them.
+ * Library rebuilds no longer lose play counts.
+ * Configurable menu accelerators when gtk-can-change-accels is set.
+ * Delete songs (or move them to the trash) from the player.
 
 0.6 - People laugh at typos in heaven?!
- - Many new filtering options (top 40, not played in X days).
- - Mass-set track numbers.
- - Tag by Pattern can replace or add new tags.
- - Maskable mount points. This lets you add files from an NFS share or
+ * Many new filtering options (top 40, not played in X days).
+ * Mass-set track numbers.
+ * Tag by Pattern can replace or add new tags.
+ * Maskable mount points. This lets you add files from an NFS share or
    portable device and not have to readd them if you unmount and remount it.
- - Support for sending files to PMPs from the context menu.
- - --next, --previous, --play-pause, --volume-up, --volume-down.
- - MOD/IT/XM/etc. support, using libmodplug and an included C extension.
- - Right-clicking the status icon will pause/unpause.
- - Seeking in FLACs.
- - Bug fixes (including at least one crash).
+ * Support for sending files to PMPs from the context menu.
+ * --next, --previous, --play-pause, --volume-up, --volume-down.
+ * MOD/IT/XM/etc. support, using libmodplug and an included C extension.
+ * Right-clicking the status icon will pause/unpause.
+ * Seeking in FLACs.
+ * Bug fixes (including at least one crash).
 
 0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
- - The ao audio backend is back; see the "AUDIO BACKENDS" section in the
+ * The ao audio backend is back; see the "AUDIO BACKENDS" section in the
    manual page for instructions on using it. This should let ALSA users
    use software mixing.
- - ID3 APIC (embedded picture) support.
- - VorbisGain (http://sjeng.org/vorbisgain.html) support.
- - A context menu for common operations was added to the properties dialog.
- - Tag values can be set from filename patterns, or vice-versa.
- - Dates can be saved in MP3s now.
- - --print-playing option, with a format string.
- - More UI tweaks.
- - Translation template update.
- - Many bug fixes; please reload your library. You can now reload your
+ * ID3 APIC (embedded picture) support.
+ * VorbisGain (http://sjeng.org/vorbisgain.html) support.
+ * A context menu for common operations was added to the properties dialog.
+ * Tag values can be set from filename patterns, or vice-versa.
+ * Dates can be saved in MP3s now.
+ * --print-playing option, with a format string.
+ * More UI tweaks.
+ * Translation template update.
+ * Many bug fixes; please reload your library. You can now reload your
    library from the "Music" menu.
 
 0.4 - The Power of Language
- - Many bug fixes, primarily due to unit testing.
- - Tweaks to cover detection to pick 'frontcover' over 'backcover'.
- - Tweaks to song display, including proper support for the 'author' tag.
- - Remember size between invokations.
- - A freedesktop.org-compatible system tray icon, using the Egg status
+ * Many bug fixes, primarily due to unit testing.
+ * Tweaks to cover detection to pick 'frontcover' over 'backcover'.
+ * Tweaks to song display, including proper support for the 'author' tag.
+ * Remember size between invokations.
+ * A freedesktop.org-compatible system tray icon, using the Egg status
    icon code by Anders Carlsson and Sun.
- - Multimedia key support, provided they're mapped (e.g. by Acme), using
+ * Multimedia key support, provided they're mapped (e.g. by Acme), using
    the MmKeys object from Muine by Lee Willis and Jan Arne Petersen.
- - UI tweaks to the main window.
- - Button to link to a song's website, or a Google search.
- - Infrastructure is in place for i18n/l10n, but I'm totally new to
+ * UI tweaks to the main window.
+ * Button to link to a song's website, or a Google search.
+ * Infrastructure is in place for i18n/l10n, but I'm totally new to
    this, so I could've done something horribly wrong.
 
 0.3
- - Handle mono MP3s correctly.
- - Crash less, especially when editing tags.
- - Many smaller bug fixes.
+ * Handle mono MP3s correctly.
+ * Crash less, especially when editing tags.
+ * Many smaller bug fixes.
 
 0.2
- - Song properties dialog, featuring mass tag editing/addition/removal.
- - Build/installation scripts.
- - Interface tweaks for HIG compliance and accessibility.
- - Try to save the library when ^C is pressed.
- - ~/.quodlibet/current interface to currently-playing song.
- - Save current query and song on exit.
- - An icon.
- - FLAC support. Writing to FLAC tags could be *very* buggy, so if you
+ * Song properties dialog, featuring mass tag editing/addition/removal.
+ * Build/installation scripts.
+ * Interface tweaks for HIG compliance and accessibility.
+ * Try to save the library when ^C is pressed.
+ * ~/.quodlibet/current interface to currently-playing song.
+ * Save current query and song on exit.
+ * An icon.
+ * FLAC support. Writing to FLAC tags could be *very* buggy, so if you
    value your tags, please back them up.
 
 0.1
- - Initial release.
+ * Initial release.
