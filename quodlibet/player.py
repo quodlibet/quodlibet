@@ -252,10 +252,10 @@ class PlaylistPlayer(object):
         self.sort = cmp
         self.filter = None
         self.lock = threading.Lock()
-
         fn = config.get("memory", "song")
         if fn and fn in library:
             self.playlist.insert(0, library[fn])
+        self.sort_by("artist")
 
     def __iter__(self): return iter(self.orig_playlist)
 
@@ -373,7 +373,6 @@ class PlaylistPlayer(object):
         else:
             f = lambda a, b: (cmp(a.get(header), b.get(header)) or cmp(a, b))
         self.sort = f
-        pl.sort(self.sort)
         self.set_playlist(pl, lock = False)
         self.lock.release()
 
