@@ -286,7 +286,7 @@ class GladeHandlers(object):
         path, col, cellx, celly = view.get_path_at_pos(x, y)
         view.grab_focus()
         selection = view.get_selection()
-        if selection.count_selected_rows() < 2:
+        if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
         widgets["songs_popup"].popup(None,None,None, event.button, event.time)
         return True
@@ -313,8 +313,6 @@ class GladeHandlers(object):
     def song_properties(item):
         view = widgets["songlist"]
         path, col = view.get_cursor()
-        #iter = widgets.songs.get_iter(path)
-        #song = widgets.songs.get_value(iter, len(HEADERS))
         selection = widgets["songlist"].get_selection()
         model, rows = selection.get_selected_rows()
         songiters = [ [model[row][len(HEADERS)],
@@ -336,14 +334,16 @@ class MultiInstanceWidget(object):
         deleted = {}
         def create_property_dict(model, path, iter):
             row = model[iter]
+            # Edited, and or and not Deleted
             if row[2] and not row[4]: updated[row[0]] = row[1]
             if row[2] and row[4]: deleted[row[0]] = 1
         self.model.foreach(create_property_dict)
 
         for song, iter in self.songiters:
-            song.update(updated)
+            for key, value in updated.iteritems():
+                if song.can_change(key): song[key] = value
             for key in deleted:
-                del song[key]
+                if song.can_change(key) and song.hasattr(key): del song[key]
             #song.write()
             print 'INVOKE the WRITE:', song
             iter = iter.get_path()
@@ -360,14 +360,17 @@ class MultiInstanceWidget(object):
         self.fill_property_info()
 
     def songprop_toggle(self, renderer, path, model):
-        it = model.get_iter(path)
-        model[it][2] = not model[it][2]
+        row = model[path]
+        row[2] = not row[2] # Edited
+        self.save.set_sensitive(True)
+        self.revert.set_sensitive(True)
 
     def songprop_edit(self, renderer, path, new, model, colnum):
-        it = model.get_iter(path)
-        if model[it][colnum] != new:
-            model[it][colnum] = new
-            model[it][2] = True
+        row = model[path]
+        if row[colnum] != new:
+            row[colnum] = new
+            row[2] = True # Edited
+            row[4] = False # not Deleted
             self.save.set_sensitive(True)
             self.revert.set_sensitive(True)
 
@@ -378,14 +381,16 @@ class MultiInstanceWidget(object):
 
     def songprop_add(self, button):
         print 'FIXME: code songprop_add'
+        self.save.set_sensitive(True)
+        self.revert.set_sensitive(True)
 
     def songprop_remove(self, button):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
         if row[0] in self.existing_comments:
             row[1] = 'Deleted'
-            row[2] = True
-            row[4] = True
+            row[2] = True # Edited
+            row[4] = True # Deleted
         else:
             model.remove(iter)
         self.save.set_sensitive(True)
@@ -442,7 +447,9 @@ class MultiInstanceWidget(object):
             else:
                 value = '(%s variants of %s)' % (len(valdict), comment)
                 mayedit = min(valdict.values())
-            self.model.append(row=[comment, value, False, mayedit, False])
+                edited = False
+                deleted = False
+            self.model.append(row=[comment, value, edited, mayedit, deleted])
 
         self.existing_comments = comments.keys()[:]
 
