@@ -58,6 +58,12 @@ class FSTests(TestCase):
         self.failUnlessEqual(util.unexpand(os.path.join(d, "la/la")),"~/la/la")
 
 class StringTests(TestCase):
+    def test_to(self):
+        self.assertEqual(type(util.to("foo")), str)
+        self.assertEqual(type(util.to(u"foo")), str)
+        self.assertEqual(util.to("foo"), "foo")
+        self.assertEqual(util.to(u"foo"), "foo")
+
     def test_escape(self):
         for s in ["foo&amp;", "<&>", "&", "&amp;",
                   "<&testing&amp;>amp;"]:
