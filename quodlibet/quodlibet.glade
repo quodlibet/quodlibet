@@ -2309,16 +2309,16 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		  </child>
 
 		  <child>
-		    <widget class="GtkHBox" id="hbox7">
+		    <widget class="GtkHBox" id="hbox14">
 		      <property name="visible">True</property>
 		      <property name="homogeneous">False</property>
-		      <property name="spacing">0</property>
+		      <property name="spacing">18</property>
 
 		      <child>
 			<widget class="GtkHButtonBox" id="hbuttonbox4">
 			  <property name="visible">True</property>
 			  <property name="layout_style">GTK_BUTTONBOX_START</property>
-			  <property name="spacing">12</property>
+			  <property name="spacing">6</property>
 
 			  <child>
 			    <widget class="GtkButton" id="songprop_add">
@@ -2345,6 +2345,45 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">False</property>
 			      <signal name="clicked" handler="songprop_remove" last_modification_time="Mon, 25 Oct 2004 21:30:45 GMT"/>
+			    </widget>
+			  </child>
+			</widget>
+			<packing>
+			  <property name="padding">0</property>
+			  <property name="expand">True</property>
+			  <property name="fill">True</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkHButtonBox" id="hbuttonbox5">
+			  <property name="visible">True</property>
+			  <property name="layout_style">GTK_BUTTONBOX_END</property>
+			  <property name="spacing">6</property>
+
+			  <child>
+			    <widget class="GtkButton" id="songprop_revert">
+			      <property name="visible">True</property>
+			      <property name="can_default">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label">gtk-revert-to-saved</property>
+			      <property name="use_stock">True</property>
+			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">False</property>
+			      <signal name="clicked" handler="songprop_revert_click" last_modification_time="Sat, 13 Nov 2004 05:30:59 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkButton" id="songprop_save">
+			      <property name="visible">True</property>
+			      <property name="can_default">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label">gtk-save</property>
+			      <property name="use_stock">True</property>
+			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">False</property>
+			      <signal name="clicked" handler="songprop_save_click" last_modification_time="Sat, 13 Nov 2004 05:30:51 GMT"/>
 			    </widget>
 			  </child>
 			</widget>
@@ -2812,35 +2851,6 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	  <property name="visible">True</property>
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 	  <property name="spacing">12</property>
-
-	  <child>
-	    <widget class="GtkButton" id="songprop_revert">
-	      <property name="visible">True</property>
-	      <property name="sensitive">False</property>
-	      <property name="tooltip" translatable="yes">Undo changes made to these files</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-revert-to-saved</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <signal name="clicked" handler="songprop_revert_click" last_modification_time="Mon, 25 Oct 2004 21:31:57 GMT"/>
-	    </widget>
-	  </child>
-
-	  <child>
-	    <widget class="GtkButton" id="songprop_save">
-	      <property name="visible">True</property>
-	      <property name="sensitive">False</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-save</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <signal name="clicked" handler="songprop_save_click" last_modification_time="Mon, 25 Oct 2004 21:31:45 GMT"/>
-	    </widget>
-	  </child>
 
 	  <child>
 	    <widget class="GtkButton" id="songprop_close">
