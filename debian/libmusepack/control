@@ -1,7 +1,7 @@
 Source: libmusepack
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
-Build-Depends: debhelper (>= 4.0.0), libusb-dev
+Build-Depends: debhelper (>= 4.0.0)
 Standards-Version: 3.6.1.1
 
 Package: libmusepack-dev
