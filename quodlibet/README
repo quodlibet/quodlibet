@@ -7,8 +7,7 @@ you can filter however you want.
 Quod Libet is designed for use with Ogg Vorbis audio files, but has
 support for MP3 files following the ID3v1 and v2 "standards" as well.
 
-Quod Libet is written entirely in Python and licensed under the GNU
-GPL version 2.
+Quod Libet is written in Python and licensed under the GNU GPL version 2.
 
 ====[ Neat Features
  - MP3, Ogg Vorbis, and FLAC audio format support.
