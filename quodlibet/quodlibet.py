@@ -2123,16 +2123,15 @@ class SongProperties(object):
             def format((date, song, album)):
                 if date: return "%s (%s)" % (util.escape(album), date)
                 else: return util.escape(album)
-            covers = [song.find_cover() for date, song, album in albums]
+            covers = [(a, s.find_cover()) for d, s, a in albums]
             albums = map(format, albums)
             if noalbum: albums.append(_("%d songs with no album") % noalbum)
             self.box.pack_start(
                 self.Frame(_("Selected Discography"),
                            self.Label("\n".join(albums))),
                 expand = False)
-            hb = gtk.HBox(spacing = 12)
             added = set()
-            covers = filter(lambda (a, b): bool(b), zip(albums, covers))
+            covers = [ac for ac in covers if bool(ac[1])]
             t = gtk.Table(4, (len(covers) // 4) + 1)
             t.set_col_spacings(12)
             t.set_row_spacings(12)
@@ -2140,7 +2139,7 @@ class SongProperties(object):
                 if cover.name in added: continue
                 try:
                     cov = self._make_cover(cover)
-                    self.prop.tips.set_tip(cov.child, util.escape(album))
+                    self.prop.tips.set_tip(cov.child, album)
                     c = i % 4
                     r = i // 4
                     t.attach(cov, c, c + 1, r, r + 1,
