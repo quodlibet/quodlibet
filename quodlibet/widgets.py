@@ -746,7 +746,7 @@ class PanedBrowser(Browser, gtk.HBox):
         artist_tree = gtk.TreeView(gtk.ListStore(str))
         album_tree = gtk.TreeView(gtk.ListStore(str))
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Artist"), render, text = 0)
+        column = gtk.TreeViewColumn(_("Artist"), render, markup = 0)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         column.set_fixed_width(50)
         artist_tree.append_column(column)
@@ -756,7 +756,7 @@ class PanedBrowser(Browser, gtk.HBox):
         sw.add(artist_tree)
         self.pack_start(sw)
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Album"), render, text = 0)
+        column = gtk.TreeViewColumn(_("Album"), render, markup = 0)
         album_tree.append_column(column)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         column.set_fixed_width(50)
@@ -794,9 +794,9 @@ class PanedBrowser(Browser, gtk.HBox):
         for lst, tree in [(artists, artist_view), (albums, album_view)]:
             model = tree.get_model()
             model.clear()
-            model.append([_("All")])
-            for a in lst: model.append([a])
-            model.append([_("Unknown")])
+            model.append(["<b>%s</b>" % _("All")])
+            for a in lst: model.append([util.escape(a)])
+            model.append(["<b>%s</b>" % _("Unknown")])
 
     def __refresh_albums(self, query, album_view):
         albums = set()
@@ -807,9 +807,9 @@ class PanedBrowser(Browser, gtk.HBox):
         for lst, tree in [(albums, album_view)]:
             model = tree.get_model()
             model.clear()
-            model.append([_("All")])
-            for a in lst: model.append([a])
-            model.append([_("Unknown")])
+            model.append([_("<b>All</b>")])
+            for a in lst: model.append([util.escape(a)])
+            model.append([_("<b>Unknown</b>")])
         album_view.get_selection().handler_unblock(self._sig)
         album_view.get_selection().select_path((0,))
 
@@ -826,7 +826,8 @@ class PanedBrowser(Browser, gtk.HBox):
         model, rows = artist_view.get_selection().get_selected_rows()
         if rows == [] or rows[0] == (0,): artists = ""
         else:
-            artists = [model[row][0].decode('utf-8') for row in rows]
+            artists = [util.unescape(model[row][0]).decode('utf-8')
+                       for row in rows]
             if rows[-1][0] == len(model) - 1: artists.pop()
             if artists: artists = self.__make_query_int("artist", artists)
             if rows[-1][0] == len(model) - 1:
@@ -836,7 +837,8 @@ class PanedBrowser(Browser, gtk.HBox):
         model, rows = album_view.get_selection().get_selected_rows()
         if rows == [] or rows[0] == (0,): albums = ""
         else:
-            albums = [model[row][0].decode('utf-8') for row in rows]
+            albums = [util.unescape(model[row][0]).decode('utf-8')
+                      for row in rows]
             if rows[-1][0] == len(model) - 1: albums.pop()
             if albums: albums = self.__make_query_int("album", albums)
             if rows[-1][0] == len(model) - 1:
@@ -853,7 +855,8 @@ class PanedBrowser(Browser, gtk.HBox):
         model, rows = artist_view.get_selection().get_selected_rows()
         if rows == [] or rows[0] == (0,): artists = ""
         else:
-            artists = [model[row][0].decode('utf-8') for row in rows]
+            artists = [util.unescape(model[row][0]).decode('utf-8')
+                       for row in rows]
             if rows[-1][0] == len(model) - 1: artists.pop()
             if artists: artists = self.__make_query_int("artist", artists)
             if rows[-1][0] == len(model) - 1:
