@@ -159,7 +159,7 @@ class QueryParser(object):
         return self._match_parened(UNION, match.Union, self.QueryList)
 
     def QueryNumcmp(self):
-        return self._match_parened(NUMCMP, match.Union, self.NumcmpList)
+        return self._match_parened(NUMCMP, match.Inter, self.NumcmpList)
 
     def QueryList(self):
         return self._match_list(self.Query)
