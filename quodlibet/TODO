@@ -1,3 +1,10 @@
+Doable by whomever, whenever:
+- Translations.
+- RPM spec/package.
+- Additional format support.
+- Additional tag-editing modes/operations.
+
+Stuff that I probably have to do:
 - More unit tests.
 - Seeking in FLAC, MODs.
 - Various skipping problems -- get smarter about Python threads.

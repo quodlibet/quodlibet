@@ -488,5 +488,6 @@ def init(devid):
     else: name, args = devid, []
 
     global device, playlist
-    device = outputs.get(name, OSSAudioDevice)(*args)
+    try: device = outputs.get(name, OSSProxy)(*args)
+    except: device = OSSProxy(*args)
     playlist = PlaylistPlayer(output = device)
