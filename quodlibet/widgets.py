@@ -3261,7 +3261,7 @@ class SongProperties(gtk.Window):
             self.remove.set_sensitive(False)
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
-
+            self.add.set_sensitive(bool(songs))
             self.songs = songs
 
     class TagByFilename(gtk.VBox):
@@ -4024,8 +4024,8 @@ class ExFalsoWindow(gtk.Window):
         self.child.pack2(nb, resize = False, shrink = False)
         fs.connect('changed', self.__changed, nb)
         self.__cache = {}
-
         self.connect('destroy', gtk.main_quit)
+        for child in nb.get_children(): child.update([])
 
     def refill(self): pass
     def update(self): pass

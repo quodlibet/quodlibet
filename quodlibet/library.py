@@ -120,6 +120,7 @@ class AudioFileGroup(dict):
                 elif cantoo is True: pass
                 else: can = set(can+cantoo)
         else:
+            if not self.types: return False
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
 
