@@ -92,9 +92,22 @@ static PyObject *ModFile_read(ModFile *self, PyObject *args, PyObject *kwds) {
   }
 }
 
+static PyObject *ModFile_seek(ModFile *self, PyObject *args, PyObject *kwds) {
+  static char *kwlist[] = {"position", NULL};
+  int ms;
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &ms))
+    return -1;
+  ModPlug_Seek(self->mf, ms);
+  return Py_BuildValue("");
+}
+
+
 static PyMethodDef ModFile_methods[] = {
   {"read", (PyCFunction)ModFile_read, METH_KEYWORDS,
      "Return audio data of no more than the given length."
+    },
+  {"seek", (PyCFunction)ModFile_read, METH_KEYWORDS,
+     "Seek to the specified position (in milliseconds)."
     },
     {NULL}
 };
