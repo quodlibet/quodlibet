@@ -1156,8 +1156,6 @@ class MainWindow(MultiInstanceWidget):
             width = int(width // c)
             ws = [width] * len(headers)
             
-        self.songlist.set_model(None)
-        widgets.songs.clear()
         for c in self.songlist.get_columns(): self.songlist.remove_column(c)
 
         def cell_data(column, cell, model, iter):
@@ -1183,8 +1181,6 @@ class MainWindow(MultiInstanceWidget):
             column.connect('notify::width', self.save_widths)
             column.set_cell_data_func(render, cell_data)
             self.songlist.append_column(column)
-        self.refresh_songlist()
-        self.songlist.set_model(widgets.songs)
 
 class AddTagDialog(MultiInstanceWidget):
     def __init__(self):
