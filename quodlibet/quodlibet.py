@@ -13,6 +13,14 @@ import gc
 def escape(str):
     return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+class Widgets(object):
+    def __init__(self, file):
+        self.widgets = gtk.glade.XML("quodlibet.glade")
+        self.widgets.signal_autoconnect(GladeHandlers.__dict__)
+
+    def __getitem__(self, key):
+        return self.widgets.get_widget(key)
+
 class GladeHandlers(object):
     def gtk_main_quit(*args): gtk.main_quit()
 
@@ -35,12 +43,27 @@ class GladeHandlers(object):
         label = widgets["currentsong"]
         label.set_markup(text)
 
-    def text_parse(textbox):
+    def open_chooser(*args):
+        chooser = gtk.FileChooserDialog(
+            title = "Add Music",
+            action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+            buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                       gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        chooser.set_select_multiple(True)
+        resp = chooser.run()
+        if resp == gtk.RESPONSE_OK:
+            library.load(chooser.get_filenames())
+        chooser.destroy()
+        GladeHandlers.text_parse(GladeHandlers())
+
+    def text_parse(*args):
         from parser import QueryParser, QueryLexer
         try:
             textbox = widgets["query"]
-            q = QueryParser(QueryLexer(textbox.get_text())).Query()
-            library.current = filter(q.search, library.songs)
+            try:
+                q = QueryParser(QueryLexer(textbox.get_text())).Query()
+                library.current = filter(q.search, library.songs)
+            except: pass
             store = widgets.songs
             store.clear()
             for song in library.current:
@@ -48,17 +71,9 @@ class GladeHandlers(object):
         except:
             pass
 
-class Widgets(object):
-    def __init__(self, file):
-        self.widgets = gtk.glade.XML("quodlibet.glade")
-        self.widgets.signal_autoconnect(GladeHandlers.__dict__)
-
-    def __getitem__(self, key):
-        return self.widgets.get_widget(key)
+widgets = Widgets("quodlibet.glade")
 
 HEADERS = ["artist", "title", "album"]
-
-widgets = Widgets("quodlibet.glade")
 
 def main():
     sl = widgets["songlist"]

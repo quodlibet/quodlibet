@@ -47,9 +47,15 @@ class MP3File(dict):
             if name:
                 try:
                     name = unicode(name.lower())
-                    text = frame["text"].decode("iso-8859-1")
+                    text = frame["text"]
+                    for codec in ["utf-8", "shift-jis", "big5", "iso-8859-1"]:
+                        try: text = text.decode(codec)
+                        except (UnicodeError, LookupError): pass
+                        else: break
+                    else: continue
                     if name in self: self[name] += "\n" + text
                     else: self[name] = text
+                    self[name] = self[name].strip()
                 except: pass
         for i in ["title", "artist", "album"]:
             if hasattr(tag, i):
