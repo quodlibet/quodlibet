@@ -41,6 +41,11 @@ the required software.
 For help on using the program, run
  $ man -l ./quodlibet.1
 
+If you are upgrading from 0.4 or earlier you may need to change your
+audio backend to 'ao:alsa', which is currently the default setting. The
+old default setting was 'oss'; 'ao:alsa' will fall back to OSS when
+ao or ALSA is unavailable.
+
 ====[ Formal Query Grammar
 This is a BNFish grammar that (at least when I checked it in) described
 the grammar used for queries. It could be used for querying of a simple

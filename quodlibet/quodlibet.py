@@ -144,19 +144,15 @@ class GTKSongInfoWrapper(object):
             self.pos.set_value(0)
 
             cover = song.find_cover()
-            if cover:
-                try:
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
-                except:
-                    self.image.set_from_pixbuf(None)
-                    self.disable_cover()
-                else:
-                    self.image.set_from_pixbuf(p)
-                    if config.state("cover"): self.enable_cover()
-                    
-            else:
+            try:
+                p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
+            except:
                 self.image.set_from_pixbuf(None)
                 self.disable_cover()
+            else:
+                self.image.set_from_pixbuf(p)
+                if config.state("cover"): self.enable_cover()
+                    
             self.update_markup(song)
         else:
             self.image.set_from_pixbuf(None)
@@ -169,6 +165,7 @@ class GTKSongInfoWrapper(object):
         last_song = CURRENT_SONG[0]
         CURRENT_SONG[0] = song
         col = len(HEADERS)
+
         def update_if_last_or_current(model, path, iter):
             if model[iter][col] is song:
                 model[iter][col + 1] = 700
@@ -176,29 +173,36 @@ class GTKSongInfoWrapper(object):
             elif model[iter][col] is last_song:
                 model[iter][col + 1] = 400
                 model.row_changed(path, iter)
+
         widgets.songs.foreach(update_if_last_or_current)
         if config.state("jump"): self.scroll_to_current()
         gc.collect()
         return False
 
 # Make a standard directory-chooser, and return the filenames and response.
-def make_chooser(title, initial_dir = None):
-    chooser = gtk.FileChooserDialog(
-        title = title,
-        parent = widgets["main_window"],
-        action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
-        buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                   gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-    if initial_dir: chooser.set_current_folder(initial_dir)
-    chooser.set_local_only(True)
-    chooser.set_select_multiple(True)
-    resp = chooser.run()
-    fns = chooser.get_filenames()
-    chooser.destroy()
-    return resp, fns
+class FileChooser(object):
+    def __init__(self, title, initial_dir = None):
+        self.dialog = gtk.FileChooserDialog(
+            title = title,
+            parent = widgets["main_window"],
+            action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+            buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                       gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        if initial_dir:
+            self.dialog.set_current_folder(initial_dir)        
+        self.dialog.set_local_only(True)
+        self.dialog.set_select_multiple(True)
+
+    def run(self):
+        resp = self.dialog.run()
+        fns = self.dialog.get_filenames()
+        return resp, fns
+
+    def destroy(self):
+        self.dialog.destroy()
 
 # Display the error dialog.
-def make_error(title, description, buttons):
+def ErrorMessage(title, description, buttons):
     text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
     dialog = gtk.MessageDialog(widgets["main_window"],
                                gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -210,10 +214,16 @@ def make_error(title, description, buttons):
 
 # Standard Glade widgets wrapper.
 class Widgets(object):
-    def __init__(self, file):
-        self.widgets = gtk.glade.XML("quodlibet.glade",
-                                     domain = gettext.textdomain())
-        self.widgets.signal_autoconnect(GladeHandlers.__dict__)
+    def __init__(self, file, handlers, widget = None):
+        if widget:
+            self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget,
+                                         domain = gettext.textdomain())
+        else:
+            self.widgets = gtk.glade.XML(file or "quodlibet.glade",
+                                         domain = gettext.textdomain())
+        self.widgets.signal_autoconnect(handlers)
+        self.get_widget = self.widgets.get_widget
+        self.signal_autoconnect = self.widgets.signal_autoconnect
 
     def __getitem__(self, key):
         return self.widgets.get_widget(key)
@@ -242,11 +252,11 @@ class GladeHandlers(object):
                 print _("Opening web browser: %s") % s
                 if os.system(s + " &") == 0: break
         else:
-            d = make_error(_("Unable to start a web browser"),
-                           _("A web browser could not be found. Please set "
-                             "your $BROWSER variable, or make sure "
-                             "/usr/bin/sensible-browser exists."),
-                           gtk.BUTTONS_OK)
+            d = ErrorMessage(_("Unable to start a web browser"),
+                             _("A web browser could not be found. Please set "
+                               "your $BROWSER variable, or make sure "
+                               "/usr/bin/sensible-browser exists."),
+                             gtk.BUTTONS_OK)
             r = d.run()
             d.destroy()
 
@@ -371,9 +381,11 @@ class GladeHandlers(object):
         config.set("settings", "gain", str(gain_opt.get_active()))
 
     def select_scan(*args):
-        resp, fns = make_chooser(_("Select Directories"), os.environ["HOME"])
+        chooser = FileChooser(_("Select Directories"), os.environ["HOME"])
+        resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             widgets["scan_opt"].set_text(":".join(fns))
+        chooser.destroy()
 
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
@@ -389,7 +401,10 @@ class GladeHandlers(object):
         player.playlist.paused = False
 
     def open_chooser(*args):
-        resp, fns = make_chooser(_("Add Music"), GladeHandlers.last_dir)
+        chooser = FileChooser(_("Add Music"), GladeHandlers.last_dir)
+        resp, fns = chooser.run()
+        chooser.destroy()
+        while gtk.events_pending(): gtk.main_iteration()
         if resp == gtk.RESPONSE_OK:
             progress = widgets["throbber"]
             label = widgets["found_count"]
@@ -454,7 +469,7 @@ class GladeHandlers(object):
             try: path = (player.playlist.get_playlist().index(song),)
             except ValueError: ref = None
             else: ref = gtk.TreeRowReference(l.get_model(), path)
-            make_song_properties([(song, ref)])
+            SongProperties([(song, ref)])
             
     def song_properties(item):
         view = widgets["songlist"]
@@ -462,17 +477,103 @@ class GladeHandlers(object):
         model, rows = selection.get_selected_rows()
         songrefs = [ (model[row][len(HEADERS)],
                       gtk.TreeRowReference(model, row)) for row in rows]
-        make_song_properties(songrefs)
+        SongProperties(songrefs)
 
 class MultiInstanceWidget(object):
+    def __init__(self, file = None, widget = None):
+        self.widgets = Widgets(file or "quodlibet.glade", self, widget)
 
-    def __init__(self, file=None, widget=None):
-        self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget)
-        self.widgets.signal_autoconnect(self)
-        menu = gtk.glade.XML(file or "quodlibet.glade", "props_popup")
-        menu.signal_autoconnect(self)
-        self.menu = menu.get_widget("props_popup")
+class SongProperties(MultiInstanceWidget):
+    def __init__(self, songrefs):
+        MultiInstanceWidget.__init__(self, widget = "properties_window")
+        menu = Widgets("quodlibet.glade", self, "props_popup")
+        self.menu = menu["props_popup"]
         self.menu_w = menu
+
+        self.window = self.widgets['properties_window']
+        self.save_edit = self.widgets['songprop_save']
+        self.revert = self.widgets['songprop_revert']
+        self.artist = self.widgets['songprop_artist']
+        self.played = self.widgets['songprop_played']
+        self.title = self.widgets['songprop_title']
+        self.album = self.widgets['songprop_album']
+        self.filename = self.widgets['songprop_file']
+        self.view = self.widgets['songprop_view']
+        self.add = self.widgets['songprop_add']
+        self.remove = self.widgets['songprop_remove']
+
+        # comment, value, use-changes, edit, deleted
+        self.model = gtk.ListStore(str, str, bool, bool, bool, str)
+        self.view.set_model(self.model)
+        selection = self.view.get_selection()
+        selection.connect('changed', self.songprop_selection_changed)
+        
+        render = gtk.CellRendererToggle()
+        column = gtk.TreeViewColumn(_('Write'), render, active = 2,
+                                    activatable = 3)
+        render.connect('toggled', self.songprop_toggle, self.model)
+        self.view.append_column(column)
+        render = gtk.CellRendererText()
+        render.connect('edited', self.songprop_edit, self.model, 0)
+        column = gtk.TreeViewColumn(_('Tag'), render, text=0)
+        self.view.append_column(column)
+        render = gtk.CellRendererText()
+        render.connect('edited', self.songprop_edit, self.model, 1)
+        column = gtk.TreeViewColumn(_('Value'), render, markup = 1,
+                                    editable = 3, strikethrough=4)
+        self.view.append_column(column)
+
+        # select active files
+        self.fview = self.widgets['songprop_files']
+        self.fview_scroll = self.widgets['songprop_files_scroll']
+        self.fbasemodel = gtk.ListStore(object, object, str, str, str)
+        self.fmodel = gtk.TreeModelSort(self.fbasemodel)
+        self.fview.set_model(self.fmodel)
+        selection = self.fview.get_selection()
+        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.connect('changed', self.songprop_files_changed)
+        column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
+        column.set_sort_column_id(2)
+        self.fview.append_column(column)
+        column = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=3)
+        column.set_sort_column_id(4)
+        self.fview.append_column(column)
+        for song, ref in songrefs:
+            self.fbasemodel.append(
+                row=[song, ref, song.get('=basename', ''),
+                     song.get('=dirname', ''), song['=filename']])
+
+        # tag by pattern
+        self.tbp_entry = self.widgets["songprop_tbp_combo"].child
+        self.tbp_view = self.widgets["songprop_tbp_view"]
+        self.tbp_model = gtk.ListStore(int) # fake first one
+        self.save_tbp = self.widgets['prop_tbp_save']
+        self.tbp_preview = self.widgets['tbp_preview']
+        self.tbp_entry.connect('changed', self.tbp_changed)
+        self.tbp_headers = []
+
+        # rename by pattern
+        self.nbp_preview = self.widgets['nbp_preview']
+        self.nbp_entry = self.widgets["songprop_nbp_combo"].child
+        self.nbp_view = self.widgets["songprop_nbp_view"]
+        self.nbp_model = gtk.ListStore(object, object, str, str)
+        self.nbp_view.set_model(self.nbp_model)
+        self.save_nbp = self.widgets['prop_nbp_save']
+        self.nbp_entry.connect('changed', self.nbp_changed)
+        column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
+                                    text = 2)
+        self.nbp_view.append_column(column)
+        column = gtk.TreeViewColumn(_('New Name'), gtk.CellRendererText(),
+                                    text = 3)
+        self.nbp_view.append_column(column)
+
+        for w in ["tbp_space", "titlecase", "splitval", "nbp_space",
+                  "windows", "ascii"]:
+            self.widgets["prop_%s_t" % w].set_active(config.state(w))
+
+        # select all files, causing selection update to fill the info
+        selection.select_all()
+        self.window.show()
 
     def songprop_close(self, *args):
         self.fview.set_model(None)
@@ -802,11 +903,14 @@ class MultiInstanceWidget(object):
         try:
             pattern = util.FileFromPattern(pattern)
         except ValueError: 
-            make_error(_("Pattern with subdirectories is not absolute"),
-                       _("The pattern\n<b>%s</b>\ncontains / but does not "
-                         "start from root. This results in bad renaming, so "
-                         "is not supported.") % util.escape(pattern),
-                       gtk.BUTTONS_OK)
+            d = ErrorMessage(_("Pattern with subdirectories is not absolute"),
+                             _("The pattern\n<b>%s</b>\ncontains / but does "
+                               "not start from root. This results in bad "
+                               "renaming, so is not supported.")%(
+                util.escape(pattern)),
+                             gtk.BUTTONS_OK)
+            d.run()
+            d.destroy()
             return
             
         for song, ref in self.songrefs:
@@ -835,13 +939,14 @@ class MultiInstanceWidget(object):
                 song.rename(newname)
                 if ref: songref_update_view(song, ref)
             except:
-                d = make_error(_("Unable to rename %s") % util.escape(oldname),
-                               _("Renaming <b>%s</b> to <b>%s</b> failed. "
-                                 "Possibly the target file already existed, "
-                                 "or you do not have permission to make the "
-                                 "new file or remove the old one.") %(
+                d = ErrorMessage(_("Unable to rename %s")%(
+                    util.escape(oldname)),
+                                 _("Renaming <b>%s</b> to <b>%s</b> failed. "
+                                   "Possibly the target file already existed, "
+                                   "or you do not have permission to make the "
+                                   "new file or remove the old one.") %(
                     util.escape(oldname), util.escape(newname)),
-                               gtk.BUTTONS_OK)
+                                 gtk.BUTTONS_OK)
                 resp = d.run()
                 d.destroy()
                 return True
@@ -963,94 +1068,6 @@ def songref_update_view(song, ref):
     if path is not None:
         row = widgets.songs[path]
         for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
-
-def make_song_properties(songrefs):
-    dlg = MultiInstanceWidget(widget="properties_window")
-    dlg.window = dlg.widgets.get_widget('properties_window')
-    dlg.save_edit = dlg.widgets.get_widget('songprop_save')
-    dlg.revert = dlg.widgets.get_widget('songprop_revert')
-    dlg.artist = dlg.widgets.get_widget('songprop_artist')
-    dlg.played = dlg.widgets.get_widget('songprop_played')
-    dlg.title = dlg.widgets.get_widget('songprop_title')
-    dlg.album = dlg.widgets.get_widget('songprop_album')
-    dlg.filename = dlg.widgets.get_widget('songprop_file')
-    dlg.view = dlg.widgets.get_widget('songprop_view')
-    dlg.add = dlg.widgets.get_widget('songprop_add')
-    dlg.remove = dlg.widgets.get_widget('songprop_remove')
-    # comment, value, use-changes, edit, deleted
-    dlg.model = gtk.ListStore(str, str, bool, bool, bool, str)
-    dlg.view.set_model(dlg.model)
-    selection = dlg.view.get_selection()
-    selection.connect('changed', dlg.songprop_selection_changed)
-
-    render = gtk.CellRendererToggle()
-    column = gtk.TreeViewColumn(_('Write'), render, active=2, activatable=3)
-    render.connect('toggled', dlg.songprop_toggle, dlg.model)
-    dlg.view.append_column(column)
-    render = gtk.CellRendererText()
-    render.connect('edited', dlg.songprop_edit, dlg.model, 0)
-    column = gtk.TreeViewColumn(_('Tag'), render, text=0)
-    dlg.view.append_column(column)
-    render = gtk.CellRendererText()
-    render.connect('edited', dlg.songprop_edit, dlg.model, 1)
-    column = gtk.TreeViewColumn(_('Value'), render, markup=1, editable=3,
-                                strikethrough=4)
-    dlg.view.append_column(column)
-
-    # select active files
-    dlg.fview = dlg.widgets.get_widget('songprop_files')
-    dlg.fview_scroll = dlg.widgets.get_widget('songprop_files_scroll')
-    dlg.fbasemodel = gtk.ListStore(object, object, str, str, str)
-    dlg.fmodel = gtk.TreeModelSort(dlg.fbasemodel)
-    dlg.fview.set_model(dlg.fmodel)
-    selection = dlg.fview.get_selection()
-    selection.set_mode(gtk.SELECTION_MULTIPLE)
-    selection.connect('changed', dlg.songprop_files_changed)
-    column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
-    column.set_sort_column_id(2)
-    dlg.fview.append_column(column)
-    column = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=3)
-    column.set_sort_column_id(4)
-    dlg.fview.append_column(column)
-    for song, ref in songrefs:
-        dlg.fbasemodel.append(row=[song, ref, song.get('=basename',''),
-                song.get('=dirname',''), song['=filename']])
-
-
-    # tag by pattern
-    dlg.tbp_combo = dlg.widgets.get_widget("songprop_tbp_combo")
-    dlg.tbp_entry = dlg.tbp_combo.child
-    dlg.tbp_view = dlg.widgets.get_widget("songprop_tbp_view")
-    dlg.tbp_model = gtk.ListStore(int) # fake first one
-    dlg.save_tbp = dlg.widgets.get_widget('prop_tbp_save')
-    dlg.tbp_preview = dlg.widgets.get_widget('tbp_preview')
-    dlg.tbp_entry.connect('changed', dlg.tbp_changed)
-    dlg.tbp_headers = []
-
-    # rename by pattern
-    dlg.nbp_combo = dlg.widgets.get_widget("songprop_nbp_combo")
-    dlg.nbp_preview = dlg.widgets.get_widget('nbp_preview')
-    dlg.nbp_entry = dlg.nbp_combo.child
-    dlg.nbp_view = dlg.widgets.get_widget("songprop_nbp_view")
-    dlg.nbp_model = gtk.ListStore(object, object, str, str)
-    dlg.nbp_view.set_model(dlg.nbp_model)
-    dlg.save_nbp = dlg.widgets.get_widget('prop_nbp_save')
-    dlg.nbp_entry.connect('changed', dlg.nbp_changed)
-    column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
-    dlg.nbp_view.append_column(column)
-    column = gtk.TreeViewColumn(_('New Name'), gtk.CellRendererText(), text=3)
-    dlg.nbp_view.append_column(column)
-
-    for w in ["tbp_space", "titlecase", "splitval", "nbp_space",
-                   "windows", "ascii"]:
-        dlg.widgets.get_widget("prop_%s_t" % w).set_active(config.state(w))
-
-    # select all files, causing selection update to fill the info
-    selection.select_all()
-
-    dlg.window.show()
-
-# Non-Glade handlers:
 
 # Grab the text from the query box, parse it, and make a new filter.
 def text_parse(*args):
@@ -1290,7 +1307,8 @@ def refresh_cache():
     print _("Loading, scanning, and saving your library.")
     library.library.load(cache_fn)
     if config.get("settings", "scan"):
-        for a, c in library.library.scan(config.get("settings", "scan").split(":")):
+        for a, c in library.library.scan(
+            config.get("settings", "scan").split(":")):
             pass
     library.library.save(cache_fn)
     raise SystemExit
@@ -1317,13 +1335,12 @@ def print_playing(fstring = DEF_PP):
         raise SystemExit(True)
 
 def error_and_quit():
-    d = make_error(_("No audio device found"),
-                   _("Quod Libet was unable to open your audio device. "
-                     "Often this means another program is using it, or "
-                     "your audio drivers are not configured.\n\nQuod Libet "
-                     "will now exit."),
-                   gtk.BUTTONS_OK)
-    d.show()
+    d = ErrorMessage(_("No audio device found"),
+                     _("Quod Libet was unable to open your audio device. "
+                       "Often this means another program is using it, or "
+                       "your audio drivers are not configured.\n\nQuod Libet "
+                       "will now exit."),
+                     gtk.BUTTONS_OK)
     d.run()
     gtk.main_quit()
     return True
@@ -1376,7 +1393,7 @@ if __name__ == "__main__":
     import gtk.glade
     gtk.glade.bindtextdomain("quodlibet", i18ndir)
     gtk.glade.textdomain("quodlibet")
-    widgets = Widgets("quodlibet.glade")
+    widgets = Widgets("quodlibet.glade", GladeHandlers.__dict__)
 
     import gc
     import util
