@@ -1,8 +1,8 @@
 - Stress-testing
 - Artist URL detection
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
-- Conform to more GTK/GNOME hotkeys, etc.
 - MikMod support.
 - Icon.
 - Save queries on exit.
 - Playlists.
+- Remember window size, position

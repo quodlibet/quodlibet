@@ -26,7 +26,7 @@ class AudioFile(dict):
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")))
 
-    def sanitize(self):
+    def sanitize(self, filename):
         for i in ["title", "artist", "album"]:
             if not self.get(i): self[i] = "Unknown"
         if "tracknumber" in self:
@@ -37,6 +37,7 @@ class AudioFile(dict):
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
+        self["filename"] = filename
 
     def to_markup(self):
         title = u", ".join(self["title"].split("\n"))
@@ -121,12 +122,14 @@ class MP3File(AudioFile):
             "TIT3": "version",
             "TPE1": "artist",
             "TPE2": "performer",
-            "TPE3": "performer",
-            "TPE4": "performer",
+            "TPE3": "conductor",
+            "TPE4": "arranger",
+            "TEXT": "lyricist",
             "TLAN": "language",
             "TALB": "album",
             "TRCK": "tracknumber",
             "TPOS": "discnumber",
+            "TSST": "part",
             "TSRC": "isrc",
             "TDRA": "date",
             "TDRC": "date",
@@ -144,10 +147,14 @@ class MP3File(AudioFile):
     INVERT_IDS = { "genre": "TIT1",
                    "title": "TIT2",
                    "version": "TIT3",
+                   "artist": "TPE1",
+                   "performer": "TPE2",
+                   "conductor": "TPE3",
+                   "arranger": "TPE4",
+                   "lyricist": "TEXT",
                    "language": "TLAN",
                    "isrc": "TSRC",
                    "tracknumber": "TRCK",
-                   "artist": "TPE1",
                    "discnumber": "TPOS",
                    "organization": "TPUB",
                    "album": "TALB"
@@ -156,7 +163,6 @@ class MP3File(AudioFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
-        self["filename"] = filename
         tag = pyid3lib.tag(filename)
 
         for frame in tag:
@@ -177,7 +183,7 @@ class MP3File(AudioFile):
                     else: self[name] = text
                     self[name] = self[name].strip()
                 except: pass
-        self.sanitize()
+        self.sanitize(filename)
 
     def write(self):
         tag = pyid3lib.tag(self['filename'])
@@ -203,13 +209,12 @@ class OggFile(AudioFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
-        self["filename"] = filename
         f = ogg.vorbis.VorbisFile(filename)
         for k, v in f.comment().as_dict().iteritems():
             if not isinstance(v, list): v = [v]
             v = u"\n".join(map(unicode, v))
             self[k.lower()] = v
-        self.sanitize()
+        self.sanitize(filename)
 
     def write(self):
         f = ogg.vorbis.VorbisFile(self['filename'])
@@ -234,8 +239,6 @@ class FLACFile(AudioFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
-        self["filename"] = filename
-
         chain = flac.metadata.Chain()
         chain.read(filename)
         it = flac.metadata.Iterator()
@@ -255,12 +258,13 @@ class FLACFile(AudioFile):
                 val = "=".join(parts[1:]).decode("utf-8")
                 if key in self: self[key] += "\n" + val
                 else: self[key] = val
-        self.sanitize()
+        self.sanitize(filename)
 
     def write(self): pass
 
     def can_change(self, k = None):
-        return False
+        if k is None: return []
+        else: return False
 
 class AudioFileGroup(dict):
 
@@ -333,7 +337,7 @@ class AudioFileGroup(dict):
                 cantoo = song.can_change()
                 if can is True: can = cantoo
                 elif cantoo is True: pass
-                else: can = dict.from_keys(can+cantoo).keys()
+                else: can = dict.fromkeys(can+cantoo).keys()
         else:
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
