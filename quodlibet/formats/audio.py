@@ -210,7 +210,10 @@ class AudioFile(dict):
                 s += "%s=%d\n" % (k, self[k])
             else:
                 for v2 in self.list(k):
-                    s += "%s=%s\n" % (k, util.encode(v2))
+                    if isinstance(v2, str):
+                        s += "%s=%s\n" % (k, v2)
+                    else:
+                        s += "%s=%s\n" % (k, util.encode(v2))
         return s
 
     # Try to change a value in the data to a new value; if the
