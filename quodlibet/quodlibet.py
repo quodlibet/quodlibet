@@ -1064,6 +1064,10 @@ class MainWindow(MultiInstanceWidget):
                     self.image.set_from_pixbuf(p)
                     if config.state("cover"): self.enable_cover()
                     self.albumfn = cover.name
+            elif not cover:
+                self.image.set_from_pixbuf(None)
+                self.disable_cover()
+
             for h in ['genre', 'artist', 'album']:
                 self.widgets["filter_%s_menu"%h].set_sensitive(
                     not song.unknown(h))
