@@ -49,7 +49,7 @@ class AudioFile(dict):
     # True if our key's value is actually unknown, rather than just the
     # string "Unknown". Or true if we don't know the key at all.
     def unknown(self, key):
-        return ((key not in self) or (isinstance(self.get(key), Unknown)))
+        return isinstance(self.get(key, Unknown()), Unknown)
 
     def realkeys(self):
         return filter(lambda s: s and "~" not in s and "=" not in s and
@@ -69,8 +69,7 @@ class AudioFile(dict):
 
     def valid(self):
         return (self.exists() and
-                self["~#mtime"] == int(
-            os.stat(self['~filename'])[stat.ST_MTIME]))
+                self["~#mtime"] == os.path.mtime(self["~filename"]))
 
     def rename(self, newname):
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
@@ -127,7 +126,7 @@ class AudioFile(dict):
         except KeyError: pass
 
         # mtime...
-        try: self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
+        try: self["~#mtime"] = os.path.mtime(self['~filename'])
         except OSError: self["~#mtime"] = 0 # this shouldn't happen.
 
         try: self["~#bpm"] = float(self["bpm"])
@@ -388,7 +387,7 @@ class MP3File(AudioFile):
                 tag.append({'frameid': "TDAT", 'text': str(m+d)})
                 
         tag.update()
-        self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
+        self["~#mtime"] = os.path.mtime(self['~filename'])
 
     def can_change(self, k=None):
         if k is None: return self.INVERT_IDS.keys()
@@ -416,7 +415,7 @@ class OggFile(AudioFile):
             value = self.list(key)
             for line in value: comments[key] = line
         comments.write_to(self['~filename'])
-        self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
+        self["~#mtime"] = os.path.mtime(self['~filename'])
 
     def can_change(self, k = None):
         if k is None: return True
@@ -427,7 +426,8 @@ class ModFile(AudioFile):
         import modplug
         f = modplug.ModFile(filename)
         self["~#length"] = f.length / 1000
-        self["title"] = f.title.decode("utf-8")
+        try: self["title"] = f.title.decode("utf-8")
+        except UnicodeError: self["title"] = f.title.decode("iso-8859-1")
         self.sanitize(filename)
 
     def write(self):

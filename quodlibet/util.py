@@ -6,9 +6,12 @@
 #
 # $Id$
 
-import os, sre, string
+import os, sre, stat, string
 import gettext
 _ = gettext.gettext
+
+def mtime(filename): return os.stat(filename)[stat.ST_MTIME]
+os.path.mtime = mtime
 
 # Make a directory, including all directories below it.
 def mkdir(dir):
