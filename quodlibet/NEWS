@@ -15,6 +15,7 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - Playlist/search UI elements can be hidden.
  - Dragging playlist columns reorders them.
  - Library rebuilds no longer lose play counts.
+ - Configurable menu accelerators when gtk-can-change-accels is set.
 
 0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).

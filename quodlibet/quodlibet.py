@@ -412,6 +412,52 @@ class MainWindow(MultiInstanceWidget):
         self.window = self.widgets["main_window"]
         self.current_song = None
 
+        settings = gtk.settings_get_default()
+        accelgroup = gtk.accel_groups_from_object(self.window)[0]
+        menubar = self.widgets["menubar1"]
+        for menuitem in menubar.get_children():
+            menu = menuitem.get_submenu()
+            menu.set_accel_group(accelgroup)
+            menu.set_accel_path('<quodlibet>/%s' %
+                    menu.get_name().replace('_menu',''))
+
+        if not os.path.exists(const.ACCELS):
+            accels = open(const.ACCELS, 'w')
+            accels.write(
+"""; quodlibet.py GtkAccelMap rc-file         -*- scheme -*-
+; this file is an automated accelerator map dump
+;
+(gtk_accel_path "<quodlibet>/FiltersMenu/Random album" "<Control>m")
+(gtk_accel_path "<quodlibet>/FiltersMenu/Random genre" "<Control>g")
+; (gtk_accel_path "<quodlibet>/FiltersMenu/Not played in a week" "")
+; (gtk_accel_path "<quodlibet>/FiltersMenu/Not played in a month" "")
+; (gtk_accel_path "<quodlibet>/ViewMenu/Playlist" "")
+; (gtk_accel_path "<quodlibet>/SongMenu/Filter on artist" "")
+(gtk_accel_path "<quodlibet>/SongMenu/Previous song" "<Control>Left")
+; (gtk_accel_path "<quodlibet>/HelpMenu/About" "")
+(gtk_accel_path "<quodlibet>/SongMenu/Next song" "<Control>Right")
+(gtk_accel_path "<quodlibet>/MusicMenu/Add Music..." "<Control>o")
+; (gtk_accel_path "<quodlibet>/ViewMenu/Search box" "")
+; (gtk_accel_path "<quodlibet>/FiltersMenu/Top 40" "")
+; (gtk_accel_path "<quodlibet>/MusicMenu/Reload library" "")
+; (gtk_accel_path "<quodlibet>/MusicMenu/Refresh library" "")
+; (gtk_accel_path "<quodlibet>/SongMenu/Properties" "<Alt>Return")
+; (gtk_accel_path "<quodlibet>/SongMenu/Filter on album" "")
+; (gtk_accel_path "<quodlibet>/SongMenu/Filter on genre" "")
+(gtk_accel_path "<quodlibet>/SongMenu/Play song" "<Control>space")
+; (gtk_accel_path "<quodlibet>/FiltersMenu/Bottom 40" "")
+; (gtk_accel_path "<quodlibet>/FiltersMenu/Not played today" "")
+; (gtk_accel_path "<quodlibet>/MusicMenu/Quit" "<Control>q")
+; (gtk_accel_path "<quodlibet>/MusicMenu/Preferences" "")
+(gtk_accel_path "<quodlibet>/FiltersMenu/Random artist" "<Control>t")
+(gtk_accel_path "<quodlibet>/SongMenu/Jump to playing song" "<Control>j")
+; (gtk_accel_path "<quodlibet>/FiltersMenu/Never played" "")""")
+            accels.close()
+
+        gtk.accel_map_load(const.ACCELS)
+        accelgroup.connect('accel-changed',
+                lambda *args: gtk.accel_map_save(const.ACCELS))
+
         menu = Widgets(None, self, "songs_popup")
         self.cmenu = menu["songs_popup"]
         self.cmenu_w = menu
