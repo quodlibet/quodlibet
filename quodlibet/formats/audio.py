@@ -96,7 +96,8 @@ class AudioFile(dict):
 
     def can_change(self, k = None):
         if k is None:
-            return os.access(self["~filename"], os.W_OK)
+            if os.access(self["~filename"], os.W_OK): return True
+            else: return []
         else: return (k and k != "vendor" and "=" not in k and "~" not in k
                       and os.access(self["~filename"], os.W_OK))
 
