@@ -12,4 +12,4 @@ clean:
 	rm -rf build dist
 
 distclean: clean
-	rm -f */*~ *~
+	rm -f */*~ *~ */*.pyc

@@ -26,7 +26,6 @@ install:
 
 clean:
 	rm -f *.pyc */*.pyc $(NAME).zip $(EXTENSIONS)
-	rm -f quodlibet.glade.h
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean
