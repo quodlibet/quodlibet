@@ -1,0 +1,123 @@
+.TH quodlibet 1 "November 6th, 2004"
+.SH NAME
+quodlibet \- music library and player
+.SH SYNOPSIS
+\fBquodlibet\fR [ \fB\-\-help\fR | \fB\-\-version\fR | \fB\-\-refresh-library\fR ]
+.SH DESCRIPTION
+Quod Libet is a music library and player. Rather than keeping a single
+playlist, it loads all your songs at once, and lets you filter and
+play them based on information like title, artist, or album.
+Quod Libet requires your music collection have appropriate tags,
+made by (for example) \fBid3v2\fR and \fBvorbiscomment\fR. Most CD
+ripping programs or music download services take care of this for you,
+but older files may have missing or inaccurate tags.
+.SH OPTIONS
+.IP \-\-refresh\-library
+Load your song library and configuration file. Deleted files will be
+removed, changed files will be updated, and new files in your scan
+directories will be added. QL will not start its interface at all,
+simply update the library. This also happens whenever QL starts up
+normally.
+.SH USAGE
+Use the "Add Music" item in the menu or click the "Add" icon on the
+toolbar to add directories full of songs to your library. Once music
+has been added to your library, enter the terms you wish to search in
+the search box, and press enter or click on the search button. If you
+want more control over the search, see the section entitled "Search
+Syntax" below.
+.PP
+If you want to display album covers, put a file named "frontcover.jpg"
+or "cover.jpg" in the same directory as the songs it goes with, and
+make sure album cover displays are enabled in your preferences. GIF
+and PNG images are also supported. QL will also look for any other
+images with 'front', 'cover', or 'jacket' in their name.
+.SH SEARCH SYNTAX
+If you need more than simple searches, you can use QL's more advanced
+search syntax, that lets you specify a specific tag to search. To use
+this, enter a search in the form of
+.RS
+tag = /re/
+.RE
+Where \fItag\fR is the name of the tag you want to search (like 'artist'
+or 'title'), and \fIre\fR is a regular expression you want
+the tag to match. (If you don't know how to write regular expressions,
+you can usually just use the word you want, if it doesn't contain
+a '*', '\.', or '/'.)
+.PP
+You can combine searches using & and |:
+.RS
+tag = &(/re1/, /re2/)
+.br
+tag = |(/re1/, /re2/)
+.RE
+& requires that the tag match everything inside it, and | only
+requires one match. You can also combine whole matches with & and |,
+or check two tags at once. The following will find the same songs:
+.RS
+|(tag1 = /re/, tag2 = /re/)
+.br
+tag1, tag2 = /re/
+.RE
+.PP
+Finally, you can select everything that doesn't match an expression
+using !:
+.RS
+tag = !/re/
+.RE
+.PP
+Because some tags are used commonly, abbreviations are provided. The
+following two searches are the same:
+.RS
+artist = /Rasputina/
+.br
+a = /Rasputina/
+.RE
+Similar abbreviations exist for album ('b'), title ('t'), version
+('v'), date ('d'), and track number ('n'). The '*' character matches 
+any of album, title, or artist.
+.PP
+Normally searchs are case-insensistive, so /BOA/ and /BoA/ are the
+same. If you need case-sensitivity, put a 'c' on the end: /BOA/c and
+/BoA/c.
+.SH EXAMPLES
+Some more examples of advanced searching:
+.RS
+&(artist = /Sana/c, album = !/beatmania/)
+.br
+&(artist = /lindsay smith/, album = /fruitbat vat/)
+.br
+artist = |(/Pete Townshend/, /The Who/)
+.br
+&(artist = /Bach/, performer = /Glenn Gould/)
+.br
+album = &(/final fantasy/, /piano/, |(/VIII/, /IX/))
+.br
+title = &(|(/aozora/, /blue/), /knife/)
+.RE
+.SH FILES
+.IP ~/.quodlibet/songs
+A cached list of songs to load initially. The format is a pickled
+Python list. Deleting this file will remove all songs from your
+library.
+.IP ~/.quodlibet/config
+Quod Libet's configuration file. At the time of this writing, all
+options in here can also be accessed from the GUI.
+.IP ~/.quodlibet/current
+A "key=value" file containing information about the currently playing song.
+.SH KNOWN BUGS
+.BR ( JZig )
+The inevitable result of enabling smart searching is that people realize how lousy their data is
+.PP
+Newlines are not supported within tags.
+.PP
+FLAC support is horrible.
+.PP
+Filenames not in UTF-8 aren't read properly. This likely won't ever work
+right. \fBAlways use UTF-8 in cases where the encoding can't be known,
+like filesystems.\fR
+.SH SEE ALSO
+http://www.sacredchao.net/~piman/software/quodlibet.shtml,
+.BR regex (7),
+.BR vorbiscomment (1),
+.BR id3v2 (1),
+http://www.xiph.org/ogg/vorbis/doc/v\-comment.html

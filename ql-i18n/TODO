@@ -1,0 +1,10 @@
+- Playlists.
+- Various skipping problems -- get smarter about Python threads.
+  - Some of this (during saving) disappeared with ossaudiodev? Rock.
+- Look into eventual GStreamer port/use (for playing).
+- Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
+- MikMod support.
+- Import covers from Muine.
+- Full FLAC support.
+- More unit tests.
+- Streaming.
