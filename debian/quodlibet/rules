@@ -37,6 +37,7 @@ install: build
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/quodlibet PREFIX=/usr
 	-mkdir -p $(CURDIR)/debian/quodlibet-ext/usr/lib/quodlibet
 	mv $(CURDIR)/debian/quodlibet/usr/lib/quodlibet/*.so $(CURDIR)/debian/quodlibet-ext/usr/lib/quodlibet
+	rm $(CURDIR)/debian/quodlibet/usr/share/man/man1/exfalso.1
 
 binary-indep: build install
 	dh_testdir -i
@@ -45,6 +46,7 @@ binary-indep: build install
 	dh_installdocs -i
 	dh_installmenu -i
 	dh_installman -i
+	ln -sf quodlibet.1.gz $(CURDIR)/debian/quodlibet/usr/share/man/man1/exfalso.1.gz
 	dh_link -i
 	dh_strip -i
 	dh_compress -i

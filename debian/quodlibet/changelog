@@ -1,3 +1,10 @@
+quodlibet (0.10.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix exfalso.1 symlink.
+
+ -- Joe Wreschnig <piman@debian.org>  Mon, 04 Apr 2005 12:23:41 -0500
+
 quodlibet (0.10-1) unstable; urgency=low
 
   * New upstream release.
