@@ -45,7 +45,7 @@ class UtilTests(TestCase):
     def test_iscommand(self):
         self.failUnless(iscommand("ls"))
         self.failUnless(iscommand("/bin/ls"))
-        self.failUnless(iscommand("/bin/asdfjkl"))
-        self.failUnless(iscommand("asdfjkl"))
+        self.failIf(iscommand("/bin/asdfjkl"))
+        self.failIf(iscommand("asdfjkl"))
 
 registerCase(UtilTests)
