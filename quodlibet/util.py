@@ -338,3 +338,74 @@ class FileFromPattern(object):
             oldname = song('~basename')
             newname.append(oldname[oldname.rfind('.'):])
         return ''.join(newname)
+
+class FileFromPattern(object):
+    format = { 'tracknumber': '%02d', 'discnumber': '%d' }
+    override = { 'tracknumber': '~#track', 'discnumber': '~#disc' }
+
+    def __init__(self, pattern):
+        if '/' in pattern and not pattern.startswith('/'):
+            raise ValueError("Pattern %r is not rooted" % pattern)
+
+        self.replacers = [self.Pattern(pattern)]
+        # simple magic to decide whether to append the extension
+        # if the pattern has no . in it, or if it has a > (probably a tag)
+        #   after the last . or if the last character is the . append .foo
+        if pattern and ('.' not in pattern or pattern.endswith('.') or
+                '>' in pattern[pattern.rfind('.'):]):
+            self.replacers.append(self.ExtensionCopy())
+
+    def match(self, song):
+        return ''.join([r.match(song) for r in self.replacers])
+
+    class ExtensionCopy(object):
+        def match(self, song):
+            oldname = song('~basename')
+            return oldname[oldname.rfind('.'):]
+
+    class Pattern(object):
+        def __init__(self, pattern, tagre=sre.compile(
+            # stdtag | < tagname ( \| [^<>] | stdtag )+ >
+            r'''( <\w+(?:\~\w+)*> |
+                < \w+ (?: \| (?: [^<>] | <\w+(?:\~\w+)*> )* )+ > )''', sre.X)):
+            pieces = filter(None, tagre.split(pattern))
+            self.replacers = map(FileFromPattern.PatternReplacer, pieces)
+
+        def match(self, song):
+            return ''.join([r.match(song) for r in self.replacers])
+
+    class PatternReplacer(object):
+        def __init__(self, pattern):
+            if not (pattern.startswith('<') and pattern.endswith('>')):
+                self.match = lambda song: pattern
+            elif '|' not in pattern:
+                self.match = lambda song: self.format(pattern[1:-1], song)
+            else:
+                parts = pattern[1:-1].split('|')
+                check = parts.pop(0)
+                parts.append('')
+                if len(parts) > 3: # 1 or 2 real, 1 fallback; >2 real is bad
+                    raise ValueError("pattern %s has extra sections" % pattern)
+                r = map(FileFromPattern.Pattern, parts)
+                self.match = lambda s: self.condmatch(check, r[0], r[1], s)
+
+        def condmatch(self, check, true, false, song):
+            if self.format(check, song): return true.match(song)
+            else: return false.match(song)
+
+        def format(self, tag, song):
+            if tag.startswith('~') or not tag.replace('~','').isalnum():
+                return tag.join('<>')
+
+            fmt = FileFromPattern.format.get(tag, '%s')
+            tag = FileFromPattern.override.get(tag, tag)
+
+            if tag.startswith('~') or '~' not in tag:
+                text = song.comma(tag)
+                try: text = text.replace('/', '_')
+                except AttributeError: pass
+                try: return fmt % text
+                except TypeError: return text
+            else:
+                fmtd = [self.format(t, song) for t in tag.split('~')]
+                return ' - '.join(filter(None, fmtd))

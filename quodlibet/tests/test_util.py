@@ -128,55 +128,107 @@ class UtilTests(TestCase):
         self.assertEquals(pat.match(b1), nomatch)
         self.assertEquals(pat.match(b2), nomatch)
 
-    def test_file_from_pattern(self):
-        class mocksong(dict):
-            def comma(self, key):
-                v = self.get(key, '')
-                if not isinstance(v, list): return v
-                else: return ', '.join(v)
-            __call__ = dict.__getitem__
+class FileFromPatternTests(TestCase):
+    class mocksong(dict):
+        def comma(self, key):
+            v = self.get(key, '')
+            if not isinstance(v, list): return v
+            else: return ', '.join(v)
+        __call__ = dict.__getitem__
 
+    def setUp(self):
         s1 = { '~#track':5, 'artist':'Artist', 'title':'Title5', '~basename':'a.mp3' }
         s2 = { '~#track':6, 'artist':'Artist', 'title':'Title6', '~basename':'b.ogg', '~#disc':'2' }
         s3 = { 'title': 'test/subdir', 'genre':['/','/'], '~basename':'a.flac', 'version':'Instrumental'}
-        s1 = mocksong(s1); s2 = mocksong(s2); s3 = mocksong(s3);
+        self.a = self.mocksong(s1)
+        self.b = self.mocksong(s2)
+        self.c = self.mocksong(s3)
 
+
+    def test_conditional_number_dot_title(s):
+        pat = FileFromPattern('<tracknumber|<tracknumber>. ><title>')
+        s.assertEquals(pat.match(s.a), '05. Title5.mp3')
+        s.assertEquals(pat.match(s.b), '06. Title6.ogg')
+        s.assertEquals(pat.match(s.c), 'test_subdir.flac')
+
+    def test_conditional_other_number_dot_title(s):
+        pat = FileFromPattern('<tracknumber|<tracknumber>|00>. <title>')
+        s.assertEquals(pat.match(s.a), '05. Title5.mp3')
+        s.assertEquals(pat.match(s.b), '06. Title6.ogg')
+        s.assertEquals(pat.match(s.c), '00. test_subdir.flac')
+
+    def test_conditional_other_other(s):
+        s.assertRaises(ValueError, FileFromPattern, '<tracknumber|a|b|c>')
+
+    def test_wacky_recursion_attempt(s):
+        pat = FileFromPattern('<tracknumber|<genre|<genre> <tracknumber>|<tracknumber>>|<artist>>')
+        s.assertEquals(pat.match(s.a), '<tracknumber|05|Artist>.mp3')
+        s.assertEquals(pat.match(s.b), '<tracknumber|06|Artist>.ogg')
+        s.assertEquals(pat.match(s.c), '<tracknumber|_, _ |>.flac')
+
+    def test_conditional_genre(s):
+        pat = FileFromPattern('<genre|<genre>|music>')
+        s.assertEquals(pat.match(s.a), 'music.mp3')
+        s.assertEquals(pat.match(s.b), 'music.ogg')
+        s.assertEquals(pat.match(s.c), '_, _.flac')
+
+    def test_conditional_subdir(s):
+        pat = FileFromPattern('/a<genre|/<genre>>/<title>')
+        s.assertEquals(pat.match(s.a), '/a/Title5.mp3')
+        s.assertEquals(pat.match(s.b), '/a/Title6.ogg')
+        s.assertEquals(pat.match(s.c), '/a/_, _/test_subdir.flac')
+
+    def test_number_dot_title(s):
         pat = FileFromPattern('<tracknumber>. <title>')
-        self.assertEquals(pat.match(s1), '05. Title5.mp3')
-        self.assertEquals(pat.match(s2), '06. Title6.ogg')
-        self.assertEquals(pat.match(s3), '. test_subdir.flac')
+        s.assertEquals(pat.match(s.a), '05. Title5.mp3')
+        s.assertEquals(pat.match(s.b), '06. Title6.ogg')
+        s.assertEquals(pat.match(s.c), '. test_subdir.flac')
 
+    def test_recnumber_dot_title(s):
         pat = FileFromPattern('<<tracknumber>>. <title>')
-        self.assertEquals(pat.match(s1), '<05>. Title5.mp3')
-        self.assertEquals(pat.match(s2), '<06>. Title6.ogg')
-        self.assertEquals(pat.match(s3), '<>. test_subdir.flac')
+        s.assertEquals(pat.match(s.a), '<05>. Title5.mp3')
+        s.assertEquals(pat.match(s.b), '<06>. Title6.ogg')
+        s.assertEquals(pat.match(s.c), '<>. test_subdir.flac')
 
+    def test_number_dot_title_dot(s):
         pat = FileFromPattern('<tracknumber>. <title>.')
-        self.assertEquals(pat.match(s1), '05. Title5..mp3')
-        self.assertEquals(pat.match(s2), '06. Title6..ogg')
-        self.assertEquals(pat.match(s3), '. test_subdir..flac')
+        s.assertEquals(pat.match(s.a), '05. Title5..mp3')
+        s.assertEquals(pat.match(s.b), '06. Title6..ogg')
+        s.assertEquals(pat.match(s.c), '. test_subdir..flac')
 
+    def test_number_dot_title_dot_hardext(s):
         pat = FileFromPattern('<tracknumber>. <title>.flac')
-        self.assertEquals(pat.match(s1), '05. Title5.flac')
-        self.assertEquals(pat.match(s2), '06. Title6.flac')
-        self.assertEquals(pat.match(s3), '. test_subdir.flac')
+        s.assertEquals(pat.match(s.a), '05. Title5.flac')
+        s.assertEquals(pat.match(s.b), '06. Title6.flac')
+        s.assertEquals(pat.match(s.c), '. test_subdir.flac')
 
+    def test_number_dot_genre(s):
         pat = FileFromPattern('<tracknumber>. <genre>')
-        self.assertEquals(pat.match(s1), '05. .mp3')
-        self.assertEquals(pat.match(s2), '06. .ogg')
-        self.assertEquals(pat.match(s3), '. _, _.flac')
+        s.assertEquals(pat.match(s.a), '05. .mp3')
+        s.assertEquals(pat.match(s.b), '06. .ogg')
+        s.assertEquals(pat.match(s.c), '. _, _.flac')
 
+    def test_raw_slash_preservation(s):
+        pat = FileFromPattern('/a/b/<genre>')
+        s.assertEquals(pat.match(s.a), '/a/b/.mp3')
+        s.assertEquals(pat.match(s.b), '/a/b/.ogg')
+        s.assertEquals(pat.match(s.c), '/a/b/_, _.flac')
+
+    def test_invalid_tilde(s):
         pat = FileFromPattern('<~#track>. <genre> mu')
-        self.assertEquals(pat.match(s1), '<~#track>.  mu.mp3')
-        self.assertEquals(pat.match(s2), '<~#track>.  mu.ogg')
-        self.assertEquals(pat.match(s3), '<~#track>. _, _ mu.flac')
+        s.assertEquals(pat.match(s.a), '<~#track>.  mu.mp3')
+        s.assertEquals(pat.match(s.b), '<~#track>.  mu.ogg')
+        s.assertEquals(pat.match(s.c), '<~#track>. _, _ mu.flac')
 
+    def test_fake_and_joiner_tilde(s):
         pat = FileFromPattern('<~a><discnumber~tracknumber>. <title~version>')
-        self.assertEquals(pat.match(s1), '<~a>05. Title5.mp3')
-        self.assertEquals(pat.match(s2), '<~a>2 - 06. Title6.ogg')
-        self.assertEquals(pat.match(s3), '<~a>. test_subdir - Instrumental.flac')
+        s.assertEquals(pat.match(s.a), '<~a>05. Title5.mp3')
+        s.assertEquals(pat.match(s.b), '<~a>2 - 06. Title6.ogg')
+        s.assertEquals(pat.match(s.c), '<~a>. test_subdir - Instrumental.flac')
 
-        self.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
+    def test_directory_rooting(s):
+        s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')
 
 registerCase(UtilTests)
+registerCase(FileFromPatternTests)

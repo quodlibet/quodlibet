@@ -4249,6 +4249,7 @@ Tags should be added to existing ones</property>
 			<widget class="GtkComboBoxEntry" id="songprop_nbp_combo">
 			  <property name="visible">True</property>
 			  <property name="items">&lt;tracknumber&gt;. &lt;title&gt;
+&lt;tracknumber|&lt;tracknumber&gt;|00&gt;. &lt;title&gt;&lt;version| (&lt;version&gt;)&gt;
 &lt;tracknumber&gt; - &lt;title&gt;
 &lt;tracknumber&gt; - &lt;artist&gt; - &lt;title&gt;
 /path/&lt;artist&gt; - &lt;album&gt;/&lt;tracknumber&gt;. &lt;title&gt;
