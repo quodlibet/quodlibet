@@ -779,6 +779,22 @@ class PanedBrowser(Browser, gtk.HBox):
             'changed', self.__album_changed, artist_tree, album_tree)
         self.show_all()
 
+    def __refresh_list(self, view, values):
+        selection = view.get_selection()
+        model, rows = selection.get_selected_rows()
+        selected_items = [model[row][0] for row in rows]
+        to_select = []
+        model = view.get_model()
+        model.clear()
+        model.append(["<b>%s</b>" % _("All")])
+        for i, value in enumerate(map(util.escape, values)):
+            model.append([value])
+            if value in selected_items: to_select.append(i + 1)
+        model.append(["<b>%s</b>" % _("Unknown")])
+        if to_select == []: to_select = [0]
+        for i in to_select:
+            selection.select_path((i,))
+
     def __refresh(self):
         artist_view, album_view = [x.child for x in self.get_children()]
         artist_view.get_model().clear()
@@ -791,27 +807,15 @@ class PanedBrowser(Browser, gtk.HBox):
         artists = list(artists); artists.sort()
         albums = list(albums); albums.sort()
 
-        for lst, tree in [(artists, artist_view), (albums, album_view)]:
-            model = tree.get_model()
-            model.clear()
-            model.append(["<b>%s</b>" % _("All")])
-            for a in lst: model.append([util.escape(a)])
-            model.append(["<b>%s</b>" % _("Unknown")])
+        self.__refresh_list(artist_view, artists)
+        self.__refresh_list(album_view, albums)
 
     def __refresh_albums(self, query, album_view):
         albums = set()
         for song in library.query(query):
             albums.update(song.list("album"))
         albums = list(albums); albums.sort()
-        album_view.get_selection().handler_block(self._sig)
-        for lst, tree in [(albums, album_view)]:
-            model = tree.get_model()
-            model.clear()
-            model.append([_("<b>All</b>")])
-            for a in lst: model.append([util.escape(a)])
-            model.append([_("<b>Unknown</b>")])
-        album_view.get_selection().handler_unblock(self._sig)
-        album_view.get_selection().select_path((0,))
+        self.__refresh_list(album_view, albums)
 
     def activate(self):
         self.__cb(self.__make_query(artist_view, album_view), None)
@@ -852,6 +856,7 @@ class PanedBrowser(Browser, gtk.HBox):
         else: return ""
 
     def __artist_changed(self, selection, artist_view, album_view):
+        album_view.get_selection().handler_block(self._sig)
         model, rows = artist_view.get_selection().get_selected_rows()
         if rows == [] or rows[0] == (0,): artists = ""
         else:
@@ -863,6 +868,8 @@ class PanedBrowser(Browser, gtk.HBox):
                 if artists: artists = "|(artist = !/./, %s)" % artists
                 else: artists = "artist = !/./"
         self.__refresh_albums(artists, album_view)
+        album_view.get_selection().handler_unblock(self._sig)
+        album_view.get_selection().emit('changed')
 
     def __album_changed(self, selection, artist_view, album_view):
         self.__cb(self.__make_query(artist_view, album_view), None)
