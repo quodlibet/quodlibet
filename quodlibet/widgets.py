@@ -277,10 +277,10 @@ class PreferencesWindow(gtk.Window):
             c.connect('toggled', self.__toggle_cover)
             vbox.pack_start(c)
 
-            c = gtk.CheckButton(_("Closing minimizes to system tray"))
+            c = gtk.CheckButton(_("Closing _minimizes to system tray"))
             c.set_sensitive(widgets.main.icon.enabled)
             c.set_active(config.getboolean('plugins', 'icon_close') and
-                         c.get_sensitive())
+                         c.get_property('sensitive'))
             c.connect('toggled', self._toggle, 'icon_close', 'plugins')
             vbox.pack_start(c)
             self.pack_start(vbox, expand=False)
@@ -635,7 +635,8 @@ class TrayIcon(object):
             i.set_from_pixbuf(pixbuf)
             eb.add(i)
             self.__mapped = False
-            self.__icon.connect('map-event', self.__got_mapped)
+            self.__icon.connect('map-event', self.__got_mapped, True)
+            self.__icon.connect('unmap-event', self.__got_mapped, False)
             self.__icon.add(eb)
             self.__icon.child.connect("button-press-event", self.__event)
             self.__icon.child.connect("scroll-event", self.__scroll)
@@ -643,8 +644,8 @@ class TrayIcon(object):
             self.__icon.show_all()
             print to(_("Initialized status icon."))
 
-    def __got_mapped(self, s, mapped):
-        self.__mapped = True
+    def __got_mapped(self, s, event, value):
+        self.__mapped = value
 
     def __enabled(self):
         return ((self.__icon is not None) and
