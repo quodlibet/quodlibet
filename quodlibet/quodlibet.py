@@ -88,6 +88,9 @@ class GladeHandlers(object):
         v = min(player.times[1], max(0, args[0].get_value()))
         player.queue.append(('seek', (v,)))
 
+    def update_volume(slider):
+        player.queue.append(('volume', (int(slider.get_value()),)))
+
     def text_parse(*args):
         from parser import QueryParser, QueryLexer
         text = widgets["query"].get_text()
@@ -164,7 +167,8 @@ def main():
     widgets.filter.set_modify_func([str]*len(HEADERS), list_transform)
     widgets.filter.set_visible_func(list_filter, CURRENT_FILTER)
     widgets.sorted = gtk.TreeModelSort(widgets.filter)
-
+    vol = widgets["volume"]
+    vol.set_value(player.get_volume())
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn(t.title(), renderer, text=i)

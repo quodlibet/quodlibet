@@ -2,7 +2,7 @@ import mad
 import ao
 import ogg.vorbis
 import time
-
+import ossaudiodev # barf
 queue = []
 playlist = []
 paused = False
@@ -49,8 +49,14 @@ def Player(dev, filename):
     return { "ogg": OggPlayer,
              "mp3": MP3Player }[kind](dev, filename)
 
+def get_volume():
+    return ossaudiodev.openmixer().get(ossaudiodev.SOUND_MIXER_PCM)[0]
+
 def get_device(samplerate = None):
     return ao.AudioDevice(ao.driver_id('oss'))
+
+def set_volume(song, value):
+    ossaudiodev.openmixer().set(ossaudiodev.SOUND_MIXER_PCM, (value, value))
 
 def set_playlist(songs):
     del(playlist[:])
@@ -76,7 +82,8 @@ def play():
 def seek(song, pos):
     if song: song.seek(pos)
 
-COMMANDS = { "seek": seek }
+COMMANDS = { "seek": seek,
+             "volume": set_volume }
 
 def do_queue(song):
     while queue:
