@@ -17,6 +17,7 @@ import util
 import stat
 import os
 import formats
+import const
 
 BUFFER_SIZE = 2**8
 
@@ -142,14 +143,13 @@ class PlaylistPlayer(object):
             else: self.playlist.insert(0, song)
         self.lock.release()
 
-        dump_fn = os.path.join(os.path.expanduser("~"),".quodlibet","current")
         while not self.quit:
             while self.playlist and not self.quit:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
                 fn = self.song['~filename']
                 config.set("memory", "song", fn)
-                f = file(dump_fn, "w")
+                f = file(const.CURRENT, "w")
                 f.write(self.song.to_dump())
                 f.close()
                 if self.shuffle: random.shuffle(self.playlist)
@@ -186,7 +186,7 @@ class PlaylistPlayer(object):
                     self.info.set_song(self.song, self.player)
                     self.paused = True
                     self.lock.release()
-                    try: os.unlink(dump_fn)
+                    try: os.unlink(const.CURRENT)
                     except OSError: pass
                 time.sleep(0.1)
 
@@ -256,8 +256,7 @@ class PlaylistPlayer(object):
 
     def quitting(self):
         self.lock.acquire()
-        dump_fn = os.path.join(os.path.expanduser("~"), ".quodlibet", "current")
-        try: os.unlink(dump_fn)
+        try: os.unlink(const.CURRENT)
         except OSError: pass
         self.quit = True
         self.paused = False
