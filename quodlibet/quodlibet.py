@@ -316,12 +316,16 @@ class GladeHandlers(object):
         window = widgets["rebuild_window"]
         window.set_transient_for(widgets["main_window"])
         window.show()
+        iter = 5
         # FIXME: We have a lot of windows like this. Make
         # CounterWindow(notice, count_text, iterator).
         for c, r in library.rebuild():
-            progress.pulse()
-            count.set_text("%d songs changed\n%d songs removed" % (c, r))
-            while gtk.events_pending(): gtk.main_iteration()
+            if iter == 5:
+                progress.pulse()
+                count.set_text("%d songs changed\n%d songs removed" % (c, r))
+                while gtk.events_pending(): gtk.main_iteration()
+                iter = 0
+            iter += 1
         window.hide()
         player.playlist.refilter()
         refresh_songlist()
@@ -333,12 +337,16 @@ class GladeHandlers(object):
         window = widgets["rebuild_window"]
         window.set_transient_for(widgets["main_window"])
         window.show()
+        iter = 5
         # FIXME: We have a lot of windows like this. Make
         # CounterWindow(notice, count_text, iterator).
         for c, r in library.rebuild(True):
-            progress.pulse()
-            count.set_text("%d songs changed\n%d songs removed" % (c, r))
-            while gtk.events_pending(): gtk.main_iteration()
+            if iter == 5:
+                progress.pulse()
+                count.set_text("%d songs changed\n%d songs removed" % (c, r))
+                while gtk.events_pending(): gtk.main_iteration()
+                iter = 0
+            iter += 1
         window.hide()
         player.playlist.refilter()
         refresh_songlist()

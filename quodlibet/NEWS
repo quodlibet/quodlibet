@@ -10,7 +10,8 @@
  - --print-playing option, with a format string.
  - More UI tweaks.
  - Translation template update.
- - Many bug fixes; please reload your library.
+ - Many bug fixes; please reload your library. You can now reload your
+   library from the "Music" menu.
 
 0.4 - The Power of Language
  - Many bug fixes, primarily due to unit testing.

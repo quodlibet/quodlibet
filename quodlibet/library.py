@@ -316,6 +316,7 @@ class MP3File(AudioFile):
             for name in map(str.lower, names):
                 try:
                     text = frame["text"]
+                    if not text: continue
                     for codec in ["utf-8", "shift-jis", "big5", "iso-8859-1"]:
                         try: text = text.decode(codec)
                         except (UnicodeError, LookupError): pass
