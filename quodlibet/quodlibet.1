@@ -7,10 +7,6 @@ quodlibet \- music library and player
 Quod Libet is a music library and player. Rather than keeping a single
 playlist, it loads all your songs at once, and lets you filter and
 play them based on information like title, artist, or album.
-Quod Libet requires your music collection have appropriate tags,
-made by (for example) \fBid3v2\fR and \fBvorbiscomment\fR. Most CD
-ripping programs or music download services take care of this for you,
-but older files may have missing or inaccurate tags.
 .SH OPTIONS
 .IP \-\-refresh\-library
 Load your song library and configuration file. Deleted files will be
@@ -48,11 +44,11 @@ If you want to display album covers, put a file named "frontcover.jpg"
 or "cover.jpg" in the same directory as the songs it goes with, and
 make sure album cover displays are enabled in your preferences. GIF
 and PNG images are also supported. QL will also look for any other
-images with 'front', 'cover', or 'jacket' in their name.
+images with 'folder', 'front', 'cover', or 'jacket' in their name.
 .SH SEARCH SYNTAX
-If you need more than simple searches, you can use QL's more advanced
-search syntax, that lets you specify a specific tag to search. To use
-this, enter a search in the form of
+If you need more control than simple searches allow, you can use QL's more
+advanced search syntax, that lets you specify a specific tag to search. To
+use this, enter a search in the form of
 .RS
 tag = /re/
 .RE
@@ -172,8 +168,7 @@ A FIFO connected to the most-recently-started instance of the program.
 Newlines are not supported within tag values. Using them will break a lot
 of tools, including QL.
 .PP
-Filenames not in UTF-8 aren't read properly, because we don't know what
-encoding they are. Similarly, filenames are always written in UTF-8.
+Filenames are always written in UTF-8.
 .SH AUTHOR
 Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 The best way to contact them is to subscribe to (or just email)
@@ -181,10 +176,10 @@ the Quod Libet mailing list at quodlibet@lists.sacredchao.net
 (quodlibet\-subscribe@lists.sacredchao.net).
 .SH SEE ALSO
 http://www.sacredchao.net/~piman/software/quodlibet.shtml,
-.PP
+.br
 .BR regex (7),
 .BR vorbiscomment (1),
 .BR id3v2 (1),
-.BR vorbisgain (1)
-.PP
+.BR vorbisgain (1),
+.br
 http://www.xiph.org/ogg/vorbis/doc/v\-comment.html
