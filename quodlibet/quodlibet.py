@@ -642,6 +642,8 @@ class MainWindow(MultiInstanceWidget):
         if toggle.get_active():
             box.show()
             dy = box.get_allocation().height
+            self.window.set_geometry_hints(None,
+                max_height = -1, min_height = -1, max_width = -1)
             self.window.resize(width, height + dy)
             box.set_size_request(-1, -1)
         else:
@@ -649,6 +651,8 @@ class MainWindow(MultiInstanceWidget):
             box.hide()
             self.window.resize(width, height - dy)
             box.set_size_request(-1, dy)
+            self.window.set_geometry_hints(None,
+                max_height = height - dy, max_width = 32000)
 
     def open_website(self, button):
         song = self.current_song
