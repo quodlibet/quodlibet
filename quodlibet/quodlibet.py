@@ -464,7 +464,6 @@ class PlaylistWindow(object):
     from weakref import WeakValueDictionary
     list_windows = WeakValueDictionary()
     def __new__(cls, name, *args, **kwargs):
-        name = PlayList.normalize_name(name)
         win = cls.list_windows.get(name, None)
         if win is None:
             win = super(PlaylistWindow, cls).__new__(cls, name, *args, **kwargs)
@@ -1418,12 +1417,19 @@ class SongList(object):
         column.set_visible(True)
 
 class PlayList(SongList):
+    # ["%", " "] + parser.QueryLexeme.table.keys()
+    BAD = ["%", " ", "!", "&", "|", "(", ")", "=", ",", "/", "#", ">", "<"]
+    DAB = BAD[:]
+    DAB.reverse()
+
     def normalize_name(name):
-        return name.lower().replace(' ', '_')
+        for c in PlayList.BAD: name = name.replace(c, "%"+hex(ord(c))[2:])
+        return name
     normalize_name = staticmethod(normalize_name)
 
     def prettify_name(name):
-        return name.replace('_', ' ').capitalize()
+        for c in PlayList.DAB: name = name.replace("%"+hex(ord(c))[2:], c)
+        return name
     prettify_name = staticmethod(prettify_name)
 
     def __init__(self, view, name):

@@ -48,7 +48,8 @@ class Neg(object):
 # Numeric comparisons
 class Numcmp(object):
     def __init__(self, tag, op, value):
-        self.tag = tag
+        if isinstance(tag, unicode): self.tag = tag.encode("utf-8")
+        else: self.tag = tag
         self.op = op
         value = value.strip()
 
