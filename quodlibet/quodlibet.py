@@ -414,10 +414,10 @@ class BigCenteredImage(object):
         if x_rat > 1 or y_rat > 1:
             if x_rat > y_rat:
                 pixbuf = pixbuf.scale_simple(width,
-                                             int(pixbuf.get_height()/y_rat),
+                                             int(pixbuf.get_height()/x_rat),
                                              gtk.gdk.INTERP_BILINEAR)
             else:
-                pixbuf = pixbuf.scale_simple(int(pixbuf.get_width()/x_rat),
+                pixbuf = pixbuf.scale_simple(int(pixbuf.get_width()/y_rat),
                                              height, gtk.gdk.INTERP_BILINEAR)
 
         self.window = gtk.Window()
