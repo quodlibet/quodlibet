@@ -13,3 +13,6 @@ clean:
 
 distclean: clean
 	rm -f */*~ *~ */*.pyc
+
+install:
+	./setup.py install

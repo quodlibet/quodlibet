@@ -18,8 +18,7 @@ systems).
 
 Some of the examples also require python-pyao.
 
- $ make
- $ ./setup.py install
+ $ make && make install
 
 Have fun, please report any bugs or incomplete features.
 
