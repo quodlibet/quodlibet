@@ -82,7 +82,7 @@ class AudioFile(dict):
                        self["arranger"].replace("\n", ", "))
         if "lyricist" in self:
             others += ("\nlyrics by " +
-                       self["arranger"].replace("\n", ", "))
+                       self["lyricist"].replace("\n", ", "))
 
         if others:
             others = others.strip().replace("\n", "; ")
@@ -264,7 +264,6 @@ class OggFile(AudioFile):
         f = ogg.vorbis.VorbisFile(self['=filename'])
         comments = f.comment()
         comments.clear()
-        print self
         for key in self.keys():
             if key[0] == "=": continue
             else:
