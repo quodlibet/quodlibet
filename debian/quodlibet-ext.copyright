@@ -4,7 +4,9 @@ Mon,  8 Nov 2004 15:52:09 -0600.
 It was downloaded from
 http://www.sacredchao.net/~piman/software/quodlibet.shtml
 
-Upstream Authors: Joe Wreschnig <piman@sacredchao.net>, Michael Urman
+Upstream Authors:
+	Joe Wreschnig <piman@sacredchao.net>
+	Michael Urman
 
 Copyright:
 
@@ -16,7 +18,8 @@ Copyright:
     published by the Free Software Foundation.
 
   mmkeys:
-    Copyright (C) 2004 Lee Willis <lee@leewillis.co.uk>
+    Copyright (C) 2004 Joe Wreschnig <piman@sacredchao.net>
+                  2004 Lee Willis <lee@leewillis.co.uk>
     Borrowed heavily from code by Jan Arne Petersen <jpetersen@uni-bonn.de>
 
     This program is free software; you can redistribute it and/or
@@ -25,7 +28,8 @@ Copyright:
     License, or (at your option) any later version.
 
   statusicon:
-    Copyright (C) 2003 Sun Microsystems, Inc.
+    Copyright (C) 2004 Joe Wreschnig <piman@sacredchao.net>
+                  2003 Sun Microsystems, Inc.
                   2002 Anders Carlsson <andersca@gnu.org>
 
     This library is free software; you can redistribute it and/or
