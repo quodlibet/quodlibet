@@ -5035,7 +5035,7 @@ Tags should be added to existing ones</property>
       <signal name="activate" handler="play_pause" last_modification_time="Sat, 04 Dec 2004 21:36:48 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image863">
+	<widget class="GtkImage" id="image1341">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-yes</property>
 	  <property name="icon_size">1</property>
@@ -5062,7 +5062,7 @@ Tags should be added to existing ones</property>
       <signal name="activate" handler="previous_song" last_modification_time="Sat, 04 Dec 2004 21:51:16 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image864">
+	<widget class="GtkImage" id="image1342">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-go-back</property>
 	  <property name="icon_size">1</property>
@@ -5083,7 +5083,7 @@ Tags should be added to existing ones</property>
       <signal name="activate" handler="next_song" last_modification_time="Sat, 04 Dec 2004 21:36:48 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image865">
+	<widget class="GtkImage" id="image1343">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-go-forward</property>
 	  <property name="icon_size">1</property>
@@ -5093,6 +5093,21 @@ Tags should be added to existing ones</property>
 	  <property name="ypad">0</property>
 	</widget>
       </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkSeparatorMenuItem" id="separator15">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkImageMenuItem" id="close1">
+      <property name="visible">True</property>
+      <property name="label">gtk-quit</property>
+      <property name="use_stock">True</property>
+      <signal name="activate" handler="gtk_main_quit" last_modification_time="Sat, 29 Jan 2005 17:48:56 GMT"/>
     </widget>
   </child>
 </widget>
