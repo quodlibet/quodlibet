@@ -18,10 +18,10 @@ class widgets(object): pass
 
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(object):
-    def __init__(self, title, initial_dir = None):
+    def __init__(self, parent, title, initial_dir = None):
         self.dialog = gtk.FileChooserDialog(
             title = title,
-            parent = widgets["main_window"],
+            parent = parent,
             action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
             buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                        gtk.STOCK_OPEN, gtk.RESPONSE_OK))
@@ -187,7 +187,7 @@ class PreferencesWindow(MultiInstanceWidget):
         else: return object.__getattr__(self, name)
 
     def select_scan(self, *args):
-        chooser = FileChooser(_("Select Directories"), const.HOME)
+        chooser = FileChooser(self.window, _("Select Directories"), const.HOME)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             self.widgets["scan_opt"].set_text(":".join(fns))
@@ -196,7 +196,7 @@ class PreferencesWindow(MultiInstanceWidget):
         if os.path.exists("/media"): path = "/media"
         elif os.path.exists("/mnt"): path = "/mnt"
         else: path = "/"
-        chooser = FileChooser(_("Select Mount Points"), path)
+        chooser = FileChooser(self.window, _("Select Mount Points"), path)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             self.widgets["mask_opt"].set_text(":".join(fns))
@@ -322,7 +322,7 @@ class Osd(object):
                 msg += ("<span size='smaller' style='italic'>%s</span>"
                         " <span foreground='%s'>%s</span>   " %(
                     (_(HEADERS_FILTER.get(key, key)).title(), color,
-                     util.escape(song[key]))))
+                     util.escape(song.comma(key)))))
         msg = msg.strip() + "</span>"
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
@@ -766,7 +766,7 @@ class MainWindow(MultiInstanceWidget):
         player.playlist.paused = False
 
     def open_chooser(self, *args):
-        chooser = FileChooser(_("Add Music"), GladeHandlers.last_dir)
+        chooser = FileChooser(self.window, _("Add Music"), self.last_dir)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             win = WaitLoadWindow(self.window, 0,
