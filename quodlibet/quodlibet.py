@@ -445,6 +445,7 @@ class MainWindow(MultiInstanceWidget):
                     menu.get_name().replace('_menu',''))
 
         if not os.path.exists(const.ACCELS):
+            util.mkdir(const.DIR)
             accels = open(const.ACCELS, 'w')
             accels.write(
 """\
@@ -515,20 +516,18 @@ class MainWindow(MultiInstanceWidget):
 
         # Show main window.
         self.window.show()
+        self.widgets["shuffle_t"].set_active(config.state("shuffle"))
+        self.widgets["repeat_t"].set_active(config.state("repeat"))
+
+        if config.get("memory", "query"):
+            self.widgets["query"].child.set_text(config.get("memory","query"))
+        else:
+            player.playlist.set_playlist(library.values())
+
         # Wait to fill in the column headers because otherwise the
         # spacing is off, since the window hasn't been sized until now.
         self.set_column_headers(config.get("settings", "headers").split())
         self.widgets["query"].child.set_text(config.get("memory", "query"))
-
-        self.widgets["shuffle_t"].set_active(config.state("shuffle"))
-        self.widgets["repeat_t"].set_active(config.state("repeat"))
-
-        if config.get("memory", "song"):
-            self.widgets["query"].child.set_text(config.get("memory","query"))
-            self.text_parse()
-        else:
-            player.playlist.set_playlist(library.values())
-            self.refresh_songlist()
 
         self.albumfn = None
         self._time = (0, 1)
