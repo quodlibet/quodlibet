@@ -626,9 +626,8 @@ class PlaylistWindow(object):
         vbox = self.vbox = gtk.VBox(spacing = 6)
         win.add(vbox)
 
-        hbox = gtk.HBox(spacing = 6)
-        bar = SearchBar(hbox, _("Add Results"), self.add_query_results)
-        vbox.pack_start(hbox, expand = False, fill = False)
+        bar = SearchBar(gtk.STOCK_ADD, self.add_query_results)
+        vbox.pack_start(bar, expand = False, fill = False)
 
         hbox = self.hbox = gtk.HButtonBox()
         hbox.set_layout(gtk.BUTTONBOX_END)
@@ -835,26 +834,40 @@ class SearchBar(EmptyBar):
         if SearchBar.model is None:
             SearchBar.model = gtk.ListStore(str)
 
-        self.combo = gtk.ComboBoxEntry(SearchBar.model, 0)
-        self.button = qltk.Button(button, cb = self.text_parse)
-        self.combo.child.connect('activate', self.text_parse)
-        self.combo.child.connect('changed', self.test_filter)
-        self.pack_start(self.combo)
-        self.pack_start(self.button, expand = False)
-        self.show_all()
-        self.connect('destroy', self._cleanup)
+        self.tips = gtk.Tooltips()
+        combo = gtk.ComboBoxEntry(SearchBar.model, 0)
 
-    def _cleanup(self, widget):
-        self.combo.set_model(None)
+        clear = gtk.Button()
+        clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
+        self.tips.set_tip(clear, _("Clear search text"))
+        clear.connect('clicked', self.clear, combo)
+                  
+        search = gtk.Button()
+        b = gtk.HBox(spacing = 2)
+        b.pack_start(gtk.image_new_from_stock(button, gtk.ICON_SIZE_MENU))
+        b.pack_start(gtk.Label(_("Search")))
+        search.add(b)
+        self.tips.set_tip(search, _("Search your audio library"))
+        search.connect_object('clicked', self.text_parse, combo)
+        self.button = qltk.Button(button, cb = self.text_parse)
+        combo.child.connect('activate', self.text_parse)
+        combo.child.connect('changed', self.test_filter)
+        self.pack_start(combo)
+        self.pack_start(clear, expand = False)
+        self.pack_start(search, expand = False)
+        self.show_all()
+
+    def clear(self, button, combo):
+        combo.child.set_text("")
 
     def activate(self):
-        self.button.clicked()
+        self.text_parse(self.get_children()[0])
 
     def set_text(self, text):
-        self.combo.child.set_text(text)
+        self.get_children()[0].child.set_text(text)
 
-    def text_parse(self, *args):
-        text = self.combo.child.get_text()
+    def text_parse(self, combo):
+        text = combo.child.get_text()
         if (parser.is_valid(text) or
             ("#" not in text and "=" not in text and "/" not in text)):
             SearchBar.model.prepend([text])
@@ -1018,7 +1031,7 @@ class MainWindow(gtk.Window):
         self.child.pack_start(hbox, expand = False)
 
         # browser bar
-        self.browser = SearchBar(_("Search"), self.text_parse)
+        self.browser = SearchBar(gtk.STOCK_FIND, self.text_parse)
         self.child.pack_start(self.browser, expand = False)
         
         # status area
@@ -1736,7 +1749,7 @@ class MainWindow(gtk.Window):
                   "Song/FilterAlbum"]:
             self.ui.get_widget("/Menu/" + w).show()
         self.browser.destroy()
-        self.browser = SearchBar(_("Search"), self.text_parse)
+        self.browser = SearchBar(gtk.STOCK_FIND, self.text_parse)
         self.child.pack_start(self.browser, expand = False)
         self.browser.set_text(config.get("memory", "query"))
 
