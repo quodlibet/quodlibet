@@ -203,6 +203,8 @@ class Library(dict):
                 try: songs = MigrateUnpickler(f).load()
                 except:
                     print to(_("W: %s is not a QL song database.") % fn)
+                    try: shutil.copy(fn, fn + ".not-valid")
+                    except: pass
                     songs = []
                 f.close()
             else: return 0, 0
