@@ -285,17 +285,17 @@ class MmKeys(object):
             map(self.keys.connect, *zip(*cbs.items()))
             print _("Initialized multimedia key support.")
 
-class GnomeOsd(object):
+class Osd(object):
     def __init__(self):
         try:
             import gosd
             self.gosd = gosd
             self.level = 0
             self.window = None
-            print _("Initialized GNOME OSD.")
+            print _("Initialized OSD.")
         except:
             self.gosd = None
-            print _("W: Failed to initialize GNOME OSD.")
+            print _("W: Failed to initialize OSD.")
 
     def show_osd(self, song):
         if not self.gosd: return
@@ -419,7 +419,7 @@ class MainWindow(MultiInstanceWidget):
         self.keys = MmKeys({"mm_prev": self.previous_song,
                             "mm_next": self.next_song,
                             "mm_playpause": self.play_pause})
-        self.osd = GnomeOsd()
+        self.osd = Osd()
 
     def restore_size(self):
        w, h = map(int, config.get("memory", "size").split())
