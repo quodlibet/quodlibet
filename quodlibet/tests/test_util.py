@@ -1,7 +1,7 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
 
-from util import escape, unescape, re_esc, encode, decode, mkdir
+from util import escape, unescape, re_esc, encode, decode, mkdir, iscommand
 import os
 
 class UtilTests(TestCase):
@@ -22,24 +22,30 @@ class UtilTests(TestCase):
         self.failUnless(not os.path.isdir("nonext"))
 
     def test_escape(self):
-        self.assertEquals(escape(""), "")
-        self.assertEquals(escape("foo&"), "foo&amp;")
-        self.assertEquals(escape("<&>"), "&lt;&amp;&gt;")
-        self.assertEquals(unescape("&"), "&")
-        self.assertEquals(unescape("&amp;"), "&")
-        self.assertEquals(unescape(escape("<&testing&amp;>amp;")),
+        self.failUnlessEqual(escape(""), "")
+        self.failUnlessEqual(escape("foo&"), "foo&amp;")
+        self.failUnlessEqual(escape("<&>"), "&lt;&amp;&gt;")
+        self.failUnlessEqual(unescape("&"), "&")
+        self.failUnlessEqual(unescape("&amp;"), "&")
+        self.failUnlessEqual(unescape(escape("<&testing&amp;>amp;")),
                           "<&testing&amp;>amp;")
 
     def test_re_esc(self):
-        self.assertEquals(re_esc(""), "")
-        self.assertEquals(re_esc("fo o"), "fo o")
-        self.assertEquals(re_esc("!bar"), "\\!bar")
-        self.assertEquals(re_esc("*quux#argh?woo"), "\\*quux\\#argh\\?woo")
+        self.failUnlessEqual(re_esc(""), "")
+        self.failUnlessEqual(re_esc("fo o"), "fo o")
+        self.failUnlessEqual(re_esc("!bar"), "\\!bar")
+        self.failUnlessEqual(re_esc("*quux#argh?woo"), "\\*quux\\#argh\\?woo")
 
     def test_unicode(self):
-        self.assertEquals(decode(""), "")
-        self.assertEquals(decode("foo!"), "foo!")
-        self.assertEquals(decode("foo\xde"), u'foo\ufffd [Invalid Unicode]')
-        self.assertEquals(encode(u"abcde"), "abcde")
+        self.failUnlessEqual(decode(""), "")
+        self.failUnlessEqual(decode("foo!"), "foo!")
+        self.failUnlessEqual(decode("foo\xde"), u'foo\ufffd [Invalid Unicode]')
+        self.failUnlessEqual(encode(u"abcde"), "abcde")
+
+    def test_iscommand(self):
+        self.failUnless(iscommand("ls"))
+        self.failUnless(iscommand("/bin/ls"))
+        self.failUnless(iscommand("/bin/asdfjkl"))
+        self.failUnless(iscommand("asdfjkl"))
 
 registerCase(UtilTests)

@@ -1,4 +1,3 @@
-- Artist URL detection
 - Playlists.
 - Various skipping problems -- get smarter about Python threads.
   - Some of this (during saving) disappeared with ossaudiodev? Rock.

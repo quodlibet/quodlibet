@@ -36,6 +36,12 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song1.to_short(), "happy - a song")
         song1["tracknumber"] = "12/14"
         self.failUnlessEqual(song1.to_short(), "happy - 12/14 - a song")
+        song1["contact"] = "foobar"
+        self.failIfEqual(song1.website(), "foobar")
+        song1["contact"] = "https://foobar"
+        self.failUnlessEqual(song1.website(), "https://foobar")
+        song1["website"] = "barbar"
+        self.failUnlessEqual(song1.website(), "barbar")
 
     def test_setters(self):
         song = AudioFile({ "=filename": "undef",
