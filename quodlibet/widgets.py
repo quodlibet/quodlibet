@@ -276,6 +276,13 @@ class PreferencesWindow(gtk.Window):
             c.set_active(config.state("cover"))
             c.connect('toggled', self.__toggle_cover)
             vbox.pack_start(c)
+
+            c = gtk.CheckButton(_("Closing minimizes to system tray"))
+            c.set_sensitive(widgets.main.icon.enabled)
+            c.set_active(config.getboolean('plugins', 'icon_close') and
+                         c.get_sensitive())
+            c.connect('toggled', self._toggle, 'icon_close', 'plugins')
+            vbox.pack_start(c)
             self.pack_start(vbox, expand=False)
 
             f = qltk.Frame(_("_Volume Normalization"), bold=True)
@@ -627,12 +634,24 @@ class TrayIcon(object):
             i = gtk.Image()
             i.set_from_pixbuf(pixbuf)
             eb.add(i)
+            self.__mapped = False
+            self.__icon.connect('map-event', self.__got_mapped)
             self.__icon.add(eb)
             self.__icon.child.connect("button-press-event", self.__event)
             self.__icon.child.connect("scroll-event", self.__scroll)
             self.__cbs = cbs
             self.__icon.show_all()
             print to(_("Initialized status icon."))
+
+    def __got_mapped(self, s, mapped):
+        self.__mapped = True
+
+    def __enabled(self):
+        return ((self.__icon is not None) and
+                (self.__mapped) and
+                (self.__icon.get_property('visible')))
+
+    enabled = property(__enabled)
 
     def __event(self, widget, event, button=None):
         c = self.__cbs.get(button or event.button)
@@ -742,6 +761,10 @@ class HIGTrayIcon(TrayIcon):
         self.__window = window
         cbs[1] = self.__showhide
         TrayIcon.__init__(self, pixbuf, cbs)
+
+    def hide_window(self):
+        if self.__window.get_property('visible'):
+            self.__showhide(None)
 
     def __showhide(self, event):
         if self.__window.get_property('visible'):
@@ -1242,6 +1265,7 @@ class MainWindow(gtk.Window):
         self.add(gtk.VBox())
         self.connect('configure-event', MainWindow.save_size)
         self.connect('destroy', gtk.main_quit)
+        self.connect('delete-event', MainWindow.__delete_event)
 
         # create main menubar, load/restore accelerator groups
         self._create_menu(tips)
@@ -1434,6 +1458,11 @@ class MainWindow(gtk.Window):
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
         self.show()
+
+    def __delete_event(self, event):
+        if self.icon.enabled and config.getboolean("plugins", "icon_close"):
+            self.icon.hide_window()
+            return True
 
     def song_update_view(self, song, error = False):
         if error:

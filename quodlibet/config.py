@@ -90,7 +90,8 @@ def init(*rc_files):
         "plugins":
         { "icon_tooltip":
           "<album|<album~discnumber~part~tracknumber~title~version>|"
-          "<artist~title~version>>" # tooltip for the tray icon
+          "<artist~title~version>>", # tooltip for the tray icon
+          "icon_close": "false", # delete-event minimizes to system tray
 
           },
 
