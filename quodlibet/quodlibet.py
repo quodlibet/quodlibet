@@ -12,7 +12,6 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gtk.glade
-import parser
 from library import library
 import player
 import threading
@@ -20,6 +19,7 @@ import gc
 import os
 import util; from util import escape
 import signal
+import config
 
 class GTKSongInfoWrapper(object):
     def __init__(self):
@@ -67,7 +67,7 @@ class GTKSongInfoWrapper(object):
 
             self.text.set_markup(song.to_markup())
         else:
-            self.image.set_from_stock(gtk.STOCK_CDROM,gtk.ICON_SIZE_BUTTON)
+            self.image.set_from_stock(gtk.STOCK_CDROM, gtk.ICON_SIZE_BUTTON)
             self.pos.set_range(0, 1)
             self.pos.set_value(0)
             self._time = (0, 1)
@@ -86,6 +86,18 @@ class GTKSongInfoWrapper(object):
                             (cur / 60000, (cur % 60000) / 1000,
                              end / 60000, (end % 60000) / 1000))
         return True
+
+def make_chooser(title):
+    chooser = gtk.FileChooserDialog(
+        title = "Add Music",
+        action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+        buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                   gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+    chooser.set_select_multiple(True)
+    resp = chooser.run()
+    fns = chooser.get_filenames()
+    chooser.destroy()
+    return resp, fns
 
 class Widgets(object):
     def __init__(self, file):
@@ -116,6 +128,25 @@ class GladeHandlers(object):
     def seek_slider(slider, v):
         gtk.idle_add(player.playlist.seek, v)
 
+    def open_prefs(*args):
+        widgets["prefs_window"].set_transient_for(widgets["main_window"])
+        widgets["cover_t"].set_active(config.state("cover"))
+        widgets["color_t"].set_active(config.state("color"))
+        widgets["scan_opt"].set_text(config.get("settings", "scan"))
+        widgets["prefs_window"].show()
+
+    def change_scan(*args):
+        config.set("settings", "scan", widgets["scan_opt"].get_text())
+
+    def select_scan(*args):
+        resp, fns = make_chooser("Select Directories")
+        if resp == gtk.RESPONSE_OK:
+            widgets["scan_opt"].set_text(":".join(fns))
+
+    def prefs_closed(*args):
+        widgets["prefs_window"].hide()
+        return True
+
     def select_song(tree, indices, col):
         iter = widgets.songs.get_iter(indices)
         song = widgets.songs.get_value(iter, 0)
@@ -123,15 +154,7 @@ class GladeHandlers(object):
         player.playlist.paused = False
 
     def open_chooser(*args):
-        chooser = gtk.FileChooserDialog(
-            title = "Add Music",
-            action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
-            buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                       gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-        chooser.set_select_multiple(True)
-        resp = chooser.run()
-        fns = chooser.get_filenames()
-        chooser.destroy()
+        resp, fns = make_chooser("Add Music")
         if resp == gtk.RESPONSE_OK:
             library.scan(fns)
             songs = filter(CURRENT_FILTER[0], library.values())
@@ -204,8 +227,8 @@ def refresh_songlist():
 
 widgets = Widgets("quodlibet.glade")
 
-HEADERS = ["#", "title", "album", "artist"]
-HEADERS_FILTER = { "#": "Track", "tracknumber": "Track" }
+HEADERS = ["=#", "title", "album", "artist"]
+HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track" }
 
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
@@ -224,23 +247,31 @@ def set_entry_color(entry, color):
     markup = '<span foreground="%s">%s</span>' % (color, escape(text))
     layout.set_markup(markup)
 
-def main():
-    sl = widgets["songlist"]
-    widgets.songs = gtk.ListStore(object)
+def set_column_headers(sl):
     widgets.filter = widgets.songs.filter_new()
     widgets.filter.set_modify_func([str]*len(HEADERS) + [int], list_transform)
-    widgets["volume"].set_value(player.device.volume)
+    for c in sl.get_columns(): sl.remove_column(c)
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(HEADERS_FILTER.get(t, t).title(), renderer, text=i, weight=len(HEADERS))
+        column = gtk.TreeViewColumn(HEADERS_FILTER.get(t, t).title(),
+                                    renderer, text = i, weight = len(HEADERS))
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)
         column.connect('clicked', set_sort_by, (i,))
         sl.append_column(column)
+    sl.set_model(widgets.filter)
 
+def main():
+    sl = widgets["songlist"]
+    widgets.songs = gtk.ListStore(object)
+    widgets["volume"].set_value(player.device.volume)
+    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    config.init(config_fn)
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.load(cache_fn)
+    if config.get("settings", "scan"):
+        library.scan(config.get("settings", "scan").split(":"))
     player.playlist.set_playlist(library.values())
     player.playlist.sort_by(HEADERS[0])
     widgets.songs.clear()
@@ -248,12 +279,12 @@ def main():
     for song in player.playlist:
          widgets.songs.append([song])
          i += 1
+    set_column_headers(sl)
     statusbar = widgets["statusbar"]
     j = statusbar.get_context_id("playlist")
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
     
     print "Done loading songs."
-    sl.set_model(widgets.filter)
     gtk.threads_init()
     t = threading.Thread(target = player.playlist.play,
                          args = (GTKSongInfoWrapper(),))
@@ -267,5 +298,6 @@ def main():
     t.join()
     util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
     library.save(cache_fn)
+    config.write(file(config_fn, "w"))
 
 if __name__ == "__main__": main()
