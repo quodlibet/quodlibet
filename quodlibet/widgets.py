@@ -626,7 +626,7 @@ class PlaylistWindow(gtk.Window):
         self.add(vbox)
 
         self.view = view = PlayList(name)
-        bar = SearchBar(gtk.STOCK_ADD, self.add_query_results)
+        bar = SearchBar(self.add_query_results, gtk.STOCK_ADD)
         vbox.pack_start(bar, expand = False, fill = False)
 
         hbox = gtk.HButtonBox()
@@ -1050,7 +1050,7 @@ class EmptyBar(Browser, gtk.HBox):
         self.activate()
 
 class SearchBar(EmptyBar):
-    def __init__(self, button, cb):
+    def __init__(self, cb, button = gtk.STOCK_FIND):
         EmptyBar.__init__(self, cb)
 
         tips = gtk.Tooltips()
@@ -1957,30 +1957,16 @@ class MainWindow(gtk.Window):
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
 
-    def show_search(self, *args):
-        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
-                  "Song/FilterAlbum"]:
-            self.ui.get_widget("/Menu/" + w).show()
+    def hide_browser(self, *args):
         if self.browser: self.browser.destroy()
-        self.browser = SearchBar(gtk.STOCK_FIND, self.text_parse)
+        self.browser = EmptyBar(self.text_parse)
         self.child.pack_start(self.browser, expand = False)
         self.__hide_menus()
 
-    def show_paned(self, *args):
-        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
-                      "Song/FilterAlbum"]:
-            self.ui.get_widget("/Menu/" + w).hide()
+    def show_search(self, *args):
         if self.browser: self.browser.destroy()
-        self.browser = PanedBrowser(self.text_parse)
-        self.child.pack_start(self.browser)
-        self.__hide_menus()
-
-    def hide_browser(self, *args):
-        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
-                  "Song/FilterAlbum"]:
-            self.ui.get_widget("/Menu/" + w).show()
-        if self.browser: self.browser.destroy()
-        self.browser = EmptyBar(self.text_parse)
+        self.browser = SearchBar(self.text_parse)
+        self.child.pack_start(self.browser, expand = False)
         self.__hide_menus()
 
     def show_listselect(self, *args):
@@ -1989,11 +1975,17 @@ class MainWindow(gtk.Window):
         self.child.pack_start(self.browser, expand = False)
         self.__hide_menus()
 
+    def show_paned(self, *args):
+        if self.browser: self.browser.destroy()
+        self.browser = PanedBrowser(self.text_parse)
+        self.child.pack_start(self.browser)
+        self.__hide_menus()
+
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Song/FilterGenre",
                            "/Menu/Filters/RandomGenre"],
-                 'artist': ["/Menu/Song/FilterGenre",
-                           "/Menu/Filters/RandomGenre"],
+                 'artist': ["/Menu/Song/FilterArtist",
+                           "/Menu/Filters/RandomArtist"],
                  'album':  ["/Menu/Song/FilterAlbum",
                            "/Menu/Filters/RandomAlbum"],
                  None: ["/Menu/Filters/NotPlayedDay",
