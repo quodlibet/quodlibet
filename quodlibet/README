@@ -1,0 +1,74 @@
+Quodlibet - A Music Library/Player
+========================================================================
+Quodlibet is an experiment in music library management. It makes
+playlists via a query syntax based on regular expressions, rather than a
+more traditonal UI. This gives it immense power, but also makes it harder
+to use if you're not familiar with regular expressions.
+
+Quodlibet is designed for use with Ogg Vorbis audio files, but has
+support for MP3 files following the ID3v1 and v2 "standards" as well.
+
+Quodlibet is written entirely in Python and licensed under the GNU
+GPL version 2.
+
+===[ Query Syntax
+QL is based around queries against the metadata tags found in music files.
+For a complete list of the tags supported officially, see the Vorbis
+comment specification at http://www.xiph.org/ogg/vorbis/doc/v-comment.html.
+However, you can query on any tags you add to the file, with a Vorbis
+comment editor.
+
+Note that to use QL, you must have your audio files tagged properly!
+Often this isn't the case if you've been using something like XMMS.
+Without proper tags, QL can't search your music at all.
+
+A basic query, to match any file by the artist Lamb, might look like:
+	artist = /Lamb/
+However, sometimes you might want all songs by two artists, or an
+artist that went by two names. QL uses a variant of set-theoretic
+notation to specify "union" and "intersection" of two queries. The
+first kind lets you select anything that meets *any* of the conditions,
+the second, anything that meets *all*. To get all songs by Pete
+Townshend, for example:
+	artist = |(/Pete Townshend/, /The Who/)
+Or to get songs by BoA and m-flo (but not songs only by BoA, or songs
+only by m-flo):
+	artist = &(/m-flo/, /BoA/)
+which will get you (probably) your copy of 'the Love Bug', and neither
+Valenti, nor bemani soundtracks.
+
+You can also negate a query, and select all songs that don't match it.
+For a loud time,
+	genre = !/ambient/
+
+You can combine entire queries. To get your beautifully-performed Bach:
+	&(artist = /Bach/, performer = /Glenn Gould/)
+
+If you are making a disjoint request for the same expression (that is,
+something like:
+	|(album = /Para Para/, title = /Para Para/)
+you can shorten it by specifying both tags at once:
+	album, title = /Para Para/
+
+You can combine all of these in many different ways.
+
+===[ Formal Query Grammar
+This is a BNFish grammar that (at least when I checked it in) described
+the grammar used for queries. It could be used for querying of a simple
+key/value database.
+
+Query           ::= QueryPart | QueryUnion | QueryInter | QueryNeg
+QueryUnion      ::= '|(' QueryList ')'
+QueryInter      ::= '&(' QueryList ')'
+QueryNeg        ::= '!' Query
+QueryList       ::= Query ',' QueryList | Query
+QueryPart       ::= TagList '=' RegexpSet
+
+TagList         ::= tag_name ',' TagList | tag_name
+
+RegexpSet       ::= RegexpPart | RegexpUnion | RegexpInter | RegexpNeg
+RegexpUnion     ::= '|(' RegexpList ')'
+RegexpInter     ::= '&(' RegexpList ')'
+RegexpNeg       ::= '!' RegexpSet
+RegexpPart      ::= '/' regexp '/' [mods] | ':' regexp ':' [mods]
+RegexpList      ::= RegexpPart ',' | regexp
