@@ -2430,6 +2430,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 
 		      <child>
 			<widget class="GtkLabel" id="songprop_file">
+			  <property name="width_request">200</property>
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes"></property>
