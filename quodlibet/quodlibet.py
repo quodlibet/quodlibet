@@ -590,6 +590,7 @@ class MainWindow(MultiInstanceWidget):
 
     def _input_check(self, source, condition):
         c = os.read(source, 1)
+        toggles = { "@": "repeat_t", "&": "shuffle_t" }
         if c == "<": self.previous_song(c)
         elif c == ">": self.next_song(c)
         elif c == "-": self.play_pause(c)
@@ -599,14 +600,12 @@ class MainWindow(MultiInstanceWidget):
         elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
         elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
         elif c == "_": self.volume.set_value(0)
-        elif c == "@":
+        elif c in toggles:
+            wid = self.widgets[toggles[c]]
             c2 = os.read(source, 1)
-            if c2 == "0": self.widgets["repeat_t"].set_active(False)
-            else: self.widgets["repeat_t"].set_active(True)
-        elif c == "&":
-            c2 = os.read(source, 1)
-            if c2 == "0": self.widgets["shuffle_t"].set_active(False)
-            else: self.widgets["shuffle_t"].set_active(True)
+            if c2 == "0": wid.set_active(False)
+            elif c2 == "t": wid.set_active(not wid.get_active())
+            else: wid.set_active(True)
         elif c == "!":
             if not self.window.get_property('visible'):
                 self.window.move(*self.window_pos)
