@@ -13,11 +13,15 @@ except ImportError:
   raise SystemExit("Please compile the musepack.mpc extension!")
 
 mod = musepack.MPCFile(sys.argv[1])
+tag = musepack.APETag(sys.argv[1])
 
 import ossaudiodev
 dev = ossaudiodev.open("w")
 
-print "Playing %s" % sys.argv[1]
+for key, value in tag:
+  if value.kind == musepack.apev2.TEXT:
+      for v in list(value):
+          print "%s: %s" % (key, v)
 
 dev.setfmt(ossaudiodev.AFMT_S16_LE)
 dev.channels(2)
