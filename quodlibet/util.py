@@ -161,8 +161,8 @@ def format_string(format, d):
     return output
 
 def unexpand(filename):
-    if filename.startswith(os.environ["HOME"]):
-        filename = filename.replace(os.environ["HOME"], "~", 1)
+    if filename.startswith(os.path.expanduser("~")):
+        filename = filename.replace(os.path.expanduser("~"), "~", 1)
     return filename
 
 class PatternFromFile(object):

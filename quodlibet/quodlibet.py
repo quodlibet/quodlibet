@@ -12,6 +12,8 @@ VERSION = "0.5"
 
 import os, sys
 
+HOME = os.path.expanduser("~")
+
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
 # using e.g. Curses would change the UI. The converse is not true. Many
@@ -250,7 +252,7 @@ class Widgets(object):
 
 # Glade-connected handler functions.
 class GladeHandlers(object):
-    last_dir = os.environ["HOME"]
+    last_dir = HOME
 
     def gtk_main_quit(*args): gtk.main_quit()
 
@@ -390,14 +392,14 @@ class GladeHandlers(object):
         config.set("settings", "gain", str(gain_opt.get_active()))
 
     def select_scan(*args):
-        chooser = FileChooser(_("Select Directories"), os.environ["HOME"])
+        chooser = FileChooser(_("Select Directories"), HOME)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             widgets["scan_opt"].set_text(":".join(fns))
 
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
-        config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+        config_fn = os.path.join(HOME, ".quodlibet", "config")
         util.mkdir(os.path.dirname(config_fn))
         save_config()
         return True
@@ -1232,7 +1234,7 @@ def setup_nonglade():
     gtk.threads_init()
 
 def save_config():
-    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    config_fn = os.path.join(HOME, ".quodlibet", "config")
     util.mkdir(os.path.dirname(config_fn))
     f = file(config_fn, "w")  
     config.write(f)
@@ -1261,7 +1263,7 @@ def main():
 
     from threading import Thread
     t = Thread(target = player.playlist.play, args = (widgets.wrap,))
-    util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
+    util.mkdir(os.path.join(HOME, ".quodlibet"))
     signal.signal(signal.SIGINT, gtk.main_quit)
     t.start()
     gtk.main()
@@ -1270,7 +1272,7 @@ def main():
     t.join()
 
     print _("Saving song library.")
-    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    cache_fn = os.path.join(HOME, ".quodlibet", "songs")
     library.save(cache_fn)
 
     save_config()
@@ -1297,8 +1299,8 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
     raise SystemExit
 
 def refresh_cache():
-    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
-    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    cache_fn = os.path.join(HOME, ".quodlibet", "songs")
+    config_fn = os.path.join(HOME, ".quodlibet", "config")
     import library, config
     config.init(config_fn)
     library.init()
@@ -1316,7 +1318,7 @@ DEF_PP = ("%(artist)?(album) - %(album)??(tracknumber) - "
 def print_playing(fstring = DEF_PP):
     import util
     try:
-        fn = file(os.path.join(os.environ["HOME"], ".quodlibet", "current"))
+        fn = file(os.path.join(HOME, ".quodlibet", "current"))
         data = {}
         for line in fn:
             line = line.strip()
@@ -1397,13 +1399,13 @@ if __name__ == "__main__":
 
     # Load the library.
     import library
-    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    cache_fn = os.path.join(HOME, ".quodlibet", "songs")
     library.init(cache_fn)
     from library import library
 
     # Load configuration data and scan the library for new/changed songs.
     import config
-    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    config_fn = os.path.join(HOME, ".quodlibet", "config")
     config.init(config_fn)
     if config.get("settings", "scan"):
         for a, c in library.scan(config.get("settings", "scan").split(":")):
