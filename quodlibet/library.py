@@ -85,6 +85,7 @@ class AudioFile(dict):
             c = cont.lower()
             if (c.startswith("http://") or c.startswith("https://") or
                 c.startswith("www.")): return cont
+            elif c.startswith("//www."): return "http:" + cont
         else:
             artist = util.escape("+".join(self["artist"].split()))
             album = util.escape("+".join(self["album"].split()))
