@@ -3,7 +3,7 @@
 all: build modplug.so
 
 modplug.so: modplug.c build
-	mv build/lib*/modplug.so .
+	cp build/lib*/modplug.so .
 
 build: modplug.c
 	./setup.py build
