@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-11-08 13:02-0600\n"
+"POT-Creation-Date: 2004-11-08 15:06-0600\n"
 "PO-Revision-Date: 2004-11-08 11:54-0600\n"
 "Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
@@ -296,47 +296,47 @@ msgid "Restart the playlist after all songs are played"
 msgstr ""
 
 #: quodlibet.glade.h:50
-msgid "Saving Songs"
+msgid "S_ong"
 msgstr ""
 
 #: quodlibet.glade.h:51
-msgid "Search"
+msgid "Saving Songs"
 msgstr ""
 
 #: quodlibet.glade.h:52
-msgid "Search your audio library"
+msgid "Search"
 msgstr ""
 
 #: quodlibet.glade.h:53
-msgid "Select _Files"
+msgid "Search your audio library"
 msgstr ""
 
 #: quodlibet.glade.h:54
-msgid "Select or unselect files in this group"
+msgid "Select _Files"
 msgstr ""
 
 #: quodlibet.glade.h:55
-msgid "Set column headers"
+msgid "Select or unselect files in this group"
 msgstr ""
 
 #: quodlibet.glade.h:56
-msgid "Show album cover images"
+msgid "Set column headers"
 msgstr ""
 
 #: quodlibet.glade.h:57
-msgid "Show only songs by the same artist as the selected ones"
+msgid "Show album cover images"
 msgstr ""
 
 #: quodlibet.glade.h:58
-msgid "Show only songs in the same album as the select ones"
+msgid "Show only songs by the same artist as the selected ones"
 msgstr ""
 
 #: quodlibet.glade.h:59
-msgid "Song Properties"
+msgid "Show only songs in the same album as the select ones"
 msgstr ""
 
 #: quodlibet.glade.h:60
-msgid "Tag:"
+msgid "Song Properties"
 msgstr ""
 
 #: quodlibet.glade.h:61
@@ -352,99 +352,99 @@ msgid "Undo changes made to these files"
 msgstr ""
 
 #: quodlibet.glade.h:64
-msgid "Value: "
-msgstr ""
-
-#: quodlibet.glade.h:65
 msgid "View and edit tags in the playing song"
 msgstr ""
 
-#: quodlibet.glade.h:66
+#: quodlibet.glade.h:65
 msgid "View and edit tags in the selected songs"
 msgstr ""
 
-#: quodlibet.glade.h:67
+#: quodlibet.glade.h:66
 msgid "Visit the artist's website"
 msgstr ""
 
-#: quodlibet.glade.h:68
+#: quodlibet.glade.h:67
 msgid ""
 "When enabled, images with 'front' or 'cover' in their names are loaded and "
 "displayed next to the song title."
 msgstr ""
 
-#: quodlibet.glade.h:69
+#: quodlibet.glade.h:68
 msgid ""
 "When the current song changes, scroll  to it in the song list. You can do "
 "this manually by pressing Ctrl-J."
 msgstr ""
 
-#: quodlibet.glade.h:70
+#: quodlibet.glade.h:69
 msgid "_About"
 msgstr ""
 
-#: quodlibet.glade.h:71
+#: quodlibet.glade.h:70
 msgid "_Add Music..."
 msgstr ""
 
-#: quodlibet.glade.h:72
+#: quodlibet.glade.h:71
 msgid "_Artist"
 msgstr ""
 
-#: quodlibet.glade.h:73
+#: quodlibet.glade.h:72
 msgid "_Disc"
 msgstr ""
 
-#: quodlibet.glade.h:74
+#: quodlibet.glade.h:73
 msgid "_Filename"
 msgstr ""
 
-#: quodlibet.glade.h:75
+#: quodlibet.glade.h:74
 msgid "_Genre"
 msgstr ""
 
-#: quodlibet.glade.h:76
+#: quodlibet.glade.h:75
 msgid "_Help"
 msgstr ""
 
-#: quodlibet.glade.h:77
+#: quodlibet.glade.h:76
 msgid "_Jump to playing song"
 msgstr ""
 
-#: quodlibet.glade.h:78
+#: quodlibet.glade.h:77
 msgid "_Music"
 msgstr ""
 
-#: quodlibet.glade.h:79
+#: quodlibet.glade.h:78
 msgid "_Next song"
 msgstr ""
 
-#: quodlibet.glade.h:80
+#: quodlibet.glade.h:79
 msgid "_Performer"
 msgstr ""
 
-#: quodlibet.glade.h:81
+#: quodlibet.glade.h:80
 msgid "_Play song"
 msgstr ""
 
-#: quodlibet.glade.h:82
+#: quodlibet.glade.h:81
 msgid "_Repeat"
 msgstr ""
 
-#: quodlibet.glade.h:83
+#: quodlibet.glade.h:82
 msgid "_Select..."
 msgstr ""
 
-#: quodlibet.glade.h:84
+#: quodlibet.glade.h:83
 msgid "_Shuffle"
 msgstr ""
 
+#: quodlibet.glade.h:84
+msgid "_Tag:"
+msgstr ""
+
 #: quodlibet.glade.h:85
-msgid "_Song"
+msgid "_Track"
 msgstr ""
 
 #: quodlibet.glade.h:86
-msgid "_Track"
+msgid "_Value: "
 msgstr ""
 
 #: quodlibet.glade.h:87
@@ -642,3 +642,108 @@ msgstr ""
 #: quodlibet.py:1058
 msgid "Opening audio device."
 msgstr ""
+
+#. Translations for tag names
+#. Note that although tag names are translated in the main list view,
+#. they are *not* when editing tags. This is because tag names are all
+#. in English in the file. So to get "licence" to appear in your custom
+#. headers, you must add "license" to your header list.
+#: po/tag-names.py:8
+msgid "artist"
+msgstr ""
+
+#: po/tag-names.py:9
+msgid "album"
+msgstr ""
+
+#: po/tag-names.py:10
+msgid "disc"
+msgstr ""
+
+#: po/tag-names.py:11
+msgid "track"
+msgstr ""
+
+#: po/tag-names.py:12
+msgid "last played"
+msgstr ""
+
+#: po/tag-names.py:13
+msgid "full name"
+msgstr ""
+
+#: po/tag-names.py:14
+msgid "filename"
+msgstr ""
+
+#: po/tag-names.py:15
+msgid "directory"
+msgstr ""
+
+#: po/tag-names.py:16
+msgid "play count"
+msgstr ""
+
+#: po/tag-names.py:17
+msgid "version"
+msgstr ""
+
+#: po/tag-names.py:18
+msgid "arranger"
+msgstr ""
+
+#: po/tag-names.py:19
+msgid "conductor"
+msgstr ""
+
+#: po/tag-names.py:20
+msgid "author"
+msgstr ""
+
+#: po/tag-names.py:21
+msgid "performer"
+msgstr ""
+
+#: po/tag-names.py:22
+msgid "website"
+msgstr ""
+
+#: po/tag-names.py:23 po/tag-names.py:27
+msgid "language"
+msgstr ""
+
+#: po/tag-names.py:24
+msgid "part"
+msgstr ""
+
+#: po/tag-names.py:25
+msgid "lyricist"
+msgstr ""
+
+#: po/tag-names.py:26
+msgid "organization"
+msgstr "organisation"
+
+#: po/tag-names.py:28
+msgid "contact"
+msgstr ""
+
+#: po/tag-names.py:29
+msgid "location"
+msgstr ""
+
+#: po/tag-names.py:30
+msgid "copyright"
+msgstr ""
+
+#: po/tag-names.py:31
+msgid "description"
+msgstr ""
+
+#: po/tag-names.py:32
+msgid "genre"
+msgstr ""
+
+#: po/tag-names.py:33
+msgid "license"
+msgstr "licence"

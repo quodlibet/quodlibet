@@ -2,3 +2,4 @@
 library.py
 quodlibet.glade
 quodlibet.py
+po/tag-names.py
