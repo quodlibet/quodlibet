@@ -7,3 +7,4 @@
 - Look into eventual GStreamer port (for playing).
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - MikMod support.
+- Deal with focus issues in tag add dialog
