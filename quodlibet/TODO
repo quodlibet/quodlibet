@@ -16,12 +16,9 @@ James Evans recently posted Python bindings for libifp to the
 ifp-driver-common list. They'd be much much nicer to use, especially
 if progress callbacks are working.
 
-Remember UI element states
---------------------------
-Show/hide state of the song list, the browser currently in use, and
-whatever state that browser might need to save (current playlist,
-current query). Again Glade will probably get in the way, and it will
-be a fight with GTK's sizing.
+Remember browser information
+----------------------------
+Browsers need a way to properly save and reinitialize themselves.
 
 GStreamer backend
 -----------------

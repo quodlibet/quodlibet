@@ -870,6 +870,7 @@ class MainWindow(MultiInstanceWidget):
 
         # Set up the main song list store.
         self.songlist = MainSongList(self.widgets["songlist"])
+
         widgets.songs = gtk.ListStore(object, int)
 
         self.browser = SearchBar(self.widgets["query_hbox"], _("Search"),
@@ -901,6 +902,9 @@ class MainWindow(MultiInstanceWidget):
 
         # Show main window.
         self.restore_size()
+        self.window.realize()
+        self.widgets["show_playlist"].set_active(
+            config.getboolean("memory", "songlist"))
         self.window.show()
 
     def tray_popup(self, *args):
@@ -1148,7 +1152,7 @@ class MainWindow(MultiInstanceWidget):
     def showhide_playlist(self, toggle):
         self.showhide_widget(self.widgets["song_scroller"],
                              toggle.get_active())
-        config.set("memory", "show_playlist", str(toggle.get_active()))
+        config.set("memory", "songlist", str(toggle.get_active()))
 
     def open_website(self, button):
         song = self.current_song
@@ -2189,8 +2193,8 @@ class SongProperties(object):
             artists = util.escape("\n".join(artists))
             if artists:
                 self.box.pack_start(
-                    self.Frame("%s (%d)" % (util.title(_("artists"), arcount)),
-                                            self.Label(artists)),
+                    self.Frame("%s (%d)" % (util.title(_("artists")), arcount),
+                               self.Label(artists)),
                                expand = False)
 
             albums = list(albums)

@@ -59,19 +59,13 @@ def init(*rc_files):
     _config.set("memory", "query", "")
     _config.set("memory", "volume", "1.0")
 
-    _config.set("memory", "show_playlist", "true")
-    _config.set("memory", "show_search", "true")
+    _config.set("memory", "songlist", "true")
 
     _config.set("pmp", "driver", "0")
     _config.set("pmp", "location", "")
     _config.set("pmp", "command", "")
 
     _config.read(rc_files)
-
-    # Migrate old configs.
-    set("settings", "headers",
-        _config.get("settings", "headers").replace("=#", "~#track").replace(
-        "=d", "~#disc").replace("=basename", "~basename"))
 
 def state(arg):
     return _config.getboolean("settings", arg)
