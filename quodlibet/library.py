@@ -68,7 +68,11 @@ class AudioFile(dict):
         for k, v in self.items():
             if k[0] == "=": continue
             for v2 in v.split("\n"):
-                s += "%s=%s\n" % (k, v2)
+                try:
+                    s += "%s=%s\n" % (k, v2)
+                except UnicodeDecodeError:
+                    s += "%s=[Invalid Unicode]" % k
+                except: pass
         return s
 
     def change(self, key, old_value, new_value):
