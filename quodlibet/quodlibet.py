@@ -1939,9 +1939,10 @@ class SongProperties(object):
                             expand = False)
 
             for names, tag in [
-                (_("performers"),  "performer"),
+                (_("performers"), "performer"),
                 (_("lyricists"),  "lyricist"),
                 (_("arrangers"),  "arranger"),
+                (_("composers"),  "composer"),
                 (_("conductors"), "conductor"),
                 (_("authors"),    "author")]:
                 if tag in song:
@@ -1954,8 +1955,8 @@ class SongProperties(object):
                         frame = self.Frame(ntag,
                                            gtk.Label(util.escape(song[tag])),
                                            False)
-                    vbox.pack_start(frame)
-            return self.Frame(_("People"), vbox)
+                    vbox.pack_start(frame, expand = False)
+            return self.Frame(util.title(_("artists")), vbox)
 
         def _album(self, song):
             title = _("Album")
@@ -1972,7 +1973,7 @@ class SongProperties(object):
                     i = gtk.Image()
                     i.set_from_pixbuf(p)
                     hb.pack_start(i, expand = False)
-                    hb.pack_start(w)
+                    hb.pack_start(w, expand = False)
                     f = self.Frame(title, hb)
                 except:
                     f = self.Frame(title, w)
@@ -2059,11 +2060,51 @@ class SongProperties(object):
             self.box.pack_start(self._people(song), expand = False)
             self.box.pack_start(self._listen(song), expand = False)
 
+        def _update_album(self, songs):
+            songs.sort()
+            album = songs[0]["album"]
+            self.box.pack_start(self.Label(
+                "<b><span size='x-large'>%s</span></b>" % util.escape(album)),
+                                expand = False)
+
+            text = []
+            cur_disc = 0
+            cur_part = None
+            cur_track = 0
+            for song in songs:
+                track = song("~#track", 0)
+                disc = song("~#disc", 0)
+                part = song.get("part")
+                if disc != cur_disc:
+                    if cur_disc: text.append("")
+                    cur_track = 0
+                    cur_part = None
+                    cur_disc = disc
+                    if disc:
+                        text.append(_("<b>%s</b>" % (_("Disc %d") % disc)))
+                if part != cur_part:
+                    tabs = "    " * bool(disc)
+                    cur_part = part
+                    if part:
+                        text.append(_("%s<b>%s</b>" % (
+                            tabs, util.escape(part))))
+                cur_track += 1
+                tabs = "    " * (bool(disc) + bool(part))
+                while cur_track < track:
+                    text.append("%s<b>%d.</b> <i>%s</i>" %(
+                        tabs, cur_track, _("No information available")))
+                    cur_track += 1
+                text.append("%s<b>%d.</b> %s" %(
+                    tabs, track, util.escape(song("~title~version"))))
+            l = self.Label("\n".join(text))
+            self.box.pack_start(self.Frame(_("Track List"), l), expand = False)
+
         def _update_artist(self, songs):
             artist = songs[0].comma("artist")
             self.box.pack_start(self.Label(
                 "<b><span size='x-large'>%s</span></b>\n%s" %(
-                util.escape(artist), _("%d songs") % len(songs))))
+                util.escape(artist), _("%d songs") % len(songs))),
+                                expand = False)
 
             noalbum = 0
             albums = {}
@@ -2078,9 +2119,10 @@ class SongProperties(object):
                 if date: return "%s (%s)" % (util.escape(album), date)
                 else: return util.escape(album)
             albums = map(format, albums)
-            if noalbum: albums.append(_("%d with no album") % noalbum)
+            if noalbum: albums.append(_("%d songs with no album") % noalbum)
             self.box.pack_start(
-                self.Frame(_("Discography"), self.Label("\n".join(albums))),
+                self.Frame(_("Selected Discography"),
+                           self.Label("\n".join(albums))),
                 expand = False)
 
         def _update_many(self, songs):
@@ -2100,7 +2142,8 @@ class SongProperties(object):
             table.attach(self.Label(_("Songs heard:")), 0, 1, 1, 2)
             table.attach(self.Label(str(count)), 1, 2, 1, 2)
 
-            self.box.pack_start(self.Frame(_("Listening"), table))
+            self.box.pack_start(self.Frame(_("Listening"), table),
+                                expand = False)
 
             artists = set()
             albums = set()
@@ -2113,7 +2156,7 @@ class SongProperties(object):
             artists = list(artists)
             artists.sort()
             arcount = len(artists)
-            if noartist: artists.append(_("%d with no artists") % noartist)
+            if noartist: artists.append(_("%d songs with no artist")%noartist)
             artists = util.escape("\n".join(artists))
             if artists:
                 self.box.pack_start(self.Frame(_("Artists (%d)") % arcount,
@@ -2123,7 +2166,7 @@ class SongProperties(object):
             albums = list(albums)
             albums.sort()
             alcount = len(albums)
-            if noalbum: albums.append(_("%d with no album") % noalbum)
+            if noalbum: albums.append(_("%d songs with no album") % noalbum)
             albums = util.escape("\n".join(albums))
             if albums:
                 self.box.pack_start(self.Frame(_("Albums (%d)") % alcount,
@@ -2138,7 +2181,9 @@ class SongProperties(object):
             else:
                 albums =  [song.get("album") for song in songs]
                 artists = [song.get("artist") for song in songs]
-                if min(artists) == max(artists):
+                if min(albums) == max(albums):
+                    self._update_album(songs[:])
+                elif min(artists) == max(artists):
                     self._update_artist(songs[:])
                 else: self._update_many(songs)
             self.box.show_all()
