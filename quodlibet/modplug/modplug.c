@@ -106,7 +106,7 @@ static PyMethodDef ModFile_methods[] = {
   {"read", (PyCFunction)ModFile_read, METH_KEYWORDS,
      "Return audio data of no more than the given length."
     },
-  {"seek", (PyCFunction)ModFile_read, METH_KEYWORDS,
+  {"seek", (PyCFunction)ModFile_seek, METH_KEYWORDS,
      "Seek to the specified position (in milliseconds)."
     },
     {NULL}
