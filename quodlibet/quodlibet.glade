@@ -626,7 +626,7 @@
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <property name="group">disable_browsing1</property>
-		      <signal name="activate" handler="show_playlist" last_modification_time="Sun, 16 Jan 2005 07:07:40 GMT"/>
+		      <signal name="activate" handler="show_listselect" last_modification_time="Sun, 16 Jan 2005 07:07:40 GMT"/>
 		    </widget>
 		  </child>
 		</widget>

@@ -606,6 +606,40 @@ class Osd(object):
             self.window.destroy()
             self.window = None
 
+class PlaylistBar(object):
+    model = None
+
+    def refresh():
+        model = PlaylistBar.model
+        model.clear()
+        model.append([_("All songs"), ""])
+        playlists = [[PlayList.prettify_name(p), p] for p in
+                     library.playlists()]
+        playlists.sort()
+        for p in playlists: model.append(p)
+    refresh = staticmethod(refresh)
+
+    def __init__(self, hbox, cb):
+        if PlaylistBar.model is None:
+            PlaylistBar.model = gtk.ListStore(str, str)
+        PlaylistBar.refresh()
+
+        self.combo = gtk.ComboBox(PlaylistBar.model)
+        cell = gtk.CellRendererText()
+        self.combo.pack_start(cell, True)
+        self.combo.add_attribute(cell, 'text', 0)
+        self.combo.connect('changed', self.list_selected)
+        hbox.pack_start(self.combo)
+        self.cb = cb
+        hbox.show_all()
+
+    def list_selected(self, box):
+        active = box.get_active()
+        if active == 0: self.cb("", None)
+        else:
+            playlist = "playlist_" + PlaylistBar.model[active][1]
+            self.cb("#(%s > 0)" % playlist, "~#"+playlist)
+
 class SearchBar(object):
     model = None
     
@@ -1282,6 +1316,19 @@ class MainWindow(MultiInstanceWidget):
                                      _("Search"), self.text_parse)
             self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser.set_text(config.get("memory", "query"))
+
+    def show_listselect(self, *args):
+        if not isinstance(self.browser, PlaylistBar):
+            for child in self.widgets["query_hbox"].get_children():
+                self.widgets["query_hbox"].remove(child)
+            self.browser = PlaylistBar(self.widgets["query_hbox"],
+                                       self.playlist_selected)
+
+    def playlist_selected(self, query, key):
+        player.playlist.sort_by(key, True)
+        player.playlist.playlist_from_filter(query)
+        print query, key
+        self.refresh_songlist()
 
     def hide_browser(self, *args):
         if self.browser:
