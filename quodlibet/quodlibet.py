@@ -420,6 +420,7 @@ class GladeHandlers(object):
 
     def random_album(menuitem):
         make_query("album = /^%s$/c" % sre.escape(library.random("album")))
+        widgets["shuffle_t"].set_active(False)
 
     def random_genre(menuitem):
         make_query("genre = /^%s$/c" % sre.escape(library.random("genre")))
