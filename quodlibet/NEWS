@@ -6,6 +6,7 @@
  - A context menu for common operations was added to the properties dialog.
  - Tag values can be set from filename patterns, or vice-versa.
  - Dates can be saved in MP3s now.
+ - --print-playing option, with a format string.
  - Many bug fixes; please reload your library.
 
 0.4 - The Power of Language

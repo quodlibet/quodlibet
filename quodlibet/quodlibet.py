@@ -1288,7 +1288,10 @@ def refresh_cache():
     library.library.save(cache_fn)
     raise SystemExit
 
-def print_playing(fstring):
+DEF_PP = ("%(artist)?(album) - %(album)??(tracknumber) - "
+          "%(tracknumber)? - %(title)")
+def print_playing(fstring = DEF_PP):
+    import util
     try:
         fn = file(os.path.join(os.environ["HOME"], ".quodlibet", "current"))
         data = {}
@@ -1299,7 +1302,8 @@ def print_playing(fstring):
             val = "=".join(parts[1:])
             if key in data: data[key] += "\n" + val
             else: data[key] = val
-        print fstring % data
+        try: print util.format_string(fstring, data)
+        except (IndexError, ValueError): print util.format_string(DEF_PP, data)
         raise SystemExit
     except (OSError, IOError):
         print _("No song is currently playing.")
@@ -1339,7 +1343,9 @@ if __name__ == "__main__":
         if command in ["--help", "-h"]: print_help()
         elif command in ["--version", "-v"]: print_version()
         elif command in ["--refresh-library"]: refresh_cache()
-        elif command in ["--print-playing"]: print_playing(sys.argv[2])
+        elif command in ["--print-playing"]:
+            try: print_playing(sys.argv[2])
+            except IndexError: print_playing()
         else:
             print _("E: Unknown command line option: %s") % command
             raise SystemExit(_("E: Try %s --help") % sys.argv[0])

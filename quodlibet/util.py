@@ -131,6 +131,35 @@ def find_subtitle(title):
                 return title.rstrip(), subtitle
     else: return title, None
 
+def format_string(format, d):
+    i = 0
+    output = ""
+    in_cond = False
+    while i < len(format):
+        c = format[i]
+        if c == "%" and i != len(format) - 1 and format[i + 1] == "(":
+            i += 2
+            tag = ""
+            while format[i] != ")" and i < len(format):
+                tag += format[i]
+                i += 1
+            output += d.get(tag, "Unknown")
+        elif c == "?":
+            if in_cond: in_cond = False
+            elif format[i + 1] == "(":
+                i += 2
+                tag = ""
+                while format[i] != ")" and i < len(format):
+                    tag += format[i]
+                    i += 1
+                if tag not in d:
+                    while format[i] != "?": i += 1
+                else: in_cond = True
+            else: output += "?"
+        else: output += c
+        i += 1
+    return output
+
 def unexpand(filename):
     if filename.startswith(os.environ["HOME"]):
         filename = filename.replace(os.environ["HOME"], "~", 1)

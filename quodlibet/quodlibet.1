@@ -2,7 +2,7 @@
 .SH NAME
 quodlibet \- music library and player
 .SH SYNOPSIS
-\fBquodlibet\fR [ \fB\-\-help\fR | \fB\-\-version\fR | \fB\-\-refresh-library\fR ]
+\fBquodlibet\fR [ \fB\-\-print-playing | \fB\-\-refresh-library\fR ]
 .SH DESCRIPTION
 Quod Libet is a music library and player. Rather than keeping a single
 playlist, it loads all your songs at once, and lets you filter and
@@ -18,6 +18,12 @@ removed, changed files will be updated, and new files in your scan
 directories will be added. QL will not start its interface at all,
 simply update the library. This also happens whenever QL starts up
 normally.
+.IP \-\-print\-playing
+Print out information about the currently playing song. This optionally
+takes a format string as an argument. This format string looks like a
+Python dictionary format string ("%(artist)\ \-\ %(title)")
+but also supports conditional substrings using ?
+("%(artist)?(album)\ \-\ %(album)?\ \-\ %(title)").
 .SH USAGE
 Use the "Add Music" item in the menu or click the "Add" icon on the
 toolbar to add directories full of songs to your library. Once music
@@ -107,18 +113,20 @@ A cached list of songs to load initially. The format is a pickled
 Python list. Deleting this file will remove all songs from your
 library.
 .IP ~/.quodlibet/config
-Quod Libet's configuration file. At the time of this writing, all
-options in here can also be accessed from the GUI.
+Quod Libet's configuration file. Don't manually edit this while QL is
+running; it will not pick up the changes, and it will overwrite it
+when you exit.
 .IP ~/.quodlibet/current
 A "key=value" file containing information about the currently playing song.
 .SH KNOWN BUGS
-.BR ( JZig )
-The inevitable result of enabling smart searching is that people realize how lousy their data is
-.PP
-Newlines are not supported within tags.
-.PP
 FLAC support is horrible.
+.PP
+Running two instances of QL at the same time is a bad idea.
 .SH KNOWN NOT-BUGS
+Newlines are not supported within tag values. Using them will break a lot
+of tools, not just QL. QL uses newlines as separators for multiple values
+to make regex matches fast.
+.PP
 Filenames not in UTF-8 aren't read properly, because we don't know what
 encoding they are. Similarly, filenames are always written in UTF-8 unless
 your OS does some character set translation at the VFS layer (it doesn't).
@@ -127,4 +135,5 @@ http://www.sacredchao.net/~piman/software/quodlibet.shtml,
 .BR regex (7),
 .BR vorbiscomment (1),
 .BR id3v2 (1),
+.BR vorbisgain (1),
 http://www.xiph.org/ogg/vorbis/doc/v\-comment.html
