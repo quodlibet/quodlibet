@@ -852,7 +852,7 @@ class MainWindow(MultiInstanceWidget):
         # Set up the main song list store.
         self.songlist = MainSongList(self.widgets["songlist"])
 
-        widgets.songs = gtk.ListStore(object, int)
+        widgets.songs = gtk.ListStore(object)
 
         self.browser = SearchBar(self.widgets["query_hbox"], _("Search"),
                                  self.text_parse)
@@ -1087,11 +1087,8 @@ class MainWindow(MultiInstanceWidget):
         col = 0
 
         def update_if_last_or_current(model, path, iter):
-            if model[iter][col] is song:
-                model[iter][col + 1] = 700
-                model.row_changed(path, iter)
-            elif model[iter][col] is last_song:
-                model[iter][col + 1] = 400
+            this_song = model[iter][col]
+            if this_song is song or this_song is last_song:
                 model.row_changed(path, iter)
 
         widgets.songs.foreach(update_if_last_or_current)
@@ -1563,10 +1560,18 @@ class SongList(object):
             
         for c in self.view.get_columns(): self.view.remove_column(c)
 
-        def cell_data(column, cell, model, iter):
-            cell.set_property('text',model[iter][0].comma(column.header_name))
+        def cell_data(column, cell, model, iter,
+                attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
+            song = model[iter][0]
+            current_song = getattr(getattr(widgets, 'main', None), 'current_song', None)
+            cell.set_property('weight', attr[song is current_song])
+            cell.set_property('text', song.comma(column.header_name))
 
-        def cell_data_fn(column, cell, model, iter, code):
+        def cell_data_fn(column, cell, model, iter, code,
+                attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
+            song = model[iter][0]
+            current_song = getattr(getattr(widgets, 'main', None), 'current_song', None)
+            cell.set_property('weight', attr[song is current_song])
             cell.set_property(
                 'text', model[iter][0].comma(column.header_name).decode(
                 code, "replace"))
@@ -1574,7 +1579,7 @@ class SongList(object):
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
             title = tag(t)
-            column = gtk.TreeViewColumn(title, render, weight = 1)
+            column = gtk.TreeViewColumn(title, render)
             column.header_name = t
             column.set_resizable(True)
             if t in SHORT_COLS or t.startswith("~#"):
@@ -1629,11 +1634,11 @@ class PlayList(SongList):
     def __init__(self, view, name):
         self.name = 'playlist_' + PlayList.normalize_name(name)
         self.key = '~#' + self.name
-        model = self.model = gtk.ListStore(object, int)
+        model = self.model = gtk.ListStore(object)
         super(PlayList, self).__init__(view, 400)
 
         for song in library.query('#(%s > 0)' % self.name, sort=self.key):
-            model.append([song, 400])
+            model.append([song])
 
         view.set_model(model)
         view.connect('button-press-event', self.button_press)
@@ -1653,7 +1658,7 @@ class PlayList(SongList):
         current_songs = dict.fromkeys([row[0]['~filename'] for row in model])
         for song in songs:
             if song['~filename'] not in current_songs:
-                model.append([song, 400])
+                model.append([song])
                 song[self.key] = len(model) # 1 based index; 0 means out
 
     def remove_selected_songs(self, *args):
@@ -1726,8 +1731,7 @@ class MainSongList(SongList):
         widgets.songs.clear()
         length = 0
         for song in player.playlist:
-            wgt = ((song is current and 700) or 400)
-            widgets.songs.append([song, wgt])
+            widgets.songs.append([song])
             length += song["~#length"]
 
         # reselect what we can
