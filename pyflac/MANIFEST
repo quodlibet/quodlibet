@@ -10,4 +10,5 @@ flac/__init__.py
 flac/metadata.py
 flac/decoder.i
 flac/encoder.i
+flac/format.i
 flac/sw_metadata.i
