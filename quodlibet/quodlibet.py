@@ -13,21 +13,26 @@
 import os, sys
 
 def main():
-    import signal,gtk, widgets
+    import signal, gtk, widgets
+    SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
+
     window = widgets.init()
 
     from threading import Thread
     t = Thread(target = player.playlist.play, args = (window,))
     t.start()
+    for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
+    enable_periodic_save()
+    gtk.quit_add(0, save_and_quit, t)
     gtk.main()
-    signal.signal(signal.SIGINT, cleanup)
-    player.playlist.quitting()
-    t.join()
 
+def save_and_quit(thread):
+    player.playlist.quitting()
+    thread.join()
     print to(_("Saving song library."))
     library.save(const.LIBRARY)
-    cleanup()
     config.write(const.CONFIG)
+    cleanup()
 
 def print_help():
     print to(_("""\
@@ -126,6 +131,22 @@ def control(c):
             if c != '!': raise SystemExit(True)
         else:
             raise SystemExit
+
+def enable_periodic_save():
+    # Check every 15 minutes to see if the library/config on disk are
+    # over 30 minutes old; if so, update them. This function can, in theory,
+    # break if saving the library takes more than 15 minutes.
+    import gobject, time
+    from threading import Thread
+    def save(save_library, save_config):
+        if (time.time() - os.path.mtime(const.LIBRARY)) > 30*60:
+            library.save(const.LIBRARY)
+        if (time.time() - os.path.mtime(const.CONFIG)) > 30*60:
+            config.write(const.CONFIG)
+        thread = Thread(target = save, args = (True, True))
+        gobject.timeout_add(15*60, thread.start, priority=gobject.PRIORITY_LOW)
+    thread = Thread(target = save, args = (False, False))
+    gobject.timeout_add(15*60, thread.start, priority=gobject.PRIORITY_LOW)
 
 def cleanup(*args):
     for filename in [const.CURRENT, const.CONTROL]:
