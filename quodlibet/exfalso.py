@@ -4,6 +4,9 @@ import os, sys
 import dircache
 import gtk, gobject
 
+basedir = os.path.split(os.path.realpath(__file__))[0]
+sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
+
 import formats
 import widgets
 import qltk
@@ -143,6 +146,7 @@ class MainWindow(gtk.Window):
     def __init__(self, dir = None):
         gtk.Window.__init__(self)
         self.set_title("Ex Falso")
+        self.set_icon_from_file("exfalso.png")
         self.set_border_width(12)
         self.set_default_size(700, 500)
         self.add(gtk.HPaned())
@@ -189,11 +193,17 @@ class MainWindow(gtk.Window):
         self.__cache = dict([(song["~filename"], song) for song in files])
 
 if __name__ == "__main__":
-    import gettext
+    import locale, gettext
+    gettext.bindtextdomain("quodlibet")
+    gettext.textdomain("quodlibet")
     gettext.install("quodlibet", unicode = True)
+    try: locale.setlocale(locale.LC_ALL, '')
+    except: pass
 
     import config, const
     config.init(const.CONFIG)
+
+    os.chdir(basedir)
 
     sys.argv.append(None)
     w = MainWindow(sys.argv[1])
