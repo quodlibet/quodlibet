@@ -7,8 +7,6 @@
 # $Id$
 
 import os, sre, stat, string, locale
-import gettext
-_ = gettext.gettext
 
 # Convert a string from 'frm' encoding (or Unicode) to the native one.
 # Only use this for console messages; PyGTK understands both Unicode

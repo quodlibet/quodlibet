@@ -1,11 +1,14 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
 
+import __builtin__
+__builtin__.__dict__['_'] = lambda a: a
+
 import util
 from util import re_esc, encode, decode, mkdir, iscommand
 from util import find_subtitle, split_album, split_title, split_value
 from util import PatternFromFile, FileFromPattern
-from util import format_time_long as f_t_l, _
+from util import format_time_long as f_t_l
 
 import os
 

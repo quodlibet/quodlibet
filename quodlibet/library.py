@@ -13,14 +13,12 @@ import fcntl
 import random
 import time
 import shutil
-import gettext
 import config
 import tempfile
 import parser
 import sre
 import formats
 from formats import MusicFile
-_ = gettext.gettext
 
 if sys.version_info < (2, 4):
     from sets import Set as set
