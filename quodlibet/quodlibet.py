@@ -82,6 +82,10 @@ class GTKSongInfoWrapper(object):
             self.image.show()
             self.vbar.show()
 
+    def update_markup(self, song):
+        if song: self.text.set_markup(song.to_markup())
+        else: self.text.set_markup("<span size='xx-large'>Not playing</span>")
+
     def _update_song(self, song, player):
         if song:
             self.pos.set_range(0, player.length)
@@ -96,13 +100,13 @@ class GTKSongInfoWrapper(object):
             else:
                 self.image.set_from_pixbuf(None)
                 self.disable_cover()
-            self.text.set_markup(song.to_markup())
+            self.update_markup(song)
         else:
             self.image.set_from_pixbuf(None)
             self.pos.set_range(0, 1)
             self.pos.set_value(0)
             self._time = (0, 1)
-            self.text.set_markup("<span size='xx-large'>Not playing</span>")
+            self.update_markup(None)
 
         # Update the currently-playing song in the list by bolding it.
         last_song = CURRENT_SONG[0]
@@ -402,6 +406,7 @@ class MultiInstanceWidget(object):
         self.save.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
+        widgets.wrap.update_markup(CURRENT_SONG[0])
 
     def songprop_revert_click(self, button):
         self.save.set_sensitive(False)
