@@ -712,7 +712,7 @@ def print_playing(fstring):
             else: data[key] = val
         print fstring % data
         raise SystemExit
-    except OSError:
+    except (OSError, IOError):
         print "No song is currently playing."
         raise SystemExit(True)
 
