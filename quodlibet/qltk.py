@@ -11,9 +11,10 @@ import os
 import gtk
 import util
 
-# A dialog window with "smart" formatting for the text, uses markup, and
-# defaults to an "OK" button, destroying itself after running.
 class Message(gtk.MessageDialog):
+    """A message dialog that destroys itself after it is run, uses
+    markup, and defaults to an 'OK' button."""
+
     def __init__(self, kind, parent, title, description, buttons = None):
         buttons = buttons or gtk.BUTTONS_OK
         text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
@@ -22,31 +23,40 @@ class Message(gtk.MessageDialog):
             kind, buttons)
         self.set_markup(text)
 
-    def run(self, destroy = True):
+    def run(self, destroy=True):
         gtk.MessageDialog.run(self)
         if destroy: self.destroy()
 
 class ConfirmAction(Message):
+    """A message dialog that asks a yes/no question."""
+
     def __init__(self, *args):
         Message.__init__(self, gtk.MESSAGE_WARNING,
                          buttons = gtk.BUTTONS_YES_NO, *args)
 
     def run(self, destroy = True):
+        """Returns True if yes was clicked, False otherwise."""
         resp = gtk.MessageDialog.run(self)
         if destroy: self.destroy()
         if resp == gtk.RESPONSE_YES: return True
         else: return False
 
 class ErrorMessage(Message):
+    """Like Message, but uses an error-indicating picture."""
     def __init__(self, *args):
         Message.__init__(self, gtk.MESSAGE_ERROR, *args)
 
 class WarningMessage(Message):
+    """Like Message, but uses an warning-indicating picture."""
     def __init__(self, *args):
         Message.__init__(self, gtk.MESSAGE_WARNING, *args)
 
 class Notebook(gtk.Notebook):
-    def append_page(self, page, label = None):
+    """A regular gtk.Notebook, except when appending a page, if no
+    label is given, the page's 'title' attribute (either a string or
+    a widget) is used."""
+    
+    def append_page(self, page, label=None):
         if label is not None:
             if not isinstance(label, gtk.Widget): label = gtk.Label(label)
             gtk.Notebook.append_page(self, page, label)
@@ -57,9 +67,10 @@ class Notebook(gtk.Notebook):
                 gtk.Notebook.append_page(self, page, title)
             else: raise TypeError("no page.title and no label given")
 
-# A ComboBoxEntry that "remembers" its contents and saves to/loads from
-# a file on disk.
 class ComboBoxEntrySave(gtk.ComboBoxEntry):
+    """A ComboBoxEntry that remembers the past 'count' strings entered,
+    and can save itself to (and load itself from) a filename or file-like."""
+
     models = {}
     
     def __init__(self, f = None, initial = [], count = 10, model = None):
@@ -108,9 +119,12 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
                 gtk.ComboBoxEntry.append_text(self, text)
 
     def get_text(self):
+        """Return a list of all entries in the history."""
         return [m[0] for m in self.get_model()]
 
-    def write(self, f, create = True):
+    def write(self, f, create=True):
+        """Save to f, a filename or file-like. If create is True, any
+        needed parent directories will be created."""
         try:
             if not hasattr(f, 'read'):
                 if ("/" in f and create and
@@ -177,7 +191,7 @@ class WaitLoadWindow(gtk.Window):
 
     w = WaitLoadWindow(None, 5, "%d/%d", (0, 5))
     for i in range(1, 6): w.step(i, 5)
-    w.end()
+    w.destroy()
     """
 
     def __init__(self, parent, count, text, initial=(), limit=5,

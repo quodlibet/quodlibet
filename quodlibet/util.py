@@ -8,39 +8,43 @@
 
 import os, sre, stat, string, locale
 
-# Convert a string from 'frm' encoding (or Unicode) to the native one.
-# Only use this for console messages; PyGTK understands both Unicode
-# and UTF-8 properly.
 def to(string, frm="utf-8"):
+    """Convert a string to the system encoding; used if you need to
+    print to stdout. If you pass in a str (rather than a unicode) you
+    should specify the encoding it's in with 'frm'."""
     enc = locale.getpreferredencoding()
     if isinstance(string, unicode): return string.encode(enc, "replace")
     else: return string.decode(frm).encode(enc, "replace")
 
 def mtime(filename):
+    """Return the mtime of a file, or 0 if an error occurs. Also available
+    as os.path.mtime."""
     try: return os.path.getmtime(filename)
     except OSError: return 0
 os.path.mtime = mtime
 
-# Make a directory, including all directories below it.
 def mkdir(dir):
+    """Make a directory, including all its parent directories. This does not
+    raise an exception if the directory already exists (and is a
+    directory)."""
     if not os.path.isdir(dir):
         os.makedirs(dir)
 
-# Escape a string in a manner suitable for XML/Pango.
 def escape(str):
+    """Escape a string in a manner suitable for XML/Pango."""
     return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-# Unescape a string that was escaped for XML/Pango.
 def unescape(str):
+    """Unescape a string in a manner suitable for XML/Pango."""
     return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
 
-# A better version of sre.escape, that doesn't go nuts on Unicode.
 def re_esc(str):
     return "".join(map(
         lambda a: (a in "/.^$*+?{,}\\[]|()<>#=!:" and "\\" + a) or a, str))
 sre.escape = re_esc
 
 def parse_time(timestr):
+    """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
     try:
         return reduce(lambda s, a: s * 60 + int(a),
                       sre.split(":|\\.", timestr), 0)
@@ -48,11 +52,13 @@ def parse_time(timestr):
         return 0
 
 def format_rating(value):
+    """Turn a number into a sequence of music notes."""
     text = '\xe2\x99\xab ' * int(value)
     if value > int(value): text += '\xe2\x99\xaa'
     return text
 
 def format_size(size):
+    """Turn an integer size value into something human-readable."""
     if size >= 1024*1024 * 10:
         return "%.1fMB" % (float(size) / (1024*1024))
     elif size >= 1024*1024:
@@ -65,6 +71,7 @@ def format_size(size):
         return "%dB" % size
 
 def format_time(time):
+    """Turn a time value in seconds into hh:mm:ss or mm:ss."""
     if time > 3600: # 1 hour
         # time, in hours:minutes:seconds
         return _("%d:%02d:%02d") % (time // 3600,
@@ -74,6 +81,7 @@ def format_time(time):
         return _("%d:%02d") % (time // 60, time % 60)
 
 def format_time_long(time):
+    """Turn a time value in seconds into x hours, x minutes, etc."""
     if time < 1: return _("No time information")
     cutoffs = [
         (60, _("%d seconds"), _("1 second")),
@@ -94,6 +102,7 @@ def format_time_long(time):
     return ", ".join(time_str)
 
 def fscoding():
+    """Return the character set the filesystem uses."""
     if "CHARSET" in os.environ: return os.environ["CHARSET"]
     elif "G_BROKEN_FILENAMES" in os.environ:
         cset = os.environ.get("LC_CTYPE", "foo.utf-8")
@@ -102,25 +111,33 @@ def fscoding():
     else: return "utf-8"
 
 def fsdecode(s):
+    """Decoding a string according to the filesystem encoding."""
     if isinstance(s, unicode): return s
     else: return decode(s, fscoding())
 
 def fsencode(s):
+    """Encode a string according to the filesystem encoding, replacing
+    errors."""
     if isinstance(s, str): return s
     else: return s.encode(fscoding(), 'replace')
 
 def decode(s, charset="utf-8"):
+    """Decode a string; if an error occurs, replace characters and append
+    a note to the string."""
     try: return s.decode(charset)
     except UnicodeError:
         return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
 
 def encode(s, charset="utf-8"):
+    """Encode a string; if an error occurs, replace characters and append
+    a note to the string."""
     try: return s.encode(charset)
     # FIXME: Can *this* happen?
     except UnicodeError:
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
 
 def title(string):
+    """Title-case a string using a less destructive method than str.title."""
     if not string: return ""
     new_string = string[0].capitalize()
     cap = False
@@ -134,6 +151,8 @@ def title(string):
     return new_string
 
 def iscommand(s):
+    """True if 's' exists in the user's path, or is a fully-qualified
+    existing path."""
     if s == "" or "/" in s:
         return os.path.exists(s)
     else:
@@ -144,6 +163,7 @@ def iscommand(s):
         else: return False
 
 def capitalize(str):
+    """Capitalize a string, not affecting any character after the first."""
     return str[:1].upper() + str[1:]
 
 # Split a string on ;s and ,s.
@@ -212,6 +232,8 @@ def find_subtitle(title):
     else: return title, None
 
 def unexpand(filename):
+    """Replace the user's home directory with ~/, if it appears at the
+    start of the path name."""
     if filename == os.path.expanduser("~"): return "~"
     elif filename.startswith(os.path.expanduser("~/")):
         filename = filename.replace(os.path.expanduser("~/"), "~/", 1)
