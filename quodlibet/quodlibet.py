@@ -29,9 +29,13 @@ class GTKSongInfoWrapper(object):
         self.timer = widgets["song_timer"]
         self.volume = widgets["volume"]
         self.button = widgets["play_button"]
+        self.menu = widgets['play_menu']
         self.but_image = widgets["play_image"]
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
+        self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
+        self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
+        self.menu.get_image().set_from_pixbuf(self.pause_s)
         self.fifo_fn = os.path.join(HOME, ".quodlibet", "control")
         try: os.unlink(self.fifo_fn)
         except OSError: pass
@@ -75,7 +79,8 @@ class GTKSongInfoWrapper(object):
         elif c == "_": self.volume.set_value(0)
         elif c == "!":
             window = widgets["main_window"]
-            if not window.get_property('visible'): window.move(*self.window_pos)
+            if not window.get_property('visible'):
+                window.move(*self.window_pos)
             widgets["main_window"].present()
 
         os.close(self.fifo)
@@ -84,7 +89,7 @@ class GTKSongInfoWrapper(object):
 
     def _previous(*args): player.playlist.previous()
     def _next(*args): player.playlist.next()
-    def _playpause(self, *args): player.playlist.paused ^= True
+    def _playpause(*args): player.playlist.paused ^= True
 
     def _toggle_window(self, icon, window):
         if window.get_property('visible'):
@@ -115,13 +120,14 @@ class GTKSongInfoWrapper(object):
         gtk.idle_add(self._missing_song, song)
 
     # idle_added functions caused by signals from the player.
-
     def _update_paused(self, paused):
         if paused:
             self.but_image.set_from_pixbuf(self.paused)
+            self.menu.get_image().set_from_pixbuf(self.pause_s)
             widgets["play_menu"].child.set_text("_Play song")
         else:
             self.but_image.set_from_pixbuf(self.playing)
+            self.menu.get_image().set_from_pixbuf(self.play_s)
             widgets["play_menu"].child.set_text("_Pause song")
         widgets["play_menu"].child.set_use_underline(True)
 
@@ -195,7 +201,7 @@ class GTKSongInfoWrapper(object):
                     if config.state("cover"): self.enable_cover()
                     self.albumfn = cover
             for h in ['genre', 'artist', 'album']:
-                widgets["filter_"+h+"_menu"].set_sensitive(not song.unknown(h))
+                widgets["filter_%s_menu"%h].set_sensitive(not song.unknown(h))
             if cover_f: cover_f.close()
 
             self.update_markup(song)
@@ -1145,8 +1151,8 @@ class SongProperties(MultiInstanceWidget):
         except ValueError: 
             d = ErrorMessage(self.window,
                              _("Pattern with subdirectories is not absolute"),
-                             _("The pattern\n\t<b>%s</b>\ncontains / but does "
-                               "not start from root. To avoid misnamed "
+                             _("The pattern\n\t<b>%s</b>\ncontains / but "
+                               "does not start from root. To avoid misnamed "
                                "directories, root your pattern by starting "
                                "it from the / directory.")%(
                 util.escape(pattern)))
@@ -1180,7 +1186,7 @@ class SongProperties(MultiInstanceWidget):
                 if ref: songref_update_view(song, ref)
             except:
                 ErrorMessage(self.window,
-                             _("Unable to rename %s") % (util.escape(oldname)),
+                             _("Unable to rename %s")%(util.escape(oldname)),
                              _("Renaming <b>%s</b> to <b>%s</b> failed. "
                                "Possibly the target file already exists, "
                                "or you do not have permission to make the "
@@ -1394,9 +1400,9 @@ def refresh_songlist():
         length += song["~#length"]
     i = len(list(player.playlist))
     if i != 1:statusbar.set_text(
-        _("%d songs found (%s)") % (i, util.format_time_long(length)))
+        _("%d songs (%s)") % (i, util.format_time_long(length)))
     else: statusbar.set_text(
-        _("%d song found (%s)") % (i, util.format_time_long(length)))
+        _("%d song (%s)") % (i, util.format_time_long(length)))
     sl.set_model(widgets.songs)
     gc.collect()
 
@@ -1432,7 +1438,8 @@ def set_column_headers(sl, headers):
     width = int(width / c)
     for i, t in enumerate(headers):
         render = gtk.CellRendererText()
-        if t in SHORT_COLS or t.startswith("~#"): render.set_fixed_size(-1, -1)
+        if t in SHORT_COLS or t.startswith("~#"):
+            render.set_fixed_size(-1, -1)
         else: render.set_fixed_size(width, -1)
         t2 = t.lstrip("~#")
         column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t2, t2)).title(),
@@ -1448,6 +1455,12 @@ def set_column_headers(sl, headers):
 def setup_nonglade():
     widgets.wrap = GTKSongInfoWrapper()
     player.playlist.info = widgets.wrap
+
+    p = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
+    widgets["prev_menu"].get_image().set_from_pixbuf(p)
+
+    p = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
+    widgets["next_menu"].get_image().set_from_pixbuf(p)
 
     # Restore window size.
     w, h = map(int, config.get("memory", "size").split())
@@ -1581,7 +1594,8 @@ def print_playing(fstring = DEF_PP):
             if key in data: data[key] += "\n" + val
             else: data[key] = val
         try: print util.format_string(fstring, data)
-        except (IndexError, ValueError): print util.format_string(DEF_PP, data)
+        except (IndexError, ValueError):
+            print util.format_string(DEF_PP, data)
         raise SystemExit
     except (OSError, IOError):
         print _("No song is currently playing.")
@@ -1603,13 +1617,18 @@ def control(c):
         raise SystemExit(_("Quod Libet is not running."))
     else:
         try:
+            import signal
+            # This is a total abuse of Python! Hooray!
+            signal.signal(signal.SIGALRM, lambda: "" + 2)
+            signal.alarm(5)
             f = file(fifo_fn, "w")
             f.write(c)
             f.close()
-        except:
+        except (OSError, IOError, TypeError):
+            os.unlink(fifo_fn)
             raise SystemExit(_("""
-Unable to write to %s
-If QL is not running, remove this file.""" % fifo_fn))
+Unable to write to %s. Removing it.
+If QL is currently running, please restart it.""" % fifo_fn))
         else:
             raise SystemExit
 

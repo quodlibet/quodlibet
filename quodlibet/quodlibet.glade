@@ -51,7 +51,7 @@
 		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image577">
+			<widget class="GtkImage" id="image712">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -80,244 +80,6 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="filters1">
-		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Filter your library</property>
-		      <property name="label" translatable="yes">Filters</property>
-		      <property name="use_underline">True</property>
-
-		      <child internal-child="image">
-			<widget class="GtkImage" id="image578">
-			  <property name="visible">True</property>
-			  <property name="stock">gtk-index</property>
-			  <property name="icon_size">1</property>
-			  <property name="xalign">0.5</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenu" id="filters1_menu">
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="random_genre1">
-			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Pick a random genre from your library</property>
-			      <property name="label" translatable="yes">Random _genre</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="random_genre" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image579">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-dialog-question</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="random_artist1">
-			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Pick a random artist from your library</property>
-			      <property name="label" translatable="yes">Random a_rtist</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="random_artist" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image580">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-dialog-question</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="random_album1">
-			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Pick a random album from your library</property>
-			      <property name="label" translatable="yes">Random al_bum</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="random_album" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image581">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-dialog-question</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkSeparatorMenuItem" id="separator9">
-			      <property name="visible">True</property>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="not_played_in_a_day1">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Not played today</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="lastplayed_day" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image582">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-find</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="not_played_in_a_week1">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Not played in 7 days</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="lastplayed_week" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image583">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-find</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="not_played_in_30_days1">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Not played in 30 days</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="lastplayed_month" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image584">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-find</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="never_played1">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Never played</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="lastplayed_never" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image585">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-find</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkSeparatorMenuItem" id="separator10">
-			      <property name="visible">True</property>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="top40">
-			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">The 40 songs you've played most (more than 40 may be chosen if there are ties)</property>
-			      <property name="label" translatable="yes">Top 40</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="top40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image586">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-goto-top</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="bottom40">
-			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">The 40 songs you've played least (more than 40 may be chosen if there are ties)</property>
-			      <property name="label" translatable="yes">Bottom 40</property>
-			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="bottom40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
-
-			      <child internal-child="image">
-				<widget class="GtkImage" id="image587">
-				  <property name="visible">True</property>
-				  <property name="stock">gtk-goto-bottom</property>
-				  <property name="icon_size">1</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-			      </child>
-			    </widget>
-			  </child>
-			</widget>
-		      </child>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkSeparatorMenuItem" id="separator8">
-		      <property name="visible">True</property>
-		    </widget>
-		  </child>
-
-		  <child>
 		    <widget class="GtkImageMenuItem" id="refresh_library1">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Check for changes in the library made since the program was started</property>
@@ -326,7 +88,7 @@
 		      <signal name="activate" handler="rebuild" last_modification_time="Thu, 18 Nov 2004 04:04:04 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image588">
+			<widget class="GtkImage" id="image713">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -348,7 +110,7 @@
 		      <signal name="activate" handler="rebuild_hard" last_modification_time="Thu, 18 Nov 2004 04:06:19 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image589">
+			<widget class="GtkImage" id="image714">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -382,6 +144,225 @@
 	  </child>
 
 	  <child>
+	    <widget class="GtkMenuItem" id="filters1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Filters</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="filters1_menu">
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="random_genre1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Pick a random genre from your library</property>
+		      <property name="label" translatable="yes">Random _genre</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="random_genre" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image715">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-dialog-question</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="random_artist1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Pick a random artist from your library</property>
+		      <property name="label" translatable="yes">Random _artist</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="random_artist" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image716">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-dialog-question</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="random_album1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Pick a random album from your library</property>
+		      <property name="label" translatable="yes">Random al_bum</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="random_album" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image717">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-dialog-question</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separator9">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="not_played_in_a_day1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Not played _today</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="lastplayed_day" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image718">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-find</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="not_played_in_a_week1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Not played in _7 days</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="lastplayed_week" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image719">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-find</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="not_played_in_30_days1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Not played in _30 days</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="lastplayed_month" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image720">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-find</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="never_played1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Never _played</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="lastplayed_never" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image721">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-find</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separator10">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="top40">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">The 40 songs you've played most (more than 40 may be chosen if there are ties)</property>
+		      <property name="label" translatable="yes">Top 40</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="top40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image722">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-goto-top</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="bottom40">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">The 40 songs you've played least (more than 40 may be chosen if there are ties)</property>
+		      <property name="label" translatable="yes">Bottom 40</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="bottom40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image723">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-goto-bottom</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
 	    <widget class="GtkMenuItem" id="song1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">S_ong</property>
@@ -391,32 +372,68 @@
 		<widget class="GtkMenu" id="song1_menu">
 
 		  <child>
-		    <widget class="GtkMenuItem" id="prev_menu">
+		    <widget class="GtkImageMenuItem" id="prev_menu">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Pre_vious song</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="previous_song" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 		      <accelerator key="Left" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image724">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-go-back</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 
 		  <child>
-		    <widget class="GtkMenuItem" id="play_menu">
+		    <widget class="GtkImageMenuItem" id="play_menu">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_Play song</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="play_pause" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 		      <accelerator key="space" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image725">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-yes</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 
 		  <child>
-		    <widget class="GtkMenuItem" id="next_menu">
+		    <widget class="GtkImageMenuItem" id="next_menu">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_Next song</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="next_song" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 		      <accelerator key="Right" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image726">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-go-forward</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 
@@ -434,7 +451,7 @@
 		      <signal name="activate" handler="cur_genre_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image590">
+			<widget class="GtkImage" id="image727">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -455,7 +472,7 @@
 		      <signal name="activate" handler="cur_artist_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image591">
+			<widget class="GtkImage" id="image728">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -476,7 +493,7 @@
 		      <signal name="activate" handler="cur_album_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image592">
+			<widget class="GtkImage" id="image729">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -521,7 +538,7 @@
 		      <accelerator key="J" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image593">
+			<widget class="GtkImage" id="image730">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
