@@ -1492,7 +1492,8 @@ class SongProperties(MultiInstanceWidget):
         self.save_edit.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
-        widgets.main.update_markup(widgets.main.current_song)
+        if widgets.main.current_song in self.songrefs:
+            widgets.main.update_markup(widgets.main.current_song)
 
     def songprop_revert_click(self, button):
         self.save_edit.set_sensitive(False)
@@ -1694,7 +1695,8 @@ class SongProperties(MultiInstanceWidget):
         editable = bool(songinfo.can_change(None))
         self.widgets["songprop_add"].set_sensitive(editable)
         self.widgets["songprop_remove"].set_sensitive(editable)
-            
+        self.widgets["songprop_tbp_combo"].set_sensitive(editable)
+        
         if len(self.songrefs) == 1:
             self.window.set_title(_("%s - Properties") %
                     self.songrefs[0]["title"])
@@ -1758,6 +1760,12 @@ class SongProperties(MultiInstanceWidget):
         for song in self.songrefs:
             self.tn_model.append(row = [song, None, song['~basename'],
                                         song.get("tracknumber", "")])
+        tn_change = self.songinfo.can_change("tracknumber")
+        self.widgets["prop_tn_start"].set_sensitive(tn_change)
+        self.widgets["prop_tn_total"].set_sensitive(tn_change)
+        self.tn_preview.set_sensitive(tn_change)
+        self.tn_view.set_reorderable(tn_change)
+            
 
     def songprop_tn_preview(self, *args):
         start = self.widgets["prop_tn_start"].get_value_as_int()
@@ -1884,11 +1892,10 @@ class SongProperties(MultiInstanceWidget):
         self.tbp_preview.set_sensitive(True)
 
     def songprop_tbp_preview(self, *args):
-        self.tbp_view.set_model(None)
-        self.tbp_model.clear()
-
         # build the pattern
         pattern_text = self.tbp_entry.get_text().decode('utf-8')
+        self.tbp_view.set_model(None)
+        self.tbp_model.clear()
 
         try: pattern = util.PatternFromFile(pattern_text)
         except sre.error:
