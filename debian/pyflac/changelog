@@ -1,3 +1,10 @@
+pyflac (0.0.3-1) unstable; urgency=low
+
+  * New upstream release.
+  * Remove B-D on swig, since the files are pre-generated now.
+
+ -- Joe Wreschnig <piman@debian.org>  Sun, 03 Apr 2005 11:49:06 -0500
+
 pyflac (0.0.2-1) unstable; urgency=low
 
   * Use new distutils-using build method.
