@@ -306,7 +306,10 @@ class PlaylistPlayer(object):
         self.lock.acquire()
         self._shuffle = shuffle
         if shuffle:
-            self.played = []
+            
+            if self.song and self.song in self.orig_playlist:
+                self.played = [self.song]
+            else: self.played = []
             self.playlist = self.orig_playlist[:]
             random.shuffle(self.playlist)
         else:
