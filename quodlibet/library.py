@@ -67,14 +67,13 @@ class MP3File(AudioFile):
             "TIT2": "title",
             "TIT3": "version",
             "TPE1": "artist",
-            "TPE2": "artist",
+            "TPE2": "performer",
             "TPE3": "performer",
             "TPE4": "performer",
-            "TCOM": "artist",
-            "TEXT": "artist",
             "TLAN": "language",
             "TALB": "album",
             "TRCK": "tracknumber",
+            "TPOS": "discnumber",
             "TSRC": "isrc",
             "TDRA": "date",
             "TDRC": "date",
@@ -88,6 +87,18 @@ class MP3File(AudioFile):
             "WCOP": "license",
             "USER": "license",
             }
+
+    INVERT_IDS = { "genre": "TIT1",
+                   "title": "TIT2",
+                   "version": "TIT3",
+                   "language": "TLAN",
+                   "isrc": "TSRC",
+                   "tracknumber": "TRCK",
+                   "artist": "TPE1",
+                   "discnumber": "TPOS",
+                   "organization": "TPUB",
+                   "album": "TALB"
+                   }
             
     def __init__(self, filename):
         if not os.path.exists(filename):
@@ -122,10 +133,22 @@ class MP3File(AudioFile):
             except: pass
 
     def write(self):
-        print "E: Cannot write to MP3s yet"
+        tag = pyid3lib.tag(self['filename'])
+        for key, id3name in self.INVERT_IDS.items():
+            try:
+                while True: tag.remove(id3name)
+            except ValueError: pass
+            if key in self:
+                for value in self[key].split("\n"):
+                    try: value = value.encode("iso-8859-1")
+                    except UnicodeError: value = value.encode("utf-8")
+                    tag.append({'frameid': id3name, 'text': value })
+        tag.update()
+        self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
+
 
     def can_change(self, k):
-        return False
+        return k in self.INVERT_IDS.keys()
 
 class OggFile(AudioFile):
     def __init__(self, filename):
