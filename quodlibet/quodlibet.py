@@ -48,10 +48,10 @@ class GTKSongInfoWrapper(object):
         except:
             print _("W: Failed to initialize multimedia key support.")
         else:
-            keys = mmkeys.MmKeys()
-            keys.connect("mm_prev", self._previous)
-            keys.connect("mm_next", self._next)
-            keys.connect("mm_playpause", self._playpause)
+            self.keys = mmkeys.MmKeys()
+            self.keys.connect("mm_prev", self._previous)
+            self.keys.connect("mm_next", self._next)
+            self.keys.connect("mm_playpause", self._playpause)
             print _("Initialized multimedia key support.")
 
         self._time = (0, 1)
