@@ -24,6 +24,7 @@ import signal
 class GTKSongInfoWrapper(object):
     def __init__(self):
         self.image = widgets["albumcover"]
+        self.vbar = widgets["vseparator2"]
         self.text = widgets["currentsong"]
         self.pos = widgets["song_pos"]
         self.timer = widgets["song_timer"]
@@ -58,8 +59,11 @@ class GTKSongInfoWrapper(object):
                 pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
                 pixbuf = pixbuf.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
                 self.image.set_from_pixbuf(pixbuf)
+                self.image.show()
+                self.vbar.show()
             else:
-                self.image.set_from_stock(gtk.STOCK_CDROM,gtk.ICON_SIZE_BUTTON)
+                self.image.hide()
+                self.vbar.hide()
 
             self.text.set_markup(song.to_markup())
         else:
@@ -256,6 +260,7 @@ def main():
     gc.collect()
     signal.signal (signal.SIGINT, signal.SIG_DFL)
     t.start()
+    widgets["main_window"].show()
     try: gtk.main()
     except: gtk.main_quit()
     player.playlist.quitting()
