@@ -220,9 +220,11 @@ class GladeHandlers(object):
     def open_website(button):
         song = CURRENT_SONG[0]
         site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
-        for s in os.environ.get("BROWSER", "sensible-browser").split(":"):
+        for s in ["sensible-browser"] + os.environ.get("BROWSER","").split(":"):
             if util.iscommand(s):
-                if "%s" in s: s = s.replace("%s", '"' + site + '"')
+                if "%s" in s:
+                    s = s.replace("%s", '"' + site + '"')
+                    s = s.replace("%%", "%")
                 else: s += " \"%s\"" % site
                 print "Executing %s" % s
                 if os.system(s + " &") == 0: break
