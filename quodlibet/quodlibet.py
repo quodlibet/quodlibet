@@ -121,8 +121,14 @@ class PreferencesWindow(MultiInstanceWidget):
             self.widgets["osd_combo"].set_sensitive(False)
             self.widgets["osd_color"].set_sensitive(False)
         self.widgets["osd_combo"].set_active(config.getint("settings", "osd"))
-        self.widgets["osd_color"].set_color(gtk.gdk.color_parse(
-            config.get("settings", "osdcolor")))
+        color1, color2 = config.get("settings", "osdcolors").split()
+        self.widgets["osd_color"].set_color(gtk.gdk.color_parse(color1))
+        self.widgets["osd_color2"].set_color(gtk.gdk.color_parse(color2))
+
+        if not self.widgets["osd_font"].set_font_name(
+            config.get("settings", "osdfont")):
+            config.set("settings", "osdfont", "Sans 18")
+            self.widgets["osd_font"].set_font_name("Sans 18")
 
     def pmp_changed(self, combobox):
         driver = self.widgets["pmp_combo"].get_active()
@@ -137,9 +143,15 @@ class PreferencesWindow(MultiInstanceWidget):
         config.set('pmp', 'command', entry.get_text())
 
     def set_color(self, button):
-        color = button.get_color()
-        ct = (color.red // 256, color.green // 256, color.blue // 256)
-        config.set("settings", "osdcolor", "#%02x%02x%02x" % ct)
+        color = self.widgets["osd_color"].get_color()
+        ct1 = (color.red // 256, color.green // 256, color.blue // 256)
+        color = self.widgets["osd_color2"].get_color()
+        ct2 = (color.red // 256, color.green // 256, color.blue // 256)
+        config.set("settings", "osdcolors",
+                   "#%02x%02x%02x #%02x%02x%02x" % (ct1+ct2))
+
+    def set_font(self, button):
+        config.set("settings", "osdfont", button.get_font_name())
 
     def set_headers(self, *args):
         new_h = []
@@ -333,28 +345,35 @@ class Osd(object):
         if not self.gosd: return
         elif config.getint("settings", "osd") == 0: return
         elif "~title~version" not in song: # FIXME: Remove after 0.7.
-            print "W: You need to rebuild your library to use the OSD."
+            print "W: You need to reload your library to use the OSD."
             return
 
-        color = config.get("settings", "osdcolor")
+        color1, color2 = config.get("settings", "osdcolors").split()
+        font = config.get("settings", "osdfont")
+
         if self.window: self.window.destroy()
 
         # \xe2\x99\xaa is a music note.
-        msg = "\xe2\x99\xaa <span foreground='%s'>%s" %(
-            color, util.escape(song["~title~version"]))
+        msg = "\xe2\x99\xaa "
+
+        msg += "<span foreground='%s' style='italic'>%s</span>" %(
+            color2, util.escape(song["~title~version"]))
         if song['~length']:
             msg += " <span size='small'>(%s)</span> " % song["~length"]
-        msg += "\xe2\x99\xaa\n<span size='x-small'>"
+        msg += "\xe2\x99\xaa\n"
+
+        msg += "<span size='x-small'>"
         for key in ["artist", "~album~part", "tracknumber"]:
             if key in song:
-                msg += "<span size='xx-small' style='italic'>%s</span> %s   "%(
-                    (_(HEADERS_FILTER.get(key, key)).title(),
-                     util.escape(song.comma(key))))
-        msg = msg.strip() + "</span></span>"
+                msg += ("<span foreground='%s' size='xx-small' style='italic'>"
+                        "%s</span> %s   "%(
+                    (color2, _(HEADERS_FILTER.get(key, key)).title(),
+                     util.escape(song.comma(key)))))
+        msg = msg.strip() + "</span>"
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
 
-        self.window = self.gosd.osd(msg, "black", color, "sans 18")
+        self.window = self.gosd.osd(msg, "black", color1, font)
         if config.getint("settings", "osd") == 1:
             self.window.move(gtk.gdk.screen_width()/2-self.window.width/2, 5)
         else:
@@ -362,7 +381,7 @@ class Osd(object):
                              gtk.gdk.screen_height()-self.window.height-48)
         self.window.show()
         self.level += 1
-        gtk.timeout_add(10000, self.unshow)
+        gtk.timeout_add(7500, self.unshow)
 
     def unshow(self):
         self.level -= 1
@@ -1783,6 +1802,8 @@ def songref_update_view(song, ref):
 HEADERS = ["~#track", "title", "album", "artist"]
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
+                   "~album~part": "album",
+                   "~title~version": "title",
                    "lastplayed": "last played", "filename": "full name",
                    "playcount": "play count", "basename": "filename",
                    "dirname": "directory"}
@@ -1871,7 +1892,7 @@ def refresh_cache():
     library.init()
     print _("Loading, scanning, and saving your library.")
     library.library.load(const.LIBRARY)
-    library.library.rebuild()
+    for x, y in library.library.rebuild(): pass
     library.library.save(const.LIBRARY)
     raise SystemExit
 

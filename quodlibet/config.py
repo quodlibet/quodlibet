@@ -36,7 +36,8 @@ def init(rc_file):
     _config.set("settings", "jump", "true")
     _config.set("settings", "cover", "true")
     _config.set("settings", "color", "true")
-    _config.set("settings", "osdcolor", "green")
+    _config.set("settings", "osdcolors", "#ffbb00 #ff8700")
+    _config.set("settings", "osdfont", "Sans 18")
 
     _config.set("settings", "tbp_space", "false")
     _config.set("settings", "addreplace", "0")

@@ -10,7 +10,7 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - Right-clicking on the status icon brings up a menu.
  - --play, --pause, --seek-to, --query, --play-file.
  - OSD (gosd) support, thanks to Iñigo Serna and Gustavo J. A. M. Carneiro.
-   A library rebuild is needed to use it.
+   A library reload is needed to use it.
  - FreeDesktop-style .folder.png files supported for album covers.
  - Playlist/search UI elements can be hidden.
  - Dragging playlist columns reorders them.

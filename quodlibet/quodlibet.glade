@@ -1215,6 +1215,7 @@
 
 	      <child>
 		<widget class="GtkAlignment" id="alignment10">
+		  <property name="width_request">100</property>
 		  <property name="visible">True</property>
 		  <property name="xalign">0.5</property>
 		  <property name="yalign">0</property>
@@ -1309,6 +1310,7 @@
 
 		      <child>
 			<widget class="GtkComboBox" id="gain_opt">
+			  <property name="width_request">100</property>
 			  <property name="visible">True</property>
 			  <property name="items" translatable="yes">No volume adjustment
 Per-song (&quot;Radio&quot;) volume adjustment
@@ -1331,9 +1333,9 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			  <child>
 			    <widget class="GtkComboBox" id="osd_combo">
 			      <property name="visible">True</property>
-			      <property name="items" translatable="yes">Don't float titles on the on-screen display
-Float titles on an OSD on the top
-Float titles on an OSD on the bottom</property>
+			      <property name="items" translatable="yes">No on-screen display
+Display OSD on the top
+Display OSD on the bottom</property>
 			      <signal name="changed" handler="combo_osd" last_modification_time="Tue, 07 Dec 2004 03:40:48 GMT"/>
 			    </widget>
 			    <packing>
@@ -1351,6 +1353,42 @@ Float titles on an OSD on the bottom</property>
 			      <property name="use_alpha">False</property>
 			      <property name="focus_on_click">True</property>
 			      <signal name="color_set" handler="set_color" last_modification_time="Tue, 07 Dec 2004 06:05:21 GMT"/>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkColorButton" id="osd_color2">
+			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">Select a color for the OSD</property>
+			      <property name="can_focus">True</property>
+			      <property name="use_alpha">False</property>
+			      <property name="focus_on_click">True</property>
+			      <signal name="color_set" handler="set_color" last_modification_time="Wed, 15 Dec 2004 21:36:47 GMT"/>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkFontButton" id="osd_font">
+			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">Select a font for the OSD</property>
+			      <property name="can_focus">True</property>
+			      <property name="title" translatable="yes">Select a font for the OSD</property>
+			      <property name="show_style">False</property>
+			      <property name="show_size">True</property>
+			      <property name="use_font">False</property>
+			      <property name="use_size">False</property>
+			      <property name="focus_on_click">True</property>
+			      <signal name="font_set" handler="set_font" last_modification_time="Wed, 15 Dec 2004 21:36:59 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
