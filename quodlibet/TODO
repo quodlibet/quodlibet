@@ -2,7 +2,6 @@
 - Stress-testing
 - Artist URL detection
 - Song information popup
-- Remove song from library
 - Handle case when song is loaded but then goes missing
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - Figure out why loading text doesn't appear on throbber

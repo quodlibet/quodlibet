@@ -41,7 +41,7 @@ Where \fItag\fR is the name of the tag you want to search (like
 'artist' or 'title'), and \fIre\fR is a regular expression you want
 the tag to match. (If you don't know how to write regular expressions,
 you can usually just use the word you want, if it doesn't contain a
-'*', '.', or '/'.)
+\'*\', \'\.\', or \'/\'.)
 .PP
 You can combine searches using & and |:
 .RS
@@ -101,6 +101,9 @@ library.
 .IP ~/.quodlibet/config
 Quod Libet's configuration file. At the time of this writing, all
 options in here can also be accessed from the GUI.
+.SH KNOWN BUGS
+.BR ( JZig )
+The inevitable result of enabling smart searching is that people realize how lousy their data is
 .SH SEE ALSO
 .BR regex (7),
 .BR vorbiscomment (1),

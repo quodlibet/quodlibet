@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os
+import os, sre
 
 # Make a directory, including all directories below it.
 def mkdir(dir):
@@ -18,6 +18,12 @@ def mkdir(dir):
 # Escape a string in a manner suitable for XML/Pango.
 def escape(str):
     return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+# A better version of sre.escape, that doesn't go nuts on Unicode.
+def re_esc(str):
+    return "".join(map(
+        lambda a: (a in ".^$*+?{,}\\[]|(=<>#=!:" and "\\" + a) or a, str))
+sre.escape = re_esc
 
 # Check whether or not we can support various formats.
 def check_mp3():
