@@ -21,7 +21,7 @@ class TestAudio(TestCase):
                 for Type, ext in [(OggPlayer, "ogg"),
                                   (MP3Player, "mp3")]:
                     f = Type(self.dev,
-                             {"=filename": "tests/data/silence-%d-%s.%s"%(
+                             {"~filename": "tests/data/silence-%d-%s.%s"%(
                         rate / 1000, mode, ext)})
                     self.failUnlessEqual(self.dev.rate, rate)
                     i = iter(f)

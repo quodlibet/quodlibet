@@ -45,7 +45,7 @@ def init(rc_file):
     _config.set("settings", "backend", "ao:alsa")
     _config.set("settings", "masked", "")
     _config.set("settings", "splitters", ",;&/")
-    _config.set("settings", "headers", "=# title album artist")
+    _config.set("settings", "headers", "~#t title album artist")
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
     _config.set("memory", "query", "")
@@ -56,6 +56,11 @@ def init(rc_file):
 
     try: _config.read([rc_file])
     except: pass
+
+    # Migrate old configs.
+    set("settings", "headers",
+        _config.get("settings", "headers").replace("=#", "~#t").replace(
+            "=d", "~#d").replace("=basename", "~basename"))
 
 def state(arg):
     return _config.getboolean("settings", arg)

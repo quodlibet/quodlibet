@@ -208,7 +208,7 @@ class PatternFromFile(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = song['=filename']
+            song = song['~filename']
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         matchon = '/'+'/'.join(song.split('/')[-self.slashes:])
@@ -227,7 +227,7 @@ class FileFromPattern(object):
 
     def match(self, song):
         format = { '<tracknumber>': '%02d', '<discnumber>': '%d' }
-        override = { '<tracknumber>': '=#', '<discnumber>': '=d' }
+        override = { '<tracknumber>': '~#t', '<discnumber>': '~#d' }
         newname = []
         for piece in self.pieces:
             if not piece: continue
@@ -245,6 +245,6 @@ class FileFromPattern(object):
         pat = self.pattern
         if pat and ('.' not in pat or pat.endswith('.') or
                 '>' in pat[pat.rfind('.'):]):
-            oldname = song['=basename']
+            oldname = song['~basename']
             newname.append(oldname[oldname.rfind('.'):])
         return ''.join(newname)

@@ -8,13 +8,13 @@ library.init()
 class AudioFileTest(TestCase):
     def test_cmp(self):
         song1 = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                            "=d": 1, "=#": 2, "title": "A song" })
+                            "~#d": 1, "~#t": 2, "title": "A song" })
         
         song1c = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                             "=d": 1, "=#": 2, "title": "A song" })
+                             "~#d": 1, "~#t": 2, "title": "A song" })
         
         song2 = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                            "=d": 2, "=#": 2, "title": "Another song" })
+                            "~#d": 2, "~#t": 2, "title": "Another song" })
         
         self.failUnlessEqual(song1, song1)
         self.failUnlessEqual(song1, song1c)
@@ -22,8 +22,8 @@ class AudioFileTest(TestCase):
 
     def test_getters(self):
         song1 = AudioFile({ "a": "foo\nbar", "b": "foobar",
-                            "=filename": "DNE",
-                            "=mtime": 0, "=foobar": 2,
+                            "~filename": "DNE",
+                            "~mtime": 0, "=foobar": 2,
                             "album": Unknown("Unknown")})
         self.failUnlessEqual(song1.comma("a"), "foo, bar")
         self.failUnlessEqual(song1.comma("b"), "foobar")
@@ -49,7 +49,7 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song1.list("c"), [])
 
     def test_setters(self):
-        song = AudioFile({ "=filename": "undef",
+        song = AudioFile({ "~filename": "undef",
                            "artist": "foo\nbar", "title": "foobar",
                            "album": Unknown("Unknown")})
         song.add("album", "An Album")
@@ -59,9 +59,9 @@ class AudioFileTest(TestCase):
         song.remove("album", "An Album")
         self.failUnless(song.unknown("album"))
         song.add("tracknumber", "11/12")
-        self.failUnlessEqual(song["=#"], 11)
+        self.failUnlessEqual(song["~#t"], 11)
         song.remove("tracknumber", "11/12")
-        self.failIf("=#" in song)
+        self.failIf("~#t" in song)
         song.change("artist", "Not A Value", "baz")
         self.failUnlessEqual(song["artist"], "baz")
         song.add("artist", "foo")
@@ -76,32 +76,34 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song["nonext"], "bar")
 
     def test_sanitize(self):
-        song = AudioFile({ "=filename": "/foo/bar/quux.ogg",
+        song = AudioFile({ "~filename": "/foo/bar/quux.ogg",
                            "title": u"A Song",
                            "vendor": "Xiph",
                            "discnumber": "2/3",
                            "tracknumber": "11/99" })
         song.sanitize()
-        self.failUnlessEqual(song["=basename"], "quux.ogg")
-        self.failUnlessEqual(song["=dirname"], "/foo/bar")
-        self.failUnlessEqual(song["=#"], 11)
-        self.failUnlessEqual(song["=d"], 2)
-        self.failUnlessEqual(song["=playcount"], 0)
+        self.failUnlessEqual(song["~basename"], "quux.ogg")
+        self.failUnlessEqual(song["~dirname"], "/foo/bar")
+        self.failUnlessEqual(song["~#t"], 11)
+        self.failUnlessEqual(song["~#d"], 2)
+        self.failUnlessEqual(song["~#playcount"], 0)
         self.failUnless("vendor" not in song)
         self.failUnlessEqual(song["album"], "Unknown")
         self.failUnless(song.unknown("album"))
 
     def test_cover(self):
-        song1 = AudioFile({ "=filename": "tests/data/foo.ogg" })
-        song2 = AudioFile({ "=filename": "tests/foo.ogg" })
+        song1 = AudioFile({ "~filename": "tests/data/foo.ogg" })
+        song1.sanitize()
+        song2 = AudioFile({ "~filename": "tests/foo.ogg" })
+        song2.sanitize()
         self.failUnlessEqual(song1.find_cover(),
                              "tests/data/frontcoverjacket.png")
         self.failIf(song2.find_cover())
 
     def test_get_played(self):
-        song1 = AudioFile({"=playcount": 0})
-        song2 = AudioFile({"=playcount": 4,
-                           "=lastplayed": 1099509099 })
+        song1 = AudioFile({"~#playcount": 0})
+        song2 = AudioFile({"~#playcount": 4,
+                           "~#lastplayed": 1099509099 })
         self.failUnlessEqual(song1.get_played(), "Never")
         # This test will fail unless you are in CST.
         self.failUnlessEqual(song2.get_played(),
@@ -133,8 +135,8 @@ class TestFileTypes(TestCase):
             self.failUnlessEqual(file["artist"], "piman\njzig")
             self.failUnlessEqual(file["album"], "Quod Libet Test Data")
             self.failUnlessEqual(file["title"], "Silence")
-            self.failUnlessEqual(file["=playcount"], 0)
-            self.failUnlessEqual(file["=#"], 2)
+            self.failUnlessEqual(file["~#playcount"], 0)
+            self.failUnlessEqual(file["~#t"], 2)
 
 registerCase(AudioFileTest)
 registerCase(TestFileTypes)

@@ -33,7 +33,7 @@ class AudioPlayer(object):
 class MP3Player(AudioPlayer):
     def __init__(self, dev, song):
         import mad
-        filename = song['=filename']
+        filename = song['~filename']
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = mad.MadFile(filename)
@@ -55,7 +55,7 @@ class MP3Player(AudioPlayer):
 class FLACPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
-        filename = song['=filename']
+        filename = song['~filename']
         import flac.decoder, flac.metadata
         self.STREAMINFO = flac.metadata.STREAMINFO
         self.EOF = flac.decoder.FLAC__FILE_DECODER_END_OF_FILE
@@ -111,7 +111,7 @@ class FLACPlayer(AudioPlayer):
 class OggPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
-        filename = song['=filename']
+        filename = song['~filename']
         import ogg.vorbis
         self.error = ogg.vorbis.VorbisError
         self.dev = dev
@@ -161,7 +161,7 @@ class ModPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
         import modplug
-        self.audio = modplug.ModFile(song["=filename"])
+        self.audio = modplug.ModFile(song["~filename"])
         self.length = self.audio.length
         self.pos = 0
         self.dev = dev
@@ -183,9 +183,9 @@ class ModPlayer(AudioPlayer):
 
 def FilePlayer(dev, song):
     for ext in supported.keys():
-        if song["=filename"].lower().endswith(ext):
+        if song["~filename"].lower().endswith(ext):
             return supported[ext](dev, song)
-    else: raise RuntimeError("Unknown file format: %s" % song["=filename"])
+    else: raise RuntimeError("Unknown file format: %s" % song["~filename"])
 
 class OSSAudioDevice(object):
     def __init__(self):
@@ -315,7 +315,7 @@ class PlaylistPlayer(object):
             while self.playlist and not self.quit:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
-                fn = self.song['=filename']
+                fn = self.song['~filename']
                 config.set("memory", "song", fn)
                 f = file(dump_fn, "w")
                 f.write(self.song.to_dump())
@@ -338,8 +338,8 @@ class PlaylistPlayer(object):
                             time.sleep(0.1)
                         if self.quit: break
                     if not self.player.stopped:
-                        self.song["=lastplayed"] = int(time.time())
-                        self.song["=playcount"] += 1
+                        self.song["~#lastplayed"] = int(time.time())
+                        self.song["~#playcount"] += 1
 
             if self.repeat:
                 self.playlist = self.orig_playlist[:]
@@ -359,7 +359,7 @@ class PlaylistPlayer(object):
     def sort_by(self, header, reverse = False):
         self.lock.acquire()
         pl = self.orig_playlist[:]
-        if header == "=#": header = "album"
+        if header == "~#t": header = "album"
         if reverse:
             f = lambda b, a: (cmp(a.get(header), b.get(header)) or cmp(a, b))
         else:

@@ -137,7 +137,7 @@ class GTKSongInfoWrapper(object):
         iter = widgets.songs.get_iter(path)
         widgets.songs.remove(iter)
         statusbar = widgets["statusbar"]
-        statusbar.set_text(_("Could not play %s.") % song['=filename'])
+        statusbar.set_text(_("Could not play %s.") % song['~filename'])
         library.remove(song)
         player.playlist.remove(song)
 
@@ -170,7 +170,9 @@ class GTKSongInfoWrapper(object):
 
     def _update_song(self, song, player):
         for wid in ["web_button", "next_button", "play_button", "prop_menu",
-                    "play_menu", "jump_menu", "next_menu", "prop_button"]:
+                    "play_menu", "jump_menu", "next_menu", "prop_button",
+                    "filter_genre_menu", "filter_album_menu",
+                    "filter_artist_menu"]:
             widgets[wid].set_sensitive(bool(song))
         if song:
             self.pos.set_range(0, player.length)
@@ -191,6 +193,8 @@ class GTKSongInfoWrapper(object):
                     self.image.set_from_pixbuf(p)
                     if config.state("cover"): self.enable_cover()
                     self.albumfn = cover
+            for h in ['genre', 'artist', 'album']:
+                widgets["filter_"+h+"_menu"].set_sensitive(not song.unknown(h))
             if cover_f: cover_f.close()
 
             self.update_markup(song)
@@ -444,16 +448,16 @@ class GladeHandlers(object):
             config.getint("settings", "addreplace"))
 
         # Fill in the header checkboxes.
-        widgets["disc_t"].set_active("=d" in old_h)
-        widgets["track_t"].set_active("=#" in old_h)
+        widgets["disc_t"].set_active("~#d" in old_h)
+        widgets["track_t"].set_active("~#t" in old_h)
         for h in ["album", "artist", "genre", "year", "version",
                   "performer"]:
             widgets[h + "_t"].set_active(h in old_h)
-        widgets["filename_t"].set_active("=basename" in old_h)
+        widgets["filename_t"].set_active("~basename" in old_h)
 
         # Remove the standard headers, and put the rest in the list.
-        for t in ["=d", "=#", "album", "artist", "genre", "year", "version",
-                  "performer", "title", "=basename"]:
+        for t in ["~#d", "~#t", "album", "artist", "genre", "year", "version",
+                  "performer", "title", "~basename"]:
             try: old_h.remove(t)
             except ValueError: pass
         widgets["extra_headers"].set_text(" ".join(old_h))
@@ -486,12 +490,12 @@ class GladeHandlers(object):
     def set_headers(*args):
         # Based on the state of the checkboxes, set up new column headers.
         new_h = []
-        if widgets["disc_t"].get_active(): new_h.append("=d")
-        if widgets["track_t"].get_active(): new_h.append("=#")
+        if widgets["disc_t"].get_active(): new_h.append("~#d")
+        if widgets["track_t"].get_active(): new_h.append("~#t")
         new_h.append("title")
         for h in ["version", "album", "artist", "performer", "year", "genre"]:
             if widgets[h + "_t"].get_active(): new_h.append(h)
-        if widgets["filename_t"].get_active(): new_h.append("=basename")
+        if widgets["filename_t"].get_active(): new_h.append("~basename")
         new_h.extend(widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))
@@ -620,6 +624,11 @@ class GladeHandlers(object):
 
     def artist_filter(item): filter_on_header('artist')
     def album_filter(item): filter_on_header('album')
+    def genre_filter(item): filter_on_header('genre')
+
+    def cur_artist_filter(item): filter_on_header('artist', CURRENT_SONG)
+    def cur_album_filter(item): filter_on_header('album', CURRENT_SONG)
+    def cur_genre_filter(item): filter_on_header('genre', CURRENT_SONG)
 
     def remove_song(item):
         view = widgets["songlist"]
@@ -708,8 +717,8 @@ class SongProperties(MultiInstanceWidget):
         self.fview.append_column(column)
         for song, ref in songrefs:
             self.fbasemodel.append(
-                row=[song, ref, song.get('=basename', ''),
-                     song.get('=dirname', ''), song['=filename']])
+                row=[song, ref, song.get('~basename', ''),
+                     song.get('~dirname', ''), song['~filename']])
 
         # tag by pattern
         self.tbp_entry = self.widgets["songprop_tbp_combo"].child
@@ -1023,11 +1032,11 @@ class SongProperties(MultiInstanceWidget):
         self.artist.set_markup(songinfo['artist'].safenicestr())
         self.title.set_markup(songinfo['title'].safenicestr())
         self.album.set_markup(songinfo['album'].safenicestr())
-        filename = util.unexpand(songinfo['=filename'].safenicestr())
+        filename = util.unexpand(songinfo['~filename'].safenicestr())
         self.filename.set_markup(filename)
 
         if len(self.songrefs) > 1:
-            listens = sum([song["=playcount"] for song, i in self.songrefs])
+            listens = sum([song["~#playcount"] for song, i in self.songrefs])
             if listens == 1: s = ("%d songs head") % listens
             else: s = _("%d songs heard") % listens
             self.played.set_markup("<i>%s</i>" % s)
@@ -1037,11 +1046,7 @@ class SongProperties(MultiInstanceWidget):
         self.model.clear()
         comments = {} # dict of dicts to see if comments all share value
 
-        # prune some 'comments' we don't want shown
-        for k in songinfo.keys():
-            if k.startswith('='): del(songinfo[k])
-
-        keys = songinfo.keys()
+        keys = songinfo.realkeys()
         keys.sort()
         # reverse order here so insertion puts them in proper order.
         for comment in ['album', 'artist', 'title']:
@@ -1071,7 +1076,7 @@ class SongProperties(MultiInstanceWidget):
         self.tn_model.clear()
         self.widgets["prop_tn_total"].set_value(len(self.songrefs))
         for song, ref in self.songrefs:
-            self.tn_model.append(row = [song, ref, song['=basename'],
+            self.tn_model.append(row = [song, ref, song['~basename'],
                                         song.get("tracknumber", "")])
 
     def songprop_tn_preview(self, *args):
@@ -1096,9 +1101,9 @@ class SongProperties(MultiInstanceWidget):
             ref = model[iter][1]
             track = model[iter][3]
             song["tracknumber"] = track
-            try: song["=#"] = int(track.split("/")[0])
+            try: song["~#t"] = int(track.split("/")[0])
             except ValueError:
-                try: del(song["=#"])
+                try: del(song["~#t"])
                 except KeyError: pass
             song.write()
             if ref: songref_update_view(song, ref)
@@ -1138,7 +1143,7 @@ class SongProperties(MultiInstanceWidget):
             if ascii:
                 newname = "".join(map(lambda c: ((ord(c) < 127 and c) or "_"),
                                       newname))
-            self.nbp_model.append(row=[song, ref, song['=basename'], newname])
+            self.nbp_model.append(row=[song, ref, song['~basename'], newname])
         self.nbp_preview.set_sensitive(False)
         self.save_nbp.set_sensitive(True)
 
@@ -1168,9 +1173,9 @@ class SongProperties(MultiInstanceWidget):
 
         def update_filename(model, path, iter):
             song = model[path][0]
-            model[path][2] = song['=basename']
-            model[path][3] = song['=dirname']
-            model[path][3] = song['=filename']
+            model[path][2] = song['~basename']
+            model[path][3] = song['~dirname']
+            model[path][3] = song['~filename']
         self.fbasemodel.foreach(update_filename)
 
         self.fill_property_info()
@@ -1221,7 +1226,7 @@ class SongProperties(MultiInstanceWidget):
         spls = config.get("settings", "splitters")
         # get info for all matches
         for song, ref in self.songrefs:
-            row = [song, ref, song['=basename']]
+            row = [song, ref, song['~basename']]
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
@@ -1313,14 +1318,16 @@ def text_parse(*args):
         widgets["query"].child.set_text(orig_text)
     return True
 
-def filter_on_header(header):
-    if header == "=#": header = "tracknumber"
-    elif header == "=d": header = "discnumber"
-    selection = widgets["songlist"].get_selection()
-    model, rows = selection.get_selected_rows()
+def filter_on_header(header, songs = None):
+    if header == "~#t": header = "tracknumber"
+    elif header == "~#d": header = "discnumber"
+    if songs is None:
+        selection = widgets["songlist"].get_selection()
+        model, rows = selection.get_selected_rows()
+        songs = [model[row][len(HEADERS)] for row in rows]
+
     values = {}
-    for row in rows:
-        song = model[row][len(HEADERS)]
+    for song in songs:
         if header in song:
             for val in song[header].split("\n"):
                 values[val] = True
@@ -1368,12 +1375,12 @@ def refresh_songlist():
     sl.set_model(widgets.songs)
     gc.collect()
 
-HEADERS = ["=#", "title", "album", "artist"]
-HEADERS_FILTER = { "=#": "track", "tracknumber": "track",
-                   "discnumber": "disc", "=d": "disc",
-                   "=lastplayed": "last played", "=filename": "full name",
-                   "=playcount": "play count", "=basename": "filename",
-                   "=dirname": "directory"}
+HEADERS = ["~#t", "title", "album", "artist"]
+HEADERS_FILTER = { "~#t": "track", "tracknumber": "track",
+                   "discnumber": "disc", "~#d": "disc",
+                   "~#lastplayed": "last played", "~filename": "full name",
+                   "~#playcount": "play count", "~basename": "filename",
+                   "~dirname": "directory"}
 
 CURRENT_SONG = [ None ]
 
@@ -1387,7 +1394,7 @@ def set_entry_color(entry, color):
 # Build a new filter around our list model, set the headers to their
 # new values.
 def set_column_headers(sl, headers):
-    SHORT_COLS = ["=#", "=d", "tracknumber", "discnumber"]
+    SHORT_COLS = ["~#t", "~#d", "tracknumber", "discnumber"]
     sl.set_model(None)
     widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)

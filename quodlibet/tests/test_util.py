@@ -118,7 +118,7 @@ class UtilTests(TestCase):
         self.assertEquals(pat.match(b1), btracktitle)
         self.assertEquals(pat.match(b2), vbtracktitle)
 
-        pat = PatternFromFile('<=#> - <title>')
+        pat = PatternFromFile('<~#t> - <title>')
         self.assertEquals(pat.match(f1), nomatch)
         self.assertEquals(pat.match(f2), nomatch)
         self.assertEquals(pat.match(f3), nomatch)
@@ -132,9 +132,9 @@ class UtilTests(TestCase):
                 if not isinstance(v, list): return v
                 else: return ', '.join(v)
 
-        s1 = { '=#':5, 'artist':'Artist', 'title':'Title5', '=basename':'a.mp3' }
-        s2 = { '=#':6, 'artist':'Artist', 'title':'Title6', '=basename':'b.ogg' }
-        s3 = { 'title': 'test/subdir', 'genre':['/','/'], '=basename':'a.flac' }
+        s1 = { '~#t':5, 'artist':'Artist', 'title':'Title5', '~basename':'a.mp3' }
+        s2 = { '~#t':6, 'artist':'Artist', 'title':'Title6', '~basename':'b.ogg' }
+        s3 = { 'title': 'test/subdir', 'genre':['/','/'], '~basename':'a.flac' }
         s1 = mocksong(s1); s2 = mocksong(s2); s3 = mocksong(s3);
 
         pat = FileFromPattern('<tracknumber>. <title>')
@@ -162,10 +162,10 @@ class UtilTests(TestCase):
         self.assertEquals(pat.match(s2), '06. .ogg')
         self.assertEquals(pat.match(s3), '. _, _.flac')
 
-        pat = FileFromPattern('<=#>. <genre> mu')
-        self.assertEquals(pat.match(s1), '<=#>.  mu.mp3')
-        self.assertEquals(pat.match(s2), '<=#>.  mu.ogg')
-        self.assertEquals(pat.match(s3), '<=#>. _, _ mu.flac')
+        pat = FileFromPattern('<~#t>. <genre> mu')
+        self.assertEquals(pat.match(s1), '<~#t>.  mu.mp3')
+        self.assertEquals(pat.match(s2), '<~#t>.  mu.ogg')
+        self.assertEquals(pat.match(s3), '<~#t>. _, _ mu.flac')
 
         self.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')

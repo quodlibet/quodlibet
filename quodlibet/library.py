@@ -22,7 +22,7 @@ def MusicFile(filename):
         if filename.lower().endswith(ext):
             try:
                 return supported[ext](filename)
-            except:
+            except None:
                 print "W: Error loading %s" % filename
                 return None
     else: return None
@@ -37,18 +37,18 @@ class AudioFile(dict):
         if not hasattr(other, "get"):
             raise ValueError("songs can only be compared to other songs.")
         return (cmp(self.get("album"), other.get("album")) or
-                cmp(self.get("=d"), other.get("=d")) or
-                cmp(self.get("=#"), other.get("=#")) or
+                cmp(self.get("~#d"), other.get("~#d")) or
+                cmp(self.get("~#t"), other.get("~#t")) or
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")))
 
     # True if our key's value is actually unknown, rather than just the
-    # string "Unknown".
+    # string "Unknown". Or true if we don't know the key at all.
     def unknown(self, key):
-        return isinstance(self.get(key), Unknown)
+        return ((key not in self) or (isinstance(self.get(key), Unknown)))
 
     def realkeys(self):
-        return filter(lambda s: s and "~" not in s and s[0] != "=" and
+        return filter(lambda s: s and "~" not in s and "=" not in s and
                                 not self.unknown(s),
                       self.keys())
 
@@ -61,19 +61,19 @@ class AudioFile(dict):
         else: return []
 
     def exists(self):
-        return os.path.exists(self.get("=filename"))
+        return os.path.exists(self.get("~filename", ""))
 
     def valid(self):
         return (self.exists() and
-                self.get("=mtime") == int(
-            os.stat(self['=filename'])[stat.ST_MTIME]))
+                self.get("~#mtime") == int(
+            os.stat(self['~filename'])[stat.ST_MTIME]))
 
     def rename(self, newname):
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
-        else: newname = os.path.join(self['=dirname'], newname)
+        else: newname = os.path.join(self['~dirname'], newname)
         if not os.path.exists(newname):
-            os.rename(self['=filename'], newname)
-        elif newname != self['=filename']: raise ValueError
+            os.rename(self['~filename'], newname)
+        elif newname != self['~filename']: raise ValueError
         self.sanitize(newname)
 
     def website(self):
@@ -98,37 +98,40 @@ class AudioFile(dict):
     def sanitize(self, filename = None):
         # File in our filename, either from what we were given or
         # our old tag name... FIXME: Remove migration after 0.4 or so.
-        if filename: self["=filename"] = filename
-        elif "filename" in self: self["=filename"] = self["filename"]
-        elif "=filename" not in self: raise ValueError("Unknown filename!")
+        if filename: self["~filename"] = filename
+        elif "filename" in self: self["~filename"] = self["filename"]
+        elif "=filename" in self: self["~filename"] = self["=filename"]
+        elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
-        self.setdefault("=lastplayed", 0)
-        self.setdefault("=playcount", 0)
-        self.setdefault("title", Unknown(util.decode(self['=basename'])))
+        self.setdefault("~#lastplayed", 0)
+        self.setdefault("~#playcount", 0)
+
+        self["~basename"] = os.path.basename(self['~filename'])
+        self["~dirname"] = os.path.dirname(self['~filename'])
+        self.setdefault("title", Unknown(util.decode(self['~basename'])))
         for i in ["artist", "album"]:
             self.setdefault(i, Unknown(_("Unknown")))
 
         # Derive disc and track numbers.
-        try: self["=#"] = int(self["tracknumber"].split("/")[0])
+        try: self["~#t"] = int(self["tracknumber"].split("/")[0])
         except (ValueError, KeyError):
-            if "=#" in self: del(self["=#"])
-        try: self["=d"] = int(self["discnumber"].split("/")[0])
+            if "~#t" in self: del(self["~#t"])
+        try: self["~#d"] = int(self["discnumber"].split("/")[0])
         except (ValueError, KeyError):
-            if "=d" in self: del(self["=d"])
+            if "~#d" in self: del(self["~#d"])
 
         # Clean up Vorbis garbage.
         try: del(self["vendor"])
         except KeyError: pass
 
         # Remove our old filename key.
-        if self.get("filename") == self["=filename"]: del(self["filename"])
+        if self.get("filename") == self["~filename"]: del(self["filename"])
+        if "=filename" in self: del(self["=filename"])
 
         # Fill in the remaining file stuff.
-        try: self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
-        except OSError: self["=mtime"] = 0
-        self["=basename"] = os.path.basename(self['=filename'])
-        self["=dirname"] = os.path.dirname(self['=filename'])
+        try: self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
+        except OSError: self["~#mtime"] = 0
 
     def to_markup(self):
         title = self.comma("title")
@@ -178,10 +181,10 @@ class AudioFile(dict):
         else: return "%s - %s" % (self.comma("album"), self.comma("title"))
 
     def get_played(self):
-        count = self["=playcount"]    
+        count = self["~#playcount"]    
         if count == 0: return _("Never")
         else:
-            t = time.localtime(self["=lastplayed"])
+            t = time.localtime(self["~#lastplayed"])
             tstr = time.strftime("%F, %X", t)
             return _("%d times, recently on %s") % (count, tstr)
 
@@ -221,7 +224,7 @@ class AudioFile(dict):
         self.sanitize()
 
     def find_cover(self):
-        base = os.path.split(self['=filename'])[0]
+        base = self['~dirname']
         fns = os.listdir(base)
         images = []
         fns.sort()
@@ -236,10 +239,10 @@ class AudioFile(dict):
                    score += 1
                if score: images.append((score, os.path.join(base, fn)))
         if images: return max(images)[1]
-        elif "=picture" in self:
+        elif "~picture" in self:
             import pyid3lib
             f = tempfile.NamedTemporaryFile()
-            tag = pyid3lib.tag(self['=filename'])
+            tag = pyid3lib.tag(self['~filename'])
             for frame in tag:
                 if frame["frameid"] == "APIC":
                     f.write(frame["data"])
@@ -311,7 +314,7 @@ class MP3File(AudioFile):
                 date[0] = frame["text"]
                 continue
             elif frame["frameid"] == "APIC" and frame["data"]:
-                self["=picture"] = "y"
+                self["~picture"] = "y"
                 continue
 
             names = self.IDS.get(frame["frameid"], [])
@@ -338,7 +341,7 @@ class MP3File(AudioFile):
 
     def write(self):
         import pyid3lib
-        tag = pyid3lib.tag(self['=filename'])
+        tag = pyid3lib.tag(self['~filename'])
         for key, id3name in self.INVERT_IDS.items():
             try:
                 while True: tag.remove(id3name)
@@ -363,7 +366,7 @@ class MP3File(AudioFile):
                 tag.append({'frameid': "TDAT", 'text': str(m+d)})
                 
         tag.update()
-        self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
+        self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
 
     def can_change(self, k=None):
         if k is None: return self.INVERT_IDS.keys()
@@ -383,14 +386,14 @@ class OggFile(AudioFile):
 
     def write(self):
         import ogg.vorbis
-        f = ogg.vorbis.VorbisFile(self['=filename'])
+        f = ogg.vorbis.VorbisFile(self['~filename'])
         comments = f.comment()
         comments.clear()
         for key in self.realkeys():
             value = self.list(key)
             for line in value: comments[key] = line
-        comments.write_to(self['=filename'])
-        self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
+        comments.write_to(self['~filename'])
+        self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
 
     def can_change(self, k = None):
         if k is None: return True
@@ -438,7 +441,7 @@ class FLACFile(AudioFile):
     def write(self):
         import flac.metadata
         chain = flac.metadata.Chain()
-        chain.read(self['=filename'])
+        chain.read(self['~filename'])
         it = flac.metadata.Iterator()
         it.init(chain)
         vc = None
@@ -553,13 +556,13 @@ class Library(dict):
         return random.choice(songs.keys())
 
     def rename(self, song, newfn):
-        oldfn = song['=filename']
+        oldfn = song['~filename']
         song.rename(newfn)
         del(self[oldfn])
-        self[song['=filename']] = song
+        self[song['~filename']] = song
 
     def remove(self, song):
-        del(self[song['=filename']])
+        del(self[song['~filename']])
 
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
@@ -590,11 +593,11 @@ class Library(dict):
             if type(song) not in supported.values(): continue
             if song.valid():
                 song.sanitize()
-                fn = song['=filename']
+                fn = song['~filename']
                 self[fn] = song
             else:
-                fn = song['=filename']
                 if song.exists():
+                    fn = song['~filename']
                     changed += 1
                     self[fn] = MusicFile(fn)
                     self[fn].sanitize()

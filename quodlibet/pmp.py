@@ -36,8 +36,8 @@ class CopyPMP(PMP):
         PMP.__init__(*args)
 
     def upload(self, song):
-        filename = song["=filename"]
-        basename = song["=basename"]
+        filename = song["~filename"]
+        basename = song["~basename"]
         dirname = os.path.basename(os.path.dirname(filename))
         target = os.path.join(self.base, dirname, basename)
         if not os.path.isdir(os.path.dirname(target)):
@@ -61,8 +61,8 @@ class IfpPMP(PMP):
         PMP.__init__(*args)
 
     def upload(self, song):
-        filename = song["=filename"]
-        basename = song["=basename"]
+        filename = song["~filename"]
+        basename = song["~basename"]
         dirname = os.path.basename(os.path.dirname(filename))
         target = os.path.join(dirname, basename)
 
@@ -85,7 +85,7 @@ class GenericPMP(PMP):
         PMP.__init__(self, *args)
 
     def upload(self, song):
-        filename = song["=filename"]
+        filename = song["~filename"]
         if "%s" in self.command:
             command = self.command.replace("%s", repr(filename))
         else:

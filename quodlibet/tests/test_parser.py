@@ -27,12 +27,12 @@ class ParserTests(TestCase):
                    "artist": "piman",
                    "title": "Quuxly",
                    "version": "cake mix",
-                   "=filename": "foobar.ogg",
+                   "~filename": "foobar.ogg",
                    },
                  { "album": "Foo the Bar",
                    "artist": "mu",
                    "title": "Rockin' Out",
-                   "=filename": "something.mp3",
+                   "~filename": "something.mp3",
                    "tracknumber": "12/15",
                  }]
         matchn = ["discnumber = /./",
@@ -41,7 +41,7 @@ class ParserTests(TestCase):
                   ]
         match0 = ["version = /./",
                   "* = /Tests/",
-                  "&(t = /Quuxly/, =filename = /.ogg/)",
+                  "&(t = /Quuxly/, ~filename = /.ogg/)",
                   "album = :Hate\: Tests:",
                   "album = /Hate\: Tests/",
                   ]
