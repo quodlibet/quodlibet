@@ -6,3 +6,4 @@
 - Figure out why loading text doesn't appear on throbber
 - Conform to more GTK/GNOME hotkeys, etc.
 - Correct shuffle/repeat interaction.
+- FLAC and MikMod support.

@@ -112,6 +112,7 @@ class GTKSongInfoWrapper(object):
             if model[iter][col] is song:
                 model[iter][col + 1] = 700
                 model.row_changed(path, iter)
+                widgets["songlist"].scroll_to_cell(path)
             elif model[iter][col] is last_song:
                 model[iter][col + 1] = 400
                 model.row_changed(path, iter)
@@ -284,7 +285,9 @@ class GladeHandlers(object):
         x, y = map(int, [event.x, event.y])
         path, col, cellx, celly = view.get_path_at_pos(x, y)
         view.grab_focus()
-        view.set_cursor(path, col, 0)
+        selection = view.get_selection()
+        if selection.count_selected_rows() < 2:
+            view.set_cursor(path, col, 0)
         widgets["songs_popup"].popup(None,None,None, event.button, event.time)
         return True
 
@@ -310,9 +313,174 @@ class GladeHandlers(object):
     def song_properties(item):
         view = widgets["songlist"]
         path, col = view.get_cursor()
-        iter = widgets.songs.get_iter(path)
-        song = widgets.songs.get_value(iter, len(HEADERS))
-        print song # FIXME: dialog
+        #iter = widgets.songs.get_iter(path)
+        #song = widgets.songs.get_value(iter, len(HEADERS))
+        selection = widgets["songlist"].get_selection()
+        model, rows = selection.get_selected_rows()
+        songiters = [ [model[row][len(HEADERS)],
+                      gtk.TreeRowReference(model, row)] for row in rows]
+        make_song_properties(songiters)
+
+class MultiInstanceWidget(object):
+
+    def __init__(self, file=None, widget=None):
+        self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget)
+        self.widgets.signal_autoconnect(self)
+
+    def songprop_close(self, button):
+        self.window.destroy()
+
+    def songprop_save_click(self, button):
+
+        updated = {}
+        deleted = {}
+        def create_property_dict(model, path, iter):
+            row = model[iter]
+            if row[2] and not row[4]: updated[row[0]] = row[1]
+            if row[2] and row[4]: deleted[row[0]] = 1
+        self.model.foreach(create_property_dict)
+
+        for song, iter in self.songiters:
+            song.update(updated)
+            for key in deleted:
+                del song[key]
+            #song.write()
+            print 'INVOKE the WRITE:', song
+            iter = iter.get_path()
+            if iter is not None:
+                widgets.songs[iter] = [song[h] for h in HEADERS] + [song, 400]
+
+        self.save.set_sensitive(False)
+        self.revert.set_sensitive(False)
+        self.fill_property_info()
+
+    def songprop_revert_click(self, button):
+        self.save.set_sensitive(False)
+        self.revert.set_sensitive(False)
+        self.fill_property_info()
+
+    def songprop_toggle(self, renderer, path, model):
+        it = model.get_iter(path)
+        model[it][2] = not model[it][2]
+
+    def songprop_edit(self, renderer, path, new, model, colnum):
+        it = model.get_iter(path)
+        if model[it][colnum] != new:
+            model[it][colnum] = new
+            model[it][2] = True
+            self.save.set_sensitive(True)
+            self.revert.set_sensitive(True)
+
+    def songprop_selection_changed(self, selection):
+        model, iter = selection.get_selected()
+        may_remove = bool(selection.count_selected_rows()) and model[iter][3]
+        self.remove.set_sensitive(may_remove)
+
+    def songprop_add(self, button):
+        print 'FIXME: code songprop_add'
+
+    def songprop_remove(self, button):
+        model, iter = self.view.get_selection().get_selected()
+        row = model[iter]
+        if row[0] in self.existing_comments:
+            row[1] = 'Deleted'
+            row[2] = True
+            row[4] = True
+        else:
+            model.remove(iter)
+        self.save.set_sensitive(True)
+        self.revert.set_sensitive(True)
+
+    def fill_property_info(self):
+        if len(self.songiters) == 1:
+            self.window.set_title("%s - Properties" %
+                    self.songiters[0][0]["title"])
+        elif len(self.songiters) > 1:
+            self.window.set_title("%s and %d more - Properties" %
+                    (self.songiters[0][0]["title"], len(self.songiters)-1))
+        else:
+            raise ValueError("Properties of no songs?")
+        artist = {}
+        title = {}
+        album = {}
+        filename = {}
+        for song, iter in self.songiters:
+            artist.setdefault(song["artist"], 0)
+            title.setdefault(song["title"], 0)
+            album.setdefault(song["album"], 0)
+            filename.setdefault(song["filename"], 0)
+        for w, v, m in [ (self.artist, artist, 'Artists'),
+                         (self.title, title, 'Titles'),
+                         (self.album, album, 'Albums'),
+                         (self.filename, filename, 'Files') ]:
+            if len(v) > 1:
+                w.set_markup("<i>%d %s</i>" % (len(v), m))
+            else:
+                w.set_text(v.keys()[0])
+
+        self.model.clear()
+        comments = {} # dict of dicts to see if comments all share value
+        for song, iter in self.songiters:
+            for k, v in song.iteritems():
+                if k.startswith('=') or k == 'filename': continue
+                comval = comments.setdefault(k, {})
+                comval.setdefault(v, True)
+                comval[v] = comval[v] and song.can_change(k)
+
+        keys = comments.keys()
+        keys.sort()
+        # reverse order here so insertion puts them in proper order.
+        for comment in ['album', 'artist', 'title']:
+            try: keys.remove(comment)
+            except ValueError: pass
+            else: keys.insert(0, comment)
+
+        for comment in keys:
+            valdict = comments[comment]
+            if len(valdict) == 1:
+                value, mayedit = valdict.items()[0]
+            else:
+                value = '(%s variants of %s)' % (len(valdict), comment)
+                mayedit = min(valdict.values())
+            self.model.append(row=[comment, value, False, mayedit, False])
+
+        self.existing_comments = comments.keys()[:]
+
+def make_song_properties(songiters):
+    dlg = MultiInstanceWidget(widget="properties_window")
+    dlg.window = dlg.widgets.get_widget('properties_window')
+    dlg.save = dlg.widgets.get_widget('songprop_save')
+    dlg.revert = dlg.widgets.get_widget('songprop_revert')
+    dlg.artist = dlg.widgets.get_widget('songprop_artist')
+    dlg.title = dlg.widgets.get_widget('songprop_title')
+    dlg.album = dlg.widgets.get_widget('songprop_album')
+    dlg.filename = dlg.widgets.get_widget('songprop_file')
+    dlg.view = dlg.widgets.get_widget('songprop_view')
+    dlg.add = dlg.widgets.get_widget('songprop_add')
+    dlg.remove = dlg.widgets.get_widget('songprop_remove')
+    # comment, value, use-changes, edit, deleted
+    dlg.model = gtk.ListStore(str, str, bool, bool, bool)
+    dlg.view.set_model(dlg.model)
+    dlg.songiters = songiters
+    selection = dlg.view.get_selection()
+    selection.connect('changed', dlg.songprop_selection_changed)
+
+    render = gtk.CellRendererToggle()
+    column = gtk.TreeViewColumn('Write', render, active=2, activatable=3)
+    render.connect('toggled', dlg.songprop_toggle, dlg.model)
+    dlg.view.append_column(column)
+    render = gtk.CellRendererText()
+    render.connect('edited', dlg.songprop_edit, dlg.model, 0)
+    column = gtk.TreeViewColumn('Property', render, text=0)
+    dlg.view.append_column(column)
+    render = gtk.CellRendererText()
+    render.connect('edited', dlg.songprop_edit, dlg.model, 1)
+    column = gtk.TreeViewColumn('Value', render, text=1, editable=3)
+    dlg.view.append_column(column)
+
+    dlg.fill_property_info()
+
+    dlg.window.show()
 
 # Non-Glade handlers:
 
@@ -426,6 +594,7 @@ def set_column_headers(sl):
 def setup_nonglade():
     # Set up the main song list store.
     sl = widgets["songlist"]
+    sl.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
     widgets.songs = gtk.ListStore(object)
     set_column_headers(sl)
     refresh_songlist()
