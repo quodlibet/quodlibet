@@ -1,3 +1,11 @@
+quodlibet (0.7-1) unstable; urgency=low
+
+  * New upstream release.
+  * Split package into arch: all (quodlibet) and arch: any (quodlibet-ext)
+    components.
+
+ -- Joe Wreschnig <piman@debian.org>  Fri, 17 Dec 2004 18:41:59 -0600
+
 quodlibet (0.6-1) unstable; urgency=low
 
   * Build-Depend on libmodplug-dev.
