@@ -93,10 +93,15 @@ class GTKSongInfoWrapper(object):
 
             cover = song.find_cover()
             if cover:
-                pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
-                pixbuf = pixbuf.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
-                self.image.set_from_pixbuf(pixbuf)
-                if config.state("cover"): self.enable_cover()
+                try:
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
+                except:
+                    self.image.set_from_pixbuf(None)
+                    self.disable_cover()
+                else:
+                    self.image.set_from_pixbuf(p)
+                    if config.state("cover"): self.enable_cover()
+                    
             else:
                 self.image.set_from_pixbuf(None)
                 self.disable_cover()
