@@ -43,18 +43,23 @@ a format perspective (yet), but it might let us avoid threading problems.
 Support for more audio formats
 ------------------------------
 Monkey's Audio is the most requested (i.e., everything else requested
-has been implemented), but MA is not a freely licensed codec.
+has been implemented), but MA is not a freely licensed codec. Maybe
+we should support WAV? Other possibilities are forms of M4A/AAC,
+RM, WMA, if free libraries exist to read from them.
 
 Format restructuring
 --------------------
 Rather than monolithic library/player files, import modules in a directory
-"plugin"-style: mp3.py, oggvorbis.py, etc.
+"plugin"-style: mp3.py, oggvorbis.py, etc., and use __import__.
 
-Covers from Muine
------------------
+Covers from Muine, RB
+---------------------
 Muine uses a pixmap serialization function to save to a BDB database.
 This function is not available directly from PyGTK. If it was, this
 would be easy.
+
+RB's album cover patch is immature, but so far just stores JPGs
+in ~/.gnome2/rhythmbox.
 
 Browser modes
 -------------
@@ -69,6 +74,26 @@ More unit tests
 ---------------
 Really, they're crap now.
 
+PMP Interfacing
+---------------
+The current PMP system is designed for small devices that manage playlists.
+Large (multi-GB) ones have different needs, and instead should use (partial)
+mirror of the library.
+
+Iñigo suggested using a "shared" flagin the song metadata, which would
+(on the user's request) copy the filesystem structure to the device;
+the device would be tracked with HAL/DBUS.
+
+Another way would be to store an "alternate filenames" list with each
+song. This would let you use multiple devices/filesystems at once, but
+I don't think that's a common enough use case to justify the complexity.
+
+HAL/DBUS
+--------
+We could use the article hal/dbus part to know when a device is
+plugged in, and trigger a library refresh if it's in our scan directories
+or masked list. This is a good idea even without the above stuff.
+
 Rewrite parser
 --------------
 Support queries like the following:
@@ -77,9 +102,17 @@ Support queries like the following:
  #(3 < track <= 10)	|(&(#(track > 3), #(track < 10)), #(track = 10))
  #(disc != 0)		!#(disc = 0)	
 
+less(1)-like case sensitivity behavior, at least for "dumb" searches.
+
 New keys
 --------
-Time added to library, number of times skipped, rating.
+Time added to library, number of times skipped, rating, file size?
+
+More options in rename-by-tag
+-----------------------------
+Fredrik Liljegren has posted about this on the mailing list. Conjoined
+tags with a custom join string are probably a good idea. Support for
+"default" and "macrod" values are also possible.
 
 Others
 ------

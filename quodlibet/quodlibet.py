@@ -2712,20 +2712,19 @@ def cleanup(*args):
         except OSError: pass
 
 if __name__ == "__main__":
+    basedir = os.path.split(os.path.realpath(__file__))[0]
+    sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
+    i18ndir = "/usr/share/locale"
+
     import locale, gettext
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
     from util import to
 
-    basedir = os.path.split(os.path.realpath(__file__))[0]
-    i18ndir = "/usr/share/locale"
-
     gettext.bindtextdomain("quodlibet")
     gettext.textdomain("quodlibet")
     gettext.install("quodlibet", unicode = True)
     _ = gettext.gettext
-
-    sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
 
     import const
 

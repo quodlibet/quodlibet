@@ -48,6 +48,12 @@ Optional:
  PyFLAC/PyModPlug/PyMusepack:
 	http://sacredchao.net/~piman/software/python.shtml
 
+To compile the status icon and multimedia key support, run
+ $ make extensions
+
+To install Quod Libet system-wide, run
+ # make install
+
 ==[ Debian / Debian-based OSs
 
 Packages of Quod Libet are available in Debian since version 0.7. They

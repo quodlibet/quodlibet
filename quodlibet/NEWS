@@ -1,10 +1,7 @@
 Recent upgrade notes:
 ---------------------
-If you want ALSA support and were using QL prior to 0.7, you will need
-to change your 'backend' option to 'ao:alsa09' (which is the new default).
-
-0.8
- - New/reloaded libraries take about 80% previous disk space.
+0.8 - I make jokes about whomever I please!
+ - New/reloaded libraries take 20% less disk space.
  - Double-clicking an album cover displays it in a larger window.
  - --shuffle, --repeat, and --volume (--volume-up and --volume-down are
    deprecated and will be removed).
@@ -14,6 +11,8 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - The MPC/MP+ format is supported (with a separate wrapper).
  - FLAC supports ReplayGain.
  - Internal changes made some things faster and others slower.
+ - Polish translation, thanks to Michal Nowikowski.
+ - German translation, thanks to Bastian Kleineidam.
 
 0.7 - I'm going to ho-ho-hoard all these nuts!
  - Default to proper 'alsa09' driver (rather than 'alsa').
