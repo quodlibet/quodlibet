@@ -54,6 +54,10 @@ class Runner:
         suite(result)
         result.printErrors()
 
-def unit():
+def unit(run = []):
     runner = Runner()
-    for suite in suites: runner.run(suite)
+    for test in suites:
+        if not run or test.__name__ in run: runner.run(test)
+
+if __name__ == "__main__":
+    unit(sys.argv[1:])

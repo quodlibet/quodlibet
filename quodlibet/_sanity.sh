@@ -1,9 +1,12 @@
 #!/bin/sh
 
-echo "Proceding to doubt the sanity of the developers."
-
-make test
-
-grep "except None:" *.py */*.py
-./quodlibet.py --help > /dev/null
-./quodlibet.py --version > /dev/null
+if test "$1" = "--help" -o "$1" = "-h"; then
+ echo "Usage: $0 --sanity | [TestName] ..."
+ exit 0
+elif [ "$1" = "--sanity" ]; then
+ echo "Running static sanity checks."
+ grep "except None:" *.py */*.py
+ exit $?
+else
+ python -c "import tests; tests.unit('$*'.split())"
+fi

@@ -42,8 +42,5 @@ extensions: $(EXTENSIONS)
 	cd $^ && make $@ && cd ..
 	cp $^/$@ .
 
-test:
-	@python -c "import tests; tests.unit()"
-
 po-data:
 	cd po && make po
