@@ -8,11 +8,12 @@
 # $Id$
 
 import os, sys
-import gc, time, shutil, signal
+import gc, sre, time, shutil, signal
 import gtk, pango
 
-import config, const, util, library, player, parser
+import config, const, util, player, parser
 from util import to
+from library import library
 
 if sys.version_info < (2, 4):
     from sets import Set as set
