@@ -45,6 +45,9 @@ def check_flac():
     except ImportError: return False
     else: return True
 
+def check_mod():
+    return iscommand("mikmod")
+
 def decode(s):
     try: return s.decode("utf-8")
     except UnicodeError:

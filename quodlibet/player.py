@@ -24,6 +24,9 @@ class AudioPlayer(object):
     def __init__(self):
         self.stopped = False
 
+    def pause(self): pass
+    def unpause(self): pass
+
     def end(self):
         self.stopped = True
 
@@ -149,6 +152,30 @@ class OggPlayer(AudioPlayer):
                 bytes = len(buff)
             self.dev.play(buff, bytes)
         return int(self.audio.time_tell() * 1000)
+
+class ModPlayer(AudioPlayer):
+    def __init__(self, dev, song):
+        AudioPlayer.__init__(self)
+        self.dev = dev
+        self.dev.set_info(44100, 2)
+        self.start = time.time()
+        self.fin, self.fout = os.popen2(
+            ("mikmod","--norc","-q","-d","stdout","-X",song["=filename"]))
+        self.length = 1
+        self.off = abs(time.time() - time.time())
+
+    def __iter__(self): return self
+    def seek(self, ms): pass
+
+    def next(self):
+        if self.stopped:
+            self.fout.close()
+            raise StopIteration
+        else:
+            s = self.fout.read(BUFFER_SIZE)
+            if s: self.dev.play(s, len(s))
+            else: self.stopped = True
+        return 0
 
 def FilePlayer(dev, song):
     for ext in supported.keys():
@@ -291,7 +318,7 @@ class PlaylistPlayer(object):
                 f.close()
                 if self.shuffle: random.shuffle(self.playlist)
                 try: self.player = FilePlayer(self.output, self.song)
-                except:
+                except None:
                     self.paused = True
                     self.info.missing_song(self.song)
                     self.played.append(self.song)
@@ -440,6 +467,15 @@ def init(devid):
     if util.check_ogg(): supported[".ogg"] = OggPlayer
     if util.check_mp3(): supported[".mp3"] = MP3Player
     if util.check_flac(): supported[".flac"] = FLACPlayer
+
+    if util.check_mod():
+        for fmt in ["669", "amf", "dsm", "gdm", "imf", "it",
+                    "med", "mod", "mtm", "s3m", "stm", "stx",
+                    "ult", "uni", "apun", "xm"]:
+            supported["." + fmt] = ModPlayer
+            supported["." + fmt + ".gz"] = ModPlayer
+            supported["." + fmt + ".bz2"] = ModPlayer
+
 
     try: import ao
     except ImportError: outputs['ao'] = OSSProxy

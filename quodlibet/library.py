@@ -394,6 +394,17 @@ class OggFile(AudioFile):
         if k is None: return True
         else: return (k and k not in ["vendor"] and "=" not in k and "~" not in k)
 
+class ModFile(AudioFile):
+    def __init__(self, filename):
+        self.sanitize(filename)
+        self["title"] = ".".join(self["=basename"].split(".")[:-1])
+
+    def write(self):
+        raise TypeError("ModFiles do not support writing!")
+
+    def can_change(self, k = None):
+        return False
+
 class FLACFile(AudioFile):
     def __init__(self, filename):
         import flac.metadata
@@ -644,6 +655,16 @@ def init(cache_fn = None):
     if util.check_flac():
         print _("Enabling FLAC support.")
         supported[".flac"] = FLACFile
+
+    if util.check_mod():
+        print _("Enabling MikMod support.")
+        for fmt in ["669", "amf", "dsm", "gdm", "imf", "it",
+                    "med", "mod", "mtm", "s3m", "stm", "stx",
+                    "ult", "uni", "apun", "xm"]:
+            supported["." + fmt] = ModFile
+            supported["." + fmt + ".gz"] = ModFile
+            supported["." + fmt + ".bz2"] = ModFile
+            
 
     global library
     library = Library(config.get("settings", "masked").split(":"))

@@ -1,7 +1,6 @@
 - More unit tests.
-- Full FLAC support.
+- Full FLAC and MikMod support.
 - Various skipping problems -- get smarter about Python threads.
-- MikMod support.
 - Import covers from Muine.
   - We need to deserialize the pixmap data, whatever it's doing, which
     doesn't seem to be exposed via PyGTK.
