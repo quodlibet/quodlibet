@@ -199,8 +199,7 @@ def make_chooser(title, initial_dir = None):
 
 # Display the error dialog.
 def make_error(title, description, buttons):
-    text = "<span size='xx-large'>%s</span>\n\n%s" % (
-        util.escape(title), util.escape(description))
+    text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
     dialog = gtk.MessageDialog(widgets["main_window"],
                                gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                                gtk.MESSAGE_ERROR,
@@ -811,11 +810,25 @@ class MultiInstanceWidget(object):
             ref = model[path][1]
             oldname = model[path][2]
             newname = model[path][3]
-            print "Renaming", oldname, "to", newname
+            try:
+                song.rename(newname)
+                if ref: songref_update_view(song, ref)
+            except:
+                d = make_error(_("Unable to rename %s") % util.escape(oldname),
+                               _("Renaming <b>%s</b> to <b>%s</b> failed. "
+                                 "Possibly the target file already existed, "
+                                 "or you do not have permission to make the "
+                                 "new file or remove the old one.") %(
+                    util.escape(oldname), util.escape(newname)),
+                               gtk.BUTTONS_OK)
+                resp = d.run()
+                d.destroy()
+                return True
             win.step()
         self.nbp_model.foreach(rename)
         self.save_nbp.set_sensitive(False)
         win.end()
+        self.fill_property_info()
 
     def tbp_changed(self, *args):
         self.tbp_preview.set_sensitive(True)

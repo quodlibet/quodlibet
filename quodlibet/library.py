@@ -65,6 +65,14 @@ class AudioFile(dict):
                 self.get("=mtime") == int(
             os.stat(self['=filename'])[stat.ST_MTIME]))
 
+    def rename(self, newname):
+        if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
+        else: newname = os.path.join(self['=dirname'], newname)
+        if not os.path.exists(newname):
+            os.rename(self['=filename'], newname)
+        elif newname != self['=filename']: raise ValueError
+        self.sanitize(newname)
+
     def website(self):
         if "website" in self: return self.list("website")[0]
         for cont in self.list("contact"):
