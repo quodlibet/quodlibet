@@ -15,6 +15,7 @@ import parser
 import ossaudiodev # barf
 import util
 import time
+import stat
 import os
 
 BUFFER_SIZE = 2**12
@@ -53,10 +54,21 @@ class FLACPlayer(AudioPlayer):
         self.dec = flac.decoder.FileDecoder()
         self.dec.set_md5_checking(False);
         self.dec.set_filename(filename)
-        self.dec.set_metadata_ignore_all()
+        self.dec.set_metadata_respond_all()
         self.dec.set_write_callback(self._player)
-        self.dec.set_metadata_callback(lambda *args: None)
+        self.dec.set_metadata_callback(self._grab_stream_info)
         self.dec.set_error_callback(lambda *args: None)
+        self.dec.init()
+        self.dec.process_until_end_of_metadata()
+        self._size = os.stat(filename)[stat.ST_SIZE]
+
+    def _grab_stream_info(self, dec, block):
+        if block.type == flac.metadata.STREAMINFO:
+            streaminfo = block.data.stream_info
+            self._samples = streaminfo.total_samples
+            self._srate = streaminfo.sample_rate / 100
+            self.length = (self._samples * 10) / self._srate
+            self._bps = streaminfo.bits_per_sample
 
     def _player(self, dec, buff, size):
         device.play(buff, size)
@@ -70,16 +82,15 @@ class FLACPlayer(AudioPlayer):
         if not self.dec.process_single():
             self.dec.finish()
             raise StopIteration
-        #return dec.get_decode_position() / 1000
-        return 0
+        pos = self.dec.get_decode_position()
+        return int(self.length * (float(pos) / self._size))
 
     def __iter__(self):
-        self.dec.init()
-        self.dec.process_until_end_of_metadata()
         return self
 
-    def seek(self, ms):
-        pass # FIXME
+    def seek(self, ms): pass
+        #samp = int((float(ms) / self.length) * self._samples)
+        #self.dec.seek_absolute(samp)
 
     def end(self):
         AudioPlayer.end(self)
