@@ -4,3 +4,5 @@ quodlibet.py
 util.py
 po/tag-names.py
 formats/audio.py
+exfalso.py
+widgets.py
