@@ -220,8 +220,7 @@ class OggFile(AudioFile):
             else:
                 value = self[key]
                 if not isinstance(value, list): value = value.split("\n")
-                if len(value) == 1: value = value[0]
-                comments[key] = value
+                for line in value: comments[key] = line
         comments.write_to(self['filename'])
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
 

@@ -358,7 +358,8 @@ class MultiInstanceWidget(object):
                     changed = True
             for key in deleted:
                 if song.can_change(key) and key in song:
-                    song.remove(key, deleted[key])
+                    try: song.remove(key, deleted[key])
+                    except ValueError: del(song[key])
                     changed = True
 
             if changed:
@@ -489,12 +490,14 @@ class MultiInstanceWidget(object):
             else: keys.insert(0, comment)
 
         for comment in keys:
+            orig_value = songinfo[comment].split("\n")
             value = songinfo[comment].safenicestr()
             edited = False
             edit = songinfo.can_change(comment)
             deleted = False
-            for v in value.split("\n"):
-                self.model.append(row=[comment, v, edited, edit, deleted, v])
+            for i, v in enumerate(value.split("\n")):
+                self.model.append(row=[comment, v, edited, edit, deleted,
+                                       orig_value[i]])
 
         self.add.set_sensitive(bool(songinfo.can_change()))
 
