@@ -2145,8 +2145,8 @@ class MainWindow(gtk.Window):
         text = text.strip()
         if self.browser.background:
             try: bg = config.get("browsers", "background").decode('utf-8')
-            except UnicodeError: bg = None
-        else: bg = None
+            except UnicodeError: bg = ""
+        else: bg = ""
         if player.playlist.playlist_from_filters(text, bg):
             if sort:
                 self.songlist.set_sort_by(None, tag=sort, refresh=False)
