@@ -4,9 +4,9 @@ Quod Libet is a music library management program. Rather than categorize
 songs by genre, artist, and album, it keeps them all in one list that
 you can filter however you want.
 
-Quod Libet is designed for use with Ogg Vorbis and FLAC audio files,
-but has support for MP3 files following the ID3v1 and v2 "standards",
-and tracked formats like MOD and XM.
+Quod Libet supports the Ogg Vorbis, FLAC, MP3, MOD/XM/IT, and MPC
+file formats for playback. Tag editing and other features may vary
+from format to format.
 
 For a longer description and list of features, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#features.
@@ -44,8 +44,9 @@ of them probably come with your OS distribution.
 
 Optional:
  Modplug:		http://modplug-xmms.sourceforge.net
- PyFLAC:		http://people.debian.org/~piman/pf
  PyAO (for ALSA):	http://www.andrewchatham.com/pyogg/
+ PyFLAC/PyModPlug/PyMusepack:
+	http://sacredchao.net/~piman/software/python.shtml
 
 ==[ Debian / Debian-based OSs
 

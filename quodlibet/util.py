@@ -18,9 +18,7 @@ os.path.mtime = mtime
 # Make a directory, including all directories below it.
 def mkdir(dir):
     if not os.path.isdir(dir):
-        base = os.path.dirname(dir)
-        if base and not os.path.isdir(base): mkdir(base)
-        os.mkdir(dir)
+        os.makedirs(dir)
 
 # Escape a string in a manner suitable for XML/Pango.
 def escape(str):
@@ -105,6 +103,14 @@ def format_time_long(time):
         else: time_str += _("1 second")
         
     return time_str.rstrip(" ,")
+
+def fscoding():
+    if "CHARSET" in env: return env["CHARSET"]
+    elif "G_BROKEN_FILENAMES" in env:
+        cset = env.get("LC_CTYPE", "foo.utf-8")
+        if "." in cset: return cset.split(".")[-1]
+        else: return "utf-8"
+    else: return "utf-8"
 
 def decode(s):
     try: return s.decode("utf-8")
