@@ -470,7 +470,7 @@ class MultiInstanceWidget(object):
                     added.setdefault(row[0], [])
                     added[row[0]].append(util.decode(row[1]))
             if row[2] and row[4]:
-                if row[5]: deleted[row[0]] = util.decode(row[5])
+                if row[5] is not None: deleted[row[0]] = util.decode(row[5])
         self.model.foreach(create_property_dict)
 
         progress = widgets["writing_progress"]
@@ -479,6 +479,7 @@ class MultiInstanceWidget(object):
         widgets["write_window"].show()
         saved = 0
         progress.set_fraction(0.0)
+        while gtk.events_pending(): gtk.main_iteration()
         for song, ref in self.songrefs:
             changed = False
             for key, (new_value, old_value) in updated.iteritems():
