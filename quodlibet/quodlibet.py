@@ -1912,8 +1912,10 @@ class SongProperties(object):
 
         def _title(self, song):
             w = gtk.Label()
-            text = "<b><span size='x-large'>%s</span></b>" % song("title")
-            if "version" in song: text += "\n" + song.comma("version")
+            text = "<b><span size='x-large'>%s</span></b>" %(
+                util.escape(song("title")))
+            if "version" in song:
+                text += "\n" + util.escape(song.comma("version"))
             w.set_markup(text)
             w.set_alignment(0, 0)
             return w
@@ -2110,7 +2112,7 @@ class SongProperties(object):
                 c.destroy()
             if len(songrefs) == 1: self._update_one(songrefs[0])
             else: self._update_many(songrefs)
-            self.widget.show_all()
+            self.box.show_all()
 
     class EditTags(object):
         def __init__(self, parent):
@@ -3023,7 +3025,8 @@ class SongProperties(object):
                 row = [song, song("~basename"), song("~dirname"),
                        song["~filename"]])
 
-        selection.select_all()
+        if len(songrefs) > 1: selection.select_all()
+        else: self.update(songrefs)
         self.window.add(vbox)
         self.window.connect('destroy', self.close)
         self.window.show_all()
@@ -3044,7 +3047,6 @@ class SongProperties(object):
         if songs is not None: self.songrefs = songs
         elif widgets.main.current_song in self.songrefs:
             widgets.main.update_markup(widgets.main.current_song)
-        
         for page in self.pages: page.update(self.songrefs)
         if len(self.songrefs) == 1:
             self.window.set_title(_("%s - Properties") %
