@@ -761,6 +761,7 @@ class PanedBrowser(Browser, gtk.HBox):
             self._songs = []
             self._selected_items = []
             self.child.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+            self.child.connect_object('destroy', self.child.set_model, None)
             self.__sig = self.child.get_selection().connect(
                 'changed', self.__selection_changed)
 
@@ -1232,6 +1233,7 @@ class MainWindow(gtk.Window):
     def song_update_view(self, song):
         if song is None:
             self.songlist.refresh()
+            self.browser.update()
         else:
             try: path = (player.playlist.get_playlist().index(song),)
             except ValueError: pass
@@ -2999,13 +3001,13 @@ class SongProperties(gtk.Window):
                             util.escape(song('~basename')))).run()
                         library.reload(song)
                         player.playlist.refilter()
-                        self.cb(None)
                         break
                     self.cb(song)
 
                 if win.step(): break
 
             win.end()
+            self.cb(None)
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
             self.prop.update()
@@ -3251,7 +3253,6 @@ class SongProperties(gtk.Window):
                             util.escape(song('~basename')))).run()
                         library.reload(song)
                         player.playlist.refilter()
-                        self.cb(None)
                         return True
                     self.cb(song)
 
@@ -3259,6 +3260,7 @@ class SongProperties(gtk.Window):
         
             self.model.foreach(save_song)
             win.end()
+            self.cb(None)
             self.save.set_sensitive(False)
             self.prop.update()
 
@@ -3389,6 +3391,7 @@ class SongProperties(gtk.Window):
             self.prop.refill()
             self.prop.update()
             self.save.set_sensitive(False)
+            self.cb(None)
             win.end()
 
         def update(self, songs):
@@ -3525,12 +3528,12 @@ class SongProperties(gtk.Window):
                         util.escape(song('~basename')))).run()
                     library.reload(song)
                     player.playlist.refilter()
-                    self.cb(None)
                     return True
                 self.cb(song)
                 return win.step()
             self.model.foreach(settrack)
             self.prop.update()
+            self.cb(None)
             win.end()
 
         def changed(self, *args):
