@@ -220,10 +220,7 @@
 	  <child>
 	    <widget class="GtkLabel" id="currentsong">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">&lt;span weight=&quot;bold&quot; size=&quot;x-large&quot;&gt;Song Title&lt;/span&gt;
-       &lt;small&gt;&lt;b&gt;Crazy Mix&lt;/b&gt;&lt;/small&gt;
-     &lt;small&gt;by Artist Name&lt;/small&gt;
-   From &lt;b&gt;Album Name&lt;/b&gt; - 1/19</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">True</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
