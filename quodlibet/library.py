@@ -135,6 +135,9 @@ class Library(dict):
     def __init__(self, initial = {}):
         dict.__init__(self, initial)
 
+    def remove(self, song):
+        del(self[song['filename']])
+
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
         f = file(fn, "w")

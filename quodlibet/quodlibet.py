@@ -277,7 +277,10 @@ class GladeHandlers(object):
         view = widgets["songlist"]
         path, col = view.get_cursor()
         iter = widgets.songs.get_iter(path)
-        widgets.songs.remove(iter) # FIXME: remove from library
+        song = widgets.songs.get_value(iter, len(HEADERS))
+        widgets.songs.remove(iter)
+        library.remove(song)
+        player.playlist.remove(song)
 
     def song_properties(item):
         view = widgets["songlist"]
@@ -473,8 +476,7 @@ def load_cache():
     print "Changed %d songs, deleted %d songs" % (c, d)
     if config.get("settings", "scan"):
         for a, c in library.scan(config.get("settings", "scan").split(":")):
-            if a or c:
-                print "Added %d songs, changed %d songs" % (a, c)
+            pass
 
 def save_cache():
     from library import library

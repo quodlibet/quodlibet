@@ -133,6 +133,15 @@ class PlaylistPlayer(object):
         self.refilter()
         return True
 
+    def remove(self, song):
+        self.lock.acquire()
+        self.orig_playlist.remove(song)
+        try: self.playlist.remove(song)
+        except ValueError: pass
+        try: self.played.remove(song)
+        except ValueError: pass
+        self.lock.release()
+
     def play(self, info):
         self.info = info
         while not self.quit:
