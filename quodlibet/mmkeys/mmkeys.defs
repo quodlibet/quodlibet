@@ -1,5 +1,3 @@
-;; Copyright 2004 Joe Wreschnig
-
 (define-object MmKeys
   (in-module "MM")
   (parent "GtkPlug")
