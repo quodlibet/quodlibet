@@ -9,6 +9,7 @@
 import os, stat
 import cPickle as Pickle
 import util; from util import escape
+import fcntl
 import time
 
 def MusicFile(filename):
@@ -398,13 +399,18 @@ class Library(dict):
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
         f = file(fn, "w")
+        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         songs = filter(lambda s: s and os.path.exists(s["filename"]),
                        self.values())
         Pickle.dump(songs, f, 2)
         f.close()
 
     def load(self, fn):
-        if os.path.exists(fn): songs = Pickle.load(file(fn, "rb"))
+        if os.path.exists(fn):
+            f = file(fn, "rb")
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            songs = Pickle.load(f)
+            f.close()
         else: return 0, 0
         removed, changed = 0, 0
         for song in songs:
