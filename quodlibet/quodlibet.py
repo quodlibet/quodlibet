@@ -458,12 +458,14 @@ class MultiInstanceWidget(object):
             row = model[iter]
             # Edited, and or and not Deleted
             if row[2] and not row[4]:
-                if row[5]: updated[row[0]] = (row[1], row[5])
+                if row[5] is not None:
+                    updated[row[0]] = (util.decode(row[1]),
+                                       util.decode(row[5]))
                 else:
                     added.setdefault(row[0], [])
-                    added[row[0]].append(row[1])
+                    added[row[0]].append(util.decode(row[1]))
             if row[2] and row[4]:
-                if row[5]: deleted[row[0]] = row[5]
+                if row[5]: deleted[row[0]] = util.decode(row[5])
         self.model.foreach(create_property_dict)
 
         progress = widgets["writing_progress"]
