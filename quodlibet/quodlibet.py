@@ -117,6 +117,10 @@ class PreferencesWindow(MultiInstanceWidget):
         self.widgets["pmp_entry"].set_text(config.get("pmp", "location"))
         self.widgets["run_entry"].set_text(config.get("pmp", "command"))
 
+        try: import gosd
+        except ImportError: self.widgets["osd_combo"].set_sensitive(False)
+        self.widgets["osd_combo"].set_active(config.getint("settings", "osd"))
+
     def pmp_changed(self, combobox):
         driver = self.widgets["pmp_combo"].get_active()
         config.set('pmp', 'driver', str(driver))
@@ -142,7 +146,7 @@ class PreferencesWindow(MultiInstanceWidget):
         new_h.extend(self.widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))
-        set_column_headers(self.widgets["songlist"], new_h)
+        self.set_column_headers(self.widgets["songlist"], new_h)
 
     def toggle_cover(self, toggle):
         config.set("settings", "cover", str(bool(toggle.get_active())))
@@ -295,6 +299,7 @@ class GnomeOsd(object):
 
     def show_osd(self, song):
         if not self.gosd: return
+        elif config.getint("settings", "osd") == 0: return
         if self.window: self.window.destroy()
 
         msg = "\xe2\x99\xaa <span foreground='yellow'>%s</span>" %(
@@ -315,7 +320,11 @@ class GnomeOsd(object):
         self.window = self.gosd.osd(msg, "black", "yellow",
                                     pango.FontDescription("sans 16"),
                                     use_markup = True)
-        self.window.move(gtk.gdk.screen_width()/2-self.window.width/2, 5)
+        if config.getint("settings", "osd") == 1:
+            self.window.move(gtk.gdk.screen_width()/2-self.window.width/2, 5)
+        else:
+            self.window.move(gtk.gdk.screen_width()/2 - self.window.width/2,
+                             gtk.gdk.screen_height()-self.window.height-48)
         self.window.show()
         self.level += 1
         gtk.timeout_add(10000, self.unshow)

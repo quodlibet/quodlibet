@@ -29,6 +29,7 @@ def init(rc_file):
     _config.add_section("pmp")
     _config.set("settings", "scan", "")
     _config.set("settings", "gain", "2")
+    _config.set("settings", "osd", "0")
 
     _config.set("settings", "shuffle", "false")
     _config.set("settings", "repeat", "false")

@@ -11,6 +11,7 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - Right-clicking on the status icon brings up a menu.
  - --play, --pause, --seek-to, --query, --play-file.
  - GNOME OSD (gosd) support, thanks to Iñigo Serna.
+ - FreeDesktop-style .folder.png files are support for album covers.
 
 0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).
