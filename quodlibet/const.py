@@ -24,6 +24,7 @@ CREDITS = ["Joe Wreschnig",
            "Jan Arne Petersen",
            "Gustavo J. A. M. Carneiro"]
 
+TBP = os.path.join(DIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\
 <tracknumber>. <title>
 <tracknumber> - <title>
@@ -31,6 +32,7 @@ TBP_EXAMPLES = """\
 <artist> - <album>/<tracknumber>. <title>
 <artist>/<album>/<tracknumber> - <title>"""
 
+NBP = os.path.join(DIR, "lists", "renamepatterns")
 NBP_EXAMPLES = """\
 <tracknumber>. <title>
 <tracknumber|<tracknumber>. ><title>

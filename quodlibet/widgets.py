@@ -2955,9 +2955,8 @@ class SongProperties(gtk.Window):
             self.prop = prop
             self.set_property('border-width', 12)
             hbox = gtk.HBox(spacing = 12)
-            combo = gtk.combo_box_entry_new_text()
-            for line in const.TBP_EXAMPLES.split("\n"):
-                combo.append_text(line)
+            self.combo = combo = qltk.ComboBoxEntrySave(
+                const.TBP, const.TBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
             self.entry = combo.child
             self.entry.connect('changed', self.changed)
@@ -3024,6 +3023,10 @@ class SongProperties(gtk.Window):
                       "it has unbalanced brackets (&lt; / &gt;).")%(
                     util.escape(pattern_text))).run()
                 return
+            else:
+                if pattern_text:
+                    self.combo.prepend_text(pattern_text)
+                    self.combo.write(const.TBP)
 
             invalid = []
 
@@ -3155,14 +3158,13 @@ class SongProperties(gtk.Window):
             self.prop = prop
             self.set_border_width(12)
             hbox = gtk.HBox(spacing = 12)
-            combo = gtk.combo_box_entry_new_text()
-            for line in const.NBP_EXAMPLES.split("\n"):
-                combo.append_text(line)
+            self.combo = combo = qltk.ComboBoxEntrySave(
+                const.NBP, const.NBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
             self.entry = combo.child
             self.entry.connect('changed', self.changed)
             self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
-            self.preview.connect('clicked', self.preview_files)
+            self.preview.connect('clicked', self.preview_files, combo)
             hbox.pack_start(self.preview, expand = False)
             self.pack_start(hbox, expand = False)
 
@@ -3223,7 +3225,7 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(False)
             self.preview.set_sensitive(bool(self.entry.get_text()))
 
-        def preview_files(self, *args):
+        def preview_files(self, button, combo):
             self.update(self.songs)
             self.save.set_sensitive(True)
             self.preview.set_sensitive(False)
@@ -3276,7 +3278,11 @@ class SongProperties(gtk.Window):
                       "it from the / directory.")%(
                     util.escape(pattern))).run()
                 return
-            
+            else:
+                if self.entry.get_text():
+                    self.combo.prepend_text(self.entry.get_text())
+                    self.combo.write(const.NBP)
+
             for song in self.songs:
                 newname = pattern.match(song)
                 code = util.fscoding()
