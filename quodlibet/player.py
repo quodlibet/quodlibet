@@ -53,7 +53,6 @@ class FLACPlayer(AudioPlayer):
     def __init__(self, dev, filename):        
         AudioPlayer.__init__(self)
         self.dev = dev
-        self.length = 100 # FIXME
         self.dec = flac.decoder.FileDecoder()
         self.dec.set_md5_checking(False);
         self.dec.set_filename(filename)
@@ -233,9 +232,9 @@ class PlaylistPlayer(object):
         while not self.quit:
             while self.playlist:
                 self.lock.acquire()
+                if self.shuffle: random.shuffle(self.playlist)
                 self.song = self.playlist.pop(0)
                 fn = self.song['filename']
-                if self.shuffle: random.shuffle(self.playlist)
                 config.set("memory", "song", fn)
                 f = file(dump_fn, "w")
                 f.write(self.song.to_dump())
