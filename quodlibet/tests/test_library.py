@@ -23,8 +23,8 @@ class AudioFileTest(TestCase):
     def test_getters(self):
         song1 = AudioFile({ "a": "foo\nbar", "b": "foobar",
                             "~filename": "DNE",
-                            "~mtime": 0, "=foobar": 2,
-                            "album": Unknown("Unknown")})
+                            "~mtime": 0, "album": Unknown("foo"),
+                            })
         self.failUnlessEqual(song1.comma("a"), "foo, bar")
         self.failUnlessEqual(song1.comma("b"), "foobar")
         self.failUnlessEqual(song1.comma("c"), "")

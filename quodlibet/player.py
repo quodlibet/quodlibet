@@ -87,6 +87,7 @@ class FLACPlayer(AudioPlayer):
         self.dec.set_write_callback(self._player)
         self.dec.set_metadata_callback(self._grab_stream_info)
         self.dec.set_error_callback(lambda *args: None)
+        self.dev.set_info(44100, 2)
         self.dec.init()
         self.dec.process_until_end_of_metadata()
         self.pos = 0

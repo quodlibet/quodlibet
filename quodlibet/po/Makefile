@@ -17,7 +17,6 @@ quodlibet.pot: ../quodlibet.glade ../quodlibet.py ../library.py ../pmp.py tag-na
 
 clean:
 	rm -f quodlibet.pot quodlibet.glade.h
-	for F in $(ALL_LINGUAS); do rm -rf $$F; done
 
 distclean: clean
 	rm -f *~
