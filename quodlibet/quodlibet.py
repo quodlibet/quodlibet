@@ -277,8 +277,8 @@ class DeleteDialog(object):
             b.child.pack_start(l)
             self.dialog.add_action_widget(b, 0)
 
-        self.dialog.add_button('gtk-cancel', 1)
-        self.dialog.add_button('gtk-delete', 2)
+        self.dialog.add_button(gtk.STOCK_CANCEL, 1)
+        self.dialog.add_button(gtk.STOCK_DELETE, 2)
 
         hbox = gtk.HBox()
         i = gtk.Image()
@@ -347,7 +347,7 @@ class WaitLoadWindow(object):
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
             hbox = gtk.HBox(spacing = 6, homogeneous = True)
-            b1 = gtk.Button(stock = 'gtk-stop')
+            b1 = gtk.Button(stock = gtk.STOCK_STOP)
             b2 = gtk.ToggleButton()
             b2.add(gtk.HBox(spacing = 2))
             i = gtk.Image()
@@ -505,15 +505,13 @@ class PlaylistWindow(object):
     def initialize_window(self, name):
         win = self.win = gtk.Window()
         win.set_destroy_with_parent(True)
-        win.set_default_size(400,400)
+        win.set_default_size(400, 400)
         win.set_border_width(12)
 
-        vbox = self.vbox = gtk.VBox()
-        vbox.set_spacing(6)
+        vbox = self.vbox = gtk.VBox(spacing = 6)
         win.add(vbox)
 
-        hbox = gtk.HBox()
-        hbox.set_spacing(6)
+        hbox = gtk.HBox(spacing = 6)
         bar = SearchBar(hbox, _("Add Results"), self.add_query_results)
         vbox.pack_start(hbox, expand = False, fill = False)
 
@@ -641,12 +639,20 @@ class PlaylistBar(object):
         self.combo.set_active(0)
         hbox.pack_start(self.combo)
 
-        self.button = gtk.Button("Edit")
+        self.button = gtk.Button()
+        self.button2 = gtk.Button()
+        # FIXME: Switch to STOCK_EDIT in 2.6.
+        self.button.add(gtk.image_new_from_stock(gtk.STOCK_INDEX,
+                                                  gtk.ICON_SIZE_MENU))
+        self.button2.add(gtk.image_new_from_stock(gtk.STOCK_REFRESH,
+                                                 gtk.ICON_SIZE_MENU))
         self.button.set_sensitive(False)
+        self.button2.set_sensitive(False)
+        hbox.pack_start(self.button2, expand = False)
         hbox.pack_start(self.button, expand = False)
-
         self.button.connect('clicked', self.edit_current)
         self.combo.connect('changed', self.list_selected)
+        self.button2.connect('clicked', self.list_selected)
 
         self.cb = cb
         hbox.show_all()
@@ -657,8 +663,9 @@ class PlaylistBar(object):
         self.combo.destroy()
 
     def list_selected(self, box):
-        active = box.get_active()
+        active = self.combo.get_active()
         self.button.set_sensitive(active != 0)
+        self.button2.set_sensitive(active != 0)
         if active == 0:
             self.cb("", None)
         else:
@@ -841,9 +848,6 @@ class MainWindow(MultiInstanceWidget):
         # Show main window.
         self.restore_size()
         self.window.show()
-
-        # TEST: show a playlist before it's actually hooked in
-        # PlaylistWindow('default')
 
     def restore_size(self):
         try: w, h = map(int, config.get("memory", "size").split())
@@ -1043,10 +1047,11 @@ class MainWindow(MultiInstanceWidget):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
     def new_playlist(self, activator):
+        options = map(PlayList.prettify_name, library.playlists())
         name = GetStringDialog(self.window, _("New Playlist..."),
                                _("Enter a name for the new playlist. If it "
                                  "already exists it will be opened for "
-                                 "editing.")).run()
+                                 "editing."), options).run()
         if name:
             PlaylistWindow(name)
 
@@ -1405,7 +1410,7 @@ class MainWindow(MultiInstanceWidget):
         while gtk.events_pending(): gtk.main_iteration()
         player.playlist.playlist_from_filter(query)
         while gtk.events_pending(): gtk.main_iteration()
-        player.playlist.sort_by(key)
+        self.songlist.set_sort_by(None, key, False)
         while gtk.events_pending(): gtk.main_iteration()
         self.refresh_songlist()
 
@@ -1478,10 +1483,11 @@ class SongList(object):
     songlistviews = WeakKeyDictionary()
     headers = []
 
-    def __init__(self, view):
+    def __init__(self, view, recall = 0):
         self.view = view
         self.view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.songlistviews[self] = None     # register self
+        self.recall_size = recall
         self.set_column_headers(self.headers)
 
     def set_all_column_headers(cls, headers):
@@ -1507,11 +1513,13 @@ class SongList(object):
         if len(headers) == 0: return
         SHORT_COLS = ["tracknumber", "discnumber", "~length"]
         SLOW_COLS = ["~basename", "~dirname", "~filename"]
-        try: ws = map(int, config.get("memory", "widths").split())
-        except: ws = []
+        if not self.recall_size:
+            try: ws = map(int, config.get("memory", "widths").split())
+            except: ws = []
+        else: ws =[]
 
         if len(ws) != len(headers):
-            width = self.view.get_allocation()[2]
+            width = self.recall_size or self.view.get_allocation()[2]
             c = sum([(x.startswith("~#") and 0.2) or 1 for x in headers])
             width = int(width // c)
             ws = [width] * len(headers)
@@ -1573,7 +1581,7 @@ class PlayList(SongList):
         self.name = 'playlist_' + PlayList.normalize_name(name)
         self.key = '~#' + self.name
         model = self.model = gtk.ListStore(object, int)
-        super(PlayList, self).__init__(view)
+        super(PlayList, self).__init__(view, 400)
 
         for song in library.query('#(%s > 0)' % self.name, sort=self.key):
             model.append([song, 400])
@@ -1630,17 +1638,21 @@ class MainSongList(SongList):
         column.connect('notify::width', self.save_widths)
 
     # Resort based on the header clicked.
-    def set_sort_by(self, header, tag):
-        s = header.get_sort_order()
-        if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
-            s = gtk.SORT_ASCENDING
-        else: s = gtk.SORT_DESCENDING
+    def set_sort_by(self, header, tag, refresh = True):
+        s = gtk.SORT_ASCENDING
+        if header:
+            s = header.get_sort_order()
+            if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
+                s = gtk.SORT_ASCENDING
+            else: s = gtk.SORT_DESCENDING
+
         for h in self.view.get_columns():
             h.set_sort_indicator(False)
-        header.set_sort_indicator(True)
-        header.set_sort_order(s)
+        if header:
+            header.set_sort_indicator(True)
+            header.set_sort_order(s)
         player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
-        self.refresh()
+        if refresh: self.refresh()
 
     # Clear the songlist and readd the songs currently wanted.
     def refresh(self, current=None):
@@ -1666,24 +1678,30 @@ class MainSongList(SongList):
         return i, length
 
 class GetStringDialog(object):
-    def __init__(self, parent, title, text):
+    def __init__(self, parent, title, text, options = []):
         self.dialog = gtk.Dialog(parent = parent, title = title)
         self.dialog.connect('close', self.destroy)
         self.dialog.set_property('border-width', 12)
         self.dialog.set_resizable(False)
-        self.dialog.add_buttons('gtk-cancel', gtk.RESPONSE_CANCEL,
-                                'gtk-new', gtk.RESPONSE_OK)
-        self.dialog.vbox.set_property('spacing', 9)
+        self.dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                gtk.STOCK_NEW, gtk.RESPONSE_OK)
+        self.dialog.vbox.set_spacing(6)
         self.dialog.set_default_response(gtk.RESPONSE_OK)
 
-        self.val = gtk.Entry()
-        box = gtk.VBox()
-        box.set_property('spacing', 6)
+        box = gtk.VBox(spacing = 6)
         lab = gtk.Label(text)
         lab.set_line_wrap(True)
         lab.set_justify(gtk.JUSTIFY_CENTER)
         box.pack_start(lab)
-        box.pack_start(self.val)
+
+        if options:
+            self.entry = gtk.combo_box_entry_new_text()
+            for o in options: self.entry.append_text(o)
+            self.val = self.entry.child
+            box.pack_start(self.entry)
+        else:
+            self.val = gtk.Entry()
+            box.pack_start(self.val)
         self.dialog.vbox.pack_start(box)
 
     def run(self):
@@ -1716,9 +1734,9 @@ class AddTagDialog(object):
         self.dialog.connect('close', self.destroy)
         self.dialog.set_property('border-width', 12)
         self.dialog.set_resizable(False)
-        self.dialog.add_buttons('gtk-cancel', gtk.RESPONSE_CANCEL,
-                                'gtk-add', gtk.RESPONSE_OK)
-        self.dialog.vbox.set_property('spacing', 9)
+        self.dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                gtk.STOCK_ADD, gtk.RESPONSE_OK)
+        self.dialog.vbox.set_spacing(9)
         self.dialog.set_default_response(gtk.RESPONSE_OK)
         table = gtk.Table(2, 2)
         table.set_row_spacings(6)
