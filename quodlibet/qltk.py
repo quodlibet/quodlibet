@@ -10,6 +10,29 @@
 import gtk
 import util
 
+# A dialog window with "smart" formatting for the text, uses markup, and
+# defaults to an "OK" button, destroying itself after running.
+class Message(gtk.MessageDialog):
+    def __init__(self, kind, parent, title, description, buttons = None):
+        buttons = buttons or gtk.BUTTONS_OK
+        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
+        gtk.MessageDialog.__init__(
+            self, parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            kind, buttons)
+        self.set_markup(text)
+
+    def run(self, destroy = True):
+        gtk.MessageDialog.run(self)
+        if destroy: self.destroy()
+
+class ErrorMessage(Message):
+    def __init__(self, *args):
+        Message.__init__(self, gtk.MESSAGE_ERROR, *args)
+
+class WarningMessage(Message):
+    def __init__(self, *args):
+        Message.__init__(self, gtk.MESSAGE_WARNING, *args)
+
 class Notebook(gtk.Notebook):
     def append_page(self, page, label = None):
         if label is not None:

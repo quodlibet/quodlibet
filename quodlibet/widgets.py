@@ -43,27 +43,6 @@ class FileChooser(object):
         self.dialog.destroy()
         return resp, fns
 
-class Message(object):
-    def __init__(self, kind, parent, title, description, buttons = None):
-        buttons = buttons or gtk.BUTTONS_OK
-        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
-        self.dialog = gtk.MessageDialog(
-            parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            kind, buttons)
-        self.dialog.set_markup(text)
-
-    def run(self):
-        self.dialog.run()
-        self.dialog.destroy()
-
-class ErrorMessage(Message):
-    def __init__(self, *args):
-        Message.__init__(self, gtk.MESSAGE_ERROR, *args)
-
-class WarningMessage(Message):
-    def __init__(self, *args):
-        Message.__init__(self, gtk.MESSAGE_WARNING, *args)
-
 # FIXME: replace with a standard About widget when using GTK 2.6.
 class AboutWindow(object):
     def __init__(self, parent):
@@ -113,11 +92,10 @@ class AboutWindow(object):
     def show(self):
         self.window.present()
 
-class PreferencesWindow(object):
-    class Browser(object):
+class PreferencesWindow(gtk.Window):
+    class Browser(gtk.VBox):
         def __init__(self, tips):
-            self.widget = qltk.Frame(
-                _("Visible Columns"), border = 12, bold = True)
+            gtk.VBox.__init__(self)
             self.title = _("Browser")
             vbox = gtk.VBox(spacing = 12)
             buttons = {}
@@ -174,7 +152,9 @@ class PreferencesWindow(object):
             hbox.pack_start(apply, expand = False)
             vbox.pack_start(hbox, expand = False)
 
-            self.widget.child.add(vbox)
+            frame = qltk.Frame(_("Visible Columns"), border = 12, bold = True,
+                               child = vbox)
+            self.pack_start(frame, expand = False)
 
         def apply(self, button, buttons, tiv, aip, others):
             headers = []
@@ -278,10 +258,10 @@ class PreferencesWindow(object):
             if config.state("cover"): widgets.main.enable_cover()
             else: widgets.main.disable_cover()        
 
-    class Library(object):
+    class Library(gtk.VBox):
         def __init__(self, tips):
-            self.widget = gtk.VBox(spacing = 12)
-            self.widget.set_border_width(12)
+            gtk.VBox.__init__(self, spacing = 12)
+            self.set_border_width(12)
             self.title = _("Library")
             f = qltk.Frame(_("Scan _Directories"), bold = True)
             hb = gtk.HBox(spacing = 6)
@@ -296,7 +276,7 @@ class PreferencesWindow(object):
             b.connect('clicked', self.select, e, const.HOME)
             e.connect('changed', self.changed, 'scan')
             f.child.add(hb)
-            self.widget.pack_start(f, expand = False)
+            self.pack_start(f, expand = False)
 
             f = qltk.Frame(_("_Masked Directories"), bold = True)
             vb = gtk.VBox(spacing = 6)
@@ -323,7 +303,7 @@ class PreferencesWindow(object):
             b.connect('clicked', self.select, e, dir)
             e.connect('changed', self.changed, 'mask')
             f.child.add(vb)
-            self.widget.pack_start(f, expand = False)
+            self.pack_start(f, expand = False)
 
             f = qltk.Frame(_("Tag Editing"), bold = True)
             vbox = gtk.VBox(spacing = 6)
@@ -347,7 +327,7 @@ class PreferencesWindow(object):
             vbox.pack_start(hb, expand = False)
             vbox.pack_start(cb, expand = False)
             f.child.add(vbox)
-            self.widget.pack_start(f)
+            self.pack_start(f)
 
         def toggle(self, c, name):
             config.set("settings", name, str(bool(c.get_active())))
@@ -364,41 +344,36 @@ class PreferencesWindow(object):
                        util.fsencode(entry.get_text().decode('utf-8')))
 
     def __init__(self, parent):
-        self.window = gtk.Window()
-        self.window.set_title(_("Quod Libet Preferences"))
-        self.window.set_border_width(12)
-        self.window.set_resizable(False)
-        self.window.set_transient_for(parent)
-        self.window.add(gtk.VBox(spacing = 12))
+        gtk.Window.__init__(self)
+        self.set_title(_("Quod Libet Preferences"))
+        self.set_border_width(12)
+        self.set_resizable(False)
+        self.set_transient_for(parent)
+        self.add(gtk.VBox(spacing = 12))
         self.tips = gtk.Tooltips()
         n = qltk.Notebook()
         n.append_page(self.Browser(self.tips))
         n.append_page(self.Player(self.tips))
         n.append_page(self.Library(self.tips))
 
-        self.window.child.pack_start(n)
+        self.child.pack_start(n)
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        button = qltk.Button(stock = gtk.STOCK_CLOSE,
-                             cb = lambda b, w: w.destroy(),
-                             user_data = [self.window])
+        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.destroy)
         bbox.pack_start(button)
-        self.window.child.pack_start(bbox, expand = False)
-        self.window.connect('destroy', self.destroy)
-        self.window.child.show_all()
+        self.connect('delete-event', self.destroy)
+        self.child.pack_start(bbox, expand = False)
+        self.child.show_all()
 
-    def destroy(self, window):
-        del(self.window)
+    def destroy(self, activator, event = None):
+        gtk.Window.destroy(self)
         try: del(widgets.preferences)
         except AttributeError: pass
         self.tips.destroy()
         del(self.tips)
         config.write(const.CONFIG)
-
-    def present(self):
-        self.window.show()
-        self.window.present()
+        return True
 
 class DeleteDialog(object):
     def __init__(self, parent, files):
@@ -1498,11 +1473,11 @@ class MainWindow(object):
                 print to(_("Opening web browser: %s") % s)
                 if os.system(s + " &") == 0: break
         else:
-            ErrorMessage(self.window,
-                         _("Unable to start a web browser"),
-                         _("A web browser could not be found. Please set "
-                           "your $BROWSER variable, or make sure "
-                           "/usr/bin/sensible-browser exists.")).run()
+            qltk.ErrorMessage(self.window,
+                              _("Unable to start a web browser"),
+                              _("A web browser could not be found. Please set "
+                                "your $BROWSER variable, or make sure "
+                                "/usr/bin/sensible-browser exists.")).run()
 
     def play_pause(self, *args):
         if self.current_song is None: player.playlist.reset()
@@ -1721,12 +1696,12 @@ class MainWindow(object):
                         os.unlink(filename)
                     library.remove(song)
                 except:
-                    ErrorMessage(self.window,
-                                 _("Unable to remove file"),
-                                 _("Removing <b>%s</b> failed. "
-                                   "Possibly the target file does not exist, "
-                                   "or you do not have permission to "
-                                   "remove it.") % (filename)).run()
+                    qltk.ErrorMessage(
+                        self.window, _("Unable to remove file"),
+                        _("Removing <b>%s</b> failed. "
+                          "Possibly the target file does not exist, "
+                          "or you do not have permission to "
+                          "remove it.") % (filename)).run()
                     break
                 else:
                     w.step(w.current + 1, w.count)
@@ -2810,17 +2785,17 @@ class SongProperties(object):
                 value = add.get_value()
                 date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
                 if not self.songinfo.can_change(comment):
-                    ErrorMessage(
+                    qltk.ErrorMessage(
                         self.prop.window, _("Invalid tag"),
                         _("Invalid tag <b>%s</b>\n\nThe files currently"
                           " selected do not support editing this tag.")%
                         util.escape(comment)).run()
 
                 elif comment == "date" and not date.match(value):
-                    ErrorMessage(self.prop.window, _("Invalid date"),
-                                 _("Invalid date: <b>%s</b>.\n\n"
-                                   "The date must be entered in YYYY or "
-                                   "YYYY-MM-DD format.") % value).run()
+                    qltk.ErrorMessage(self.prop.window, _("Invalid date"),
+                                      _("Invalid date: <b>%s</b>.\n\n"
+                                        "The date must be entered in YYYY or "
+                                        "YYYY-MM-DD format.") % value).run()
                 else:
                     self.add_new_tag(comment, value)
                     break
@@ -2886,11 +2861,11 @@ class SongProperties(object):
                 if changed:
                     try: song.write()
                     except:
-                        ErrorMessage(self.prop.window,
-                                     _("Unable to edit song"),
-                                     _("Saving <b>%s</b> failed. The file "
-                                       "may be read-only, corrupted, or you "
-                                       "do not have permission to edit it.")%(
+                        qltk.ErrorMessage(
+                            self.prop.window, _("Unable to edit song"),
+                            _("Saving <b>%s</b> failed. The file "
+                              "may be read-only, corrupted, or you "
+                              "do not have permission to edit it.")%(
                             util.escape(song('~basename')))).run()
                         library.reload(song)
                         player.playlist.refilter()
@@ -2913,10 +2888,10 @@ class SongProperties(object):
             row = model[path]
             date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if row[0] == "date" and not date.match(new):
-                WarningMessage(self.prop.window, _("Invalid date format"),
-                               _("Invalid date: <b>%s</b>.\n\n"
-                                 "The date must be entered in YYYY or "
-                                 "YYYY-MM-DD format.") % new).run()
+                qltk.WarningMessage(self.prop.window, _("Invalid date format"),
+                                    _("Invalid date: <b>%s</b>.\n\n"
+                                      "The date must be entered in YYYY or "
+                                      "YYYY-MM-DD format.") % new).run()
             elif row[colnum].replace('<i>','').replace('</i>','') != new:
                 row[colnum] = util.escape(new)
                 row[2] = True # Edited
@@ -3043,11 +3018,11 @@ class SongProperties(object):
             self.view.set_model(None)
             try: pattern = util.PatternFromFile(pattern_text)
             except sre.error:
-                ErrorMessage(self.prop.window,
-                             _("Invalid pattern"),
-                             _("The pattern\n\t<b>%s</b>\nis invalid. "
-                               "Possibly it contains the same tag twice or "
-                               "it has unbalanced brackets (&lt; / &gt;).")%(
+                qltk.ErrorMessage(
+                    self.prop.window, _("Invalid pattern"),
+                    _("The pattern\n\t<b>%s</b>\nis invalid. "
+                      "Possibly it contains the same tag twice or "
+                      "it has unbalanced brackets (&lt; / &gt;).")%(
                     util.escape(pattern_text))).run()
                 return
 
@@ -3066,8 +3041,8 @@ class SongProperties(object):
                     msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
                             " selected do not support editing these tags.")
                     
-                ErrorMessage(self.prop.window, title,
-                             msg % ", ".join(invalid)).run()
+                qltk.ErrorMessage(self.prop.window, title,
+                                  msg % ", ".join(invalid)).run()
                 return
 
             rep = self.space.get_active()
@@ -3134,11 +3109,11 @@ class SongProperties(object):
                         song.sanitize()
                         song.write()
                     except:
-                        ErrorMessage(self.prop.window,
-                                     _("Unable to edit song"),
-                                     _("Saving <b>%s</b> failed. The file "
-                                       "may be read-only, corrupted, or you "
-                                       "do not have permission to edit it.")%(
+                        qltk.ErrorMessage(
+                            self.prop.window, _("Unable to edit song"),
+                            _("Saving <b>%s</b> failed. The file "
+                              "may be read-only, corrupted, or you "
+                              "do not have permission to edit it.")%(
                             util.escape(song('~basename')))).run()
                         library.reload(song)
                         player.playlist.refilter()
@@ -3266,7 +3241,7 @@ class SongProperties(object):
                     library.rename(song, newname)
                     songref_update_view(song)
                 except:
-                    ErrorMessage(
+                    qltk.ErrorMessage(
                         self.prop.window,
                         _("Unable to rename file"),
                         _("Renaming <b>%s</b> to <b>%s</b> failed. "
@@ -3294,15 +3269,14 @@ class SongProperties(object):
             try:
                 pattern = util.FileFromPattern(pattern)
             except ValueError: 
-                d = ErrorMessage(
+                qltk.ErrorMessage(
                     self.prop.window,
                     _("Pattern with subdirectories is not absolute"),
                     _("The pattern\n\t<b>%s</b>\ncontains / but "
                       "does not start from root. To avoid misnamed "
                       "directories, root your pattern by starting "
                       "it from the / directory.")%(
-                    util.escape(pattern)))
-                d.run()
+                    util.escape(pattern))).run()
                 return
             
             for song in self.songs:
@@ -3407,11 +3381,11 @@ class SongProperties(object):
                 song["tracknumber"] = track
                 try: song.write()
                 except:
-                    ErrorMessage(self.prop.window,
-                                 _("Unable to edit song"),
-                                 _("Saving <b>%s</b> failed. The file may be "
-                                   "read-only, corrupted, or you do not have "
-                                   "permission to edit it.")%(
+                    qltk.ErrorMessage(
+                        self.prop.window, _("Unable to edit song"),
+                        _("Saving <b>%s</b> failed. The file may be "
+                          "read-only, corrupted, or you do not have "
+                          "permission to edit it.")%(
                         util.escape(song('~basename')))).run()
                     library.reload(song)
                     player.playlist.refilter()
@@ -3617,10 +3591,10 @@ def init():
     return widgets.main
 
 def error_and_quit():
-    ErrorMessage(None,
-                 _("No audio device found"),
-                 _("Quod Libet was unable to open your audio device. "
-                   "Often this means another program is using it, or "
-                   "your audio drivers are not configured.\n\nQuod Libet "
-                   "will now exit.")).run()
+    qltk.ErrorMessage(None,
+                      _("No audio device found"),
+                      _("Quod Libet was unable to open your audio device. "
+                        "Often this means another program is using it, or "
+                        "your audio drivers are not configured.\n\nQuod Libet "
+                        "will now exit.")).run()
     gtk.main_quit()
