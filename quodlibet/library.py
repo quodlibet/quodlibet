@@ -113,6 +113,9 @@ class MP3File(AudioFile):
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
             except: pass
 
+    def write(self):
+        print "E: Cannot write to MP3s yet"
+
 class OggFile(AudioFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
@@ -130,6 +133,18 @@ class OggFile(AudioFile):
             except: pass
         try: del(self["vendor"])
         except KeyError: pass
+
+    def write(self):
+        tags = {}
+        for key in self.keys():
+            if key == "filename" or key[0] == "=": continue
+            else:
+                value = self[key]
+                if not isinstance(value, list): value = value.split("\n")
+                if len(value) == 1: value = value[0]
+                tags[key] = value
+        comments = ogg.vorbis.VorbisComment(tags)
+        comments.write_to(self['filename'])
 
 class Library(dict):
     def __init__(self, initial = {}):
