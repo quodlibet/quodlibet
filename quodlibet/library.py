@@ -104,6 +104,7 @@ class AudioFile(dict):
         # Fill in necessary values.
         self.setdefault("~#lastplayed", 0)
         self.setdefault("~#playcount", 0)
+        self.setdefault("~#length", 0)
 
         self["~basename"] = os.path.basename(self['~filename'])
         self["~dirname"] = os.path.dirname(self['~filename'])
