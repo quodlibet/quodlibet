@@ -3452,17 +3452,16 @@ class SongProperties(gtk.Window):
 
     def __init__(self, songrefs, callback = None):
         gtk.Window.__init__(self)
-        self._callback = callback
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.tips = gtk.Tooltips()
         self.pages = []
         self.notebook = qltk.Notebook()
-        self.pages = [Ctr(self, self._callback) for Ctr in
+        self.pages = [Ctr(self, callback) for Ctr in
                       [self.Information, self.EditTags, self.TagByFilename,
                        self.RenameFiles]]
         if len(songrefs) > 1:
-            self.pages.append(self.TrackNumbers(self, self._callback))
+            self.pages.append(self.TrackNumbers(self, callback))
         for page in self.pages: self.notebook.append_page(page)
         self.set_property('border-width', 12)
         vbox = gtk.VBox(spacing = 12)
