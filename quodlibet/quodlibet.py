@@ -1727,7 +1727,6 @@ def main():
     HEADERS[:] = config.get("settings", "headers").split()
     if "title" not in HEADERS: HEADERS.append("title")
     setup_ui()
-    player.playlist.sort_by(HEADERS[0])
 
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
