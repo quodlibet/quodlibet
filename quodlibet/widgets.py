@@ -72,7 +72,7 @@ class AboutWindow(gtk.Window):
         self.alive = True
         self.add(vbox)
         self.set_property('border-width', 12)
-        self.connect_object('destroy', AboutWindow._cleanup, self)
+        self.connect_object('destroy', AboutWindow._destroy, self)
         self.set_transient_for(parent)
         self.child.show_all()
         self.show()
@@ -82,7 +82,7 @@ class AboutWindow(gtk.Window):
         contrib.set_text(credits[0])
         return hasattr(widgets, 'about')
 
-    def _cleanup(self):
+    def _destroy(self):
         gobject.source_remove(self.timeout_id)
         try: del(widgets.about)
         except AttributeError: pass
@@ -365,14 +365,14 @@ class PreferencesWindow(gtk.Window):
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.destroy)
+        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button.connect_object('clicked', PreferencesWindow.destroy, self)
         bbox.pack_start(button)
-        self.connect('delete-event', self.destroy)
+        self.connect_object('destroy', self._destroy, self)
         self.child.pack_start(bbox, expand = False)
         self.child.show_all()
 
-    def destroy(self, activator, event = None):
-        gtk.Window.destroy(self)
+    def _destroy(self):
         del(widgets.preferences)
         self.tips.destroy()
         del(self.tips)
@@ -532,11 +532,13 @@ class BigCenteredImage(gtk.Window):
         self.child.child.child.set_from_pixbuf(pixbuf)
 
         # The eventbox
-        self.child.child.connect('button-press-event', self._destroy)
-        self.child.child.connect('key-press-event', self._destroy)
+        self.child.child.connect_object('button-press-event',
+                                        BigCenteredImage._destroy, self)
+        self.child.child.connect_object('key-press-event',
+                                 BigCenteredImage._destroy, self)
         self.show_all()
 
-    def _destroy(self, *args):
+    def _destroy(self, event):
         self.destroy()
 
 class TrayIcon(object):
@@ -548,13 +550,13 @@ class TrayIcon(object):
         else:
             self.icon = trayicon.TrayIcon('quodlibet')
             self.tips = gtk.Tooltips()
-            self.eb = gtk.EventBox()
+            eb = gtk.EventBox()
             i = gtk.Image()
             i.set_from_pixbuf(pixbuf)
-            self.eb.add(i)
-            self.icon.add(self.eb)
-            self.eb.connect("button-press-event", self._event)
-            self.eb.connect("scroll-event", self._scroll)
+            eb.add(i)
+            self.icon.add(eb)
+            self.icon.connect("button-press-event", self._event)
+            self.icon.connect("scroll-event", self._scroll)
             self.cbs = cbs
             self.icon.show_all()
             print to(_("Initialized status icon."))
@@ -572,7 +574,7 @@ class TrayIcon(object):
 
 
     def set_tooltip(self, tooltip):
-        if self.icon: self.tips.set_tip(self.eb, tooltip)
+        if self.icon: self.tips.set_tip(self.icon, tooltip)
 
     tooltip = property(None, set_tooltip)
 
