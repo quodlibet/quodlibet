@@ -16,7 +16,8 @@ GPL version 2.
 
 You must be running 'unstable' or a recent snapshot of it.
 
-# apt-get install python-pymad python-pyvorbis python-id3lib python-glade2
+# apt-get install python-pymad python-pyvorbis python-id3lib python-glade2 \
+		  python-pyao
 
 ==[ Other OSs
 
