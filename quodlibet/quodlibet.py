@@ -125,10 +125,8 @@ class PreferencesWindow(MultiInstanceWidget):
         self.widgets["osd_color"].set_color(gtk.gdk.color_parse(color1))
         self.widgets["osd_color2"].set_color(gtk.gdk.color_parse(color2))
 
-        if not self.widgets["osd_font"].set_font_name(
-            config.get("settings", "osdfont")):
-            config.set("settings", "osdfont", "Sans 18")
-            self.widgets["osd_font"].set_font_name("Sans 18")
+        self.widgets["osd_font"].set_font_name(
+            config.get("settings", "osdfont"))
 
     def pmp_changed(self, combobox):
         driver = self.widgets["pmp_combo"].get_active()
