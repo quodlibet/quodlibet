@@ -79,7 +79,9 @@ class PluginManager(object):
 
         justscanned = {}
         for scandir in self.scan:
-            for name in os.listdir(scandir):
+            try: names = os.listdir(scandir)
+            except OSError, err: continue
+            for name in names:
                 pathname = os.path.realpath(os.path.join(scandir, name))
                 if not os.path.isdir(pathname):
                     name = name[: name.rfind('.')]
