@@ -58,6 +58,8 @@ if __name__ == "__main__":
     sys.argv[1] = os.path.realpath(sys.argv[1])
     os.chdir(basedir)
 
+    import pygtk
+    pygtk.require('2.0')
     import gtk, widgets
     w = widgets.ExFalsoWindow(sys.argv[1])
     w.show_all()
