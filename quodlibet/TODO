@@ -1,6 +1,5 @@
 - More unit tests.
 - Full FLAC support.
-- Properties tab for handling track numbers.
 - Various skipping problems -- get smarter about Python threads.
 - MikMod support.
 - Import covers from Muine.

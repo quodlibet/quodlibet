@@ -3524,6 +3524,7 @@ Tags should be added to existing ones</property>
 		      <property name="rules_hint">False</property>
 		      <property name="reorderable">True</property>
 		      <property name="enable_search">True</property>
+		      <signal name="drag_end" handler="prop_tn_changed" last_modification_time="Fri, 19 Nov 2004 06:36:43 GMT"/>
 		    </widget>
 		  </child>
 		</widget>

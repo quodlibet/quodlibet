@@ -625,7 +625,6 @@ class SongProperties(MultiInstanceWidget):
         self.tn_preview = self.widgets['prop_tn_preview']
         self.tn_view = self.widgets["prop_tn_view"]
         self.tn_model = gtk.ListStore(object, object, str, str)
-        self.tn_model.connect("rows-reordered", self.prop_tn_changed)
         self.tn_view.set_model(self.tn_model)
         self.save_tn = self.widgets['prop_tn_save']
         column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
