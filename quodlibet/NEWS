@@ -16,8 +16,12 @@ files may disappear on reload, and new ones to appear.
  - Pane-based (Rhythmbox/iTunes-style) library browser.
  - --seek supports +/- prefix to seek relative to the current position.
  - Added Ex Falso, a tag editor based on QL (without audio playback).
- - Many minor UI improvements.
+ - Song ratings, on a 0 to 4 scale.
+ - Switched genre from TIT1 to TCON.
+ - Many minor UI improvements, like a new icon.
  - No more dependency on Glade.
+ - Many bug fixes.
+ - Quod Libet now uses Trac for development.
 
 0.9 - I don't want any trouble, cephalopods!
  - Major updates to the Properties dialog:
