@@ -44,7 +44,7 @@ class AudioFile(dict):
                 cmp(self.get("~#track"), other.get("~#track")) or
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")) or
-                cmp(self, other))
+                cmp(self.get("~filename"), other.get("~filename")))
 
     # True if our key's value is actually unknown, rather than just the
     # string "Unknown". Or true if we don't know the key at all.
