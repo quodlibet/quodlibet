@@ -453,9 +453,11 @@ class MainWindow(MultiInstanceWidget):
         self.osd = Osd()
 
     def restore_size(self):
-       w, h = map(int, config.get("memory", "size").split())
-       self.window.set_property("default-width", w)
-       self.window.set_property("default-height", h)
+        try: w, h = map(int, config.get("memory", "size").split())
+        except ValueError: pass
+        else:
+            self.window.set_property("default-width", w)
+            self.window.set_property("default-height", h)
 
     def open_fifo(self):
         if not os.path.exists(const.CONTROL):
@@ -629,6 +631,10 @@ class MainWindow(MultiInstanceWidget):
 
     def gtk_main_quit(self, *args):
         gtk.main_quit()
+
+    def save_widths(self, column, width):
+        config.set("memory", "widths", " ".join(
+            [str(x.get_width()) for x in self.widgets["songlist"].get_columns()]))
 
     def save_size(self, widget, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
@@ -1017,14 +1023,20 @@ class MainWindow(MultiInstanceWidget):
     # new values.
     def set_column_headers(self, sl, headers):
         SHORT_COLS = ["tracknumber", "discnumber", "~length"]
+        try: ws = map(int, config.get("memory", "widths").split())
+        except: ws = []
+
+        if len(ws) != len(headers):
+            width = sl.get_allocation()[2]
+            c = sum([(x.startswith("~#") and 0.2) or 1 for x in headers])
+            width = int(width // c)
+            ws = [width] * len(headers)
+            
         sl.set_model(None)
         widgets.songs.clear()
         widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
         for c in sl.get_columns(): sl.remove_column(c)
-        self.widgets["songlist"].realize()
-        width = self.widgets["songlist"].get_allocation()[2]
-        c = sum([(x.startswith("~#") and 0.2) or 1 for x in headers])
-        width = int(width // c)
+        sl.realize()
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
             t2 = t.lstrip("~#")
@@ -1037,11 +1049,12 @@ class MainWindow(MultiInstanceWidget):
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             else:
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-                column.set_fixed_width(width)
+                column.set_fixed_width(ws[i])
             column.set_clickable(True)
             column.set_reorderable(True)
             column.set_sort_indicator(False)
             column.connect('clicked', self.set_sort_by, t)
+            column.connect('notify::width', self.save_widths)
             sl.append_column(column)
         self.refresh_songlist()
         sl.set_model(widgets.songs)

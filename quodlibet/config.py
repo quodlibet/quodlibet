@@ -54,6 +54,7 @@ def init(rc_file):
 
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
+    _config.set("memory", "widths", "0 100 100 100")
     _config.set("memory", "query", "")
     _config.set("memory", "volume", "1.0")
 
