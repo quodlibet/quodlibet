@@ -400,6 +400,8 @@ class GladeHandlers(object):
 
         # Fill in the scanned directories.
         widgets["scan_opt"].set_text(config.get("settings", "scan"))
+        widgets["mask_opt"].set_text(config.get("settings", "masked"))
+
         widgets["split_entry"].set_text(config.get("settings", "splitters"))
         widgets["gain_opt"].set_active(config.getint("settings", "gain"))
         widgets["prefs_window"].show()
@@ -423,6 +425,9 @@ class GladeHandlers(object):
 
     def change_scan(entry):
         config.set("settings", "scan", entry.get_text())
+
+    def change_masked(entry):
+        config.set("settings", "masked", entry.get_text())
 
     def prefs_change_split(entry):
         config.set("settings", "splitters", entry.get_text())
@@ -464,6 +469,12 @@ class GladeHandlers(object):
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             widgets["scan_opt"].set_text(":".join(fns))
+
+    def select_masked(*args):
+        chooser = FileChooser(_("Select Mount Points"), HOME)
+        resp, fns = chooser.run()
+        if resp == gtk.RESPONSE_OK:
+            widgets["mask_opt"].set_text(":".join(fns))
 
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
@@ -1507,16 +1518,17 @@ if __name__ == "__main__":
     import gc
     import util
 
+    # Load configuration data and scan the library for new/changed songs.
+    import config
+    config_fn = os.path.join(HOME, ".quodlibet", "config")
+    config.init(config_fn)
+
     # Load the library.
     import library
     cache_fn = os.path.join(HOME, ".quodlibet", "songs")
     library.init(cache_fn)
     from library import library
 
-    # Load configuration data and scan the library for new/changed songs.
-    import config
-    config_fn = os.path.join(HOME, ".quodlibet", "config")
-    config.init(config_fn)
     if config.get("settings", "scan"):
         for a, c in library.scan(config.get("settings", "scan").split(":")):
             pass

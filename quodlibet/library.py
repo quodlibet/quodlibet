@@ -12,6 +12,7 @@ import util; from util import escape
 import fcntl
 import time
 import gettext
+import config
 import tempfile
 _ = gettext.gettext
 
@@ -526,7 +527,9 @@ class AudioFileGroup(dict):
         return can
 
 class Library(dict):
-    def __init__(self, initial = {}):
+    def __init__(self, masked = [], initial = {}):
+        self.masked = masked
+        self.masked_files = {}
         dict.__init__(self, initial)
 
     def rename(self, song, newfn):
@@ -542,7 +545,8 @@ class Library(dict):
         util.mkdir(os.path.dirname(fn))
         f = file(fn + ".tmp", "w")
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-        songs = filter(lambda s: s.exists(), self.values())
+        songs = self.values()
+        for v in self.masked_files.values(): songs.extend(v.values())
         Pickle.dump(songs, f, 2)
         f.close()
         os.rename(fn + ".tmp", fn)
@@ -566,20 +570,27 @@ class Library(dict):
             if type(song) not in supported.values(): continue
             if song.valid():
                 song.sanitize()
-                fn = song.get('=filename')
+                fn = song['=filename']
                 self[fn] = song
             else:
-                fn = song.get('=filename', song.get("filename", ""))
+                fn = song['=filename']
                 if song.exists():
                     changed += 1
                     self[fn] = MusicFile(fn)
                     self[fn].sanitize()
-                else:
-                    removed += 1
+                elif config.get("settings", "masked"):
+                    for m in config.get("settings", "masked").split(":"):
+                        if fn.startswith(m) and not os.path.ismount(m):
+                            self.masked_files.setdefault(m, {})
+                            self.masked_files[m][fn] = song
+                            break
+                    else:
+                        removed += 1
         return changed, removed
 
     def scan(self, dirs):
         added, changed = 0, 0
+
         for d in dirs:
             print "Checking", d
             d = os.path.expanduser(d)
@@ -599,6 +610,11 @@ class Library(dict):
 
     def rebuild(self, force = False):
         changed, removed = 0, 0
+        for m in self.masked_files:
+            if os.path.ismount(m):
+                self.extend(self.masked_files[m])
+                del(self.masked_files[m])
+
         for fn in self.keys():
             if force or not self[fn].valid():
                 m = MusicFile(fn)
@@ -630,5 +646,5 @@ def init(cache_fn = None):
         supported[".flac"] = FLACFile
 
     global library
-    library = Library()
+    library = Library(config.get("settings", "masked").split(":"))
     if cache_fn: library.load(cache_fn)
