@@ -599,6 +599,14 @@ class MainWindow(MultiInstanceWidget):
         elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
         elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
         elif c == "_": self.volume.set_value(0)
+        elif c == "@":
+            c2 = os.read(source, 1)
+            if c2 == "0": self.widgets["repeat_t"].set_active(False)
+            else: self.widgets["repeat_t"].set_active(True)
+        elif c == "&":
+            c2 = os.read(source, 1)
+            if c2 == "0": self.widgets["shuffle_t"].set_active(False)
+            else: self.widgets["shuffle_t"].set_active(True)
         elif c == "!":
             if not self.window.get_property('visible'):
                 self.window.move(*self.window_pos)
@@ -2129,21 +2137,21 @@ if __name__ == "__main__":
     opts = sys.argv[1:]
     controls = {"--next": ">", "--previous": "<", "--play": ")",
                 "--pause": "|", "--play-pause": "-", "--volume-up": "^",
-                "--volume-down": "v"}
+                "--volume-down": "v", }
+    controls_opt = { "--seek-to": "s", "--shuffle": "&", "--repeat": "@",
+                     "--query": "q" }
     try:
         for i, command in enumerate(opts):
             if command in ["--help", "-h"]: print_help()
             elif command in ["--version", "-v"]: print_version()
             elif command in ["--refresh-library"]: refresh_cache()
             elif command in controls: control(controls[command])
-            elif command in ["--query"]:
-                control("q" + opts[i+1])
+            elif command in controls_opt:
+                control(controls_opt[command] + opts[i+1])
             elif command in ["--play-file"]:
                 filename = os.path.abspath(os.path.expanduser(opts[i+1]))
                 if os.path.isdir(filename): control("d" + filename)
                 else: control("p" + filename)
-            elif command in ["--seek-to"]:
-                control("s" + opts[i+1])
             elif command in ["--print-playing"]:
                 try: print_playing(opts[i+1])
                 except IndexError: print_playing()
