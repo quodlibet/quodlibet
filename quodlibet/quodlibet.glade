@@ -1113,7 +1113,7 @@
 	      <property name="headers_visible">True</property>
 	      <property name="rules_hint">True</property>
 	      <property name="reorderable">False</property>
-	      <property name="enable_search">True</property>
+	      <property name="enable_search">False</property>
 	      <signal name="row_activated" handler="select_song" last_modification_time="Thu, 07 Oct 2004 23:44:00 GMT"/>
 	      <signal name="button-press-event" handler="songs_button_press" last_modification_time="Fri, 22 Oct 2004 03:18:51 GMT"/>
 	      <signal name="popup-menu" handler="songs_popup_menu" last_modification_time="Thu, 28 Oct 2004 03:55:46 GMT"/>

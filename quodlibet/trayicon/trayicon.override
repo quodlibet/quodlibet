@@ -3,12 +3,11 @@ headers
 #include <Python.h>
 
 #include "pygobject.h"
-#include "eggstatusicon.h"
+#include "eggtrayicon.h"
 %%
-modulename statusicon
+modulename trayicon
 %%
 import gtk.Plug as PyGtkPlug_Type
-import gtk.gdk.Pixbuf as PyGdkPixbuf_Type
 %%
 ignore-glob
   *_get_type

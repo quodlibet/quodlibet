@@ -37,11 +37,13 @@ class FSTests(TestCase):
         if locale.getpreferredencoding() != "UTF-8":
             print "WARNING: Skipping fscoding test."
         else:
-            self.failUnlessEqual(util.fscoding(), "utf-8")
-            import os
-            os.environ["CHARSET"] = "ascii"
-            self.failUnlessEqual(util.fscoding(), "ascii")
-            del(os.environ["CHARSET"])
+            try:
+                self.failUnlessEqual(util.fscoding(), "utf-8")
+                import os
+                os.environ["CHARSET"] = "ascii"
+                self.failUnlessEqual(util.fscoding(), "ascii")
+            finally:
+                del(os.environ["CHARSET"])
 
     def test_unexpand(self):
         d = os.path.expanduser("~")

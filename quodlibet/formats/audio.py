@@ -248,14 +248,13 @@ class AudioFile(dict):
         for fn in fns:
             lfn = fn.lower()
             if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
+                score = 0
                 # check for the album label number
-                if self.get("labelid", lfn + ".").lower() in lfn:
-                    images.append((100, os.path.join(base, fn)))
-                else: # otherwise, check for common names
-                    matches = filter(lambda s: s in lfn,
-                                     ["front", "cover", "jacket", "folder"])
-                    score = len(matches)
-                    if score: images.append((score, os.path.join(base, fn)))
+                if self.get("labelid", lfn + ".").lower() in lfn: score += 100
+                matches = filter(lambda s: s in lfn,
+                                 ["front", "cover", "jacket", "folder"])
+                score += len(matches)
+                if score: images.append((score, os.path.join(base, fn)))
         # Highest score wins.
         if images: return file(max(images)[1], "rb")
         elif "~picture" in self:

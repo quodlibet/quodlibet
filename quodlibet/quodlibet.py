@@ -460,20 +460,39 @@ class BigCenteredImage(object):
         self.window.destroy()
 
 class TrayIcon(object):
-    def __init__(self, pixbuf, activate_cb, popup_cb):
+    def __init__(self, pixbuf, cbs):
         try:
-            import statusicon
+            import trayicon
         except:
             self.icon = None
         else:
-            self.icon = statusicon.StatusIcon(pixbuf)
-            self.icon.connect("activate", activate_cb)
-            self.icon.connect("popup-menu", popup_cb)
+            self.icon = trayicon.TrayIcon('quodlibet')
+            self.tips = gtk.Tooltips()
+            self.eb = gtk.EventBox()
+            i = gtk.Image()
+            i.set_from_pixbuf(pixbuf)
+            self.eb.add(i)
+            self.icon.add(self.eb)
+            self.eb.connect("button-press-event", self._event)
+            self.eb.connect("scroll-event", self._scroll)
+            self.cbs = cbs
+            self.icon.show_all()
             print to(_("Initialized status icon."))
 
+    def _event(self, widget, event, button = None):
+        c = self.cbs.get(button or event.button)
+        if callable(c): c(event)
+
+    def _scroll(self, widget, event):
+        button = {gtk.gdk.SCROLL_DOWN: 4,
+                  gtk.gdk.SCROLL_UP: 5,
+                  gtk.gdk.SCROLL_RIGHT: 6,
+                  gtk.gdk.SCROLL_LEFT: 7}.get(event.direction)
+        self._event(widget, event, button)
+
+
     def set_tooltip(self, tooltip):
-        if self.icon:
-            self.icon.set_tooltip(tooltip, "magic")
+        if self.icon: self.tips.set_tip(self.eb, tooltip)
 
     tooltip = property(None, set_tooltip)
 
@@ -567,11 +586,12 @@ class PlaylistWindow(object):
 # A tray icon aware of UI policy -- left click shows/hides, right
 # click makes a callback.
 class HIGTrayIcon(TrayIcon):
-    def __init__(self, pixbuf, window, cb):
+    def __init__(self, pixbuf, window, cbs = {}):
         self._window = window
-        TrayIcon.__init__(self, pixbuf, self._showhide, cb)
+        cbs[1] = self._showhide
+        TrayIcon.__init__(self, pixbuf, cbs)
 
-    def _showhide(self, icon):
+    def _showhide(self, event):
         if self._window.get_property('visible'):
             self._pos = self._window.get_position()
             self._window.hide()
@@ -847,7 +867,14 @@ class MainWindow(MultiInstanceWidget):
 
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
         
-        self.icon = HIGTrayIcon(p, self.window, self.tray_popup)
+        self.icon = HIGTrayIcon(p, self.window, cbs = {
+            2: self.play_pause,
+            3: self.tray_popup,
+            4: lambda ev: self.volume.set_value(self.volume.get_value()-0.05),
+            5: lambda ev: self.volume.set_value(self.volume.get_value()+0.05),
+            6: self.next_song,
+            7: self.previous_song
+            })
 
         # Set up the main song list store.
         self.songlist = MainSongList(self.widgets["songlist"])
@@ -888,7 +915,7 @@ class MainWindow(MultiInstanceWidget):
             config.getboolean("memory", "songlist"))
         self.window.show()
 
-    def tray_popup(self, *args):
+    def tray_popup(self, event, *args):
         tray_menu = gtk.Menu()
         if player.playlist.paused:
             b = gtk.ImageMenuItem(_("_Play"))
@@ -915,7 +942,7 @@ class MainWindow(MultiInstanceWidget):
         tray_menu.append(b)        
         tray_menu.show_all()
         tray_menu.connect('selection-done', lambda m: m.destroy())
-        tray_menu.popup(None, None, None, 2, 0)
+        tray_menu.popup(None, None, None, event.button, event.time)
 
     def restore_size(self):
         try: w, h = map(int, config.get("memory", "size").split())
