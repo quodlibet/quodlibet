@@ -51,7 +51,7 @@
 		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image7">
+			<widget class="GtkImage" id="image47">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -85,6 +85,92 @@
 		      <property name="label">gtk-quit</property>
 		      <property name="use_stock">True</property>
 		      <signal name="activate" handler="gtk_main_quit" last_modification_time="Wed, 06 Oct 2004 20:44:49 GMT"/>
+		      <accelerator key="Q" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="song1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Song</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="song1_menu">
+
+		  <child>
+		    <widget class="GtkMenuItem" id="prev_menu">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Pre_vious song</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="previous_song" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
+		      <accelerator key="Left" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="play_menu">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Play song</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="play_pause" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
+		      <accelerator key="space" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="next_menu">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Next song</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="next_song" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
+		      <accelerator key="Right" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separator4">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="prop_menu">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-properties</property>
+		      <property name="use_stock">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separator5">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="jump_menu">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Jump to current song</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="jump_to_current" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
+		      <accelerator key="J" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image48">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-jump-to</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 		</widget>
@@ -1216,6 +1302,27 @@
 	      <property name="fill">False</property>
 	    </packing>
 	  </child>
+
+	  <child>
+	    <widget class="GtkCheckButton" id="jump_t">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">When the current song changes, scroll  to it in the song list. You can do this manually by pressing Ctrl-J.</property>
+	      <property name="can_focus">True</property>
+	      <property name="label" translatable="yes">Jump to current song automatically</property>
+	      <property name="use_underline">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="active">False</property>
+	      <property name="inconsistent">False</property>
+	      <property name="draw_indicator">True</property>
+	      <signal name="toggled" handler="toggle_jump" last_modification_time="Sun, 07 Nov 2004 22:58:32 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
@@ -1500,13 +1607,13 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
   <child>
     <widget class="GtkImageMenuItem" id="filter_on_artist1">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Show only songs with the same artist as this one</property>
+      <property name="tooltip" translatable="yes">Show only songs by the same artist as this one</property>
       <property name="label" translatable="yes">Filter on _artist</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="artist_filter" last_modification_time="Fri, 22 Oct 2004 04:20:14 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image22">
+	<widget class="GtkImage" id="image54">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1528,7 +1635,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
       <signal name="activate" handler="album_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image23">
+	<widget class="GtkImage" id="image55">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1549,7 +1656,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
       <signal name="activate" handler="song_col_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image24">
+	<widget class="GtkImage" id="image56">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1579,11 +1686,12 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
   </child>
 
   <child>
-    <widget class="GtkImageMenuItem" id="properties1">
+    <widget class="GtkImageMenuItem" id="song_properties">
       <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">View and edit tags in the selected song</property>
       <property name="label">gtk-properties</property>
       <property name="use_stock">True</property>
-      <signal name="activate" handler="song_properties" last_modification_time="Fri, 22 Oct 2004 03:21:41 GMT"/>
+      <signal name="activate" handler="song_properties" last_modification_time="Sun, 07 Nov 2004 23:13:08 GMT"/>
     </widget>
   </child>
 </widget>

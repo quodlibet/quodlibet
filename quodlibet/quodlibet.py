@@ -74,8 +74,11 @@ class GTKSongInfoWrapper(object):
     def _update_paused(self, paused):
         if paused:
             self.but_image.set_from_pixbuf(self.paused)
+            widgets["play_menu"].child.set_text("_Play song")
         else:
             self.but_image.set_from_pixbuf(self.playing)
+            widgets["play_menu"].child.set_text("_Pause song")
+        widgets["play_menu"].child.set_use_underline(True)
 
     # The player told us about a new time.
     def set_time(self, cur, end):
@@ -119,19 +122,25 @@ class GTKSongInfoWrapper(object):
     def update_markup(self, song):
         if song:
             self.text.set_markup(song.to_markup())
-            widgets["web_button"].set_sensitive(True)
             if self.icon: self.icon.set_tooltip(song.to_short(), "magic")
         else:
             self.text.set_markup("<span size='xx-large'>Not playing</span>")
-            widgets["web_button"].set_sensitive(False)
             if self.icon: self.icon.set_tooltip("Not playing", "magic")
 
+    def scroll_to_current(self):
+        song = CURRENT_SONG[0]
+        if song:
+            try: path = (player.playlist.get_playlist().index(song),)
+            except ValueError: pass
+            else: widgets["songlist"].scroll_to_cell(path)
+
     def _update_song(self, song, player):
+        for wid in ["web_button", "next_button", "play_button", "prop_menu",
+                    "play_menu", "jump_menu", "next_menu"]:
+            widgets[wid].set_sensitive(bool(song))
         if song:
             self.pos.set_range(0, player.length)
             self.pos.set_value(0)
-            widgets["next_button"].set_sensitive(True)
-            widgets["play_button"].set_sensitive(True)
 
             cover = song.find_cover()
             if cover:
@@ -152,8 +161,6 @@ class GTKSongInfoWrapper(object):
             self.image.set_from_pixbuf(None)
             self.pos.set_range(0, 1)
             self.pos.set_value(0)
-            widgets["next_button"].set_sensitive(False)
-            widgets["play_button"].set_sensitive(False)
             self._time = (0, 1)
             self.update_markup(None)
 
@@ -165,11 +172,11 @@ class GTKSongInfoWrapper(object):
             if model[iter][col] is song:
                 model[iter][col + 1] = 700
                 model.row_changed(path, iter)
-                widgets["songlist"].scroll_to_cell(path)
             elif model[iter][col] is last_song:
                 model[iter][col + 1] = 400
                 model.row_changed(path, iter)
         widgets.songs.foreach(update_if_last_or_current)
+        if config.state("jump"): self.scroll_to_current()
         gc.collect()
         return False
 
@@ -220,7 +227,7 @@ class GladeHandlers(object):
     def open_website(button):
         song = CURRENT_SONG[0]
         site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
-        for s in ["sensible-browser"] + os.environ.get("BROWSER","").split(":"):
+        for s in ["sensible-browser"]+os.environ.get("BROWSER","").split(":"):
             if util.iscommand(s):
                 if "%s" in s:
                     s = s.replace("%s", '"' + site + '"')
@@ -239,6 +246,9 @@ class GladeHandlers(object):
 
     def play_pause(button):
         player.playlist.paused ^= True
+
+    def jump_to_current(*args):
+        widgets.wrap.scroll_to_current()
 
     def next_song(*args):
         player.playlist.next()
@@ -269,6 +279,7 @@ class GladeHandlers(object):
         # Fill in the general checkboxes.
         widgets["cover_t"].set_active(config.state("cover"))
         widgets["color_t"].set_active(config.state("color"))
+        widgets["jump_t"].set_active(config.state("jump"))
         old_h = HEADERS[:]
 
         # Fill in the header checkboxes.
@@ -321,6 +332,9 @@ class GladeHandlers(object):
         config.set("settings", "cover", str(bool(toggle.get_active())))
         if config.state("cover"): widgets.wrap.enable_cover()
         else: widgets.wrap.disable_cover()
+
+    def toggle_jump(toggle):
+        config.set("settings", "jump", str(bool(toggle.get_active())))
 
     def select_scan(*args):
         resp, fns = make_chooser("Select Directories")
