@@ -1379,7 +1379,6 @@ def main():
     widgets["repeat_t"].set_active(config.state("repeat"))
 
     player.playlist.sort_by(HEADERS[0])
-    print _("Loaded song library.")
 
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
@@ -1527,6 +1526,7 @@ if __name__ == "__main__":
     import library
     cache_fn = os.path.join(HOME, ".quodlibet", "songs")
     library.init(cache_fn)
+    print _("Loaded song library.")
     from library import library
 
     if config.get("settings", "scan"):
