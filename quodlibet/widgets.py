@@ -555,8 +555,8 @@ class TrayIcon(object):
             i.set_from_pixbuf(pixbuf)
             eb.add(i)
             self.icon.add(eb)
-            self.icon.connect("button-press-event", self._event)
-            self.icon.connect("scroll-event", self._scroll)
+            self.icon.child.connect("button-press-event", self._event)
+            self.icon.child.connect("scroll-event", self._scroll)
             self.cbs = cbs
             self.icon.show_all()
             print to(_("Initialized status icon."))
@@ -609,14 +609,15 @@ class PlaylistWindow(gtk.Window):
         self.plname = PlayList.normalize_name(name)
         self.set_title('Quod Libet Playlist: %s' % name)
 
-    def _destroy(self, *w):
+    def _destroy(self, view):
         del(self.list_windows[self.prettyname])
-        if not len(self.view.get_model()):
+        if not len(view.get_model()):
             def remove_matching(model, path, iter, name):
                 if model[iter][1] == name:
                     model.remove(iter)
                     return True
             PlayList.lists_model().foreach(remove_matching, self.plname)
+        view.set_model(None)
 
     def initialize_window(self, name):
         gtk.Window.__init__(self)
@@ -627,28 +628,28 @@ class PlaylistWindow(gtk.Window):
         vbox = self.vbox = gtk.VBox(spacing = 6)
         self.add(vbox)
 
+        self.view = view = PlayList(name)
         bar = SearchBar(gtk.STOCK_ADD, self.add_query_results)
         vbox.pack_start(bar, expand = False, fill = False)
 
-        hbox = self.hbox = gtk.HButtonBox()
+        hbox = gtk.HButtonBox()
         hbox.set_layout(gtk.BUTTONBOX_END)
         vbox.pack_end(hbox, expand = False)
         vbox.pack_end(gtk.HSeparator(), expand = False)
 
-        close = self.close = qltk.Button(stock = gtk.STOCK_CLOSE)
+        close = qltk.Button(stock = gtk.STOCK_CLOSE)
         hbox.pack_end(close, expand = False)
 
-        swin = self.swin = gtk.ScrolledWindow()
+        swin = gtk.ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         vbox.pack_start(swin)
 
-        self.view = PlayList(name)
-        swin.add(self.view)
+        swin.add(view)
 
         self.set_name(name)
-        self.connect('destroy', self._destroy)
-        self.close.connect_object('clicked', gtk.Window.destroy, self)
+        self.connect_object('destroy', PlaylistWindow._destroy, self, view)
+        close.connect_object('clicked', gtk.Window.destroy, self)
         self.show_all()
 
     def add_query_results(self, text, sort):
@@ -745,57 +746,55 @@ class BrowserBar(object):
 class PlaylistBar(gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
-        self.combo = gtk.ComboBox(PlayList.lists_model())
+        combo = gtk.ComboBox(PlayList.lists_model())
         cell = gtk.CellRendererText()
-        self.combo.pack_start(cell, True)
-        self.combo.add_attribute(cell, 'text', 0)
-        self.combo.set_active(0)
-        self.pack_start(self.combo)
+        combo.pack_start(cell, True)
+        combo.add_attribute(cell, 'text', 0)
+        combo.set_active(0)
+        self.pack_start(combo)
 
-        self.button = gtk.Button()
-        self.button2 = gtk.Button()
+        edit = gtk.Button()
+        refresh = gtk.Button()
         # FIXME: Switch to STOCK_EDIT in 2.6.
-        self.button.add(gtk.image_new_from_stock(gtk.STOCK_INDEX,
-                                                  gtk.ICON_SIZE_MENU))
-        self.button2.add(gtk.image_new_from_stock(gtk.STOCK_REFRESH,
-                                                 gtk.ICON_SIZE_MENU))
-        self.button.set_sensitive(False)
-        self.button2.set_sensitive(False)
-        self.pack_start(self.button2, expand = False)
-        self.pack_start(self.button, expand = False)
-        self.button.connect('clicked', self.edit_current)
-        self.combo.connect('changed', self.list_selected)
-        self.button2.connect('clicked', self.list_selected)
+        edit.add(gtk.image_new_from_stock(gtk.STOCK_INDEX,
+                                          gtk.ICON_SIZE_MENU))
+        refresh.add(gtk.image_new_from_stock(gtk.STOCK_REFRESH,
+                                             gtk.ICON_SIZE_MENU))
+        edit.set_sensitive(False)
+        refresh.set_sensitive(False)
+        self.pack_start(edit, expand = False)
+        self.pack_start(refresh, expand = False)
+        edit.connect_object('clicked', self.edit_current, combo)
+        combo.connect('changed', self.list_selected, edit, refresh)
+        refresh.connect_object('clicked', self.list_selected, combo,
+                               edit, refresh)
 
         self.cb = cb
         self.tips = gtk.Tooltips()
-        self.tips.set_tip(self.button, _("Edit the current playlist"))
-        self.tips.set_tip(self.button2, _("Refresh the current playlist"))
+        self.tips.set_tip(edit, _("Edit the current playlist"))
+        self.tips.set_tip(refresh, _("Refresh the current playlist"))
         self.tips.enable()
         self.show_all()
-        self.connect('destroy', self._cleanup)
+        self.connect_object('destroy', PlaylistBar._destroy, self, combo)
 
-    def _cleanup(self, widget):
+    def _destroy(self, combo):
+        combo.set_model(None)
         self.tips.disable()
-        self.combo.set_model(None)
         self.tips.destroy()
 
-    def list_selected(self, box):
-        active = self.combo.get_active()
-        self.button.set_sensitive(active != 0)
-        self.button2.set_sensitive(active != 0)
+    def list_selected(self, combo, edit, refresh):
+        active = combo.get_active()
+        edit.set_sensitive(active != 0)
+        refresh.set_sensitive(active != 0)
         if active == 0:
             self.cb("", None)
         else:
-            playlist = "playlist_" + self.combo.get_model()[active][1]
+            playlist = "playlist_" + combo.get_model()[active][1]
             self.cb("#(%s > 0)" % playlist, "~#"+playlist)
 
-    def activate(self):
-        self.list_selected(None)
-
-    def edit_current(self, button):
-        active = self.combo.get_active()
-        if active: PlaylistWindow(self.combo.get_model()[active][0])
+    def edit_current(self, combo):
+        active = combo.get_active()
+        if active: PlaylistWindow(combo.get_model()[active][0])
 
 class EmptyBar(BrowserBar, gtk.HBox):
     def __init__(self, cb):
@@ -867,6 +866,7 @@ class SearchBar(EmptyBar):
 
     def _destroy(self, widget, combo):
         combo.set_model(None)
+        self.cb = lambda *args: 0
 
     def text_parse(self, entry):
         text = entry.get_text()
@@ -1954,28 +1954,32 @@ class PlayList(SongList):
     def __init__(self, name):
         self.plname = 'playlist_' + PlayList.normalize_name(name)
         self.key = '~#' + self.plname
-        model = self.model = gtk.ListStore(object)
+        model = gtk.ListStore(object)
         super(PlayList, self).__init__(400)
 
         for song in library.query('#(%s > 0)' % self.plname, sort=self.key):
             model.append([song])
 
         self.set_model(model)
-        self.connect('button-press-event', self.button_press)
         self.connect('drag-end', self.refresh_indices)
         self.set_reorderable(True)
-        self.menu = gtk.Menu()
+
+        menu = gtk.Menu()
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         rem.connect('activate', self.remove_selected_songs)
-        self.menu.append(rem)
+        menu.append(rem)
         prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
         prop.connect('activate', self.song_properties)
-        self.menu.append(prop)
-        self.menu.show_all()
-        self.connect_object('destroy', gtk.Menu.destroy, self.menu)
+        menu.append(prop)
+        menu.show_all()
+        self.connect_object('destroy', gtk.Menu.destroy, menu)
+
+        self.connect('button-press-event', self.button_press, menu)
+        self.connect_object('popup-menu', gtk.Menu.popup, menu,
+                            None, None, None, 2, 0)
 
     def append_songs(self, songs):
-        model = self.model
+        model = self.get_model()
         current_songs = dict.fromkeys([row[0]['~filename'] for row in model])
         for song in songs:
             if song['~filename'] not in current_songs:
@@ -1997,10 +2001,10 @@ class PlayList(SongList):
         SongProperties([model[row][0] for row in rows])
 
     def refresh_indices(self, *args):
-        for i, row in enumerate(iter(self.model)):
+        for i, row in enumerate(iter(self.get_model())):
             row[0][self.key] = i + 1    # 1 indexed; 0 is not present
 
-    def button_press(self, view, event):
+    def button_press(self, view, event, menu):
         if event.button != 3:
             return False
         x, y = map(int, [event.x, event.y])
@@ -2010,7 +2014,7 @@ class PlayList(SongList):
         selection = view.get_selection()
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
-        self.menu.popup(None, None, None, event.button, event.time)
+        menu.popup(None, None, None, event.button, event.time)
         return True
 
 class MainSongList(SongList):
