@@ -101,19 +101,13 @@ def fsdecode(s):
 def decode(s, charset = "utf-8"):
     try: return s.decode(charset)
     except UnicodeError:
-        try:
-            return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
-        # FIXME: Can this happen?
-        except UnicodeError: return _("[Invalid Encoding]")
+        return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
 
 def encode(s, charset = "utf-8"):
     try: return s.encode(charset)
     # FIXME: Can *this* happen?
     except UnicodeError:
-        try:
-            return (s+" " + _("[Invalid Encoding]")).encode(charset, "replace")
-        # Can *THIS* happen?
-        except UnicodeError: return _("[Invalid Encoding]")
+        return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
 
 def title(string):
     if not string: return ""
