@@ -10,6 +10,7 @@ import ao
 import time
 import threading
 import random
+import config
 from library import library
 import parser
 import ossaudiodev # barf
@@ -205,6 +206,10 @@ class PlaylistPlayer(object):
 
     def play(self, info):
         self.info = info
+        fn = config.get("memory", "song")
+        if fn and fn in library:
+            self.playlist.insert(0, library[fn])
+                
         dump_fn = os.path.join(os.environ["HOME"], ".quodlibet", "current")
         while not self.quit:
             while self.playlist:
@@ -212,6 +217,7 @@ class PlaylistPlayer(object):
                 self.song = self.playlist.pop(0)
                 fn = self.song['filename']
                 if self.shuffle: random.shuffle(self.playlist)
+                config.set("memory", "song", fn)
                 f = file(dump_fn, "w")
                 f.write(self.song.to_dump())
                 f.close()

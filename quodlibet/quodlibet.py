@@ -248,9 +248,7 @@ class GladeHandlers(object):
         widgets["prefs_window"].hide()
         config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
         util.mkdir(os.path.dirname(config_fn))
-        f = file(config_fn, "w")
-        config.write(f)
-        f.close()
+        save_config()
         return True
 
     def select_song(tree, indices, col):
@@ -545,7 +543,9 @@ def make_song_properties(songrefs):
 
 # Grab the text from the query box, parse it, and make a new filter.
 def text_parse(*args):
-    text = widgets["query"].child.get_text().decode("utf-8").strip()
+    text = widgets["query"].child.get_text().strip()
+    config.set("memory", "query", text)
+    text = text.decode("utf-8")
     orig_text = text
     if text and "=" not in text and "/" not in text:
         # A simple search, not regexp-based.
@@ -690,7 +690,17 @@ def setup_nonglade():
 
     widgets["main_window"].show()
 
+    widgets["query"].child.set_text(config.get("memory", "query"))
+    widgets["search_button"].clicked()
+
     gtk.threads_init()
+
+def save_config():
+    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    util.mkdir(os.path.dirname(config_fn))
+    f = file(config_fn, "w")  
+    config.write(f)
+    f.close()
 
 def main():
     load_cache()
@@ -710,6 +720,7 @@ def main():
     player.playlist.quitting()
     t.join()
     save_cache()
+    save_config()
 
 def print_help():
     print """\
