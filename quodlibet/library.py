@@ -32,12 +32,15 @@ class MigrateUnpickler(pickle.Unpickler):
               "MP3File":  "formats/mp3",
               "FLACFile": "formats/flac",
               "OggFile":  "formats/oggvorbis",
-              "ModFile":  "formats/mod",
-              "Unknown":  "formats/audio"}
+              "ModFile":  "formats/mod"}
+
     def find_class(self, module, name):
         if (module == "library" and name in self.TRANS):
             try: return __import__(self.TRANS[name]).info
             except: pass
+        elif module == "library" and name == "Unknown":
+            import formats.audio
+            return formats.audio.Unknown
         return pickle.Unpickler.find_class(self, module, name)
 
 global library
