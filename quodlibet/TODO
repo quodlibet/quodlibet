@@ -8,10 +8,6 @@ Filename encoding bug
 Don't let editing modes try to write tags they actually can't.
  - sanely, requires rewriting SongProps (and don't use glade,
    while we're at it).
-(JZig) I want sorting to work in the editor
-(JZig) and then I can move blocks of things as needed afterwards
-(piman) What if it just added them sorted by track?
-(JZig) that works fine
 
 Doable by whomever, whenever:
 - Translations.

@@ -26,6 +26,16 @@ if sys.version_info < (2, 4):
 class Unknown(unicode): pass
 UNKNOWN = Unknown(_("Unknown"))
 
+# A string that carries around its decoding.
+class DecString(str):
+    # Depickling doesn't pass in the third argument.
+    def __new__(cls, val, enc = None):
+        return str.__new__(cls, val)
+
+    def __init__(self, val, enc):
+        self.encoding = enc
+        self.decoded = val.decode(enc, "replace")
+
 def MusicFile(filename):
     for ext in supported.keys():
         if filename.lower().endswith(ext):
@@ -64,8 +74,12 @@ class AudioFile(dict):
             if "~" in key:
                 parts = [self(p) for p in key.split("~")]
                 return " - ".join(filter(None, parts))
-            elif key == "basename": return os.path.basename(self["~filename"])
-            elif key == "dirname": return os.path.dirname(self["~filename"])
+            elif key == "basename":
+                return DecString(os.path.basename(self["~filename"]),
+                                 self["~filename"].encoding)
+            elif key == "dirname":
+                return DecString(os.path.dirname(self["~filename"]),
+                                 self["~filename"].encoding)
             elif key == "length": return util.format_time(self["~#length"])
             elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
@@ -81,7 +95,7 @@ class AudioFile(dict):
             v = dict.get(self, "title")
             if v is None:
                 return "%s [%s]" %(
-                    os.path.basename(self["~filename"]), UNKNOWN)
+                    os.path.basename(self["~filename"].f), UNKNOWN)
             else: return v
         elif (key == "artist" or key == "album"):
             v = dict.get(self, key)
@@ -106,22 +120,21 @@ class AudioFile(dict):
             self[key] = other[key]
 
     def exists(self):
-        return os.path.exists(str(self["~filename"]))
+        return os.path.exists(self["~filename"])
 
     def valid(self):
         return (self.exists() and
-                self["~#mtime"] == os.path.mtime(str(self["~filename"])))
+                self["~#mtime"] == os.path.mtime(self["~filename"]))
 
     def can_change(self, k = None):
         if k is None: return True
         else: return (k and k != "vendor" and "=" not in k and "~" not in k)
 
     def rename(self, newname):
-        newname = UnicodeFilename(newname, self['~filename'].encoding)
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
         else: newname = os.path.join(self('~dirname'), newname)
         if not os.path.exists(newname):
-            shutil.move(str(self['~filename']), str(newname))
+            shutil.move(self['~filename'], newname)
         elif newname != self['~filename']: raise ValueError
         self.sanitize(newname)
 
@@ -149,7 +162,8 @@ class AudioFile(dict):
 
     # Sanity-check all sorts of things...
     def sanitize(self, filename = None):
-        if filename: self["~filename"] = UnicodeFilename(filename)
+        if filename:
+            self["~filename"] = DecString(filename, util.fscoding())
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
@@ -161,7 +175,7 @@ class AudioFile(dict):
         try: del(self["vendor"])
         except KeyError: pass
 
-        self["~#mtime"] = os.path.mtime(str(self['~filename']))
+        self["~#mtime"] = os.path.mtime(self['~filename'])
 
     # Construct the text seen in the player window
     def to_markup(self):
@@ -267,7 +281,7 @@ class AudioFile(dict):
 
     # Try to find an album cover for the file
     def find_cover(self):
-        base = str(self('~dirname'))
+        base = self('~dirname')
         fns = os.listdir(base)
         images = []
         fns.sort()
@@ -289,7 +303,7 @@ class AudioFile(dict):
             # Otherwise, we might have a picture stored in the metadata...
             import pyid3lib
             f = tempfile.NamedTemporaryFile()
-            tag = pyid3lib.tag(str(self['~filename']))
+            tag = pyid3lib.tag(self['~filename'])
             for frame in tag:
                 if frame["frameid"] == "APIC":
                     f.write(frame["data"])
@@ -330,7 +344,7 @@ class MPCFile(AudioFile):
 
     def write(self):
         import musepack
-        tag = musepack.APETag(str(self['~filename']))
+        tag = musepack.APETag(self['~filename'])
 
         keys = tag.keys()
         for key in keys:
@@ -425,7 +439,7 @@ class MP3File(AudioFile):
 
     def write(self):
         import pyid3lib
-        tag = pyid3lib.tag(str(self['~filename']))
+        tag = pyid3lib.tag(self['~filename'])
 
         ql_comments = [i for i, frame in enumerate(tag)
                        if (frame["frameid"] == "COMM" and
@@ -464,7 +478,7 @@ class MP3File(AudioFile):
                 tag.append({'frameid': "TDAT", 'text': str(m+d)})
                 
         tag.update()
-        self["~#mtime"] = os.path.mtime(str(self['~filename']))
+        self["~#mtime"] = os.path.mtime(self['~filename'])
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -481,14 +495,14 @@ class OggFile(AudioFile):
 
     def write(self):
         import ogg.vorbis
-        f = ogg.vorbis.VorbisFile(str(self['~filename']))
+        f = ogg.vorbis.VorbisFile(self['~filename'])
         comments = f.comment()
         comments.clear()
         for key in self.realkeys():
             value = self.list(key)
             for line in value: comments[key] = line
-        comments.write_to(str(self['~filename']))
-        self["~#mtime"] = os.path.mtime(str(self['~filename']))
+        comments.write_to(self['~filename'])
+        self["~#mtime"] = os.path.mtime(self['~filename'])
 
 class ModFile(AudioFile):
     def __init__(self, filename):
@@ -537,7 +551,7 @@ class FLACFile(AudioFile):
     def write(self):
         import flac.metadata
         chain = flac.metadata.Chain()
-        chain.read(str(self['~filename']))
+        chain.read(self['~filename'])
         it = flac.metadata.Iterator()
         it.init(chain)
         vc = None
@@ -636,33 +650,6 @@ class AudioFileGroup(dict):
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
 
-class UnicodeFilename(unicode):
-    """Store a filename in unicode for most uses. This will attempt to guess the
-    real encoding of the filename so that it can be reversed 100%. To ensure you
-    have a bytestring version, just call str(filename) where necessary."""
-
-    encoding = util.fscoding() # default encoding
-
-    def __new__(cls, value, encoding=None, errors='strict'):
-        if isinstance(value, cls):              # no need to reconvert
-            return value
-        elif isinstance(value, unicode):
-            return unicode.__new__(cls, value)  # use default encoding for these
-        else:
-            # guess among explicitly passed, CHARSET reported fscoding,
-            # and a couple preferred defaults
-            for enc in filter(None, (encoding, cls.encoding,
-                    'utf-8', 'shift-jis', 'iso-8859-1')):
-                try: fn = unicode.__new__(cls, value, enc, errors) 
-                except (UnicodeError, LookupError): pass
-                else: break
-            else: raise
-            fn.encoding = enc
-            return fn
-
-    def __str__(self):
-        return self.encode(self.encoding)
-
 class Library(dict):
     def __init__(self, masked = [], initial = {}):
         self.masked = masked
@@ -751,16 +738,20 @@ class Library(dict):
                     songs = []
                 f.close()
             else: return 0, 0
-        except: return 0, 0
+        except:
+            return 0, 0
 
         # Prune old entries.
         removed, changed = 0, 0
+        cset = util.fscoding()
         for song in songs:
             if type(song) not in supported.values(): continue
-            song['~filename'] = UnicodeFilename(song['~filename'])
             if song.valid():
                 fn = song['~filename']
-                self[fn] = song
+                self[str(fn)] = song
+                # FIXME: Remove migration after 0.8
+                if not isinstance(fn, DecString):
+                    song['~filename'] = DecString(fn, cset)
             else:
                 if song.exists():
                     fn = song['~filename']
@@ -768,12 +759,12 @@ class Library(dict):
                     song2 = MusicFile(fn)
                     if song2:
                         song2.migrate(song)
-                        self[fn] = song2
+                        self[str(fn)] = song2
                 elif config.get("settings", "masked"):
                     for m in config.get("settings", "masked").split(":"):
                         if fn.startswith(m) and not os.path.ismount(m):
                             self.masked_files.setdefault(m, {})
-                            self.masked_files[m][fn] = song
+                            self.masked_files[m][str(fn)] = song
                             break
                     else:
                         removed += 1

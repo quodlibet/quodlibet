@@ -47,17 +47,18 @@ class CopyPMP(PMP):
     def upload(self, song):
         filename = song["~filename"]
         basename = song["~basename"]
-        dirname = os.path.basename(os.path.dirname(str(filename)))
-        target = os.path.join(self.base, dirname, str(basename))
+        dirname = os.path.basename(os.path.dirname(filename))
+        target = os.path.join(self.base, dirname, basename)
         if not os.path.isdir(os.path.dirname(target)):
             try: os.mkdir(os.path.dirname(target))
             except OSError: pass
             except:
                 raise error(_("Unable to create directory <b>%s</b>.")%(
-                    util.escape(dirname)))
+                    util.escape(dirname.decoded)))
         try: shutil.copyfile(filename, target)
         except:
-            raise error(_("Unable to copy <b>%s</b>.") % util.escape(filename))
+            raise error(_("Unable to copy <b>%s</b>.") %(
+                util.escape(filename.decoded)))
 
 # Special-case the iFP because I have one. :) Make directories and
 # upload files.
@@ -74,8 +75,8 @@ class IfpPMP(PMP):
     def upload(self, song):
         filename = song["~filename"]
         basename = song["~basename"]
-        dirname = os.path.basename(os.path.dirname(str(filename)))
-        target = os.path.join(dirname, str(basename))
+        dirname = os.path.basename(os.path.dirname(filename))
+        target = os.path.join(dirname, basename)
 
         # Avoid spurious calls to ifp mkdir; this can take a long time
         # on a noisy USB line.
@@ -85,7 +86,7 @@ class IfpPMP(PMP):
         if os.system("ifp upload %r %r > /dev/null" % (filename, target)):
             raise error(_("Unable to upload <b>%s</b>. The device may be "
                           "out of space, or turned off.")%(
-                util.escape(filename)))
+                util.escape(filename.decoded)))
 
 # Or, let the user specify a command to run.
 class GenericPMP(PMP):
@@ -105,14 +106,14 @@ class GenericPMP(PMP):
         PMP.__init__(self, *args)
 
     def upload(self, song):
-        filename = str(song["~filename"])
+        filename = song["~filename"]
         if "%s" in self.command:
             command = self.command.replace("%s", repr(filename))
         else:
             command = "%s %r" % (self.command, filename)
         if os.system(command):
             raise error(_("Execution of <b>%s</b> failed.")%(
-                util.escape(command)))
+                util.escape(command.decode("utf-8", "replace"))))
 
 # This should correspond to the order of the drivers in the combobox.
 drivers = [None, CopyPMP, GenericPMP, IfpPMP]

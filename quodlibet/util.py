@@ -105,10 +105,9 @@ def format_time_long(time):
     return time_str.rstrip(" ,")
 
 def fscoding():
-    env = os.environ
-    if "CHARSET" in env: return env["CHARSET"]
-    elif "G_BROKEN_FILENAMES" in env:
-        cset = env.get("LC_CTYPE", "foo.utf-8")
+    if "CHARSET" in os.environ: return os.environ["CHARSET"]
+    elif "G_BROKEN_FILENAMES" in os.environ:
+        cset = os.environ.get("LC_CTYPE", "foo.utf-8")
         if "." in cset: return cset.split(".")[-1]
         else: return "utf-8"
     else: return "utf-8"
@@ -283,7 +282,7 @@ class PatternFromFile(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = song['~filename']
+            song = song['~filename'].decoded
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         matchon = '/'+'/'.join(song.split('/')[-self.slashes:])
@@ -327,6 +326,6 @@ class FileFromPattern(object):
         pat = self.pattern
         if pat and ('.' not in pat or pat.endswith('.') or
                 '>' in pat[pat.rfind('.'):]):
-            oldname = str(song('~basename'))
+            oldname = song('~basename')
             newname.append(oldname[oldname.rfind('.'):])
         return ''.join(newname)
