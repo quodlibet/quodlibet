@@ -1055,7 +1055,7 @@ class SongProperties(MultiInstanceWidget):
 
         if len(self.songrefs) > 1:
             listens = sum([song["~#playcount"] for song, i in self.songrefs])
-            if listens == 1: s = ("%d songs head") % listens
+            if listens == 1: s = _("1 song heard")
             else: s = _("%d songs heard") % listens
             self.played.set_markup("<i>%s</i>" % s)
         else:
@@ -1386,21 +1386,25 @@ def refresh_songlist():
     sl.set_model(None)
     widgets.songs.clear()
     statusbar = widgets["statusbar"]
+    length = 0
     for song in player.playlist:
         wgt = ((song is CURRENT_SONG[0] and 700) or 400)
         widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
+        length += song["~#length"]
     i = len(list(player.playlist))
-    if i != 1:statusbar.set_text(_("%d songs found.") % i)
-    else: statusbar.set_text(_("%d song found.") % i)
+    if i != 1:statusbar.set_text(
+        _("%d songs found (%s)") % (i, util.format_time_long(length)))
+    else: statusbar.set_text(
+        _("%d song found (%s)") % (i, util.format_time_long(length)))
     sl.set_model(widgets.songs)
     gc.collect()
 
 HEADERS = ["~#track", "title", "album", "artist"]
-HEADERS_FILTER = { "~#track": "track", "tracknumber": "track",
-                   "discnumber": "disc", "~#disc": "disc",
-                   "~#lastplayed": "last played", "~filename": "full name",
-                   "~#playcount": "play count", "~basename": "filename",
-                   "~dirname": "directory"}
+HEADERS_FILTER = { "tracknumber": "track",
+                   "discnumber": "disc",
+                   "lastplayed": "last played", "filename": "full name",
+                   "playcount": "play count", "basename": "filename",
+                   "dirname": "directory"}
 
 CURRENT_SONG = [ None ]
 
@@ -1414,22 +1418,24 @@ def set_entry_color(entry, color):
 # Build a new filter around our list model, set the headers to their
 # new values.
 def set_column_headers(sl, headers):
-    SHORT_COLS = ["~#track", "~#disc", "tracknumber", "discnumber"]
+    SHORT_COLS = ["tracknumber", "discnumber"]
     sl.set_model(None)
     widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)
     widgets["songlist"].realize()
     width = widgets["songlist"].get_allocation()[2]
-    c = len(headers)
-    for t in SHORT_COLS:
-        if t in headers: c -= 0.5
+    c = 0
+    for t in headers:
+        if t in SHORT_COLS or t.startswith("~#"): c += 0.1
+        else: c += 1
     width = int(width / c)
     for i, t in enumerate(headers):
         render = gtk.CellRendererText()
+        if t in SHORT_COLS or t.startswith("~#"): render.set_fixed_size(-1, -1)
+        else: render.set_fixed_size(width, -1)
+        t = t.lstrip("~#")
         column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t, t)).title(),
                                     render, text = i, weight = len(headers)+1)
-        if t in SHORT_COLS: render.set_fixed_size(-1, -1)
-        else: render.set_fixed_size(width, -1)
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)

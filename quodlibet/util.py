@@ -52,6 +52,31 @@ def check_mod():
     except ImportError: return False
     else: return True
 
+def format_time(time):
+    if time > 3600: # 1 hour
+        return _("%d:%02d:%02d") % (time / 3600, (time % 3600) / 60, time % 60)
+    else:
+        return _("%d:%02d") % (time / 60, time % 60)
+
+def format_time_long(time):
+    time_str = ""
+    if time > 365 * 24 * 60 * 60:
+        time_str += _("%d years, ") % (time / (365 * 24 * 60 * 60))
+        time = time % (365 * 24 * 60 * 60)
+    if time > 24 * 60 * 60:
+        time_str += _("%d days, ") % (time / (24 * 60 * 60))
+        time = time % (24 * 60 * 60)
+    if time > 60 * 60:
+        time_str += _("%d hours, ") % (time / (60 * 60))
+        time = time % (60 * 60)
+    if time > 60:
+        time_str += _("%d minutes, ") % (time / 60)
+        time = time % 60
+    # only include seconds if we don't have hours (or greater)
+    if time and len(time_str) <= len(_("xx minutes, ")):
+        time_str += _("%d seconds") % time
+    return time_str.strip(" ,")
+
 def decode(s):
     try: return s.decode("utf-8")
     except UnicodeError:

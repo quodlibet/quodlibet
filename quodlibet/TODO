@@ -7,6 +7,7 @@ Doable by whomever, whenever:
 
 Stuff that I probably have to do:
 - More unit tests.
+- Nail TreeView sizing down hard.
 - Icons in the Song menu for the controls.
 - Various skipping problems -- get smarter about Python threads.
 - Import covers from Muine.

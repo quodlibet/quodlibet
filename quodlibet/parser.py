@@ -32,7 +32,7 @@ class QueryLexer(object):
                  }
 
     table = { '!': NEGATION, '&': INTERSECT, '|': UNION, '(': OPENP,
-              ')': CLOSEP, '=': EQUALS, ',': COMMA, ':': CLOSERE,
+              ')': CLOSEP, '=': EQUALS, ',': COMMA,
               '/': CLOSERE, '#': NUMCMP, '>': RELOP, '<': RELOP }
 
     def __init__(self, string):
@@ -84,7 +84,7 @@ class QueryLexer(object):
             self.regexp_start = None
             self.regexp_end = True
             return QueryLexeme(RE, s)
-        elif self.string[self.i] == ':' or self.string[self.i] == '/':
+        elif self.string[self.i] == '/':
             self.i += 1
             self.regexp_start = self.string[self.i - 1]
             return QueryLexeme(OPENRE, self.string[self.i - 1])

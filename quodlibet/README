@@ -67,27 +67,9 @@ audio backend to 'ao:alsa', which is currently the default setting. The
 old default setting was 'oss'; 'ao:alsa' will fall back to OSS when
 ao or ALSA is unavailable.
 
+If you are upgrading from 0.5 or earlier, your library will be emptied
+and you will need to readd any part of it that is not scanned on startup.
+
 Whenever you upgrade, it's a good idea to select "Reload library" from
 the Music menu. This upgrades your library to take advantage of new
 tag features found in the release.
-
-====[ Formal Query Grammar
-This is a BNFish grammar that (at least when I checked it in) described
-the grammar used for queries. It could be used for querying of a simple
-key/value database.
-
-Query           ::= QueryPart | QueryUnion | QueryInter | QueryNeg
-QueryUnion      ::= '|(' QueryList ')'
-QueryInter      ::= '&(' QueryList ')'
-QueryNeg        ::= '!' Query
-QueryList       ::= Query ',' QueryList | Query
-QueryPart       ::= TagList '=' RegexpSet
-
-TagList         ::= tag_name ',' TagList | tag_name
-
-RegexpSet       ::= RegexpPart | RegexpUnion | RegexpInter | RegexpNeg
-RegexpUnion     ::= '|(' RegexpList ')'
-RegexpInter     ::= '&(' RegexpList ')'
-RegexpNeg       ::= '!' RegexpSet
-RegexpPart      ::= '/' regexp '/' [mods] | ':' regexp ':' [mods]
-RegexpList      ::= RegexpPart ',' | regexp

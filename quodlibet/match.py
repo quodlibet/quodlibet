@@ -64,6 +64,7 @@ class Numcmp(object):
             except ValueError:
                 try:
                     hms = map(int, value.split(":"))
+                    value = 0
                     for t in hms:
                         value *= 60
                         value += t

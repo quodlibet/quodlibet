@@ -99,8 +99,6 @@ class AudioFile(dict):
         # File in our filename, either from what we were given or
         # our old tag name... FIXME: Remove migration after 0.4 or so.
         if filename: self["~filename"] = filename
-        elif "filename" in self: self["~filename"] = self["filename"]
-        elif "=filename" in self: self["~filename"] = self["=filename"]
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
@@ -125,13 +123,12 @@ class AudioFile(dict):
         try: del(self["vendor"])
         except KeyError: pass
 
-        # Remove our old filename key.
-        if self.get("filename") == self["~filename"]: del(self["filename"])
-        if "=filename" in self: del(self["=filename"])
-
-        # Fill in the remaining file stuff.
+        # mtime...
         try: self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
-        except OSError: self["~#mtime"] = 0
+        except OSError: self["~#mtime"] = 0 # this shouldn't happen.
+
+        # time format
+        self["~length"] = util.format_time(self.get('~#length', 0))
 
     def to_markup(self):
         title = self.comma("title")
@@ -261,7 +258,7 @@ class MP3File(AudioFile):
             "TIT2": "title",
             "TIT3": "version",
             "TPE1": "artist",
-            "TPE2": "performer",
+            "TPE2": "performer", 
             "TPE3": "conductor",
             "TPE4": "arranger",
             "TEXT": "lyricist",
@@ -299,7 +296,7 @@ class MP3File(AudioFile):
                    }
             
     def __init__(self, filename):
-        import pyid3lib
+        import pyid3lib, mad
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
         tag = pyid3lib.tag(filename)
@@ -335,6 +332,9 @@ class MP3File(AudioFile):
                     else: self[name] = text
                     self[name] = self[name].strip()
                 except: pass
+
+        md = mad.MadFile(filename)
+        self["~#length"] = md.total_time() / 1000
 
         if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
@@ -382,6 +382,7 @@ class OggFile(AudioFile):
             if not isinstance(v, list): v = [v]
             v = u"\n".join(map(unicode, v))
             self[k.lower()] = v
+        self["~#length"] = int(f.time_total(-1))
         self.sanitize(filename)
 
     def write(self):
@@ -397,12 +398,13 @@ class OggFile(AudioFile):
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return (k and k not in ["vendor"] and "=" not in k and "~" not in k)
+        else: return (k and k != "vendor" and "=" not in k and "~" not in k)
 
 class ModFile(AudioFile):
     def __init__(self, filename):
         import modplug
         f = modplug.ModFile(filename)
+        self["~#length"] = f.length / 1000
         self["title"] = f.title.decode("utf-8")
         self.sanitize(filename)
 
@@ -426,7 +428,9 @@ class FLACFile(AudioFile):
             if it.get_block_type() == flac.metadata.VORBIS_COMMENT:
                 block = it.get_block()
                 vc = flac.metadata.VorbisComment(block)
-                break
+            elif it.get_block_type() == flac.metadata.STREAMINFO:
+                info = it.get_block().data.stream_info
+                self["~#length"] = (info.total_samples / info.sample_rate)
             if not it.next(): break
 
         if vc:
