@@ -230,7 +230,8 @@ class PreferencesWindow(MultiInstanceWidget):
 class WaitLoadWindow(MultiInstanceWidget):
     def __init__(self, parent, count, text, initial):
         MultiInstanceWidget.__init__(self, widget = "load_window")
-        self.widgets["load_window"].set_transient_for(parent)
+        self.window = self.widgets["load_window"]
+        self.window.set_transient_for(parent)
         self.current = 0
         self.count = count
         if 0 < self.count < 6: self.widgets["pause_cancel_box"].hide()
@@ -241,7 +242,7 @@ class WaitLoadWindow(MultiInstanceWidget):
         self.progress = self.widgets["load_progress"]
         self.progress.set_fraction(0)
         self.label.set_markup(self.text % initial)
-        self.widgets["load_window"].show()
+        self.window.show()
         while gtk.events_pending(): gtk.main_iteration()
 
     def pause_clicked(self, button):
@@ -264,7 +265,7 @@ class WaitLoadWindow(MultiInstanceWidget):
         return self.quit
 
     def end(self):
-        self.widgets["load_window"].destroy()
+        self.window.destroy()
 
 class TrayIcon(object):
     def __init__(self, pixbuf, activate_cb, popup_cb):
@@ -319,38 +320,41 @@ class Osd(object):
     def __init__(self):
         try:
             import gosd
+        except:
+            self.gosd = None
+            print _("W: Failed to initialize OSD.")
+        else:
             self.gosd = gosd
             self.level = 0
             self.window = None
             print _("Initialized OSD.")
-        except:
-            self.gosd = None
-            print _("W: Failed to initialize OSD.")
 
     def show_osd(self, song):
-        color = config.get("settings", "osdcolor")
         if not self.gosd: return
         elif config.getint("settings", "osd") == 0: return
+        elif "~title~version" not in song: # FIXME: Remove after 0.7.
+            print "W: You need to rebuild your library to use the OSD."
+            return
+
+        color = config.get("settings", "osdcolor")
         if self.window: self.window.destroy()
 
-        msg = "\xe2\x99\xaa <span foreground='%s'>%s</span>" %(
-            color, util.escape(song.get("title", "")))
+        # \xe2\x99\xaa is a music note.
+        msg = "\xe2\x99\xaa <span foreground='%s'>%s" %(
+            color, util.escape(song["~title~version"]))
         if song['~length']:
-            msg += " <span size='smaller'>(%s)</span> " % song["~length"]
-        msg += "\xe2\x99\xaa\n<span size='smaller'>"
-        for key in ["artist", "album", "tracknumber"]:
+            msg += " <span size='small'>(%s)</span> " % song["~length"]
+        msg += "\xe2\x99\xaa\n<span size='x-small'>"
+        for key in ["artist", "~album~part", "tracknumber"]:
             if key in song:
-                msg += ("<span size='smaller' style='italic'>%s</span>"
-                        " <span foreground='%s'>%s</span>   " %(
-                    (_(HEADERS_FILTER.get(key, key)).title(), color,
-                     util.escape(song.comma(key)))))
-        msg = msg.strip() + "</span>"
+                msg += "<span size='xx-small' style='italic'>%s</span> %s   "%(
+                    (_(HEADERS_FILTER.get(key, key)).title(),
+                     util.escape(song.comma(key))))
+        msg = msg.strip() + "</span></span>"
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
 
-        self.window = self.gosd.osd(msg, "black", color,
-                                    pango.FontDescription("sans 16"),
-                                    use_markup = True)
+        self.window = self.gosd.osd(msg, "black", color, "sans 18")
         if config.getint("settings", "osd") == 1:
             self.window.move(gtk.gdk.screen_width()/2-self.window.width/2, 5)
         else:

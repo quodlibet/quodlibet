@@ -139,6 +139,14 @@ class AudioFile(dict):
         # time format
         self["~length"] = util.format_time(self.get('~#length', 0))
 
+        if "version" in self:
+            self["~title~version"] = "%s - %s" %(self["title"],self['version'])
+        else: self["~title~version"] = self["title"]
+
+        if "part" in self:
+            self["~album~part"] = "%s - %s" %(self["album"], self['part'])
+        else: self["~album~part"] = self["album"]
+
     # Construct the text seen in the player window
     def to_markup(self):
         title = self.comma("title")
@@ -481,7 +489,8 @@ class FLACFile(AudioFile):
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return (k and k not in ["vendor"] and "=" not in k and "~" not in k)
+        else: return (k and k not in ["vendor"] and "=" not in k and
+                      "~" not in k)
 
 class AudioFileGroup(dict):
 
@@ -562,6 +571,7 @@ class AudioFileGroup(dict):
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
 
+MIGRATE = ["~#playcount", "~#lastplayed"]
 class Library(dict):
     def __init__(self, masked = [], initial = {}):
         self.masked = masked
@@ -630,7 +640,9 @@ class Library(dict):
                     fn = song['~filename']
                     changed += 1
                     song = MusicFile(fn)
-                    if song: self[fn] = song
+                    if song:
+                        for key in MIGRATE: song[key] = self[fn][key]
+                        self[fn] = song
                 elif config.get("settings", "masked"):
                     for m in config.get("settings", "masked").split(":"):
                         if fn.startswith(m) and not os.path.ismount(m):
@@ -676,11 +688,13 @@ class Library(dict):
             if force or not self[fn].valid():
                 m = MusicFile(fn)
                 if m:
+                    for key in MIGRATE: m[key] = self[fn][key]
                     self[fn] = m
                     changed += 1
                 else:
                     del(self[fn])
                     removed += 1
+
             yield changed, removed
 
 supported = {}

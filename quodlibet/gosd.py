@@ -22,7 +22,7 @@ import gtk.gdk as gdk
 
 BORDER_WIDTH=1
 
-def osd(text, bgcolor, fgcolor, fontdesc, use_markup = False,
+def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
         alignment = pango.ALIGN_CENTER):
     if isinstance(fontdesc, str):
         fontdesc = pango.FontDescription(fontdesc)
