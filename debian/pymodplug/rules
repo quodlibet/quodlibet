@@ -1,8 +1,6 @@
 #!/usr/bin/make -f
 CFLAGS = -Wall -g
 
-PYV = 2.3
-
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
 else
