@@ -20,7 +20,7 @@ import pango
 import gtk
 import gtk.gdk as gdk
 
-BORDER_WIDTH=3
+BORDER_WIDTH=4
 
 def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
         alignment = pango.ALIGN_CENTER):

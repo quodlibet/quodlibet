@@ -1641,6 +1641,9 @@ class PlayList(SongList):
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         rem.connect('activate', self.remove_selected_songs)
         self.menu.append(rem)
+        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
+        prop.connect('activate', self.song_properties)
+        self.menu.append(prop)
         self.menu.show_all()
 
     def append_songs(self, songs):
@@ -1660,6 +1663,10 @@ class PlayList(SongList):
             iter = model.get_iter(row)
             model.remove(iter)
         self.refresh_indices()
+
+    def song_properties(self, *args):
+        model, rows = self.view.get_selection().get_selected_rows()
+        SongProperties([model[row][0] for row in rows])
 
     def refresh_indices(self, *args):
         for i, row in enumerate(iter(self.model)):
