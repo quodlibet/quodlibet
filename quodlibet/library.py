@@ -128,6 +128,8 @@ class OggFile(AudioFile):
         if "tracknumber" in self:
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
             except: pass
+        try: del(self["vendor"])
+        except KeyError: pass
 
 class Library(dict):
     def __init__(self, initial = {}):
