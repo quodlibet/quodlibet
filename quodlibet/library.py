@@ -286,6 +286,7 @@ class MP3File(AudioFile):
             "USER": "license",
             "WOAR": "website",
             "TOLY": "author",
+            "COMM": "comment",
             }
 
     INVERT_IDS = { "genre": "TIT1",
@@ -306,6 +307,7 @@ class MP3File(AudioFile):
                    "copyright": "TCOP",
                    "license": "USER",
                    "website": "WOAR",
+                   "comment": "COMM",
                    }
             
     def __init__(self, filename):
