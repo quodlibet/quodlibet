@@ -9,9 +9,7 @@ class TestWidgetLeaks(TestCase):
          dummy.destroy()
 
     def test_BCI(self):
-         self.failIfLeaky(
-             widgets.BigCenteredImage, "woo",
-             "/home/piman/audio/Ani DiFranco - Dilate/cover.jpg")
+         self.failIfLeaky(widgets.BigCenteredImage, "woo", "exfalso.png")
 
     def failIfLeaky(self, Ctr, *args):
          gc.collect()
