@@ -138,16 +138,18 @@ class OggFile(AudioFile):
         except KeyError: pass
 
     def write(self):
-        tags = {}
+        f = ogg.vorbis.VorbisFile(self['filename'])
+        comments = f.comment()
+        comments.clear()
         for key in self.keys():
             if key == "filename" or key[0] == "=": continue
             else:
                 value = self[key]
                 if not isinstance(value, list): value = value.split("\n")
                 if len(value) == 1: value = value[0]
-                tags[key] = value
-        comments = ogg.vorbis.VorbisComment(tags)
+                comments[key] = value
         comments.write_to(self['filename'])
+        self["=mtime"] = int(time.time())
 
     def can_change(self, k):
         return k not in ["vendor", "filename"]

@@ -339,16 +339,15 @@ class MultiInstanceWidget(object):
             if row[2] and row[4]: deleted[row[0]] = 1
         self.model.foreach(create_property_dict)
 
-        for song, iter in self.songiters:
+        for song, ref in self.songiters:
             for key, value in updated.iteritems():
                 if song.can_change(key): song[key] = value
             for key in deleted:
-                if song.can_change(key) and song.hasattr(key): del song[key]
-            #song.write()
-            print 'INVOKE the WRITE:', song
-            iter = iter.get_path()
-            if iter is not None:
-                widgets.songs[iter] = [song[h] for h in HEADERS] + [song, 400]
+                if song.can_change(key) and key in song: del song[key]
+            path = ref.get_path()
+            song.write()
+            if path is not None:
+                widgets.songs[path] = [song[h] for h in HEADERS] + [song, 400]
 
         self.save.set_sensitive(False)
         self.revert.set_sensitive(False)
