@@ -129,6 +129,7 @@
 		  <child>
 		    <widget class="GtkToolButton" id="prev_button">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Play previous song</property>
 		      <property name="label" translatable="yes">Previous song</property>
 		      <property name="use_underline">True</property>
 		      <property name="icon">previous.png</property>
@@ -145,6 +146,7 @@
 		  <child>
 		    <widget class="GtkToolButton" id="play_button">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Start playing</property>
 		      <property name="label" translatable="yes">Play current song</property>
 		      <property name="use_underline">True</property>
 		      <property name="icon">play.png</property>
@@ -161,6 +163,7 @@
 		  <child>
 		    <widget class="GtkToolButton" id="next_button">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Play next song</property>
 		      <property name="label" translatable="yes">Play next song</property>
 		      <property name="use_underline">True</property>
 		      <property name="icon">next.png</property>
@@ -203,10 +206,12 @@
 		  <child>
 		    <widget class="GtkToolButton" id="addbutton">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Add music to your library</property>
 		      <property name="stock_id">gtk-add</property>
 		      <property name="visible_horizontal">True</property>
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
+		      <signal name="clicked" handler="open_chooser" last_modification_time="Sat, 09 Oct 2004 04:34:09 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="expand">False</property>
@@ -217,6 +222,7 @@
 		  <child>
 		    <widget class="GtkToggleToolButton" id="repeat_toggle">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Play first song after all songs are played</property>
 		      <property name="label" translatable="yes">Repeat playlist</property>
 		      <property name="use_underline">True</property>
 		      <property name="icon">repeat.png</property>
@@ -234,6 +240,7 @@
 		  <child>
 		    <widget class="GtkToggleToolButton" id="shuffle_toggle">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Play songs in a random order</property>
 		      <property name="label" translatable="yes">Shuffle playlist</property>
 		      <property name="use_underline">True</property>
 		      <property name="icon">shuffle.png</property>
