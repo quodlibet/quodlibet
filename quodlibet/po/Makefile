@@ -1,22 +1,20 @@
 top_srcdir = ../
+NAME = quodlibet
+ALL_LINGUAS = en_US
 
-ALL_LINGUAS = 
+all: quodlibet.pot
+	for L in $(ALL_LINGUAS); \
+	   do intltool-update --gettext-package=$(NAME) $$L && make $$L.mo; \
+	done
 
-all:
-	for L in $(ALL_LINGUAS); do make $$L.mo; done
-
-messages.pot: quodlibet.glade.h ../quodlibet.py ../library.py
-	xgettext --from-code=utf-8 -k_ -kN_ -o $@ quodlibet.glade.h ../quodlibet.py ../library.py
-
-quodlibet.glade.h: ../quodlibet.glade
-	intltool-extract --type=gettext/glade ../quodlibet.glade
-	mv ../quodlibet.glade.h .
+quodlibet.pot: ../quodlibet.glade ../quodlibet.py ../library.py
+	intltool-update --pot --gettext-package=$(NAME)
 
 %.mo: %.po
 	msgfmt -o $@ $<
 
 clean:
-	rm -f messages.pot quodlibet.glade.h *.mo
+	rm -f quodlibet.pot quodlibet.glade.h *.mo
 
 distclean: clean
 	rm -f *~
