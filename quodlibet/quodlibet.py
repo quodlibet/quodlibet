@@ -135,8 +135,8 @@ def make_chooser(title):
 
 # Display the error dialog.
 def make_error(title, description, buttons):
-    text = "<span size='xx-large'>%s</span>\n\n%s" % (escape(title),
-                                                      escape(description))
+    text = "<span size='xx-large'>%s</span>\n\n%s" % (
+        util.escape(title), util.escape(description))
     dialog = gtk.MessageDialog(widgets["main_window"],
                                gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                                gtk.MESSAGE_ERROR,
@@ -282,7 +282,6 @@ class GladeHandlers(object):
             wind.hide()
             player.playlist.refilter()
             refresh_songlist()
-            gc.collect()
 
     def update_volume(slider):
         player.device.volume = int(slider.get_value())
@@ -675,7 +674,7 @@ CURRENT_SONG = [ None ]
 def set_entry_color(entry, color):
     layout = entry.get_layout()
     text = layout.get_text()
-    markup = '<span foreground="%s">%s</span>' % (color, escape(text))
+    markup = '<span foreground="%s">%s</span>' % (color, util.escape(text))
     layout.set_markup(markup)
 
 # Build a new filter around our list model, set the headers to their
@@ -758,9 +757,8 @@ def main():
         val = config.get("header_maps", opt)
         HEADERS_FILTER[opt] = val
 
-    t = threading.Thread(target = player.playlist.play,
-                         args = (widgets.wrap,))
-    gc.collect()
+    from threading import Thread
+    t = Thread(target = player.playlist.play, args = (widgets.wrap,))
     util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
     signal.signal(signal.SIGINT, gtk.main_quit)
     t.start()
@@ -768,7 +766,11 @@ def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     player.playlist.quitting()
     t.join()
-    save_cache()
+
+    print "Saving library"
+    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    library.save(cache_fn)
+
     save_config()
 
 def print_help():
@@ -792,27 +794,20 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
 """ % VERSION
     raise SystemExit
 
-def load_cache():
-    import config
-    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
-    print "Loading config"
-    config.init(config_fn)
-    print "Loading library"
+def refresh_cache():
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
-    c, d = library.load(cache_fn)
-    print "Changed %d songs, deleted %d songs" % (c, d)
+    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    import library, config
+    config.init(config_fn)
+    library.init()
+    print "Loading."
+    library.library.load(cache_fn)
+    print "Scanning."
     if config.get("settings", "scan"):
         for a, c in library.scan(config.get("settings", "scan").split(":")):
             pass
-
-def save_cache():
-    print "Saving library"
-    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
-    library.save(cache_fn)
-
-def refresh_cache():
-    load_cache()
-    save_cache()
+    print "Saving."
+    library.library.save(cache_fn)
     raise SystemExit
 
 def print_playing(fstring):
@@ -846,6 +841,9 @@ def error_and_quit():
 
 if __name__ == "__main__":
     import os, sys
+
+    # Check command-line parameters before doing "real" work, so they
+    # respond quickly.
     for command in sys.argv[1:]:
         if command in ["--help", "-h"]: print_help()
         elif command in ["--version", "-v"]: print_version()
@@ -855,6 +853,13 @@ if __name__ == "__main__":
             print "E: Unknown command line option: %s" % command
             raise SystemExit("E: Try %s --help" % sys.argv[0])
 
+    # Get to the right directory for our data.
+    d = os.path.split(os.path.realpath(__file__))[0]
+    os.chdir(d)
+    if os.path.exists(os.path.join(d, "quodlibet.zip")):
+        sys.path.insert(0, os.path.join(d, "quodlibet.zip"))
+
+    # Initialize GTK/Glade.
     import pygtk
     pygtk.require('2.0')
     import gtk
@@ -864,31 +869,40 @@ if __name__ == "__main__":
             ".".join(map(str, gtk.gtk_version)),
             ".".join(map(str, gtk.pygtk_version)))
         raise SystemExit("E: Please upgrade GTK+/PyGTK.")
-
     import gtk.glade
-
-    d = os.path.split(os.path.realpath(__file__))[0]
-    os.chdir(d)
-    if os.path.exists(os.path.join(d, "quodlibet.zip")):
-        sys.path.insert(0, os.path.join(d, "quodlibet.zip"))
     widgets = Widgets("quodlibet.glade")
 
-    import util; from util import escape
-    import threading
     import gc
-    import os
+    import util
+
+    # Load the library.
+    print "Loading library."
     import library
-    library.init()
+    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    library.init(cache_fn)
     from library import library
-    load_cache()
-    try: import player
+
+    # Load configuration data and scan the library for new/changed songs.
+    import config
+    print "Loading configuration."
+    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    config.init(config_fn)
+    if config.get("settings", "scan"):
+        for a, c in library.scan(config.get("settings", "scan").split(":")):
+            pass
+
+    # Try to initialize the playlist and audio output.
+    print "Opening audio device."
+    import player
+    try: player.init()
     except IOError:
+        # The audio device was busy; we can't do anything useful yet.
+        # FIXME: Allow editing but not playing in this case.
         gtk.idle_add(error_and_quit)
         gtk.main()
         raise SystemExit(True)
 
     import parser
     import signal
-    import config
     import sre
     main()

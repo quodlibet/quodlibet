@@ -483,7 +483,7 @@ class Library(dict):
 
 supported = {}
 
-def init():
+def init(cache_fn = None):
     if util.check_ogg():
         print "Enabling Ogg Vorbis support."
         supported[".ogg"] = OggFile
@@ -502,3 +502,4 @@ def init():
 
     global library
     library = Library()
+    if cache_fn: library.load(cache_fn)

@@ -29,6 +29,7 @@ class AudioPlayer(object):
 
 class MP3Player(AudioPlayer):
     def __init__(self, dev, filename):
+        import mad
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = mad.MadFile(filename)
@@ -50,8 +51,11 @@ class MP3Player(AudioPlayer):
 class FLACPlayer(AudioPlayer):
     def __init__(self, dev, filename):        
         AudioPlayer.__init__(self)
+        import flac.decoder, flac.metadata
+        self.decoder = flac.decoder
+        self.metadata = flac.metadata
         self.dev = dev
-        self.dec = flac.decoder.FileDecoder()
+        self.dec = self.decoder.FileDecoder()
         self.dec.set_md5_checking(False);
         self.dec.set_filename(filename)
         self.dec.set_metadata_respond_all()
@@ -63,7 +67,7 @@ class FLACPlayer(AudioPlayer):
         self._size = os.stat(filename)[stat.ST_SIZE]
 
     def _grab_stream_info(self, dec, block):
-        if block.type == flac.metadata.STREAMINFO:
+        if block.type == self.metadata.STREAMINFO:
             streaminfo = block.data.stream_info
             self._samples = streaminfo.total_samples
             self._srate = streaminfo.sample_rate / 100
@@ -72,13 +76,13 @@ class FLACPlayer(AudioPlayer):
 
     def _player(self, dec, buff, size):
         device.play(buff, size)
-        return flac.decoder.FLAC__FILE_DECODER_OK
+        return self.decoder.FLAC__FILE_DECODER_OK
 
     def next(self):
         if self.stopped:
             self.dec.finish()
             raise StopIteration
-        if self.dec.get_state() == flac.decoder.FLAC__FILE_DECODER_END_OF_FILE:
+        if self.dec.get_state() == self.decoder.FLAC__FILE_DECODER_END_OF_FILE:
             self.dec.finish()
             raise StopIteration
         if not self.dec.process_single():
@@ -97,6 +101,8 @@ class FLACPlayer(AudioPlayer):
 class OggPlayer(AudioPlayer):
     def __init__(self, dev, filename):
         AudioPlayer.__init__(self)
+        import ogg.vorbis
+        self.error = ogg.vorbis.VorbisError
         self.dev = dev
         self.audio = ogg.vorbis.VorbisFile(filename)
         self.dev.set_info(self.audio.info().rate,
@@ -111,7 +117,7 @@ class OggPlayer(AudioPlayer):
     def next(self):
         if self.stopped: raise StopIteration
         try: (buff, bytes, bit) = self.audio.read(BUFFER_SIZE)
-        except ogg.vorbis.VorbisError: pass
+        except self.error: pass
         else:
             if bytes == 0: raise StopIteration
             self.dev.play(buff, bytes)
@@ -373,17 +379,15 @@ class PlaylistPlayer(object):
 
 supported = {}
 
-if util.check_ogg():
-    import ogg.vorbis
-    supported[".ogg"] = OggPlayer
+global device, playlist
+device = None
+playlist = None
 
-if util.check_mp3():
-    import mad
-    supported[".mp3"] = MP3Player
+def init():
+    if util.check_ogg(): supported[".ogg"] = OggPlayer
+    if util.check_mp3(): supported[".mp3"] = MP3Player
+    if util.check_flac(): supported[".flac"] = FLACPlayer
 
-if util.check_flac():
-    import flac.decoder
-    supported[".flac"] = FLACPlayer
-
-device = OSSAudioDevice()
-playlist = PlaylistPlayer(output = device)
+    global device, playlist
+    device = OSSAudioDevice()
+    playlist = PlaylistPlayer(output = device)
