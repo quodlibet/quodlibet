@@ -315,9 +315,9 @@ class GladeHandlers(object):
         path, col = view.get_cursor()
         selection = widgets["songlist"].get_selection()
         model, rows = selection.get_selected_rows()
-        songiters = [ [model[row][len(HEADERS)],
+        songrefs = [ [model[row][len(HEADERS)],
                       gtk.TreeRowReference(model, row)] for row in rows]
-        make_song_properties(songiters)
+        make_song_properties(songrefs)
 
 class MultiInstanceWidget(object):
 
@@ -340,7 +340,7 @@ class MultiInstanceWidget(object):
             if row[2] and row[4]: deleted[row[0]] = 1
         self.model.foreach(create_property_dict)
 
-        for song, ref in self.songiters:
+        for song, ref in self.songrefs:
             for key, value in updated.iteritems():
                 if song.can_change(key): song[key] = value
             for key in deleted:
@@ -397,19 +397,19 @@ class MultiInstanceWidget(object):
         self.revert.set_sensitive(True)
 
     def fill_property_info(self):
-        if len(self.songiters) == 1:
+        if len(self.songrefs) == 1:
             self.window.set_title("%s - Properties" %
-                    self.songiters[0][0]["title"])
-        elif len(self.songiters) > 1:
+                    self.songrefs[0][0]["title"])
+        elif len(self.songrefs) > 1:
             self.window.set_title("%s and %d more - Properties" %
-                    (self.songiters[0][0]["title"], len(self.songiters)-1))
+                    (self.songrefs[0][0]["title"], len(self.songrefs)-1))
         else:
             raise ValueError("Properties of no songs?")
         artist = {}
         title = {}
         album = {}
         filename = {}
-        for song, iter in self.songiters:
+        for song, iter in self.songrefs:
             artist.setdefault(song["artist"], 0)
             title.setdefault(song["title"], 0)
             album.setdefault(song["album"], 0)
@@ -425,7 +425,7 @@ class MultiInstanceWidget(object):
 
         self.model.clear()
         comments = {} # dict of dicts to see if comments all share value
-        for song, iter in self.songiters:
+        for song, iter in self.songrefs:
             for k, v in song.iteritems():
                 if k.startswith('=') or k == 'filename': continue
                 comval = comments.setdefault(k, {})
@@ -453,7 +453,7 @@ class MultiInstanceWidget(object):
 
         self.existing_comments = comments.keys()[:]
 
-def make_song_properties(songiters):
+def make_song_properties(songrefs):
     dlg = MultiInstanceWidget(widget="properties_window")
     dlg.window = dlg.widgets.get_widget('properties_window')
     dlg.save = dlg.widgets.get_widget('songprop_save')
@@ -468,7 +468,7 @@ def make_song_properties(songiters):
     # comment, value, use-changes, edit, deleted
     dlg.model = gtk.ListStore(str, str, bool, bool, bool)
     dlg.view.set_model(dlg.model)
-    dlg.songiters = songiters
+    dlg.songrefs = songrefs
     selection = dlg.view.get_selection()
     selection.connect('changed', dlg.songprop_selection_changed)
 
