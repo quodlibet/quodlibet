@@ -1907,6 +1907,17 @@ class SongProperties(MultiInstanceWidget):
                 util.escape(pattern_text))).run()
             return
 
+        invalid = []
+        for header in pattern.headers:
+            if not self.songinfo.can_change(header):
+                invalid.append(header)
+        if len(invalid):
+            ErrorMessage(self.window,
+                        _("Uneditable tags"),
+                        _("The selected songs do not support editing the "
+                          "following tags:\n   ")+'\n   '.join(invalid)).run()
+            return
+
         rep = self.widgets["prop_tbp_space_t"].get_active()
         title = self.widgets["prop_titlecase_t"].get_active()
         split = self.widgets["prop_splitval_t"].get_active()
