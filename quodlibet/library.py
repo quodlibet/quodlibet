@@ -55,8 +55,7 @@ class AudioFile(dict):
         return isinstance(self.get(key, Unknown()), Unknown)
 
     def realkeys(self):
-        return filter(lambda s: s and "~" not in s and "=" not in s and
-                                not self.unknown(s),
+        return filter(lambda s: s and s[0] != "~" and not self.unknown(s),
                       self.keys())
 
     def __call__(self, key, default = ""):
@@ -296,13 +295,14 @@ class AudioFile(dict):
 class MPCFile(AudioFile):
     # Map APE names to QL names. APE tags are also usually capitalized.
 
-    IGNORE = ["file", "index", "introplay"]
+    IGNORE = ["file", "index", "introplay", "dummy"]
     TRANS = { "subtitle": "version",
               "track": "tracknumber",
               "catalog": "labelid",
               "year": "date",
               "record location": "location"
               }
+    SNART = dict([(v, k) for k, v in TRANS.iteritems()])
     
     def __init__(self, filename):
         import musepack
@@ -316,8 +316,27 @@ class MPCFile(AudioFile):
         self.sanitize(filename)
 
     def can_change(self, key = None):
-        if key is None: return []
-        else: return False
+        if key is None: return True
+        else: return (AudioFile.can_change(self, key) and
+                      key not in MPCFile.IGNORE)
+
+    def write(self):
+        import musepack
+        tag = musepack.APETag(self['~filename'])
+
+        keys = tag.keys()
+        for key in keys:
+            # remove any text keys we read in
+            value = tag[key]
+            if value.kind == musepack.apev2.TEXT and key not in MPCFile.IGNORE:
+                del(tag[key])
+        for key in self.realkeys():
+            value = self[key]
+            key = MPCFile.SNART.get(key, key)
+            if key in ["isrc", "isbn", "ean/upc"]: key = key.upper()
+            else: key = key.title()
+            tag[key] = value.split("\n")
+        tag.write()
 
 class MP3File(AudioFile):
 
@@ -417,8 +436,7 @@ class MP3File(AudioFile):
                     value = value.encode("utf-8")
                     tag.append({'frameid': id3name, 'text': value })
 
-        for key in filter(lambda x: x not in self.INVERT_IDS and x[0] != "~"
-                                    and x != "date",
+        for key in filter(lambda x: x not in self.INVERT_IDS and x != "date",
                           self.realkeys()):
             for value in self.list(key):
                 value = value.encode('utf-8')

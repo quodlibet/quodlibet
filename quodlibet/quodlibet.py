@@ -491,7 +491,6 @@ class PlaylistWindow(object):
         self.prettyname = name
         self.name = PlayList.normalize_name(name)
         self.win.set_title('Quod Libet Playlist: %s' % name)
-        #self.label.set_text(name + ':')
 
     def destroy(self, *w):
         if not len(self.view.view.get_model()):
@@ -501,6 +500,7 @@ class PlaylistWindow(object):
                     return True
             PlayList.lists_model().foreach(remove_matching, self.name)
         self.win.destroy()
+        self.view.destroy()
 
     def initialize_window(self, name):
         win = self.win = gtk.Window()
@@ -1612,6 +1612,11 @@ class PlayList(SongList):
         view.connect('button-press-event', self.button_press)
         view.connect('drag-end', self.refresh_indices)
         view.set_reorderable(True)
+        self.menu = gtk.Menu()
+        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        rem.connect('activate', self.remove_selected_songs)
+        self.menu.append(rem)
+        self.menu.show_all()
 
     def append_songs(self, songs):
         model = self.model
@@ -1621,7 +1626,7 @@ class PlayList(SongList):
                 model.append([song, 400])
                 song[self.key] = len(model) # 1 based index; 0 means out
 
-    def remove_selected_songs(self):
+    def remove_selected_songs(self, *args):
         model, rows = self.view.get_selection().get_selected_rows()
         rows.sort()
         rows.reverse()
@@ -1645,11 +1650,11 @@ class PlayList(SongList):
         selection = view.get_selection()
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
-        header = col.header_name
-        self.remove_selected_songs()
-        #self.prep_main_popup(header)
-        #self.cmenu.popup(None,None,None, event.button, event.time)
+        self.menu.popup(None, None, None, event.button, event.time)
         return True
+
+    def destroy(self):
+        self.menu.destroy()
 
 class MainSongList(SongList):
 
