@@ -3953,7 +3953,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
 		      <child>
 			<widget class="GtkComboBoxEntry" id="songprop_tbp_combo">
 			  <property name="visible">True</property>
-			  <property name="items" translatable="yes">&lt;tracknumber&gt;. &lt;title&gt;
+			  <property name="items">&lt;tracknumber&gt;. &lt;title&gt;
 &lt;tracknumber&gt; - &lt;title&gt;
 &lt;tracknumber&gt; - &lt;artist&gt; - &lt;title&gt;
 &lt;artist&gt; - &lt;album&gt;/&lt;tracknumber&gt;. &lt;title&gt;
@@ -4248,7 +4248,7 @@ Tags should be added to existing ones</property>
 		      <child>
 			<widget class="GtkComboBoxEntry" id="songprop_nbp_combo">
 			  <property name="visible">True</property>
-			  <property name="items" translatable="yes">&lt;tracknumber&gt;. &lt;title&gt;
+			  <property name="items">&lt;tracknumber&gt;. &lt;title&gt;
 &lt;tracknumber&gt; - &lt;title&gt;
 &lt;tracknumber&gt; - &lt;artist&gt; - &lt;title&gt;
 /path/&lt;artist&gt; - &lt;album&gt;/&lt;tracknumber&gt;. &lt;title&gt;
