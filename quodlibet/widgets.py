@@ -887,32 +887,31 @@ class SearchBar(EmptyBar):
             color, util.escape(text))
         layout.set_markup(markup)
 
-class MainWindow(object):
+class MainWindow(gtk.Window):
     def __init__(self):
+        gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
         self.current_song = None
         self.albumfn = None
         self._time = (0, 1)
 
         self.tips = gtk.Tooltips()
-        # create the main window, restore its size
-        self.window = gtk.Window()
-        self.window.set_title("Quod Libet")
-        self.window.set_icon_from_file("quodlibet.png")
-        self.window.set_default_size(
+        self.set_title("Quod Libet")
+        self.set_icon_from_file("quodlibet.png")
+        self.set_default_size(
             *map(int, config.get('memory', 'size').split()))
-        self.window.add(gtk.VBox())
-        self.window.connect('configure-event', self.save_size)
-        self.window.connect('destroy', gtk.main_quit)
+        self.add(gtk.VBox())
+        self.connect('configure-event', MainWindow.save_size)
+        self.connect('destroy', gtk.main_quit)
 
         # create main menubar, load/restore accelerator groups
         self._create_menu()
-        self.window.add_accel_group(self.ui.get_accel_group())
+        self.add_accel_group(self.ui.get_accel_group())
         gtk.accel_map_load(const.ACCELS)
-        accelgroup = gtk.accel_groups_from_object(self.window)[0]
+        accelgroup = gtk.accel_groups_from_object(self)[0]
         accelgroup.connect('accel-changed',
                 lambda *args: gtk.accel_map_save(const.ACCELS))
-        self.window.child.pack_start(self.ui.get_widget("/Menu"), expand=False)
+        self.child.pack_start(self.ui.get_widget("/Menu"), expand=False)
 
         # song info (top part of window)
         hbox = gtk.HBox()
@@ -1024,11 +1023,11 @@ class MainWindow(object):
         vbox.pack_start(self.volume)
         hbox.pack_start(vbox, expand = False)
 
-        self.window.child.pack_start(hbox, expand = False)
+        self.child.pack_start(hbox, expand = False)
 
         # browser bar
         self.query_hbox = gtk.HBox()
-        self.window.child.pack_start(self.query_hbox, expand = False)
+        self.child.pack_start(self.query_hbox, expand = False)
         
         # song list
         self.song_scroller = sw = gtk.ScrolledWindow()
@@ -1041,7 +1040,7 @@ class MainWindow(object):
         self.songlist = MainSongList(songlist)
         widgets.songs = gtk.ListStore(object)
         self.set_column_headers(config.get("settings", "headers").split())
-        self.window.child.pack_start(sw)
+        self.child.pack_start(sw)
         songlist.connect('row-activated', self.select_song)
         songlist.connect('button-press-event', self.songs_button_press)
         songlist.connect('popup-menu', self.songs_popup_menu)
@@ -1066,12 +1065,12 @@ class MainWindow(object):
         self.statusbar.set_justify(gtk.JUSTIFY_RIGHT)
         hbox.pack_start(self.statusbar)
         hbox.set_border_width(3)
-        self.window.child.pack_start(hbox, expand = False)
+        self.child.pack_start(hbox, expand = False)
 
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-        self.icon = HIGTrayIcon(p, self.window, cbs = {
+        self.icon = HIGTrayIcon(p, self, cbs = {
             2: self.play_pause,
             3: self.tray_popup,
             4: lambda ev: self.volume.set_value(self.volume.get_value()-0.05),
@@ -1091,13 +1090,10 @@ class MainWindow(object):
         self.osd = Osd()
 
         gtk.timeout_add(100, self._update_time)
-        self.window.child.show_all()
-        self.window.realize()
+        self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
         self.tips.enable()
-
-    def show(self):
-        self.window.show()
+        self.show()
 
     def _create_menu(self):
         ag = gtk.ActionGroup('MainWindowActions')
@@ -1114,7 +1110,7 @@ class MainWindow(object):
             ("ReloadLibrary", gtk.STOCK_REFRESH, _("Re_load library"), None,
              None, self.rebuild_hard),
             ("Quit", gtk.STOCK_QUIT, None, None, None,
-             lambda *args: self.window.destroy()),
+             lambda *args: self.destroy()),
 
             ('Filters', None, _("_Filters")),
             ("RandomGenre", gtk.STOCK_DIALOG_QUESTION, _("Random _genre"),
@@ -1267,9 +1263,9 @@ class MainWindow(object):
             elif c2 == "t": wid.set_active(not wid.get_active())
             else: wid.set_active(True)
         elif c == "!":
-            if not self.window.get_property('visible'):
-                self.window.move(*self.window_pos)
-            self.window.present()
+            if not self.get_property('visible'):
+                self.move(*self.window_pos)
+            self.present()
         elif c == "q": self.make_query(os.read(source, 4096))
         elif c == "s":
             player.playlist.seek(util.parse_time(os.read(source, 20)) * 1000)
@@ -1359,7 +1355,7 @@ class MainWindow(object):
             self.disable_cover()
 
     def _update_song(self, song, player):
-        self.window.show()
+        self.show()
         for wid in self.song_buttons:
             wid.set_sensitive(bool(song))
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
@@ -1414,15 +1410,12 @@ class MainWindow(object):
             self.jump_to_current()
         return False
 
-    def gtk_main_quit(self, *args):
-        gtk.main_quit()
-
-    def save_size(self, widget, event):
+    def save_size(self, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
     def new_playlist(self, activator):
         options = map(PlayList.prettify_name, library.playlists())
-        name = GetStringDialog(self.window, _("New Playlist..."),
+        name = GetStringDialog(self, _("New Playlist..."),
                                _("Enter a name for the new playlist. If it "
                                  "already exists it will be opened for "
                                  "editing."), options).run()
@@ -1431,23 +1424,23 @@ class MainWindow(object):
 
     def showhide_widget(self, box, on):
         if on and box.get_property('visible'): return
-        width, height = self.window.get_size()
+        width, height = self.get_size()
         if on:
             box.show()
             dy = box.get_allocation().height
-            self.window.set_geometry_hints(None,
+            self.set_geometry_hints(None,
                 max_height = -1, min_height = -1, max_width = -1)
-            self.window.resize(width, height + dy)
+            self.resize(width, height + dy)
             box.set_size_request(-1, -1)
         else:
             dy = box.get_allocation().height
             box.hide()
-            self.window.resize(width, height - dy)
+            self.resize(width, height - dy)
             box.set_size_request(-1, dy)
         if not box.get_property("visible"):
-            self.window.set_geometry_hints(
+            self.set_geometry_hints(
                 None, max_height = height - dy, max_width = 32000)
-        self.window.realize()
+        self.realize()
 
     def showhide_playlist(self, toggle):
         self.showhide_widget(self.song_scroller, toggle.get_active())
@@ -1465,8 +1458,7 @@ class MainWindow(object):
                 print to(_("Opening web browser: %s") % s)
                 if os.system(s + " &") == 0: break
         else:
-            qltk.ErrorMessage(self.window,
-                              _("Unable to start a web browser"),
+            qltk.ErrorMessage(self, _("Unable to start a web browser"),
                               _("A web browser could not be found. Please set "
                                 "your $BROWSER variable, or make sure "
                                 "/usr/bin/sensible-browser exists.")).run()
@@ -1492,7 +1484,7 @@ class MainWindow(object):
 
     def show_about(self, menuitem):
         if not hasattr(widgets, 'about'):
-            widgets.about = AboutWindow(self.window)
+            widgets.about = AboutWindow(self)
         widgets.about.present()
 
     def toggle_shuffle(self, button):
@@ -1549,7 +1541,7 @@ class MainWindow(object):
             BigCenteredImage(self.current_song.comma("album"), cover.name)
 
     def rebuild(self, activator, hard = False):
-        window = WaitLoadWindow(self.window, len(library) // 7,
+        window = WaitLoadWindow(self, len(library) // 7,
                                 _("Quod Libet is scanning your library. "
                                   "This may take several minutes.\n\n"
                                   "%d songs reloaded\n%d songs removed"),
@@ -1578,7 +1570,7 @@ class MainWindow(object):
     # Set up the preferences window.
     def open_prefs(self, activator):
         if not hasattr(widgets, 'preferences'):
-            widgets.preferences = PreferencesWindow(self.window)
+            widgets.preferences = PreferencesWindow(self)
         widgets.preferences.present()
 
     def select_song(self, tree, indices, col):
@@ -1588,14 +1580,14 @@ class MainWindow(object):
         player.playlist.paused = False
 
     def open_chooser(self, *args):
-        chooser = FileChooser(self.window, _("Add Music"), self.last_dir)
+        chooser = FileChooser(self, _("Add Music"), self.last_dir)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK: self.scan_dirs(fns)
         if fns: self.last_dir = fns[0]
         library.save(const.LIBRARY)
 
     def scan_dirs(self, fns):
-        win = WaitLoadWindow(self.window, 0,
+        win = WaitLoadWindow(self, 0,
                              _("Quod Libet is scanning for new songs and "
                                "adding them to your library.\n\n"
                                "%d songs added"), 0)
@@ -1668,7 +1660,7 @@ class MainWindow(object):
         songs = [model[r][0] for r in rows]
         filenames = [song["~filename"] for song in songs]
         filenames.sort()
-        d = DeleteDialog(self.window, filenames)
+        d = DeleteDialog(self, filenames)
         resp = d.run()
         d.destroy()
         if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
@@ -1676,7 +1668,7 @@ class MainWindow(object):
             if resp == 0: s = _("Moving %d/%d.")
             elif resp == 2: s = _("Deleting %d/%d.")
             else: return
-            w = WaitLoadWindow(self.window, len(songs), s, (0, len(songs)))
+            w = WaitLoadWindow(self, len(songs), s, (0, len(songs)))
             trash = os.path.expanduser("~/.Trash")
             for song in songs:
                 filename = str(song["~filename"])
@@ -1689,7 +1681,7 @@ class MainWindow(object):
                     library.remove(song)
                 except:
                     qltk.ErrorMessage(
-                        self.window, _("Unable to remove file"),
+                        self, _("Unable to remove file"),
                         _("Removing <b>%s</b> failed. "
                           "Possibly the target file does not exist, "
                           "or you do not have permission to "
