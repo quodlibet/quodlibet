@@ -32,50 +32,66 @@ def write(filename):
     f.close()
 
 def init(*rc_files):
-    _config.add_section("settings")
-    _config.add_section("memory")
-    _config.add_section("browsers")
-    _config.add_section("header_maps")
+    initial = {
+        # User-defined tag name -> human name mappings
+        "header_maps": {},
 
-    _config.set("settings", "scan", "")
-    _config.set("settings", "gain", "2")
-    _config.set("settings", "osd", "0")
+        # State about the player, to restore on startup
+        "memory":
+        { "size": "400 350", # player window size
+          "song": "", # filename of last song
+          "widths": "1 80 80 80 80 1", # song list column widths
+          "volume": "1.0", # internal volume, [0.0, 1.0]
+          "browser": "1", # none, search, playlist, panes
+          "songlist": "true", # on or off
+          "sortby": "0artist" # <asc/desc>tagname, song list sort
+          },
 
-    _config.set("settings", "shuffle", "false")
-    _config.set("settings", "repeat", "false")
+        "browsers":
+        { "query_text": "", # none/search bar text
+          "color": "true", # color search terms in search bar
+          "panes": "artist album", # panes in paned browser
+          "pane_selection": "", # selected pane values
+          },
 
-    _config.set("settings", "jump", "true")
-    _config.set("settings", "cover", "true")
-    _config.set("settings", "color", "true")
-    _config.set("settings", "osdcolors", "#ffbb00 #ff8700")
-    _config.set("settings", "osdfont", "Sans 18")
+        # Kind of a dumping ground right now, should probably be
+        # cleaned out later.
+        "settings":
+        { "scan": "", # scan directories, :-separated
+          "masked": "", # masked directories, :-separated
 
-    _config.set("settings", "tbp_space", "false")
-    _config.set("settings", "addreplace", "0")
-    _config.set("settings", "titlecase", "false")
-    _config.set("settings", "splitval", "true")
-    _config.set("settings", "nbp_space", "false")
-    _config.set("settings", "windows", "true")
-    _config.set("settings", "ascii", "false")
-    _config.set("settings", "allcomments", "true")
+          "gain": "2", # replaygain - none, radio, audiophile
+          "cover": "true", # display album cover images
+          "jump": "true", # scroll song list on current song change
+          "osd": "0", # OSD - none, top, bottom
+          "osdcolors": "#ffbb00 #ff8700", # color for the OSD, fed to Pango
+          "osdfont": "Sans 18", # font for the OSD, fed to Pango
 
-    _config.set("settings", "backend", "ao:alsa09")
-    _config.set("settings", "masked", "")
-    _config.set("settings", "splitters", ",;&/")
-    _config.set("settings", "headers", "~#track ~title~version ~album~part artist ~length")
+          # probably belong in memory
+          "shuffle": "false",
+          "repeat": "false",
 
-    _config.set("memory", "size", "400 350")
-    _config.set("memory", "song", "")
-    _config.set("memory", "widths", "1 80 80 80 50")
-    _config.set("memory", "volume", "1.0")
-    _config.set("memory", "browser", "1")
-    _config.set("memory", "songlist", "true")
-    _config.set("memory", "sortby", "0artist")
+          "tbp_space": "false", # replace _s with spaces in TBP
+          "addreplace": "0", # 0 - replace tags, 1 - add tags, in TBP
+          "titlecase": "false", # titlecase values in TBP
+          "splitval": "true", # split values in TBP
+          "nbp_space": "false", # replace spaces with _s in renaming
+          "windows": "true", # replace invalid Win32 characters with _s
+          "ascii": "false", # replace non-ASCII characters with _s
+          "allcomments": "true", # show all comments, or just "human" ones
+          "splitters": ",;&/",
 
-    for k, v in {"query_text": "",
-                 "pane_selection": "<b>All</b>\n<b>All</b>",
-                 "panes": "artist album"}.items():
-        _config.set("browsers", k, v)
+          "backend": "ao:alsa09", # audio backend
+
+          # initial column headers
+          "headers": "~#track ~title~version ~album~part artist ~length"
+          }
+        }
+
+    for section, values in initial.iteritems():
+        _config.add_section(section)
+        for key, value in values.iteritems():
+            _config.set(section, key, value)
 
     _config.read(rc_files)
 

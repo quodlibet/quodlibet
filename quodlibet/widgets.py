@@ -96,8 +96,8 @@ class AboutWindow(gtk.Window):
 
 class PreferencesWindow(gtk.Window):
     class _Pane(object):
-        def _toggle(self, c, name):
-            config.set("settings", name, str(bool(c.get_active())))
+        def _toggle(self, c, name, section = "settings"):
+            config.set(section, name, str(bool(c.get_active())))
 
         def _changed(self, cb, name):
             config.set("settings", name, str(cb.get_active()))
@@ -227,8 +227,8 @@ class PreferencesWindow(gtk.Window):
                 c, _("Display simple searches in blue, "
                      "advanced ones in green, and invalid ones in red"))
                          
-            c.set_active(config.state("color"))
-            c.connect('toggled', self._toggle, "color")
+            c.set_active(config.getboolean("browsers", "color"))
+            c.connect('toggled', self._toggle, "color", "browsers")
 
             f = qltk.Frame(_("Search Bar"), bold=True, child=c)
             self.pack_start(f, expand=False)
@@ -1194,10 +1194,9 @@ class SearchBar(EmptyBar):
         self.get_children()[0].write(const.QUERIES)
 
     def __test_filter(self, textbox):
-        if not config.state('color'): return
+        if not config.getboolean('browsers', 'color'): return
         text = textbox.get_text()
-        if "=" not in text and "#" not in text:
-            color = "blue"
+        if "=" not in text and "#" not in text: color = "blue"
         elif parser.is_valid(text): color = "dark green"
         else: color = "red"
         gobject.idle_add(self.__set_entry_color, textbox, color)
