@@ -12,73 +12,6 @@ VERSION = "0.6"
 
 import os, sys
 
-# This object communicates with the playing thread. It's the only way
-# the playing thread talks to the UI, so replacing this with something
-# using e.g. Curses would change the UI. The converse is not true. Many
-# parts of the UI talk to the player.
-#
-# The single instantiation of this is widgets.wrap, created at startup.
-class GTKSongInfoWrapper(object):
-    def __init__(self):
-        try: os.unlink(const.CONTROL)
-        except OSError: pass
-        util.mkdir(const.DIR)
-        os.mkfifo(const.CONTROL, 0600)
-        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
-        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
-
-        try: import mmkeys
-        except:
-            print _("W: Failed to initialize multimedia key support.")
-        else:
-            self.keys = mmkeys.MmKeys()
-            self.keys.connect("mm_prev", self._previous)
-            self.keys.connect("mm_next", self._next)
-            self.keys.connect("mm_playpause", self._playpause)
-            print _("Initialized multimedia key support.")
-
-    def _input_check(self, source, condition):
-        c = os.read(source, 1)
-        if c == "<": self._previous()
-        elif c == ">": self._next()
-        elif c == "-": self._playpause()
-        elif c == ")": player.playlist.paused = False
-        elif c == "|": player.playlist.paused = True
-        elif c == "0": player.playlist.seek(0)
-        elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
-        elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
-        elif c == "_": self.volume.set_value(0)
-        elif c == "!":
-            window = widgets.main
-            if not window.get_property('visible'):
-                window.move(*self.window_pos)
-            widgets.main.present()
-        elif c == "q": make_query(os.read(source, 4096))
-        elif c == "s":
-            player.playlist.seek(util.parse_time(os.read(source, 20)) * 1000)
-        elif c == "p":
-            filename = os.read(source, 4096)
-            if library.add(filename):
-                song = library[filename]
-                if song not in player.playlist.get_playlist():
-                    widgets.main.make_query("filename = /^%s/c" % sre.escape(filename))
-                player.playlist.go_to(library[filename])
-                player.playlist.paused = False
-            else:
-                print "W: Unable to load %s" % filename
-        elif c == "d":
-            filename = os.read(source, 4096)
-            for a, c in library.scan([filename]): pass
-            widgets.main.make_query("filename = /^%s/c" % sre.escape(filename))
-
-        os.close(self.fifo)
-        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
-        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
-
-    def _previous(*args): player.playlist.previous()
-    def _next(*args): player.playlist.next()
-    def _playpause(*args): player.playlist.paused ^= True
-
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(object):
     def __init__(self, title, initial_dir = None):
@@ -408,6 +341,60 @@ class MainWindow(MultiInstanceWidget):
         self.iframe = self.widgets["iframe"]
         self.volume = self.widgets["volume"]
 
+        try: import mmkeys
+        except:
+            print _("W: Failed to initialize multimedia key support.")
+        else:
+            self.keys = mmkeys.MmKeys()
+            self.keys.connect("mm_prev", self.previous_song)
+            self.keys.connect("mm_next", self.next_song)
+            self.keys.connect("mm_playpause", self.play_pause)
+            print _("Initialized multimedia key support.")
+
+        try: os.unlink(const.CONTROL)
+        except OSError: pass
+        util.mkdir(const.DIR)
+        os.mkfifo(const.CONTROL, 0600)
+        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
+        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+
+    def _input_check(self, source, condition):
+        c = os.read(source, 1)
+        if c == "<": self.previous_song(c)
+        elif c == ">": self.next_song(c)
+        elif c == "-": self.play_pause(c)
+        elif c == ")": player.playlist.paused = False
+        elif c == "|": player.playlist.paused = True
+        elif c == "0": player.playlist.seek(0)
+        elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
+        elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
+        elif c == "_": self.volume.set_value(0)
+        elif c == "!":
+            if not self.window.get_property('visible'):
+                self.window.move(*self.window_pos)
+            self.widgets.main.present()
+        elif c == "q": make_query(os.read(source, 4096))
+        elif c == "s":
+            player.playlist.seek(util.parse_time(os.read(source, 20)) * 1000)
+        elif c == "p":
+            filename = os.read(source, 4096)
+            if library.add(filename):
+                song = library[filename]
+                if song not in player.playlist.get_playlist():
+                    self.make_query("filename = /^%s/c" % sre.escape(filename))
+                player.playlist.go_to(library[filename])
+                player.playlist.paused = False
+            else:
+                print "W: Unable to load %s" % filename
+        elif c == "d":
+            filename = os.read(source, 4096)
+            for a, c in library.scan([filename]): pass
+            self.make_query("filename = /^%s/c" % sre.escape(filename))
+
+        os.close(self.fifo)
+        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
+        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+
     def set_paused(self, paused):
         gtk.idle_add(self._update_paused, paused)
 
@@ -568,7 +555,7 @@ class MainWindow(MultiInstanceWidget):
                            "your $BROWSER variable, or make sure "
                            "/usr/bin/sensible-browser exists.")).run()
 
-    def play_pause(self, button):
+    def play_pause(self, *args):
         if CURRENT_SONG[0] is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
@@ -1648,7 +1635,6 @@ CURRENT_SONG = [ None ]
 def setup_nonglade():
     widgets.songs = gtk.ListStore(object)
     widgets.main = MainWindow()
-    widgets.wrap = GTKSongInfoWrapper()
     player.playlist.info = widgets.main
     gtk.threads_init()
 
