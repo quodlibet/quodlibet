@@ -50,7 +50,8 @@ class AudioFile(dict):
         if self.get("filename") == self["=filename"]: del(self["filename"])
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
-        self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
+        try: self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
+        except OSError: self["=mtime"] = 0
         self["=basename"] = os.path.basename(self['=filename'])
         self["=dirname"] = os.path.dirname(self['=filename'])
 
