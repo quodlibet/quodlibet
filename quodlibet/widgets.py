@@ -609,7 +609,7 @@ class PlaylistWindow(gtk.Window):
 
     def _destroy(self):
         del(self.list_windows[self.prettyname])
-        if not len(view.get_model()):
+        if not len(self.view.get_model()):
             def remove_matching(model, path, iter, name):
                 if model[iter][1] == name:
                     model.remove(iter)
@@ -817,17 +817,12 @@ class EmptyBar(BrowserBar, gtk.HBox):
         self.activate()
 
 class SearchBar(EmptyBar):
-    model = None
-    
     def __init__(self, button, cb):
         EmptyBar.__init__(self, cb)
 
-        if SearchBar.model is None:
-            SearchBar.model = gtk.ListStore(str)
-
         tips = gtk.Tooltips()
-        combo = gtk.ComboBoxEntry(SearchBar.model, 0)
-
+        combo = qltk.ComboBoxEntrySave(
+            const.QUERIES, model = "searchbar", count = 15)
         clear = gtk.Button()
         clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
         tips.set_tip(clear, _("Clear search text"))
@@ -846,9 +841,6 @@ class SearchBar(EmptyBar):
         self.pack_start(clear, expand = False)
         self.pack_start(search, expand = False)
         self.show_all()
-
-        self.connect_object(
-            'destroy', gtk.ComboBoxEntry.set_model, combo, None)
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
     def clear(self, button, combo):
@@ -864,10 +856,9 @@ class SearchBar(EmptyBar):
         text = entry.get_text()
         if (parser.is_valid(text) or
             ("#" not in text and "=" not in text and "/" not in text)):
-            SearchBar.model.prepend([text])
-            try: SearchBar.model.remove(SearchBar.model.get_iter((10,)))
-            except ValueError: pass
+            self.get_children()[0].prepend_text(text)
         self.cb(text, None)
+        self.get_children()[0].write(const.QUERIES)
 
     def test_filter(self, textbox):
         if not config.state('color'): return

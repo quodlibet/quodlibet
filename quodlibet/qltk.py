@@ -49,10 +49,23 @@ class Notebook(gtk.Notebook):
 # A ComboBoxEntry that "remembers" its contents and saves to/loads from
 # a file on disk.
 class ComboBoxEntrySave(gtk.ComboBoxEntry):
-    def __init__(self, f = None, initial = [], count = 10):
-        model = gtk.ListStore(str)
-        gtk.ComboBoxEntry.__init__(self, model, 0)
+    models = {}
+    
+    def __init__(self, f = None, initial = [], count = 10, model = None):
         self.count = count
+        if model:
+            try:
+                gtk.ComboBoxEntry.__init__(self, self.models[model], 0)
+            except KeyError:
+                gtk.ComboBoxEntry.__init__(self, gtk.ListStore(str), 0)
+                self.models[model] = self.get_model()
+                self.__fill(f, initial)
+        else:
+            gtk.ComboBoxEntry.__init__(self, gtk.ListStore(str), 0)
+            self.__fill(f, initial)
+        self.connect_object('destroy', self.set_model, None)
+
+    def __fill(self, f, initial):
         if f is not None and not hasattr(f, 'readlines'):
             if os.path.exists(f):
                 for line in file(f).readlines():
@@ -61,7 +74,6 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             for line in f.readlines():
                 self.append_text(line.strip())
         for c in initial: self.append_text(c)
-        self.connect('destroy', ComboBoxEntrySave._clean)
 
     def prepend_text(self, text):
         try: self.remove_text(self.get_text().index(text))
@@ -93,10 +105,6 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
                 os.makedirs(os.path.dirname(f))
             f = file(f, "w")
         f.write("\n".join(self.get_text()) + "\n")
-
-    def _clean(self):
-        self.get_model().clear()
-        self.set_model(None)
 
 def Frame(label = None, border = 0, markup = None, big = False, bold = False,
           alignment = True, child = None, underline = True):

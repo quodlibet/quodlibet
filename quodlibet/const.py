@@ -13,6 +13,8 @@ CURRENT = os.path.join(DIR,  "current")
 LIBRARY = os.path.join(DIR,  "songs")
 ACCELS  = os.path.join(DIR,  "accels")
 
+QUERIES  = os.path.join(DIR, "lists",  "queries")
+
 CREDITS = ["Joe Wreschnig",
            "Michael Urman",
            "Iñigo Serna",
