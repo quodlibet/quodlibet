@@ -4,11 +4,13 @@ Songs added to the library before 0.9 will not support the "added"
 numeric tag (its value will be 0).
 
 0.9
- - "Drop-in" support for new file formats.
- - Conditional tags in rename-by-tag dialog.
- - New search language enhancements.
+ - Text in the rename-by-tag dialog can be conditionalized.
+ - New query language enhancements (ternary relation operators,
+   string comparisons, less-like case-sensitivity).
  - Non-UTF-8 filesystem encodings support (via CHARSET/G_BROKEN_FILENAMES).
- - New numeric keys "added", "skipcount".
+ - New numeric keys "added", "skipcount" can be searched on.
+ - "Information" tab in the Properties window.
+ - Major code reorganization, featuring less Glade and more modules.
 
 0.8.1 - Our story takes a sudden dive..
  - Fix a crash when encoding information is not available.

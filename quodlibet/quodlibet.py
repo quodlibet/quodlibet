@@ -2059,10 +2059,34 @@ class SongProperties(object):
             self.box.pack_start(self._people(song), expand = False)
             self.box.pack_start(self._listen(song), expand = False)
 
+        def _update_artist(self, songs):
+            artist = songs[0].comma("artist")
+            self.box.pack_start(self.Label(
+                "<b><span size='x-large'>%s</span></b>\n%s" %(
+                util.escape(artist), _("%d songs") % len(songs))))
+
+            noalbum = 0
+            albums = {}
+            for song in songs:
+                if "album" in song:
+                    albums[song.list("album")[0]] = song.get("date")
+                else:
+                    noalbum += 1
+            albums = [(date, album) for album, date in albums.items()]
+            albums.sort()
+            def format((date, album)):
+                if date: return "%s (%s)" % (util.escape(album), date)
+                else: return util.escape(album)
+            albums = map(format, albums)
+            if noalbum: albums.append(_("%d with no album") % noalbum)
+            self.box.pack_start(
+                self.Frame(_("Discography"), self.Label("\n".join(albums))),
+                expand = False)
+
         def _update_many(self, songs):
-            text = ["<b><span size='x-large'>%s</span></b>" %(
-                _("%d songs") % len(songs))]
-            l = self.Label("\n".join(text))
+            text = "<b><span size='x-large'>%s</span></b>" %(
+                _("%d songs") % len(songs))
+            l = self.Label(text)
             self.box.pack_start(l, expand = False)
 
             tc = sum([complex(song["~#length"], song["~#playcount"])
@@ -2106,12 +2130,17 @@ class SongProperties(object):
                                                self.Label(albums)),
                                     expand = False)
 
-        def update(self, songrefs):
+        def update(self, songs):
             for c in self.box.get_children():
                 self.box.remove(c)
                 c.destroy()
-            if len(songrefs) == 1: self._update_one(songrefs[0])
-            else: self._update_many(songrefs)
+            if len(songs) == 1: self._update_one(songs[0])
+            else:
+                albums =  [song.get("album") for song in songs]
+                artists = [song.get("artist") for song in songs]
+                if min(artists) == max(artists):
+                    self._update_artist(songs[:])
+                else: self._update_many(songs)
             self.box.show_all()
 
     class EditTags(object):
