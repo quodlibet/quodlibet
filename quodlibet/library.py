@@ -18,6 +18,7 @@ def MusicFile(filename):
 
 class AudioFile(dict):
     def __cmp__(self, other):
+        if not hasattr(other, "get"): return -1
         return (cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("album"), other.get("album")) or
                 cmp(self.get("tracknumber"), other.get("tracknumber")) or

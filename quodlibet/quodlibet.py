@@ -30,7 +30,7 @@ class GTKSongInfoWrapper(object):
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
 
-        self._time = (0, 0)
+        self._time = (0, 1)
         gtk.timeout_add(300, self._update_time)
 
     def set_paused(self, paused):
@@ -63,9 +63,15 @@ class GTKSongInfoWrapper(object):
             self.text.set_markup(song.to_markup())
         else:
             self.image.set_from_stock(gtk.STOCK_CDROM,gtk.ICON_SIZE_BUTTON)
-            self.pos.set_range(0, 0)
+            self.pos.set_range(0, 1)
             self.pos.set_value(0)
+            self._time = (0, 1)
             self.text.set_markup("<span size='xx-large'>Not playing</span>")
+        last_song = CURRENT_SONG[0]
+        CURRENT_SONG[0] = song
+        def update_if_last_or_current(model, path, iter, changed):
+            if model[iter][0] in changed: model.row_changed(path, iter)
+        widgets.songs.foreach(update_if_last_or_current, (last_song, song))
         return False
 
     def _update_time(self):
@@ -133,21 +139,21 @@ class GladeHandlers(object):
 
     def text_parse(*args):
         from parser import QueryParser, QueryLexer
-        text = widgets["query"].get_text()
+        text = widgets["query"].get_text().decode("utf-8")
         if text.strip() == "":
             CURRENT_FILTER[0] = FILTER_ALL
             songs = filter(CURRENT_FILTER[0], library.values())
             player.playlist.set_playlist(songs)
             refresh_songlist()
         else:
-            try:
+            if "=" not in text and "/" not in text:
+                parts = ["* = /" + p + "/" for p in text.split()]
+                text = "&(" + ",".join(parts) + ")"
                 q = QueryParser(QueryLexer(text)).Query()
-            except:
-                if "=" not in text and "/" not in text:
-                    parts = ["* = /" + p + "/" for p in text.split()]
-                    text = "&(" + ",".join(parts) + ")"
-                    q = QueryParser(QueryLexer(text)).Query()
-                    widgets["query"].set_text(text)
+                widgets["query"].set_text(text)
+
+            try: q = QueryParser(QueryLexer(text)).Query()
+            except: pass
             else:
                 CURRENT_FILTER[0] = q.search
                 set_entry_color(widgets["query"], "black")
@@ -159,15 +165,15 @@ class GladeHandlers(object):
         from parser import QueryParser, QueryLexer
         textbox = widgets["query"]
         text = textbox.get_text()
-        try:
-            QueryParser(QueryLexer(text)).Query()
-        except:
-            if "=" not in text and "/" not in text:
-                gtk.idle_add(set_entry_color, textbox, "blue")
-            else:
-                gtk.idle_add(set_entry_color, textbox, "red")
+        if "=" not in text and "/" not in text:
+            gtk.idle_add(set_entry_color, textbox, "blue")
         else:
-            gtk.idle_add(set_entry_color, textbox, "dark green")
+            try:
+                QueryParser(QueryLexer(text)).Query()
+            except:
+                gtk.idle_add(set_entry_color, textbox, "red")
+            else:
+                gtk.idle_add(set_entry_color, textbox, "dark green")
 
 def set_sort_by(header, i):
     s = header.get_sort_order()
@@ -191,12 +197,14 @@ HEADERS = ["artist", "title", "album"]
 
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
+CURRENT_SONG = [ None ]
 
 def list_transform(model, iter, col):
     citer = model.convert_iter_to_child_iter(iter)
     cmodel = model.get_model()
     song = cmodel.get_value(citer, 0)
-    return song.get(HEADERS[col], "")
+    try: return song.get(HEADERS[col], "")
+    except IndexError: return song is CURRENT_SONG[0] and 700 or 400
 
 def set_entry_color(entry, color):
     layout = entry.get_layout()
@@ -208,11 +216,11 @@ def main():
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(object)
     widgets.filter = widgets.songs.filter_new()
-    widgets.filter.set_modify_func([str]*len(HEADERS), list_transform)
+    widgets.filter.set_modify_func([str]*len(HEADERS) + [int], list_transform)
     widgets["volume"].set_value(player.device.volume)
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(t.title(), renderer, text=i)
+        column = gtk.TreeViewColumn(t.title(), renderer, text=i, weight=len(HEADERS))
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)

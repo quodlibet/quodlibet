@@ -6,6 +6,7 @@
 #
 # $Id$
 
+import string
 import match
 import sre
 
@@ -141,7 +142,7 @@ class QueryParser(object):
         return s
 
     def QueryPart(self):
-        names = map(str.lower, self._match_list(self._match_string))
+        names = map(string.lower, self._match_list(self._match_string))
         self.match(EQUALS)
         res = self.RegexpSet()
         return match.Tag(names, res)

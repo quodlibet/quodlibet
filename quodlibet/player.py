@@ -159,6 +159,8 @@ class PlaylistPlayer(object):
                 if self.song or self.player:
                     self.lock.acquire()
                     self.song = self.player = None
+                    self.info.set_song(self.song, self.player)
+                    self.paused = True
                     self.lock.release()
                 time.sleep(0.01)
 
