@@ -21,7 +21,7 @@ import os, sys
 class GTKSongInfoWrapper(object):
     def __init__(self):
         self.image = widgets["albumcover"]
-        self.vbar = widgets["vseparator2"]
+        self.iframe = widgets["iframe"]
         self.text = widgets["currentsong"]
         self.pos = widgets["song_pos"]
         self.timer = widgets["song_timer"]
@@ -112,14 +112,12 @@ class GTKSongInfoWrapper(object):
 
     # Called when no cover is available, or covers are off.
     def disable_cover(self):
-        self.image.hide()
-        self.vbar.hide()
+        self.iframe.hide()
 
     # Called when a covers are turned on; an image may not be available.
     def enable_cover(self):
         if self.image.get_pixbuf():
-            self.image.show()
-            self.vbar.show()
+            self.iframe.show()
 
     def update_markup(self, song):
         if song:
