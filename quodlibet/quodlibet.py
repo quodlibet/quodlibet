@@ -89,6 +89,7 @@ class AboutWindow(object):
         l = gtk.Label(const.COPYRIGHT)
         s2 = _("Quod Libet is free software licensed under the GNU GPL v2.")
         l2 = gtk.Label("<small>%s</small>" % s2)
+        l2.set_line_wrap(True)
         l.set_use_markup(True)
         l2.set_use_markup(True)
         l.set_justify(gtk.JUSTIFY_CENTER)

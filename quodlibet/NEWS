@@ -22,6 +22,7 @@ numeric tag (its value will be 0).
    the scroll wheel, and skips forward/backward on buttons 6/7.
  - This release depends on GTK 2.6 for its new media icons.
  - PMP support was removed.
+ - Updated German translation (thanks, Bastian!)
 
 0.8.1 - Our story takes a sudden dive..
  - Fix a crash when encoding information is not available.
