@@ -48,13 +48,37 @@ class AudioFile(dict):
         title = u", ".join(self["title"].split("\n"))
         text = u'<span weight="bold" size="x-large">%s</span>' % escape(title)
         if "version" in self:
-            text += u"\n         <small><b>%s</b></small>" % escape(
+            text += u"\n<small><b>%s</b></small>" % escape(
                 self["version"])
-        
-        artist = u", ".join(self["artist"].split("\n"))
-        text += u"\n      <small>by %s</small>" % escape(artist)
+        artist = self["artist"].replace("\n", ", ")
+        text += u"\nby %s" % escape(artist)
+
+        if "performer" in self:
+            text += ("\n<small>Performed by %s</small>" %
+                     self["performer"].replace("\n", ", "))
+
+        others = ""
+        if "conductor" in self:
+            others += ("\nconducted by " +
+                       self["conductor"].replace("\n", ", "))
+        if "arranger" in self:
+            others += ("\narranged by " +
+                       self["arranger"].replace("\n", ", "))
+        if "lyricist" in self:
+            others += ("\nlyrics by " +
+                       self["arranger"].replace("\n", ", "))
+
+        if others:
+            others = others.strip().replace("\n", "; ")
+            others = others[0].upper() + others[1:]
+            text += "\n<small>%s</small>" % escape(others.strip())
+
         if "album" in self:
-            album = u"\n   <b>%s</b>" % escape(self["album"])
+            album = u"\n<b>%s</b>" % escape(self["album"])
+            if "part" in self:
+                album += u" - " + escape(self["part"])
+            if "discnumber" in self:
+                album += u" - Disc %s" % escape(self["discnumber"])
             if "tracknumber" in self:
                 album += u" - Track %s" % escape(self["tracknumber"])
             text += album

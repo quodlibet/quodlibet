@@ -1,12 +1,9 @@
 - Stress-testing
 - Artist URL detection
+- Remember window size, position (more importantly, why this isn't working)
+- Playlists.
+- FLAC segfaults
+- Various skipping problems -- get smarter about Python threads.
+- Look into eventual GStreamer port (for playing).
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - MikMod support.
-- Playlists.
-- Remember window size, position
-- FLAC segfaults
-- Audio resampling when rate != 44100.
-- Various skipping problems -- get smarter about Python threads.
-- Look into eventual GStreamer port
-  - FOR PLAYING ONLY. We'll continue to handle our own metadata, because
-    we do it better.
