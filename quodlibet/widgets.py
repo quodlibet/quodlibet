@@ -1317,7 +1317,8 @@ class MainWindow(gtk.Window):
         hb2.pack_start(l, expand = False)
         scale = gtk.HScale(gtk.Adjustment(0, 0, 0, 3000, 15000, 0))
         scale.set_update_policy(gtk.UPDATE_DELAYED)
-        scale.connect('adjust-bounds', self.seek_slider)
+        scale.connect('adjust-bounds',
+                      lambda slider, position: player.playlist.seek(position))
         scale.set_draw_value(False)
         self.song_pos = scale
         self.song_timer = l
@@ -1420,7 +1421,6 @@ class MainWindow(gtk.Window):
             library.reload(song)
             player.playlist.refilter()
         if song is None:
-            self.songlist.refresh()
             self.browser.update()
         else:
             try: path = (player.playlist.get_playlist().index(song),)
@@ -1823,9 +1823,6 @@ class MainWindow(gtk.Window):
     def toggle_shuffle(self, button):
         player.playlist.shuffle = button.get_active()
         config.set("settings", "shuffle", str(bool(button.get_active())))
-
-    def seek_slider(self, slider, v):
-        gobject.idle_add(player.playlist.seek, v)
 
     def __random(self, key):
         if self.browser.can_filter(key):
