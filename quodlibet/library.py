@@ -240,8 +240,8 @@ class AudioFile(dict):
                 # is worth 2 points, everything else 1.
                 matches = filter(lambda s: s in lfn,
                                  ["front", "cover", "jacket",
-                                  self.get("labelid", lfn + "."),
-                                  self.get("labelid", lfn + ".")])
+                                  self.get("labelid", lfn + ".").lower(),
+                                  self.get("labelid", lfn + ".").lower()])
                 score = len(matches)
                 if score: images.append((score, os.path.join(base, fn)))
         # Highest score wins.
