@@ -76,6 +76,18 @@ class TestSearchBar(TestCase):
         self._expected = "a test"
         self._bar.activate()
 
+    def test_savenosave(self):
+        bar = SearchBar(self._check_cb, save=False)
+        bar.set_text("a test")
+        bar.save()
+        bar.set_text("another test")
+        self._expected = "another test"
+        bar.activate()
+        bar.restore()
+        self._expected = "a test"
+        bar.activate()
+        bar.destroy()
+
     def test_restore(self):
         self._bar.set_text("a test")
         self._bar.save()

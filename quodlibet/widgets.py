@@ -704,7 +704,7 @@ class PlaylistWindow(gtk.Window):
         self.add(vbox)
 
         self.__view = view = PlayList(name)
-        bar = SearchBar(self.__add_query_results, gtk.STOCK_ADD)
+        bar = SearchBar(self.__add_query_results, gtk.STOCK_ADD, save=False)
         vbox.pack_start(bar, expand=False, fill=False)
 
         hbox = gtk.HButtonBox()
@@ -1153,8 +1153,9 @@ class EmptyBar(Browser, gtk.HBox):
         self.activate()
 
 class SearchBar(EmptyBar):
-    def __init__(self, cb, button=gtk.STOCK_FIND):
+    def __init__(self, cb, button=gtk.STOCK_FIND, save=True):
         EmptyBar.__init__(self, cb)
+        self.__save = save
 
         tips = gtk.Tooltips()
         combo = qltk.ComboBoxEntrySave(
@@ -1194,7 +1195,7 @@ class SearchBar(EmptyBar):
             self._text = text
             self.get_children()[0].prepend_text(text)
         self._cb(text, None)
-        self.save()
+        if self.__save: self.save()
         self.get_children()[0].write(const.QUERIES)
 
     def __test_filter(self, textbox):
