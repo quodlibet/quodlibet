@@ -293,6 +293,32 @@ class AudioFile(dict):
                 return None
         else: return None
 
+class MPCFile(AudioFile):
+    # Map APE names to QL names. APE tags are also usually capitalized.
+
+    IGNORE = ["file", "index", "introplay"]
+    TRANS = { "subtitle": "version",
+              "track": "tracknumber",
+              "catalog": "labelid",
+              "year": "date",
+              "record location": "location"
+              }
+    
+    def __init__(self, filename):
+        import musepack
+        tag = musepack.APETag(filename)
+        for key, value in tag:
+            key = MPCFile.TRANS.get(key.lower(), key.lower())
+            if value.kind == musepack.apev2.TEXT and key not in MPCFile.IGNORE:
+                self[key] = "\n".join(list(value))
+        f = musepack.MPCFile(filename)
+        self["~#length"] = int(f.length / 1000)
+        self.sanitize(filename)
+
+    def can_change(self, key = None):
+        if key is None: return []
+        else: return False
+
 class MP3File(AudioFile):
 
     # http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
@@ -762,12 +788,13 @@ def init(cache_fn = None):
 
     if util.check_mod():
         print _("Enabling ModPlug support.")
-        for fmt in ["669", "amf", "dsm", "gdm", "imf", "it",
-                    "med", "mod", "mtm", "s3m", "stm", "stx",
-                    "ult", "uni", "apun", "xm"]:
+        for fmt in ["mod", "it", "xm", "s3m"]:
             supported["." + fmt] = ModFile
-            
 
+    if util.check_mpc():
+        print _("Enabling Musepack support.")
+        supported[".mpc"] = supported[".mp+"] = MPCFile
+        
     global library
     library = Library(config.get("settings", "masked").split(":"))
     if cache_fn: library.load(cache_fn)

@@ -186,6 +186,30 @@ class ModPlayer(AudioPlayer):
             else: self.stopped = True
         return int(self.audio.position)
 
+class MPCPlayer(AudioPlayer):
+    def __init__(self, dev, song):
+        AudioPlayer.__init__(self)
+        import musepack
+        self.audio = musepack.MPCFile(song["~filename"])
+        self.length = self.audio.length
+        self.pos = 0
+        self.dev = dev
+        self.dev.set_info(self.audio.frequency, 2)
+
+    def __iter__(self): return self
+
+    def seek(self, ms):
+        self.audio.seek(ms)
+        self.pos = ms
+
+    def next(self):
+        if self.stopped: raise StopIteration
+        else:
+            s = self.audio.read()
+            if s: self.dev.play(s)
+            else: self.stopped = True
+        return int(self.audio.position)
+
 def FilePlayer(dev, song):
     for ext in supported.keys():
         if song["~filename"].lower().endswith(ext):
@@ -482,14 +506,13 @@ def init(devid):
     if util.check_ogg(): supported[".ogg"] = OggPlayer
     if util.check_mp3(): supported[".mp3"] = MP3Player
     if util.check_flac(): supported[".flac"] = FLACPlayer
+    if util.check_mpc():
+        supported[".mpc"] = MPCPlayer
+        supported[".mp+"] = MPCPlayer
 
     if util.check_mod():
-        for fmt in ["669", "amf", "dsm", "gdm", "imf", "it",
-                    "med", "mod", "mtm", "s3m", "stm", "stx",
-                    "ult", "uni", "apun", "xm"]:
+        for fmt in ["mod", "xm", "it", "s3m"]:
             supported["." + fmt] = ModPlayer
-            supported["." + fmt + ".gz"] = ModPlayer
-            supported["." + fmt + ".bz2"] = ModPlayer
 
 
     try: import ao

@@ -57,6 +57,11 @@ def check_mod():
     except ImportError: return False
     else: return True
 
+def check_mpc():
+    try: import musepack
+    except ImportError: return False
+    else: return True
+
 def parse_time(timestr):
     try:
         return reduce(lambda s, a: s * 60 + int(a),
