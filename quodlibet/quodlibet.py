@@ -155,7 +155,7 @@ class PreferencesWindow(MultiInstanceWidget):
         new_h.extend(self.widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))
-        widgets.main.set_column_headers(self.widgets["songlist"], new_h)
+        widgets.main.set_column_headers(widgets.main.widgets["songlist"],new_h)
 
     def toggle_cover(self, toggle):
         config.set("settings", "cover", str(bool(toggle.get_active())))
