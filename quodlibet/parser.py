@@ -175,7 +175,7 @@ class QueryParser(object):
 
     def RegexpNeg(self):
         self.match(NEGATION)
-        return match.Neg(self.Regexp())
+        return match.Neg(self.RegexpSet())
 
     def RegexpUnion(self):
         return self._match_parened(UNION, match.Union, self.RegexpList)
