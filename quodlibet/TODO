@@ -1,16 +1,28 @@
-Translations
-------------
-Also, comments for translators where appropriate.
+Things That Always Need Work
+----------------------------
+Tweaking UI to fit the GNOME HIG and common sense.
+Add and improve unit tests.
+Translations, more string reuse, and comments for translators.
 
-Song rating system
-------------------
-Don't tell anyone, but the ~#rating key exists already. It just needs UI.
-
-UI Tweaking
------------
-Continue HIGification.
-Handle very long titles/filenames better.
+'Quick' Features
+---------------
+Interface for the ~#rating key.
 Remember song list sort order.
+http://eyed3.nicfit.net/ is a possible replacement for pyid3lib.
+A real manual, not just a man page.
+(Python-based) plugin system for the song list context menu.
+~#bitrate AudioFile key.
+RPM spec/package.
+
+Browser modes
+-------------
+A Muine-style album browser.
+A Jukebox mode (requires 'just browser, no player' windows).
+
+Album cover download
+--------------------
+Amazon has a ToS I can't agree to, but a Google image search for the
+album name (or especially label ID) seems to be effective.
 
 GStreamer backend
 -----------------
@@ -33,21 +45,6 @@ would be easy.
 
 RB's album cover patch is immature, but so far just stores JPGs
 in ~/.gnome2/rhythmbox.
-
-Browser modes
--------------
-A Muine-style album browser.
-A Jukebox mode (requires 'just browser, no player' windows).
-
-Album cover download
---------------------
-Amazon has a ToS I can't agree to, but a Google image search for the
-album name (or especially label ID) seems to be effective.
-
-Unit tests
-----------
-Keep testing new functions, keep writing new tests for old functions
-when bugs are found.
 
 PMP Interfacing
 ---------------
@@ -72,11 +69,6 @@ or masked list. This is a good idea even without the above stuff.
 Related we should whip our song-update callbacks into shape. The less
 entry points the better.
 
-New keys
---------
-Bitrate/quality.
-File size?
-
 IRC Dumps
 ---------
 (mu) hmm. is it a bug that if you, vorbisgain, don't refresh, edit your tags
@@ -84,8 +76,27 @@ IRC Dumps
 (piman) good question.
 (piman) do we need a warning dialog if the mtime is wrong?
 
-Others
-------
-RPM spec/package, Gentoo ebuild, whatever.
-A real manual, not just a man page.
-(Python-based) plugin system for the song list context menu.
+(16:16:56) Karl: Firstly: it definitely does not save list position or
+anything like that if I log out while it's still running.
+(16:18:43) Karl: Secondly: when editing the tags of multiple files, if
+you expand the "apply to these files" widget and proceed to make
+modifications to the files one at a time (say, to tweak a few names)
+you have to save before selecting the next file, or your changes will
+be lost.  It would make more sense to me if the changes were kept in
+memory and a save at the end would perform all of them.
+(16:20:48) Karl: Thirdly: I have it filtered by "not played this
+month" right now.  When I get done playing a song, I've obviously
+played that song this month, but the song stays on the list.  Are
+there dynamic checks to make sure it isn't played again?  I could test
+this myself with a short list, but I'm very lazy.  And as an aside, I
+know from others that iTunes does remove tracks from the current list
+when they're done being played if it's a "not played recently" style
+list.
+(16:22:55) Karl: And fourthly: it would be pretty useful to have a
+"stop after this song" ("stop soon"? "end here"? I'm not sure of the
+best name for it.) button in the tray menu.  Because that's usually
+what I want to do if I get up to make dinner or something, since I
+don't want to resume in the middle of a song and I want to hear the
+end of the current one.  Right now my solution is to wait and quickly
+pause as the next one is starting, but that seems like it shouldn't be
+necessary.
