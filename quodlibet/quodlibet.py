@@ -1143,7 +1143,7 @@ def refresh_cache():
     print _("Loading, scanning, and saving your library.")
     library.library.load(cache_fn)
     if config.get("settings", "scan"):
-        for a, c in library.scan(config.get("settings", "scan").split(":")):
+        for a, c in library.library.scan(config.get("settings", "scan").split(":")):
             pass
     library.library.save(cache_fn)
     raise SystemExit
