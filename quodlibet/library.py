@@ -652,10 +652,10 @@ class Library(dict):
                 if song.exists():
                     fn = song['~filename']
                     changed += 1
-                    song = MusicFile(fn)
-                    if song and fn in self:
-                        for key in MIGRATE: song[key] = self[fn][key]
-                        self[fn] = song
+                    song2 = MusicFile(fn)
+                    if song2:
+                        for key in MIGRATE: song2[key] = song[key]
+                        self[fn] = song2
                 elif config.get("settings", "masked"):
                     for m in config.get("settings", "masked").split(":"):
                         if fn.startswith(m) and not os.path.ismount(m):
@@ -664,10 +664,6 @@ class Library(dict):
                             break
                     else:
                         removed += 1
-                elif "=filename" in song:
-                    song.sanitize(song["=filename"])
-                    if song.exists:
-                        self[song["~filename"]] = song
         return changed, removed
 
     def scan(self, dirs):
