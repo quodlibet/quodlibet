@@ -197,15 +197,10 @@ class MP3File(AudioFile):
         # strip null string.. might be needed? -- niklasjanlert
         gstr = gstr.rstrip("\x00")
 
-        if gstr in ["(CR)", "(RX)"]:
-            genreid = gstr[1:3]
-            self.add('genre', self.GENRES[genreid])
-            return # Can't map them to anything else, so break out
-
         genreid, genrename = self.GENRE_RE.match(gstr).groups()
         if genrename: genrename = genrename.strip()
 
-        if not genreid or genrename:
+        if not genreid:
             try: genreid = str(int(gstr)) # Try id3v1 style..
             except ValueError: pass
 
@@ -214,7 +209,8 @@ class MP3File(AudioFile):
             try: self.add("genre", self.GENRES[genreid])
             except KeyError: pass
 
-        if genrename: self.add("genre", genrename)
+        if genrename and genrename not in self.list("genre"):
+            self.add("genre", genrename)
 
     def write(self):
         import pyid3lib
