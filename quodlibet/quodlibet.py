@@ -62,6 +62,7 @@ class GladeHandlers(object):
                                                  gtk.ICON_SIZE_BUTTON)
         label.set_markup(text)
         player.set_playlist([song])
+        player.paused = False
 
     def open_chooser(*args):
         chooser = gtk.FileChooserDialog(
@@ -72,8 +73,9 @@ class GladeHandlers(object):
         chooser.set_select_multiple(True)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
-            gtk.idle_add(lazy_loader, library.load(chooser.get_filenames()),
-                         widgets.songs)
+            library.load(chooser.get_filenames())
+            songs = filter(CURRENT_FILTER[0], library.library.values())
+            set_songs(songs)
         chooser.destroy()
 
     def update_pos_text(*args):
@@ -99,7 +101,8 @@ class GladeHandlers(object):
         text = widgets["query"].get_text()
         if text.strip() == "":
             CURRENT_FILTER[0] = FILTER_ALL
-            widgets.filter.refilter()
+            songs = filter(CURRENT_FILTER[0], library.library.values())
+            set_songs(songs)
         else:
             try:
                 q = QueryParser(QueryLexer(text)).Query()
@@ -107,7 +110,8 @@ class GladeHandlers(object):
             else:
                 CURRENT_FILTER[0] = q.search
                 set_entry_color(widgets["query"], "black")
-                widgets.filter.refilter()
+                songs = filter(CURRENT_FILTER[0], library.library.values())
+                set_songs(songs)
 
     def test_filter(*args):
         from parser import QueryParser, QueryLexer
@@ -120,6 +124,10 @@ class GladeHandlers(object):
         else:
             gtk.idle_add(set_entry_color, textbox, "dark green")
 
+def set_songs(songs):
+    widgets.songs.clear()
+    for song in songs: widgets.songs.append([song])
+    player.set_playlist(songs)
 
 widgets = Widgets("quodlibet.glade")
 
@@ -128,26 +136,11 @@ HEADERS = ["artist", "title", "album"]
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
 
-def list_filter(model, it, qlist):
-    song = model[it][0]
-    query = qlist[0]
-    return bool(song and query(song))
-
 def list_transform(model, iter, col):
     citer = model.convert_iter_to_child_iter(iter)
     cmodel = model.get_model()
     song = cmodel.get_value(citer, 0)
     return song.get(HEADERS[col], "")
-
-def lazy_loader(iterator, model):
-    from itertools import izip
-    for i in range(40):
-        try: song = iterator.next()
-        except StopIteration:
-            print "Done loading requested songs."
-            break
-        else: model.append([song])
-    else: gtk.idle_add(lazy_loader, iterator, model)
 
 def set_entry_color(entry, color):
     layout = entry.get_layout()
@@ -169,8 +162,8 @@ def main():
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(object)
     widgets.filter = widgets.songs.filter_new()
+    widgets.filter.set_visible_func(lambda m, i: bool(m[i][0]))
     widgets.filter.set_modify_func([str]*len(HEADERS), list_transform)
-    widgets.filter.set_visible_func(list_filter, CURRENT_FILTER)
     widgets.sorted = gtk.TreeModelSort(widgets.filter)
     vol = widgets["volume"]
     vol.set_value(player.get_volume())
@@ -181,14 +174,15 @@ def main():
         column.set_sort_column_id(i)
         sl.append_column(column)
 
-    gtk.idle_add(lazy_loader, iter(library.load_cache()), widgets.songs)
+    set_songs(library.load_cache())
+    print "Done loading songs."
     sl.set_model(widgets.sorted)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
     player.paused = True
     gtk.timeout_add(500, update_timer, ())
     gtk.threads_init()
-    thread.start_new_thread(player.play, ())
+    thread.start_new_thread(player.play, (widgets["currentsong"],))
     gtk.main()
     library.save_cache([row[0] for row in widgets.songs])
 

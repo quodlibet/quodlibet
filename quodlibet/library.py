@@ -7,9 +7,29 @@ def MusicFile(filename):
     elif filename.lower().endswith(".mp3"): return MP3File(filename)
     else: return None
 
+def escape(str):
+    return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
 library = {}
 
-class MP3File(dict):
+class AudioFile(dict):
+    def to_markup(self):
+        title = ", ".join(self.get("title", "Unknown").split("\n"))
+        text = u'<span weight="bold" size="x-large">%s</span>' % escape(title)
+        if "version" in self:
+            text += u"\n         <small><b>%s</b></small>" % escape(
+                self["version"])
+        
+        artist = ", ".join(self.get("artist", "Unknown").split("\n"))
+        text += u"\n      <small>by %s</small>" % escape(artist)
+        if "album" in self:
+            album = u"\n   <b>%s</b>" % escape(self["album"])
+            if "tracknumber" in self:
+                album += u" - Track %s" % escape(self["tracknumber"])
+            text += album
+        return text
+
+class MP3File(AudioFile):
 
     # http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
     # http://www.id3.org/id3v2.4.0-frames.txt
@@ -64,7 +84,7 @@ class MP3File(dict):
             if hasattr(tag, i):
                 self.setdefault(unicode(i), getattr(tag, i))
 
-class OggFile(dict):
+class OggFile(AudioFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
@@ -78,14 +98,16 @@ class OggFile(dict):
 def load_cache():
     fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     if os.path.exists(fn): songs = cPickle.load(file(fn, "rb"))
-    else: raise StopIteration
+    else: return []
     mtime = os.stat(fn)[stat.ST_MTIME] - 1
+    nsongs = []
     for song in songs:
         if song and os.path.exists(song['filename']):
             library[song['filename']] = song
             if os.stat(song['filename'])[stat.ST_MTIME] > mtime:
                 library[song['filename']] = MusicFile(fn)
-            yield library[song['filename']]
+            nsongs.append(library[song['filename']])
+    return nsongs
 
 def save_cache(songs):
     songs = filter(None, songs)
@@ -107,4 +129,3 @@ def load(dirs):
                 m = MusicFile(m_fn)
                 if m:
                     library[m_fn] = m
-                    yield m

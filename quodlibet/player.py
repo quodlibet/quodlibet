@@ -22,7 +22,7 @@ class MP3Player(object):
         self.mf.seek_time(ms)
 
     def next(self):
-        buff = self.mf.read()
+        buff = self.mf.read(4096)
         if buff is None: raise StopIteration
         self.dev.play(buff, len(buff))
         return self.mf.current_time()
@@ -62,13 +62,17 @@ def set_playlist(songs):
     del(playlist[:])
     playlist.extend(songs)
 
-def play():
+def set_info(song, label):
+    label.set_markup(text)
+
+def play(info):
     dev = get_device()
     while True:
         do_queue(None)
         while playlist:
             song = playlist.pop(0)
             player = Player(dev, song['filename'])
+            info.set_markup(song.to_markup())
             times[1] = player.length
             for t in player:
                 times[0] = t
