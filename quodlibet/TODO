@@ -1,5 +1,6 @@
 - Handle weird UI flukes (seek past end of song, etc) better
 - Stress-testing
+- Figure out how to get horizontal sizing limited to window width
 - Artist URL detection
 - Song information popup
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them

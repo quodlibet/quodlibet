@@ -10,6 +10,12 @@ support for MP3 files following the ID3v1 and v2 "standards" as well.
 Quod Libet is written entirely in Python and licensed under the GNU
 GPL version 2.
 
+====[ Neat Features
+ - MP3 and Ogg Vorbis audio format support.
+ - Full support for Unicode in tags and searches.
+ - Album cover detection and display.
+ - Regexp-based search support.
+
 ====[ Requirements
 
 ==[ Debian / Debian-based OSs
