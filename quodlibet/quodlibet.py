@@ -234,6 +234,37 @@ class WarningMessage(Message):
     def __init__(self, *args):
         Message.__init__(self, gtk.MESSAGE_WARNING, *args)
 
+class MultiInstanceWidget(object):
+    def __init__(self, file = None, widget = None):
+        self.widgets = Widgets(file or "quodlibet.glade", self, widget)
+
+class WaitLoadWindow(MultiInstanceWidget):
+    def __init__(self, parent, count, text, initial):
+        MultiInstanceWidget.__init__(self, widget = "load_window")
+        self.widgets["load_window"].set_transient_for(parent)
+        self.current = 0
+        self.count = count
+        self.text = text
+        self.label = self.widgets["load_label"]
+        self.progress = self.widgets["load_progress"]
+        self.progress.set_fraction(0)
+        self.label.set_markup(self.text % initial)
+        self.widgets["load_window"].show()
+        while gtk.events_pending(): gtk.main_iteration()
+
+    def step(self, *values):
+        self.label.set_markup(self.text % values)
+        if self.count:
+            self.current += 1
+            self.progress.set_fraction(
+                max(0, min(1, self.current / float(self.count))))
+        else:
+            self.progress.pulse()
+        while gtk.events_pending(): gtk.main_iteration()
+
+    def end(self):
+        self.widgets["load_window"].destroy()
+
 # Standard Glade widgets wrapper.
 class Widgets(object):
     def __init__(self, file, handlers, widget = None):
@@ -309,44 +340,34 @@ class GladeHandlers(object):
         gtk.idle_add(player.playlist.seek, v)
 
     def rebuild(activator):
-        progress = widgets["rebuild_throbber"]
-        count = widgets["rebuild_count"]
-        label = widgets["rebuild_label"]
-        window = widgets["rebuild_window"]
-        window.set_transient_for(widgets["main_window"])
-        window.show()
+        window = WaitLoadWindow(widgets["main_window"], len(library) / 5,
+                                _("Quod Libet is scanning your library. "
+                                  "This may take several minutes.\n\n"
+                                  "%d songs reloaded\n%d songs removed"),
+                                (0, 0))
         iter = 5
-        # FIXME: We have a lot of windows like this. Make
-        # CounterWindow(notice, count_text, iterator).
         for c, r in library.rebuild():
             if iter == 5:
-                progress.pulse()
-                count.set_text("%d songs changed\n%d songs removed" % (c, r))
-                while gtk.events_pending(): gtk.main_iteration()
+                window.step(c, r)
                 iter = 0
             iter += 1
-        window.hide()
+        window.end()
         player.playlist.refilter()
         refresh_songlist()
 
     def rebuild_hard(activator):
-        progress = widgets["rebuild_throbber"]
-        count = widgets["rebuild_count"]
-        label = widgets["rebuild_label"]
-        window = widgets["rebuild_window"]
-        window.set_transient_for(widgets["main_window"])
-        window.show()
+        window = WaitLoadWindow(widgets["main_window"], len(library) / 5,
+                                _("Quod Libet is reloading your library. "
+                                  "This may take several minutes.\n\n"
+                                  "%d songs reloaded\n%d songs removed"),
+                                (0, 0))
         iter = 5
-        # FIXME: We have a lot of windows like this. Make
-        # CounterWindow(notice, count_text, iterator).
         for c, r in library.rebuild(True):
             if iter == 5:
-                progress.pulse()
-                count.set_text("%d songs changed\n%d songs removed" % (c, r))
-                while gtk.events_pending(): gtk.main_iteration()
+                window.step(c, r)
                 iter = 0
             iter += 1
-        window.hide()
+        window.end()
         player.playlist.refilter()
         refresh_songlist()
 
@@ -534,10 +555,6 @@ class GladeHandlers(object):
         songrefs = [ (model[row][len(HEADERS)],
                       gtk.TreeRowReference(model, row)) for row in rows]
         SongProperties(songrefs)
-
-class MultiInstanceWidget(object):
-    def __init__(self, file = None, widget = None):
-        self.widgets = Widgets(file or "quodlibet.glade", self, widget)
 
 class SongProperties(MultiInstanceWidget):
     def __init__(self, songrefs):
@@ -1159,25 +1176,14 @@ class SongProperties(MultiInstanceWidget):
         self.save_tbp.set_sensitive(False)
         self.fill_property_info()
 
-class WritingWindow(object):
+class WritingWindow(WaitLoadWindow):
     def __init__(self, parent, count):
-        self.win = widgets["write_window"]
-        self.label = widgets["saved_count"]
-        self.prog = widgets["writing_progress"]
-        self.win.set_transient_for(parent)
-        self.saved = 0
-        self.count = count
-        self.win.show()
-        while gtk.events_pending(): gtk.main_iteration()
+        WaitLoadWindow.__init__(self, parent, count,
+                                _("Saving the songs you changed.\n\n"
+                                  "%d/%d songs saved"), (0, count))
 
     def step(self):
-        self.saved += 1
-        self.prog.set_fraction(self.saved / float(self.count))
-        self.label.set_text(_("%d/%d songs saved") % (self.saved, self.count))
-        while gtk.events_pending(): gtk.main_iteration()
-
-    def end(self):
-        self.win.hide()
+        WaitLoadWindow.step(self, self.current + 1, self.count)
 
 def songref_update_view(song, ref):
     path = ref.get_path()
