@@ -1685,15 +1685,14 @@ def control(c):
             import signal
             # This is a total abuse of Python! Hooray!
             signal.signal(signal.SIGALRM, lambda: "" + 2)
-            signal.alarm(5)
+            signal.alarm(2)
             f = file(const.CONTROL, "w")
             f.write(c)
             f.close()
         except (OSError, IOError, TypeError):
             os.unlink(const.CONTROL)
-            raise SystemExit(_("""
-Unable to write to %s. Removing it.
-If QL is currently running, please restart it.""" % const.CONTROL))
+            print _("Unable to write to %s. Removing it.") % const.CONTROL
+            if c != '!': raise SystemExit(True)
         else:
             raise SystemExit
 
