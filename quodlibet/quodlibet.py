@@ -2771,7 +2771,7 @@ class SongProperties(object):
             # save for last to potentially save time
             self.view.set_model(self.model)
             self.preview.set_sensitive(False)
-            if len(pattern.headers) > 0: self.save.set_sensitive(True)
+            self.save.set_sensitive(len(pattern.headers) > 0)
 
         def save_files(self, *args):
             pattern_text = self.entry.get_text().decode('utf-8')
@@ -2913,7 +2913,7 @@ class SongProperties(object):
             config.set("settings", "nbp_space",
                        str(self.replace.get_active()))
             self.save.set_sensitive(False)
-            self.preview.set_sensitive(True)
+            self.preview.set_sensitive(bool(self.entry.get_text()))
 
         def preview_files(self, *args):
             self.update(self.songs)
@@ -2985,7 +2985,8 @@ class SongProperties(object):
                         map(lambda c: ((ord(c) < 127 and c) or "_"),
                             newname))
                 self.model.append(row=[song, basename, newname])
-            self.save.set_sensitive(False)
+            self.preview.set_sensitive(False)
+            self.save.set_sensitive(bool(self.entry.get_text()))
 
         def destroy(self):
             self.view.set_model(None)
