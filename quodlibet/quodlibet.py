@@ -572,6 +572,7 @@ class MainWindow(MultiInstanceWidget):
         self.osd = Osd()
 
         # Show main window.
+        self.restore_size()
         self.window.show()
 
     def restore_size(self):
@@ -597,9 +598,15 @@ class MainWindow(MultiInstanceWidget):
         elif c == ")": player.playlist.paused = False
         elif c == "|": player.playlist.paused = True
         elif c == "0": player.playlist.seek(0)
-        elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
-        elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
-        elif c == "_": self.volume.set_value(0)
+        elif c == "v":
+            c2 = os.read(source, 3)
+            if c2 == "+":
+                self.volume.set_value(self.volume.get_value() + 0.05)
+            elif c2 == "-":
+                self.volume.set_value(self.volume.get_value() - 0.05)
+            else:
+                try: self.volume.set_value(int(c2) / 100.0)
+                except ValueError: pass
         elif c in toggles:
             wid = self.widgets[toggles[c]]
             c2 = os.read(source, 1)
@@ -2018,11 +2025,15 @@ Options:
   --refresh-library Rescan your song cache and then exit.
   --print-playing   Print the currently playing song.
 
-  --next, --previous, --play-pause, --volume-up, -volume-down,
-  --play, --pause
-    Control a currently running instance of Quod Libet.
+ Player controls:
+  --next, --previous, --play-pause, --play, --pause
+    Change songs or pause/resume playing.
+  --volume +|-|0..100
+    Increase, decrease, or set the volume.
+  --shuffle 0|1|t, --repeat 0|1|t
+    Enable, disable, or toggle shuffle and repeat.  
   --query search-string
-    Search in a running instance of Quod Libet.
+    Make a new playlist from the given search.
   --seek-to [HH:MM:]SS
     Seek to a position in the current song.
   --play-file filename
@@ -2099,8 +2110,9 @@ def control(c):
             import signal
             # This is a total abuse of Python! Hooray!
             signal.signal(signal.SIGALRM, lambda: "" + 2)
-            signal.alarm(2)
+            signal.alarm(1)
             f = file(const.CONTROL, "w")
+            signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(c)
             f.close()
         except (OSError, IOError, TypeError):
@@ -2135,10 +2147,10 @@ if __name__ == "__main__":
     # respond quickly.
     opts = sys.argv[1:]
     controls = {"--next": ">", "--previous": "<", "--play": ")",
-                "--pause": "|", "--play-pause": "-", "--volume-up": "^",
-                "--volume-down": "v", }
+                "--pause": "|", "--play-pause": "-", "--volume-up": "v+",
+                "--volume-down": "v-", }
     controls_opt = { "--seek-to": "s", "--shuffle": "&", "--repeat": "@",
-                     "--query": "q" }
+                     "--query": "q", "--volume": "v" }
     try:
         for i, command in enumerate(opts):
             if command in ["--help", "-h"]: print_help()

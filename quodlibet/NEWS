@@ -7,6 +7,8 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - New/reloaded libraries take about 80% previous disk space.
  - Double-clicking an album cover displays it in a larger window.
  - Changing column headers is faster. Sorting and displaying is slower.
+ - --shuffle, --repeat, and --volume (--volume-up and --volume-down are
+   deprecated and will be removed).
 
 0.7 - I'm going to ho-ho-hoard all these nuts!
  - Default to proper 'alsa09' driver (rather than 'alsa').
