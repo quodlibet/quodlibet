@@ -1,0 +1,36 @@
+Multimedia Key support as a PyGTK object
+----------------------------------------
+This module lets you access multimedia keys found on most new keyboards
+from Python; most important it grabs all input events so your program
+doesn't need to be in focus when the key is pressed (which is the
+usual behavior of the keys). You still need something like Acme or
+xmodmap to map the keys before using them.
+
+This code comes from the mmkeys object found in the Muine media player.
+
+Compiling:
+----------
+(Requires the PyGTK and Python development libraries.)
+$ make mmkeys.so
+
+Usage:
+------
+import mmkeys
+keys = mmkeys.Mmkeys()
+keys.connect("mm_prev", previous_cb)
+keys.connect("mm_next", next_cb)
+keys.connect("mm_playpause", playpause_cb)
+
+Make sure the reference to 'keys' sticks around; if it falls out of scope
+it can get GCd and cause segfaults.
+
+License:
+--------
+Copyright (C) 2004 Lee Willis <lee@leewillis.co.uk>
+Borrowed heavily from code by Jan Arne Petersen <jpetersen@uni-bonn.de>
+Python bindings by Joe Wreschnig <piman@sacredchao.net>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
