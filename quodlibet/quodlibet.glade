@@ -1416,7 +1416,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
       <signal name="activate" handler="artist_filter" last_modification_time="Fri, 22 Oct 2004 04:20:14 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image20">
+	<widget class="GtkImage" id="image22">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1438,7 +1438,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
       <signal name="activate" handler="album_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image21">
+	<widget class="GtkImage" id="image23">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1459,7 +1459,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
       <signal name="activate" handler="song_col_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image22">
+	<widget class="GtkImage" id="image24">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1481,6 +1481,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
   <child>
     <widget class="GtkImageMenuItem" id="remove1">
       <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Remove selected songs from your library</property>
       <property name="label">gtk-remove</property>
       <property name="use_stock">True</property>
       <signal name="activate" handler="remove_song" last_modification_time="Fri, 22 Oct 2004 03:21:41 GMT"/>
