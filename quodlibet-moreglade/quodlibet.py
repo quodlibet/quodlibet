@@ -41,7 +41,8 @@ class GTKSongInfoWrapper(object):
         self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
         gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
         self.albumfn = None
-
+        self.cmenu_w = Widgets(None, widgets.main, "tray_popup")
+        self.cmenu = self.cmenu_w["tray_popup"]
         try: import statusicon
         except:
             print _("W: Failed to initialize status icon.")
@@ -145,12 +146,15 @@ class GTKSongInfoWrapper(object):
         if paused:
             self.but_image.set_from_pixbuf(self.paused)
             self.menu.get_image().set_from_pixbuf(self.pause_s)
-            widgets.main.widgets["play_menu"].child.set_text("Play _song")
+            widgets.main.widgets["play_menu"].child.set_text(_("Play _song"))
+            self.cmenu_w["play_popup_menu"].child.set_text(_("_Play"))
         else:
             self.but_image.set_from_pixbuf(self.playing)
             self.menu.get_image().set_from_pixbuf(self.play_s)
-            widgets.main.widgets["play_menu"].child.set_text("Pause _song")
+            widgets.main.widgets["play_menu"].child.set_text(_("Pause _song"))
+            self.cmenu_w["play_popup_menu"].child.set_text(_("_Pause"))
         widgets.main.widgets["play_menu"].child.set_use_underline(True)
+        self.cmenu_w["play_popup_menu"].child.set_use_underline(True)
 
     def _update_time(self):
         cur, end = self._time
