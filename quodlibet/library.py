@@ -157,6 +157,8 @@ class AudioFile(dict):
             others += "; " + _("lyrics by %s") % self.comma("lyricist")
         if "conductor" in self:
             others += "; " + _("conducted by %s") % self.comma("conductor")
+        if "composer" in self:
+            others += "; " + _("composed by %s") % self.comma("composer")
         if "author" in self:
             others += "; " + _("written by %s") % self.comma("author")
 
@@ -281,11 +283,14 @@ class MP3File(AudioFile):
             "TPE3": "conductor",
             "TPE4": "arranger",
             "TEXT": "lyricist",
+            "TCOM": "composer",
+            "TENC": "encodedby",
             "TLAN": "language",
             "TALB": "album",
             "TRCK": "tracknumber",
             "TPOS": "discnumber",
-            "TSST": "part",
+            "TMOO": "mood",
+            #"TSST": "part",
             "TSRC": "isrc",
             "TCOP": "copyright",
             "TPUB": "organization",
@@ -295,26 +300,7 @@ class MP3File(AudioFile):
             "COMM": "comment",
             }
 
-    INVERT_IDS = { "genre": "TIT1",
-                   "title": "TIT2",
-                   "version": "TIT3",
-                   "artist": "TPE1",
-                   "performer": "TPE2",
-                   "conductor": "TPE3",
-                   "arranger": "TPE4",
-                   "lyricist": "TEXT",
-                   "language": "TLAN",
-                   "author": "TOLY",
-                   "isrc": "TSRC",
-                   "tracknumber": "TRCK",
-                   "discnumber": "TPOS",
-                   "organization": "TPUB",
-                   "album": "TALB",
-                   "copyright": "TCOP",
-                   "license": "USER",
-                   "website": "WOAR",
-                   "comment": "COMM",
-                   }
+    INVERT_IDS = dict([(v, k) for k, v in IDS.iteritems()])
             
     def __init__(self, filename):
         import pyid3lib, mad
