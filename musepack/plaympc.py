@@ -30,3 +30,5 @@ while True:
      mod.length / 60000, (mod.length % 60000) / 1000))
   if s: dev.write(s)
   else: break
+
+print

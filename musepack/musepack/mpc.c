@@ -117,8 +117,7 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
   }
 
   self->frequency = info.sample_freq;
-  /* FIXME */
-  self->length = 0;
+  self->length = (int)(mpc_streaminfo_get_length(&info) * 1000);
   return 0;
 }
 
@@ -199,7 +198,7 @@ static PyObject *MPCFile_seek(MPCFile *self, PyObject *args, PyObject *kwds) {
   int ms = -1;
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &ms))
     return NULL;
-  if (1) { /* ms <= self->length) { */ /* FIXME */
+  if (ms <= self->length) {
     mpc_int64_t sample = (mpc_int64_t)((ms/1000.0) * self->frequency);
     mpc_decoder_seek_sample(self->decoder, sample);
     self->position = ms;
