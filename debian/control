@@ -7,7 +7,7 @@ Standards-Version: 3.6.1
 
 Package: quodlibet
 Architecture: any
-Depends: ${python:Depends}, ${shlibs:Depends}, python-pymad python-pyvorbis python-id3lib python-glade2, libmodplug0
+Depends: ${python:Depends}, ${shlibs:Depends}, python-pymad, python-pyvorbis, python-id3lib, python-glade2, libmodplug0
 Description: audio library manager and player for GTK+
  Quod Libet is a music player based around searching your audio library
  based on the values of the tags in it. It supports MP3, Ogg Vorbis, FLAC,

@@ -1,0 +1,35 @@
+ModPlug Player in Python
+------------------------
+This Python module lets you load and decode files supported by the ModPlug
+library (which includes MODs, ITs, XMs, and so on). Its API has been chosen
+to mostly match pyvorbis and pymad.
+
+Currently it always outputs in 44100khz stereo, 16 bits per channel. Noise
+reduction, oversampling, and the highest-quality resampling filter are
+enabled.
+
+libmodplug can be found at http://modplug-xmms.sourceforge.net.
+
+Compiling:
+----------
+This module has only been tested on Python 2.3. It definitely won't
+work on 2.1 or earlier.
+
+$ ./setup.py build
+
+Usage:
+------
+modplug uses Python docstrings as its primary form of documentation.
+>>> import modplug; help(modplug)
+
+See 'playmod.py' for an example of a simple player.
+
+License:
+--------
+Copyright 2004 Joe Wreschnig <piman@sacredchao.net>
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License, version 2, as published
+by the Free Software Foundation. A copy of the GNU GPL v2 is included
+as 'COPYING' with the source of this module.
+

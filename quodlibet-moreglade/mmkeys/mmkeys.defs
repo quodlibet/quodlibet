@@ -1,0 +1,19 @@
+; Copyright 2004 Joe Wreschnig. Released under the terms of the GNU GPL.
+
+(define-object MmKeys
+  (in-module "MM")
+  (parent "GtkPlug")
+  (c-name "MmKeys")
+  (gtype-id "TYPE_MMKEYS")
+)
+
+(define-function mmkeys_get_type
+  (c-name "mmkeys_get_type")
+  (return-type "GType")
+)
+
+(define-function mmkeys_new
+  (c-name "mmkeys_new")
+  (is-constructor-of "MmKeys")
+  (return-type "MmKeys*")
+)
