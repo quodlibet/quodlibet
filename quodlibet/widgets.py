@@ -2348,60 +2348,60 @@ class PlayList(SongList):
     lists_model = classmethod(lists_model)
 
     def __init__(self, name):
-        self.plname = 'playlist_' + PlayList.normalize_name(name)
-        self.key = '~#' + self.plname
+        plname = 'playlist_' + PlayList.normalize_name(name)
+        self.__key = key = '~#' + plname
         model = gtk.ListStore(object)
         super(PlayList, self).__init__(400)
 
-        for song in library.query('#(%s > 0)' % self.plname, sort=self.key):
+        for song in library.query('#(%s > 0)' % plname, sort=key):
             model.append([song])
 
         self.set_model(model)
-        self.connect('drag-end', self.refresh_indices)
+        self.connect_object('drag-end', PlayList.__refresh_indices, self, key)
         self.set_reorderable(True)
 
         menu = gtk.Menu()
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
-        rem.connect('activate', self.remove_selected_songs)
+        rem.connect('activate', self.__remove_selected_songs, key)
         menu.append(rem)
         prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
-        prop.connect('activate', self.song_properties)
+        prop.connect('activate', self.__song_properties)
         menu.append(prop)
         menu.show_all()
         self.connect_object('destroy', gtk.Menu.destroy, menu)
 
-        self.connect('button-press-event', self.button_press, menu)
+        self.connect('button-press-event', self.__button_press, menu)
         self.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
 
     def append_songs(self, songs):
         model = self.get_model()
-        current_songs = dict.fromkeys([row[0]['~filename'] for row in model])
+        current_songs = set([row[0]['~filename'] for row in model])
         for song in songs:
             if song['~filename'] not in current_songs:
                 model.append([song])
-                song[self.key] = len(model) # 1 based index; 0 means out
+                song[self.__key] = len(model) # 1 based index; 0 means out
 
-    def remove_selected_songs(self, *args):
+    def __remove_selected_songs(self, activator, key):
         model, rows = self.get_selection().get_selected_rows()
         rows.sort()
         rows.reverse()
         for row in rows:
-            del model[row][0][self.key]
+            del(model[row][0][key])
             iter = model.get_iter(row)
             model.remove(iter)
-        self.refresh_indices()
+        self.__refresh_indices(activator, key)
 
-    def song_properties(self, *args):
+    def __song_properties(self, activator):
         model, rows = self.get_selection().get_selected_rows()
         SongProperties([model[row][0] for row in rows],
                        widgets.main.song_update_view)
 
-    def refresh_indices(self, *args):
+    def __refresh_indices(self, context, key):
         for i, row in enumerate(iter(self.get_model())):
-            row[0][self.key] = i + 1    # 1 indexed; 0 is not present
+            row[0][self.__key] = i + 1    # 1 indexed; 0 is not present
 
-    def button_press(self, view, event, menu):
+    def __button_press(self, view, event, menu):
         if event.button != 3:
             return False
         x, y = map(int, [event.x, event.y])
