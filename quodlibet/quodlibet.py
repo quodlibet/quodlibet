@@ -92,11 +92,15 @@ class GTKSongInfoWrapper(object):
             if library.add(filename):
                 song = library[filename]
                 if song not in player.playlist.get_playlist():
-                    make_query("filename = /%s/c" % sre.escape(filename))
+                    make_query("filename = /^%s/c" % sre.escape(filename))
                 player.playlist.go_to(library[filename])
                 player.playlist.paused = False
             else:
                 print "W: Unable to load %s" % filename
+        elif c == "d":
+            filename = os.read(source, 4096)
+            for a, c in library.scan([filename]): pass
+            make_query("filename = /^%s/c" % sre.escape(filename))
 
         os.close(self.fifo)
         self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
@@ -1810,7 +1814,8 @@ if __name__ == "__main__":
                 control("q" + opts[i+1])
             elif command in ["--play-file"]:
                 filename = os.path.abspath(os.path.expanduser(opts[i+1]))
-                control("p" + filename)
+                if os.path.isdir(filename): control("d" + filename)
+                else: control("p" + filename)
             elif command in ["--seek-to"]:
                 control("s" + opts[i+1])
             elif command in ["--print-playing"]:
