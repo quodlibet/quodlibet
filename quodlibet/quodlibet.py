@@ -9,6 +9,7 @@ import sys
 import parser
 import library
 import gc
+import os
 
 def escape(str):
     return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -42,6 +43,16 @@ class GladeHandlers(object):
                 album += u" - Track %s" % escape(song["tracknumber"])
             text += album
         label = widgets["currentsong"]
+
+        cover = os.path.split(song["filename"])[0]
+        cover = os.path.join(cover, "cover.jpg")
+        if os.path.exists(cover):
+            pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
+            scaled_buf = pixbuf.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
+            widgets["albumcover"].set_from_pixbuf(scaled_buf)
+        else:
+            widgets["albumcover"].set_from_stock(gtk.STOCK_CDROM,
+                                                       gtk.ICON_SIZE_BUTTON)
         label.set_markup(text)
 
     def open_chooser(*args):
@@ -59,7 +70,7 @@ class GladeHandlers(object):
                                      [song.get(i, "") for i in HEADERS])
             CURRENT_FILTER.pop(0)
         chooser.destroy()
-        GladeHandlers.text_parse(GladeHandlers())
+        widgets.filter.refilter()
 
     def text_parse(*args):
         from parser import QueryParser, QueryLexer
