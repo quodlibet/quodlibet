@@ -1,14 +1,12 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
 import config
-
-config.init("")
 from player import MP3Player, OggPlayer
 import os
 
 class FakeDev(object):
     volume = 50
-    def play(self, buf, len): pass
+    def play(self, buf): pass
     def set_info(self, rate, channels):
         self.rate = rate
         self.channels = channels

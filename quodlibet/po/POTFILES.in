@@ -3,4 +3,5 @@ library.py
 quodlibet.glade
 quodlibet.py
 pmp.py
+util.py
 po/tag-names.py

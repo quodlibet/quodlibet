@@ -7,6 +7,8 @@
 # $Id$
 
 import os, sre, string
+import gettext
+_ = gettext.gettext
 
 # Make a directory, including all directories below it.
 def mkdir(dir):
@@ -53,14 +55,14 @@ def check_mod():
 def decode(s):
     try: return s.decode("utf-8")
     except UnicodeError:
-        try: return s.decode("utf-8", "replace") + " [Invalid Unicode]"
-        except UnicodeError: return "[Invalid Unicode]"
+        try: return s.decode("utf-8", "replace") + " " + _("[Invalid Unicode]")
+        except UnicodeError: return _("[Invalid Unicode]")
 
 def encode(s):
     try: return s.encode("utf-8")
     except UnicodeError:
-        try: return s.encode("utf-8", "replace") + " [Invalid Unicode]"
-        except UnicodeError: return "[Invalid Unicode]"
+        try: return s.encode("utf-8", "replace") + " " + _("[Invalid Unicode]")
+        except UnicodeError: return _("[Invalid Unicode]")
 
 def iscommand(s):
     if not s or s[0] == "/":

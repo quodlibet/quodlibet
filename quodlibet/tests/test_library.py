@@ -1,5 +1,7 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
+import config
+config.init([])
 import library; from library import AudioFile, MusicFile, Unknown
 library.init()
 

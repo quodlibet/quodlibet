@@ -5,15 +5,15 @@ songs by genre, artist, and album, it keeps them all in one list that
 you can filter however you want.
 
 Quod Libet is designed for use with Ogg Vorbis audio files, but has
-support for MP3 files following the ID3v1 and v2 "standards" as well.
+support for FLAC, MP3 files following the ID3v1 and v2 "standards", and
+tracked formats like MOD and XM.
 
 Quod Libet is written in Python and licensed under the GNU GPL version 2.
 
 ====[ Neat Features
- - MP3, Ogg Vorbis, and FLAC audio format support.
- - Full support for the Vorbis comment format.
  - Album cover detection and display.
  - Regexp-based search support.
+ - Advanced tag editing.
 
 For a full description and list of features, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml.
