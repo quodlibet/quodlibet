@@ -1915,11 +1915,11 @@ class SongProperties(MultiInstanceWidget):
             if len(invalid) == 1:
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing these tags.")
+                        " selected do not support editing this tag.")
             else:
                 title = _("Invalid tags")
                 msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing this tag.")
+                        " selected do not support editing these tags.")
                     
             ErrorMessage(self.window, title, msg % ", ".join(invalid)).run()
             return
