@@ -967,7 +967,6 @@ class MainWindow(object):
         info.connect('clicked', self.open_website)
         t.attach(info, 2, 3, 1, 2, xoptions = False, yoptions = False)
         self.tips.set_tip(info, _("Visit the artist's website"))
-                          
 
         self.song_buttons = [info, next, props]
         self.play_image = play.child
@@ -1222,6 +1221,11 @@ class MainWindow(object):
         b = gtk.ImageMenuItem(_("_Next"))
         b.connect('activate', self.next_song)
         b.get_image().set_from_stock('gtk-media-next', gtk.ICON_SIZE_MENU)
+        tray_menu.append(b)
+        tray_menu.append(gtk.SeparatorMenuItem())
+        b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        b.connect('activate', self.current_song_prop)
+        b.set_sensitive(bool(self.current_song))
         tray_menu.append(b)
         tray_menu.append(gtk.SeparatorMenuItem())
         b = gtk.ImageMenuItem(gtk.STOCK_QUIT)
@@ -1700,7 +1704,7 @@ class MainWindow(object):
     def current_song_prop(self, *args):
         song = self.current_song
         if song: SongProperties([song])
-            
+
     def song_properties(self, item):
         SongProperties(self.songlist.get_selected_songs())
 
