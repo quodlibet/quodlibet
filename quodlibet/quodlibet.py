@@ -624,6 +624,32 @@ class MainWindow(MultiInstanceWidget):
     def save_size(self, widget, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
+    def showhide_searchbox(self, toggle):
+        width, height = self.window.get_size()
+        box = self.widgets["query_hbox"]
+        if toggle.get_active():
+            box.show()
+            dy = box.get_allocation().height
+            self.window.resize(width, height + dy)
+        else:
+            dy = box.get_allocation().height
+            box.hide()
+            self.window.resize(width, height - dy)
+
+    def showhide_playlist(self, toggle):
+        width, height = self.window.get_size()
+        box = self.widgets["song_scroller"]
+        if toggle.get_active():
+            box.show()
+            dy = box.get_allocation().height
+            self.window.resize(width, height + dy)
+            box.set_size_request(-1, -1)
+        else:
+            dy = box.get_allocation().height
+            box.hide()
+            self.window.resize(width, height - dy)
+            box.set_size_request(-1, dy)
+
     def open_website(self, button):
         song = self.current_song
         site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
