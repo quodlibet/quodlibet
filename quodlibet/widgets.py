@@ -3242,7 +3242,7 @@ class SongProperties(gtk.Window):
             self.prop.update()
 
         def revert_files(self, *args):
-            self.update(self.songs)
+            self.__update(self.songs)
 
         def edit_tag(self, renderer, path, new, model, colnum):
             new = ', '.join(new.splitlines())
