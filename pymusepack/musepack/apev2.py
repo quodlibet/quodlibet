@@ -15,7 +15,7 @@
 import struct
 from cStringIO import StringIO
 
-# This works with the new left-shift.
+# This module works with the new left-shift.
 import warnings
 warnings.filterwarnings("ignore", "x<<y", FutureWarning)
 warnings.filterwarnings("ignore", "%u/%o/%x/%X of negative int", FutureWarning)
@@ -25,20 +25,26 @@ TEXT, BINARY, EXTERNAL = range(3)
 
 HAS_HEADER = 1 << 31
 HAS_FOOTER = 1 << 30
-IS_HEADER =  1 << 29
-
+IS_HEADER  = 1 << 29
 
 def _debug(str): print str
 def _dummy(str): pass
 debug = _dummy
 
 class error(IOError): pass
-class InvalidTagError(error): pass
+class InvalidFormatError(error): pass
 
 class APETag(object):
+    """An APETag contains the tags in the file. It behaves much like a
+    dictionary of key/value pairs, except that the keys must be strings,
+    and the values a support APE tag value."""
     def __init__(self, filename):
+        if not os.path.exists(filename):
+            raise error("%s does not exist" % filename)
+        elif os.path.getsize(filename) < 32:
+            raise InvalidTagError("%s does not contain an APE tag" % filename)
         self.filename = filename
-        self.dict = {}
+        self.__dict = {}
 
         f = file(filename)
         tag, count = self._find_tag(f)
@@ -56,11 +62,13 @@ class APETag(object):
 
             # 1 and 2 bits are flags, 0-3
             kind = (flags & 6) >> 1
+            if kind == 3:
+                raise InvalidTagFormat("value type must be 0, 1, or 2")
             key = ""
             while key[-1:] != '\0': key += f.read(1)
             key = key[:-1]
             value = f.read(size)
-            self.dict[APEKey(key)] = APEValue(value, kind)
+            self.__dict[APEKey(key)] = APEValue(value, kind)
             debug("key %s, value %r" % (key, value))
 
     def _tag_start(self, f):
@@ -83,7 +91,7 @@ class APETag(object):
             debug("tag version: %d" % version)
             if version < 2000 or version >= 3000:
                 raise InvalidTagError(
-                    "module only supports APEv2 (2000-2999), got %d" %version)
+                    "module only supports APEv2 (2000-2999), has %d" % version)
 
             # 4 byte tag size
             tag_size = _read_int(data[12:16])
@@ -97,7 +105,7 @@ class APETag(object):
             flags = _read_int(data[20:24])
             debug("flags: %#x" % flags)
             if flags & IS_HEADER:
-                raise InvalidTagError("found header, not footer")
+                raise InvalidTagError("found header at end of file")
 
             f.seek(-tag_size, 2)
             # tag size includes footer
@@ -106,14 +114,20 @@ class APETag(object):
             debug("no APE tag found")
             return None, 0
 
-    def __iter__(self): return self.dict.iteritems()
-    def keys(self): return self.dict.keys()
-    def values(self): return self.dict.values()
-    def items(self): return self.dict.items()
+    def __iter__(self): return self.__dict.iteritems()
+    def keys(self): return self.__dict.keys()
+    def values(self): return self.__dict.values()
+    def items(self): return self.__dict.items()
 
-    def __getitem__(self, k): return self.dict[k]
-    def __delitem__(self, k): del(self.dict[k])
+    def __getitem__(self, k): return self.__dict[k]
+    def __delitem__(self, k): del(self.__dict[k])
     def __setitem__(self, k, v):
+        """This function tries (and usually succeeds) to guess at what
+        kind of value you want to store. If you pass in a valid UTF-8
+        or Unicode string, it treats it as a text value. If you pass
+        in a list, it treats it as a list of string/Unicode values.
+        If you pass in a string that is not valid UTF-8, it assumes
+        it is a binary value."""
         if not isinstance(v, _APEValue):
             # let's guess at the content if we're not already a value...
             if isinstance(v, unicode):
@@ -125,14 +139,16 @@ class APETag(object):
             else:
                 try: dummy = k2.decode("utf-8")
                 except UnicodeError:
-                    # valid UTF8 text, probably binary
+                    # invalid UTF8 text, probably binary
                     v = APEValue(v, BINARY)
                 else:
                     # valid UTF8, probably text
                     v = APEValue(v, TEXT)
-        self.dict[APEKey(k)] = v
+        self.__dict[APEKey(k)] = v
 
     def write(self, filename = None):
+        """Saves any changes you've made to the file, or to a different
+        file if you specify one. Any existing tag will be removed."""
         filename = filename or self.filename
         f = file(filename, "ab+")
         offset = self._tag_start(f)
@@ -140,7 +156,7 @@ class APETag(object):
         f.seek(offset, 0)
         f.truncate()
 
-        tags = [v.internal(k) for k, v in self]
+        tags = [v._internal(k) for k, v in self]
         tags.sort(lambda a, b: cmp(len(a), len(b)))
         num_tags = len(tags)
         tags = "".join(tags)
@@ -180,6 +196,8 @@ class APEKey(str):
     def __repr__(self): return "<APEKey %s>" % str.__repr__(self)
 
 def APEValue(value, kind):
+    """It is not recommended you construct APE values manually; instead
+    use APETag's __setitem__."""
     if kind == TEXT: return APETextValue(value, kind)
     elif kind == BINARY: return APEBinaryValue(value, kind)
     elif kind == EXTERNAL: return APEExtValue(value, kind)
@@ -193,15 +211,19 @@ class _APEValue(object):
     def __len__(self): return len(self.value)
     def __str__(self): return self.value
 
-    def internal(self, key):
+    def _internal(self, key):
         return "%s%s\0%s" %(
             struct.pack("<ii", len(self.value), self.kind << 1),
             key, self.value)
 
 class APETextValue(_APEValue):
+    """APE text values are Unicode/UTF-8 strings. They can be accessed
+    like strings (with a null seperating the values), or arrays of strings."""
     def __unicode__(self):
         return unicode(str(self), "utf-8")
 
+    """Iterating over an APETextValue will iterate over the Unicode strings,
+    not the characters in the string."""
     def __iter__(self):
         return iter(unicode(self).split("\0"))
 
@@ -217,10 +239,14 @@ class APETextValue(_APEValue):
         return "<APETextValue %r>" % list(self)
 
 class APEBinaryValue(_APEValue):
+    """Binary values may be converted to a string of bytes. They are
+    used for anything not intended to be human-readable."""
     def __repr__(self):
         return "<APEBinaryValue (%d bytes)>" % len(self)
 
 class APEExtValue(_APEValue):
+    """An external value is a string containing a URI (http://..., file://...)
+    that contains the actual value of the tag."""
     def __repr__(self):
         return "<APEExtValue ref=%s>" % len(self.value)
 
@@ -233,4 +259,4 @@ def _utf8(data):
         return data.decode("utf-8", "replace").encode("utf-8")
     elif isinstance(data, unicode):
         return data.encode("utf-8")
-    else: raise TypeError("only unicode/str types can be converted to UTF8")
+    else: raise TypeError("only unicode/str types can be converted to UTF-8")
