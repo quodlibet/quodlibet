@@ -3923,7 +3923,8 @@ gobject.type_register(SongProperties)
 
 class DirectoryTree(gtk.TreeView):
     def cell_data(column, cell, model, iter):
-        cell.set_property('text', os.path.basename(model[iter][0]) or "/")
+        cell.set_property('text', util.fsdecode(
+            os.path.basename(model[iter][0])) or "/")
     cell_data = staticmethod(cell_data)
 
     def __init__(self, initial=None):
@@ -3995,7 +3996,8 @@ class DirectoryTree(gtk.TreeView):
 
 class FileSelector(gtk.VPaned):
     def cell_data(column, cell, model, iter):
-        cell.set_property('text', os.path.basename(model[iter][0]) or "/")
+        cell.set_property(
+            'text', util.fsdecode(os.path.basename(model[iter][0])))
     cell_data = staticmethod(cell_data)
 
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
