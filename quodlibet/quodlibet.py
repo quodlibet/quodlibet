@@ -1480,6 +1480,9 @@ class MainWindow(MultiInstanceWidget):
 
     def hide_browser(self, *args):
         if type(self.browser) != EmptyBar:
+            self.widgets["FiltersMenu"].show()
+            self.widgets["separator4"].show()
+
             self.browser.destroy()
             self.showhide_widget(self.widgets["query_hbox"], False)
             self.browser = EmptyBar(self.widgets["query_hbox"],
@@ -2023,7 +2026,8 @@ class SongProperties(object):
             table.attach(l, 0, 2, 0, 1, xoptions = gtk.FILL)
             table.set_homogeneous(False)
             for i, (l, r) in enumerate(tbl):
-                l = util.escape(l.decode("utf-8").capitalize()) + ":"
+                l = util.escape(l.decode("utf-8")) + ":"
+                l = l[0].capitalize() + l[1:]
                 l = "<b>%s</b>" % l
                 table.attach(self.Label(l), 0, 1, i + 1, i + 2, xoptions = 0)
                 table.attach(self.Label(util.escape(r)), 1, 2, i + 1, i + 2)
