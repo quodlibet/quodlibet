@@ -854,11 +854,10 @@ if __name__ == "__main__":
     import threading
     import gc
     import os
-    import ao
     load_cache()
     from library import library
     try: import player
-    except ao.aoError:
+    except IOError:
         gtk.idle_add(error_and_quit)
         gtk.main()
         raise SystemExit(True)

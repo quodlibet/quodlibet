@@ -78,8 +78,10 @@ class FLACPlayer(AudioPlayer):
         return flac.decoder.FLAC__FILE_DECODER_OK
 
     def next(self):
-        if self.stopped: raise StopIteration
-        if self.dec.get_state() ==flac.decoder.FLAC__FILE_DECODER_END_OF_FILE:
+        if self.stopped:
+            self.dec.finish()
+            raise StopIteration
+        if self.dec.get_state() == flac.decoder.FLAC__FILE_DECODER_END_OF_FILE:
             self.dec.finish()
             raise StopIteration
         if not self.dec.process_single():
@@ -94,10 +96,6 @@ class FLACPlayer(AudioPlayer):
     def seek(self, ms): pass
         #samp = int((float(ms) / self.length) * self._samples)
         #self.dec.seek_absolute(samp)
-
-    def end(self):
-        AudioPlayer.end(self)
-        self.dec.finish()
 
 class OggPlayer(AudioPlayer):
     def __init__(self, dev, filename):
