@@ -628,17 +628,31 @@ class PlaylistBar(object):
         cell = gtk.CellRendererText()
         self.combo.pack_start(cell, True)
         self.combo.add_attribute(cell, 'text', 0)
-        self.combo.connect('changed', self.list_selected)
+        self.combo.set_active(0)
         hbox.pack_start(self.combo)
+
+        self.button = gtk.Button("Edit")
+        self.button.set_sensitive(False)
+        hbox.pack_start(self.button, expand = False)
+
+        self.button.connect('clicked', self.edit_current)
+        self.combo.connect('changed', self.list_selected)
+
         self.cb = cb
         hbox.show_all()
 
     def list_selected(self, box):
         active = box.get_active()
-        if active == 0: self.cb("", None)
+        self.button.set_sensitive(active != 0)
+        if active == 0:
+            self.cb("", None)
         else:
             playlist = "playlist_" + PlaylistBar.model[active][1]
             self.cb("#(%s > 0)" % playlist, "~#"+playlist)
+
+    def edit_current(self, button):
+        active = self.combo.get_active()
+        if active: PlaylistWindow(PlaylistBar.model[active][0])
 
 class SearchBar(object):
     model = None
