@@ -118,8 +118,12 @@ class PreferencesWindow(MultiInstanceWidget):
         self.widgets["run_entry"].set_text(config.get("pmp", "command"))
 
         try: import gosd
-        except ImportError: self.widgets["osd_combo"].set_sensitive(False)
+        except ImportError:
+            self.widgets["osd_combo"].set_sensitive(False)
+            self.widgets["osd_color"].set_sensitive(False)
         self.widgets["osd_combo"].set_active(config.getint("settings", "osd"))
+        self.widgets["osd_color"].set_color(gtk.gdk.color_parse(
+            config.get("settings", "osdcolor")))
 
     def pmp_changed(self, combobox):
         driver = self.widgets["pmp_combo"].get_active()
@@ -132,6 +136,11 @@ class PreferencesWindow(MultiInstanceWidget):
 
     def pmp_command_changed(self, entry):
         config.set('pmp', 'command', entry.get_text())
+
+    def set_color(self, button):
+        color = button.get_color()
+        ct = (color.red / 256, color.green / 255, color.blue / 255)
+        config.set("settings", "osdcolor", "#%02x%02x%02x" % ct)
 
     def set_headers(self, *args):
         new_h = []
@@ -298,26 +307,27 @@ class Osd(object):
             print _("W: Failed to initialize OSD.")
 
     def show_osd(self, song):
+        color = config.get("settings", "osdcolor")
         if not self.gosd: return
         elif config.getint("settings", "osd") == 0: return
         if self.window: self.window.destroy()
 
-        msg = "\xe2\x99\xaa <span foreground='yellow'>%s</span>" %(
-            util.escape(song.get("title", "")))
+        msg = "\xe2\x99\xaa <span foreground='%s'>%s</span>" %(
+            color, util.escape(song.get("title", "")))
         if song['~length']:
             msg += " <span size='smaller'>(%s)</span> " % song["~length"]
         msg += "\xe2\x99\xaa\n<span size='smaller'>"
         for key in ["artist", "album", "tracknumber"]:
             if key in song:
                 msg += ("<span size='smaller' style='italic'>%s</span>"
-                        " <span foreground='yellow'>%s</span>   " %(
-                    (_(HEADERS_FILTER.get(key, key)).title(),
+                        " <span foreground='%s'>%s</span>   " %(
+                    (_(HEADERS_FILTER.get(key, key)).title(), color,
                      util.escape(song[key]))))
         msg = msg.strip() + "</span>"
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
 
-        self.window = self.gosd.osd(msg, "black", "yellow",
+        self.window = self.gosd.osd(msg, "black", color,
                                     pango.FontDescription("sans 16"),
                                     use_markup = True)
         if config.getint("settings", "osd") == 1:

@@ -1140,7 +1140,7 @@
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
   <property name="modal">False</property>
-  <property name="resizable">True</property>
+  <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">True</property>
@@ -1289,12 +1289,41 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkComboBox" id="osd_combo">
+			<widget class="GtkHBox" id="hbox100">
 			  <property name="visible">True</property>
-			  <property name="items" translatable="yes">Don't float titles on the on-screen display
+			  <property name="homogeneous">False</property>
+			  <property name="spacing">6</property>
+
+			  <child>
+			    <widget class="GtkComboBox" id="osd_combo">
+			      <property name="visible">True</property>
+			      <property name="items" translatable="yes">Don't float titles on the on-screen display
 Float titles on an OSD on the top
 Float titles on an OSD on the bottom</property>
-			  <signal name="changed" handler="combo_osd" last_modification_time="Tue, 07 Dec 2004 03:40:48 GMT"/>
+			      <signal name="changed" handler="combo_osd" last_modification_time="Tue, 07 Dec 2004 03:40:48 GMT"/>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">True</property>
+			      <property name="fill">True</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkColorButton" id="osd_color">
+			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">Select a color for the OSD</property>
+			      <property name="can_focus">True</property>
+			      <property name="use_alpha">False</property>
+			      <property name="focus_on_click">True</property>
+			      <signal name="color_set" handler="set_color" last_modification_time="Tue, 07 Dec 2004 06:05:21 GMT"/>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
