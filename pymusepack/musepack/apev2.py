@@ -15,6 +15,10 @@
 import struct
 from cStringIO import StringIO
 
+# This works with the new left-shift.
+import warnings
+warnings.filterwarnings("ignore", "x<<y", FutureWarning)
+
 # There are three different kinds of APE tag values.
 TEXT, BINARY, EXTERNAL = range(3)
 
