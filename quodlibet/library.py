@@ -128,7 +128,7 @@ class AudioFile(dict):
 
         if "performer" in self:
             s = _("Performed by %s") % self.comma("performer")
-            text += "<small>%s</small>" % s
+            text += "\n<small>%s</small>" % s
 
         others = ""
         if "arranger" in self:
