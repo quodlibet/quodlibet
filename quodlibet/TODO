@@ -103,12 +103,6 @@ New keys
 --------
 Time added to library, number of times skipped, rating, file size?
 
-More options in rename-by-tag
------------------------------
-Fredrik Liljegren has posted about this on the mailing list. Conjoined
-tags with a custom join string are probably a good idea. Support for
-"default" and "macrod" values are also possible.
-
 Others
 ------
 RPM spec/package, Gentoo ebuild, whatever.

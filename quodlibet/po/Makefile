@@ -16,7 +16,7 @@ quodlibet.pot: ../quodlibet.glade ../quodlibet.py ../library.py ../pmp.py tag-na
 	msgfmt -o $@ $<
 
 clean:
-	rm -f quodlibet.pot quodlibet.glade.h
+	rm -f untitled.pot
 
 distclean: clean
 	rm -f *~
