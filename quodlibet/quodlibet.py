@@ -1932,10 +1932,7 @@ class SongProperties(object):
             if cover:
                 try:
                     hb = gtk.HBox(spacing = 12)
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70,70)
-                    i = gtk.Image()
-                    i.set_from_pixbuf(p)
-                    hb.pack_start(i, expand = False)
+                    hb.pack_start(self._make_cover(cover), expand = False)
                     hb.pack_start(w, expand = False)
                     f = self.Frame(title, hb)
                 except:
@@ -2048,9 +2045,7 @@ class SongProperties(object):
             if cover:
                 try:
                     hb = gtk.HBox(spacing = 12)
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70,70)
-                    i = gtk.Image()
-                    i.set_from_pixbuf(p)
+                    i = self._make_cover(cover)
                     hb.pack_start(i, expand = False)
                     hb.pack_start(w)
                     self.box.pack_start(hb, expand = False)
@@ -2110,20 +2105,27 @@ class SongProperties(object):
             albums = {}
             for song in songs:
                 if "album" in song:
-                    albums[song.list("album")[0]] = song.get("date")
+                    albums[song.list("album")[0]] = song
                 else:
                     noalbum += 1
-            albums = [(date, album) for album, date in albums.items()]
+            albums = [(song.get("date"), song, album) for album, song in
+                        albums.items()]
             albums.sort()
-            def format((date, album)):
+            def format((date, song, album)):
                 if date: return "%s (%s)" % (util.escape(album), date)
                 else: return util.escape(album)
+            covers = [song.find_cover() for date, song, album in albums]
             albums = map(format, albums)
             if noalbum: albums.append(_("%d songs with no album") % noalbum)
             self.box.pack_start(
                 self.Frame(_("Selected Discography"),
                            self.Label("\n".join(albums))),
                 expand = False)
+            hb = gtk.HBox(spacing = 12)
+            for cover in filter(None, covers):
+                try: hb.pack_start(self._make_cover(cover), expand = False)
+                except: pass
+            self.box.pack_start(hb, expand = False)
 
         def _update_many(self, songs):
             text = "<b><span size='x-large'>%s</span></b>" %(
@@ -2189,6 +2191,16 @@ class SongProperties(object):
                     self._update_artist(songs[:])
                 else: self._update_many(songs)
             self.box.show_all()
+
+        def _make_cover(self, cover):
+            p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70,70)
+            i = gtk.Image()
+            i.set_from_pixbuf(p)
+            f = gtk.Frame()
+            f.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            f.add(i)
+            return f
+
 
     class EditTags(object):
         def __init__(self, parent):
