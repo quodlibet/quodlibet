@@ -208,7 +208,8 @@ def make_error(title, description, buttons):
 # Standard Glade widgets wrapper.
 class Widgets(object):
     def __init__(self, file):
-        self.widgets = gtk.glade.XML("quodlibet.glade")
+        self.widgets = gtk.glade.XML("quodlibet.glade",
+                                     domain = gettext.textdomain())
         self.widgets.signal_autoconnect(GladeHandlers.__dict__)
 
     def __getitem__(self, key):
@@ -679,11 +680,11 @@ def make_song_properties(songrefs):
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 0)
-    column = gtk.TreeViewColumn('Tag', render, text=0)
+    column = gtk.TreeViewColumn(_('Tag'), render, text=0)
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 1)
-    column = gtk.TreeViewColumn('Value', render, markup=1, editable=3,
+    column = gtk.TreeViewColumn(_('Value'), render, markup=1, editable=3,
                                 strikethrough=4)
     dlg.view.append_column(column)
 
@@ -739,6 +740,7 @@ def text_parse(*args):
 
 def filter_on_header(header):
     if header == "=#": header = "tracknumber"
+    elif header == "=d": header = "discnumber"
     selection = widgets["songlist"].get_selection()
     model, rows = selection.get_selected_rows()
     values = {}
@@ -791,17 +793,17 @@ def refresh_songlist():
         widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
 
     i = len(list(player.playlist))
-    if i != 1:statusbar.set_text(_("%d songs found." % i))
-    else: statusbar.set_text(_("%d song found." % i))
+    if i != 1:statusbar.set_text(_("%d songs found.") % i)
+    else: statusbar.set_text(_("%d song found.") % i)
     sl.set_model(widgets.songs)
     gc.collect()
 
 HEADERS = ["=#", "title", "album", "artist"]
-HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track",
-                   "discnumber": "Disc", "=d": "Disc",
-                   "=lastplayed": "Last Played", "=filename": "Full Name",
-                   "=playcount": "Play Count", "=basename": "Filename",
-                   "=dirname": "Directory"}
+HEADERS_FILTER = { "=#": "track", "tracknumber": "track",
+                   "discnumber": "disc", "=d": "disc",
+                   "=lastplayed": "last played", "=filename": "full name",
+                   "=playcount": "play count", "=basename": "filename",
+                   "=dirname": "directory"}
 
 CURRENT_SONG = [ None ]
 
@@ -827,7 +829,7 @@ def set_column_headers(sl):
     width = int(width / c)
     for i, t in enumerate(HEADERS):
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(HEADERS_FILTER.get(t, t).title(),
+        column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t, t)).title(),
                                     render, text = i, weight = len(HEADERS)+1)
         if t in SHORT_COLS: render.set_fixed_size(-1, -1)
         else: render.set_fixed_size(width, -1)
@@ -849,7 +851,6 @@ def setup_nonglade():
     sl = widgets["songlist"]
     sl.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
     widgets.songs = gtk.ListStore(object)
-    #refresh_songlist()
 
     # Build a model and view for our ComboBoxEntry.
     liststore = gtk.ListStore(str)
@@ -982,8 +983,17 @@ def error_and_quit():
 if __name__ == "__main__":
     import os, sys
 
-    import gettext
-    gettext.install('quodlibet')
+    basedir = os.path.split(os.path.realpath(__file__))[0]
+    if os.path.isdir(os.path.join(basedir, "i18n")):
+        i18ndir = os.path.join(basedir, "i18n")
+    else: i18ndir = "/usr/share/locale"
+
+    import locale, gettext
+    try: locale.setlocale(locale.LC_ALL, '')
+    except: pass
+    gettext.bindtextdomain("quodlibet", i18ndir)
+    gettext.textdomain("quodlibet")
+    gettext.install("quodlibet", i18ndir, unicode = 1)
     _ = gettext.gettext
 
     # Check command-line parameters before doing "real" work, so they
@@ -1014,6 +1024,8 @@ if __name__ == "__main__":
             ".".join(map(str, gtk.pygtk_version)))
         raise SystemExit(_("E: Please upgrade GTK+/PyGTK."))
     import gtk.glade
+    gtk.glade.bindtextdomain("quodlibet", i18ndir)
+    gtk.glade.textdomain("quodlibet")
     widgets = Widgets("quodlibet.glade")
 
     import gc

@@ -25,11 +25,12 @@ install:
 
 clean:
 	rm -f *.pyc */*.pyc $(NAME).zip statusicon.so mmkeys.so
+	rm -f messages.pot quodlibet.glade.h
 	cd statusicon && make clean
 	cd mmkeys && make clean
 
 distclean: clean
-	rm -f *~ \#* *.bak *.orig */*~ */\#* */*.bak */*.orig
+	rm -f *~ \#* *.bak *.orig */*~ */\#* */*.bak */*.orig $(NAME).gladep
 
 extensions: statusicon.so mmkeys.so
 
@@ -43,3 +44,9 @@ mmkeys.so:
 
 test:
 	python -c "import tests; tests.unit()"
+
+messages.pot: quodlibet.glade.h quodlibet.py library.py
+	xgettext -k_ -kN_ -o $@ quodlibet.glade.h quodlibet.py library.py
+
+quodlibet.glade.h:
+	intltool-extract --type=xml/glade > $@
