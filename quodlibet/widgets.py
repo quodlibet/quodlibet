@@ -740,6 +740,10 @@ class Browser(object):
     # called when the library has been updated (new/removed/edited songs)
     def update(self): pass
 
+    # read/write from config data
+    def restore(self): pass
+    def save(self): pass
+
     # decides whether "filter on foo" menu entries are available
     def can_filter(self, key):
         return False
@@ -847,7 +851,7 @@ class PanedBrowser(Browser, gtk.HBox):
         gtk.HBox.__init__(self, spacing = 3)
         # fill in the pane list. the last pane reports back to us.
         self._panes = [self]
-        panes = ["genre", "artist", "album"]; panes.reverse()
+        panes = config.get("browsers", "panes").split(); panes.reverse()
         for pane in panes:
             self._panes.insert(0, self.Pane(pane, self._panes[0]))
         self._panes.pop() # remove self
@@ -982,8 +986,15 @@ class EmptyBar(Browser, gtk.HBox):
     def set_text(self, text):
         self.text = text
 
+    def save(self):
+        config.set("browsers", "query_text", self.text)
+
+    def restore(self):
+        self.set_text(config.get("browsers", "query_text"))
+
     def activate(self):
         self.cb(self.text, None)
+        self.save()
 
     def can_filter(self, key):
         return True
@@ -1039,8 +1050,10 @@ class SearchBar(EmptyBar):
         text = entry.get_text()
         if (parser.is_valid(text) or
             ("#" not in text and "=" not in text and "/" not in text)):
+            self.text = text
             self.get_children()[0].prepend_text(text)
         self.cb(text, None)
+        self.save()
         self.get_children()[0].write(const.QUERIES)
 
     def test_filter(self, textbox):
@@ -1193,10 +1206,6 @@ class MainWindow(gtk.Window):
 
         self.child.pack_start(hbox, expand = False)
 
-        # browser bar
-        self.browser = SearchBar(gtk.STOCK_FIND, self.text_parse)
-        self.child.pack_start(self.browser, expand = False)
-        
         # status area
         hbox = gtk.HBox(spacing = 6)
         self.shuffle = shuffle = gtk.CheckButton(_("_Shuffle"))
@@ -1246,7 +1255,9 @@ class MainWindow(gtk.Window):
         self.songlist.connect('popup-menu', self.songs_popup_menu)
         self.songlist.connect('columns_changed', self.cols_changed)
         
-        self.browser.set_text(config.get("memory", "query"))
+        self.browser = None
+        self.select_browser(self, config.getint("memory", "browser"))
+        self.browser.restore()
         self.browser.activate()
 
         self.open_fifo()
@@ -1344,8 +1355,9 @@ class MainWindow(gtk.Window):
             ("BrowserSearch", None, _("_Search library"), None, None, 1),
             ("BrowserPlaylist", None, _("_Playlists"), None, None, 2),
             ("BrowserPaned", None, _("_Paned browser"), None, None, 3)
-            ], 1, self.select_browser)
+            ], config.getint("memory", "browser"), self.select_browser)
 
+        
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, 0)
         self.ui.add_ui_from_string(const.MENU)
@@ -1372,10 +1384,11 @@ class MainWindow(gtk.Window):
             self.ui.get_widget("/Menu/Song/Properties"),
             _("View and edit tags in the playing song"))
 
-
     def select_browser(self, activator, current):
+        if not isinstance(current, int): current = current.get_current_value()
+        config.set("memory", "browser", str(current))
         [self.hide_browser, self.show_search, self.show_listselect,
-         self.show_paned][current.get_current_value()](activator)
+         self.show_paned][current](activator)
 
     def tray_popup(self, event, *args):
         tray_menu = gtk.Menu()
@@ -1909,23 +1922,30 @@ class MainWindow(gtk.Window):
         for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
                   "Song/FilterAlbum"]:
             self.ui.get_widget("/Menu/" + w).show()
-        self.browser.destroy()
+        if self.browser: self.browser.destroy()
         self.browser = SearchBar(gtk.STOCK_FIND, self.text_parse)
         self.child.pack_start(self.browser, expand = False)
         self.__hide_menus()
-        #self.browser.set_text(config.get("memory", "query"))
 
     def show_paned(self, *args):
         for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
                       "Song/FilterAlbum"]:
             self.ui.get_widget("/Menu/" + w).hide()
-        self.browser.destroy()
+        if self.browser: self.browser.destroy()
         self.browser = PanedBrowser(self.text_parse)
         self.child.pack_start(self.browser)
         self.__hide_menus()
 
+    def hide_browser(self, *args):
+        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+                  "Song/FilterAlbum"]:
+            self.ui.get_widget("/Menu/" + w).show()
+        if self.browser: self.browser.destroy()
+        self.browser = EmptyBar(self.text_parse)
+        self.__hide_menus()
+
     def show_listselect(self, *args):
-        self.browser.destroy()
+        if self.browser: self.browser.destroy()
         self.browser = PlaylistBar(self.playlist_selected)
         self.child.pack_start(self.browser, expand = False)
         self.__hide_menus()
@@ -1956,18 +1976,9 @@ class MainWindow(gtk.Window):
         while gtk.events_pending(): gtk.main_iteration()
         self.refresh_songlist()
 
-    def hide_browser(self, *args):
-        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
-                  "Song/FilterAlbum"]:
-            self.ui.get_widget("/Menu/" + w).show()
-        self.browser.destroy()
-        self.browser = EmptyBar(self.text_parse)
-        self.__hide_menus()
-
     # Grab the text from the query box, parse it, and make a new filter.
     # The sort argument is not used for this browser.
     def text_parse(self, text, dummy_sort):
-        config.set("memory", "query", text)
         if isinstance(text, str): text = text.decode("utf-8")
         text = text.strip()
         if player.playlist.playlist_from_filter(text):

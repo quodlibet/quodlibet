@@ -34,7 +34,9 @@ def write(filename):
 def init(*rc_files):
     _config.add_section("settings")
     _config.add_section("memory")
+    _config.add_section("browsers")
     _config.add_section("header_maps")
+
     _config.set("settings", "scan", "")
     _config.set("settings", "gain", "2")
     _config.set("settings", "osd", "0")
@@ -65,10 +67,13 @@ def init(*rc_files):
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
     _config.set("memory", "widths", "0 100 100 100")
-    _config.set("memory", "query", "")
     _config.set("memory", "volume", "1.0")
-
+    _config.set("memory", "browser", "1")
     _config.set("memory", "songlist", "true")
+
+    for k, v in {"query_text": "",
+                 "panes": "artist album"}.items():
+        _config.set("browsers", k, v)
 
     _config.read(rc_files)
 
