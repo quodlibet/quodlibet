@@ -65,7 +65,7 @@ def encode(s):
         except UnicodeError: return _("[Invalid Unicode]")
 
 def iscommand(s):
-    if not s or s[0] == "/":
+    if s == "" or "/" in s:
         return os.path.exists(s)
     else:
         s = s.split()[0]

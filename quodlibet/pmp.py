@@ -74,10 +74,13 @@ class IfpPMP(PMP):
 class GenericPMP(PMP):
     def __init__(self, *args):
         self.command = os.path.expanduser(config.get("pmp", "command"))
-        if not util.iscommand(self.command.split()[0]):
+        if len(self.command) == 0:
+            raise IOError(_("Please set your upload command in the "
+                            "PMP section of the preferences dialog."))
+        elif not util.iscommand(self.command.split()[0]):
             raise IOError(_("The uploading command <b>%s</b> was not found "
                             "in your path. Please check your PMP settings "
-                            "and try again.") % self.commnd.split()[0])
+                            "and try again.") % self.command.split()[0])
             
         PMP.__init__(self, *args)
 
