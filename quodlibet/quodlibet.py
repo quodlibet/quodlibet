@@ -1137,10 +1137,10 @@ class SongProperties(MultiInstanceWidget):
         keys = songinfo.realkeys()
         keys.sort()
         if not config.state("allcomments"):
-            machine_comments = dict.fromkeys([
-                    'replaygain_album_gain', 'replaygain_album_peak',
-                    'replaygain_track_gain', 'replaygain_track_peak',
-            ])
+            machine_comments = set(['replaygain_album_gain',
+                                    'replaygain_album_peak',
+                                    'replaygain_track_gain',
+                                    'replaygain_track_peak'])
             keys = filter(lambda k: k not in machine_comments, keys)
 
         # reverse order here so insertion puts them in proper order.
@@ -1337,7 +1337,7 @@ class SongProperties(MultiInstanceWidget):
             for h in pattern.headers:
                 text = match.get(h, '')
                 if rep: text = text.replace("_", " ")
-                if title: text = text.title()
+                if title: text = util.title(text)
                 if split: text = "\n".join(util.split_value(text, spls))
                 row.append(text)
             self.tbp_model.append(row = row)
@@ -1540,7 +1540,7 @@ def set_column_headers(sl, headers):
             render.set_fixed_size(-1, -1)
         else: render.set_fixed_size(width, -1)
         t2 = t.lstrip("~#")
-        column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t2, t2)).title(),
+        column = gtk.TreeViewColumn(util.title(_(HEADERS_FILTER.get(t2, t2))),
                                     render, text = i, weight = len(headers)+1)
         column.set_resizable(True)
         column.set_clickable(True)
@@ -1826,5 +1826,7 @@ if __name__ == "__main__":
     import parser
     import signal
     import sre
+    if sys.version_info < (2, 4):
+        from sets import Set as set
     try: main()
     finally: cleanup()

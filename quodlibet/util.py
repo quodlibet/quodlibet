@@ -90,6 +90,18 @@ def encode(s):
         try: return s.encode("utf-8", "replace") + " " + _("[Invalid Unicode]")
         except UnicodeError: return _("[Invalid Unicode]")
 
+def titlecase(string):
+    if not string: return ""
+    new_string = string[0].capitalize()
+    cap = False
+    for s in string[1:]:
+        if s.isspace(): cap = True
+        elif cap and s.isalpha():
+            cap = False
+            s = s.capitalize()
+        new_string += s
+    return new_string
+
 def iscommand(s):
     if s == "" or "/" in s:
         return os.path.exists(s)

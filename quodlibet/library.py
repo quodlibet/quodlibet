@@ -6,16 +6,20 @@
 #
 # $Id$
 
-import os, stat
+import os, sys, stat
 import cPickle as Pickle
 import util; from util import escape
 import fcntl
 import random
 import time
+import shutil
 import gettext
 import config
 import tempfile
 _ = gettext.gettext
+
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 def MusicFile(filename):
     for ext in supported.keys():
@@ -72,7 +76,7 @@ class AudioFile(dict):
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
         else: newname = os.path.join(self['~dirname'], newname)
         if not os.path.exists(newname):
-            os.rename(self['~filename'], newname)
+            shutil.move(self['~filename'], newname)
         elif newname != self['~filename']: raise ValueError
         self.sanitize(newname)
 
@@ -563,7 +567,7 @@ class AudioFileGroup(dict):
                 cantoo = song.can_change()
                 if can is True: can = cantoo
                 elif cantoo is True: pass
-                else: can = dict.fromkeys(can+cantoo).keys()
+                else: can = set(can+cantoo)
         else:
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
