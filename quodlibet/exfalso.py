@@ -180,6 +180,13 @@ class MainWindow(gtk.Window):
         except ValueError: pass
         for child in notebook.get_children(): child.update(files)
         self.__cache.clear()
+        if len(files) == 0: self.set_title("Ex Falso")
+        elif len(files) == 1:
+            self.set_title("%s - Ex Falso" % files[0]("title"))
+        else:
+            self.set_title(
+                "%s - Ex Falso" %
+                (_("%s and %d more") % (files[0]("title"), len(files) - 1)))
         self.__cache = dict([(song["~filename"], song) for song in files])
 
 if __name__ == "__main__":

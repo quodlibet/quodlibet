@@ -3728,12 +3728,11 @@ class SongProperties(gtk.Window):
         else: self.songs = songs
         for page in self.pages: page.update(songs)
         if len(songs) == 1:
-            self.set_title(_("%s - Properties") %
-                           songs[0].comma("title"))
+            title = songs[0].comma("title")
         else:
-            self.set_title(_("%s and %d more - Properties") %
-                           (songs[0].comma("title"),
-                            len(songs) - 1))
+            title = _("%s and %d more") % (
+                songs[0].comma("title"), len(songs) - 1)
+        self.set_title("%s - %s" % (title, _("Properties")))
 
     def refill(self):
         def refresh(model, iter, path):
