@@ -832,8 +832,8 @@
 		  <property name="justify">GTK_JUSTIFY_RIGHT</property>
 		  <property name="wrap">True</property>
 		  <property name="selectable">False</property>
-		  <property name="xalign">0.97000002861</property>
-		  <property name="yalign">0.829999983311</property>
+		  <property name="xalign">0.97</property>
+		  <property name="yalign">0.83</property>
 		  <property name="xpad">0</property>
 		  <property name="ypad">2</property>
 		  <property name="mnemonic_widget">song_pos</property>
@@ -2053,7 +2053,7 @@ Display OSD on the bottom</property>
 				      <property name="has_frame">True</property>
 				      <property name="invisible_char">*</property>
 				      <property name="activates_default">False</property>
-				      <signal name="changed" handler="change_scan" last_modification_time="Sat, 16 Oct 2004 23:27:42 GMT"/>
+				      <signal name="changed" handler="text_change_scan" last_modification_time="Thu, 16 Dec 2004 06:21:23 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -2233,7 +2233,7 @@ Display OSD on the bottom</property>
 					  <property name="has_frame">True</property>
 					  <property name="invisible_char">*</property>
 					  <property name="activates_default">False</property>
-					  <signal name="changed" handler="change_masked" last_modification_time="Sat, 20 Nov 2004 20:04:03 GMT"/>
+					  <signal name="changed" handler="text_change_masked" last_modification_time="Thu, 16 Dec 2004 06:21:29 GMT"/>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -2448,7 +2448,7 @@ Display OSD on the bottom</property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">*</property>
 				  <property name="activates_default">False</property>
-				  <signal name="changed" handler="prefs_change_split" last_modification_time="Thu, 11 Nov 2004 22:39:07 GMT"/>
+				  <signal name="changed" handler="text_change_splitters" last_modification_time="Thu, 16 Dec 2004 06:22:03 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -3568,7 +3568,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
 			  <property name="wrap">False</property>
 			  <property name="selectable">True</property>
 			  <property name="xalign">0</property>
-			  <property name="yalign">0.479999989271</property>
+			  <property name="yalign">0.48</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
 			</widget>
@@ -5156,7 +5156,7 @@ version</property>
   <child>
     <widget class="GtkFrame" id="frame8">
       <property name="visible">True</property>
-      <property name="label_xalign">0.0299999993294</property>
+      <property name="label_xalign">0.03</property>
       <property name="label_yalign">0</property>
       <property name="shadow_type">GTK_SHADOW_OUT</property>
 
@@ -5207,7 +5207,7 @@ version</property>
 		  <property name="visible">True</property>
 		  <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
 		  <property name="fraction">0</property>
-		  <property name="pulse_step">0.0750000029802</property>
+		  <property name="pulse_step">0.075</property>
 		  <property name="text" translatable="yes"></property>
 		</widget>
 		<packing>
