@@ -656,7 +656,7 @@
 			      <child>
 				<widget class="GtkLabel" id="label8">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Select...</property>
+				  <property name="label" translatable="yes">_Select...</property>
 				  <property name="use_underline">True</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -753,7 +753,7 @@
 			<widget class="GtkCheckButton" id="track_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Track</property>
+			  <property name="label" translatable="yes">_Track</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -774,7 +774,7 @@
 			<widget class="GtkCheckButton" id="album_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Album</property>
+			  <property name="label" translatable="yes">Al_bum</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -795,7 +795,7 @@
 			<widget class="GtkCheckButton" id="artist_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Artist</property>
+			  <property name="label" translatable="yes">_Artist</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -816,7 +816,7 @@
 			<widget class="GtkCheckButton" id="genre_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Genre</property>
+			  <property name="label" translatable="yes">_Genre</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -837,7 +837,7 @@
 			<widget class="GtkCheckButton" id="year_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Year</property>
+			  <property name="label" translatable="yes">_Year</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -858,7 +858,7 @@
 			<widget class="GtkCheckButton" id="version_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Version (Remix)</property>
+			  <property name="label" translatable="yes">_Version (Remix)</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -879,7 +879,7 @@
 			<widget class="GtkCheckButton" id="performer_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Performer</property>
+			  <property name="label" translatable="yes">_Performer</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -1359,12 +1359,12 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
     <widget class="GtkImageMenuItem" id="filter_on_artist1">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Show only songs with the same artist as this one</property>
-      <property name="label" translatable="yes">Filter on artist</property>
+      <property name="label" translatable="yes">Filter on _artist</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="artist_filter" last_modification_time="Fri, 22 Oct 2004 04:20:14 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image14">
+	<widget class="GtkImage" id="image20">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1381,12 +1381,12 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
     <widget class="GtkImageMenuItem" id="filter_on_album1">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Show only songs in the same album as this one</property>
-      <property name="label" translatable="yes">Filter on album</property>
+      <property name="label" translatable="yes">Filter on al_bum</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="album_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image15">
+	<widget class="GtkImage" id="image21">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -1402,12 +1402,12 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
   <child>
     <widget class="GtkImageMenuItem" id="filter_on_this_column1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Filter on this column</property>
+      <property name="label" translatable="yes">Filter on this _column</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="song_col_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image16">
+	<widget class="GtkImage" id="image22">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>

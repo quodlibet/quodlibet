@@ -408,6 +408,7 @@ class MultiInstanceWidget(object):
         add = widgets["add_tag_dialog"]
         tag = widgets["add_tag_tag"]
         val = widgets["add_tag_value"]
+        val.set_activates_default(gtk.TRUE)
 
         while True:
             resp = add.run()
