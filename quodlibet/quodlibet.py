@@ -4,8 +4,6 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gtk.glade
-import gobject
-import sys
 import parser
 from library import library
 import player
@@ -102,7 +100,13 @@ class GladeHandlers(object):
         else:
             try:
                 q = QueryParser(QueryLexer(text)).Query()
-            except: pass
+            except:
+                if "=" not in text and "/" not in text:
+                    parts = ["/" + p + "/i" for p in text.split()]
+                    text = "|(" + ",".join(parts) + ")"
+                    text = "artist, title, album = " + text
+                    q = QueryParser(QueryLexer(text)).Query()
+                    widgets["query"].set_text(text)
             else:
                 CURRENT_FILTER[0] = q.search
                 set_entry_color(widgets["query"], "black")
@@ -116,7 +120,10 @@ class GladeHandlers(object):
         try:
             QueryParser(QueryLexer(text)).Query()
         except:
-            gtk.idle_add(set_entry_color, textbox, "red")
+            if "=" not in text and "/" not in text:
+                gtk.idle_add(set_entry_color, textbox, "blue")
+            else:
+                gtk.idle_add(set_entry_color, textbox, "red")
         else:
             gtk.idle_add(set_entry_color, textbox, "dark green")
 
@@ -127,11 +134,7 @@ def set_songs(songs):
 
 def sort_songs(a, b):
     h = MAINHEADER[0]
-    return (cmp(a.get(h), b.get(h)) or
-            cmp(a.get("artist"), b.get("artist")) or
-            cmp(a.get("album"), b.get("album")) or
-            cmp(a.get("tracknumber"), b.get("tracknumber")) or
-            cmp(a.get("title"), b.get("title")))
+    return (cmp(a.get(h), b.get(h)) or cmp(a, b))
 
 def set_sort_by(header, i):
     s = header.get_sort_order()
@@ -191,7 +194,6 @@ def main():
     set_songs(library.values())
     print "Done loading songs."
     sl.set_model(widgets.filter)
-    #widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
     gtk.timeout_add(100, update_timer, ())
     gtk.threads_init()
