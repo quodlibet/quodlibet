@@ -1,4 +1,3 @@
-- Deal with focus issues in tag add dialog
 - Lock database on load, save.
 - Artist URL detection
 - Playlists.

@@ -97,12 +97,7 @@ class AudioFile(dict):
         for k, v in self.items():
             if k[0] == "=": continue
             for v2 in v.split("\n"):
-                try:
-                    s += "%s=%s\n" % (k, v2)
-                except UnicodeDecodeError:
-                    v2 = v2.encode("utf-8", 'replace')
-                    s += "%s=%s [Invalid Unicode]" % (k, v2)
-                except: pass
+                s += "%s=%s\n" % (k, util.encode(v2))
         return s
 
     def change(self, key, old_value, new_value):
@@ -275,7 +270,7 @@ class FLACFile(AudioFile):
             for k in vc.comments:
                 parts = k.split("=")
                 key = parts[0].lower()
-                val = "=".join(parts[1:]).decode("utf-8")
+                val = util.decode("=".join(parts[1:]))
                 if key in self: self[key] += "\n" + val
                 else: self[key] = val
         self.sanitize(filename)
@@ -307,7 +302,7 @@ class FLACFile(AudioFile):
                     value = self[key]
                     if not isinstance(value, list): value = value.split("\n")
                     for line in value:
-                        vc.comments[key] = line.encode("utf-8")
+                        vc.comments[key] = util.encode(line)
             chain.write(True, True)
             print "After all"
             for k in vc.comments: print k

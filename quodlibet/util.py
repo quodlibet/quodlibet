@@ -44,3 +44,15 @@ def check_flac():
     try: import flac.decoder
     except ImportError: return False
     else: return True
+
+def decode(s):
+    try: return s.decode("utf-8")
+    except UnicodeError:
+        try: return s.decode("utf-8", "replace") + "[Invalid Unicode]"
+        except UnicodeError: return "[Invalid Unicode]"
+
+def encode(s):
+    try: return s.encode("utf-8")
+    except UnicodeError:
+        try: return s.encode("utf-8", "replace") + "[Invalid Unicode]"
+        except UnicodeError: return "[Invalid Unicode]"

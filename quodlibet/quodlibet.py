@@ -422,13 +422,15 @@ class MultiInstanceWidget(object):
         add = widgets["add_tag_dialog"]
         tag = widgets["add_tag_tag"]
         val = widgets["add_tag_value"]
+        tag.child.set_activates_default(gtk.TRUE)
         val.set_activates_default(gtk.TRUE)
+        tag.child.grab_focus()
 
         while True:
             resp = add.run()
             if resp != gtk.RESPONSE_OK: break
 
-            comment = tag.child.get_text().decode("utf-8").lower()
+            comment = tag.child.get_text().decode("utf-8").lower().strip()
             if not self.songinfo.can_change(comment):
                 msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
                         gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
