@@ -61,8 +61,7 @@ class AudioFile(dict):
         if key and key[0] == "~":
             key = key[1:]
             if "~" in key:
-                f = self.__call__
-                parts = [f(p) for p in key.split("~")]
+                parts = [self(p) for p in key.split("~")]
                 return " - ".join(filter(None, parts))
             elif key == "basename": return os.path.basename(self["~filename"])
             elif key == "dirname": return os.path.dirname(self["~filename"])

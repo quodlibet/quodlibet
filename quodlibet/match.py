@@ -83,7 +83,7 @@ class Numcmp(object):
         self.value = value
 
     def search(self, data):
-        num = data.get("~#" + self.tag, 0)
+        num = data("~#" + self.tag, 0)
         if self.op == ">": return num > self.value
         elif self.op == "=": return num == self.value
         elif self.op == "<": return num < self.value

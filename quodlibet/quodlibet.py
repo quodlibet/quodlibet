@@ -1078,7 +1078,7 @@ class MainWindow(MultiInstanceWidget):
         view = self.songlist
         path, col = view.get_cursor()
         header = col.header_name
-        header = filter(None, header.split("~"))[0]
+        if "~" in header[1:]: header = filter(None, header.split("~"))[0]
         self.filter_on_header(header)
 
     def artist_filter(self, item): self.filter_on_header('artist')
@@ -1209,15 +1209,14 @@ class MainWindow(MultiInstanceWidget):
 
         if header.startswith("~#"):
             nheader = header[2:]
-            values = [song.get(header, 0) for song in songs]
+            values = [song(header, 0) for song in songs]
             queries = ["#(%s = %d)" % (nheader, i) for i in values]
             self.make_query("|(" + ", ".join(queries) + ")")
         else:
             values = {}
             for song in songs:
-                if header in song:
-                    for val in song.list(header):
-                        values[val] = True
+                for val in song.list(header):
+                    values[val] = True
 
             text = "|".join([sre.escape(s) for s in values.keys()])
             if header.startswith("~"): header = header[1:]
