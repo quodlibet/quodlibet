@@ -159,19 +159,25 @@ class ModPlayer(AudioPlayer):
         import modplug
         self.audio = modplug.ModFile(song["=filename"])
         self.length = self.audio.length
+        self.pos = 0
         self.dev = dev
         self.dev.set_info(44100, 2)
 
     def __iter__(self): return self
-    def seek(self, ms): pass
+
+    def seek(self, ms):
+        self.audio.seek(ms)
+        self.pos = ms
 
     def next(self):
         if self.stopped: raise StopIteration
         else:
             s = self.audio.read(BUFFER_SIZE)
-            if s: self.dev.play(s)
+            if s:
+                self.pos += float(len(s)) / 176.400 # 2 / 2 / 44100
+                self.dev.play(s)
             else: self.stopped = True
-        return 0
+        return self.pos
 
 def FilePlayer(dev, song):
     for ext in supported.keys():

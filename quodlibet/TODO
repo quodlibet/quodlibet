@@ -1,6 +1,5 @@
 - More unit tests.
-- Seeking in FLAC.
-- Time reporting in MODs (in which case, we can do seeking in MODs easily).
+- Seeking in FLAC, MODs.
 - Various skipping problems -- get smarter about Python threads.
 - Import covers from Muine.
   - We need to deserialize the pixmap data, whatever it's doing, which
