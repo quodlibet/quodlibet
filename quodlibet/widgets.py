@@ -737,6 +737,10 @@ class Osd(object):
             self.window = None
 
 class Browser(object):
+    # called when the library has been updated (new/removed/edited songs)
+    def update(self): pass
+
+    # decides whether "filter on foo" menu entries are available
     def can_filter(self, key):
         return False
 
@@ -836,6 +840,10 @@ class PanedBrowser(Browser, gtk.HBox):
 
     def activate(self):
         self.fill(None)
+
+    def update(self):
+        self.__inhibit = True
+        self._panes[0].fill(library.values())
 
     def fill(self, songs):
         if self.__inhibit: self.__inhibit = False
@@ -1710,6 +1718,7 @@ class MainWindow(gtk.Window):
         win.end()
         player.playlist.refilter()
         self.refresh_songlist()
+        self.browser.update()
 
     def update_volume(self, slider):
         val = (2 ** slider.get_value()) - 1
@@ -1766,6 +1775,7 @@ class MainWindow(gtk.Window):
             widgets.songs.remove(iter)
             library.remove(song)
             player.playlist.remove(song)
+        self.browser.update()
 
     def delete_song(self, item):
         view = self.songlist
@@ -1806,6 +1816,7 @@ class MainWindow(gtk.Window):
             w.end()
             player.playlist.refilter()
             self.refresh_songlist()
+            self.browser.update()
 
     def current_song_prop(self, *args):
         song = self.current_song
