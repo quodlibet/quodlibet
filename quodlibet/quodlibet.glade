@@ -4128,7 +4128,7 @@ Tags should be added to existing ones</property>
 			  <child>
 			    <widget class="GtkLabel" id="label43">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">St_art from:</property>
+			      <property name="label" translatable="yes">Sta_rt from:</property>
 			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4155,10 +4155,10 @@ Tags should be added to existing ones</property>
 			      <property name="digits">0</property>
 			      <property name="numeric">True</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
-			      <property name="snap_to_ticks">False</property>
+			      <property name="snap_to_ticks">True</property>
 			      <property name="wrap">False</property>
 			      <property name="adjustment">1 1 99 1 10 10</property>
-			      <signal name="changed" handler="prop_tn_changed" last_modification_time="Fri, 19 Nov 2004 02:33:54 GMT"/>
+			      <signal name="value_changed" handler="prop_tn_changed" last_modification_time="Sun, 28 Nov 2004 09:01:52 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -4208,12 +4208,12 @@ Tags should be added to existing ones</property>
 			      <property name="can_focus">True</property>
 			      <property name="climb_rate">1</property>
 			      <property name="digits">0</property>
-			      <property name="numeric">False</property>
+			      <property name="numeric">True</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
-			      <property name="snap_to_ticks">False</property>
+			      <property name="snap_to_ticks">True</property>
 			      <property name="wrap">False</property>
 			      <property name="adjustment">0 0 99 1 10 10</property>
-			      <signal name="changed" handler="prop_tn_changed" last_modification_time="Fri, 19 Nov 2004 02:34:09 GMT"/>
+			      <signal name="value_changed" handler="prop_tn_changed" last_modification_time="Sun, 28 Nov 2004 09:01:45 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>

@@ -34,11 +34,13 @@ class Unknown(unicode): pass
 
 class AudioFile(dict):
     def __cmp__(self, other):
+        if not other: return -1
         return (cmp(self.get("album"), other.get("album")) or
                 cmp(self.get("~#disc"), other.get("~#disc")) or
                 cmp(self.get("~#track"), other.get("~#track")) or
                 cmp(self.get("artist"), other.get("artist")) or
-                cmp(self.get("title"), other.get("title")))
+                cmp(self.get("title"), other.get("title")) or
+                cmp(self, other))
 
     # True if our key's value is actually unknown, rather than just the
     # string "Unknown". Or true if we don't know the key at all.
