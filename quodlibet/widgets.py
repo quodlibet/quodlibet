@@ -118,7 +118,7 @@ class PreferencesWindow(object):
         def __init__(self, tips):
             self.widget = qltk.Frame(
                 _("Visible Columns"), border = 12, bold = True)
-
+            self.title = _("Browser")
             vbox = gtk.VBox(spacing = 12)
             buttons = {}
             table = gtk.Table(3, 3)
@@ -192,11 +192,11 @@ class PreferencesWindow(object):
             config.set("settings", "headers", " ".join(headers))
             widgets.main.set_column_headers(headers)
 
-    class Player(object):
+    class Player(gtk.VBox):
         def __init__(self, tips):
-            self.widget = gtk.VBox(spacing = 12)
-            self.widget.set_border_width(12)
-
+            gtk.VBox.__init__(self, spacing = 12)
+            self.set_border_width(12)
+            self.title = _("Player")
             vbox = gtk.VBox()
             c = gtk.CheckButton(_("Show _album cover images"))
             c.set_active(config.state("cover"))
@@ -216,7 +216,7 @@ class PreferencesWindow(object):
             c.set_active(config.state("jump"))
             c.connect('toggled', self.toggle, "jump")
             vbox.pack_start(c)
-            self.widget.pack_start(vbox, expand = False)
+            self.pack_start(vbox, expand = False)
 
             f = qltk.Frame(_("_Volume Normalization"), bold = True)
             cb = gtk.combo_box_new_text()
@@ -227,7 +227,7 @@ class PreferencesWindow(object):
             f.child.add(cb)
             cb.set_active(config.getint("settings", "gain"))
             cb.connect('changed', self.changed, 'gain')
-            self.widget.pack_start(f, expand = False)
+            self.pack_start(f, expand = False)
 
             f = qltk.Frame(_("_On-Screen Display"), bold = True)
             cb = gtk.combo_box_new_text()
@@ -254,7 +254,7 @@ class PreferencesWindow(object):
             hb.pack_start(color2, expand = False)
             hb.pack_start(font)
             vbox.pack_start(hb, expand = False)
-            self.widget.pack_start(f, expand = False)
+            self.pack_start(f, expand = False)
 
         def font_set(self, font):
             config.set("settings", "osdfont", font.get_font_name())
@@ -282,6 +282,7 @@ class PreferencesWindow(object):
         def __init__(self, tips):
             self.widget = gtk.VBox(spacing = 12)
             self.widget.set_border_width(12)
+            self.title = _("Library")
             f = qltk.Frame(_("Scan _Directories"), bold = True)
             hb = gtk.HBox(spacing = 6)
             b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
@@ -370,10 +371,10 @@ class PreferencesWindow(object):
         self.window.set_transient_for(parent)
         self.window.add(gtk.VBox(spacing = 12))
         self.tips = gtk.Tooltips()
-        n = gtk.Notebook()
-        n.append_page(self.Browser(self.tips).widget, gtk.Label(_("Browser")))
-        n.append_page(self.Player(self.tips).widget, gtk.Label(_("Player")))
-        n.append_page(self.Library(self.tips).widget, gtk.Label(_("Library")))
+        n = qltk.Notebook()
+        n.append_page(self.Browser(self.tips))
+        n.append_page(self.Player(self.tips))
+        n.append_page(self.Library(self.tips))
 
         self.window.child.pack_start(n)
 
@@ -3469,13 +3470,12 @@ class SongProperties(object):
         self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.tips = gtk.Tooltips()
         self.pages = []
-        self.notebook = gtk.Notebook()
-        self.add_page(self.Information(self))
-        self.add_page(self.EditTags(self))
-        self.add_page(self.TagByFilename(self))
-        self.add_page(self.RenameFiles(self))
+        self.notebook = qltk.Notebook()
+        self.pages = [self.Information(self), self.EditTags(self),
+                      self.TagByFilename(self), self.RenameFiles(self)]
         if len(songrefs) > 1:
-            self.add_page(self.TrackNumbers(self))
+            self.pages.append(self.TrackNumbers(self))
+        for page in self.pages: self.notebook.append_page(page)
         self.window.set_property('border-width', 12)
         vbox = gtk.VBox(spacing = 12)
         vbox.pack_start(self.notebook)
@@ -3532,10 +3532,6 @@ class SongProperties(object):
         self.fmodel.clear_cache()
         for page in self.pages: page.destroy()
         self.window.destroy()
-
-    def add_page(self, page):
-        self.notebook.append_page(page.widget, gtk.Label(page.title))
-        self.pages.append(page)
 
     def update(self, songs = None):
         if songs is not None: self.songrefs = songs

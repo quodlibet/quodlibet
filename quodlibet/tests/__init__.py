@@ -2,10 +2,14 @@ import unittest, sys
 suites = []
 registerCase = suites.append
 
+class Mock(object):
+    # A generic mocking object.
+    def __init__(self, **kwargs): self.__dict__.update(kwargs)
+
 # well-tested code
 import test_util, test_audio
 # not well-tested code
-import test_library, test_match, test_parser, test_player
+import test_library, test_match, test_parser, test_player, test_qltk
 
 class Result(unittest.TestResult):
 
