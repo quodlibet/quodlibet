@@ -118,10 +118,10 @@ The inevitable result of enabling smart searching is that people realize how lou
 Newlines are not supported within tags.
 .PP
 FLAC support is horrible.
-.PP
-Filenames not in UTF-8 aren't read properly. This likely won't ever work
-right. \fBAlways use UTF-8 in cases where the encoding can't be known,
-like filesystems.\fR
+.SH KNOWN NOT-BUGS
+Filenames not in UTF-8 aren't read properly, because we don't know what
+encoding they are. Similarly, filenames are always written in UTF-8 unless
+your OS does some character set translation at the VFS layer (it doesn't).
 .SH SEE ALSO
 http://www.sacredchao.net/~piman/software/quodlibet.shtml,
 .BR regex (7),

@@ -2294,7 +2294,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 			<widget class="GtkTreeView" id="songprop_view">
 			  <property name="width_request">100</property>
 			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Double-click on a tag value to change it</property>
+			  <property name="tooltip" translatable="yes">Double-click on a tag value to change it, right-click for other options</property>
 			  <property name="can_focus">True</property>
 			  <property name="headers_visible">True</property>
 			  <property name="rules_hint">False</property>
@@ -2478,6 +2478,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 			<widget class="GtkButton" id="tbp_preview">
 			  <property name="visible">True</property>
 			  <property name="sensitive">False</property>
+			  <property name="tooltip" translatable="yes">Display changes that will be made to tags based on the current pattern</property>
 			  <property name="can_focus">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">False</property>
@@ -2594,7 +2595,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 			<widget class="GtkCheckButton" id="replace_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Replace underscores with spaces</property>
+			  <property name="label" translatable="yes">Replace _underscores with spaces</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -2613,8 +2614,9 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      <child>
 			<widget class="GtkCheckButton" id="titlecase_t">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">If appropriate to the language, strings will be title-cased (the first letter of each word capitalized)</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Title-case resulting values</property>
+			  <property name="label" translatable="yes">_Title-case resulting values</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -2633,8 +2635,9 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      <child>
 			<widget class="GtkCheckButton" id="val_split_t">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Tag values will be split based on your preferences</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Split into multiple values</property>
+			  <property name="label" translatable="yes">Split into _multiple values</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -2695,7 +2698,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	  <child>
 	    <widget class="GtkLabel" id="label32">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Tag by Pattern</property>
+	      <property name="label" translatable="yes">Tag by Filename</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2757,6 +2760,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 			<widget class="GtkButton" id="nbp_preview">
 			  <property name="visible">True</property>
 			  <property name="sensitive">False</property>
+			  <property name="tooltip" translatable="yes">Display changes that will be made to filenames based on the current pattern</property>
 			  <property name="can_focus">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">False</property>
@@ -2873,7 +2877,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 			<widget class="GtkCheckButton" id="underscore_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Replace spaces with underscores</property>
+			  <property name="label" translatable="yes">Replace spaces with _underscores</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -2892,8 +2896,9 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      <child>
 			<widget class="GtkCheckButton" id="windows_t">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Characters incompatible with Windows systems (\:*?;&quot;&lt;&gt;|) will be replaced by underscores</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Replace Windows-incompatible characters</property>
+			  <property name="label" translatable="yes">Replace _Windows-incompatible characters</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -2912,8 +2917,9 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      <child>
 			<widget class="GtkCheckButton" id="ascii_t">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Characters outside of the ASCII set (Latin A-Z, 0-9, and punctuation) will be replaced by underscores</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Replace non-ASCII characters</property>
+			  <property name="label" translatable="yes">Replace non-_ASCII characters</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -2974,7 +2980,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	  <child>
 	    <widget class="GtkLabel" id="label33">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Rename by Pattern</property>
+	      <property name="label" translatable="yes">Rename by Tags</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>

@@ -591,7 +591,8 @@ class MultiInstanceWidget(object):
         self.remove.set_sensitive(may_remove)
 
     def songprop_files_toggled(self, toggle):
-        getattr(self.fview_scroll,['hide','show'][bool(toggle.get_active())])()
+        if toggle.get_active(): self.fview_scroll.show()
+        else: self.fview_scroll.hide()
 
     def songprop_files_changed(self, selection):
         songrefs = []
@@ -826,9 +827,17 @@ class MultiInstanceWidget(object):
                 return True
             win.step()
         self.nbp_model.foreach(rename)
+
+        def update_filename(model, path, iter):
+            song = model[path][0]
+            model[path][2] = song['=basename']
+            model[path][3] = song['=dirname']
+            model[path][3] = song['=filename']
+        self.fbasemodel.foreach(update_filename)
+
+        self.fill_property_info()
         self.save_nbp.set_sensitive(False)
         win.end()
-        self.fill_property_info()
 
     def tbp_changed(self, *args):
         self.tbp_preview.set_sensitive(True)
