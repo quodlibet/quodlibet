@@ -1118,21 +1118,21 @@ class CoverImage(gtk.Frame):
 class EmptyBar(Browser, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
-        self.__text = ""
+        self._text = ""
         self._cb = cb
 
     def set_text(self, text):
-        self.__text = text
+        self._text = text
 
     def save(self):
-        config.set("browsers", "query_text", self.__text)
+        config.set("browsers", "query_text", self._text)
 
     def restore(self):
         try: self.set_text(config.get("browsers", "query_text"))
         except Exception: pass
 
     def activate(self):
-        self._cb(self.__text, None)
+        self._cb(self._text, None)
         self.save()
 
     def can_filter(self, key):
@@ -1187,7 +1187,7 @@ class SearchBar(EmptyBar):
     def __text_parse(self, entry):
         text = entry.get_text()
         if (parser.is_valid(text) or ("#" not in text and "=" not in text)):
-            self.__text = text
+            self._text = text
             self.get_children()[0].prepend_text(text)
         self._cb(text, None)
         self.save()
