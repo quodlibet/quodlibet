@@ -1040,7 +1040,7 @@ class SongProperties(MultiInstanceWidget):
             oldname = model[path][2]
             newname = model[path][3]
             try:
-                song.rename(newname)
+                library.rename(song, newname)
                 if ref: songref_update_view(song, ref)
             except:
                 ErrorMessage(self.window,

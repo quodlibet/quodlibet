@@ -529,6 +529,12 @@ class Library(dict):
     def __init__(self, initial = {}):
         dict.__init__(self, initial)
 
+    def rename(self, song, newfn):
+        oldfn = song['=filename']
+        song.rename(newfn)
+        del(self[oldfn])
+        self[song['=filename']] = song
+
     def remove(self, song):
         del(self[song['=filename']])
 
