@@ -52,6 +52,7 @@ def init(*rc_files):
           "color": "true", # color search terms in search bar
           "panes": "artist album", # panes in paned browser
           "pane_selection": "", # selected pane values
+          "background": "", # "global" filter for SearchBar
           },
 
         # Kind of a dumping ground right now, should probably be

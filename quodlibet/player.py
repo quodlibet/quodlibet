@@ -18,6 +18,7 @@ import stat
 import os
 import formats
 import const
+import match
 
 BUFFER_SIZE = 2**8
 
@@ -115,12 +116,16 @@ class PlaylistPlayer(object):
     def refilter(self):
         self.set_playlist(filter(self.filter, library.values()))
 
-    def playlist_from_filter(self, text):
-        if text == "": self.filter = None
+    def playlist_from_filters(self, *filters):
+        if not filter(None, filters): self.filter = None
         else:
-            try: q = parser.parse(text)
-            except parser.error: return False
-            else: self.filter = q.search
+            def parse(text):
+                try: return parser.parse(text)
+                except parser.error: return None
+            filters = filter(None, map(parse, filters))
+            if not filters: return False
+            elif len(filters) == 1: self.filter = filters[0].search
+            else: self.filter = match.Inter(filters).search
         self.refilter()
         return True
 

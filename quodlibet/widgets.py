@@ -227,10 +227,23 @@ class PreferencesWindow(gtk.Window):
                 c, _("Display simple searches in blue, "
                      "advanced ones in green, and invalid ones in red"))
                          
+            vb = gtk.VBox()
             c.set_active(config.getboolean("browsers", "color"))
             c.connect('toggled', self._toggle, "color", "browsers")
+            vb.pack_start(c)
 
-            f = qltk.Frame(_("Search Bar"), bold=True, child=c)
+            hb = gtk.HBox(spacing = 3)
+            l = gtk.Label(_("_Global filter:"))
+            l.set_use_underline(True)
+            e = qltk.ValidatingEntry(parser.is_valid_color)
+            e.set_text(config.get("browsers", "background"))
+            e.connect('changed', self._entry, 'background', 'browsers')
+            l.set_mnemonic_widget(e)
+            hb.pack_start(l, expand=False)
+            hb.pack_start(e)
+            vb.pack_start(hb)
+
+            f = qltk.Frame(_("Search Bar"), bold=True, child=vb)
             self.pack_start(f, expand=False)
 
             t = gtk.Table(2, 4)
@@ -258,6 +271,9 @@ class PreferencesWindow(gtk.Window):
             self.pack_start(
                 qltk.Frame(_("Paned Browser"), bold=True, child=t),
                 expand=False)
+
+        def _entry(self, entry, name, section="settings"):
+            config.set(section, name, entry.get_text())
 
         def __update_panes(self, button, cbes):
             panes = " ".join([c.child.get_text() for c in cbes])
@@ -756,7 +772,8 @@ class Osd(object):
             self.__window = None
 
 class Browser(object):
-    expand = False
+    expand = False # Packing options
+    background = False # Use browsers/filter as a background filter
 
     # called when the library has been updated (new/removed/edited songs)
     def update(self): pass
@@ -1061,6 +1078,8 @@ class CoverImage(gtk.Frame):
             BigCenteredImage(self.__song.comma("album"), cover.name)
 
 class EmptyBar(Browser, gtk.HBox):
+    background = True
+    
     def __init__(self, cb):
         gtk.HBox.__init__(self)
         self._text = ""
@@ -1125,7 +1144,7 @@ class SearchBar(EmptyBar):
         combo.child.set_text("")
 
     def activate(self):
-        self.__text_parse(self.get_children()[0].child)
+        self.get_children()[-1].clicked()
 
     def set_text(self, text):
         self.get_children()[0].child.set_text(text)
@@ -1143,10 +1162,8 @@ class SearchBar(EmptyBar):
     def __test_filter(self, textbox):
         if not config.getboolean('browsers', 'color'): return
         text = textbox.get_text()
-        if "=" not in text and "#" not in text: color = "blue"
-        elif parser.is_valid(text): color = "dark green"
-        else: color = "red"
-        gobject.idle_add(self.__set_entry_color, textbox, color)
+        gobject.idle_add(
+            self.__set_entry_color, textbox, parser.is_valid_color(text))
 
     # Set the color of some text.
     def __set_entry_color(self, entry, color):
@@ -2126,7 +2143,11 @@ class MainWindow(gtk.Window):
     def __browser_cb(self, text, sort):
         if isinstance(text, str): text = text.decode("utf-8")
         text = text.strip()
-        if player.playlist.playlist_from_filter(text):
+        if self.browser.background:
+            try: bg = config.get("browsers", "background").decode('utf-8')
+            except UnicodeError: bg = None
+        else: bg = None
+        if player.playlist.playlist_from_filters(text, bg):
             if sort:
                 self.songlist.set_sort_by(None, tag=sort, refresh=False)
             self.refresh_songlist()

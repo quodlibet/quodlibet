@@ -8,7 +8,8 @@
 
 # Widget wrappers for GTK.
 import os
-import gtk
+import gobject, gtk
+import config
 import util
 
 class Message(gtk.MessageDialog):
@@ -182,6 +183,37 @@ def Button(text = None, image = None, stock = None, cb = None, user_data = []):
     # Set a callback.
     if cb: b.connect('clicked', cb, *user_data)
     return b
+
+class ValidatingEntry(gtk.Entry):
+    """An entry with visual feedback as to whether it is valid or not.
+    The given validator function gets a string and returns True (green),
+    False (red), or a color string, or None (black).
+
+    parser.is_valid_color mimicks the behavior of the search bar.
+
+    If the "Color search terms" option is off, the entry will not
+    change color."""
+
+    def __init__(self, validator=None, *args):
+        gtk.Entry.__init__(self, *args)
+        if validator: self.connect_object('changed', self.__color, validator)
+
+    def __color(self, validator):
+        if not config.getboolean('browsers', 'color'): return
+        value = validator(self.get_text())
+        if value is True: color = "dark green"
+        elif value is False: color = "red"
+        elif isinstance(value, str): color = value
+        else: color = None
+
+        if color: gobject.idle_add(self.__set_color, color)
+
+    def __set_color(self, color):
+        layout = self.get_layout()
+        text = layout.get_text()
+        markup = '<span foreground="%s">%s</span>' %(
+            color, util.escape(text))
+        layout.set_markup(markup)
 
 class WaitLoadWindow(gtk.Window):
     """A window with a progress bar and some nice updating text,

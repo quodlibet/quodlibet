@@ -189,5 +189,19 @@ class ParserTests(TestCase):
         self.failIf(parser.parse("woo man").search(self.s1))
         self.failIf(parser.parse("not crazy").search(self.s1))
 
+class TestColors(TestCase):
+    def test_red(self):
+        for p in ["a = /w", "|(sa#"]:
+            self.failUnlessEqual("red", parser.is_valid_color(p))
+
+    def test_blue(self):
+        for p in ["a test", "more test hooray"]:
+            self.failUnlessEqual("blue", parser.is_valid_color(p))
+
+    def test_green(self):
+        for p in ["a = /b/", "&(a = b, c = d)"]:
+            self.failUnlessEqual("dark green", parser.is_valid_color(p))
+
 registerCase(ValidityTests)
 registerCase(ParserTests)
+registerCase(TestColors)
