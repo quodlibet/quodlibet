@@ -428,7 +428,7 @@ class MultiInstanceWidget(object):
             resp = add.run()
             if resp != gtk.RESPONSE_OK: break
 
-            comment = tag.child.get_text().decode("utf-8")
+            comment = tag.child.get_text().decode("utf-8").lower()
             if not self.songinfo.can_change(comment):
                 msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
                         gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
@@ -564,9 +564,9 @@ def make_song_properties(songrefs):
 
 # Grab the text from the query box, parse it, and make a new filter.
 def text_parse(*args):
-    text = widgets["query"].child.get_text().strip()
+    text = widgets["query"].child.get_text()
     config.set("memory", "query", text)
-    text = text.decode("utf-8")
+    text = text.decode("utf-8").strip()
     orig_text = text
     if text and "=" not in text and "/" not in text:
         # A simple search, not regexp-based.
@@ -586,6 +586,8 @@ def text_parse(*args):
         m.prepend([orig_text])
         set_entry_color(widgets["query"].child, "black")
         refresh_songlist()
+        widgets["query"].child.set_text(orig_text)
+    return True
 
 def filter_on_header(header):
     if header == "=#": header = "tracknumber"

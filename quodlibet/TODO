@@ -1,10 +1,10 @@
+- Deal with focus issues in tag add dialog
 - Lock database on load, save.
-- Stress-testing
 - Artist URL detection
-- Remember window size, position (more importantly, why this isn't working)
 - Playlists.
+- Remember window size, position (more importantly, why this isn't working)
 - Various skipping problems -- get smarter about Python threads.
-- Look into eventual GStreamer port (for playing).
+  - Some of this (during saving) disappeared with ossaudiodev? Rock.
+- Look into eventual GStreamer port/use (for playing).
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - MikMod support.
-- Deal with focus issues in tag add dialog
