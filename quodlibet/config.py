@@ -9,7 +9,7 @@
 # Simple proxy to a Python ConfigParser.
 
 import os
-from ConfigParser import SafeConfigParser as ConfigParser
+from ConfigParser import RawConfigParser as ConfigParser
 
 _config = ConfigParser()
 get = _config.get
@@ -52,6 +52,7 @@ def init(rc_file):
 
     _config.set("pmp", "driver", "0")
     _config.set("pmp", "location", "")
+    _config.set("pmp", "command", "")
 
     try: _config.read([rc_file])
     except: pass

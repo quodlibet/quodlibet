@@ -443,17 +443,23 @@ class GladeHandlers(object):
         widgets["split_entry"].set_text(config.get("settings", "splitters"))
         widgets["gain_opt"].set_active(config.getint("settings", "gain"))
 
-        widgets["pmp_combo"].set_active(config.getint("pmp", "driver"))
+        driver = config.getint("pmp", "driver")
+        widgets["pmp_combo"].set_active(driver)
         widgets["pmp_entry"].set_text(config.get("pmp", "location"))
+        widgets["run_entry"].set_text(config.get("pmp", "command"))
         widgets["prefs_window"].show()
 
     def pmp_changed(combobox):
-        config.set('pmp', 'driver', str(widgets["pmp_combo"].get_active()))
-        if combobox.get_active() == 1: widgets["pmp_entry"].set_sensitive(True)
-        else: widgets["pmp_entry"].set_sensitive(False)
+        driver = widgets["pmp_combo"].get_active()
+        config.set('pmp', 'driver', str(driver))
+        widgets["pmp_entry"].set_sensitive(driver == 1)
+        widgets["run_entry"].set_sensitive(driver == 2)
 
     def pmp_location_changed(entry):
         config.set('pmp', 'location', entry.get_text())
+
+    def pmp_command_changed(entry):
+        config.set('pmp', 'command', entry.get_text())
 
     def set_headers(*args):
         # Based on the state of the checkboxes, set up new column headers.

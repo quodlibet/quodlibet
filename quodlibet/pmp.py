@@ -55,9 +55,9 @@ class IfpPMP(PMP):
     def __init__(*args):
         if os.system("ifp typestring") != 0:
             raise IOError(_("Unable to contact your iFP device. Check "
-                               "that the device is powered on and plugged "
-                               "in, and that you have ifp-line "
-                               "(http://ifp-driver.sf.net) installed."))
+                            "that the device is powered on and plugged "
+                            "in, and that you have ifp-line "
+                            "(http://ifp-driver.sf.net) installed."))
         PMP.__init__(*args)
 
     def upload(self, song):
@@ -66,12 +66,30 @@ class IfpPMP(PMP):
         dirname = os.path.basename(os.path.dirname(filename))
         target = os.path.join(dirname, basename)
 
-        fn_e = filename.replace("\\", "\\\\").replace("'", "\\'")
-        target_e = target.replace("\\", "\\\\").replace("'", "\\'")
-        dirname_e = dirname.replace("\\", "\\\\").replace("'", "\\'")
-        os.system("ifp mkdir '%s' > /dev/null 2>/dev/null" % dirname_e)
-        if os.system("ifp upload '%s' '%s' > /dev/null" % (fn_e, target_e)):
+        os.system("ifp mkdir %r> /dev/null 2>/dev/null" % dirname)
+        if os.system("ifp upload %r %r > /dev/null" % (filename, target)):
             raise IOError(_("Unable to upload <b>%s</b>.")%(
                     util.escape(filename)))
 
-drivers = [None, CopyPMP, IfpPMP]
+class GenericPMP(PMP):
+    def __init__(self, *args):
+        self.command = os.path.expanduser(config.get("pmp", "command"))
+        if not util.iscommand(self.command.split()[0]):
+            raise IOError(_("The uploading command <b>%s</b> was not found "
+                            "in your path. Please check your PMP settings "
+                            "and try again.") % self.commnd.split()[0])
+            
+        PMP.__init__(self, *args)
+
+    def upload(self, song):
+        filename = song["=filename"]
+        if "%s" in self.command:
+            command = self.command.replace("%s", repr(filename))
+        else:
+            command = "%s %r" % (self.command, filename)
+        if os.system(command):
+            raise IOError(_("Unable to upload <b>%s</b>.")%(
+                util.escape(filename)))
+        
+
+drivers = [None, CopyPMP, GenericPMP, IfpPMP]
