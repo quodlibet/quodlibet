@@ -473,7 +473,7 @@ class GladeHandlers(object):
         widgets["prefs_window"].set_transient_for(widgets["main_window"])
         # Fill in the general checkboxes.
         for w in ["jump", "cover", "color", "tbp_space", "titlecase",
-                  "splitval", "nbp_space", "windows", "ascii"]:
+                  "splitval", "nbp_space", "windows", "ascii", "allcomments"]:
              widgets["prefs_%s_t" % w].set_active(config.state(w))
         old_h = HEADERS[:]
 
@@ -574,6 +574,9 @@ class GladeHandlers(object):
 
     def toggle_ascii(toggle):
         config.set("settings", "ascii", str(bool(toggle.get_active())))
+
+    def toggle_allcomments(toggle):
+        config.set("settings", "allcomments", str(bool(toggle.get_active())))
 
     def set_gain(gain_opt):
         config.set("settings", "gain", str(gain_opt.get_active()))
@@ -1109,10 +1112,15 @@ class SongProperties(MultiInstanceWidget):
             self.played.set_text(self.songrefs[0][0].get_played())
 
         self.model.clear()
-        comments = {} # dict of dicts to see if comments all share value
-
         keys = songinfo.realkeys()
         keys.sort()
+        if not config.state("allcomments"):
+            machine_comments = dict.fromkeys([
+                    'replaygain_album_gain', 'replaygain_album_peak',
+                    'replaygain_track_gain', 'replaygain_track_peak',
+            ])
+            keys = filter(lambda k: k not in machine_comments, keys)
+
         # reverse order here so insertion puts them in proper order.
         for comment in ['album', 'artist', 'title']:
             try: keys.remove(comment)

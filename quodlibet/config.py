@@ -43,6 +43,7 @@ def init(rc_file):
     _config.set("settings", "nbp_space", "false")
     _config.set("settings", "windows", "true")
     _config.set("settings", "ascii", "false")
+    _config.set("settings", "allcomments", "true")
 
     _config.set("settings", "backend", "ao:alsa")
     _config.set("settings", "masked", "")

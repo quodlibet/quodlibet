@@ -425,7 +425,8 @@ class ModFile(AudioFile):
         raise TypeError("ModFiles do not support writing!")
 
     def can_change(self, k = None):
-        return False
+        if k is None: return []
+        else: return False
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
