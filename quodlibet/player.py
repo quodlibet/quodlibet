@@ -292,7 +292,7 @@ class PlaylistPlayer(object):
                 f.close()
                 if self.shuffle: random.shuffle(self.playlist)
                 try: self.player = FilePlayer(self.output, self.song)
-                except None:
+                except:
                     self.paused = True
                     self.info.missing_song(self.song)
                     self.played.append(self.song)
