@@ -1240,12 +1240,49 @@ class MainWindow(MultiInstanceWidget):
             column.set_cell_data_func(render, cell_data)
             self.songlist.append_column(column)
 
-class AddTagDialog(MultiInstanceWidget):
-    def __init__(self):
-        MultiInstanceWidget.__init__(self, widget = "add_tag_dialog")
-        self.dialog = self.widgets["add_tag_dialog"]
-        self.tag = self.widgets["add_tag_tag"].child
-        self.val = self.widgets["add_tag_value"]
+class AddTagDialog(object):
+    def __init__(self, parent, can_change):
+        if can_change == True:
+            self.limit = False
+            self.can = ["title", "version", "artist", "album",
+                        "performer", "discnumber"]
+        else:
+            self.limit = True
+            self.can = can_change
+        self.can.sort()
+
+        self.dialog = gtk.Dialog(parent = parent, title = "Add a new tag")
+        self.dialog.connect('close', self.destroy)
+        self.dialog.set_property('border-width', 12)
+        self.dialog.set_resizable(False)
+        self.dialog.add_buttons('gtk-cancel', gtk.RESPONSE_CANCEL,
+                                'gtk-add', gtk.RESPONSE_OK)
+        self.dialog.vbox.set_property('spacing', 9)
+        self.dialog.set_default_response(gtk.RESPONSE_OK)
+        table = gtk.Table(2, 2)
+        table.set_row_spacings(6)
+        table.set_col_spacings(9)
+        
+        self.tag = gtk.Entry()
+        label = gtk.Label()
+        label.set_property('xalign', 0.0)
+        label.set_text(_("_Tag:"))
+        label.set_use_underline(True)
+        label.set_mnemonic_widget(self.tag)
+        table.attach(label, 0, 1, 0, 1)
+        table.attach(self.tag, 1, 2, 0, 1)
+
+        self.val = gtk.Entry()
+        label = gtk.Label()
+        label.set_text(_("_Value:"))
+        label.set_property('xalign', 0.0)
+        label.set_use_underline(True)
+        label.set_mnemonic_widget(self.val)
+        table.attach(label, 0, 1, 1, 2)
+        table.attach(self.val, 1, 2, 1, 2)
+
+        self.dialog.vbox.pack_start(table)
+        self.dialog.show_all()
 
     def get_tag(self):
         return self.tag.get_text().lower().strip()
@@ -1261,7 +1298,7 @@ class AddTagDialog(MultiInstanceWidget):
         self.tag.grab_focus()
         return self.dialog.run()
 
-    def destroy(self):
+    def destroy(self, *args):
         self.dialog.destroy()
 
 class SongProperties(MultiInstanceWidget):
@@ -1583,7 +1620,7 @@ class SongProperties(MultiInstanceWidget):
         return True
 
     def songprop_add(self, button):
-        add = AddTagDialog()
+        add = AddTagDialog(self.window, self.songinfo.can_change(None))
 
         while True:
             resp = add.run()
