@@ -1,6 +1,6 @@
 # Copyright 2004 Joe Wreschnig. Released under the terms of the GNU GPL v2.
 
-all: build modplug.so
+all: build
 
 modplug.so: modplug.c build
 	cp build/lib*/modplug.so .
