@@ -890,6 +890,9 @@ class PanedBrowser(Browser, gtk.HBox):
                 if rows == []: rows = [(0,)]
                 if self.__selected_items == selected_items: return
                 else: self.__selected_items = selected_items
+            else:
+                model, rows = selection.get_selected_rows()
+                self.__selected_items = [model[row][0] for row in rows]
             if jump:
                 model, rows = selection.get_selected_rows()
                 if rows: self.child.scroll_to_cell(rows[0])
@@ -911,8 +914,6 @@ class PanedBrowser(Browser, gtk.HBox):
                     if model[path][0] in values:
                         selection.select_path(path)
                 model.foreach(select_values)
-                if selection.count_selected_rows() == 0:
-                    selection.select_path((0,))
             selection.handler_unblock(self.__sig)
             self.__selection_changed(selection, check=False, jump=True)
 
@@ -943,7 +944,6 @@ class PanedBrowser(Browser, gtk.HBox):
                 if value in selected_items: to_select.append(i + 1)
             if not complete:
                 model.append(["<b>%s</b>" % _("Unknown")])
-            # if no selections are still around default to all
             if to_select == []: to_select = [0]
             for i in to_select: selection.select_path((i,))
             selection.handler_unblock(self.__sig)
@@ -1021,6 +1021,9 @@ class PanedBrowser(Browser, gtk.HBox):
     def update(self):
         self.__inhibit = True
         self.__panes[0].fill(library.values())
+        for p in self.__panes:
+            self.__inhibit = True
+            p.select("<not in list>", False)
 
     def fill(self, songs):
         if self.__inhibit: self.__inhibit = False
@@ -4015,7 +4018,7 @@ class SongProperties(gtk.Window):
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()
-        if len(model) == 1: self.emit('changed', [model[(0,)][0]])
+        if model and len(model) == 1: self.emit('changed', [model[(0,)][0]])
         else:
             songs = []
             def get_songs(model, path, iter, songs):
