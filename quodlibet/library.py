@@ -1,5 +1,6 @@
-import os
+import os, stat
 import ogg.vorbis, pyid3lib
+import cPickle
 
 def MusicFile(filename):
     if filename.lower().endswith(".ogg"): return OggFile(filename)
@@ -71,6 +72,26 @@ class OggFile(dict):
             if not isinstance(v, list): v = [v]
             v = u"\n".join(map(unicode, v))
             self[unicode(k).lower()] = v
+
+def load_cache():
+    fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    if os.path.exists(fn): songs = cPickle.load(file(fn, "rb"))
+    else: raise StopIteration
+    mtime = os.stat(fn)[stat.ST_MTIME] - 1
+    for song in songs:
+        if song and os.path.exists(song['filename']):
+            if os.stat(song['filename'])[stat.ST_MTIME] > mtime:
+                yield MusicFile(fn)
+            else: yield song
+
+def save_cache(songs):
+    songs = filter(None, songs)
+    fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    if not os.path.isdir(os.path.split(fn)[0]):
+        os.mkdir(os.path.split(fn)[0])
+    f = file(fn, "w")
+    cPickle.dump(songs, f, 2)
+    f.close()
 
 def load(dirs):
     for d in dirs:

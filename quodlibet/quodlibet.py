@@ -138,9 +138,11 @@ def list_transform(model, iter, col):
 
 def lazy_loader(iterator, model):
     from itertools import izip
-    for i in range(20):
+    for i in range(40):
         try: song = iterator.next()
-        except StopIteration: break
+        except StopIteration:
+            print "Done loading requested songs."
+            break
         else: model.append([song])
     else: gtk.idle_add(lazy_loader, iterator, model)
 
@@ -176,7 +178,7 @@ def main():
         column.set_sort_column_id(i)
         sl.append_column(column)
 
-    gtk.idle_add(lazy_loader, library.load(sys.argv[1:]), widgets.songs)
+    gtk.idle_add(lazy_loader, iter(library.load_cache()), widgets.songs)
     sl.set_model(widgets.sorted)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
@@ -184,5 +186,6 @@ def main():
     gtk.threads_init()
     thread.start_new_thread(player.play, ())
     gtk.main()
+    library.save_cache([row[0] for row in widgets.songs])
 
 if __name__ == "__main__": main()

@@ -39,7 +39,7 @@ class OggPlayer(object):
         self.vf.time_seek(ms / 1000.0)
 
     def next(self):
-        (buff, bytes, bit) = self.vf.read(1048576)
+        (buff, bytes, bit) = self.vf.read(4096)
         if bytes == 0: raise StopIteration
         self.dev.play(buff, bytes)
         return self.vf.time_tell() * 1000
