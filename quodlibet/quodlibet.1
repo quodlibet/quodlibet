@@ -74,6 +74,8 @@ same. If you need case-sensitivity, put a 'c' on the end: /BOA/c and
 .SH EXAMPLES
 Some more examples of advanced searching:
 .RS
+&(artist = /Sana/c, album = !/beatmania/)
+.br
 &(artist = /lindsay smith/, album = /fruitbat vat/)
 .br
 artist = |(/Pete Townshend/, /The Who/)
@@ -82,7 +84,7 @@ artist = |(/Pete Townshend/, /The Who/)
 .br
 album = &(/final fantasy/, /piano/, |(/VIII/, /IX/))
 .br
-&(artist = /Sana/c, album = !/beatmania/)
+title = &(|(/aozora/, /blue/), /knife/)
 .RE
 .SH FILES
 .IP ~/.quodlibet/songs
