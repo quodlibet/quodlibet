@@ -5,44 +5,60 @@ import time
 import ossaudiodev # barf
 queue = []
 playlist = []
+orig_playlist = []
 paused = False
 shuffled = False
+repeat = False
 
 times = [0, 0]
 
-class MP3Player(object):
+class AudioPlayer(object):
+    def __init__(self):
+        self.stopped = False
+
+    # This is the worst function ever.
+    def seek(self, *args): self.seek(*args)
+
+    def end(self):
+        self.stopped = True
+
+class MP3Player(AudioPlayer):
     def __init__(self, dev, filename):
+        AudioPlayer.__init__(self)
         self.dev = dev
-        self.mf = mad.MadFile(filename)
+        self.audio = mad.MadFile(filename)
         self.length = self.mf.total_time()
 
     def __iter__(self): return self
 
     def seek(self, ms):
-        self.mf.seek_time(ms)
+        self.audio.seek_time(ms)
 
     def next(self):
-        buff = self.mf.read(4096)
+        if self.stopped: raise StopIteration
+        buff = self.audio.read(4096)
         if buff is None: raise StopIteration
         self.dev.play(buff, len(buff))
-        return self.mf.current_time()
+        return self.audio.current_time()
 
-class OggPlayer(object):
+class OggPlayer(AudioPlayer):
     def __init__(self, dev, filename):
+        AudioPlayer.__init__(self)
         self.dev = dev
-        self.vf = ogg.vorbis.VorbisFile(filename)
-        self.length = self.vf.time_total(-1) * 1000
+        self.audio = ogg.vorbis.VorbisFile(filename)
+        self.length = self.audio.time_total(-1) * 1000
 
     def __iter__(self): return self
 
     def seek(self, ms):
-        self.vf.time_seek(ms / 1000.0)
+        self.audio.time_seek(ms / 1000.0)
 
     def next(self):
-        (buff, bytes, bit) = self.vf.read(4096)
+        if self.stopped: raise StopIteration
+        (buff, bytes, bit) = self.audio.read(4096)
         if bytes == 0: raise StopIteration
         self.dev.play(buff, bytes)
-        return self.vf.time_tell() * 1000
+        return self.audio.time_tell() * 1000
 
 def Player(dev, filename):
     kind = filename.split(".")[-1].lower()
@@ -60,16 +76,21 @@ def set_volume(song, value):
 
 def set_playlist(songs):
     del(playlist[:])
+    del(orig_playlist[:])
     playlist.extend(songs)
+    orig_playlist.extend(songs)
 
-def set_info(song, label):
-    label.set_markup(text)
+def go_to_song(song, newsong):
+    if song in playlist: playlist.remove(newsong)
+    playlist.insert(0, newsong)
+    song.end()
 
 def play(info):
     dev = get_device()
     while True:
         do_queue(None)
         while playlist:
+            if shuffled: random.shuffle(playlist)
             song = playlist.pop(0)
             player = Player(dev, song['filename'])
             info.set_markup(song.to_markup())
@@ -80,13 +101,17 @@ def play(info):
                 while paused:
                     do_queue(player)
                     time.sleep(0.01)
+                else: continue
+                break
+
+            if song in playlist: playlist.remove(song)
+        if repeat: playlist.extend(orig_playlist)
 
         time.sleep(0.01)
 
-def seek(song, pos):
-    if song: song.seek(pos)
-
-COMMANDS = { "seek": seek,
+COMMANDS = { "seek": (lambda *args: args[0] and AudioPlayer.seek(*args)),
+             "goto": go_to_song,
+             "next": (lambda *args: args[0] and AudioPlayer.end(*args)),
              "volume": set_volume }
 
 def do_queue(song):

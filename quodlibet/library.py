@@ -29,6 +29,17 @@ class AudioFile(dict):
             text += album
         return text
 
+    def find_cover(self):
+        base = os.path.split(self['filename'])[0]
+        fns = os.listdir(base)
+        fns.sort()
+        for fn in fns:
+            lfn = fn.lower()
+            if lfn[-4:] in ["jpeg", ".jpg", ".png", "gif"]:
+                if "front" in fn or "cover" in fn:
+                   return os.path.join(base, fn)
+        else: return None
+
 class MP3File(AudioFile):
 
     # http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
@@ -82,7 +93,7 @@ class MP3File(AudioFile):
                 except: pass
         for i in ["title", "artist", "album"]:
             if hasattr(tag, i):
-                self.setdefault(unicode(i), getattr(tag, i))
+                self.setdefault(i, getattr(tag, i))
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -93,7 +104,7 @@ class OggFile(AudioFile):
         for k, v in f.comment().as_dict().iteritems():
             if not isinstance(v, list): v = [v]
             v = u"\n".join(map(unicode, v))
-            self[unicode(k).lower()] = v
+            self[k.lower()] = v
 
 def load_cache():
     fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")

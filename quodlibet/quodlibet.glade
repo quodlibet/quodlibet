@@ -20,6 +20,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <signal name="destroy" handler="gtk_main_quit" last_modification_time="Wed, 06 Oct 2004 06:30:51 GMT"/>
 
+
   <child>
     <widget class="GtkVBox" id="vbox1">
       <property name="visible">True</property>
@@ -173,6 +174,7 @@
 		      <property name="visible_horizontal">True</property>
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
+		      <signal name="clicked" handler="next_song" last_modification_time="Sun, 10 Oct 2004 04:53:16 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="expand">False</property>
@@ -233,6 +235,7 @@
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
 		      <property name="active">False</property>
+		      <signal name="clicked" handler="toggle_repeat" last_modification_time="Sat, 09 Oct 2004 04:34:09 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="expand">False</property>

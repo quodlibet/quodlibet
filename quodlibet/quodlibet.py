@@ -30,6 +30,12 @@ class GladeHandlers(object):
     def play_pause(*args):
         player.paused ^= True
 
+    def next_song(*args):
+        player.queue.append(("next", ()))
+
+    def toggle_repeat(button):
+        player.repeat = button.get_active()
+
     def select_song(tree, indices, col):
         iter = widgets.sorted.get_iter(indices)
         iter = widgets.sorted.convert_iter_to_child_iter(None, iter)
@@ -51,8 +57,8 @@ class GladeHandlers(object):
             text += album
         label = widgets["currentsong"]
 
-        cover = song.get("cover", None)
-        if cover and os.path.exists(cover):
+        cover = song.find_cover()
+        if cover:
             pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
             scaled_buf = pixbuf.scale_simple(100, 100,
                                              gtk.gdk.INTERP_BILINEAR)
@@ -61,7 +67,7 @@ class GladeHandlers(object):
             widgets["albumcover"].set_from_stock(gtk.STOCK_CDROM,
                                                  gtk.ICON_SIZE_BUTTON)
         label.set_markup(text)
-        player.set_playlist([song])
+        player.queue.append(("goto", (song,)))
         player.paused = False
 
     def open_chooser(*args):
@@ -180,7 +186,7 @@ def main():
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
     player.paused = True
-    gtk.timeout_add(500, update_timer, ())
+    gtk.timeout_add(100, update_timer, ())
     gtk.threads_init()
     thread.start_new_thread(player.play, (widgets["currentsong"],))
     gtk.main()
