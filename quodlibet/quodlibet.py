@@ -12,8 +12,6 @@ VERSION = "0.6"
 
 import os, sys
 
-HOME = os.path.expanduser("~")
-
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
 # using e.g. Curses would change the UI. The converse is not true. Many
@@ -36,12 +34,11 @@ class GTKSongInfoWrapper(object):
         self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
         self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
         self.menu.get_image().set_from_pixbuf(self.pause_s)
-        self.fifo_fn = os.path.join(HOME, ".quodlibet", "control")
-        try: os.unlink(self.fifo_fn)
+        try: os.unlink(const.CONTROL)
         except OSError: pass
-        util.mkdir(os.path.dirname(self.fifo_fn))
-        os.mkfifo(self.fifo_fn, 0600)
-        self.fifo = os.open(self.fifo_fn, os.O_NONBLOCK)
+        util.mkdir(const.DIR)
+        os.mkfifo(const.CONTROL, 0600)
+        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
         gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
         self.albumfn = None
 
@@ -84,7 +81,7 @@ class GTKSongInfoWrapper(object):
             widgets["main_window"].present()
 
         os.close(self.fifo)
-        self.fifo = os.open(self.fifo_fn, os.O_NONBLOCK)
+        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
         gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
 
     def _previous(*args): player.playlist.previous()
@@ -169,11 +166,9 @@ class GTKSongInfoWrapper(object):
             self.disable_cover()
 
     def scroll_to_current(self):
-        song = CURRENT_SONG[0]
-        if song:
-            try: path = (player.playlist.get_playlist().index(song),)
-            except ValueError: pass
-            else: widgets["songlist"].scroll_to_cell(path)
+        try: path = (player.playlist.get_playlist().index(CURRENT_SONG[0]),)
+        except ValueError: pass
+        else: widgets["songlist"].scroll_to_cell(path)
 
     def _update_song(self, song, player):
         for wid in ["web_button", "next_button", "prop_menu",
@@ -320,7 +315,7 @@ class Widgets(object):
 
 # Glade-connected handler functions.
 class GladeHandlers(object):
-    last_dir = HOME
+    last_dir = os.path.expanduser("~")
 
     def gtk_main_quit(*args):
         gtk.main_quit()
@@ -571,21 +566,23 @@ class GladeHandlers(object):
         config.set("settings", "gain", str(gain_opt.get_active()))
 
     def select_scan(*args):
-        chooser = FileChooser(_("Select Directories"), HOME)
+        chooser = FileChooser(_("Select Directories"), const.HOME)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             widgets["scan_opt"].set_text(":".join(fns))
 
     def select_masked(*args):
-        chooser = FileChooser(_("Select Mount Points"), HOME)
+        if os.path.exists("/media"): path = "/media"
+        elif os.path.exists("/mnt"): path = "/mnt"
+        else: path = "/"
+        chooser = FileChooser(_("Select Mount Points"), path)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             widgets["mask_opt"].set_text(":".join(fns))
 
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
-        config_fn = os.path.join(HOME, ".quodlibet", "config")
-        util.mkdir(os.path.dirname(config_fn))
+        util.mkdir(const.DIR)
         save_config()
         return True
 
@@ -622,33 +619,17 @@ class GladeHandlers(object):
         selection = view.get_selection()
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
-        if not config.getint("pmp", "driver"):
-            widgets["pmp_sep"].hide()
-            widgets["pmp_upload"].hide()
-        else:
-            widgets["pmp_sep"].show()
-            widgets["pmp_upload"].show()
         coln = view.get_columns().index(col)
         header = HEADERS[coln]
-        if header not in ["genre", "artist", "album"]:
-            widgets["filter_column"].show()
-            if header.startswith("~#"): header = header[2:]
-            elif header.startswith("~"): header = header[1:]
-            header = HEADERS_FILTER.get(header, header)
-            widgets["filter_column"].child.set_text(_("Filter on %s") %
-                                                    _(header))
-        else:
-            widgets["filter_column"].hide()
+        prep_main_popup(header)
         widgets["songs_popup"].popup(None,None,None, event.button, event.time)
         return True
 
     def songs_popup_menu(view):
-        if not config.getint("pmp", "driver"):
-            widgets["pmp_sep"].hide()
-            widgets["pmp_upload"].hide()
-        else:
-            widgets["pmp_sep"].show()
-            widgets["pmp_upload"].show()
+        path, col = view.get_cursor()
+        coln = view.get_columns().index(col)
+        header = HEADERS[coln]
+        prep_main_popup(header)
         widgets["songs_popup"].popup(None, None, None, 1, 0)
 
     def song_col_filter(item):
@@ -695,6 +676,24 @@ class GladeHandlers(object):
         songrefs = [ (model[row][len(HEADERS)],
                       gtk.TreeRowReference(model, row)) for row in rows]
         SongProperties(songrefs)
+
+def prep_main_popup(header):
+    if not config.getint("pmp", "driver"):
+        widgets["pmp_sep"].hide()
+        widgets["pmp_upload"].hide()
+    else:
+        widgets["pmp_sep"].show()
+        widgets["pmp_upload"].show()
+    if header not in ["genre", "artist", "album"]:
+        widgets["filter_column"].show()
+        if header.startswith("~#"): header = header[2:]
+        elif header.startswith("~"): header = header[1:]
+        header = HEADERS_FILTER.get(header, header)
+        widgets["filter_column"].child.set_text(_("_Filter on %s") %
+                                                    _(header))
+        widgets["filter_column"].child.set_use_underline(True)
+    else:
+        widgets["filter_column"].hide()
 
 class SongProperties(MultiInstanceWidget):
     def __init__(self, songrefs):
@@ -949,7 +948,41 @@ class SongProperties(MultiInstanceWidget):
         if len(songrefs): self.songrefs = songrefs
         self.fill_property_info()
 
+    def prep_prop_menu(self, row):
+        self.menu_w.get_widget("split_album").hide()
+        self.menu_w.get_widget("split_title").hide()
+        self.menu_w.get_widget("split_performer").hide()
+        self.menu_w.get_widget("split_arranger").hide()
+        self.menu_w.get_widget("special_sep").hide()
+        spls = config.get("settings", "splitters")
+
+        self.menu_w["split_into_list"].set_sensitive(
+            len(util.split_value(row[1], spls)) > 1)
+
+        if row[0] == "album":
+            self.menu_w["split_album"].show()
+            self.menu_w["special_sep"].show()
+            self.menu_w["split_album"].set_sensitive(
+                util.split_album(row[1])[1] is not None)
+
+        if row[0] == "title":
+            self.menu_w.get_widget("split_title").show()
+            self.menu_w.get_widget("special_sep").show()
+            self.menu_w["split_title"].set_sensitive(
+                util.split_title(row[1], spls)[1] != [])
+
+        if row[0] == "artist":
+            self.menu_w.get_widget("split_performer").show()
+            self.menu_w.get_widget("split_arranger").show()
+            self.menu_w.get_widget("special_sep").show()
+            ok = (util.split_people(row[1], spls)[1] != [])
+            self.menu_w["split_performer"].set_sensitive(ok)
+            self.menu_w["split_arranger"].set_sensitive(ok)
+
     def prop_popup_menu(self, view):
+        path, col = view.get_cursor()
+        row = view.get_model()[path]
+        self.prep_prop_menu(row)
         self.menu.popup(None, None, None, 1, 0)
 
     def prop_button_press(self, view, event):
@@ -963,25 +996,7 @@ class SongProperties(MultiInstanceWidget):
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
         row = view.get_model()[path]
-        self.menu_w.get_widget("split_album").hide()
-        self.menu_w.get_widget("split_title").hide()
-        self.menu_w.get_widget("split_performer").hide()
-        self.menu_w.get_widget("split_arranger").hide()
-        self.menu_w.get_widget("special_sep").hide()
-
-        if row[0] == "album":
-            self.menu_w.get_widget("split_album").show()
-            self.menu_w.get_widget("special_sep").show()
-
-        if row[0] == "title":
-            self.menu_w.get_widget("split_title").show()
-            self.menu_w.get_widget("special_sep").show()
-
-        if row[0] == "artist":
-            self.menu_w.get_widget("split_performer").show()
-            self.menu_w.get_widget("split_arranger").show()
-            self.menu_w.get_widget("special_sep").show()
-
+        self.prep_prop_menu(row)
         self.menu.popup(None, None, None, event.button, event.time)
         return True
 
@@ -1510,9 +1525,8 @@ def setup_nonglade():
     gtk.threads_init()
 
 def save_config():
-    config_fn = os.path.join(HOME, ".quodlibet", "config")
-    util.mkdir(os.path.dirname(config_fn))
-    f = file(config_fn, "w")  
+    util.mkdir(const.DIR)
+    f = file(const.CONFIG, "w")  
     config.write(f)
     f.close()
 
@@ -1538,7 +1552,7 @@ def main():
 
     from threading import Thread
     t = Thread(target = player.playlist.play, args = (widgets.wrap,))
-    util.mkdir(os.path.join(HOME, ".quodlibet"))
+    util.mkdir(const.DIR)
     signal.signal(signal.SIGINT, gtk.main_quit)
     signal.signal(signal.SIGKILL, gtk.main_quit)
     signal.signal(signal.SIGTERM, gtk.main_quit)
@@ -1550,8 +1564,7 @@ def main():
     t.join()
 
     print _("Saving song library.")
-    cache_fn = os.path.join(HOME, ".quodlibet", "songs")
-    library.save(cache_fn)
+    library.save(const.LIBRARY)
     cleanup()
     save_config()
 
@@ -1584,15 +1597,13 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
     raise SystemExit
 
 def refresh_cache():
-    cache_fn = os.path.join(HOME, ".quodlibet", "songs")
-    config_fn = os.path.join(HOME, ".quodlibet", "config")
-    import library, config
-    config.init(config_fn)
+    import library, config, const
+    config.init(const.CONFIG)
     library.init()
     print _("Loading, scanning, and saving your library.")
-    library.library.load(cache_fn)
+    library.library.load(const.LIBRARY)
     library.library.rebuild()
-    library.library.save(cache_fn)
+    library.library.save(const.LIBRARY)
     raise SystemExit
 
 DEF_PP = ("%(artist)?(album) - %(album)??(tracknumber) - "
@@ -1600,7 +1611,7 @@ DEF_PP = ("%(artist)?(album) - %(album)??(tracknumber) - "
 def print_playing(fstring = DEF_PP):
     import util
     try:
-        fn = file(os.path.join(HOME, ".quodlibet", "current"))
+        fn = file(const.CURRENT)
         data = {}
         for line in fn:
             line = line.strip()
@@ -1628,8 +1639,7 @@ def error_and_quit():
     return True
 
 def control(c):
-    fifo_fn = os.path.join(HOME, ".quodlibet", "control")
-    if not os.path.exists(fifo_fn):
+    if not os.path.exists(const.CONTROL):
         raise SystemExit(_("Quod Libet is not running."))
     else:
         try:
@@ -1637,25 +1647,24 @@ def control(c):
             # This is a total abuse of Python! Hooray!
             signal.signal(signal.SIGALRM, lambda: "" + 2)
             signal.alarm(5)
-            f = file(fifo_fn, "w")
+            f = file(const.CONTROL, "w")
             f.write(c)
             f.close()
         except (OSError, IOError, TypeError):
-            os.unlink(fifo_fn)
+            os.unlink(const.CONTROL)
             raise SystemExit(_("""
 Unable to write to %s. Removing it.
-If QL is currently running, please restart it.""" % fifo_fn))
+If QL is currently running, please restart it.""" % const.CONTROL))
         else:
             raise SystemExit
 
 def cleanup(*args):
-    try: os.unlink(os.path.join(HOME, ".quodlibet", "current"))
-    except OSError: pass
-    try: os.unlink(os.path.join(HOME, ".quodlibet", "control"))
-    except OSError: pass
+    for filename in [const.CURRENT, const.CONTROL]:
+        try: os.unlink(filename)
+        except OSError: pass
 
 if __name__ == "__main__":
-    import os, sys
+    import os, sys, const
 
     basedir = os.path.split(os.path.realpath(__file__))[0]
     if os.path.isdir(os.path.join(basedir, "po")):
@@ -1689,15 +1698,14 @@ if __name__ == "__main__":
             print _("E: Unknown command line option: %s") % command
             raise SystemExit(_("E: Try %s --help") % sys.argv[0])
 
-    if os.path.exists(os.path.join(HOME, ".quodlibet", "control")):
+    if os.path.exists(const.CONTROL):
         print _("Quod Libet is already running.")
         control('!')
 
     # Get to the right directory for our data.
-    d = os.path.split(os.path.realpath(__file__))[0]
-    os.chdir(d)
-    if os.path.exists(os.path.join(d, "quodlibet.zip")):
-        sys.path.insert(0, os.path.join(d, "quodlibet.zip"))
+    os.chdir(basedir)
+    if os.path.exists(os.path.join(basedir, "quodlibet.zip")):
+        sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
 
     # Initialize GTK/Glade.
     import pygtk
@@ -1719,13 +1727,11 @@ if __name__ == "__main__":
 
     # Load configuration data and scan the library for new/changed songs.
     import config
-    config_fn = os.path.join(HOME, ".quodlibet", "config")
-    config.init(config_fn)
+    config.init(const.CONFIG)
 
     # Load the library.
     import library
-    cache_fn = os.path.join(HOME, ".quodlibet", "songs")
-    library.init(cache_fn)
+    library.init(const.LIBRARY)
     print _("Loaded song library.")
     from library import library
 

@@ -59,6 +59,7 @@ def format_time(time):
         return _("%d:%02d") % (time / 60, time % 60)
 
 def format_time_long(time):
+    if time < 1: return _("No time information")
     time_str = ""
     if time > 365 * 24 * 60 * 60:
         time_str += _("%d years, ") % (time / (365 * 24 * 60 * 60))

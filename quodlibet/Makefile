@@ -1,4 +1,4 @@
-MODULES = config.py library.py match.py parser.py player.py util.py pmp.py
+MODULES = config.py const.py library.py match.py parser.py player.py pmp.py util.py
 SUBDIRS = statusicon mmkeys po modplug
 EXTENSIONS = statusicon.so mmkeys.so modplug.so
 NAME = quodlibet

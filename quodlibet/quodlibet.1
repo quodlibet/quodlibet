@@ -162,16 +162,16 @@ A FIFO connected to the most-recently-started instance of the program.
 \-\-next, \-\-previous, et cetera, use this to control the player.
 .SH KNOWN NOT-BUGS
 Newlines are not supported within tag values. Using them will break a lot
-of tools, not just QL. QL uses newlines as separators for multiple values
-to make regex matches fast.
+of tools, including QL.
 .PP
 Filenames not in UTF-8 aren't read properly, because we don't know what
-encoding they are. Similarly, filenames are always written in UTF-8 unless
-your OS does some character set translation at the VFS layer (it doesn't).
+encoding they are. Similarly, filenames are always written in UTF-8.
 .SH SEE ALSO
 http://www.sacredchao.net/~piman/software/quodlibet.shtml,
+.PP
 .BR regex (7),
 .BR vorbiscomment (1),
 .BR id3v2 (1),
-.BR vorbisgain (1),
+.BR vorbisgain (1)
+.PP
 http://www.xiph.org/ogg/vorbis/doc/v\-comment.html
