@@ -517,7 +517,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="prop_menu">
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">View and edit tags in the current song</property>
+		      <property name="tooltip" translatable="yes">View and edit tags in the playing song</property>
 		      <property name="label">gtk-properties</property>
 		      <property name="use_stock">True</property>
 		      <signal name="activate" handler="current_song_prop" last_modification_time="Mon, 08 Nov 2004 01:11:18 GMT"/>
@@ -1241,7 +1241,6 @@
 			  <child>
 			    <widget class="GtkCheckButton" id="prefs_cover_t">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">When enabled, images with 'front' or 'cover' in their names are loaded and displayed next to the song title.</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">Show album cover _images</property>
 			      <property name="use_underline">True</property>
@@ -1262,7 +1261,7 @@
 			  <child>
 			    <widget class="GtkCheckButton" id="prefs_color_t">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Display simple searches in blue, advanced ones in green, and invalid ones in red. Turn this off if your theme makes the colors hard to read.</property>
+			      <property name="tooltip" translatable="yes">Display simple searches in blue, advanced ones in green, and invalid ones in red</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">Color _search terms</property>
 			      <property name="use_underline">True</property>
@@ -1283,7 +1282,7 @@
 			  <child>
 			    <widget class="GtkCheckButton" id="prefs_jump_t">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">When the playing song changes, scroll to it in the song list. You can do this manually by pressing Ctrl-J.</property>
+			      <property name="tooltip" translatable="yes">When the playing song changes, scroll to it in the song list</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">_Jump to current song automatically</property>
 			      <property name="use_underline">True</property>
@@ -4388,7 +4387,7 @@ Tags should be added to existing ones</property>
 		  <child>
 		    <widget class="GtkButton" id="prop_tn_preview">
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Display changes that will be made to filenames based on the current pattern</property>
+		      <property name="tooltip" translatable="yes">Display changes that will be made to track numbers</property>
 		      <property name="can_focus">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">False</property>
@@ -4940,7 +4939,6 @@ version</property>
   <child>
     <widget class="GtkImageMenuItem" id="remove2">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Remove this tag</property>
       <property name="label">gtk-remove</property>
       <property name="use_stock">True</property>
       <signal name="activate" handler="songprop_remove" last_modification_time="Mon, 25 Oct 2004 21:30:45 GMT"/>
