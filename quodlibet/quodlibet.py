@@ -1877,6 +1877,18 @@ class AddTagDialog(object):
     def destroy(self, *args):
         self.dialog.destroy()
 
+def Button(text, image):
+    hbox = gtk.HBox(spacing = 2)
+    i = gtk.Image()
+    i.set_from_stock(image, gtk.ICON_SIZE_BUTTON)
+    hbox.pack_start(i)
+    l = gtk.Label(text)
+    l.set_use_underline(True)
+    hbox.pack_start(l)
+    b = gtk.Button()
+    b.add(hbox)
+    return b
+
 class SongProperties2(object):
 
     class Information(object):
@@ -1935,6 +1947,9 @@ class SongProperties2(object):
                                         editable = 3, strikethrough = 4)
             self.view.append_column(column)
 
+            self.view.connect('popup-menu', self.popup_menu)
+            self.view.connect('button-press-event', self.button_press)
+
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -1969,6 +1984,123 @@ class SongProperties2(object):
             self.buttonbox.pack_start(bbox2)
 
             self.widget.pack_start(self.buttonbox, expand = False)
+
+        def popup_menu(self, view):
+            path, col = view.get_cursor()
+            row = view.get_model()[path]
+            self.show_menu(row, 1, 0)
+
+        def button_press(self, view, event):
+            if event.button != 3:
+                return False
+            x, y = map(int, [event.x, event.y])
+            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+            except TypeError: return True
+            view.grab_focus()
+            selection = view.get_selection()
+            if not selection.path_is_selected(path):
+                view.set_cursor(path, col, 0)
+            row = view.get_model()[path]
+            self.show_menu(row, event.button, event.time)
+            return True
+
+        def split_into_list(self, activator):
+            model, iter = self.view.get_selection().get_selected()
+            row = model[iter]
+            spls = config.get("settings", "splitters")
+            vals = util.split_value(util.unescape(row[1]), spls)
+            if vals[0] != util.unescape(row[1]):
+                row[1] = util.escape(vals[0])
+                row[2] = True
+                for val in vals[1:]: self.add_new_tag(row[0], val)
+
+        def split_title(self, activator):
+            model, iter = self.view.get_selection().get_selected()
+            row = model[iter]
+            spls = config.get("settings", "splitters")
+            title, versions = util.split_title(util.unescape(row[1]), spls)
+            if title != util.unescape(row[1]):
+                row[1] = util.escape(title)
+                row[2] = True
+                for val in versions: self.add_new_tag("version", val)
+
+        def split_album(self, activator):
+            model, iter = self.view.get_selection().get_selected()
+            row = model[iter]
+            album, disc = util.split_album(util.unescape(row[1]))
+            if album != util.unescape(row[1]):
+                row[1] = util.escape(album)
+                row[2] = True
+                self.add_new_tag("discnumber", disc)
+
+        def split_people(self, tag):
+            model, iter = self.view.get_selection().get_selected()
+            row = model[iter]
+            spls = config.get("settings", "splitters")
+            person, others = util.split_people(util.unescape(row[1]), spls)
+            if person != util.unescape(row[1]):
+                row[1] = util.escape(person)
+                row[2] = True
+                for val in others: self.add_new_tag(tag, val)
+
+        def split_performer(self, activator): self.split_people("performer")
+        def split_arranger(self, activator): self.split_people("arranger")
+
+        def show_menu(self, row, button, time):
+            menu = gtk.Menu()        
+            spls = config.get("settings", "splitters")
+
+            b = gtk.ImageMenuItem(_("_Split into multiple values"))
+            b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                         gtk.ICON_SIZE_MENU)
+            b.set_sensitive(len(util.split_value(row[1], spls)) > 1)
+            b.connect('activate', self.split_into_list)
+            menu.append(b)
+            menu.append(gtk.SeparatorMenuItem())
+
+            if row[0] == "album":
+                b = gtk.ImageMenuItem(_("Split disc out of _album"))
+                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                             gtk.ICON_SIZE_MENU)
+                b.connect('activate', self.split_album)
+                b.set_sensitive(util.split_album(row[1])[1] is not None)
+                menu.append(b)
+
+            elif row[0] == "title":
+                b = gtk.ImageMenuItem(_("Split version out of title"))
+                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                             gtk.ICON_SIZE_MENU)
+                b.connect('activate', self.split_title)
+                b.set_sensitive(util.split_title(row[1], spls)[1] != [])
+                menu.append(b)
+
+            elif row[0] == "artist":
+                ok = (util.split_people(row[1], spls)[1] != [])
+
+                b = gtk.ImageMenuItem(_("Split arranger out of ar_tist"))
+                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                             gtk.ICON_SIZE_MENU)
+                b.connect('activate', self.split_arranger)
+                b.set_sensitive(ok)
+                menu.append(b)
+
+                b = gtk.ImageMenuItem(_("Split _performer out of artist"))
+                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                             gtk.ICON_SIZE_MENU)
+                b.connect('activate', self.split_performer)
+                b.set_sensitive(ok)
+                menu.append(b)
+
+            if len(menu.get_children()) > 2:
+                menu.append(gtk.SeparatorMenuItem())
+
+            b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+            b.connect('activate', self.remove_tag)
+            menu.append(b)
+
+            menu.show_all()
+            menu.connect('selection-done', lambda m: m.destroy())
+            menu.popup(None, None, None, button, time)
 
         def tag_select(self, selection):
             model, iter = selection.get_selected()
@@ -2164,6 +2296,194 @@ class SongProperties2(object):
             self.model.clear()
             self.widget.destroy()
 
+    class TagByFilename(object):
+        def __init__(self, prop):
+            self.title = _("Tag by Filename")
+            self.prop = prop
+            self.widget = gtk.VBox(spacing = 6)
+            self.widget.set_property('border-width', 12)
+            hbox = gtk.HBox(spacing = 12)
+            combo = gtk.combo_box_entry_new_text()
+            for line in const.TBP_EXAMPLES.split("\n"):
+                combo.append_text(line)
+            hbox.pack_start(combo)
+            self.entry = combo.child
+            self.entry.connect('changed', self.changed)
+            self.preview = Button(_("_Preview"), gtk.STOCK_CONVERT)
+            self.preview.connect('clicked', self.preview_tags)
+            hbox.pack_start(self.preview, expand = False)
+            self.widget.pack_start(hbox, expand = False)
+
+            self.view = gtk.TreeView()
+            sw = gtk.ScrolledWindow()
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            sw.add(self.view)
+            self.widget.pack_start(sw)
+
+            vbox = gtk.VBox()
+            c1 = gtk.CheckButton(_("Replace _underscores with spaces"))
+            c1.set_active(config.state("tbp_space"))
+            c2 = gtk.CheckButton(_("_Title-case resulting values"))
+            c2.set_active(config.state("titlecase"))
+            c3 = gtk.CheckButton(_("Split into _multiple values"))
+            c3.set_active(config.state("splitval"))
+            c4 = gtk.combo_box_new_text()
+            c4.append_text(_("Tags should replace existing ones"))
+            c4.append_text(_("Tags should be added to existing ones"))
+            c4.set_active(config.getint("settings", "addreplace"))
+            self.space = c1
+            self.titlecase = c2
+            self.split = c3
+            self.addreplace = c4
+
+            vbox.pack_start(c1)
+            vbox.pack_start(c2)
+            vbox.pack_start(c3)
+            vbox.pack_start(c4)
+            self.widget.pack_start(vbox, expand = False)
+
+            bbox = gtk.HButtonBox()
+            bbox.set_layout(gtk.BUTTONBOX_END)
+            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
+            self.save.connect('clicked', self.save_files)
+            bbox.pack_start(self.save)
+            self.widget.pack_start(bbox, expand = False)
+
+        def update(self, songs):
+            from library import AudioFileGroup
+            self.songs = songs
+            songinfo = AudioFileGroup(songs)
+            pattern_text = self.entry.get_text().decode("utf-8")
+            self.view.set_model(None)
+            try: pattern = util.PatternFromFile(pattern_text)
+            except sre.error:
+                ErrorMessage(self.prop.window,
+                             _("Invalid pattern"),
+                             _("The pattern\n\t<b>%s</b>\nis invalid. "
+                               "Possibly it contains the same tag twice or "
+                               "it has unbalanced brackets (&lt; / &gt;).")%(
+                    util.escape(pattern_text))).run()
+                return
+
+            invalid = []
+
+            for header in pattern.headers:
+                if not songinfo.can_change(header):
+                    invalid.append(header)
+            if len(invalid):
+                if len(invalid) == 1:
+                    title = _("Invalid tag")
+                    msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
+                            " selected do not support editing this tag.")
+                else:
+                    title = _("Invalid tags")
+                    msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
+                            " selected do not support editing these tags.")
+                    
+                ErrorMessage(self.prop.window, title,
+                             msg % ", ".join(invalid)).run()
+                return
+
+            rep = self.space.get_active()
+            title = self.titlecase.get_active()
+            split = self.split.get_active()
+            self.model = gtk.ListStore(object, str,
+                                       *([str] * len(pattern.headers)))
+            for col in self.view.get_columns():
+                self.view.remove_column(col)
+
+            col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
+                                     text=1)
+            self.view.append_column(col)
+            for i, header in enumerate(pattern.headers):
+                render = gtk.CellRendererText()
+                render.set_property('editable', True)
+                render.connect('edited', self.changed, self.model,  i + 2)
+                col = gtk.TreeViewColumn(header, render, text = i + 2)
+                self.view.append_column(col)
+            spls = config.get("settings", "splitters")
+
+            for song in songs:
+                row = [song, song("~basename")]
+                match = pattern.match(song)
+                for h in pattern.headers:
+                    text = match.get(h, '')
+                    if rep: text = text.replace("_", " ")
+                    if title: text = util.title(text)
+                    if split: text = "\n".join(util.split_value(text, spls))
+                    row.append(text)
+                self.model.append(row = row)
+
+            # save for last to potentially save time
+            self.view.set_model(self.model)
+            self.preview.set_sensitive(False)
+            if len(pattern.headers) > 0: self.save.set_sensitive(True)
+
+        def save_files(self, *args):
+            pattern_text = self.entry.get_text().decode('utf-8')
+            pattern = util.PatternFromFile(pattern_text)
+            add = (self.addreplace.get_active() == 1)
+            win = WritingWindow(self.prop.window, len(self.songs))
+
+            def save_song(model, path, iter):
+                song = model[path][0]
+                row = model[path]
+                changed = False
+                for i, h in enumerate(pattern.headers):
+                    if row[i + 2]:
+                        if not add or h not in song:
+                            try:
+                                song[h] = row[i + 2].decode("utf-8")
+                            except UnicodeDecodeError:
+                                song[h] = row[i + 2].decode("iso8859-1")
+                            changed = True
+                        else:
+                            try:
+                                vals = row[i + 2].decode("utf-8")
+                            except UnicodeDecodeError:
+                                vals = row[i + 2].decode("iso8859-1")
+                            for val in vals.split("\n"):
+                                if val not in song[h]:
+                                    song.add(h, val)
+                                    changed = True
+
+                if changed:
+                    try:
+                        song.sanitize()
+                        song.write()
+                    except:
+                        ErrorMessage(self.prop.window,
+                                     _("Unable to edit song"),
+                                     _("Saving <b>%s</b> failed. The file "
+                                       "may be read-only, corrupted, or you "
+                                       "do not have permission to edit it.")%(
+                            util.escape(song('~basename')))).run()
+                        library.reload(song)
+                        player.playlist.refilter()
+                        widgets.main.refresh_songlist()
+                        return True
+                    songref_update_view(song)
+
+                return win.step()
+        
+            self.model.foreach(save_song)
+            win.end()
+            self.save.set_sensitive(False)
+            self.prop.update()
+
+        def preview_tags(self, *args):
+            self.update(self.songs)
+
+        def changed(self, *args):
+            self.preview.set_sensitive(True)
+            self.save.set_sensitive(False)
+
+        def destroy(self):
+            self.view.set_model(None)
+            self.model.clear()
+            self.widget.destroy()
+
     class TrackNumbers(object):
         def __init__(self, prop):
             self.title = _("Track Numbers")
@@ -2202,15 +2522,7 @@ class SongProperties2(object):
             hbox2.pack_start(hbox_start, expand = True, fill = False)
             hbox2.pack_start(hbox_total, expand = True, fill = False)
 
-            self.preview = gtk.Button()
-            hbox = gtk.HBox(spacing = 2)
-            i = gtk.Image()
-            i.set_from_stock(gtk.STOCK_CONVERT, gtk.ICON_SIZE_BUTTON)
-            hbox.pack_start(i)
-            l = gtk.Label(_("_Preview"))
-            l.set_use_underline(True)
-            hbox.pack_start(l)
-            self.preview.add(hbox)
+            self.preview = Button(_("_Preview"), gtk.STOCK_CONVERT)
             self.preview.connect('clicked', self.preview_tracks)
             hbox2.pack_start(self.preview, expand = False)
 
@@ -2317,6 +2629,7 @@ class SongProperties2(object):
         self.notebook = gtk.Notebook()
         self.add_page(self.Information(self))
         self.add_page(self.EditTags(self))
+        self.add_page(self.TagByFilename(self))
         if len(songrefs) > 1:
             self.add_page(self.TrackNumbers(self))
         self.window.set_property('border-width', 12)
@@ -2376,7 +2689,7 @@ class SongProperties2(object):
 
     def update(self, songs = None):
         if songs is not None: self.songrefs = songs
-        if widgets.main.current_song in self.songrefs:
+        elif widgets.main.current_song in self.songrefs:
             widgets.main.update_markup(widgets.main.current_song)
         
         for page in self.pages: page.update(self.songrefs)
