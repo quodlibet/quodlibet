@@ -88,6 +88,14 @@ class QueryLexer(object):
             self.i += 1
             self.regexp_start = self.string[self.i - 1]
             return QueryLexeme(OPENRE, self.string[self.i - 1])
+        elif (self.string[self.i] == '=' and len(self.string) > self.i + 1 and
+              self.string[self.i + 1] not in " /:!&|("):
+            start = self.i
+            self.i += 1
+            while (self.i < len(self.string) and
+                   self.string[self.i] not in ' ),=/'):
+                self.i += 1
+            return QueryLexeme(TAG, self.string[start:self.i])
         elif self.string[self.i] in self.table:
             c = self.string[self.i]
             self.i += 1
