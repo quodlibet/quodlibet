@@ -1049,17 +1049,12 @@ class MainWindow(MultiInstanceWidget):
     def current_song_prop(self, *args):
         song = self.current_song
         if song:
-            l = self.songlist
-            try: path = (player.playlist.get_playlist().index(song),)
-            except ValueError: ref = None
-            else: ref = gtk.TreeRowReference(l.get_model(), path)
-            SongProperties([(song, ref)])
+            SongProperties([song])
             
     def song_properties(self, item):
         selection = self.songlist.get_selection()
         model, rows = selection.get_selected_rows()
-        songrefs = [ (model[row][0],
-                      gtk.TreeRowReference(model, row)) for row in rows]
+        songrefs = [model[row][0] for row in rows]
         SongProperties(songrefs)
 
     def prep_main_popup(self, header):
@@ -1308,9 +1303,9 @@ class SongProperties(MultiInstanceWidget):
         column = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=3)
         column.set_sort_column_id(4)
         self.fview.append_column(column)
-        for song, ref in songrefs:
+        for song in songrefs:
             self.fbasemodel.append(
-                row=[song, ref, song.get('~basename', ''),
+                row=[song, None, song.get('~basename', ''),
                      song.get('~dirname', ''), song['~filename']])
 
         # tag by pattern
@@ -1367,7 +1362,6 @@ class SongProperties(MultiInstanceWidget):
         self.model.clear()
         self.window.destroy()
         self.menu.destroy()
-        del(self.songrefs)
 
     def songprop_save_click(self, button):
         updated = {}
@@ -1391,7 +1385,7 @@ class SongProperties(MultiInstanceWidget):
         self.model.foreach(create_property_dict)
 
         win = WritingWindow(self.window, len(self.songrefs))
-        for song, ref in self.songrefs:
+        for song in self.songrefs:
             changed = False
             for key, values in updated.iteritems():
                 for (new_value, old_value) in values:
@@ -1413,7 +1407,7 @@ class SongProperties(MultiInstanceWidget):
                         song.remove(key, value)
                         changed = True
 
-            if changed and ref:
+            if changed:
                 try: song.write()
                 except:
                     ErrorMessage(self.window,
@@ -1426,7 +1420,7 @@ class SongProperties(MultiInstanceWidget):
                     player.playlist.refilter()
                     widgets.main.refresh_songlist()
                     break
-                songref_update_view(song, ref)
+                songref_update_view(song)
 
             if win.step(): break
 
@@ -1515,19 +1509,17 @@ class SongProperties(MultiInstanceWidget):
     def songprop_files_changed(self, selection):
         songrefs = []
         def get_songrefs(model, path, iter, songrefs):
-            path = model.convert_path_to_child_path(path)
-            model = model.get_model()
-            songrefs.append([model[path][0], model[path][1]])
+            songrefs.append(model[path][0])
         selection.selected_foreach(get_songrefs, songrefs)
         if len(songrefs): self.songrefs = songrefs
         self.fill_property_info()
 
     def prep_prop_menu(self, row):
-        self.menu_w.get_widget("split_album").hide()
-        self.menu_w.get_widget("split_title").hide()
-        self.menu_w.get_widget("split_performer").hide()
-        self.menu_w.get_widget("split_arranger").hide()
-        self.menu_w.get_widget("special_sep").hide()
+        self.menu_w["split_album"].hide()
+        self.menu_w["split_title"].hide()
+        self.menu_w["split_performer"].hide()
+        self.menu_w["split_arranger"].hide()
+        self.menu_w["special_sep"].hide()
         spls = config.get("settings", "splitters")
 
         self.menu_w["split_into_list"].set_sensitive(
@@ -1540,15 +1532,15 @@ class SongProperties(MultiInstanceWidget):
                 util.split_album(row[1])[1] is not None)
 
         if row[0] == "title":
-            self.menu_w.get_widget("split_title").show()
-            self.menu_w.get_widget("special_sep").show()
+            self.menu_w["split_title"].show()
+            self.menu_w["special_sep"].show()
             self.menu_w["split_title"].set_sensitive(
                 util.split_title(row[1], spls)[1] != [])
 
         if row[0] == "artist":
-            self.menu_w.get_widget("split_performer").show()
-            self.menu_w.get_widget("split_arranger").show()
-            self.menu_w.get_widget("special_sep").show()
+            self.menu_w["split_performer"].show()
+            self.menu_w["split_arranger"].show()
+            self.menu_w["special_sep"].show()
             ok = (util.split_people(row[1], spls)[1] != [])
             self.menu_w["split_performer"].set_sensitive(ok)
             self.menu_w["split_arranger"].set_sensitive(ok)
@@ -1633,14 +1625,14 @@ class SongProperties(MultiInstanceWidget):
 
     def fill_property_info(self):
         from library import AudioFileGroup
-        songinfo = AudioFileGroup([song for (song,ref) in self.songrefs])
+        songinfo = AudioFileGroup(self.songrefs)
         self.songinfo = songinfo
         if len(self.songrefs) == 1:
             self.window.set_title(_("%s - Properties") %
-                    self.songrefs[0][0]["title"])
+                    self.songrefs[0]["title"])
         elif len(self.songrefs) > 1:
             self.window.set_title(_("%s and %d more - Properties") %
-                    (self.songrefs[0][0]["title"], len(self.songrefs)-1))
+                    (self.songrefs[0]["title"], len(self.songrefs)-1))
         else:
             raise ValueError("Properties of no songs?")
 
@@ -1651,12 +1643,12 @@ class SongProperties(MultiInstanceWidget):
         self.filename.set_markup(filename)
 
         if len(self.songrefs) > 1:
-            listens = sum([song["~#playcount"] for song, i in self.songrefs])
+            listens = sum([song["~#playcount"] for song in self.songrefs])
             if listens == 1: s = _("1 song heard")
             else: s = _("%d songs heard") % listens
             self.played.set_markup("<i>%s</i>" % s)
         else:
-            self.played.set_text(self.songrefs[0][0].get_played())
+            self.played.set_text(self.songrefs[0].get_played())
 
         self.model.clear()
         keys = songinfo.realkeys()
@@ -1695,8 +1687,8 @@ class SongProperties(MultiInstanceWidget):
     def songprop_tn_fill(self, *args):
         self.tn_model.clear()
         self.widgets["prop_tn_total"].set_value(len(self.songrefs))
-        for song, ref in self.songrefs:
-            self.tn_model.append(row = [song, ref, song['~basename'],
+        for song in self.songrefs:
+            self.tn_model.append(row = [song, None, song['~basename'],
                                         song.get("tracknumber", "")])
 
     def songprop_tn_preview(self, *args):
@@ -1718,7 +1710,6 @@ class SongProperties(MultiInstanceWidget):
         win = WritingWindow(self.window, len(self.songrefs))
         def settrack(model, path, iter):
             song = model[iter][0]
-            ref = model[iter][1]
             track = model[iter][3]
             song["tracknumber"] = track
             try: song["~#track"] = int(track.split("/")[0])
@@ -1737,7 +1728,7 @@ class SongProperties(MultiInstanceWidget):
                 player.playlist.refilter()
                 widgets.main.refresh_songlist()
                 return True
-            if ref: songref_update_view(song, ref)
+            songref_update_view(song)
             return win.step()
         self.tn_model.foreach(settrack)
         self.fill_property_info()
@@ -1748,9 +1739,9 @@ class SongProperties(MultiInstanceWidget):
         self.nbp_model.clear()
         pattern = self.nbp_entry.get_text().decode('utf-8')
 
-        underscore = self.widgets.get_widget("prop_nbp_space_t").get_active()
-        windows = self.widgets.get_widget("prop_windows_t").get_active()
-        ascii = self.widgets.get_widget("prop_ascii_t").get_active()
+        underscore = self.widgets["prop_nbp_space_t"].get_active()
+        windows = self.widgets["prop_windows_t"].get_active()
+        ascii = self.widgets["prop_ascii_t"].get_active()
 
         try:
             pattern = util.FileFromPattern(pattern)
@@ -1765,7 +1756,7 @@ class SongProperties(MultiInstanceWidget):
             d.run()
             return
             
-        for song, ref in self.songrefs:
+        for song in self.songrefs:
             newname = pattern.match(song)
             if underscore: newname = newname.replace(" ", "_")
             if windows:
@@ -1774,7 +1765,7 @@ class SongProperties(MultiInstanceWidget):
             if ascii:
                 newname = "".join(map(lambda c: ((ord(c) < 127 and c) or "_"),
                                       newname))
-            self.nbp_model.append(row=[song, ref, song['~basename'], newname])
+            self.nbp_model.append(row=[song, None, song['~basename'], newname])
         self.nbp_preview.set_sensitive(False)
         self.save_nbp.set_sensitive(True)
 
@@ -1784,12 +1775,11 @@ class SongProperties(MultiInstanceWidget):
 
         def rename(model, path, iter):
             song = model[path][0]
-            ref = model[path][1]
             oldname = model[path][2]
             newname = model[path][3]
             try:
                 library.rename(song, newname)
-                if ref: songref_update_view(song, ref)
+                songref_update_view(song)
             except:
                 ErrorMessage(self.window,
                              _("Unable to rename file"),
@@ -1842,9 +1832,9 @@ class SongProperties(MultiInstanceWidget):
                 util.escape(pattern_text))).run()
             return
 
-        rep = self.widgets.get_widget("prop_tbp_space_t").get_active()
-        title = self.widgets.get_widget("prop_titlecase_t").get_active()
-        split = self.widgets.get_widget("prop_splitval_t").get_active()
+        rep = self.widgets["prop_tbp_space_t"].get_active()
+        title = self.widgets["prop_titlecase_t"].get_active()
+        split = self.widgets["prop_splitval_t"].get_active()
 
         # create model to store the matches, and view to match
         self.tbp_model = gtk.ListStore(object, object, str,
@@ -1863,8 +1853,8 @@ class SongProperties(MultiInstanceWidget):
 
         spls = config.get("settings", "splitters")
         # get info for all matches
-        for song, ref in self.songrefs:
-            row = [song, ref, song['~basename']]
+        for song in self.songrefs:
+            row = [song, None, song['~basename']]
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
@@ -1887,7 +1877,6 @@ class SongProperties(MultiInstanceWidget):
 
         def save_song(model, path, iter):
             song = model[path][0]
-            ref = model[path][1]
             row = model[path]
             changed = False
             for i, h in enumerate(pattern.headers):
@@ -1908,7 +1897,7 @@ class SongProperties(MultiInstanceWidget):
                                 song.add(h, val)
                                 changed = True
 
-            if changed and ref:
+            if changed:
                 try:
                     song.sanitize()
                     song.write()
@@ -1923,7 +1912,7 @@ class SongProperties(MultiInstanceWidget):
                     player.playlist.refilter()
                     widgets.main.refresh_songlist()
                     return True
-                songref_update_view(song, ref)
+                songref_update_view(song)
 
             return win.step()
 
@@ -1949,17 +1938,15 @@ def tag(name):
         if name[0] == "~":
             if name[1] == "#": name = name[2:]
             else: name = name[1:]
-        if "~" in name:
-            return " / ".join([HEADERS_FILTER.get(n, n).title() for n
-                             in name.split("~")])
-        else:
-            return HEADERS_FILTER.get(name, name).title()
+        return " / ".join([HEADERS_FILTER.get(n, n) for n
+                           in name.split("~")]).title()
     except IndexError:
         return _("Invalid tag name")
 
-def songref_update_view(song, ref):
-    path = ref.get_path()
-    if path is not None:
+def songref_update_view(song):
+    try: path = (player.playlist.get_playlist().index(song),)
+    except ValueError: pass
+    else:
         row = widgets.songs[path]
         row[0] = row[0]
 

@@ -30,39 +30,25 @@ file for any important upgrade notes.
 
 ====[ Requirements
 
+==[ Source
+
+Quod Libet has a long, but not very complicated, dependency list. Many
+of them probably come with your OS distribution.
+ Python (>= 2.3):	http://www.python.org
+ PyGTK (>= 2.4):	http://www.pygtk.org
+ PyVorbis:		http://www.andrewchatham.com/pyogg/
+ Pymad (MP3):		http://spacepants.org/src/pymad
+ PyID3lib:		http://pyid3lib.sourceforge.net
+
+Optional:
+ Modplug:		http://modplug-xmms.sourceforge.net
+ PyFLAC:		http://people.debian.org/~piman/pf
+ PyAO (for ALSA):	http://www.andrewchatham.com/pyogg/
+
 ==[ Debian / Debian-based OSs
 
-You must be running 'unstable' or a recent snapshot of it.
+Packages of Quod Libet are available in Debian since version 0.7. They
+should not lag behind releases by more than 24 hours. You must be running
+'unstable' or a recent snapshot of it.
 
-# apt-get install python-pymad python-pyvorbis python-id3lib python-glade2 \
-                  python-pyao
-
-There are several C extensions for Quod Libet you probably want. After
-installing the software listed below, run
-	# make extensions
-prior to running 'make install' (or ./quodlibet.py), in order to compile
-all extensions. If you only want some extensions, use the make targets
-given below.
-
-Tray icon (GNOME/KDE/XFce/etc. notification area):
-	# apt-get install python2.3-dev python-gtk2-dev
-	# make statusicon.so
-
-Multimedia key support:
-	# apt-get install python2.3-dev python-gtk2-dev
-	# make mmkeys.so
-
-MOD/XM/IT/etc. support:
-	# apt-get install libmodplug-dev
-	# make modplug.so
-
-Alternately, if you have these modules installed system-wide already
-(unlikely), you don't need to compile and install them.
-
-==[ Other OSs
-
-Find the above software and install it. PyGTK must be at least version 2.4,
-or strange errors will happen. The Quod Libet website links to most of
-the required software.
-
-http://www.sacredchao.net/~piman/software/quodlibet.shtml#links
+# apt-get install quodlibet
