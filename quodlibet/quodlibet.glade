@@ -399,7 +399,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="play_menu">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Play song</property>
+		      <property name="label" translatable="yes">Play _song</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="play_pause" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 		      <accelerator key="space" modifiers="GDK_CONTROL_MASK" signal="activate"/>

@@ -289,7 +289,7 @@ class MP3File(AudioFile):
             "TALB": "album",
             "TRCK": "tracknumber",
             "TPOS": "discnumber",
-            "TMOO": "mood",
+            #"TMOO": "mood",
             #"TSST": "part",
             "TSRC": "isrc",
             "TCOP": "copyright",
