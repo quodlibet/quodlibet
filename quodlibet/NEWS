@@ -1,10 +1,12 @@
-0.4
+0.4 - SO HARD.
  - Many bug fixes, primarily due to unit testing.
  - Tweaks to cover detection to pick 'frontcover' over 'backcover'.
  - Tweaks to song display, including proper support for the 'author' tag.
- - A freedesktop.org-compatible system tray icon.
  - Remember size between invokations.
- - Multimedia key support, provided they're mapped (e.g. by Acme).
+ - A freedesktop.org-compatible system tray icon, using the Egg status
+   icon code by Anders Carlsson and Sun.
+ - Multimedia key support, provided they're mapped (e.g. by Acme), using
+   the MmKeys object from Muine by Lee Willis and Jan Arne Petersen.
 
 0.3
  - Handle mono MP3s correctly.

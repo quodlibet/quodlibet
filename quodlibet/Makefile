@@ -28,6 +28,8 @@ clean:
 distclean: clean
 	rm -f *~ \#* *.bak *.orig */*~ */\#* */*.bak */*.orig
 
+extensions: statusicon.so mmkeys.so
+
 statusicon.so:
 	cd statusicon && make && cd ..
 	cp statusicon/statusicon.so .

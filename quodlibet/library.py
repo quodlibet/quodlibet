@@ -73,9 +73,11 @@ class AudioFile(dict):
 
         # Derive disc and track numbers.
         try: self["=#"] = int(self["tracknumber"].split("/")[0])
-        except (ValueError, KeyError): pass
+        except (ValueError, KeyError):
+            if "=#" in self: del(self["=#"])
         try: self["=d"] = int(self["discnumber"].split("/")[0])
-        except (ValueError, KeyError): pass
+        except (ValueError, KeyError):
+            if "=d" in self: del(self["=d"])
 
         # Clean up Vorbis garbage.
         try: del(self["vendor"])

@@ -29,7 +29,8 @@ You must be running 'unstable' or a recent snapshot of it.
 
 If you want tray icon or multimedia key support,
 # apt-get install python2.3-dev python-gtk2-dev
-# make statusbar.so mmkeys.so
+# make extensions
+prior to running 'make install' (or ./quodlibet.py).
 
 ==[ Other OSs
 

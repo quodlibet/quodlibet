@@ -49,6 +49,8 @@ class AudioFileTest(TestCase):
         self.failUnless(song.unknown("album"))
         song.add("tracknumber", "11/12")
         self.failUnlessEqual(song["=#"], 11)
+        song.remove("tracknumber", "11/12")
+        self.failIf("=#" in song)
         song.change("artist", "Not A Value", "baz")
         self.failUnlessEqual(song["artist"], "baz")
         song.add("artist", "foo")
