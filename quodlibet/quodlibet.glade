@@ -51,7 +51,7 @@
 		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image820">
+			<widget class="GtkImage" id="image938">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -88,7 +88,7 @@
 		      <signal name="activate" handler="rebuild" last_modification_time="Thu, 18 Nov 2004 04:04:04 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image821">
+			<widget class="GtkImage" id="image939">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -110,7 +110,7 @@
 		      <signal name="activate" handler="rebuild_hard" last_modification_time="Thu, 18 Nov 2004 04:06:19 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image822">
+			<widget class="GtkImage" id="image940">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -159,9 +159,10 @@
 		      <property name="label" translatable="yes">Random _genre</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="random_genre" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
+		      <accelerator key="G" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image823">
+			<widget class="GtkImage" id="image941">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-question</property>
 			  <property name="icon_size">1</property>
@@ -181,9 +182,10 @@
 		      <property name="label" translatable="yes">Random _artist</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="random_artist" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
+		      <accelerator key="T" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image824">
+			<widget class="GtkImage" id="image942">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-question</property>
 			  <property name="icon_size">1</property>
@@ -203,9 +205,10 @@
 		      <property name="label" translatable="yes">Random al_bum</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="random_album" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
+		      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image825">
+			<widget class="GtkImage" id="image943">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-question</property>
 			  <property name="icon_size">1</property>
@@ -232,7 +235,7 @@
 		      <signal name="activate" handler="lastplayed_day" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image826">
+			<widget class="GtkImage" id="image944">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -253,7 +256,7 @@
 		      <signal name="activate" handler="lastplayed_week" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image827">
+			<widget class="GtkImage" id="image945">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -274,7 +277,7 @@
 		      <signal name="activate" handler="lastplayed_month" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image828">
+			<widget class="GtkImage" id="image946">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -295,7 +298,7 @@
 		      <signal name="activate" handler="lastplayed_never" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image829">
+			<widget class="GtkImage" id="image947">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -323,7 +326,7 @@
 		      <signal name="activate" handler="top40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image830">
+			<widget class="GtkImage" id="image948">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-top</property>
 			  <property name="icon_size">1</property>
@@ -345,7 +348,7 @@
 		      <signal name="activate" handler="bottom40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image831">
+			<widget class="GtkImage" id="image949">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-bottom</property>
 			  <property name="icon_size">1</property>
@@ -380,7 +383,7 @@
 		      <accelerator key="Left" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image832">
+			<widget class="GtkImage" id="image950">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-go-back</property>
 			  <property name="icon_size">1</property>
@@ -402,7 +405,7 @@
 		      <accelerator key="space" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image833">
+			<widget class="GtkImage" id="image951">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-yes</property>
 			  <property name="icon_size">1</property>
@@ -424,7 +427,7 @@
 		      <accelerator key="Right" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image834">
+			<widget class="GtkImage" id="image952">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-go-forward</property>
 			  <property name="icon_size">1</property>
@@ -451,7 +454,7 @@
 		      <signal name="activate" handler="cur_genre_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image835">
+			<widget class="GtkImage" id="image953">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -472,7 +475,7 @@
 		      <signal name="activate" handler="cur_artist_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image836">
+			<widget class="GtkImage" id="image954">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -493,7 +496,7 @@
 		      <signal name="activate" handler="cur_album_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image837">
+			<widget class="GtkImage" id="image955">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -538,7 +541,7 @@
 		      <accelerator key="J" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image838">
+			<widget class="GtkImage" id="image956">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -1002,6 +1005,7 @@
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
+	      <accelerator key="L" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -1068,6 +1072,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="toggle_shuffle" last_modification_time="Sun, 07 Nov 2004 00:11:28 GMT"/>
+	      <accelerator key="S" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -1089,6 +1094,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="toggle_repeat" last_modification_time="Sun, 07 Nov 2004 00:11:14 GMT"/>
+	      <accelerator key="R" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

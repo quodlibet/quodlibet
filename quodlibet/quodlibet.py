@@ -1575,6 +1575,7 @@ def setup_nonglade():
     widgets["prev_popup_menu"].get_image().set_from_pixbuf(p)
 
     p = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
+    widgets["next_menu"].get_image().set_from_pixbuf(p)
     widgets["next_popup_menu"].get_image().set_from_pixbuf(p)
 
     # Restore window size.
