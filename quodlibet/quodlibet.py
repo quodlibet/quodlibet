@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2004 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 # <quodlibet@lists.sacredchao.net>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -80,14 +80,53 @@ class WarningMessage(Message):
         Message.__init__(self, gtk.MESSAGE_WARNING, *args)
 
 # FIXME: replace with a standard About widget when using GTK 2.6.
-class AboutWindow(MultiInstanceWidget):
+class AboutWindow(object):
     def __init__(self, parent):
-        MultiInstanceWidget.__init__(self, widget = "about_window")
-        self.window = self.widgets["about_window"]
-        self.window.set_transient_for(parent)
+        self.window = gtk.Window()
+        self.window.set_title(_("About Quod Libet"))
+        vbox = gtk.VBox(spacing = 6)
+        l = gtk.Label("""\
+<u><span weight="bold" size="xx-large">Quod Libet</span></u>
+&lt;quodlibet@lists.sacredchao.net&gt;
+Copyright © 2004-2005""")
+        s2 = _("Quod Libet is free software licensed under the GNU GPL v2.")
+        l2 = gtk.Label("<small>%s</small>" % s2)
+        l.set_use_markup(True)
+        l2.set_use_markup(True)
+        l.set_justify(gtk.JUSTIFY_CENTER)
+        l2.set_justify(gtk.JUSTIFY_CENTER)
+        vbox.pack_start(l)
 
-    def close_about(self, *args):
-        self.window.hide()
+        self.contributor = gtk.Label(const.CREDITS[0])
+        self.contributor.set_justify(gtk.JUSTIFY_CENTER)
+        vbox.pack_start(self.contributor)
+
+        vbox.pack_start(l2)
+        hbox = gtk.HButtonBox()
+        hbox.set_layout(gtk.BUTTONBOX_SPREAD)
+        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button.connect('clicked', self.close)
+        hbox.pack_start(button)
+        vbox.pack_start(hbox)
+        gtk.timeout_add(4000, self.pick_name, list(const.CREDITS))
+        self.alive = True
+        self.window.add(vbox)
+        self.window.connect('destroy', self.destroy)
+        self.window.set_property('border-width', 12)
+        self.window.set_transient_for(parent)
+        self.window.show_all()
+
+    def pick_name(self, credits):
+        credits.append(credits.pop(0))
+        self.contributor.set_text(credits[0])
+        return self.alive
+
+    def close(self, *args):
+        self.window.destroy()
+
+    def destroy(self, *args):
+        self.alive = False
+        del(widgets.about)
 
     def show(self):
         self.window.present()
@@ -579,12 +618,10 @@ class Osd(object):
             import gosd
         except:
             self.gosd = None
-            print to(_("W: Failed to initialize OSD."))
         else:
             self.gosd = gosd
             self.level = 0
             self.window = None
-            print to(_("Initialized OSD."))
 
     def show_osd(self, song):
         if not self.gosd: return
@@ -1159,6 +1196,8 @@ class MainWindow(MultiInstanceWidget):
         config.set("settings", "repeat", str(bool(button.get_active())))
 
     def show_about(self, menuitem):
+        if not hasattr(widgets, 'about'):
+            widgets.about = AboutWindow(self.window)
         widgets.about.show()
 
     def toggle_shuffle(self, button):
@@ -2601,7 +2640,6 @@ def setup_ui():
     gtk.threads_init()
 
     widgets.preferences = PreferencesWindow(widgets.main.window)
-    widgets.about = AboutWindow(widgets.main.window)
 
 def save_config():
     util.mkdir(const.DIR)
@@ -2665,8 +2703,8 @@ For more information, see the manual page (`man 1 quodlibet').
 
 def print_version():
     print to(_("""\
-Quod Libet %s
-Copyright 2004 Joe Wreschnig, Michael Urman - quodlibet@lists.sacredchao.net
+Quod Libet %s - <quodlibet@lists.sacredchao.net>
+Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
