@@ -64,7 +64,7 @@ class FLACPlayer(AudioPlayer):
 
     def next(self):
         if self.stopped: raise StopIteration
-        self.dec.process_single()
+        if not self.dec.process_single(): raise StopIteration
         #return dec.get_decode_position() / 1000
         return 0
 
@@ -102,8 +102,9 @@ class OggPlayer(AudioPlayer):
         return self.audio.time_tell() * 1000
 
 def FilePlayer(dev, filename):
-    typ = filename[-4:].lower()
-    if typ in supported: return supported[typ](dev, filename)
+    for ext in supported.keys():
+        if filename.lower().endswith(ext):
+            return supported[ext](dev, filename)
     else: raise RuntimeError("Unknown file format: %s" % filename)
 
 class DummyOutput(object):
@@ -320,7 +321,7 @@ if util.check_mp3():
 
 if util.check_flac():
     import flac.decoder
-    supported["flac"] = FLACPlayer
+    supported[".flac"] = FLACPlayer
 
 device = OutputDevice()
 playlist = PlaylistPlayer(output = device)

@@ -12,8 +12,9 @@ import util; from util import escape
 import time
 
 def MusicFile(filename):
-    typ = filename[-4:].lower()
-    if typ in supported: return supported[typ](filename)
+    for ext in supported.keys():
+        if filename.lower().endswith(ext):
+            return supported[ext](filename)
     else: return None
 
 class AudioFile(dict):
@@ -414,6 +415,6 @@ else:
 if util.check_flac():
     print "Enabling FLAC support."
     import flac.metadata
-    supported["flac"] = FLACFile
+    supported[".flac"] = FLACFile
 
 library = Library()
