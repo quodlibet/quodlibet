@@ -731,7 +731,7 @@ class Osd(object):
                              gtk.gdk.screen_height()-self.window.height-48)
         self.window.show()
         self.level += 1
-        gtk.timeout_add(7500, self.unshow)
+        gobject.timeout_add(7500, self.unshow)
 
     def unshow(self):
         self.level -= 1
@@ -775,12 +775,8 @@ class PlaylistBar(gtk.HBox):
         self.tips.set_tip(refresh, _("Refresh the current playlist"))
         self.tips.enable()
         self.show_all()
-        self.connect_object('destroy', PlaylistBar._destroy, self, combo)
-
-    def _destroy(self, combo):
-        combo.set_model(None)
-        self.tips.disable()
-        self.tips.destroy()
+        self.connect_object('destroy', gtk.ComboBoxEntry.destroy, combo, None)
+        self.connect_object('destroy', gtk.Tooltips.destroy, self.tips)
 
     def list_selected(self, combo, edit, refresh):
         active = combo.get_active()
@@ -1094,7 +1090,7 @@ class MainWindow(gtk.Window):
                             "mm_playpause": self.play_pause})
         self.osd = Osd()
 
-        gtk.timeout_add(100, self._update_time)
+        gobject.timeout_add(100, self._update_time)
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
         self.tips.enable()
@@ -1241,7 +1237,7 @@ class MainWindow(gtk.Window):
             util.mkdir(const.DIR)
             os.mkfifo(const.CONTROL, 0600)
         self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
-        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+        gobject.io_add_watch(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
 
     def _input_check(self, source, condition):
         c = os.read(source, 1)
@@ -3480,7 +3476,8 @@ class SongProperties(gtk.Window):
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.close)
+        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button.connect_object('clicked', gtk.Window.destroy, self)
         bbox.pack_start(button)
         vbox.pack_start(bbox, expand = False)
 
@@ -3496,16 +3493,12 @@ class SongProperties(gtk.Window):
         if len(songrefs) > 1: selection.select_all()
         else: self.update(songrefs)
         self.add(vbox)
-        self.connect('destroy', self.close)
+        self.connect_object('destroy', self.fview.set_model, None)
+        self.connect_object('destroy', gtk.ListStore.clear, self.fbasemodel)
+        self.connect_object('destroy', gtk.Tooltips.destroy, self.tips)
+        self.connect_object('destroy', gtk.TreeModelSort.clear_cache,
+                            self.fmodel)
         self.show_all()
-
-    def close(self, *args):
-        self.fview.set_model(None)
-        self.tips.destroy()
-        self.fbasemodel.clear()
-        self.fmodel.clear_cache()
-        for page in self.pages: page.destroy()
-        self.destroy()
 
     def update(self, songs = None):
         if songs is not None: self.songrefs = songs
