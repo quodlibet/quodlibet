@@ -21,6 +21,7 @@ CREDITS = ["Joe Wreschnig",
            "Bastian Kleineidam",
            "Michal Nowikowski",
            "Ben Zeigler",
+           "Niklas Janlert",
 
            "Anders Carlsson",
            "Lee Willis",

@@ -2,18 +2,20 @@ Quod Libet is only upwards-compatible; your library will remain intact
 if you upgrade to the next version. Skipping a version or downgrading
 may require you to re-add any songs in the library.
 
+Reloading your library after upgrading is always a good idea.
+
 Recent upgrade notes:
 ---------------------
-Running Quod Libet and Ex Falso at the same time (on the same files) is
-not recommended and can lead to an inconsistent library state. Currently
-Ex Falso is mostly for people who want a tag editor but prefer some other
-audio player.
+Running Ex Falso and Quod Libet at the same time is not recommended (Ex
+Falso will warn you if you do this).
+
+A change in the ID3 reader could cause genres in many of your MP3
+files may disappear on reload, and new ones to appear.
 
 0.10
  - Pane-based (Rhythmbox/iTunes-style) library browser.
  - --seek supports +/- prefix to seek relative to the current position.
- - A new program, Ex Falso, that has the tag editing features of QL
-   without the overhead of the audio player.
+ - Added Ex Falso, a tag editor based on QL (without audio playback).
  - Many minor UI improvements.
  - No more dependency on Glade.
 
