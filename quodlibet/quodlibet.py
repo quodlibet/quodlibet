@@ -51,6 +51,7 @@ class GTKSongInfoWrapper(object):
             self.icon = statusicon.StatusIcon(p)
             self.icon.connect("activate", self._toggle_window,
                               (widgets["main_window"]))
+            self.icon.connect("popup-menu", self._playpause, ())
             print _("Initialized status icon.")
 
         try: import mmkeys

@@ -399,7 +399,6 @@ emit_activate_signal (EggStatusIcon *status_icon)
 		 status_icon_signals [ACTIVATE_SIGNAL], 0);
 }
 
-#ifdef UNUSED
 static void
 emit_popup_menu_signal (EggStatusIcon *status_icon,
 			guint          button,
@@ -410,7 +409,6 @@ emit_popup_menu_signal (EggStatusIcon *status_icon,
 		 button,
 		 activate_time);
 }
-#endif
 
 static gboolean
 emit_size_changed_signal (EggStatusIcon *status_icon,
@@ -570,7 +568,10 @@ egg_status_icon_button_release (EggStatusIcon  *status_icon,
       emit_activate_signal (status_icon);
       return TRUE;
     }
-
+  /* added by Joe Wreschnig for QL -- popup-menu on RMB */
+  else if (event->button == 3) 
+    emit_popup_menu_signal(status_icon, (guint)3, (guint32)0);
+                        
   return FALSE;
 }
 

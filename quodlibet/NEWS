@@ -15,6 +15,7 @@ to change your 'backend' option to 'ao:alsa' (which is the new default).
  - Support for sending files to PMPs from the context menu.
  - --next, --previous, --play-pause, --volume-up, --volume-down, --mute.
  - MOD/IT/XM/etc. support, using libmodplug and an included C extension.
+ - Right-clicking the status icon will pause/unpause.
  - Seeking in FLACs.
  - Bug fixes (including at least one crash).
 
