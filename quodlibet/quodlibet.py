@@ -602,6 +602,8 @@ class MainWindow(MultiInstanceWidget):
 
         widgets.songs.foreach(update_if_last_or_current)
         gc.collect()
+        if song and config.getboolean("settings", "jump"):
+            self.jump_to_current()
         return False
 
     def tray_toggle_window(self, icon):

@@ -62,14 +62,14 @@ class CopyPMP(PMP):
 # Special-case the iFP because I have one. :) Make directories and
 # upload files.
 class IfpPMP(PMP):
-    def __init__(*args):
+    def __init__(self, *args):
         if os.system("ifp typestring"):
             raise error(_("Unable to contact your iFP device. Check "
                           "that the device is powered on and plugged "
                           "in, and that you have ifp-line "
                           "(http://ifp-driver.sf.net) installed."))
         self.madedir = []
-        PMP.__init__(*args)
+        PMP.__init__(self, *args)
 
     def upload(self, song):
         filename = song["~filename"]

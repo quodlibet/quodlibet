@@ -14,7 +14,6 @@ from library import library
 import parser
 import audioop
 import util
-import time
 import stat
 import os
 
@@ -81,7 +80,7 @@ class FLACPlayer(AudioPlayer):
             self._chan = streaminfo.channels
             self._samples = streaminfo.total_samples
             self.length = (self._samples * 1000) / self._srate
-            dev.self.set_info(self._srate, self._chan)
+            self.dev.self.set_info(self._srate, self._chan)
 
     def _player(self, dec, buff, size):
         self.pos += 1000 * (float(len(buff))/self._chan/self._bps/self._srate)

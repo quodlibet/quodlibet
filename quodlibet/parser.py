@@ -35,8 +35,8 @@ class QueryLexer(object):
               ')': CLOSEP, '=': EQUALS, ',': COMMA,
               '/': CLOSERE, '#': NUMCMP, '>': RELOP, '<': RELOP }
 
-    def __init__(self, string):
-        self.string = string.strip()
+    def __init__(self, s):
+        self.string = s.strip()
         self.regexp_mod = False
         self.regexp_start = None
         self.regexp_end = False

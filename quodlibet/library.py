@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, sys, stat
+import os, sys
 import cPickle as Pickle
 import util; from util import escape
 import fcntl
@@ -669,7 +669,7 @@ class Library(dict):
         changed, removed = 0, 0
         for m in self.masked_files:
             if os.path.ismount(m):
-                self.extend(self.masked_files[m])
+                self.masked.extend(self.masked_files[m])
                 del(self.masked_files[m])
 
         for fn in self.keys():
