@@ -16,6 +16,8 @@ import shutil
 import gettext
 import config
 import tempfile
+import parser
+import sre
 _ = gettext.gettext
 
 if sys.version_info < (2, 4):
