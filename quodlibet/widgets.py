@@ -1450,7 +1450,13 @@ class MainWindow(gtk.Window):
             self.present()
         elif c == "q": self.make_query(os.read(source, 4096))
         elif c == "s":
-            player.playlist.seek(util.parse_time(os.read(source, 20)) * 1000)
+            time = os.read(source, 20)
+            seek_to = self._time[0]
+            if time[0] == "+": seek_to += util.parse_time(time[1:]) * 1000
+            elif time[0] == "-": seek_to -= util.parse_time(time[1:]) * 1000
+            else: seek_to = util.parse_time(time) * 1000
+            seek_to = min(self._time[1] - 1, max(0, seek_to))
+            player.playlist.seek(seek_to)
         elif c == "p":
             filename = os.read(source, 4096)
             if library.add(filename):

@@ -47,7 +47,7 @@ Options:
     Enable, disable, or toggle shuffle and repeat.  
   --query search-string
     Make a new playlist from the given search.
-  --seek-to [HH:MM:]SS
+  --seek [+|-][HH:MM:]SS
     Seek to a position in the current song.
   --play-file filename
     Play this file, adding it to the library if necessary.
@@ -149,8 +149,8 @@ if __name__ == "__main__":
     controls = {"--next": ">", "--previous": "<", "--play": ")",
                 "--pause": "|", "--play-pause": "-", "--volume-up": "v+",
                 "--volume-down": "v-", }
-    controls_opt = { "--seek-to": "s", "--shuffle": "&", "--repeat": "@",
-                     "--query": "q", "--volume": "v" }
+    controls_opt = { "--seek-to": "s", "--seek": "s", "--shuffle": "&",
+                     "--repeat": "@", "--query": "q", "--volume": "v" }
     try:
         for i, command in enumerate(opts):
             if command in ["--help", "-h"]: print_help()

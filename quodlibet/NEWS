@@ -9,6 +9,7 @@ numeric tag (its value will be 0).
 
 0.10
  - Pane-based (Rhythmbox/iTunes-style) library browser.
+ - --seek supports +/- prefix to seek relative to the current position.
  - Many minor UI improvements.
  - No more dependency on Glade.
 
