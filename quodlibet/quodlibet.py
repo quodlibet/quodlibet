@@ -1078,6 +1078,7 @@ class MainWindow(MultiInstanceWidget):
         view = self.songlist
         path, col = view.get_cursor()
         header = col.header_name
+        header = filter(None, header.split("~"))[0]
         self.filter_on_header(header)
 
     def artist_filter(self, item): self.filter_on_header('artist')
@@ -1165,6 +1166,7 @@ class MainWindow(MultiInstanceWidget):
             self.cmenu_w["filter_column"].show()
             if header.startswith("~#"): header = header[2:]
             elif header.startswith("~"): header = header[1:]
+            header = header.split("~")[0]
             header = tag(header)
             self.cmenu_w["filter_column"].child.set_text(
                 _("_Filter on this column (%s)") % _(header))
@@ -1298,6 +1300,7 @@ class MainWindow(MultiInstanceWidget):
     def set_column_headers(self, headers):
         if len(headers) == 0: return
         SHORT_COLS = ["tracknumber", "discnumber", "~length"]
+        SLOW_COLS = ["~basename", "~dirname", "~filename"]
         try: ws = map(int, config.get("memory", "widths").split())
         except: ws = []
 
@@ -1310,14 +1313,12 @@ class MainWindow(MultiInstanceWidget):
         for c in self.songlist.get_columns(): self.songlist.remove_column(c)
 
         def cell_data(column, cell, model, iter):
-            cell.set_property('text',
-                              model[iter][0].get(column.header_name, ""))
-        
+            cell.set_property('text', model[iter][0](column.header_name, ""))
+
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
             title = tag(t)
-            column = gtk.TreeViewColumn(title, render,
-                                        weight = 1)
+            column = gtk.TreeViewColumn(title, render, weight = 1)
             column.header_name = t
             column.set_resizable(True)
             if t in SHORT_COLS or t.startswith("~#"):

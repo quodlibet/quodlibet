@@ -39,12 +39,12 @@ class Unknown(unicode): pass
 class AudioFile(dict):
     def __cmp__(self, other):
         if not other: return -1
-        return (cmp(self.get("album"), other.get("album")) or
-                cmp(self.get("~#disc"), other.get("~#disc")) or
-                cmp(self.get("~#track"), other.get("~#track")) or
-                cmp(self.get("artist"), other.get("artist")) or
-                cmp(self.get("title"), other.get("title")) or
-                cmp(self.get("~filename"), other.get("~filename")))
+        return (cmp(self("album"), other("album")) or
+                cmp(self("~#disc"), other("~#disc")) or
+                cmp(self("~#track"), other("~#track")) or
+                cmp(self("artist"), other("artist")) or
+                cmp(self("title"), other("title")) or
+                cmp(self("~filename"), other("~filename")))
 
     # True if our key's value is actually unknown, rather than just the
     # string "Unknown". Or true if we don't know the key at all.
@@ -56,11 +56,7 @@ class AudioFile(dict):
                                 not self.unknown(s),
                       self.keys())
 
-    def get(self, key, default = None):
-        try: return self(key)
-        except KeyError: return default
-
-    def __call__(self, key):
+    def __call__(self, key, default = ""):
         if key and key[0] == "~":
             key = key[1:]
             if "~" in key:
@@ -69,23 +65,23 @@ class AudioFile(dict):
                 return " - ".join(filter(None, parts))
             elif key == "basename": return os.path.basename(self["~filename"])
             elif key == "dirname": return os.path.dirname(self["~filename"])
+            elif key == "length": return util.format_time(self["~#length"])
             elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
-                except (ValueError, TypeError): raise KeyError
+                except (ValueError, TypeError, KeyError): return default
             elif key == "#disc":
                 try: return int(self["discnumber"].split("/")[0])
-                except (ValueError, TypeError): raise KeyError
+                except (ValueError, TypeError, KeyError): return default
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
-                except (ValueError, TypeError): raise KeyError
-            else: return dict.__getitem__(self, "~" + key)
-        else: return dict.__getitem__(self, key)
-
-    #__call__ = __getitem__
+                except (ValueError, TypeError, KeyError): return default
+            else: return dict.get(self, "~" + key, default)
+        else: return dict.get(self, key, default)
 
     def comma(self, key):
-        if isinstance(self.get(key), int): return self.get(key)
-        else: return self.get(key, "").replace("\n", ", ")
+        v = self(key, "")
+        if isinstance(v, int): return v
+        else: return v.replace("\n", ", ")
 
     def list(self, key):
         if key in self: return self[key].split("\n")
@@ -150,9 +146,6 @@ class AudioFile(dict):
         except KeyError: pass
 
         self["~#mtime"] = os.path.mtime(self['~filename'])
-
-        # time format -- FIXME - why not proxied?
-        self["~length"] = util.format_time(self['~#length'])
 
     # Construct the text seen in the player window
     def to_markup(self):
@@ -309,8 +302,6 @@ class MP3File(AudioFile):
             "TALB": "album",
             "TRCK": "tracknumber",
             "TPOS": "discnumber",
-            #"TMOO": "mood",
-            #"TSST": "part",
             "TSRC": "isrc",
             "TCOP": "copyright",
             "TPUB": "organization",
@@ -549,7 +540,7 @@ class AudioFileGroup(dict):
 
         # collect types of songs; comment names, values, and sharedness
         for song in songs:
-            self.types[repr(song.__class__)] = song # for group can_change
+            self.types[song.__class__] = song # for group can_change
             for comment, val in song.iteritems():
                 keys[comment] = keys.get(comment, 0) + 1
                 first.setdefault(comment, val)

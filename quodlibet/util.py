@@ -308,6 +308,6 @@ class FileFromPattern(object):
         pat = self.pattern
         if pat and ('.' not in pat or pat.endswith('.') or
                 '>' in pat[pat.rfind('.'):]):
-            oldname = song['~basename']
+            oldname = song('~basename')
             newname.append(oldname[oldname.rfind('.'):])
         return ''.join(newname)
