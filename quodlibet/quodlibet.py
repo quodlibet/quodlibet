@@ -448,16 +448,16 @@ class GladeHandlers(object):
             config.getint("settings", "addreplace"))
 
         # Fill in the header checkboxes.
-        widgets["disc_t"].set_active("~#d" in old_h)
-        widgets["track_t"].set_active("~#t" in old_h)
+        widgets["disc_t"].set_active("~#disc" in old_h)
+        widgets["track_t"].set_active("~#track" in old_h)
         for h in ["album", "artist", "genre", "year", "version",
                   "performer"]:
             widgets[h + "_t"].set_active(h in old_h)
         widgets["filename_t"].set_active("~basename" in old_h)
 
         # Remove the standard headers, and put the rest in the list.
-        for t in ["~#d", "~#t", "album", "artist", "genre", "year", "version",
-                  "performer", "title", "~basename"]:
+        for t in ["~#disc", "~#track", "album", "artist", "genre", "year",
+                  "version", "performer", "title", "~basename"]:
             try: old_h.remove(t)
             except ValueError: pass
         widgets["extra_headers"].set_text(" ".join(old_h))
@@ -490,8 +490,8 @@ class GladeHandlers(object):
     def set_headers(*args):
         # Based on the state of the checkboxes, set up new column headers.
         new_h = []
-        if widgets["disc_t"].get_active(): new_h.append("~#d")
-        if widgets["track_t"].get_active(): new_h.append("~#t")
+        if widgets["disc_t"].get_active(): new_h.append("~#disc")
+        if widgets["track_t"].get_active(): new_h.append("~#track")
         new_h.append("title")
         for h in ["version", "album", "artist", "performer", "year", "genre"]:
             if widgets[h + "_t"].get_active(): new_h.append(h)
@@ -1101,9 +1101,9 @@ class SongProperties(MultiInstanceWidget):
             ref = model[iter][1]
             track = model[iter][3]
             song["tracknumber"] = track
-            try: song["~#t"] = int(track.split("/")[0])
+            try: song["~#track"] = int(track.split("/")[0])
             except ValueError:
-                try: del(song["~#t"])
+                try: del(song["~#track"])
                 except KeyError: pass
             song.write()
             if ref: songref_update_view(song, ref)
@@ -1319,8 +1319,8 @@ def text_parse(*args):
     return True
 
 def filter_on_header(header, songs = None):
-    if header == "~#t": header = "tracknumber"
-    elif header == "~#d": header = "discnumber"
+    if header == "~#track": header = "tracknumber"
+    elif header == "~#disc": header = "discnumber"
     if songs is None:
         selection = widgets["songlist"].get_selection()
         model, rows = selection.get_selected_rows()
@@ -1375,9 +1375,9 @@ def refresh_songlist():
     sl.set_model(widgets.songs)
     gc.collect()
 
-HEADERS = ["~#t", "title", "album", "artist"]
-HEADERS_FILTER = { "~#t": "track", "tracknumber": "track",
-                   "discnumber": "disc", "~#d": "disc",
+HEADERS = ["~#track", "title", "album", "artist"]
+HEADERS_FILTER = { "~#track": "track", "tracknumber": "track",
+                   "discnumber": "disc", "~#disc": "disc",
                    "~#lastplayed": "last played", "~filename": "full name",
                    "~#playcount": "play count", "~basename": "filename",
                    "~dirname": "directory"}
@@ -1394,7 +1394,7 @@ def set_entry_color(entry, color):
 # Build a new filter around our list model, set the headers to their
 # new values.
 def set_column_headers(sl, headers):
-    SHORT_COLS = ["~#t", "~#d", "tracknumber", "discnumber"]
+    SHORT_COLS = ["~#track", "~#disc", "tracknumber", "discnumber"]
     sl.set_model(None)
     widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)

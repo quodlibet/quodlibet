@@ -8,13 +8,13 @@ library.init()
 class AudioFileTest(TestCase):
     def test_cmp(self):
         song1 = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                            "~#d": 1, "~#t": 2, "title": "A song" })
+                            "~#disc": 1, "~#track": 2, "title": "A song" })
         
         song1c = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                             "~#d": 1, "~#t": 2, "title": "A song" })
+                             "~#disc": 1, "~#track": 2, "title": "A song" })
         
         song2 = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                            "~#d": 2, "~#t": 2, "title": "Another song" })
+                            "~#disc": 2, "~#track": 2, "title": "Another song" })
         
         self.failUnlessEqual(song1, song1)
         self.failUnlessEqual(song1, song1c)
@@ -59,9 +59,9 @@ class AudioFileTest(TestCase):
         song.remove("album", "An Album")
         self.failUnless(song.unknown("album"))
         song.add("tracknumber", "11/12")
-        self.failUnlessEqual(song["~#t"], 11)
+        self.failUnlessEqual(song["~#track"], 11)
         song.remove("tracknumber", "11/12")
-        self.failIf("~#t" in song)
+        self.failIf("~#track" in song)
         song.change("artist", "Not A Value", "baz")
         self.failUnlessEqual(song["artist"], "baz")
         song.add("artist", "foo")
@@ -84,8 +84,8 @@ class AudioFileTest(TestCase):
         song.sanitize()
         self.failUnlessEqual(song["~basename"], "quux.ogg")
         self.failUnlessEqual(song["~dirname"], "/foo/bar")
-        self.failUnlessEqual(song["~#t"], 11)
-        self.failUnlessEqual(song["~#d"], 2)
+        self.failUnlessEqual(song["~#track"], 11)
+        self.failUnlessEqual(song["~#disc"], 2)
         self.failUnlessEqual(song["~#playcount"], 0)
         self.failUnless("vendor" not in song)
         self.failUnlessEqual(song["album"], "Unknown")
@@ -136,7 +136,7 @@ class TestFileTypes(TestCase):
             self.failUnlessEqual(file["album"], "Quod Libet Test Data")
             self.failUnlessEqual(file["title"], "Silence")
             self.failUnlessEqual(file["~#playcount"], 0)
-            self.failUnlessEqual(file["~#t"], 2)
+            self.failUnlessEqual(file["~#track"], 2)
 
 registerCase(AudioFileTest)
 registerCase(TestFileTypes)

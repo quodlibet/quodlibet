@@ -227,7 +227,7 @@ class FileFromPattern(object):
 
     def match(self, song):
         format = { '<tracknumber>': '%02d', '<discnumber>': '%d' }
-        override = { '<tracknumber>': '~#t', '<discnumber>': '~#d' }
+        override = { '<tracknumber>': '~#track', '<discnumber>': '~#disc' }
         newname = []
         for piece in self.pieces:
             if not piece: continue

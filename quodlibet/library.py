@@ -37,8 +37,8 @@ class AudioFile(dict):
         if not hasattr(other, "get"):
             raise ValueError("songs can only be compared to other songs.")
         return (cmp(self.get("album"), other.get("album")) or
-                cmp(self.get("~#d"), other.get("~#d")) or
-                cmp(self.get("~#t"), other.get("~#t")) or
+                cmp(self.get("~#disc"), other.get("~#disc")) or
+                cmp(self.get("~#track"), other.get("~#track")) or
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")))
 
@@ -114,12 +114,12 @@ class AudioFile(dict):
             self.setdefault(i, Unknown(_("Unknown")))
 
         # Derive disc and track numbers.
-        try: self["~#t"] = int(self["tracknumber"].split("/")[0])
+        try: self["~#track"] = int(self["tracknumber"].split("/")[0])
         except (ValueError, KeyError):
-            if "~#t" in self: del(self["~#t"])
-        try: self["~#d"] = int(self["discnumber"].split("/")[0])
+            if "~#track" in self: del(self["~#track"])
+        try: self["~#disc"] = int(self["discnumber"].split("/")[0])
         except (ValueError, KeyError):
-            if "~#d" in self: del(self["~#d"])
+            if "~#disc" in self: del(self["~#disc"])
 
         # Clean up Vorbis garbage.
         try: del(self["vendor"])
