@@ -325,7 +325,7 @@ class MultiInstanceWidget(object):
         self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget)
         self.widgets.signal_autoconnect(self)
 
-    def songprop_close(self, button):
+    def songprop_close(self, *args):
         for song, ref in self.songrefs: ref.free()
         self.window.destroy()
 
