@@ -163,15 +163,14 @@ class QueryParser(object):
     def Regexp(self):
         self.match(OPENRE)
         re = self.lookahead.lexeme
-        mods = 0
+        mods = sre.IGNORECASE | sre.MULTILINE | sre.UNICODE
         self.match(RE)
         self.match(CLOSERE)
         if self.lookahead.type == REMODS:
             s = self.lookahead.lexeme.lower()
-            if "i" in s: mods |= sre.IGNORECASE
+            if "c" in s: mods &= ~sre.IGNORECASE
             if "s" in s: mods |= sre.DOTALL
-            if "m" in s: mods |= sre.MULTILINE
-            if "l" in s or "u" in s: mods |= sre.LOCALE
+            if "l" in s: mods = (mods & ~sre.UNICODE) | sre.LOCALE
             self.match(REMODS)
         return sre.compile(re, mods)
 

@@ -7,7 +7,7 @@ import gtk.glade
 import parser
 from library import library
 import player
-import thread
+import threading
 import gc
 import os
 import util; from util import escape
@@ -50,10 +50,11 @@ class GladeHandlers(object):
     def toggle_repeat(button):
         player.playlist.repeat = button.get_active()
 
+    def toggle_shuffle(button):
+        player.playlist.shuffle = button.get_active()
+
     def select_song(tree, indices, col):
         iter = widgets.songs.get_iter(indices)
-        #iter = widgets.songs.convert_iter_to_child_iter(None, iter)
-        #iter = widgets.filter.convert_iter_to_child_iter(iter)
         song = widgets.songs.get_value(iter, 0)
         player.playlist.go_to(song)
         player.playlist.paused = False
@@ -69,7 +70,8 @@ class GladeHandlers(object):
         if resp == gtk.RESPONSE_OK:
             library.scan(chooser.get_filenames())
             songs = filter(CURRENT_FILTER[0], library.values())
-            set_songs(songs)
+            player.playlist.set_playlist(songs)
+            refresh_songlist()
         chooser.destroy()
 
     def update_pos_text(*args):
@@ -96,7 +98,8 @@ class GladeHandlers(object):
         if text.strip() == "":
             CURRENT_FILTER[0] = FILTER_ALL
             songs = filter(CURRENT_FILTER[0], library.values())
-            set_songs(songs)
+            player.playlist.set_playlist(songs)
+            refresh_songlist()
         else:
             try:
                 q = QueryParser(QueryLexer(text)).Query()
@@ -111,7 +114,8 @@ class GladeHandlers(object):
                 CURRENT_FILTER[0] = q.search
                 set_entry_color(widgets["query"], "black")
                 songs = filter(CURRENT_FILTER[0], library.values())
-                set_songs(songs)
+                player.playlist.set_playlist(songs)
+                refresh_songlist()
 
     def test_filter(*args):
         from parser import QueryParser, QueryLexer
@@ -127,21 +131,17 @@ class GladeHandlers(object):
         else:
             gtk.idle_add(set_entry_color, textbox, "dark green")
 
-def set_songs(songs):
-    widgets.songs.clear()
-    for song in songs: widgets.songs.append([song])
-    player.playlist.set_playlist(songs)
-
-def sort_songs(a, b):
-    h = MAINHEADER[0]
-    return (cmp(a.get(h), b.get(h)) or cmp(a, b))
-
 def set_sort_by(header, i):
     s = header.get_sort_order()
     if s == gtk.SORT_ASCENDING: s = gtk.SORT_DESCENDING
     else: s = gtk.SORT_ASCENDING
     header.set_sort_order(s)
-    print header, i
+    player.playlist.sort_by(HEADERS[i[0]], s == gtk.SORT_DESCENDING)
+    refresh_songlist()
+
+def refresh_songlist():
+    widgets.songs.clear()
+    for song in player.playlist: widgets.songs.append([song])
 
 widgets = Widgets("quodlibet.glade")
 
@@ -178,8 +178,7 @@ def main():
     widgets.songs = gtk.ListStore(object)
     widgets.filter = widgets.songs.filter_new()
     widgets.filter.set_modify_func([str]*len(HEADERS), list_transform)
-    vol = widgets["volume"]
-    vol.set_value(player.device.volume)
+    widgets["volume"].set_value(player.device.volume)
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn(t.title(), renderer, text=i)
@@ -191,16 +190,24 @@ def main():
 
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.load(cache_fn)
-    set_songs(library.values())
+    player.playlist.set_playlist(library.values())
+    player.playlist.sort_by(None)
+    widgets.songs.clear()
+    for song in player.playlist: widgets.songs.append([song])
+    
     print "Done loading songs."
     sl.set_model(widgets.filter)
-    gc.collect()
     gtk.timeout_add(100, update_timer, ())
     gtk.threads_init()
-    thread.start_new_thread(player.playlist.play,
-                            (widgets["currentsong"],
-                             GTKImageWrapper(widgets["albumcover"])))
-    gtk.main()
+    t = threading.Thread(target = player.playlist.play,
+                         args = (widgets["currentsong"],
+                                 GTKImageWrapper(widgets["albumcover"])))
+    gc.collect()
+    t.start()
+    try: gtk.main()
+    except: gtk.main_quit()
+    player.playlist.quitting()
+    t.join(2) # Give it 2 seconds to stop, should be more than enough
     util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
     library.save(cache_fn)
 

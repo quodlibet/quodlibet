@@ -3,6 +3,7 @@ import ao
 import ogg.vorbis
 import time
 import threading
+import random
 from library import library
 from parser import QueryParser, QueryLexer
 import ossaudiodev # barf
@@ -110,16 +111,22 @@ class PlaylistPlayer(object):
         self.repeat = False
         self.paused = True
         self.song = None
+        self.quit = False
         self.lock = threading.Lock()
 
+    def __iter__(self): return iter(self.orig_playlist)
+
     def seek(self, pos):
+        self.lock.acquire()
         if self.player: self.player.seek(pos)
+        self.lock.release()
 
     def play(self, info, album):
-        while True:
+        while not self.quit:
             while self.playlist:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
+                if self.shuffle: random.shuffle(self.playlist)
                 self.player = FilePlayer(self.output, self.song['filename'])
                 if info: info.set_markup(self.song.to_markup())
                 if album: album.set_image(self.song.find_cover())
@@ -130,24 +137,53 @@ class PlaylistPlayer(object):
                     times[0] = t
                     while self.paused:
                         time.sleep(0.01)
-            self.lock.acquire()
-            self.song = self.player = None
-            self.lock.release()
-            time.sleep(0.01)
+            if self.repeat:
+                self.playlist = self.orig_playlist[:]
+                if len(self.played) > 500:
+                    del(self.played[500:])
+            else:
+                if self.song or self.player:
+                    self.lock.acquire()
+                    self.song = self.player = None
+                    self.lock.release()
+                time.sleep(0.01)
+
+    def sort_by(self, header, reverse = False):
+        self.lock.acquire()
+        pl = self.orig_playlist[:]
+        if reverse:
+            f = lambda b, a: (cmp(a.get(header), b.get(header)) or cmp(a, b))
+        else:
+            f = lambda a, b: (cmp(a.get(header), b.get(header)) or cmp(a, b))
+        pl.sort(f)
+        self.set_playlist(pl, lock = False)
+        self.lock.release()
 
     def get_playlist(self):
-        return self.playlist
+        return self.orig_playlist
 
-    def set_playlist(self, pl):
-        self.lock.acquire()
+    def set_playlist(self, pl, lock = True):
+        if lock: self.lock.acquire()
         self.played = []
         self.playlist = pl
         self.orig_playlist = pl[:]
-        self.lock.release()
+        if self.song and self.song in playlist and not self.shuffle:
+            i = self.orig_playlist.index(self.song) + 1
+            self.played = self.orig_playlist[:i]
+            self.playlist = self.orig_playlist[i:]
+        if lock: self.lock.release()
 
     def next(self):
         self.lock.acquire()
         if self.player: self.player.end()
+        self.lock.release()
+
+    def quitting(self):
+        self.lock.acquire()
+        self.quit = True
+        self.paused = False
+        if self.player: self.player.end()
+        self.set_playlist([], lock = False)
         self.lock.release()
 
     def previous(self):
@@ -157,19 +193,29 @@ class PlaylistPlayer(object):
             self.playlist.insert(0, self.played.pop())
             self.playlist.insert(0, self.played.pop())
         elif self.player and self.played:
-            if self.player: self.player.end()
-            self.playlist.insert(0, self.played.pop())
+            if self.repeat:
+                self.played = self.orig_playlist[:-1]
+                self.playlist = [self.orig_playlist[-1]]
+            else:
+                if self.player: self.player.end()
+                self.playlist.insert(0, self.played.pop())
         else: pass
         self.lock.release()
 
     def go_to(self, song):
+        self.lock.acquire()
         if not self.shuffle:
-            self.lock.acquire()
             i = self.orig_playlist.index(song)
             self.played = self.orig_playlist[:i]
             self.playlist = self.orig_playlist[i:]
             self.player.end()
-            self.lock.release()
+        else:
+            del(self.playlist[:])
+            self.playlist.extend(self.orig_playlist)
+            self.playlist.remove(song)
+            self.playlist.insert(0, song)
+            if self.player: self.player.end()
+        self.lock.release()
 
 device = OutputDevice()
 playlist = PlaylistPlayer(output = device)

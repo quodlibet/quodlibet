@@ -254,6 +254,7 @@
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
 		      <property name="active">False</property>
+		      <signal name="clicked" handler="toggle_shuffle" last_modification_time="Sat, 09 Oct 2004 04:34:09 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="expand">False</property>
