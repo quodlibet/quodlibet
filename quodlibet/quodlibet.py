@@ -1240,6 +1240,7 @@ class MainWindow(MultiInstanceWidget):
                                   "%d songs reloaded\n%d songs removed"),
                                 (0, 0))
         iter = 7
+        c = r = 0
         for c, r in library.rebuild(hard):
             if iter == 7:
                 if window.step(c, r):
