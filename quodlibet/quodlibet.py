@@ -424,7 +424,15 @@ class GladeHandlers(object):
 
         widgets["split_entry"].set_text(config.get("settings", "splitters"))
         widgets["gain_opt"].set_active(config.getint("settings", "gain"))
+
+        widgets["pmp_combo"].set_active(config.getint("pmp", "driver"))
+        widgets["pmp_entry"].set_text(config.get("pmp", "location"))
         widgets["prefs_window"].show()
+
+    def pmp_changed(combobox):
+        config.set('pmp', 'driver', str(widgets["pmp_combo"].get_active()))
+        if combobox.get_active() == 1: widgets["pmp_entry"].set_sensitive(True)
+        else: widgets["pmp_entry"].set_sensitive(False)
 
     def set_headers(*args):
         # Based on the state of the checkboxes, set up new column headers.
@@ -536,10 +544,22 @@ class GladeHandlers(object):
         selection = view.get_selection()
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
+        if not config.getint("pmp", "driver"):
+            widgets["pmp_sep"].hide()
+            widgets["pmp_upload"].hide()
+        else:
+            widgets["pmp_sep"].show()
+            widgets["pmp_upload"].show()
         widgets["songs_popup"].popup(None,None,None, event.button, event.time)
         return True
 
     def songs_popup_menu(view):
+        if not config.getint("pmp", "driver"):
+            widgets["pmp_sep"].hide()
+            widgets["pmp_upload"].hide()
+        else:
+            widgets["pmp_sep"].show()
+            widgets["pmp_upload"].show()
         widgets["songs_popup"].popup(None, None, None, 1, 0)
 
     def song_col_filter(item):

@@ -23,6 +23,7 @@ def init(rc_file):
     _config.add_section("settings")
     _config.add_section("memory")
     _config.add_section("header_maps")
+    _config.add_section("pmp")
     _config.set("settings", "scan", "")
     _config.set("settings", "gain", "2")
 
@@ -48,6 +49,10 @@ def init(rc_file):
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
     _config.set("memory", "query", "")
+
+    _config.set("pmp", "driver", "0")
+    _config.set("pmp", "location", "")
+
     try: _config.read([rc_file])
     except: pass
 
