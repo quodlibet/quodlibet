@@ -11,7 +11,7 @@ import time
 import threading
 import random
 from library import library
-from parser import QueryParser, QueryLexer
+import parser
 import ossaudiodev # barf
 import util
 
@@ -103,6 +103,7 @@ class PlaylistPlayer(object):
         self.song = None
         self.quit = False
         self.sort = cmp
+        self.filter = None
         self.lock = threading.Lock()
 
     def __iter__(self): return iter(self.orig_playlist)
@@ -119,6 +120,18 @@ class PlaylistPlayer(object):
         self.lock.acquire()
         if self.player: self.player.seek(pos)
         self.lock.release()
+
+    def refilter(self):
+        self.set_playlist(filter(self.filter, library.values()))
+
+    def playlist_from_filter(self, text):
+        if text == "": self.filter = None
+        else:
+            try: q = parser.parse(text)
+            except parser.error: return False
+            else: self.filter = q.search
+        self.refilter()
+        return True
 
     def play(self, info):
         self.info = info

@@ -15,6 +15,7 @@ _config = ConfigParser()
 get = _config.get
 set = _config.set
 getboolean = _config.getboolean
+write = _config.write
 
 def init(rc_file):
     # So far we only have/need one section...
@@ -27,6 +28,3 @@ def init(rc_file):
 
 def state(arg):
     return _config.getboolean("settings", arg)
-
-def write(*args):
-    _config.write(*args)

@@ -221,8 +221,7 @@ class GladeHandlers(object):
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
         config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
-        if not os.path.isdir(os.path.basename(config_fn)):
-            util.mkdir(os.path.basename(config_fn))
+        util.mkdir(os.path.basename(config_fn))
         f = file(config_fn, "w")
         config.write(f)
         f.close()
@@ -238,8 +237,7 @@ class GladeHandlers(object):
         resp, fns = make_chooser("Add Music")
         if resp == gtk.RESPONSE_OK:
             library.scan(fns)
-            songs = filter(CURRENT_FILTER[0], library.values())
-            player.playlist.set_playlist(songs)
+            player.playlist.refilter()
             refresh_songlist()
             gc.collect()
 
@@ -250,45 +248,32 @@ class GladeHandlers(object):
 
 # Grab the text from the query box, parse it, and make a new filter.
 def text_parse(*args):
-        text = widgets["query"].child.get_text().decode("utf-8")
-        if text.strip() == "": # Empty text, remove all filters.
-            CURRENT_FILTER[0] = FILTER_ALL
-            songs = filter(CURRENT_FILTER[0], library.values())
-            player.playlist.set_playlist(songs)
-            refresh_songlist()
-        else:
-            if "=" not in text and "/" not in text:
-                # A simple search, not regexp-based.
-                widgets["query"].prepend_text(text)
-                parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
-                text = "&(" + ",".join(parts) + ")"
-                # The result must be well-formed, since no /s were
-                # in the original string and we escaped it.
-                q = parser.parse(text)
-            else:
-                # Regular query, but possibly not well-formed..
-                try: q = parser.parse(text)
-                except parser.error: return
-                else: widgets["query"].prepend_text(text)
+    text = widgets["query"].child.get_text().decode("utf-8").strip()
+    if text and "=" not in text and "/" not in text:
+        # A simple search, not regexp-based.
+        widgets["query"].prepend_text(text)
+        parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
+        text = "&(" + ",".join(parts) + ")"
+        # The result must be well-formed, since no /s were
+        # in the original string and we escaped it.
 
-            CURRENT_FILTER[0] = q.search
-            set_entry_color(widgets["query"].child, "black")
-            songs = filter(CURRENT_FILTER[0], library.values())
-            player.playlist.set_playlist(songs)
-            refresh_songlist()
+    if player.playlist.playlist_from_filter(text):
+        widgets["query"].prepend_text(text)
+        set_entry_color(widgets["query"].child, "black")
+        refresh_songlist()
 
 # Try and construct a query, but don't actually run it; change the color
 # of the textbox to indicate its validity (if the option to do so is on).
 def test_filter(*args):
-        if not config.state("color"): return
-        textbox = widgets["query"].child
-        text = textbox.get_text()
-        if "=" not in text and "/" not in text:
-            gtk.idle_add(set_entry_color, textbox, "blue")
-        elif parser.is_valid(text):
-            gtk.idle_add(set_entry_color, textbox, "dark green")
-        else:
-            gtk.idle_add(set_entry_color, textbox, "red")
+    if not config.state("color"): return
+    textbox = widgets["query"].child
+    text = textbox.get_text()
+    if "=" not in text and "/" not in text:
+        gtk.idle_add(set_entry_color, textbox, "blue")
+    elif parser.is_valid(text):
+        gtk.idle_add(set_entry_color, textbox, "dark green")
+    else:
+        gtk.idle_add(set_entry_color, textbox, "red")
 
 # Resort based on the header clicked.
 def set_sort_by(header, i):
@@ -324,8 +309,6 @@ def refresh_songlist():
 HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track" }
 
-FILTER_ALL = lambda x: True
-CURRENT_FILTER = [ FILTER_ALL ]
 CURRENT_SONG = [ None ]
 
 # Set the color of some text.
