@@ -1879,12 +1879,11 @@ class SongProperties(object):
             self.prop = parent
 
         def _title(self, song):
-            w = gtk.Label()
             text = "<b><span size='x-large'>%s</span></b>" %(
                 util.escape(song("title")))
             if "version" in song:
                 text += "\n" + util.escape(song.comma("version"))
-            w.set_markup(text)
+            w = self.Label(text)
             w.set_alignment(0, 0)
             return w
 
@@ -1895,7 +1894,8 @@ class SongProperties(object):
             else: g.set_markup("<u>%s</u>" % label)
             f.set_label_widget(g)
             f.set_shadow_type(gtk.SHADOW_NONE)
-            a = gtk.Alignment()
+            a = gtk.Alignment(xalign = 0.0, yalign = 0.0,
+                              xscale = 1.0, yscale = 1.0)
             a.set_padding(0, 0, 12, 0)
             a.add(widget)
             f.add(a)
@@ -1903,7 +1903,7 @@ class SongProperties(object):
 
         def _people(self, song):
             vbox = gtk.VBox(spacing = 6)
-            vbox.pack_start(gtk.Label(util.escape(song("artist"))),
+            vbox.pack_start(self.Label(util.escape(song("artist"))),
                             expand = False)
 
             for names, tag in [
@@ -1929,13 +1929,12 @@ class SongProperties(object):
         def _album(self, song):
             title = _("Album")
             cover = song.find_cover()
-            w = gtk.Label()
-            w.set_alignment(0, 0)
+            w = self.Label("")
             if cover:
                 try:
                     hb = gtk.HBox(spacing = 12)
                     hb.pack_start(self._make_cover(cover), expand = False)
-                    hb.pack_start(w, expand = False)
+                    hb.pack_start(w)
                     f = self.Frame(title, hb)
                 except:
                     f = self.Frame(title, w)
@@ -1943,8 +1942,7 @@ class SongProperties(object):
                 f = self.Frame(title, w)
 
             text = []
-            text.append("<b><big>%s</big></b>" %
-                        util.escape(song.comma("album")))
+            text.append("<b>%s</b>" % util.escape(song.comma("album")))
             if "date" in song: text[-1] += " - " + util.escape(song["date"])
             secondary = []
             if "discnumber" in song:
@@ -1964,7 +1962,6 @@ class SongProperties(object):
                     util.escape(song.comma("producer"))))
 
             w.set_selectable(True)
-            w.set_line_wrap(True)
             w.set_markup("\n".join(text))
             
             f.show_all()
@@ -1987,19 +1984,23 @@ class SongProperties(object):
             size = util.format_size(os.path.getsize(song["~filename"]))
             tim = util.format_time_long(song["~#length"])
             fn = util.fsdecode(util.unexpand(song["~filename"]))
-            tbl = [(_("Play count:"), playcount),
-                   (_("Skip count:"), skipcount),
-                   (_("Song length:"), tim),
-                   (_("Added on:"), added),
-                   (_("Changed on:"), changed),
-                   (_("Filename:"), fn),
-                   (_("File size:"), size)
+            tbl = [(_("play count"), playcount),
+                   (_("skip count"), skipcount),
+                   (_("length"), tim),
+                   (_("added"), added),
+                   (_("modified"), changed),
+                   (_("file size"), size)
                    ]
-            table = gtk.Table(len(tbl), 2)
+            table = gtk.Table(len(tbl) + 1, 2)
             table.set_col_spacings(6)
+            l = self.Label(util.escape(fn))
+            table.attach(l, 0, 2, 0, 1, xoptions = gtk.FILL)
+            table.set_homogeneous(False)
             for i, (l, r) in enumerate(tbl):
-                table.attach(self.Label(util.escape(l)), 0, 1, i, i +1)
-                table.attach(self.Label(util.escape(r)), 1, 2, i, i + 1)
+                l = util.escape(l.decode("utf-8").capitalize()) + ":"
+                l = "<b>%s</b>" % l
+                table.attach(self.Label(l), 0, 1, i + 1, i + 2, xoptions = 0)
+                table.attach(self.Label(util.escape(r)), 1, 2, i + 1, i + 2)
 
             return self.Frame(_("File"), table)
 
@@ -2008,7 +2009,7 @@ class SongProperties(object):
             l.set_markup(str)
             l.set_alignment(0, 0)
             l.set_selectable(True)
-            l.set_line_wrap(True)
+            l.set_size_request(100, -1)
             return l
 
         def destroy(self):
@@ -2032,10 +2033,7 @@ class SongProperties(object):
 
             text = []
             if "organization" in song:
-                t = util.escape(song.comma("organization"))
-                if "labelid" in song: t += " - %s" %(
-                    util.escape(song.comma("labelid")))
-                text.append(t)
+                text.append(util.escape(song.comma("~organization~labelid")))
 
             if "producer" in song:
                 text.append("Produced by %s" %(
@@ -2092,7 +2090,7 @@ class SongProperties(object):
                         tabs, cur_track, _("No information available")))
                     cur_track += 1
                 text.append("%s<b>%d.</b> %s" %(
-                    tabs, track, util.escape(song("~title~version"))))
+                    tabs, track, util.escape(song.comma("~title~version"))))
             l = self.Label("\n".join(text))
             self.box.pack_start(self.Frame(_("Track List"), l), expand = False)
 
@@ -2114,7 +2112,7 @@ class SongProperties(object):
                         albums.items()]
             albums.sort()
             def format((date, song, album)):
-                if date: return "%s (%s)" % (util.escape(album), date)
+                if date: return "%s (%s)" % (util.escape(album), date[:4])
                 else: return util.escape(album)
             covers = [(a, s.find_cover()) for d, s, a in albums]
             albums = map(format, albums)
