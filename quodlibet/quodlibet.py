@@ -119,16 +119,17 @@ class GTKSongInfoWrapper(object):
     def update_markup(self, song):
         if song:
             self.text.set_markup(song.to_markup())
+            widgets["web_button"].set_sensitive(True)
             if self.icon: self.icon.set_tooltip(song.to_short(), "magic")
         else:
             self.text.set_markup("<span size='xx-large'>Not playing</span>")
+            widgets["web_button"].set_sensitive(False)
             if self.icon: self.icon.set_tooltip("Not playing", "magic")
 
     def _update_song(self, song, player):
         if song:
             self.pos.set_range(0, player.length)
             self.pos.set_value(0)
-            widgets["web_button"].set_sensitive(True)
             widgets["next_button"].set_sensitive(True)
             widgets["play_button"].set_sensitive(True)
 
@@ -151,7 +152,6 @@ class GTKSongInfoWrapper(object):
             self.image.set_from_pixbuf(None)
             self.pos.set_range(0, 1)
             self.pos.set_value(0)
-            widgets["web_button"].set_sensitive(False)
             widgets["next_button"].set_sensitive(False)
             widgets["play_button"].set_sensitive(False)
             self._time = (0, 1)
@@ -219,9 +219,21 @@ class GladeHandlers(object):
 
     def open_website(button):
         song = CURRENT_SONG[0]
-        site = song.website()
-        import webbrowser
-        webbrowser.open(site, new = True)
+        site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
+        for s in os.environ.get("BROWSER", "sensible-browser").split(":"):
+            if util.iscommand(s):
+                if "%s" in s: s = s.replace("%s", '"' + site + '"')
+                else: s += " \"%s\"" % site
+                print "Executing %s" % s
+                if os.system(s + " &") == 0: break
+        else:
+            d = make_error("Unable to start a web browser",
+                           "A web browser could not be found. Please set "
+                           "your $BROWSER variable, or make sure "
+                           "/usr/bin/sensible-browser exists.",
+                           gtk.BUTTONS_OK)
+            r = d.run()
+            d.destroy()
 
     def play_pause(button):
         player.playlist.paused ^= True
