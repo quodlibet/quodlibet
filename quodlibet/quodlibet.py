@@ -608,7 +608,7 @@ class BigCenteredImage(object):
         # The eventbox
         self.window.child.child.connect('button-press-event', self.close)
         self.window.child.child.connect('key-press-event', self.close)
-        self.window..show_all()
+        self.window.show_all()
 
     def close(self, *args):
         self.window.destroy()
