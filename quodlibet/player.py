@@ -230,13 +230,13 @@ class PlaylistPlayer(object):
         while not self.quit:
             while self.playlist and not self.quit:
                 self.lock.acquire()
-                if self.shuffle: random.shuffle(self.playlist)
                 self.song = self.playlist.pop(0)
                 fn = self.song['filename']
                 config.set("memory", "song", fn)
                 f = file(dump_fn, "w")
                 f.write(self.song.to_dump())
                 f.close()
+                if self.shuffle: random.shuffle(self.playlist)
                 try: self.player = FilePlayer(self.output, fn)
                 except:
                     self.paused = True
@@ -298,6 +298,8 @@ class PlaylistPlayer(object):
             i = self.orig_playlist.index(self.song) + 1
             self.played = self.orig_playlist[:i]
             self.playlist = self.orig_playlist[i:]
+        elif self.shuffle:
+            random.shuffle(self.playlist)
         if lock: self.lock.release()
 
     def set_shuffle(self, shuffle):
@@ -306,6 +308,7 @@ class PlaylistPlayer(object):
         if shuffle:
             self.played = []
             self.playlist = self.orig_playlist[:]
+            random.shuffle(self.playlist)
         else:
             if self.song and self.song in self.orig_playlist:
                 i = self.orig_playlist.index(self.song) + 1
