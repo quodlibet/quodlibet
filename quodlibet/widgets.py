@@ -2899,6 +2899,7 @@ class SongProperties(gtk.Window):
             render = gtk.CellRendererText()
             render.connect('edited', self.edit_tag, self.model, 0)
             column = gtk.TreeViewColumn(_('Tag'), render, text=0)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(column)
 
             render = gtk.CellRendererText()
@@ -2906,6 +2907,7 @@ class SongProperties(gtk.Window):
             render.connect('edited', self.edit_tag, self.model, 1)
             column = gtk.TreeViewColumn(_('Value'), render, markup = 1,
                                         editable = 3, strikethrough = 4)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(column)
 
             self.view.connect('popup-menu', self.popup_menu)
@@ -3388,12 +3390,14 @@ class SongProperties(gtk.Window):
 
             col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
                                      text=1)
+            col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(col)
             for i, header in enumerate(pattern.headers):
                 render = gtk.CellRendererText()
                 render.set_property('editable', True)
                 render.connect('edited', self.row_edited, self.model, i + 2)
                 col = gtk.TreeViewColumn(header, render, text = i + 2)
+                col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
                 self.view.append_column(col)
             spls = config.get("settings", "splitters")
 
@@ -3511,11 +3515,13 @@ class SongProperties(gtk.Window):
             self.view = gtk.TreeView(self.model)
             column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
                                         text = 1)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(column)
             render = gtk.CellRendererText()
             render.set_property('editable', True)
             render.connect('edited', self.row_edited, self.model)
             column = gtk.TreeViewColumn(_('New Name'), render, text = 2)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             
             self.view.append_column(column)
             sw = gtk.ScrolledWindow()
@@ -3701,9 +3707,11 @@ class SongProperties(gtk.Window):
             self.view = gtk.TreeView(self.model)
             column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
                                         text = 1)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(column)
             column = gtk.TreeViewColumn(_('Track'), gtk.CellRendererText(),
                                         text = 2)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(column)
             self.view.set_reorderable(True)
             self.view.connect('drag-end', self.changed)
@@ -3819,8 +3827,10 @@ class SongProperties(gtk.Window):
             expander = gtk.Expander(_("Apply to these _files..."))
             c1 = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=1)
             c1.set_sort_column_id(1)
+            c1.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             c2 = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=2)
             c2.set_sort_column_id(3)
+            c2.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.fview.append_column(c1)
             self.fview.append_column(c2)
             self.fview.set_size_request(-1, 130)
@@ -3889,6 +3899,7 @@ class DirectoryTree(gtk.TreeView):
     def __init__(self, initial = None):
         gtk.TreeView.__init__(self, gtk.TreeStore(str))
         column = gtk.TreeViewColumn(_("Folders"))
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_DIRECTORY)
         column.pack_start(render, expand=False)
@@ -3968,6 +3979,7 @@ class FileSelector(gtk.VPaned):
         dirlist = DirectoryTree(initial)
         filelist = gtk.TreeView(gtk.ListStore(str))
         column = gtk.TreeViewColumn(_("Audio files"))
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_FILE)
         column.pack_start(render, expand=False)
