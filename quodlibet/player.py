@@ -167,6 +167,7 @@ class PlaylistPlayer(object):
     def sort_by(self, header, reverse = False):
         self.lock.acquire()
         pl = self.orig_playlist[:]
+        if header == "=#": header = "album"
         if reverse:
             f = lambda b, a: (cmp(a.get(header), b.get(header)) or cmp(a, b))
         else:
@@ -228,7 +229,7 @@ class PlaylistPlayer(object):
             i = self.orig_playlist.index(song)
             self.played = self.orig_playlist[:i]
             self.playlist = self.orig_playlist[i:]
-            self.player.end()
+            if self.player: self.player.end()
         else:
             del(self.playlist[:])
             self.playlist.extend(self.orig_playlist)
