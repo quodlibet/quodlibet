@@ -9,8 +9,8 @@ Recent upgrade notes:
 Running Ex Falso and Quod Libet at the same time is not recommended
 (Ex Falso will warn you if you do this).
 
-A change in the ID3 reader could cause genres in many of your MP3
-files may disappear on reload, and new ones to appear.
+0.11
+ * Plugins can be made for the context menu in the song list.
 
 0.10.1 - What if I said I'm not really kidding?
  * The main window stays hidden when the song changes.
