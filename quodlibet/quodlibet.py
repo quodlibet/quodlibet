@@ -1463,8 +1463,8 @@ class SongProperties(MultiInstanceWidget):
         self.fview.append_column(column)
         for song in songrefs:
             self.fbasemodel.append(
-                row=[song, None, song.get('~basename', ''),
-                     song.get('~dirname', ''), song['~filename']])
+                row=[song, None, song('~basename'),
+                     song('~dirname'), song['~filename']])
 
         # tag by pattern
         self.tbp_entry = self.widgets["songprop_tbp_combo"].child
