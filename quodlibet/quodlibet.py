@@ -387,13 +387,13 @@ class GladeHandlers(object):
         gtk.idle_add(player.playlist.seek, v)
 
     def random_artist(menuitem):
-        make_query("artist = /%s/c" % sre.escape(library.random("artist")))
+        make_query("artist = /^%s$/c" % sre.escape(library.random("artist")))
 
     def random_album(menuitem):
-        make_query("album = /%s/c" % sre.escape(library.random("album")))
+        make_query("album = /^%s$/c" % sre.escape(library.random("album")))
 
     def random_genre(menuitem):
-        make_query("genre = /%s/c" % sre.escape(library.random("genre")))
+        make_query("genre = /^%s$/c" % sre.escape(library.random("genre")))
 
     def lastplayed_day(menuitem): make_query("#(lastplayed > today)")
     def lastplayed_week(menuitem): make_query("#(lastplayed > 7 days ago)")
@@ -1456,7 +1456,7 @@ def filter_on_header(header, songs = None):
                     values[val] = True
 
         text = "|".join([sre.escape(s) for s in values.keys()])
-        make_query(u"%s = /%s/c" % (header, text))
+        make_query(u"%s = /^(%s)$/c" % (header, text))
 
 def make_query(query):
     widgets["query"].child.set_text(query.encode('utf-8'))
