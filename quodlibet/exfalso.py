@@ -10,7 +10,7 @@
 
 import os, sys
 
-def print_help(output = sys.stdout):
+def print_help(output=sys.stdout):
     output.write(to(_("""\
 Ex Falso - an audio file tagger
 Usage: %s [directory]
@@ -19,7 +19,7 @@ For more information, see the manual page (`man 1 exfalso').
 """)) % sys.argv[0])
     raise SystemExit(output == sys.stderr)
 
-def print_version(output = sys.stdout):
+def print_version(output=sys.stdout):
     output.write(to(_("""\
 Ex Falso %s - <quodlibet@lists.sacredchao.net>
 Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     import locale, gettext
     gettext.bindtextdomain("quodlibet")
     gettext.textdomain("quodlibet")
-    gettext.install("quodlibet", unicode = True)
+    gettext.install("quodlibet", unicode=True)
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
 

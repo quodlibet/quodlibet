@@ -52,7 +52,7 @@ class FileChooser(gtk.FileChooserDialog):
 
 # FIXME: replace with a standard About widget when using GTK 2.6.
 class AboutWindow(gtk.Window):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         gtk.Window.__init__(self)
         self.set_title(_("About Quod Libet"))
         vbox = gtk.VBox(spacing=6)
@@ -139,7 +139,7 @@ class PreferencesWindow(gtk.Window):
 
                     table.attach(buttons[k], i, i + 1, j, j + 1)
 
-            vbox.pack_start(table, expand = False)
+            vbox.pack_start(table, expand=False)
 
             vbox2 = gtk.VBox()
             rat = gtk.CheckButton(_("Display song _rating"))
@@ -244,9 +244,9 @@ class PreferencesWindow(gtk.Window):
                 lbl = gtk.Label(_("_Pane %d:") % (i + 1))
                 lbl.set_use_underline(True)
                 lbl.set_mnemonic_widget(c)
-                t.attach(lbl, 0, 1, i, i + 1, xoptions = 0)
+                t.attach(lbl, 0, 1, i, i + 1, xoptions=0)
                 t.attach(c, 1, 2, i, i + 1)
-            b = gtk.Button(stock = gtk.STOCK_APPLY)
+            b = gtk.Button(stock=gtk.STOCK_APPLY)
             b.connect('clicked', self.__update_panes, cbes)
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
@@ -254,7 +254,7 @@ class PreferencesWindow(gtk.Window):
             t.attach(bbox, 0, 2, 3, 4)
             self.pack_start(
                 qltk.Frame(_("Paned Browser"), bold=True, child=t),
-                expand = False)
+                expand=False)
 
         def __update_panes(self, button, cbes):
             panes = " ".join([c.child.get_text() for c in cbes])
@@ -294,10 +294,10 @@ class PreferencesWindow(gtk.Window):
             cb.set_active(config.getint('settings', 'osd'))
             cb.connect('changed', self._changed, 'osd')
             f.get_label_widget().set_mnemonic_widget(cb)
-            vbox = gtk.VBox(spacing = 6)
+            vbox = gtk.VBox(spacing=6)
             f.child.add(vbox)
             f.child.child.pack_start(cb, expand=False)
-            hb = gtk.HBox(spacing = 6)
+            hb = gtk.HBox(spacing=6)
             c1, c2 = config.get("settings", "osdcolors").split()
             color1 = gtk.ColorButton(gtk.gdk.color_parse(c1))
             color2 = gtk.ColorButton(gtk.gdk.color_parse(c2))
@@ -344,14 +344,14 @@ class PreferencesWindow(gtk.Window):
             tips = gtk.Tooltips()
             tips.set_tip(e, _("On start up, any files found in these "
                               "directories will be added to your library"))
-            hb.pack_start(b, expand = False)
+            hb.pack_start(b, expand=False)
             b.connect('clicked', self.__select, e, const.HOME)
             e.connect('changed', self._changed, 'scan')
             f.child.add(hb)
-            self.pack_start(f, expand = False)
+            self.pack_start(f, expand=False)
 
             f = qltk.Frame(_("_Masked Directories"), bold=True)
-            vb = gtk.VBox(spacing = 6)
+            vb = gtk.VBox(spacing=6)
             l = gtk.Label(_(
                 "If you have songs in directories that will not always be "
                 "mounted (for example, a removable device or an NFS shared "
@@ -361,7 +361,7 @@ class PreferencesWindow(gtk.Window):
             l.set_line_wrap(True)
             l.set_justify(gtk.JUSTIFY_FILL)
             vb.pack_start(l, expand=False)
-            hb = gtk.HBox(spacing = 6)
+            hb = gtk.HBox(spacing=6)
             b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "masked")))
@@ -603,12 +603,12 @@ class BigCenteredImage(gtk.Window):
 
         # The eventbox
         self.child.child.connect_object('button-press-event',
-                                        BigCenteredImage._destroy, self)
+                                        BigCenteredImage.__destroy, self)
         self.child.child.connect_object('key-press-event',
-                                 BigCenteredImage._destroy, self)
+                                 BigCenteredImage.__destroy, self)
         self.show_all()
 
-    def _destroy(self, event):
+    def __destroy(self, event):
         self.destroy()
 
 class TrayIcon(object):
@@ -616,35 +616,35 @@ class TrayIcon(object):
         try:
             import trayicon
         except:
-            self.icon = None
+            self.__icon = None
         else:
-            self.icon = trayicon.TrayIcon('quodlibet')
-            self.tips = gtk.Tooltips()
+            self.__icon = trayicon.TrayIcon('quodlibet')
+            self.__tips = gtk.Tooltips()
             eb = gtk.EventBox()
             i = gtk.Image()
             i.set_from_pixbuf(pixbuf)
             eb.add(i)
-            self.icon.add(eb)
-            self.icon.child.connect("button-press-event", self._event)
-            self.icon.child.connect("scroll-event", self._scroll)
-            self.cbs = cbs
-            self.icon.show_all()
+            self.__icon.add(eb)
+            self.__icon.child.connect("button-press-event", self.__event)
+            self.__icon.child.connect("scroll-event", self.__scroll)
+            self.__cbs = cbs
+            self.__icon.show_all()
             print to(_("Initialized status icon."))
 
-    def _event(self, widget, event, button = None):
-        c = self.cbs.get(button or event.button)
+    def __event(self, widget, event, button = None):
+        c = self.__cbs.get(button or event.button)
         if callable(c): c(event)
 
-    def _scroll(self, widget, event):
+    def __scroll(self, widget, event):
         button = {gtk.gdk.SCROLL_DOWN: 4,
                   gtk.gdk.SCROLL_UP: 5,
                   gtk.gdk.SCROLL_RIGHT: 6,
                   gtk.gdk.SCROLL_LEFT: 7}.get(event.direction)
-        self._event(widget, event, button)
+        self.__event(widget, event, button)
 
 
     def set_tooltip(self, tooltip):
-        if self.icon: self.tips.set_tip(self.icon, tooltip)
+        if self.__icon: self.__tips.set_tip(self.__icon, tooltip)
 
     tooltip = property(None, set_tooltip)
 
@@ -659,34 +659,34 @@ class PlaylistWindow(gtk.Window):
             klass.list_windows[name] = win
             # insert sorted, unless present
             def insert_sorted(model, path, iter, last_try):
-                if model[iter][1] == win.plname:
+                if model[iter][1] == win.__plname:
                     return True # already present
-                if model[iter][1] > win.plname:
-                    model.insert_before(iter, [win.prettyname, win.plname])
+                if model[iter][1] > win.__plname:
+                    model.insert_before(iter, [win.__prettyname, win.__plname])
                     return True # inserted
                 if path[0] == last_try:
-                    model.insert_after(iter, [win.prettyname, win.plname])
+                    model.insert_after(iter, [win.__prettyname, win.__plname])
                     return True # appended
             model = PlayList.lists_model()
-            model.foreach(insert_sorted, len(model)-1)
+            model.foreach(insert_sorted, len(model) - 1)
         return win
 
     def __init__(self, name):
         self.present()
 
     def set_name(self, name):
-        self.prettyname = name
-        self.plname = PlayList.normalize_name(name)
+        self.__prettyname = name
+        self.__plname = PlayList.normalize_name(name)
         self.set_title('Quod Libet Playlist: %s' % name)
 
-    def _destroy(self):
-        del(self.list_windows[self.prettyname])
-        if not len(self.view.get_model()):
+    def __destroy(self, view):
+        del(self.list_windows[self.__prettyname])
+        if not len(view.get_model()):
             def remove_matching(model, path, iter, name):
                 if model[iter][1] == name:
                     model.remove(iter)
                     return True
-            PlayList.lists_model().foreach(remove_matching, self.plname)
+            PlayList.lists_model().foreach(remove_matching, self.__plname)
 
     def initialize_window(self, name):
         gtk.Window.__init__(self)
@@ -694,20 +694,20 @@ class PlaylistWindow(gtk.Window):
         self.set_default_size(400, 400)
         self.set_border_width(12)
 
-        vbox = self.vbox = gtk.VBox(spacing = 6)
+        vbox = gtk.VBox(spacing=6)
         self.add(vbox)
 
-        self.view = view = PlayList(name)
-        bar = SearchBar(self.add_query_results, gtk.STOCK_ADD)
-        vbox.pack_start(bar, expand = False, fill = False)
+        self.__view = view = PlayList(name)
+        bar = SearchBar(self.__add_query_results, gtk.STOCK_ADD)
+        vbox.pack_start(bar, expand=False, fill=False)
 
         hbox = gtk.HButtonBox()
         hbox.set_layout(gtk.BUTTONBOX_END)
-        vbox.pack_end(hbox, expand = False)
-        vbox.pack_end(gtk.HSeparator(), expand = False)
+        vbox.pack_end(hbox, expand=False)
+        vbox.pack_end(gtk.HSeparator(), expand=False)
 
-        close = qltk.Button(stock = gtk.STOCK_CLOSE)
-        hbox.pack_end(close, expand = False)
+        close = qltk.Button(stock=gtk.STOCK_CLOSE)
+        hbox.pack_end(close, expand=False)
 
         swin = gtk.ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
@@ -717,33 +717,33 @@ class PlaylistWindow(gtk.Window):
         swin.add(view)
 
         self.set_name(name)
-        self.connect_object('destroy', PlaylistWindow._destroy, self)
+        self.connect_object('destroy', PlaylistWindow.__destroy, self, view)
         close.connect_object('clicked', gtk.Window.destroy, self)
         self.show_all()
 
-    def add_query_results(self, text, sort):
+    def __add_query_results(self, text, sort):
         query = text.decode('utf-8').strip()
         try:
            songs = library.query(query)
            songs.sort()
-           self.view.append_songs(songs)
+           self.__view.append_songs(songs)
         except ValueError: pass
 
 # A tray icon aware of UI policy -- left click shows/hides, right
 # click makes a callback.
 class HIGTrayIcon(TrayIcon):
-    def __init__(self, pixbuf, window, cbs = {}):
-        self._window = window
-        cbs[1] = self._showhide
+    def __init__(self, pixbuf, window, cbs={}):
+        self.__window = window
+        cbs[1] = self.__showhide
         TrayIcon.__init__(self, pixbuf, cbs)
 
-    def _showhide(self, event):
-        if self._window.get_property('visible'):
-            self._pos = self._window.get_position()
-            self._window.hide()
+    def __showhide(self, event):
+        if self.__window.get_property('visible'):
+            self.__pos = self._window.get_position()
+            self.__window.hide()
         else:
-            self._window.move(*self._pos)
-            self._window.show()
+            self.__window.move(*self.__pos)
+            self.__window.show()
 
 class MmKeys(object):
     def __init__(self, cbs):
@@ -762,17 +762,17 @@ class Osd(object):
         except:
             self.gosd = None
         else:
-            self.gosd = gosd
-            self.level = 0
-            self.window = None
+            self.__gosd = gosd
+            self.__level = 0
+            self.__window = None
 
     def show_osd(self, song):
-        if not self.gosd: return
+        if not self.__gosd: return
         elif config.getint("settings", "osd") == 0: return
         color1, color2 = config.get("settings", "osdcolors").split()
         font = config.get("settings", "osdfont")
 
-        if self.window: self.window.destroy()
+        if self.__window: self.__window.destroy()
 
         # \xe2\x99\xaa is a music note.
         msg = "\xe2\x99\xaa "
@@ -792,21 +792,23 @@ class Osd(object):
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
 
-        self.window = self.gosd.osd(msg, "black", color1, font)
+        self.__window = self.__gosd.osd(msg, "black", color1, font)
         if config.getint("settings", "osd") == 1:
-            self.window.move(gtk.gdk.screen_width()/2-self.window.width/2, 5)
+            self.__window.move(
+                gtk.gdk.screen_width()/2 - self.__window.width/2, 5)
         else:
-            self.window.move(gtk.gdk.screen_width()/2 - self.window.width/2,
-                             gtk.gdk.screen_height()-self.window.height-48)
-        self.window.show()
-        self.level += 1
-        gobject.timeout_add(7500, self.unshow)
+            self.window.move(
+                gtk.gdk.screen_width()/2 - self.__window.width/2,
+                gtk.gdk.screen_height() - self.__window.height-48)
+        self.__window.show()
+        self.__level += 1
+        gobject.timeout_add(7500, self.__unshow)
 
-    def unshow(self):
-        self.level -= 1
-        if self.level == 0 and self.window:
-            self.window.destroy()
-            self.window = None
+    def __unshow(self):
+        self.__level -= 1
+        if self.__level == 0 and self.__window:
+            self.__window.destroy()
+            self.__window = None
 
 class Browser(object):
     expand = False
