@@ -20,7 +20,7 @@ below, or it will default to \fB<artist~album~tracknumber~title>\fR.
 .IP \-\-next,\ \-\-previous,\ \-\-play\-pause,\ \-\-play,\ \-\-pause 4
 Control a currently-running instance of QL, as if the equivalent
 buttons in the window had been clicked.
-.IP \-\-volume\ +|-|0..100 4
+.IP \-\-volume\ +|\-|0..100 4
 Control the volume in a running instance of QL by increasing it, decreasing
 it, or setting it to the given value.
 .IP \-\-shuffle\ 0|1|t,\ \-\-repeat\ 0|1|t 4
@@ -198,8 +198,8 @@ extreme case.
 .SH AUDIO BACKENDS
 By default QL uses the ao ALSA 0.9 driver for playing audio, and falls back
 to an OSS driver if that fails. You can change this in ~/.quodlibet/config
-by editing the 'backend' option. For example 'ao:arts' will use an aRts
-backend, or 'oss' to always use OSS.
+by editing the 'backend' option. Common settings include 'oss', 'ao:oss',
+'ao:alsa09', 'ao:esd', and 'ao:arts'.
 .SH FILES
 .IP ~/.quodlibet/songs 4
 A cached list of songs to load initially. The format is a pickled
