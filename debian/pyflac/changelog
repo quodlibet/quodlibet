@@ -1,0 +1,12 @@
+pyflac (0.0.2-0.1) unstable; urgency=low
+
+  * Use new distutils-based build method.
+
+ -- Joe Wreschnig <piman@debian.org>
+
+pyflac (0.0.1-0.1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Joe Wreschnig <piman@debian.org>  Fri, 29 Oct 2004 04:23:41 -0500
+

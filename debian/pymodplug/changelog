@@ -1,0 +1,6 @@
+pymodplug (1.1-0.1) unstable; urgency=low
+
+  * Initial packaging.
+
+ -- Joe Wreschnig <piman@debian.org>
+

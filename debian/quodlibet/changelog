@@ -1,3 +1,11 @@
+quodlibet (0.8-2) unstable; urgency=low
+
+  * Depends on PyGTK >= 2.4.1.
+  * modplug is no longer included; don't depend on it.
+  * Suggest python-flac, python-modplug, python-musepack.
+
+ -- Joe Wreschnig <piman@debian.org> 
+
 quodlibet (0.7-2) unstable; urgency=low
 
   * Include -fPIC when building shared libraries. (Closes: #289927)

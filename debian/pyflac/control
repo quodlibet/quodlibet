@@ -1,0 +1,16 @@
+Source: pyflac
+Section: python
+Priority: optional
+Maintainer: Joe Wreschnig <piman@debian.org>
+Build-Depends: debhelper (>= 4.0.0), libflac-dev, python-dev, swig
+Standards-Version: 3.6.1.1
+
+Package: python-flac
+Architecture: any
+Depends: ${shlibs:Depends}, ${python:Depends}
+Description: Free Lossless Audio Codec [Python bindings]
+ FLAC stands for Free Lossless Audio Codec. Grossly oversimplified, FLAC is
+ similar to Ogg Vorbis, but lossless.
+ .
+ This package contains Python bindings for libFLAC, allowing programs
+ written in Python to read or write FLAC audio data or metadata.
