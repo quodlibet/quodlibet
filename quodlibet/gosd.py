@@ -13,17 +13,14 @@
 
 # $Id$
 
-import pygtk
-pygtk.require('2.0')
-
 import pango
 import gtk
 import gtk.gdk as gdk
 
 BORDER_WIDTH=4
 
-def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
-        alignment = pango.ALIGN_CENTER):
+def osd(text, bgcolor, fgcolor, fontdesc, use_markup=True,
+        alignment=pango.ALIGN_CENTER):
     if isinstance(fontdesc, str):
         fontdesc = pango.FontDescription(fontdesc)
     assert isinstance(fontdesc, pango.FontDescription)
@@ -89,11 +86,3 @@ def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
     win.width = width
     win.height = height
     return win
-
-if __name__ == '__main__':
-    w = osd("<i>Hello</i> <span size='larger' weight='bold'>World</span>"
-            "<span foreground='red'>!</span>", "#000000", "#80ff80",
-            pango.FontDescription("sans serif 20"),  use_markup=True)
-    w.move(gdk.screen_width()/2 - w.width/2, gdk.screen_height() - w.height - 10)
-    w.show()
-    gtk.main()
