@@ -1,3 +1,8 @@
+0.4
+ - Many bug fixes, primarily due to unit testing.
+ - Tweaks to cover detection to pick 'frontcover' over 'backcover'.
+ - Tweaks to song display, including proper support for the 'author' tag.
+
 0.3
  - Handle mono MP3s correctly.
  - Crash less, especially when editing tags.

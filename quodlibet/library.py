@@ -139,7 +139,7 @@ class AudioFile(dict):
     def to_dump(self):
         s = ""
         for k, v in self.items():
-            if k[0] == "=": continue
+            if "=" in k or "~" in k: continue
             for v2 in v.split("\n"):
                 s += "%s=%s\n" % (k, util.encode(v2))
         return s
@@ -304,7 +304,7 @@ class OggFile(AudioFile):
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return (k and k not in ["vendor"] and not k.startswith("="))
+        else: return (k and k not in ["vendor"] and "=" not in k and "~" not in k)
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
@@ -361,7 +361,7 @@ class FLACFile(AudioFile):
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return (k and k not in ["vendor"] and not k.startswith("="))
+        else: return (k and k not in ["vendor"] and "=" not in k and "~" not in k)
 
 class AudioFileGroup(dict):
 
