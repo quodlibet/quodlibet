@@ -260,8 +260,8 @@ class PreferencesWindow(gtk.Window):
 
         def toggle_cover(self, c):
             config.set("settings", "cover", str(bool(c.get_active())))
-            if config.state("cover"): widgets.main.enable_cover()
-            else: widgets.main.disable_cover()        
+            if config.state("cover"): widgets.main.image.show()
+            else: widgets.main.image.hide()
 
     class Library(gtk.VBox):
         def __init__(self, tips):
@@ -336,7 +336,7 @@ class PreferencesWindow(gtk.Window):
             config.set("settings", name, str(bool(c.get_active())))
 
         def select(self, button, entry, initial):
-            chooser = FileChooser(widgets.preferences.window,
+            chooser = FileChooser(self.parent.parent.parent,
                                   _("Select Directories"), initial)
             resp, fns = chooser.run()
             chooser.destroy()
@@ -790,6 +790,45 @@ class PlaylistBar(BrowserBar, gtk.HBox):
         active = combo.get_active()
         if active > 0: PlaylistWindow(combo.get_model()[active][0])
 
+class CoverImage(gtk.Frame):
+    def __init__(self):
+        gtk.Frame.__init__(self)
+        self.add(gtk.EventBox())
+        self.child.add(gtk.Image())
+        self.child.child.set_size_request(-1, 100)
+        self.child.connect_object('button-press-event',
+                                  CoverImage.__show_cover, self)
+        self.child.show_all()
+        self.__albumfn = None
+
+    def set_song(self, song):
+        self.__song = song
+        if song is None:
+            self.child.child.set_from_pixbuf(None)
+            self.__albumfn = None
+            self.hide()
+        else:
+            cover = song.find_cover()
+            if cover is None:
+                self.__albumfn = None
+                self.child.child.set_from_pixbuf(None)
+                self.hide()
+            elif cover.name != self.__albumfn:
+                self.child.child.set_from_pixbuf(
+                    gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 100, 100))
+                self.__albumfn = cover.name
+                self.show()
+
+    def show(self):
+        if config.state("cover") and self.__albumfn:
+            gtk.Frame.show(self)
+
+    def __show_cover(self, event):
+        if (self.__song and event.button == 1 and
+            event.type == gtk.gdk._2BUTTON_PRESS):
+            cover = self.__song.find_cover()
+            BigCenteredImage(self.__song.comma("album"), cover.name)
+
 class EmptyBar(BrowserBar, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
@@ -988,13 +1027,8 @@ class MainWindow(gtk.Window):
         vbox.pack_start(hb2, expand = False)
 
         # cover image
-        self.image = gtk.Image()
-        self.image.set_size_request(-1, 100)
-        self.iframe = gtk.Frame()
-        self.iframe.add(gtk.EventBox())
-        self.iframe.child.add(self.image)
-        self.iframe.child.connect('button-press-event', self.show_big_cover)
-        hbox.pack_start(self.iframe, expand = False)
+        self.image = CoverImage()
+        hbox.pack_start(self.image, expand = False)
 
         # volume control
         vbox = gtk.VBox()
@@ -1299,15 +1333,6 @@ class MainWindow(gtk.Window):
     def missing_song(self, song):
         gobject.idle_add(self._missing_song, song)
 
-    # Called when no cover is available, or covers are off.
-    def disable_cover(self):
-        self.iframe.hide()
-
-    # Called when covers are turned on; an image may not be available.
-    def enable_cover(self):
-        if self.image.get_pixbuf():
-            self.iframe.show()
-
     def _update_paused(self, paused):
         menu = self.ui.get_widget("/Menu/Song/PlayPause")
         if paused:
@@ -1353,8 +1378,6 @@ class MainWindow(gtk.Window):
             s = _("Not playing")
             self.text.set_markup("<span size='xx-large'>%s</span>" % s)
             self.icon.tooltip = s
-            self.albumfn = None
-            self.disable_cover()
 
     def _update_song(self, song, player):
         self.show()
@@ -1366,22 +1389,6 @@ class MainWindow(gtk.Window):
         if song:
             self.song_pos.set_range(0, player.length)
             self.song_pos.set_value(0)
-            cover = song.find_cover()
-            if cover and cover.name != self.albumfn:
-                try:
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(
-                        cover.name, 100, 100)
-                except:
-                    self.image.set_from_pixbuf(None)
-                    self.disable_cover()
-                    self.albumfn = None
-                else:
-                    self.image.set_from_pixbuf(p)
-                    if config.state("cover"): self.enable_cover()
-                    self.albumfn = cover.name
-            elif not cover:
-                self.image.set_from_pixbuf(None)
-                self.disable_cover()
 
             for h in ['genre', 'artist', 'album']:
                 self.ui.get_widget(
@@ -1390,11 +1397,11 @@ class MainWindow(gtk.Window):
 
             self.update_markup(song)
         else:
-            self.image.set_from_pixbuf(None)
             self.song_pos.set_range(0, 1)
             self.song_pos.set_value(0)
             self._time = (0, 1)
             self.update_markup(None)
+        self.image.set_song(song)
 
         # Update the currently-playing song in the list by bolding it.
         last_song = self.current_song
