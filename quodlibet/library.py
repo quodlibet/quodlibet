@@ -621,10 +621,10 @@ class Library(dict):
             # Simple, non-regexp search
             parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
             text = "&(" + ",".join(parts) + ")"
-            songs = filter(parser.parse(text), self.values())
+            songs = filter(parser.parse(text).search, self.values())
         else:
             # Regexp search
-            songs = filter(parser.parse(text), self.values())
+            songs = filter(parser.parse(text).search, self.values())
 
         if sort is None: pass
         elif callable(sort):
