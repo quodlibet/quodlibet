@@ -655,12 +655,18 @@ class PlaylistBar(object):
         self.button2.connect('clicked', self.list_selected)
 
         self.cb = cb
+        self.tips = gtk.Tooltips()
+        self.tips.set_tip(self.button, _("Edit the current playlist"))
+        self.tips.set_tip(self.button2, _("Refresh the current playlist"))
+        self.tips.enable()
         hbox.show_all()
 
     def destroy(self):
         self.combo.set_model(None)
         self.button.destroy()
         self.combo.destroy()
+        self.tips.disable()
+        self.tips.destroy()
 
     def list_selected(self, box):
         active = self.combo.get_active()
