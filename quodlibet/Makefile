@@ -30,7 +30,7 @@ clean:
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean
-	rm -f *~ \#* *.bak *.orig $(NAME).gladep
+	rm -f *~ */*~ \#* *.bak *.orig $(NAME).gladep
 	for D in $(SUBDIRS); do cd $$D && make distclean && cd ..; done
 
 extensions: $(EXTENSIONS)
