@@ -253,6 +253,39 @@ class GladeHandlers(object):
     def update_volume(slider):
         player.device.volume = int(slider.get_value())
 
+    def songs_button_press(view, event):
+        if event.button != 3:
+            return False
+        x, y = map(int, [event.x, event.y])
+        path, col, cellx, celly = view.get_path_at_pos(x, y)
+        view.grab_focus()
+        view.set_cursor(path, col, 0)
+        widgets["songs_popup"].popup(None,None,None, event.button, event.time)
+        return True
+
+    def song_col_filter(item):
+        view = widgets["songlist"]
+        path, col = view.get_cursor()
+        coln = view.get_columns().index(col)
+        header = HEADERS[coln]
+        filter_on_header(header)
+
+    def artist_filter(item): filter_on_header('artist')
+    def album_filter(item):filter_on_header('album')
+
+    def remove_song(item):
+        view = widgets["songlist"]
+        path, col = view.get_cursor()
+        iter = widgets.songs.get_iter(path)
+        widgets.songs.remove(iter) # FIXME: remove from library
+
+    def song_properties(item):
+        view = widgets["songlist"]
+        path, col = view.get_cursor()
+        iter = widgets.songs.get_iter(path)
+        song = widgets.songs.get_value(iter, len(HEADERS))
+        print song # FIXME: dialog
+
 # Non-Glade handlers:
 
 # Grab the text from the query box, parse it, and make a new filter.
@@ -278,6 +311,18 @@ def text_parse(*args):
         set_entry_color(widgets["query"].child, "black")
         refresh_songlist()
 
+def filter_on_header(header):
+    view = widgets["songlist"]
+    path, col = view.get_cursor()
+    iter = widgets.songs.get_iter(path)
+    song = widgets.songs.get_value(iter, len(HEADERS))
+    if header == "=#": header = "tracknumber"
+    text = song.get(header, "")
+    text = "|".join([sre.escape(s) for s in text.split("\n")])
+    query = u"%s = /%s/c" % (header, text)
+    widgets["query"].child.set_text(query.encode('utf-8'))
+    widgets["search_button"].clicked()
+
 # Try and construct a query, but don't actually run it; change the color
 # of the textbox to indicate its validity (if the option to do so is on).
 def test_filter(*args):
@@ -292,9 +337,10 @@ def test_filter(*args):
         gtk.idle_add(set_entry_color, textbox, "red")
 
 # Resort based on the header clicked.
-def set_sort_by(header, i):
+def set_sort_by(header, i, sortdir=None):
     s = header.get_sort_order()
-    if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
+    if sortdir is not None: s = sortdir
+    elif not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
         s = gtk.SORT_ASCENDING
     else: s = gtk.SORT_DESCENDING
     for h in widgets["songlist"].get_columns():
