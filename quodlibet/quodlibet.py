@@ -46,15 +46,21 @@ class GladeHandlers(object):
             text += album
         label = widgets["currentsong"]
 
-        cover = os.path.split(song["filename"])[0]
-        cover = os.path.join(cover, "cover.jpg")
-        if os.path.exists(cover):
-            pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
-            scaled_buf = pixbuf.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
-            widgets["albumcover"].set_from_pixbuf(scaled_buf)
+        cover_base = os.path.split(song["filename"])[0]
+        for fn in ["cover", "Cover"]:
+            for ext in ["png", "PNG", "jpg", "JPG"]:
+                cover = os.path.join(cover_base, fn + "." + ext)
+                if os.path.exists(cover):
+                    pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
+                    scaled_buf = pixbuf.scale_simple(100, 100,
+                                                     gtk.gdk.INTERP_BILINEAR)
+                    widgets["albumcover"].set_from_pixbuf(scaled_buf)
+                    break
+            else: continue
+            break
         else:
             widgets["albumcover"].set_from_stock(gtk.STOCK_CDROM,
-                                                       gtk.ICON_SIZE_BUTTON)
+                                                 gtk.ICON_SIZE_BUTTON)
         label.set_markup(text)
 
     def open_chooser(*args):
