@@ -18,7 +18,6 @@ CREDITS = ["Joe Wreschnig",
            "Michal Nowikowski",
 
            "Anders Carlsson",
-           "Sun Microsystems, Inc.",
            "Lee Willis",
            "Jan Arne Petersen",
            "Gustavo J. A. M. Carneiro"]
