@@ -24,6 +24,7 @@ install:
 clean:
 	rm -f *.pyc */*.pyc $(NAME).zip statusicon.so mmkeys.so
 	cd statusicon && make clean
+	cd mmkeys && make clean
 
 distclean: clean
 	rm -f *~ \#* *.bak *.orig */*~ */\#* */*.bak */*.orig

@@ -475,10 +475,23 @@ class MultiInstanceWidget(object):
         may_remove = bool(selection.count_selected_rows()) and model[iter][3]
         self.remove.set_sensitive(may_remove)
 
+    def songprop_files_toggled(self, toggle):
+        getattr(self.fview_scroll, ['hide','show'][bool(toggle.get_active())])()
+
+    def songprop_files_changed(self, selection):
+        songrefs = []
+        def get_songrefs(model, path, iter, songrefs):
+            songrefs.append([model[path][0], model[path][1]])
+        selection.selected_foreach(get_songrefs, songrefs)
+        if len(songrefs): self.songrefs = songrefs
+        self.fill_property_info()
+
     def songprop_add(self, button):
         add = widgets["add_tag_dialog"]
         tag = widgets["add_tag_tag"]
         val = widgets["add_tag_value"]
+        tag.child.set_text("")
+        val.set_text("")
         tag.child.set_activates_default(gtk.TRUE)
         val.set_activates_default(gtk.TRUE)
         tag.child.grab_focus()
@@ -502,8 +515,13 @@ class MultiInstanceWidget(object):
                 edit = True
                 orig = None
                 deleted = False
-                self.model.append(row=[comment, util.escape(value),
-                                       edited, edit, deleted, orig])
+                iters = []
+                def find_same_comments(model, path, iter):
+                    if model[path][0] == comment: iters.append(iter)
+                self.model.foreach(find_same_comments)
+                row = [comment, util.escape(value), edited, edit, deleted, orig] 
+                if len(iters): self.model.insert_after(iters[-1], row=row)
+                else: self.model.append(row=row)
 
                 self.save.set_sensitive(True)
                 self.revert.set_sensitive(True)
@@ -579,6 +597,8 @@ class MultiInstanceWidget(object):
                                        orig_value[i]])
 
         self.add.set_sensitive(bool(songinfo.can_change()))
+        self.save.set_sensitive(False)
+        self.revert.set_sensitive(False)
 
 def make_song_properties(songrefs):
     dlg = MultiInstanceWidget(widget="properties_window")
@@ -594,7 +614,6 @@ def make_song_properties(songrefs):
     dlg.add = dlg.widgets.get_widget('songprop_add')
     dlg.remove = dlg.widgets.get_widget('songprop_remove')
     # comment, value, use-changes, edit, deleted
-    dlg.songrefs = songrefs
     dlg.model = gtk.ListStore(str, str, bool, bool, bool, str)
     dlg.view.set_model(dlg.model)
     selection = dlg.view.get_selection()
@@ -606,7 +625,7 @@ def make_song_properties(songrefs):
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 0)
-    column = gtk.TreeViewColumn('Property', render, text=0)
+    column = gtk.TreeViewColumn('Tag', render, text=0)
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 1)
@@ -614,7 +633,24 @@ def make_song_properties(songrefs):
                                 strikethrough=4)
     dlg.view.append_column(column)
 
-    dlg.fill_property_info()
+    # select active files
+    dlg.fview = dlg.widgets.get_widget('songprop_files')
+    dlg.fview_scroll = dlg.widgets.get_widget('songprop_files_scroll')
+    dlg.fmodel = gtk.ListStore(object, object, str, str)
+    dlg.fview.set_model(dlg.fmodel)
+    selection = dlg.fview.get_selection()
+    selection.set_mode(gtk.SELECTION_MULTIPLE)
+    selection.connect('changed', dlg.songprop_files_changed)
+    column = gtk.TreeViewColumn('File', gtk.CellRendererText(), text=2)
+    dlg.fview.append_column(column)
+    column = gtk.TreeViewColumn('Path', gtk.CellRendererText(), text=3)
+    dlg.fview.append_column(column)
+    for song, ref in songrefs:
+        dlg.fmodel.append(row=[song, ref,
+                song.get('=basename',''), song.get('=dirname','')])
+
+    # select all files, causing selection update to fill the info
+    selection.select_all()
 
     dlg.window.show()
 
