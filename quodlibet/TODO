@@ -2,8 +2,6 @@
 - Artist URL detection
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - MikMod support.
-- Icon.
-- Save queries on exit.
 - Playlists.
 - Remember window size, position
 - FLAC segfaults
