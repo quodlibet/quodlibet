@@ -1,6 +1,8 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
+import config
 
+config.init("")
 from player import MP3Player, OggPlayer
 import os
 
@@ -20,8 +22,9 @@ class TestAudio(TestCase):
             for mode in ["s", "m"]:
                 for Type, ext in [(OggPlayer, "ogg"),
                                   (MP3Player, "mp3")]:
-                    f = Type(self.dev, "tests/data/silence-%d-%s.%s"%(
-                        rate / 1000, mode, ext))
+                    f = Type(self.dev,
+                             {"=filename": "tests/data/silence-%d-%s.%s"%(
+                        rate / 1000, mode, ext)})
                     self.failUnlessEqual(self.dev.rate, rate)
                     i = iter(f)
                     self.failUnless(f.length == 4000 or # mp3

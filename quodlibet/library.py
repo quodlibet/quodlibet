@@ -216,9 +216,12 @@ class AudioFile(dict):
         for fn in fns:
             lfn = fn.lower()
             if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
-               matches = filter(lambda s: s in lfn,
-                                ["front", "cover", "jacket"])
+               matches = filter(
+                   lambda s: s in lfn,["front", "cover", "jacket",
+                                       self.get("labelid", lfn + ".")])
                score = len(matches)
+               if "labelid" in self and self["labelid"].lower() in lfn:
+                   score += 1
                if score: images.append((score, os.path.join(base, fn)))
         if images: return max(images)[1]
         else: return None
