@@ -2132,12 +2132,22 @@ class SongProperties(object):
                 expand = False)
             hb = gtk.HBox(spacing = 12)
             added = set()
-            for cover in filter(None, covers):
+            covers = filter(lambda (a, b): bool(b), zip(albums, covers))
+            t = gtk.Table(4, (len(covers) // 4) + 1)
+            t.set_col_spacings(12)
+            t.set_row_spacings(12)
+            for i, (album, cover) in enumerate(covers):
                 if cover.name in added: continue
-                try: hb.pack_start(self._make_cover(cover), expand = False)
+                try:
+                    cov = self._make_cover(cover)
+                    self.prop.tips.set_tip(cov.child, util.escape(album))
+                    c = i % 4
+                    r = i // 4
+                    t.attach(cov, c, c + 1, r, r + 1,
+                             xoptions = gtk.EXPAND, yoptions = 0)
                 except: pass
                 added.add(cover.name)
-            self.box.pack_start(hb, expand = False)
+            self.box.pack_start(t)
 
         def _update_many(self, songs):
             text = "<b><span size='x-large'>%s</span></b>" %(
@@ -2205,14 +2215,15 @@ class SongProperties(object):
             self.box.show_all()
 
         def _make_cover(self, cover):
-            p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70,70)
+            p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70, 70)
             i = gtk.Image()
             i.set_from_pixbuf(p)
+            ev = gtk.EventBox()
+            ev.add(i)
             f = gtk.Frame()
             f.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            f.add(i)
+            f.add(ev)
             return f
-
 
     class EditTags(object):
         def __init__(self, parent):
