@@ -11,6 +11,8 @@ numeric tag (its value will be 0).
  - New numeric keys "added", "skipcount" can be searched on.
  - "Information" tab in the Properties window.
  - Major code reorganization, featuring less Glade and more modules.
+ - PMP support was removed pending a redesign to support more devices
+   (see the TODO for more information).
 
 0.8.1 - Our story takes a sudden dive..
  - Fix a crash when encoding information is not available.

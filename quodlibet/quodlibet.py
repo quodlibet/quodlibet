@@ -135,11 +135,8 @@ class PreferencesWindow(MultiInstanceWidget):
         self.window = self.widgets["prefs_window"]
         self.window.set_transient_for(parent)
         # Fill in the general checkboxes.
-        for w in ["jump", "cover", "color", "tbp_space", "titlecase",
-                  "splitval", "nbp_space", "windows", "ascii", "allcomments"]:
+        for w in ["jump", "cover", "color", "allcomments"]:
              self.widgets["prefs_%s_t" % w].set_active(config.state(w))
-        self.widgets["prefs_addreplace"].set_active(
-            config.getint("settings", "addreplace"))
 
         # Fill in the scanned directories.
         self.widgets["scan_opt"].set_text(config.get("settings", "scan"))
@@ -148,11 +145,6 @@ class PreferencesWindow(MultiInstanceWidget):
         self.widgets["split_entry"].set_text(
             config.get("settings", "splitters"))
         self.widgets["gain_opt"].set_active(config.getint("settings", "gain"))
-
-        driver = config.getint("pmp", "driver")
-        self.widgets["pmp_combo"].set_active(driver)
-        self.widgets["pmp_entry"].set_text(config.get("pmp", "location"))
-        self.widgets["run_entry"].set_text(config.get("pmp", "command"))
 
         try: import gosd
         except ImportError:
@@ -165,18 +157,6 @@ class PreferencesWindow(MultiInstanceWidget):
 
         self.widgets["osd_font"].set_font_name(
             config.get("settings", "osdfont"))
-
-    def pmp_changed(self, combobox):
-        driver = self.widgets["pmp_combo"].get_active()
-        config.set('pmp', 'driver', str(driver))
-        self.widgets["pmp_entry"].set_sensitive(driver == 1)
-        self.widgets["run_entry"].set_sensitive(driver == 2)
-
-    def pmp_location_changed(self, entry):
-        config.set('pmp', 'location', entry.get_text())
-
-    def pmp_command_changed(self, entry):
-        config.set('pmp', 'command', entry.get_text())
 
     def set_color(self, button):
         color = self.widgets["osd_color"].get_color()
@@ -1275,20 +1255,6 @@ class MainWindow(MultiInstanceWidget):
     def rebuild_hard(self, activator):
         self.rebuild(activator, True)
 
-    def pmp_upload(self, *args):
-        songs = self.songlist.get_selected_songs()
-        try:
-            window = WaitLoadWindow(self.window, len(songs),
-                                    _("Uploading song %d/%d"),
-                                    (0, len(songs)))
-            d = pmp.drivers[config.getint("pmp", "driver")](songs, window)
-            d.run()
-            window.end()
-        except pmp.error, s:
-            window.end()
-            e = ErrorMessage(self.window, _("Unable to upload files"), s)
-            e.run()
-
     # Set up the preferences window.
     def open_prefs(self, activator):
         widgets.preferences.show()
@@ -1445,13 +1411,6 @@ class MainWindow(MultiInstanceWidget):
             b.connect('activate', self.filter_proxy, 'album')
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
-
-        if config.getint("pmp", "driver"):
-            b = gtk.ImageMenuItem(_("Upload to PMP..."))
-            b.get_image().set_from_stock(gtk.STOCK_HARDDISK, gtk.ICON_SIZE_MENU)
-            b.connect('activate', self.pmp_upload)
-            menu.append(b)
-            menu.append(gtk.SeparatorMenuItem())
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         b.connect('activate', self.remove_song)
@@ -2649,11 +2608,12 @@ class SongProperties(object):
             self.titlecase = c2
             self.split = c3
             self.addreplace = c4
-
-            vbox.pack_start(c1)
-            vbox.pack_start(c2)
-            vbox.pack_start(c3)
+            for i in [c1, c2, c3]:
+                i.connect('toggled', self.changed)
+                vbox.pack_start(i)
+            c4.connect('changed', self.changed)
             vbox.pack_start(c4)
+            
             self.widget.pack_start(vbox, expand = False)
 
             bbox = gtk.HButtonBox()
@@ -2791,6 +2751,14 @@ class SongProperties(object):
             self.update(self.songs)
 
         def changed(self, *args):
+            config.set("settings", "addreplace",
+                       str(self.addreplace.get_active()))
+            config.set("settings", "splitval",
+                       str(self.split.get_active()))
+            config.set("settings", "titlecase",
+                       str(self.titlecase.get_active()))
+            config.set("settings", "tbp_space",
+                       str(self.space.get_active()))
             self.preview.set_sensitive(True)
             self.save.set_sensitive(False)
 
@@ -2835,11 +2803,14 @@ class SongProperties(object):
             self.replace = gtk.CheckButton(
                 _("Replace spaces with _underscores"))
             self.replace.set_active(config.state("nbp_space"))
+            self.replace.connect('toggled', self.changed)
             self.windows = gtk.CheckButton(_(
                 "Replace _Windows-incompatible characters"))
             self.windows.set_active(config.state("windows"))
+            self.windows.connect('toggled', self.changed)
             self.ascii = gtk.CheckButton(_("Replace non-_ASCII characters"))
             self.ascii.set_active(config.state("ascii"))
+            self.ascii.connect('toggled', self.changed)
             vbox = gtk.VBox()
             vbox.pack_start(self.replace)
             vbox.pack_start(self.windows)
@@ -2862,8 +2833,13 @@ class SongProperties(object):
                    "and punctuation) will be replaced by underscores"))]:
                 self.prop.tips.set_tip(widget, tip)
 
-
         def changed(self, *args):
+            config.set("settings", "windows",
+                       str(self.windows.get_active()))
+            config.set("settings", "ascii",
+                       str(self.ascii.get_active()))
+            config.set("settings", "nbp_space",
+                       str(self.replace.get_active()))
             self.save.set_sensitive(False)
             self.preview.set_sensitive(True)
 
@@ -3467,7 +3443,6 @@ if __name__ == "__main__":
         save_config()
         raise SystemExit(True)
 
-    import pmp
     import parser
     import signal
     import sre

@@ -25,7 +25,6 @@ def init(*rc_files):
     _config.add_section("settings")
     _config.add_section("memory")
     _config.add_section("header_maps")
-    _config.add_section("pmp")
     _config.set("settings", "scan", "")
     _config.set("settings", "gain", "2")
     _config.set("settings", "osd", "0")
@@ -60,10 +59,6 @@ def init(*rc_files):
     _config.set("memory", "volume", "1.0")
 
     _config.set("memory", "songlist", "true")
-
-    _config.set("pmp", "driver", "0")
-    _config.set("pmp", "location", "")
-    _config.set("pmp", "command", "")
 
     _config.read(rc_files)
 
