@@ -1007,7 +1007,7 @@ class SongProperties(MultiInstanceWidget):
                 if title: text = text.title()
                 if split: text = "\n".join(util.split_value(text, spls))
                 row.append(text)
-            self.tbp_model.append(row=row)
+            self.tbp_model.append(row = row)
 
         # save for last to potentially save time
         self.tbp_view.set_model(self.tbp_model)
@@ -1027,8 +1027,7 @@ class SongProperties(MultiInstanceWidget):
             changed = False
             for i, h in enumerate(pattern.headers):
                 if row[i]:
-                    song[h] = "\n".join(util.split_value(
-                        row[i + 3].decode("utf-8"), spls))
+                    song[h] = row[i + 3].decode("utf-8")
                     changed = True
 
             if changed and ref:
