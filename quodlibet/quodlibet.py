@@ -1421,10 +1421,10 @@ class MainWindow(MultiInstanceWidget):
     def current_song_prop(self, *args):
         song = self.current_song
         if song:
-            SongProperties([song])
+            SongProperties2([song])
             
     def song_properties(self, item):
-        SongProperties(self.songlist.get_selected_songs())
+        SongProperties2(self.songlist.get_selected_songs())
 
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.split("~")[0]
@@ -1876,6 +1876,377 @@ class AddTagDialog(object):
 
     def destroy(self, *args):
         self.dialog.destroy()
+
+class SongProperties2(object):
+
+    class Information(object):
+        def __init__(self, parent):
+            self.title = _("Information")
+            self.widget = gtk.Label()
+            self.widget.set_property('xpad', 12)
+            self.widget.set_property('ypad', 12)
+            self.widget.set_property('xalign', 0)
+            self.widget.set_property('yalign', 0)
+            self.prop = parent
+
+        def destroy(self):
+            self.widget.destroy()
+
+        def _update_one(self, song):
+            self.widget.set_markup("\n".join([
+                "<b><span size='x-large'>%s</span></b>" %
+                util.escape(song("title")),
+                _("by %s") % util.escape(song("artist"))
+                ]))
+
+        def update(self, songrefs):
+            if len(songrefs) == 1:
+                self._update_one(songrefs[0])
+            else:
+                self.widget.set_text(
+                    "%d songs\nMultisong information not done."%len(songrefs))
+
+    class EditTags(object):
+        def __init__(self, parent):
+            self.title = _("Edit Tags")
+            self.widget = gtk.VBox(spacing = 12)
+            self.widget.set_property('border-width', 12)
+            self.prop = parent
+
+            self.model = gtk.ListStore(str, str, bool, bool, bool, str)
+            self.view = gtk.TreeView(self.model)
+            selection = self.view.get_selection()
+            selection.connect('changed', self.tag_select)
+            render = gtk.CellRendererToggle()
+            column = gtk.TreeViewColumn(_("Write"), render, active = 2,
+                                        activatable = 3)
+            render.connect('toggled', self.write_toggle, self.model)
+            self.view.append_column(column)
+
+            render = gtk.CellRendererText()
+            render.connect('edited', self.edit_tag, self.model, 0)
+            column = gtk.TreeViewColumn(_('Tag'), render, text=0)
+            self.view.append_column(column)
+
+            render = gtk.CellRendererText()
+            render.set_property('editable', True)
+            render.connect('edited', self.edit_tag, self.model, 1)
+            column = gtk.TreeViewColumn(_('Value'), render, markup = 1,
+                                        editable = 3, strikethrough = 4)
+            self.view.append_column(column)
+
+            sw = gtk.ScrolledWindow()
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            sw.add(self.view)
+            self.widget.pack_start(sw)
+
+            self.buttonbox = gtk.HBox(spacing = 18)
+            bbox1 = gtk.HButtonBox()
+            bbox1.set_spacing(6)
+            bbox1.set_layout(gtk.BUTTONBOX_START)
+            self.add = gtk.Button(stock = gtk.STOCK_ADD)
+            self.remove = gtk.Button(stock = gtk.STOCK_REMOVE)
+            self.add.connect('clicked', self.add_tag)
+            self.remove.connect('clicked', self.remove_tag)
+            self.remove.set_sensitive(False)
+            bbox1.pack_start(self.add)
+            bbox1.pack_start(self.remove)
+
+            bbox2 = gtk.HButtonBox()
+            bbox2.set_spacing(6)
+            bbox2.set_layout(gtk.BUTTONBOX_END)
+            self.revert = gtk.Button(stock = gtk.STOCK_REVERT_TO_SAVED)
+            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
+            self.revert.connect('clicked', self.revert_files)
+            self.save.connect('clicked', self.save_files)
+            self.revert.set_sensitive(False)
+            self.save.set_sensitive(False)
+            bbox2.pack_start(self.revert)
+            bbox2.pack_start(self.save)
+
+            self.buttonbox.pack_start(bbox1)
+            self.buttonbox.pack_start(bbox2)
+
+            self.widget.pack_start(self.buttonbox, expand = False)
+
+        def tag_select(self, selection):
+            model, iter = selection.get_selected()
+            self.remove.set_sensitive(bool(selection.count_selected_rows())
+                                      and model[iter][3])
+
+        def add_new_tag(self, comment, value):
+            edited = True
+            edit = True
+            orig = None
+            deleted = False
+            iters = []
+            def find_same_comments(model, path, iter):
+                if model[path][0] == comment: iters.append(iter)
+            self.model.foreach(find_same_comments)
+            row = [comment, util.escape(value), edited, edit,deleted,orig]
+            if len(iters): self.model.insert_after(iters[-1], row=row)
+            else: self.model.append(row=row)
+            self.save.set_sensitive(True)
+            self.revert.set_sensitive(True)
+
+        def add_tag(self, *args):
+            add = AddTagDialog(self.prop.window,
+                               self.songinfo.can_change())
+
+            while True:
+                resp = add.run()
+                if resp != gtk.RESPONSE_OK: break
+                comment = add.get_tag()
+                value = add.get_value()
+                date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
+                if not self.songinfo.can_change(comment):
+                    ErrorMessage(
+                        self.prop.window, _("Invalid tag"),
+                        _("Invalid tag <b>%s</b>\n\nThe files currently"
+                          " selected do not support editing this tag.")%
+                        util.escape(comment)).run()
+
+                elif comment == "date" and not date.match(value):
+                    ErrorMessage(self.prop.window, _("Invalid date"),
+                                 _("Invalid date: <b>%s</b>.\n\n"
+                                   "The date must be entered in YYYY or "
+                                   "YYYY-MM-DD format.") % value).run()
+                else:
+                    self.add_new_tag(comment, value)
+                    break
+
+            add.destroy()
+
+        def remove_tag(self, *args):
+            model, iter = self.view.get_selection().get_selected()
+            row = model[iter]
+            if row[0] in self.songinfo:
+                row[2] = True # Edited
+                row[4] = True # Deleted
+            else:
+                model.remove(iter)
+            self.save.set_sensitive(True)
+            self.revert.set_sensitive(True)
+
+
+        def save_files(self, *args):
+            updated = {}
+            deleted = {}
+            added = {}
+            def create_property_dict(model, path, iter):
+                row = model[iter]
+                # Edited, and or and not Deleted
+                if row[2] and not row[4]:
+                    if row[5] is not None:
+                        updated.setdefault(row[0], [])
+                        updated[row[0]].append((util.decode(row[1]),
+                                                util.decode(row[5])))
+                    else:
+                        added.setdefault(row[0], [])
+                        added[row[0]].append(util.decode(row[1]))
+                if row[2] and row[4]:
+                    if row[5] is not None:
+                        deleted.setdefault(row[0], [])
+                        deleted[row[0]].append(util.decode(row[5]))
+            self.model.foreach(create_property_dict)
+
+            win = WritingWindow(self.prop.window, len(self.songs))
+            for song in self.songs:
+                changed = False
+                for key, values in updated.iteritems():
+                    for (new_value, old_value) in values:
+                        new_value = util.unescape(new_value)
+                        if song.can_change(key):
+                            if old_value is None: song.add(key, new_value)
+                            else: song.change(key, old_value, new_value)
+                            changed = True
+                for key, values in added.iteritems():
+                    for value in values:
+                        value = util.unescape(value)
+                        if song.can_change(key):
+                            song.add(key, value)
+                            changed = True
+                for key, values in deleted.iteritems():
+                    for value in values:
+                        value = util.unescape(value)
+                        if song.can_change(key) and key in song:
+                            song.remove(key, value)
+                            changed = True
+
+                if changed:
+                    try: song.write()
+                    except:
+                        ErrorMessage(self.prop.window,
+                                     _("Unable to edit song"),
+                                     _("Saving <b>%s</b> failed. The file may "
+                                       "be read-only, corrupted, or you do "
+                                       "not have permission to edit it.")%(
+                            util.escape(song('~basename')))).run()
+                        library.reload(song)
+                        player.playlist.refilter()
+                        widgets.main.refresh_songlist()
+                        break
+                    songref_update_view(song)
+
+                if win.step(): break
+
+            win.end()
+            self.save.set_sensitive(False)
+            self.revert.set_sensitive(False)
+            self.prop.update()
+
+        def revert_files(self, *args):
+            self.update(self.songs)
+
+        def edit_tag(self, renderer, path, new, model, colnum):
+            row = model[path]
+            date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
+            if row[0] == "date" and not date.match(new):
+                WarningMessage(self.window, _("Invalid date format"),
+                               _("Invalid date: <b>%s</b>.\n\n"
+                                 "The date must be entered in YYYY or "
+                                 "YYYY-MM-DD format.") % new).run()
+            elif row[colnum].replace('<i>','').replace('</i>','') != new:
+                row[colnum] = util.escape(new)
+                row[2] = True # Edited
+                row[4] = False # not Deleted
+                self.save.set_sensitive(True)
+                self.revert.set_sensitive(True)
+
+        def write_toggle(self, renderer, path, model):
+            row = model[path]
+            row[2] = not row[2] # Edited
+            self.save.set_sensitive(True)
+            self.revert.set_sensitive(True)
+
+        def update(self, songs):
+            from library import AudioFileGroup
+            self.songinfo = songinfo = AudioFileGroup(songs)
+            self.songs = songs
+            self.model.clear()
+
+            keys = songinfo.realkeys()
+            keys.sort()
+
+            if not config.state("allcomments"):
+                machine_comments = set(['replaygain_album_gain',
+                                        'replaygain_album_peak',
+                                        'replaygain_track_gain',
+                                        'replaygain_track_peak'])
+                keys = filter(lambda k: k not in machine_comments, keys)
+
+            # reverse order here so insertion puts them in proper order.
+            for comment in ['album', 'artist', 'title']:
+                try: keys.remove(comment)
+                except ValueError: pass
+                else: keys.insert(0, comment)
+
+            for comment in keys:
+                orig_value = songinfo[comment].split("\n")
+                value = songinfo[comment].safenicestr()
+                edited = False
+                edit = songinfo.can_change(comment)
+                deleted = False
+                for i, v in enumerate(value.split("\n")):
+                    self.model.append(row=[comment, v, edited, edit, deleted,
+                                           orig_value[i]])
+
+
+            self.buttonbox.set_sensitive(bool(songinfo.can_change()))
+            self.remove.set_sensitive(False)
+            self.save.set_sensitive(False)
+            self.revert.set_sensitive(False)
+
+            self.songs = songs
+
+        def destroy(self):
+            self.model.clear()
+            self.widget.destroy()
+
+    def __init__(self, songrefs):
+        self.window = gtk.Window()
+        self.window.set_default_size(300, 400)
+        self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        self.pages = []
+        self.notebook = gtk.Notebook()
+        self.add_page(self.Information(self))
+        self.add_page(self.EditTags(self))
+        self.window.set_property('border-width', 12)
+        vbox = gtk.VBox(spacing = 12)
+        vbox.pack_start(self.notebook)
+
+        self.fbasemodel = gtk.ListStore(object, str, str, str)
+        self.fmodel = gtk.TreeModelSort(self.fbasemodel)
+        self.fview = gtk.TreeView(self.fmodel)
+        selection = self.fview.get_selection()
+        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.connect('changed', self.selection_changed)
+
+        if len(songrefs) > 1:
+            expander = gtk.Expander(_("Apply to these _files..."))
+            c1 = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=1)
+            c1.set_sort_column_id(1)
+            c2 = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=2)
+            c2.set_sort_column_id(3)
+            self.fview.append_column(c1)
+            self.fview.append_column(c2)
+            sw = gtk.ScrolledWindow()
+            sw.add(self.fview)
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            expander.add(sw)
+            expander.set_use_underline(True)
+            vbox.pack_start(expander, expand = False)
+
+        for song in songrefs:
+            self.fbasemodel.append([song, song("~basename"),
+                                    song("~dirname"), song["~filename"]])
+
+        bbox = gtk.HButtonBox()
+        bbox.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button.connect('clicked', self.close)
+        bbox.pack_start(button)
+        vbox.pack_start(bbox, expand = False)
+
+        selection.select_all()
+        self.window.add(vbox)
+        self.window.connect('destroy', self.close)
+        self.window.show_all()
+
+    def close(self, *args):
+        self.fview.set_model(None)
+        self.fview.destroy()
+        self.fbasemodel.clear()
+        self.fmodel.clear_cache()
+        for page in self.pages: page.destroy()
+        self.window.destroy()
+
+    def add_page(self, page):
+        self.notebook.append_page(page.widget, gtk.Label(page.title))
+        self.pages.append(page)
+
+    def update(self, songs = None):
+        if songs is not None: self.songrefs = songs
+        if widgets.main.current_song in self.songrefs:
+            widgets.main.update_markup(widgets.main.current_song)
+        
+        for page in self.pages: page.update(self.songrefs)
+        if len(self.songrefs) == 1:
+            self.window.set_title(_("%s - Properties") %
+                                  self.songrefs[0]("title"))
+        else:
+            self.window.set_title(_("%s and %d more - Properties") %
+                                  (self.songrefs[0]("title"),
+                                   len(self.songrefs) - 1))
+        
+    def selection_changed(self, selection):
+        songrefs = []
+        def get_songrefs(model, path, iter, songrefs):
+            songrefs.append(model[path][0])
+        selection.selected_foreach(get_songrefs, songrefs)
+        if len(songrefs): self.update(songrefs)
 
 class SongProperties(MultiInstanceWidget):
     def __init__(self, songrefs):
