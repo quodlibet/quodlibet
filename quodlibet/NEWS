@@ -8,6 +8,9 @@ Songs added to the library before 0.9 will not support the "added"
 numeric tag (its value will be 0).
 
 0.10
+ - Pane-based (Rhythmbox/iTunes-style) library browser.
+ - Many minor UI improvements.
+ - No more dependency on Glade.
 
 0.9 - I don't want any trouble, cephalopods!
  - Major updates to the Properties dialog:

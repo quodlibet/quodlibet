@@ -741,138 +741,106 @@ class Browser(object):
         return False
 
 class PanedBrowser(Browser, gtk.HBox):
+    class Pane(gtk.ScrolledWindow):
+        def __init__(self, mytag, next):
+            gtk.ScrolledWindow.__init__(self)
+            self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            self.set_shadow_type(gtk.SHADOW_IN)
+            self.add(gtk.TreeView(gtk.ListStore(str)))
+            render = gtk.CellRendererText()
+            column = gtk.TreeViewColumn(tag(mytag), render, markup = 0)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            column.set_fixed_width(50)
+            self.child.append_column(column)
+            self.tag = mytag
+            self.next = next
+            self._songs = []
+            self._selected_items = []
+            self.child.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+            self.__sig = self.child.get_selection().connect(
+                'changed', self.__selection_changed)
+
+        def __selection_changed(self, selection, check = True):
+            if check: # verify we've actually changed...
+                model, rows = selection.get_selected_rows()
+                selected_items = [model[row][0] for row in rows]
+                if self._selected_items == selected_items: return
+                else: self._selected_items = selected_items
+            # pass on the remaining songs to the next pane
+            self.next.fill(
+                filter(parser.parse(self.query()).search, self._songs))
+
+        def fill(self, songs):
+            self._songs = songs
+            # get values from song list
+            complete = True
+            values = set()
+            for song in songs:
+                l = song.list(self.tag)
+                values.update(l)
+                complete = complete and bool(l)
+            values = list(values); values.sort()
+
+            # record old selection data to preserve as much as possible
+            selection = self.child.get_selection()
+            selection.handler_block(self.__sig)
+            model, rows = selection.get_selected_rows()
+            selected_items = [model[row][0] for row in rows]
+            # fill in the new model
+            model = self.child.get_model()
+            model.clear()
+            to_select = []
+            if len(values) + bool(complete) > 1:
+                model.append(["<b>%s</b>" % _("All")])
+            for i, value in enumerate(map(util.escape, values)):
+                model.append([value])
+                if value in selected_items: to_select.append(i + 1)
+            if not complete:
+                model.append(["<b>%s</b>" % _("Unknown")])
+            # if no selections are still around default to all
+            if to_select == []: to_select = [0]
+            for i in to_select: selection.select_path((i,))
+            selection.handler_unblock(self.__sig)
+            self.__selection_changed(selection, check = False)
+
+        def query(self):
+            selection = self.child.get_selection()
+            model, rows = selection.get_selected_rows()
+            if rows[0][0] == 0: # All
+                return "%s = /.?/" % self.tag
+            else:
+                selected = ["/^%s$/c"%sre.escape(util.unescape(model[row][0]))
+                            for row in rows]
+                if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
+                    selected.pop()
+                    selected.append("!/./")
+                return "%s = |(%s)" % (self.tag, ", ".join(selected))
+
     def __init__(self, cb):
         gtk.HBox.__init__(self, spacing = 3)
-        artist_tree = gtk.TreeView(gtk.ListStore(str))
-        album_tree = gtk.TreeView(gtk.ListStore(str))
-        render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Artist"), render, markup = 0)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column.set_fixed_width(50)
-        artist_tree.append_column(column)
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.add(artist_tree)
-        self.pack_start(sw)
-        render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Album"), render, markup = 0)
-        album_tree.append_column(column)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column.set_fixed_width(50)
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.add(album_tree)
-        self.pack_start(sw)
-        self.__refresh()
-
+        # fill in the pane list. the last pane reports back to us.
+        self._panes = [self]
+        panes = ["genre", "artist", "album"]; panes.reverse()
+        for pane in panes:
+            self._panes.insert(0, self.Pane(pane, self._panes[0]))
+        self._panes.pop() # remove self
+        map(self.pack_start, self._panes)
         self.__cb = cb
+
+        self.__inhibit = True
+        self._panes[0].fill(library.values())
         self.set_homogeneous(True)
         self.set_size_request(100, 100)
-
-        artist_tree.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        album_tree.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        artist_tree.get_selection().connect(
-            'changed', self.__artist_changed, artist_tree, album_tree)
-        self._sig = album_tree.get_selection().connect(
-            'changed', self.__album_changed, artist_tree, album_tree)
         self.show_all()
 
-    def __refresh_list(self, view, values):
-        selection = view.get_selection()
-        model, rows = selection.get_selected_rows()
-        selected_items = [model[row][0] for row in rows]
-        to_select = []
-        model = view.get_model()
-        model.clear()
-        model.append(["<b>%s</b>" % _("All")])
-        for i, value in enumerate(map(util.escape, values)):
-            model.append([value])
-            if value in selected_items: to_select.append(i + 1)
-        model.append(["<b>%s</b>" % _("Unknown")])
-        if to_select == []: to_select = [0]
-        for i in to_select:
-            selection.select_path((i,))
-
-    def __refresh(self):
-        artist_view, album_view = [x.child for x in self.get_children()]
-        artist_view.get_model().clear()
-        album_view.get_model().clear()
-        artists = set()
-        albums = set()
-        for song in library.values():
-            artists.update(song.list("artist"))
-            albums.update(song.list("album"))
-        artists = list(artists); artists.sort()
-        albums = list(albums); albums.sort()
-
-        self.__refresh_list(artist_view, artists)
-        self.__refresh_list(album_view, albums)
-
-    def __refresh_albums(self, query, album_view):
-        albums = set()
-        for song in library.query(query):
-            albums.update(song.list("album"))
-        albums = list(albums); albums.sort()
-        self.__refresh_list(album_view, albums)
-
     def activate(self):
-        self.__cb(self.__make_query(artist_view, album_view), None)
+        self.fill(None)
 
-    def __make_query_int(self, tag, values):
-        if values:
-            return "%s = |(%s)" % (tag, ", ".join(
-                ["/^%s$/c" % sre.escape(v) for v in values]))
-        else: return ""
-
-    def __make_query(self, artist_view, album_view):
-        model, rows = artist_view.get_selection().get_selected_rows()
-        if rows == [] or rows[0] == (0,): artists = ""
+    def fill(self, songs):
+        if self.__inhibit: self.__inhibit = False
         else:
-            artists = [util.unescape(model[row][0]).decode('utf-8')
-                       for row in rows]
-            if rows[-1][0] == len(model) - 1: artists.pop()
-            if artists: artists = self.__make_query_int("artist", artists)
-            if rows[-1][0] == len(model) - 1:
-                if artists: artists = "|(artist = !/./, %s)" % artists
-                else: artists = "artist = !/./"
-
-        model, rows = album_view.get_selection().get_selected_rows()
-        if rows == [] or rows[0] == (0,): albums = ""
-        else:
-            albums = [util.unescape(model[row][0]).decode('utf-8')
-                      for row in rows]
-            if rows[-1][0] == len(model) - 1: albums.pop()
-            if albums: albums = self.__make_query_int("album", albums)
-            if rows[-1][0] == len(model) - 1:
-                if albums: albums = "|(album = !/./, %s)" % albums
-                else: albums = "album = !/./"
-
-        if artists and albums:
-            return "&(%s, %s)" % (artists, albums)
-        elif artists: return artists
-        elif albums: return albums
-        else: return ""
-
-    def __artist_changed(self, selection, artist_view, album_view):
-        album_view.get_selection().handler_block(self._sig)
-        model, rows = artist_view.get_selection().get_selected_rows()
-        if rows == [] or rows[0] == (0,): artists = ""
-        else:
-            artists = [util.unescape(model[row][0]).decode('utf-8')
-                       for row in rows]
-            if rows[-1][0] == len(model) - 1: artists.pop()
-            if artists: artists = self.__make_query_int("artist", artists)
-            if rows[-1][0] == len(model) - 1:
-                if artists: artists = "|(artist = !/./, %s)" % artists
-                else: artists = "artist = !/./"
-        self.__refresh_albums(artists, album_view)
-        album_view.get_selection().handler_unblock(self._sig)
-        album_view.get_selection().emit('changed')
-
-    def __album_changed(self, selection, artist_view, album_view):
-        self.__cb(self.__make_query(artist_view, album_view), None)
+            self.__cb(
+                "&(%s)" % ", ".join(map(self.Pane.query, self._panes)), None)
 
 class PlaylistBar(Browser, gtk.HBox):
     def __init__(self, cb):
@@ -3702,8 +3670,8 @@ def tag(name):
         if name[0] == "~":
             if name[1] == "#": name = name[2:]
             else: name = name[1:]
-        return " / ".join([_(HEADERS_FILTER.get(n, n)) for n
-                             in name.split("~")]).title()
+        return util.title(" / ".join([_(HEADERS_FILTER.get(n, n)) for n
+                                      in name.split("~")]))
     except IndexError:
         return _("Invalid tag name")
 
