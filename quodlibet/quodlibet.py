@@ -1343,14 +1343,15 @@ class MainWindow(MultiInstanceWidget):
         d = DeleteDialog(self.window, filenames)
         resp = d.run()
         d.destroy()
-        if resp == 1: return
+        if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
         else:
             if resp == 0: s = _("Moving %d/%d.")
-            else: s = _("Deleting %d/%d.")
+            elif resp == 2: s = _("Deleting %d/%d.")
+            else: return
             w = WaitLoadWindow(self.window, len(songs), s, (0, len(songs)))
             trash = os.path.expanduser("~/.Trash")
             for song in songs:
-                filename = song["~filename"]
+                filename = str(song["~filename"])
                 try:
                     if resp == 0:
                         basename = os.path.basename(filename)
