@@ -148,6 +148,7 @@ class PreferencesWindow(gtk.Window):
             l.set_mnemonic_widget(others)
             l.set_use_underline(True)
             hbox.pack_start(others)
+            #FIXME: Move below entry
             apply = qltk.Button(stock = gtk.STOCK_APPLY, cb = self.apply,
                                 user_data = [buttons, tiv, aip, fip, others])
             hbox.pack_start(apply, expand = False)
@@ -313,8 +314,6 @@ class PreferencesWindow(gtk.Window):
             vbox = gtk.VBox(spacing = 6)
             hb = gtk.HBox(spacing = 6)
             e = gtk.Entry()
-            # at least in English, this determines the size of the window
-            #e.set_size_request(270, -1)
             e.set_text(config.get("settings", "splitters"))
             e.connect('changed', self.changed, 'splitters')
             tips.set_tip(
@@ -608,7 +607,7 @@ class PlaylistWindow(gtk.Window):
         self.plname = PlayList.normalize_name(name)
         self.set_title('Quod Libet Playlist: %s' % name)
 
-    def _destroy(self, view):
+    def _destroy(self):
         del(self.list_windows[self.prettyname])
         if not len(view.get_model()):
             def remove_matching(model, path, iter, name):
@@ -616,7 +615,6 @@ class PlaylistWindow(gtk.Window):
                     model.remove(iter)
                     return True
             PlayList.lists_model().foreach(remove_matching, self.plname)
-        view.set_model(None)
 
     def initialize_window(self, name):
         gtk.Window.__init__(self)
@@ -647,7 +645,7 @@ class PlaylistWindow(gtk.Window):
         swin.add(view)
 
         self.set_name(name)
-        self.connect_object('destroy', PlaylistWindow._destroy, self, view)
+        self.connect_object('destroy', PlaylistWindow._destroy, self)
         close.connect_object('clicked', gtk.Window.destroy, self)
         self.show_all()
 
@@ -896,7 +894,7 @@ class MainWindow(gtk.Window):
         self.albumfn = None
         self._time = (0, 1)
 
-        self.tips = gtk.Tooltips()
+        tips = gtk.Tooltips()
         self.set_title("Quod Libet")
         self.set_icon_from_file("quodlibet.png")
         self.set_default_size(
@@ -906,7 +904,7 @@ class MainWindow(gtk.Window):
         self.connect('destroy', gtk.main_quit)
 
         # create main menubar, load/restore accelerator groups
-        self._create_menu()
+        self._create_menu(tips)
         self.add_accel_group(self.ui.get_accel_group())
         gtk.accel_map_load(const.ACCELS)
         accelgroup = gtk.accel_groups_from_object(self)[0]
@@ -952,21 +950,21 @@ class MainWindow(gtk.Window):
             gtk.STOCK_ADD, gtk.ICON_SIZE_LARGE_TOOLBAR))
         add.connect('clicked', self.open_chooser)
         t.attach(add, 0, 1, 1, 2, xoptions = False, yoptions = False)
-        self.tips.set_tip(add, _("Add songs to your library"))
+        tips.set_tip(add, _("Add songs to your library"))
 
         props = gtk.Button()
         props.add(gtk.image_new_from_stock(
             gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_LARGE_TOOLBAR))
         props.connect('clicked', self.current_song_prop)
         t.attach(props, 1, 2, 1, 2, xoptions = False, yoptions = False)
-        self.tips.set_tip(props, _("View and edit tags in the playing song"))
+        tips.set_tip(props, _("View and edit tags in the playing song"))
 
         info = gtk.Button()
         info.add(gtk.image_new_from_stock(
             gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_LARGE_TOOLBAR))
         info.connect('clicked', self.open_website)
         t.attach(info, 2, 3, 1, 2, xoptions = False, yoptions = False)
-        self.tips.set_tip(info, _("Visit the artist's website"))
+        tips.set_tip(info, _("Visit the artist's website"))
 
         self.song_buttons = [info, next, props]
         self.play_image = play.child
@@ -1020,7 +1018,7 @@ class MainWindow(gtk.Window):
         adj.set_value(config.getfloat('memory', 'volume'))
         self.volume.set_draw_value(False)
         self.volume.set_inverted(True)
-        self.tips.set_tip(self.volume, _("Adjust audio volume"))
+        tips.set_tip(self.volume, _("Adjust audio volume"))
         vbox.pack_start(self.volume)
         hbox.pack_start(vbox, expand = False)
 
@@ -1033,14 +1031,14 @@ class MainWindow(gtk.Window):
         # status area
         hbox = gtk.HBox(spacing = 6)
         self.shuffle = shuffle = gtk.CheckButton(_("_Shuffle"))
-        self.tips.set_tip(shuffle, _("Play songs in a random order"))
+        tips.set_tip(shuffle, _("Play songs in a random order"))
         shuffle.connect('toggled', self.toggle_shuffle)
         shuffle.set_active(config.getboolean('settings', 'shuffle'))
         hbox.pack_start(shuffle, expand = False)
         self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
         repeat.connect('toggled', self.toggle_repeat)
         repeat.set_active(config.getboolean('settings', 'repeat'))
-        self.tips.set_tip(
+        tips.set_tip(
             repeat, _("Restart the playlist after all songs are played"))
         hbox.pack_start(repeat, expand = False)
         self.statusbar = gtk.Label()
@@ -1091,10 +1089,24 @@ class MainWindow(gtk.Window):
         gobject.timeout_add(100, self._update_time)
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
-        self.tips.enable()
+        tips.enable()
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.show()
 
-    def _create_menu(self):
+    def songref_update_view(self, song):
+        if song is None:
+            self.songlist.refresh()
+        else:
+            try: path = (player.playlist.get_playlist().index(song),)
+            except ValueError: pass
+            else:
+                row = widgets.songs[path]
+                row[0] = row[0]
+
+            if song is self.current_song:
+                self.update_markup(self.current_song)
+
+    def _create_menu(self, tips):
         ag = gtk.ActionGroup('MainWindowActions')
         ag.add_actions([
             ('Music', None, _("_Music")),
@@ -1170,22 +1182,22 @@ class MainWindow(gtk.Window):
         # Cute. So. UIManager lets you attach tooltips, but when they're
         # for menu items, they just get ignored. So here I get to actually
         # attach them.
-        self.tips.set_tip(
+        tips.set_tip(
             self.ui.get_widget("/Menu/Music/RefreshLibrary"),
             _("Check for changes in the library made since the program "
               "was started"))
-        self.tips.set_tip(
+        tips.set_tip(
             self.ui.get_widget("/Menu/Music/ReloadLibrary"),
             _("Reload all songs in your library (this can take a long time)"))
-        self.tips.set_tip(
+        tips.set_tip(
             self.ui.get_widget("/Menu/Filters/Top"),
              _("The 40 songs you've played most (more than 40 may "
                "be chosen if there are ties)"))
-        self.tips.set_tip(
+        tips.set_tip(
             self.ui.get_widget("/Menu/Filters/Bottom"),
             _("The 40 songs you've played least (more than 40 may "
               "be chosen if there are ties)"))
-        self.tips.set_tip(
+        tips.set_tip(
             self.ui.get_widget("/Menu/Song/Properties"),
             _("View and edit tags in the playing song"))
 
@@ -1695,10 +1707,11 @@ class MainWindow(gtk.Window):
 
     def current_song_prop(self, *args):
         song = self.current_song
-        if song: SongProperties([song])
+        if song: SongProperties([song], self.songref_update_view)
 
     def song_properties(self, item):
-        SongProperties(self.songlist.get_selected_songs())
+        SongProperties(self.songlist.get_selected_songs(),
+                       self.songref_update_view)
 
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.split("~")[0]
@@ -1830,6 +1843,7 @@ class SongList(gtk.TreeView):
         self.recall_size = recall
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList._destroy, self)
+        self.connect_object('destroy', self.set_model, None)
 
     def set_all_column_headers(cls, headers):
         cls.headers = headers
@@ -1992,7 +2006,8 @@ class PlayList(SongList):
 
     def song_properties(self, *args):
         model, rows = self.get_selection().get_selected_rows()
-        SongProperties([model[row][0] for row in rows])
+        SongProperties([model[row][0] for row in rows],
+                       self.songref_update_view)
 
     def refresh_indices(self, *args):
         for i, row in enumerate(iter(self.get_model())):
@@ -2191,7 +2206,7 @@ class AddTagDialog(gtk.Dialog):
 class SongProperties(gtk.Window):
 
     class Information(gtk.ScrolledWindow):
-        def __init__(self, parent):
+        def __init__(self, parent, cbs):
             gtk.ScrolledWindow.__init__(self)
             self.title = _("Information")
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -2519,11 +2534,11 @@ class SongProperties(gtk.Window):
                 c.destroy()
             if len(songs) == 1: self._update_one(songs[0])
             else:
-                albums =  [song.get("album") for song in songs]
+                albums = [song.get("album") for song in songs]
                 artists = [song.get("artist") for song in songs]
                 if min(albums) == max(albums) and None not in albums:
                     self._update_album(songs[:])
-                elif min(artists) == max(artists) and None not in albums:
+                elif min(artists) == max(artists) and None not in artists:
                     self._update_artist(songs[:])
                 else: self._update_many(songs)
             self.box.show_all()
@@ -2547,11 +2562,12 @@ class SongProperties(gtk.Window):
             return f
 
     class EditTags(gtk.VBox):
-        def __init__(self, parent):
+        def __init__(self, parent, cb):
             gtk.VBox.__init__(self, spacing = 12)
             self.title = _("Edit Tags")
             self.set_border_width(12)
             self.prop = parent
+            self.cb = cb
 
             self.model = gtk.ListStore(str, str, bool, bool, bool, str)
             self.view = gtk.TreeView(self.model)
@@ -2618,6 +2634,8 @@ class SongProperties(gtk.Window):
                 (self.add, _("Add a new tag to the file")),
                 (self.remove, _("Remove a tag from the file"))]:
                 self.prop.tips.set_tip(widget, tip)
+
+            self.connect_object('destroy', gtk.ListStore.clear, self.model)
 
         def popup_menu(self, view):
             path, col = view.get_cursor()
@@ -2803,7 +2821,6 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(True)
             self.revert.set_sensitive(True)
 
-
         def save_files(self, *args):
             updated = {}
             deleted = {}
@@ -2859,9 +2876,9 @@ class SongProperties(gtk.Window):
                             util.escape(song('~basename')))).run()
                         library.reload(song)
                         player.playlist.refilter()
-                        widgets.main.refresh_songlist()
+                        self.cb(None)
                         break
-                    songref_update_view(song)
+                    self.cb(song)
 
                 if win.step(): break
 
@@ -2935,15 +2952,12 @@ class SongProperties(gtk.Window):
 
             self.songs = songs
 
-        def destroy(self):
-            self.model.clear()
-            gtk.VBox.destroy(self)
-
     class TagByFilename(gtk.VBox):
-        def __init__(self, prop):
+        def __init__(self, prop, cb):
             gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Tag by Filename")
             self.prop = prop
+            self.cb = cb
             self.set_property('border-width', 12)
             hbox = gtk.HBox(spacing = 12)
             self.combo = combo = qltk.ComboBoxEntrySave(
@@ -2998,6 +3012,10 @@ class SongProperties(gtk.Window):
                  _("If appropriate to the language, the first letter of "
                    "each word will be capitalized"))]:
                 self.prop.tips.set_tip(widget, tip)
+
+            self.connect_object('destroy', self.view.set_model, None)
+            self.connect_object(
+                'destroy', SongProperties.TagByFilename._destroy, self)
 
         def update(self, songs):
             from library import AudioFileGroup
@@ -3110,9 +3128,9 @@ class SongProperties(gtk.Window):
                             util.escape(song('~basename')))).run()
                         library.reload(song)
                         player.playlist.refilter()
-                        widgets.main.refresh_songlist()
+                        self.cb(None)
                         return True
-                    songref_update_view(song)
+                    self.cb(song)
 
                 return win.step()
         
@@ -3136,17 +3154,16 @@ class SongProperties(gtk.Window):
             self.preview.set_sensitive(True)
             self.save.set_sensitive(False)
 
-        def destroy(self):
-            self.view.set_model(None)
+        def _destroy(self):
             try: self.model.clear()
             except AttributeError: pass
-            gtk.VBox.destroy(self)
 
     class RenameFiles(gtk.VBox):
-        def __init__(self, prop):
+        def __init__(self, prop, cb):
             gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Rename Files")
             self.prop = prop
+            self.cb = cb
             self.set_border_width(12)
             hbox = gtk.HBox(spacing = 12)
             self.combo = combo = qltk.ComboBoxEntrySave(
@@ -3206,6 +3223,9 @@ class SongProperties(gtk.Window):
                    "and punctuation) will be replaced by underscores"))]:
                 self.prop.tips.set_tip(widget, tip)
 
+            self.connect_object('destroy', self.view.set_model, None)
+            self.connect_object('destroy', gtk.ListStore.clear, self.model)
+
         def changed(self, *args):
             config.set("settings", "windows",
                        str(self.windows.get_active()))
@@ -3231,7 +3251,7 @@ class SongProperties(gtk.Window):
                 try:
                     newname = newname.encode(util.fscoding(), "replace")
                     library.rename(song, newname)
-                    songref_update_view(song)
+                    self.cb(song)
                 except:
                     qltk.ErrorMessage(
                         self.prop, _("Unable to rename file"),
@@ -3291,16 +3311,12 @@ class SongProperties(gtk.Window):
             self.preview.set_sensitive(False)
             self.save.set_sensitive(bool(self.entry.get_text()))
 
-        def destroy(self):
-            self.view.set_model(None)
-            self.model.clear()
-            gtk.VBox.destroy(self)
-
     class TrackNumbers(gtk.VBox):
-        def __init__(self, prop):
+        def __init__(self, prop, cb):
             gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Track Numbers")
             self.prop = prop
+            self.cb = cb
             self.set_property('border-width', 12)
             hbox = gtk.HBox(spacing = 18)
             hbox2 = gtk.HBox(spacing = 12)
@@ -3366,13 +3382,15 @@ class SongProperties(gtk.Window):
             bbox.pack_start(self.revert)
             bbox.pack_start(self.save)
             self.pack_start(bbox, expand = False)
+            self.connect_object('destroy', self.view.set_model, None)
+            self.connect_object('destroy', gtk.ListStore.clear, self.model)
 
         def save_files(self, *args):
             win = WritingWindow(self.prop, len(self.songs))
             def settrack(model, path, iter):
                 song = model[iter][0]
                 track = model[iter][2]
-                if song["tracknumber"] == track: return win.step()
+                if song.get("tracknumber") == track: return win.step()
                 song["tracknumber"] = track
                 try: song.write()
                 except:
@@ -3384,9 +3402,9 @@ class SongProperties(gtk.Window):
                         util.escape(song('~basename')))).run()
                     library.reload(song)
                     player.playlist.refilter()
-                    widgets.main.refresh_songlist()
+                    self.cb(None)
                     return True
-                songref_update_view(song)
+                self.cb(song)
                 return win.step()
             self.model.foreach(settrack)
             self.prop.update()
@@ -3432,17 +3450,19 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(False)
             self.preview.set_sensitive(True)
 
-    def __init__(self, songrefs):
+    def __init__(self, songrefs, callback = None):
         gtk.Window.__init__(self)
+        self._callback = callback
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.tips = gtk.Tooltips()
         self.pages = []
         self.notebook = qltk.Notebook()
-        self.pages = [self.Information(self), self.EditTags(self),
-                      self.TagByFilename(self), self.RenameFiles(self)]
+        self.pages = [Ctr(self, self._callback) for Ctr in
+                      [self.Information, self.EditTags, self.TagByFilename,
+                       self.RenameFiles]]
         if len(songrefs) > 1:
-            self.pages.append(self.TrackNumbers(self))
+            self.pages.append(self.TrackNumbers(self, self._callback))
         for page in self.pages: self.notebook.append_page(page)
         self.set_property('border-width', 12)
         vbox = gtk.VBox(spacing = 12)
@@ -3479,8 +3499,6 @@ class SongProperties(gtk.Window):
         bbox.pack_start(button)
         vbox.pack_start(bbox, expand = False)
 
-        self.songrefs = songrefs
-
         for song in songrefs:
             self.fbasemodel.append(
                 row = [song,
@@ -3499,17 +3517,16 @@ class SongProperties(gtk.Window):
         self.show_all()
 
     def update(self, songs = None):
-        if songs is not None: self.songrefs = songs
-        elif widgets.main.current_song in self.songrefs:
-            widgets.main.update_markup(widgets.main.current_song)
-        for page in self.pages: page.update(self.songrefs)
-        if len(self.songrefs) == 1:
+        if songs is None: songs = self.songs
+        else: self.songs = songs
+        for page in self.pages: page.update(songs)
+        if len(songs) == 1:
             self.set_title(_("%s - Properties") %
-                           self.songrefs[0].comma("title"))
+                           songs[0].comma("title"))
         else:
             self.set_title(_("%s and %d more - Properties") %
-                           (self.songrefs[0].comma("title"),
-                            len(self.songrefs) - 1))
+                           (songs[0].comma("title"),
+                            len(songs) - 1))
 
     def refill(self):
         def refresh(model, iter, path):
@@ -3547,13 +3564,6 @@ def tag(name):
                              in name.split("~")]).title()
     except IndexError:
         return _("Invalid tag name")
-
-def songref_update_view(song):
-    try: path = (player.playlist.get_playlist().index(song),)
-    except ValueError: pass
-    else:
-        row = widgets.songs[path]
-        row[0] = row[0]
 
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
