@@ -621,6 +621,20 @@ class SongProperties(MultiInstanceWidget):
                   "windows", "ascii"]:
             self.widgets["prop_%s_t" % w].set_active(config.state(w))
 
+        # track numbering
+        self.tn_preview = self.widgets['prop_tn_preview']
+        self.tn_view = self.widgets["prop_tn_view"]
+        self.tn_model = gtk.ListStore(object, object, str, str)
+        self.tn_model.connect("rows-reordered", self.prop_tn_changed)
+        self.tn_view.set_model(self.tn_model)
+        self.save_tn = self.widgets['prop_tn_save']
+        column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
+                                    text = 2)
+        self.tn_view.append_column(column)
+        column = gtk.TreeViewColumn(_('Track'), gtk.CellRendererText(),
+                                    text = 3)
+        self.tn_view.append_column(column)
+
         # select all files, causing selection update to fill the info
         selection.select_all()
         self.window.show()
@@ -932,6 +946,48 @@ class SongProperties(MultiInstanceWidget):
 
         self.songprop_tbp_preview()
         self.songprop_nbp_preview()
+        self.songprop_tn_fill()
+
+    def songprop_tn_fill(self, *args):
+        self.tn_model.clear()
+        self.widgets["prop_tn_total"].set_value(len(self.songrefs))
+        for song, ref in self.songrefs:
+            self.tn_model.append(row = [song, ref, song['=basename'],
+                                        song.get("tracknumber", "")])
+
+    def songprop_tn_preview(self, *args):
+        start = self.widgets["prop_tn_start"].get_value_as_int()
+        total = self.widgets["prop_tn_total"].get_value_as_int()
+        def refill(model, path, iter):
+            if total: s = "%d/%d" % (path[0] + start, total)
+            else: s = str(path[0] + start)
+            model[iter][3] = s
+        self.tn_model.foreach(refill)
+        self.tn_preview.set_sensitive(False)
+        self.save_tn.set_sensitive(True)
+
+    def prop_tn_changed(self, *args):
+        self.tn_preview.set_sensitive(True)
+        self.save_tn.set_sensitive(False)
+
+    def tn_save(self, *args):
+        win = WritingWindow(self.window, len(self.songrefs))
+        def settrack(model, path, iter):
+            song = model[iter][0]
+            ref = model[iter][1]
+            track = model[iter][3]
+            song["tracknumber"] = track
+            try: song["=d"] = int(track.split("/")[0])
+            except ValueError:
+                try: del(song["=d"])
+                except KeyError: pass
+            song.write()
+            if ref: songref_update_view(song, ref)
+            win.step()
+        self.tn_model.foreach(settrack)
+        self.fill_property_info()
+        self.save_tn.set_sensitive(False)
+        win.end()
 
     def songprop_nbp_preview(self, *args):
         self.nbp_model.clear()
