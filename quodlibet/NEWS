@@ -13,15 +13,21 @@ A change in the ID3 reader could cause genres in many of your MP3
 files may disappear on reload, and new ones to appear.
 
 0.10
- - Pane-based (Rhythmbox/iTunes-style) library browser.
  - --seek supports +/- prefix to seek relative to the current position.
  - Added Ex Falso, a tag editor based on QL (without audio playback).
+ - Switched MP3 genres from TIT1 to TCON.
+ - Tag by Pattern/Rename Files save patterns used.
+ - Adding tags with specific formats ('date') is less prone to error.
+ - Several display bugs and non-HIG windows were fixed.
+ - Pane-based (Rhythmbox/iTunes-style) library browser.
+ - Tag by Pattern/Rename Files previews can be manually edited before saving.
+ - Kind of browser (none, search, playlists, paned), song list sort order,
+   and what you were browsing are remembered when you exit.
+ - At least one lockup-causing bug was fixed.
  - Song ratings, on a 0 to 4 scale.
- - Switched genre from TIT1 to TCON.
- - Many minor UI improvements, like a new icon.
+ - Masked directories work again.
  - No more dependency on Glade.
- - Many bug fixes.
- - Quod Libet now uses Trac for development.
+ - A new icon and website.
 
 0.9 - I don't want any trouble, cephalopods!
  - Major updates to the Properties dialog:
