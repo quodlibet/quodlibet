@@ -64,7 +64,12 @@ class FLACPlayer(AudioPlayer):
 
     def next(self):
         if self.stopped: raise StopIteration
-        if not self.dec.process_single(): raise StopIteration
+        if self.dec.get_state() == flac.decoder.FLAC__FILE_DECODER_END_OF_FILE:
+            self.dec.finish()
+            raise StopIteration
+        if not self.dec.process_single():
+            self.dec.finish()
+            raise StopIteration
         #return dec.get_decode_position() / 1000
         return 0
 
