@@ -48,6 +48,7 @@ NBP_EXAMPLES = """\
 COPYRIGHT = """\
 <u><span weight="bold" size="xx-large">Quod Libet %s</span></u>
 &lt;quodlibet@lists.sacredchao.net&gt;
+http://www.sacredchao.net/quodlibet
 Copyright © 2004-2005""" % VERSION
 
 MENU = """<ui>
