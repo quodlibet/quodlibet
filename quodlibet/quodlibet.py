@@ -1602,7 +1602,12 @@ class SongList(object):
         for c in self.view.get_columns(): self.view.remove_column(c)
 
         def cell_data(column, cell, model, iter):
-            cell.set_property('text', model[iter][0].comma(column.header_name))
+            cell.set_property('text',model[iter][0].comma(column.header_name))
+
+        def cell_data_fn(column, cell, model, iter, code):
+            cell.set_property(
+                'text', model[iter][0].comma(column.header_name).decode(
+                code, "replace"))
 
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
@@ -1618,7 +1623,11 @@ class SongList(object):
             if hasattr(self, 'set_sort_by'):
                 column.connect('clicked', self.set_sort_by, t)
             self._set_column_settings(column)
-            column.set_cell_data_func(render, cell_data)
+            if t in ["~filename", "~basename", "~dirname"]:
+                column.set_cell_data_func(render, cell_data_fn,
+                                          util.fscoding())
+            else:
+                column.set_cell_data_func(render, cell_data)
             if t == "~length":
                 column.set_property('alignment', 1.0)
                 render.set_property('xalign', 1.0)
