@@ -68,6 +68,13 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song["album"], "Unknown")
         self.failUnless(song.unknown("album"))
 
+    def test_cover(self):
+        song1 = AudioFile({ "=filename": "tests/data/foo.ogg" })
+        song2 = AudioFile({ "=filename": "tests/foo.ogg" })
+        self.failUnlessEqual(song1.find_cover(),
+                             "tests/data/frontcoverjacket.png")
+        self.failIf(song2.find_cover())
+
     def test_get_played(self):
         song1 = AudioFile({"=playcount": 0})
         song2 = AudioFile({"=playcount": 4,

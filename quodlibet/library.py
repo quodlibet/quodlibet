@@ -171,12 +171,16 @@ class AudioFile(dict):
     def find_cover(self):
         base = os.path.split(self['=filename'])[0]
         fns = os.listdir(base)
+        images = []
         fns.sort()
         for fn in fns:
             lfn = fn.lower()
             if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
-                if "front" in lfn or "cover" in lfn or "jacket" in lfn:
-                   return os.path.join(base, fn)
+               matches = filter(lambda s: s in lfn,
+                                ["front", "cover", "jacket"])
+               score = len(matches)
+               if score: images.append((score, os.path.join(base, fn)))
+        if images: return max(images)[1]
         else: return None
 
 class MP3File(AudioFile):
