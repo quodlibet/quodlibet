@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-11-14 23:40-0600\n"
+"POT-Creation-Date: 2004-11-17 18:15-0600\n"
 "PO-Revision-Date: 2004-11-08 11:54-0600\n"
 "Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
@@ -19,94 +19,94 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: library.py:106
+#: library.py:107
 msgid "Unknown"
 msgstr ""
 
-#: library.py:135
+#: library.py:136
 #, python-format
 msgid "by %s"
 msgstr ""
 
-#: library.py:138
+#: library.py:139
 #, python-format
 msgid "Performed by %s"
 msgstr ""
 
-#: library.py:143
+#: library.py:144
 #, python-format
 msgid "arranged by %s"
 msgstr ""
 
-#: library.py:145
+#: library.py:146
 #, python-format
 msgid "lyrics by %s"
 msgstr ""
 
-#: library.py:147
+#: library.py:148
 #, python-format
 msgid "conducted by %s"
 msgstr ""
 
-#: library.py:149
+#: library.py:150
 #, python-format
 msgid "written by %s"
 msgstr ""
 
-#: library.py:159
+#: library.py:160
 msgid "Disc"
 msgstr ""
 
-#: library.py:163
+#: library.py:164
 msgid "Track"
 msgstr ""
 
-#: library.py:178
+#: library.py:179
 msgid "Never"
 msgstr ""
 
-#: library.py:182
+#: library.py:183
 #, python-format
 msgid "%d times, recently on %s"
 msgstr ""
 
-#: library.py:447
+#: library.py:455
 #, python-format
 msgid "(shared across all %d songs)"
 msgstr ""
 
-#: library.py:449
+#: library.py:457
 #, python-format
 msgid "(missing from %d songs)"
 msgstr ""
 
-#: library.py:451
+#: library.py:459
 #, python-format
 msgid "(different across %d songs)"
 msgstr ""
 
-#: library.py:453
+#: library.py:461
 #, python-format
 msgid "(different across %d songs, missing from %d songs)"
 msgstr ""
 
-#: library.py:581
+#: library.py:589
 msgid "Enabling Ogg Vorbis support."
 msgstr ""
 
-#: library.py:584
+#: library.py:592
 msgid "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
 msgstr ""
 
-#: library.py:587
+#: library.py:595
 msgid "Enabling MP3 support."
 msgstr ""
 
-#: library.py:590
+#: library.py:598
 msgid "W: MP3 support is disabled! MP3 files cannot be loaded."
 msgstr ""
 
-#: library.py:593
+#: library.py:601
 msgid "Enabling FLAC support."
 msgstr ""
 
@@ -610,54 +610,82 @@ msgid "_Year"
 msgstr ""
 
 #: quodlibet.py:38
-msgid "Initialized status icon."
-msgstr ""
-
-#: quodlibet.py:40
 msgid "W: Failed to initialize status icon."
 msgstr ""
 
-#: quodlibet.py:49
-msgid "Initialized multimedia key support."
+#: quodlibet.py:45
+msgid "Initialized status icon."
 msgstr ""
 
-#: quodlibet.py:51
+#: quodlibet.py:49
 msgid "W: Failed to initialize multimedia key support."
 msgstr ""
 
-#: quodlibet.py:109
+#: quodlibet.py:55
+msgid "Initialized multimedia key support."
+msgstr ""
+
+#: quodlibet.py:116
 #, python-format
 msgid "Could not play %s."
 msgstr ""
 
-#: quodlibet.py:127
+#: quodlibet.py:134
 msgid "Not playing"
 msgstr ""
 
-#: quodlibet.py:242
+#: quodlibet.py:271
 #, python-format
 msgid "Opening web browser: %s"
 msgstr ""
 
-#: quodlibet.py:245
+#: quodlibet.py:275
 msgid "Unable to start a web browser"
 msgstr ""
 
-#: quodlibet.py:246
+#: quodlibet.py:276
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
 msgstr ""
 
-#: quodlibet.py:374
+#: quodlibet.py:395
 msgid "Select Directories"
 msgstr ""
 
-#: quodlibet.py:392
+#: quodlibet.py:414
 msgid "Add Music"
 msgstr ""
 
-#: quodlibet.py:597 quodlibet.py:692
+#: quodlibet.py:521
+msgid "Write"
+msgstr ""
+
+#: quodlibet.py:527
+msgid "Tag"
+msgstr ""
+
+#: quodlibet.py:531
+msgid "Value"
+msgstr ""
+
+#: quodlibet.py:544 quodlibet.py:572 quodlibet.py:999
+msgid "File"
+msgstr ""
+
+#: quodlibet.py:547
+msgid "Path"
+msgstr ""
+
+#: quodlibet.py:575
+msgid "New Name"
+msgstr ""
+
+#: quodlibet.py:704
+msgid "Invalid date format"
+msgstr ""
+
+#: quodlibet.py:705 quodlibet.py:795
 #, python-format
 msgid ""
 "Invalid date: <b>%s</b>.\n"
@@ -665,7 +693,11 @@ msgid ""
 "The date must be entered in YYYY or YYYY-MM-DD format."
 msgstr ""
 
-#: quodlibet.py:683
+#: quodlibet.py:788
+msgid "Invalid tag"
+msgstr ""
+
+#: quodlibet.py:789
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -673,95 +705,88 @@ msgid ""
 "The files currently selected do not support editing this tag"
 msgstr ""
 
-#: quodlibet.py:740
+#: quodlibet.py:794
+msgid "Invalid date"
+msgstr ""
+
+#: quodlibet.py:841
 #, python-format
 msgid "%s - Properties"
 msgstr ""
 
-#: quodlibet.py:743
+#: quodlibet.py:844
 #, python-format
 msgid "%s and %d more - Properties"
 msgstr ""
 
-#: quodlibet.py:757
+#: quodlibet.py:858
 #, python-format
 msgid "%d songs heard"
 msgstr ""
 
-#: quodlibet.py:805
+#: quodlibet.py:907
 msgid "Pattern with subdirectories is not absolute"
 msgstr ""
 
-#: quodlibet.py:806
+#: quodlibet.py:908
 #, python-format
 msgid ""
 "The pattern\n"
-"<b>%s</b>\n"
-"contains / but does not start from root. This results in bad renaming, so is "
-"not supported."
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed directories, root "
+"your pattern by starting it from the / directory."
 msgstr ""
 
-#: quodlibet.py:838
+#: quodlibet.py:943
 #, python-format
 msgid "Unable to rename %s"
 msgstr ""
 
-#: quodlibet.py:839
+#: quodlibet.py:944
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
-"existed, or you do not have permission to make the new file or remove the "
-"old one."
+"exists, or you do not have permission to make the new file or remove the old "
+"one."
 msgstr ""
 
-#: quodlibet.py:888 quodlibet.py:1009 quodlibet.py:1039
-msgid "File"
+#: quodlibet.py:982
+msgid "Invalid pattern"
 msgstr ""
 
-#: quodlibet.py:955
+#: quodlibet.py:983
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; and &gt;)."
+msgstr ""
+
+#: quodlibet.py:1065
 #, python-format
 msgid "%d/%d songs saved"
 msgstr ""
 
-#: quodlibet.py:987
-msgid "Write"
-msgstr ""
-
-#: quodlibet.py:992
-msgid "Tag"
-msgstr ""
-
-#: quodlibet.py:996
-msgid "Value"
-msgstr ""
-
-#: quodlibet.py:1012
-msgid "Path"
-msgstr ""
-
-#: quodlibet.py:1041
-msgid "New Name"
-msgstr ""
-
-#: quodlibet.py:1137
+#: quodlibet.py:1155
 #, python-format
 msgid "%d songs found."
 msgstr ""
 
-#: quodlibet.py:1138
+#: quodlibet.py:1156
 #, python-format
 msgid "%d song found."
 msgstr ""
 
-#: quodlibet.py:1240
+#: quodlibet.py:1258
 msgid "Loaded song library."
 msgstr ""
 
-#: quodlibet.py:1257
+#: quodlibet.py:1274
 msgid "Saving song library."
 msgstr ""
 
-#: quodlibet.py:1264
+#: quodlibet.py:1281
 msgid ""
 "Quod Libet - a music library and player\n"
 "Options:\n"
@@ -772,7 +797,7 @@ msgid ""
 "                    and then exit."
 msgstr ""
 
-#: quodlibet.py:1275
+#: quodlibet.py:1292
 #, python-format
 msgid ""
 "Quod Libet %s\n"
@@ -787,19 +812,19 @@ msgstr ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 
-#: quodlibet.py:1290
+#: quodlibet.py:1307
 msgid "Loading, scanning, and saving your library."
 msgstr ""
 
-#: quodlibet.py:1316
+#: quodlibet.py:1334
 msgid "No song is currently playing."
 msgstr ""
 
-#: quodlibet.py:1320
+#: quodlibet.py:1339
 msgid "No audio device found"
 msgstr ""
 
-#: quodlibet.py:1321
+#: quodlibet.py:1340
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -807,31 +832,31 @@ msgid ""
 "Quod Libet will now exit."
 msgstr ""
 
-#: quodlibet.py:1357
+#: quodlibet.py:1373
 #, python-format
 msgid "E: Unknown command line option: %s"
 msgstr ""
 
-#: quodlibet.py:1358
+#: quodlibet.py:1374
 #, python-format
 msgid "E: Try %s --help"
 msgstr ""
 
-#: quodlibet.py:1371
+#: quodlibet.py:1387
 msgid "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
 msgstr ""
 
-#: quodlibet.py:1372
+#: quodlibet.py:1388
 #, python-format
 msgid "E: You have GTK+ %s and PyGTK %s."
 msgstr ""
 
-#: quodlibet.py:1375
+#: quodlibet.py:1391
 msgid "E: Please upgrade GTK+/PyGTK."
 msgstr ""
 
 #. Try to initialize the playlist and audio output.
-#: quodlibet.py:1399
+#: quodlibet.py:1415
 msgid "Opening audio device."
 msgstr ""
 
