@@ -157,16 +157,24 @@ class PreferencesWindow(MultiInstanceWidget):
         new_h = []
         if self.widgets["disc_t"].get_active(): new_h.append("~#disc")
         if self.widgets["track_t"].get_active(): new_h.append("~#track")
-        new_h.append("title")
-        for h in ["version", "album", "part", "artist", "performer",
+        for h in ["title", "version", "album", "part", "artist", "performer",
                   "date", "genre"]:
             if self.widgets[h + "_t"].get_active(): new_h.append(h)
         if self.widgets["filename_t"].get_active(): new_h.append("~basename")
         if self.widgets["length_t"].get_active(): new_h.append("~length")
+
+        if self.widgets["titleversion_t"].get_active():
+            try: new_h[new_h.index("title")] = "~title~version"
+            except ValueError: pass
+
+        if self.widgets["albumpart_t"].get_active():
+            try: new_h[new_h.index("album")] = "~album~part"
+            except ValueError: pass
+
         new_h.extend(self.widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))
-        widgets.main.set_column_headers(widgets.main.songlist,new_h)
+        widgets.main.set_column_headers(new_h)
 
     def toggle_cover(self, toggle):
         config.set("settings", "cover", str(bool(toggle.get_active())))
@@ -198,7 +206,8 @@ class PreferencesWindow(MultiInstanceWidget):
         else: return object.__getattr__(self, name)
 
     def select_scan(self, *args):
-        chooser = FileChooser(self.window, _("Select Directories"), const.HOME)
+        chooser = FileChooser(self.window,
+                              _("Select Directories"), const.HOME)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             self.widgets["scan_opt"].set_text(":".join(fns))
@@ -223,11 +232,20 @@ class PreferencesWindow(MultiInstanceWidget):
         # Fill in the header checkboxes.
         self.widgets["disc_t"].set_active("~#disc" in headers)
         self.widgets["track_t"].set_active("~#track" in headers)
-        for h in ["album", "part", "artist", "genre", "date", "version",
-                  "performer"]:
+        for h in ["title", "album", "part", "artist", "genre",
+                  "date", "version", "performer"]:
             self.widgets[h + "_t"].set_active(h in headers)
         self.widgets["filename_t"].set_active("~basename" in headers)
         self.widgets["length_t"].set_active("~length" in headers)
+
+        if "~title~version" in headers:
+            self.widgets["title_t"].set_active(True)
+            self.widgets["titleversion_t"].set_active(True)
+            headers.remove("~title~version")
+        if "~album~part" in headers:
+            self.widgets["album_t"].set_active(True)
+            self.widgets["albumpart_t"].set_active(True)
+            headers.remove("~album~part")
 
         # Remove the standard headers, and put the rest in the list.
         for t in ["~#disc", "~#track", "album", "artist", "genre", "date",
@@ -1045,6 +1063,7 @@ class MainWindow(MultiInstanceWidget):
     # Build a new filter around our list model, set the headers to their
     # new values.
     def set_column_headers(self, headers):
+        if len(headers) == 0: return
         SHORT_COLS = ["tracknumber", "discnumber", "~length"]
         try: ws = map(int, config.get("memory", "widths").split())
         except: ws = []
@@ -1802,8 +1821,8 @@ def songref_update_view(song, ref):
 HEADERS = ["~#track", "title", "album", "artist"]
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
-                   "~album~part": "album",
-                   "~title~version": "title",
+                   "album~part": "album",
+                   "title~version": "title",
                    "lastplayed": "last played", "filename": "full name",
                    "playcount": "play count", "basename": "filename",
                    "dirname": "directory"}
@@ -1824,7 +1843,9 @@ def save_config():
 
 def main():
     HEADERS[:] = config.get("settings", "headers").split()
-    if "title" not in HEADERS: HEADERS.append("title")
+    if HEADERS == []:
+       config.set("settings", "headers", "title")
+       HEADERS[:] = ["title"]
     setup_ui()
 
     for opt in config.options("header_maps"):
