@@ -1568,11 +1568,14 @@ class MainWindow(gtk.Window):
         tray_menu.popup(None, None, None, event.button, event.time)
 
     def open_fifo(self):
-        if not os.path.exists(const.CONTROL):
-            util.mkdir(const.DIR)
-            os.mkfifo(const.CONTROL, 0600)
-        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
-        gobject.io_add_watch(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+        try:
+            if not os.path.exists(const.CONTROL):
+                util.mkdir(const.DIR)
+                os.mkfifo(const.CONTROL, 0600)
+            self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
+            gobject.io_add_watch(
+                self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+        except (IOError, OSError): pass
 
     def _input_check(self, source, condition):
         c = os.read(source, 1)

@@ -111,11 +111,14 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         return [m[0] for m in self.get_model()]
 
     def write(self, f, create = True):
-        if not hasattr(f, 'read'):
-            if "/" in f and create and not os.path.isdir(os.path.dirname(f)):
-                os.makedirs(os.path.dirname(f))
-            f = file(f, "w")
-        f.write("\n".join(self.get_text()) + "\n")
+        try:
+            if not hasattr(f, 'read'):
+                if ("/" in f and create and
+                    not os.path.isdir(os.path.dirname(f))):
+                    os.makedirs(os.path.dirname(f))
+                f = file(f, "w")
+            f.write("\n".join(self.get_text()) + "\n")
+        except (IOError, OSError): pass
 
 def Frame(label = None, border = 0, markup = None, big = False, bold = False,
           alignment = True, child = None, underline = True):

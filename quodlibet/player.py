@@ -153,7 +153,7 @@ class PlaylistPlayer(object):
                     f = file(const.CURRENT, "w")
                     f.write(self.song.to_dump())
                     f.close()
-                except OSError: pass
+                except (IOError, OSError): pass
                 if self.shuffle: random.shuffle(self.playlist)
                 try: self.player = formats.MusicPlayer(self.output, self.song)
                 except:
