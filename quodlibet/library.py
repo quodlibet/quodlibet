@@ -106,21 +106,22 @@ class AudioFile(dict):
             self[key] = other[key]
 
     def exists(self):
-        return os.path.exists(self["~filename"])
+        return os.path.exists(str(self["~filename"]))
 
     def valid(self):
         return (self.exists() and
-                self["~#mtime"] == os.path.mtime(self["~filename"]))
+                self["~#mtime"] == os.path.mtime(str(self["~filename"])))
 
     def can_change(self, k = None):
         if k is None: return True
         else: return (k and k != "vendor" and "=" not in k and "~" not in k)
 
     def rename(self, newname):
+        newname = UnicodeFilename(newname, self['~filename'].encoding)
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
         else: newname = os.path.join(self('~dirname'), newname)
         if not os.path.exists(newname):
-            shutil.move(self['~filename'], newname)
+            shutil.move(str(self['~filename']), str(newname))
         elif newname != self['~filename']: raise ValueError
         self.sanitize(newname)
 
@@ -148,7 +149,7 @@ class AudioFile(dict):
 
     # Sanity-check all sorts of things...
     def sanitize(self, filename = None):
-        if filename: self["~filename"] = filename
+        if filename: self["~filename"] = UnicodeFilename(filename)
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
@@ -160,7 +161,7 @@ class AudioFile(dict):
         try: del(self["vendor"])
         except KeyError: pass
 
-        self["~#mtime"] = os.path.mtime(self['~filename'])
+        self["~#mtime"] = os.path.mtime(str(self['~filename']))
 
     # Construct the text seen in the player window
     def to_markup(self):
@@ -266,7 +267,7 @@ class AudioFile(dict):
 
     # Try to find an album cover for the file
     def find_cover(self):
-        base = self('~dirname')
+        base = str(self('~dirname'))
         fns = os.listdir(base)
         images = []
         fns.sort()
@@ -288,7 +289,7 @@ class AudioFile(dict):
             # Otherwise, we might have a picture stored in the metadata...
             import pyid3lib
             f = tempfile.NamedTemporaryFile()
-            tag = pyid3lib.tag(self['~filename'])
+            tag = pyid3lib.tag(str(self['~filename']))
             for frame in tag:
                 if frame["frameid"] == "APIC":
                     f.write(frame["data"])
@@ -329,7 +330,7 @@ class MPCFile(AudioFile):
 
     def write(self):
         import musepack
-        tag = musepack.APETag(self['~filename'])
+        tag = musepack.APETag(str(self['~filename']))
 
         keys = tag.keys()
         for key in keys:
@@ -424,7 +425,7 @@ class MP3File(AudioFile):
 
     def write(self):
         import pyid3lib
-        tag = pyid3lib.tag(self['~filename'])
+        tag = pyid3lib.tag(str(self['~filename']))
 
         ql_comments = [i for i, frame in enumerate(tag)
                        if (frame["frameid"] == "COMM" and
@@ -463,7 +464,7 @@ class MP3File(AudioFile):
                 tag.append({'frameid': "TDAT", 'text': str(m+d)})
                 
         tag.update()
-        self["~#mtime"] = os.path.mtime(self['~filename'])
+        self["~#mtime"] = os.path.mtime(str(self['~filename']))
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -480,14 +481,14 @@ class OggFile(AudioFile):
 
     def write(self):
         import ogg.vorbis
-        f = ogg.vorbis.VorbisFile(self['~filename'])
+        f = ogg.vorbis.VorbisFile(str(self['~filename']))
         comments = f.comment()
         comments.clear()
         for key in self.realkeys():
             value = self.list(key)
             for line in value: comments[key] = line
-        comments.write_to(self['~filename'])
-        self["~#mtime"] = os.path.mtime(self['~filename'])
+        comments.write_to(str(self['~filename']))
+        self["~#mtime"] = os.path.mtime(str(self['~filename']))
 
 class ModFile(AudioFile):
     def __init__(self, filename):
@@ -536,7 +537,7 @@ class FLACFile(AudioFile):
     def write(self):
         import flac.metadata
         chain = flac.metadata.Chain()
-        chain.read(self['~filename'])
+        chain.read(str(self['~filename']))
         it = flac.metadata.Iterator()
         it.init(chain)
         vc = None
@@ -635,6 +636,33 @@ class AudioFileGroup(dict):
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
 
+class UnicodeFilename(unicode):
+    """Store a filename in unicode for most uses. This will attempt to guess the
+    real encoding of the filename so that it can be reversed 100%. To ensure you
+    have a bytestring version, just call str(filename) where necessary."""
+
+    encoding = util.fscoding() # default encoding
+
+    def __new__(cls, value, encoding=None, errors='strict'):
+        if isinstance(value, cls):              # no need to reconvert
+            return value
+        elif isinstance(value, unicode):
+            return unicode.__new__(cls, value)  # use default encoding for these
+        else:
+            # guess among explicitly passed, CHARSET reported fscoding,
+            # and a couple preferred defaults
+            for enc in filter(None, (encoding, cls.encoding,
+                    'utf-8', 'shift-jis', 'iso-8859-1')):
+                try: fn = unicode.__new__(cls, value, enc, errors) 
+                except (UnicodeError, LookupError): pass
+                else: break
+            else: raise
+            fn.encoding = enc
+            return fn
+
+    def __str__(self):
+        return self.encode(self.encoding)
+
 class Library(dict):
     def __init__(self, masked = [], initial = {}):
         self.masked = masked
@@ -729,6 +757,7 @@ class Library(dict):
         removed, changed = 0, 0
         for song in songs:
             if type(song) not in supported.values(): continue
+            song['~filename'] = UnicodeFilename(song['~filename'])
             if song.valid():
                 fn = song['~filename']
                 self[fn] = song

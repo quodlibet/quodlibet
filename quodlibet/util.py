@@ -105,6 +105,7 @@ def format_time_long(time):
     return time_str.rstrip(" ,")
 
 def fscoding():
+    env = os.environ
     if "CHARSET" in env: return env["CHARSET"]
     elif "G_BROKEN_FILENAMES" in env:
         cset = env.get("LC_CTYPE", "foo.utf-8")
@@ -326,6 +327,6 @@ class FileFromPattern(object):
         pat = self.pattern
         if pat and ('.' not in pat or pat.endswith('.') or
                 '>' in pat[pat.rfind('.'):]):
-            oldname = song('~basename')
+            oldname = str(song('~basename'))
             newname.append(oldname[oldname.rfind('.'):])
         return ''.join(newname)

@@ -49,7 +49,7 @@ class AudioPlayer(object):
 class MP3Player(AudioPlayer):
     def __init__(self, dev, song):
         import mad
-        filename = song['~filename']
+        filename = str(song['~filename'])
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = mad.MadFile(filename)
@@ -74,7 +74,7 @@ class MP3Player(AudioPlayer):
 class FLACPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
-        filename = song['~filename']
+        filename = str(song['~filename'])
         import flac.decoder, flac.metadata
         self.STREAMINFO = flac.metadata.STREAMINFO
         self.EOF = flac.decoder.FLAC__FILE_DECODER_END_OF_FILE
@@ -134,7 +134,7 @@ class FLACPlayer(AudioPlayer):
 class OggPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
-        filename = song['~filename']
+        filename = str(song['~filename'])
         import ogg.vorbis
         self.error = ogg.vorbis.VorbisError
         self.dev = dev
@@ -166,7 +166,7 @@ class ModPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
         import modplug
-        self.audio = modplug.ModFile(song["~filename"])
+        self.audio = modplug.ModFile(str(song["~filename"]))
         self.length = self.audio.length
         self.pos = 0
         self.dev = dev
@@ -190,7 +190,7 @@ class MPCPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
         import musepack
-        self.audio = musepack.MPCFile(song["~filename"])
+        self.audio = musepack.MPCFile(str(song["~filename"]))
         self.length = self.audio.length
         self.pos = 0
         self.dev = dev

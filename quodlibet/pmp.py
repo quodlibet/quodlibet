@@ -47,8 +47,8 @@ class CopyPMP(PMP):
     def upload(self, song):
         filename = song["~filename"]
         basename = song["~basename"]
-        dirname = os.path.basename(os.path.dirname(filename))
-        target = os.path.join(self.base, dirname, basename)
+        dirname = os.path.basename(os.path.dirname(str(filename)))
+        target = os.path.join(self.base, dirname, str(basename))
         if not os.path.isdir(os.path.dirname(target)):
             try: os.mkdir(os.path.dirname(target))
             except OSError: pass
@@ -74,8 +74,8 @@ class IfpPMP(PMP):
     def upload(self, song):
         filename = song["~filename"]
         basename = song["~basename"]
-        dirname = os.path.basename(os.path.dirname(filename))
-        target = os.path.join(dirname, basename)
+        dirname = os.path.basename(os.path.dirname(str(filename)))
+        target = os.path.join(dirname, str(basename))
 
         # Avoid spurious calls to ifp mkdir; this can take a long time
         # on a noisy USB line.
@@ -105,7 +105,7 @@ class GenericPMP(PMP):
         PMP.__init__(self, *args)
 
     def upload(self, song):
-        filename = song["~filename"]
+        filename = str(song["~filename"])
         if "%s" in self.command:
             command = self.command.replace("%s", repr(filename))
         else:
