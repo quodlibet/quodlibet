@@ -1,6 +1,6 @@
-.TH quodlibet 1 "November 6th, 2004"
+.TH quodlibet 1 "February 23rd, 2005"
 .SH NAME
-quodlibet \- music library and player
+quodlibet \- music library manager and player
 .SH SYNOPSIS
 \fBquodlibet\fR [ \fB\-\-print\-playing\fR | \fB\-\-refresh\-library\fR | \fIcontrol\fR ]
 .SH DESCRIPTION
@@ -8,62 +8,73 @@ Quod Libet is a music library and player. Rather than keeping a single
 playlist, it loads all your songs at once, and lets you filter and
 play them based on information like title, artist, or album.
 .SH OPTIONS
-.IP \-\-refresh\-library
+.IP \-\-refresh\-library 4
 Load your song library and configuration file. Deleted files will be
 removed and changed files will be updated. This happens whenever
 QL starts up, or when you select "Refresh library" from the Music
 menu.
-.IP \-\-print\-playing
+.IP \-\-print\-playing 4
 Print out information about the currently playing song. This optionally
 takes a format string as an argument. This format string looks like a
 Python dictionary format string ("%(artist)\ \-\ %(title)")
 but also supports conditional substrings using ?
 ("%(artist)?(album)\ \-\ %(album)?\ \-\ %(title)").
-.IP \-\-next,\ \-\-previous,\ \-\-play\-pause,\ \-\-play,\ \-\-pause
+.IP \-\-next,\ \-\-previous,\ \-\-play\-pause,\ \-\-play,\ \-\-pause 4
 Control a currently-running instance of QL, as if the equivalent
 buttons in the window had been clicked.
-.IP \-\-volume\ +|-|0..100
+.IP \-\-volume\ +|-|0..100 4
 Control the volume in a running instance of QL by increasing it, decreasing
 it, or setting it to the given value.
-.IP \-\-shuffle\ 0|1|t,\ \-\-repeat\ 0|1|t
+.IP \-\-shuffle\ 0|1|t,\ \-\-repeat\ 0|1|t 4
 Set the shuffle or repeat playback options to off (0), on (1), or
 toggle them between on and off (t).
-.IP \-\-seek\-to\ \fI[hh:mm:]ss\fR
+.IP \-\-seek\-to\ \fI[hh:mm:]ss\fR 4
 Seek within the currently playing song.
-.IP \-\-query\ \fIquery\fR
+.IP \-\-query\ \fIquery\fR 4
 Search your library and make a playlist.
-.IP \-\-play\-file\ \fIfilename\fR
+.IP \-\-play\-file\ \fIfilename\fR 4
 Play the given song. If it is not in the library, it will be added.
 If it is in the current playlist, it will be selected there, otherwise
 a new playlist containing only this song will be made.
 .SH USAGE
 Use the "Add Music" item in the menu or click the "Add" icon on the
-toolbar to add directories full of songs to your library. Once music
-has been added to your library, enter the terms you wish to search in
-the search box, and press enter or click on the search button. If you
-want more control over the search, see the section entitled "Search
-Syntax" below.
-.PP
-If you want to display album covers, put a file named "frontcover.jpg"
+toolbar to add songs to your library; if you add a directory, its
+contents will be added recursively. Once music has been added to your
+library, enter the terms you wish to search in the search box, and
+press enter or click on the search button. If you want more control
+over the search, see the section entitled "Search Syntax" below.
+.SH ALBUM COVERS
+If you want to display album covers, put a file named "folder.jpg"
 or "cover.jpg" in the same directory as the songs it goes with, and
 make sure album cover displays are enabled in your preferences. GIF
 and PNG images are also supported. QL will also look for any other
 images with 'folder', 'front', 'cover', or 'jacket' in their name.
+.PP
+If you want to store multiple albums in the same directory but keep
+distinct cover images, the name of the appropriate image file must
+contain the 'labelid' tag value, e.g. "COCX-32760 cover.jpg".
 .SH SEARCH SYNTAX
 If you need more control than simple searches allow, you can use QL's more
 advanced search syntax, that lets you specify a specific tag to search. To
 use this, enter a search in the form of
-.RS
+.RS 4
 tag = /re/
 .RE
 Where \fItag\fR is the name of the tag you want to search (like 'artist'
 or 'title'), and \fIre\fR is a regular expression you want
-the tag to match. (If you don't know how to write regular expressions,
-you can usually just use the word you want, if it doesn't contain
-a '*', '\.', or '/'.)
+the tag to match.
+.PP
+If you don't know how to use regular expressions, you can use a string
+instead;
+.RS 4
+tag = "a string"
+.RE
+will find all songs where the value of \fItag\fR is \fIa
+string\fR. All the following examples of combining searches apply to
+string and regular expression searches.
 .PP
 You can combine searches using & and |:
-.RS
+.RS 4
 tag = &(/re1/, /re2/)
 .br
 tag = |(/re1/, /re2/)
@@ -71,7 +82,7 @@ tag = |(/re1/, /re2/)
 & requires that the tag match everything inside it, and | only
 requires one match. You can also combine whole matches with & and |,
 or check two tags at once. The following will find the same songs:
-.RS
+.RS 4
 |(tag1 = /re/, tag2 = /re/)
 .br
 tag1, tag2 = /re/
@@ -79,13 +90,13 @@ tag1, tag2 = /re/
 .PP
 Finally, you can select everything that doesn't match an expression
 using !:
-.RS
+.RS 4
 tag = !/re/
 .RE
 .PP
 Because some tags are used commonly, abbreviations are provided. The
 following two searches are the same:
-.RS
+.RS 4
 artist = /Rasputina/
 .br
 a = /Rasputina/
@@ -94,22 +105,25 @@ Similar abbreviations exist for album ('b'), title ('t'), version
 ('v'), date ('d'), and track number ('n'). The '*' character matches 
 any of artist, album, title, version, or performer.
 .PP
-Normally searches are case-insensitive, so /BOA/ and /BoA/ are the
-same. If you need case-sensitivity, put a 'c' on the end: /BOA/c and
-/BoA/c.
+Searches are case-insensitive if they are entirely lowercase, so
+"boa" will match "boa", "BoA" and "BOA". However, "BoA" will only
+match "BoA", and "Boa" will match none of them. If you need
+case-sensitivity for lower-case values, append a 'c' to the end:
+\fB/boa/c\fR, or \fB"boa"c\fR. You can append an 'i' to force
+case-insensitivity.
 .SH NUMERIC SEARCHES
 In addition to matching strings with regular expressions, QL supports
 searches with numeric comparisons. These searches begin with a '#'.
 To view all songs longer than 2 minutes, or all tracks on any
 album greater than 20 but less than 40:
-.RS
+.RS 4
 #(length > 2:00)
 .br
-#(track > 20, track < 40)
+#(20 < track < 40)
 .RE
 You can also search for how long ago you last heard or modified a
 song:
-.RS
+.RS 4
 #(lastplayed > 8 days)
 .br
 #(mtime < today)
@@ -124,16 +138,18 @@ Supported numeric fields are
 .IR disc ,
 .IR length ,
 .IR playcount ,
+.IR skipcount ,
+.IR added ,
 .IR mtime ,
 and
 .IR lastplayed .
 Numeric searches can be combined with other searches. QL understands
 units of minutes, hours, days, weeks (7 days), months (30 days), and years
 (365 days), and times in "h:mm:ss" or "m:ss" format.
-.SH EXAMPLES
+.SH SEARCHING EXAMPLES
 Some more examples of advanced searching:
-.RS
-&(artist = /Sana/c, album = !/beatmania/)
+.RS 4
+&(artist = "Sana", album = !/beatmania/)
 .br
 &(artist = /lindsay smith/, album = /fruitbat vat/)
 .br
@@ -149,31 +165,63 @@ filename = /.ogg$/
 .br
 &(genre = /classical/, #(lastplayed > 3 days))
 .RE
+.SH RENAMING FILES
+Quod Libet allows you to rename files based on their tags. In some
+cases you may wish to alter the filename depending on whether some
+tags are present or missing, in addition to their values. A common
+pattern might be
+.RS 4
+<tracknumber>. <title~version>
+.RE
+But when the file is missing a 'tracknumber', this results in a file
+starting with a '.', which isn't what you want. Instead, you can use a
+'|' to only add the '.' when a tracknumber is present:
+.RS 4
+<tracknumber|<tracknumber>. ><title~version>
+.RE
+You can also specify text to use if the tag is missing by adding
+another '|':
+.RS 4
+<album|<album>|No Album> \- <title>
+.RE
+If the song has an album tag it will be used, otherwise the text
+"No Album" will be used.
+.SH TIED TAGS
+Many places in Quod Libet (such as the song list, or rename dialog)
+allow you to use a feature called "tied tags". Tied tags are two tag
+names joined together with a "~" like "~title~version" or
+"~album~part" (some places you can also omit the initial ~). Tied tags
+result in "nice" displays even when one of the tags is missing; for
+example, "title~version" will result in \fITitle\ \-\ Version\fR when a
+version tag is present, but only \fITitle\fR when one isn't. You can
+tie any number of tags together;
+"~artist~album~discnumber~part~tracknumber~title~version" is an
+extreme case.
 .SH AUDIO BACKENDS
 By default QL uses the ao ALSA 0.9 driver for playing audio, and falls back
 to an OSS driver if that fails. You can change this in ~/.quodlibet/config
 by editing the 'backend' option. For example 'ao:arts' will use an aRts
 backend, or 'oss' to always use OSS.
 .SH FILES
-.IP ~/.quodlibet/songs
+.IP ~/.quodlibet/songs 4
 A cached list of songs to load initially. The format is a pickled
 Python dict. Deleting this file will remove all songs from your
 library.
-.IP ~/.quodlibet/config
+.IP ~/.quodlibet/config 4
 Quod Libet's configuration file. Don't manually edit this while QL is
 running; it will not pick up the changes, and it will overwrite it
 when you exit.
-.IP ~/.quodlibet/current
+.IP ~/.quodlibet/current 4
 A "key=value" file containing information about the currently playing song.
-.IP ~/.quodlibet/control
+.IP ~/.quodlibet/control 4
 A FIFO connected to the most-recently-started instance of the program.
 \-\-next, \-\-previous, etc., use this to control the player.
 .SH KNOWN NOT-BUGS
 Newlines are not supported within tag values. Using them will break a lot
 of tools, including QL.
 .PP
-Filenames are always written in UTF-8.
-.SH AUTHOR
+Symbolic links are not followed when recursively adding files.
+.SH AUTHORS
 Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 The best way to contact them is to subscribe to (or just email)
 the Quod Libet mailing list at quodlibet@lists.sacredchao.net
