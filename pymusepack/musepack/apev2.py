@@ -29,7 +29,7 @@ IS_HEADER =  1 << 29
 
 def _debug(str): print str
 def _dummy(str): pass
-debug = _debug
+debug = _dummy
 
 class error(IOError): pass
 class InvalidTagError(error): pass
@@ -62,6 +62,17 @@ class APETag(object):
             self.dict[APEKey(key)] = APEValue(value, kind)
             debug("key %s, value %r" % (key, value))
 
+    def _tag_start(self, f):
+        f.seek(-32, 2)
+        if f.read(8) == "APETAGEX":
+            f.read(4) # version
+            tag_size = _read_int(f.read(4))
+            f.seek(-(tag_size + 8), 2) # start of header
+            return f.tell()
+        else:
+            f.seek(0, 2)
+            return f.tell()
+
     def _find_tag(self, f):
         f.seek(-32, 2)
         data = f.read(32)
@@ -89,7 +100,7 @@ class APETag(object):
 
             f.seek(-tag_size, 2)
             # tag size includes footer
-            return f.read(tag_size - 8), item_count
+            return f.read(tag_size - 32), item_count
         else:
             debug("no APE tag found")
             return None, 0
@@ -100,6 +111,7 @@ class APETag(object):
     def items(self): return self.dict.items()
 
     def __getitem__(self, k): return self.dict[k]
+    def __delitem__(self, k): del(self.dict[k])
     def __setitem__(self, k, v):
         if not isinstance(v, _APEValue):
             # let's guess at the content if we're not already a value...
@@ -122,7 +134,7 @@ class APETag(object):
     def write(self, filename = None):
         filename = filename or self.filename
         f = file(filename, "ab+")
-        offset = self.tag_offset(f)
+        offset = self._tag_start(f)
 
         f.seek(offset, 0)
         f.truncate()
