@@ -519,15 +519,11 @@ class MainWindow(MultiInstanceWidget):
         self.widgets["shuffle_t"].set_active(config.state("shuffle"))
         self.widgets["repeat_t"].set_active(config.state("repeat"))
 
-        if config.get("memory", "query"):
-            self.widgets["query"].child.set_text(config.get("memory","query"))
-        else:
-            player.playlist.set_playlist(library.values())
-
         # Wait to fill in the column headers because otherwise the
         # spacing is off, since the window hasn't been sized until now.
-        self.set_column_headers(config.get("settings", "headers").split())
         self.widgets["query"].child.set_text(config.get("memory", "query"))
+        self.set_column_headers(config.get("settings", "headers").split())
+        self.text_parse()
 
         self.albumfn = None
         self._time = (0, 1)
