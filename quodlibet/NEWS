@@ -1,6 +1,7 @@
 0.6
  - Mass-set track numbers.
  - Fix a race condition on startup resulting in a crash. (I think.)
+ - Tag by Pattern can replace or add new tags.
 
 0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
  - The ao audio backend is back; see the "AUDIO BACKENDS" section in the

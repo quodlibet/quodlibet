@@ -34,6 +34,7 @@ def init(rc_file):
     _config.set("settings", "color", "true")
 
     _config.set("settings", "tbp_space", "false")
+    _config.set("settings", "addreplace", "0")
     _config.set("settings", "titlecase", "false")
     _config.set("settings", "splitval", "true")
     _config.set("settings", "nbp_space", "false")

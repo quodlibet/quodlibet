@@ -27,7 +27,8 @@ http://www.sacredchao.net/~piman/software/quodlibet.shtml#faq.
 
 You must be running 'unstable' or a recent snapshot of it.
 
-# apt-get install python-pymad python-pyvorbis python-id3lib python-glade2
+# apt-get install python-pymad python-pyvorbis python-id3lib python-glade2 \
+                  python-pyao
 
 If you want tray icon or multimedia key support,
 # apt-get install python2.3-dev python-gtk2-dev

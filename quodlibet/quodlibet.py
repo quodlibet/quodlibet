@@ -359,6 +359,9 @@ class GladeHandlers(object):
              widgets["prefs_%s_t" % w].set_active(config.state(w))
         old_h = HEADERS[:]
 
+        widgets["prefs_addreplace"].set_active(
+            config.getint("settings", "addreplace"))
+
         # Fill in the header checkboxes.
         widgets["disc_t"].set_active("=d" in old_h)
         widgets["track_t"].set_active("=#" in old_h)
@@ -393,6 +396,9 @@ class GladeHandlers(object):
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))
         set_column_headers(widgets["songlist"], new_h)
+
+    def prefs_addreplace(box):
+        config.set("settings", "addreplace", str(box.get_active()))
 
     def change_scan(entry):
         config.set("settings", "scan", entry.get_text())
@@ -601,6 +607,8 @@ class SongProperties(MultiInstanceWidget):
         self.tbp_preview = self.widgets['tbp_preview']
         self.tbp_entry.connect('changed', self.tbp_changed)
         self.tbp_headers = []
+        self.widgets["prop_tbp_addreplace"].set_active(
+            config.getint("settings", "addreplace"))
 
         # rename by pattern
         self.nbp_preview = self.widgets['nbp_preview']
@@ -1119,6 +1127,7 @@ class SongProperties(MultiInstanceWidget):
     def tbp_save(self, *args):
         pattern_text = self.tbp_entry.get_text().decode('utf-8')
         pattern = util.PatternFromFile(pattern_text)
+        add = (self.widgets["prop_tbp_addreplace"].get_active() == 1)
         win = WritingWindow(self.window, len(self.songrefs))
         spls = config.get("settings", "splitters")
 
@@ -1129,8 +1138,14 @@ class SongProperties(MultiInstanceWidget):
             changed = False
             for i, h in enumerate(pattern.headers):
                 if row[i]:
-                    song[h] = row[i + 3].decode("utf-8")
-                    changed = True
+                    if not add or h not in song:
+                        song[h] = row[i + 3].decode("utf-8")
+                        changed = True
+                    else:
+                        for val in row[i + 3].decode("utf-8").split("\n"):
+                            if val not in song[h]:
+                                song.add(h, val)
+                                changed = True
 
             if changed and ref:
                 song.sanitize()

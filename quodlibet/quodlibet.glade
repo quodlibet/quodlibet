@@ -1712,6 +1712,20 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <property name="fill">False</property>
 				</packing>
 			      </child>
+
+			      <child>
+				<widget class="GtkComboBox" id="prefs_addreplace">
+				  <property name="visible">True</property>
+				  <property name="items" translatable="yes">Tags should replace existing ones
+Tags should be added to existing ones</property>
+				  <signal name="changed" handler="prefs_addreplace" last_modification_time="Fri, 19 Nov 2004 07:00:16 GMT"/>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
+				</packing>
+			      </child>
 			    </widget>
 			  </child>
 			</widget>
@@ -3511,8 +3525,8 @@ Tags should be added to existing ones</property>
 		<widget class="GtkScrolledWindow" id="scrolledwindow4">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
-		  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+		  <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+		  <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
 		  <property name="shadow_type">GTK_SHADOW_IN</property>
 		  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
