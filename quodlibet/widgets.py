@@ -2438,7 +2438,7 @@ class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change, validators):
         if can_change == True:
             can = ["title", "version", "artist", "album",
-                   "performer", "discnumber"]
+                   "performer", "discnumber", "tracknumber"]
         else: can = can_change
         can.sort()
 
