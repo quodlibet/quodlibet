@@ -1429,7 +1429,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 </widget>
 
 <widget class="GtkWindow" id="properties_window">
-  <property name="border_width">10</property>
+  <property name="border_width">12</property>
   <property name="title" translatable="yes">Song Properties</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -1441,12 +1441,13 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
   <property name="skip_pager_hint">False</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <signal name="delete_event" handler="songprop_close" last_modification_time="Sun, 24 Oct 2004 04:16:33 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox11">
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
-      <property name="spacing">0</property>
+      <property name="spacing">12</property>
 
       <child>
 	<widget class="GtkTable" id="table2">
@@ -1627,6 +1628,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 
 	  <child>
 	    <widget class="GtkLabel" id="songprop_file">
+	      <property name="width_request">300</property>
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">False</property>
@@ -1657,22 +1659,12 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
       </child>
 
       <child>
-	<widget class="GtkHSeparator" id="hseparator7">
-	  <property name="visible">True</property>
-	</widget>
-	<packing>
-	  <property name="padding">10</property>
-	  <property name="expand">False</property>
-	  <property name="fill">False</property>
-	</packing>
-      </child>
-
-      <child>
 	<widget class="GtkScrolledWindow" id="scrolledwindow1">
+	  <property name="height_request">150</property>
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
-	  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+	  <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+	  <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
 	  <property name="shadow_type">GTK_SHADOW_IN</property>
 	  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
@@ -1704,6 +1696,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	    <widget class="GtkButton" id="songprop_add">
 	      <property name="visible">True</property>
 	      <property name="sensitive">False</property>
+	      <property name="tooltip" translatable="yes">Add a new tag to the file</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-add</property>
 	      <property name="use_stock">True</property>
@@ -1722,6 +1715,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	    <widget class="GtkButton" id="songprop_remove">
 	      <property name="visible">True</property>
 	      <property name="sensitive">False</property>
+	      <property name="tooltip" translatable="yes">Remove the currently selected tag from the file</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-remove</property>
 	      <property name="use_stock">True</property>
@@ -1738,17 +1732,6 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
-	  <property name="expand">False</property>
-	  <property name="fill">True</property>
-	</packing>
-      </child>
-
-      <child>
-	<widget class="GtkHSeparator" id="hseparator6">
-	  <property name="visible">True</property>
-	</widget>
-	<packing>
-	  <property name="padding">10</property>
 	  <property name="expand">False</property>
 	  <property name="fill">True</property>
 	</packing>
@@ -1782,6 +1765,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	    <widget class="GtkButton" id="songprop_save">
 	      <property name="visible">True</property>
 	      <property name="sensitive">False</property>
+	      <property name="tooltip" translatable="yes">Save any changes made to the tag</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-save</property>
 	      <property name="use_stock">True</property>
@@ -1801,6 +1785,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	    <widget class="GtkButton" id="songprop_revert">
 	      <property name="visible">True</property>
 	      <property name="sensitive">False</property>
+	      <property name="tooltip" translatable="yes">Undo all changes since the last save</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-revert-to-saved</property>
 	      <property name="use_stock">True</property>

@@ -447,8 +447,8 @@ class MultiInstanceWidget(object):
             else:
                 value = '(%s variants of %s)' % (len(valdict), comment)
                 mayedit = min(valdict.values())
-                edited = False
-                deleted = False
+            edited = False
+            deleted = False
             self.model.append(row=[comment, value, edited, mayedit, deleted])
 
         self.existing_comments = comments.keys()[:]
