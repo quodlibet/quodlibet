@@ -501,90 +501,6 @@ class DeleteDialog(gtk.Dialog):
         self.vbox.pack_start(hbox)
         self.vbox.show_all()
 
-class WaitLoadWindow(gtk.Window):
-    def __init__(self, parent, count, text, initial):
-        gtk.Window.__init__(self)
-        self.__sig = parent.connect('configure-event', self.__recenter)
-        self.set_transient_for(parent)
-        self.set_modal(True)
-        self.set_decorated(False)
-        self.set_resizable(False)
-        self.add(gtk.Frame())
-        self.child.set_shadow_type(gtk.SHADOW_OUT)
-        vbox = gtk.VBox(spacing=12)
-        vbox.set_border_width(12)
-        self.__label = gtk.Label()
-        self.__label.set_size_request(170, -1)
-        self.__label.set_use_markup(True)
-        self.__label.set_line_wrap(True)
-        self.__label.set_justify(gtk.JUSTIFY_CENTER)
-        vbox.pack_start(self.__label)
-        self.__progress = gtk.ProgressBar()
-        self.__progress.set_pulse_step(0.08)
-        vbox.pack_start(self.__progress)
-
-        self.current = 0
-        self.count = count
-        if self.count > 5 or self.count == 0:
-            # Display a stop/pause box. count = 0 means an indefinite
-            # number of steps.
-            hbox = gtk.HBox(spacing=6, homogeneous=True)
-            b1 = qltk.Button(stock=gtk.STOCK_STOP)
-            b2 = gtk.ToggleButton()
-            b2.add(gtk.HBox(spacing=2))
-            i = gtk.Image()
-            i.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
-            b2.child.pack_start(i, expand=False)
-            l = gtk.Label(_("_Pause"))
-            l.set_use_underline(True)
-            l.set_mnemonic_widget(b2)
-            b2.child.pack_start(l)
-            b1.connect('clicked', self.__cancel_clicked)
-            b2.connect('clicked', self.__pause_clicked)
-            hbox.pack_start(b1)
-            hbox.pack_start(b2)
-            vbox.pack_start(hbox)
-
-        self.child.add(vbox)
-
-        self.__text = text
-        self.__paused = False
-        self.__quit = False
-
-        self.__label.set_markup(self.__text % initial)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
-        self.show_all()
-        while gtk.events_pending(): gtk.main_iteration()
-
-    def __pause_clicked(self, button):
-        self.__paused = button.get_active()
-
-    def __cancel_clicked(self, button):
-        self.__quit = True
-
-    def step(self, *values):
-        self.__label.set_markup(self.__text % values)
-        if self.count:
-            self.current += 1
-            self.__progress.set_fraction(
-                max(0, min(1, self.current / float(self.count))))
-        else:
-            self.__progress.pulse()
-
-        while not self.__quit and (self.__paused or gtk.events_pending()):
-            gtk.main_iteration()
-        return self.__quit
-
-    def __recenter(self, parent, event):
-        x, y = parent.get_position()
-        dx, dy = parent.get_size()
-        dx2, dy2 = self.get_size()
-        self.move(x + dx/2 - dx2/2, y + dy/2 - dy2/2)
-
-    def end(self):
-        self.get_transient_for().disconnect(self.__sig)
-        self.destroy()
-
 class BigCenteredImage(gtk.Window):
     def __init__(self, title, filename):
         gtk.Window.__init__(self)
@@ -1924,22 +1840,22 @@ class MainWindow(gtk.Window):
             BigCenteredImage(self.current_song.comma("album"), cover.name)
 
     def rebuild(self, activator, hard = False):
-        window = WaitLoadWindow(self, len(library) // 7,
-                                _("Quod Libet is scanning your library. "
-                                  "This may take several minutes.\n\n"
-                                  "%d songs reloaded\n%d songs removed"),
-                                (0, 0))
+        window = qltk.WaitLoadWindow(self, len(library) // 7,
+                                     _("Quod Libet is scanning your library. "
+                                       "This may take several minutes.\n\n"
+                                       "%d songs reloaded\n%d songs removed"),
+                                     (0, 0))
         iter = 7
         c = r = 0
         for c, r in library.rebuild(hard):
             if iter == 7:
                 if window.step(c, r):
-                    window.end()
+                    window.destroy()
                     break
                 iter = 0
             iter += 1
         else:
-            window.end()
+            window.destroy()
             if config.get("settings", "scan"):
                 self.scan_dirs(config.get("settings", "scan").split(":"))
         if c + r != 0:
@@ -1972,13 +1888,13 @@ class MainWindow(gtk.Window):
         library.save(const.LIBRARY)
 
     def scan_dirs(self, fns):
-        win = WaitLoadWindow(self, 0,
-                             _("Quod Libet is scanning for new songs and "
-                               "adding them to your library.\n\n"
-                               "%d songs added"), 0)
+        win = qltk.WaitLoadWindow(self, 0,
+                                  _("Quod Libet is scanning for new songs and "
+                                    "adding them to your library.\n\n"
+                                    "%d songs added"), 0)
         for added, changed in library.scan(fns):
             if win.step(added): break
-        win.end()
+        win.destroy()
         player.playlist.refilter()
         self.refresh_songlist()
         self.browser.update()
@@ -2052,7 +1968,7 @@ class MainWindow(gtk.Window):
             if resp == 0: s = _("Moving %d/%d.")
             elif resp == 2: s = _("Deleting %d/%d.")
             else: return
-            w = WaitLoadWindow(self, len(songs), s, (0, len(songs)))
+            w = qltk.WaitLoadWindow(self, len(songs), s, (0, len(songs)))
             trash = os.path.expanduser("~/.Trash")
             for filename, song, iter in songs:
                 try:
@@ -2075,7 +1991,7 @@ class MainWindow(gtk.Window):
                     break
                 else:
                     w.step(w.current + 1, w.count)
-            w.end()
+            w.destroy()
             self.browser.update()
 
     def __popup_stopafter(self, activator, event, *args):
@@ -3331,7 +3247,7 @@ class SongProperties(gtk.Window):
 
                 if win.step(): break
 
-            win.end()
+            win.destroy()
             self.cb(None)
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
@@ -3594,7 +3510,7 @@ class SongProperties(gtk.Window):
                 return win.step()
         
             self.model.foreach(save_song)
-            win.end()
+            win.destroy()
             self.cb(None)
             self.save.set_sensitive(False)
             self.prop.update()
@@ -3741,7 +3657,7 @@ class SongProperties(gtk.Window):
             self.prop.update()
             self.save.set_sensitive(False)
             self.cb(None)
-            win.end()
+            win.destroy()
 
         def __update(self, songs):
             self.songs = songs
@@ -3892,7 +3808,7 @@ class SongProperties(gtk.Window):
             self.model.foreach(settrack)
             self.prop.update()
             self.cb(None)
-            win.end()
+            win.destroy()
 
         def changed(self, *args):
             self.preview.set_sensitive(True)
@@ -4236,14 +4152,14 @@ class ExFalsoWindow(gtk.Window):
 
 gobject.type_register(ExFalsoWindow)
 
-class WritingWindow(WaitLoadWindow):
+class WritingWindow(qltk.WaitLoadWindow):
     def __init__(self, parent, count):
-        WaitLoadWindow.__init__(self, parent, count,
+        qltk.WaitLoadWindow.__init__(self, parent, count,
                                 _("Saving the songs you changed.\n\n"
                                   "%d/%d songs saved"), (0, count))
 
     def step(self):
-        return WaitLoadWindow.step(self, self.current + 1, self.count)
+        return qltk.WaitLoadWindow.step(self, self.current + 1, self.count)
 
 # Return a 'natural' version of the tag for human-readable bits.
 # Strips ~ and ~# from the start and runs it through a map (which

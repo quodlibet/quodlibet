@@ -104,6 +104,44 @@ class TestComboSave(TestCase):
         self.failUnlessEqual(["line 0", "line 1", "line 2"], c.get_text())
         c.destroy()
 
+class TestWLW(TestCase):
+    class DummyConnector(gtk.Window):
+        count = 0
+        def connect(self, *args): self.count += 1
+        def disconnect(self, *args): self.count -= 1
+    
+    def setUp(self):
+        self.parent = self.DummyConnector()
+        self.wlw = qltk.WaitLoadWindow(self.parent, 5, "a test", show=False)
+        self.wlw.hide()
+
+    def test_none(self):
+        wlw = qltk.WaitLoadWindow(None, 5, "a test", show=False)
+        wlw.step()
+        wlw.destroy()
+
+    def test_connect(self):
+        self.failUnlessEqual(1, self.parent.count)
+
+    def test_start(self):
+        self.failUnlessEqual(0, self.wlw.current)
+        self.failUnlessEqual(5, self.wlw.count)
+
+    def test_step(self):
+        self.failIf(self.wlw.step())
+        self.failUnlessEqual(1, self.wlw.current)
+        self.failIf(self.wlw.step())
+        self.failIf(self.wlw.step())
+        self.failUnlessEqual(3, self.wlw.current)
+
+    def test_destroy(self):
+        self.wlw.destroy()
+        self.failUnlessEqual(0, self.parent.count)
+
+    def tearDown(self):
+        self.wlw.destroy()
+
 registerCase(TestNotebook)
 registerCase(TestComboSave)
+registerCase(TestWLW)
 
