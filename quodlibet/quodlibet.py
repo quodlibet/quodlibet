@@ -405,6 +405,8 @@ class MultiInstanceWidget(object):
             row[4] = False # not Deleted
             self.save.set_sensitive(True)
             self.revert.set_sensitive(True)
+            if self.window.get_title()[0] != "*":
+                self.window.set_title("* " + self.window.get_title())
 
     def songprop_selection_changed(self, selection):
         model, iter = selection.get_selected()
@@ -441,6 +443,8 @@ class MultiInstanceWidget(object):
 
                 self.save.set_sensitive(True)
                 self.revert.set_sensitive(True)
+                if self.window.get_title()[0] != "*":
+                    self.window.set_title("* " + self.window.get_title())
 
                 tag.child.set_text("")
                 val.set_text("")
@@ -458,6 +462,8 @@ class MultiInstanceWidget(object):
             model.remove(iter)
         self.save.set_sensitive(True)
         self.revert.set_sensitive(True)
+        if self.window.get_title()[0] != "*":
+            self.window.set_title("* " + self.window.get_title())
 
     def fill_property_info(self):
         from library import AudioFileGroup
@@ -696,7 +702,8 @@ def setup_nonglade():
     widgets["volume"].set_value(player.device.volume)
 
     widgets.wrap = GTKSongInfoWrapper()
-
+    w, h = map(int, config.get("memory", "size").split())
+    widgets["main_window"].set_size_request(w, h)
     widgets["main_window"].show()
 
     widgets["query"].child.set_text(config.get("memory", "query"))
