@@ -1,4 +1,4 @@
-from unittest import TestCase, makeSuite
+from unittest import TestCase
 from tests import registerCase
 
 import parser
@@ -17,6 +17,12 @@ class ValidityTests(TestCase):
 
     def test_empty(self):
         self.failUnless(parser.is_valid(''))
+
+    def test_emptylist(self):
+        self.failIf(parser.is_valid("a = &()"))
+        self.failIf(parser.is_valid("a = |()"))
+        self.failIf(parser.is_valid("|()"))
+        self.failIf(parser.is_valid("&()"))
 
     def test_nonsense(self):
         self.failIf(parser.is_valid('a string'))
@@ -91,6 +97,9 @@ class ParserTests(TestCase):
             { "album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
               "~filename": "something.mp3", "tracknumber": "12/15" })
 
+    def test_empty(self):
+        self.failIf(parser.parse("foobar = /./").search(self.s1))
+
     def test_re(self):
         for s in ["album = /i hate/", "artist = /pi*/", "title = /x.y/"]:
             self.failUnless(parser.parse(s).search(self.s1))
@@ -98,6 +107,11 @@ class ParserTests(TestCase):
         f = parser.parse("artist = /mu|piman/").search
         self.failUnless(f(self.s1))
         self.failUnless(f(self.s2))
+
+    def test_abbrs(self):
+        for s in ["b = /i hate/", "a = /pi*/", "* = /x.y/"]:
+            self.failUnless(parser.parse(s).search(self.s1))
+            self.failIf(parser.parse(s).search(self.s2))
 
     def test_str(self):
         for k in self.s2.keys():
@@ -109,45 +123,56 @@ class ParserTests(TestCase):
         self.failUnless(parser.parse("#(notatag = 0)").search(self.s1))
         self.failUnless(parser.parse("#(track = 12)").search(self.s2))
 
+    def test_trinary(self):
+        self.failUnless(parser.parse("#(11 < track < 13)").search(self.s2))
+        self.failUnless(parser.parse("#(11 < track <= 12)").search(self.s2))
+        self.failUnless(parser.parse("#(12 <= track <= 12)").search(self.s2))
+        self.failUnless(parser.parse("#(12 <= track < 13)").search(self.s2))
+        self.failUnless(parser.parse("#(13 > track > 11)").search(self.s2))
+        self.failUnless(parser.parse("#(20 > track < 20)").search(self.s2))
+
     def test_not(self):
         for s in ["album = !/i hate/", "artist = !/pi*/", "title = !/x.y/"]:
             self.failUnless(parser.parse(s).search(self.s2))
             self.failIf(parser.parse(s).search(self.s1))
 
-    def test_matching(self):
-        matchn = ["discnumber = /./",
-                  "artist = /MU/c",
-                  
-                  ]
-        match0 = ["version = /./",
-                  "* = /Tests/",
-                  "&(t = /Quuxly/, filename = /.ogg/)",
-                  "album = /Hate: Tests/",
-                  ]
-        match1 = ["artist = /mu/",
-                  "title = /Rocking?/",
-                  "tracknumber = /./",
-                  ]
-        match2 = ["artist = /./",
-                  "|(artist = /piman/, title = /Out/c)",
-                  ]
+    def test_case(self):
+        self.failUnless(parser.parse("album = /i hate/").search(self.s1))
+        self.failUnless(parser.parse("album = /I Hate/").search(self.s1))
+        self.failIf(parser.parse("album = /i Hate/").search(self.s1))
+        self.failUnless(parser.parse("album = /i Hate/i").search(self.s1))
+        self.failIf(parser.parse("album = /i hate/c").search(self.s1))
 
-        l = [self.s1, self.s2]
-        for s in matchn:
-            m = parser.parse(s)
-            self.failUnlessEqual(filter(m.search, l), [])
+    def test_re_and(self):
+        self.failUnless(parser.parse("album = &(/ate/,/est/)").search(self.s1))
+        self.failIf(parser.parse("album = &(/ate/, /ets/)").search(self.s1))
+        self.failIf(parser.parse("album = &(/tate/, /ets/)").search(self.s1))
 
-        for s in match0:
-            m = parser.parse(s)
-            self.failUnlessEqual(filter(m.search, l), [self.s1])
-        
-        for s in match1:
-            m = parser.parse(s)
-            self.failUnlessEqual(filter(m.search, l), [self.s2])
-        
-        for s in match2:
-            m = parser.parse(s)
-            self.failUnlessEqual(filter(m.search, l), l)
+    def test_re_or(self):
+        self.failUnless(parser.parse("album = |(/ate/,/est/)").search(self.s1))
+        self.failUnless(parser.parse("album = |(/ate/,/ets/)").search(self.s1))
+        self.failIf(parser.parse("album = |(/tate/, /ets/)").search(self.s1))
+
+    def test_exp_and(self):
+        self.failUnless(parser.parse(
+            "&(album = /ate/, artist = /man/)").search(self.s1))
+        self.failIf(parser.parse(
+            "&(album = /ate/, artist = /nam/)").search(self.s1))
+        self.failIf(parser.parse(
+            "&(album = /tea/, artist = /nam/)").search(self.s1))
+
+    def test_exp_or(self):
+        self.failUnless(parser.parse(
+            "|(album = /ate/, artist = /man/)").search(self.s1))
+        self.failUnless(parser.parse(
+            "|(album = /ate/, artist = /nam/)").search(self.s1))
+        self.failIf(parser.parse(
+            "&(album = /tea/, artist = /nam/)").search(self.s1))
+
+    def test_dumb_search(self):
+        self.failUnless(parser.parse("ate man").search(self.s1))
+        self.failIf(parser.parse("woo man").search(self.s1))
+        self.failIf(parser.parse("not crazy").search(self.s1))
 
 registerCase(ValidityTests)
 registerCase(ParserTests)

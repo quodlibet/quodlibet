@@ -7,10 +7,11 @@ class Mock(object):
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
 
 # well-tested code
-import test_util, test_audio
+import test_util, test_audio, test_parser
+# good but incomplete
+import test_leaks, test_qltk
 # not well-tested code
-import test_parser, test_leaks, test_qltk
-import test_library, test_match, test_player
+import test_library, test_player
 
 class Result(unittest.TestResult):
 
