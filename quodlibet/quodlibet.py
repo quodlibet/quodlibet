@@ -879,7 +879,15 @@ class SongProperties(MultiInstanceWidget):
                         changed = True
 
             if changed and ref:
-                song.write()
+                try: song.write()
+                except:
+                    ErrorMessage(self.window,
+                                 _("Unable to edit song"),
+                                 _("Saving <b>%s</b> failed. The file may be "
+                                   "read-only, corrupted, or you do not have "
+                                   "permission to edit it.")%(
+                        util.escape(song['~basename'])))
+                    return True
                 songref_update_view(song, ref)
 
             if win.step(): break
@@ -1189,7 +1197,15 @@ class SongProperties(MultiInstanceWidget):
             except ValueError:
                 try: del(song["~#track"])
                 except KeyError: pass
-            song.write()
+            try: song.write()
+            except:
+                ErrorMessage(self.window,
+                             _("Unable to edit song"),
+                             _("Saving <b>%s</b> failed. The file may be "
+                               "read-only, corrupted, or you do not have "
+                               "permission to edit it.")%(
+                    util.escape(song['~basename'])))
+                return True
             if ref: songref_update_view(song, ref)
             return win.step()
         self.tn_model.foreach(settrack)
@@ -1349,8 +1365,17 @@ class SongProperties(MultiInstanceWidget):
                                 changed = True
 
             if changed and ref:
-                song.sanitize()
-                song.write()
+                try:
+                    song.write()
+                    song.sanitize()
+                except:
+                    ErrorMessage(self.window,
+                                 _("Unable to edit song"),
+                                 _("Saving <b>%s</b> failed. The file may be "
+                                   "read-only, corrupted, or you do not have "
+                                   "permission to edit it.")%(
+                        util.escape(song['~basename'])))
+                    return True
                 songref_update_view(song, ref)
 
             return win.step()

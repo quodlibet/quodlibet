@@ -3,7 +3,7 @@ Recent upgrade notes:
 If you want ALSA support and were using QL prior to 0.5, you will need
 to change your 'backend' option to 'ao:alsa' (which is the new default).
 
-0.6
+0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).
  - Mass-set track numbers.
  - Tag by Pattern can replace or add new tags.
