@@ -345,7 +345,7 @@ class MP3File(AudioFile):
                 except: pass
 
         md = mad.MadFile(filename)
-        self["~#length"] = md.total_time() / 1000
+        self["~#length"] = md.total_time() // 1000
 
         if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
@@ -415,7 +415,7 @@ class ModFile(AudioFile):
     def __init__(self, filename):
         import modplug
         f = modplug.ModFile(filename)
-        self["~#length"] = f.length / 1000
+        self["~#length"] = f.length // 1000
         try: self["title"] = f.title.decode("utf-8")
         except UnicodeError: self["title"] = f.title.decode("iso-8859-1")
         self.sanitize(filename)
@@ -443,7 +443,7 @@ class FLACFile(AudioFile):
                 vc = flac.metadata.VorbisComment(block)
             elif it.get_block_type() == flac.metadata.STREAMINFO:
                 info = it.get_block().data.stream_info
-                self["~#length"] = (info.total_samples / info.sample_rate)
+                self["~#length"] = (info.total_samples // info.sample_rate)
             if not it.next(): break
 
         if vc:

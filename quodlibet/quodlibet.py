@@ -139,7 +139,7 @@ class PreferencesWindow(MultiInstanceWidget):
 
     def set_color(self, button):
         color = button.get_color()
-        ct = (color.red / 256, color.green / 256, color.blue / 256)
+        ct = (color.red // 256, color.green // 256, color.blue // 256)
         config.set("settings", "osdcolor", "#%02x%02x%02x" % ct)
 
     def set_headers(self, *args):
@@ -524,8 +524,8 @@ class MainWindow(MultiInstanceWidget):
         cur, end = self._time
         self.widgets["song_pos"].set_value(cur)
         self.widgets["song_timer"].set_text("%d:%02d/%d:%02d" %
-                            (cur / 60000, (cur % 60000) / 1000,
-                             end / 60000, (end % 60000) / 1000))
+                            (cur // 60000, (cur % 60000) // 1000,
+                             end // 60000, (end % 60000) // 1000))
         return True
 
     def _missing_song(self, song):
@@ -739,7 +739,7 @@ class MainWindow(MultiInstanceWidget):
             self.make_query("#(playcount < %d)" % (songs[-40][0] + 1))
 
     def rebuild(self, activator, hard = False):
-        window = WaitLoadWindow(self.window, len(library) / 5,
+        window = WaitLoadWindow(self.window, len(library) // 5,
                                 _("Quod Libet is scanning your library. "
                                   "This may take several minutes.\n\n"
                                   "%d songs reloaded\n%d songs removed"),
@@ -1016,7 +1016,7 @@ class MainWindow(MultiInstanceWidget):
         for t in headers:
             if t in SHORT_COLS or t.startswith("~#"): c += 0.1
             else: c += 1
-        width = int(width / c)
+        width = int(width // c)
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
             if t in SHORT_COLS or t.startswith("~#"):

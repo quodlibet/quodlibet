@@ -76,10 +76,10 @@ class FLACPlayer(AudioPlayer):
         if block.type == self.STREAMINFO:
             streaminfo = block.data.stream_info
             self._srate = streaminfo.sample_rate
-            self._bps = streaminfo.bits_per_sample / 8
+            self._bps = streaminfo.bits_per_sample // 8
             self._chan = streaminfo.channels
             self._samples = streaminfo.total_samples
-            self.length = (self._samples * 1000) / self._srate
+            self.length = (self._samples * 1000) // self._srate
             self.dev.self.set_info(self._srate, self._chan)
 
     def _player(self, dec, buff, size):

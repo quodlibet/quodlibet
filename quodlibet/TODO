@@ -1,3 +1,7 @@
+JZig) I can resize vertically with nothing, but not with only search box
+(piman) oh, heh, the searchbox size is resizable.
+
+
 (inigo) column.set_reorderable(True) only has a problem
 (inigo) when user clicks over a header to move the column, the model sorting
 +begins, so it's not very UI friendly
