@@ -1,4 +1,4 @@
-dquodlibet (0.9-1) unstable; urgency=low
+quodlibet (0.9-1) unstable; urgency=low
 
   * New upstream release.
   * Acknowledges CHARSET/G_BROKEN_FILENAMES. (Closes: #289782)
