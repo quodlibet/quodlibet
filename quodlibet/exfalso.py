@@ -39,7 +39,6 @@ if __name__ == "__main__":
 
     basedir = os.path.split(os.path.realpath(__file__))[0]
     sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
-    os.chdir(basedir)
 
     import const
     from util import to
@@ -57,6 +56,7 @@ if __name__ == "__main__":
         print_help(sys.stderr)
 
     sys.argv[1] = os.path.realpath(sys.argv[1])
+    os.chdir(basedir)
 
     import gtk, widgets
     w = widgets.ExFalsoWindow(sys.argv[1])
