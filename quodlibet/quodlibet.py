@@ -259,28 +259,63 @@ class PreferencesWindow(MultiInstanceWidget):
 
         self.window.present()
 
-class DeleteDialog(MultiInstanceWidget):
+class DeleteDialog(object):
     def __init__(self, parent, files):
-        MultiInstanceWidget.__init__(self, widget = "delete_dialog")
-        self.window = self.widgets["delete_dialog"]
-        self.window.set_transient_for(parent)
-        if not os.path.isdir(os.path.expanduser("~/.Trash")):
-            self.widgets["trash_button"].hide()
+        self.dialog = gtk.Dialog(title = _("Deleting files"), parent = parent)
+        self.dialog.set_property('border-width', 6)
+        self.dialog.set_resizable(False)
+        if os.path.isdir(os.path.expanduser("~/.Trash")):
+            b = gtk.Button()
+            b.add(gtk.HBox(spacing = 2))
+            i = gtk.Image()
+            i.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
+            b.child.pack_start(i)
+            l = gtk.Label(_("_Move to Trash"))
+            l.set_use_underline(True)
+            l.set_mnemonic_widget(b)
+            b.child.pack_start(l)
+            self.dialog.add_action_widget(b, 0)
 
+        self.dialog.add_button('gtk-cancel', 1)
+        self.dialog.add_button('gtk-delete', 2)
+
+        hbox = gtk.HBox()
+        i = gtk.Image()
+        i.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_DIALOG)
+        i.set_padding(12, 12)
+        i.set_alignment(0.5, 0.0)
+        hbox.pack_start(i, expand = False)
+        vbox = gtk.VBox(spacing = 6)
         if len(files) == 1:
-            self.widgets["fn_count"].set_text(os.path.basename(files[0]))
+            l = _("Permanently delete this file?")
+            exp = gtk.Expander("%s" % os.path.basename(files[0]))
         else:
-            self.widgets["fn_count"].set_text(_("%s and %d more...") %(
+            l = _("Permanently delete these files?")
+            exp = gtk.Expander(_("%s and %d more...") %(
                 os.path.basename(files[0]), len(files) - 1))
 
-        self.widgets["filename_list"].set_text(
-            "\n".join(map(util.unexpand, files)))
+        lab = gtk.Label()
+        lab.set_markup("<big><b>%s</b></big>" % l)
+        lab.set_property('xalign', 0.0)
+        vbox.pack_start(lab, expand = False)
+
+        lab = gtk.Label("\n".join(map(util.unexpand, files)))
+        lab.set_property('xalign', 0.1)
+        lab.set_property('yalign', 0.0)
+        exp.add(gtk.ScrolledWindow())
+        exp.child.add_with_viewport(lab)
+        exp.child.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        exp.child.child.set_shadow_type(gtk.SHADOW_NONE)
+        vbox.pack_start(exp)
+        hbox.pack_start(vbox)
+        self.dialog.vbox.pack_start(hbox)
 
     def run(self):
-        return self.window.run()
+        self.dialog.show_all()
+        return self.dialog.run()
 
-    def destroy(self):
-        self.window.destroy()
+    def destroy(self, *args):
+        self.dialog.destroy()
 
 class WaitLoadWindow(MultiInstanceWidget):
     def __init__(self, parent, count, text, initial):
@@ -1251,7 +1286,7 @@ class AddTagDialog(object):
             can = can_change
         can.sort()
 
-        self.dialog = gtk.Dialog(parent = parent, title = "Add a new tag")
+        self.dialog = gtk.Dialog(parent = parent, title = _("Add a new tag"))
         self.dialog.connect('close', self.destroy)
         self.dialog.set_property('border-width', 12)
         self.dialog.set_resizable(False)
@@ -1289,7 +1324,6 @@ class AddTagDialog(object):
         table.attach(self.val, 1, 2, 1, 2)
 
         self.dialog.vbox.pack_start(table)
-        self.dialog.show_all()
 
     def get_tag(self):
         try: return self.tag.child.get_text().lower().strip()
@@ -1300,6 +1334,7 @@ class AddTagDialog(object):
         return self.val.get_text().decode("utf-8")
 
     def run(self):
+        self.dialog.show_all()
         try: self.tag.child.set_text("")
         except AttributeError: pass
         self.val.set_text("")
