@@ -14,6 +14,7 @@ from library import library
 import parser
 import ossaudiodev # barf
 import util
+import time
 import os
 
 BUFFER_SIZE = 2**12
@@ -176,6 +177,9 @@ class PlaylistPlayer(object):
                         self.info.set_time(t, self.player.length)
                         while self.paused and not self.quit:
                             time.sleep(0.1)
+                    if not self.player.stopped:
+                        self.song["=lastplayed"] = int(time.time())
+                        self.song["=playcount"] += 1
 
             if self.repeat:
                 self.playlist = self.orig_playlist[:]

@@ -41,6 +41,14 @@ class AudioFile(dict):
             text += album
         return text
 
+    def get_played(self):
+        count = self["=playcount"]    
+        if count == 0: return "Never"
+        else:
+            t = time.localtime(self["=lastplayed"])
+            tstr = time.strftime("%F, %X", t)
+            return "%d times, recently on %s" % (count, tstr)
+
     def to_dump(self):
         s = ""
         for k, v in self.items():
@@ -53,10 +61,20 @@ class AudioFile(dict):
         parts = self[key].split("\n")
         parts[parts.index(old_value)] = new_value
         self[key] = "\n".join(parts)
+        if key == "tracknumber":
+            try: self["=#"] = int(self["tracknumber"].split("/")[0])
+            except ValueError:
+                try: del(self["=#"])
+                except KeyError: pass
 
     def add(key, value):
         if key in self: self[key] = value
         else: self[key] += "\n" + value
+        if key == "tracknumber":
+            try: self["=#"] = int(self["tracknumber"].split("/")[0])
+            except ValueError:
+                try: del(self["=#"])
+                except KeyError: pass
 
     def remove(key, value):
         if self[key] == value: del(self[key])
@@ -64,6 +82,11 @@ class AudioFile(dict):
             parts = self[key].split("\n")
             parts.remove(value)
             self[key] = "\n".join(parts)
+        if key == "tracknumber":
+            try: self["=#"] = int(self["tracknumber"].split("/")[0])
+            except ValueError:
+                try: del(self["=#"])
+                except KeyError: pass
 
     def find_cover(self):
         base = os.path.split(self['filename'])[0]
@@ -148,6 +171,8 @@ class MP3File(AudioFile):
         if "tracknumber" in self:
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
             except: pass
+        self.setdefault("=lastplayed", 0)
+        self.setdefault("=playcount", 0)
 
     def write(self):
         tag = pyid3lib.tag(self['filename'])
@@ -184,6 +209,8 @@ class OggFile(AudioFile):
             except: pass
         try: del(self["vendor"])
         except KeyError: pass
+        self.setdefault("=lastplayed", 0)
+        self.setdefault("=playcount", 0)
 
     def write(self):
         f = ogg.vorbis.VorbisFile(self['filename'])
@@ -228,7 +255,10 @@ class Library(dict):
                     self[fn] = MusicFile(fn)
                     self[fn]["=mtime"] = int(os.stat(fn)[stat.ST_MTIME])
                     changed += 1
-                else: self[fn] = song
+                else:
+                    song.setdefault("=lastplayed", 0)
+                    song.setdefault("=playcount", 0)
+                    self[fn] = song
             else:
                 removed += 1
         return changed, removed

@@ -8,7 +8,8 @@
 #
 # $Id$
 
-VERSION = "0.1"
+VERSION = "0.2"
+
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
 # using e.g. Curses would change the UI. The converse is not true. Many
@@ -433,14 +434,19 @@ class MultiInstanceWidget(object):
             title.setdefault(song["title"], 0)
             album.setdefault(song["album"], 0)
             filename.setdefault(song["filename"], 0)
-        for w, v, m in [ (self.artist, artist, 'Artists'),
-                         (self.title, title, 'Titles'),
-                         (self.album, album, 'Albums'),
-                         (self.filename, filename, 'Files') ]:
+        for w, v, m in [ (self.artist, artist, 'artists'),
+                         (self.title, title, 'titles'),
+                         (self.album, album, 'albums'),
+                         (self.filename, filename, 'files') ]:
             if len(v) > 1:
                 w.set_markup("<i>%d %s</i>" % (len(v), m))
             else:
                 w.set_text(v.keys()[0])
+        if len(self.songrefs) > 1:
+            listens = sum([song["=playcount"] for song, i in self.songrefs])
+            self.played.set_markup("<i>%d songs heard</i>" % listens)
+        else:
+            self.played.set_text(self.songrefs[0][0].get_played())
 
         self.model.clear()
         comments = {} # dict of dicts to see if comments all share value
@@ -478,6 +484,7 @@ def make_song_properties(songrefs):
     dlg.save = dlg.widgets.get_widget('songprop_save')
     dlg.revert = dlg.widgets.get_widget('songprop_revert')
     dlg.artist = dlg.widgets.get_widget('songprop_artist')
+    dlg.played = dlg.widgets.get_widget('songprop_played')
     dlg.title = dlg.widgets.get_widget('songprop_title')
     dlg.album = dlg.widgets.get_widget('songprop_album')
     dlg.filename = dlg.widgets.get_widget('songprop_file')
@@ -485,9 +492,9 @@ def make_song_properties(songrefs):
     dlg.add = dlg.widgets.get_widget('songprop_add')
     dlg.remove = dlg.widgets.get_widget('songprop_remove')
     # comment, value, use-changes, edit, deleted
+    dlg.songrefs = songrefs
     dlg.model = gtk.ListStore(str, str, bool, bool, bool)
     dlg.view.set_model(dlg.model)
-    dlg.songrefs = songrefs
     selection = dlg.view.get_selection()
     selection.connect('changed', dlg.songprop_selection_changed)
 
@@ -588,7 +595,9 @@ def refresh_songlist():
     sl.set_model(widgets.songs)
 
 HEADERS = ["=#", "title", "album", "artist"]
-HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track" }
+HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track",
+                   "discnumber": "Disc", "=lastplayed": "Last Played",
+                   "=playcount": "Play Count" }
 
 CURRENT_SONG = [ None ]
 
