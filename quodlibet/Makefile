@@ -23,3 +23,6 @@ clean:
 
 distclean: clean
 	rm -f *~ \#* *.bak *.orig
+
+test:
+	python -c "import tests; tests.unit()"

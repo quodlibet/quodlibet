@@ -447,8 +447,7 @@ class MultiInstanceWidget(object):
                 orig = None
                 deleted = False
                 self.model.append(row=[comment, util.escape(value),
-                                       edited, edit,
-                                       deleted, orig])
+                                       edited, edit, deleted, orig])
 
                 self.save.set_sensitive(True)
                 self.revert.set_sensitive(True)
