@@ -1905,7 +1905,7 @@ class MainWindow(gtk.Window):
         while gtk.events_pending(): gtk.main_iteration()
         player.playlist.playlist_from_filter(query)
         while gtk.events_pending(): gtk.main_iteration()
-        self.songlist.set_sort_by(None, False)
+        self.songlist.set_sort_by(None, tag = key, refresh = False)
         while gtk.events_pending(): gtk.main_iteration()
         self.refresh_songlist()
 
@@ -2167,9 +2167,9 @@ class MainSongList(SongList):
         column.connect('notify::width', self.save_widths)
 
     # Resort based on the header clicked.
-    def set_sort_by(self, header, refresh = True):
+    def set_sort_by(self, header, tag = None, refresh = True):
         s = gtk.SORT_ASCENDING
-        tag = header.header_name
+        tag = tag or header.header_name
         if header:
             s = header.get_sort_order()
             if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
