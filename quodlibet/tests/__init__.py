@@ -17,7 +17,7 @@ class Result(unittest.TestResult):
         sys.stdout.write('.')
 
     def addError(self, test, err):
-        unittest.TestResult.addError(self, test)
+        unittest.TestResult.addError(self, test, err)
         sys.stdout.write('E')
 
     def addFailure(self, test, err):
