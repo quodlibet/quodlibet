@@ -112,7 +112,7 @@ class PreferencesWindow(gtk.Window):
                     if k in checks:
                         buttons[k].set_active(True)
                         checks.remove(k)
-                    
+
                     table.attach(buttons[k], i, i + 1, j, j + 1)
 
             vbox.pack_start(table, expand = False)
@@ -128,8 +128,14 @@ class PreferencesWindow(gtk.Window):
                 buttons["album"].set_active(True)
                 aip.set_active(True)
                 checks.remove("~album~part")
+            fip = gtk.CheckButton(_("Filename includes _directory"))
+            if "~filename" in checks:
+                buttons["~basename"].set_active(True)
+                aip.set_active(True)
+                checks.remove("~filename")
             vbox2.pack_start(tiv)
             vbox2.pack_start(aip)
+            vbox2.pack_start(fip)
             vbox.pack_start(vbox2, expand = False)
 
             hbox = gtk.HBox(spacing = 3)
@@ -143,7 +149,7 @@ class PreferencesWindow(gtk.Window):
             l.set_use_underline(True)
             hbox.pack_start(others)
             apply = qltk.Button(stock = gtk.STOCK_APPLY, cb = self.apply,
-                                user_data = [buttons, tiv, aip, others])
+                                user_data = [buttons, tiv, aip, fip, others])
             hbox.pack_start(apply, expand = False)
             vbox.pack_start(hbox, expand = False)
 
@@ -151,7 +157,7 @@ class PreferencesWindow(gtk.Window):
                                child = vbox)
             self.pack_start(frame, expand = False)
 
-        def apply(self, button, buttons, tiv, aip, others):
+        def apply(self, button, buttons, tiv, aip, fip, others):
             headers = []
             for key in ["~#disc", "~#track", "title", "album", "artist",
                         "date", "genre", "~basename", "~length"]:
@@ -161,6 +167,9 @@ class PreferencesWindow(gtk.Window):
                 except ValueError: pass
             if aip.get_active():
                 try: headers[headers.index("album")] = "~album~part"
+                except ValueError: pass
+            if fip.get_active():
+                try: headers[headers.index("~basename")] = "~filename"
                 except ValueError: pass
 
             headers.extend(others.get_text().split())
@@ -1884,7 +1893,8 @@ class SongList(object):
                 song = model[iter][0]
                 current_song = widgets.main.current_song
                 cell.set_property('weight', attr[song is current_song])
-                cell.set_property('text', song.comma(column.header_name).decode(code, 'replace'))
+                cell.set_property('text', util.unexpand(
+                    song.comma(column.header_name).decode(code, 'replace')))
             except AttributeError: pass
 
         for i, t in enumerate(headers):
