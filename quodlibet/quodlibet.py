@@ -53,9 +53,11 @@ class GladeHandlers(object):
         chooser.set_select_multiple(True)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
+            CURRENT_FILTER.insert(0, FILTER_ALL)
             for song in library.load(chooser.get_filenames()):
                 widgets.songs.append([song] +
                                      [song.get(i, "") for i in HEADERS])
+            CURRENT_FILTER.pop(0)
         chooser.destroy()
         GladeHandlers.text_parse(GladeHandlers())
 
@@ -80,12 +82,14 @@ HEADERS = ["artist", "title", "album"]
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
 
+def list_filter(m, i, q):
+    return bool(q[0](m[i][0]))
+
 def main():
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(*([object] + [str] * len(HEADERS)))
     widgets.filter = widgets.songs.filter_new()
-    widgets.filter.set_visible_func(lambda m, i, q: bool(q[0](m[i][0])),
-                                    CURRENT_FILTER)
+    widgets.filter.set_visible_func(list_filter, CURRENT_FILTER)
     widgets.sorted = gtk.TreeModelSort(widgets.filter)
 
     for i, t in enumerate(HEADERS):
