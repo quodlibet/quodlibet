@@ -637,7 +637,7 @@ class SearchBar(object):
         if (parser.is_valid(text) or
             ("#" not in text and "=" not in text and "/" not in text)):
             self.combo.prepend_text(text)
-            if len(self.combo.get_model()) > 10: m.remove(10)
+            if len(self.combo.get_model()) > 10: self.combo.remove_text(10)
         self.cb(text, None)
 
     def test_filter(self, textbox):
