@@ -35,6 +35,8 @@ class MPCFile(AudioFile):
                 self[key] = "\n".join(list(value))
         f = musepack.MPCFile(filename)
         self["~#length"] = int(f.length / 1000)
+        try: self["~#bitrate"] = int(f.bitrate)
+        except AttributeError: pass
         self.sanitize(filename)
 
     def can_change(self, key = None):

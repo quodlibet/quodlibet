@@ -142,6 +142,7 @@ class AudioFile(dict):
         self.setdefault("~#playcount", 0)
         self.setdefault("~#skipcount", 0)
         self.setdefault("~#length", 0)
+        self.setdefault("~#bitrate", 0)
         self.setdefault("~#rating", 2)
         self.setdefault("~#added", int(time.time()))
 

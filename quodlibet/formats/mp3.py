@@ -175,6 +175,7 @@ class MP3File(AudioFile):
 
         md = mad.MadFile(filename)
         self["~#length"] = md.total_time() // 1000
+        self["~#bitrate"] = md.bitrate()
         if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
 

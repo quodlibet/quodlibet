@@ -22,6 +22,7 @@ class OggFile(AudioFile):
             v = u"\n".join(map(unicode, v))
             self[k.lower()] = v
         self["~#length"] = int(f.time_total(-1))
+        self["~#bitrate"] = int(f.bitrate(-1))
         self.sanitize(filename)
 
     def write(self):
