@@ -20,7 +20,6 @@ class MP3Player(object):
         buff = self.mf.read()
         if buff is None: raise StopIteration
         self.dev.play(buff, len(buff))
-        print "played"
         return self.mf.current_time()
         
 
@@ -33,9 +32,8 @@ class OggPlayer(object):
     def __iter__(self): return self
 
     def next(self):
-        (buff, bytes, bit) = self.vf.read(16384)
+        (buff, bytes, bit) = self.vf.read(1048576)
         if bytes == 0: raise StopIteration
-        print "yo"
         self.dev.play(buff, bytes)
         return 1000
 
@@ -57,18 +55,14 @@ def play():
         do_queue()
         while playlist:
             song = playlist.pop(0)['filename']
-            print song
             player = Player(dev, song)
             for t in player:
                 do_queue()
-                print "I am here"
                 while paused:
-                    print "I shouldn't be here!"
                     do_queue()
-            print "where am I"
+                    time.sleep(0.01)
 
-        print "not here"
-        time.sleep(0.001)
+        time.sleep(0.01)
 
 def do_queue():
     for command in queue:

@@ -132,6 +132,7 @@ def main():
     sl.set_model(widgets.sorted)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
+    gtk.threads_init()
     thread.start_new_thread(player.play, ())
     gtk.main()
 

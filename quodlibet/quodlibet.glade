@@ -9,6 +9,8 @@
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
+  <property name="default_width">400</property>
+  <property name="default_height">300</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
@@ -428,6 +430,7 @@
 	      <property name="invisible_char" translatable="yes">*</property>
 	      <property name="activates_default">False</property>
 	      <signal name="activate" handler="text_parse" last_modification_time="Wed, 06 Oct 2004 06:33:00 GMT"/>
+	      <signal name="changed" handler="test_filter" last_modification_time="Sat, 09 Oct 2004 04:40:02 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -465,7 +468,7 @@
 	<widget class="GtkScrolledWindow" id="scrolledwindow1">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+	  <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
 	  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
 	  <property name="shadow_type">GTK_SHADOW_NONE</property>
 	  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>

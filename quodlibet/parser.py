@@ -72,9 +72,7 @@ class QueryLexer(object):
         else:
             start = self.i
             while (self.i < len(self.string) and
-                   self.string[self.i] != ' ' and
-                   self.string[self.i] != ')' and
-                   self.string[self.i] != ','):
+                   self.string[self.i] not in ' ),=/'):
                 self.i += 1
             return QueryLexeme(TAG, self.string[start:self.i])
 
