@@ -706,37 +706,28 @@ class MainWindow(MultiInstanceWidget):
         else:
             self.make_query("#(playcount < %d)" % (songs[-40][0] + 1))
 
-    def rebuild(self, activator):
+    def rebuild(self, activator, hard = False):
         window = WaitLoadWindow(self.window, len(library) / 5,
                                 _("Quod Libet is scanning your library. "
                                   "This may take several minutes.\n\n"
                                   "%d songs reloaded\n%d songs removed"),
                                 (0, 0))
         iter = 5
-        for c, r in library.rebuild():
+        for c, r in library.rebuild(hard):
             if iter == 5:
-                if window.step(c, r): break
+                if window.step(c, r):
+                    window.end()
+                    break
                 iter = 0
             iter += 1
-        window.end()
+        else:
+            window.end()
+            self.scan_dirs(config.get("settings", "scan").split(":"))
         player.playlist.refilter()
         self.refresh_songlist()
 
     def rebuild_hard(self, activator):
-        window = WaitLoadWindow(self.window, len(library) / 5,
-                                _("Quod Libet is reloading your library. "
-                                  "This may take several minutes.\n\n"
-                                  "%d songs reloaded\n%d songs removed"),
-                                (0, 0))
-        iter = 5
-        for c, r in library.rebuild(True):
-            if iter == 5:
-                if window.step(c, r): break
-                iter = 0
-            iter += 1
-        window.end()
-        player.playlist.refilter()
-        self.refresh_songlist()
+        self.rebuild(activator, True)
 
     def pmp_upload(self, *args):
         view = self.widgets["songlist"]
@@ -768,17 +759,19 @@ class MainWindow(MultiInstanceWidget):
     def open_chooser(self, *args):
         chooser = FileChooser(self.window, _("Add Music"), self.last_dir)
         resp, fns = chooser.run()
-        if resp == gtk.RESPONSE_OK:
-            win = WaitLoadWindow(self.window, 0,
-                                 _("Quod Libet is scanning for new songs and "
-                                   "adding them to your library.\n\n"
-                                   "%d songs added"), 0)
-            for added, changed in library.scan(fns):
-                if win.step(added): break
-            win.end()
-            player.playlist.refilter()
-            self.refresh_songlist()
+        if resp == gtk.RESPONSE_OK: self.scan_dirs(fns)
         if fns: self.last_dir = fns[0]
+
+    def scan_dirs(self, fns):
+        win = WaitLoadWindow(self.window, 0,
+                             _("Quod Libet is scanning for new songs and "
+                               "adding them to your library.\n\n"
+                               "%d songs added"), 0)
+        for added, changed in library.scan(fns):
+            if win.step(added): break
+        win.end()
+        player.playlist.refilter()
+        self.refresh_songlist()
 
     def update_volume(self, slider):
         val = (2 ** slider.get_value()) - 1
