@@ -1610,6 +1610,9 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
     raise SystemExit
 
 def refresh_cache():
+    if isrunning():
+        raise SystemExit(_(
+            "The library cannot be refreshed while Quod Libet is running."))
     import library, config, const
     config.init(const.CONFIG)
     library.init()
@@ -1651,8 +1654,11 @@ def error_and_quit():
     gtk.main_quit()
     return True
 
+def isrunning():
+    return os.path.exists(const.CONTROL)
+
 def control(c):
-    if not os.path.exists(const.CONTROL):
+    if not isrunning():
         raise SystemExit(_("Quod Libet is not running."))
     else:
         try:
