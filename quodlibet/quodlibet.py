@@ -477,7 +477,7 @@ class PlaylistWindow(object):
                 if model[iter][1] > win.name:
                     model.insert_before(iter, [win.prettyname, win.name])
                     return True # inserted
-                if path == last_try:
+                if path[0] == last_try:
                     model.insert_after(iter, [win.prettyname, win.name])
                     return True # appended
             model = PlayList.lists_model()
@@ -488,8 +488,8 @@ class PlaylistWindow(object):
         self.win.present()
 
     def set_name(self, name):
-        self.name = name
-        self.prettyname = name = PlayList.prettify_name(name)
+        self.prettyname = name
+        self.name = PlayList.normalize_name(name)
         self.win.set_title('Quod Libet Playlist: %s' % name)
         #self.label.set_text(name + ':')
 
