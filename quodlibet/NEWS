@@ -2,6 +2,9 @@
  - Song databases should be reloaded; a Unicode-related bug was fixed
    where the database used UTF-8 strings instead of unicode objects.
    This could cause searches to fail. Tags in files were not affected.
+ - The ao audio backend can be used again (for ALSA support); see the
+   "AUDIO BACKENDS" section in the manual page for information on how
+   to use it.
  - Dates can be saved in MP3s now.
  - A context menu for common operations has been added to the tag editing
    view.

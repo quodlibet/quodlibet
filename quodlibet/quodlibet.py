@@ -1241,7 +1241,7 @@ if __name__ == "__main__":
     # Try to initialize the playlist and audio output.
     print _("Opening audio device.")
     import player
-    try: player.init()
+    try: player.init(config.get("settings", "backend"))
     except IOError:
         # The audio device was busy; we can't do anything useful yet.
         # FIXME: Allow editing but not playing in this case.

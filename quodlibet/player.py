@@ -159,6 +159,31 @@ class OSSAudioDevice(object):
             self._rate = self.dev.speed(rate)
             self.dev.nonblock()
 
+class AOAudioDevice(object):
+    def __init__(self, device):
+        import ao
+        import audioop
+        self.scale = audioop.mul
+        try: self.dev = ao.AudioDevice(device)
+        except ao.aoError: raise IOError
+        self.vol = 1
+        print "W: ao backend cannot adjust sample rate or channel count"
+
+    def get_volume(self):
+        return self.vol * 100
+
+    def set_volume(self, vol):
+        self.vol = vol / 100.0
+
+    volume = property(get_volume, set_volume)
+
+    def set_info(self, rate, channels):
+        pass
+
+    def play(self, buf, l):
+        buf = self.scale(buf, 2, self.volume / 100.0)
+        self.dev.play(buf, len(buf))
+
 class PlaylistPlayer(object):
     def __init__(self, output = None, playlist = []):
         if output: self.output = output
@@ -378,17 +403,31 @@ class PlaylistPlayer(object):
             if self.player: self.player.end()
         if lock: self.lock.release()
 
+def OSSProxy(*args):
+    print "W: Unable to open the requested audio device."
+    print "W: Falling back to Open Sound System support."
+    return OSSAudioDevice()
+
 supported = {}
+outputs = { 'oss': OSSAudioDevice }
 
 global device, playlist
 device = None
 playlist = None
 
-def init():
+def init(devid):
     if util.check_ogg(): supported[".ogg"] = OggPlayer
     if util.check_mp3(): supported[".mp3"] = MP3Player
     if util.check_flac(): supported[".flac"] = FLACPlayer
 
+    try: import ao
+    except ImportError: outputs['ao'] = OSSProxy
+    else: outputs['ao'] = AOAudioDevice
+
+    if ":" in devid:
+        name, args = devid.split(":")[0], devid.split(":")[1:]
+    else: name = devid
+
     global device, playlist
-    device = OSSAudioDevice()
+    device = outputs.get(name, OSSAudioDevice)(*args)
     playlist = PlaylistPlayer(output = device)

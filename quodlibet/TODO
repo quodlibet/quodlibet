@@ -4,7 +4,6 @@
   (Check out autoconf, distutils...)
 - Various skipping problems -- get smarter about Python threads.
   - Some of this (during saving) disappeared with ossaudiodev? Rock.
-- More audio backends (people want ALSA...)
 - Look into eventual GStreamer port/use (for playing).
 - MikMod support.
 - Import covers from Muine.

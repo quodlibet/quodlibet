@@ -94,6 +94,13 @@ album = &(/final fantasy/, /piano/, |(/VIII/, /IX/))
 .br
 title = &(|(/aozora/, /blue/), /knife/)
 .RE
+.SH AUDIO BACKENDS
+By default QL uses the Open Sound System (OSS) interface to play audio;
+this interface is available on many operating systems and is (for QL's use)
+full-featured. QL can also use the 'ao' audio backend, if you have
+the pyao bindings installed. To do this, edit the 'backend' option in
+~/.quodlibet/config to be 'ao:<driver>'; for example, 'ao:arts' for the aRts
+ao backend, or 'ao:alsa09' for the ALSA 0.9 interface.
 .SH FILES
 .IP ~/.quodlibet/songs
 A cached list of songs to load initially. The format is a pickled
