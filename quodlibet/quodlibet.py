@@ -263,8 +263,12 @@ class DeleteDialog(MultiInstanceWidget):
         if not os.path.isdir(os.path.expanduser("~/.Trash")):
             self.widgets["trash_button"].hide()
 
-        self.widgets["fn_count"].set_text(_("%s and %d more...") %(
-            os.path.basename(files[0]), len(files) - 1))
+        if len(files) == 1:
+            self.widgets["fn_count"].set_text(os.path.basename(files[0]))
+        else:
+            self.widgets["fn_count"].set_text(_("%s and %d more...") %(
+                os.path.basename(files[0]), len(files) - 1))
+
         self.widgets["filename_list"].set_text(
             "\n".join(map(util.unexpand, files)))
 
