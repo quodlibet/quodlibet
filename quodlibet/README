@@ -56,8 +56,11 @@ To install Quod Libet system-wide, run
 
 ==[ Debian / Debian-based OSs
 
-Packages of Quod Libet are available in Debian since version 0.7. They
-should not lag behind releases by more than 24 hours. You must be running
-'unstable' or a recent snapshot of it.
+Packages of Quod Libet are available in Debian 'unstable'. They should
+not lag behind releases by more than about 24 hours.
+
+Because of this, packages also exist in Debian 'testing' although they
+will be out of date for longer waiting for propogation from unstable.
+They can also be found in Ubuntu's 'universe' repoistory.
 
 # apt-get install quodlibet

@@ -11,10 +11,6 @@ Song rating system
 ------------------
 Don't tell anyone, but the ~#rating key exists already. It just needs UI.
 
---print-playing
----------------
-Should use the same kind of string as NBP.
-
 UI Tweaking
 -----------
 Continue HIGification, handle very long titles/filenames better.
@@ -60,9 +56,10 @@ Album cover download
 Amazon has a ToS I can't agree to, but a Google image search for the
 album name (or especially label ID) seems to be effective.
 
-More unit tests
----------------
-Really, they're crap now.
+Unit tests
+----------
+Keep testing new functions, keep writing new tests for old functions
+when bugs are found.
 
 PMP Interfacing
 ---------------

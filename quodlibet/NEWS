@@ -1,21 +1,27 @@
+Quod Libet is only upwards-compatible; your library will remain intact
+if you upgrade to the next version. Skipping a version or downgrading
+may require you to re-add any songs in the library.
+
 Recent upgrade notes:
 ---------------------
 Songs added to the library before 0.9 will not support the "added"
 numeric tag (its value will be 0).
 
 0.9
- - Text in the rename-by-tag dialog can be conditionalized.
- - New query language enhancements (ternary relation operators,
-   string comparisons, less-like case-sensitivity).
+ - Major updates to the Properties dialog:
+   - A new detailed 'Information' tab was added.
+   - Middle click pastes current PRIMARY clipboard text in 'Edit Tags'.
+   - Text in the 'Rename Files' dialog can be conditionalized.
  - Non-UTF-8 filesystem encodings support (via CHARSET/G_BROKEN_FILENAMES).
- - New numeric keys "added", "skipcount" can be searched on.
- - "Information" tab in the Properties window.
- - PMP support was removed pending a redesign to support more devices
-   (see the TODO for more information).
- - Tray icon now pauses/unpauses on middle click, adjusts volume on
-   scroll wheel, and skips songs on buttons 6/7 (plus bug fixes).
- - Middle click pastes current PRIMARY clipboard text in Edit Tags.
- - Depends on GTK 2.6 for new media icons.
+ - New numeric keys "added" and "skipcount" can be searched on.
+ - The --print-playing format string syntax has changed to match the one
+   now used in 'Rename Files'.
+ - New query language enhancements (ternary relation operators, string
+   comparisons, and Lynx-like case-sensitivity).
+ - The tray icon now pauses/unpauses on middle click, adjusts volume with
+   the scroll wheel, and skips forward/backward on buttons 6/7.
+ - This release depends on GTK 2.6 for its new media icons.
+ - PMP support was removed.
 
 0.8.1 - Our story takes a sudden dive..
  - Fix a crash when encoding information is not available.
