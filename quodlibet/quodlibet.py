@@ -136,7 +136,7 @@ class GTKSongInfoWrapper(object):
 
     def _update_song(self, song, player):
         for wid in ["web_button", "next_button", "play_button", "prop_menu",
-                    "play_menu", "jump_menu", "next_menu"]:
+                    "play_menu", "jump_menu", "next_menu", "prop_button"]:
             widgets[wid].set_sensitive(bool(song))
         if song:
             self.pos.set_range(0, player.length)
@@ -412,12 +412,21 @@ class GladeHandlers(object):
             library.remove(song)
             player.playlist.remove(song)
 
+    def current_song_prop(*args):
+        song = CURRENT_SONG[0]
+        if song:
+            l = widgets["songlist"]
+            try: path = (player.playlist.get_playlist().index(song),)
+            except ValueError: ref = None
+            else: ref = gtk.TreeRowReference(l.get_model(), path)
+            make_song_properties([(song, ref)])
+            
     def song_properties(item):
         view = widgets["songlist"]
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        songrefs = [ [model[row][len(HEADERS)],
-                      gtk.TreeRowReference(model, row)] for row in rows]
+        songrefs = [ (model[row][len(HEADERS)],
+                      gtk.TreeRowReference(model, row)) for row in rows]
         make_song_properties(songrefs)
 
 class MultiInstanceWidget(object):
@@ -475,7 +484,7 @@ class MultiInstanceWidget(object):
                     song.remove(key, value)
                     changed = True
 
-            if changed:
+            if changed and ref:
                 path = ref.get_path()
                 song.write()
                 if path is not None:

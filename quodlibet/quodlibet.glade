@@ -51,7 +51,7 @@
 		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image47">
+			<widget class="GtkImage" id="image62">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -141,8 +141,11 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="prop_menu">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">View and edit tags in the playing song</property>
 		      <property name="label">gtk-properties</property>
 		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="current_song_prop" last_modification_time="Mon, 08 Nov 2004 01:11:18 GMT"/>
+		      <accelerator key="Return" modifiers="GDK_MOD1_MASK" signal="activate"/>
 		    </widget>
 		  </child>
 
@@ -155,13 +158,13 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="jump_menu">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Jump to current song</property>
+		      <property name="label" translatable="yes">_Jump to playing song</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="jump_to_current" last_modification_time="Sun, 07 Nov 2004 22:41:24 GMT"/>
 		      <accelerator key="J" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image48">
+			<widget class="GtkImage" id="image63">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -378,6 +381,37 @@
 		      <property name="right_attach">3</property>
 		      <property name="top_attach">0</property>
 		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkButton" id="prop_button">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">View and edit tags in the playing song</property>
+		      <property name="can_focus">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <signal name="clicked" handler="current_song_prop" last_modification_time="Mon, 08 Nov 2004 01:13:45 GMT"/>
+
+		      <child>
+			<widget class="GtkImage" id="image61">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-properties</property>
+			  <property name="icon_size">3</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
 		      <property name="x_options">fill</property>
 		      <property name="y_options"></property>
 		    </packing>
@@ -1607,7 +1641,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
   <child>
     <widget class="GtkImageMenuItem" id="filter_on_artist1">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Show only songs by the same artist as this one</property>
+      <property name="tooltip" translatable="yes">Show only songs by the same artist as the selected ones</property>
       <property name="label" translatable="yes">Filter on _artist</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="artist_filter" last_modification_time="Fri, 22 Oct 2004 04:20:14 GMT"/>
@@ -1629,7 +1663,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
   <child>
     <widget class="GtkImageMenuItem" id="filter_on_album1">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Show only songs in the same album as this one</property>
+      <property name="tooltip" translatable="yes">Show only songs in the same album as the select ones</property>
       <property name="label" translatable="yes">Filter on al_bum</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="album_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
@@ -1688,7 +1722,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
   <child>
     <widget class="GtkImageMenuItem" id="song_properties">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">View and edit tags in the selected song</property>
+      <property name="tooltip" translatable="yes">View and edit tags in the selected songs</property>
       <property name="label">gtk-properties</property>
       <property name="use_stock">True</property>
       <signal name="activate" handler="song_properties" last_modification_time="Sun, 07 Nov 2004 23:13:08 GMT"/>
@@ -2058,8 +2092,8 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 
 	  <child>
 	    <widget class="GtkToggleButton" id="togglebutton1">
-	      <property name="border_width">2</property>
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Select or unselect files in this group</property>
 	      <property name="can_focus">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">False</property>
@@ -2189,6 +2223,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	    <widget class="GtkButton" id="songprop_revert">
 	      <property name="visible">True</property>
 	      <property name="sensitive">False</property>
+	      <property name="tooltip" translatable="yes">Undo changes made to these files</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-revert-to-saved</property>
@@ -2216,6 +2251,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	  <child>
 	    <widget class="GtkButton" id="songprop_close">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Close without saving changes</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-close</property>
