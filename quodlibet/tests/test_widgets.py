@@ -1,7 +1,9 @@
 from unittest import TestCase
 from tests import registerCase, Mock
 import os, gtk
+import widgets
 from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList
+
 import config
 
 class TestDirTree(TestCase):
@@ -112,8 +114,19 @@ class TestPlayList(TestCase):
             self.failIfEqual(string, nstring)
             self.failUnlessEqual(string, PlayList.prettify_name(nstring))
 
+class StopAfterTest(TestCase):
+    def test_active(self):
+        w = widgets.MainWindow.StopAfterMenu()
+        self.failIf(w.active)
+        for b in [True, False, True, False, False]:
+            w.active = b
+            if b: self.failUnless(w.active)
+            else: self.failIf(w.active)
+        w.destroy()
+
 registerCase(TestDirTree)
 registerCase(TestEmptyBar)
 registerCase(TestSearchBar)
 registerCase(TestPlayList)
+registerCase(StopAfterTest)
 

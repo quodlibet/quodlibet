@@ -159,7 +159,6 @@ class PlaylistPlayer(object):
                 except:
                     self.paused = True
                     self.info.missing_song(self.song)
-                    self.played.append(self.song)
                     self.lock.release()
                 else:
                     self.info.set_song(self.song, self.player)

@@ -1215,6 +1215,18 @@ class SearchBar(EmptyBar):
         layout.set_markup(markup)
 
 class MainWindow(gtk.Window):
+    class StopAfterMenu(gtk.Menu):
+        def __init__(self):
+            gtk.Menu.__init__(self)
+            self.__item = gtk.CheckMenuItem(_("Stop after this song"))
+            self.__item.set_active(False)
+            self.append(self.__item)
+            self.__item.show()
+
+        def __get_active(self): return self.__item.get_active()
+        def __set_active(self, v): return self.__item.set_active(v)
+        active = property(__get_active, __set_active)
+
     def __init__(self):
         gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
@@ -1264,6 +1276,7 @@ class MainWindow(gtk.Window):
         play = gtk.Button()
         play.add(gtk.image_new_from_stock(
             gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
+        play.connect('button-press-event', self.__popup_stopafter)
         play.connect('clicked', self.play_pause)
         t.attach(play, 1, 2, 0, 1, xoptions = gtk.FILL, yoptions = gtk.FILL)
 
@@ -1368,6 +1381,8 @@ class MainWindow(gtk.Window):
         hbox.pack_start(self.statusbar)
         hbox.set_border_width(3)
         self.child.pack_end(hbox, expand = False)
+
+        self.__stopafter = self.StopAfterMenu()
 
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
@@ -1643,8 +1658,11 @@ class MainWindow(gtk.Window):
     def set_paused(self, paused):
         gobject.idle_add(self._update_paused, paused)
 
-    def set_song(self, song, player):
-        gobject.idle_add(self._update_song, song, player)
+    def set_song(self, song, play):
+        if song and self.__stopafter.active:
+            self.__stopafter.active = False
+            player.playlist.paused = True
+        gobject.idle_add(self._update_song, song, play)
 
     def missing_song(self, song):
         gobject.idle_add(self._missing_song, song)
@@ -1714,6 +1732,7 @@ class MainWindow(gtk.Window):
         if song:
             self.song_pos.set_range(0, player.length)
             self.song_pos.set_value(0)
+            self._time = (0, song["~#length"] * 1000)
 
             for h in ['genre', 'artist', 'album']:
                 self.ui.get_widget(
@@ -1796,6 +1815,7 @@ class MainWindow(gtk.Window):
                                 "/usr/bin/sensible-browser exists.")).run()
 
     def play_pause(self, *args):
+        self.__stopafter.active = False
         if self.current_song is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
@@ -1805,9 +1825,11 @@ class MainWindow(gtk.Window):
         else: self.songlist.jump_to(path)
 
     def next_song(self, *args):
+        self.__stopafter.active = False
         player.playlist.next()
 
     def previous_song(self, *args):
+        self.__stopafter.active = False
         player.playlist.previous()
 
     def toggle_repeat(self, button):
@@ -1899,6 +1921,7 @@ class MainWindow(gtk.Window):
         widgets.preferences.present()
 
     def select_song(self, tree, indices, col):
+        self.__stopafter.active = False
         iter = widgets.songs.get_iter(indices)
         song = widgets.songs.get_value(iter, 0)
         player.playlist.go_to(song)
@@ -2021,6 +2044,10 @@ class MainWindow(gtk.Window):
             player.playlist.refilter()
             self.refresh_songlist()
             self.browser.update()
+
+    def __popup_stopafter(self, activator, event, *args):
+        if event.button == 3:
+            self.__stopafter.popup(None, None, None, event.button, event.time)
 
     def current_song_prop(self, *args):
         song = self.current_song
