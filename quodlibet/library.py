@@ -497,6 +497,9 @@ class AudioFileGroup(dict):
     class PartialSharedComment(SharedComment): complete = False
     class PartialUnsharedComment(UnsharedComment): complete = False
 
+    def realkeys(self):
+        return filter(lambda s: s and "~" not in s and "=" not in s, self)
+
     def __init__(self, songs):
         self.songcount = total = len(songs)
         keys = {}
