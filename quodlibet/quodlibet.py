@@ -215,7 +215,7 @@ class WaitLoadWindow(MultiInstanceWidget):
         self.widgets["load_window"].set_transient_for(parent)
         self.current = 0
         self.count = count
-        if self.count < 6: self.widgets["pause_cancel_box"].hide()
+        if 0 < self.count < 6: self.widgets["pause_cancel_box"].hide()
         self.text = text
         self.paused = False
         self.quit = False
