@@ -8,17 +8,8 @@ features found in Quod Libet, but does not play audio files.
 EF/QL support the Ogg Vorbis, FLAC, MP3, MOD/XM/IT, and MPC file formats
 for playback. Tag editing and other features may vary from format to format.
 
-For a longer description and list of features, see
-http://www.sacredchao.net/~piman/software/quodlibet.shtml#features.
-
-For the FAQ, updated regularly, see
-http://www.sacredchao.net/~piman/software/quodlibet.shtml#faq.
-
-There is a mailing list for EF/QL at quodlibet@lists.sacredchao.net.
-To subscribe, email quodlibet-subscribe@lists.sacredchao.net. It is a
-low traffic list so far (less than five mails a week). You can post without
-subscribing, but please mention if you aren't subscribed and want direct
-replies.
+To report bugs, suggest features, ask a question, get the latest version,
+or help us out, visit http://www.sacredchao.net/quodlibet.
 
 ====[ Using EF/QL
 To run the programs, use
@@ -30,6 +21,8 @@ After installing, you can just run `quodlibet' or `exfalso'.
 
 For help on using them, run
  $ man -l ./quodlibet.1
+
+Or visit http://www.sacredchao.net/quodlibet/wiki/Guide.
 
 Whenever you upgrade, it's a good idea to select "Reload library" from
 the Music menu. This upgrades your library to take advantage of new
@@ -52,7 +45,7 @@ Optional:
  Modplug:		http://modplug-xmms.sourceforge.net
  PyAO (for ALSA):	http://www.andrewchatham.com/pyogg/
  PyFLAC/PyModPlug/PyMusepack:
-	http://sacredchao.net/~piman/software/python.shtml
+	http://www.sacredchao.net/quodlibet/wiki/Download
 
 To compile the status icon and multimedia key support, run
  $ make extensions
@@ -60,13 +53,4 @@ To compile the status icon and multimedia key support, run
 To install EF/QL system-wide, run
  # make install
 
-==[ Debian / Debian-based OSs
-
-Packages of EF/QL are available in Debian 'unstable'. They should not lag
-behind releases by more than about 24 hours.
-
-Because of this, packages also exist in Debian 'testing' although they
-will be out of date for longer waiting for propogation from unstable.
-They can also be found in Ubuntu's 'universe' repoistory.
-
-# apt-get install quodlibet
+For more information, see http://www.sacredchao.net/quodlibet/wiki/Download.
