@@ -117,6 +117,7 @@ class PlaylistPlayer(object):
         self.orig_playlist = playlist[:]
         self.shuffle = False
         self.repeat = False
+        self.player = None
         self._paused = True
         self.song = None
         self.quit = False
