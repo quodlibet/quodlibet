@@ -5,3 +5,5 @@
 - Playlists.
 - Remember window size, position
 - FLAC segfaults
+- Audio resampling when rate != 44100.
+- Various skipping problems -- get smarter about Python threads.

@@ -6,20 +6,19 @@
 #
 # $Id$
 
-import ao
 import time
 import threading
 import random
 import config
 from library import library
 import parser
-import ossaudiodev # barf
+import ossaudiodev
 import util
 import time
 import stat
 import os
 
-BUFFER_SIZE = 2**12
+BUFFER_SIZE = 2**8
 
 class AudioPlayer(object):
     def __init__(self):
@@ -33,6 +32,9 @@ class MP3Player(AudioPlayer):
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = mad.MadFile(filename)
+        if self.audio.mode() == mad.MODE_SINGLE_CHANNEL: channels = 1
+        else: channels = 2
+        self.dev.set_info(self.audio.samplerate(), channels)
         self.length = self.audio.total_time()
 
     def __iter__(self): return self
@@ -77,7 +79,7 @@ class FLACPlayer(AudioPlayer):
 
     def next(self):
         if self.stopped: raise StopIteration
-        if self.dec.get_state() == flac.decoder.FLAC__FILE_DECODER_END_OF_FILE:
+        if self.dec.get_state() ==flac.decoder.FLAC__FILE_DECODER_END_OF_FILE:
             self.dec.finish()
             raise StopIteration
         if not self.dec.process_single():
@@ -102,6 +104,8 @@ class OggPlayer(AudioPlayer):
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = ogg.vorbis.VorbisFile(filename)
+        self.dev.set_info(self.audio.info().rate,
+                          self.audio.info().channels)
         self.length = self.audio.time_total(-1) * 1000
 
     def __iter__(self): return self
@@ -124,17 +128,17 @@ def FilePlayer(dev, filename):
             return supported[ext](dev, filename)
     else: raise RuntimeError("Unknown file format: %s" % filename)
 
-class DummyOutput(object):
-    def play(self, buf): time.sleep(len(buf) / 1000000.0)
-    def set_volume(self, v): pass
-    def get_volume(self): pass
-    volume = property(get_volume, set_volume)
-
-class OutputDevice(object):
+class OSSAudioDevice(object):
     def __init__(self):
         self.mixer = ossaudiodev.openmixer()
-        self.dev = ao.AudioDevice(ao.driver_id('oss'))
-        self.play = self.dev.play
+        self.dev = ossaudiodev.open("w")
+        self.dev.setfmt(ossaudiodev.AFMT_S16_LE)
+        self._channels = self.dev.channels(2)
+        self._rate = self.dev.speed(44100)
+        self.dev.nonblock()
+
+    def play(self, buf, len):
+        self.dev.writeall(buf)
 
     def get_volume(self):
         return self.mixer.get(ossaudiodev.SOUND_MIXER_PCM)[0]
@@ -143,6 +147,17 @@ class OutputDevice(object):
         return self.mixer.set(ossaudiodev.SOUND_MIXER_PCM, (vol, vol))
 
     volume = property(get_volume, set_volume)
+
+    def set_info(self, rate, channels):
+        if rate != self._rate or channels != self._channels:
+            print "Setting", rate, channels
+            self.dev.close()
+            self.dev = ossaudiodev.open("w")
+            self.dev.setfmt(ossaudiodev.AFMT_S16_LE)
+            self._channels = self.dev.channels(channels)
+            self._rate = self.dev.speed(rate)
+            self.dev.nonblock()
+            print self._rate, self._channels
 
 class PlaylistPlayer(object):
     def __init__(self, output = None, playlist = []):
@@ -239,6 +254,7 @@ class PlaylistPlayer(object):
                     self.info.set_song(self.song, self.player)
                     self.played.append(self.song)
                     self.lock.release()
+                    while self.paused: time.sleep(0.1)
                     for t in self.player:
                         self.info.set_time(t, self.player.length)
                         while self.paused and not self.quit:
@@ -370,5 +386,5 @@ if util.check_flac():
     import flac.decoder
     supported[".flac"] = FLACPlayer
 
-device = OutputDevice()
+device = OSSAudioDevice()
 playlist = PlaylistPlayer(output = device)
