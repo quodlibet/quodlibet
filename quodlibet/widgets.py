@@ -2512,28 +2512,28 @@ class SongProperties(gtk.Window):
             vbox.pack_start(self.Label(util.escape(song("artist"))),
                             expand = False)
 
-            for names, tag in [
+            for names, tag_ in [
                 (_("performers"), "performer"),
                 (_("lyricists"),  "lyricist"),
                 (_("arrangers"),  "arranger"),
                 (_("composers"),  "composer"),
                 (_("conductors"), "conductor"),
                 (_("authors"),    "author")]:
-                if tag in song:
-                    if "\n" in song[tag]:
-                        frame = self.Frame(names,
-                                           self.Label(util.escape(song[tag])),
+                if tag_ in song:
+                    if "\n" in song[tag_]:
+                        frame = self.Frame(util.capitalize(names),
+                                           self.Label(util.escape(song[tag_])),
                                            False)
                     else:
-                        ntag = util.title(_(tag))
-                        frame = self.Frame(ntag,
-                                           self.Label(util.escape(song[tag])),
+                        ntag = util.capitalize(tag(tag_))
+                        frame = self.Frame(util.capitalize(ntag),
+                                           self.Label(util.escape(song[tag_])),
                                            False)
                     vbox.pack_start(frame, expand = False)
-            return self.Frame(util.title(_("artists")), vbox)
+            return self.Frame(util.capitalize(_("artists")), vbox)
 
         def _album(self, song):
-            title = _("Album")
+            title = tag("album")
             cover = song.find_cover()
             w = self.Label("")
             if cover:
@@ -2549,7 +2549,7 @@ class SongProperties(gtk.Window):
 
             text = []
             text.append("<b>%s</b>" % util.escape(song.comma("album")))
-            if "date" in song: text[-1] += " - " + util.escape(song["date"])
+            if "date" in song: text[-1] += "(%s)" % util.escape(song["date"])
             secondary = []
             if "discnumber" in song:
                 secondary.append(_("Disc %s") % song("~#disc"))
@@ -2603,9 +2603,7 @@ class SongProperties(gtk.Window):
             table.attach(l, 0, 2, 0, 1, xoptions = gtk.FILL)
             table.set_homogeneous(False)
             for i, (l, r) in enumerate(tbl):
-                l = util.escape(l) + ":"
-                l = l[0].capitalize() + l[1:]
-                l = "<b>%s</b>" % l
+                l = "<b>%s</b>" % util.capitalize(util.escape(l) + ":")
                 table.attach(self.Label(l), 0, 1, i + 1, i + 2, xoptions = 0)
                 table.attach(self.Label(util.escape(r)), 1, 2, i + 1, i + 2)
 
@@ -2667,7 +2665,7 @@ class SongProperties(gtk.Window):
             l.set_selectable(True)
             l.set_line_wrap(True)
             self.box.pack_start(
-                self.Frame(util.title(_("artists")), l), expand = False)
+                self.Frame(util.capitalize(_("artists")), l), expand = False)
 
             text = []
             cur_disc = songs[0]("~#disc", 1) - 1
@@ -2780,7 +2778,8 @@ class SongProperties(gtk.Window):
             artists = util.escape("\n".join(artists))
             if artists:
                 self.box.pack_start(
-                    self.Frame("%s (%d)" % (util.title(_("artists")), arcount),
+                    self.Frame("%s (%d)" % (util.capitalize(_("artists")),
+                                            arcount),
                                self.Label(artists)),
                                expand = False)
 
@@ -2791,7 +2790,8 @@ class SongProperties(gtk.Window):
             albums = util.escape("\n".join(albums))
             if albums:
                 self.box.pack_start(
-                    self.Frame("%s (%d)" % (util.title(_("albums")), alcount),
+                    self.Frame("%s (%d)" % (util.capitalize(_("albums")),
+                                            alcount),
                                self.Label(albums)),
                                expand = False)
 
@@ -3833,8 +3833,8 @@ def tag(name):
         if name[0] == "~":
             if name[1] == "#": name = name[2:]
             else: name = name[1:]
-        return util.title(" / ".join([_(HEADERS_FILTER.get(n, n)) for n
-                                      in name.split("~")]))
+            return " / ".join([util.capitalize(_(HEADERS_FILTER.get(n, n)))
+                               for n in name.split("~")])
     except IndexError:
         return _("Invalid tag name")
 
