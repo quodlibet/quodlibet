@@ -129,6 +129,14 @@ class GladeHandlers(object):
     def toggle_repeat(button):
         player.playlist.repeat = button.get_active()
 
+    def show_about(*args):
+        widgets["about_window"].set_transient_for(widgets["main_window"])
+        widgets["about_window"].show()
+
+    def close_about(*args):
+        widgets["about_window"].hide()
+        return True
+
     def toggle_shuffle(button):
         player.playlist.shuffle = button.get_active()
 
