@@ -563,7 +563,7 @@ class Library(dict):
                 self[fn] = song
             else:
                 fn = song.get('=filename', song.get("filename", ""))
-                if os.path.exists(fn):
+                if song.exists():
                     changed += 1
                     self[fn] = MusicFile(fn)
                     self[fn].sanitize()
@@ -589,6 +589,19 @@ class Library(dict):
                         added += 1
                         self[m_fn] = m
                 yield added, changed
+
+    def rebuild(self, force = False):
+        changed, removed = 0, 0
+        for fn in self.keys():
+            if force or not self[fn].valid():
+                m = MusicFile(fn)
+                if m:
+                    self[fn] = m
+                    changed += 1
+                else:
+                    del(self[fn])
+                    removed += 1
+            yield changed, removed
 
 supported = {}
 

@@ -309,6 +309,40 @@ class GladeHandlers(object):
     def seek_slider(slider, v):
         gtk.idle_add(player.playlist.seek, v)
 
+    def rebuild(activator):
+        progress = widgets["rebuild_throbber"]
+        count = widgets["rebuild_count"]
+        label = widgets["rebuild_label"]
+        window = widgets["rebuild_window"]
+        window.set_transient_for(widgets["main_window"])
+        window.show()
+        # FIXME: We have a lot of windows like this. Make
+        # CounterWindow(notice, count_text, iterator).
+        for c, r in library.rebuild():
+            progress.pulse()
+            count.set_text("%d songs changed\n%d songs removed" % (c, r))
+            while gtk.events_pending(): gtk.main_iteration()
+        window.hide()
+        player.playlist.refilter()
+        refresh_songlist()
+
+    def rebuild_hard(activator):
+        progress = widgets["rebuild_throbber"]
+        count = widgets["rebuild_count"]
+        label = widgets["rebuild_label"]
+        window = widgets["rebuild_window"]
+        window.set_transient_for(widgets["main_window"])
+        window.show()
+        # FIXME: We have a lot of windows like this. Make
+        # CounterWindow(notice, count_text, iterator).
+        for c, r in library.rebuild(True):
+            progress.pulse()
+            count.set_text("%d songs changed\n%d songs removed" % (c, r))
+            while gtk.events_pending(): gtk.main_iteration()
+        window.hide()
+        player.playlist.refilter()
+        refresh_songlist()
+
     # Set up the preferences window.
     def open_prefs(activator):
         widgets["prefs_window"].set_transient_for(widgets["main_window"])
@@ -1150,7 +1184,6 @@ def refresh_songlist():
     for song in player.playlist:
         wgt = ((song is CURRENT_SONG[0] and 700) or 400)
         widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
-
     i = len(list(player.playlist))
     if i != 1:statusbar.set_text(_("%d songs found.") % i)
     else: statusbar.set_text(_("%d song found.") % i)
@@ -1306,10 +1339,7 @@ def refresh_cache():
     library.init()
     print _("Loading, scanning, and saving your library.")
     library.library.load(cache_fn)
-    if config.get("settings", "scan"):
-        for a, c in library.library.scan(
-            config.get("settings", "scan").split(":")):
-            pass
+    library.library.rebuild()
     library.library.save(cache_fn)
     raise SystemExit
 

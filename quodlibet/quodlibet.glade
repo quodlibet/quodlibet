@@ -51,7 +51,7 @@
 		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image64">
+			<widget class="GtkImage" id="image122">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -70,6 +70,56 @@
 		      <property name="label">gtk-preferences</property>
 		      <property name="use_stock">True</property>
 		      <signal name="activate" handler="open_prefs" last_modification_time="Sat, 16 Oct 2004 23:05:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separator7">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="refresh_library1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Check for changes in the library made since the program was started</property>
+		      <property name="label" translatable="yes">Refresh library</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="rebuild" last_modification_time="Thu, 18 Nov 2004 04:04:04 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image123">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-refresh</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="reload_library1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Reload all songs in your library. This can take a long time.</property>
+		      <property name="label" translatable="yes">Reload library</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="rebuild_hard" last_modification_time="Thu, 18 Nov 2004 04:06:19 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image124">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-refresh</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 
@@ -164,7 +214,7 @@
 		      <accelerator key="J" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image65">
+			<widget class="GtkImage" id="image125">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -3723,6 +3773,114 @@ version</property>
       <property name="label">gtk-remove</property>
       <property name="use_stock">True</property>
       <signal name="activate" handler="songprop_remove" last_modification_time="Mon, 25 Oct 2004 21:30:45 GMT"/>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkWindow" id="rebuild_window">
+  <property name="width_request">200</property>
+  <property name="title" translatable="yes">Rebuilding library</property>
+  <property name="type">GTK_WINDOW_POPUP</property>
+  <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+  <property name="modal">True</property>
+  <property name="default_width">200</property>
+  <property name="resizable">False</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">False</property>
+  <property name="skip_taskbar_hint">True</property>
+  <property name="skip_pager_hint">True</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+
+  <child>
+    <widget class="GtkFrame" id="frame7">
+      <property name="visible">True</property>
+      <property name="label_xalign">0.03</property>
+      <property name="label_yalign">0</property>
+      <property name="shadow_type">GTK_SHADOW_OUT</property>
+
+      <child>
+	<widget class="GtkAlignment" id="alignment15">
+	  <property name="visible">True</property>
+	  <property name="xalign">0.5</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xscale">1</property>
+	  <property name="yscale">1</property>
+	  <property name="top_padding">0</property>
+	  <property name="bottom_padding">0</property>
+	  <property name="left_padding">10</property>
+	  <property name="right_padding">10</property>
+
+	  <child>
+	    <widget class="GtkVBox" id="vbox23">
+	      <property name="border_width">12</property>
+	      <property name="visible">True</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">12</property>
+
+	      <child>
+		<widget class="GtkLabel" id="rebuild_label">
+		  <property name="width_request">150</property>
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">Quod Libet is updating your library. This may take several minutes.</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_CENTER</property>
+		  <property name="wrap">True</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkLabel" id="rebuild_count">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">0 songs changed
+0 songs removed</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_CENTER</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkProgressBar" id="rebuild_throbber">
+		  <property name="width_request">150</property>
+		  <property name="visible">True</property>
+		  <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
+		  <property name="fraction">0</property>
+		  <property name="pulse_step">0.075</property>
+		  <property name="text" translatable="yes"></property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
     </widget>
   </child>
 </widget>
