@@ -1096,6 +1096,7 @@ class MainWindow(object):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
         songlist = gtk.TreeView()
+        songlist.set_rules_hint(True)
         songlist.set_size_request(200, 150)
         sw.add(songlist)
         self.songlist = MainSongList(songlist)
