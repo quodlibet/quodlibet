@@ -1,4 +1,4 @@
-MODULES = config.py const.py library.py gosd.py match.py parser.py player.py util.py formats/*.py
+MODULES = config.py const.py library.py gosd.py match.py parser.py player.py util.py widgets.py formats/*.py
 SUBDIRS = trayicon mmkeys po
 EXTENSIONS = trayicon.so mmkeys.so
 NAME = quodlibet
