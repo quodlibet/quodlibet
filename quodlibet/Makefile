@@ -1,6 +1,6 @@
 MODULES = config.py const.py library.py gosd.py match.py parser.py player.py pmp.py util.py
-SUBDIRS = statusicon mmkeys po modplug
-EXTENSIONS = statusicon.so mmkeys.so modplug.so
+SUBDIRS = statusicon mmkeys po
+EXTENSIONS = statusicon.so mmkeys.so
 NAME = quodlibet
 PREFIX ?= /usr/local
 TO = lib/$(NAME)
