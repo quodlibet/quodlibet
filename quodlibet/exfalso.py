@@ -46,12 +46,14 @@ if __name__ == "__main__":
     import config
     config.init(const.CONFIG)
 
+    sys.argv.append(os.environ["HOME"])
+    sys.argv[1] = os.path.realpath(sys.argv[1])
+
     basedir = os.path.split(os.path.realpath(__file__))[0]
     sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
     os.chdir(basedir)
 
     import gtk, widgets
-    sys.argv.append(os.environ["HOME"])
     w = widgets.ExFalsoWindow(sys.argv[1])
     w.show_all()
 
