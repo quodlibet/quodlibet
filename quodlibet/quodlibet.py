@@ -317,22 +317,60 @@ class DeleteDialog(object):
     def destroy(self, *args):
         self.dialog.destroy()
 
-class WaitLoadWindow(MultiInstanceWidget):
+class WaitLoadWindow(object):
     def __init__(self, parent, count, text, initial):
-        MultiInstanceWidget.__init__(self, widget = "load_window")
-        self.window = self.widgets["load_window"]
+        self.window = gtk.Window()
+        self.sig = parent.connect('configure-event', self.recenter)
+        self.parent = parent
         self.window.set_transient_for(parent)
+        self.window.set_modal(True)
+        self.window.set_decorated(False)
+        self.window.set_resizable(False)
+        self.window.add(gtk.Frame())
+        self.window.child.set_shadow_type(gtk.SHADOW_OUT)
+        vbox = gtk.VBox(spacing = 12)
+        vbox.set_property('border-width', 12)
+        self.label = gtk.Label()
+        self.label.set_size_request(170, -1)
+        self.label.set_use_markup(True)
+        self.label.set_line_wrap(True)
+        self.label.set_justify(gtk.JUSTIFY_CENTER)
+        vbox.pack_start(self.label)
+        self.progress = gtk.ProgressBar()
+        self.progress.set_pulse_step(0.08)
+        vbox.pack_start(self.progress)
+
         self.current = 0
         self.count = count
-        if 0 < self.count < 6: self.widgets["pause_cancel_box"].hide()
+        if self.count > 5 or self.count == 0:
+            # Display a stop/pause box. count = 0 means an indefinite
+            # number of steps.
+            hbox = gtk.HBox(spacing = 6, homogeneous = True)
+            b1 = gtk.Button(stock = 'gtk-stop')
+            b2 = gtk.ToggleButton()
+            b2.add(gtk.HBox(spacing = 2))
+            i = gtk.Image()
+            i.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
+            b2.child.pack_start(i, expand = False)
+            l = gtk.Label(_("_Pause"))
+            l.set_use_underline(True)
+            l.set_mnemonic_widget(b2)
+            b2.child.pack_start(l)
+            b1.connect('clicked', self.cancel_clicked)
+            b2.connect('clicked', self.pause_clicked)
+            hbox.pack_start(b1)
+            hbox.pack_start(b2)
+            vbox.pack_start(hbox)
+
+        self.window.child.add(vbox)
+
         self.text = text
         self.paused = False
         self.quit = False
-        self.label = self.widgets["load_label"]
-        self.progress = self.widgets["load_progress"]
-        self.progress.set_fraction(0)
+
         self.label.set_markup(self.text % initial)
-        self.window.show()
+        self.window.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.window.show_all()
         while gtk.events_pending(): gtk.main_iteration()
 
     def pause_clicked(self, button):
@@ -354,7 +392,14 @@ class WaitLoadWindow(MultiInstanceWidget):
             gtk.main_iteration()
         return self.quit
 
+    def recenter(self, *args):
+        x, y = self.parent.get_position()
+        dx, dy = self.parent.get_size()
+        dx2, dy2 = self.window.get_size()
+        self.window.move(x + dx/2 - dx2/2, y + dy/2 - dy2/2)
+
     def end(self):
+        self.parent.disconnect(self.sig)
         self.window.destroy()
 
 class BigCenteredImage(object):
@@ -477,8 +522,8 @@ class Osd(object):
         msg += "<span size='x-small'>"
         for key in ["artist", "~album~part", "tracknumber"]:
             if key in song:
-                msg += ("<span foreground='%s' size='xx-small' style='italic'>"
-                        "%s</span> %s   "%(
+                msg += ("<span foreground='%s' size='xx-small' "
+                        "style='italic'>%s</span> %s   "%(
                     (color2, tag(key), util.escape(song.comma(key)))))
         msg = msg.strip() + "</span>"
         if isinstance(msg, unicode):
@@ -935,14 +980,14 @@ class MainWindow(MultiInstanceWidget):
             BigCenteredImage(self.current_song.comma("album"), cover)
 
     def rebuild(self, activator, hard = False):
-        window = WaitLoadWindow(self.window, len(library) // 5,
+        window = WaitLoadWindow(self.window, len(library) // 7,
                                 _("Quod Libet is scanning your library. "
                                   "This may take several minutes.\n\n"
                                   "%d songs reloaded\n%d songs removed"),
                                 (0, 0))
-        iter = 5
+        iter = 7
         for c, r in library.rebuild(hard):
-            if iter == 5:
+            if iter == 7:
                 if window.step(c, r):
                     window.end()
                     break
@@ -950,10 +995,12 @@ class MainWindow(MultiInstanceWidget):
             iter += 1
         else:
             window.end()
-            self.scan_dirs(config.get("settings", "scan").split(":"))
-        library.save(const.LIBRARY)
-        player.playlist.refilter()
-        self.refresh_songlist()
+            if config.get("settings", "scan"):
+                self.scan_dirs(config.get("settings", "scan").split(":"))
+        if c + r != 0:
+            library.save(const.LIBRARY)
+            player.playlist.refilter()
+            self.refresh_songlist()
 
     def rebuild_hard(self, activator):
         self.rebuild(activator, True)
