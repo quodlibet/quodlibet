@@ -1,6 +1,6 @@
 top_srcdir = ../
 NAME = quodlibet
-ALL_LINGUAS = en_GB en_CA
+ALL_LINGUAS = en_GB en_CA de pl
 PO_DIR ?= /usr/share/locale
 
 all:
