@@ -3370,7 +3370,9 @@ class SongProperties(gtk.Window):
             from library import AudioFileGroup
             self.songinfo = songinfo = AudioFileGroup(songs)
             self.songs = songs
+            self.view.set_model(None)
             self.model.clear()
+            self.view.set_model(self.model)
 
             keys = songinfo.realkeys()
             keys.sort()
@@ -3397,7 +3399,6 @@ class SongProperties(gtk.Window):
                 for i, v in enumerate(value.split("\n")):
                     self.model.append(row=[comment, v, edited, edit, deleted,
                                            orig_value[i]])
-
 
             self.buttonbox.set_sensitive(bool(songinfo.can_change()))
             self.remove.set_sensitive(False)
