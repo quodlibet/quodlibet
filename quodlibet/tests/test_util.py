@@ -283,6 +283,10 @@ class NBPTests(TestCase):
         s.assertEquals(pat.match(s.b), '<06>. Title6.ogg')
         s.assertEquals(pat.match(s.c), '<>. test_subdir.flac')
 
+    def test_generated(s):
+        pat = FileFromPattern('<~basename>', filename = False)
+        s.assertEquals(pat.match(s.a), os.path.basename(s.a["~filename"]))
+
     def test_number_dot_title_dot(s):
         pat = FileFromPattern('<tracknumber>. <title>.')
         s.assertEquals(pat.match(s.a), '05. Title5..mp3')
