@@ -6,6 +6,8 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
 0.7
  - Default to proper 'alsa09' driver (rather than 'alsa').
  - "Random Foo" searches are now anchored with ^...$.
+ - The titlecase algorithm has been adjusted slightly.
+ - Tag By Pattern values can be edited before being saved.
 
 0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).

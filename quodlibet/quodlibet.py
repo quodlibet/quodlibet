@@ -1296,6 +1296,10 @@ class SongProperties(MultiInstanceWidget):
         self.nbp_preview.set_sensitive(True)
         self.save_nbp.set_sensitive(False)
 
+    def tbp_edited(self, cell, path, text, model, col):
+        model[path][col] = text
+        self.tbp_preview.set_sensitive(True)
+
     def songprop_tbp_preview(self, *args):
         self.tbp_view.set_model(None)
         self.tbp_model.clear()
@@ -1326,7 +1330,10 @@ class SongProperties(MultiInstanceWidget):
         col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
         self.tbp_view.append_column(col)
         for i, header in enumerate(pattern.headers):
-            col = gtk.TreeViewColumn(header, gtk.CellRendererText(), text=i+3)
+            render = gtk.CellRendererText()
+            render.set_property('editable', True)
+            render.connect('edited', self.tbp_edited, self.tbp_model,  i + 3)
+            col = gtk.TreeViewColumn(header, render, text=i+3)
             self.tbp_view.append_column(col)
 
         spls = config.get("settings", "splitters")
@@ -1497,7 +1504,7 @@ def refresh_songlist():
         widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
         length += song["~#length"]
     i = len(list(player.playlist))
-    if i != 1:statusbar.set_text(
+    if i != 1: statusbar.set_text(
         _("%d songs (%s)") % (i, util.format_time_long(length)))
     else: statusbar.set_text(
         _("%d song (%s)") % (i, util.format_time_long(length)))
