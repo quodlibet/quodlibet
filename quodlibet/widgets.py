@@ -2648,13 +2648,20 @@ class SongProperties(gtk.Window):
             size = util.format_size(os.path.getsize(song["~filename"]))
             tim = util.format_time_long(song["~#length"])
             fn = util.fsdecode(util.unexpand(song["~filename"]))
+            rating = song("~rating")
             tbl = [(_("play count"), playcount),
                    (_("skip count"), skipcount),
+                   (_("rating"), rating),
                    (_("length"), tim),
                    (_("added"), added),
                    (_("modified"), changed),
                    (_("file size"), size)
                    ]
+
+            if song.get("~#bitrate"):
+                tbl.insert(-1,
+                           (_("bitrate"),
+                            _("%d kbps") % int(song["~#bitrate"]/1000)))
             table = gtk.Table(len(tbl) + 1, 2)
             table.set_col_spacings(6)
             l = self.Label(util.escape(fn))
