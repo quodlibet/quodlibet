@@ -16,6 +16,8 @@ else: extensions = [".flac"]
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
+        if not os.path.exists(filename):
+            raise IOError("%s does not exist" % filename)
         chain = flac.metadata.Chain()
         chain.read(filename)
         it = flac.metadata.Iterator()
@@ -65,6 +67,8 @@ class FLACPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
         filename = song['~filename']
+        if not os.path.exists(filename):
+            raise IOError("%s does not exist" % filename)
         self.STREAMINFO = flac.metadata.STREAMINFO
         self.EOF = flac.decoder.FLAC__FILE_DECODER_END_OF_FILE
         self.OK = flac.decoder.FLAC__FILE_DECODER_OK
