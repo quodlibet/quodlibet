@@ -33,6 +33,10 @@ class FSTests(TestCase):
         self.failIf(iscommand("asdfjkl"))
         self.failIf(iscommand(""))
 
+    def test_mtime(self):
+        self.failUnlessEqual(os.path.mtime("."), os.path.getmtime("."))
+        self.failUnlessEqual(os.path.mtime("doesnotexist"), 0)
+
     def test_fscoding(self):
         import locale
         if locale.getpreferredencoding() != "UTF-8":
@@ -74,83 +78,142 @@ class StringTests(TestCase):
         self.failUnlessEqual(decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
         self.failUnlessEqual(encode(u"abcde"), "abcde")
 
+    def test_title(self):
+        self.failUnlessEqual(util.title(""), "")
+        self.failUnlessEqual(util.title("foobar"), "Foobar")
+        self.failUnlessEqual(util.title("fooBar"), "FooBar")
+        self.failUnlessEqual(util.title("foo bar"), "Foo Bar")
+        self.failUnlessEqual(util.title("foo 1bar"), "Foo 1bar")
+        self.failUnlessEqual(util.title("foo 1  bar"), "Foo 1  Bar")
+
     def test_split(self):
         self.failUnlessEqual(split_value("a b"), ["a b"])
         self.failUnlessEqual(split_value("a, b"), ["a", "b"])
         self.failUnlessEqual(split_value("a, b; c"), ["a", "b", "c"])
+        self.failUnlessEqual(split_value("a b", " "), ["a", "b"])
+
+    def test_subtitle(self):
+        # these tests shouldn't be necessary; we're really only
+        # interested in split_foo.
         self.failUnlessEqual(find_subtitle("foo"), ("foo", None))
         self.failUnlessEqual(find_subtitle("foo (baz)"), ("foo", "baz"))
         self.failUnlessEqual(find_subtitle("foo (baz]"), ("foo (baz]", None))
         self.failUnlessEqual(find_subtitle("foo [baz]"), ("foo", "baz"))
         self.failUnlessEqual(find_subtitle("foo ~baz~"), ("foo", "baz"))
-        self.failUnlessEqual(find_subtitle(u"a\u301cb\u301c".encode('utf-8')), ("a", "b"))
-        self.failUnlessEqual(find_subtitle(u"a\u301cb\u301c"), ("a", "b"))
-        self.failUnlessEqual(find_subtitle(u"a\u301cb"), (u"a\u301cb", None))
-        self.failUnlessEqual(split_title("foo"), ("foo", []))
-        self.failUnlessEqual(split_title("foo ~baz~"), ("foo", ["baz"]))
+        self.failUnlessEqual(find_subtitle(
+            u"a\u301cb\u301c".encode('utf-8')), ("a", "b"))
+
+    def test_split_title(self):
+        self.failUnlessEqual(split_title("foo ~"), ("foo ~", []))
+        self.failUnlessEqual(split_title("~foo "), ("~foo ", []))
+        self.failUnlessEqual(split_title("~foo ~"), ("~foo ~", []))
+        self.failUnlessEqual(split_title("~foo ~bar~"), ("~foo", ["bar"]))
+        self.failUnlessEqual(split_title("foo (baz)"), ("foo", ["baz"]))
         self.failUnlessEqual(split_title("foo [b, c]"), ("foo", ["b", "c"]))
-        self.failUnlessEqual(split_album("foo ~disc 1~"), ("foo", "1"))
-        self.failUnlessEqual(split_album("foo Disk 2"), ("foo", "2"))
-        self.failUnlessEqual(split_album("foo ~Disk 3~"), ("foo", "3"))
+        self.failUnlessEqual(split_title("foo [b c]", " "), ("foo",["b", "c"]))
+
+    def test_split_album(self):
         self.failUnlessEqual(split_album("disk 2"), ("disk 2", None))
+        self.failUnlessEqual(split_album("foo disc 1/2"), ("foo", "1/2"))
+        self.failUnlessEqual(
+            split_album("disc foo disc"), ("disc foo disc", None))
+        self.failUnlessEqual(
+            split_album("disc foo disc 1"), ("disc foo", "1"))
+        
+        self.failUnlessEqual(split_album("foo ~disk 3~"), ("foo", "3"))
+        self.failUnlessEqual(
+            split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
+
+    def test_split_people(self):
+        self.failUnlessEqual(util.split_people("foo (bar)"), ("foo", ["bar"]))
+        self.failUnlessEqual(
+            util.split_people("foo (with bar)"), ("foo", ["bar"]))
+        self.failUnlessEqual(
+            util.split_people("foo (with with bar)"), ("foo", ["with bar"]))
+        self.failUnlessEqual(
+            util.split_people("foo featuring bar, qx"), ("foo", ["bar", "qx"]))
+
+    def test_size(self):
+        for k, v in {
+            0: "0B", 1: "1B", 1023: "1023B",
+            1024: "1.00KB", 1536: "1.50KB",
+            10240: "10KB", 15360: "15KB",
+            1024*1024: "1.00MB", 1024*1536: "1.50MB",
+            1024*10240: "10.0MB", 1024*15360: "15.0MB"
+            }.items(): self.failUnlessEqual(util.format_size(k), v)
+
+    def test_time(self):
+        self.failUnlessEqual(util.parse_time("not a time"), 0)
+        # check via round-tripping
+        for i in range(0, 60*60*3, 137):
+            self.failUnlessEqual(util.parse_time(util.format_time(i)), i)
 
 class TBPTests(TestCase):
-    def test_tbp(self):
-        f1 = '/path/Artist/Album/01 - Title.mp3'
-        f2 = '/path/Artist - Album/01. Title.mp3'
-        f3 = '/path/01 - Artist - Title.mp3'
-        b1 = '/path/01 - Title'
-        b2 = '/path/01 - Artist - Title'
+    def setUp(self):
+        self.f1 = '/path/Artist/Album/01 - Title.mp3'
+        self.f2 = '/path/Artist - Album/01. Title.mp3'
+        self.f3 = '/path/01 - Artist - Title.mp3'
+        self.b1 = '/path/01 - Title'
+        self.b2 = '/path/01 - Artist - Title'
+        self.nomatch = {}
 
-        nomatch = {}
+    def test_empty(self):
         pat = PatternFromFile('')
-        self.assertEquals(pat.match(f1), nomatch)
-        self.assertEquals(pat.match(f2), nomatch)
-        self.assertEquals(pat.match(f3), nomatch)
-        self.assertEquals(pat.match(b1), nomatch)
-        self.assertEquals(pat.match(b2), nomatch)
+        self.assertEquals(pat.match(self.f1), self.nomatch)
+        self.assertEquals(pat.match(self.f2), self.nomatch)
+        self.assertEquals(pat.match(self.f3), self.nomatch)
+        self.assertEquals(pat.match(self.b1), self.nomatch)
+        self.assertEquals(pat.match(self.b2), self.nomatch)
 
+    def test_tracktitle(self):
         tracktitle = {'tracknumber': '01', 'title': 'Title' }
         btracktitle = {'tracknumber': '01', 'title': 'Artist - Title' }
         pat = PatternFromFile('<tracknumber> - <title>')
-        self.assertEquals(pat.match(f1), tracktitle)
-        self.assertEquals(pat.match(f2), nomatch)
-        self.assertEquals(pat.match(f3), btracktitle)
-        self.assertEquals(pat.match(b1), nomatch)
-        self.assertEquals(pat.match(b2), nomatch)
+        self.assertEquals(pat.match(self.f1), tracktitle)
+        self.assertEquals(pat.match(self.f2), self.nomatch)
+        self.assertEquals(pat.match(self.f3), btracktitle)
+        self.assertEquals(pat.match(self.b1), self.nomatch)
+        self.assertEquals(pat.match(self.b2), self.nomatch)
 
-        albumtracktitle = tracktitle.copy(); albumtracktitle['album']='Album'
-        balbumtracktitle = btracktitle.copy(); balbumtracktitle['album']='path'
+    def test_path(self):
+        albumtracktitle = {'tracknumber': '01', 'title': 'Title',
+                           'album': 'Album' }
+        balbumtracktitle = {'tracknumber': '01', 'title': 'Artist - Title',
+                            'album': 'path' }
         pat = PatternFromFile('<album>/<tracknumber> - <title>')
-        self.assertEquals(pat.match(f1), albumtracktitle)
-        self.assertEquals(pat.match(f2), nomatch)
-        self.assertEquals(pat.match(f3), balbumtracktitle)
-        self.assertEquals(pat.match(b1), nomatch)
-        self.assertEquals(pat.match(b2), nomatch)
+        self.assertEquals(pat.match(self.f1), albumtracktitle)
+        self.assertEquals(pat.match(self.f2), self.nomatch)
+        self.assertEquals(pat.match(self.f3), balbumtracktitle)
+        self.assertEquals(pat.match(self.b1), self.nomatch)
+        self.assertEquals(pat.match(self.b2), self.nomatch)
 
-        all = albumtracktitle.copy(); all['artist']='Artist'
+    def test_all(self):
+        all = {'tracknumber': '01', 'title': 'Title',
+               'album': 'Album', 'artist': 'Artist' }
         pat = PatternFromFile('<artist>/<album>/<tracknumber> - <title>')
-        self.assertEquals(pat.match(f1), all)
-        self.assertEquals(pat.match(f2), nomatch)
-        self.assertEquals(pat.match(f3), nomatch)
-        self.assertEquals(pat.match(b1), nomatch)
-        self.assertEquals(pat.match(b2), nomatch)
+        self.assertEquals(pat.match(self.f1), all)
+        self.assertEquals(pat.match(self.f2), self.nomatch)
+        self.assertEquals(pat.match(self.f3), self.nomatch)
+        self.assertEquals(pat.match(self.b1), self.nomatch)
+        self.assertEquals(pat.match(self.b2), self.nomatch)
 
+    def test_post(self):
         btracktitle = {'tracknumber': '01', 'title': 'Titl' }
         vbtracktitle = {'tracknumber': '01', 'title': 'Artist - Titl' }
         pat = PatternFromFile('<tracknumber> - <title>e')
-        self.assertEquals(pat.match(f1), btracktitle)
-        self.assertEquals(pat.match(f2), nomatch)
-        self.assertEquals(pat.match(f3), vbtracktitle)
-        self.assertEquals(pat.match(b1), btracktitle)
-        self.assertEquals(pat.match(b2), vbtracktitle)
+        self.assertEquals(pat.match(self.f1), btracktitle)
+        self.assertEquals(pat.match(self.f2), self.nomatch)
+        self.assertEquals(pat.match(self.f3), vbtracktitle)
+        self.assertEquals(pat.match(self.b1), btracktitle)
+        self.assertEquals(pat.match(self.b2), vbtracktitle)
 
+    def test_nofakes(self):
         pat = PatternFromFile('<~#track> - <title>')
-        self.assertEquals(pat.match(f1), nomatch)
-        self.assertEquals(pat.match(f2), nomatch)
-        self.assertEquals(pat.match(f3), nomatch)
-        self.assertEquals(pat.match(b1), nomatch)
-        self.assertEquals(pat.match(b2), nomatch)
+        self.assertEquals(pat.match(self.f1), self.nomatch)
+        self.assertEquals(pat.match(self.f2), self.nomatch)
+        self.assertEquals(pat.match(self.f3), self.nomatch)
+        self.assertEquals(pat.match(self.b1), self.nomatch)
+        self.assertEquals(pat.match(self.b2), self.nomatch)
 
 class NBPTests(TestCase):
     from formats.audio import AudioFile

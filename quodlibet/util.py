@@ -16,8 +16,7 @@ _ = gettext.gettext
 def to(string, frm = "utf-8"):
     enc = locale.getpreferredencoding()
     if isinstance(string, unicode): return string.encode(enc, "replace")
-    else:
-        return string.decode(frm).encode(enc, "replace")
+    else: return string.decode(frm).encode(enc, "replace")
 
 def mtime(filename):
     try: return os.path.getmtime(filename)
@@ -47,14 +46,18 @@ def parse_time(timestr):
     try:
         return reduce(lambda s, a: s * 60 + int(a),
                       sre.split(":|\\.", timestr), 0)
-    except:
+    except (ValueError, sre.error):
         return 0
 
 def format_size(size):
-    if size > 1024*1024:
-        return "%.02fMB" % (float(size) / (1024*1024))
-    elif size > 1024:
-        return "%.02fKB" % (float(size) / (1024*1024))
+    if size >= 1024*1024 * 10:
+        return "%.1fMB" % (float(size) / (1024*1024))
+    elif size >= 1024*1024:
+        return "%.2fMB" % (float(size) / (1024*1024))
+    elif size >= 1024 * 10:
+        return "%dKB" % int(size / 1024)
+    elif size >= 1024:
+        return "%.2fKB" % (float(size) / 1024)
     else:
         return "%dB" % size
 
@@ -123,6 +126,7 @@ def title(string):
         elif cap and s.isalpha():
             cap = False
             s = s.capitalize()
+        else: cap = False
         new_string += s
     return new_string
 
@@ -149,8 +153,7 @@ def split_value(s, splitters = ",;&"):
 def split_title(s, splitters = ",;&"):
     title, subtitle = find_subtitle(s)
     if not subtitle: return (s, [])
-    else:
-        return (title.strip(), split_value(subtitle, splitters))
+    else: return (title.strip(), split_value(subtitle, splitters))
 
 def split_people(s, splitters = ",;&"):
     title, subtitle = find_subtitle(s)
@@ -168,8 +171,7 @@ def split_people(s, splitters = ",;&"):
     else:
         for feat in ["feat.", "featuring", "feat", "with", "w/"]:
             if subtitle.startswith(feat):
-                subtitle = subtitle.replace(feat, "", 1)
-                subtitle.lstrip()
+                subtitle = subtitle.replace(feat, "", 1).lstrip()
                 break
         values = split_value(subtitle, splitters)
         return (title.strip(), values)
@@ -189,11 +191,12 @@ def split_album(s):
             parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
             try: return (name, parts[1])
             except: return (s, None)
+        else: return (s, None)
 
 def find_subtitle(title):
-    if isinstance(title, str): title = unicode(title, 'utf-8')
+    if isinstance(title, str): title = title.decode('utf-8', 'replace')
     for pair in [u"[]", u"()", u"~~", u"--", u"\u301c\u301c"]:
-        if pair[0] in title and title.endswith(pair[1]):
+        if pair[0] in title[:-1] and title.endswith(pair[1]):
             r = len(pair[1])
             l = title[0:-r].rindex(pair[0])
             if l != 0:
