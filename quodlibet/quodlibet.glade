@@ -101,7 +101,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="reload_library1">
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Reload all songs in your library. This can take a long time.</property>
+		      <property name="tooltip" translatable="yes">Reload all songs in your library (this can take a long time)</property>
 		      <property name="label" translatable="yes">Re_load library</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="rebuild_hard" last_modification_time="Thu, 18 Nov 2004 04:06:19 GMT"/>
@@ -1617,7 +1617,7 @@
 			      <child>
 				<widget class="GtkButton" id="button7">
 				  <property name="visible">True</property>
-				  <property name="tooltip" translatable="yes">Set column headers</property>
+				  <property name="tooltip" translatable="yes">Set and save column headers</property>
 				  <property name="can_focus">True</property>
 				  <property name="label">gtk-apply</property>
 				  <property name="use_stock">True</property>
@@ -1906,7 +1906,7 @@ Display OSD on the bottom</property>
 				      <child>
 					<widget class="GtkColorButton" id="osd_color2">
 					  <property name="visible">True</property>
-					  <property name="tooltip" translatable="yes">Select a color for the OSD</property>
+					  <property name="tooltip" translatable="yes">Select a second color for the OSD</property>
 					  <property name="can_focus">True</property>
 					  <property name="use_alpha">False</property>
 					  <property name="focus_on_click">True</property>
@@ -2699,7 +2699,7 @@ Tags should be added to existing ones</property>
 				  <child>
 				    <widget class="GtkCheckButton" id="prefs_ascii_t">
 				      <property name="visible">True</property>
-				      <property name="tooltip" translatable="yes">Characters outside of the ASCII set (Latin A-Z, 0-9, and punctuation) will be replaced by underscores</property>
+				      <property name="tooltip" translatable="yes">Characters outside of the ASCII set (A-Z, 0-9, and punctuation) will be replaced by underscores</property>
 				      <property name="can_focus">True</property>
 				      <property name="label" translatable="yes">Replace non-_ASCII characters</property>
 				      <property name="use_underline">True</property>
@@ -4380,7 +4380,7 @@ Tags should be added to existing ones</property>
 		      <child>
 			<widget class="GtkCheckButton" id="prop_ascii_t">
 			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Characters outside of the ASCII set (Latin A-Z, 0-9, and punctuation) will be replaced by underscores</property>
+			  <property name="tooltip" translatable="yes">Characters outside of the ASCII set (A-Z, 0-9, and punctuation) will be replaced by underscores</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Replace non-_ASCII characters</property>
 			  <property name="use_underline">True</property>
@@ -4858,13 +4858,12 @@ Tags should be added to existing ones</property>
   <child>
     <widget class="GtkImageMenuItem" id="split_into_list">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Split this tag's value into multiple values</property>
-      <property name="label" translatable="yes">_Split values</property>
+      <property name="label" translatable="yes">_Split into multiple values</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="split_into_list" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image101">
+	<widget class="GtkImage" id="image1215">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
@@ -4886,13 +4885,12 @@ Tags should be added to existing ones</property>
   <child>
     <widget class="GtkImageMenuItem" id="split_title">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Split title into title and version</property>
       <property name="label" translatable="yes">Split version out of _title</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="split_title" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image102">
+	<widget class="GtkImage" id="image1216">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
@@ -4913,7 +4911,7 @@ Tags should be added to existing ones</property>
       <signal name="activate" handler="split_arranger" last_modification_time="Fri, 12 Nov 2004 02:41:57 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image103">
+	<widget class="GtkImage" id="image1217">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
@@ -4934,7 +4932,7 @@ Tags should be added to existing ones</property>
       <signal name="activate" handler="split_performer" last_modification_time="Fri, 12 Nov 2004 02:41:57 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image104">
+	<widget class="GtkImage" id="image1218">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
@@ -4950,13 +4948,12 @@ Tags should be added to existing ones</property>
   <child>
     <widget class="GtkImageMenuItem" id="split_album">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Split into album and disc number</property>
       <property name="label" translatable="yes">Split disc out of _album</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="split_album" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image105">
+	<widget class="GtkImage" id="image1219">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
