@@ -640,7 +640,7 @@ class Library(dict):
                     fn = song['~filename']
                     changed += 1
                     song = MusicFile(fn)
-                    if song:
+                    if song and fn in self:
                         for key in MIGRATE: song[key] = self[fn][key]
                         self[fn] = song
                 elif config.get("settings", "masked"):

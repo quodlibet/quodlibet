@@ -255,6 +255,25 @@ class PreferencesWindow(MultiInstanceWidget):
 
         self.window.present()
 
+class DeleteDialog(MultiInstanceWidget):
+    def __init__(self, parent, files):
+        MultiInstanceWidget.__init__(self, widget = "delete_dialog")
+        self.window = self.widgets["delete_dialog"]
+        self.window.set_transient_for(parent)
+        if not os.path.isdir(os.path.expanduser("~/.Trash")):
+            self.widgets["trash_button"].hide()
+
+        self.widgets["fn_count"].set_text(_("%s and %d more...") %(
+            os.path.basename(files[0]), len(files) - 1))
+        self.widgets["filename_list"].set_text(
+            "\n".join(map(util.unexpand, files)))
+
+    def run(self):
+        return self.window.run()
+
+    def destroy(self):
+        self.window.destroy()
+
 class WaitLoadWindow(MultiInstanceWidget):
     def __init__(self, parent, count, text, initial):
         MultiInstanceWidget.__init__(self, widget = "load_window")
@@ -624,9 +643,10 @@ class MainWindow(MultiInstanceWidget):
         path = (player.playlist.get_playlist().index(song),)
         iter = widgets.songs.get_iter(path)
         widgets.songs.remove(iter)
-        statusbar = widgets["statusbar"]
+        statusbar = self.widgets["statusbar"]
         statusbar.set_text(_("Could not play %s.") % song['~filename'])
-        library.remove(song)
+        try: library.remove(song)
+        except KeyError: pass
         player.playlist.remove(song)
 
     def update_markup(self, song):
@@ -945,6 +965,45 @@ class MainWindow(MultiInstanceWidget):
             library.remove(song)
             player.playlist.remove(song)
 
+    def delete_song(self, item):
+        view = self.songlist
+        selection = self.songlist.get_selection()
+        model, rows = selection.get_selected_rows()
+        songs = [model[r][len(HEADERS)] for r in rows]
+        filenames = [song["~filename"] for song in songs]
+        filenames.sort()
+        d = DeleteDialog(self.window, filenames)
+        resp = d.run()
+        d.destroy()
+        if resp == 1: return
+        else:
+            if resp == 0: s = _("Moving %d/%d.")
+            else: s = _("Deleting %d/%d.")
+            w = WaitLoadWindow(self.window, len(songs), s, (0, len(songs)))
+            trash = os.path.expanduser("~/.Trash")
+            for song in songs:
+                filename = song["~filename"]
+                try:
+                    if resp == 0:
+                        basename = os.path.basename(filename)
+                        shutil.move(filename, os.path.join(trash, basename))
+                    else:
+                        os.unlink(filename)
+                    library.remove(song)
+                except:
+                    ErrorMessage(self.window,
+                                 _("Unable to remove file"),
+                                 _("Removing <b>%s</b> failed. "
+                                   "Possibly the target file does not exist, "
+                                   "or you do not have permission to "
+                                   "remove it.") % (filename)).run()
+                    break
+                else:
+                    w.step(w.current + 1, w.count)
+            w.end()
+            player.playlist.refilter()
+            self.refresh_songlist()
+
     def current_song_prop(self, *args):
         song = self.current_song
         if song:
@@ -968,7 +1027,7 @@ class MainWindow(MultiInstanceWidget):
         else:
             self.cmenu_w["pmp_sep"].show()
             self.cmenu_w["pmp_upload"].show()
-        if header not in ["genre", "artist", "album"]:
+        if header not in ["genre", "artist", "album", "~album~part"]:
             self.cmenu_w["filter_column"].show()
             if header.startswith("~#"): header = header[2:]
             elif header.startswith("~"): header = header[1:]
@@ -1018,7 +1077,6 @@ class MainWindow(MultiInstanceWidget):
             queries = ["#(%s = %d)" % (nheader, i) for i in values]
             self.make_query("|(" + ", ".join(queries) + ")")
         else:
-            if header.startswith("~"): header = header[1:]
             values = {}
             for song in songs:
                 if header in song:
@@ -1026,6 +1084,7 @@ class MainWindow(MultiInstanceWidget):
                         values[val] = True
 
             text = "|".join([sre.escape(s) for s in values.keys()])
+            if header.startswith("~"): header = header[1:]
             self.make_query(u"%s = /^(%s)$/c" % (header, text))
 
     def cols_changed(self, view):        
@@ -2071,6 +2130,7 @@ if __name__ == "__main__":
     gtk.glade.textdomain("quodlibet")
 
     import gc
+    import shutil
     import util
 
     # Load configuration data and scan the library for new/changed songs.

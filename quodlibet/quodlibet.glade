@@ -3269,7 +3269,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
       <signal name="activate" handler="genre_filter" last_modification_time="Tue, 23 Nov 2004 11:13:37 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image851">
+	<widget class="GtkImage" id="image1165">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -3291,7 +3291,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
       <signal name="activate" handler="artist_filter" last_modification_time="Fri, 22 Oct 2004 04:20:14 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image852">
+	<widget class="GtkImage" id="image1166">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -3313,7 +3313,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
       <signal name="activate" handler="album_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image853">
+	<widget class="GtkImage" id="image1167">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
 	  <property name="icon_size">1</property>
@@ -3334,9 +3334,37 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
       <signal name="activate" handler="song_col_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image854">
+	<widget class="GtkImage" id="image1168">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-index</property>
+	  <property name="icon_size">1</property>
+	  <property name="xalign">0.5</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkSeparatorMenuItem" id="pmp_sep">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkImageMenuItem" id="pmp_upload">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Upload the selected songs to your portable device</property>
+      <property name="label" translatable="yes">Upload to PMP...</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="pmp_upload" last_modification_time="Sun, 21 Nov 2004 01:22:35 GMT"/>
+
+      <child internal-child="image">
+	<widget class="GtkImage" id="image1169">
+	  <property name="visible">True</property>
+	  <property name="stock">gtk-harddisk</property>
 	  <property name="icon_size">1</property>
 	  <property name="xalign">0.5</property>
 	  <property name="yalign">0.5</property>
@@ -3364,40 +3392,21 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
   </child>
 
   <child>
+    <widget class="GtkImageMenuItem" id="delete1">
+      <property name="visible">True</property>
+      <property name="label">gtk-delete</property>
+      <property name="use_stock">True</property>
+      <signal name="activate" handler="delete_song" last_modification_time="Fri, 17 Dec 2004 08:15:18 GMT"/>
+    </widget>
+  </child>
+
+  <child>
     <widget class="GtkImageMenuItem" id="song_properties">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">View and edit tags in the selected songs</property>
       <property name="label">gtk-properties</property>
       <property name="use_stock">True</property>
       <signal name="activate" handler="song_properties" last_modification_time="Sun, 07 Nov 2004 23:13:08 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkSeparatorMenuItem" id="pmp_sep">
-      <property name="visible">True</property>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkImageMenuItem" id="pmp_upload">
-      <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Upload the selected songs to your portable device</property>
-      <property name="label" translatable="yes">Upload to PMP...</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="pmp_upload" last_modification_time="Sun, 21 Nov 2004 01:22:35 GMT"/>
-
-      <child internal-child="image">
-	<widget class="GtkImage" id="image855">
-	  <property name="visible">True</property>
-	  <property name="stock">gtk-harddisk</property>
-	  <property name="icon_size">1</property>
-	  <property name="xalign">0.5</property>
-	  <property name="yalign">0.5</property>
-	  <property name="xpad">0</property>
-	  <property name="ypad">0</property>
-	</widget>
-      </child>
     </widget>
   </child>
 </widget>
@@ -5398,6 +5407,278 @@ version</property>
 	  <property name="xpad">0</property>
 	  <property name="ypad">0</property>
 	</widget>
+      </child>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkDialog" id="delete_dialog">
+  <property name="border_width">6</property>
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Deleting files</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">False</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="has_separator">True</property>
+
+  <child internal-child="vbox">
+    <widget class="GtkVBox" id="dialog-vbox2">
+      <property name="visible">True</property>
+      <property name="homogeneous">False</property>
+      <property name="spacing">0</property>
+
+      <child internal-child="action_area">
+	<widget class="GtkHButtonBox" id="dialog-action_area2">
+	  <property name="visible">True</property>
+	  <property name="layout_style">GTK_BUTTONBOX_END</property>
+
+	  <child>
+	    <widget class="GtkButton" id="trash_button">
+	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="response_id">0</property>
+
+	      <child>
+		<widget class="GtkAlignment" id="alignment26">
+		  <property name="visible">True</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xscale">0</property>
+		  <property name="yscale">0</property>
+		  <property name="top_padding">0</property>
+		  <property name="bottom_padding">0</property>
+		  <property name="left_padding">0</property>
+		  <property name="right_padding">0</property>
+
+		  <child>
+		    <widget class="GtkHBox" id="hbox102">
+		      <property name="visible">True</property>
+		      <property name="homogeneous">False</property>
+		      <property name="spacing">2</property>
+
+		      <child>
+			<widget class="GtkImage" id="image1155">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-delete</property>
+			  <property name="icon_size">4</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+			<packing>
+			  <property name="padding">0</property>
+			  <property name="expand">False</property>
+			  <property name="fill">False</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkLabel" id="label59">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">_Move to Trash</property>
+			  <property name="use_underline">True</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+			<packing>
+			  <property name="padding">0</property>
+			  <property name="expand">False</property>
+			  <property name="fill">False</property>
+			</packing>
+		      </child>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkButton" id="button13">
+	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="has_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="has_focus">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="response_id">1</property>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkButton" id="button14">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-delete</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="response_id">2</property>
+	    </widget>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">True</property>
+	  <property name="pack_type">GTK_PACK_END</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkHBox" id="hbox103">
+	  <property name="visible">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">0</property>
+
+	  <child>
+	    <widget class="GtkImage" id="image1156">
+	      <property name="visible">True</property>
+	      <property name="stock">gtk-dialog-warning</property>
+	      <property name="icon_size">6</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0</property>
+	      <property name="xpad">12</property>
+	      <property name="ypad">12</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkVBox" id="vbox32">
+	      <property name="visible">True</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<widget class="GtkLabel" id="label60">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Permanently delete these files?&lt;/b&gt;&lt;/big&gt;</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">True</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">True</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">6</property>
+		  <property name="ypad">6</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkExpander" id="expander2">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="expanded">False</property>
+		  <property name="spacing">0</property>
+
+		  <child>
+		    <widget class="GtkScrolledWindow" id="scrolledwindow5">
+		      <property name="height_request">90</property>
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+		      <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+		      <property name="shadow_type">GTK_SHADOW_NONE</property>
+		      <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
+
+		      <child>
+			<widget class="GtkViewport" id="viewport1">
+			  <property name="border_width">6</property>
+			  <property name="visible">True</property>
+			  <property name="shadow_type">GTK_SHADOW_NONE</property>
+
+			  <child>
+			    <widget class="GtkLabel" id="filename_list">
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label" translatable="yes">~/foo
+~/music/bar.ogg
+~/audio/an artist - album - long name/01. whee.ogg</property>
+			      <property name="use_underline">False</property>
+			      <property name="use_markup">False</property>
+			      <property name="justify">GTK_JUSTIFY_LEFT</property>
+			      <property name="wrap">False</property>
+			      <property name="selectable">True</property>
+			      <property name="xalign">0</property>
+			      <property name="yalign">0</property>
+			      <property name="xpad">0</property>
+			      <property name="ypad">0</property>
+			    </widget>
+			  </child>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="fn_count">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">%s and %d more...</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0.5</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="type">label_item</property>
+		    </packing>
+		  </child>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
       </child>
     </widget>
   </child>
