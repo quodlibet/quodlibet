@@ -769,13 +769,33 @@ class PanedBrowser(Browser, gtk.HBox):
             if check: # verify we've actually changed...
                 model, rows = selection.get_selected_rows()
                 selected_items = [model[row][0] for row in rows]
+                if rows == []: rows = [(0,)]
                 if self._selected_items == selected_items: return
                 else: self._selected_items = selected_items
+            self.child.scroll_to_cell(selection.get_selected_rows()[1][0])
             # pass on the remaining songs to the next pane
             self.next.fill(
                 filter(parser.parse(self.query()).search, self._songs))
 
-        def fill(self, songs):
+        def select(self, values):
+            selection = self.child.get_selection()
+            selection.handler_block(self.__sig)
+            selection.unselect_all()
+            model = selection.get_tree_view().get_model()
+            if values == []: selection.select_path((len(model) - 1,))
+            elif values is None: selection.select_path((0,))
+            else:
+                values = [util.escape(v.encode('utf-8')) for v in values]
+                def select_values(model, path, iter):
+                    if model[path][0] in values:
+                        selection.select_path(path)
+                model.foreach(select_values)
+                if selection.count_selected_rows() == 0:
+                    selection.select_path((0,))
+            selection.handler_unblock(self.__sig)
+            self.__selection_changed(selection, check = False)
+
+        def fill(self, songs, handle_pending = True):
             self._songs = songs
             # get values from song list
             complete = True
@@ -806,13 +826,13 @@ class PanedBrowser(Browser, gtk.HBox):
             if to_select == []: to_select = [0]
             for i in to_select: selection.select_path((i,))
             selection.handler_unblock(self.__sig)
-            while gtk.events_pending(): gtk.main_iteration()
+            while handle_pending and gtk.events_pending(): gtk.main_iteration()
             self.__selection_changed(selection, check = False)
 
         def query(self):
             selection = self.child.get_selection()
             model, rows = selection.get_selected_rows()
-            if rows[0][0] == 0: # All
+            if rows == [] or rows[0][0] == 0: # All
                 return "%s = /.?/" % self.tag
             else:
                 selected = ["/^%s$/c"%sre.escape(util.unescape(model[row][0]))
@@ -839,6 +859,17 @@ class PanedBrowser(Browser, gtk.HBox):
         self.set_homogeneous(True)
         self.set_size_request(100, 100)
         self.show_all()
+
+    def can_filter(self, key):
+        return key in [pane.tag for pane in self._panes]
+
+    def filter(self, key, values):
+        for pane in self._panes:
+            self.__inhibit = True
+            pane.select(None)
+
+        pane = self._panes[[pane.tag for pane in self._panes].index(key)]
+        pane.select(values)
 
     def activate(self):
         self.fill(None)
@@ -1488,9 +1519,11 @@ class MainWindow(gtk.Window):
         if song:
             self.text.set_markup(song.to_markup())
             self.icon.tooltip = song.to_short()
+            self.set_title("Quod Libet - " + song.comma("~title~version"))
             self.osd.show_osd(song)
         else:
             s = _("Not playing")
+            self.set_title("Quod Libet")
             self.text.set_markup("<span size='xx-large'>%s</span>" % s)
             self.icon.tooltip = s
         self.image.set_song(song)
@@ -1619,17 +1652,14 @@ class MainWindow(gtk.Window):
         gobject.idle_add(player.playlist.seek, v)
 
     def random_artist(self, menuitem):
-        self.make_query("artist = /^%s$/c" %(
-            sre.escape(library.random("artist"))))
+        self.browser.filter('artist', [library.random("artist")])
 
     def random_album(self, menuitem):
-        self.make_query("album = /^%s$/c" %(
-            sre.escape(library.random("album"))))
+        self.browser.filter('album', [library.random("album")])
         self.shuffle.set_active(False)
 
     def random_genre(self, menuitem):
-        self.make_query("genre = /^%s$/c" %(
-            sre.escape(library.random("genre"))))
+        self.browser.filter('genre', [library.random("genre")])
 
     def lastplayed_day(self, menuitem):
         self.make_query("#(lastplayed > today)")
@@ -1876,7 +1906,8 @@ class MainWindow(gtk.Window):
         self.browser.destroy()
         self.browser = SearchBar(gtk.STOCK_FIND, self.text_parse)
         self.child.pack_start(self.browser, expand = False)
-        self.browser.set_text(config.get("memory", "query"))
+        self.__hide_menus()
+        #self.browser.set_text(config.get("memory", "query"))
 
     def show_paned(self, *args):
         for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
@@ -1885,14 +1916,31 @@ class MainWindow(gtk.Window):
         self.browser.destroy()
         self.browser = PanedBrowser(self.text_parse)
         self.child.pack_start(self.browser)
+        self.__hide_menus()
 
     def show_listselect(self, *args):
-        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
-                      "Song/FilterAlbum"]:
-            self.ui.get_widget("/Menu/" + w).hide()
         self.browser.destroy()
         self.browser = PlaylistBar(self.playlist_selected)
         self.child.pack_start(self.browser, expand = False)
+        self.__hide_menus()
+
+    def __hide_menus(self):
+        menus = {'genre': ["/Menu/Song/FilterGenre",
+                           "/Menu/Filters/RandomGenre"],
+                 'artist': ["/Menu/Song/FilterGenre",
+                           "/Menu/Filters/RandomGenre"],
+                 'album':  ["/Menu/Song/FilterAlbum",
+                           "/Menu/Filters/RandomAlbum"],
+                 None: ["/Menu/Filters/NotPlayedDay",
+                        "/Menu/Filters/NotPlayedWeek",
+                        "/Menu/Filters/NotPlayedMonth",
+                        "/Menu/Filters/NotPlayedEver",
+                        "/Menu/Filters/Top",
+                        "/Menu/Filters/Bottom"]}
+        for key, widgets in menus.items():
+            c = self.browser.can_filter(key)
+            for widget in widgets:
+                self.ui.get_widget(widget).set_property('visible', c)
 
     def playlist_selected(self, query, key):
         while gtk.events_pending(): gtk.main_iteration()
@@ -1908,6 +1956,7 @@ class MainWindow(gtk.Window):
             self.ui.get_widget("/Menu/" + w).show()
         self.browser.destroy()
         self.browser = EmptyBar(self.text_parse)
+        self.__hide_menus()
 
     # Grab the text from the query box, parse it, and make a new filter.
     # The sort argument is not used for this browser.
