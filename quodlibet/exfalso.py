@@ -33,9 +33,7 @@ class DirectoryTree(gtk.TreeView):
 
         if initial:
             path = []
-            print initial
             head, tail = os.path.split(initial)
-            print head, tail
             while head not in [os.path.dirname(os.environ["HOME"]), "/"]:
                 if tail:
                     dirs = [d for d in
@@ -93,7 +91,12 @@ class FileSelector(gtk.VPaned):
         filelist.append_column(column)
         filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        dirlist.get_selection().connect('changed', self.__fill, filelist)
+
+        self.__sig = filelist.get_selection().connect(
+            'changed', self.__changed)
+
+        dirlist.get_selection().connect(
+            'changed', self.__fill, filelist)
         dirlist.get_selection().emit('changed')
 
         sw = gtk.ScrolledWindow()
@@ -108,8 +111,6 @@ class FileSelector(gtk.VPaned):
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.pack2(sw, resize = True)
 
-        filelist.get_selection().connect('changed', self.__changed)
-
     def rescan(self):
         self.get_child1().child.get_selection().emit('changed')
 
@@ -117,7 +118,9 @@ class FileSelector(gtk.VPaned):
         self.emit('changed', selection)
 
     def __fill(self, selection, filelist):
-        fmodel, frows = filelist.get_selection().get_selected_rows()
+        fselect = filelist.get_selection()
+        fselect.handler_block(self.__sig)
+        fmodel, frows = fselect.get_selected_rows()
         selected = [fmodel[row][0] for row in frows]
         fmodel = filelist.get_model()
         fmodel.clear()
@@ -130,7 +133,9 @@ class FileSelector(gtk.VPaned):
         def select_paths(model, path, iter, selection):
             if model[path][0] in selected:
                 selection.select_path(path)
-        if fmodel: fmodel.foreach(select_paths, filelist.get_selection())
+        if fmodel: fmodel.foreach(select_paths, fselect)
+        fselect.handler_unblock(self.__sig)
+        fselect.emit('changed')
 
 gobject.type_register(FileSelector)
 
@@ -139,7 +144,7 @@ class MainWindow(gtk.Window):
         gtk.Window.__init__(self)
         self.set_title("Ex Falso")
         self.set_border_width(12)
-        self.set_default_size(600, 400)
+        self.set_default_size(700, 500)
         self.add(gtk.HPaned())
         fs = FileSelector(dir)
         self.child.pack1(fs, resize = True)
