@@ -1091,11 +1091,15 @@ class CoverImage(gtk.Frame):
                 self.child.child.set_from_pixbuf(None)
                 self.hide()
             elif cover.name != self.__albumfn:
-                self.child.child.set_from_pixbuf(
-                    gtk.gdk.pixbuf_new_from_file_at_size(
-                    cover.name, *self.__size))
-                self.__albumfn = cover.name
-                self.show()
+                try:
+                    pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                        cover.name, *self.__size)
+                except gobject.GError:
+                    self.hide()
+                else:
+                    self.child.child.set_from_pixbuf(pixbuf)
+                    self.__albumfn = cover.name
+                    self.show()
 
     def show(self):
         if config.state("cover") and self.__albumfn:
@@ -3908,7 +3912,7 @@ class DirectoryTree(gtk.TreeView):
         if initial:
             path = []
             head, tail = os.path.split(initial)
-            while head not in [os.path.dirname(os.environ["HOME"]), "/"]:
+            while head != os.path.dirname(os.environ["HOME"]) and tail != '':
                 if tail:
                     dirs = [d for d in
                             dircache.listdir(head) if
