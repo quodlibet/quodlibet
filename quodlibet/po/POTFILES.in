@@ -4,3 +4,4 @@ quodlibet.glade
 quodlibet.py
 util.py
 po/tag-names.py
+formats/audio.py

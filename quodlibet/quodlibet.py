@@ -1970,7 +1970,7 @@ class SongProperties(object):
         def _listen(self, song):
             def counter(i):
                 if i == 0: return _("Never")
-                elif i == 1: return _("%d time") % i
+                elif i == 1: return _("1 time")
                 else: return _("%d times") % i
 
             def ftime(t):

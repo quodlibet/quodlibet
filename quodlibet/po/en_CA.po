@@ -11,354 +11,109 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-03 19:15-0600\n"
-"PO-Revision-Date: 2005-02-03 19:13-0600\n"
+"POT-Creation-Date: 2005-02-21 12:44-0600\n"
+"PO-Revision-Date: 2005-02-21 12:42-0600\n"
 "Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: library.py:27 quodlibet.py:2220 quodlibet.py:2222 quodlibet.py:2224
-msgid "Unknown"
-msgstr "Unknown"
-
-#: library.py:35
-#, python-format
-msgid "W: Error loading %s"
-msgstr "W: Error loading %s"
-
-#: library.py:174
-#, python-format
-msgid "by %s"
-msgstr "by %s"
-
-#: library.py:177
-#, python-format
-msgid "Performed by %s"
-msgstr "Performed by %s"
-
-#: library.py:182
-#, python-format
-msgid "arranged by %s"
-msgstr "arranged by %s"
-
-#: library.py:184
-#, python-format
-msgid "lyrics by %s"
-msgstr "lyrics by %s"
-
-#: library.py:186
-#, python-format
-msgid "conducted by %s"
-msgstr "conducted by %s"
-
-#: library.py:188
-#, python-format
-msgid "composed by %s"
-msgstr "composed by %s"
-
-#: library.py:190
-#, python-format
-msgid "written by %s"
-msgstr "written by %s"
-
-#: library.py:200
-#, python-format
-msgid "Disc %s"
-msgstr "Disc %s"
-
-#: library.py:204
-#, python-format
-msgid "Track %s"
-msgstr "Track %s"
-
-#: library.py:219
-msgid "Never"
-msgstr "Never"
-
-#: library.py:224
-#, python-format
-msgid "1 time, recently on %s"
-msgstr "1 time, recently on %s"
-
-#: library.py:226
-#, python-format
-msgid "%d times, recently on %s"
-msgstr "%d times, recently on %s"
-
-#: library.py:571
+#: ../library.py:61
 #, python-format
 msgid "(shared across all %d songs)"
 msgstr "(shared across all %d songs)"
 
-#: library.py:573
+#: ../library.py:63
 #, python-format
 msgid "(missing from %d songs)"
 msgstr "(missing from %d songs)"
 
-#: library.py:575
+#: ../library.py:65
 #, python-format
 msgid "(different across %d songs)"
 msgstr "(different across %d songs)"
 
-#: library.py:577
+#: ../library.py:67
 #, python-format
 msgid "(different across %d songs, missing from %d songs)"
 msgstr "(different across %d songs, missing from %d songs)"
 
-#: library.py:722
+#: ../library.py:205
 #, python-format
 msgid "W: %s is not a QL song database."
 msgstr "W: %s is not a QL song database."
 
-#: library.py:757
+#: ../library.py:240
 #, python-format
 msgid "Checking %s"
 msgstr "Checking %s"
 
-#: library.py:797
-msgid "Enabling Ogg Vorbis support."
-msgstr "Enabling Ogg Vorbis support."
+#: ../library.py:278
+msgid "Supported formats:"
+msgstr "Supported formats:"
 
-#: library.py:800
-msgid "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
-msgstr "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
-
-#: library.py:803
-msgid "Enabling MP3 support."
-msgstr "Enabling MP3 support."
-
-#: library.py:806
-msgid "W: MP3 support is disabled! MP3 files cannot be loaded."
-msgstr "W: MP3 support is disabled! MP3 files cannot be loaded."
-
-#: library.py:809
-msgid "Enabling FLAC support."
-msgstr "Enabling FLAC support."
-
-#: library.py:813
-msgid "Enabling ModPlug support."
-msgstr "Enabling ModPlug support."
-
-#: library.py:818
-msgid "Enabling Musepack support."
-msgstr "Enabling Musepack support."
-
-#: quodlibet.glade.h:1
-msgid "<b>Album:</b>"
-msgstr "<b>Album:</b>"
-
-#: quodlibet.glade.h:2
-msgid "<b>Artist:</b>"
-msgstr "<b>Artist:</b>"
-
-#: quodlibet.glade.h:3
-msgid "<b>Copy files</b>"
-msgstr "<b>Copy files</b>"
-
-#: quodlibet.glade.h:4
-msgid "<b>File:</b>"
-msgstr "<b>File:</b>"
-
-#: quodlibet.glade.h:5
-msgid "<b>Played:</b>"
-msgstr "<b>Played:</b>"
-
-#: quodlibet.glade.h:6
-msgid "<b>Rename by Tag Defaults</b>"
-msgstr "<b>Rename by Tag Defaults</b>"
-
-#: quodlibet.glade.h:7
-msgid "<b>Run command</b>"
-msgstr "<b>Run command</b>"
-
-#: quodlibet.glade.h:8
+#: ../quodlibet.glade.h:1
 msgid "<b>Scan _Directories</b>"
 msgstr "<b>Scan _Directories</b>"
 
-#: quodlibet.glade.h:9
-msgid "<b>Tag by Filename Defaults</b>"
-msgstr "<b>Tag by Filename Defaults</b>"
+#: ../quodlibet.glade.h:2
+msgid "<b>Tag Editing</b>"
+msgstr "<b>Tag Editing</b>"
 
-#: quodlibet.glade.h:10
-msgid "<b>Title:</b>"
-msgstr "<b>Title:</b>"
-
-#: quodlibet.glade.h:11
+#: ../quodlibet.glade.h:3
 msgid "<b>Visible Columns</b>"
 msgstr "<b>Visible Columns</b>"
 
-#: quodlibet.glade.h:12
+#: ../quodlibet.glade.h:4
 msgid "<b>_Masked Directories</b>"
 msgstr "<b>_Masked Directories</b>"
 
-#: quodlibet.glade.h:13
+#: ../quodlibet.glade.h:5
 msgid "<b>_On-Screen Display</b>"
 msgstr "<b>_On-Screen Display</b>"
 
-#: quodlibet.glade.h:14
+#: ../quodlibet.glade.h:6
 msgid "<b>_Volume Normalization</b>"
 msgstr "<b>_Volume Normalization</b>"
 
-#: quodlibet.glade.h:15
-msgid ""
-"<small><i>Quodlibet 'kwäd-l&amp;-\"bet\\</i> [From Latin, \"what you please"
-"\"]\n"
-"\t1. A nice point; a subtilty; a debatable point.\n"
-"\t2. (Mus.) A medley improvised by several performers.\n"
-"\n"
-"<i>Quod Libet</i>\n"
-"\t1. A music library manager and player.\n"
-"\t2. The result of forgetting high school Latin before doing a commit.</"
-"small>"
-msgstr ""
-"<small><i>Quodlibet 'kwäd-l&amp;-\"bet\\</i> [From Latin, \"what you please"
-"\"]\n"
-"\t1. A nice point; a subtilty; a debatable point.\n"
-"\t2. (Mus.) A medley improvised by several performers.\n"
-"\n"
-"<i>Quod Libet</i>\n"
-"\t1. A music library manager and player.\n"
-"\t2. The result of forgetting high school Latin before doing a commit.</"
-"small>"
-
-#: quodlibet.glade.h:22
-msgid ""
-"<small>Quod Libet is free software licensed under the GNU GPL version 2.</"
-"small>"
-msgstr ""
-"<small>Quod Libet is free software licensed under the GNU GPL version 2.</"
-"small>"
-
-#: quodlibet.glade.h:23
-msgid ""
-"<u><span weight=\"bold\" size=\"xx-large\">Quod Libet</span></u>\n"
-"Copyright ©2004 Joe Wreschnig and Michael Urman\n"
-"<quodlibet@lists.sacredchao.net>\n"
-"<span size='small'>Tray icon code by Anders Carlsson and Sun Microsystems, "
-"Inc.\n"
-"Multimedia key code by Lee Willis and Jan Arne Petersen.\n"
-"OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.</span>"
-msgstr ""
-"<u><span weight=\"bold\" size=\"xx-large\">Quod Libet</span></u>\n"
-"Copyright ©2004 Joe Wreschnig and Michael Urman\n"
-"<quodlibet@lists.sacredchao.net>\n"
-"<span size='small'>Tray icon code by Anders Carlsson and Sun Microsystems, "
-"Inc.\n"
-"Multimedia key code by Lee Willis and Jan Arne Petersen.\n"
-"OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.</span>"
-
-#: quodlibet.glade.h:29
+#: ../quodlibet.glade.h:7
 msgid "A_rtist"
 msgstr "A_rtist"
 
-#: quodlibet.glade.h:30
-msgid "About Quod Libet"
-msgstr "About Quod Libet"
-
-#: quodlibet.glade.h:31
-msgid "Add a new tag to the file"
-msgstr "Add a new tag to the file"
-
-#: quodlibet.glade.h:32
+#: ../quodlibet.glade.h:8
 msgid "Add songs to your library"
 msgstr "Add songs to your library"
 
-#: quodlibet.glade.h:33
+#: ../quodlibet.glade.h:9
 msgid "Al_bum"
 msgstr "Al_bum"
 
-#: quodlibet.glade.h:34
+#: ../quodlibet.glade.h:10
 msgid "Album includes part"
 msgstr "Album includes part"
 
-#: quodlibet.glade.h:35
-msgid "Apply to these _files:"
-msgstr "Apply to these _files:"
-
-#: quodlibet.glade.h:36
+#: ../quodlibet.glade.h:11
 msgid "B_ottom 40"
 msgstr "B_ottom 40"
 
-#: quodlibet.glade.h:37
+#: ../quodlibet.glade.h:12
 msgid "Browser"
 msgstr "Browser"
 
-#: quodlibet.glade.h:38
-msgid ""
-"Characters not allowed in Windows filenames (\\:*?;\"<>|) will be replaced "
-"by underscores"
-msgstr ""
-"Characters not allowed in Windows filenames (\\:*?;\"<>|) will be replaced "
-"by underscores"
-
-#: quodlibet.glade.h:39
-msgid ""
-"Characters outside of the ASCII set (A-Z, 0-9, and punctuation) will be "
-"replaced by underscores"
-msgstr ""
-"Characters outside of the ASCII set (A-Z, 0-9, and punctuation) will be "
-"replaced by underscores"
-
-#: quodlibet.glade.h:40
+#: ../quodlibet.glade.h:13
 msgid "Check for changes in the library made since the program was started"
 msgstr "Check for changes in the library made since the program was started"
 
-#: quodlibet.glade.h:41
-msgid ""
-"Choose \"Regular filesystem\" above. When this driver is enabled, files will "
-"be copied from their normal location to another one when you select \"Upload "
-"to PMP\" from the context menu. Use this driver for players that appear as "
-"hard drives."
-msgstr ""
-"Choose \"Regular filesystem\" above. When this driver is enabled, files will "
-"be copied from their normal location to another one when you select \"Upload "
-"to PMP\" from the context menu. Use this driver for players that appear as "
-"hard drives."
-
-#: quodlibet.glade.h:43
-#, no-c-format
-msgid ""
-"Choose \"Run command\" from above. When this driver is enabled, the "
-"specified program will be called once per filename. '%s' will be replaced "
-"with the filename."
-msgstr ""
-"Choose \"Run command\" from above. When this driver is enabled, the "
-"specified program will be called once per filename. '%s' will be replaced "
-"with the filename."
-
-#: quodlibet.glade.h:44
-msgid "Close without saving changes"
-msgstr "Close without saving changes"
-
-#: quodlibet.glade.h:45
+#: ../quodlibet.glade.h:14
 msgid "Color _search terms"
 msgstr "Colour _search terms"
 
-#: quodlibet.glade.h:46
-msgid "Copy _files to"
-msgstr "Copy _files to"
-
-#: quodlibet.glade.h:47
+#: ../quodlibet.glade.h:15
 msgid "Dat_e"
 msgstr "Dat_e"
 
-#: quodlibet.glade.h:48
-msgid ""
-"Display changes that will be made to filenames based on the current pattern"
-msgstr ""
-"Display changes that will be made to filenames based on the current pattern"
-
-#: quodlibet.glade.h:49
-msgid "Display changes that will be made to tags based on the current pattern"
-msgstr "Display changes that will be made to tags based on the current pattern"
-
-#: quodlibet.glade.h:50
-msgid "Display changes that will be made to track numbers"
-msgstr "Display changes that will be made to track numbers"
-
-#: quodlibet.glade.h:51
+#: ../quodlibet.glade.h:16
 msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
@@ -366,40 +121,19 @@ msgstr ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
 
-#: quodlibet.glade.h:52
-msgid "Double-click on a tag value to change it, right-click for other options"
-msgstr ""
-"Double-click on a tag value to change it, right-click for other options"
-
-#: quodlibet.glade.h:53
-msgid "Edit Tags"
-msgstr "Edit Tags"
-
-#: quodlibet.glade.h:54
+#: ../quodlibet.glade.h:17 ../quodlibet.py:1405
 msgid "Filter on _artist"
 msgstr "Filter on _artist"
 
-#: quodlibet.glade.h:55
+#: ../quodlibet.glade.h:18 ../quodlibet.py:1400
 msgid "Filter on _genre"
 msgstr "Filter on _genre"
 
-#: quodlibet.glade.h:56
+#: ../quodlibet.glade.h:19 ../quodlibet.py:1410
 msgid "Filter on al_bum"
 msgstr "Filter on al_bum"
 
-#: quodlibet.glade.h:57
-msgid "Filter on this column"
-msgstr "Filter on this column"
-
-#: quodlibet.glade.h:58
-msgid ""
-"If appropriate to the language, strings will be title-cased (the first "
-"letter of each word capitalized)"
-msgstr ""
-"If appropriate to the language, strings will be title-cased (the first "
-"letter of each word capitalized)"
-
-#: quodlibet.glade.h:59
+#: ../quodlibet.glade.h:20
 msgid ""
 "If you have songs in directories that will not always be mounted (for "
 "example, a removable device or an NFS shared drive), list those mount points "
@@ -411,15 +145,15 @@ msgstr ""
 "here. Files in these directories will not be removed from the library if the "
 "device is not mounted."
 
-#: quodlibet.glade.h:60
+#: ../quodlibet.glade.h:21
 msgid "Library"
 msgstr "Library"
 
-#: quodlibet.glade.h:61
+#: ../quodlibet.glade.h:22
 msgid "List other headers you want displayed, separated by spaces"
 msgstr "List other headers you want displayed, separated by spaces"
 
-#: quodlibet.glade.h:62
+#: ../quodlibet.glade.h:23
 msgid ""
 "No on-screen display\n"
 "Display OSD on the top\n"
@@ -429,19 +163,7 @@ msgstr ""
 "Display OSD on the top\n"
 "Display OSD on the bottom"
 
-#: quodlibet.glade.h:65
-msgid ""
-"No portable device\n"
-"Regular filesystem (set locations below)\n"
-"Run command (see path below)\n"
-"iRiver iFP device (ifp-line driver)\n"
-msgstr ""
-"No portable device\n"
-"Regular filesystem (set locations below)\n"
-"Run command (see path below)\n"
-"iRiver iFP device (ifp-line driver)\n"
-
-#: quodlibet.glade.h:70
+#: ../quodlibet.glade.h:26
 msgid ""
 "No volume adjustment\n"
 "Per-song (\"Radio\") volume adjustment\n"
@@ -451,19 +173,19 @@ msgstr ""
 "Per-song (\"Radio\") volume adjustment\n"
 "Per-album (\"Audiophile\") volume adjustment"
 
-#: quodlibet.glade.h:73
+#: ../quodlibet.glade.h:29
 msgid "Not played in a _month"
 msgstr "Not played in a _month"
 
-#: quodlibet.glade.h:74
+#: ../quodlibet.glade.h:30
 msgid "Not played in a _week"
 msgstr "Not played in a _week"
 
-#: quodlibet.glade.h:75
+#: ../quodlibet.glade.h:31
 msgid "Not played to_day"
 msgstr "Not played to_day"
 
-#: quodlibet.glade.h:76
+#: ../quodlibet.glade.h:32
 msgid ""
 "On start up, any files found in these directories will be added to your "
 "library. Separate multiple directories with colons (':')."
@@ -471,215 +193,123 @@ msgstr ""
 "On start up, any files found in these directories will be added to your "
 "library. Separate multiple directories with colons (':')."
 
-#: quodlibet.glade.h:77
+#: ../quodlibet.glade.h:33
 msgid "Ot_hers: "
 msgstr "Ot_hers: "
 
-#: quodlibet.glade.h:78
+#: ../quodlibet.glade.h:34
 msgid "Pause/resume the current song"
 msgstr "Pause/resume the current song"
 
-#: quodlibet.glade.h:79
+#: ../quodlibet.glade.h:35
 msgid "Perfor_mer"
 msgstr "Perfor_mer"
 
-#: quodlibet.glade.h:80
+#: ../quodlibet.glade.h:36
 msgid "Pick a random album from your library"
 msgstr "Pick a random album from your library"
 
-#: quodlibet.glade.h:81
+#: ../quodlibet.glade.h:37
 msgid "Pick a random artist from your library"
 msgstr "Pick a random artist from your library"
 
-#: quodlibet.glade.h:82
+#: ../quodlibet.glade.h:38
 msgid "Pick a random genre from your library"
 msgstr "Pick a random genre from your library"
 
-#: quodlibet.glade.h:83 quodlibet.py:973
+#: ../quodlibet.glade.h:39 ../quodlibet.py:1006
 msgid "Play _song"
 msgstr "Play _song"
 
-#: quodlibet.glade.h:84
+#: ../quodlibet.glade.h:40
 msgid "Play next song"
 msgstr "Play next song"
 
-#: quodlibet.glade.h:85
+#: ../quodlibet.glade.h:41
 msgid "Play previous song"
 msgstr "Play previous song"
 
-#: quodlibet.glade.h:86
+#: ../quodlibet.glade.h:42
 msgid "Play songs in a random order"
 msgstr "Play songs in a random order"
 
-#: quodlibet.glade.h:87
+#: ../quodlibet.glade.h:43
 msgid "Player"
 msgstr "Player"
 
-#: quodlibet.glade.h:88
-msgid "Portable Devices"
-msgstr "Portable Devices"
-
-#: quodlibet.glade.h:89
-msgid "Pre_vious"
-msgstr "Pre_vious"
-
-#: quodlibet.glade.h:90
+#: ../quodlibet.glade.h:44
 msgid "Pre_vious song"
 msgstr "Pre_vious song"
 
-#: quodlibet.glade.h:91
+#: ../quodlibet.glade.h:45
 msgid "Quod Libet Preferences"
 msgstr "Quod Libet Preferences"
 
-#: quodlibet.glade.h:92
+#: ../quodlibet.glade.h:46
 msgid "Random _artist"
 msgstr "Random _artist"
 
-#: quodlibet.glade.h:93
+#: ../quodlibet.glade.h:47
 msgid "Random _genre"
 msgstr "Random _genre"
 
-#: quodlibet.glade.h:94
+#: ../quodlibet.glade.h:48
 msgid "Random al_bum"
 msgstr "Random al_bum"
 
-#: quodlibet.glade.h:95
+#: ../quodlibet.glade.h:49
 msgid "Re_fresh library"
 msgstr "Re_fresh library"
 
-#: quodlibet.glade.h:96
+#: ../quodlibet.glade.h:50
 msgid "Re_load library"
 msgstr "Re_load library"
 
-#: quodlibet.glade.h:97
+#: ../quodlibet.glade.h:51
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Reload all songs in your library (this can take a long time)"
 
-#: quodlibet.glade.h:98
-msgid "Remove selected songs from your library"
-msgstr "Remove selected songs from your library"
-
-#: quodlibet.glade.h:99
-msgid "Remove the currently selected tag from the file"
-msgstr "Remove the currently selected tag from the file"
-
-#: quodlibet.glade.h:100
-msgid "Rename by Tags"
-msgstr "Rename by Tags"
-
-#: quodlibet.glade.h:101
-msgid "Replace _Windows-incompatible characters"
-msgstr "Replace _Windows-incompatible characters"
-
-#: quodlibet.glade.h:102
-msgid "Replace _underscores with spaces"
-msgstr "Replace _underscores with spaces"
-
-#: quodlibet.glade.h:103
-msgid "Replace non-_ASCII characters"
-msgstr "Replace non-_ASCII characters"
-
-#: quodlibet.glade.h:104
-msgid "Replace spaces with _underscores"
-msgstr "Replace spaces with _underscores"
-
-#: quodlibet.glade.h:105
+#: ../quodlibet.glade.h:52
 msgid "Restart the playlist after all songs are played"
 msgstr "Restart the playlist after all songs are played"
 
-#: quodlibet.glade.h:106
+#: ../quodlibet.glade.h:53
 msgid "S_ong"
 msgstr "S_ong"
 
-#: quodlibet.glade.h:107
+#: ../quodlibet.glade.h:54
 msgid "Select a color for the OSD"
 msgstr "Select a colour for the OSD"
 
-#: quodlibet.glade.h:108
+#: ../quodlibet.glade.h:55
 msgid "Select a font for the OSD"
 msgstr "Select a font for the OSD"
 
-#: quodlibet.glade.h:109
+#: ../quodlibet.glade.h:56
 msgid "Select a second color for the OSD"
 msgstr "Select a second colour for the OSD"
 
-#: quodlibet.glade.h:110
+#: ../quodlibet.glade.h:57
 msgid "Set and save column headers"
 msgstr "Set and save column headers"
 
-#: quodlibet.glade.h:111
+#: ../quodlibet.glade.h:58
+msgid "Show _programmatic comments"
+msgstr "Show _programmatic comments"
+
+#: ../quodlibet.glade.h:59
 msgid "Show album cover _images"
 msgstr "Show album cover _images"
 
-#: quodlibet.glade.h:112
-msgid "Show only songs by the same artists as the selected ones"
-msgstr "Show only songs by the same artists as the selected ones"
-
-#: quodlibet.glade.h:113
-msgid "Show only songs in the same albums as the selected ones"
-msgstr "Show only songs in the same albums as the selected ones"
-
-#: quodlibet.glade.h:114
-msgid "Show only songs with the same genres as the selected ones"
-msgstr "Show only songs with the same genres as the selected ones"
-
-#: quodlibet.glade.h:115
-msgid "Song Properties"
-msgstr "Song Properties"
-
-#: quodlibet.glade.h:116
+#: ../quodlibet.glade.h:60
 msgid "Song _list"
 msgstr "Song _list"
 
-#: quodlibet.glade.h:117
+#: ../quodlibet.glade.h:61
 msgid "Split _on:"
 msgstr "Split _on:"
 
-#: quodlibet.glade.h:118
-msgid "Split _performer out of artist"
-msgstr "Split _performer out of artist"
-
-#: quodlibet.glade.h:119
-msgid "Split arranger out of ar_tist"
-msgstr "Split arranger out of ar_tist"
-
-#: quodlibet.glade.h:120
-msgid "Split disc out of _album"
-msgstr "Split disc out of _album"
-
-#: quodlibet.glade.h:121
-msgid "Split into _multiple values"
-msgstr "Split into _multiple values"
-
-#: quodlibet.glade.h:122
-msgid "Split version out of _title"
-msgstr "Split version out of _title"
-
-#: quodlibet.glade.h:123
-msgid "Sta_rt from:"
-msgstr "Sta_rt from:"
-
-#: quodlibet.glade.h:124
-msgid "Tag Editing"
-msgstr "Tag Editing"
-
-#: quodlibet.glade.h:125
-msgid "Tag by Filename"
-msgstr "Tag by Filename"
-
-#: quodlibet.glade.h:126
-msgid "Tag values will be split based on your preferences"
-msgstr "Tag values will be split based on your preferences"
-
-#: quodlibet.glade.h:127
-msgid ""
-"Tags should replace existing ones\n"
-"Tags should be added to existing ones"
-msgstr ""
-"Tags should replace existing ones\n"
-"Tags should be added to existing ones"
-
-#: quodlibet.glade.h:129
+#: ../quodlibet.glade.h:62
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -687,7 +317,7 @@ msgstr ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
 
-#: quodlibet.glade.h:130
+#: ../quodlibet.glade.h:63
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -695,7 +325,7 @@ msgstr ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
 
-#: quodlibet.glade.h:131
+#: ../quodlibet.glade.h:64
 msgid ""
 "These characters will be used as separators when \"Split values\" is "
 "selected in the tag editor"
@@ -703,274 +333,226 @@ msgstr ""
 "These characters will be used as separators when \"Split values\" is "
 "selected in the tag editor"
 
-#: quodlibet.glade.h:132
+#: ../quodlibet.glade.h:65
 msgid "Title"
 msgstr "Title"
 
-#: quodlibet.glade.h:133
+#: ../quodlibet.glade.h:66
 msgid "Title includes version"
 msgstr "Title includes version"
 
-#: quodlibet.glade.h:134
-msgid "Track Numbers"
-msgstr "Track Numbers"
-
-#: quodlibet.glade.h:135
-msgid "Upload the selected songs to your portable device"
-msgstr "Upload the selected songs to your portable device"
-
-#: quodlibet.glade.h:136
-msgid "Upload to PMP..."
-msgstr "Upload to PMP..."
-
-#: quodlibet.glade.h:137
+#: ../quodlibet.glade.h:67
 msgid "View and edit tags in the playing song"
 msgstr "View and edit tags in the playing song"
 
-#: quodlibet.glade.h:138
-msgid "View and edit tags in the selected songs"
-msgstr "View and edit tags in the selected songs"
-
-#: quodlibet.glade.h:139
+#: ../quodlibet.glade.h:68
 msgid "Visit the artist's website"
 msgstr "Visit the artist's website"
 
-#: quodlibet.glade.h:140
+#: ../quodlibet.glade.h:69
 msgid "When the playing song changes, scroll to it in the playlist"
 msgstr "When the playing song changes, scroll to it in the playlist"
 
-#: quodlibet.glade.h:141
+#: ../quodlibet.glade.h:70
 msgid "_About"
 msgstr "_About"
 
-#: quodlibet.glade.h:142
+#: ../quodlibet.glade.h:71
 msgid "_Add Music..."
 msgstr "_Add Music..."
 
-#: quodlibet.glade.h:143
+#: ../quodlibet.glade.h:72
 msgid "_Disable browsing"
 msgstr "_Disable browsing"
 
-#: quodlibet.glade.h:144
+#: ../quodlibet.glade.h:73
 msgid "_Disc"
 msgstr "_Disc"
 
-#: quodlibet.glade.h:145
+#: ../quodlibet.glade.h:74
 msgid "_Filename"
 msgstr "_Filename"
 
-#: quodlibet.glade.h:146
+#: ../quodlibet.glade.h:75
 msgid "_Filters"
 msgstr "_Filters"
 
-#: quodlibet.glade.h:147
+#: ../quodlibet.glade.h:76
 msgid "_Genre"
 msgstr "_Genre"
 
-#: quodlibet.glade.h:148
+#: ../quodlibet.glade.h:77
 msgid "_Help"
 msgstr "_Help"
 
-#: quodlibet.glade.h:149
+#: ../quodlibet.glade.h:78
 msgid "_Jump to current song automatically"
 msgstr "_Jump to current song automatically"
 
-#: quodlibet.glade.h:150
+#: ../quodlibet.glade.h:79
 msgid "_Jump to playing song"
 msgstr "_Jump to playing song"
 
-#: quodlibet.glade.h:151
+#: ../quodlibet.glade.h:80
 msgid "_Length"
 msgstr "_Length"
 
-#: quodlibet.glade.h:152
+#: ../quodlibet.glade.h:81
 msgid "_Music"
 msgstr "_Music"
 
-#: quodlibet.glade.h:153
+#: ../quodlibet.glade.h:82
 msgid "_Never played"
 msgstr "_Never played"
 
-#: quodlibet.glade.h:154
+#: ../quodlibet.glade.h:83
 msgid "_New Playlist..."
 msgstr "_New Playlist..."
 
-#: quodlibet.glade.h:155
-msgid "_Next"
-msgstr "_Next"
-
-#: quodlibet.glade.h:156
+#: ../quodlibet.glade.h:84
 msgid "_Next song"
 msgstr "_Next song"
 
-#: quodlibet.glade.h:157
+#: ../quodlibet.glade.h:85
 msgid "_Part"
 msgstr "_Part"
 
-#: quodlibet.glade.h:158 quodlibet.py:974
-msgid "_Play"
-msgstr "_Play"
-
-#: quodlibet.glade.h:159
+#: ../quodlibet.glade.h:86
 msgid "_Playlists"
 msgstr "_Playlists"
 
-#: quodlibet.glade.h:160
-msgid "_Preview"
-msgstr "_Preview"
-
-#: quodlibet.glade.h:161
+#: ../quodlibet.glade.h:87
 msgid "_Repeat"
 msgstr "_Repeat"
 
-#: quodlibet.glade.h:162
-msgid "_Replace underscores with spaces"
-msgstr "_Replace underscores with spaces"
-
-#: quodlibet.glade.h:163
-msgid "_Run:"
-msgstr "_Run:"
-
-#: quodlibet.glade.h:164
+#: ../quodlibet.glade.h:88
 msgid "_Search library"
 msgstr "_Search library"
 
-#: quodlibet.glade.h:165
+#: ../quodlibet.glade.h:89
 msgid "_Select..."
 msgstr "_Select..."
 
-#: quodlibet.glade.h:166
-msgid "_Show programmatic comments"
-msgstr "_Show programmatic comments"
-
-#: quodlibet.glade.h:167
+#: ../quodlibet.glade.h:90
 msgid "_Shuffle"
 msgstr "_Shuffle"
 
-#: quodlibet.glade.h:168
-msgid "_Split into multiple values"
-msgstr "_Split into multiple values"
-
-#: quodlibet.glade.h:169
-msgid "_Title-case resulting values"
-msgstr "_Title-case resulting values"
-
-#: quodlibet.glade.h:170
+#: ../quodlibet.glade.h:91
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: quodlibet.glade.h:171
-msgid "_Total tracks:"
-msgstr "_Total tracks:"
-
-#: quodlibet.glade.h:172
+#: ../quodlibet.glade.h:92
 msgid "_Track"
 msgstr "_Track"
 
-#: quodlibet.glade.h:173
+#: ../quodlibet.glade.h:93
 msgid "_Version"
 msgstr "_Version"
 
-#: quodlibet.glade.h:174
+#: ../quodlibet.glade.h:94
 msgid "_View"
 msgstr "_View"
 
-#: quodlibet.py:208
+#: ../quodlibet.py:87
+msgid "About Quod Libet"
+msgstr "About Quod Libet"
+
+#: ../quodlibet.py:90
+msgid "Quod Libet is free software licensed under the GNU GPL v2."
+msgstr "Quod Libet is free software licensed under the GNU GPL v2."
+
+#: ../quodlibet.py:225
 msgid "Select Directories"
 msgstr "Select Directories"
 
-#: quodlibet.py:217
+#: ../quodlibet.py:234
 msgid "Select Mount Points"
 msgstr "Select Mount Points"
 
-#: quodlibet.py:265
+#: ../quodlibet.py:282
 msgid "Deleting files"
 msgstr "Deleting files"
 
-#: quodlibet.py:274
+#: ../quodlibet.py:291
 msgid "_Move to Trash"
 msgstr "_Move to Trash"
 
-#: quodlibet.py:291
+#: ../quodlibet.py:308
 msgid "Permanently delete this file?"
 msgstr "Permanently delete this file?"
 
-#: quodlibet.py:294
+#: ../quodlibet.py:311
 msgid "Permanently delete these files?"
 msgstr "Permanently delete these files?"
 
-#: quodlibet.py:295
+#: ../quodlibet.py:312
 #, python-format
 msgid "%s and %d more..."
 msgstr "%s and %d more..."
 
-#: quodlibet.py:356 quodlibet.py:982
+#: ../quodlibet.py:374 ../quodlibet.py:898
 msgid "_Pause"
 msgstr "_Pause"
 
-#: quodlibet.py:450
-msgid "W: Failed to initialize status icon."
-msgstr "W: Failed to initialize status icon."
-
-#: quodlibet.py:455
+#: ../quodlibet.py:472
 msgid "Initialized status icon."
 msgstr "Initialized status icon."
 
-#: quodlibet.py:515
+#: ../quodlibet.py:532
 msgid "Add Results"
 msgstr "Add Results"
 
-#: quodlibet.py:574
-msgid "W: Failed to initialize multimedia key support."
-msgstr "W: Failed to initialize multimedia key support."
-
-#: quodlibet.py:578
+#: ../quodlibet.py:590
 msgid "Initialized multimedia key support."
 msgstr "Initialized multimedia key support."
 
-#: quodlibet.py:586
-msgid "W: Failed to initialize OSD."
-msgstr "W: Failed to initialize OSD."
-
-#: quodlibet.py:591
-msgid "Initialized OSD."
-msgstr "Initialized OSD."
-
-#: quodlibet.py:672
+#: ../quodlibet.py:682
 msgid "Edit the current playlist"
 msgstr "Edit the current playlist"
 
-#: quodlibet.py:673
+#: ../quodlibet.py:683
 msgid "Refresh the current playlist"
 msgstr "Refresh the current playlist"
 
-#: quodlibet.py:854 quodlibet.py:1417
+#: ../quodlibet.py:857 ../quodlibet.py:1443
 msgid "Search"
 msgstr "Search"
 
-#: quodlibet.py:940
+#: ../quodlibet.py:894
+msgid "_Play"
+msgstr "_Play"
+
+#: ../quodlibet.py:904
+msgid "Pre_vious"
+msgstr "Pre_vious"
+
+#: ../quodlibet.py:908
+msgid "_Next"
+msgstr "_Next"
+
+#: ../quodlibet.py:975
 #, python-format
 msgid "W: Unable to load %s"
 msgstr "W: Unable to load %s"
 
-#: quodlibet.py:981
+#: ../quodlibet.py:1010
 msgid "Pause _song"
 msgstr "Pause _song"
 
-#: quodlibet.py:1002
+#: ../quodlibet.py:1029
 #, python-format
 msgid "Could not play %s."
 msgstr "Could not play %s."
 
-#: quodlibet.py:1013
+#: ../quodlibet.py:1040
 msgid "Not playing"
 msgstr "Not playing"
 
-#: quodlibet.py:1084
+#: ../quodlibet.py:1111
 msgid "New Playlist..."
 msgstr "New Playlist..."
 
-#: quodlibet.py:1085
+#: ../quodlibet.py:1112
 msgid ""
 "Enter a name for the new playlist. If it already exists it will be opened "
 "for editing."
@@ -978,16 +560,16 @@ msgstr ""
 "Enter a name for the new playlist. If it already exists it will be opened "
 "for editing."
 
-#: quodlibet.py:1124
+#: ../quodlibet.py:1151
 #, python-format
 msgid "Opening web browser: %s"
 msgstr "Opening web browser: %s"
 
-#: quodlibet.py:1128
+#: ../quodlibet.py:1155
 msgid "Unable to start a web browser"
 msgstr "Unable to start a web browser"
 
-#: quodlibet.py:1129
+#: ../quodlibet.py:1156
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -995,7 +577,7 @@ msgstr ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
 
-#: quodlibet.py:1213
+#: ../quodlibet.py:1239
 #, python-format
 msgid ""
 "Quod Libet is scanning your library. This may take several minutes.\n"
@@ -1008,20 +590,11 @@ msgstr ""
 "%d songs reloaded\n"
 "%d songs removed"
 
-#: quodlibet.py:1241
-#, python-format
-msgid "Uploading song %d/%d"
-msgstr "Uploading song %d/%d"
-
-#: quodlibet.py:1248
-msgid "Unable to upload files"
-msgstr "Unable to upload files"
-
-#: quodlibet.py:1262
+#: ../quodlibet.py:1275
 msgid "Add Music"
 msgstr "Add Music"
 
-#: quodlibet.py:1270
+#: ../quodlibet.py:1283
 #, python-format
 msgid ""
 "Quod Libet is scanning for new songs and adding them to your library.\n"
@@ -1032,21 +605,21 @@ msgstr ""
 "\n"
 "%d songs added"
 
-#: quodlibet.py:1348
+#: ../quodlibet.py:1360
 #, python-format
 msgid "Moving %d/%d."
 msgstr "Moving %d/%d."
 
-#: quodlibet.py:1349
+#: ../quodlibet.py:1361
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "Deleting %d/%d."
 
-#: quodlibet.py:1364
+#: ../quodlibet.py:1376
 msgid "Unable to remove file"
 msgstr "Unable to remove file"
 
-#: quodlibet.py:1365
+#: ../quodlibet.py:1377
 #, python-format
 msgid ""
 "Removing <b>%s</b> failed. Possibly the target file does not exist, or you "
@@ -1055,94 +628,223 @@ msgstr ""
 "Removing <b>%s</b> failed. Possibly the target file does not exist, or you "
 "do not have permission to remove it."
 
-#: quodlibet.py:1400
+#: ../quodlibet.py:1416
 #, python-format
-msgid "_Filter on this column (%s)"
-msgstr "_Filter on this column (%s)"
+msgid "_Filter on %s"
+msgstr "_Filter on %s"
 
-#: quodlibet.py:1499
+#: ../quodlibet.py:1513
 #, python-format
 msgid "%d songs (%s)"
 msgstr "%d songs (%s)"
 
-#: quodlibet.py:1501
+#: ../quodlibet.py:1515
 #, python-format
 msgid "%d song (%s)"
 msgstr "%d song (%s)"
 
-#: quodlibet.py:1764
+#: ../quodlibet.py:1794
 msgid "Add a new tag"
 msgstr "Add a new tag"
 
-#: quodlibet.py:1786
+#: ../quodlibet.py:1816
 msgid "_Tag:"
 msgstr "_Tag:"
 
-#: quodlibet.py:1794
+#: ../quodlibet.py:1824
 msgid "_Value:"
 msgstr "_Value:"
 
-#: quodlibet.py:1851
-msgid "Write"
-msgstr "Write"
+#: ../quodlibet.py:1871
+msgid "Information"
+msgstr "Information"
 
-#: quodlibet.py:1857
-msgid "Tag"
-msgstr "Tag"
+#: ../quodlibet.py:1910
+msgid "performers"
+msgstr "performers"
 
-#: quodlibet.py:1861
-msgid "Value"
-msgstr "Value"
+#: ../quodlibet.py:1911
+msgid "lyricists"
+msgstr "lyricists"
 
-#: quodlibet.py:1874 quodlibet.py:1904 quodlibet.py:1921 quodlibet.py:2446
+#: ../quodlibet.py:1912
+msgid "arrangers"
+msgstr "arrangers"
+
+#: ../quodlibet.py:1913
+msgid "composers"
+msgstr "composers"
+
+#: ../quodlibet.py:1914
+msgid "conductors"
+msgstr "conductors"
+
+#: ../quodlibet.py:1915
+msgid "authors"
+msgstr "authors"
+
+#: ../quodlibet.py:1927 ../quodlibet.py:2062 ../quodlibet.py:2177
+msgid "artists"
+msgstr "artists"
+
+#: ../quodlibet.py:1930
+msgid "Album"
+msgstr "Album"
+
+#: ../quodlibet.py:1949 ../quodlibet.py:2080 ../formats/audio.py:189
+#, python-format
+msgid "Disc %s"
+msgstr "Disc %s"
+
+#: ../quodlibet.py:1953 ../formats/audio.py:193
+#, python-format
+msgid "Track %s"
+msgstr "Track %s"
+
+#: ../quodlibet.py:1972
+msgid "Never"
+msgstr "Never"
+
+#: ../quodlibet.py:1973
+msgid "1 time"
+msgstr "1 time"
+
+#: ../quodlibet.py:1974
+#, python-format
+msgid "%d times"
+msgstr "%d times"
+
+#: ../quodlibet.py:1977 ../formats/audio.py:21
+msgid "Unknown"
+msgstr "Unknown"
+
+#: ../quodlibet.py:1987 ../po/tag-names.py:20
+msgid "play count"
+msgstr "play count"
+
+#: ../quodlibet.py:1988 ../po/tag-names.py:21
+msgid "skip count"
+msgstr "skip count"
+
+#: ../quodlibet.py:1989 ../po/tag-names.py:7
+msgid "length"
+msgstr "length"
+
+#. date the song was added to the library
+#: ../quodlibet.py:1990 ../po/tag-names.py:43
+msgid "added"
+msgstr "added"
+
+#. date song was last modified/edited
+#: ../quodlibet.py:1991 ../po/tag-names.py:45
+msgid "modified"
+msgstr "modified"
+
+#: ../quodlibet.py:1992
+msgid "file size"
+msgstr "file size"
+
+#: ../quodlibet.py:2005 ../quodlibet.py:2714 ../quodlibet.py:2830
+#: ../quodlibet.py:3008 ../quodlibet.py:3125
 msgid "File"
 msgstr "File"
 
-#: quodlibet.py:1877
-msgid "Path"
-msgstr "Path"
+#: ../quodlibet.py:2090
+msgid "No information available"
+msgstr "No information available"
 
-#: quodlibet.py:1907
-msgid "New Name"
-msgstr "New Name"
+#: ../quodlibet.py:2095
+msgid "Track List"
+msgstr "Track List"
 
-#: quodlibet.py:1924
-msgid "Track"
-msgstr "Track"
-
-#: quodlibet.py:1988 quodlibet.py:2307 quodlibet.py:2507
-msgid "Unable to edit song"
-msgstr "Unable to edit song"
-
-#: quodlibet.py:1989 quodlibet.py:2308 quodlibet.py:2508
+#: ../quodlibet.py:2101 ../quodlibet.py:2144
 #, python-format
-msgid ""
-"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
-"have permission to edit it."
-msgstr ""
-"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
-"have permission to edit it."
+msgid "%d songs"
+msgstr "%d songs"
 
-#: quodlibet.py:2065
-msgid "Invalid date format"
-msgstr "Invalid date format"
-
-#: quodlibet.py:2066 quodlibet.py:2162
+#: ../quodlibet.py:2119 ../quodlibet.py:2184
 #, python-format
-msgid ""
-"Invalid date: <b>%s</b>.\n"
-"\n"
-"The date must be entered in YYYY or YYYY-MM-DD format."
-msgstr ""
-"Invalid date: <b>%s</b>.\n"
-"\n"
-"The date must be entered in YYYY or YYYY-MM-DD format."
+msgid "%d songs with no album"
+msgstr "%d songs with no album"
 
-#: quodlibet.py:2155 quodlibet.py:2425
+#: ../quodlibet.py:2121
+msgid "Selected Discography"
+msgstr "Selected Discography"
+
+#: ../quodlibet.py:2154
+msgid "Total length:"
+msgstr "Total length:"
+
+#: ../quodlibet.py:2156
+msgid "Songs heard:"
+msgstr "Songs heard:"
+
+#: ../quodlibet.py:2159
+msgid "Listening"
+msgstr "Listening"
+
+#: ../quodlibet.py:2173
+#, python-format
+msgid "%d songs with no artist"
+msgstr "%d songs with no artist"
+
+#: ../quodlibet.py:2188
+msgid "albums"
+msgstr "albums"
+
+#: ../quodlibet.py:2227
+msgid "Edit Tags"
+msgstr "Edit Tags"
+
+#: ../quodlibet.py:2237
+msgid "Write"
+msgstr "Write"
+
+#: ../quodlibet.py:2244
+msgid "Tag"
+msgstr "Tag"
+
+#: ../quodlibet.py:2250
+msgid "Value"
+msgstr "Value"
+
+#: ../quodlibet.py:2293
+msgid "Double-click a tag value to change it, right-click for other options"
+msgstr "Double-click a tag value to change it, right-click for other options"
+
+#: ../quodlibet.py:2295
+msgid "Add a new tag to the file"
+msgstr "Add a new tag to the file"
+
+#: ../quodlibet.py:2296
+msgid "Remove a tag from the file"
+msgstr "Remove a tag from the file"
+
+#: ../quodlibet.py:2364
+msgid "_Split into multiple values"
+msgstr "_Split into multiple values"
+
+#: ../quodlibet.py:2373
+msgid "Split disc out of _album"
+msgstr "Split disc out of _album"
+
+#: ../quodlibet.py:2381
+msgid "Split version out of title"
+msgstr "Split version out of title"
+
+#: ../quodlibet.py:2391
+msgid "Split arranger out of ar_tist"
+msgstr "Split arranger out of ar_tist"
+
+#: ../quodlibet.py:2398
+msgid "Split _performer out of artist"
+msgstr "Split _performer out of artist"
+
+#: ../quodlibet.py:2448 ../quodlibet.py:2694
 msgid "Invalid tag"
 msgstr "Invalid tag"
 
-#: quodlibet.py:2156 quodlibet.py:2426
+#: ../quodlibet.py:2449 ../quodlibet.py:2695
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1153,94 +855,201 @@ msgstr ""
 "\n"
 "The files currently selected do not support editing this tag."
 
-#: quodlibet.py:2161
+#: ../quodlibet.py:2454
 msgid "Invalid date"
 msgstr "Invalid date"
 
-#: quodlibet.py:2211
+#: ../quodlibet.py:2455 ../quodlibet.py:2550
+#, python-format
+msgid ""
+"Invalid date: <b>%s</b>.\n"
+"\n"
+"The date must be entered in YYYY or YYYY-MM-DD format."
+msgstr ""
+"Invalid date: <b>%s</b>.\n"
+"\n"
+"The date must be entered in YYYY or YYYY-MM-DD format."
+
+#: ../quodlibet.py:2524 ../quodlibet.py:2771 ../quodlibet.py:3043
+msgid "Unable to edit song"
+msgstr "Unable to edit song"
+
+#: ../quodlibet.py:2525 ../quodlibet.py:2772 ../quodlibet.py:3044
+#, python-format
+msgid ""
+"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
+"have permission to edit it."
+msgstr ""
+"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
+"have permission to edit it."
+
+#: ../quodlibet.py:2549
+msgid "Invalid date format"
+msgstr "Invalid date format"
+
+#: ../quodlibet.py:2612
+msgid "Tag by Filename"
+msgstr "Tag by Filename"
+
+#: ../quodlibet.py:2623 ../quodlibet.py:2823 ../quodlibet.py:3000
+msgid "_Preview"
+msgstr "_Preview"
+
+#: ../quodlibet.py:2636
+msgid "Replace _underscores with spaces"
+msgstr "Replace _underscores with spaces"
+
+#: ../quodlibet.py:2638
+msgid "_Title-case resulting values"
+msgstr "_Title-case resulting values"
+
+#: ../quodlibet.py:2640
+msgid "Split into _multiple values"
+msgstr "Split into _multiple values"
+
+#: ../quodlibet.py:2643
+msgid "Tags should replace existing ones"
+msgstr "Tags should replace existing ones"
+
+#: ../quodlibet.py:2644
+msgid "Tags should be added to existing ones"
+msgstr "Tags should be added to existing ones"
+
+#: ../quodlibet.py:2667
+msgid ""
+"If appropriate to the language, the first letter of each word will be "
+"capitalized"
+msgstr ""
+"If appropriate to the language, the first letter of each word will be "
+"capitalized"
+
+#: ../quodlibet.py:2680
+msgid "Invalid pattern"
+msgstr "Invalid pattern"
+
+#: ../quodlibet.py:2681
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; / &gt;)."
+msgstr ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; / &gt;)."
+
+#: ../quodlibet.py:2698
+msgid "Invalid tags"
+msgstr "Invalid tags"
+
+#: ../quodlibet.py:2699
+#, python-format
+msgid ""
+"Invalid tags <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing these tags."
+msgstr ""
+"Invalid tags <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing these tags."
+
+#: ../quodlibet.py:2812
+msgid "Rename Files"
+msgstr "Rename Files"
+
+#: ../quodlibet.py:2833
+msgid "New Name"
+msgstr "New Name"
+
+#: ../quodlibet.py:2843
+msgid "Replace spaces with _underscores"
+msgstr "Replace spaces with _underscores"
+
+#: ../quodlibet.py:2847
+msgid "Replace _Windows-incompatible characters"
+msgstr "Replace _Windows-incompatible characters"
+
+#: ../quodlibet.py:2850
+msgid "Replace non-_ASCII characters"
+msgstr "Replace non-_ASCII characters"
+
+#: ../quodlibet.py:2868
+msgid ""
+"Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
+"underscores"
+msgstr ""
+"Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
+"underscores"
+
+#: ../quodlibet.py:2871
+msgid ""
+"Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
+"replaced by underscores"
+msgstr ""
+"Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
+"replaced by underscores"
+
+#: ../quodlibet.py:2904
+msgid "Unable to rename file"
+msgstr "Unable to rename file"
+
+#: ../quodlibet.py:2905
+#, python-format
+msgid ""
+"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
+"exists, or you do not have permission to make the new file or remove the old "
+"one."
+msgstr ""
+"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
+"exists, or you do not have permission to make the new file or remove the old "
+"one."
+
+#: ../quodlibet.py:2932
+msgid "Pattern with subdirectories is not absolute"
+msgstr "Pattern with subdirectories is not absolute"
+
+#: ../quodlibet.py:2933
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed directories, root "
+"your pattern by starting it from the / directory."
+msgstr ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed directories, root "
+"your pattern by starting it from the / directory."
+
+#: ../quodlibet.py:2964
+msgid "Track Numbers"
+msgstr "Track Numbers"
+
+#: ../quodlibet.py:3011
+msgid "Track"
+msgstr "Track"
+
+#: ../quodlibet.py:3124
+msgid "Apply to these _files..."
+msgstr "Apply to these _files..."
+
+#: ../quodlibet.py:3127
+msgid "Path"
+msgstr "Path"
+
+#: ../quodlibet.py:3180
 #, python-format
 msgid "%s - Properties"
 msgstr "%s - Properties"
 
-#: quodlibet.py:2214
+#: ../quodlibet.py:3183
 #, python-format
 msgid "%s and %d more - Properties"
 msgstr "%s and %d more - Properties"
 
-#: quodlibet.py:2230
-msgid "1 song heard"
-msgstr "1 song heard"
-
-#: quodlibet.py:2231
-#, python-format
-msgid "%d songs heard"
-msgstr "%d songs heard"
-
-#: quodlibet.py:2335
-msgid "Pattern with subdirectories is not absolute"
-msgstr "Pattern with subdirectories is not absolute"
-
-#: quodlibet.py:2336
-#, python-format
-msgid ""
-"The pattern\n"
-"\t<b>%s</b>\n"
-"contains / but does not start from root. To avoid misnamed directories, root "
-"your pattern by starting it from the / directory."
-msgstr ""
-"The pattern\n"
-"\t<b>%s</b>\n"
-"contains / but does not start from root. To avoid misnamed directories, root "
-"your pattern by starting it from the / directory."
-
-#: quodlibet.py:2370
-msgid "Unable to rename file"
-msgstr "Unable to rename file"
-
-#: quodlibet.py:2371
-#, python-format
-msgid ""
-"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
-"exists, or you do not have permission to make the new file or remove the old "
-"one."
-msgstr ""
-"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
-"exists, or you do not have permission to make the new file or remove the old "
-"one."
-
-#: quodlibet.py:2412
-msgid "Invalid pattern"
-msgstr "Invalid pattern"
-
-#: quodlibet.py:2413
-#, python-format
-msgid ""
-"The pattern\n"
-"\t<b>%s</b>\n"
-"is invalid. Possibly it contains the same tag twice or it has unbalanced "
-"brackets (&lt; and &gt;)."
-msgstr ""
-"The pattern\n"
-"\t<b>%s</b>\n"
-"is invalid. Possibly it contains the same tag twice or it has unbalanced "
-"brackets (&lt; and &gt;)."
-
-#: quodlibet.py:2429
-msgid "Invalid tags"
-msgstr "Invalid tags"
-
-#: quodlibet.py:2430
-#, python-format
-msgid ""
-"Invalid tags <b>%s</b>\n"
-"\n"
-"The files currently selected do not support editing these tags."
-msgstr ""
-"Invalid tags <b>%s</b>\n"
-"\n"
-"The files currently selected do not support editing these tags."
-
-#: quodlibet.py:2528
+#: ../quodlibet.py:3205
 #, python-format
 msgid ""
 "Saving the songs you changed.\n"
@@ -1251,15 +1060,15 @@ msgstr ""
 "\n"
 "%d/%d songs saved"
 
-#: quodlibet.py:2545
+#: ../quodlibet.py:3222
 msgid "Invalid tag name"
 msgstr "Invalid tag name"
 
-#: quodlibet.py:2598
+#: ../quodlibet.py:3275
 msgid "Saving song library."
 msgstr "Saving song library."
 
-#: quodlibet.py:2604
+#: ../quodlibet.py:3281
 msgid ""
 "Quod Libet - a music library and player\n"
 "Options:\n"
@@ -1307,40 +1116,38 @@ msgstr ""
 "\n"
 "For more information, see the manual page (`man 1 quodlibet').\n"
 
-#: quodlibet.py:2632
+#: ../quodlibet.py:3309
 #, python-format
 msgid ""
-"Quod Libet %s\n"
-"Copyright 2004 Joe Wreschnig, Michael Urman - quodlibet@lists.sacredchao."
-"net\n"
+"Quod Libet %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others\n"
 "\n"
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 msgstr ""
-"Quod Libet %s\n"
-"Copyright 2004 Joe Wreschnig, Michael Urman - quodlibet@lists.sacredchao."
-"net\n"
+"Quod Libet %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others\n"
 "\n"
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 
-#: quodlibet.py:2644
+#: ../quodlibet.py:3321
 msgid "The library cannot be refreshed while Quod Libet is running."
 msgstr "The library cannot be refreshed while Quod Libet is running."
 
-#: quodlibet.py:2648
+#: ../quodlibet.py:3325
 msgid "Loading, scanning, and saving your library."
 msgstr "Loading, scanning, and saving your library."
 
-#: quodlibet.py:2673
+#: ../quodlibet.py:3350
 msgid "No song is currently playing."
 msgstr "No song is currently playing."
 
-#: quodlibet.py:2678
+#: ../quodlibet.py:3355
 msgid "No audio device found"
 msgstr "No audio device found"
 
-#: quodlibet.py:2679
+#: ../quodlibet.py:3356
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1352,312 +1159,271 @@ msgstr ""
 "\n"
 "Quod Libet will now exit."
 
-#: quodlibet.py:2691
+#: ../quodlibet.py:3368
 msgid "Quod Libet is not running."
 msgstr "Quod Libet is not running."
 
-#: quodlibet.py:2704
+#: ../quodlibet.py:3381
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Unable to write to %s. Removing it."
 
-#: quodlibet.py:2755
+#: ../quodlibet.py:3432
 #, python-format
 msgid "E: Unknown command line option: %s"
 msgstr "E: Unknown command line option: %s"
 
-#: quodlibet.py:2756 quodlibet.py:2759
+#: ../quodlibet.py:3433 ../quodlibet.py:3436
 #, python-format
 msgid "E: Try %s --help"
 msgstr "E: Try %s --help"
 
-#: quodlibet.py:2758
+#: ../quodlibet.py:3435
 #, python-format
 msgid "E: Option `%s' requires an argument."
 msgstr "E: Option `%s' requires an argument."
 
-#: quodlibet.py:2762
+#: ../quodlibet.py:3439
 msgid "Quod Libet is already running."
 msgstr "Quod Libet is already running."
 
-#: quodlibet.py:2773
+#: ../quodlibet.py:3450
 msgid "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
 msgstr "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
 
-#: quodlibet.py:2774
+#: ../quodlibet.py:3451
 #, python-format
 msgid "E: You have GTK+ %s and PyGTK %s."
 msgstr "E: You have GTK+ %s and PyGTK %s."
 
-#: quodlibet.py:2777
+#: ../quodlibet.py:3454
 msgid "E: Please upgrade GTK+/PyGTK."
 msgstr "E: Please upgrade GTK+/PyGTK."
 
-#: quodlibet.py:2793
+#: ../quodlibet.py:3471
 msgid "Loaded song library."
 msgstr "Loaded song library."
 
 #. Try to initialize the playlist and audio output.
-#: quodlibet.py:2801
+#: ../quodlibet.py:3479
 msgid "Opening audio device."
 msgstr "Opening audio device."
 
-#: pmp.py:39
-msgid ""
-"Please set your upload directory in the Portable Device section of the "
-"preferences dialog."
-msgstr ""
-"Please set your upload directory in the Portable Device section of the "
-"preferences dialog."
-
-#: pmp.py:43
-#, python-format
-msgid "The target directory (%s) does not exist"
-msgstr "The target directory (%s) does not exist"
-
-#: pmp.py:56
-#, python-format
-msgid "Unable to create directory <b>%s</b>."
-msgstr "Unable to create directory <b>%s</b>."
-
-#: pmp.py:60
-#, python-format
-msgid "Unable to copy <b>%s</b>."
-msgstr "Unable to copy <b>%s</b>."
-
-#: pmp.py:67
-msgid ""
-"Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
-msgstr ""
-"Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
-
-#: pmp.py:86
-#, python-format
-msgid ""
-"Unable to upload <b>%s</b>. The device may be out of space, or turned off."
-msgstr ""
-"Unable to upload <b>%s</b>. The device may be out of space, or turned off."
-
-#: pmp.py:95
-msgid ""
-"Please set your upload command in the Portable Devices section of the "
-"preferences dialog."
-msgstr ""
-"Please set your upload command in the Portable Devices section of the "
-"preferences dialog."
-
-#: pmp.py:99
-#, python-format
-msgid ""
-"The upload command <b>%s</b> was not found. Please enter a valid command in "
-"the Portable Devices section of the preferences dialog and try again."
-msgstr ""
-"The upload command <b>%s</b> was not found. Please enter a valid command in "
-"the Portable Devices section of the preferences dialog and try again."
-
-#: pmp.py:114
-#, python-format
-msgid "Execution of <b>%s</b> failed."
-msgstr "Execution of <b>%s</b> failed."
-
 #. 1 hour
-#: util.py:81
+#: ../util.py:63
 #, python-format
 msgid "%d:%02d:%02d"
 msgstr "%d:%02d:%02d"
 
-#: util.py:84
+#: ../util.py:66
 #, python-format
 msgid "%d:%02d"
 msgstr "%d:%02d"
 
-#: util.py:87
+#: ../util.py:69
 msgid "No time information"
 msgstr "No time information"
 
-#: util.py:91
+#: ../util.py:73
 #, python-format
 msgid "%d years, "
 msgstr "%d years, "
 
-#: util.py:92
+#: ../util.py:74
 msgid "1 year, "
 msgstr "1 year, "
 
-#: util.py:96
+#: ../util.py:78
 #, python-format
 msgid "%d days, "
 msgstr "%d days, "
 
-#: util.py:97
+#: ../util.py:79
 msgid "1 day, "
 msgstr "1 day, "
 
-#: util.py:101
+#: ../util.py:83
 #, python-format
 msgid "%d hours, "
 msgstr "%d hours, "
 
-#: util.py:102
+#: ../util.py:84
 msgid "1 hour, "
 msgstr "1 hour, "
 
-#: util.py:106
+#: ../util.py:88
 #, python-format
 msgid "%d minutes, "
 msgstr "%d minutes, "
 
-#: util.py:107
+#: ../util.py:89
 msgid "1 minute, "
 msgstr "1 minute, "
 
 #. only include seconds if we don't have hours (or greater)
-#: util.py:110
+#: ../util.py:92
 msgid "xx minutes, "
 msgstr "xx minutes, "
 
-#: util.py:111
+#: ../util.py:93
 #, python-format
 msgid "%d seconds"
 msgstr "%d seconds"
 
-#: util.py:112
+#: ../util.py:94
 msgid "1 second"
 msgstr "1 second"
 
-#: util.py:127 util.py:128 util.py:133 util.py:134
-msgid "[Invalid Unicode]"
-msgstr "[Invalid Unicode]"
+#. FIXME: Can this happen?
+#. Can *THIS* happen?
+#: ../util.py:114 ../util.py:116 ../util.py:123 ../util.py:125
+msgid "[Invalid Encoding]"
+msgstr "[Invalid Encoding]"
 
 #. Translations for tag names
 #. Note that although tag names are translated in the main list view,
-#. they are *not* when editing tags. This is because tag names are all
-#. in English in the file. So to get "licence" to appear in your custom
-#. headers, you must add "license" to your header list.
-#: po/tag-names.py:8
+#. they are *not* when editing tags.
+#: ../po/tag-names.py:6
+msgid "title"
+msgstr "title"
+
+#: ../po/tag-names.py:8
 msgid "artist"
 msgstr "artist"
 
-#: po/tag-names.py:9
+#: ../po/tag-names.py:9
 msgid "album"
 msgstr "album"
 
-#: po/tag-names.py:10
+#: ../po/tag-names.py:10
 msgid "disc"
 msgstr "disc"
 
-#: po/tag-names.py:11
+#: ../po/tag-names.py:11
 msgid "track"
 msgstr "track"
 
-#: po/tag-names.py:12
+#. date the song was last heard on
+#: ../po/tag-names.py:13
 msgid "last played"
 msgstr "last played"
 
-#: po/tag-names.py:13
+#. file name plus path, /.../.../foo.ogg
+#: ../po/tag-names.py:15
 msgid "full name"
 msgstr "full name"
 
-#: po/tag-names.py:14
+#. just file name, foo.ogg
+#: ../po/tag-names.py:17
 msgid "filename"
 msgstr "filename"
 
-#: po/tag-names.py:15
+#. just path, /.../...
+#: ../po/tag-names.py:19
 msgid "directory"
 msgstr "directory"
 
-#: po/tag-names.py:16
-msgid "play count"
-msgstr "play count"
-
-#: po/tag-names.py:17
+#: ../po/tag-names.py:22
 msgid "version"
 msgstr "version"
 
-#: po/tag-names.py:18
+#: ../po/tag-names.py:23
 msgid "arranger"
 msgstr "arranger"
 
-#: po/tag-names.py:19
+#: ../po/tag-names.py:24
 msgid "conductor"
 msgstr "conductor"
 
-#: po/tag-names.py:20
+#: ../po/tag-names.py:25
 msgid "author"
 msgstr "author"
 
-#: po/tag-names.py:21
+#: ../po/tag-names.py:26
 msgid "performer"
 msgstr "performer"
 
-#: po/tag-names.py:22
+#: ../po/tag-names.py:27
 msgid "website"
 msgstr "website"
 
-#: po/tag-names.py:23 po/tag-names.py:27
+#: ../po/tag-names.py:28 ../po/tag-names.py:34
 msgid "language"
 msgstr "language"
 
-#: po/tag-names.py:24
+#. alternately, "movement"
+#: ../po/tag-names.py:30
 msgid "part"
 msgstr "part"
 
-#: po/tag-names.py:25
+#: ../po/tag-names.py:31
 msgid "lyricist"
 msgstr "lyricist"
 
-#: po/tag-names.py:26
+#. alternately, "record label"
+#: ../po/tag-names.py:33
 msgid "organization"
 msgstr "organization"
 
-#: po/tag-names.py:28
+#: ../po/tag-names.py:35
 msgid "contact"
 msgstr "contact"
 
-#: po/tag-names.py:29
+#: ../po/tag-names.py:36
 msgid "location"
 msgstr "location"
 
-#: po/tag-names.py:30
+#: ../po/tag-names.py:37
 msgid "copyright"
 msgstr "copyright"
 
-#: po/tag-names.py:31
+#: ../po/tag-names.py:38
 msgid "description"
 msgstr "description"
 
-#: po/tag-names.py:32
+#: ../po/tag-names.py:39
 msgid "genre"
 msgstr "genre"
 
-#: po/tag-names.py:33
+#: ../po/tag-names.py:40
 msgid "license"
 msgstr "licence"
 
-#~ msgid ""
-#~ "<tracknumber>. <title>\n"
-#~ "<tracknumber> - <title>\n"
-#~ "<tracknumber> - <artist> - <title>\n"
-#~ "/path/<artist> - <album>/<tracknumber>. <title>\n"
-#~ "/path/<artist>/<album>/<tracknumber> - <title>"
-#~ msgstr ""
-#~ "<tracknumber>. <title>\n"
-#~ "<tracknumber> - <title>\n"
-#~ "<tracknumber> - <artist> - <title>\n"
-#~ "/path/<artist> - <album>/<tracknumber>. <title>\n"
-#~ "/path/<artist>/<album>/<tracknumber> - <title>"
+#: ../po/tag-names.py:41
+msgid "composer"
+msgstr "composer"
 
-#~ msgid ""
-#~ "<tracknumber>. <title>\n"
-#~ "<tracknumber> - <title>\n"
-#~ "<tracknumber> - <artist> - <title>\n"
-#~ "<artist> - <album>/<tracknumber>. <title>\n"
-#~ "<artist>/<album>/<tracknumber> - <title>"
-#~ msgstr ""
-#~ "<tracknumber>. <title>\n"
-#~ "<tracknumber> - <title>\n"
-#~ "<tracknumber> - <artist> - <title>\n"
-#~ "<artist> - <album>/<tracknumber>. <title>\n"
-#~ "<artist>/<album>/<tracknumber> - <title>"
+#: ../formats/audio.py:163
+#, python-format
+msgid "by %s"
+msgstr "by %s"
+
+#: ../formats/audio.py:166
+#, python-format
+msgid "Performed by %s"
+msgstr "Performed by %s"
+
+#: ../formats/audio.py:171
+#, python-format
+msgid "arranged by %s"
+msgstr "arranged by %s"
+
+#: ../formats/audio.py:173
+#, python-format
+msgid "lyrics by %s"
+msgstr "lyrics by %s"
+
+#: ../formats/audio.py:175
+#, python-format
+msgid "conducted by %s"
+msgstr "conducted by %s"
+
+#: ../formats/audio.py:177
+#, python-format
+msgid "composed by %s"
+msgstr "composed by %s"
+
+#: ../formats/audio.py:179
+#, python-format
+msgid "written by %s"
+msgstr "written by %s"
