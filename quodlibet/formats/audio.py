@@ -30,16 +30,12 @@ class AudioFile(dict):
                 cmp(self("title"), other("title")) or
                 cmp(self("~filename"), other("~filename")))
 
-    # True if our key's value is actually unknown, rather than just the
-    # string "Unknown". Or true if we don't know the key at all.
-    def unknown(self, key):
-        return isinstance(self.get(key, Unknown()), Unknown)
+    # song.unknown has been removed in favor of 'key in song'.
 
     def realkeys(self):
-        return filter(lambda s: s and s[0] != "~" and not self.unknown(s),
-                      self.keys())
+        return filter(lambda s: s and s[0] != "~", self.keys())
 
-    def __call__(self, key, default = ""):
+    def __call__(self, key, default=""):
         if key and key[0] == "~":
             key = key[1:]
             if "~" in key:
@@ -98,7 +94,7 @@ class AudioFile(dict):
         return (self.exists() and
                 self["~#mtime"] == os.path.mtime(self["~filename"]))
 
-    def can_change(self, k = None):
+    def can_change(self, k=None):
         if k is None:
             if os.access(self["~filename"], os.W_OK): return True
             else: return []
@@ -136,7 +132,7 @@ class AudioFile(dict):
             return text
 
     # Sanity-check all sorts of things...
-    def sanitize(self, filename = None):
+    def sanitize(self, filename=None):
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
@@ -163,7 +159,7 @@ class AudioFile(dict):
             text += u"\n<small><b>%s</b></small>" % escape(
                 self.comma("version"))
 
-        if not self.unknown("artist"):
+        if "artist" in self:
             text += u"\n" + _("by %s") % escape(self.comma("artist"))
 
         if "performer" in self:
@@ -187,7 +183,7 @@ class AudioFile(dict):
             others = others[0].upper() + others[1:]
             text += "\n<small>%s</small>" % escape(others)
 
-        if not self.unknown("album"):
+        if "album" in self:
             album = u"\n<b>%s</b>" % escape(self.comma("album"))
             if "discnumber" in self:
                 album += " - "+_("Disc %s")%escape(self.comma("discnumber"))
@@ -200,11 +196,11 @@ class AudioFile(dict):
 
     # A shortened song info line (for the statusicon tooltip)
     def to_short(self):
-        if self.unknown("album"):
-            return self.comma("~artist~title~version")
-        else:
+        if "album" in self:
             return self.comma("~album~discnumber~part"
                               "~tracknumber~title~version")
+        else:
+            return self.comma("~artist~title~version")
 
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
@@ -234,7 +230,7 @@ class AudioFile(dict):
         except KeyError: self[key] = new_value
 
     def add(self, key, value):
-        if self.unknown(key): self[key] = value
+        if key not in self: self[key] = value
         else: self[key] += "\n" + value
 
     # Like change, if the value isn't found, remove all values...

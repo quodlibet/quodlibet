@@ -124,11 +124,9 @@ class Library(dict):
             del(self.__masked_files[mountp])
 
     def random(self, tag):
-        songs = {}
-        for song in self.values():
-             if not song.unknown(tag):
-                 for v in song.list(tag): songs[v] = True  
-        if songs: return random.choice(songs.keys())
+        songs = set()
+        for song in self.values(): songs.update(song.list(tag))
+        if songs: return random.choice(list(songs))
         else: return None
 
     def rename(self, song, newfn):

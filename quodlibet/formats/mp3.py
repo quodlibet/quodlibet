@@ -231,11 +231,9 @@ class MP3File(AudioFile):
             try:
                 while True: tag.remove(id3name)
             except ValueError: pass
-            if key in self:
-                if self.unknown(key): continue
-                for value in self.list(key):
-                    value = value.encode("utf-8")
-                    tag.append({'frameid': id3name, 'text': value })
+            for value in self.list(key):
+                value = value.encode("utf-8")
+                tag.append({'frameid': id3name, 'text': value })
 
         for key in filter(lambda x: x not in self.SDI and x != "date",
                           self.realkeys()):

@@ -30,10 +30,6 @@ class UnknownTest(TestCase):
     def test_eq(self):
         self.failUnlessEqual(Unknown("foo"), "foo")
 
-    def test_fakekeys(self):
-        song = AudioFile({"title": Unknown('whee')})
-        self.failIf(song.realkeys())
-
 class AudioFileTest(TestCase):
     def setUp(self):
         file(quux["~filename"], "w")
@@ -46,16 +42,10 @@ class AudioFileTest(TestCase):
         self.assertEqual(bar_1_1, bar_1_1)
         self.assertNotEqual(bar_1_1, bar_1_2)
         
-    def test_unknown(self):
-        self.failUnless(quux.unknown("artist"))
-        self.failIf(bar_1_1.unknown("artist"))
-        self.failUnless(quux.unknown("doesn't exist tag"))
-
     def test_realkeys(self):
         self.failIf("artist" in quux.realkeys())
-        quux["foobar"] = Unknown("whee")
-        self.failIf("foobar" in quux.realkeys())
-        del(quux["foobar"])
+        self.failIf("~filename" in quux.realkeys())
+        self.failUnless("album" in quux.realkeys())
 
     def test_call(self):
         # real keys should lookup the same

@@ -786,7 +786,7 @@ class Osd(object):
 
         msg += "<span size='x-small'>"
         for key in ["artist", "album", "tracknumber"]:
-            if not song.unknown(key):
+            if key in song:
                 msg += ("<span foreground='%s' size='xx-small' "
                         "style='italic'>%s</span> %s   "%(
                     (color2, tag(key), util.escape(song.comma(key)))))
@@ -1708,7 +1708,7 @@ class MainWindow(gtk.Window):
             for h in ['genre', 'artist', 'album']:
                 self.ui.get_widget(
                     "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
-                    not song.unknown(h))
+                    h in song)
 
             self.update_markup(song)
         else:
