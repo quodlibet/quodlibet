@@ -127,11 +127,11 @@
 		  <property name="show_arrow">False</property>
 
 		  <child>
-		    <widget class="GtkToolButton" id="toolbutton8">
+		    <widget class="GtkToolButton" id="prev_button">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Previous song</property>
 		      <property name="use_underline">True</property>
-		      <property name="icon">pixmaps/previous.png</property>
+		      <property name="icon">previous.png</property>
 		      <property name="visible_horizontal">True</property>
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
@@ -143,11 +143,11 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkToolButton" id="toolbutton9">
+		    <widget class="GtkToolButton" id="play_button">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Play current song</property>
 		      <property name="use_underline">True</property>
-		      <property name="icon">pixmaps/play.png</property>
+		      <property name="icon">play.png</property>
 		      <property name="visible_horizontal">True</property>
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
@@ -159,11 +159,11 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkToolButton" id="toolbutton10">
+		    <widget class="GtkToolButton" id="next_button">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Play next song</property>
 		      <property name="use_underline">True</property>
-		      <property name="icon">pixmaps/next.png</property>
+		      <property name="icon">next.png</property>
 		      <property name="visible_horizontal">True</property>
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
@@ -187,26 +187,92 @@
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
-		  <property name="expand">True</property>
-		  <property name="fill">True</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
 		</packing>
 	      </child>
 
 	      <child>
-		<widget class="GtkHScale" id="hscale1">
+		<widget class="GtkToolbar" id="toolbar2">
 		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="draw_value">False</property>
-		  <property name="value_pos">GTK_POS_LEFT</property>
-		  <property name="digits">1</property>
-		  <property name="update_policy">GTK_UPDATE_CONTINUOUS</property>
-		  <property name="inverted">False</property>
-		  <property name="adjustment">0 0 0 0 0 0</property>
+		  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+		  <property name="toolbar_style">GTK_TOOLBAR_ICONS</property>
+		  <property name="tooltips">True</property>
+		  <property name="show_arrow">True</property>
+
+		  <child>
+		    <widget class="GtkToolButton" id="addbutton">
+		      <property name="visible">True</property>
+		      <property name="stock_id">gtk-add</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkToggleToolButton" id="repeat_toggle">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Repeat playlist</property>
+		      <property name="use_underline">True</property>
+		      <property name="icon">repeat.png</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
+		      <property name="active">False</property>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkToggleToolButton" id="shuffle_toggle">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Shuffle playlist</property>
+		      <property name="use_underline">True</property>
+		      <property name="icon">shuffle.png</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
+		      <property name="active">False</property>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
+		    </packing>
+		  </child>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkLabel" id="song_timer">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">3:00/9:00</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.8</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
 		  <property name="expand">True</property>
-		  <property name="fill">True</property>
+		  <property name="fill">False</property>
 		</packing>
 	      </child>
 	    </widget>
@@ -218,23 +284,65 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="currentsong">
+	    <widget class="GtkVBox" id="vbox3">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes"></property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">True</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0.05</property>
-	      <property name="yalign">0.05</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<widget class="GtkLabel" id="currentsong">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes"></property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">True</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.05</property>
+		  <property name="yalign">0.05</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkHScale" id="song_pos">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="draw_value">False</property>
+		  <property name="value_pos">GTK_POS_LEFT</property>
+		  <property name="digits">1</property>
+		  <property name="update_policy">GTK_UPDATE_CONTINUOUS</property>
+		  <property name="inverted">False</property>
+		  <property name="adjustment">0 0 0 0 0 0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
 	      <property name="expand">True</property>
 	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkVSeparator" id="vseparator2">
+	      <property name="visible">True</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
 	    </packing>
 	  </child>
 
@@ -258,7 +366,18 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkVScale" id="vscale1">
+	    <widget class="GtkVSeparator" id="vseparator1">
+	      <property name="visible">True</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkVScale" id="volume">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="draw_value">False</property>

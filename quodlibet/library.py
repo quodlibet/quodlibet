@@ -85,6 +85,7 @@ def load(dirs):
                         break
                 else: continue
                 break
+            else: img = None
 
             for fn in fnames:
                 m = MusicFile(os.path.join(path, fn))
