@@ -531,7 +531,6 @@ class MainWindow(MultiInstanceWidget):
 
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
         self.icon = HIGTrayIcon(p, self.window, self.tray_menu["tray_popup"])
-        self.restore_size()
 
         # Set up the main song list store.
         self.songlist = self.widgets["songlist"]
@@ -551,13 +550,9 @@ class MainWindow(MultiInstanceWidget):
         # Initialize volume controls.
         self.widgets["volume"].set_value(config.getfloat("memory", "volume"))
 
-        # Show main window.
-        self.window.show()
         self.widgets["shuffle_t"].set_active(config.state("shuffle"))
         self.widgets["repeat_t"].set_active(config.state("repeat"))
 
-        # Wait to fill in the column headers because otherwise the
-        # spacing is off, since the window hasn't been sized until now.
         self.widgets["query"].child.set_text(config.get("memory", "query"))
         self.set_column_headers(config.get("settings", "headers").split())
         self.text_parse()
@@ -575,6 +570,9 @@ class MainWindow(MultiInstanceWidget):
                             "mm_next": self.next_song,
                             "mm_playpause": self.play_pause})
         self.osd = Osd()
+
+        # Show main window.
+        self.window.show()
 
     def restore_size(self):
         try: w, h = map(int, config.get("memory", "size").split())
@@ -784,10 +782,12 @@ class MainWindow(MultiInstanceWidget):
 
     def showhide_searchbox(self, toggle):
         self.showhide_widget(self.widgets["query_hbox"], toggle.get_active())
+        config.set("memory", "show_search", str(toggle.get_active()))
 
     def showhide_playlist(self, toggle):
         self.showhide_widget(self.widgets["song_scroller"],
                              toggle.get_active())
+        config.set("memory", "show_playlist", str(toggle.get_active()))
 
     def open_website(self, button):
         song = self.current_song

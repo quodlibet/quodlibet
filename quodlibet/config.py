@@ -59,6 +59,9 @@ def init(rc_file):
     _config.set("memory", "query", "")
     _config.set("memory", "volume", "1.0")
 
+    _config.set("memory", "show_playlist", "true")
+    _config.set("memory", "show_search", "true")
+
     _config.set("pmp", "driver", "0")
     _config.set("pmp", "location", "")
     _config.set("pmp", "command", "")
