@@ -1,12 +1,9 @@
 Recent upgrade notes:
 ---------------------
-Upgrading from to 0.6 your library will be wiped (again).
-
 If you want ALSA support and were using QL prior to 0.5, you will need
 to change your 'backend' option to 'ao:alsa' (which is the new default).
 
 0.6
- - Your library will start out empty when you load the program. Sorry again.
  - Many new filtering options (top 40, not played in X days).
  - Mass-set track numbers.
  - Tag by Pattern can replace or add new tags.

@@ -2191,7 +2191,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			    <widget class="GtkCheckButton" id="prefs_allcomments_t">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">Show computer-generated comments</property>
+			      <property name="label" translatable="yes">_Show computer-generated comments</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -2243,7 +2243,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				    <widget class="GtkCheckButton" id="prefs_tbp_space_t">
 				      <property name="visible">True</property>
 				      <property name="can_focus">True</property>
-				      <property name="label" translatable="yes">Replace _underscores with spaces</property>
+				      <property name="label" translatable="yes">_Replace underscores with spaces</property>
 				      <property name="use_underline">True</property>
 				      <property name="relief">GTK_RELIEF_NORMAL</property>
 				      <property name="focus_on_click">True</property>

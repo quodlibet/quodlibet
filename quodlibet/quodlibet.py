@@ -1696,7 +1696,7 @@ def cleanup(*args):
         except OSError: pass
 
 if __name__ == "__main__":
-    import os, sys, const
+    import os, sys
 
     basedir = os.path.split(os.path.realpath(__file__))[0]
     if os.path.isdir(os.path.join(basedir, "po")):
@@ -1710,6 +1710,13 @@ if __name__ == "__main__":
     gettext.textdomain("quodlibet")
     gettext.install("quodlibet", i18ndir, unicode = 1)
     _ = gettext.gettext
+
+    # Get to the right directory for our data.
+    os.chdir(basedir)
+    if os.path.exists(os.path.join(basedir, "quodlibet.zip")):
+        sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
+
+    import const
 
     # Check command-line parameters before doing "real" work, so they
     # respond quickly.
@@ -1733,11 +1740,6 @@ if __name__ == "__main__":
     if os.path.exists(const.CONTROL):
         print _("Quod Libet is already running.")
         control('!')
-
-    # Get to the right directory for our data.
-    os.chdir(basedir)
-    if os.path.exists(os.path.join(basedir, "quodlibet.zip")):
-        sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
 
     # Initialize GTK/Glade.
     import pygtk

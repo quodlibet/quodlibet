@@ -613,15 +613,14 @@ class Library(dict):
         for song in songs:
             if type(song) not in supported.values(): continue
             if song.valid():
-                song.sanitize()
                 fn = song['~filename']
                 self[fn] = song
             else:
                 if song.exists():
                     fn = song['~filename']
                     changed += 1
-                    self[fn] = MusicFile(fn)
-                    self[fn].sanitize()
+                    song = MusicFile(fn)
+                    if song: self[fn] = song
                 elif config.get("settings", "masked"):
                     for m in config.get("settings", "masked").split(":"):
                         if fn.startswith(m) and not os.path.ismount(m):
@@ -630,6 +629,10 @@ class Library(dict):
                             break
                     else:
                         removed += 1
+                elif "=filename" in song:
+                    song.sanitize(song["=filename"])
+                    if song.exists:
+                        self[song["~filename"]] = song
         return changed, removed
 
     def scan(self, dirs):
