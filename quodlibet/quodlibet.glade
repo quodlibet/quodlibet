@@ -500,14 +500,14 @@
 	<widget class="GtkScrolledWindow" id="song_scroller">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+	  <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
 	  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
 	  <property name="shadow_type">GTK_SHADOW_NONE</property>
 	  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 	  <child>
 	    <widget class="GtkTreeView" id="songlist">
-	      <property name="width_request">100</property>
+	      <property name="width_request">400</property>
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="headers_visible">True</property>

@@ -611,13 +611,22 @@ def set_entry_color(entry, color):
 # Build a new filter around our list model, set the headers to their
 # new values.
 def set_column_headers(sl):
+    SHORT_COLS = ["=#", "tracknumber", "discnumber"]
     sl.set_model(None)
     widgets.songs = gtk.ListStore(*([str] * len(HEADERS) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)
+    widgets["songlist"].realize()    
+    width = widgets["songlist"].get_allocation()[2]
+    c = len(HEADERS)
+    for t in SHORT_COLS:
+        if t in HEADERS: c -= 0.5
+    width = int(width / c)
     for i, t in enumerate(HEADERS):
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn(HEADERS_FILTER.get(t, t).title(),
                                     render, text = i, weight = len(HEADERS)+1)
+        if t in SHORT_COLS: render.set_fixed_size(-1, -1)
+        else: render.set_fixed_size(width, -1)
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)
