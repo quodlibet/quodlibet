@@ -504,29 +504,26 @@ class MultiInstanceWidget(object):
                     changed = True
 
             if changed and ref:
-                path = ref.get_path()
                 song.write()
-                if path is not None:
-                    row = widgets.songs[path]
-                    for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
+                songref_update_view(song, ref)
 
             win.step()
 
         win.end()
-        self.save.set_sensitive(False)
+        self.save_edit.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
         widgets.wrap.update_markup(CURRENT_SONG[0])
 
     def songprop_revert_click(self, button):
-        self.save.set_sensitive(False)
+        self.save_edit.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
 
     def songprop_toggle(self, renderer, path, model):
         row = model[path]
         row[2] = not row[2] # Edited
-        self.save.set_sensitive(True)
+        self.save_edit.set_sensitive(True)
         self.revert.set_sensitive(True)
 
     def split_into_list(self, *args):
@@ -700,7 +697,7 @@ class MultiInstanceWidget(object):
         self.enable_save()
 
     def enable_save(self):
-        self.save.set_sensitive(True)
+        self.save_edit.set_sensitive(True)
         self.revert.set_sensitive(True)
         if self.window.get_title()[0] != "*":
             self.window.set_title("* " + self.window.get_title())
@@ -768,7 +765,7 @@ class MultiInstanceWidget(object):
                                        orig_value[i]])
 
         self.add.set_sensitive(bool(songinfo.can_change()))
-        self.save.set_sensitive(False)
+        self.save_edit.set_sensitive(False)
         self.revert.set_sensitive(False)
 
         self.songprop_tbp_preview()
@@ -791,10 +788,17 @@ class MultiInstanceWidget(object):
             newname = pattern.match(song)
             self.nbp_model.append(row=[song, ref, song['=basename'], newname])
 
+    def tbp_changed(self, *args):
+        self.tbp_preview.set_sensitive(True)
+        self.save_tbp.set_sensitive(False)
 
     def songprop_tbp_preview(self, *args):
         self.tbp_view.set_model(None)
         self.tbp_model.clear()
+
+        rep = self.widgets.get_widget("replace_t").get_active()
+        title = self.widgets.get_widget("titlecase_t").get_active()
+        split = self.widgets.get_widget("val_split_t").get_active()
 
         # build the pattern
         pattern_text = self.tbp_entry.get_text().decode('utf-8')
@@ -816,32 +820,46 @@ class MultiInstanceWidget(object):
         for song, ref in self.songrefs:
             row = [song, ref, song['=basename']]
             match = pattern.match(song)
-            row.extend(["\n".join(util.split_value(match.get(h, '')))
-                        for h in pattern.headers])
+            for h in pattern.headers:
+                text = match.get(h, '')
+                if rep: text = text.replace("_", " ")
+                if title: text = text.title()
+                if split: text = "\n".join(util.split_value(text))
+                row.append(text)
             self.tbp_model.append(row=row)
 
         # save for last to potentially save time
         self.tbp_view.set_model(self.tbp_model)
+        self.tbp_preview.set_sensitive(False)
+        if len(pattern.headers) > 0: self.save_tbp.set_sensitive(True)
 
     def tbp_save(self, *args):
+        self.songprop_tbp_preview()
         pattern_text = self.tbp_entry.get_text().decode('utf-8')
         pattern = util.PatternFromFile(pattern_text)
         win = WritingWindow(self.window, len(self.songrefs))
-        for song, ref in self.songrefs:
-            match = pattern.match(song)
+
+        def save_song(model, path, iter):
+            song = model[path][0]
+            ref = model[path][1]
+            row = model[path]
             changed = False
-            for h in pattern.headers:
-                if h in match:
-                    song[h] = "\n".join(util.split_value(match[h]))
+            for i, h in enumerate(pattern.headers):
+                if row[i]:
+                    song[h] = "\n".join(util.split_value(
+                        row[i + 3].decode("utf-8")))
                     changed = True
+
             if changed and ref:
-                path = ref.get_path()
+                song.sanitize()
                 song.write()
-                if path is not None:
-                    row = widgets.songs[path]
-                    for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
+                songref_update_view(song, ref)
+
             win.step()
+
+        self.tbp_model.foreach(save_song)
         win.end()
+        self.save_tbp.set_sensitive(False)
         self.fill_property_info()
 
 class WritingWindow(object):
@@ -864,11 +882,16 @@ class WritingWindow(object):
     def end(self):
         self.win.hide()
 
+def songref_update_view(song, ref):
+    path = ref.get_path()
+    if path is not None:
+        row = widgets.songs[path]
+        for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
+
 def make_song_properties(songrefs):
     dlg = MultiInstanceWidget(widget="properties_window")
     dlg.window = dlg.widgets.get_widget('properties_window')
-    #dlg.menu = dlg.widgets.get_widget('props_popup')
-    dlg.save = dlg.widgets.get_widget('songprop_save')
+    dlg.save_edit = dlg.widgets.get_widget('songprop_save')
     dlg.revert = dlg.widgets.get_widget('songprop_revert')
     dlg.artist = dlg.widgets.get_widget('songprop_artist')
     dlg.played = dlg.widgets.get_widget('songprop_played')
@@ -923,6 +946,9 @@ def make_song_properties(songrefs):
     dlg.tbp_entry = dlg.tbp_combo.child
     dlg.tbp_view = dlg.widgets.get_widget("songprop_tbp_view")
     dlg.tbp_model = gtk.ListStore(int) # fake first one
+    dlg.save_tbp = dlg.widgets.get_widget('prop_tbp_save')
+    dlg.tbp_preview = dlg.widgets.get_widget('tbp_preview')
+    dlg.tbp_entry.connect('changed', dlg.tbp_changed)
     dlg.tbp_headers = []
 
     # rename by pattern
