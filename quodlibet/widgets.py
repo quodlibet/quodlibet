@@ -3749,6 +3749,7 @@ class SongProperties(gtk.Window):
         if len(songs) > 1: selection.select_all()
         else: self.update(songs)
         self.add(vbox)
+        self.connect_object('destroy', self.fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, self.fbasemodel)
         self.connect_object('destroy', gtk.TreeModelSort.clear_cache,
                             self.fmodel)
