@@ -1324,7 +1324,10 @@ class MainWindow(gtk.Window):
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.show()
 
-    def song_update_view(self, song):
+    def song_update_view(self, song, error = False):
+        if error:
+            library.reload(song)
+            player.playlist.refilter()
         if song is None:
             self.songlist.refresh()
             self.browser.update()
@@ -3079,8 +3082,7 @@ class SongProperties(gtk.Window):
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
                             util.escape(song('~basename')))).run()
-                        library.reload(song)
-                        player.playlist.refilter()
+                        self.cb(song, True)
                         break
                     self.cb(song)
 
@@ -3331,8 +3333,7 @@ class SongProperties(gtk.Window):
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
                             util.escape(song('~basename')))).run()
-                        library.reload(song)
-                        player.playlist.refilter()
+                        self.cb(song, True)
                         return True
                     self.cb(song)
 
@@ -3455,7 +3456,8 @@ class SongProperties(gtk.Window):
                 newname = model[path][2]
                 try:
                     newname = newname.encode(util.fscoding(), "replace")
-                    library.rename(song, newname)
+                    if library: library.rename(song, newname)
+                    else: song.rename(newname)
                     self.cb(song)
                 except:
                     qltk.ErrorMessage(
@@ -3465,6 +3467,7 @@ class SongProperties(gtk.Window):
                           "or you do not have permission to make the "
                           "new file or remove the old one.") %(
                         util.escape(oldname), util.escape(newname))).run()
+                    self.cb(song, True)
                     return True
                 return win.step()
             self.model.foreach(rename)
@@ -3606,8 +3609,7 @@ class SongProperties(gtk.Window):
                           "read-only, corrupted, or you do not have "
                           "permission to edit it.")%(
                         util.escape(song('~basename')))).run()
-                    library.reload(song)
-                    player.playlist.refilter()
+                    self.cb(song, True)
                     return True
                 self.cb(song)
                 return win.step()
