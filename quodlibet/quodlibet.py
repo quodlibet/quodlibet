@@ -106,9 +106,15 @@ class GTKSongInfoWrapper(object):
         # Update the currently-playing song in the list by bolding it.
         last_song = CURRENT_SONG[0]
         CURRENT_SONG[0] = song
-        def update_if_last_or_current(model, path, iter, changed):
-            if model[iter][0] in changed: model.row_changed(path, iter)
-        widgets.songs.foreach(update_if_last_or_current, (last_song, song))
+        col = len(HEADERS)
+        def update_if_last_or_current(model, path, iter):
+            if model[iter][col] is song:
+                model[iter][col + 1] = 700
+                model.row_changed(path, iter)
+            elif model[iter][col] is last_song:
+                model[iter][col + 1] = 400
+                model.row_changed(path, iter)
+        widgets.songs.foreach(update_if_last_or_current)
 
         return False
 
@@ -233,7 +239,7 @@ class GladeHandlers(object):
 
     def select_song(tree, indices, col):
         iter = widgets.songs.get_iter(indices)
-        song = widgets.songs.get_value(iter, 0)
+        song = widgets.songs.get_value(iter, len(HEADERS))
         player.playlist.go_to(song)
         player.playlist.paused = False
 
@@ -319,14 +325,21 @@ def set_sort_by(header, i):
 # Clear the songlist and readd the songs currently wanted.
 def refresh_songlist():
     t = time.time()
+    sl = widgets["songlist"]
+    sl.set_model(None)
     widgets.songs.clear()
-    i = 0
     statusbar = widgets["statusbar"]
     for song in player.playlist:
-         widgets.songs.append([song])
-         i += 1
+        if song is CURRENT_SONG[0]:
+            widgets.songs.append([song.get(h, "") for h in HEADERS] +
+                                  [song, 700])
+        else:
+            widgets.songs.append([song.get(h, "") for h in HEADERS] +
+                                  [song, 400])
     j = statusbar.get_context_id("playlist")
+    i = len(list(player.playlist))
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
+    sl.set_model(widgets.songs)
     print "Setting songlist took %f seconds " % (time.time() - t)
 
 HEADERS = ["=#", "title", "album", "artist"]
@@ -335,15 +348,6 @@ HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track" }
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
 CURRENT_SONG = [ None ]
-
-# Turn the list model (which just contains the song objects) into
-# the appropriate set of headers.
-def list_transform(model, iter, col):
-    citer = model.convert_iter_to_child_iter(iter)
-    cmodel = model.get_model()
-    song = cmodel.get_value(citer, 0)
-    try: return song.get(HEADERS[col], "")
-    except IndexError: return song is CURRENT_SONG[0] and 700 or 400
 
 # Set the color of some text.
 def set_entry_color(entry, color):
@@ -355,19 +359,22 @@ def set_entry_color(entry, color):
 # Build a new filter around our list model, set the headers to their
 # new values.
 def set_column_headers(sl):
-    widgets.filter = widgets.songs.filter_new()
-    widgets.filter.set_modify_func([str]*len(HEADERS) + [int], list_transform)
+    ti = time.time()
+    sl.set_model(None)
+    widgets.songs = gtk.ListStore(*([str] * len(HEADERS) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)
     for i, t in enumerate(HEADERS):
-        renderer = gtk.CellRendererText()
+        render = gtk.CellRendererText()
         column = gtk.TreeViewColumn(HEADERS_FILTER.get(t, t).title(),
-                                    renderer, text = i, weight = len(HEADERS))
+                                    render, text = i, weight = len(HEADERS)+1)
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)
         column.connect('clicked', set_sort_by, (i,))
         sl.append_column(column)
-    sl.set_model(widgets.filter)
+    refresh_songlist()
+    sl.set_model(widgets.songs)
+    print "Initting headers took %f seconds " % (time.time() - ti)
 
 widgets = Widgets("quodlibet.glade")
 
