@@ -37,7 +37,7 @@ class APETag(object):
         f = file(filename)
 
         self.tag_offset(f)
-        debug("tag offset: 0x%x" % self.offset)
+        debug("tag offset: %#x" % self.offset)
         f.seek(self.offset)
 
         f.read(8) # "APETAGEX"
@@ -59,7 +59,7 @@ class APETag(object):
 
         # 4 byte flags
         self.flags = _read_int(f)
-        debug("flags: 0x%x" % self.flags)
+        debug("flags: %#x" % self.flags)
         if not (self.flags & IS_HEADER):
             raise InvalidTagError("found footer, not header")
 
@@ -77,7 +77,7 @@ class APETag(object):
         for i in range(item_count):
             size = _read_int(f)
             flags = _read_int(f)
-            debug("size: %d, flags 0x%x" % (size, flags))
+            debug("size: %d, flags %#x" % (size, flags))
 
             # 1 and 2 bits are flags, 0-3
             kind = (flags & 6) >> 1
@@ -85,7 +85,7 @@ class APETag(object):
             while key[-1:] != '\0': key += f.read(1)
             key = key[:-1]
             value = f.read(size)
-            self.dict[APEKey(key)] = APEValue(kind, value)
+            self.dict[APEKey(key)] = APEValue(value, kind)
             debug("key %s, value %r" % (key, value))
 
         s = f.read(32)
@@ -110,11 +110,27 @@ class APETag(object):
         except ValueError: raise InvalidTagError("no tag header found")
         else: self.offset = (f.tell() - size) + index
 
-    def __iter__(self):
-        return self.dict.iteritems()
+    def __iter__(self): return self.dict.iteritems()
+    def keys(self): return self.dict.keys()
+    def values(self): return self.dict.values()
+    def items(self): return self.dict.items()
 
     def __getitem__(self, k): return self.dict[k]
-    def __setitem__(self, k, v): self.dict[k] = v
+    def __setitem__(self, k, v):
+        if not isinstance(v, _APEValue):
+            # let's guess at the content if we're not already a value...
+            if isinstance(v, unicode):
+                # unicode? we've got to be text.
+                v = APEValue(v.encode("utf-8"), TEXT)
+            else:
+                try: dummy = k2.decode("utf-8")
+                except UnicodeError:
+                    # valid UTF8 text, probably binary
+                    v = APEValue(v, BINARY)
+                else:
+                    # valid UTF8, probably text
+                    v = APEValue(v, TEXT)
+        self.dict[APEKey(k)] = v
 
     def write(self, filename = None):
         filename = filename or self.filename
@@ -123,6 +139,7 @@ class APETag(object):
         self.tag_offset(f)
         if offset != self.offset: debug("file offsets don't match")
         f.seek(offset, 0)
+        f.truncate()
 
         tags = [v.internal(k) for k, v in self]
         tags.sort(lambda a, b: cmp(len(a), len(b)))
@@ -164,14 +181,14 @@ class APEKey(str):
 
     def __repr__(self): return "<APEKey %s>" % str.__repr__(self)
 
-def APEValue(kind, value):
-    if kind == TEXT: return APETextValue(kind, value)
-    elif kind == BINARY: return APEBinaryValue(kind, value)
-    elif kind == EXTERNAL: return APEExtValue(kind, value)
+def APEValue(value, kind):
+    if kind == TEXT: return APETextValue(value, kind)
+    elif kind == BINARY: return APEBinaryValue(value, kind)
+    elif kind == EXTERNAL: return APEExtValue(value, kind)
     else: raise ValueError("kind must be TEXT, BINARY, or EXTERNAL")
 
 class _APEValue(object):
-    def __init__(self, kind, value):
+    def __init__(self, value, kind):
         self.kind = kind
         self.value = value
 
@@ -194,9 +211,9 @@ class APETextValue(_APEValue):
         return unicode(self).split("\0")[i]
 
     def __setitem__(self, i, v):
-        list = list(self)
-        list[i] = v.encode("utf-8")
-        self.value = "\0".join(list).encode("utf-8")
+        l = list(self)
+        l[i] = v.encode("utf-8")
+        self.value = "\0".join(l).encode("utf-8")
 
     def __repr__(self):
         return "<APETextValue %r>" % list(self)
