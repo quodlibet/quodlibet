@@ -164,18 +164,12 @@ class OSSAudioDevice(object):
         self.dev.setfmt(ossaudiodev.AFMT_S16_LE)
         self._channels = self.dev.channels(2)
         self._rate = self.dev.speed(44100)
+        self.volume = 1.0
         self.dev.nonblock()
 
     def play(self, buf, len):
+        if self.volume != 1.0: buf = audioop.mul(buf, 2, self.volume)
         self.dev.writeall(buf)
-
-    def get_volume(self):
-        return self.mixer.get(ossaudiodev.SOUND_MIXER_PCM)[0]
-
-    def set_volume(self, vol):
-        return self.mixer.set(ossaudiodev.SOUND_MIXER_PCM, (vol, vol))
-
-    volume = property(get_volume, set_volume)
 
     def set_info(self, rate, channels):
         if rate != self._rate or channels != self._channels:
@@ -194,15 +188,7 @@ class AOAudioDevice(object):
         try: self.dev = ao.AudioDevice(device, rate = 44100,
                                        channels = 2, bits = 16)
         except ao.aoError: raise IOError
-        self.vol = 1
-
-    def get_volume(self):
-        return self.vol * 100
-
-    def set_volume(self, vol):
-        self.vol = vol / 100.0
-
-    volume = property(get_volume, set_volume)
+        self.volume = 1.0
 
     def set_info(self, rate, channels):
          if rate != 44100:
@@ -214,8 +200,8 @@ class AOAudioDevice(object):
          else: self.chan_conv = lambda *args: args[0]
 
     def play(self, buf, l):
-        buf = audioop.mul(buf, 2, self.volume / 100.0)
         buf = self.chan_conv(buf, 2, 1, 1)
+        if self.volume != 1.0: buf = audioop.mul(buf, 2, self.volume)
         buf, self.ratestate = self.rate_conv(buf, 2, 2, self.rate,
                                              44100, self.ratestate)
         self.dev.play(buf, len(buf))

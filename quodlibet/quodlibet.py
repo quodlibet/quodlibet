@@ -387,7 +387,7 @@ class GladeHandlers(object):
         if fns: GladeHandlers.last_dir = fns[0]
 
     def update_volume(slider):
-        player.device.volume = int(slider.get_value())
+        player.device.volume = slider.get_value()
 
     def songs_button_press(view, event):
         if event.button != 3:

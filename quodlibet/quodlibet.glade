@@ -578,7 +578,7 @@
 		  <property name="digits">1</property>
 		  <property name="update_policy">GTK_UPDATE_CONTINUOUS</property>
 		  <property name="inverted">True</property>
-		  <property name="adjustment">0 0 100 1 10 0</property>
+		  <property name="adjustment">1 0 1 0.01 0.1 0</property>
 		  <signal name="value_changed" handler="update_volume" last_modification_time="Sat, 09 Oct 2004 19:17:04 GMT"/>
 		</widget>
 		<packing>
