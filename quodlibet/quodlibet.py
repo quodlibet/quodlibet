@@ -489,15 +489,10 @@ class PlaylistWindow(object):
         vbox.set_spacing(6)
         win.add(vbox)
 
-        #label = self.label = gtk.Label()
-        #vbox.pack_start(label, expand=False, fill=False)
-
         hbox = gtk.HBox()
+        hbox.set_spacing(6)
+        bar = SearchBar(hbox, _("Add Results"), self.add_query_results)
         vbox.pack_start(hbox, expand=False, fill=False)
-        entry = self.entry = gtk.Entry()
-        hbox.pack_start(entry, expand=True, fill=True)
-        add = self.add = gtk.Button(_('Add Results'))
-        hbox.pack_start(add, expand=False, fill=False)
 
         hbox = self.hbox = gtk.HBox()
         hbox.set_spacing(6)
@@ -518,12 +513,10 @@ class PlaylistWindow(object):
         self.win.connect('delete-event', destroy)
         self.win.connect('destroy', destroy)
         self.close.connect('clicked', destroy)
-        self.add.connect('clicked', self.add_query_results)
-        self.entry.connect('activate', self.add_query_results)
         self.win.show_all()
 
-    def add_query_results(self, widget):
-        query = self.entry.get_text().decode('utf-8').strip()
+    def add_query_results(self, text, sort):
+        query = text.decode('utf-8').strip()
         try: self.view.append_songs(library.query(query))
         except ValueError: pass
 
@@ -614,9 +607,14 @@ class Osd(object):
             self.window = None
 
 class SearchBar(object):
-    def __init__(self, hbox, cb):
-        self.combo = gtk.combo_box_entry_new_text()
-        self.button = gtk.Button(_("Search"))
+    model = None
+    
+    def __init__(self, hbox, button, cb):
+        if SearchBar.model is None:
+            SearchBar.model = gtk.ListStore(str)
+
+        self.combo = gtk.ComboBoxEntry(SearchBar.model, 0)
+        self.button = gtk.Button(button)
         self.combo.child.connect('activate', self.text_parse)
         self.combo.child.connect('changed', self.test_filter)
         self.button.connect('clicked', self.text_parse)
@@ -635,8 +633,9 @@ class SearchBar(object):
         text = self.combo.child.get_text()
         if (parser.is_valid(text) or
             ("#" not in text and "=" not in text and "/" not in text)):
-            self.combo.prepend_text(text)
-            if len(self.combo.get_model()) > 10: self.combo.remove_text(10)
+            SearchBar.model.prepend([text])
+            try: SearchBar.model.remove(SearchBar.model.get_iter((10,)))
+            except ValueError: pass
         self.cb(text, None)
 
     def test_filter(self, textbox):
@@ -727,7 +726,8 @@ class MainWindow(MultiInstanceWidget):
         self.songlist = MainSongList(self.widgets["songlist"])
         widgets.songs = gtk.ListStore(object, int)
 
-        self.browser = SearchBar(self.widgets["query_hbox"], self.text_parse)
+        self.browser = SearchBar(self.widgets["query_hbox"], _("Search"),
+                                 self.text_parse)
         self.browser.set_text(config.get("memory", "query"))
 
         # Initialize volume controls.
@@ -1279,7 +1279,7 @@ class MainWindow(MultiInstanceWidget):
             for child in self.widgets["query_hbox"].get_children():
                 self.widgets["query_hbox"].remove(child)
             self.browser = SearchBar(self.widgets["query_hbox"],
-                                     self.text_parse)
+                                     _("Search"), self.text_parse)
             self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser.set_text(config.get("memory", "query"))
 
