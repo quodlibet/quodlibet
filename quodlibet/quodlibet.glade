@@ -51,7 +51,7 @@
 		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image62">
+			<widget class="GtkImage" id="image64">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -96,7 +96,7 @@
 	  <child>
 	    <widget class="GtkMenuItem" id="song1">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_Song</property>
+	      <property name="label" translatable="yes">S_ong</property>
 	      <property name="use_underline">True</property>
 
 	      <child>
@@ -164,7 +164,7 @@
 		      <accelerator key="J" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image63">
+			<widget class="GtkImage" id="image65">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -2469,8 +2469,8 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	  <child>
 	    <widget class="GtkLabel" id="label28">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Tag:</property>
-	      <property name="use_underline">False</property>
+	      <property name="label" translatable="yes">_Tag:</property>
+	      <property name="use_underline">True</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
@@ -2479,6 +2479,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="mnemonic_widget">add_tag_tag</property>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">0</property>
@@ -2493,8 +2494,8 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	  <child>
 	    <widget class="GtkLabel" id="label29">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Value: </property>
-	      <property name="use_underline">False</property>
+	      <property name="label" translatable="yes">_Value: </property>
+	      <property name="use_underline">True</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
@@ -2503,6 +2504,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
+	      <property name="mnemonic_widget">add_tag_value</property>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">0</property>
