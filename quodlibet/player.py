@@ -183,7 +183,7 @@ class ModPlayer(AudioPlayer):
         else:
             s = self.audio.read(BUFFER_SIZE)
             if s: self.dev.play(s)
-            else: self.stopped = True
+            else: raise StopIteration
         return int(self.audio.position)
 
 class MPCPlayer(AudioPlayer):
@@ -207,7 +207,7 @@ class MPCPlayer(AudioPlayer):
         else:
             s = self.audio.read()
             if s: self.dev.play(s)
-            else: self.stopped = True
+            else: raise StopIteration
         return int(self.audio.position)
 
 def FilePlayer(dev, song):
