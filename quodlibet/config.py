@@ -44,7 +44,7 @@ def init(*rc_files):
           "volume": "1.0", # internal volume, [0.0, 1.0]
           "browser": "1", # none, search, playlist, panes
           "songlist": "true", # on or off
-          "sortby": "0artist" # <asc/desc>tagname, song list sort
+          "sortby": "1artist" # <asc/desc>tagname, song list sort
           },
 
         "browsers":
