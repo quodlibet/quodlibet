@@ -116,6 +116,9 @@ class MP3File(AudioFile):
     def write(self):
         print "E: Cannot write to MP3s yet"
 
+    def can_change(self, k):
+        return False
+
 class OggFile(AudioFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
@@ -145,6 +148,9 @@ class OggFile(AudioFile):
                 tags[key] = value
         comments = ogg.vorbis.VorbisComment(tags)
         comments.write_to(self['filename'])
+
+    def can_change(self, k):
+        return k not in ["vendor", "filename"]
 
 class Library(dict):
     def __init__(self, initial = {}):
