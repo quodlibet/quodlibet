@@ -121,19 +121,22 @@ class PlaylistPlayer(object):
         if self.player: self.player.seek(pos)
         self.lock.release()
 
-    def play(self, info, album):
+    def play(self, info):
         while not self.quit:
             while self.playlist:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
                 if self.shuffle: random.shuffle(self.playlist)
                 self.player = FilePlayer(self.output, self.song['filename'])
-                if info: info.set_markup(self.song.to_markup())
-                if album: album.set_image(self.song.find_cover())
+                info.set_song(self.song, self.player)
                 times[1] = self.player.length
                 self.played.append(self.song)
                 self.lock.release()
+                old_t = 500
                 for t in self.player:
+                    if t > old_t:
+                        info.set_time(t, self.player.length)
+                        old_t = t + 500
                     times[0] = t
                     while self.paused:
                         time.sleep(0.01)

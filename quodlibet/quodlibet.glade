@@ -334,9 +334,7 @@
 		  <property name="digits">1</property>
 		  <property name="update_policy">GTK_UPDATE_DISCONTINUOUS</property>
 		  <property name="inverted">False</property>
-		  <property name="adjustment">-15000 0 0 3000 15000 15000</property>
-		  <signal name="value_changed" handler="update_pos_text" last_modification_time="Sat, 09 Oct 2004 19:52:16 GMT"/>
-		  <signal name="adjust_bounds" handler="moved_seek_slider" after="yes" last_modification_time="Sat, 09 Oct 2004 19:53:52 GMT"/>
+		  <property name="adjustment">-15000 0 0 3000 15000 0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>

@@ -12,21 +12,47 @@ import gc
 import os
 import util; from util import escape
 
-class GTKImageWrapper(object):
-    def __init__(self, widget, x = 100, y = 100):
-        self.widget = widget
-        self.x = x
-        self.y = y
+class GTKSongInfoWrapper(object):
+    def __init__(self):
+        self.image = widgets["albumcover"]
+        self.text = widgets["currentsong"]
+        self.pos = widgets["song_pos"]
 
-    def set_image(self, filename):
-        if filename:
-            pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
-            scaled_buf = pixbuf.scale_simple(self.x, self.y,
-                                             gtk.gdk.INTERP_BILINEAR)
-            self.widget.set_from_pixbuf(scaled_buf)
+    def set_song(self, song, player):
+        gtk.idle_add(self._update_song, song, player)
+
+    def set_time(self, cur, end):
+        gtk.idle_add(self._update_time, cur, end)
+
+    def _update_song(self, song, player):
+        if song:
+            self.pos.set_range(0, player.length)
+            self.pos.set_value(0)
+
+            cover = song.find_cover()
+            if cover:
+                pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
+                pixbuf = pixbuf.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
+                self.image.set_from_pixbuf(pixbuf)
+            else:
+                self.image.set_from_stock(gtk.STOCK_CDROM,gtk.ICON_SIZE_BUTTON)
+
+            self.text.set_markup(song.to_markup())
         else:
-            self.widget.set_from_stock(gtk.STOCK_CDROM,
-                                       gtk.ICON_SIZE_BUTTON)
+            self.image.set_from_stock(gtk.STOCK_CDROM,gtk.ICON_SIZE_BUTTON)
+            self.pos.set_range(0, 0)
+            self.pos.set_value(0)
+            self.text.set_markup("<span size='xx-large'>Not playing</span>")
+        return False
+
+    def _update_time(self, cur, end):
+        timer = widgets["song_timer"]
+        self.pos.set_value(cur)
+        timer.set_text("%d:%02d/%d:%02d" %
+                       (cur / 60000, (cur % 60000) / 1000,
+                        end / 60000, (end % 60000) / 1000))
+        return False
+
 class Widgets(object):
     def __init__(self, file):
         self.widgets = gtk.glade.XML("quodlibet.glade")
@@ -67,27 +93,15 @@ class GladeHandlers(object):
                        gtk.STOCK_OPEN, gtk.RESPONSE_OK))
         chooser.set_select_multiple(True)
         resp = chooser.run()
+        fns = chooser.get_filenames()
+        chooser.destroy()
+        gtk.mainiteration(False)
         if resp == gtk.RESPONSE_OK:
-            library.scan(chooser.get_filenames())
+            library.scan(fns)
             songs = filter(CURRENT_FILTER[0], library.values())
             player.playlist.set_playlist(songs)
             refresh_songlist()
-        chooser.destroy()
-
-    def update_pos_text(*args):
-        timer = widgets["song_timer"]
-        cur, end = player.times
-        cur = args[0].get_value()
-        if cur:
-            timer.set_text("%d:%02d/%d:%02d" %
-                           (cur / 60000, (cur % 60000) / 1000,
-                            end / 60000, (end % 60000) / 1000))
-        else:
-            timer.set_text("0:00/0:00")
-
-    def moved_seek_slider(*args):
-        v = min(player.times[1], max(0, args[0].get_value()))
-        player.playlist.seek(v)
+            gc.collect()
 
     def update_volume(slider):
         player.device.volume = int(slider.get_value())
@@ -166,16 +180,6 @@ def set_entry_color(entry, color):
     markup = '<span foreground="%s">%s</span>' % (color, escape(text))
     layout.set_markup(markup)
 
-def update_timer(*args):
-    pos = widgets["song_pos"]
-    cur, end = player.times
-    if end:
-        pos.set_range(0, end)
-        pos.set_value(cur)
-    else:
-        pos.set_value(0)
-    return True
-
 def main():
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(object)
@@ -194,23 +198,21 @@ def main():
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.load(cache_fn)
     player.playlist.set_playlist(library.values())
-    player.playlist.sort_by(None)
+    player.playlist.sort_by(HEADERS[0])
     widgets.songs.clear()
     for song in player.playlist: widgets.songs.append([song])
     
     print "Done loading songs."
     sl.set_model(widgets.filter)
-    gtk.timeout_add(100, update_timer, ())
     gtk.threads_init()
     t = threading.Thread(target = player.playlist.play,
-                         args = (widgets["currentsong"],
-                                 GTKImageWrapper(widgets["albumcover"])))
+                         args = (GTKSongInfoWrapper(),))
     gc.collect()
     t.start()
     try: gtk.main()
     except: gtk.main_quit()
     player.playlist.quitting()
-    t.join(2) # Give it 2 seconds to stop, should be more than enough
+    t.join()
     util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
     library.save(cache_fn)
 
