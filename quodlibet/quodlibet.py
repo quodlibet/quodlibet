@@ -460,6 +460,75 @@ class TrayIcon(object):
 
     tooltip = property(None, set_tooltip)
 
+class PlaylistWindow(object):
+    from weakref import WeakValueDictionary
+    list_windows = WeakValueDictionary()
+    def __new__(cls, name, *args, **kwargs):
+        name = PlayList.normalize_name(name)
+        win = cls.list_windows.get(name, None)
+        if win is None:
+            win = super(PlaylistWindow, cls).__new__(cls, name, *args, **kwargs)
+            win.initialize_window(name)
+            cls.list_windows[name] = win
+        return win
+
+    def __init__(self, name):
+        self.win.present()
+
+    def set_name(self, name):
+        name = PlayList.prettify_name(name)
+        self.win.set_title('Quod Libet Playlist: %s' % name)
+        #self.label.set_text(name + ':')
+
+    def initialize_window(self, name):
+        win = self.win = gtk.Window()
+        win.set_destroy_with_parent(True)
+        win.set_default_size(400,400)
+        win.set_border_width(12)
+
+        vbox = self.vbox = gtk.VBox()
+        vbox.set_spacing(6)
+        win.add(vbox)
+
+        #label = self.label = gtk.Label()
+        #vbox.pack_start(label, expand=False, fill=False)
+
+        hbox = gtk.HBox()
+        vbox.pack_start(hbox, expand=False, fill=False)
+        entry = self.entry = gtk.Entry()
+        hbox.pack_start(entry, expand=True, fill=True)
+        add = self.add = gtk.Button(_('Add Results'))
+        hbox.pack_start(add, expand=False, fill=False)
+
+        hbox = self.hbox = gtk.HBox()
+        hbox.set_spacing(6)
+        vbox.pack_end(hbox, expand=False, fill=False)
+
+        close = self.close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        hbox.pack_end(close, expand=False, fill=False)
+
+        swin = self.swin = gtk.ScrolledWindow()
+        vbox.pack_start(swin, expand=True, fill=True)
+
+        view = gtk.TreeView()
+        self.view = PlayList(view, name)
+        swin.add(view)
+
+        self.set_name(name)
+        destroy = lambda *w: self.win.destroy()
+        self.win.connect('delete-event', destroy)
+        self.win.connect('destroy', destroy)
+        self.close.connect('clicked', destroy)
+        self.add.connect('clicked', self.add_query_results)
+        self.entry.connect('activate', self.add_query_results)
+        self.win.show_all()
+
+    def add_query_results(self, widget):
+        query = self.entry.get_text().decode('utf-8').strip()
+        try: self.view.append_songs(library.query(query))
+        except ValueError: pass
+
+
 # A tray icon aware of UI policy -- left click shows/hides, right
 # click brings up a popup menu
 class HIGTrayIcon(TrayIcon):
@@ -613,8 +682,7 @@ class MainWindow(MultiInstanceWidget):
         self.icon = HIGTrayIcon(p, self.window, self.tray_menu["tray_popup"])
 
         # Set up the main song list store.
-        self.songlist = self.widgets["songlist"]
-        self.songlist.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.songlist = MainSongList(self.widgets["songlist"])
         widgets.songs = gtk.ListStore(object, int)
 
         # Build a model and view for our ComboBoxEntry.
@@ -654,6 +722,9 @@ class MainWindow(MultiInstanceWidget):
         # Show main window.
         self.restore_size()
         self.window.show()
+
+        # TEST: show a playlist before it's actually hooked in
+        # PlaylistWindow('default')
 
     def restore_size(self):
         try: w, h = map(int, config.get("memory", "size").split())
@@ -849,10 +920,6 @@ class MainWindow(MultiInstanceWidget):
     def gtk_main_quit(self, *args):
         gtk.main_quit()
 
-    def save_widths(self, column, width):
-        config.set("memory", "widths", " ".join(
-            [str(x.get_width()) for x in self.songlist.get_columns()]))
-
     def save_size(self, widget, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
@@ -908,7 +975,7 @@ class MainWindow(MultiInstanceWidget):
     def jump_to_current(self, *args):
         try: path = (player.playlist.get_playlist().index(self.current_song),)
         except ValueError: pass
-        else: self.songlist.scroll_to_cell(path)
+        else: self.songlist.jump_to(path)
 
     def next_song(self, *args):
         player.playlist.next()
@@ -1006,9 +1073,7 @@ class MainWindow(MultiInstanceWidget):
         self.rebuild(activator, True)
 
     def pmp_upload(self, *args):
-        selection = self.songlist.get_selection()
-        model, rows = selection.get_selected_rows()
-        songs = [model[row][0] for row in rows]
+        songs = self.songlist.get_selected_songs()
         try:
             window = WaitLoadWindow(self.window, len(songs),
                                     _("Uploading song %d/%d"),
@@ -1076,7 +1141,7 @@ class MainWindow(MultiInstanceWidget):
         self.cmenu.popup(None, None, None, 1, 0)
 
     def song_col_filter(self, item):
-        view = self.songlist
+        view = self.songlist.view
         path, col = view.get_cursor()
         header = col.header_name
         if "~" in header[1:]: header = filter(None, header.split("~"))[0]
@@ -1094,8 +1159,8 @@ class MainWindow(MultiInstanceWidget):
         self.filter_on_header('genre', [self.current_song])
 
     def remove_song(self, item):
-        view = self.songlist
-        selection = self.songlist.get_selection()
+        view = self.songlist.view
+        selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         rows.sort()
         rows.reverse()
@@ -1107,8 +1172,8 @@ class MainWindow(MultiInstanceWidget):
             player.playlist.remove(song)
 
     def delete_song(self, item):
-        view = self.songlist
-        selection = self.songlist.get_selection()
+        view = self.songlist.view
+        selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         songs = [model[r][0] for r in rows]
         filenames = [song["~filename"] for song in songs]
@@ -1151,10 +1216,7 @@ class MainWindow(MultiInstanceWidget):
             SongProperties([song])
             
     def song_properties(self, item):
-        selection = self.songlist.get_selection()
-        model, rows = selection.get_selected_rows()
-        songrefs = [model[row][0] for row in rows]
-        SongProperties(songrefs)
+        SongProperties(self.songlist.get_selected_songs())
 
     def prep_main_popup(self, header):
         if not config.getint("pmp", "driver"):
@@ -1204,9 +1266,7 @@ class MainWindow(MultiInstanceWidget):
 
     def filter_on_header(self, header, songs = None):
         if songs is None:
-            selection = self.songlist.get_selection()
-            model, rows = selection.get_selected_rows()
-            songs = [model[row][0] for row in rows]
+            songs = self.songlist.get_selected_songs()
 
         if header.startswith("~#"):
             nheader = header[2:]
@@ -1252,48 +1312,45 @@ class MainWindow(MultiInstanceWidget):
             color, util.escape(text))
         layout.set_markup(markup)
 
-    # Resort based on the header clicked.
-    def set_sort_by(self, header, tag):
-        s = header.get_sort_order()
-        if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
-            s = gtk.SORT_ASCENDING
-        else: s = gtk.SORT_DESCENDING
-        for h in self.songlist.get_columns():
-            h.set_sort_indicator(False)
-        header.set_sort_indicator(True)
-        header.set_sort_order(s)
-        player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
-        self.refresh_songlist()
+    def set_column_headers(self, headers):
+        SongList.set_all_column_headers(headers)
 
-    # Clear the songlist and readd the songs currently wanted.
     def refresh_songlist(self):
-
-        selection = self.songlist.get_selection()
-        model, rows = selection.get_selected_rows()
-        selected = dict.fromkeys([model[row][0]['~filename'] for row in rows])
-
-        self.songlist.set_model(None)
-        widgets.songs.clear()
+        i, length = self.songlist.refresh(current=self.current_song)
         statusbar = self.widgets["statusbar"]
-        length = 0
-        for song in player.playlist:
-            wgt = ((song is self.current_song and 700) or 400)
-            widgets.songs.append([song, wgt])
-            length += song["~#length"]
-        i = len(list(player.playlist))
         if i != 1: statusbar.set_text(
             _("%d songs (%s)") % (i, util.format_time_long(length)))
         else: statusbar.set_text(
             _("%d song (%s)") % (i, util.format_time_long(length)))
-        self.songlist.set_model(widgets.songs)
 
-        selection = self.songlist.get_selection()
-        for i, row in enumerate(iter(widgets.songs)):
-            if row[0]['~filename'] in selected:
-                selection.select_path(i)
-        del selected
+class SongList(object):
+    """Wrap a treeview that works like a songlist"""
+    from weakref import WeakKeyDictionary
+    songlistviews = WeakKeyDictionary()
+    headers = []
 
-        gc.collect()
+    def __init__(self, view):
+        self.view = view
+        self.view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.songlistviews[self] = None     # register self
+        self.set_column_headers(self.headers)
+
+    def set_all_column_headers(cls, headers):
+        cls.headers = headers
+        for listview in cls.songlistviews:
+            listview.set_column_headers(headers)
+    set_all_column_headers = classmethod(set_all_column_headers)
+
+    def get_selected_songs(self):
+        model, rows = self.view.get_selection().get_selected_rows()
+        return [model[row][0] for row in rows]
+
+    def jump_to(self, path):
+        self.view.scroll_to_cell(path)
+
+    def save_widths(self, column, width):
+        config.set("memory", "widths", " ".join(
+            [str(x.get_width()) for x in self.view.get_columns()]))
 
     # Build a new filter around our list model, set the headers to their
     # new values.
@@ -1305,15 +1362,15 @@ class MainWindow(MultiInstanceWidget):
         except: ws = []
 
         if len(ws) != len(headers):
-            width = self.songlist.get_allocation()[2]
+            width = self.view.get_allocation()[2]
             c = sum([(x.startswith("~#") and 0.2) or 1 for x in headers])
             width = int(width // c)
             ws = [width] * len(headers)
             
-        for c in self.songlist.get_columns(): self.songlist.remove_column(c)
+        for c in self.view.get_columns(): self.view.remove_column(c)
 
         def cell_data(column, cell, model, iter):
-            cell.set_property('text', model[iter][0](column.header_name, ""))
+            cell.set_property('text', model[iter][0].comma(column.header_name))
 
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
@@ -1326,13 +1383,123 @@ class MainWindow(MultiInstanceWidget):
             else:
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_fixed_width(ws[i])
-            column.set_clickable(True)
-            column.set_reorderable(True)
-            column.set_sort_indicator(False)
-            column.connect('clicked', self.set_sort_by, t)
-            column.connect('notify::width', self.save_widths)
+                if hasattr(self, 'set_sort_by'):
+                    column.connect('clicked', self.set_sort_by, t)
+            self._set_column_settings(column)
             column.set_cell_data_func(render, cell_data)
-            self.songlist.append_column(column)
+            self.view.append_column(column)
+
+    def _set_column_settings(self, column):
+        column.set_visible(True)
+
+class PlayList(SongList):
+    def normalize_name(name):
+        return name.lower().replace(' ', '_')
+    normalize_name = staticmethod(normalize_name)
+
+    def prettify_name(name):
+        return name.replace('_', ' ').capitalize()
+    prettify_name = staticmethod(prettify_name)
+
+    def __init__(self, view, name):
+        self.name = 'playlist_' + PlayList.normalize_name(name)
+        self.key = '~#' + self.name
+        model = self.model = gtk.ListStore(object, int)
+        super(PlayList, self).__init__(view)
+
+        for song in library.query('#(%s > 0)' % self.name, sort=self.key):
+            model.append([song, 400])
+
+        view.set_model(model)
+        view.connect('button-press-event', self.button_press)
+        view.connect('drag-end', self.refresh_indices)
+        view.set_reorderable(True)
+
+    def append_songs(self, songs):
+        model = self.model
+        current_songs = dict.fromkeys([row[0]['~filename'] for row in model])
+        for song in songs:
+            if song['~filename'] not in current_songs:
+                model.append([song, 400])
+                song[self.key] = len(model) # 1 based index; 0 means out
+
+    def remove_selected_songs(self):
+        model, rows = self.view.get_selection().get_selected_rows()
+        rows.sort()
+        rows.reverse()
+        for row in rows:
+            del model[row][0][self.key]
+            iter = model.get_iter(row)
+            model.remove(iter)
+        self.refresh_indices()
+
+    def refresh_indices(self, *args):
+        for i, row in enumerate(iter(self.model)):
+            row[0][self.key] = i + 1    # 1 indexed; 0 is not present
+
+    def button_press(self, view, event):
+        if event.button != 3:
+            return False
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
+        view.grab_focus()
+        selection = view.get_selection()
+        if not selection.path_is_selected(path):
+            view.set_cursor(path, col, 0)
+        header = col.header_name
+        self.remove_selected_songs()
+        #self.prep_main_popup(header)
+        #self.cmenu.popup(None,None,None, event.button, event.time)
+        return True
+
+class MainSongList(SongList):
+
+    def _set_column_settings(self, column):
+        column.set_clickable(True)
+        column.set_reorderable(True)
+        column.set_sort_indicator(False)
+        column.connect('notify::width', self.save_widths)
+
+    # Resort based on the header clicked.
+    def set_sort_by(self, header, tag):
+        s = header.get_sort_order()
+        if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
+            s = gtk.SORT_ASCENDING
+        else: s = gtk.SORT_DESCENDING
+        for h in self.songlist.get_columns():
+            h.set_sort_indicator(False)
+        header.set_sort_indicator(True)
+        header.set_sort_order(s)
+        player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
+        self.refresh()
+
+    # Clear the songlist and readd the songs currently wanted.
+    def refresh(self, current=None):
+        selected = self.get_selected_songs()
+        selected = dict.fromkeys([song['~filename'] for song in selected])
+
+        # swap out the current list for the new one
+        self.view.set_model(None)
+        widgets.songs.clear()
+        length = 0
+        for song in player.playlist:
+            wgt = ((song is current and 700) or 400)
+            widgets.songs.append([song, wgt])
+            length += song["~#length"]
+        self.view.set_model(widgets.songs)
+
+        # reselect what we can
+        selection = self.view.get_selection()
+        for i, row in enumerate(iter(widgets.songs)):
+            if row[0]['~filename'] in selected:
+                selection.select_path(i)
+        del selected
+
+        gc.collect()
+
+        i = len(list(player.playlist))
+        return i, length
 
 class AddTagDialog(object):
     def __init__(self, parent, can_change):
