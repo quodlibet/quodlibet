@@ -1699,9 +1699,7 @@ if __name__ == "__main__":
     import os, sys
 
     basedir = os.path.split(os.path.realpath(__file__))[0]
-    if os.path.isdir(os.path.join(basedir, "po")):
-        i18ndir = os.path.join(basedir, "po")
-    else: i18ndir = "/usr/share/locale"
+    i18ndir = "/usr/share/locale"
 
     import locale, gettext
     try: locale.setlocale(locale.LC_ALL, '')

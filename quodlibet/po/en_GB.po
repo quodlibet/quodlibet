@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-11-29 01:59-0600\n"
+"POT-Creation-Date: 2004-11-29 02:16-0600\n"
 "PO-Revision-Date: 2004-11-08 11:54-0600\n"
 "Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
@@ -785,7 +785,7 @@ msgstr ""
 
 #: quodlibet.py:47
 msgid "W: Failed to initialize status icon."
-msgstr "W: Failed to initilise status icon."
+msgstr "W: Failed to initialise status icon."
 
 #: quodlibet.py:55
 msgid "Initialized status icon."
@@ -1079,39 +1079,39 @@ msgid ""
 "If QL is currently running, please restart it."
 msgstr ""
 
-#: quodlibet.py:1737
+#: quodlibet.py:1735
 #, python-format
 msgid "E: Unknown command line option: %s"
 msgstr ""
 
-#: quodlibet.py:1738
+#: quodlibet.py:1736
 #, python-format
 msgid "E: Try %s --help"
 msgstr ""
 
-#: quodlibet.py:1741
+#: quodlibet.py:1739
 msgid "Quod Libet is already running."
 msgstr ""
 
-#: quodlibet.py:1749
+#: quodlibet.py:1747
 msgid "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
 msgstr ""
 
-#: quodlibet.py:1750
+#: quodlibet.py:1748
 #, python-format
 msgid "E: You have GTK+ %s and PyGTK %s."
 msgstr ""
 
-#: quodlibet.py:1753
+#: quodlibet.py:1751
 msgid "E: Please upgrade GTK+/PyGTK."
 msgstr ""
 
-#: quodlibet.py:1769
+#: quodlibet.py:1767
 msgid "Loaded song library."
 msgstr ""
 
 #. Try to initialize the playlist and audio output.
-#: quodlibet.py:1777
+#: quodlibet.py:1775
 msgid "Opening audio device."
 msgstr ""
 
