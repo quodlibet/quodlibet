@@ -18,7 +18,8 @@ def MusicFile(filename):
 
 class AudioFile(dict):
     def __cmp__(self, other):
-        if not hasattr(other, "get"): return -1
+        if not hasattr(other, "get"):
+            raise ValueError("songs can only be compared to other songs.")
         return (cmp(self.get("album"), other.get("album")) or
                 cmp(self.get("=#"), other.get("=#")) or
                 cmp(self.get("artist"), other.get("artist")) or
@@ -47,6 +48,22 @@ class AudioFile(dict):
             for v2 in v.split("\n"):
                 s += "%s=%s\n" % (k, v2)
         return s
+
+    def change(key, old_value, new_value):
+        parts = self[key].split("\n")
+        parts[parts.index(old_value)] = new_value
+        self[key] = "\n".join(parts)
+
+    def add(key, value):
+        if key in self: self[key] = value
+        else: self[key] += "\n" + value
+
+    def remove(key, value):
+        if self[key] == value: del(self[key])
+        else:
+            parts = self[key].split("\n")
+            parts.remove(value)
+            self[key] = "\n".join(parts)
 
     def find_cover(self):
         base = os.path.split(self['filename'])[0]

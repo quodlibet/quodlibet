@@ -9,7 +9,6 @@
 # $Id$
 
 VERSION = "0.1"
-
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
 # using e.g. Curses would change the UI. The converse is not true. Many
@@ -761,6 +760,11 @@ if __name__ == "__main__":
         raise SystemExit("E: Please upgrade GTK+/PyGTK.")
 
     import gtk.glade
+
+    d = os.path.split(os.path.realpath(__file__))[0]
+    os.chdir(d)
+    if os.path.exists(os.path.join(d, "quodlibet.zip")):
+        sys.path.insert(0, os.path.join(d, "quodlibet.zip"))
     widgets = Widgets("quodlibet.glade")
 
     import util; from util import escape
