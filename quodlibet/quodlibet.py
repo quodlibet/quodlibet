@@ -1001,27 +1001,27 @@ class MainWindow(MultiInstanceWidget):
     # Build a new filter around our list model, set the headers to their
     # new values.
     def set_column_headers(self, sl, headers):
-        SHORT_COLS = ["tracknumber", "discnumber"]
+        SHORT_COLS = ["tracknumber", "discnumber", "~length"]
         sl.set_model(None)
         widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
         for c in sl.get_columns(): sl.remove_column(c)
         self.widgets["songlist"].realize()
         width = self.widgets["songlist"].get_allocation()[2]
-        c = 0
-        for t in headers:
-            if t in SHORT_COLS or t.startswith("~#"): c += 0.1
-            else: c += 1
+        c = len(headers)
         width = int(width // c)
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
-            if t in SHORT_COLS or t.startswith("~#"):
-                render.set_fixed_size(-1, -1)
-            else: render.set_fixed_size(width, -1)
             t2 = t.lstrip("~#")
             title = util.title(_(HEADERS_FILTER.get(t2, t2)))
             column = gtk.TreeViewColumn(title, render, text = i,
                                         weight = len(headers)+1)
             column.set_resizable(True)
+            if t in SHORT_COLS or t.startswith("~#"):
+                column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            else:
+                column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+                column.set_expand(True)
+                column.set_fixed_width(30)
             column.set_clickable(True)
             column.set_sort_indicator(False)
             column.connect('clicked', self.set_sort_by, t)

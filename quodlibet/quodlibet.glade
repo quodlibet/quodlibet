@@ -1055,6 +1055,7 @@
 
       <child>
 	<widget class="GtkScrolledWindow" id="song_scroller">
+	  <property name="width_request">200</property>
 	  <property name="height_request">150</property>
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
@@ -1065,7 +1066,7 @@
 
 	  <child>
 	    <widget class="GtkTreeView" id="songlist">
-	      <property name="width_request">400</property>
+	      <property name="width_request">200</property>
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="headers_visible">True</property>
@@ -4147,7 +4148,7 @@ Tags should be added to existing ones</property>
 		      <child>
 			<widget class="GtkCheckButton" id="prop_windows_t">
 			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Characters incompatible with Windows systems (\:*?;&quot;&lt;&gt;|) will be replaced by underscores</property>
+			  <property name="tooltip" translatable="yes">Characters not allowed in Windows filenames (\:*?;&quot;&lt;&gt;|) will be replaced by underscores</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Replace _Windows-incompatible characters</property>
 			  <property name="use_underline">True</property>
