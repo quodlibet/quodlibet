@@ -19,6 +19,7 @@ import threading
 import gc
 import os
 import util; from util import escape
+import signal
 
 class GTKSongInfoWrapper(object):
     def __init__(self):
@@ -241,6 +242,7 @@ def main():
     t = threading.Thread(target = player.playlist.play,
                          args = (GTKSongInfoWrapper(),))
     gc.collect()
+    signal.signal (signal.SIGINT, signal.SIG_DFL)
     t.start()
     try: gtk.main()
     except: gtk.main_quit()
