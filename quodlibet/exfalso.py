@@ -14,7 +14,7 @@ def cell_data(column, cell, model, iter):
 class DirectoryTree(gtk.TreeView):
     def __init__(self, initial = None):
         gtk.TreeView.__init__(self, gtk.TreeStore(str))
-        column = gtk.TreeViewColumn("Folders")
+        column = gtk.TreeViewColumn(_("Folders"))
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_DIRECTORY)
         column.pack_start(render, expand=False)
@@ -80,7 +80,7 @@ class FileSelector(gtk.VPaned):
 
         dirlist = DirectoryTree(initial)
         filelist = gtk.TreeView(gtk.ListStore(str))
-        column = gtk.TreeViewColumn("Audio files")
+        column = gtk.TreeViewColumn(_("Audio files"))
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_FILE)
         column.pack_start(render, expand=False)
@@ -199,5 +199,15 @@ if __name__ == "__main__":
     sys.argv.append(None)
     w = MainWindow(sys.argv[1])
     w.show_all()
+
+    if os.path.exists(const.CONTROL):
+        qltk.WarningMessage(
+            w, _("Quod Libet is running"),
+            _("It looks like you are running Quod Libet right now. "
+              "If you edit songs also in Quod Libet's library while it is "
+              "running, you may need to refresh or re-add them.\n\n"
+              "If you are not running Quod Libet, or are editing songs "
+              "outside of its library, you may ignore this warning.")).run()
+
     gtk.main()
     w.destroy()
