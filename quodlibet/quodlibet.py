@@ -8,7 +8,7 @@
 #
 # $Id$
 
-VERSION = "0.4"
+VERSION = "0.5"
 
 import os, sys
 
@@ -310,6 +310,7 @@ class GladeHandlers(object):
         # Fill in the scanned directories.
         widgets["scan_opt"].set_text(config.get("settings", "scan"))
         widgets["split_entry"].set_text(config.get("settings", "splitters"))
+        widgets["gain_opt"].set_active(config.getint("settings", "gain"))
         widgets["prefs_window"].show()
 
     def set_headers(*args):
@@ -346,6 +347,9 @@ class GladeHandlers(object):
 
     def toggle_jump(toggle):
         config.set("settings", "jump", str(bool(toggle.get_active())))
+
+    def set_gain(gain_opt):
+        config.set("settings", "gain", str(gain_opt.get_active()))
 
     def select_scan(*args):
         resp, fns = make_chooser(_("Select Directories"), os.environ["HOME"])

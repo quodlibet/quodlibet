@@ -1,13 +1,11 @@
 0.5
- - Song databases should be reloaded; a Unicode-related bug was fixed
-   where the database used UTF-8 strings instead of unicode objects.
-   This could cause searches to fail. Tags in files were not affected.
- - The ao audio backend can be used again (for ALSA support); see the
-   "AUDIO BACKENDS" section in the manual page for information on how
-   to use it.
+ - The ao audio backend is back; see the "AUDIO BACKENDS" section in the
+   manual page for instructions on using it.
+ - VorbisGain (http://sjeng.org/vorbisgain.html) support.
+ - A context menu for common operations was added to the properties dialog.
+ - Tag values can be set from filename patterns, or vice-versa.
  - Dates can be saved in MP3s now.
- - A context menu for common operations has been added to the tag editing
-   view.
+ - Many bug fixes; please reload your library.
 
 0.4 - The Power of Language
  - Many bug fixes, primarily due to unit testing.

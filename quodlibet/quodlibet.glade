@@ -882,6 +882,21 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkComboBox" id="gain_opt">
+		      <property name="visible">True</property>
+		      <property name="items" translatable="yes">No volume adjustment
+Per-song (&quot;Radio&quot;) volume adjustment
+Per-album (&quot;Audiophile&quot;) volume adjustment</property>
+		      <signal name="changed" handler="set_gain" last_modification_time="Fri, 12 Nov 2004 21:10:45 GMT"/>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">True</property>
+		      <property name="fill">True</property>
+		    </packing>
+		  </child>
+
+		  <child>
 		    <widget class="GtkFrame" id="frame3">
 		      <property name="visible">True</property>
 		      <property name="label_xalign">0</property>

@@ -12,6 +12,7 @@ import random
 import config
 from library import library
 import parser
+import audioop
 import ossaudiodev
 import util
 import time
@@ -28,8 +29,9 @@ class AudioPlayer(object):
         self.stopped = True
 
 class MP3Player(AudioPlayer):
-    def __init__(self, dev, filename):
+    def __init__(self, dev, song):
         import mad
+        filename = song['=filename']
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = mad.MadFile(filename)
@@ -49,8 +51,9 @@ class MP3Player(AudioPlayer):
         return self.audio.current_time()
 
 class FLACPlayer(AudioPlayer):
-    def __init__(self, dev, filename):        
+    def __init__(self, dev, song):
         AudioPlayer.__init__(self)
+        filename = song['=filename']
         import flac.decoder, flac.metadata
         self.STREAMINFO = flac.metadata.STREAMINFO
         self.EOF = flac.decoder.FLAC__FILE_DECODER_END_OF_FILE
@@ -100,17 +103,38 @@ class FLACPlayer(AudioPlayer):
         #self.dec.seek_absolute(samp)
 
 class OggPlayer(AudioPlayer):
-    def __init__(self, dev, filename):
+    def __init__(self, dev, song):
         AudioPlayer.__init__(self)
+        filename = song['=filename']
         import ogg.vorbis
         self.error = ogg.vorbis.VorbisError
         self.dev = dev
         self.audio = ogg.vorbis.VorbisFile(filename)
-        self.dev.set_info(self.audio.info().rate,
-                          self.audio.info().channels)
+        rate = self.audio.info().rate
+        channels = self.audio.info().channels
+        self.replay_gain(song)
+        self.dev.set_info(rate, channels)
         self.length = int(self.audio.time_total(-1) * 1000)
 
     def __iter__(self): return self
+
+    def replay_gain(self, song):
+        gain = config.getint("settings", "gain")
+        try:
+            if gain == 0: raise ValueError
+            elif gain == 2 and "replaygain_album_gain" in song:
+                db = float(song["replaygain_album_gain"].split()[0])
+                peak = float(song["replaygain_album_peak"])
+            elif gain > 0 and "replaygain_track_gain" in song:
+                db = float(song["replaygain_track_gain"].split()[0])
+                peak = float(song["replaygain_track_peak"])
+            else: raise ValueError
+            self.scale = 10.**(db / 20)
+            
+            if self.scale * peak > 1: self.scale = 1.0 / peak # don't clip
+            if self.scale > 15: self.scale = 15 # probably messed up...
+        except (KeyError, ValueError):
+            self.scale = 1
 
     def seek(self, ms):
         self.audio.time_seek(ms / 1000.0)
@@ -121,14 +145,17 @@ class OggPlayer(AudioPlayer):
         except self.error: pass
         else:
             if bytes == 0: raise StopIteration
+            if self.scale != 1:
+                buff = audioop.mul(buff, 2, self.scale)
+                bytes = len(buff)
             self.dev.play(buff, bytes)
         return int(self.audio.time_tell() * 1000)
 
-def FilePlayer(dev, filename):
+def FilePlayer(dev, song):
     for ext in supported.keys():
-        if filename.lower().endswith(ext):
-            return supported[ext](dev, filename)
-    else: raise RuntimeError("Unknown file format: %s" % filename)
+        if song["=filename"].lower().endswith(ext):
+            return supported[ext](dev, song)
+    else: raise RuntimeError("Unknown file format: %s" % song["=filename"])
 
 class OSSAudioDevice(object):
     def __init__(self):
@@ -162,13 +189,10 @@ class OSSAudioDevice(object):
 class AOAudioDevice(object):
     def __init__(self, device):
         import ao
-        import audioop
-        self.scale = audioop.mul
-        self.ratecv = audioop.ratecv
-        self.tostereo = audioop.tostereo
         self.rate = 44100
         self.ratestate = None
-        try: self.dev = ao.AudioDevice(device, rate = 44100, channels = 2, bits = 16)
+        try: self.dev = ao.AudioDevice(device, rate = 44100,
+                                       channels = 2, bits = 16)
         except ao.aoError: raise IOError
         self.vol = 1
 
@@ -184,15 +208,16 @@ class AOAudioDevice(object):
          if rate != 44100:
              self.ratestate = None
              self.rate = rate
-             self.rate_conv = self.ratecv
+             self.rate_conv = audioop.ratecv
          else: self.rate_conv = lambda *args: (args[0], None)
-         if channels != 2: self.chan_conv = self.tostereo
+         if channels != 2: self.chan_conv = audioop.tostereo
          else: self.chan_conv = lambda *args: args[0]
 
     def play(self, buf, l):
-        buf = self.scale(buf, 2, self.volume / 100.0)
+        buf = audioop.mul(buf, 2, self.volume / 100.0)
         buf = self.chan_conv(buf, 2, 1, 1)
-        buf, self.ratestate = self.rate_conv(buf, 2, 2, self.rate, 44100, self.ratestate)
+        buf, self.ratestate = self.rate_conv(buf, 2, 2, self.rate,
+                                             44100, self.ratestate)
         self.dev.play(buf, len(buf))
 
 class PlaylistPlayer(object):
@@ -280,8 +305,8 @@ class PlaylistPlayer(object):
                 f.write(self.song.to_dump())
                 f.close()
                 if self.shuffle: random.shuffle(self.playlist)
-                try: self.player = FilePlayer(self.output, fn)
-                except:
+                try: self.player = FilePlayer(self.output, self.song)
+                except None:
                     self.paused = True
                     self.info.missing_song(self.song)
                     self.played.append(self.song)
@@ -437,7 +462,7 @@ def init(devid):
 
     if ":" in devid:
         name, args = devid.split(":")[0], devid.split(":")[1:]
-    else: name = devid
+    else: name, args = devid, []
 
     global device, playlist
     device = outputs.get(name, OSSAudioDevice)(*args)

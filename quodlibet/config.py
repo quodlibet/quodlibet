@@ -15,6 +15,7 @@ _config = ConfigParser()
 get = _config.get
 set = _config.set
 getboolean = _config.getboolean
+getint = _config.getint
 write = _config.write
 options = _config.options
 
@@ -24,6 +25,7 @@ def init(rc_file):
     _config.add_section("memory")
     _config.add_section("header_maps")
     _config.set("settings", "scan", "")
+    _config.set("settings", "gain", "2")
     _config.set("settings", "jump", "true")
     _config.set("settings", "cover", "true")
     _config.set("settings", "color", "true")
