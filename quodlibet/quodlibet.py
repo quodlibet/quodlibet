@@ -35,6 +35,7 @@ class GTKSongInfoWrapper(object):
         self.fifo_fn = os.path.join(HOME, ".quodlibet", "control")
         try: os.unlink(self.fifo_fn)
         except OSError: pass
+        util.mkdir(os.path.dirname(self.fifo_fn))
         os.mkfifo(self.fifo_fn, 0600)
         self.fifo = os.open(self.fifo_fn, os.O_NONBLOCK)
         gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)

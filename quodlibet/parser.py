@@ -16,7 +16,7 @@ import sre
 
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
- CLOSERE, REMODS, COMMA, TAG, RE, EOF) = range(13)
+ CLOSERE, REMODS, COMMA, TAG, RE, RELOP, NUMCMP, EOF) = range(15)
 
 class error(RuntimeError): pass
 class ParseError(error): pass
@@ -28,12 +28,12 @@ class QueryLexer(object):
                  OPENRE: "OPENRE", CLOSERE: "CLOSERE", REMODS: "REMODS",
                  OPENP: "OPENP", CLOSEP: "CLOSEP", UNION: "UNION",
                  EQUALS: "EQUALS", COMMA: "COMMA", TAG: "TAG", RE: "RE",
-                 EOF: "EOF",
+                 RELOP: "RELOP", NUMCMP: "NUMCP", EOF: "EOF",
                  }
 
-    table = { '!': NEGATION, '&': INTERSECT, '|': UNION,
-              '(': OPENP, ')': CLOSEP, '=': EQUALS, ',': COMMA,
-              ':': CLOSERE, '/': CLOSERE }
+    table = { '!': NEGATION, '&': INTERSECT, '|': UNION, '(': OPENP,
+              ')': CLOSEP, '=': EQUALS, ',': COMMA, ':': CLOSERE,
+              '/': CLOSERE, '#': NUMCMP, '>': RELOP, '<': RELOP }
 
     def __init__(self, string):
         self.string = string.strip()
