@@ -18,6 +18,11 @@ from cStringIO import StringIO
 # There are three different kinds of APE tag values.
 TEXT, BINARY, EXTERNAL = range(3)
 
+HAS_HEADER = 1 << 31
+HAS_FOOTER = 1 << 30
+IS_HEADER =  1 << 29
+
+
 def _debug(str): print str
 def _dummy(str): pass
 debug = _debug
@@ -55,7 +60,7 @@ class APETag(object):
         # 4 byte flags
         self.flags = _read_int(f)
         debug("flags: 0x%x" % self.flags)
-        if self.flags & (1 << 29) == 0:
+        if not (self.flags & IS_HEADER):
             raise InvalidTagError("found footer, not header")
 
         # 8 bytes reserved
@@ -74,6 +79,7 @@ class APETag(object):
             flags = _read_int(f)
             debug("size: %d, flags 0x%x" % (size, flags))
 
+            # 1 and 2 bits are flags, 0-3
             kind = (flags & 6) >> 1
             key = ""
             while key[-1:] != '\0': key += f.read(1)
@@ -81,6 +87,10 @@ class APETag(object):
             value = f.read(size)
             self.dict[APEKey(key)] = APEValue(kind, value)
             debug("key %s, value %r" % (key, value))
+
+        s = f.read(32)
+        if not s.startswith("APETAGEX"):
+            debug("APE footer missing")
 
     def tag_offset(self, f):
         # APEv2 tags should be less than 8KB and at the end of the file.
@@ -106,17 +116,48 @@ class APETag(object):
     def __getitem__(self, k): return self.dict[k]
     def __setitem__(self, k, v): self.dict[k] = v
 
+    def write(self, filename = None):
+        filename = filename or self.filename
+        offset = self.offset
+        f = file(filename, "ab+")
+        self.tag_offset(f)
+        if offset != self.offset: debug("file offsets don't match")
+        f.seek(offset, 0)
+
+        tags = [v.internal(k) for k, v in self]
+        tags.sort(lambda a, b: cmp(len(a), len(b)))
+        num_tags = len(tags)
+        tags = "".join(tags)
+        debug("writing %s" % str(tags))
+
+        header = "APETAGEX%s%s" %(
+            # version, tag size, item count, flags
+            struct.pack("<iiii", 2000, len(tags) + 32, num_tags,
+                        HAS_HEADER | HAS_FOOTER | IS_HEADER),
+            "\0" * 8)
+        f.write(header)
+
+        # data
+        f.write(tags)
+
+        footer = "APETAGEX%s%s" %(
+            # version, tag size, item count, flags
+            struct.pack("<iiii", 2000, len(tags) + 32, num_tags,
+                        HAS_HEADER | HAS_FOOTER),
+            "\0" * 8)
+        f.write(footer)
+        f.close()
+
 class APEKey(str):
     """An APE key is an ASCII string of length 2 to 255. The specification's
     case rules are nonsense, so this object is case-preserving but not
     case-sensitive, i.e. "album" == "Album"."""
 
-
     def __cmp__(self, o):
-        return cmp(self.lower(), o.lower())
+        return cmp(str(self).lower(), o.lower())
     
     def __eq__(self, o):
-        return self.lower() == o.lower()
+        return str(self).lower() == o.lower()
     
     def __hash__(self):
         return str.__hash__(self.lower())
@@ -136,6 +177,11 @@ class _APEValue(object):
 
     def __len__(self): return len(self.value)
     def __str__(self): return self.value
+
+    def internal(self, key):
+        return "%s%s\0%s" %(
+            struct.pack("<ii", len(self.value), self.kind << 1),
+            key, self.value)
 
 class APETextValue(_APEValue):
     def __unicode__(self):
