@@ -172,8 +172,6 @@ class PlaylistPlayer(object):
                     if not self.player.stopped:
                         self.song["~#lastplayed"] = int(time.time())
                         self.song["~#playcount"] += 1
-                    else:
-                        self.song["~#skipcount"] = self.song.get("~#skipcount", 0) + 1
 
             if self.repeat:
                 self.playlist = self.orig_playlist[:]
@@ -250,7 +248,9 @@ class PlaylistPlayer(object):
 
     def next(self):
         self.lock.acquire()
-        if self.player: self.player.end()
+        if self.player:
+            self.player.end()
+            self.song["~#skipcount"] = self.song.get("~#skipcount", 0) + 1
         self.paused = False
         self.lock.release()
 
@@ -261,16 +261,14 @@ class PlaylistPlayer(object):
         self.quit = True
         self.paused = False
         if self.player: self.player.end()
-        # quitting shouldn't count as skipping the current song
-        if self.song:
-            self.song["~#skipcount"] = self.song.get("~#skipcount", 0) - 1
         self.lock.release()
 
     def previous(self):
         self.lock.acquire()
         self.paused = False
         if len(self.played) >= 2 and self.player:
-            if self.player: self.player.end()
+            self.player.end()
+            self.song["~#skipcount"] = self.song.get("~#skipcount", 0) + 1
             self.playlist.insert(0, self.played.pop())
             self.playlist.insert(0, self.played.pop())
         elif self.played:
@@ -284,6 +282,8 @@ class PlaylistPlayer(object):
         self.lock.release()
 
     def go_to(self, song, lock = True):
+        if self.song and self.song != song:
+            self.song["~#skipcount"] = self.song.get("~#skipcount", 0) + 1
         if lock: self.lock.acquire()
         if not self.shuffle:
             i = self.orig_playlist.index(song)
