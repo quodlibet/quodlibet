@@ -366,6 +366,21 @@ class GladeHandlers(object):
     def seek_slider(slider, v):
         gtk.idle_add(player.playlist.seek, v)
 
+    def random_artist(menuitem):
+        q = "artist = /%s/c" % sre.escape(library.random("artist"))
+        widgets["query"].child.set_text(q)
+        widgets["search_button"].clicked()
+
+    def random_album(menuitem):
+        q = "album = /%s/c" % sre.escape(library.random("album"))
+        widgets["query"].child.set_text(q)
+        widgets["search_button"].clicked()
+
+    def random_genre(menuitem):
+        q = "genre = /%s/c" % sre.escape(library.random("genre"))
+        widgets["query"].child.set_text(q)
+        widgets["search_button"].clicked()
+
     def rebuild(activator):
         window = WaitLoadWindow(widgets["main_window"], len(library) / 5,
                                 _("Quod Libet is scanning your library. "

@@ -10,6 +10,7 @@ import os, stat
 import cPickle as Pickle
 import util; from util import escape
 import fcntl
+import random
 import time
 import gettext
 import config
@@ -543,6 +544,13 @@ class Library(dict):
         self.masked = masked
         self.masked_files = {}
         dict.__init__(self, initial)
+
+    def random(self, tag):
+        songs = {}
+        for song in self.values():
+             if tag in song and not song.unknown(tag):
+                 for v in song.list(tag): songs[v] = True  
+        return random.choice(songs.keys())
 
     def rename(self, song, newfn):
         oldfn = song['=filename']
