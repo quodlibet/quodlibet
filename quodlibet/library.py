@@ -9,6 +9,7 @@
 import os, stat
 import cPickle as Pickle
 import util; from util import escape
+import time
 
 def MusicFile(filename):
     typ = filename[-4:].lower()
@@ -135,6 +136,7 @@ class Library(dict):
         dict.__init__(self, initial)
 
     def save(self, fn):
+        util.mkdir(os.path.dirname(fn))
         f = file(fn, "w")
         songs = filter(lambda s: s and os.path.exists(s["filename"]),
                        self.values())
@@ -143,24 +145,41 @@ class Library(dict):
 
     def load(self, fn):
         if os.path.exists(fn): songs = Pickle.load(file(fn, "rb"))
-        else: return False
-        mtime = os.stat(fn)[stat.ST_MTIME] - 1
+        else: return 0, 0
+        removed, changed = 0, 0
         for song in songs:
-            if song and os.path.exists(song['filename']):
-                self[song['filename']] = song
-                if os.stat(song['filename'])[stat.ST_MTIME] > mtime:
-                    self[song['filename']] = MusicFile(fn)
+            fn = song['filename']
+            if song and os.path.exists(fn):
+                if (os.stat(fn)[stat.ST_MTIME] != song["=mtime"]):
+                    self[fn] = MusicFile(fn)
+                    self[fn]["=mtime"] = int(os.stat(fn)[stat.ST_MTIME])
+                    changed += 1
+                else: self[fn] = song
+            else:
+                removed += 1
+        return changed, removed
 
     def scan(self, dirs):
+        added, changed = 0, 0
         for d in dirs:
             print "Checking", d
             d = os.path.expanduser(d)
             for path, dnames, fnames in os.walk(d):
                 for fn in fnames:
                     m_fn = os.path.join(path, fn)
-                    if m_fn in self: continue
+                    if m_fn in self:
+                        m = self[m_fn]
+                        if os.stat(m_fn)[stat.ST_MTIME] == m["=mtime"]:
+                            continue
+                        else:
+                            changed += 1
+                            added -= 1
                     m = MusicFile(m_fn)
-                    if m: self[m_fn] = m
+                    if m:
+                        added += 1
+                        m["=mtime"] = int(os.stat(m_fn)[stat.ST_MTIME])
+                        self[m_fn] = m
+                yield added, changed
 
 supported = {}
 

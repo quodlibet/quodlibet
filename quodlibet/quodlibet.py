@@ -236,7 +236,16 @@ class GladeHandlers(object):
     def open_chooser(*args):
         resp, fns = make_chooser("Add Music")
         if resp == gtk.RESPONSE_OK:
-            library.scan(fns)
+            progress = widgets["throbber"]
+            wind = widgets["scan_window"]
+            wind.set_transient_for(widgets["main_window"])
+            wind.show()
+            for added, changed in library.scan(fns):
+                progress.pulse()
+                progress.set_text("%d songs added, %d songs updated" %
+                                   (added, changed))
+                while gtk.events_pending(): gtk.main_iteration()
+            wind.hide()
             player.playlist.refilter()
             refresh_songlist()
             gc.collect()
@@ -414,9 +423,12 @@ def load_cache():
     config.init(config_fn)
     print "Loading library"
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
-    library.load(cache_fn)
+    c, d = library.load(cache_fn)
+    print "Changed %d songs, deleted %d songs" % (c, d)
     if config.get("settings", "scan"):
-        library.scan(config.get("settings", "scan").split(":"))
+        for a, c in library.scan(config.get("settings", "scan").split(":")):
+            if a or c:
+                print "Added %d songs, changed %d songs" % (a, c)
 
 def save_cache():
     from library import library
