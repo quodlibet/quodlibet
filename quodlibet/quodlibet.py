@@ -341,14 +341,23 @@ class MultiInstanceWidget(object):
         self.model.foreach(create_property_dict)
 
         for song, ref in self.songrefs:
+            changed = False
             for key, value in updated.iteritems():
-                if song.can_change(key): song[key] = value
+                if song.can_change(key):
+                    if song.get(key) != value:
+                        song[key] = value
+                        changed = True
             for key in deleted:
-                if song.can_change(key) and key in song: del song[key]
-            path = ref.get_path()
-            song.write()
-            if path is not None:
-                widgets.songs[path] = [song.get(h, "") for h in HEADERS] + [song, 400]
+                if song.can_change(key) and key in song:
+                    changed = True
+                    del song[key]
+
+            if changed:
+                path = ref.get_path()
+                song.write()
+                if path is not None:
+                    widgets.songs[path] = ([song.get(h, "") for h in HEADERS] +
+                                           [song, 400])
 
         self.save.set_sensitive(False)
         self.revert.set_sensitive(False)
