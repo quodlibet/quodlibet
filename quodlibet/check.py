@@ -13,12 +13,12 @@ if __name__ == "__main__":
         raise SystemExit("%s requires at least Python 2.3."
                          "(http://www.python.org)" % NAME)
 
-    print "Checking for PyGTK >= 2.4:",
+    print "Checking for PyGTK >= 2.4.1:",
     try:
         import pygtk
         pygtk.require('2.0')
         import gtk
-        if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 4):
+        if gtk.pygtk_version < (2, 4, 1) or gtk.gtk_version < (2, 4):
             raise ImportError
         import gtk.glade
     except ImportError:
