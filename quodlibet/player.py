@@ -8,6 +8,8 @@ playlist = []
 paused = False
 shuffled = False
 
+times = [0, 0]
+
 class MP3Player(object):
     def __init__(self, dev, filename):
         self.dev = dev
@@ -21,7 +23,6 @@ class MP3Player(object):
         if buff is None: raise StopIteration
         self.dev.play(buff, len(buff))
         return self.mf.current_time()
-        
 
 class OggPlayer(object):
     def __init__(self, dev, filename):
@@ -56,7 +57,9 @@ def play():
         while playlist:
             song = playlist.pop(0)['filename']
             player = Player(dev, song)
+            times[1] = player.length
             for t in player:
+                times[0] = t
                 do_queue()
                 while paused:
                     do_queue()

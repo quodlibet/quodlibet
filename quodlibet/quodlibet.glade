@@ -329,6 +329,8 @@
 		  <property name="update_policy">GTK_UPDATE_CONTINUOUS</property>
 		  <property name="inverted">False</property>
 		  <property name="adjustment">0 0 0 0 0 0</property>
+		  <signal name="adjust_bounds" handler="update_pos_text" last_modification_time="Sat, 09 Oct 2004 07:36:45 GMT"/>
+		  <signal name="value_changed" handler="update_pos_text" last_modification_time="Sat, 09 Oct 2004 07:36:53 GMT"/>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>

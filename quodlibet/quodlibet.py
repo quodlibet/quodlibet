@@ -73,6 +73,17 @@ class GladeHandlers(object):
                          widgets.songs)
         chooser.destroy()
 
+    def update_pos_text(*args):
+        timer = widgets["song_timer"]
+        cur, end = player.times
+        cur = args[0].get_value()
+        if cur:
+            timer.set_text("%d:%02d/%d:%02d" %
+                           (cur / 60000, (cur % 60000) / 1000,
+                            end / 60000, (end % 60000) / 1000))
+        else:
+            timer.set_text("0:00/0:00")
+
     def text_parse(*args):
         from parser import QueryParser, QueryLexer
         text = widgets["query"].get_text()
@@ -85,7 +96,20 @@ class GladeHandlers(object):
             except: pass
             else:
                 CURRENT_FILTER[0] = q.search
+                set_entry_color(widgets["query"], "black")
                 widgets.filter.refilter()
+
+    def test_filter(*args):
+        from parser import QueryParser, QueryLexer
+        textbox = widgets["query"]
+        text = textbox.get_text()
+        try:
+            QueryParser(QueryLexer(text)).Query()
+        except:
+            gtk.idle_add(set_entry_color, textbox, "red")
+        else:
+            gtk.idle_add(set_entry_color, textbox, "dark green")
+
 
 widgets = Widgets("quodlibet.glade")
 
@@ -113,6 +137,22 @@ def lazy_loader(iterator, model):
         else: model.append([song])
     else: gtk.idle_add(lazy_loader, iterator, model)
 
+def set_entry_color(entry, color):
+    layout = entry.get_layout()
+    text = layout.get_text()
+    markup = '<span foreground="%s">%s</span>' % (color, escape(text))
+    layout.set_markup(markup)
+
+def update_timer(*args):
+    pos = widgets["song_pos"]
+    cur, end = player.times
+    if end:
+        pos.set_range(0, end)
+        pos.set_value(cur)
+    else:
+        pos.set_value(0)
+    return True
+
 def main():
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(object)
@@ -132,6 +172,7 @@ def main():
     sl.set_model(widgets.sorted)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
+    gtk.timeout_add(500, update_timer, ())
     gtk.threads_init()
     thread.start_new_thread(player.play, ())
     gtk.main()
