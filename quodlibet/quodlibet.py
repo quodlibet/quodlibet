@@ -483,14 +483,16 @@ class GladeHandlers(object):
         # Fill in the header checkboxes.
         widgets["disc_t"].set_active("~#disc" in old_h)
         widgets["track_t"].set_active("~#track" in old_h)
-        for h in ["album", "artist", "genre", "year", "version",
+        for h in ["album", "part", "artist", "genre", "date", "version",
                   "performer"]:
             widgets[h + "_t"].set_active(h in old_h)
         widgets["filename_t"].set_active("~basename" in old_h)
+        widgets["length_t"].set_active("~length" in old_h)
 
         # Remove the standard headers, and put the rest in the list.
-        for t in ["~#disc", "~#track", "album", "artist", "genre", "year",
-                  "version", "performer", "title", "~basename"]:
+        for t in ["~#disc", "~#track", "album", "artist", "genre", "date",
+                  "version", "performer", "title", "~basename", "part",
+                  "~length"]:
             try: old_h.remove(t)
             except ValueError: pass
         widgets["extra_headers"].set_text(" ".join(old_h))
@@ -526,9 +528,11 @@ class GladeHandlers(object):
         if widgets["disc_t"].get_active(): new_h.append("~#disc")
         if widgets["track_t"].get_active(): new_h.append("~#track")
         new_h.append("title")
-        for h in ["version", "album", "artist", "performer", "year", "genre"]:
+        for h in ["version", "album", "part", "artist", "performer",
+                  "date", "genre"]:
             if widgets[h + "_t"].get_active(): new_h.append(h)
         if widgets["filename_t"].get_active(): new_h.append("~basename")
+        if widgets["length_t"].get_active(): new_h.append("~length")
         new_h.extend(widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))

@@ -1310,7 +1310,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <child>
 				    <widget class="GtkTable" id="table1">
 				      <property name="visible">True</property>
-				      <property name="n_rows">5</property>
+				      <property name="n_rows">6</property>
 				      <property name="n_columns">2</property>
 				      <property name="homogeneous">True</property>
 				      <property name="row_spacing">0</property>
@@ -1471,10 +1471,10 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				      </child>
 
 				      <child>
-					<widget class="GtkCheckButton" id="year_t">
+					<widget class="GtkCheckButton" id="date_t">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="label" translatable="yes">_Year</property>
+					  <property name="label" translatable="yes">Dat_e</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -1496,7 +1496,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 					<widget class="GtkCheckButton" id="performer_t">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="label" translatable="yes">_Performer</property>
+					  <property name="label" translatable="yes">Perfor_mer</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -1531,6 +1531,50 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 					  <property name="right_attach">2</property>
 					  <property name="top_attach">4</property>
 					  <property name="bottom_attach">5</property>
+					  <property name="x_options">fill</property>
+					  <property name="y_options"></property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkCheckButton" id="part_t">
+					  <property name="visible">True</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">_Part</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					  <property name="active">False</property>
+					  <property name="inconsistent">False</property>
+					  <property name="draw_indicator">True</property>
+					</widget>
+					<packing>
+					  <property name="left_attach">0</property>
+					  <property name="right_attach">1</property>
+					  <property name="top_attach">5</property>
+					  <property name="bottom_attach">6</property>
+					  <property name="x_options">fill</property>
+					  <property name="y_options"></property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkCheckButton" id="length_t">
+					  <property name="visible">True</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">_Length</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					  <property name="active">False</property>
+					  <property name="inconsistent">False</property>
+					  <property name="draw_indicator">True</property>
+					</widget>
+					<packing>
+					  <property name="left_attach">1</property>
+					  <property name="right_attach">2</property>
+					  <property name="top_attach">5</property>
+					  <property name="bottom_attach">6</property>
 					  <property name="x_options">fill</property>
 					  <property name="y_options"></property>
 					</packing>
