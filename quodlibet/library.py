@@ -65,10 +65,11 @@ class AudioFile(dict):
             os.stat(self['=filename'])[stat.ST_MTIME]))
 
     def website(self):
-        if "website" in self: return self["website"]
-        cont = self.get("contact", "").lower()
-        if (cont.startswith("http://") or cont.startswith("https://") or
-            cont.startswith("www.")): return self["contact"]
+        if "website" in self: return self.list("website")[0]
+        for cont in self.list("contact"):
+            c = cont.lower()
+            if (c.startswith("http://") or c.startswith("https://") or
+                c.startswith("www.")): return cont
         else:
             artist = util.escape("+".join(self["artist"].split()))
             album = util.escape("+".join(self["album"].split()))
