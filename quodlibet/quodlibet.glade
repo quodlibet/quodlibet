@@ -606,7 +606,7 @@
 		  <property name="max_length">0</property>
 		  <property name="text" translatable="yes"></property>
 		  <property name="has_frame">True</property>
-		  <property name="invisible_char" translatable="yes">*</property>
+		  <property name="invisible_char">*</property>
 		  <property name="activates_default">False</property>
 		  <signal name="changed" handler="change_scan" last_modification_time="Sat, 16 Oct 2004 23:27:42 GMT"/>
 		</widget>
@@ -968,7 +968,7 @@
 		  <property name="max_length">0</property>
 		  <property name="text" translatable="yes"></property>
 		  <property name="has_frame">True</property>
-		  <property name="invisible_char" translatable="yes">*</property>
+		  <property name="invisible_char">*</property>
 		  <property name="activates_default">False</property>
 		  <signal name="activate" handler="set_headers" last_modification_time="Sun, 17 Oct 2004 01:28:59 GMT"/>
 		</widget>
