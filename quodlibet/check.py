@@ -53,5 +53,12 @@ except ImportError:
            "(http://users.dart.net.au/~collett/software/pyflac-0.0.1.tar.gz)" % NAME)
 else: print "found"
 
+sys.stdout.write("Checking for ao: ")
+try: import ao
+except ImportError:
+    print ("not found\n%s recommends libao/pyao (for ALSA/aRts/ESD output).\n"
+           " (http://www.andrewchatham.com/pyogg/)" % NAME)
+else: print "found"
+
 print "\nYour system meets the requirements to install %s." % NAME
 print "Type 'make install' (as root) to install it."

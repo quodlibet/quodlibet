@@ -13,7 +13,6 @@ import config
 from library import library
 import parser
 import audioop
-import ossaudiodev
 import util
 import time
 import stat
@@ -159,7 +158,7 @@ def FilePlayer(dev, song):
 
 class OSSAudioDevice(object):
     def __init__(self):
-        self.mixer = ossaudiodev.openmixer()
+        import ossaudiodev
         self.dev = ossaudiodev.open("w")
         self.dev.setfmt(ossaudiodev.AFMT_S16_LE)
         self._channels = self.dev.channels(2)
@@ -173,6 +172,7 @@ class OSSAudioDevice(object):
 
     def set_info(self, rate, channels):
         if rate != self._rate or channels != self._channels:
+            import ossaudiodev
             self.dev.close()
             self.dev = ossaudiodev.open("w")
             self.dev.setfmt(ossaudiodev.AFMT_S16_LE)

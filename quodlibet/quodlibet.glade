@@ -812,7 +812,7 @@
 		      <property name="spacing">0</property>
 
 		      <child>
-			<widget class="GtkCheckButton" id="cover_t">
+			<widget class="GtkCheckButton" id="prefs_cover_t">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">When enabled, images with 'front' or 'cover' in their names are loaded and displayed next to the song title.</property>
 			  <property name="can_focus">True</property>
@@ -833,7 +833,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="color_t">
+			<widget class="GtkCheckButton" id="prefs_color_t">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">Display simple searches in blue, advanced ones in green, and invalid ones in red. Turn this off if your theme makes the colors hard to read.</property>
 			  <property name="can_focus">True</property>
@@ -854,7 +854,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="jump_t">
+			<widget class="GtkCheckButton" id="prefs_jump_t">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">When the current song changes, scroll  to it in the song list. You can do this manually by pressing Ctrl-J.</property>
 			  <property name="can_focus">True</property>
@@ -1602,7 +1602,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			      <property name="spacing">0</property>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton2">
+				<widget class="GtkCheckButton" id="prefs_tbp_space_t">
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Replace _underscores with spaces</property>
@@ -1612,6 +1612,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="toggle_tbp_space" last_modification_time="Mon, 15 Nov 2004 03:21:49 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1621,7 +1622,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton3">
+				<widget class="GtkCheckButton" id="prefs_titlecase_t">
 				  <property name="visible">True</property>
 				  <property name="tooltip" translatable="yes">If appropriate to the language, strings will be title-cased (the first letter of each word capitalized)</property>
 				  <property name="can_focus">True</property>
@@ -1632,6 +1633,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="toggle_titlecase" last_modification_time="Mon, 15 Nov 2004 03:21:56 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1641,7 +1643,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton4">
+				<widget class="GtkCheckButton" id="prefs_splitval_t">
 				  <property name="visible">True</property>
 				  <property name="tooltip" translatable="yes">Tag values will be split based on your preferences</property>
 				  <property name="can_focus">True</property>
@@ -1652,6 +1654,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="toggle_splitval" last_modification_time="Mon, 15 Nov 2004 03:22:07 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1716,7 +1719,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			      <property name="spacing">0</property>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton5">
+				<widget class="GtkCheckButton" id="prefs_nbp_space_t">
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Replace spaces with _underscores</property>
@@ -1726,6 +1729,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="toggle_nbp_space" last_modification_time="Mon, 15 Nov 2004 03:22:17 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1735,7 +1739,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton6">
+				<widget class="GtkCheckButton" id="prefs_windows_t">
 				  <property name="visible">True</property>
 				  <property name="tooltip" translatable="yes">Characters incompatible with Windows systems (\:*?;&quot;&lt;&gt;|) will be replaced by underscores</property>
 				  <property name="can_focus">True</property>
@@ -1746,6 +1750,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <property name="active">True</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="toggle_windows" last_modification_time="Mon, 15 Nov 2004 03:22:23 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1755,7 +1760,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton7">
+				<widget class="GtkCheckButton" id="prefs_ascii_t">
 				  <property name="visible">True</property>
 				  <property name="tooltip" translatable="yes">Characters outside of the ASCII set (Latin A-Z, 0-9, and punctuation) will be replaced by underscores</property>
 				  <property name="can_focus">True</property>
@@ -1766,6 +1771,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="toggle_ascii" last_modification_time="Mon, 15 Nov 2004 03:22:30 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -2820,7 +2826,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      <property name="spacing">0</property>
 
 		      <child>
-			<widget class="GtkCheckButton" id="replace_t">
+			<widget class="GtkCheckButton" id="prop_tbp_space_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Replace _underscores with spaces</property>
@@ -2840,7 +2846,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="titlecase_t">
+			<widget class="GtkCheckButton" id="prop_titlecase_t">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">If appropriate to the language, strings will be title-cased (the first letter of each word capitalized)</property>
 			  <property name="can_focus">True</property>
@@ -2861,7 +2867,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="val_split_t">
+			<widget class="GtkCheckButton" id="prop_splitval_t">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">Tag values will be split based on your preferences</property>
 			  <property name="can_focus">True</property>
@@ -3102,7 +3108,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      <property name="spacing">0</property>
 
 		      <child>
-			<widget class="GtkCheckButton" id="underscore_t">
+			<widget class="GtkCheckButton" id="prop_nbp_space_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Replace spaces with _underscores</property>
@@ -3122,7 +3128,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="windows_t">
+			<widget class="GtkCheckButton" id="prop_windows_t">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">Characters incompatible with Windows systems (\:*?;&quot;&lt;&gt;|) will be replaced by underscores</property>
 			  <property name="can_focus">True</property>
@@ -3143,7 +3149,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="ascii_t">
+			<widget class="GtkCheckButton" id="prop_ascii_t">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">Characters outside of the ASCII set (Latin A-Z, 0-9, and punctuation) will be replaced by underscores</property>
 			  <property name="can_focus">True</property>

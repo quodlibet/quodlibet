@@ -20,7 +20,6 @@ write = _config.write
 options = _config.options
 
 def init(rc_file):
-    # So far we only have/need one section...
     _config.add_section("settings")
     _config.add_section("memory")
     _config.add_section("header_maps")
@@ -29,7 +28,15 @@ def init(rc_file):
     _config.set("settings", "jump", "true")
     _config.set("settings", "cover", "true")
     _config.set("settings", "color", "true")
-    _config.set("settings", "backend", "oss")
+
+    _config.set("settings", "tbp_space", "false")
+    _config.set("settings", "titlecase", "false")
+    _config.set("settings", "splitval", "true")
+    _config.set("settings", "nbp_space", "false")
+    _config.set("settings", "windows", "true")
+    _config.set("settings", "ascii", "false")
+
+    _config.set("settings", "backend", "ao:alsa")
     _config.set("settings", "splitters", ",;&/")
     _config.set("settings", "headers", "=# title album artist")
     _config.set("memory", "size", "400 350")

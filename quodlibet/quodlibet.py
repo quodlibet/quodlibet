@@ -283,9 +283,9 @@ class GladeHandlers(object):
     def open_prefs(*args):
         widgets["prefs_window"].set_transient_for(widgets["main_window"])
         # Fill in the general checkboxes.
-        widgets["cover_t"].set_active(config.state("cover"))
-        widgets["color_t"].set_active(config.state("color"))
-        widgets["jump_t"].set_active(config.state("jump"))
+        for w in ["jump", "cover", "color", "tbp_space", "titlecase",
+                  "splitval", "nbp_space", "windows", "ascii"]:
+             widgets["prefs_%s_t" % w].set_active(config.state(w))
         old_h = HEADERS[:]
 
         # Fill in the header checkboxes.
@@ -346,6 +346,24 @@ class GladeHandlers(object):
 
     def toggle_jump(toggle):
         config.set("settings", "jump", str(bool(toggle.get_active())))
+
+    def toggle_tbp_space(toggle):
+        config.set("settings", "tbp_space", str(bool(toggle.get_active())))
+
+    def toggle_titlecase(toggle):
+        config.set("settings", "titlecase", str(bool(toggle.get_active())))
+
+    def toggle_splitval(toggle):
+        config.set("settings", "splitval", str(bool(toggle.get_active())))
+
+    def toggle_nbp_space(toggle):
+        config.set("settings", "nbp_space", str(bool(toggle.get_active())))
+
+    def toggle_windows(toggle):
+        config.set("settings", "windows", str(bool(toggle.get_active())))
+
+    def toggle_ascii(toggle):
+        config.set("settings", "ascii", str(bool(toggle.get_active())))
 
     def set_gain(gain_opt):
         config.set("settings", "gain", str(gain_opt.get_active()))
@@ -775,9 +793,9 @@ class MultiInstanceWidget(object):
         self.nbp_model.clear()
         pattern = self.nbp_entry.get_text().decode('utf-8')
 
-        underscore = self.widgets.get_widget("underscore_t").get_active()
-        windows = self.widgets.get_widget("windows_t").get_active()
-        ascii = self.widgets.get_widget("ascii_t").get_active()
+        underscore = self.widgets.get_widget("prop_nbp_space_t").get_active()
+        windows = self.widgets.get_widget("prop_windows_t").get_active()
+        ascii = self.widgets.get_widget("prop_ascii_t").get_active()
 
         try:
             pattern = util.FileFromPattern(pattern)
@@ -851,9 +869,9 @@ class MultiInstanceWidget(object):
         self.tbp_view.set_model(None)
         self.tbp_model.clear()
 
-        rep = self.widgets.get_widget("replace_t").get_active()
-        title = self.widgets.get_widget("titlecase_t").get_active()
-        split = self.widgets.get_widget("val_split_t").get_active()
+        rep = self.widgets.get_widget("prop_tbp_space_t").get_active()
+        title = self.widgets.get_widget("prop_titlecase_t").get_active()
+        split = self.widgets.get_widget("prop_splitval_t").get_active()
 
         # build the pattern
         pattern_text = self.tbp_entry.get_text().decode('utf-8')
@@ -1020,6 +1038,10 @@ def make_song_properties(songrefs):
     dlg.nbp_view.append_column(column)
     column = gtk.TreeViewColumn(_('New Name'), gtk.CellRendererText(), text=3)
     dlg.nbp_view.append_column(column)
+
+    for w in ["tbp_space", "titlecase", "splitval", "nbp_space",
+                   "windows", "ascii"]:
+        dlg.widgets.get_widget("prop_%s_t" % w).set_active(config.state(w))
 
     # select all files, causing selection update to fill the info
     selection.select_all()
