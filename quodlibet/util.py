@@ -90,7 +90,7 @@ def encode(s):
         try: return s.encode("utf-8", "replace") + " " + _("[Invalid Unicode]")
         except UnicodeError: return _("[Invalid Unicode]")
 
-def titlecase(string):
+def title(string):
     if not string: return ""
     new_string = string[0].capitalize()
     cap = False
