@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 #
-# $Id:$
+# $Id$
 
 """
 Plugins are objects (generally classes or modules) that have the following
@@ -72,14 +72,14 @@ class PluginManager(object):
         self.plugins = {}
 
     def rescan(self):
-        import os, sys
+        import os, sys, dircache
         from stat import ST_MTIME
 
         changes = False;
 
         justscanned = {}
         for scandir in self.scan:
-            try: names = os.listdir(scandir)
+            try: names = dircache.listdir(scandir)
             except OSError, err: continue
             for name in names:
                 pathname = os.path.realpath(os.path.join(scandir, name))
