@@ -62,22 +62,23 @@ class AudioFile(dict):
 
     def __getitem__(self, key):
         if key and key[0] == "~":
-            if key == "~basename": return os.path.basename(self["~filename"])
-            elif key == "~dirname": return os.path.dirname(self["~filename"])
-            elif key == "~#track":
+            key = key[1:]
+            if "~" in key:
+                f = dict.get
+                parts = [f(self, p) for p in key.split("~")]
+                return " - ".join(filter(None, parts))
+            elif key == "basename": return os.path.basename(self["~filename"])
+            elif key == "dirname": return os.path.dirname(self["~filename"])
+            elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
                 except (ValueError, TypeError): raise KeyError
-            elif key == "~#disc":
+            elif key == "#disc":
                 try: return int(self["discnumber"].split("/")[0])
                 except (ValueError, TypeError): raise KeyError
-            elif key[1] == "#" and key not in self:
-                try: return int(self[key[2:]])
+            elif key[0] == "#" and "~" + key not in self:
+                try: return int(self[key[1:]])
                 except (ValueError, TypeError): raise KeyError
-
-            elif "~" in key[1:]:
-                parts = [self.get(p, "") for p in key[1:].split("~") if p]
-                return " - ".join(filter(None, parts))
-            else: return dict.__getitem__(self, key)
+            else: return dict.__getitem__(self, "~" + key)
         else: return dict.__getitem__(self, key)
 
     def comma(self, key):
@@ -89,7 +90,7 @@ class AudioFile(dict):
         else: return []
 
     def exists(self):
-        return os.path.exists(self.get("~filename", ""))
+        return os.path.exists(self["~filename"])
 
     def valid(self):
         return (self.exists() and

@@ -1,7 +1,7 @@
 0.8
 An unintrusive clear button.
 Remember hidden UI element states
-Don't let editing modes write tags they actually can't.
+Don't let editing modes try to write tags they actually can't.
 
 Doable by whomever, whenever:
 - Translations.
@@ -12,6 +12,7 @@ Doable by whomever, whenever:
 
 Stuff that I probably have to do:
 - More unit tests.
+- Less Glade means smaller size, easier changes, and more testability!
 - Various skipping problems -- get smarter about Python threads.
 - Look into eventual GStreamer port/use (for playing).
   - This is probably going to end up not useful unless it solves the
@@ -21,6 +22,12 @@ Things that would be nice if someone did, but I won't pursue them:
 - Import covers from Muine.
   - We need to deserialize the pixmap data, whatever it's doing, which
     doesn't seem to be exposed via PyGTK.
-- Streaming & playlists.
-  - New UI element(s) for selecting playlists or streams. Combobox next
-    to search, Library/Playlist/Streams?
+- Playlists, album browser, iTunes browser...
+  - New UI element(s) for selecting browser-type, or search, or &c...
+
+Wontadd:
+- Streaming.
+- More featureful PMP management.
+- Automatic album cover downloads.
+- Transcoding, ripping, burning.
+- Monkey's Audio (unless it gets freed), MPC (worse than Vorbis in all ways).
