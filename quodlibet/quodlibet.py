@@ -664,9 +664,10 @@ def main():
     t = threading.Thread(target = player.playlist.play,
                          args = (widgets.wrap,))
     gc.collect()
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGINT, gtk.main_quit)
     t.start()
     gtk.main()
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     player.playlist.quitting()
     t.join()
     save_cache()
