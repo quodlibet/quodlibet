@@ -221,7 +221,7 @@ class GladeHandlers(object):
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
         config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
-        util.mkdir(os.path.basename(config_fn))
+        util.mkdir(os.path.dirname(config_fn))
         f = file(config_fn, "w")
         config.write(f)
         f.close()
