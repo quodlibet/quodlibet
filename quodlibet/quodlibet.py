@@ -718,6 +718,7 @@ def main():
         text_parse()
     else:
         player.playlist.set_playlist(library.values())
+        refresh_songlist()
     player.playlist.sort_by(HEADERS[0])
     print "Done loading songs."
     t = threading.Thread(target = player.playlist.play,
