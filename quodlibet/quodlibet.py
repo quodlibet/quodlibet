@@ -340,6 +340,12 @@ class MultiInstanceWidget(object):
             if row[2] and row[4]: deleted[row[0]] = 1
         self.model.foreach(create_property_dict)
 
+        progress = widgets["writing_progress"]
+        label = widgets["saved_count"]
+        widgets["write_window"].set_transient_for(self.window)
+        widgets["write_window"].show()
+        saved = 0
+        progress.set_fraction(0.0)
         for song, ref in self.songrefs:
             changed = False
             for key, value in updated.iteritems():
@@ -358,7 +364,12 @@ class MultiInstanceWidget(object):
                 if path is not None:
                     widgets.songs[path] = ([song.get(h, "") for h in HEADERS] +
                                            [song, 400])
+            saved += 1
+            progress.set_fraction(saved / float(len(self.songrefs)))
+            label.set_text("%d/%d songs saved" % (saved, len(self.songrefs)))
+            while gtk.events_pending(): gtk.main_iteration()
 
+        widgets["write_window"].hide()
         self.save.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
