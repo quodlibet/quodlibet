@@ -150,7 +150,7 @@ class PlaylistPlayer(object):
                 for t in self.player:
                     self.info.set_time(t, self.player.length)
                     while self.paused:
-                        time.sleep(0.01)
+                        time.sleep(0.1)
             if self.repeat:
                 self.playlist = self.orig_playlist[:]
                 if len(self.played) > 500:
@@ -162,7 +162,7 @@ class PlaylistPlayer(object):
                     self.info.set_song(self.song, self.player)
                     self.paused = True
                     self.lock.release()
-                time.sleep(0.01)
+                time.sleep(0.1)
 
     def sort_by(self, header, reverse = False):
         self.lock.acquire()
