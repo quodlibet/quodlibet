@@ -20,6 +20,7 @@ CREDITS = ["Joe Wreschnig",
            "Iñigo Serna",
            "Bastian Kleineidam",
            "Michal Nowikowski",
+           "Ben Zeigler",
 
            "Anders Carlsson",
            "Lee Willis",

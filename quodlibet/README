@@ -1,12 +1,12 @@
-Quod Libet - A Music Library/Player
+Ex Falso / Quod Libet - A Music Library/Editor/Player
 ========================================================================
 Quod Libet is a music library management program. Rather than categorize
 songs by genre, artist, and album, it lets you search and display them
-however you want.
+however you want. Ex Falso is a tag editor that has the same editing
+features found in Quod Libet, but does not play audio files.
 
-Quod Libet supports the Ogg Vorbis, FLAC, MP3, MOD/XM/IT, and MPC
-file formats for playback. Tag editing and other features may vary
-from format to format.
+EF/QL support the Ogg Vorbis, FLAC, MP3, MOD/XM/IT, and MPC file formats
+for playback. Tag editing and other features may vary from format to format.
 
 For a longer description and list of features, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#features.
@@ -14,15 +14,21 @@ http://www.sacredchao.net/~piman/software/quodlibet.shtml#features.
 For the FAQ, updated regularly, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#faq.
 
-There is a mailing list for Quod Libet at quodlibet@lists.sacredchao.net.
+There is a mailing list for EF/QL at quodlibet@lists.sacredchao.net.
 To subscribe, email quodlibet-subscribe@lists.sacredchao.net. It is a
 low traffic list so far (less than five mails a week). You can post without
 subscribing, but please mention if you aren't subscribed and want direct
 replies.
 
-====[ Using QL
+====[ Using EF/QL
+To run the programs, use
+ $ ./quodlibet.py
+or
+ $ ./exfalso.py
 
-For help on using the program, run
+After installing, you can just run `quodlibet' or `exfalso'.
+
+For help on using them, run
  $ man -l ./quodlibet.1
 
 Whenever you upgrade, it's a good idea to select "Reload library" from
@@ -34,7 +40,7 @@ file for any important upgrade notes.
 
 ==[ Source
 
-Quod Libet has a long, but not very complicated, dependency list. Many
+EF/QL have a long, but not very complicated, dependency list. Many
 of them probably come with your OS distribution.
  Python (>= 2.3):	http://www.python.org
  PyGTK (>= 2.6):	http://www.pygtk.org
@@ -51,13 +57,13 @@ Optional:
 To compile the status icon and multimedia key support, run
  $ make extensions
 
-To install Quod Libet system-wide, run
+To install EF/QL system-wide, run
  # make install
 
 ==[ Debian / Debian-based OSs
 
-Packages of Quod Libet are available in Debian 'unstable'. They should
-not lag behind releases by more than about 24 hours.
+Packages of EF/QL are available in Debian 'unstable'. They should not lag
+behind releases by more than about 24 hours.
 
 Because of this, packages also exist in Debian 'testing' although they
 will be out of date for longer waiting for propogation from unstable.

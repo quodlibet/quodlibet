@@ -1,13 +1,22 @@
-.TH quodlibet 1 "February 23rd, 2005"
+.TH quodlibet 1 "March 21st, 2005"
 .SH NAME
-quodlibet \- music library manager and player
+quodlibet \- audio library manager and player
+.br
+exfalso \- audio tag editor
 .SH SYNOPSIS
 \fBquodlibet\fR [ \fB\-\-print\-playing\fR | \fB\-\-refresh\-library\fR | \fIcontrol\fR ]
+.br
+\fBexfalso\fR [ \fIdirectory\fR ]
 .SH DESCRIPTION
-Quod Libet is a music library and player. Rather than keeping a single
-playlist, it loads all your songs at once, and lets you filter and
-play them based on information like title, artist, or album.
-.SH OPTIONS
+Quod Libet is a music library management program. Rather than categorize
+songs by genre, artist, and album, it lets you search and display them
+however you want. Ex Falso is a tag editor that has the same editing
+features found in Quod Libet, but does not play audio files.
+.PP
+.SH EX\ FALSO\ OPTIONS
+Ex Falso may be given a directory to open on the command line; otherwise
+it will default to your home directory.
+.SH QUOD\ LIBET\ OPTIONS
 .IP \-\-refresh\-library 4
 Load your song library and configuration file. Deleted files will be
 removed and changed files will be updated. This happens whenever
@@ -34,7 +43,18 @@ Search your library and make a playlist.
 Play the given song. If it is not in the library, it will be added.
 If it is in the current playlist, it will be selected there, otherwise
 a new playlist containing only this song will be made.
-.SH USAGE
+.SH EX\ FALSO\ USAGE
+To edit tags, first select the directories you wish to open in
+the upper-left pane, then the audio files you wish to edit in the
+lower-left one. Multiple directories or files can be selected by
+holding Control while clicking.
+.PP
+Information on the selected songs will appear in the notebook tabs on
+the right. No changes are made to songs until you click 'Save'.
+.PP
+The same interface is used for Quod Libet's \fBProperties\fR window;
+see the notes on \fBRENAMING FILES\fR and \fBTIED TAGS\fR below.
+.SH QUOD\ LIBET\ USAGE
 Use the "Add Music" item in the menu or click the "Add" icon on the
 toolbar to add songs to your library; if you add a directory, its
 contents will be added recursively. Once music has been added to your
@@ -164,7 +184,7 @@ filename = /.ogg$/
 &(genre = /classical/, #(lastplayed > 3 days))
 .RE
 .SH RENAMING FILES
-Quod Libet allows you to rename files based on their tags. In some
+Ex Falso / Quod Libet allow you to rename files based on their tags. In some
 cases you may wish to alter the filename depending on whether some
 tags are present or missing, in addition to their values. A common
 pattern might be
@@ -185,7 +205,7 @@ another '|':
 If the song has an album tag it will be used, otherwise the text
 "No Album" will be used.
 .SH TIED TAGS
-Many places in Quod Libet (such as the song list, or rename dialog)
+Many places in EF/QL (such as the song list, or rename dialog)
 allow you to use a feature called "tied tags". Tied tags are two tag
 names joined together with a "~" like "~title~version" or
 "~album~part" (some places you can also omit the initial ~). Tied tags
@@ -206,23 +226,28 @@ A cached list of songs to load initially. The format is a pickled
 Python dict. Deleting this file will remove all songs from your
 library.
 .IP ~/.quodlibet/config 4
-Quod Libet's configuration file. Don't manually edit this while QL is
-running; it will not pick up the changes, and it will overwrite it
+Ex Falso / Quod Libet's configuration file. Don't manually edit this while
+either is running; it will not pick up the changes, and it will overwrite it
 when you exit.
 .IP ~/.quodlibet/current 4
 A "key=value" file containing information about the currently playing song.
 .IP ~/.quodlibet/control 4
 A FIFO connected to the most-recently-started instance of the program.
 \-\-next, \-\-previous, etc., use this to control the player.
+.SH BUGS
+Editing/playing the same files with both Ex Falso and Quod Libet at
+the same time can lead to Quod Libet having an inconsistent library
+state. Ex Falso will warn you if it detects Quod Libet running when
+it starts.
 .SH KNOWN NOT-BUGS
 Newlines are not supported within tag values. Using them will break a lot
 of tools, including QL.
 .PP
 Symbolic links are not followed when recursively adding files.
 .SH AUTHORS
-Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
-The best way to contact them is to subscribe to (or just email)
-the Quod Libet mailing list at quodlibet@lists.sacredchao.net
+Joe Wreschnig and Michael Urman are the primary authors of Ex Falso and
+ Quod Libet. The best way to contact them is to subscribe to (or just email)
+the EF/QL mailing list at quodlibet@lists.sacredchao.net
 (quodlibet\-subscribe@lists.sacredchao.net).
 .SH SEE ALSO
 http://www.sacredchao.net/~piman/software/quodlibet.shtml,

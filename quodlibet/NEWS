@@ -4,12 +4,16 @@ may require you to re-add any songs in the library.
 
 Recent upgrade notes:
 ---------------------
-Songs added to the library before 0.9 will not support the "added"
-numeric tag (its value will be 0).
+Running Quod Libet and Ex Falso at the same time (on the same files) is
+not recommended and can lead to an inconsistent library state. Currently
+Ex Falso is mostly for people who want a tag editor but prefer some other
+audio player.
 
 0.10
  - Pane-based (Rhythmbox/iTunes-style) library browser.
  - --seek supports +/- prefix to seek relative to the current position.
+ - A new program, Ex Falso, that has the tag editing features of QL
+   without the overhead of the audio player.
  - Many minor UI improvements.
  - No more dependency on Glade.
 
