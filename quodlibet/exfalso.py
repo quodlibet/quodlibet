@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2004-2005 Joe Wreschnig
+# Copyright 2004-2005 Joe Wreschnig, Niklas Janlert
 # <quodlibet@lists.sacredchao.net>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -37,6 +37,10 @@ if __name__ == "__main__":
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
 
+    basedir = os.path.split(os.path.realpath(__file__))[0]
+    sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
+    os.chdir(basedir)
+
     import const
     from util import to
 
@@ -53,10 +57,6 @@ if __name__ == "__main__":
         print_help(sys.stderr)
 
     sys.argv[1] = os.path.realpath(sys.argv[1])
-
-    basedir = os.path.split(os.path.realpath(__file__))[0]
-    sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
-    os.chdir(basedir)
 
     import gtk, widgets
     w = widgets.ExFalsoWindow(sys.argv[1])
