@@ -2169,7 +2169,7 @@ class MainSongList(SongList):
     # Resort based on the header clicked.
     def set_sort_by(self, header, tag = None, refresh = True):
         s = gtk.SORT_ASCENDING
-        tag = tag or header.header_name
+        if tag is None: tag = header.header_name
         if header:
             s = header.get_sort_order()
             if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
