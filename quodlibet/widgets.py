@@ -1037,7 +1037,7 @@ class MainWindow(object):
 
         # cover image
         self.image = gtk.Image()
-        self.image.set_size_request(100, 100)
+        self.image.set_size_request(-1, 100)
         self.iframe = gtk.Frame()
         self.iframe.add(gtk.EventBox())
         self.iframe.child.add(self.image)
