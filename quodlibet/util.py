@@ -212,35 +212,6 @@ def find_subtitle(title):
                 return title.rstrip(), subtitle
     else: return title, None
 
-def format_string(format, d):
-    i = 0
-    output = ""
-    in_cond = False
-    while i < len(format):
-        c = format[i]
-        if c == "%" and i != len(format) - 1 and format[i + 1] == "(":
-            i += 2
-            tag = ""
-            while format[i] != ")" and i < len(format):
-                tag += format[i]
-                i += 1
-            output += d.get(tag, "Unknown")
-        elif c == "?":
-            if in_cond: in_cond = False
-            elif format[i + 1] == "(":
-                i += 2
-                tag = ""
-                while format[i] != ")" and i < len(format):
-                    tag += format[i]
-                    i += 1
-                if tag not in d:
-                    while format[i] != "?": i += 1
-                else: in_cond = True
-            else: output += "?"
-        else: output += c
-        i += 1
-    return output
-
 def unexpand(filename):
     if filename == os.path.expanduser("~"): return "~"
     elif filename.startswith(os.path.expanduser("~/")):
@@ -297,16 +268,17 @@ class FileFromPattern(object):
     format = { 'tracknumber': '%02d', 'discnumber': '%d' }
     override = { 'tracknumber': '~#track', 'discnumber': '~#disc' }
 
-    def __init__(self, pattern):
-        if '/' in pattern and not pattern.startswith('/'):
+    def __init__(self, pattern, filename = True):
+        if filename and '/' in pattern and not pattern.startswith('/'):
             raise ValueError("Pattern %r is not rooted" % pattern)
 
         self.replacers = [self.Pattern(pattern)]
         # simple magic to decide whether to append the extension
         # if the pattern has no . in it, or if it has a > (probably a tag)
         #   after the last . or if the last character is the . append .foo
-        if pattern and ('.' not in pattern or pattern.endswith('.') or
-                '>' in pattern[pattern.rfind('.'):]):
+        if filename and pattern and (
+            '.' not in pattern or pattern.endswith('.') or
+            '>' in pattern[pattern.rfind('.'):]):
             self.replacers.append(self.ExtensionCopy())
 
     def match(self, song):

@@ -14,11 +14,9 @@ removed and changed files will be updated. This happens whenever
 QL starts up, or when you select "Refresh library" from the Music
 menu.
 .IP \-\-print\-playing 4
-Print out information about the currently playing song. This optionally
-takes a format string as an argument. This format string looks like a
-Python dictionary format string ("%(artist)\ \-\ %(title)")
-but also supports conditional substrings using ?
-("%(artist)?(album)\ \-\ %(album)?\ \-\ %(title)").
+Print out information about the currently playing song. You may provide
+in a string like the kind described in the \fBRENAMING FILES\fR section
+below, or it will default to \fB<artist~album~tracknumber~title>\fR.
 .IP \-\-next,\ \-\-previous,\ \-\-play\-pause,\ \-\-play,\ \-\-pause 4
 Control a currently-running instance of QL, as if the equivalent
 buttons in the window had been clicked.
@@ -52,7 +50,7 @@ images with 'folder', 'front', 'cover', or 'jacket' in their name.
 .PP
 If you want to store multiple albums in the same directory but keep
 distinct cover images, the name of the appropriate image file must
-contain the 'labelid' tag value, e.g. "COCX-32760 cover.jpg".
+contain the 'labelid' tag value, e.g. "COCX\-32760 cover.jpg".
 .SH SEARCH SYNTAX
 If you need more control than simple searches allow, you can use QL's more
 advanced search syntax, that lets you specify a specific tag to search. To

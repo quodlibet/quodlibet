@@ -77,8 +77,8 @@ class AudioFile(dict):
         else: return v.replace("\n", ", ")
 
     def list(self, key):
-        if key in self: return self[key].split("\n")
-        else: return []
+        try: return self[key].split("\n")
+        except (KeyError, AttributeError): return []
 
     # copy important keys from the other song to this one.
     def migrate(self, other):
@@ -205,7 +205,7 @@ class AudioFile(dict):
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
         s = ""
-        for k in self.realkeys():
+        for k in self.keys():
             for v2 in self.list(k):
                 s += "%s=%s\n" % (k, util.encode(v2))
         return s

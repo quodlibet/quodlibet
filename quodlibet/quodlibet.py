@@ -3370,10 +3370,9 @@ def refresh_cache():
     library.library.save(const.LIBRARY)
     raise SystemExit
 
-DEF_PP = ("%(artist)?(album) - %(album)??(tracknumber) - "
-          "%(tracknumber)? - %(title)")
-def print_playing(fstring = DEF_PP):
-    import util; from util import to
+def print_playing(fstring = "<artist~album~tracknumber~title>"):
+    import util; from util import to, FileFromPattern
+    from formats.audio import AudioFile
     try:
         fn = file(const.CURRENT)
         data = {}
@@ -3384,9 +3383,7 @@ def print_playing(fstring = DEF_PP):
             val = "=".join(parts[1:])
             if key in data: data[key] += "\n" + val
             else: data[key] = val
-        try: print to(util.format_string(fstring, data))
-        except (IndexError, ValueError):
-            print to(util.format_string(DEF_PP, data))
+        print to(FileFromPattern(fstring, False).match(AudioFile(data)))
         raise SystemExit
     except (OSError, IOError):
         print to(_("No song is currently playing."))
