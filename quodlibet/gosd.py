@@ -20,7 +20,7 @@ import pango
 import gtk
 import gtk.gdk as gdk
 
-BORDER_WIDTH=1
+BORDER_WIDTH=3
 
 def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
         alignment = pango.ALIGN_CENTER):
@@ -75,19 +75,10 @@ def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
     fg_gc.set_foreground(gdk.Color(pixel=-1))
     bg_gc.set_background(gdk.Color(pixel=0))
     bitmap.draw_rectangle(bg_gc, True, 0, 0, width, height)
-    bitmap.draw_layout(fg_gc, off_x, off_y, layout)
-    bitmap.draw_layout(fg_gc, off_x + BORDER_WIDTH, off_y, layout)
-    bitmap.draw_layout(fg_gc, off_x + BORDER_WIDTH,
-                       off_y + BORDER_WIDTH, layout)
-    bitmap.draw_layout(fg_gc, off_x, off_y + BORDER_WIDTH, layout)
-    bitmap.draw_layout(fg_gc, off_x - BORDER_WIDTH,
-                       off_y + BORDER_WIDTH, layout)
-    bitmap.draw_layout(fg_gc, off_x - BORDER_WIDTH, off_y, layout)
-    bitmap.draw_layout(fg_gc, off_x - BORDER_WIDTH,
-                       off_y - BORDER_WIDTH, layout)
-    bitmap.draw_layout(fg_gc, off_x, off_y - BORDER_WIDTH, layout)
-    bitmap.draw_layout(fg_gc, off_x + BORDER_WIDTH,
-                       off_y - BORDER_WIDTH, layout)
+    for dx in range(-BORDER_WIDTH, BORDER_WIDTH+1):
+        for dy in range(-BORDER_WIDTH, BORDER_WIDTH+1):
+            if dx*dx + dy*dy >= BORDER_WIDTH*BORDER_WIDTH: continue
+            bitmap.draw_layout(fg_gc, off_x + dx, off_y + dy, layout)
 
     darea.window.set_back_pixmap(pixmap, False)
     win.window.shape_combine_mask(bitmap, 0, 0)
