@@ -164,10 +164,13 @@ class AOAudioDevice(object):
         import ao
         import audioop
         self.scale = audioop.mul
-        try: self.dev = ao.AudioDevice(device)
+        self.ratecv = audioop.ratecv
+        self.tostereo = audioop.tostereo
+        self.rate = 44100
+        self.ratestate = None
+        try: self.dev = ao.AudioDevice(device, rate = 44100, channels = 2, bits = 16)
         except ao.aoError: raise IOError
         self.vol = 1
-        print "W: ao backend cannot adjust sample rate or channel count"
 
     def get_volume(self):
         return self.vol * 100
@@ -178,10 +181,18 @@ class AOAudioDevice(object):
     volume = property(get_volume, set_volume)
 
     def set_info(self, rate, channels):
-        pass
+         if rate != 44100:
+             self.ratestate = None
+             self.rate = rate
+             self.rate_conv = self.ratecv
+         else: self.rate_conv = lambda *args: (args[0], None)
+         if channels != 2: self.chan_conv = self.tostereo
+         else: self.chan_conv = lambda *args: args[0]
 
     def play(self, buf, l):
         buf = self.scale(buf, 2, self.volume / 100.0)
+        buf = self.chan_conv(buf, 2, 1, 1)
+        buf, self.ratestate = self.rate_conv(buf, 2, 2, self.rate, 44100, self.ratestate)
         self.dev.play(buf, len(buf))
 
 class PlaylistPlayer(object):
