@@ -614,6 +614,49 @@ class Osd(object):
             self.window.destroy()
             self.window = None
 
+class SearchBar(object):
+    def __init__(self, hbox, cb):
+        self.combo = gtk.combo_box_entry_new_text()
+        self.button = gtk.Button(_("Search"))
+        self.combo.child.connect('activate', self.text_parse)
+        self.combo.child.connect('changed', self.test_filter)
+        self.button.connect('clicked', self.text_parse)
+        hbox.pack_start(self.combo)
+        hbox.pack_start(self.button, expand = False)
+        hbox.show_all()
+        self.cb = cb
+
+    def activate(self):
+        self.button.clicked()
+
+    def set_text(self, text):
+        self.combo.child.set_text(text)
+
+    def text_parse(self, *args):
+        text = self.combo.child.get_text()
+        if (parser.is_valid(text) or
+            ("#" not in text and "=" not in text and "/" not in text)):
+            self.combo.prepend_text(text)
+            if len(self.combo.get_model()) > 10: m.remove(10)
+        self.cb(text, None)
+
+    def test_filter(self, textbox):
+        if not config.state('color'): return
+        text = textbox.get_text()
+        if "=" not in text and "#" not in text and "/" not in text:
+            color = "blue"
+        elif parser.is_valid(text): color = "dark green"
+        else: color = "red"
+        gtk.idle_add(self.set_entry_color, textbox, color)
+
+    # Set the color of some text.
+    def set_entry_color(self, entry, color):
+        layout = entry.get_layout()
+        text = layout.get_text()
+        markup = '<span foreground="%s">%s</span>' %(
+            color, util.escape(text))
+        layout.set_markup(markup)
+
 class MainWindow(MultiInstanceWidget):
     def __init__(self):
         MultiInstanceWidget.__init__(self, widget = "main_window")
@@ -685,15 +728,8 @@ class MainWindow(MultiInstanceWidget):
         self.songlist = MainSongList(self.widgets["songlist"])
         widgets.songs = gtk.ListStore(object, int)
 
-        # Build a model and view for our ComboBoxEntry.
-        liststore = gtk.ListStore(str)
-        self.widgets["query"].set_model(liststore)
-        self.widgets["query"].set_text_column(0)
-        cell = gtk.CellRendererText()
-        self.widgets["query"].pack_start(cell, True)
-        self.widgets["query"].child.connect('activate', self.text_parse)
-        self.widgets["query"].child.connect('changed', self.test_filter)
-        self.widgets["search_button"].connect('clicked', self.text_parse)
+        self.browser = SearchBar(self.widgets["query_hbox"], self.text_parse)
+        self.browser.set_text(config.get("memory", "query"))
 
         # Initialize volume controls.
         self.widgets["volume"].set_value(config.getfloat("memory", "volume"))
@@ -701,9 +737,8 @@ class MainWindow(MultiInstanceWidget):
         self.widgets["shuffle_t"].set_active(config.state("shuffle"))
         self.widgets["repeat_t"].set_active(config.state("repeat"))
 
-        self.widgets["query"].child.set_text(config.get("memory", "query"))
         self.set_column_headers(config.get("settings", "headers").split())
-        self.text_parse()
+        self.browser.activate()
 
         self.albumfn = None
         self._time = (0, 1)
@@ -940,10 +975,6 @@ class MainWindow(MultiInstanceWidget):
         if not self.widgets["song_scroller"].get_property("visible"):
             self.window.set_geometry_hints(
                 None, max_height = height - dy, max_width = 32000)
-
-    def showhide_searchbox(self, toggle):
-        self.showhide_widget(self.widgets["query_hbox"], toggle.get_active())
-        config.set("memory", "show_search", str(toggle.get_active()))
 
     def showhide_playlist(self, toggle):
         self.showhide_widget(self.widgets["song_scroller"],
@@ -1237,9 +1268,24 @@ class MainWindow(MultiInstanceWidget):
         else:
             self.cmenu_w["filter_column"].hide()
 
+    def show_search(self, *args):
+        if not isinstance(self.browser, SearchBar):
+            for child in self.widgets["query_hbox"].get_children():
+                self.widgets["query_hbox"].remove(child)
+            self.browser = SearchBar(self.widgets["query_hbox"],
+                                     self.text_parse)
+            self.browser.set_text(config.get("memory", "query"))
+
+    def hide_browser(self, *args):
+        if self.browser:
+            self.showhide_widget(self.widgets["query_hbox"], False)
+            for child in self.widgets["query_hbox"].get_children():
+                self.widgets["query_hbox"].remove(child)
+            self.browser = None
+
     # Grab the text from the query box, parse it, and make a new filter.
-    def text_parse(self, *args):
-        text = self.widgets["query"].child.get_text()
+    # The sort argument is not used for this browser.
+    def text_parse(self, text, dummy_sort):
         config.set("memory", "query", text)
         text = text.decode("utf-8").strip()
         orig_text = text
@@ -1251,17 +1297,7 @@ class MainWindow(MultiInstanceWidget):
             # in the original string and we escaped it.
 
         if player.playlist.playlist_from_filter(text):
-            m = self.widgets["query"].get_model()
-            for i, row in enumerate(iter(m)):
-                 if row[0] == orig_text:
-                     m.remove(m.get_iter((i,)))
-                     break
-            else:
-                if len(m) > 10: m.remove(m.get_iter((10,)))
-            m.prepend([orig_text])
-            self.set_entry_color(self.widgets["query"].child, "black")
             self.refresh_songlist()
-            self.widgets["query"].child.set_text(orig_text)
         return True
 
     def filter_on_header(self, header, songs = None):
@@ -1290,27 +1326,8 @@ class MainWindow(MultiInstanceWidget):
             config.set("settings", "headers", " ".join(headers))
 
     def make_query(self, query):
-        self.widgets["query"].child.set_text(query.encode('utf-8'))
-        self.widgets["search_button"].clicked()
-
-    # Try and construct a query, but don't actually run it; change the color
-    # of the textbox to indicate its validity (if the option to do so is on).
-    def test_filter(self, textbox):
-        if not config.state("color"): return
-        text = textbox.get_text()
-        if "=" not in text and "#" not in text and "/" not in text:
-            color = "blue"
-        elif parser.is_valid(text): color = "dark green"
-        else: color = "red"
-        gtk.idle_add(self.set_entry_color, textbox, color)
-
-    # Set the color of some text.
-    def set_entry_color(self, entry, color):
-        layout = entry.get_layout()
-        text = layout.get_text()
-        markup = '<span foreground="%s">%s</span>'%(
-            color, util.escape(text))
-        layout.set_markup(markup)
+        self.browser.set_text(query.encode('utf-8'))
+        self.browser.activate()
 
     def set_column_headers(self, headers):
         SongList.set_all_column_headers(headers)
