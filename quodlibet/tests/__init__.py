@@ -6,7 +6,7 @@ def registerSuite(suite):
 def registerCase(testcase):
     registerSuite(unittest.makeSuite(testcase))
 
-import test_util, test_library, test_match, test_parser
+import test_util, test_library, test_match, test_parser, test_player
 
 def unit():
     runner = unittest.TextTestRunner()

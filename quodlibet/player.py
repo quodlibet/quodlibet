@@ -52,8 +52,9 @@ class FLACPlayer(AudioPlayer):
     def __init__(self, dev, filename):        
         AudioPlayer.__init__(self)
         import flac.decoder, flac.metadata
-        self.decoder = flac.decoder
-        self.metadata = flac.metadata
+        self.STREAMINFO = flac.metadata.STREAMINFO
+        self.EOF = flac.decoder.FLAC__FILE_DECODER_END_OF_FILE
+        self.OK = flac.decoder.decoder.FLAC__FILE_DECODER_OK
         self.dev = dev
         self.dec = self.decoder.FileDecoder()
         self.dec.set_md5_checking(False);
@@ -67,7 +68,7 @@ class FLACPlayer(AudioPlayer):
         self._size = os.stat(filename)[stat.ST_SIZE]
 
     def _grab_stream_info(self, dec, block):
-        if block.type == self.metadata.STREAMINFO:
+        if block.type == self.STREAMINFO:
             streaminfo = block.data.stream_info
             self._samples = streaminfo.total_samples
             self._srate = streaminfo.sample_rate / 100
@@ -76,13 +77,13 @@ class FLACPlayer(AudioPlayer):
 
     def _player(self, dec, buff, size):
         device.play(buff, size)
-        return self.decoder.FLAC__FILE_DECODER_OK
+        return self.OK
 
     def next(self):
         if self.stopped:
             self.dec.finish()
             raise StopIteration
-        if self.dec.get_state() == self.decoder.FLAC__FILE_DECODER_END_OF_FILE:
+        if self.dec.get_state() == self.EOF:
             self.dec.finish()
             raise StopIteration
         if not self.dec.process_single():
@@ -107,7 +108,7 @@ class OggPlayer(AudioPlayer):
         self.audio = ogg.vorbis.VorbisFile(filename)
         self.dev.set_info(self.audio.info().rate,
                           self.audio.info().channels)
-        self.length = self.audio.time_total(-1) * 1000
+        self.length = int(self.audio.time_total(-1) * 1000)
 
     def __iter__(self): return self
 
@@ -121,7 +122,7 @@ class OggPlayer(AudioPlayer):
         else:
             if bytes == 0: raise StopIteration
             self.dev.play(buff, bytes)
-        return self.audio.time_tell() * 1000
+        return int(self.audio.time_tell() * 1000)
 
 def FilePlayer(dev, filename):
     for ext in supported.keys():
