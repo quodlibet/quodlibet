@@ -74,13 +74,13 @@ class AudioFile(dict):
             text += "\n<small>%s</small>" % escape(others.strip())
 
         if "album" in self:
-            album = u"\n<b>%s</b>" % escape(self["album"])
-            if "part" in self:
-                album += u" - " + escape(self["part"])
+            album = u"\n<b>%s</b>" % escape(self["album"].replace("\n", ", "))
             if "discnumber" in self:
-                album += u" - Disc %s" % escape(self["discnumber"])
+                album += u" - Disc %s" % escape(self["discnumber"].replace("\n", ", "))
+            if "part" in self:
+                album += u" - <b>%s</b>" % escape(self["part"].replace("\n", ", "))
             if "tracknumber" in self:
-                album += u" - Track %s" % escape(self["tracknumber"])
+                album += u" - Track %s" % escape(self["tracknumber"].replace("\n", ", "))
             text += album
         return text
 

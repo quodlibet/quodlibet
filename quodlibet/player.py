@@ -230,7 +230,7 @@ class PlaylistPlayer(object):
 
         dump_fn = os.path.join(os.environ["HOME"], ".quodlibet", "current")
         while not self.quit:
-            while self.playlist:
+            while self.playlist and not self.quit:
                 self.lock.acquire()
                 if self.shuffle: random.shuffle(self.playlist)
                 self.song = self.playlist.pop(0)
@@ -254,6 +254,7 @@ class PlaylistPlayer(object):
                         self.info.set_time(t, self.player.length)
                         while self.paused and not self.quit:
                             time.sleep(0.1)
+                        if self.quit: break
                     if not self.player.stopped:
                         self.song["=lastplayed"] = int(time.time())
                         self.song["=playcount"] += 1
@@ -332,7 +333,6 @@ class PlaylistPlayer(object):
         self.quit = True
         self.paused = False
         if self.player: self.player.end()
-        self.set_playlist([], lock = False)
         self.lock.release()
 
     def previous(self):
