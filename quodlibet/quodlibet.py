@@ -466,7 +466,8 @@ class PlaylistWindow(object):
     def __new__(cls, name, *args, **kwargs):
         win = cls.list_windows.get(name, None)
         if win is None:
-            win = super(PlaylistWindow, cls).__new__(cls, name, *args, **kwargs)
+            win = super(PlaylistWindow, cls).__new__(cls, name,
+                                                     *args, **kwargs)
             win.initialize_window(name)
             cls.list_windows[name] = win
         return win
@@ -492,17 +493,20 @@ class PlaylistWindow(object):
         hbox = gtk.HBox()
         hbox.set_spacing(6)
         bar = SearchBar(hbox, _("Add Results"), self.add_query_results)
-        vbox.pack_start(hbox, expand=False, fill=False)
+        vbox.pack_start(hbox, expand = False, fill = False)
 
-        hbox = self.hbox = gtk.HBox()
-        hbox.set_spacing(6)
-        vbox.pack_end(hbox, expand=False, fill=False)
+        hbox = self.hbox = gtk.HButtonBox()
+        hbox.set_layout(gtk.BUTTONBOX_END)
+        vbox.pack_end(hbox, expand = False)
+        vbox.pack_end(gtk.HSeparator(), expand = False)
 
-        close = self.close = gtk.Button(stock=gtk.STOCK_CLOSE)
-        hbox.pack_end(close, expand=False, fill=False)
+        close = self.close = gtk.Button(stock = gtk.STOCK_CLOSE)
+        hbox.pack_end(close, expand = False)
 
         swin = self.swin = gtk.ScrolledWindow()
-        vbox.pack_start(swin, expand=True, fill=True)
+        swin.set_shadow_type(gtk.SHADOW_IN)
+        swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        vbox.pack_start(swin)
 
         view = gtk.TreeView()
         self.view = PlayList(view, name)
@@ -1017,8 +1021,9 @@ class MainWindow(MultiInstanceWidget):
 
     def new_playlist(self, activator):
         name = GetStringDialog(self.window, _("New Playlist..."),
-                               _("Enter a playlist name to edit. If it does "
-                                 "not exist, it will be created.")).run()
+                               _("Enter a name for the new playlist. If it "
+                                 "already exists it will be opened for "
+                                 "editing.")).run()
         if name:
             PlaylistWindow(name)
 
