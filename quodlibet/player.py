@@ -1,3 +1,11 @@
+# Copyright 2004 Joe Wreschnig, Michael Urman
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+#
+# $Id$
+
 import mad
 import ao
 import ogg.vorbis
