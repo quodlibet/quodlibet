@@ -211,15 +211,6 @@ class PatternFromFile(object):
         if match is None: return {}
         else: return match.groupdict()
 
-    def apply(self, song, replace=False):
-        match = self.match(song)
-        for tag, value in match.iteritems():
-            if replace: pass
-                # remove tags as present
-                # add them
-            else: pass
-                # add them if identical is not present
-
 class FileFromPattern(object):
     def __init__(self, pattern):
         if '/' in pattern and not pattern.startswith('/'):
@@ -228,8 +219,8 @@ class FileFromPattern(object):
         self.pieces = sre.split(r'(<\w+>)', pattern)
 
     def match(self, song):
-        format = { '<tracknumber>': '%02d' }
-        override = { '<tracknumber>': '=#' }
+        format = { '<tracknumber>': '%02d', '<discnumber>': '%d' }
+        override = { '<tracknumber>': '=#', '<discnumber>': '=d' }
         newname = []
         for piece in self.pieces:
             if not piece: continue
@@ -250,7 +241,3 @@ class FileFromPattern(object):
             oldname = song['=basename']
             newname.append(oldname[oldname.rfind('.'):])
         return ''.join(newname)
-
-    def apply(self, song):
-        pass
-        # smart mv song['=filename'], self.match(song)
