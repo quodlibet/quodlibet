@@ -19,7 +19,7 @@ def MusicFile(filename):
         if filename.lower().endswith(ext):
             try:
                 return supported[ext](filename)
-            except None:
+            except:
                 print "W: Error loading %s" % filename
                 return None
     else: return None
