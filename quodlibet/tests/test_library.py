@@ -17,6 +17,12 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song1, song1c)
         self.failUnless(song2 > song1)
 
+    def test_getters(self):
+        song1 = AudioFile({ "a": "foo\nbar", "b": "foobar" })
+        self.failUnlessEqual(song1.comma("a"), "foo, bar")
+        self.failUnlessEqual(song1.comma("b"), "foobar")
+        self.failUnlessEqual(song1.comma("c"), "")
+
     def test_sanitize(self):
         song = AudioFile({ "=filename": "/foo/bar/quux.ogg",
                            "title": u"A Song",
@@ -30,6 +36,8 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song["=d"], 2)
         self.failUnlessEqual(song["=playcount"], 0)
         self.failUnless("vendor" not in song)
+        self.failUnlessEqual(song["album"], "Unknown")
+        self.failUnless(song.unknown("album"))
 
     def test_get_played(self):
         song1 = AudioFile({"=playcount": 0})

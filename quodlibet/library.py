@@ -37,66 +37,92 @@ class AudioFile(dict):
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")))
 
+    # True if our key's value is actually unknown, rather than just the
+    # string "Unknown".
+    def unknown(self, key):
+        return isinstance(self.get(key), Unknown)
+
+    def realkeys(self):
+        return filter(lambda s: s and s[0] and not self.unknown(s),
+                      self.keys())
+
+    def comma(self, key):
+        return self.get(key, "").replace("\n", ", ")
+
+    def exists(self):
+        return os.path.exists(self.get("=filename"))
+
+    def valid(self):
+        return (self.exists() and
+                self.get("=mtime") == int(
+            os.stat(self['=filename'])[stat.ST_MTIME]))
+    
+    # Sanity-check all sorts of things...
     def sanitize(self, filename = None):
+        # File in our filename, either from what we were given or
+        # our old tag name... FIXME: Remove migration after 0.4 or so.
         if filename: self["=filename"] = filename
         elif "filename" in self: self["=filename"] = self["filename"]
-        elif "=filename" not in self:
-            raise ValueError("Unknown filename!")
-        for i in ["title", "artist", "album"]:
-            if not self.get(i): self[i] = Unknown("Unknown")
-        if "tracknumber" in self:
-            try: self["=#"] = int(self["tracknumber"].split("/")[0])
-            except: pass
-        if "discnumber" in self:
-            try: self["=d"] = int(self["discnumber"].split("/")[0])
-            except: pass
-        try: del(self["vendor"])
-        except KeyError: pass
-        if self.get("filename") == self["=filename"]: del(self["filename"])
+        elif "=filename" not in self: raise ValueError("Unknown filename!")
+
+        # Fill in necessary values.
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
+        for i in ["title", "artist", "album"]:
+            self.setdefault(i, Unknown("Unknown"))
+
+        # Derive disc and track numbers.
+        try: self["=#"] = int(self["tracknumber"].split("/")[0])
+        except (ValueError, KeyError): pass
+        try: self["=d"] = int(self["discnumber"].split("/")[0])
+        except (ValueError, KeyError): pass
+
+        # Clean up Vorbis garbage.
+        try: del(self["vendor"])
+        except KeyError: pass
+
+        # Remove our old filename key.
+        if self.get("filename") == self["=filename"]: del(self["filename"])
+
+        # Fill in the remaining file stuff.
         try: self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
         except OSError: self["=mtime"] = 0
         self["=basename"] = os.path.basename(self['=filename'])
         self["=dirname"] = os.path.dirname(self['=filename'])
 
     def to_markup(self):
-        title = u", ".join(self["title"].split("\n"))
+        title = self.comma("title")
         text = u'<span weight="bold" size="x-large">%s</span>' % escape(title)
         if "version" in self:
             text += u"\n<small><b>%s</b></small>" % escape(
-                self["version"])
-        artist = self["artist"].replace("\n", ", ")
-        text += u"\nby %s" % escape(artist)
+                self.comma("version"))
+        text += u"\nby %s" % escape(self.comma("artist"))
 
         if "performer" in self:
             text += ("\n<small>Performed by %s</small>" %
-                     self["performer"].replace("\n", ", "))
+                     self.comma("performer"))
 
         others = ""
         if "conductor" in self:
-            others += ("\nconducted by " +
-                       self["conductor"].replace("\n", ", "))
+            others += ("\nconducted by " + self.comma("conductor"))
         if "arranger" in self:
-            others += ("\narranged by " +
-                       self["arranger"].replace("\n", ", "))
+            others += ("\narranged by " + self.comma("arranger"))
         if "lyricist" in self:
-            others += ("\nlyrics by " +
-                       self["lyricist"].replace("\n", ", "))
+            others += ("\nlyrics by " + self.comma("lyricist"))
 
         if others:
             others = others.strip().replace("\n", "; ")
             others = others[0].upper() + others[1:]
             text += "\n<small>%s</small>" % escape(others.strip())
 
-        if "album" in self:
-            album = u"\n<b>%s</b>" % escape(self["album"].replace("\n", ", "))
+        if not self.unknown("album"):
+            album = u"\n<b>%s</b>" % escape(self.comma("album"))
             if "discnumber" in self:
-                album += u" - Disc %s" % escape(self["discnumber"].replace("\n", ", "))
+                album += u" - Disc " + escape(self.comma("discnumber"))
             if "part" in self:
-                album += u" - <b>%s</b>" % escape(self["part"].replace("\n", ", "))
+                album += u" - <b>%s</b>" % escape(self.comma("part"))
             if "tracknumber" in self:
-                album += u" - Track %s" % escape(self["tracknumber"].replace("\n", ", "))
+                album += u" - Track " + escape(self.comma("tracknumber"))
             text += album
         return text
 
@@ -129,6 +155,7 @@ class AudioFile(dict):
 
     def add(self, key, value):
         if key not in self: self[key] = value
+        elif self.unknown(key): self[key] = value
         else: self[key] += "\n" + value
         self.sanitize()
 
@@ -178,10 +205,6 @@ class MP3File(AudioFile):
             "TORY": "date",
             "TCOP": "copyright",
             "TPUB": "organization",
-            "WOAF": "contact",
-            "WOAR": "contact",
-            "WOAS": "contact",
-            "WCOP": "license",
             "USER": "license",
             }
 
@@ -198,7 +221,9 @@ class MP3File(AudioFile):
                    "tracknumber": "TRCK",
                    "discnumber": "TPOS",
                    "organization": "TPUB",
-                   "album": "TALB"
+                   "album": "TALB",
+                   "copyright": "TCOP",
+                   "license": "USER"
                    }
             
     def __init__(self, filename):
@@ -235,7 +260,7 @@ class MP3File(AudioFile):
                 while True: tag.remove(id3name)
             except ValueError: pass
             if key in self:
-                if isinstance(self[key], Unknown): continue
+                if self.unknown(key): continue
                 for value in self[key].split("\n"):
                     try: value = value.encode("iso-8859-1")
                     except UnicodeError: value = value.encode("utf-8")
@@ -264,13 +289,10 @@ class OggFile(AudioFile):
         f = ogg.vorbis.VorbisFile(self['=filename'])
         comments = f.comment()
         comments.clear()
-        for key in self.keys():
-            if key[0] == "=": continue
-            else:
-                value = self[key]
-                if isinstance(value, Unknown): continue
-                if not isinstance(value, list): value = value.split("\n")
-                for line in value: comments[key] = line
+        for key in self.realkeys():
+            value = self[key]
+            if not isinstance(value, list): value = value.split("\n")
+            for line in value: comments[key] = line
         comments.write_to(self['=filename'])
         self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
 
@@ -321,15 +343,12 @@ class FLACFile(AudioFile):
         if vc:
             keys = [k.split("=")[0] for k in vc.comments]
             for k in keys: del(vc.comments[k])
-            for key in self.keys():
-                if isinstance(key, Unknown): continue
-                elif key[0] == "=": continue
-                else:
-                    value = self[key]
-                    if isinstance(value, Unknown): continue
-                    if not isinstance(value, list): value = value.split("\n")
-                    for line in value:
-                        vc.comments[key] = util.encode(line)
+            for key in self.realkeys():
+                if self.unknown(key): continue
+                value = self[key]
+                if not isinstance(value, list): value = value.split("\n")
+                for line in value:
+                    vc.comments[key] = util.encode(line)
             chain.write(True, True)
             print "After all"
             for k in vc.comments: print k
@@ -379,10 +398,10 @@ class AudioFileGroup(dict):
         # collect types of songs; comment names, values, and sharedness
         for song in songs:
             self.types[repr(song.__class__)] = song # for group can_change
-            for comment, value in song.iteritems():
+            for comment, val in song.iteritems():
                 keys[comment] = keys.get(comment, 0) + 1
-                first.setdefault(comment, value)
-                all[comment] = all.get(comment, True) and first[comment] == value
+                first.setdefault(comment, val)
+                all[comment] = all.get(comment, True) and first[comment] == val
 
         # collect comment representations
         for comment, count in keys.iteritems():
@@ -426,12 +445,12 @@ class Library(dict):
         util.mkdir(os.path.dirname(fn))
         f = file(fn, "w")
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-        songs = filter(lambda s: s and os.path.exists(s["=filename"]),
-                       self.values())
+        songs = filter(lambda s: s.exists(), self.values())
         Pickle.dump(songs, f, 2)
         f.close()
 
     def load(self, fn):
+        # Load the database and read it in.
         try:
             if os.path.exists(fn):
                 f = file(fn, "rb")
@@ -442,22 +461,24 @@ class Library(dict):
                     songs = []
                 f.close()
             else: return 0, 0
-        # Yes, really catch everything.
         except: return 0, 0
 
+        # Prune old entries.
         removed, changed = 0, 0
         for song in songs:
             if type(song) not in supported.values(): continue
-            fn = song.get('=filename', song.get("filename", ""))
-            if song and os.path.exists(fn):
-                if (os.stat(fn)[stat.ST_MTIME] != song["=mtime"]):
-                    self[fn] = MusicFile(fn)
-                    changed += 1
-                else:
-                    song.sanitize()
-                    self[fn] = song
+            if song.valid():
+                song.sanitize()
+                fn = song.get('=filename')
+                self[fn] = song
             else:
-                removed += 1
+                fn = song.get('=filename', song.get("filename", ""))
+                if os.path.exists(fn):
+                    changed += 1
+                    self[fn] = MusicFile(fn)
+                    self[fn].sanitize()
+                else:
+                    removed += 1
         return changed, removed
 
     def scan(self, dirs):
@@ -469,9 +490,7 @@ class Library(dict):
                 for fn in fnames:
                     m_fn = os.path.join(path, fn)
                     if m_fn in self:
-                        m = self[m_fn]
-                        if os.stat(m_fn)[stat.ST_MTIME] == m["=mtime"]:
-                            continue
+                        if self[m_fn].valid(): continue
                         else:
                             changed += 1
                             added -= 1
