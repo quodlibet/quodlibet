@@ -904,9 +904,10 @@ class SongProperties(MultiInstanceWidget):
             pattern = util.FileFromPattern(pattern)
         except ValueError: 
             d = ErrorMessage(_("Pattern with subdirectories is not absolute"),
-                             _("The pattern\n<b>%s</b>\ncontains / but does "
-                               "not start from root. This results in bad "
-                               "renaming, so is not supported.")%(
+                             _("The pattern\n\t<b>%s</b>\ncontains / but does "
+                               "not start from root. To avoid misnamed "
+                               "directories, root your pattern by starting "
+                               "it from the / directory.")%(
                 util.escape(pattern)),
                              gtk.BUTTONS_OK)
             d.run()
@@ -942,7 +943,7 @@ class SongProperties(MultiInstanceWidget):
                 d = ErrorMessage(_("Unable to rename %s")%(
                     util.escape(oldname)),
                                  _("Renaming <b>%s</b> to <b>%s</b> failed. "
-                                   "Possibly the target file already existed, "
+                                   "Possibly the target file already exists, "
                                    "or you do not have permission to make the "
                                    "new file or remove the old one.") %(
                     util.escape(oldname), util.escape(newname)),
@@ -976,13 +977,24 @@ class SongProperties(MultiInstanceWidget):
         self.tbp_view.set_model(None)
         self.tbp_model.clear()
 
+        # build the pattern
+        pattern_text = self.tbp_entry.get_text().decode('utf-8')
+
+        try: pattern = util.PatternFromFile(pattern_text)
+        except sre.error:
+            d = ErrorMessage(_("Invalid pattern"),
+                             _("The pattern\n\t<b>%s</b>\nis invalid. "
+                               "Possibly it contains the same tag twice or "
+                               "it has unbalanced brackets (&lt; and &gt;).")%(
+                util.escape(pattern_text)),
+                             gtk.BUTTONS_OK)
+            d.run()
+            d.destroy()
+            return
+
         rep = self.widgets.get_widget("prop_tbp_space_t").get_active()
         title = self.widgets.get_widget("prop_titlecase_t").get_active()
         split = self.widgets.get_widget("prop_splitval_t").get_active()
-
-        # build the pattern
-        pattern_text = self.tbp_entry.get_text().decode('utf-8')
-        pattern = util.PatternFromFile(pattern_text)
 
         # create model to store the matches, and view to match
         self.tbp_model = gtk.ListStore(object, object, str,
