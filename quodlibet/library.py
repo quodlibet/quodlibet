@@ -127,7 +127,7 @@ class AudioFile(dict):
             except ValueError:
                 try: del(self["=#"])
                 except KeyError: pass
-        elif key == "tracknumber":
+        elif key == "discnumber":
             try: self["=d"] = int(self["discnumber"].split("/")[0])
             except ValueError:
                 try: del(self["=d"])
