@@ -1,11 +1,11 @@
 - More unit tests.
-- "Automated" tag editing (file name scanning, value splitting, etc.)
+- "Automated" tag editing (file name scanning, etc.)
 - Rework all the build scripts to be smarter.
   (Check out autoconf, distutils...)
 - Various skipping problems -- get smarter about Python threads.
   - Some of this (during saving) disappeared with ossaudiodev? Rock.
+- More audio backends (people want ALSA...)
 - Look into eventual GStreamer port/use (for playing).
-- Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - MikMod support.
 - Import covers from Muine.
 - Full FLAC support.

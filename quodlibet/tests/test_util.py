@@ -2,6 +2,8 @@ from unittest import TestCase, makeSuite
 from tests import registerCase
 
 from util import escape, unescape, re_esc, encode, decode, mkdir, iscommand
+from util import find_subtitle, split_album, split_title, split_value
+
 import os
 
 class UtilTests(TestCase):
@@ -47,5 +49,22 @@ class UtilTests(TestCase):
         self.failUnless(iscommand("/bin/ls"))
         self.failIf(iscommand("/bin/asdfjkl"))
         self.failIf(iscommand("asdfjkl"))
+
+    def test_split(self):
+        self.failUnlessEqual(split_value("a b"), ["a b"])
+        self.failUnlessEqual(split_value("a, b"), ["a", "b"])
+        self.failUnlessEqual(split_value("a, b; c"), ["a", "b", "c"])
+        self.failUnlessEqual(find_subtitle("foo"), ("foo", None))
+        self.failUnlessEqual(find_subtitle("foo (baz)"), ("foo", "baz"))
+        self.failUnlessEqual(find_subtitle("foo (baz]"), ("foo (baz]", None))
+        self.failUnlessEqual(find_subtitle("foo [baz]"), ("foo", "baz"))
+        self.failUnlessEqual(find_subtitle("foo ~baz~"), ("foo", "baz"))
+        self.failUnlessEqual(split_title("foo"), ("foo", []))
+        self.failUnlessEqual(split_title("foo ~baz~"), ("foo", ["baz"]))
+        self.failUnlessEqual(split_title("foo [b, c]"), ("foo", ["b", "c"]))
+        self.failUnlessEqual(split_album("foo ~disc 1~"), ("foo", "1"))
+        self.failUnlessEqual(split_album("foo Disk 2"), ("foo", "2"))
+        self.failUnlessEqual(split_album("foo ~Disk 3~"), ("foo", "3"))
+        self.failUnlessEqual(split_album("disk 2"), ("disk 2", None))
 
 registerCase(UtilTests)

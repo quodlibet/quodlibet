@@ -86,11 +86,12 @@ def split_album(s):
     name, disc = find_subtitle(s)
     if not disc:
         parts = s.split(" ")
-        if len(parts) > 2 and "disc" in parts[-2]:
-            return (" ".join(parts[:-2]), parts[-1])
+        if len(parts) > 2:
+            lower = parts[-2].lower()
+            if "disc" in lower or "disk" in lower:
+                return (" ".join(parts[:-2]), parts[-1])
         return (s, None)
     else:
-        disc = disc[1:-1]
         parts = disc.split()
         if (len(parts) == 2 and
             parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
@@ -104,5 +105,5 @@ def find_subtitle(title):
             if l != 0:
                 subtitle = title[l+1:-1]
                 title = title[:l]
-                return title, subtitle
-    else: return title, ""
+                return title.rstrip(), subtitle
+    else: return title, None
