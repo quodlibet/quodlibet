@@ -10,6 +10,7 @@
 import os, sys
 import gc, sre, time, shutil, signal
 import gtk, pango
+import qltk
 
 import config, const, util, player, parser
 from util import to
@@ -86,8 +87,7 @@ class AboutWindow(object):
         vbox.pack_start(l2)
         hbox = gtk.HButtonBox()
         hbox.set_layout(gtk.BUTTONBOX_SPREAD)
-        button = gtk.Button(stock = gtk.STOCK_CLOSE)
-        button.connect('clicked', self.close)
+        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.close)
         hbox.pack_start(button)
         vbox.pack_start(hbox)
         gtk.timeout_add(4000, self.pick_name, list(const.CREDITS))
@@ -114,26 +114,10 @@ class AboutWindow(object):
         self.window.present()
 
 class PreferencesWindow(object):
-    def Frame(label, border = 0):
-        widget = gtk.Frame()
-        widget.add(gtk.Alignment(xalign = 0.0, yalign = 0.0,
-                                 xscale = 1.0, yscale = 1.0))
-        widget.child.set_padding(3, 0, 12, 0)
-        widget.set_shadow_type(gtk.SHADOW_NONE)
-        widget.set_label_widget(gtk.Label())
-        widget.set_border_width(border)
-        widget.get_label_widget().set_markup("<b>%s</b>" % util.escape(label))
-        widget.get_label_widget().set_use_underline(True)
-        return widget
-
-    # FIXME: This is code duplication from SongProperties
-    # We need to refactor all these GTK wrappers soon (before 0.10).
-    Frame = staticmethod(Frame)
-
     class Browser(object):
         def __init__(self, tips):
-            self.widget = PreferencesWindow.Frame(_("Visible Columns"),
-                                                  border = 12)
+            self.widget = qltk.Frame(
+                _("Visible Columns"), border = 12, bold = True)
 
             vbox = gtk.VBox(spacing = 12)
             buttons = {}
@@ -185,8 +169,8 @@ class PreferencesWindow(object):
             l.set_mnemonic_widget(others)
             l.set_use_underline(True)
             hbox.pack_start(others)
-            apply = gtk.Button(stock = gtk.STOCK_APPLY)
-            apply.connect('clicked', self.apply, buttons, tiv, aip, others)
+            apply = qltk.Button(stock = gtk.STOCK_APPLY, cb = self.apply,
+                                user_data = [buttons, tiv, aip, others])
             hbox.pack_start(apply, expand = False)
             vbox.pack_start(hbox, expand = False)
 
@@ -234,7 +218,7 @@ class PreferencesWindow(object):
             vbox.pack_start(c)
             self.widget.pack_start(vbox, expand = False)
 
-            f = PreferencesWindow.Frame(_("_Volume Normalization"))
+            f = qltk.Frame(_("_Volume Normalization"), bold = True)
             cb = gtk.combo_box_new_text()
             cb.append_text(_("No volume adjustment"))
             cb.append_text(_('Per-song ("Radio") volume adjustment'))
@@ -245,7 +229,7 @@ class PreferencesWindow(object):
             cb.connect('changed', self.changed, 'gain')
             self.widget.pack_start(f, expand = False)
 
-            f = PreferencesWindow.Frame(_("_On-Screen Display"))
+            f = qltk.Frame(_("_On-Screen Display"), bold = True)
             cb = gtk.combo_box_new_text()
             cb.append_text(_("No on-screen display"))
             cb.append_text(_('Display OSD on the top'))
@@ -298,9 +282,9 @@ class PreferencesWindow(object):
         def __init__(self, tips):
             self.widget = gtk.VBox(spacing = 12)
             self.widget.set_border_width(12)
-            f = PreferencesWindow.Frame(_("Scan _Directories"))
+            f = qltk.Frame(_("Scan _Directories"), bold = True)
             hb = gtk.HBox(spacing = 6)
-            b = Button(_("_Select..."), gtk.STOCK_OPEN)
+            b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "scan")))
             f.get_label_widget().set_mnemonic_widget(e)
@@ -313,7 +297,7 @@ class PreferencesWindow(object):
             f.child.add(hb)
             self.widget.pack_start(f, expand = False)
 
-            f = PreferencesWindow.Frame(_("_Masked Directories"))
+            f = qltk.Frame(_("_Masked Directories"), bold = True)
             vb = gtk.VBox(spacing = 6)
             l = gtk.Label(_(
                 "If you have songs in directories that will not always be "
@@ -325,7 +309,7 @@ class PreferencesWindow(object):
             l.set_justify(gtk.JUSTIFY_FILL)
             vb.pack_start(l, expand = False)
             hb = gtk.HBox(spacing = 6)
-            b = Button(_("_Select..."), gtk.STOCK_OPEN)
+            b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "masked")))
             f.get_label_widget().set_mnemonic_widget(e)
@@ -340,7 +324,7 @@ class PreferencesWindow(object):
             f.child.add(vb)
             self.widget.pack_start(f, expand = False)
 
-            f = PreferencesWindow.Frame(_("Tag Editing"))
+            f = qltk.Frame(_("Tag Editing"), bold = True)
             vbox = gtk.VBox(spacing = 6)
             hb = gtk.HBox(spacing = 6)
             e = gtk.Entry()
@@ -395,8 +379,9 @@ class PreferencesWindow(object):
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock = gtk.STOCK_CLOSE)
-        button.connect('clicked', lambda b, w: w.destroy(), self.window)
+        button = qltk.Button(stock = gtk.STOCK_CLOSE,
+                             cb = lambda b, w: w.destroy(),
+                             user_data = [self.window])
         bbox.pack_start(button)
         self.window.child.pack_start(bbox, expand = False)
         self.window.connect('destroy', self.destroy)
@@ -420,15 +405,7 @@ class DeleteDialog(object):
         self.dialog.set_property('border-width', 6)
         self.dialog.set_resizable(False)
         if os.path.isdir(os.path.expanduser("~/.Trash")):
-            b = gtk.Button()
-            b.add(gtk.HBox(spacing = 2))
-            i = gtk.Image()
-            i.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
-            b.child.pack_start(i)
-            l = gtk.Label(_("_Move to Trash"))
-            l.set_use_underline(True)
-            l.set_mnemonic_widget(b)
-            b.child.pack_start(l)
+            b = qltk.Button(_("Move to Trash"), image = gtk.STOCK_DELETE)
             self.dialog.add_action_widget(b, 0)
 
         self.dialog.add_button(gtk.STOCK_CANCEL, 1)
@@ -502,7 +479,7 @@ class WaitLoadWindow(object):
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
             hbox = gtk.HBox(spacing = 6, homogeneous = True)
-            b1 = gtk.Button(stock = gtk.STOCK_STOP)
+            b1 = qltk.Button(stock = gtk.STOCK_STOP)
             b2 = gtk.ToggleButton()
             b2.add(gtk.HBox(spacing = 2))
             i = gtk.Image()
@@ -693,7 +670,7 @@ class PlaylistWindow(object):
         vbox.pack_end(hbox, expand = False)
         vbox.pack_end(gtk.HSeparator(), expand = False)
 
-        close = self.close = gtk.Button(stock = gtk.STOCK_CLOSE)
+        close = self.close = qltk.Button(stock = gtk.STOCK_CLOSE)
         hbox.pack_end(close, expand = False)
 
         swin = self.swin = gtk.ScrolledWindow()
@@ -902,10 +879,9 @@ class SearchBar(EmptyBar):
             SearchBar.model = gtk.ListStore(str)
 
         self.combo = gtk.ComboBoxEntry(SearchBar.model, 0)
-        self.button = gtk.Button(button)
+        self.button = qltk.Button(button, cb = self.text_parse)
         self.combo.child.connect('activate', self.text_parse)
         self.combo.child.connect('changed', self.test_filter)
-        self.button.connect('clicked', self.text_parse)
         hbox.pack_start(self.combo)
         hbox.pack_start(self.button, expand = False)
         hbox.show_all()
@@ -2177,15 +2153,16 @@ class AddTagDialog(object):
 
         self.dialog = gtk.Dialog(parent = parent, title = _("Add a new tag"))
         self.dialog.connect('close', self.destroy)
-        self.dialog.set_property('border-width', 12)
+        self.dialog.set_border_width(12)
         self.dialog.set_resizable(False)
         self.dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                 gtk.STOCK_ADD, gtk.RESPONSE_OK)
-        self.dialog.vbox.set_spacing(9)
+        self.dialog.vbox.set_spacing(12)
+        self.dialog.set_has_separator(False)
         self.dialog.set_default_response(gtk.RESPONSE_OK)
         table = gtk.Table(2, 2)
-        table.set_row_spacings(6)
-        table.set_col_spacings(9)
+        table.set_row_spacings(12)
+        table.set_col_spacings(6)
         
         if can_change == True:
             self.tag = gtk.combo_box_entry_new_text()
@@ -2235,18 +2212,6 @@ class AddTagDialog(object):
 
     def destroy(self, *args):
         self.dialog.destroy()
-
-def Button(text, image):
-    hbox = gtk.HBox(spacing = 2)
-    i = gtk.Image()
-    i.set_from_stock(image, gtk.ICON_SIZE_BUTTON)
-    hbox.pack_start(i)
-    l = gtk.Label(text)
-    l.set_use_underline(True)
-    hbox.pack_start(l)
-    b = gtk.Button()
-    b.add(hbox)
-    return b
 
 class SongProperties(object):
 
@@ -2649,10 +2614,9 @@ class SongProperties(object):
             bbox1 = gtk.HButtonBox()
             bbox1.set_spacing(6)
             bbox1.set_layout(gtk.BUTTONBOX_START)
-            self.add = gtk.Button(stock = gtk.STOCK_ADD)
-            self.remove = gtk.Button(stock = gtk.STOCK_REMOVE)
-            self.add.connect('clicked', self.add_tag)
-            self.remove.connect('clicked', self.remove_tag)
+            self.add = qltk.Button(stock = gtk.STOCK_ADD, cb = self.add_tag)
+            self.remove = qltk.Button(stock = gtk.STOCK_REMOVE,
+                                     cb = self.remove_tag)
             self.remove.set_sensitive(False)
             bbox1.pack_start(self.add)
             bbox1.pack_start(self.remove)
@@ -2660,10 +2624,10 @@ class SongProperties(object):
             bbox2 = gtk.HButtonBox()
             bbox2.set_spacing(6)
             bbox2.set_layout(gtk.BUTTONBOX_END)
-            self.revert = gtk.Button(stock = gtk.STOCK_REVERT_TO_SAVED)
-            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
-            self.revert.connect('clicked', self.revert_files)
-            self.save.connect('clicked', self.save_files)
+            self.revert = qltk.Button(stock = gtk.STOCK_REVERT_TO_SAVED,
+                                      cb = self.revert_files)
+            self.save = qltk.Button(stock = gtk.STOCK_SAVE,
+                                   cb = self.save_files)
             self.revert.set_sensitive(False)
             self.save.set_sensitive(False)
             bbox2.pack_start(self.revert)
@@ -3020,7 +2984,7 @@ class SongProperties(object):
             hbox.pack_start(combo)
             self.entry = combo.child
             self.entry.connect('changed', self.changed)
-            self.preview = Button(_("_Preview"), gtk.STOCK_CONVERT)
+            self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
             self.preview.connect('clicked', self.preview_tags)
             hbox.pack_start(self.preview, expand = False)
             self.widget.pack_start(hbox, expand = False)
@@ -3057,8 +3021,8 @@ class SongProperties(object):
 
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
-            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
-            self.save.connect('clicked', self.save_files)
+            self.save = qltk.Button(
+                stock = gtk.STOCK_SAVE, cb = self.save_files)
             bbox.pack_start(self.save)
             self.widget.pack_start(bbox, expand = False)
 
@@ -3220,7 +3184,7 @@ class SongProperties(object):
             hbox.pack_start(combo)
             self.entry = combo.child
             self.entry.connect('changed', self.changed)
-            self.preview = Button(_("_Preview"), gtk.STOCK_CONVERT)
+            self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
             self.preview.connect('clicked', self.preview_files)
             hbox.pack_start(self.preview, expand = False)
             self.widget.pack_start(hbox, expand = False)
@@ -3256,8 +3220,8 @@ class SongProperties(object):
             vbox.pack_start(self.ascii)
             self.widget.pack_start(vbox, expand = False)
 
-            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
-            self.save.connect('clicked', self.rename_files)
+            self.save = qltk.Button(stock = gtk.STOCK_SAVE,
+                                    cb = self.rename_files)
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
             bbox.pack_start(self.save)
@@ -3398,7 +3362,7 @@ class SongProperties(object):
             hbox2.pack_start(hbox_start, expand = True, fill = False)
             hbox2.pack_start(hbox_total, expand = True, fill = False)
 
-            self.preview = Button(_("_Preview"), gtk.STOCK_CONVERT)
+            self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
             self.preview.connect('clicked', self.preview_tracks)
             hbox2.pack_start(self.preview, expand = False)
 
@@ -3423,10 +3387,10 @@ class SongProperties(object):
             bbox = gtk.HButtonBox()
             bbox.set_spacing(12)
             bbox.set_layout(gtk.BUTTONBOX_END)
-            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
-            self.save.connect('clicked', self.save_files)
-            self.revert = gtk.Button(stock = gtk.STOCK_REVERT_TO_SAVED)
-            self.revert.connect('clicked', self.revert_files)
+            self.save = qltk.Button(
+                stock = gtk.STOCK_SAVE, cb = self.save_files)
+            self.revert = qltk.Button(
+                stock = gtk.STOCK_REVERT_TO_SAVED, cb = self.revert_files)
             bbox.pack_start(self.revert)
             bbox.pack_start(self.save)
             self.widget.pack_start(bbox, expand = False)
@@ -3540,8 +3504,7 @@ class SongProperties(object):
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock = gtk.STOCK_CLOSE)
-        button.connect('clicked', self.close)
+        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.close)
         bbox.pack_start(button)
         vbox.pack_start(bbox, expand = False)
 
