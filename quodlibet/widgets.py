@@ -1183,6 +1183,7 @@ class SearchBar(EmptyBar):
 
     def set_text(self, text):
         self.get_children()[0].child.set_text(text)
+        self._text = text
 
     def __text_parse(self, entry):
         text = entry.get_text()
