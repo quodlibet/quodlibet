@@ -64,6 +64,8 @@ def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
 
     fg_gc = gdk.GC(pixmap); fg_gc.copy(darea.style.fg_gc[gtk.STATE_NORMAL])
     bg_gc = gdk.GC(pixmap); bg_gc.copy(darea.style.fg_gc[gtk.STATE_NORMAL])
+    fg_gc.set_colormap(darea.window.get_colormap())
+    bg_gc.set_colormap(darea.window.get_colormap())
     fg_gc.set_foreground(darea.get_colormap().alloc_color(fgcolor))
     bg_gc.set_background(darea.get_colormap().alloc_color(bgcolor))
     pixmap.draw_rectangle(bg_gc, True, 0, 0, width, height)
@@ -72,6 +74,8 @@ def osd(text, bgcolor, fgcolor, fontdesc, use_markup = True,
     bitmap = gtk.gdk.Pixmap(None, width, height, 1)
     fg_gc = gdk.GC(bitmap)
     bg_gc = gdk.GC(bitmap)
+    fg_gc.set_colormap(darea.window.get_colormap())
+    bg_gc.set_colormap(darea.window.get_colormap())
     fg_gc.set_foreground(gdk.Color(pixel=-1))
     bg_gc.set_background(gdk.Color(pixel=0))
     bitmap.draw_rectangle(bg_gc, True, 0, 0, width, height)
