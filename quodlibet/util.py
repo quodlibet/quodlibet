@@ -35,3 +35,8 @@ def check_ogg():
     try: import ogg.vorbis
     except ImportError: return False
     else: return True
+
+def check_flac():
+    try: import flac.decoder
+    except ImportError: return False
+    else: return True

@@ -22,4 +22,4 @@ clean:
 	rm -f *.pyc $(NAME).zip
 
 distclean: clean
-	rm -f *~ \#* *.bak
+	rm -f *~ \#* *.bak *.orig

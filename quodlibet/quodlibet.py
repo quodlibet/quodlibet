@@ -316,7 +316,7 @@ class GladeHandlers(object):
 
     def song_properties(item):
         view = widgets["songlist"]
-        selection = vew.get_selection()
+        selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         songrefs = [ [model[row][len(HEADERS)],
                       gtk.TreeRowReference(model, row)] for row in rows]

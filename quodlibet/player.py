@@ -45,6 +45,41 @@ class MP3Player(AudioPlayer):
         self.dev.play(buff, len(buff))
         return self.audio.current_time()
 
+class FLACPlayer(AudioPlayer):
+    def __init__(self, dev, filename):        
+        AudioPlayer.__init__(self)
+        self.dev = dev
+        self.length = 100 # FIXME
+        self.dec = flac.decoder.FileDecoder()
+        self.dec.set_md5_checking(False);
+        self.dec.set_filename(filename)
+        self.dec.set_metadata_ignore_all()
+        self.dec.set_write_callback(self._player)
+        self.dec.set_metadata_callback(lambda *args: None)
+        self.dec.set_error_callback(lambda *args: None)
+
+    def _player(self, dec, buff, size):
+        device.play(buff, size)
+        return flac.decoder.FLAC__FILE_DECODER_OK
+
+    def next(self):
+        if self.stopped: raise StopIteration
+        self.dec.process_single()
+        #return dec.get_decode_position() / 1000
+        return 0
+
+    def __iter__(self):
+        self.dec.init()
+        self.dec.process_until_end_of_metadata()
+        return self
+
+    def seek(self, ms):
+        pass # FIXME
+
+    def end(self):
+        AudioPlayer.end(self)
+        self.dec.finish()
+
 class OggPlayer(AudioPlayer):
     def __init__(self, dev, filename):
         AudioPlayer.__init__(self)
@@ -233,7 +268,8 @@ class PlaylistPlayer(object):
     def quitting(self):
         self.lock.acquire()
         dump_fn = os.path.join(os.environ["HOME"], ".quodlibet", "current")
-        os.unlink(dump_fn)
+        try: os.unlink(dump_fn)
+        except OSError: pass
         self.quit = True
         self.paused = False
         if self.player: self.player.end()
@@ -281,6 +317,10 @@ if util.check_ogg():
 if util.check_mp3():
     import mad
     supported[".mp3"] = MP3Player
+
+if util.check_flac():
+    import flac.decoder
+    supported["flac"] = FLACPlayer
 
 device = OutputDevice()
 playlist = PlaylistPlayer(output = device)

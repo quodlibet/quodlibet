@@ -24,7 +24,19 @@ class AudioFile(dict):
                 cmp(self.get("=#"), other.get("=#")) or
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")))
-    
+
+    def sanitize(self):
+        for i in ["title", "artist", "album"]:
+            if not self.get(i): self[i] = "Unknown"
+        if "tracknumber" in self:
+            try: self["=#"] = int(self["tracknumber"].split("/")[0])
+            except: pass
+        try: del(self["vendor"])
+        except KeyError: pass
+        self.setdefault("=lastplayed", 0)
+        self.setdefault("=playcount", 0)
+        self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
+
     def to_markup(self):
         title = u", ".join(self["title"].split("\n"))
         text = u'<span weight="bold" size="x-large">%s</span>' % escape(title)
@@ -164,15 +176,7 @@ class MP3File(AudioFile):
                     else: self[name] = text
                     self[name] = self[name].strip()
                 except: pass
-        for i in ["title", "artist", "album"]:
-            if hasattr(tag, i):
-                self.setdefault(i, getattr(tag, i))
-            if not self.get(i): self[i] = "Unknown"
-        if "tracknumber" in self:
-            try: self["=#"] = int(self["tracknumber"].split("/")[0])
-            except: pass
-        self.setdefault("=lastplayed", 0)
-        self.setdefault("=playcount", 0)
+        self.sanitize()
 
     def write(self):
         tag = pyid3lib.tag(self['filename'])
@@ -187,7 +191,6 @@ class MP3File(AudioFile):
                     tag.append({'frameid': id3name, 'text': value })
         tag.update()
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
-
 
     def can_change(self, k=None):
         if k is None:
@@ -205,15 +208,7 @@ class OggFile(AudioFile):
             if not isinstance(v, list): v = [v]
             v = u"\n".join(map(unicode, v))
             self[k.lower()] = v
-        for i in ["title", "artist", "album"]:
-            if not self.get(i): self[i] = "Unknown"
-        if "tracknumber" in self:
-            try: self["=#"] = int(self["tracknumber"].split("/")[0])
-            except: pass
-        try: del(self["vendor"])
-        except KeyError: pass
-        self.setdefault("=lastplayed", 0)
-        self.setdefault("=playcount", 0)
+        self.sanitize()
 
     def write(self):
         f = ogg.vorbis.VorbisFile(self['filename'])
@@ -229,11 +224,44 @@ class OggFile(AudioFile):
         comments.write_to(self['filename'])
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
 
-    def can_change(self, k=None):
+    def can_change(self, k = None):
         if k is None:
             return True
         else:
             return k not in ["vendor", "filename"]
+
+class FLACFile(AudioFile):
+    def __init__(self, filename):
+        print "I WIN"
+        if not os.path.exists(filename):
+            raise ValueError("Unable to read filename: " + filename)
+        self["filename"] = filename
+
+        chain = flac.metadata.Chain()
+        chain.read(filename)
+        it = flac.metadata.Iterator()
+        it.init(chain)
+        vc = None
+        while True:
+            if it.get_block_type() == flac.metadata.VORBIS_COMMENT:
+                block = it.get_block()
+                vc = flac.metadata.VorbisComment(block)
+                break
+            if not it.next(): break
+
+        if vc:
+            for k in vc.comments:
+                parts = k.split("=")
+                key = parts[0].lower()
+                val = "=".join(parts[1:]).decode("utf-8")
+                if key in self: self[key] += "\n" + val
+                else: self[key] = val
+        self.sanitize()
+
+    def write(self): pass
+
+    def can_change(self, k = None):
+        return False
 
 class AudioFileGroup(dict):
 
@@ -337,7 +365,6 @@ class Library(dict):
             if song and os.path.exists(fn):
                 if (os.stat(fn)[stat.ST_MTIME] != song["=mtime"]):
                     self[fn] = MusicFile(fn)
-                    self[fn]["=mtime"] = int(os.stat(fn)[stat.ST_MTIME])
                     changed += 1
                 else:
                     song.setdefault("=lastplayed", 0)
@@ -365,7 +392,6 @@ class Library(dict):
                     m = MusicFile(m_fn)
                     if m:
                         added += 1
-                        m["=mtime"] = int(os.stat(m_fn)[stat.ST_MTIME])
                         self[m_fn] = m
                 yield added, changed
 
@@ -385,5 +411,9 @@ if util.check_mp3():
 else:
     print "W: MP3 support is disabled! MP3 files cannot be loaded."
 
-library = Library()
+if util.check_flac():
+    print "Enabling FLAC support."
+    import flac.metadata
+    supported["flac"] = FLACFile
 
+library = Library()
