@@ -1,4 +1,4 @@
-# Copyright 2004 Joe Wreschnig, Michael Urman
+# Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,7 +11,7 @@ import os, sre, stat, string, locale
 # Convert a string from 'frm' encoding (or Unicode) to the native one.
 # Only use this for console messages; PyGTK understands both Unicode
 # and UTF-8 properly.
-def to(string, frm = "utf-8"):
+def to(string, frm="utf-8"):
     enc = locale.getpreferredencoding()
     if isinstance(string, unicode): return string.encode(enc, "replace")
     else: return string.decode(frm).encode(enc, "replace")
@@ -109,12 +109,12 @@ def fsencode(s):
     if isinstance(s, str): return s
     else: return s.encode(fscoding(), 'replace')
 
-def decode(s, charset = "utf-8"):
+def decode(s, charset="utf-8"):
     try: return s.decode(charset)
     except UnicodeError:
         return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
 
-def encode(s, charset = "utf-8"):
+def encode(s, charset="utf-8"):
     try: return s.encode(charset)
     # FIXME: Can *this* happen?
     except UnicodeError:
@@ -147,7 +147,7 @@ def capitalize(str):
     return str[:1].upper() + str[1:]
 
 # Split a string on ;s and ,s.
-def split_value(s, splitters = ",;&"):
+def split_value(s, splitters=",;&"):
     values = s.split("\n")
     for spl in splitters:
         new_values = []
@@ -156,12 +156,12 @@ def split_value(s, splitters = ",;&"):
         values = new_values
     return values
 
-def split_title(s, splitters = ",;&"):
+def split_title(s, splitters=",;&"):
     title, subtitle = find_subtitle(s)
     if not subtitle: return (s, [])
     else: return (title.strip(), split_value(subtitle, splitters))
 
-def split_people(s, splitters = ",;&"):
+def split_people(s, splitters=",;&"):
     title, subtitle = find_subtitle(s)
     if not subtitle:
         parts = s.split(" ")
@@ -267,11 +267,11 @@ class FileFromPattern(object):
     format = { 'tracknumber': '%02d', 'discnumber': '%d' }
     override = { 'tracknumber': '~#track', 'discnumber': '~#disc' }
 
-    def __init__(self, pattern, filename = True):
+    def __init__(self, pattern, filename=True):
         if filename and '/' in pattern and not pattern.startswith('/'):
             raise ValueError("Pattern %r is not rooted" % pattern)
 
-        self.replacers = [self.Pattern(pattern)]
+        self.replacers = [self.Pattern(pattern, filename)]
         # simple magic to decide whether to append the extension
         # if the pattern has no . in it, or if it has a > (probably a tag)
         #   after the last . or if the last character is the . append .foo
@@ -289,18 +289,21 @@ class FileFromPattern(object):
             return oldname[oldname.rfind('.'):]
 
     class Pattern(object):
-        def __init__(self, pattern, tagre=sre.compile(
+        def __init__(self, pattern, filename=True, tagre=sre.compile(
             # stdtag | < tagname ( \| [^<>] | stdtag )+ >
             r'''( <\w+(?:\~\w+)*> |
                 < \w+ (?: \| (?: [^<>] | <\w+(?:\~\w+)*> )* )+ > )''', sre.X)):
             pieces = filter(None, tagre.split(pattern))
-            self.replacers = map(FileFromPattern.PatternReplacer, pieces)
+            self.replacers = [
+                FileFromPattern.PatternReplacer(piece, filename=filename)
+                for piece in pieces]
 
         def match(self, song):
             return ''.join([r.match(song) for r in self.replacers])
 
     class PatternReplacer(object):
-        def __init__(self, pattern):
+        def __init__(self, pattern, filename=True):
+            self.filename = filename
             if not (pattern.startswith('<') and pattern.endswith('>')):
                 self.match = lambda song: pattern
             elif '|' not in pattern:
@@ -328,8 +331,9 @@ class FileFromPattern(object):
 
             if tag.startswith('~') or '~' not in tag:
                 text = song.comma(tag)
-                try: text = text.replace('/', '_')
-                except AttributeError: pass
+                if self.filename:
+                    try: text = text.replace('/', '_')
+                    except AttributeError: pass
                 try: return fmt % text
                 except TypeError: return text
             else:

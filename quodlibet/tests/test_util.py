@@ -262,6 +262,12 @@ class NBPTests(TestCase):
         s.assertEquals(pat.match(s.b), '06. Title6.ogg')
         s.assertEquals(pat.match(s.c), '00. test_subdir.flac')
 
+    def test_escape_slash(s):
+        fpat = FileFromPattern('<~filename>', filename=True)
+        pat = FileFromPattern('<~filename>', filename=False)
+        s.assertEquals(fpat.match(s.a), "_path_to_a.mp3.mp3")
+        s.assertEquals(pat.match(s.a), "/path/to/a.mp3")
+
     def test_conditional_other_other(s):
         s.assertRaises(ValueError, FileFromPattern, '<tracknumber|a|b|c>')
 
