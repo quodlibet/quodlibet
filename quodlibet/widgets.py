@@ -1800,14 +1800,17 @@ class MainWindow(gtk.Window):
         gobject.idle_add(player.playlist.seek, v)
 
     def random_artist(self, menuitem):
-        self.browser.filter('artist', [library.random("artist")])
+        if self.browser.can_filter('artist'):
+            self.browser.filter('artist', [library.random("artist")])
 
     def random_album(self, menuitem):
-        self.browser.filter('album', [library.random("album")])
-        self.shuffle.set_active(False)
+        if self.browser.can_filter('album'):
+            self.browser.filter('album', [library.random("album")])
+            self.shuffle.set_active(False)
 
     def random_genre(self, menuitem):
-        self.browser.filter('genre', [library.random("genre")])
+        if self.browser.can_filter('genre'):
+            self.browser.filter('genre', [library.random("genre")])
 
     def lastplayed_day(self, menuitem):
         self.make_query("#(lastplayed > today)")
@@ -2116,8 +2119,9 @@ class MainWindow(gtk.Window):
             config.set("settings", "headers", " ".join(headers))
 
     def make_query(self, query):
-        self.browser.set_text(query.encode('utf-8'))
-        self.browser.activate()
+        if self.browser.can_filter(None):
+            self.browser.set_text(query.encode('utf-8'))
+            self.browser.activate()
 
     def set_column_headers(self, headers):
         SongList.set_all_column_headers(headers)
