@@ -2,7 +2,7 @@
 .SH NAME
 quodlibet \- music library and player
 .SH SYNOPSIS
-\fBquodlibet\fR [ \fB\-\-help\fR | \fB\-\-version\fR ]
+\fBquodlibet\fR [ \fB\-\-help\fR | \fB\-\-version\fR | \fB\-\-refresh-library\fR ]
 .SH DESCRIPTION
 Quod Libet is a music library and player. Rather than keeping a single
 playlist, it loads all your songs at once, and lets you filter and
@@ -11,6 +11,13 @@ Quod Libet requires your music collection have appropriate tags,
 made by (for example) \fBid3v2\fR and \fBvorbiscomment\fR. Most CD
 ripping programs or music download services take care of this for you,
 but older files may have missing or inaccurate tags.
+.SH OPTIONS
+.IP --refresh-library
+Load your song library and configuration file. Deleted files will be
+removed, changed files will be updated, and new files in your scan
+directories will be added. QL will not start its interface at all,
+simply update the library. This also happens whenever QL starts up
+normally.
 .SH USAGE
 Use the "Add Music" item in the menu or click the "Add" icon on the
 toolbar to add directories full of songs to your library. Once music

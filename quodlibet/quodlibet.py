@@ -8,19 +8,7 @@
 #
 # $Id$
 
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gtk.glade
-from library import library
-import player
-import threading
-import gc
-import os
-import util; from util import escape
-import signal
-import config
-import time
+VERSION = "0.0"
 
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
@@ -283,12 +271,10 @@ def text_parse(*args):
                     widgets["query"].prepend_text(text)
                 except: return
 
-            t = time.time()
             CURRENT_FILTER[0] = q.search
             set_entry_color(widgets["query"].child, "black")
             songs = filter(CURRENT_FILTER[0], library.values())
             player.playlist.set_playlist(songs)
-            print "Searching songlist took %f seconds " % (time.time() - t)
             refresh_songlist()
 
 # Try and construct a query, but don't actually run it; change the color
@@ -310,7 +296,6 @@ def test_filter(*args):
 
 # Resort based on the header clicked.
 def set_sort_by(header, i):
-    t = time.time()
     s = header.get_sort_order()
     if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
         s = gtk.SORT_ASCENDING
@@ -320,12 +305,10 @@ def set_sort_by(header, i):
     header.set_sort_indicator(True)
     header.set_sort_order(s)
     player.playlist.sort_by(HEADERS[i[0]], s == gtk.SORT_DESCENDING)
-    print "Sorting songlist took %f seconds " % (time.time() - t)
     refresh_songlist()
 
 # Clear the songlist and readd the songs currently wanted.
 def refresh_songlist():
-    t = time.time()
     sl = widgets["songlist"]
     sl.set_model(None)
     widgets.songs.clear()
@@ -341,7 +324,6 @@ def refresh_songlist():
     i = len(list(player.playlist))
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
     sl.set_model(widgets.songs)
-    print "Setting songlist took %f seconds " % (time.time() - t)
 
 HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track" }
@@ -360,7 +342,6 @@ def set_entry_color(entry, color):
 # Build a new filter around our list model, set the headers to their
 # new values.
 def set_column_headers(sl):
-    ti = time.time()
     sl.set_model(None)
     widgets.songs = gtk.ListStore(*([str] * len(HEADERS) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)
@@ -375,9 +356,6 @@ def set_column_headers(sl):
         sl.append_column(column)
     refresh_songlist()
     sl.set_model(widgets.songs)
-    print "Initting headers took %f seconds " % (time.time() - ti)
-
-widgets = Widgets("quodlibet.glade")
 
 def setup_nonglade():
     # Set up the main song list store.
@@ -406,14 +384,9 @@ def setup_nonglade():
     gtk.threads_init()
 
 def main():
-    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
-    config.init(config_fn)
+    load_cache()
     HEADERS[:] = config.get("settings", "headers").split()
     if "title" not in HEADERS: HEADERS.append("title")
-    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
-    library.load(cache_fn)
-    if config.get("settings", "scan"):
-        library.scan(config.get("settings", "scan").split(":"))
     player.playlist.set_playlist(library.values())
     player.playlist.sort_by(HEADERS[0])
     setup_nonglade()
@@ -423,10 +396,86 @@ def main():
     gc.collect()
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     t.start()
-    try: gtk.main()
-    except: gtk.main_quit()
+    gtk.main()
     player.playlist.quitting()
     t.join()
+    save_cache()
+
+def print_help():
+    print """\
+Quod Libet - a music library and player
+Options:
+  --help, -h        Display this help message
+  --version         Display version and copyright information
+  --refresh-library Rescan your song cache; remove dead files; add new ones;
+                    and then exit."""
+
+    raise SystemExit
+
+def print_version():
+    print """\
+Quod Libet %s
+Copyright 2004 Joe Wreschnig <piman@sacredchao.net>
+               Michael Urman
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
+""" % VERSION
+    raise SystemExit
+
+def load_cache():
+    from library import library
+    import config
+    config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+    print "Loading config"
+    config.init(config_fn)
+    print "Loading library"
+    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    library.load(cache_fn)
+    if config.get("settings", "scan"):
+        library.scan(config.get("settings", "scan").split(":"))
+
+def save_cache():
+    from library import library
+    print "Saving library"
+    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.save(cache_fn)
 
-if __name__ == "__main__": main()
+def refresh_cache():
+    load_cache()
+    save_cache()
+    raise SystemExit
+
+if __name__ == "__main__":
+    import os, sys
+    for command in sys.argv[1:]:
+        if command in ["--help", "-h"]: print_help()
+        elif command in ["--version", "-v"]: print_version()
+        elif command in ["--refresh-library"]: refresh_cache()
+        else:
+            print "E: Unknown command line option: %s" % command
+            raise SystemExit("E: Try %s --help" % sys.argv[0])
+
+    import pygtk
+    pygtk.require('2.0')
+    import gtk
+    if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 4):
+        print "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
+        print "E: You have GTK+ %s and PyGTK %s." % (
+            ".".join(map(str, gtk.gtk_version)),
+            ".".join(map(str, gtk.pygtk_version)))
+        raise SystemExit("E: Please upgrade GTK+/PyGTK.")
+
+    import gtk.glade
+    widgets = Widgets("quodlibet.glade")
+
+    import threading
+    import gc
+    import os
+    from library import library
+    import player
+    import util; from util import escape
+    import signal
+    import config
+
+    main()

@@ -165,12 +165,18 @@ class Library(dict):
 supported = {}
 
 if util.check_ogg():
+    print "Enabling Ogg Vorbis support."
     import ogg.vorbis
     supported[".ogg"] = OggFile
+else:
+    print "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
 
 if util.check_mp3():
+    print "Enabling MP3 support."
     import pyid3lib
     supported[".mp3"] = MP3File
+else:
+    print "W: MP3 support is disabled! MP3 files cannot be loaded."
 
 library = Library()
 

@@ -229,7 +229,6 @@ if util.check_ogg():
     supported[".ogg"] = OggPlayer
 
 if util.check_mp3():
-    print "whee"
     import mad
     supported[".mp3"] = MP3Player
 
