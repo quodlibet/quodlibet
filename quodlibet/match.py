@@ -1,4 +1,4 @@
-# Copyright 2004 Joe Wreschnig, Michael Urman
+# Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,58 +8,60 @@
 
 import time
 
+TIME_KEYS = ["added", "mtime", "lastplayed"]
+
 # True if the object matches any of its REs.
 class Union(object):
     def __init__(self, res):
-        self.res = res
+        self.__res = res
 
     def search(self, data):
-        for re in self.res:
+        for re in self.__res:
             if re.search(data): return True
         return False
 
     def __repr__(self):
-        return "<Union %r>" % self.res
+        return "<Union %r>" % self.__res
 
 # True if the object matches all of its REs.
 class Inter(object):
     def __init__(self, res):
-        self.res = res
+        self.__res = res
 
     def search(self, data):
-        for re in self.res:
+        for re in self.__res:
             if not re.search(data): return False
         return True
 
     def __repr__(self):
-        return "<Inter %r>" % self.res
+        return "<Inter %r>" % self.__res
 
 # True if the object doesn't match its RE.
 class Neg(object):
     def __init__(self, re):
-        self.re = re
+        self.__re = re
 
     def search(self, data):
-        return not self.re.search(data)
+        return not self.__re.search(data)
 
     def __repr__(self):
-        return "<Neg %r>" % self.re
+        return "<Neg %r>" % self.__re
 
 # Numeric comparisons
 class Numcmp(object):
     def __init__(self, tag, op, value):
-        if isinstance(tag, unicode): self.tag = tag.encode("utf-8")
-        else: self.tag = tag
-        self.ftag = "~#" + self.tag
-        self.shortcircuit = tag.startswith("playlist")
-        self.op = op
+        if isinstance(tag, unicode): self.__tag = tag.encode("utf-8")
+        else: self.__tag = tag
+        self.__ftag = "~#" + self.__tag
+        self.__shortcircuit = tag.startswith("playlist")
+        self.__op = op
         value = value.strip()
 
-        if tag in ["lastplayed", "mtime", "added"]:
-            if self.op == ">": self.op = "<"
-            elif self.op == "<": self.op = ">"
-            elif self.op == "<=": self.op = ">="
-            elif self.op == ">=": self.op = "<="
+        if tag in TIME_KEYS:
+            if self.__op == ">": self.__op = "<"
+            elif self.__op == "<": self.__op = ">"
+            elif self.__op == "<=": self.__op = ">="
+            elif self.__op == ">=": self.__op = "<="
 
         if value in ["now"]: value = int(time.time())
         elif value in ["today"]: value = int(time.time() - 24 * 60 * 60)
@@ -83,23 +85,24 @@ class Numcmp(object):
                 elif unit == "week": value *= 7 * 24 * 60 * 60
                 elif unit == "year": value *= 365 * 24 * 60 * 60
 
-                if tag in ["lastplayed", "mtime", "added"]:
+                if tag in TIME_KEYS:
                     value = int(time.time() - value)
-        self.value = value
+        self.__value = value
 
     def search(self, data):
-        if self.shortcircuit: num = data.get(self.ftag, 0)
-        else: num = data(self.ftag, 0)
-        if   self.op == ">":  return num >  self.value
-        elif self.op == "<":  return num <  self.value
-        elif self.op == "=":  return num == self.value
-        elif self.op == ">=": return num <= self.value
-        elif self.op == "<=": return num <= self.value
-        elif self.op == "!=": return num != self.value
-        else: raise ValueError("Unknown operator %s" % self.op)
+        if self.__shortcircuit: num = data.get(self.__ftag, 0)
+        else: num = data(self.__ftag, 0)
+        if   self.__op == ">":  return num >  self.__value
+        elif self.__op == "<":  return num <  self.__value
+        elif self.__op == "=":  return num == self.__value
+        elif self.__op == ">=": return num <= self.__value
+        elif self.__op == "<=": return num <= self.__value
+        elif self.__op == "!=": return num != self.__value
+        else: raise ValueError("Unknown operator %s" % self.__op)
 
     def __repr__(self):
-        return "<Numcmp tag=%r, op=%r, value=%d>"%(self.tag,self.op,self.value)
+        return "<Numcmp tag=%r, op=%r, value=%d>"%(
+            self.__tag, self.__op, self.__value)
 
 # See if a property of the object matches its RE.
 class Tag(object):
@@ -113,20 +116,20 @@ class Tag(object):
               "d": "date",
               }
     def __init__(self, names, res):
-        self.names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
-        self.res = res
-        if "*" in self.names:
-            self.names.remove("*")
-            self.names.extend(["artist", "album", "title", "version",
-                               "performer"])
-        if not isinstance(self.res, list): self.res = [self.res]
+        self.__names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
+        self.__res = res
+        if "*" in self.__names:
+            self.__names.remove("*")
+            self.__names.extend(
+                ["artist", "album", "title", "version", "performer"])
+        if not isinstance(self.__res, list): self.__res = [self.__res]
 
     def search(self, data):
-        for name in self.names:
-            for re in self.res:
+        for name in self.__names:
+            for re in self.__res:
                 if re.search(data.get(name, data.get("~"+name, ""))):
                     return True
         return False
 
     def __repr__(self):
-        return ("<Tag names=%r, res=%r>" % (self.names, self.res))
+        return ("<Tag names=%r, res=%r>" % (self.__names, self.__res))
