@@ -10,6 +10,8 @@
 
 VERSION = "0.4"
 
+import os, sys
+
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
 # using e.g. Curses would change the UI. The converse is not true. Many
@@ -181,12 +183,15 @@ class GTKSongInfoWrapper(object):
         return False
 
 # Make a standard directory-chooser, and return the filenames and response.
-def make_chooser(title):
+def make_chooser(title, initial_dir = None):
     chooser = gtk.FileChooserDialog(
         title = title,
+        parent = widgets["main_window"],
         action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                    gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+    if initial_dir: chooser.set_current_folder(initial_dir)
+    chooser.set_local_only(True)
     chooser.set_select_multiple(True)
     resp = chooser.run()
     fns = chooser.get_filenames()
@@ -216,6 +221,8 @@ class Widgets(object):
 
 # Glade-connected handler functions.
 class GladeHandlers(object):
+    last_dir = os.environ["HOME"]
+
     def gtk_main_quit(*args): gtk.main_quit()
 
     def save_size(widget, *args):
@@ -337,7 +344,7 @@ class GladeHandlers(object):
         config.set("settings", "jump", str(bool(toggle.get_active())))
 
     def select_scan(*args):
-        resp, fns = make_chooser("Select Directories")
+        resp, fns = make_chooser("Select Directories", os.environ["HOME"])
         if resp == gtk.RESPONSE_OK:
             widgets["scan_opt"].set_text(":".join(fns))
 
@@ -355,7 +362,7 @@ class GladeHandlers(object):
         player.playlist.paused = False
 
     def open_chooser(*args):
-        resp, fns = make_chooser("Add Music")
+        resp, fns = make_chooser("Add Music", GladeHandlers.last_dir)
         if resp == gtk.RESPONSE_OK:
             progress = widgets["throbber"]
             label = widgets["found_count"]
@@ -369,6 +376,7 @@ class GladeHandlers(object):
             wind.hide()
             player.playlist.refilter()
             refresh_songlist()
+        if fns: GladeHandlers.last_dir = fns[0]
 
     def update_volume(slider):
         player.device.volume = int(slider.get_value())
@@ -979,8 +987,6 @@ def error_and_quit():
     return True
 
 if __name__ == "__main__":
-    import os, sys
-
     # Check command-line parameters before doing "real" work, so they
     # respond quickly.
     for command in sys.argv[1:]:
