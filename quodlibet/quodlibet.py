@@ -1173,7 +1173,7 @@ class MainWindow(MultiInstanceWidget):
             column.header_name = t
             column.set_resizable(True)
             if t in SHORT_COLS or t.startswith("~#"):
-                column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+                render.set_fixed_size(-1, -1)
             else:
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_fixed_width(ws[i])
