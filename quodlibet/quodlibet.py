@@ -447,12 +447,12 @@ class TrayIcon(object):
             import statusicon
         except:
             self.icon = None
-            print _("W: Failed to initialize status icon.")
+            print to(_("W: Failed to initialize status icon."))
         else:
             self.icon = statusicon.StatusIcon(pixbuf)
             self.icon.connect("activate", activate_cb)
             self.icon.connect("popup-menu", popup_cb)
-            print _("Initialized status icon.")
+            print to(_("Initialized status icon."))
 
     def set_tooltip(self, tooltip):
         if self.icon:
@@ -571,11 +571,11 @@ class MmKeys(object):
         try:
             import mmkeys
         except:
-            print _("W: Failed to initialize multimedia key support.")
+            print to(_("W: Failed to initialize multimedia key support."))
         else:
             self.keys = mmkeys.MmKeys()
             map(self.keys.connect, *zip(*cbs.items()))
-            print _("Initialized multimedia key support.")
+            print to(_("Initialized multimedia key support."))
 
 class Osd(object):
     def __init__(self):
@@ -583,12 +583,12 @@ class Osd(object):
             import gosd
         except:
             self.gosd = None
-            print _("W: Failed to initialize OSD.")
+            print to(_("W: Failed to initialize OSD."))
         else:
             self.gosd = gosd
             self.level = 0
             self.window = None
-            print _("Initialized OSD.")
+            print to(_("Initialized OSD."))
 
     def show_osd(self, song):
         if not self.gosd: return
@@ -937,7 +937,7 @@ class MainWindow(MultiInstanceWidget):
                 player.playlist.go_to(library[filename])
                 player.playlist.paused = False
             else:
-                print "W: Unable to load %s" % filename
+                print to(_("W: Unable to load %s") % filename)
         elif c == "d":
             filename = os.read(source, 4096)
             for a, c in library.scan([filename]): pass
@@ -1121,7 +1121,7 @@ class MainWindow(MultiInstanceWidget):
                     s = s.replace("%s", '"' + site + '"')
                     s = s.replace("%%", "%")
                 else: s += " \"%s\"" % site
-                print _("Opening web browser: %s") % s
+                print to(_("Opening web browser: %s") % s)
                 if os.system(s + " &") == 0: break
         else:
             ErrorMessage(self.window,
@@ -2578,7 +2578,6 @@ def main():
        config.set("settings", "headers", "title")
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
-        print opt, val
         HEADERS_FILTER[opt] = val
 
     setup_ui()
@@ -2596,13 +2595,13 @@ def main():
     player.playlist.quitting()
     t.join()
 
-    print _("Saving song library.")
+    print to(_("Saving song library."))
     library.save(const.LIBRARY)
     cleanup()
     save_config()
 
 def print_help():
-    print _("""\
+    print to(_("""\
 Quod Libet - a music library and player
 Options:
   --help, -h        Display this help message
@@ -2625,28 +2624,28 @@ Options:
     Play this file, adding it to the library if necessary.
 
 For more information, see the manual page (`man 1 quodlibet').
-""")
+"""))
 
     raise SystemExit
 
 def print_version():
-    print _("""\
+    print to(_("""\
 Quod Libet %s
 Copyright 2004 Joe Wreschnig, Michael Urman - quodlibet@lists.sacredchao.net
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
-""") % VERSION
+""")) % VERSION
     raise SystemExit
 
 def refresh_cache():
     if isrunning():
-        raise SystemExit(_(
-            "The library cannot be refreshed while Quod Libet is running."))
+        raise SystemExit(to(_(
+            "The library cannot be refreshed while Quod Libet is running.")))
     import library, config, const
     config.init(const.CONFIG)
     library.init()
-    print _("Loading, scanning, and saving your library.")
+    print to(_("Loading, scanning, and saving your library."))
     library.library.load(const.LIBRARY)
     for x, y in library.library.rebuild(): pass
     library.library.save(const.LIBRARY)
@@ -2655,7 +2654,7 @@ def refresh_cache():
 DEF_PP = ("%(artist)?(album) - %(album)??(tracknumber) - "
           "%(tracknumber)? - %(title)")
 def print_playing(fstring = DEF_PP):
-    import util
+    import util; from util import to
     try:
         fn = file(const.CURRENT)
         data = {}
@@ -2671,7 +2670,7 @@ def print_playing(fstring = DEF_PP):
             print util.format_string(DEF_PP, data)
         raise SystemExit
     except (OSError, IOError):
-        print _("No song is currently playing.")
+        print to(_("No song is currently playing."))
         raise SystemExit(True)
 
 def error_and_quit():
@@ -2689,7 +2688,7 @@ def isrunning():
 
 def control(c):
     if not isrunning():
-        raise SystemExit(_("Quod Libet is not running."))
+        raise SystemExit(to(_("Quod Libet is not running.")))
     else:
         try:
             import signal
@@ -2702,7 +2701,7 @@ def control(c):
             f.close()
         except (OSError, IOError, TypeError):
             os.unlink(const.CONTROL)
-            print _("Unable to write to %s. Removing it.") % const.CONTROL
+            print to(_("Unable to write to %s. Removing it.") % const.CONTROL)
             if c != '!': raise SystemExit(True)
         else:
             raise SystemExit
@@ -2713,12 +2712,14 @@ def cleanup(*args):
         except OSError: pass
 
 if __name__ == "__main__":
-    basedir = os.path.split(os.path.realpath(__file__))[0]
-    i18ndir = "/usr/share/locale"
-
     import locale, gettext
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
+    from util import to
+
+    basedir = os.path.split(os.path.realpath(__file__))[0]
+    i18ndir = "/usr/share/locale"
+
     gettext.bindtextdomain("quodlibet")
     gettext.textdomain("quodlibet")
     gettext.install("quodlibet", unicode = True)
@@ -2752,11 +2753,11 @@ if __name__ == "__main__":
                 try: print_playing(opts[i+1])
                 except IndexError: print_playing()
             else:
-                print _("E: Unknown command line option: %s") % command
-                raise SystemExit(_("E: Try %s --help") % sys.argv[0])
+                print to(_("E: Unknown command line option: %s") % command)
+                raise SystemExit(to(_("E: Try %s --help") % sys.argv[0]))
     except IndexError:
-        print _("E: Option `%s' requires an argument.") % command
-        raise SystemExit(_("E: Try %s --help") % sys.argv[0])
+        print to(_("E: Option `%s' requires an argument.") % command)
+        raise SystemExit(to(_("E: Try %s --help") % sys.argv[0]))
 
     if os.path.exists(const.CONTROL):
         print _("Quod Libet is already running.")
@@ -2769,18 +2770,19 @@ if __name__ == "__main__":
     pygtk.require('2.0')
     import gtk, pango
     if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 4):
-        print _("E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet.")
-        print _("E: You have GTK+ %s and PyGTK %s.") % (
+        print to(
+            _("E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."))
+        print to(_("E: You have GTK+ %s and PyGTK %s.") % (
             ".".join(map(str, gtk.gtk_version)),
-            ".".join(map(str, gtk.pygtk_version)))
-        raise SystemExit(_("E: Please upgrade GTK+/PyGTK."))
+            ".".join(map(str, gtk.pygtk_version))))
+        raise SystemExit(to(_("E: Please upgrade GTK+/PyGTK.")))
     import gtk.glade
     gtk.glade.bindtextdomain("quodlibet")
     gtk.glade.textdomain("quodlibet")
 
     import gc
     import shutil
-    import util
+    import util; from util import to
 
     # Load configuration data and scan the library for new/changed songs.
     import config
@@ -2789,7 +2791,7 @@ if __name__ == "__main__":
     # Load the library.
     import library
     library.init(const.LIBRARY)
-    print _("Loaded song library.")
+    print to(_("Loaded song library."))
     from library import library
 
     if config.get("settings", "scan"):
@@ -2797,7 +2799,7 @@ if __name__ == "__main__":
             pass
 
     # Try to initialize the playlist and audio output.
-    print _("Opening audio device.")
+    print to(_("Opening audio device."))
     import player
     try: player.init(config.get("settings", "backend"))
     except IOError:

@@ -1024,7 +1024,7 @@ msgid ""
 "sure /usr/bin/sensible-browser exists."
 msgstr ""
 "Nie znaleziono przeglądarki WWW. Należy ustawić zmienną środowiskową "
-"$BROWESER albo ustawić link symboliczny /usr/bin/sensible-browser."
+"$BROWSER albo ustawić link symboliczny /usr/bin/sensible-browser."
 
 #: quodlibet.py:1213
 #, python-format

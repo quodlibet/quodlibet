@@ -8,7 +8,7 @@
 
 import os, sys
 import cPickle as Pickle
-import util; from util import escape
+import util; from util import escape, to
 import fcntl
 import random
 import time
@@ -32,7 +32,7 @@ def MusicFile(filename):
             try:
                 return supported[ext](filename)
             except:
-                print _("W: Error loading %s") % filename
+                print to(_("W: Error loading %s") % filename)
                 return None
     else: return None
 
@@ -719,7 +719,7 @@ class Library(dict):
                 f = file(fn, "rb")
                 try: songs = Pickle.load(f)
                 except:
-                    print _("W: %s is not a QL song database.") % fn
+                    print to(_("W: %s is not a QL song database.") % fn)
                     songs = []
                 f.close()
             else: return 0, 0
@@ -754,7 +754,7 @@ class Library(dict):
         added, changed = 0, 0
 
         for d in dirs:
-            print _("Checking %s") % d
+            print to(_("Checking %s") % d)
             d = os.path.expanduser(d)
             for path, dnames, fnames in os.walk(d):
                 for fn in fnames:
@@ -794,28 +794,28 @@ supported = {}
 
 def init(cache_fn = None):
     if util.check_ogg():
-        print _("Enabling Ogg Vorbis support.")
+        print to(_("Enabling Ogg Vorbis support."))
         supported[".ogg"] = OggFile
     else:
-        print _("W: Ogg Vorbis support is disabled! Ogg files cannot be loaded.")
+        print to(_("W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."))
 
     if util.check_mp3():
-        print _("Enabling MP3 support.")
+        print to(_("Enabling MP3 support."))
         supported[".mp3"] = MP3File
     else:
-        print _("W: MP3 support is disabled! MP3 files cannot be loaded.")
+        print to(_("W: MP3 support is disabled! MP3 files cannot be loaded."))
 
     if util.check_flac():
-        print _("Enabling FLAC support.")
+        print to(_("Enabling FLAC support."))
         supported[".flac"] = FLACFile
 
     if util.check_mod():
-        print _("Enabling ModPlug support.")
+        print to(_("Enabling ModPlug support."))
         for fmt in ["mod", "it", "xm", "s3m"]:
             supported["." + fmt] = ModFile
 
     if util.check_mpc():
-        print _("Enabling Musepack support.")
+        print to(_("Enabling Musepack support."))
         supported[".mpc"] = supported[".mp+"] = MPCFile
         
     global library

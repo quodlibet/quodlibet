@@ -6,9 +6,18 @@
 #
 # $Id$
 
-import os, sre, stat, string
+import os, sre, stat, string, locale
 import gettext
 _ = gettext.gettext
+
+# Convert a string from 'frm' encoding (or Unicode) to the native one.
+# Only use this for console messages; PyGTK understands both Unicode
+# and UTF-8 properly.
+def to(string, frm = "utf-8"):
+    lang, enc = locale.getdefaultlocale()
+    if isinstance(string, unicode): return string.encode(enc, "replace")
+    else:
+        return string.decode(frm).encode(enc, "replace")
 
 def mtime(filename):
     try: return os.stat(filename)[stat.ST_MTIME]
