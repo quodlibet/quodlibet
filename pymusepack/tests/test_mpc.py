@@ -18,14 +18,21 @@ class APEWriter(TestCase):
         for k, v in self.values.items():
             tag[k] = v
         tag.write()
+        tag.write(SAMPLE + ".justtag")
         self.tag = musepack.APETag(SAMPLE + ".new")
 
     def test_readback(self):
         for k, v in self.tag.items():
             self.failUnlessEqual(str(v), self.values[k])
 
+    def test_size(self):
+        self.failUnlessEqual(
+            os.path.getsize(SAMPLE + ".new"),
+            os.path.getsize(SAMPLE) + os.path.getsize(SAMPLE + ".justtag"))
+
     def tearDown(self):
         os.unlink(SAMPLE + ".new")
+        os.unlink(SAMPLE + ".justtag")
 
 class APEReader(TestCase):
     def setUp(self):

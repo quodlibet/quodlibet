@@ -73,7 +73,8 @@ class APETag(object):
             debug("key %s, value %r" % (key, value))
 
     def _tag_start(self, f):
-        f.seek(-32, 2)
+        try: f.seek(-32, 2)
+        except IOError: f.seek(0, 0)
         if f.read(8) == "APETAGEX":
             f.read(4) # version
             tag_size = _read_int(f.read(4))
@@ -84,7 +85,8 @@ class APETag(object):
             return f.tell()
 
     def _find_tag(self, f):
-        f.seek(-32, 2)
+        try: f.seek(-32, 2)
+        except IOError: return None, 0
         data = f.read(32)
         if data.startswith("APETAGEX"):
             # 4 byte version
