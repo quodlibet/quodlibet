@@ -25,12 +25,27 @@ class GTKSongInfoWrapper(object):
         self.image = widgets["albumcover"]
         self.text = widgets["currentsong"]
         self.pos = widgets["song_pos"]
+        self.timer = widgets["song_timer"]
+        self.button = widgets["play_button"]
+        self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
+        self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
+
+        self._time = (0, 0)
+        gtk.timeout_add(300, self._update_time)
+
+    def set_paused(self, paused):
+        gtk.idle_add(self._update_paused, paused)
+
+    def _update_paused(self, paused):
+        img = self.button.get_icon_widget()
+        if paused: img.set_from_pixbuf(self.paused)
+        else: img.set_from_pixbuf(self.playing)
 
     def set_song(self, song, player):
         gtk.idle_add(self._update_song, song, player)
 
     def set_time(self, cur, end):
-        gtk.idle_add(self._update_time, cur, end)
+        self._time = (cur, end)
 
     def _update_song(self, song, player):
         if song:
@@ -53,13 +68,13 @@ class GTKSongInfoWrapper(object):
             self.text.set_markup("<span size='xx-large'>Not playing</span>")
         return False
 
-    def _update_time(self, cur, end):
-        timer = widgets["song_timer"]
+    def _update_time(self):
+        cur, end = self._time
         self.pos.set_value(cur)
-        timer.set_text("%d:%02d/%d:%02d" %
-                       (cur / 60000, (cur % 60000) / 1000,
-                        end / 60000, (end % 60000) / 1000))
-        return False
+        self.timer.set_text("%d:%02d/%d:%02d" %
+                            (cur / 60000, (cur % 60000) / 1000,
+                             end / 60000, (end % 60000) / 1000))
+        return True
 
 class Widgets(object):
     def __init__(self, file):
@@ -72,7 +87,7 @@ class Widgets(object):
 class GladeHandlers(object):
     def gtk_main_quit(*args): gtk.main_quit()
 
-    def play_pause(*args):
+    def play_pause(button):
         player.playlist.paused ^= True
 
     def next_song(*args):
@@ -86,6 +101,9 @@ class GladeHandlers(object):
 
     def toggle_shuffle(button):
         player.playlist.shuffle = button.get_active()
+
+    def seek_slider(slider):
+        gtk.idle_add(player.playlist.seek, slider.get_value())
 
     def select_song(tree, indices, col):
         iter = widgets.songs.get_iter(indices)
@@ -199,7 +217,7 @@ def main():
         column = gtk.TreeViewColumn(t.title(), renderer, text=i)
         column.set_resizable(True)
         column.set_clickable(True)
-        column.set_sort_indicator(True)
+        column.set_sort_indicator(False)
         column.connect('clicked', set_sort_by, (i,))
         sl.append_column(column)
 

@@ -16,7 +16,7 @@ from library import library
 from parser import QueryParser, QueryLexer
 import ossaudiodev # barf
 
-BUFFER_SIZE = 2**8
+BUFFER_SIZE = 2**12
 
 # Playlist management:
 # There are three objects involved in the player; the first is the
@@ -117,12 +117,21 @@ class PlaylistPlayer(object):
         self.orig_playlist = playlist[:]
         self.shuffle = False
         self.repeat = False
-        self.paused = True
+        self._paused = True
         self.song = None
         self.quit = False
+        self.sort = cmp
         self.lock = threading.Lock()
 
     def __iter__(self): return iter(self.orig_playlist)
+
+    def set_paused(self, paused):
+        self._paused = paused
+        self.info.set_paused(paused)
+
+    def get_paused(self): return self._paused
+
+    paused = property(get_paused, set_paused)
 
     def seek(self, pos):
         self.lock.acquire()
@@ -130,22 +139,19 @@ class PlaylistPlayer(object):
         self.lock.release()
 
     def play(self, info):
+        self.info = info
         while not self.quit:
             while self.playlist:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
                 if self.shuffle: random.shuffle(self.playlist)
                 self.player = FilePlayer(self.output, self.song['filename'])
-                info.set_song(self.song, self.player)
+                self.info.set_song(self.song, self.player)
                 times[1] = self.player.length
                 self.played.append(self.song)
                 self.lock.release()
-                old_t = 500
                 for t in self.player:
-                    if t > old_t:
-                        info.set_time(t, self.player.length)
-                        old_t = t + 500
-                    times[0] = t
+                    self.info.set_time(t, self.player.length)
                     while self.paused:
                         time.sleep(0.01)
             if self.repeat:
@@ -166,7 +172,8 @@ class PlaylistPlayer(object):
             f = lambda b, a: (cmp(a.get(header), b.get(header)) or cmp(a, b))
         else:
             f = lambda a, b: (cmp(a.get(header), b.get(header)) or cmp(a, b))
-        pl.sort(f)
+        self.sort = f
+        pl.sort(self.sort)
         self.set_playlist(pl, lock = False)
         self.lock.release()
 
@@ -175,6 +182,7 @@ class PlaylistPlayer(object):
 
     def set_playlist(self, pl, lock = True):
         if lock: self.lock.acquire()
+        pl.sort(self.sort)
         self.played = []
         self.playlist = pl
         self.orig_playlist = pl[:]
@@ -187,6 +195,7 @@ class PlaylistPlayer(object):
     def next(self):
         self.lock.acquire()
         if self.player: self.player.end()
+        self.paused = False
         self.lock.release()
 
     def quitting(self):
@@ -199,6 +208,7 @@ class PlaylistPlayer(object):
 
     def previous(self):
         self.lock.acquire()
+        self.paused = False
         if len(self.played) >= 2:
             if self.player: self.player.end()
             self.playlist.insert(0, self.played.pop())
