@@ -15,7 +15,11 @@ import time
 def MusicFile(filename):
     for ext in supported.keys():
         if filename.lower().endswith(ext):
-            return supported[ext](filename)
+            try:
+                return supported[ext](filename)
+            except:
+                print "W: Error loading %s" % filename
+                return None
     else: return None
 
 class AudioFile(dict):
@@ -48,6 +52,7 @@ class AudioFile(dict):
         self.setdefault("=playcount", 0)
         self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
         self["=basename"] = os.path.basename(self['=filename'])
+        self["=dirname"] = os.path.dirname(self['=filename'])
 
     def to_markup(self):
         title = u", ".join(self["title"].split("\n"))
@@ -414,12 +419,19 @@ class Library(dict):
         f.close()
 
     def load(self, fn):
-        if os.path.exists(fn):
-            f = file(fn, "rb")
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-            songs = Pickle.load(f)
-            f.close()
-        else: return 0, 0
+        try:
+            if os.path.exists(fn):
+                f = file(fn, "rb")
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                try: songs = Pickle.load(f)
+                except:
+                    print "W: %s is not a QL song database." % fn
+                    songs = []
+                f.close()
+            else: return 0, 0
+        # Yes, really catch everything.
+        except: return 0, 0
+
         removed, changed = 0, 0
         for song in songs:
             if type(song) not in supported.values(): continue

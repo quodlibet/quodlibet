@@ -1,6 +1,7 @@
 0.3
  - Handle mono MP3s correctly.
- - Crash less.
+ - Crash less, especially when editing tags.
+ - Many smaller bug fixes.
 
 0.2
  - Song properties dialog, featuring mass tag editing/addition/removal.

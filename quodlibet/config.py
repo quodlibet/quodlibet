@@ -16,11 +16,13 @@ get = _config.get
 set = _config.set
 getboolean = _config.getboolean
 write = _config.write
+options = _config.options
 
 def init(rc_file):
     # So far we only have/need one section...
     _config.add_section("settings")
     _config.add_section("memory")
+    _config.add_section("header_maps")
     _config.set("settings", "scan", "")
     _config.set("settings", "cover", "true")
     _config.set("settings", "color", "true")
@@ -28,7 +30,8 @@ def init(rc_file):
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
     _config.set("memory", "query", "")
-    _config.read([rc_file])
+    try: _config.read([rc_file])
+    except: pass
 
 def state(arg):
     return _config.getboolean("settings", arg)

@@ -12,7 +12,7 @@ made by (for example) \fBid3v2\fR and \fBvorbiscomment\fR. Most CD
 ripping programs or music download services take care of this for you,
 but older files may have missing or inaccurate tags.
 .SH OPTIONS
-.IP --refresh-library
+.IP \-\-refresh\-library
 Load your song library and configuration file. Deleted files will be
 removed, changed files will be updated, and new files in your scan
 directories will be added. QL will not start its interface at all,
@@ -95,7 +95,7 @@ title = &(|(/aozora/, /blue/), /knife/)
 .RE
 .SH FILES
 .IP ~/.quodlibet/songs
-A cached list of songs to load at start-up. The format is a pickled
+A cached list of songs to load initially. The format is a pickled
 Python list. Deleting this file will remove all songs from your
 library.
 .IP ~/.quodlibet/config
@@ -113,7 +113,8 @@ Window size is not saved on exit.
 .br
 Error handling leaves much to be desired.
 .SH SEE ALSO
+http://www.sacredchao.net/~piman/software/quodlibet.shtml,
 .BR regex (7),
 .BR vorbiscomment (1),
 .BR id3v2 (1),
-http://www.xiph.org/ogg/vorbis/doc/v-comment.html
+http://www.xiph.org/ogg/vorbis/doc/v\-comment.html

@@ -654,7 +654,8 @@ HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track",
                    "discnumber": "Disc", "=d": "Disc",
                    "=lastplayed": "Last Played", "=filename": "Full Name",
-                   "=playcount": "Play Count", "=basename": "Filename" }
+                   "=playcount": "Play Count", "=basename": "Filename",
+                   "=dirname": "Directory"}
 
 CURRENT_SONG = [ None ]
 
@@ -740,6 +741,11 @@ def main():
         refresh_songlist()
     player.playlist.sort_by(HEADERS[0])
     print "Done loading songs."
+
+    for opt in config.options("header_maps"):
+        val = config.get("header_maps", opt)
+        HEADERS_FILTER[opt] = val
+
     t = threading.Thread(target = player.playlist.play,
                          args = (widgets.wrap,))
     gc.collect()

@@ -11,10 +11,13 @@ Quod Libet is written entirely in Python and licensed under the GNU
 GPL version 2.
 
 ====[ Neat Features
- - MP3 and Ogg Vorbis audio format support.
- - Full support for Unicode in tags and searches.
+ - MP3, Ogg Vorbis, and FLAC audio format support.
+ - Full support for the Vorbis comment format.
  - Album cover detection and display.
  - Regexp-based search support.
+
+For a full description and list of features, see
+http://www.sacredchao.net/~piman/software/quodlibet.shtml.
 
 ====[ Requirements
 
