@@ -35,7 +35,7 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	./setup.py install debian/python-flac
+	./setup.py install --prefix debian/python-flac
 
 binary-arch: build install
 	dh_testdir

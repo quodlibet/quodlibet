@@ -35,7 +35,7 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	./setup.py install debian/python-modplug
+	./setup.py install --prefix debian/python-modplug
 
 binary-arch: build install
 	dh_testdir
@@ -44,7 +44,7 @@ binary-arch: build install
 	dh_installdocs
 	dh_link
 	dh_strip
-	dh_compress -Xexamples
+	dh_compress
 	dh_fixperms
 	dh_python
 	dh_installdeb
