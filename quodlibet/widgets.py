@@ -1360,7 +1360,7 @@ class MainWindow(gtk.Window):
 
         # plugin support
         from plugins import PluginManager
-        self.__pm = PluginManager()
+        self.__pm = PluginManager([const.PLUGINS])
         
         self.browser = None
         self.select_browser(self, config.getint("memory", "browser"))

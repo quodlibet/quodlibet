@@ -64,9 +64,9 @@ callables = {
 class PluginManager(object):
     """PluginManager manages all the plugins"""
 
-    def __init__(self):
-        from const import PLUGINS
-        self.scan = [PLUGINS]
+    def __init__(self, folders=[]):
+        self.scan = []
+        self.scan.extend(folders)
         self.files = {}
         self.byfile = {}
         self.plugins = {}
@@ -116,7 +116,8 @@ class PluginManager(object):
     def load(self, name, mod):
         
         for plugin in self.byfile.get(name, []):
-            del self.plugins[name + '.' + plugin.PLUGIN_NAME]
+            try: del self.plugins[name + '.' + plugin.PLUGIN_NAME]
+            except KeyError: pass
 
         self.byfile[name] = []
         objects = [mod] + [getattr(mod, attr) for attr in vars(mod)]
