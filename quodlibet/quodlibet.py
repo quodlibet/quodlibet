@@ -629,9 +629,19 @@ class Osd(object):
             self.window.destroy()
             self.window = None
 
-class PlaylistBar(object):
+class BrowserBar(object):
+    def __init__(self, hbox):
+        for child in hbox.get_children():
+            hbox.remove(child)
 
+    def destroy(self): pass
+
+    def can_filter(self, key):
+        return False
+
+class PlaylistBar(BrowserBar):
     def __init__(self, hbox, cb):
+        super(self.__class__, self).__init__(hbox)
         self.combo = gtk.ComboBox(PlayList.lists_model())
         cell = gtk.CellRendererText()
         self.combo.pack_start(cell, True)
@@ -662,10 +672,11 @@ class PlaylistBar(object):
         hbox.show_all()
 
     def destroy(self):
+        self.tips.disable()
         self.combo.set_model(None)
         self.button.destroy()
+        self.button2.destroy()
         self.combo.destroy()
-        self.tips.disable()
         self.tips.destroy()
 
     def list_selected(self, box):
@@ -678,17 +689,45 @@ class PlaylistBar(object):
             playlist = "playlist_" + self.combo.get_model()[active][1]
             self.cb("#(%s > 0)" % playlist, "~#"+playlist)
 
+    def activate(self):
+        self.list_selected(None)
+
     def edit_current(self, button):
         active = self.combo.get_active()
         if active: PlaylistWindow(self.combo.get_model()[active][0])
 
-    def can_filter(self, key):
-        return False
+class EmptyBar(BrowserBar):
+    def __init__(self, hbox, cb):
+        BrowserBar.__init__(self, hbox)
+        self.text = ""
+        self.cb = cb
 
-class SearchBar(object):
+    def set_text(self, text):
+        self.text = text
+
+    def activate(self):
+        self.cb(self.text, None)
+
+    def can_filter(self, key):
+        return True
+
+    def filter(self, key, values):
+        if key.startswith("~#"):
+            nheader = key[2:]
+            queries = ["#(%s = %d)" % (nheader, i) for i in values]
+            self.set_text("|(" + ", ".join(queries) + ")")
+        else:
+            text = "|".join([sre.escape(s) for s in values])
+            if key.startswith("~"): key = key[1:]
+            self.set_text(u"%s = /^(%s)$/c" % (key, text))
+        self.activate()
+
+class SearchBar(EmptyBar):
     model = None
     
     def __init__(self, hbox, button, cb):
+        EmptyBar.__init__(self, hbox, cb)
+
         if SearchBar.model is None:
             SearchBar.model = gtk.ListStore(str)
 
@@ -700,7 +739,6 @@ class SearchBar(object):
         hbox.pack_start(self.combo)
         hbox.pack_start(self.button, expand = False)
         hbox.show_all()
-        self.cb = cb
 
     def destroy(self):
         self.combo.set_model(None)
@@ -738,20 +776,6 @@ class SearchBar(object):
         markup = '<span foreground="%s">%s</span>' %(
             color, util.escape(text))
         layout.set_markup(markup)
-
-    def can_filter(self, key):
-        return True
-
-    def filter(self, key, values):
-        if key.startswith("~#"):
-            nheader = key[2:]
-            queries = ["#(%s = %d)" % (nheader, i) for i in values]
-            self.set_text("|(" + ", ".join(queries) + ")")
-        else:
-            text = "|".join([sre.escape(s) for s in values])
-            if key.startswith("~"): key = key[1:]
-            self.set_text(u"%s = /^(%s)$/c" % (key, text))
-        self.activate()
 
 class MainWindow(MultiInstanceWidget):
     def __init__(self):
@@ -1062,6 +1086,7 @@ class MainWindow(MultiInstanceWidget):
             PlaylistWindow(name)
 
     def showhide_widget(self, box, on):
+        if on and box.get_property('visible'): return
         width, height = self.window.get_size()
         if on:
             box.show()
@@ -1374,7 +1399,7 @@ class MainWindow(MultiInstanceWidget):
             self.cmenu_w["filter_column"].hide()
 
     def show_search(self, *args):
-        if not isinstance(self.browser, SearchBar):
+        if type(self.browser) != SearchBar:
             self.widgets["FiltersMenu"].show()
             for h in ["genre", "artist", "album"]:
                 self.cmenu_w["filter_on_" + h].show()
@@ -1382,19 +1407,14 @@ class MainWindow(MultiInstanceWidget):
             self.widgets["separator4"].show()
             self.cmenu_w["filter_sep"].show()
 
-            for child in self.widgets["query_hbox"].get_children():
-                self.widgets["query_hbox"].remove(child)
-            if self.browser:
-                self.browser.destroy()
-                self.browser = None
-            else:
-                self.showhide_widget(self.widgets["query_hbox"], True)
+            self.browser.destroy()
+            self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser = SearchBar(self.widgets["query_hbox"],
                                      _("Search"), self.text_parse)
             self.browser.set_text(config.get("memory", "query"))
 
     def show_listselect(self, *args):
-        if not isinstance(self.browser, PlaylistBar):
+        if type(self.browser) != PlaylistBar:
             self.widgets["FiltersMenu"].hide()
             for h in ["genre", "artist", "album"]:
                 self.cmenu_w["filter_on_" + h].hide()
@@ -1402,13 +1422,8 @@ class MainWindow(MultiInstanceWidget):
             self.widgets["separator4"].hide()
             self.cmenu_w["filter_sep"].hide()
 
-            for child in self.widgets["query_hbox"].get_children():
-                self.widgets["query_hbox"].remove(child)
-            if self.browser:
-                self.browser.destroy()
-                self.browser = None
-            else:
-                self.showhide_widget(self.widgets["query_hbox"], True)
+            self.browser.destroy()
+            self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser = PlaylistBar(self.widgets["query_hbox"],
                                        self.playlist_selected)
 
@@ -1421,13 +1436,11 @@ class MainWindow(MultiInstanceWidget):
         self.refresh_songlist()
 
     def hide_browser(self, *args):
-        if self.browser:
-            self.widgets["FiltersMenu"].hide()
-            self.showhide_widget(self.widgets["query_hbox"], False)
-            for child in self.widgets["query_hbox"].get_children():
-                self.widgets["query_hbox"].remove(child)
+        if type(self.browser) != EmptyBar:
             self.browser.destroy()
-            self.browser = None
+            self.showhide_widget(self.widgets["query_hbox"], False)
+            self.browser = EmptyBar(self.widgets["query_hbox"],
+                                    self.text_parse)
 
     # Grab the text from the query box, parse it, and make a new filter.
     # The sort argument is not used for this browser.
