@@ -1693,10 +1693,17 @@ class SongProperties(MultiInstanceWidget):
             for i, h in enumerate(pattern.headers):
                 if row[i]:
                     if not add or h not in song:
-                        song[h] = row[i + 3].decode("utf-8")
+                        try:
+                            song[h] = row[i + 3].decode("utf-8")
+                        except UnicodeDecodeError:
+                            song[h] = row[i + 3].decode("iso8859-1")
                         changed = True
                     else:
-                        for val in row[i + 3].decode("utf-8").split("\n"):
+                        try:
+                            vals = row[i + 3].decode("utf-8")
+                        except UnicodeDecodeError:
+                            vals = row[i + 3].decode("iso8859-1")
+                        for val in vals.split("\n"):
                             if val not in song[h]:
                                 song.add(h, val)
                                 changed = True
