@@ -24,23 +24,21 @@ if sys.version_info < (2, 4):
 class widgets(object): pass
 
 # Make a standard directory-chooser, and return the filenames and response.
-class FileChooser(object):
+class FileChooser(gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir = None):
-        self.dialog = gtk.FileChooserDialog(
-            title = title,
-            parent = parent,
+        gtk.FileChooserDialog.__init__(
+            self, title = title, parent = parent,
             action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
             buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                        gtk.STOCK_OPEN, gtk.RESPONSE_OK))
         if initial_dir:
-            self.dialog.set_current_folder(initial_dir)
-        self.dialog.set_local_only(True)
-        self.dialog.set_select_multiple(True)
+            self.set_current_folder(initial_dir)
+        self.set_local_only(True)
+        self.set_select_multiple(True)
 
     def run(self):
-        resp = self.dialog.run()
-        fns = self.dialog.get_filenames()
-        self.dialog.destroy()
+        resp = gtk.FileChooserDialog.run(self)
+        fns = self.get_filenames()
         return resp, fns
 
 # FIXME: replace with a standard About widget when using GTK 2.6.
@@ -342,6 +340,7 @@ class PreferencesWindow(gtk.Window):
             chooser = FileChooser(widgets.preferences.window,
                                   _("Select Directories"), initial)
             resp, fns = chooser.run()
+            chooser.destroy()
             if resp == gtk.RESPONSE_OK:
                 entry.set_text(":".join(map(util.fsdecode, fns)))
 
@@ -577,15 +576,15 @@ class TrayIcon(object):
 
     tooltip = property(None, set_tooltip)
 
-class PlaylistWindow(object):
+class PlaylistWindow(gtk.Window):
     list_windows = {}
-    def __new__(cls, name, *args, **kwargs):
-        win = cls.list_windows.get(name, None)
+    def __new__(klass, name, *args, **kwargs):
+        win = klass.list_windows.get(name, None)
         if win is None:
-            win = super(PlaylistWindow, cls).__new__(cls, name,
-                                                     *args, **kwargs)
+            win = super(PlaylistWindow, klass).__new__(
+                klass, name, *args, **kwargs)
             win.initialize_window(name)
-            cls.list_windows[name] = win
+            klass.list_windows[name] = win
             # insert sorted, unless present
             def insert_sorted(model, path, iter, last_try):
                 if model[iter][1] == win.plname:
@@ -601,12 +600,12 @@ class PlaylistWindow(object):
         return win
 
     def __init__(self, name):
-        self.win.present()
+        self.present()
 
     def set_name(self, name):
         self.prettyname = name
         self.plname = PlayList.normalize_name(name)
-        self.win.set_title('Quod Libet Playlist: %s' % name)
+        self.set_title('Quod Libet Playlist: %s' % name)
 
     def _destroy(self, *w):
         del(self.list_windows[self.prettyname])
@@ -618,13 +617,13 @@ class PlaylistWindow(object):
             PlayList.lists_model().foreach(remove_matching, self.plname)
 
     def initialize_window(self, name):
-        win = self.win = gtk.Window()
-        win.set_destroy_with_parent(True)
-        win.set_default_size(400, 400)
-        win.set_border_width(12)
+        gtk.Window.__init__(self)
+        self.set_destroy_with_parent(True)
+        self.set_default_size(400, 400)
+        self.set_border_width(12)
 
         vbox = self.vbox = gtk.VBox(spacing = 6)
-        win.add(vbox)
+        self.add(vbox)
 
         bar = SearchBar(gtk.STOCK_ADD, self.add_query_results)
         vbox.pack_start(bar, expand = False, fill = False)
@@ -646,9 +645,9 @@ class PlaylistWindow(object):
         swin.add(self.view)
 
         self.set_name(name)
-        self.win.connect('destroy', self._destroy)
-        self.close.connect_object('clicked', gtk.Window.destroy, self.win)
-        self.win.show_all()
+        self.connect('destroy', self._destroy)
+        self.close.connect_object('clicked', gtk.Window.destroy, self)
+        self.show_all()
 
     def add_query_results(self, text, sort):
         query = text.decode('utf-8').strip()
@@ -1586,6 +1585,7 @@ class MainWindow(gtk.Window):
     def open_chooser(self, *args):
         chooser = FileChooser(self, _("Add Music"), self.last_dir)
         resp, fns = chooser.run()
+        chooser.destroy()
         if resp == gtk.RESPONSE_OK: self.scan_dirs(fns)
         if fns: self.last_dir = fns[0]
         library.save(const.LIBRARY)
