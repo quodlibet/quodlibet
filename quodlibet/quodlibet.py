@@ -133,8 +133,12 @@ class GladeHandlers(object):
 
 def set_sort_by(header, i):
     s = header.get_sort_order()
-    if s == gtk.SORT_ASCENDING: s = gtk.SORT_DESCENDING
-    else: s = gtk.SORT_ASCENDING
+    if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
+        s = gtk.SORT_ASCENDING
+    else: s = gtk.SORT_DESCENDING
+    for h in widgets["songlist"].get_columns():
+        h.set_sort_indicator(False)
+    header.set_sort_indicator(True)
     header.set_sort_order(s)
     player.playlist.sort_by(HEADERS[i[0]], s == gtk.SORT_DESCENDING)
     refresh_songlist()
