@@ -68,8 +68,9 @@ class AudioFile(dict):
             text = "http://www.google.com/search?q="
             artist = util.encode(artist)
             album = util.encode(album)
-            artist = "%22" + artist + "%22"
-            album = "%22" + album + "%22"
+            esc = lambda c: ord(c) > 127 and '%%%x'%ord(c) or c
+            artist = "%22" + ''.join(map(esc, artist)) + "%22"
+            album = "%22" + ''.join(map(esc, album)) + "%22"
             text += artist + "+" + album + "&ie=UTF8"
             return text
 
