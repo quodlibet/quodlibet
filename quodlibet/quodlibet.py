@@ -431,7 +431,7 @@ class MultiInstanceWidget(object):
             if resp != gtk.RESPONSE_OK: break
 
             comment = tag.child.get_text().decode("utf-8").lower().strip()
-            if command and not self.songinfo.can_change(comment):
+            if not self.songinfo.can_change(comment):
                 msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
                         gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
                 msg.set_markup("Invalid tag <b>%s</b>\n\nThe files currently"

@@ -231,10 +231,8 @@ class MP3File(AudioFile):
         self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
 
     def can_change(self, k=None):
-        if k is None:
-            return self.INVERT_IDS.keys()
-        else:
-            return k in self.INVERT_IDS.keys()
+        if k is None: return self.INVERT_IDS.keys()
+        else: return k in self.INVERT_IDS.keys()
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -262,7 +260,7 @@ class OggFile(AudioFile):
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return (k not in ["vendor"] and k[0] != "=")
+        else: return (k and k not in ["vendor"] and not k.startswith("="))
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
@@ -323,7 +321,7 @@ class FLACFile(AudioFile):
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return (k not in ["vendor"] and k[0] != "=")
+        else: return (k and k not in ["vendor"] and not k.startswith("="))
 
 class AudioFileGroup(dict):
 
