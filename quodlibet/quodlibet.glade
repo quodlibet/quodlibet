@@ -446,7 +446,7 @@
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image1506">
 			  <property name="visible">True</property>
-			  <property name="stock">gtk-media-forward</property>
+			  <property name="stock">gtk-media-next</property>
 			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
