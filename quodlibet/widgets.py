@@ -96,11 +96,12 @@ class PreferencesWindow(gtk.Window):
             config.set("settings", name, str(cb.get_active()))
 
     class SongList(_Pane, gtk.VBox):
-        def __init__(self, tips):
+        def __init__(self):
             gtk.VBox.__init__(self, spacing = 12)
             self.set_border_width(12)
             self.title = _("Song List")
             vbox = gtk.VBox(spacing = 12)
+            tips = gtk.Tooltips()
 
             c = gtk.CheckButton(_("_Jump to current song automatically"))
             tips.set_tip(c, _("When the playing song changes, "
@@ -197,11 +198,11 @@ class PreferencesWindow(gtk.Window):
             widgets.main.set_column_headers(headers)
 
     class Browsers(_Pane, gtk.VBox):
-        def __init__(self, tips):
+        def __init__(self):
             gtk.VBox.__init__(self, spacing = 12)
             self.set_border_width(12)
             self.title = _("Browsers")
-            
+            tips = gtk.Tooltips()
             c = gtk.CheckButton(_("Color _search terms"))
             tips.set_tip(
                 c, _("Display simple searches in blue, "
@@ -246,10 +247,11 @@ class PreferencesWindow(gtk.Window):
                 widgets.main.browser.refresh_panes()
 
     class Player(_Pane, gtk.VBox):
-        def __init__(self, tips):
+        def __init__(self):
             gtk.VBox.__init__(self, spacing = 12)
             self.set_border_width(12)
             self.title = _("Player")
+            tips = gtk.Tooltips()
             vbox = gtk.VBox()
             c = gtk.CheckButton(_("Show _album cover images"))
             c.set_active(config.state("cover"))
@@ -312,7 +314,7 @@ class PreferencesWindow(gtk.Window):
             else: widgets.main.image.hide()
 
     class Library(gtk.VBox):
-        def __init__(self, tips):
+        def __init__(self):
             gtk.VBox.__init__(self, spacing = 12)
             self.set_border_width(12)
             self.title = _("Library")
@@ -323,6 +325,7 @@ class PreferencesWindow(gtk.Window):
             e.set_text(util.fsdecode(config.get("settings", "scan")))
             f.get_label_widget().set_mnemonic_widget(e)
             hb.pack_start(e)
+            tips = gtk.Tooltips()
             tips.set_tip(e, _("On start up, any files found in these "
                               "directories will be added to your library"))
             hb.pack_start(b, expand = False)
@@ -404,10 +407,10 @@ class PreferencesWindow(gtk.Window):
         self.add(gtk.VBox(spacing = 12))
         tips = gtk.Tooltips()
         n = qltk.Notebook()
-        n.append_page(self.SongList(tips))
-        n.append_page(self.Browsers(tips))
-        n.append_page(self.Player(tips))
-        n.append_page(self.Library(tips))
+        n.append_page(self.SongList())
+        n.append_page(self.Browsers())
+        n.append_page(self.Player())
+        n.append_page(self.Library())
 
         self.child.pack_start(n)
 
@@ -417,7 +420,6 @@ class PreferencesWindow(gtk.Window):
         button.connect_object('clicked', gtk.Window.destroy, self)
         bbox.pack_start(button)
         self.connect_object('destroy', PreferencesWindow._destroy, self)
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.child.pack_start(bbox, expand = False)
         self.child.show_all()
 
@@ -999,11 +1001,9 @@ class PlaylistBar(Browser, gtk.HBox):
         tips = gtk.Tooltips()
         tips.set_tip(edit, _("Edit the current playlist"))
         tips.set_tip(refresh, _("Refresh the current playlist"))
-        tips.enable()
         self.show_all()
         self.connect_object('destroy', gtk.ComboBoxEntry.set_model,
                             combo, None)
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
     def save(self):
         combo = self.get_children()[0]
@@ -1042,14 +1042,15 @@ class PlaylistBar(Browser, gtk.HBox):
         if active > 0: PlaylistWindow(combo.get_model()[active][0])
 
 class CoverImage(gtk.Frame):
-    def __init__(self):
+    def __init__(self, size = [100, 100]):
         gtk.Frame.__init__(self)
         self.add(gtk.EventBox())
         self.child.add(gtk.Image())
-        self.child.child.set_size_request(-1, 100)
+        self.child.child.set_size_request(-1, size[1])
         self.child.connect_object('button-press-event',
                                   CoverImage.__show_cover, self)
         self.child.show_all()
+        self.__size = size
         self.__albumfn = None
 
     def set_song(self, song):
@@ -1066,7 +1067,8 @@ class CoverImage(gtk.Frame):
                 self.hide()
             elif cover.name != self.__albumfn:
                 self.child.child.set_from_pixbuf(
-                    gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 100, 100))
+                    gtk.gdk.pixbuf_new_from_file_at_size(
+                    cover.name, *self.__size))
                 self.__albumfn = cover.name
                 self.show()
 
@@ -1139,7 +1141,6 @@ class SearchBar(EmptyBar):
         self.pack_start(clear, expand = False)
         self.pack_start(search, expand = False)
         self.show_all()
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
     def clear(self, button, combo):
         combo.child.set_text("")
@@ -1373,8 +1374,6 @@ class MainWindow(gtk.Window):
         gobject.timeout_add(100, self._update_time)
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
-        tips.enable()
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.show()
 
     def song_update_view(self, song, error = False):
@@ -2103,7 +2102,6 @@ class SongList(gtk.TreeView):
         self.recall_size = recall
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList._destroy, self)
-        self.connect_object('destroy', self.set_model, None)
 
     def set_all_column_headers(cls, headers):
         cls.headers = headers
@@ -2476,7 +2474,7 @@ class SongProperties(gtk.Window):
             self.box = gtk.VBox(spacing = 6)
             self.box.set_property('border-width', 12)
             self.child.add(self.box)
-            self.prop = parent
+            self.tips = gtk.Tooltips()
 
         def _title(self, song):
             text = "<b><span size='x-large'>%s</span></b>" %(
@@ -2730,7 +2728,7 @@ class SongProperties(gtk.Window):
                 if cover.name in added: continue
                 try:
                     cov = self._make_cover(cover, song)
-                    self.prop.tips.set_tip(cov.child, album)
+                    self.tips.set_tip(cov.child, album)
                     c = i % 4
                     r = i // 4
                     t.attach(cov, c, c + 1, r, r + 1,
@@ -2889,14 +2887,13 @@ class SongProperties(gtk.Window):
 
             self.pack_start(self.buttonbox, expand = False)
 
+            tips = gtk.Tooltips()
             for widget, tip in [
                 (self.view, _("Double-click a tag value to change it, "
                               "right-click for other options")),
                 (self.add, _("Add a new tag to the file")),
                 (self.remove, _("Remove a tag from the file"))]:
-                self.prop.tips.set_tip(widget, tip)
-
-            self.connect_object('destroy', gtk.ListStore.clear, self.model)
+                tips.set_tip(widget, tip)
 
         def popup_menu(self, view):
             path, col = view.get_cursor()
@@ -3267,15 +3264,12 @@ class SongProperties(gtk.Window):
             bbox.pack_start(self.save)
             self.pack_start(bbox, expand = False)
 
+            tips = gtk.Tooltips()
             for widget, tip in [
                 (self.titlecase,
                  _("If appropriate to the language, the first letter of "
                    "each word will be capitalized"))]:
-                self.prop.tips.set_tip(widget, tip)
-
-            self.connect_object('destroy', self.view.set_model, None)
-            self.connect_object(
-                'destroy', SongProperties.TagByFilename._destroy, self)
+                tips.set_tip(widget, tip)
 
         def update(self, songs):
             from library import AudioFileGroup
@@ -3413,10 +3407,6 @@ class SongProperties(gtk.Window):
             self.preview.set_sensitive(True)
             self.save.set_sensitive(False)
 
-        def _destroy(self):
-            try: self.model.clear()
-            except AttributeError: pass
-
     class RenameFiles(gtk.VBox):
         def __init__(self, prop, cb):
             gtk.VBox.__init__(self, spacing = 6)
@@ -3473,6 +3463,7 @@ class SongProperties(gtk.Window):
             bbox.pack_start(self.save)
             self.pack_start(bbox, expand = False)
 
+            tips = gtk.Tooltips()
             for widget, tip in [
                 (self.windows,
                  _("Characters not allowed in Windows filenames "
@@ -3480,10 +3471,7 @@ class SongProperties(gtk.Window):
                 (self.ascii,
                  _("Characters outside of the ASCII set (A-Z, a-z, 0-9, "
                    "and punctuation) will be replaced by underscores"))]:
-                self.prop.tips.set_tip(widget, tip)
-
-            self.connect_object('destroy', self.view.set_model, None)
-            self.connect_object('destroy', gtk.ListStore.clear, self.model)
+                tips.set_tip(widget, tip)
 
         def changed(self, *args):
             config.set("settings", "windows",
@@ -3644,8 +3632,6 @@ class SongProperties(gtk.Window):
             bbox.pack_start(self.revert)
             bbox.pack_start(self.save)
             self.pack_start(bbox, expand = False)
-            self.connect_object('destroy', self.view.set_model, None)
-            self.connect_object('destroy', gtk.ListStore.clear, self.model)
 
         def save_files(self, *args):
             win = WritingWindow(self.prop, len(self.songs))
@@ -3690,11 +3676,6 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(True)
             self.preview.set_sensitive(False)
 
-        def destroy(self):
-            self.view.set_model(None)
-            self.model.clear()
-            gtk.VBox.destroy(self)
-
         def update(self, songs):
             self.songs = songs
             self.model.clear()
@@ -3715,7 +3696,6 @@ class SongProperties(gtk.Window):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
-        self.tips = gtk.Tooltips()
         self.pages = []
         self.notebook = qltk.Notebook()
         self.pages = [Ctr(self, callback) for Ctr in
@@ -3769,9 +3749,7 @@ class SongProperties(gtk.Window):
         if len(songs) > 1: selection.select_all()
         else: self.update(songs)
         self.add(vbox)
-        self.connect_object('destroy', self.fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, self.fbasemodel)
-        self.connect_object('destroy', gtk.Tooltips.destroy, self.tips)
         self.connect_object('destroy', gtk.TreeModelSort.clear_cache,
                             self.fmodel)
         self.show_all()

@@ -148,7 +148,6 @@ class MainWindow(gtk.Window):
         self.add(gtk.HPaned())
         fs = FileSelector(dir)
         self.child.pack1(fs, resize = True)
-        self.tips = gtk.Tooltips()
         nb = qltk.Notebook()
         for Page in [widgets.SongProperties.EditTags,
                      widgets.SongProperties.TagByFilename,
