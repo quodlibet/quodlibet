@@ -149,7 +149,7 @@ class OggFile(AudioFile):
                 if len(value) == 1: value = value[0]
                 comments[key] = value
         comments.write_to(self['filename'])
-        self["=mtime"] = int(time.time())
+        self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
 
     def can_change(self, k):
         return k not in ["vendor", "filename"]
