@@ -59,26 +59,26 @@ class MP3File(AudioFile):
             "TIT2": "title",
             "TIT3": "version",
             "TPE1": "artist",
-            "TPE4": ["artist", "performer"],
+            "TPE2": "artist",
+            "TPE3": "performer",
+            "TPE4": "performer",
             "TCOM": "artist",
             "TEXT": "artist",
-            "TPE2": ["artist", "performer"],
-            "TPE3": "performer",
             "TLAN": "language",
             "TALB": "album",
             "TRCK": "tracknumber",
-            "TSRC": "ISRC",
+            "TSRC": "isrc",
             "TDRA": "date",
             "TDRC": "date",
             "TDOR": "date",
             "TORY": "date",
-            "TCOP": ["copyright", "license"],
+            "TCOP": "copyright",
             "TPUB": "organization",
             "WOAF": "contact",
             "WOAR": "contact",
             "WOAS": "contact",
-            "WCOP": ["copyright", "license"],
-            "USER": ["copyright", "license"],
+            "WCOP": "license",
+            "USER": "license",
             }
             
     def __init__(self, filename):
@@ -98,7 +98,10 @@ class MP3File(AudioFile):
                         except (UnicodeError, LookupError): pass
                         else: break
                     else: continue
-                    if name in self: self[name] += "\n" + text
+                    if name in self:
+                        if text in self[name]: pass
+                        elif self["name"] in text: self[name] = text
+                        else: self[name] += "\n" + text
                     else: self[name] = text
                     self[name] = self[name].strip()
                 except: pass
