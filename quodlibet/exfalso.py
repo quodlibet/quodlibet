@@ -17,17 +17,17 @@ Usage: %s [directory]
 
 For more information, see the manual page (`man 1 exfalso').
 """)) % sys.argv[0])
-    raise SystemExit
+    raise SystemExit(output != sys.stdout)
 
-def print_version():
-    print to(_("""\
+def print_version(output = sys.stdout):
+    output.write(to(_("""\
 Ex Falso %s - <quodlibet@lists.sacredchao.net>
 Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
 
 This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
-""")) % const.VERSION
-    raise SystemExit
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+""")) % const.VERSION)
+    raise SystemExit(output != sys.stdout)
 
 if __name__ == "__main__":
     import locale, gettext
@@ -46,7 +46,12 @@ if __name__ == "__main__":
     import config
     config.init(const.CONFIG)
 
-    sys.argv.append(os.environ["HOME"])
+    if len(sys.argv) < 2:
+        sys.argv.append(os.environ["HOME"])
+    elif (sys.argv[1].startswith("--") and
+          (sys.argv[1] != "--" or len(sys.argv) == 2)):
+        print_help(sys.stderr)
+
     sys.argv[1] = os.path.realpath(sys.argv[1])
 
     basedir = os.path.split(os.path.realpath(__file__))[0]
