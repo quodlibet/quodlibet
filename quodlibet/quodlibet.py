@@ -276,13 +276,22 @@ class WaitLoadWindow(MultiInstanceWidget):
         self.widgets["load_window"].set_transient_for(parent)
         self.current = 0
         self.count = count
+        if self.count < 6: self.widgets["pause_cancel_box"].hide()
         self.text = text
+        self.paused = False
+        self.quit = False
         self.label = self.widgets["load_label"]
         self.progress = self.widgets["load_progress"]
         self.progress.set_fraction(0)
         self.label.set_markup(self.text % initial)
         self.widgets["load_window"].show()
         while gtk.events_pending(): gtk.main_iteration()
+
+    def pause_clicked(self, button):
+        self.paused = button.get_active()
+
+    def cancel_clicked(self, button):
+        self.quit = True
 
     def step(self, *values):
         self.label.set_markup(self.text % values)
@@ -292,7 +301,10 @@ class WaitLoadWindow(MultiInstanceWidget):
                 max(0, min(1, self.current / float(self.count))))
         else:
             self.progress.pulse()
-        while gtk.events_pending(): gtk.main_iteration()
+            
+        while not self.quit and (self.paused or gtk.events_pending()):
+            gtk.main_iteration()
+        return self.quit
 
     def end(self):
         self.widgets["load_window"].destroy()
@@ -414,7 +426,7 @@ class GladeHandlers(object):
         iter = 5
         for c, r in library.rebuild():
             if iter == 5:
-                window.step(c, r)
+                if window.step(c, r): break
                 iter = 0
             iter += 1
         window.end()
@@ -430,7 +442,7 @@ class GladeHandlers(object):
         iter = 5
         for c, r in library.rebuild(True):
             if iter == 5:
-                window.step(c, r)
+                if window.step(c, r): break
                 iter = 0
             iter += 1
         window.end()
@@ -600,7 +612,8 @@ class GladeHandlers(object):
                                  _("Quod Libet is scanning for new songs and "
                                    "adding them to your library.\n\n"
                                    "%d songs added"), 0)
-            for added, changed in library.scan(fns): win.step(added)
+            for added, changed in library.scan(fns):
+                if win.step(added): break
             win.end()
             player.playlist.refilter()
             refresh_songlist()
@@ -854,7 +867,7 @@ class SongProperties(MultiInstanceWidget):
                 song.write()
                 songref_update_view(song, ref)
 
-            win.step()
+            if win.step(): break
 
         win.end()
         self.save_edit.set_sensitive(False)
@@ -1158,7 +1171,7 @@ class SongProperties(MultiInstanceWidget):
                 except KeyError: pass
             song.write()
             if ref: songref_update_view(song, ref)
-            win.step()
+            return win.step()
         self.tn_model.foreach(settrack)
         self.fill_property_info()
         self.save_tn.set_sensitive(False)
@@ -1219,7 +1232,7 @@ class SongProperties(MultiInstanceWidget):
                                "new file or remove the old one.") %(
                     util.escape(oldname), util.escape(newname))).run()
                 return True
-            win.step()
+            return win.step()
         self.nbp_model.foreach(rename)
 
         def update_filename(model, path, iter):
@@ -1320,7 +1333,7 @@ class SongProperties(MultiInstanceWidget):
                 song.write()
                 songref_update_view(song, ref)
 
-            win.step()
+            return win.step()
 
         self.tbp_model.foreach(save_song)
         win.end()
@@ -1334,7 +1347,7 @@ class WritingWindow(WaitLoadWindow):
                                   "%d/%d songs saved"), (0, count))
 
     def step(self):
-        WaitLoadWindow.step(self, self.current + 1, self.count)
+        return WaitLoadWindow.step(self, self.current + 1, self.count)
 
 def songref_update_view(song, ref):
     path = ref.get_path()

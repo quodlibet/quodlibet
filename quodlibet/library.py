@@ -30,12 +30,10 @@ def MusicFile(filename):
 global library
 library = None
 
-class Unknown(str): pass
+class Unknown(unicode): pass
 
 class AudioFile(dict):
     def __cmp__(self, other):
-        if not hasattr(other, "get"):
-            raise ValueError("songs can only be compared to other songs.")
         return (cmp(self.get("album"), other.get("album")) or
                 cmp(self.get("~#disc"), other.get("~#disc")) or
                 cmp(self.get("~#track"), other.get("~#track")) or
@@ -65,7 +63,7 @@ class AudioFile(dict):
 
     def valid(self):
         return (self.exists() and
-                self.get("~#mtime") == int(
+                self["~#mtime"] == int(
             os.stat(self['~filename'])[stat.ST_MTIME]))
 
     def rename(self, newname):
@@ -96,21 +94,19 @@ class AudioFile(dict):
 
     # Sanity-check all sorts of things...
     def sanitize(self, filename = None):
-        # File in our filename, either from what we were given or
-        # our old tag name... FIXME: Remove migration after 0.4 or so.
-        if filename: self["~filename"] = filename
+        if filename:
+            self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
-        self.setdefault("~#lastplayed", 0)
-        self.setdefault("~#playcount", 0)
-        self.setdefault("~#length", 0)
-
         self["~basename"] = os.path.basename(self['~filename'])
         self["~dirname"] = os.path.dirname(self['~filename'])
         self.setdefault("title", Unknown(util.decode(self['~basename'])))
         for i in ["artist", "album"]:
             self.setdefault(i, Unknown(_("Unknown")))
+        self.setdefault("~#lastplayed", 0)
+        self.setdefault("~#playcount", 0)
+        self.setdefault("~#length", 0)
 
         # Derive disc and track numbers.
         try: self["~#track"] = int(self["tracknumber"].split("/")[0])
@@ -131,13 +127,16 @@ class AudioFile(dict):
         # time format
         self["~length"] = util.format_time(self.get('~#length', 0))
 
+    # Construct the text seen in the player window
     def to_markup(self):
         title = self.comma("title")
-        text = u'<span weight="bold" size="x-large">%s</span>' % escape(title)
+        text = u'<span weight="bold" size="large">%s</span>' % escape(title)
         if "version" in self:
             text += u"\n<small><b>%s</b></small>" % escape(
                 self.comma("version"))
-        text += u"\n" + _("by %s") % escape(self.comma("artist"))
+
+        if not self.unknown("artist"):
+            text += u"\n" + _("by %s") % escape(self.comma("artist"))
 
         if "performer" in self:
             s = _("Performed by %s") % self.comma("performer")
@@ -145,30 +144,31 @@ class AudioFile(dict):
 
         others = ""
         if "arranger" in self:
-            others += "\n" + _("arranged by %s") % self.comma("arranger")
+            others += "; " + _("arranged by %s") % self.comma("arranger")
         if "lyricist" in self:
-            others += "\n" + _("lyrics by %s") % self.comma("lyricist")
+            others += "; " + _("lyrics by %s") % self.comma("lyricist")
         if "conductor" in self:
-            others += "\n" + _("conducted by %s") % self.comma("conductor")
+            others += "; " + _("conducted by %s") % self.comma("conductor")
         if "author" in self:
-            others += "\n" + _("written by %s") % self.comma("author")
+            others += "; " + _("written by %s") % self.comma("author")
 
         if others:
-            others = others.strip().replace("\n", "; ")
+            others = others.lstrip("; ")
             others = others[0].upper() + others[1:]
-            text += "\n<small>%s</small>" % escape(others.strip())
+            text += "\n<small>%s</small>" % escape(others)
 
         if not self.unknown("album"):
             album = u"\n<b>%s</b>" % escape(self.comma("album"))
             if "discnumber" in self:
-                album += " - "+_("Disc")+" "+escape(self.comma("discnumber"))
+                album += " - "+_("Disc %s")%escape(self.comma("discnumber"))
             if "part" in self:
                 album += u" - <b>%s</b>" % escape(self.comma("part"))
             if "tracknumber" in self:
-                album += " - "+_("Track")+" "+escape(self.comma("tracknumber"))
+                album +=" - "+_("Track %s")%escape(self.comma("tracknumber"))
             text += album
         return text
 
+    # A shortened song info line (for the statusicon tooltip)
     def to_short(self):
         if self.unknown("album"):
             return "%s - %s" % (self.comma("artist"), self.comma("title"))
@@ -178,6 +178,7 @@ class AudioFile(dict):
                 self.comma("title"))
         else: return "%s - %s" % (self.comma("album"), self.comma("title"))
 
+    # Nicely format how long it's been since it was played
     def get_played(self):
         count = self["~#playcount"]    
         if count == 0: return _("Never")
@@ -186,6 +187,7 @@ class AudioFile(dict):
             tstr = time.strftime("%F, %X", t)
             return _("%d times, recently on %s") % (count, tstr)
 
+    # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
         s = ""
         for k in self.realkeys():
@@ -193,6 +195,9 @@ class AudioFile(dict):
                 s += "%s=%s\n" % (k, util.encode(v2))
         return s
 
+    # Try to change a value in the data to a new value; if the
+    # value being changed from doesn't exist, just overwrite the
+    # whole value.
     def change(self, key, old_value, new_value):
         try:
             parts = self.list(key)
@@ -205,11 +210,11 @@ class AudioFile(dict):
         self.sanitize()
 
     def add(self, key, value):
-        if key not in self: self[key] = value
-        elif self.unknown(key): self[key] = value
+        if self.unknown(key): self[key] = value
         else: self[key] += "\n" + value
         self.sanitize()
 
+    # Like change, if the value isn't found, remove all values...
     def remove(self, key, value):
         if self[key] == value: del(self[key])
         else:
@@ -221,6 +226,7 @@ class AudioFile(dict):
                 if key in self: del(self[key])
         self.sanitize()
 
+    # Try to find an album cover for the file
     def find_cover(self):
         base = self['~dirname']
         fns = os.listdir(base)
@@ -229,15 +235,19 @@ class AudioFile(dict):
         for fn in fns:
             lfn = fn.lower()
             if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
-               matches = filter(
-                   lambda s: s in lfn,["front", "cover", "jacket",
-                                       self.get("labelid", lfn + ".")])
-               score = len(matches)
-               if "labelid" in self and self["labelid"].lower() in lfn:
-                   score += 1
-               if score: images.append((score, os.path.join(base, fn)))
+                # Look for some generic names, and also the album
+                # label number, which is pretty common. Label number
+                # is worth 2 points, everything else 1.
+                matches = filter(lambda s: s in lfn,
+                                 ["front", "cover", "jacket",
+                                  self.get("labelid", lfn + "."),
+                                  self.get("labelid", lfn + ".")])
+                score = len(matches)
+                if score: images.append((score, os.path.join(base, fn)))
+        # Highest score wins.
         if images: return max(images)[1]
         elif "~picture" in self:
+            # Otherwise, we might have a picture stored in the metadata...
             import pyid3lib
             f = tempfile.NamedTemporaryFile()
             tag = pyid3lib.tag(self['~filename'])
