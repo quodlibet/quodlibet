@@ -1,58 +1,33 @@
-Quodlibet - A Music Library/Player
+Quod Libet - A Music Library/Player
 ========================================================================
-Quodlibet is an experiment in music library management. It makes
-playlists via a query syntax based on regular expressions, rather than a
-more traditonal UI. This gives it immense power, but also makes it harder
-to use if you're not familiar with regular expressions.
+Quod Libet is a music library management program. Rather than categorize
+songs by genre, artist, and album, it keeps them all in one list that
+you can filter however you want.
 
-Quodlibet is designed for use with Ogg Vorbis audio files, but has
+Quod Libet is designed for use with Ogg Vorbis audio files, but has
 support for MP3 files following the ID3v1 and v2 "standards" as well.
 
-Quodlibet is written entirely in Python and licensed under the GNU
+Quod Libet is written entirely in Python and licensed under the GNU
 GPL version 2.
 
-===[ Query Syntax
-QL is based around queries against the metadata tags found in music files.
-For a complete list of the tags supported officially, see the Vorbis
-comment specification at http://www.xiph.org/ogg/vorbis/doc/v-comment.html.
-However, you can query on any tags you add to the file, with a Vorbis
-comment editor.
+====[ Requirements
 
-Note that to use QL, you must have your audio files tagged properly!
-Often this isn't the case if you've been using something like XMMS.
-Without proper tags, QL can't search your music at all.
+==[ Debian / Debian-based OSs
 
-A basic query, to match any file by the artist Lamb, might look like:
-	artist = /Lamb/
-However, sometimes you might want all songs by two artists, or an
-artist that went by two names. QL uses a variant of set-theoretic
-notation to specify "union" and "intersection" of two queries. The
-first kind lets you select anything that meets *any* of the conditions,
-the second, anything that meets *all*. To get all songs by Pete
-Townshend, for example:
-	artist = |(/Pete Townshend/, /The Who/)
-Or to get songs by BoA and m-flo (but not songs only by BoA, or songs
-only by m-flo):
-	artist = &(/m-flo/, /BoA/)
-which will get you (probably) your copy of 'the Love Bug', and neither
-Valenti, nor bemani soundtracks.
+You must be running 'unstable' or a recent snapshot of it.
 
-You can also negate a query, and select all songs that don't match it.
-For a loud time,
-	genre = !/ambient/
+# apt-get install python-pymad python-pyvorbis python-id3lib python-glade2
 
-You can combine entire queries. To get your beautifully-performed Bach:
-	&(artist = /Bach/, performer = /Glenn Gould/)
+==[ Other OSs
 
-If you are making a disjoint request for the same expression (that is,
-something like:
-	|(album = /Para Para/, title = /Para Para/)
-you can shorten it by specifying both tags at once:
-	album, title = /Para Para/
+Find the above software and install it. PyGTK must be at least
+version 2.4, or strange errors will happen.
 
-You can combine all of these in many different ways.
+====[ Using QL
+For help on using the program, run
+ $ man -l ./quodlibet.1
 
-===[ Formal Query Grammar
+====[ Formal Query Grammar
 This is a BNFish grammar that (at least when I checked it in) described
 the grammar used for queries. It could be used for querying of a simple
 key/value database.

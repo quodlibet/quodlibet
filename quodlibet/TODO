@@ -1,0 +1,10 @@
+- Escape REs properly
+- Fix crappy search history
+- Takes too long to give feedback when adding songs
+- Handle weird UI flukes (seek past end of song, etc) better
+- Stress-testing
+- Artist URL detection
+- Song information popup
+- Context menu - remove song from library
+- Handle case when song is loaded but then goes missing
+- Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
