@@ -26,10 +26,11 @@ the search box, and press enter or click on the search button. If you
 want more control over the search, see the section entitled "Search
 Syntax" below.
 .PP
-If you want to display album covers, put a file name "cover.jpg"
-or "front.jpg" in the same directory as the songs it goes with, and
+If you want to display album covers, put a file named "frontcover.jpg"
+or "cover.jpg" in the same directory as the songs it goes with, and
 make sure album cover displays are enabled in your preferences. GIF
-and PNG images are also supported.
+and PNG images are also supported. QL will also look for any other
+images with 'front', 'cover', or 'jacket' in their name.
 .SH SEARCH SYNTAX
 If you need more than simple searches, you can use QL's more advanced
 search syntax, that lets you specify a specific tag to search. To use
@@ -37,11 +38,11 @@ this, enter a search in the form of
 .RS
 tag = /re/
 .RE
-Where \fItag\fR is the name of the tag you want to search (like
-\'artist' or 'title'), and \fIre\fR is a regular expression you want
+Where \fItag\fR is the name of the tag you want to search (like 'artist'
+or 'title'), and \fIre\fR is a regular expression you want
 the tag to match. (If you don't know how to write regular expressions,
-you can usually just use the word you want, if it doesn't contain a
-\'*\', \'\.\', or \'/\'.)
+you can usually just use the word you want, if it doesn't contain
+a '*', '\.', or '/'.)
 .PP
 You can combine searches using & and |:
 .RS
