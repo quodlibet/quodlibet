@@ -83,6 +83,28 @@ def split_title(s, splitters = ",;&"):
     else:
         return (title.strip(), split_value(subtitle, splitters))
 
+def split_people(s, splitters = ",;&"):
+    title, subtitle = find_subtitle(s)
+    if not subtitle:
+        parts = s.split(" ")
+        if len(parts) > 2:
+            for feat in ["feat.", "featuring", "feat", "with", "w/"]:
+                try:
+                    i = map(string.lower, parts).index(feat)
+                    orig = " ".join(parts[:i])
+                    others = " ".join(parts[i+1:])
+                    return (orig, split_value(others, splitters))
+                except (ValueError, IndexError): pass
+        return (s, [])
+    else:
+        for feat in ["feat.", "featuring", "feat", "with", "w/"]:
+            if subtitle.startswith(feat):
+                subtitle = subtitle.replace(feat, "", 1)
+                subtitle.lstrip()
+                break
+        values = split_value(subtitle, splitters)
+        return (title.strip(), values)
+
 def split_album(s):
     name, disc = find_subtitle(s)
     if not disc:

@@ -562,6 +562,19 @@ class MultiInstanceWidget(object):
             row[2] = True
             self.add_new_tag("discnumber", disc)
 
+    def split_people(self, tag):
+        model, iter = self.view.get_selection().get_selected()
+        row = model[iter]
+        spls = config.get("settings", "splitters")
+        person, others = util.split_people(util.unescape(row[1]), spls)
+        if person != util.unescape(row[1]):
+            row[1] = util.escape(person)
+            row[2] = True
+            for val in others: self.add_new_tag(tag, val)
+
+    def split_performer(self, *args): self.split_people("performer")
+    def split_arranger(self, *args): self.split_people("arranger")
+
     def songprop_edit(self, renderer, path, new, model, colnum):
         row = model[path]
         date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
@@ -610,10 +623,25 @@ class MultiInstanceWidget(object):
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
         row = view.get_model()[path]
-        if row[0] != "album": self.menu_w.get_widget("split_album").hide()
-        else: self.menu_w.get_widget("split_album").show()
-        if row[0] != "title": self.menu_w.get_widget("split_title").hide()
-        else: self.menu_w.get_widget("split_title").show()
+        self.menu_w.get_widget("split_album").hide()
+        self.menu_w.get_widget("split_title").hide()
+        self.menu_w.get_widget("split_performer").hide()
+        self.menu_w.get_widget("split_arranger").hide()
+        self.menu_w.get_widget("special_sep").hide()
+
+        if row[0] == "album":
+            self.menu_w.get_widget("split_album").show()
+            self.menu_w.get_widget("special_sep").show()
+
+        if row[0] == "title":
+            self.menu_w.get_widget("split_title").show()
+            self.menu_w.get_widget("special_sep").show()
+
+        if row[0] == "artist":
+            self.menu_w.get_widget("split_performer").show()
+            self.menu_w.get_widget("split_arranger").show()
+            self.menu_w.get_widget("special_sep").show()
+
         self.menu.popup(None, None, None, event.button, event.time)
         return True
 

@@ -2779,7 +2779,7 @@ version</property>
       <signal name="activate" handler="split_into_list" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image86">
+	<widget class="GtkImage" id="image101">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
@@ -2793,6 +2793,12 @@ version</property>
   </child>
 
   <child>
+    <widget class="GtkSeparatorMenuItem" id="special_sep">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
     <widget class="GtkImageMenuItem" id="split_title">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Split title into title and version</property>
@@ -2801,7 +2807,49 @@ version</property>
       <signal name="activate" handler="split_title" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image87">
+	<widget class="GtkImage" id="image102">
+	  <property name="visible">True</property>
+	  <property name="stock">gtk-find-and-replace</property>
+	  <property name="icon_size">1</property>
+	  <property name="xalign">0.5</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkImageMenuItem" id="split_arranger">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Split arranger out of ar_tist</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="split_arranger" last_modification_time="Fri, 12 Nov 2004 02:41:57 GMT"/>
+
+      <child internal-child="image">
+	<widget class="GtkImage" id="image103">
+	  <property name="visible">True</property>
+	  <property name="stock">gtk-find-and-replace</property>
+	  <property name="icon_size">1</property>
+	  <property name="xalign">0.5</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkImageMenuItem" id="split_performer">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Split _performer out of artist</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="split_performer" last_modification_time="Fri, 12 Nov 2004 02:41:57 GMT"/>
+
+      <child internal-child="image">
+	<widget class="GtkImage" id="image104">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
@@ -2823,7 +2871,7 @@ version</property>
       <signal name="activate" handler="split_album" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image88">
+	<widget class="GtkImage" id="image105">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-find-and-replace</property>
 	  <property name="icon_size">1</property>
