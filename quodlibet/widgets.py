@@ -1414,6 +1414,10 @@ class MainWindow(gtk.Window):
         self.songlist.connect('button-press-event', self.songs_button_press)
         self.songlist.connect('popup-menu', self.songs_popup_menu)
         self.songlist.connect('columns_changed', self.cols_changed)
+
+        # plugin support
+        from plugins import PluginManager
+        self.__pm = PluginManager()
         
         self.browser = None
         self.select_browser(self, config.getint("memory", "browser"))
@@ -2103,6 +2107,18 @@ class MainWindow(gtk.Window):
             menu.append(b)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
+        b = gtk.ImageMenuItem(_("Plugins"))
+        b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+        menu.append(b)
+        submenu = gtk.Menu()
+        b.set_submenu(submenu)
+        self.__pm.rescan()
+        self.__create_plugins_menu(self.__pm, submenu)
+        submenu.connect('expose-event', self.__refresh_plugins_menu,
+                self.__pm, submenu)
+
+        if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         b.connect('activate', self.remove_song)
         menu.append(b)
@@ -2116,6 +2132,33 @@ class MainWindow(gtk.Window):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
+
+    def __refresh_plugins_menu(self, item, event, pm, menu):
+        if pm.rescan(): self.__create_plugins_menu(pm, menu)
+
+    def __create_plugins_menu(self, pm, menu):
+        for child in menu.get_children(): menu.remove(child)
+        songs = self.songlist.get_selected_songs()
+        plugins = [(plugin.PLUGIN_NAME, plugin) for plugin in pm.list(songs)]
+        plugins.sort()
+        for name, plugin in plugins:
+            if hasattr(plugin, 'PLUGIN_ICON'):
+                b = gtk.ImageMenuItem(name)
+                b.get_image().set_from_stock(plugin.PLUGIN_ICON,
+                    gtk.ICON_SIZE_MENU)
+            else:
+                b = gtk.MenuItem(name)
+            b.connect('activate', self.__invoke_plugin, pm, plugin, songs)
+            menu.append(b)
+
+        if not menu.get_children():
+            b = gtk.MenuItem(_("No Matching Plugins"))
+            b.set_sensitive(False)
+            menu.append(b)
+        menu.show_all()
+
+    def __invoke_plugin(self, event, pm, plugin, songs):
+        pm.invoke(plugin, songs)
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Song/FilterGenre",
