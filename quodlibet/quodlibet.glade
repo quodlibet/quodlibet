@@ -856,7 +856,7 @@
 		      <child>
 			<widget class="GtkCheckButton" id="prefs_jump_t">
 			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">When the current song changes, scroll  to it in the song list. You can do this manually by pressing Ctrl-J.</property>
+			  <property name="tooltip" translatable="yes">When the current song changes, scroll to it in the song list. You can do this manually by pressing Ctrl-J.</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">_Jump to current song automatically</property>
 			  <property name="use_underline">True</property>
@@ -1946,7 +1946,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes">&lt;small&gt;&lt;i&gt;Quodlibet \'kwäd-l&amp;amp;-&quot;bet\&lt;/i&gt; [From Latin, &quot;what you please&quot;]
 	1. A nice point; a subtilty; a debatable point.
-	2. (Mus.) A medley improsed by several performers.
+	2. (Mus.) A medley improvised by several performers.
 
 &lt;i&gt;Quod Libet&lt;/i&gt;
 	1. A music library manager and player.
