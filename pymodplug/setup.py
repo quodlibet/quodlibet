@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from distutils.core import setup, Extension
-setup(name = "modplug", version = "1.0",
-      url="http://sacredchao.net/~piman/software/python.shtml",
+setup(name = "pymodplug", version = "1.1",
+      url = "http://sacredchao.net/~piman/software/python.shtml",
       description = "ModPlug decoder",
       author = "Joe Wreschnig",
       author_email = "piman@sacredchao.net",
