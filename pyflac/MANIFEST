@@ -1,0 +1,13 @@
+COPYING
+README
+Makefile
+examples/encoder.py
+examples/flac123.py
+examples/metaflac.py
+examples/tagedit.py
+setup.py
+flac/__init__.py
+flac/metadata.py
+flac/decoder.i
+flac/encoder.i
+flac/sw_metadata.i
