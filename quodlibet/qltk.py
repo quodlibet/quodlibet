@@ -42,7 +42,6 @@ class Notebook(gtk.Notebook):
             if hasattr(page, 'title'):
                 title = page.title
                 if not isinstance(title, gtk.Widget): title = gtk.Label(title)
-                if not isinstance(page, gtk.Widget): page = page.widget
                 gtk.Notebook.append_page(self, page, title)
             else: raise TypeError("no page.title and no label given")
 

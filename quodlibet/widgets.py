@@ -44,10 +44,10 @@ class FileChooser(object):
         return resp, fns
 
 # FIXME: replace with a standard About widget when using GTK 2.6.
-class AboutWindow(object):
+class AboutWindow(gtk.Window):
     def __init__(self, parent):
-        self.window = gtk.Window()
-        self.window.set_title(_("About Quod Libet"))
+        gtk.Window.__init__(self)
+        self.set_title(_("About Quod Libet"))
         vbox = gtk.VBox(spacing = 6)
         l = gtk.Label(const.COPYRIGHT)
         s2 = _("Quod Libet is free software licensed under the GNU GPL v2.")
@@ -59,38 +59,33 @@ class AboutWindow(object):
         l2.set_justify(gtk.JUSTIFY_CENTER)
         vbox.pack_start(l)
 
-        self.contributor = gtk.Label(const.CREDITS[0])
-        self.contributor.set_justify(gtk.JUSTIFY_CENTER)
-        vbox.pack_start(self.contributor)
-
+        contrib = gtk.Label(const.CREDITS[0])
+        contrib.set_justify(gtk.JUSTIFY_CENTER)
+        vbox.pack_start(contrib)
+        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.destroy)
         vbox.pack_start(l2)
         hbox = gtk.HButtonBox()
         hbox.set_layout(gtk.BUTTONBOX_SPREAD)
-        button = qltk.Button(stock = gtk.STOCK_CLOSE, cb = self.close)
         hbox.pack_start(button)
         vbox.pack_start(hbox)
-        gtk.timeout_add(4000, self.pick_name, list(const.CREDITS))
+        gtk.timeout_add(4000, self.pick_name, list(const.CREDITS), contrib)
         self.alive = True
-        self.window.add(vbox)
-        self.window.connect('destroy', self.destroy)
-        self.window.set_property('border-width', 12)
-        self.window.set_transient_for(parent)
-        self.window.show_all()
+        self.add(vbox)
+        self.set_property('border-width', 12)
+        self.connect('destroy', self.destroy)
+        self.set_transient_for(parent)
+        self.child.show_all()
+        self.show()
 
-    def pick_name(self, credits):
+    def pick_name(self, credits, contrib):
         credits.append(credits.pop(0))
-        self.contributor.set_text(credits[0])
-        return self.alive
-
-    def close(self, *args):
-        self.window.destroy()
+        contrib.set_text(credits[0])
+        return hasattr(widgets, 'about')
 
     def destroy(self, *args):
-        self.alive = False
-        del(widgets.about)
-
-    def show(self):
-        self.window.present()
+        gtk.Window.destroy(self)
+        try: del(widgets.about)
+        except AttributeError: pass
 
 class PreferencesWindow(gtk.Window):
     class Browser(gtk.VBox):
@@ -368,24 +363,27 @@ class PreferencesWindow(gtk.Window):
 
     def destroy(self, activator, event = None):
         gtk.Window.destroy(self)
-        try: del(widgets.preferences)
-        except AttributeError: pass
+        del(widgets.preferences)
         self.tips.destroy()
         del(self.tips)
         config.write(const.CONFIG)
-        return True
 
-class DeleteDialog(object):
+class DeleteDialog(gtk.Dialog):
     def __init__(self, parent, files):
-        self.dialog = gtk.Dialog(title = _("Deleting files"), parent = parent)
-        self.dialog.set_property('border-width', 6)
-        self.dialog.set_resizable(False)
+        gtk.Dialog.__init__(self, _("Deleting files"), parent)
+        self.set_border_width(6)
+        self.vbox.set_spacing(12)
+        self.action_area.set_border_width(0)
+        self.set_resizable(False)
+        # This is the GNOME trash can for at least some versions.
+        # The FreeDesktop spec is complicated and I'm not sure it's
+        # actually used by anything.
         if os.path.isdir(os.path.expanduser("~/.Trash")):
             b = qltk.Button(_("Move to Trash"), image = gtk.STOCK_DELETE)
-            self.dialog.add_action_widget(b, 0)
+            self.add_action_widget(b, 0)
 
-        self.dialog.add_button(gtk.STOCK_CANCEL, 1)
-        self.dialog.add_button(gtk.STOCK_DELETE, 2)
+        self.add_button(gtk.STOCK_CANCEL, 1)
+        self.add_button(gtk.STOCK_DELETE, 2)
 
         hbox = gtk.HBox()
         i = gtk.Image()
@@ -394,13 +392,14 @@ class DeleteDialog(object):
         i.set_alignment(0.5, 0.0)
         hbox.pack_start(i, expand = False)
         vbox = gtk.VBox(spacing = 6)
+        base = os.path.basename(files[0])
         if len(files) == 1:
             l = _("Permanently delete this file?")
-            exp = gtk.Expander("%s"%util.fsdecode(os.path.basename(files[0])))
+            exp = gtk.Expander("%s" % util.fsdecode(base))
         else:
             l = _("Permanently delete these files?")
             exp = gtk.Expander(_("%s and %d more...") %(
-                util.fsdecode(os.path.basename(files[0])), len(files) - 1))
+                util.fsdecode(base), len(files) - 1))
 
         lab = gtk.Label()
         lab.set_markup("<big><b>%s</b></big>" % l)
@@ -417,26 +416,19 @@ class DeleteDialog(object):
         exp.child.child.set_shadow_type(gtk.SHADOW_NONE)
         vbox.pack_start(exp)
         hbox.pack_start(vbox)
-        self.dialog.vbox.pack_start(hbox)
+        self.vbox.pack_start(hbox)
+        self.vbox.show_all()
 
-    def run(self):
-        self.dialog.show_all()
-        return self.dialog.run()
-
-    def destroy(self, *args):
-        self.dialog.destroy()
-
-class WaitLoadWindow(object):
+class WaitLoadWindow(gtk.Window):
     def __init__(self, parent, count, text, initial):
-        self.window = gtk.Window()
+        gtk.Window.__init__(self)
         self.sig = parent.connect('configure-event', self.recenter)
-        self.parent = parent
-        self.window.set_transient_for(parent)
-        self.window.set_modal(True)
-        self.window.set_decorated(False)
-        self.window.set_resizable(False)
-        self.window.add(gtk.Frame())
-        self.window.child.set_shadow_type(gtk.SHADOW_OUT)
+        self.set_transient_for(parent)
+        self.set_modal(True)
+        self.set_decorated(False)
+        self.set_resizable(False)
+        self.add(gtk.Frame())
+        self.child.set_shadow_type(gtk.SHADOW_OUT)
         vbox = gtk.VBox(spacing = 12)
         vbox.set_property('border-width', 12)
         self.label = gtk.Label()
@@ -471,15 +463,15 @@ class WaitLoadWindow(object):
             hbox.pack_start(b2)
             vbox.pack_start(hbox)
 
-        self.window.child.add(vbox)
+        self.child.add(vbox)
 
         self.text = text
         self.paused = False
         self.quit = False
 
         self.label.set_markup(self.text % initial)
-        self.window.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
-        self.window.show_all()
+        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.show_all()
         while gtk.events_pending(): gtk.main_iteration()
 
     def pause_clicked(self, button):
@@ -501,53 +493,39 @@ class WaitLoadWindow(object):
             gtk.main_iteration()
         return self.quit
 
-    def recenter(self, *args):
-        x, y = self.parent.get_position()
-        dx, dy = self.parent.get_size()
-        dx2, dy2 = self.window.get_size()
-        self.window.move(x + dx/2 - dx2/2, y + dy/2 - dy2/2)
+    def recenter(self, parent, event):
+        x, y = parent.get_position()
+        dx, dy = parent.get_size()
+        dx2, dy2 = self.get_size()
+        self.move(x + dx/2 - dx2/2, y + dy/2 - dy2/2)
 
     def end(self):
-        self.parent.disconnect(self.sig)
-        self.window.destroy()
+        self.get_transient_for().disconnect(self.sig)
+        self.destroy()
 
-class BigCenteredImage(object):
+class BigCenteredImage(gtk.Window):
     def __init__(self, title, filename):
+        gtk.Window.__init__(self)
         width = gtk.gdk.screen_width() / 2
         height = gtk.gdk.screen_height() / 2
-        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
-
-        x_rat = pixbuf.get_width() / float(width)
-        y_rat = pixbuf.get_height() / float(height)
-
-        if x_rat > 1 or y_rat > 1:
-            if x_rat > y_rat:
-                pixbuf = pixbuf.scale_simple(width,
-                                             int(pixbuf.get_height()/x_rat),
-                                             gtk.gdk.INTERP_BILINEAR)
-            else:
-                pixbuf = pixbuf.scale_simple(int(pixbuf.get_width()/y_rat),
-                                             height, gtk.gdk.INTERP_BILINEAR)
-
-        self.window = gtk.Window()
-        self.window.set_title(title)
-        self.window.set_decorated(False)
-        self.window.set_position(gtk.WIN_POS_CENTER)
-        self.window.set_modal(False)
-        self.window.set_icon(pixbuf)
-        self.window.add(gtk.Frame())
-        self.window.child.set_shadow_type(gtk.SHADOW_OUT)
-        self.window.child.add(gtk.EventBox())
-        self.window.child.child.add(gtk.Image())
-        self.window.child.child.child.set_from_pixbuf(pixbuf)
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, width, height)
+        self.set_title(title)
+        self.set_decorated(False)
+        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_modal(False)
+        self.set_icon(pixbuf)
+        self.add(gtk.Frame())
+        self.child.set_shadow_type(gtk.SHADOW_OUT)
+        self.child.add(gtk.EventBox())
+        self.child.child.add(gtk.Image())
+        self.child.child.child.set_from_pixbuf(pixbuf)
 
         # The eventbox
-        self.window.child.child.connect('button-press-event', self.close)
-        self.window.child.child.connect('key-press-event', self.close)
-        self.window.show_all()
+        self.child.child.connect('button-press-event', self.destroy)
+        self.child.child.connect('key-press-event', self.destroy)
+        self.show_all()
 
-    def close(self, *args):
-        self.window.destroy()
+    def destroy(self, *args): gtk.Window.destroy(self)
 
 class TrayIcon(object):
     def __init__(self, pixbuf, cbs):
@@ -1501,7 +1479,7 @@ class MainWindow(object):
     def show_about(self, menuitem):
         if not hasattr(widgets, 'about'):
             widgets.about = AboutWindow(self.window)
-        widgets.about.show()
+        widgets.about.present()
 
     def toggle_shuffle(self, button):
         player.playlist.shuffle = button.get_active()
@@ -2189,18 +2167,18 @@ class AddTagDialog(object):
     def destroy(self, *args):
         self.dialog.destroy()
 
-class SongProperties(object):
+class SongProperties(gtk.Window):
 
-    class Information(object):
+    class Information(gtk.ScrolledWindow):
         def __init__(self, parent):
+            gtk.ScrolledWindow.__init__(self)
             self.title = _("Information")
-            self.widget = gtk.ScrolledWindow()
-            self.widget.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-            self.widget.add(gtk.Viewport())
-            self.widget.child.set_shadow_type(gtk.SHADOW_NONE)
+            self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            self.add(gtk.Viewport())
+            self.child.set_shadow_type(gtk.SHADOW_NONE)
             self.box = gtk.VBox(spacing = 6)
             self.box.set_property('border-width', 12)
-            self.widget.child.add(self.box)
+            self.child.add(self.box)
             self.prop = parent
 
         def _title(self, song):
@@ -2337,9 +2315,6 @@ class SongProperties(object):
             l.set_selectable(True)
             l.set_size_request(100, -1)
             return l
-
-        def destroy(self):
-            self.widget.destroy()
 
         def _update_one(self, song):
             self.box.pack_start(self._title(song), expand = False)
@@ -2550,11 +2525,11 @@ class SongProperties(object):
             f.add(ev)
             return f
 
-    class EditTags(object):
+    class EditTags(gtk.VBox):
         def __init__(self, parent):
+            gtk.VBox.__init__(self, spacing = 12)
             self.title = _("Edit Tags")
-            self.widget = gtk.VBox(spacing = 12)
-            self.widget.set_property('border-width', 12)
+            self.set_border_width(12)
             self.prop = parent
 
             self.model = gtk.ListStore(str, str, bool, bool, bool, str)
@@ -2586,7 +2561,7 @@ class SongProperties(object):
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             sw.add(self.view)
-            self.widget.pack_start(sw)
+            self.pack_start(sw)
 
             self.buttonbox = gtk.HBox(spacing = 18)
             bbox1 = gtk.HButtonBox()
@@ -2614,7 +2589,7 @@ class SongProperties(object):
             self.buttonbox.pack_start(bbox1)
             self.buttonbox.pack_start(bbox2)
 
-            self.widget.pack_start(self.buttonbox, expand = False)
+            self.pack_start(self.buttonbox, expand = False)
 
             for widget, tip in [
                 (self.view, _("Double-click a tag value to change it, "
@@ -2947,14 +2922,14 @@ class SongProperties(object):
 
         def destroy(self):
             self.model.clear()
-            self.widget.destroy()
+            gtk.VBox.destroy(self)
 
-    class TagByFilename(object):
+    class TagByFilename(gtk.VBox):
         def __init__(self, prop):
+            gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Tag by Filename")
             self.prop = prop
-            self.widget = gtk.VBox(spacing = 6)
-            self.widget.set_property('border-width', 12)
+            self.set_property('border-width', 12)
             hbox = gtk.HBox(spacing = 12)
             combo = gtk.combo_box_entry_new_text()
             for line in const.TBP_EXAMPLES.split("\n"):
@@ -2965,14 +2940,14 @@ class SongProperties(object):
             self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
             self.preview.connect('clicked', self.preview_tags)
             hbox.pack_start(self.preview, expand = False)
-            self.widget.pack_start(hbox, expand = False)
+            self.pack_start(hbox, expand = False)
 
             self.view = gtk.TreeView()
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             sw.add(self.view)
-            self.widget.pack_start(sw)
+            self.pack_start(sw)
 
             vbox = gtk.VBox()
             c1 = gtk.CheckButton(_("Replace _underscores with spaces"))
@@ -2995,14 +2970,14 @@ class SongProperties(object):
             c4.connect('changed', self.changed)
             vbox.pack_start(c4)
             
-            self.widget.pack_start(vbox, expand = False)
+            self.pack_start(vbox, expand = False)
 
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
             self.save = qltk.Button(
                 stock = gtk.STOCK_SAVE, cb = self.save_files)
             bbox.pack_start(self.save)
-            self.widget.pack_start(bbox, expand = False)
+            self.pack_start(bbox, expand = False)
 
             for widget, tip in [
                 (self.titlecase,
@@ -3147,14 +3122,14 @@ class SongProperties(object):
             self.view.set_model(None)
             try: self.model.clear()
             except AttributeError: pass
-            self.widget.destroy()
+            gtk.VBox.destroy(self)
 
-    class RenameFiles(object):
+    class RenameFiles(gtk.VBox):
         def __init__(self, prop):
+            gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Rename Files")
             self.prop = prop
-            self.widget = gtk.VBox(spacing = 6)
-            self.widget.set_property('border-width', 12)
+            self.set_border_width(12)
             hbox = gtk.HBox(spacing = 12)
             combo = gtk.combo_box_entry_new_text()
             for line in const.NBP_EXAMPLES.split("\n"):
@@ -3165,7 +3140,7 @@ class SongProperties(object):
             self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
             self.preview.connect('clicked', self.preview_files)
             hbox.pack_start(self.preview, expand = False)
-            self.widget.pack_start(hbox, expand = False)
+            self.pack_start(hbox, expand = False)
 
             self.model = gtk.ListStore(object, str, str)
             self.view = gtk.TreeView(self.model)
@@ -3179,7 +3154,7 @@ class SongProperties(object):
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             sw.add(self.view)
-            self.widget.pack_start(sw)
+            self.pack_start(sw)
 
             self.replace = gtk.CheckButton(
                 _("Replace spaces with _underscores"))
@@ -3196,14 +3171,14 @@ class SongProperties(object):
             vbox.pack_start(self.replace)
             vbox.pack_start(self.windows)
             vbox.pack_start(self.ascii)
-            self.widget.pack_start(vbox, expand = False)
+            self.pack_start(vbox, expand = False)
 
             self.save = qltk.Button(stock = gtk.STOCK_SAVE,
                                     cb = self.rename_files)
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
             bbox.pack_start(self.save)
-            self.widget.pack_start(bbox, expand = False)
+            self.pack_start(bbox, expand = False)
 
             for widget, tip in [
                 (self.windows,
@@ -3299,14 +3274,14 @@ class SongProperties(object):
         def destroy(self):
             self.view.set_model(None)
             self.model.clear()
-            self.widget.destroy()
+            gtk.VBox.destroy(self)
 
-    class TrackNumbers(object):
+    class TrackNumbers(gtk.VBox):
         def __init__(self, prop):
+            gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Track Numbers")
             self.prop = prop
-            self.widget = gtk.VBox(spacing = 6)
-            self.widget.set_property('border-width', 12)
+            self.set_property('border-width', 12)
             hbox = gtk.HBox(spacing = 18)
             hbox2 = gtk.HBox(spacing = 12)
 
@@ -3343,7 +3318,7 @@ class SongProperties(object):
             self.preview.connect('clicked', self.preview_tracks)
             hbox2.pack_start(self.preview, expand = False)
 
-            self.widget.pack_start(hbox2, expand = False)
+            self.pack_start(hbox2, expand = False)
 
             self.model = gtk.ListStore(object, str, str)
             self.view = gtk.TreeView(self.model)
@@ -3359,7 +3334,7 @@ class SongProperties(object):
             w.set_shadow_type(gtk.SHADOW_IN)
             w.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             w.add(self.view)
-            self.widget.pack_start(w)
+            self.pack_start(w)
 
             bbox = gtk.HButtonBox()
             bbox.set_spacing(12)
@@ -3370,7 +3345,7 @@ class SongProperties(object):
                 stock = gtk.STOCK_REVERT_TO_SAVED, cb = self.revert_files)
             bbox.pack_start(self.revert)
             bbox.pack_start(self.save)
-            self.widget.pack_start(bbox, expand = False)
+            self.pack_start(bbox, expand = False)
 
         def save_files(self, *args):
             win = WritingWindow(self.prop.window, len(self.songs))
@@ -3419,7 +3394,7 @@ class SongProperties(object):
         def destroy(self):
             self.view.set_model(None)
             self.model.clear()
-            self.widget.destroy()
+            gtk.VBox.destroy(self)
 
         def update(self, songs):
             self.songs = songs
@@ -3427,10 +3402,9 @@ class SongProperties(object):
             self.total.set_value(len(songs))
             for song in songs:
                 if not song.can_change("tracknumber"):
-                    self.widget.set_sensitive(False)
+                    self.set_sensitive(False)
                     break
-            else:
-                self.widget.set_sensitive(True)
+            else: self.set_sensitive(True)
             for song in songs:
                 basename = util.fsdecode(song("~basename"))
                 self.model.append(row = [song, basename, song("tracknumber")])
@@ -3439,9 +3413,9 @@ class SongProperties(object):
             self.preview.set_sensitive(True)
 
     def __init__(self, songrefs):
-        self.window = gtk.Window()
-        self.window.set_default_size(300, 430)
-        self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        gtk.Window.__init__(self)
+        self.set_default_size(300, 430)
+        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.tips = gtk.Tooltips()
         self.pages = []
         self.notebook = qltk.Notebook()
@@ -3450,7 +3424,7 @@ class SongProperties(object):
         if len(songrefs) > 1:
             self.pages.append(self.TrackNumbers(self))
         for page in self.pages: self.notebook.append_page(page)
-        self.window.set_property('border-width', 12)
+        self.set_property('border-width', 12)
         vbox = gtk.VBox(spacing = 12)
         vbox.pack_start(self.notebook)
 
@@ -3495,9 +3469,9 @@ class SongProperties(object):
 
         if len(songrefs) > 1: selection.select_all()
         else: self.update(songrefs)
-        self.window.add(vbox)
-        self.window.connect('destroy', self.close)
-        self.window.show_all()
+        self.add(vbox)
+        self.connect('destroy', self.close)
+        self.show_all()
 
     def close(self, *args):
         self.fview.set_model(None)
@@ -3505,7 +3479,7 @@ class SongProperties(object):
         self.fbasemodel.clear()
         self.fmodel.clear_cache()
         for page in self.pages: page.destroy()
-        self.window.destroy()
+        self.destroy()
 
     def update(self, songs = None):
         if songs is not None: self.songrefs = songs
@@ -3513,12 +3487,12 @@ class SongProperties(object):
             widgets.main.update_markup(widgets.main.current_song)
         for page in self.pages: page.update(self.songrefs)
         if len(self.songrefs) == 1:
-            self.window.set_title(_("%s - Properties") %
-                                  self.songrefs[0].comma("title"))
+            self.set_title(_("%s - Properties") %
+                           self.songrefs[0].comma("title"))
         else:
-            self.window.set_title(_("%s and %d more - Properties") %
-                                  (self.songrefs[0].comma("title"),
-                                   len(self.songrefs) - 1))
+            self.set_title(_("%s and %d more - Properties") %
+                           (self.songrefs[0].comma("title"),
+                            len(self.songrefs) - 1))
 
     def refill(self):
         def refresh(model, iter, path):

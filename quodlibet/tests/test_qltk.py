@@ -18,20 +18,6 @@ class TestNotebook(TestCase):
         self.failUnless(l is n.get_tab_label(c))
         c.destroy()
 
-    def test_wrapper_string(self):
-        n = qltk.Notebook()
-        w = Mock(widget = gtk.VBox(), title = "A Test")
-        n.append_page(w)
-        self.failUnlessEqual("A Test", n.get_tab_label(w.widget).get_text())
-        n.destroy()
-
-    def test_wrapper_label(self):
-        n = qltk.Notebook()
-        w = Mock(widget = gtk.VBox(), title = gtk.Label("A Test"))
-        n.append_page(w)
-        self.failUnless(w.title is n.get_tab_label(w.widget))
-        n.destroy()
-
     def test_wrapper_error(self):
         n = qltk.Notebook()
         w = Mock(widget = gtk.VBox())
