@@ -172,6 +172,8 @@ class PlaylistPlayer(object):
                     if not self.player.stopped:
                         self.song["~#lastplayed"] = int(time.time())
                         self.song["~#playcount"] += 1
+                    else:
+                        self.song["~#skipcount"] = self.song.get("~#skipcount", 0) + 1
 
             if self.repeat:
                 self.playlist = self.orig_playlist[:]

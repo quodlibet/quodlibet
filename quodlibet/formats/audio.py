@@ -81,8 +81,9 @@ class AudioFile(dict):
 
     # copy important keys from the other song to this one.
     def migrate(self, other):
-        for key in ["~#playcount", "~#lastplayed"]:
-            self[key] = other[key]
+        for key in ["~#playcount", "~#lastplayed", "~#added", "~#skipcount"]:
+            self[key] = other.get(key, 0)
+        self["~#rating"] = other.get("~#rating", 2)
         for key in filter(lambda s: s.startswith("~#playlist_"), other):
             self[key] = other[key]
 
@@ -135,7 +136,10 @@ class AudioFile(dict):
         # Fill in necessary values.
         self.setdefault("~#lastplayed", 0)
         self.setdefault("~#playcount", 0)
+        self.setdefault("~#skipcount", 0)
         self.setdefault("~#length", 0)
+        self.setdefault("~#rating", 2)
+        self.setdefault("~#added", int(time.time()))
 
         # Clean up Vorbis garbage.
         try: del(self["vendor"])

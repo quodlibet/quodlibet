@@ -101,7 +101,7 @@ less(1)-like case sensitivity behavior, at least for "dumb" searches.
 
 New keys
 --------
-Time added to library, number of times skipped, rating, file size?
+File size? (Is this useful?)
 
 Others
 ------

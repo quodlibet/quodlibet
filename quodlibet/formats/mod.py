@@ -32,7 +32,6 @@ class ModPlayer(AudioPlayer):
         AudioPlayer.__init__(self)
         self.audio = modplug.ModFile(song["~filename"])
         self.length = self.audio.length
-        self.pos = 0
         self.dev = dev
         self.dev.set_info(44100, 2)
 
@@ -40,7 +39,6 @@ class ModPlayer(AudioPlayer):
 
     def seek(self, ms):
         self.audio.seek(ms)
-        self.pos = ms
 
     def next(self):
         if self.stopped: raise StopIteration
