@@ -8,7 +8,7 @@
 #
 # $Id$
 
-VERSION = "0.3"
+VERSION = "0.4"
 
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
@@ -41,8 +41,12 @@ class GTKSongInfoWrapper(object):
 
     def _toggle_window(self, *args):
         w = widgets["main_window"]
-        if w.get_property('visible'): w.hide()
-        else: w.show()
+        if w.get_property('visible'):
+            self.window_pos = w.get_position()
+            w.hide()
+        else:
+            w.move(*self.window_pos)
+            w.show()
 
     # The pattern of getting a call from the playing thread and then
     # queueing an idle function prevents thread-unsafety in GDK.
@@ -733,11 +737,15 @@ def set_column_headers(sl):
     sl.set_model(widgets.songs)
 
 def setup_nonglade():
+    # Restore window size.
+    w, h = map(int, config.get("memory", "size").split())
+    widgets["main_window"].set_property("default-width", w)
+    widgets["main_window"].set_property("default-height", h)
+
     # Set up the main song list store.
     sl = widgets["songlist"]
     sl.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
     widgets.songs = gtk.ListStore(object)
-    set_column_headers(sl)
     #refresh_songlist()
 
     # Build a model and view for our ComboBoxEntry.
@@ -753,11 +761,12 @@ def setup_nonglade():
     # Initialize volume controls.
     widgets["volume"].set_value(player.device.volume)
 
-    widgets.wrap = GTKSongInfoWrapper()
-    w, h = map(int, config.get("memory", "size").split())
-    widgets["main_window"].set_size_request(w, h)
+    # Show main window.
     widgets["main_window"].show()
-
+    # Wait to fill in the column headers because otherwise the
+    # spacing is off, since the window hasn't been sized until now.
+    set_column_headers(sl)
+    widgets.wrap = GTKSongInfoWrapper()
     widgets["query"].child.set_text(config.get("memory", "query"))
     gtk.threads_init()
 

@@ -1,6 +1,5 @@
 - Artist URL detection
 - Playlists.
-- Remember window size, position (more importantly, why this isn't working)
 - Various skipping problems -- get smarter about Python threads.
   - Some of this (during saving) disappeared with ossaudiodev? Rock.
 - Look into eventual GStreamer port/use (for playing).
