@@ -1706,7 +1706,6 @@ class MainWindow(gtk.Window):
         self.image.set_song(song)
 
     def _update_song(self, song, player):
-        self.show()
         for wid in self.song_buttons:
             wid.set_sensitive(bool(song))
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
