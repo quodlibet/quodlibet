@@ -2719,9 +2719,9 @@ if __name__ == "__main__":
     import locale, gettext
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
-    gettext.bindtextdomain("quodlibet", i18ndir)
+    gettext.bindtextdomain("quodlibet")
     gettext.textdomain("quodlibet")
-    gettext.install("quodlibet", i18ndir, unicode = 1)
+    gettext.install("quodlibet", unicode = True)
     _ = gettext.gettext
 
     sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
@@ -2775,7 +2775,7 @@ if __name__ == "__main__":
             ".".join(map(str, gtk.pygtk_version)))
         raise SystemExit(_("E: Please upgrade GTK+/PyGTK."))
     import gtk.glade
-    gtk.glade.bindtextdomain("quodlibet", i18ndir)
+    gtk.glade.bindtextdomain("quodlibet")
     gtk.glade.textdomain("quodlibet")
 
     import gc
