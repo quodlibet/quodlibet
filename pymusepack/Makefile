@@ -13,6 +13,7 @@ clean:
 	./setup.py clean
 	rm -rf build dist
 	rm -f musepack/mpc.so
+	rm -f */*.pyc
 
 distclean: clean
 	rm -f *~ */*~

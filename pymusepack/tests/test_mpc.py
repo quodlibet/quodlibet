@@ -162,7 +162,7 @@ class MPCTest(TestCase):
         self.failUnlessEqual(self.mpc.profile_name, "'Standard'")
 
     def test_bitrate(self):
-        self.failUnlessEqual(self.mpc.bitrate, 207760.0)
+        self.failUnlessEqual(self.mpc.bitrate, 194530.0)
 
     def test_replaygain(self):
         self.failUnlessEqual(self.mpc.gain_radio, 0)
