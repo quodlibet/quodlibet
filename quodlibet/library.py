@@ -125,17 +125,31 @@ class AudioFileGroup(dict):
         return can
 
 class Library(dict):
-    def __init__(self, masked = [], initial = {}):
-        self.masked = masked
+    def __init__(self, initial={}):
         self.masked_files = {}
         dict.__init__(self, initial)
+
+    def mask(self, mountp):
+        mountd = mountp + "/"
+        files = [f for f in self if f.startswith(mountd)]
+        if files:
+            self.masked_files[mountp] = {}
+            for f in files:
+                self.masked_files[mountp][f] = self[f]
+                del(self[f])
+
+    def unmask(self, mountp):
+        if mountp in self.masked_files:
+            self.update(self.masked_files[mountp])
+            del(self.masked_files[mountp])
 
     def random(self, tag):
         songs = {}
         for song in self.values():
              if not song.unknown(tag):
                  for v in song.list(tag): songs[v] = True  
-        return random.choice(songs.keys())
+        if songs: return random.choice(songs.keys())
+        else: return None
 
     def rename(self, song, newfn):
         oldfn = song['~filename']
@@ -153,7 +167,7 @@ class Library(dict):
             return bool(song)
         else: return True
 
-    def query(self, text, sort = None):
+    def query(self, text, sort=None):
         if text == "": songs = self.values()
         else: songs = filter(parser.parse(text).search, self.values())
 
@@ -236,6 +250,11 @@ class Library(dict):
         return changed, removed
 
     def scan(self, dirs):
+        if config.get("settings", "masked"):
+            for m in config.get("settings", "masked").split(":"):
+                if not os.path.ismount(m): self.mask(m)
+                else: self.unmask(m)
+
         added, changed = 0, 0
 
         for d in dirs:
@@ -255,12 +274,13 @@ class Library(dict):
                         self[m_fn] = m
                 yield added, changed
 
-    def rebuild(self, force = False):
+    def rebuild(self, force=False):
+        if config.get("settings", "masked"):
+            for m in config.get("settings", "masked").split(":"):
+                if not os.path.ismount(m): self.mask(m)
+                else: self.unmask(m)
+
         changed, removed = 0, 0
-        for m in self.masked_files:
-            if os.path.ismount(m):
-                self.masked.extend(self.masked_files[m])
-                del(self.masked_files[m])
 
         for fn in self.keys():
             if force or not self[fn].valid():
@@ -275,10 +295,10 @@ class Library(dict):
 
             yield changed, removed
 
-def init(cache_fn = None):
+def init(cache_fn=None):
     global library
     print to(_("Supported formats:")),
     print ", ".join([os.path.basename(name) for name, mod in formats.modules
                      if mod.extensions])
-    library = Library(config.get("settings", "masked").split(":"))
+    library = Library()
     if cache_fn: library.load(cache_fn)
