@@ -8,7 +8,7 @@
 #
 # $Id$
 
-VERSION = "0.5"
+VERSION = "0.6"
 
 import os, sys
 
@@ -1241,6 +1241,9 @@ def set_column_headers(sl, headers):
     sl.set_model(widgets.songs)
 
 def setup_nonglade():
+    widgets.wrap = GTKSongInfoWrapper()
+    player.playlist.info = widgets.wrap
+
     # Restore window size.
     w, h = map(int, config.get("memory", "size").split())
     widgets["main_window"].set_property("default-width", w)
@@ -1269,7 +1272,6 @@ def setup_nonglade():
     # Wait to fill in the column headers because otherwise the
     # spacing is off, since the window hasn't been sized until now.
     set_column_headers(sl, config.get("settings", "headers").split())
-    widgets.wrap = GTKSongInfoWrapper()
     widgets["query"].child.set_text(config.get("memory", "query"))
     gtk.threads_init()
 
