@@ -22,6 +22,8 @@ def MusicFile(filename):
                 return None
     else: return None
 
+class Unknown(str): pass
+
 class AudioFile(dict):
     def __cmp__(self, other):
         if not hasattr(other, "get"):
@@ -38,7 +40,7 @@ class AudioFile(dict):
         elif "=filename" not in self:
             raise ValueError("Unknown filename!")
         for i in ["title", "artist", "album"]:
-            if not self.get(i): self[i] = "Unknown"
+            if not self.get(i): self[i] = Unknown("Unknown")
         if "tracknumber" in self:
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
             except: pass
@@ -228,6 +230,7 @@ class MP3File(AudioFile):
                 while True: tag.remove(id3name)
             except ValueError: pass
             if key in self:
+                if isinstance(self[key], Unknown): continue
                 for value in self[key].split("\n"):
                     try: value = value.encode("iso-8859-1")
                     except UnicodeError: value = value.encode("utf-8")
@@ -258,6 +261,7 @@ class OggFile(AudioFile):
             if key[0] == "=": continue
             else:
                 value = self[key]
+                if isinstance(value, Unknown): continue
                 if not isinstance(value, list): value = value.split("\n")
                 for line in value: comments[key] = line
         comments.write_to(self['=filename'])
@@ -306,17 +310,14 @@ class FLACFile(AudioFile):
             if not it.next(): break
 
         if vc:
-            for k in vc.comments: print k
-
             keys = [k.split("=")[0] for k in vc.comments]
             for k in keys: del(vc.comments[k])
-
-            print "After delete"
-            for k in vc.comments: print k
             for key in self.keys():
-                if key[0] == "=": continue
+                if isinstance(key, Unknown): continue
+                elif key[0] == "=": continue
                 else:
                     value = self[key]
+                    if isinstance(value, Unknown): continue
                     if not isinstance(value, list): value = value.split("\n")
                     for line in value:
                         vc.comments[key] = util.encode(line)
