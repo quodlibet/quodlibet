@@ -14,6 +14,21 @@ import gc
 import os
 import util; from util import escape
 
+class GTKImageWrapper(object):
+    def __init__(self, widget, x = 100, y = 100):
+        self.widget = widget
+        self.x = x
+        self.y = y
+
+    def set_image(self, filename):
+        if filename:
+            pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+            scaled_buf = pixbuf.scale_simple(self.x, self.y,
+                                             gtk.gdk.INTERP_BILINEAR)
+            self.widget.set_from_pixbuf(scaled_buf)
+        else:
+            self.widget.set_from_stock(gtk.STOCK_CDROM,
+                                       gtk.ICON_SIZE_BUTTON)
 class Widgets(object):
     def __init__(self, file):
         self.widgets = gtk.glade.XML("quodlibet.glade")
@@ -38,36 +53,10 @@ class GladeHandlers(object):
         player.playlist.repeat = button.get_active()
 
     def select_song(tree, indices, col):
-        iter = widgets.sorted.get_iter(indices)
-        iter = widgets.sorted.convert_iter_to_child_iter(None, iter)
-        iter = widgets.filter.convert_iter_to_child_iter(iter)
+        iter = widgets.songs.get_iter(indices)
+        #iter = widgets.songs.convert_iter_to_child_iter(None, iter)
+        #iter = widgets.filter.convert_iter_to_child_iter(iter)
         song = widgets.songs.get_value(iter, 0)
-        title = ", ".join(song.get("title", "Unknown").split("\n"))
-
-        text = u'<span weight="bold" size="x-large">%s</span>' % escape(title)
-        if "version" in song:
-            text += u"\n         <small><b>%s</b></small>" % escape(
-                song["version"])
-
-        artist = ", ".join(song.get("artist", "Unknown").split("\n"))
-        text += u"\n      <small>by %s</small>" % escape(artist)
-        if "album" in song:
-            album = u"\n   <b>%s</b>" % escape(song["album"])
-            if "tracknumber" in song:
-                album += u" - Track %s" % escape(song["tracknumber"])
-            text += album
-        label = widgets["currentsong"]
-
-        cover = song.find_cover()
-        if cover:
-            pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
-            scaled_buf = pixbuf.scale_simple(100, 100,
-                                             gtk.gdk.INTERP_BILINEAR)
-            widgets["albumcover"].set_from_pixbuf(scaled_buf)
-        else:
-            widgets["albumcover"].set_from_stock(gtk.STOCK_CDROM,
-                                                 gtk.ICON_SIZE_BUTTON)
-        label.set_markup(text)
         player.playlist.go_to(song)
         player.playlist.paused = False
 
@@ -144,7 +133,12 @@ def sort_songs(a, b):
             cmp(a.get("tracknumber"), b.get("tracknumber")) or
             cmp(a.get("title"), b.get("title")))
 
-def set_sort_by(header): pass
+def set_sort_by(header, i):
+    s = header.get_sort_order()
+    if s == gtk.SORT_ASCENDING: s = gtk.SORT_DESCENDING
+    else: s = gtk.SORT_ASCENDING
+    header.set_sort_order(s)
+    print header, i
 
 widgets = Widgets("quodlibet.glade")
 
@@ -180,28 +174,30 @@ def main():
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(object)
     widgets.filter = widgets.songs.filter_new()
-    widgets.filter.set_visible_func(lambda m, i: bool(m[i][0]))
     widgets.filter.set_modify_func([str]*len(HEADERS), list_transform)
-    widgets.sorted = gtk.TreeModelSort(widgets.filter)
     vol = widgets["volume"]
     vol.set_value(player.device.volume)
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn(t.title(), renderer, text=i)
         column.set_resizable(True)
-        #column.set_sort_column_id(i)
+        column.set_clickable(True)
+        column.set_sort_indicator(True)
+        column.connect('clicked', set_sort_by, (i,))
         sl.append_column(column)
 
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.load(cache_fn)
     set_songs(library.values())
     print "Done loading songs."
-    sl.set_model(widgets.sorted)
-    widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
+    sl.set_model(widgets.filter)
+    #widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
     gtk.timeout_add(100, update_timer, ())
     gtk.threads_init()
-    thread.start_new_thread(player.playlist.play, (widgets["currentsong"],))
+    thread.start_new_thread(player.playlist.play,
+                            (widgets["currentsong"],
+                             GTKImageWrapper(widgets["albumcover"])))
     gtk.main()
     util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
     library.save(cache_fn)

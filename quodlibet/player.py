@@ -112,12 +112,13 @@ class PlaylistPlayer(object):
     def seek(self, pos):
         if self.player: self.player.seek(pos)
 
-    def play(self, info):
+    def play(self, info, album):
         while True:
             while self.playlist:
                 self.song = self.playlist.pop(0)
                 self.player = FilePlayer(self.output, self.song['filename'])
                 if info: info.set_markup(self.song.to_markup())
+                if album: album.set_image(self.song.find_cover())
                 times[1] = self.player.length
                 self.played.append(self.song)
                 for t in self.player:
