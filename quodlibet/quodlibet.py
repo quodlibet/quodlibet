@@ -1933,7 +1933,8 @@ class SongProperties(object):
 
         def _people(self, song):
             vbox = gtk.VBox(spacing = 6)
-            vbox.pack_start(gtk.Label(song("artist")), expand = False)
+            vbox.pack_start(gtk.Label(util.escape(song("artist"))),
+                            expand = False)
 
             for names, tag in [
                 (_("performers"),  "performer"),
@@ -1943,10 +1944,14 @@ class SongProperties(object):
                 (_("authors"),    "author")]:
                 if tag in song:
                     if "\n" in song[tag]:
-                        frame = self.Frame(names, gtk.Label(song[tag]), False)
+                        frame = self.Frame(names,
+                                           gtk.Label(util.escape(song[tag])),
+                                           False)
                     else:
                         ntag = util.title(_(tag))
-                        frame = self.Frame(ntag, gtk.Label(song[tag]), False)
+                        frame = self.Frame(ntag,
+                                           gtk.Label(util.escape(song[tag])),
+                                           False)
                     vbox.pack_start(frame)
             return self.Frame(_("People"), vbox)
 
@@ -2083,7 +2088,7 @@ class SongProperties(object):
             artists.sort()
             arcount = len(artists)
             if noartist: artists.append(_("%d with no artists") % noartist)
-            artists = "\n".join(artists)
+            artists = util.escape("\n".join(artists))
             if artists:
                 self.box.pack_start(self.Frame(_("Artists (%d)") % arcount,
                                                self.Label(artists)),
@@ -2093,7 +2098,7 @@ class SongProperties(object):
             albums.sort()
             alcount = len(albums)
             if noalbum: albums.append(_("%d with no album") % noalbum)
-            albums = "\n".join(albums)
+            albums = util.escape("\n".join(albums))
             if albums:
                 self.box.pack_start(self.Frame(_("Albums (%d)") % alcount,
                                                self.Label(albums)),
