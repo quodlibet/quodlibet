@@ -8,9 +8,12 @@ modplug.so: modplug.c build
 build: modplug.c
 	./setup.py build
 
+install: build
+	./setup.py install
+
 clean:
 	./setup.py clean
-	rm -rf build
+	rm -rf build dist
 	rm -f modplug.so
 
 distclean: clean
