@@ -81,6 +81,7 @@ class FLACPlayer(AudioPlayer):
             self._samples = streaminfo.total_samples
             self.length = (self._samples * 1000) // self._srate
             self.dev.self.set_info(self._srate, self._chan)
+        return self.OK
 
     def _player(self, dec, buff, size):
         self.pos += 1000 * (float(len(buff))/self._chan/self._bps/self._srate)
@@ -213,17 +214,16 @@ class OSSAudioDevice(object):
 class AOAudioDevice(object):
     def __init__(self, device):
         import ao
-        self.rate = 44100
-        self.ratestate = None
         try: self.dev = ao.AudioDevice(device, rate = 44100,
                                        channels = 2, bits = 16)
         except ao.aoError: raise IOError
         self.volume = 1.0
+        self.set_info(44100, 2)
 
     def set_info(self, rate, channels):
+         self.rate = rate
+         self.ratestate = None
          if rate != 44100:
-             self.ratestate = None
-             self.rate = rate
              self.rate_conv = audioop.ratecv
          else: self.rate_conv = lambda *args: (args[0], None)
          if channels != 2: self.chan_conv = audioop.tostereo
