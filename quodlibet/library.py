@@ -107,9 +107,13 @@ class AudioFile(dict):
 
     def change(self, key, old_value, new_value):
         parts = self[key].split("\n")
-        parts[parts.index(old_value)] = new_value
-        self[key] = "\n".join(parts)
-        self.sanitize()
+        try: parts[parts.index(old_value)] = new_value
+        except ValueError:
+            print "W: Old value not found; overwriting the entire tag. This is probably safe."
+            self[key] = new_value
+        else:
+            self[key] = "\n".join(parts)
+            self.sanitize()
 
     def add(self, key, value):
         if key not in self: self[key] = value
