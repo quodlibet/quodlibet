@@ -139,6 +139,7 @@ class PluginManager(object):
             self.plugins[name + '.' + obj.PLUGIN_NAME] = obj
 
     def list(self, selection):
+
         if len(selection) == 0:
             return []
 
@@ -152,15 +153,17 @@ class PluginManager(object):
             return plugins
 
         else:
-            albums = {}
-            for song in selection: albums[song.comma('album')] = song
-            albums = len(albums)
+            albums = True
+            album = selection[-1].comma('album')
+            for song in selection:
+                if album != song.comma('album'): break
+            else: albums = False
 
             plugins = []
             for plugin in self.plugins.values():
                 for fn in all_callables[1:]:
                     if not hascallable(plugin, fn): continue
-                    elif albums > 1 and fn in callables['single']: continue
+                    elif albums and fn in callables['single']: continue
                     else: break
                 else: continue
                 plugins.append(plugin)
