@@ -139,7 +139,7 @@ class APETag(object):
                 # list? text.
                 v = APEValue("\0".join(map(_utf8, v)), TEXT)
             else:
-                try: dummy = k2.decode("utf-8")
+                try: dummy = k.decode("utf-8")
                 except UnicodeError:
                     # invalid UTF8 text, probably binary
                     v = APEValue(v, BINARY)
@@ -187,10 +187,10 @@ class APEKey(str):
     case-sensitive, i.e. "album" == "Album"."""
 
     def __cmp__(self, o):
-        return cmp(str(self).lower(), o.lower())
+        return cmp(str(self).lower(), str(o).lower())
     
     def __eq__(self, o):
-        return str(self).lower() == o.lower()
+        return str(self).lower() == str(o).lower()
     
     def __hash__(self):
         return str.__hash__(self.lower())
@@ -231,6 +231,8 @@ class APETextValue(_APEValue):
 
     def __getitem__(self, i):
         return unicode(self).split("\0")[i]
+
+    def __len__(self): return self.value.count("\0") + 1
 
     def __cmp__(self, other):
         return cmp(unicode(self), other)

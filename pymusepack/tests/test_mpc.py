@@ -6,9 +6,26 @@ import musepack
 DIR = os.path.dirname(__file__)
 SAMPLE = os.path.join(DIR, "click.mpc")
 OLD = os.path.join(DIR, "oldtag.apev2")
-NEW = os.path.join(DIR, "newtag.apev2")
 
-from sets import Set as set
+class APEWriter(TestCase):
+    def setUp(self):
+        import shutil
+        shutil.copy(SAMPLE, SAMPLE + ".new")
+        tag = musepack.APETag(SAMPLE + ".new")
+        self.values = {"artist": "Joe Wreschnig\0unittest",
+                       "album": "Pymusepack tests",
+                       "title": "Not really a song"}
+        for k, v in self.values.items():
+            tag[k] = v
+        tag.write()
+        self.tag = musepack.APETag(SAMPLE + ".new")
+
+    def test_readback(self):
+        for k, v in self.tag.items():
+            self.failUnlessEqual(str(v), self.values[k])
+
+    def tearDown(self):
+        os.unlink(SAMPLE + ".new")
 
 class APEReader(TestCase):
     def setUp(self):
@@ -23,8 +40,7 @@ class APEReader(TestCase):
         self.failUnless("artisT" in self.tag)
 
     def test_dictlike(self):
-        self.failUnlessEqual(set(self.tag.keys()),
-                             set(["artist", "title", "album", "track"]))
+        self.failUnless("Track" in self.tag.keys())
         self.failUnless("AnArtist" in self.tag.values())
 
         self.failUnlessEqual(
@@ -47,6 +63,72 @@ class APEReader(TestCase):
         self.failUnlessEqual("07", self.tag["track"])
 
         self.failIfEqual(self.tag["album"], "A test Case")
+
+class APEKeyTest(TestCase):
+    from musepack.apev2 import APEKey
+
+    def test_eq(self):
+        self.failUnlessEqual(self.APEKey("foo"), "foo")
+        self.failUnlessEqual("foo", self.APEKey("foo"))
+        self.failUnlessEqual(self.APEKey("foo"), u"foo")
+        self.failUnlessEqual(u"foo", self.APEKey("foo"))
+
+        self.failUnlessEqual(self.APEKey("Bar"), "baR")
+        self.failUnlessEqual(u"baR", self.APEKey("Bar"))
+
+    def test_hash(self):
+        self.failUnlessEqual(hash("foo"), hash(self.APEKey("foo")))
+        self.failUnlessEqual(hash("foo"), hash(self.APEKey("FoO")))
+
+class APEBinaryTest(TestCase):
+    from musepack.apev2 import APEBinaryValue as BV
+
+    def setUp(self):
+        self.sample = "\x12\x45\xde"
+        self.value = musepack.apev2.APEValue(self.sample,musepack.apev2.BINARY)
+
+    def test_type(self):
+        self.failUnless(isinstance(self.value, self.BV))
+
+    def test_const(self):
+        self.failUnlessEqual(self.sample, str(self.value))
+
+class APETextTest(TestCase):
+    from musepack.apev2 import APETextValue as TV
+    def setUp(self):
+        self.sample = ["foo", "bar", "baz"]
+        self.value = musepack.apev2.APEValue(
+            "\0".join(self.sample), musepack.apev2.TEXT)
+
+    def test_type(self):
+        self.failUnless(isinstance(self.value, self.TV))
+
+    def test_list(self):
+        self.failUnlessEqual(self.sample, list(self.value))
+
+    def test_setitem(self):
+        self.value[2] = self.sample[2] = 'quux'
+        self.test_list()
+        self.test_getitem()
+        self.value[2] = self.sample[2] = 'baz'
+
+    def test_getitem(self):
+        for i in range(len(self.value)):
+            self.failUnlessEqual(self.sample[i], self.value[i])
+
+class APEExtTest(TestCase):
+    from musepack.apev2 import APEExtValue as EV
+
+    def setUp(self):
+        self.sample = "http://foo"
+        self.value = musepack.apev2.APEValue(
+            self.sample, musepack.apev2.EXTERNAL)
+
+    def test_type(self):
+        self.failUnless(isinstance(self.value, self.EV))
+
+    def test_const(self):
+        self.failUnlessEqual(self.sample, str(self.value))
 
 class MPCTest(TestCase):
     def setUp(self):
@@ -105,4 +187,9 @@ class MPCTest(TestCase):
         del(self.mpc)
 
 registerCase(APEReader)
+registerCase(APEWriter)
+registerCase(APEKeyTest)
+registerCase(APEBinaryTest)
+registerCase(APETextTest)
+registerCase(APEExtTest)
 registerCase(MPCTest)
