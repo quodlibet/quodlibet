@@ -308,7 +308,7 @@ class PlaylistPlayer(object):
             self.played = []
             self.playlist = self.orig_playlist[:]
         else:
-            if self.song and self.song in self.playlist:
+            if self.song and self.song in self.orig_playlist:
                 i = self.orig_playlist.index(self.song) + 1
                 self.played = self.orig_playlist[:i]
                 self.playlist = self.orig_playlist[i:]
