@@ -19,7 +19,7 @@ def MusicFile(filename):
         if filename.lower().endswith(ext):
             try:
                 return supported[ext](filename)
-            except:
+            except None:
                 print "W: Error loading %s" % filename
                 return None
     else: return None
@@ -45,11 +45,16 @@ class AudioFile(dict):
         return isinstance(self.get(key), Unknown)
 
     def realkeys(self):
-        return filter(lambda s: s and s[0] != "=" and not self.unknown(s),
+        return filter(lambda s: s and "~" not in s and s[0] != "=" and
+                                not self.unknown(s),
                       self.keys())
 
     def comma(self, key):
         return self.get(key, "").replace("\n", ", ")
+
+    def list(self, key):
+        if key in self: return self[key].split("\n")
+        else: return []
 
     def exists(self):
         return os.path.exists(self.get("=filename"))
@@ -168,15 +173,14 @@ class AudioFile(dict):
 
     def to_dump(self):
         s = ""
-        for k, v in self.items():
-            if "=" in k or "~" in k: continue
-            for v2 in v.split("\n"):
+        for k in self.realkeys():
+            for v2 in self.list(k):
                 s += "%s=%s\n" % (k, util.encode(v2))
         return s
 
     def change(self, key, old_value, new_value):
         try:
-            parts = self[key].split("\n")
+            parts = self.list(key)
             try: parts[parts.index(old_value)] = new_value
             except ValueError:
                 self[key] = new_value
@@ -195,7 +199,7 @@ class AudioFile(dict):
         if self[key] == value: del(self[key])
         else:
             try:
-                parts = self[key].split("\n")
+                parts = self.list(key)
                 parts.remove(value)
                 self[key] = "\n".join(parts)
             except ValueError:
@@ -235,14 +239,11 @@ class MP3File(AudioFile):
             "TPOS": "discnumber",
             "TSST": "part",
             "TSRC": "isrc",
-            "TDRA": "date",
-            "TDRC": "date",
-            "TDOR": "date",
-            "TORY": "date",
             "TCOP": "copyright",
             "TPUB": "organization",
             "USER": "license",
             "WOAR": "website",
+            "TOLY": "author",
             }
 
     INVERT_IDS = { "genre": "TIT1",
@@ -254,6 +255,7 @@ class MP3File(AudioFile):
                    "arranger": "TPE4",
                    "lyricist": "TEXT",
                    "language": "TLAN",
+                   "author": "TOLY",
                    "isrc": "TSRC",
                    "tracknumber": "TRCK",
                    "discnumber": "TPOS",
@@ -269,8 +271,17 @@ class MP3File(AudioFile):
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
         tag = pyid3lib.tag(filename)
+        date = ["", "", ""]
 
         for frame in tag:
+            if frame["frameid"] == "TDAT":
+                date[1] = frame["text"][0:2]
+                date[2] = frame["text"][2:4]
+                continue
+            elif frame["frameid"] == "TYER":
+                date[0] = frame["text"]
+                continue
+
             names = self.IDS.get(frame["frameid"], [])
             if not isinstance(names, list): names = [names]
             for name in map(str.lower, names):
@@ -288,6 +299,8 @@ class MP3File(AudioFile):
                     else: self[name] = text
                     self[name] = self[name].strip()
                 except: pass
+
+        if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
 
     def write(self):
@@ -299,16 +312,30 @@ class MP3File(AudioFile):
             except ValueError: pass
             if key in self:
                 if self.unknown(key): continue
-                for value in self[key].split("\n"):
+                for value in self.list(key):
                     try: value = value.encode("iso-8859-1")
                     except UnicodeError: value = value.encode("utf-8")
                     tag.append({'frameid': id3name, 'text': value })
+
+        if self["date"]:
+            y, m, d = (self["date"] + "--").split("-")[0:3]
+            if y:
+                try:
+                    while True: tag.remove("TYER")
+                except ValueError: pass
+                tag.append({'frameid': "TYER", 'text': str(y)})
+            if m and d:
+                try:
+                    while True: tag.remove("TDAT")
+                except ValueError: pass
+                tag.append({'frameid': "TDAT", 'text': str(m+d)})
+                
         tag.update()
         self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
 
     def can_change(self, k=None):
         if k is None: return self.INVERT_IDS.keys()
-        else: return k in self.INVERT_IDS.keys()
+        else: return (k in self.INVERT_IDS.keys() or k == "date")
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -328,8 +355,7 @@ class OggFile(AudioFile):
         comments = f.comment()
         comments.clear()
         for key in self.realkeys():
-            value = self[key]
-            if not isinstance(value, list): value = value.split("\n")
+            value = self.list(key)
             for line in value: comments[key] = line
         comments.write_to(self['=filename'])
         self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
@@ -383,8 +409,7 @@ class FLACFile(AudioFile):
             for k in keys: del(vc.comments[k])
             for key in self.realkeys():
                 if self.unknown(key): continue
-                value = self[key]
-                if not isinstance(value, list): value = value.split("\n")
+                value = self.list(key)
                 for line in value:
                     vc.comments[key] = util.encode(line)
             chain.write(True, True)

@@ -1,3 +1,9 @@
+0.5
+ - Song databases should be reloaded; a Unicode-related bug was fixed
+   where the database used UTF-8 strings instead of unicode objects.
+   This could cause searches to fail. Tags in files were not affected.
+ - Dates can be saved in MP3s now.
+
 0.4 - The Power of Language
  - Many bug fixes, primarily due to unit testing.
  - Tweaks to cover detection to pick 'frontcover' over 'backcover'.

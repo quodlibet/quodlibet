@@ -1,6 +1,7 @@
+- More unit tests.
+- "Automated" tag editing (file name scanning, value splitting, etc.)
 - Rework all the build scripts to be smarter.
   (Check out autoconf, distutils...)
-- Playlists.
 - Various skipping problems -- get smarter about Python threads.
   - Some of this (during saving) disappeared with ossaudiodev? Rock.
 - Look into eventual GStreamer port/use (for playing).
@@ -8,5 +9,6 @@
 - MikMod support.
 - Import covers from Muine.
 - Full FLAC support.
-- More unit tests.
 - Streaming.
+- Playlists.
+- New UI element for selecting playlists or streams.

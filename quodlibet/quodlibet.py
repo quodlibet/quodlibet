@@ -525,7 +525,17 @@ class MultiInstanceWidget(object):
 
     def songprop_edit(self, renderer, path, new, model, colnum):
         row = model[path]
-        if row[colnum].replace('<i>','').replace('</i>','') != new:
+        date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
+        if row[0] == "date" and not date.match(new):
+            msg = gtk.MessageDialog(self.window, gtk.DIALOG_MODAL,
+                                    gtk.MESSAGE_WARNING,
+                                    gtk.BUTTONS_OK)
+            msg.set_markup(_("Invalid date: <b>%s</b>.\n\n"
+                             "The date must be entered in YYYY or "
+                             "YYYY-MM-DD format.") % new)
+            msg.run()
+            msg.destroy()
+        elif row[colnum].replace('<i>','').replace('</i>','') != new:
             row[colnum] = util.escape(new)
             row[2] = True # Edited
             row[4] = False # not Deleted
@@ -565,16 +575,26 @@ class MultiInstanceWidget(object):
             if resp != gtk.RESPONSE_OK: break
 
             comment = tag.child.get_text().decode("utf-8").lower().strip()
+            value = val.get_text().decode("utf-8")
+            date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if not self.songinfo.can_change(comment):
                 msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
-                        gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
+                                        gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
                 msg.set_markup(_("Invalid tag <b>%s</b>\n\nThe files currently"
                                  " selected do not support editing this tag")%
                                util.escape(comment))
                 msg.run()
                 msg.destroy()
+            elif comment == "date" and not date.match(value):
+                msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
+                                        gtk.MESSAGE_WARNING,
+                                        gtk.BUTTONS_OK)
+                msg.set_markup(_("Invalid date: <b>%s</b>.\n\n"
+                                 "The date must be entered in YYYY or "
+                                 "YYYY-MM-DD format.") % value)
+                msg.run()
+                msg.destroy()
             else:
-                value = val.get_text().decode("utf-8")
                 edited = True
                 edit = True
                 orig = None
