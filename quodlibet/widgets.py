@@ -161,11 +161,14 @@ class PreferencesWindow(gtk.Window):
                 buttons["~basename"].set_active(True)
                 fip.set_active(True)
                 checks.remove("~filename")
-            vbox2.pack_start(rat)
-            vbox2.pack_start(tiv)
-            vbox2.pack_start(aip)
-            vbox2.pack_start(fip)
-            vbox.pack_start(vbox2, expand=False)
+
+            t = gtk.Table(2, 2)
+            t.set_homogeneous(True)
+            t.attach(tiv, 0, 1, 0, 1)
+            t.attach(aip, 0, 1, 1, 2)
+            t.attach(fip, 1, 2, 0, 1)
+            t.attach(rat, 1, 2, 1, 2)
+            vbox.pack_start(t, expand=False)
 
             hbox = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Others:"))
@@ -2185,12 +2188,8 @@ class SongList(gtk.TreeView):
             except: ws = []
         else: ws = []
 
-        if len(ws) != len(headers):
-            width = self.recall_size or self.get_allocation()[2]
-            c = sum([(x.startswith("~#") and 0.2) or 1 for x in headers])
-            width = int(width // c)
-            ws = [width] * len(headers)
-            
+        if len(ws) != len(headers): ws = [40] * len(headers)
+
         for c in self.get_columns(): self.remove_column(c)
 
         def cell_data(column, cell, model, iter,
