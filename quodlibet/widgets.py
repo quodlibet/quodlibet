@@ -88,11 +88,27 @@ class AboutWindow(gtk.Window):
         except AttributeError: pass
 
 class PreferencesWindow(gtk.Window):
-    class Browser(gtk.VBox):
+    class _Pane(object):
+        def toggle(self, c, name):
+            config.set("settings", name, str(bool(c.get_active())))
+
+        def changed(self, cb, name):
+            config.set("settings", name, str(cb.get_active()))
+
+    class SongList(_Pane, gtk.VBox):
         def __init__(self, tips):
-            gtk.VBox.__init__(self)
-            self.title = _("Browser")
+            gtk.VBox.__init__(self, spacing = 12)
+            self.set_border_width(12)
+            self.title = _("Song List")
             vbox = gtk.VBox(spacing = 12)
+
+            c = gtk.CheckButton(_("_Jump to current song automatically"))
+            tips.set_tip(c, _("When the playing song changes, "
+                              "scroll to it in the song list"))
+            c.set_active(config.state("jump"))
+            c.connect('toggled', self.toggle, "jump")
+            self.pack_start(c, expand = False)
+
             buttons = {}
             table = gtk.Table(3, 3)
             table.set_homogeneous(True)
@@ -138,7 +154,7 @@ class PreferencesWindow(gtk.Window):
             vbox2.pack_start(fip)
             vbox.pack_start(vbox2, expand = False)
 
-            hbox = gtk.HBox(spacing = 3)
+            hbox = gtk.HBox(spacing = 6)
             l = gtk.Label(_("_Others:"))
             hbox.pack_start(l, expand = False)
             others = gtk.Entry()
@@ -148,14 +164,17 @@ class PreferencesWindow(gtk.Window):
             l.set_mnemonic_widget(others)
             l.set_use_underline(True)
             hbox.pack_start(others)
-            #FIXME: Move below entry
-            apply = qltk.Button(stock = gtk.STOCK_APPLY, cb = self.apply,
-                                user_data = [buttons, tiv, aip, fip, others])
-            hbox.pack_start(apply, expand = False)
             vbox.pack_start(hbox, expand = False)
 
-            frame = qltk.Frame(_("Visible Columns"), border = 12, bold = True,
-                               child = vbox)
+            apply = qltk.Button(stock = gtk.STOCK_APPLY, cb = self.apply,
+                                user_data = [buttons, tiv, aip, fip, others])
+            b = gtk.HButtonBox()
+            b.set_layout(gtk.BUTTONBOX_END)
+            b.pack_start(apply)
+            vbox.pack_start(b)
+
+            frame = qltk.Frame(_("Visible Columns"), bold = True,
+                              child = vbox)
             self.pack_start(frame, expand = False)
 
         def apply(self, button, buttons, tiv, aip, fip, others):
@@ -177,7 +196,56 @@ class PreferencesWindow(gtk.Window):
             config.set("settings", "headers", " ".join(headers))
             widgets.main.set_column_headers(headers)
 
-    class Player(gtk.VBox):
+    class Browsers(_Pane, gtk.VBox):
+        def __init__(self, tips):
+            gtk.VBox.__init__(self, spacing = 12)
+            self.set_border_width(12)
+            self.title = _("Browsers")
+            
+            c = gtk.CheckButton(_("Color _search terms"))
+            tips.set_tip(
+                c, _("Display simple searches in blue, "
+                     "advanced ones in green, and invalid ones in red"))
+                         
+            c.set_active(config.state("color"))
+            c.connect('toggled', self.toggle, "color")
+
+            f = qltk.Frame(_("Search Bar"), bold = True, child = c)
+            self.pack_start(f, expand = False)
+
+            t = gtk.Table(2, 4)
+            t.set_col_spacings(3)
+            t.set_row_spacings(3)
+            cbes = [gtk.combo_box_entry_new_text() for i in range(3)]
+            values = ["", "genre", "artist", "album"]
+            current = config.get("browsers", "panes").split()
+            for i, c in enumerate(cbes):
+                for v in values:
+                    c.append_text(v)
+                    try: c.child.set_text(current[i])
+                    except IndexError: pass
+                lbl = gtk.Label(_("_Pane %d:") % (i + 1))
+                lbl.set_use_underline(True)
+                lbl.set_mnemonic_widget(c)
+                t.attach(lbl, 0, 1, i, i + 1, xoptions = 0)
+                t.attach(c, 1, 2, i, i + 1)
+            b = gtk.Button(stock = gtk.STOCK_APPLY)
+            b.connect('clicked', self.__update_panes, cbes)
+            bbox = gtk.HButtonBox()
+            bbox.set_layout(gtk.BUTTONBOX_END)
+            bbox.pack_start(b)
+            t.attach(bbox, 0, 2, 3, 4)
+            self.pack_start(
+                qltk.Frame(_("Paned Browser"), bold = True, child = t),
+                expand = False)
+
+        def __update_panes(self, button, cbes):
+            panes = " ".join([c.child.get_text() for c in cbes])
+            config.set('browsers', 'panes', panes)
+            if hasattr(widgets.main.browser, 'refresh_panes'):
+                widgets.main.browser.refresh_panes()
+
+    class Player(_Pane, gtk.VBox):
         def __init__(self, tips):
             gtk.VBox.__init__(self, spacing = 12)
             self.set_border_width(12)
@@ -186,20 +254,6 @@ class PreferencesWindow(gtk.Window):
             c = gtk.CheckButton(_("Show _album cover images"))
             c.set_active(config.state("cover"))
             c.connect('toggled', self.toggle_cover)
-            vbox.pack_start(c)
-            c = gtk.CheckButton(_("Color _search terms"))
-            tips.set_tip(
-                c, _("Display simple searches in blue, "
-                     "advanced ones in green, and invalid ones in red"))
-                         
-            c.set_active(config.state("color"))
-            c.connect('toggled', self.toggle, "color")
-            vbox.pack_start(c)
-            c = gtk.CheckButton(_("_Jump to current song automatically"))
-            tips.set_tip(c, _("When the playing song changes, "
-                              "scroll to it in the song list"))
-            c.set_active(config.state("jump"))
-            c.connect('toggled', self.toggle, "jump")
             vbox.pack_start(c)
             self.pack_start(vbox, expand = False)
 
@@ -251,12 +305,6 @@ class PreferencesWindow(gtk.Window):
             ct2 = (color.red // 256, color.green // 256, color.blue // 256)
             config.set("settings", "osdcolors",
                        "#%02x%02x%02x #%02x%02x%02x" % (ct1+ct2))
-
-        def toggle(self, c, name):
-            config.set("settings", name, str(bool(c.get_active())))
-
-        def changed(self, cb, name):
-            config.set("settings", name, str(cb.get_active()))
 
         def toggle_cover(self, c):
             config.set("settings", "cover", str(bool(c.get_active())))
@@ -356,7 +404,8 @@ class PreferencesWindow(gtk.Window):
         self.add(gtk.VBox(spacing = 12))
         tips = gtk.Tooltips()
         n = qltk.Notebook()
-        n.append_page(self.Browser(tips))
+        n.append_page(self.SongList(tips))
+        n.append_page(self.Browsers(tips))
         n.append_page(self.Player(tips))
         n.append_page(self.Library(tips))
 
@@ -856,6 +905,14 @@ class PanedBrowser(Browser, gtk.HBox):
 
     def __init__(self, cb):
         gtk.HBox.__init__(self, spacing = 3)
+        self.__cb = cb
+        self.refresh_panes()
+        self.set_homogeneous(True)
+        self.set_size_request(100, 100)
+        player.playlist.sort_by("album")
+
+    def refresh_panes(self):
+        for c in self.get_children(): c.destroy()
         # fill in the pane list. the last pane reports back to us.
         self._panes = [self]
         panes = config.get("browsers", "panes").split(); panes.reverse()
@@ -863,13 +920,9 @@ class PanedBrowser(Browser, gtk.HBox):
             self._panes.insert(0, self.Pane(pane, self._panes[0]))
         self._panes.pop() # remove self
         map(self.pack_start, self._panes)
-        self.__cb = cb
-
         self.__inhibit = True
         self._panes[0].fill(library.values())
-        self.set_homogeneous(True)
-        self.set_size_request(100, 100)
-        player.playlist.sort_by("album")
+        self.restore()
         self.show_all()
 
     def can_filter(self, key):
