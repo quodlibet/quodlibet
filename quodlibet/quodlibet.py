@@ -1949,17 +1949,15 @@ class SongProperties(object):
             if "date" in song: text[-1] += " - " + util.escape(song["date"])
             secondary = []
             if "discnumber" in song:
-                secondary.append(_("Disc %d") % song("~#disc"))
+                secondary.append(_("Disc %s") % song("~#disc"))
             if "part" in song:
                 secondary.append("<b>%s</b>" % util.escape(song.comma("part")))
             if "tracknumber" in song:
-                secondary.append(_("Track %d") % song("~#track"))
+                secondary.append(_("Track %s") % song("~#track"))
             if secondary: text.append(" - ".join(secondary))
 
             if "organization" in song:
-                t = util.escape(song.comma("organization"))
-                if "labelid" in song: t += " - %s" %(
-                    util.escape(song.comma("labelid")))
+                t = util.escape(song.comma("~organization~labelid"))
                 text.append(t)
 
             if "producer" in song:
@@ -2084,13 +2082,12 @@ class SongProperties(object):
                     cur_part = None
                     cur_disc = disc
                     if disc:
-                        text.append(_("<b>%s</b>" % (_("Disc %d") % disc)))
+                        text.append("<b>%s</b>" % (_("Disc %s") % disc))
                 if part != cur_part:
                     tabs = "    " * bool(disc)
                     cur_part = part
                     if part:
-                        text.append(_("%s<b>%s</b>" % (
-                            tabs, util.escape(part))))
+                        text.append("%s<b>%s</b>" % (tabs, util.escape(part)))
                 cur_track += 1
                 tabs = "    " * (bool(disc) + bool(part))
                 while cur_track < track:
@@ -2174,8 +2171,7 @@ class SongProperties(object):
             albums = util.escape("\n".join(albums))
             if albums:
                 self.box.pack_start(
-                    self.Frame("%s (%d)" %(
-                    util.title(_("albums (%d)")), alcount),
+                    self.Frame("%s (%d)" % (util.title(_("albums")), alcount),
                                self.Label(albums)),
                                expand = False)
 
@@ -3100,6 +3096,7 @@ class SongProperties(object):
             c2.set_sort_column_id(3)
             self.fview.append_column(c1)
             self.fview.append_column(c2)
+            self.fview.set_size_request(-1, 130)
             sw = gtk.ScrolledWindow()
             sw.add(self.fview)
             sw.set_shadow_type(gtk.SHADOW_IN)
