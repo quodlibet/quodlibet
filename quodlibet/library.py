@@ -318,8 +318,8 @@ class MP3File(AudioFile):
                     except UnicodeError: value = value.encode("utf-8")
                     tag.append({'frameid': id3name, 'text': value })
 
-        if self["date"]:
-            y, m, d = (self["date"] + "--").split("-")[0:3]
+        for date in self.list("date"):
+            y, m, d = (date + "--").split("-")[0:3]
             if y:
                 try:
                     while True: tag.remove("TYER")

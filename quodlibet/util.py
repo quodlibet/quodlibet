@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, sre
+import os, sre, string
 
 # Make a directory, including all directories below it.
 def mkdir(dir):
@@ -66,3 +66,43 @@ def iscommand(s):
             p2 = os.path.join(p, s)
             if os.path.exists(p2): return True
         else: return False
+
+# Split a string on ;s and ,s.
+def split_value(s):
+    values = []
+    parts = s.split("\n")
+    for p in parts:
+        for p2 in p.split(";"):
+            values.extend(map(string.strip, p2.split(",")))
+    return values
+
+def split_title(s):
+    title, subtitle = find_subtitle(s)
+    if not subtitle: return (s, [])
+    else:
+        return (title.strip(), split_value(subtitle))
+
+def split_album(s):
+    name, disc = find_subtitle(s)
+    if not disc:
+        parts = s.split(" ")
+        if len(parts) > 2 and "disc" in parts[-2]:
+            return (" ".join(parts[:-2]), parts[-1])
+        return (s, None)
+    else:
+        disc = disc[1:-1]
+        parts = disc.split()
+        if (len(parts) == 2 and
+            parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
+            try: return (name, parts[1])
+            except: return (s, None)
+
+def find_subtitle(title):
+    for pair in [("[", "]"), ("(", ")"), ("~", "~"), ("-", "-")]:
+        if pair[0] in title and title[-1] == pair[1]:
+            l = title[0:-1].rindex(pair[0])
+            if l != 0:
+                subtitle = title[l+1:-1]
+                title = title[:l]
+                return title, subtitle
+    else: return title, ""

@@ -442,12 +442,17 @@ class MultiInstanceWidget(object):
     def __init__(self, file=None, widget=None):
         self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget)
         self.widgets.signal_autoconnect(self)
+        menu = gtk.glade.XML(file or "quodlibet.glade", "props_popup")
+        menu.signal_autoconnect(self)
+        self.menu = menu.get_widget("props_popup")
+        self.menu_w = menu
 
     def songprop_close(self, *args):
         self.fview.set_model(None)
         self.fmodel.clear()
         self.model.clear()
         self.window.destroy()
+        self.menu.destroy()
         del(self.songrefs)
 
     def songprop_save_click(self, button):
@@ -523,6 +528,33 @@ class MultiInstanceWidget(object):
         self.save.set_sensitive(True)
         self.revert.set_sensitive(True)
 
+    def split_into_list(self, *args):
+        model, iter = self.view.get_selection().get_selected()
+        row = model[iter]
+        vals = util.split_value(row[1])
+        if vals[0] != row[1]:
+            row[1] = vals[0]
+            row[2] = True
+            for val in vals[1:]: self.add_new_tag(row[0], val)
+
+    def split_title(self, *args):
+        model, iter = self.view.get_selection().get_selected()
+        row = model[iter]
+        title, versions = util.split_title(row[1])
+        if title != row[1]:
+            row[1] = title
+            row[2] = True
+            for val in versions: self.add_new_tag("version", val)
+
+    def split_album(self, *args):
+        model, iter = self.view.get_selection().get_selected()
+        row = model[iter]
+        album, disc = util.split_album(row[1])
+        if album != row[1]:
+            row[1] = album
+            row[2] = True
+            self.add_new_tag("discnumber", disc)
+
     def songprop_edit(self, renderer, path, new, model, colnum):
         row = model[path]
         date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
@@ -539,10 +571,7 @@ class MultiInstanceWidget(object):
             row[colnum] = util.escape(new)
             row[2] = True # Edited
             row[4] = False # not Deleted
-            self.save.set_sensitive(True)
-            self.revert.set_sensitive(True)
-            if self.window.get_title()[0] != "*":
-                self.window.set_title("* " + self.window.get_title())
+            self.enable_save()
 
     def songprop_selection_changed(self, selection):
         model, iter = selection.get_selected()
@@ -559,6 +588,27 @@ class MultiInstanceWidget(object):
         selection.selected_foreach(get_songrefs, songrefs)
         if len(songrefs): self.songrefs = songrefs
         self.fill_property_info()
+
+    def prop_popup_menu(self, view):
+        self.menu.popup(None, None, None, 1, 0)
+
+    def prop_button_press(self, view, event):
+        if event.button != 3:
+            return False
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
+        view.grab_focus()
+        selection = view.get_selection()
+        if not selection.path_is_selected(path):
+            view.set_cursor(path, col, 0)
+        row = view.get_model()[path]
+        if row[0] != "album": self.menu_w.get_widget("split_album").hide()
+        else: self.menu_w.get_widget("split_album").show()
+        if row[0] != "title": self.menu_w.get_widget("split_title").hide()
+        else: self.menu_w.get_widget("split_title").show()
+        self.menu.popup(None, None, None, event.button, event.time)
+        return True
 
     def songprop_add(self, button):
         add = widgets["add_tag_dialog"]
@@ -595,30 +645,34 @@ class MultiInstanceWidget(object):
                 msg.run()
                 msg.destroy()
             else:
-                edited = True
-                edit = True
-                orig = None
-                deleted = False
-                iters = []
-                def find_same_comments(model, path, iter):
-                    if model[path][0] == comment: iters.append(iter)
-                self.model.foreach(find_same_comments)
-                row = [comment, util.escape(value), edited, edit,deleted,orig]
-                if len(iters): self.model.insert_after(iters[-1], row=row)
-                else: self.model.append(row=row)
-
-                self.save.set_sensitive(True)
-                self.revert.set_sensitive(True)
-                if self.window.get_title()[0] != "*":
-                    self.window.set_title("* " + self.window.get_title())
-
+                self.add_new_tag(comment, value)
                 tag.child.set_text("")
                 val.set_text("")
                 break
 
         add.hide()
 
-    def songprop_remove(self, button):
+    def add_new_tag(self, comment, value):
+        edited = True
+        edit = True
+        orig = None
+        deleted = False
+        iters = []
+        def find_same_comments(model, path, iter):
+            if model[path][0] == comment: iters.append(iter)
+        self.model.foreach(find_same_comments)
+        row = [comment, util.escape(value), edited, edit,deleted,orig]
+        if len(iters): self.model.insert_after(iters[-1], row=row)
+        else: self.model.append(row=row)
+        self.enable_save()
+
+    def enable_save(self):
+        self.save.set_sensitive(True)
+        self.revert.set_sensitive(True)
+        if self.window.get_title()[0] != "*":
+            self.window.set_title("* " + self.window.get_title())
+
+    def songprop_remove(self, *args):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
         if row[0] in self.songinfo:
@@ -626,10 +680,7 @@ class MultiInstanceWidget(object):
             row[4] = True # Deleted
         else:
             model.remove(iter)
-        self.save.set_sensitive(True)
-        self.revert.set_sensitive(True)
-        if self.window.get_title()[0] != "*":
-            self.window.set_title("* " + self.window.get_title())
+        self.enable_save()
 
     def fill_property_info(self):
         from library import AudioFileGroup
@@ -689,6 +740,7 @@ class MultiInstanceWidget(object):
 def make_song_properties(songrefs):
     dlg = MultiInstanceWidget(widget="properties_window")
     dlg.window = dlg.widgets.get_widget('properties_window')
+    #dlg.menu = dlg.widgets.get_widget('props_popup')
     dlg.save = dlg.widgets.get_widget('songprop_save')
     dlg.revert = dlg.widgets.get_widget('songprop_revert')
     dlg.artist = dlg.widgets.get_widget('songprop_artist')

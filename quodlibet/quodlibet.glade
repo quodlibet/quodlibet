@@ -2035,6 +2035,8 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 	      <property name="rules_hint">False</property>
 	      <property name="reorderable">False</property>
 	      <property name="enable_search">True</property>
+	      <signal name="popup-menu" handler="prop_popup_menu" last_modification_time="Wed, 10 Nov 2004 02:10:15 GMT"/>
+	      <signal name="button-press-event" handler="prop_button_press" last_modification_time="Wed, 10 Nov 2004 02:10:19 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -2187,7 +2189,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 
 	  <child>
 	    <widget class="GtkTreeView" id="songprop_files">
-	      <property name="height_request">100</property>
+	      <property name="height_request">120</property>
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="headers_visible">True</property>
@@ -2545,6 +2547,91 @@ version</property>
 	  <property name="fill">True</property>
 	</packing>
       </child>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkMenu" id="props_popup">
+
+  <child>
+    <widget class="GtkImageMenuItem" id="split_into_list">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Split this tag's value into multiple values</property>
+      <property name="label" translatable="yes">_Split values</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="split_into_list" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
+
+      <child internal-child="image">
+	<widget class="GtkImage" id="image86">
+	  <property name="visible">True</property>
+	  <property name="stock">gtk-find-and-replace</property>
+	  <property name="icon_size">1</property>
+	  <property name="xalign">0.5</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkImageMenuItem" id="split_title">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Split title into title and version</property>
+      <property name="label" translatable="yes">Split version out of _title</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="split_title" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
+
+      <child internal-child="image">
+	<widget class="GtkImage" id="image87">
+	  <property name="visible">True</property>
+	  <property name="stock">gtk-find-and-replace</property>
+	  <property name="icon_size">1</property>
+	  <property name="xalign">0.5</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkImageMenuItem" id="split_album">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Split into album and disc number</property>
+      <property name="label" translatable="yes">Split disc out of _album</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="split_album" last_modification_time="Wed, 10 Nov 2004 05:12:49 GMT"/>
+
+      <child internal-child="image">
+	<widget class="GtkImage" id="image88">
+	  <property name="visible">True</property>
+	  <property name="stock">gtk-find-and-replace</property>
+	  <property name="icon_size">1</property>
+	  <property name="xalign">0.5</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkSeparatorMenuItem" id="separator6">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkImageMenuItem" id="remove2">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Remove this tag</property>
+      <property name="label">gtk-remove</property>
+      <property name="use_stock">True</property>
+      <signal name="activate" handler="songprop_remove" last_modification_time="Mon, 25 Oct 2004 21:30:45 GMT"/>
     </widget>
   </child>
 </widget>
