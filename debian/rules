@@ -1,0 +1,60 @@
+#!/usr/bin/make -f
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+
+build: build-stamp
+build-stamp: configure-stamp 
+	dh_testdir
+	make extensions
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+	-$(MAKE) clean
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/quodlibet PREFIX=/usr
+
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_python
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
