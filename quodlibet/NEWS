@@ -7,7 +7,7 @@ Recent upgrade notes:
 Songs added to the library before 0.9 will not support the "added"
 numeric tag (its value will be 0).
 
-0.9
+0.9 - I don't want any trouble, cephalopods!
  - Major updates to the Properties dialog:
    - A new detailed 'Information' tab was added.
    - Middle click pastes current PRIMARY clipboard text in 'Edit Tags'.
@@ -24,7 +24,7 @@ numeric tag (its value will be 0).
  - PMP support was removed.
  - Updated German translation (thanks, Bastian!)
 
-0.8.1 - Our story takes a sudden dive..
+0.8.1 - Our story takes a sudden dive...
  - Fix a crash when encoding information is not available.
 
 0.8 - I make jokes about whomever I please!
