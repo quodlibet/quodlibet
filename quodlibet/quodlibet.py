@@ -24,6 +24,7 @@ class GTKSongInfoWrapper(object):
         self.pos = widgets["song_pos"]
         self.timer = widgets["song_timer"]
         self.button = widgets["play_button"]
+        self.but_image = widgets["play_image"]
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
 
@@ -69,9 +70,10 @@ class GTKSongInfoWrapper(object):
         gtk.idle_add(self._update_paused, paused)
 
     def _update_paused(self, paused):
-        img = self.button.get_icon_widget()
-        if paused: img.set_from_pixbuf(self.paused)
-        else: img.set_from_pixbuf(self.playing)
+        if paused:
+            self.but_image.set_from_pixbuf(self.paused)
+        else:
+            self.but_image.set_from_pixbuf(self.playing)
 
     # The player told us about a new time.
     def set_time(self, cur, end):
@@ -97,8 +99,7 @@ class GTKSongInfoWrapper(object):
         iter = widgets.songs.get_iter(path)
         widgets.songs.remove(iter)
         statusbar = widgets["statusbar"]
-        j = statusbar.get_context_id("warnings")
-        statusbar.push(j, "Could not play %s." % song['=filename'])
+        statusbar.set_text("Could not play %s." % song['=filename'])
         library.remove(song)
         player.playlist.remove(song)
 
@@ -125,6 +126,8 @@ class GTKSongInfoWrapper(object):
         if song:
             self.pos.set_range(0, player.length)
             self.pos.set_value(0)
+            widgets["next_button"].set_sensitive(True)
+            widgets["play_button"].set_sensitive(True)
 
             cover = song.find_cover()
             if cover:
@@ -145,6 +148,8 @@ class GTKSongInfoWrapper(object):
             self.image.set_from_pixbuf(None)
             self.pos.set_range(0, 1)
             self.pos.set_value(0)
+            widgets["next_button"].set_sensitive(False)
+            widgets["play_button"].set_sensitive(False)
             self._time = (0, 1)
             self.update_markup(None)
 
@@ -736,9 +741,8 @@ def refresh_songlist():
         wgt = ((song is CURRENT_SONG[0] and 700) or 400)
         widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
 
-    j = statusbar.get_context_id("playlist")
     i = len(list(player.playlist))
-    statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
+    statusbar.set_text("%d song%s found." % (i, (i != 1 and "s" or "")))
     sl.set_model(widgets.songs)
     gc.collect()
 

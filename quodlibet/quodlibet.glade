@@ -129,150 +129,170 @@
 	  <property name="spacing">0</property>
 
 	  <child>
-	    <widget class="GtkVBox" id="vbox2">
+	    <widget class="GtkVBox" id="vbox14">
 	      <property name="visible">True</property>
 	      <property name="homogeneous">False</property>
 	      <property name="spacing">0</property>
 
 	      <child>
-		<widget class="GtkToolbar" id="toolbar1">
+		<widget class="GtkTable" id="table4">
+		  <property name="border_width">3</property>
 		  <property name="visible">True</property>
-		  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-		  <property name="toolbar_style">GTK_TOOLBAR_ICONS</property>
-		  <property name="tooltips">True</property>
-		  <property name="show_arrow">False</property>
+		  <property name="n_rows">2</property>
+		  <property name="n_columns">3</property>
+		  <property name="homogeneous">False</property>
+		  <property name="row_spacing">3</property>
+		  <property name="column_spacing">3</property>
 
 		  <child>
-		    <widget class="GtkToolButton" id="prev_button">
+		    <widget class="GtkButton" id="add_button">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Add songs to your library</property>
+		      <property name="can_focus">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <signal name="clicked" handler="open_chooser" last_modification_time="Sun, 07 Nov 2004 01:00:27 GMT"/>
+
+		      <child>
+			<widget class="GtkImage" id="image27">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-add</property>
+			  <property name="icon_size">3</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">1</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkButton" id="button15">
+		      <property name="visible">True</property>
+		      <property name="sensitive">False</property>
+		      <property name="tooltip" translatable="yes">Visit the artist's website</property>
+		      <property name="can_focus">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+
+		      <child>
+			<widget class="GtkImage" id="image34">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-dialog-info</property>
+			  <property name="icon_size">3</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">2</property>
+		      <property name="right_attach">3</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkButton" id="prev_button">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Play previous song</property>
-		      <property name="label" translatable="yes">Previous song</property>
-		      <property name="use_underline">True</property>
-		      <property name="icon">previous.png</property>
-		      <property name="visible_horizontal">True</property>
-		      <property name="visible_vertical">True</property>
-		      <property name="is_important">False</property>
-		      <signal name="clicked" handler="previous_song" last_modification_time="Sun, 10 Oct 2004 04:53:16 GMT"/>
+		      <property name="can_focus">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <signal name="clicked" handler="previous_song" last_modification_time="Sun, 07 Nov 2004 00:59:44 GMT"/>
+
+		      <child>
+			<widget class="GtkImage" id="image33">
+			  <property name="visible">True</property>
+			  <property name="pixbuf">previous.png</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		    <packing>
-		      <property name="expand">False</property>
-		      <property name="homogeneous">True</property>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">1</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
 		    </packing>
 		  </child>
 
 		  <child>
-		    <widget class="GtkToolButton" id="play_button">
+		    <widget class="GtkButton" id="play_button">
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Start playing</property>
-		      <property name="label" translatable="yes">Play current song</property>
-		      <property name="use_underline">True</property>
-		      <property name="icon">play.png</property>
-		      <property name="visible_horizontal">True</property>
-		      <property name="visible_vertical">True</property>
-		      <property name="is_important">False</property>
-		      <signal name="clicked" handler="play_pause" last_modification_time="Sun, 10 Oct 2004 04:53:16 GMT"/>
+		      <property name="tooltip" translatable="yes">Pause/resume the current song</property>
+		      <property name="can_focus">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <signal name="clicked" handler="play_pause" last_modification_time="Sun, 07 Nov 2004 01:00:00 GMT"/>
+
+		      <child>
+			<widget class="GtkImage" id="play_image">
+			  <property name="visible">True</property>
+			  <property name="pixbuf">play.png</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		    <packing>
-		      <property name="expand">False</property>
-		      <property name="homogeneous">True</property>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
 		    </packing>
 		  </child>
 
 		  <child>
-		    <widget class="GtkToolButton" id="next_button">
+		    <widget class="GtkButton" id="next_button">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Play next song</property>
-		      <property name="label" translatable="yes">Play next song</property>
-		      <property name="use_underline">True</property>
-		      <property name="icon">next.png</property>
-		      <property name="visible_horizontal">True</property>
-		      <property name="visible_vertical">True</property>
-		      <property name="is_important">False</property>
-		      <signal name="clicked" handler="next_song" last_modification_time="Sun, 10 Oct 2004 04:53:16 GMT"/>
+		      <property name="can_focus">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <signal name="clicked" handler="next_song" last_modification_time="Sun, 07 Nov 2004 01:00:09 GMT"/>
+
+		      <child>
+			<widget class="GtkImage" id="image32">
+			  <property name="visible">True</property>
+			  <property name="pixbuf">next.png</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		    <packing>
-		      <property name="expand">False</property>
-		      <property name="homogeneous">True</property>
-		    </packing>
-		  </child>
-		</widget>
-		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">False</property>
-		  <property name="fill">False</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkHSeparator" id="hseparator1">
-		  <property name="visible">True</property>
-		</widget>
-		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">False</property>
-		  <property name="fill">False</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkToolbar" id="toolbar2">
-		  <property name="visible">True</property>
-		  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-		  <property name="toolbar_style">GTK_TOOLBAR_ICONS</property>
-		  <property name="tooltips">True</property>
-		  <property name="show_arrow">True</property>
-
-		  <child>
-		    <widget class="GtkToolButton" id="addbutton">
-		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Add music to your library</property>
-		      <property name="stock_id">gtk-add</property>
-		      <property name="visible_horizontal">True</property>
-		      <property name="visible_vertical">True</property>
-		      <property name="is_important">False</property>
-		      <signal name="clicked" handler="open_chooser" last_modification_time="Sat, 09 Oct 2004 04:34:09 GMT"/>
-		    </widget>
-		    <packing>
-		      <property name="expand">False</property>
-		      <property name="homogeneous">True</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkToggleToolButton" id="repeat_toggle">
-		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Play first song after all songs are played</property>
-		      <property name="label" translatable="yes">Repeat playlist</property>
-		      <property name="use_underline">True</property>
-		      <property name="icon">repeat.png</property>
-		      <property name="visible_horizontal">True</property>
-		      <property name="visible_vertical">True</property>
-		      <property name="is_important">False</property>
-		      <property name="active">False</property>
-		      <signal name="clicked" handler="toggle_repeat" last_modification_time="Sat, 09 Oct 2004 04:34:09 GMT"/>
-		    </widget>
-		    <packing>
-		      <property name="expand">False</property>
-		      <property name="homogeneous">True</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkToggleToolButton" id="shuffle_toggle">
-		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Play songs in a random order</property>
-		      <property name="label" translatable="yes">Shuffle playlist</property>
-		      <property name="use_underline">True</property>
-		      <property name="icon">shuffle.png</property>
-		      <property name="visible_horizontal">True</property>
-		      <property name="visible_vertical">True</property>
-		      <property name="is_important">False</property>
-		      <property name="active">False</property>
-		      <signal name="clicked" handler="toggle_shuffle" last_modification_time="Sat, 09 Oct 2004 04:34:09 GMT"/>
-		    </widget>
-		    <packing>
-		      <property name="expand">False</property>
-		      <property name="homogeneous">True</property>
+		      <property name="left_attach">2</property>
+		      <property name="right_attach">3</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
 		    </packing>
 		  </child>
 		</widget>
@@ -301,14 +321,14 @@
 		<packing>
 		  <property name="padding">0</property>
 		  <property name="expand">True</property>
-		  <property name="fill">False</property>
+		  <property name="fill">True</property>
 		</packing>
 	      </child>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
 	      <property name="expand">False</property>
-	      <property name="fill">True</property>
+	      <property name="fill">False</property>
 	    </packing>
 	  </child>
 
@@ -506,7 +526,7 @@
 	  <property name="can_focus">True</property>
 	  <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
 	  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
-	  <property name="shadow_type">GTK_SHADOW_NONE</property>
+	  <property name="shadow_type">GTK_SHADOW_IN</property>
 	  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 	  <child>
@@ -532,9 +552,74 @@
       </child>
 
       <child>
-	<widget class="GtkStatusbar" id="statusbar">
+	<widget class="GtkHBox" id="hbox9">
+	  <property name="border_width">3</property>
 	  <property name="visible">True</property>
-	  <property name="has_resize_grip">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">6</property>
+
+	  <child>
+	    <widget class="GtkCheckButton" id="checkbutton1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Play songs in a random order</property>
+	      <property name="can_focus">True</property>
+	      <property name="label" translatable="yes">_Shuffle</property>
+	      <property name="use_underline">True</property>
+	      <property name="relief">GTK_RELIEF_NONE</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="active">False</property>
+	      <property name="inconsistent">False</property>
+	      <property name="draw_indicator">True</property>
+	      <signal name="toggled" handler="toggle_shuffle" last_modification_time="Sun, 07 Nov 2004 00:11:28 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkCheckButton" id="repeat_toggle">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Restart the playlist after all songs are played</property>
+	      <property name="can_focus">True</property>
+	      <property name="label" translatable="yes">_Repeat</property>
+	      <property name="use_underline">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="active">False</property>
+	      <property name="inconsistent">False</property>
+	      <property name="draw_indicator">True</property>
+	      <signal name="toggled" handler="toggle_repeat" last_modification_time="Sun, 07 Nov 2004 00:11:14 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="statusbar">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes"></property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_RIGHT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">1</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>

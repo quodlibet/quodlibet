@@ -349,11 +349,11 @@ class PlaylistPlayer(object):
     def previous(self):
         self.lock.acquire()
         self.paused = False
-        if len(self.played) >= 2:
+        if len(self.played) >= 2 and self.player:
             if self.player: self.player.end()
             self.playlist.insert(0, self.played.pop())
             self.playlist.insert(0, self.played.pop())
-        elif self.player and self.played:
+        elif self.played:
             if self.repeat:
                 self.played = self.orig_playlist[:-1]
                 self.playlist = [self.orig_playlist[-1]]
