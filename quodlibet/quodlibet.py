@@ -21,6 +21,12 @@ import util; from util import escape
 import signal
 import config
 
+# This object communicates with the playing thread. It's the only way
+# the playing thread talks to the UI, so replacing this with something
+# using e.g. Curses would change the UI. The converse is not true. Many
+# parts of the UI talk to the player.
+#
+# The single instantiation of this is widgets.wrap, created at startup.
 class GTKSongInfoWrapper(object):
     def __init__(self):
         self.image = widgets["albumcover"]
@@ -35,6 +41,10 @@ class GTKSongInfoWrapper(object):
         self._time = (0, 1)
         gtk.timeout_add(300, self._update_time)
 
+    # The pattern of getting a call from the playing thread and then
+    # queueing an idle function prevents thread-unsafety in GDK.
+
+    # The pause toggle was clicked.
     def set_paused(self, paused):
         gtk.idle_add(self._update_paused, paused)
 
@@ -43,16 +53,28 @@ class GTKSongInfoWrapper(object):
         if paused: img.set_from_pixbuf(self.paused)
         else: img.set_from_pixbuf(self.playing)
 
-    def set_song(self, song, player):
-        gtk.idle_add(self._update_song, song, player)
-
+    # The player told us about a new time.
     def set_time(self, cur, end):
         self._time = (cur, end)
 
+    def _update_time(self):
+        cur, end = self._time
+        self.pos.set_value(cur)
+        self.timer.set_text("%d:%02d/%d:%02d" %
+                            (cur / 60000, (cur % 60000) / 1000,
+                             end / 60000, (end % 60000) / 1000))
+        return True
+
+    # A new song was selected, or the next song started playing.
+    def set_song(self, song, player):
+        gtk.idle_add(self._update_song, song, player)
+
+    # Called when no cover is available, or covers are off.
     def disable_cover(self):
         self.image.hide()
         self.vbar.hide()
 
+    # Called when a covers are turned on; an image may not be available.
     def enable_cover(self):
         if self.image.get_pixbuf():
             self.image.show()
@@ -74,29 +96,25 @@ class GTKSongInfoWrapper(object):
                 self.disable_cover()
             self.text.set_markup(song.to_markup())
         else:
-            self.image.set_from_stock(gtk.STOCK_CDROM, gtk.ICON_SIZE_BUTTON)
+            self.image.set_from_pixbuf(None)
             self.pos.set_range(0, 1)
             self.pos.set_value(0)
             self._time = (0, 1)
             self.text.set_markup("<span size='xx-large'>Not playing</span>")
+
+        # Update the currently-playing song in the list by bolding it.
         last_song = CURRENT_SONG[0]
         CURRENT_SONG[0] = song
         def update_if_last_or_current(model, path, iter, changed):
             if model[iter][0] in changed: model.row_changed(path, iter)
         widgets.songs.foreach(update_if_last_or_current, (last_song, song))
+
         return False
 
-    def _update_time(self):
-        cur, end = self._time
-        self.pos.set_value(cur)
-        self.timer.set_text("%d:%02d/%d:%02d" %
-                            (cur / 60000, (cur % 60000) / 1000,
-                             end / 60000, (end % 60000) / 1000))
-        return True
-
+# Make a standard directory-chooser, and return the filenames and response.
 def make_chooser(title):
     chooser = gtk.FileChooserDialog(
-        title = "Add Music",
+        title = title,
         action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                    gtk.STOCK_OPEN, gtk.RESPONSE_OK))
@@ -106,6 +124,7 @@ def make_chooser(title):
     chooser.destroy()
     return resp, fns
 
+# Standard Glade widgets wrapper.
 class Widgets(object):
     def __init__(self, file):
         self.widgets = gtk.glade.XML("quodlibet.glade")
@@ -114,6 +133,7 @@ class Widgets(object):
     def __getitem__(self, key):
         return self.widgets.get_widget(key)
 
+# Glade-connected handler functions.
 class GladeHandlers(object):
     def gtk_main_quit(*args): gtk.main_quit()
 
@@ -129,7 +149,7 @@ class GladeHandlers(object):
     def toggle_repeat(button):
         player.playlist.repeat = button.get_active()
 
-    def show_about(*args):
+    def show_about(menuitem):
         widgets["about_window"].set_transient_for(widgets["main_window"])
         widgets["about_window"].show()
 
@@ -143,12 +163,15 @@ class GladeHandlers(object):
     def seek_slider(slider, v):
         gtk.idle_add(player.playlist.seek, v)
 
+    # Set up the preferences window.
     def open_prefs(*args):
         widgets["prefs_window"].set_transient_for(widgets["main_window"])
+        # Fill in the general checkboxes.
         widgets["cover_t"].set_active(config.state("cover"))
         widgets["color_t"].set_active(config.state("color"))
         old_h = HEADERS[:]
 
+        # Fill in the header checkboxes.
         widgets["track_t"].set_active("=#" in old_h)
         widgets["album_t"].set_active("album" in old_h)
         widgets["artist_t"].set_active("artist" in old_h)
@@ -157,17 +180,19 @@ class GladeHandlers(object):
         widgets["version_t"].set_active("version" in old_h)
         widgets["performer_t"].set_active("performer" in old_h)
 
+        # Remove the standard headers, and put the rest in the list.
         for t in ["=#", "album", "artist", "genre", "year", "version",
                   "performer", "title"]:
             try: old_h.remove(t)
             except ValueError: pass
-
         widgets["extra_headers"].set_text(" ".join(old_h))
 
+        # Fill in the scanned directories.
         widgets["scan_opt"].set_text(config.get("settings", "scan"))
         widgets["prefs_window"].show()
 
     def set_headers(*args):
+        # Based on the state of the checkboxes, set up new column headers.
         new_h = []
         if widgets["track_t"].get_active(): new_h.append("=#")
         new_h.append("title")
@@ -223,22 +248,29 @@ class GladeHandlers(object):
     def update_volume(slider):
         player.device.volume = int(slider.get_value())
 
+# Non-Glade handlers:
+
+# Grab the text from the query box, parse it, and make a new filter.
 def text_parse(*args):
         from parser import QueryParser, QueryLexer
         text = widgets["query"].child.get_text().decode("utf-8")
-        if text.strip() == "":
+        if text.strip() == "": # Empty text, remove all filters.
             CURRENT_FILTER[0] = FILTER_ALL
             songs = filter(CURRENT_FILTER[0], library.values())
             player.playlist.set_playlist(songs)
             refresh_songlist()
         else:
             if "=" not in text and "/" not in text:
+                # A simple search, not regexp-based.
                 widgets["query"].prepend_text(text)
                 parts = ["* = /" + p + "/" for p in text.split()]
                 text = "&(" + ",".join(parts) + ")"
+                # The result must be well-formed, since no /s were
+                # in the original string.
                 q = QueryParser(QueryLexer(text)).Query()
             else:
                 try:
+                    # Regular query, but possibly not well-formed..
                     q = QueryParser(QueryLexer(text)).Query()
                     widgets["query"].prepend_text(text)
                 except: return
@@ -249,6 +281,8 @@ def text_parse(*args):
             player.playlist.set_playlist(songs)
             refresh_songlist()
 
+# Try and construct a query, but don't actually run it; change the color
+# of the textbox to indicate its validity (if the option to do so is on).
 def test_filter(*args):
         if not config.state("color"): return
         from parser import QueryParser, QueryLexer
@@ -264,6 +298,7 @@ def test_filter(*args):
             else:
                 gtk.idle_add(set_entry_color, textbox, "dark green")
 
+# Resort based on the header clicked.
 def set_sort_by(header, i):
     s = header.get_sort_order()
     if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
@@ -276,6 +311,7 @@ def set_sort_by(header, i):
     player.playlist.sort_by(HEADERS[i[0]], s == gtk.SORT_DESCENDING)
     refresh_songlist()
 
+# Clear the songlist and readd the songs currently wanted.
 def refresh_songlist():
     widgets.songs.clear()
     i = 0
@@ -286,8 +322,6 @@ def refresh_songlist():
     j = statusbar.get_context_id("playlist")
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
 
-widgets = Widgets("quodlibet.glade")
-
 HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track" }
 
@@ -295,6 +329,8 @@ FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
 CURRENT_SONG = [ None ]
 
+# Turn the list model (which just contains the song objects) into
+# the appropriate set of headers.
 def list_transform(model, iter, col):
     citer = model.convert_iter_to_child_iter(iter)
     cmodel = model.get_model()
@@ -302,12 +338,15 @@ def list_transform(model, iter, col):
     try: return song.get(HEADERS[col], "")
     except IndexError: return song is CURRENT_SONG[0] and 700 or 400
 
+# Set the color of some text.
 def set_entry_color(entry, color):
     layout = entry.get_layout()
     text = layout.get_text()
     markup = '<span foreground="%s">%s</span>' % (color, escape(text))
     layout.set_markup(markup)
 
+# Build a new filter around our list model, set the headers to their
+# new values.
 def set_column_headers(sl):
     widgets.filter = widgets.songs.filter_new()
     widgets.filter.set_modify_func([str]*len(HEADERS) + [int], list_transform)
@@ -323,10 +362,35 @@ def set_column_headers(sl):
         sl.append_column(column)
     sl.set_model(widgets.filter)
 
-def main():
+widgets = Widgets("quodlibet.glade")
+
+def setup_nonglade():
+    # Set up the main song list store.
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(object)
+    set_column_headers(sl)
+    refresh_songlist()
+
+    # Build a model and view for our ComboBoxEntry.
+    liststore = gtk.ListStore(str)
+    widgets["query"].set_model(liststore)
+    cell = gtk.CellRendererText()
+    widgets["query"].pack_start(cell, True)
+    widgets["query"].add_attribute(cell, 'text', 0)
+    widgets["query"].child.connect('activate', text_parse)
+    widgets["query"].child.connect('changed', test_filter)
+    widgets["search_button"].connect('clicked', text_parse)
+
+    # Initialize volume controls.
     widgets["volume"].set_value(player.device.volume)
+
+    widgets.wrap = GTKSongInfoWrapper()
+
+    widgets["main_window"].show()
+
+    gtk.threads_init()
+
+def main():
     config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
     config.init(config_fn)
     HEADERS[:] = config.get("settings", "headers").split()
@@ -337,32 +401,13 @@ def main():
         library.scan(config.get("settings", "scan").split(":"))
     player.playlist.set_playlist(library.values())
     player.playlist.sort_by(HEADERS[0])
-    widgets.songs.clear()
-    i = 0
-    for song in player.playlist:
-         widgets.songs.append([song])
-         i += 1
-    set_column_headers(sl)
-    statusbar = widgets["statusbar"]
-    liststore = gtk.ListStore(str)
-    widgets["query"].set_model(liststore)
-    cell = gtk.CellRendererText()
-    widgets["query"].pack_start(cell, True)
-    widgets["query"].add_attribute(cell, 'text', 0)
-    j = statusbar.get_context_id("playlist")
-    statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
-    widgets["query"].child.connect('activate', text_parse)
-    widgets["query"].child.connect('changed', test_filter)
-    widgets["search_button"].connect('clicked', text_parse)
+    setup_nonglade()
     print "Done loading songs."
-    gtk.threads_init()
-    widgets.wrap = GTKSongInfoWrapper()
     t = threading.Thread(target = player.playlist.play,
                          args = (widgets.wrap,))
     gc.collect()
-    signal.signal (signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     t.start()
-    widgets["main_window"].show()
     try: gtk.main()
     except: gtk.main_quit()
     player.playlist.quitting()
