@@ -699,6 +699,23 @@ def refresh_cache():
     save_cache()
     raise SystemExit
 
+def print_playing(fstring):
+    try:
+        fn = file(os.path.join(os.environ["HOME"], ".quodlibet", "current"))
+        data = {}
+        for line in fn:
+            line = line.strip()
+            parts = line.split("=")
+            key = parts[0]
+            val = "=".join(parts[1:])
+            if key in data: data[key] += "\n" + val
+            else: data[key] = val
+        print fstring % data
+        raise SystemExit
+    except OSError:
+        print "No song is currently playing."
+        raise SystemExit(True)
+
 def error_and_quit():
     d = make_error("No audio device found",
                    "Quod Libet was unable to open your audio device. "
@@ -717,6 +734,7 @@ if __name__ == "__main__":
         if command in ["--help", "-h"]: print_help()
         elif command in ["--version", "-v"]: print_version()
         elif command in ["--refresh-library"]: refresh_cache()
+        elif command in ["--print-playing"]: print_playing(sys.argv[2])
         else:
             print "E: Unknown command line option: %s" % command
             raise SystemExit("E: Try %s --help" % sys.argv[0])

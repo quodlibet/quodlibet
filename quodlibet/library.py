@@ -40,6 +40,14 @@ class AudioFile(dict):
             text += album
         return text
 
+    def to_dump(self):
+        s = ""
+        for k, v in self.items():
+            if k[0] == "=": continue
+            for v2 in v.split("\n"):
+                s += "%s=%s\n" % (k, v2)
+        return s
+
     def find_cover(self):
         base = os.path.split(self['filename'])[0]
         fns = os.listdir(base)

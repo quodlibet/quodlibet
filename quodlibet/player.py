@@ -14,6 +14,7 @@ from library import library
 import parser
 import ossaudiodev # barf
 import util
+import os
 
 BUFFER_SIZE = 2**12
 
@@ -151,12 +152,16 @@ class PlaylistPlayer(object):
 
     def play(self, info):
         self.info = info
+        dump_fn = os.path.join(os.environ["HOME"], ".quodlibet", "current")
         while not self.quit:
             while self.playlist:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
                 fn = self.song['filename']
                 if self.shuffle: random.shuffle(self.playlist)
+                f = file(dump_fn, "w")
+                f.write(self.song.to_dump())
+                f.close()
                 try: self.player = FilePlayer(self.output, fn)
                 except:
                     self.paused = True
@@ -183,6 +188,8 @@ class PlaylistPlayer(object):
                     self.info.set_song(self.song, self.player)
                     self.paused = True
                     self.lock.release()
+                    try: os.unlink(dump_fn)
+                    except OSError: pass
                 time.sleep(0.1)
 
     def sort_by(self, header, reverse = False):
@@ -221,6 +228,8 @@ class PlaylistPlayer(object):
 
     def quitting(self):
         self.lock.acquire()
+        dump_fn = os.path.join(os.environ["HOME"], ".quodlibet", "current")
+        os.unlink(dump_fn)
         self.quit = True
         self.paused = False
         if self.player: self.player.end()
