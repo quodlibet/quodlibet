@@ -2402,7 +2402,9 @@ class SongProperties(object):
             spls = config.get("settings", "splitters")
 
             for song in songs:
-                row = [song, song("~basename")]
+                basename = song("~basename")
+                basename = basename.decode(util.fscoding(), "replace")
+                row = [song, basename]
                 match = pattern.match(song)
                 for h in pattern.headers:
                     text = match.get(h, '')
@@ -2430,16 +2432,10 @@ class SongProperties(object):
                 for i, h in enumerate(pattern.headers):
                     if row[i + 2]:
                         if not add or h not in song:
-                            try:
-                                song[h] = row[i + 2].decode("utf-8")
-                            except UnicodeDecodeError:
-                                song[h] = row[i + 2].decode("iso8859-1")
+                            song[h] = row[i + 2].decode("utf-8")
                             changed = True
                         else:
-                            try:
-                                vals = row[i + 2].decode("utf-8")
-                            except UnicodeDecodeError:
-                                vals = row[i + 2].decode("iso8859-1")
+                            vals = row[i + 2].decode("utf-8")
                             for val in vals.split("\n"):
                                 if val not in song[h]:
                                     song.add(h, val)
@@ -2551,6 +2547,7 @@ class SongProperties(object):
                 oldname = model[path][1]
                 newname = model[path][2]
                 try:
+                    newname = newname.encode(util.fscoding(), "replace")
                     library.rename(song, newname)
                     songref_update_view(song)
                 except:
@@ -2566,6 +2563,7 @@ class SongProperties(object):
                 return win.step()
             self.model.foreach(rename)
             self.prop.refill()
+            self.prop.update()
             self.save.set_sensitive(False)
             win.end()
 
@@ -2594,6 +2592,9 @@ class SongProperties(object):
             
             for song in self.songs:
                 newname = pattern.match(song)
+                code = util.fscoding()
+                newname = newname.encode(code, "replace").decode(code)
+                basename = song("~basename").decode(code, "replace")
                 if underscore: newname = newname.replace(" ", "_")
                 if windows:
                     for c in '\\:*?;"<>|':
@@ -2602,7 +2603,7 @@ class SongProperties(object):
                     newname = "".join(
                         map(lambda c: ((ord(c) < 127 and c) or "_"),
                             newname))
-                self.model.append(row=[song, song('~basename'), newname])
+                self.model.append(row=[song, basename, newname])
             self.save.set_sensitive(False)
 
         def destroy(self):
@@ -2741,8 +2742,8 @@ class SongProperties(object):
             else:
                 self.widget.set_sensitive(True)
             for song in songs:
-                self.model.append(row = [song, song("~basename"),
-                                         song("tracknumber")])
+                basename = song("~basename").decode(util.fscoding(),"replace")
+                self.model.append(row = [song, basename, song("tracknumber")])
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
             self.preview.set_sensitive(True)

@@ -124,13 +124,15 @@ def fscoding():
 def decode(s):
     try: return s.decode("utf-8")
     except UnicodeError:
-        try: return s.decode("utf-8", "replace") + " " + _("[Invalid Unicode]")
+        try:
+            return s.decode("utf-8", "replace") + " " + _("[Invalid Unicode]")
         except UnicodeError: return _("[Invalid Unicode]")
 
 def encode(s):
     try: return s.encode("utf-8")
     except UnicodeError:
-        try: return s.encode("utf-8", "replace") + " " + _("[Invalid Unicode]")
+        try:
+            return s.encode("utf-8", "replace") + " " + _("[Invalid Unicode]")
         except UnicodeError: return _("[Invalid Unicode]")
 
 def title(string):
@@ -291,7 +293,7 @@ class PatternFromFile(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = song['~filename']
+            song = song['~filename'].decode(fscoding(), "replace")
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         matchon = '/'+'/'.join(song.split('/')[-self.slashes:])
@@ -360,7 +362,7 @@ class FileFromPattern(object):
 
     class ExtensionCopy(object):
         def match(self, song):
-            oldname = song('~basename')
+            oldname = song('~basename').decode(fscoding(), 'replace')
             return oldname[oldname.rfind('.'):]
 
     class Pattern(object):
