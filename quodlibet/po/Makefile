@@ -1,6 +1,6 @@
 top_srcdir = ../
 NAME = quodlibet
-ALL_LINGUAS = en_US
+ALL_LINGUAS =
 
 all: quodlibet.pot
 	for L in $(ALL_LINGUAS); \
