@@ -1,3 +1,14 @@
+dquodlibet (0.9-1) unstable; urgency=low
+
+  * New upstream release.
+  * Acknowledges CHARSET/G_BROKEN_FILENAMES. (Closes: #289782)
+  * Checks edge case of empty library. (Closes: #295668)
+  * Add dh_desktop call to debian/rules, bump debhelper Build-Dep.
+  * Remove circular dependency from quodlibet-ext.
+  * Rewrite long description.
+
+ -- Joe Wreschnig <piman@debian.org>  
+
 quodlibet (0.8.1-1) unstable; urgency=low
 
   * New upstream release.

@@ -50,6 +50,7 @@ binary-indep: build install
 	dh_compress -i
 	dh_fixperms -i
 	dh_python -i
+	dh_desktop -i
 	dh_installdeb -i
 	dh_shlibdeps -i
 	dh_gencontrol -i
