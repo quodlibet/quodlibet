@@ -18,21 +18,6 @@ import ossaudiodev # barf
 
 BUFFER_SIZE = 2**12
 
-# Playlist management:
-# There are three objects involved in the player; the first is the
-# currently playing song; the second is the current playlist (which
-# may include the current song, or may not); the third is the list of
-# songs remaining to play in the current playlist.
-#
-# There are two state toggles, repeat and shuffle.
-#
-# There are four possible actions the user takes:
-# 1. Pause (or resume) the current song.
-# 2. Change the currently playing song.
-# 3. Change the current playlist.
-# 4. Go to the next song.
-# 5. Go to the previous song.
-
 class AudioPlayer(object):
     def __init__(self):
         self.stopped = False
