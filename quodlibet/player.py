@@ -34,7 +34,6 @@ class MP3Player(AudioPlayer):
     def __iter__(self): return self
 
     def seek(self, ms):
-        ms = max(0, min(int(ms), self.length - 1))
         self.audio.seek_time(int(ms))
 
     def next(self):
@@ -54,7 +53,6 @@ class OggPlayer(AudioPlayer):
     def __iter__(self): return self
 
     def seek(self, ms):
-        ms = max(0, min(int(ms), self.length - 1))
         self.audio.time_seek(ms / 1000.0)
 
     def next(self):
@@ -120,7 +118,14 @@ class PlaylistPlayer(object):
 
     def seek(self, pos):
         self.lock.acquire()
-        if self.player: self.player.seek(pos)
+        if self.player:
+            pos = max(0, int(pos))
+            if pos >= self.player.length:
+                self.paused = True
+                pos = self.player.length
+
+            self.info.set_time(pos, self.player.length)
+            self.player.seek(pos)
         self.lock.release()
 
     def refilter(self):
@@ -164,8 +169,9 @@ class PlaylistPlayer(object):
                     self.lock.release()
                     for t in self.player:
                         self.info.set_time(t, self.player.length)
-                        while self.paused:
+                        while self.paused and not self.quit:
                             time.sleep(0.1)
+
             if self.repeat:
                 self.playlist = self.orig_playlist[:]
                 if len(self.played) > 500:

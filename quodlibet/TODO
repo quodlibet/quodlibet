@@ -1,4 +1,3 @@
-- Handle weird UI flukes (seek past end of song, etc) better
 - Stress-testing
 - Figure out how to get horizontal sizing limited to window width
 - Artist URL detection
@@ -6,3 +5,4 @@
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - Figure out why loading text doesn't appear on throbber
 - Conform to more GTK/GNOME hotkeys, etc.
+- Correct shuffle/repeat interaction.
