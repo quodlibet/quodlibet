@@ -271,8 +271,7 @@ class AudioFileGroup(dict):
             return '%s %s' % (str(self), self.paren())
 
         def __str__(self):
-            return self.replace('&','&amp;')\
-                    .replace('<','&lt;').replace('>','&gt;')
+            return util.escape(self)
 
         def paren(self):
             if self.shared and self.complete:

@@ -352,6 +352,7 @@ class MultiInstanceWidget(object):
         for song, ref in self.songrefs:
             changed = False
             for key, (new_value, old_value) in updated.iteritems():
+                new_value = util.unescape(new_value)
                 if song.can_change(key):
                     if old_value is None: song.add(key, new_value)
                     else: song.change(key, old_value, new_value)
@@ -392,7 +393,7 @@ class MultiInstanceWidget(object):
     def songprop_edit(self, renderer, path, new, model, colnum):
         row = model[path]
         if row[colnum].replace('<i>','').replace('</i>','') != new:
-            row[colnum] = new
+            row[colnum] = util.escape(new)
             row[2] = True # Edited
             row[4] = False # not Deleted
             self.save.set_sensitive(True)

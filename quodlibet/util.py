@@ -19,6 +19,10 @@ def mkdir(dir):
 def escape(str):
     return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+# Unescape a string that was escaped for XML/Pango.
+def unescape(str):
+    return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+
 # A better version of sre.escape, that doesn't go nuts on Unicode.
 def re_esc(str):
     return "".join(map(
