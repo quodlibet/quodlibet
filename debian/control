@@ -2,21 +2,20 @@ Source: quodlibet
 Section: audio
 Priority: optional
 Maintainer: Joe Wreschnig <piman@sacredchao.net>
-Build-Depends: debhelper (>= 4.0.0), python2.3-dev, python-gtk2-dev
+Build-Depends: debhelper (>= 4.0.0), python2.3-dev, python-gtk2-dev, libmodplug-dev
 Standards-Version: 3.6.1
 
 Package: quodlibet
 Architecture: any
-Depends: ${python:Depends}, ${shlibs:Depends}, python-pymad python-pyvorbis python-id3lib python-glade2
+Depends: ${python:Depends}, ${shlibs:Depends}, python-pymad python-pyvorbis python-id3lib python-glade2, libmodplug0
 Description: audio library manager and player for GTK+
  Quod Libet is a music player based around searching your audio library
- based on the values of the tags in it. It supports MP3, Ogg Vorbis, and
- FLAC audio formats. Features include:
+ based on the values of the tags in it. It supports MP3, Ogg Vorbis, FLAC,
+ and tracked (MOD/XM/IT) audio formats. Features include:
   - A simple user interface.
   - Searching based on regular expression matching.
   - Tag editing, including cross-format changes and mass editing.
   - Many supported tags, like "conductor", "performer", and "discnumber".
-  - Multiple values per tag for all file formats.
   - Shuffle, repeat, multimedia keys, Unicode, a tray icon, album cover
     display, and other features found in most modern media players.
  .

@@ -10,13 +10,17 @@
 
 static ModPlug_Settings settings;
 
+#define MF_SAMPLE_RATE 44100
+#define MF_CHANNELS 2
+#define MF_BITS_PER_CHANNEL 16
+
 typedef struct {
   PyObject_HEAD
   ModPlugFile *mf;
-  int fd, size;
+  int length;
+  double position;
   void *mem;
   const char *title, *filename;
-  int length;
 } ModFile;
 
 static PyObject
@@ -26,8 +30,9 @@ static PyObject
   self = (ModFile *)type->tp_alloc(type, 0);
   if (self != NULL) {
     self->mf = NULL;
-    self->fd = -1;
-    self->size = 0;
+    self->length = self->position = 0;
+    self->mem = NULL;
+    self->title = self->filename = NULL;
   }
   
   return (PyObject *)self;
@@ -36,25 +41,28 @@ static PyObject
 static int ModFile_init(ModFile *self, PyObject *args, PyObject *kwds) {
   static char *kwlist[] = {"filename", NULL}, *filename;
   struct stat st;
-  int fd;
+  int fd, size;
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &filename))
     return -1;
   
   if (stat(filename, &st) != 0) return -1;
-  self->size = st.st_size;
+  size = st.st_size;
 
   fd = open(filename, O_RDONLY);
   if (fd == -1) return -1;
 
-  self->mem = (void *)malloc(self->size);
-  read(fd, self->mem, self->size);
+  self->mem = (void *)malloc(size);
+  read(fd, self->mem, size);
 
-  self->mf = ModPlug_Load(self->mem, self->size);
+  self->mf = ModPlug_Load(self->mem, size);
 
   self->title = ModPlug_GetName(self->mf);
   self->length = ModPlug_GetLength(self->mf);
   self->filename = strdup(filename);
+
+  /* if no title is available, use the filename */
   if (!strcmp(self->title, "")) self->title = basename(self->filename);
+
   close(fd);
   return 0;
 }
@@ -69,6 +77,8 @@ static void ModFile_dealloc(ModFile *self) {
 static PyMemberDef ModFile_members[] = {
     {"title", T_STRING, offsetof(ModFile, title), 0, "song title"},
     {"length", T_INT, offsetof(ModFile, length), 0, "song length in ms"},
+    {"position", T_DOUBLE, offsetof(ModFile, position), 0,
+     "current position in ms"},
     {NULL}
 };
 
@@ -87,6 +97,8 @@ static PyObject *ModFile_read(ModFile *self, PyObject *args, PyObject *kwds) {
     return Py_BuildValue("s", "");
   } else {
     PyObject *p = Py_BuildValue("s#", buffer, buffer_len);
+    /* 1 / 176.4 = 1000 / 2 / 2 / 44100 */
+    self->position += buffer_len / 176.4;
     free(buffer);
     return p;
   }
@@ -98,6 +110,7 @@ static PyObject *ModFile_seek(ModFile *self, PyObject *args, PyObject *kwds) {
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &ms))
     return -1;
   ModPlug_Seek(self->mf, ms);
+  self->position = ms;
   return Py_BuildValue("");
 }
 
@@ -106,7 +119,7 @@ static PyMethodDef ModFile_methods[] = {
   {"read", (PyCFunction)ModFile_read, METH_KEYWORDS,
      "Return audio data of no more than the given length."
     },
-  {"seek", (PyCFunction)ModFile_read, METH_KEYWORDS,
+  {"seek", (PyCFunction)ModFile_seek, METH_KEYWORDS,
      "Seek to the specified position (in milliseconds)."
     },
     {NULL}
@@ -177,9 +190,9 @@ PyMODINIT_FUNC initmodplug(void)
     PyModule_AddObject(m, "ModFile", (PyObject *)&ModFileType);
     ModPlug_GetSettings(&settings);
     settings.mLoopCount = 0;
-    settings.mChannels = 2;
-    settings.mBits = 16;
-    settings.mFrequency = 44100;
+    settings.mChannels = MF_CHANNELS;
+    settings.mBits = MF_BITS_PER_CHANNEL;
+    settings.mFrequency = MF_SAMPLE_RATE;
     settings.mFlags = (MODPLUG_ENABLE_OVERSAMPLING |
 		       MODPLUG_ENABLE_NOISE_REDUCTION);
     settings.mResamplingMode = MODPLUG_RESAMPLE_FIR;

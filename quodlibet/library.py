@@ -104,7 +104,8 @@ class AudioFile(dict):
         # Fill in necessary values.
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
-        for i in ["title", "artist", "album"]:
+        self.setdefault("title", Unknown(util.decode(self['=basename'])))
+        for i in ["artist", "album"]:
             self.setdefault(i, Unknown(_("Unknown")))
 
         # Derive disc and track numbers.

@@ -16,7 +16,6 @@ configure-stamp:
 	dh_testdir
 	touch configure-stamp
 
-
 build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
@@ -36,7 +35,6 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/quodlibet PREFIX=/usr
-
 
 # Build architecture-dependent files here.
 binary-arch: build install

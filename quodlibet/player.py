@@ -177,11 +177,9 @@ class ModPlayer(AudioPlayer):
         if self.stopped: raise StopIteration
         else:
             s = self.audio.read(BUFFER_SIZE)
-            if s:
-                self.pos += float(len(s)) / 176.400 # 2 / 2 / 44100
-                self.dev.play(s)
+            if s: self.dev.play(s)
             else: self.stopped = True
-        return self.pos
+        return int(self.audio.position)
 
 def FilePlayer(dev, song):
     for ext in supported.keys():

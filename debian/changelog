@@ -1,3 +1,9 @@
+quodlibet (0.6-1) unstable; urgency=low
+
+  * Build-Depend on libmodplug-dev.
+
+ -- Joe Wreschnig <piman@sacredchao.net>
+
 quodlibet (0.5-1) unstable; urgency=low
 
   * New release.
