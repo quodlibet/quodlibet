@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # Copyright 2004 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
@@ -139,7 +139,7 @@ class PreferencesWindow(MultiInstanceWidget):
 
     def set_color(self, button):
         color = button.get_color()
-        ct = (color.red / 256, color.green / 255, color.blue / 255)
+        ct = (color.red / 256, color.green / 256, color.blue / 256)
         config.set("settings", "osdcolor", "#%02x%02x%02x" % ct)
 
     def set_headers(self, *args):
@@ -155,7 +155,7 @@ class PreferencesWindow(MultiInstanceWidget):
         new_h.extend(self.widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(new_h))
-        self.set_column_headers(self.widgets["songlist"], new_h)
+        widgets.main.set_column_headers(self.widgets["songlist"], new_h)
 
     def toggle_cover(self, toggle):
         config.set("settings", "cover", str(bool(toggle.get_active())))
@@ -457,8 +457,8 @@ class MainWindow(MultiInstanceWidget):
         elif c == "!":
             if not self.window.get_property('visible'):
                 self.window.move(*self.window_pos)
-            self.widgets.main.present()
-        elif c == "q": make_query(os.read(source, 4096))
+            self.window.present()
+        elif c == "q": self.make_query(os.read(source, 4096))
         elif c == "s":
             player.playlist.seek(util.parse_time(os.read(source, 20)) * 1000)
         elif c == "p":
@@ -813,11 +813,11 @@ class MainWindow(MultiInstanceWidget):
     def genre_filter(self, item): self.filter_on_header('genre')
 
     def cur_artist_filter(self, item):
-        self.filter_on_header('artist', CURRENT_SONG)
+        self.filter_on_header('artist', [self.current_song])
     def cur_album_filter(self, item):
-        self.filter_on_header('album', CURRENT_SONG)
+        self.filter_on_header('album', [self.current_song])
     def cur_genre_filter(self, item):
-        self.filter_on_header('genre', CURRENT_SONG)
+        self.filter_on_header('genre', [self.current_song])
 
     def remove_song(self, item):
         view = self.widgets["songlist"]
@@ -1657,7 +1657,6 @@ class SongProperties(MultiInstanceWidget):
         pattern = util.PatternFromFile(pattern_text)
         add = (self.widgets["prop_tbp_addreplace"].get_active() == 1)
         win = WritingWindow(self.window, len(self.songrefs))
-        spls = config.get("settings", "splitters")
 
         def save_song(model, path, iter):
             song = model[path][0]
@@ -1688,7 +1687,7 @@ class SongProperties(MultiInstanceWidget):
                         util.escape(song['~basename']))).run()
                     library.reload(song)
                     player.playlist.refilter()
-                    refresh_songlist()
+                    widgets.main.refresh_songlist()
                     return True
                 songref_update_view(song, ref)
 
@@ -1869,8 +1868,6 @@ def cleanup(*args):
         except OSError: pass
 
 if __name__ == "__main__":
-    import os, sys
-
     basedir = os.path.split(os.path.realpath(__file__))[0]
     i18ndir = "/usr/share/locale"
 
