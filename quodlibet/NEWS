@@ -1,3 +1,7 @@
+0.3
+ - Handle mono MP3s correctly.
+ - Crash less.
+
 0.2
  - Song properties dialog, featuring mass tag editing/addition/removal.
  - Build/installation scripts.

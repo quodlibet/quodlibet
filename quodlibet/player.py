@@ -32,9 +32,7 @@ class MP3Player(AudioPlayer):
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = mad.MadFile(filename)
-        if self.audio.mode() == mad.MODE_SINGLE_CHANNEL: channels = 1
-        else: channels = 2
-        self.dev.set_info(self.audio.samplerate(), channels)
+        self.dev.set_info(self.audio.samplerate(), 2)
         self.length = self.audio.total_time()
 
     def __iter__(self): return self
