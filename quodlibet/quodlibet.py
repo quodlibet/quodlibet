@@ -33,6 +33,7 @@ class GTKSongInfoWrapper(object):
             p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
             self.icon = statusicon.StatusIcon(p)
             self.icon.connect("activate", self._toggle_window, ())
+            print "Initialized status icon."
         except:
             print "W: Failed to initialize status icon."
             self.icon = None
@@ -43,6 +44,7 @@ class GTKSongInfoWrapper(object):
             self.keys.connect("mm_prev", self._previous)
             self.keys.connect("mm_next", self._next)
             self.keys.connect("mm_playpause", self._playpause)
+            print "Initialized multimedia key support."
         except:
             print "W: Failed to initialize multimedia key support."
 
@@ -126,6 +128,7 @@ class GTKSongInfoWrapper(object):
         if song:
             self.pos.set_range(0, player.length)
             self.pos.set_value(0)
+            widgets["web_button"].set_sensitive(True)
             widgets["next_button"].set_sensitive(True)
             widgets["play_button"].set_sensitive(True)
 
@@ -148,6 +151,7 @@ class GTKSongInfoWrapper(object):
             self.image.set_from_pixbuf(None)
             self.pos.set_range(0, 1)
             self.pos.set_value(0)
+            widgets["web_button"].set_sensitive(False)
             widgets["next_button"].set_sensitive(False)
             widgets["play_button"].set_sensitive(False)
             self._time = (0, 1)
@@ -212,6 +216,12 @@ class GladeHandlers(object):
         new_size = widget.get_size()
         if old_size != new_size:
             config.set("memory", "size", " ".join(map(str, new_size)))
+
+    def open_website(button):
+        song = CURRENT_SONG[0]
+        site = song.website()
+        import webbrowser
+        webbrowser.open(site, new = True)
 
     def play_pause(button):
         player.playlist.paused ^= True

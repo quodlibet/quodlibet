@@ -475,18 +475,18 @@ class Library(dict):
 
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
-        f = file(fn, "w")
+        f = file(fn + ".tmp", "w")
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         songs = filter(lambda s: s.exists(), self.values())
         Pickle.dump(songs, f, 2)
         f.close()
+        os.rename(fn + ".tmp", fn)
 
     def load(self, fn):
         # Load the database and read it in.
         try:
             if os.path.exists(fn):
                 f = file(fn, "rb")
-                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
                 try: songs = Pickle.load(f)
                 except:
                     print "W: %s is not a QL song database." % fn

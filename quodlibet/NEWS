@@ -7,6 +7,7 @@
    icon code by Anders Carlsson and Sun.
  - Multimedia key support, provided they're mapped (e.g. by Acme), using
    the MmKeys object from Muine by Lee Willis and Jan Arne Petersen.
+ - UI tweaks to the main window.
 
 0.3
  - Handle mono MP3s correctly.
