@@ -2030,11 +2030,9 @@ class MainWindow(gtk.Window):
         view = self.songlist
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        rows.sort()
-        rows.reverse()
-        for row in rows:
-            song = model[row][0]
-            iter = widgets.songs.get_iter(row)
+        iters = [widgets.songs.get_iter(row) for row in rows]
+        for iter in iters:
+            song = model[iter][0]
             widgets.songs.remove(iter)
             library.remove(song)
             player.playlist.remove(song)
@@ -2044,10 +2042,9 @@ class MainWindow(gtk.Window):
         view = self.songlist
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        songs = [model[r][0] for r in rows]
-        filenames = [song["~filename"] for song in songs]
-        filenames.sort()
-        d = DeleteDialog(self, filenames)
+        songs = [(model[r][0]["~filename"], model[r][0],
+                  widgets.songs.get_iter(r)) for r in rows]
+        d = DeleteDialog(self, [song[0] for song in songs])
         resp = d.run()
         d.destroy()
         if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
@@ -2057,28 +2054,28 @@ class MainWindow(gtk.Window):
             else: return
             w = WaitLoadWindow(self, len(songs), s, (0, len(songs)))
             trash = os.path.expanduser("~/.Trash")
-            for song in songs:
-                filename = str(song["~filename"])
+            for filename, song, iter in songs:
                 try:
                     if resp == 0:
                         basename = os.path.basename(filename)
                         shutil.move(filename, os.path.join(trash, basename))
                     else:
                         os.unlink(filename)
+                    widgets.songs.remove(iter)
                     library.remove(song)
+                    player.playlist.remove(song)
+                    
                 except:
                     qltk.ErrorMessage(
-                        self, _("Unable to remove file"),
-                        _("Removing <b>%s</b> failed. "
+                        self, _("Unable to delete file"),
+                        _("Deleting <b>%s</b> failed. "
                           "Possibly the target file does not exist, "
                           "or you do not have permission to "
-                          "remove it.") % (filename)).run()
+                          "delete it.") % (filename)).run()
                     break
                 else:
                     w.step(w.current + 1, w.count)
             w.end()
-            player.playlist.refilter()
-            self.refresh_songlist()
             self.browser.update()
 
     def __popup_stopafter(self, activator, event, *args):
