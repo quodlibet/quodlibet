@@ -886,8 +886,11 @@ class SongProperties(MultiInstanceWidget):
                                  _("Saving <b>%s</b> failed. The file may be "
                                    "read-only, corrupted, or you do not have "
                                    "permission to edit it.")%(
-                        util.escape(song['~basename'])))
-                    return True
+                        util.escape(song['~basename']))).run()
+                    library.reload(song)
+                    player.playlist.refilter()
+                    refresh_songlist()
+                    break
                 songref_update_view(song, ref)
 
             if win.step(): break
@@ -1204,7 +1207,10 @@ class SongProperties(MultiInstanceWidget):
                              _("Saving <b>%s</b> failed. The file may be "
                                "read-only, corrupted, or you do not have "
                                "permission to edit it.")%(
-                    util.escape(song['~basename'])))
+                    util.escape(song['~basename']))).run()
+                library.reload(song)
+                player.playlist.refilter()
+                refresh_songlist()
                 return True
             if ref: songref_update_view(song, ref)
             return win.step()
@@ -1261,7 +1267,7 @@ class SongProperties(MultiInstanceWidget):
                 if ref: songref_update_view(song, ref)
             except:
                 ErrorMessage(self.window,
-                             _("Unable to rename %s")%(util.escape(oldname)),
+                             _("Unable to rename file"),
                              _("Renaming <b>%s</b> to <b>%s</b> failed. "
                                "Possibly the target file already exists, "
                                "or you do not have permission to make the "
@@ -1366,15 +1372,18 @@ class SongProperties(MultiInstanceWidget):
 
             if changed and ref:
                 try:
-                    song.write()
                     song.sanitize()
+                    song.write()
                 except:
                     ErrorMessage(self.window,
                                  _("Unable to edit song"),
                                  _("Saving <b>%s</b> failed. The file may be "
                                    "read-only, corrupted, or you do not have "
                                    "permission to edit it.")%(
-                        util.escape(song['~basename'])))
+                        util.escape(song['~basename']))).run()
+                    library.reload(song)
+                    player.playlist.refilter()
+                    refresh_songlist()
                     return True
                 songref_update_view(song, ref)
 

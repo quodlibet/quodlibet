@@ -587,6 +587,14 @@ class Library(dict):
     def remove(self, song):
         del(self[song['~filename']])
 
+    def add(self, fn):
+        song = MusicFile(fn)
+        if song: self[fn] = song
+
+    def reload(self, song):
+        self.remove(song)
+        self.add(song['~filename'])
+
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
         f = file(fn + ".tmp", "w")
