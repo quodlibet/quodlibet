@@ -57,10 +57,10 @@ class AudioFile(dict):
                       self.keys())
 
     def get(self, key, default = None):
-        try: return self[key]
+        try: return self(key)
         except KeyError: return default
 
-    def __getitem__(self, key):
+    def __call__(self, key):
         if key and key[0] == "~":
             key = key[1:]
             if "~" in key:
@@ -80,6 +80,8 @@ class AudioFile(dict):
                 except (ValueError, TypeError): raise KeyError
             else: return dict.__getitem__(self, "~" + key)
         else: return dict.__getitem__(self, key)
+
+    #__call__ = __getitem__
 
     def comma(self, key):
         if isinstance(self.get(key), int): return self.get(key)
@@ -102,7 +104,7 @@ class AudioFile(dict):
 
     def rename(self, newname):
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
-        else: newname = os.path.join(self['~dirname'], newname)
+        else: newname = os.path.join(self('~dirname'), newname)
         if not os.path.exists(newname):
             shutil.move(self['~filename'], newname)
         elif newname != self['~filename']: raise ValueError
@@ -120,8 +122,8 @@ class AudioFile(dict):
             esc = lambda c: ord(c) > 127 and '%%%x'%ord(c) or c
             if "labelid" in self: text += esc(self["labelid"])
             else:
-                artist = util.escape("+".join(self["artist"].split()))
-                album = util.escape("+".join(self["album"].split()))
+                artist = util.escape("+".join(self("artist").split()))
+                album = util.escape("+".join(self("album").split()))
                 artist = util.encode(artist)
                 album = util.encode(album)
                 artist = "%22" + ''.join(map(esc, artist)) + "%22"
@@ -136,7 +138,7 @@ class AudioFile(dict):
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
-        self.setdefault("title", Unknown(util.decode(self['~basename'])))
+        self.setdefault("title", Unknown(util.decode(self('~basename'))))
         for i in ["artist", "album"]:
             self.setdefault(i, Unknown(_("Unknown")))
         self.setdefault("~#lastplayed", 0)
@@ -149,7 +151,7 @@ class AudioFile(dict):
 
         self["~#mtime"] = os.path.mtime(self['~filename'])
 
-        # time format
+        # time format -- FIXME - why not proxied?
         self["~length"] = util.format_time(self['~#length'])
 
     # Construct the text seen in the player window
@@ -256,7 +258,7 @@ class AudioFile(dict):
 
     # Try to find an album cover for the file
     def find_cover(self):
-        base = self['~dirname']
+        base = self('~dirname')
         fns = os.listdir(base)
         images = []
         fns.sort()
@@ -499,7 +501,6 @@ class FLACFile(AudioFile):
             keys = [k.split("=")[0] for k in vc.comments]
             for k in keys: del(vc.comments[k])
             for key in self.realkeys():
-                if self.unknown(key): continue
                 value = self.list(key)
                 for line in value:
                     vc.comments[key] = util.encode(line)

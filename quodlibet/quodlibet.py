@@ -514,14 +514,13 @@ class Osd(object):
         msg = "\xe2\x99\xaa "
 
         msg += "<span foreground='%s' style='italic'>%s</span>" %(
-            color2, util.escape(song["~title~version"]))
-        if song['~length']:
-            msg += " <span size='small'>(%s)</span> " % song["~length"]
+            color2, util.escape(song("~title~version")))
+        msg += " <span size='small'>(%s)</span> " % song("~length")
         msg += "\xe2\x99\xaa\n"
 
         msg += "<span size='x-small'>"
-        for key in ["artist", "~album~part", "tracknumber"]:
-            if key in song:
+        for key in ["artist", "album", "tracknumber"]:
+            if not song.unknown(key):
                 msg += ("<span foreground='%s' size='xx-small' "
                         "style='italic'>%s</span> %s   "%(
                     (color2, tag(key), util.escape(song.comma(key)))))
@@ -672,9 +671,9 @@ class MainWindow(MultiInstanceWidget):
     def _input_check(self, source, condition):
         c = os.read(source, 1)
         toggles = { "@": "repeat_t", "&": "shuffle_t" }
-        if c == "<": self.previous_song(c)
-        elif c == ">": self.next_song(c)
-        elif c == "-": self.play_pause(c)
+        if c == "<": self.previous_song()
+        elif c == ">": self.next_song()
+        elif c == "-": self.play_pause()
         elif c == ")": player.playlist.paused = False
         elif c == "|": player.playlist.paused = True
         elif c == "0": player.playlist.seek(0)
@@ -1215,7 +1214,7 @@ class MainWindow(MultiInstanceWidget):
             values = {}
             for song in songs:
                 if header in song:
-                    for val in song[header].split("\n"):
+                    for val in song.list(header):
                         values[val] = True
 
             text = "|".join([sre.escape(s) for s in values.keys()])
@@ -1573,7 +1572,7 @@ class SongProperties(MultiInstanceWidget):
                                  _("Saving <b>%s</b> failed. The file may be "
                                    "read-only, corrupted, or you do not have "
                                    "permission to edit it.")%(
-                        util.escape(song['~basename']))).run()
+                        util.escape(song('~basename')))).run()
                     library.reload(song)
                     player.playlist.refilter()
                     widgets.main.refresh_songlist()
@@ -1852,7 +1851,7 @@ class SongProperties(MultiInstanceWidget):
         self.tn_model.clear()
         self.widgets["prop_tn_total"].set_value(len(self.songrefs))
         for song in self.songrefs:
-            self.tn_model.append(row = [song, None, song['~basename'],
+            self.tn_model.append(row = [song, None, song('~basename'),
                                         song.get("tracknumber", "")])
         tn_change = self.songinfo.can_change("tracknumber")
         self.widgets["prop_tn_start"].set_sensitive(tn_change)
@@ -1882,10 +1881,6 @@ class SongProperties(MultiInstanceWidget):
             song = model[iter][0]
             track = model[iter][3]
             song["tracknumber"] = track
-            try: song["~#track"] = int(track.split("/")[0])
-            except ValueError:
-                try: del(song["~#track"])
-                except KeyError: pass
             try: song.write()
             except:
                 ErrorMessage(self.window,
@@ -1893,7 +1888,7 @@ class SongProperties(MultiInstanceWidget):
                              _("Saving <b>%s</b> failed. The file may be "
                                "read-only, corrupted, or you do not have "
                                "permission to edit it.")%(
-                    util.escape(song['~basename']))).run()
+                    util.escape(song('~basename')))).run()
                 library.reload(song)
                 player.playlist.refilter()
                 widgets.main.refresh_songlist()
@@ -1935,7 +1930,7 @@ class SongProperties(MultiInstanceWidget):
             if ascii:
                 newname = "".join(map(lambda c: ((ord(c) < 127 and c) or "_"),
                                       newname))
-            self.nbp_model.append(row=[song, None, song['~basename'], newname])
+            self.nbp_model.append(row=[song, None, song('~basename'), newname])
         self.nbp_preview.set_sensitive(False)
         self.save_nbp.set_sensitive(True)
 
@@ -1964,8 +1959,8 @@ class SongProperties(MultiInstanceWidget):
 
         def update_filename(model, path, iter):
             song = model[path][0]
-            model[path][2] = song['~basename']
-            model[path][3] = song['~dirname']
+            model[path][2] = song('~basename')
+            model[path][3] = song('~dirname')
             model[path][3] = song['~filename']
         self.fbasemodel.foreach(update_filename)
 
@@ -2040,7 +2035,7 @@ class SongProperties(MultiInstanceWidget):
         spls = config.get("settings", "splitters")
         # get info for all matches
         for song in self.songrefs:
-            row = [song, song['~basename']]
+            row = [song, song('~basename')]
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
@@ -2093,7 +2088,7 @@ class SongProperties(MultiInstanceWidget):
                                  _("Saving <b>%s</b> failed. The file may be "
                                    "read-only, corrupted, or you do not have "
                                    "permission to edit it.")%(
-                        util.escape(song['~basename']))).run()
+                        util.escape(song('~basename')))).run()
                     library.reload(song)
                     player.playlist.refilter()
                     widgets.main.refresh_songlist()

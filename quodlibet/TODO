@@ -2,6 +2,7 @@
 An unintrusive clear button.
 Remember hidden UI element states
 Don't let editing modes try to write tags they actually can't.
+Encoding bug
 
 Doable by whomever, whenever:
 - Translations.
