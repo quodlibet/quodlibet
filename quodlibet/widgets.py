@@ -801,6 +801,7 @@ class PanedBrowser(Browser, gtk.HBox):
             if to_select == []: to_select = [0]
             for i in to_select: selection.select_path((i,))
             selection.handler_unblock(self.__sig)
+            while gtk.events_pending(): gtk.main_iteration()
             self.__selection_changed(selection, check = False)
 
         def query(self):
