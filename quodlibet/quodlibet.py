@@ -7,14 +7,12 @@ import gtk.glade
 import gobject
 import sys
 import parser
-import library
+from library import library
 import player
 import thread
 import gc
 import os
-
-def escape(str):
-    return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+import util; from util import escape
 
 class Widgets(object):
     def __init__(self, file):
@@ -28,13 +26,16 @@ class GladeHandlers(object):
     def gtk_main_quit(*args): gtk.main_quit()
 
     def play_pause(*args):
-        player.paused ^= True
+        player.playlist.paused ^= True
 
     def next_song(*args):
-        player.queue.append(("next", ()))
+        player.playlist.next()
+
+    def previous_song(*args):
+        player.playlist.previous()
 
     def toggle_repeat(button):
-        player.repeat = button.get_active()
+        player.playlist.repeat = button.get_active()
 
     def select_song(tree, indices, col):
         iter = widgets.sorted.get_iter(indices)
@@ -67,8 +68,8 @@ class GladeHandlers(object):
             widgets["albumcover"].set_from_stock(gtk.STOCK_CDROM,
                                                  gtk.ICON_SIZE_BUTTON)
         label.set_markup(text)
-        player.queue.append(("goto", (song,)))
-        player.paused = False
+        player.playlist.go_to(song)
+        player.playlist.paused = False
 
     def open_chooser(*args):
         chooser = gtk.FileChooserDialog(
@@ -79,8 +80,8 @@ class GladeHandlers(object):
         chooser.set_select_multiple(True)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
-            library.load(chooser.get_filenames())
-            songs = filter(CURRENT_FILTER[0], library.library.values())
+            library.scan(chooser.get_filenames())
+            songs = filter(CURRENT_FILTER[0], library.values())
             set_songs(songs)
         chooser.destroy()
 
@@ -97,17 +98,17 @@ class GladeHandlers(object):
 
     def moved_seek_slider(*args):
         v = min(player.times[1], max(0, args[0].get_value()))
-        player.queue.append(('seek', (v,)))
+        player.playlist.seek(v)
 
     def update_volume(slider):
-        player.queue.append(('volume', (int(slider.get_value()),)))
+        player.device.volume = int(slider.get_value())
 
     def text_parse(*args):
         from parser import QueryParser, QueryLexer
         text = widgets["query"].get_text()
         if text.strip() == "":
             CURRENT_FILTER[0] = FILTER_ALL
-            songs = filter(CURRENT_FILTER[0], library.library.values())
+            songs = filter(CURRENT_FILTER[0], library.values())
             set_songs(songs)
         else:
             try:
@@ -116,7 +117,7 @@ class GladeHandlers(object):
             else:
                 CURRENT_FILTER[0] = q.search
                 set_entry_color(widgets["query"], "black")
-                songs = filter(CURRENT_FILTER[0], library.library.values())
+                songs = filter(CURRENT_FILTER[0], library.values())
                 set_songs(songs)
 
     def test_filter(*args):
@@ -133,11 +134,22 @@ class GladeHandlers(object):
 def set_songs(songs):
     widgets.songs.clear()
     for song in songs: widgets.songs.append([song])
-    player.set_playlist(songs)
+    player.playlist.set_playlist(songs)
+
+def sort_songs(a, b):
+    h = MAINHEADER[0]
+    return (cmp(a.get(h), b.get(h)) or
+            cmp(a.get("artist"), b.get("artist")) or
+            cmp(a.get("album"), b.get("album")) or
+            cmp(a.get("tracknumber"), b.get("tracknumber")) or
+            cmp(a.get("title"), b.get("title")))
+
+def set_sort_by(header): pass
 
 widgets = Widgets("quodlibet.glade")
 
 HEADERS = ["artist", "title", "album"]
+MAINHEADER = ["artist"]
 
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
@@ -172,24 +184,26 @@ def main():
     widgets.filter.set_modify_func([str]*len(HEADERS), list_transform)
     widgets.sorted = gtk.TreeModelSort(widgets.filter)
     vol = widgets["volume"]
-    vol.set_value(player.get_volume())
+    vol.set_value(player.device.volume)
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn(t.title(), renderer, text=i)
         column.set_resizable(True)
-        column.set_sort_column_id(i)
+        #column.set_sort_column_id(i)
         sl.append_column(column)
 
-    set_songs(library.load_cache())
+    cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
+    library.load(cache_fn)
+    set_songs(library.values())
     print "Done loading songs."
     sl.set_model(widgets.sorted)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
-    player.paused = True
     gtk.timeout_add(100, update_timer, ())
     gtk.threads_init()
-    thread.start_new_thread(player.play, (widgets["currentsong"],))
+    thread.start_new_thread(player.playlist.play, (widgets["currentsong"],))
     gtk.main()
-    library.save_cache()
+    util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
+    library.save(cache_fn)
 
 if __name__ == "__main__": main()

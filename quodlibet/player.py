@@ -2,13 +2,26 @@ import mad
 import ao
 import ogg.vorbis
 import time
+from library import library
+from parser import QueryParser, QueryLexer
 import ossaudiodev # barf
-queue = []
-playlist = []
-orig_playlist = []
-paused = False
-shuffled = False
-repeat = False
+
+BUFFER_SIZE = 2**8
+
+# Playlist management:
+# There are three objects involved in the player; the first is the
+# currently playing song; the second is the current playlist (which
+# may include the current song, or may not); the third is the list of
+# songs remaining to play in the current playlist.
+#
+# There are two state toggles, repeat and shuffle.
+#
+# There are four possible actions the user takes:
+# 1. Pause (or resume) the current song.
+# 2. Change the currently playing song.
+# 3. Change the current playlist.
+# 4. Go to the next song.
+# 5. Go to the previous song.
 
 times = [0, 0]
 
@@ -27,16 +40,16 @@ class MP3Player(AudioPlayer):
         AudioPlayer.__init__(self)
         self.dev = dev
         self.audio = mad.MadFile(filename)
-        self.length = self.mf.total_time()
+        self.length = self.audio.total_time()
 
     def __iter__(self): return self
 
     def seek(self, ms):
-        self.audio.seek_time(ms)
+        self.audio.seek_time(int(ms))
 
     def next(self):
         if self.stopped: raise StopIteration
-        buff = self.audio.read(4096)
+        buff = self.audio.read(BUFFER_SIZE)
         if buff is None: raise StopIteration
         self.dev.play(buff, len(buff))
         return self.audio.current_time()
@@ -55,66 +68,86 @@ class OggPlayer(AudioPlayer):
 
     def next(self):
         if self.stopped: raise StopIteration
-        (buff, bytes, bit) = self.audio.read(4096)
+        (buff, bytes, bit) = self.audio.read(BUFFER_SIZE)
         if bytes == 0: raise StopIteration
         self.dev.play(buff, bytes)
         return self.audio.time_tell() * 1000
 
-def Player(dev, filename):
+def FilePlayer(dev, filename):
     kind = filename.split(".")[-1].lower()
     return { "ogg": OggPlayer,
              "mp3": MP3Player }[kind](dev, filename)
 
-def get_volume():
-    return ossaudiodev.openmixer().get(ossaudiodev.SOUND_MIXER_PCM)[0]
+class DummyOutput(object):
+    def play(self, buf): time.sleep(len(buf) / 1000000.0)
+    def set_volume(self, v): pass
+    def get_volume(self): pass
+    volume = property(get_volume, set_volume)
 
-def get_device(samplerate = None):
-    return ao.AudioDevice(ao.driver_id('oss'))
+class OutputDevice(object):
+    def __init__(self):
+        self.mixer = ossaudiodev.openmixer()
+        self.dev = ao.AudioDevice(ao.driver_id('oss'))
+        self.play = self.dev.play
 
-def set_volume(song, value):
-    ossaudiodev.openmixer().set(ossaudiodev.SOUND_MIXER_PCM, (value, value))
+    def get_volume(self):
+        return self.mixer.get(ossaudiodev.SOUND_MIXER_PCM)[0]
 
-def set_playlist(songs):
-    del(playlist[:])
-    del(orig_playlist[:])
-    playlist.extend(songs)
-    orig_playlist.extend(songs)
+    def set_volume(self, vol):
+        return self.mixer.set(ossaudiodev.SOUND_MIXER_PCM, (vol, vol))
 
-def go_to_song(song, newsong):
-    if song in playlist: playlist.remove(newsong)
-    playlist.insert(0, newsong)
-    song.end()
+    volume = property(get_volume, set_volume)
 
-def play(info):
-    dev = get_device()
-    while True:
-        do_queue(None)
-        while playlist:
-            if shuffled: random.shuffle(playlist)
-            song = playlist.pop(0)
-            player = Player(dev, song['filename'])
-            info.set_markup(song.to_markup())
-            times[1] = player.length
-            for t in player:
-                times[0] = t
-                do_queue(player)
-                while paused:
-                    do_queue(player)
-                    time.sleep(0.01)
-                else: continue
-                break
+class PlaylistPlayer(object):
+    def __init__(self, output = None, playlist = []):
+        if output: self.output = output
+        else: self.output = DummyOutput()
+        self.playlist = playlist
+        self.played = []
+        self.shuffle = True
+        self.repeat = True
+        self.paused = True
+        self.song = None
 
-            if song in playlist: playlist.remove(song)
-        if repeat: playlist.extend(orig_playlist)
+    def seek(self, pos):
+        if self.player: self.player.seek(pos)
 
-        time.sleep(0.01)
+    def play(self, info):
+        while True:
+            while self.playlist:
+                self.song = self.playlist.pop(0)
+                self.player = FilePlayer(self.output, self.song['filename'])
+                if info: info.set_markup(self.song.to_markup())
+                times[1] = self.player.length
+                self.played.append(self.song)
+                for t in self.player:
+                    times[0] = t
+                    while self.paused:
+                        time.sleep(0.01)
+            self.song = self.player = None
+            time.sleep(0.01)
 
-COMMANDS = { "seek": (lambda *args: args[0] and AudioPlayer.seek(*args)),
-             "goto": go_to_song,
-             "next": (lambda *args: args[0] and AudioPlayer.end(*args)),
-             "volume": set_volume }
+    def get_playlist(self):
+        return self.playlist
 
-def do_queue(song):
-    while queue:
-        command = queue.pop(0)
-        COMMANDS[command[0]](*((song,) + command[1]))
+    def set_playlist(self, pl):
+        self.played = []
+        self.playlist = pl
+
+    def next(self):
+        if self.player: self.player.end()
+
+    def previous(self):
+        if len(self.played) >= 2:
+            if self.player: self.player.end()
+            self.playlist.insert(0, self.played.pop())
+            self.playlist.insert(0, self.played.pop())
+        elif self.player and self.played:
+            if self.player: self.player.end()
+            self.playlist.insert(0, self.played.pop())
+        else: pass
+
+    def go_to(self, song): pass
+
+device = OutputDevice()
+playlist = PlaylistPlayer(output = device)

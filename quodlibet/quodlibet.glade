@@ -20,7 +20,6 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <signal name="destroy" handler="gtk_main_quit" last_modification_time="Wed, 06 Oct 2004 06:30:51 GMT"/>
 
-
   <child>
     <widget class="GtkVBox" id="vbox1">
       <property name="visible">True</property>
@@ -139,6 +138,7 @@
 		      <property name="visible_horizontal">True</property>
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
+		      <signal name="clicked" handler="previous_song" last_modification_time="Sun, 10 Oct 2004 04:53:16 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="expand">False</property>
@@ -274,13 +274,13 @@
 		  <property name="label" translatable="yes">0:00 / 0:00</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
-		  <property name="justify">GTK_JUSTIFY_LEFT</property>
-		  <property name="wrap">False</property>
+		  <property name="justify">GTK_JUSTIFY_RIGHT</property>
+		  <property name="wrap">True</property>
 		  <property name="selectable">False</property>
-		  <property name="xalign">0.8</property>
+		  <property name="xalign">0.97</property>
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>
-		  <property name="ypad">0</property>
+		  <property name="ypad">2</property>
 		  <property name="mnemonic_widget">song_pos</property>
 		</widget>
 		<packing>
@@ -310,11 +310,11 @@
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">True</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
-		  <property name="wrap">False</property>
+		  <property name="wrap">True</property>
 		  <property name="selectable">False</property>
 		  <property name="xalign">0.05</property>
 		  <property name="yalign">0.05</property>
-		  <property name="xpad">0</property>
+		  <property name="xpad">5</property>
 		  <property name="ypad">0</property>
 		</widget>
 		<packing>
@@ -333,7 +333,7 @@
 		  <property name="digits">1</property>
 		  <property name="update_policy">GTK_UPDATE_DISCONTINUOUS</property>
 		  <property name="inverted">False</property>
-		  <property name="adjustment">0 0 0 3000 15000 15000</property>
+		  <property name="adjustment">-15000 0 0 3000 15000 15000</property>
 		  <signal name="value_changed" handler="update_pos_text" last_modification_time="Sat, 09 Oct 2004 19:52:16 GMT"/>
 		  <signal name="adjust_bounds" handler="moved_seek_slider" after="yes" last_modification_time="Sat, 09 Oct 2004 19:53:52 GMT"/>
 		</widget>
@@ -505,7 +505,7 @@
 	<widget class="GtkScrolledWindow" id="scrolledwindow1">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+	  <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
 	  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
 	  <property name="shadow_type">GTK_SHADOW_NONE</property>
 	  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
