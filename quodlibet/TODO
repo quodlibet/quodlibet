@@ -15,12 +15,6 @@ Remember browser information
 Browsers need a way to properly save and reinitialize themselves. Also,
 remember song list sort order.
 
-Jukebox mode
-------------
-Where songs keep adding themselves to the playlist. (My idea for this needs
-a window designed only to browse the library and drag songs to the playlist
-or jukebox. This shouldn't be "too" hard.)
-
 GStreamer backend
 -----------------
 Experiment with a GStreamer backend. This is not very interesting from
@@ -44,7 +38,8 @@ in ~/.gnome2/rhythmbox.
 
 Browser modes
 -------------
-In particular, an iTunes/RB-like browser, and a Muine-style album browser.
+A Muine-style album browser.
+A Jukebox mode (requires 'just browser, no player' windows).
 
 Album cover download
 --------------------
@@ -70,49 +65,29 @@ Another way would be to store an "alternate filenames" list with each
 song. This would let you use multiple devices/filesystems at once, but
 I don't think that's a common enough use case to justify the complexity.
 
-James Evans recently posted Python bindings for libifp to the
-ifp-driver-common list. They'd be much much nicer to use, especially
-if progress callbacks are working.
-
 HAL/DBUS
 --------
-We could use the article hal/dbus part to know when a device is
+We could use the above HAL/DBUS part to know when a device is
 plugged in, and trigger a library refresh if it's in our scan directories
 or masked list. This is a good idea even without the above stuff.
 
+Related we should whip our song-update callbacks into shape. The less
+entry points the better.
+
 New keys
 --------
-File size? (Is this useful?)
+Bitrate/quality.
+File size?
 
 IRC Dumps
 ---------
-(piman_) We need some sort of QL manual...
-(mu) heh.  make wm write it?
-(piman_) The number of tiny languages we have is too long for man page :/
-
 (mu) hmm. is it a bug that if you, vorbisgain, don't refresh, edit your tags
 +and save the gained files, you lose the vorbisgain?
 (piman) good question.
 (piman) do we need a warning dialog if the mtime is wrong?
 
-(piman) What would you think of some kind of "plugin" system like Nautilus's
-+old (and useful) "Scripts" thing?
-(mu) something to let you invoke stuff on various selections? that'd be
-+awesome.
-(piman) Yeah, with some halfassed way to keep it talking to QL.
-(mu) there'd need to be some meta plugins, to call plugins on each album of
-+the selection separately, and such.
-(piman) Yeah, I'm trying to think of a way to pass all the useful arguments...
-(mu) really these so called plugins should probably exist in two varieties -
-+python, and *, where only the python would necessarily get talkback.
-(mu) nautilus used environment variables.
-(piman) Nautilus only had like 5-10 things.
-(piman) we have 5-10 things per item :/
-(mu) what does QL need to pass?
-(piman) Ideally the whole song dict.
-(mu) bah, so start with the python ones.  we can make a lame meta-plugin that
-+translates to simple shell invokes.
-
 Others
 ------
 RPM spec/package, Gentoo ebuild, whatever.
+A real manual, not just a man page.
+(Python-based) plugin system for the song list context menu.
