@@ -795,7 +795,7 @@ class PanedBrowser(Browser, gtk.HBox):
             model = self.child.get_model()
             model.clear()
             to_select = []
-            if len(values) + bool(complete) > 1:
+            if len(values) + (not bool(complete)) > 1:
                 model.append(["<b>%s</b>" % _("All")])
             for i, value in enumerate(map(util.escape, values)):
                 model.append([value])
@@ -820,7 +820,8 @@ class PanedBrowser(Browser, gtk.HBox):
                 if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
                     selected.pop()
                     selected.append("!/./")
-                return "%s = |(%s)" % (self.tag, ", ".join(selected))
+                return ("%s = |(%s)" % (self.tag, ", ".join(selected))).decode(
+                    "utf-8")
 
     def __init__(self, cb):
         gtk.HBox.__init__(self, spacing = 3)
