@@ -2326,7 +2326,7 @@ class PlayList(SongList):
     def song_properties(self, *args):
         model, rows = self.get_selection().get_selected_rows()
         SongProperties([model[row][0] for row in rows],
-                       self.song_update_view)
+                       widgets.main.song_update_view)
 
     def refresh_indices(self, *args):
         for i, row in enumerate(iter(self.get_model())):
