@@ -1,19 +1,4 @@
-JZig) I can resize vertically with nothing, but not with only search box
-(piman) oh, heh, the searchbox size is resizable.
-
-
-(inigo) column.set_reorderable(True) only has a problem
-(inigo) when user clicks over a header to move the column, the model sorting
-+begins, so it's not very UI friendly
-(piman) oh! I read that wrong, sorry. I saw "set_reorderable" and thought rows
-+. Yeah, column reordering should be easy.
-(inigo) because UI halts until sorting ends
-(JZig) I would like column reordering
-(JZig) so my custom columns arent always at the end
-(piman) It might better to change the preferences dialog, to make reordering
-+happen there. It's less convenient, but doesn't have the speed problems.
-(inigo) maybe a small treeview without any data, only headers
-(inigo) and then real treeview keep preferences one
+(inigo) a clear button for search box would be good too
 
 Doable by whomever, whenever:
 - Translations.

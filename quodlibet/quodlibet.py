@@ -943,6 +943,12 @@ class MainWindow(MultiInstanceWidget):
             text = "|".join([sre.escape(s) for s in values.keys()])
             self.make_query(u"%s = /^(%s)$/c" % (header, text))
 
+    def cols_changed(self, view):        
+        headers = [col.header_name for col in view.get_columns()]
+        if len(headers) == len(HEADERS):
+            # Not an addition or removal (handled separately)
+            config.set("settings", "headers", " ".join(headers))
+
     def make_query(self, query):
         self.widgets["query"].child.set_text(query.encode('utf-8'))
         self.widgets["search_button"].clicked()
@@ -1015,6 +1021,7 @@ class MainWindow(MultiInstanceWidget):
             title = util.title(_(HEADERS_FILTER.get(t2, t2)))
             column = gtk.TreeViewColumn(title, render, text = i,
                                         weight = len(headers)+1)
+            column.header_name = t
             column.set_resizable(True)
             if t in SHORT_COLS or t.startswith("~#"):
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -1023,6 +1030,7 @@ class MainWindow(MultiInstanceWidget):
                 column.set_expand(True)
                 column.set_fixed_width(1)
             column.set_clickable(True)
+            column.set_reorderable(True)
             column.set_sort_indicator(False)
             column.connect('clicked', self.set_sort_by, t)
             sl.append_column(column)

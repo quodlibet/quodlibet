@@ -12,6 +12,8 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - --play, --pause, --seek-to, --query, --play-file.
  - OSD (gosd) support, thanks to Iñigo Serna and Gustavo J. A. M. Carneiro.
  - FreeDesktop-style .folder.png files supported for album covers.
+ - Playlist/search UI elements can be hidden.
+ - Dragging columns can reorder them.
 
 0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).

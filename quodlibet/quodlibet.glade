@@ -1076,6 +1076,7 @@
 	      <signal name="row_activated" handler="select_song" last_modification_time="Thu, 07 Oct 2004 23:44:00 GMT"/>
 	      <signal name="button-press-event" handler="songs_button_press" last_modification_time="Fri, 22 Oct 2004 03:18:51 GMT"/>
 	      <signal name="popup-menu" handler="songs_popup_menu" last_modification_time="Thu, 28 Oct 2004 03:55:46 GMT"/>
+	      <signal name="columns_changed" handler="cols_changed" last_modification_time="Sat, 11 Dec 2004 02:42:49 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
