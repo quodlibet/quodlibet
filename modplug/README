@@ -1,0 +1,23 @@
+ModPlug Player in Python
+------------------------
+This Python module lets you load and decode files supported by the ModPlug
+library (which includes MODs, ITs, XMs, and so on). Its API has been chosen
+to mostly match pyvorbis and pymad.
+
+Compiling:
+----------
+(Requires libmodplug and Python development files.)
+$ make modplug.so
+
+Usage:
+------
+See 'playmod.py' for an example of using modplug.
+
+License:
+--------
+Copyright 2004 Joe Wreschnig <piman@sacredchao.net>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
