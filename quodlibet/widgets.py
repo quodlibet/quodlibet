@@ -3923,6 +3923,7 @@ class DirectoryTree(gtk.TreeView):
             for i in range(len(path)):
                 self.expand_row(tuple(path[:i+1]), False)
             self.get_selection().select_path(tuple(path))
+            self.scroll_to_cell(tuple(path))
 
         else: self.expand_row((0,), False)
 
