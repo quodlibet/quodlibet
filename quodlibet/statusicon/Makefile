@@ -1,21 +1,10 @@
-# Copyright 2004 Joe Wreschnig. Released under the terms of the GNU LGPL.
+# Copyright 2004 Joe Wreschnig. Released under the terms of the GNU GPL.
 
-PYTHON_DIR = /usr/include/python2.3
-CFLAGS = -O2 `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I$(PYTHON_DIR) -fPIC
-LDFLAGS = `pkg-config --libs gtk+-2.0 pygtk-2.0` -fPIC
+statusicon.so: build
+	cp build/lib*/statusicon.so .
 
-statusicon.so: statusicon.o eggstatusicon.o eggtrayicon.o statusiconmodule.o eggmarshalers.o
-	$(CC) $(LDFLAGS) -shared $^ -o $@
-
-statusicon.o: eggmarshalers.h eggmarshalers.o
-
-eggmarshalers.h: eggmarshalers.list
-	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --header > gen-tmp
-	mv gen-tmp $@
-
-eggmarshalers.c: eggmarshalers.list
-	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --body > gen-tmp
-	mv gen-tmp $@
+build: statusicon.c eggmarshalers.h eggmarshalers.c
+	./setup.py build
 
 DEFS=`pkg-config --variable=defsdir pygtk-2.0`
 
@@ -27,8 +16,17 @@ statusicon.c: statusicon.defs statusicon.override
 	statusicon.defs > gen-tmp
 	mv gen-tmp $@
 
+eggmarshalers.h: eggmarshalers.list
+	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --header > gen-tmp
+	mv gen-tmp $@
+
+eggmarshalers.c: eggmarshalers.list
+	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --body > gen-tmp
+	mv gen-tmp $@
+
 clean:
-	rm -f statusicon.so *.o statusicon.c eggmarshalers.c eggmarshalers.h gen-tmp
+	rm -f statusicon.so *.o statusicon.c eggmarshalers.[ch]
+	rm -rf build dist
 
 distclean: clean
 	rm -f *~ gen-tmp

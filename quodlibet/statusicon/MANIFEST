@@ -1,0 +1,12 @@
+eggmarshalers.list
+eggstatusicon.c
+eggstatusicon.h
+eggtrayicon.c
+eggtrayicon.h
+Makefile
+MANIFEST
+README
+setup.py
+statusicon.defs
+statusiconmodule.c
+statusicon.override

@@ -1,12 +1,10 @@
 # Copyright 2004 Joe Wreschnig. Released under the terms of the GNU GPL.
 
-PYTHON_DIR = /usr/include/python2.3/
+mmkeys.so: build
+	cp build/lib*/mmkeys.so .
 
-CFLAGS = -O2 `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I$(PYTHON_DIR) -fPIC
-LDFLAGS = `pkg-config --libs gtk+-2.0 pygtk-2.0` -fPIC
-
-mmkeys.so: mmkeyspy.o mmkeys.o mmkeysmodule.o
-	$(CC) $(LDFLAGS) -shared $^ -o $@
+build: mmkeyspy.c
+	./setup.py build
 
 DEFS=`pkg-config --variable=defsdir pygtk-2.0`
 
@@ -20,6 +18,7 @@ mmkeyspy.c: mmkeys.defs mmkeys.override
 
 clean:
 	rm -f mmkeys.so *.o mmkeyspy.c
+	rm -rf build dist
 
 distclean: clean
 	rm -f *~ gen-tmp
