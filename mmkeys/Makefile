@@ -2,7 +2,7 @@
 
 PYTHON_DIR = /usr/include/python2.3/
 
-CFLAGS = `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I$(PYTHON_DIR)
+CFLAGS = -O2 `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I$(PYTHON_DIR)
 LDFLAGS = `pkg-config --libs gtk+-2.0 pygtk-2.0`
 
 mmkeys.so: mmkeyspy.o mmkeys.o mmkeysmodule.o
