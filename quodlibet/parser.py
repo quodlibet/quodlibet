@@ -243,6 +243,7 @@ def parse(string):
     return QueryParser(QueryLexer(string)).StartQuery()
 
 def is_valid(string):
+    if string == "": return True
     tokens = QueryLexer(string)
     try: QueryParser(tokens).StartQuery()
     except error: return False
