@@ -1,8 +1,9 @@
 pyflac (0.0.2-0.1) unstable; urgency=low
 
-  * Use new distutils-based build method.
+  * Use new distutils-using build method.
+  * Upload to Debian. (Closes: #292106)
 
- -- Joe Wreschnig <piman@debian.org>
+ -- Joe Wreschnig <piman@debian.org>  Tue, 25 Jan 2005 15:17:16 -0600
 
 pyflac (0.0.1-0.1) unstable; urgency=low
 

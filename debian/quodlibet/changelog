@@ -1,8 +1,10 @@
-quodlibet (0.8-2) unstable; urgency=low
+quodlibet (0.8-1) unstable; urgency=low
 
-  * Depends on PyGTK >= 2.4.1.
+  * Depends on PyGTK >= 2.4.1 (for use of combobox.set_model(None).
   * modplug is no longer included; don't depend on it.
   * Suggest python-flac, python-modplug, python-musepack.
+  * Removed versioned Build-Dep on python-dev, new mmkeys/statusicon
+    builds autodetect Python version using distutils.
 
  -- Joe Wreschnig <piman@debian.org> 
 
