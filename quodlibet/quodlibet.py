@@ -548,12 +548,11 @@ class PlaylistWindow(object):
 
 
 # A tray icon aware of UI policy -- left click shows/hides, right
-# click brings up a popup menu
+# click makes a callback.
 class HIGTrayIcon(TrayIcon):
-    def __init__(self, pixbuf, window, menu):
-        self._menu = menu
+    def __init__(self, pixbuf, window, cb):
         self._window = window
-        TrayIcon.__init__(self, pixbuf, self._showhide, self._popup)
+        TrayIcon.__init__(self, pixbuf, self._showhide, cb)
 
     def _showhide(self, icon):
         if self._window.get_property('visible'):
@@ -562,9 +561,6 @@ class HIGTrayIcon(TrayIcon):
         else:
             self._window.move(*self._pos)
             self._window.show()
-
-    def _popup(self, *args):
-        self._menu.popup(None, None, None, 2, 0)
 
 class MmKeys(object):
     def __init__(self, cbs):
@@ -818,10 +814,6 @@ class MainWindow(MultiInstanceWidget):
         accelgroup.connect('accel-changed',
                 lambda *args: gtk.accel_map_save(const.ACCELS))
 
-        menu = Widgets(None, self, "songs_popup")
-        self.cmenu = menu["songs_popup"]
-        self.cmenu_w = menu
-
         # Oft-used pixmaps -- play/pause and small versions of the same.
         # FIXME: Switching to GTK 2.6 we can use the stock icons.
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
@@ -829,23 +821,19 @@ class MainWindow(MultiInstanceWidget):
         self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
         self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
 
-        pp = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
-        self.widgets["prev_menu"].get_image().set_from_pixbuf(pp)
+        self.pp = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
+        self.widgets["prev_menu"].get_image().set_from_pixbuf(self.pp)
 
-        pn = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
-        self.widgets["next_menu"].get_image().set_from_pixbuf(pn)
+        self.pn = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
+        self.widgets["next_menu"].get_image().set_from_pixbuf(self.pn)
         self.widgets["play_menu"].get_image().set_from_pixbuf(self.pause_s)
 
         # Set up the tray icon; initialize the menu widget even if we
         # don't end up using it for simplicity.
-        self.tray_menu = Widgets(None, self, "tray_popup")
-        self.tray_menu_play = self.tray_menu["play_popup_menu"].get_image()
-        self.tray_menu_play.set_from_pixbuf(self.pause_s)
-        self.tray_menu["prev_popup_menu"].get_image().set_from_pixbuf(pp)
-        self.tray_menu["next_popup_menu"].get_image().set_from_pixbuf(pn)
 
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-        self.icon = HIGTrayIcon(p, self.window, self.tray_menu["tray_popup"])
+        
+        self.icon = HIGTrayIcon(p, self.window, self.tray_popup)
 
         # Set up the main song list store.
         self.songlist = MainSongList(self.widgets["songlist"])
@@ -881,6 +869,35 @@ class MainWindow(MultiInstanceWidget):
         # Show main window.
         self.restore_size()
         self.window.show()
+
+    def tray_popup(self, *args):
+        tray_menu = gtk.Menu()
+        if player.playlist.paused:
+            b = gtk.ImageMenuItem(_("_Play"))
+            tray_menu_play = b.get_image()
+            tray_menu_play.set_from_pixbuf(self.pause_s)
+        else:
+            b = gtk.ImageMenuItem(_("_Pause"))
+            tray_menu_play = b.get_image()
+            tray_menu_play.set_from_pixbuf(self.play_s)
+        b.connect('activate', self.play_pause)
+        tray_menu.append(b)
+        tray_menu.append(gtk.SeparatorMenuItem())
+        b = gtk.ImageMenuItem(_("Pre_vious"))
+        b.connect('activate', self.previous_song)
+        b.get_image().set_from_pixbuf(self.pp)
+        tray_menu.append(b)
+        b = gtk.ImageMenuItem(_("_Next"))
+        b.connect('activate', self.next_song)
+        b.get_image().set_from_pixbuf(self.pn)
+        tray_menu.append(b)
+        tray_menu.append(gtk.SeparatorMenuItem())
+        b = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        b.connect('activate', gtk.main_quit)
+        tray_menu.append(b)        
+        tray_menu.show_all()
+        tray_menu.connect('selection-done', lambda m: m.destroy())
+        tray_menu.popup(None, None, None, 2, 0)
 
     def restore_size(self):
         try: w, h = map(int, config.get("memory", "size").split())
@@ -967,21 +984,13 @@ class MainWindow(MultiInstanceWidget):
     def _update_paused(self, paused):
         if paused:
             self.widgets["play_image"].set_from_pixbuf(self.paused)
-            self.widgets["play_menu"].get_image().set_from_pixbuf(
-                self.pause_s)
-            self.tray_menu_play.set_from_pixbuf(self.pause_s)
+            self.widgets["play_menu"].get_image().set_from_pixbuf(self.pause_s)
             self.widgets["play_menu"].child.set_text(_("Play _song"))
-            self.tray_menu["play_popup_menu"].child.set_text(_("_Play"))
         else:
             self.widgets["play_image"].set_from_pixbuf(self.playing)
-            self.widgets["play_menu"].get_image().set_from_pixbuf(
-                self.play_s)
             self.widgets["play_menu"].get_image().set_from_pixbuf(self.play_s)
-            self.tray_menu_play.set_from_pixbuf(self.play_s)
             self.widgets["play_menu"].child.set_text(_("Pause _song"))
-            self.tray_menu["play_popup_menu"].child.set_text(_("_Pause"))
         self.widgets["play_menu"].child.set_use_underline(True)
-        self.tray_menu["play_popup_menu"].child.set_use_underline(True)
 
     def set_time(self, cur, end):
         self._time = (cur, end)
@@ -1292,15 +1301,13 @@ class MainWindow(MultiInstanceWidget):
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
         header = col.header_name
-        self.prep_main_popup(header)
-        self.cmenu.popup(None,None,None, event.button, event.time)
+        self.prep_main_popup(header, event.button, event.time)
         return True
 
     def songs_popup_menu(self, view):
         path, col = view.get_cursor()
         header = col.header_name
-        self.prep_main_popup(header)
-        self.cmenu.popup(None, None, None, 1, 0)
+        self.prep_main_popup(header, 1, 0)
 
     def song_col_filter(self, item):
         view = self.songlist.view
@@ -1309,6 +1316,7 @@ class MainWindow(MultiInstanceWidget):
         if "~" in header[1:]: header = filter(None, header.split("~"))[0]
         self.filter_on_header(header)
 
+    def filter_proxy(self, item, header): self.filter_on_header(header)
     def artist_filter(self, item): self.filter_on_header('artist')
     def album_filter(self, item): self.filter_on_header('album')
     def genre_filter(self, item): self.filter_on_header('genre')
@@ -1381,35 +1389,57 @@ class MainWindow(MultiInstanceWidget):
     def song_properties(self, item):
         SongProperties(self.songlist.get_selected_songs())
 
-    def prep_main_popup(self, header):
-        if header.startswith("~#"): header = header[2:]
-        elif header.startswith("~"): header = header[1:]
-        header = header.split("~")[0]
+    def prep_main_popup(self, header, button, time):
+        if "~" in header[1:]: header = header.split("~")[0]
+        menu = gtk.Menu()
 
-        if not config.getint("pmp", "driver"):
-            self.cmenu_w["pmp_sep"].hide()
-            self.cmenu_w["pmp_upload"].hide()
-        else:
-            self.cmenu_w["pmp_sep"].show()
-            self.cmenu_w["pmp_upload"].show()
+        if self.browser.can_filter("genre"):
+            b = gtk.ImageMenuItem(_("Filter on _genre"))
+            b.connect('activate', self.filter_proxy, 'genre')
+            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            menu.append(b)
+        if self.browser.can_filter("artist"):
+            b = gtk.ImageMenuItem(_("Filter on _artist"))
+            b.connect('activate', self.filter_proxy, 'artist')
+            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            menu.append(b)
+        if self.browser.can_filter("album"):
+            b = gtk.ImageMenuItem(_("Filter on al_bum"))
+            b.connect('activate', self.filter_proxy, 'album')
+            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            menu.append(b)
         if (header not in ["genre", "artist", "album"] and
-            self.browser and self.browser.can_filter(header)):
-            self.cmenu_w["filter_column"].show()
-            header = tag(header)
-            self.cmenu_w["filter_column"].child.set_text(
-                _("_Filter on this column (%s)") % _(header))
-            self.cmenu_w["filter_column"].child.set_use_underline(True)
-        else:
-            self.cmenu_w["filter_column"].hide()
+            self.browser.can_filter(header)):
+            b = gtk.ImageMenuItem(_("_Filter on %s") % _(tag(header)))
+            b.connect('activate', self.filter_proxy, 'album')
+            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+        if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+
+        if config.getint("pmp", "driver"):
+            b = gtk.ImageMenuItem(_("Upload to PMP..."))
+            b.get_image().set_from_stock(gtk.STOCK_HARDDISK, gtk.ICON_SIZE_MENU)
+            b.connect('activate', self.pmp_upload)
+            menu.append(b)
+            menu.append(gtk.SeparatorMenuItem())
+
+        b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        b.connect('activate', self.remove_song)
+        menu.append(b)
+        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        b.connect('activate', self.delete_song)
+        menu.append(b)
+        b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        b.connect('activate', self.song_properties)
+        menu.append(b)
+
+        menu.show_all()
+        menu.connect('selection-done', lambda m: m.destroy())
+        menu.popup(None, None, None, button, time)
 
     def show_search(self, *args):
         if type(self.browser) != SearchBar:
             self.widgets["FiltersMenu"].show()
-            for h in ["genre", "artist", "album"]:
-                self.cmenu_w["filter_on_" + h].show()
-                self.widgets["filter_%s_menu" % h].show()
             self.widgets["separator4"].show()
-            self.cmenu_w["filter_sep"].show()
 
             self.browser.destroy()
             self.showhide_widget(self.widgets["query_hbox"], True)
@@ -1420,11 +1450,7 @@ class MainWindow(MultiInstanceWidget):
     def show_listselect(self, *args):
         if type(self.browser) != PlaylistBar:
             self.widgets["FiltersMenu"].hide()
-            for h in ["genre", "artist", "album"]:
-                self.cmenu_w["filter_on_" + h].hide()
-                self.widgets["filter_%s_menu" % h].hide()
             self.widgets["separator4"].hide()
-            self.cmenu_w["filter_sep"].hide()
 
             self.browser.destroy()
             self.showhide_widget(self.widgets["query_hbox"], True)
@@ -1617,7 +1643,7 @@ class PlayList(SongList):
         view.connect('drag-end', self.refresh_indices)
         view.set_reorderable(True)
         self.menu = gtk.Menu()
-        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         rem.connect('activate', self.remove_selected_songs)
         self.menu.append(rem)
         self.menu.show_all()
@@ -1825,9 +1851,6 @@ class AddTagDialog(object):
 class SongProperties(MultiInstanceWidget):
     def __init__(self, songrefs):
         MultiInstanceWidget.__init__(self, widget = "properties_window")
-        menu = Widgets("quodlibet.glade", self, "props_popup")
-        self.menu = menu["props_popup"]
-        self.menu_w = menu
 
         self.window = self.widgets['properties_window']
         self.save_edit = self.widgets['songprop_save']
@@ -1935,7 +1958,6 @@ class SongProperties(MultiInstanceWidget):
         self.fmodel.clear_cache()
         self.model.clear()
         self.window.destroy()
-        self.menu.destroy()
 
     def songprop_save_click(self, button):
         updated = {}
@@ -2089,42 +2111,65 @@ class SongProperties(MultiInstanceWidget):
         if len(songrefs): self.songrefs = songrefs
         self.fill_property_info()
 
-    def prep_prop_menu(self, row):
-        self.menu_w["split_album"].hide()
-        self.menu_w["split_title"].hide()
-        self.menu_w["split_performer"].hide()
-        self.menu_w["split_arranger"].hide()
-        self.menu_w["special_sep"].hide()
+    def prep_prop_menu(self, row, button, time):
+        menu = gtk.Menu()        
         spls = config.get("settings", "splitters")
 
-        self.menu_w["split_into_list"].set_sensitive(
-            len(util.split_value(row[1], spls)) > 1)
+        b = gtk.ImageMenuItem(_("_Split into multiple values"))
+        b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                     gtk.ICON_SIZE_MENU)
+        b.set_sensitive(len(util.split_value(row[1], spls)) > 1)
+        b.connect('activate', self.split_into_list)
+        menu.append(b)
+        menu.append(gtk.SeparatorMenuItem())
 
         if row[0] == "album":
-            self.menu_w["split_album"].show()
-            self.menu_w["special_sep"].show()
-            self.menu_w["split_album"].set_sensitive(
-                util.split_album(row[1])[1] is not None)
+            b = gtk.ImageMenuItem(_("Split disc out of _album"))
+            b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                         gtk.ICON_SIZE_MENU)
+            b.connect('activate', self.split_album)
+            b.set_sensitive(util.split_album(row[1])[1] is not None)
+            menu.append(b)
 
-        if row[0] == "title":
-            self.menu_w["split_title"].show()
-            self.menu_w["special_sep"].show()
-            self.menu_w["split_title"].set_sensitive(
-                util.split_title(row[1], spls)[1] != [])
+        elif row[0] == "title":
+            b = gtk.ImageMenuItem(_("Split version out of title"))
+            b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                         gtk.ICON_SIZE_MENU)
+            b.connect('activate', self.split_title)
+            b.set_sensitive(util.split_title(row[1], spls)[1] != [])
+            menu.append(b)
 
-        if row[0] == "artist":
-            self.menu_w["split_performer"].show()
-            self.menu_w["split_arranger"].show()
-            self.menu_w["special_sep"].show()
+        elif row[0] == "artist":
             ok = (util.split_people(row[1], spls)[1] != [])
-            self.menu_w["split_performer"].set_sensitive(ok)
-            self.menu_w["split_arranger"].set_sensitive(ok)
+
+            b = gtk.ImageMenuItem(_("Split arranger out of ar_tist"))
+            b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                         gtk.ICON_SIZE_MENU)
+            b.connect('activate', self.split_arranger)
+            b.set_sensitive(ok)
+            menu.append(b)
+
+            b = gtk.ImageMenuItem(_("Split _performer out of artist"))
+            b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
+                                         gtk.ICON_SIZE_MENU)
+            b.connect('activate', self.split_performer)
+            b.set_sensitive(ok)
+            menu.append(b)
+
+        if len(menu.get_children()) > 2: menu.append(gtk.SeparatorMenuItem())
+
+        b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        b.connect('activate', self.songprop_remove)
+        menu.append(b)
+
+        menu.show_all()
+        menu.connect('selection-done', lambda m: m.destroy())
+        menu.popup(None, None, None, button, time)
 
     def prop_popup_menu(self, view):
         path, col = view.get_cursor()
         row = view.get_model()[path]
-        self.prep_prop_menu(row)
-        self.menu.popup(None, None, None, 1, 0)
+        self.prep_prop_menu(row, 1, 0)
 
     def prop_button_press(self, view, event):
         if event.button != 3:
@@ -2137,8 +2182,7 @@ class SongProperties(MultiInstanceWidget):
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
         row = view.get_model()[path]
-        self.prep_prop_menu(row)
-        self.menu.popup(None, None, None, event.button, event.time)
+        self.prep_prop_menu(row, event.button, event.time)
         return True
 
     def songprop_add(self, button):
