@@ -19,7 +19,7 @@ install:
 	install -m 644 $(NAME).1 $(DESTDIR)$(PREFIX)/share/man/man1/$(NAME).1
 	ln -sf ../$(TO)/$(NAME).py $(DESTDIR)$(PREFIX)/bin/$(NAME)
 clean:
-	rm -f *.pyc $(NAME).zip
+	rm -f *.pyc */*.pyc $(NAME).zip
 
 distclean: clean
 	rm -f *~ \#* *.bak *.orig
