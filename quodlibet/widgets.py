@@ -531,11 +531,12 @@ class BigCenteredImage(gtk.Window):
         self.child.child.child.set_from_pixbuf(pixbuf)
 
         # The eventbox
-        self.child.child.connect('button-press-event', self.destroy)
-        self.child.child.connect('key-press-event', self.destroy)
+        self.child.child.connect('button-press-event', self._destroy)
+        self.child.child.connect('key-press-event', self._destroy)
         self.show_all()
 
-    def destroy(self, *args): gtk.Window.destroy(self)
+    def _destroy(self, *args):
+        self.destroy()
 
 class TrayIcon(object):
     def __init__(self, pixbuf, cbs):
@@ -741,24 +742,18 @@ class Osd(object):
             self.window = None
 
 class BrowserBar(object):
-    def __init__(self, hbox):
-        for child in hbox.get_children():
-            hbox.remove(child)
-
-    def destroy(self): pass
-
     def can_filter(self, key):
         return False
 
-class PlaylistBar(BrowserBar):
-    def __init__(self, hbox, cb):
-        super(self.__class__, self).__init__(hbox)
+class PlaylistBar(gtk.HBox):
+    def __init__(self, cb):
+        gtk.HBox.__init__(self)
         self.combo = gtk.ComboBox(PlayList.lists_model())
         cell = gtk.CellRendererText()
         self.combo.pack_start(cell, True)
         self.combo.add_attribute(cell, 'text', 0)
         self.combo.set_active(0)
-        hbox.pack_start(self.combo)
+        self.pack_start(self.combo)
 
         self.button = gtk.Button()
         self.button2 = gtk.Button()
@@ -769,8 +764,8 @@ class PlaylistBar(BrowserBar):
                                                  gtk.ICON_SIZE_MENU))
         self.button.set_sensitive(False)
         self.button2.set_sensitive(False)
-        hbox.pack_start(self.button2, expand = False)
-        hbox.pack_start(self.button, expand = False)
+        self.pack_start(self.button2, expand = False)
+        self.pack_start(self.button, expand = False)
         self.button.connect('clicked', self.edit_current)
         self.combo.connect('changed', self.list_selected)
         self.button2.connect('clicked', self.list_selected)
@@ -780,14 +775,12 @@ class PlaylistBar(BrowserBar):
         self.tips.set_tip(self.button, _("Edit the current playlist"))
         self.tips.set_tip(self.button2, _("Refresh the current playlist"))
         self.tips.enable()
-        hbox.show_all()
+        self.show_all()
+        self.connect('destroy', self._cleanup)
 
-    def destroy(self):
+    def _cleanup(self, widget):
         self.tips.disable()
         self.combo.set_model(None)
-        self.button.destroy()
-        self.button2.destroy()
-        self.combo.destroy()
         self.tips.destroy()
 
     def list_selected(self, box):
@@ -807,9 +800,9 @@ class PlaylistBar(BrowserBar):
         active = self.combo.get_active()
         if active: PlaylistWindow(self.combo.get_model()[active][0])
 
-class EmptyBar(BrowserBar):
-    def __init__(self, hbox, cb):
-        BrowserBar.__init__(self, hbox)
+class EmptyBar(BrowserBar, gtk.HBox):
+    def __init__(self, cb):
+        gtk.HBox.__init__(self)
         self.text = ""
         self.cb = cb
 
@@ -836,8 +829,8 @@ class EmptyBar(BrowserBar):
 class SearchBar(EmptyBar):
     model = None
     
-    def __init__(self, hbox, button, cb):
-        EmptyBar.__init__(self, hbox, cb)
+    def __init__(self, button, cb):
+        EmptyBar.__init__(self, cb)
 
         if SearchBar.model is None:
             SearchBar.model = gtk.ListStore(str)
@@ -846,14 +839,13 @@ class SearchBar(EmptyBar):
         self.button = qltk.Button(button, cb = self.text_parse)
         self.combo.child.connect('activate', self.text_parse)
         self.combo.child.connect('changed', self.test_filter)
-        hbox.pack_start(self.combo)
-        hbox.pack_start(self.button, expand = False)
-        hbox.show_all()
+        self.pack_start(self.combo)
+        self.pack_start(self.button, expand = False)
+        self.show_all()
+        self.connect('destroy', self._cleanup)
 
-    def destroy(self):
+    def _cleanup(self, widget):
         self.combo.set_model(None)
-        self.button.destroy()
-        self.combo.destroy()
 
     def activate(self):
         self.button.clicked()
@@ -976,7 +968,7 @@ class MainWindow(gtk.Window):
         self.text = gtk.Label()
         self.text.set_size_request(100, -1)
         self.text.set_alignment(0.0, 0.0)
-        self.text.set_padding(6, 6)
+        self.text.set_padding(3, 3)
         hb2.pack_start(self.text)
 
         vbox.pack_start(hb2, expand = True)
@@ -1026,25 +1018,8 @@ class MainWindow(gtk.Window):
         self.child.pack_start(hbox, expand = False)
 
         # browser bar
-        self.query_hbox = gtk.HBox()
-        self.child.pack_start(self.query_hbox, expand = False)
-        
-        # song list
-        self.song_scroller = sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        songlist = gtk.TreeView()
-        songlist.set_rules_hint(True)
-        songlist.set_size_request(200, 150)
-        sw.add(songlist)
-        self.songlist = MainSongList(songlist)
-        widgets.songs = gtk.ListStore(object)
-        self.set_column_headers(config.get("settings", "headers").split())
-        self.child.pack_start(sw)
-        songlist.connect('row-activated', self.select_song)
-        songlist.connect('button-press-event', self.songs_button_press)
-        songlist.connect('popup-menu', self.songs_popup_menu)
-        songlist.connect('columns_changed', self.cols_changed)
+        self.browser = SearchBar(_("Search"), self.text_parse)
+        self.child.pack_start(self.browser, expand = False)
         
         # status area
         hbox = gtk.HBox(spacing = 6)
@@ -1065,7 +1040,7 @@ class MainWindow(gtk.Window):
         self.statusbar.set_justify(gtk.JUSTIFY_RIGHT)
         hbox.pack_start(self.statusbar)
         hbox.set_border_width(3)
-        self.child.pack_start(hbox, expand = False)
+        self.child.pack_end(hbox, expand = False)
 
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
@@ -1079,7 +1054,23 @@ class MainWindow(gtk.Window):
             7: self.previous_song
             })
 
-        self.browser = SearchBar(self.query_hbox, _("Search"), self.text_parse)
+        # song list
+        self.song_scroller = sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        songlist = gtk.TreeView()
+        songlist.set_rules_hint(True)
+        songlist.set_size_request(200, 150)
+        sw.add(songlist)
+        self.songlist = MainSongList(songlist)
+        widgets.songs = gtk.ListStore(object)
+        self.set_column_headers(config.get("settings", "headers").split())
+        self.child.pack_end(sw)
+        songlist.connect('row-activated', self.select_song)
+        songlist.connect('button-press-event', self.songs_button_press)
+        songlist.connect('popup-menu', self.songs_popup_menu)
+        songlist.connect('columns_changed', self.cols_changed)
+        
         self.browser.set_text(config.get("memory", "query"))
         self.browser.activate()
 
@@ -1741,25 +1732,21 @@ class MainWindow(gtk.Window):
         menu.popup(None, None, None, button, time)
 
     def show_search(self, *args):
-        if type(self.browser) != SearchBar:
-            for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
-                      "Song/FilterAlbum"]:
-                self.ui.get_widget("/Menu/" + w).show()
-            self.browser.destroy()
-            self.showhide_widget(self.query_hbox, True)
-            self.browser = SearchBar(self.query_hbox,
-                                     _("Search"), self.text_parse)
-            self.browser.set_text(config.get("memory", "query"))
+        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+                  "Song/FilterAlbum"]:
+            self.ui.get_widget("/Menu/" + w).show()
+        self.browser.destroy()
+        self.browser = SearchBar(_("Search"), self.text_parse)
+        self.child.pack_start(self.browser, expand = False)
+        self.browser.set_text(config.get("memory", "query"))
 
     def show_listselect(self, *args):
-        if type(self.browser) != PlaylistBar:
-            for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
                       "Song/FilterAlbum"]:
-                self.ui.get_widget("/Menu/" + w).hide()
-            self.browser.destroy()
-            self.showhide_widget(self.query_hbox, True)
-            self.browser = PlaylistBar(self.query_hbox,
-                                       self.playlist_selected)
+            self.ui.get_widget("/Menu/" + w).hide()
+        self.browser.destroy()
+        self.browser = PlaylistBar(self.playlist_selected)
+        self.child.pack_start(self.browser, expand = False)
 
     def playlist_selected(self, query, key):
         while gtk.events_pending(): gtk.main_iteration()
@@ -1770,14 +1757,11 @@ class MainWindow(gtk.Window):
         self.refresh_songlist()
 
     def hide_browser(self, *args):
-        if type(self.browser) != EmptyBar:
-            for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
-                      "Song/FilterAlbum"]:
-                self.ui.get_widget("/Menu/" + w).show()
-            self.browser.destroy()
-            self.showhide_widget(self.query_hbox, False)
-            self.browser = EmptyBar(self.query_hbox,
-                                    self.text_parse)
+        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+                  "Song/FilterAlbum"]:
+            self.ui.get_widget("/Menu/" + w).show()
+        self.browser.destroy()
+        self.browser = EmptyBar(self.text_parse)
 
     # Grab the text from the query box, parse it, and make a new filter.
     # The sort argument is not used for this browser.
