@@ -51,12 +51,24 @@ class Numcmp(object):
         self.tag = tag
         self.op = op
         value = value.strip()
+
+        if tag in ["lastplayed", "mtime"]:
+            if self.op == ">": self.op = "<"
+            elif self.op == "<": self.op = ">"
+
         if value in ["now"]: value = 0
         elif value in ["today"]: value = 24 * 60 * 60
         else:
             parts = value.split()
             try: value = int(parts[0])
-            except ValueError: value = 0
+            except ValueError:
+                try:
+                    hms = map(int, value.split(":"))
+                    for t in hms:
+                        value *= 60
+                        value += t
+                except ValueError:
+                    value = 0
             if len(parts) > 1:
                 unit = parts[1].strip("s")
                 if unit == "minute": value *= 60
@@ -65,9 +77,6 @@ class Numcmp(object):
                 elif unit == "week": value *= 7 * 24 * 60 * 60
                 elif unit == "year": value *= 365 * 24 * 60 * 60
 
-                # Since units mean "ago", the operators are reversed
-                if self.op == ">": self.op = "<"
-                elif self.op == "<": self.op = ">"
                 value = int(time.time() - value)
         self.value = value
 
@@ -108,4 +117,4 @@ class Tag(object):
         return False
 
     def __repr__(self):
-        return ("<Tag names=%r, res = %r>" % (self.names, self.res))
+        return ("<Tag names=%r, res=%r>" % (self.names, self.res))

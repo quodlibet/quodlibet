@@ -372,19 +372,36 @@ class GladeHandlers(object):
         gtk.idle_add(player.playlist.seek, v)
 
     def random_artist(menuitem):
-        q = "artist = /%s/c" % sre.escape(library.random("artist"))
-        widgets["query"].child.set_text(q)
-        widgets["search_button"].clicked()
+        make_query("artist = /%s/c" % sre.escape(library.random("artist")))
 
     def random_album(menuitem):
-        q = "album = /%s/c" % sre.escape(library.random("album"))
-        widgets["query"].child.set_text(q)
-        widgets["search_button"].clicked()
+        make_query("album = /%s/c" % sre.escape(library.random("album")))
 
     def random_genre(menuitem):
-        q = "genre = /%s/c" % sre.escape(library.random("genre"))
-        widgets["query"].child.set_text(q)
-        widgets["search_button"].clicked()
+        make_query("genre = /%s/c" % sre.escape(library.random("genre")))
+
+    def lastplayed_day(menuitem): make_query("#(lastplayed > today)")
+    def lastplayed_week(menuitem): make_query("#(lastplayed > 7 days ago)")
+    def lastplayed_month(menuitem): make_query("#(lastplayed > 30 days ago)")
+    def lastplayed_never(menuitem): make_query("#(playcount = 0)")
+
+    def top40(menuitem):
+        songs = [(song["~#playcount"], song) for song in library.values()]
+        if len(songs) == 0: return
+        songs.sort()
+        if len(songs) < 40:
+            make_query("#(playcount > %d)" % (songs[0][0] - 1))
+        else:
+            make_query("#(playcount > %d)" % (songs[-40][0] - 1))
+
+    def bottom40(menuitem):
+        songs = [(song["~#playcount"], song) for song in library.values()]
+        if len(songs) == 0: return
+        songs.sort()
+        if len(songs) < 40:
+            make_query("#(playcount < %d)" % (songs[0][0] + 1))
+        else:
+            make_query("#(playcount < %d)" % (songs[-40][0] + 1))
 
     def rebuild(activator):
         window = WaitLoadWindow(widgets["main_window"], len(library) / 5,
@@ -1334,7 +1351,9 @@ def filter_on_header(header, songs = None):
                 values[val] = True
 
     text = "|".join([sre.escape(s) for s in values.keys()])
-    query = u"%s = /%s/c" % (header, text)
+    make_query(u"%s = /%s/c" % (header, text))
+
+def make_query(query):
     widgets["query"].child.set_text(query.encode('utf-8'))
     widgets["search_button"].clicked()
 
@@ -1485,6 +1504,9 @@ def main():
     t = Thread(target = player.playlist.play, args = (widgets.wrap,))
     util.mkdir(os.path.join(HOME, ".quodlibet"))
     signal.signal(signal.SIGINT, gtk.main_quit)
+    signal.signal(signal.SIGKILL, gtk.main_quit)
+    signal.signal(signal.SIGTERM, gtk.main_quit)
+    signal.signal(signal.SIGHUP, gtk.main_quit)
     t.start()
     gtk.main()
     signal.signal(signal.SIGINT, cleanup)

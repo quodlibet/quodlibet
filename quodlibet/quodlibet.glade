@@ -51,7 +51,7 @@
 		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image385">
+			<widget class="GtkImage" id="image545">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -87,7 +87,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image386">
+			<widget class="GtkImage" id="image546">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -110,7 +110,7 @@
 			      <signal name="activate" handler="random_genre" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image387">
+				<widget class="GtkImage" id="image547">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-dialog-question</property>
 				  <property name="icon_size">1</property>
@@ -132,7 +132,7 @@
 			      <signal name="activate" handler="random_artist" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image388">
+				<widget class="GtkImage" id="image548">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-dialog-question</property>
 				  <property name="icon_size">1</property>
@@ -154,7 +154,7 @@
 			      <signal name="activate" handler="random_album" last_modification_time="Tue, 23 Nov 2004 09:57:00 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image389">
+				<widget class="GtkImage" id="image549">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-dialog-question</property>
 				  <property name="icon_size">1</property>
@@ -176,12 +176,12 @@
 			  <child>
 			    <widget class="GtkImageMenuItem" id="not_played_in_a_day1">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Not played in a day</property>
+			      <property name="label" translatable="yes">Not played today</property>
 			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="on_not_played_in_a_day1_activate" last_modification_time="Tue, 23 Nov 2004 11:05:23 GMT"/>
+			      <signal name="activate" handler="lastplayed_day" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image390">
+				<widget class="GtkImage" id="image550">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-find</property>
 				  <property name="icon_size">1</property>
@@ -197,12 +197,12 @@
 			  <child>
 			    <widget class="GtkImageMenuItem" id="not_played_in_a_week1">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Not played in a week</property>
+			      <property name="label" translatable="yes">Not played in 7 days</property>
 			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="on_not_played_in_a_week1_activate" last_modification_time="Tue, 23 Nov 2004 11:05:23 GMT"/>
+			      <signal name="activate" handler="lastplayed_week" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image391">
+				<widget class="GtkImage" id="image551">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-find</property>
 				  <property name="icon_size">1</property>
@@ -220,10 +220,10 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">Not played in 30 days</property>
 			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="on_not_played_in_30_days1_activate" last_modification_time="Tue, 23 Nov 2004 11:05:23 GMT"/>
+			      <signal name="activate" handler="lastplayed_month" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image392">
+				<widget class="GtkImage" id="image552">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-find</property>
 				  <property name="icon_size">1</property>
@@ -241,10 +241,10 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">Never played</property>
 			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="on_never_played1_activate" last_modification_time="Tue, 23 Nov 2004 11:05:23 GMT"/>
+			      <signal name="activate" handler="lastplayed_never" last_modification_time="Tue, 23 Nov 2004 23:42:08 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image393">
+				<widget class="GtkImage" id="image553">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-find</property>
 				  <property name="icon_size">1</property>
@@ -264,15 +264,15 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkImageMenuItem" id="top_1">
+			    <widget class="GtkImageMenuItem" id="top40">
 			      <property name="visible">True</property>
 			      <property name="tooltip" translatable="yes">Listen to the 40 songs you've played most</property>
 			      <property name="label" translatable="yes">Top 40</property>
 			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="on_top_1_activate" last_modification_time="Tue, 23 Nov 2004 11:08:19 GMT"/>
+			      <signal name="activate" handler="top40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image394">
+				<widget class="GtkImage" id="image554">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-goto-top</property>
 				  <property name="icon_size">1</property>
@@ -286,15 +286,15 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkImageMenuItem" id="bottom_1">
+			    <widget class="GtkImageMenuItem" id="bottom40">
 			      <property name="visible">True</property>
 			      <property name="tooltip" translatable="yes">Listen to the 40 songs you've played least</property>
 			      <property name="label" translatable="yes">Bottom 40</property>
 			      <property name="use_underline">True</property>
-			      <signal name="activate" handler="on_bottom_1_activate" last_modification_time="Tue, 23 Nov 2004 11:08:19 GMT"/>
+			      <signal name="activate" handler="bottom40" last_modification_time="Wed, 24 Nov 2004 02:50:07 GMT"/>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image395">
+				<widget class="GtkImage" id="image555">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-goto-bottom</property>
 				  <property name="icon_size">1</property>
@@ -326,7 +326,7 @@
 		      <signal name="activate" handler="rebuild" last_modification_time="Thu, 18 Nov 2004 04:04:04 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image396">
+			<widget class="GtkImage" id="image556">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -348,7 +348,7 @@
 		      <signal name="activate" handler="rebuild_hard" last_modification_time="Thu, 18 Nov 2004 04:06:19 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image397">
+			<widget class="GtkImage" id="image557">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -434,7 +434,7 @@
 		      <signal name="activate" handler="cur_genre_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image398">
+			<widget class="GtkImage" id="image558">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -455,7 +455,7 @@
 		      <signal name="activate" handler="cur_artist_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image399">
+			<widget class="GtkImage" id="image559">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -476,7 +476,7 @@
 		      <signal name="activate" handler="cur_album_filter" last_modification_time="Tue, 23 Nov 2004 11:22:33 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image400">
+			<widget class="GtkImage" id="image560">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -521,7 +521,7 @@
 		      <accelerator key="J" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image401">
+			<widget class="GtkImage" id="image561">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
