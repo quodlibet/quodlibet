@@ -348,11 +348,15 @@ class MultiInstanceWidget(object):
 
         updated = {}
         deleted = {}
+        added = {}
         def create_property_dict(model, path, iter):
             row = model[iter]
             # Edited, and or and not Deleted
-            if row[2] and not row[4]: updated[row[0]] = (row[1], row[5])
-            if row[2] and row[4]: deleted[row[0]] = row[5]
+            if row[2] and not row[4]:
+                if row[5]: updated[row[0]] = (row[1], row[5])
+                else: added[row[0]] = row[1]
+            if row[2] and row[4]:
+                if row[5]: deleted[row[0]] = row[5]
         self.model.foreach(create_property_dict)
 
         progress = widgets["writing_progress"]
@@ -369,10 +373,15 @@ class MultiInstanceWidget(object):
                     if old_value is None: song.add(key, new_value)
                     else: song.change(key, old_value, new_value)
                     changed = True
-            for key in deleted:
+            for key, value in added.iteritems():
+                value = util.unescape(value)
                 if song.can_change(key) and key in song:
-                    try: song.remove(key, deleted[key])
-                    except ValueError: del(song[key])
+                    song.add(key, value)
+                    changed = True
+            for key, value in deleted.iteritems():
+                value = util.unescape(value)
+                if song.can_change(key) and key in song:
+                    song.remove(key, value)
                     changed = True
 
             if changed:

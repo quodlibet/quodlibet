@@ -115,7 +115,8 @@ class AudioFile(dict):
         parts = self[key].split("\n")
         try: parts[parts.index(old_value)] = new_value
         except ValueError:
-            print "W: Old value not found; overwriting the entire tag. This is probably safe."
+            print ("W: Old value not found; overwriting the entire tag. "
+                   "This is probably safe.")
             self[key] = new_value
         else:
             self[key] = "\n".join(parts)
@@ -129,9 +130,12 @@ class AudioFile(dict):
     def remove(self, key, value):
         if self[key] == value: del(self[key])
         else:
-            parts = self[key].split("\n")
-            parts.remove(value)
-            self[key] = "\n".join(parts)
+            try:
+                parts = self[key].split("\n")
+                parts.remove(value)
+                self[key] = "\n".join(parts)
+            except ValueError:
+                if key in self: del(self[key])
         self.sanitize()
 
     def find_cover(self):
