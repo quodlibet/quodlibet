@@ -71,7 +71,7 @@ class AboutWindow(gtk.Window):
             4000, self.pick_name, list(const.CREDITS), contrib)
         self.alive = True
         self.add(vbox)
-        self.set_property('border-width', 12)
+        self.set_border_width(12)
         self.connect_object('destroy', AboutWindow._destroy, self)
         self.set_transient_for(parent)
         self.child.show_all()
@@ -463,13 +463,12 @@ class DeleteDialog(gtk.Dialog):
 
         lab = gtk.Label()
         lab.set_markup("<big><b>%s</b></big>" % l)
-        lab.set_property('xalign', 0.0)
+        lab.set_alignment(0.0, 0.5)
         vbox.pack_start(lab, expand = False)
 
         lab = gtk.Label("\n".join(
             map(util.fsdecode, map(util.unexpand, files))))
-        lab.set_property('xalign', 0.1)
-        lab.set_property('yalign', 0.0)
+        lab.set_alignment(0.1, 0,0)
         exp.add(gtk.ScrolledWindow())
         exp.child.add_with_viewport(lab)
         exp.child.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -490,7 +489,7 @@ class WaitLoadWindow(gtk.Window):
         self.add(gtk.Frame())
         self.child.set_shadow_type(gtk.SHADOW_OUT)
         vbox = gtk.VBox(spacing = 12)
-        vbox.set_property('border-width', 12)
+        vbox.set_border_width(12)
         self.label = gtk.Label()
         self.label.set_size_request(170, -1)
         self.label.set_use_markup(True)
@@ -2410,7 +2409,7 @@ class AddTagDialog(gtk.Dialog):
         self.tag.connect('changed', self.validate, validators)
 
         label = gtk.Label()
-        label.set_property('xalign', 0.0)
+        label.set_alignment(0.0, 0.5)
         label.set_text(_("_Tag:"))
         label.set_use_underline(True)
         label.set_mnemonic_widget(self.tag)
@@ -2421,7 +2420,7 @@ class AddTagDialog(gtk.Dialog):
         self.val.connect('changed', self.validate, validators)
         label = gtk.Label()
         label.set_text(_("_Value:"))
-        label.set_property('xalign', 0.0)
+        label.set_alignment(0.0, 0.5)
         label.set_use_underline(True)
         label.set_mnemonic_widget(self.val)
         self.valuebox = gtk.EventBox()
@@ -2480,7 +2479,7 @@ class SongProperties(gtk.Window):
             self.add(gtk.Viewport())
             self.child.set_shadow_type(gtk.SHADOW_NONE)
             self.box = gtk.VBox(spacing = 6)
-            self.box.set_property('border-width', 12)
+            self.box.set_border_width(12)
             self.child.add(self.box)
             self.tips = gtk.Tooltips()
 
@@ -3233,7 +3232,7 @@ class SongProperties(gtk.Window):
             self.title = _("Tag by Filename")
             self.prop = prop
             self.cb = cb
-            self.set_property('border-width', 12)
+            self.set_border_width(12)
             hbox = gtk.HBox(spacing = 12)
             self.combo = combo = qltk.ComboBoxEntrySave(
                 const.TBP, const.TBP_EXAMPLES.split("\n"))
@@ -3342,7 +3341,7 @@ class SongProperties(gtk.Window):
             for i, header in enumerate(pattern.headers):
                 render = gtk.CellRendererText()
                 render.set_property('editable', True)
-                render.connect('edited', self.changed, self.model,  i + 2)
+                render.connect('edited', self.row_edited, self.model, i + 2)
                 col = gtk.TreeViewColumn(header, render, text = i + 2)
                 self.view.append_column(col)
             spls = config.get("settings", "splitters")
@@ -3418,6 +3417,12 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(False)
             self.prop.update()
 
+        def row_edited(self, renderer, path, new, model, colnum):
+            row = model[path]
+            if row[colnum] != new:
+                row[colnum] = new
+                self.preview.set_sensitive(True)
+
         def preview_tags(self, *args):
             self.update(self.songs)
 
@@ -3456,8 +3461,11 @@ class SongProperties(gtk.Window):
             column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
                                         text = 1)
             self.view.append_column(column)
-            column = gtk.TreeViewColumn(_('New Name'), gtk.CellRendererText(),
-                                        text = 2)
+            render = gtk.CellRendererText()
+            render.set_property('editable', True)
+            render.connect('edited', self.row_edited, self.model)
+            column = gtk.TreeViewColumn(_('New Name'), render, text = 2)
+            
             self.view.append_column(column)
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
@@ -3508,6 +3516,12 @@ class SongProperties(gtk.Window):
                        str(self.replace.get_active()))
             self.save.set_sensitive(False)
             self.preview.set_sensitive(bool(self.entry.get_text()))
+
+        def row_edited(self, renderer, path, new, model):
+            row = model[path]
+            if row[2] != new:
+                row[2] = new
+                self.preview.set_sensitive(True)
 
         def preview_files(self, button, combo):
             self.update(self.songs)
@@ -3593,7 +3607,7 @@ class SongProperties(gtk.Window):
             self.title = _("Track Numbers")
             self.prop = prop
             self.cb = cb
-            self.set_property('border-width', 12)
+            self.set_border_width(12)
             hbox = gtk.HBox(spacing = 18)
             hbox2 = gtk.HBox(spacing = 12)
 
@@ -3739,7 +3753,7 @@ class SongProperties(gtk.Window):
         if len(songs) > 1:
             self.pages.append(self.TrackNumbers(self, callback))
         for page in self.pages: self.notebook.append_page(page)
-        self.set_property('border-width', 12)
+        self.set_border_width(12)
         vbox = gtk.VBox(spacing = 12)
         vbox.pack_start(self.notebook)
 
