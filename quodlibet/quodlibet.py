@@ -2335,8 +2335,7 @@ class SongProperties(object):
             self.show_menu(row, 1, 0)
 
         def button_press(self, view, event):
-            if event.button != 3:
-                return False
+            if event.button not in (2, 3): return False
             x, y = map(int, [event.x, event.y])
             try: path, col, cellx, celly = view.get_path_at_pos(x, y)
             except TypeError: return True
@@ -2345,8 +2344,23 @@ class SongProperties(object):
             if not selection.path_is_selected(path):
                 view.set_cursor(path, col, 0)
             row = view.get_model()[path]
-            self.show_menu(row, event.button, event.time)
-            return True
+
+            if event.button == 2: # middle click paste
+                if col != view.get_columns()[2]: return False
+                display = gtk.gdk.display_manager_get().get_default_display()
+                clipboard = gtk.Clipboard(display, "PRIMARY")
+                for rend in col.get_cell_renderers():
+                    if rend.get_property('editable'):
+                        clipboard.request_text(self._paste, (rend, path[0]))
+                        return True
+                else: return False
+
+            elif event.button == 3: # right click menu
+                self.show_menu(row, event.button, event.time)
+                return True
+
+        def _paste(self, clip, text, (rend, path)):
+            if text: rend.emit('edited', path, text.strip())
 
         def split_into_list(self, activator):
             model, iter = self.view.get_selection().get_selected()
@@ -2576,6 +2590,7 @@ class SongProperties(object):
             self.update(self.songs)
 
         def edit_tag(self, renderer, path, new, model, colnum):
+            new = ', '.join(new.splitlines())
             row = model[path]
             date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if row[0] == "date" and not date.match(new):
