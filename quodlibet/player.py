@@ -33,14 +33,9 @@ BUFFER_SIZE = 2**12
 # 4. Go to the next song.
 # 5. Go to the previous song.
 
-times = [0, 0]
-
 class AudioPlayer(object):
     def __init__(self):
         self.stopped = False
-
-    # This is the worst function ever.
-    def seek(self, *args): self.seek(*args)
 
     def end(self):
         self.stopped = True
@@ -55,6 +50,7 @@ class MP3Player(AudioPlayer):
     def __iter__(self): return self
 
     def seek(self, ms):
+        ms = max(0, min(int(ms), self.length - 1))
         self.audio.seek_time(int(ms))
 
     def next(self):
@@ -74,6 +70,7 @@ class OggPlayer(AudioPlayer):
     def __iter__(self): return self
 
     def seek(self, ms):
+        ms = max(0, min(int(ms), self.length - 1))
         self.audio.time_seek(ms / 1000.0)
 
     def next(self):
@@ -148,7 +145,6 @@ class PlaylistPlayer(object):
                 if self.shuffle: random.shuffle(self.playlist)
                 self.player = FilePlayer(self.output, self.song['filename'])
                 self.info.set_song(self.song, self.player)
-                times[1] = self.player.length
                 self.played.append(self.song)
                 self.lock.release()
                 for t in self.player:

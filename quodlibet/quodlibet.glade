@@ -341,9 +341,10 @@
 		  <property name="draw_value">False</property>
 		  <property name="value_pos">GTK_POS_LEFT</property>
 		  <property name="digits">1</property>
-		  <property name="update_policy">GTK_UPDATE_DISCONTINUOUS</property>
+		  <property name="update_policy">GTK_UPDATE_DELAYED</property>
 		  <property name="inverted">False</property>
 		  <property name="adjustment">0 0 0 3000 15000 0</property>
+		  <signal name="adjust_bounds" handler="seek_slider" last_modification_time="Sat, 16 Oct 2004 04:50:19 GMT"/>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>

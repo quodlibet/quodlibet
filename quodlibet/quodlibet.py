@@ -102,8 +102,8 @@ class GladeHandlers(object):
     def toggle_shuffle(button):
         player.playlist.shuffle = button.get_active()
 
-    def seek_slider(slider):
-        gtk.idle_add(player.playlist.seek, slider.get_value())
+    def seek_slider(slider, v):
+        gtk.idle_add(player.playlist.seek, v)
 
     def select_song(tree, indices, col):
         iter = widgets.songs.get_iter(indices)
@@ -121,7 +121,6 @@ class GladeHandlers(object):
         resp = chooser.run()
         fns = chooser.get_filenames()
         chooser.destroy()
-        gtk.mainiteration(False)
         if resp == gtk.RESPONSE_OK:
             library.scan(fns)
             songs = filter(CURRENT_FILTER[0], library.values())
@@ -189,7 +188,6 @@ def refresh_songlist():
 widgets = Widgets("quodlibet.glade")
 
 HEADERS = ["artist", "title", "album"]
-MAINHEADER = ["artist"]
 
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
