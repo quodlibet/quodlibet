@@ -87,15 +87,18 @@ class AudioFile(dict):
                 c.startswith("www.")): return cont
             elif c.startswith("//www."): return "http:" + cont
         else:
-            artist = util.escape("+".join(self["artist"].split()))
-            album = util.escape("+".join(self["album"].split()))
             text = "http://www.google.com/search?q="
-            artist = util.encode(artist)
-            album = util.encode(album)
             esc = lambda c: ord(c) > 127 and '%%%x'%ord(c) or c
-            artist = "%22" + ''.join(map(esc, artist)) + "%22"
-            album = "%22" + ''.join(map(esc, album)) + "%22"
-            text += artist + "+" + album + "&ie=UTF8"
+            if "labelid in" self: text += esc(self["labelid"])
+            else:
+                artist = util.escape("+".join(self["artist"].split()))
+                album = util.escape("+".join(self["album"].split()))
+                artist = util.encode(artist)
+                album = util.encode(album)
+                artist = "%22" + ''.join(map(esc, artist)) + "%22"
+                album = "%22" + ''.join(map(esc, album)) + "%22"
+                text += artist + "+" + album
+            text += "&ie=UTF8"
             return text
 
     # Sanity-check all sorts of things...
