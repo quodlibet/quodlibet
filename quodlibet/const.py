@@ -3,6 +3,8 @@
 
 import os
 
+VERSION = "0.10"
+
 HOME    = os.path.expanduser("~")
 DIR     = os.path.join(HOME, ".quodlibet")
 CONTROL = os.path.join(DIR,  "control")
@@ -38,9 +40,9 @@ NBP_EXAMPLES = """\
 /path/<artist>/<album>/<tracknumber> - <title>"""
 
 COPYRIGHT = """\
-<u><span weight="bold" size="xx-large">Quod Libet</span></u>
+<u><span weight="bold" size="xx-large">Quod Libet %s</span></u>
 &lt;quodlibet@lists.sacredchao.net&gt;
-Copyright © 2004-2005"""
+Copyright © 2004-2005""" % VERSION
 
 MENU = """<ui>
   <menubar name='Menu'>

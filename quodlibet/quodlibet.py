@@ -10,8 +10,6 @@
 #
 # $Id$
 
-VERSION = "0.10"
-
 import os, sys
 
 def main():
@@ -66,7 +64,7 @@ Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
-""")) % VERSION
+""")) % const.VERSION
     raise SystemExit
 
 def refresh_cache():
