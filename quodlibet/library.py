@@ -232,7 +232,6 @@ class OggFile(AudioFile):
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
-        print "I WIN"
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
         self["filename"] = filename

@@ -150,7 +150,7 @@ class PlaylistPlayer(object):
         self.playlist = playlist
         self.played = []
         self.orig_playlist = playlist[:]
-        self.shuffle = False
+        self._shuffle = False
         self.repeat = False
         self.player = None
         self._paused = True
@@ -235,7 +235,7 @@ class PlaylistPlayer(object):
 
             if self.repeat:
                 self.playlist = self.orig_playlist[:]
-                if len(self.played) > 500:
+                if self.shuffle and len(self.played) > 500:
                     del(self.played[500:])
             else:
                 if self.song or self.player:
@@ -275,6 +275,23 @@ class PlaylistPlayer(object):
             self.played = self.orig_playlist[:i]
             self.playlist = self.orig_playlist[i:]
         if lock: self.lock.release()
+
+    def set_shuffle(self, shuffle):
+        self.lock.acquire()
+        self._shuffle = shuffle
+        if shuffle:
+            self.played = []
+            self.playlist = self.orig_playlist[:]
+        else:
+            if self.song and self.song in self.playlist:
+                i = self.orig_playlist.index(self.song) + 1
+                self.played = self.orig_playlist[:i]
+                self.playlist = self.orig_playlist[i:]
+        self.lock.release()
+
+    def get_shuffle(self): return self._shuffle
+
+    shuffle = property(get_shuffle, set_shuffle)
 
     def next(self):
         self.lock.acquire()

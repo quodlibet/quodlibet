@@ -2,7 +2,6 @@
 - Artist URL detection
 - Wacky: Hook into Kakasi, romanize Japanese tags, allow searching on them
 - Conform to more GTK/GNOME hotkeys, etc.
-- Correct shuffle/repeat interaction.
 - MikMod support.
 - Icon.
 - Save queries on exit.
