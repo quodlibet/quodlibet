@@ -136,7 +136,7 @@ class PlaylistPlayer(object):
     def play(self, info):
         self.info = info
         self.lock.acquire()
-        last_song =  config.get("memory", "song")
+        last_song = config.get("memory", "song")
         if last_song in library:
             song = library[last_song]
             if song in self.playlist: self.go_to(song, lock = False)
@@ -172,6 +172,9 @@ class PlaylistPlayer(object):
                     if not self.player.stopped:
                         self.song["~#lastplayed"] = int(time.time())
                         self.song["~#playcount"] += 1
+
+            while self.paused and not self.quit:
+                time.sleep(0.05)
 
             if self.repeat:
                 self.playlist = self.orig_playlist[:]
