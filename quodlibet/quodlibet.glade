@@ -1782,7 +1782,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
-	      <signal name="clicked" handler="songprop_removed" last_modification_time="Mon, 25 Oct 2004 21:30:45 GMT"/>
+	      <signal name="clicked" handler="songprop_remove" last_modification_time="Mon, 25 Oct 2004 21:30:45 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
