@@ -7,7 +7,7 @@ Standards-Version: 3.6.1.1
 
 Package: quodlibet
 Architecture: all
-Depends: ${python:Depends}, python-pymad, python-pyvorbis, python-id3lib, python-glade2, quodlibet-ext (= ${Source-Version})
+Depends: ${python:Depends}, python-pymad, python-pyvorbis, python-id3lib, python-glade2, quodlibet-ext (= ${Source-Version}), libgtk2.0-0 (>= 2.6.0-1)
 Recommends: python-pyao
 Suggests: python-modplug, python-flac, python-musepack, albumart, vorbisgain (>= 0.35-2)
 Description: audio library manager and player for GTK+

@@ -6,8 +6,9 @@ dquodlibet (0.9-1) unstable; urgency=low
   * Add dh_desktop call to debian/rules, bump debhelper Build-Dep.
   * Remove circular dependency from quodlibet-ext.
   * Rewrite long description.
+  * Depend on GTK 2.6.
 
- -- Joe Wreschnig <piman@debian.org>  
+ -- Joe Wreschnig <piman@debian.org>  Fri, 04 Mar 2005 13:55:07 -0600
 
 quodlibet (0.8.1-1) unstable; urgency=low
 
