@@ -35,8 +35,8 @@ class AudioFile(dict):
         fns.sort()
         for fn in fns:
             lfn = fn.lower()
-            if lfn[-4:] in ["jpeg", ".jpg", ".png", "gif"]:
-                if "front" in fn or "cover" in fn:
+            if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
+                if "front" in lfn or "cover" in lfn:
                    return os.path.join(base, fn)
         else: return None
 
