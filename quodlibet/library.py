@@ -27,6 +27,7 @@ class AudioFile(dict):
                 cmp(self.get("title"), other.get("title")))
 
     def sanitize(self, filename):
+        self["filename"] = filename
         for i in ["title", "artist", "album"]:
             if not self.get(i): self[i] = "Unknown"
         if "tracknumber" in self:
@@ -37,7 +38,6 @@ class AudioFile(dict):
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
-        self["filename"] = filename
 
     def to_markup(self):
         title = u", ".join(self["title"].split("\n"))

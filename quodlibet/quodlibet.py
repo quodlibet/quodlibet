@@ -158,6 +158,12 @@ class Widgets(object):
 class GladeHandlers(object):
     def gtk_main_quit(*args): gtk.main_quit()
 
+    def save_size(widget, *args):
+        old_size = map(int, config.get("memory", "size").split(" "))
+        new_size = widget.get_size()
+        if old_size != new_size:
+            config.set("memory", "size", " ".join(map(str, new_size)))
+
     def play_pause(button):
         player.playlist.paused ^= True
 
@@ -288,6 +294,9 @@ class GladeHandlers(object):
             view.set_cursor(path, col, 0)
         widgets["songs_popup"].popup(None,None,None, event.button, event.time)
         return True
+
+    def songs_popup_menu(view):
+        widgets["songs_popup"].popup(None, None, None, 1, 0)
 
     def song_col_filter(item):
         view = widgets["songlist"]
@@ -671,7 +680,7 @@ def setup_nonglade():
     sl.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
     widgets.songs = gtk.ListStore(object)
     set_column_headers(sl)
-    refresh_songlist()
+    #refresh_songlist()
 
     # Build a model and view for our ComboBoxEntry.
     liststore = gtk.ListStore(str)
@@ -691,8 +700,6 @@ def setup_nonglade():
     widgets["main_window"].show()
 
     widgets["query"].child.set_text(config.get("memory", "query"))
-    widgets["search_button"].clicked()
-
     gtk.threads_init()
 
 def save_config():
@@ -703,12 +710,15 @@ def save_config():
     f.close()
 
 def main():
-    load_cache()
     HEADERS[:] = config.get("settings", "headers").split()
     if "title" not in HEADERS: HEADERS.append("title")
-    player.playlist.set_playlist(library.values())
-    player.playlist.sort_by(HEADERS[0])
     setup_nonglade()
+    if config.get("memory", "song"):
+        widgets["query"].child.set_text(config.get("memory", "query"))
+        text_parse()
+    else:
+        player.playlist.set_playlist(library.values())
+    player.playlist.sort_by(HEADERS[0])
     print "Done loading songs."
     t = threading.Thread(target = player.playlist.play,
                          args = (widgets.wrap,))
@@ -832,6 +842,7 @@ if __name__ == "__main__":
     import gc
     import os
     import ao
+    load_cache()
     from library import library
     try: import player
     except ao.aoError:

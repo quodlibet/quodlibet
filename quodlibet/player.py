@@ -161,6 +161,10 @@ class PlaylistPlayer(object):
         self.filter = None
         self.lock = threading.Lock()
 
+        fn = config.get("memory", "song")
+        if fn and fn in library:
+            self.playlist.insert(0, library[fn])
+
     def __iter__(self): return iter(self.orig_playlist)
 
     def set_paused(self, paused):
@@ -206,10 +210,14 @@ class PlaylistPlayer(object):
 
     def play(self, info):
         self.info = info
-        fn = config.get("memory", "song")
-        if fn and fn in library:
-            self.playlist.insert(0, library[fn])
-                
+        self.lock.acquire()
+        last_song =  config.get("memory", "song")
+        if last_song in library:
+            song = library[last_song]
+            if song in self.playlist: self.go_to(song, lock = False)
+            else: self.playlist.insert(0, song)
+        self.lock.release()
+
         dump_fn = os.path.join(os.environ["HOME"], ".quodlibet", "current")
         while not self.quit:
             while self.playlist:
@@ -333,8 +341,8 @@ class PlaylistPlayer(object):
         else: pass
         self.lock.release()
 
-    def go_to(self, song):
-        self.lock.acquire()
+    def go_to(self, song, lock = True):
+        if lock: self.lock.acquire()
         if not self.shuffle:
             i = self.orig_playlist.index(song)
             self.played = self.orig_playlist[:i]
@@ -346,7 +354,7 @@ class PlaylistPlayer(object):
             self.playlist.remove(song)
             self.playlist.insert(0, song)
             if self.player: self.player.end()
-        self.lock.release()
+        if lock: self.lock.release()
 
 supported = {}
 
