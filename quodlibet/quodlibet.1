@@ -84,9 +84,42 @@ Similar abbreviations exist for album ('b'), title ('t'), version
 ('v'), date ('d'), and track number ('n'). The '*' character matches 
 any of album, title, or artist.
 .PP
-Normally searchs are case-insensistive, so /BOA/ and /BoA/ are the
+Normally searches are case-insensitive, so /BOA/ and /BoA/ are the
 same. If you need case-sensitivity, put a 'c' on the end: /BOA/c and
 /BoA/c.
+.SH NUMERIC SEARCHES
+In addition to matching strings with regular expressions, QL supports
+searches with numeric comparisons. These searches begin with a '#'.
+To view all songs longer than 2 minutes, or all tracks on any
+album greater than 20 but less than 40:
+.RS
+#(length > 2:00)
+.br
+#(track > 20, track < 40)
+.RE
+You can also search for how long ago you last heard or modified a
+song:
+.RS
+#(lastplayed > 8 days ago)
+.br
+#(mtime < today)
+.RE
+When searching using times, "greater than" means "older than" and
+"less than" means "younger than". In the above, the first
+selects all songs not played within the past 8 days, and the second
+selects all songs changed within the last 24 hours.
+.PP
+Supported numeric fields are
+.IR track ,
+.IR disc ,
+.IR length ,
+.IR playcount ,
+.IR mtime ,
+and
+.IR lastplayed .
+Numeric searches can be combined with other searches. QL understands
+units of minutes, hours, days, weeks (7 days), months (30 days), and years
+(365 days), and times in "h:mm:ss" or "m:ss" format.
 .SH EXAMPLES
 Some more examples of advanced searching:
 .RS
@@ -101,6 +134,10 @@ artist = |(/Pete Townshend/, /The Who/)
 album = &(/final fantasy/, /piano/, |(/VIII/, /IX/))
 .br
 title = &(|(/aozora/, /blue/), /knife/)
+.br
+filename = /.ogg$/
+.br
+&(genre = /classical/, #(lastplayed > 3 days))
 .RE
 .SH AUDIO BACKENDS
 By default QL uses the Open Sound System (OSS) interface to play audio;

@@ -1,19 +1,22 @@
+Recent upgrade notes:
+---------------------
+Upgrading from to 0.6 your library will be wiped (again).
+
+If you want ALSA support and were using QL prior to 0.5, you will need
+to change your 'backend' option to 'ao:alsa' (which is the new default).
+
 0.6
- - Once again the library format has changed incompatibly; your library will
-   start out empty when you load the program. Sorry again.
- - Many new filtering options (top 40, not played in X days, etc.)
+ - Your library will start out empty when you load the program. Sorry again.
+ - Many new filtering options (top 40, not played in X days).
  - Mass-set track numbers.
- - Fix a race condition on startup resulting in a crash. (I think.)
  - Tag by Pattern can replace or add new tags.
- - Rename by Tag properly keeps songs in the library.
  - Maskable mount points. This lets you add files from an NFS share or
    portable device and not have to readd them if you unmount and remount it.
- - Support for sending files to PMPs from the context menu has been
-   added; currently devices that look like a hard drive and the iRiver
-   iFP series are supported.
+ - Support for sending files to PMPs from the context menu.
  - --next, --previous, --play-pause, --volume-up, --volume-down, --mute.
  - MOD/IT/XM/etc. support, using libmodplug and an included C extension.
  - Seeking in FLACs.
+ - Bug fixes (including at least one crash).
 
 0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
  - The ao audio backend is back; see the "AUDIO BACKENDS" section in the

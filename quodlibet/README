@@ -16,7 +16,7 @@ Quod Libet is written in Python and licensed under the GNU GPL version 2.
  - Advanced tag editing.
 
 For a full description and list of features, see
-http://www.sacredchao.net/~piman/software/quodlibet.shtml.
+http://www.sacredchao.net/~piman/software/quodlibet.shtml#features.
 
 For the FAQ, updated regularly, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#faq.
@@ -34,7 +34,7 @@ There are several C extensions for Quod Libet you probably want. After
 installing the software listed below, run
 	# make extensions
 prior to running 'make install' (or ./quodlibet.py), in order to compile
-all extensions. If you only want some extensions, use the make target
+all extensions. If you only want some extensions, use the make targets
 given below.
 
 Tray icon (GNOME/KDE/XFce/etc. notification area):
@@ -58,17 +58,11 @@ Find the above software and install it. PyGTK must be at least version 2.4,
 or strange errors will happen. The Quod Libet website links to most of
 the required software.
 
+http://www.sacredchao.net/~piman/software/quodlibet.shtml#links
+
 ====[ Using QL
 For help on using the program, run
  $ man -l ./quodlibet.1
-
-If you are upgrading from 0.4 or earlier you may need to change your
-audio backend to 'ao:alsa', which is currently the default setting. The
-old default setting was 'oss'; 'ao:alsa' will fall back to OSS when
-ao or ALSA is unavailable.
-
-If you are upgrading from 0.5 or earlier, your library will be emptied
-and you will need to readd any part of it that is not scanned on startup.
 
 Whenever you upgrade, it's a good idea to select "Reload library" from
 the Music menu. This upgrades your library to take advantage of new

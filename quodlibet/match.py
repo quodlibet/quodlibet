@@ -78,7 +78,8 @@ class Numcmp(object):
                 elif unit == "week": value *= 7 * 24 * 60 * 60
                 elif unit == "year": value *= 365 * 24 * 60 * 60
 
-                value = int(time.time() - value)
+                if tag in ["lastplayed", "mtime"]:
+                    value = int(time.time() - value)
         self.value = value
 
     def search(self, data):

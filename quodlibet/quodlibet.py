@@ -1434,13 +1434,13 @@ def set_column_headers(sl, headers):
         render = gtk.CellRendererText()
         if t in SHORT_COLS or t.startswith("~#"): render.set_fixed_size(-1, -1)
         else: render.set_fixed_size(width, -1)
-        t = t.lstrip("~#")
-        column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t, t)).title(),
+        t2 = t.lstrip("~#")
+        column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t2, t2)).title(),
                                     render, text = i, weight = len(headers)+1)
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)
-        column.connect('clicked', set_sort_by, (t,))
+        column.connect('clicked', set_sort_by, t)
         sl.append_column(column)
     refresh_songlist()
     sl.set_model(widgets.songs)

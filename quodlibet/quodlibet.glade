@@ -2421,7 +2421,7 @@ Tags should be added to existing ones</property>
 		      <property name="items" translatable="yes">No portable devices
 Regular filesystem (set locations below)
 Run command (see path below)
-iRivier iFP device (ifp-line driver)
+iRiver iFP device (ifp-line driver)
 </property>
 		      <signal name="changed" handler="pmp_changed" last_modification_time="Sun, 21 Nov 2004 01:15:05 GMT"/>
 		    </widget>
