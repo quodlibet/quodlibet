@@ -9,10 +9,12 @@ statusicon.so: statusicon.o eggstatusicon.o eggtrayicon.o statusiconmodule.o egg
 statusicon.o: eggmarshalers.h eggmarshalers.o
 
 eggmarshalers.h: eggmarshalers.list
-	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --header > eggmarshalers.h
+	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --header > gen-tmp
+	mv gen-tmp $@
 
 eggmarshalers.c: eggmarshalers.list
-	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --body > eggmarshalers.c
+	glib-genmarshal --prefix=_egg_marshal eggmarshalers.list --body > gen-tmp
+	mv gen-tmp $@
 
 # The path to the GTK+ python types
 DEFS=`pkg-config --variable=defsdir pygtk-2.0`
@@ -23,10 +25,11 @@ statusicon.c: statusicon.defs statusicon.override
 	--register $(DEFS)/gdk-types.defs \
 	--register $(DEFS)/gtk-types.defs \
 	--override statusicon.override \
-	statusicon.defs > $@
+	statusicon.defs > gen-tmp
+	mv gen-tmp $@
 
 # A rule to clean the generated files
 clean:
-	rm -f statusicon.so *.o statusicon.c *~ eggmarshalers.c eggmarshalers.h
+	rm -f statusicon.so *.o statusicon.c *~ eggmarshalers.c eggmarshalers.h gen-tmp
 
 .PHONY: clean

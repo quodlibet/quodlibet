@@ -27,6 +27,10 @@ You must be running 'unstable' or a recent snapshot of it.
 
 # apt-get install python-pymad python-pyvorbis python-id3lib python-glade2
 
+If you want tray icon support,
+# apt-get install python2.3-dev python-gtk2-dev
+# make statusbar.so
+
 ==[ Other OSs
 
 Find the above software and install it. PyGTK must be at least
