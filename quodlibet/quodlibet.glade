@@ -176,7 +176,7 @@
 		<widget class="GtkMenu" id="FiltersMenu_menu">
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="random_genre1">
+		    <widget class="GtkImageMenuItem" id="random_genre">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Pick a random genre from your library</property>
 		      <property name="label" translatable="yes">Random _genre</property>
@@ -198,7 +198,7 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="random_artist1">
+		    <widget class="GtkImageMenuItem" id="random_artist">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Pick a random artist from your library</property>
 		      <property name="label" translatable="yes">Random _artist</property>
@@ -220,7 +220,7 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="random_album1">
+		    <widget class="GtkImageMenuItem" id="random_album">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Pick a random album from your library</property>
 		      <property name="label" translatable="yes">Random al_bum</property>
@@ -3312,7 +3312,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
 <widget class="GtkMenu" id="songs_popup">
 
   <child>
-    <widget class="GtkImageMenuItem" id="filter_on_genre1">
+    <widget class="GtkImageMenuItem" id="filter_on_genre">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Show only songs with the same genres as the selected ones</property>
       <property name="label" translatable="yes">Filter on _genre</property>
@@ -3334,7 +3334,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
   </child>
 
   <child>
-    <widget class="GtkImageMenuItem" id="filter_on_artist1">
+    <widget class="GtkImageMenuItem" id="filter_on_artist">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Show only songs by the same artists as the selected ones</property>
       <property name="label" translatable="yes">Filter on _artist</property>
@@ -3356,7 +3356,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
   </child>
 
   <child>
-    <widget class="GtkImageMenuItem" id="filter_on_album1">
+    <widget class="GtkImageMenuItem" id="filter_on_album">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Show only songs in the same albums as the selected ones</property>
       <property name="label" translatable="yes">Filter on al_bum</property>
@@ -3399,7 +3399,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
   </child>
 
   <child>
-    <widget class="GtkSeparatorMenuItem" id="pmp_sep">
+    <widget class="GtkSeparatorMenuItem" id="filter_sep">
       <property name="visible">True</property>
     </widget>
   </child>
@@ -3427,7 +3427,7 @@ OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.&lt;/span&gt;</property>
   </child>
 
   <child>
-    <widget class="GtkSeparatorMenuItem" id="separator3">
+    <widget class="GtkSeparatorMenuItem" id="pmp_sep">
       <property name="visible">True</property>
     </widget>
   </child>

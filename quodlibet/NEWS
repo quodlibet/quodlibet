@@ -9,9 +9,11 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - --shuffle, --repeat, and --volume (--volume-up and --volume-down are
    deprecated and will be removed).
  - Any tag name can be written to (and read from) an MP3 file.
- - Internal changes may make some things faster and others slower.
- - FLAC supports ReplayGain.
+ - Playlists containing arbitrary songs can be created.
  - The libmodplug Python wrapper must be downloaded separately.
+ - The MPC/MP+ format is supported (with a separate wrapper).
+ - FLAC supports ReplayGain.
+ - Internal changes made some things faster and others slower.
 
 0.7 - I'm going to ho-ho-hoard all these nuts!
  - Default to proper 'alsa09' driver (rather than 'alsa').

@@ -669,6 +669,9 @@ class PlaylistBar(object):
         active = self.combo.get_active()
         if active: PlaylistWindow(self.combo.get_model()[active][0])
 
+    def can_filter(self, key):
+        return False
+
 class SearchBar(object):
     model = None
     
@@ -722,6 +725,20 @@ class SearchBar(object):
         markup = '<span foreground="%s">%s</span>' %(
             color, util.escape(text))
         layout.set_markup(markup)
+
+    def can_filter(self, key):
+        return True
+
+    def filter(self, key, values):
+        if key.startswith("~#"):
+            nheader = key[2:]
+            queries = ["#(%s = %d)" % (nheader, i) for i in values]
+            self.set_text("|(" + ", ".join(queries) + ")")
+        else:
+            text = "|".join([sre.escape(s) for s in values])
+            if key.startswith("~"): key = key[1:]
+            self.set_text(u"%s = /^(%s)$/c" % (key, text))
+        self.activate()
 
 class MainWindow(MultiInstanceWidget):
     def __init__(self):
@@ -1325,17 +1342,19 @@ class MainWindow(MultiInstanceWidget):
         SongProperties(self.songlist.get_selected_songs())
 
     def prep_main_popup(self, header):
+        if header.startswith("~#"): header = header[2:]
+        elif header.startswith("~"): header = header[1:]
+        header = header.split("~")[0]
+
         if not config.getint("pmp", "driver"):
             self.cmenu_w["pmp_sep"].hide()
             self.cmenu_w["pmp_upload"].hide()
         else:
             self.cmenu_w["pmp_sep"].show()
             self.cmenu_w["pmp_upload"].show()
-        if header not in ["genre", "artist", "album", "~album~part"]:
+        if (header not in ["genre", "artist", "album"] and
+            self.browser and self.browser.can_filter(header)):
             self.cmenu_w["filter_column"].show()
-            if header.startswith("~#"): header = header[2:]
-            elif header.startswith("~"): header = header[1:]
-            header = header.split("~")[0]
             header = tag(header)
             self.cmenu_w["filter_column"].child.set_text(
                 _("_Filter on this column (%s)") % _(header))
@@ -1345,6 +1364,13 @@ class MainWindow(MultiInstanceWidget):
 
     def show_search(self, *args):
         if not isinstance(self.browser, SearchBar):
+            self.widgets["FiltersMenu"].show()
+            for h in ["genre", "artist", "album"]:
+                self.cmenu_w["filter_on_" + h].show()
+                self.widgets["filter_%s_menu" % h].show()
+            self.widgets["separator4"].show()
+            self.cmenu_w["filter_sep"].show()
+
             for child in self.widgets["query_hbox"].get_children():
                 self.widgets["query_hbox"].remove(child)
             if self.browser:
@@ -1358,6 +1384,13 @@ class MainWindow(MultiInstanceWidget):
 
     def show_listselect(self, *args):
         if not isinstance(self.browser, PlaylistBar):
+            self.widgets["FiltersMenu"].hide()
+            for h in ["genre", "artist", "album"]:
+                self.cmenu_w["filter_on_" + h].hide()
+                self.widgets["filter_%s_menu" % h].hide()
+            self.widgets["separator4"].hide()
+            self.cmenu_w["filter_sep"].hide()
+
             for child in self.widgets["query_hbox"].get_children():
                 self.widgets["query_hbox"].remove(child)
             if self.browser:
@@ -1378,6 +1411,7 @@ class MainWindow(MultiInstanceWidget):
 
     def hide_browser(self, *args):
         if self.browser:
+            self.widgets["FiltersMenu"].hide()
             self.showhide_widget(self.widgets["query_hbox"], False)
             for child in self.widgets["query_hbox"].get_children():
                 self.widgets["query_hbox"].remove(child)
@@ -1402,23 +1436,20 @@ class MainWindow(MultiInstanceWidget):
         return True
 
     def filter_on_header(self, header, songs = None):
+        if not self.browser or not self.browser.can_filter(header):
+            return
         if songs is None:
             songs = self.songlist.get_selected_songs()
 
         if header.startswith("~#"):
-            nheader = header[2:]
             values = [song(header, 0) for song in songs]
-            queries = ["#(%s = %d)" % (nheader, i) for i in values]
-            self.make_query("|(" + ", ".join(queries) + ")")
         else:
             values = {}
             for song in songs:
                 for val in song.list(header):
                     values[val] = True
-
-            text = "|".join([sre.escape(s) for s in values.keys()])
-            if header.startswith("~"): header = header[1:]
-            self.make_query(u"%s = /^(%s)$/c" % (header, text))
+            values = values.keys()
+        self.browser.filter(header, values)
 
     def cols_changed(self, view):        
         headers = [col.header_name for col in view.get_columns()]
