@@ -20,9 +20,8 @@ if __name__ == "__main__":
         import gtk
         if gtk.pygtk_version < (2, 4, 1) or gtk.gtk_version < (2, 6):
             raise ImportError
-        import gtk.glade
     except ImportError:
-        raise SystemExit("not found\n%s requires PyGTK 2.4 and Glade. "
+        raise SystemExit("not found\n%s requires PyGTK 2.4. "
                          "(http://www.pygtk.org)" % NAME)
     else: print "found"
 

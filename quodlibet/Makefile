@@ -16,7 +16,7 @@ install:
 	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)
 	./quickzip.py $(NAME).zip $(MODULES)
 	install -m 755 $(NAME).py $(DESTDIR)$(PREFIX)/$(TO)
-	install -m 644 $(NAME).zip $(NAME).glade *.png $(DESTDIR)$(PREFIX)/$(TO)
+	install -m 644 $(NAME).zip *.png $(DESTDIR)$(PREFIX)/$(TO)
 	install -m 644 $(NAME).1 $(DESTDIR)$(PREFIX)/share/man/man1/$(NAME).1
 	install -D -m 644 $(NAME).png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
 	install -D -m 644 $(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
