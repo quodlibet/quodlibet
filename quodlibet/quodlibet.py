@@ -2131,9 +2131,12 @@ class SongProperties(object):
                            self.Label("\n".join(albums))),
                 expand = False)
             hb = gtk.HBox(spacing = 12)
+            added = set()
             for cover in filter(None, covers):
+                if cover.name in added: continue
                 try: hb.pack_start(self._make_cover(cover), expand = False)
                 except: pass
+                added.add(cover.name)
             self.box.pack_start(hb, expand = False)
 
         def _update_many(self, songs):
