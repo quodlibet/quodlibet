@@ -66,13 +66,13 @@ class DirectoryTree(gtk.TreeView):
                     model.append(niter, ["dummy"])
         if not model.iter_has_child(iter): return True
 
-class FileSelector(gtk.HPaned):
+class FileSelector(gtk.VPaned):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (gtk.TreeSelection,))
                      }
 
     def __init__(self, initial = None, filter = formats.filter):
-        gtk.HPaned.__init__(self)
+        gtk.VPaned.__init__(self)
         self.__filter = filter
 
         dirlist = DirectoryTree(initial)
@@ -107,6 +107,8 @@ class FileSelector(gtk.HPaned):
         self.emit('changed', selection)
 
     def __fill(self, selection, filelist):
+        fmodel, frows = filelist.get_selection().get_selected_rows()
+        selected = [fmodel[row][0] for row in frows]
         fmodel = filelist.get_model()
         fmodel.clear()
         dmodel, rows = selection.get_selected_rows()
@@ -115,6 +117,10 @@ class FileSelector(gtk.HPaned):
         for dir in dirs:
             for file in filter(self.__filter, dircache.listdir(dir)):
                 fmodel.append([os.path.join(dir, file)])
+        def select_paths(model, path, iter, selection):
+            if model[path][0] in selected:
+                selection.select_path(path)
+        if fmodel: fmodel.foreach(select_paths, filelist.get_selection())
 
 gobject.type_register(FileSelector)
 
