@@ -1400,8 +1400,8 @@ class SongList(object):
             else:
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_fixed_width(ws[i])
-                if hasattr(self, 'set_sort_by'):
-                    column.connect('clicked', self.set_sort_by, t)
+            if hasattr(self, 'set_sort_by'):
+                column.connect('clicked', self.set_sort_by, t)
             self._set_column_settings(column)
             column.set_cell_data_func(render, cell_data)
             self.view.append_column(column)

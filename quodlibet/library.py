@@ -634,7 +634,7 @@ class Library(dict):
             if header == "~#track": header = "album"
             elif header == "~#disc": header = "album"
             elif header == "~length": header = "~#length"
-            songs = [(song.get(header), song) for song in songs]
+            songs = [(song(header), song) for song in songs]
             songs.sort()
             songs = [song[1] for song in songs]
         return songs

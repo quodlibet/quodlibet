@@ -373,9 +373,9 @@ class PlaylistPlayer(object):
         elif header == "~#disc": header = "album"
         elif header == "~length": header = "~#length"
         if reverse:
-            f = lambda b, a: (cmp(a.get(header), b.get(header)) or cmp(a, b))
+            f = lambda b, a: (cmp(a(header), b(header)) or cmp(a, b))
         else:
-            f = lambda a, b: (cmp(a.get(header), b.get(header)) or cmp(a, b))
+            f = lambda a, b: (cmp(a(header), b(header)) or cmp(a, b))
         self.sort = f
         self.set_playlist(pl, lock = False)
         self.lock.release()
