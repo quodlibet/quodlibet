@@ -515,7 +515,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="prop_menu">
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">View and edit tags in the playing song</property>
+		      <property name="tooltip" translatable="yes">View and edit tags in the current song</property>
 		      <property name="label">gtk-properties</property>
 		      <property name="use_stock">True</property>
 		      <signal name="activate" handler="current_song_prop" last_modification_time="Mon, 08 Nov 2004 01:11:18 GMT"/>
@@ -1242,7 +1242,7 @@
 			  <child>
 			    <widget class="GtkCheckButton" id="prefs_jump_t">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">When the current song changes, scroll to it in the song list. You can do this manually by pressing Ctrl-J.</property>
+			      <property name="tooltip" translatable="yes">When the playing song changes, scroll to it in the song list. You can do this manually by pressing Ctrl-J.</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">_Jump to current song automatically</property>
 			      <property name="use_underline">True</property>
@@ -1618,7 +1618,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 				      <child>
 					<widget class="GtkEntry" id="extra_headers">
 					  <property name="visible">True</property>
-					  <property name="tooltip" translatable="yes">List other headers you want displayed, separated by spaces.</property>
+					  <property name="tooltip" translatable="yes">List other headers you want displayed, separated by spaces</property>
 					  <property name="can_focus">True</property>
 					  <property name="editable">True</property>
 					  <property name="visibility">True</property>
@@ -2191,7 +2191,7 @@ Per-album (&quot;Audiophile&quot;) volume adjustment</property>
 			    <widget class="GtkCheckButton" id="prefs_allcomments_t">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">_Show computer-generated comments</property>
+			      <property name="label" translatable="yes">_Show programmatic comments</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -2393,7 +2393,7 @@ Tags should be added to existing ones</property>
 				  <child>
 				    <widget class="GtkCheckButton" id="prefs_windows_t">
 				      <property name="visible">True</property>
-				      <property name="tooltip" translatable="yes">Characters incompatible with Windows systems (\:*?;&quot;&lt;&gt;|) will be replaced by underscores</property>
+				      <property name="tooltip" translatable="yes">Characters not allowed in Windows filenames (\:*?;&quot;&lt;&gt;|) will be replaced by underscores</property>
 				      <property name="can_focus">True</property>
 				      <property name="label" translatable="yes">Replace _Windows-incompatible characters</property>
 				      <property name="use_underline">True</property>
@@ -2499,7 +2499,7 @@ Tags should be added to existing ones</property>
 		  <child>
 		    <widget class="GtkComboBox" id="pmp_combo">
 		      <property name="visible">True</property>
-		      <property name="items" translatable="yes">No portable devices
+		      <property name="items" translatable="yes">No portable device
 Regular filesystem (set locations below)
 Run command (see path below)
 iRiver iFP device (ifp-line driver)
@@ -2542,7 +2542,7 @@ iRiver iFP device (ifp-line driver)
 			      <child>
 				<widget class="GtkLabel" id="label50">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Choose &quot;Regular filesystem&quot; above. When this driver is enabled, files will be copied from their normal location to another one when you select &quot;Upload to PMP&quot; from menu. Use this driver for players that looks like hard drives, like the Neuros.</property>
+				  <property name="label" translatable="yes">Choose &quot;Regular filesystem&quot; above. When this driver is enabled, files will be copied from their normal location to another one when you select &quot;Upload to PMP&quot; from the context menu. Use this driver for players that appear as hard drives.</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3007,7 +3007,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
   <child>
     <widget class="GtkImageMenuItem" id="filter_on_artist1">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Show only songs by the same artist as the selected ones</property>
+      <property name="tooltip" translatable="yes">Show only songs by the same artists as the selected ones</property>
       <property name="label" translatable="yes">Filter on _artist</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="artist_filter" last_modification_time="Fri, 22 Oct 2004 04:20:14 GMT"/>
@@ -3029,7 +3029,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
   <child>
     <widget class="GtkImageMenuItem" id="filter_on_album1">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Show only songs in the same album as the selected ones</property>
+      <property name="tooltip" translatable="yes">Show only songs in the same albums as the selected ones</property>
       <property name="label" translatable="yes">Filter on al_bum</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="album_filter" last_modification_time="Fri, 22 Oct 2004 04:20:51 GMT"/>

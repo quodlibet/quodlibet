@@ -1,7 +1,3 @@
-TODO STILL: Remember volume.
-(piman) I could probably use the same code for remembering volume between
-+mutes.
-
 Doable by whomever, whenever:
 - Translations.
 - RPM spec/package.

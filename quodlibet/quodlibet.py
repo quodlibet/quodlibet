@@ -628,7 +628,9 @@ class GladeHandlers(object):
         if fns: GladeHandlers.last_dir = fns[0]
 
     def update_volume(slider):
-        player.device.volume = slider.get_value() ** 2
+        val = (2 ** slider.get_value()) - 1
+        player.device.volume = val
+        config.set("memory", "volume", str(slider.get_value()))
 
     def songs_button_press(view, event):
         if event.button != 3:
@@ -710,8 +712,8 @@ def prep_main_popup(header):
         if header.startswith("~#"): header = header[2:]
         elif header.startswith("~"): header = header[1:]
         header = HEADERS_FILTER.get(header, header)
-        widgets["filter_column"].child.set_text(_("_Filter on %s") %
-                                                    _(header))
+        widgets["filter_column"].child.set_text(
+            _("_Filter on this column (%s)") % _(header))
         widgets["filter_column"].child.set_use_underline(True)
     else:
         widgets["filter_column"].hide()
@@ -1540,7 +1542,7 @@ def setup_nonglade():
     widgets["search_button"].connect('clicked', text_parse)
 
     # Initialize volume controls.
-    widgets["volume"].set_value(player.device.volume)
+    widgets["volume"].set_value(config.getfloat("memory", "volume"))
 
     # Show main window.
     widgets["main_window"].show()
@@ -1604,7 +1606,7 @@ Options:
                     and then exit.
   --print-playing   Print the currently playing song.
 
-  --next, --previous, --play-pause, --volume-up, -volume-down, --mute
+  --next, --previous, --play-pause, --volume-up, -volume-down
     Control a currently running instance of Quod Libet.
 
 For more information, see the manual page (`man 1 quodlibet').
@@ -1725,7 +1727,6 @@ if __name__ == "__main__":
         elif command in ["--play-pause"]: control("-")
         elif command in ["--volume-up"]: control("^")
         elif command in ["--volume-down"]: control("v")
-        elif command in ["--mute"]: control("_")
         elif command in ["--version", "-v"]: print_version()
         elif command in ["--refresh-library"]: refresh_cache()
         elif command in ["--print-playing"]:
@@ -1780,6 +1781,7 @@ if __name__ == "__main__":
         # FIXME: Allow editing but not playing in this case.
         gtk.idle_add(error_and_quit)
         gtk.main()
+        save_config()
         raise SystemExit(True)
 
     import pmp

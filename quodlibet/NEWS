@@ -10,7 +10,7 @@ to change your 'backend' option to 'ao:alsa' (which is the new default).
  - Maskable mount points. This lets you add files from an NFS share or
    portable device and not have to readd them if you unmount and remount it.
  - Support for sending files to PMPs from the context menu.
- - --next, --previous, --play-pause, --volume-up, --volume-down, --mute.
+ - --next, --previous, --play-pause, --volume-up, --volume-down.
  - MOD/IT/XM/etc. support, using libmodplug and an included C extension.
  - Right-clicking the status icon will pause/unpause.
  - Seeking in FLACs.

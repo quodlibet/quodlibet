@@ -18,6 +18,7 @@ get = _config.get
 set = _config.set
 getboolean = _config.getboolean
 getint = _config.getint
+getfloat = _config.getfloat
 write = _config.write
 options = _config.options
 
@@ -53,6 +54,7 @@ def init(rc_file):
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
     _config.set("memory", "query", "")
+    _config.set("memory", "volume", "1.0")
 
     _config.set("pmp", "driver", "0")
     _config.set("pmp", "location", "")

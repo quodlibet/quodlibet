@@ -62,3 +62,4 @@ else: print "found"
 
 print "\nYour system meets the requirements to install %s." % NAME
 print "Type 'make install' (as root) to install it."
+print "You may want to make some extensions first; see the README file."
