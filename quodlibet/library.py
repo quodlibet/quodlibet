@@ -27,8 +27,8 @@ class AudioFile(dict):
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")))
 
-    def sanitize(self, filename):
-        self["filename"] = filename
+    def sanitize(self, filename = None):
+        if filename: self["filename"] = filename
         for i in ["title", "artist", "album"]:
             if not self.get(i): self[i] = "Unknown"
         if "tracknumber" in self:
@@ -109,30 +109,12 @@ class AudioFile(dict):
         parts = self[key].split("\n")
         parts[parts.index(old_value)] = new_value
         self[key] = "\n".join(parts)
-        if key == "tracknumber":
-            try: self["=#"] = int(self["tracknumber"].split("/")[0])
-            except ValueError:
-                try: del(self["=#"])
-                except KeyError: pass
-        elif key == "discnumber":
-            try: self["=d"] = int(self["discnumber"].split("/")[0])
-            except ValueError:
-                try: del(self["=d"])
-                except KeyError: pass
+        self.sanitize()
 
     def add(self, key, value):
         if key not in self: self[key] = value
         else: self[key] += "\n" + value
-        if key == "tracknumber":
-            try: self["=#"] = int(self["tracknumber"].split("/")[0])
-            except ValueError:
-                try: del(self["=#"])
-                except KeyError: pass
-        elif key == "discnumber":
-            try: self["=d"] = int(self["discnumber"].split("/")[0])
-            except ValueError:
-                try: del(self["=d"])
-                except KeyError: pass
+        self.sanitize()
 
     def remove(self, key, value):
         if self[key] == value: del(self[key])
@@ -140,16 +122,7 @@ class AudioFile(dict):
             parts = self[key].split("\n")
             parts.remove(value)
             self[key] = "\n".join(parts)
-        if key == "tracknumber":
-            try: self["=#"] = int(self["tracknumber"].split("/")[0])
-            except ValueError:
-                try: del(self["=#"])
-                except KeyError: pass
-        elif key == "discnumber":
-            try: self["=d"] = int(self["discnumber"].split("/")[0])
-            except ValueError:
-                try: del(self["=d"])
-                except KeyError: pass
+        self.sanitize()
 
     def find_cover(self):
         base = os.path.split(self['filename'])[0]
@@ -447,7 +420,7 @@ class Library(dict):
                     self[fn] = MusicFile(fn)
                     changed += 1
                 else:
-                    song.sanitize(fn)
+                    song.sanitize()
                     self[fn] = song
             else:
                 removed += 1
