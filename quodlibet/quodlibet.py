@@ -424,34 +424,18 @@ class MainWindow(MultiInstanceWidget):
         if not os.path.exists(const.ACCELS):
             accels = open(const.ACCELS, 'w')
             accels.write(
-"""; quodlibet.py GtkAccelMap rc-file         -*- scheme -*-
-; this file is an automated accelerator map dump
-;
+"""\
 (gtk_accel_path "<quodlibet>/FiltersMenu/Random album" "<Control>m")
 (gtk_accel_path "<quodlibet>/FiltersMenu/Random genre" "<Control>g")
-; (gtk_accel_path "<quodlibet>/FiltersMenu/Not played in a week" "")
-; (gtk_accel_path "<quodlibet>/FiltersMenu/Not played in a month" "")
-; (gtk_accel_path "<quodlibet>/ViewMenu/Playlist" "")
-; (gtk_accel_path "<quodlibet>/SongMenu/Filter on artist" "")
 (gtk_accel_path "<quodlibet>/SongMenu/Previous song" "<Control>Left")
-; (gtk_accel_path "<quodlibet>/HelpMenu/About" "")
 (gtk_accel_path "<quodlibet>/SongMenu/Next song" "<Control>Right")
 (gtk_accel_path "<quodlibet>/MusicMenu/Add Music..." "<Control>o")
-; (gtk_accel_path "<quodlibet>/ViewMenu/Search box" "")
-; (gtk_accel_path "<quodlibet>/FiltersMenu/Top 40" "")
-; (gtk_accel_path "<quodlibet>/MusicMenu/Reload library" "")
-; (gtk_accel_path "<quodlibet>/MusicMenu/Refresh library" "")
-; (gtk_accel_path "<quodlibet>/SongMenu/Properties" "<Alt>Return")
-; (gtk_accel_path "<quodlibet>/SongMenu/Filter on album" "")
-; (gtk_accel_path "<quodlibet>/SongMenu/Filter on genre" "")
+(gtk_accel_path "<quodlibet>/SongMenu/Properties" "<Alt>Return")
 (gtk_accel_path "<quodlibet>/SongMenu/Play song" "<Control>space")
-; (gtk_accel_path "<quodlibet>/FiltersMenu/Bottom 40" "")
-; (gtk_accel_path "<quodlibet>/FiltersMenu/Not played today" "")
-; (gtk_accel_path "<quodlibet>/MusicMenu/Quit" "<Control>q")
-; (gtk_accel_path "<quodlibet>/MusicMenu/Preferences" "")
+(gtk_accel_path "<quodlibet>/MusicMenu/Quit" "<Control>q")
 (gtk_accel_path "<quodlibet>/FiltersMenu/Random artist" "<Control>t")
-(gtk_accel_path "<quodlibet>/SongMenu/Jump to playing song" "<Control>j")
-; (gtk_accel_path "<quodlibet>/FiltersMenu/Never played" "")""")
+(gtk_accel_path "<quodlibet>/SongMenu/Jump to playing song" "<Control>j")\
+""")
             accels.close()
 
         gtk.accel_map_load(const.ACCELS)
