@@ -16,16 +16,6 @@ James Evans recently posted Python bindings for libifp to the
 ifp-driver-common list. They'd be much much nicer to use, especially
 if progress callbacks are working.
 
-Fix fs encoding bug
--------------------
-Requires cleanups before attempting, so we have a good division between
-displayed strings and byte strings (this is worst in Properties). See
-util.fscoding for the way to get the encoding.
-
-Clean up properties
--------------------
-Don't enable widgets unless can_change says we can use them.
-
 Remember UI element states
 --------------------------
 Show/hide state of the song list, the browser currently in use, and

@@ -1900,29 +1900,85 @@ class SongProperties(object):
     class Information(object):
         def __init__(self, parent):
             self.title = _("Information")
-            self.widget = gtk.Label()
-            self.widget.set_property('xpad', 12)
-            self.widget.set_property('ypad', 12)
-            self.widget.set_property('xalign', 0)
-            self.widget.set_property('yalign', 0)
+            self.widget = gtk.VBox(spacing = 12)
+            self.widget.set_property('border-width', 12)
             self.prop = parent
+
+        def _title(self, song):
+            w = gtk.Label()
+            text = "<b><span size='x-large'>%s</span></b>" % song("title")
+            if "version" in song: text += "\n" + song["version"]
+            w.set_markup(text)
+            w.set_alignment(0, 0)
+            return w
+
+        def _album(self, song):
+            f = gtk.Frame()
+            g = gtk.Label()
+            g.set_markup("<big><u>%s</u></big>" % _("Album"))
+            f.set_label_widget(g)
+            f.set_shadow_type(gtk.SHADOW_NONE)
+            cover = song.find_cover()
+            w = gtk.Label()
+            w.set_alignment(0, 0)
+            if cover:
+                try:
+                    hb = gtk.HBox(spacing = 12)
+                    if hasattr(cover, "write"):
+                        cover_f = cover
+                        cover = cover.name
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
+                    i = gtk.Image()
+                    i.set_from_pixbuf(p)
+                    hb.pack_start(i, expand = False)
+                    f.add(hb)
+                    hb.set_border_width(6)
+                    hb.pack_start(w)
+                except:
+                    f.add(w)
+                    w.set_padding(6, 6)
+            else:
+                w.set_padding(6, 6)
+                f.add(w)
+
+            text = []
+            text.append("<b><big>%s</big></b>" % song.comma("album"))
+            if "date" in song: text[-1] += " - " + song["date"]
+            secondary = []
+            if "discnumber" in song:
+                secondary.append(_("Disc %d") % song("~#disc"))
+            if "part" in song:
+                secondary.append("<b>%s</b>" % song.comma("part"))
+            if "tracknumber" in song:
+                secondary.append(_("Track %d") % song("~#track"))
+            if secondary: text.append(" - ".join(secondary))
+
+            if "organization" in song:
+                t = song["organization"]
+                if "labelid" in song: t += " - %s" % song["labelid"]
+                text.append(t)
+
+            w.set_markup("\n".join(text))
+            
+            f.show_all()
+            return f
 
         def destroy(self):
             self.widget.destroy()
 
         def _update_one(self, song):
-            self.widget.set_markup("\n".join([
-                "<b><span size='x-large'>%s</span></b>" %
-                util.escape(song("title")),
-                _("by %s") % util.escape(song("artist"))
-                ]))
+            self.widget.pack_start(self._title(song), expand = False)
+            if "album" in song:
+                self.widget.pack_start(self._album(song), expand = False)
 
         def update(self, songrefs):
+            for c in self.widget.get_children():
+                self.widget.remove(c)
+                c.destroy()
             if len(songrefs) == 1:
                 self._update_one(songrefs[0])
             else:
-                self.widget.set_text(
-                    "%d songs\nMultisong information not done."%len(songrefs))
+                pass
 
     class EditTags(object):
         def __init__(self, parent):
