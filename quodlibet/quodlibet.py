@@ -2484,6 +2484,135 @@ class SongProperties2(object):
             self.model.clear()
             self.widget.destroy()
 
+    class RenameFiles(object):
+        def __init__(self, prop):
+            self.title = _("Rename Files")
+            self.prop = prop
+            self.widget = gtk.VBox(spacing = 6)
+            self.widget.set_property('border-width', 12)
+            hbox = gtk.HBox(spacing = 12)
+            combo = gtk.combo_box_entry_new_text()
+            for line in const.NBP_EXAMPLES.split("\n"):
+                combo.append_text(line)
+            hbox.pack_start(combo)
+            self.entry = combo.child
+            self.entry.connect('changed', self.changed)
+            self.preview = Button(_("_Preview"), gtk.STOCK_CONVERT)
+            self.preview.connect('clicked', self.preview_files)
+            hbox.pack_start(self.preview, expand = False)
+            self.widget.pack_start(hbox, expand = False)
+
+            self.model = gtk.ListStore(object, str, str)
+            self.view = gtk.TreeView(self.model)
+            column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
+                                        text = 1)
+            self.view.append_column(column)
+            column = gtk.TreeViewColumn(_('New Name'), gtk.CellRendererText(),
+                                        text = 2)
+            self.view.append_column(column)
+            sw = gtk.ScrolledWindow()
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            sw.add(self.view)
+            self.widget.pack_start(sw)
+
+            self.replace = gtk.CheckButton(
+                _("Replace spaces with _underscores"))
+            self.replace.set_active(config.state("nbp_space"))
+            self.windows = gtk.CheckButton(_(
+                "Replace _Windows-incompatible characters"))
+            self.windows.set_active(config.state("windows"))
+            self.ascii = gtk.CheckButton(_("Replace non-_ASCII characters"))
+            self.ascii.set_active(config.state("ascii"))
+            vbox = gtk.VBox()
+            vbox.pack_start(self.replace)
+            vbox.pack_start(self.windows)
+            vbox.pack_start(self.ascii)
+            self.widget.pack_start(vbox, expand = False)
+
+            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
+            self.save.connect('clicked', self.rename_files)
+            bbox = gtk.HButtonBox()
+            bbox.set_layout(gtk.BUTTONBOX_END)
+            bbox.pack_start(self.save)
+            self.widget.pack_start(bbox, expand = False)
+
+        def changed(self, *args):
+            self.save.set_sensitive(False)
+            self.preview.set_sensitive(True)
+
+        def preview_files(self, *args):
+            self.update(self.songs)
+            self.save.set_sensitive(True)
+            self.preview.set_sensitive(False)
+
+        def rename_files(self, *args):
+            win = WritingWindow(self.prop.window, len(self.songs))
+
+            def rename(model, path, iter):
+                song = model[path][0]
+                oldname = model[path][1]
+                newname = model[path][2]
+                try:
+                    library.rename(song, newname)
+                    songref_update_view(song)
+                except:
+                    ErrorMessage(
+                        self.prop.window,
+                        _("Unable to rename file"),
+                        _("Renaming <b>%s</b> to <b>%s</b> failed. "
+                          "Possibly the target file already exists, "
+                          "or you do not have permission to make the "
+                          "new file or remove the old one.") %(
+                        util.escape(oldname), util.escape(newname))).run()
+                    return True
+                return win.step()
+            self.model.foreach(rename)
+            self.prop.refill()
+            self.save.set_sensitive(False)
+            win.end()
+
+        def update(self, songs):
+            self.songs = songs
+            self.model.clear()
+            pattern = self.entry.get_text().decode("utf-8")
+
+            underscore = self.replace.get_active()
+            windows = self.windows.get_active()
+            ascii = self.ascii.get_active()
+
+            try:
+                pattern = util.FileFromPattern(pattern)
+            except ValueError: 
+                d = ErrorMessage(
+                    self.prop.window,
+                    _("Pattern with subdirectories is not absolute"),
+                    _("The pattern\n\t<b>%s</b>\ncontains / but "
+                      "does not start from root. To avoid misnamed "
+                      "directories, root your pattern by starting "
+                      "it from the / directory.")%(
+                    util.escape(pattern)))
+                d.run()
+                return
+            
+            for song in self.songs:
+                newname = pattern.match(song)
+                if underscore: newname = newname.replace(" ", "_")
+                if windows:
+                    for c in '\\:*?;"<>|':
+                        newname = newname.replace(c, "_")
+                if ascii:
+                    newname = "".join(
+                        map(lambda c: ((ord(c) < 127 and c) or "_"),
+                            newname))
+                self.model.append(row=[song, song('~basename'), newname])
+            self.save.set_sensitive(False)
+
+        def destroy(self):
+            self.view.set_model(None)
+            self.model.clear()
+            self.widget.destroy()
+
     class TrackNumbers(object):
         def __init__(self, prop):
             self.title = _("Track Numbers")
@@ -2630,6 +2759,7 @@ class SongProperties2(object):
         self.add_page(self.Information(self))
         self.add_page(self.EditTags(self))
         self.add_page(self.TagByFilename(self))
+        self.add_page(self.RenameFiles(self))
         if len(songrefs) > 1:
             self.add_page(self.TrackNumbers(self))
         self.window.set_property('border-width', 12)
@@ -2659,16 +2789,19 @@ class SongProperties2(object):
             expander.set_use_underline(True)
             vbox.pack_start(expander, expand = False)
 
-        for song in songrefs:
-            self.fbasemodel.append([song, song("~basename"),
-                                    song("~dirname"), song["~filename"]])
-
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
         button = gtk.Button(stock = gtk.STOCK_CLOSE)
         button.connect('clicked', self.close)
         bbox.pack_start(button)
         vbox.pack_start(bbox, expand = False)
+
+        self.songrefs = songrefs
+
+        for song in songrefs:
+            self.fbasemodel.append(
+                row = [song, song("~basename"), song("~dirname"),
+                       song["~filename"]])
 
         selection.select_all()
         self.window.add(vbox)
@@ -2700,7 +2833,15 @@ class SongProperties2(object):
             self.window.set_title(_("%s and %d more - Properties") %
                                   (self.songrefs[0]("title"),
                                    len(self.songrefs) - 1))
-        
+
+    def refill(self):
+        def refresh(model, iter, path):
+            song = model[iter][0]
+            model[iter][1] = song("~basename")
+            model[iter][2] = song("~dirname")
+            model[iter][3] = song["~filename"]
+        self.fbasemodel.foreach(refresh)
+
     def selection_changed(self, selection):
         songrefs = []
         def get_songrefs(model, path, iter, songrefs):
@@ -3254,7 +3395,7 @@ class SongProperties(MultiInstanceWidget):
             if ascii:
                 newname = "".join(map(lambda c: ((ord(c) < 127 and c) or "_"),
                                       newname))
-            self.nbp_model.append(row=[song, None, song('~basename'), newname])
+            self.nbp_model.append([song, None, song('~basename'), newname])
         self.nbp_preview.set_sensitive(False)
         self.save_nbp.set_sensitive(True)
 

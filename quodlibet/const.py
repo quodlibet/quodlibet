@@ -21,3 +21,18 @@ CREDITS = ["Joe Wreschnig",
            "Lee Willis",
            "Jan Arne Petersen",
            "Gustavo J. A. M. Carneiro"]
+
+TBP_EXAMPLES = """\
+<tracknumber>. <title>
+<tracknumber> - <title>
+<tracknumber> - <artist> - <title>
+<artist> - <album>/<tracknumber>. <title>
+<artist>/<album>/<tracknumber> - <title>"""
+
+NBP_EXAMPLES = """\
+<tracknumber>. <title>
+<tracknumber|<tracknumber>. ><title>
+<tracknumber> - <title>
+<tracknumber> - <artist> - <title>
+/path/<artist> - <album>/<tracknumber>. <title>
+/path/<artist>/<album>/<tracknumber> - <title>"""
