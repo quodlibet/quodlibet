@@ -2684,7 +2684,8 @@ class SongProperties(object):
 
         def destroy(self):
             self.view.set_model(None)
-            self.model.clear()
+            try: self.model.clear()
+            except AttributeError: pass
             self.widget.destroy()
 
     class RenameFiles(object):
