@@ -22,6 +22,9 @@ def MusicFile(filename):
                 return None
     else: return None
 
+global library
+library = None
+
 class Unknown(str): pass
 
 class AudioFile(dict):
@@ -199,6 +202,7 @@ class MP3File(AudioFile):
                    }
             
     def __init__(self, filename):
+        import pyid3lib
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
         tag = pyid3lib.tag(filename)
@@ -224,6 +228,7 @@ class MP3File(AudioFile):
         self.sanitize(filename)
 
     def write(self):
+        import pyid3lib
         tag = pyid3lib.tag(self['=filename'])
         for key, id3name in self.INVERT_IDS.items():
             try:
@@ -244,6 +249,7 @@ class MP3File(AudioFile):
 
 class OggFile(AudioFile):
     def __init__(self, filename):
+        import ogg.vorbis
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
         f = ogg.vorbis.VorbisFile(filename)
@@ -254,9 +260,11 @@ class OggFile(AudioFile):
         self.sanitize(filename)
 
     def write(self):
+        import ogg.vorbis
         f = ogg.vorbis.VorbisFile(self['=filename'])
         comments = f.comment()
         comments.clear()
+        print self
         for key in self.keys():
             if key[0] == "=": continue
             else:
@@ -273,6 +281,7 @@ class OggFile(AudioFile):
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
+        import flac.metadata
         if not os.path.exists(filename):
             raise ValueError("Unable to read filename: " + filename)
         chain = flac.metadata.Chain()
@@ -297,6 +306,7 @@ class FLACFile(AudioFile):
         self.sanitize(filename)
 
     def write(self):
+        import flac.metadata
         chain = flac.metadata.Chain()
         chain.read(self['=filename'])
         it = flac.metadata.Iterator()
@@ -474,23 +484,22 @@ class Library(dict):
 
 supported = {}
 
-if util.check_ogg():
-    print "Enabling Ogg Vorbis support."
-    import ogg.vorbis
-    supported[".ogg"] = OggFile
-else:
-    print "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
+def init():
+    if util.check_ogg():
+        print "Enabling Ogg Vorbis support."
+        supported[".ogg"] = OggFile
+    else:
+        print "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
 
-if util.check_mp3():
-    print "Enabling MP3 support."
-    import pyid3lib
-    supported[".mp3"] = MP3File
-else:
-    print "W: MP3 support is disabled! MP3 files cannot be loaded."
+    if util.check_mp3():
+        print "Enabling MP3 support."
+        supported[".mp3"] = MP3File
+    else:
+        print "W: MP3 support is disabled! MP3 files cannot be loaded."
 
-if util.check_flac():
-    print "Enabling FLAC support."
-    import flac.metadata
-    supported[".flac"] = FLACFile
+    if util.check_flac():
+        print "Enabling FLAC support."
+        supported[".flac"] = FLACFile
 
-library = Library()
+    global library
+    library = Library()

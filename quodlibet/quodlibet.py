@@ -366,6 +366,7 @@ class MultiInstanceWidget(object):
         saved = 0
         progress.set_fraction(0.0)
         for song, ref in self.songrefs:
+            print song
             changed = False
             for key, (new_value, old_value) in updated.iteritems():
                 new_value = util.unescape(new_value)
@@ -375,7 +376,7 @@ class MultiInstanceWidget(object):
                     changed = True
             for key, value in added.iteritems():
                 value = util.unescape(value)
-                if song.can_change(key) and key in song:
+                if song.can_change(key):
                     song.add(key, value)
                     changed = True
             for key, value in deleted.iteritems():
@@ -790,7 +791,6 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
     raise SystemExit
 
 def load_cache():
-    from library import library
     import config
     config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
     print "Loading config"
@@ -804,7 +804,6 @@ def load_cache():
             pass
 
 def save_cache():
-    from library import library
     print "Saving library"
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.save(cache_fn)
@@ -876,8 +875,10 @@ if __name__ == "__main__":
     import threading
     import gc
     import os
-    load_cache()
+    import library
+    library.init()
     from library import library
+    load_cache()
     try: import player
     except IOError:
         gtk.idle_add(error_and_quit)
