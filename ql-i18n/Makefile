@@ -44,9 +44,3 @@ mmkeys.so:
 
 test:
 	python -c "import tests; tests.unit()"
-
-messages.pot: quodlibet.glade.h quodlibet.py library.py
-	xgettext --from-code=utf-8 -k_ -kN_ -o $@ quodlibet.glade.h quodlibet.py library.py
-
-quodlibet.glade.h: quodlibet.glade
-	intltool-extract --type=gettext/glade quodlibet.glade

@@ -1,3 +1,5 @@
+- Rework all the build scripts to be smarter.
+  (Check out autoconf, distutils...)
 - Playlists.
 - Various skipping problems -- get smarter about Python threads.
   - Some of this (during saving) disappeared with ossaudiodev? Rock.

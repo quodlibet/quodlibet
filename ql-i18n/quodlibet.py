@@ -984,8 +984,8 @@ if __name__ == "__main__":
     import os, sys
 
     basedir = os.path.split(os.path.realpath(__file__))[0]
-    if os.path.isdir(os.path.join(basedir, "i18n")):
-        i18ndir = os.path.join(basedir, "i18n")
+    if os.path.isdir(os.path.join(basedir, "po")):
+        i18ndir = os.path.join(basedir, "po")
     else: i18ndir = "/usr/share/locale"
 
     import locale, gettext
