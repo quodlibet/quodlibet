@@ -3,3 +3,4 @@ modplug.c
 setup.py
 Makefile
 COPYING
+playmod.py

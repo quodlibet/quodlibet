@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from distutils.core import setup, Extension
-setup(name = "musepack", version = "1.0",
-      url="http://sacredchao.net/~piman/software/python.shtml",
+setup(name = "pymusepack", version = "0.1",
+      url = "http://sacredchao.net/~piman/software/python.shtml",
       description = "Musepack decoder and tagger",
       author = "Joe Wreschnig",
       author_email = "piman@sacredchao.net",
