@@ -1813,6 +1813,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	  <child>
 	    <widget class="GtkButton" id="songprop_revert">
 	      <property name="visible">True</property>
+	      <property name="sensitive">False</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-revert-to-saved</property>
@@ -1826,6 +1827,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	  <child>
 	    <widget class="GtkButton" id="songprop_save">
 	      <property name="visible">True</property>
+	      <property name="sensitive">False</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-save</property>

@@ -387,7 +387,7 @@ class MultiInstanceWidget(object):
 
     def songprop_edit(self, renderer, path, new, model, colnum):
         row = model[path]
-        if row[colnum] != new:
+        if row[colnum].replace('<i>','').replace('</i>','') != new:
             row[colnum] = new
             row[2] = True # Edited
             row[4] = False # not Deleted
@@ -417,6 +417,8 @@ class MultiInstanceWidget(object):
         self.revert.set_sensitive(True)
 
     def fill_property_info(self):
+        from library import AudioFileGroup
+        songinfo = AudioFileGroup([song for (song,ref) in self.songrefs])
         if len(self.songrefs) == 1:
             self.window.set_title("%s - Properties" %
                     self.songrefs[0][0]["title"])
@@ -425,23 +427,12 @@ class MultiInstanceWidget(object):
                     (self.songrefs[0][0]["title"], len(self.songrefs)-1))
         else:
             raise ValueError("Properties of no songs?")
-        artist = {}
-        title = {}
-        album = {}
-        filename = {}
-        for song, iter in self.songrefs:
-            artist.setdefault(song["artist"], 0)
-            title.setdefault(song["title"], 0)
-            album.setdefault(song["album"], 0)
-            filename.setdefault(song["filename"], 0)
-        for w, v, m in [ (self.artist, artist, 'artists'),
-                         (self.title, title, 'titles'),
-                         (self.album, album, 'albums'),
-                         (self.filename, filename, 'files') ]:
-            if len(v) > 1:
-                w.set_markup("<i>%d %s</i>" % (len(v), m))
-            else:
-                w.set_text(v.keys()[0])
+
+        self.artist.set_markup(songinfo['artist'].safenicestr())
+        self.title.set_markup(songinfo['title'].safenicestr())
+        self.album.set_markup(songinfo['album'].safenicestr())
+        self.filename.set_markup(songinfo['filename'].safenicestr())
+
         if len(self.songrefs) > 1:
             listens = sum([song["=playcount"] for song, i in self.songrefs])
             self.played.set_markup("<i>%d songs heard</i>" % listens)
@@ -450,14 +441,12 @@ class MultiInstanceWidget(object):
 
         self.model.clear()
         comments = {} # dict of dicts to see if comments all share value
-        for song, iter in self.songrefs:
-            for k, v in song.iteritems():
-                if k.startswith('=') or k == 'filename': continue
-                comval = comments.setdefault(k, {})
-                comval.setdefault(v, True)
-                comval[v] = comval[v] and song.can_change(k)
 
-        keys = comments.keys()
+        # prune some 'comments' we don't want shown
+        for k in songinfo.keys():
+            if k.startswith('=') or k == 'filename': del songinfo[k]
+
+        keys = songinfo.keys()
         keys.sort()
         # reverse order here so insertion puts them in proper order.
         for comment in ['album', 'artist', 'title']:
@@ -466,15 +455,11 @@ class MultiInstanceWidget(object):
             else: keys.insert(0, comment)
 
         for comment in keys:
-            valdict = comments[comment]
-            if len(valdict) == 1:
-                value, mayedit = valdict.items()[0]
-            else:
-                value = '(%s variants of %s)' % (len(valdict), comment)
-                mayedit = min(valdict.values())
+            value = songinfo[comment].safenicestr()
             edited = False
+            edit = songinfo.can_change(comment)
             deleted = False
-            self.model.append(row=[comment, value, edited, mayedit, deleted])
+            self.model.append(row=[comment, value, edited, edit, deleted])
 
         self.existing_comments = comments.keys()[:]
 
@@ -508,7 +493,7 @@ def make_song_properties(songrefs):
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 1)
-    column = gtk.TreeViewColumn('Value', render, text=1, editable=3)
+    column = gtk.TreeViewColumn('Value', render, markup=1, editable=3)
     dlg.view.append_column(column)
 
     dlg.fill_property_info()

@@ -229,6 +229,84 @@ class OggFile(AudioFile):
     def can_change(self, k):
         return k not in ["vendor", "filename"]
 
+class AudioFileGroup(dict):
+
+    class Comment(unicode):
+        complete = True
+        def __repr__(self):
+            return '%s %s' % (str(self), self.paren())
+
+        def __str__(self):
+            return self.replace('&','&amp;')\
+                    .replace('<','&lt;').replace('>','&gt;')
+
+        def paren(self):
+            if self.shared and self.complete:
+                return '(shared across all %d songs)' % self.total
+            elif self.shared:
+                return '(missing from %d songs)' % self.missing
+            elif self.complete:
+                return '(different across %d songs)' % self.total
+            else:
+                return '(different across %d songs, missing from %d songs)' % (
+                        self.have, self.missing)
+
+        def safenicestr(self):
+            if self.shared and self.complete: return str(self)
+            elif self.shared: return '%s <i>%s</i>' % (str(self), self.paren())
+            else: return '<i>%s</i>' % self.paren()
+
+    class SharedComment(Comment): shared = True
+    class UnsharedComment(Comment): shared = False
+    class PartialSharedComment(SharedComment): complete = False
+    class PartialUnsharedComment(UnsharedComment): complete = False
+
+    def __init__(self, songs):
+        self.songcount = total = len(songs)
+        keys = {}
+        first = {}
+        all = {}
+        self.types = {}
+
+        # collect types of songs; comment names, values, and sharedness
+        for song in songs:
+            self.types[repr(song.__class__)] = song # for group can_change
+            for comment, value in song.iteritems():
+                keys[comment] = keys.get(comment, 0) + 1
+                first.setdefault(comment, value)
+                all[comment] = all.get(comment, True) and first[comment] == value
+
+        # collect comment representations
+        for comment, count in keys.iteritems():
+            if count < total:
+                if all[comment]:
+                    value = self.PartialSharedComment(first[comment])
+                else:
+                    value = self.PartialUnsharedComment(first[comment])
+            else:
+                if all[comment]:
+                    value = self.SharedComment(first[comment])
+                else:
+                    value = self.UnsharedComment(first[comment])
+            value.have = count
+            value.total = total
+            value.missing = total - count
+
+            self[comment] = value
+
+    def can_change(self, k=None):
+        if k is None:
+            can = True
+            for song in self.types.itervalues():
+                cantoo = song.can_change()
+                if can is True: can = cantoo
+                elif cantoo is True: pass
+                else: can = dict.from_keys(can+cantoo).keys()
+        else:
+            can = min([song.can_change(k) for song in self.types.itervalues()])
+        return can
+
+
 class Library(dict):
     def __init__(self, initial = {}):
         dict.__init__(self, initial)
