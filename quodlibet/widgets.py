@@ -3102,6 +3102,16 @@ class SongProperties(gtk.Window):
 
             win = WritingWindow(self.prop, len(self.songs))
             for song in self.songs:
+                if not song.valid() and not qltk.ConfirmAction(
+                    self.prop, _("Tag may not be accurate"),
+                    _("<b>%s</b> looks like it was changed while the "
+                      "program was running. Saving now without "
+                      "refreshing your library might overwrite other "
+                      "changes to tag.\n\n"
+                      "Save this tag anyway?") % song("~basename")
+                    ).run():
+                    break
+
                 changed = False
                 for key, values in updated.iteritems():
                     for (new_value, old_value) in values:
@@ -3357,6 +3367,16 @@ class SongProperties(gtk.Window):
                 song = model[path][0]
                 row = model[path]
                 changed = False
+                if not song.valid() and not qltk.ConfirmAction(
+                    self.prop, _("Tag may not be accurate"),
+                    _("<b>%s</b> looks like it was changed while the "
+                      "program was running. Saving now without "
+                      "refreshing your library might overwrite other "
+                      "changes to tag.\n\n"
+                      "Save this tag anyway?") % song("~basename")
+                    ).run():
+                    return True
+
                 for i, h in enumerate(pattern.headers):
                     if row[i + 2]:
                         if not add or h not in song:
@@ -3370,9 +3390,7 @@ class SongProperties(gtk.Window):
                                     changed = True
 
                 if changed:
-                    try:
-                        song.sanitize()
-                        song.write()
+                    try: song.write()
                     except:
                         qltk.ErrorMessage(
                             self.prop, _("Unable to edit song"),
@@ -3639,6 +3657,15 @@ class SongProperties(gtk.Window):
                 song = model[iter][0]
                 track = model[iter][2]
                 if song.get("tracknumber") == track: return win.step()
+                if not song.valid() and not qltk.ConfirmAction(
+                    self.prop, _("Tag may not be accurate"),
+                    _("<b>%s</b> looks like it was changed while the "
+                      "program was running. Saving now without "
+                      "refreshing your library might overwrite other "
+                      "changes to tag.\n\n"
+                      "Save this tag anyway?") % song("~basename")
+                    ).run():
+                    return True
                 song["tracknumber"] = track
                 try: song.write()
                 except:

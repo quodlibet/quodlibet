@@ -26,6 +26,17 @@ class Message(gtk.MessageDialog):
         gtk.MessageDialog.run(self)
         if destroy: self.destroy()
 
+class ConfirmAction(Message):
+    def __init__(self, *args):
+        Message.__init__(self, gtk.MESSAGE_WARNING,
+                         buttons = gtk.BUTTONS_YES_NO, *args)
+
+    def run(self, destroy = True):
+        resp = gtk.MessageDialog.run(self)
+        if destroy: self.destroy()
+        if resp == gtk.RESPONSE_YES: return True
+        else: return False
+
 class ErrorMessage(Message):
     def __init__(self, *args):
         Message.__init__(self, gtk.MESSAGE_ERROR, *args)
