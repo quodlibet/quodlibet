@@ -315,8 +315,7 @@ class MP3File(AudioFile):
             if key in self:
                 if self.unknown(key): continue
                 for value in self.list(key):
-                    try: value = value.encode("iso-8859-1")
-                    except UnicodeError: value = value.encode("utf-8")
+                    value = value.encode("utf-8")
                     tag.append({'frameid': id3name, 'text': value })
 
         for date in self.list("date"):
