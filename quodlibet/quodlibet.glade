@@ -2883,7 +2883,7 @@ iRiver iFP device (ifp-line driver)
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes">&lt;u&gt;&lt;span weight=&quot;bold&quot; size=&quot;xx-large&quot;&gt;Quod Libet&lt;/span&gt;&lt;/u&gt;
 Copyright ©2004 Joe Wreschnig and Michael Urman
-&amp;lt;piman@sacredchao.net&amp;gt;
+&amp;lt;quodlibet@lists.sacredchao.net&amp;gt;
 &lt;span size='small'&gt;Tray icon code by Anders Carlsson and Sun Microsystems, Inc.
 Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property>
 	  <property name="use_underline">False</property>

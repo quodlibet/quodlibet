@@ -1663,7 +1663,7 @@ For more information, see the manual page (`man 1 quodlibet').
 def print_version():
     print _("""\
 Quod Libet %s
-Copyright 2004 Joe Wreschnig <piman@sacredchao.net>, Michael Urman
+Copyright 2004 Joe Wreschnig, Michael Urman - quodlibet@lists.sacredchao.net
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
