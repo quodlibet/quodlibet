@@ -47,14 +47,6 @@ if __name__ == "__main__":
                "(http://pyid3lib.sourceforge.net/)" % NAME)
     else: print "found"
 
-    print "Checking for pyflac:",
-    try: import flac
-    except ImportError:
-        print ("not found\n%s recommends pyflac. "
-               "(http://users.dart.net.au/~collett/"
-               "software/pyflac-0.0.1.tar.gz)" % NAME)
-    else: print "found"
-
     print "Checking for ao:",
     try: import ao
     except ImportError:
