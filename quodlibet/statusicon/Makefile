@@ -30,6 +30,7 @@ statusicon.c: statusicon.defs statusicon.override
 
 # A rule to clean the generated files
 clean:
-	rm -f statusicon.so *.o statusicon.c *~ eggmarshalers.c eggmarshalers.h gen-tmp
+	rm -f statusicon.so *.o statusicon.c eggmarshalers.c eggmarshalers.h gen-tmp
 
-.PHONY: clean
+distclean: clean
+	rm -f *~ gen-tmp

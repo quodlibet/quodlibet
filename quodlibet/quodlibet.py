@@ -106,7 +106,7 @@ class GTKSongInfoWrapper(object):
         iter = widgets.songs.get_iter(path)
         widgets.songs.remove(iter)
         statusbar = widgets["statusbar"]
-        statusbar.set_text("Could not play %s." % song['=filename'])
+        statusbar.set_text(_("Could not play %s.") % song['=filename'])
         library.remove(song)
         player.playlist.remove(song)
 
@@ -126,8 +126,9 @@ class GTKSongInfoWrapper(object):
             self.text.set_markup(song.to_markup())
             if self.icon: self.icon.set_tooltip(song.to_short(), "magic")
         else:
-            self.text.set_markup("<span size='xx-large'>Not playing</span>")
-            if self.icon: self.icon.set_tooltip("Not playing", "magic")
+            s = _("Not playing")
+            self.text.set_markup("<span size='xx-large'>%s</span>" % s)
+            if self.icon: self.icon.set_tooltip(s, "magic")
 
     def scroll_to_current(self):
         song = CURRENT_SONG[0]
@@ -213,7 +214,8 @@ def make_error(title, description, buttons):
 # Standard Glade widgets wrapper.
 class Widgets(object):
     def __init__(self, file):
-        self.widgets = gtk.glade.XML("quodlibet.glade")
+        self.widgets = gtk.glade.XML("quodlibet.glade",
+                                     domain = gettext.textdomain())
         self.widgets.signal_autoconnect(GladeHandlers.__dict__)
 
     def __getitem__(self, key):
@@ -243,10 +245,10 @@ class GladeHandlers(object):
                 print "Executing %s" % s
                 if os.system(s + " &") == 0: break
         else:
-            d = make_error("Unable to start a web browser",
-                           "A web browser could not be found. Please set "
-                           "your $BROWSER variable, or make sure "
-                           "/usr/bin/sensible-browser exists.",
+            d = make_error(_("Unable to start a web browser"),
+                           _("A web browser could not be found. Please set "
+                             "your $BROWSER variable, or make sure "
+                             "/usr/bin/sensible-browser exists."),
                            gtk.BUTTONS_OK)
             r = d.run()
             d.destroy()
@@ -344,7 +346,7 @@ class GladeHandlers(object):
         config.set("settings", "jump", str(bool(toggle.get_active())))
 
     def select_scan(*args):
-        resp, fns = make_chooser("Select Directories", os.environ["HOME"])
+        resp, fns = make_chooser(_("Select Directories"), os.environ["HOME"])
         if resp == gtk.RESPONSE_OK:
             widgets["scan_opt"].set_text(":".join(fns))
 
@@ -362,7 +364,7 @@ class GladeHandlers(object):
         player.playlist.paused = False
 
     def open_chooser(*args):
-        resp, fns = make_chooser("Add Music", GladeHandlers.last_dir)
+        resp, fns = make_chooser(_("Add Music"), GladeHandlers.last_dir)
         if resp == gtk.RESPONSE_OK:
             progress = widgets["throbber"]
             label = widgets["found_count"]
@@ -501,7 +503,7 @@ class MultiInstanceWidget(object):
 
             saved += 1
             progress.set_fraction(saved / float(len(self.songrefs)))
-            label.set_text("%d/%d songs saved" % (saved, len(self.songrefs)))
+            label.set_text(_("%d/%d songs saved")%(saved, len(self.songrefs)))
             while gtk.events_pending(): gtk.main_iteration()
 
         widgets["write_window"].hide()
@@ -538,7 +540,7 @@ class MultiInstanceWidget(object):
         self.remove.set_sensitive(may_remove)
 
     def songprop_files_toggled(self, toggle):
-        getattr(self.fview_scroll, ['hide','show'][bool(toggle.get_active())])()
+        getattr(self.fview_scroll,['hide','show'][bool(toggle.get_active())])()
 
     def songprop_files_changed(self, selection):
         songrefs = []
@@ -566,8 +568,8 @@ class MultiInstanceWidget(object):
             if not self.songinfo.can_change(comment):
                 msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
                         gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
-                msg.set_markup("Invalid tag <b>%s</b>\n\nThe files currently"
-                               " selected do not support editing this tag" %
+                msg.set_markup(_("Invalid tag <b>%s</b>\n\nThe files currently"
+                                 " selected do not support editing this tag")%
                                util.escape(comment))
                 msg.run()
                 msg.destroy()
@@ -581,7 +583,7 @@ class MultiInstanceWidget(object):
                 def find_same_comments(model, path, iter):
                     if model[path][0] == comment: iters.append(iter)
                 self.model.foreach(find_same_comments)
-                row = [comment, util.escape(value), edited, edit, deleted, orig] 
+                row = [comment, util.escape(value), edited, edit,deleted,orig]
                 if len(iters): self.model.insert_after(iters[-1], row=row)
                 else: self.model.append(row=row)
 
@@ -614,10 +616,10 @@ class MultiInstanceWidget(object):
         songinfo = AudioFileGroup([song for (song,ref) in self.songrefs])
         self.songinfo = songinfo
         if len(self.songrefs) == 1:
-            self.window.set_title("%s - Properties" %
+            self.window.set_title(_("%s - Properties") %
                     self.songrefs[0][0]["title"])
         elif len(self.songrefs) > 1:
-            self.window.set_title("%s and %d more - Properties" %
+            self.window.set_title(_("%s and %d more - Properties") %
                     (self.songrefs[0][0]["title"], len(self.songrefs)-1))
         else:
             raise ValueError("Properties of no songs?")
@@ -629,7 +631,9 @@ class MultiInstanceWidget(object):
 
         if len(self.songrefs) > 1:
             listens = sum([song["=playcount"] for song, i in self.songrefs])
-            self.played.set_markup("<i>%d songs heard</i>" % listens)
+            if listens == 1: s = ("%d songs head") % listens
+            else: s = _("%d songs heard") % listens
+            self.played.set_markup("<i>%s</i>" % s)
         else:
             self.played.set_text(self.songrefs[0][0].get_played())
 
@@ -682,16 +686,16 @@ def make_song_properties(songrefs):
     selection.connect('changed', dlg.songprop_selection_changed)
 
     render = gtk.CellRendererToggle()
-    column = gtk.TreeViewColumn('Write', render, active=2, activatable=3)
+    column = gtk.TreeViewColumn(_('Write'), render, active=2, activatable=3)
     render.connect('toggled', dlg.songprop_toggle, dlg.model)
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 0)
-    column = gtk.TreeViewColumn('Tag', render, text=0)
+    column = gtk.TreeViewColumn(_('Tag'), render, text=0)
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 1)
-    column = gtk.TreeViewColumn('Value', render, markup=1, editable=3,
+    column = gtk.TreeViewColumn(_('Value'), render, markup=1, editable=3,
                                 strikethrough=4)
     dlg.view.append_column(column)
 
@@ -703,9 +707,9 @@ def make_song_properties(songrefs):
     selection = dlg.fview.get_selection()
     selection.set_mode(gtk.SELECTION_MULTIPLE)
     selection.connect('changed', dlg.songprop_files_changed)
-    column = gtk.TreeViewColumn('File', gtk.CellRendererText(), text=2)
+    column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
     dlg.fview.append_column(column)
-    column = gtk.TreeViewColumn('Path', gtk.CellRendererText(), text=3)
+    column = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=3)
     dlg.fview.append_column(column)
     for song, ref in songrefs:
         dlg.fmodel.append(row=[song, ref,
@@ -747,6 +751,7 @@ def text_parse(*args):
 
 def filter_on_header(header):
     if header == "=#": header = "tracknumber"
+    elif header == "=d": header = "discnumber"
     selection = widgets["songlist"].get_selection()
     model, rows = selection.get_selected_rows()
     values = {}
@@ -799,16 +804,17 @@ def refresh_songlist():
         widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
 
     i = len(list(player.playlist))
-    statusbar.set_text("%d song%s found." % (i, (i != 1 and "s" or "")))
+    if i != 1:statusbar.set_text(_("%d songs found.") % i)
+    else: statusbar.set_text(_("%d song found.") % i)
     sl.set_model(widgets.songs)
     gc.collect()
 
 HEADERS = ["=#", "title", "album", "artist"]
-HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track",
-                   "discnumber": "Disc", "=d": "Disc",
-                   "=lastplayed": "Last Played", "=filename": "Full Name",
-                   "=playcount": "Play Count", "=basename": "Filename",
-                   "=dirname": "Directory"}
+HEADERS_FILTER = { "=#": "track", "tracknumber": "track",
+                   "discnumber": "disc", "=d": "disc",
+                   "=lastplayed": "last played", "=filename": "full name",
+                   "=playcount": "play count", "=basename": "filename",
+                   "=dirname": "directory"}
 
 CURRENT_SONG = [ None ]
 
@@ -834,7 +840,7 @@ def set_column_headers(sl):
     width = int(width / c)
     for i, t in enumerate(HEADERS):
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(HEADERS_FILTER.get(t, t).title(),
+        column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t, t)).title(),
                                     render, text = i, weight = len(HEADERS)+1)
         if t in SHORT_COLS: render.set_fixed_size(-1, -1)
         else: render.set_fixed_size(width, -1)
@@ -856,7 +862,6 @@ def setup_nonglade():
     sl = widgets["songlist"]
     sl.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
     widgets.songs = gtk.ListStore(object)
-    #refresh_songlist()
 
     # Build a model and view for our ComboBoxEntry.
     liststore = gtk.ListStore(str)
@@ -921,24 +926,24 @@ def main():
     save_config()
 
 def print_help():
-    print """\
+    print _("""\
 Quod Libet - a music library and player
 Options:
   --help, -h        Display this help message
   --version         Display version and copyright information
   --refresh-library Rescan your song cache; remove dead files; add new ones;
-                    and then exit."""
+                    and then exit.""")
 
     raise SystemExit
 
 def print_version():
-    print """\
+    print _("""\
 Quod Libet %s
 Copyright 2004 Joe Wreschnig <piman@sacredchao.net>, Michael Urman
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
-""" % VERSION
+""") % VERSION
     raise SystemExit
 
 def refresh_cache():
@@ -971,15 +976,15 @@ def print_playing(fstring):
         print fstring % data
         raise SystemExit
     except (OSError, IOError):
-        print "No song is currently playing."
+        print _("No song is currently playing.")
         raise SystemExit(True)
 
 def error_and_quit():
-    d = make_error("No audio device found",
-                   "Quod Libet was unable to open your audio device. "
-                   "Often this means another program is using it, or "
-                   "your audio drivers are not configured.\n\nQuod Libet "
-                   "will now exit.",
+    d = make_error(_("No audio device found"),
+                   _("Quod Libet was unable to open your audio device. "
+                     "Often this means another program is using it, or "
+                     "your audio drivers are not configured.\n\nQuod Libet "
+                     "will now exit."),
                    gtk.BUTTONS_OK)
     d.show()
     d.run()
@@ -1030,6 +1035,8 @@ if __name__ == "__main__":
             ".".join(map(str, gtk.pygtk_version)))
         raise SystemExit("E: Please upgrade GTK+/PyGTK.")
     import gtk.glade
+    gtk.glade.bindtextdomain("quodlibet", i18ndir)
+    gtk.glade.textdomain("quodlibet")
     widgets = Widgets("quodlibet.glade")
 
     import gc

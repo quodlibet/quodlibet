@@ -1,5 +1,5 @@
 MODULES = config.py library.py match.py parser.py player.py util.py
-
+SUBDIRS = statusicon mmkeys po
 NAME = quodlibet
 PREFIX ?= /usr/local
 TO = lib/$(NAME)
@@ -25,11 +25,12 @@ install:
 
 clean:
 	rm -f *.pyc */*.pyc $(NAME).zip statusicon.so mmkeys.so
-	cd statusicon && make clean
-	cd mmkeys && make clean
+	rm -f messages.pot quodlibet.glade.h
+	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean
-	rm -f *~ \#* *.bak *.orig */*~ */\#* */*.bak */*.orig
+	rm -f *~ \#* *.bak *.orig $(NAME).gladep
+	for D in $(SUBDIRS); do cd $$D && make distclean && cd ..; done
 
 extensions: statusicon.so mmkeys.so
 

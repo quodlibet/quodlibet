@@ -30,9 +30,6 @@
 #include <gtk/gtk.h>
 #include "eggmarshalers.h"
 
-#define _(x) x
-#define N_(x) x
-
 enum{
   PROP_0,
   PROP_PIXBUF,
@@ -144,40 +141,40 @@ egg_status_icon_class_init (EggStatusIconClass *klass)
   g_object_class_install_property (gobject_class,
 				   PROP_PIXBUF,
 				   g_param_spec_object ("pixbuf",
-							_("Pixbuf"),
-							_("A GdkPixbuf to display"),
+							"Pixbuf",
+							"A GdkPixbuf to display",
 							GDK_TYPE_PIXBUF,
 							G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
 				   PROP_FILE,
 				   g_param_spec_string ("file",
-							_("Filename"),
-							_("Filename to load and display"),
+							"Filename",
+							"Filename to load and display",
 							NULL,
 							G_PARAM_WRITABLE));
 
   g_object_class_install_property (gobject_class,
 				   PROP_STOCK,
 				   g_param_spec_string ("stock",
-							_("Stock ID"),
-							_("Stock ID for a stock image to display"),
+							"Stock ID",
+							"Stock ID for a stock image to display",
 							NULL,
 							G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
 				   PROP_PIXBUF_ANIMATION,
 				   g_param_spec_object ("pixbuf-animation",
-							_("Animation"),
-							_("GdkPixbufAnimation to display"),
+							"Animation",
+							"GdkPixbufAnimation to display",
 							GDK_TYPE_PIXBUF_ANIMATION,
 							G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
 				   PROP_STORAGE_TYPE,
 				   g_param_spec_enum ("image-type",
-						      _("Image type"),
-						      _("The representation being used for image data"),
+						      "Image type",
+						      "The representation being used for image data",
 						      GTK_TYPE_IMAGE_TYPE,
 						      GTK_IMAGE_EMPTY,
 						      G_PARAM_READABLE));
@@ -185,8 +182,8 @@ egg_status_icon_class_init (EggStatusIconClass *klass)
   g_object_class_install_property (gobject_class,
 				   PROP_SIZE,
 				   g_param_spec_int ("size",
-						     _("Size"),
-						     _("The size of the icon"),
+						     "Size",
+						     "The size of the icon",
 						     G_MININT,
 						     G_MAXINT,
 						     0,
@@ -195,8 +192,8 @@ egg_status_icon_class_init (EggStatusIconClass *klass)
   g_object_class_install_property (gobject_class,
 				   PROP_BLINKING,
 				   g_param_spec_boolean ("blinking",
-							 _("Blinking"),
-							 _("Whether or not the status icon is blinking"),
+							 "Blinking",
+							 "Whether or not the status icon is blinking",
 							 FALSE,
 							 G_PARAM_READWRITE));
 

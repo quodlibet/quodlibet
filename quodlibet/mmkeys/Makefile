@@ -20,6 +20,7 @@ mmkeyspy.c: mmkeys.defs mmkeys.override
 
 # A rule to clean the generated files
 clean:
-	rm -f mmkeys.so *.o mmkeyspy.c *~ gen-tmp
+	rm -f mmkeys.so *.o mmkeyspy.c
 
-.PHONY: clean
+distclean: clean
+	rm -f *~ gen-tmp

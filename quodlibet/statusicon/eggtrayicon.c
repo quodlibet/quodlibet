@@ -20,15 +20,11 @@
 
 #include <config.h>
 #include <string.h>
-#include <libintl.h>
 
 #include "eggtrayicon.h"
 
 #include <gdk/gdkx.h>
 #include <X11/Xatom.h>
-
-#define _(x) x
-#define N_(x) x
 
 #define SYSTEM_TRAY_REQUEST_DOCK    0
 #define SYSTEM_TRAY_BEGIN_MESSAGE   1
@@ -108,8 +104,8 @@ egg_tray_icon_class_init (EggTrayIconClass *klass)
   g_object_class_install_property (gobject_class,
 				   PROP_ORIENTATION,
 				   g_param_spec_enum ("orientation",
-						      _("Orientation"),
-						      _("The orientation of the tray."),
+						      "Orientation",
+						      "The orientation of the tray.",
 						      GTK_TYPE_ORIENTATION,
 						      GTK_ORIENTATION_HORIZONTAL,
 						      G_PARAM_READABLE));

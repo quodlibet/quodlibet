@@ -1,3 +1,10 @@
+top_srcdir = ../
+
+ALL_LINGUAS = 
+
+all:
+	for L in $(ALL_LINGUAS); do make $$L.mo; done
+
 messages.pot: quodlibet.glade.h ../quodlibet.py ../library.py
 	xgettext --from-code=utf-8 -k_ -kN_ -o $@ quodlibet.glade.h ../quodlibet.py ../library.py
 
@@ -10,3 +17,6 @@ quodlibet.glade.h: ../quodlibet.glade
 
 clean:
 	rm -f messages.pot quodlibet.glade.h *.mo
+
+distclean: clean
+	rm -f *~

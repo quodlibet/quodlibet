@@ -11,6 +11,8 @@ import cPickle as Pickle
 import util; from util import escape
 import fcntl
 import time
+import gettext
+_ = gettext.gettext
 
 def MusicFile(filename):
     for ext in supported.keys():
@@ -86,7 +88,7 @@ class AudioFile(dict):
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
         for i in ["title", "artist", "album"]:
-            self.setdefault(i, Unknown("Unknown"))
+            self.setdefault(i, Unknown(_("Unknown")))
 
         # Derive disc and track numbers.
         try: self["=#"] = int(self["tracknumber"].split("/")[0])
@@ -115,21 +117,21 @@ class AudioFile(dict):
         if "version" in self:
             text += u"\n<small><b>%s</b></small>" % escape(
                 self.comma("version"))
-        text += u"\nby %s" % escape(self.comma("artist"))
+        text += u"\n" + _("by %s") % escape(self.comma("artist"))
 
         if "performer" in self:
-            text += ("\n<small>Performed by %s</small>" %
-                     self.comma("performer"))
+            s = _("Performed by %s") % self.comma("performer")
+            text += "<small>%s</small>" % s
 
         others = ""
         if "arranger" in self:
-            others += ("\narranged by " + self.comma("arranger"))
+            others += "\n" + _("arranged by %s") % self.comma("arranger")
         if "lyricist" in self:
-            others += ("\nlyrics by " + self.comma("lyricist"))
+            others += "\n" + _("lyrics by %s") % self.comma("lyricist")
         if "conductor" in self:
-            others += ("\nconducted by " + self.comma("conductor"))
+            others += "\n" + _("conducted by %s") % self.comma("conductor")
         if "author" in self:
-            others += ("\nwritten by " + self.comma("author"))
+            others += "\n" + _("written by %s") % self.comma("author")
 
         if others:
             others = others.strip().replace("\n", "; ")
@@ -139,11 +141,11 @@ class AudioFile(dict):
         if not self.unknown("album"):
             album = u"\n<b>%s</b>" % escape(self.comma("album"))
             if "discnumber" in self:
-                album += u" - Disc " + escape(self.comma("discnumber"))
+                album += " - "+_("Disc")+" "+escape(self.comma("discnumber"))
             if "part" in self:
                 album += u" - <b>%s</b>" % escape(self.comma("part"))
             if "tracknumber" in self:
-                album += u" - Track " + escape(self.comma("tracknumber"))
+                album += " - "+_("Track")+" "+escape(self.comma("tracknumber"))
             text += album
         return text
 
@@ -158,11 +160,11 @@ class AudioFile(dict):
 
     def get_played(self):
         count = self["=playcount"]    
-        if count == 0: return "Never"
+        if count == 0: return _("Never")
         else:
             t = time.localtime(self["=lastplayed"])
             tstr = time.strftime("%F, %X", t)
-            return "%d times, recently on %s" % (count, tstr)
+            return _("%d times, recently on %s") % (count, tstr)
 
     def to_dump(self):
         s = ""
@@ -405,13 +407,13 @@ class AudioFileGroup(dict):
 
         def paren(self):
             if self.shared and self.complete:
-                return '(shared across all %d songs)' % self.total
+                return _('(shared across all %d songs)') % self.total
             elif self.shared:
-                return '(missing from %d songs)' % self.missing
+                return _('(missing from %d songs)') % self.missing
             elif self.complete:
-                return '(different across %d songs)' % self.total
+                return _('(different across %d songs)') % self.total
             else:
-                return '(different across %d songs, missing from %d songs)' % (
+                return _('(different across %d songs, missing from %d songs)')%(
                         self.have, self.missing)
 
         def safenicestr(self):
