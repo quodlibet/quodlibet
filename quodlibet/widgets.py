@@ -2200,10 +2200,11 @@ class SongList(gtk.TreeView):
             title = tag(t)
             column = gtk.TreeViewColumn(title, render)
             column.header_name = t
-            column.set_resizable(True)
             if t in SHORT_COLS or t.startswith("~#"):
-                render.set_fixed_size(-1, -1)
+                column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
             else:
+                column.set_expand(True)
+                column.set_resizable(True)
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_fixed_width(ws[i])
             if hasattr(self, 'set_sort_by'):
@@ -2217,7 +2218,7 @@ class SongList(gtk.TreeView):
             else:
                 column.set_cell_data_func(render, cell_data)
             if t == "~length":
-                column.set_property('alignment', 1.0)
+                column.set_alignment(1.0)
                 render.set_property('xalign', 1.0)
             self.append_column(column)
 
