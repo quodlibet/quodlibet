@@ -3899,10 +3899,19 @@ class DirectoryTree(gtk.TreeView):
 
         column.set_attributes(render, text=0)
         self.append_column(column)
-        niter = self.get_model().append(None, [os.environ["HOME"]])
-        self.get_model().append(niter, ["dummy"])
-        niter = self.get_model().append(None, ["/"])
-        self.get_model().append(niter, ["dummy"])
+        folders = [os.environ["HOME"], "/"]
+        # Read in the GTK bookmarks list; gjc says this is the right way
+        try: f = file(os.path.join(os.environ["HOME"], ".gtk-bookmarks"))
+        except: pass
+        else:
+            import urlparse
+            for line in f.readlines():
+                folders.append(urlparse.urlsplit(line.rstrip())[2])
+            folders = filter(os.path.isdir, folders)
+
+        for path in folders:
+            niter = self.get_model().append(None, [path])
+            self.get_model().append(niter, ["dummy"])
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.connect('test-expand-row', DirectoryTree.__expanded,
                      self.get_model())
@@ -3912,14 +3921,13 @@ class DirectoryTree(gtk.TreeView):
             head, tail = os.path.split(initial)
             while head != os.path.dirname(os.environ["HOME"]) and tail != '':
                 if tail:
-                    dirs = [d for d in
-                            dircache.listdir(head) if
+                    dirs = [d for d in dircache.listdir(head) if
                             (d[0] != "." and
                              os.path.isdir(os.path.join(head,d)))]
                     try: path.insert(0, dirs.index(tail))
                     except ValueError: break
                 head, tail = os.path.split(head)
-                    
+
             if initial.startswith(os.environ["HOME"]): path.insert(0, 0)
             else: path.insert(0, 1)
             for i in range(len(path)):
@@ -3927,8 +3935,7 @@ class DirectoryTree(gtk.TreeView):
             self.get_selection().select_path(tuple(path))
             self.scroll_to_cell(tuple(path))
 
-        else: self.expand_row((0,), False)
-
+        else: pass
 
     def __expanded(self, iter, path, model):
         if model is None: return
