@@ -707,7 +707,7 @@
       </child>
 
       <child>
-	<widget class="GtkHSeparator" id="hseparator2">
+	<widget class="GtkHSeparator" id="hseparator5">
 	  <property name="visible">True</property>
 	</widget>
 	<packing>
@@ -1130,7 +1130,10 @@
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes">&lt;u&gt;&lt;span weight=&quot;bold&quot; size=&quot;xx-large&quot;&gt;Quod Libet&lt;/span&gt;&lt;/u&gt;
 Copyright ©2004 Joe Wreschnig and Michael Urman
-&amp;lt;piman@sacredchao.net&amp;gt;</property>
+&amp;lt;piman@sacredchao.net&amp;gt;
+
+&lt;small&gt;Quod Libet is free software licensed under the GNU GPL version 2.&lt;/small&gt;
+</property>
 	  <property name="use_underline">False</property>
 	  <property name="use_markup">True</property>
 	  <property name="justify">GTK_JUSTIFY_CENTER</property>
