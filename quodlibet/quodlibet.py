@@ -1562,19 +1562,21 @@ class SongList(object):
 
         def cell_data(column, cell, model, iter,
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
-            song = model[iter][0]
-            current_song = getattr(getattr(widgets, 'main', None), 'current_song', None)
-            cell.set_property('weight', attr[song is current_song])
-            cell.set_property('text', song.comma(column.header_name))
+            try:
+                song = model[iter][0]
+                current_song = widgets.main.current_song
+                cell.set_property('weight', attr[song is current_song])
+                cell.set_property('text', song.comma(column.header_name))
+            except AttributeError: pass
 
         def cell_data_fn(column, cell, model, iter, code,
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
-            song = model[iter][0]
-            current_song = getattr(getattr(widgets, 'main', None), 'current_song', None)
-            cell.set_property('weight', attr[song is current_song])
-            cell.set_property(
-                'text', model[iter][0].comma(column.header_name).decode(
-                code, "replace"))
+            try:
+                song = model[iter][0]
+                current_song = widgets.main.current_song
+                cell.set_property('weight', attr[song is current_song])
+                cell.set_property('text', song.comma(column.header_name).decode(code, 'replace'))
+            except AttributeError: pass
 
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
@@ -1877,7 +1879,7 @@ class SongProperties(object):
             self.widget.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             self.widget.add(gtk.Viewport())
             self.widget.child.set_shadow_type(gtk.SHADOW_NONE)
-            self.box = gtk.VBox(spacing = 12)
+            self.box = gtk.VBox(spacing = 6)
             self.box.set_property('border-width', 12)
             self.widget.child.add(self.box)
             self.prop = parent
@@ -1920,12 +1922,12 @@ class SongProperties(object):
                 if tag in song:
                     if "\n" in song[tag]:
                         frame = self.Frame(names,
-                                           gtk.Label(util.escape(song[tag])),
+                                           self.Label(util.escape(song[tag])),
                                            False)
                     else:
                         ntag = util.title(_(tag))
                         frame = self.Frame(ntag,
-                                           gtk.Label(util.escape(song[tag])),
+                                           self.Label(util.escape(song[tag])),
                                            False)
                     vbox.pack_start(frame, expand = False)
             return self.Frame(util.title(_("artists")), vbox)
