@@ -4,6 +4,10 @@ This Python module lets you load and decode files supported by the ModPlug
 library (which includes MODs, ITs, XMs, and so on). Its API has been chosen
 to mostly match pyvorbis and pymad.
 
+Currently it always outputs in 44100khz stereo, 16 bits per channel. Noise
+reduction, oversampling, and the highest-quality resampling filter are
+enabled.
+
 Compiling:
 ----------
 (Requires libmodplug and Python development files.)
