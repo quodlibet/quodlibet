@@ -1687,7 +1687,14 @@ class MainWindow(gtk.Window):
     def update_markup(self, song):
         if song:
             self.text.set_markup(song.to_markup())
-            self.icon.tooltip = song.to_short()
+            try:
+                pattern = util.FileFromPattern(
+                    config.get("plugins", "icon_tooltip"), filename=False)
+            except ValueError:
+                pattern = util.FileFromPattern(
+                    "<album|<album~discnumber~part~tracknumber~title~version>|"
+                    "<artist~title~version>>", filename=False)
+            self.icon.tooltip = pattern.match(song)
             self.set_title("Quod Libet - " + song.comma("~title~version"))
             self.osd.show_osd(song)
         else:

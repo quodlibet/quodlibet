@@ -264,9 +264,6 @@ class PatternFromFile(object):
         else: return match.groupdict()
 
 class FileFromPattern(object):
-    format = { 'tracknumber': '%02d', 'discnumber': '%d' }
-    override = { 'tracknumber': '~#track', 'discnumber': '~#disc' }
-
     def __init__(self, pattern, filename=True):
         if filename and '/' in pattern and not pattern.startswith('/'):
             raise ValueError("Pattern %r is not rooted" % pattern)
@@ -304,6 +301,14 @@ class FileFromPattern(object):
     class PatternReplacer(object):
         def __init__(self, pattern, filename=True):
             self.filename = filename
+            if filename:
+                self.__format = { 'tracknumber': '%02d', 'discnumber': '%d' }
+                self.__override = {
+                    'tracknumber': '~#track', 'discnumber': '~#disc' }
+            else:
+                self.__format = {}
+                self.__override = {}
+
             if not (pattern.startswith('<') and pattern.endswith('>')):
                 self.match = lambda song: pattern
             elif '|' not in pattern:
@@ -314,11 +319,11 @@ class FileFromPattern(object):
                 parts.append('')
                 if len(parts) > 3: # 1 or 2 real, 1 fallback; >2 real is bad
                     raise ValueError("pattern %s has extra sections" % pattern)
-                r = map(FileFromPattern.Pattern, parts)
+                r = [FileFromPattern.Pattern(p, filename) for p in parts]
                 self.match = lambda s: self.condmatch(check, r[0], r[1], s)
 
         def condmatch(self, check, true, false, song):
-            if self.format(check, song): return true.match(song)
+            if check in song: return true.match(song)
             else: return false.match(song)
 
         def format(self, tag, song):
@@ -326,8 +331,8 @@ class FileFromPattern(object):
                 and (song(tag, None) is None)):
                 return tag.join('<>')
 
-            fmt = FileFromPattern.format.get(tag, '%s')
-            tag = FileFromPattern.override.get(tag, tag)
+            fmt = self.__format.get(tag, '%s')
+            tag = self.__override.get(tag, tag)
 
             if tag.startswith('~') or '~' not in tag:
                 text = song.comma(tag)

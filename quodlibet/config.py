@@ -87,6 +87,13 @@ def init(*rc_files):
           "headers": "~#track ~title~version ~album~part artist ~length"
           },
 
+        "plugins":
+        { "icon_tooltip":
+          "<album|<album~discnumber~part~tracknumber~title~version>|"
+          "<artist~title~version>>" # tooltip for the tray icon
+
+          },
+
         "exfalso":
         { "shutup": "false", # don't whine about QL running.
           }

@@ -283,6 +283,16 @@ class NBPTests(TestCase):
         s.assertEquals(pat.match(s.b), 'music.ogg')
         s.assertEquals(pat.match(s.c), '_, _.flac')
 
+    def test_conditional_unknown(s):
+        pat = FileFromPattern('<album|foo|bar>')
+        s.assertEquals(pat.match(s.a), 'bar.mp3')
+
+    def test_conditional_notfile(s):
+        pat = FileFromPattern('<tracknumber|<tracknumber>|00>', filename=False)
+        s.assertEquals(pat.match(s.a), '5/6')
+        s.assertEquals(pat.match(s.b), '6')
+        s.assertEquals(pat.match(s.c), '00')
+
     def test_conditional_subdir(s):
         pat = FileFromPattern('/a<genre|/<genre>>/<title>')
         s.assertEquals(pat.match(s.a), '/a/Title5.mp3')

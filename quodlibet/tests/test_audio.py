@@ -184,7 +184,6 @@ class AudioFileTest(TestCase):
         self.failUnlessRaises(ValueError, b.sanitize)
 
     # FIXME: test to_markup (this function sucks and should be UI)
-    # FIXME: test to_short (maybe this should too)
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()

@@ -194,14 +194,6 @@ class AudioFile(dict):
             text += album
         return text
 
-    # A shortened song info line (for the statusicon tooltip)
-    def to_short(self):
-        if "album" in self:
-            return self.comma("~album~discnumber~part"
-                              "~tracknumber~title~version")
-        else:
-            return self.comma("~artist~title~version")
-
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
         s = ""
