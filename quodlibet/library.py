@@ -224,6 +224,7 @@ class Library(dict):
                         song2.migrate(song)
                         self[fn] = song2
                 elif config.get("settings", "masked"):
+                    fn = song["~filename"]
                     for m in config.get("settings", "masked").split(":"):
                         if fn.startswith(m) and not os.path.ismount(m):
                             self.masked_files.setdefault(m, {})

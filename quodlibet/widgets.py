@@ -306,7 +306,7 @@ class PreferencesWindow(gtk.Window):
             elif os.path.exists("/mnt"): dir = "/mnt"
             else: dir = "/"
             b.connect('clicked', self.select, e, dir)
-            e.connect('changed', self.changed, 'mask')
+            e.connect('changed', self.changed, 'masked')
             f.child.add(vb)
             self.pack_start(f, expand = False)
 
