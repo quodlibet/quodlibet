@@ -31,7 +31,8 @@ class AudioFile(dict):
     def sanitize(self, filename = None):
         if filename: self["=filename"] = filename
         elif "filename" in self: self["=filename"] = self["filename"]
-        else: raise ValueError("Unknown filename!")
+        elif "=filename" not in self:
+            raise ValueError("Unknown filename!")
         for i in ["title", "artist", "album"]:
             if not self.get(i): self[i] = "Unknown"
         if "tracknumber" in self:

@@ -502,7 +502,7 @@ class MultiInstanceWidget(object):
 
         # prune some 'comments' we don't want shown
         for k in songinfo.keys():
-            if k.startswith('=') or k == '=filename': del songinfo[k]
+            if k.startswith('='): del(songinfo[k])
 
         keys = songinfo.keys()
         keys.sort()
