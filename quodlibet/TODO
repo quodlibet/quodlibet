@@ -10,6 +10,12 @@ using it now that the dialogs are reasonably mature, it's slow, and
 it's big. These windows should be in Python, and new windows should
 probably be written in python from the start.
 
+Port iFP PMP driver to PyIFP
+----------------------------
+James Evans recently posted Python bindings for libifp to the
+ifp-driver-common list. They'd be much much nicer to use, especially
+if progress callbacks are working.
+
 Fix fs encoding bug
 -------------------
 Requires cleanups before attempting, so we have a good division between

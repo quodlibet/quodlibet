@@ -45,8 +45,8 @@ class CopyPMP(PMP):
         PMP.__init__(*args)
 
     def upload(self, song):
-        filename = song["~filename"]
-        basename = song["~basename"]
+        filename = song("~filename")
+        basename = song("~basename")
         dirname = os.path.basename(os.path.dirname(filename))
         target = os.path.join(self.base, dirname, basename)
         if not os.path.isdir(os.path.dirname(target)):
@@ -73,7 +73,7 @@ class IfpPMP(PMP):
 
     def upload(self, song):
         filename = song["~filename"]
-        basename = song["~basename"]
+        basename = song("~basename")
         dirname = os.path.basename(os.path.dirname(filename))
         target = os.path.join(dirname, basename)
 
@@ -81,7 +81,7 @@ class IfpPMP(PMP):
         # on a noisy USB line.
         if dirname not in self.madedir:
             os.system("ifp mkdir %r> /dev/null 2>/dev/null" % dirname)
-            madedir.append(dirname)
+            self.madedir.append(dirname)
         if os.system("ifp upload %r %r > /dev/null" % (filename, target)):
             raise error(_("Unable to upload <b>%s</b>. The device may be "
                           "out of space, or turned off.")%(
