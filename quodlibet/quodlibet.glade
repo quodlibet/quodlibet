@@ -317,7 +317,7 @@
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
-	      <signal name="activate" handler="text_parse" last_modification_time="Thu, 07 Oct 2004 06:26:33 GMT"/>
+	      <signal name="clicked" handler="text_parse" last_modification_time="Fri, 08 Oct 2004 04:06:45 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

@@ -72,9 +72,8 @@ class OggFile(dict):
             v = u"\n".join(map(unicode, v))
             self[unicode(k).lower()] = v
 
-songs = []
-
 def load(dirs):
+    songs = []
     for d in dirs:
         print "Checking", d
         d = os.path.expanduser(d)
@@ -82,3 +81,5 @@ def load(dirs):
             for fn in fnames:
                 m = MusicFile(os.path.join(path, fn))
                 if m: songs.append(m)
+
+    return songs
