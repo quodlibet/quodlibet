@@ -641,6 +641,11 @@ class PlaylistBar(object):
         self.cb = cb
         hbox.show_all()
 
+    def destroy(self):
+        self.combo.set_model(None)
+        self.button.destroy()
+        self.combo.destroy()
+
     def list_selected(self, box):
         active = box.get_active()
         self.button.set_sensitive(active != 0)
@@ -670,6 +675,11 @@ class SearchBar(object):
         hbox.pack_start(self.button, expand = False)
         hbox.show_all()
         self.cb = cb
+
+    def destroy(self):
+        self.combo.set_model(None)
+        self.button.destroy()
+        self.combo.destroy()
 
     def activate(self):
         self.button.clicked()
@@ -1326,15 +1336,24 @@ class MainWindow(MultiInstanceWidget):
         if not isinstance(self.browser, SearchBar):
             for child in self.widgets["query_hbox"].get_children():
                 self.widgets["query_hbox"].remove(child)
+            if self.browser:
+                self.browser.destroy()
+                self.browser = None
+            else:
+                self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser = SearchBar(self.widgets["query_hbox"],
                                      _("Search"), self.text_parse)
-            self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser.set_text(config.get("memory", "query"))
 
     def show_listselect(self, *args):
         if not isinstance(self.browser, PlaylistBar):
             for child in self.widgets["query_hbox"].get_children():
                 self.widgets["query_hbox"].remove(child)
+            if self.browser:
+                self.browser.destroy()
+                self.browser = None
+            else:
+                self.showhide_widget(self.widgets["query_hbox"], True)
             self.browser = PlaylistBar(self.widgets["query_hbox"],
                                        self.playlist_selected)
 
@@ -1351,6 +1370,7 @@ class MainWindow(MultiInstanceWidget):
             self.showhide_widget(self.widgets["query_hbox"], False)
             for child in self.widgets["query_hbox"].get_children():
                 self.widgets["query_hbox"].remove(child)
+            self.browser.destroy()
             self.browser = None
 
     # Grab the text from the query box, parse it, and make a new filter.
