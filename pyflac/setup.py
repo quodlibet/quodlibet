@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup, Extension
-setup(name = "pyflac", version = "0.0.2",
+setup(name = "pyflac", version = "0.0.3",
       url="http://sacredchao.net/~piman/software/python.shtml",
       description = "libFLAC wrapper",
       author = "David Collett",
@@ -12,7 +12,7 @@ setup(name = "pyflac", version = "0.0.2",
       long_description = """
 This is a simple wrapper for some of libFLAC, namely the file decoder, file
 encoder, and metadata interfaces. Most of the functions of these interfaces
-are working (I think)..""",
+are working (I think).""",
       packages = ["flac"],
       ext_modules = [Extension('flac/_%s' % i, ['flac/%s_wrap.c' % i],
                                libraries = ['FLAC']) for i in
