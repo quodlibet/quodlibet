@@ -87,6 +87,12 @@ class StringTests(TestCase):
         self.failUnlessEqual(decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
         self.failUnlessEqual(encode(u"abcde"), "abcde")
 
+    def test_capitalize(self):
+        self.failUnlessEqual(util.capitalize(""), "")
+        self.failUnlessEqual(util.capitalize("aa b"), "Aa b")
+        self.failUnlessEqual(util.capitalize("aa B"), "Aa B")
+        self.failUnlessEqual(util.capitalize("!aa B"), "!aa B")
+
     def test_title(self):
         self.failUnlessEqual(util.title(""), "")
         self.failUnlessEqual(util.title("foobar"), "Foobar")

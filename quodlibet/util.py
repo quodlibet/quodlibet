@@ -138,6 +138,9 @@ def iscommand(s):
             if os.path.exists(p2): return True
         else: return False
 
+def capitalize(str):
+    return str[:1].upper() + str[1:]
+
 # Split a string on ;s and ,s.
 def split_value(s, splitters = ",;&"):
     values = s.split("\n")
