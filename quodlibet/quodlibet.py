@@ -275,8 +275,7 @@ class GladeHandlers(object):
                          _("Unable to start a web browser"),
                          _("A web browser could not be found. Please set "
                            "your $BROWSER variable, or make sure "
-                           "/usr/bin/sensible-browser exists."),
-                         gtk.BUTTONS_OK).run()
+                           "/usr/bin/sensible-browser exists.")).run()
 
     def play_pause(button):
         player.playlist.paused ^= True

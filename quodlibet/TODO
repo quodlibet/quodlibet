@@ -10,4 +10,10 @@
   - New UI element(s) for selecting playlists or streams. Combobox next
     to search, Library/Playlist/Streams?
 - Look into eventual GStreamer port/use (for playing).
-  - This is probably going to end up not useful.
+  - This is probably going to end up not useful unless it solves the
+    skipping issue.
+- Portable device support
+  - Masking directories when devices aren't mounted
+  - Sending files to them (via some script, ~/.ql/send or something...)
+- A "better" ID3 library. But these are in short supply, and we'd just
+  write incompatible tags anyway.
