@@ -62,7 +62,8 @@ if __name__ == "__main__":
     w = widgets.ExFalsoWindow(sys.argv[1])
     w.show_all()
 
-    if os.path.exists(const.CONTROL):
+    if (os.path.exists(const.CONTROL) and
+        not config.getboolean('exfalso', 'shutup')):
         import qltk
         qltk.WarningMessage(
             w, _("Quod Libet is running"),

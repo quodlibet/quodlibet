@@ -85,6 +85,10 @@ def init(*rc_files):
 
           # initial column headers
           "headers": "~#track ~title~version ~album~part artist ~length"
+          },
+
+        "exfalso":
+        { "shutup": "false", # don't whine about QL running.
           }
         }
 
