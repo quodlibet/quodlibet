@@ -389,7 +389,8 @@ class MP3File(AudioFile):
                     value = value.encode("utf-8")
                     tag.append({'frameid': id3name, 'text': value })
 
-        for key in filter(lambda x: x not in self.INVERT_IDS and x[0] != "~",
+        for key in filter(lambda x: x not in self.INVERT_IDS and x[0] != "~"
+                                    and x != "date",
                           self.realkeys()):
             for value in self.list(key):
                 value = value.encode('utf-8')
