@@ -540,7 +540,10 @@ class PlaylistWindow(object):
 
     def add_query_results(self, text, sort):
         query = text.decode('utf-8').strip()
-        try: self.view.append_songs(library.query(query))
+        try:
+           songs = library.query(query)
+           songs.sort()
+           self.view.append_songs(songs)
         except ValueError: pass
 
 
@@ -1703,7 +1706,7 @@ class GetStringDialog(object):
         self.dialog.set_property('border-width', 12)
         self.dialog.set_resizable(False)
         self.dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                gtk.STOCK_NEW, gtk.RESPONSE_OK)
+                                gtk.STOCK_OPEN, gtk.RESPONSE_OK)
         self.dialog.vbox.set_spacing(6)
         self.dialog.set_default_response(gtk.RESPONSE_OK)
 
