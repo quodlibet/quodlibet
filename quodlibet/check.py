@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python -u
 # check.py -- check for system requirements
 # public domain
 
@@ -7,13 +7,13 @@ NAME = "Quod Libet"
 import sys
 
 if __name__ == "__main__":
-    sys.stdout.write("Checking Python version: ")
-    sys.stdout.write(".".join(map(str, sys.version_info[:2])) + "\n")
+    print "Checking Python version:",
+    print ".".join(map(str, sys.version_info[:2]))
     if sys.version_info < (2, 3):
-        raise SystemExit("%s requires at least Python 2.3. "
+        raise SystemExit("%s requires at least Python 2.3."
                          "(http://www.python.org)" % NAME)
 
-    sys.stdout.write("Checking for PyGTK >= 2.4: ")
+    print "Checking for PyGTK >= 2.4:",
     try:
         import pygtk
         pygtk.require('2.0')
@@ -26,28 +26,28 @@ if __name__ == "__main__":
                          "(http://www.pygtk.org)" % NAME)
     else: print "found"
 
-    sys.stdout.write("Checking for ogg.vorbis: ")
+    print "Checking for ogg.vorbis:",
     try: import ogg.vorbis
     except ImportError:
         print ("not found\n%s recommends libvorbis/pyvorbis. "
                "(http://www.andrewchatham.com/pyogg/)" % NAME)
     else: print "found"
 
-    sys.stdout.write("Checking for MAD: ")
+    print "Checking for MAD:",
     try: import mad
     except ImportError:
         print ("not found\n%s recommends MAD/pymad. "
                "(http://www.mars.org/home/rob/proj/mpeg/)" % NAME)
     else: print "found"
 
-    sys.stdout.write("Checking for id3lib: ")
+    print "Checking for id3lib: ",
     try: import pyid3lib
     except ImportError:
         print ("not found\n%s recommends id3lib. "
                "(http://pyid3lib.sourceforge.net/)" % NAME)
     else: print "found"
 
-    sys.stdout.write("Checking for pyflac: ")
+    print "Checking for pyflac:",
     try: import flac
     except ImportError:
         print ("not found\n%s recommends pyflac. "
@@ -55,7 +55,7 @@ if __name__ == "__main__":
                "software/pyflac-0.0.1.tar.gz)" % NAME)
     else: print "found"
 
-    sys.stdout.write("Checking for ao: ")
+    print "Checking for ao:",
     try: import ao
     except ImportError:
         print ("not found\n%s recommends libao/pyao "
