@@ -207,9 +207,8 @@ class AOAudioDevice(object):
         self.dev.play(buf, len(buf))
 
 class PlaylistPlayer(object):
-    def __init__(self, output = None, playlist = []):
-        if output: self.output = output
-        else: self.output = DummyOutput()
+    def __init__(self, output, playlist = []):
+        self.output = output
         self.playlist = playlist
         self.played = []
         self.orig_playlist = playlist[:]
