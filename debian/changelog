@@ -1,5 +1,6 @@
 quodlibet (0.7-1) unstable; urgency=low
 
+  * Upload to the Debian archive. (Closes: #285707)
   * New upstream release.
   * Split package into arch: all (quodlibet) and arch: any (quodlibet-ext)
     components.
