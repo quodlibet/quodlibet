@@ -70,8 +70,10 @@ def init(*rc_files):
     _config.set("memory", "volume", "1.0")
     _config.set("memory", "browser", "1")
     _config.set("memory", "songlist", "true")
+    _config.set("memory", "sortby", "0artist")
 
     for k, v in {"query_text": "",
+                 "pane_selection": "<b>All</b>\n<b>All</b>",
                  "panes": "artist album"}.items():
         _config.set("browsers", k, v)
 

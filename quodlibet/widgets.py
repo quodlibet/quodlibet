@@ -244,7 +244,7 @@ class PreferencesWindow(gtk.Window):
             panes = " ".join([c.child.get_text() for c in cbes])
             config.set('browsers', 'panes', panes)
             if hasattr(widgets.main.browser, 'refresh_panes'):
-                widgets.main.browser.refresh_panes()
+                widgets.main.browser.refresh_panes(restore = True)
 
     class Player(_Pane, gtk.VBox):
         def __init__(self):
@@ -908,12 +908,11 @@ class PanedBrowser(Browser, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self, spacing = 3)
         self.__cb = cb
-        self.refresh_panes()
+        self.refresh_panes(restore = False)
         self.set_homogeneous(True)
         self.set_size_request(100, 100)
-        player.playlist.sort_by("album")
 
-    def refresh_panes(self):
+    def refresh_panes(self, restore = True):
         for c in self.get_children(): c.destroy()
         # fill in the pane list. the last pane reports back to us.
         self._panes = [self]
@@ -924,7 +923,7 @@ class PanedBrowser(Browser, gtk.HBox):
         map(self.pack_start, self._panes)
         self.__inhibit = True
         self._panes[0].fill(library.values())
-        self.restore()
+        if restore: self.restore()
         self.show_all()
 
     def can_filter(self, key):
@@ -1354,6 +1353,9 @@ class MainWindow(gtk.Window):
         sw.add(self.songlist)
         widgets.songs = gtk.ListStore(object)
         self.set_column_headers(config.get("settings", "headers").split())
+        sort = config.get('memory', 'sortby')
+        self.songlist.set_sort_by(None, sort[1:], refresh=True,
+                                  order=int(sort[0]))
         self.child.pack_end(sw)
         self.songlist.connect('row-activated', self.select_song)
         self.songlist.connect('button-press-event', self.songs_button_press)
@@ -2293,21 +2295,27 @@ class MainSongList(SongList):
         column.connect('notify::width', self.save_widths)
 
     # Resort based on the header clicked.
-    def set_sort_by(self, header, tag = None, refresh = True):
+    def set_sort_by(self, header, tag = None, refresh = True, order = None):
         s = gtk.SORT_ASCENDING
         if header and tag is None: tag = header.header_name
-        if header:
-            s = header.get_sort_order()
-            if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
-                s = gtk.SORT_ASCENDING
-            else: s = gtk.SORT_DESCENDING
 
         for h in self.get_columns():
-            h.set_sort_indicator(False)
-        if header:
-            header.set_sort_indicator(True)
-            header.set_sort_order(s)
+            if h.header_name == tag:
+                if order is None:
+                    s = header.get_sort_order()
+                    if (not header.get_sort_indicator() or
+                        s == gtk.SORT_DESCENDING):
+                        s = gtk.SORT_ASCENDING
+                    else: s = gtk.SORT_DESCENDING
+                else:
+                    if order: s == gtk.SORT_ASCENDING
+                    else: s = gtk.SORT_DESCENDING
+                h.set_sort_indicator(True)
+                h.set_sort_order(s)
+            else: h.set_sort_indicator(False)
         player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
+        config.set('memory', 'sortby', "%d%s" % (s == gtk.SORT_ASCENDING,
+                                                 tag))
         if refresh: self.refresh()
 
     # Clear the songlist and readd the songs currently wanted.
