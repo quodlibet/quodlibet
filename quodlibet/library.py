@@ -595,8 +595,11 @@ class Library(dict):
         del(self[song['~filename']])
 
     def add(self, fn):
-        song = MusicFile(fn)
-        if song: self[fn] = song
+        if fn not in self:
+            song = MusicFile(fn)
+            if song: self[fn] = song
+            return bool(song)
+        else: return True
 
     def reload(self, song):
         self.remove(song)

@@ -55,6 +55,13 @@ def check_mod():
     except ImportError: return False
     else: return True
 
+def parse_time(timestr):
+    try:
+        return reduce(lambda s, a: s * 60 + int(a),
+                      sre.split(":|\\.", timestr), 0)
+    except:
+        return 0
+
 def format_time(time):
     if time > 3600: # 1 hour
         return _("%d:%02d:%02d") % (time / 3600, (time % 3600) / 60, time % 60)

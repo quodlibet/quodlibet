@@ -9,6 +9,7 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
  - The titlecase algorithm has been adjusted slightly.
  - Tag By Pattern values can be edited before being saved.
  - Right-clicking on the status icon brings up a menu.
+ - --play, --pause, --seek-to, --query, --play-file.
 
 0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).

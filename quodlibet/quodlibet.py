@@ -73,6 +73,9 @@ class GTKSongInfoWrapper(object):
         if c == "<": self._previous()
         elif c == ">": self._next()
         elif c == "-": self._playpause()
+        elif c == ")": player.playlist.paused = False
+        elif c == "|": player.playlist.paused = True
+        elif c == "0": player.playlist.seek(0)
         elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
         elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
         elif c == "_": self.volume.set_value(0)
@@ -81,6 +84,19 @@ class GTKSongInfoWrapper(object):
             if not window.get_property('visible'):
                 window.move(*self.window_pos)
             widgets["main_window"].present()
+        elif c == "q": make_query(os.read(source, 4096))
+        elif c == "s":
+            player.playlist.seek(util.parse_time(os.read(source, 20)) * 1000)
+        elif c == "p":
+            filename = os.read(source, 4096)
+            if library.add(filename):
+                song = library[filename]
+                if song not in player.playlist.get_playlist():
+                    make_query("filename = /%s/c" % sre.escape(filename))
+                player.playlist.go_to(library[filename])
+                player.playlist.paused = False
+            else:
+                print "W: Unable to load %s" % filename
 
         os.close(self.fifo)
         self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
@@ -1659,12 +1675,18 @@ Quod Libet - a music library and player
 Options:
   --help, -h        Display this help message
   --version         Display version and copyright information
-  --refresh-library Rescan your song cache; remove dead files; add new ones;
-                    and then exit.
+  --refresh-library Rescan your song cache and then exit.
   --print-playing   Print the currently playing song.
 
-  --next, --previous, --play-pause, --volume-up, -volume-down
+  --next, --previous, --play-pause, --volume-up, -volume-down,
+  --play, --pause
     Control a currently running instance of Quod Libet.
+  --query search-string
+    Search in a running instance of Quod Libet.
+  --seek-to [HH:MM:]SS
+    Seek to a position in the current song.
+  --play-file filename
+    Play this file, adding it to the library if necessary.
 
 For more information, see the manual page (`man 1 quodlibet').
 """)
@@ -1767,8 +1789,6 @@ if __name__ == "__main__":
     gettext.install("quodlibet", i18ndir, unicode = 1)
     _ = gettext.gettext
 
-    # Get to the right directory for our data.
-    os.chdir(basedir)
     if os.path.exists(os.path.join(basedir, "quodlibet.zip")):
         sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
 
@@ -1776,26 +1796,39 @@ if __name__ == "__main__":
 
     # Check command-line parameters before doing "real" work, so they
     # respond quickly.
-    for command in sys.argv[1:]:
-        if command in ["--help", "-h"]: print_help()
-        elif command in ["--next"]: control(">")
-        elif command in ["--previous"]: control("<")
-        elif command in ["--play-pause"]: control("-")
-        elif command in ["--volume-up"]: control("^")
-        elif command in ["--volume-down"]: control("v")
-        elif command in ["--version", "-v"]: print_version()
-        elif command in ["--refresh-library"]: refresh_cache()
-        elif command in ["--print-playing"]:
-            try: print_playing(sys.argv[2])
-            except IndexError: print_playing()
-        else:
-            print _("E: Unknown command line option: %s") % command
-            raise SystemExit(_("E: Try %s --help") % sys.argv[0])
+    opts = sys.argv[1:]
+    controls = {"--next": ">", "--previous": "<", "--play": ")",
+                "--pause": "|", "--play-pause": "-", "--volume-up": "^",
+                "--volume-down": "v"}
+    try:
+        for i, command in enumerate(opts):
+            if command in ["--help", "-h"]: print_help()
+            elif command in ["--version", "-v"]: print_version()
+            elif command in ["--refresh-library"]: refresh_cache()
+            elif command in controls: control(controls[command])
+            elif command in ["--query"]:
+                control("q" + opts[i+1])
+            elif command in ["--play-file"]:
+                filename = os.path.abspath(os.path.expanduser(opts[i+1]))
+                control("p" + filename)
+            elif command in ["--seek-to"]:
+                control("s" + opts[i+1])
+            elif command in ["--print-playing"]:
+                try: print_playing(opts[i+1])
+                except IndexError: print_playing()
+            else:
+                print _("E: Unknown command line option: %s") % command
+                raise SystemExit(_("E: Try %s --help") % sys.argv[0])
+    except IndexError:
+        print _("E: Option `%s' requires an argument.") % command
+        raise SystemExit(_("E: Try %s --help") % sys.argv[0])
 
     if os.path.exists(const.CONTROL):
         print _("Quod Libet is already running.")
         control('!')
 
+    # Get to the right directory for our data.
+    os.chdir(basedir)
     # Initialize GTK/Glade.
     import pygtk
     pygtk.require('2.0')
