@@ -310,7 +310,7 @@ class PlaylistPlayer(object):
             else: self.playlist.insert(0, song)
         self.lock.release()
 
-        dump_fn = os.path.join(os.path.expanduser("~"), ".quodlibet", "current")
+        dump_fn = os.path.join(os.path.expanduser("~"),".quodlibet","current")
         while not self.quit:
             while self.playlist and not self.quit:
                 self.lock.acquire()
@@ -355,6 +355,12 @@ class PlaylistPlayer(object):
                     try: os.unlink(dump_fn)
                     except OSError: pass
                 time.sleep(0.1)
+
+    def reset(self):
+        self.lock.acquire()
+        self.playlist = self.orig_playlist[:]
+        self.paused = False
+        self.lock.release()
 
     def sort_by(self, header, reverse = False):
         self.lock.acquire()

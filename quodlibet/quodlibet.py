@@ -170,7 +170,7 @@ class GTKSongInfoWrapper(object):
             else: widgets["songlist"].scroll_to_cell(path)
 
     def _update_song(self, song, player):
-        for wid in ["web_button", "next_button", "play_button", "prop_menu",
+        for wid in ["web_button", "next_button", "prop_menu",
                     "play_menu", "jump_menu", "next_menu", "prop_button",
                     "filter_genre_menu", "filter_album_menu",
                     "filter_artist_menu"]:
@@ -341,7 +341,8 @@ class GladeHandlers(object):
                            "/usr/bin/sensible-browser exists.")).run()
 
     def play_pause(button):
-        player.playlist.paused ^= True
+        if CURRENT_SONG[0] is None: player.playlist.reset()
+        else: player.playlist.paused ^= True
 
     def jump_to_current(*args):
         widgets.wrap.scroll_to_current()
