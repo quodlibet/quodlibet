@@ -372,7 +372,7 @@ class DeleteDialog(gtk.Dialog):
     def __init__(self, parent, files):
         gtk.Dialog.__init__(self, _("Deleting files"), parent)
         self.set_border_width(6)
-        self.vbox.set_spacing(12)
+        self.vbox.set_spacing(6)
         self.action_area.set_border_width(0)
         self.set_resizable(False)
         # This is the GNOME trash can for at least some versions.
@@ -386,9 +386,10 @@ class DeleteDialog(gtk.Dialog):
         self.add_button(gtk.STOCK_DELETE, 2)
 
         hbox = gtk.HBox()
+        hbox.set_border_width(6)
         i = gtk.Image()
         i.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_DIALOG)
-        i.set_padding(12, 12)
+        i.set_padding(12, 0)
         i.set_alignment(0.5, 0.0)
         hbox.pack_start(i, expand = False)
         vbox = gtk.VBox(spacing = 6)
@@ -2052,19 +2053,19 @@ class MainSongList(SongList):
         i = len(list(player.playlist))
         return i, length
 
-class GetStringDialog(object):
+class GetStringDialog(gtk.Dialog):
     def __init__(self, parent, title, text, options = []):
-        self.dialog = gtk.Dialog(parent = parent, title = title)
-        self.dialog.connect('close', self.destroy)
-        self.dialog.set_property('border-width', 12)
-        self.dialog.set_resizable(False)
-        self.dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+        gtk.Dialog.__init__(self, title, parent)
+        self.set_border_width(6)        
+        self.set_resizable(False)
+        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                 gtk.STOCK_OPEN, gtk.RESPONSE_OK)
-        self.dialog.vbox.set_spacing(6)
-        self.dialog.set_default_response(gtk.RESPONSE_OK)
+        self.vbox.set_spacing(6)
+        self.set_default_response(gtk.RESPONSE_OK)
 
         box = gtk.VBox(spacing = 6)
         lab = gtk.Label(text)
+        box.set_border_width(6)
         lab.set_line_wrap(True)
         lab.set_justify(gtk.JUSTIFY_CENTER)
         box.pack_start(lab)
@@ -2077,47 +2078,41 @@ class GetStringDialog(object):
         else:
             self.val = gtk.Entry()
             box.pack_start(self.val)
-        self.dialog.vbox.pack_start(box)
+        self.vbox.pack_start(box)
+        self.child.show_all()
 
     def run(self):
-        self.dialog.show_all()
+        self.show()
         self.val.set_text("")
         self.val.set_activates_default(True)
         self.val.grab_focus()
-        resp = self.dialog.run()
+        resp = gtk.Dialog.run(self)
         if resp == gtk.RESPONSE_OK:
             value = self.val.get_text()
         else: value = None
         self.destroy()
         return value
 
-    def destroy(self, *args):
-        self.dialog.destroy()
-
-class AddTagDialog(object):
+class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change):
         if can_change == True:
-            self.limit = False
             can = ["title", "version", "artist", "album",
-                        "performer", "discnumber"]
-        else:
-            self.limit = True
-            can = can_change
+                   "performer", "discnumber"]
+        else: can = can_change
         can.sort()
 
-        self.dialog = gtk.Dialog(parent = parent, title = _("Add a new tag"))
-        self.dialog.connect('close', self.destroy)
-        self.dialog.set_border_width(12)
-        self.dialog.set_resizable(False)
-        self.dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+        gtk.Dialog.__init__(self, _("Add a new tag"), parent)
+        self.set_border_width(6)
+        self.set_resizable(False)
+        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                 gtk.STOCK_ADD, gtk.RESPONSE_OK)
-        self.dialog.vbox.set_spacing(12)
-        self.dialog.set_has_separator(False)
-        self.dialog.set_default_response(gtk.RESPONSE_OK)
+        self.vbox.set_spacing(6)
+        self.set_default_response(gtk.RESPONSE_OK)
         table = gtk.Table(2, 2)
         table.set_row_spacings(12)
         table.set_col_spacings(6)
-        
+        table.set_border_width(6)
+
         if can_change == True:
             self.tag = gtk.combo_box_entry_new_text()
             for tag in can: self.tag.append_text(tag)
@@ -2143,7 +2138,8 @@ class AddTagDialog(object):
         table.attach(label, 0, 1, 1, 2)
         table.attach(self.val, 1, 2, 1, 2)
 
-        self.dialog.vbox.pack_start(table)
+        self.vbox.pack_start(table)
+        self.child.show_all()
 
     def get_tag(self):
         try: return self.tag.child.get_text().lower().strip()
@@ -2154,18 +2150,12 @@ class AddTagDialog(object):
         return self.val.get_text().decode("utf-8")
 
     def run(self):
-        self.dialog.show_all()
-        try: self.tag.child.set_text("")
-        except AttributeError: pass
-        self.val.set_text("")
+        self.show()
         try: self.tag.child.set_activates_default(True)
         except AttributeError: pass
         self.val.set_activates_default(True)
         self.tag.grab_focus()
-        return self.dialog.run()
-
-    def destroy(self, *args):
-        self.dialog.destroy()
+        return gtk.Dialog.run(self)
 
 class SongProperties(gtk.Window):
 
@@ -2750,8 +2740,7 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(True)
 
         def add_tag(self, *args):
-            add = AddTagDialog(self.prop.window,
-                               self.songinfo.can_change())
+            add = AddTagDialog(self.prop, self.songinfo.can_change())
 
             while True:
                 resp = add.run()
@@ -2761,13 +2750,13 @@ class SongProperties(gtk.Window):
                 date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
                 if not self.songinfo.can_change(comment):
                     qltk.ErrorMessage(
-                        self.prop.window, _("Invalid tag"),
+                        self.prop, _("Invalid tag"),
                         _("Invalid tag <b>%s</b>\n\nThe files currently"
                           " selected do not support editing this tag.")%
                         util.escape(comment)).run()
 
                 elif comment == "date" and not date.match(value):
-                    qltk.ErrorMessage(self.prop.window, _("Invalid date"),
+                    qltk.ErrorMessage(self.prop, _("Invalid date"),
                                       _("Invalid date: <b>%s</b>.\n\n"
                                         "The date must be entered in YYYY or "
                                         "YYYY-MM-DD format.") % value).run()
@@ -2810,7 +2799,7 @@ class SongProperties(gtk.Window):
                         deleted[row[0]].append(util.decode(row[5]))
             self.model.foreach(create_property_dict)
 
-            win = WritingWindow(self.prop.window, len(self.songs))
+            win = WritingWindow(self.prop, len(self.songs))
             for song in self.songs:
                 changed = False
                 for key, values in updated.iteritems():
@@ -2837,7 +2826,7 @@ class SongProperties(gtk.Window):
                     try: song.write()
                     except:
                         qltk.ErrorMessage(
-                            self.prop.window, _("Unable to edit song"),
+                            self.prop, _("Unable to edit song"),
                             _("Saving <b>%s</b> failed. The file "
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
@@ -2863,7 +2852,7 @@ class SongProperties(gtk.Window):
             row = model[path]
             date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if row[0] == "date" and not date.match(new):
-                qltk.WarningMessage(self.prop.window, _("Invalid date format"),
+                qltk.WarningMessage(self.prop, _("Invalid date format"),
                                     _("Invalid date: <b>%s</b>.\n\n"
                                       "The date must be entered in YYYY or "
                                       "YYYY-MM-DD format.") % new).run()
@@ -2994,7 +2983,7 @@ class SongProperties(gtk.Window):
             try: pattern = util.PatternFromFile(pattern_text)
             except sre.error:
                 qltk.ErrorMessage(
-                    self.prop.window, _("Invalid pattern"),
+                    self.prop, _("Invalid pattern"),
                     _("The pattern\n\t<b>%s</b>\nis invalid. "
                       "Possibly it contains the same tag twice or "
                       "it has unbalanced brackets (&lt; / &gt;).")%(
@@ -3016,7 +3005,7 @@ class SongProperties(gtk.Window):
                     msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
                             " selected do not support editing these tags.")
                     
-                qltk.ErrorMessage(self.prop.window, title,
+                qltk.ErrorMessage(self.prop, title,
                                   msg % ", ".join(invalid)).run()
                 return
 
@@ -3061,7 +3050,7 @@ class SongProperties(gtk.Window):
             pattern_text = self.entry.get_text().decode('utf-8')
             pattern = util.PatternFromFile(pattern_text)
             add = (self.addreplace.get_active() == 1)
-            win = WritingWindow(self.prop.window, len(self.songs))
+            win = WritingWindow(self.prop, len(self.songs))
 
             def save_song(model, path, iter):
                 song = model[path][0]
@@ -3085,7 +3074,7 @@ class SongProperties(gtk.Window):
                         song.write()
                     except:
                         qltk.ErrorMessage(
-                            self.prop.window, _("Unable to edit song"),
+                            self.prop, _("Unable to edit song"),
                             _("Saving <b>%s</b> failed. The file "
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
@@ -3205,7 +3194,7 @@ class SongProperties(gtk.Window):
             self.preview.set_sensitive(False)
 
         def rename_files(self, *args):
-            win = WritingWindow(self.prop.window, len(self.songs))
+            win = WritingWindow(self.prop, len(self.songs))
 
             def rename(model, path, iter):
                 song = model[path][0]
@@ -3217,8 +3206,7 @@ class SongProperties(gtk.Window):
                     songref_update_view(song)
                 except:
                     qltk.ErrorMessage(
-                        self.prop.window,
-                        _("Unable to rename file"),
+                        self.prop, _("Unable to rename file"),
                         _("Renaming <b>%s</b> to <b>%s</b> failed. "
                           "Possibly the target file already exists, "
                           "or you do not have permission to make the "
@@ -3245,7 +3233,7 @@ class SongProperties(gtk.Window):
                 pattern = util.FileFromPattern(pattern)
             except ValueError: 
                 qltk.ErrorMessage(
-                    self.prop.window,
+                    self.prop,
                     _("Pattern with subdirectories is not absolute"),
                     _("The pattern\n\t<b>%s</b>\ncontains / but "
                       "does not start from root. To avoid misnamed "
@@ -3348,7 +3336,7 @@ class SongProperties(gtk.Window):
             self.pack_start(bbox, expand = False)
 
         def save_files(self, *args):
-            win = WritingWindow(self.prop.window, len(self.songs))
+            win = WritingWindow(self.prop, len(self.songs))
             def settrack(model, path, iter):
                 song = model[iter][0]
                 track = model[iter][2]
@@ -3357,7 +3345,7 @@ class SongProperties(gtk.Window):
                 try: song.write()
                 except:
                     qltk.ErrorMessage(
-                        self.prop.window, _("Unable to edit song"),
+                        self.prop, _("Unable to edit song"),
                         _("Saving <b>%s</b> failed. The file may be "
                           "read-only, corrupted, or you do not have "
                           "permission to edit it.")%(
