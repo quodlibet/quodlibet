@@ -1551,7 +1551,7 @@ class SongList(object):
         if not self.recall_size:
             try: ws = map(int, config.get("memory", "widths").split())
             except: ws = []
-        else: ws =[]
+        else: ws = []
 
         if len(ws) != len(headers):
             width = self.recall_size or self.view.get_allocation()[2]
@@ -1569,7 +1569,6 @@ class SongList(object):
                 'text', model[iter][0].comma(column.header_name).decode(
                 code, "replace"))
 
-        searchcol = None
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
             title = tag(t)
@@ -1579,7 +1578,6 @@ class SongList(object):
             if t in SHORT_COLS or t.startswith("~#"):
                 render.set_fixed_size(-1, -1)
             else:
-                if searchcol is None: searchcol = i
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_fixed_width(ws[i])
             if hasattr(self, 'set_sort_by'):
@@ -1594,13 +1592,6 @@ class SongList(object):
                 column.set_property('alignment', 1.0)
                 render.set_property('xalign', 1.0)
             self.view.append_column(column)
-
-        if searchcol:
-            def cell_equal(model, column, key, iter, col):
-                return (key.decode("utf-8") not in model[iter][0](col))
-
-            self.view.set_search_equal_func(cell_equal, headers[searchcol])
-            self.view.set_search_column(searchcol)
 
     def _set_column_settings(self, column):
         column.set_visible(True)
