@@ -3997,6 +3997,10 @@ class FileSelector(gtk.VPaned):
         dirlist.get_selection().connect(
             'changed', self.__fill, filelist)
         dirlist.get_selection().emit('changed')
+        def select_all_files(view, path, col, fileselection):
+            fileselection.select_all()
+        dirlist.connect('row-activated', select_all_files,
+            filelist.get_selection())
 
         sw = gtk.ScrolledWindow()
         sw.add(dirlist)
