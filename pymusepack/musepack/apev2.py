@@ -29,6 +29,7 @@ debug = _debug
 
 class error(IOError): pass
 class InvalidTagError(error): pass
+class NoTagWarning(Warning): pass
 
 class APETag(object):
     def __init__(self, filename):
@@ -36,10 +37,13 @@ class APETag(object):
         debug("loading %s" % self.filename)
         f = file(filename)
 
-        self.tag_offset(f)
-        debug("tag offset: %#x" % self.offset)
-        f.seek(self.offset)
+        offset = self.tag_offset(f)
+        debug("tag offset: %#x" % offset)
+        f.seek(offset)
+        self.parse_tag(f)
+        f.close()
 
+    def parse_tag(self, f):
         f.read(8) # "APETAGEX"
 
         # 4 byte version
@@ -69,7 +73,6 @@ class APETag(object):
         tag_data = f.read(tag_size)
         if len(tag_data) < tag_size:
             debug("W: tag size does not match file size")
-        f.close()
 
         self.dict = {}
 
@@ -97,9 +100,7 @@ class APETag(object):
         # In the interest of my sanity this only reads tags at the end.
 
         # TODO:
-        # * Check existing offset if available
-        # * Check for footerness, rewind to right point
-        # * If all else fails scan the whole file
+        # * Check for footer, rewind to right point
         f.seek(0, 2)
         size = min(10240, f.tell())
         f.seek(-size, 2)
@@ -107,8 +108,10 @@ class APETag(object):
 
         # store offset to the start of the tag
         try: index = data.index("APETAGEX")
-        except ValueError: raise InvalidTagError("no tag header found")
-        else: self.offset = (f.tell() - size) + index
+        except ValueError:
+            debug("no APE tag found")
+            index = size
+        return (f.tell() - size) + index
 
     def __iter__(self): return self.dict.iteritems()
     def keys(self): return self.dict.keys()
@@ -134,10 +137,9 @@ class APETag(object):
 
     def write(self, filename = None):
         filename = filename or self.filename
-        offset = self.offset
         f = file(filename, "ab+")
-        self.tag_offset(f)
-        if offset != self.offset: debug("file offsets don't match")
+        offset = self.tag_offset(f)
+
         f.seek(offset, 0)
         f.truncate()
 
@@ -154,7 +156,6 @@ class APETag(object):
             "\0" * 8)
         f.write(header)
 
-        # data
         f.write(tags)
 
         footer = "APETAGEX%s%s" %(
@@ -167,7 +168,7 @@ class APETag(object):
 
 class APEKey(str):
     """An APE key is an ASCII string of length 2 to 255. The specification's
-    case rules are nonsense, so this object is case-preserving but not
+    case rules are silly, so this object is case-preserving but not
     case-sensitive, i.e. "album" == "Album"."""
 
     def __cmp__(self, o):

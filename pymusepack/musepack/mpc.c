@@ -35,24 +35,29 @@ typedef struct {
 } MPCFile;
 
 /* standard MPC reader callbacks */
-mpc_int32_t read_impl(MPCFile *data, void *ptr, mpc_int32_t size) {
-    return fread(ptr, 1, size, data->file);
+mpc_int32_t read_impl(void *data, void *ptr, mpc_int32_t size) {
+  MPCFile *d = (MPCFile *)data;
+  return fread(ptr, 1, size, d->file);
 }
 
-BOOL seek_impl(MPCFile *data, mpc_int32_t offset) {
-    return data->seekable ? !fseek(data->file, offset, SEEK_SET) : FALSE;
+BOOL seek_impl(void *data, mpc_int32_t offset) {
+  MPCFile *d = (MPCFile *)data;
+  return (d->seekable && !fseek(d->file, offset, SEEK_SET));
 }
 
-mpc_int32_t tell_impl(MPCFile *data) {
-    return ftell(data->file);
+mpc_int32_t tell_impl(void *data) {
+  MPCFile *d = (MPCFile *)data;
+  return ftell(d->file);
 }
 
-mpc_int32_t get_size_impl(MPCFile *data) {
-    return data->size;
+mpc_int32_t get_size_impl(void *data) {
+  MPCFile *d = (MPCFile *)data;
+  return d->size;
 }
 
-BOOL canseek_impl(MPCFile *data) {
-    return data->seekable;
+BOOL canseek_impl(void *data) {
+  MPCFile *d = (MPCFile *)data;
+  return d->seekable;
 }
 
 static PyObject
@@ -95,7 +100,12 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
   self->file = f;
   self->size = st.st_size;
   self->seekable = TRUE;
-  self->reader = malloc(sizeof(mpc_reader));
+
+  if (!(self->reader = (mpc_reader *)malloc(sizeof(mpc_reader)))) {
+    PyErr_SetString(PyExc_MemoryError, "unable to allocate reader");
+    return -1;
+  }
+
   self->reader->read = read_impl;
   self->reader->seek = seek_impl;
   self->reader->tell = tell_impl;
@@ -105,19 +115,28 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
 
   mpc_streaminfo info;
   if (mpc_streaminfo_read(&info, self->reader) != ERROR_CODE_OK) {
+    free(self->reader);
     PyErr_SetString(PyExc_IOError, "not a valid musepack file");
     return -1;
   }
 
-  self->decoder = malloc(sizeof(mpc_decoder));
+  if (!(self->decoder = malloc(sizeof(mpc_decoder)))) {
+    free(self->reader);
+    PyErr_SetString(PyExc_MemoryError, "unable to allocate decoder");
+    return -1;
+  }
+
   mpc_decoder_setup(self->decoder, self->reader);
   if (!mpc_decoder_initialize(self->decoder, &info)) {
+    free(self->decoder);
+    free(self->reader);
     PyErr_SetString(PyExc_IOError, "error initializing decoder");
     return -1;
   }
 
   self->frequency = info.sample_freq;
   self->length = (int)(mpc_streaminfo_get_length(&info) * 1000);
+
   return 0;
 }
 
@@ -135,7 +154,7 @@ static PyMemberDef MPCFile_members[] = {
     {"frequency", T_INT, offsetof(MPCFile, frequency), 0,
      "the sample frequency in Hz"},
     {"position", T_DOUBLE, offsetof(MPCFile, position), 0,
-     "the song position in milliseconds"},
+     "the song position in milliseconds in a float"},
     {NULL}
 };
 
@@ -147,6 +166,8 @@ static int shift_signed(MPC_SAMPLE_FORMAT val, int shift) {
 }
 #endif
 
+/* convert the MPC sample format (which are doubles) to a C string
+   such as Python expects for its constructor. */
 static void mpc_to_str(MPC_SAMPLE_FORMAT *from, char* to, unsigned int st) {
   unsigned int m_bps = 16;
   unsigned n;
@@ -178,7 +199,7 @@ static PyObject *MPCFile_read(MPCFile *self, PyObject *args, PyObject *kwds) {
   /* status is the number of samples, -1 for error, 0 for EOF */
 
   if (status == -1) {
-    PyErr_SetString(PyExc_IOError, "not a valid musepack file");
+    PyErr_SetString(PyExc_IOError, "unable to read from file");
     return NULL;
   } else if (status == 0) {
     return Py_BuildValue("s", "");
@@ -210,11 +231,10 @@ static PyObject *MPCFile_seek(MPCFile *self, PyObject *args, PyObject *kwds) {
 }
 
 static PyMethodDef MPCFile_methods[] = {
-  {"read", (PyCFunction)MPCFile_read, METH_KEYWORDS,
-   "Return stereo audio data of no more than the given length.\n\
-    If you are at the end of the file, an empty string will\n\
-    be returned. The read length needs to be reasonably large\n\
-    (at least 10 bytes); the default value is 1024 bytes."
+  {"read", (PyCFunction)MPCFile_read, METH_NOARGS,
+   "Return stereo audio data in a Python string. If\n\
+    you are at the end of the file, an empty string will\n\
+    be returned."
     },
   {"seek", (PyCFunction)MPCFile_seek, METH_KEYWORDS,
    "Seek to the specified position (in milliseconds).\n\
