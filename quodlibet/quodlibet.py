@@ -749,6 +749,7 @@ def main():
     t = threading.Thread(target = player.playlist.play,
                          args = (widgets.wrap,))
     gc.collect()
+    util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
     signal.signal(signal.SIGINT, gtk.main_quit)
     t.start()
     gtk.main()
