@@ -128,6 +128,15 @@ class AudioFile(dict):
             text += album
         return text
 
+    def to_short(self):
+        if self.unknown("album"):
+            return "%s - %s" % (self.comma("artist"), self.comma("title"))
+        elif "tracknumber" in self:
+            return "%s - %s - %s" %(
+                self.comma("album"), self.comma("tracknumber"),
+                self.comma("title"))
+        else: return "%s - %s" % (self.comma("album"), self.comma("title"))
+
     def get_played(self):
         count = self["=playcount"]    
         if count == 0: return "Never"

@@ -29,6 +29,13 @@ class AudioFileTest(TestCase):
         self.failUnless(song1.realkeys() in [["a", "b"], ["b", "a"]])
         self.failIf(song1.exists())
         self.failIf(song1.valid())
+        song1["title"] = "a song"
+        song1["artist"] = "piman"
+        self.failUnlessEqual(song1.to_short(), "piman - a song")
+        song1["album"] = "happy"
+        self.failUnlessEqual(song1.to_short(), "happy - a song")
+        song1["tracknumber"] = "12/14"
+        self.failUnlessEqual(song1.to_short(), "happy - 12/14 - a song")
 
     def test_setters(self):
         song = AudioFile({ "=filename": "undef",

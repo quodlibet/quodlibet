@@ -19,10 +19,15 @@ install:
 	install -m 644 $(NAME).1 $(DESTDIR)$(PREFIX)/share/man/man1/$(NAME).1
 	ln -sf ../$(TO)/$(NAME).py $(DESTDIR)$(PREFIX)/bin/$(NAME)
 clean:
-	rm -f *.pyc */*.pyc $(NAME).zip
+	rm -f *.pyc */*.pyc $(NAME).zip statusicon.so
+	cd statusicon && make clean
 
 distclean: clean
 	rm -f *~ \#* *.bak *.orig */*~ */\#* */*.bak */*.orig
+
+statusicon.so:
+	cd statusicon && make && cd ..
+	cp statusicon/statusicon.so .
 
 test:
 	python -c "import tests; tests.unit()"

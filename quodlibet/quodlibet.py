@@ -27,8 +27,22 @@ class GTKSongInfoWrapper(object):
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
 
+        try:
+            import statusicon
+            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+            self.icon = statusicon.StatusIcon(p)
+            self.icon.connect("activate", self._toggle_window, ())
+        except:
+            print "W: Failed to initialize status icon."
+            self.icon = None
+
         self._time = (0, 1)
         gtk.timeout_add(300, self._update_time)
+
+    def _toggle_window(self, *args):
+        w = widgets["main_window"]
+        if w.get_property('visible'): w.hide()
+        else: w.show()
 
     # The pattern of getting a call from the playing thread and then
     # queueing an idle function prevents thread-unsafety in GDK.
@@ -83,8 +97,12 @@ class GTKSongInfoWrapper(object):
             self.vbar.show()
 
     def update_markup(self, song):
-        if song: self.text.set_markup(song.to_markup())
-        else: self.text.set_markup("<span size='xx-large'>Not playing</span>")
+        if song:
+            self.text.set_markup(song.to_markup())
+            if self.icon: self.icon.set_tooltip(song.to_short(), "magic")
+        else:
+            self.text.set_markup("<span size='xx-large'>Not playing</span>")
+            if self.icon: self.icon.set_tooltip("Not playing", "magic")
 
     def _update_song(self, song, player):
         if song:
