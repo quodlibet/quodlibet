@@ -309,6 +309,7 @@ class GladeHandlers(object):
 
         # Fill in the scanned directories.
         widgets["scan_opt"].set_text(config.get("settings", "scan"))
+        widgets["split_entry"].set_text(config.get("settings", "splitters"))
         widgets["prefs_window"].show()
 
     def set_headers(*args):
@@ -331,6 +332,9 @@ class GladeHandlers(object):
 
     def change_scan(*args):
         config.set("settings", "scan", widgets["scan_opt"].get_text())
+
+    def prefs_change_split(*args):
+        config.set("settings", "splitters", widgets["split_entry"].get_text())
 
     def toggle_color(toggle):
         config.set("settings", "color", str(bool(toggle.get_active())))
@@ -532,7 +536,8 @@ class MultiInstanceWidget(object):
     def split_into_list(self, *args):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
-        vals = util.split_value(util.unescape(row[1]))
+        spls = config.get("settings", "splitters")
+        vals = util.split_value(util.unescape(row[1]), spls)
         if vals[0] != util.unescape(row[1]):
             row[1] = util.escape(vals[0])
             row[2] = True
@@ -541,7 +546,8 @@ class MultiInstanceWidget(object):
     def split_title(self, *args):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
-        title, versions = util.split_title(util.unescape(row[1]))
+        spls = config.get("settings", "splitters")
+        title, versions = util.split_title(util.unescape(row[1]), spls)
         if title != util.unescape(row[1]):
             row[1] = util.escape(title)
             row[2] = True
@@ -699,7 +705,8 @@ class MultiInstanceWidget(object):
         self.artist.set_markup(songinfo['artist'].safenicestr())
         self.title.set_markup(songinfo['title'].safenicestr())
         self.album.set_markup(songinfo['album'].safenicestr())
-        self.filename.set_markup(songinfo['=filename'].safenicestr())
+        filename = util.unexpand(songinfo['=filename'].safenicestr())
+        self.filename.set_markup(filename)
 
         if len(self.songrefs) > 1:
             listens = sum([song["=playcount"] for song, i in self.songrefs])

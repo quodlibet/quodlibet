@@ -760,7 +760,7 @@
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
   <property name="modal">False</property>
-  <property name="resizable">False</property>
+  <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">True</property>
@@ -799,7 +799,7 @@
 		<widget class="GtkHBox" id="hbox3">
 		  <property name="visible">True</property>
 		  <property name="homogeneous">False</property>
-		  <property name="spacing">5</property>
+		  <property name="spacing">6</property>
 
 		  <child>
 		    <widget class="GtkEntry" id="scan_opt">
@@ -1009,7 +1009,7 @@
 			<widget class="GtkCheckButton" id="artist_t">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">_Artist</property>
+			  <property name="label" translatable="yes">A_rtist</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
@@ -1292,6 +1292,104 @@
       </child>
 
       <child>
+	<widget class="GtkFrame" id="frame5">
+	  <property name="visible">True</property>
+	  <property name="label_xalign">0</property>
+	  <property name="label_yalign">0.5</property>
+	  <property name="shadow_type">GTK_SHADOW_NONE</property>
+
+	  <child>
+	    <widget class="GtkAlignment" id="alignment8">
+	      <property name="visible">True</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xscale">1</property>
+	      <property name="yscale">1</property>
+	      <property name="top_padding">0</property>
+	      <property name="bottom_padding">0</property>
+	      <property name="left_padding">12</property>
+	      <property name="right_padding">0</property>
+
+	      <child>
+		<widget class="GtkHBox" id="hbox10">
+		  <property name="visible">True</property>
+		  <property name="homogeneous">False</property>
+		  <property name="spacing">6</property>
+
+		  <child>
+		    <widget class="GtkLabel" id="label33">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Split _on:</property>
+		      <property name="use_underline">True</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0.5</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">6</property>
+		      <property name="mnemonic_widget">split_entry</property>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkEntry" id="split_entry">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Tag values will be split into multiple values using these characters</property>
+		      <property name="can_focus">True</property>
+		      <property name="editable">True</property>
+		      <property name="visibility">True</property>
+		      <property name="max_length">0</property>
+		      <property name="text" translatable="yes"></property>
+		      <property name="has_frame">True</property>
+		      <property name="invisible_char">*</property>
+		      <property name="activates_default">False</property>
+		      <signal name="changed" handler="prefs_change_split" last_modification_time="Thu, 11 Nov 2004 22:39:07 GMT"/>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">True</property>
+		      <property name="fill">True</property>
+		    </packing>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="label32">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Tag Editing&lt;/b&gt;&lt;/big&gt;</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">True</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	    </widget>
+	    <packing>
+	      <property name="type">label_item</property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
 	<widget class="GtkVBox" id="vbox12">
 	  <property name="visible">True</property>
 	  <property name="homogeneous">False</property>
@@ -1302,7 +1400,7 @@
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">When enabled, images with 'front' or 'cover' in their names are loaded and displayed next to the song title.</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Show album cover images</property>
+	      <property name="label" translatable="yes">Show album cover _images</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
@@ -1323,7 +1421,7 @@
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Display simple searches in blue, advanced ones in green, and invalid ones in red. Turn this off if your theme makes the colors hard to read.</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Color search terms</property>
+	      <property name="label" translatable="yes">C_olor search terms</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
@@ -1344,7 +1442,7 @@
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">When the current song changes, scroll  to it in the song list. You can do this manually by pressing Ctrl-J.</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Jump to current song automatically</property>
+	      <property name="label" translatable="yes">_Jump to current song automatically</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>

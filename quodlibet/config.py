@@ -27,7 +27,7 @@ def init(rc_file):
     _config.set("settings", "jump", "true")
     _config.set("settings", "cover", "true")
     _config.set("settings", "color", "true")
-    _config.set("settings", "splitters", ",;&")
+    _config.set("settings", "splitters", ",;&/")
     _config.set("settings", "headers", "=# title album artist")
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")

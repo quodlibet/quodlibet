@@ -77,11 +77,11 @@ def split_value(s, splitters = ",;&"):
         values = new_values
     return values
 
-def split_title(s):
+def split_title(s, splitters = ",;&"):
     title, subtitle = find_subtitle(s)
     if not subtitle: return (s, [])
     else:
-        return (title.strip(), split_value(subtitle))
+        return (title.strip(), split_value(subtitle, splitters))
 
 def split_album(s):
     name, disc = find_subtitle(s)
@@ -108,3 +108,8 @@ def find_subtitle(title):
                 title = title[:l]
                 return title.rstrip(), subtitle
     else: return title, None
+
+def unexpand(filename):
+    if filename.startswith(os.environ["HOME"]):
+        filename = filename.replace(os.environ["HOME"], "~", 1)
+    return filename
