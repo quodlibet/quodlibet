@@ -8,11 +8,21 @@
 # $Id$
 
 import os, sys
-import gc, sre, time, shutil, signal, dircache
+import sre
+import time     # ~#lastplayed display
+import shutil   # renames (and Move to Trash)
+import dircache # Ex Falso directory display
+
 import gtk, pango, gobject
 import qltk
 
-import config, const, util, player, parser, formats
+import const
+import config
+import player
+import parser
+import formats
+import util
+
 from util import to
 from library import library
 
@@ -25,14 +35,13 @@ class widgets(object): pass
 
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(gtk.FileChooserDialog):
-    def __init__(self, parent, title, initial_dir = None):
-        gtk.FileChooserDialog.__init__(
-            self, title = title, parent = parent,
-            action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
-            buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                       gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-        if initial_dir:
-            self.set_current_folder(initial_dir)
+    def __init__(self, parent, title, initial_dir=None):
+        super(FileChooser, self).__init__(
+            title=title, parent=parent,
+            action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        if initial_dir: self.set_current_folder(initial_dir)
         self.set_local_only(True)
         self.set_select_multiple(True)
 
@@ -43,10 +52,10 @@ class FileChooser(gtk.FileChooserDialog):
 
 # FIXME: replace with a standard About widget when using GTK 2.6.
 class AboutWindow(gtk.Window):
-    def __init__(self, parent):
+    def __init__(self, parent = None):
         gtk.Window.__init__(self)
         self.set_title(_("About Quod Libet"))
-        vbox = gtk.VBox(spacing = 6)
+        vbox = gtk.VBox(spacing=6)
         l = gtk.Label(const.COPYRIGHT)
         s2 = _("Quod Libet is free software licensed under the GNU GPL v2.")
         l2 = gtk.Label("<small>%s</small>" % s2)
@@ -60,55 +69,53 @@ class AboutWindow(gtk.Window):
         contrib = gtk.Label(const.CREDITS[0])
         contrib.set_justify(gtk.JUSTIFY_CENTER)
         vbox.pack_start(contrib)
-        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button = gtk.Button(stock=gtk.STOCK_CLOSE)
         button.connect_object('clicked', gtk.Window.destroy, self)
         vbox.pack_start(l2)
         hbox = gtk.HButtonBox()
         hbox.set_layout(gtk.BUTTONBOX_SPREAD)
         hbox.pack_start(button)
         vbox.pack_start(hbox)
-        self.timeout_id = gobject.timeout_add(
-            4000, self.pick_name, list(const.CREDITS), contrib)
-        self.alive = True
+        self.__timeout_id = gobject.timeout_add(
+            4000, self.__pick_name, list(const.CREDITS), contrib)
         self.add(vbox)
         self.set_border_width(12)
-        self.connect_object('destroy', AboutWindow._destroy, self)
+        self.connect_object('destroy', AboutWindow.__destroy, self)
         self.set_transient_for(parent)
-        self.child.show_all()
-        self.show()
+        self.show_all()
 
-    def pick_name(self, credits, contrib):
+    def __pick_name(self, credits, contrib):
         credits.append(credits.pop(0))
         contrib.set_text(credits[0])
         return hasattr(widgets, 'about')
 
-    def _destroy(self):
-        gobject.source_remove(self.timeout_id)
+    def __destroy(self):
+        gobject.source_remove(self.__timeout_id)
         try: del(widgets.about)
         except AttributeError: pass
 
 class PreferencesWindow(gtk.Window):
     class _Pane(object):
-        def toggle(self, c, name):
+        def _toggle(self, c, name):
             config.set("settings", name, str(bool(c.get_active())))
 
-        def changed(self, cb, name):
+        def _changed(self, cb, name):
             config.set("settings", name, str(cb.get_active()))
 
     class SongList(_Pane, gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing = 12)
+            gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Song List")
-            vbox = gtk.VBox(spacing = 12)
+            vbox = gtk.VBox(spacing=12)
             tips = gtk.Tooltips()
 
             c = gtk.CheckButton(_("_Jump to current song automatically"))
             tips.set_tip(c, _("When the playing song changes, "
                               "scroll to it in the song list"))
             c.set_active(config.state("jump"))
-            c.connect('toggled', self.toggle, "jump")
-            self.pack_start(c, expand = False)
+            c.connect('toggled', self._toggle, "jump")
+            self.pack_start(c, expand=False)
 
             buttons = {}
             table = gtk.Table(3, 3)
@@ -158,11 +165,11 @@ class PreferencesWindow(gtk.Window):
             vbox2.pack_start(tiv)
             vbox2.pack_start(aip)
             vbox2.pack_start(fip)
-            vbox.pack_start(vbox2, expand = False)
+            vbox.pack_start(vbox2, expand=False)
 
-            hbox = gtk.HBox(spacing = 6)
+            hbox = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Others:"))
-            hbox.pack_start(l, expand = False)
+            hbox.pack_start(l, expand=False)
             others = gtk.Entry()
             others.set_text(" ".join(checks))
             tips.set_tip(others, _("List other headers you want displayed, "
@@ -170,21 +177,20 @@ class PreferencesWindow(gtk.Window):
             l.set_mnemonic_widget(others)
             l.set_use_underline(True)
             hbox.pack_start(others)
-            vbox.pack_start(hbox, expand = False)
+            vbox.pack_start(hbox, expand=False)
 
             apply = qltk.Button(
-                stock=gtk.STOCK_APPLY, cb=self.apply,
+                stock=gtk.STOCK_APPLY, cb=self.__apply,
                 user_data=[buttons, rat, tiv, aip, fip, others])
             b = gtk.HButtonBox()
             b.set_layout(gtk.BUTTONBOX_END)
             b.pack_start(apply)
             vbox.pack_start(b)
 
-            frame = qltk.Frame(_("Visible Columns"), bold = True,
-                              child = vbox)
-            self.pack_start(frame, expand = False)
+            frame = qltk.Frame(_("Visible Columns"), bold=True, child=vbox)
+            self.pack_start(frame, expand=False)
 
-        def apply(self, button, buttons, rat, tiv, aip, fip, others):
+        def __apply(self, button, buttons, rat, tiv, aip, fip, others):
             headers = []
             for key in ["~#disc", "~#track", "title", "album", "artist",
                         "date", "genre", "~basename", "~length"]:
@@ -209,7 +215,7 @@ class PreferencesWindow(gtk.Window):
 
     class Browsers(_Pane, gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing = 12)
+            gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
             tips = gtk.Tooltips()
@@ -219,10 +225,10 @@ class PreferencesWindow(gtk.Window):
                      "advanced ones in green, and invalid ones in red"))
                          
             c.set_active(config.state("color"))
-            c.connect('toggled', self.toggle, "color")
+            c.connect('toggled', self._toggle, "color")
 
-            f = qltk.Frame(_("Search Bar"), bold = True, child = c)
-            self.pack_start(f, expand = False)
+            f = qltk.Frame(_("Search Bar"), bold=True, child=c)
+            self.pack_start(f, expand=False)
 
             t = gtk.Table(2, 4)
             t.set_col_spacings(3)
@@ -247,29 +253,29 @@ class PreferencesWindow(gtk.Window):
             bbox.pack_start(b)
             t.attach(bbox, 0, 2, 3, 4)
             self.pack_start(
-                qltk.Frame(_("Paned Browser"), bold = True, child = t),
+                qltk.Frame(_("Paned Browser"), bold=True, child=t),
                 expand = False)
 
         def __update_panes(self, button, cbes):
             panes = " ".join([c.child.get_text() for c in cbes])
             config.set('browsers', 'panes', panes)
             if hasattr(widgets.main.browser, 'refresh_panes'):
-                widgets.main.browser.refresh_panes(restore = True)
+                widgets.main.browser.refresh_panes(restore=True)
 
     class Player(_Pane, gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing = 12)
+            gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Player")
             tips = gtk.Tooltips()
             vbox = gtk.VBox()
             c = gtk.CheckButton(_("Show _album cover images"))
             c.set_active(config.state("cover"))
-            c.connect('toggled', self.toggle_cover)
+            c.connect('toggled', self.__toggle_cover)
             vbox.pack_start(c)
-            self.pack_start(vbox, expand = False)
+            self.pack_start(vbox, expand=False)
 
-            f = qltk.Frame(_("_Volume Normalization"), bold = True)
+            f = qltk.Frame(_("_Volume Normalization"), bold=True)
             cb = gtk.combo_box_new_text()
             cb.append_text(_("No volume adjustment"))
             cb.append_text(_('Per-song ("Radio") volume adjustment'))
@@ -277,40 +283,40 @@ class PreferencesWindow(gtk.Window):
             f.get_label_widget().set_mnemonic_widget(cb)
             f.child.add(cb)
             cb.set_active(config.getint("settings", "gain"))
-            cb.connect('changed', self.changed, 'gain')
-            self.pack_start(f, expand = False)
+            cb.connect('changed', self._changed, 'gain')
+            self.pack_start(f, expand=False)
 
-            f = qltk.Frame(_("_On-Screen Display"), bold = True)
+            f = qltk.Frame(_("_On-Screen Display"), bold=True)
             cb = gtk.combo_box_new_text()
             cb.append_text(_("No on-screen display"))
             cb.append_text(_('Display OSD on the top'))
             cb.append_text(_('Display OSD on the bottom'))
             cb.set_active(config.getint('settings', 'osd'))
-            cb.connect('changed', self.changed, 'osd')
+            cb.connect('changed', self._changed, 'osd')
             f.get_label_widget().set_mnemonic_widget(cb)
             vbox = gtk.VBox(spacing = 6)
             f.child.add(vbox)
-            f.child.child.pack_start(cb, expand = False)
+            f.child.child.pack_start(cb, expand=False)
             hb = gtk.HBox(spacing = 6)
             c1, c2 = config.get("settings", "osdcolors").split()
             color1 = gtk.ColorButton(gtk.gdk.color_parse(c1))
             color2 = gtk.ColorButton(gtk.gdk.color_parse(c2))
             tips.set_tip(color1, _("Select a color for the OSD"))
             tips.set_tip(color2, _("Select a second color for the OSD"))
-            color1.connect('color-set', self.color_set, color1, color2)
-            color2.connect('color-set', self.color_set, color1, color2)
+            color1.connect('color-set', self.__color_set, color1, color2)
+            color2.connect('color-set', self.__color_set, color1, color2)
             font = gtk.FontButton(config.get("settings", "osdfont"))
-            font.connect('font-set', self.font_set)
-            hb.pack_start(color1, expand = False)
-            hb.pack_start(color2, expand = False)
+            font.connect('font-set', self.__font_set)
+            hb.pack_start(color1, expand=False)
+            hb.pack_start(color2, expand=False)
             hb.pack_start(font)
-            vbox.pack_start(hb, expand = False)
-            self.pack_start(f, expand = False)
+            vbox.pack_start(hb, expand=False)
+            self.pack_start(f, expand=False)
 
-        def font_set(self, font):
+        def __font_set(self, font):
             config.set("settings", "osdfont", font.get_font_name())
 
-        def color_set(self, color, c1, c2):
+        def __color_set(self, color, c1, c2):
             color = c1.get_color()
             ct1 = (color.red // 256, color.green // 256, color.blue // 256)
             color = c2.get_color()
@@ -318,18 +324,18 @@ class PreferencesWindow(gtk.Window):
             config.set("settings", "osdcolors",
                        "#%02x%02x%02x #%02x%02x%02x" % (ct1+ct2))
 
-        def toggle_cover(self, c):
+        def __toggle_cover(self, c):
             config.set("settings", "cover", str(bool(c.get_active())))
             if config.state("cover"): widgets.main.image.show()
             else: widgets.main.image.hide()
 
-    class Library(gtk.VBox):
+    class Library(_Pane, gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing = 12)
+            gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Library")
-            f = qltk.Frame(_("Scan _Directories"), bold = True)
-            hb = gtk.HBox(spacing = 6)
+            f = qltk.Frame(_("Scan _Directories"), bold=True)
+            hb = gtk.HBox(spacing=6)
             b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "scan")))
@@ -339,12 +345,12 @@ class PreferencesWindow(gtk.Window):
             tips.set_tip(e, _("On start up, any files found in these "
                               "directories will be added to your library"))
             hb.pack_start(b, expand = False)
-            b.connect('clicked', self.select, e, const.HOME)
-            e.connect('changed', self.changed, 'scan')
+            b.connect('clicked', self.__select, e, const.HOME)
+            e.connect('changed', self._changed, 'scan')
             f.child.add(hb)
             self.pack_start(f, expand = False)
 
-            f = qltk.Frame(_("_Masked Directories"), bold = True)
+            f = qltk.Frame(_("_Masked Directories"), bold=True)
             vb = gtk.VBox(spacing = 6)
             l = gtk.Label(_(
                 "If you have songs in directories that will not always be "
@@ -354,7 +360,7 @@ class PreferencesWindow(gtk.Window):
                 "device is not mounted."))
             l.set_line_wrap(True)
             l.set_justify(gtk.JUSTIFY_FILL)
-            vb.pack_start(l, expand = False)
+            vb.pack_start(l, expand=False)
             hb = gtk.HBox(spacing = 6)
             b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
             e = gtk.Entry()
@@ -366,37 +372,34 @@ class PreferencesWindow(gtk.Window):
             if os.path.exists("/media"): dir = "/media"
             elif os.path.exists("/mnt"): dir = "/mnt"
             else: dir = "/"
-            b.connect('clicked', self.select, e, dir)
-            e.connect('changed', self.changed, 'masked')
+            b.connect('clicked', self.__select, e, dir)
+            e.connect('changed', self._changed, 'masked')
             f.child.add(vb)
-            self.pack_start(f, expand = False)
+            self.pack_start(f, expand=False)
 
-            f = qltk.Frame(_("Tag Editing"), bold = True)
-            vbox = gtk.VBox(spacing = 6)
-            hb = gtk.HBox(spacing = 6)
+            f = qltk.Frame(_("Tag Editing"), bold=True)
+            vbox = gtk.VBox(spacing=6)
+            hb = gtk.HBox(spacing=6)
             e = gtk.Entry()
             e.set_text(config.get("settings", "splitters"))
-            e.connect('changed', self.changed, 'splitters')
+            e.connect('changed', self._changed, 'splitters')
             tips.set_tip(
                 e, _('These characters will be used as separators '
                      'when "Split values" is selected in the tag editor'))
             l = gtk.Label(_("Split _on:"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(e)
-            hb.pack_start(l, expand = False)
+            hb.pack_start(l, expand=False)
             hb.pack_start(e)
             cb = gtk.CheckButton(_("Show _programmatic comments"))
             cb.set_active(config.state("allcomments"))
-            cb.connect('toggled', self.toggle, 'allcomments')
-            vbox.pack_start(hb, expand = False)
-            vbox.pack_start(cb, expand = False)
+            cb.connect('toggled', self._toggle, 'allcomments')
+            vbox.pack_start(hb, expand=False)
+            vbox.pack_start(cb, expand=False)
             f.child.add(vbox)
             self.pack_start(f)
 
-        def toggle(self, c, name):
-            config.set("settings", name, str(bool(c.get_active())))
-
-        def select(self, button, entry, initial):
+        def __select(self, button, entry, initial):
             chooser = FileChooser(self.parent.parent.parent,
                                   _("Select Directories"), initial)
             resp, fns = chooser.run()
@@ -404,7 +407,7 @@ class PreferencesWindow(gtk.Window):
             if resp == gtk.RESPONSE_OK:
                 entry.set_text(":".join(map(util.fsdecode, fns)))
 
-        def changed(self, entry, name):
+        def _changed(self, entry, name):
             config.set('settings', name,
                        util.fsencode(entry.get_text().decode('utf-8')))
 
@@ -414,7 +417,7 @@ class PreferencesWindow(gtk.Window):
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
-        self.add(gtk.VBox(spacing = 12))
+        self.add(gtk.VBox(spacing=12))
         tips = gtk.Tooltips()
         n = qltk.Notebook()
         n.append_page(self.SongList())
@@ -426,14 +429,14 @@ class PreferencesWindow(gtk.Window):
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button = gtk.Button(stock=gtk.STOCK_CLOSE)
         button.connect_object('clicked', gtk.Window.destroy, self)
         bbox.pack_start(button)
-        self.connect_object('destroy', PreferencesWindow._destroy, self)
-        self.child.pack_start(bbox, expand = False)
+        self.connect_object('destroy', PreferencesWindow.__destroy, self)
+        self.child.pack_start(bbox, expand=False)
         self.child.show_all()
 
-    def _destroy(self):
+    def __destroy(self):
         del(widgets.preferences)
         config.write(const.CONFIG)
 
@@ -491,85 +494,85 @@ class DeleteDialog(gtk.Dialog):
 class WaitLoadWindow(gtk.Window):
     def __init__(self, parent, count, text, initial):
         gtk.Window.__init__(self)
-        self.sig = parent.connect('configure-event', self.recenter)
+        self.__sig = parent.connect('configure-event', self.__recenter)
         self.set_transient_for(parent)
         self.set_modal(True)
         self.set_decorated(False)
         self.set_resizable(False)
         self.add(gtk.Frame())
         self.child.set_shadow_type(gtk.SHADOW_OUT)
-        vbox = gtk.VBox(spacing = 12)
+        vbox = gtk.VBox(spacing=12)
         vbox.set_border_width(12)
-        self.label = gtk.Label()
-        self.label.set_size_request(170, -1)
-        self.label.set_use_markup(True)
-        self.label.set_line_wrap(True)
-        self.label.set_justify(gtk.JUSTIFY_CENTER)
-        vbox.pack_start(self.label)
-        self.progress = gtk.ProgressBar()
-        self.progress.set_pulse_step(0.08)
-        vbox.pack_start(self.progress)
+        self.__label = gtk.Label()
+        self.__label.set_size_request(170, -1)
+        self.__label.set_use_markup(True)
+        self.__label.set_line_wrap(True)
+        self.__label.set_justify(gtk.JUSTIFY_CENTER)
+        vbox.pack_start(self.__label)
+        self.__progress = gtk.ProgressBar()
+        self.__progress.set_pulse_step(0.08)
+        vbox.pack_start(self.__progress)
 
         self.current = 0
         self.count = count
         if self.count > 5 or self.count == 0:
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
-            hbox = gtk.HBox(spacing = 6, homogeneous = True)
-            b1 = qltk.Button(stock = gtk.STOCK_STOP)
+            hbox = gtk.HBox(spacing=6, homogeneous=True)
+            b1 = qltk.Button(stock=gtk.STOCK_STOP)
             b2 = gtk.ToggleButton()
-            b2.add(gtk.HBox(spacing = 2))
+            b2.add(gtk.HBox(spacing=2))
             i = gtk.Image()
             i.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
-            b2.child.pack_start(i, expand = False)
+            b2.child.pack_start(i, expand=False)
             l = gtk.Label(_("_Pause"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(b2)
             b2.child.pack_start(l)
-            b1.connect('clicked', self.cancel_clicked)
-            b2.connect('clicked', self.pause_clicked)
+            b1.connect('clicked', self.__cancel_clicked)
+            b2.connect('clicked', self.__pause_clicked)
             hbox.pack_start(b1)
             hbox.pack_start(b2)
             vbox.pack_start(hbox)
 
         self.child.add(vbox)
 
-        self.text = text
-        self.paused = False
-        self.quit = False
+        self.__text = text
+        self.__paused = False
+        self.__quit = False
 
-        self.label.set_markup(self.text % initial)
+        self.__label.set_markup(self.__text % initial)
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         self.show_all()
         while gtk.events_pending(): gtk.main_iteration()
 
-    def pause_clicked(self, button):
-        self.paused = button.get_active()
+    def __pause_clicked(self, button):
+        self.__paused = button.get_active()
 
-    def cancel_clicked(self, button):
-        self.quit = True
+    def __cancel_clicked(self, button):
+        self.__quit = True
 
     def step(self, *values):
-        self.label.set_markup(self.text % values)
+        self.__label.set_markup(self.__text % values)
         if self.count:
             self.current += 1
-            self.progress.set_fraction(
+            self.__progress.set_fraction(
                 max(0, min(1, self.current / float(self.count))))
         else:
-            self.progress.pulse()
-            
-        while not self.quit and (self.paused or gtk.events_pending()):
-            gtk.main_iteration()
-        return self.quit
+            self.__progress.pulse()
 
-    def recenter(self, parent, event):
+        while not self.__quit and (self.__paused or gtk.events_pending()):
+            gtk.main_iteration()
+        return self.__quit
+
+    def __recenter(self, parent, event):
         x, y = parent.get_position()
         dx, dy = parent.get_size()
         dx2, dy2 = self.get_size()
         self.move(x + dx/2 - dx2/2, y + dy/2 - dy2/2)
 
     def end(self):
-        self.get_transient_for().disconnect(self.sig)
+        self.get_transient_for().disconnect(self.__sig)
         self.destroy()
 
 class BigCenteredImage(gtk.Window):
@@ -577,7 +580,16 @@ class BigCenteredImage(gtk.Window):
         gtk.Window.__init__(self)
         width = gtk.gdk.screen_width() / 2
         height = gtk.gdk.screen_height() / 2
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, width, height)
+        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+
+        x_rat = pixbuf.get_width() / float(width)
+        y_rat = pixbuf.get_height() / float(height)
+        if x_rat > 1 or y_rat > 1:
+            if x_rat > y_rat: height = int(pixbuf.get_height() / x_rat)
+            else: width = int(pixbuf.get_width() / y_rat)
+            pixbuf = pixbuf.scale_simple(
+                width, height, gtk.gdk.INTERP_BILINEAR)
+
         self.set_title(title)
         self.set_decorated(False)
         self.set_position(gtk.WIN_POS_CENTER)
@@ -1699,7 +1711,6 @@ class MainWindow(gtk.Window):
                 model.row_changed(path, iter)
 
         widgets.songs.foreach(update_if_last_or_current)
-        gc.collect()
         if song and config.getboolean("settings", "jump"):
             self.jump_to_current()
         return False
@@ -2222,8 +2233,7 @@ class SongList(gtk.TreeView):
 class PlayList(SongList):
     # ["%", " "] + parser.QueryLexeme.table.keys()
     BAD = ["%", " ", "!", "&", "|", "(", ")", "=", ",", "/", "#", ">", "<"]
-    DAB = BAD[:]
-    DAB.reverse()
+    DAB = BAD[::-1]
 
     def normalize_name(name):
         for c in PlayList.BAD: name = name.replace(c, "%"+hex(ord(c))[2:])
@@ -4090,6 +4100,7 @@ def init():
     player.playlist.info = widgets.main
     gtk.threads_init()
     util.mkdir(const.DIR)
+    import signal
     signal.signal(signal.SIGINT, gtk.main_quit)
     signal.signal(signal.SIGTERM, gtk.main_quit)
     signal.signal(signal.SIGHUP, gtk.main_quit)
