@@ -1900,8 +1900,13 @@ class SongProperties(object):
     class Information(object):
         def __init__(self, parent):
             self.title = _("Information")
-            self.widget = gtk.VBox(spacing = 12)
-            self.widget.set_property('border-width', 12)
+            self.widget = gtk.ScrolledWindow()
+            self.widget.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            self.widget.add(gtk.Viewport())
+            self.widget.child.set_shadow_type(gtk.SHADOW_NONE)
+            self.box = gtk.VBox(spacing = 12)
+            self.box.set_property('border-width', 12)
+            self.widget.child.add(self.box)
             self.prop = parent
 
         def _title(self, song):
@@ -1912,12 +1917,20 @@ class SongProperties(object):
             w.set_alignment(0, 0)
             return w
 
-        def _album(self, song):
+        def Frame(self, label, widget):
             f = gtk.Frame()
             g = gtk.Label()
-            g.set_markup("<big><u>%s</u></big>" % _("Album"))
+            g.set_markup("<big><u>%s</u></big>" % label)
             f.set_label_widget(g)
             f.set_shadow_type(gtk.SHADOW_NONE)
+            a = gtk.Alignment()
+            a.set_padding(0, 0, 12, 0)
+            a.add(widget)
+            f.add(a)
+            return f
+
+        def _album(self, song):
+            title = _("Album")
             cover = song.find_cover()
             w = gtk.Label()
             w.set_alignment(0, 0)
@@ -1927,58 +1940,112 @@ class SongProperties(object):
                     if hasattr(cover, "write"):
                         cover_f = cover
                         cover = cover.name
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 70, 70)
                     i = gtk.Image()
                     i.set_from_pixbuf(p)
                     hb.pack_start(i, expand = False)
-                    f.add(hb)
-                    hb.set_border_width(6)
                     hb.pack_start(w)
+                    f = self.Frame(title, hb)
                 except:
-                    f.add(w)
-                    w.set_padding(6, 6)
+                    f = self.Frame(title, w)
             else:
-                w.set_padding(6, 6)
-                f.add(w)
+                f = self.Frame(title, w)
 
             text = []
-            text.append("<b><big>%s</big></b>" % song.comma("album"))
-            if "date" in song: text[-1] += " - " + song["date"]
+            text.append("<b><big>%s</big></b>" %
+                        util.escape(song.comma("album")))
+            if "date" in song: text[-1] += " - " + util.escape(song["date"])
             secondary = []
             if "discnumber" in song:
                 secondary.append(_("Disc %d") % song("~#disc"))
             if "part" in song:
-                secondary.append("<b>%s</b>" % song.comma("part"))
+                secondary.append("<b>%s</b>" % util.escape(song.comma("part")))
             if "tracknumber" in song:
                 secondary.append(_("Track %d") % song("~#track"))
             if secondary: text.append(" - ".join(secondary))
 
             if "organization" in song:
-                t = song["organization"]
-                if "labelid" in song: t += " - %s" % song["labelid"]
+                t = util.escape(song.comma("organization"))
+                if "labelid" in song: t += " - %s" %(
+                    util.escape(song.comma("labelid")))
                 text.append(t)
 
+            if "producer" in song:
+                text.append("Produced by %s" %(
+                    util.escape(song.comma("producer"))))
+
+            w.set_selectable(True)
+            w.set_line_wrap(True)
             w.set_markup("\n".join(text))
             
             f.show_all()
             return f
 
+        def Label(self, str):
+            l = gtk.Label()
+            l.set_markup(str)
+            l.set_alignment(0, 0)
+            return l
+
         def destroy(self):
             self.widget.destroy()
 
         def _update_one(self, song):
-            self.widget.pack_start(self._title(song), expand = False)
+            self.box.pack_start(self._title(song), expand = False)
             if "album" in song:
-                self.widget.pack_start(self._album(song), expand = False)
+                self.box.pack_start(self._album(song), expand = False)
+
+        def _update_many(self, songs):
+            text = ["<b><span size='x-large'>%s</span></b>" %(
+                _("%d songs") % len(songs))]
+            l = self.Label("\n".join(text))
+            self.box.pack_start(l, expand = False)
+
+            artists = set()
+            albums = set()
+            noartist = noalbum = 0
+            for song in songs:
+                if "artist" in song: artists.update(song.list("artist"))
+                else: noartist += 1
+                if "album" in song: albums.update(song.list("album"))
+                else: noalbum += 1
+            artists = list(artists)
+            artists.sort()
+            if noartist: artists.append(_("%d with no artists") % noartist)
+            artists = "\n".join(artists)
+            if artists:
+                self.box.pack_start(self.Frame(_("Artists"),
+                                               self.Label(artists)),
+                                    expand = False)
+
+            albums = list(albums)
+            albums.sort()
+            if noalbum: albums.append(_("%d with no album") % noalbum)
+            albums = "\n".join(albums)
+            if albums:
+                self.box.pack_start(self.Frame(_("Albums"),
+                                               self.Label(albums)),
+                                    expand = False)
+
+            playinfo = []
+            time = sum([song["~#length"] for song in songs])
+            count = sum([song["~#playcount"] for song in songs])
+            table = gtk.Table(2, 2)
+            table.set_col_spacings(6)
+            table.attach(self.Label(_("Total length:")), 0, 1, 0, 1)
+            table.attach(self.Label(util.format_time(time)), 1, 2, 0, 1)
+            table.attach(self.Label(_("Songs heard:")), 0, 1, 1, 2)
+            table.attach(self.Label(str(count)), 1, 2, 1, 2)
+
+            self.box.pack_start(self.Frame(_("Listening"), table))
 
         def update(self, songrefs):
-            for c in self.widget.get_children():
-                self.widget.remove(c)
+            for c in self.box.get_children():
+                self.box.remove(c)
                 c.destroy()
-            if len(songrefs) == 1:
-                self._update_one(songrefs[0])
-            else:
-                pass
+            if len(songrefs) == 1: self._update_one(songrefs[0])
+            else: self._update_many(songrefs)
+            self.widget.show_all()
 
     class EditTags(object):
         def __init__(self, parent):
