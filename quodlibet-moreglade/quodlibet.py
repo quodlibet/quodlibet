@@ -20,39 +20,12 @@ import os, sys
 # The single instantiation of this is widgets.wrap, created at startup.
 class GTKSongInfoWrapper(object):
     def __init__(self):
-        self.image = widgets.main.widgets["albumcover"]
-        self.iframe = widgets.main.widgets["iframe"]
-        self.text = widgets.main.widgets["currentsong"]
-        self.pos = widgets.main.widgets["song_pos"]
-        self.timer = widgets.main.widgets["song_timer"]
-        self.volume = widgets.main.widgets["volume"]
-        self.button = widgets.main.widgets["play_button"]
-        self.menu = widgets.main.widgets['play_menu']
-        self.but_image = widgets.main.widgets["play_image"]
-        self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
-        self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
-        self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
-        self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
-        self.menu.get_image().set_from_pixbuf(self.pause_s)
         try: os.unlink(const.CONTROL)
         except OSError: pass
         util.mkdir(const.DIR)
         os.mkfifo(const.CONTROL, 0600)
         self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
         gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
-        self.albumfn = None
-        self.cmenu_w = Widgets(None, widgets.main, "tray_popup")
-        self.cmenu = self.cmenu_w["tray_popup"]
-        try: import statusicon
-        except:
-            print _("W: Failed to initialize status icon.")
-            self.icon = None
-        else:
-            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-            self.icon = statusicon.StatusIcon(p)
-            self.icon.connect("activate", self._toggle_window)
-            self.icon.connect("popup-menu", self._popup, ())
-            print _("Initialized status icon.")
 
         try: import mmkeys
         except:
@@ -63,9 +36,6 @@ class GTKSongInfoWrapper(object):
             self.keys.connect("mm_next", self._next)
             self.keys.connect("mm_playpause", self._playpause)
             print _("Initialized multimedia key support.")
-
-        self._time = (0, 1)
-        gtk.timeout_add(300, self._update_time)
 
     def _input_check(self, source, condition):
         c = os.read(source, 1)
@@ -108,150 +78,6 @@ class GTKSongInfoWrapper(object):
     def _previous(*args): player.playlist.previous()
     def _next(*args): player.playlist.next()
     def _playpause(*args): player.playlist.paused ^= True
-
-    def _toggle_window(self, icon):
-        window = widgets.main.window
-        if window.get_property('visible'):
-            self.window_pos = window.get_position()
-            window.hide()
-        else:
-            window.move(*self.window_pos)
-            window.show()
-
-    def _popup(self, *args):
-        self.cmenu.popup(None, None, None, 1, 0)
-
-    # These are all the signals that the wrapper gets from the player.
-
-    # The pattern of getting a call from the playing thread and then
-    # queueing an idle function prevents thread-unsafety in GDK.
-
-    # The pause state was toggled.
-    def set_paused(self, paused):
-        gtk.idle_add(self._update_paused, paused)
-
-    # The player told us about a new time.
-    def set_time(self, cur, end):
-        self._time = (cur, end)
-
-    # A new song was selected, or the next song started playing.
-    def set_song(self, song, player):
-        gtk.idle_add(self._update_song, song, player)
-
-    def missing_song(self, song):
-        gtk.idle_add(self._missing_song, song)
-
-    # idle_added functions caused by signals from the player.
-    def _update_paused(self, paused):
-        if paused:
-            self.but_image.set_from_pixbuf(self.paused)
-            self.menu.get_image().set_from_pixbuf(self.pause_s)
-            widgets.main.widgets["play_menu"].child.set_text(_("Play _song"))
-            self.cmenu_w["play_popup_menu"].child.set_text(_("_Play"))
-        else:
-            self.but_image.set_from_pixbuf(self.playing)
-            self.menu.get_image().set_from_pixbuf(self.play_s)
-            widgets.main.widgets["play_menu"].child.set_text(_("Pause _song"))
-            self.cmenu_w["play_popup_menu"].child.set_text(_("_Pause"))
-        widgets.main.widgets["play_menu"].child.set_use_underline(True)
-        self.cmenu_w["play_popup_menu"].child.set_use_underline(True)
-
-    def _update_time(self):
-        cur, end = self._time
-        self.pos.set_value(cur)
-        self.timer.set_text("%d:%02d/%d:%02d" %
-                            (cur / 60000, (cur % 60000) / 1000,
-                             end / 60000, (end % 60000) / 1000))
-        return True
-
-    def _missing_song(self, song):
-        path = (player.playlist.get_playlist().index(song),)
-        iter = widgets.songs.get_iter(path)
-        widgets.songs.remove(iter)
-        statusbar = widgets["statusbar"]
-        statusbar.set_text(_("Could not play %s.") % song['~filename'])
-        library.remove(song)
-        player.playlist.remove(song)
-
-    # Called when no cover is available, or covers are off.
-    def disable_cover(self):
-        self.iframe.hide()
-
-    # Called when covers are turned on; an image may not be available.
-    def enable_cover(self):
-        if self.image.get_pixbuf():
-            self.iframe.show()
-
-    def update_markup(self, song):
-        if song:
-            self.text.set_markup(song.to_markup())
-            if self.icon: self.icon.set_tooltip(song.to_short(), "magic")
-        else:
-            s = _("Not playing")
-            self.text.set_markup("<span size='xx-large'>%s</span>" % s)
-            if self.icon: self.icon.set_tooltip(s, "magic")
-            self.albumfn = None
-            self.disable_cover()
-
-    def scroll_to_current(self):
-        try: path = (player.playlist.get_playlist().index(CURRENT_SONG[0]),)
-        except ValueError: pass
-        else: widgets.main.widgets["songlist"].scroll_to_cell(path)
-
-    def _update_song(self, song, player):
-        for wid in ["web_button", "next_button", "prop_menu",
-                    "play_menu", "jump_menu", "next_menu", "prop_button",
-                    "filter_genre_menu", "filter_album_menu",
-                    "filter_artist_menu"]:
-            widgets.main.widgets[wid].set_sensitive(bool(song))
-        if song:
-            self.pos.set_range(0, player.length)
-            self.pos.set_value(0)
-            cover_f = None
-            cover = song.find_cover()
-            if hasattr(cover, "write"):
-                cover_f = cover
-                cover = cover.name
-            if cover != self.albumfn:
-                try:
-                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
-                except:
-                    self.image.set_from_pixbuf(None)
-                    self.disable_cover()
-                    self.albumfn = None
-                else:
-                    self.image.set_from_pixbuf(p)
-                    if config.state("cover"): self.enable_cover()
-                    self.albumfn = cover
-            for h in ['genre', 'artist', 'album']:
-                widgets.main.widgets["filter_%s_menu"%h].set_sensitive(not song.unknown(h))
-            if cover_f: cover_f.close()
-
-            self.update_markup(song)
-        else:
-            self.image.set_from_pixbuf(None)
-            self.pos.set_range(0, 1)
-            self.pos.set_value(0)
-            self._time = (0, 1)
-            self.update_markup(None)
-
-        # Update the currently-playing song in the list by bolding it.
-        last_song = CURRENT_SONG[0]
-        CURRENT_SONG[0] = song
-        col = len(HEADERS)
-
-        def update_if_last_or_current(model, path, iter):
-            if model[iter][col] is song:
-                model[iter][col + 1] = 700
-                model.row_changed(path, iter)
-            elif model[iter][col] is last_song:
-                model[iter][col + 1] = 400
-                model.row_changed(path, iter)
-
-        widgets.songs.foreach(update_if_last_or_current)
-        if config.state("jump"): self.scroll_to_current()
-        gc.collect()
-        return False
 
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(object):
@@ -386,8 +212,8 @@ class PreferencesWindow(MultiInstanceWidget):
 
     def toggle_cover(self, toggle):
         config.set("settings", "cover", str(bool(toggle.get_active())))
-        if config.state("cover"): widgets.wrap.enable_cover()
-        else: widgets.wrap.disable_cover()
+        if config.state("cover"): widgets.main.enable_cover()
+        else: widgets.main.disable_cover()
 
     def __getattr__(self, name):
         # A checkbox was changed.
@@ -496,14 +322,43 @@ class MainWindow(MultiInstanceWidget):
         MultiInstanceWidget.__init__(self, widget = "main_window")
         self.last_dir = os.path.expanduser("~")
         self.window = self.widgets["main_window"]
-        p = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
-        self.widgets["prev_menu"].get_image().set_from_pixbuf(p)
+
         menu = Widgets(None, self, "songs_popup")
         self.cmenu = menu["songs_popup"]
         self.cmenu_w = menu
 
-        p = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
-        self.widgets["next_menu"].get_image().set_from_pixbuf(p)
+        self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
+        self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
+
+        pp = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
+        self.widgets["prev_menu"].get_image().set_from_pixbuf(pp)
+
+        pn = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
+        self.widgets["next_menu"].get_image().set_from_pixbuf(pn)
+
+        self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
+        self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
+
+        self.widgets["play_menu"].get_image().set_from_pixbuf(self.pause_s)
+
+        # Set up the tray icon; initialize the menu widget even if we
+        # don't end up using it for simplicity.
+        self.tray_menu = Widgets(None, self, "tray_popup")
+        self.tray_menu_play = self.tray_menu["play_popup_menu"].get_image()
+        self.tray_menu_play.set_from_pixbuf(self.pause_s)
+        self.tray_menu["prev_popup_menu"].get_image().set_from_pixbuf(pp)
+        self.tray_menu["next_popup_menu"].get_image().set_from_pixbuf(pn)
+
+        try: import statusicon
+        except:
+            print _("W: Failed to initialize status icon.")
+            self.icon = None
+        else:
+            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+            self.icon = statusicon.StatusIcon(p)
+            self.icon.connect("activate", self.tray_toggle_window)
+            self.icon.connect("popup-menu", self.tray_popup, ())
+            print _("Initialized status icon.")
 
         # Restore window size.
         w, h = map(int, config.get("memory", "size").split())
@@ -545,6 +400,150 @@ class MainWindow(MultiInstanceWidget):
             player.playlist.set_playlist(library.values())
             self.refresh_songlist()
 
+        self.albumfn = None
+        self._time = (0, 1)
+        gtk.timeout_add(300, self._update_time)
+        self.text = self.widgets["currentsong"]
+        self.image = self.widgets["albumcover"]
+        self.iframe = self.widgets["iframe"]
+        self.volume = self.widgets["volume"]
+
+    def set_paused(self, paused):
+        gtk.idle_add(self._update_paused, paused)
+
+    def set_song(self, song, player):
+        gtk.idle_add(self._update_song, song, player)
+
+    def missing_song(self, song):
+        gtk.idle_add(self._missing_song, song)
+
+    # Called when no cover is available, or covers are off.
+    def disable_cover(self):
+        self.iframe.hide()
+
+    # Called when covers are turned on; an image may not be available.
+    def enable_cover(self):
+        if self.image.get_pixbuf():
+            self.iframe.show()
+
+    def _update_paused(self, paused):
+        if paused:
+            self.widgets["play_image"].set_from_pixbuf(self.paused)
+            self.widgets["play_menu"].get_image().set_from_pixbuf(
+                self.pause_s)
+            self.tray_menu_play.set_from_pixbuf(self.pause_s)
+            self.widgets["play_menu"].child.set_text(_("Play _song"))
+            self.tray_menu["play_popup_menu"].child.set_text(_("_Play"))
+        else:
+            self.widgets["play_image"].set_from_pixbuf(self.playing)
+            self.widgets["play_menu"].get_image().set_from_pixbuf(
+                self.play_s)
+            self.widgets["play_menu"].get_image().set_from_pixbuf(self.play_s)
+            self.tray_menu_play.set_from_pixbuf(self.play_s)
+            self.widgets["play_menu"].child.set_text(_("Pause _song"))
+            self.tray_menu["play_popup_menu"].child.set_text(_("_Pause"))
+        self.widgets["play_menu"].child.set_use_underline(True)
+        self.tray_menu["play_popup_menu"].child.set_use_underline(True)
+
+    def set_time(self, cur, end):
+        self._time = (cur, end)
+
+    def _update_time(self):
+        cur, end = self._time
+        self.widgets["song_pos"].set_value(cur)
+        self.widgets["song_timer"].set_text("%d:%02d/%d:%02d" %
+                            (cur / 60000, (cur % 60000) / 1000,
+                             end / 60000, (end % 60000) / 1000))
+        return True
+
+    def _missing_song(self, song):
+        path = (player.playlist.get_playlist().index(song),)
+        iter = widgets.songs.get_iter(path)
+        widgets.songs.remove(iter)
+        statusbar = widgets["statusbar"]
+        statusbar.set_text(_("Could not play %s.") % song['~filename'])
+        library.remove(song)
+        player.playlist.remove(song)
+
+    def update_markup(self, song):
+        if song:
+            self.text.set_markup(song.to_markup())
+            if widgets.main.icon:
+                widgets.main.icon.set_tooltip(song.to_short(), "magic")
+        else:
+            s = _("Not playing")
+            self.text.set_markup("<span size='xx-large'>%s</span>" % s)
+            if self.icon:
+                self.icon.set_tooltip(s, "magic")
+            self.albumfn = None
+            self.disable_cover()
+
+    def _update_song(self, song, player):
+        for wid in ["web_button", "next_button", "prop_menu",
+                    "play_menu", "jump_menu", "next_menu", "prop_button",
+                    "filter_genre_menu", "filter_album_menu",
+                    "filter_artist_menu"]:
+            self.widgets[wid].set_sensitive(bool(song))
+        if song:
+            self.widgets["song_pos"].set_range(0, player.length)
+            self.widgets["song_pos"].set_value(0)
+            cover_f = None
+            cover = song.find_cover()
+            if hasattr(cover, "write"):
+                cover_f = cover
+                cover = cover.name
+            if cover != self.albumfn:
+                try:
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
+                except:
+                    self.image.set_from_pixbuf(None)
+                    self.disable_cover()
+                    self.albumfn = None
+                else:
+                    self.image.set_from_pixbuf(p)
+                    if config.state("cover"): self.enable_cover()
+                    self.albumfn = cover
+            for h in ['genre', 'artist', 'album']:
+                self.widgets["filter_%s_menu"%h].set_sensitive(not song.unknown(h))
+            if cover_f: cover_f.close()
+
+            self.update_markup(song)
+        else:
+            self.image.set_from_pixbuf(None)
+            self.widgets["song_pos"].set_range(0, 1)
+            self.widgets["song_pos"].set_value(0)
+            self._time = (0, 1)
+            self.update_markup(None)
+
+        # Update the currently-playing song in the list by bolding it.
+        last_song = CURRENT_SONG[0]
+        CURRENT_SONG[0] = song
+        col = len(HEADERS)
+
+        def update_if_last_or_current(model, path, iter):
+            if model[iter][col] is song:
+                model[iter][col + 1] = 700
+                model.row_changed(path, iter)
+            elif model[iter][col] is last_song:
+                model[iter][col + 1] = 400
+                model.row_changed(path, iter)
+
+        widgets.songs.foreach(update_if_last_or_current)
+        gc.collect()
+        return False
+
+    def tray_toggle_window(self, icon):
+        window = self.window
+        if window.get_property('visible'):
+            self.window_pos = window.get_position()
+            window.hide()
+        else:
+            window.move(*self.window_pos)
+            window.show()
+
+    def tray_popup(self, *args):
+        self.tray_menu["tray_popup"].popup(None, None, None, 1, 0)
+
     def gtk_main_quit(self, *args):
         gtk.main_quit()
 
@@ -574,7 +573,9 @@ class MainWindow(MultiInstanceWidget):
         else: player.playlist.paused ^= True
 
     def jump_to_current(self, *args):
-        widgets.wrap.scroll_to_current()
+        try: path = (player.playlist.get_playlist().index(CURRENT_SONG[0]),)
+        except ValueError: pass
+        else: self.widgets["songlist"].scroll_to_cell(path)
 
     def next_song(self, *args):
         player.playlist.next()
@@ -1116,7 +1117,7 @@ class SongProperties(MultiInstanceWidget):
         self.save_edit.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
-        widgets.wrap.update_markup(CURRENT_SONG[0])
+        widgets.main.update_markup(CURRENT_SONG[0])
 
     def songprop_revert_click(self, button):
         self.save_edit.set_sensitive(False)
@@ -1648,7 +1649,7 @@ def setup_nonglade():
     widgets.songs = gtk.ListStore(object)
     widgets.main = MainWindow()
     widgets.wrap = GTKSongInfoWrapper()
-    player.playlist.info = widgets.wrap
+    player.playlist.info = widgets.main
     gtk.threads_init()
 
     widgets.preferences = PreferencesWindow(widgets.main.window)
@@ -1671,7 +1672,7 @@ def main():
         HEADERS_FILTER[opt] = val
 
     from threading import Thread
-    t = Thread(target = player.playlist.play, args = (widgets.wrap,))
+    t = Thread(target = player.playlist.play, args = (widgets.main,))
     util.mkdir(const.DIR)
     signal.signal(signal.SIGINT, gtk.main_quit)
     signal.signal(signal.SIGKILL, gtk.main_quit)
