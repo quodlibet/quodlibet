@@ -1,11 +1,45 @@
 #!/usr/bin/env python
 
 import os, sys
-import dircache
-import gtk, gobject
 
 basedir = os.path.split(os.path.realpath(__file__))[0]
-sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
+sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
+
+# Importing GTK fails if X is not running, so we need to check
+# all this stuff now.
+def print_help():
+    print to(_("""\
+Ex Falso - an audio file tagger
+Usage: %s [directory]
+
+For more information, see the manual page (`man 1 quodlibet').
+""")) % sys.argv[0]
+    raise SystemExit
+
+def print_version():
+    print to(_("""\
+Ex Falso %s - <quodlibet@lists.sacredchao.net>
+Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
+""")) % const.VERSION
+    raise SystemExit
+
+import locale, gettext
+gettext.bindtextdomain("quodlibet")
+gettext.textdomain("quodlibet")
+gettext.install("quodlibet", unicode = True)
+try: locale.setlocale(locale.LC_ALL, '')
+except: pass
+
+import const
+from util import to
+if "--help" in sys.argv or "-h" in sys.argv: print_help()
+elif "--version" in sys.argv or "-v" in sys.argv: print_version()
+
+import dircache
+import gtk, gobject
 
 import formats
 import widgets
@@ -193,19 +227,12 @@ class MainWindow(gtk.Window):
         self.__cache = dict([(song["~filename"], song) for song in files])
 
 if __name__ == "__main__":
-    import locale, gettext
-    gettext.bindtextdomain("quodlibet")
-    gettext.textdomain("quodlibet")
-    gettext.install("quodlibet", unicode = True)
-    try: locale.setlocale(locale.LC_ALL, '')
-    except: pass
-
-    import config, const
+    import config
     config.init(const.CONFIG)
 
     os.chdir(basedir)
-
     sys.argv.append(None)
+
     w = MainWindow(sys.argv[1])
     w.show_all()
 
