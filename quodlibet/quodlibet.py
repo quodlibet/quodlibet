@@ -1566,6 +1566,9 @@ class SongList(object):
                 column.connect('clicked', self.set_sort_by, t)
             self._set_column_settings(column)
             column.set_cell_data_func(render, cell_data)
+            if t == "~length":
+                column.set_property('alignment', 1.0)
+                render.set_property('xalign', 1.0)
             self.view.append_column(column)
 
     def _set_column_settings(self, column):

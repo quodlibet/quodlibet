@@ -98,6 +98,13 @@ class AudioFile(dict):
         if key in self: return self[key].split("\n")
         else: return []
 
+    # copy important keys from the other song to this one.
+    def migrate(self, other):
+        for key in ["~#playcount", "~#lastplayed"]:
+            self[key] = other[key]
+        for key in filter(lambda s: s.startswith("~#playlist_"), other):
+            self[key] = other[key]
+
     def exists(self):
         return os.path.exists(self["~filename"])
 
@@ -412,7 +419,6 @@ class MP3File(AudioFile):
 
         md = mad.MadFile(filename)
         self["~#length"] = md.total_time() // 1000
-
         if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
 
@@ -629,7 +635,6 @@ class AudioFileGroup(dict):
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
 
-MIGRATE = ["~#playcount", "~#lastplayed"]
 class Library(dict):
     def __init__(self, masked = [], initial = {}):
         self.masked = masked
@@ -733,7 +738,7 @@ class Library(dict):
                     changed += 1
                     song2 = MusicFile(fn)
                     if song2:
-                        for key in MIGRATE: song2[key] = song[key]
+                        song2.migrate(song)
                         self[fn] = song2
                 elif config.get("settings", "masked"):
                     for m in config.get("settings", "masked").split(":"):
@@ -776,7 +781,7 @@ class Library(dict):
             if force or not self[fn].valid():
                 m = MusicFile(fn)
                 if m:
-                    for key in MIGRATE: m[key] = self[fn][key]
+                    m.migrate(self[fn])
                     self[fn] = m
                     changed += 1
                 else:
