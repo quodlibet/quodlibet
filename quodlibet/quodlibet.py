@@ -264,6 +264,7 @@ class GladeHandlers(object):
 
     def toggle_repeat(button):
         player.playlist.repeat = button.get_active()
+        config.set("settings", "repeat", str(bool(button.get_active())))
 
     def show_about(menuitem):
         widgets["about_window"].set_transient_for(widgets["main_window"])
@@ -275,6 +276,7 @@ class GladeHandlers(object):
 
     def toggle_shuffle(button):
         player.playlist.shuffle = button.get_active()
+        config.set("settings", "shuffle", str(bool(button.get_active())))
 
     def seek_slider(slider, v):
         gtk.idle_add(player.playlist.seek, v)
@@ -1230,12 +1232,17 @@ def main():
     else:
         player.playlist.set_playlist(library.values())
         refresh_songlist()
+
+    widgets["shuffle_t"].set_active(config.state("shuffle"))
+    widgets["repeat_t"].set_active(config.state("repeat"))
+
     player.playlist.sort_by(HEADERS[0])
     print _("Loaded song library.")
 
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
         HEADERS_FILTER[opt] = val
+
 
     from threading import Thread
     t = Thread(target = player.playlist.play, args = (widgets.wrap,))

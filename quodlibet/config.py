@@ -25,6 +25,10 @@ def init(rc_file):
     _config.add_section("header_maps")
     _config.set("settings", "scan", "")
     _config.set("settings", "gain", "2")
+
+    _config.set("settings", "shuffle", "false")
+    _config.set("settings", "repeat", "false")
+
     _config.set("settings", "jump", "true")
     _config.set("settings", "cover", "true")
     _config.set("settings", "color", "true")

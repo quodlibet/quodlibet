@@ -682,7 +682,7 @@
 	  <property name="spacing">6</property>
 
 	  <child>
-	    <widget class="GtkCheckButton" id="checkbutton1">
+	    <widget class="GtkCheckButton" id="shuffle_t">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Play songs in a random order</property>
 	      <property name="can_focus">True</property>
@@ -703,7 +703,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkCheckButton" id="repeat_toggle">
+	    <widget class="GtkCheckButton" id="repeat_t">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Restart the playlist after all songs are played</property>
 	      <property name="can_focus">True</property>
