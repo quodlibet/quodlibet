@@ -12,8 +12,9 @@ Quod Libet is written in Python and licensed under the GNU GPL version 2.
 
 ====[ Neat Features
  - Album cover detection and display.
- - Regexp-based search support.
- - Advanced tag editing.
+ - Complex library filtering and searching.
+ - Tag editing, including mass edits.
+ - Ogg Vorbis, FLAC, and MOD/XM/IT support.
 
 For a full description and list of features, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#features.

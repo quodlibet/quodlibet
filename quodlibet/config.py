@@ -46,7 +46,7 @@ def init(rc_file):
     _config.set("settings", "ascii", "false")
     _config.set("settings", "allcomments", "true")
 
-    _config.set("settings", "backend", "ao:alsa")
+    _config.set("settings", "backend", "ao:alsa09")
     _config.set("settings", "masked", "")
     _config.set("settings", "splitters", ",;&/")
     _config.set("settings", "headers", "~#track title album artist")
