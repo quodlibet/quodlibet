@@ -29,57 +29,24 @@ debug = _debug
 
 class error(IOError): pass
 class InvalidTagError(error): pass
-class NoTagWarning(Warning): pass
 
 class APETag(object):
     def __init__(self, filename):
         self.filename = filename
-        debug("loading %s" % self.filename)
-        f = file(filename)
-
-        offset = self.tag_offset(f)
-        debug("tag offset: %#x" % offset)
-        f.seek(offset)
-        self.parse_tag(f)
-        f.close()
-
-    def parse_tag(self, f):
-        f.read(8) # "APETAGEX"
-
-        # 4 byte version
-        version = _read_int(f)
-        debug("tag version: %d" % version)
-        if version < 2000 or version >= 3000:
-            raise InvalidTagError(
-                "module only supports APEv2 (2000-2999), found %d" % version)
-
-        # 4 byte tag size
-        tag_size = _read_int(f)
-        debug("tag size: %d" % tag_size)
-
-        # 4 byte item count
-        item_count = _read_int(f)
-        debug("item count: %d" % item_count)
-
-        # 4 byte flags
-        self.flags = _read_int(f)
-        debug("flags: %#x" % self.flags)
-        if not (self.flags & IS_HEADER):
-            raise InvalidTagError("found footer, not header")
-
-        # 8 bytes reserved
-        f.read(8)
-
-        tag_data = f.read(tag_size)
-        if len(tag_data) < tag_size:
-            debug("W: tag size does not match file size")
-
         self.dict = {}
 
-        f = StringIO(tag_data)
-        for i in range(item_count):
-            size = _read_int(f)
-            flags = _read_int(f)
+        f = file(filename)
+        tag, count = self._find_tag(f)
+        f.close()
+
+        if tag: self._parse_tag(tag, count)
+
+    def _parse_tag(self, tag, count):
+        f = StringIO(tag)
+
+        for i in range(count):
+            size = _read_int(f.read(4))
+            flags = _read_int(f.read(4))
             debug("size: %d, flags %#x" % (size, flags))
 
             # 1 and 2 bits are flags, 0-3
@@ -91,27 +58,37 @@ class APETag(object):
             self.dict[APEKey(key)] = APEValue(value, kind)
             debug("key %s, value %r" % (key, value))
 
-        s = f.read(32)
-        if not s.startswith("APETAGEX"):
-            debug("APE footer missing")
+    def _find_tag(self, f):
+        f.seek(-32, 2)
+        data = f.read(32)
+        if data.startswith("APETAGEX"):
+            # 4 byte version
+            version = _read_int(data[8:12])
+            debug("tag version: %d" % version)
+            if version < 2000 or version >= 3000:
+                raise InvalidTagError(
+                    "module only supports APEv2 (2000-2999), got %d" %version)
 
-    def tag_offset(self, f):
-        # APEv2 tags should be less than 8KB and at the end of the file.
-        # In the interest of my sanity this only reads tags at the end.
+            # 4 byte tag size
+            tag_size = _read_int(data[12:16])
+            debug("tag size: %d" % tag_size)
 
-        # TODO:
-        # * Check for footer, rewind to right point
-        f.seek(0, 2)
-        size = min(10240, f.tell())
-        f.seek(-size, 2)
-        data = f.read(size)
+            # 4 byte item count
+            item_count = _read_int(data[16:20])
+            debug("item count: %d" % item_count)
 
-        # store offset to the start of the tag
-        try: index = data.index("APETAGEX")
-        except ValueError:
+            # 4 byte flags
+            flags = _read_int(data[20:24])
+            debug("flags: %#x" % flags)
+            if flags & IS_HEADER:
+                raise InvalidTagError("found header, not footer")
+
+            f.seek(-tag_size, 2)
+            # tag size includes footer
+            return f.read(tag_size - 8), item_count
+        else:
             debug("no APE tag found")
-            index = size
-        return (f.tell() - size) + index
+            return None, 0
 
     def __iter__(self): return self.dict.iteritems()
     def keys(self): return self.dict.keys()
@@ -124,7 +101,10 @@ class APETag(object):
             # let's guess at the content if we're not already a value...
             if isinstance(v, unicode):
                 # unicode? we've got to be text.
-                v = APEValue(v.encode("utf-8"), TEXT)
+                v = APEValue(_utf8(v), TEXT)
+            elif isinstance(v, list):
+                # list? text.
+                v = APEValue("\0".join(map(_utf8, v)), TEXT)
             else:
                 try: dummy = k2.decode("utf-8")
                 except UnicodeError:
@@ -227,6 +207,13 @@ class APEExtValue(_APEValue):
     def __repr__(self):
         return "<APEExtValue ref=%s>" % len(self.value)
 
-def _read_int(f):
+def _read_int(data):
     # ints in APE are LE
-    return struct.unpack('<i', f.read(4))[0]
+    return struct.unpack('<i', data)[0]
+
+def _utf8(data):
+    if isinstance(data, str):
+        return data.decode("utf-8", "replace").encode("utf-8")
+    elif isinstance(data, unicode):
+        return data.encode("utf-8")
+    else: raise TypeError("only unicode/str types can be converted to UTF8")
