@@ -1219,6 +1219,11 @@ class MainWindow(MultiInstanceWidget):
 
     # Clear the songlist and readd the songs currently wanted.
     def refresh_songlist(self):
+
+        selection = self.songlist.get_selection()
+        model, rows = selection.get_selected_rows()
+        selected = dict.fromkeys([model[row][0]['~filename'] for row in rows])
+
         self.songlist.set_model(None)
         widgets.songs.clear()
         statusbar = self.widgets["statusbar"]
@@ -1233,6 +1238,13 @@ class MainWindow(MultiInstanceWidget):
         else: statusbar.set_text(
             _("%d song (%s)") % (i, util.format_time_long(length)))
         self.songlist.set_model(widgets.songs)
+
+        selection = self.songlist.get_selection()
+        for i, row in enumerate(iter(widgets.songs)):
+            if row[0]['~filename'] in selected:
+                selection.select_path(i)
+        del selected
+
         gc.collect()
 
     # Build a new filter around our list model, set the headers to their
