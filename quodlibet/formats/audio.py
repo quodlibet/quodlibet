@@ -201,18 +201,6 @@ class AudioFile(dict):
             return self.comma("~album~discnumber~part"
                               "~tracknumber~title~version")
 
-    # Nicely format how long it's been since it was played
-    def get_played(self):
-        count = self["~#playcount"]    
-        if count == 0: return _("Never")
-        else:
-            t = time.localtime(self["~#lastplayed"])
-            tstr = time.strftime("%F, %X", t)
-            if count == 1:
-                return _("1 time, recently on %s") % tstr
-            else:
-                return _("%d times, recently on %s") % (count, tstr)
-
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
         s = ""

@@ -76,6 +76,14 @@ def parse_time(timestr):
     except:
         return 0
 
+def format_size(size):
+    if size > 1024*1024:
+        return "%.02fMB" % (float(size) / (1024*1024))
+    elif size > 1024:
+        return "%.02fKiB" % (float(size) / (1024*1024))
+    else:
+        return "%dB" % size
+
 def format_time(time):
     if time > 3600: # 1 hour
         return _("%d:%02d:%02d") % (time // 3600,

@@ -2002,10 +2002,44 @@ class SongProperties(object):
             f.show_all()
             return f
 
+        def _listen(self, song):
+            def counter(i):
+                if i == 0: return _("Never")
+                elif i == 1: return _("%d time") % i
+                else: return _("%d times") % i
+
+            def ftime(t):
+                if t == 0: return _("Unknown")
+                else: return time.strftime("%c", time.localtime(t))
+
+            playcount = counter(song["~#playcount"])
+            skipcount = counter(song.get("~#skipcount", 0))
+            added = ftime(song.get("~#added", 0))
+            changed = ftime(song["~#mtime"])
+            size = util.format_size(os.path.getsize(song["~filename"]))
+            tim = util.format_time_long(song["~#length"])
+            fn = util.unexpand(song["~filename"])
+            tbl = [(_("Play count:"), playcount),
+                   (_("Skip count:"), skipcount),
+                   (_("Song length:"), tim),
+                   (_("Added on:"), added),
+                   (_("Changed on:"), changed),
+                   (_("Filename:"), fn),
+                   (_("File size:"), size)
+                   ]
+            table = gtk.Table(len(tbl), 2)
+            table.set_col_spacings(6)
+            for i, (l, r) in enumerate(tbl):
+                table.attach(self.Label(util.escape(l)), 0, 1, i, i +1)
+                table.attach(self.Label(util.escape(r)), 1, 2, i, i + 1)
+
+            return self.Frame(_("File"), table)
+
         def Label(self, str):
             l = gtk.Label()
             l.set_markup(str)
             l.set_alignment(0, 0)
+            l.set_selectable(True)
             return l
 
         def destroy(self):
@@ -2016,6 +2050,7 @@ class SongProperties(object):
             if "album" in song:
                 self.box.pack_start(self._album(song), expand = False)
             self.box.pack_start(self._people(song), expand = False)
+            self.box.pack_start(self._listen(song), expand = False)
 
         def _update_many(self, songs):
             text = ["<b><span size='x-large'>%s</span></b>" %(
@@ -3284,6 +3319,7 @@ if __name__ == "__main__":
     gtk.glade.textdomain("quodlibet")
 
     import gc
+    import time
     import shutil
     import util; from util import to
 
