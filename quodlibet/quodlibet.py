@@ -902,6 +902,7 @@ class MainWindow(MultiInstanceWidget):
         else:
             window.end()
             self.scan_dirs(config.get("settings", "scan").split(":"))
+        library.save(const.LIBRARY)
         player.playlist.refilter()
         self.refresh_songlist()
 
@@ -939,6 +940,7 @@ class MainWindow(MultiInstanceWidget):
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK: self.scan_dirs(fns)
         if fns: self.last_dir = fns[0]
+        library.save(const.LIBRARY)
 
     def scan_dirs(self, fns):
         win = WaitLoadWindow(self.window, 0,

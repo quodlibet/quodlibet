@@ -10,7 +10,9 @@ import os, sre, stat, string
 import gettext
 _ = gettext.gettext
 
-def mtime(filename): return os.stat(filename)[stat.ST_MTIME]
+def mtime(filename):
+    try: return os.stat(filename)[stat.ST_MTIME]
+    except OSError: return 0
 os.path.mtime = mtime
 
 # Make a directory, including all directories below it.
@@ -73,21 +75,31 @@ def format_time_long(time):
     if time < 1: return _("No time information")
     time_str = ""
     if time > 365 * 24 * 60 * 60:
-        time_str += _("%d years, ") % (time // (365 * 24 * 60 * 60))
+        years = (time // (365 * 24 * 60 * 60))
+        if years != 1: time_str += _("%d years, ") % years
+        else: time_str += _("1 year, ")
         time = time % (365 * 24 * 60 * 60)
     if time > 24 * 60 * 60:
-        time_str += _("%d days, ") % (time // (24 * 60 * 60))
+        days = (time // (24 * 60 * 60))
+        if days != 1: time_str += _("%d days, ") % days
+        else: time_str += _("1 day, ")
         time = time % (24 * 60 * 60)
     if time > 60 * 60:
-        time_str += _("%d hours, ") % (time // (60 * 60))
+        hours = (time // (60 * 60))
+        if hours != 1: time_str += _("%d hours, ") % hours
+        else: time_str += _("1 hour, ")
         time = time % (60 * 60)
     if time > 60:
-        time_str += _("%d minutes, ") % (time // 60)
+        mins = (time // 60)
+        if mins != 1: time_str += _("%d minute, ") % mins
+        else: time_str += _("1 minute, ")
         time = time % 60
     # only include seconds if we don't have hours (or greater)
     if time and len(time_str) <= len(_("xx minutes, ")):
-        time_str += _("%d seconds") % time
-    return time_str.strip(" ,")
+        if time != 1: time_str += _("%d seconds") % time
+        else: time_str += _("1 second")
+        
+    return time_str.rstrip(" ,")
 
 def decode(s):
     try: return s.decode("utf-8")
@@ -233,7 +245,7 @@ class PatternFromFile(object):
         self.pattern = None
         # patterns look like <tagname> non regexy stuff <tagname> ...
         pieces = sre.split(r'(<[A-Za-z0-9_]+>)', pattern)
-        override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d' }
+        override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d\d?' }
         for i, piece in enumerate(pieces):
             if not piece: continue
             if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():

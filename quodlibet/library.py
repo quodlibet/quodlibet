@@ -27,7 +27,7 @@ def MusicFile(filename):
             try:
                 return supported[ext](filename)
             except:
-                print "W: Error loading %s" % filename
+                print _("W: Error loading %s") % filename
                 return None
     else: return None
 
@@ -127,8 +127,7 @@ class AudioFile(dict):
 
     # Sanity-check all sorts of things...
     def sanitize(self, filename = None):
-        if filename:
-            self["~filename"] = filename
+        if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
@@ -146,7 +145,7 @@ class AudioFile(dict):
         self["~#mtime"] = os.path.mtime(self['~filename'])
 
         # time format
-        self["~length"] = util.format_time(self.get('~#length', 0))
+        self["~length"] = util.format_time(self['~#length'])
 
     # Construct the text seen in the player window
     def to_markup(self):
@@ -187,19 +186,17 @@ class AudioFile(dict):
             if "part" in self:
                 album += u" - <b>%s</b>" % escape(self.comma("part"))
             if "tracknumber" in self:
-                album +=" - "+_("Track %s")%escape(self.comma("tracknumber"))
+                album +=" - " + _("Track %s")%escape(self.comma("tracknumber"))
             text += album
         return text
 
     # A shortened song info line (for the statusicon tooltip)
     def to_short(self):
         if self.unknown("album"):
-            return "%s - %s" % (self.comma("artist"), self.comma("title"))
-        elif "tracknumber" in self:
-            return "%s - %s - %s" %(
-                self.comma("album"), self.comma("tracknumber"),
-                self.comma("title"))
-        else: return "%s - %s" % (self.comma("album"), self.comma("title"))
+            return self.comma("~artist~title~version")
+        else:
+            return self.comma("~album~discnumber~part"
+                              "~tracknumber~title~version")
 
     # Nicely format how long it's been since it was played
     def get_played(self):
@@ -208,7 +205,10 @@ class AudioFile(dict):
         else:
             t = time.localtime(self["~#lastplayed"])
             tstr = time.strftime("%F, %X", t)
-            return _("%d times, recently on %s") % (count, tstr)
+            if count == 1:
+                return _("1 time, recently on %s") % tstr
+            else:
+                return _("%d times, recently on %s") % (count, tstr)
 
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
@@ -612,7 +612,7 @@ class Library(dict):
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         songs = self.values()
         for v in self.masked_files.values(): songs.extend(v.values())
-        Pickle.dump(songs, f, 2)
+        Pickle.dump(songs, f, Pickle.HIGHEST_PROTOCOL)
         f.close()
         os.rename(fn + ".tmp", fn)
 
@@ -623,7 +623,7 @@ class Library(dict):
                 f = file(fn, "rb")
                 try: songs = Pickle.load(f)
                 except:
-                    print "W: %s is not a QL song database." % fn
+                    print _("W: %s is not a QL song database.") % fn
                     songs = []
                 f.close()
             else: return 0, 0
@@ -662,7 +662,7 @@ class Library(dict):
         added, changed = 0, 0
 
         for d in dirs:
-            print "Checking", d
+            print _("Checking %s") % d
             d = os.path.expanduser(d)
             for path, dnames, fnames in os.walk(d):
                 for fn in fnames:
@@ -723,8 +723,6 @@ def init(cache_fn = None):
                     "med", "mod", "mtm", "s3m", "stm", "stx",
                     "ult", "uni", "apun", "xm"]:
             supported["." + fmt] = ModFile
-            supported["." + fmt + ".gz"] = ModFile
-            supported["." + fmt + ".bz2"] = ModFile
             
 
     global library
