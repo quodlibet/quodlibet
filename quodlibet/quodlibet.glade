@@ -44,9 +44,10 @@
 		      <property name="label" translatable="yes">_Add Music...</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="open_chooser" last_modification_time="Fri, 08 Oct 2004 01:26:46 GMT"/>
+		      <accelerator key="O" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image5">
+			<widget class="GtkImage" id="image7">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -148,6 +149,7 @@
 		      <property name="visible_vertical">True</property>
 		      <property name="is_important">False</property>
 		      <signal name="clicked" handler="previous_song" last_modification_time="Sun, 10 Oct 2004 04:53:16 GMT"/>
+		      <accelerator key="XF86AudioPrev" modifiers="0" signal="clicked"/>
 		    </widget>
 		    <packing>
 		      <property name="expand">False</property>
@@ -769,7 +771,7 @@
 		<widget class="GtkCheckButton" id="track_t">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Track Number</property>
+		  <property name="label" translatable="yes">Track</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
@@ -915,7 +917,7 @@
 	      <child>
 		<widget class="GtkLabel" id="label9">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">Title (Always Visible)</property>
+		  <property name="label" translatable="yes">Title (Always visible)</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
