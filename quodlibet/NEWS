@@ -9,7 +9,7 @@
    added; currently devices that look like a hard drive and the iRiver
    iFP series are supported.
  - --next, --previous, --play-pause, --volume-up, --volume-down, --mute.
- - Crappy .mod/.xm/&c. support (requires mikmod).
+ - MOD/IT/XM/etc. support, using libmodplug and an included C extension.
 
 0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
  - The ao audio backend is back; see the "AUDIO BACKENDS" section in the

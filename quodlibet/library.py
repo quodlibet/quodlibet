@@ -396,8 +396,10 @@ class OggFile(AudioFile):
 
 class ModFile(AudioFile):
     def __init__(self, filename):
+        import modplug
+        f = modplug.ModFile(filename)
+        self["title"] = f.title.decode("utf-8")
         self.sanitize(filename)
-        self["title"] = ".".join(self["=basename"].split(".")[:-1])
 
     def write(self):
         raise TypeError("ModFiles do not support writing!")
@@ -657,7 +659,7 @@ def init(cache_fn = None):
         supported[".flac"] = FLACFile
 
     if util.check_mod():
-        print _("Enabling MikMod support.")
+        print _("Enabling ModPlug support.")
         for fmt in ["669", "amf", "dsm", "gdm", "imf", "it",
                     "med", "mod", "mtm", "s3m", "stm", "stx",
                     "ult", "uni", "apun", "xm"]:

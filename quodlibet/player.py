@@ -49,7 +49,7 @@ class MP3Player(AudioPlayer):
         if self.stopped: raise StopIteration
         buff = self.audio.read(BUFFER_SIZE)
         if buff is None: raise StopIteration
-        self.dev.play(buff, len(buff))
+        self.dev.play(buff)
         return self.audio.current_time()
 
 class FLACPlayer(AudioPlayer):
@@ -81,7 +81,7 @@ class FLACPlayer(AudioPlayer):
             self._bps = streaminfo.bits_per_sample
 
     def _player(self, dec, buff, size):
-        device.play(buff, size)
+        device.play(buff)
         return self.OK
 
     def next(self):
@@ -150,30 +150,26 @@ class OggPlayer(AudioPlayer):
             if self.scale != 1:
                 buff = audioop.mul(buff, 2, self.scale)
                 bytes = len(buff)
-            self.dev.play(buff, bytes)
+            self.dev.play(buff)
         return int(self.audio.time_tell() * 1000)
 
 class ModPlayer(AudioPlayer):
     def __init__(self, dev, song):
         AudioPlayer.__init__(self)
+        import modplug
+        self.audio = modplug.ModFile(song["=filename"])
+        self.length = self.audio.length
         self.dev = dev
         self.dev.set_info(44100, 2)
-        self.start = time.time()
-        self.fin, self.fout = os.popen2(
-            ("mikmod","--norc","-q","-d","stdout","-X",song["=filename"]))
-        self.length = 1
-        self.off = abs(time.time() - time.time())
 
     def __iter__(self): return self
     def seek(self, ms): pass
 
     def next(self):
-        if self.stopped:
-            self.fout.close()
-            raise StopIteration
+        if self.stopped: raise StopIteration
         else:
-            s = self.fout.read(BUFFER_SIZE)
-            if s: self.dev.play(s, len(s))
+            s = self.audio.read(BUFFER_SIZE)
+            if s: self.dev.play(s)
             else: self.stopped = True
         return 0
 
@@ -193,7 +189,7 @@ class OSSAudioDevice(object):
         self.volume = 1.0
         self.dev.nonblock()
 
-    def play(self, buf, len):
+    def play(self, buf):
         if self.volume != 1.0: buf = audioop.mul(buf, 2, self.volume)
         self.dev.writeall(buf)
 
@@ -226,7 +222,7 @@ class AOAudioDevice(object):
          if channels != 2: self.chan_conv = audioop.tostereo
          else: self.chan_conv = lambda *args: args[0]
 
-    def play(self, buf, l):
+    def play(self, buf):
         buf = self.chan_conv(buf, 2, 1, 1)
         if self.volume != 1.0: buf = audioop.mul(buf, 2, self.volume)
         buf, self.ratestate = self.rate_conv(buf, 2, 2, self.rate,

@@ -1,5 +1,6 @@
 MODULES = config.py library.py match.py parser.py player.py util.py pmp.py
-SUBDIRS = statusicon mmkeys po
+SUBDIRS = statusicon mmkeys po modplug
+EXTENSIONS = statusicon.so mmkeys.so modplug.so
 NAME = quodlibet
 PREFIX ?= /usr/local
 TO = lib/$(NAME)
@@ -20,12 +21,13 @@ install: po-data
 	install -D -m 644 $(NAME).png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
 	install -D -m 644 $(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
 	ln -sf ../$(TO)/$(NAME).py $(DESTDIR)$(PREFIX)/bin/$(NAME)
-	(test -e statusicon.so && install -m 755 statusicon.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true
-	(test -e mmkeys.so && install -m 755 mmkeys.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true
+	for E in $(EXTENSIONS); do\
+		(test -e $$E.so && install -m 755 $$E.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true\
+	done
 	cd po && make install-po DESTDIR=$(DESTDIR)
 
 clean:
-	rm -f *.pyc */*.pyc $(NAME).zip statusicon.so mmkeys.so
+	rm -f *.pyc */*.pyc $(NAME).zip $(EXTENSIONS)
 	rm -f messages.pot quodlibet.glade.h
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
@@ -33,15 +35,11 @@ distclean: clean
 	rm -f *~ \#* *.bak *.orig $(NAME).gladep
 	for D in $(SUBDIRS); do cd $$D && make distclean && cd ..; done
 
-extensions: statusicon.so mmkeys.so
+extensions: $(EXTENSIONS)
 
-statusicon.so:
-	cd statusicon && make && cd ..
-	cp statusicon/statusicon.so .
-
-mmkeys.so:
-	cd mmkeys && make && cd ..
-	cp mmkeys/mmkeys.so .
+%.so: %
+	cd $^ && make $@ && cd ..
+	cp $^/$@ .
 
 test:
 	python -c "import tests; tests.unit()"
