@@ -70,7 +70,7 @@ class AudioFile(dict):
                 s += "%s=%s\n" % (k, v2)
         return s
 
-    def change(key, old_value, new_value):
+    def change(self, key, old_value, new_value):
         parts = self[key].split("\n")
         parts[parts.index(old_value)] = new_value
         self[key] = "\n".join(parts)
@@ -80,8 +80,8 @@ class AudioFile(dict):
                 try: del(self["=#"])
                 except KeyError: pass
 
-    def add(key, value):
-        if key in self: self[key] = value
+    def add(self, key, value):
+        if key not in self: self[key] = value
         else: self[key] += "\n" + value
         if key == "tracknumber":
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
@@ -89,7 +89,7 @@ class AudioFile(dict):
                 try: del(self["=#"])
                 except KeyError: pass
 
-    def remove(key, value):
+    def remove(self, key, value):
         if self[key] == value: del(self[key])
         else:
             parts = self[key].split("\n")

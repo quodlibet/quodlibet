@@ -2034,7 +2034,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	  <property name="column_spacing">6</property>
 
 	  <child>
-	    <widget class="GtkEntry" id="entry1">
+	    <widget class="GtkEntry" id="add_tag_value">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="editable">True</property>
@@ -2103,7 +2103,7 @@ Copyright ©2004 Joe Wreschnig and Michael Urman
 	  </child>
 
 	  <child>
-	    <widget class="GtkComboBoxEntry" id="comboboxentry1">
+	    <widget class="GtkComboBoxEntry" id="add_tag_tag">
 	      <property name="visible">True</property>
 	      <property name="items">album
 artist

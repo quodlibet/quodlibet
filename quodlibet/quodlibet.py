@@ -339,8 +339,8 @@ class MultiInstanceWidget(object):
         def create_property_dict(model, path, iter):
             row = model[iter]
             # Edited, and or and not Deleted
-            if row[2] and not row[4]: updated[row[0]] = row[1]
-            if row[2] and row[4]: deleted[row[0]] = 1
+            if row[2] and not row[4]: updated[row[0]] = (row[1], row[5])
+            if row[2] and row[4]: deleted[row[0]] = row[5]
         self.model.foreach(create_property_dict)
 
         progress = widgets["writing_progress"]
@@ -351,21 +351,21 @@ class MultiInstanceWidget(object):
         progress.set_fraction(0.0)
         for song, ref in self.songrefs:
             changed = False
-            for key, value in updated.iteritems():
+            for key, (new_value, old_value) in updated.iteritems():
                 if song.can_change(key):
-                    if song.get(key) != value:
-                        song[key] = value
-                        changed = True
+                    if old_value is None: song.add(key, new_value)
+                    else: song.change(key, old_value, new_value)
+                    changed = True
             for key in deleted:
                 if song.can_change(key) and key in song:
+                    song.remove(key, deleted[key])
                     changed = True
-                    del song[key]
 
             if changed:
                 path = ref.get_path()
                 song.write()
                 if path is not None:
-                    widgets.songs[path] = ([song.get(h, "") for h in HEADERS] +
+                    widgets.songs[path] = ([song.get(h, "") for h in HEADERS]+
                                            [song, 400])
             saved += 1
             progress.set_fraction(saved / float(len(self.songrefs)))
@@ -403,14 +403,45 @@ class MultiInstanceWidget(object):
         self.remove.set_sensitive(may_remove)
 
     def songprop_add(self, button):
-        print 'FIXME: code songprop_add'
-        self.save.set_sensitive(True)
-        self.revert.set_sensitive(True)
+        add = widgets["add_tag_dialog"]
+        tag = widgets["add_tag_tag"]
+        val = widgets["add_tag_value"]
+
+        while True:
+            resp = add.run()
+            if resp != gtk.RESPONSE_OK: break
+
+            comment = tag.child.get_text().decode("utf-8")
+            if not self.songinfo.can_change(comment):
+                msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
+                        gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
+                msg.set_markup("Invalid tag <b>%s</b>\n\nThe files currently"
+                               " selected do not support editing this tag" %
+                               util.escape(comment))
+                msg.run()
+                msg.destroy()
+            else:
+                value = val.get_text().decode("utf-8")
+                edited = True
+                edit = True
+                orig = None
+                deleted = False
+                self.model.append(row=[comment, value, edited, edit,
+                                       deleted, orig])
+
+                self.save.set_sensitive(True)
+                self.revert.set_sensitive(True)
+
+                tag.child.set_text("")
+                val.set_text("")
+                break
+
+        add.hide()
 
     def songprop_remove(self, button):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
-        if row[0] in self.existing_comments:
+        if row[0] in self.songinfo:
             row[2] = True # Edited
             row[4] = True # Deleted
         else:
@@ -421,6 +452,7 @@ class MultiInstanceWidget(object):
     def fill_property_info(self):
         from library import AudioFileGroup
         songinfo = AudioFileGroup([song for (song,ref) in self.songrefs])
+        self.songinfo = songinfo
         if len(self.songrefs) == 1:
             self.window.set_title("%s - Properties" %
                     self.songrefs[0][0]["title"])
@@ -461,9 +493,9 @@ class MultiInstanceWidget(object):
             edited = False
             edit = songinfo.can_change(comment)
             deleted = False
-            self.model.append(row=[comment, value, edited, edit, deleted])
+            for v in value.split("\n"):
+                self.model.append(row=[comment, v, edited, edit, deleted, v])
 
-        self.existing_comments = keys
         self.add.set_sensitive(bool(songinfo.can_change()))
 
 def make_song_properties(songrefs):
@@ -481,7 +513,7 @@ def make_song_properties(songrefs):
     dlg.remove = dlg.widgets.get_widget('songprop_remove')
     # comment, value, use-changes, edit, deleted
     dlg.songrefs = songrefs
-    dlg.model = gtk.ListStore(str, str, bool, bool, bool)
+    dlg.model = gtk.ListStore(str, str, bool, bool, bool, str)
     dlg.view.set_model(dlg.model)
     selection = dlg.view.get_selection()
     selection.connect('changed', dlg.songprop_selection_changed)
