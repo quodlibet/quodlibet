@@ -355,27 +355,26 @@ class PreferencesWindow(gtk.Window):
         self.set_resizable(False)
         self.set_transient_for(parent)
         self.add(gtk.VBox(spacing = 12))
-        self.tips = gtk.Tooltips()
+        tips = gtk.Tooltips()
         n = qltk.Notebook()
-        n.append_page(self.Browser(self.tips))
-        n.append_page(self.Player(self.tips))
-        n.append_page(self.Library(self.tips))
+        n.append_page(self.Browser(tips))
+        n.append_page(self.Player(tips))
+        n.append_page(self.Library(tips))
 
         self.child.pack_start(n)
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
         button = gtk.Button(stock = gtk.STOCK_CLOSE)
-        button.connect_object('clicked', PreferencesWindow.destroy, self)
+        button.connect_object('clicked', gtk.Window.destroy, self)
         bbox.pack_start(button)
-        self.connect_object('destroy', self._destroy, self)
+        self.connect_object('destroy', PreferencesWindow._destroy, self)
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.child.pack_start(bbox, expand = False)
         self.child.show_all()
 
     def _destroy(self):
         del(widgets.preferences)
-        self.tips.destroy()
-        del(self.tips)
         config.write(const.CONFIG)
 
 class DeleteDialog(gtk.Dialog):
@@ -743,7 +742,7 @@ class BrowserBar(object):
     def can_filter(self, key):
         return False
 
-class PlaylistBar(gtk.HBox):
+class PlaylistBar(BrowserBar, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
         combo = gtk.ComboBox(PlayList.lists_model())
@@ -770,13 +769,14 @@ class PlaylistBar(gtk.HBox):
                                edit, refresh)
 
         self.cb = cb
-        self.tips = gtk.Tooltips()
-        self.tips.set_tip(edit, _("Edit the current playlist"))
-        self.tips.set_tip(refresh, _("Refresh the current playlist"))
-        self.tips.enable()
+        tips = gtk.Tooltips()
+        tips.set_tip(edit, _("Edit the current playlist"))
+        tips.set_tip(refresh, _("Refresh the current playlist"))
+        tips.enable()
         self.show_all()
-        self.connect_object('destroy', gtk.ComboBoxEntry.destroy, combo, None)
-        self.connect_object('destroy', gtk.Tooltips.destroy, self.tips)
+        self.connect_object('destroy', gtk.ComboBoxEntry.set_model,
+                            combo, None)
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
     def list_selected(self, combo, edit, refresh):
         active = combo.get_active()
@@ -790,7 +790,7 @@ class PlaylistBar(gtk.HBox):
 
     def edit_current(self, combo):
         active = combo.get_active()
-        if active: PlaylistWindow(combo.get_model()[active][0])
+        if active > 0: PlaylistWindow(combo.get_model()[active][0])
 
 class EmptyBar(BrowserBar, gtk.HBox):
     def __init__(self, cb):
@@ -827,12 +827,12 @@ class SearchBar(EmptyBar):
         if SearchBar.model is None:
             SearchBar.model = gtk.ListStore(str)
 
-        self.tips = gtk.Tooltips()
+        tips = gtk.Tooltips()
         combo = gtk.ComboBoxEntry(SearchBar.model, 0)
 
         clear = gtk.Button()
         clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
-        self.tips.set_tip(clear, _("Clear search text"))
+        tips.set_tip(clear, _("Clear search text"))
         clear.connect('clicked', self.clear, combo)
                   
         search = gtk.Button()
@@ -840,7 +840,7 @@ class SearchBar(EmptyBar):
         b.pack_start(gtk.image_new_from_stock(button, gtk.ICON_SIZE_MENU))
         b.pack_start(gtk.Label(_("Search")))
         search.add(b)
-        self.tips.set_tip(search, _("Search your audio library"))
+        tips.set_tip(search, _("Search your audio library"))
         search.connect_object('clicked', self.text_parse, combo.child)
         combo.child.connect('activate', self.text_parse)
         combo.child.connect('changed', self.test_filter)
@@ -849,7 +849,9 @@ class SearchBar(EmptyBar):
         self.pack_start(search, expand = False)
         self.show_all()
 
-        self.connect('destroy', self._destroy, combo)
+        self.connect_object(
+            'destroy', gtk.ComboBoxEntry.set_model, combo, None)
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
     def clear(self, button, combo):
         combo.child.set_text("")
@@ -859,10 +861,6 @@ class SearchBar(EmptyBar):
 
     def set_text(self, text):
         self.get_children()[0].child.set_text(text)
-
-    def _destroy(self, widget, combo):
-        combo.set_model(None)
-        self.cb = lambda *args: 0
 
     def text_parse(self, entry):
         text = entry.get_text()
@@ -1624,7 +1622,7 @@ class MainWindow(gtk.Window):
         self.prep_main_popup(header, 1, 0)
 
     def song_col_filter(self, item):
-        view = self.songlist.view
+        view = self.songlist
         path, col = view.get_cursor()
         header = col.header_name
         if "~" in header[1:]: header = filter(None, header.split("~"))[0]
@@ -1643,7 +1641,7 @@ class MainWindow(gtk.Window):
         self.filter_on_header('genre', [self.current_song])
 
     def remove_song(self, item):
-        view = self.songlist.view
+        view = self.songlist
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         rows.sort()
@@ -1656,7 +1654,7 @@ class MainWindow(gtk.Window):
             player.playlist.remove(song)
 
     def delete_song(self, item):
-        view = self.songlist.view
+        view = self.songlist
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         songs = [model[r][0] for r in rows]
