@@ -84,6 +84,10 @@ class GladeHandlers(object):
         else:
             timer.set_text("0:00/0:00")
 
+    def moved_seek_slider(*args):
+        v = min(player.times[1], max(0, args[0].get_value()))
+        player.queue.append(('seek', (v,)))
+
     def text_parse(*args):
         from parser import QueryParser, QueryLexer
         text = widgets["query"].get_text()
