@@ -58,6 +58,19 @@ class GTKSongInfoWrapper(object):
     def set_song(self, song, player):
         gtk.idle_add(self._update_song, song, player)
 
+    def missing_song(self, song):
+        gtk.idle_add(self._missing_song, song)
+
+    def _missing_song(self, song):
+        path = (player.playlist.get_playlist().index(song),)
+        iter = widgets.songs.get_iter(path)
+        widgets.songs.remove(iter)
+        statusbar = widgets["statusbar"]
+        j = statusbar.get_context_id("warnings")
+        statusbar.push(j, "Could not play %s." % song['filename'])
+        library.remove(song)
+        player.playlist.remove(song)
+
     # Called when no cover is available, or covers are off.
     def disable_cover(self):
         self.image.hide()
@@ -118,6 +131,18 @@ def make_chooser(title):
     fns = chooser.get_filenames()
     chooser.destroy()
     return resp, fns
+
+# Display the error dialog.
+def make_error(title, description, buttons):
+    text = "<span size='xx-large'>%s</span>\n\n%s" % (escape(title),
+                                                      escape(description))
+    dialog = gtk.MessageDialog(widgets["main_window"],
+                               gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                               gtk.MESSAGE_ERROR,
+                               buttons)
+    dialog.set_markup(text)
+    dialog.show_all()
+    return dialog
 
 # Standard Glade widgets wrapper.
 class Widgets(object):
@@ -489,6 +514,18 @@ def refresh_cache():
     save_cache()
     raise SystemExit
 
+def error_and_quit():
+    d = make_error("No audio device found",
+                   "Quod Libet was unable to open your audio device. "
+                   "Often this means another program is using it, or "
+                   "your audio drivers are not configured.\n\nQuod Libet "
+                   "will now exit.",
+                   gtk.BUTTONS_OK)
+    d.show()
+    d.run()
+    gtk.main_quit()
+    return True
+
 if __name__ == "__main__":
     import os, sys
     for command in sys.argv[1:]:
@@ -512,13 +549,19 @@ if __name__ == "__main__":
     import gtk.glade
     widgets = Widgets("quodlibet.glade")
 
+    import util; from util import escape
     import threading
     import gc
     import os
+    import ao
     from library import library
-    import player
+    try: import player
+    except ao.aoError:
+        gtk.idle_add(error_and_quit)
+        gtk.main()
+        raise SystemExit(True)
+
     import parser
-    import util; from util import escape
     import signal
     import config
     import sre

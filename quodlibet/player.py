@@ -59,9 +59,11 @@ class OggPlayer(AudioPlayer):
 
     def next(self):
         if self.stopped: raise StopIteration
-        (buff, bytes, bit) = self.audio.read(BUFFER_SIZE)
-        if bytes == 0: raise StopIteration
-        self.dev.play(buff, bytes)
+        try: (buff, bytes, bit) = self.audio.read(BUFFER_SIZE)
+        except ogg.vorbis.VorbisError: pass
+        else:
+            if bytes == 0: raise StopIteration
+            self.dev.play(buff, bytes)
         return self.audio.time_tell() * 1000
 
 def FilePlayer(dev, filename):
@@ -148,15 +150,22 @@ class PlaylistPlayer(object):
             while self.playlist:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
+                fn = self.song['filename']
                 if self.shuffle: random.shuffle(self.playlist)
-                self.player = FilePlayer(self.output, self.song['filename'])
-                self.info.set_song(self.song, self.player)
-                self.played.append(self.song)
-                self.lock.release()
-                for t in self.player:
-                    self.info.set_time(t, self.player.length)
-                    while self.paused:
-                        time.sleep(0.1)
+                try: self.player = FilePlayer(self.output, fn)
+                except:
+                    self.paused = True
+                    self.info.missing_song(self.song)
+                    self.played.append(self.song)
+                    self.lock.release()
+                else:
+                    self.info.set_song(self.song, self.player)
+                    self.played.append(self.song)
+                    self.lock.release()
+                    for t in self.player:
+                        self.info.set_time(t, self.player.length)
+                        while self.paused:
+                            time.sleep(0.1)
             if self.repeat:
                 self.playlist = self.orig_playlist[:]
                 if len(self.played) > 500:
