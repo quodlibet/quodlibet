@@ -1,4 +1,4 @@
-0.4 - SO HARD.
+0.4 - The Power of Language
  - Many bug fixes, primarily due to unit testing.
  - Tweaks to cover detection to pick 'frontcover' over 'backcover'.
  - Tweaks to song display, including proper support for the 'author' tag.
