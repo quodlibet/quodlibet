@@ -7,7 +7,7 @@
 # $Id$
 
 import os, sys
-import pickle
+import pickle, cPickle
 import util; from util import escape, to
 import fcntl
 import random
@@ -32,9 +32,10 @@ class MigrateUnpickler(pickle.Unpickler):
               "MP3File":  "formats/mp3",
               "FLACFile": "formats/flac",
               "OggFile":  "formats/oggvorbis",
-              "ModFile":  "formats/mod" }
+              "ModFile":  "formats/mod",
+              "Unknown":  "formats/audio"}
     def find_class(self, module, name):
-        if (module == "library" and name.endswith("File")):
+        if (module == "library" and name in self.TRANS):
             try: return __import__(self.TRANS[name]).info
             except: pass
         return pickle.Unpickler.find_class(self, module, name)
@@ -184,7 +185,7 @@ class Library(dict):
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         songs = self.values()
         for v in self.masked_files.values(): songs.extend(v.values())
-        pickle.dump(songs, f, pickle.HIGHEST_PROTOCOL)
+        cPickle.dump(songs, f, cPickle.HIGHEST_PROTOCOL)
         f.close()
         os.rename(fn + ".tmp", fn)
 
