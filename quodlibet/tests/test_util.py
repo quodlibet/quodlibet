@@ -67,9 +67,15 @@ class StringTests(TestCase):
         self.assertEqual(util.to("foo"), "foo")
         self.assertEqual(util.to(u"foo"), "foo")
 
+    def test_rating(self):
+        self.failUnlessEqual(util.format_rating(0), "")
+        rat4 = util.format_rating(4).decode('utf-8').replace(' ', '')
+        rat25 = util.format_rating(2.5).decode('utf-8').replace(' ', '')
+        self.failUnlessEqual(len(rat4), 4)
+        self.failUnlessEqual(len(rat25), 3)
+
     def test_escape(self):
-        for s in ["foo&amp;", "<&>", "&", "&amp;",
-                  "<&testing&amp;>amp;"]:
+        for s in ["foo&amp;", "<&>", "&", "&amp;", "<&testing&amp;>amp;"]:
             esc = util.escape(s)
             self.failIfEqual(s, esc)
             self.failUnlessEqual(s, util.unescape(esc))

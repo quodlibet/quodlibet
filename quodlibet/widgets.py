@@ -135,6 +135,10 @@ class PreferencesWindow(gtk.Window):
             vbox.pack_start(table, expand = False)
 
             vbox2 = gtk.VBox()
+            rat = gtk.CheckButton(_("Display song _rating"))
+            if "~#rating" in checks:
+                rat.set_active(True)
+                checks.remove("~#rating")
             tiv = gtk.CheckButton(_("Title includes _version"))
             if "~title~version" in checks:
                 buttons["title"].set_active(True)
@@ -150,6 +154,7 @@ class PreferencesWindow(gtk.Window):
                 buttons["~basename"].set_active(True)
                 fip.set_active(True)
                 checks.remove("~filename")
+            vbox2.pack_start(rat)
             vbox2.pack_start(tiv)
             vbox2.pack_start(aip)
             vbox2.pack_start(fip)
@@ -167,8 +172,9 @@ class PreferencesWindow(gtk.Window):
             hbox.pack_start(others)
             vbox.pack_start(hbox, expand = False)
 
-            apply = qltk.Button(stock = gtk.STOCK_APPLY, cb = self.apply,
-                                user_data = [buttons, tiv, aip, fip, others])
+            apply = qltk.Button(
+                stock=gtk.STOCK_APPLY, cb=self.apply,
+                user_data=[buttons, rat, tiv, aip, fip, others])
             b = gtk.HButtonBox()
             b.set_layout(gtk.BUTTONBOX_END)
             b.pack_start(apply)
@@ -178,11 +184,15 @@ class PreferencesWindow(gtk.Window):
                               child = vbox)
             self.pack_start(frame, expand = False)
 
-        def apply(self, button, buttons, tiv, aip, fip, others):
+        def apply(self, button, buttons, rat, tiv, aip, fip, others):
             headers = []
             for key in ["~#disc", "~#track", "title", "album", "artist",
                         "date", "genre", "~basename", "~length"]:
                 if buttons[key].get_active(): headers.append(key)
+            if rat.get_active():
+                if headers and headers[-1] == "~length":
+                    headers.insert(-1, "~#rating")
+                else: headers.append("~#rating")
             if tiv.get_active():
                 try: headers[headers.index("title")] = "~title~version"
                 except ValueError: pass
@@ -1988,9 +1998,25 @@ class MainWindow(gtk.Window):
         SongProperties(self.songlist.get_selected_songs(),
                        self.song_update_view)
 
+    def set_selected_ratings(self, item, value):
+        for song in self.songlist.get_selected_songs():
+            song["~#rating"] = value
+
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.split("~")[0]
         menu = gtk.Menu()
+
+        if header == "~#rating":
+            item = gtk.MenuItem(_("Set rating..."))
+            m2 = gtk.Menu()
+            item.set_submenu(m2)
+            for i in [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]:
+                itm = gtk.MenuItem("%0.1f\t%s" %(
+                    i, util.format_rating(i)))
+                m2.append(itm)
+                itm.connect('activate', self.set_selected_ratings, i)
+            menu.append(item)
+            menu.append(gtk.SeparatorMenuItem())
 
         if self.browser.can_filter("genre"):
             b = gtk.ImageMenuItem(_("Filter on _genre"))
@@ -2009,9 +2035,10 @@ class MainWindow(gtk.Window):
             menu.append(b)
         if (header not in ["genre", "artist", "album"] and
             self.browser.can_filter(header)):
-            b = gtk.ImageMenuItem(_("_Filter on %s") % _(tag(header)))
-            b.connect('activate', self.filter_proxy, 'album')
+            b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
+            b.connect('activate', self.filter_proxy, header)
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            menu.append(b)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
@@ -2061,7 +2088,7 @@ class MainWindow(gtk.Window):
             songs = self.songlist.get_selected_songs()
 
         if header.startswith("~#"):
-            values = [song(header, 0) for song in songs]
+            values = set([song(header, 0) for song in songs])
         else:
             values = {}
             for song in songs:
@@ -2149,6 +2176,16 @@ class SongList(gtk.TreeView):
                 cell.set_property('text', song.comma(column.header_name))
             except AttributeError: pass
 
+        def cell_data_rating(column, cell, model, iter,
+                attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
+            try:
+                song = model[iter][0]
+                current_song = widgets.main.current_song
+                val = song("~#rating")
+                cell.set_property('markup', "<big>%s</big>" %(
+                    util.format_rating(val)))
+            except AttributeError: pass
+
         def cell_data_fn(column, cell, model, iter, code,
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
             try:
@@ -2176,6 +2213,8 @@ class SongList(gtk.TreeView):
             if t in ["~filename", "~basename", "~dirname"]:
                 column.set_cell_data_func(render, cell_data_fn,
                                           util.fscoding())
+            elif t == "~#rating":
+                column.set_cell_data_func(render, cell_data_rating)
             else:
                 column.set_cell_data_func(render, cell_data)
             if t == "~length":
@@ -3842,13 +3881,14 @@ class WritingWindow(WaitLoadWindow):
 # Return a 'natural' version of the tag for human-readable bits.
 # Strips ~ and ~# from the start and runs it through a map (which
 # the user can configure).
-def tag(name):
+def tag(name, cap = True):
     try:
         if name[0] == "~":
             if name[1] == "#": name = name[2:]
             else: name = name[1:]
-            return " / ".join([util.capitalize(_(HEADERS_FILTER.get(n, n)))
-                               for n in name.split("~")])
+        parts = [_(HEADERS_FILTER.get(n, n)) for n in name.split("~")]
+        if cap: parts = map(util.capitalize, parts)
+        return " / ".join(parts)
     except IndexError:
         return _("Invalid tag name")
 

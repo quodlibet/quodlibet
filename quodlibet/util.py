@@ -47,6 +47,11 @@ def parse_time(timestr):
     except (ValueError, sre.error):
         return 0
 
+def format_rating(value):
+    text = '\xe2\x99\xab ' * int(value)
+    if value > int(value): text += '\xe2\x99\xaa'
+    return text
+
 def format_size(size):
     if size >= 1024*1024 * 10:
         return "%.1fMB" % (float(size) / (1024*1024))
