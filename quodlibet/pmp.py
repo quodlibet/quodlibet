@@ -14,6 +14,9 @@ import shutil
 
 _ = gettext.gettext
 
+class error(RuntimeError): pass
+
+# Routines common to all existing PMP drivers
 class PMP(object):
     def __init__(self, songs, window):
         self.songs = songs
@@ -21,18 +24,24 @@ class PMP(object):
 
     def run(self):
         for i, song in enumerate(self.songs):
-            self.window.step(i + 1, len(self.songs))
+            if self.window.step(i + 1, len(self.songs)): break
             self.upload(song)
 
     def upload(self, song):
-        raise IOError("This PMP driver should never be instantiated!")
+        raise error("This PMP driver should never be instantiated!")
 
+# A driver that copies songs from one directory to another; useful
+# for the Neuros, iPod, etc.
 class CopyPMP(PMP):
-    def __init__(*args):
-        args[0].base = os.path.expanduser(config.get("pmp", "location"))
+    def __init__(self, *args):
+        self.base = os.path.expanduser(config.get("pmp", "location"))
+        if not self.base:
+            raise error(_("Please set your upload directory in the "
+                          "Portable Device section of the preferences "
+                          "dialog."))
         if not os.path.isdir(args[0].base):
-            raise IOError(_("The target directory (%s) does not exist")%(
-                util.escape(args[0].base)))
+            raise error(_("The target directory (%s) does not exist")%(
+                util.escape(self.base)))
         PMP.__init__(*args)
 
     def upload(self, song):
@@ -44,20 +53,22 @@ class CopyPMP(PMP):
             try: os.mkdir(os.path.dirname(target))
             except OSError: pass
             except:
-                raise IOError(_("Unable to create directory <b>%s</b>.")%(
+                raise error(_("Unable to create directory <b>%s</b>.")%(
                     util.escape(dirname)))
         try: shutil.copyfile(filename, target)
         except:
-            raise IOError(_("Unable to copy file <b>%s</b>.")%(
-                    util.escape(filename)))
+            raise error(_("Unable to copy <b>%s</b>.") % util.escape(filename))
 
+# Special-case the iFP because I have one. :) Make directories and
+# upload files.
 class IfpPMP(PMP):
     def __init__(*args):
-        if os.system("ifp typestring") != 0:
-            raise IOError(_("Unable to contact your iFP device. Check "
-                            "that the device is powered on and plugged "
-                            "in, and that you have ifp-line "
-                            "(http://ifp-driver.sf.net) installed."))
+        if os.system("ifp typestring"):
+            raise error(_("Unable to contact your iFP device. Check "
+                          "that the device is powered on and plugged "
+                          "in, and that you have ifp-line "
+                          "(http://ifp-driver.sf.net) installed."))
+        self.madedir = []
         PMP.__init__(*args)
 
     def upload(self, song):
@@ -66,21 +77,30 @@ class IfpPMP(PMP):
         dirname = os.path.basename(os.path.dirname(filename))
         target = os.path.join(dirname, basename)
 
-        os.system("ifp mkdir %r> /dev/null 2>/dev/null" % dirname)
+        # Avoid spurious calls to ifp mkdir; this can take a long time
+        # on a noisy USB line.
+        if dirname not in self.madedir:
+            os.system("ifp mkdir %r> /dev/null 2>/dev/null" % dirname)
+            madedir.append(dirname)
         if os.system("ifp upload %r %r > /dev/null" % (filename, target)):
-            raise IOError(_("Unable to upload <b>%s</b>.")%(
-                    util.escape(filename)))
+            raise error(_("Unable to upload <b>%s</b>. The device may be "
+                          "out of space, or turned off.")%(
+                util.escape(filename)))
 
+# Or, let the user specify a command to run.
 class GenericPMP(PMP):
     def __init__(self, *args):
         self.command = os.path.expanduser(config.get("pmp", "command"))
         if len(self.command) == 0:
-            raise IOError(_("Please set your upload command in the "
-                            "PMP section of the preferences dialog."))
+            raise error(_("Please set your upload command in the "
+                          "Portable Devices section of the preferences "
+                          "dialog."))
         elif not util.iscommand(self.command.split()[0]):
-            raise IOError(_("The uploading command <b>%s</b> was not found "
-                            "in your path. Please check your PMP settings "
-                            "and try again.") % self.command.split()[0])
+            raise error(_("The upload command <b>%s</b> was not found. "
+                          "Please enter a valid command in the Portable "
+                          "Devices section of the preferences dialog and "
+                          "try again.")%(
+                self.command.split()[0]))
             
         PMP.__init__(self, *args)
 
@@ -91,8 +111,8 @@ class GenericPMP(PMP):
         else:
             command = "%s %r" % (self.command, filename)
         if os.system(command):
-            raise IOError(_("Unable to upload <b>%s</b>.")%(
-                util.escape(filename)))
-        
+            raise error(_("Execution of <b>%s</b> failed.")%(
+                util.escape(command)))
 
+# This should correspond to the order of the drivers in the combobox.
 drivers = [None, CopyPMP, GenericPMP, IfpPMP]

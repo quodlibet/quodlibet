@@ -461,7 +461,7 @@ class GladeHandlers(object):
             d = pmp.drivers[config.getint("pmp", "driver")](songs, window)
             d.run()
             window.end()
-        except IOError, s:
+        except pmp.error, s:
             window.end()
             e = ErrorMessage(widgets["main_window"],
                              _("Unable to upload files"), s)
