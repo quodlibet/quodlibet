@@ -2529,6 +2529,9 @@ class AddTagDialog(gtk.Dialog):
         return gtk.Dialog.run(self)
 
 class SongProperties(gtk.Window):
+    __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
+                                 gobject.TYPE_NONE, (object,))
+                     }
 
     class Information(gtk.ScrolledWindow):
         def __init__(self, parent, cbs):
@@ -2541,6 +2544,7 @@ class SongProperties(gtk.Window):
             self.box.set_border_width(12)
             self.child.add(self.box)
             self.tips = gtk.Tooltips()
+            parent.connect_object('changed', self.__class__.__update, self)
 
         def _title(self, song):
             text = "<b><span size='x-large'>%s</span></b>" %(
@@ -2860,7 +2864,7 @@ class SongProperties(gtk.Window):
                                self.Label(albums)),
                                expand = False)
 
-        def update(self, songs):
+        def __update(self, songs):
             for c in self.box.get_children():
                 self.box.remove(c)
                 c.destroy()
@@ -2969,6 +2973,7 @@ class SongProperties(gtk.Window):
                 (self.add, _("Add a new tag to the file")),
                 (self.remove, _("Remove a tag from the file"))]:
                 tips.set_tip(widget, tip)
+            parent.connect_object('changed', self.__class__.__update, self)
 
         def popup_menu(self, view):
             path, col = view.get_cursor()
@@ -3254,7 +3259,7 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(True)
             self.revert.set_sensitive(True)
 
-        def update(self, songs):
+        def __update(self, songs):
             from library import AudioFileGroup
             self.songinfo = songinfo = AudioFileGroup(songs)
             self.songs = songs
@@ -3355,8 +3360,9 @@ class SongProperties(gtk.Window):
                  _("If appropriate to the language, the first letter of "
                    "each word will be capitalized"))]:
                 tips.set_tip(widget, tip)
+            prop.connect_object('changed', self.__class__.__update, self)
 
-        def update(self, songs):
+        def __update(self, songs):
             from library import AudioFileGroup
             self.songs = songs
             songinfo = AudioFileGroup(songs)
@@ -3494,7 +3500,7 @@ class SongProperties(gtk.Window):
                 self.preview.set_sensitive(True)
 
         def preview_tags(self, *args):
-            self.update(self.songs)
+            self.__update(self.songs)
 
         def changed(self, *args):
             config.set("settings", "addreplace",
@@ -3578,6 +3584,7 @@ class SongProperties(gtk.Window):
                  _("Characters outside of the ASCII set (A-Z, a-z, 0-9, "
                    "and punctuation) will be replaced by underscores"))]:
                 tips.set_tip(widget, tip)
+            prop.connect_object('changed', self.__class__.__update, self)
 
         def changed(self, *args):
             config.set("settings", "windows",
@@ -3596,7 +3603,7 @@ class SongProperties(gtk.Window):
                 self.preview.set_sensitive(True)
 
         def preview_files(self, button, combo):
-            self.update(self.songs)
+            self.__update(self.songs)
             self.save.set_sensitive(True)
             self.preview.set_sensitive(False)
 
@@ -3630,7 +3637,7 @@ class SongProperties(gtk.Window):
             self.cb(None)
             win.end()
 
-        def update(self, songs):
+        def __update(self, songs):
             self.songs = songs
             self.model.clear()
             pattern = self.entry.get_text().decode("utf-8")
@@ -3746,6 +3753,7 @@ class SongProperties(gtk.Window):
             bbox.pack_start(self.revert)
             bbox.pack_start(self.save)
             self.pack_start(bbox, expand = False)
+            prop.connect_object('changed', self.__class__.__update, self)
 
         def save_files(self, *args):
             win = WritingWindow(self.prop, len(self.songs))
@@ -3785,7 +3793,7 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(False)
 
         def revert_files(self, *args):
-            self.update(self.songs)
+            self.__update(self.songs)
 
         def preview_tracks(self, *args):
             start = self.start.get_value_as_int()
@@ -3799,7 +3807,7 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(True)
             self.preview.set_sensitive(False)
 
-        def update(self, songs):
+        def __update(self, songs):
             self.songs = songs
             self.model.clear()
             self.total.set_value(len(songs))
@@ -3836,7 +3844,7 @@ class SongProperties(gtk.Window):
         self.fview = gtk.TreeView(self.fmodel)
         selection = self.fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
-        selection.connect('changed', self.selection_changed)
+        selection.connect('changed', self.__selection_changed)
 
         if len(songs) > 1:
             expander = gtk.Expander(_("Apply to these _files..."))
@@ -3883,7 +3891,7 @@ class SongProperties(gtk.Window):
     def update(self, songs = None):
         if songs is None: songs = self.songs
         else: self.songs = songs
-        for page in self.pages: page.update(songs)
+        self.emit('changed', self.songs)
         if len(songs) == 1:
             title = songs[0].comma("title")
         else:
@@ -3899,12 +3907,14 @@ class SongProperties(gtk.Window):
             model[iter][3] = song["~filename"]
         self.fbasemodel.foreach(refresh)
 
-    def selection_changed(self, selection):
+    def __selection_changed(self, selection):
         songs = []
         def get_songs(model, path, iter, songs):
             songs.append(model[path][0])
         selection.selected_foreach(get_songs, songs)
-        if songs: self.update(songs)
+        if songs: self.emit('changed', songs)
+
+gobject.type_register(SongProperties)
 
 class DirectoryTree(gtk.TreeView):
     def cell_data(column, cell, model, iter):
@@ -4058,6 +4068,10 @@ class FileSelector(gtk.VPaned):
 gobject.type_register(FileSelector)
 
 class ExFalsoWindow(gtk.Window):
+    __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
+                                 gobject.TYPE_NONE, (object,))
+                     }
+
     def __init__(self, dir=None):
         gtk.Window.__init__(self)
         self.set_title("Ex Falso")
@@ -4077,7 +4091,7 @@ class ExFalsoWindow(gtk.Window):
         fs.connect('changed', self.__changed, nb)
         self.__cache = {}
         self.connect('destroy', gtk.main_quit)
-        for child in nb.get_children(): child.update([])
+        self.emit('changed', [])
 
     def refill(self): pass
     def update(self): pass
@@ -4096,7 +4110,7 @@ class ExFalsoWindow(gtk.Window):
         try:
             while True: files.remove(None)
         except ValueError: pass
-        for child in notebook.get_children(): child.update(files)
+        self.emit('changed', files)
         self.__cache.clear()
         if len(files) == 0: self.set_title("Ex Falso")
         elif len(files) == 1:
@@ -4106,6 +4120,8 @@ class ExFalsoWindow(gtk.Window):
                 "%s - Ex Falso" %
                 (_("%s and %d more") % (files[0]("title"), len(files) - 1)))
         self.__cache = dict([(song["~filename"], song) for song in files])
+
+gobject.type_register(ExFalsoWindow)
 
 class WritingWindow(WaitLoadWindow):
     def __init__(self, parent, count):
