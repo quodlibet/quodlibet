@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-06 20:49-0600\n"
-"PO-Revision-Date: 2005-03-06 20:48-0600\n"
+"POT-Creation-Date: 2005-03-27 00:31-0600\n"
+"PO-Revision-Date: 2005-03-27 00:10-0600\n"
 "Last-Translator: godfryd <godfryd@gmail.com>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
 "MIME-Version: 1.0\n"
@@ -37,1000 +37,25 @@ msgstr "(różne w %d utworach)"
 msgid "(different across %d songs, missing from %d songs)"
 msgstr "(różne w %d utworach, brakujące w %d utworach)"
 
-#: ../library.py:203
+#: ../library.py:204
 #, python-format
 msgid "W: %s is not a QL song database."
 msgstr "W: %s nie jest bazą utworów Quod Libet"
 
-#: ../library.py:240
+#: ../library.py:242
 #, python-format
 msgid "Checking %s"
 msgstr "Sprawdzanie %s"
 
-#: ../library.py:278
+#: ../library.py:280
 msgid "Supported formats:"
 msgstr ""
 
-#: ../quodlibet.py:66
-msgid "About Quod Libet"
-msgstr "Informacje o Quod Libet"
-
-#: ../quodlibet.py:69
-msgid "Quod Libet is free software licensed under the GNU GPL v2."
-msgstr ""
-"Quod Libet is wolnym oprogramowanie dystrybuowanym na licencji GNU GPL "
-"wersja 2."
-
-#: ../quodlibet.py:131
-msgid "Visible Columns"
-msgstr "Widoczne kolumny"
-
-#: ../quodlibet.py:140
-msgid "_Disc"
-msgstr "_Płyta"
-
-#: ../quodlibet.py:141
-msgid "Al_bum"
-msgstr "Al_bum"
-
-#: ../quodlibet.py:142
-msgid "_Genre"
-msgstr "_Rodzaj"
-
-#: ../quodlibet.py:143
-msgid "_Track"
-msgstr "Ścież_ka"
-
-#: ../quodlibet.py:144
-msgid "A_rtist"
-msgstr "_Artysta"
-
-#: ../quodlibet.py:145
-msgid "_Filename"
-msgstr "_Nazwa pliku"
-
-#: ../quodlibet.py:146
-msgid "Title"
-msgstr "Tyt_uł"
-
-#: ../quodlibet.py:147
-msgid "Dat_e"
-msgstr "Da_ta"
-
-#: ../quodlibet.py:148
-msgid "_Length"
-msgstr "_Długość"
-
-#: ../quodlibet.py:160
-msgid "Title includes _version"
-msgstr "Zawarcie _wersji w tytule"
-
-#: ../quodlibet.py:165
-msgid "Album includes _part"
-msgstr "Zawarcie _numeru części w tytule"
-
-#: ../quodlibet.py:175
-msgid "_Others:"
-msgstr "_Inne:"
-
-#: ../quodlibet.py:179
-msgid "List other headers you want displayed, separated by spaces"
-msgstr "Wymień inne nagłówki do wyświetlania (rozdzielone spacjami)"
-
-#: ../quodlibet.py:213
-msgid "Show _album cover images"
-msgstr "Pokazywanie _obrazków z okładki albumu"
-
-#: ../quodlibet.py:217
-msgid "Color _search terms"
-msgstr "_Kolorowanie poszukiwanych wyrażeń"
-
-#: ../quodlibet.py:219
-msgid ""
-"Display simple searches in blue, advanced ones in green, and invalid ones in "
-"red"
-msgstr ""
-"Wyświetl proste wyszukiwania na niebiesko, zaawansowane na zielono i "
-"nieprawidłowe na czerwono"
-
-#: ../quodlibet.py:225
-msgid "_Jump to current song automatically"
-msgstr "Automatyczny _skok do bieżącego utworu"
-
-#: ../quodlibet.py:226
-msgid "When the playing song changes, scroll to it in the song list"
-msgstr ""
-"W chwili zmiany odtwarzanego utworu, lista zostanie przesunięta na nowy utwór"
-
-#: ../quodlibet.py:233
-msgid "_Volume Normalization"
-msgstr "_Normalizacja głośności"
-
-#: ../quodlibet.py:235
-msgid "No volume adjustment"
-msgstr "Brak dopasowywania głośności"
-
-#: ../quodlibet.py:236
-msgid "Per-song (\"Radio\") volume adjustment"
-msgstr "Dopasowywanie głośności per utwór (\"Radio\")"
-
-#: ../quodlibet.py:237
-msgid "Per-album (\"Audiophile\") volume adjustment"
-msgstr "Dopasowywanie głośności per album (\"Audiophile\")"
-
-#: ../quodlibet.py:244
-msgid "_On-Screen Display"
-msgstr "_Wyświetlanie na ekranie"
-
-#: ../quodlibet.py:246
-msgid "No on-screen display"
-msgstr "Brak wyświetlania OSD"
-
-#: ../quodlibet.py:247
-msgid "Display OSD on the top"
-msgstr "Wyświetlanie OSD na górze"
-
-#: ../quodlibet.py:248
-msgid "Display OSD on the bottom"
-msgstr "Wyświetlanie OSD na dole"
-
-#: ../quodlibet.py:259
-msgid "Select a color for the OSD"
-msgstr "Wybierz kolor dla OSD"
-
-#: ../quodlibet.py:260
-msgid "Select a second color for the OSD"
-msgstr "Wybierz drugi kolor dla OSD"
-
-#: ../quodlibet.py:297
-msgid "Scan _Directories"
-msgstr "Skanowane _Katalogi"
-
-#: ../quodlibet.py:299 ../quodlibet.py:324
-msgid "_Select..."
-msgstr "_Wybierz..."
-
-#: ../quodlibet.py:304
-msgid ""
-"On start up, any files found in these directories will be added to your "
-"library"
-msgstr ""
-"Przy uruchomieniu Quod Libet, każdy plik znaleziony we wskazanych katalogach "
-"zostanie dodany do biblioteki utworów"
-
-#: ../quodlibet.py:312
-msgid "_Masked Directories"
-msgstr "_Maskowane Katalogi"
-
-#: ../quodlibet.py:315
-msgid ""
-"If you have songs in directories that will not always be mounted (for "
-"example, a removable device or an NFS shared drive), list those mount points "
-"here. Files in these directories will not be removed from the library if the "
-"device is not mounted."
-msgstr ""
-"Jeżeli niektóre utwory znajdują się w katalogach które nie zawsze są "
-"zamontowane (na przykład na wyjmowalnych nośnikach albo na współdzielonych "
-"katalogach NFS), to wylistuj ich punkty montowania. Pliki z tych katalogów "
-"nie będą usuwane podczas skanowania gdy dany katalog będzie odmontowany."
-
-#: ../quodlibet.py:339
-msgid "Tag Editing"
-msgstr "Edycja Tagów"
-
-#: ../quodlibet.py:348
-msgid ""
-"These characters will be used as separators when \"Split values\" is "
-"selected in the tag editor"
-msgstr ""
-"Te znaki zostaną użyte do rozdzielania gdy \"Rozdziel wartości\" zostanie "
-"wybrane w edytorze tagów."
-
-#: ../quodlibet.py:350
-msgid "Split _on:"
-msgstr "Rozdziel _przy:"
-
-#: ../quodlibet.py:355
-msgid "Show _programmatic comments"
-msgstr "_Pokazywanie komentarzy komputerowych"
-
-#: ../quodlibet.py:368
-msgid "Select Directories"
-msgstr "Wybierz Katalogi"
-
-#: ../quodlibet.py:379
-msgid "Quod Libet Preferences"
-msgstr "Quod Libet - Preferencje"
-
-#: ../quodlibet.py:386
-msgid "Browser"
-msgstr "Przeglądarka"
-
-#: ../quodlibet.py:387
-msgid "Player"
-msgstr "Odtwarzacz"
-
-#: ../quodlibet.py:388
-msgid "Library"
-msgstr "Biblioteka"
-
-#: ../quodlibet.py:415
-msgid "Deleting files"
-msgstr "Usuwanie plików"
-
-#: ../quodlibet.py:424
-msgid "_Move to Trash"
-msgstr "_Przesuń do Śmietnika"
-
-#: ../quodlibet.py:441
-msgid "Permanently delete this file?"
-msgstr "Usunąć wskazany plik?"
-
-#: ../quodlibet.py:444
-msgid "Permanently delete these files?"
-msgstr "Usunąć wskazane pliki?"
-
-#: ../quodlibet.py:445
-#, python-format
-msgid "%s and %d more..."
-msgstr "%s i %d więcej..."
-
-#: ../quodlibet.py:507 ../quodlibet.py:1266 ../quodlibet.py:1377
-msgid "_Pause"
-msgstr "Pau_za"
-
-#: ../quodlibet.py:613
-msgid "Initialized status icon."
-msgstr "Zainicjowano ikonę statusu"
-
-#: ../quodlibet.py:684
-msgid "Add Results"
-msgstr "Dodaj utwory"
-
-#: ../quodlibet.py:743
-msgid "Initialized multimedia key support."
-msgstr "Zainicjowano wsparcie dla klawiszy multimedialnych"
-
-#: ../quodlibet.py:835
-msgid "Edit the current playlist"
-msgstr "Edytuj bieżącą listę utworów"
-
-#: ../quodlibet.py:836
-msgid "Refresh the current playlist"
-msgstr "Odśwież bieżącą listę utworów"
-
-#: ../quodlibet.py:1011
-msgid "Add songs to your library"
-msgstr "Dodaj utwory do biblioteki"
-
-#: ../quodlibet.py:1018 ../quodlibet.py:1251
-msgid "View and edit tags in the playing song"
-msgstr "Otwiera okno tagów dla utworu"
-
-#: ../quodlibet.py:1025
-msgid "Visit the artist's website"
-msgstr "Otwórz stronę www autora"
-
-#: ../quodlibet.py:1080
-msgid "Adjust audio volume"
-msgstr ""
-
-#: ../quodlibet.py:1108
-msgid "_Shuffle"
-msgstr "Mie_szaj"
-
-#: ../quodlibet.py:1109
-msgid "Play songs in a random order"
-msgstr "Losowe odtwarzanie utworów"
-
-#: ../quodlibet.py:1113
-msgid "_Repeat"
-msgstr "Powta_rzaj"
-
-#: ../quodlibet.py:1117
-msgid "Restart the playlist after all songs are played"
-msgstr "Odtwarzanie od początku listy po odtworzeniu wszystkich utworów"
-
-#: ../quodlibet.py:1120 ../util.py:72
-msgid "No time information"
-msgstr "Brak informacji o czasie"
-
-#: ../quodlibet.py:1139 ../quodlibet.py:1810
-msgid "Search"
-msgstr "Szukaj"
-
-#: ../quodlibet.py:1161
-msgid "_Music"
-msgstr "_Muzyka"
-
-#: ../quodlibet.py:1162
-msgid "_Add Music..."
-msgstr "_Dodaj utwory..."
-
-#: ../quodlibet.py:1164
-msgid "_New Playlist..."
-msgstr "_Utwórz listę utworów..."
-
-#: ../quodlibet.py:1168
-msgid "Re_fresh library"
-msgstr "_Odśwież bibliotekę"
-
-#: ../quodlibet.py:1170
-msgid "Re_load library"
-msgstr "_Załaduj ponownie bibliotekę"
-
-#: ../quodlibet.py:1175
-msgid "_Filters"
-msgstr "_Filtr"
-
-#: ../quodlibet.py:1176
-msgid "Random _genre"
-msgstr "Losuj _rodzaj"
-
-#: ../quodlibet.py:1178
-msgid "Random _artist"
-msgstr "Losuj _artystę"
-
-#: ../quodlibet.py:1180
-msgid "Random al_bum"
-msgstr "Losuj al_bum"
-
-#: ../quodlibet.py:1182
-msgid "Not played to_day"
-msgstr "Nie odtwarzane _dzisiaj"
-
-#: ../quodlibet.py:1184
-msgid "Not played in a _week"
-msgstr "Nie odtwarzane w tym _tygodniu"
-
-#: ../quodlibet.py:1186
-msgid "Not played in a _month"
-msgstr "Nie odtwarzane w tym _miesiącu"
-
-#: ../quodlibet.py:1188
-msgid "_Never played"
-msgstr "_Nigdy nie odtwarzane"
-
-#: ../quodlibet.py:1190
-msgid "_Top 40"
-msgstr "40 _popularnych"
-
-#: ../quodlibet.py:1191
-msgid "B_ottom 40"
-msgstr "40 _niepopularnych"
-
-#: ../quodlibet.py:1193
-msgid "S_ong"
-msgstr "_Utwór"
-
-#: ../quodlibet.py:1200 ../quodlibet.py:1767
-msgid "Filter on _genre"
-msgstr "Filtruj _rodzaj"
-
-#: ../quodlibet.py:1202 ../quodlibet.py:1772
-msgid "Filter on _artist"
-msgstr "Filtruj _artystów"
-
-#: ../quodlibet.py:1204 ../quodlibet.py:1777
-msgid "Filter on al_bum"
-msgstr "Filtruj al_bum"
-
-#: ../quodlibet.py:1208
-msgid "_Jump to playing song"
-msgstr "_Skocz do odtwarzanego utworu"
-
-#: ../quodlibet.py:1211
-msgid "_View"
-msgstr "_Widok"
-
-#: ../quodlibet.py:1212
-msgid "_Help"
-msgstr "_Pomoc"
-
-#: ../quodlibet.py:1217
-msgid "Song _list"
-msgstr "_Lista utworów"
-
-#: ../quodlibet.py:1222
-msgid "_Disable browsing"
-msgstr "_Bez przeszukiwania"
-
-#: ../quodlibet.py:1223
-msgid "_Search library"
-msgstr "_Wyszukiwanie w bibliotece"
-
-#: ../quodlibet.py:1224
-msgid "_Playlists"
-msgstr "Przeglądanie _list utworów"
-
-#: ../quodlibet.py:1236
-msgid "Check for changes in the library made since the program was started"
-msgstr "Sprawdzenie zmian w bibliotece od momentu uruchomienia programu"
-
-#: ../quodlibet.py:1240
-msgid "Reload all songs in your library (this can take a long time)"
-msgstr "Przeładowuje wszystkie utwory w bibliotece (to może chwilę potrwać)"
-
-#: ../quodlibet.py:1243
-msgid ""
-"The 40 songs you've played most (more than 40 may be chosen if there are "
-"ties)"
-msgstr ""
-"40 najczęściej odtwarzanych utworów "
-"(może·być·więcej·jeśli·utwowry·mają·tę·samą·liczbę·odtworzeń)"
-
-#: ../quodlibet.py:1247
-msgid ""
-"The 40 songs you've played least (more than 40 may be chosen if there are "
-"ties)"
-msgstr ""
-"40 najrzadziej odtwarzanych utworów (może być więcej jeśli utwowry mają tę "
-"samą liczbę odtworzeń)"
-
-#: ../quodlibet.py:1261 ../quodlibet.py:1371
-msgid "_Play"
-msgstr "_Odtwarzaj"
-
-#: ../quodlibet.py:1273
-msgid "Pre_vious"
-msgstr "_Poprzedni"
-
-#: ../quodlibet.py:1277
-msgid "_Next"
-msgstr "_Następny"
-
-#: ../quodlibet.py:1337
-#, python-format
-msgid "W: Unable to load %s"
-msgstr "W: Nie można wczytać %s"
-
-#: ../quodlibet.py:1395
-#, python-format
-msgid "Could not play %s."
-msgstr "Nie można odtworzyć %s."
-
-#: ../quodlibet.py:1406
-msgid "Not playing"
-msgstr "Nie odtwarza"
-
-#: ../quodlibet.py:1476
-msgid "New Playlist..."
-msgstr "_Nowa lista utworów..."
-
-#: ../quodlibet.py:1477
-msgid ""
-"Enter a name for the new playlist. If it already exists it will be opened "
-"for editing."
-msgstr ""
-"Podaj nazwę nowej listy utworów. Jeśli już istnieje zostanie ona otwarta do "
-"edycji."
-
-#: ../quodlibet.py:1516
-#, python-format
-msgid "Opening web browser: %s"
-msgstr "Otwieranie przeglądarki WWW: %s"
-
-#: ../quodlibet.py:1520
-msgid "Unable to start a web browser"
-msgstr "Nie można uruchomić przeglądarki WWW."
-
-#: ../quodlibet.py:1521
-msgid ""
-"A web browser could not be found. Please set your $BROWSER variable, or make "
-"sure /usr/bin/sensible-browser exists."
-msgstr ""
-"Nie znaleziono przeglądarki WWW. Należy ustawić zmienną środowiskową "
-"$BROWSER albo ustawić link symboliczny /usr/bin/sensible-browser."
-
-#: ../quodlibet.py:1604
-#, python-format
-msgid ""
-"Quod Libet is scanning your library. This may take several minutes.\n"
-"\n"
-"%d songs reloaded\n"
-"%d songs removed"
-msgstr ""
-"Quod·Libet·skanuje·bibliotekę.\n"
-"Może to trwać kilka minut.\n"
-"\n"
-"przeładowano %d utworów\n"
-"usunięto %d utworów"
-
-#: ../quodlibet.py:1642
-msgid "Add Music"
-msgstr "Dodaj Utwory"
-
-#: ../quodlibet.py:1650
-#, python-format
-msgid ""
-"Quod Libet is scanning for new songs and adding them to your library.\n"
-"\n"
-"%d songs added"
-msgstr ""
-"Quod Libet skanuje katalogi pod kątem nowych utworów i dodaje je do "
-"biblioteki.\n"
-"\n"
-"dodano już %d utworów"
-
-#: ../quodlibet.py:1727
-#, python-format
-msgid "Moving %d/%d."
-msgstr "Przenoszenie %d/%d."
-
-#: ../quodlibet.py:1728
-#, python-format
-msgid "Deleting %d/%d."
-msgstr "Usuwanie %d/%d."
-
-#: ../quodlibet.py:1743
-msgid "Unable to remove file"
-msgstr "Nie można usunąć pliku"
-
-#: ../quodlibet.py:1744
-#, python-format
-msgid ""
-"Removing <b>%s</b> failed. Possibly the target file does not exist, or you "
-"do not have permission to remove it."
-msgstr ""
-"Nie można usunąć <b>%s</b>. Prawdopodobnie usuwany plik nie istniejealbo nie "
-"masz uprawnień do usunięcia."
-
-#: ../quodlibet.py:1783
-#, fuzzy, python-format
-msgid "_Filter on %s"
-msgstr "_Filtr"
-
-#: ../quodlibet.py:1883
-#, python-format
-msgid "%d songs (%s)"
-msgstr "%d utworów (%s)"
-
-#: ../quodlibet.py:1885
-#, python-format
-msgid "%d song (%s)"
-msgstr "%d utwór (%s)"
-
-#: ../quodlibet.py:2173
-msgid "Add a new tag"
-msgstr "Dodawanie nowego tagu"
-
-#: ../quodlibet.py:2195
-msgid "_Tag:"
-msgstr "_Tag:"
-
-#: ../quodlibet.py:2203
-msgid "_Value:"
-msgstr "_Wartość:"
-
-#: ../quodlibet.py:2250
-#, fuzzy
-msgid "Information"
-msgstr "Brak informacji o czasie"
-
-#: ../quodlibet.py:2289
-#, fuzzy
-msgid "performers"
-msgstr "wykonawca"
-
-#: ../quodlibet.py:2290
-#, fuzzy
-msgid "lyricists"
-msgstr "autor słów"
-
-#: ../quodlibet.py:2291
-#, fuzzy
-msgid "arrangers"
-msgstr "aranżer"
-
-#: ../quodlibet.py:2292
-#, fuzzy
-msgid "composers"
-msgstr "kompozycja %s"
-
-#: ../quodlibet.py:2293
-#, fuzzy
-msgid "conductors"
-msgstr "dyrygent"
-
-#: ../quodlibet.py:2294
-#, fuzzy
-msgid "authors"
-msgstr "autor"
-
-#: ../quodlibet.py:2306 ../quodlibet.py:2442 ../quodlibet.py:2557
-#, fuzzy
-msgid "artists"
-msgstr "artysta"
-
-#: ../quodlibet.py:2309
-msgid "Album"
-msgstr "Album"
-
-#: ../quodlibet.py:2328 ../quodlibet.py:2460 ../formats/audio.py:189
-#, python-format
-msgid "Disc %s"
-msgstr "Płyta %s"
-
-#: ../quodlibet.py:2332 ../formats/audio.py:193
-#, python-format
-msgid "Track %s"
-msgstr "Ścieżka %s"
-
-#: ../quodlibet.py:2351
-msgid "Never"
-msgstr "Nigdy"
-
-#: ../quodlibet.py:2352
-msgid "1 time"
-msgstr ""
-
-#: ../quodlibet.py:2353
-#, fuzzy, python-format
-msgid "%d times"
-msgstr "%d minut(y), "
-
-#: ../quodlibet.py:2356 ../formats/audio.py:21
-msgid "Unknown"
-msgstr "Nieznany"
-
-#: ../quodlibet.py:2366 ../po/tag-names.py:20
-msgid "play count"
-msgstr "liczba odtwarzań"
-
-#: ../quodlibet.py:2367 ../po/tag-names.py:21
-#, fuzzy
-msgid "skip count"
-msgstr "liczba odtwarzań"
-
-#: ../quodlibet.py:2368 ../po/tag-names.py:7
-msgid "length"
-msgstr "długość"
-
-#. date the song was added to the library
-#: ../quodlibet.py:2369 ../po/tag-names.py:43
-msgid "added"
-msgstr ""
-
-#. date song was last modified/edited
-#: ../quodlibet.py:2370 ../po/tag-names.py:45
-msgid "modified"
-msgstr ""
-
-#: ../quodlibet.py:2371
-msgid "file size"
-msgstr ""
-
-#: ../quodlibet.py:2385 ../quodlibet.py:3109 ../quodlibet.py:3225
-#: ../quodlibet.py:3404 ../quodlibet.py:3521
-msgid "File"
-msgstr "Plik"
-
-#: ../quodlibet.py:2470
-#, fuzzy
-msgid "No information available"
-msgstr "Brak informacji o czasie"
-
-#: ../quodlibet.py:2475
-#, fuzzy
-msgid "Track List"
-msgstr "Ścieżka %s"
-
-#: ../quodlibet.py:2481 ../quodlibet.py:2524
-#, python-format
-msgid "%d songs"
-msgstr "%d utworów"
-
-#: ../quodlibet.py:2499 ../quodlibet.py:2564
-#, fuzzy, python-format
-msgid "%d songs with no album"
-msgstr "%d utworów odsłuchanych"
-
-#: ../quodlibet.py:2501
-#, fuzzy
-msgid "Selected Discography"
-msgstr "Wybierz Katalogi"
-
-#: ../quodlibet.py:2534
-msgid "Total length:"
-msgstr ""
-
-#: ../quodlibet.py:2536
-#, fuzzy
-msgid "Songs heard:"
-msgstr "%d utworów odsłuchanych"
-
-#: ../quodlibet.py:2539
-msgid "Listening"
-msgstr ""
-
-#: ../quodlibet.py:2553
-#, fuzzy, python-format
-msgid "%d songs with no artist"
-msgstr "%d utworów odsłuchanych"
-
-#: ../quodlibet.py:2568
-#, fuzzy
-msgid "albums"
-msgstr "album"
-
-#: ../quodlibet.py:2607
-msgid "Edit Tags"
-msgstr "Edycja tagów"
-
-#: ../quodlibet.py:2617
-msgid "Write"
-msgstr "Zapisane"
-
-#: ../quodlibet.py:2624
-msgid "Tag"
-msgstr "Tag"
-
-#: ../quodlibet.py:2630
-msgid "Value"
-msgstr "Wartość"
-
-#: ../quodlibet.py:2673
-msgid "Double-click a tag value to change it, right-click for other options"
-msgstr ""
-"Dwa razy kliknij na wartości tagu aby ją zmenić, kliknij prawym klawiszem "
-"myszy aby wyświetlić inne opcje"
-
-#: ../quodlibet.py:2675
-msgid "Add a new tag to the file"
-msgstr "Dodawanie nowy tago do pliku"
-
-#: ../quodlibet.py:2676
-msgid "Remove a tag from the file"
-msgstr "Usuwanie zaznaczonego tagu z pliku"
-
-#: ../quodlibet.py:2758
-msgid "_Split into multiple values"
-msgstr "_Rozdziel na wiele wartości"
-
-#: ../quodlibet.py:2767
-msgid "Split disc out of _album"
-msgstr "Oddziel płytę od al_bumu"
-
-#: ../quodlibet.py:2775
-msgid "Split version out of title"
-msgstr "Oddziel wersję od tytułu"
-
-#: ../quodlibet.py:2785
-msgid "Split arranger out of ar_tist"
-msgstr "Oddziel arranżera od _artysty"
-
-#: ../quodlibet.py:2792
-msgid "Split _performer out of artist"
-msgstr "Oddziej w_ykonawcę od artysty"
-
-#: ../quodlibet.py:2842 ../quodlibet.py:3089
-msgid "Invalid tag"
-msgstr "Błędny tag"
-
-#: ../quodlibet.py:2843 ../quodlibet.py:3090
-#, python-format
-msgid ""
-"Invalid tag <b>%s</b>\n"
-"\n"
-"The files currently selected do not support editing this tag."
-msgstr ""
-"Błędny tag <b>%s</b>\n"
-"\n"
-"Nie można zmieniać tego tagu w zaznaczonych plikach."
-
-#: ../quodlibet.py:2848
-msgid "Invalid date"
-msgstr "Błędna data"
-
-#: ../quodlibet.py:2849 ../quodlibet.py:2945
-#, python-format
-msgid ""
-"Invalid date: <b>%s</b>.\n"
-"\n"
-"The date must be entered in YYYY or YYYY-MM-DD format."
-msgstr ""
-"Błędna data: <b>%s</b>.\n"
-"\n"
-"Data musi mieć format YYYY albo YYYY-MM-DD."
-
-#: ../quodlibet.py:2918 ../quodlibet.py:3166 ../quodlibet.py:3439
-msgid "Unable to edit song"
-msgstr "Nie można edytować utworu"
-
-#: ../quodlibet.py:2919 ../quodlibet.py:3167 ../quodlibet.py:3440
-#, python-format
-msgid ""
-"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
-"have permission to edit it."
-msgstr ""
-"Nie można zapisać <b>%s</b>. Prawdopodobnie plik jest tylko do odczytu,albo "
-"zepsuty albo nie masz uprawnień do jego edycji."
-
-#: ../quodlibet.py:2944
-msgid "Invalid date format"
-msgstr "Błędny format daty"
-
-#: ../quodlibet.py:3007
-msgid "Tag by Filename"
-msgstr "Tagi po nazwie pliku"
-
-#: ../quodlibet.py:3018 ../quodlibet.py:3218 ../quodlibet.py:3396
-msgid "_Preview"
-msgstr "_Podgląd"
-
-#: ../quodlibet.py:3031
-msgid "Replace _underscores with spaces"
-msgstr "Zamiana znaków _podkreślenia na znaki spacji"
-
-#: ../quodlibet.py:3033
-msgid "_Title-case resulting values"
-msgstr "_Duże litery jak w tytule"
-
-#: ../quodlibet.py:3035
-msgid "Split into _multiple values"
-msgstr "Rozdziel na _wiele wartości"
-
-#: ../quodlibet.py:3038
-msgid "Tags should replace existing ones"
-msgstr "Zastępowanie istniejących tagów nowymi"
-
-#: ../quodlibet.py:3039
-msgid "Tags should be added to existing ones"
-msgstr "Dodawanie nowych tagów do istniejących"
-
-#: ../quodlibet.py:3062
-msgid ""
-"If appropriate to the language, the first letter of each word will be "
-"capitalized"
-msgstr ""
-"Jeśli zgodne z językiem to pierwsze litery tytułu zostaną zamienione na duże"
-
-#: ../quodlibet.py:3075
-msgid "Invalid pattern"
-msgstr "Błędny wzorzec"
-
-#: ../quodlibet.py:3076
-#, python-format
-msgid ""
-"The pattern\n"
-"\t<b>%s</b>\n"
-"is invalid. Possibly it contains the same tag twice or it has unbalanced "
-"brackets (&lt; / &gt;)."
-msgstr ""
-"Wzorzec\n"
-"\t<b>%s</b>\n"
-"jest błędny. Prawdopodobnie zawiera on dwa razy ten sam tagalbo niezamknięte "
-"nawiasy (&lt; i &gt;)."
-
-#: ../quodlibet.py:3093
-msgid "Invalid tags"
-msgstr "Błędne tagi"
-
-#: ../quodlibet.py:3094
-#, python-format
-msgid ""
-"Invalid tags <b>%s</b>\n"
-"\n"
-"The files currently selected do not support editing these tags."
-msgstr ""
-"Błędne tagi <b>%s</b>\n"
-"\n"
-"Nie można zmieniać tych tagów w zaznaczonych plikach"
-
-#: ../quodlibet.py:3207
-#, fuzzy
-msgid "Rename Files"
-msgstr "Nazwa pliku po tagach"
-
-#: ../quodlibet.py:3228
-msgid "New Name"
-msgstr "Nowa nazwa"
-
-#: ../quodlibet.py:3238
-msgid "Replace spaces with _underscores"
-msgstr "Zamiana znaków spacji na znaki _podkreślenia"
-
-#: ../quodlibet.py:3242
-msgid "Replace _Windows-incompatible characters"
-msgstr "Zamiana znaków niezgodnych z _Windows"
-
-#: ../quodlibet.py:3245
-msgid "Replace non-_ASCII characters"
-msgstr "Zamiana znaków spoza znaków _ASCII"
-
-#: ../quodlibet.py:3263
-msgid ""
-"Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
-"underscores"
-msgstr ""
-"Znaki nie dozwolone w nazwach plików Windows (\\:*?;\"<>|) będą zastąpione "
-"znakami podkreślenia"
-
-#: ../quodlibet.py:3266
-msgid ""
-"Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
-"replaced by underscores"
-msgstr ""
-"Znaki spoza ASCII (Latin A-Z, 0-9 i znaki interpunkcji) zostaną zastąpione "
-"znakami podkreślenia"
-
-#: ../quodlibet.py:3299
-msgid "Unable to rename file"
-msgstr "Nie można zmienić nazwy pliku"
-
-#: ../quodlibet.py:3300
-#, python-format
-msgid ""
-"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
-"exists, or you do not have permission to make the new file or remove the old "
-"one."
-msgstr ""
-"Nie można zmienić nazwy z <b>%s</b> na <b>%s</b>.Prawdopodobnie docelowy "
-"plik już istnieje albo nie masz prawa zapisu."
-
-#: ../quodlibet.py:3327
-msgid "Pattern with subdirectories is not absolute"
-msgstr "Wzorzec z podkatalogami nie jest bezwzględny"
-
-#: ../quodlibet.py:3328
-#, python-format
-msgid ""
-"The pattern\n"
-"\t<b>%s</b>\n"
-"contains / but does not start from root. To avoid misnamed directories, root "
-"your pattern by starting it from the / directory."
-msgstr ""
-"Wzorzec\n"
-"\t<b>%s</b>\n"
-"zawiera / ale nie zaczyna się od korzenia. W celu uniknięcia źle nazwanych "
-"katalogówzacznij wzorzec od katalogu /."
-
-#: ../quodlibet.py:3360
-msgid "Track Numbers"
-msgstr "Numeracja ścieżek"
-
-#: ../quodlibet.py:3407
-msgid "Track"
-msgstr "Ścieżka"
-
-#: ../quodlibet.py:3520
-msgid "Apply to these _files..."
-msgstr "Zastosuj do _plików..."
-
-#: ../quodlibet.py:3523
-msgid "Path"
-msgstr "Katalog"
-
-#: ../quodlibet.py:3576
-#, python-format
-msgid "%s - Properties"
-msgstr "%s - Ustawienia"
-
-#: ../quodlibet.py:3579
-#, python-format
-msgid "%s and %d more - Properties"
-msgstr "%s i %d więcej - Ustawienia"
-
-#: ../quodlibet.py:3601
-#, python-format
-msgid ""
-"Saving the songs you changed.\n"
-"\n"
-"%d/%d songs saved"
-msgstr ""
-"Zapisywanie zmienionych utworów.\n"
-"\n"
-"zapisano już %d/%d utworów"
-
-#: ../quodlibet.py:3618
-msgid "Invalid tag name"
-msgstr "Błędna nazwa tagu"
-
-#: ../quodlibet.py:3669
+#: ../quodlibet.py:32
 msgid "Saving song library."
 msgstr "Zapisywanie biblioteki utworów."
 
-#: ../quodlibet.py:3675
+#: ../quodlibet.py:38
 msgid ""
 "Quod Libet - a music library and player\n"
 "Options:\n"
@@ -1048,7 +73,7 @@ msgid ""
 "    Enable, disable, or toggle shuffle and repeat.  \n"
 "  --query search-string\n"
 "    Make a new playlist from the given search.\n"
-"  --seek-to [HH:MM:]SS\n"
+"  --seek [+|-][HH:MM:]SS\n"
 "    Seek to a position in the current song.\n"
 "  --play-file filename\n"
 "    Play this file, adding it to the library if necessary.\n"
@@ -1071,15 +96,15 @@ msgstr ""
 "    Włączenie, wyłączenie lub przełączenie mieszania i powtarzania.  \n"
 "  --query <wyrażenie do wyszukania>\n"
 "    Utworzenie nowej listy odtwarzania na podstawie wyszukiwanego wyrażenia\n"
-"  --seek-to·[HH:MM:]SS\n"
+"  --seek [+|-][HH:MM:]SS\n"
 "    Ustawienie pozycji w aktualnie odtwarzanym utworze\n"
-"  --play-file·<nazwa pliku>\n"
+"  --play-file <nazwa pliku>\n"
 "    Odtworzenie poddanego plik dodając go do bibliteki jeśli go jeszcze nie "
 "ma\n"
 "\n"
 "Po więcej informacji zajżyj do manuala (`man 1 quodlibet').\n"
 
-#: ../quodlibet.py:3703
+#: ../quodlibet.py:66
 #, python-format
 msgid ""
 "Quod Libet %s - <quodlibet@lists.sacredchao.net>\n"
@@ -1094,144 +119,132 @@ msgstr ""
 "programNIE jest udzielana jakakolwiek gwarancja, nawet gwarancja "
 "PRZYDATNOŚCI HANDLOWEJ czy też PRZYDATNOŚCI DO OKREŚLONYCH ZASTOSOWAŃ."
 
-#: ../quodlibet.py:3715
+#: ../quodlibet.py:78
 msgid "The library cannot be refreshed while Quod Libet is running."
 msgstr "Nie można odświerzyć biblioteki w chwili gdy działa Quod Libet."
 
-#: ../quodlibet.py:3719
+#: ../quodlibet.py:82
 msgid "Loading, scanning, and saving your library."
 msgstr "Ładowanie, skanowanie i zapisywanie biblioteki."
 
-#: ../quodlibet.py:3741
+#: ../quodlibet.py:109
 msgid "No song is currently playing."
 msgstr "Żaden utwór nie jest w tej chwili odtwarzany."
 
-#: ../quodlibet.py:3746
-msgid "No audio device found"
-msgstr "Nie znaleziono urządzenia audio"
-
-#: ../quodlibet.py:3747
-msgid ""
-"Quod Libet was unable to open your audio device. Often this means another "
-"program is using it, or your audio drivers are not configured.\n"
-"\n"
-"Quod Libet will now exit."
-msgstr ""
-"Quod Libet nie był w stanie otworzyć urządzenia audio.Możliwe, że inny "
-"program go używa albo jest ono nieskonfigurowane.\n"
-"\n"
-"Quod Libet zostanie zamknięty."
-
-#: ../quodlibet.py:3759
+#: ../quodlibet.py:117
 msgid "Quod Libet is not running."
 msgstr "Quod Libet działa."
 
-#: ../quodlibet.py:3772
+#: ../quodlibet.py:130
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Nie można zapisać do pliku %s. Usuwanie go."
 
-#: ../quodlibet.py:3822
+#: ../quodlibet.py:196
 #, python-format
 msgid "E: Unknown command line option: %s"
 msgstr "E: Nieznana opcja wywołania: %s"
 
-#: ../quodlibet.py:3823 ../quodlibet.py:3826
+#: ../quodlibet.py:197 ../quodlibet.py:200
 #, python-format
 msgid "E: Try %s --help"
 msgstr "E: Spróbuj %s --help"
 
-#: ../quodlibet.py:3825
+#: ../quodlibet.py:199
 #, python-format
 msgid "E: Option `%s' requires an argument."
 msgstr "E: Opcja `%s' wymaga podania argumentu"
 
-#: ../quodlibet.py:3829
+#: ../quodlibet.py:203
 msgid "Quod Libet is already running."
 msgstr "Quod Libet już działa."
 
-#: ../quodlibet.py:3840
+#: ../quodlibet.py:214
 msgid "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
 msgstr ""
 "E: You need GTK+ and PyGTK 2.4 albo nowszy żeby uruchomić program Quod Liber."
 
-#: ../quodlibet.py:3841
+#: ../quodlibet.py:215
 #, python-format
 msgid "E: You have GTK+ %s and PyGTK %s."
 msgstr "E: Są zainstalowane GTK+ %s i PyGTK %s."
 
-#: ../quodlibet.py:3844
+#: ../quodlibet.py:218
 msgid "E: Please upgrade GTK+/PyGTK."
 msgstr "E: Należy uaktualnić GTK+/PyGTK."
 
-#: ../quodlibet.py:3858
+#: ../quodlibet.py:229
 msgid "Loaded song library."
 msgstr "Załadowano bibliotekę utworów."
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:3866
+#: ../quodlibet.py:237
 msgid "Opening audio device."
 msgstr "Otwieranie urządzenia audio."
 
 #. 1 hour
 #. time, in hours:minutes:seconds
-#: ../util.py:65
+#: ../util.py:70
 #, python-format
 msgid "%d:%02d:%02d"
 msgstr "%d:%02d:%02d"
 
 #. time, in minutes:seconds
-#: ../util.py:69
+#: ../util.py:74
 #, python-format
 msgid "%d:%02d"
 msgstr "%d:%02d"
 
-#: ../util.py:74
+#: ../util.py:77 ../widgets.py:1334
+msgid "No time information"
+msgstr "Brak informacji o czasie"
+
+#: ../util.py:79
 #, python-format
 msgid "%d seconds"
 msgstr "%d sekund"
 
-#: ../util.py:74
+#: ../util.py:79
 msgid "1 second"
 msgstr "1 sekunda"
 
-#: ../util.py:75
+#: ../util.py:80
 #, python-format
 msgid "%d minutes"
 msgstr "%d minut(y)"
 
-#: ../util.py:75
+#: ../util.py:80
 msgid "1 minute"
 msgstr "1 minuta"
 
-#: ../util.py:76
+#: ../util.py:81
 #, python-format
 msgid "%d hours"
 msgstr "%d godzin(y)"
 
-#: ../util.py:76
+#: ../util.py:81
 msgid "1 hour"
 msgstr "1 godzina"
 
-#: ../util.py:77
+#: ../util.py:82
 #, python-format
 msgid "%d days"
 msgstr "%d dni"
 
-#: ../util.py:77
+#: ../util.py:82
 msgid "1 day"
 msgstr "1 dzień"
 
-#: ../util.py:78
+#: ../util.py:83
 #, python-format
 msgid "%d years"
 msgstr "%d lat"
 
-#: ../util.py:78
+#: ../util.py:83
 msgid "1 year"
 msgstr "1 rok"
 
-#: ../util.py:110 ../util.py:116
+#: ../util.py:115 ../util.py:121
 #, fuzzy
 msgid "[Invalid Encoding]"
 msgstr "[Błędny Unicode]"
@@ -1242,6 +255,10 @@ msgstr "[Błędny Unicode]"
 #: ../po/tag-names.py:6
 msgid "title"
 msgstr "tytuł"
+
+#: ../po/tag-names.py:7 ../widgets.py:2632
+msgid "length"
+msgstr "długość"
 
 #: ../po/tag-names.py:8
 msgid "artist"
@@ -1278,6 +295,15 @@ msgstr "nazwa pliku"
 #: ../po/tag-names.py:19
 msgid "directory"
 msgstr "katalog"
+
+#: ../po/tag-names.py:20 ../widgets.py:2630
+msgid "play count"
+msgstr "liczba odtwarzań"
+
+#: ../po/tag-names.py:21 ../widgets.py:2631
+#, fuzzy
+msgid "skip count"
+msgstr "liczba odtwarzań"
 
 #: ../po/tag-names.py:22
 msgid "version"
@@ -1350,40 +376,1129 @@ msgstr "licencja"
 msgid "composer"
 msgstr "kompozycja %s"
 
-#: ../formats/audio.py:163
+#. date the song was added to the library
+#: ../po/tag-names.py:43 ../widgets.py:2633
+msgid "added"
+msgstr ""
+
+#. date song was last modified/edited
+#: ../po/tag-names.py:45 ../widgets.py:2634
+msgid "modified"
+msgstr ""
+
+#: ../formats/audio.py:21 ../widgets.py:895 ../widgets.py:2620
+msgid "Unknown"
+msgstr "Nieznany"
+
+#: ../formats/audio.py:165
 #, python-format
 msgid "by %s"
 msgstr "przez %s"
 
-#: ../formats/audio.py:166
+#: ../formats/audio.py:168
 #, python-format
 msgid "Performed by %s"
 msgstr "Wykonanie %s"
 
-#: ../formats/audio.py:171
+#: ../formats/audio.py:173
 #, python-format
 msgid "arranged by %s"
 msgstr "aranżacja %s"
 
-#: ../formats/audio.py:173
+#: ../formats/audio.py:175
 #, python-format
 msgid "lyrics by %s"
 msgstr "słowa %s"
 
-#: ../formats/audio.py:175
+#: ../formats/audio.py:177
 #, python-format
 msgid "conducted by %s"
 msgstr "dyrygent %s"
 
-#: ../formats/audio.py:177
+#: ../formats/audio.py:179
 #, python-format
 msgid "composed by %s"
 msgstr "kompozycja %s"
 
-#: ../formats/audio.py:179
+#: ../formats/audio.py:181
 #, python-format
 msgid "written by %s"
 msgstr "słowa %s"
+
+#: ../formats/audio.py:191 ../widgets.py:2592 ../widgets.py:2721
+#, python-format
+msgid "Disc %s"
+msgstr "Płyta %s"
+
+#: ../formats/audio.py:195 ../widgets.py:2596
+#, python-format
+msgid "Track %s"
+msgstr "Ścieżka %s"
+
+#: ../exfalso.py:14
+#, python-format
+msgid ""
+"Ex Falso - an audio file tagger\n"
+"Usage: %s [directory]\n"
+"\n"
+"For more information, see the manual page (`man 1 exfalso').\n"
+msgstr ""
+
+#: ../exfalso.py:23
+#, python-format
+msgid ""
+"Ex Falso %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others\n"
+"\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+msgstr ""
+"Ex Falso %s - <quodlibet@lists.sacredchao.net>\n"
+"\n"
+"To jest wolne oprogramowanie; przeczytaj warunki kopiowania w licencji.  Na "
+"programNIE jest udzielana jakakolwiek gwarancja, nawet gwarancja "
+"PRZYDATNOŚCI HANDLOWEJ czy też PRZYDATNOŚCI DO OKREŚLONYCH ZASTOSOWAŃ."
+
+#: ../exfalso.py:61
+#, fuzzy
+msgid "Quod Libet is running"
+msgstr "Quod Libet działa."
+
+#: ../exfalso.py:62
+msgid ""
+"It looks like you are running Quod Libet right now. If you edit songs also "
+"in Quod Libet's library while it is running, you may need to refresh or re-"
+"add them.\n"
+"\n"
+"If you are not running Quod Libet, or are editing songs outside of its "
+"library, you may ignore this warning."
+msgstr ""
+
+#: ../widgets.py:48
+msgid "About Quod Libet"
+msgstr "Informacje o Quod Libet"
+
+#: ../widgets.py:51
+msgid "Quod Libet is free software licensed under the GNU GPL v2."
+msgstr ""
+"Quod Libet is wolnym oprogramowanie dystrybuowanym na licencji GNU GPL "
+"wersja 2."
+
+#: ../widgets.py:102
+msgid "Song List"
+msgstr "Lista utworów"
+
+#: ../widgets.py:106
+msgid "_Jump to current song automatically"
+msgstr "Automatyczny _skok do bieżącego utworu"
+
+#: ../widgets.py:107
+msgid "When the playing song changes, scroll to it in the song list"
+msgstr ""
+"W chwili zmiany odtwarzanego utworu, lista zostanie przesunięta na nowy utwór"
+
+#: ../widgets.py:118
+msgid "_Disc"
+msgstr "_Płyta"
+
+#: ../widgets.py:119
+msgid "Al_bum"
+msgstr "Al_bum"
+
+#: ../widgets.py:120
+msgid "_Genre"
+msgstr "_Rodzaj"
+
+#: ../widgets.py:121
+msgid "_Track"
+msgstr "Ścież_ka"
+
+#: ../widgets.py:122
+msgid "A_rtist"
+msgstr "_Artysta"
+
+#: ../widgets.py:123
+msgid "_Filename"
+msgstr "_Nazwa pliku"
+
+#: ../widgets.py:124
+msgid "Title"
+msgstr "Tyt_uł"
+
+#: ../widgets.py:125
+msgid "Dat_e"
+msgstr "Da_ta"
+
+#: ../widgets.py:126
+msgid "_Length"
+msgstr "_Długość"
+
+#: ../widgets.py:138
+msgid "Display song _rating"
+msgstr ""
+
+#: ../widgets.py:142
+msgid "Title includes _version"
+msgstr "Zawarcie _wersji w tytule"
+
+#: ../widgets.py:147
+msgid "Album includes _part"
+msgstr "Zawarcie _numeru części w tytule"
+
+#: ../widgets.py:152
+#, fuzzy
+msgid "Filename includes _folder"
+msgstr "Zawarcie _wersji w tytule"
+
+#: ../widgets.py:164
+msgid "_Others:"
+msgstr "_Inne:"
+
+#: ../widgets.py:168
+msgid "List other headers you want displayed, separated by spaces"
+msgstr "Wymień inne nagłówki do wyświetlania (rozdzielone spacjami)"
+
+#: ../widgets.py:183
+msgid "Visible Columns"
+msgstr "Widoczne kolumny"
+
+#: ../widgets.py:214
+#, fuzzy
+msgid "Browsers"
+msgstr "Przeglądarka"
+
+#: ../widgets.py:216
+msgid "Color _search terms"
+msgstr "_Kolorowanie poszukiwanych wyrażeń"
+
+#: ../widgets.py:218
+msgid ""
+"Display simple searches in blue, advanced ones in green, and invalid ones in "
+"red"
+msgstr ""
+"Wyświetl proste wyszukiwania na niebiesko, zaawansowane na zielono i "
+"nieprawidłowe na czerwono"
+
+#: ../widgets.py:224
+#, fuzzy
+msgid "Search Bar"
+msgstr "Szukaj"
+
+#: ../widgets.py:238
+#, python-format
+msgid "_Pane %d:"
+msgstr ""
+
+#: ../widgets.py:250
+#, fuzzy
+msgid "Paned Browser"
+msgstr "Przeglądarka"
+
+#: ../widgets.py:263
+msgid "Player"
+msgstr "Odtwarzacz"
+
+#: ../widgets.py:266
+msgid "Show _album cover images"
+msgstr "Pokazywanie _obrazków z okładki albumu"
+
+#: ../widgets.py:272
+msgid "_Volume Normalization"
+msgstr "_Normalizacja głośności"
+
+#: ../widgets.py:274
+msgid "No volume adjustment"
+msgstr "Brak dopasowywania głośności"
+
+#: ../widgets.py:275
+msgid "Per-song (\"Radio\") volume adjustment"
+msgstr "Dopasowywanie głośności per utwór (\"Radio\")"
+
+#: ../widgets.py:276
+msgid "Per-album (\"Audiophile\") volume adjustment"
+msgstr "Dopasowywanie głośności per album (\"Audiophile\")"
+
+#: ../widgets.py:283
+msgid "_On-Screen Display"
+msgstr "_Wyświetlanie na ekranie"
+
+#: ../widgets.py:285
+msgid "No on-screen display"
+msgstr "Brak wyświetlania OSD"
+
+#: ../widgets.py:286
+msgid "Display OSD on the top"
+msgstr "Wyświetlanie OSD na górze"
+
+#: ../widgets.py:287
+msgid "Display OSD on the bottom"
+msgstr "Wyświetlanie OSD na dole"
+
+#: ../widgets.py:298
+msgid "Select a color for the OSD"
+msgstr "Wybierz kolor dla OSD"
+
+#: ../widgets.py:299
+msgid "Select a second color for the OSD"
+msgstr "Wybierz drugi kolor dla OSD"
+
+#: ../widgets.py:330
+msgid "Library"
+msgstr "Biblioteka"
+
+#: ../widgets.py:331
+msgid "Scan _Directories"
+msgstr "Skanowane _Katalogi"
+
+#: ../widgets.py:333 ../widgets.py:359
+msgid "_Select..."
+msgstr "_Wybierz..."
+
+#: ../widgets.py:339
+msgid ""
+"On start up, any files found in these directories will be added to your "
+"library"
+msgstr ""
+"Przy uruchomieniu Quod Libet, każdy plik znaleziony we wskazanych katalogach "
+"zostanie dodany do biblioteki utworów"
+
+#: ../widgets.py:347
+msgid "_Masked Directories"
+msgstr "_Maskowane Katalogi"
+
+#: ../widgets.py:350
+msgid ""
+"If you have songs in directories that will not always be mounted (for "
+"example, a removable device or an NFS shared drive), list those mount points "
+"here. Files in these directories will not be removed from the library if the "
+"device is not mounted."
+msgstr ""
+"Jeżeli niektóre utwory znajdują się w katalogach które nie zawsze są "
+"zamontowane (na przykład na wyjmowalnych nośnikach albo na współdzielonych "
+"katalogach NFS), to wylistuj ich punkty montowania. Pliki z tych katalogów "
+"nie będą usuwane podczas skanowania gdy dany katalog będzie odmontowany."
+
+#: ../widgets.py:374
+msgid "Tag Editing"
+msgstr "Edycja Tagów"
+
+#: ../widgets.py:381
+msgid ""
+"These characters will be used as separators when \"Split values\" is "
+"selected in the tag editor"
+msgstr ""
+"Te znaki zostaną użyte do rozdzielania gdy \"Rozdziel wartości\" zostanie "
+"wybrane w edytorze tagów."
+
+#: ../widgets.py:383
+msgid "Split _on:"
+msgstr "Rozdziel _przy:"
+
+#: ../widgets.py:388
+msgid "Show _programmatic comments"
+msgstr "_Pokazywanie komentarzy komputerowych"
+
+#: ../widgets.py:401
+msgid "Select Directories"
+msgstr "Wybierz Katalogi"
+
+#: ../widgets.py:413
+msgid "Quod Libet Preferences"
+msgstr "Quod Libet - Preferencje"
+
+#: ../widgets.py:442
+msgid "Deleting files"
+msgstr "Usuwanie plików"
+
+#: ../widgets.py:451
+msgid "_Move to Trash"
+msgstr "_Przesuń do Śmietnika"
+
+#: ../widgets.py:467
+msgid "Permanently delete this file?"
+msgstr "Usunąć wskazany plik?"
+
+#: ../widgets.py:470
+msgid "Permanently delete these files?"
+msgstr "Usunąć wskazane pliki?"
+
+#: ../widgets.py:471
+#, python-format
+msgid "%s and %d more..."
+msgstr "%s i %d więcej..."
+
+#: ../widgets.py:525 ../widgets.py:1519 ../widgets.py:1632
+msgid "_Pause"
+msgstr "Pau_za"
+
+#: ../widgets.py:620
+msgid "Initialized status icon."
+msgstr "Zainicjowano ikonę statusu"
+
+#: ../widgets.py:744
+msgid "Initialized multimedia key support."
+msgstr "Zainicjowano wsparcie dla klawiszy multimedialnych"
+
+#: ../widgets.py:890
+msgid "All"
+msgstr ""
+
+#: ../widgets.py:1008
+msgid "Edit the current playlist"
+msgstr "Edytuj bieżącą listę utworów"
+
+#: ../widgets.py:1009
+msgid "Refresh the current playlist"
+msgstr "Odśwież bieżącą listę utworów"
+
+#: ../widgets.py:1134
+#, fuzzy
+msgid "Clear search text"
+msgstr "_Kolorowanie poszukiwanych wyrażeń"
+
+#: ../widgets.py:1140
+msgid "Search"
+msgstr "Szukaj"
+
+#: ../widgets.py:1142
+msgid "Search your audio library"
+msgstr "Szukaj w bibliotece"
+
+#: ../widgets.py:1251
+msgid "Add songs to your library"
+msgstr "Dodaj utwory do biblioteki"
+
+#: ../widgets.py:1258 ../widgets.py:1500
+msgid "View and edit tags in the playing song"
+msgstr "Otwiera okno tagów dla utworu"
+
+#: ../widgets.py:1265
+msgid "Visit the artist's website"
+msgstr "Otwórz stronę www autora"
+
+#: ../widgets.py:1314
+msgid "Adjust audio volume"
+msgstr ""
+
+#: ../widgets.py:1322
+msgid "_Shuffle"
+msgstr "Mie_szaj"
+
+#: ../widgets.py:1323
+msgid "Play songs in a random order"
+msgstr "Losowe odtwarzanie utworów"
+
+#: ../widgets.py:1327
+msgid "_Repeat"
+msgstr "Powta_rzaj"
+
+#: ../widgets.py:1331
+msgid "Restart the playlist after all songs are played"
+msgstr "Odtwarzanie od początku listy po odtworzeniu wszystkich utworów"
+
+#: ../widgets.py:1408
+msgid "_Music"
+msgstr "_Muzyka"
+
+#: ../widgets.py:1409
+msgid "_Add Music..."
+msgstr "_Dodaj utwory..."
+
+#: ../widgets.py:1411
+msgid "_New Playlist..."
+msgstr "_Utwórz listę utworów..."
+
+#: ../widgets.py:1415
+msgid "Re_fresh library"
+msgstr "_Odśwież bibliotekę"
+
+#: ../widgets.py:1417
+msgid "Re_load library"
+msgstr "_Załaduj ponownie bibliotekę"
+
+#: ../widgets.py:1422
+msgid "_Filters"
+msgstr "_Filtr"
+
+#: ../widgets.py:1423
+msgid "Random _genre"
+msgstr "Losuj _rodzaj"
+
+#: ../widgets.py:1425
+msgid "Random _artist"
+msgstr "Losuj _artystę"
+
+#: ../widgets.py:1427
+msgid "Random al_bum"
+msgstr "Losuj al_bum"
+
+#: ../widgets.py:1429
+msgid "Not played to_day"
+msgstr "Nie odtwarzane _dzisiaj"
+
+#: ../widgets.py:1431
+msgid "Not played in a _week"
+msgstr "Nie odtwarzane w tym _tygodniu"
+
+#: ../widgets.py:1433
+msgid "Not played in a _month"
+msgstr "Nie odtwarzane w tym _miesiącu"
+
+#: ../widgets.py:1435
+msgid "_Never played"
+msgstr "_Nigdy nie odtwarzane"
+
+#: ../widgets.py:1437
+msgid "_Top 40"
+msgstr "40 _popularnych"
+
+#: ../widgets.py:1438
+msgid "B_ottom 40"
+msgstr "40 _niepopularnych"
+
+#: ../widgets.py:1440
+msgid "S_ong"
+msgstr "_Utwór"
+
+#: ../widgets.py:1447 ../widgets.py:2020
+msgid "Filter on _genre"
+msgstr "Filtruj _rodzaj"
+
+#: ../widgets.py:1449 ../widgets.py:2025
+msgid "Filter on _artist"
+msgstr "Filtruj _artystów"
+
+#: ../widgets.py:1451 ../widgets.py:2030
+msgid "Filter on al_bum"
+msgstr "Filtruj al_bum"
+
+#: ../widgets.py:1455
+msgid "_Jump to playing song"
+msgstr "_Skocz do odtwarzanego utworu"
+
+#: ../widgets.py:1458
+msgid "_View"
+msgstr "_Widok"
+
+#: ../widgets.py:1459
+msgid "_Help"
+msgstr "_Pomoc"
+
+#: ../widgets.py:1464
+msgid "Song _list"
+msgstr "_Lista utworów"
+
+#: ../widgets.py:1469
+msgid "_Disable browsing"
+msgstr "_Bez przeszukiwania"
+
+#: ../widgets.py:1470
+msgid "_Search library"
+msgstr "_Wyszukiwanie w bibliotece"
+
+#: ../widgets.py:1471
+msgid "_Playlists"
+msgstr "Przeglądanie _list utworów"
+
+#: ../widgets.py:1472
+msgid "_Paned browser"
+msgstr ""
+
+#: ../widgets.py:1485
+msgid "Check for changes in the library made since the program was started"
+msgstr "Sprawdzenie zmian w bibliotece od momentu uruchomienia programu"
+
+#: ../widgets.py:1489
+msgid "Reload all songs in your library (this can take a long time)"
+msgstr "Przeładowuje wszystkie utwory w bibliotece (to może chwilę potrwać)"
+
+#: ../widgets.py:1492
+msgid ""
+"The 40 songs you've played most (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"40 najczęściej odtwarzanych utworów "
+"(może·być·więcej·jeśli·utwowry·mają·tę·samą·liczbę·odtworzeń)"
+
+#: ../widgets.py:1496
+msgid ""
+"The 40 songs you've played least (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"40 najrzadziej odtwarzanych utworów (może być więcej jeśli utwowry mają tę "
+"samą liczbę odtworzeń)"
+
+#: ../widgets.py:1514 ../widgets.py:1626
+msgid "_Play"
+msgstr "_Odtwarzaj"
+
+#: ../widgets.py:1526
+msgid "Pre_vious"
+msgstr "_Poprzedni"
+
+#: ../widgets.py:1530
+msgid "_Next"
+msgstr "_Następny"
+
+#: ../widgets.py:1601
+#, python-format
+msgid "W: Unable to load %s"
+msgstr "W: Nie można wczytać %s"
+
+#: ../widgets.py:1650
+#, python-format
+msgid "Could not play %s."
+msgstr "Nie można odtworzyć %s."
+
+#: ../widgets.py:1662
+msgid "Not playing"
+msgstr "Nie odtwarza"
+
+#: ../widgets.py:1712
+msgid "New Playlist..."
+msgstr "_Nowa lista utworów..."
+
+#: ../widgets.py:1713
+msgid ""
+"Enter a name for the new playlist. If it already exists it will be opened "
+"for editing."
+msgstr ""
+"Podaj nazwę nowej listy utworów. Jeśli już istnieje zostanie ona otwarta do "
+"edycji."
+
+#: ../widgets.py:1752
+#, python-format
+msgid "Opening web browser: %s"
+msgstr "Otwieranie przeglądarki WWW: %s"
+
+#: ../widgets.py:1755
+msgid "Unable to start a web browser"
+msgstr "Nie można uruchomić przeglądarki WWW."
+
+#: ../widgets.py:1756
+msgid ""
+"A web browser could not be found. Please set your $BROWSER variable, or make "
+"sure /usr/bin/sensible-browser exists."
+msgstr ""
+"Nie znaleziono przeglądarki WWW. Należy ustawić zmienną środowiskową "
+"$BROWSER albo ustawić link symboliczny /usr/bin/sensible-browser."
+
+#: ../widgets.py:1836
+#, python-format
+msgid ""
+"Quod Libet is scanning your library. This may take several minutes.\n"
+"\n"
+"%d songs reloaded\n"
+"%d songs removed"
+msgstr ""
+"Quod·Libet·skanuje·bibliotekę.\n"
+"Może to trwać kilka minut.\n"
+"\n"
+"przeładowano %d utworów\n"
+"usunięto %d utworów"
+
+#: ../widgets.py:1874
+msgid "Add Music"
+msgstr "Dodaj Utwory"
+
+#: ../widgets.py:1883
+#, python-format
+msgid ""
+"Quod Libet is scanning for new songs and adding them to your library.\n"
+"\n"
+"%d songs added"
+msgstr ""
+"Quod Libet skanuje katalogi pod kątem nowych utworów i dodaje je do "
+"biblioteki.\n"
+"\n"
+"dodano już %d utworów"
+
+#: ../widgets.py:1962
+#, python-format
+msgid "Moving %d/%d."
+msgstr "Przenoszenie %d/%d."
+
+#: ../widgets.py:1963
+#, python-format
+msgid "Deleting %d/%d."
+msgstr "Usuwanie %d/%d."
+
+#: ../widgets.py:1978
+msgid "Unable to remove file"
+msgstr "Nie można usunąć pliku"
+
+#: ../widgets.py:1979
+#, python-format
+msgid ""
+"Removing <b>%s</b> failed. Possibly the target file does not exist, or you "
+"do not have permission to remove it."
+msgstr ""
+"Nie można usunąć <b>%s</b>. Prawdopodobnie usuwany plik nie istniejealbo nie "
+"masz uprawnień do usunięcia."
+
+#: ../widgets.py:2008
+msgid "Set rating..."
+msgstr ""
+
+#: ../widgets.py:2037
+#, fuzzy, python-format
+msgid "_Filter on %s"
+msgstr "_Filtr"
+
+#: ../widgets.py:2116
+#, python-format
+msgid "%d songs (%s)"
+msgstr "%d utworów (%s)"
+
+#: ../widgets.py:2118
+#, python-format
+msgid "%d song (%s)"
+msgstr "%d utwór (%s)"
+
+#: ../widgets.py:2428
+msgid "Add a new tag"
+msgstr "Dodawanie nowego tagu"
+
+#: ../widgets.py:2451
+msgid "_Tag:"
+msgstr "_Tag:"
+
+#: ../widgets.py:2460
+msgid "_Value:"
+msgstr "_Wartość:"
+
+#: ../widgets.py:2515
+#, fuzzy
+msgid "Information"
+msgstr "Brak informacji o czasie"
+
+#: ../widgets.py:2553
+#, fuzzy
+msgid "performers"
+msgstr "wykonawca"
+
+#: ../widgets.py:2554
+#, fuzzy
+msgid "lyricists"
+msgstr "autor słów"
+
+#: ../widgets.py:2555
+#, fuzzy
+msgid "arrangers"
+msgstr "aranżer"
+
+#: ../widgets.py:2556
+#, fuzzy
+msgid "composers"
+msgstr "kompozycja %s"
+
+#: ../widgets.py:2557
+#, fuzzy
+msgid "conductors"
+msgstr "dyrygent"
+
+#: ../widgets.py:2558
+#, fuzzy
+msgid "authors"
+msgstr "autor"
+
+#: ../widgets.py:2570 ../widgets.py:2705 ../widgets.py:2818
+#, fuzzy
+msgid "artists"
+msgstr "artysta"
+
+#: ../widgets.py:2615
+msgid "Never"
+msgstr "Nigdy"
+
+#: ../widgets.py:2616
+msgid "1 time"
+msgstr ""
+
+#: ../widgets.py:2617
+#, fuzzy, python-format
+msgid "%d times"
+msgstr "%d minut(y), "
+
+#: ../widgets.py:2635
+msgid "file size"
+msgstr ""
+
+#: ../widgets.py:2647 ../widgets.py:3376 ../widgets.py:3499 ../widgets.py:3689
+#: ../widgets.py:3807
+msgid "File"
+msgstr "Plik"
+
+#: ../widgets.py:2731
+#, fuzzy
+msgid "No information available"
+msgstr "Brak informacji o czasie"
+
+#: ../widgets.py:2736
+#, fuzzy
+msgid "Track List"
+msgstr "Ścieżka %s"
+
+#: ../widgets.py:2742 ../widgets.py:2785
+#, python-format
+msgid "%d songs"
+msgstr "%d utworów"
+
+#: ../widgets.py:2760 ../widgets.py:2826
+#, fuzzy, python-format
+msgid "%d songs with no album"
+msgstr "%d utworów odsłuchanych"
+
+#: ../widgets.py:2762
+#, fuzzy
+msgid "Selected Discography"
+msgstr "Wybierz Katalogi"
+
+#: ../widgets.py:2795
+msgid "Total length:"
+msgstr ""
+
+#: ../widgets.py:2797
+#, fuzzy
+msgid "Songs heard:"
+msgstr "%d utworów odsłuchanych"
+
+#: ../widgets.py:2800
+msgid "Listening"
+msgstr ""
+
+#: ../widgets.py:2814
+#, fuzzy, python-format
+msgid "%d songs with no artist"
+msgstr "%d utworów odsłuchanych"
+
+#: ../widgets.py:2830
+#, fuzzy
+msgid "albums"
+msgstr "album"
+
+#: ../widgets.py:2871
+msgid "Edit Tags"
+msgstr "Edycja tagów"
+
+#: ../widgets.py:2881
+msgid "Write"
+msgstr "Zapisane"
+
+#: ../widgets.py:2888
+msgid "Tag"
+msgstr "Tag"
+
+#: ../widgets.py:2894
+msgid "Value"
+msgstr "Wartość"
+
+#: ../widgets.py:2937
+msgid "Double-click a tag value to change it, right-click for other options"
+msgstr ""
+"Dwa razy kliknij na wartości tagu aby ją zmenić, kliknij prawym klawiszem "
+"myszy aby wyświetlić inne opcje"
+
+#: ../widgets.py:2939
+msgid "Add a new tag to the file"
+msgstr "Dodawanie nowy tago do pliku"
+
+#: ../widgets.py:2940
+msgid "Remove a tag from the file"
+msgstr "Usuwanie zaznaczonego tagu z pliku"
+
+#: ../widgets.py:3022
+msgid "_Split into multiple values"
+msgstr "_Rozdziel na wiele wartości"
+
+#: ../widgets.py:3031
+msgid "Split disc out of _album"
+msgstr "Oddziel płytę od al_bumu"
+
+#: ../widgets.py:3039
+msgid "Split version out of title"
+msgstr "Oddziel wersję od tytułu"
+
+#: ../widgets.py:3049
+msgid "Split arranger out of ar_tist"
+msgstr "Oddziel arranżera od _artysty"
+
+#: ../widgets.py:3056
+msgid "Split _performer out of artist"
+msgstr "Oddziej w_ykonawcę od artysty"
+
+#: ../widgets.py:3097
+msgid "The date must be entered in YYYY or YYYY-MM-DD format."
+msgstr "Data musi mieć format YYYY albo YYYY-MM-DD."
+
+#: ../widgets.py:3106 ../widgets.py:3356
+msgid "Invalid tag"
+msgstr "Błędny tag"
+
+#: ../widgets.py:3107 ../widgets.py:3357
+#, python-format
+msgid ""
+"Invalid tag <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing this tag."
+msgstr ""
+"Błędny tag <b>%s</b>\n"
+"\n"
+"Nie można zmieniać tego tagu w zaznaczonych plikach."
+
+#: ../widgets.py:3151 ../widgets.py:3416 ../widgets.py:3721
+msgid "Tag may not be accurate"
+msgstr ""
+
+#: ../widgets.py:3152 ../widgets.py:3417 ../widgets.py:3722
+#, python-format
+msgid ""
+"<b>%s</b> looks like it was changed while the program was running. Saving "
+"now without refreshing your library might overwrite other changes to tag.\n"
+"\n"
+"Save this tag anyway?"
+msgstr ""
+
+#: ../widgets.py:3185 ../widgets.py:3441 ../widgets.py:3733
+msgid "Unable to edit song"
+msgstr "Nie można edytować utworu"
+
+#: ../widgets.py:3186 ../widgets.py:3442 ../widgets.py:3734
+#, python-format
+msgid ""
+"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
+"have permission to edit it."
+msgstr ""
+"Nie można zapisać <b>%s</b>. Prawdopodobnie plik jest tylko do odczytu,albo "
+"zepsuty albo nie masz uprawnień do jego edycji."
+
+#: ../widgets.py:3210
+msgid "Invalid date format"
+msgstr "Błędny format daty"
+
+#: ../widgets.py:3211
+#, python-format
+msgid ""
+"Invalid date: <b>%s</b>.\n"
+"\n"
+"The date must be entered in YYYY or YYYY-MM-DD format."
+msgstr ""
+"Błędna data: <b>%s</b>.\n"
+"\n"
+"Data musi mieć format YYYY albo YYYY-MM-DD."
+
+#: ../widgets.py:3270
+msgid "Tag by Filename"
+msgstr "Tagi po nazwie pliku"
+
+#: ../widgets.py:3280 ../widgets.py:3492 ../widgets.py:3681
+msgid "_Preview"
+msgstr "_Podgląd"
+
+#: ../widgets.py:3293
+msgid "Replace _underscores with spaces"
+msgstr "Zamiana znaków _podkreślenia na znaki spacji"
+
+#: ../widgets.py:3295
+msgid "_Title-case resulting values"
+msgstr "_Duże litery jak w tytule"
+
+#: ../widgets.py:3297
+msgid "Split into _multiple values"
+msgstr "Rozdziel na _wiele wartości"
+
+#: ../widgets.py:3300
+msgid "Tags should replace existing ones"
+msgstr "Zastępowanie istniejących tagów nowymi"
+
+#: ../widgets.py:3301
+msgid "Tags should be added to existing ones"
+msgstr "Dodawanie nowych tagów do istniejących"
+
+#: ../widgets.py:3325
+msgid ""
+"If appropriate to the language, the first letter of each word will be "
+"capitalized"
+msgstr ""
+"Jeśli zgodne z językiem to pierwsze litery tytułu zostaną zamienione na duże"
+
+#: ../widgets.py:3338
+msgid "Invalid pattern"
+msgstr "Błędny wzorzec"
+
+#: ../widgets.py:3339
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; / &gt;)."
+msgstr ""
+"Wzorzec\n"
+"\t<b>%s</b>\n"
+"jest błędny. Prawdopodobnie zawiera on dwa razy ten sam tagalbo niezamknięte "
+"nawiasy (&lt; i &gt;)."
+
+#: ../widgets.py:3360
+msgid "Invalid tags"
+msgstr "Błędne tagi"
+
+#: ../widgets.py:3361
+#, python-format
+msgid ""
+"Invalid tags <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing these tags."
+msgstr ""
+"Błędne tagi <b>%s</b>\n"
+"\n"
+"Nie można zmieniać tych tagów w zaznaczonych plikach"
+
+#: ../widgets.py:3482
+#, fuzzy
+msgid "Rename Files"
+msgstr "Nazwa pliku po tagach"
+
+#: ../widgets.py:3505
+msgid "New Name"
+msgstr "Nowa nazwa"
+
+#: ../widgets.py:3515
+msgid "Replace spaces with _underscores"
+msgstr "Zamiana znaków spacji na znaki _podkreślenia"
+
+#: ../widgets.py:3519
+msgid "Replace _Windows-incompatible characters"
+msgstr "Zamiana znaków niezgodnych z _Windows"
+
+#: ../widgets.py:3522
+msgid "Replace non-_ASCII characters"
+msgstr "Zamiana znaków spoza znaków _ASCII"
+
+#: ../widgets.py:3541
+msgid ""
+"Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
+"underscores"
+msgstr ""
+"Znaki nie dozwolone w nazwach plików Windows (\\:*?;\"<>|) będą zastąpione "
+"znakami podkreślenia"
+
+#: ../widgets.py:3544
+msgid ""
+"Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
+"replaced by underscores"
+msgstr ""
+"Znaki spoza ASCII (Latin A-Z, 0-9 i znaki interpunkcji) zostaną zastąpione "
+"znakami podkreślenia"
+
+#: ../widgets.py:3583
+msgid "Unable to rename file"
+msgstr "Nie można zmienić nazwy pliku"
+
+#: ../widgets.py:3584
+#, python-format
+msgid ""
+"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
+"exists, or you do not have permission to make the new file or remove the old "
+"one."
+msgstr ""
+"Nie można zmienić nazwy z <b>%s</b> na <b>%s</b>.Prawdopodobnie docelowy "
+"plik już istnieje albo nie masz prawa zapisu."
+
+#: ../widgets.py:3613
+msgid "Pattern with subdirectories is not absolute"
+msgstr "Wzorzec z podkatalogami nie jest bezwzględny"
+
+#: ../widgets.py:3614
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed directories, root "
+"your pattern by starting it from the / directory."
+msgstr ""
+"Wzorzec\n"
+"\t<b>%s</b>\n"
+"zawiera / ale nie zaczyna się od korzenia. W celu uniknięcia źle nazwanych "
+"katalogówzacznij wzorzec od katalogu /."
+
+#: ../widgets.py:3645
+msgid "Track Numbers"
+msgstr "Numeracja ścieżek"
+
+#: ../widgets.py:3692
+msgid "Track"
+msgstr "Ścieżka"
+
+#: ../widgets.py:3806
+msgid "Apply to these _files..."
+msgstr "Zastosuj do _plików..."
+
+#: ../widgets.py:3809
+msgid "Path"
+msgstr "Katalog"
+
+#: ../widgets.py:3852 ../widgets.py:4055
+#, python-format
+msgid "%s and %d more"
+msgstr "%s i %d więcej"
+
+#: ../widgets.py:3854
+#, fuzzy
+msgid "Properties"
+msgstr "%s - Ustawienia"
+
+#: ../widgets.py:3878
+#, fuzzy
+msgid "Folders"
+msgstr "_Filtr"
+
+#: ../widgets.py:3949
+msgid "Audio files"
+msgstr ""
+
+#: ../widgets.py:4061
+#, python-format
+msgid ""
+"Saving the songs you changed.\n"
+"\n"
+"%d/%d songs saved"
+msgstr ""
+"Zapisywanie zmienionych utworów.\n"
+"\n"
+"zapisano już %d/%d utworów"
+
+#: ../widgets.py:4079
+msgid "Invalid tag name"
+msgstr "Błędna nazwa tagu"
+
+#: ../widgets.py:4109
+msgid "No audio device found"
+msgstr "Nie znaleziono urządzenia audio"
+
+#: ../widgets.py:4110
+msgid ""
+"Quod Libet was unable to open your audio device. Often this means another "
+"program is using it, or your audio drivers are not configured.\n"
+"\n"
+"Quod Libet will now exit."
+msgstr ""
+"Quod Libet nie był w stanie otworzyć urządzenia audio.Możliwe, że inny "
+"program go używa albo jest ono nieskonfigurowane.\n"
+"\n"
+"Quod Libet zostanie zamknięty."
+
+#~ msgid "Add Results"
+#~ msgstr "Dodaj utwory"
+
+#~ msgid "Album"
+#~ msgstr "Album"
+
+#~ msgid "Invalid date"
+#~ msgstr "Błędna data"
+
+#~ msgid "%s and %d more - Properties"
+#~ msgstr "%s i %d więcej - Ustawienia"
 
 #~ msgid ""
 #~ "No on-screen display\n"
@@ -1749,9 +1864,6 @@ msgstr "słowa %s"
 #~ "<tracknumber> - <artist> - <title>\n"
 #~ "<artist> - <album>/<tracknumber>. <title>\n"
 #~ "<artist>/<album>/<tracknumber> - <title>"
-
-#~ msgid "Search your audio library"
-#~ msgstr "Szukaj w bibliotece"
 
 #~ msgid "Split into album and disc number"
 #~ msgstr "Oddziej album od numeru płyty"

@@ -8,7 +8,7 @@ all:
 po: quodlibet.pot
 	for F in $(ALL_LINGUAS); do make $$F.mo; done
 
-quodlibet.pot: ../quodlibet.py ../library.py tag-names.py ../util.py
+quodlibet.pot: ../quodlibet.py ../library.py tag-names.py ../util.py ../widgets.py ../exfalso.py ../formats/audio.py
 	intltool-update --pot --gettext-package=$(NAME)
 
 %.mo: %.po quodlibet.pot
