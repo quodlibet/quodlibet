@@ -53,6 +53,7 @@ class AudioFile(dict):
         self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
         self["=basename"] = os.path.basename(self['=filename'])
         self["=dirname"] = os.path.dirname(self['=filename'])
+        if "filename" not in self: self["filename"] = self["=filename"]
 
     def to_markup(self):
         title = u", ".join(self["title"].split("\n"))

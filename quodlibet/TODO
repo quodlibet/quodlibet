@@ -1,3 +1,4 @@
+- Fix tag writing when one file has the right tag and the rest don't.
 - Artist URL detection
 - Playlists.
 - Remember window size, position (more importantly, why this isn't working)
