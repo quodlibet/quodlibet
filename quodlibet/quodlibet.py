@@ -1484,7 +1484,7 @@ class MainSongList(SongList):
         if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
             s = gtk.SORT_ASCENDING
         else: s = gtk.SORT_DESCENDING
-        for h in self.songlist.get_columns():
+        for h in self.view.get_columns():
             h.set_sort_indicator(False)
         header.set_sort_indicator(True)
         header.set_sort_order(s)
