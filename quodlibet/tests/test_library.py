@@ -1,6 +1,6 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-from library import AudioFile
+from library import AudioFile, Unknown
 
 class AudioFileTest(TestCase):
     def test_cmp(self):
@@ -18,10 +18,13 @@ class AudioFileTest(TestCase):
         self.failUnless(song2 > song1)
 
     def test_getters(self):
-        song1 = AudioFile({ "a": "foo\nbar", "b": "foobar" })
+        song1 = AudioFile({ "a": "foo\nbar", "b": "foobar",
+                            "=mtime": 0, "=foobar": 2,
+                            "album": Unknown("Unknown")})
         self.failUnlessEqual(song1.comma("a"), "foo, bar")
         self.failUnlessEqual(song1.comma("b"), "foobar")
         self.failUnlessEqual(song1.comma("c"), "")
+        self.failUnless(song1.realkeys() in [["a", "b"], ["b", "a"]])
 
     def test_sanitize(self):
         song = AudioFile({ "=filename": "/foo/bar/quux.ogg",

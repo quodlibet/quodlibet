@@ -43,7 +43,7 @@ class AudioFile(dict):
         return isinstance(self.get(key), Unknown)
 
     def realkeys(self):
-        return filter(lambda s: s and s[0] and not self.unknown(s),
+        return filter(lambda s: s and s[0] != "=" and not self.unknown(s),
                       self.keys())
 
     def comma(self, key):
@@ -432,7 +432,6 @@ class AudioFileGroup(dict):
         else:
             can = min([song.can_change(k) for song in self.types.itervalues()])
         return can
-
 
 class Library(dict):
     def __init__(self, initial = {}):
