@@ -117,7 +117,7 @@ class GTKSongInfoWrapper(object):
                 model[iter][col + 1] = 400
                 model.row_changed(path, iter)
         widgets.songs.foreach(update_if_last_or_current)
-
+        gc.collect()
         return False
 
 # Make a standard directory-chooser, and return the filenames and response.
@@ -648,6 +648,7 @@ def refresh_songlist():
     i = len(list(player.playlist))
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
     sl.set_model(widgets.songs)
+    gc.collect()
 
 HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track",
