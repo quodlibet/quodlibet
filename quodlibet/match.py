@@ -64,6 +64,10 @@ class Numcmp(object):
                 elif unit == "day": value *= 24 * 60 * 60
                 elif unit == "week": value *= 7 * 24 * 60 * 60
                 elif unit == "year": value *= 365 * 24 * 60 * 60
+
+                # Since units mean "ago", the operators are reversed
+                if self.op == ">": self.op = "<"
+                elif self.op == "<": self.op = ">"
                 value = int(time.time() - value)
         self.value = value
 
