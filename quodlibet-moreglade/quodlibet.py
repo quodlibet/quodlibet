@@ -250,28 +250,59 @@ class Widgets(object):
     def __getitem__(self, key):
         return self.widgets.get_widget(key)
 
+class TrayIcon(object):
+    def __init__(self, pixbuf, activate_cb, popup_cb):
+        try:
+            import statusicon
+        except:
+            self.icon = None
+            print _("W: Failed to initialize status icon.")
+        else:
+            self.icon = statusicon.StatusIcon(pixbuf)
+            self.icon.connect("activate", activate_cb)
+            self.icon.connect("popup-menu", popup_cb)
+            print _("Initialized status icon.")
+
+    def set_tooltip(self, tooltip):
+        if self.icon:
+            self.icon.set_tooltip(tooltip, "magic")
+
+    tooltip = property(None, set_tooltip)
+
+class MmKeys(object):
+    def __init__(self, cbs):
+        try:
+            import mmkeys
+        except:
+            print _("W: Failed to initialize multimedia key support.")
+        else:
+            self.keys = mmkeys.MmKeys()
+            map(self.keys.connect, *zip(*cbs.items()))
+            print _("Initialized multimedia key support.")
+
 class MainWindow(MultiInstanceWidget):
     def __init__(self):
         MultiInstanceWidget.__init__(self, widget = "main_window")
         self.last_dir = os.path.expanduser("~")
         self.window = self.widgets["main_window"]
+        self.current_song = None
 
         menu = Widgets(None, self, "songs_popup")
         self.cmenu = menu["songs_popup"]
         self.cmenu_w = menu
 
+        # Oft-used pixmaps -- play/pause and small versions of the same.
+        # FIXME: Switching to GTK 2.6 we can use the stock icons.
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
+        self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
+        self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
 
         pp = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
         self.widgets["prev_menu"].get_image().set_from_pixbuf(pp)
 
         pn = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
         self.widgets["next_menu"].get_image().set_from_pixbuf(pn)
-
-        self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
-        self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
-
         self.widgets["play_menu"].get_image().set_from_pixbuf(self.pause_s)
 
         # Set up the tray icon; initialize the menu widget even if we
@@ -282,21 +313,9 @@ class MainWindow(MultiInstanceWidget):
         self.tray_menu["prev_popup_menu"].get_image().set_from_pixbuf(pp)
         self.tray_menu["next_popup_menu"].get_image().set_from_pixbuf(pn)
 
-        try: import statusicon
-        except:
-            print _("W: Failed to initialize status icon.")
-            self.icon = None
-        else:
-            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-            self.icon = statusicon.StatusIcon(p)
-            self.icon.connect("activate", self.tray_toggle_window)
-            self.icon.connect("popup-menu", self.tray_popup, ())
-            print _("Initialized status icon.")
-
-        # Restore window size.
-        w, h = map(int, config.get("memory", "size").split())
-        self.widgets["main_window"].set_property("default-width", w)
-        self.widgets["main_window"].set_property("default-height", h)
+        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+        self.icon = TrayIcon(p, self.tray_toggle_window, self.tray_popup)
+        self.restore_size()
 
         # Set up the main song list store.
         sl = self.widgets["songlist"]
@@ -341,20 +360,20 @@ class MainWindow(MultiInstanceWidget):
         self.iframe = self.widgets["iframe"]
         self.volume = self.widgets["volume"]
 
-        try: import mmkeys
-        except:
-            print _("W: Failed to initialize multimedia key support.")
-        else:
-            self.keys = mmkeys.MmKeys()
-            self.keys.connect("mm_prev", self.previous_song)
-            self.keys.connect("mm_next", self.next_song)
-            self.keys.connect("mm_playpause", self.play_pause)
-            print _("Initialized multimedia key support.")
+        self.open_fifo()
+        self.keys = MmKeys({"mm_prev": self.previous_song,
+                            "mm_next": self.next_song,
+                            "mm_playpause": self.play_pause})
 
-        try: os.unlink(const.CONTROL)
-        except OSError: pass
-        util.mkdir(const.DIR)
-        os.mkfifo(const.CONTROL, 0600)
+    def restore_size(self):
+       w, h = map(int, config.get("memory", "size").split())
+       self.window.set_property("default-width", w)
+       self.window.set_property("default-height", h)
+
+    def open_fifo(self):
+        if not os.path.exists(const.CONTROL):
+            util.mkdir(const.DIR)
+            os.mkfifo(const.CONTROL, 0600)
         self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
         gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
 
@@ -381,7 +400,8 @@ class MainWindow(MultiInstanceWidget):
             if library.add(filename):
                 song = library[filename]
                 if song not in player.playlist.get_playlist():
-                    self.make_query("filename = /^%s/c" % sre.escape(filename))
+                    e_fn = sre.escape(filename)
+                    self.make_query("filename = /^%s/c" % e_fn)
                 player.playlist.go_to(library[filename])
                 player.playlist.paused = False
             else:
@@ -392,8 +412,7 @@ class MainWindow(MultiInstanceWidget):
             self.make_query("filename = /^%s/c" % sre.escape(filename))
 
         os.close(self.fifo)
-        self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
-        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+        self.open_fifo()
 
     def set_paused(self, paused):
         gtk.idle_add(self._update_paused, paused)
@@ -455,13 +474,11 @@ class MainWindow(MultiInstanceWidget):
     def update_markup(self, song):
         if song:
             self.text.set_markup(song.to_markup())
-            if widgets.main.icon:
-                widgets.main.icon.set_tooltip(song.to_short(), "magic")
+            self.icon.tooltip = song.to_short()
         else:
             s = _("Not playing")
             self.text.set_markup("<span size='xx-large'>%s</span>" % s)
-            if self.icon:
-                self.icon.set_tooltip(s, "magic")
+            self.icon.tooltip = s
             self.albumfn = None
             self.disable_cover()
 
@@ -491,7 +508,8 @@ class MainWindow(MultiInstanceWidget):
                     if config.state("cover"): self.enable_cover()
                     self.albumfn = cover
             for h in ['genre', 'artist', 'album']:
-                self.widgets["filter_%s_menu"%h].set_sensitive(not song.unknown(h))
+                self.widgets["filter_%s_menu"%h].set_sensitive(
+                    not song.unknown(h))
             if cover_f: cover_f.close()
 
             self.update_markup(song)
@@ -503,8 +521,8 @@ class MainWindow(MultiInstanceWidget):
             self.update_markup(None)
 
         # Update the currently-playing song in the list by bolding it.
-        last_song = CURRENT_SONG[0]
-        CURRENT_SONG[0] = song
+        last_song = self.current_song
+        self.current_song = song
         col = len(HEADERS)
 
         def update_if_last_or_current(model, path, iter):
@@ -538,7 +556,7 @@ class MainWindow(MultiInstanceWidget):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
     def open_website(self, button):
-        song = CURRENT_SONG[0]
+        song = self.current_song
         site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
         for s in ["sensible-browser"]+os.environ.get("BROWSER","").split(":"):
             if util.iscommand(s):
@@ -556,11 +574,11 @@ class MainWindow(MultiInstanceWidget):
                            "/usr/bin/sensible-browser exists.")).run()
 
     def play_pause(self, *args):
-        if CURRENT_SONG[0] is None: player.playlist.reset()
+        if self.current_song is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
     def jump_to_current(self, *args):
-        try: path = (player.playlist.get_playlist().index(CURRENT_SONG[0]),)
+        try: path = (player.playlist.get_playlist().index(self.current_song),)
         except ValueError: pass
         else: self.widgets["songlist"].scroll_to_cell(path)
 
@@ -755,7 +773,7 @@ class MainWindow(MultiInstanceWidget):
             player.playlist.remove(song)
 
     def current_song_prop(self, *args):
-        song = CURRENT_SONG[0]
+        song = self.current_song
         if song:
             l = self.widgets["songlist"]
             try: path = (player.playlist.get_playlist().index(song),)
@@ -882,7 +900,7 @@ class MainWindow(MultiInstanceWidget):
         statusbar = self.widgets["statusbar"]
         length = 0
         for song in player.playlist:
-            wgt = ((song is CURRENT_SONG[0] and 700) or 400)
+            wgt = ((song is self.current_song and 700) or 400)
             widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
             length += song["~#length"]
         i = len(list(player.playlist))
@@ -1104,7 +1122,7 @@ class SongProperties(MultiInstanceWidget):
         self.save_edit.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
-        widgets.main.update_markup(CURRENT_SONG[0])
+        widgets.main.update_markup(widgets.main.current_song)
 
     def songprop_revert_click(self, button):
         self.save_edit.set_sensitive(False)
@@ -1628,12 +1646,7 @@ HEADERS_FILTER = { "tracknumber": "track",
                    "playcount": "play count", "basename": "filename",
                    "dirname": "directory"}
 
-CURRENT_SONG = [ None ]
-
-
-
 def setup_nonglade():
-    widgets.songs = gtk.ListStore(object)
     widgets.main = MainWindow()
     player.playlist.info = widgets.main
     gtk.threads_init()
