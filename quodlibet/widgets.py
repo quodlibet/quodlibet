@@ -2408,10 +2408,12 @@ class SongProperties(object):
             for song in songs: artists.update(song.list("artist"))
             artists = list(artists)
             artists.sort()
+            l = gtk.Label(", ".join(artists))
+            l.set_alignment(0, 0)
+            l.set_selectable(True)
+            l.set_line_wrap(True)
             self.box.pack_start(
-                self.Frame(util.title(_("artists")),
-                           self.Label(util.escape(", ".join(artists)))),
-                expand = False)
+                self.Frame(util.title(_("artists")), l), expand = False)
 
             text = []
             cur_disc = songs[0]("~#disc", 1) - 1
