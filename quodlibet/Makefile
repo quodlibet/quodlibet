@@ -1,4 +1,4 @@
-MODULES = config.py library.py match.py parser.py player.py util.py
+MODULES = config.py library.py match.py parser.py player.py util.py pmp.py
 SUBDIRS = statusicon mmkeys po
 NAME = quodlibet
 PREFIX ?= /usr/local

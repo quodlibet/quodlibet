@@ -391,6 +391,24 @@ class GladeHandlers(object):
         player.playlist.refilter()
         refresh_songlist()
 
+    def pmp_upload(*args):
+        view = widgets["songlist"]
+        selection = view.get_selection()
+        model, rows = selection.get_selected_rows()
+        songs = [model[row][len(HEADERS)] for row in rows]
+        try:
+            window = WaitLoadWindow(widgets["main_window"], len(songs),
+                                    _("Uploading song %d/%d"),
+                                    (0, len(songs)))
+            d = pmp.drivers[config.getint("pmp", "driver")](songs, window)
+            d.run()
+            window.end()
+        except IOError, s:
+            window.end()
+            e = ErrorMessage(widgets["main_window"],
+                             _("Unable to upload files"), s)
+            e.run()
+
     # Set up the preferences window.
     def open_prefs(activator):
         widgets["prefs_window"].set_transient_for(widgets["main_window"])
@@ -433,6 +451,9 @@ class GladeHandlers(object):
         config.set('pmp', 'driver', str(widgets["pmp_combo"].get_active()))
         if combobox.get_active() == 1: widgets["pmp_entry"].set_sensitive(True)
         else: widgets["pmp_entry"].set_sensitive(False)
+
+    def pmp_location_changed(entry):
+        config.set('pmp', 'location', entry.get_text())
 
     def set_headers(*args):
         # Based on the state of the checkboxes, set up new column headers.
@@ -1611,6 +1632,7 @@ if __name__ == "__main__":
         gtk.main()
         raise SystemExit(True)
 
+    import pmp
     import parser
     import signal
     import sre
