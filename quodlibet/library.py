@@ -613,6 +613,30 @@ class Library(dict):
             return bool(song)
         else: return True
 
+    def query(self, text, sort = None):
+        if text == "": songs = self.values()
+        elif "#" not in text and "=" not in text and "/" not in text:
+            # Simple, non-regexp search
+            parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
+            text = "&(" + ",".join(parts) + ")"
+            songs = filter(parser.parse(text), self.values())
+        else:
+            # Regexp search
+            songs = filter(parser.parse(text), self.values())
+
+        if sort is None: pass
+        elif callable(sort):
+            songs.sort(sort)
+        else:
+            header = str(sort) # sanity check
+            if header == "~#track": header = "album"
+            elif header == "~#disc": header = "album"
+            elif header == "~length": header = "~#length"
+            songs = [(song.get(header), song) for song in songs]
+            songs.sort()
+            songs = [song[1] for song in songs]
+        return songs
+
     def reload(self, song):
         self.remove(song)
         self.add(song['~filename'])

@@ -18,7 +18,7 @@ import sre
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
  CLOSERE, REMODS, COMMA, TAG, RE, RELOP, NUMCMP, EOF) = range(15)
 
-class error(RuntimeError): pass
+class error(ValueError): pass
 class ParseError(error): pass
 class LexerError(error): pass
 
