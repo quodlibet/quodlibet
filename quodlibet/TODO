@@ -1,7 +1,5 @@
 - More unit tests.
 - "Automated" tag editing (file name scanning, etc.)
-- Rework all the build scripts to be smarter.
-  (Check out autoconf, distutils...)
 - Various skipping problems -- get smarter about Python threads.
   - Some of this (during saving) disappeared with ossaudiodev? Rock.
 - Look into eventual GStreamer port/use (for playing).

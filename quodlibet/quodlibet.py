@@ -482,13 +482,7 @@ class MultiInstanceWidget(object):
                 if row[5] is not None: deleted[row[0]] = util.decode(row[5])
         self.model.foreach(create_property_dict)
 
-        progress = widgets["writing_progress"]
-        label = widgets["saved_count"]
-        widgets["write_window"].set_transient_for(self.window)
-        widgets["write_window"].show()
-        saved = 0
-        progress.set_fraction(0.0)
-        while gtk.events_pending(): gtk.main_iteration()
+        win = WritingWindow(self.window, len(self.songrefs))
         for song, ref in self.songrefs:
             changed = False
             for key, (new_value, old_value) in updated.iteritems():
@@ -516,12 +510,9 @@ class MultiInstanceWidget(object):
                     row = widgets.songs[path]
                     for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
 
-            saved += 1
-            progress.set_fraction(saved / float(len(self.songrefs)))
-            label.set_text(_("%d/%d songs saved")%(saved, len(self.songrefs)))
-            while gtk.events_pending(): gtk.main_iteration()
+            win.step()
 
-        widgets["write_window"].hide()
+        win.end()
         self.save.set_sensitive(False)
         self.revert.set_sensitive(False)
         self.fill_property_info()
@@ -813,7 +804,8 @@ class MultiInstanceWidget(object):
         self.tbp_model = gtk.ListStore(object, object, str,
                 *([str] * len(pattern.headers)))
 
-        for col in self.tbp_view.get_columns(): self.tbp_view.remove_column(col)
+        for col in self.tbp_view.get_columns():
+            self.tbp_view.remove_column(col)
         col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
         self.tbp_view.append_column(col)
         for i, header in enumerate(pattern.headers):
@@ -824,12 +816,53 @@ class MultiInstanceWidget(object):
         for song, ref in self.songrefs:
             row = [song, ref, song['=basename']]
             match = pattern.match(song)
-            row.extend([match.get(h, '') for h in pattern.headers])
+            row.extend(["\n".join(util.split_value(match.get(h, '')))
+                        for h in pattern.headers])
             self.tbp_model.append(row=row)
 
         # save for last to potentially save time
         self.tbp_view.set_model(self.tbp_model)
 
+    def tbp_save(self, *args):
+        pattern_text = self.tbp_entry.get_text().decode('utf-8')
+        pattern = util.PatternFromFile(pattern_text)
+        win = WritingWindow(self.window, len(self.songrefs))
+        for song, ref in self.songrefs:
+            match = pattern.match(song)
+            changed = False
+            for h in pattern.headers:
+                if h in match:
+                    song[h] = "\n".join(util.split_value(match[h]))
+                    changed = True
+            if changed and ref:
+                path = ref.get_path()
+                song.write()
+                if path is not None:
+                    row = widgets.songs[path]
+                    for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
+            win.step()
+        win.end()
+        self.fill_property_info()
+
+class WritingWindow(object):
+    def __init__(self, parent, count):
+        self.win = widgets["write_window"]
+        self.label = widgets["saved_count"]
+        self.prog = widgets["writing_progress"]
+        self.win.set_transient_for(parent)
+        self.saved = 0
+        self.count = count
+        self.win.show()
+        while gtk.events_pending(): gtk.main_iteration()
+
+    def step(self):
+        self.saved += 1
+        self.prog.set_fraction(self.saved / float(self.count))
+        self.label.set_text(_("%d/%d songs saved") % (self.saved, self.count))
+        while gtk.events_pending(): gtk.main_iteration()
+
+    def end(self):
+        self.win.hide()
 
 def make_song_properties(songrefs):
     dlg = MultiInstanceWidget(widget="properties_window")
