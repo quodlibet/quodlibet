@@ -17,6 +17,8 @@ install:
 	install -m 755 $(NAME).py $(DESTDIR)$(PREFIX)/$(TO)
 	install -m 644 $(NAME).zip $(NAME).glade *.png $(DESTDIR)$(PREFIX)/$(TO)
 	install -m 644 $(NAME).1 $(DESTDIR)$(PREFIX)/share/man/man1/$(NAME).1
+	install -m 644 $(NAME).png $(DESTDIR)$(PREFIX)/share/pixmaps
+	install -m 644 $(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications
 	ln -sf ../$(TO)/$(NAME).py $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	(test -e statusicon.so && install -m 755 statusicon.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true
 	(test -e mmkeys.so && install -m 755 mmkeys.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true
