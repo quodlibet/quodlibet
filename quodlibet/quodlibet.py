@@ -2228,9 +2228,9 @@ class SongProperties(object):
             else:
                 albums =  [song.get("album") for song in songs]
                 artists = [song.get("artist") for song in songs]
-                if min(albums) == max(albums):
+                if min(albums) == max(albums) and None not in albums:
                     self._update_album(songs[:])
-                elif min(artists) == max(artists):
+                elif min(artists) == max(artists) and None not in albums:
                     self._update_artist(songs[:])
                 else: self._update_many(songs)
             self.box.show_all()
