@@ -215,9 +215,9 @@ class GladeHandlers(object):
     def update_volume(slider):
         player.device.volume = int(slider.get_value())
 
-    def text_parse(*args):
+def text_parse(*args):
         from parser import QueryParser, QueryLexer
-        text = widgets["query"].get_text().decode("utf-8")
+        text = widgets["query"].child.get_text().decode("utf-8")
         if text.strip() == "":
             CURRENT_FILTER[0] = FILTER_ALL
             songs = filter(CURRENT_FILTER[0], library.values())
@@ -225,24 +225,26 @@ class GladeHandlers(object):
             refresh_songlist()
         else:
             if "=" not in text and "/" not in text:
+                widgets["query"].prepend_text(text)
                 parts = ["* = /" + p + "/" for p in text.split()]
                 text = "&(" + ",".join(parts) + ")"
                 q = QueryParser(QueryLexer(text)).Query()
-                widgets["query"].set_text(text)
-
-            try: q = QueryParser(QueryLexer(text)).Query()
-            except: pass
             else:
-                CURRENT_FILTER[0] = q.search
-                set_entry_color(widgets["query"], "black")
-                songs = filter(CURRENT_FILTER[0], library.values())
-                player.playlist.set_playlist(songs)
-                refresh_songlist()
+                try:
+                    q = QueryParser(QueryLexer(text)).Query()
+                    widgets["query"].prepend_text(text)
+                except: return
 
-    def test_filter(*args):
+            CURRENT_FILTER[0] = q.search
+            set_entry_color(widgets["query"].child, "black")
+            songs = filter(CURRENT_FILTER[0], library.values())
+            player.playlist.set_playlist(songs)
+            refresh_songlist()
+
+def test_filter(*args):
         if not config.state("color"): return
         from parser import QueryParser, QueryLexer
-        textbox = widgets["query"]
+        textbox = widgets["query"].child
         text = textbox.get_text()
         if "=" not in text and "/" not in text:
             gtk.idle_add(set_entry_color, textbox, "blue")
@@ -334,8 +336,16 @@ def main():
          i += 1
     set_column_headers(sl)
     statusbar = widgets["statusbar"]
+    liststore = gtk.ListStore(str)
+    widgets["query"].set_model(liststore)
+    cell = gtk.CellRendererText()
+    widgets["query"].pack_start(cell, True)
+    widgets["query"].add_attribute(cell, 'text', 0)
     j = statusbar.get_context_id("playlist")
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
+    widgets["query"].child.connect('activate', text_parse)
+    widgets["query"].child.connect('changed', test_filter)
+    widgets["search_button"].connect('clicked', text_parse)
     print "Done loading songs."
     gtk.threads_init()
     widgets.wrap = GTKSongInfoWrapper()
