@@ -1,6 +1,7 @@
 0.5
  - The ao audio backend is back; see the "AUDIO BACKENDS" section in the
-   manual page for instructions on using it.
+   manual page for instructions on using it. This should let ALSA users
+   use software mixing.
  - VorbisGain (http://sjeng.org/vorbisgain.html) support.
  - A context menu for common operations was added to the properties dialog.
  - Tag values can be set from filename patterns, or vice-versa.

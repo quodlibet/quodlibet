@@ -1,11 +1,12 @@
 - More unit tests.
-- "Automated" tag editing (file name scanning, etc.)
+- Full FLAC support.
 - Various skipping problems -- get smarter about Python threads.
-  - Some of this (during saving) disappeared with ossaudiodev? Rock.
-- Look into eventual GStreamer port/use (for playing).
 - MikMod support.
 - Import covers from Muine.
-- Full FLAC support.
-- Streaming.
-- Playlists.
-- New UI element for selecting playlists or streams.
+  - We need to serialized the pixmap data, whatever it's doing, which
+    doesn't seem to be exposed via PyGTK.
+- Streaming & playlists.
+  - New UI element(s) for selecting playlists or streams. Combobox next
+    to search, Library/Playlist/Streams?
+- Look into eventual GStreamer port/use (for playing).
+  - This is probably going to end up not useful.

@@ -33,8 +33,9 @@ prior to running 'make install' (or ./quodlibet.py).
 
 ==[ Other OSs
 
-Find the above software and install it. PyGTK must be at least
-version 2.4, or strange errors will happen.
+Find the above software and install it. PyGTK must be at least version 2.4,
+or strange errors will happen. The Quod Libet website links to most of
+the required software.
 
 ====[ Using QL
 For help on using the program, run
