@@ -96,6 +96,10 @@ class AudioFile(dict):
         return (self.exists() and
                 self["~#mtime"] == os.path.mtime(self["~filename"]))
 
+    def can_change(self, k = None):
+        if k is None: return True
+        else: return (k and k != "vendor" and "=" not in k and "~" not in k)
+
     def rename(self, newname):
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
         else: newname = os.path.join(self['~dirname'], newname)
@@ -334,25 +338,30 @@ class MP3File(AudioFile):
             elif frame["frameid"] == "APIC" and frame["data"]:
                 self["~picture"] = "y"
                 continue
+            elif frame["frameid"] == "COMM":
+                if frame["description"].startswith("QuodLibet::"):
+                    name = frame["description"][11:]
+                elif frame["description"] == "ID3v1 Comment": continue
+                else: name = "comment"
+            else: name = self.IDS.get(frame["frameid"], "").lower()
 
-            names = self.IDS.get(frame["frameid"], [])
-            if not isinstance(names, list): names = [names]
-            for name in map(str.lower, names):
-                try:
-                    text = frame["text"]
-                    if not text: continue
-                    for codec in ["utf-8", "shift-jis", "big5", "iso-8859-1"]:
-                        try: text = text.decode(codec)
-                        except (UnicodeError, LookupError): pass
-                        else: break
-                    else: continue
-                    if name in self:
-                        if text in self[name]: pass
-                        elif self[name] in text: self[name] = text
-                        else: self[name] += "\n" + text
-                    else: self[name] = text
-                    self[name] = self[name].strip()
-                except: pass
+            if not name: continue
+
+            try:
+                text = frame["text"]
+                if not text: continue
+                for codec in ["utf-8", "shift-jis", "big5", "iso-8859-1"]:
+                    try: text = text.decode(codec)
+                    except (UnicodeError, LookupError): pass
+                    else: break
+                else: continue
+                if name in self:
+                    if text in self[name]: pass
+                    elif self[name] in text: self[name] = text
+                    else: self[name] += "\n" + text
+                else: self[name] = text
+                self[name] = self[name].strip()
+            except: pass
 
         md = mad.MadFile(filename)
         self["~#length"] = md.total_time() // 1000
@@ -363,6 +372,13 @@ class MP3File(AudioFile):
     def write(self):
         import pyid3lib
         tag = pyid3lib.tag(self['~filename'])
+
+        ql_comments = [i for i, frame in enumerate(tag)
+                       if (frame["frameid"] == "COMM" and
+                           frame["description"].startswith("QuodLibet::"))]
+        ql_comments.reverse()
+        for comm in ql_comments: del(tag[comm])
+        
         for key, id3name in self.INVERT_IDS.items():
             try:
                 while True: tag.remove(id3name)
@@ -372,6 +388,13 @@ class MP3File(AudioFile):
                 for value in self.list(key):
                     value = value.encode("utf-8")
                     tag.append({'frameid': id3name, 'text': value })
+
+        for key in filter(lambda x: x not in self.INVERT_IDS and x[0] != "~",
+                          self.realkeys()):
+            for value in self.list(key):
+                value = value.encode('utf-8')
+                tag.append({'frameid': "COMM", 'text': value,
+                            'description': "QuodLibet::%s" % key})
 
         for date in self.list("date"):
             y, m, d = (date + "--").split("-")[0:3]
@@ -388,10 +411,6 @@ class MP3File(AudioFile):
                 
         tag.update()
         self["~#mtime"] = os.path.mtime(self['~filename'])
-
-    def can_change(self, k=None):
-        if k is None: return self.INVERT_IDS.keys() + ["date"]
-        else: return (k in self.INVERT_IDS.keys() or k == "date")
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -416,10 +435,6 @@ class OggFile(AudioFile):
             for line in value: comments[key] = line
         comments.write_to(self['~filename'])
         self["~#mtime"] = os.path.mtime(self['~filename'])
-
-    def can_change(self, k = None):
-        if k is None: return True
-        else: return (k and k != "vendor" and "=" not in k and "~" not in k)
 
 class ModFile(AudioFile):
     def __init__(self, filename):
@@ -488,11 +503,6 @@ class FLACFile(AudioFile):
                 for line in value:
                     vc.comments[key] = util.encode(line)
             chain.write(True, True)
-
-    def can_change(self, k = None):
-        if k is None: return True
-        else: return (k and k not in ["vendor"] and "=" not in k and
-                      "~" not in k)
 
 class AudioFileGroup(dict):
 

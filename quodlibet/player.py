@@ -29,6 +29,23 @@ class AudioPlayer(object):
     def end(self):
         self.stopped = True
 
+    def replay_gain(self, song):
+        gain = config.getint("settings", "gain")
+        try:
+            if gain == 0: raise ValueError
+            elif gain == 2 and "replaygain_album_gain" in song:
+                db = float(song["replaygain_album_gain"].split()[0])
+                peak = float(song["replaygain_album_peak"])
+            elif gain > 0 and "replaygain_track_gain" in song:
+                db = float(song["replaygain_track_gain"].split()[0])
+                peak = float(song["replaygain_track_peak"])
+            else: raise ValueError
+            self.scale = 10.**(db / 20)
+            if self.scale * peak > 1: self.scale = 1.0 / peak # don't clip
+            if self.scale > 15: self.scale = 15 # probably messed up...
+        except (KeyError, ValueError):
+            self.scale = 1
+
 class MP3Player(AudioPlayer):
     def __init__(self, dev, song):
         import mad
@@ -38,6 +55,7 @@ class MP3Player(AudioPlayer):
         self.audio = mad.MadFile(filename)
         self.dev.set_info(self.audio.samplerate(), 2)
         self.length = self.audio.total_time()
+        self.replay_gain(song)
 
     def __iter__(self): return self
 
@@ -48,6 +66,8 @@ class MP3Player(AudioPlayer):
         if self.stopped: raise StopIteration
         buff = self.audio.read(BUFFER_SIZE)
         if buff is None: raise StopIteration
+        if self.scale != 1:
+            buff = audioop.mul(buff, 2, self.scale)
         self.dev.play(buff)
         return self.audio.current_time()
 
@@ -71,6 +91,7 @@ class FLACPlayer(AudioPlayer):
         self.dec.process_until_end_of_metadata()
         self.pos = 0
         self._size = os.stat(filename)[stat.ST_SIZE]
+        self.replay_gain(song)
 
     def _grab_stream_info(self, dec, block):
         if block.type == self.STREAMINFO:
@@ -85,6 +106,8 @@ class FLACPlayer(AudioPlayer):
 
     def _player(self, dec, buff, size):
         self.pos += 1000 * (float(len(buff))/self._chan/self._bps/self._srate)
+        if self.scale != 1:
+            buff = audioop.mul(buff, self._chan, self.scale)
         device.play(buff)
         return self.OK
 
@@ -118,29 +141,11 @@ class OggPlayer(AudioPlayer):
         self.audio = ogg.vorbis.VorbisFile(filename)
         rate = self.audio.info().rate
         channels = self.audio.info().channels
-        self.replay_gain(song)
         self.dev.set_info(rate, channels)
         self.length = int(self.audio.time_total(-1) * 1000)
+        self.replay_gain(song)
 
     def __iter__(self): return self
-
-    def replay_gain(self, song):
-        gain = config.getint("settings", "gain")
-        try:
-            if gain == 0: raise ValueError
-            elif gain == 2 and "replaygain_album_gain" in song:
-                db = float(song["replaygain_album_gain"].split()[0])
-                peak = float(song["replaygain_album_peak"])
-            elif gain > 0 and "replaygain_track_gain" in song:
-                db = float(song["replaygain_track_gain"].split()[0])
-                peak = float(song["replaygain_track_peak"])
-            else: raise ValueError
-            self.scale = 10.**(db / 20)
-            
-            if self.scale * peak > 1: self.scale = 1.0 / peak # don't clip
-            if self.scale > 15: self.scale = 15 # probably messed up...
-        except (KeyError, ValueError):
-            self.scale = 1
 
     def seek(self, ms):
         self.audio.time_seek(ms / 1000.0)

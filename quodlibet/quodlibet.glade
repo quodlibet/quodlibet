@@ -1808,7 +1808,7 @@
 				  <property name="items" translatable="yes">No volume adjustment
 Per-song (&quot;Radio&quot;) volume adjustment
 Per-album (&quot;Audiophile&quot;) volume adjustment</property>
-				  <signal name="changed" handler="set_gain" last_modification_time="Fri, 12 Nov 2004 21:10:45 GMT"/>
+				  <signal name="changed" handler="combo_gain" last_modification_time="Fri, 12 Nov 2004 21:10:45 GMT"/>
 				</widget>
 			      </child>
 			    </widget>

@@ -128,7 +128,7 @@ class TestFileTypes(TestCase):
             self.failUnless(file.can_change("tracknumber"))
         self.failUnless(self.vorb.can_change("somebadtag"))
         self.failUnless(self.flac.can_change("somebadtag"))
-        self.failIf(self.mp3.can_change("somebadtag"))
+        self.failUnless(self.mp3.can_change("somebadtag"))
 
     def test_metadata(self):
         for file in [self.vorb, self.mp3, self.flac]:
