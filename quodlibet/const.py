@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Short string constants and long non-translated ones.
 
 import os
 
@@ -36,3 +37,8 @@ NBP_EXAMPLES = """\
 <tracknumber> - <artist> - <title>
 /path/<artist> - <album>/<tracknumber>. <title>
 /path/<artist>/<album>/<tracknumber> - <title>"""
+
+COPYRIGHT = """\
+<u><span weight="bold" size="xx-large">Quod Libet</span></u>
+&lt;quodlibet@lists.sacredchao.net&gt;
+Copyright © 2004-2005"""
