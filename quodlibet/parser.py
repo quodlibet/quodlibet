@@ -150,6 +150,11 @@ class QueryParser(object):
             raise ParseError("The expected symbol should be |, &, !, or "
                              "a tag name, but was %s" % self.lookahead.lexeme)
 
+    def StartQuery(self):
+        s = self.Query()
+        self.match(EOF)
+        return s
+
     def QueryNeg(self):
         self.match(NEGATION)
         return match.Neg(self.Query())
@@ -214,7 +219,7 @@ class QueryParser(object):
             raise ParseError("The regular expression /%s/ is invalid." % re)
 
     def match(self, token):
-        if self.lookahead.type == EOF:
+        if token != EOF and self.lookahead.type == EOF:
             raise ParseError("The search string ended, but more "
                              "tokens were expected.")
         try:
@@ -227,10 +232,10 @@ class QueryParser(object):
             self.lookahead = QueryLexeme(EOF, "")
 
 def parse(string):
-    return QueryParser(QueryLexer(string)).Query()
+    return QueryParser(QueryLexer(string)).StartQuery()
 
 def is_valid(string):
-    try: QueryParser(QueryLexer(string)).Query()
+    tokens = QueryLexer(string)
+    try: QueryParser(tokens).StartQuery()
     except error: return False
     else: return True
-
