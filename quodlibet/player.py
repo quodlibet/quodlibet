@@ -262,6 +262,9 @@ class PlaylistPlayer(object):
         self.quit = True
         self.paused = False
         if self.player: self.player.end()
+        # quitting shouldn't count as skipping the current song
+        if self.song:
+            self.song["~#skipcount"] = self.song.get("~#skipcount", 0) - 1
         self.lock.release()
 
     def previous(self):
