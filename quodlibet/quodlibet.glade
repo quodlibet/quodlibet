@@ -31,50 +31,35 @@
 	  <child>
 	    <widget class="GtkMenuItem" id="menuitem4">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_File</property>
+	      <property name="label" translatable="yes">_Music</property>
 	      <property name="use_underline">True</property>
 
 	      <child>
-		<widget class="GtkMenu" id="menu4">
+		<widget class="GtkMenu" id="menuitem4_menu">
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="new1">
+		    <widget class="GtkImageMenuItem" id="add_music1">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-new</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_new1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
+		      <property name="label" translatable="yes">_Add Music...</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_add_music1_activate" last_modification_time="Wed, 06 Oct 2004 20:44:49 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image1">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-add</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="open1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-open</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_open1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkImageMenuItem" id="save1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-save</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_save1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkImageMenuItem" id="save_as1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-save-as</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_save_as1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
+		    <widget class="GtkSeparatorMenuItem" id="separator2">
 		      <property name="visible">True</property>
 		    </widget>
 		  </child>
@@ -84,71 +69,9 @@
 		      <property name="visible">True</property>
 		      <property name="label">gtk-quit</property>
 		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_quit1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
+		      <signal name="activate" handler="gtk_main_quit" last_modification_time="Wed, 06 Oct 2004 20:44:49 GMT"/>
 		    </widget>
 		  </child>
-		</widget>
-	      </child>
-	    </widget>
-	  </child>
-
-	  <child>
-	    <widget class="GtkMenuItem" id="menuitem5">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_Edit</property>
-	      <property name="use_underline">True</property>
-
-	      <child>
-		<widget class="GtkMenu" id="menu5">
-
-		  <child>
-		    <widget class="GtkImageMenuItem" id="cut1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-cut</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_cut1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkImageMenuItem" id="copy1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-copy</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_copy1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkImageMenuItem" id="paste1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-paste</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_paste1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkImageMenuItem" id="delete1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-delete</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_delete1_activate" last_modification_time="Wed, 06 Oct 2004 06:07:12 GMT"/>
-		    </widget>
-		  </child>
-		</widget>
-	      </child>
-	    </widget>
-	  </child>
-
-	  <child>
-	    <widget class="GtkMenuItem" id="menuitem6">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_View</property>
-	      <property name="use_underline">True</property>
-
-	      <child>
-		<widget class="GtkMenu" id="menu6">
 		</widget>
 	      </child>
 	    </widget>
@@ -161,7 +84,7 @@
 	      <property name="use_underline">True</property>
 
 	      <child>
-		<widget class="GtkMenu" id="menu7">
+		<widget class="GtkMenu" id="menuitem7_menu">
 
 		  <child>
 		    <widget class="GtkMenuItem" id="about1">
@@ -334,17 +257,17 @@
 	<widget class="GtkScrolledWindow" id="scrolledwindow1">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
+	  <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
 	  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
 	  <property name="shadow_type">GTK_SHADOW_NONE</property>
 	  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 	  <child>
-	    <widget class="GtkTreeView" id="treeview1">
+	    <widget class="GtkTreeView" id="songlist">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="headers_visible">True</property>
-	      <property name="rules_hint">False</property>
+	      <property name="rules_hint">True</property>
 	      <property name="reorderable">True</property>
 	      <property name="enable_search">True</property>
 	    </widget>
@@ -358,7 +281,7 @@
       </child>
 
       <child>
-	<widget class="GtkStatusbar" id="statusbar1">
+	<widget class="GtkStatusbar" id="statusbar">
 	  <property name="visible">True</property>
 	  <property name="has_resize_grip">True</property>
 	</widget>

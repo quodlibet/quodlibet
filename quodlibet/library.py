@@ -68,13 +68,11 @@ class OggFile(dict):
 
 songs = []
 
-def insert_file(arg, dirname, fnames):
-    for fn in fnames:
-        m = MusicFile(os.path.join(dirname, fn))
-        if m: songs.append(m)
-
 def load(dirs):
     for d in dirs:
         print "Checking", d
         d = os.path.expanduser(d)
-        os.path.walk(d, insert_file, None)
+        for path, dnames, fnames in os.walk(d):
+            for fn in fnames:
+                m = MusicFile(os.path.join(path, fn))
+                if m: songs.append(m)
