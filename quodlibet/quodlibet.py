@@ -14,7 +14,15 @@ class GladeHandlers(object):
 
     def text_parse(textbox):
         from parser import QueryParser, QueryLexer
-        print QueryParser(QueryLexer(textbox.get_text())).Query()
+        try:
+            q = QueryParser(QueryLexer(textbox.get_text())).Query()
+            songs = filter(q.search, library.songs)
+            store = widgets.songs
+            store.clear()
+            for song in songs:
+                store.append([song.get(i, "") for i in HEADERS])
+        except:
+            pass
 
 class Widgets(object):
     def __init__(self, file):
@@ -26,10 +34,11 @@ class Widgets(object):
 
 HEADERS = ["artist", "title", "album"]
 
+widgets = Widgets("quodlibet.glade")
+
 def main():
-    widgets = Widgets("quodlibet.glade")
     sl = widgets["songlist"]
-    store = gtk.ListStore(*([gobject.TYPE_STRING] * len(HEADERS)))
+    widgets.songs = gtk.ListStore(*([gobject.TYPE_STRING] * len(HEADERS)))
 
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
@@ -39,9 +48,8 @@ def main():
     library.load(sys.argv[1:])
     print library.songs
     for song in library.songs:
-        store.append([song.get(i, "") for i in HEADERS])
-    sl.set_model(store)
-    print store[0]
+        widgets.songs.append([song.get(i, "") for i in HEADERS])
+    sl.set_model(widgets.songs)
     gtk.main()
 
 if __name__ == "__main__": main()
