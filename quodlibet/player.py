@@ -149,9 +149,11 @@ class PlaylistPlayer(object):
                 self.song = self.playlist.pop(0)
                 fn = self.song['~filename']
                 config.set("memory", "song", fn)
-                f = file(const.CURRENT, "w")
-                f.write(self.song.to_dump())
-                f.close()
+                try: # potentially, permissions error, out of disk space
+                    f = file(const.CURRENT, "w")
+                    f.write(self.song.to_dump())
+                    f.close()
+                except OSError: pass
                 if self.shuffle: random.shuffle(self.playlist)
                 try: self.player = formats.MusicPlayer(self.output, self.song)
                 except:
