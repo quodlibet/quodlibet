@@ -41,7 +41,7 @@ class ParserTests(TestCase):
         match0 = ["version = /./",
                   "* = /Tests/",
                   "&(t = /Quuxly/, filename = /.ogg/)",
-                  "album = /Hate\: Tests/",
+                  "album = /Hate: Tests/",
                   ]
         match1 = ["artist = /mu/",
                   "title = /Rocking?/",

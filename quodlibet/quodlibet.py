@@ -1477,14 +1477,6 @@ class MainWindow(MultiInstanceWidget):
     def text_parse(self, text, dummy_sort):
         config.set("memory", "query", text)
         text = text.decode("utf-8").strip()
-        orig_text = text
-        if text and "#" not in text and "=" not in text and "/" not in text:
-            # A simple search, not regexp-based.
-            parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
-            text = "&(" + ",".join(parts) + ")"
-            # The result must be well-formed, since no /s were
-            # in the original string and we escaped it.
-
         if player.playlist.playlist_from_filter(text):
             self.refresh_songlist()
         return True

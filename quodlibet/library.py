@@ -156,14 +156,7 @@ class Library(dict):
 
     def query(self, text, sort = None):
         if text == "": songs = self.values()
-        elif "#" not in text and "=" not in text and "/" not in text:
-            # Simple, non-regexp search
-            parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
-            text = "&(" + ",".join(parts) + ")"
-            songs = filter(parser.parse(text).search, self.values())
-        else:
-            # Regexp search
-            songs = filter(parser.parse(text).search, self.values())
+        else: songs = filter(parser.parse(text).search, self.values())
 
         if sort is None: pass
         elif callable(sort):

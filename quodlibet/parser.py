@@ -13,6 +13,10 @@
 import string
 import match
 import sre
+import sys
+
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
@@ -38,7 +42,7 @@ class QueryLexer(sre.Scanner):
         return QueryLexeme(RE, string[1:-1])
 
     def str_to_re(self, scanner, string):
-        return QueryLexeme(RE, "^%s$" % sre.escape(string[1:-1]))
+        return QueryLexeme(RE, sre.escape(string[1:-1]))
 
     def tag(self, scanner, string):
         return QueryLexeme(TAG, string.strip())
@@ -212,6 +216,9 @@ class QueryParser(object):
             self.lookahead = QueryLexeme(EOF, "")
 
 def parse(string):
+    if string and not set("#=/").intersection(string):
+        parts = ["* = /" + sre.escape(p) + "/" for p in string.split()]
+        string = "&(" + ",".join(parts) + ")"
     return QueryParser(QueryLexer(string)).StartQuery()
 
 def is_valid(string):

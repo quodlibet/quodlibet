@@ -3,6 +3,7 @@ Recent upgrade notes:
 0.9
  - "Drop-in" support for new file formats.
  - Conditional tags in rename-by-tag dialog.
+ - New searching enhancements.
 
 0.8.1 - Our story takes a sudden dive..
  - Fix a crash when encoding information is not available.
