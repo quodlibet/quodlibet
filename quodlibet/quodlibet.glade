@@ -47,7 +47,7 @@
 		      <signal name="activate" handler="open_chooser" last_modification_time="Fri, 08 Oct 2004 01:26:46 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1">
+			<widget class="GtkImage" id="image3">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -57,6 +57,15 @@
 			  <property name="ypad">0</property>
 			</widget>
 		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="preferences1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-preferences</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_preferences1_activate" last_modification_time="Fri, 15 Oct 2004 22:53:46 GMT"/>
 		    </widget>
 		  </child>
 
@@ -272,7 +281,7 @@
 	      <child>
 		<widget class="GtkLabel" id="song_timer">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">0:00 / 0:00</property>
+		  <property name="label" translatable="yes">0:00/0:00</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_RIGHT</property>
@@ -311,7 +320,7 @@
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">True</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
-		  <property name="wrap">True</property>
+		  <property name="wrap">False</property>
 		  <property name="selectable">False</property>
 		  <property name="xalign">0</property>
 		  <property name="yalign">0</property>
@@ -334,7 +343,7 @@
 		  <property name="digits">1</property>
 		  <property name="update_policy">GTK_UPDATE_DISCONTINUOUS</property>
 		  <property name="inverted">False</property>
-		  <property name="adjustment">-15000 0 0 3000 15000 0</property>
+		  <property name="adjustment">0 0 0 3000 15000 0</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
