@@ -73,13 +73,21 @@ class OggFile(dict):
             self[unicode(k).lower()] = v
 
 def load(dirs):
-    songs = []
     for d in dirs:
         print "Checking", d
         d = os.path.expanduser(d)
         for path, dnames, fnames in os.walk(d):
+            for cvr in ["cover", "Cover"]:
+                for ext in ["png", "PNG", "jpg", "JPG"]:
+                    cover = os.path.join(path, cvr + "." + ext)
+                    if os.path.exists(cover):
+                        img = cover
+                        break
+                else: continue
+                break
+
             for fn in fnames:
                 m = MusicFile(os.path.join(path, fn))
-                if m: songs.append(m)
-
-    return songs
+                if m:
+                    if img: m['cover'] = img
+                    yield m

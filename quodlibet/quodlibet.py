@@ -46,18 +46,12 @@ class GladeHandlers(object):
             text += album
         label = widgets["currentsong"]
 
-        cover_base = os.path.split(song["filename"])[0]
-        for fn in ["cover", "Cover"]:
-            for ext in ["png", "PNG", "jpg", "JPG"]:
-                cover = os.path.join(cover_base, fn + "." + ext)
-                if os.path.exists(cover):
-                    pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
-                    scaled_buf = pixbuf.scale_simple(100, 100,
-                                                     gtk.gdk.INTERP_BILINEAR)
-                    widgets["albumcover"].set_from_pixbuf(scaled_buf)
-                    break
-            else: continue
-            break
+        cover = song.get("cover", None)
+        if cover and os.path.exists(cover):
+            pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
+            scaled_buf = pixbuf.scale_simple(100, 100,
+                                             gtk.gdk.INTERP_BILINEAR)
+            widgets["albumcover"].set_from_pixbuf(scaled_buf)
         else:
             widgets["albumcover"].set_from_stock(gtk.STOCK_CDROM,
                                                  gtk.ICON_SIZE_BUTTON)
@@ -72,8 +66,8 @@ class GladeHandlers(object):
         chooser.set_select_multiple(True)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
-            for song in library.load(chooser.get_filenames()):
-                widgets.songs.append([song])
+            gtk.idle_add(lazy_loader, library.load(chooser.get_filenames()),
+                         widgets.songs)
         chooser.destroy()
 
     def text_parse(*args):
@@ -108,6 +102,14 @@ def list_transform(model, iter, col):
     song = cmodel.get_value(citer, 0)
     return song.get(HEADERS[col], "")
 
+def lazy_loader(iterator, model):
+    from itertools import izip
+    for i in range(20):
+        try: song = iterator.next()
+        except StopIteration: break
+        else: model.append([song])
+    else: gtk.idle_add(lazy_loader, iterator, model)
+
 def main():
     sl = widgets["songlist"]
     widgets.songs = gtk.ListStore(object)
@@ -123,10 +125,8 @@ def main():
         column.set_sort_column_id(i)
         sl.append_column(column)
 
-    for song in library.load(sys.argv[1:]):
-        widgets.songs.append([song])
+    gtk.idle_add(lazy_loader, library.load(sys.argv[1:]), widgets.songs)
     sl.set_model(widgets.sorted)
-    sl.set_reorderable(True)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
     gtk.main()
