@@ -2,9 +2,9 @@ class Union(object):
     def __init__(self, res):
         self.res = res
 
-    def match(self, data):
+    def search(self, data):
         for re in self.res:
-            if re.match(data): return True
+            if re.search(data): return True
         return False
 
     def __repr__(self):
@@ -14,9 +14,9 @@ class Inter(object):
     def __init__(self, res):
         self.res = res
 
-    def match(self, data):
+    def search(self, data):
         for re in self.res:
-            if not re.match(data): return False
+            if not re.search(data): return False
         return True
 
     def __repr__(self):
@@ -26,8 +26,8 @@ class Neg(object):
     def __init__(self, re):
         self.re = re
 
-    def match(self, data):
-        return not re.match(data)
+    def search(self, data):
+        return not self.re.search(data)
 
     def __repr__(self):
         return "<Neg " + repr(self.re) + ">"
@@ -38,10 +38,10 @@ class Tag(object):
         self.res = res
         if not isinstance(self.res, list): self.res = [self.res]
 
-    def match(self, data):
+    def search(self, data):
         for name in self.names:
             for re in self.res:
-                if re.match(data[name]): return True
+                if re.search(data[name]): return True
         return False
 
     def __repr__(self):

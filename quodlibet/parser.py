@@ -188,6 +188,14 @@ class QueryParser(object):
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
 
-import sys
-while not sys.stdin.closed:
-    print repr(QueryParser(QueryLexer(sys.stdin.readline())).Query())
+if __name__ == "__main__":
+    import os.path, sys
+    name = os.path.basename(__file__)
+    name = "test_" + name
+    if os.path.exists(name): os.execlp(sys.argv[0], sys.argv[0], name)
+    else: print "W: No tests found for " + name[5:] + "."
+#import sys
+#while not sys.stdin.closed:
+#    print repr(QueryParser(QueryLexer(sys.stdin.readline())).Query())
+
+    
