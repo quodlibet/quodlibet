@@ -190,7 +190,13 @@ def set_sort_by(header, i):
 
 def refresh_songlist():
     widgets.songs.clear()
-    for song in player.playlist: widgets.songs.append([song])
+    i = 0
+    statusbar = widgets["statusbar"]
+    for song in player.playlist:
+         widgets.songs.append([song])
+         i += 1
+    j = statusbar.get_context_id("playlist")
+    statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
 
 widgets = Widgets("quodlibet.glade")
 
@@ -234,7 +240,13 @@ def main():
     player.playlist.set_playlist(library.values())
     player.playlist.sort_by(HEADERS[0])
     widgets.songs.clear()
-    for song in player.playlist: widgets.songs.append([song])
+    i = 0
+    for song in player.playlist:
+         widgets.songs.append([song])
+         i += 1
+    statusbar = widgets["statusbar"]
+    j = statusbar.get_context_id("playlist")
+    statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
     
     print "Done loading songs."
     sl.set_model(widgets.filter)
