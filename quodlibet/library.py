@@ -439,6 +439,7 @@ class Library(dict):
         else: return 0, 0
         removed, changed = 0, 0
         for song in songs:
+            if type(song) not in supported.values(): continue
             fn = song['filename']
             if song and os.path.exists(fn):
                 if (os.stat(fn)[stat.ST_MTIME] != song["=mtime"]):

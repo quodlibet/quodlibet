@@ -53,7 +53,12 @@ except ImportError:
            "(http://pyid3lib.sourceforge.net/)" % NAME)
 else: print "found"
 
-
+sys.stdout.write("Checking for pyflac: ")
+try: import flac
+except ImportError:
+    print ("not found\n%s recommends pyflac. "
+           "(http://users.dart.net.au/~collett/software/pyflac-0.0.1.tar.gz)" % NAME)
+else: print "found"
 
 print "\nYour system meets the requirements to install %s." % NAME
 print "Type 'make install' (as root) to install it."
