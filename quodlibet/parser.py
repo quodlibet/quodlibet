@@ -189,8 +189,7 @@ class QueryParser(object):
     def Regexp(self):
         re = self.lookahead.lexeme
         self.match(RE)
-        mods = sre.MULTILINE | sre.UNICODE
-        if re.lower() == re: mods |= sre.IGNORECASE
+        mods = sre.MULTILINE | sre.UNICODE | sre.IGNORECASE
         if self.lookahead.type == TAG:
             s = self.lookahead.lexeme.lower()
             if "c" in s: mods &= ~sre.IGNORECASE

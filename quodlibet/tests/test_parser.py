@@ -139,7 +139,7 @@ class ParserTests(TestCase):
     def test_case(self):
         self.failUnless(parser.parse("album = /i hate/").search(self.s1))
         self.failUnless(parser.parse("album = /I Hate/").search(self.s1))
-        self.failIf(parser.parse("album = /i Hate/").search(self.s1))
+        self.failUnless(parser.parse("album = /i Hate/").search(self.s1))
         self.failUnless(parser.parse("album = /i Hate/i").search(self.s1))
         self.failIf(parser.parse("album = /i hate/c").search(self.s1))
 
@@ -171,6 +171,7 @@ class ParserTests(TestCase):
 
     def test_dumb_search(self):
         self.failUnless(parser.parse("ate man").search(self.s1))
+        self.failUnless(parser.parse("Ate man").search(self.s1))
         self.failIf(parser.parse("woo man").search(self.s1))
         self.failIf(parser.parse("not crazy").search(self.s1))
 
