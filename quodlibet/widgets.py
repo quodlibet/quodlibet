@@ -136,9 +136,9 @@ class PreferencesWindow(gtk.Window):
 
             vbox2 = gtk.VBox()
             rat = gtk.CheckButton(_("Display song _rating"))
-            if "~#rating" in checks:
+            if "~rating" in checks:
                 rat.set_active(True)
-                checks.remove("~#rating")
+                checks.remove("~rating")
             tiv = gtk.CheckButton(_("Title includes _version"))
             if "~title~version" in checks:
                 buttons["title"].set_active(True)
@@ -191,8 +191,8 @@ class PreferencesWindow(gtk.Window):
                 if buttons[key].get_active(): headers.append(key)
             if rat.get_active():
                 if headers and headers[-1] == "~length":
-                    headers.insert(-1, "~#rating")
-                else: headers.append("~#rating")
+                    headers.insert(-1, "~rating")
+                else: headers.append("~rating")
             if tiv.get_active():
                 try: headers[headers.index("title")] = "~title~version"
                 except ValueError: pass
@@ -2004,7 +2004,7 @@ class MainWindow(gtk.Window):
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
         menu = gtk.Menu()
 
-        if header == "~#rating":
+        if header == "~rating":
             item = gtk.MenuItem(_("Set rating..."))
             m2 = gtk.Menu()
             item.set_submenu(m2)
@@ -2031,6 +2031,8 @@ class MainWindow(gtk.Window):
             b.connect('activate', self.filter_proxy, 'album')
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
             menu.append(b)
+        header = {"~rating":"~#rating", "~length":"~#length"}.get(
+            header, header)
         if (header not in ["genre", "artist", "album"] and
             self.browser.can_filter(header) and
             (header[0] != "~" or header[1] == "#")):
@@ -2151,7 +2153,7 @@ class SongList(gtk.TreeView):
     # new values.
     def set_column_headers(self, headers):
         if len(headers) == 0: return
-        SHORT_COLS = ["tracknumber", "discnumber", "~length"]
+        SHORT_COLS = ["tracknumber", "discnumber", "~length", "~rating"]
         SLOW_COLS = ["~basename", "~dirname", "~filename"]
         if not self.recall_size:
             try: ws = map(int, config.get("memory", "widths").split())
@@ -2173,16 +2175,6 @@ class SongList(gtk.TreeView):
                 current_song = widgets.main.current_song
                 cell.set_property('weight', attr[song is current_song])
                 cell.set_property('text', song.comma(column.header_name))
-            except AttributeError: pass
-
-        def cell_data_rating(column, cell, model, iter,
-                attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
-            try:
-                song = model[iter][0]
-                current_song = widgets.main.current_song
-                val = song("~#rating")
-                cell.set_property('markup', "<big>%s</big>" %(
-                    util.format_rating(val)))
             except AttributeError: pass
 
         def cell_data_fn(column, cell, model, iter, code,
@@ -2213,8 +2205,6 @@ class SongList(gtk.TreeView):
             if t in ["~filename", "~basename", "~dirname"]:
                 column.set_cell_data_func(render, cell_data_fn,
                                           util.fscoding())
-            elif t == "~#rating":
-                column.set_cell_data_func(render, cell_data_rating)
             else:
                 column.set_cell_data_func(render, cell_data)
             if t == "~length":

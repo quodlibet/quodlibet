@@ -48,6 +48,8 @@ class AudioFile(dict):
             elif key == "basename": return os.path.basename(self["~filename"])
             elif key == "dirname": return os.path.dirname(self["~filename"])
             elif key == "length": return util.format_time(self["~#length"])
+            elif key == "rating":
+                return util.format_rating(self.get("~#rating", 0))
             elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default
