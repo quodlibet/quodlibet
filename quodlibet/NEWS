@@ -6,13 +6,13 @@ Reloading your library after upgrading is always a good idea.
 
 Recent upgrade notes:
 ---------------------
-Running Ex Falso and Quod Libet at the same time is not recommended (Ex
-Falso will warn you if you do this).
+Running Ex Falso and Quod Libet at the same time is not recommended
+(Ex Falso will warn you if you do this).
 
 A change in the ID3 reader could cause genres in many of your MP3
 files may disappear on reload, and new ones to appear.
 
-0.10
+0.10 - As it turns out, my life is NOT THAT INTERESTING!
  * --seek supports +/- prefix to seek relative to the current position.
  * Added Ex Falso, a tag editor based on QL (without audio playback).
  * Switched MP3 genres from TIT1 to TCON.
