@@ -13,5 +13,5 @@ Description: ModPlug mod-like music shared libraries [Python bindings]
  It features high-quality audio output including noise reduction and
  support for many MOD-like formats.
  .
- This package contains Python bindings for libFLAC, allowing programs
+ This package contains Python bindings for libmodplug, allowing programs
  written in Python to read music in MOD, XM, IT, and other formats.
