@@ -816,7 +816,7 @@ class MainWindow(MultiInstanceWidget):
         self.filter_on_header(header)
 
     def artist_filter(self, item): self.filter_on_header('artist')
-    def album_filter(self, item): self,filter_on_header('album')
+    def album_filter(self, item): self.filter_on_header('album')
     def genre_filter(self, item): self.filter_on_header('genre')
 
     def cur_artist_filter(self, item):
