@@ -282,20 +282,27 @@ class PatternFromFile(object):
         else: return match.groupdict()
 
 class FileFromPattern(object):
-    def __init__(self, pattern):
+    def __init__(self, pattern, tagre=sre.compile(r'(<\w+(?:\~\w+)*>)')):
         if '/' in pattern and not pattern.startswith('/'):
             raise ValueError("Pattern %r is not rooted" % pattern)
         self.pattern = pattern
-        self.pieces = sre.split(r'(<\w+>)', pattern)
+        self.pieces = tagre.split(pattern)
 
-    def match(self, song):
-        format = { '<tracknumber>': '%02d', '<discnumber>': '%d' }
-        override = { '<tracknumber>': '~#track', '<discnumber>': '~#disc' }
+    def match(self, song, tagre=sre.compile(r'<\w+(?:\~\w+)*>')):
+        format = { 'tracknumber': '%02d', 'discnumber': '%d' }
+        override = { 'tracknumber': '~#track', 'discnumber': '~#disc' }
         newname = []
         for piece in self.pieces:
             if not piece: continue
-            if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
-                text = song.comma(override.get(piece, piece[1:-1]))
+            if tagre.match(piece):
+                piece = piece[1:-1]
+                texts = []
+                for part in piece.split('~'):
+                    text = song.comma(override.get(part, part))
+                    try: text = format.get(part, '%s') % text
+                    except TypeError: pass
+                    texts.append(text)
+                text = ' - '.join(filter(None, texts))
                 try: text = format.get(piece, '%s') % text
                 except TypeError: pass
                 newname.append(text.replace('/', '_'))

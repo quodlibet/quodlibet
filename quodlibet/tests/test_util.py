@@ -137,8 +137,8 @@ class UtilTests(TestCase):
             __call__ = dict.__getitem__
 
         s1 = { '~#track':5, 'artist':'Artist', 'title':'Title5', '~basename':'a.mp3' }
-        s2 = { '~#track':6, 'artist':'Artist', 'title':'Title6', '~basename':'b.ogg' }
-        s3 = { 'title': 'test/subdir', 'genre':['/','/'], '~basename':'a.flac' }
+        s2 = { '~#track':6, 'artist':'Artist', 'title':'Title6', '~basename':'b.ogg', '~#disc':'2' }
+        s3 = { 'title': 'test/subdir', 'genre':['/','/'], '~basename':'a.flac', 'version':'Instrumental'}
         s1 = mocksong(s1); s2 = mocksong(s2); s3 = mocksong(s3);
 
         pat = FileFromPattern('<tracknumber>. <title>')
@@ -170,6 +170,11 @@ class UtilTests(TestCase):
         self.assertEquals(pat.match(s1), '<~#track>.  mu.mp3')
         self.assertEquals(pat.match(s2), '<~#track>.  mu.ogg')
         self.assertEquals(pat.match(s3), '<~#track>. _, _ mu.flac')
+
+        pat = FileFromPattern('<~a><discnumber~tracknumber>. <title~version>')
+        self.assertEquals(pat.match(s1), '<~a>05. Title5.mp3')
+        self.assertEquals(pat.match(s2), '<~a>2 - 06. Title6.ogg')
+        self.assertEquals(pat.match(s3), '<~a>. test_subdir - Instrumental.flac')
 
         self.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')
