@@ -7,6 +7,7 @@
 # $Id$
 
 # Simple proxy to a Python ConfigParser.
+import os
 
 # Need to use a RawConfigParser because the PMP-related keys can
 # contain %s, which breaks the "smart" ConfigParser's interpolation.
@@ -20,6 +21,15 @@ getint = _config.getint
 getfloat = _config.getfloat
 write = _config.write
 options = _config.options
+
+def write(filename):
+    if isinstance(filename, str):
+        if not os.path.isdir(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        f = file(filename, "w")
+    else: f = filename
+    _config.write(f)
+    f.close()
 
 def init(*rc_files):
     _config.add_section("settings")

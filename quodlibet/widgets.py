@@ -407,7 +407,7 @@ class PreferencesWindow(object):
         except AttributeError: pass
         self.tips.destroy()
         del(self.tips)
-        save_config()
+        config.write(const.CONFIG)
 
     def present(self):
         self.window.show()
@@ -3636,12 +3636,6 @@ HEADERS_FILTER = { "tracknumber": "track",
                    "mtime": "modified",
                    "basename": "filename",
                    "dirname": "directory"}
-
-def save_config():
-    util.mkdir(const.DIR)
-    f = file(const.CONFIG, "w")  
-    config.write(f)
-    f.close()
 
 def init():
     if config.get("settings", "headers").split() == []:

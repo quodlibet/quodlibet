@@ -14,12 +14,6 @@ VERSION = "0.10"
 
 import os, sys
 
-def save_config():
-    util.mkdir(const.DIR)
-    f = file(const.CONFIG, "w")  
-    config.write(f)
-    f.close()
-
 def main():
     import signal,gtk, widgets
     window = widgets.init()
@@ -35,7 +29,7 @@ def main():
     print to(_("Saving song library."))
     library.save(const.LIBRARY)
     cleanup()
-    save_config()
+    config.write(const.CONFIG)
 
 def print_help():
     print to(_("""\
@@ -191,7 +185,7 @@ if __name__ == "__main__":
     import pygtk
     pygtk.require('2.0')
     import gtk
-    if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 4):
+    if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 6):
         print to(
             _("E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."))
         print to(_("E: You have GTK+ %s and PyGTK %s.") % (
@@ -225,7 +219,7 @@ if __name__ == "__main__":
         import widgets
         gtk.idle_add(widgets.error_and_quit)
         gtk.main()
-        save_config()
+        config.write(const.CONFIG)
         raise SystemExit(True)
 
     try: main()
