@@ -135,7 +135,18 @@ class QueryParser(object):
         self.match(RELOP, EQUALS)
         value = self.lookahead.lexeme
         self.match(TAG)
-        return match.Numcmp(tag, op, value)
+        if self.lookahead.type in [RELOP, EQUALS]:
+            # Reverse the first operator
+            tag, value = value, tag
+            op = {">": "<", "<": ">", "<=": ">=", "<=": ">="}.get(op, op)
+            op2 = self.lookahead.lexeme
+            self.match(RELOP, EQUALS)
+            val2 = self.lookahead.lexeme
+            self.match(TAG)
+            return match.Inter([match.Numcmp(tag, op, value),
+                                match.Numcmp(tag, op2, val2)])
+        else:
+            return match.Numcmp(tag, op, value)
 
     def _match_string(self):
         s = self.lookahead.lexeme

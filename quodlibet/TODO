@@ -89,16 +89,6 @@ We could use the article hal/dbus part to know when a device is
 plugged in, and trigger a library refresh if it's in our scan directories
 or masked list. This is a good idea even without the above stuff.
 
-Rewrite parser
---------------
-Support queries like the following:
- New format		Equivalent old format
- artist = "Foobar"	artist = /^Foobar$/c
- #(3 < track <= 10)	|(&(#(track > 3), #(track < 10)), #(track = 10))
- #(disc != 0)		!#(disc = 0)	
-
-less(1)-like case sensitivity behavior, at least for "dumb" searches.
-
 New keys
 --------
 File size? (Is this useful?)
