@@ -802,7 +802,7 @@ class Osd(object):
             self.__window.move(
                 gtk.gdk.screen_width()/2 - self.__window.width/2, 5)
         else:
-            self.window.move(
+            self.__window.move(
                 gtk.gdk.screen_width()/2 - self.__window.width/2,
                 gtk.gdk.screen_height() - self.__window.height-48)
         self.__window.show()
@@ -3879,25 +3879,27 @@ class SongProperties(gtk.Window):
                        util.fsdecode(song("~dirname")),
                        song["~filename"]])
 
-        if len(songs) > 1: selection.select_all()
-        else: self.update(songs)
+        self.connect_object('changed', SongProperties.__set_title, self)
+
+        selection.select_all()
         self.add(vbox)
         self.connect_object('destroy', self.fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, self.fbasemodel)
         self.connect_object('destroy', gtk.TreeModelSort.clear_cache,
                             self.fmodel)
+        self.emit('changed', songs)
         self.show_all()
 
-    def update(self, songs = None):
-        if songs is None: songs = self.songs
-        else: self.songs = songs
-        self.emit('changed', self.songs)
-        if len(songs) == 1:
-            title = songs[0].comma("title")
-        else:
-            title = _("%s and %d more") % (
+    def update(self):
+        self.fview.get_selection().emit('changed')
+
+    def __set_title(self, songs):
+        if songs:
+            if len(songs) == 1: title = songs[0].comma("title")
+            else: title = _("%s and %d more") % (
                 songs[0].comma("title"), len(songs) - 1)
-        self.set_title("%s - %s" % (title, _("Properties")))
+            self.set_title("%s - %s" % (title, _("Properties")))
+        else: self.set_title(_("Properties"))
 
     def refill(self):
         def refresh(model, iter, path):
@@ -3908,11 +3910,14 @@ class SongProperties(gtk.Window):
         self.fbasemodel.foreach(refresh)
 
     def __selection_changed(self, selection):
-        songs = []
-        def get_songs(model, path, iter, songs):
-            songs.append(model[path][0])
-        selection.selected_foreach(get_songs, songs)
-        if songs: self.emit('changed', songs)
+        model = selection.get_tree_view().get_model()
+        if len(model) == 1: self.emit('changed', [model[(0,)][0]])
+        else:
+            songs = []
+            def get_songs(model, path, iter, songs):
+                songs.append(model[path][0])
+            selection.selected_foreach(get_songs, songs)
+            if songs: self.emit('changed', songs)
 
 gobject.type_register(SongProperties)
 
