@@ -291,7 +291,8 @@ class GladeHandlers(object):
         if event.button != 3:
             return False
         x, y = map(int, [event.x, event.y])
-        path, col, cellx, celly = view.get_path_at_pos(x, y)
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
         view.grab_focus()
         selection = view.get_selection()
         if not selection.path_is_selected(path):
@@ -759,8 +760,7 @@ Options:
 def print_version():
     print """\
 Quod Libet %s
-Copyright 2004 Joe Wreschnig <piman@sacredchao.net>
-               Michael Urman
+Copyright 2004 Joe Wreschnig <piman@sacredchao.net>, Michael Urman
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\

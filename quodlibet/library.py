@@ -278,10 +278,8 @@ class OggFile(AudioFile):
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
 
     def can_change(self, k = None):
-        if k is None:
-            return True
-        else:
-            return k not in ["vendor", "filename"]
+        if k is None: return True
+        else: return k not in ["vendor", "filename"]
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
@@ -308,11 +306,41 @@ class FLACFile(AudioFile):
                 else: self[key] = val
         self.sanitize(filename)
 
-    def write(self): pass
+    def write(self):
+        chain = flac.metadata.Chain()
+        chain.read(self['filename'])
+        it = flac.metadata.Iterator()
+        it.init(chain)
+        vc = None
+        while True:
+            if it.get_block_type() == flac.metadata.VORBIS_COMMENT:
+                block = it.get_block()
+                vc = flac.metadata.VorbisComment(block)
+                break
+            if not it.next(): break
+
+        if vc:
+            for k in vc.comments: print k
+
+            keys = [k.split("=")[0] for k in vc.comments]
+            for k in keys: del(vc.comments[k])
+
+            print "After delete"
+            for k in vc.comments: print k
+            for key in self.keys():
+                if key == "filename" or key[0] == "=": continue
+                else:
+                    value = self[key]
+                    if not isinstance(value, list): value = value.split("\n")
+                    for line in value:
+                        vc.comments[key] = line.encode("utf-8")
+            chain.write(True, True)
+            print "After all"
+            for k in vc.comments: print k
 
     def can_change(self, k = None):
-        if k is None: return []
-        else: return False
+        if k is None: return True
+        else: return k not in ["vendor", "filename"]
 
 class AudioFileGroup(dict):
 
