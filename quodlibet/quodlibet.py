@@ -3104,7 +3104,7 @@ class SongProperties(object):
 
     def __init__(self, songrefs):
         self.window = gtk.Window()
-        self.window.set_default_size(300, 400)
+        self.window.set_default_size(300, 430)
         self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.tips = gtk.Tooltips()
         self.pages = []
@@ -3184,10 +3184,10 @@ class SongProperties(object):
         for page in self.pages: page.update(self.songrefs)
         if len(self.songrefs) == 1:
             self.window.set_title(_("%s - Properties") %
-                                  self.songrefs[0]("title"))
+                                  self.songrefs[0].comma("title"))
         else:
             self.window.set_title(_("%s and %d more - Properties") %
-                                  (self.songrefs[0]("title"),
+                                  (self.songrefs[0].comma("title"),
                                    len(self.songrefs) - 1))
 
     def refill(self):
