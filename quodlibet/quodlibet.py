@@ -9,7 +9,7 @@
 #
 # $Id$
 
-VERSION = "0.7"
+VERSION = "0.8"
 
 import os, sys
 
@@ -19,23 +19,23 @@ class widgets(object): pass
 # Standard Glade widgets wrapper.
 class Widgets(object):
     def __init__(self, file = None, handlers = None, widget = None):
-        if widget:
-            self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget,
-                                         domain = gettext.textdomain())
-        else:
-            self.widgets = gtk.glade.XML(file or "quodlibet.glade",
-                                         domain = gettext.textdomain())
+        file = file or "quodlibet.glade"
+        domain = gettext.textdomain()
+        if widget: self.widgets = gtk.glade.XML(file, widget, domain = domain)
+        else: self.widgets = gtk.glade.XML(file, domain = domain)
         if handlers is not None:
             self.widgets.signal_autoconnect(handlers)
         self.get_widget = self.widgets.get_widget
         self.signal_autoconnect = self.widgets.signal_autoconnect
 
     def __getitem__(self, key):
-        return self.widgets.get_widget(key)
+        w = self.widgets.get_widget(key)
+        if w: return w
+        else: raise KeyError("no such widget %s" % key)
 
 class MultiInstanceWidget(object):
     def __init__(self, file = None, widget = None):
-        self.widgets = Widgets(file or "quodlibet.glade", self, widget)
+        self.widgets = Widgets(handlers = self, widget = widget)
 
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(object):
