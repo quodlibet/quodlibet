@@ -1933,7 +1933,7 @@ class SongProperties(object):
             if cover:
                 try:
                     hb = gtk.HBox(spacing = 12)
-                    hb.pack_start(self._make_cover(cover), expand = False)
+                    hb.pack_start(self._make_cover(cover, song),expand = False)
                     hb.pack_start(w)
                     f = self.Frame(title, hb)
                 except:
@@ -2045,7 +2045,7 @@ class SongProperties(object):
                 if cover:
                     try:
                         hb = gtk.HBox(spacing = 12)
-                        i = self._make_cover(cover)
+                        i = self._make_cover(cover, songs[0])
                         hb.pack_start(i, expand = False)
                         hb.pack_start(w)
                         self.box.pack_start(hb, expand = False)
@@ -2114,7 +2114,7 @@ class SongProperties(object):
             def format((date, song, album)):
                 if date: return "%s (%s)" % (util.escape(album), date[:4])
                 else: return util.escape(album)
-            covers = [(a, s.find_cover()) for d, s, a in albums]
+            covers = [(a, s.find_cover(), s) for d, s, a in albums]
             albums = map(format, albums)
             if noalbum: albums.append(_("%d songs with no album") % noalbum)
             self.box.pack_start(
@@ -2126,10 +2126,10 @@ class SongProperties(object):
             t = gtk.Table(4, (len(covers) // 4) + 1)
             t.set_col_spacings(12)
             t.set_row_spacings(12)
-            for i, (album, cover) in enumerate(covers):
+            for i, (album, cover, song) in enumerate(covers):
                 if cover.name in added: continue
                 try:
-                    cov = self._make_cover(cover)
+                    cov = self._make_cover(cover, song)
                     self.prop.tips.set_tip(cov.child, album)
                     c = i % 4
                     r = i // 4
@@ -2204,12 +2204,19 @@ class SongProperties(object):
                 else: self._update_many(songs)
             self.box.show_all()
 
-        def _make_cover(self, cover):
+        def _show_big_cover(self, image, event, song):
+            if (event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS):
+                cover = song.find_cover()
+                if cover:
+                    BigCenteredImage(song.comma("album"), cover.name)
+
+        def _make_cover(self, cover, song):
             p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70, 70)
             i = gtk.Image()
             i.set_from_pixbuf(p)
             ev = gtk.EventBox()
             ev.add(i)
+            ev.connect('button-press-event', self._show_big_cover, song)
             f = gtk.Frame()
             f.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             f.add(ev)
