@@ -20,21 +20,20 @@ import os, sys
 # The single instantiation of this is widgets.wrap, created at startup.
 class GTKSongInfoWrapper(object):
     def __init__(self):
-        self.image = widgets["albumcover"]
-        self.iframe = widgets["iframe"]
-        self.text = widgets["currentsong"]
-        self.pos = widgets["song_pos"]
-        self.timer = widgets["song_timer"]
-        self.volume = widgets["volume"]
-        self.button = widgets["play_button"]
-        self.menu = widgets['play_menu']
-        self.but_image = widgets["play_image"]
+        self.image = widgets.main.widgets["albumcover"]
+        self.iframe = widgets.main.widgets["iframe"]
+        self.text = widgets.main.widgets["currentsong"]
+        self.pos = widgets.main.widgets["song_pos"]
+        self.timer = widgets.main.widgets["song_timer"]
+        self.volume = widgets.main.widgets["volume"]
+        self.button = widgets.main.widgets["play_button"]
+        self.menu = widgets.main.widgets['play_menu']
+        self.but_image = widgets.main.widgets["play_image"]
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
         self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
         self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
         self.menu.get_image().set_from_pixbuf(self.pause_s)
-        widgets["play_popup_menu"].get_image().set_from_pixbuf(self.pause_s)
         try: os.unlink(const.CONTROL)
         except OSError: pass
         util.mkdir(const.DIR)
@@ -50,8 +49,7 @@ class GTKSongInfoWrapper(object):
         else:
             p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
             self.icon = statusicon.StatusIcon(p)
-            self.icon.connect("activate", self._toggle_window,
-                              (widgets["main_window"]))
+            self.icon.connect("activate", self._toggle_window)
             self.icon.connect("popup-menu", self._popup, ())
             print _("Initialized status icon.")
 
@@ -80,10 +78,10 @@ class GTKSongInfoWrapper(object):
         elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
         elif c == "_": self.volume.set_value(0)
         elif c == "!":
-            window = widgets["main_window"]
+            window = widgets.main
             if not window.get_property('visible'):
                 window.move(*self.window_pos)
-            widgets["main_window"].present()
+            widgets.main.present()
         elif c == "q": make_query(os.read(source, 4096))
         elif c == "s":
             player.playlist.seek(util.parse_time(os.read(source, 20)) * 1000)
@@ -92,7 +90,7 @@ class GTKSongInfoWrapper(object):
             if library.add(filename):
                 song = library[filename]
                 if song not in player.playlist.get_playlist():
-                    make_query("filename = /^%s/c" % sre.escape(filename))
+                    widgets.main.make_query("filename = /^%s/c" % sre.escape(filename))
                 player.playlist.go_to(library[filename])
                 player.playlist.paused = False
             else:
@@ -100,7 +98,7 @@ class GTKSongInfoWrapper(object):
         elif c == "d":
             filename = os.read(source, 4096)
             for a, c in library.scan([filename]): pass
-            make_query("filename = /^%s/c" % sre.escape(filename))
+            widgets.main.make_query("filename = /^%s/c" % sre.escape(filename))
 
         os.close(self.fifo)
         self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
@@ -110,7 +108,8 @@ class GTKSongInfoWrapper(object):
     def _next(*args): player.playlist.next()
     def _playpause(*args): player.playlist.paused ^= True
 
-    def _toggle_window(self, icon, window):
+    def _toggle_window(self, icon):
+        window = widgets.main.window
         if window.get_property('visible'):
             self.window_pos = window.get_position()
             window.hide()
@@ -119,7 +118,7 @@ class GTKSongInfoWrapper(object):
             window.show()
 
     def _popup(self, *args):
-        widgets["tray_popup"].popup(None, None, None, 1, 0)
+        self.cmenu.popup(None, None, None, 1, 0)
 
     # These are all the signals that the wrapper gets from the player.
 
@@ -146,17 +145,12 @@ class GTKSongInfoWrapper(object):
         if paused:
             self.but_image.set_from_pixbuf(self.paused)
             self.menu.get_image().set_from_pixbuf(self.pause_s)
-            widgets["play_popup_menu"].get_image().set_from_pixbuf(self.pause_s)
-            widgets["play_menu"].child.set_text("Play _song")
-            widgets["play_popup_menu"].child.set_text(_("_Play"))
+            widgets.main.widgets["play_menu"].child.set_text("Play _song")
         else:
             self.but_image.set_from_pixbuf(self.playing)
             self.menu.get_image().set_from_pixbuf(self.play_s)
-            widgets["play_popup_menu"].get_image().set_from_pixbuf(self.play_s)
-            widgets["play_menu"].child.set_text("Pause _song")
-            widgets["play_popup_menu"].child.set_text(_("_Pause"))
-        widgets["play_menu"].child.set_use_underline(True)
-        widgets["play_popup_menu"].child.set_use_underline(True)
+            widgets.main.widgets["play_menu"].child.set_text("Pause _song")
+        widgets.main.widgets["play_menu"].child.set_use_underline(True)
 
     def _update_time(self):
         cur, end = self._time
@@ -198,14 +192,14 @@ class GTKSongInfoWrapper(object):
     def scroll_to_current(self):
         try: path = (player.playlist.get_playlist().index(CURRENT_SONG[0]),)
         except ValueError: pass
-        else: widgets["songlist"].scroll_to_cell(path)
+        else: widgets.main.widgets["songlist"].scroll_to_cell(path)
 
     def _update_song(self, song, player):
         for wid in ["web_button", "next_button", "prop_menu",
                     "play_menu", "jump_menu", "next_menu", "prop_button",
                     "filter_genre_menu", "filter_album_menu",
                     "filter_artist_menu"]:
-            widgets[wid].set_sensitive(bool(song))
+            widgets.main.widgets[wid].set_sensitive(bool(song))
         if song:
             self.pos.set_range(0, player.length)
             self.pos.set_value(0)
@@ -226,7 +220,7 @@ class GTKSongInfoWrapper(object):
                     if config.state("cover"): self.enable_cover()
                     self.albumfn = cover
             for h in ['genre', 'artist', 'album']:
-                widgets["filter_%s_menu"%h].set_sensitive(not song.unknown(h))
+                widgets.main.widgets["filter_%s_menu"%h].set_sensitive(not song.unknown(h))
             if cover_f: cover_f.close()
 
             self.update_markup(song)
@@ -275,6 +269,9 @@ class FileChooser(object):
         self.dialog.destroy()
         return resp, fns
 
+# Give us a namespace for now..
+class widgets(object): pass
+
 class Message(object):
     def __init__(self, kind, parent, title, description, buttons = None):
         buttons = buttons or gtk.BUTTONS_OK
@@ -300,11 +297,23 @@ class MultiInstanceWidget(object):
     def __init__(self, file = None, widget = None):
         self.widgets = Widgets(file or "quodlibet.glade", self, widget)
 
+class AboutWindow(MultiInstanceWidget):
+    def __init__(self, parent):
+        MultiInstanceWidget.__init__(self, widget = "about_window")
+        self.window = self.widgets["about_window"]
+        self.window.set_transient_for(parent)
+
+    def close_about(self, *args):
+        self.window.hide()
+
+    def show(self):
+        self.window.present()
+
 class PreferencesWindow(MultiInstanceWidget):
     def __init__(self, parent):
         MultiInstanceWidget.__init__(self, widget = "prefs_window")
         self.window = self.widgets["prefs_window"]
-        self.window.set_transient_for(widgets["main_window"])
+        self.window.set_transient_for(parent)
         # Fill in the general checkboxes.
         for w in ["jump", "cover", "color", "tbp_space", "titlecase",
                   "splitval", "nbp_space", "windows", "ascii", "allcomments"]:
@@ -478,17 +487,67 @@ class Widgets(object):
     def __getitem__(self, key):
         return self.widgets.get_widget(key)
 
-# Glade-connected handler functions.
-class GladeHandlers(object):
-    last_dir = os.path.expanduser("~")
+class MainWindow(MultiInstanceWidget):
+    def __init__(self):
+        MultiInstanceWidget.__init__(self, widget = "main_window")
+        self.last_dir = os.path.expanduser("~")
+        self.window = self.widgets["main_window"]
+        p = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
+        self.widgets["prev_menu"].get_image().set_from_pixbuf(p)
+        menu = Widgets(None, self, "songs_popup")
+        self.cmenu = menu["songs_popup"]
+        self.cmenu_w = menu
 
-    def gtk_main_quit(*args):
+        p = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
+        self.widgets["next_menu"].get_image().set_from_pixbuf(p)
+
+        # Restore window size.
+        w, h = map(int, config.get("memory", "size").split())
+        self.widgets["main_window"].set_property("default-width", w)
+        self.widgets["main_window"].set_property("default-height", h)
+
+        # Set up the main song list store.
+        sl = self.widgets["songlist"]
+        sl.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        widgets.songs = gtk.ListStore(object)
+
+        # Build a model and view for our ComboBoxEntry.
+        liststore = gtk.ListStore(str)
+        self.widgets["query"].set_model(liststore)
+        self.widgets["query"].set_text_column(0)
+        cell = gtk.CellRendererText()
+        self.widgets["query"].pack_start(cell, True)
+        self.widgets["query"].child.connect('activate', self.text_parse)
+        self.widgets["query"].child.connect('changed', self.test_filter)
+        self.widgets["search_button"].connect('clicked', self.text_parse)
+
+        # Initialize volume controls.
+        self.widgets["volume"].set_value(config.getfloat("memory", "volume"))
+
+        # Show main window.
+        self.window.show()
+        # Wait to fill in the column headers because otherwise the
+        # spacing is off, since the window hasn't been sized until now.
+        self.set_column_headers(sl, config.get("settings", "headers").split())
+        self.widgets["query"].child.set_text(config.get("memory", "query"))
+
+        self.widgets["shuffle_t"].set_active(config.state("shuffle"))
+        self.widgets["repeat_t"].set_active(config.state("repeat"))
+
+        if config.get("memory", "song"):
+            self.widgets["query"].child.set_text(config.get("memory","query"))
+            self.text_parse()
+        else:
+            player.playlist.set_playlist(library.values())
+            self.refresh_songlist()
+
+    def gtk_main_quit(self, *args):
         gtk.main_quit()
 
-    def save_size(widget, event):
+    def save_size(self, widget, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
-    def open_website(button):
+    def open_website(self, button):
         song = CURRENT_SONG[0]
         site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
         for s in ["sensible-browser"]+os.environ.get("BROWSER","").split(":"):
@@ -500,79 +559,78 @@ class GladeHandlers(object):
                 print _("Opening web browser: %s") % s
                 if os.system(s + " &") == 0: break
         else:
-            ErrorMessage(widgets["main_window"],
+            ErrorMessage(self.window,
                          _("Unable to start a web browser"),
                          _("A web browser could not be found. Please set "
                            "your $BROWSER variable, or make sure "
                            "/usr/bin/sensible-browser exists.")).run()
 
-    def play_pause(button):
+    def play_pause(self, button):
         if CURRENT_SONG[0] is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
-    def jump_to_current(*args):
+    def jump_to_current(self, *args):
         widgets.wrap.scroll_to_current()
 
-    def next_song(*args):
+    def next_song(self, *args):
         player.playlist.next()
 
-    def previous_song(*args):
+    def previous_song(self, *args):
         player.playlist.previous()
 
-    def toggle_repeat(button):
+    def toggle_repeat(self, button):
         player.playlist.repeat = button.get_active()
         config.set("settings", "repeat", str(bool(button.get_active())))
 
-    def show_about(menuitem):
-        widgets["about_window"].set_transient_for(widgets["main_window"])
-        widgets["about_window"].show()
+    def show_about(self, menuitem):
+        widgets.about.show()
 
-    def close_about(*args):
-        widgets["about_window"].hide()
-        return True
-
-    def toggle_shuffle(button):
+    def toggle_shuffle(self, button):
         player.playlist.shuffle = button.get_active()
         config.set("settings", "shuffle", str(bool(button.get_active())))
 
-    def seek_slider(slider, v):
+    def seek_slider(self, slider, v):
         gtk.idle_add(player.playlist.seek, v)
 
-    def random_artist(menuitem):
-        make_query("artist = /^%s$/c" % sre.escape(library.random("artist")))
+    def random_artist(self, menuitem):
+        self.make_query("artist = /^%s$/c"%sre.escape(library.random("artist")))
 
-    def random_album(menuitem):
-        make_query("album = /^%s$/c" % sre.escape(library.random("album")))
-        widgets["shuffle_t"].set_active(False)
+    def random_album(self, menuitem):
+        self.make_query("album = /^%s$/c"%sre.escape(library.random("album")))
+        self.widgets["shuffle_t"].set_active(False)
 
-    def random_genre(menuitem):
-        make_query("genre = /^%s$/c" % sre.escape(library.random("genre")))
+    def random_genre(self, menuitem):
+        self.make_query("genre = /^%s$/c"%sre.escape(library.random("genre")))
 
-    def lastplayed_day(menuitem): make_query("#(lastplayed > today)")
-    def lastplayed_week(menuitem): make_query("#(lastplayed > 7 days ago)")
-    def lastplayed_month(menuitem): make_query("#(lastplayed > 30 days ago)")
-    def lastplayed_never(menuitem): make_query("#(playcount = 0)")
+    def lastplayed_day(self, menuitem):
+        self.make_query("#(lastplayed > today)")
+    def lastplayed_week(self, menuitem):
+        self.make_query("#(lastplayed > 7 days ago)")
+    def lastplayed_month(self, menuitem):
+        self.make_query("#(lastplayed > 30 days ago)")
+    def lastplayed_never(self, menuitem):
+        self.make_query("#(playcount = 0)")
 
-    def top40(menuitem):
+    def top40(self, menuitem):
         songs = [(song["~#playcount"], song) for song in library.values()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
-            make_query("#(playcount > %d)" % (songs[0][0] - 1))
+            self.make_query("#(playcount > %d)" % (songs[0][0] - 1))
         else:
-            make_query("#(playcount > %d)" % (songs[-40][0] - 1))
+            self.make_query("#(playcount > %d)" % (songs[-40][0] - 1))
 
-    def bottom40(menuitem):
+    def bottom40(self, menuitem):
         songs = [(song["~#playcount"], song) for song in library.values()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
-            make_query("#(playcount < %d)" % (songs[0][0] + 1))
+            self.make_query("#(playcount < %d)" % (songs[0][0] + 1))
         else:
-            make_query("#(playcount < %d)" % (songs[-40][0] + 1))
+            self.make_query("#(playcount < %d)" % (songs[-40][0] + 1))
 
-    def rebuild(activator):
-        window = WaitLoadWindow(widgets["main_window"], len(library) / 5,
+    def rebuild(self, activator):
+        window = WaitLoadWindow(self.window, len(library) / 5,
                                 _("Quod Libet is scanning your library. "
                                   "This may take several minutes.\n\n"
                                   "%d songs reloaded\n%d songs removed"),
@@ -585,10 +643,10 @@ class GladeHandlers(object):
             iter += 1
         window.end()
         player.playlist.refilter()
-        refresh_songlist()
+        self.refresh_songlist()
 
-    def rebuild_hard(activator):
-        window = WaitLoadWindow(widgets["main_window"], len(library) / 5,
+    def rebuild_hard(self, activator):
+        window = WaitLoadWindow(self.window, len(library) / 5,
                                 _("Quod Libet is reloading your library. "
                                   "This may take several minutes.\n\n"
                                   "%d songs reloaded\n%d songs removed"),
@@ -601,15 +659,15 @@ class GladeHandlers(object):
             iter += 1
         window.end()
         player.playlist.refilter()
-        refresh_songlist()
+        self.refresh_songlist()
 
-    def pmp_upload(*args):
-        view = widgets["songlist"]
+    def pmp_upload(self, *args):
+        view = self.widgets["songlist"]
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         songs = [model[row][len(HEADERS)] for row in rows]
         try:
-            window = WaitLoadWindow(widgets["main_window"], len(songs),
+            window = WaitLoadWindow(self.window, len(songs),
                                     _("Uploading song %d/%d"),
                                     (0, len(songs)))
             d = pmp.drivers[config.getint("pmp", "driver")](songs, window)
@@ -617,25 +675,24 @@ class GladeHandlers(object):
             window.end()
         except pmp.error, s:
             window.end()
-            e = ErrorMessage(widgets["main_window"],
-                             _("Unable to upload files"), s)
+            e = ErrorMessage(self.window, _("Unable to upload files"), s)
             e.run()
 
     # Set up the preferences window.
-    def open_prefs(activator):
+    def open_prefs(self, activator):
         widgets.preferences.show()
 
-    def select_song(tree, indices, col):
+    def select_song(self, tree, indices, col):
         iter = widgets.songs.get_iter(indices)
         song = widgets.songs.get_value(iter, len(HEADERS))
         player.playlist.go_to(song)
         player.playlist.paused = False
 
-    def open_chooser(*args):
+    def open_chooser(self, *args):
         chooser = FileChooser(_("Add Music"), GladeHandlers.last_dir)
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
-            win = WaitLoadWindow(widgets["main_window"], 0,
+            win = WaitLoadWindow(self.window, 0,
                                  _("Quod Libet is scanning for new songs and "
                                    "adding them to your library.\n\n"
                                    "%d songs added"), 0)
@@ -643,15 +700,15 @@ class GladeHandlers(object):
                 if win.step(added): break
             win.end()
             player.playlist.refilter()
-            refresh_songlist()
-        if fns: GladeHandlers.last_dir = fns[0]
+            self.refresh_songlist()
+        if fns: self.last_dir = fns[0]
 
-    def update_volume(slider):
+    def update_volume(self, slider):
         val = (2 ** slider.get_value()) - 1
         player.device.volume = val
         config.set("memory", "volume", str(slider.get_value()))
 
-    def songs_button_press(view, event):
+    def songs_button_press(self, view, event):
         if event.button != 3:
             return False
         x, y = map(int, [event.x, event.y])
@@ -663,35 +720,38 @@ class GladeHandlers(object):
             view.set_cursor(path, col, 0)
         coln = view.get_columns().index(col)
         header = HEADERS[coln]
-        prep_main_popup(header)
-        widgets["songs_popup"].popup(None,None,None, event.button, event.time)
+        self.prep_main_popup(header)
+        self.cmenu.popup(None,None,None, event.button, event.time)
         return True
 
-    def songs_popup_menu(view):
+    def songs_popup_menu(self, view):
         path, col = view.get_cursor()
         coln = view.get_columns().index(col)
         header = HEADERS[coln]
-        prep_main_popup(header)
-        widgets["songs_popup"].popup(None, None, None, 1, 0)
+        self.prep_main_popup(header)
+        self.cmenu.popup(None, None, None, 1, 0)
 
-    def song_col_filter(item):
-        view = widgets["songlist"]
+    def song_col_filter(self, item):
+        view = self.widgets["songlist"]
         path, col = view.get_cursor()
         coln = view.get_columns().index(col)
         header = HEADERS[coln]
-        filter_on_header(header)
+        self.filter_on_header(header)
 
-    def artist_filter(item): filter_on_header('artist')
-    def album_filter(item): filter_on_header('album')
-    def genre_filter(item): filter_on_header('genre')
+    def artist_filter(self, item): self.filter_on_header('artist')
+    def album_filter(self, item): self,filter_on_header('album')
+    def genre_filter(self, item): self.filter_on_header('genre')
 
-    def cur_artist_filter(item): filter_on_header('artist', CURRENT_SONG)
-    def cur_album_filter(item): filter_on_header('album', CURRENT_SONG)
-    def cur_genre_filter(item): filter_on_header('genre', CURRENT_SONG)
+    def cur_artist_filter(self, item):
+        self.filter_on_header('artist', CURRENT_SONG)
+    def cur_album_filter(self, item):
+        self.filter_on_header('album', CURRENT_SONG)
+    def cur_genre_filter(self, item):
+        self.filter_on_header('genre', CURRENT_SONG)
 
-    def remove_song(item):
-        view = widgets["songlist"]
-        selection = widgets["songlist"].get_selection()
+    def remove_song(self, item):
+        view = self.widgets["songlist"]
+        selection = self.widgets["songlist"].get_selection()
         model, rows = selection.get_selected_rows()
         rows.sort()
         rows.reverse()
@@ -702,40 +762,174 @@ class GladeHandlers(object):
             library.remove(song)
             player.playlist.remove(song)
 
-    def current_song_prop(*args):
+    def current_song_prop(self, *args):
         song = CURRENT_SONG[0]
         if song:
-            l = widgets["songlist"]
+            l = self.widgets["songlist"]
             try: path = (player.playlist.get_playlist().index(song),)
             except ValueError: ref = None
             else: ref = gtk.TreeRowReference(l.get_model(), path)
             SongProperties([(song, ref)])
             
-    def song_properties(item):
-        view = widgets["songlist"]
+    def song_properties(self, item):
+        view = self.widgets["songlist"]
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         songrefs = [ (model[row][len(HEADERS)],
                       gtk.TreeRowReference(model, row)) for row in rows]
         SongProperties(songrefs)
 
-def prep_main_popup(header):
-    if not config.getint("pmp", "driver"):
-        widgets["pmp_sep"].hide()
-        widgets["pmp_upload"].hide()
-    else:
-        widgets["pmp_sep"].show()
-        widgets["pmp_upload"].show()
-    if header not in ["genre", "artist", "album"]:
-        widgets["filter_column"].show()
-        if header.startswith("~#"): header = header[2:]
-        elif header.startswith("~"): header = header[1:]
-        header = HEADERS_FILTER.get(header, header)
-        widgets["filter_column"].child.set_text(
-            _("_Filter on this column (%s)") % _(header))
-        widgets["filter_column"].child.set_use_underline(True)
-    else:
-        widgets["filter_column"].hide()
+    def prep_main_popup(self, header):
+        if not config.getint("pmp", "driver"):
+            self.cmenu_w["pmp_sep"].hide()
+            self.cmenu_w["pmp_upload"].hide()
+        else:
+            self.cmenu_w["pmp_sep"].show()
+            self.cmenu_w["pmp_upload"].show()
+        if header not in ["genre", "artist", "album"]:
+            self.cmenu_w["filter_column"].show()
+            if header.startswith("~#"): header = header[2:]
+            elif header.startswith("~"): header = header[1:]
+            header = HEADERS_FILTER.get(header, header)
+            self.cmenu_w["filter_column"].child.set_text(
+                _("_Filter on this column (%s)") % _(header))
+            self.cmenu_w["filter_column"].child.set_use_underline(True)
+        else:
+            self.cmenu_w["filter_column"].hide()
+
+    # Grab the text from the query box, parse it, and make a new filter.
+    def text_parse(self, *args):
+        text = self.widgets["query"].child.get_text()
+        config.set("memory", "query", text)
+        text = text.decode("utf-8").strip()
+        orig_text = text
+        if text and "#" not in text and "=" not in text and "/" not in text:
+            # A simple search, not regexp-based.
+            parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
+            text = "&(" + ",".join(parts) + ")"
+            # The result must be well-formed, since no /s were
+            # in the original string and we escaped it.
+
+        if player.playlist.playlist_from_filter(text):
+            m = self.widgets["query"].get_model()
+            for i, row in enumerate(iter(m)):
+                 if row[0] == orig_text:
+                     m.remove(m.get_iter((i,)))
+                     break
+            else:
+                if len(m) > 10: m.remove(m.get_iter((10,)))
+            m.prepend([orig_text])
+            self.set_entry_color(self.widgets["query"].child, "black")
+            self.refresh_songlist()
+            self.widgets["query"].child.set_text(orig_text)
+        return True
+
+    def filter_on_header(self, header, songs = None):
+        if songs is None:
+            selection = self.widgets["songlist"].get_selection()
+            model, rows = selection.get_selected_rows()
+            songs = [model[row][len(HEADERS)] for row in rows]
+
+        if header.startswith("~#"):
+            nheader = header[2:]
+            values = [song.get(header, 0) for song in songs]
+            queries = ["#(%s = %d)" % (nheader, i) for i in values]
+            self.make_query("|(" + ", ".join(queries) + ")")
+        else:
+            if header.startswith("~"): header = header[1:]
+            values = {}
+            for song in songs:
+                if header in song:
+                    for val in song[header].split("\n"):
+                        values[val] = True
+
+            text = "|".join([sre.escape(s) for s in values.keys()])
+            self.make_query(u"%s = /^(%s)$/c" % (header, text))
+
+    def make_query(self, query):
+        self.widgets["query"].child.set_text(query.encode('utf-8'))
+        self.widgets["search_button"].clicked()
+
+    # Try and construct a query, but don't actually run it; change the color
+    # of the textbox to indicate its validity (if the option to do so is on).
+    def test_filter(self, textbox):
+        if not config.state("color"): return
+        text = textbox.get_text()
+        if "=" not in text and "#" not in text and "/" not in text:
+            color = "blue"
+        elif parser.is_valid(text): color = "dark green"
+        else: color = "red"
+        gtk.idle_add(self.set_entry_color, textbox, color)
+
+    # Set the color of some text.
+    def set_entry_color(self, entry, color):
+        layout = entry.get_layout()
+        text = layout.get_text()
+        markup = '<span foreground="%s">%s</span>'%(
+            color, util.escape(text))
+        layout.set_markup(markup)
+
+    # Resort based on the header clicked.
+    def set_sort_by(self, header, tag):
+        s = header.get_sort_order()
+        if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
+            s = gtk.SORT_ASCENDING
+        else: s = gtk.SORT_DESCENDING
+        for h in self.widgets["songlist"].get_columns():
+            h.set_sort_indicator(False)
+        header.set_sort_indicator(True)
+        header.set_sort_order(s)
+        player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
+        self.refresh_songlist()
+
+    # Clear the songlist and readd the songs currently wanted.
+    def refresh_songlist(self):
+        sl = self.widgets["songlist"]
+        sl.set_model(None)
+        widgets.songs.clear()
+        statusbar = self.widgets["statusbar"]
+        length = 0
+        for song in player.playlist:
+            wgt = ((song is CURRENT_SONG[0] and 700) or 400)
+            widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
+            length += song["~#length"]
+        i = len(list(player.playlist))
+        if i != 1: statusbar.set_text(
+            _("%d songs (%s)") % (i, util.format_time_long(length)))
+        else: statusbar.set_text(
+            _("%d song (%s)") % (i, util.format_time_long(length)))
+        sl.set_model(widgets.songs)
+        gc.collect()
+
+    # Build a new filter around our list model, set the headers to their
+    # new values.
+    def set_column_headers(self, sl, headers):
+        SHORT_COLS = ["tracknumber", "discnumber"]
+        sl.set_model(None)
+        widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
+        for c in sl.get_columns(): sl.remove_column(c)
+        self.widgets["songlist"].realize()
+        width = self.widgets["songlist"].get_allocation()[2]
+        c = 0
+        for t in headers:
+            if t in SHORT_COLS or t.startswith("~#"): c += 0.1
+            else: c += 1
+        width = int(width / c)
+        for i, t in enumerate(headers):
+            render = gtk.CellRendererText()
+            if t in SHORT_COLS or t.startswith("~#"):
+                render.set_fixed_size(-1, -1)
+            else: render.set_fixed_size(width, -1)
+            t2 = t.lstrip("~#")
+            column = gtk.TreeViewColumn(util.title(_(HEADERS_FILTER.get(t2, t2))),
+                                        render, text = i, weight = len(headers)+1)
+            column.set_resizable(True)
+            column.set_clickable(True)
+            column.set_sort_indicator(False)
+            column.connect('clicked', self.set_sort_by, t)
+            sl.append_column(column)
+        self.refresh_songlist()
+        sl.set_model(widgets.songs)
 
 class SongProperties(MultiInstanceWidget):
     def __init__(self, songrefs):
@@ -1435,101 +1629,6 @@ def songref_update_view(song, ref):
         row = widgets.songs[path]
         for i, h in enumerate(HEADERS): row[i] = song.get(h, "")
 
-# Grab the text from the query box, parse it, and make a new filter.
-def text_parse(*args):
-    text = widgets["query"].child.get_text()
-    config.set("memory", "query", text)
-    text = text.decode("utf-8").strip()
-    orig_text = text
-    if text and "#" not in text and "=" not in text and "/" not in text:
-        # A simple search, not regexp-based.
-        parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
-        text = "&(" + ",".join(parts) + ")"
-        # The result must be well-formed, since no /s were
-        # in the original string and we escaped it.
-
-    if player.playlist.playlist_from_filter(text):
-        m = widgets["query"].get_model()
-        for i, row in enumerate(iter(m)):
-             if row[0] == orig_text:
-                 m.remove(m.get_iter((i,)))
-                 break
-        else:
-            if len(m) > 10: m.remove(m.get_iter((10,)))
-        m.prepend([orig_text])
-        set_entry_color(widgets["query"].child, "black")
-        refresh_songlist()
-        widgets["query"].child.set_text(orig_text)
-    return True
-
-def filter_on_header(header, songs = None):
-    if songs is None:
-        selection = widgets["songlist"].get_selection()
-        model, rows = selection.get_selected_rows()
-        songs = [model[row][len(HEADERS)] for row in rows]
-
-    if header.startswith("~#"):
-        nheader = header[2:]
-        values = [song.get(header, 0) for song in songs]
-        queries = ["#(%s = %d)" % (nheader, i) for i in values]
-        make_query("|(" + ", ".join(queries) + ")")
-    else:
-        if header.startswith("~"): header = header[1:]
-        values = {}
-        for song in songs:
-            if header in song:
-                for val in song[header].split("\n"):
-                    values[val] = True
-
-        text = "|".join([sre.escape(s) for s in values.keys()])
-        make_query(u"%s = /^(%s)$/c" % (header, text))
-
-def make_query(query):
-    widgets["query"].child.set_text(query.encode('utf-8'))
-    widgets["search_button"].clicked()
-
-# Try and construct a query, but don't actually run it; change the color
-# of the textbox to indicate its validity (if the option to do so is on).
-def test_filter(textbox):
-    if not config.state("color"): return
-    text = textbox.get_text()
-    if "=" not in text and "#" not in text and "/" not in text: color = "blue"
-    elif parser.is_valid(text): color = "dark green"
-    else: color = "red"
-    gtk.idle_add(set_entry_color, textbox, color)
-
-# Resort based on the header clicked.
-def set_sort_by(header, tag):
-    s = header.get_sort_order()
-    if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
-        s = gtk.SORT_ASCENDING
-    else: s = gtk.SORT_DESCENDING
-    for h in widgets["songlist"].get_columns():
-        h.set_sort_indicator(False)
-    header.set_sort_indicator(True)
-    header.set_sort_order(s)
-    player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
-    refresh_songlist()
-
-# Clear the songlist and readd the songs currently wanted.
-def refresh_songlist():
-    sl = widgets["songlist"]
-    sl.set_model(None)
-    widgets.songs.clear()
-    statusbar = widgets["statusbar"]
-    length = 0
-    for song in player.playlist:
-        wgt = ((song is CURRENT_SONG[0] and 700) or 400)
-        widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
-        length += song["~#length"]
-    i = len(list(player.playlist))
-    if i != 1: statusbar.set_text(
-        _("%d songs (%s)") % (i, util.format_time_long(length)))
-    else: statusbar.set_text(
-        _("%d song (%s)") % (i, util.format_time_long(length)))
-    sl.set_model(widgets.songs)
-    gc.collect()
-
 HEADERS = ["~#track", "title", "album", "artist"]
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
@@ -1539,86 +1638,17 @@ HEADERS_FILTER = { "tracknumber": "track",
 
 CURRENT_SONG = [ None ]
 
-# Set the color of some text.
-def set_entry_color(entry, color):
-    layout = entry.get_layout()
-    text = layout.get_text()
-    markup = '<span foreground="%s">%s</span>' % (color, util.escape(text))
-    layout.set_markup(markup)
 
-# Build a new filter around our list model, set the headers to their
-# new values.
-def set_column_headers(sl, headers):
-    SHORT_COLS = ["tracknumber", "discnumber"]
-    sl.set_model(None)
-    widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
-    for c in sl.get_columns(): sl.remove_column(c)
-    widgets["songlist"].realize()
-    width = widgets["songlist"].get_allocation()[2]
-    c = 0
-    for t in headers:
-        if t in SHORT_COLS or t.startswith("~#"): c += 0.1
-        else: c += 1
-    width = int(width / c)
-    for i, t in enumerate(headers):
-        render = gtk.CellRendererText()
-        if t in SHORT_COLS or t.startswith("~#"):
-            render.set_fixed_size(-1, -1)
-        else: render.set_fixed_size(width, -1)
-        t2 = t.lstrip("~#")
-        column = gtk.TreeViewColumn(util.title(_(HEADERS_FILTER.get(t2, t2))),
-                                    render, text = i, weight = len(headers)+1)
-        column.set_resizable(True)
-        column.set_clickable(True)
-        column.set_sort_indicator(False)
-        column.connect('clicked', set_sort_by, t)
-        sl.append_column(column)
-    refresh_songlist()
-    sl.set_model(widgets.songs)
 
 def setup_nonglade():
-    widgets.wrap = GTKSongInfoWrapper()
-    widgets.preferences = PreferencesWindow(widgets["main_window"])
-    player.playlist.info = widgets.wrap
-
-    p = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
-    widgets["prev_menu"].get_image().set_from_pixbuf(p)
-    widgets["prev_popup_menu"].get_image().set_from_pixbuf(p)
-
-    p = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
-    widgets["next_menu"].get_image().set_from_pixbuf(p)
-    widgets["next_popup_menu"].get_image().set_from_pixbuf(p)
-
-    # Restore window size.
-    w, h = map(int, config.get("memory", "size").split())
-    widgets["main_window"].set_property("default-width", w)
-    widgets["main_window"].set_property("default-height", h)
-
-    # Set up the main song list store.
-    sl = widgets["songlist"]
-    sl.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
     widgets.songs = gtk.ListStore(object)
-
-    # Build a model and view for our ComboBoxEntry.
-    liststore = gtk.ListStore(str)
-    widgets["query"].set_model(liststore)
-    widgets["query"].set_text_column(0)
-    cell = gtk.CellRendererText()
-    widgets["query"].pack_start(cell, True)
-    widgets["query"].child.connect('activate', text_parse)
-    widgets["query"].child.connect('changed', test_filter)
-    widgets["search_button"].connect('clicked', text_parse)
-
-    # Initialize volume controls.
-    widgets["volume"].set_value(config.getfloat("memory", "volume"))
-
-    # Show main window.
-    widgets["main_window"].show()
-    # Wait to fill in the column headers because otherwise the
-    # spacing is off, since the window hasn't been sized until now.
-    set_column_headers(sl, config.get("settings", "headers").split())
-    widgets["query"].child.set_text(config.get("memory", "query"))
+    widgets.main = MainWindow()
+    widgets.wrap = GTKSongInfoWrapper()
+    player.playlist.info = widgets.wrap
     gtk.threads_init()
+
+    widgets.preferences = PreferencesWindow(widgets.main.window)
+    widgets.about = AboutWindow(widgets.main.window)
 
 def save_config():
     util.mkdir(const.DIR)
@@ -1630,16 +1660,6 @@ def main():
     HEADERS[:] = config.get("settings", "headers").split()
     if "title" not in HEADERS: HEADERS.append("title")
     setup_nonglade()
-    if config.get("memory", "song"):
-        widgets["query"].child.set_text(config.get("memory", "query"))
-        text_parse()
-    else:
-        player.playlist.set_playlist(library.values())
-        refresh_songlist()
-
-    widgets["shuffle_t"].set_active(config.state("shuffle"))
-    widgets["repeat_t"].set_active(config.state("repeat"))
-
     player.playlist.sort_by(HEADERS[0])
 
     for opt in config.options("header_maps"):
@@ -1838,7 +1858,6 @@ if __name__ == "__main__":
     import gtk.glade
     gtk.glade.bindtextdomain("quodlibet", i18ndir)
     gtk.glade.textdomain("quodlibet")
-    widgets = Widgets("quodlibet.glade", GladeHandlers.__dict__)
 
     import gc
     import util
