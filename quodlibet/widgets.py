@@ -3473,9 +3473,10 @@ class SongProperties(gtk.Window):
         def __update(self, songs):
             from library import AudioFileGroup
             self.songs = songs
+
             songinfo = AudioFileGroup(songs)
-            pattern_text = self.entry.get_text().decode("utf-8")
-            self.view.set_model(None)
+            if songs: pattern_text = self.entry.get_text().decode("utf-8")
+            else: pattern_text = ""
             try: pattern = util.PatternFromFile(pattern_text)
             except sre.error:
                 qltk.ErrorMessage(
@@ -3495,7 +3496,7 @@ class SongProperties(gtk.Window):
             for header in pattern.headers:
                 if not songinfo.can_change(header):
                     invalid.append(header)
-            if len(invalid):
+            if len(invalid) and songs:
                 if len(invalid) == 1:
                     title = _("Invalid tag")
                     msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -3504,11 +3505,12 @@ class SongProperties(gtk.Window):
                     title = _("Invalid tags")
                     msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
                             " selected do not support editing these tags.")
-                    
+
                 qltk.ErrorMessage(self.prop, title,
                                   msg % ", ".join(invalid)).run()
-                return
+                pattern = util.PatternFromFile("")
 
+            self.view.set_model(None)
             rep = self.space.get_active()
             title = self.titlecase.get_active()
             split = self.split.get_active()
@@ -3544,7 +3546,7 @@ class SongProperties(gtk.Window):
                 self.model.append(row = row)
 
             # save for last to potentially save time
-            self.view.set_model(self.model)
+            if songs: self.view.set_model(self.model)
             self.preview.set_sensitive(False)
             self.save.set_sensitive(len(pattern.headers) > 0)
 
