@@ -67,33 +67,23 @@ def format_time(time):
 
 def format_time_long(time):
     if time < 1: return _("No time information")
-    time_str = ""
-    if time > 365 * 24 * 60 * 60:
-        years = (time // (365 * 24 * 60 * 60))
-        if years != 1: time_str += _("%d years, ") % years
-        else: time_str += _("1 year, ")
-        time = time % (365 * 24 * 60 * 60)
-    if time > 24 * 60 * 60:
-        days = (time // (24 * 60 * 60))
-        if days != 1: time_str += _("%d days, ") % days
-        else: time_str += _("1 day, ")
-        time = time % (24 * 60 * 60)
-    if time > 60 * 60:
-        hours = (time // (60 * 60))
-        if hours != 1: time_str += _("%d hours, ") % hours
-        else: time_str += _("1 hour, ")
-        time = time % (60 * 60)
-    if time > 60:
-        mins = (time // 60)
-        if mins != 1: time_str += _("%d minutes, ") % mins
-        else: time_str += _("1 minute, ")
-        time = time % 60
-    # only include seconds if we don't have hours (or greater)
-    if time and len(time_str) <= len(_("xx minutes, ")):
-        if time != 1: time_str += _("%d seconds") % time
-        else: time_str += _("1 second")
-        
-    return time_str.rstrip(" ,")
+    cutoffs = [
+        (60, _("%d seconds"), _("1 second")),
+        (60, _("%d minutes"), _("1 minute")),
+        (24, _("%d hours"), _("1 hour")),
+        (365, _("%d days"), _("1 day")),
+        (None, _("%d years"), _("1 year")),
+    ]
+    time_str = []
+    for divisor, plural, single in cutoffs:
+        if time < 1: break
+        if divisor is None: time, unit = 0, time
+        else: time, unit = divmod(time, divisor)
+        if unit == 1: time_str.append(single)
+        else: time_str.append(plural % unit)
+    time_str.reverse()
+    if len(time_str) > 2: time_str.pop()
+    return ", ".join(time_str)
 
 def fscoding():
     if "CHARSET" in os.environ: return os.environ["CHARSET"]
