@@ -25,13 +25,6 @@ except ImportError:
                      "(http://www.pygtk.org)" % NAME)
 else: print "found"
 
-sys.stdout.write("Checking for ao: ")
-try: import ao
-except ImportError:
-    raise SystemExit("not found\n%s requires libao/pyao. "
-                     "(http://www.andrewchatham.com/pyogg/)" % NAME)
-else: print "found"
-
 sys.stdout.write("Checking for ogg.vorbis: ")
 try: import ogg.vorbis
 except ImportError:
