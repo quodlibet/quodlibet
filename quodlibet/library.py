@@ -89,7 +89,7 @@ class AudioFile(dict):
         else:
             text = "http://www.google.com/search?q="
             esc = lambda c: ord(c) > 127 and '%%%x'%ord(c) or c
-            if "labelid in" self: text += esc(self["labelid"])
+            if "labelid" in self: text += esc(self["labelid"])
             else:
                 artist = util.escape("+".join(self["artist"].split()))
                 album = util.escape("+".join(self["album"].split()))
