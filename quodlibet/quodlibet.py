@@ -2079,9 +2079,9 @@ class SongProperties2(object):
                     except:
                         ErrorMessage(self.prop.window,
                                      _("Unable to edit song"),
-                                     _("Saving <b>%s</b> failed. The file may "
-                                       "be read-only, corrupted, or you do "
-                                       "not have permission to edit it.")%(
+                                     _("Saving <b>%s</b> failed. The file "
+                                       "may be read-only, corrupted, or you "
+                                       "do not have permission to edit it.")%(
                             util.escape(song('~basename')))).run()
                         library.reload(song)
                         player.playlist.refilter()
@@ -2103,7 +2103,7 @@ class SongProperties2(object):
             row = model[path]
             date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if row[0] == "date" and not date.match(new):
-                WarningMessage(self.window, _("Invalid date format"),
+                WarningMessage(self.prop.window, _("Invalid date format"),
                                _("Invalid date: <b>%s</b>.\n\n"
                                  "The date must be entered in YYYY or "
                                  "YYYY-MM-DD format.") % new).run()
@@ -2164,6 +2164,151 @@ class SongProperties2(object):
             self.model.clear()
             self.widget.destroy()
 
+    class TrackNumbers(object):
+        def __init__(self, prop):
+            self.title = _("Track Numbers")
+            self.prop = prop
+            self.widget = gtk.VBox(spacing = 6)
+            self.widget.set_property('border-width', 12)
+            hbox = gtk.HBox(spacing = 18)
+            hbox2 = gtk.HBox(spacing = 12)
+
+            hbox_start = gtk.HBox(spacing = 3)
+            label_start = gtk.Label("Start fro_m:")
+            label_start.set_use_underline(True)
+            spin_start = gtk.SpinButton()
+            spin_start.set_range(1, 99)
+            spin_start.set_increments(1, 10)
+            spin_start.set_value(1)
+            label_start.set_mnemonic_widget(spin_start)
+            hbox_start.pack_start(label_start)
+            hbox_start.pack_start(spin_start)
+
+            hbox_total = gtk.HBox(spacing = 3)
+            label_total = gtk.Label("_Total tracks:")
+            label_total.set_use_underline(True)
+            spin_total = gtk.SpinButton()
+            spin_total.set_range(0, 99)
+            spin_total.set_increments(1, 10)
+            label_total.set_mnemonic_widget(spin_total)
+            hbox_total.pack_start(label_total)
+            hbox_total.pack_start(spin_total)
+
+            self.total = spin_total
+            self.start = spin_start
+            self.total.connect('value-changed', self.changed)
+            self.start.connect('value-changed', self.changed)
+
+            hbox2.pack_start(hbox_start, expand = True, fill = False)
+            hbox2.pack_start(hbox_total, expand = True, fill = False)
+
+            self.preview = gtk.Button()
+            hbox = gtk.HBox(spacing = 2)
+            i = gtk.Image()
+            i.set_from_stock(gtk.STOCK_CONVERT, gtk.ICON_SIZE_BUTTON)
+            hbox.pack_start(i)
+            l = gtk.Label(_("_Preview"))
+            l.set_use_underline(True)
+            hbox.pack_start(l)
+            self.preview.add(hbox)
+            self.preview.connect('clicked', self.preview_tracks)
+            hbox2.pack_start(self.preview, expand = False)
+
+            self.widget.pack_start(hbox2, expand = False)
+
+            self.model = gtk.ListStore(object, str, str)
+            self.view = gtk.TreeView(self.model)
+            column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
+                                        text = 1)
+            self.view.append_column(column)
+            column = gtk.TreeViewColumn(_('Track'), gtk.CellRendererText(),
+                                        text = 2)
+            self.view.append_column(column)
+            self.view.set_reorderable(True)
+            self.view.connect('drag-end', self.changed)
+            w = gtk.ScrolledWindow()
+            w.set_shadow_type(gtk.SHADOW_IN)
+            w.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            w.add(self.view)
+            self.widget.pack_start(w)
+
+            bbox = gtk.HButtonBox()
+            bbox.set_spacing(12)
+            bbox.set_layout(gtk.BUTTONBOX_END)
+            self.save = gtk.Button(stock = gtk.STOCK_SAVE)
+            self.save.connect('clicked', self.save_files)
+            self.revert = gtk.Button(stock = gtk.STOCK_REVERT_TO_SAVED)
+            self.revert.connect('clicked', self.revert_files)
+            bbox.pack_start(self.revert)
+            bbox.pack_start(self.save)
+            self.widget.pack_start(bbox, expand = False)
+
+        def save_files(self, *args):
+            win = WritingWindow(self.prop.window, len(self.songs))
+            def settrack(model, path, iter):
+                song = model[iter][0]
+                track = model[iter][2]
+                if song["tracknumber"] == track: return win.step()
+                song["tracknumber"] = track
+                try: song.write()
+                except:
+                    ErrorMessage(self.prop.window,
+                                 _("Unable to edit song"),
+                                 _("Saving <b>%s</b> failed. The file may be "
+                                   "read-only, corrupted, or you do not have "
+                                   "permission to edit it.")%(
+                        util.escape(song('~basename')))).run()
+                    library.reload(song)
+                    player.playlist.refilter()
+                    widgets.main.refresh_songlist()
+                    return True
+                songref_update_view(song)
+                return win.step()
+            self.model.foreach(settrack)
+            self.prop.update()
+            win.end()
+
+        def changed(self, *args):
+            self.preview.set_sensitive(True)
+            self.save.set_sensitive(False)
+
+        def revert_files(self, *args):
+            self.update(self.songs)
+
+        def preview_tracks(self, *args):
+            start = self.start.get_value_as_int()
+            total = self.total.get_value_as_int()
+            def refill(model, path, iter):
+                if total: s = "%d/%d" % (path[0] + start, total)
+                else: s = str(path[0] + start)
+                model[iter][2] = s
+            self.model.foreach(refill)
+            self.save.set_sensitive(True)
+            self.revert.set_sensitive(True)
+            self.preview.set_sensitive(False)
+
+        def destroy(self):
+            self.view.set_model(None)
+            self.model.clear()
+            self.widget.destroy()
+
+        def update(self, songs):
+            self.songs = songs
+            self.model.clear()
+            self.total.set_value(len(songs))
+            for song in songs:
+                if not song.can_change("tracknumber"):
+                    self.widget.set_sensitive(False)
+                    break
+            else:
+                self.widget.set_sensitive(True)
+            for song in songs:
+                self.model.append(row = [song, song("~basename"),
+                                         song("tracknumber")])
+            self.save.set_sensitive(False)
+            self.revert.set_sensitive(False)
+            self.preview.set_sensitive(True)
+
     def __init__(self, songrefs):
         self.window = gtk.Window()
         self.window.set_default_size(300, 400)
@@ -2172,6 +2317,8 @@ class SongProperties2(object):
         self.notebook = gtk.Notebook()
         self.add_page(self.Information(self))
         self.add_page(self.EditTags(self))
+        if len(songrefs) > 1:
+            self.add_page(self.TrackNumbers(self))
         self.window.set_property('border-width', 12)
         vbox = gtk.VBox(spacing = 12)
         vbox.pack_start(self.notebook)
