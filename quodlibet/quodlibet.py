@@ -36,8 +36,21 @@ class GTKSongInfoWrapper(object):
             print "W: Failed to initialize status icon."
             self.icon = None
 
+        try:
+            import mmkeys
+            self.keys = mmkeys.MmKeys()
+            self.keys.connect("mm_prev", self._previous)
+            self.keys.connect("mm_next", self._next)
+            self.keys.connect("mm_playpause", self._playpause)
+        except:
+            print "W: Failed to initialize multimedia key support."
+
         self._time = (0, 1)
         gtk.timeout_add(300, self._update_time)
+
+    def _previous(*args): player.playlist.previous()
+    def _next(*args): player.playlist.next()
+    def _playpause(*args): player.playlist.paused ^= True
 
     def _toggle_window(self, *args):
         w = widgets["main_window"]

@@ -19,9 +19,10 @@ install:
 	install -m 644 $(NAME).1 $(DESTDIR)$(PREFIX)/share/man/man1/$(NAME).1
 	ln -sf ../$(TO)/$(NAME).py $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	(test -e statusicon.so && install -m 755 statusicon.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true
+	(test -e mmkeys.so && install -m 755 mmkeys.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true
 
 clean:
-	rm -f *.pyc */*.pyc $(NAME).zip statusicon.so
+	rm -f *.pyc */*.pyc $(NAME).zip statusicon.so mmkeys.so
 	cd statusicon && make clean
 
 distclean: clean
@@ -30,6 +31,10 @@ distclean: clean
 statusicon.so:
 	cd statusicon && make && cd ..
 	cp statusicon/statusicon.so .
+
+mmkeys.so:
+	cd mmkeys && make && cd ..
+	cp mmkeys/mmkeys.so .
 
 test:
 	python -c "import tests; tests.unit()"

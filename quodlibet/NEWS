@@ -4,6 +4,7 @@
  - Tweaks to song display, including proper support for the 'author' tag.
  - A freedesktop.org-compatible system tray icon.
  - Remember size between invokations.
+ - Multimedia key support, provided they're mapped (e.g. by Acme).
 
 0.3
  - Handle mono MP3s correctly.

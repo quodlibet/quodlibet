@@ -27,9 +27,9 @@ You must be running 'unstable' or a recent snapshot of it.
 
 # apt-get install python-pymad python-pyvorbis python-id3lib python-glade2
 
-If you want tray icon support,
+If you want tray icon or multimedia key support,
 # apt-get install python2.3-dev python-gtk2-dev
-# make statusbar.so
+# make statusbar.so mmkeys.so
 
 ==[ Other OSs
 
