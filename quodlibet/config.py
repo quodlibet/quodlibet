@@ -9,6 +9,8 @@
 # Simple proxy to a Python ConfigParser.
 
 import os
+# Need to use a RawConfigParser because the PMP-related keys can
+# contain %s, which breaks the "smart" ConfigParser's interpolation.
 from ConfigParser import RawConfigParser as ConfigParser
 
 _config = ConfigParser()
@@ -46,6 +48,7 @@ def init(rc_file):
     _config.set("settings", "masked", "")
     _config.set("settings", "splitters", ",;&/")
     _config.set("settings", "headers", "~#track title album artist")
+
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
     _config.set("memory", "query", "")

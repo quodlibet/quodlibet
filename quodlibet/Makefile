@@ -11,7 +11,6 @@ all:
 	@./check.py
 
 install:
-	install -d $(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)

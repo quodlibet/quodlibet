@@ -108,7 +108,8 @@ class Tag(object):
         self.res = res
         if "*" in self.names:
             self.names.remove("*")
-            self.names.extend(["artist", "album", "title", "version"])
+            self.names.extend(["artist", "album", "title", "version",
+                               "performer"])
         if not isinstance(self.res, list): self.res = [self.res]
 
     def search(self, data):
