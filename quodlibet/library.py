@@ -78,7 +78,7 @@ class AudioFile(dict):
 
     def website(self):
         if "website" in self: return self.list("website")[0]
-        for cont in self.list("contact"):
+        for cont in self.list("contact") + self.list("comment"):
             c = cont.lower()
             if (c.startswith("http://") or c.startswith("https://") or
                 c.startswith("www.")): return cont
@@ -125,6 +125,9 @@ class AudioFile(dict):
         # mtime...
         try: self["~#mtime"] = int(os.stat(self['~filename'])[stat.ST_MTIME])
         except OSError: self["~#mtime"] = 0 # this shouldn't happen.
+
+        try: self["~#bpm"] = float(self["bpm"])
+        except (KeyError, ValueError): self["~#bpm"] = 0
 
         # time format
         self["~length"] = util.format_time(self.get('~#length', 0))

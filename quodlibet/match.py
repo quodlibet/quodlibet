@@ -60,7 +60,7 @@ class Numcmp(object):
         elif value in ["today"]: value = int(time.time() - 24 * 60 * 60)
         else:
             parts = value.split()
-            try: value = int(parts[0])
+            try: value = float(parts[0])
             except ValueError:
                 try:
                     hms = map(int, value.split(":"))

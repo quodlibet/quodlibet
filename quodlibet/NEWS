@@ -1,10 +1,11 @@
 Recent upgrade notes:
 ---------------------
-If you want ALSA support and were using QL prior to 0.6.1, you will need
+If you want ALSA support and were using QL prior to 0.7, you will need
 to change your 'backend' option to 'ao:alsa09' (which is the new default).
 
-0.6.1
+0.7
  - Default to proper 'alsa09' driver (rather than 'alsa').
+ - "Random Foo" searches are now anchored with ^...$.
 
 0.6 - People laugh at typos in heaven?!
  - Many new filtering options (top 40, not played in X days).
