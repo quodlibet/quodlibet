@@ -2,7 +2,7 @@
 .SH NAME
 quodlibet \- music library and player
 .SH SYNOPSIS
-\fBquodlibet\fR [ \fB\-\-print-playing | \fB\-\-refresh-library\fR ]
+\fBquodlibet\fR [ \fB\-\-print\-playing | \fB\-\-refresh\-library\fR | \fIcontrol\fR ]
 .SH DESCRIPTION
 Quod Libet is a music library and player. Rather than keeping a single
 playlist, it loads all your songs at once, and lets you filter and
@@ -23,6 +23,9 @@ takes a format string as an argument. This format string looks like a
 Python dictionary format string ("%(artist)\ \-\ %(title)")
 but also supports conditional substrings using ?
 ("%(artist)?(album)\ \-\ %(album)?\ \-\ %(title)").
+.IP \-\-next,\ \-\-previous,\ \-\-play\-pause,\ \-\-volume\-up,\ \-\-volume\-down,\ \-\-mute
+Control a currently-running instance of QL, as if the equivalent
+buttons in the window had been clicked.
 .SH USAGE
 Use the "Add Music" item in the menu or click the "Add" icon on the
 toolbar to add directories full of songs to your library. Once music
@@ -117,6 +120,9 @@ running; it will not pick up the changes, and it will overwrite it
 when you exit.
 .IP ~/.quodlibet/current
 A "key=value" file containing information about the currently playing song.
+.IP ~/.quodlibet/control
+A FIFO connected to the most-recently-started instance of the program.
+\-\-next, \-\-previous, et cetera, use this to control the player.
 .SH KNOWN BUGS
 FLAC support is horrible.
 .PP

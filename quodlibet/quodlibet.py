@@ -27,10 +27,17 @@ class GTKSongInfoWrapper(object):
         self.text = widgets["currentsong"]
         self.pos = widgets["song_pos"]
         self.timer = widgets["song_timer"]
+        self.volume = widgets["volume"]
         self.button = widgets["play_button"]
         self.but_image = widgets["play_image"]
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
+        self.fifo_fn = os.path.join(HOME, ".quodlibet", "control")
+        try: os.unlink(self.fifo_fn)
+        except OSError: pass
+        os.mkfifo(self.fifo_fn, 0600)
+        self.fifo = os.open(self.fifo_fn, os.O_NONBLOCK)
+        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
         self.albumfn = None
 
         try: import statusicon
@@ -57,9 +64,22 @@ class GTKSongInfoWrapper(object):
         self._time = (0, 1)
         gtk.timeout_add(300, self._update_time)
 
+    def _input_check(self, source, condition):
+        c = os.read(source, 1)
+        if c == "<": self._previous()
+        elif c == ">": self._next()
+        elif c == "-": self._playpause()
+        elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
+        elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
+        elif c == "_": self.volume.set_value(0)
+            
+        os.close(self.fifo)
+        self.fifo = os.open(self.fifo_fn, os.O_NONBLOCK)
+        gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+
     def _previous(*args): player.playlist.previous()
     def _next(*args): player.playlist.next()
-    def _playpause(*args): player.playlist.paused ^= True
+    def _playpause(self, *args): player.playlist.paused ^= True
 
     def _toggle_window(self, icon, window):
         if window.get_property('visible'):
@@ -1399,6 +1419,8 @@ def main():
     library.save(cache_fn)
 
     save_config()
+    try: os.unlink(widgets.wrap.fifo_fn)
+    except OSError: pass
 
 def print_help():
     print _("""\
@@ -1407,7 +1429,14 @@ Options:
   --help, -h        Display this help message
   --version         Display version and copyright information
   --refresh-library Rescan your song cache; remove dead files; add new ones;
-                    and then exit.""")
+                    and then exit.
+  --print-playing   Print the currently playing song.
+
+  --next, --previous, --play-pause, --volume-up, -volume-down, --mute
+    Control a currently running instance of Quod Libet.
+
+For more information, see the manual page (`man 1 quodlibet').
+""")
 
     raise SystemExit
 
@@ -1464,6 +1493,18 @@ def error_and_quit():
     gtk.main_quit()
     return True
 
+def control(c):
+    fifo_fn = os.path.join(HOME, ".quodlibet", "control")
+    if not os.path.exists(fifo_fn):
+        raise SystemExit(_("Quod Libet is not running."))
+    else:
+        try:
+            f = file(fifo_fn, "w")
+            f.write(c)
+            f.close()
+        except: raise SystemExit(_("Unable to write to %s" % fifo_fn))
+        else: raise SystemExit
+
 if __name__ == "__main__":
     import os, sys
 
@@ -1484,6 +1525,12 @@ if __name__ == "__main__":
     # respond quickly.
     for command in sys.argv[1:]:
         if command in ["--help", "-h"]: print_help()
+        elif command in ["--next"]: control(">")
+        elif command in ["--previous"]: control("<")
+        elif command in ["--play-pause"]: control("-")
+        elif command in ["--volume-up"]: control("^")
+        elif command in ["--volume-down"]: control("v")
+        elif command in ["--mute"]: control("_")
         elif command in ["--version", "-v"]: print_version()
         elif command in ["--refresh-library"]: refresh_cache()
         elif command in ["--print-playing"]:

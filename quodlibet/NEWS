@@ -5,6 +5,7 @@
  - Rename by Tag properly keeps songs in the library.
  - Maskable mount points. This lets you add files from an NFS share or
    portable device and not have to readd them if you unmount and remount it.
+ - --next, --previous, --play-pause, --volume-up, --volume-down, --mute.
 
 0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
  - The ao audio backend is back; see the "AUDIO BACKENDS" section in the
