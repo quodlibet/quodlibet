@@ -167,6 +167,7 @@ class QueryParser(object):
         if self.lookahead.type == UNION: return self.RegexpUnion()
         elif self.lookahead.type == INTERSECT: return self.RegexpInter()
         elif self.lookahead.type == NEGATION: return self.RegexpNeg()
+        elif self.lookahead.type == TAG: return self.MatchTag()
         elif self.lookahead.type == RE: return self.Regexp()
         else:
             raise ParseError("The expected symbol should be |, &, !, or "
@@ -185,6 +186,13 @@ class QueryParser(object):
 
     def RegexpList(self):
         return self._match_list(self.RegexpSet)
+
+    def MatchTag(self):
+        tag = self.lookahead.lexeme
+        self.match(TAG)
+        try: return sre.compile(sre.escape(tag), sre.IGNORECASE)
+        except sre.error:
+            raise ParseError("The regular expression was invalid")
 
     def Regexp(self):
         re = self.lookahead.lexeme

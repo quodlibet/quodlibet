@@ -13,7 +13,14 @@ class ValidityTests(TestCase):
         self.failUnless(parser.is_valid('t = "a str"'))
         self.failUnless(parser.is_valid('t = "a str"c'))
         self.failUnless(parser.is_valid('t = "a\\"str"'))
-        # there's no equivalent failure for strings
+        # there's no equivalent failure for strings since 'str"' would be
+        # read as a set of modifiers
+    def test_tag(self):
+        self.failUnless(parser.is_valid('t = tag'))
+        self.failUnless(parser.is_valid('t = !tag'))
+        self.failUnless(parser.is_valid('t = |(tag, bar)'))
+        self.failUnless(parser.is_valid('t = a"tag"'))
+        self.failIf(parser.is_valid('t = a, tag'))
 
     def test_empty(self):
         self.failUnless(parser.is_valid(''))
@@ -26,7 +33,6 @@ class ValidityTests(TestCase):
 
     def test_nonsense(self):
         self.failIf(parser.is_valid('a string'))
-        self.failIf(parser.is_valid('t = a'))
         self.failIf(parser.is_valid('t = #(a > b)'))
         self.failIf(parser.is_valid("=a= = /b/"))
         self.failIf(parser.is_valid("a = &(/b//"))
@@ -155,19 +161,19 @@ class ParserTests(TestCase):
 
     def test_exp_and(self):
         self.failUnless(parser.parse(
-            "&(album = /ate/, artist = /man/)").search(self.s1))
+            "&(album = ate, artist = man)").search(self.s1))
         self.failIf(parser.parse(
-            "&(album = /ate/, artist = /nam/)").search(self.s1))
+            "&(album = ate, artist = nam)").search(self.s1))
         self.failIf(parser.parse(
-            "&(album = /tea/, artist = /nam/)").search(self.s1))
+            "&(album = tea, artist = nam)").search(self.s1))
 
     def test_exp_or(self):
         self.failUnless(parser.parse(
-            "|(album = /ate/, artist = /man/)").search(self.s1))
+            "|(album = ate, artist = man)").search(self.s1))
         self.failUnless(parser.parse(
-            "|(album = /ate/, artist = /nam/)").search(self.s1))
+            "|(album = ate, artist = nam)").search(self.s1))
         self.failIf(parser.parse(
-            "&(album = /tea/, artist = /nam/)").search(self.s1))
+            "&(album = tea, artist = nam)").search(self.s1))
 
     def test_dumb_search(self):
         self.failUnless(parser.parse("ate man").search(self.s1))
