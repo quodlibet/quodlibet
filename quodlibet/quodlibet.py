@@ -425,7 +425,7 @@ class BigCenteredImage(object):
         self.window.set_title(title)
         self.window.set_decorated(False)
         self.window.set_position(gtk.WIN_POS_CENTER)
-        self.window.set_modal(True)
+        self.window.set_modal(False)
         self.window.set_icon(pixbuf)
         self.window.add(gtk.Frame())
         self.window.child.set_shadow_type(gtk.SHADOW_OUT)

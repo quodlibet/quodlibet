@@ -1,35 +1,87 @@
-0.8
-Remember hidden UI element states
- - This will require fighting with GTK sizing.
-Filename encoding bug
- - see util.fsencoding, will need a lot of testing
+Translations
+------------
+Also, comments for translators where appropriate.
 
-0.9
-Don't let editing modes try to write tags they actually can't.
- - sanely, requires rewriting SongProps (and don't use glade,
-   while we're at it).
+Use less Glade
+--------------
+The parts of the code that are messiest (like PropertiesWindow) are
+that way at least partially from Glade. There's no good reason to be
+using it now that the dialogs are reasonably mature, it's slow, and
+it's big. These windows should be in Python, and new windows should
+probably be written in python from the start.
 
-Doable by whomever, whenever:
-- Translations.
-- RPM spec/package.
+Fix fs encoding bug
+-------------------
+Requires cleanups before attempting, so we have a good division between
+displayed strings and byte strings (this is worst in Properties). See
+util.fscoding for the way to get the encoding.
 
-Stuff that I probably have to do:
-- More unit tests.
-- Less Glade means smaller size, easier changes, and more testability!
-- Various skipping problems -- get smarter about Python threads.
-- Look into eventual GStreamer port/use (for playing).
-  - This is probably going to end up not useful unless it solves the
-    skipping issue.
+Clean up properties
+-------------------
+Don't enable widgets unless we're reasonably sure they can be used. This
+means detecting unwriteable files both at the can_change level and at
+the OS permissions level.
 
-Things that would be nice if someone did, but I may not pursue them:
-- Import covers from Muine.
-  - We need to deserialize the pixmap data, whatever it's doing, which
-    doesn't seem to be exposed via PyGTK.
-- Album browser, iTunes browser...
+Remember UI element states
+--------------------------
+Show/hide state of the song list, the browser currently in use, and
+whatever state that browser might need to save (current playlist,
+current query). Again Glade will probably get in the way, and it will
+be a fight with GTK's sizing.
 
-Wontadd:
-- Streaming.
-- More featureful PMP management - use a separate application.
-- Automatic album cover downloads.
-- Transcoding, ripping, burning.
-- Monkey's Audio (unless it gets freed).
+GStreamer backend
+-----------------
+Experiment with a GStreamer backend. This is not very interesting from
+a format perspective (yet), but it might let us avoid threading problems.
+
+Support for more audio formats
+------------------------------
+Monkey's Audio is the most requested (i.e., everything else requested
+has been implemented), but MA is not a freely licensed codec.
+
+Format restructuring
+--------------------
+Rather than monolithic library/player files, import modules in a directory
+"plugin"-style: mp3.py, oggvorbis.py, etc.
+
+Covers from Muine
+-----------------
+Muine uses a pixmap serialization function to save to a BDB database.
+This function is not available directly from PyGTK. If it was, this
+would be easy.
+
+Browser modes
+-------------
+In particular, an iTunes/RB-like browser, and a Muine-style album browser.
+
+Album cover download
+--------------------
+Amazon has a ToS I can't agree to, but a Google image search for the
+album name (or especially label ID) seems to be effective.
+
+More unit tests
+---------------
+Really, they're crap now.
+
+Rewrite parser
+--------------
+Support queries like the following:
+ New format		Equivalent old format
+ artist = "Foobar"	artist = /^Foobar$/c
+ #(3 < track <= 10)	|(&(#(track > 3), #(track < 10)), #(track = 10))
+ #(disc != 0)		!#(disc = 0)	
+
+New keys
+--------
+Time added to library, number of times skipped, rating.
+
+Others
+------
+RPM spec/package, Gentoo ebuild, whatever.
+
+Not Interested
+--------------
+Streaming. It doesn't fit well into our library model, and it might never.
+
+Transcoding, ripping, burning, better PMP management. Get a separate
+program, and we'll integrate with it.

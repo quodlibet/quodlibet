@@ -585,7 +585,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="show_playlist">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Playlist</property>
+		      <property name="label" translatable="yes">Song _list</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">True</property>
 		      <signal name="activate" handler="showhide_playlist" last_modification_time="Wed, 08 Dec 2004 05:31:40 GMT"/>
@@ -601,7 +601,7 @@
 		  <child>
 		    <widget class="GtkRadioMenuItem" id="disable_browsing1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Disable browsing</property>
+		      <property name="label" translatable="yes">_Disable browsing</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="hide_browser" last_modification_time="Sun, 16 Jan 2005 07:07:40 GMT"/>
@@ -611,7 +611,7 @@
 		  <child>
 		    <widget class="GtkRadioMenuItem" id="search_library1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Search library</property>
+		      <property name="label" translatable="yes">_Search library</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">True</property>
 		      <property name="group">disable_browsing1</property>
@@ -622,7 +622,7 @@
 		  <child>
 		    <widget class="GtkRadioMenuItem" id="playlists1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Playlists</property>
+		      <property name="label" translatable="yes">_Playlists</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <property name="group">disable_browsing1</property>
@@ -2634,7 +2634,7 @@ Display OSD on the bottom</property>
 				      <property name="visible">True</property>
 				      <property name="items" translatable="yes">Tags should replace existing ones
 Tags should be added to existing ones</property>
-				      <signal name="changed" handler="prefs_addreplace" last_modification_time="Fri, 19 Nov 2004 07:00:16 GMT"/>
+				      <signal name="changed" handler="combo_addreplace" last_modification_time="Fri, 19 Nov 2004 07:00:16 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
