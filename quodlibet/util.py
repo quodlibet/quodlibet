@@ -91,7 +91,7 @@ def format_time_long(time):
         time = time % (60 * 60)
     if time > 60:
         mins = (time // 60)
-        if mins != 1: time_str += _("%d minute, ") % mins
+        if mins != 1: time_str += _("%d minutes, ") % mins
         else: time_str += _("1 minute, ")
         time = time % 60
     # only include seconds if we don't have hours (or greater)
