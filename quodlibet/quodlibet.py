@@ -105,9 +105,8 @@ class GladeHandlers(object):
                 q = QueryParser(QueryLexer(text)).Query()
             except:
                 if "=" not in text and "/" not in text:
-                    parts = ["/" + p + "/i" for p in text.split()]
-                    text = "|(" + ",".join(parts) + ")"
-                    text = "artist, title, album = " + text
+                    parts = ["* = /" + p + "/" for p in text.split()]
+                    text = "&(" + ",".join(parts) + ")"
                     q = QueryParser(QueryLexer(text)).Query()
                     widgets["query"].set_text(text)
             else:

@@ -33,9 +33,19 @@ class Neg(object):
         return "<Neg " + repr(self.re) + ">"
 
 class Tag(object):
+    ABBRS = { "a": "artist",
+              "b": "album",
+              "v": "version",
+              "t": "title",
+              "n": "tracknumber",
+              "d": "date",
+              }
     def __init__(self, names, res):
-        self.names = names
+        self.names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
         self.res = res
+        if "*" in self.names:
+            self.names.remove("*")
+            self.names.extend(["artist", "album", "title", "version"])
         if not isinstance(self.res, list): self.res = [self.res]
 
     def search(self, data):
