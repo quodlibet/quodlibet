@@ -7,7 +7,7 @@
 # $Id$
 
 import os, sys
-import pickle, cPickle
+import cPickle
 import util; from util import escape, to
 import fcntl
 import random
@@ -22,24 +22,6 @@ from formats import MusicFile
 
 if sys.version_info < (2, 4):
     from sets import Set as set
-
-# Remove after 0.8; migrates song databases.
-# cPickle isn't new-style objects. That's stupid.
-class MigrateUnpickler(pickle.Unpickler):
-    TRANS = { "MPCFile":  "formats/mpc",
-              "MP3File":  "formats/mp3",
-              "FLACFile": "formats/flac",
-              "OggFile":  "formats/oggvorbis",
-              "ModFile":  "formats/mod"}
-
-    def find_class(self, module, name):
-        if (module == "library" and name in self.TRANS):
-            try: return __import__(self.TRANS[name]).info
-            except: pass
-        elif module == "library" and name == "Unknown":
-            import formats.audio
-            return formats.audio.Unknown
-        return pickle.Unpickler.find_class(self, module, name)
 
 global library
 library = None
@@ -79,15 +61,13 @@ class AudioFileGroup(dict):
         return filter(lambda s: s and "~" not in s and "=" not in s, self)
 
     def __init__(self, songs):
-        self.songcount = total = len(songs)
         keys = {}
         first = {}
         all = {}
-        self.types = {}
+        total = len(songs)
+        self.__songs = songs
 
-        # collect types of songs; comment names, values, and sharedness
         for song in songs:
-            self.types[song.__class__] = song # for group can_change
             for comment, val in song.iteritems():
                 keys[comment] = keys.get(comment, 0) + 1
                 first.setdefault(comment, val)
@@ -114,34 +94,34 @@ class AudioFileGroup(dict):
     def can_change(self, k=None):
         if k is None:
             can = True
-            for song in self.types.itervalues():
+            for song in self.__songs:
                 cantoo = song.can_change()
                 if can is True: can = cantoo
                 elif cantoo is True: pass
                 else: can = set(can+cantoo)
         else:
-            if not self.types: return False
-            can = min([song.can_change(k) for song in self.types.itervalues()])
+            if not self.__songs: return False
+            can = min([song.can_change(k) for song in self.__songs])
         return can
 
 class Library(dict):
     def __init__(self, initial={}):
-        self.masked_files = {}
+        self.__masked_files = {}
         dict.__init__(self, initial)
 
     def mask(self, mountp):
         mountd = mountp + "/"
         files = [f for f in self if f.startswith(mountd)]
         if files:
-            self.masked_files[mountp] = {}
+            self.__masked_files[mountp] = {}
             for f in files:
-                self.masked_files[mountp][f] = self[f]
+                self.__masked_files[mountp][f] = self[f]
                 del(self[f])
 
     def unmask(self, mountp):
-        if mountp in self.masked_files:
-            self.update(self.masked_files[mountp])
-            del(self.masked_files[mountp])
+        if mountp in self.__masked_files:
+            self.update(self.__masked_files[mountp])
+            del(self.__masked_files[mountp])
 
     def random(self, tag):
         songs = {}
@@ -160,10 +140,13 @@ class Library(dict):
     def remove(self, song):
         del(self[song['~filename']])
 
-    def add(self, fn):
+    def add(self, fn, migrate = None):
         if fn not in self:
             song = MusicFile(fn)
-            if song: self[fn] = song
+            
+            if song:
+                if migrate: song.migrate(migrate)
+                self[fn] = song
             return bool(song)
         else: return True
 
@@ -186,14 +169,14 @@ class Library(dict):
 
     def reload(self, song):
         self.remove(song)
-        self.add(song['~filename'])
+        return self.add(song['~filename'], song)
 
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
         f = file(fn + ".tmp", "w")
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         songs = self.values()
-        for v in self.masked_files.values(): songs.extend(v.values())
+        for v in self.__masked_files.values(): songs.extend(v.values())
         cPickle.dump(songs, f, cPickle.HIGHEST_PROTOCOL)
         f.close()
         os.rename(fn + ".tmp", fn)
@@ -213,7 +196,7 @@ class Library(dict):
         try:
             if os.path.exists(fn):
                 f = file(fn, "rb")
-                try: songs = MigrateUnpickler(f).load()
+                try: songs = cPickle.load(f)
                 except:
                     print to(_("W: %s is not a QL song database.") % fn)
                     try: shutil.copy(fn, fn + ".not-valid")
@@ -227,26 +210,20 @@ class Library(dict):
         removed, changed = 0, 0
         for song in songs:
             if not formats.supported(song): continue
-            if song.valid():
-                fn = song['~filename']
-                self[fn] = song
+            if song.valid(): self[song["~filename"]] = song
             else:
                 if song.exists():
-                    fn = song['~filename']
                     changed += 1
-                    song2 = MusicFile(fn)
-                    if song2:
-                        song2.migrate(song)
-                        self[fn] = song2
+                    self.add(song["~filename"], song)
+                    fn = song['~filename']
                 elif config.get("settings", "masked"):
                     fn = song["~filename"]
                     for m in config.get("settings", "masked").split(":"):
                         if fn.startswith(m) and not os.path.ismount(m):
-                            self.masked_files.setdefault(m, {})
-                            self.masked_files[m][fn] = song
+                            self.__masked_files.setdefault(m, {})
+                            self.__masked_files[m][fn] = song
                             break
-                    else:
-                        removed += 1
+                    else: removed += 1
         return changed, removed
 
     def scan(self, dirs):
@@ -264,14 +241,10 @@ class Library(dict):
                 for fn in fnames:
                     m_fn = os.path.join(path, fn)
                     if m_fn in self:
-                        if self[m_fn].valid(): continue
-                        else:
+                        if not self[m_fn].valid():
+                            self.reload(self[m_fn])
                             changed += 1
-                            added -= 1
-                    m = MusicFile(m_fn)
-                    if m:
-                        added += 1
-                        self[m_fn] = m
+                    else: added += self.add(m_fn)
                 yield added, changed
 
     def rebuild(self, force=False):
@@ -284,15 +257,8 @@ class Library(dict):
 
         for fn in self.keys():
             if force or not self[fn].valid():
-                m = MusicFile(fn)
-                if m:
-                    m.migrate(self[fn])
-                    self[fn] = m
-                    changed += 1
-                else:
-                    del(self[fn])
-                    removed += 1
-
+                if self.reload(self[fn]): changed += 1
+                else: removed += 1
             yield changed, removed
 
 def init(cache_fn=None):
