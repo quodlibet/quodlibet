@@ -984,9 +984,9 @@ class SongProperties(MultiInstanceWidget):
             ref = model[iter][1]
             track = model[iter][3]
             song["tracknumber"] = track
-            try: song["=d"] = int(track.split("/")[0])
+            try: song["=#"] = int(track.split("/")[0])
             except ValueError:
-                try: del(song["=d"])
+                try: del(song["=#"])
                 except KeyError: pass
             song.write()
             if ref: songref_update_view(song, ref)
