@@ -124,11 +124,11 @@ class GTKSongInfoWrapper(object):
         if paused:
             self.but_image.set_from_pixbuf(self.paused)
             self.menu.get_image().set_from_pixbuf(self.pause_s)
-            widgets["play_menu"].child.set_text("_Play song")
+            widgets["play_menu"].child.set_text("Play song")
         else:
             self.but_image.set_from_pixbuf(self.playing)
             self.menu.get_image().set_from_pixbuf(self.play_s)
-            widgets["play_menu"].child.set_text("_Pause song")
+            widgets["play_menu"].child.set_text("Pause song")
         widgets["play_menu"].child.set_use_underline(True)
 
     def _update_time(self):
@@ -628,6 +628,17 @@ class GladeHandlers(object):
         else:
             widgets["pmp_sep"].show()
             widgets["pmp_upload"].show()
+        coln = view.get_columns().index(col)
+        header = HEADERS[coln]
+        if header not in ["genre", "artist", "album"]:
+            widgets["filter_column"].show()
+            if header.startswith("~#"): header = header[2:]
+            elif header.startswith("~"): header = header[1:]
+            header = HEADERS_FILTER.get(header, header)
+            widgets["filter_column"].child.set_text(_("Filter on %s") %
+                                                    _(header))
+        else:
+            widgets["filter_column"].hide()
         widgets["songs_popup"].popup(None,None,None, event.button, event.time)
         return True
 
@@ -1344,21 +1355,26 @@ def text_parse(*args):
     return True
 
 def filter_on_header(header, songs = None):
-    if header == "~#track": header = "tracknumber"
-    elif header == "~#disc": header = "discnumber"
     if songs is None:
         selection = widgets["songlist"].get_selection()
         model, rows = selection.get_selected_rows()
         songs = [model[row][len(HEADERS)] for row in rows]
 
-    values = {}
-    for song in songs:
-        if header in song:
-            for val in song[header].split("\n"):
-                values[val] = True
+    if header.startswith("~#"):
+        nheader = header[2:]
+        values = [song.get(header, 0) for song in songs]
+        queries = ["#(%s = %d)" % (nheader, i) for i in values]
+        make_query("|(" + ", ".join(queries) + ")")
+    else:
+        if header.startswith("~"): header = header[1:]
+        values = {}
+        for song in songs:
+            if header in song:
+                for val in song[header].split("\n"):
+                    values[val] = True
 
-    text = "|".join([sre.escape(s) for s in values.keys()])
-    make_query(u"%s = /%s/c" % (header, text))
+        text = "|".join([sre.escape(s) for s in values.keys()])
+        make_query(u"%s = /%s/c" % (header, text))
 
 def make_query(query):
     widgets["query"].child.set_text(query.encode('utf-8'))

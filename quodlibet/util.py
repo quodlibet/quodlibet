@@ -28,7 +28,7 @@ def unescape(str):
 # A better version of sre.escape, that doesn't go nuts on Unicode.
 def re_esc(str):
     return "".join(map(
-        lambda a: (a in ".^$*+?{,}\\[]|()<>#=!:" and "\\" + a) or a, str))
+        lambda a: (a in "/.^$*+?{,}\\[]|()<>#=!:" and "\\" + a) or a, str))
 sre.escape = re_esc
 
 # Check whether or not we can support various formats.
