@@ -10,7 +10,11 @@ from formats.audio import AudioFile, AudioPlayer
 
 try: import modplug
 except ImportError: extensions = []
-else: extensions = [".mod", ".it", ".xm", ".s3m"]
+# Based on the supported format list at http://www.linuks.mine.nu/modplugplay
+else: extensions = ['.669', '.amf', '.ams', '.dbm', '.dmf', '.dsm', '.far',
+                    '.it', '.j2b', '.mdl', '.med', '.mod', '.mt2', '.mtm',
+                    '.okt', '.psm', '.ptm', '.s3m', '.stm', '.ult', '.umx',
+                    '.xm']
 
 class ModFile(AudioFile):
     def __init__(self, filename):
