@@ -1641,14 +1641,14 @@ class SongProperties(MultiInstanceWidget):
             value = add.get_value()
             date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if not self.songinfo.can_change(comment):
-                WarningMessage(
+                ErrorMessage(
                     self.window, _("Invalid tag"),
                     _("Invalid tag <b>%s</b>\n\nThe files currently"
-                      " selected do not support editing this tag")%
+                      " selected do not support editing this tag.")%
                     util.escape(comment)).run()
 
             elif comment == "date" and not date.match(value):
-                WarningMessage(self.window, _("Invalid date"),
+                ErrorMessage(self.window, _("Invalid date"),
                                _("Invalid date: <b>%s</b>.\n\n"
                                  "The date must be entered in YYYY or "
                                  "YYYY-MM-DD format.") % value).run()
@@ -1912,10 +1912,16 @@ class SongProperties(MultiInstanceWidget):
             if not self.songinfo.can_change(header):
                 invalid.append(header)
         if len(invalid):
-            ErrorMessage(self.window,
-                        _("Uneditable tags"),
-                        _("The selected songs do not support editing the "
-                          "following tags:\n   ")+'\n   '.join(invalid)).run()
+            if len(invalid) == 1:
+                title = _("Invalid tag")
+                msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
+                        " selected do not support editing these tags.")
+            else:
+                title = _("Invalid tags")
+                msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
+                        " selected do not support editing this tag.")
+                    
+            ErrorMessage(self.window, title, msg % ", ".join(invalid)).run()
             return
 
         rep = self.widgets["prop_tbp_space_t"].get_active()

@@ -389,7 +389,7 @@ class MP3File(AudioFile):
         self["~#mtime"] = os.path.mtime(self['~filename'])
 
     def can_change(self, k=None):
-        if k is None: return self.INVERT_IDS.keys()
+        if k is None: return self.INVERT_IDS.keys() + ["date"]
         else: return (k in self.INVERT_IDS.keys() or k == "date")
 
 class OggFile(AudioFile):
