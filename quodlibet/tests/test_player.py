@@ -1,7 +1,8 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
 import config
-from player import MP3Player, OggPlayer
+from formats.mp3 import MP3Player
+from formats.oggvorbis import OggPlayer
 import os
 
 class FakeDev(object):

@@ -1983,7 +1983,7 @@ class SongProperties(MultiInstanceWidget):
 
             if changed:
                 try: song.write()
-                except None:
+                except:
                     ErrorMessage(self.window,
                                  _("Unable to edit song"),
                                  _("Saving <b>%s</b> failed. The file may be "

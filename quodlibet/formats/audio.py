@@ -1,0 +1,309 @@
+# Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+#
+# $Id$
+
+import os
+import tempfile
+import gettext
+import shutil
+import time
+
+import util, config
+from util import escape
+
+_ = gettext.gettext
+
+class Unknown(unicode): pass
+UNKNOWN = Unknown(_("Unknown"))
+
+class AudioFile(dict):
+    def __cmp__(self, other):
+        if not other: return -1
+        return (cmp(self("album"), other("album")) or
+                cmp(self("~#disc"), other("~#disc")) or
+                cmp(self("~#track"), other("~#track")) or
+                cmp(self("artist"), other("artist")) or
+                cmp(self("title"), other("title")) or
+                cmp(self("~filename"), other("~filename")))
+
+    # True if our key's value is actually unknown, rather than just the
+    # string "Unknown". Or true if we don't know the key at all.
+    def unknown(self, key):
+        return isinstance(self.get(key, Unknown()), Unknown)
+
+    def realkeys(self):
+        return filter(lambda s: s and s[0] != "~" and not self.unknown(s),
+                      self.keys())
+
+    def __call__(self, key, default = ""):
+        if key and key[0] == "~":
+            key = key[1:]
+            if "~" in key:
+                parts = [self(p) for p in key.split("~")]
+                return " - ".join(filter(None, parts))
+            elif key == "basename": return os.path.basename(self["~filename"])
+            elif key == "dirname": return os.path.dirname(self["~filename"])
+            elif key == "length": return util.format_time(self["~#length"])
+            elif key == "#track":
+                try: return int(self["tracknumber"].split("/")[0])
+                except (ValueError, TypeError, KeyError): return default
+            elif key == "#disc":
+                try: return int(self["discnumber"].split("/")[0])
+                except (ValueError, TypeError, KeyError): return default
+            elif key[0] == "#" and "~" + key not in self:
+                try: return int(self[key[1:]])
+                except (ValueError, TypeError, KeyError): return default
+            else: return dict.get(self, "~" + key, default)
+        elif key == "title":
+            v = dict.get(self, "title")
+            if v is None:
+                return "%s [%s]" %(
+                    os.path.basename(self["~filename"]), UNKNOWN)
+            else: return v
+        elif (key == "artist" or key == "album"):
+            v = dict.get(self, key)
+            if v is None: return UNKNOWN
+            else: return v
+        else: return dict.get(self, key, default)
+
+    def comma(self, key):
+        v = self(key, "")
+        if isinstance(v, int): return v
+        else: return v.replace("\n", ", ")
+
+    def list(self, key):
+        if key in self: return self[key].split("\n")
+        else: return []
+
+    # copy important keys from the other song to this one.
+    def migrate(self, other):
+        for key in ["~#playcount", "~#lastplayed"]:
+            self[key] = other[key]
+        for key in filter(lambda s: s.startswith("~#playlist_"), other):
+            self[key] = other[key]
+
+    def exists(self):
+        return os.path.exists(self["~filename"])
+
+    def valid(self):
+        return (self.exists() and
+                self["~#mtime"] == os.path.mtime(self["~filename"]))
+
+    def can_change(self, k = None):
+        if k is None: return True
+        else: return (k and k != "vendor" and "=" not in k and "~" not in k)
+
+    def rename(self, newname):
+        if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
+        else: newname = os.path.join(self('~dirname'), newname)
+        if not os.path.exists(newname):
+            shutil.move(self['~filename'], newname)
+        elif newname != self['~filename']: raise ValueError
+        self.sanitize(newname)
+
+    def website(self):
+        if "website" in self: return self.list("website")[0]
+        for cont in self.list("contact") + self.list("comment"):
+            c = cont.lower()
+            if (c.startswith("http://") or c.startswith("https://") or
+                c.startswith("www.")): return cont
+            elif c.startswith("//www."): return "http:" + cont
+        else:
+            text = "http://www.google.com/search?q="
+            esc = lambda c: ord(c) > 127 and '%%%x'%ord(c) or c
+            if "labelid" in self: text += esc(self["labelid"])
+            else:
+                artist = util.escape("+".join(self("artist").split()))
+                album = util.escape("+".join(self("album").split()))
+                artist = util.encode(artist)
+                album = util.encode(album)
+                artist = "%22" + ''.join(map(esc, artist)) + "%22"
+                album = "%22" + ''.join(map(esc, album)) + "%22"
+                text += artist + "+" + album
+            text += "&ie=UTF8"
+            return text
+
+    # Sanity-check all sorts of things...
+    def sanitize(self, filename = None):
+        if filename: self["~filename"] = filename
+        elif "~filename" not in self: raise ValueError("Unknown filename!")
+
+        # Fill in necessary values.
+        self.setdefault("~#lastplayed", 0)
+        self.setdefault("~#playcount", 0)
+        self.setdefault("~#length", 0)
+
+        # Clean up Vorbis garbage.
+        try: del(self["vendor"])
+        except KeyError: pass
+
+        self["~#mtime"] = os.path.mtime(self['~filename'])
+
+    # Construct the text seen in the player window
+    def to_markup(self):
+        title = self.comma("title")
+        text = u'<span weight="bold" size="large">%s</span>' % escape(title)
+        if "version" in self:
+            text += u"\n<small><b>%s</b></small>" % escape(
+                self.comma("version"))
+
+        if not self.unknown("artist"):
+            text += u"\n" + _("by %s") % escape(self.comma("artist"))
+
+        if "performer" in self:
+            s = _("Performed by %s") % self.comma("performer")
+            text += "\n<small>%s</small>" % s
+
+        others = ""
+        if "arranger" in self:
+            others += "; " + _("arranged by %s") % self.comma("arranger")
+        if "lyricist" in self:
+            others += "; " + _("lyrics by %s") % self.comma("lyricist")
+        if "conductor" in self:
+            others += "; " + _("conducted by %s") % self.comma("conductor")
+        if "composer" in self:
+            others += "; " + _("composed by %s") % self.comma("composer")
+        if "author" in self:
+            others += "; " + _("written by %s") % self.comma("author")
+
+        if others:
+            others = others.lstrip("; ")
+            others = others[0].upper() + others[1:]
+            text += "\n<small>%s</small>" % escape(others)
+
+        if not self.unknown("album"):
+            album = u"\n<b>%s</b>" % escape(self.comma("album"))
+            if "discnumber" in self:
+                album += " - "+_("Disc %s")%escape(self.comma("discnumber"))
+            if "part" in self:
+                album += u" - <b>%s</b>" % escape(self.comma("part"))
+            if "tracknumber" in self:
+                album +=" - " + _("Track %s")%escape(self.comma("tracknumber"))
+            text += album
+        return text
+
+    # A shortened song info line (for the statusicon tooltip)
+    def to_short(self):
+        if self.unknown("album"):
+            return self.comma("~artist~title~version")
+        else:
+            return self.comma("~album~discnumber~part"
+                              "~tracknumber~title~version")
+
+    # Nicely format how long it's been since it was played
+    def get_played(self):
+        count = self["~#playcount"]    
+        if count == 0: return _("Never")
+        else:
+            t = time.localtime(self["~#lastplayed"])
+            tstr = time.strftime("%F, %X", t)
+            if count == 1:
+                return _("1 time, recently on %s") % tstr
+            else:
+                return _("%d times, recently on %s") % (count, tstr)
+
+    # key=value list, for ~/.quodlibet/current interface
+    def to_dump(self):
+        s = ""
+        for k in self.realkeys():
+            for v2 in self.list(k):
+                s += "%s=%s\n" % (k, util.encode(v2))
+        return s
+
+    # Try to change a value in the data to a new value; if the
+    # value being changed from doesn't exist, just overwrite the
+    # whole value.
+    def change(self, key, old_value, new_value):
+        try:
+            parts = self.list(key)
+            try: parts[parts.index(old_value)] = new_value
+            except ValueError:
+                self[key] = new_value
+            else:
+                self[key] = "\n".join(parts)
+        except KeyError: self[key] = new_value
+        self.sanitize()
+
+    def add(self, key, value):
+        if self.unknown(key): self[key] = value
+        else: self[key] += "\n" + value
+        self.sanitize()
+
+    # Like change, if the value isn't found, remove all values...
+    def remove(self, key, value):
+        if self[key] == value: del(self[key])
+        else:
+            try:
+                parts = self.list(key)
+                parts.remove(value)
+                self[key] = "\n".join(parts)
+            except ValueError:
+                if key in self: del(self[key])
+        self.sanitize()
+
+    # Try to find an album cover for the file
+    def find_cover(self):
+        base = self('~dirname')
+        fns = os.listdir(base)
+        images = []
+        fns.sort()
+        for fn in fns:
+            lfn = fn.lower()
+            if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
+                # Look for some generic names, and also the album
+                # label number, which is pretty common. Label number
+                # is worth 2 points, everything else 1.
+                matches = filter(lambda s: s in lfn,
+                                 ["front", "cover", "jacket", "folder",
+                                  self.get("labelid", lfn + ".").lower(),
+                                  self.get("labelid", lfn + ".").lower()])
+                score = len(matches)
+                if score: images.append((score, os.path.join(base, fn)))
+        # Highest score wins.
+        if images: return max(images)[1]
+        elif "~picture" in self:
+            # Otherwise, we might have a picture stored in the metadata...
+            import pyid3lib
+            f = tempfile.NamedTemporaryFile()
+            tag = pyid3lib.tag(self['~filename'])
+            for frame in tag:
+                if frame["frameid"] == "APIC":
+                    f.write(frame["data"])
+                    f.flush()
+                    return f
+            else:
+                f.close()
+                return None
+        else: return None
+
+class AudioPlayer(object):
+    def __init__(self):
+        self.stopped = False
+
+    def pause(self): pass
+    def unpause(self): pass
+
+    def end(self):
+        self.stopped = True
+
+    def replay_gain(self, song):
+        gain = config.getint("settings", "gain")
+        try:
+            if gain == 0: raise ValueError
+            elif gain == 2 and "replaygain_album_gain" in song:
+                db = float(song["replaygain_album_gain"].split()[0])
+                peak = float(song["replaygain_album_peak"])
+            elif gain > 0 and "replaygain_track_gain" in song:
+                db = float(song["replaygain_track_gain"].split()[0])
+                peak = float(song["replaygain_track_peak"])
+            else: raise ValueError
+            self.scale = 10.**(db / 20)
+            if self.scale * peak > 1: self.scale = 1.0 / peak # don't clip
+            if self.scale > 15: self.scale = 15 # probably messed up...
+        except (KeyError, ValueError):
+            self.scale = 1
+

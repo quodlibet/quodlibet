@@ -12,5 +12,5 @@ if __name__ == "__main__":
 
     for fn in sys.argv[2:]:
         print "Adding", fn
-        z.write(fn)
+        z.write(fn, arcname = fn)
     z.close()

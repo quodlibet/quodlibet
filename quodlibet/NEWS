@@ -1,5 +1,8 @@
 Recent upgrade notes:
 ---------------------
+0.9
+ - "Drop-in" support for new file formats.
+
 0.8 - I make jokes about whomever I please!
  - New/reloaded libraries take 20% less disk space.
  - Double-clicking an album cover displays it in a larger window.

@@ -16,206 +16,9 @@ import audioop
 import util
 import stat
 import os
+import formats
 
 BUFFER_SIZE = 2**8
-
-class AudioPlayer(object):
-    def __init__(self):
-        self.stopped = False
-
-    def pause(self): pass
-    def unpause(self): pass
-
-    def end(self):
-        self.stopped = True
-
-    def replay_gain(self, song):
-        gain = config.getint("settings", "gain")
-        try:
-            if gain == 0: raise ValueError
-            elif gain == 2 and "replaygain_album_gain" in song:
-                db = float(song["replaygain_album_gain"].split()[0])
-                peak = float(song["replaygain_album_peak"])
-            elif gain > 0 and "replaygain_track_gain" in song:
-                db = float(song["replaygain_track_gain"].split()[0])
-                peak = float(song["replaygain_track_peak"])
-            else: raise ValueError
-            self.scale = 10.**(db / 20)
-            if self.scale * peak > 1: self.scale = 1.0 / peak # don't clip
-            if self.scale > 15: self.scale = 15 # probably messed up...
-        except (KeyError, ValueError):
-            self.scale = 1
-
-class MP3Player(AudioPlayer):
-    def __init__(self, dev, song):
-        import mad
-        filename = song['~filename']
-        AudioPlayer.__init__(self)
-        self.dev = dev
-        self.audio = mad.MadFile(filename)
-        self.dev.set_info(self.audio.samplerate(), 2)
-        self.length = self.audio.total_time()
-        self.replay_gain(song)
-
-    def __iter__(self): return self
-
-    def seek(self, ms):
-        self.audio.seek_time(int(ms))
-
-    def next(self):
-        if self.stopped: raise StopIteration
-        buff = self.audio.read(BUFFER_SIZE)
-        if buff is None: raise StopIteration
-        if self.scale != 1:
-            buff = audioop.mul(buff, 2, self.scale)
-        self.dev.play(buff)
-        return self.audio.current_time()
-
-class FLACPlayer(AudioPlayer):
-    def __init__(self, dev, song):
-        AudioPlayer.__init__(self)
-        filename = song['~filename']
-        import flac.decoder, flac.metadata
-        self.STREAMINFO = flac.metadata.STREAMINFO
-        self.EOF = flac.decoder.FLAC__FILE_DECODER_END_OF_FILE
-        self.OK = flac.decoder.FLAC__FILE_DECODER_OK
-        self.dev = dev
-        self.dec = flac.decoder.FileDecoder()
-        self.dec.set_md5_checking(False);
-        self.dec.set_filename(filename)
-        self.dec.set_metadata_respond_all()
-        self.dec.set_write_callback(self._player)
-        self.dec.set_metadata_callback(self._grab_stream_info)
-        self.dec.set_error_callback(lambda *args: None)
-        self.dev.set_info(44100, 2)
-        self.dec.init()
-        self.dec.process_until_end_of_metadata()
-        self.pos = 0
-        self._size = os.stat(filename)[stat.ST_SIZE]
-        self.replay_gain(song)
-
-    def _grab_stream_info(self, dec, block):
-        if block.type == self.STREAMINFO:
-            streaminfo = block.data.stream_info
-            self._srate = streaminfo.sample_rate
-            self._bps = streaminfo.bits_per_sample // 8
-            self._chan = streaminfo.channels
-            self._samples = streaminfo.total_samples
-            self.length = (self._samples * 1000) // self._srate
-            self.dev.self.set_info(self._srate, self._chan)
-        return self.OK
-
-    def _player(self, dec, buff, size):
-        self.pos += 1000 * (float(len(buff))/self._chan/self._bps/self._srate)
-        if self.scale != 1:
-            buff = audioop.mul(buff, self._chan, self.scale)
-        device.play(buff)
-        return self.OK
-
-    def next(self):
-        if self.stopped:
-            self.dec.finish()
-            raise StopIteration
-        if self.dec.get_state() == self.EOF:
-            self.dec.finish()
-            raise StopIteration
-        if not self.dec.process_single():
-            self.dec.finish()
-            raise StopIteration
-        return int(self.pos)
-
-    def __iter__(self):
-        return self
-
-    def seek(self, ms):
-        self.pos = ms
-        sample = (ms / 1000.0) * self._srate
-        self.dec.seek_absolute(long(sample))
-
-class OggPlayer(AudioPlayer):
-    def __init__(self, dev, song):
-        AudioPlayer.__init__(self)
-        filename = song['~filename']
-        import ogg.vorbis
-        self.error = ogg.vorbis.VorbisError
-        self.dev = dev
-        self.audio = ogg.vorbis.VorbisFile(filename)
-        rate = self.audio.info().rate
-        channels = self.audio.info().channels
-        self.dev.set_info(rate, channels)
-        self.length = int(self.audio.time_total(-1) * 1000)
-        self.replay_gain(song)
-
-    def __iter__(self): return self
-
-    def seek(self, ms):
-        self.audio.time_seek(ms / 1000.0)
-
-    def next(self):
-        if self.stopped: raise StopIteration
-        try: (buff, bytes, bit) = self.audio.read(BUFFER_SIZE)
-        except self.error: pass
-        else:
-            if bytes == 0: raise StopIteration
-            if self.scale != 1:
-                buff = audioop.mul(buff, 2, self.scale)
-                bytes = len(buff)
-            self.dev.play(buff)
-        return int(self.audio.time_tell() * 1000)
-
-class ModPlayer(AudioPlayer):
-    def __init__(self, dev, song):
-        AudioPlayer.__init__(self)
-        import modplug
-        self.audio = modplug.ModFile(song["~filename"])
-        self.length = self.audio.length
-        self.pos = 0
-        self.dev = dev
-        self.dev.set_info(44100, 2)
-
-    def __iter__(self): return self
-
-    def seek(self, ms):
-        self.audio.seek(ms)
-        self.pos = ms
-
-    def next(self):
-        if self.stopped: raise StopIteration
-        else:
-            s = self.audio.read(BUFFER_SIZE)
-            if s: self.dev.play(s)
-            else: raise StopIteration
-        return int(self.audio.position)
-
-class MPCPlayer(AudioPlayer):
-    def __init__(self, dev, song):
-        AudioPlayer.__init__(self)
-        import musepack
-        self.audio = musepack.MPCFile(song["~filename"])
-        self.length = self.audio.length
-        self.pos = 0
-        self.dev = dev
-        self.dev.set_info(self.audio.frequency, 2)
-
-    def __iter__(self): return self
-
-    def seek(self, ms):
-        self.audio.seek(ms)
-        self.pos = ms
-
-    def next(self):
-        if self.stopped: raise StopIteration
-        else:
-            s = self.audio.read()
-            if s: self.dev.play(s)
-            else: raise StopIteration
-        return int(self.audio.position)
-
-def FilePlayer(dev, song):
-    for ext in supported.keys():
-        if song["~filename"].lower().endswith(ext):
-            return supported[ext](dev, song)
-    else: raise RuntimeError("Unknown file format: %s" % song["~filename"])
 
 class OSSAudioDevice(object):
     def __init__(self):
@@ -350,7 +153,7 @@ class PlaylistPlayer(object):
                 f.write(self.song.to_dump())
                 f.close()
                 if self.shuffle: random.shuffle(self.playlist)
-                try: self.player = FilePlayer(self.output, self.song)
+                try: self.player = formats.MusicPlayer(self.output, self.song)
                 except:
                     self.paused = True
                     self.info.missing_song(self.song)
@@ -504,18 +307,6 @@ device = None
 playlist = None
 
 def init(devid):
-    if util.check_ogg(): supported[".ogg"] = OggPlayer
-    if util.check_mp3(): supported[".mp3"] = MP3Player
-    if util.check_flac(): supported[".flac"] = FLACPlayer
-    if util.check_mpc():
-        supported[".mpc"] = MPCPlayer
-        supported[".mp+"] = MPCPlayer
-
-    if util.check_mod():
-        for fmt in ["mod", "xm", "it", "s3m"]:
-            supported["." + fmt] = ModPlayer
-
-
     try: import ao
     except ImportError: outputs['ao'] = OSSProxy
     else: outputs['ao'] = AOAudioDevice

@@ -2,7 +2,9 @@ from unittest import TestCase, makeSuite
 from tests import registerCase
 import config
 config.init()
-import library; from library import AudioFile, MusicFile, Unknown
+import library
+from formats.audio import AudioFile, Unknown
+from formats import MusicFile
 library.init()
 
 class AudioFileTest(TestCase):

@@ -47,11 +47,6 @@ has been implemented), but MA is not a freely licensed codec. Maybe
 we should support WAV? Other possibilities are forms of M4A/AAC,
 RM, WMA, if free libraries exist to read from them.
 
-Format restructuring
---------------------
-Rather than monolithic library/player files, import modules in a directory
-"plugin"-style: mp3.py, oggvorbis.py, etc., and use __import__.
-
 Covers from Muine, RB
 ---------------------
 Muine uses a pixmap serialization function to save to a BDB database.
