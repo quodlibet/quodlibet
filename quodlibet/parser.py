@@ -1,4 +1,4 @@
-# Copyright 2004 Joe Wreschnig, Michael Urman
+# Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -22,8 +22,41 @@ class error(ValueError): pass
 class ParseError(error): pass
 class LexerError(error): pass
 
-# Iterator for tokenized input.
-class QueryLexer(object):
+class QueryLexer(sre.Scanner):
+    def __init__(self, s):
+        self.string = s.strip()
+        sre.Scanner.__init__(self,
+                             [(r"/([^/\\]|\\.)*/", self.regexp),
+                              (r'"([^\"\\]|\\.)*"', self.str_to_re),
+                              (r"([<>]=?)|(!=)", self.relop),
+                              (r"[=|()&!,#]", self.table),
+                              (r"\s+", None),
+                              (r"[^=)|&#/<>!,]+", self.tag)
+                              ])
+
+    def regexp(self, scanner, string):
+        return QueryLexeme(RE, string[1:-1])
+
+    def str_to_re(self, scanner, string):
+        return QueryLexeme(RE, "^%s$" % sre.escape(string[1:-1]))
+
+    def tag(self, scanner, string):
+        return QueryLexeme(TAG, string.strip())
+
+    def relop(self, scannr, string):
+        return QueryLexeme(RELOP, string)
+
+    def table(self, scanner, string):
+        return QueryLexeme({ '!': NEGATION, '&': INTERSECT, '|': UNION,
+                             '(': OPENP, ')': CLOSEP, '=': EQUALS,
+                             ',': COMMA, '#': NUMCMP }[string], string)
+
+    def __iter__(self):
+        s = self.scan(self.string)
+        if s[1] != "": raise LexerError("characters left over in string")
+        else: return iter(s[0] + [QueryLexeme(EOF, "")])
+
+class QueryLexeme(object):
     _reverse = { NEGATION: "NEGATION", INTERSECT: "INTERSECT",
                  OPENRE: "OPENRE", CLOSERE: "CLOSERE", REMODS: "REMODS",
                  OPENP: "OPENP", CLOSEP: "CLOSEP", UNION: "UNION",
@@ -31,93 +64,21 @@ class QueryLexer(object):
                  RELOP: "RELOP", NUMCMP: "NUMCP", EOF: "EOF",
                  }
 
-    table = { '!': NEGATION, '&': INTERSECT, '|': UNION, '(': OPENP,
-              ')': CLOSEP, '=': EQUALS, ',': COMMA,
-              '/': CLOSERE, '#': NUMCMP, '>': RELOP, '<': RELOP }
-
-    def __init__(self, s):
-        self.string = s.strip()
-        self.regexp_mod = False
-        self.regexp_start = None
-        self.regexp_end = False
-        self.i = 0
-
-    def __iter__(self): return self
-
-    def next(self):
-        if self.i >= len(self.string): raise StopIteration
-        while self.string[self.i] == ' ': self.i += 1
-        if self.regexp_end:
-            self.regexp_end = False
-            if self.string[self.i] in self.table:
-                c = self.string[self.i]
-                self.regexp_mod = True
-                self.regexp_end = False
-                self.i += 1
-                return QueryLexeme(self.table[c], c)            
-        if self.regexp_mod:
-            self.regexp_mod = False
-            if self.string[self.i] not in self.table:
-                start = self.i
-                while (self.i < len(self.string) and
-                       self.string[self.i] not in self.table and
-                       self.string[self.i] != ' '):
-                    self.i += 1
-                return QueryLexeme(REMODS, self.string[start:self.i])
-
-        if self.regexp_start is not None:
-            escaped = False
-            s = ""
-            try:
-                while escaped or self.string[self.i] != self.regexp_start:
-                    if not escaped and self.string[self.i] == '\\':
-                        escaped = True
-                    else:
-                        if (escaped and
-                            self.string[self.i] != self.regexp_start):
-                            s += "\\"
-                        escaped = False
-                        s += self.string[self.i]
-                    self.i += 1
-            except IndexError:
-                raise LexerError("A regular expression is not closed.")
-            self.regexp_start = None
-            self.regexp_end = True
-            return QueryLexeme(RE, s)
-        elif self.string[self.i] == '/':
-            self.i += 1
-            self.regexp_start = self.string[self.i - 1]
-            return QueryLexeme(OPENRE, self.string[self.i - 1])
-        elif self.string[self.i] in self.table:
-            c = self.string[self.i]
-            self.i += 1
-            return QueryLexeme(self.table[c], c)
-        else:
-            start = self.i
-            while (self.i < len(self.string) and
-                   self.string[self.i] not in self.table.keys()):
-                self.i += 1
-            return QueryLexeme(TAG, self.string[start:self.i].strip())
-
-class QueryLexeme(object):
     def __init__(self, typ, lexeme):
         self.type = typ
         self.lexeme = lexeme
 
-    def __iter__(self):
-        return iter((self.type, self.lexeme))
-
     def __repr__(self):
         return (object.__repr__(self).split()[0] +
                 " type=" + repr(self.type) + " (" +
-                str(QueryLexer._reverse[self.type]) +
+                str(QueryLexeme._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
 
 # Parse the input. One lookahead token, start symbol is Query.
 class QueryParser(object):
     def __init__(self, tokens):
-        self.lookahead = tokens.next()
-        self.tokens = tokens
+        self.tokens = iter(tokens)
+        self.lookahead = self.tokens.next()
 
     def _match_parened(self, expect, ReturnType, InternalType):
         self.match(expect)
@@ -191,7 +152,7 @@ class QueryParser(object):
         if self.lookahead.type == UNION: return self.RegexpUnion()
         elif self.lookahead.type == INTERSECT: return self.RegexpInter()
         elif self.lookahead.type == NEGATION: return self.RegexpNeg()
-        elif self.lookahead.type == OPENRE: return self.Regexp()
+        elif self.lookahead.type == RE: return self.Regexp()
         else:
             raise ParseError("The expected symbol should be |, &, !, or "
                              "a tag name, but was %s" % self.lookahead.lexeme)
@@ -211,17 +172,17 @@ class QueryParser(object):
         return self._match_list(self.RegexpSet)
 
     def Regexp(self):
-        self.match(OPENRE)
         re = self.lookahead.lexeme
-        mods = sre.IGNORECASE | sre.MULTILINE | sre.UNICODE
         self.match(RE)
-        self.match(CLOSERE)
-        if self.lookahead.type == REMODS:
+        mods = sre.MULTILINE | sre.UNICODE
+        if re.lower() == re: mods |= sre.IGNORECASE
+        if self.lookahead.type == TAG:
             s = self.lookahead.lexeme.lower()
             if "c" in s: mods &= ~sre.IGNORECASE
+            if "i" in s: mods |= sre.IGNORECASE
             if "s" in s: mods |= sre.DOTALL
             if "l" in s: mods = (mods & ~sre.UNICODE) | sre.LOCALE
-            self.match(REMODS)
+            self.match(TAG)
         try: return sre.compile(re, mods)
         except sre.error:
             raise ParseError("The regular expression /%s/ is invalid." % re)

@@ -55,9 +55,11 @@ class Numcmp(object):
         self.op = op
         value = value.strip()
 
-        if tag in ["lastplayed", "mtime"]:
+        if tag in ["lastplayed", "mtime", "added"]:
             if self.op == ">": self.op = "<"
             elif self.op == "<": self.op = ">"
+            elif self.op == "<=": self.op = ">="
+            elif self.op == ">=": self.op = "<="
 
         if value in ["now"]: value = int(time.time())
         elif value in ["today"]: value = int(time.time() - 24 * 60 * 60)
@@ -81,16 +83,19 @@ class Numcmp(object):
                 elif unit == "week": value *= 7 * 24 * 60 * 60
                 elif unit == "year": value *= 365 * 24 * 60 * 60
 
-                if tag in ["lastplayed", "mtime"]:
+                if tag in ["lastplayed", "mtime", "added"]:
                     value = int(time.time() - value)
         self.value = value
 
     def search(self, data):
         if self.shortcircuit: num = data.get(self.ftag, 0)
         else: num = data(self.ftag, 0)
-        if self.op == ">": return num > self.value
-        elif self.op == "=": return num == self.value
-        elif self.op == "<": return num < self.value
+        if   self.op == ">":  return num >  self.value
+        elif self.op == "<":  return num <  self.value
+        elif self.op == "=":  return num == self.value
+        elif self.op == ">=": return num <= self.value
+        elif self.op == "<=": return num <= self.value
+        elif self.op == "!=": return num != self.value
         else: raise ValueError("Unknown operator %s" % self.op)
 
     def __repr__(self):
