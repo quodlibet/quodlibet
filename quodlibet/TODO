@@ -91,6 +91,18 @@ New keys
 --------
 File size? (Is this useful?)
 
+IRC Dumps
+---------
+(mu) at some point the "examples" should be made configurable on users systems
++.  ideally saveable from the program itself.
+(piman_) Yeah.
+(piman_) Around the same time I make it save the whole past query list, since
++the backend requirements are the same.
+
+(piman_) We need some sort of QL manual...
+(mu) heh.  make wm write it?
+(piman_) The number of tiny languages we have is too long for man page :/
+
 Others
 ------
 RPM spec/package, Gentoo ebuild, whatever.

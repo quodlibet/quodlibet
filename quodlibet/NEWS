@@ -1,9 +1,14 @@
 Recent upgrade notes:
 ---------------------
+Songs added to the library before 0.9 will not support the "added"
+numeric tag (its value will be 0).
+
 0.9
  - "Drop-in" support for new file formats.
  - Conditional tags in rename-by-tag dialog.
- - New searching enhancements.
+ - New search language enhancements.
+ - Non-UTF-8 filesystem encodings support (via CHARSET/G_BROKEN_FILENAMES).
+ - New numeric keys "added", "skipcount".
 
 0.8.1 - Our story takes a sudden dive..
  - Fix a crash when encoding information is not available.
