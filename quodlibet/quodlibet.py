@@ -263,13 +263,13 @@ class GladeHandlers(object):
         resp, fns = make_chooser("Add Music")
         if resp == gtk.RESPONSE_OK:
             progress = widgets["throbber"]
+            label = widgets["found_count"]
             wind = widgets["scan_window"]
             wind.set_transient_for(widgets["main_window"])
             wind.show()
             for added, changed in library.scan(fns):
                 progress.pulse()
-                progress.set_text("%d songs added, %d songs updated" %
-                                   (added, changed))
+                label.set_text("%d new songs found" % added)
                 while gtk.events_pending(): gtk.main_iteration()
             wind.hide()
             player.playlist.refilter()
