@@ -151,7 +151,7 @@ class GTKSongInfoWrapper(object):
             self.pos.set_value(0)
             cover_f = None
             cover = song.find_cover()
-            if hasattr(cover, "rewind"):
+            if hasattr(cover, "write"):
                 cover_f = cover
                 cover = cover.name
             if cover != self.albumfn:

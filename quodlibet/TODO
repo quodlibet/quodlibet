@@ -6,7 +6,6 @@
 - Import covers from Muine.
   - We need to deserialize the pixmap data, whatever it's doing, which
     doesn't seem to be exposed via PyGTK.
-- Import covers from ID3 APIC tags.
 - Streaming & playlists.
   - New UI element(s) for selecting playlists or streams. Combobox next
     to search, Library/Playlist/Streams?

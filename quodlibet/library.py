@@ -236,6 +236,7 @@ class AudioFile(dict):
         elif "=picture" in self:
             f = tempfile.NamedTemporaryFile()
             f.write(self["=picture"])
+            f.flush()
             return f
         else: return None
 
@@ -300,7 +301,7 @@ class MP3File(AudioFile):
                 date[0] = frame["text"]
                 continue
             elif frame["frameid"] == "APIC":
-                self["=picture"] = frame["text"]
+                self["=picture"] = frame["data"]
                 continue
 
             names = self.IDS.get(frame["frameid"], [])
