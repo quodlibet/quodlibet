@@ -348,7 +348,7 @@ class MultiInstanceWidget(object):
             path = ref.get_path()
             song.write()
             if path is not None:
-                widgets.songs[path] = [song[h] for h in HEADERS] + [song, 400]
+                widgets.songs[path] = [song.get(h, "") for h in HEADERS] + [song, 400]
 
         self.save.set_sensitive(False)
         self.revert.set_sensitive(False)
