@@ -884,7 +884,7 @@ class SearchBar(EmptyBar):
             color = "blue"
         elif parser.is_valid(text): color = "dark green"
         else: color = "red"
-        gtk.idle_add(self.set_entry_color, textbox, color)
+        gobject.idle_add(self.set_entry_color, textbox, color)
 
     # Set the color of some text.
     def set_entry_color(self, entry, color):
@@ -1294,13 +1294,13 @@ class MainWindow(gtk.Window):
         self.open_fifo()
 
     def set_paused(self, paused):
-        gtk.idle_add(self._update_paused, paused)
+        gobject.idle_add(self._update_paused, paused)
 
     def set_song(self, song, player):
-        gtk.idle_add(self._update_song, song, player)
+        gobject.idle_add(self._update_song, song, player)
 
     def missing_song(self, song):
-        gtk.idle_add(self._missing_song, song)
+        gobject.idle_add(self._missing_song, song)
 
     # Called when no cover is available, or covers are off.
     def disable_cover(self):
@@ -1497,7 +1497,7 @@ class MainWindow(gtk.Window):
         config.set("settings", "shuffle", str(bool(button.get_active())))
 
     def seek_slider(self, slider, v):
-        gtk.idle_add(player.playlist.seek, v)
+        gobject.idle_add(player.playlist.seek, v)
 
     def random_artist(self, menuitem):
         self.make_query("artist = /^%s$/c" %(
