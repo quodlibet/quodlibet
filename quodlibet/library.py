@@ -29,7 +29,9 @@ class AudioFile(dict):
                 cmp(self.get("title"), other.get("title")))
 
     def sanitize(self, filename = None):
-        if filename: self["filename"] = filename
+        if filename: self["=filename"] = filename
+        elif "filename" in self: self["=filename"] = self["filename"]
+        else: raise ValueError("Unknown filename!")
         for i in ["title", "artist", "album"]:
             if not self.get(i): self[i] = "Unknown"
         if "tracknumber" in self:
@@ -40,10 +42,11 @@ class AudioFile(dict):
             except: pass
         try: del(self["vendor"])
         except KeyError: pass
+        if self.get("filename") == self["=filename"]: del(self["filename"])
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
-        self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
-        self["=basename"] = os.path.basename(self['filename'])
+        self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
+        self["=basename"] = os.path.basename(self['=filename'])
 
     def to_markup(self):
         title = u", ".join(self["title"].split("\n"))
@@ -121,7 +124,7 @@ class AudioFile(dict):
         self.sanitize()
 
     def find_cover(self):
-        base = os.path.split(self['filename'])[0]
+        base = os.path.split(self['=filename'])[0]
         fns = os.listdir(base)
         fns.sort()
         for fn in fns:
@@ -204,7 +207,7 @@ class MP3File(AudioFile):
         self.sanitize(filename)
 
     def write(self):
-        tag = pyid3lib.tag(self['filename'])
+        tag = pyid3lib.tag(self['=filename'])
         for key, id3name in self.INVERT_IDS.items():
             try:
                 while True: tag.remove(id3name)
@@ -215,7 +218,7 @@ class MP3File(AudioFile):
                     except UnicodeError: value = value.encode("utf-8")
                     tag.append({'frameid': id3name, 'text': value })
         tag.update()
-        self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
+        self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
 
     def can_change(self, k=None):
         if k is None:
@@ -235,21 +238,21 @@ class OggFile(AudioFile):
         self.sanitize(filename)
 
     def write(self):
-        f = ogg.vorbis.VorbisFile(self['filename'])
+        f = ogg.vorbis.VorbisFile(self['=filename'])
         comments = f.comment()
         comments.clear()
         for key in self.keys():
-            if key == "filename" or key[0] == "=": continue
+            if key[0] == "=": continue
             else:
                 value = self[key]
                 if not isinstance(value, list): value = value.split("\n")
                 for line in value: comments[key] = line
-        comments.write_to(self['filename'])
-        self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
+        comments.write_to(self['=filename'])
+        self["=mtime"] = int(os.stat(self['=filename'])[stat.ST_MTIME])
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return k not in ["vendor", "filename"]
+        else: return (k not in ["vendor"] and k[0] != "=")
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
@@ -278,7 +281,7 @@ class FLACFile(AudioFile):
 
     def write(self):
         chain = flac.metadata.Chain()
-        chain.read(self['filename'])
+        chain.read(self['=filename'])
         it = flac.metadata.Iterator()
         it.init(chain)
         vc = None
@@ -298,7 +301,7 @@ class FLACFile(AudioFile):
             print "After delete"
             for k in vc.comments: print k
             for key in self.keys():
-                if key == "filename" or key[0] == "=": continue
+                if key[0] == "=": continue
                 else:
                     value = self[key]
                     if not isinstance(value, list): value = value.split("\n")
@@ -310,7 +313,7 @@ class FLACFile(AudioFile):
 
     def can_change(self, k = None):
         if k is None: return True
-        else: return k not in ["vendor", "filename"]
+        else: return (k not in ["vendor"] and k[0] != "=")
 
 class AudioFileGroup(dict):
 
@@ -394,13 +397,13 @@ class Library(dict):
         dict.__init__(self, initial)
 
     def remove(self, song):
-        del(self[song['filename']])
+        del(self[song['=filename']])
 
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
         f = file(fn, "w")
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-        songs = filter(lambda s: s and os.path.exists(s["filename"]),
+        songs = filter(lambda s: s and os.path.exists(s["=filename"]),
                        self.values())
         Pickle.dump(songs, f, 2)
         f.close()
@@ -415,7 +418,7 @@ class Library(dict):
         removed, changed = 0, 0
         for song in songs:
             if type(song) not in supported.values(): continue
-            fn = song['filename']
+            fn = song.get('=filename', song.get("filename", ""))
             if song and os.path.exists(fn):
                 if (os.stat(fn)[stat.ST_MTIME] != song["=mtime"]):
                     self[fn] = MusicFile(fn)

@@ -67,7 +67,7 @@ class GTKSongInfoWrapper(object):
         widgets.songs.remove(iter)
         statusbar = widgets["statusbar"]
         j = statusbar.get_context_id("warnings")
-        statusbar.push(j, "Could not play %s." % song['filename'])
+        statusbar.push(j, "Could not play %s." % song['=filename'])
         library.remove(song)
         player.playlist.remove(song)
 
@@ -489,7 +489,7 @@ class MultiInstanceWidget(object):
         self.artist.set_markup(songinfo['artist'].safenicestr())
         self.title.set_markup(songinfo['title'].safenicestr())
         self.album.set_markup(songinfo['album'].safenicestr())
-        self.filename.set_markup(songinfo['filename'].safenicestr())
+        self.filename.set_markup(songinfo['=filename'].safenicestr())
 
         if len(self.songrefs) > 1:
             listens = sum([song["=playcount"] for song, i in self.songrefs])
@@ -502,7 +502,7 @@ class MultiInstanceWidget(object):
 
         # prune some 'comments' we don't want shown
         for k in songinfo.keys():
-            if k.startswith('=') or k == 'filename': del songinfo[k]
+            if k.startswith('=') or k == '=filename': del songinfo[k]
 
         keys = songinfo.keys()
         keys.sort()
@@ -652,7 +652,7 @@ def refresh_songlist():
 HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track",
                    "discnumber": "Disc", "=d": "Disc",
-                   "=lastplayed": "Last Played",
+                   "=lastplayed": "Last Played", "=filename": "Full Name",
                    "=playcount": "Play Count", "=basename": "Filename" }
 
 CURRENT_SONG = [ None ]

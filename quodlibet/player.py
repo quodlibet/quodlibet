@@ -231,7 +231,7 @@ class PlaylistPlayer(object):
             while self.playlist and not self.quit:
                 self.lock.acquire()
                 self.song = self.playlist.pop(0)
-                fn = self.song['filename']
+                fn = self.song['=filename']
                 config.set("memory", "song", fn)
                 f = file(dump_fn, "w")
                 f.write(self.song.to_dump())
