@@ -50,6 +50,8 @@ class Numcmp(object):
     def __init__(self, tag, op, value):
         if isinstance(tag, unicode): self.tag = tag.encode("utf-8")
         else: self.tag = tag
+        self.ftag = "~#" + self.tag
+        self.shortcircuit = tag.startswith("playlist")
         self.op = op
         value = value.strip()
 
@@ -84,7 +86,8 @@ class Numcmp(object):
         self.value = value
 
     def search(self, data):
-        num = data("~#" + self.tag, 0)
+        if self.shortcircuit: num = data.get(self.ftag, 0)
+        else: num = data(self.ftag, 0)
         if self.op == ">": return num > self.value
         elif self.op == "=": return num == self.value
         elif self.op == "<": return num < self.value

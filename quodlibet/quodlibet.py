@@ -1325,9 +1325,11 @@ class MainWindow(MultiInstanceWidget):
                                        self.playlist_selected)
 
     def playlist_selected(self, query, key):
-        player.playlist.sort_by(key, True)
+        while gtk.events_pending(): gtk.main_iteration()
         player.playlist.playlist_from_filter(query)
-        print query, key
+        while gtk.events_pending(): gtk.main_iteration()
+        player.playlist.sort_by(key)
+        while gtk.events_pending(): gtk.main_iteration()
         self.refresh_songlist()
 
     def hide_browser(self, *args):
@@ -1554,28 +1556,24 @@ class MainSongList(SongList):
 
     # Clear the songlist and readd the songs currently wanted.
     def refresh(self, current=None):
+        if self.view.get_model() is None:
+            self.view.set_model(widgets.songs)
+
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])
 
-        # swap out the current list for the new one
-        self.view.set_model(None)
         widgets.songs.clear()
         length = 0
         for song in player.playlist:
             wgt = ((song is current and 700) or 400)
             widgets.songs.append([song, wgt])
             length += song["~#length"]
-        self.view.set_model(widgets.songs)
 
         # reselect what we can
         selection = self.view.get_selection()
         for i, row in enumerate(iter(widgets.songs)):
             if row[0]['~filename'] in selected:
                 selection.select_path(i)
-        del selected
-
-        gc.collect()
-
         i = len(list(player.playlist))
         return i, length
 
