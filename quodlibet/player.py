@@ -163,11 +163,11 @@ class PlaylistPlayer(object):
                     self.info.set_song(self.song, self.player)
                     self.played.append(self.song)
                     self.lock.release()
-                    while self.paused: time.sleep(0.1)
+                    while self.paused: time.sleep(0.05)
                     for t in self.player:
                         self.info.set_time(t, self.player.length)
                         while self.paused and not self.quit:
-                            time.sleep(0.1)
+                            time.sleep(0.05)
                         if self.quit: break
                     if not self.player.stopped:
                         self.song["~#lastplayed"] = int(time.time())
