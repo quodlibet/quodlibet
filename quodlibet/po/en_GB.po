@@ -11,133 +11,133 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-28 01:43-0600\n"
-"PO-Revision-Date: 2004-12-28 01:42-0600\n"
+"POT-Creation-Date: 2005-01-11 14:26-0600\n"
+"PO-Revision-Date: 2005-01-11 14:30-0600\n"
 "Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: library.py:30
 #, python-format
 msgid "W: Error loading %s"
 msgstr "W: Error loading %s"
 
-#: library.py:137
+#: library.py:141
 msgid "Unknown"
 msgstr "Unknown"
 
-#: library.py:160
+#: library.py:164
 #, python-format
 msgid "by %s"
 msgstr "by %s"
 
-#: library.py:163
+#: library.py:167
 #, python-format
 msgid "Performed by %s"
 msgstr "Performed by %s"
 
-#: library.py:168
+#: library.py:172
 #, python-format
 msgid "arranged by %s"
 msgstr "arranged by %s"
 
-#: library.py:170
+#: library.py:174
 #, python-format
 msgid "lyrics by %s"
 msgstr "lyrics by %s"
 
-#: library.py:172
+#: library.py:176
 #, python-format
 msgid "conducted by %s"
 msgstr "conducted by %s"
 
-#: library.py:174
+#: library.py:178
 #, python-format
 msgid "composed by %s"
 msgstr "composed by %s"
 
-#: library.py:176
+#: library.py:180
 #, python-format
 msgid "written by %s"
 msgstr "written by %s"
 
-#: library.py:186
+#: library.py:190
 #, python-format
 msgid "Disc %s"
 msgstr "Disc %s"
 
-#: library.py:190
+#: library.py:194
 #, python-format
 msgid "Track %s"
 msgstr "Track %s"
 
-#: library.py:205
+#: library.py:209
 msgid "Never"
 msgstr "Never"
 
-#: library.py:210
+#: library.py:214
 #, python-format
 msgid "1 time, recently on %s"
 msgstr "1 time, recently on %s"
 
-#: library.py:212
+#: library.py:216
 #, python-format
 msgid "%d times, recently on %s"
 msgstr "%d times, recently on %s"
 
-#: library.py:509
+#: library.py:520
 #, python-format
 msgid "(shared across all %d songs)"
 msgstr "(shared across all %d songs)"
 
-#: library.py:511
+#: library.py:522
 #, python-format
 msgid "(missing from %d songs)"
 msgstr "(missing from %d songs)"
 
-#: library.py:513
+#: library.py:524
 #, python-format
 msgid "(different across %d songs)"
 msgstr "(different across %d songs)"
 
-#: library.py:515
+#: library.py:526
 #, python-format
 msgid "(different across %d songs, missing from %d songs)"
 msgstr "(different across %d songs, missing from %d songs)"
 
-#: library.py:627
+#: library.py:638
 #, python-format
 msgid "W: %s is not a QL song database."
 msgstr "W: %s is not a QL song database."
 
-#: library.py:666
+#: library.py:673
 #, python-format
 msgid "Checking %s"
 msgstr "Checking %s"
 
-#: library.py:706
+#: library.py:713
 msgid "Enabling Ogg Vorbis support."
 msgstr "Enabling Ogg Vorbis support."
 
-#: library.py:709
+#: library.py:716
 msgid "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
 msgstr "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
 
-#: library.py:712
+#: library.py:719
 msgid "Enabling MP3 support."
 msgstr "Enabling MP3 support."
 
-#: library.py:715
+#: library.py:722
 msgid "W: MP3 support is disabled! MP3 files cannot be loaded."
 msgstr "W: MP3 support is disabled! MP3 files cannot be loaded."
 
-#: library.py:718
+#: library.py:725
 msgid "Enabling FLAC support."
 msgstr "Enabling FLAC support."
 
-#: library.py:722
+#: library.py:729
 msgid "Enabling ModPlug support."
 msgstr "Enabling ModPlug support."
 
@@ -319,11 +319,11 @@ msgstr ""
 
 #: quodlibet.glade.h:49
 msgid ""
-"Characters outside of the ASCII set (Latin A-Z, 0-9, and punctuation) will "
-"be replaced by underscores"
+"Characters outside of the ASCII set (A-Z, 0-9, and punctuation) will be "
+"replaced by underscores"
 msgstr ""
-"Characters outside of the ASCII set (Latin A-Z, 0-9, and punctuation) will "
-"be replaced by underscores"
+"Characters outside of the ASCII set (A-Z, 0-9, and punctuation) will be "
+"replaced by underscores"
 
 #: quodlibet.glade.h:50
 msgid "Check for changes in the library made since the program was started"
@@ -576,8 +576,8 @@ msgid "Re_load library"
 msgstr "Re_load library"
 
 #: quodlibet.glade.h:107
-msgid "Reload all songs in your library. This can take a long time."
-msgstr "Reload all songs in your library. This can take a long time."
+msgid "Reload all songs in your library (this can take a long time)"
+msgstr "Reload all songs in your library (this can take a long time)"
 
 #: quodlibet.glade.h:108
 msgid "Remove selected songs from your library"
@@ -632,274 +632,266 @@ msgid "Select a font for the OSD"
 msgstr "Select a font for the OSD"
 
 #: quodlibet.glade.h:121
-msgid "Set column headers"
-msgstr "Set column headers"
+msgid "Select a second color for the OSD"
+msgstr "Select a second colour for the OSD"
 
 #: quodlibet.glade.h:122
+msgid "Set and save column headers"
+msgstr "Set and save column headers"
+
+#: quodlibet.glade.h:123
 msgid "Show album cover _images"
 msgstr "Show album cover _images"
 
-#: quodlibet.glade.h:123
+#: quodlibet.glade.h:124
 msgid "Show only songs by the same artists as the selected ones"
 msgstr "Show only songs by the same artists as the selected ones"
 
-#: quodlibet.glade.h:124
+#: quodlibet.glade.h:125
 msgid "Show only songs in the same albums as the selected ones"
 msgstr "Show only songs in the same albums as the selected ones"
 
-#: quodlibet.glade.h:125
+#: quodlibet.glade.h:126
 msgid "Show only songs with the same genres as the selected ones"
 msgstr "Show only songs with the same genres as the selected ones"
 
-#: quodlibet.glade.h:126
+#: quodlibet.glade.h:127
 msgid "Song Properties"
 msgstr "Song Properties"
 
-#: quodlibet.glade.h:127
+#: quodlibet.glade.h:128
 msgid "Split _on:"
 msgstr "Split _on:"
 
-#: quodlibet.glade.h:128
+#: quodlibet.glade.h:129
 msgid "Split _performer out of artist"
 msgstr "Split _performer out of artist"
 
-#: quodlibet.glade.h:129
+#: quodlibet.glade.h:130
 msgid "Split arranger out of ar_tist"
 msgstr "Split arranger out of ar_tist"
 
-#: quodlibet.glade.h:130
+#: quodlibet.glade.h:131
 msgid "Split disc out of _album"
 msgstr "Split disc out of _album"
 
-#: quodlibet.glade.h:131
+#: quodlibet.glade.h:132
 msgid "Split into _multiple values"
 msgstr "Split into _multiple values"
 
-#: quodlibet.glade.h:132
-msgid "Split into album and disc number"
-msgstr "Split into album and disc number"
-
 #: quodlibet.glade.h:133
-msgid "Split this tag's value into multiple values"
-msgstr "Split this tag's value into multiple values"
-
-#: quodlibet.glade.h:134
-msgid "Split title into title and version"
-msgstr "Split title into title and version"
-
-#: quodlibet.glade.h:135
 msgid "Split version out of _title"
 msgstr "Split version out of _title"
 
-#: quodlibet.glade.h:136
+#: quodlibet.glade.h:134
 msgid "Sta_rt from:"
 msgstr "Sta_rt from:"
 
-#: quodlibet.glade.h:137
+#: quodlibet.glade.h:135
 msgid "Tag Editing"
 msgstr "Tag Editing"
 
-#: quodlibet.glade.h:138
+#: quodlibet.glade.h:136
 msgid "Tag by Filename"
 msgstr "Tag by Filename"
 
-#: quodlibet.glade.h:139
+#: quodlibet.glade.h:137
 msgid "Tag values will be split based on your preferences"
 msgstr "Tag values will be split based on your preferences"
 
-#: quodlibet.glade.h:140
+#: quodlibet.glade.h:138
 msgid ""
 "Tags should replace existing ones\n"
 "Tags should be added to existing ones"
 msgstr ""
 "Tags should replace existing ones\n"
 "Tags should be added to existing ones"
+
+#: quodlibet.glade.h:140
+msgid ""
+"The 40 songs you've played least (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"The 40 songs you've played least (more than 40 may be chosen if there are "
+"ties)"
+
+#: quodlibet.glade.h:141
+msgid ""
+"The 40 songs you've played most (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"The 40 songs you've played most (more than 40 may be chosen if there are "
+"ties)"
 
 #: quodlibet.glade.h:142
 msgid ""
-"The 40 songs you've played least (more than 40 may be chosen if there are "
-"ties)"
+"These characters will be used as separators when \"Split values\" is "
+"selected in the tag editor"
 msgstr ""
-"The 40 songs you've played least (more than 40 may be chosen if there are "
-"ties)"
+"These characters will be used as separators when \"Split values\" is "
+"selected in the tag editor"
 
 #: quodlibet.glade.h:143
-msgid ""
-"The 40 songs you've played most (more than 40 may be chosen if there are "
-"ties)"
-msgstr ""
-"The 40 songs you've played most (more than 40 may be chosen if there are "
-"ties)"
-
-#: quodlibet.glade.h:144
-msgid ""
-"These characters will be used as separators when \"Split values\" is "
-"selected in the tag editor"
-msgstr ""
-"These characters will be used as separators when \"Split values\" is "
-"selected in the tag editor"
-
-#: quodlibet.glade.h:145
 msgid "Title"
 msgstr "Title"
 
-#: quodlibet.glade.h:146
+#: quodlibet.glade.h:144
 msgid "Title includes version"
 msgstr "Title includes version"
 
-#: quodlibet.glade.h:147
+#: quodlibet.glade.h:145
 msgid "Track Numbers"
 msgstr "Track Numbers"
 
-#: quodlibet.glade.h:148
+#: quodlibet.glade.h:146
 msgid "Upload the selected songs to your portable device"
 msgstr "Upload the selected songs to your portable device"
 
-#: quodlibet.glade.h:149
+#: quodlibet.glade.h:147
 msgid "Upload to PMP..."
 msgstr "Upload to PMP..."
 
-#: quodlibet.glade.h:150
+#: quodlibet.glade.h:148
 msgid "View and edit tags in the playing song"
 msgstr "View and edit tags in the playing song"
 
-#: quodlibet.glade.h:151
+#: quodlibet.glade.h:149
 msgid "View and edit tags in the selected songs"
 msgstr "View and edit tags in the selected songs"
 
-#: quodlibet.glade.h:152
+#: quodlibet.glade.h:150
 msgid "Visit the artist's website"
 msgstr "Visit the artist's website"
 
-#: quodlibet.glade.h:153
+#: quodlibet.glade.h:151
 msgid "When the playing song changes, scroll to it in the playlist"
 msgstr "When the playing song changes, scroll to it in the playlist"
 
-#: quodlibet.glade.h:154
+#: quodlibet.glade.h:152
 msgid "_About"
 msgstr "_About"
 
-#: quodlibet.glade.h:155
+#: quodlibet.glade.h:153
 msgid "_Add Music..."
 msgstr "_Add Music..."
 
-#: quodlibet.glade.h:156
+#: quodlibet.glade.h:154
 msgid "_Disc"
 msgstr "_Disc"
 
-#: quodlibet.glade.h:157
+#: quodlibet.glade.h:155
 msgid "_Filename"
 msgstr "_Filename"
 
-#: quodlibet.glade.h:158
+#: quodlibet.glade.h:156
 msgid "_Filters"
 msgstr "_Filters"
 
-#: quodlibet.glade.h:159
+#: quodlibet.glade.h:157
 msgid "_Genre"
 msgstr "_Genre"
 
-#: quodlibet.glade.h:160
+#: quodlibet.glade.h:158
 msgid "_Help"
 msgstr "_Help"
 
-#: quodlibet.glade.h:161
+#: quodlibet.glade.h:159
 msgid "_Jump to current song automatically"
 msgstr "_Jump to current song automatically"
 
-#: quodlibet.glade.h:162
+#: quodlibet.glade.h:160
 msgid "_Jump to playing song"
 msgstr "_Jump to playing song"
 
-#: quodlibet.glade.h:163
+#: quodlibet.glade.h:161
 msgid "_Length"
 msgstr "_Length"
 
-#: quodlibet.glade.h:164
+#: quodlibet.glade.h:162
 msgid "_Music"
 msgstr "_Music"
 
-#: quodlibet.glade.h:165
+#: quodlibet.glade.h:163
 msgid "_Never played"
 msgstr "_Never played"
 
-#: quodlibet.glade.h:166
+#: quodlibet.glade.h:164
 msgid "_Next"
 msgstr "_Next"
 
-#: quodlibet.glade.h:167
+#: quodlibet.glade.h:165
 msgid "_Next song"
 msgstr "_Next song"
 
-#: quodlibet.glade.h:168
+#: quodlibet.glade.h:166
 msgid "_Part"
 msgstr "_Part"
 
-#: quodlibet.glade.h:169 quodlibet.py:747
+#: quodlibet.glade.h:167 quodlibet.py:747
 msgid "_Play"
 msgstr "_Play"
 
-#: quodlibet.glade.h:170
+#: quodlibet.glade.h:168
 msgid "_Playlist"
 msgstr "_Playlist"
 
-#: quodlibet.glade.h:171
+#: quodlibet.glade.h:169
 msgid "_Preview"
 msgstr "_Preview"
 
-#: quodlibet.glade.h:172
+#: quodlibet.glade.h:170
 msgid "_Repeat"
 msgstr "_Repeat"
 
-#: quodlibet.glade.h:173
+#: quodlibet.glade.h:171
 msgid "_Replace underscores with spaces"
 msgstr "_Replace underscores with spaces"
 
-#: quodlibet.glade.h:174
+#: quodlibet.glade.h:172
 msgid "_Run:"
 msgstr "_Run:"
 
-#: quodlibet.glade.h:175
+#: quodlibet.glade.h:173
 msgid "_Search box"
 msgstr "_Search box"
 
-#: quodlibet.glade.h:176
+#: quodlibet.glade.h:174
 msgid "_Select..."
 msgstr "_Select..."
 
-#: quodlibet.glade.h:177
+#: quodlibet.glade.h:175
 msgid "_Show programmatic comments"
 msgstr "_Show programmatic comments"
 
-#: quodlibet.glade.h:178
+#: quodlibet.glade.h:176
 msgid "_Shuffle"
 msgstr "_Shuffle"
 
-#: quodlibet.glade.h:179
-msgid "_Split values"
-msgstr "_Split values"
+#: quodlibet.glade.h:177
+msgid "_Split into multiple values"
+msgstr "_Split into multiple values"
 
-#: quodlibet.glade.h:180
+#: quodlibet.glade.h:178
 msgid "_Title-case resulting values"
 msgstr "_Title-case resulting values"
 
-#: quodlibet.glade.h:181
+#: quodlibet.glade.h:179
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: quodlibet.glade.h:182
+#: quodlibet.glade.h:180
 msgid "_Total tracks:"
 msgstr "_Total tracks:"
 
-#: quodlibet.glade.h:183
+#: quodlibet.glade.h:181
 msgid "_Track"
 msgstr "_Track"
 
-#: quodlibet.glade.h:184
+#: quodlibet.glade.h:182
 msgid "_Version"
 msgstr "_Version"
 
-#: quodlibet.glade.h:185
+#: quodlibet.glade.h:183
 msgid "_View"
 msgstr "_View"
 
@@ -1501,8 +1493,8 @@ msgstr "1 hour, "
 
 #: util.py:94
 #, python-format
-msgid "%d minute, "
-msgstr "%d minute, "
+msgid "%d minutes, "
+msgstr "%d minutes, "
 
 #: util.py:95
 msgid "1 minute, "
