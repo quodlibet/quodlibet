@@ -7,3 +7,6 @@
 - FLAC segfaults
 - Audio resampling when rate != 44100.
 - Various skipping problems -- get smarter about Python threads.
+- Look into eventual GStreamer port
+  - FOR PLAYING ONLY. We'll continue to handle our own metadata, because
+    we do it better.

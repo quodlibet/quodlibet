@@ -22,6 +22,7 @@ class AudioFile(dict):
         if not hasattr(other, "get"):
             raise ValueError("songs can only be compared to other songs.")
         return (cmp(self.get("album"), other.get("album")) or
+                cmp(self.get("=d"), other.get("=d")) or
                 cmp(self.get("=#"), other.get("=#")) or
                 cmp(self.get("artist"), other.get("artist")) or
                 cmp(self.get("title"), other.get("title")))
@@ -33,11 +34,15 @@ class AudioFile(dict):
         if "tracknumber" in self:
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
             except: pass
+        if "discnumber" in self:
+            try: self["=d"] = int(self["discnumber"].split("/")[0])
+            except: pass
         try: del(self["vendor"])
         except KeyError: pass
         self.setdefault("=lastplayed", 0)
         self.setdefault("=playcount", 0)
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
+        self["=basename"] = os.path.basename(self['filename'])
 
     def to_markup(self):
         title = u", ".join(self["title"].split("\n"))
@@ -84,6 +89,11 @@ class AudioFile(dict):
             except ValueError:
                 try: del(self["=#"])
                 except KeyError: pass
+        elif key == "discnumber":
+            try: self["=d"] = int(self["discnumber"].split("/")[0])
+            except ValueError:
+                try: del(self["=d"])
+                except KeyError: pass
 
     def add(self, key, value):
         if key not in self: self[key] = value
@@ -92,6 +102,11 @@ class AudioFile(dict):
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
             except ValueError:
                 try: del(self["=#"])
+                except KeyError: pass
+        elif key == "tracknumber":
+            try: self["=d"] = int(self["discnumber"].split("/")[0])
+            except ValueError:
+                try: del(self["=d"])
                 except KeyError: pass
 
     def remove(self, key, value):
@@ -104,6 +119,11 @@ class AudioFile(dict):
             try: self["=#"] = int(self["tracknumber"].split("/")[0])
             except ValueError:
                 try: del(self["=#"])
+                except KeyError: pass
+        elif key == "discnumber":
+            try: self["=d"] = int(self["discnumber"].split("/")[0])
+            except ValueError:
+                try: del(self["=d"])
                 except KeyError: pass
 
     def find_cover(self):
@@ -373,8 +393,7 @@ class Library(dict):
                     self[fn] = MusicFile(fn)
                     changed += 1
                 else:
-                    song.setdefault("=lastplayed", 0)
-                    song.setdefault("=playcount", 0)
+                    song.sanitize(fn)
                     self[fn] = song
             else:
                 removed += 1

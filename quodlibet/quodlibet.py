@@ -199,6 +199,7 @@ class GladeHandlers(object):
         old_h = HEADERS[:]
 
         # Fill in the header checkboxes.
+        widgets["disc_t"].set_active("=d" in old_h)
         widgets["track_t"].set_active("=#" in old_h)
         widgets["album_t"].set_active("album" in old_h)
         widgets["artist_t"].set_active("artist" in old_h)
@@ -206,10 +207,11 @@ class GladeHandlers(object):
         widgets["year_t"].set_active("year" in old_h)
         widgets["version_t"].set_active("version" in old_h)
         widgets["performer_t"].set_active("performer" in old_h)
+        widgets["filename_t"].set_active("=basename" in old_h)
 
         # Remove the standard headers, and put the rest in the list.
-        for t in ["=#", "album", "artist", "genre", "year", "version",
-                  "performer", "title"]:
+        for t in ["=d", "=#", "album", "artist", "genre", "year", "version",
+                  "performer", "title", "=basename"]:
             try: old_h.remove(t)
             except ValueError: pass
         widgets["extra_headers"].set_text(" ".join(old_h))
@@ -221,6 +223,7 @@ class GladeHandlers(object):
     def set_headers(*args):
         # Based on the state of the checkboxes, set up new column headers.
         new_h = []
+        if widgets["disc_t"].get_active(): new_h.append("=d")
         if widgets["track_t"].get_active(): new_h.append("=#")
         new_h.append("title")
         if widgets["album_t"].get_active(): new_h.append("album")
@@ -229,6 +232,7 @@ class GladeHandlers(object):
         if widgets["year_t"].get_active(): new_h.append("year")
         if widgets["version_t"].get_active(): new_h.append("version")
         if widgets["performer_t"].get_active(): new_h.append("performer")
+        if widgets["filename_t"].get_active(): new_h.append("=basename")
         new_h.extend(widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
         config.set("settings", "headers", " ".join(HEADERS))
@@ -641,8 +645,9 @@ def refresh_songlist():
 
 HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track",
-                   "discnumber": "Disc", "=lastplayed": "Last Played",
-                   "=playcount": "Play Count" }
+                   "discnumber": "Disc", "=d": "Disc",
+                   "=lastplayed": "Last Played",
+                   "=playcount": "Play Count", "=basename": "Filename" }
 
 CURRENT_SONG = [ None ]
 
@@ -656,7 +661,7 @@ def set_entry_color(entry, color):
 # Build a new filter around our list model, set the headers to their
 # new values.
 def set_column_headers(sl):
-    SHORT_COLS = ["=#", "tracknumber", "discnumber"]
+    SHORT_COLS = ["=#", "=d", "tracknumber", "discnumber"]
     sl.set_model(None)
     widgets.songs = gtk.ListStore(*([str] * len(HEADERS) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)

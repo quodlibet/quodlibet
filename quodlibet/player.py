@@ -150,14 +150,12 @@ class OSSAudioDevice(object):
 
     def set_info(self, rate, channels):
         if rate != self._rate or channels != self._channels:
-            print "Setting", rate, channels
             self.dev.close()
             self.dev = ossaudiodev.open("w")
             self.dev.setfmt(ossaudiodev.AFMT_S16_LE)
             self._channels = self.dev.channels(channels)
             self._rate = self.dev.speed(rate)
             self.dev.nonblock()
-            print self._rate, self._channels
 
 class PlaylistPlayer(object):
     def __init__(self, output = None, playlist = []):
