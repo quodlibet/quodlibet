@@ -1,3 +1,10 @@
+quodlibet (0.8.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * getpreferredencoding() instead of getdefaultlocale()[1]. (Closes: #293834)
+
+ -- Joe Wreschnig <piman@debian.org>  Sun, 06 Feb 2005 13:04:28 -0600
+
 quodlibet (0.8-1) unstable; urgency=low
 
   * Depends on PyGTK >= 2.4.1 (for use of combobox.set_model(None).
