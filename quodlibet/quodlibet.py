@@ -470,15 +470,37 @@ class PlaylistWindow(object):
                                                      *args, **kwargs)
             win.initialize_window(name)
             cls.list_windows[name] = win
+            # insert sorted, unless present
+            def insert_sorted(model, path, iter, last_try):
+                if model[iter][1] == win.name:
+                    return True # already present
+                if model[iter][1] > win.name:
+                    model.insert_before(iter, [win.prettyname, win.name])
+                    return True # inserted
+                if path == last_try:
+                    model.insert_after(iter, [win.prettyname, win.name])
+                    return True # appended
+            model = PlayList.lists_model()
+            model.foreach(insert_sorted, len(model)-1)
         return win
 
     def __init__(self, name):
         self.win.present()
 
     def set_name(self, name):
-        name = PlayList.prettify_name(name)
+        self.name = name
+        self.prettyname = name = PlayList.prettify_name(name)
         self.win.set_title('Quod Libet Playlist: %s' % name)
         #self.label.set_text(name + ':')
+
+    def destroy(self, *w):
+        if not len(self.view.view.get_model()):
+            def remove_matching(model, path, iter, name):
+                if model[iter][1] == name:
+                    model.remove(iter)
+                    return True
+            PlayList.lists_model().foreach(remove_matching, self.name)
+        self.win.destroy()
 
     def initialize_window(self, name):
         win = self.win = gtk.Window()
@@ -513,10 +535,9 @@ class PlaylistWindow(object):
         swin.add(view)
 
         self.set_name(name)
-        destroy = lambda *w: self.win.destroy()
-        self.win.connect('delete-event', destroy)
-        self.win.connect('destroy', destroy)
-        self.close.connect('clicked', destroy)
+        self.win.connect('delete-event', self.destroy)
+        self.win.connect('destroy', self.destroy)
+        self.close.connect('clicked', self.destroy)
         self.win.show_all()
 
     def add_query_results(self, text, sort):
@@ -611,24 +632,9 @@ class Osd(object):
             self.window = None
 
 class PlaylistBar(object):
-    model = None
-
-    def refresh():
-        model = PlaylistBar.model
-        model.clear()
-        model.append([_("All songs"), ""])
-        playlists = [[PlayList.prettify_name(p), p] for p in
-                     library.playlists()]
-        playlists.sort()
-        for p in playlists: model.append(p)
-    refresh = staticmethod(refresh)
 
     def __init__(self, hbox, cb):
-        if PlaylistBar.model is None:
-            PlaylistBar.model = gtk.ListStore(str, str)
-        PlaylistBar.refresh()
-
-        self.combo = gtk.ComboBox(PlaylistBar.model)
+        self.combo = gtk.ComboBox(PlayList.lists_model())
         cell = gtk.CellRendererText()
         self.combo.pack_start(cell, True)
         self.combo.add_attribute(cell, 'text', 0)
@@ -656,12 +662,12 @@ class PlaylistBar(object):
         if active == 0:
             self.cb("", None)
         else:
-            playlist = "playlist_" + PlaylistBar.model[active][1]
+            playlist = "playlist_" + self.combo.get_model()[active][1]
             self.cb("#(%s > 0)" % playlist, "~#"+playlist)
 
     def edit_current(self, button):
         active = self.combo.get_active()
-        if active: PlaylistWindow(PlaylistBar.model[active][0])
+        if active: PlaylistWindow(self.combo.get_model()[active][0])
 
 class SearchBar(object):
     model = None
@@ -1519,6 +1525,18 @@ class PlayList(SongList):
         for c in PlayList.DAB: name = name.replace("%"+hex(ord(c))[2:], c)
         return name
     prettify_name = staticmethod(prettify_name)
+
+    def lists_model(cls):
+        try: return cls._lists_model
+        except AttributeError:
+            model = cls._lists_model = gtk.ListStore(str, str)
+            playlists = [[PlayList.prettify_name(p), p] for p in
+                          library.playlists()]
+            playlists.sort()
+            model.append([("All songs"), ""])
+            for p in playlists: model.append(p)
+            return model
+    lists_model = classmethod(lists_model)
 
     def __init__(self, view, name):
         self.name = 'playlist_' + PlayList.normalize_name(name)
