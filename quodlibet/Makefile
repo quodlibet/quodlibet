@@ -40,7 +40,7 @@ extensions: $(EXTENSIONS)
 	cp $^/$@ .
 
 test:
-	python -c "import tests; tests.unit()"
+	@python -c "import tests; tests.unit()"
 
 po-data:
 	cd po && make po

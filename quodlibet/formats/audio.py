@@ -120,7 +120,7 @@ class AudioFile(dict):
         else:
             text = "http://www.google.com/search?q="
             esc = lambda c: ord(c) > 127 and '%%%x'%ord(c) or c
-            if "labelid" in self: text += esc(self["labelid"])
+            if "labelid" in self: text += ''.join(map(esc, self["labelid"]))
             else:
                 artist = util.escape("+".join(self("artist").split()))
                 album = util.escape("+".join(self("album").split()))
@@ -222,16 +222,15 @@ class AudioFile(dict):
             else:
                 self[key] = "\n".join(parts)
         except KeyError: self[key] = new_value
-        self.sanitize()
 
     def add(self, key, value):
         if self.unknown(key): self[key] = value
         else: self[key] += "\n" + value
-        self.sanitize()
 
     # Like change, if the value isn't found, remove all values...
     def remove(self, key, value):
-        if self[key] == value: del(self[key])
+        if key not in self: return
+        elif self[key] == value: del(self[key])
         else:
             try:
                 parts = self.list(key)
@@ -239,7 +238,6 @@ class AudioFile(dict):
                 self[key] = "\n".join(parts)
             except ValueError:
                 if key in self: del(self[key])
-        self.sanitize()
 
     # Try to find an album cover for the file
     def find_cover(self):
@@ -250,15 +248,14 @@ class AudioFile(dict):
         for fn in fns:
             lfn = fn.lower()
             if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
-                # Look for some generic names, and also the album
-                # label number, which is pretty common. Label number
-                # is worth 2 points, everything else 1.
-                matches = filter(lambda s: s in lfn,
-                                 ["front", "cover", "jacket", "folder",
-                                  self.get("labelid", lfn + ".").lower(),
-                                  self.get("labelid", lfn + ".").lower()])
-                score = len(matches)
-                if score: images.append((score, os.path.join(base, fn)))
+                # check for the album label number
+                if self.get("labelid", lfn + ".").lower() in lfn:
+                    images.append((100, os.path.join(base, fn)))
+                else: # otherwise, check for common names
+                    matches = filter(lambda s: s in lfn,
+                                     ["front", "cover", "jacket", "folder"])
+                    score = len(matches)
+                    if score: images.append((score, os.path.join(base, fn)))
         # Highest score wins.
         if images: return file(max(images)[1], "rb")
         elif "~picture" in self:
@@ -280,9 +277,6 @@ class AudioFile(dict):
 class AudioPlayer(object):
     def __init__(self):
         self.stopped = False
-
-    def pause(self): pass
-    def unpause(self): pass
 
     def end(self):
         self.stopped = True

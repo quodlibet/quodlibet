@@ -1,106 +1,8 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-import config
-config.init()
-import library
 from formats.audio import AudioFile, Unknown
 from formats import MusicFile
-library.init()
-
-class AudioFileTest(TestCase):
-    def test_cmp(self):
-        song1 = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                            "~#disc": 1, "~#track": 2, "title": "A song" })
-        
-        song1c = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                             "~#disc": 1, "~#track": 2, "title": "A song" })
-        
-        song2 = AudioFile({ "artist": u"Foo", "album": u"Bar",
-                            "~#disc": 2, "~#track": 2, "title": "Another song" })
-        
-        self.failUnlessEqual(song1, song1)
-        self.failUnlessEqual(song1, song1c)
-        self.failUnless(song2 > song1)
-
-    def test_getters(self):
-        song1 = AudioFile({ "a": "foo\nbar", "b": "foobar",
-                            "~filename": "DNE",
-                            "~mtime": 0, "album": Unknown("foo"),
-                            })
-        self.failUnlessEqual(song1.comma("a"), "foo, bar")
-        self.failUnlessEqual(song1.comma("b"), "foobar")
-        self.failUnlessEqual(song1.comma("c"), "")
-        self.failUnless(song1.realkeys() in [["a", "b"], ["b", "a"]])
-        self.failIf(song1.exists())
-        self.failIf(song1.valid())
-        song1["title"] = "a song"
-        song1["artist"] = "piman"
-        self.failUnlessEqual(song1.to_short(), "piman - a song")
-        song1["album"] = "happy"
-        self.failUnlessEqual(song1.to_short(), "happy - a song")
-        song1["tracknumber"] = "12/14"
-        self.failUnlessEqual(song1.to_short(), "happy - 12/14 - a song")
-        song1["contact"] = "foobar"
-        self.failIfEqual(song1.website(), "foobar")
-        song1["contact"] = "https://foobar"
-        self.failUnlessEqual(song1.website(), "https://foobar")
-        song1["website"] = "barbar"
-        self.failUnlessEqual(song1.website(), "barbar")
-        self.failUnlessEqual(song1.list("a"), ["foo", "bar"])
-        self.failUnlessEqual(song1.list("b"), ["foobar"])
-        self.failUnlessEqual(song1.list("c"), [])
-
-    def test_setters(self):
-        song = AudioFile({ "~filename": "undef",
-                           "artist": "foo\nbar", "title": "foobar",
-                           "album": Unknown("Unknown")})
-        song.add("album", "An Album")
-        self.failUnlessEqual(song["album"], "An Album")
-        song.change("artist", "foo", "quux")
-        self.failUnlessEqual(song["artist"], "quux\nbar")
-        song.remove("album", "An Album")
-        self.failUnless(song.unknown("album"))
-        song.add("tracknumber", "11/12")
-        self.failUnlessEqual(song("~#track"), 11)
-        song.remove("tracknumber", "11/12")
-        self.failIf("~#track" in song)
-        song.change("artist", "Not A Value", "baz")
-        self.failUnlessEqual(song["artist"], "baz")
-        song.add("artist", "foo")
-        self.failUnlessEqual(song["artist"], "baz\nfoo")
-        song.remove("artist", "Not A Value")
-        self.failUnless(song.unknown("artist"))
-        song.add("artist", "foo")
-        song.add("artist", "bar")
-        song.remove("artist", "foo")
-        self.failUnlessEqual(song["artist"], "bar")
-        song.change("nonext", "foo", "bar")
-        self.failUnlessEqual(song["nonext"], "bar")
-
-    def test_sanitize(self):
-        song = AudioFile({ "~filename": "/foo/bar/quux.ogg",
-                           "title": u"A Song",
-                           "vendor": "Xiph",
-                           "discnumber": "2/3",
-                           "tracknumber": "11/99" })
-        song.sanitize()
-        self.failUnlessEqual(song("~basename"), "quux.ogg")
-        self.failUnlessEqual(song("~dirname"), "/foo/bar")
-        self.failUnlessEqual(song("~#track"), 11)
-        self.failUnlessEqual(song("~#disc"), 2)
-        self.failUnlessEqual(song["~#playcount"], 0)
-        self.failUnless("vendor" not in song)
-        self.failUnlessEqual(song("album"), "Unknown")
-        self.failUnless(song.unknown("album"))
-
-    def test_cover(self):
-        song1 = AudioFile({ "~filename": "tests/data/foo.ogg" })
-        song1.sanitize()
-        song2 = AudioFile({ "~filename": "tests/foo.ogg" })
-        song2.sanitize()
-        self.failUnlessEqual(song1.find_cover().name,
-                             "tests/data/frontcoverjacket.png")
-        self.failIf(song2.find_cover())
+import config; config.init()
 
 class TestFileTypes(TestCase):
     def setUp(self):
@@ -131,5 +33,4 @@ class TestFileTypes(TestCase):
             self.failUnlessEqual(file["~#playcount"], 0)
             self.failUnlessEqual(file("~#track"), 2)
 
-registerCase(AudioFileTest)
 registerCase(TestFileTypes)

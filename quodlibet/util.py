@@ -54,7 +54,7 @@ def format_size(size):
     if size > 1024*1024:
         return "%.02fMB" % (float(size) / (1024*1024))
     elif size > 1024:
-        return "%.02fKiB" % (float(size) / (1024*1024))
+        return "%.02fKB" % (float(size) / (1024*1024))
     else:
         return "%dB" % size
 
@@ -242,8 +242,9 @@ def format_string(format, d):
     return output
 
 def unexpand(filename):
-    if filename.startswith(os.path.expanduser("~")):
-        filename = filename.replace(os.path.expanduser("~"), "~", 1)
+    if filename == os.path.expanduser("~"): return "~"
+    elif filename.startswith(os.path.expanduser("~/")):
+        filename = filename.replace(os.path.expanduser("~/"), "~/", 1)
     return filename
 
 class PatternFromFile(object):

@@ -1,13 +1,14 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
 
-from util import escape, unescape, re_esc, encode, decode, mkdir, iscommand
+import util
+from util import re_esc, encode, decode, mkdir, iscommand
 from util import find_subtitle, split_album, split_title, split_value
 from util import PatternFromFile, FileFromPattern
 
 import os
 
-class UtilTests(TestCase):
+class FSTests(TestCase):
     def test_mkdir(self):
         self.failUnless(not os.path.isdir("nonext"))
         mkdir("nonext/test/test2/test3")
@@ -24,14 +25,39 @@ class UtilTests(TestCase):
         os.rmdir("nonext")
         self.failUnless(not os.path.isdir("nonext"))
 
+    def test_iscommand(self):
+        self.failUnless(iscommand("ls"))
+        self.failUnless(iscommand("/bin/ls"))
+        self.failIf(iscommand("/bin/asdfjkl"))
+        self.failIf(iscommand("asdfjkl"))
+        self.failIf(iscommand(""))
+
+    def test_fscoding(self):
+        import locale
+        if locale.getpreferredencoding() != "UTF-8":
+            print "WARNING: Skipping fscoding test."
+        else:
+            self.failUnlessEqual(util.fscoding(), "utf-8")
+            import os
+            os.environ["CHARSET"] = "ascii"
+            self.failUnlessEqual(util.fscoding(), "ascii")
+            del(os.environ["CHARSET"])
+
+    def test_unexpand(self):
+        d = os.path.expanduser("~")
+        self.failUnlessEqual(util.unexpand(d), "~")
+        self.failUnlessEqual(util.unexpand(d + "/"), "~/")
+        self.failUnlessEqual(util.unexpand(d + "foobar/"), d + "foobar/")
+        self.failUnlessEqual(util.unexpand(os.path.join(d, "la/la")),"~/la/la")
+
+class StringTests(TestCase):
     def test_escape(self):
-        self.failUnlessEqual(escape(""), "")
-        self.failUnlessEqual(escape("foo&"), "foo&amp;")
-        self.failUnlessEqual(escape("<&>"), "&lt;&amp;&gt;")
-        self.failUnlessEqual(unescape("&"), "&")
-        self.failUnlessEqual(unescape("&amp;"), "&")
-        self.failUnlessEqual(unescape(escape("<&testing&amp;>amp;")),
-                          "<&testing&amp;>amp;")
+        for s in ["foo&amp;", "<&>", "&", "&amp;",
+                  "<&testing&amp;>amp;"]:
+            esc = util.escape(s)
+            self.failIfEqual(s, esc)
+            self.failUnlessEqual(s, util.unescape(esc))
+        self.failUnlessEqual(util.escape(""), "")
 
     def test_re_esc(self):
         self.failUnlessEqual(re_esc(""), "")
@@ -42,14 +68,8 @@ class UtilTests(TestCase):
     def test_unicode(self):
         self.failUnlessEqual(decode(""), "")
         self.failUnlessEqual(decode("foo!"), "foo!")
-        self.failUnlessEqual(decode("foo\xde"), u'foo\ufffd [Invalid Encoding]')
+        self.failUnlessEqual(decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
         self.failUnlessEqual(encode(u"abcde"), "abcde")
-
-    def test_iscommand(self):
-        self.failUnless(iscommand("ls"))
-        self.failUnless(iscommand("/bin/ls"))
-        self.failIf(iscommand("/bin/asdfjkl"))
-        self.failIf(iscommand("asdfjkl"))
 
     def test_split(self):
         self.failUnlessEqual(split_value("a b"), ["a b"])
@@ -71,7 +91,8 @@ class UtilTests(TestCase):
         self.failUnlessEqual(split_album("foo ~Disk 3~"), ("foo", "3"))
         self.failUnlessEqual(split_album("disk 2"), ("disk 2", None))
 
-    def test_pattern_from_file(self):
+class TBPTests(TestCase):
+    def test_tbp(self):
         f1 = '/path/Artist/Album/01 - Title.mp3'
         f2 = '/path/Artist - Album/01. Title.mp3'
         f3 = '/path/01 - Artist - Title.mp3'
@@ -128,22 +149,19 @@ class UtilTests(TestCase):
         self.assertEquals(pat.match(b1), nomatch)
         self.assertEquals(pat.match(b2), nomatch)
 
-class FileFromPatternTests(TestCase):
-    class mocksong(dict):
-        def comma(self, key):
-            v = self.get(key, '')
-            if not isinstance(v, list): return v
-            else: return ', '.join(v)
-        __call__ = dict.__getitem__
+class NBPTests(TestCase):
+    from formats.audio import AudioFile
 
     def setUp(self):
-        s1 = { '~#track':5, 'artist':'Artist', 'title':'Title5', '~basename':'a.mp3' }
-        s2 = { '~#track':6, 'artist':'Artist', 'title':'Title6', '~basename':'b.ogg', '~#disc':'2' }
-        s3 = { 'title': 'test/subdir', 'genre':['/','/'], '~basename':'a.flac', 'version':'Instrumental'}
-        self.a = self.mocksong(s1)
-        self.b = self.mocksong(s2)
-        self.c = self.mocksong(s3)
-
+        s1 = { 'tracknumber': '5/6', 'artist':'Artist', 'title':'Title5',
+               '~filename':'/path/to/a.mp3' }
+        s2 = { 'tracknumber': '6', 'artist':'Artist', 'title':'Title6',
+               '~filename': '/path/to/b.ogg', 'discnumber':'2' }
+        s3 = { 'title': 'test/subdir', 'genre':'/\n/',
+               '~filename':'/one/more/a.flac', 'version': 'Instrumental'}
+        self.a = self.AudioFile(s1)
+        self.b = self.AudioFile(s2)
+        self.c = self.AudioFile(s3)
 
     def test_conditional_number_dot_title(s):
         pat = FileFromPattern('<tracknumber|<tracknumber>. ><title>')
@@ -164,7 +182,7 @@ class FileFromPatternTests(TestCase):
         pat = FileFromPattern('<tracknumber|<genre|<genre> <tracknumber>|<tracknumber>>|<artist>>')
         s.assertEquals(pat.match(s.a), '<tracknumber|05|Artist>.mp3')
         s.assertEquals(pat.match(s.b), '<tracknumber|06|Artist>.ogg')
-        s.assertEquals(pat.match(s.c), '<tracknumber|_, _ |>.flac')
+        s.assertEquals(pat.match(s.c), '<tracknumber|_, _ |Unknown>.flac')
 
     def test_conditional_genre(s):
         pat = FileFromPattern('<genre|<genre>|music>')
@@ -230,5 +248,7 @@ class FileFromPatternTests(TestCase):
         s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')
 
-registerCase(UtilTests)
-registerCase(FileFromPatternTests)
+registerCase(FSTests)
+registerCase(StringTests)
+registerCase(TBPTests)
+registerCase(NBPTests)
