@@ -34,6 +34,7 @@ class GTKSongInfoWrapper(object):
         self.play_s = gtk.gdk.pixbuf_new_from_file_at_size("pause.png", 16,16)
         self.pause_s = gtk.gdk.pixbuf_new_from_file_at_size("play.png", 16,16)
         self.menu.get_image().set_from_pixbuf(self.pause_s)
+        widgets["play_popup_menu"].get_image().set_from_pixbuf(self.pause_s)
         try: os.unlink(const.CONTROL)
         except OSError: pass
         util.mkdir(const.DIR)
@@ -51,7 +52,7 @@ class GTKSongInfoWrapper(object):
             self.icon = statusicon.StatusIcon(p)
             self.icon.connect("activate", self._toggle_window,
                               (widgets["main_window"]))
-            self.icon.connect("popup-menu", self._playpause, ())
+            self.icon.connect("popup-menu", self._popup, ())
             print _("Initialized status icon.")
 
         try: import mmkeys
@@ -97,6 +98,9 @@ class GTKSongInfoWrapper(object):
             window.move(*self.window_pos)
             window.show()
 
+    def _popup(self, *args):
+        widgets["tray_popup"].popup(None, None, None, 1, 0)
+
     # These are all the signals that the wrapper gets from the player.
 
     # The pattern of getting a call from the playing thread and then
@@ -122,12 +126,17 @@ class GTKSongInfoWrapper(object):
         if paused:
             self.but_image.set_from_pixbuf(self.paused)
             self.menu.get_image().set_from_pixbuf(self.pause_s)
-            widgets["play_menu"].child.set_text("Play song")
+            widgets["play_popup_menu"].get_image().set_from_pixbuf(self.pause_s)
+            widgets["play_menu"].child.set_text("Play _song")
+            widgets["play_popup_menu"].child.set_text(_("_Play"))
         else:
             self.but_image.set_from_pixbuf(self.playing)
             self.menu.get_image().set_from_pixbuf(self.play_s)
-            widgets["play_menu"].child.set_text("Pause song")
+            widgets["play_popup_menu"].get_image().set_from_pixbuf(self.play_s)
+            widgets["play_menu"].child.set_text("Pause _song")
+            widgets["play_popup_menu"].child.set_text(_("_Pause"))
         widgets["play_menu"].child.set_use_underline(True)
+        widgets["play_popup_menu"].child.set_use_underline(True)
 
     def _update_time(self):
         cur, end = self._time
@@ -1563,9 +1572,10 @@ def setup_nonglade():
 
     p = gtk.gdk.pixbuf_new_from_file_at_size("previous.png", 16, 16)
     widgets["prev_menu"].get_image().set_from_pixbuf(p)
+    widgets["prev_popup_menu"].get_image().set_from_pixbuf(p)
 
     p = gtk.gdk.pixbuf_new_from_file_at_size("next.png", 16, 16)
-    widgets["next_menu"].get_image().set_from_pixbuf(p)
+    widgets["next_popup_menu"].get_image().set_from_pixbuf(p)
 
     # Restore window size.
     w, h = map(int, config.get("memory", "size").split())
