@@ -211,6 +211,7 @@ class GladeHandlers(object):
         if widgets["performer_t"].get_active(): new_h.append("performer")
         new_h.extend(widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
+        config.set("settings", "headers", " ".join(HEADERS))
         set_column_headers(widgets["songlist"])
 
     def change_scan(*args):
@@ -426,8 +427,6 @@ def main():
     except: gtk.main_quit()
     player.playlist.quitting()
     t.join()
-    util.mkdir(os.path.join(os.environ["HOME"], ".quodlibet"))
     library.save(cache_fn)
-    config.write(file(config_fn, "w"))
 
 if __name__ == "__main__": main()
