@@ -16,6 +16,27 @@ import os, sys
 # Give us a namespace for now.. FIXME: We need to remove this later.
 class widgets(object): pass
 
+# Standard Glade widgets wrapper.
+class Widgets(object):
+    def __init__(self, file = None, handlers = None, widget = None):
+        if widget:
+            self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget,
+                                         domain = gettext.textdomain())
+        else:
+            self.widgets = gtk.glade.XML(file or "quodlibet.glade",
+                                         domain = gettext.textdomain())
+        if handlers is not None:
+            self.widgets.signal_autoconnect(handlers)
+        self.get_widget = self.widgets.get_widget
+        self.signal_autoconnect = self.widgets.signal_autoconnect
+
+    def __getitem__(self, key):
+        return self.widgets.get_widget(key)
+
+class MultiInstanceWidget(object):
+    def __init__(self, file = None, widget = None):
+        self.widgets = Widgets(file or "quodlibet.glade", self, widget)
+
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(object):
     def __init__(self, parent, title, initial_dir = None):
@@ -57,10 +78,7 @@ class WarningMessage(Message):
     def __init__(self, *args):
         Message.__init__(self, gtk.MESSAGE_WARNING, *args)
 
-class MultiInstanceWidget(object):
-    def __init__(self, file = None, widget = None):
-        self.widgets = Widgets(file or "quodlibet.glade", self, widget)
-
+# FIXME: replace with a standard About widget when using GTK 2.6.
 class AboutWindow(MultiInstanceWidget):
     def __init__(self, parent):
         MultiInstanceWidget.__init__(self, widget = "about_window")
@@ -248,22 +266,6 @@ class WaitLoadWindow(MultiInstanceWidget):
     def end(self):
         self.widgets["load_window"].destroy()
 
-# Standard Glade widgets wrapper.
-class Widgets(object):
-    def __init__(self, file, handlers, widget = None):
-        if widget:
-            self.widgets = gtk.glade.XML(file or "quodlibet.glade", widget,
-                                         domain = gettext.textdomain())
-        else:
-            self.widgets = gtk.glade.XML(file or "quodlibet.glade",
-                                         domain = gettext.textdomain())
-        self.widgets.signal_autoconnect(handlers)
-        self.get_widget = self.widgets.get_widget
-        self.signal_autoconnect = self.widgets.signal_autoconnect
-
-    def __getitem__(self, key):
-        return self.widgets.get_widget(key)
-
 class TrayIcon(object):
     def __init__(self, pixbuf, activate_cb, popup_cb):
         try:
@@ -282,6 +284,25 @@ class TrayIcon(object):
             self.icon.set_tooltip(tooltip, "magic")
 
     tooltip = property(None, set_tooltip)
+
+# A tray icon aware of UI policy -- left click shows/hides, right
+# click brings up a popup menu
+class HIGTrayIcon(TrayIcon):
+    def __init__(self, pixbuf, window, menu):
+        self._menu = menu
+        self._window = window
+        TrayIcon.__init__(self, pixbuf, self._showhide, self._popup)
+
+    def _showhide(self, icon):
+        if self._window.get_property('visible'):
+            self._pos = self._window.get_position()
+            self._window.hide()
+        else:
+            self._window.move(*self._pos)
+            self._window.show()
+
+    def _popup(self, *args):
+        self._menu.popup(None, None, None, 2, 0)
 
 class MmKeys(object):
     def __init__(self, cbs):
@@ -379,7 +400,7 @@ class MainWindow(MultiInstanceWidget):
         self.tray_menu["next_popup_menu"].get_image().set_from_pixbuf(pn)
 
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-        self.icon = TrayIcon(p, self.tray_toggle_window, self.tray_popup)
+        self.icon = HIGTrayIcon(p, self.window, self.tray_menu["tray_popup"])
         self.restore_size()
 
         # Set up the main song list store.
@@ -605,18 +626,6 @@ class MainWindow(MultiInstanceWidget):
         if song and config.getboolean("settings", "jump"):
             self.jump_to_current()
         return False
-
-    def tray_toggle_window(self, icon):
-        window = self.window
-        if window.get_property('visible'):
-            self.window_pos = window.get_position()
-            window.hide()
-        else:
-            window.move(*self.window_pos)
-            window.show()
-
-    def tray_popup(self, *args):
-        self.tray_menu["tray_popup"].popup(None, None, None, 3, 0)
 
     def gtk_main_quit(self, *args):
         gtk.main_quit()
@@ -1009,11 +1018,12 @@ class MainWindow(MultiInstanceWidget):
     def set_column_headers(self, sl, headers):
         SHORT_COLS = ["tracknumber", "discnumber", "~length"]
         sl.set_model(None)
+        widgets.songs.clear()
         widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
         for c in sl.get_columns(): sl.remove_column(c)
         self.widgets["songlist"].realize()
         width = self.widgets["songlist"].get_allocation()[2]
-        c = len(headers)
+        c = sum([(x.startswith("~#") and 0.2) or 1 for x in headers])
         width = int(width // c)
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
@@ -1027,8 +1037,7 @@ class MainWindow(MultiInstanceWidget):
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             else:
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-                column.set_expand(True)
-                column.set_fixed_width(1)
+                column.set_fixed_width(width)
             column.set_clickable(True)
             column.set_reorderable(True)
             column.set_sort_indicator(False)
