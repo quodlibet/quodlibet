@@ -82,27 +82,8 @@ class PreferencesWindow(MultiInstanceWidget):
         for w in ["jump", "cover", "color", "tbp_space", "titlecase",
                   "splitval", "nbp_space", "windows", "ascii", "allcomments"]:
              self.widgets["prefs_%s_t" % w].set_active(config.state(w))
-        headers = config.get("settings", "headers").split()
-
         self.widgets["prefs_addreplace"].set_active(
             config.getint("settings", "addreplace"))
-
-        # Fill in the header checkboxes.
-        self.widgets["disc_t"].set_active("~#disc" in headers)
-        self.widgets["track_t"].set_active("~#track" in headers)
-        for h in ["album", "part", "artist", "genre", "date", "version",
-                  "performer"]:
-            self.widgets[h + "_t"].set_active(h in headers)
-        self.widgets["filename_t"].set_active("~basename" in headers)
-        self.widgets["length_t"].set_active("~length" in headers)
-
-        # Remove the standard headers, and put the rest in the list.
-        for t in ["~#disc", "~#track", "album", "artist", "genre", "date",
-                  "version", "performer", "title", "~basename", "part",
-                  "~length"]:
-            try: headers.remove(t)
-            except ValueError: pass
-        self.widgets["extra_headers"].set_text(" ".join(headers))
 
         # Fill in the scanned directories.
         self.widgets["scan_opt"].set_text(config.get("settings", "scan"))
@@ -207,6 +188,25 @@ class PreferencesWindow(MultiInstanceWidget):
         return True
 
     def show(self):
+        headers = config.get("settings", "headers").split()
+
+        # Fill in the header checkboxes.
+        self.widgets["disc_t"].set_active("~#disc" in headers)
+        self.widgets["track_t"].set_active("~#track" in headers)
+        for h in ["album", "part", "artist", "genre", "date", "version",
+                  "performer"]:
+            self.widgets[h + "_t"].set_active(h in headers)
+        self.widgets["filename_t"].set_active("~basename" in headers)
+        self.widgets["length_t"].set_active("~length" in headers)
+
+        # Remove the standard headers, and put the rest in the list.
+        for t in ["~#disc", "~#track", "album", "artist", "genre", "date",
+                  "version", "performer", "title", "~basename", "part",
+                  "~length"]:
+            try: headers.remove(t)
+            except ValueError: pass
+        self.widgets["extra_headers"].set_text(" ".join(headers))
+
         self.window.present()
 
 class WaitLoadWindow(MultiInstanceWidget):
@@ -1021,7 +1021,7 @@ class MainWindow(MultiInstanceWidget):
             else:
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_expand(True)
-                column.set_fixed_width(30)
+                column.set_fixed_width(1)
             column.set_clickable(True)
             column.set_sort_indicator(False)
             column.connect('clicked', self.set_sort_by, t)
