@@ -1,4 +1,5 @@
 /* Copyright 2004 Joe Wreschnig. Licensed under the GNU GPL version 2. */
+
 #include <Python.h>
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -20,7 +21,7 @@ typedef struct {
   int length;
   double position;
   void *mem;
-  const char *title, *filename;
+  char *title, *filename;
 } ModFile;
 
 static PyObject
@@ -68,7 +69,7 @@ static int ModFile_init(ModFile *self, PyObject *args, PyObject *kwds) {
     return -1;
   }
 
-  self->title = ModPlug_GetName(self->mf);
+  self->title = (char *)ModPlug_GetName(self->mf);
   self->length = ModPlug_GetLength(self->mf);
   self->filename = strdup(filename);
 
@@ -89,24 +90,27 @@ static void ModFile_dealloc(ModFile *self) {
 }
 
 static PyMemberDef ModFile_members[] = {
-    {"title", T_STRING, offsetof(ModFile, title), 0, "song title"},
-    {"length", T_INT, offsetof(ModFile, length), 0, "song length in ms"},
+    {"title", T_STRING, offsetof(ModFile, title), 0,
+     "the song title (or filename if it has no title)"},
+    {"length", T_INT, offsetof(ModFile, length), 0,
+     "the song length in milliseconds"},
     {"position", T_DOUBLE, offsetof(ModFile, position), 0,
-     "current position in ms"},
+     "the current decoder position in milliseconds"},
     {NULL}
 };
 
 static PyObject *ModFile_read(ModFile *self, PyObject *args, PyObject *kwds) {
   static char *kwlist[] = {"size", NULL};
-  int buffer_size, buffer_len;
+  int buffer_size = -1, buffer_len;
   char *buffer;
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &buffer_size))
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|i", kwlist, &buffer_size))
     return NULL;
 
+  if (buffer_size == -1) buffer_size = 1024;
   buffer = (char *)malloc(buffer_size);
   buffer_len = ModPlug_Read(self->mf, buffer, buffer_size);
   if (buffer_len == 0) {
-    /* FIXME: Raise EOF exception of some sort */
+    /* FIXME: Raise EOF exception of some sort instead? if people want... */
     free(buffer);
     return Py_BuildValue("s", "");
   } else {
@@ -120,10 +124,10 @@ static PyObject *ModFile_read(ModFile *self, PyObject *args, PyObject *kwds) {
 
 static PyObject *ModFile_seek(ModFile *self, PyObject *args, PyObject *kwds) {
   static char *kwlist[] = {"position", NULL};
-  int ms;
+  int ms = -1;
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &ms))
     return NULL;
-  if (ms < self->length) {
+  if (ms <= self->length) {
     ModPlug_Seek(self->mf, ms);
     self->position = ms;
     return Py_BuildValue("");
@@ -135,10 +139,15 @@ static PyObject *ModFile_seek(ModFile *self, PyObject *args, PyObject *kwds) {
 
 static PyMethodDef ModFile_methods[] = {
   {"read", (PyCFunction)ModFile_read, METH_KEYWORDS,
-     "Return audio data of no more than the given length."
+   "Return 44.1kHz stereo audio data of no more than the given length.\n\
+    If you are at the end of the file, an empty string will\n\
+    be returned. The read length needs to be reasonably large\n\
+    (at least 10 bytes); the default value is 1024 bytes."
     },
   {"seek", (PyCFunction)ModFile_seek, METH_KEYWORDS,
-     "Seek to the specified position (in milliseconds)."
+   "Seek to the specified position (in milliseconds).\n\
+    An IOError will be thrown if you attempt to seek past\n\
+    the end of the file."
     },
     {NULL}
 };
@@ -165,7 +174,9 @@ static PyTypeObject ModFileType = {
   0,                         /*tp_setattro*/
   0,                         /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  "ModFile objects",         /* tp_doc */
+  "ModFile objects - a loaded audio file\n\n\
+  Although seeking and position information are available,\n\
+  they may be wrong due to the nature of the MOD format.",
   0,		               /* tp_traverse */
   0,		               /* tp_clear */
   0,		               /* tp_richcompare */
@@ -199,7 +210,7 @@ PyMODINIT_FUNC initmodplug(void)
     if (PyType_Ready(&ModFileType) < 0) return;
 
     m = Py_InitModule3("modplug", module_methods,
-                       "An interface to libmodplug, a MOD decoder.");
+                       "An interface to libmodplug, a MOD/XM/IT decoder");
 
     if (m == NULL) return;
 

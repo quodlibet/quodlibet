@@ -15,7 +15,10 @@ $ make modplug.so
 
 Usage:
 ------
-See 'playmod.py' for an example of using modplug.
+modplug uses Python docstrings as its primary form of documentation.
+>>> import modplug; help(modplug)
+
+See 'playmod.py' for an example of a simple player.
 
 License:
 --------
