@@ -19,12 +19,38 @@ class AudioFileTest(TestCase):
 
     def test_getters(self):
         song1 = AudioFile({ "a": "foo\nbar", "b": "foobar",
+                            "=filename": "DNE",
                             "=mtime": 0, "=foobar": 2,
                             "album": Unknown("Unknown")})
         self.failUnlessEqual(song1.comma("a"), "foo, bar")
         self.failUnlessEqual(song1.comma("b"), "foobar")
         self.failUnlessEqual(song1.comma("c"), "")
         self.failUnless(song1.realkeys() in [["a", "b"], ["b", "a"]])
+        self.failIf(song1.exists())
+        self.failIf(song1.valid())
+
+    def test_setters(self):
+        song = AudioFile({ "=filename": "undef",
+                           "artist": "foo\nbar", "title": "foobar",
+                           "album": Unknown("Unknown")})
+        song.add("album", "An Album")
+        self.failUnlessEqual(song["album"], "An Album")
+        song.change("artist", "foo", "quux")
+        self.failUnlessEqual(song["artist"], "quux\nbar")
+        song.remove("album", "An Album")
+        self.failUnless(song.unknown("album"))
+        song.add("tracknumber", "11/12")
+        self.failUnlessEqual(song["=#"], 11)
+        song.change("artist", "Not A Value", "baz")
+        self.failUnlessEqual(song["artist"], "baz")
+        song.add("artist", "foo")
+        self.failUnlessEqual(song["artist"], "baz\nfoo")
+        song.remove("artist", "Not A Value")
+        self.failUnless(song.unknown("artist"))
+        song.add("artist", "foo")
+        song.add("artist", "bar")
+        song.remove("artist", "foo")
+        self.failUnlessEqual(song["artist"], "bar")
 
     def test_sanitize(self):
         song = AudioFile({ "=filename": "/foo/bar/quux.ogg",
