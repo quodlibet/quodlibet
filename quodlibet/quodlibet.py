@@ -942,6 +942,30 @@ class MainWindow(MultiInstanceWidget):
         self.refresh_songlist()
         sl.set_model(widgets.songs)
 
+class AddTagDialog(MultiInstanceWidget):
+    def __init__(self):
+        MultiInstanceWidget.__init__(self, widget = "add_tag_dialog")
+        self.dialog = self.widgets["add_tag_dialog"]
+        self.tag = self.widgets["add_tag_tag"].child
+        self.val = self.widgets["add_tag_value"]
+
+    def get_tag(self):
+        return self.tag.get_text().lower().strip()
+
+    def get_value(self):
+        return self.val.get_text().decode("utf-8")
+
+    def run(self):
+        self.tag.set_text("")
+        self.val.set_text("")
+        self.tag.set_activates_default(True)
+        self.val.set_activates_default(True)
+        self.tag.grab_focus()
+        return self.dialog.run()
+
+    def destroy(self):
+        self.dialog.destroy()
+
 class SongProperties(MultiInstanceWidget):
     def __init__(self, songrefs):
         MultiInstanceWidget.__init__(self, widget = "properties_window")
@@ -1264,21 +1288,13 @@ class SongProperties(MultiInstanceWidget):
         return True
 
     def songprop_add(self, button):
-        add = widgets["add_tag_dialog"]
-        tag = widgets["add_tag_tag"]
-        val = widgets["add_tag_value"]
-        tag.child.set_text("")
-        val.set_text("")
-        tag.child.set_activates_default(gtk.TRUE)
-        val.set_activates_default(gtk.TRUE)
-        tag.child.grab_focus()
+        add = AddTagDialog()
 
         while True:
             resp = add.run()
             if resp != gtk.RESPONSE_OK: break
-
-            comment = tag.child.get_text().decode("utf-8").lower().strip()
-            value = val.get_text().decode("utf-8")
+            comment = add.get_tag()
+            value = add.get_value()
             date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if not self.songinfo.can_change(comment):
                 WarningMessage(
@@ -1294,11 +1310,9 @@ class SongProperties(MultiInstanceWidget):
                                  "YYYY-MM-DD format.") % value).run()
             else:
                 self.add_new_tag(comment, value)
-                tag.child.set_text("")
-                val.set_text("")
                 break
 
-        add.hide()
+        add.destroy()
 
     def add_new_tag(self, comment, value):
         edited = True
