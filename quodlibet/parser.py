@@ -18,6 +18,10 @@ import sre
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
  CLOSERE, REMODS, COMMA, TAG, RE, EOF) = range(13)
 
+class error(RuntimeError): pass
+class ParseError(error): pass
+class LexerError(error): pass
+
 # Iterator for tokenized input.
 class QueryLexer(object):
     _reverse = { NEGATION: "NEGATION", INTERSECT: "INTERSECT",
@@ -64,13 +68,19 @@ class QueryLexer(object):
         if self.regexp_start is not None:
             escaped = False
             s = ""
-            while escaped or self.string[self.i] != self.regexp_start:
-                if not escaped and self.string[self.i] == '\\':
-                    escaped = True
-                else:
-                    escaped = False
-                    s += self.string[self.i]
-                self.i += 1
+            try:
+                while escaped or self.string[self.i] != self.regexp_start:
+                    if not escaped and self.string[self.i] == '\\':
+                        escaped = True
+                    else:
+                        if (escaped and
+                            self.string[self.i] != self.regexp_start):
+                            s += "\\"
+                        escaped = False
+                        s += self.string[self.i]
+                    self.i += 1
+            except IndexError:
+                raise LexerError("A regular expression is not closed.")
             self.regexp_start = None
             self.regexp_end = True
             return QueryLexeme(RE, s)
@@ -128,7 +138,9 @@ class QueryParser(object):
         elif self.lookahead.type == INTERSECT: return self.QueryInter()
         elif self.lookahead.type == NEGATION: return self.QueryNeg()
         elif self.lookahead.type == TAG: return self.QueryPart()
-        else: raise ValueError
+        else:
+            raise ParseError("The expected symbol should be |, &, !, or "
+                             "a tag name, but was %s" % self.lookahead.lexeme)
 
     def QueryNeg(self):
         self.match(NEGATION)
@@ -159,7 +171,10 @@ class QueryParser(object):
         elif self.lookahead.type == INTERSECT: return self.RegexpInter()
         elif self.lookahead.type == NEGATION: return self.RegexpNeg()
         elif self.lookahead.type == OPENRE: return self.Regexp()
-        else: raise ValueError
+        else:
+            raise ParseError("The expected symbol should be |, &, !, or "
+                             "a tag name, but was %s" % self.lookahead.lexeme)
+
 
     def RegexpNeg(self):
         self.match(NEGATION)
@@ -186,17 +201,28 @@ class QueryParser(object):
             if "s" in s: mods |= sre.DOTALL
             if "l" in s: mods = (mods & ~sre.UNICODE) | sre.LOCALE
             self.match(REMODS)
-        return sre.compile(re, mods)
+        try: return sre.compile(re, mods)
+        except sre.error:
+            raise ParseError("The regular expression /%s/ is invalid." % re)
 
     def match(self, token):
         if self.lookahead.type == EOF:
-            raise ValueError("End of input!")
+            raise ParseError("The search string ended, but more "
+                             "tokens were expected.")
         try:
             if self.lookahead.type == token:
                 self.lookahead = self.tokens.next()
             else:
-                raise ValueError("Parse error!")
+                raise ParseError("The token '%s' is not the type exected." %(
+                    self.lookahead.lexeme))
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
 
-    
+def parse(string):
+    return QueryParser(QueryLexer(string)).Query()
+
+def is_valid(string):
+    try: QueryParser(QueryLexer(string)).Query()
+    except error: return False
+    else: return True
+

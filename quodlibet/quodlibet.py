@@ -248,7 +248,6 @@ class GladeHandlers(object):
 
 # Grab the text from the query box, parse it, and make a new filter.
 def text_parse(*args):
-        from parser import QueryParser, QueryLexer
         text = widgets["query"].child.get_text().decode("utf-8")
         if text.strip() == "": # Empty text, remove all filters.
             CURRENT_FILTER[0] = FILTER_ALL
@@ -259,17 +258,16 @@ def text_parse(*args):
             if "=" not in text and "/" not in text:
                 # A simple search, not regexp-based.
                 widgets["query"].prepend_text(text)
-                parts = ["* = /" + p + "/" for p in text.split()]
+                parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
                 text = "&(" + ",".join(parts) + ")"
                 # The result must be well-formed, since no /s were
-                # in the original string.
-                q = QueryParser(QueryLexer(text)).Query()
+                # in the original string and we escaped it.
+                q = parser.parse(text)
             else:
-                try:
-                    # Regular query, but possibly not well-formed..
-                    q = QueryParser(QueryLexer(text)).Query()
-                    widgets["query"].prepend_text(text)
-                except: return
+                # Regular query, but possibly not well-formed..
+                try: q = parser.parse(text)
+                except parser.error: return
+                else: widgets["query"].prepend_text(text)
 
             CURRENT_FILTER[0] = q.search
             set_entry_color(widgets["query"].child, "black")
@@ -281,18 +279,14 @@ def text_parse(*args):
 # of the textbox to indicate its validity (if the option to do so is on).
 def test_filter(*args):
         if not config.state("color"): return
-        from parser import QueryParser, QueryLexer
         textbox = widgets["query"].child
         text = textbox.get_text()
         if "=" not in text and "/" not in text:
             gtk.idle_add(set_entry_color, textbox, "blue")
+        elif parser.is_valid(text):
+            gtk.idle_add(set_entry_color, textbox, "dark green")
         else:
-            try:
-                QueryParser(QueryLexer(text)).Query()
-            except:
-                gtk.idle_add(set_entry_color, textbox, "red")
-            else:
-                gtk.idle_add(set_entry_color, textbox, "dark green")
+            gtk.idle_add(set_entry_color, textbox, "red")
 
 # Resort based on the header clicked.
 def set_sort_by(header, i):
@@ -474,8 +468,9 @@ if __name__ == "__main__":
     import os
     from library import library
     import player
+    import parser
     import util; from util import escape
     import signal
     import config
-
+    import sre
     main()
