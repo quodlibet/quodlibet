@@ -72,7 +72,11 @@ class GTKSongInfoWrapper(object):
         elif c == "^": self.volume.set_value(self.volume.get_value() + 0.05)
         elif c == "v": self.volume.set_value(self.volume.get_value() - 0.05)
         elif c == "_": self.volume.set_value(0)
-            
+        elif c == "!":
+            window = widgets["main_window"]
+            if not window.get_property('visible'): window.move(*self.window_pos)
+            widgets["main_window"].present()
+
         os.close(self.fifo)
         self.fifo = os.open(self.fifo_fn, os.O_NONBLOCK)
         gtk.input_add(self.fifo, gtk.gdk.INPUT_READ, self._input_check)
@@ -154,6 +158,8 @@ class GTKSongInfoWrapper(object):
             s = _("Not playing")
             self.text.set_markup("<span size='xx-large'>%s</span>" % s)
             if self.icon: self.icon.set_tooltip(s, "magic")
+            self.albumfn = None
+            self.disable_cover()
 
     def scroll_to_current(self):
         song = CURRENT_SONG[0]
@@ -305,7 +311,8 @@ class Widgets(object):
 class GladeHandlers(object):
     last_dir = HOME
 
-    def gtk_main_quit(*args): gtk.main_quit()
+    def gtk_main_quit(*args):
+        gtk.main_quit()
 
     def save_size(widget, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
@@ -1457,17 +1464,15 @@ def main():
     signal.signal(signal.SIGINT, gtk.main_quit)
     t.start()
     gtk.main()
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGINT, cleanup)
     player.playlist.quitting()
     t.join()
 
     print _("Saving song library.")
     cache_fn = os.path.join(HOME, ".quodlibet", "songs")
     library.save(cache_fn)
-
+    cleanup()
     save_config()
-    try: os.unlink(widgets.wrap.fifo_fn)
-    except OSError: pass
 
 def print_help():
     print _("""\
@@ -1549,8 +1554,18 @@ def control(c):
             f = file(fifo_fn, "w")
             f.write(c)
             f.close()
-        except: raise SystemExit(_("Unable to write to %s" % fifo_fn))
-        else: raise SystemExit
+        except:
+            raise SystemExit(_("""
+Unable to write to %s
+If QL is not running, remove this file.""" % fifo_fn))
+        else:
+            raise SystemExit
+
+def cleanup(*args):
+    try: os.unlink(os.path.join(HOME, ".quodlibet", "current"))
+    except OSError: pass
+    try: os.unlink(os.path.join(HOME, ".quodlibet", "control"))
+    except OSError: pass
 
 if __name__ == "__main__":
     import os, sys
@@ -1586,6 +1601,10 @@ if __name__ == "__main__":
         else:
             print _("E: Unknown command line option: %s") % command
             raise SystemExit(_("E: Try %s --help") % sys.argv[0])
+
+    if os.path.exists(os.path.join(HOME, ".quodlibet", "control")):
+        print _("Quod Libet is already running.")
+        control('!')
 
     # Get to the right directory for our data.
     d = os.path.split(os.path.realpath(__file__))[0]
@@ -1642,4 +1661,5 @@ if __name__ == "__main__":
     import parser
     import signal
     import sre
-    main()
+    try: main()
+    finally: cleanup()
