@@ -1,0 +1,13 @@
+0.2
+ - Song properties dialog, featuring mass tag editing/addition/removal.
+ - Build/installation scripts.
+ - Interface tweaks for HIG compliance and accessibility.
+ - Try to save the library when ^C is pressed.
+ - ~/.quodlibet/current interface to currently-playing song.
+ - Save current query and song on exit.
+ - An icon.
+ - FLAC support. Writing to FLAC tags could be *very* buggy, so if you
+   value your tags, please back them up.
+
+0.1
+ - Initial release.
