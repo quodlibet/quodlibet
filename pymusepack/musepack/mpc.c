@@ -1,8 +1,8 @@
 /* A Musepack (MPC) decoder wrapper for Python
    Based upon the work for the C libmusepack wrapper, available
-       http://www.caddr.com/svn/libmusepack
+       http://svn.musepack.net/svn/libmusepack/trunk/
 
-  Copyright (c) 2005 Joe Wreschnig
+  Copyright 2005 Joe Wreschnig, Wim Speekenbrink
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2 as
@@ -30,6 +30,22 @@ typedef struct {
   BOOL seekable;
 
   int frequency;
+  int channels;
+  unsigned int frames;
+  unsigned int samples;
+  double bitrate;
+
+  int stream_version;
+  int encoder_version;
+  char *encoder;
+  int profile;
+  char *profile_name;
+
+  int gain_radio;
+  int gain_audiophile;
+  unsigned int peak_radio;
+  unsigned int peak_audiophile;
+
   unsigned int length;
   double position;
 } MPCFile;
@@ -74,6 +90,18 @@ static PyObject
     self->decoder = NULL;
     self->frequency = 0;
     self->position = 0.0;
+
+    self->channels = 2;
+    self->bitrate = 0.0;
+    self->samples = 0;
+    self->frames = 0;
+    self->profile = 0;
+    self->profile_name = NULL;
+    self->gain_radio = self->gain_audiophile = 0;
+    self->peak_radio = self->peak_audiophile = 0;
+
+    self->encoder_version = -1;
+    self->encoder = NULL;
   }
   
   return (PyObject *)self;
@@ -82,6 +110,7 @@ static PyObject
 static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
   static char *kwlist[] = {"filename", NULL}, *filename;
   struct stat st;
+  mpc_streaminfo info;
   FILE *f;
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &filename))
     return -1;
@@ -113,7 +142,6 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
   self->reader->canseek = canseek_impl;
   self->reader->data = self;
 
-  mpc_streaminfo info;
   if (mpc_streaminfo_read(&info, self->reader) != ERROR_CODE_OK) {
     free(self->reader);
     PyErr_SetString(PyExc_IOError, "not a valid musepack file");
@@ -135,8 +163,24 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
   }
 
   self->frequency = info.sample_freq;
-  self->length = (int)(mpc_streaminfo_get_length(&info) * 1000);
+  self->channels = info.channels;
+  self->frames = info.frames;
+  self->channels = info.channels;
+  self->bitrate = info.average_bitrate;
+  self->samples = info.pcm_samples;
 
+  self->stream_version = info.stream_version;
+  self->encoder_version = info.encoder_version;
+  self->encoder = strdup(info.encoder);
+  self->profile = info.profile;
+  self->profile_name = strdup(info.profile_name);
+
+  self->gain_radio = info.gain_title;
+  self->gain_audiophile = info.gain_album;
+  self->peak_radio = info.peak_title;
+  self->peak_audiophile = info.peak_album;
+
+  self->length = (int)(mpc_streaminfo_get_length(&info) * 1000);
   return 0;
 }
 
@@ -145,16 +189,48 @@ static void MPCFile_dealloc(MPCFile *self) {
   if (self->decoder) free(self->decoder);
   if (self->reader) free(self->reader);
   if (self->file) fclose(self->file);
+  if (self->profile_name) free(self->profile_name);
+  if (self->encoder) free(self->encoder);
   self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyMemberDef MPCFile_members[] = {
-    {"length", T_UINT, offsetof(MPCFile, length), 0,
-     "the song length in milliseconds"},
     {"frequency", T_INT, offsetof(MPCFile, frequency), 0,
      "the sample frequency in Hz"},
+    {"channels", T_INT, offsetof(MPCFile, channels), 0,
+     "number of channels in the file (1 or 2)"},
+    {"frames", T_UINT, offsetof(MPCFile, frames), 0,
+     "number of channels in the file"},
+    {"samples", T_UINT, offsetof(MPCFile, samples), 0,
+     "number of samples in the file"},
+    {"bitrate", T_DOUBLE, offsetof(MPCFile, samples), 0,
+     "average bitrate of the file"},
+
+    {"stream_version", T_INT, offsetof(MPCFile, stream_version), 0,
+     "Musepack stream version number"},
+    {"encoder_version", T_INT, offsetof(MPCFile, encoder_version), 0,
+     "audio encoder version number"},
+    {"encoder", T_STRING, offsetof(MPCFile, encoder), 0,
+     "audio encoder identifier string"},
+
+    {"profile", T_INT, offsetof(MPCFile, profile), 0,
+     "audio encoding profile ('quality')"},
+    {"profile_name", T_STRING, offsetof(MPCFile, encoder), 0,
+     "audio encoding profile name, in English"},
+
+    {"gain_radio", T_INT, offsetof(MPCFile, gain_radio), 0,
+     "ReplayGain 'radio' (per-track) volume adjustment"},
+    {"gain_audiophile", T_INT, offsetof(MPCFile, gain_audiophile), 0,
+     "ReplayGain 'audiophile' (per-album) volume adjustment"},
+    {"peak_radio", T_UINT, offsetof(MPCFile, peak_radio), 0,
+     "track volume peak"},
+    {"peak_audiophile", T_UINT, offsetof(MPCFile, peak_audiophile), 0,
+     "album volume peak"},
+
+    {"length", T_UINT, offsetof(MPCFile, length), 0,
+     "the song length in milliseconds"},
     {"position", T_DOUBLE, offsetof(MPCFile, position), 0,
-     "the song position in milliseconds in a float"},
+     "the song position in milliseconds (a floating-point number)"},
     {NULL}
 };
 
@@ -171,9 +247,8 @@ static int shift_signed(MPC_SAMPLE_FORMAT val, int shift) {
 static void mpc_to_str(MPC_SAMPLE_FORMAT *from, char* to, unsigned int st) {
   unsigned int m_bps = 16;
   unsigned n;
-  int clip_min = - 1 << (m_bps - 1),
-    clip_max = (1 << (m_bps - 1)) - 1,
-    float_scale = 1 << (m_bps - 1);
+  int float_scale = 1 << (m_bps - 1);
+  int clip_min = -float_scale, clip_max = float_scale - 1;
 
   for (n = 0; n < 2 * st; n++) {
     int val;
@@ -184,7 +259,7 @@ static void mpc_to_str(MPC_SAMPLE_FORMAT *from, char* to, unsigned int st) {
 #endif
     if (val < clip_min) val = clip_min;
     else if (val > clip_max) val = clip_max;
-    unsigned shift = 0;
+    unsigned int shift = 0;
     do {
       to[n * 2 + (shift / 8)] = (unsigned char)((val >> shift) & 0xFF);
       shift += 8;
