@@ -300,14 +300,14 @@ class MP3File(AudioFile):
         date = ["", "", ""]
 
         for frame in tag:
-            if frame["frameid"] == "TDAT":
+            if frame["frameid"] == "TDAT" and len(frame["text"]) == 4:
                 date[1] = frame["text"][0:2]
                 date[2] = frame["text"][2:4]
                 continue
-            elif frame["frameid"] == "TYER":
+            elif frame["frameid"] == "TYER" and len(frame["text"]) == 4:
                 date[0] = frame["text"]
                 continue
-            elif frame["frameid"] == "APIC":
+            elif frame["frameid"] == "APIC" and frame["data"]:
                 self["=picture"] = "y"
                 continue
 

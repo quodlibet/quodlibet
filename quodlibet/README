@@ -49,6 +49,10 @@ audio backend to 'ao:alsa', which is currently the default setting. The
 old default setting was 'oss'; 'ao:alsa' will fall back to OSS when
 ao or ALSA is unavailable.
 
+Whenever you upgrade, it's a good idea to select "Reload library" from
+the Music menu. This upgrades your library to take advantage of new
+tag features found in the release.
+
 ====[ Formal Query Grammar
 This is a BNFish grammar that (at least when I checked it in) described
 the grammar used for queries. It could be used for querying of a simple
