@@ -2041,20 +2041,20 @@ class SongProperties(object):
                 text.append("Produced by %s" %(
                     util.escape(song.comma("producer"))))
 
-            w = self.Label("\n".join(text))
-
             cover = songs[0].find_cover()
-            if cover:
-                try:
-                    hb = gtk.HBox(spacing = 12)
-                    i = self._make_cover(cover)
-                    hb.pack_start(i, expand = False)
-                    hb.pack_start(w)
-                    self.box.pack_start(hb, expand = False)
-                except:
+            if cover or text:
+                w = self.Label("\n".join(text))
+                if cover:
+                    try:
+                        hb = gtk.HBox(spacing = 12)
+                        i = self._make_cover(cover)
+                        hb.pack_start(i, expand = False)
+                        hb.pack_start(w)
+                        self.box.pack_start(hb, expand = False)
+                    except:
+                        self.box.pack_start(w, expand = False)
+                else:
                     self.box.pack_start(w, expand = False)
-            else:
-                self.box.pack_start(w, expand = False)
 
             artists = set()
             for song in songs: artists.update(song.list("artist"))
@@ -3225,10 +3225,12 @@ def songref_update_view(song):
 
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
-                   "album~part": "album",
-                   "title~version": "title",
-                   "lastplayed": "last played", "filename": "full name",
-                   "playcount": "play count", "basename": "filename",
+                   "lastplayed": "last played",
+                   "filename": "full name",
+                   "playcount": "play count",
+                   "skipcount": "skip count",
+                   "mtime": "modified",
+                   "basename": "filename",
                    "dirname": "directory"}
 
 def setup_ui():

@@ -7,6 +7,10 @@ Use less Glade
 MainWindow and PrefsWindow should be in Python, and new windows should
 probably be written in Python from the start.
 
+Song rating system
+------------------
+Don't tell anyone, but the ~#rating key exists already. It just needs UI.
+
 UI Tweaking
 -----------
 Continue HIGification, handle very long titles/filenames better.
@@ -88,6 +92,9 @@ IRC Dumps
 (piman_) Yeah.
 (piman_) Around the same time I make it save the whole past query list, since
 +the backend requirements are the same.
+[[ I did some work on this using a gtk.ComboBoxEntry subclass. It worked,
+   except we need to clean up the import structure before we can use it.
+   We need to remove glade use before I want to do that. -- Joe ]]
 
 (piman_) We need some sort of QL manual...
 (mu) heh.  make wm write it?

@@ -14,8 +14,10 @@ else: extensions = [".mpc", ".mp+"]
 
 class MPCFile(AudioFile):
     # Map APE names to QL names. APE tags are also usually capitalized.
-
-    IGNORE = ["file", "index", "introplay", "dummy"]
+    # Also blacklist a number of tags.
+    IGNORE = ["file", "index", "introplay", "dummy",
+              "replaygain_track_peak", "replaygain_album_peak",
+              "replaygain_track_gain", "replaygain_album_gain"]
     TRANS = { "subtitle": "version",
               "track": "tracknumber",
               "catalog": "labelid",
