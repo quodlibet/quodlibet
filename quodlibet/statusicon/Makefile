@@ -1,7 +1,7 @@
 # Copyright 2004 Joe Wreschnig. Released under the terms of the GNU LGPL.
 
 PYTHON_DIR = /usr/include/python2.3
-CFLAGS = `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I$(PYTHON_DIR)
+CFLAGS = -O2 `pkg-config --cflags gtk+-2.0 pygtk-2.0` -I$(PYTHON_DIR)
 LDFLAGS = `pkg-config --libs gtk+-2.0 pygtk-2.0`
 
 statusicon.so: statusicon.o eggstatusicon.o eggtrayicon.o statusiconmodule.o eggmarshalers.o
