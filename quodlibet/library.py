@@ -234,10 +234,17 @@ class AudioFile(dict):
                if score: images.append((score, os.path.join(base, fn)))
         if images: return max(images)[1]
         elif "=picture" in self:
+            import pyid3lib
             f = tempfile.NamedTemporaryFile()
-            f.write(self["=picture"])
-            f.flush()
-            return f
+            tag = pyid3lib.tag(self['=filename'])
+            for frame in tag:
+                if frame["frameid"] == "APIC":
+                    f.write(frame["data"])
+                    f.flush()
+                    return f
+            else:
+                f.close()
+                return None
         else: return None
 
 class MP3File(AudioFile):
@@ -301,7 +308,7 @@ class MP3File(AudioFile):
                 date[0] = frame["text"]
                 continue
             elif frame["frameid"] == "APIC":
-                self["=picture"] = frame["data"]
+                self["=picture"] = "y"
                 continue
 
             names = self.IDS.get(frame["frameid"], [])

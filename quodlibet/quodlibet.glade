@@ -2200,14 +2200,10 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 
 <widget class="GtkWindow" id="properties_window">
   <property name="border_width">12</property>
-  <property name="width_request">430</property>
-  <property name="height_request">430</property>
   <property name="title" translatable="yes">Song Properties</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="default_width">430</property>
-  <property name="default_height">430</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
@@ -2434,7 +2430,6 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 
 		      <child>
 			<widget class="GtkLabel" id="songprop_file">
-			  <property name="width_request">300</property>
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes"></property>
@@ -2516,7 +2511,7 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 
 		  <child>
 		    <widget class="GtkScrolledWindow" id="scrolledwindow1">
-		      <property name="height_request">120</property>
+		      <property name="height_request">130</property>
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
@@ -2526,7 +2521,6 @@ Multimedia key code by  Lee Willis and Jan Arne Petersen.&lt;/span&gt;</property
 
 		      <child>
 			<widget class="GtkTreeView" id="songprop_view">
-			  <property name="width_request">100</property>
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">Double-click on a tag value to change it, right-click for other options</property>
 			  <property name="can_focus">True</property>
