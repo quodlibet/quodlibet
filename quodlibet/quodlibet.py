@@ -8,6 +8,8 @@ import gobject
 import sys
 import parser
 import library
+import player
+import thread
 import gc
 import os
 
@@ -56,6 +58,7 @@ class GladeHandlers(object):
             widgets["albumcover"].set_from_stock(gtk.STOCK_CDROM,
                                                  gtk.ICON_SIZE_BUTTON)
         label.set_markup(text)
+        player.set_playlist([song])
 
     def open_chooser(*args):
         chooser = gtk.FileChooserDialog(
@@ -129,6 +132,7 @@ def main():
     sl.set_model(widgets.sorted)
     widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
+    thread.start_new_thread(player.play, ())
     gtk.main()
 
 if __name__ == "__main__": main()
