@@ -54,9 +54,9 @@ class FLACPlayer(AudioPlayer):
         import flac.decoder, flac.metadata
         self.STREAMINFO = flac.metadata.STREAMINFO
         self.EOF = flac.decoder.FLAC__FILE_DECODER_END_OF_FILE
-        self.OK = flac.decoder.decoder.FLAC__FILE_DECODER_OK
+        self.OK = flac.decoder.FLAC__FILE_DECODER_OK
         self.dev = dev
-        self.dec = self.decoder.FileDecoder()
+        self.dec = flac.decoder.FileDecoder()
         self.dec.set_md5_checking(False);
         self.dec.set_filename(filename)
         self.dec.set_metadata_respond_all()
