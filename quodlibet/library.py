@@ -103,12 +103,14 @@ class AudioFile(dict):
                      self.comma("performer"))
 
         others = ""
-        if "conductor" in self:
-            others += ("\nconducted by " + self.comma("conductor"))
         if "arranger" in self:
             others += ("\narranged by " + self.comma("arranger"))
         if "lyricist" in self:
             others += ("\nlyrics by " + self.comma("lyricist"))
+        if "conductor" in self:
+            others += ("\nconducted by " + self.comma("conductor"))
+        if "author" in self:
+            others += ("\nwritten by " + self.comma("author"))
 
         if others:
             others = others.strip().replace("\n", "; ")
@@ -143,12 +145,14 @@ class AudioFile(dict):
         return s
 
     def change(self, key, old_value, new_value):
-        parts = self[key].split("\n")
-        try: parts[parts.index(old_value)] = new_value
-        except ValueError:
-            self[key] = new_value
-        else:
-            self[key] = "\n".join(parts)
+        try:
+            parts = self[key].split("\n")
+            try: parts[parts.index(old_value)] = new_value
+            except ValueError:
+                self[key] = new_value
+            else:
+                self[key] = "\n".join(parts)
+        except KeyError: self[key] = new_value
         self.sanitize()
 
     def add(self, key, value):

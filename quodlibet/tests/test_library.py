@@ -1,6 +1,7 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-from library import AudioFile, Unknown
+import library; from library import AudioFile, MusicFile, Unknown
+library.init()
 
 class AudioFileTest(TestCase):
     def test_cmp(self):
@@ -51,6 +52,8 @@ class AudioFileTest(TestCase):
         song.add("artist", "bar")
         song.remove("artist", "foo")
         self.failUnlessEqual(song["artist"], "bar")
+        song.change("nonext", "foo", "bar")
+        self.failUnlessEqual(song["nonext"], "bar")
 
     def test_sanitize(self):
         song = AudioFile({ "=filename": "/foo/bar/quux.ogg",
@@ -84,4 +87,34 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song2.get_played(),
                              "4 times, recently on 2004-11-03, 13:11:39")
 
+class TestFileTypes(TestCase):
+    def setUp(self):
+        self.vorb = MusicFile("tests/data/silence-44-s.ogg")
+        self.mp3 = MusicFile("tests/data/silence-44-s.mp3")
+        self.flac = MusicFile("tests/data/silence-44-s.flac")
+        self.failUnless(self.vorb)
+        self.failUnless(self.mp3)
+        self.failUnless(self.flac)
+
+    def test_changable(self):
+        for file in [self.vorb, self.mp3, self.flac]:
+            self.failIf(file.can_change("=foo"))
+            self.failIf(file.can_change("vendor"))
+            self.failIf(file.can_change(""))
+            self.failUnless(file.can_change("artist"))
+            self.failUnless(file.can_change("title"))
+            self.failUnless(file.can_change("tracknumber"))
+        self.failUnless(self.vorb.can_change("author"))
+        self.failUnless(self.flac.can_change("author"))
+        self.failIf(self.mp3.can_change("author"))
+
+    def test_metadata(self):
+        for file in [self.vorb, self.mp3, self.flac]:
+            self.failUnlessEqual(file["artist"], "piman\njzig")
+            self.failUnlessEqual(file["album"], "Quod Libet Test Data")
+            self.failUnlessEqual(file["title"], "Silence")
+            self.failUnlessEqual(file["=playcount"], 0)
+            self.failUnlessEqual(file["=#"], 2)
+
 registerCase(AudioFileTest)
+registerCase(TestFileTypes)

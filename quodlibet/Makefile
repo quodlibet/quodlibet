@@ -1,7 +1,7 @@
 MODULES = config.py library.py match.py parser.py player.py util.py
 
 NAME = quodlibet
-PREFIX ?= /usr
+PREFIX ?= /usr/local
 TO = share/$(NAME)
 
 all:
@@ -22,7 +22,7 @@ clean:
 	rm -f *.pyc */*.pyc $(NAME).zip
 
 distclean: clean
-	rm -f *~ \#* *.bak *.orig
+	rm -f *~ \#* *.bak *.orig */*~ */\#* */*.bak */*.orig
 
 test:
 	python -c "import tests; tests.unit()"
