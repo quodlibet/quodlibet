@@ -250,7 +250,7 @@ class AudioFile(dict):
                 # label number, which is pretty common. Label number
                 # is worth 2 points, everything else 1.
                 matches = filter(lambda s: s in lfn,
-                                 ["front", "cover", "jacket",
+                                 ["front", "cover", "jacket", "folder",
                                   self.get("labelid", lfn + ".").lower(),
                                   self.get("labelid", lfn + ".").lower()])
                 score = len(matches)
