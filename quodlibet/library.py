@@ -7,13 +7,12 @@
 # $Id$
 
 import os, stat
-import ogg.vorbis, pyid3lib
 import cPickle as Pickle
-from util import escape
+import util; from util import escape
 
 def MusicFile(filename):
-    if filename.lower().endswith(".ogg"): return OggFile(filename)
-    elif filename.lower().endswith(".mp3"): return MP3File(filename)
+    typ = filename[-4:].lower()
+    if typ in supported: return supported[typ](filename)
     else: return None
 
 class AudioFile(dict):
@@ -162,6 +161,16 @@ class Library(dict):
                     if m_fn in self: continue
                     m = MusicFile(m_fn)
                     if m: self[m_fn] = m
+
+supported = {}
+
+if util.check_ogg():
+    import ogg.vorbis
+    supported[".ogg"] = OggFile
+
+if util.check_mp3():
+    import pyid3lib
+    supported[".mp3"] = MP3File
 
 library = Library()
 

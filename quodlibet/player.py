@@ -6,15 +6,14 @@
 #
 # $Id$
 
-import mad
 import ao
-import ogg.vorbis
 import time
 import threading
 import random
 from library import library
 from parser import QueryParser, QueryLexer
 import ossaudiodev # barf
+import util
 
 BUFFER_SIZE = 2**12
 
@@ -66,9 +65,9 @@ class OggPlayer(AudioPlayer):
         return self.audio.time_tell() * 1000
 
 def FilePlayer(dev, filename):
-    kind = filename.split(".")[-1].lower()
-    return { "ogg": OggPlayer,
-             "mp3": MP3Player }[kind](dev, filename)
+    typ = filename[-4:].lower()
+    if typ in supported: return supported[typ](dev, filename)
+    else: raise RuntimeError("Unknown file format: %s" % filename)
 
 class DummyOutput(object):
     def play(self, buf): time.sleep(len(buf) / 1000000.0)
@@ -222,6 +221,17 @@ class PlaylistPlayer(object):
             self.playlist.insert(0, song)
             if self.player: self.player.end()
         self.lock.release()
+
+supported = {}
+
+if util.check_ogg():
+    import ogg.vorbis
+    supported[".ogg"] = OggPlayer
+
+if util.check_mp3():
+    print "whee"
+    import mad
+    supported[".mp3"] = MP3Player
 
 device = OutputDevice()
 playlist = PlaylistPlayer(output = device)

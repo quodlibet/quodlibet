@@ -18,3 +18,14 @@ def mkdir(dir):
 # Escape a string in a manner suitable for XML/Pango.
 def escape(str):
     return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+# Check whether or not we can support various formats.
+def check_mp3():
+    try: import pyid3lib, mad
+    except ImportError: return False
+    else: return True
+
+def check_ogg():
+    try: import ogg.vorbis
+    except ImportError: return False
+    else: return True
