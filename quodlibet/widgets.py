@@ -2108,7 +2108,7 @@ class GetStringDialog(gtk.Dialog):
         return value
 
 class AddTagDialog(gtk.Dialog):
-    def __init__(self, parent, can_change):
+    def __init__(self, parent, can_change, validators):
         if can_change == True:
             can = ["title", "version", "artist", "album",
                    "performer", "discnumber"]
@@ -2118,8 +2118,8 @@ class AddTagDialog(gtk.Dialog):
         gtk.Dialog.__init__(self, _("Add a new tag"), parent)
         self.set_border_width(6)
         self.set_resizable(False)
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                gtk.STOCK_ADD, gtk.RESPONSE_OK)
+        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+        self.add = self.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
         self.vbox.set_spacing(6)
         self.set_default_response(gtk.RESPONSE_OK)
         table = gtk.Table(2, 2)
@@ -2134,6 +2134,7 @@ class AddTagDialog(gtk.Dialog):
             self.tag = gtk.combo_box_new_text()
             for tag in can: self.tag.append_text(tag)
             self.tag.set_active(0)
+        self.tag.connect('changed', self.validate, validators)
 
         label = gtk.Label()
         label.set_property('xalign', 0.0)
@@ -2144,16 +2145,26 @@ class AddTagDialog(gtk.Dialog):
         table.attach(self.tag, 1, 2, 0, 1)
 
         self.val = gtk.Entry()
+        self.val.connect('changed', self.validate, validators)
         label = gtk.Label()
         label.set_text(_("_Value:"))
         label.set_property('xalign', 0.0)
         label.set_use_underline(True)
         label.set_mnemonic_widget(self.val)
+        self.valuebox = gtk.EventBox()
         table.attach(label, 0, 1, 1, 2)
-        table.attach(self.val, 1, 2, 1, 2)
+        table.attach(self.valuebox, 1, 2, 1, 2)
+        hbox = gtk.HBox()
+        self.valuebox.add(hbox)
+        hbox.pack_start(self.val)
+        hbox.set_spacing(6)
 
         self.vbox.pack_start(table)
         self.child.show_all()
+        self.valuebox.tips = gtk.Tooltips()
+        self.invalid = gtk.image_new_from_stock(gtk.STOCK_DIALOG_WARNING,
+                                                gtk.ICON_SIZE_SMALL_TOOLBAR)
+        hbox.pack_start(self.invalid)
 
     def get_tag(self):
         try: return self.tag.child.get_text().lower().strip()
@@ -2162,6 +2173,21 @@ class AddTagDialog(gtk.Dialog):
 
     def get_value(self):
         return self.val.get_text().decode("utf-8")
+
+    def validate(self, editable, validators):
+        tag = self.get_tag()
+        try: validator, message = validators.get(tag)
+        except TypeError: valid = True
+        else: valid = bool(validator(self.get_value()))
+
+        self.add.set_sensitive(valid)
+        if valid:
+            self.invalid.hide()
+            self.valuebox.tips.disable()
+        else:
+            self.invalid.show()
+            self.valuebox.tips.set_tip(self.valuebox, message)
+            self.valuebox.tips.enable()
 
     def run(self):
         self.show()
@@ -2754,26 +2780,21 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(True)
 
         def add_tag(self, *args):
-            add = AddTagDialog(self.prop, self.songinfo.can_change())
+            add = AddTagDialog(self.prop, self.songinfo.can_change(),
+                {'date': [sre.compile(r"^\d{4}(-\d{2}-\d{2})?$").match,
+                _("The date must be entered in YYYY or YYYY-MM-DD format.")]})
 
             while True:
                 resp = add.run()
                 if resp != gtk.RESPONSE_OK: break
                 comment = add.get_tag()
                 value = add.get_value()
-                date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
                 if not self.songinfo.can_change(comment):
                     qltk.ErrorMessage(
                         self.prop, _("Invalid tag"),
                         _("Invalid tag <b>%s</b>\n\nThe files currently"
                           " selected do not support editing this tag.")%
                         util.escape(comment)).run()
-
-                elif comment == "date" and not date.match(value):
-                    qltk.ErrorMessage(self.prop, _("Invalid date"),
-                                      _("Invalid date: <b>%s</b>.\n\n"
-                                        "The date must be entered in YYYY or "
-                                        "YYYY-MM-DD format.") % value).run()
                 else:
                     self.add_new_tag(comment, value)
                     break
