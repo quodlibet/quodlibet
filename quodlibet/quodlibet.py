@@ -533,7 +533,7 @@ class MultiInstanceWidget(object):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
         vals = util.split_value(util.unescape(row[1]))
-        if vals[0] != util.unscape(row[1]):
+        if vals[0] != util.unescape(row[1]):
             row[1] = util.escape(vals[0])
             row[2] = True
             for val in vals[1:]: self.add_new_tag(row[0], val)
