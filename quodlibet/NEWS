@@ -6,7 +6,6 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
 0.7
  - Default to proper 'alsa09' driver (rather than 'alsa').
  - "Random Foo" searches are now anchored with ^...$.
- - The titlecase algorithm has been adjusted slightly.
  - Tag By Pattern values can be edited before being saved.
  - Right-clicking on the status icon brings up a menu.
  - --play, --pause, --seek-to, --query, --play-file.
@@ -14,7 +13,7 @@ to change your 'backend' option to 'ao:alsa09' (which is the new default).
    A library rebuild is needed to use it.
  - FreeDesktop-style .folder.png files supported for album covers.
  - Playlist/search UI elements can be hidden.
- - Dragging columns can reorder them.
+ - Dragging playlist columns reorders them.
  - Library rebuilds no longer lose play counts.
 
 0.6 - People laugh at typos in heaven?!

@@ -8,13 +8,6 @@ Quod Libet is designed for use with Ogg Vorbis and FLAC audio files,
 but has support for MP3 files following the ID3v1 and v2 "standards",
 and tracked formats like MOD and XM.
 
-Quod Libet is written in Python and licensed under the GNU GPL version 2.
-
-====[ Neat Features
- - Album cover display.
- - Complex library filtering and searching.
- - Tag editing, including mass edits.
-
 For a full description and list of features, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#features.
 
@@ -22,7 +15,18 @@ For the FAQ, updated regularly, see
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#faq.
 
 There is a mailing list for Quod Libet at quodlibet@lists.sacredchao.net.
-To subscribe, email quodlibet-subscribe@lists.sacredchao.net.
+To subscribe, email quodlibet-subscribe@lists.sacredchao.net. It has
+been very low traffic so far.
+
+====[ Using QL
+
+For help on using the program, run
+ $ man -l ./quodlibet.1
+
+Whenever you upgrade, it's a good idea to select "Reload library" from
+the Music menu. This upgrades your library to take advantage of new
+tag features found in the release. You should also read the NEWS
+file for any important upgrade notes.
 
 ====[ Requirements
 
@@ -62,11 +66,3 @@ or strange errors will happen. The Quod Libet website links to most of
 the required software.
 
 http://www.sacredchao.net/~piman/software/quodlibet.shtml#links
-
-====[ Using QL
-For help on using the program, run
- $ man -l ./quodlibet.1
-
-Whenever you upgrade, it's a good idea to select "Reload library" from
-the Music menu. This upgrades your library to take advantage of new
-tag features found in the release.
