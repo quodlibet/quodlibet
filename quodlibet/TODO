@@ -8,17 +8,15 @@ Don't tell anyone, but the ~#rating key exists already. It just needs UI.
 
 UI Tweaking
 -----------
-Continue HIGification, handle very long titles/filenames better.
-
-Remember browser information
-----------------------------
-Browsers need a way to properly save and reinitialize themselves. Also,
-remember song list sort order.
+Continue HIGification.
+Handle very long titles/filenames better.
+Remember song list sort order.
 
 GStreamer backend
 -----------------
 Experiment with a GStreamer backend. This is not very interesting from
 a format perspective (yet), but it might let us avoid threading problems.
+http://primates.ximian.com/~sandino/python-glade/Examples/GstPlayerGladeApp/
 
 Support for more audio formats
 ------------------------------

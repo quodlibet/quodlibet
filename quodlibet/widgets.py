@@ -769,19 +769,20 @@ class PanedBrowser(Browser, gtk.HBox):
             self.__sig = self.child.get_selection().connect(
                 'changed', self.__selection_changed)
 
-        def __selection_changed(self, selection, check = True):
+        def __selection_changed(self, selection, check = True, jump = False):
             if check: # verify we've actually changed...
                 model, rows = selection.get_selected_rows()
                 selected_items = [model[row][0] for row in rows]
                 if rows == []: rows = [(0,)]
                 if self._selected_items == selected_items: return
                 else: self._selected_items = selected_items
-            self.child.scroll_to_cell(selection.get_selected_rows()[1][0])
+            if jump:
+                self.child.scroll_to_cell(selection.get_selected_rows()[1][0])
             # pass on the remaining songs to the next pane
             self.next.fill(
                 filter(parser.parse(self.query()).search, self._songs))
 
-        def select(self, values):
+        def select(self, values, escape = True):
             selection = self.child.get_selection()
             selection.handler_block(self.__sig)
             selection.unselect_all()
@@ -789,7 +790,8 @@ class PanedBrowser(Browser, gtk.HBox):
             if values == []: selection.select_path((len(model) - 1,))
             elif values is None: selection.select_path((0,))
             else:
-                values = [util.escape(v.encode('utf-8')) for v in values]
+                if escape:
+                    values = [util.escape(v.encode('utf-8')) for v in values]
                 def select_values(model, path, iter):
                     if model[path][0] in values:
                         selection.select_path(path)
@@ -797,7 +799,7 @@ class PanedBrowser(Browser, gtk.HBox):
                 if selection.count_selected_rows() == 0:
                     selection.select_path((0,))
             selection.handler_unblock(self.__sig)
-            self.__selection_changed(selection, check = False)
+            self.__selection_changed(selection, check = False, jump = True)
 
         def fill(self, songs, handle_pending = True):
             self._songs = songs
@@ -831,7 +833,7 @@ class PanedBrowser(Browser, gtk.HBox):
             for i in to_select: selection.select_path((i,))
             selection.handler_unblock(self.__sig)
             while handle_pending and gtk.events_pending(): gtk.main_iteration()
-            self.__selection_changed(selection, check = False)
+            self.__selection_changed(selection, check = False, jump = True)
 
         def query(self):
             selection = self.child.get_selection()
@@ -875,6 +877,22 @@ class PanedBrowser(Browser, gtk.HBox):
         pane = self._panes[[pane.tag for pane in self._panes].index(key)]
         pane.select(values)
 
+    def save(self):
+        selected = []
+        for pane in self._panes:
+            selection = pane.child.get_selection()
+            model, rows = selection.get_selected_rows()
+            selected.append("\t".join([model[row][0] for row in rows]))
+        config.set("browsers", "pane_selection", "\n".join(selected))
+
+    def restore(self):
+        selections = [y.split("\t") for y in
+                      config.get("browsers", "pane_selection").split("\n")]
+        if len(selections) == len(self._panes):
+            for sel, pane in zip(selections, self._panes):
+                self.__inhibit = True
+                pane.select(sel, escape = False)
+
     def activate(self):
         self.fill(None)
 
@@ -885,6 +903,7 @@ class PanedBrowser(Browser, gtk.HBox):
     def fill(self, songs):
         if self.__inhibit: self.__inhibit = False
         else:
+            self.save()
             self.__cb(
                 "&(%s)" % ", ".join(map(self.Pane.query, self._panes)), None)
 
@@ -924,10 +943,30 @@ class PlaylistBar(Browser, gtk.HBox):
                             combo, None)
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
+    def save(self):
+        combo = self.get_children()[0]
+        active = combo.get_active()
+        key = combo.get_model()[active][1]
+        config.set("browsers", "playlist", key)
+
+    def restore(self):
+        key = config.get("browsers", "playlist")
+        combo = self.get_children()[0]
+        model = combo.get_model()
+        def find_key(model, path, iter, key):
+            if model[iter][1] == key:
+                combo.set_active(path[0])
+                return True
+        model.foreach(find_key, key)
+
+    def activate(self):
+        self.list_selected(*self.get_children())
+
     def list_selected(self, combo, edit, refresh):
         active = combo.get_active()
         edit.set_sensitive(active != 0)
         refresh.set_sensitive(active != 0)
+        self.save()
         if active == 0:
             self.cb("", None)
         else:
@@ -2228,7 +2267,7 @@ class MainSongList(SongList):
     # Resort based on the header clicked.
     def set_sort_by(self, header, tag = None, refresh = True):
         s = gtk.SORT_ASCENDING
-        if tag is None: tag = header.header_name
+        if header and tag is None: tag = header.header_name
         if header:
             s = header.get_sort_order()
             if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
