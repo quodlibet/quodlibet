@@ -21,7 +21,7 @@
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <signal name="destroy" handler="gtk_main_quit" last_modification_time="Wed, 06 Oct 2004 06:30:51 GMT"/>
-  <signal name="size_allocate" handler="save_size" last_modification_time="Thu, 28 Oct 2004 03:42:28 GMT"/>
+  <signal name="configure-event" handler="save_size" last_modification_time="Thu, 28 Oct 2004 03:42:28 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">

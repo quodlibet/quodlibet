@@ -29,26 +29,28 @@ class GTKSongInfoWrapper(object):
         self.but_image = widgets["play_image"]
         self.playing = gtk.gdk.pixbuf_new_from_file("pause.png")
         self.paused = gtk.gdk.pixbuf_new_from_file("play.png")
+        self.albumfn = None
 
-        try:
-            import statusicon
-            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-            self.icon = statusicon.StatusIcon(p)
-            self.icon.connect("activate", self._toggle_window, ())
-            print _("Initialized status icon.")
+        try: import statusicon
         except:
             print _("W: Failed to initialize status icon.")
             self.icon = None
+        else:
+            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+            self.icon = statusicon.StatusIcon(p)
+            self.icon.connect("activate", self._toggle_window,
+                              (widgets["main_window"]))
+            print _("Initialized status icon.")
 
-        try:
-            import mmkeys
-            self.keys = mmkeys.MmKeys()
-            self.keys.connect("mm_prev", self._previous)
-            self.keys.connect("mm_next", self._next)
-            self.keys.connect("mm_playpause", self._playpause)
-            print _("Initialized multimedia key support.")
+        try: import mmkeys
         except:
             print _("W: Failed to initialize multimedia key support.")
+        else:
+            keys = mmkeys.MmKeys()
+            keys.connect("mm_prev", self._previous)
+            keys.connect("mm_next", self._next)
+            keys.connect("mm_playpause", self._playpause)
+            print _("Initialized multimedia key support.")
 
         self._time = (0, 1)
         gtk.timeout_add(300, self._update_time)
@@ -57,21 +59,35 @@ class GTKSongInfoWrapper(object):
     def _next(*args): player.playlist.next()
     def _playpause(*args): player.playlist.paused ^= True
 
-    def _toggle_window(self, *args):
-        w = widgets["main_window"]
-        if w.get_property('visible'):
-            self.window_pos = w.get_position()
-            w.hide()
+    def _toggle_window(self, icon, window):
+        if window.get_property('visible'):
+            self.window_pos = window.get_position()
+            window.hide()
         else:
-            w.move(*self.window_pos)
-            w.show()
+            window.move(*self.window_pos)
+            window.show()
+
+    # These are all the signals that the wrapper gets from the player.
 
     # The pattern of getting a call from the playing thread and then
     # queueing an idle function prevents thread-unsafety in GDK.
 
-    # The pause toggle was clicked.
+    # The pause state was toggled.
     def set_paused(self, paused):
         gtk.idle_add(self._update_paused, paused)
+
+    # The player told us about a new time.
+    def set_time(self, cur, end):
+        self._time = (cur, end)
+
+    # A new song was selected, or the next song started playing.
+    def set_song(self, song, player):
+        gtk.idle_add(self._update_song, song, player)
+
+    def missing_song(self, song):
+        gtk.idle_add(self._missing_song, song)
+
+    # idle_added functions caused by signals from the player.
 
     def _update_paused(self, paused):
         if paused:
@@ -82,10 +98,6 @@ class GTKSongInfoWrapper(object):
             widgets["play_menu"].child.set_text("_Pause song")
         widgets["play_menu"].child.set_use_underline(True)
 
-    # The player told us about a new time.
-    def set_time(self, cur, end):
-        self._time = (cur, end)
-
     def _update_time(self):
         cur, end = self._time
         self.pos.set_value(cur)
@@ -93,13 +105,6 @@ class GTKSongInfoWrapper(object):
                             (cur / 60000, (cur % 60000) / 1000,
                              end / 60000, (end % 60000) / 1000))
         return True
-
-    # A new song was selected, or the next song started playing.
-    def set_song(self, song, player):
-        gtk.idle_add(self._update_song, song, player)
-
-    def missing_song(self, song):
-        gtk.idle_add(self._missing_song, song)
 
     def _missing_song(self, song):
         path = (player.playlist.get_playlist().index(song),)
@@ -114,7 +119,7 @@ class GTKSongInfoWrapper(object):
     def disable_cover(self):
         self.iframe.hide()
 
-    # Called when a covers are turned on; an image may not be available.
+    # Called when covers are turned on; an image may not be available.
     def enable_cover(self):
         if self.image.get_pixbuf():
             self.iframe.show()
@@ -142,17 +147,24 @@ class GTKSongInfoWrapper(object):
         if song:
             self.pos.set_range(0, player.length)
             self.pos.set_value(0)
-
+            cover_f = None
             cover = song.find_cover()
-            try:
-                p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
-            except:
-                self.image.set_from_pixbuf(None)
-                self.disable_cover()
-            else:
-                self.image.set_from_pixbuf(p)
-                if config.state("cover"): self.enable_cover()
-                    
+            if hasattr(cover, "rewind"):
+                cover_f = cover
+                cover = cover.name
+            if cover != self.albumfn:
+                try:
+                    p = gtk.gdk.pixbuf_new_from_file_at_size(cover, 100, 100)
+                except:
+                    self.image.set_from_pixbuf(None)
+                    self.disable_cover()
+                    self.albumfn = None
+                else:
+                    self.image.set_from_pixbuf(p)
+                    if config.state("cover"): self.enable_cover()
+                    self.albumfn = cover
+            if cover_f: cover_f.close()
+
             self.update_markup(song)
         else:
             self.image.set_from_pixbuf(None)
@@ -189,28 +201,36 @@ class FileChooser(object):
             buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                        gtk.STOCK_OPEN, gtk.RESPONSE_OK))
         if initial_dir:
-            self.dialog.set_current_folder(initial_dir)        
+            self.dialog.set_current_folder(initial_dir)
         self.dialog.set_local_only(True)
         self.dialog.set_select_multiple(True)
 
     def run(self):
         resp = self.dialog.run()
         fns = self.dialog.get_filenames()
+        self.dialog.destroy()
         return resp, fns
 
-    def destroy(self):
+class Message(object):
+    def __init__(self, kind, parent, title, description, buttons = None):
+        buttons = buttons or gtk.BUTTONS_OK
+        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
+        self.dialog = gtk.MessageDialog(
+            parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            kind, buttons)
+        self.dialog.set_markup(text)
+
+    def run(self):
+        self.dialog.run()
         self.dialog.destroy()
 
-# Display the error dialog.
-def ErrorMessage(title, description, buttons):
-    text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
-    dialog = gtk.MessageDialog(widgets["main_window"],
-                               gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                               gtk.MESSAGE_ERROR,
-                               buttons)
-    dialog.set_markup(text)
-    dialog.show_all()
-    return dialog
+class ErrorMessage(Message):
+    def __init__(self, *args):
+        Message.__init__(self, gtk.MESSAGE_ERROR, *args)
+
+class WarningMessage(Message):
+    def __init__(self, *args):
+        Message.__init__(self, gtk.MESSAGE_WARNING, *args)
 
 # Standard Glade widgets wrapper.
 class Widgets(object):
@@ -234,11 +254,8 @@ class GladeHandlers(object):
 
     def gtk_main_quit(*args): gtk.main_quit()
 
-    def save_size(widget, *args):
-        old_size = map(int, config.get("memory", "size").split(" "))
-        new_size = widget.get_size()
-        if old_size != new_size:
-            config.set("memory", "size", " ".join(map(str, new_size)))
+    def save_size(widget, event):
+        config.set("memory", "size", "%d %d" % (event.width, event.height))
 
     def open_website(button):
         song = CURRENT_SONG[0]
@@ -252,13 +269,12 @@ class GladeHandlers(object):
                 print _("Opening web browser: %s") % s
                 if os.system(s + " &") == 0: break
         else:
-            d = ErrorMessage(_("Unable to start a web browser"),
-                             _("A web browser could not be found. Please set "
-                               "your $BROWSER variable, or make sure "
-                               "/usr/bin/sensible-browser exists."),
-                             gtk.BUTTONS_OK)
-            r = d.run()
-            d.destroy()
+            ErrorMessage(widgets["main_window"],
+                         _("Unable to start a web browser"),
+                         _("A web browser could not be found. Please set "
+                           "your $BROWSER variable, or make sure "
+                           "/usr/bin/sensible-browser exists."),
+                         gtk.BUTTONS_OK).run()
 
     def play_pause(button):
         player.playlist.paused ^= True
@@ -292,7 +308,7 @@ class GladeHandlers(object):
         gtk.idle_add(player.playlist.seek, v)
 
     # Set up the preferences window.
-    def open_prefs(*args):
+    def open_prefs(activator):
         widgets["prefs_window"].set_transient_for(widgets["main_window"])
         # Fill in the general checkboxes.
         for w in ["jump", "cover", "color", "tbp_space", "titlecase",
@@ -303,12 +319,9 @@ class GladeHandlers(object):
         # Fill in the header checkboxes.
         widgets["disc_t"].set_active("=d" in old_h)
         widgets["track_t"].set_active("=#" in old_h)
-        widgets["album_t"].set_active("album" in old_h)
-        widgets["artist_t"].set_active("artist" in old_h)
-        widgets["genre_t"].set_active("genre" in old_h)
-        widgets["year_t"].set_active("year" in old_h)
-        widgets["version_t"].set_active("version" in old_h)
-        widgets["performer_t"].set_active("performer" in old_h)
+        for h in ["album", "artist", "genre", "year", "version",
+                  "performer"]:
+            widgets[h + "_t"].set_active(h in old_h)
         widgets["filename_t"].set_active("=basename" in old_h)
 
         # Remove the standard headers, and put the rest in the list.
@@ -330,23 +343,19 @@ class GladeHandlers(object):
         if widgets["disc_t"].get_active(): new_h.append("=d")
         if widgets["track_t"].get_active(): new_h.append("=#")
         new_h.append("title")
-        if widgets["version_t"].get_active(): new_h.append("version")
-        if widgets["album_t"].get_active(): new_h.append("album")
-        if widgets["artist_t"].get_active(): new_h.append("artist")
-        if widgets["performer_t"].get_active(): new_h.append("performer")
-        if widgets["year_t"].get_active(): new_h.append("year")
-        if widgets["genre_t"].get_active(): new_h.append("genre")
+        for h in ["version", "album", "artist", "performer", "year", "genre"]:
+            if widgets[h + "_t"].get_active(): new_h.append(h)
         if widgets["filename_t"].get_active(): new_h.append("=basename")
         new_h.extend(widgets["extra_headers"].get_text().split())
         HEADERS[:] = new_h
-        config.set("settings", "headers", " ".join(HEADERS))
-        set_column_headers(widgets["songlist"])
+        config.set("settings", "headers", " ".join(new_h))
+        set_column_headers(widgets["songlist"], new_h)
 
-    def change_scan(*args):
-        config.set("settings", "scan", widgets["scan_opt"].get_text())
+    def change_scan(entry):
+        config.set("settings", "scan", entry.get_text())
 
-    def prefs_change_split(*args):
-        config.set("settings", "splitters", widgets["split_entry"].get_text())
+    def prefs_change_split(entry):
+        config.set("settings", "splitters", entry.get_text())
 
     def toggle_color(toggle):
         config.set("settings", "color", str(bool(toggle.get_active())))
@@ -385,7 +394,6 @@ class GladeHandlers(object):
         resp, fns = chooser.run()
         if resp == gtk.RESPONSE_OK:
             widgets["scan_opt"].set_text(":".join(fns))
-        chooser.destroy()
 
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
@@ -403,7 +411,6 @@ class GladeHandlers(object):
     def open_chooser(*args):
         chooser = FileChooser(_("Add Music"), GladeHandlers.last_dir)
         resp, fns = chooser.run()
-        chooser.destroy()
         while gtk.events_pending(): gtk.main_iteration()
         if resp == gtk.RESPONSE_OK:
             progress = widgets["throbber"]
@@ -646,7 +653,7 @@ class SongProperties(MultiInstanceWidget):
         self.save_edit.set_sensitive(True)
         self.revert.set_sensitive(True)
 
-    def split_into_list(self, *args):
+    def split_into_list(self, activator):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
         spls = config.get("settings", "splitters")
@@ -656,7 +663,7 @@ class SongProperties(MultiInstanceWidget):
             row[2] = True
             for val in vals[1:]: self.add_new_tag(row[0], val)
 
-    def split_title(self, *args):
+    def split_title(self, activator):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
         spls = config.get("settings", "splitters")
@@ -666,7 +673,7 @@ class SongProperties(MultiInstanceWidget):
             row[2] = True
             for val in versions: self.add_new_tag("version", val)
 
-    def split_album(self, *args):
+    def split_album(self, activator):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
         album, disc = util.split_album(util.unescape(row[1]))
@@ -685,21 +692,17 @@ class SongProperties(MultiInstanceWidget):
             row[2] = True
             for val in others: self.add_new_tag(tag, val)
 
-    def split_performer(self, *args): self.split_people("performer")
-    def split_arranger(self, *args): self.split_people("arranger")
+    def split_performer(self, activator): self.split_people("performer")
+    def split_arranger(self, activator): self.split_people("arranger")
 
     def songprop_edit(self, renderer, path, new, model, colnum):
         row = model[path]
         date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
         if row[0] == "date" and not date.match(new):
-            msg = gtk.MessageDialog(self.window, gtk.DIALOG_MODAL,
-                                    gtk.MESSAGE_WARNING,
-                                    gtk.BUTTONS_OK)
-            msg.set_markup(_("Invalid date: <b>%s</b>.\n\n"
+            WarningMessage(self.window, _("Invalid date format"),
+                           _("Invalid date: <b>%s</b>.\n\n"
                              "The date must be entered in YYYY or "
-                             "YYYY-MM-DD format.") % new)
-            msg.run()
-            msg.destroy()
+                             "YYYY-MM-DD format.") % new).run()
         elif row[colnum].replace('<i>','').replace('</i>','') != new:
             row[colnum] = util.escape(new)
             row[2] = True # Edited
@@ -779,22 +782,17 @@ class SongProperties(MultiInstanceWidget):
             value = val.get_text().decode("utf-8")
             date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
             if not self.songinfo.can_change(comment):
-                msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
-                                        gtk.MESSAGE_WARNING, gtk.BUTTONS_OK)
-                msg.set_markup(_("Invalid tag <b>%s</b>\n\nThe files currently"
-                                 " selected do not support editing this tag")%
-                               util.escape(comment))
-                msg.run()
-                msg.destroy()
+                WarningMessage(
+                    self.window, _("Invalid tag"),
+                    _("Invalid tag <b>%s</b>\n\nThe files currently"
+                      " selected do not support editing this tag")%
+                    util.escape(comment)).run()
+
             elif comment == "date" and not date.match(value):
-                msg = gtk.MessageDialog(add, gtk.DIALOG_MODAL,
-                                        gtk.MESSAGE_WARNING,
-                                        gtk.BUTTONS_OK)
-                msg.set_markup(_("Invalid date: <b>%s</b>.\n\n"
+                WarningMessage(self.window, _("Invalid date"),
+                               _("Invalid date: <b>%s</b>.\n\n"
                                  "The date must be entered in YYYY or "
-                                 "YYYY-MM-DD format.") % value)
-                msg.run()
-                msg.destroy()
+                                 "YYYY-MM-DD format.") % value).run()
             else:
                 self.add_new_tag(comment, value)
                 tag.child.set_text("")
@@ -903,15 +901,14 @@ class SongProperties(MultiInstanceWidget):
         try:
             pattern = util.FileFromPattern(pattern)
         except ValueError: 
-            d = ErrorMessage(_("Pattern with subdirectories is not absolute"),
+            d = ErrorMessage(self.window,
+                             _("Pattern with subdirectories is not absolute"),
                              _("The pattern\n\t<b>%s</b>\ncontains / but does "
                                "not start from root. To avoid misnamed "
                                "directories, root your pattern by starting "
                                "it from the / directory.")%(
-                util.escape(pattern)),
-                             gtk.BUTTONS_OK)
+                util.escape(pattern)))
             d.run()
-            d.destroy()
             return
             
         for song, ref in self.songrefs:
@@ -940,16 +937,13 @@ class SongProperties(MultiInstanceWidget):
                 song.rename(newname)
                 if ref: songref_update_view(song, ref)
             except:
-                d = ErrorMessage(_("Unable to rename %s")%(
-                    util.escape(oldname)),
-                                 _("Renaming <b>%s</b> to <b>%s</b> failed. "
-                                   "Possibly the target file already exists, "
-                                   "or you do not have permission to make the "
-                                   "new file or remove the old one.") %(
-                    util.escape(oldname), util.escape(newname)),
-                                 gtk.BUTTONS_OK)
-                resp = d.run()
-                d.destroy()
+                ErrorMessage(self.window,
+                             _("Unable to rename %s") % (util.escape(oldname)),
+                             _("Renaming <b>%s</b> to <b>%s</b> failed. "
+                               "Possibly the target file already exists, "
+                               "or you do not have permission to make the "
+                               "new file or remove the old one.") %(
+                    util.escape(oldname), util.escape(newname))).run()
                 return True
             win.step()
         self.nbp_model.foreach(rename)
@@ -982,14 +976,12 @@ class SongProperties(MultiInstanceWidget):
 
         try: pattern = util.PatternFromFile(pattern_text)
         except sre.error:
-            d = ErrorMessage(_("Invalid pattern"),
-                             _("The pattern\n\t<b>%s</b>\nis invalid. "
-                               "Possibly it contains the same tag twice or "
-                               "it has unbalanced brackets (&lt; and &gt;).")%(
-                util.escape(pattern_text)),
-                             gtk.BUTTONS_OK)
-            d.run()
-            d.destroy()
+            ErrorMessage(self.window,
+                         _("Invalid pattern"),
+                         _("The pattern\n\t<b>%s</b>\nis invalid. "
+                           "Possibly it contains the same tag twice or "
+                           "it has unbalanced brackets (&lt; and &gt;).")%(
+                util.escape(pattern_text))).run()
             return
 
         rep = self.widgets.get_widget("prop_tbp_space_t").get_active()
@@ -1126,29 +1118,25 @@ def filter_on_header(header):
 
 # Try and construct a query, but don't actually run it; change the color
 # of the textbox to indicate its validity (if the option to do so is on).
-def test_filter(*args):
+def test_filter(textbox):
     if not config.state("color"): return
-    textbox = widgets["query"].child
     text = textbox.get_text()
-    if "=" not in text and "/" not in text:
-        gtk.idle_add(set_entry_color, textbox, "blue")
-    elif parser.is_valid(text):
-        gtk.idle_add(set_entry_color, textbox, "dark green")
-    else:
-        gtk.idle_add(set_entry_color, textbox, "red")
+    if "=" not in text and "/" not in text: color = "blue"
+    elif parser.is_valid(text): color = "dark green"
+    else: color = "red"
+    gtk.idle_add(set_entry_color, textbox, color)
 
 # Resort based on the header clicked.
-def set_sort_by(header, i, sortdir=None):
+def set_sort_by(header, tag):
     s = header.get_sort_order()
-    if sortdir is not None: s = sortdir
-    elif not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
+    if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
         s = gtk.SORT_ASCENDING
     else: s = gtk.SORT_DESCENDING
     for h in widgets["songlist"].get_columns():
         h.set_sort_indicator(False)
     header.set_sort_indicator(True)
     header.set_sort_order(s)
-    player.playlist.sort_by(HEADERS[i[0]], s == gtk.SORT_DESCENDING)
+    player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
     refresh_songlist()
 
 # Clear the songlist and readd the songs currently wanted.
@@ -1185,27 +1173,27 @@ def set_entry_color(entry, color):
 
 # Build a new filter around our list model, set the headers to their
 # new values.
-def set_column_headers(sl):
+def set_column_headers(sl, headers):
     SHORT_COLS = ["=#", "=d", "tracknumber", "discnumber"]
     sl.set_model(None)
-    widgets.songs = gtk.ListStore(*([str] * len(HEADERS) + [object, int]))
+    widgets.songs = gtk.ListStore(*([str] * len(headers) + [object, int]))
     for c in sl.get_columns(): sl.remove_column(c)
-    widgets["songlist"].realize()    
+    widgets["songlist"].realize()
     width = widgets["songlist"].get_allocation()[2]
-    c = len(HEADERS)
+    c = len(headers)
     for t in SHORT_COLS:
-        if t in HEADERS: c -= 0.5
+        if t in headers: c -= 0.5
     width = int(width / c)
-    for i, t in enumerate(HEADERS):
+    for i, t in enumerate(headers):
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_(HEADERS_FILTER.get(t, t)).title(),
-                                    render, text = i, weight = len(HEADERS)+1)
+                                    render, text = i, weight = len(headers)+1)
         if t in SHORT_COLS: render.set_fixed_size(-1, -1)
         else: render.set_fixed_size(width, -1)
         column.set_resizable(True)
         column.set_clickable(True)
         column.set_sort_indicator(False)
-        column.connect('clicked', set_sort_by, (i,))
+        column.connect('clicked', set_sort_by, (t,))
         sl.append_column(column)
     refresh_songlist()
     sl.set_model(widgets.songs)
@@ -1238,7 +1226,7 @@ def setup_nonglade():
     widgets["main_window"].show()
     # Wait to fill in the column headers because otherwise the
     # spacing is off, since the window hasn't been sized until now.
-    set_column_headers(sl)
+    set_column_headers(sl, config.get("settings", "headers").split())
     widgets.wrap = GTKSongInfoWrapper()
     widgets["query"].child.set_text(config.get("memory", "query"))
     gtk.threads_init()
@@ -1270,7 +1258,6 @@ def main():
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
         HEADERS_FILTER[opt] = val
-
 
     from threading import Thread
     t = Thread(target = player.playlist.play, args = (widgets.wrap,))
@@ -1346,13 +1333,12 @@ def print_playing(fstring = DEF_PP):
         raise SystemExit(True)
 
 def error_and_quit():
-    d = ErrorMessage(_("No audio device found"),
-                     _("Quod Libet was unable to open your audio device. "
-                       "Often this means another program is using it, or "
-                       "your audio drivers are not configured.\n\nQuod Libet "
-                       "will now exit."),
-                     gtk.BUTTONS_OK)
-    d.run()
+    ErrorMessage(None,
+                 _("No audio device found"),
+                 _("Quod Libet was unable to open your audio device. "
+                   "Often this means another program is using it, or "
+                   "your audio drivers are not configured.\n\nQuod Libet "
+                   "will now exit.")).run()
     gtk.main_quit()
     return True
 

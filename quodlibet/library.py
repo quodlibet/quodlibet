@@ -12,6 +12,7 @@ import util; from util import escape
 import fcntl
 import time
 import gettext
+import tempfile
 _ = gettext.gettext
 
 def MusicFile(filename):
@@ -232,6 +233,10 @@ class AudioFile(dict):
                    score += 1
                if score: images.append((score, os.path.join(base, fn)))
         if images: return max(images)[1]
+        elif "=picture" in self:
+            f = tempfile.NamedTemporaryFile()
+            f.write(self["=picture"])
+            return f
         else: return None
 
 class MP3File(AudioFile):
@@ -293,6 +298,9 @@ class MP3File(AudioFile):
                 continue
             elif frame["frameid"] == "TYER":
                 date[0] = frame["text"]
+                continue
+            elif frame["frameid"] == "APIC":
+                self["=picture"] = frame["text"]
                 continue
 
             names = self.IDS.get(frame["frameid"], [])

@@ -1,10 +1,12 @@
 - More unit tests.
 - Full FLAC support.
+- Properties tab for handling track numbers.
 - Various skipping problems -- get smarter about Python threads.
 - MikMod support.
 - Import covers from Muine.
-  - We need to serialized the pixmap data, whatever it's doing, which
+  - We need to deserialize the pixmap data, whatever it's doing, which
     doesn't seem to be exposed via PyGTK.
+- Import covers from ID3 APIC tags.
 - Streaming & playlists.
   - New UI element(s) for selecting playlists or streams. Combobox next
     to search, Library/Playlist/Streams?
