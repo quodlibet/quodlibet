@@ -736,11 +736,126 @@ class Osd(object):
             self.window.destroy()
             self.window = None
 
-class BrowserBar(object):
+class Browser(object):
     def can_filter(self, key):
         return False
 
-class PlaylistBar(BrowserBar, gtk.HBox):
+class PanedBrowser(Browser, gtk.HBox):
+    def __init__(self, cb):
+        gtk.HBox.__init__(self, spacing = 6)
+        artist_tree = gtk.TreeView(gtk.ListStore(str))
+        album_tree = gtk.TreeView(gtk.ListStore(str))
+        render = gtk.CellRendererText()
+        column = gtk.TreeViewColumn(_("Artist"), render, text = 0)
+        artist_tree.append_column(column)
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.add(artist_tree)
+        self.pack_start(sw)
+        render = gtk.CellRendererText()
+        column = gtk.TreeViewColumn(_("Album"), render, text = 0)
+        album_tree.append_column(column)
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.add(album_tree)
+        self.pack_start(sw)
+        self.__refresh()
+
+        self.__cb = cb
+        self.set_homogeneous(True)
+        self.set_size_request(100, 100)
+
+        artist_tree.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        album_tree.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        artist_tree.get_selection().connect(
+            'changed', self.__artist_changed, artist_tree, album_tree)
+        album_tree.get_selection().connect(
+            'changed', self.__album_changed, artist_tree, album_tree)
+        self.show_all()
+
+    def __refresh(self):
+        artist_view, album_view = [x.child for x in self.get_children()]
+        artist_view.get_model().clear()
+        album_view.get_model().clear()
+        artists = set()
+        albums = set()
+        for song in library.values():
+            artists.update(song.list("artist"))
+            albums.update(song.list("album"))
+        artists = list(artists); artists.sort()
+        albums = list(albums); albums.sort()
+
+        for lst, tree in [(artists, artist_view), (albums, album_view)]:
+            model = tree.get_model()
+            model.clear()
+            model.append([_("All")])
+            for a in lst: model.append([a])
+            model.append([_("Unknown")])
+
+    def __refresh_albums(self, query, album_view):
+        albums = set()
+        for song in library.query(query):
+            albums.update(song.list("album"))
+        albums = list(albums); albums.sort()
+        
+        for lst, tree in [(albums, album_view)]:
+            model = tree.get_model()
+            model.clear()
+            model.append([_("All")])
+            for a in lst: model.append([a])
+            model.append([_("Unknown")])
+
+    def activate(self):
+        self.__cb(self.__make_query(artist_view, album_view), None)
+
+    def __make_query_int(self, tag, values):
+        return "%s = |(%s)" % (tag, ", ".join(
+            ["/^%s$/c" % sre.escape(v) for v in values]))
+
+    def __make_query(self, artist_view, album_view):
+        model, rows = artist_view.get_selection().get_selected_rows()
+        if rows == [] or rows[0] == (0,): artists = None
+        else:
+            artists = [model[row][0] for row in rows]
+            if rows[-1] == (len(model) - 1,): artists.pop()
+            artists = self.__make_query_int("artist", artists)
+            if rows[-1] == (len(model) - 1,):
+                artists = "|(artist = !/./, %s)" % artists
+
+        model, rows = album_view.get_selection().get_selected_rows()
+        if rows == [] or rows[0] == (0,): albums = None
+        else:
+            albums = [model[row][0] for row in rows]
+            if rows[-1] == (len(model) - 1,): albums.pop()
+            albums = self.__make_query_int("album", albums)
+            if rows[-1] == (len(model) - 1,):
+                albums = "|(album = !/./, %s)" % albums
+
+        if artists and albums:
+            return "&(%s, %s)" % (artists, albums)
+        elif artists: return artists
+        elif albums: return albums
+        else: return ""
+
+    def __artist_changed(self, selection, artist_view, album_view):
+        album_view.get_selection().unselect_all()
+        album_view.get_selection().select_path((0,))
+        model, rows = artist_view.get_selection().get_selected_rows()
+        if rows == [] or rows[0] == (0,): artists = None
+        else:
+            artists = [model[row][0] for row in rows]
+            artists = self.__make_query_int("artist", artists)
+            if rows[-1] == (len(model),):
+                artists = "|(artist = !/./, %s)" % artists
+        self.__refresh_albums(artists, album_view)
+        while gtk.events_pending(): gtk.main_iteration()
+
+    def __album_changed(self, selection, artist_view, album_view):
+        self.__cb(self.__make_query(artist_view, album_view), None)
+
+class PlaylistBar(Browser, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
         combo = gtk.ComboBox(PlayList.lists_model())
@@ -829,7 +944,7 @@ class CoverImage(gtk.Frame):
             cover = self.__song.find_cover()
             BigCenteredImage(self.__song.comma("album"), cover.name)
 
-class EmptyBar(BrowserBar, gtk.HBox):
+class EmptyBar(Browser, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
         self.text = ""
@@ -1118,7 +1233,7 @@ class MainWindow(gtk.Window):
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.show()
 
-    def songref_update_view(self, song):
+    def song_update_view(self, song):
         if song is None:
             self.songlist.refresh()
         else:
@@ -1197,7 +1312,8 @@ class MainWindow(gtk.Window):
         ag.add_radio_actions([
             ("BrowserDisable", None, _("_Disable browsing"), None, None, 0),
             ("BrowserSearch", None, _("_Search library"), None, None, 1),
-            ("BrowserPlaylist", None, _("_Playlists"), None, None, 2)
+            ("BrowserPlaylist", None, _("_Playlists"), None, None, 2),
+            ("BrowserPaned", None, _("_Paned browser"), None, None, 3)
             ], 1, self.select_browser)
 
         self.ui = gtk.UIManager()
@@ -1228,8 +1344,8 @@ class MainWindow(gtk.Window):
 
 
     def select_browser(self, activator, current):
-        [self.hide_browser, self.show_search, self.show_listselect][
-            current.get_current_value()](activator)
+        [self.hide_browser, self.show_search, self.show_listselect,
+         self.show_paned][current.get_current_value()](activator)
 
     def tray_popup(self, event, *args):
         tray_menu = gtk.Menu()
@@ -1705,11 +1821,11 @@ class MainWindow(gtk.Window):
 
     def current_song_prop(self, *args):
         song = self.current_song
-        if song: SongProperties([song], self.songref_update_view)
+        if song: SongProperties([song], self.song_update_view)
 
     def song_properties(self, item):
         SongProperties(self.songlist.get_selected_songs(),
-                       self.songref_update_view)
+                       self.song_update_view)
 
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.split("~")[0]
@@ -1760,6 +1876,14 @@ class MainWindow(gtk.Window):
         self.child.pack_start(self.browser, expand = False)
         self.browser.set_text(config.get("memory", "query"))
 
+    def show_paned(self, *args):
+        for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+                      "Song/FilterAlbum"]:
+            self.ui.get_widget("/Menu/" + w).hide()
+        self.browser.destroy()
+        self.browser = PanedBrowser(self.text_parse)
+        self.child.pack_start(self.browser)
+
     def show_listselect(self, *args):
         for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
                       "Song/FilterAlbum"]:
@@ -1772,7 +1896,7 @@ class MainWindow(gtk.Window):
         while gtk.events_pending(): gtk.main_iteration()
         player.playlist.playlist_from_filter(query)
         while gtk.events_pending(): gtk.main_iteration()
-        self.songlist.set_sort_by(None, key, False)
+        self.songlist.set_sort_by(None, False)
         while gtk.events_pending(): gtk.main_iteration()
         self.refresh_songlist()
 
@@ -1910,7 +2034,7 @@ class SongList(gtk.TreeView):
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_fixed_width(ws[i])
             if hasattr(self, 'set_sort_by'):
-                column.connect('clicked', self.set_sort_by, t)
+                column.connect('clicked', self.set_sort_by)
             self._set_column_settings(column)
             if t in ["~filename", "~basename", "~dirname"]:
                 column.set_cell_data_func(render, cell_data_fn,
@@ -2005,7 +2129,7 @@ class PlayList(SongList):
     def song_properties(self, *args):
         model, rows = self.get_selection().get_selected_rows()
         SongProperties([model[row][0] for row in rows],
-                       self.songref_update_view)
+                       self.song_update_view)
 
     def refresh_indices(self, *args):
         for i, row in enumerate(iter(self.get_model())):
@@ -2033,8 +2157,9 @@ class MainSongList(SongList):
         column.connect('notify::width', self.save_widths)
 
     # Resort based on the header clicked.
-    def set_sort_by(self, header, tag, refresh = True):
+    def set_sort_by(self, header, refresh = True):
         s = gtk.SORT_ASCENDING
+        t = header.header_name
         if header:
             s = header.get_sort_order()
             if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
@@ -3448,7 +3573,7 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(False)
             self.preview.set_sensitive(True)
 
-    def __init__(self, songrefs, callback = None):
+    def __init__(self, songs, callback = None):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
@@ -3458,7 +3583,7 @@ class SongProperties(gtk.Window):
         self.pages = [Ctr(self, callback) for Ctr in
                       [self.Information, self.EditTags, self.TagByFilename,
                        self.RenameFiles]]
-        if len(songrefs) > 1:
+        if len(songs) > 1:
             self.pages.append(self.TrackNumbers(self, callback))
         for page in self.pages: self.notebook.append_page(page)
         self.set_property('border-width', 12)
@@ -3472,7 +3597,7 @@ class SongProperties(gtk.Window):
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         selection.connect('changed', self.selection_changed)
 
-        if len(songrefs) > 1:
+        if len(songs) > 1:
             expander = gtk.Expander(_("Apply to these _files..."))
             c1 = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=1)
             c1.set_sort_column_id(1)
@@ -3496,15 +3621,15 @@ class SongProperties(gtk.Window):
         bbox.pack_start(button)
         vbox.pack_start(bbox, expand = False)
 
-        for song in songrefs:
+        for song in songs:
             self.fbasemodel.append(
                 row = [song,
                        util.fsdecode(song("~basename")),
                        util.fsdecode(song("~dirname")),
                        song["~filename"]])
 
-        if len(songrefs) > 1: selection.select_all()
-        else: self.update(songrefs)
+        if len(songs) > 1: selection.select_all()
+        else: self.update(songs)
         self.add(vbox)
         self.connect_object('destroy', self.fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, self.fbasemodel)
@@ -3534,11 +3659,11 @@ class SongProperties(gtk.Window):
         self.fbasemodel.foreach(refresh)
 
     def selection_changed(self, selection):
-        songrefs = []
-        def get_songrefs(model, path, iter, songrefs):
-            songrefs.append(model[path][0])
-        selection.selected_foreach(get_songrefs, songrefs)
-        if len(songrefs): self.update(songrefs)
+        songs = []
+        def get_songs(model, path, iter, songs):
+            songs.append(model[path][0])
+        selection.selected_foreach(get_songs, songs)
+        if songs: self.update(songs)
 
 class WritingWindow(WaitLoadWindow):
     def __init__(self, parent, count):
