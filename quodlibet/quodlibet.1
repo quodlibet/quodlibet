@@ -92,7 +92,7 @@ a = /Rasputina/
 .RE
 Similar abbreviations exist for album ('b'), title ('t'), version
 ('v'), date ('d'), and track number ('n'). The '*' character matches 
-any of album, title, or artist.
+any of artist, album, title, version, or performer.
 .PP
 Normally searches are case-insensitive, so /BOA/ and /BoA/ are the
 same. If you need case-sensitivity, put a 'c' on the end: /BOA/c and
@@ -110,7 +110,7 @@ album greater than 20 but less than 40:
 You can also search for how long ago you last heard or modified a
 song:
 .RS
-#(lastplayed > 8 days ago)
+#(lastplayed > 8 days)
 .br
 #(mtime < today)
 .RE
@@ -150,16 +150,14 @@ filename = /.ogg$/
 &(genre = /classical/, #(lastplayed > 3 days))
 .RE
 .SH AUDIO BACKENDS
-By default QL uses the Open Sound System (OSS) interface to play audio;
-this interface is available on many operating systems and is (for QL's use)
-full-featured. QL can also use the 'ao' audio backend, if you have
-the pyao bindings installed. To do this, edit the 'backend' option in
-~/.quodlibet/config to be 'ao:<driver>'; for example, 'ao:arts' for the aRts
-ao backend, or 'ao:alsa09' for the ALSA 0.9 interface.
+By default QL uses the ao ALSA 0.9 driver for playing audio, and falls back
+to an OSS driver if that fails. You can change this in ~/.quodlibet/config
+by editing the 'backend' option. For example 'ao:arts' will use an aRts
+backend, or 'oss' to always use OSS.
 .SH FILES
 .IP ~/.quodlibet/songs
 A cached list of songs to load initially. The format is a pickled
-Python list. Deleting this file will remove all songs from your
+Python dict. Deleting this file will remove all songs from your
 library.
 .IP ~/.quodlibet/config
 Quod Libet's configuration file. Don't manually edit this while QL is
@@ -169,7 +167,7 @@ when you exit.
 A "key=value" file containing information about the currently playing song.
 .IP ~/.quodlibet/control
 A FIFO connected to the most-recently-started instance of the program.
-\-\-next, \-\-previous, et cetera, use this to control the player.
+\-\-next, \-\-previous, etc., use this to control the player.
 .SH KNOWN NOT-BUGS
 Newlines are not supported within tag values. Using them will break a lot
 of tools, including QL.
@@ -180,7 +178,7 @@ encoding they are. Similarly, filenames are always written in UTF-8.
 Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 The best way to contact them is to subscribe to (or just email)
 the Quod Libet mailing list at quodlibet@lists.sacredchao.net
-(quodlibet-subscribe@lists.sacredchao.net).
+(quodlibet\-subscribe@lists.sacredchao.net).
 .SH SEE ALSO
 http://www.sacredchao.net/~piman/software/quodlibet.shtml,
 .PP
