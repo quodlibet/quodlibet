@@ -843,35 +843,40 @@ class SongProperties(MultiInstanceWidget):
             # Edited, and or and not Deleted
             if row[2] and not row[4]:
                 if row[5] is not None:
-                    updated[row[0]] = (util.decode(row[1]),
-                                       util.decode(row[5]))
+                    updated.setdefault(row[0], [])
+                    updated[row[0]].append((util.decode(row[1]),
+                                            util.decode(row[5])))
                 else:
                     added.setdefault(row[0], [])
                     added[row[0]].append(util.decode(row[1]))
             if row[2] and row[4]:
-                if row[5] is not None: deleted[row[0]] = util.decode(row[5])
+                if row[5] is not None:
+                    deleted.setdefault(row[0], [])
+                    deleted[row[0]].append(util.decode(row[5]))
         self.model.foreach(create_property_dict)
 
         win = WritingWindow(self.window, len(self.songrefs))
         for song, ref in self.songrefs:
             changed = False
-            for key, (new_value, old_value) in updated.iteritems():
-                new_value = util.unescape(new_value)
-                if song.can_change(key):
-                    if old_value is None: song.add(key, new_value)
-                    else: song.change(key, old_value, new_value)
-                    changed = True
+            for key, values in updated.iteritems():
+                for (new_value, old_value) in values:
+                    new_value = util.unescape(new_value)
+                    if song.can_change(key):
+                        if old_value is None: song.add(key, new_value)
+                        else: song.change(key, old_value, new_value)
+                        changed = True
             for key, values in added.iteritems():
                 for value in values:
                     value = util.unescape(value)
                     if song.can_change(key):
                         song.add(key, value)
                         changed = True
-            for key, value in deleted.iteritems():
-                value = util.unescape(value)
-                if song.can_change(key) and key in song:
-                    song.remove(key, value)
-                    changed = True
+            for key, values in deleted.iteritems():
+                for value in values:
+                    value = util.unescape(value)
+                    if song.can_change(key) and key in song:
+                        song.remove(key, value)
+                        changed = True
 
             if changed and ref:
                 song.write()
