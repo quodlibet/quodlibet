@@ -134,6 +134,7 @@ class UtilTests(TestCase):
                 v = self.get(key, '')
                 if not isinstance(v, list): return v
                 else: return ', '.join(v)
+            __call__ = dict.__getitem__
 
         s1 = { '~#track':5, 'artist':'Artist', 'title':'Title5', '~basename':'a.mp3' }
         s2 = { '~#track':6, 'artist':'Artist', 'title':'Title6', '~basename':'b.ogg' }
