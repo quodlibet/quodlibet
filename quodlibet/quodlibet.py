@@ -1793,16 +1793,19 @@ class SongProperties(MultiInstanceWidget):
         
         if len(self.songrefs) == 1:
             self.window.set_title(_("%s - Properties") %
-                    self.songrefs[0]["title"])
+                    self.songrefs[0]("title"))
         elif len(self.songrefs) > 1:
             self.window.set_title(_("%s and %d more - Properties") %
-                    (self.songrefs[0]["title"], len(self.songrefs)-1))
+                    (self.songrefs[0]("title"), len(self.songrefs)-1))
         else:
             raise ValueError("Properties of no songs?")
 
-        self.artist.set_markup(songinfo['artist'].safenicestr())
-        self.title.set_markup(songinfo['title'].safenicestr())
-        self.album.set_markup(songinfo['album'].safenicestr())
+        try: self.artist.set_markup(songinfo['artist'].safenicestr())
+        except KeyError: self.artist.set_markup(_("Unknown"))
+        try: self.title.set_markup(songinfo['title'].safenicestr())
+        except KeyError: self.title.set_markup(_("Unknown"))
+        try: self.album.set_markup(songinfo['album'].safenicestr())
+        except KeyError: self.album.set_markup(_("Unknown"))
         filename = util.unexpand(songinfo['~filename'].safenicestr())
         self.filename.set_markup(filename)
 

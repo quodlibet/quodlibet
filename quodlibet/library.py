@@ -21,6 +21,9 @@ _ = gettext.gettext
 if sys.version_info < (2, 4):
     from sets import Set as set
 
+class Unknown(unicode): pass
+UNKNOWN = Unknown(_("Unknown"))
+
 def MusicFile(filename):
     for ext in supported.keys():
         if filename.lower().endswith(ext):
@@ -33,8 +36,6 @@ def MusicFile(filename):
 
 global library
 library = None
-
-class Unknown(unicode): pass
 
 class AudioFile(dict):
     def __cmp__(self, other):
@@ -60,8 +61,8 @@ class AudioFile(dict):
         if key and key[0] == "~":
             key = key[1:]
             if "~" in key:
-                f = dict.get
-                parts = [f(self, p) for p in key.split("~")]
+                f = self.__call__
+                parts = [f(p) for p in key.split("~")]
                 return " - ".join(filter(None, parts))
             elif key == "basename": return os.path.basename(self["~filename"])
             elif key == "dirname": return os.path.dirname(self["~filename"])
@@ -76,6 +77,16 @@ class AudioFile(dict):
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default
             else: return dict.get(self, "~" + key, default)
+        elif key == "title":
+            v = dict.get(self, "title")
+            if v is None:
+                return "%s [%s]" %(
+                    os.path.basename(self["~filename"]), UNKNOWN)
+            else: return v
+        elif (key == "artist" or key == "album"):
+            v = dict.get(self, key)
+            if v is None: return UNKNOWN
+            else: return v
         else: return dict.get(self, key, default)
 
     def comma(self, key):
@@ -134,9 +145,6 @@ class AudioFile(dict):
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
-        self.setdefault("title", Unknown(util.decode(self('~basename'))))
-        for i in ["artist", "album"]:
-            self.setdefault(i, Unknown(_("Unknown")))
         self.setdefault("~#lastplayed", 0)
         self.setdefault("~#playcount", 0)
         self.setdefault("~#length", 0)
@@ -586,7 +594,7 @@ class Library(dict):
     def random(self, tag):
         songs = {}
         for song in self.values():
-             if tag in song and not song.unknown(tag):
+             if not song.unknown(tag):
                  for v in song.list(tag): songs[v] = True  
         return random.choice(songs.keys())
 

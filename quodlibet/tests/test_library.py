@@ -88,7 +88,7 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song("~#disc"), 2)
         self.failUnlessEqual(song["~#playcount"], 0)
         self.failUnless("vendor" not in song)
-        self.failUnlessEqual(song["album"], "Unknown")
+        self.failUnlessEqual(song("album"), "Unknown")
         self.failUnless(song.unknown("album"))
 
     def test_cover(self):
