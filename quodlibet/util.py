@@ -304,44 +304,6 @@ class PatternFromFile(object):
         else: return match.groupdict()
 
 class FileFromPattern(object):
-    def __init__(self, pattern, tagre=sre.compile(r'(<\w+(?:\~\w+)*>)')):
-        if '/' in pattern and not pattern.startswith('/'):
-            raise ValueError("Pattern %r is not rooted" % pattern)
-        self.pattern = pattern
-        self.pieces = tagre.split(pattern)
-
-    def match(self, song, tagre=sre.compile(r'<\w+(?:\~\w+)*>')):
-        format = { 'tracknumber': '%02d', 'discnumber': '%d' }
-        override = { 'tracknumber': '~#track', 'discnumber': '~#disc' }
-        newname = []
-        for piece in self.pieces:
-            if not piece: continue
-            if tagre.match(piece):
-                piece = piece[1:-1]
-                texts = []
-                for part in piece.split('~'):
-                    text = song.comma(override.get(part, part))
-                    try: text = format.get(part, '%s') % text
-                    except TypeError: pass
-                    texts.append(text)
-                text = ' - '.join(filter(None, texts))
-                try: text = format.get(piece, '%s') % text
-                except TypeError: pass
-                newname.append(text.replace('/', '_'))
-            else:
-                newname.append(piece)
-
-        # simple magic to decide whether to append the extension
-        # if the pattern has no . in it, or if it has a > (probably a tag)
-        #   after the last . or if the last character is the . append .foo
-        pat = self.pattern
-        if pat and ('.' not in pat or pat.endswith('.') or
-                '>' in pat[pat.rfind('.'):]):
-            oldname = song('~basename')
-            newname.append(oldname[oldname.rfind('.'):])
-        return ''.join(newname)
-
-class FileFromPattern(object):
     format = { 'tracknumber': '%02d', 'discnumber': '%d' }
     override = { 'tracknumber': '~#track', 'discnumber': '~#disc' }
 

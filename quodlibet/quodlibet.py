@@ -1902,6 +1902,7 @@ class SongProperties(object):
             self.title = _("Information")
             self.widget = gtk.ScrolledWindow()
             self.widget.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            self.widget.set_size_request(10, 10)
             self.widget.add(gtk.Viewport())
             self.widget.child.set_shadow_type(gtk.SHADOW_NONE)
             self.box = gtk.VBox(spacing = 12)
@@ -1912,15 +1913,16 @@ class SongProperties(object):
         def _title(self, song):
             w = gtk.Label()
             text = "<b><span size='x-large'>%s</span></b>" % song("title")
-            if "version" in song: text += "\n" + song["version"]
+            if "version" in song: text += "\n" + song.comma("version")
             w.set_markup(text)
             w.set_alignment(0, 0)
             return w
 
-        def Frame(self, label, widget):
+        def Frame(self, label, widget, big = True):
             f = gtk.Frame()
             g = gtk.Label()
-            g.set_markup("<big><u>%s</u></big>" % label)
+            if big: g.set_markup("<big><u>%s</u></big>" % label)
+            else: g.set_markup("<u>%s</u>" % label)
             f.set_label_widget(g)
             f.set_shadow_type(gtk.SHADOW_NONE)
             a = gtk.Alignment()
@@ -1928,6 +1930,25 @@ class SongProperties(object):
             a.add(widget)
             f.add(a)
             return f
+
+        def _people(self, song):
+            vbox = gtk.VBox(spacing = 6)
+            vbox.pack_start(gtk.Label(song("artist")), expand = False)
+
+            for names, tag in [
+                (_("performers"),  "performer"),
+                (_("lyricists"),  "lyricist"),
+                (_("arrangers"),  "arranger"),
+                (_("conductors"), "conductor"),
+                (_("authors"),    "author")]:
+                if tag in song:
+                    if "\n" in song[tag]:
+                        frame = self.Frame(names, gtk.Label(song[tag]), False)
+                    else:
+                        ntag = util.title(_(tag))
+                        frame = self.Frame(ntag, gtk.Label(song[tag]), False)
+                    vbox.pack_start(frame)
+            return self.Frame(_("People"), vbox)
 
         def _album(self, song):
             title = _("Album")
@@ -1994,12 +2015,26 @@ class SongProperties(object):
             self.box.pack_start(self._title(song), expand = False)
             if "album" in song:
                 self.box.pack_start(self._album(song), expand = False)
+            self.box.pack_start(self._people(song), expand = False)
 
         def _update_many(self, songs):
             text = ["<b><span size='x-large'>%s</span></b>" %(
                 _("%d songs") % len(songs))]
             l = self.Label("\n".join(text))
             self.box.pack_start(l, expand = False)
+
+            tc = sum([complex(song["~#length"], song["~#playcount"])
+                      for song in songs])
+            time = tc.real
+            count = int(tc.imag)
+            table = gtk.Table(2, 2)
+            table.set_col_spacings(6)
+            table.attach(self.Label(_("Total length:")), 0, 1, 0, 1)
+            table.attach(self.Label(util.format_time(time)), 1, 2, 0, 1)
+            table.attach(self.Label(_("Songs heard:")), 0, 1, 1, 2)
+            table.attach(self.Label(str(count)), 1, 2, 1, 2)
+
+            self.box.pack_start(self.Frame(_("Listening"), table))
 
             artists = set()
             albums = set()
@@ -2011,33 +2046,23 @@ class SongProperties(object):
                 else: noalbum += 1
             artists = list(artists)
             artists.sort()
+            arcount = len(artists)
             if noartist: artists.append(_("%d with no artists") % noartist)
             artists = "\n".join(artists)
             if artists:
-                self.box.pack_start(self.Frame(_("Artists"),
+                self.box.pack_start(self.Frame(_("Artists (%d)") % arcount,
                                                self.Label(artists)),
                                     expand = False)
 
             albums = list(albums)
             albums.sort()
+            alcount = len(albums)
             if noalbum: albums.append(_("%d with no album") % noalbum)
             albums = "\n".join(albums)
             if albums:
-                self.box.pack_start(self.Frame(_("Albums"),
+                self.box.pack_start(self.Frame(_("Albums (%d)") % alcount,
                                                self.Label(albums)),
                                     expand = False)
-
-            playinfo = []
-            time = sum([song["~#length"] for song in songs])
-            count = sum([song["~#playcount"] for song in songs])
-            table = gtk.Table(2, 2)
-            table.set_col_spacings(6)
-            table.attach(self.Label(_("Total length:")), 0, 1, 0, 1)
-            table.attach(self.Label(util.format_time(time)), 1, 2, 0, 1)
-            table.attach(self.Label(_("Songs heard:")), 0, 1, 1, 2)
-            table.attach(self.Label(str(count)), 1, 2, 1, 2)
-
-            self.box.pack_start(self.Frame(_("Listening"), table))
 
         def update(self, songrefs):
             for c in self.box.get_children():
