@@ -1,3 +1,11 @@
+quodlibet (0.10-1) unstable; urgency=low
+
+  * New upstream release.
+  * Include a menu entry for Ex Falso.
+  * Rewrite long description.
+
+ -- Joe Wreschnig <piman@debian.org>  Sun, 03 Apr 2005 11:55:01 -0500
+
 quodlibet (0.9-1) unstable; urgency=low
 
   * New upstream release.

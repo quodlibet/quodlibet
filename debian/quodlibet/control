@@ -11,19 +11,18 @@ Depends: ${python:Depends}, python-gtk2 (>= 2.4.1), python-pymad, python-pyvorbi
 Recommends: python-pyao
 Suggests: python-modplug, python-flac, python-musepack, albumart, vorbisgain (>= 0.35-2)
 Description: audio library manager and player for GTK+
- Quod Libet is an audio player where playlists can be constructed by
- searching your library using a powerful regular-expression-based
- search language (simpler searches are also supported). It also
- supports editing tags in your library, including mass-editing.
+ Quod Libet is a music library management program. Rather than categorize
+ songs by genre, artist, and album, it lets you search and display them
+ however you want. It supports regexp-based searches, album cover display,
+ tag editing, ReplayGain, multimedia keys, and an OSD.
  .
- Other features include multimedia keys, Unicode support, a tray icon,
- album covers, ReplayGain, and an On-Screen Display.
+ Also included is Ex Falso, a tag editor that has the same editing features
+ found in Quod Libet, but does not play audio files.
  .
  Supported formats include MP3, Ogg Vorbis, FLAC, Musepack (MPC), and
- MOD/XM/IT (with appropriate extensions installed). Full tag vocabularies
- are supported for appropriate formats.
+ MOD/XM/IT (with appropriate extensions installed).
  .
- Quod Libet is written in Python and uses PyGTK+.
+ Quod Libet and Ex Falso are written in Python and use PyGTK+.
 
 Package: quodlibet-ext
 Architecture: any
@@ -31,6 +30,7 @@ Depends: ${shlibs:Depends}
 Recommends: quodlibet
 Description: extensions for the Quod Libet audio player
  This package contains architecture-dependent extensions to Quod
- Libet.
+ Libet. It adds a notification area icon and multimedia key support
+ to Quod Libet.
  .
  Quod Libet is an audio player for GTK+.
