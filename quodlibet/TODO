@@ -1,11 +1,7 @@
 0.8
 An unintrusive clear button.
 Remember hidden UI element states
-(mu) has the list of tags in the add tag dialog ever been "fixed"?  not that i
-+know what fixed would be.
-(piman) Not yet.
-(piman) (me neither)
-
+Don't let editing modes write tags they actually can't.
 
 Doable by whomever, whenever:
 - Translations.

@@ -1244,12 +1244,12 @@ class AddTagDialog(object):
     def __init__(self, parent, can_change):
         if can_change == True:
             self.limit = False
-            self.can = ["title", "version", "artist", "album",
+            can = ["title", "version", "artist", "album",
                         "performer", "discnumber"]
         else:
             self.limit = True
-            self.can = can_change
-        self.can.sort()
+            can = can_change
+        can.sort()
 
         self.dialog = gtk.Dialog(parent = parent, title = "Add a new tag")
         self.dialog.connect('close', self.destroy)
@@ -1263,7 +1263,14 @@ class AddTagDialog(object):
         table.set_row_spacings(6)
         table.set_col_spacings(9)
         
-        self.tag = gtk.Entry()
+        if can_change == True:
+            self.tag = gtk.combo_box_entry_new_text()
+            for tag in can: self.tag.append_text(tag)
+        else:
+            self.tag = gtk.combo_box_new_text()
+            for tag in can: self.tag.append_text(tag)
+            self.tag.set_active(0)
+
         label = gtk.Label()
         label.set_property('xalign', 0.0)
         label.set_text(_("_Tag:"))
@@ -1285,15 +1292,19 @@ class AddTagDialog(object):
         self.dialog.show_all()
 
     def get_tag(self):
-        return self.tag.get_text().lower().strip()
+        try: return self.tag.child.get_text().lower().strip()
+        except AttributeError:
+            return self.tag.get_model()[self.tag.get_active()][0]
 
     def get_value(self):
         return self.val.get_text().decode("utf-8")
 
     def run(self):
-        self.tag.set_text("")
+        try: self.tag.child.set_text("")
+        except AttributeError: pass
         self.val.set_text("")
-        self.tag.set_activates_default(True)
+        try: self.tag.child.set_activates_default(True)
+        except AttributeError: pass
         self.val.set_activates_default(True)
         self.tag.grab_focus()
         return self.dialog.run()
@@ -1680,6 +1691,10 @@ class SongProperties(MultiInstanceWidget):
         from library import AudioFileGroup
         songinfo = AudioFileGroup(self.songrefs)
         self.songinfo = songinfo
+        editable = bool(songinfo.can_change(None))
+        self.widgets["songprop_add"].set_sensitive(editable)
+        self.widgets["songprop_remove"].set_sensitive(editable)
+            
         if len(self.songrefs) == 1:
             self.window.set_title(_("%s - Properties") %
                     self.songrefs[0]["title"])
