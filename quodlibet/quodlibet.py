@@ -49,6 +49,15 @@ class GTKSongInfoWrapper(object):
     def set_time(self, cur, end):
         self._time = (cur, end)
 
+    def disable_cover(self):
+        self.image.hide()
+        self.vbar.hide()
+
+    def enable_cover(self):
+        if self.image.get_pixbuf():
+            self.image.show()
+            self.vbar.show()
+
     def _update_song(self, song, player):
         if song:
             self.pos.set_range(0, player.length)
@@ -59,12 +68,10 @@ class GTKSongInfoWrapper(object):
                 pixbuf = gtk.gdk.pixbuf_new_from_file(cover)
                 pixbuf = pixbuf.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
                 self.image.set_from_pixbuf(pixbuf)
-                self.image.show()
-                self.vbar.show()
+                if config.state("cover"): self.enable_cover()
             else:
-                self.image.hide()
-                self.vbar.hide()
-
+                self.image.set_from_pixbuf(None)
+                self.disable_cover()
             self.text.set_markup(song.to_markup())
         else:
             self.image.set_from_stock(gtk.STOCK_CDROM, gtk.ICON_SIZE_BUTTON)
@@ -132,11 +139,50 @@ class GladeHandlers(object):
         widgets["prefs_window"].set_transient_for(widgets["main_window"])
         widgets["cover_t"].set_active(config.state("cover"))
         widgets["color_t"].set_active(config.state("color"))
+        old_h = HEADERS[:]
+
+        widgets["track_t"].set_active("=#" in old_h)
+        widgets["album_t"].set_active("album" in old_h)
+        widgets["artist_t"].set_active("artist" in old_h)
+        widgets["genre_t"].set_active("genre" in old_h)
+        widgets["year_t"].set_active("year" in old_h)
+        widgets["version_t"].set_active("version" in old_h)
+        widgets["performer_t"].set_active("performer" in old_h)
+
+        for t in ["=#", "album", "artist", "genre", "year", "version",
+                  "performer", "title"]:
+            try: old_h.remove(t)
+            except ValueError: pass
+
+        widgets["extra_headers"].set_text(" ".join(old_h))
+
         widgets["scan_opt"].set_text(config.get("settings", "scan"))
         widgets["prefs_window"].show()
 
+    def set_headers(*args):
+        new_h = []
+        if widgets["track_t"].get_active(): new_h.append("=#")
+        new_h.append("title")
+        if widgets["album_t"].get_active(): new_h.append("album")
+        if widgets["artist_t"].get_active(): new_h.append("artist")
+        if widgets["genre_t"].get_active(): new_h.append("genre")
+        if widgets["year_t"].get_active(): new_h.append("year")
+        if widgets["version_t"].get_active(): new_h.append("version")
+        if widgets["performer_t"].get_active(): new_h.append("performer")
+        new_h.extend(widgets["extra_headers"].get_text().split())
+        HEADERS[:] = new_h
+        set_column_headers(widgets["songlist"])
+
     def change_scan(*args):
         config.set("settings", "scan", widgets["scan_opt"].get_text())
+
+    def toggle_color(toggle):
+        config.set("settings", "color", str(bool(toggle.get_active())))
+
+    def toggle_cover(toggle):
+        config.set("settings", "cover", str(bool(toggle.get_active())))
+        if config.state("cover"): widgets.wrap.enable_cover()
+        else: widgets.wrap.disable_cover()
 
     def select_scan(*args):
         resp, fns = make_chooser("Select Directories")
@@ -145,6 +191,10 @@ class GladeHandlers(object):
 
     def prefs_closed(*args):
         widgets["prefs_window"].hide()
+        config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
+        f = file(config_fn, "w")
+        config.write(f)
+        f.close()
         return True
 
     def select_song(tree, indices, col):
@@ -190,6 +240,7 @@ class GladeHandlers(object):
                 refresh_songlist()
 
     def test_filter(*args):
+        if not config.state("color"): return
         from parser import QueryParser, QueryLexer
         textbox = widgets["query"]
         text = textbox.get_text()
@@ -268,6 +319,8 @@ def main():
     widgets["volume"].set_value(player.device.volume)
     config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
     config.init(config_fn)
+    HEADERS[:] = config.get("settings", "headers").split()
+    if "title" not in HEADERS: HEADERS.append("title")
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.load(cache_fn)
     if config.get("settings", "scan"):
@@ -283,11 +336,11 @@ def main():
     statusbar = widgets["statusbar"]
     j = statusbar.get_context_id("playlist")
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
-    
     print "Done loading songs."
     gtk.threads_init()
+    widgets.wrap = GTKSongInfoWrapper()
     t = threading.Thread(target = player.playlist.play,
-                         args = (GTKSongInfoWrapper(),))
+                         args = (widgets.wrap,))
     gc.collect()
     signal.signal (signal.SIGINT, signal.SIG_DFL)
     t.start()
