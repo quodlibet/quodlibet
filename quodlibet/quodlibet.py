@@ -299,21 +299,24 @@ class GladeHandlers(object):
         filter_on_header(header)
 
     def artist_filter(item): filter_on_header('artist')
-    def album_filter(item):filter_on_header('album')
+    def album_filter(item): filter_on_header('album')
 
     def remove_song(item):
         view = widgets["songlist"]
-        path, col = view.get_cursor()
-        iter = widgets.songs.get_iter(path)
-        song = widgets.songs.get_value(iter, len(HEADERS))
-        widgets.songs.remove(iter)
-        library.remove(song)
-        player.playlist.remove(song)
+        selection = widgets["songlist"].get_selection()
+        model, rows = selection.get_selected_rows()
+        rows.sort()
+        rows.reverse()
+        for row in rows:
+            song = model[row][len(HEADERS)]
+            iter = widgets.songs.get_iter(row)
+            widgets.songs.remove(iter)
+            library.remove(song)
+            player.playlist.remove(song)
 
     def song_properties(item):
         view = widgets["songlist"]
-        path, col = view.get_cursor()
-        selection = widgets["songlist"].get_selection()
+        selection = vew.get_selection()
         model, rows = selection.get_selected_rows()
         songrefs = [ [model[row][len(HEADERS)],
                       gtk.TreeRowReference(model, row)] for row in rows]
@@ -408,7 +411,6 @@ class MultiInstanceWidget(object):
         model, iter = self.view.get_selection().get_selected()
         row = model[iter]
         if row[0] in self.existing_comments:
-            row[1] = 'Deleted'
             row[2] = True # Edited
             row[4] = True # Deleted
         else:
@@ -461,7 +463,8 @@ class MultiInstanceWidget(object):
             deleted = False
             self.model.append(row=[comment, value, edited, edit, deleted])
 
-        self.existing_comments = comments.keys()[:]
+        self.existing_comments = keys
+        self.add.set_sensitive(bool(songinfo.can_change()))
 
 def make_song_properties(songrefs):
     dlg = MultiInstanceWidget(widget="properties_window")
@@ -493,7 +496,8 @@ def make_song_properties(songrefs):
     dlg.view.append_column(column)
     render = gtk.CellRendererText()
     render.connect('edited', dlg.songprop_edit, dlg.model, 1)
-    column = gtk.TreeViewColumn('Value', render, markup=1, editable=3)
+    column = gtk.TreeViewColumn('Value', render, markup=1, editable=3,
+                                strikethrough=4)
     dlg.view.append_column(column)
 
     dlg.fill_property_info()
@@ -526,13 +530,17 @@ def text_parse(*args):
         refresh_songlist()
 
 def filter_on_header(header):
-    view = widgets["songlist"]
-    path, col = view.get_cursor()
-    iter = widgets.songs.get_iter(path)
-    song = widgets.songs.get_value(iter, len(HEADERS))
     if header == "=#": header = "tracknumber"
-    text = song.get(header, "")
-    text = "|".join([sre.escape(s) for s in text.split("\n")])
+    selection = widgets["songlist"].get_selection()
+    model, rows = selection.get_selected_rows()
+    values = {}
+    for row in rows:
+        song = model[row][len(HEADERS)]
+        if header in song:
+            for val in song[header].split("\n"):
+                values[val] = True
+
+    text = "|".join([sre.escape(s) for s in values.keys()])
     query = u"%s = /%s/c" % (header, text)
     widgets["query"].child.set_text(query.encode('utf-8'))
     widgets["search_button"].clicked()

@@ -189,8 +189,11 @@ class MP3File(AudioFile):
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
 
 
-    def can_change(self, k):
-        return k in self.INVERT_IDS.keys()
+    def can_change(self, k=None):
+        if k is None:
+            return self.INVERT_IDS.keys()
+        else:
+            return k in self.INVERT_IDS.keys()
 
 class OggFile(AudioFile):
     def __init__(self, filename):
@@ -226,8 +229,11 @@ class OggFile(AudioFile):
         comments.write_to(self['filename'])
         self["=mtime"] = int(os.stat(self['filename'])[stat.ST_MTIME])
 
-    def can_change(self, k):
-        return k not in ["vendor", "filename"]
+    def can_change(self, k=None):
+        if k is None:
+            return True
+        else:
+            return k not in ["vendor", "filename"]
 
 class AudioFileGroup(dict):
 
