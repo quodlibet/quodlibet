@@ -12,6 +12,9 @@ Running Ex Falso and Quod Libet at the same time is not recommended
 A change in the ID3 reader could cause genres in many of your MP3
 files may disappear on reload, and new ones to appear.
 
+0.10.1 - What if I said I'm not really kidding?
+ * The main window stays hidden when the song changes.
+
 0.10 - As it turns out, my life is NOT THAT INTERESTING!
  * --seek supports +/- prefix to seek relative to the current position.
  * Added Ex Falso, a tag editor based on QL (without audio playback).
