@@ -26,8 +26,10 @@ class GladeHandlers(object):
     def gtk_main_quit(*args): gtk.main_quit()
 
     def select_song(tree, indices, col):
-        model = widgets.sorted
-        song = model[model.get_iter(indices)][0]
+        iter = widgets.sorted.get_iter(indices)
+        iter = widgets.sorted.convert_iter_to_child_iter(None, iter)
+        iter = widgets.filter.convert_iter_to_child_iter(iter)
+        song = widgets.songs.get_value(iter, 0)
         title = ", ".join(song.get("title", "Unknown").split("\n"))
 
         text = u'<span weight="bold" size="x-large">%s</span>' % escape(title)
@@ -64,13 +66,9 @@ class GladeHandlers(object):
         chooser.set_select_multiple(True)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
-            CURRENT_FILTER.insert(0, FILTER_ALL)
             for song in library.load(chooser.get_filenames()):
-                widgets.songs.append([song] +
-                                     [song.get(i, "") for i in HEADERS])
-            CURRENT_FILTER.pop(0)
+                widgets.songs.append([song])
         chooser.destroy()
-        widgets.filter.refilter()
 
     def text_parse(*args):
         from parser import QueryParser, QueryLexer
@@ -93,28 +91,37 @@ HEADERS = ["artist", "title", "album"]
 FILTER_ALL = lambda x: True
 CURRENT_FILTER = [ FILTER_ALL ]
 
-def list_filter(m, i, q):
-    return bool(q[0](m[i][0]))
+def list_filter(model, it, qlist):
+    song = model[it][0]
+    query = qlist[0]
+    return bool(song and query(song))
+
+def list_transform(model, iter, col):
+    citer = model.convert_iter_to_child_iter(iter)
+    cmodel = model.get_model()
+    song = cmodel.get_value(citer, 0)
+    return song.get(HEADERS[col], "")
 
 def main():
     sl = widgets["songlist"]
-    widgets.songs = gtk.ListStore(*([object] + [str] * len(HEADERS)))
+    widgets.songs = gtk.ListStore(object)
     widgets.filter = widgets.songs.filter_new()
+    widgets.filter.set_modify_func([str]*len(HEADERS), list_transform)
     widgets.filter.set_visible_func(list_filter, CURRENT_FILTER)
     widgets.sorted = gtk.TreeModelSort(widgets.filter)
 
     for i, t in enumerate(HEADERS):
         renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(t.title(), renderer, text=i+1)
+        column = gtk.TreeViewColumn(t.title(), renderer, text=i)
         column.set_resizable(True)
-        column.set_sort_column_id(i+1)
+        column.set_sort_column_id(i)
         sl.append_column(column)
 
     for song in library.load(sys.argv[1:]):
-        widgets.songs.append([song] + [song.get(i, "") for i in HEADERS])
+        widgets.songs.append([song])
     sl.set_model(widgets.sorted)
     sl.set_reorderable(True)
-    widgets.sorted.set_sort_column_id(1, gtk.SORT_ASCENDING)
+    widgets.sorted.set_sort_column_id(0, gtk.SORT_ASCENDING)
     gc.collect()
     gtk.main()
 
