@@ -249,16 +249,23 @@ class GladeHandlers(object):
 # Grab the text from the query box, parse it, and make a new filter.
 def text_parse(*args):
     text = widgets["query"].child.get_text().decode("utf-8").strip()
+    orig_text = text
     if text and "=" not in text and "/" not in text:
         # A simple search, not regexp-based.
-        widgets["query"].prepend_text(text)
         parts = ["* = /" + sre.escape(p) + "/" for p in text.split()]
         text = "&(" + ",".join(parts) + ")"
         # The result must be well-formed, since no /s were
         # in the original string and we escaped it.
 
     if player.playlist.playlist_from_filter(text):
-        widgets["query"].prepend_text(text)
+        m = widgets["query"].get_model()
+        for i, row in enumerate(iter(m)):
+             if row[0] == orig_text:
+                 m.remove(m.get_iter((i,)))
+                 break
+        else:
+            if len(m) > 10: m.remove(m.get_iter((10,)))
+        m.prepend([orig_text])
         set_entry_color(widgets["query"].child, "black")
         refresh_songlist()
 
@@ -295,12 +302,9 @@ def refresh_songlist():
     widgets.songs.clear()
     statusbar = widgets["statusbar"]
     for song in player.playlist:
-        if song is CURRENT_SONG[0]:
-            widgets.songs.append([song.get(h, "") for h in HEADERS] +
-                                  [song, 700])
-        else:
-            widgets.songs.append([song.get(h, "") for h in HEADERS] +
-                                  [song, 400])
+        wgt = ((song is CURRENT_SONG[0] and 700) or 400)
+        widgets.songs.append([song.get(h, "") for h in HEADERS] + [song, wgt])
+
     j = statusbar.get_context_id("playlist")
     i = len(list(player.playlist))
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
@@ -346,9 +350,9 @@ def setup_nonglade():
     # Build a model and view for our ComboBoxEntry.
     liststore = gtk.ListStore(str)
     widgets["query"].set_model(liststore)
+    widgets["query"].set_text_column(0)
     cell = gtk.CellRendererText()
     widgets["query"].pack_start(cell, True)
-    widgets["query"].add_attribute(cell, 'text', 0)
     widgets["query"].child.connect('activate', text_parse)
     widgets["query"].child.connect('changed', test_filter)
     widgets["search_button"].connect('clicked', text_parse)

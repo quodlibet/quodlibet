@@ -1,6 +1,3 @@
-- Figure out why mu's Mozilla makes this skip...
-- Escape REs properly
-- Fix crappy search history
 - Takes too long to give feedback when adding songs
 - Handle weird UI flukes (seek past end of song, etc) better
 - Stress-testing
