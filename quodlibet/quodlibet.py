@@ -354,7 +354,9 @@ class MultiInstanceWidget(object):
             # Edited, and or and not Deleted
             if row[2] and not row[4]:
                 if row[5]: updated[row[0]] = (row[1], row[5])
-                else: added[row[0]] = row[1]
+                else:
+                    added.setdefault(row[0], [])
+                    added[row[0]].append(row[1])
             if row[2] and row[4]:
                 if row[5]: deleted[row[0]] = row[5]
         self.model.foreach(create_property_dict)
@@ -366,7 +368,6 @@ class MultiInstanceWidget(object):
         saved = 0
         progress.set_fraction(0.0)
         for song, ref in self.songrefs:
-            print song
             changed = False
             for key, (new_value, old_value) in updated.iteritems():
                 new_value = util.unescape(new_value)
@@ -374,11 +375,12 @@ class MultiInstanceWidget(object):
                     if old_value is None: song.add(key, new_value)
                     else: song.change(key, old_value, new_value)
                     changed = True
-            for key, value in added.iteritems():
-                value = util.unescape(value)
-                if song.can_change(key):
-                    song.add(key, value)
-                    changed = True
+            for key, values in added.iteritems():
+                for value in values:
+                    value = util.unescape(value)
+                    if song.can_change(key):
+                        song.add(key, value)
+                        changed = True
             for key, value in deleted.iteritems():
                 value = util.unescape(value)
                 if song.can_change(key) and key in song:
