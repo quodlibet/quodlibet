@@ -10,7 +10,8 @@ all:
 	@which python || ( echo "Not found." && /bin/false )
 	@./check.py
 
-install: po-data
+install:
+	install -d $(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)
@@ -21,9 +22,7 @@ install: po-data
 	install -D -m 644 $(NAME).png $(DESTDIR)$(PREFIX)/share/pixmaps/$(NAME).png
 	install -D -m 644 $(NAME).desktop $(DESTDIR)$(PREFIX)/share/applications/$(NAME).desktop
 	ln -sf ../$(TO)/$(NAME).py $(DESTDIR)$(PREFIX)/bin/$(NAME)
-	for E in $(EXTENSIONS); do\
-		(test -e $$E.so && install -m 755 $$E.so $(DESTDIR)$(PREFIX)/$(TO)) || /bin/true\
-	done
+	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 $$E $(DESTDIR)$(PREFIX)/$(TO)); done
 	cd po && make install-po DESTDIR=$(DESTDIR)
 
 clean:
