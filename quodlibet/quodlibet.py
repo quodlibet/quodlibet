@@ -481,18 +481,13 @@ class GladeHandlers(object):
     def open_chooser(*args):
         chooser = FileChooser(_("Add Music"), GladeHandlers.last_dir)
         resp, fns = chooser.run()
-        while gtk.events_pending(): gtk.main_iteration()
         if resp == gtk.RESPONSE_OK:
-            progress = widgets["throbber"]
-            label = widgets["found_count"]
-            wind = widgets["scan_window"]
-            wind.set_transient_for(widgets["main_window"])
-            wind.show()
-            for added, changed in library.scan(fns):
-                progress.pulse()
-                label.set_text("%d new songs found" % added)
-                while gtk.events_pending(): gtk.main_iteration()
-            wind.hide()
+            win = WaitLoadWindow(widgets["main_window"], 0,
+                                 _("Quod Libet is scanning for new songs and "
+                                   "adding them to your library.\n\n"
+                                   "%d songs added"), 0)
+            for added, changed in library.scan(fns): win.step(added)
+            win.end()
             player.playlist.refilter()
             refresh_songlist()
         if fns: GladeHandlers.last_dir = fns[0]
