@@ -100,7 +100,7 @@ class MP3File(AudioFile):
                     else: continue
                     if name in self:
                         if text in self[name]: pass
-                        elif self["name"] in text: self[name] = text
+                        elif self[name] in text: self[name] = text
                         else: self[name] += "\n" + text
                     else: self[name] = text
                     self[name] = self[name].strip()
