@@ -1503,6 +1503,7 @@ class MainWindow(gtk.Window):
             s = _("Not playing")
             self.text.set_markup("<span size='xx-large'>%s</span>" % s)
             self.icon.tooltip = s
+        self.image.set_song(song)
 
     def _update_song(self, song, player):
         self.show()
@@ -1526,7 +1527,6 @@ class MainWindow(gtk.Window):
             self.song_pos.set_value(0)
             self._time = (0, 1)
             self.update_markup(None)
-        self.image.set_song(song)
 
         # Update the currently-playing song in the list by bolding it.
         last_song = self.current_song
