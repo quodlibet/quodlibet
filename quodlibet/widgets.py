@@ -742,11 +742,13 @@ class Browser(object):
 
 class PanedBrowser(Browser, gtk.HBox):
     def __init__(self, cb):
-        gtk.HBox.__init__(self, spacing = 6)
+        gtk.HBox.__init__(self, spacing = 3)
         artist_tree = gtk.TreeView(gtk.ListStore(str))
         album_tree = gtk.TreeView(gtk.ListStore(str))
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Artist"), render, text = 0)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.set_fixed_width(50)
         artist_tree.append_column(column)
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -756,6 +758,8 @@ class PanedBrowser(Browser, gtk.HBox):
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Album"), render, text = 0)
         album_tree.append_column(column)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.set_fixed_width(50)
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.set_shadow_type(gtk.SHADOW_IN)
@@ -771,7 +775,7 @@ class PanedBrowser(Browser, gtk.HBox):
         album_tree.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         artist_tree.get_selection().connect(
             'changed', self.__artist_changed, artist_tree, album_tree)
-        album_tree.get_selection().connect(
+        self._sig = album_tree.get_selection().connect(
             'changed', self.__album_changed, artist_tree, album_tree)
         self.show_all()
 
@@ -799,39 +803,45 @@ class PanedBrowser(Browser, gtk.HBox):
         for song in library.query(query):
             albums.update(song.list("album"))
         albums = list(albums); albums.sort()
-        
+        album_view.get_selection().handler_block(self._sig)
         for lst, tree in [(albums, album_view)]:
             model = tree.get_model()
             model.clear()
             model.append([_("All")])
             for a in lst: model.append([a])
             model.append([_("Unknown")])
+        album_view.get_selection().handler_unblock(self._sig)
+        album_view.get_selection().select_path((0,))
 
     def activate(self):
         self.__cb(self.__make_query(artist_view, album_view), None)
 
     def __make_query_int(self, tag, values):
-        return "%s = |(%s)" % (tag, ", ".join(
-            ["/^%s$/c" % sre.escape(v) for v in values]))
+        if values:
+            return "%s = |(%s)" % (tag, ", ".join(
+                ["/^%s$/c" % sre.escape(v) for v in values]))
+        else: return ""
 
     def __make_query(self, artist_view, album_view):
         model, rows = artist_view.get_selection().get_selected_rows()
-        if rows == [] or rows[0] == (0,): artists = None
+        if rows == [] or rows[0] == (0,): artists = ""
         else:
-            artists = [model[row][0] for row in rows]
-            if rows[-1] == (len(model) - 1,): artists.pop()
-            artists = self.__make_query_int("artist", artists)
-            if rows[-1] == (len(model) - 1,):
-                artists = "|(artist = !/./, %s)" % artists
+            artists = [model[row][0].decode('utf-8') for row in rows]
+            if rows[-1][0] == len(model) - 1: artists.pop()
+            if artists: artists = self.__make_query_int("artist", artists)
+            if rows[-1][0] == len(model) - 1:
+                if artists: artists = "|(artist = !/./, %s)" % artists
+                else: artists = "artist = !/./"
 
         model, rows = album_view.get_selection().get_selected_rows()
-        if rows == [] or rows[0] == (0,): albums = None
+        if rows == [] or rows[0] == (0,): albums = ""
         else:
-            albums = [model[row][0] for row in rows]
-            if rows[-1] == (len(model) - 1,): albums.pop()
-            albums = self.__make_query_int("album", albums)
-            if rows[-1] == (len(model) - 1,):
-                albums = "|(album = !/./, %s)" % albums
+            albums = [model[row][0].decode('utf-8') for row in rows]
+            if rows[-1][0] == len(model) - 1: albums.pop()
+            if albums: albums = self.__make_query_int("album", albums)
+            if rows[-1][0] == len(model) - 1:
+                if albums: albums = "|(album = !/./, %s)" % albums
+                else: albums = "album = !/./"
 
         if artists and albums:
             return "&(%s, %s)" % (artists, albums)
@@ -840,17 +850,16 @@ class PanedBrowser(Browser, gtk.HBox):
         else: return ""
 
     def __artist_changed(self, selection, artist_view, album_view):
-        album_view.get_selection().unselect_all()
-        album_view.get_selection().select_path((0,))
         model, rows = artist_view.get_selection().get_selected_rows()
-        if rows == [] or rows[0] == (0,): artists = None
+        if rows == [] or rows[0] == (0,): artists = ""
         else:
-            artists = [model[row][0] for row in rows]
-            artists = self.__make_query_int("artist", artists)
-            if rows[-1] == (len(model),):
-                artists = "|(artist = !/./, %s)" % artists
+            artists = [model[row][0].decode('utf-8') for row in rows]
+            if rows[-1][0] == len(model) - 1: artists.pop()
+            if artists: artists = self.__make_query_int("artist", artists)
+            if rows[-1][0] == len(model) - 1:
+                if artists: artists = "|(artist = !/./, %s)" % artists
+                else: artists = "artist = !/./"
         self.__refresh_albums(artists, album_view)
-        while gtk.events_pending(): gtk.main_iteration()
 
     def __album_changed(self, selection, artist_view, album_view):
         self.__cb(self.__make_query(artist_view, album_view), None)
@@ -1911,7 +1920,8 @@ class MainWindow(gtk.Window):
     # The sort argument is not used for this browser.
     def text_parse(self, text, dummy_sort):
         config.set("memory", "query", text)
-        text = text.decode("utf-8").strip()
+        if isinstance(text, str): text = text.decode("utf-8")
+        text = text.strip()
         if player.playlist.playlist_from_filter(text):
             self.refresh_songlist()
         return True
