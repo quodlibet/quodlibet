@@ -1,7 +1,10 @@
-(inigo) a clear button for search box would be good too
+0.8
+An unintrusive clear button.
 Cleanups re. tag name normalization.
 Try out cell-data-funcs again.
 Proxy requests for tag names and generate more on the fly.
+Remember hidden UI element states
+Fix grammar on UI elements (1 days, 1 times played, etc.)
 
 Doable by whomever, whenever:
 - Translations.
@@ -24,5 +27,3 @@ Things that would be nice if someone did, but I won't pursue them:
 - Streaming & playlists.
   - New UI element(s) for selecting playlists or streams. Combobox next
     to search, Library/Playlist/Streams?
-- A "better" ID3 library. But these are in short supply, and we'd just
-  write incompatible tags anyway.

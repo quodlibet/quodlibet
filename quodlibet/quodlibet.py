@@ -1381,7 +1381,7 @@ class SongProperties(MultiInstanceWidget):
                         util.escape(song['~basename']))).run()
                     library.reload(song)
                     player.playlist.refilter()
-                    refresh_songlist()
+                    widgets.main.refresh_songlist()
                     break
                 songref_update_view(song, ref)
 
@@ -1692,7 +1692,7 @@ class SongProperties(MultiInstanceWidget):
                     util.escape(song['~basename']))).run()
                 library.reload(song)
                 player.playlist.refilter()
-                refresh_songlist()
+                widgets.main.refresh_songlist()
                 return True
             if ref: songref_update_view(song, ref)
             return win.step()
