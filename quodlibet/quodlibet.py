@@ -91,8 +91,12 @@ def print_playing(fstring = "<artist~album~tracknumber~title>"):
             parts = line.split("=")
             key = parts[0]
             val = "=".join(parts[1:])
-            if key in data: data[key] += "\n" + val
-            else: data[key] = val
+            if key.startswith("~#"):
+                try: data[key] = int(val)
+                except ValueError: data[key] = 0
+            else:
+                if key in data: data[key] += "\n" + val
+                else: data[key] = val
         print to(FileFromPattern(fstring, False).match(AudioFile(data)))
         raise SystemExit
     except (OSError, IOError):

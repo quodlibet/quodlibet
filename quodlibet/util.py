@@ -311,7 +311,8 @@ class FileFromPattern(object):
             else: return false.match(song)
 
         def format(self, tag, song):
-            if tag.startswith('~') or not tag.replace('~','').isalnum():
+            if ((tag.startswith('~') or not tag.replace('~', '').isalnum())
+                and (song(tag, None) is None)):
                 return tag.join('<>')
 
             fmt = FileFromPattern.format.get(tag, '%s')

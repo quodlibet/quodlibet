@@ -206,8 +206,11 @@ class AudioFile(dict):
     def to_dump(self):
         s = ""
         for k in self.keys():
-            for v2 in self.list(k):
-                s += "%s=%s\n" % (k, util.encode(v2))
+            if isinstance(self[k], int):
+                s += "%s=%d\n" % (k, self[k])
+            else:
+                for v2 in self.list(k):
+                    s += "%s=%s\n" % (k, util.encode(v2))
         return s
 
     # Try to change a value in the data to a new value; if the
