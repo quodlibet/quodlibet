@@ -41,3 +41,55 @@ COPYRIGHT = """\
 <u><span weight="bold" size="xx-large">Quod Libet</span></u>
 &lt;quodlibet@lists.sacredchao.net&gt;
 Copyright © 2004-2005"""
+
+MENU = """<ui>
+  <menubar name='Menu'>
+    <menu action='Music'>
+      <menuitem action='AddMusic'/>
+      <menuitem action='NewPlaylist'/>
+      <separator/>
+      <menuitem action='Preferences'/>
+      <separator/>
+      <menuitem action='RefreshLibrary'/>
+      <menuitem action='ReloadLibrary'/>
+      <separator/>
+      <menuitem action='Quit'/>
+    </menu>
+    <menu action='Filters'>
+      <menuitem action='RandomGenre'/>
+      <menuitem action='RandomArtist'/>
+      <menuitem action='RandomAlbum'/>
+      <separator/>
+      <menuitem action='NotPlayedDay'/>
+      <menuitem action='NotPlayedWeek'/>
+      <menuitem action='NotPlayedMonth'/>
+      <menuitem action='NotPlayedEver'/>
+      <separator/>
+      <menuitem action='Top'/>
+      <menuitem action='Bottom'/>
+    </menu>
+    <menu action='Song'>
+      <menuitem action='Previous'/>
+      <menuitem action='PlayPause'/>
+      <menuitem action='Next'/>
+      <separator/>
+      <menuitem action='FilterGenre'/>
+      <menuitem action='FilterArtist'/>
+      <menuitem action='FilterAlbum'/>
+      <separator/>
+      <menuitem action='Properties'/>
+      <separator/>
+      <menuitem action='Jump'/>
+    </menu>
+    <menu action='View'>
+      <menuitem action='Songlist'/>
+      <separator/>
+      <menuitem action='BrowserDisable'/>
+      <menuitem action='BrowserSearch'/>
+      <menuitem action='BrowserPlaylist'/>
+    </menu>
+    <menu action='Help'>
+      <menuitem action='About'/>
+    </menu>
+  </menubar>
+</ui>"""

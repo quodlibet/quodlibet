@@ -1,6 +1,5 @@
 [encoding: UTF-8]
 library.py
-quodlibet.glade
 quodlibet.py
 util.py
 po/tag-names.py

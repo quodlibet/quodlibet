@@ -18,27 +18,6 @@ import os, sys
 # Or, replace it with nicer wrappers!
 class widgets(object): pass
 
-# Standard Glade widgets wrapper.
-class Widgets(object):
-    def __init__(self, file = None, handlers = None, widget = None):
-        file = file or "quodlibet.glade"
-        domain = gettext.textdomain()
-        if widget: self.widgets = gtk.glade.XML(file, widget, domain = domain)
-        else: self.widgets = gtk.glade.XML(file, domain = domain)
-        if handlers is not None:
-            self.widgets.signal_autoconnect(handlers)
-        self.get_widget = self.widgets.get_widget
-        self.signal_autoconnect = self.widgets.signal_autoconnect
-
-    def __getitem__(self, key):
-        w = self.widgets.get_widget(key)
-        if w: return w
-        else: raise KeyError("no such widget %s" % key)
-
-class MultiInstanceWidget(object):
-    def __init__(self, file = None, widget = None):
-        self.widgets = Widgets(handlers = self, widget = widget)
-
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(object):
     def __init__(self, parent, title, initial_dir = None):
@@ -368,7 +347,7 @@ class PreferencesWindow(object):
             tips.set_tip(
                 e, _('These characters will be used as separators '
                      'when "Split values" is selected in the tag editor'))
-            l = gtk.Label(_("Split _on"))
+            l = gtk.Label(_("Split _on:"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(e)
             hb.pack_start(l, expand = False)
@@ -964,51 +943,190 @@ class SearchBar(EmptyBar):
             color, util.escape(text))
         layout.set_markup(markup)
 
-class MainWindow(MultiInstanceWidget):
+class MainWindow(object):
     def __init__(self):
-        MultiInstanceWidget.__init__(self, widget = "main_window")
         self.last_dir = os.path.expanduser("~")
-        self.window = self.widgets["main_window"]
         self.current_song = None
+        self.albumfn = None
+        self._time = (0, 1)
 
-        settings = gtk.settings_get_default()
-        accelgroup = gtk.accel_groups_from_object(self.window)[0]
-        menubar = self.widgets["menubar1"]
-        for menuitem in menubar.get_children():
-            menu = menuitem.get_submenu()
-            menu.set_accel_group(accelgroup)
-            menu.set_accel_path('<quodlibet>/%s' %
-                    menu.get_name().replace('_menu',''))
+        self.tips = gtk.Tooltips()
+        # create the main window, restore its size
+        self.window = gtk.Window()
+        self.window.set_title("Quod Libet")
+        self.window.set_icon_from_file("quodlibet.png")
+        self.window.set_default_size(
+            *map(int, config.get('memory', 'size').split()))
+        self.window.add(gtk.VBox())
+        self.window.connect('configure-event', self.save_size)
+        self.window.connect('destroy', gtk.main_quit)
 
-        if not os.path.exists(const.ACCELS):
-            util.mkdir(const.DIR)
-            accels = open(const.ACCELS, 'w')
-            accels.write(
-"""\
-(gtk_accel_path "<quodlibet>/FiltersMenu/Random album" "<Control>m")
-(gtk_accel_path "<quodlibet>/FiltersMenu/Random genre" "<Control>g")
-(gtk_accel_path "<quodlibet>/SongMenu/Previous song" "<Control>Left")
-(gtk_accel_path "<quodlibet>/SongMenu/Next song" "<Control>Right")
-(gtk_accel_path "<quodlibet>/MusicMenu/Add Music..." "<Control>o")
-(gtk_accel_path "<quodlibet>/SongMenu/Properties" "<Alt>Return")
-(gtk_accel_path "<quodlibet>/SongMenu/Play song" "<Control>space")
-(gtk_accel_path "<quodlibet>/MusicMenu/Quit" "<Control>q")
-(gtk_accel_path "<quodlibet>/FiltersMenu/Random artist" "<Control>t")
-(gtk_accel_path "<quodlibet>/SongMenu/Jump to playing song" "<Control>j")\
-""")
-            accels.close()
-
+        # create main menubar, load/restore accelerator groups
+        self._create_menu()
+        self.window.add_accel_group(self.ui.get_accel_group())
         gtk.accel_map_load(const.ACCELS)
+        accelgroup = gtk.accel_groups_from_object(self.window)[0]
         accelgroup.connect('accel-changed',
                 lambda *args: gtk.accel_map_save(const.ACCELS))
+        self.window.child.pack_start(self.ui.get_widget("/Menu"), expand=False)
 
-        #self.widgets["play_menu"].get_image().set_from_stock(
-        #    'gtk-media-play', gtk.ICON_SIZE_MENU)
+        # song info (top part of window)
+        hbox = gtk.HBox()
+        hbox.set_size_request(-1, 102)
 
-        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+        vbox = gtk.VBox()
+
+        hb2 = gtk.HBox()
+
+        # play controls
+        t = gtk.Table(2, 3)
+        t.set_homogeneous(True)
+        t.set_row_spacings(3)
+        t.set_col_spacings(3)
+        t.set_border_width(3)
+
+        prev = gtk.Button()
+        prev.add(gtk.image_new_from_stock(
+            gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_LARGE_TOOLBAR))
+        prev.connect('clicked', self.previous_song)
+        t.attach(prev, 0, 1, 0, 1, xoptions = gtk.FILL, yoptions = gtk.FILL)
+
+        play = gtk.Button()
+        play.add(gtk.image_new_from_stock(
+            gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
+        play.connect('clicked', self.play_pause)
+        t.attach(play, 1, 2, 0, 1, xoptions = gtk.FILL, yoptions = gtk.FILL)
+
+        next = gtk.Button()
+        next.add(gtk.image_new_from_stock(
+            gtk.STOCK_MEDIA_NEXT, gtk.ICON_SIZE_LARGE_TOOLBAR))
+        next.connect('clicked', self.next_song)
+        t.attach(next, 2, 3, 0, 1, xoptions = False, yoptions = False)
+
+        add = gtk.Button()
+        add.add(gtk.image_new_from_stock(
+            gtk.STOCK_ADD, gtk.ICON_SIZE_LARGE_TOOLBAR))
+        add.connect('clicked', self.open_chooser)
+        t.attach(add, 0, 1, 1, 2, xoptions = False, yoptions = False)
+        self.tips.set_tip(add, _("Add songs to your library"))
+
+        props = gtk.Button()
+        props.add(gtk.image_new_from_stock(
+            gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_LARGE_TOOLBAR))
+        props.connect('clicked', self.current_song_prop)
+        t.attach(props, 1, 2, 1, 2, xoptions = False, yoptions = False)
+        self.tips.set_tip(props, _("View and edit tags in the playing song"))
+
+        info = gtk.Button()
+        info.add(gtk.image_new_from_stock(
+            gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_LARGE_TOOLBAR))
+        info.connect('clicked', self.open_website)
+        t.attach(info, 2, 3, 1, 2, xoptions = False, yoptions = False)
+        self.tips.set_tip(info, _("Visit the artist's website"))
+                          
+
+        self.song_buttons = [info, next, props]
+        self.play_image = play.child
+
+        hb2.pack_start(t, expand = False, fill = False)
+
+        # song text
+        self.text = gtk.Label()
+        self.text.set_size_request(100, -1)
+        self.text.set_alignment(0.0, 0.0)
+        self.text.set_padding(6, 6)
+        hb2.pack_start(self.text)
+
+        vbox.pack_start(hb2, expand = True)
+
+        hbox.pack_start(vbox, expand = True)
+
+        # position slider
+        hb2 = gtk.HBox()
+        l = gtk.Label("0:00/0:00")
+        l.set_padding(6, 0)
+        hb2.pack_start(l, expand = False)
+        scale = gtk.HScale(gtk.Adjustment(0, 0, 0, 3000, 15000, 0))
+        scale.set_update_policy(gtk.UPDATE_DELAYED)
+        scale.connect('adjust-bounds', self.seek_slider)
+        scale.set_draw_value(False)
+        self.song_pos = scale
+        self.song_timer = l
+        hb2.pack_start(scale)
+        vbox.pack_start(hb2, expand = False)
+
+        # cover image
+        self.image = gtk.Image()
+        self.image.set_size_request(100, 100)
+        self.iframe = gtk.Frame()
+        self.iframe.add(gtk.EventBox())
+        self.iframe.child.add(self.image)
+        self.iframe.child.connect('button-press-event', self.show_big_cover)
+        hbox.pack_start(self.iframe, expand = False)
+
+        # volume control
+        vbox = gtk.VBox()
+        p = gtk.gdk.pixbuf_new_from_file("volume.png")
+        i = gtk.Image()
+        i.set_from_pixbuf(p)
+        vbox.pack_start(i, expand = False)
+        adj = gtk.Adjustment(1, 0, 1, 0.01, 0.1)
+        self.volume = gtk.VScale(adj)
+        self.volume.set_update_policy(gtk.UPDATE_CONTINUOUS)
+        self.volume.connect('value-changed', self.update_volume)
+        adj.set_value(config.getfloat('memory', 'volume'))
+        self.volume.set_draw_value(False)
+        self.volume.set_inverted(True)
+        self.tips.set_tip(self.volume, _("Adjust audio volume"))
+        vbox.pack_start(self.volume)
+        hbox.pack_start(vbox, expand = False)
+
+        self.window.child.pack_start(hbox, expand = False)
+
+        # browser bar
+        self.query_hbox = gtk.HBox()
+        self.window.child.pack_start(self.query_hbox, expand = False)
         
-        # Set up the tray icon; initialize the menu widget even if we
-        # don't end up using it for simplicity.
+        # song list
+        self.song_scroller = sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        songlist = gtk.TreeView()
+        songlist.set_size_request(200, 150)
+        sw.add(songlist)
+        self.songlist = MainSongList(songlist)
+        widgets.songs = gtk.ListStore(object)
+        self.set_column_headers(config.get("settings", "headers").split())
+        self.window.child.pack_start(sw)
+        songlist.connect('row-activated', self.select_song)
+        songlist.connect('button-press-event', self.songs_button_press)
+        songlist.connect('popup-menu', self.songs_popup_menu)
+        songlist.connect('columns_changed', self.cols_changed)
+        
+        # status area
+        hbox = gtk.HBox(spacing = 6)
+        self.shuffle = shuffle = gtk.CheckButton(_("_Shuffle"))
+        self.tips.set_tip(shuffle, _("Play songs in a random order"))
+        shuffle.connect('toggled', self.toggle_shuffle)
+        shuffle.set_active(config.getboolean('settings', 'shuffle'))
+        hbox.pack_start(shuffle, expand = False)
+        self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
+        repeat.connect('toggled', self.toggle_repeat)
+        repeat.set_active(config.getboolean('settings', 'repeat'))
+        self.tips.set_tip(
+            repeat, _("Restart the playlist after all songs are played"))
+        hbox.pack_start(repeat, expand = False)
+        self.statusbar = gtk.Label()
+        self.statusbar.set_text(_("No time information"))
+        self.statusbar.set_alignment(1.0, 0.5)
+        self.statusbar.set_justify(gtk.JUSTIFY_RIGHT)
+        hbox.pack_start(self.statusbar)
+        hbox.set_border_width(3)
+        self.window.child.pack_start(hbox, expand = False)
+
+        # Set up the tray icon. It gets created even if we don't
+        # actually use it (e.g. missing trayicon.so).
+        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
         self.icon = HIGTrayIcon(p, self.window, cbs = {
             2: self.play_pause,
             3: self.tray_popup,
@@ -1018,31 +1136,9 @@ class MainWindow(MultiInstanceWidget):
             7: self.previous_song
             })
 
-        # Set up the main song list store.
-        self.songlist = MainSongList(self.widgets["songlist"])
-
-        widgets.songs = gtk.ListStore(object)
-
-        self.browser = SearchBar(self.widgets["query_hbox"], _("Search"),
-                                 self.text_parse)
+        self.browser = SearchBar(self.query_hbox, _("Search"), self.text_parse)
         self.browser.set_text(config.get("memory", "query"))
-
-        # Initialize volume controls.
-        self.widgets["volume"].set_value(config.getfloat("memory", "volume"))
-
-        self.widgets["shuffle_t"].set_active(config.state("shuffle"))
-        self.widgets["repeat_t"].set_active(config.state("repeat"))
-
-        self.set_column_headers(config.get("settings", "headers").split())
         self.browser.activate()
-
-        self.albumfn = None
-        self._time = (0, 1)
-        gtk.timeout_add(300, self._update_time)
-        self.text = self.widgets["currentsong"]
-        self.image = self.widgets["albumcover"]
-        self.iframe = self.widgets["iframe"]
-        self.volume = self.widgets["volume"]
 
         self.open_fifo()
         self.keys = MmKeys({"mm_prev": self.previous_song,
@@ -1050,24 +1146,127 @@ class MainWindow(MultiInstanceWidget):
                             "mm_playpause": self.play_pause})
         self.osd = Osd()
 
-        # Show main window.
-        self.restore_size()
+        gtk.timeout_add(100, self._update_time)
+        self.window.child.show_all()
         self.window.realize()
-        self.widgets["show_playlist"].set_active(
-            config.getboolean("memory", "songlist"))
+        self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
+        self.tips.enable()
+
+    def show(self):
         self.window.show()
+
+    def _create_menu(self):
+        ag = gtk.ActionGroup('MainWindowActions')
+        ag.add_actions([
+            ('Music', None, _("_Music")),
+            ('AddMusic', gtk.STOCK_ADD, _('_Add Music...'), "<control>O", None,
+             self.open_chooser),
+            ('NewPlaylist', gtk.STOCK_NEW, _('_New Playlist...'), None, None,
+             self.new_playlist),
+            ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
+             self.open_prefs),
+            ("RefreshLibrary", gtk.STOCK_REFRESH, _("Re_fresh library"), None,
+             None, self.rebuild),
+            ("ReloadLibrary", gtk.STOCK_REFRESH, _("Re_load library"), None,
+             None, self.rebuild_hard),
+            ("Quit", gtk.STOCK_QUIT, None, None, None,
+             lambda *args: self.window.destroy()),
+
+            ('Filters', None, _("_Filters")),
+            ("RandomGenre", gtk.STOCK_DIALOG_QUESTION, _("Random _genre"),
+             "<control>G", None, self.random_genre),
+            ("RandomArtist", gtk.STOCK_DIALOG_QUESTION, _("Random _artist"),
+             "<control>T", None, self.random_artist),
+            ("RandomAlbum", gtk.STOCK_DIALOG_QUESTION, _("Random al_bum"),
+             "<control>M", None, self.random_album),
+            ("NotPlayedDay", gtk.STOCK_FIND, _("Not played to_day"),
+             "", None, self.lastplayed_day),
+            ("NotPlayedWeek", gtk.STOCK_FIND, _("Not played in a _week"),
+             "", None, self.lastplayed_week),
+            ("NotPlayedMonth", gtk.STOCK_FIND, _("Not played in a _month"),
+             "", None, self.lastplayed_month),
+            ("NotPlayedEver", gtk.STOCK_FIND, _("_Never played"),
+             "", None, self.lastplayed_never),
+            ("Top", gtk.STOCK_GO_UP, _("_Top 40"), "", None, self.top40),
+            ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
+             None, self.bottom40),
+            ("Song", None, _("S_ong")),
+            ("Previous", gtk.STOCK_MEDIA_PREVIOUS, None, "<control>Left",
+             None, self.previous_song),
+            ("PlayPause", gtk.STOCK_MEDIA_PLAY, None, "<control>space",
+             None, self.play_pause),
+            ("Next", gtk.STOCK_MEDIA_NEXT, None, "<control>Right",
+             None, self.next_song),
+            ("FilterGenre", gtk.STOCK_INDEX, _("Filter on _genre"), "",
+             None, self.cur_genre_filter),
+            ("FilterArtist", gtk.STOCK_INDEX, _("Filter on _artist"), "",
+             None, self.cur_artist_filter),
+            ("FilterAlbum", gtk.STOCK_INDEX, _("Filter on al_bum"), "",
+             None, self.cur_album_filter),
+            ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
+             self.current_song_prop),
+            ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
+             "<control>J", None, self.jump_to_current),
+
+            ("View", None, _("_View")),
+            ("Help", None, _("_Help")),
+            ("About", gtk.STOCK_ABOUT, None, None, None, self.show_about),
+            ])
+
+        ag.add_toggle_actions([
+            ("Songlist", None, _("Song _list"), None, None,
+             self.showhide_playlist,
+             config.getboolean("memory", "songlist"))])
+
+        ag.add_radio_actions([
+            ("BrowserDisable", None, _("_Disable browsing"), None, None, 0),
+            ("BrowserSearch", None, _("_Search library"), None, None, 1),
+            ("BrowserPlaylist", None, _("_Playlists"), None, None, 2)
+            ], 1, self.select_browser)
+
+        self.ui = gtk.UIManager()
+        self.ui.insert_action_group(ag, 0)
+        self.ui.add_ui_from_string(const.MENU)
+
+        # Cute. So. UIManager lets you attach tooltips, but when they're
+        # for menu items, they just get ignored. So here I get to actually
+        # attach them.
+        self.tips.set_tip(
+            self.ui.get_widget("/Menu/Music/RefreshLibrary"),
+            _("Check for changes in the library made since the program "
+              "was started"))
+        self.tips.set_tip(
+            self.ui.get_widget("/Menu/Music/ReloadLibrary"),
+            _("Reload all songs in your library (this can take a long time)"))
+        self.tips.set_tip(
+            self.ui.get_widget("/Menu/Filters/Top"),
+             _("The 40 songs you've played most (more than 40 may "
+               "be chosen if there are ties)"))
+        self.tips.set_tip(
+            self.ui.get_widget("/Menu/Filters/Bottom"),
+            _("The 40 songs you've played least (more than 40 may "
+              "be chosen if there are ties)"))
+        self.tips.set_tip(
+            self.ui.get_widget("/Menu/Song/Properties"),
+            _("View and edit tags in the playing song"))
+
+
+    def select_browser(self, activator, current):
+        [self.hide_browser, self.show_search, self.show_listselect][
+            current.get_current_value()](activator)
 
     def tray_popup(self, event, *args):
         tray_menu = gtk.Menu()
         if player.playlist.paused:
             b = gtk.ImageMenuItem(_("_Play"))
             tray_menu_play = b.get_image()
-            tray_menu_play.set_from_stock('gtk-media-play', gtk.ICON_SIZE_MENU)
+            tray_menu_play.set_from_stock(
+                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
         else:
             b = gtk.ImageMenuItem(_("_Pause"))
             tray_menu_play = b.get_image()
-            tray_menu_play.set_from_stock('gtk-media-pause',
-                                          gtk.ICON_SIZE_MENU)
+            tray_menu_play.set_from_stock(
+                gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU)
         b.connect('activate', self.play_pause)
         tray_menu.append(b)
         tray_menu.append(gtk.SeparatorMenuItem())
@@ -1087,13 +1286,6 @@ class MainWindow(MultiInstanceWidget):
         tray_menu.connect('selection-done', lambda m: m.destroy())
         tray_menu.popup(None, None, None, event.button, event.time)
 
-    def restore_size(self):
-        try: w, h = map(int, config.get("memory", "size").split())
-        except ValueError: pass
-        else:
-            self.window.set_property("default-width", w)
-            self.window.set_property("default-height", h)
-
     def open_fifo(self):
         if not os.path.exists(const.CONTROL):
             util.mkdir(const.DIR)
@@ -1103,7 +1295,7 @@ class MainWindow(MultiInstanceWidget):
 
     def _input_check(self, source, condition):
         c = os.read(source, 1)
-        toggles = { "@": "repeat_t", "&": "shuffle_t" }
+        toggles = { "@": self.repeat, "&": self.shuffle }
         if c == "<": self.previous_song()
         elif c == ">": self.next_song()
         elif c == "-": self.play_pause()
@@ -1120,7 +1312,7 @@ class MainWindow(MultiInstanceWidget):
                 try: self.volume.set_value(int(c2) / 100.0)
                 except ValueError: pass
         elif c in toggles:
-            wid = self.widgets[toggles[c]]
+            wid = toggles[c]
             c2 = os.read(source, 1)
             if c2 == "0": wid.set_active(False)
             elif c2 == "t": wid.set_active(not wid.get_active())
@@ -1170,27 +1362,28 @@ class MainWindow(MultiInstanceWidget):
             self.iframe.show()
 
     def _update_paused(self, paused):
+        menu = self.ui.get_widget("/Menu/Song/PlayPause")
         if paused:
-            self.widgets["play_image"].set_from_stock(
-                'gtk-media-play', gtk.ICON_SIZE_LARGE_TOOLBAR)
-            self.widgets["play_menu"].get_image().set_from_stock(
-                'gtk-media-play', gtk.ICON_SIZE_MENU)
-            self.widgets["play_menu"].child.set_text(_("Play _song"))
+            self.play_image.set_from_stock(
+                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR)
+            menu.get_image().set_from_stock(
+                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
+            menu.child.set_text(_("_Play"))
         else:
-            self.widgets["play_image"].set_from_stock(
-                'gtk-media-pause', gtk.ICON_SIZE_LARGE_TOOLBAR)
-            self.widgets["play_menu"].get_image().set_from_stock(
-                'gtk-media-pause', gtk.ICON_SIZE_MENU)
-            self.widgets["play_menu"].child.set_text(_("Pause _song"))
-        self.widgets["play_menu"].child.set_use_underline(True)
+            self.play_image.set_from_stock(
+                gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_LARGE_TOOLBAR)
+            menu.get_image().set_from_stock(
+                gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU)
+            menu.child.set_text(_("_Pause"))
+        menu.child.set_use_underline(True)
 
     def set_time(self, cur, end):
         self._time = (cur, end)
 
     def _update_time(self):
         cur, end = self._time
-        self.widgets["song_pos"].set_value(cur)
-        self.widgets["song_timer"].set_text("%d:%02d/%d:%02d" %
+        self.song_pos.set_value(cur)
+        self.song_timer.set_text("%d:%02d/%d:%02d" %
                             (cur // 60000, (cur % 60000) // 1000,
                              end // 60000, (end % 60000) // 1000))
         return True
@@ -1199,8 +1392,7 @@ class MainWindow(MultiInstanceWidget):
         path = (player.playlist.get_playlist().index(song),)
         iter = widgets.songs.get_iter(path)
         widgets.songs.remove(iter)
-        statusbar = self.widgets["statusbar"]
-        statusbar.set_text(_("Could not play %s.") % song['~filename'])
+        self.statusbar.set_text(_("Could not play %s.") % song['~filename'])
         try: library.remove(song)
         except KeyError: pass
         player.playlist.remove(song)
@@ -1218,14 +1410,15 @@ class MainWindow(MultiInstanceWidget):
             self.disable_cover()
 
     def _update_song(self, song, player):
-        for wid in ["web_button", "next_button", "prop_menu",
-                    "play_menu", "jump_menu", "next_menu", "prop_button",
-                    "filter_genre_menu", "filter_album_menu",
-                    "filter_artist_menu"]:
-            self.widgets[wid].set_sensitive(bool(song))
+        self.window.show()
+        for wid in self.song_buttons:
+            wid.set_sensitive(bool(song))
+        for wid in ["Jump", "Next", "Properties", "FilterGenre",
+                    "FilterArtist", "FilterAlbum"]:
+            self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
-            self.widgets["song_pos"].set_range(0, player.length)
-            self.widgets["song_pos"].set_value(0)
+            self.song_pos.set_range(0, player.length)
+            self.song_pos.set_value(0)
             cover = song.find_cover()
             if cover and cover.name != self.albumfn:
                 try:
@@ -1244,14 +1437,15 @@ class MainWindow(MultiInstanceWidget):
                 self.disable_cover()
 
             for h in ['genre', 'artist', 'album']:
-                self.widgets["filter_%s_menu"%h].set_sensitive(
+                self.ui.get_widget(
+                    "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
                     not song.unknown(h))
 
             self.update_markup(song)
         else:
             self.image.set_from_pixbuf(None)
-            self.widgets["song_pos"].set_range(0, 1)
-            self.widgets["song_pos"].set_value(0)
+            self.song_pos.set_range(0, 1)
+            self.song_pos.set_value(0)
             self._time = (0, 1)
             self.update_markup(None)
 
@@ -1301,13 +1495,13 @@ class MainWindow(MultiInstanceWidget):
             box.hide()
             self.window.resize(width, height - dy)
             box.set_size_request(-1, dy)
-        if not self.widgets["song_scroller"].get_property("visible"):
+        if not box.get_property("visible"):
             self.window.set_geometry_hints(
                 None, max_height = height - dy, max_width = 32000)
+        self.window.realize()
 
     def showhide_playlist(self, toggle):
-        self.showhide_widget(self.widgets["song_scroller"],
-                             toggle.get_active())
+        self.showhide_widget(self.song_scroller, toggle.get_active())
         config.set("memory", "songlist", str(toggle.get_active()))
 
     def open_website(self, button):
@@ -1366,7 +1560,7 @@ class MainWindow(MultiInstanceWidget):
     def random_album(self, menuitem):
         self.make_query("album = /^%s$/c" %(
             sre.escape(library.random("album"))))
-        self.widgets["shuffle_t"].set_active(False)
+        self.shuffle.set_active(False)
 
     def random_genre(self, menuitem):
         self.make_query("genre = /^%s$/c" %(
@@ -1607,23 +1801,23 @@ class MainWindow(MultiInstanceWidget):
 
     def show_search(self, *args):
         if type(self.browser) != SearchBar:
-            self.widgets["FiltersMenu"].show()
-            self.widgets["separator4"].show()
-
+            for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+                      "Song/FilterAlbum"]:
+                self.ui.get_widget("/Menu/" + w).show()
             self.browser.destroy()
-            self.showhide_widget(self.widgets["query_hbox"], True)
-            self.browser = SearchBar(self.widgets["query_hbox"],
+            self.showhide_widget(self.query_hbox, True)
+            self.browser = SearchBar(self.query_hbox,
                                      _("Search"), self.text_parse)
             self.browser.set_text(config.get("memory", "query"))
 
     def show_listselect(self, *args):
         if type(self.browser) != PlaylistBar:
-            self.widgets["FiltersMenu"].hide()
-            self.widgets["separator4"].hide()
-
+            for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+                      "Song/FilterAlbum"]:
+                self.ui.get_widget("/Menu/" + w).hide()
             self.browser.destroy()
-            self.showhide_widget(self.widgets["query_hbox"], True)
-            self.browser = PlaylistBar(self.widgets["query_hbox"],
+            self.showhide_widget(self.query_hbox, True)
+            self.browser = PlaylistBar(self.query_hbox,
                                        self.playlist_selected)
 
     def playlist_selected(self, query, key):
@@ -1636,12 +1830,12 @@ class MainWindow(MultiInstanceWidget):
 
     def hide_browser(self, *args):
         if type(self.browser) != EmptyBar:
-            self.widgets["FiltersMenu"].show()
-            self.widgets["separator4"].show()
-
+            for w in ["Filters", "Song/FilterGenre", "Song/FilterArtist",
+                      "Song/FilterAlbum"]:
+                self.ui.get_widget("/Menu/" + w).show()
             self.browser.destroy()
-            self.showhide_widget(self.widgets["query_hbox"], False)
-            self.browser = EmptyBar(self.widgets["query_hbox"],
+            self.showhide_widget(self.query_hbox, False)
+            self.browser = EmptyBar(self.query_hbox,
                                     self.text_parse)
 
     # Grab the text from the query box, parse it, and make a new filter.
@@ -1684,7 +1878,7 @@ class MainWindow(MultiInstanceWidget):
 
     def refresh_songlist(self):
         i, length = self.songlist.refresh(current=self.current_song)
-        statusbar = self.widgets["statusbar"]
+        statusbar = self.statusbar
         if i != 1: statusbar.set_text(
             _("%d songs (%s)") % (i, util.format_time_long(length)))
         else: statusbar.set_text(
@@ -3637,7 +3831,7 @@ if __name__ == "__main__":
 
     # Get to the right directory for our data.
     os.chdir(basedir)
-    # Initialize GTK/Glade.
+    # Initialize GTK.
     import pygtk
     pygtk.require('2.0')
     import gtk, pango
@@ -3648,9 +3842,6 @@ if __name__ == "__main__":
             ".".join(map(str, gtk.gtk_version)),
             ".".join(map(str, gtk.pygtk_version))))
         raise SystemExit(to(_("E: Please upgrade GTK+/PyGTK.")))
-    import gtk.glade
-    gtk.glade.bindtextdomain("quodlibet")
-    gtk.glade.textdomain("quodlibet")
 
     import gc
     import time

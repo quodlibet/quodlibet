@@ -7,6 +7,8 @@ Recent upgrade notes:
 Songs added to the library before 0.9 will not support the "added"
 numeric tag (its value will be 0).
 
+0.10
+
 0.9 - I don't want any trouble, cephalopods!
  - Major updates to the Properties dialog:
    - A new detailed 'Information' tab was added.
