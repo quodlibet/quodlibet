@@ -745,7 +745,7 @@ class HIGTrayIcon(TrayIcon):
 
     def __showhide(self, event):
         if self.__window.get_property('visible'):
-            self.__pos = self._window.get_position()
+            self.__pos = self.__window.get_position()
             self.__window.hide()
         else:
             self.__window.move(*self.__pos)
