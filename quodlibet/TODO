@@ -6,7 +6,6 @@ Doable by whomever, whenever:
 
 Stuff that I probably have to do:
 - More unit tests.
-- Seeking in FLAC, MODs.
 - Various skipping problems -- get smarter about Python threads.
 - Import covers from Muine.
   - We need to deserialize the pixmap data, whatever it's doing, which

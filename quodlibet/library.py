@@ -456,8 +456,6 @@ class FLACFile(AudioFile):
                 for line in value:
                     vc.comments[key] = util.encode(line)
             chain.write(True, True)
-            print "After all"
-            for k in vc.comments: print k
 
     def can_change(self, k = None):
         if k is None: return True

@@ -10,7 +10,7 @@
    iFP series are supported.
  - --next, --previous, --play-pause, --volume-up, --volume-down, --mute.
  - MOD/IT/XM/etc. support, using libmodplug and an included C extension.
-   As usual for MODs, seeking doesn't work right.
+ - Seeking in FLACs.
 
 0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
  - The ao audio backend is back; see the "AUDIO BACKENDS" section in the

@@ -70,17 +70,21 @@ class FLACPlayer(AudioPlayer):
         self.dec.set_error_callback(lambda *args: None)
         self.dec.init()
         self.dec.process_until_end_of_metadata()
+        self.pos = 0
         self._size = os.stat(filename)[stat.ST_SIZE]
 
     def _grab_stream_info(self, dec, block):
         if block.type == self.STREAMINFO:
             streaminfo = block.data.stream_info
+            self._srate = streaminfo.sample_rate
+            self._bps = streaminfo.bits_per_sample / 8
+            self._chan = streaminfo.channels
             self._samples = streaminfo.total_samples
-            self._srate = streaminfo.sample_rate / 100
-            self.length = (self._samples * 10) / self._srate
-            self._bps = streaminfo.bits_per_sample
+            self.length = (self._samples * 1000) / self._srate
+            dev.self.set_info(self._srate, self._chan)
 
     def _player(self, dec, buff, size):
+        self.pos += 1000 * (float(len(buff))/self._chan/self._bps/self._srate)
         device.play(buff)
         return self.OK
 
@@ -94,15 +98,15 @@ class FLACPlayer(AudioPlayer):
         if not self.dec.process_single():
             self.dec.finish()
             raise StopIteration
-        pos = self.dec.get_decode_position()
-        return int(self.length * (float(pos) / self._size))
+        return int(self.pos)
 
     def __iter__(self):
         return self
 
-    def seek(self, ms): pass
-        #samp = int((float(ms) / self.length) * self._samples)
-        #self.dec.seek_absolute(samp)
+    def seek(self, ms):
+        self.pos = ms
+        sample = (ms / 1000.0) * self._srate
+        self.dec.seek_absolute(long(sample))
 
 class OggPlayer(AudioPlayer):
     def __init__(self, dev, song):
