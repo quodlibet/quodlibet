@@ -20,6 +20,7 @@ import os
 import util; from util import escape
 import signal
 import config
+import time
 
 # This object communicates with the playing thread. It's the only way
 # the playing thread talks to the UI, so replacing this with something
@@ -275,10 +276,12 @@ def text_parse(*args):
                     widgets["query"].prepend_text(text)
                 except: return
 
+            t = time.time()
             CURRENT_FILTER[0] = q.search
             set_entry_color(widgets["query"].child, "black")
             songs = filter(CURRENT_FILTER[0], library.values())
             player.playlist.set_playlist(songs)
+            print "Searching songlist took %f seconds " % (time.time() - t)
             refresh_songlist()
 
 # Try and construct a query, but don't actually run it; change the color
@@ -300,6 +303,7 @@ def test_filter(*args):
 
 # Resort based on the header clicked.
 def set_sort_by(header, i):
+    t = time.time()
     s = header.get_sort_order()
     if not header.get_sort_indicator() or s == gtk.SORT_DESCENDING:
         s = gtk.SORT_ASCENDING
@@ -309,10 +313,12 @@ def set_sort_by(header, i):
     header.set_sort_indicator(True)
     header.set_sort_order(s)
     player.playlist.sort_by(HEADERS[i[0]], s == gtk.SORT_DESCENDING)
+    print "Sorting songlist took %f seconds " % (time.time() - t)
     refresh_songlist()
 
 # Clear the songlist and readd the songs currently wanted.
 def refresh_songlist():
+    t = time.time()
     widgets.songs.clear()
     i = 0
     statusbar = widgets["statusbar"]
@@ -321,6 +327,7 @@ def refresh_songlist():
          i += 1
     j = statusbar.get_context_id("playlist")
     statusbar.push(j, "%d song%s found." % (i, (i != 1 and "s" or "")))
+    print "Setting songlist took %f seconds " % (time.time() - t)
 
 HEADERS = ["=#", "title", "album", "artist"]
 HEADERS_FILTER = { "=#": "Track", "tracknumber": "Track" }
