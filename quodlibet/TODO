@@ -112,6 +112,29 @@ IRC Dumps
 (mu) heh.  make wm write it?
 (piman_) The number of tiny languages we have is too long for man page :/
 
+(mu) hmm. is it a bug that if you, vorbisgain, don't refresh, edit your tags
++and save the gained files, you lose the vorbisgain?
+(piman) good question.
+(piman) do we need a warning dialog if the mtime is wrong?
+
+(piman) What would you think of some kind of "plugin" system like Nautilus's
++old (and useful) "Scripts" thing?
+(mu) something to let you invoke stuff on various selections? that'd be
++awesome.
+(piman) Yeah, with some halfassed way to keep it talking to QL.
+(mu) there'd need to be some meta plugins, to call plugins on each album of
++the selection separately, and such.
+(piman) Yeah, I'm trying to think of a way to pass all the useful arguments...
+(mu) really these so called plugins should probably exist in two varieties -
++python, and *, where only the python would necessarily get talkback.
+(mu) nautilus used environment variables.
+(piman) Nautilus only had like 5-10 things.
+(piman) we have 5-10 things per item :/
+(mu) what does QL need to pass?
+(piman) Ideally the whole song dict.
+(mu) bah, so start with the python ones.  we can make a lame meta-plugin that
++translates to simple shell invokes.
+
 Others
 ------
 RPM spec/package, Gentoo ebuild, whatever.
