@@ -774,6 +774,11 @@ class MultiInstanceWidget(object):
     def songprop_nbp_preview(self, *args):
         self.nbp_model.clear()
         pattern = self.nbp_entry.get_text().decode('utf-8')
+
+        underscore = self.widgets.get_widget("underscore_t").get_active()
+        windows = self.widgets.get_widget("windows_t").get_active()
+        ascii = self.widgets.get_widget("ascii_t").get_active()
+
         try:
             pattern = util.FileFromPattern(pattern)
         except ValueError: 
@@ -786,11 +791,39 @@ class MultiInstanceWidget(object):
             
         for song, ref in self.songrefs:
             newname = pattern.match(song)
+            if underscore: newname = newname.replace(" ", "_")
+            if windows:
+                for c in '\\:*?;"<>|':
+                    newname = newname.replace(c, "_")
+            if ascii:
+                newname = "".join(map(lambda c: ((ord(c) < 127 and c) or "_"),
+                                      newname))
             self.nbp_model.append(row=[song, ref, song['=basename'], newname])
+        self.nbp_preview.set_sensitive(False)
+        self.save_nbp.set_sensitive(True)
+
+    def nbp_save(self, *args):
+        pattern = self.nbp_entry.get_text().decode('utf-8')
+        win = WritingWindow(self.window, len(self.songrefs))
+
+        def rename(model, path, iter):
+            song = model[path][0]
+            ref = model[path][1]
+            oldname = model[path][2]
+            newname = model[path][3]
+            print "Renaming", oldname, "to", newname
+            win.step()
+        self.nbp_model.foreach(rename)
+        self.save_nbp.set_sensitive(False)
+        win.end()
 
     def tbp_changed(self, *args):
         self.tbp_preview.set_sensitive(True)
         self.save_tbp.set_sensitive(False)
+
+    def nbp_changed(self, *args):
+        self.nbp_preview.set_sensitive(True)
+        self.save_nbp.set_sensitive(False)
 
     def songprop_tbp_preview(self, *args):
         self.tbp_view.set_model(None)
@@ -816,6 +849,7 @@ class MultiInstanceWidget(object):
             col = gtk.TreeViewColumn(header, gtk.CellRendererText(), text=i+3)
             self.tbp_view.append_column(col)
 
+        spls = config.get("settings", "splitters")
         # get info for all matches
         for song, ref in self.songrefs:
             row = [song, ref, song['=basename']]
@@ -824,7 +858,7 @@ class MultiInstanceWidget(object):
                 text = match.get(h, '')
                 if rep: text = text.replace("_", " ")
                 if title: text = text.title()
-                if split: text = "\n".join(util.split_value(text))
+                if split: text = "\n".join(util.split_value(text, spls))
                 row.append(text)
             self.tbp_model.append(row=row)
 
@@ -834,10 +868,10 @@ class MultiInstanceWidget(object):
         if len(pattern.headers) > 0: self.save_tbp.set_sensitive(True)
 
     def tbp_save(self, *args):
-        self.songprop_tbp_preview()
         pattern_text = self.tbp_entry.get_text().decode('utf-8')
         pattern = util.PatternFromFile(pattern_text)
         win = WritingWindow(self.window, len(self.songrefs))
+        spls = config.get("settings", "splitters")
 
         def save_song(model, path, iter):
             song = model[path][0]
@@ -847,7 +881,7 @@ class MultiInstanceWidget(object):
             for i, h in enumerate(pattern.headers):
                 if row[i]:
                     song[h] = "\n".join(util.split_value(
-                        row[i + 3].decode("utf-8")))
+                        row[i + 3].decode("utf-8"), spls))
                     changed = True
 
             if changed and ref:
@@ -953,10 +987,13 @@ def make_song_properties(songrefs):
 
     # rename by pattern
     dlg.nbp_combo = dlg.widgets.get_widget("songprop_nbp_combo")
+    dlg.nbp_preview = dlg.widgets.get_widget('nbp_preview')
     dlg.nbp_entry = dlg.nbp_combo.child
     dlg.nbp_view = dlg.widgets.get_widget("songprop_nbp_view")
     dlg.nbp_model = gtk.ListStore(object, object, str, str)
     dlg.nbp_view.set_model(dlg.nbp_model)
+    dlg.save_nbp = dlg.widgets.get_widget('prop_nbp_save')
+    dlg.nbp_entry.connect('changed', dlg.nbp_changed)
     column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
     dlg.nbp_view.append_column(column)
     column = gtk.TreeViewColumn(_('New Name'), gtk.CellRendererText(), text=3)
