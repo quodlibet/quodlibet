@@ -41,7 +41,7 @@ class Tag(object):
     def search(self, data):
         for name in self.names:
             for re in self.res:
-                if re.search(data[name]): return True
+                if re.search(data.get(name, "")): return True
         return False
 
     def __repr__(self):
