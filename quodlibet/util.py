@@ -175,7 +175,7 @@ class PatternFromFile(object):
         self.pattern = None
         # patterns look like <tagname> non regexy stuff <tagname> ...
         pieces = sre.split(r'(<[A-Za-z0-9_]+>)', pattern)
-        override = { '<tracknumber>': r'\d+', '<discnumber>': r'\d+' }
+        override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d' }
         for i, piece in enumerate(pieces):
             if not piece: continue
             if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
