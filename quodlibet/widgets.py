@@ -781,7 +781,8 @@ class PanedBrowser(Browser, gtk.HBox):
                 if self._selected_items == selected_items: return
                 else: self._selected_items = selected_items
             if jump:
-                self.child.scroll_to_cell(selection.get_selected_rows()[1][0])
+                model, rows = selection.get_selected_rows()
+                if rows: self.child.scroll_to_cell(rows[0])
             # pass on the remaining songs to the next pane
             self.next.fill(
                 filter(parser.parse(self.query()).search, self._songs))
@@ -891,12 +892,15 @@ class PanedBrowser(Browser, gtk.HBox):
         config.set("browsers", "pane_selection", "\n".join(selected))
 
     def restore(self):
-        selections = [y.split("\t") for y in
-                      config.get("browsers", "pane_selection").split("\n")]
-        if len(selections) == len(self._panes):
-            for sel, pane in zip(selections, self._panes):
-                self.__inhibit = True
-                pane.select(sel, escape = False)
+        try:
+            selections = [y.split("\t") for y in
+                          config.get("browsers", "pane_selection").split("\n")]
+        except Exception: pass
+        else:
+            if len(selections) == len(self._panes):
+                for sel, pane in zip(selections, self._panes):
+                    self.__inhibit = True
+                    pane.select(sel, escape = False)
 
     def activate(self):
         self.fill(None)
@@ -955,14 +959,16 @@ class PlaylistBar(Browser, gtk.HBox):
         config.set("browsers", "playlist", key)
 
     def restore(self):
-        key = config.get("browsers", "playlist")
-        combo = self.get_children()[0]
-        model = combo.get_model()
-        def find_key(model, path, iter, key):
-            if model[iter][1] == key:
-                combo.set_active(path[0])
-                return True
-        model.foreach(find_key, key)
+        try: key = config.get("browsers", "playlist")
+        except Exception: pass
+        else:
+            combo = self.get_children()[0]
+            model = combo.get_model()
+            def find_key(model, path, iter, key):
+                if model[iter][1] == key:
+                    combo.set_active(path[0])
+                    return True
+            model.foreach(find_key, key)
 
     def activate(self):
         self.list_selected(*self.get_children())
@@ -1034,7 +1040,8 @@ class EmptyBar(Browser, gtk.HBox):
         config.set("browsers", "query_text", self.text)
 
     def restore(self):
-        self.set_text(config.get("browsers", "query_text"))
+        try: self.set_text(config.get("browsers", "query_text"))
+        except Exception: pass
 
     def activate(self):
         self.cb(self.text, None)

@@ -66,7 +66,7 @@ def init(*rc_files):
 
     _config.set("memory", "size", "400 350")
     _config.set("memory", "song", "")
-    _config.set("memory", "widths", "0 100 100 100")
+    _config.set("memory", "widths", "1 80 80 80 50")
     _config.set("memory", "volume", "1.0")
     _config.set("memory", "browser", "1")
     _config.set("memory", "songlist", "true")
