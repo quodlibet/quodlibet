@@ -35,9 +35,9 @@ class GTKSongInfoWrapper(object):
             p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
             self.icon = statusicon.StatusIcon(p)
             self.icon.connect("activate", self._toggle_window, ())
-            print "Initialized status icon."
+            print _("Initialized status icon.")
         except:
-            print "W: Failed to initialize status icon."
+            print _("W: Failed to initialize status icon.")
             self.icon = None
 
         try:
@@ -46,9 +46,9 @@ class GTKSongInfoWrapper(object):
             self.keys.connect("mm_prev", self._previous)
             self.keys.connect("mm_next", self._next)
             self.keys.connect("mm_playpause", self._playpause)
-            print "Initialized multimedia key support."
+            print _("Initialized multimedia key support.")
         except:
-            print "W: Failed to initialize multimedia key support."
+            print _("W: Failed to initialize multimedia key support.")
 
         self._time = (0, 1)
         gtk.timeout_add(300, self._update_time)
@@ -242,7 +242,7 @@ class GladeHandlers(object):
                     s = s.replace("%s", '"' + site + '"')
                     s = s.replace("%%", "%")
                 else: s += " \"%s\"" % site
-                print "Executing %s" % s
+                print _("Opening web browser: %s") % s
                 if os.system(s + " &") == 0: break
         else:
             d = make_error(_("Unable to start a web browser"),
@@ -903,7 +903,7 @@ def main():
         player.playlist.set_playlist(library.values())
         refresh_songlist()
     player.playlist.sort_by(HEADERS[0])
-    print "Done loading songs."
+    print _("Loaded song library.")
 
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
@@ -919,7 +919,7 @@ def main():
     player.playlist.quitting()
     t.join()
 
-    print "Saving library"
+    print _("Saving song library.")
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.save(cache_fn)
 
@@ -952,13 +952,11 @@ def refresh_cache():
     import library, config
     config.init(config_fn)
     library.init()
-    print "Loading."
+    print _("Loading, scanning, and saving your library.")
     library.library.load(cache_fn)
-    print "Scanning."
     if config.get("settings", "scan"):
         for a, c in library.scan(config.get("settings", "scan").split(":")):
             pass
-    print "Saving."
     library.library.save(cache_fn)
     raise SystemExit
 
@@ -1015,8 +1013,8 @@ if __name__ == "__main__":
         elif command in ["--refresh-library"]: refresh_cache()
         elif command in ["--print-playing"]: print_playing(sys.argv[2])
         else:
-            print "E: Unknown command line option: %s" % command
-            raise SystemExit("E: Try %s --help" % sys.argv[0])
+            print _("E: Unknown command line option: %s") % command
+            raise SystemExit(_("E: Try %s --help") % sys.argv[0])
 
     # Get to the right directory for our data.
     d = os.path.split(os.path.realpath(__file__))[0]
@@ -1029,11 +1027,11 @@ if __name__ == "__main__":
     pygtk.require('2.0')
     import gtk
     if gtk.pygtk_version < (2, 4) or gtk.gtk_version < (2, 4):
-        print "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
-        print "E: You have GTK+ %s and PyGTK %s." % (
+        print _("E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet.")
+        print _("E: You have GTK+ %s and PyGTK %s.") % (
             ".".join(map(str, gtk.gtk_version)),
             ".".join(map(str, gtk.pygtk_version)))
-        raise SystemExit("E: Please upgrade GTK+/PyGTK.")
+        raise SystemExit(_("E: Please upgrade GTK+/PyGTK."))
     import gtk.glade
     gtk.glade.bindtextdomain("quodlibet", i18ndir)
     gtk.glade.textdomain("quodlibet")
@@ -1043,7 +1041,6 @@ if __name__ == "__main__":
     import util
 
     # Load the library.
-    print "Loading library."
     import library
     cache_fn = os.path.join(os.environ["HOME"], ".quodlibet", "songs")
     library.init(cache_fn)
@@ -1051,7 +1048,6 @@ if __name__ == "__main__":
 
     # Load configuration data and scan the library for new/changed songs.
     import config
-    print "Loading configuration."
     config_fn = os.path.join(os.environ["HOME"], ".quodlibet", "config")
     config.init(config_fn)
     if config.get("settings", "scan"):
@@ -1059,7 +1055,7 @@ if __name__ == "__main__":
             pass
 
     # Try to initialize the playlist and audio output.
-    print "Opening audio device."
+    print _("Opening audio device.")
     import player
     try: player.init()
     except IOError:

@@ -1,0 +1,642 @@
+# English/Canada translation of Quod Libet.
+# Copyright (C) 2004 Joe Wreschnig
+# This file is distributed under the same license as the Quod Libet package.
+# Joe Wreschnig <piman@sacredchao.net>, 2004
+#
+# NB: I am not actually Canadian, but I need a translation to test my i18n
+# support, and I know Canadian better than, say, Kurdish.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: quodlibet\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-11-08 12:42-0600\n"
+"PO-Revision-Date: 2004-11-08 11:54-0600\n"
+"Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
+"Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: library.py:91
+msgid "Unknown"
+msgstr ""
+
+#: library.py:120
+#, python-format
+msgid "by %s"
+msgstr ""
+
+#: library.py:123
+#, python-format
+msgid "Performed by %s"
+msgstr ""
+
+#: library.py:128
+#, python-format
+msgid "arranged by %s"
+msgstr ""
+
+#: library.py:130
+#, python-format
+msgid "lyrics by %s"
+msgstr ""
+
+#: library.py:132
+#, python-format
+msgid "conducted by %s"
+msgstr ""
+
+#: library.py:134
+#, python-format
+msgid "written by %s"
+msgstr ""
+
+#: library.py:144
+msgid "Disc"
+msgstr ""
+
+#: library.py:148
+msgid "Track"
+msgstr ""
+
+#: library.py:163
+msgid "Never"
+msgstr ""
+
+#: library.py:167
+#, python-format
+msgid "%d times, recently on %s"
+msgstr ""
+
+#: library.py:410
+#, python-format
+msgid "(shared across all %d songs)"
+msgstr ""
+
+#: library.py:412
+#, python-format
+msgid "(missing from %d songs)"
+msgstr ""
+
+#: library.py:414
+#, python-format
+msgid "(different across %d songs)"
+msgstr ""
+
+#: library.py:416
+#, python-format
+msgid "(different across %d songs, missing from %d songs)"
+msgstr ""
+
+#: library.py:544
+msgid "Enabling Ogg Vorbis support."
+msgstr ""
+
+#: library.py:547
+msgid "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
+msgstr ""
+
+#: library.py:550
+msgid "Enabling MP3 support."
+msgstr ""
+
+#: library.py:553
+msgid "W: MP3 support is disabled! MP3 files cannot be loaded."
+msgstr ""
+
+#: library.py:556
+msgid "Enabling FLAC support."
+msgstr ""
+
+#: quodlibet.glade.h:1
+msgid "0 new songs found"
+msgstr ""
+
+#: quodlibet.glade.h:2
+msgid "0/0 songs saved."
+msgstr ""
+
+#: quodlibet.glade.h:3
+msgid "<b>Album:</b>"
+msgstr ""
+
+#: quodlibet.glade.h:4
+msgid "<b>Artist:</b>"
+msgstr ""
+
+#: quodlibet.glade.h:5
+msgid "<b>File:</b>"
+msgstr ""
+
+#: quodlibet.glade.h:6
+msgid "<b>Played:</b>"
+msgstr ""
+
+#: quodlibet.glade.h:7
+msgid "<b>Title:</b>"
+msgstr ""
+
+#: quodlibet.glade.h:8
+msgid "<big><b>Scan Directories</b></big>"
+msgstr ""
+
+#: quodlibet.glade.h:9
+msgid "<big><b>Visible Columns</b></big>"
+msgstr ""
+
+#: quodlibet.glade.h:10
+msgid ""
+"<small><i>Quodlibet 'kwäd-l&amp;-\"bet\\</i> [From Latin, \"what you please"
+"\"]\n"
+"\t1. A nice point; a subtilty; a debatable point.\n"
+"\t2. (Mus.) A medley improsed by several performers.\n"
+"\n"
+"<i>Quod Libet</i>\n"
+"\t1. A music library manager and player.\n"
+"\t2. The result of forgetting high school Latin before doing a commit.</"
+"small>"
+msgstr ""
+
+#: quodlibet.glade.h:17
+msgid ""
+"<small>Quod Libet is free software licensed under the GNU GPL version 2.</"
+"small>"
+msgstr ""
+
+#: quodlibet.glade.h:18
+msgid ""
+"<u><span weight=\"bold\" size=\"xx-large\">Quod Libet</span></u>\n"
+"Copyright ©2004 Joe Wreschnig and Michael Urman\n"
+"<piman@sacredchao.net>\n"
+"<span size='small'>Tray icon code by Anders Carlsson and Sun Microsystems, "
+"Inc.\n"
+"Multimedia key code by  Lee Willis and Jan Arne Petersen.</span>"
+msgstr ""
+"<u><span weight=\"bold\" size=\"xx-large\">Quod Libet</span></u>\n"
+"Copyright ©2004 Joe Wreschnig and Michael Urman\n"
+"(piman@sacredchao.net)\n"
+"<span size='small'>Tray icon code by Anders Carlsson and Sun Microsystems, "
+"Inc.\n"
+"Multimedia key code by  Lee Willis and Jan Arne Petersen.</span>"
+
+#: quodlibet.glade.h:23
+msgid "About Quod Libet"
+msgstr ""
+
+#: quodlibet.glade.h:24
+msgid "Add a new tag"
+msgstr ""
+
+#: quodlibet.glade.h:25
+msgid "Add a new tag to the file"
+msgstr ""
+
+#: quodlibet.glade.h:26
+msgid "Add songs to your library"
+msgstr ""
+
+#: quodlibet.glade.h:27
+msgid "Adding Songs"
+msgstr ""
+
+#: quodlibet.glade.h:28
+msgid "Al_bum"
+msgstr ""
+
+#: quodlibet.glade.h:29
+msgid "Close without saving changes"
+msgstr ""
+
+#: quodlibet.glade.h:30
+msgid "Color search terms"
+msgstr ""
+
+#: quodlibet.glade.h:31
+msgid ""
+"Display simple searches in blue, advanced ones in green, and invalid ones in "
+"red. Turn this off if your theme makes the colors hard to read."
+msgstr ""
+
+#: quodlibet.glade.h:32
+msgid "Double-click on a tag value to change it"
+msgstr ""
+
+#: quodlibet.glade.h:33
+msgid "Filter on _artist"
+msgstr ""
+
+#: quodlibet.glade.h:34
+msgid "Filter on al_bum"
+msgstr ""
+
+#: quodlibet.glade.h:35
+msgid "Filter on this _column"
+msgstr ""
+
+#: quodlibet.glade.h:36
+msgid "Jump to current song automatically"
+msgstr ""
+
+#: quodlibet.glade.h:37
+msgid "List other headers you want displayed, separated by spaces."
+msgstr ""
+
+#: quodlibet.glade.h:38
+msgid ""
+"On start up, any files found in these directories will be added to your "
+"library. Separate multiple directories with colons (':')."
+msgstr ""
+
+#: quodlibet.glade.h:39
+msgid "Others: "
+msgstr ""
+
+#: quodlibet.glade.h:40
+msgid "Pause/resume the current song"
+msgstr ""
+
+#: quodlibet.glade.h:41
+msgid "Play next song"
+msgstr ""
+
+#: quodlibet.glade.h:42
+msgid "Play previous song"
+msgstr ""
+
+#: quodlibet.glade.h:43
+msgid "Play songs in a random order"
+msgstr ""
+
+#: quodlibet.glade.h:44
+msgid "Pre_vious song"
+msgstr ""
+
+#: quodlibet.glade.h:45
+msgid "Quod Libet Preferences"
+msgstr ""
+
+#: quodlibet.glade.h:46
+msgid "Quod Libet is scanning for new songs and adding them to your library."
+msgstr ""
+
+#: quodlibet.glade.h:47
+msgid "Remove selected songs from your library"
+msgstr ""
+
+#: quodlibet.glade.h:48
+msgid "Remove the currently selected tag from the file"
+msgstr ""
+
+#: quodlibet.glade.h:49
+msgid "Restart the playlist after all songs are played"
+msgstr ""
+
+#: quodlibet.glade.h:50
+msgid "Saving Songs"
+msgstr ""
+
+#: quodlibet.glade.h:51
+msgid "Search"
+msgstr ""
+
+#: quodlibet.glade.h:52
+msgid "Search your audio library"
+msgstr ""
+
+#: quodlibet.glade.h:53
+msgid "Select _Files"
+msgstr ""
+
+#: quodlibet.glade.h:54
+msgid "Select or unselect files in this group"
+msgstr ""
+
+#: quodlibet.glade.h:55
+msgid "Set column headers"
+msgstr ""
+
+#: quodlibet.glade.h:56
+msgid "Show album cover images"
+msgstr ""
+
+#: quodlibet.glade.h:57
+msgid "Show only songs by the same artist as the selected ones"
+msgstr ""
+
+#: quodlibet.glade.h:58
+msgid "Show only songs in the same album as the select ones"
+msgstr ""
+
+#: quodlibet.glade.h:59
+msgid "Song Properties"
+msgstr ""
+
+#: quodlibet.glade.h:60
+msgid "Tag:"
+msgstr ""
+
+#: quodlibet.glade.h:61
+msgid "The songs you changed are being saved."
+msgstr ""
+
+#: quodlibet.glade.h:62
+msgid "Title (Always visible)"
+msgstr ""
+
+#: quodlibet.glade.h:63
+msgid "Undo changes made to these files"
+msgstr ""
+
+#: quodlibet.glade.h:64
+msgid "Value: "
+msgstr ""
+
+#: quodlibet.glade.h:65
+msgid "View and edit tags in the playing song"
+msgstr ""
+
+#: quodlibet.glade.h:66
+msgid "View and edit tags in the selected songs"
+msgstr ""
+
+#: quodlibet.glade.h:67
+msgid "Visit the artist's website"
+msgstr ""
+
+#: quodlibet.glade.h:68
+msgid ""
+"When enabled, images with 'front' or 'cover' in their names are loaded and "
+"displayed next to the song title."
+msgstr ""
+
+#: quodlibet.glade.h:69
+msgid ""
+"When the current song changes, scroll  to it in the song list. You can do "
+"this manually by pressing Ctrl-J."
+msgstr ""
+
+#: quodlibet.glade.h:70
+msgid "_About"
+msgstr ""
+
+#: quodlibet.glade.h:71
+msgid "_Add Music..."
+msgstr ""
+
+#: quodlibet.glade.h:72
+msgid "_Artist"
+msgstr ""
+
+#: quodlibet.glade.h:73
+msgid "_Disc"
+msgstr ""
+
+#: quodlibet.glade.h:74
+msgid "_Filename"
+msgstr ""
+
+#: quodlibet.glade.h:75
+msgid "_Genre"
+msgstr ""
+
+#: quodlibet.glade.h:76
+msgid "_Help"
+msgstr ""
+
+#: quodlibet.glade.h:77
+msgid "_Jump to playing song"
+msgstr ""
+
+#: quodlibet.glade.h:78
+msgid "_Music"
+msgstr ""
+
+#: quodlibet.glade.h:79
+msgid "_Next song"
+msgstr ""
+
+#: quodlibet.glade.h:80
+msgid "_Performer"
+msgstr ""
+
+#: quodlibet.glade.h:81
+msgid "_Play song"
+msgstr ""
+
+#: quodlibet.glade.h:82
+msgid "_Repeat"
+msgstr ""
+
+#: quodlibet.glade.h:83
+msgid "_Select..."
+msgstr ""
+
+#: quodlibet.glade.h:84
+msgid "_Shuffle"
+msgstr ""
+
+#: quodlibet.glade.h:85
+msgid "_Song"
+msgstr ""
+
+#: quodlibet.glade.h:86
+msgid "_Track"
+msgstr ""
+
+#: quodlibet.glade.h:87
+msgid "_Version (Remix)"
+msgstr ""
+
+#: quodlibet.glade.h:88
+msgid "_Year"
+msgstr ""
+
+#: quodlibet.py:38
+msgid "Initialized status icon."
+msgstr ""
+
+#: quodlibet.py:40
+msgid "W: Failed to initialize status icon."
+msgstr ""
+
+#: quodlibet.py:49
+msgid "Initialized multimedia key support."
+msgstr ""
+
+#: quodlibet.py:51
+msgid "W: Failed to initialize multimedia key support."
+msgstr ""
+
+#: quodlibet.py:109
+#, python-format
+msgid "Could not play %s."
+msgstr ""
+
+#: quodlibet.py:129
+msgid "Not playing"
+msgstr ""
+
+#: quodlibet.py:245
+#, python-format
+msgid "Opening web browser: %s"
+msgstr ""
+
+#: quodlibet.py:248
+msgid "Unable to start a web browser"
+msgstr ""
+
+#: quodlibet.py:249
+msgid ""
+"A web browser could not be found. Please set your $BROWSER variable, or make "
+"sure /usr/bin/sensible-browser exists."
+msgstr ""
+
+#: quodlibet.py:349
+msgid "Select Directories"
+msgstr ""
+
+#: quodlibet.py:367
+msgid "Add Music"
+msgstr ""
+
+#: quodlibet.py:506
+#, python-format
+msgid "%d/%d songs saved"
+msgstr ""
+
+#: quodlibet.py:571
+#, python-format
+msgid ""
+"Invalid tag <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing this tag"
+msgstr ""
+
+#: quodlibet.py:619
+#, python-format
+msgid "%s - Properties"
+msgstr ""
+
+#: quodlibet.py:622
+#, python-format
+msgid "%s and %d more - Properties"
+msgstr ""
+
+#: quodlibet.py:635
+#, python-format
+msgid "%d songs heard"
+msgstr ""
+
+#: quodlibet.py:689
+msgid "Write"
+msgstr ""
+
+#: quodlibet.py:694
+msgid "Tag"
+msgstr ""
+
+#: quodlibet.py:698
+msgid "Value"
+msgstr ""
+
+#: quodlibet.py:710
+msgid "File"
+msgstr ""
+
+#: quodlibet.py:712
+msgid "Path"
+msgstr ""
+
+#: quodlibet.py:807
+#, python-format
+msgid "%d songs found."
+msgstr ""
+
+#: quodlibet.py:808
+#, python-format
+msgid "%d song found."
+msgstr ""
+
+#: quodlibet.py:906
+msgid "Loaded song library."
+msgstr ""
+
+#: quodlibet.py:922
+msgid "Saving song library."
+msgstr ""
+
+#: quodlibet.py:929
+msgid ""
+"Quod Libet - a music library and player\n"
+"Options:\n"
+"  --help, -h        Display this help message\n"
+"  --version         Display version and copyright information\n"
+"  --refresh-library Rescan your song cache; remove dead files; add new "
+"ones;\n"
+"                    and then exit."
+msgstr ""
+
+#: quodlibet.py:940
+#, python-format
+msgid ""
+"Quod Libet %s\n"
+"Copyright 2004 Joe Wreschnig <piman@sacredchao.net>, Michael Urman\n"
+"\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+msgstr ""
+"Quod Libet %s\n"
+"Copyright 2004 Joe Wreschnig (piman@sacredchao.net), Michael Urman\n"
+"\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+
+#: quodlibet.py:955
+msgid "Loading, scanning, and saving your library."
+msgstr ""
+
+#: quodlibet.py:977
+msgid "No song is currently playing."
+msgstr ""
+
+#: quodlibet.py:981
+msgid "No audio device found"
+msgstr ""
+
+#: quodlibet.py:982
+msgid ""
+"Quod Libet was unable to open your audio device. Often this means another "
+"program is using it, or your audio drivers are not configured.\n"
+"\n"
+"Quod Libet will now exit."
+msgstr ""
+
+#: quodlibet.py:1016
+#, python-format
+msgid "E: Unknown command line option: %s"
+msgstr ""
+
+#: quodlibet.py:1017
+#, python-format
+msgid "E: Try %s --help"
+msgstr ""
+
+#: quodlibet.py:1030
+msgid "E: You need GTK+ and PyGTK 2.4 or greater to run Quod Libet."
+msgstr ""
+
+#: quodlibet.py:1031
+#, python-format
+msgid "E: You have GTK+ %s and PyGTK %s."
+msgstr ""
+
+#: quodlibet.py:1034
+msgid "E: Please upgrade GTK+/PyGTK."
+msgstr ""
+
+#. Try to initialize the playlist and audio output.
+#: quodlibet.py:1058
+msgid "Opening audio device."
+msgstr ""

@@ -464,7 +464,7 @@
 		  <property name="width_request">100</property>
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">&lt;span size='xx-large'&gt;Not playing&lt;/span&gt;</property>
+		  <property name="label" translatable="yes"></property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">True</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -803,7 +803,7 @@
 		    <widget class="GtkEntry" id="scan_opt">
 		      <property name="width_request">150</property>
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">On startup, any files found in these directories will be added to your library. Separate multiple directories with colons (':').</property>
+		      <property name="tooltip" translatable="yes">On start up, any files found in these directories will be added to your library. Separate multiple directories with colons (':').</property>
 		      <property name="can_focus">True</property>
 		      <property name="editable">True</property>
 		      <property name="visibility">True</property>

@@ -9,6 +9,8 @@
    the MmKeys object from Muine by Lee Willis and Jan Arne Petersen.
  - UI tweaks to the main window.
  - Button to link to a song's website, or a Google search.
+ - Infrastructure is in place for i18n/l10n, but I'm totally new to
+   this, so I could've done something horribly wrong.
 
 0.3
  - Handle mono MP3s correctly.

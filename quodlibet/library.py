@@ -541,19 +541,19 @@ supported = {}
 
 def init(cache_fn = None):
     if util.check_ogg():
-        print "Enabling Ogg Vorbis support."
+        print _("Enabling Ogg Vorbis support.")
         supported[".ogg"] = OggFile
     else:
-        print "W: Ogg Vorbis support is disabled! Ogg files cannot be loaded."
+        print _("W: Ogg Vorbis support is disabled! Ogg files cannot be loaded.")
 
     if util.check_mp3():
-        print "Enabling MP3 support."
+        print _("Enabling MP3 support.")
         supported[".mp3"] = MP3File
     else:
-        print "W: MP3 support is disabled! MP3 files cannot be loaded."
+        print _("W: MP3 support is disabled! MP3 files cannot be loaded.")
 
     if util.check_flac():
-        print "Enabling FLAC support."
+        print _("Enabling FLAC support.")
         supported[".flac"] = FLACFile
 
     global library
