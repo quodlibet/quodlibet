@@ -1,5 +1,9 @@
 Recent upgrade notes:
 ---------------------
+0.8.1 - Our story takes a sudden dive..
+ - Fix a crash when encoding information is not available.
+ - Fix compatibility with Python 2.4.
+
 0.8 - I make jokes about whomever I please!
  - New/reloaded libraries take 20% less disk space.
  - Double-clicking an album cover displays it in a larger window.

@@ -14,7 +14,7 @@ _ = gettext.gettext
 # Only use this for console messages; PyGTK understands both Unicode
 # and UTF-8 properly.
 def to(string, frm = "utf-8"):
-    lang, enc = locale.getdefaultlocale()
+    enc = locale.getpreferredencoding()
     if isinstance(string, unicode): return string.encode(enc, "replace")
     else:
         return string.decode(frm).encode(enc, "replace")

@@ -10,7 +10,7 @@
 #
 # $Id$
 
-VERSION = "0.8"
+VERSION = "0.8.1"
 
 import os, sys
 
@@ -2586,7 +2586,6 @@ def main():
     t = Thread(target = player.playlist.play, args = (widgets.main,))
     util.mkdir(const.DIR)
     signal.signal(signal.SIGINT, gtk.main_quit)
-    signal.signal(signal.SIGKILL, gtk.main_quit)
     signal.signal(signal.SIGTERM, gtk.main_quit)
     signal.signal(signal.SIGHUP, gtk.main_quit)
     t.start()
