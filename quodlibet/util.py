@@ -68,12 +68,13 @@ def iscommand(s):
         else: return False
 
 # Split a string on ;s and ,s.
-def split_value(s):
-    values = []
-    parts = s.split("\n")
-    for p in parts:
-        for p2 in p.split(";"):
-            values.extend(map(string.strip, p2.split(",")))
+def split_value(s, splitters = ",;&"):
+    values = s.split("\n")
+    for spl in splitters:
+        new_values = []
+        for v in values:
+            new_values.extend(map(string.strip, v.split(spl)))
+        values = new_values
     return values
 
 def split_title(s):
