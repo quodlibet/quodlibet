@@ -130,152 +130,305 @@ class AboutWindow(object):
     def show(self):
         self.window.present()
 
-class PreferencesWindow(MultiInstanceWidget):
+class PreferencesWindow(object):
+    def Frame(label, border = 0):
+        widget = gtk.Frame()
+        widget.add(gtk.Alignment(xalign = 0.0, yalign = 0.0,
+                                 xscale = 1.0, yscale = 1.0))
+        widget.child.set_padding(3, 0, 12, 0)
+        widget.set_shadow_type(gtk.SHADOW_NONE)
+        widget.set_label_widget(gtk.Label())
+        widget.set_border_width(border)
+        widget.get_label_widget().set_markup("<b>%s</b>" % util.escape(label))
+        widget.get_label_widget().set_use_underline(True)
+        return widget
+
+    # FIXME: This is code duplication from SongProperties
+    # We need to refactor all these GTK wrappers soon (before 0.10).
+    Frame = staticmethod(Frame)
+
+    class Browser(object):
+        def __init__(self, tips):
+            self.widget = PreferencesWindow.Frame(_("Visible Columns"),
+                                                  border = 12)
+
+            vbox = gtk.VBox(spacing = 12)
+            buttons = {}
+            table = gtk.Table(3, 3)
+            table.set_homogeneous(True)
+            checks = config.get("settings", "headers").split()
+            for j, l in enumerate(
+                [[("~#disc", _("_Disc")),
+                  ("album", _("Al_bum")),
+                  ("genre", _("_Genre"))],
+                 [("~#track", _("_Track")),
+                  ("artist", _("A_rtist")),
+                  ("~basename",_("_Filename"))],
+                 [("title",_("Title")),
+                  ("date", _("Dat_e")),
+                  ("~length",_("_Length"))]]):
+                for i, (k, t) in enumerate(l):
+                    buttons[k] = gtk.CheckButton(t)
+                    if k in checks:
+                        buttons[k].set_active(True)
+                        checks.remove(k)
+                    
+                    table.attach(buttons[k], i, i + 1, j, j + 1)
+
+            vbox.pack_start(table, expand = False)
+
+            vbox2 = gtk.VBox()
+            tiv = gtk.CheckButton(_("Title includes _version"))
+            if "~title~version" in checks:
+                buttons["title"].set_active(True)
+                tiv.set_active(True)
+                checks.remove("~title~version")
+            aip = gtk.CheckButton(_("Album includes _part"))
+            if "~album~part" in checks:
+                buttons["album"].set_active(True)
+                aip.set_active(True)
+                checks.remove("~album~part")
+            vbox2.pack_start(tiv)
+            vbox2.pack_start(aip)
+            vbox.pack_start(vbox2, expand = False)
+
+            hbox = gtk.HBox(spacing = 3)
+            l = gtk.Label(_("_Others:"))
+            hbox.pack_start(l, expand = False)
+            others = gtk.Entry()
+            others.set_text(" ".join(checks))
+            tips.set_tip(others, _("List other headers you want displayed, "
+                                   "separated by spaces"))
+            l.set_mnemonic_widget(others)
+            l.set_use_underline(True)
+            hbox.pack_start(others)
+            apply = gtk.Button(stock = gtk.STOCK_APPLY)
+            apply.connect('clicked', self.apply, buttons, tiv, aip, others)
+            hbox.pack_start(apply, expand = False)
+            vbox.pack_start(hbox, expand = False)
+
+            self.widget.child.add(vbox)
+
+        def apply(self, button, buttons, tiv, aip, others):
+            headers = []
+            for key in ["~#disc", "~#track", "title", "album", "artist",
+                        "date", "genre", "~basename", "~length"]:
+                if buttons[key].get_active(): headers.append(key)
+            if tiv.get_active():
+                try: headers[headers.index("title")] = "~title~version"
+                except ValueError: pass
+            if aip.get_active():
+                try: headers[headers.index("album")] = "~album~part"
+                except ValueError: pass
+
+            headers.extend(others.get_text().split())
+            config.set("settings", "headers", " ".join(headers))
+            widgets.main.set_column_headers(headers)
+
+    class Player(object):
+        def __init__(self, tips):
+            self.widget = gtk.VBox(spacing = 12)
+            self.widget.set_border_width(12)
+
+            vbox = gtk.VBox()
+            c = gtk.CheckButton(_("Show _album cover images"))
+            c.set_active(config.state("cover"))
+            c.connect('toggled', self.toggle_cover)
+            vbox.pack_start(c)
+            c = gtk.CheckButton(_("Color _search terms"))
+            tips.set_tip(
+                c, _("Display simple searches in blue, "
+                     "advanced ones in green, and invalid ones in red"))
+                         
+            c.set_active(config.state("color"))
+            c.connect('toggled', self.toggle, "color")
+            vbox.pack_start(c)
+            c = gtk.CheckButton(_("_Jump to current song automatically"))
+            tips.set_tip(c, _("When the playing song changes, "
+                              "scroll to it in the song list"))
+            c.set_active(config.state("jump"))
+            c.connect('toggled', self.toggle, "jump")
+            vbox.pack_start(c)
+            self.widget.pack_start(vbox, expand = False)
+
+            f = PreferencesWindow.Frame(_("_Volume Normalization"))
+            cb = gtk.combo_box_new_text()
+            cb.append_text(_("No volume adjustment"))
+            cb.append_text(_('Per-song ("Radio") volume adjustment'))
+            cb.append_text(_('Per-album ("Audiophile") volume adjustment'))
+            f.get_label_widget().set_mnemonic_widget(cb)
+            f.child.add(cb)
+            cb.set_active(config.getint("settings", "gain"))
+            cb.connect('changed', self.changed, 'gain')
+            self.widget.pack_start(f, expand = False)
+
+            f = PreferencesWindow.Frame(_("_On-Screen Display"))
+            cb = gtk.combo_box_new_text()
+            cb.append_text(_("No on-screen display"))
+            cb.append_text(_('Display OSD on the top'))
+            cb.append_text(_('Display OSD on the bottom'))
+            cb.set_active(config.getint('settings', 'osd'))
+            cb.connect('changed', self.changed, 'osd')
+            f.get_label_widget().set_mnemonic_widget(cb)
+            vbox = gtk.VBox(spacing = 6)
+            f.child.add(vbox)
+            f.child.child.pack_start(cb, expand = False)
+            hb = gtk.HBox(spacing = 6)
+            c1, c2 = config.get("settings", "osdcolors").split()
+            color1 = gtk.ColorButton(gtk.gdk.color_parse(c1))
+            color2 = gtk.ColorButton(gtk.gdk.color_parse(c2))
+            tips.set_tip(color1, _("Select a color for the OSD"))
+            tips.set_tip(color2, _("Select a second color for the OSD"))
+            color1.connect('color-set', self.color_set, color1, color2)
+            color2.connect('color-set', self.color_set, color1, color2)
+            font = gtk.FontButton(config.get("settings", "osdfont"))
+            font.connect('font-set', self.font_set)
+            hb.pack_start(color1, expand = False)
+            hb.pack_start(color2, expand = False)
+            hb.pack_start(font)
+            vbox.pack_start(hb, expand = False)
+            self.widget.pack_start(f, expand = False)
+
+        def font_set(self, font):
+            config.set("settings", "osdfont", font.get_font_name())
+
+        def color_set(self, color, c1, c2):
+            color = c1.get_color()
+            ct1 = (color.red // 256, color.green // 256, color.blue // 256)
+            color = c2.get_color()
+            ct2 = (color.red // 256, color.green // 256, color.blue // 256)
+            config.set("settings", "osdcolors",
+                       "#%02x%02x%02x #%02x%02x%02x" % (ct1+ct2))
+
+        def toggle(self, c, name):
+            config.set("settings", name, str(bool(c.get_active())))
+
+        def changed(self, cb, name):
+            config.set("settings", name, str(cb.get_active()))
+
+        def toggle_cover(self, c):
+            config.set("settings", "cover", str(bool(c.get_active())))
+            if config.state("cover"): widgets.main.enable_cover()
+            else: widgets.main.disable_cover()        
+
+    class Library(object):
+        def __init__(self, tips):
+            self.widget = gtk.VBox(spacing = 12)
+            self.widget.set_border_width(12)
+            f = PreferencesWindow.Frame(_("Scan _Directories"))
+            hb = gtk.HBox(spacing = 6)
+            b = Button(_("Select..."), gtk.STOCK_OPEN)
+            e = gtk.Entry()
+            e.set_text(util.fsdecode(config.get("settings", "scan")))
+            f.get_label_widget().set_mnemonic_widget(e)
+            hb.pack_start(e)
+            tips.set_tip(e, _("On start up, any files found in these "
+                              "directories will be added to your library"))
+            hb.pack_start(b, expand = False)
+            b.connect('clicked', self.select, e, const.HOME)
+            e.connect('changed', self.changed, 'scan')
+            f.child.add(hb)
+            self.widget.pack_start(f, expand = False)
+
+            f = PreferencesWindow.Frame(_("_Masked Directories"))
+            vb = gtk.VBox(spacing = 6)
+            l = gtk.Label(_(
+                "If you have songs in directories that will not always be "
+                "mounted (for example, a removable device or an NFS shared "
+                "drive), list those mount points here. Files in these "
+                "directories will not be removed from the library if the "
+                "device is not mounted."))
+            l.set_line_wrap(True)
+            l.set_justify(gtk.JUSTIFY_FILL)
+            vb.pack_start(l, expand = False)
+            hb = gtk.HBox(spacing = 6)
+            b = Button(_("Select..."), gtk.STOCK_OPEN)
+            e = gtk.Entry()
+            e.set_text(util.fsdecode(config.get("settings", "masked")))
+            f.get_label_widget().set_mnemonic_widget(e)
+            hb.pack_start(e)
+            hb.pack_start(b, expand = False)
+            vb.pack_start(hb, expand = False)
+            if os.path.exists("/media"): dir = "/media"
+            elif os.path.exists("/mnt"): dir = "/mnt"
+            else: dir = "/"
+            b.connect('clicked', self.select, e, dir)
+            e.connect('changed', self.changed, 'mask')
+            f.child.add(vb)
+            self.widget.pack_start(f, expand = False)
+
+            f = PreferencesWindow.Frame(_("Tag Editing"))
+            vbox = gtk.VBox(spacing = 6)
+            hb = gtk.HBox(spacing = 6)
+            e = gtk.Entry()
+            # at least in English, this determines the size of the window
+            #e.set_size_request(270, -1)
+            e.set_text(config.get("settings", "splitters"))
+            e.connect('changed', self.changed, 'splitters')
+            tips.set_tip(
+                e, _('These characters will be used as separators '
+                     'when "Split values" is selected in the tag editor'))
+            l = gtk.Label(_("Split _on"))
+            l.set_use_underline(True)
+            l.set_mnemonic_widget(e)
+            hb.pack_start(l, expand = False)
+            hb.pack_start(e)
+            cb = gtk.CheckButton(_("Show _programmatic comments"))
+            cb.set_active(config.state("allcomments"))
+            cb.connect('toggled', self.toggle, 'allcomments')
+            vbox.pack_start(hb, expand = False)
+            vbox.pack_start(cb, expand = False)
+            f.child.add(vbox)
+            self.widget.pack_start(f)
+
+        def toggle(self, c, name):
+            config.set("settings", name, str(bool(c.get_active())))
+
+        def select(self, button, entry, initial):
+            chooser = FileChooser(widgets.preferences.window,
+                                  _("Select Directories"), initial)
+            resp, fns = chooser.run()
+            if resp == gtk.RESPONSE_OK:
+                entry.set_text(":".join(map(util.fsdecode, fns)))
+
+        def changed(self, entry, name):
+            config.set('settings', name,
+                       util.fsencode(entry.get_text().decode('utf-8')))
+
     def __init__(self, parent):
-        MultiInstanceWidget.__init__(self, widget = "prefs_window")
-        self.window = self.widgets["prefs_window"]
+        self.window = gtk.Window()
+        self.window.set_title(_("Quod Libet Preferences"))
+        self.window.set_border_width(12)
+        self.window.set_resizable(False)
         self.window.set_transient_for(parent)
-        # Fill in the general checkboxes.
-        for w in ["jump", "cover", "color", "allcomments"]:
-             self.widgets["prefs_%s_t" % w].set_active(config.state(w))
+        self.window.add(gtk.VBox(spacing = 12))
+        self.tips = gtk.Tooltips()
+        n = gtk.Notebook()
+        n.append_page(self.Browser(self.tips).widget, gtk.Label(_("Browser")))
+        n.append_page(self.Player(self.tips).widget, gtk.Label(_("Player")))
+        n.append_page(self.Library(self.tips).widget, gtk.Label(_("Library")))
 
-        # Fill in the scanned directories.
-        self.widgets["scan_opt"].set_text(config.get("settings", "scan"))
-        self.widgets["mask_opt"].set_text(config.get("settings", "masked"))
+        self.window.child.pack_start(n)
 
-        self.widgets["split_entry"].set_text(
-            config.get("settings", "splitters"))
-        self.widgets["gain_opt"].set_active(config.getint("settings", "gain"))
+        bbox = gtk.HButtonBox()
+        bbox.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button.connect('clicked', lambda b, w: w.destroy(), self.window)
+        bbox.pack_start(button)
+        self.window.child.pack_start(bbox, expand = False)
+        self.window.connect('destroy', self.destroy)
+        self.window.child.show_all()
 
-        try: import gosd
-        except ImportError:
-            self.widgets["osd_combo"].set_sensitive(False)
-            self.widgets["osd_color"].set_sensitive(False)
-        self.widgets["osd_combo"].set_active(config.getint("settings", "osd"))
-        color1, color2 = config.get("settings", "osdcolors").split()
-        self.widgets["osd_color"].set_color(gtk.gdk.color_parse(color1))
-        self.widgets["osd_color2"].set_color(gtk.gdk.color_parse(color2))
-
-        self.widgets["osd_font"].set_font_name(
-            config.get("settings", "osdfont"))
-
-    def set_color(self, button):
-        color = self.widgets["osd_color"].get_color()
-        ct1 = (color.red // 256, color.green // 256, color.blue // 256)
-        color = self.widgets["osd_color2"].get_color()
-        ct2 = (color.red // 256, color.green // 256, color.blue // 256)
-        config.set("settings", "osdcolors",
-                   "#%02x%02x%02x #%02x%02x%02x" % (ct1+ct2))
-
-    def set_font(self, button):
-        config.set("settings", "osdfont", button.get_font_name())
-
-    def set_headers(self, *args):
-        new_h = []
-        if self.widgets["disc_t"].get_active(): new_h.append("~#disc")
-        if self.widgets["track_t"].get_active(): new_h.append("~#track")
-        for h in ["title", "version", "album", "part", "artist", "performer",
-                  "date", "genre"]:
-            if self.widgets[h + "_t"].get_active(): new_h.append(h)
-        if self.widgets["filename_t"].get_active(): new_h.append("~basename")
-        if self.widgets["length_t"].get_active(): new_h.append("~length")
-
-        if self.widgets["titleversion_t"].get_active():
-            try: new_h[new_h.index("title")] = "~title~version"
-            except ValueError: pass
-
-        if self.widgets["albumpart_t"].get_active():
-            try: new_h[new_h.index("album")] = "~album~part"
-            except ValueError: pass
-
-        new_h.extend(self.widgets["extra_headers"].get_text().split())
-        config.set("settings", "headers", " ".join(new_h))
-        widgets.main.set_column_headers(new_h)
-
-    def toggle_cover(self, toggle):
-        config.set("settings", "cover", str(bool(toggle.get_active())))
-        if config.state("cover"): widgets.main.enable_cover()
-        else: widgets.main.disable_cover()
-
-    def __getattr__(self, name):
-        # A checkbox was changed.
-        if name.startswith("toggle_"):
-            name = name[7:]
-            def toggle(toggle):
-                config.set("settings", name, str(bool(toggle.get_active())))
-            return toggle
-
-        # A text entry was changed.
-        elif name.startswith("text_change_"):
-            name = name[12:]
-            def set_text(entry):
-                config.set("settings", name, entry.get_text())
-            return set_text
-
-        # A combobox was changed.
-        elif name.startswith("combo_"):
-            name = name[6:]
-            def set_combo(combo):
-                config.set("settings", name, str(combo.get_active()))
-            return set_combo
-
-        else: return object.__getattr__(self, name)
-
-    def select_scan(self, *args):
-        chooser = FileChooser(self.window,
-                              _("Select Directories"), const.HOME)
-        resp, fns = chooser.run()
-        if resp == gtk.RESPONSE_OK:
-            self.widgets["scan_opt"].set_text(":".join(fns))
-
-    def select_masked(self, *args):
-        if os.path.exists("/media"): path = "/media"
-        elif os.path.exists("/mnt"): path = "/mnt"
-        else: path = "/"
-        chooser = FileChooser(self.window, _("Select Mount Points"), path)
-        resp, fns = chooser.run()
-        if resp == gtk.RESPONSE_OK:
-            self.widgets["mask_opt"].set_text(":".join(fns))
-
-    def prefs_closed(self, *args):
-        self.window.hide()
+    def destroy(self, window):
+        del(self.window)
+        try: del(widgets.preferences)
+        except AttributeError: pass
+        self.tips.destroy()
+        del(self.tips)
         save_config()
-        return True
 
-    def show(self):
-        headers = config.get("settings", "headers").split()
-
-        # Fill in the header checkboxes.
-        self.widgets["disc_t"].set_active("~#disc" in headers)
-        self.widgets["track_t"].set_active("~#track" in headers)
-        for h in ["title", "album", "part", "artist", "genre",
-                  "date", "version", "performer"]:
-            self.widgets[h + "_t"].set_active(h in headers)
-        self.widgets["filename_t"].set_active("~basename" in headers)
-        self.widgets["length_t"].set_active("~length" in headers)
-
-        if "~title~version" in headers:
-            self.widgets["title_t"].set_active(True)
-            self.widgets["titleversion_t"].set_active(True)
-            headers.remove("~title~version")
-        else:
-            self.widgets["titleversion_t"].set_active(False)
-
-        if "~album~part" in headers:
-            self.widgets["album_t"].set_active(True)
-            self.widgets["albumpart_t"].set_active(True)
-            headers.remove("~album~part")
-        else:
-            self.widgets["albumpart_t"].set_active(False)
-
-        # Remove the standard headers, and put the rest in the list.
-        for t in ["~#disc", "~#track", "album", "artist", "genre", "date",
-                  "version", "performer", "title", "~basename", "part",
-                  "~length"]:
-            try: headers.remove(t)
-            except ValueError: pass
-        self.widgets["extra_headers"].set_text(" ".join(headers))
-
+    def present(self):
+        self.window.show()
         self.window.present()
 
 class DeleteDialog(object):
@@ -455,7 +608,7 @@ class BigCenteredImage(object):
         # The eventbox
         self.window.child.child.connect('button-press-event', self.close)
         self.window.child.child.connect('key-press-event', self.close)
-        self.window.show_all()
+        self.window..show_all()
 
     def close(self, *args):
         self.window.destroy()
@@ -1281,7 +1434,9 @@ class MainWindow(MultiInstanceWidget):
 
     # Set up the preferences window.
     def open_prefs(self, activator):
-        widgets.preferences.show()
+        if not hasattr(widgets, 'preferences'):
+            widgets.preferences = PreferencesWindow(self.window)
+        widgets.preferences.present()
 
     def select_song(self, tree, indices, col):
         iter = widgets.songs.get_iter(indices)
@@ -3289,8 +3444,6 @@ def setup_ui():
     widgets.main = MainWindow()
     player.playlist.info = widgets.main
     gtk.threads_init()
-
-    widgets.preferences = PreferencesWindow(widgets.main.window)
 
 def save_config():
     util.mkdir(const.DIR)

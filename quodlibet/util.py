@@ -100,6 +100,10 @@ def fsdecode(s):
     if isinstance(s, unicode): return s
     else: return decode(s, fscoding())
 
+def fsencode(s):
+    if isinstance(s, str): return s
+    else: return s.encode(fscoding(), 'replace')
+
 def decode(s, charset = "utf-8"):
     try: return s.decode(charset)
     except UnicodeError:
