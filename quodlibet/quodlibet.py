@@ -1991,6 +1991,13 @@ class SongProperties(object):
 
             self.widget.pack_start(self.buttonbox, expand = False)
 
+            for widget, tip in [
+                (self.view, _("Double-click a tag value to change it, "
+                              "right-click for other options")),
+                (self.add, _("Add a new tag to the file")),
+                (self.remove, _("Remove a tag from the file"))]:
+                self.prop.tips.set_tip(widget, tip)
+
         def popup_menu(self, view):
             path, col = view.get_cursor()
             row = view.get_model()[path]
@@ -2356,6 +2363,12 @@ class SongProperties(object):
             bbox.pack_start(self.save)
             self.widget.pack_start(bbox, expand = False)
 
+            for widget, tip in [
+                (self.titlecase,
+                 _("If appropriate to the language, the first letter of "
+                   "each word will be capitalized"))]:
+                self.prop.tips.set_tip(widget, tip)
+
         def update(self, songs):
             from library import AudioFileGroup
             self.songs = songs
@@ -2538,6 +2551,16 @@ class SongProperties(object):
             bbox.set_layout(gtk.BUTTONBOX_END)
             bbox.pack_start(self.save)
             self.widget.pack_start(bbox, expand = False)
+
+            for widget, tip in [
+                (self.windows,
+                 _("Characters not allowed in Windows filenames "
+                   "(\:?;\"<>|) will be replaced by underscores")),
+                (self.ascii,
+                 _("Characters outside of the ASCII set (A-Z, a-z, 0-9, "
+                   "and punctuation) will be replaced by underscores"))]:
+                self.prop.tips.set_tip(widget, tip)
+
 
         def changed(self, *args):
             self.save.set_sensitive(False)
@@ -2761,6 +2784,7 @@ class SongProperties(object):
         self.window = gtk.Window()
         self.window.set_default_size(300, 400)
         self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        self.tips = gtk.Tooltips()
         self.pages = []
         self.notebook = gtk.Notebook()
         self.add_page(self.Information(self))
@@ -2817,7 +2841,7 @@ class SongProperties(object):
 
     def close(self, *args):
         self.fview.set_model(None)
-        self.fview.destroy()
+        self.tips.destroy()
         self.fbasemodel.clear()
         self.fmodel.clear_cache()
         for page in self.pages: page.destroy()
