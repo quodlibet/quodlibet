@@ -876,12 +876,11 @@ class PanedBrowser(Browser, gtk.HBox):
             self.__sig = self.child.get_selection().connect(
                 'changed', self.__selection_changed)
             self.child.connect_object(
-                'button-press-event', PanedBrowser.Pane.__play_selection, self)
+                'row-activated', PanedBrowser.Pane.__play_selection, self)
 
-        def __play_selection(self, event):
-            if event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:
-                player.playlist.next()
-                player.playlist.reset()
+        def __play_selection(self, indices, col):
+            player.playlist.next()
+            player.playlist.reset()
 
         def __selection_changed(self, selection, check=True, jump=False):
             if check: # verify we've actually changed...
