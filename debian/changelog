@@ -1,3 +1,9 @@
+quodlibet (0.7-2) unstable; urgency=low
+
+  * Include -fPIC when building shared libraries. (Closes: #289927)
+
+ -- Joe Wreschnig <piman@debian.org>  Tue, 11 Jan 2005 17:06:46 -0600
+
 quodlibet (0.7-1) unstable; urgency=low
 
   * Upload to the Debian archive. (Closes: #285707)
