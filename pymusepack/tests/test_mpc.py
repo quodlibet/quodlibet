@@ -3,7 +3,50 @@ from tests import registerCase
 from unittest import TestCase
 import musepack
 
-SAMPLE = os.path.join(os.path.dirname(__file__), "click.mpc")
+DIR = os.path.dirname(__file__)
+SAMPLE = os.path.join(DIR, "click.mpc")
+OLD = os.path.join(DIR, "oldtag.apev2")
+NEW = os.path.join(DIR, "newtag.apev2")
+
+from sets import Set as set
+
+class APEReader(TestCase):
+    def setUp(self):
+        self.tag = musepack.APETag(OLD)
+
+    def test_invalid(self):
+        self.failUnlessRaises(OSError, musepack.APETag, "dne")
+
+    def test_cases(self):
+        self.failUnlessEqual(self.tag["artist"], self.tag["ARTIST"])
+        self.failUnless("artist" in self.tag)
+        self.failUnless("artisT" in self.tag)
+
+    def test_dictlike(self):
+        self.failUnlessEqual(set(self.tag.keys()),
+                             set(["artist", "title", "album", "track"]))
+        self.failUnless("AnArtist" in self.tag.values())
+
+        self.failUnlessEqual(
+            self.tag.items(), zip(self.tag.keys(), self.tag.values()))
+
+    def test_del(self):
+        s = self.tag["artist"]
+        del(self.tag["artist"])
+        self.failIf("artist" in self.tag)
+        self.failUnlessRaises(KeyError, self.tag.__getitem__, "artist")
+        self.tag["Artist"] = s
+        self.failUnlessEqual(self.tag["artist"], "AnArtist")
+
+    def test_values(self):
+        self.failUnlessEqual(self.tag["artist"], self.tag["artist"])
+        self.failUnless(self.tag["artist"] < self.tag["title"])
+        self.failUnlessEqual(self.tag["artist"], "AnArtist")
+        self.failUnlessEqual(self.tag["title"], "Some Music")
+        self.failUnlessEqual(self.tag["album"], "A test case")
+        self.failUnlessEqual("07", self.tag["track"])
+
+        self.failIfEqual(self.tag["album"], "A test Case")
 
 class MPCTest(TestCase):
     def setUp(self):
@@ -61,4 +104,5 @@ class MPCTest(TestCase):
     def tearDown(self):
         del(self.mpc)
 
+registerCase(APEReader)
 registerCase(MPCTest)

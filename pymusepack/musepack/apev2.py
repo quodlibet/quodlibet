@@ -12,7 +12,7 @@
 # http://www.personal.uni-jena.de/~pfk/mpp/sv8/apetag.html
 # (Available at http://web.archive.org/web/20040205023703/http://www.personal.uni-jena.de/~pfk/mpp/sv8/apetag.html)
 
-import struct
+import os, struct
 from cStringIO import StringIO
 
 # This module works with the new left-shift.
@@ -32,6 +32,7 @@ def _dummy(str): pass
 debug = _dummy
 
 class error(IOError): pass
+class FileNotFoundError(error, OSError): pass
 class InvalidFormatError(error): pass
 
 class APETag(object):
@@ -40,7 +41,7 @@ class APETag(object):
     and the values a support APE tag value."""
     def __init__(self, filename):
         if not os.path.exists(filename):
-            raise error("%s does not exist" % filename)
+            raise FileNotFoundError("%s does not exist" % filename)
         elif os.path.getsize(filename) < 32:
             raise InvalidTagError("%s does not contain an APE tag" % filename)
         self.filename = filename
@@ -119,8 +120,9 @@ class APETag(object):
     def values(self): return self.__dict.values()
     def items(self): return self.__dict.items()
 
-    def __getitem__(self, k): return self.__dict[k]
-    def __delitem__(self, k): del(self.__dict[k])
+    def __contains__(self, k): return self.__dict.__contains__(APEKey(k))
+    def __getitem__(self, k): return self.__dict[APEKey(k)]
+    def __delitem__(self, k): del(self.__dict[APEKey(k)])
     def __setitem__(self, k, v):
         """This function tries (and usually succeeds) to guess at what
         kind of value you want to store. If you pass in a valid UTF-8
@@ -229,6 +231,9 @@ class APETextValue(_APEValue):
 
     def __getitem__(self, i):
         return unicode(self).split("\0")[i]
+
+    def __cmp__(self, other):
+        return cmp(unicode(self), other)
 
     def __setitem__(self, i, v):
         l = list(self)
