@@ -26,16 +26,6 @@ if sys.version_info < (2, 4):
 class Unknown(unicode): pass
 UNKNOWN = Unknown(_("Unknown"))
 
-# A string that carries around its decoding.
-class DecString(str):
-    # Depickling doesn't pass in the third argument.
-    def __new__(cls, val, enc = None):
-        return str.__new__(cls, val)
-
-    def __init__(self, val, enc):
-        self.encoding = enc
-        self.decoded = val.decode(enc, "replace")
-
 def MusicFile(filename):
     for ext in supported.keys():
         if filename.lower().endswith(ext):
@@ -74,12 +64,8 @@ class AudioFile(dict):
             if "~" in key:
                 parts = [self(p) for p in key.split("~")]
                 return " - ".join(filter(None, parts))
-            elif key == "basename":
-                return DecString(os.path.basename(self["~filename"]),
-                                 self["~filename"].encoding)
-            elif key == "dirname":
-                return DecString(os.path.dirname(self["~filename"]),
-                                 self["~filename"].encoding)
+            elif key == "basename": return os.path.basename(self["~filename"])
+            elif key == "dirname": return os.path.dirname(self["~filename"])
             elif key == "length": return util.format_time(self["~#length"])
             elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
@@ -95,7 +81,7 @@ class AudioFile(dict):
             v = dict.get(self, "title")
             if v is None:
                 return "%s [%s]" %(
-                    os.path.basename(self["~filename"].f), UNKNOWN)
+                    os.path.basename(self["~filename"]), UNKNOWN)
             else: return v
         elif (key == "artist" or key == "album"):
             v = dict.get(self, key)
@@ -162,8 +148,7 @@ class AudioFile(dict):
 
     # Sanity-check all sorts of things...
     def sanitize(self, filename = None):
-        if filename:
-            self["~filename"] = DecString(filename, util.fscoding())
+        if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
 
         # Fill in necessary values.
@@ -738,20 +723,15 @@ class Library(dict):
                     songs = []
                 f.close()
             else: return 0, 0
-        except:
-            return 0, 0
+        except: return 0, 0
 
         # Prune old entries.
         removed, changed = 0, 0
-        cset = util.fscoding()
         for song in songs:
             if type(song) not in supported.values(): continue
             if song.valid():
                 fn = song['~filename']
-                self[str(fn)] = song
-                # FIXME: Remove migration after 0.8
-                if not isinstance(fn, DecString):
-                    song['~filename'] = DecString(fn, cset)
+                self[fn] = song
             else:
                 if song.exists():
                     fn = song['~filename']
@@ -759,12 +739,12 @@ class Library(dict):
                     song2 = MusicFile(fn)
                     if song2:
                         song2.migrate(song)
-                        self[str(fn)] = song2
+                        self[fn] = song2
                 elif config.get("settings", "masked"):
                     for m in config.get("settings", "masked").split(":"):
                         if fn.startswith(m) and not os.path.ismount(m):
                             self.masked_files.setdefault(m, {})
-                            self.masked_files[m][str(fn)] = song
+                            self.masked_files[m][fn] = song
                             break
                     else:
                         removed += 1

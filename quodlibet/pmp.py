@@ -54,11 +54,10 @@ class CopyPMP(PMP):
             except OSError: pass
             except:
                 raise error(_("Unable to create directory <b>%s</b>.")%(
-                    util.escape(dirname.decoded)))
+                    util.escape(dirname)))
         try: shutil.copyfile(filename, target)
         except:
-            raise error(_("Unable to copy <b>%s</b>.") %(
-                util.escape(filename.decoded)))
+            raise error(_("Unable to copy <b>%s</b>.") % util.escape(filename))
 
 # Special-case the iFP because I have one. :) Make directories and
 # upload files.
@@ -86,7 +85,7 @@ class IfpPMP(PMP):
         if os.system("ifp upload %r %r > /dev/null" % (filename, target)):
             raise error(_("Unable to upload <b>%s</b>. The device may be "
                           "out of space, or turned off.")%(
-                util.escape(filename.decoded)))
+                util.escape(filename)))
 
 # Or, let the user specify a command to run.
 class GenericPMP(PMP):
@@ -113,7 +112,7 @@ class GenericPMP(PMP):
             command = "%s %r" % (self.command, filename)
         if os.system(command):
             raise error(_("Execution of <b>%s</b> failed.")%(
-                util.escape(command.decode("utf-8", "replace"))))
+                util.escape(command)))
 
 # This should correspond to the order of the drivers in the combobox.
 drivers = [None, CopyPMP, GenericPMP, IfpPMP]

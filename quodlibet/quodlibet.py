@@ -999,7 +999,7 @@ class MainWindow(MultiInstanceWidget):
         iter = widgets.songs.get_iter(path)
         widgets.songs.remove(iter)
         statusbar = self.widgets["statusbar"]
-        statusbar.set_text(_("Could not play %s.") % song['~filename'].decoded)
+        statusbar.set_text(_("Could not play %s.") % song['~filename'])
         try: library.remove(song)
         except KeyError: pass
         player.playlist.remove(song)
@@ -1338,7 +1338,7 @@ class MainWindow(MultiInstanceWidget):
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         songs = [model[r][0] for r in rows]
-        filenames = [song["~filename"].decoded for song in songs]
+        filenames = [song["~filename"] for song in songs]
         filenames.sort()
         d = DeleteDialog(self.window, filenames)
         resp = d.run()
@@ -1351,7 +1351,7 @@ class MainWindow(MultiInstanceWidget):
             w = WaitLoadWindow(self.window, len(songs), s, (0, len(songs)))
             trash = os.path.expanduser("~/.Trash")
             for song in songs:
-                filename = song["~filename"]
+                filename = str(song["~filename"])
                 try:
                     if resp == 0:
                         basename = os.path.basename(filename)
@@ -1365,7 +1365,7 @@ class MainWindow(MultiInstanceWidget):
                                  _("Removing <b>%s</b> failed. "
                                    "Possibly the target file does not exist, "
                                    "or you do not have permission to "
-                                   "remove it.") % (filename.decoded)).run()
+                                   "remove it.") % (filename)).run()
                     break
                 else:
                     w.step(w.current + 1, w.count)
@@ -1535,6 +1535,7 @@ class SongList(object):
     def set_column_headers(self, headers):
         if len(headers) == 0: return
         SHORT_COLS = ["tracknumber", "discnumber", "~length"]
+        SLOW_COLS = ["~basename", "~dirname", "~filename"]
         if not self.recall_size:
             try: ws = map(int, config.get("memory", "widths").split())
             except: ws = []
@@ -1551,10 +1552,6 @@ class SongList(object):
         def cell_data(column, cell, model, iter):
             cell.set_property('text', model[iter][0].comma(column.header_name))
 
-        def cell_data_dec(column, cell, model, iter):
-            cell.set_property('text',
-                              model[iter][0](column.header_name).decoded)
-
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
             title = tag(t)
@@ -1569,10 +1566,7 @@ class SongList(object):
             if hasattr(self, 'set_sort_by'):
                 column.connect('clicked', self.set_sort_by, t)
             self._set_column_settings(column)
-            if t in ["~filename", "~basename", "~dirname"]:
-                column.set_cell_data_func(render, cell_data_dec)
-            else:
-                column.set_cell_data_func(render, cell_data)
+            column.set_cell_data_func(render, cell_data)
             if t == "~length":
                 column.set_property('alignment', 1.0)
                 render.set_property('xalign', 1.0)
@@ -2277,7 +2271,7 @@ class SongProperties(MultiInstanceWidget):
         self.tn_model.clear()
         self.widgets["prop_tn_total"].set_value(len(self.songrefs))
         for song in self.songrefs:
-            self.tn_model.append(row = [song, None, song('~basename').decoded,
+            self.tn_model.append(row = [song, None, song('~basename'),
                                         song.get("tracknumber", "")])
         tn_change = self.songinfo.can_change("tracknumber")
         self.widgets["prop_tn_start"].set_sensitive(tn_change)
@@ -2314,7 +2308,7 @@ class SongProperties(MultiInstanceWidget):
                              _("Saving <b>%s</b> failed. The file may be "
                                "read-only, corrupted, or you do not have "
                                "permission to edit it.")%(
-                    util.escape(song('~basename').decoded))).run()
+                    util.escape(song('~basename')))).run()
                 library.reload(song)
                 player.playlist.refilter()
                 widgets.main.refresh_songlist()
@@ -2356,8 +2350,7 @@ class SongProperties(MultiInstanceWidget):
             if ascii:
                 newname = "".join(map(lambda c: ((ord(c) < 127 and c) or "_"),
                                       newname))
-            self.nbp_model.append(row=[song, None, song('~basename').decoded,
-                                       newname])
+            self.nbp_model.append(row=[song, None, song('~basename'), newname])
         self.nbp_preview.set_sensitive(False)
         self.save_nbp.set_sensitive(True)
 
@@ -2386,9 +2379,9 @@ class SongProperties(MultiInstanceWidget):
 
         def update_filename(model, path, iter):
             song = model[path][0]
-            model[path][2] = song('~basename').decoded
-            model[path][3] = song('~dirname').decoded
-            model[path][3] = song['~filename'].decoded
+            model[path][2] = song('~basename')
+            model[path][3] = song('~dirname')
+            model[path][3] = song['~filename']
         self.fbasemodel.foreach(update_filename)
 
         self.fill_property_info()
@@ -2462,7 +2455,7 @@ class SongProperties(MultiInstanceWidget):
         spls = config.get("settings", "splitters")
         # get info for all matches
         for song in self.songrefs:
-            row = [song, song('~basename').decoded]
+            row = [song, song('~basename')]
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
@@ -2515,7 +2508,7 @@ class SongProperties(MultiInstanceWidget):
                                  _("Saving <b>%s</b> failed. The file may be "
                                    "read-only, corrupted, or you do not have "
                                    "permission to edit it.")%(
-                        util.escape(song('~basename').decoded))).run()
+                        util.escape(song('~basename')))).run()
                     library.reload(song)
                     player.playlist.refilter()
                     widgets.main.refresh_songlist()

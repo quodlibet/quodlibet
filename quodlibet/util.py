@@ -282,7 +282,7 @@ class PatternFromFile(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = song['~filename'].decoded
+            song = song['~filename']
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         matchon = '/'+'/'.join(song.split('/')[-self.slashes:])
