@@ -1,8 +1,8 @@
 Source: quodlibet
 Section: audio
 Priority: optional
-Maintainer: Joe Wreschnig <piman@sacredchao.net>
-Build-Depends: debhelper (>= 4.0.0), python-dev, python-gtk2-dev, libmodplug-dev
+Maintainer: Joe Wreschnig <piman@debian.org>
+Build-Depends: debhelper (>= 4.0.0), python-dev, python-gtk2-dev, libmodplug-dev, pkg-config, libgtk2.0-dev
 Standards-Version: 3.6.1.0
 
 Package: quodlibet
