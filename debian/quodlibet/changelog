@@ -7,7 +7,7 @@ quodlibet (0.8-1) unstable; urgency=low
   * Removed versioned Build-Dep on python-dev, new mmkeys/statusicon
     builds autodetect Python version using distutils.
 
- -- Joe Wreschnig <piman@debian.org> 
+ -- Joe Wreschnig <piman@debian.org>  Thu, 03 Feb 2005 19:36:16 -0600
 
 quodlibet (0.7-2) unstable; urgency=low
 
