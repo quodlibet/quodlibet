@@ -322,6 +322,44 @@ class WaitLoadWindow(MultiInstanceWidget):
     def end(self):
         self.window.destroy()
 
+class BigCenteredImage(object):
+    def __init__(self, title, filename):
+        width = gtk.gdk.screen_width() / 2
+        height = gtk.gdk.screen_height() / 2
+        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+
+        x_rat = pixbuf.get_width() / float(width)
+        y_rat = pixbuf.get_height() / float(height)
+
+        if x_rat > 1 or y_rat > 1:
+            if x_rat > y_rat:
+                pixbuf = pixbuf.scale_simple(width,
+                                             int(pixbuf.get_height()/y_rat),
+                                             gtk.gdk.INTERP_BILINEAR)
+            else:
+                pixbuf = pixbuf.scale_simple(int(pixbuf.get_width()/x_rat),
+                                             height, gtk.gdk.INTERP_BILINEAR)
+
+        self.window = gtk.Window()
+        self.window.set_title(title)
+        self.window.set_decorated(False)
+        self.window.set_position(gtk.WIN_POS_CENTER)
+        self.window.set_modal(True)
+        self.window.set_icon(pixbuf)
+        self.window.add(gtk.Frame())
+        self.window.child.set_shadow_type(gtk.SHADOW_OUT)
+        self.window.child.add(gtk.EventBox())
+        self.window.child.child.add(gtk.Image())
+        self.window.child.child.child.set_from_pixbuf(pixbuf)
+
+        # The eventbox
+        self.window.child.child.connect('button-press-event', self.close)
+        self.window.child.child.connect('key-press-event', self.close)
+        self.window.show_all()
+
+    def close(self, *args):
+        self.window.destroy()
+
 class TrayIcon(object):
     def __init__(self, pixbuf, activate_cb, popup_cb):
         try:
@@ -837,6 +875,15 @@ class MainWindow(MultiInstanceWidget):
             self.make_query("#(playcount < %d)" % (songs[0][0] + 1))
         else:
             self.make_query("#(playcount < %d)" % (songs[-40][0] + 1))
+
+    def show_big_cover(self, image, event):
+        if (self.current_song and event.button == 1 and
+            event.type == gtk.gdk._2BUTTON_PRESS):
+            cover = self.current_song.find_cover()
+            if hasattr(cover, "write"):
+                cover_f = cover
+                cover = cover.name
+            BigCenteredImage(self.current_song.comma("album"), cover)
 
     def rebuild(self, activator, hard = False):
         window = WaitLoadWindow(self.window, len(library) // 5,

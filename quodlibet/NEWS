@@ -4,7 +4,10 @@ If you want ALSA support and were using QL prior to 0.7, you will need
 to change your 'backend' option to 'ao:alsa09' (which is the new default).
 
 0.8
- - New/reloaded libraries take about 3/4 as much disk space.
+ - New/reloaded libraries take about 80% previous disk space.
+ - Double-clicking an album cover displays it in a larger window.
+ - Changing column headers is faster. Sorting and displaying is slower.
+ - OSD font tweaks.
 
 0.7 - I'm going to ho-ho-hoard all these nuts!
  - Default to proper 'alsa09' driver (rather than 'alsa').
