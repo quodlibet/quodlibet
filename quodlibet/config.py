@@ -21,7 +21,7 @@ getfloat = _config.getfloat
 write = _config.write
 options = _config.options
 
-def init(rc_file):
+def init(*rc_files):
     _config.add_section("settings")
     _config.add_section("memory")
     _config.add_section("header_maps")
@@ -66,8 +66,7 @@ def init(rc_file):
     _config.set("pmp", "location", "")
     _config.set("pmp", "command", "")
 
-    try: _config.read([rc_file])
-    except: pass
+    _config.read(rc_files)
 
     # Migrate old configs.
     set("settings", "headers",
