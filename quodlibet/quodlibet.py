@@ -1853,24 +1853,24 @@ class SongProperties(MultiInstanceWidget):
         split = self.widgets["prop_splitval_t"].get_active()
 
         # create model to store the matches, and view to match
-        self.tbp_model = gtk.ListStore(object, object, str,
+        self.tbp_model = gtk.ListStore(object, str,
                 *([str] * len(pattern.headers)))
 
         for col in self.tbp_view.get_columns():
             self.tbp_view.remove_column(col)
-        col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=2)
+        col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=1)
         self.tbp_view.append_column(col)
         for i, header in enumerate(pattern.headers):
             render = gtk.CellRendererText()
             render.set_property('editable', True)
-            render.connect('edited', self.tbp_edited, self.tbp_model,  i + 3)
-            col = gtk.TreeViewColumn(header, render, text=i+3)
+            render.connect('edited', self.tbp_edited, self.tbp_model,  i + 2)
+            col = gtk.TreeViewColumn(header, render, text = i + 2)
             self.tbp_view.append_column(col)
 
         spls = config.get("settings", "splitters")
         # get info for all matches
         for song in self.songrefs:
-            row = [song, None, song['~basename']]
+            row = [song, song['~basename']]
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
@@ -1896,18 +1896,18 @@ class SongProperties(MultiInstanceWidget):
             row = model[path]
             changed = False
             for i, h in enumerate(pattern.headers):
-                if row[i]:
+                if row[i + 2]:
                     if not add or h not in song:
                         try:
-                            song[h] = row[i + 3].decode("utf-8")
+                            song[h] = row[i + 2].decode("utf-8")
                         except UnicodeDecodeError:
-                            song[h] = row[i + 3].decode("iso8859-1")
+                            song[h] = row[i + 2].decode("iso8859-1")
                         changed = True
                     else:
                         try:
-                            vals = row[i + 3].decode("utf-8")
+                            vals = row[i + 2].decode("utf-8")
                         except UnicodeDecodeError:
-                            vals = row[i + 3].decode("iso8859-1")
+                            vals = row[i + 2].decode("iso8859-1")
                         for val in vals.split("\n"):
                             if val not in song[h]:
                                 song.add(h, val)
