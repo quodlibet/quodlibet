@@ -174,10 +174,8 @@ class MP3File(AudioFile):
             except: pass
 
         md = mad.MadFile(filename)
-        # MAD fills in some kind of data after the first read, because on
-        # certain files the bitrate/samplerate/length is inaccurate until
-        # after we call this.
-        md.read()
+        # Avoid garbage at the start of the file.
+        md.seek_time(md.total_time()); md.read()
         self["~#length"] = md.total_time() // 1000
         self["~#bitrate"] = md.bitrate()
         if date[0]: self["date"] = "-".join(filter(None, date))
@@ -263,11 +261,13 @@ class MP3Player(AudioPlayer):
         filename = song['~filename']
         AudioPlayer.__init__(self)
         self.dev = dev
-        self.audio = mad.MadFile(filename)
-        self.audio.read()
-        self.dev.set_info(self.audio.samplerate(), 2)
-        self.audio = mad.MadFile(filename)
-        self.length = self.audio.total_time()
+        audio = mad.MadFile(filename)
+        audio.seek_time(audio.total_time())
+        audio.read()
+        self.dev.set_info(audio.samplerate(), 2)
+        self.length = audio.total_time()
+        audio.seek_time(0)
+        self.audio = audio
         self.replay_gain(song)
 
     def __iter__(self): return self
