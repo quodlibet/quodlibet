@@ -262,11 +262,24 @@ class MP3Player(AudioPlayer):
         AudioPlayer.__init__(self)
         self.dev = dev
         audio = mad.MadFile(filename)
+        initial_sr = audio.samplerate()
         audio.seek_time(audio.total_time())
         audio.read()
+        self.__expected_sr = audio.samplerate()
+
+        # Don't play garbage at the start of a file.
+        if initial_sr != self.__expected_sr:
+            audio.seek_time(0); audio.read()
+            for i in range(20):
+                if self.__expected_sr == audio.samplerate(): break
+                else: audio.read()
+            else:
+                audio.seek_time(audio.total_time())
+                audio.read()
+                audio.seek_time(0)
+        else: audio.seek_time(0)
         self.dev.set_info(audio.samplerate(), 2)
         self.length = audio.total_time()
-        audio.seek_time(0)
         self.audio = audio
         self.replay_gain(song)
 
@@ -278,6 +291,11 @@ class MP3Player(AudioPlayer):
     def next(self):
         if self.stopped: raise StopIteration
         buff = self.audio.read(256)
+        if self.audio.samplerate() != self.__expected_sr:
+            print "W: Skipping what doesn't look like audio data..."
+            while self.audio.samplerate() != self.__expected_sr and buff:
+                buff = self.audio.read(256)
+            buff = self.audio.read(256)
         if buff is None: raise StopIteration
         if self.scale != 1:
             buff = audioop.mul(buff, 2, self.scale)
