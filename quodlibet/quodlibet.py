@@ -151,8 +151,7 @@ def save_and_quit(thread):
     library.save(const.LIBRARY)
     config.write(const.CONFIG)
     cleanup()
-
-    raise SystemExit(out == sys.stderr)
+    raise SystemExit
 
 def refresh_cache():
     if isrunning():
