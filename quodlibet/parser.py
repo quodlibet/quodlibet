@@ -235,6 +235,11 @@ def is_valid(string):
     except error: return False
     else: return True
 
+def is_parsable(string):
+    if string == "": return True
+    elif not set("#=").intersection(string): return True
+    else: return is_valid(string)
+
 def is_valid_color(string):
     if is_valid(string): return "dark green"
     elif not (string and set("#=").intersection(string)):

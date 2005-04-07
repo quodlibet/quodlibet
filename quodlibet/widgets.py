@@ -786,7 +786,7 @@ class Browser(object):
     def can_filter(self, key):
         return False
 
-class PanedBrowser(Browser, gtk.HBox):
+class PanedBrowser(Browser, gtk.VBox):
     expand = True
     
     class Pane(gtk.ScrolledWindow):
@@ -879,7 +879,6 @@ class PanedBrowser(Browser, gtk.HBox):
             if to_select == []: to_select = [0]
             for i in to_select: selection.select_path((i,))
             selection.handler_unblock(self.__sig)
-            while handle_pending and gtk.events_pending(): gtk.main_iteration()
             self.__selection_changed(selection, check=False, jump=True)
 
         def query(self):
@@ -897,23 +896,68 @@ class PanedBrowser(Browser, gtk.HBox):
                     self.tag, ", ".join(selected))).decode("utf-8")
 
     def __init__(self, cb):
-        gtk.HBox.__init__(self, spacing=3)
+        gtk.VBox.__init__(self, spacing=0)
         self.__cb = cb
+        hbox = gtk.HBox(spacing=6)
+        c = gtk.CheckButton(_("_Global filter:"))
+        e = qltk.ValidatingEntry(parser.is_valid_color)
+        e.set_text(config.get("browsers", "background"))
+        e.set_sensitive(False)
+        e.connect('changed', self.__filter_changed)
+        c.connect('toggled', self.__filter_toggled, e)
+        hbox.pack_start(c, expand=False)
+        hbox.pack_start(e)
+        a = gtk.Alignment(xalign=1.0, xscale=0.3)
+        a.add(hbox)
+        self.__refill_sig = 0
+
+        self.pack_start(a, expand=False)
         self.refresh_panes(restore=False)
-        self.set_homogeneous(True)
-        self.set_size_request(100, 100)
+
+    def __filter_toggled(self, toggle, entry):
+        self.background = toggle.get_active()
+        entry.set_text(config.get("browsers", "background"))
+        entry.set_sensitive(toggle.get_active())
+        if entry.get_text():
+            if not self.background: self.__panes[0].fill(library.values())
+            else: self.__filter_changed(entry)
+
+    def __filter_changed(self, entry):
+        self.__refill_sig += 1
+        gobject.timeout_add(
+            500, self.__refill_panes_timeout, entry, self.__refill_sig)
+
+    def __refill_panes_timeout(self, entry, id):
+        if id == self.__refill_sig:
+            filter = entry.get_text().strip()
+            if parser.is_parsable(filter.decode('utf-8')):
+                entry.set_position(10000) # at the end
+                config.set("browsers", "background", filter)
+                values = library.query(filter.decode('utf-8'))
+                self.__panes[0].fill(values)
 
     def refresh_panes(self, restore=True):
-        for c in self.get_children(): c.destroy()
+        try: hbox = self.get_children()[1]
+        except IndexError: pass # first call
+        else: hbox.destroy()
+
+        hbox = gtk.HBox(spacing=3)
+        hbox.set_homogeneous(True)
+        hbox.set_size_request(100, 100)
         # fill in the pane list. the last pane reports back to us.
         self.__panes = [self]
         panes = config.get("browsers", "panes").split(); panes.reverse()
         for pane in panes:
             self.__panes.insert(0, self.Pane(pane, self.__panes[0]))
         self.__panes.pop() # remove self
-        map(self.pack_start, self.__panes)
+        map(hbox.pack_start, self.__panes)
+        self.pack_start(hbox)
         self.__inhibit = True
-        self.__panes[0].fill(library.values())
+        filter = config.get("browsers", "background")
+        if not (self.background and filter and parser.is_parsable(filter)):
+            values = library.values()
+        else: values = library.query(filter)
+        self.__panes[0].fill(values)
         if restore: self.restore()
         self.show_all()
 
@@ -940,7 +984,7 @@ class PanedBrowser(Browser, gtk.HBox):
         try:
             selections = [y.split("\t") for y in
                           config.get("browsers", "pane_selection").split("\n")]
-        except Exception: pass
+        except: pass
         else:
             if len(selections) == len(self.__panes):
                 for sel, pane in zip(selections, self.__panes):
