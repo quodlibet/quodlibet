@@ -12,6 +12,114 @@
 
 import os, sys
 
+class OptionParser(object):
+    def __init__(self, name, version):
+        self.__name = name
+        self.__version = version
+        self.__args = {}
+        self.__translate_short = {}
+        self.__translate_long = {}
+        self.__help = {}
+        self.add(
+            "help", shorts="h", help=_("Display brief usage information"))
+        self.add(
+            "version", shorts="v", help=_("Display version and copyright"))
+
+    def add(self, canon, help=None, arg=False, shorts="", longs=[]):
+        self.__args[canon] = arg
+        for s in shorts: self.__translate_short[s] = canon
+        for l in longs: self.__translate_longs[s] = canon
+        if help: self.__help[canon] = help
+
+    def __shorts(self):
+        shorts = ""
+        for short, canon in self.__translate_short.items():
+            shorts += short + (self.__args[canon] and "=" or "")
+        return shorts
+
+    def __longs(self):
+        longs = []
+        for long, arg in self.__args.items():
+            longs.append(long + (arg and "=" or ""))
+        for long, canon in self.__translate_long.items():
+            longs.append(long + (self.__args[canon] and "=" or ""))
+        return longs
+
+    def __format_help(self, opt, space):
+        if opt in self.__help:
+            return "  --%s %s\n" % (opt.ljust(space), self.__help[opt])
+        else: return ""
+
+    def help(self, usage=None, description=None):
+        if not isinstance(self.__help, dict): return self.__help
+
+        l = max(map(len, self.__help.keys()))
+        if usage: s = _("Usage: %s %s") % (sys.argv[0], usage)
+        else: s = _("Usage: %s [options]") % sys.argv[0]
+        s += "\n"
+        if description: s += "%s - %s\n" % (self.__name, description)
+        s += "\n"
+        keys = self.__help.keys()
+        keys.sort()
+        try: keys.remove("help")
+        except ValueError: pass
+        try: keys.remove("version")
+        except ValueError: pass
+        for h in keys: s += self.__format_help(h, l)
+        s += self.__format_help("help", l)
+        s += self.__format_help("version", l)
+        return s
+
+    def set_help(self, newhelp):
+        self.__help = newhelp
+
+    def version(self):
+        return _("""\
+%s %s - <quodlibet@lists.sacredchao.net>
+Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+""") % (self.__name, self.__version)
+
+    def parse(self, args=None, usage=None, description=None):
+        if args is None: args = sys.argv[1:]
+        from getopt import getopt, GetoptError
+        try: opts, args = getopt(args, self.__shorts(), self.__longs())
+        except GetoptError, s:
+            s = str(s)
+            text = []
+            if "not recognized" in s:
+                text.append(
+                    _("E: Option '%s' not recognized.") % s.split()[1])
+            elif "requires argument" in s:
+                text.append(
+                    _("E: Option '%s' requires an argument.") % s.split()[1])
+            elif "unique prefix" in s:
+                text.append(
+                    _("E: '%s' is not a unique prefix.") % s.split()[1])
+            if "help" in self.__args:
+                text.append(_("E: Try %s --help.") % sys.argv[0])
+
+            raise SystemExit(to("\n".join(text)))
+        else:
+            transopts = {}
+            for o, a in opts:
+                if o.startswith("--"):
+                    o = self.__translate_long.get(o[2:], o[2:])
+                elif o.startswith("-"):
+                    o = self.__translate_short.get(o[1:], o[1:])
+                if o == "help":
+                    print self.help(usage, description)
+                    raise SystemExit
+                elif o == "version":
+                    print self.version()
+                    raise SystemExit
+                if self.__args[o]: transopts[o] = a
+                else: transopts[o] = True
+
+            return transopts, args
+
 def main():
     import signal, gtk, widgets
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
@@ -34,42 +142,6 @@ def save_and_quit(thread):
     config.write(const.CONFIG)
     cleanup()
 
-def print_help(out = sys.stdout):
-    out.write(to(_("""\
-Quod Libet - a music library and player
-Options:
-  --help, -h        Display this help message
-  --version         Display version and copyright information
-  --refresh-library Rescan your song cache and then exit.
-  --print-playing   Print the currently playing song.
-
- Player controls:
-  --next, --previous, --play-pause, --play, --pause
-    Change songs or pause/resume playing.
-  --volume +|-|0..100
-    Increase, decrease, or set the volume.
-  --shuffle 0|1|t, --repeat 0|1|t
-    Enable, disable, or toggle shuffle and repeat.  
-  --query search-string
-    Make a new playlist from the given search.
-  --seek [+|-][HH:MM:]SS
-    Seek to a position in the current song.
-  --play-file filename
-    Play this file, adding it to the library if necessary.
-
-For more information, see the manual page (`man 1 quodlibet').
-""")))
-
-    raise SystemExit(out == sys.stderr)
-
-def print_version(out = sys.stdout):
-    print to(_("""\
-Quod Libet %s - <quodlibet@lists.sacredchao.net>
-Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
-
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\
-""")) % const.VERSION
     raise SystemExit(out == sys.stderr)
 
 def refresh_cache():
@@ -172,34 +244,35 @@ if __name__ == "__main__":
     # Check command-line parameters before doing "real" work, so they
     # respond quickly.
     opts = sys.argv[1:]
-    controls = {"--next": ">", "--previous": "<", "--play": ")",
-                "--pause": "|", "--play-pause": "-", "--volume-up": "v+",
-                "--volume-down": "v-", }
-    controls_opt = { "--seek-to": "s", "--seek": "s", "--shuffle": "&",
-                     "--repeat": "@", "--query": "q", "--volume": "v" }
-    try:
-        for i, command in enumerate(opts):
-            if command in ["--help", "-h"]: print_help()
-            elif command in ["--version", "-v"]: print_version()
-            elif command in ["--refresh-library"]: refresh_cache()
-            elif command in controls: control(controls[command])
-            elif command in controls_opt:
-                control(controls_opt[command] + opts[i+1])
-            elif command in ["--play-file"]:
-                filename = os.path.abspath(os.path.expanduser(opts[i+1]))
-                if os.path.isdir(filename): control("d" + filename)
-                else: control("p" + filename)
-            elif command in ["--print-playing"]:
-                try: print_playing(opts[i+1])
-                except IndexError: print_playing()
-            else:
-                sys.stderr.write(
-                    to(_("E: Unknown command line option: %s") % command)+"\n")
-                raise SystemExit(to(_("E: Try %s --help") % sys.argv[0]))
-    except IndexError:
-        sys.stderr.write(
-            to(_("E: Option `%s' requires an argument.") % command) + "\n")
-        raise SystemExit(to(_("E: Try %s --help") % sys.argv[0]))
+    controls = {"next": ">", "previous": "<", "play": ")",
+                "pause": "|", "play-pause": "-", "volume-up": "v+",
+                "volume-down": "v-", }
+    controls_opt = { "seek": "s", "shuffle": "&",
+                     "repeat": "@", "query": "q", "volume": "v" }
+
+    options = OptionParser("Quod Libet", const.VERSION)
+    options.add("refresh-library")
+    options.add("print-playing")
+    map(options.add, controls.keys())
+    for opt in controls_opt: options.add(opt, arg=True)
+    options.set_help(const.HELP)
+
+    opts, args = options.parse(
+        usage=_("[--refresh-library | --print-playing | control]"),
+        description=_("music library and player"))
+
+    for command, arg in opts.items():
+        if command == "refresh-library": refresh_cache()
+        elif command in controls: control(controls[command])
+        elif command in controls_opt:
+            control(controls_opt[command] + arg)
+        elif command == "play-file":
+            filename = os.path.abspath(os.path.expanduser(arg))
+            if os.path.isdir(filename): control("d" + filename)
+            else: control("p" + filename)
+        elif command == "print-playing":
+            try: print_playing(args[0])
+            except IndexError: print_playing()
 
     if os.path.exists(const.CONTROL):
         print _("Quod Libet is already running.")
