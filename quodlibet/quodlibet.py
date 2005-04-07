@@ -13,19 +13,21 @@
 import os, sys
 
 class OptionParser(object):
-    def __init__(self, name, version):
+    def __init__(self, name, version, description=None, usage=None):
         self.__name = name
         self.__version = version
         self.__args = {}
         self.__translate_short = {}
         self.__translate_long = {}
         self.__help = {}
+        self.__usage = usage
+        self.__description = description
         self.add(
             "help", shorts="h", help=_("Display brief usage information"))
         self.add(
             "version", shorts="v", help=_("Display version and copyright"))
 
-    def add(self, canon, help=None, arg=False, shorts="", longs=[]):
+    def add(self, canon, help=None, arg="", shorts="", longs=[]):
         self.__args[canon] = arg
         for s in shorts: self.__translate_short[s] = canon
         for l in longs: self.__translate_longs[s] = canon
@@ -47,17 +49,23 @@ class OptionParser(object):
 
     def __format_help(self, opt, space):
         if opt in self.__help:
-            return "  --%s %s\n" % (opt.ljust(space), self.__help[opt])
+            help = self.__help[opt]
+            if self.__args[opt]:
+                opt = "%s=%s" % (opt, self.__args[opt])
+            return "  --%s %s\n" % (opt.ljust(space), help)
+                
         else: return ""
 
-    def help(self, usage=None, description=None):
-        if not isinstance(self.__help, dict): return self.__help
+    def help(self):
+        l = 0
+        for k in self.__help.keys():
+            l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
-        l = max(map(len, self.__help.keys()))
-        if usage: s = _("Usage: %s %s") % (sys.argv[0], usage)
+        if self.__usage: s = _("Usage: %s %s") % (sys.argv[0], self.__usage)
         else: s = _("Usage: %s [options]") % sys.argv[0]
         s += "\n"
-        if description: s += "%s - %s\n" % (self.__name, description)
+        if self.__description:
+            s += "%s - %s\n" % (self.__name, self.__description)
         s += "\n"
         keys = self.__help.keys()
         keys.sort()
@@ -66,6 +74,7 @@ class OptionParser(object):
         try: keys.remove("version")
         except ValueError: pass
         for h in keys: s += self.__format_help(h, l)
+        if keys: s += "\n"
         s += self.__format_help("help", l)
         s += self.__format_help("version", l)
         return s
@@ -82,7 +91,8 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 """) % (self.__name, self.__version)
 
-    def parse(self, args=None, usage=None, description=None):
+    def parse(self, args=None):
+        from util import to
         if args is None: args = sys.argv[1:]
         from getopt import getopt, GetoptError
         try: opts, args = getopt(args, self.__shorts(), self.__longs())
@@ -110,7 +120,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
                 elif o.startswith("-"):
                     o = self.__translate_short.get(o[1:], o[1:])
                 if o == "help":
-                    print self.help(usage, description)
+                    print self.help()
                     raise SystemExit
                 elif o == "version":
                     print self.version()
@@ -250,16 +260,35 @@ if __name__ == "__main__":
     controls_opt = { "seek": "s", "shuffle": "&",
                      "repeat": "@", "query": "q", "volume": "v" }
 
-    options = OptionParser("Quod Libet", const.VERSION)
-    options.add("refresh-library")
-    options.add("print-playing")
-    map(options.add, controls.keys())
-    for opt in controls_opt: options.add(opt, arg=True)
-    options.set_help(const.HELP)
+    options = OptionParser(
+        "Quod Libet", const.VERSION, 
+        _("a music library and player"),
+        _("[ --refresh-library | --print-playing | control ]"))
 
-    opts, args = options.parse(
-        usage=_("[--refresh-library | --print-playing | control]"),
-        description=_("music library and player"))
+    options.add("refresh-library", help=_("Rescan your library and exit"))
+    options.add("print-playing", help=_("Print the playing song and exit"))
+
+    #map(options.add, controls.keys())
+    for opt, help in [
+        ("next", _("Jump to next song")),
+        ("previous", _("Jump to previous song")),
+        ("play", _("Start playback")),
+        ("pause", _("Pause playback")),
+        ("play-pause", _("Toggle play/pause mode")),
+        ("volume-up", _("Turn up volume")),
+        ("volume-down", _("Turn down volume")),
+        ]: options.add(opt, help=help)
+
+    for opt, help, arg in [
+        ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
+        ("shuffle", _("Turn shuffle off, on, or toggle it"), _("0|1|t")),
+        ("repeat", _("Turn repeat off, on, or toggle it"), _("0|1|t")),
+        ("volume", _("Set the volume"), _("+|-|0..100")),
+        ("query", _("Search your library"), _("search-string")),
+        ("play-file", _("Play a file"), _("filename"))
+        ]: options.add(opt, help=help, arg=arg)
+
+    opts, args = options.parse()
 
     for command, arg in opts.items():
         if command == "refresh-library": refresh_cache()

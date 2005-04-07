@@ -104,28 +104,3 @@ MENU = """<ui>
     </menu>
   </menubar>
 </ui>"""
-
-HELP = _("""\
-Quod Libet - a music library and player
-Options:
-  --help, -h        Display this help message
-  --version         Display version and copyright information
-  --refresh-library Rescan your song cache and then exit.
-  --print-playing   Print the currently playing song.
-
- Player controls:
-  --next, --previous, --play-pause, --play, --pause
-    Change songs or pause/resume playing.
-  --volume +|-|0..100
-    Increase, decrease, or set the volume.
-  --shuffle 0|1|t, --repeat 0|1|t
-    Enable, disable, or toggle shuffle and repeat.  
-  --query search-string
-    Make a new playlist from the given search.
-  --seek [+|-][HH:MM:]SS
-    Seek to a position in the current song.
-  --play-file filename
-    Play this file, adding it to the library if necessary.
-
-For more information, see the manual page (`man 1 quodlibet').
-""")

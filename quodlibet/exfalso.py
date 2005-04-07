@@ -21,21 +21,13 @@ if __name__ == "__main__":
     basedir = os.path.split(os.path.realpath(__file__))[0]
     sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
 
-    HELP = _("""\
-Ex Falso - an audio file tagger
-Usage: %s [directory]
-
-For more information, see the manual page (`man 1 exfalso').
-""") % sys.argv[0]
-
-
     import const
     from util import to
 
-    # FIXME: UGLY
-    import quodlibet; quodlibet.to = to
-    opts = quodlibet.OptionParser("Ex Falso", const.VERSION)
-    opts.set_help(HELP)    
+    import quodlibet
+    opts = quodlibet.OptionParser(
+        "Ex Falso", const.VERSION,
+        _("an audio tag editor"), _("[directory]"))
 
     import config
     config.init(const.CONFIG)
