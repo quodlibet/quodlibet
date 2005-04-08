@@ -50,6 +50,22 @@ class FileChooser(gtk.FileChooserDialog):
         fns = self.get_filenames()
         return resp, fns
 
+class SongWatcher(gobject.GObject):
+    __gsignals__ = {
+        # The given song was changed
+        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                    (object,)),
+        # The song was removed from the library; it should be removed
+        # from all views.
+        'removed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                    (object,)),
+
+        # A group of changes has been finished; all library views should
+        # do a global refresh if necessary
+        'refresh': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        }
+gobject.type_register(SongWatcher)
+
 # FIXME: replace with a standard About widget when using GTK 2.6.
 class AboutWindow(gtk.Window):
     def __init__(self, parent=None):
@@ -1460,6 +1476,11 @@ class MainWindow(gtk.Window):
         gobject.timeout_add(100, self.__update_time)
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
+
+        widgets.watcher.connect_object(
+            'removed', MainWindow.__song_removed, self)
+        widgets.watcher.connect_object(
+            'refresh', MainWindow.__update_browser, self)
         self.show()
 
     def __delete_event(self, event):
@@ -2030,10 +2051,17 @@ class MainWindow(gtk.Window):
         iters = [widgets.songs.get_iter(row) for row in rows]
         for iter in iters:
             song = model[iter][0]
-            widgets.songs.remove(iter)
             library.remove(song)
-            player.playlist.remove(song)
+            widgets.watcher.emit('removed', song)
+        widgets.watcher.emit('refresh')
+
+    def __update_browser(self):
         self.browser.update()
+
+    def __song_removed(self, song):
+        iter = self.songlist.song_to_iter(song)
+        if iter: widgets.songs.remove(iter)
+        player.playlist.remove(song)
 
     def delete_song(self, item):
         view = self.songlist
@@ -2277,6 +2305,15 @@ class SongList(gtk.TreeView):
         model, rows = self.get_selection().get_selected_rows()
         return [model[row][0] for row in rows]
 
+    def song_to_iter(self, song):
+        model = self.get_model()
+        it = []
+        def find(model, path, iter, it):
+            if model[iter][0] == song: it.append(iter)
+            return bool(it)
+        model.foreach(find, it)
+        return it[0]
+
     def jump_to(self, path):
         self.scroll_to_cell(path)
 
@@ -2399,10 +2436,13 @@ class PlayList(SongList):
         menu.append(prop)
         menu.show_all()
         self.connect_object('destroy', gtk.Menu.destroy, menu)
-
         self.connect('button-press-event', self.__button_press, menu)
         self.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
+
+        s = widgets.watcher.connect_object(
+            'removed', PlayList.__song_removed, self)
+        self.connect_object('destroy', widgets.watcher.disconnect, s)
 
     def append_songs(self, songs):
         model = self.get_model()
@@ -2411,6 +2451,13 @@ class PlayList(SongList):
             if song['~filename'] not in current_songs:
                 model.append([song])
                 song[self.__key] = len(model) # 1 based index; 0 means out
+
+    def __song_removed(self, song):
+        iter = self.song_to_iter(song)
+        if iter:
+            model = self.get_model()
+            model.remove(iter)
+            self.emit('drag-end', None)
 
     def __remove_selected_songs(self, activator, key):
         model, rows = self.get_selection().get_selected_rows()
@@ -4296,6 +4343,7 @@ def init():
         val = config.get("header_maps", opt)
         HEADERS_FILTER[opt] = val
 
+    widgets.watcher = SongWatcher()
     widgets.main = MainWindow()
     player.playlist.info = widgets.main
     gtk.threads_init()
