@@ -3013,15 +3013,23 @@ class SongProperties(gtk.Window):
             self.view = gtk.TreeView(self.model)
             selection = self.view.get_selection()
             selection.connect('changed', self.tag_select)
-            render = gtk.CellRendererToggle()
-            column = gtk.TreeViewColumn(_("Write"), render, active = 2,
-                                        activatable = 3)
-            render.connect('toggled', self.write_toggle, self.model)
+            render = gtk.CellRendererPixbuf()
+            column = gtk.TreeViewColumn(_("Write"), render)
+            def cdf_write(col, rend, model, iter, (write, delete)):
+                if model[iter][write]:
+                    if model[iter][delete]: stock = gtk.STOCK_DELETE
+                    else: stock = gtk.STOCK_EDIT
+                else: stock = ''
+                rend.set_property('stock-id', stock)
+            column.set_cell_data_func(render, cdf_write, (2, 4))
+            self.view.connect('button-press-event',
+                              self.write_toggle, (column, 2))
             self.view.append_column(column)
 
             render = gtk.CellRendererText()
             render.connect('edited', self.edit_tag, self.model, 0)
-            column = gtk.TreeViewColumn(_('Tag'), render, text=0)
+            column = gtk.TreeViewColumn(_('Tag'), render, text=0,
+                                        strikethrough=4)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(column)
 
@@ -3357,11 +3365,18 @@ class SongProperties(gtk.Window):
                 self.save.set_sensitive(True)
                 self.revert.set_sensitive(True)
 
-        def write_toggle(self, renderer, path, model):
-            row = model[path]
-            row[2] = not row[2] # Edited
-            self.save.set_sensitive(True)
-            self.revert.set_sensitive(True)
+        def write_toggle(self, view, event, (writecol, edited)):
+            if event.button != 1: return False
+            x, y = map(int, [event.x, event.y])
+            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+            except TypeError: return False
+
+            if col is writecol:
+                row = view.get_model()[path]
+                row[edited] = not row[edited]
+                self.save.set_sensitive(True)
+                self.revert.set_sensitive(True)
+                return True
 
         def __update(self, songs):
             from library import AudioFileGroup
