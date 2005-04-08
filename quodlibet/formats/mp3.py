@@ -261,19 +261,18 @@ class MP3Player(AudioPlayer):
         filename = song['~filename']
         AudioPlayer.__init__(self)
         self.dev = dev
-        self.audio = mad.MadFile(filename)
+        audio = mad.MadFile(filename)
         # Lots of MP3s report incorrect bitrates/samplerates/lengths if
         # the ID3 tag is busted in whatever way the ID3 tag reader is
         # using. Seek to the end of the file to get relaible information.
-        initial_sr = self.audio.samplerate()
-        self.audio.seek_time(self.audio.total_time())
-        self.audio.read()
-        self.__expected_sr = self.audio.samplerate()
+        initial_sr = audio.samplerate()
+        audio.seek_time(audio.total_time())
+        audio.read()
+        self.__expected_sr = audio.samplerate()
         self.dev.set_info(self.__expected_sr, 2)
-        self.length = self.audio.total_time()
-        # Then, seek back; we won't get repeat audio since we were at the
-        # end of the file.
-        self.audio.seek_time(0)
+        self.length = audio.total_time()
+        # Then, reload so we don't get repeat audio.
+        self.audio = mad.MadFile(filename)
         self.replay_gain(song)
 
     def __iter__(self): return self
