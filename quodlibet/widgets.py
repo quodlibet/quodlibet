@@ -1230,6 +1230,38 @@ class MainWindow(gtk.Window):
         def __set_active(self, v): return self.__item.set_active(v)
         active = property(__get_active, __set_active)
 
+    class PositionSlider(gtk.HBox):
+        __gsignals__ = {
+            'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
+            }
+            
+        
+        def __init__(self):
+            gtk.HBox.__init__(self)
+            l = gtk.Label("0:00/0:00")
+            l.set_padding(6, 0)
+            self.pack_start(l, expand=False)
+            scale = gtk.HScale(gtk.Adjustment(0, 0, 0, 3600, 15000, 0))
+            scale.set_update_policy(gtk.UPDATE_DELAYED)
+            scale.connect_object('adjust-bounds', self.emit, 'seek')
+            scale.set_draw_value(False)
+            self.pack_start(scale)
+
+            self.__position = scale
+            self.__timer = l
+
+        def set_value(self, cur, end = None):
+            self.__position.set_value(cur)
+            self.__timer.set_text(
+                "%d:%02d/%d:%02d" %
+                (cur // 60000, (cur % 60000) // 1000,
+                 end // 60000, (end % 60000) // 1000))
+
+        def set_range(self, end):
+            self.__position.set_range(0, end)
+
+    gobject.type_register(PositionSlider)
+
     def __init__(self):
         gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
@@ -1328,19 +1360,10 @@ class MainWindow(gtk.Window):
         hbox.pack_start(vbox, expand = True)
 
         # position slider
-        hb2 = gtk.HBox()
-        l = gtk.Label("0:00/0:00")
-        l.set_padding(6, 0)
-        hb2.pack_start(l, expand = False)
-        scale = gtk.HScale(gtk.Adjustment(0, 0, 0, 3000, 15000, 0))
-        scale.set_update_policy(gtk.UPDATE_DELAYED)
-        scale.connect('adjust-bounds',
-                      lambda slider, position: player.playlist.seek(position))
-        scale.set_draw_value(False)
-        self.song_pos = scale
-        self.song_timer = l
-        hb2.pack_start(scale)
-        vbox.pack_start(hb2, expand = False)
+        scale = self.PositionSlider()
+        scale.connect('seek', lambda s, pos: player.playlist.seek(pos))
+        self.__scale = scale
+        vbox.pack_start(scale, expand=False)
 
         # cover image
         self.image = CoverImage()
@@ -1434,7 +1457,7 @@ class MainWindow(gtk.Window):
                             "mm_playpause": self.play_pause})
         self.osd = Osd()
 
-        gobject.timeout_add(100, self._update_time)
+        gobject.timeout_add(100, self.__update_time)
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
         self.show()
@@ -1700,12 +1723,8 @@ class MainWindow(gtk.Window):
     def set_time(self, cur, end):
         self._time = (cur, end)
 
-    def _update_time(self):
-        cur, end = self._time
-        self.song_pos.set_value(cur)
-        self.song_timer.set_text("%d:%02d/%d:%02d" %
-                            (cur // 60000, (cur % 60000) // 1000,
-                             end // 60000, (end % 60000) // 1000))
+    def __update_time(self):
+        self.__scale.set_value(*self._time)
         return True
 
     def _missing_song(self, song):
@@ -1744,8 +1763,8 @@ class MainWindow(gtk.Window):
                     "FilterArtist", "FilterAlbum"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
-            self.song_pos.set_range(0, player.length)
-            self.song_pos.set_value(0)
+            self.__scale.set_range(player.length)
+            self.__scale.set_value(0, player.length)
             self._time = (0, song["~#length"] * 1000)
 
             for h in ['genre', 'artist', 'album']:
@@ -1755,8 +1774,8 @@ class MainWindow(gtk.Window):
 
             self.update_markup(song)
         else:
-            self.song_pos.set_range(0, 1)
-            self.song_pos.set_value(0)
+            self.__scale.set_range(1)
+            self.__scale.set_value(0, 1)
             self._time = (0, 1)
             self.update_markup(None)
 
