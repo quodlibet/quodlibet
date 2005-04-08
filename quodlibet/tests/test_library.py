@@ -33,4 +33,11 @@ class TestFileTypes(TestCase):
             self.failUnlessEqual(file["~#playcount"], 0)
             self.failUnlessEqual(file("~#track"), 2)
 
+    def test_reload(self):
+        for file in [self.vorb, self.mp3, self.flac]:
+            d = dict(file)
+            file.reload()
+            self.failUnlessEqual(d, file)
+        
+
 registerCase(TestFileTypes)

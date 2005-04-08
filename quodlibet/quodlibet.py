@@ -267,7 +267,6 @@ if __name__ == "__main__":
     options.add("refresh-library", help=_("Rescan your library and exit"))
     options.add("print-playing", help=_("Print the playing song and exit"))
 
-    #map(options.add, controls.keys())
     for opt, help in [
         ("next", _("Jump to next song")),
         ("previous", _("Jump to previous song")),

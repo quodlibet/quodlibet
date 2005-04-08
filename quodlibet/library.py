@@ -165,10 +165,6 @@ class Library(dict):
             songs = [song[1] for song in songs]
         return songs
 
-    def reload(self, song):
-        self.remove(song)
-        return self.add(song['~filename'], song)
-
     def save(self, fn):
         util.mkdir(os.path.dirname(fn))
         f = file(fn + ".tmp", "w")
@@ -240,7 +236,9 @@ class Library(dict):
                     m_fn = os.path.join(path, fn)
                     if m_fn in self:
                         if not self[m_fn].valid():
-                            self.reload(self[m_fn])
+                            try: self[m_fn].reload()
+                            except:
+                                del(self[m_fn])
                             changed += 1
                     else: added += self.add(m_fn)
                 yield added, changed
@@ -255,8 +253,11 @@ class Library(dict):
 
         for fn in self.keys():
             if force or not self[fn].valid():
-                if self.reload(self[fn]): changed += 1
-                else: removed += 1
+                try: self[fn].reload()
+                except:
+                    del(self[fn])
+                    removed += 1
+                else: changed += 1
             yield changed, removed
 
 def init(cache_fn=None):

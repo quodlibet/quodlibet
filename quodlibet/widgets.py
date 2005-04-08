@@ -1444,9 +1444,10 @@ class MainWindow(gtk.Window):
             self.icon.hide_window()
             return True
 
-    def song_update_view(self, song, error = False):
+    def song_update_view(self, song, error=False):
         if error:
-            library.reload(song)
+            try: song.reload()
+            except: library.remove(song)
             player.playlist.refilter()
         if song is None:
             self.browser.update()

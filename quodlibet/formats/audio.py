@@ -30,7 +30,10 @@ class AudioFile(dict):
                 cmp(self("title"), other("title")) or
                 cmp(self("~filename"), other("~filename")))
 
-    # song.unknown has been removed in favor of 'key in song'.
+    def reload(self):
+        fn = self["~filename"]
+        self.clear()
+        self.__init__(fn)
 
     def realkeys(self):
         return filter(lambda s: s and s[0] != "~", self.keys())
