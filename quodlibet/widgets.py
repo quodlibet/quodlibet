@@ -2059,8 +2059,6 @@ class MainWindow(gtk.Window):
         self.browser.update()
 
     def __song_removed(self, song):
-        iter = self.songlist.song_to_iter(song)
-        if iter: widgets.songs.remove(iter)
         player.playlist.remove(song)
 
     def delete_song(self, item):
@@ -2086,9 +2084,8 @@ class MainWindow(gtk.Window):
                         shutil.move(filename, os.path.join(trash, basename))
                     else:
                         os.unlink(filename)
-                    widgets.songs.remove(iter)
                     library.remove(song)
-                    player.playlist.remove(song)
+                    widgets.watcher.emit('removed', song)
                     
                 except:
                     qltk.ErrorMessage(
@@ -2294,6 +2291,12 @@ class SongList(gtk.TreeView):
         self.recall_size = recall
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList._destroy, self)
+        sigc = widgets.watcher.connect_object(
+            'changed', SongList.__song_updated, self)
+        sigr = widgets.watcher.connect_object(
+            'removed', SongList.__song_removed, self)
+        self.connect_object('destroy', widgets.watcher.disconnect, sigc)
+        self.connect_object('destroy', widgets.watcher.disconnect, sigr)
 
     def set_all_column_headers(cls, headers):
         cls.headers = headers
@@ -2307,12 +2310,24 @@ class SongList(gtk.TreeView):
 
     def song_to_iter(self, song):
         model = self.get_model()
-        it = []
+        it = [None]
         def find(model, path, iter, it):
             if model[iter][0] == song: it.append(iter)
-            return bool(it)
+            return bool(it[-1])
         model.foreach(find, it)
-        return it[0]
+        return it[-1]
+
+    def __song_updated(self, song):
+        iter = self.song_to_iter(song)
+        if iter:
+            model = self.get_model()
+            model[iter][0] = model[iter][0]
+
+    def __song_removed(self, song):
+        iter = self.song_to_iter(song)
+        if iter:
+            model = self.get_model()
+            model.remove(iter)
 
     def jump_to(self, path):
         self.scroll_to_cell(path)
@@ -2440,9 +2455,8 @@ class PlayList(SongList):
         self.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
 
-        s = widgets.watcher.connect_object(
-            'removed', PlayList.__song_removed, self)
-        self.connect_object('destroy', widgets.watcher.disconnect, s)
+        sig = widgets.watcher.connect('refresh', self.__refresh_indices, key)
+        self.connect_object('destroy', widgets.watcher.disconnect, sig)
 
     def append_songs(self, songs):
         model = self.get_model()
@@ -2451,13 +2465,6 @@ class PlayList(SongList):
             if song['~filename'] not in current_songs:
                 model.append([song])
                 song[self.__key] = len(model) # 1 based index; 0 means out
-
-    def __song_removed(self, song):
-        iter = self.song_to_iter(song)
-        if iter:
-            model = self.get_model()
-            model.remove(iter)
-            self.emit('drag-end', None)
 
     def __remove_selected_songs(self, activator, key):
         model, rows = self.get_selection().get_selected_rows()
