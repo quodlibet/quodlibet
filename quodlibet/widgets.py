@@ -675,7 +675,7 @@ class PlaylistWindow(gtk.Window):
         swin.add(view)
 
         self.set_name(name)
-        self.connect_object('destroy', PlaylistWindow.__destroy, self, view)
+        self.connect_object('destroy', self.__destroy, view)
         close.connect_object('clicked', gtk.Window.destroy, self)
         self.show_all()
 
@@ -2387,7 +2387,7 @@ class PlayList(SongList):
             model.append([song])
 
         self.set_model(model)
-        self.connect_object('drag-end', PlayList.__refresh_indices, self, key)
+        self.connect_object('drag-end', self.__refresh_indices, key)
         self.set_reorderable(True)
 
         menu = gtk.Menu()
