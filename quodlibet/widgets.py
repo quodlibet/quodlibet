@@ -3015,12 +3015,16 @@ class SongProperties(gtk.Window):
             selection.connect('changed', self.tag_select)
             render = gtk.CellRendererPixbuf()
             column = gtk.TreeViewColumn(_("Write"), render)
+
+            style = self.view.get_style()
+            pixbufs = [ style.lookup_icon_set(stock)
+                        .render_icon(style, gtk.TEXT_DIR_NONE, state,
+                            gtk.ICON_SIZE_MENU, self.view, None)
+                        for state in (gtk.STATE_INSENSITIVE, gtk.STATE_NORMAL)
+                            for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
             def cdf_write(col, rend, model, iter, (write, delete)):
-                if model[iter][write]:
-                    if model[iter][delete]: stock = gtk.STOCK_DELETE
-                    else: stock = gtk.STOCK_EDIT
-                else: stock = ''
-                rend.set_property('stock-id', stock)
+                row = model[iter]
+                rend.set_property('pixbuf', pixbufs[2*row[write]+row[delete]])
             column.set_cell_data_func(render, cdf_write, (2, 4))
             self.view.connect('button-press-event',
                               self.write_toggle, (column, 2))
