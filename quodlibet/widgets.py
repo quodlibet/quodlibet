@@ -1491,17 +1491,13 @@ class MainWindow(gtk.Window):
     def song_update_view(self, song, error=False):
         if error:
             try: song.reload()
-            except: library.remove(song)
-            player.playlist.refilter()
-        if song is None:
-            self.browser.update()
+            except:
+                library.remove(song)
+                widgets.watcher.emit('removed', song)
+            else: widgets.watcher.emit('changed', song)
         else:
-            try: path = (player.playlist.get_playlist().index(song),)
-            except ValueError: pass
-            else:
-                row = widgets.songs[path]
-                row[0] = row[0]
-
+            assert(song)
+            widgets.watcher.emit('changed', song)
             if song is self.current_song:
                 self.update_markup(self.current_song)
 
@@ -3399,7 +3395,7 @@ class SongProperties(gtk.Window):
                 if win.step(): break
 
             win.destroy()
-            self.cb(None)
+            widgets.watcher.emit('refresh')
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
             self.prop.update()
@@ -3669,7 +3665,7 @@ class SongProperties(gtk.Window):
         
             self.model.foreach(save_song)
             win.destroy()
-            self.cb(None)
+            widgets.watcher.emit('refresh')
             self.save.set_sensitive(False)
             self.prop.update()
 
@@ -3814,7 +3810,7 @@ class SongProperties(gtk.Window):
             self.prop.refill()
             self.prop.update()
             self.save.set_sensitive(False)
-            self.cb(None)
+            widgets.watcher.emit('refresh')
             win.destroy()
 
         def __update(self, songs):
@@ -3965,7 +3961,7 @@ class SongProperties(gtk.Window):
                 return win.step()
             self.model.foreach(settrack)
             self.prop.update()
-            self.cb(None)
+            widgets.watcher.emit('refresh')
             win.destroy()
 
         def changed(self, *args):
@@ -4273,18 +4269,17 @@ class ExFalsoWindow(gtk.Window):
                      SongProperties.TagByFilename,
                      SongProperties.RenameFiles,
                      SongProperties.TrackNumbers]:
-            nb.append_page(Page(self, self.__files_changed))
+            nb.append_page(Page(self, lambda *args: 1))
         self.child.pack2(nb, resize = False, shrink=False)
         fs.connect('changed', self.__changed, nb)
         self.__cache = {}
+        s = widgets.watcher.connect_object('refresh', FileSelector.rescan, fs)
+        self.connect_object('destroy', widgets.watcher.disconnect, s)
         self.connect('destroy', gtk.main_quit)
         self.emit('changed', [])
 
     def refill(self): pass
     def update(self): pass
-
-    def __files_changed(self, song, error=False):
-        if song is None: self.child.get_child1().rescan()
 
     def __changed(self, selector, selection, notebook):
         model, rows = selection.get_selected_rows()
