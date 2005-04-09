@@ -78,7 +78,7 @@ class SongWatcher(gobject.GObject):
     def changed(self, song): self.emit('changed', song)
     def removed(self, song): self.emit('removed', song)
     def refresh(self): self.emit('refresh')
-    def set_song(self, song): self.emit('song-started', song)
+    def start_song(self, song): self.emit('song-started', song)
 
     def error(self, song):
         try: song.reload()
@@ -1514,6 +1514,8 @@ class MainWindow(gtk.Window):
             'changed', MainWindow.__song_changed, self)
         widgets.watcher.connect_object(
             'refresh', MainWindow.__update_browser, self)
+        widgets.watcher.connect_object(
+            'song-started', MainWindow.__song_started, self)
         self.show()
 
     def __delete_event(self, event):
@@ -1736,11 +1738,8 @@ class MainWindow(gtk.Window):
     def set_paused(self, paused):
         gobject.idle_add(self._update_paused, paused)
 
-    def set_song(self, song, play):
-        if song and self.__stopafter.active:
-            self.__stopafter.active = False
-            player.playlist.paused = True
-        gobject.idle_add(self._update_song, song, play)
+    def start_song(self, song):
+        gobject.idle_add(widgets.watcher.start_song, song)
 
     def missing_song(self, song):
         gobject.idle_add(self._missing_song, song)
@@ -1796,15 +1795,16 @@ class MainWindow(gtk.Window):
             self.icon.tooltip = s
         self.image.set_song(song)
 
-    def _update_song(self, song, player):
-        widgets.watcher.set_song(song)
+    def __song_started(self, song):
+        if song and self.__stopafter.active:
+            self.__stopafter.active = False
+            player.playlist.paused = True
         for wid in self.song_buttons:
             wid.set_sensitive(bool(song))
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
-            self.__scale.set_value(0, player.length)
             self._time = (0, song["~#length"] * 1000)
 
             for h in ['genre', 'artist', 'album']:
@@ -1814,7 +1814,6 @@ class MainWindow(gtk.Window):
 
             self.update_markup(song)
         else:
-            self.__scale.set_value(0, 1)
             self._time = (0, 1)
             self.update_markup(None)
 

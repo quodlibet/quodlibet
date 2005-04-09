@@ -173,7 +173,7 @@ class PlaylistPlayer(object):
                     self.info.missing_song(self.song)
                     self.lock.release()
                 else:
-                    self.info.set_song(self.song, self.player)
+                    self.info.start_song(self.song)
                     self.played.append(self.song)
                     self.lock.release()
                     while self.paused: time.sleep(0.05)
@@ -197,7 +197,7 @@ class PlaylistPlayer(object):
                 if self.song or self.player:
                     self.lock.acquire()
                     self.song = self.player = None
-                    self.info.set_song(self.song, self.player)
+                    self.info.start_song(self.song)
                     self.paused = True
                     self.lock.release()
                     try: os.unlink(const.CURRENT)
