@@ -3132,7 +3132,9 @@ class SongProperties(gtk.Window):
             for c in self.box.get_children():
                 self.box.remove(c)
                 c.destroy()
-            if len(songs) == 1: self._update_one(songs[0])
+            if len(songs) == 0:
+                self.box.pack_start(gtk.Label(_("No songs are selected.")))
+            elif len(songs) == 1: self._update_one(songs[0])
             else:
                 albums = [song.get("album") for song in songs]
                 artists = [song.get("artist") for song in songs]
@@ -3914,7 +3916,7 @@ class SongProperties(gtk.Window):
                     return True
                 return win.step()
             self.model.foreach(rename)
-            self.prop.refill()
+            widgets.watcher.refresh()
             self.prop.update()
             self.save.set_sensitive(False)
             widgets.watcher.refresh()
@@ -4118,12 +4120,12 @@ class SongProperties(gtk.Window):
             self.pages.append(self.TrackNumbers(self))
         for page in self.pages: self.notebook.append_page(page)
         self.set_border_width(12)
-        vbox = gtk.VBox(spacing = 12)
+        vbox = gtk.VBox(spacing=12)
         vbox.pack_start(self.notebook)
 
-        self.fbasemodel = gtk.ListStore(object, str, str, str)
-        self.fmodel = gtk.TreeModelSort(self.fbasemodel)
-        self.fview = gtk.TreeView(self.fmodel)
+        fbasemodel = gtk.ListStore(object, str, str, str)
+        fmodel = gtk.TreeModelSort(fbasemodel)
+        self.fview = gtk.TreeView(fmodel)
         selection = self.fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         selection.connect('changed', self.__selection_changed)
@@ -4145,17 +4147,17 @@ class SongProperties(gtk.Window):
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             expander.add(sw)
             expander.set_use_underline(True)
-            vbox.pack_start(expander, expand = False)
+            vbox.pack_start(expander, expand=False)
 
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock = gtk.STOCK_CLOSE)
+        button = gtk.Button(stock=gtk.STOCK_CLOSE)
         button.connect_object('clicked', gtk.Window.destroy, self)
         bbox.pack_start(button)
-        vbox.pack_start(bbox, expand = False)
+        vbox.pack_start(bbox, expand=False)
 
         for song in songs:
-            self.fbasemodel.append(
+            fbasemodel.append(
                 row = [song,
                        util.fsdecode(song("~basename")),
                        util.fsdecode(song("~dirname")),
@@ -4166,11 +4168,30 @@ class SongProperties(gtk.Window):
         selection.select_all()
         self.add(vbox)
         self.connect_object('destroy', self.fview.set_model, None)
-        self.connect_object('destroy', gtk.ListStore.clear, self.fbasemodel)
-        self.connect_object('destroy', gtk.TreeModelSort.clear_cache,
-                            self.fmodel)
+        self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
+        self.connect_object(
+            'destroy', gtk.TreeModelSort.clear_cache, fmodel)
+
+        s1 = widgets.watcher.connect_object(
+            'refresh', SongProperties.__refill, self, fbasemodel)
+        s2 = widgets.watcher.connect_object(
+            'removed', SongProperties.__remove, self, fbasemodel)
+        self.connect_object('destroy', widgets.watcher.disconnect, s1)
+        self.connect_object('destroy', widgets.watcher.disconnect, s2)
+
         self.emit('changed', songs)
         self.show_all()
+
+    def __remove(self, song, model):
+        to_remove = [None]
+        def remove(model, path, iter):
+            if model[iter][0] == song: to_remove.append(iter)
+            return bool(to_remove[-1])
+        model.foreach(remove)
+        if to_remove[-1]:
+            model.remove(to_remove[-1])
+            self.__refill(model)
+            self.update()
 
     def update(self):
         self.fview.get_selection().emit('changed')
@@ -4183,13 +4204,13 @@ class SongProperties(gtk.Window):
             self.set_title("%s - %s" % (title, _("Properties")))
         else: self.set_title(_("Properties"))
 
-    def refill(self):
+    def __refill(self, model):
         def refresh(model, iter, path):
             song = model[iter][0]
             model[iter][1] = song("~basename")
             model[iter][2] = song("~dirname")
             model[iter][3] = song["~filename"]
-        self.fbasemodel.foreach(refresh)
+        model.foreach(refresh)
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()
@@ -4197,9 +4218,9 @@ class SongProperties(gtk.Window):
         else:
             songs = []
             def get_songs(model, path, iter, songs):
-                songs.append(model[path][0])
+                songs.append(model[iter][0])
             selection.selected_foreach(get_songs, songs)
-            if songs: self.emit('changed', songs)
+            self.emit('changed', songs)
 
 gobject.type_register(SongProperties)
 
@@ -4384,7 +4405,6 @@ class ExFalsoWindow(gtk.Window):
         self.connect('destroy', gtk.main_quit)
         self.emit('changed', [])
 
-    def refill(self): pass
     def update(self): pass
 
     def __changed(self, selector, selection, notebook):
