@@ -28,19 +28,22 @@ characteristics:
         obj.plugin_full_album(album)
         obj.plugin_full_albums(albums)
 
-        All matching provided callables are called in the above order if they
-        match until one returns a true value.  A plugin should generally only
-        provide one of the callables.
+    All matching provided callables on a single object are called in the above
+    order if they match until one returns a true value.  A plugin should
+    generally only provide one of the callables.
 
-        The single_ variant is only called if a single song/album is selected.
+    The single_ variant is only called if a single song/album is selected.
 
-        The singular tense is called once for each selected song/album, but
-        the plural tense is called with a list of songs/albums.
+    The singular tense is called once for each selected song/album, but the
+    plural tense is called with a list of songs/albums.
 
-        An album is a list of songs all with the same album tag.
+    An album is a list of songs all with the same album tag.
 
-        The full variants of album will expand the selection to all songs
-        matching the album, and pass similarly to the normal variants.
+    The full variants of album will expand the selection to all songs matching
+    the album, and pass similarly to the normal variants.
+
+    If a module defines __all__, only plugins whose names are listed in __all__
+    will be detected. This makes using __all__ in a module-as-plugin impossible.
 """
 
 def hascallable(obj, attr):
@@ -115,12 +118,15 @@ class PluginManager(object):
 
     def load(self, name, mod):
         
-        for plugin in self.byfile.get(name, []):
-            try: del self.plugins[name + '.' + plugin.PLUGIN_NAME]
+        print 'bf', self.byfile
+        print 'pl', self.plugins
+        for pluginname in self.byfile.get(name, []):
+            try: del self.plugins[pluginname]
             except KeyError: pass
 
         self.byfile[name] = []
-        objects = [mod] + [getattr(mod, attr) for attr in vars(mod)]
+        objects = [mod] + [getattr(mod, attr) for attr in
+                            getattr(mod, '__all__', vars(mod))]
         for obj in objects:
             try: obj = obj()
             except TypeError:
@@ -138,8 +144,9 @@ class PluginManager(object):
                 if hascallable(obj, attr): break
             else: continue
 
-            self.byfile[name].append(obj)
-            self.plugins[name + '.' + obj.PLUGIN_NAME] = obj
+            pluginname = name + '.' + obj.PLUGIN_NAME
+            self.byfile[name].append(pluginname)
+            self.plugins[pluginname] = obj
 
     def list(self, selection):
 
