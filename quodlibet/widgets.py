@@ -1438,7 +1438,9 @@ class MainWindow(gtk.Window):
 
         # cover image
         self.image = CoverImage()
-        hbox.pack_start(self.image, expand = False)
+        widgets.watcher.connect_object(
+            'song-started', CoverImage.set_song, self.image)
+        hbox.pack_start(self.image, expand=False)
 
         # volume control
         vbox = gtk.VBox()
@@ -1808,7 +1810,6 @@ class MainWindow(gtk.Window):
             self.set_title("Quod Libet")
             self.text.set_markup("<span size='xx-large'>%s</span>" % s)
             self.icon.tooltip = s
-        self.image.set_song(song)
 
     def __song_started(self, song):
         if song and self.__stopafter.active:
