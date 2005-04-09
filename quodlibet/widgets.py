@@ -49,11 +49,12 @@ class FSInterface(object):
         except OSError: pass
 
     def __started(self, watcher, song):
-        try: f = file(const.CURRENT, "w")
-        except (OSError, IOError): pass
-        else:
-            f.write(song.to_dump())
-            f.close()
+        if song:
+            try: f = file(const.CURRENT, "w")
+            except (OSError, IOError): pass
+            else:
+                f.write(song.to_dump())
+                f.close()
 
     def __ended(self, watcher, song, stopped):
         try: os.unlink(const.CURRENT)
@@ -1667,7 +1668,7 @@ class MainWindow(gtk.Window):
         self.songlist.set_rules_hint(True)
         self.songlist.set_size_request(200, 150)
         sw.add(self.songlist)
-        widgets.songs = gtk.ListStore(object)
+        self.songlist.set_model(gtk.ListStore(object))
         self.set_column_headers(config.get("settings", "headers").split())
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(None, sort[1:], refresh=True,
@@ -1966,7 +1967,7 @@ class MainWindow(gtk.Window):
             if this_song is song or this_song is last_song:
                 model.row_changed(path, iter)
 
-        widgets.songs.foreach(update_if_last_or_current)
+        self.songlist.get_model().foreach(update_if_last_or_current)
         if song and config.getboolean("settings", "jump"):
             self.jump_to_current()
         return False
@@ -2129,8 +2130,9 @@ class MainWindow(gtk.Window):
 
     def select_song(self, tree, indices, col):
         self.__stopafter.active = False
-        iter = widgets.songs.get_iter(indices)
-        song = widgets.songs.get_value(iter, 0)
+        model = self.songlist.get_model()
+        iter = model.get_iter(indices)
+        song = model.get_value(iter, 0)
         player.playlist.go_to(song)
         player.playlist.paused = False
 
@@ -2201,7 +2203,7 @@ class MainWindow(gtk.Window):
         view = self.songlist
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        iters = [widgets.songs.get_iter(row) for row in rows]
+        iters = [model.get_iter(row) for row in rows]
         for iter in iters:
             song = model[iter][0]
             library.remove(song)
@@ -2219,7 +2221,7 @@ class MainWindow(gtk.Window):
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         songs = [(model[r][0]["~filename"], model[r][0],
-                  widgets.songs.get_iter(r)) for r in rows]
+                  model.get_iter(r)) for r in rows]
         d = DeleteDialog(self, [song[0] for song in songs])
         resp = d.run()
         d.destroy()
@@ -2683,21 +2685,20 @@ class MainSongList(SongList):
 
     # Clear the songlist and readd the songs currently wanted.
     def refresh(self, current=None):
-        if self.get_model() is None:
-            self.set_model(widgets.songs)
+        model = self.get_model()
 
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])
 
-        widgets.songs.clear()
+        model.clear()
         length = 0
         for song in player.playlist:
-            widgets.songs.append([song])
+            model.append([song])
             length += song["~#length"]
 
         # reselect what we can
         selection = self.get_selection()
-        for i, row in enumerate(iter(widgets.songs)):
+        for i, row in enumerate(iter(model)):
             if row[0]['~filename'] in selected:
                 selection.select_path(i)
         i = len(list(player.playlist))
@@ -3845,98 +3846,111 @@ class SongProperties(gtk.Window):
 
     class RenameFiles(gtk.VBox):
         def __init__(self, prop):
-            gtk.VBox.__init__(self, spacing = 6)
+            gtk.VBox.__init__(self, spacing=6)
             self.title = _("Rename Files")
-            self.prop = prop
             self.set_border_width(12)
-            hbox = gtk.HBox(spacing = 12)
-            self.combo = combo = qltk.ComboBoxEntrySave(
+
+            # ComboEntry and Preview button
+            hbox = gtk.HBox(spacing=12)
+            combo = qltk.ComboBoxEntrySave(
                 const.NBP, const.NBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
-            self.entry = combo.child
-            self.entry.connect('changed', self.changed)
-            self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
-            self.preview.connect('clicked', self.preview_files, combo)
-            hbox.pack_start(self.preview, expand = False)
-            self.pack_start(hbox, expand = False)
+            preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
+            hbox.pack_start(preview, expand=False)
+            self.pack_start(hbox, expand=False)
 
-            self.model = gtk.ListStore(object, str, str)
-            self.view = gtk.TreeView(self.model)
-            column = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
-                                        text = 1)
+            # Tree view in a scrolling window
+            model = gtk.ListStore(object, str, str)
+            view = gtk.TreeView(model)
+            column = gtk.TreeViewColumn(
+                _('File'), gtk.CellRendererText(), text=1)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            self.view.append_column(column)
+            view.append_column(column)
             render = gtk.CellRendererText()
             render.set_property('editable', True)
-            render.connect('edited', self.row_edited, self.model)
-            column = gtk.TreeViewColumn(_('New Name'), render, text = 2)
+            render.connect('edited', self.__row_edited, model, preview)
+            column = gtk.TreeViewColumn(_('New Name'), render, text=2)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            
-            self.view.append_column(column)
+            view.append_column(column)
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            sw.add(self.view)
+            sw.add(view)
             self.pack_start(sw)
 
-            self.replace = gtk.CheckButton(
-                _("Replace spaces with _underscores"))
-            self.replace.set_active(config.state("nbp_space"))
-            self.replace.connect('toggled', self.changed)
-            self.windows = gtk.CheckButton(_(
+            # Checkboxes
+            replace = gtk.CheckButton(_("Replace spaces with _underscores"))
+            replace.set_active(config.state("nbp_space"))
+            windows = gtk.CheckButton(_(
                 "Replace _Windows-incompatible characters"))
-            self.windows.set_active(config.state("windows"))
-            self.windows.connect('toggled', self.changed)
-            self.ascii = gtk.CheckButton(_("Replace non-_ASCII characters"))
-            self.ascii.set_active(config.state("ascii"))
-            self.ascii.connect('toggled', self.changed)
-            vbox = gtk.VBox()
-            vbox.pack_start(self.replace)
-            vbox.pack_start(self.windows)
-            vbox.pack_start(self.ascii)
-            self.pack_start(vbox, expand = False)
+            windows.set_active(config.state("windows"))
+            ascii = gtk.CheckButton(_("Replace non-_ASCII characters"))
+            ascii.set_active(config.state("ascii"))
 
-            self.save = qltk.Button(stock = gtk.STOCK_SAVE,
-                                    cb = self.rename_files)
+            vbox = gtk.VBox()
+            vbox.pack_start(replace)
+            vbox.pack_start(windows)
+            vbox.pack_start(ascii)
+            self.pack_start(vbox, expand=False)
+
+            # Save button
+            save = gtk.Button(stock=gtk.STOCK_SAVE)
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
-            bbox.pack_start(self.save)
-            self.pack_start(bbox, expand = False)
+            bbox.pack_start(save)
+            self.pack_start(bbox, expand=False)
 
+            # Set tooltips
             tips = gtk.Tooltips()
             for widget, tip in [
-                (self.windows,
+                (windows,
                  _("Characters not allowed in Windows filenames "
                    "(\:?;\"<>|) will be replaced by underscores")),
-                (self.ascii,
+                (ascii,
                  _("Characters outside of the ASCII set (A-Z, a-z, 0-9, "
                    "and punctuation) will be replaced by underscores"))]:
                 tips.set_tip(widget, tip)
-            prop.connect_object('changed', self.__class__.__update, self)
 
-        def changed(self, *args):
-            config.set("settings", "windows",
-                       str(self.windows.get_active()))
-            config.set("settings", "ascii",
-                       str(self.ascii.get_active()))
-            config.set("settings", "nbp_space",
-                       str(self.replace.get_active()))
-            self.save.set_sensitive(False)
-            self.preview.set_sensitive(bool(self.entry.get_text()))
+            # Connect callbacks
+            preview_args = [combo, prop, model, save, preview,
+                            replace, windows, ascii]
+            preview.connect(
+                'clicked', self.__preview_files, *preview_args)
+            prop.connect_object(
+                'changed', self.__class__.__update, self, *preview_args)
 
-        def row_edited(self, renderer, path, new, model):
+            changed_args = [replace, windows, ascii, save, preview,
+                            combo.child]
+            for w in [replace, windows, ascii]:
+                w.connect_object('toggled', self.__changed, *changed_args)
+            combo.child.connect_object(
+                'changed', self.__changed, *changed_args)
+
+            save.connect_object(
+                'clicked', self.__rename_files, prop, save, model)
+
+        def __changed(self, replace, windows, ascii, save, preview, entry):
+            config.set("settings", "windows", str(windows.get_active()))
+            config.set("settings", "ascii", str(ascii.get_active()))
+            config.set("settings", "nbp_space", str(replace.get_active()))
+            save.set_sensitive(False)
+            preview.set_sensitive(bool(entry.get_text()))
+
+        def __row_edited(self, renderer, path, new, model, preview):
             row = model[path]
             if row[2] != new:
                 row[2] = new
-                self.preview.set_sensitive(True)
+                preview.set_sensitive(True)
 
-        def preview_files(self, button, combo):
-            self.__update(self.songs)
-            self.save.set_sensitive(True)
-            self.preview.set_sensitive(False)
+        def __preview_files(self, button, *args):
+            self.__update(self.__songs, *args)
+            save = args[3]
+            save.set_sensitive(True)
+            preview = args[4]
+            preview.set_sensitive(False)
 
-        def rename_files(self, *args):
-            win = WritingWindow(self.prop, len(self.songs))
+        def __rename_files(self, parent, save, model):
+            win = WritingWindow(parent, len(self.__songs))
 
             def rename(model, path, iter):
                 song = model[path][0]
@@ -3949,7 +3963,7 @@ class SongProperties(gtk.Window):
                     widgets.watcher.changed(song)
                 except:
                     qltk.ErrorMessage(
-                        self.prop, _("Unable to rename file"),
+                        win, _("Unable to rename file"),
                         _("Renaming <b>%s</b> to <b>%s</b> failed. "
                           "Possibly the target file already exists, "
                           "or you do not have permission to make the "
@@ -3958,26 +3972,27 @@ class SongProperties(gtk.Window):
                     widgets.watcher.error(song)
                     return True
                 return win.step()
-            self.model.foreach(rename)
+            model.foreach(rename)
             widgets.watcher.refresh()
-            self.save.set_sensitive(False)
+            save.set_sensitive(False)
             widgets.watcher.refresh()
             win.destroy()
 
-        def __update(self, songs):
-            self.songs = songs
-            self.model.clear()
-            pattern = self.entry.get_text().decode("utf-8")
+        def __update(self, songs, combo, parent, model, save, preview,
+                     replace, windows, ascii):
+            self.__songs = songs
+            model.clear()
+            pattern = combo.child.get_text().decode("utf-8")
 
-            underscore = self.replace.get_active()
-            windows = self.windows.get_active()
-            ascii = self.ascii.get_active()
+            underscore = replace.get_active()
+            windows = windows.get_active()
+            ascii = ascii.get_active()
 
             try:
                 pattern = util.FileFromPattern(pattern)
             except ValueError: 
                 qltk.ErrorMessage(
-                    self.prop,
+                    parent,
                     _("Pattern with subdirectories is not absolute"),
                     _("The pattern\n\t<b>%s</b>\ncontains / but "
                       "does not start from root. To avoid misnamed "
@@ -3986,11 +4001,11 @@ class SongProperties(gtk.Window):
                     util.escape(pattern))).run()
                 return
             else:
-                if self.entry.get_text():
-                    self.combo.prepend_text(self.entry.get_text())
-                    self.combo.write(const.NBP)
+                if combo.child.get_text():
+                    combo.prepend_text(combo.child.get_text())
+                    combo.write(const.NBP)
 
-            for song in self.songs:
+            for song in self.__songs:
                 newname = pattern.match(song)
                 code = util.fscoding()
                 newname = newname.encode(code, "replace").decode(code)
@@ -4003,9 +4018,9 @@ class SongProperties(gtk.Window):
                     newname = "".join(
                         map(lambda c: ((ord(c) < 127 and c) or "_"),
                             newname))
-                self.model.append(row=[song, basename, newname])
-            self.preview.set_sensitive(False)
-            self.save.set_sensitive(bool(self.entry.get_text()))
+                model.append(row=[song, basename, newname])
+            preview.set_sensitive(False)
+            save.set_sensitive(bool(combo.child.get_text()))
 
     class TrackNumbers(gtk.VBox):
         def __init__(self, prop):
@@ -4026,7 +4041,7 @@ class SongProperties(gtk.Window):
             hbox_start.pack_start(label_start)
             hbox_start.pack_start(spin_start)
 
-            hbox_total = gtk.HBox(spacing = 3)
+            hbox_total = gtk.HBox(spacing=3)
             label_total = gtk.Label("_Total tracks:")
             label_total.set_use_underline(True)
             spin_total = gtk.SpinButton()
