@@ -1585,7 +1585,8 @@ class MainWindow(gtk.Window):
 
         # plugin support
         from plugins import PluginManager
-        self.__pm = PluginManager([const.PLUGINS])
+        self.__pm = PluginManager(widgets.watcher, [const.PLUGINS])
+        self.__pm.rescan()
         
         self.browser = None
         self.select_browser(self, config.getint("memory", "browser"))
@@ -2270,7 +2271,6 @@ class MainWindow(gtk.Window):
         menu.append(b)
         submenu = gtk.Menu()
         b.set_submenu(submenu)
-        self.__pm.rescan()
         self.__create_plugins_menu(self.__pm, submenu)
         submenu.connect('expose-event', self.__refresh_plugins_menu,
                 self.__pm, submenu)
