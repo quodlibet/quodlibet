@@ -118,8 +118,6 @@ class PluginManager(object):
 
     def load(self, name, mod):
         
-        print 'bf', self.byfile
-        print 'pl', self.plugins
         for pluginname in self.byfile.get(name, []):
             try: del self.plugins[pluginname]
             except KeyError: pass
