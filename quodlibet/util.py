@@ -74,11 +74,11 @@ def format_time(time):
     """Turn a time value in seconds into hh:mm:ss or mm:ss."""
     if time > 3600: # 1 hour
         # time, in hours:minutes:seconds
-        return _("%d:%02d:%02d") % (time // 3600,
+        return "%d:%02d:%02d" % (time // 3600,
                                  (time % 3600) // 60, time % 60)
     else:
         # time, in minutes:seconds
-        return _("%d:%02d") % (time // 60, time % 60)
+        return "%d:%02d" % (time // 60, time % 60)
 
 def format_time_long(time):
     """Turn a time value in seconds into x hours, x minutes, etc."""
