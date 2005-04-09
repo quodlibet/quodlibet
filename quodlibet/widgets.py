@@ -3509,7 +3509,6 @@ class SongProperties(gtk.Window):
             widgets.watcher.refresh()
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
-            self.prop.update()
 
         def revert_files(self, *args):
             self.__update(self.songs)
@@ -3777,7 +3776,6 @@ class SongProperties(gtk.Window):
             win.destroy()
             widgets.watcher.refresh()
             self.save.set_sensitive(False)
-            self.prop.update()
 
         def row_edited(self, renderer, path, new, model, colnum):
             row = model[path]
@@ -3917,7 +3915,6 @@ class SongProperties(gtk.Window):
                 return win.step()
             self.model.foreach(rename)
             widgets.watcher.refresh()
-            self.prop.update()
             self.save.set_sensitive(False)
             widgets.watcher.refresh()
             win.destroy()
@@ -4068,7 +4065,6 @@ class SongProperties(gtk.Window):
                 widgets.watcher.changed(song)
                 return win.step()
             self.model.foreach(settrack)
-            self.prop.update()
             widgets.watcher.refresh()
             win.destroy()
 
@@ -4176,8 +4172,11 @@ class SongProperties(gtk.Window):
             'refresh', SongProperties.__refill, self, fbasemodel)
         s2 = widgets.watcher.connect_object(
             'removed', SongProperties.__remove, self, fbasemodel)
+        s3 = widgets.watcher.connect_object(
+            'refresh', self.fview.get_selection().emit, 'changed')
         self.connect_object('destroy', widgets.watcher.disconnect, s1)
         self.connect_object('destroy', widgets.watcher.disconnect, s2)
+        self.connect_object('destroy', widgets.watcher.disconnect, s3)
 
         self.emit('changed', songs)
         self.show_all()
@@ -4191,10 +4190,7 @@ class SongProperties(gtk.Window):
         if to_remove[-1]:
             model.remove(to_remove[-1])
             self.__refill(model)
-            self.update()
-
-    def update(self):
-        self.fview.get_selection().emit('changed')
+            self.fview.get_selection().emit('changed')
 
     def __set_title(self, songs):
         if songs:
@@ -4404,8 +4400,6 @@ class ExFalsoWindow(gtk.Window):
         self.connect_object('destroy', widgets.watcher.disconnect, s)
         self.connect('destroy', gtk.main_quit)
         self.emit('changed', [])
-
-    def update(self): pass
 
     def __changed(self, selector, selection, notebook):
         model, rows = selection.get_selected_rows()
