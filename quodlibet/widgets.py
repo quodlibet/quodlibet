@@ -1288,6 +1288,70 @@ class MainWindow(gtk.Window):
         def __set_active(self, v): return self.__item.set_active(v)
         active = property(__get_active, __set_active)
 
+    class SongInfo(gtk.Label):
+        def __init__(self):
+            gtk.Label.__init__(self)
+            self.set_size_request(100, -1)
+            self.set_alignment(0.0, 0.0)
+            self.set_padding(3, 3)
+            self.__song = None
+            widgets.watcher.connect('song-started', self.__song_started)
+            widgets.watcher.connect('changed', self.__check_change)
+
+        def __check_change(self, watcher, song):
+            if song is self.__song:
+                self.__song_started(watcher, song)
+
+        def __song_started(self, watcher, song):
+            if song:
+                t = self.__title(song)+self.__people(song)+self.__album(song)
+            else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
+            self.set_markup(t)
+            self.__song = song
+
+        def __title(self, song):
+            t = "<span weight='bold' size='large'>%s</span>" %(
+                util.escape(song.comma("title")))
+            if "version" in song:
+                t += "\n<small><b>%s</b></small>" %(
+                    util.escape(song.comma("version")))
+            return t
+
+        def __people(self, song):
+            t = ""
+            if "artist" in song:
+                t += "\n" + _("by %s") % util.escape(song.comma("artist"))
+            if "performer" in song:
+                t += "\n<small>%s</small>" % util.escape(
+                    _("Performed by %s") % song.comma("performer"))
+
+            others = []
+            for key, name in [
+                ("arranger", _("arranged by %s")),
+                ("lyricist", _("lyrics by %s")),
+                ("conductor", _("conducted by %s")),
+                ("composer", _("composed by %s")),
+                ("author", _("written by %s"))]:
+                if key in song: others.append(name % song.comma(key))
+            if others:
+                others = util.capitalize("; ".join(others))
+                t += "\n<small>%s</small>" % util.escape(others)
+            return t
+
+        def __album(self, song):
+            t = []
+            if "album" in song:
+                t.append("\n<b>%s</b>" % util.escape(song.comma("album")))
+                if "discnumber" in song:
+                    t.append(_("Disc %s") % util.escape(
+                        song.comma("discnumber")))
+                if "part" in song:
+                    t.append("<b>%s</b>" % util.escape(song.comma("part")))
+                if "tracknumber" in song:
+                    t.append(_("Track %s") % util.escape(
+                        song.comma("tracknumber")))
+            return " - ".join(t)
+
     class PositionSlider(gtk.HBox):
         __gsignals__ = {
             'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
@@ -1417,18 +1481,14 @@ class MainWindow(gtk.Window):
         self.song_buttons = [info, next, props]
         self.play_image = play.child
 
-        hb2.pack_start(t, expand = False, fill = False)
+        hb2.pack_start(t, expand=False, fill=False)
 
         # song text
-        self.text = gtk.Label()
-        self.text.set_size_request(100, -1)
-        self.text.set_alignment(0.0, 0.0)
-        self.text.set_padding(3, 3)
-        hb2.pack_start(self.text)
+        text = self.SongInfo()
+        hb2.pack_start(text)
 
-        vbox.pack_start(hb2, expand = True)
-
-        hbox.pack_start(vbox, expand = True)
+        vbox.pack_start(hb2, expand=True)
+        hbox.pack_start(vbox, expand=True)
 
         # position slider
         scale = self.PositionSlider()
@@ -1795,7 +1855,6 @@ class MainWindow(gtk.Window):
 
     def update_markup(self, song):
         if song:
-            self.text.set_markup(song.to_markup())
             try:
                 pattern = util.FileFromPattern(
                     config.get("plugins", "icon_tooltip"), filename=False)
@@ -1808,7 +1867,6 @@ class MainWindow(gtk.Window):
         else:
             s = _("Not playing")
             self.set_title("Quod Libet")
-            self.text.set_markup("<span size='xx-large'>%s</span>" % s)
             self.icon.tooltip = s
 
     def __song_started(self, song):

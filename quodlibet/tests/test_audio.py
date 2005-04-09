@@ -183,8 +183,6 @@ class AudioFileTest(TestCase):
         q.sanitize()
         self.failUnlessRaises(ValueError, b.sanitize)
 
-    # FIXME: test to_markup (this function sucks and should be UI)
-
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
         self.failUnlessEqual(dump.count("\n"), len(bar_1_1))

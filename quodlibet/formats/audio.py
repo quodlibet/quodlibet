@@ -154,49 +154,6 @@ class AudioFile(dict):
 
         self["~#mtime"] = os.path.mtime(self['~filename'])
 
-    # Construct the text seen in the player window
-    def to_markup(self):
-        title = self.comma("title")
-        text = u'<span weight="bold" size="large">%s</span>' % escape(title)
-        if "version" in self:
-            text += u"\n<small><b>%s</b></small>" % escape(
-                self.comma("version"))
-
-        if "artist" in self:
-            text += u"\n" + _("by %s") % escape(self.comma("artist"))
-
-        if "performer" in self:
-            s = _("Performed by %s") % self.comma("performer")
-            text += "\n<small>%s</small>" % s
-
-        others = ""
-        if "arranger" in self:
-            others += "; " + _("arranged by %s") % self.comma("arranger")
-        if "lyricist" in self:
-            others += "; " + _("lyrics by %s") % self.comma("lyricist")
-        if "conductor" in self:
-            others += "; " + _("conducted by %s") % self.comma("conductor")
-        if "composer" in self:
-            others += "; " + _("composed by %s") % self.comma("composer")
-        if "author" in self:
-            others += "; " + _("written by %s") % self.comma("author")
-
-        if others:
-            others = others.lstrip("; ")
-            others = others[0].upper() + others[1:]
-            text += "\n<small>%s</small>" % escape(others)
-
-        if "album" in self:
-            album = u"\n<b>%s</b>" % escape(self.comma("album"))
-            if "discnumber" in self:
-                album += " - "+_("Disc %s")%escape(self.comma("discnumber"))
-            if "part" in self:
-                album += u" - <b>%s</b>" % escape(self.comma("part"))
-            if "tracknumber" in self:
-                album +=" - " + _("Track %s")%escape(self.comma("tracknumber"))
-            text += album
-        return text
-
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
         s = ""
