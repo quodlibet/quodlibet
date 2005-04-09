@@ -7,14 +7,14 @@ VERSION = "0.11"
 
 HOME    = os.path.expanduser("~")
 DIR     = os.path.join(HOME, ".quodlibet")
-CONTROL = os.path.join(DIR,  "control")
-CONFIG  = os.path.join(DIR,  "config")
-CURRENT = os.path.join(DIR,  "current")
-LIBRARY = os.path.join(DIR,  "songs")
-ACCELS  = os.path.join(DIR,  "accels")
-
+CONTROL = os.path.join(DIR, "control")
+CONFIG  = os.path.join(DIR, "config")
+CURRENT = os.path.join(DIR, "current")
+LIBRARY = os.path.join(DIR, "songs")
+ACCELS  = os.path.join(DIR, "accels")
+PAUSED  = os.path.join(DIR, "paused")
 PLUGINS = os.path.join(DIR, "plugins")
-QUERIES  = os.path.join(DIR, "lists",  "queries")
+QUERIES = os.path.join(DIR, "lists", "queries")
 
 CREDITS = ["Joe Wreschnig",
            "Michael Urman",

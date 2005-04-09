@@ -80,7 +80,7 @@ class PlaylistPlayer(object):
         self._shuffle = False
         self.repeat = False
         self.player = None
-        self._paused = True
+        self.paused = True
         self.song = None
         self.quit = False
         self.sort = cmp
@@ -95,7 +95,14 @@ class PlaylistPlayer(object):
 
     def set_paused(self, paused):
         self._paused = paused
-        self.info.set_paused(paused)
+        try: self.info.set_paused(paused)
+        except AttributeError: pass
+        if paused:
+            try: file(const.PAUSED, "w").close()
+            except: pass
+        else:
+            try: os.unlink(const.PAUSED)
+            except: pass
 
     def get_paused(self): return self._paused
 

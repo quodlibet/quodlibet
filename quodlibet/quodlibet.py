@@ -144,6 +144,12 @@ def main():
     gtk.quit_add(0, save_and_quit, t)
     gtk.main()
 
+def print_status():
+    if not os.path.exists(const.CURRENT): print "stopped"
+    elif os.path.exists(const.PAUSED): print "paused"
+    else: print "playing"
+    raise SystemExit
+
 def save_and_quit(thread):
     player.playlist.quitting()
     thread.join()
@@ -275,6 +281,7 @@ if __name__ == "__main__":
         ("play-pause", _("Toggle play/pause mode")),
         ("volume-up", _("Turn up volume")),
         ("volume-down", _("Turn down volume")),
+        ("status", _("Print playing status")),
         ]: options.add(opt, help=help)
 
     for opt, help, arg in [
@@ -293,6 +300,7 @@ if __name__ == "__main__":
         elif command in controls: control(controls[command])
         elif command in controls_opt:
             control(controls_opt[command] + arg)
+        elif command == "status": print_status()
         elif command == "play-file":
             filename = os.path.abspath(os.path.expanduser(arg))
             if os.path.isdir(filename): control("d" + filename)
