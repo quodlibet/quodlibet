@@ -51,23 +51,34 @@ class FileChooser(gtk.FileChooserDialog):
         return resp, fns
 
 class SongWatcher(gobject.GObject):
+    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+    SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+    
     __gsignals__ = {
-        # The given song was changed
-        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                    (object,)),
-        # The song was removed from the library; it should be removed
-        # from all views.
-        'removed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                    (object,)),
+        # A song in the library has been changed; update it in all views.
+        'changed': SIG_PYOBJECT,
+
+        # A song was removed from the library; remove it from all views.
+        'removed': SIG_PYOBJECT,
 
         # A group of changes has been finished; all library views should
         # do a global refresh if necessary
-        'refresh': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        'refresh': SIG_NONE,
+
+        # A new song started playing (or the current one was restarted).
+        'song-started': SIG_PYOBJECT,
+
+        # Playback was paused.
+        'paused': SIG_NONE,
+
+        # Playback was unpaused.
+        'unpaused': SIG_NONE,
         }
 
     def changed(self, song): self.emit('changed', song)
     def removed(self, song): self.emit('removed', song)
     def refresh(self): self.emit('refresh')
+    def set_song(self, song): self.emit('song-started', song)
 
     def error(self, song):
         try: song.reload()
@@ -748,16 +759,16 @@ class MmKeys(object):
 class Osd(object):
     def __init__(self):
         try: import gosd
-        except:
-            self.__gosd = None
+        except: pass
         else:
             self.__gosd = gosd
             self.__level = 0
             self.__window = None
+            widgets.watcher.connect_object(
+                'song-started', Osd.__show_osd, self)
 
-    def show_osd(self, song):
-        if not self.__gosd: return
-        elif config.getint("settings", "osd") == 0: return
+    def __show_osd(self, song):
+        if song is None or config.getint("settings", "osd") == 0: return
         color1, color2 = config.get("settings", "osdcolors").split()
         font = config.get("settings", "osdfont")
 
@@ -1262,8 +1273,7 @@ class MainWindow(gtk.Window):
         __gsignals__ = {
             'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
             }
-            
-        
+                    
         def __init__(self):
             gtk.HBox.__init__(self)
             l = gtk.Label("0:00/0:00")
@@ -1275,18 +1285,28 @@ class MainWindow(gtk.Window):
             scale.set_draw_value(False)
             self.pack_start(scale)
 
+            widgets.watcher.connect_object(
+                'song-started', self.__class__.__song_changed, self, scale, l)
+
             self.__position = scale
             self.__timer = l
 
-        def set_value(self, cur, end = None):
+        def __song_changed(self, song, position, label):
+            if song:
+                length = song["~#length"]
+                position.set_range(0, length * 1000)
+                position.set_value(0)
+                label.set_text(util.format_time(length))
+            else:
+                position.set_range(0, 1)
+                label.set_text(util.format_time(0))
+
+        def set_value(self, cur, end=None):
             self.__position.set_value(cur)
             self.__timer.set_text(
                 "%d:%02d/%d:%02d" %
                 (cur // 60000, (cur % 60000) // 1000,
                  end // 60000, (end % 60000) // 1000))
-
-        def set_range(self, end):
-            self.__position.set_range(0, end)
 
     gobject.type_register(PositionSlider)
 
@@ -1483,7 +1503,6 @@ class MainWindow(gtk.Window):
         self.keys = MmKeys({"mm_prev": self.previous_song,
                             "mm_next": self.next_song,
                             "mm_playpause": self.play_pause})
-        self.osd = Osd()
 
         gobject.timeout_add(100, self.__update_time)
         self.child.show_all()
@@ -1770,7 +1789,6 @@ class MainWindow(gtk.Window):
                     "<artist~title~version>>", filename=False)
             self.icon.tooltip = pattern.match(song)
             self.set_title("Quod Libet - " + song.comma("~title~version"))
-            self.osd.show_osd(song)
         else:
             s = _("Not playing")
             self.set_title("Quod Libet")
@@ -1779,13 +1797,13 @@ class MainWindow(gtk.Window):
         self.image.set_song(song)
 
     def _update_song(self, song, player):
+        widgets.watcher.set_song(song)
         for wid in self.song_buttons:
             wid.set_sensitive(bool(song))
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
-            self.__scale.set_range(player.length)
             self.__scale.set_value(0, player.length)
             self._time = (0, song["~#length"] * 1000)
 
@@ -1796,7 +1814,6 @@ class MainWindow(gtk.Window):
 
             self.update_markup(song)
         else:
-            self.__scale.set_range(1)
             self.__scale.set_value(0, 1)
             self._time = (0, 1)
             self.update_markup(None)
@@ -4348,6 +4365,12 @@ def init():
     widgets.watcher = SongWatcher()
     widgets.main = MainWindow()
     player.playlist.info = widgets.main
+
+    # If the OSD module is not available, no signal is registered and
+    # the reference is dropped. If it is available, a reference to it is
+    # stored in its signal registered with SongWatcher.
+    Osd()
+
     gtk.threads_init()
     util.mkdir(const.DIR)
     import signal
