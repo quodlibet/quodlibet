@@ -4107,22 +4107,21 @@ class SongProperties(gtk.Window):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
-        self.pages = []
-        self.notebook = qltk.Notebook()
-        self.pages = [Ctr(self) for Ctr in
-                      [self.Information, self.EditTags, self.TagByFilename,
-                       self.RenameFiles]]
+        notebook = qltk.Notebook()
+        pages = [Ctr(self) for Ctr in
+                 [self.Information, self.EditTags, self.TagByFilename,
+                  self.RenameFiles]]
         if len(songs) > 1:
-            self.pages.append(self.TrackNumbers(self))
-        for page in self.pages: self.notebook.append_page(page)
+            pages.append(self.TrackNumbers(self))
+        for page in pages: notebook.append_page(page)
         self.set_border_width(12)
         vbox = gtk.VBox(spacing=12)
-        vbox.pack_start(self.notebook)
+        vbox.pack_start(notebook)
 
         fbasemodel = gtk.ListStore(object, str, str, str)
         fmodel = gtk.TreeModelSort(fbasemodel)
-        self.fview = gtk.TreeView(fmodel)
-        selection = self.fview.get_selection()
+        fview = gtk.TreeView(fmodel)
+        selection = fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         selection.connect('changed', self.__selection_changed)
 
@@ -4134,11 +4133,11 @@ class SongProperties(gtk.Window):
             c2 = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=2)
             c2.set_sort_column_id(3)
             c2.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            self.fview.append_column(c1)
-            self.fview.append_column(c2)
-            self.fview.set_size_request(-1, 130)
+            fview.append_column(c1)
+            fview.append_column(c2)
+            fview.set_size_request(-1, 130)
             sw = gtk.ScrolledWindow()
-            sw.add(self.fview)
+            sw.add(fview)
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             expander.add(sw)
@@ -4163,7 +4162,7 @@ class SongProperties(gtk.Window):
 
         selection.select_all()
         self.add(vbox)
-        self.connect_object('destroy', self.fview.set_model, None)
+        self.connect_object('destroy', fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
         self.connect_object(
             'destroy', gtk.TreeModelSort.clear_cache, fmodel)
@@ -4171,9 +4170,9 @@ class SongProperties(gtk.Window):
         s1 = widgets.watcher.connect_object(
             'refresh', SongProperties.__refill, self, fbasemodel)
         s2 = widgets.watcher.connect_object(
-            'removed', SongProperties.__remove, self, fbasemodel)
+            'removed', SongProperties.__remove, self, fbasemodel, selection)
         s3 = widgets.watcher.connect_object(
-            'refresh', self.fview.get_selection().emit, 'changed')
+            'refresh', selection.emit, 'changed')
         self.connect_object('destroy', widgets.watcher.disconnect, s1)
         self.connect_object('destroy', widgets.watcher.disconnect, s2)
         self.connect_object('destroy', widgets.watcher.disconnect, s3)
@@ -4181,7 +4180,7 @@ class SongProperties(gtk.Window):
         self.emit('changed', songs)
         self.show_all()
 
-    def __remove(self, song, model):
+    def __remove(self, song, model, selection):
         to_remove = [None]
         def remove(model, path, iter):
             if model[iter][0] == song: to_remove.append(iter)
@@ -4190,7 +4189,7 @@ class SongProperties(gtk.Window):
         if to_remove[-1]:
             model.remove(to_remove[-1])
             self.__refill(model)
-            self.fview.get_selection().emit('changed')
+            selection.emit('changed')
 
     def __set_title(self, songs):
         if songs:
