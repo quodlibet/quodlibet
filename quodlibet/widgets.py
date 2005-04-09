@@ -64,6 +64,18 @@ class SongWatcher(gobject.GObject):
         # do a global refresh if necessary
         'refresh': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
         }
+
+    def changed(self, song): self.emit('changed', song)
+    def removed(self, song): self.emit('removed', song)
+    def refresh(self): self.emit('refresh')
+
+    def error(self, song):
+        try: song.reload()
+        except:
+            library.remove(song)
+            self.removed(song)
+        else: self.changed(song)
+
 gobject.type_register(SongWatcher)
 
 # FIXME: replace with a standard About widget when using GTK 2.6.
@@ -1480,6 +1492,8 @@ class MainWindow(gtk.Window):
         widgets.watcher.connect_object(
             'removed', MainWindow.__song_removed, self)
         widgets.watcher.connect_object(
+            'changed', MainWindow.__song_changed, self)
+        widgets.watcher.connect_object(
             'refresh', MainWindow.__update_browser, self)
         self.show()
 
@@ -1488,18 +1502,9 @@ class MainWindow(gtk.Window):
             self.icon.hide_window()
             return True
 
-    def song_update_view(self, song, error=False):
-        if error:
-            try: song.reload()
-            except:
-                library.remove(song)
-                widgets.watcher.emit('removed', song)
-            else: widgets.watcher.emit('changed', song)
-        else:
-            assert(song)
-            widgets.watcher.emit('changed', song)
-            if song is self.current_song:
-                self.update_markup(self.current_song)
+    def __song_changed(self, song):
+        if song is self.current_song:
+            self.update_markup(self.current_song)
 
     def _create_menu(self, tips):
         ag = gtk.ActionGroup('MainWindowActions')
@@ -2048,8 +2053,8 @@ class MainWindow(gtk.Window):
         for iter in iters:
             song = model[iter][0]
             library.remove(song)
-            widgets.watcher.emit('removed', song)
-        widgets.watcher.emit('refresh')
+            widgets.watcher.removed(song)
+        widgets.watcher.refresh()
 
     def __update_browser(self):
         self.browser.update()
@@ -2081,8 +2086,8 @@ class MainWindow(gtk.Window):
                     else:
                         os.unlink(filename)
                     library.remove(song)
-                    widgets.watcher.emit('removed', song)
-                    
+                    widgets.watcher.removed(song)
+
                 except:
                     qltk.ErrorMessage(
                         self, _("Unable to delete file"),
@@ -2102,15 +2107,15 @@ class MainWindow(gtk.Window):
 
     def current_song_prop(self, *args):
         song = self.current_song
-        if song: SongProperties([song], self.song_update_view)
+        if song: SongProperties([song])
 
     def song_properties(self, item):
-        SongProperties(self.songlist.get_selected_songs(),
-                       self.song_update_view)
+        SongProperties(self.songlist.get_selected_songs())
 
     def set_selected_ratings(self, item, value):
         for song in self.songlist.get_selected_songs():
             song["~#rating"] = value
+            widgets.watcher.changed(song)
 
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
@@ -2474,8 +2479,7 @@ class PlayList(SongList):
 
     def __song_properties(self, activator):
         model, rows = self.get_selection().get_selected_rows()
-        SongProperties([model[row][0] for row in rows],
-                       widgets.main.song_update_view)
+        SongProperties([model[row][0] for row in rows])
 
     def __refresh_indices(self, context, key):
         for i, row in enumerate(iter(self.get_model())):
@@ -2688,7 +2692,7 @@ class SongProperties(gtk.Window):
                      }
 
     class Information(gtk.ScrolledWindow):
-        def __init__(self, parent, cbs):
+        def __init__(self, parent):
             gtk.ScrolledWindow.__init__(self)
             self.title = _("Information")
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -3052,12 +3056,11 @@ class SongProperties(gtk.Window):
             return f
 
     class EditTags(gtk.VBox):
-        def __init__(self, parent, cb):
+        def __init__(self, parent):
             gtk.VBox.__init__(self, spacing = 12)
             self.title = _("Edit Tags")
             self.set_border_width(12)
             self.prop = parent
-            self.cb = cb
 
             self.model = gtk.ListStore(str, str, bool, bool, bool, str)
             self.view = gtk.TreeView(self.model)
@@ -3388,14 +3391,14 @@ class SongProperties(gtk.Window):
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
                             util.escape(song('~basename')))).run()
-                        self.cb(song, True)
+                        widgets.watcher.error(song)
                         break
-                    self.cb(song)
+                    widgets.watcher.changed(song)
 
                 if win.step(): break
 
             win.destroy()
-            widgets.watcher.emit('refresh')
+            widgets.watcher.refresh()
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
             self.prop.update()
@@ -3474,11 +3477,10 @@ class SongProperties(gtk.Window):
             self.songs = songs
 
     class TagByFilename(gtk.VBox):
-        def __init__(self, prop, cb):
+        def __init__(self, prop):
             gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Tag by Filename")
             self.prop = prop
-            self.cb = cb
             self.set_border_width(12)
             hbox = gtk.HBox(spacing = 12)
             self.combo = combo = qltk.ComboBoxEntrySave(
@@ -3657,15 +3659,15 @@ class SongProperties(gtk.Window):
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
                             util.escape(song('~basename')))).run()
-                        self.cb(song, True)
+                        widgets.watcher.error(song)
                         return True
-                    self.cb(song)
+                    widgets.watcher.changed(song)
 
                 return win.step()
         
             self.model.foreach(save_song)
             win.destroy()
-            widgets.watcher.emit('refresh')
+            widgets.watcher.refresh()
             self.save.set_sensitive(False)
             self.prop.update()
 
@@ -3691,11 +3693,10 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(False)
 
     class RenameFiles(gtk.VBox):
-        def __init__(self, prop, cb):
+        def __init__(self, prop):
             gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Rename Files")
             self.prop = prop
-            self.cb = cb
             self.set_border_width(12)
             hbox = gtk.HBox(spacing = 12)
             self.combo = combo = qltk.ComboBoxEntrySave(
@@ -3794,7 +3795,7 @@ class SongProperties(gtk.Window):
                     newname = newname.encode(util.fscoding(), "replace")
                     if library: library.rename(song, newname)
                     else: song.rename(newname)
-                    self.cb(song)
+                    widgets.watcher.changed(song)
                 except:
                     qltk.ErrorMessage(
                         self.prop, _("Unable to rename file"),
@@ -3803,14 +3804,14 @@ class SongProperties(gtk.Window):
                           "or you do not have permission to make the "
                           "new file or remove the old one.") %(
                         util.escape(oldname), util.escape(newname))).run()
-                    self.cb(song, True)
+                    widgets.watcher.error(song)
                     return True
                 return win.step()
             self.model.foreach(rename)
             self.prop.refill()
             self.prop.update()
             self.save.set_sensitive(False)
-            widgets.watcher.emit('refresh')
+            widgets.watcher.refresh()
             win.destroy()
 
         def __update(self, songs):
@@ -3857,11 +3858,10 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(bool(self.entry.get_text()))
 
     class TrackNumbers(gtk.VBox):
-        def __init__(self, prop, cb):
+        def __init__(self, prop):
             gtk.VBox.__init__(self, spacing = 6)
             self.title = _("Track Numbers")
             self.prop = prop
-            self.cb = cb
             self.set_border_width(12)
             hbox = gtk.HBox(spacing = 18)
             hbox2 = gtk.HBox(spacing = 12)
@@ -3955,13 +3955,13 @@ class SongProperties(gtk.Window):
                           "read-only, corrupted, or you do not have "
                           "permission to edit it.")%(
                         util.escape(song('~basename')))).run()
-                    self.cb(song, True)
+                    widgets.watcher.error(song)
                     return True
-                self.cb(song)
+                widgets.watcher.changed(song)
                 return win.step()
             self.model.foreach(settrack)
             self.prop.update()
-            widgets.watcher.emit('refresh')
+            widgets.watcher.refresh()
             win.destroy()
 
         def changed(self, *args):
@@ -3999,17 +3999,17 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(False)
             self.preview.set_sensitive(True)
 
-    def __init__(self, songs, callback = None):
+    def __init__(self, songs):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.pages = []
         self.notebook = qltk.Notebook()
-        self.pages = [Ctr(self, callback) for Ctr in
+        self.pages = [Ctr(self) for Ctr in
                       [self.Information, self.EditTags, self.TagByFilename,
                        self.RenameFiles]]
         if len(songs) > 1:
-            self.pages.append(self.TrackNumbers(self, callback))
+            self.pages.append(self.TrackNumbers(self))
         for page in self.pages: self.notebook.append_page(page)
         self.set_border_width(12)
         vbox = gtk.VBox(spacing = 12)
@@ -4269,7 +4269,7 @@ class ExFalsoWindow(gtk.Window):
                      SongProperties.TagByFilename,
                      SongProperties.RenameFiles,
                      SongProperties.TrackNumbers]:
-            nb.append_page(Page(self, lambda *args: 1))
+            nb.append_page(Page(self))
         self.child.pack2(nb, resize = False, shrink=False)
         fs.connect('changed', self.__changed, nb)
         self.__cache = {}
