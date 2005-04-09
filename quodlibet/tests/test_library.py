@@ -37,6 +37,7 @@ class TestFileTypes(TestCase):
         for file in [self.vorb, self.mp3, self.flac]:
             d = dict(file)
             file.reload()
+            d["~#added"] = file["~#added"] # this key could change
             self.failUnlessEqual(d, file)
         
 
