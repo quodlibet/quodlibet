@@ -1609,6 +1609,8 @@ class MainWindow(gtk.Window):
         widgets.watcher.connect_object(
             'song-started', MainWindow.__song_started, self)
         widgets.watcher.connect_object(
+            'song-ended', MainWindow.__song_ended, self)
+        widgets.watcher.connect_object(
             'missing', MainWindow.__song_missing, self)
         widgets.watcher.connect_object('paused', self._update_paused, True)
         widgets.watcher.connect_object('unpaused', self._update_paused, False)
@@ -1875,6 +1877,12 @@ class MainWindow(gtk.Window):
             s = _("Not playing")
             self.set_title("Quod Libet")
             self.icon.tooltip = s
+
+    def __song_ended(self, song):
+        if player.playlist.filter and not player.playlist.filter(song):
+            player.playlist.remove(song)
+            iter = self.songlist.song_to_iter(song)
+            if iter: self.songlist.get_model().remove(iter)
 
     def __song_started(self, song):
         if song and self.__stopafter.active:
