@@ -137,7 +137,7 @@ def main():
     window = widgets.init()
 
     from threading import Thread
-    t = Thread(target = player.playlist.play, args = (window,))
+    t = Thread(target=player.playlist.play, args=(widgets.widgets.watcher,))
     t.start()
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     enable_periodic_save()

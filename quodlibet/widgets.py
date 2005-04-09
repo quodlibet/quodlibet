@@ -112,6 +112,12 @@ class SongWatcher(gobject.GObject):
         'missing': SIG_PYOBJECT
         }
 
+    time = (0, 1)
+    song = None
+
+    def set_time(self, current, end):
+        self.time = (current, end)
+
     def changed(self, song):
         gobject.idle_add(self.emit, 'changed', song)
 
@@ -123,6 +129,9 @@ class SongWatcher(gobject.GObject):
         gobject.idle_add(self.emit, 'missing', song)
 
     def song_started(self, song):
+        if song: self.set_time(0, song["~#length"] * 1000)
+        else: self.set_time(0, 1)
+        self.song = song
         gobject.idle_add(self.emit, 'song-started', song)
 
     def song_ended(self, song, stopped):
@@ -1481,39 +1490,29 @@ class MainWindow(gtk.Window):
             widgets.watcher.connect_object(
                 'song-started', self.__class__.__song_changed, self, scale, l)
 
-            self.__position = scale
-            self.__timer = l
+            gobject.timeout_add(200, self.__update_time, scale, l)
 
         def __song_changed(self, song, position, label):
             if song:
                 length = song["~#length"]
                 position.set_range(0, length * 1000)
-                position.set_value(0)
-                label.set_text(util.format_time(length))
-            else:
-                position.set_range(0, 1)
-                label.set_text(util.format_time(0))
+            else: position.set_range(0, 1)
 
-        def set_value(self, cur, end=None):
-            self.__position.set_value(cur)
-            self.__timer.set_text(
+        def __update_time(self, position, timer):
+            cur, end = widgets.watcher.time
+            position.set_value(cur)
+            timer.set_text(
                 "%d:%02d/%d:%02d" %
                 (cur // 60000, (cur % 60000) // 1000,
                  end // 60000, (end % 60000) // 1000))
+            return True
 
     gobject.type_register(PositionSlider)
 
     def __init__(self):
         gtk.Window.__init__(self)
-        self.song_started = widgets.watcher.song_started
-        self.song_ended = widgets.watcher.song_ended
-        self.missing = widgets.watcher.missing
-        self.set_paused = widgets.watcher.set_paused
-
         self.last_dir = os.path.expanduser("~")
         self.current_song = None
-        self.albumfn = None
-        self._time = (0, 1)
 
         tips = gtk.Tooltips()
         self.set_title("Quod Libet")
@@ -1694,7 +1693,6 @@ class MainWindow(gtk.Window):
                             "mm_next": self.next_song,
                             "mm_playpause": self.play_pause})
 
-        gobject.timeout_add(100, self.__update_time)
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
 
@@ -1912,13 +1910,6 @@ class MainWindow(gtk.Window):
                 gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU)
             menu.child.set_text(_("_Pause"))
         menu.child.set_use_underline(True)
-
-    def set_time(self, cur, end):
-        self._time = (cur, end)
-
-    def __update_time(self):
-        self.__scale.set_value(*self._time)
-        return True
 
     def __song_missing(self, song):
         self.statusbar.set_text(_("Could not play %s.") % song['~filename'])
@@ -4527,7 +4518,7 @@ def init():
     widgets.watcher = SongWatcher()
     FSInterface()
     widgets.main = MainWindow()
-    player.playlist.info = widgets.main
+    player.playlist.info = widgets.watcher
 
     # If the OSD module is not available, no signal is registered and
     # the reference is dropped. If it is available, a reference to it is
