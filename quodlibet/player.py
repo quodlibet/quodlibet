@@ -170,7 +170,7 @@ class PlaylistPlayer(object):
                 try: self.player = formats.MusicPlayer(self.output, self.song)
                 except:
                     self.paused = True
-                    self.info.missing_song(self.song)
+                    self.info.missing(self.song)
                     self.lock.release()
                 else:
                     self.info.start_song(self.song)

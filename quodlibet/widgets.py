@@ -73,12 +73,31 @@ class SongWatcher(gobject.GObject):
 
         # Playback was unpaused.
         'unpaused': SIG_NONE,
+
+        # A song was missing (i.e. disappeared from the filesystem).
+        # This is emitted in parallel with remove.
+        'missing': SIG_PYOBJECT
         }
 
-    def changed(self, song): self.emit('changed', song)
-    def removed(self, song): self.emit('removed', song)
-    def refresh(self): self.emit('refresh')
-    def start_song(self, song): self.emit('song-started', song)
+    def changed(self, song):
+        gobject.idle_add(self.emit, 'changed', song)
+
+    def removed(self, song):
+        gobject.idle_add(self.emit, 'removed', song)
+
+    def missing(self, song):
+        self.removed(song)
+        gobject.idle_add(self.emit, 'missing', song)
+
+    def start_song(self, song):
+        gobject.idle_add(self.emit, 'song-started', song)
+
+    def refresh(self):
+        gobject.idle_add(self.emit, 'refresh')
+
+    def set_paused(self, paused):
+        if paused: gobject.idle_add(self.emit, 'paused')
+        else: gobject.idle_add(self.emit, 'unpaused')
 
     def error(self, song):
         try: song.reload()
@@ -1312,6 +1331,10 @@ class MainWindow(gtk.Window):
 
     def __init__(self):
         gtk.Window.__init__(self)
+        self.start_song = widgets.watcher.start_song
+        self.missing = widgets.watcher.missing
+        self.set_paused = widgets.watcher.set_paused
+
         self.last_dir = os.path.expanduser("~")
         self.current_song = None
         self.albumfn = None
@@ -1516,6 +1539,11 @@ class MainWindow(gtk.Window):
             'refresh', MainWindow.__update_browser, self)
         widgets.watcher.connect_object(
             'song-started', MainWindow.__song_started, self)
+        widgets.watcher.connect_object(
+            'missing', MainWindow.__song_missing, self)
+        widgets.watcher.connect_object('paused', self._update_paused, True)
+        widgets.watcher.connect_object('unpaused', self._update_paused, False)
+
         self.show()
 
     def __delete_event(self, event):
@@ -1735,15 +1763,6 @@ class MainWindow(gtk.Window):
         os.close(self.fifo)
         self.open_fifo()
 
-    def set_paused(self, paused):
-        gobject.idle_add(self._update_paused, paused)
-
-    def start_song(self, song):
-        gobject.idle_add(widgets.watcher.start_song, song)
-
-    def missing_song(self, song):
-        gobject.idle_add(self._missing_song, song)
-
     def _update_paused(self, paused):
         menu = self.ui.get_widget("/Menu/Song/PlayPause")
         if paused:
@@ -1767,14 +1786,10 @@ class MainWindow(gtk.Window):
         self.__scale.set_value(*self._time)
         return True
 
-    def _missing_song(self, song):
-        path = (player.playlist.get_playlist().index(song),)
-        iter = widgets.songs.get_iter(path)
-        widgets.songs.remove(iter)
+    def __song_missing(self, song):
         self.statusbar.set_text(_("Could not play %s.") % song['~filename'])
         try: library.remove(song)
         except KeyError: pass
-        player.playlist.remove(song)
 
     def update_markup(self, song):
         if song:
