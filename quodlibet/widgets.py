@@ -3997,9 +3997,6 @@ class SongProperties(gtk.Window):
             model = gtk.ListStore(object, str, str)
             view = gtk.TreeView(model)
 
-            preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
-            hbox2.pack_start(preview, expand=False)
-
             self.pack_start(hbox2, expand=False)
 
             column = gtk.TreeViewColumn(
@@ -4026,28 +4023,26 @@ class SongProperties(gtk.Window):
             revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
             revert.connect_object(
                 'clicked', self.__revert_files, spin_total, model,
-                save, revert, preview)
+                save, revert)
             bbox.pack_start(revert)
             bbox.pack_start(save)
             self.pack_start(bbox, expand=False)
 
-            preview.connect_object(
-                'clicked', self.__preview_tracks, spin_start, spin_total,
-                model, preview, save, revert)
-            spin_total.connect_object(
-                'value-changed', self.__changed, None, preview, save)
-            spin_start.connect_object(
-                'value-changed', self.__changed, None, preview, save)
+            preview_args = [spin_start, spin_total, model, save, revert]
+            spin_total.connect(
+                'value-changed', self.__preview_tracks, *preview_args)
+            spin_start.connect(
+                'value-changed', self.__preview_tracks, *preview_args)
             view.connect_object(
-                'drag-end', self.__class__.__changed, self,
-                preview, save)
+                'drag-end', self.__class__.__preview_tracks, self,
+                *preview_args)
 
             prop.connect_object(
-                'changed', self.__class__.__update, self, spin_total, model,
-                save, revert, preview)
+                'changed', self.__class__.__update, self,
+                spin_total, model, save, revert)
 
         def __save_files(self, parent, model):
-            win = WritingWindow(parent, len(self.songs))
+            win = WritingWindow(parent, len(self.__songs))
             def settrack(model, path, iter):
                 song = model[iter][0]
                 track = model[iter][2]
@@ -4078,14 +4073,10 @@ class SongProperties(gtk.Window):
             widgets.watcher.refresh()
             win.destroy()
 
-        def __changed(self, context, preview, save):
-            preview.set_sensitive(True)
-            save.set_sensitive(False)
-
         def __revert_files(self, *args):
-            self.__update(self.songs, *args)
+            self.__update(self.__songs, *args)
 
-        def __preview_tracks(self, start, total, model, preview, save, revert):
+        def __preview_tracks(self, ctx, start, total, model, save, revert):
             start = start.get_value_as_int()
             total = total.get_value_as_int()
             def refill(model, path, iter):
@@ -4095,11 +4086,10 @@ class SongProperties(gtk.Window):
             model.foreach(refill)
             save.set_sensitive(True)
             revert.set_sensitive(True)
-            preview.set_sensitive(False)
 
-        def __update(self, songs, total, model, save, revert, preview):
+        def __update(self, songs, total, model, save, revert):
             songs = songs[:]; songs.sort()
-            self.songs = songs
+            self.__songs = songs
             model.clear()
             total.set_value(len(songs))
             for song in songs:
@@ -4112,7 +4102,6 @@ class SongProperties(gtk.Window):
                 model.append(row = [song, basename, song("tracknumber")])
             save.set_sensitive(False)
             revert.set_sensitive(False)
-            preview.set_sensitive(True)
 
     def __init__(self, songs):
         gtk.Window.__init__(self)
