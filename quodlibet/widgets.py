@@ -96,6 +96,7 @@ class SongWatcher(gobject.GObject):
         gobject.idle_add(self.emit, 'song-started', song)
 
     def song_ended(self, song):
+        self.changed(song)
         gobject.idle_add(self.emit, 'song-ended', song)
 
     def refresh(self):
