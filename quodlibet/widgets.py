@@ -69,7 +69,10 @@ class SongWatcher(gobject.GObject):
         'song-started': SIG_PYOBJECT,
 
         # A new song started playing (or the current one was restarted).
-        'song-ended': SIG_PYOBJECT,
+        # The boolean is True if the song was stopped rather than simply
+        # ended.
+        'song-ended': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                       (object, bool)),
 
         # Playback was paused.
         'paused': SIG_NONE,
@@ -95,9 +98,9 @@ class SongWatcher(gobject.GObject):
     def song_started(self, song):
         gobject.idle_add(self.emit, 'song-started', song)
 
-    def song_ended(self, song):
+    def song_ended(self, song, stopped):
         self.changed(song)
-        gobject.idle_add(self.emit, 'song-ended', song)
+        gobject.idle_add(self.emit, 'song-ended', song, stopped)
 
     def refresh(self):
         gobject.idle_add(self.emit, 'refresh')
@@ -771,6 +774,79 @@ class HIGTrayIcon(TrayIcon):
         else:
             self.__window.move(*self.__pos)
             self.__window.show()
+
+class QLTrayIcon(HIGTrayIcon):
+    def __init__(self, window, volume):
+        tray_menu = gtk.Menu()
+        playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
+        playpause.connect('activate', self.__playpause)
+
+        previous = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PREVIOUS)
+        previous.connect('activate', lambda *args: player.playlist.previous())
+        next = gtk.ImageMenuItem(gtk.STOCK_MEDIA_NEXT)
+        next.connect('activate', lambda *args: player.playlist.next())
+
+        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        props.connect('activate', self.__properties)
+
+        quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        quit.connect('activate', gtk.main_quit)
+
+        for item in [playpause, gtk.SeparatorMenuItem(), previous, next,
+                     gtk.SeparatorMenuItem(), props, gtk.SeparatorMenuItem(),
+                     quit]: tray_menu.append(item)
+
+        tray_menu.show_all()
+
+        widgets.watcher.connect_object(
+            'song-started', QLTrayIcon.__set_song, self, next, props)
+        widgets.watcher.connect_object(
+            'paused', self.__set_paused, tray_menu, True)
+        widgets.watcher.connect_object(
+            'unpaused', self.__set_paused, tray_menu, False)
+
+        cbs = {
+            2: lambda *args: self.__playpause(args[0]),
+            3: lambda ev, *args:
+            tray_menu.popup(None, None, None, ev.button, ev.time),
+            4: lambda *args: volume.set_value(volume.get_value()-0.05),
+            5: lambda *args: volume.set_value(volume.get_value()+0.05),
+            6: lambda *args: player.playlist.next(),
+            7: lambda *args: player.playlist.previous()
+            }
+
+        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+
+        HIGTrayIcon.__init__(self, p, window, cbs)
+
+    def __set_paused(self, menu, paused):
+        menu.get_children()[0].destroy()
+        stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
+        playpause = gtk.ImageMenuItem(stock)
+        playpause.connect('activate', self.__playpause)
+        playpause.show()
+        menu.prepend(playpause)
+
+    def __playpause(self, activator):
+        if self.__song: player.playlist.paused ^= True
+        else: player.playlist.reset()
+
+    def __properties(self, activator):
+        if self.__song: SongProperties([self.__song])
+
+    def __set_song(self, song, *items):
+        self.__song = song
+        for item in items: item.set_sensitive(bool(song))
+        if song:
+            try:
+                pattern = util.FileFromPattern(
+                    config.get("plugins", "icon_tooltip"), filename=False)
+            except ValueError:
+                pattern = util.FileFromPattern(
+                    "<album|<album~discnumber~part~tracknumber~title~version>|"
+                    "<artist~title~version>>", filename=False)
+            self.tooltip = pattern.match(song)
+        else: self.tooltip = _("Not playing")
 
 class MmKeys(object):
     def __init__(self, cbs):
@@ -1555,14 +1631,7 @@ class MainWindow(gtk.Window):
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-        self.icon = HIGTrayIcon(p, self, cbs = {
-            2: self.play_pause,
-            3: self.tray_popup,
-            4: lambda ev: self.volume.set_value(self.volume.get_value()-0.05),
-            5: lambda ev: self.volume.set_value(self.volume.get_value()+0.05),
-            6: self.next_song,
-            7: self.previous_song
-            })
+        self.icon = QLTrayIcon(self, self.volume)
 
         # song list
         self.song_scroller = sw = gtk.ScrolledWindow()
@@ -1626,7 +1695,7 @@ class MainWindow(gtk.Window):
 
     def __song_changed(self, song):
         if song is self.current_song:
-            self.update_markup(self.current_song)
+            self.__update_markup(self.current_song)
 
     def _create_menu(self, tips):
         ag = gtk.ActionGroup('MainWindowActions')
@@ -1734,42 +1803,6 @@ class MainWindow(gtk.Window):
         self.child.pack_start(self.browser, self.browser.expand)
         self.__hide_menus()
 
-    def tray_popup(self, event, *args):
-        tray_menu = gtk.Menu()
-        if player.playlist.paused:
-            b = gtk.ImageMenuItem(_("_Play"))
-            tray_menu_play = b.get_image()
-            tray_menu_play.set_from_stock(
-                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
-        else:
-            b = gtk.ImageMenuItem(_("_Pause"))
-            tray_menu_play = b.get_image()
-            tray_menu_play.set_from_stock(
-                gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU)
-        b.connect('activate', self.play_pause)
-        tray_menu.append(b)
-        tray_menu.append(gtk.SeparatorMenuItem())
-        b = gtk.ImageMenuItem(_("Pre_vious"))
-        b.connect('activate', self.previous_song)
-        b.get_image().set_from_stock('gtk-media-previous', gtk.ICON_SIZE_MENU)
-        tray_menu.append(b)
-        b = gtk.ImageMenuItem(_("_Next"))
-        b.connect('activate', self.next_song)
-        b.get_image().set_from_stock('gtk-media-next', gtk.ICON_SIZE_MENU)
-        tray_menu.append(b)
-        tray_menu.append(gtk.SeparatorMenuItem())
-        b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        b.connect('activate', self.current_song_prop)
-        b.set_sensitive(bool(self.current_song))
-        tray_menu.append(b)
-        tray_menu.append(gtk.SeparatorMenuItem())
-        b = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        b.connect('activate', gtk.main_quit)
-        tray_menu.append(b)        
-        tray_menu.show_all()
-        tray_menu.connect('selection-done', lambda m: m.destroy())
-        tray_menu.popup(None, None, None, event.button, event.time)
-
     def open_fifo(self):
         try:
             if not os.path.exists(const.CONTROL):
@@ -1838,6 +1871,7 @@ class MainWindow(gtk.Window):
 
     def _update_paused(self, paused):
         menu = self.ui.get_widget("/Menu/Song/PlayPause")
+        self.__stopafter.active = False
         if paused:
             self.play_image.set_from_stock(
                 gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR)
@@ -1864,23 +1898,12 @@ class MainWindow(gtk.Window):
         try: library.remove(song)
         except KeyError: pass
 
-    def update_markup(self, song):
-        if song:
-            try:
-                pattern = util.FileFromPattern(
-                    config.get("plugins", "icon_tooltip"), filename=False)
-            except ValueError:
-                pattern = util.FileFromPattern(
-                    "<album|<album~discnumber~part~tracknumber~title~version>|"
-                    "<artist~title~version>>", filename=False)
-            self.icon.tooltip = pattern.match(song)
-            self.set_title("Quod Libet - " + song.comma("~title~version"))
-        else:
-            s = _("Not playing")
-            self.set_title("Quod Libet")
-            self.icon.tooltip = s
+    def __update_markup(self, song):
+        if song: self.set_title("Quod Libet - " + song.comma("~title~version"))
+        else: self.set_title("Quod Libet")
 
-    def __song_ended(self, song):
+    def __song_ended(self, song, stopped):
+        if stopped: self.__stopafter.active = False
         if player.playlist.filter and not player.playlist.filter(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
@@ -1888,7 +1911,6 @@ class MainWindow(gtk.Window):
 
     def __song_started(self, song):
         if song and self.__stopafter.active:
-            self.__stopafter.active = False
             player.playlist.paused = True
         for wid in self.song_buttons:
             wid.set_sensitive(bool(song))
@@ -1903,10 +1925,10 @@ class MainWindow(gtk.Window):
                     "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
 
-            self.update_markup(song)
+            self.__update_markup(song)
         else:
             self._time = (0, 1)
-            self.update_markup(None)
+            self.__update_markup(None)
 
         # Update the currently-playing song in the list by bolding it.
         last_song = self.current_song
@@ -1977,7 +1999,6 @@ class MainWindow(gtk.Window):
                                 "/usr/bin/sensible-browser exists.")).run()
 
     def play_pause(self, *args):
-        self.__stopafter.active = False
         if self.current_song is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
@@ -1987,11 +2008,9 @@ class MainWindow(gtk.Window):
         else: self.songlist.jump_to(path)
 
     def next_song(self, *args):
-        self.__stopafter.active = False
         player.playlist.next()
 
     def previous_song(self, *args):
-        self.__stopafter.active = False
         player.playlist.previous()
 
     def toggle_repeat(self, button):

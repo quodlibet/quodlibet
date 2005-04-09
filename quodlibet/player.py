@@ -185,7 +185,7 @@ class PlaylistPlayer(object):
                     if not self.__player.stopped:
                         self.__song["~#lastplayed"] = int(time.time())
                         self.__song["~#playcount"] += 1
-                    self.info.song_ended(self.__song)
+                    self.info.song_ended(self.__song, self.__player.stopped)
 
             while self.paused and not self.quit:
                 time.sleep(0.05)

@@ -31,7 +31,7 @@ characteristics:
 
         # event based callbacks
         obj.plugin_on_song_started(song)
-        obj.plugin_on_song_ended(song)
+        obj.plugin_on_song_ended(song, stopped)
         obj.plugin_on_changed(song)
         obj.plugin_on_removed(song)
         obj.plugin_on_missing(song)
@@ -282,8 +282,8 @@ class PluginManager(object):
     def on_song_started(self, watcher, song):
         self.invoke_event('song_started', song)
 
-    def on_song_ended(self, watcher, song):
-        self.invoke_event('song_ended', song)
+    def on_song_ended(self, watcher, song, stopped):
+        self.invoke_event('song_ended', song, stopped)
 
     def on_paused(self, watcher):
         self.invoke_event('paused')
