@@ -173,7 +173,7 @@ class PlaylistPlayer(object):
                     self.info.missing(self.song)
                     self.lock.release()
                 else:
-                    self.info.start_song(self.song)
+                    self.info.song_started(self.song)
                     self.played.append(self.song)
                     self.lock.release()
                     while self.paused: time.sleep(0.05)
@@ -185,6 +185,7 @@ class PlaylistPlayer(object):
                     if not self.player.stopped:
                         self.song["~#lastplayed"] = int(time.time())
                         self.song["~#playcount"] += 1
+                    self.info.song_ended(self.song)
 
             while self.paused and not self.quit:
                 time.sleep(0.05)
@@ -197,7 +198,7 @@ class PlaylistPlayer(object):
                 if self.song or self.player:
                     self.lock.acquire()
                     self.song = self.player = None
-                    self.info.start_song(self.song)
+                    self.info.song_started(self.song)
                     self.paused = True
                     self.lock.release()
                     try: os.unlink(const.CURRENT)

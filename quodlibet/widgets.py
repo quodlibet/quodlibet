@@ -68,6 +68,9 @@ class SongWatcher(gobject.GObject):
         # A new song started playing (or the current one was restarted).
         'song-started': SIG_PYOBJECT,
 
+        # A new song started playing (or the current one was restarted).
+        'song-ended': SIG_PYOBJECT,
+
         # Playback was paused.
         'paused': SIG_NONE,
 
@@ -89,8 +92,11 @@ class SongWatcher(gobject.GObject):
         self.removed(song)
         gobject.idle_add(self.emit, 'missing', song)
 
-    def start_song(self, song):
+    def song_started(self, song):
         gobject.idle_add(self.emit, 'song-started', song)
+
+    def song_ended(self, song):
+        gobject.idle_add(self.emit, 'song-ended', song)
 
     def refresh(self):
         gobject.idle_add(self.emit, 'refresh')
@@ -1395,7 +1401,8 @@ class MainWindow(gtk.Window):
 
     def __init__(self):
         gtk.Window.__init__(self)
-        self.start_song = widgets.watcher.start_song
+        self.song_started = widgets.watcher.song_started
+        self.song_ended = widgets.watcher.song_ended
         self.missing = widgets.watcher.missing
         self.set_paused = widgets.watcher.set_paused
 
