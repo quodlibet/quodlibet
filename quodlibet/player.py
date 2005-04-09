@@ -96,12 +96,6 @@ class PlaylistPlayer(object):
         self.__paused = paused
         try: self.info.set_paused(paused)
         except AttributeError: pass
-        if paused:
-            try: file(const.PAUSED, "w").close()
-            except: pass
-        else:
-            try: os.unlink(const.PAUSED)
-            except: pass
 
     def __get_paused(self): return self.__paused
 
@@ -161,11 +155,6 @@ class PlaylistPlayer(object):
                 self.__song = self.__playlist.pop(0)
                 fn = self.__song['~filename']
                 config.set("memory", "song", fn)
-                try: # potentially, permissions error, out of disk space
-                    f = file(const.CURRENT, "w")
-                    f.write(self.__song.to_dump())
-                    f.close()
-                except (IOError, OSError): pass
                 if self.shuffle: random.shuffle(self.__playlist)
                 try: self.__player = MusicPlayer(self.__output, self.__song)
                 except:

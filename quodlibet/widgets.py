@@ -33,6 +33,32 @@ if sys.version_info < (2, 4):
 # Or, replace it with nicer wrappers!
 class widgets(object): pass
 
+class FSInterface(object):
+    def __init__(self):
+        widgets.watcher.connect('paused', self.__paused)
+        widgets.watcher.connect('unpaused', self.__unpaused)
+        widgets.watcher.connect('song-started', self.__started)
+        widgets.watcher.connect('song-ended', self.__ended)
+
+    def __paused(self, watcher):
+        try: file(const.PAUSED, "w").close()
+        except (OSError, IOError): pass
+
+    def __unpaused(self, watcher):
+        try: os.unlink(const.PAUSED)
+        except OSError: pass
+
+    def __started(self, watcher, song):
+        try: f = file(const.CURRENT, "w")
+        except (OSError, IOError): pass
+        else:
+            f.write(song.to_dump())
+            f.close()
+
+    def __ended(self, watcher, song, stopped):
+        try: os.unlink(const.CURRENT)
+        except OSError: pass
+
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir=None):
@@ -4484,6 +4510,7 @@ def init():
         HEADERS_FILTER[opt] = val
 
     widgets.watcher = SongWatcher()
+    FSInterface()
     widgets.main = MainWindow()
     player.playlist.info = widgets.main
 
