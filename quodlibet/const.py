@@ -23,6 +23,7 @@ CREDITS = ["Joe Wreschnig",
            "Michal Nowikowski",
            "Ben Zeigler",
            "Niklas Janlert",
+           "Andrey Fedoseev",
 
            "Anders Carlsson",
            "Lee Willis",
