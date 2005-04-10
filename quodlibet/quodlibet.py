@@ -132,6 +132,8 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 def main():
     import signal, gtk, widgets
+    gtk.threads_init()
+
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
     window = widgets.init()

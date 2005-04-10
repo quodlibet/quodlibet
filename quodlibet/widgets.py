@@ -4525,7 +4525,6 @@ def init():
     # stored in its signal registered with SongWatcher.
     Osd()
 
-    gtk.threads_init()
     util.mkdir(const.DIR)
     import signal
     signal.signal(signal.SIGINT, gtk.main_quit)
