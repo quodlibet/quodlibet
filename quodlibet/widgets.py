@@ -1471,6 +1471,130 @@ class MainWindow(gtk.Window):
                         song.comma("tracknumber")))
             return " - ".join(t)
 
+    class PlayControls(gtk.Table):
+        def __init__(self):
+            gtk.Table.__init__(self, 2, 3)
+            self.set_homogeneous(True)
+            self.set_row_spacings(3)
+            self.set_col_spacings(3)
+            self.set_border_width(3)
+
+            prev = gtk.Button()
+            prev.add(gtk.image_new_from_stock(
+                gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_LARGE_TOOLBAR))
+            prev.connect('clicked', self.__previous)
+            self.attach(prev, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+
+            play = gtk.Button()
+            play.add(gtk.image_new_from_stock(
+                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
+            play.connect('clicked', self.__playpause)
+            self.attach(play, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+
+            next = gtk.Button()
+            next.add(gtk.image_new_from_stock(
+                gtk.STOCK_MEDIA_NEXT, gtk.ICON_SIZE_LARGE_TOOLBAR))
+            next.connect('clicked', self.__next)
+            self.attach(next, 2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+
+            tips = gtk.Tooltips()
+
+            add = gtk.Button()
+            add.add(gtk.image_new_from_stock(
+                gtk.STOCK_ADD, gtk.ICON_SIZE_LARGE_TOOLBAR))
+            add.connect('clicked', self.__add_music)
+            self.attach(add, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
+            tips.set_tip(add, _("Add songs to your library"))
+
+            prop = gtk.Button()
+            prop.add(gtk.image_new_from_stock(
+                gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_LARGE_TOOLBAR))
+            prop.connect('clicked', self.__properties)
+            self.attach(prop, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
+            tips.set_tip(prop, _("View and edit tags in the playing song"))
+
+            info = gtk.Button()
+            info.add(gtk.image_new_from_stock(
+                gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_LARGE_TOOLBAR))
+            info.connect('clicked', self.__website)
+            self.attach(info, 2, 3, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
+            tips.set_tip(info, _("Visit the artist's website"))
+
+            stopafter = MainWindow.StopAfterMenu()
+
+            widgets.watcher.connect(
+                'song-started', self.__song_started, stopafter,
+                next, prop, info)
+            widgets.watcher.connect(
+                'song-ended', self.__song_ended, stopafter)
+            widgets.watcher.connect(
+                'paused', self.__paused, stopafter, play.child,
+                gtk.STOCK_MEDIA_PLAY),
+            widgets.watcher.connect(
+                'unpaused', self.__paused, stopafter, play.child,
+                gtk.STOCK_MEDIA_PAUSE),
+
+            play.connect(
+                'button-press-event', self.__popup_stopafter, stopafter)
+
+            self.show_all()
+
+        def __popup_stopafter(self, activator, event, stopafter):
+            if event.button == 3:
+                stopafter.popup(None, None, None, event.button, event.time)
+
+        def __song_started(self, watcher, song, stopafter, *buttons):
+            if song and stopafter.active:
+                player.playlist.paused = True
+            for b in buttons: b.set_sensitive(bool(song))
+
+        def __paused(self, watcher, stopafter, image, stock):
+            stopafter.active = False
+            image.set_from_stock(stock, gtk.ICON_SIZE_LARGE_TOOLBAR)
+
+        def __song_ended(self, watcher, song, stopped, stopafter):
+            if stopped: stopafter.active = False
+
+        def __playpause(self, button):
+            if widgets.watcher.song is None: player.playlist.reset()
+            else: player.playlist.paused ^= True
+
+        def __previous(self, button): player.playlist.previous()
+        def __next(self, button): player.playlist.next()
+
+        def __add_music(self, button):
+            chooser = FileChooser(
+                widgets.main, _("Add Music"), widgets.main.last_dir)
+            resp, fns = chooser.run()
+            chooser.destroy()
+            if resp == gtk.RESPONSE_OK: widgets.main.scan_dirs(fns)
+            if fns: widgets.main.last_dir = fns[0]
+            library.save(const.LIBRARY)
+
+        def __properties(self, button):
+            if widgets.watcher.song:
+                SongProperties([widgets.watcher.song])
+
+        def __website(self, button):
+            song = widgets.watcher.song
+            if not song: return
+            site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
+            for s in (["sensible-browser"] +
+                      os.environ.get("BROWSER","").split(":")):
+                if util.iscommand(s):
+                    if "%s" in s:
+                        s = s.replace("%s", '"' + site + '"')
+                        s = s.replace("%%", "%")
+                    else: s += " \"%s\"" % site
+                    print to(_("Opening web browser: %s") % s)
+                    if os.system(s + " &") == 0: break
+                else:
+                    qltk.ErrorMessage(
+                        widgets.main, _("Unable to start a web browser"),
+                        _("A web browser could not be found. Please set "
+                          "your $BROWSER variable, or make sure "
+                          "/usr/bin/sensible-browser exists.")).run()
+
     class PositionSlider(gtk.HBox):
         __gsignals__ = {
             'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
@@ -1542,55 +1666,7 @@ class MainWindow(gtk.Window):
         hb2 = gtk.HBox()
 
         # play controls
-        t = gtk.Table(2, 3)
-        t.set_homogeneous(True)
-        t.set_row_spacings(3)
-        t.set_col_spacings(3)
-        t.set_border_width(3)
-
-        prev = gtk.Button()
-        prev.add(gtk.image_new_from_stock(
-            gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_LARGE_TOOLBAR))
-        prev.connect('clicked', self.previous_song)
-        t.attach(prev, 0, 1, 0, 1, xoptions = gtk.FILL, yoptions = gtk.FILL)
-
-        play = gtk.Button()
-        play.add(gtk.image_new_from_stock(
-            gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
-        play.connect('button-press-event', self.__popup_stopafter)
-        play.connect('clicked', self.play_pause)
-        t.attach(play, 1, 2, 0, 1, xoptions = gtk.FILL, yoptions = gtk.FILL)
-
-        next = gtk.Button()
-        next.add(gtk.image_new_from_stock(
-            gtk.STOCK_MEDIA_NEXT, gtk.ICON_SIZE_LARGE_TOOLBAR))
-        next.connect('clicked', self.next_song)
-        t.attach(next, 2, 3, 0, 1, xoptions = False, yoptions = False)
-
-        add = gtk.Button()
-        add.add(gtk.image_new_from_stock(
-            gtk.STOCK_ADD, gtk.ICON_SIZE_LARGE_TOOLBAR))
-        add.connect('clicked', self.open_chooser)
-        t.attach(add, 0, 1, 1, 2, xoptions = False, yoptions = False)
-        tips.set_tip(add, _("Add songs to your library"))
-
-        props = gtk.Button()
-        props.add(gtk.image_new_from_stock(
-            gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_LARGE_TOOLBAR))
-        props.connect('clicked', self.current_song_prop)
-        t.attach(props, 1, 2, 1, 2, xoptions = False, yoptions = False)
-        tips.set_tip(props, _("View and edit tags in the playing song"))
-
-        info = gtk.Button()
-        info.add(gtk.image_new_from_stock(
-            gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_LARGE_TOOLBAR))
-        info.connect('clicked', self.open_website)
-        t.attach(info, 2, 3, 1, 2, xoptions = False, yoptions = False)
-        tips.set_tip(info, _("Visit the artist's website"))
-
-        self.song_buttons = [info, next, props]
-        self.play_image = play.child
-
+        t = self.PlayControls()
         hb2.pack_start(t, expand=False, fill=False)
 
         # song text
@@ -1651,8 +1727,6 @@ class MainWindow(gtk.Window):
         hbox.pack_start(self.statusbar)
         hbox.set_border_width(3)
         self.child.pack_end(hbox, expand = False)
-
-        self.__stopafter = self.StopAfterMenu()
 
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
@@ -1896,16 +1970,11 @@ class MainWindow(gtk.Window):
 
     def _update_paused(self, paused):
         menu = self.ui.get_widget("/Menu/Song/PlayPause")
-        self.__stopafter.active = False
         if paused:
-            self.play_image.set_from_stock(
-                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR)
             menu.get_image().set_from_stock(
                 gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
             menu.child.set_text(_("_Play"))
         else:
-            self.play_image.set_from_stock(
-                gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_LARGE_TOOLBAR)
             menu.get_image().set_from_stock(
                 gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU)
             menu.child.set_text(_("_Pause"))
@@ -1921,17 +1990,12 @@ class MainWindow(gtk.Window):
         else: self.set_title("Quod Libet")
 
     def __song_ended(self, song, stopped):
-        if stopped: self.__stopafter.active = False
         if player.playlist.filter and not player.playlist.filter(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
             if iter: self.songlist.get_model().remove(iter)
 
     def __song_started(self, song):
-        if song and self.__stopafter.active:
-            player.playlist.paused = True
-        for wid in self.song_buttons:
-            wid.set_sensitive(bool(song))
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
@@ -1998,23 +2062,6 @@ class MainWindow(gtk.Window):
     def showhide_playlist(self, toggle):
         self.showhide_widget(self.song_scroller, toggle.get_active())
         config.set("memory", "songlist", str(toggle.get_active()))
-
-    def open_website(self, button):
-        song = self.current_song
-        site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
-        for s in ["sensible-browser"]+os.environ.get("BROWSER","").split(":"):
-            if util.iscommand(s):
-                if "%s" in s:
-                    s = s.replace("%s", '"' + site + '"')
-                    s = s.replace("%%", "%")
-                else: s += " \"%s\"" % site
-                print to(_("Opening web browser: %s") % s)
-                if os.system(s + " &") == 0: break
-        else:
-            qltk.ErrorMessage(self, _("Unable to start a web browser"),
-                              _("A web browser could not be found. Please set "
-                                "your $BROWSER variable, or make sure "
-                                "/usr/bin/sensible-browser exists.")).run()
 
     def play_pause(self, *args):
         if self.current_song is None: player.playlist.reset()
@@ -2120,7 +2167,6 @@ class MainWindow(gtk.Window):
         widgets.preferences.present()
 
     def select_song(self, tree, indices, col):
-        self.__stopafter.active = False
         model = self.songlist.get_model()
         iter = model.get_iter(indices)
         song = model.get_value(iter, 0)
@@ -2245,10 +2291,6 @@ class MainWindow(gtk.Window):
                     w.step(w.current + 1, w.count)
             w.destroy()
             self.browser.update()
-
-    def __popup_stopafter(self, activator, event, *args):
-        if event.button == 3:
-            self.__stopafter.popup(None, None, None, event.button, event.time)
 
     def current_song_prop(self, *args):
         song = self.current_song
