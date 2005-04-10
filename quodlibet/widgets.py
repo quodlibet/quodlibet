@@ -180,11 +180,11 @@ class AboutWindow(gtk.Window):
         hbox.set_layout(gtk.BUTTONBOX_SPREAD)
         hbox.pack_start(button)
         vbox.pack_start(hbox)
-        self.__timeout_id = gobject.timeout_add(
+        sig = gobject.timeout_add(
             4000, self.__pick_name, list(const.CREDITS), contrib)
         self.add(vbox)
         self.set_border_width(12)
-        self.connect_object('destroy', AboutWindow.__destroy, self)
+        self.connect_object('destroy', AboutWindow.__destroy, self, sig)
         self.set_transient_for(parent)
         self.show_all()
 
@@ -193,14 +193,14 @@ class AboutWindow(gtk.Window):
         contrib.set_text(credits[0])
         return hasattr(widgets, 'about')
 
-    def __destroy(self):
-        gobject.source_remove(self.__timeout_id)
+    def __destroy(self, sig):
+        gobject.source_remove(sig)
         try: del(widgets.about)
         except AttributeError: pass
 
 class PreferencesWindow(gtk.Window):
     class _Pane(object):
-        def _toggle(self, c, name, section = "settings"):
+        def _toggle(self, c, name, section="settings"):
             config.set(section, name, str(bool(c.get_active())))
 
         def _changed(self, cb, name):
@@ -336,7 +336,7 @@ class PreferencesWindow(gtk.Window):
             c.connect('toggled', self._toggle, "color", "browsers")
             vb.pack_start(c)
 
-            hb = gtk.HBox(spacing = 3)
+            hb = gtk.HBox(spacing=3)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
             e = qltk.ValidatingEntry(parser.is_valid_color)
@@ -648,10 +648,10 @@ class BigCenteredImage(gtk.Window):
         self.child.child.child.set_from_pixbuf(pixbuf)
 
         # The eventbox
-        self.child.child.connect_object('button-press-event',
-                                        BigCenteredImage.__destroy, self)
-        self.child.child.connect_object('key-press-event',
-                                 BigCenteredImage.__destroy, self)
+        self.child.child.connect_object(
+            'button-press-event', BigCenteredImage.__destroy, self)
+        self.child.child.connect_object(
+            'key-press-event', BigCenteredImage.__destroy, self)
         self.show_all()
 
     def __destroy(self, event):
@@ -813,7 +813,7 @@ class HIGTrayIcon(TrayIcon):
 
 class QLTrayIcon(HIGTrayIcon):
     def __init__(self, window, volume):
-        tray_menu = gtk.Menu()
+        menu = gtk.Menu()
         playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__playpause)
 
@@ -830,16 +830,13 @@ class QLTrayIcon(HIGTrayIcon):
 
         for item in [playpause, gtk.SeparatorMenuItem(), previous, next,
                      gtk.SeparatorMenuItem(), props, gtk.SeparatorMenuItem(),
-                     quit]: tray_menu.append(item)
+                     quit]: menu.append(item)
 
-        tray_menu.show_all()
+        menu.show_all()
 
-        widgets.watcher.connect_object(
-            'song-started', QLTrayIcon.__set_song, self, next, props)
-        widgets.watcher.connect_object(
-            'paused', self.__set_paused, tray_menu, True)
-        widgets.watcher.connect_object(
-            'unpaused', self.__set_paused, tray_menu, False)
+        widgets.watcher.connect('song-started', self.__set_song, next, props)
+        widgets.watcher.connect('paused', self.__set_paused, menu, True)
+        widgets.watcher.connect('unpaused', self.__set_paused, menu, False)
 
         cbs = {
             2: lambda *args: self.__playpause(args[0]),
@@ -855,7 +852,7 @@ class QLTrayIcon(HIGTrayIcon):
 
         HIGTrayIcon.__init__(self, p, window, cbs)
 
-    def __set_paused(self, menu, paused):
+    def __set_paused(self, watcher, menu, paused):
         menu.get_children()[0].destroy()
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
         playpause = gtk.ImageMenuItem(stock)
@@ -864,14 +861,13 @@ class QLTrayIcon(HIGTrayIcon):
         menu.prepend(playpause)
 
     def __playpause(self, activator):
-        if self.__song: player.playlist.paused ^= True
+        if widgets.watcher.song: player.playlist.paused ^= True
         else: player.playlist.reset()
 
     def __properties(self, activator):
-        if self.__song: SongProperties([self.__song])
+        if widgets.watcher.song: SongProperties([self.__song])
 
-    def __set_song(self, song, *items):
-        self.__song = song
+    def __set_song(self, watcher, song, *items):
         for item in items: item.set_sensitive(bool(song))
         if song:
             try:
@@ -902,10 +898,9 @@ class Osd(object):
             self.__gosd = gosd
             self.__level = 0
             self.__window = None
-            widgets.watcher.connect_object(
-                'song-started', Osd.__show_osd, self)
+            widgets.watcher.connect('song-started', self.__show_osd)
 
-    def __show_osd(self, song):
+    def __show_osd(self, watcher, song):
         if song is None or config.getint("settings", "osd") == 0: return
         color1, color2 = config.get("settings", "osdcolors").split()
         font = config.get("settings", "osdfont")
@@ -1413,20 +1408,17 @@ class MainWindow(gtk.Window):
             self.set_size_request(100, -1)
             self.set_alignment(0.0, 0.0)
             self.set_padding(3, 3)
-            self.__song = None
             widgets.watcher.connect('song-started', self.__song_started)
             widgets.watcher.connect('changed', self.__check_change)
 
         def __check_change(self, watcher, song):
-            if song is self.__song:
-                self.__song_started(watcher, song)
+            if song is watcher.song: self.__song_started(watcher, song)
 
         def __song_started(self, watcher, song):
             if song:
                 t = self.__title(song)+self.__people(song)+self.__album(song)
             else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
             self.set_markup(t)
-            self.__song = song
 
         def __title(self, song):
             t = "<span weight='bold' size='large'>%s</span>" %(
@@ -1611,12 +1603,12 @@ class MainWindow(gtk.Window):
             scale.set_draw_value(False)
             self.pack_start(scale)
 
-            widgets.watcher.connect_object(
-                'song-started', self.__class__.__song_changed, self, scale, l)
+            widgets.watcher.connect(
+                'song-started', self.__song_changed, scale, l)
 
             gobject.timeout_add(200, self.__update_time, scale, l)
 
-        def __song_changed(self, song, position, label):
+        def __song_changed(self, watcher, song, position, label):
             if song:
                 length = song["~#length"]
                 position.set_range(0, length * 1000)
@@ -2197,19 +2189,14 @@ class MainWindow(gtk.Window):
         path, col = view.get_cursor()
         header = col.header_name
         if "~" in header[1:]: header = filter(None, header.split("~"))[0]
-        self.filter_on_header(header)
-
-    def filter_proxy(self, item, header): self.filter_on_header(header)
-    def artist_filter(self, item): self.filter_on_header('artist')
-    def album_filter(self, item): self.filter_on_header('album')
-    def genre_filter(self, item): self.filter_on_header('genre')
+        self.__filter_on(header)
 
     def cur_artist_filter(self, item):
-        self.filter_on_header('artist', [widgets.watcher.song])
+        self.__filter_on('artist', [widgets.watcher.song])
     def cur_album_filter(self, item):
-        self.filter_on_header('album', [widgets.watcher.song])
+        self.__filter_on('album', [widgets.watcher.song])
     def cur_genre_filter(self, item):
-        self.filter_on_header('genre', [widgets.watcher.song])
+        self.__filter_on('genre', [widgets.watcher.song])
 
     def remove_song(self, item):
         view = self.songlist
@@ -2295,28 +2282,25 @@ class MainWindow(gtk.Window):
             menu.append(item)
             menu.append(gtk.SeparatorMenuItem())
 
-        if self.browser.can_filter("genre"):
-            b = gtk.ImageMenuItem(_("Filter on _genre"))
-            b.connect('activate', self.filter_proxy, 'genre')
-            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
-            menu.append(b)
+        songs = self.songlist.get_selected_songs()
+
         if self.browser.can_filter("artist"):
             b = gtk.ImageMenuItem(_("Filter on _artist"))
-            b.connect('activate', self.filter_proxy, 'artist')
+            b.connect_object('activate', self.__filter_on, 'artist', songs)
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
             menu.append(b)
         if self.browser.can_filter("album"):
             b = gtk.ImageMenuItem(_("Filter on al_bum"))
-            b.connect('activate', self.filter_proxy, 'album')
+            b.connect_object('activate', self.__filter_on, 'album', songs)
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
             menu.append(b)
         header = {"~rating":"~#rating", "~length":"~#length"}.get(
             header, header)
-        if (header not in ["genre", "artist", "album"] and
+        if (header not in ["artist", "album"] and
             self.browser.can_filter(header) and
             (header[0] != "~" or header[1] == "#")):
             b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
-            b.connect('activate', self.filter_proxy, header)
+            b.connect_object('activate', self.__filter_on, 'header', songs)
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
             menu.append(b)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
@@ -2339,7 +2323,7 @@ class MainWindow(gtk.Window):
         b.connect('activate', self.delete_song)
         menu.append(b)
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        b.connect('activate', self.song_properties)
+        b.connect_object('activate', SongProperties, songs)
         menu.append(b)
 
         menu.show_all()
@@ -2403,7 +2387,7 @@ class MainWindow(gtk.Window):
                 self.songlist.set_sort_by(None, tag=sort, refresh=False)
             self.refresh_songlist()
 
-    def filter_on_header(self, header, songs=None):
+    def __filter_on(self, header, songs=None):
         if not self.browser or not self.browser.can_filter(header):
             return
         if songs is None:
