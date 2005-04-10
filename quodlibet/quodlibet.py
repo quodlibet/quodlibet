@@ -140,11 +140,13 @@ def main():
 
     from threading import Thread
     t = Thread(target=player.playlist.play, args=(widgets.widgets.watcher,))
-    t.start()
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     enable_periodic_save()
     gtk.quit_add(0, save_and_quit, t)
+    gtk.threads_enter()
+    t.start()
     gtk.main()
+    gtk.threads_leave()
 
 def print_status():
     if not os.path.exists(const.CURRENT): print "stopped"
