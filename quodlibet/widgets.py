@@ -2040,10 +2040,11 @@ class MainWindow(gtk.Window):
         else: player.playlist.paused ^= True
 
     def jump_to_current(self, *args):
-        song = widgets.watcher.song
-        try: path = (player.playlist.get_playlist().index(song),)
-        except ValueError: pass
-        else: self.songlist.jump_to(path)
+        watcher, songlist = widgets.watcher, self.songlist
+        iter = songlist.song_to_iter(watcher.song)
+        if iter:
+            path = songlist.get_model().get_path(iter)
+            songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
 
     def next_song(self, *args):
         player.playlist.next()
@@ -2467,9 +2468,6 @@ class SongList(gtk.TreeView):
         if iter:
             model = self.get_model()
             model.remove(iter)
-
-    def jump_to(self, path):
-        self.scroll_to_cell(path)
 
     def save_widths(self, column, width):
         config.set("memory", "widths", " ".join(
