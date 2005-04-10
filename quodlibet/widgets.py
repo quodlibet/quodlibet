@@ -1702,7 +1702,7 @@ class MainWindow(gtk.Window):
         tips.set_tip(shuffle, _("Play songs in a random order"))
         shuffle.connect('toggled', self.toggle_shuffle)
         shuffle.set_active(config.getboolean('settings', 'shuffle'))
-        hbox.pack_start(shuffle, expand = False)
+        hbox.pack_start(shuffle, expand=False)
         self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
         repeat.connect('toggled', self.toggle_repeat)
         repeat.set_active(config.getboolean('settings', 'repeat'))
@@ -1736,10 +1736,10 @@ class MainWindow(gtk.Window):
         self.songlist.set_sort_by(
             None, sort[1:], refresh=True, order=int(sort[0]))
         self.child.pack_end(sw)
-        self.songlist.connect('row-activated', self.select_song)
-        self.songlist.connect('button-press-event', self.songs_button_press)
-        self.songlist.connect('popup-menu', self.songs_popup_menu)
-        self.songlist.connect('columns_changed', self.cols_changed)
+        self.songlist.connect('row-activated', self.__select_song)
+        self.songlist.connect('button-press-event', self.__songs_button_press)
+        self.songlist.connect('popup-menu', self.__songs_popup_menu)
+        self.songlist.connect('columns-changed', self.__cols_changed)
 
         # plugin support
         from plugins import PluginManager
@@ -1747,14 +1747,14 @@ class MainWindow(gtk.Window):
         self.__pm.rescan()
         
         self.browser = None
-        self.select_browser(self, config.getint("memory", "browser"))
+        self.__select_browser(self, config.getint("memory", "browser"))
         self.browser.restore()
         self.browser.activate()
 
         self.open_fifo()
-        self.keys = MmKeys({"mm_prev": self.previous_song,
-                            "mm_next": self.next_song,
-                            "mm_playpause": self.play_pause})
+        self.__keys = MmKeys({"mm_prev": self.previous_song,
+                              "mm_next": self.next_song,
+                              "mm_playpause": self.play_pause})
 
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
@@ -1844,7 +1844,7 @@ class MainWindow(gtk.Window):
             ("BrowserSearch", None, _("_Search library"), None, None, 1),
             ("BrowserPlaylist", None, _("_Playlists"), None, None, 2),
             ("BrowserPaned", None, _("_Paned browser"), None, None, 3)
-            ], config.getint("memory", "browser"), self.select_browser)
+            ], config.getint("memory", "browser"), self.__select_browser)
 
         
         self.ui = gtk.UIManager()
@@ -1873,7 +1873,7 @@ class MainWindow(gtk.Window):
             self.ui.get_widget("/Menu/Song/Properties"),
             _("View and edit tags in the playing song"))
 
-    def select_browser(self, activator, current):
+    def __select_browser(self, activator, current):
         if not isinstance(current, int): current = current.get_current_value()
         config.set("memory", "browser", str(current))
         Browser = [EmptyBar, SearchBar, PlaylistBar, PanedBrowser][current]
@@ -2018,7 +2018,7 @@ class MainWindow(gtk.Window):
             box.show()
             dy = box.get_allocation().height
             self.set_geometry_hints(None,
-                max_height = -1, min_height = -1, max_width = -1)
+                max_height=-1, min_height=-1, max_width=-1)
             self.resize(width, height + dy)
             box.set_size_request(-1, -1)
         else:
@@ -2028,7 +2028,7 @@ class MainWindow(gtk.Window):
             box.set_size_request(-1, dy)
         if not box.get_property("visible"):
             self.set_geometry_hints(
-                None, max_height = height - dy, max_width = 32000)
+                None, max_height=height - dy, max_width=32000)
         self.realize()
 
     def showhide_playlist(self, toggle):
@@ -2133,8 +2133,8 @@ class MainWindow(gtk.Window):
             widgets.preferences = PreferencesWindow(self)
         widgets.preferences.present()
 
-    def select_song(self, tree, indices, col):
-        model = self.songlist.get_model()
+    def __select_song(self, songlist, indices, col):
+        model = songlist.get_model()
         iter = model.get_iter(indices)
         song = model.get_value(iter, 0)
         player.playlist.go_to(song)
@@ -2165,7 +2165,7 @@ class MainWindow(gtk.Window):
         player.device.volume = val
         config.set("memory", "volume", str(slider.get_value()))
 
-    def songs_button_press(self, view, event):
+    def __songs_button_press(self, view, event):
         if event.button != 3:
             return False
         x, y = map(int, [event.x, event.y])
@@ -2179,17 +2179,10 @@ class MainWindow(gtk.Window):
         self.prep_main_popup(header, event.button, event.time)
         return True
 
-    def songs_popup_menu(self, view):
-        path, col = view.get_cursor()
+    def __songs_popup_menu(self, songlist):
+        path, col = songlist.get_cursor()
         header = col.header_name
         self.prep_main_popup(header, 1, 0)
-
-    def song_col_filter(self, item):
-        view = self.songlist
-        path, col = view.get_cursor()
-        header = col.header_name
-        if "~" in header[1:]: header = filter(None, header.split("~"))[0]
-        self.__filter_on(header)
 
     def cur_artist_filter(self, item):
         self.__filter_on('artist', [widgets.watcher.song])
@@ -2300,7 +2293,7 @@ class MainWindow(gtk.Window):
             self.browser.can_filter(header) and
             (header[0] != "~" or header[1] == "#")):
             b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
-            b.connect_object('activate', self.__filter_on, 'header', songs)
+            b.connect_object('activate', self.__filter_on, header, songs)
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
             menu.append(b)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
@@ -2403,8 +2396,8 @@ class MainWindow(gtk.Window):
             values = values.keys()
         self.browser.filter(header, values)
 
-    def cols_changed(self, view):        
-        headers = [col.header_name for col in view.get_columns()]
+    def __cols_changed(self, songlst):
+        headers = [col.header_name for col in songlist.get_columns()]
         if len(headers) == len(config.get("settings", "headers").split()):
             # Not an addition or removal (handled separately)
             config.set("settings", "headers", " ".join(headers))
