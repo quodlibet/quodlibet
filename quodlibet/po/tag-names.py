@@ -43,3 +43,4 @@ _("composer")
 _("added")
 # date song was last modified/edited
 _("modified")
+_("date")

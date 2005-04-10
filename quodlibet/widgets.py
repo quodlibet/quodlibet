@@ -2596,7 +2596,7 @@ class PlayList(SongList):
             playlists = [[PlayList.prettify_name(p), p] for p in
                           library.playlists()]
             playlists.sort()
-            model.append([("All songs"), ""])
+            model.append([(_("All songs")), ""])
             for p in playlists: model.append(p)
             return model
     lists_model = classmethod(lists_model)
