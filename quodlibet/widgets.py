@@ -1636,7 +1636,6 @@ class MainWindow(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
-        self.current_song = None
 
         tips = gtk.Tooltips()
         self.set_title("Quod Libet")
@@ -1998,14 +1997,10 @@ class MainWindow(gtk.Window):
                 self.ui.get_widget(
                     "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
-        # Update the currently-playing song in the list by bolding it.
-        last_song = self.current_song
-        self.current_song = song
         col = 0
-
         def update_if_last_or_current(model, path, iter):
             this_song = model[iter][col]
-            if this_song is song or this_song is last_song:
+            if this_song is song:
                 model.row_changed(path, iter)
 
         self.songlist.get_model().foreach(update_if_last_or_current)
@@ -2049,11 +2044,12 @@ class MainWindow(gtk.Window):
         config.set("memory", "songlist", str(toggle.get_active()))
 
     def play_pause(self, *args):
-        if self.current_song is None: player.playlist.reset()
+        if widgets.watcher.song is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
     def jump_to_current(self, *args):
-        try: path = (player.playlist.get_playlist().index(self.current_song),)
+        song = widgets.watcher.song
+        try: path = (player.playlist.get_playlist().index(song),)
         except ValueError: pass
         else: self.songlist.jump_to(path)
 
@@ -2111,12 +2107,6 @@ class MainWindow(gtk.Window):
             self.make_query("#(playcount < %d)" % (songs[0][0] + 1))
         else:
             self.make_query("#(playcount < %d)" % (songs[-40][0] + 1))
-
-    def show_big_cover(self, image, event):
-        if (self.current_song and event.button == 1 and
-            event.type == gtk.gdk._2BUTTON_PRESS):
-            cover = self.current_song.find_cover()
-            BigCenteredImage(self.current_song.comma("album"), cover.name)
 
     def rebuild(self, activator, hard=False):
         window = qltk.WaitLoadWindow(self, len(library) // 7,
@@ -2215,11 +2205,11 @@ class MainWindow(gtk.Window):
     def genre_filter(self, item): self.filter_on_header('genre')
 
     def cur_artist_filter(self, item):
-        self.filter_on_header('artist', [self.current_song])
+        self.filter_on_header('artist', [widgets.watcher.song])
     def cur_album_filter(self, item):
-        self.filter_on_header('album', [self.current_song])
+        self.filter_on_header('album', [widgets.watcher.song])
     def cur_genre_filter(self, item):
-        self.filter_on_header('genre', [self.current_song])
+        self.filter_on_header('genre', [widgets.watcher.song])
 
     def remove_song(self, item):
         view = self.songlist
@@ -2278,7 +2268,7 @@ class MainWindow(gtk.Window):
             self.browser.update()
 
     def current_song_prop(self, *args):
-        song = self.current_song
+        song = widgets.watcher.song
         if song: SongProperties([song])
 
     def song_properties(self, item):
@@ -2444,7 +2434,7 @@ class MainWindow(gtk.Window):
         SongList.set_all_column_headers(headers)
 
     def refresh_songlist(self):
-        i, length = self.songlist.refresh(current=self.current_song)
+        i, length = self.songlist.refresh(current=widgets.watcher.song)
         statusbar = self.__statusbar
         if i != 1: statusbar.set_text(
             _("%d songs (%s)") % (i, util.format_time_long(length)))
@@ -2527,7 +2517,7 @@ class SongList(gtk.TreeView):
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
             try:
                 song = model[iter][0]
-                current_song = widgets.main.current_song
+                current_song = widgets.watcher.song
                 cell.set_property('weight', attr[song is current_song])
                 cell.set_property('text', song.comma(column.header_name))
             except AttributeError: pass
@@ -2536,7 +2526,7 @@ class SongList(gtk.TreeView):
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
             try:
                 song = model[iter][0]
-                current_song = widgets.main.current_song
+                current_song = widgets.watcher.song
                 cell.set_property('weight', attr[song is current_song])
                 cell.set_property('text', util.unexpand(
                     song.comma(column.header_name).decode(code, 'replace')))
