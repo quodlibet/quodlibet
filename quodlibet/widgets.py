@@ -1265,7 +1265,7 @@ class CoverImage(gtk.Frame):
         self.child.show_all()
         self.__albumfn = None
 
-    def set_song(self, song):
+    def set_song(self, activator, song):
         self.__song = song
         if song is None:
             self.child.child.set_from_pixbuf(None)
@@ -1679,13 +1679,11 @@ class MainWindow(gtk.Window):
         # position slider
         scale = self.PositionSlider()
         scale.connect('seek', lambda s, pos: player.playlist.seek(pos))
-        self.__scale = scale
         vbox.pack_start(scale, expand=False)
 
         # cover image
         self.image = CoverImage()
-        widgets.watcher.connect_object(
-            'song-started', CoverImage.set_song, self.image)
+        widgets.watcher.connect('song-started', self.image.set_song)
         hbox.pack_start(self.image, expand=False)
 
         # volume control
@@ -1693,7 +1691,7 @@ class MainWindow(gtk.Window):
         p = gtk.gdk.pixbuf_new_from_file("volume.png")
         i = gtk.Image()
         i.set_from_pixbuf(p)
-        vbox.pack_start(i, expand = False)
+        vbox.pack_start(i, expand=False)
         adj = gtk.Adjustment(1, 0, 1, 0.01, 0.1)
         self.volume = gtk.VScale(adj)
         self.volume.set_update_policy(gtk.UPDATE_CONTINUOUS)
@@ -1703,12 +1701,12 @@ class MainWindow(gtk.Window):
         self.volume.set_inverted(True)
         tips.set_tip(self.volume, _("Adjust audio volume"))
         vbox.pack_start(self.volume)
-        hbox.pack_start(vbox, expand = False)
+        hbox.pack_start(vbox, expand=False)
 
-        self.child.pack_start(hbox, expand = False)
+        self.child.pack_start(hbox, expand=False)
 
         # status area
-        hbox = gtk.HBox(spacing = 6)
+        hbox = gtk.HBox(spacing=6)
         self.shuffle = shuffle = gtk.CheckButton(_("_Shuffle"))
         tips.set_tip(shuffle, _("Play songs in a random order"))
         shuffle.connect('toggled', self.toggle_shuffle)
@@ -1719,14 +1717,14 @@ class MainWindow(gtk.Window):
         repeat.set_active(config.getboolean('settings', 'repeat'))
         tips.set_tip(
             repeat, _("Restart the playlist after all songs are played"))
-        hbox.pack_start(repeat, expand = False)
-        self.statusbar = gtk.Label()
-        self.statusbar.set_text(_("No time information"))
-        self.statusbar.set_alignment(1.0, 0.5)
-        self.statusbar.set_justify(gtk.JUSTIFY_RIGHT)
-        hbox.pack_start(self.statusbar)
+        hbox.pack_start(repeat, expand=False)
+        self.__statusbar = gtk.Label()
+        self.__statusbar.set_text(_("No time information"))
+        self.__statusbar.set_alignment(1.0, 0.5)
+        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
+        hbox.pack_start(self.__statusbar)
         hbox.set_border_width(3)
-        self.child.pack_end(hbox, expand = False)
+        self.child.pack_end(hbox, expand=False)
 
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
@@ -1744,8 +1742,8 @@ class MainWindow(gtk.Window):
         self.songlist.set_model(gtk.ListStore(object))
         self.set_column_headers(config.get("settings", "headers").split())
         sort = config.get('memory', 'sortby')
-        self.songlist.set_sort_by(None, sort[1:], refresh=True,
-                                  order=int(sort[0]))
+        self.songlist.set_sort_by(
+            None, sort[1:], refresh=True, order=int(sort[0]))
         self.child.pack_end(sw)
         self.songlist.connect('row-activated', self.select_song)
         self.songlist.connect('button-press-event', self.songs_button_press)
@@ -1770,20 +1768,15 @@ class MainWindow(gtk.Window):
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
 
-        widgets.watcher.connect_object(
-            'removed', MainWindow.__song_removed, self)
-        widgets.watcher.connect_object(
-            'changed', MainWindow.__song_changed, self)
-        widgets.watcher.connect_object(
-            'refresh', MainWindow.__update_browser, self)
-        widgets.watcher.connect_object(
-            'song-started', MainWindow.__song_started, self)
-        widgets.watcher.connect_object(
-            'song-ended', MainWindow.__song_ended, self)
-        widgets.watcher.connect_object(
-            'missing', MainWindow.__song_missing, self)
-        widgets.watcher.connect_object('paused', self._update_paused, True)
-        widgets.watcher.connect_object('unpaused', self._update_paused, False)
+        widgets.watcher.connect('removed', self.__song_removed)
+        widgets.watcher.connect('changed', self.__update_title)
+        widgets.watcher.connect('refresh', self.__update_browser)
+        widgets.watcher.connect('song-started', self.__song_started)
+        widgets.watcher.connect('song-ended', self.__song_ended)
+        widgets.watcher.connect(
+            'missing', self.__song_missing, self.__statusbar)
+        widgets.watcher.connect('paused', self.__update_paused, True)
+        widgets.watcher.connect('unpaused', self.__update_paused, False)
 
         self.show()
 
@@ -1791,10 +1784,6 @@ class MainWindow(gtk.Window):
         if self.icon.enabled and config.getboolean("plugins", "icon_close"):
             self.icon.hide_window()
             return True
-
-    def __song_changed(self, song):
-        if song is self.current_song:
-            self.__update_markup(self.current_song)
 
     def _create_menu(self, tips):
         ag = gtk.ActionGroup('MainWindowActions')
@@ -1943,11 +1932,11 @@ class MainWindow(gtk.Window):
         elif c == "q": self.make_query(os.read(source, 4096))
         elif c == "s":
             time = os.read(source, 20)
-            seek_to = self._time[0]
+            seek_to = widgets.watcher.time[0]
             if time[0] == "+": seek_to += util.parse_time(time[1:]) * 1000
             elif time[0] == "-": seek_to -= util.parse_time(time[1:]) * 1000
             else: seek_to = util.parse_time(time) * 1000
-            seek_to = min(self._time[1] - 1, max(0, seek_to))
+            seek_to = min(widgets.watcher.time[1] - 1, max(0, seek_to))
             player.playlist.seek(seek_to)
         elif c == "p":
             filename = os.read(source, 4096)
@@ -1968,7 +1957,7 @@ class MainWindow(gtk.Window):
         os.close(self.fifo)
         self.open_fifo()
 
-    def _update_paused(self, paused):
+    def __update_paused(self, watcher, paused):
         menu = self.ui.get_widget("/Menu/Song/PlayPause")
         if paused:
             menu.get_image().set_from_stock(
@@ -1980,38 +1969,35 @@ class MainWindow(gtk.Window):
             menu.child.set_text(_("_Pause"))
         menu.child.set_use_underline(True)
 
-    def __song_missing(self, song):
-        self.statusbar.set_text(_("Could not play %s.") % song['~filename'])
+    def __song_missing(self, watcher, song, statusbar):
+        statusbar.set_text(_("Could not play %s.") % song['~filename'])
         try: library.remove(song)
         except KeyError: pass
+        else: watcher.removed(song)
 
-    def __update_markup(self, song):
-        if song: self.set_title("Quod Libet - " + song.comma("~title~version"))
-        else: self.set_title("Quod Libet")
-
-    def __song_ended(self, song, stopped):
+    def __song_ended(self, watcher, song, stopped):
         if player.playlist.filter and not player.playlist.filter(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
             if iter: self.songlist.get_model().remove(iter)
 
-    def __song_started(self, song):
+    def __update_title(self, watcher, song):
+        if song is watcher.song:
+            if song:
+                self.set_title("Quod Libet - " + song.comma("~title~version"))
+            else: self.set_title("Quod Libet")
+
+    def __song_started(self, watcher, song):
+        self.__update_title(watcher, song)
+
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
-            self._time = (0, song["~#length"] * 1000)
-
             for h in ['genre', 'artist', 'album']:
                 self.ui.get_widget(
                     "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
-
-            self.__update_markup(song)
-        else:
-            self._time = (0, 1)
-            self.__update_markup(None)
-
         # Update the currently-playing song in the list by bolding it.
         last_song = self.current_song
         self.current_song = song
@@ -2025,7 +2011,6 @@ class MainWindow(gtk.Window):
         self.songlist.get_model().foreach(update_if_last_or_current)
         if song and config.getboolean("settings", "jump"):
             self.jump_to_current()
-        return False
 
     def save_size(self, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
@@ -2133,7 +2118,7 @@ class MainWindow(gtk.Window):
             cover = self.current_song.find_cover()
             BigCenteredImage(self.current_song.comma("album"), cover.name)
 
-    def rebuild(self, activator, hard = False):
+    def rebuild(self, activator, hard=False):
         window = qltk.WaitLoadWindow(self, len(library) // 7,
                                      _("Quod Libet is scanning your library. "
                                        "This may take several minutes.\n\n"
@@ -2247,10 +2232,10 @@ class MainWindow(gtk.Window):
             widgets.watcher.removed(song)
         widgets.watcher.refresh()
 
-    def __update_browser(self):
+    def __update_browser(self, watcher):
         self.browser.update()
 
-    def __song_removed(self, song):
+    def __song_removed(self, watcher, song):
         player.playlist.remove(song)
 
     def delete_song(self, item):
@@ -2428,7 +2413,7 @@ class MainWindow(gtk.Window):
                 self.songlist.set_sort_by(None, tag=sort, refresh=False)
             self.refresh_songlist()
 
-    def filter_on_header(self, header, songs = None):
+    def filter_on_header(self, header, songs=None):
         if not self.browser or not self.browser.can_filter(header):
             return
         if songs is None:
@@ -2460,7 +2445,7 @@ class MainWindow(gtk.Window):
 
     def refresh_songlist(self):
         i, length = self.songlist.refresh(current=self.current_song)
-        statusbar = self.statusbar
+        statusbar = self.__statusbar
         if i != 1: statusbar.set_text(
             _("%d songs (%s)") % (i, util.format_time_long(length)))
         else: statusbar.set_text(
@@ -2471,7 +2456,7 @@ class SongList(gtk.TreeView):
     songlistviews = {}
     headers = []
 
-    def __init__(self, recall = 0):
+    def __init__(self, recall=0):
         gtk.TreeView.__init__(self)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.songlistviews[self] = None     # register self
@@ -2883,7 +2868,7 @@ class SongProperties(gtk.Window):
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             self.add(gtk.Viewport())
             self.child.set_shadow_type(gtk.SHADOW_NONE)
-            self.box = gtk.VBox(spacing = 6)
+            self.box = gtk.VBox(spacing=6)
             self.box.set_border_width(12)
             self.child.add(self.box)
             self.tips = gtk.Tooltips()
@@ -2898,24 +2883,23 @@ class SongProperties(gtk.Window):
             w.set_alignment(0, 0)
             return w
 
-        def Frame(self, label, widget, big = True):
+        def Frame(self, label, widget, big=True):
             f = gtk.Frame()
             g = gtk.Label()
             if big: g.set_markup("<big><u>%s</u></big>" % label)
             else: g.set_markup("<u>%s</u>" % label)
             f.set_label_widget(g)
             f.set_shadow_type(gtk.SHADOW_NONE)
-            a = gtk.Alignment(xalign = 0.0, yalign = 0.0,
-                              xscale = 1.0, yscale = 1.0)
+            a = gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
             a.set_padding(0, 0, 12, 0)
             a.add(widget)
             f.add(a)
             return f
 
         def _people(self, song):
-            vbox = gtk.VBox(spacing = 6)
-            vbox.pack_start(self.Label(util.escape(song("artist"))),
-                            expand = False)
+            vbox = gtk.VBox(spacing=6)
+            vbox.pack_start(
+                self.Label(util.escape(song("artist"))), expand=False)
 
             for names, tag_ in [
                 (_("performers"), "performer"),
@@ -2934,7 +2918,7 @@ class SongProperties(gtk.Window):
                         frame = self.Frame(util.capitalize(ntag),
                                            self.Label(util.escape(song[tag_])),
                                            False)
-                    vbox.pack_start(frame, expand = False)
+                    vbox.pack_start(frame, expand=False)
             return self.Frame(util.capitalize(_("artists")), vbox)
 
         def _album(self, song):
@@ -2943,8 +2927,8 @@ class SongProperties(gtk.Window):
             w = self.Label("")
             if cover:
                 try:
-                    hb = gtk.HBox(spacing = 12)
-                    hb.pack_start(self._make_cover(cover, song),expand = False)
+                    hb = gtk.HBox(spacing=12)
+                    hb.pack_start(self._make_cover(cover, song),expand=False)
                     hb.pack_start(w)
                     f = self.Frame(title, hb)
                 except:
@@ -3012,11 +2996,11 @@ class SongProperties(gtk.Window):
             table = gtk.Table(len(tbl) + 1, 2)
             table.set_col_spacings(6)
             l = self.Label(util.escape(fn))
-            table.attach(l, 0, 2, 0, 1, xoptions = gtk.FILL)
+            table.attach(l, 0, 2, 0, 1, xoptions=gtk.FILL)
             table.set_homogeneous(False)
             for i, (l, r) in enumerate(tbl):
                 l = "<b>%s</b>" % util.capitalize(util.escape(l) + ":")
-                table.attach(self.Label(l), 0, 1, i + 1, i + 2, xoptions = 0)
+                table.attach(self.Label(l), 0, 1, i + 1, i + 2, xoptions=0)
                 table.attach(self.Label(util.escape(r)), 1, 2, i + 1, i + 2)
 
             return self.Frame(_("File"), table)
@@ -3030,18 +3014,18 @@ class SongProperties(gtk.Window):
             return l
 
         def _update_one(self, song):
-            self.box.pack_start(self._title(song), expand = False)
+            self.box.pack_start(self._title(song), expand=False)
             if "album" in song:
-                self.box.pack_start(self._album(song), expand = False)
-            self.box.pack_start(self._people(song), expand = False)
-            self.box.pack_start(self._listen(song), expand = False)
+                self.box.pack_start(self._album(song), expand=False)
+            self.box.pack_start(self._people(song), expand=False)
+            self.box.pack_start(self._listen(song), expand=False)
 
         def _update_album(self, songs):
             songs.sort()
             album = songs[0]("~album~date")
             self.box.pack_start(self.Label(
                 "<b><span size='x-large'>%s</span></b>" % util.escape(album)),
-                                expand = False)
+                                expand=False)
 
             song = songs[0]
 
@@ -3058,15 +3042,15 @@ class SongProperties(gtk.Window):
                 w = self.Label("\n".join(text))
                 if cover:
                     try:
-                        hb = gtk.HBox(spacing = 12)
+                        hb = gtk.HBox(spacing=12)
                         i = self._make_cover(cover, songs[0])
-                        hb.pack_start(i, expand = False)
+                        hb.pack_start(i, expand=False)
                         hb.pack_start(w)
-                        self.box.pack_start(hb, expand = False)
+                        self.box.pack_start(hb, expand=False)
                     except:
-                        self.box.pack_start(w, expand = False)
+                        self.box.pack_start(w, expand=False)
                 else:
-                    self.box.pack_start(w, expand = False)
+                    self.box.pack_start(w, expand=False)
 
             artists = set()
             for song in songs: artists.update(song.list("artist"))
@@ -3077,7 +3061,7 @@ class SongProperties(gtk.Window):
             l.set_selectable(True)
             l.set_line_wrap(True)
             self.box.pack_start(
-                self.Frame(util.capitalize(_("artists")), l), expand = False)
+                self.Frame(util.capitalize(_("artists")), l), expand=False)
 
             text = []
             cur_disc = songs[0]("~#disc", 1) - 1
@@ -3108,14 +3092,14 @@ class SongProperties(gtk.Window):
                 text.append("%s<b>%d.</b> %s" %(
                     tabs, track, util.escape(song.comma("~title~version"))))
             l = self.Label("\n".join(text))
-            self.box.pack_start(self.Frame(_("Track List"), l), expand = False)
+            self.box.pack_start(self.Frame(_("Track List"), l), expand=False)
 
         def _update_artist(self, songs):
             artist = songs[0].comma("artist")
             self.box.pack_start(self.Label(
                 "<b><span size='x-large'>%s</span></b>\n%s" %(
                 util.escape(artist), _("%d songs") % len(songs))),
-                                expand = False)
+                                expand=False)
 
             noalbum = 0
             albums = {}
@@ -3136,7 +3120,7 @@ class SongProperties(gtk.Window):
             self.box.pack_start(
                 self.Frame(_("Selected Discography"),
                            self.Label("\n".join(albums))),
-                expand = False)
+                expand=False)
             added = set()
             covers = [ac for ac in covers if bool(ac[1])]
             t = gtk.Table(4, (len(covers) // 4) + 1)
@@ -3150,7 +3134,7 @@ class SongProperties(gtk.Window):
                     c = i % 4
                     r = i // 4
                     t.attach(cov, c, c + 1, r, r + 1,
-                             xoptions = gtk.EXPAND, yoptions = 0)
+                             xoptions=gtk.EXPAND, yoptions=0)
                 except: pass
                 added.add(cover.name)
             self.box.pack_start(t)
@@ -3159,7 +3143,7 @@ class SongProperties(gtk.Window):
             text = "<b><span size='x-large'>%s</span></b>" %(
                 _("%d songs") % len(songs))
             l = self.Label(text)
-            self.box.pack_start(l, expand = False)
+            self.box.pack_start(l, expand=False)
 
             tc = sum([complex(song["~#length"], song["~#playcount"])
                       for song in songs])
@@ -3173,7 +3157,7 @@ class SongProperties(gtk.Window):
             table.attach(self.Label(str(count)), 1, 2, 1, 2)
 
             self.box.pack_start(self.Frame(_("Listening"), table),
-                                expand = False)
+                                expand=False)
 
             artists = set()
             albums = set()
@@ -3193,7 +3177,7 @@ class SongProperties(gtk.Window):
                     self.Frame("%s (%d)" % (util.capitalize(_("artists")),
                                             arcount),
                                self.Label(artists)),
-                               expand = False)
+                               expand=False)
 
             albums = list(albums)
             albums.sort()
@@ -3205,7 +3189,7 @@ class SongProperties(gtk.Window):
                     self.Frame("%s (%d)" % (util.capitalize(_("albums")),
                                             alcount),
                                self.Label(albums)),
-                               expand = False)
+                               expand=False)
 
         def __update(self, songs):
             for c in self.box.get_children():
@@ -3244,7 +3228,7 @@ class SongProperties(gtk.Window):
 
     class EditTags(gtk.VBox):
         def __init__(self, parent):
-            gtk.VBox.__init__(self, spacing = 12)
+            gtk.VBox.__init__(self, spacing=12)
             self.title = _("Edit Tags")
             self.set_border_width(12)
             self.prop = parent
@@ -3280,8 +3264,8 @@ class SongProperties(gtk.Window):
             render = gtk.CellRendererText()
             render.set_property('editable', True)
             render.connect('edited', self.edit_tag, self.model, 1)
-            column = gtk.TreeViewColumn(_('Value'), render, markup = 1,
-                                        editable = 3, strikethrough = 4)
+            column = gtk.TreeViewColumn(_('Value'), render, markup=1,
+                                        editable=3, strikethrough=4)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(column)
 
@@ -3294,13 +3278,13 @@ class SongProperties(gtk.Window):
             sw.add(self.view)
             self.pack_start(sw)
 
-            self.buttonbox = gtk.HBox(spacing = 18)
+            self.buttonbox = gtk.HBox(spacing=18)
             bbox1 = gtk.HButtonBox()
             bbox1.set_spacing(6)
             bbox1.set_layout(gtk.BUTTONBOX_START)
-            self.add = qltk.Button(stock = gtk.STOCK_ADD, cb = self.add_tag)
-            self.remove = qltk.Button(stock = gtk.STOCK_REMOVE,
-                                     cb = self.remove_tag)
+            self.add = qltk.Button(stock=gtk.STOCK_ADD, cb=self.add_tag)
+            self.remove = qltk.Button(stock=gtk.STOCK_REMOVE,
+                                      cb=self.remove_tag)
             self.remove.set_sensitive(False)
             bbox1.pack_start(self.add)
             bbox1.pack_start(self.remove)
@@ -3308,10 +3292,10 @@ class SongProperties(gtk.Window):
             bbox2 = gtk.HButtonBox()
             bbox2.set_spacing(6)
             bbox2.set_layout(gtk.BUTTONBOX_END)
-            self.revert = qltk.Button(stock = gtk.STOCK_REVERT_TO_SAVED,
-                                      cb = self.revert_files)
-            self.save = qltk.Button(stock = gtk.STOCK_SAVE,
-                                   cb = self.save_files)
+            self.revert = qltk.Button(stock=gtk.STOCK_REVERT_TO_SAVED,
+                                      cb=self.revert_files)
+            self.save = qltk.Button(stock=gtk.STOCK_SAVE,
+                                   cb=self.save_files)
             self.revert.set_sensitive(False)
             self.save.set_sensitive(False)
             bbox2.pack_start(self.revert)
@@ -3320,7 +3304,7 @@ class SongProperties(gtk.Window):
             self.buttonbox.pack_start(bbox1)
             self.buttonbox.pack_start(bbox2)
 
-            self.pack_start(self.buttonbox, expand = False)
+            self.pack_start(self.buttonbox, expand=False)
 
             tips = gtk.Tooltips()
             for widget, tip in [
@@ -3664,11 +3648,11 @@ class SongProperties(gtk.Window):
 
     class TagByFilename(gtk.VBox):
         def __init__(self, prop):
-            gtk.VBox.__init__(self, spacing = 6)
+            gtk.VBox.__init__(self, spacing=6)
             self.title = _("Tag by Filename")
             self.prop = prop
             self.set_border_width(12)
-            hbox = gtk.HBox(spacing = 12)
+            hbox = gtk.HBox(spacing=12)
             self.combo = combo = qltk.ComboBoxEntrySave(
                 const.TBP, const.TBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
@@ -3676,8 +3660,8 @@ class SongProperties(gtk.Window):
             self.entry.connect('changed', self.changed)
             self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
             self.preview.connect('clicked', self.preview_tags)
-            hbox.pack_start(self.preview, expand = False)
-            self.pack_start(hbox, expand = False)
+            hbox.pack_start(self.preview, expand=False)
+            self.pack_start(hbox, expand=False)
 
             self.view = gtk.TreeView()
             sw = gtk.ScrolledWindow()
@@ -3707,14 +3691,14 @@ class SongProperties(gtk.Window):
             c4.connect('changed', self.changed)
             vbox.pack_start(c4)
             
-            self.pack_start(vbox, expand = False)
+            self.pack_start(vbox, expand=False)
 
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
             self.save = qltk.Button(
-                stock = gtk.STOCK_SAVE, cb = self.save_files)
+                stock=gtk.STOCK_SAVE, cb=self.save_files)
             bbox.pack_start(self.save)
-            self.pack_start(bbox, expand = False)
+            self.pack_start(bbox, expand=False)
 
             tips = gtk.Tooltips()
             for widget, tip in [
@@ -3781,7 +3765,7 @@ class SongProperties(gtk.Window):
                 render = gtk.CellRendererText()
                 render.set_property('editable', True)
                 render.connect('edited', self.row_edited, self.model, i + 2)
-                col = gtk.TreeViewColumn(header, render, text = i + 2)
+                col = gtk.TreeViewColumn(header, render, text=i + 2)
                 col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
                 self.view.append_column(col)
             spls = config.get("settings", "splitters")
@@ -3797,7 +3781,7 @@ class SongProperties(gtk.Window):
                     if title: text = util.title(text)
                     if split: text = "\n".join(util.split_value(text, spls))
                     row.append(text)
-                self.model.append(row = row)
+                self.model.append(row=row)
 
             # save for last to potentially save time
             if songs: self.view.set_model(self.model)
@@ -4192,7 +4176,7 @@ class SongProperties(gtk.Window):
             else: self.set_sensitive(True)
             for song in songs:
                 basename = util.fsdecode(song("~basename"))
-                model.append(row = [song, basename, song("tracknumber")])
+                model.append(row=[song, basename, song("tracknumber")])
             save.set_sensitive(False)
             revert.set_sensitive(False)
 
@@ -4485,7 +4469,7 @@ class ExFalsoWindow(gtk.Window):
                      SongProperties.RenameFiles,
                      SongProperties.TrackNumbers]:
             nb.append_page(Page(self))
-        self.child.pack2(nb, resize = False, shrink=False)
+        self.child.pack2(nb, resize=False, shrink=False)
         fs.connect('changed', self.__changed, nb)
         self.__cache = {}
         s = widgets.watcher.connect_object('refresh', FileSelector.rescan, fs)
