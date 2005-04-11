@@ -841,7 +841,7 @@ class QLTrayIcon(HIGTrayIcon):
         cbs = {
             2: lambda *args: self.__playpause(args[0]),
             3: lambda ev, *args:
-            tray_menu.popup(None, None, None, ev.button, ev.time),
+            menu.popup(None, None, None, ev.button, ev.time),
             4: lambda *args: volume.set_value(volume.get_value()-0.05),
             5: lambda *args: volume.set_value(volume.get_value()+0.05),
             6: lambda *args: player.playlist.next(),
