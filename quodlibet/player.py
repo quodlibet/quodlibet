@@ -329,3 +329,4 @@ def init(devid):
     try: device = outputs.get(name, OSSProxy)(*args)
     except: device = OSSProxy(*args)
     playlist = PlaylistPlayer(output=device)
+    return playlist

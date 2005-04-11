@@ -267,3 +267,5 @@ def init(cache_fn=None):
                      if mod.extensions])
     library = Library()
     if cache_fn: library.load(cache_fn)
+    return library
+

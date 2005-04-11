@@ -34,11 +34,11 @@ if sys.version_info < (2, 4):
 class widgets(object): pass
 
 class FSInterface(object):
-    def __init__(self):
-        widgets.watcher.connect('paused', self.__paused)
-        widgets.watcher.connect('unpaused', self.__unpaused)
-        widgets.watcher.connect('song-started', self.__started)
-        widgets.watcher.connect('song-ended', self.__ended)
+    def __init__(self, watcher):
+        watcher.connect('paused', self.__paused)
+        watcher.connect('unpaused', self.__unpaused)
+        watcher.connect('song-started', self.__started)
+        watcher.connect('song-ended', self.__ended)
 
     def __paused(self, watcher):
         try: file(const.PAUSED, "w").close()
@@ -891,14 +891,14 @@ class MmKeys(object):
             print to(_("Initialized multimedia key support."))
 
 class Osd(object):
-    def __init__(self):
+    def __init__(self, watcher):
         try: import gosd
         except: pass
         else:
             self.__gosd = gosd
             self.__level = 0
             self.__window = None
-            widgets.watcher.connect('song-started', self.__show_osd)
+            watcher.connect('song-started', self.__show_osd)
 
     def __show_osd(self, watcher, song):
         if song is None or config.getint("settings", "osd") == 0: return
@@ -2397,7 +2397,7 @@ class MainWindow(gtk.Window):
             values = values.keys()
         self.browser.filter(header, values)
 
-    def __cols_changed(self, songlst):
+    def __cols_changed(self, songlist):
         headers = [col.header_name for col in songlist.get_columns()]
         if len(headers) == len(config.get("settings", "headers").split()):
             # Not an addition or removal (handled separately)
@@ -4509,15 +4509,15 @@ def init():
         val = config.get("header_maps", opt)
         HEADERS_FILTER[opt] = val
 
-    widgets.watcher = SongWatcher()
-    FSInterface()
+    watcher = widgets.watcher = SongWatcher()
+    FSInterface(watcher)
     widgets.main = MainWindow()
     player.playlist.info = widgets.watcher
 
     # If the OSD module is not available, no signal is registered and
     # the reference is dropped. If it is available, a reference to it is
     # stored in its signal registered with SongWatcher.
-    Osd()
+    Osd(watcher)
 
     util.mkdir(const.DIR)
     import signal
