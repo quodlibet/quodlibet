@@ -3618,67 +3618,77 @@ class SongProperties(gtk.Window):
             self.set_border_width(12)
             hbox = gtk.HBox(spacing=12)
 
-            view = gtk.TreeView()
+            # Main buttons
+            preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
+            save = gtk.Button(stock=gtk.STOCK_SAVE)
 
+            # Text entry and preview button
             combo = qltk.ComboBoxEntrySave(
                 const.TBP, const.TBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
             entry = combo.child
-            entry.connect('changed', self.changed)
-            self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
-            hbox.pack_start(self.preview, expand=False)
+            hbox.pack_start(preview, expand=False)
             self.pack_start(hbox, expand=False)
 
+            # Header preview display
+            view = gtk.TreeView()
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             sw.add(view)
             self.pack_start(sw)
 
+            # Options
             vbox = gtk.VBox()
-            c1 = gtk.CheckButton(_("Replace _underscores with spaces"))
-            c1.set_active(config.state("tbp_space"))
-            c2 = gtk.CheckButton(_("_Title-case resulting values"))
-            c2.set_active(config.state("titlecase"))
-            c3 = gtk.CheckButton(_("Split into _multiple values"))
-            c3.set_active(config.state("splitval"))
-            c4 = gtk.combo_box_new_text()
-            c4.append_text(_("Tags should replace existing ones"))
-            c4.append_text(_("Tags should be added to existing ones"))
-            c4.set_active(config.getint("settings", "addreplace"))
-            self.space = c1
-            self.titlecase = c2
-            self.split = c3
-            self.addreplace = c4
-            for i in [c1, c2, c3]:
-                i.connect('toggled', self.changed)
+            space = gtk.CheckButton(_("Replace _underscores with spaces"))
+            space.set_active(config.state("tbp_space"))
+            titlecase = gtk.CheckButton(_("_Title-case resulting values"))
+            titlecase.set_active(config.state("titlecase"))
+            split = gtk.CheckButton(_("Split into _multiple values"))
+            split.set_active(config.state("splitval"))
+            addreplace = gtk.combo_box_new_text()
+            addreplace.append_text(_("Tags should replace existing ones"))
+            addreplace.append_text(_("Tags should be added to existing ones"))
+            addreplace.set_active(config.getint("settings", "addreplace"))
+            for i in [space, titlecase, split]:
                 vbox.pack_start(i)
-            c4.connect('changed', self.changed)
-            vbox.pack_start(c4)
-            
+            vbox.pack_start(addreplace)
             self.pack_start(vbox, expand=False)
 
+            # Save button
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
-            self.save = gtk.Button(stock=gtk.STOCK_SAVE)
-            bbox.pack_start(self.save)
+            bbox.pack_start(save)
             self.pack_start(bbox, expand=False)
 
             tips = gtk.Tooltips()
-            for widget, tip in [
-                (self.titlecase,
-                 _("If appropriate to the language, the first letter of "
-                   "each word will be capitalized"))]:
-                tips.set_tip(widget, tip)
-            update_args = [prop, view, combo, entry]
-            prop.connect_object(
-                'changed', self.__class__.__update, self, *update_args)
-            self.preview.connect('clicked', self.__preview_tags, *update_args)
-            self.save.connect('clicked', self.__save_files, prop, view, entry)
+            tips.set_tip(
+                titlecase,
+                _("The first letter of each word will be capitalized"))
 
-        def __update(self, songs, parent, view, combo, entry):
+            # Changing things -> need to preview again
+            kw = { "titlecase": titlecase,
+                   "splitval": split, "tbp_space": space }
+            for i in [space, titlecase, split]:
+                i.connect('toggled', self.__changed, preview, save, kw)
+            entry.connect('changed', self.__changed, preview, save, kw)
+
+            UPDATE_ARGS = [prop, view, combo, entry, preview, save,
+                           space, titlecase, split]
+
+            # Song selection changed, preview clicked
+            preview.connect('clicked', self.__preview_tags, *UPDATE_ARGS)
+            prop.connect_object(
+                'changed', self.__class__.__update, self, *UPDATE_ARGS)
+
+            # Save changes
+            save.connect('clicked', self.__save_files, prop, view, entry,
+                         addreplace)
+
+        def __update(self, songs, parent, view, combo, entry, preview, save,
+                     space, titlecase, split):
             from library import AudioFileGroup
-            self.songs = songs
+            self.__songs = songs
 
             songinfo = AudioFileGroup(songs)
             if songs: pattern_text = entry.get_text().decode("utf-8")
@@ -3717,9 +3727,9 @@ class SongProperties(gtk.Window):
                 pattern = util.PatternFromFile("")
 
             view.set_model(None)
-            rep = self.space.get_active()
-            title = self.titlecase.get_active()
-            split = self.split.get_active()
+            rep = space.get_active()
+            title = titlecase.get_active()
+            split = split.get_active()
             model = gtk.ListStore(object, str,
                                  *([str] * len(pattern.headers)))
             for col in view.get_columns():
@@ -3732,7 +3742,8 @@ class SongProperties(gtk.Window):
             for i, header in enumerate(pattern.headers):
                 render = gtk.CellRendererText()
                 render.set_property('editable', True)
-                render.connect('edited', self.row_edited, model, i + 2)
+                render.connect(
+                    'edited', self.__row_edited, model, i + 2, preview)
                 col = gtk.TreeViewColumn(header, render, text=i + 2)
                 col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
                 view.append_column(col)
@@ -3753,14 +3764,15 @@ class SongProperties(gtk.Window):
 
             # save for last to potentially save time
             if songs: view.set_model(model)
-            self.preview.set_sensitive(False)
-            self.save.set_sensitive(len(pattern.headers) > 0)
+            preview.set_sensitive(False)
+            save.set_sensitive(len(pattern.headers) > 0)
 
-        def __save_files(self, activator, parent, view, entry):
+        def __save_files(self, save, parent, view, entry, addreplace):
             pattern_text = entry.get_text().decode('utf-8')
             pattern = util.PatternFromFile(pattern_text)
-            add = (self.addreplace.get_active() == 1)
-            win = WritingWindow(parent, len(self.songs))
+            add = (addreplace.get_active() == 1)
+            config.set("settings", "addreplace", str(addreplace.get_active()))
+            win = WritingWindow(parent, len(self.__songs))
 
             def save_song(model, path, iter):
                 song = model[path][0]
@@ -3784,7 +3796,7 @@ class SongProperties(gtk.Window):
                         else:
                             vals = row[i + 2].decode("utf-8")
                             for val in vals.split("\n"):
-                                if val not in song[h]:
+                                if val not in song.list(h):
                                     song.add(h, val)
                                     changed = True
 
@@ -3806,28 +3818,22 @@ class SongProperties(gtk.Window):
             view.get_model().foreach(save_song)
             win.destroy()
             widgets.watcher.refresh()
-            self.save.set_sensitive(False)
+            save.set_sensitive(False)
 
-        def row_edited(self, renderer, path, new, model, colnum):
+        def __row_edited(self, renderer, path, new, model, colnum, preview):
             row = model[path]
             if row[colnum] != new:
                 row[colnum] = new
-                self.preview.set_sensitive(True)
+                preview.set_sensitive(True)
 
         def __preview_tags(self, activator, *args):
-            self.__update(self.songs, *args)
+            self.__update(self.__songs, *args)
 
-        def changed(self, *args):
-            config.set("settings", "addreplace",
-                       str(self.addreplace.get_active()))
-            config.set("settings", "splitval",
-                       str(self.split.get_active()))
-            config.set("settings", "titlecase",
-                       str(self.titlecase.get_active()))
-            config.set("settings", "tbp_space",
-                       str(self.space.get_active()))
-            self.preview.set_sensitive(True)
-            self.save.set_sensitive(False)
+        def __changed(self, activator, preview, save, kw):
+            for key, widget in kw.items():
+                config.set("settings", key, str(widget.get_active()))
+            preview.set_sensitive(True)
+            save.set_sensitive(False)
 
     class RenameFiles(gtk.VBox):
         def __init__(self, prop):
