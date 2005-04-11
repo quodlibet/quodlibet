@@ -3615,24 +3615,24 @@ class SongProperties(gtk.Window):
         def __init__(self, prop):
             gtk.VBox.__init__(self, spacing=6)
             self.title = _("Tag by Filename")
-            self.prop = prop
             self.set_border_width(12)
             hbox = gtk.HBox(spacing=12)
-            self.combo = combo = qltk.ComboBoxEntrySave(
+
+            view = gtk.TreeView()
+
+            combo = qltk.ComboBoxEntrySave(
                 const.TBP, const.TBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
-            self.entry = combo.child
-            self.entry.connect('changed', self.changed)
+            entry = combo.child
+            entry.connect('changed', self.changed)
             self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
-            self.preview.connect('clicked', self.preview_tags)
             hbox.pack_start(self.preview, expand=False)
             self.pack_start(hbox, expand=False)
 
-            self.view = gtk.TreeView()
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            sw.add(self.view)
+            sw.add(view)
             self.pack_start(sw)
 
             vbox = gtk.VBox()
@@ -3660,8 +3660,7 @@ class SongProperties(gtk.Window):
 
             bbox = gtk.HButtonBox()
             bbox.set_layout(gtk.BUTTONBOX_END)
-            self.save = qltk.Button(
-                stock=gtk.STOCK_SAVE, cb=self.save_files)
+            self.save = gtk.Button(stock=gtk.STOCK_SAVE)
             bbox.pack_start(self.save)
             self.pack_start(bbox, expand=False)
 
@@ -3671,19 +3670,23 @@ class SongProperties(gtk.Window):
                  _("If appropriate to the language, the first letter of "
                    "each word will be capitalized"))]:
                 tips.set_tip(widget, tip)
-            prop.connect_object('changed', self.__class__.__update, self)
+            update_args = [prop, view, combo, entry]
+            prop.connect_object(
+                'changed', self.__class__.__update, self, *update_args)
+            self.preview.connect('clicked', self.__preview_tags, *update_args)
+            self.save.connect('clicked', self.__save_files, prop, view, entry)
 
-        def __update(self, songs):
+        def __update(self, songs, parent, view, combo, entry):
             from library import AudioFileGroup
             self.songs = songs
 
             songinfo = AudioFileGroup(songs)
-            if songs: pattern_text = self.entry.get_text().decode("utf-8")
+            if songs: pattern_text = entry.get_text().decode("utf-8")
             else: pattern_text = ""
             try: pattern = util.PatternFromFile(pattern_text)
             except sre.error:
                 qltk.ErrorMessage(
-                    self.prop, _("Invalid pattern"),
+                    parent, _("Invalid pattern"),
                     _("The pattern\n\t<b>%s</b>\nis invalid. "
                       "Possibly it contains the same tag twice or "
                       "it has unbalanced brackets (&lt; / &gt;).")%(
@@ -3691,8 +3694,8 @@ class SongProperties(gtk.Window):
                 return
             else:
                 if pattern_text:
-                    self.combo.prepend_text(pattern_text)
-                    self.combo.write(const.TBP)
+                    combo.prepend_text(pattern_text)
+                    combo.write(const.TBP)
 
             invalid = []
 
@@ -3709,30 +3712,30 @@ class SongProperties(gtk.Window):
                     msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
                             " selected do not support editing these tags.")
 
-                qltk.ErrorMessage(self.prop, title,
+                qltk.ErrorMessage(parent, title,
                                   msg % ", ".join(invalid)).run()
                 pattern = util.PatternFromFile("")
 
-            self.view.set_model(None)
+            view.set_model(None)
             rep = self.space.get_active()
             title = self.titlecase.get_active()
             split = self.split.get_active()
-            self.model = gtk.ListStore(object, str,
-                                       *([str] * len(pattern.headers)))
-            for col in self.view.get_columns():
-                self.view.remove_column(col)
+            model = gtk.ListStore(object, str,
+                                 *([str] * len(pattern.headers)))
+            for col in view.get_columns():
+                view.remove_column(col)
 
             col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
                                      text=1)
             col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            self.view.append_column(col)
+            view.append_column(col)
             for i, header in enumerate(pattern.headers):
                 render = gtk.CellRendererText()
                 render.set_property('editable', True)
-                render.connect('edited', self.row_edited, self.model, i + 2)
+                render.connect('edited', self.row_edited, model, i + 2)
                 col = gtk.TreeViewColumn(header, render, text=i + 2)
                 col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-                self.view.append_column(col)
+                view.append_column(col)
             spls = config.get("settings", "splitters")
 
             for song in songs:
@@ -3746,25 +3749,25 @@ class SongProperties(gtk.Window):
                     if title: text = util.title(text)
                     if split: text = "\n".join(util.split_value(text, spls))
                     row.append(text)
-                self.model.append(row=row)
+                model.append(row=row)
 
             # save for last to potentially save time
-            if songs: self.view.set_model(self.model)
+            if songs: view.set_model(model)
             self.preview.set_sensitive(False)
             self.save.set_sensitive(len(pattern.headers) > 0)
 
-        def save_files(self, *args):
-            pattern_text = self.entry.get_text().decode('utf-8')
+        def __save_files(self, activator, parent, view, entry):
+            pattern_text = entry.get_text().decode('utf-8')
             pattern = util.PatternFromFile(pattern_text)
             add = (self.addreplace.get_active() == 1)
-            win = WritingWindow(self.prop, len(self.songs))
+            win = WritingWindow(parent, len(self.songs))
 
             def save_song(model, path, iter):
                 song = model[path][0]
                 row = model[path]
                 changed = False
                 if not song.valid() and not qltk.ConfirmAction(
-                    self.prop, _("Tag may not be accurate"),
+                    parent, _("Tag may not be accurate"),
                     _("<b>%s</b> looks like it was changed while the "
                       "program was running. Saving now without "
                       "refreshing your library might overwrite other "
@@ -3789,7 +3792,7 @@ class SongProperties(gtk.Window):
                     try: song.write()
                     except:
                         qltk.ErrorMessage(
-                            self.prop, _("Unable to edit song"),
+                            parent, _("Unable to edit song"),
                             _("Saving <b>%s</b> failed. The file "
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
@@ -3800,7 +3803,7 @@ class SongProperties(gtk.Window):
 
                 return win.step()
         
-            self.model.foreach(save_song)
+            view.get_model().foreach(save_song)
             win.destroy()
             widgets.watcher.refresh()
             self.save.set_sensitive(False)
@@ -3811,8 +3814,8 @@ class SongProperties(gtk.Window):
                 row[colnum] = new
                 self.preview.set_sensitive(True)
 
-        def preview_tags(self, *args):
-            self.__update(self.songs)
+        def __preview_tags(self, activator, *args):
+            self.__update(self.songs, *args)
 
         def changed(self, *args):
             config.set("settings", "addreplace",
