@@ -1971,6 +1971,7 @@ class MainWindow(gtk.Window):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
             if iter: self.songlist.get_model().remove(iter)
+            self.__set_time()
 
     def __update_title(self, watcher, song):
         if song is watcher.song:
@@ -2208,6 +2209,7 @@ class MainWindow(gtk.Window):
 
     def __song_removed(self, watcher, song):
         player.playlist.remove(song)
+        self.__set_time()
 
     def delete_song(self, item):
         view = self.songlist
@@ -2413,7 +2415,14 @@ class MainWindow(gtk.Window):
 
     def refresh_songlist(self):
         i, length = self.songlist.refresh(current=widgets.watcher.song)
+        self.__set_time()
+
+    def __set_time(self):
         statusbar = self.__statusbar
+        model = self.songlist.get_model()
+        songs = [row[0] for row in model]
+        i = len(songs)
+        length = sum([song["~#length"] for song in songs])
         if i != 1: statusbar.set_text(
             _("%d songs (%s)") % (i, util.format_time_long(length)))
         else: statusbar.set_text(
