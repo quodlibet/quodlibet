@@ -88,15 +88,6 @@ class AudioFile(dict):
         try: return self[key].split("\n")
         except (KeyError, AttributeError): return []
 
-    # copy important keys from the other song to this one.
-    def migrate(self, other):
-        for key in ["~#playcount", "~#lastplayed", "~#added", "~#skipcount",
-                    "~#rating"]:
-            self[key] = other.get(key, 0)
-        self["~#rating"] = other.get("~#rating", 2)
-        for key in filter(lambda s: s.startswith("~#playlist_"), other):
-            self[key] = other[key]
-
     def exists(self):
         return os.path.exists(self["~filename"])
 
