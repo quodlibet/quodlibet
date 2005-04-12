@@ -2548,6 +2548,10 @@ class SongList(gtk.TreeView):
             if t == "~length":
                 column.set_alignment(1.0)
                 render.set_property('xalign', 1.0)
+            elif t.startswith("~#"):
+                render.set_property('xalign', 1.0)
+                render.set_property('xpad', 12)
+                
             self.append_column(column)
 
     def _destroy(self):
