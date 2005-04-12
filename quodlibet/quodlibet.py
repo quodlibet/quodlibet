@@ -217,8 +217,9 @@ def control(c):
             f.write(c)
             f.close()
         except (OSError, IOError, TypeError):
-            os.unlink(const.CONTROL)
             print to(_("Unable to write to %s. Removing it.") % const.CONTROL)
+            try: os.unlink(const.CONTROL)
+            except OSError: pass
             if c != '!': raise SystemExit(True)
         else:
             raise SystemExit
