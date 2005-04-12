@@ -2504,8 +2504,6 @@ class SongList(gtk.TreeView):
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
             try:
                 song = model[iter][0]
-                current_song = widgets.watcher.song
-                cell.set_property('weight', attr[song is current_song])
                 cell.set_property('text', song.comma(column.header_name))
             except AttributeError: pass
 
@@ -2513,8 +2511,6 @@ class SongList(gtk.TreeView):
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
             try:
                 song = model[iter][0]
-                current_song = widgets.watcher.song
-                cell.set_property('weight', attr[song is current_song])
                 cell.set_property('text', util.unexpand(
                     song.comma(column.header_name).decode(code, 'replace')))
             except AttributeError: pass
