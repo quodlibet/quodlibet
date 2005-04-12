@@ -2299,16 +2299,15 @@ class MainWindow(gtk.Window):
             menu.append(b)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
-        b = gtk.ImageMenuItem(_("Plugins"))
-        b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
-        menu.append(b)
         submenu = gtk.Menu()
-        b.set_submenu(submenu)
-        self.__create_plugins_menu(self.__pm, submenu)
-        submenu.connect('expose-event', self.__refresh_plugins_menu,
-                self.__pm, submenu)
-
-        if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+        if self.__create_plugins_menu(self.__pm, submenu):
+            b = gtk.ImageMenuItem(_("Plugins"))
+            b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+            menu.append(b)
+            b.set_submenu(submenu)
+            submenu.connect('expose-event', self.__refresh_plugins_menu,
+                            self.__pm, submenu)
+            if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         b.connect('activate', self.remove_song)
@@ -2341,12 +2340,12 @@ class MainWindow(gtk.Window):
                 b = gtk.MenuItem(name)
             b.connect('activate', self.__invoke_plugin, pm, plugin, songs)
             menu.append(b)
+            menu.show_all()
+            return True
 
         if not menu.get_children():
-            b = gtk.MenuItem(_("No Matching Plugins"))
-            b.set_sensitive(False)
-            menu.append(b)
-        menu.show_all()
+            menu.destroy()
+            return False
 
     def __invoke_plugin(self, event, pm, plugin, songs):
         pm.invoke(plugin, songs)
