@@ -2488,6 +2488,18 @@ class SongList(gtk.TreeView):
 
         for c in self.get_columns(): self.remove_column(c)
 
+        def redraw_current(watcher, model):
+            iter = self.song_to_iter(widgets.watcher.song)
+            model[iter][0] = model[iter][0]
+
+        def cell_data_current(column, cell, model, iter,
+                pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
+            try:
+                if model[iter][0] is not widgets.watcher.song: stock = ''
+                else: stock = pixbuf[player.playlist.paused]
+                cell.set_property('stock-id', stock)
+            except AttributeError: pass
+
         def cell_data(column, cell, model, iter,
                 attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
             try:
@@ -2506,6 +2518,17 @@ class SongList(gtk.TreeView):
                 cell.set_property('text', util.unexpand(
                     song.comma(column.header_name).decode(code, 'replace')))
             except AttributeError: pass
+
+        # indicator column
+        render = gtk.CellRendererPixbuf()
+        render.set_property('xalign', 0.5)
+        column = gtk.TreeViewColumn("", render)
+        column.header_name = ""
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+        column.set_cell_data_func(render, cell_data_current)
+        widgets.watcher.connect('paused', redraw_current, self.get_model())
+        widgets.watcher.connect('unpaused', redraw_current, self.get_model())
+        self.append_column(column)
 
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
