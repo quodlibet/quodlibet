@@ -20,6 +20,8 @@ _ = gettext.gettext
 class Unknown(unicode): pass
 UNKNOWN = Unknown(_("Unknown"))
 
+MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
+
 class AudioFile(dict):
     def __cmp__(self, other):
         if not other: return -1
@@ -32,8 +34,13 @@ class AudioFile(dict):
 
     def reload(self):
         fn = self["~filename"]
+        saved = {}
+        for key in self:
+            if key in MIGRATE or key.startswith("~#playlist_"):
+                saved[key] = self[key]
         self.clear()
         self.__init__(fn)
+        self.update(saved)
 
     def realkeys(self):
         return filter(lambda s: s and s[0] != "~", self.keys())

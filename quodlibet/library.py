@@ -138,13 +138,10 @@ class Library(dict):
     def remove(self, song):
         del(self[song['~filename']])
 
-    def add(self, fn, migrate = None):
+    def add(self, fn):
         if fn not in self:
             song = MusicFile(fn)
-            
-            if song:
-                if migrate: song.migrate(migrate)
-                self[fn] = song
+            if song: self[fn] = song
             return bool(song)
         else: return True
 
@@ -207,9 +204,11 @@ class Library(dict):
             if song.valid(): self[song["~filename"]] = song
             else:
                 if song.exists():
-                    changed += 1
-                    self.add(song["~filename"], song)
-                    fn = song['~filename']
+                    try: song.reload()
+                    except: removed += 1
+                    else:
+                        self[song["~filename"]] = song
+                        changed += 1
                 elif config.get("settings", "masked"):
                     fn = song["~filename"]
                     for m in config.get("settings", "masked").split(":"):

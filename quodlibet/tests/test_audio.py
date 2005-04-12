@@ -84,25 +84,6 @@ class AudioFileTest(TestCase):
             self.failUnlessEqual(bar_1_1.comma(key), bar_1_1(key))
         self.failUnless(", " in bar_2_1.comma("artist"))
 
-    def test_migrate(self):
-        osong = {"~#playlist_foo": 2,
-                 "foobar": "a tag",
-                 "~#skipcount": 10,
-                 "~#added": 10,
-                 "~#rating": 4,
-                 "~#playcount": 4}
-        keys = osong.keys()
-        keys.remove("foobar")
-        nsong = AudioFile({"~filename": "dummy"})
-        nsong.sanitize()
-        self.failUnlessEqual(nsong["~#skipcount"], 0)
-        self.failUnlessEqual(nsong["~#rating"], 2)
-        self.failIf("~#playlist_foo" in nsong)
-
-        nsong.migrate(osong)
-        self.failIf("f1oobar" in nsong)
-        for k in keys: self.failUnless(nsong[k] == osong[k])
-        
     def test_exist(self):
         self.failIf(bar_2_1.exists())
         self.failUnless(quux.exists())
