@@ -4327,6 +4327,67 @@ class DirectoryTree(gtk.TreeView):
 
         else: pass
 
+        menu = gtk.Menu()
+        m = gtk.ImageMenuItem(_("New folder.."))
+        m.get_image().set_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_MENU)
+        m.connect('activate', self.__mkdir)
+        menu.append(m)
+        m = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        m.connect('activate', self.__rmdir)
+        menu.append(m)
+        menu.show_all()
+        self.connect('button-press-event', DirectoryTree.__button_press, menu)
+
+    def __button_press(self, event, menu):
+        if event.button != 3: return False
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError: return True
+        directory = self.get_model()[path][0]
+        menu.get_children()[1].set_sensitive(len(os.listdir(directory)) == 0)
+        selection = self.get_selection()
+        selection.unselect_all()
+        selection.select_path(path)
+        menu.popup(None, None, None, event.button, event.time)
+
+    def __mkdir(self, button):
+        model, rows = self.get_selection().get_selected_rows()
+        if len(rows) != 1: return
+
+        row = rows[0]
+        directory = model[row][0]
+        uparent = util.unexpand(directory)
+        dir = GetStringDialog(
+            None, _("New folder"), _("Enter a name for the new folder:"),
+            ).run()
+
+        if dir:
+            dir = util.fsencode(dir.decode('utf-8'))
+            fullpath = os.path.realpath(os.path.join(directory, dir))
+            try: os.makedirs(fullpath)
+            except OSError, err:
+                error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+                qltk.ErrorMessage(
+                    None, _("Unable to create folder"), error).run()
+            else:
+                self.emit('test-expand-row', model.get_iter(row), row)
+                self.expand_row(row, False)
+
+    def __rmdir(self, button):
+        model, rows = self.get_selection().get_selected_rows()
+        if len(rows) != 1: return
+        directory = model[rows[0]][0]
+        try: os.rmdir(directory)
+        except OSError, err:
+            error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+            qltk.ErrorMessage(
+                None, _("Unable to delete folder"), error).run()
+        else:
+            prow = rows[0][:-1]
+            expanded = self.row_expanded(prow)
+            self.emit('test-expand-row', model.get_iter(prow), prow)
+            if expanded: self.expand_row(prow, False)
+
     def __expanded(self, iter, path, model):
         if model is None: return
         while model.iter_has_child(iter):
@@ -4379,6 +4440,7 @@ class FileSelector(gtk.VPaned):
             'changed', self.__fill, filelist)
         dirlist.get_selection().emit('changed')
         def select_all_files(view, path, col, fileselection):
+            view.expand_row(path, False)
             fileselection.select_all()
         dirlist.connect('row-activated', select_all_files,
             filelist.get_selection())
