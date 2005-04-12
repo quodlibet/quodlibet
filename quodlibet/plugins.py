@@ -25,9 +25,6 @@ characteristics:
         obj.plugin_single_album(album)
         obj.plugin_album(album)
         obj.plugin_albums(albums)
-        obj.plugin_single_full_album(album)
-        obj.plugin_full_album(album)
-        obj.plugin_full_albums(albums)
 
         # event based callbacks
         obj.plugin_on_song_started(song)
@@ -54,9 +51,6 @@ characteristics:
         plural tense is called with a list of songs/albums.
 
         An album is a list of songs all with the same album tag.
-
-        The full variants of album will expand the selection to all songs
-        matching the album, and pass similarly to the normal variants.
 """
 
 from util import mtime
@@ -103,13 +97,11 @@ class PluginManager(object):
     all_callables = [
         'plugin_single_song', 'plugin_song', 'plugin_songs',
         'plugin_single_album', 'plugin_album', 'plugin_albums',
-        'plugin_single_full_album', 'plugin_full_album', 'plugin_full_albums'
     ]
 
     callables = {
         'song_callables': all_callables[0:3],
         'album_callables': all_callables[3:6],
-        'full_callables': all_callables[6:9],
         'single': all_callables[0::3],
         'mapped': all_callables[1::3],
         'plural': all_callables[2::3],
@@ -269,13 +261,6 @@ class PluginManager(object):
                 albums = {}
                 for song in selection: albums[song.comma('album')] = song
                 args = [ListWrapper(album) for album in albums.values()]
-
-            elif fn in self.callables['full_callables']:
-                albums = {}
-                for song in selection: albums[song.comma('album')] = song
-                args = []
-                for album in albums.keys():
-                    args.append(ListWrapper(library.query('album=/^%s$/c' % album)))
 
             if fn in self.callables['single']:
                 if len(selection) == 1:
