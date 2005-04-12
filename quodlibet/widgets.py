@@ -2340,10 +2340,11 @@ class MainWindow(gtk.Window):
                 b = gtk.MenuItem(name)
             b.connect('activate', self.__invoke_plugin, pm, plugin, songs)
             menu.append(b)
+
+        if menu.get_children():
             menu.show_all()
             return True
-
-        if not menu.get_children():
+        else:
             menu.destroy()
             return False
 
