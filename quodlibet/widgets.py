@@ -4022,7 +4022,7 @@ class SongProperties(gtk.Window):
             hbox2 = gtk.HBox(spacing=12)
 
             hbox_start = gtk.HBox(spacing=3)
-            label_start = gtk.Label("Start fro_m:")
+            label_start = gtk.Label(_("Start fro_m:"))
             label_start.set_use_underline(True)
             spin_start = gtk.SpinButton()
             spin_start.set_range(1, 99)
@@ -4033,7 +4033,7 @@ class SongProperties(gtk.Window):
             hbox_start.pack_start(spin_start)
 
             hbox_total = gtk.HBox(spacing=3)
-            label_total = gtk.Label("_Total tracks:")
+            label_total = gtk.Label(_("_Total tracks:"))
             label_total.set_use_underline(True)
             spin_total = gtk.SpinButton()
             spin_total.set_range(0, 99)
