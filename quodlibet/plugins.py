@@ -59,9 +59,41 @@ characteristics:
         matching the album, and pass similarly to the normal variants.
 """
 
+from util import mtime
 from traceback import print_exc
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
+
+class SongWrapper(object):
+    __slots__ = ['_song', '_updated', '_mtime']
+    def __init__(self, song):
+        self._song = song
+        self._updated = False
+        self._mtime = mtime(self["~filename"])
+
+    def _was_updated(self): return self._updated
+    def _was_changed(self): return self._mtime < mtime(self["~filename"])
+
+    def __setitem__(self, *args):
+        self.__updated = True
+        if self.__song.can_change(args[0]):
+            return self.__song.__setitem__(*args)
+        else:
+            raise ValueError, "Can not set %s" % args[0]
+
+    def __getitem__(self, *args): return self._song.__getitem__(*args)
+    def __cmp__(self, other): return cmp(self._song, other)
+    def __contains__(self, key): return key in self._song
+    def __call__(self, *args): return self._song(*args)
+    def realkeys(self): return self._song.realkeys()
+    def comma(self, key): return self._song.comma(key)
+    def list(self, key): return self._song.list(key)
+    def rename(self, newname): return self._song.rename(newname)
+    def website(self): return self._song.website()
+    def find_cover(self): return self._song.find_cover()
+
+class ListWrapper(list):
+    def __new__(cls, songs): return [SongWrapper(song) for song in songs]
 
 class PluginManager(object):
     """PluginManager manages all the plugins"""
@@ -126,12 +158,12 @@ class PluginManager(object):
                     name = name[: name.rfind('.')]
                 if '.' in name or name in justscanned: continue
                 else: justscanned[name] = True
-                mtime = os.stat(pathname)[ST_MTIME]
+                modified = mtime(pathname)
                 info = self.files.setdefault(name, [None, None])
 
                 try:
                     sys.path.insert(0, scandir)
-                    if info[1] is None or info[1] < mtime:
+                    if info[1] is None or info[1] < modified:
                         changes = True
                         if info[0] is None:
                             try:
@@ -148,7 +180,7 @@ class PluginManager(object):
                             else: info[0] = mod; self.load(name, mod)
                 finally:
                     del sys.path[0:1]
-                info[1] = mtime
+                info[1] = modified
 
         return changes
 
@@ -231,19 +263,19 @@ class PluginManager(object):
             if not hascallable(plugin, fn): continue
 
             if fn in self.callables['song_callables']:
-                args = selection[:]
+                args = ListWrapper(selection)
 
             elif fn in self.callables['album_callables']:
                 albums = {}
                 for song in selection: albums[song.comma('album')] = song
-                args = albums.values()
+                args = [ListWrapper(album) for album in albums.values()]
 
             elif fn in self.callables['full_callables']:
                 albums = {}
                 for song in selection: albums[song.comma('album')] = song
                 args = []
                 for album in albums.keys():
-                    args.append(list(library.query('album=/^%s$/c' % album)))
+                    args.append(ListWrapper(library.query('album=/^%s$/c' % album)))
 
             if fn in self.callables['single']:
                 if len(selection) == 1:
@@ -264,11 +296,27 @@ class PluginManager(object):
                 except Exception:
                     print_exc()
 
+        self.check_change_and_refresh(args)
+
+    def check_change_and_refresh(self, args):
+        updated = False
+        for song in args:
+            if song._was_changed():
+                self.watcher.changed(song._song)
+                updated = True
+        if updated:
+            self.watcher.refresh()
+
     def invoke_event(self, event, *args):
-        for handlers in self.events[event].values():
-            for handler in handlers:
-                try: handler(*args)
-                except Exception: print_exc()
+        try:
+            try: args = [SongWrapper(args[0])] + list(args[1:])
+            except IndexError: pass
+            for handlers in self.events[event].values():
+                for handler in handlers:
+                    try: handler(*args)
+                    except Exception: print_exc()
+        finally:
+            self.check_change_and_refresh(args[0:1])
 
     def on_changed(self, watcher, song):
         self.invoke_event('changed', song)
