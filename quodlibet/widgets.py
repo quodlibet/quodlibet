@@ -2499,7 +2499,7 @@ class SongList(gtk.TreeView):
 
         def redraw_current(watcher, model):
             iter = self.song_to_iter(widgets.watcher.song)
-            model[iter][0] = model[iter][0]
+            if iter: model[iter][0] = model[iter][0]
 
         def cell_data_current(column, cell, model, iter,
                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
