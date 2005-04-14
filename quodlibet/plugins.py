@@ -86,8 +86,8 @@ class SongWrapper(object):
     def website(self): return self._song.website()
     def find_cover(self): return self._song.find_cover()
 
-class ListWrapper(list):
-    def __new__(cls, songs): return [SongWrapper(song) for song in songs]
+def ListWrapper(songs):
+    return [(song and SongWrapper(song)) for song in songs]
 
 class PluginManager(object):
     """PluginManager manages all the plugins"""
@@ -286,7 +286,7 @@ class PluginManager(object):
     def check_change_and_refresh(self, args):
         updated = False
         for song in args:
-            if song._was_changed():
+            if song and song._was_changed():
                 self.watcher.changed(song._song)
                 updated = True
         if updated:
@@ -294,7 +294,7 @@ class PluginManager(object):
 
     def invoke_event(self, event, *args):
         try:
-            try: args = [SongWrapper(args[0])] + list(args[1:])
+            try: args = [args[0] and SongWrapper(args[0])] + list(args[1:])
             except IndexError: pass
             for handlers in self.events[event].values():
                 for handler in handlers:
