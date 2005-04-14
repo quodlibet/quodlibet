@@ -275,6 +275,7 @@ class PreferencesWindow(gtk.Window):
             l = gtk.Label(_("_Others:"))
             hbox.pack_start(l, expand=False)
             others = gtk.Entry()
+            if "~current" in checks: checks.remove("~current")
             others.set_text(" ".join(checks))
             tips.set_tip(others, _("List other headers you want displayed, "
                                    "separated by spaces"))
@@ -314,6 +315,8 @@ class PreferencesWindow(gtk.Window):
                 except ValueError: pass
 
             headers.extend(others.get_text().split())
+            if "~current" in headers: headers.remove("~current")
+            headers.insert(0, "~current")
             config.set("settings", "headers", " ".join(headers))
             widgets.main.set_column_headers(headers)
 
@@ -2525,12 +2528,13 @@ class SongList(gtk.TreeView):
         render = gtk.CellRendererPixbuf()
         render.set_property('xalign', 0.5)
         column = gtk.TreeViewColumn("", render)
-        column.header_name = ""
+        column.header_name = "~current"
         column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
         column.set_cell_data_func(render, cell_data_current)
         widgets.watcher.connect('paused', redraw_current, self.get_model())
         widgets.watcher.connect('unpaused', redraw_current, self.get_model())
         self.append_column(column)
+        if "~current" in headers: headers.remove("~current")
 
         for i, t in enumerate(headers):
             render = gtk.CellRendererText()
