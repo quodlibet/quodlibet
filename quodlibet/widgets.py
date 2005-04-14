@@ -77,7 +77,7 @@ class FileChooser(gtk.FileChooserDialog):
         fns = self.get_filenames()
         return resp, fns
 
-class SongWatcher(gobject.GObject):
+class SongWatcher(gtk.Object):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
     
@@ -122,7 +122,6 @@ class SongWatcher(gobject.GObject):
         gobject.idle_add(self.emit, 'removed', song)
 
     def missing(self, song):
-        self.removed(song)
         gobject.idle_add(self.emit, 'missing', song)
 
     def song_started(self, song):
@@ -144,7 +143,8 @@ class SongWatcher(gobject.GObject):
 
     def error(self, song):
         try: song.reload()
-        except:
+        except Exception, err:
+            sys.stdout.write(str(err) + "\n")
             library.remove(song)
             self.removed(song)
         else: self.changed(song)
