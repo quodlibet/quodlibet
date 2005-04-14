@@ -284,9 +284,9 @@ class PreferencesWindow(gtk.Window):
             hbox.pack_start(others)
             vbox.pack_start(hbox, expand=False)
 
-            apply = qltk.Button(
-                stock=gtk.STOCK_APPLY, cb=self.__apply,
-                user_data=[buttons, rat, tiv, aip, fip, others])
+            apply = gtk.Button(stock=gtk.STOCK_APPLY)
+            apply.connect(
+                'clicked', self.__apply, buttons, rat, tiv, aip, fip, others)
             b = gtk.HButtonBox()
             b.set_layout(gtk.BUTTONBOX_END)
             b.pack_start(apply)
@@ -968,7 +968,7 @@ class PanedBrowser(Browser, gtk.VBox):
             self.set_shadow_type(gtk.SHADOW_IN)
             self.add(gtk.TreeView(gtk.ListStore(str)))
             render = gtk.CellRendererText()
-            column = gtk.TreeViewColumn(tag(mytag), render, markup = 0)
+            column = gtk.TreeViewColumn(tag(mytag), render, markup=0)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
             self.child.append_column(column)
@@ -980,10 +980,9 @@ class PanedBrowser(Browser, gtk.VBox):
             self.child.connect_object('destroy', self.child.set_model, None)
             self.__sig = self.child.get_selection().connect(
                 'changed', self.__selection_changed)
-            self.child.connect_object(
-                'row-activated', PanedBrowser.Pane.__play_selection, self)
+            self.child.connect('row-activated', self.__play_selection)
 
-        def __play_selection(self, indices, col):
+        def __play_selection(self, view, indices, col):
             player.playlist.next()
             player.playlist.reset()
 
@@ -1199,7 +1198,7 @@ class PlaylistBar(Browser, gtk.HBox):
         refresh.set_sensitive(False)
         self.pack_start(edit, expand=False)
         self.pack_start(refresh, expand=False)
-        edit.connect_object('clicked', self.__edit_current, combo)
+        edit.connect('clicked', self.__edit_current, combo)
         combo.connect('changed', self.__list_selected, edit, refresh)
         refresh.connect_object(
             'clicked', self.__list_selected, combo, edit, refresh)
@@ -1209,8 +1208,7 @@ class PlaylistBar(Browser, gtk.HBox):
         tips.set_tip(edit, _("Edit the current playlist"))
         tips.set_tip(refresh, _("Refresh the current playlist"))
         self.show_all()
-        self.connect_object(
-            'destroy', gtk.ComboBoxEntry.set_model, combo, None)
+        self.connect_object('destroy', combo.set_model, None)
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         tips.enable()
 
@@ -1246,7 +1244,7 @@ class PlaylistBar(Browser, gtk.HBox):
             playlist = "playlist_" + combo.get_model()[active][1]
             self.__cb("#(%s > 0)" % playlist, "~#"+playlist)
 
-    def __edit_current(self, combo):
+    def __edit_current(self, edit, combo):
         active = combo.get_active()
         if active > 0: PlaylistWindow(combo.get_model()[active][0])
 
@@ -4080,9 +4078,11 @@ class SongProperties(gtk.Window):
             label_total.set_mnemonic_widget(spin_total)
             hbox_total.pack_start(label_total)
             hbox_total.pack_start(spin_total)
+            preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
 
             hbox2.pack_start(hbox_start, expand=True, fill=False)
             hbox2.pack_start(hbox_total, expand=True, fill=False)
+            hbox2.pack_start(preview, expand=True, fill=False)
 
             model = gtk.ListStore(object, str, str)
             view = gtk.TreeView(model)
@@ -4119,6 +4119,7 @@ class SongProperties(gtk.Window):
             self.pack_start(bbox, expand=False)
 
             preview_args = [spin_start, spin_total, model, save, revert]
+            preview.connect('clicked', self.__preview_tracks, *preview_args)
             spin_total.connect(
                 'value-changed', self.__preview_tracks, *preview_args)
             spin_start.connect(
