@@ -126,8 +126,8 @@ class SongWatcher(gobject.GObject):
         gobject.idle_add(self.emit, 'missing', song)
 
     def song_started(self, song):
-        if song: self.set_time(0, song["~#length"] * 1000)
-        else: self.set_time(0, 1)
+        if song: self.time = (0, song["~#length"] * 1000)
+        else: self.time = (0, 1)
         self.song = song
         gobject.idle_add(self.emit, 'song-started', song)
 
