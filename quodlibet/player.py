@@ -6,19 +6,16 @@
 #
 # $Id$
 
+import os, sys
 import time
 import threading
 import random
 import config
-from library import library
+import match
 import parser
 import audioop
-import util
-import stat
-import os
 from formats import MusicPlayer
-import const
-import match
+from library import library
 
 BUFFER_SIZE = 2**8
 
@@ -85,9 +82,6 @@ class PlaylistPlayer(object):
         self.repeat = False
         self.paused = True
         self.quit = False
-        fn = config.get("memory", "song")
-        if fn and fn in library:
-            self.__playlist.insert(0, library[fn])
         self.sort_by("artist")
 
     def __iter__(self): return iter(self.__orig_playlist)
@@ -109,7 +103,7 @@ class PlaylistPlayer(object):
                 self.paused = True
                 pos = self.__player.length
 
-            self.info.set_time(pos, self.__player.length)
+            self.info.time = (pos, self.__player.length)
             self.__player.seek(pos)
         self.__lock.release()
 
@@ -139,50 +133,53 @@ class PlaylistPlayer(object):
         except ValueError: pass
         self.__lock.release()
 
+    def __get_song(self):
+        self.__lock.acquire()
+        song = self.__playlist.pop(0)
+        fn = song['~filename']
+        config.set("memory", "song", fn)
+        if self.shuffle: random.shuffle(self.__playlist)
+        try: player = MusicPlayer(self.__output, song)
+        except Exception, err:
+            sys.stderr.write(str(err) + "\n")
+            player = None
+            self.paused = True
+            self.info.missing(song)
+        else:
+            self.info.song_started(song)
+            self.__played.append(song)
+        self.__lock.release()
+        return song, player
+
     def play(self, info):
         self.info = info
         self.__lock.acquire()
         last_song = config.get("memory", "song")
         if last_song in library:
             song = library[last_song]
-            if song in self.__playlist: self.go_to(song, lock = False)
-            else: self.__playlist.insert(0, song)
+            if song in self.__playlist:
+                self.go_to(song, lock=False)
         self.__lock.release()
 
         while not self.quit:
             while self.__playlist and not self.quit:
-                self.__lock.acquire()
-                self.__song = self.__playlist.pop(0)
-                fn = self.__song['~filename']
-                config.set("memory", "song", fn)
-                if self.shuffle: random.shuffle(self.__playlist)
-                try: self.__player = MusicPlayer(self.__output, self.__song)
-                except:
-                    self.paused = True
-                    self.info.missing(self.__song)
-                    self.__lock.release()
-                else:
-                    self.info.song_started(self.__song)
-                    self.__played.append(self.__song)
-                    self.__lock.release()
-                    while self.paused: time.sleep(0.05)
-                    for t in self.__player:
-                        self.info.set_time(t, self.__player.length)
-                        while self.paused and not self.quit:
-                            time.sleep(0.05)
-                        if self.quit: break
-                    if not self.__player.stopped:
-                        self.__song["~#lastplayed"] = int(time.time())
-                        self.__song["~#playcount"] += 1
-                    self.info.song_ended(self.__song, self.__player.stopped)
+                self.__song, self.__player = self.__get_song()
+                if not self.__player: continue
+                while self.paused: time.sleep(0.05)
+                for t in self.__player:
+                    self.info.time = (t, self.__player.length)
+                    while self.paused and not self.quit:
+                        time.sleep(0.05)
+                    if self.quit: break
+                if not self.__player.stopped:
+                    self.__song["~#lastplayed"] = int(time.time())
+                    self.__song["~#playcount"] += 1
+                self.info.song_ended(self.__song, self.__player.stopped)
 
             while self.paused and not self.quit:
                 time.sleep(0.05)
 
-            if self.repeat:
-                self.__playlist = self.__orig_playlist[:]
-                if self.shuffle and len(self.__played) > 500:
-                    del(self.__played[500:])
+            if self.repeat: self.reset()
             else:
                 if self.__song or self.__player:
                     self.__lock.acquire()
@@ -190,13 +187,13 @@ class PlaylistPlayer(object):
                     self.info.song_started(self.__song)
                     self.paused = True
                     self.__lock.release()
-                    try: os.unlink(const.CURRENT)
-                    except OSError: pass
-                time.sleep(0.1)
+            time.sleep(0.1)
 
     def reset(self):
         self.__lock.acquire()
         self.__playlist = self.__orig_playlist[:]
+        if self.shuffle and len(self.__played) > 500:
+            del(self.__played[500:])
         self.paused = False
         self.__lock.release()
 
@@ -262,8 +259,6 @@ class PlaylistPlayer(object):
 
     def quitting(self):
         self.__lock.acquire()
-        try: os.unlink(const.CURRENT)
-        except OSError: pass
         self.quit = True
         self.paused = False
         if self.__player: self.__player.end()

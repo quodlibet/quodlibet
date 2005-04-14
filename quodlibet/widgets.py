@@ -115,9 +115,6 @@ class SongWatcher(gobject.GObject):
     time = (0, 1)
     song = None
 
-    def set_time(self, current, end):
-        self.time = (current, end)
-
     def changed(self, song):
         gobject.idle_add(self.emit, 'changed', song)
 
