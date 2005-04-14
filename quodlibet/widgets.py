@@ -1326,7 +1326,7 @@ class EmptyBar(Browser, gtk.HBox):
         else:
             text = "|".join(values)
             if key.startswith("~"): key = key[1:]
-            self.set_text(u"%s = '%s'" % (
+            self.set_text(u"%s = '%s'c" % (
                 key, text.replace("\\", "\\\\").replace("'", "\\'")))
         self.activate()
 
