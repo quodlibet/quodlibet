@@ -31,7 +31,8 @@ class QueryLexer(sre.Scanner):
         self.string = s.strip()
         sre.Scanner.__init__(self,
                              [(r"/([^/\\]|\\.)*/", self.regexp),
-                              (r'"([^\"\\]|\\.)*"', self.str_to_re),
+                              (r'"([^"\\]|\\.)*"', self.str_to_re),
+                              (r"'([^'\\]|\\.)*'", self.str_to_re),
                               (r"([<>]=?)|(!=)", self.relop),
                               (r"[=|()&!,#]", self.table),
                               (r"\s+", None),
@@ -42,7 +43,7 @@ class QueryLexer(sre.Scanner):
         return QueryLexeme(RE, string[1:-1])
 
     def str_to_re(self, scanner, string):
-        return QueryLexeme(RE, sre.escape(string[1:-1]))
+        return QueryLexeme(RE, sre.escape(eval(string)))
 
     def tag(self, scanner, string):
         return QueryLexeme(TAG, string.strip())
