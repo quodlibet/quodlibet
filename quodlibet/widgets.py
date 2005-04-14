@@ -1211,6 +1211,8 @@ class PlaylistBar(Browser, gtk.HBox):
         self.show_all()
         self.connect_object(
             'destroy', gtk.ComboBoxEntry.set_model, combo, None)
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+        tips.enable()
 
     def save(self):
         combo = self.get_children()[0]
@@ -1352,6 +1354,8 @@ class SearchBar(EmptyBar):
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
         combo.child.connect('changed', self.__test_filter)
+        tips.enable()
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.pack_start(combo)
         self.pack_start(clear, expand=False)
         self.pack_start(search, expand=False)
@@ -1529,7 +1533,8 @@ class MainWindow(gtk.Window):
 
             play.connect(
                 'button-press-event', self.__popup_stopafter, stopafter)
-
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             self.show_all()
 
         def __popup_stopafter(self, activator, event, stopafter):
