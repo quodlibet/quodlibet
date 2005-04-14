@@ -1324,9 +1324,10 @@ class EmptyBar(Browser, gtk.HBox):
             queries = ["#(%s = %d)" % (nheader, i) for i in values]
             self.set_text("|(" + ", ".join(queries) + ")")
         else:
-            text = "|".join([sre.escape(s) for s in values])
+            text = "|".join(values)
             if key.startswith("~"): key = key[1:]
-            self.set_text(u"%s = /^(%s)$/c" % (key, text))
+            self.set_text(u"%s = '%s'" % (
+                key, text.replace("\\", "\\\\").replace("'", "\\'")))
         self.activate()
 
 class SearchBar(EmptyBar):

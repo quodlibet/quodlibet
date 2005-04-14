@@ -56,7 +56,7 @@ class TestEmptyBar(TestCase):
         self._bar.filter("~#track", [3, 4])
 
     def test_filter_text(self):
-        self._expected = "artist = /^(some guy)$/c"
+        self._expected = "artist = 'some guy'"
         self._bar.filter("artist", ["some guy"])
 
     def tearDown(self):
