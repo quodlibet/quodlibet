@@ -18,10 +18,10 @@ if __name__ == "__main__":
         import pygtk
         pygtk.require('2.0')
         import gtk
-        if gtk.pygtk_version < (2, 4, 1) or gtk.gtk_version < (2, 6):
+        if gtk.pygtk_version < (2, 6) or gtk.gtk_version < (2, 6):
             raise ImportError
     except ImportError:
-        raise SystemExit("not found\n%s requires PyGTK 2.4. "
+        raise SystemExit("not found\n%s requires PyGTK 2.6. "
                          "(http://www.pygtk.org)" % NAME)
     else: print "found"
 

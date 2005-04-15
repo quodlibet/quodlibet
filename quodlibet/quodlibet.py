@@ -324,7 +324,7 @@ if __name__ == "__main__":
     import pygtk
     pygtk.require('2.0')
     import gtk
-    if gtk.pygtk_version < (2, 4, 1) or gtk.gtk_version < (2, 6):
+    if gtk.pygtk_version < (2, 6) or gtk.gtk_version < (2, 6):
         sys.stderr.write(to(_("E: You need GTK+ 2.6 and PyGTK 2.4 or greater to run Quod Libet."))+"\n")
         sys.stderr.write(to(_("E: You have GTK+ %s and PyGTK %s.") % (
             ".".join(map(str, gtk.gtk_version)),
