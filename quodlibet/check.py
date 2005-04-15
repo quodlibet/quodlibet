@@ -13,7 +13,7 @@ if __name__ == "__main__":
         raise SystemExit("%s requires at least Python 2.3."
                          "(http://www.python.org)" % NAME)
 
-    print "Checking for PyGTK >= 2.4.1:",
+    print "Checking for PyGTK >= 2.6:",
     try:
         import pygtk
         pygtk.require('2.0')
