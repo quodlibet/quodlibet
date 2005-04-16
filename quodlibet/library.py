@@ -98,7 +98,7 @@ class AudioFileGroup(dict):
                 cantoo = song.can_change()
                 if can is True: can = cantoo
                 elif cantoo is True: pass
-                else: can = set(can+cantoo)
+                else: can = set(can) | set(cantoo)
         else:
             if not self.__songs: return False
             can = min([song.can_change(k) for song in self.__songs])
