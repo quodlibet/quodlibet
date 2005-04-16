@@ -1168,9 +1168,6 @@ class PanedBrowser(Browser, gtk.VBox):
     def update(self):
         self.__inhibit = True
         self.__panes[0].fill(library.values())
-        for p in self.__panes:
-            self.__inhibit = True
-            p.select("<not in list>", False)
 
     def fill(self, songs):
         if self.__inhibit: self.__inhibit = False
@@ -2505,7 +2502,7 @@ class SongList(gtk.TreeView):
 
         def redraw_current(watcher, model):
             iter = self.song_to_iter(widgets.watcher.song)
-            if iter: model[iter][0] = model[iter][0]
+            if iter and model: model[iter][0] = model[iter][0]
 
         def cell_data_current(column, cell, model, iter,
                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
