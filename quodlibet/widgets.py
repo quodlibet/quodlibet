@@ -2864,369 +2864,452 @@ class SongProperties(gtk.Window):
                      }
 
     class Information(gtk.ScrolledWindow):
-        def __init__(self, parent):
+        class SongInfo(gtk.VBox):
+            def __init__(self, spacing=6, border=12, library=True, songs=[]):
+                gtk.VBox.__init__(self, spacing=spacing)
+                self.set_border_width(border)
+                attrs = ["title", "album", "people", "description", "file"]
+                songs = songs[:]
+                songs.sort()
+                if library: attrs.append("library")
+                for attr in attrs:
+                    attr = "_" + attr
+                    if hasattr(self, attr):
+                        getattr(self, attr)(songs)
+                self.show_all()
+
+            def Label(self, *args):
+                l = gtk.Label(*args)
+                l.set_selectable(True)
+                l.set_alignment(0, 0)
+                return l
+
+            def pack_frame(self, name, widget, expand=False):
+                f = gtk.Frame()
+                f.set_shadow_type(gtk.SHADOW_NONE)
+                l = gtk.Label()
+                l.set_markup("<u><b>%s</b></u>" % name)
+                f.set_label_widget(l)
+                a = gtk.Alignment(xalign=0, yalign=0, xscale=1, yscale=1)
+                a.set_padding(3, 0, 12, 0)
+                f.add(a)
+                a.add(widget)
+                self.pack_start(f, expand=expand)
+
+            def _show_big_cover(self, image, event, song):
+                if (event.button == 1 and
+                    event.type == gtk.gdk._2BUTTON_PRESS):
+                    cover = song.find_cover()
+                    try: BigCenteredImage(song.comma("album"), cover.name)
+                    except: pass
+
+            def _make_cover(self, cover, song):
+                p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70, 70)
+                i = gtk.Image()
+                i.set_from_pixbuf(p)
+                ev = gtk.EventBox()
+                ev.add(i)
+                ev.connect(
+                    'button-press-event', self._show_big_cover, song)
+                f = gtk.Frame()
+                f.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+                f.add(ev)
+                return f
+
+        class NoSongs(SongInfo):
+            def _description(self, songs):
+                self.pack_start(gtk.Label(_("No songs are selected.")))
+
+        class OneSong(SongInfo):
+            def _title(self, (song,)):
+                l = self.Label()
+                text = "<big><b>%s</b></big>" % util.escape(song("title"))
+                if "version" in song:
+                    text += "\n" + util.escape(song.comma("version"))
+                l.set_markup(text)
+                l.set_ellipsize(pango.ELLIPSIZE_END)
+                self.pack_start(l, expand=False)
+
+            def _album(self, (song,)):
+                if "album" not in song: return
+                w = self.Label("")
+                text = []
+                text.append("<i>%s</i>" % util.escape(song.comma("album")))
+                if "date" in song:
+                    text[-1] += " (%s)" % util.escape(song.comma("date"))
+                secondary = []
+                if "discnumber" in song:
+                    secondary.append(_("Disc %s") % song["discnumber"])
+                if "part" in song:
+                    secondary.append("<i>%s</i>" %
+                                     util.escape(song.comma("part")))
+                if "tracknumber" in song:
+                    secondary.append(_("Track %s") % song["tracknumber"])
+                if secondary: text.append(" - ".join(secondary))
+
+                if "organization" in song or "labelid" in song:
+                    t = util.escape(song.comma("~organization~labelid"))
+                    text.append(t)
+
+                if "producer" in song:
+                    text.append("Produced by %s" %(
+                        util.escape(song.comma("producer"))))
+
+                w.set_markup("\n".join(text))
+                cover = song.find_cover()
+                if cover:
+                    hb = gtk.HBox(spacing=12)
+                    try:
+                        hb.pack_start(
+                            self._make_cover(cover, song), expand=False)
+                    except:
+                        hb.destroy()
+                        self.pack_frame(tag("album"), w)
+                    else:
+                        hb.pack_start(w)
+                        self.pack_frame(tag("album"), hb)
+                else: self.pack_frame(tag("album"), w)
+
+            def _people(self, (song,)):
+                vb = SongProperties.Information.SongInfo(3, 0)
+                if "artist" in song:
+                    if "\n" in song["artist"]:
+                        title = util.capitalize(_("artists"))
+                    else:
+                        title = tag("artist")
+                    l = self.Label(song["artist"])
+                    l.set_ellipsize(pango.ELLIPSIZE_END)
+                    vb.pack_start(l)
+                else: title = _("People")
+                for names, tag_ in [
+                    (_("performers"), "performer"),
+                    (_("lyricists"),  "lyricist"),
+                    (_("arrangers"),  "arranger"),
+                    (_("composers"),  "composer"),
+                    (_("conductors"), "conductor"),
+                    (_("authors"),    "author")]:
+                    if tag_ in song:
+                        l = self.Label(song[tag_])
+                        l.set_ellipsize(pango.ELLIPSIZE_END)
+                        if "\n" in song[tag_]:
+                            vb.pack_frame(util.capitalize(names), l)
+                        else:
+                            vb.pack_frame(tag(tag_), l)
+                if not vb.get_children(): vb.destroy()
+                else: self.pack_frame(title, vb)
+
+            def _library(self, (song,)):
+                def counter(i):
+                    if i == 0: return _("Never")
+                    elif i == 1: return _("1 time")
+                    else: return _("%d times") % i
+                def ftime(t):
+                    if t == 0: return _("Unknown")
+                    else: return time.strftime("%c", time.localtime(t))
+
+                playcount = counter(song.get("~#playcount", 0))
+                skipcount = counter(song.get("~#skipcount", 0))
+                lastplayed = ftime(song.get("~#lastplayed", 0))
+                if lastplayed == _("Unknown"):
+                    lastplayed = _("Never")
+                added = ftime(song.get("~#added", 0))
+                rating = song("~rating")
+
+                t = gtk.Table(5, 2)
+                t.set_col_spacings(6)
+                t.set_homogeneous(False)
+                table = [(_("added"), added),
+                         (_("last played"), lastplayed),
+                         (_("play count"), playcount),
+                         (_("skip count"), skipcount),
+                         (_("rating"), rating)]
+
+                for i, (l, r) in enumerate(table):
+                    l = "<b>%s</b>" % util.capitalize(util.escape(l) + ":")
+                    lab = self.Label()
+                    lab.set_markup(l)
+                    t.attach(lab, 0, 1, i + 1, i + 2, xoptions=gtk.FILL)
+                    t.attach(self.Label(r), 1, 2, i + 1, i + 2)
+                    
+                self.pack_frame(_("Library"), t)
+
+            def _file(self, (song,)):
+                def ftime(t):
+                    if t == 0: return _("Unknown")
+                    else: return time.strftime("%c", time.localtime(t))
+
+                fn = util.fsdecode(util.unexpand(song["~filename"]))
+                length = util.format_time_long(song["~#length"])
+                size = util.format_size(os.path.getsize(song["~filename"]))
+                mtime = ftime(util.mtime(song["~filename"]))
+                if "~#bitrate" in song and song["~#bitrate"] != 0:
+                    bitrate = _("%d kbps") % int(song["~#bitrate"]/1000)
+                else: bitrate = False
+
+                t = gtk.Table(4, 2)
+                t.set_col_spacings(6)
+                t.set_homogeneous(False)
+                table = [(_("length"), length),
+                         (_("file size"), size),
+                         (_("modified"), mtime)]
+                if bitrate:
+                    table.insert(1, (_("bitrate"), bitrate))
+                fnlab = self.Label(fn)
+                fnlab.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+                t.attach(fnlab, 0, 2, 0, 1, xoptions=gtk.FILL)
+                for i, (l, r) in enumerate(table):
+                    l = "<b>%s</b>" % util.capitalize(util.escape(l) + ":")
+                    lab = self.Label()
+                    lab.set_markup(l)
+                    t.attach(lab, 0, 1, i + 1, i + 2, xoptions=gtk.FILL)
+                    t.attach(self.Label(r), 1, 2, i + 1, i + 2)
+                    
+                self.pack_frame(_("File"), t)
+
+        class OneAlbum(SongInfo):
+            def _title(self, songs):
+                song = songs[0]
+                l = self.Label()
+                l.set_ellipsize(pango.ELLIPSIZE_END)
+                text = "<big><b>%s</b></big>" % util.escape(song["album"])
+                if "date" in song: text += "\n" + song["date"]
+                l.set_markup(text)
+                self.pack_start(l, expand=False)
+
+            def _album(self, songs):
+                text = []
+
+                discs = {}
+                for song in songs:
+                    try:
+                        discs[song("~#disc")] = int(
+                            song["tracknumber"].split("/")[1])
+                    except (AttributeError, ValueError, IndexError, KeyError):
+                        discs[song("~#disc")] = max([
+                            song("~#track", discs.get(song("~#disc"), 0))])
+                tracks = sum(discs.values())
+                discs = len(discs)
+                length = sum([song["~#length"] for song in songs])
+
+                if tracks == 0 or tracks < len(songs): tracks = len(songs)
+
+                parts = []
+                if discs > 1: parts.append(_("%d discs") % discs)
+                parts.append(_("%d tracks") % tracks)
+                if tracks != len(songs):
+                    parts.append(_("%d selected") % len(songs))
+
+                text.append(", ".join(parts))
+                text.append(util.format_time_long(length))
+
+                if "location" in song:
+                    text.append(util.escape(song["location"]))
+                if "organization" in song or "labelid" in song:
+                    t = util.escape(song.comma("~organization~labelid"))
+                    text.append(t)
+
+                if "producer" in song:
+                    text.append(_("Produced by %s") %(
+                        util.escape(song.comma("producer"))))
+
+                w = self.Label("")
+                w.set_ellipsize(pango.ELLIPSIZE_END)
+                w.set_markup("\n".join(text))
+                cover = song.find_cover()
+                if cover:
+                    hb = gtk.HBox(spacing=12)
+                    try:
+                        hb.pack_start(
+                            self._make_cover(cover, song), expand=False)
+                    except:
+                        hb.destroy()
+                        self.pack_start(w, expand=False)
+                    else:
+                        hb.pack_start(w)
+                        self.pack_start(hb, expand=False)
+                else: self.pack_start(w, expand=False)
+
+            def _people(self, songs):
+                artists = set([])
+                performers = set([])
+                for song in songs:
+                    artists.update(song.list("artist"))
+                    performers.update(song.list("performer"))
+
+                artists = list(artists); artists.sort()
+                performers = list(performers); performers.sort()
+
+                if artists:
+                    if len(artists) == 1: title = tag("artist")
+                    else: title = util.capitalize(_("artists"))
+                    self.pack_frame(title, self.Label("\n".join(artists)))
+                if performers:
+                    if len(performers) == 1: title = tag("performer")
+                    else: title = util.capitalize(_("performers"))
+                    self.pack_frame(title, self.Label("\n".join(performers)))
+
+            def _description(self, songs):
+                text = []
+                cur_disc = songs[0]("~#disc", 1) - 1
+                cur_part = None
+                cur_track = songs[0]("~#track", 1) - 1
+                for song in songs:
+                    track = song("~#track", 0)
+                    disc = song("~#disc", 0)
+                    part = song.get("part")
+                    if disc != cur_disc:
+                        if cur_disc: text.append("")
+                        cur_track = song("~#track", 1) - 1
+                        cur_part = None
+                        cur_disc = disc
+                        if disc:
+                            text.append("<b>%s</b>" % (_("Disc %s") % disc))
+                    if part != cur_part:
+                        ts = "    " * bool(disc)
+                        cur_part = part
+                        if part:
+                            text.append("%s<b>%s</b>" %(ts, util.escape(part)))
+                    cur_track += 1
+                    ts = "    " * (bool(disc) + bool(part))
+                    while cur_track < track:
+                        text.append("%s<b>%d.</b> <i>%s</i>" %(
+                            ts, cur_track, _("No information available")))
+                        cur_track += 1
+                    text.append("%s<b>%d.</b> %s" %(
+                        ts, track, util.escape(song.comma("~title~version"))))
+                l = self.Label()
+                l.set_markup("\n".join(text))
+                l.set_ellipsize(pango.ELLIPSIZE_END)
+                self.pack_frame(_("Track List"), l)
+
+        class OneArtist(SongInfo):
+            def _title(self, songs):
+                l = self.Label()
+                l.set_ellipsize(pango.ELLIPSIZE_END)
+                artist = util.escape(songs[0]("artist"))
+                l.set_markup("<b><big>%s</big></b>" % artist)
+                self.pack_start(l, expand=False)
+
+            def _album(self, songs):
+                noalbum = 0
+                albums = {}
+                for song in songs:
+                    if "album" in song:
+                        albums[song.list("album")[0]] = song
+                    else: noalbum += 1
+                albums = [(song.get("date"), song, album) for
+                          album, song in albums.items()]
+                albums.sort()
+                def format((date, song, album)):
+                    if date: return "%s (%s)" % (util.escape(album), date[:4])
+                    else: return util.escape(album)
+                covers = [(a, s.find_cover(), s) for d, s, a in albums]
+                albums = map(format, albums)
+                if noalbum:
+                    albums.append(_("%d songs with no album") % noalbum)
+                l = self.Label("\n".join(albums))
+                l.set_ellipsize(pango.ELLIPSIZE_END)
+                self.pack_frame(_("Selected Discography"), l)
+
+                tips = gtk.Tooltips()
+                covers = [ac for ac in covers if bool(ac[1])]
+                t = gtk.Table(4, (len(covers) // 4) + 1)
+                t.set_col_spacings(12)
+                t.set_row_spacings(12)
+                added = set()
+                for i, (album, cover, song) in enumerate(covers):
+                    if cover.name in added: continue
+                    try:
+                        cov = self._make_cover(cover, song)
+                        tips.set_tip(cov.child, album)
+                        c = i % 4
+                        r = i // 4
+                        t.attach(cov, c, c + 1, r, r + 1,
+                                 xoptions=gtk.EXPAND, yoptions=0)
+                    except: pass
+                    added.add(cover.name)
+                self.pack_start(t, expand=False)
+                self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+
+        class ManySongs(SongInfo):
+            def _title(self, songs):
+                l = self.Label()
+                t = _("%d songs") % len(songs)
+                l.set_markup("<big><b>%s</b></big>" % t)
+                self.pack_start(l, expand=False)
+
+            def _people(self, songs):
+                artists = set([])
+                none = 0
+                for song in songs:
+                    if "artist" in song: artists.update(song.list("artist"))
+                    else: none += 1
+                artists = list(artists)
+                artists.sort()
+                num_artists = len(artists)
+
+                if none: artists.append(_("%d songs with no artist") % none)
+                self.pack_frame(
+                    "%s (%d)" % (util.capitalize(_("artists")), num_artists),
+                    self.Label("\n".join(artists)))
+
+            def _album(self, songs):
+                albums = set([])
+                none = 0
+                for song in songs:
+                    if "album" in song: albums.update(song.list("album"))
+                    else: none += 1
+                albums = list(albums)
+                albums.sort()
+                num_albums = len(albums)
+
+                if none: albums.append(_("%d songs with no album") % none)
+                self.pack_frame(
+                    "%s (%d)" % (util.capitalize(_("albums")), num_albums),
+                    self.Label("\n".join(albums)))
+
+            def _file(self, songs):
+                time = 0
+                size = 0
+                for song in songs:
+                    time += song["~#length"]
+                    try: size += os.path.getsize(song["~filename"])
+                    except OSError: pass
+                table = gtk.Table(2, 2)
+                table.set_col_spacings(6)
+                table.attach(self.Label(_("Total length:")), 0, 1, 0, 1,
+                             xoptions=gtk.FILL)
+                table.attach(
+                    self.Label(util.format_time_long(time)), 1, 2, 0, 1)
+                table.attach(self.Label(_("Total size:")), 0, 1, 1, 2,
+                             xoptions=gtk.FILL)
+                table.attach(self.Label(util.format_size(size)), 1, 2, 1, 2)
+                self.pack_frame(_("Files"), table)
+
+        def __init__(self, parent, library):
             gtk.ScrolledWindow.__init__(self)
             self.title = _("Information")
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             self.add(gtk.Viewport())
             self.child.set_shadow_type(gtk.SHADOW_NONE)
-            self.box = gtk.VBox(spacing=6)
-            self.box.set_border_width(12)
-            self.child.add(self.box)
             self.tips = gtk.Tooltips()
-            parent.connect_object('changed', self.__class__.__update, self)
+            parent.connect_object(
+                'changed', self.__class__.__update, self, library)
 
-        def _title(self, song):
-            text = "<b><span size='x-large'>%s</span></b>" %(
-                util.escape(song("title")))
-            if "version" in song:
-                text += "\n" + util.escape(song.comma("version"))
-            w = self.Label(text)
-            w.set_alignment(0, 0)
-            return w
-
-        def Frame(self, label, widget, big=True):
-            f = gtk.Frame()
-            g = gtk.Label()
-            if big: g.set_markup("<big><u>%s</u></big>" % label)
-            else: g.set_markup("<u>%s</u>" % label)
-            f.set_label_widget(g)
-            f.set_shadow_type(gtk.SHADOW_NONE)
-            a = gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
-            a.set_padding(0, 0, 12, 0)
-            a.add(widget)
-            f.add(a)
-            return f
-
-        def _people(self, song):
-            vbox = gtk.VBox(spacing=6)
-            vbox.pack_start(
-                self.Label(util.escape(song("artist"))), expand=False)
-
-            for names, tag_ in [
-                (_("performers"), "performer"),
-                (_("lyricists"),  "lyricist"),
-                (_("arrangers"),  "arranger"),
-                (_("composers"),  "composer"),
-                (_("conductors"), "conductor"),
-                (_("authors"),    "author")]:
-                if tag_ in song:
-                    if "\n" in song[tag_]:
-                        frame = self.Frame(util.capitalize(names),
-                                           self.Label(util.escape(song[tag_])),
-                                           False)
-                    else:
-                        ntag = util.capitalize(tag(tag_))
-                        frame = self.Frame(util.capitalize(ntag),
-                                           self.Label(util.escape(song[tag_])),
-                                           False)
-                    vbox.pack_start(frame, expand=False)
-            return self.Frame(util.capitalize(_("artists")), vbox)
-
-        def _album(self, song):
-            title = tag("album")
-            cover = song.find_cover()
-            w = self.Label("")
-            if cover:
-                try:
-                    hb = gtk.HBox(spacing=12)
-                    hb.pack_start(self._make_cover(cover, song),expand=False)
-                    hb.pack_start(w)
-                    f = self.Frame(title, hb)
-                except:
-                    f = self.Frame(title, w)
-            else:
-                f = self.Frame(title, w)
-
-            text = []
-            text.append("<b>%s</b>" % util.escape(song.comma("album")))
-            if "date" in song: text[-1] += " (%s)" % util.escape(song["date"])
-            secondary = []
-            if "discnumber" in song:
-                secondary.append(_("Disc %s") % song("~#disc"))
-            if "part" in song:
-                secondary.append("<b>%s</b>" % util.escape(song.comma("part")))
-            if "tracknumber" in song:
-                secondary.append(_("Track %s") % song("~#track"))
-            if secondary: text.append(" - ".join(secondary))
-
-            if "organization" in song:
-                t = util.escape(song.comma("~organization~labelid"))
-                text.append(t)
-
-            if "producer" in song:
-                text.append("Produced by %s" %(
-                    util.escape(song.comma("producer"))))
-
-            w.set_selectable(True)
-            w.set_markup("\n".join(text))
+        def __update(self, songs, library):
+            if self.child.child: self.child.child.destroy()
             
-            f.show_all()
-            return f
-
-        def _listen(self, song):
-            def counter(i):
-                if i == 0: return _("Never")
-                elif i == 1: return _("1 time")
-                else: return _("%d times") % i
-
-            def ftime(t):
-                if t == 0: return _("Unknown")
-                else: return time.strftime("%c", time.localtime(t))
-
-            playcount = counter(song["~#playcount"])
-            skipcount = counter(song.get("~#skipcount", 0))
-            added = ftime(song.get("~#added", 0))
-            changed = ftime(song["~#mtime"])
-            size = util.format_size(os.path.getsize(song["~filename"]))
-            tim = util.format_time_long(song["~#length"])
-            fn = util.fsdecode(util.unexpand(song["~filename"]))
-            rating = song("~rating")
-            tbl = [(_("play count"), playcount),
-                   (_("skip count"), skipcount),
-                   (_("rating"), rating),
-                   (_("length"), tim),
-                   (_("added"), added),
-                   (_("modified"), changed),
-                   (_("file size"), size)
-                   ]
-
-            if song.get("~#bitrate"):
-                tbl.insert(-1,
-                           (_("bitrate"),
-                            _("%d kbps") % int(song["~#bitrate"]/1000)))
-            table = gtk.Table(len(tbl) + 1, 2)
-            table.set_col_spacings(6)
-            l = self.Label(util.escape(fn))
-            table.attach(l, 0, 2, 0, 1, xoptions=gtk.FILL)
-            table.set_homogeneous(False)
-            for i, (l, r) in enumerate(tbl):
-                l = "<b>%s</b>" % util.capitalize(util.escape(l) + ":")
-                table.attach(self.Label(l), 0, 1, i + 1, i + 2, xoptions=0)
-                table.attach(self.Label(util.escape(r)), 1, 2, i + 1, i + 2)
-
-            return self.Frame(_("File"), table)
-
-        def Label(self, str):
-            l = gtk.Label()
-            l.set_markup(str)
-            l.set_alignment(0, 0)
-            l.set_selectable(True)
-            l.set_size_request(100, -1)
-            return l
-
-        def _update_one(self, song):
-            self.box.pack_start(self._title(song), expand=False)
-            if "album" in song:
-                self.box.pack_start(self._album(song), expand=False)
-            self.box.pack_start(self._people(song), expand=False)
-            self.box.pack_start(self._listen(song), expand=False)
-
-        def _update_album(self, songs):
-            songs.sort()
-            album = songs[0]("~album~date")
-            self.box.pack_start(self.Label(
-                "<b><span size='x-large'>%s</span></b>" % util.escape(album)),
-                                expand=False)
-
-            song = songs[0]
-
-            text = []
-            if "organization" in song:
-                text.append(util.escape(song.comma("~organization~labelid")))
-
-            if "producer" in song:
-                text.append("Produced by %s" %(
-                    util.escape(song.comma("producer"))))
-
-            cover = songs[0].find_cover()
-            if cover or text:
-                w = self.Label("\n".join(text))
-                if cover:
-                    try:
-                        hb = gtk.HBox(spacing=12)
-                        i = self._make_cover(cover, songs[0])
-                        hb.pack_start(i, expand=False)
-                        hb.pack_start(w)
-                        self.box.pack_start(hb, expand=False)
-                    except:
-                        self.box.pack_start(w, expand=False)
-                else:
-                    self.box.pack_start(w, expand=False)
-
-            artists = set()
-            for song in songs: artists.update(song.list("artist"))
-            artists = list(artists)
-            artists.sort()
-            l = gtk.Label(", ".join(artists))
-            l.set_alignment(0, 0)
-            l.set_selectable(True)
-            l.set_line_wrap(True)
-            self.box.pack_start(
-                self.Frame(util.capitalize(_("artists")), l), expand=False)
-
-            text = []
-            cur_disc = songs[0]("~#disc", 1) - 1
-            cur_part = None
-            cur_track = songs[0]("~#track", 1) - 1
-            for song in songs:
-                track = song("~#track", 0)
-                disc = song("~#disc", 0)
-                part = song.get("part")
-                if disc != cur_disc:
-                    if cur_disc: text.append("")
-                    cur_track = song("~#track", 1) - 1
-                    cur_part = None
-                    cur_disc = disc
-                    if disc:
-                        text.append("<b>%s</b>" % (_("Disc %s") % disc))
-                if part != cur_part:
-                    tabs = "    " * bool(disc)
-                    cur_part = part
-                    if part:
-                        text.append("%s<b>%s</b>" % (tabs, util.escape(part)))
-                cur_track += 1
-                tabs = "    " * (bool(disc) + bool(part))
-                while cur_track < track:
-                    text.append("%s<b>%d.</b> <i>%s</i>" %(
-                        tabs, cur_track, _("No information available")))
-                    cur_track += 1
-                text.append("%s<b>%d.</b> %s" %(
-                    tabs, track, util.escape(song.comma("~title~version"))))
-            l = self.Label("\n".join(text))
-            self.box.pack_start(self.Frame(_("Track List"), l), expand=False)
-
-        def _update_artist(self, songs):
-            artist = songs[0].comma("artist")
-            self.box.pack_start(self.Label(
-                "<b><span size='x-large'>%s</span></b>\n%s" %(
-                util.escape(artist), _("%d songs") % len(songs))),
-                                expand=False)
-
-            noalbum = 0
-            albums = {}
-            for song in songs:
-                if "album" in song:
-                    albums[song.list("album")[0]] = song
-                else:
-                    noalbum += 1
-            albums = [(song.get("date"), song, album) for album, song in
-                        albums.items()]
-            albums.sort()
-            def format((date, song, album)):
-                if date: return "%s (%s)" % (util.escape(album), date[:4])
-                else: return util.escape(album)
-            covers = [(a, s.find_cover(), s) for d, s, a in albums]
-            albums = map(format, albums)
-            if noalbum: albums.append(_("%d songs with no album") % noalbum)
-            self.box.pack_start(
-                self.Frame(_("Selected Discography"),
-                           self.Label("\n".join(albums))),
-                expand=False)
-            added = set()
-            covers = [ac for ac in covers if bool(ac[1])]
-            t = gtk.Table(4, (len(covers) // 4) + 1)
-            t.set_col_spacings(12)
-            t.set_row_spacings(12)
-            for i, (album, cover, song) in enumerate(covers):
-                if cover.name in added: continue
-                try:
-                    cov = self._make_cover(cover, song)
-                    self.tips.set_tip(cov.child, album)
-                    c = i % 4
-                    r = i // 4
-                    t.attach(cov, c, c + 1, r, r + 1,
-                             xoptions=gtk.EXPAND, yoptions=0)
-                except: pass
-                added.add(cover.name)
-            self.box.pack_start(t)
-
-        def _update_many(self, songs):
-            text = "<b><span size='x-large'>%s</span></b>" %(
-                _("%d songs") % len(songs))
-            l = self.Label(text)
-            self.box.pack_start(l, expand=False)
-
-            tc = sum([complex(song["~#length"], song["~#playcount"])
-                      for song in songs])
-            time = tc.real
-            count = int(tc.imag)
-            table = gtk.Table(2, 2)
-            table.set_col_spacings(6)
-            table.attach(self.Label(_("Total length:")), 0, 1, 0, 1)
-            table.attach(self.Label(util.format_time(time)), 1, 2, 0, 1)
-            table.attach(self.Label(_("Songs heard:")), 0, 1, 1, 2)
-            table.attach(self.Label(str(count)), 1, 2, 1, 2)
-
-            self.box.pack_start(self.Frame(_("Listening"), table),
-                                expand=False)
-
-            artists = set()
-            albums = set()
-            noartist = noalbum = 0
-            for song in songs:
-                if "artist" in song: artists.update(song.list("artist"))
-                else: noartist += 1
-                if "album" in song: albums.update(song.list("album"))
-                else: noalbum += 1
-            artists = list(artists)
-            artists.sort()
-            arcount = len(artists)
-            if noartist: artists.append(_("%d songs with no artist")%noartist)
-            artists = util.escape("\n".join(artists))
-            if artists:
-                self.box.pack_start(
-                    self.Frame("%s (%d)" % (util.capitalize(_("artists")),
-                                            arcount),
-                               self.Label(artists)),
-                               expand=False)
-
-            albums = list(albums)
-            albums.sort()
-            alcount = len(albums)
-            if noalbum: albums.append(_("%d songs with no album") % noalbum)
-            albums = util.escape("\n".join(albums))
-            if albums:
-                self.box.pack_start(
-                    self.Frame("%s (%d)" % (util.capitalize(_("albums")),
-                                            alcount),
-                               self.Label(albums)),
-                               expand=False)
-
-        def __update(self, songs):
-            for c in self.box.get_children():
-                self.box.remove(c)
-                c.destroy()
-            if len(songs) == 0:
-                self.box.pack_start(gtk.Label(_("No songs are selected.")))
-            elif len(songs) == 1: self._update_one(songs[0])
+            if len(songs) == 0: Ctr = self.NoSongs
+            elif len(songs) == 1: Ctr = self.OneSong
             else:
                 albums = [song.get("album") for song in songs]
                 artists = [song.get("artist") for song in songs]
                 if min(albums) == max(albums) and None not in albums:
-                    self._update_album(songs[:])
+                    Ctr = self.OneAlbum
                 elif min(artists) == max(artists) and None not in artists:
-                    self._update_artist(songs[:])
-                else: self._update_many(songs)
-            self.box.show_all()
-
-        def _show_big_cover(self, image, event, song):
-            if (event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS):
-                cover = song.find_cover()
-                if cover:
-                    BigCenteredImage(song.comma("album"), cover.name)
-
-        def _make_cover(self, cover, song):
-            p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70, 70)
-            i = gtk.Image()
-            i.set_from_pixbuf(p)
-            ev = gtk.EventBox()
-            ev.add(i)
-            ev.connect('button-press-event', self._show_big_cover, song)
-            f = gtk.Frame()
-            f.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            f.add(ev)
-            return f
+                    Ctr = self.OneArtist
+                else: Ctr = self.ManySongs
+            self.child.add(Ctr(library=library, songs=songs))
 
     class EditTags(gtk.VBox):
         def __init__(self, parent):
@@ -4199,9 +4282,9 @@ class SongProperties(gtk.Window):
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         notebook = qltk.Notebook()
-        pages = [Ctr(self) for Ctr in
-                 [self.Information, self.EditTags, self.TagByFilename,
-                  self.RenameFiles]]
+        pages = [self.Information(self, library=True)]
+        pages.extend([Ctr(self) for Ctr in
+                      [self.EditTags, self.TagByFilename, self.RenameFiles]])
         if len(songs) > 1:
             pages.append(self.TrackNumbers(self))
         for page in pages: notebook.append_page(page)
@@ -4540,6 +4623,7 @@ class ExFalsoWindow(gtk.Window):
         fs = FileSelector(dir)
         self.child.pack1(fs, resize=True)
         nb = qltk.Notebook()
+        nb.append_page(SongProperties.Information(self, library=False))
         for Page in [SongProperties.EditTags,
                      SongProperties.TagByFilename,
                      SongProperties.RenameFiles,
