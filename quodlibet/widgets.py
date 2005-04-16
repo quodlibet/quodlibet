@@ -1788,6 +1788,8 @@ class MainWindow(gtk.Window):
              self.open_chooser),
             ('NewPlaylist', gtk.STOCK_NEW, _('_New Playlist...'), None, None,
              self.new_playlist),
+            ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library...'),
+             None, None, LibraryBrowser),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.open_prefs),
             ("RefreshLibrary", gtk.STOCK_REFRESH, _("Re_fresh library"), None,
@@ -2575,6 +2577,71 @@ class SongList(gtk.TreeView):
 
     def _set_column_settings(self, column):
         column.set_visible(True)
+
+class LibraryBrowser(gtk.Window):
+    def __init__(self, activator):
+        gtk.Window.__init__(self)
+        self.set_default_size(400, 400)
+        self.set_border_width(12)
+        self.set_title(_("Library Browser"))
+        vbox = gtk.VBox(spacing=6)
+
+        view = SongList()
+        view.set_model(gtk.ListStore(object))
+        self.__view = view
+        vbox.pack_start(SearchBar(self.__search), expand=False)
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.add(view)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        vbox.pack_start(sw)
+        self.add(vbox)
+
+        menu = gtk.Menu()
+        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        rem.connect('activate', self.__remove_selected_songs, view)
+        menu.append(rem)
+        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
+        prop.connect('activate', self.__song_properties, view)
+        menu.append(prop)
+        menu.show_all()
+        self.connect_object('destroy', gtk.Menu.destroy, menu)
+        view.connect('button-press-event', self.__button_press, menu)
+        view.connect_object('popup-menu', gtk.Menu.popup, menu,
+                            None, None, None, 2, 0)
+
+        self.show_all()
+
+    def __remove_selected_songs(self, activator, view):
+        model, rows = view.get_selection().get_selected_rows()
+        for row in rows:
+            library.remove(model[row][0])
+            widgets.watcher.removed(model[row][0])
+
+    def __song_properties(self, activator, view):
+        model, rows = view.get_selection().get_selected_rows()
+        SongProperties([model[row][0] for row in rows])
+
+    def __button_press(self, view, event, menu):
+        if event.button != 3:
+            return False
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
+        view.grab_focus()
+        selection = view.get_selection()
+        if not selection.path_is_selected(path):
+            view.set_cursor(path, col, 0)
+        menu.popup(None, None, None, event.button, event.time)
+        return True
+
+    def __search(self, text, dummy):
+        model = self.__view.get_model()
+        model.clear()
+        if text is None: songs = library.values()
+        else: songs = library.query(text)
+        songs.sort()
+        for song in songs: model.append([song])
 
 class PlayList(SongList):
     # ["%", " "] + parser.QueryLexeme.table.keys()
