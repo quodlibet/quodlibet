@@ -3201,8 +3201,8 @@ class SongProperties(gtk.Window):
                           album, song in albums.items()]
                 albums.sort()
                 def format((date, song, album)):
-                    if date: return "%s (%s)" % (util.escape(album), date[:4])
-                    else: return util.escape(album)
+                    if date: return "%s (%s)" % (album, date[:4])
+                    else: return album
                 covers = [(a, s.find_cover(), s) for d, s, a in albums]
                 albums = map(format, albums)
                 if noalbum:
