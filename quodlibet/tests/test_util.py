@@ -37,8 +37,8 @@ class FSTests(TestCase):
         self.failIf(iscommand(""))
 
     def test_mtime(self):
-        self.failUnlessEqual(os.path.mtime("."), os.path.getmtime("."))
-        self.failUnlessEqual(os.path.mtime("doesnotexist"), 0)
+        self.failUnlessEqual(util.mtime("."), os.path.getmtime("."))
+        self.failUnlessEqual(util.mtime("doesnotexist"), 0)
 
     def test_fscoding(self):
         import locale

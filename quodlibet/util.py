@@ -17,11 +17,9 @@ def to(string, frm="utf-8"):
     else: return string.decode(frm).encode(enc, "replace")
 
 def mtime(filename):
-    """Return the mtime of a file, or 0 if an error occurs. Also available
-    as os.path.mtime."""
+    """Return the mtime of a file, or 0 if an error occurs."""
     try: return os.path.getmtime(filename)
     except OSError: return 0
-os.path.mtime = mtime
 
 def mkdir(dir):
     """Make a directory, including all its parent directories. This does not

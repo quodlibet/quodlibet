@@ -93,7 +93,7 @@ class AudioFile(dict):
 
     def valid(self):
         return (self.exists() and
-                self["~#mtime"] == os.path.mtime(self["~filename"]))
+                self["~#mtime"] == util.mtime(self["~filename"]))
 
     def can_change(self, k=None):
         if k is None:
@@ -150,7 +150,7 @@ class AudioFile(dict):
         try: del(self["vendor"])
         except KeyError: pass
 
-        self["~#mtime"] = os.path.mtime(self['~filename'])
+        self["~#mtime"] = util.mtime(self['~filename'])
 
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):

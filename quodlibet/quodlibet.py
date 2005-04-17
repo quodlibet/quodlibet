@@ -231,13 +231,13 @@ def enable_periodic_save():
     # Check every 5 minutes to see if the library/config on disk are
     # over 15 minutes old; if so, update them. This function can, in theory,
     # break if saving the library takes more than 5 minutes.
-    import gobject, time
+    import gobject, time, util
     from library import library
     from threading import Thread
     def save(save_library, save_config):
-        if (time.time() - os.path.mtime(const.LIBRARY)) > 15*60:
+        if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
             library.save(const.LIBRARY)
-        if (time.time() - os.path.mtime(const.CONFIG)) > 15*60:
+        if (time.time() - util.mtime(const.CONFIG)) > 15*60:
             config.write(const.CONFIG)
         thread = Thread(target=save, args=(True, True))
         gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
