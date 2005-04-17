@@ -2450,6 +2450,16 @@ class SongList(gtk.TreeView):
         self.connect_object('destroy', widgets.watcher.disconnect, sigc)
         self.connect_object('destroy', widgets.watcher.disconnect, sigr)
 
+        sigp = widgets.watcher.connect('paused', self.__redraw_current)
+        sigup = widgets.watcher.connect('unpaused', self.__redraw_current)
+        self.connect_object('destroy', widgets.watcher.disconnect, sigp)
+        self.connect_object('destroy', widgets.watcher.disconnect, sigup)
+
+    def __redraw_current(self, watcher):
+        model = self.get_model()
+        iter = self.song_to_iter(watcher.song)
+        if iter: model[iter][0] = model[iter][0]
+
     def set_all_column_headers(cls, headers):
         cls.headers = headers
         for listview in cls.songlistviews:
@@ -2500,10 +2510,6 @@ class SongList(gtk.TreeView):
 
         for c in self.get_columns(): self.remove_column(c)
 
-        def redraw_current(watcher, model):
-            iter = self.song_to_iter(widgets.watcher.song)
-            if iter and model: model[iter][0] = model[iter][0]
-
         def cell_data_current(column, cell, model, iter,
                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
             try:
@@ -2534,8 +2540,6 @@ class SongList(gtk.TreeView):
         column.header_name = "~current"
         column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
         column.set_cell_data_func(render, cell_data_current)
-        widgets.watcher.connect('paused', redraw_current, self.get_model())
-        widgets.watcher.connect('unpaused', redraw_current, self.get_model())
         self.append_column(column)
         if "~current" in headers: headers.remove("~current")
 
