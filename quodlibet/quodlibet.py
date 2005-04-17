@@ -131,7 +131,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
             return transopts, args
 
 def main():
-    import signal, gtk, widgets
+    import signal, gtk, widgets, player
     gtk.threads_init()
 
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
@@ -139,11 +139,11 @@ def main():
     window = widgets.init()
 
     from threading import Thread
-    t = Thread(target=player.playlist.play, args=(widgets.widgets.watcher,))
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     enable_periodic_save()
-    gtk.quit_add(0, save_and_quit, t)
     gtk.threads_enter()
+    t = Thread(target=player.playlist.play, args=(widgets.widgets.watcher,))
+    gtk.quit_add(0, save_and_quit, t, player.playlist)
     t.start()
     gtk.main()
     gtk.threads_leave()
@@ -154,13 +154,16 @@ def print_status():
     else: print "playing"
     raise SystemExit
 
-def save_and_quit(thread):
-    player.playlist.quitting()
+def save_and_quit(thread, playlist):
+    from library import library
+    playlist.quitting()
     thread.join()
     print to(_("Saving song library."))
     library.save(const.LIBRARY)
     config.write(const.CONFIG)
-    cleanup()
+    for filename in [const.CURRENT, const.CONTROL]:
+        try: os.unlink(filename)
+        except OSError: pass
     raise SystemExit
 
 def refresh_cache():
@@ -169,11 +172,11 @@ def refresh_cache():
             "The library cannot be refreshed while Quod Libet is running.")))
     import library, config, const
     config.init(const.CONFIG)
-    library.init()
+    lib = library.init()
     print to(_("Loading, scanning, and saving your library."))
-    library.library.load(const.LIBRARY)
-    for x, y in library.library.rebuild(): pass
-    library.library.save(const.LIBRARY)
+    lib.load(const.LIBRARY)
+    for x, y in lib.rebuild(): pass
+    lib.save(const.LIBRARY)
     raise SystemExit
 
 def print_playing(fstring = "<artist~album~tracknumber~title>"):
@@ -229,41 +232,19 @@ def enable_periodic_save():
     # over 15 minutes old; if so, update them. This function can, in theory,
     # break if saving the library takes more than 5 minutes.
     import gobject, time
+    from library import library
     from threading import Thread
     def save(save_library, save_config):
         if (time.time() - os.path.mtime(const.LIBRARY)) > 15*60:
             library.save(const.LIBRARY)
         if (time.time() - os.path.mtime(const.CONFIG)) > 15*60:
             config.write(const.CONFIG)
-        thread = Thread(target = save, args = (True, True))
+        thread = Thread(target=save, args=(True, True))
         gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
-    thread = Thread(target = save, args = (False, False))
+    thread = Thread(target=save, args=(False, False))
     gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
 
-def cleanup(*args):
-    for filename in [const.CURRENT, const.CONTROL]:
-        try: os.unlink(filename)
-        except OSError: pass
-
-if __name__ == "__main__":
-    basedir = os.path.split(os.path.realpath(__file__))[0]
-    sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
-    i18ndir = "/usr/share/locale"
-
-    import locale, gettext
-    try: locale.setlocale(locale.LC_ALL, '')
-    except: pass
-    from util import to
-
-    gettext.bindtextdomain("quodlibet")
-    gettext.textdomain("quodlibet")
-    gettext.install("quodlibet", unicode = True)
-
-    import const
-
-    # Check command-line parameters before doing "real" work, so they
-    # respond quickly.
-    opts = sys.argv[1:]
+def process_arguments():
     controls = {"next": ">", "previous": "<", "play": ")",
                 "pause": "|", "play-pause": "-", "volume-up": "v+",
                 "volume-down": "v-", }
@@ -291,9 +272,9 @@ if __name__ == "__main__":
 
     for opt, help, arg in [
         ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
-        ("shuffle", _("Turn shuffle off, on, or toggle it"), _("0|1|t")),
-        ("repeat", _("Turn repeat off, on, or toggle it"), _("0|1|t")),
-        ("volume", _("Set the volume"), _("+|-|0..100")),
+        ("shuffle", _("Turn shuffle off, on, or toggle it"), "0|1|t"),
+        ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
+        ("volume", _("Set the volume"), "+|-|0..100"),
         ("query", _("Search your library"), _("search-string")),
         ("play-file", _("Play a file"), _("filename"))
         ]: options.add(opt, help=help, arg=arg)
@@ -314,30 +295,7 @@ if __name__ == "__main__":
             try: print_playing(args[0])
             except IndexError: print_playing()
 
-    if os.path.exists(const.CONTROL):
-        print _("Quod Libet is already running.")
-        control('!')
-
-    # Get to the right directory for our data.
-    os.chdir(basedir)
-    # Initialize GTK.
-    import pygtk
-    pygtk.require('2.0')
-    import gtk
-    if gtk.pygtk_version < (2, 6) or gtk.gtk_version < (2, 6):
-        sys.stderr.write(to(_("E: You need GTK+ 2.6 and PyGTK 2.4 or greater to run Quod Libet."))+"\n")
-        sys.stderr.write(to(_("E: You have GTK+ %s and PyGTK %s.") % (
-            ".".join(map(str, gtk.gtk_version)),
-            ".".join(map(str, gtk.pygtk_version)))) + "\n")
-        raise SystemExit(to(_("E: Please upgrade GTK+/PyGTK.")))
-
-    import util; from util import to
-
-    # Load configuration data and scan the library for new/changed songs.
-    import config
-    config.init(const.CONFIG)
-
-    # Load the library.
+def load_library():
     import library
     library.init(const.LIBRARY)
     print to(_("Loaded song library."))
@@ -347,6 +305,7 @@ if __name__ == "__main__":
         for a, c in library.scan(config.get("settings", "scan").split(":")):
             pass
 
+def load_player():
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
     import player
@@ -358,5 +317,45 @@ if __name__ == "__main__":
         config.write(const.CONFIG)
         raise SystemExit(True)
 
-    try: main()
-    finally: cleanup()
+if __name__ == "__main__":
+    basedir = os.path.split(os.path.realpath(__file__))[0]
+    sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
+    i18ndir = "/usr/share/locale"
+
+    import locale, gettext
+    try: locale.setlocale(locale.LC_ALL, '')
+    except: pass
+    from util import to
+
+    gettext.bindtextdomain("quodlibet")
+    gettext.textdomain("quodlibet")
+    gettext.install("quodlibet", unicode=True)
+
+    import const
+    process_arguments()
+    if os.path.exists(const.CONTROL):
+        print _("Quod Libet is already running.")
+        control('!')
+
+    # Get to the right directory for our data.
+    os.chdir(basedir)
+    # Initialize GTK.
+    import pygtk
+    pygtk.require('2.0')
+    import gtk
+    if gtk.pygtk_version < (2, 6) or gtk.gtk_version < (2, 6):
+        sys.stderr.write(
+            to(_("E: You need GTK+ 2.6 and PyGTK 2.6 or greater."))+"\n")
+        sys.stderr.write(to(_("E: You have GTK+ %s and PyGTK %s.") % (
+            ".".join(map(str, gtk.gtk_version)),
+            ".".join(map(str, gtk.pygtk_version)))) + "\n")
+        raise SystemExit(to(_("E: Please upgrade GTK+/PyGTK.")))
+
+    import util; from util import to
+
+    # Load configuration data and scan the library for new/changed songs.
+    import config
+    config.init(const.CONFIG)
+    load_library()
+    load_player()
+    main()
