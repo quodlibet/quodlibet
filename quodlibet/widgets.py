@@ -33,6 +33,8 @@ if sys.version_info < (2, 4):
 # Or, replace it with nicer wrappers!
 class widgets(object): pass
 
+# Provides some files in ~/.quodlibet to indicate what song is playing
+# and whether the player is paused or not.
 class FSInterface(object):
     def __init__(self, watcher):
         watcher.connect('paused', self.__paused)
@@ -77,6 +79,7 @@ class FileChooser(gtk.FileChooserDialog):
         fns = self.get_filenames()
         return resp, fns
 
+# Everything connects to this to get updates about the library and player.
 class SongWatcher(gtk.Object):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
@@ -108,11 +111,16 @@ class SongWatcher(gtk.Object):
         'unpaused': SIG_NONE,
 
         # A song was missing (i.e. disappeared from the filesystem).
-        # This is emitted in parallel with remove.
+        # When QL is running it will also result in a removed signal
+        # (caused by MainWindow).
         'missing': SIG_PYOBJECT
         }
 
+    # (current_in_msec, total_in_msec)
+    # (0, 1) when no song is playing.
     time = (0, 1)
+
+    # the currently playing song.
     song = None
 
     def changed(self, song):
@@ -318,7 +326,7 @@ class PreferencesWindow(gtk.Window):
             if "~current" in headers: headers.remove("~current")
             headers.insert(0, "~current")
             config.set("settings", "headers", " ".join(headers))
-            widgets.main.set_column_headers(headers)
+            SongList.set_all_column_headers(headers)
 
     class Browsers(_Pane, gtk.VBox):
         def __init__(self):
@@ -581,7 +589,7 @@ class DeleteDialog(gtk.Dialog):
         # The FreeDesktop spec is complicated and I'm not sure it's
         # actually used by anything.
         if os.path.isdir(os.path.expanduser("~/.Trash")):
-            b = qltk.Button(_("_Move to Trash"), image = gtk.STOCK_DELETE)
+            b = qltk.Button(_("_Move to Trash"), image=gtk.STOCK_DELETE)
             self.add_action_widget(b, 0)
 
         self.add_button(gtk.STOCK_CANCEL, 1)
@@ -768,7 +776,7 @@ class PlaylistWindow(gtk.Window):
         vbox.pack_end(hbox, expand=False)
         vbox.pack_end(gtk.HSeparator(), expand=False)
 
-        close = qltk.Button(stock=gtk.STOCK_CLOSE)
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
         hbox.pack_end(close, expand=False)
 
         swin = gtk.ScrolledWindow()
@@ -1745,7 +1753,8 @@ class MainWindow(gtk.Window):
         self.songlist.set_size_request(200, 150)
         sw.add(self.songlist)
         self.songlist.set_model(gtk.ListStore(object))
-        self.set_column_headers(config.get("settings", "headers").split())
+        SongList.set_all_column_headers(
+            config.get("settings", "headers").split())
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(
             None, sort[1:], refresh=True, order=int(sort[0]))
@@ -2006,13 +2015,6 @@ class MainWindow(gtk.Window):
                 self.ui.get_widget(
                     "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
-        col = 0
-        def update_if_last_or_current(model, path, iter):
-            this_song = model[iter][col]
-            if this_song is song:
-                model.row_changed(path, iter)
-
-        self.songlist.get_model().foreach(update_if_last_or_current)
         if song and config.getboolean("settings", "jump"):
             self.jump_to_current()
 
@@ -2421,11 +2423,8 @@ class MainWindow(gtk.Window):
             self.browser.set_text(query.encode('utf-8'))
             self.browser.activate()
 
-    def set_column_headers(self, headers):
-        SongList.set_all_column_headers(headers)
-
     def refresh_songlist(self):
-        i, length = self.songlist.refresh(current=widgets.watcher.song)
+        self.songlist.refresh()
         self.__set_time()
 
     def __set_time(self):
@@ -2452,6 +2451,7 @@ class SongList(gtk.TreeView):
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList._destroy, self)
         sigs = [widgets.watcher.connect('changed', self.__song_updated),
+                widgets.watcher.connect('song-started', self.__song_updated),
                 widgets.watcher.connect('removed', self.__song_removed),
                 widgets.watcher.connect('paused', self.__redraw_current),
                 widgets.watcher.connect('unpaused', self.__redraw_current)
@@ -2765,25 +2765,21 @@ class MainSongList(SongList):
         if refresh: self.refresh()
 
     # Clear the songlist and readd the songs currently wanted.
-    def refresh(self, current=None):
+    def refresh(self):
         model = self.get_model()
 
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])
 
         model.clear()
-        length = 0
         for song in player.playlist:
             model.append([song])
-            length += song["~#length"]
 
         # reselect what we can
         selection = self.get_selection()
         for i, row in enumerate(iter(model)):
             if row[0]['~filename'] in selected:
                 selection.select_path(i)
-        i = len(list(player.playlist))
-        return i, length
 
 class GetStringDialog(gtk.Dialog):
     def __init__(self, parent, title, text, options=[]):
@@ -3923,7 +3919,6 @@ class SongProperties(gtk.Window):
             view.append_column(col)
             for i, header in enumerate(pattern.headers):
                 render = gtk.CellRendererText()
-                render.set_property('ellipsize', pango.ELLIPSIZE_END)
                 render.set_property('editable', True)
                 render.connect(
                     'edited', self.__row_edited, model, i + 2, preview)
@@ -4041,7 +4036,6 @@ class SongProperties(gtk.Window):
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
             render = gtk.CellRendererText()
-            render.set_property('ellipsize', pango.ELLIPSIZE_END)
             render.set_property('editable', True)
             render.connect('edited', self.__row_edited, model, preview)
             column = gtk.TreeViewColumn(_('New Name'), render, text=2)
