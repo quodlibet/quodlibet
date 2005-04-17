@@ -363,29 +363,31 @@ class FormatTimeTests(TestCase):
     def test_notminutes(s):
         s.assertEquals(f_t_l(59).split(", ")[0], _("%d seconds")%59)
     def test_minute(s):
-        s.assertEquals(f_t_l(60).split(", ")[0], _("1 minute"))
+        s.assertEquals(f_t_l(60), _("1 minute"))
     def test_minutes(s):
         s.assertEquals(f_t_l(120).split(", ")[0], _("%d minutes")%2)
     def test_nothours(s):
         s.assertEquals(f_t_l(3599).split(", ")[0], _("%d minutes")%59)
     def test_hour(s):
-        s.assertEquals(f_t_l(3600).split(", ")[0], _("1 hour"))
+        s.assertEquals(f_t_l(3600), _("1 hour"))
     def test_hours(s):
-        s.assertEquals(f_t_l(7200).split(", ")[0], _("%d hours")%2)
+        s.assertEquals(f_t_l(7200), _("%d hours")%2)
     def test_notdays(s):
         s.assertEquals(f_t_l(86399).split(", ")[0], _("%d hours")%23)
     def test_seconds_dropped(s):
-        s.assertEquals(len(f_t_l(3600).split(", ")), 2)
+        s.assertEquals(len(f_t_l(3601).split(", ")), 2)
     def test_day(s):
-        s.assertEquals(f_t_l(86400).split(", ")[0], _("1 day"))
+        s.assertEquals(f_t_l(86400), _("1 day"))
     def test_days(s):
         s.assertEquals(f_t_l(172800).split(", ")[0], _("%d days")%2)
     def test_notyears(s):
         s.assertEquals(f_t_l(31535999).split(", ")[0], _("%d days")%364)
     def test_year(s):
-        s.assertEquals(f_t_l(31536000).split(", ")[0], _("1 year"))
+        s.assertEquals(f_t_l(31536000), _("1 year"))
     def test_years(s):
         s.assertEquals(f_t_l(63072000).split(", ")[0], _("%d years")%2)
+    def test_drop_zero(s):
+        s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 
 registerCase(FSTests)
 registerCase(StringTests)

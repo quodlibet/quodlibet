@@ -95,7 +95,8 @@ def format_time_long(time):
         if time < 1: break
         if divisor is None: time, unit = 0, time
         else: time, unit = divmod(time, divisor)
-        if unit == 1: time_str.append(single)
+        if unit == 0: pass
+        elif unit == 1: time_str.append(single)
         else: time_str.append(plural % unit)
     time_str.reverse()
     if len(time_str) > 2: time_str.pop()
