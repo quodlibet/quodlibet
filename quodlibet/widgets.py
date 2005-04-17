@@ -968,6 +968,7 @@ class PanedBrowser(Browser, gtk.VBox):
             self.set_shadow_type(gtk.SHADOW_IN)
             self.add(gtk.TreeView(gtk.ListStore(str)))
             render = gtk.CellRendererText()
+            render.set_property('ellipsize', pango.ELLIPSIZE_END)
             column = gtk.TreeViewColumn(tag(mytag), render, markup=0)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
@@ -2100,22 +2101,22 @@ class MainWindow(gtk.Window):
         self.make_query("#(playcount = 0)")
 
     def top40(self, menuitem):
-        songs = [(song["~#playcount"], song) for song in library.values()]
+        songs = [song["~#playcount"] for song in library.values()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
-            self.make_query("#(playcount > %d)" % (songs[0][0] - 1))
+            self.make_query("#(playcount > %d)" % (songs[0] - 1))
         else:
-            self.make_query("#(playcount > %d)" % (songs[-40][0] - 1))
+            self.make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def bottom40(self, menuitem):
-        songs = [(song["~#playcount"], song) for song in library.values()]
+        songs = [song["~#playcount"] for song in library.values()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
-            self.make_query("#(playcount < %d)" % (songs[0][0] + 1))
+            self.make_query("#(playcount < %d)" % (songs[0] + 1))
         else:
-            self.make_query("#(playcount < %d)" % (songs[-40][0] + 1))
+            self.make_query("#(playcount < %d)" % (songs[-40] + 1))
 
     def rebuild(self, activator, hard=False):
         window = qltk.WaitLoadWindow(self, len(library) // 7,
@@ -2450,17 +2451,13 @@ class SongList(gtk.TreeView):
         self.recall_size = recall
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList._destroy, self)
-        sigc = widgets.watcher.connect_object(
-            'changed', SongList.__song_updated, self)
-        sigr = widgets.watcher.connect_object(
-            'removed', SongList.__song_removed, self)
-        self.connect_object('destroy', widgets.watcher.disconnect, sigc)
-        self.connect_object('destroy', widgets.watcher.disconnect, sigr)
-
-        sigp = widgets.watcher.connect('paused', self.__redraw_current)
-        sigup = widgets.watcher.connect('unpaused', self.__redraw_current)
-        self.connect_object('destroy', widgets.watcher.disconnect, sigp)
-        self.connect_object('destroy', widgets.watcher.disconnect, sigup)
+        sigs = [widgets.watcher.connect('changed', self.__song_updated),
+                widgets.watcher.connect('removed', self.__song_removed),
+                widgets.watcher.connect('paused', self.__redraw_current),
+                widgets.watcher.connect('unpaused', self.__redraw_current)
+                ]
+        for sig in sigs:
+            self.connect_object('destroy', widgets.watcher.disconnect, sig)
 
     def __redraw_current(self, watcher):
         model = self.get_model()
@@ -2486,34 +2483,23 @@ class SongList(gtk.TreeView):
         model.foreach(find, it)
         return it[-1]
 
-    def __song_updated(self, song):
+    def __song_updated(self, watcher, song):
         iter = self.song_to_iter(song)
         if iter:
             model = self.get_model()
             model[iter][0] = model[iter][0]
 
-    def __song_removed(self, song):
+    def __song_removed(self, watcher, song):
         iter = self.song_to_iter(song)
         if iter:
             model = self.get_model()
             model.remove(iter)
-
-    def save_widths(self, column, width):
-        config.set("memory", "widths", " ".join(
-            [str(x.get_width()) for x in self.get_columns()]))
 
     # Build a new filter around our list model, set the headers to their
     # new values.
     def set_column_headers(self, headers):
         if len(headers) == 0: return
         SHORT_COLS = ["tracknumber", "discnumber", "~length", "~rating"]
-        SLOW_COLS = ["~basename", "~dirname", "~filename"]
-        if not self.recall_size:
-            try: ws = map(int, config.get("memory", "widths").split())
-            except: ws = []
-        else: ws = []
-
-        if len(ws) != len(headers): ws = [40] * len(headers)
 
         for c in self.get_columns(): self.remove_column(c)
 
@@ -2558,10 +2544,11 @@ class SongList(gtk.TreeView):
             if t in SHORT_COLS or t.startswith("~#"):
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
             else:
+                render.set_property('ellipsize', pango.ELLIPSIZE_END)
                 column.set_expand(True)
                 column.set_resizable(True)
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-                column.set_fixed_width(ws[i])
+                column.set_fixed_width(1)
             if hasattr(self, 'set_sort_by'):
                 column.connect('clicked', self.set_sort_by)
             self._set_column_settings(column)
@@ -2752,7 +2739,6 @@ class MainSongList(SongList):
         column.set_clickable(True)
         column.set_reorderable(True)
         column.set_sort_indicator(False)
-        column.connect('notify::width', self.save_widths)
 
     # Resort based on the header clicked.
     def set_sort_by(self, header, tag=None, refresh=True, order=None):
@@ -3422,6 +3408,7 @@ class SongProperties(gtk.Window):
             self.view.append_column(column)
 
             render = gtk.CellRendererText()
+            render.set_property('ellipsize', pango.ELLIPSIZE_END)
             render.set_property('editable', True)
             render.connect('edited', self.edit_tag, self.model, 1)
             column = gtk.TreeViewColumn(_('Value'), render, markup=1,
@@ -3936,6 +3923,7 @@ class SongProperties(gtk.Window):
             view.append_column(col)
             for i, header in enumerate(pattern.headers):
                 render = gtk.CellRendererText()
+                render.set_property('ellipsize', pango.ELLIPSIZE_END)
                 render.set_property('editable', True)
                 render.connect(
                     'edited', self.__row_edited, model, i + 2, preview)
@@ -4053,6 +4041,7 @@ class SongProperties(gtk.Window):
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
             render = gtk.CellRendererText()
+            render.set_property('ellipsize', pango.ELLIPSIZE_END)
             render.set_property('editable', True)
             render.connect('edited', self.__row_edited, model, preview)
             column = gtk.TreeViewColumn(_('New Name'), render, text=2)
