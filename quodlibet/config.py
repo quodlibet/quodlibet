@@ -40,7 +40,6 @@ def init(*rc_files):
         "memory":
         { "size": "400 350", # player window size
           "song": "", # filename of last song
-          "widths": "1 80 80 80 80 1", # song list column widths
           "volume": "1.0", # internal volume, [0.0, 1.0]
           "browser": "1", # none, search, playlist, panes
           "songlist": "true", # on or off
