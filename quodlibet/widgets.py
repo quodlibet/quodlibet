@@ -1607,7 +1607,8 @@ class MainWindow(gtk.Window):
             widgets.watcher.connect(
                 'song-started', self.__song_changed, scale, l)
 
-            gobject.timeout_add(200, self.__update_time, scale, l)
+            gobject.timeout_add(
+                200, self.__update_time, widgets.watcher, scale, l)
 
         def __song_changed(self, watcher, song, position, label):
             if song:
@@ -1615,8 +1616,8 @@ class MainWindow(gtk.Window):
                 position.set_range(0, length * 1000)
             else: position.set_range(0, 1)
 
-        def __update_time(self, position, timer):
-            cur, end = widgets.watcher.time
+        def __update_time(self, watcher, position, timer):
+            cur, end = watcher.time
             position.set_value(cur)
             timer.set_text(
                 "%d:%02d/%d:%02d" %
@@ -1625,6 +1626,30 @@ class MainWindow(gtk.Window):
             return True
 
     gobject.type_register(PositionSlider)
+
+    class VolumeSlider(gtk.VBox):
+        def __init__(self, device):
+            gtk.VBox.__init__(self)
+            i = gtk.Image()
+            i.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file("volume.png"))
+            self.pack_start(i, expand=False)
+            slider = gtk.VScale(gtk.Adjustment(1, 0, 1, 0.01, 0.1))
+            slider.set_update_policy(gtk.UPDATE_CONTINUOUS)
+            slider.connect('value-changed', self.__volume_changed, device)
+            self.pack_start(slider)
+            tips = gtk.Tooltips()
+            tips.set_tip(slider, _("Adjust audio volume"))            
+            self.get_value = slider.get_value
+            self.set_value = slider.set_value
+            slider.set_inverted(True)
+            slider.set_draw_value(False)
+            self.set_value(config.getfloat("memory", "volume"))
+            self.show_all()
+
+        def __volume_changed(self, slider, device):
+            val = (2 ** slider.get_value()) - 1
+            device.volume = val
+            config.set("memory", "volume", str(slider.get_value()))
 
     def __init__(self):
         gtk.Window.__init__(self)
@@ -1679,21 +1704,8 @@ class MainWindow(gtk.Window):
         hbox.pack_start(self.image, expand=False)
 
         # volume control
-        vbox = gtk.VBox()
-        p = gtk.gdk.pixbuf_new_from_file("volume.png")
-        i = gtk.Image()
-        i.set_from_pixbuf(p)
-        vbox.pack_start(i, expand=False)
-        adj = gtk.Adjustment(1, 0, 1, 0.01, 0.1)
-        self.volume = gtk.VScale(adj)
-        self.volume.set_update_policy(gtk.UPDATE_CONTINUOUS)
-        self.volume.connect('value-changed', self.update_volume)
-        adj.set_value(config.getfloat('memory', 'volume'))
-        self.volume.set_draw_value(False)
-        self.volume.set_inverted(True)
-        tips.set_tip(self.volume, _("Adjust audio volume"))
-        vbox.pack_start(self.volume)
-        hbox.pack_start(vbox, expand=False)
+        self.volume = self.VolumeSlider(player.device)
+        hbox.pack_start(self.volume, expand=False)
 
         self.child.pack_start(hbox, expand=False)
 
@@ -2164,11 +2176,6 @@ class MainWindow(gtk.Window):
         player.playlist.refilter()
         self.refresh_songlist()
         self.browser.update()
-
-    def update_volume(self, slider):
-        val = (2 ** slider.get_value()) - 1
-        player.device.volume = val
-        config.set("memory", "volume", str(slider.get_value()))
 
     def __songs_button_press(self, view, event):
         if event.button != 3:
