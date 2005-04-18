@@ -16,7 +16,7 @@ class Message(gtk.MessageDialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 
-    def __init__(self, kind, parent, title, description, buttons = None):
+    def __init__(self, kind, parent, title, description, buttons=None):
         buttons = buttons or gtk.BUTTONS_OK
         text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
         gtk.MessageDialog.__init__(
@@ -33,7 +33,7 @@ class ConfirmAction(Message):
 
     def __init__(self, *args):
         Message.__init__(self, gtk.MESSAGE_WARNING,
-                         buttons = gtk.BUTTONS_YES_NO, *args)
+                         buttons=gtk.BUTTONS_YES_NO, *args)
 
     def run(self, destroy = True):
         """Returns True if yes was clicked, False otherwise."""
@@ -74,7 +74,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
     models = {}
     
-    def __init__(self, f = None, initial = [], count = 10, model = None):
+    def __init__(self, f=None, initial=[], count=10, model=None):
         self.count = count
         if model:
             try:
@@ -135,53 +135,39 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             f.write("\n".join(self.get_text()) + "\n")
         except (IOError, OSError): pass
 
-def Frame(label = None, border = 0, markup = None, big = False, bold = False,
-          alignment = True, child = None, underline = True):
+def Frame(label=None, border=0, bold=False, child=None):
     if markup and label:
         raise ArgumentError("Frame must take only one of label or markup")
     if isinstance(label, basestring):
         format = "%s"
-        if big: format = "<big>%s</big>" % format
         if bold: format  = "<b>%s</b>" % format
         if label: markup = util.escape(label)
         markup = format % markup
         label = gtk.Label()
         label.set_markup(markup)
-        if underline: label.set_use_underline(True)
 
     frame = gtk.Frame()
     frame.set_border_width(border)
-    if alignment:
-        align = gtk.Alignment(xalign = 0.0, yalign = 0.0,
-                              xscale = 1.0, yscale = 1.0)
-        
-        align.set_padding(3, 0, 12, 0)
-        frame.add(align)
-        if child: align.add(child)
+    align = gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
+    align.set_padding(3, 0, 12, 0)
+    frame.add(align)
+    if child: align.add(child)
     elif child: frame.add(child)
     frame.set_shadow_type(gtk.SHADOW_NONE)
     frame.set_label_widget(label)
     return frame
 
-def Button(text = None, image = None, stock = None, cb = None, user_data = []):
-    # Regular GTK stock button.
-    if stock: b = gtk.Button(stock = stock)
-    else:
-        # Label-only button.
-        if image is None: b = gtk.Button(text)
-        else:
-            # Stock image with custom label.
-            hbox = gtk.HBox(spacing = 2)
-            i = gtk.Image()
-            i.set_from_stock(image, gtk.ICON_SIZE_BUTTON)
-            hbox.pack_start(i)
-            l = gtk.Label(text)
-            l.set_use_underline(True)
-            hbox.pack_start(l)
-            b = gtk.Button()
-            b.add(hbox)
-    # Set a callback.
-    if cb: b.connect('clicked', cb, *user_data)
+def Button(text, image):
+    # Stock image with custom label.
+    hbox = gtk.HBox(spacing=2)
+    i = gtk.Image()
+    i.set_from_stock(image, gtk.ICON_SIZE_BUTTON)
+    hbox.pack_start(i)
+    l = gtk.Label(text)
+    l.set_use_underline(True)
+    hbox.pack_start(l)
+    b = gtk.Button()
+    b.add(hbox)
     return b
 
 class ValidatingEntry(gtk.Entry):

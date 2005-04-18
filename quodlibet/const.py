@@ -106,3 +106,5 @@ MENU = """<ui>
     </menu>
   </menubar>
 </ui>"""
+
+ICON = 'quodlibet-icon'

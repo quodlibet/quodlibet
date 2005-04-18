@@ -164,6 +164,9 @@ class AboutWindow(gtk.Window):
     def __init__(self, parent=None):
         gtk.Window.__init__(self)
         self.set_title(_("About Quod Libet"))
+        icon_theme = gtk.icon_theme_get_default()
+        self.set_icon(icon_theme.load_icon(
+            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         vbox = gtk.VBox(spacing=6)
         l = gtk.Label(const.COPYRIGHT)
         s2 = _("Quod Libet is free software licensed under the GNU GPL v2.")
@@ -555,6 +558,9 @@ class PreferencesWindow(gtk.Window):
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
+        icon_theme = gtk.icon_theme_get_default()
+        self.set_icon(icon_theme.load_icon(
+            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         self.add(gtk.VBox(spacing=12))
         tips = gtk.Tooltips()
         n = qltk.Notebook()
@@ -589,7 +595,7 @@ class DeleteDialog(gtk.Dialog):
         # The FreeDesktop spec is complicated and I'm not sure it's
         # actually used by anything.
         if os.path.isdir(os.path.expanduser("~/.Trash")):
-            b = qltk.Button(_("_Move to Trash"), image=gtk.STOCK_DELETE)
+            b = qltk.Button(_("_Move to Trash"), gtk.STOCK_DELETE)
             self.add_action_widget(b, 0)
 
         self.add_button(gtk.STOCK_CANCEL, 1)
@@ -760,6 +766,9 @@ class PlaylistWindow(gtk.Window):
 
     def __initialize_window(self, name):
         gtk.Window.__init__(self)
+        icon_theme = gtk.icon_theme_get_default()
+        self.set_icon(icon_theme.load_icon(
+            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         self.set_destroy_with_parent(True)
         self.set_default_size(400, 400)
         self.set_border_width(12)
@@ -856,7 +865,10 @@ class QLTrayIcon(HIGTrayIcon):
             7: lambda *args: player.playlist.previous()
             }
 
-        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+
+        icon_theme = gtk.icon_theme_get_default()
+        p = icon_theme.load_icon(
+            const.ICON, 16, gtk.ICON_LOOKUP_USE_BUILTIN)
 
         HIGTrayIcon.__init__(self, p, window, cbs)
 
@@ -1666,7 +1678,13 @@ class MainWindow(gtk.Window):
 
         tips = gtk.Tooltips()
         self.set_title("Quod Libet")
-        self.set_icon_from_file("quodlibet.png")
+
+        icon_theme = gtk.icon_theme_get_default()
+        p = gtk.gdk.pixbuf_new_from_file("quodlibet.png")
+        gtk.icon_theme_add_builtin_icon(const.ICON, 64, p)
+        self.set_icon(icon_theme.load_icon(
+            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
+
         self.set_default_size(
             *map(int, config.get('memory', 'size').split()))
         self.add(gtk.VBox())
@@ -1741,7 +1759,6 @@ class MainWindow(gtk.Window):
 
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
-        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
         self.icon = QLTrayIcon(self, self.volume)
 
         # song list
@@ -2402,15 +2419,12 @@ class MainWindow(gtk.Window):
         if songs is None:
             songs = self.songlist.get_selected_songs()
 
+        values = set()
         if header.startswith("~#"):
-            values = set([song(header, 0) for song in songs])
+            values.update([song(header, 0) for song in songs])
         else:
-            values = {}
-            for song in songs:
-                for val in song.list(header):
-                    values[val] = True
-            values = values.keys()
-        self.browser.filter(header, values)
+            for song in songs: values.update(song.list(header))
+        self.browser.filter(header, list(values))
 
     def __cols_changed(self, songlist):
         headers = [col.header_name for col in songlist.get_columns()]
@@ -2579,6 +2593,9 @@ class LibraryBrowser(gtk.Window):
         self.set_default_size(400, 400)
         self.set_border_width(12)
         self.set_title(_("Library Browser"))
+        icon_theme = gtk.icon_theme_get_default()
+        self.set_icon(icon_theme.load_icon(
+            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         vbox = gtk.VBox(spacing=6)
 
         view = SongList()
@@ -3425,9 +3442,10 @@ class SongProperties(gtk.Window):
             bbox1 = gtk.HButtonBox()
             bbox1.set_spacing(6)
             bbox1.set_layout(gtk.BUTTONBOX_START)
-            self.add = qltk.Button(stock=gtk.STOCK_ADD, cb=self.add_tag)
-            self.remove = qltk.Button(stock=gtk.STOCK_REMOVE,
-                                      cb=self.remove_tag)
+            self.add = gtk.Button(stock=gtk.STOCK_ADD)
+            self.add.connect('clicked', self.add_tag)
+            self.remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+            self.remove.connect('clicked', self.remove_tag)
             self.remove.set_sensitive(False)
             bbox1.pack_start(self.add)
             bbox1.pack_start(self.remove)
@@ -3435,10 +3453,10 @@ class SongProperties(gtk.Window):
             bbox2 = gtk.HButtonBox()
             bbox2.set_spacing(6)
             bbox2.set_layout(gtk.BUTTONBOX_END)
-            self.revert = qltk.Button(stock=gtk.STOCK_REVERT_TO_SAVED,
-                                      cb=self.revert_files)
-            self.save = qltk.Button(stock=gtk.STOCK_SAVE,
-                                   cb=self.save_files)
+            self.revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
+            self.revert.connect('clicked', self.revert_files)
+            self.save = gtk.Button(stock=gtk.STOCK_SAVE)
+            self.save.connect('clicked', self.save_files)
             self.revert.set_sensitive(False)
             self.save.set_sensitive(False)
             bbox2.pack_start(self.revert)
@@ -4339,6 +4357,9 @@ class SongProperties(gtk.Window):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        icon_theme = gtk.icon_theme_get_default()
+        self.set_icon(icon_theme.load_icon(
+            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         notebook = qltk.Notebook()
         pages = [self.Information(self, library=True)]
         pages.extend([Ctr(self) for Ctr in
@@ -4674,7 +4695,11 @@ class ExFalsoWindow(gtk.Window):
     def __init__(self, dir=None):
         gtk.Window.__init__(self)
         self.set_title("Ex Falso")
-        self.set_icon_from_file("exfalso.png")
+        icon_theme = gtk.icon_theme_get_default()
+        p = gtk.gdk.pixbuf_new_from_file("exfalso.png")
+        gtk.icon_theme_add_builtin_icon(const.ICON, 64, p)
+        self.set_icon(icon_theme.load_icon(
+            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         self.set_border_width(12)
         self.set_default_size(700, 500)
         self.add(gtk.HPaned())
