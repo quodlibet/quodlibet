@@ -136,12 +136,10 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         except (IOError, OSError): pass
 
 def Frame(label=None, border=0, bold=False, child=None):
-    if markup and label:
-        raise ArgumentError("Frame must take only one of label or markup")
     if isinstance(label, basestring):
         format = "%s"
         if bold: format  = "<b>%s</b>" % format
-        if label: markup = util.escape(label)
+        markup = util.escape(label)
         markup = format % markup
         label = gtk.Label()
         label.set_markup(markup)
