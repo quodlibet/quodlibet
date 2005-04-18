@@ -255,7 +255,7 @@ class WaitLoadWindow(gtk.Window):
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
             hbox = gtk.HBox(spacing=6, homogeneous=True)
-            b1 = Button(stock=gtk.STOCK_STOP)
+            b1 = gtk.Button(stock=gtk.STOCK_STOP)
             b2 = gtk.ToggleButton()
             b2.add(gtk.HBox(spacing=2))
             i = gtk.Image()
