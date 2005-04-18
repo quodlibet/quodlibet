@@ -365,3 +365,15 @@ class FileFromPattern(object):
             else:
                 fmtd = [self.format(t, song) for t in tag.split('~')]
                 return ' - '.join(filter(None, fmtd))
+
+def website(site):
+    site = site.replace("\\", "\\\\").replace("\"", "\\\"")
+    for s in (["sensible-browser", "gnome-open"] +
+              os.environ.get("BROWSER","").split(":")):
+        if iscommand(s):
+            if "%s" in s:
+                s = s.replace("%s", '"' + site + '"')
+                s = s.replace("%%", "%")
+            else: s += " \"%s\"" % site
+            if os.system(s + " &") == 0: return True
+    else: return False

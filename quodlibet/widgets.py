@@ -159,52 +159,23 @@ class SongWatcher(gtk.Object):
 
 gobject.type_register(SongWatcher)
 
-# FIXME: replace with a standard About widget when using GTK 2.6.
-class AboutWindow(gtk.Window):
+class AboutWindow(gtk.AboutDialog):
     def __init__(self, parent=None):
-        gtk.Window.__init__(self)
-        self.set_title(_("About Quod Libet"))
-        icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
-        vbox = gtk.VBox(spacing=6)
-        l = gtk.Label(const.COPYRIGHT)
-        s2 = _("Quod Libet is free software licensed under the GNU GPL v2.")
-        l2 = gtk.Label("<small>%s</small>" % s2)
-        l2.set_line_wrap(True)
-        l.set_use_markup(True)
-        l2.set_use_markup(True)
-        l.set_justify(gtk.JUSTIFY_CENTER)
-        l2.set_justify(gtk.JUSTIFY_CENTER)
-        vbox.pack_start(l)
-
-        contrib = gtk.Label(const.CREDITS[0])
-        contrib.set_justify(gtk.JUSTIFY_CENTER)
-        vbox.pack_start(contrib)
-        button = gtk.Button(stock=gtk.STOCK_CLOSE)
-        button.connect_object('clicked', gtk.Window.destroy, self)
-        vbox.pack_start(l2)
-        hbox = gtk.HButtonBox()
-        hbox.set_layout(gtk.BUTTONBOX_SPREAD)
-        hbox.pack_start(button)
-        vbox.pack_start(hbox)
-        sig = gobject.timeout_add(
-            4000, self.__pick_name, list(const.CREDITS), contrib)
-        self.add(vbox)
-        self.set_border_width(12)
-        self.connect_object('destroy', AboutWindow.__destroy, self, sig)
-        self.set_transient_for(parent)
-        self.show_all()
-
-    def __pick_name(self, credits, contrib):
-        credits.append(credits.pop(0))
-        contrib.set_text(credits[0])
-        return hasattr(widgets, 'about')
-
-    def __destroy(self, sig):
-        gobject.source_remove(sig)
-        try: del(widgets.about)
-        except AttributeError: pass
+        gtk.AboutDialog.__init__(self)
+        self.set_name("Quod Libet")
+        self.set_version(const.VERSION)
+        self.set_authors(const.AUTHORS)
+        self.set_comments(_("An audio player and tag editor"))
+        # Translators: Replace this with your name to have it appear
+        # in the "About" dialog.
+        self.set_translator_credits(_('translator-credits'))
+        self.set_logo_icon_name(const.ICON)
+        self.set_website("http://www.sacredchao.net/quodlibet")
+        self.set_copyright(
+            "Copyright © 2004-2005 Joe Wreschnig, Michael Urman, & others\n"
+            "<quodlibet@lists.sacredchao.net>")
+        gtk.AboutDialog.run(self)
+        self.destroy()
 
 class PreferencesWindow(gtk.Window):
     class _Pane(object):
@@ -1592,22 +1563,7 @@ class MainWindow(gtk.Window):
         def __website(self, button):
             song = widgets.watcher.song
             if not song: return
-            site = song.website().replace("\\", "\\\\").replace("\"", "\\\"")
-            for s in (["sensible-browser"] +
-                      os.environ.get("BROWSER","").split(":")):
-                if util.iscommand(s):
-                    if "%s" in s:
-                        s = s.replace("%s", '"' + site + '"')
-                        s = s.replace("%%", "%")
-                    else: s += " \"%s\"" % site
-                    print to(_("Opening web browser: %s") % s)
-                    if os.system(s + " &") == 0: break
-                else:
-                    qltk.ErrorMessage(
-                        widgets.main, _("Unable to start a web browser"),
-                        _("A web browser could not be found. Please set "
-                          "your $BROWSER variable, or make sure "
-                          "/usr/bin/sensible-browser exists.")).run()
+            website_wrap(button, song.website())
 
     class PositionSlider(gtk.HBox):
         __gsignals__ = {
@@ -1873,7 +1829,7 @@ class MainWindow(gtk.Window):
 
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
-            ("About", gtk.STOCK_ABOUT, None, None, None, self.show_about),
+            ("About", gtk.STOCK_ABOUT, None, None, None, AboutWindow),
             ])
 
         ag.add_toggle_actions([
@@ -2091,11 +2047,6 @@ class MainWindow(gtk.Window):
     def toggle_repeat(self, button):
         player.playlist.repeat = button.get_active()
         config.set("settings", "repeat", str(bool(button.get_active())))
-
-    def show_about(self, menuitem):
-        if not hasattr(widgets, 'about'):
-            widgets.about = AboutWindow(self)
-        widgets.about.present()
 
     def toggle_shuffle(self, button):
         player.playlist.shuffle = button.get_active()
@@ -4777,6 +4728,14 @@ HEADERS_FILTER = { "tracknumber": "track",
                    "basename": "filename",
                    "dirname": "directory"}
 
+def website_wrap(activator, link):
+    if not util.website(link):
+        qltk.ErrorMessage(
+            widgets.main, _("Unable to start a web browser"),
+            _("A web browser could not be found. Please set "
+              "your $BROWSER variable, or make sure "
+              "/usr/bin/sensible-browser exists.")).run()
+
 def init():
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
@@ -4784,6 +4743,7 @@ def init():
         val = config.get("header_maps", opt)
         HEADERS_FILTER[opt] = val
 
+    gtk.about_dialog_set_url_hook(website_wrap)
     watcher = widgets.watcher = SongWatcher()
     FSInterface(watcher)
     widgets.main = MainWindow()

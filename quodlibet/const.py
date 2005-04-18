@@ -16,19 +16,21 @@ PAUSED  = os.path.join(DIR, "paused")
 PLUGINS = os.path.join(DIR, "plugins")
 QUERIES = os.path.join(DIR, "lists", "queries")
 
-CREDITS = ["Joe Wreschnig",
+AUTHORS = ["Joe Wreschnig <quodlibet@lists.sacredchao.net>",
            "Michael Urman",
            "Iñigo Serna",
-           "Bastian Kleineidam",
-           "Michal Nowikowski",
            "Ben Zeigler",
            "Niklas Janlert",
-           "Andrey Fedoseev",
 
-           "Anders Carlsson",
-           "Lee Willis",
-           "Jan Arne Petersen",
-           "Gustavo J. A. M. Carneiro"]
+           "Anders Carlsson (trayicon)",
+           "Lee Willis, Jan Arne Petersen (mmkeys)",
+           "Gustavo J. A. M. Carneiro (GNOME OSD)"]
+
+TRANSLATORS =[
+    "Michal Nowikowski (pl)",
+    "Bastian Kleineidam (de)",
+    "Andrey Fedoseev (ru)",
+    ]
 
 TBP = os.path.join(DIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\
