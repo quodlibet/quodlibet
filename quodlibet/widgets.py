@@ -1988,6 +1988,7 @@ class MainWindow(gtk.Window):
         self.browser = Browser(self.__browser_cb)
         self.child.pack_start(self.browser, self.browser.expand)
         self.__hide_menus()
+        self.__refresh_size()
 
     def open_fifo(self):
         try:
@@ -2112,29 +2113,20 @@ class MainWindow(gtk.Window):
         if name:
             PlaylistWindow(name)
 
-    def showhide_widget(self, box, on):
-        if on and box.get_property('visible'): return
-        width, height = self.get_size()
-        if on:
-            box.show()
-            dy = box.get_allocation().height
-            self.set_geometry_hints(None,
-                max_height=-1, min_height=-1, max_width=-1)
-            self.resize(width, height + dy)
-            box.set_size_request(-1, -1)
+    def __refresh_size(self):
+        if (not self.browser.expand and
+            not self.song_scroller.get_property('visible')):
+            width, height = self.get_size()
+            self.resize(width, 1)
+            self.set_geometry_hints(None, max_height=1, max_width=32000)
         else:
-            dy = box.get_allocation().height
-            box.hide()
-            self.resize(width, height - dy)
-            box.set_size_request(-1, dy)
-        if not box.get_property("visible"):
-            self.set_geometry_hints(
-                None, max_height=height - dy, max_width=32000)
+            self.set_geometry_hints(None, max_height=-1, max_width=-1)
         self.realize()
 
     def showhide_playlist(self, toggle):
-        self.showhide_widget(self.song_scroller, toggle.get_active())
+        self.song_scroller.set_property('visible', toggle.get_active())
         config.set("memory", "songlist", str(toggle.get_active()))
+        self.__refresh_size()
 
     def play_pause(self, *args):
         if widgets.watcher.song is None: player.playlist.reset()
