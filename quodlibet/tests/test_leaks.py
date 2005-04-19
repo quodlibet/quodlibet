@@ -3,11 +3,6 @@ from tests import registerCase
 import os, gtk, widgets, gc, time
 
 class TestWidgetLeaks(TestCase):
-    def test_AboutWindow(self):
-         dummy = gtk.Window()
-         self.failIfLeaky(widgets.AboutWindow, dummy)
-         dummy.destroy()
-
     def test_BCI(self):
          self.failIfLeaky(widgets.BigCenteredImage, "woo", "exfalso.png")
 
