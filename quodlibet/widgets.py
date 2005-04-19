@@ -175,6 +175,9 @@ class AboutWindow(gtk.AboutDialog):
         self.set_copyright(
             "Copyright © 2004-2005 Joe Wreschnig, Michael Urman, & others\n"
             "<quodlibet@lists.sacredchao.net>")
+        icon_theme = gtk.icon_theme_get_default()
+        self.set_icon(icon_theme.load_icon(const.ICON, 64,
+            gtk.ICON_LOOKUP_USE_BUILTIN))
         gtk.AboutDialog.run(self)
         self.destroy()
 
