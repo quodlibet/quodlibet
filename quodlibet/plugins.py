@@ -174,10 +174,10 @@ class PluginManager(object):
                     del sys.path[0:1]
                 info[1] = modified
 
+        self.restore()
         return changes
 
-    def load(self, name, mod):
-        
+    def load(self, name, mod):        
         for pluginname in self.byfile.get(name, []):
             try: del self.plugins[pluginname]
             except KeyError: pass
@@ -203,6 +203,18 @@ class PluginManager(object):
 
             self.load_invokables(obj, name)
             self.load_events(obj, name)
+
+    def restore(self):
+        import config
+        possible = config.get("plugins", "active").split("\n")
+        for name, plugin in self.plugins.iteritems():
+            self.enable(plugin, name in possible)
+
+    def save(self):
+        import config
+        active = [name for name, plugin in self.plugins.iteritems()
+                  if self.enabled(plugin)]
+        config.set("plugins", "active", "\n".join(active))
 
     def load_invokables(self, obj, name):
         # if an object doesn't have at least one plugin method skip it

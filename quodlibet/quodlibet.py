@@ -143,7 +143,7 @@ def main():
     enable_periodic_save()
     gtk.threads_enter()
     t = Thread(target=player.playlist.play, args=(widgets.widgets.watcher,))
-    gtk.quit_add(0, save_and_quit, t, player.playlist)
+    gtk.quit_add(0, save_and_quit, t, player.playlist, window)
     t.start()
     gtk.main()
     gtk.threads_leave()
@@ -154,9 +154,10 @@ def print_status():
     else: print "playing"
     raise SystemExit
 
-def save_and_quit(thread, playlist):
+def save_and_quit(thread, playlist, main):
     from library import library
     playlist.quitting()
+    main.pm.save()
     thread.join()
     print to(_("Saving song library."))
     library.save(const.LIBRARY)

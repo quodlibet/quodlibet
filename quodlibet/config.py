@@ -92,7 +92,7 @@ def init(*rc_files):
           "<album|<album~discnumber~part~tracknumber~title~version>|"
           "<artist~title~version>>", # tooltip for the tray icon
           "icon_close": "false", # delete-event minimizes to system tray
-
+          "active": "", # activated plugins
           },
 
         "exfalso":
