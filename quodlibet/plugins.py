@@ -207,12 +207,12 @@ class PluginManager(object):
     def restore(self):
         import config
         possible = config.get("plugins", "active").split("\n")
-        for name, plugin in self.plugins.iteritems():
-            self.enable(plugin, name in possible)
+        for plugin in self.list():
+            self.enable(plugin, plugin.PLUGIN_NAME in possible)
 
     def save(self):
         import config
-        active = [name for name, plugin in self.plugins.iteritems()
+        active = [plugin.PLUGIN_NAME for plugin in self.list()
                   if self.enabled(plugin)]
         config.set("plugins", "active", "\n".join(active))
 
