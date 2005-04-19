@@ -217,9 +217,21 @@ class PluginManager(object):
     def load_events(self, obj, name):
         for bin, attr in self.all_events:
             if hascallable(obj, attr):
-                self.events[bin].setdefault(name, []).append(getattr(obj, attr))
+                self.events[bin].setdefault(name, []).append(obj)
 
-    def list(self, selection):
+    def enable(self, plugin, enabled): plugin.PMEnFlag = bool(enabled)
+    def enabled(self, plugin): return getattr(plugin, 'PMEnFlag', False)
+
+    def list(self, selection=None):
+
+        if selection is None:
+            called = self.plugins.values()
+            signaled = [plugin for handlers in self.events.values()
+                        for plugin in handlers.values()]
+            plugins = [(p.PLUGIN_NAME, p)
+                for p in dict.from_keys(called + signaled).keys()]
+            plugins.sort()
+            return [p for (pn, p) in plugins]
 
         if len(selection) == 0:
             return []
@@ -227,6 +239,7 @@ class PluginManager(object):
         elif len(selection) == 1:
             plugins = []
             for plugin in self.plugins.values():
+                if not self.enabled(plugin): continue
                 for fn in self.all_callables:
                     if hascallable(plugin, fn): break
                 else: continue
@@ -242,6 +255,7 @@ class PluginManager(object):
 
             plugins = []
             for plugin in self.plugins.values():
+                if not self.enabled(plugin): continue
                 for fn in self.all_callables[1:]:
                     if not hascallable(plugin, fn): continue
                     elif albums and fn in self.callables['single']: continue
@@ -296,10 +310,13 @@ class PluginManager(object):
         try:
             try: args = [args[0] and SongWrapper(args[0])] + list(args[1:])
             except IndexError: pass
-            for handlers in self.events[event].values():
-                for handler in handlers:
-                    try: handler(*args)
-                    except Exception: print_exc()
+            for plugins in self.events[event].values():
+                for plugin in plugins:
+                    if not self.enabled(plugin): continue
+                    handler = getattr(plugin, 'plugin_on_' + event, None)
+                    if handler is not None:
+                        try: handler(*args)
+                        except Exception: print_exc()
         finally:
             self.check_change_and_refresh(args[0:1])
 
