@@ -527,6 +527,98 @@ class PreferencesWindow(gtk.Window):
             config.set('settings', name,
                        util.fsencode(entry.get_text().decode('utf-8')))
 
+    class Plugins(_Pane, gtk.VBox):
+        def __init__(self):
+            gtk.VBox.__init__(self, spacing=6)
+            self.set_border_width(12)
+            self.title = _("Plugins")
+
+            sw = gtk.ScrolledWindow()
+            sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            tv = gtk.TreeView()
+            model = gtk.ListStore(object)
+            tv.set_model(model)
+
+            render = gtk.CellRendererToggle()
+            def cell_data(col, render, model, iter):
+                render.set_active(
+                    widgets.main.pm.enabled(model[iter][0]))
+            render.connect('toggled', self.__toggled, model)
+            column = gtk.TreeViewColumn("enabled", render)
+            column.set_cell_data_func(render, cell_data)
+            tv.append_column(column)
+
+            render = gtk.CellRendererPixbuf()
+            def cell_data(col, render, model, iter):
+                render.set_property(
+                    'stock-id', getattr(model[iter][0], 'PLUGIN_ICON',
+                                        gtk.STOCK_EXECUTE))
+            column = gtk.TreeViewColumn("image", render)
+            column.set_cell_data_func(render, cell_data)
+            tv.append_column(column)
+
+            render = gtk.CellRendererText()
+            column = gtk.TreeViewColumn("name", render)
+            def cell_data(col, render, model, iter):
+                render.set_property('text', model[iter][0].PLUGIN_NAME)
+            column.set_cell_data_func(render, cell_data)
+            tv.append_column(column)
+            sw.add(tv)
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            self.pack_start(sw, expand=True)
+
+            tv.set_headers_visible(False)
+            
+            selection = tv.get_selection()
+            desc = gtk.Frame()
+            lab = gtk.Label()
+            lab.set_markup("<b>%s</b>" % _("Description"))
+            desc.set_label_widget(lab)
+            selection.connect('changed', self.__description, desc)
+            self.pack_start(desc, expand=False)
+
+            bbox = gtk.HButtonBox()
+            bbox.set_spacing(6)
+            bbox.set_layout(gtk.BUTTONBOX_END)
+            refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
+            refresh.connect('clicked', self.__refresh, tv, desc)
+            bbox.pack_start(refresh)
+            self.pack_start(bbox, expand=False)
+            self.__description(tv.get_selection(), desc)
+            refresh.clicked()
+
+        def __description(self, selection, frame):
+            model, iter = selection.get_selected()
+            if iter:
+                if frame.child: frame.child.destroy()
+                plugin = model[iter][0]
+                try:
+                    description = gtk.Label(model[iter][0].PLUGIN_DESC)
+                except AttributeError: pass
+                else:
+                    description.set_alignment(0, 0)
+                    description.set_padding(6, 3)
+                    description.set_line_wrap(True)
+                    frame.add(description)
+            if frame.child: frame.show_all()
+            else: frame.hide()
+
+        def __toggled(self, render, path, model):
+            render.set_active(not render.get_active())
+            widgets.main.pm.enable(model[path][0], render.get_active())
+            model[path][0] = model[path][0]
+
+        def __refresh(self, activator, view, desc):
+            model = view.get_model()
+            model.clear()
+            widgets.main.pm.rescan()
+            plugins = widgets.main.pm.list()
+            for plugin in plugins: model.append(row=[plugin])
+            if plugins: view.get_selection().select_path((0,))
+            else:
+                desc.add(gtk.Label(_("No plugins found.")))
+                desc.child.set_padding(3, 6)
+
     def __init__(self, parent):
         gtk.Window.__init__(self)
         self.set_title(_("Quod Libet Preferences"))
@@ -539,10 +631,9 @@ class PreferencesWindow(gtk.Window):
         self.add(gtk.VBox(spacing=12))
         tips = gtk.Tooltips()
         n = qltk.Notebook()
-        n.append_page(self.SongList())
-        n.append_page(self.Browsers())
-        n.append_page(self.Player())
-        n.append_page(self.Library())
+        for Page in [self.SongList, self.Browsers, self.Player,
+                     self.Library, self.Plugins]:
+            n.append_page(Page())
 
         self.child.pack_start(n)
 
@@ -1743,8 +1834,8 @@ class MainWindow(gtk.Window):
 
         # plugin support
         from plugins import PluginManager
-        self.__pm = PluginManager(widgets.watcher, [const.PLUGINS])
-        self.__pm.rescan()
+        self.pm = PluginManager(widgets.watcher, [const.PLUGINS])
+        self.pm.rescan()
         
         self.browser = None
         self.__select_browser(self, config.getint("memory", "browser"))
@@ -2299,13 +2390,13 @@ class MainWindow(gtk.Window):
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
         submenu = gtk.Menu()
-        if self.__create_plugins_menu(self.__pm, submenu):
+        if self.__create_plugins_menu(self.pm, submenu):
             b = gtk.ImageMenuItem(_("Plugins"))
             b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
             menu.append(b)
             b.set_submenu(submenu)
             submenu.connect('expose-event', self.__refresh_plugins_menu,
-                            self.__pm, submenu)
+                            self.pm, submenu)
             if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
