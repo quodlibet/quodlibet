@@ -11,7 +11,7 @@ import test_util, test_audio, test_parser
 # good but incomplete
 import test_leaks, test_qltk, test_widgets
 # not well-tested code
-import test_library, test_player
+import test_library, test_player, test_plugins
 
 class Result(unittest.TestResult):
 

@@ -227,9 +227,9 @@ class PluginManager(object):
         if selection is None:
             called = self.plugins.values()
             signaled = [plugin for handlers in self.events.values()
-                        for plugin in handlers.values()]
+                        for ps in handlers.values() for plugin in ps]
             plugins = [(p.PLUGIN_NAME, p)
-                for p in dict.fromkeys(called + signaled).keys()]
+                        for p in dict.fromkeys(called + signaled).keys()]
             plugins.sort()
             return [p for (pn, p) in plugins]
 
