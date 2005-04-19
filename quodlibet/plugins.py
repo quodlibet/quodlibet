@@ -131,7 +131,7 @@ class PluginManager(object):
                 'paused unpaused missing'.split():
             self.events[event] = {}
             handler = getattr(self, 'on_' + event, None)
-            if handler:
+            if handler and watcher:
                 watcher.connect(event, handler)
 
     def rescan(self):
@@ -229,7 +229,7 @@ class PluginManager(object):
             signaled = [plugin for handlers in self.events.values()
                         for plugin in handlers.values()]
             plugins = [(p.PLUGIN_NAME, p)
-                for p in dict.from_keys(called + signaled).keys()]
+                for p in dict.fromkeys(called + signaled).keys()]
             plugins.sort()
             return [p for (pn, p) in plugins]
 
