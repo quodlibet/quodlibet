@@ -166,10 +166,11 @@ class AboutWindow(gtk.AboutDialog):
         self.set_version(const.VERSION)
         self.set_authors(const.AUTHORS)
         self.set_comments(_("An audio player and tag editor"))
-        # Translators: Replace this with your name to have it appear
+        # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
         self.set_translator_credits(_('translator-credits'))
-        self.set_logo_icon_name(const.ICON)
+        # The icon looks pretty ugly at this size.
+        #self.set_logo_icon_name(const.ICON)
         self.set_website("http://www.sacredchao.net/quodlibet")
         self.set_copyright(
             "Copyright © 2004-2005 Joe Wreschnig, Michael Urman, & others\n"
@@ -1644,7 +1645,7 @@ class MainWindow(gtk.Window):
         self.set_default_size(
             *map(int, config.get('memory', 'size').split()))
         self.add(gtk.VBox())
-        self.connect('configure-event', MainWindow.save_size)
+        self.connect('configure-event', MainWindow.__save_size)
         self.connect('destroy', gtk.main_quit)
         self.connect('delete-event', MainWindow.__delete_event)
 
@@ -1778,26 +1779,15 @@ class MainWindow(gtk.Window):
             ('Music', None, _("_Music")),
             ('AddMusic', gtk.STOCK_ADD, _('_Add Music...'), "<control>O", None,
              self.open_chooser),
-            ('NewPlaylist', gtk.STOCK_NEW, _('_New Playlist...'), None, None,
-             self.new_playlist),
+            ('NewPlaylist', gtk.STOCK_EDIT, _('_New/Edit Playlist...'),
+             None, None, self.__new_playlist),
             ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library...'),
              None, None, LibraryBrowser),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
-             self.open_prefs),
-            ("RefreshLibrary", gtk.STOCK_REFRESH, _("Re_fresh library"), None,
-             None, self.rebuild),
-            ("ReloadLibrary", gtk.STOCK_REFRESH, _("Re_load library"), None,
-             None, self.rebuild_hard),
-            ("Quit", gtk.STOCK_QUIT, None, None, None,
-             lambda *args: self.destroy()),
-
+             self.__preferences),
+            ("Quit", gtk.STOCK_QUIT, None, None, None, gtk.main_quit),
             ('Filters', None, _("_Filters")),
-            ("RandomGenre", gtk.STOCK_DIALOG_QUESTION, _("Random _genre"),
-             "<control>G", None, self.random_genre),
-            ("RandomArtist", gtk.STOCK_DIALOG_QUESTION, _("Random _artist"),
-             "<control>T", None, self.random_artist),
-            ("RandomAlbum", gtk.STOCK_DIALOG_QUESTION, _("Random al_bum"),
-             "<control>M", None, self.random_album),
+
             ("NotPlayedDay", gtk.STOCK_FIND, _("Not played to_day"),
              "", None, self.lastplayed_day),
             ("NotPlayedWeek", gtk.STOCK_FIND, _("Not played in a _week"),
@@ -1824,13 +1814,33 @@ class MainWindow(gtk.Window):
              None, self.cur_album_filter),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.current_song_prop),
+            ("Rating", None, _("Rating")),
+
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
-             "<control>J", None, self.jump_to_current),
+             "<control>J", None, self.__jump_to_current),
 
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
             ("About", gtk.STOCK_ABOUT, None, None, None, AboutWindow),
             ])
+
+        act = gtk.Action(
+            "RefreshLibrary", _("Re_fresh library"), None, gtk.STOCK_REFRESH)
+        act.connect('activate', self.__rebuild)
+        ag.add_action(act)
+        act = gtk.Action(
+            "ReloadLibrary", _("Re_load library"), None, gtk.STOCK_REFRESH)
+        act.connect('activate', self.__rebuild, True)
+        ag.add_action(act)
+
+        for (tag, accel, label) in [
+            ("genre", "G", _("Random _genre")),
+            ("artist", "T", _("Random _artist")),
+            ("album", "M", _("Random al_bum"))]:
+            act = gtk.Action("Random%s" % util.capitalize(tag), label,
+                             None, gtk.STOCK_DIALOG_QUESTION)
+            act.connect('activate', self.__random, tag)
+            ag.add_action_with_accel(act, "<control>" + accel)
 
         ag.add_toggle_actions([
             ("Songlist", None, _("Song _list"), None, None,
@@ -1844,9 +1854,14 @@ class MainWindow(gtk.Window):
             ("BrowserPaned", None, _("_Paned browser"), None, None, 3)
             ], config.getint("memory", "browser"), self.__select_browser)
 
+        for i in range(5):
+            act = gtk.Action(
+                "Rate%d" % i, util.format_rating(i) or " ", None, None)
+            act.connect('activate', self.__set_rating, i)
+            ag.add_action_with_accel(act, str(i))
         
         self.ui = gtk.UIManager()
-        self.ui.insert_action_group(ag, 0)
+        self.ui.insert_action_group(ag, -1)
         self.ui.add_ui_from_string(const.MENU)
 
         # Cute. So. UIManager lets you attach tooltips, but when they're
@@ -1981,7 +1996,7 @@ class MainWindow(gtk.Window):
         self.__update_title(watcher, song)
 
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
-                    "FilterArtist", "FilterAlbum"]:
+                    "FilterArtist", "FilterAlbum", "Rating"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
             for h in ['genre', 'artist', 'album']:
@@ -1989,12 +2004,12 @@ class MainWindow(gtk.Window):
                     "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
         if song and config.getboolean("settings", "jump"):
-            self.jump_to_current()
+            self.__jump_to_current()
 
-    def save_size(self, event):
+    def __save_size(self, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
-    def new_playlist(self, activator):
+    def __new_playlist(self, activator):
         options = map(PlayList.prettify_name, library.playlists())
         name = GetStringDialog(self, _("New Playlist..."),
                                _("Enter a name for the new playlist. If it "
@@ -2031,7 +2046,7 @@ class MainWindow(gtk.Window):
         if widgets.watcher.song is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
-    def jump_to_current(self, *args):
+    def __jump_to_current(self, *args):
         watcher, songlist = widgets.watcher, self.songlist
         iter = songlist.song_to_iter(watcher.song)
         if iter:
@@ -2052,14 +2067,10 @@ class MainWindow(gtk.Window):
         player.playlist.shuffle = button.get_active()
         config.set("settings", "shuffle", str(bool(button.get_active())))
 
-    def __random(self, key):
+    def __random(self, item, key):
         if self.browser.can_filter(key):
             value = library.random(key)
             if value is not None: self.browser.filter(key, [value])
-
-    def random_artist(self, menuitem): self.__random('artist')
-    def random_album(self, menuitem): self.__random('album')
-    def random_genre(self, menuitem): self.__random('genre')
 
     def lastplayed_day(self, menuitem):
         self.make_query("#(lastplayed > today)")
@@ -2088,7 +2099,7 @@ class MainWindow(gtk.Window):
         else:
             self.make_query("#(playcount < %d)" % (songs[-40] + 1))
 
-    def rebuild(self, activator, hard=False):
+    def __rebuild(self, activator, hard=False):
         window = qltk.WaitLoadWindow(self, len(library) // 7,
                                      _("Quod Libet is scanning your library. "
                                        "This may take several minutes.\n\n"
@@ -2112,11 +2123,8 @@ class MainWindow(gtk.Window):
             player.playlist.refilter()
             self.refresh_songlist()
 
-    def rebuild_hard(self, activator):
-        self.rebuild(activator, True)
-
     # Set up the preferences window.
-    def open_prefs(self, activator):
+    def __preferences(self, activator):
         if not hasattr(widgets, 'preferences'):
             widgets.preferences = PreferencesWindow(self)
         widgets.preferences.present()
@@ -2238,10 +2246,15 @@ class MainWindow(gtk.Window):
     def song_properties(self, item):
         SongProperties(self.songlist.get_selected_songs())
 
-    def set_selected_ratings(self, item, value):
-        for song in self.songlist.get_selected_songs():
+    def __set_rating(self, item, value, songs=[]):
+        songs = songs or [widgets.watcher.song]
+        if songs[0] is None: return
+        for song in songs:
             song["~#rating"] = value
             widgets.watcher.changed(song)
+
+    def set_selected_ratings(self, item, value):
+        self.__set_rating(item, value, self.songlist.get_selected_songs())
 
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]

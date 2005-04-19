@@ -143,6 +143,7 @@ def Frame(label=None, border=0, bold=False, child=None):
         markup = format % markup
         label = gtk.Label()
         label.set_markup(markup)
+        label.set_use_underline(True)
 
     frame = gtk.Frame()
     frame.set_border_width(border)
@@ -150,7 +151,6 @@ def Frame(label=None, border=0, bold=False, child=None):
     align.set_padding(3, 0, 12, 0)
     frame.add(align)
     if child: align.add(child)
-    elif child: frame.add(child)
     frame.set_shadow_type(gtk.SHADOW_NONE)
     frame.set_label_widget(label)
     return frame

@@ -92,6 +92,13 @@ MENU = """<ui>
       <menuitem action='FilterAlbum'/>
       <separator/>
       <menuitem action='Properties'/>
+      <menu action='Rating'>
+         <menuitem action='Rate0'/>
+         <menuitem action='Rate1'/>
+         <menuitem action='Rate2'/>
+         <menuitem action='Rate3'/>
+         <menuitem action='Rate4'/>
+      </menu>
       <separator/>
       <menuitem action='Jump'/>
     </menu>
