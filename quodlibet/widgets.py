@@ -2614,6 +2614,7 @@ class LibraryBrowser(gtk.Window):
     def __search(self, text, dummy):
         model = self.__view.get_model()
         model.clear()
+        if isinstance(text, str): text = text.decode("utf-8")
         if text is None: songs = library.values()
         else: songs = library.query(text)
         songs.sort()
