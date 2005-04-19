@@ -157,7 +157,6 @@ def print_status():
 def save_and_quit(thread, playlist, main):
     from library import library
     playlist.quitting()
-    main.pm.save()
     thread.join()
     print to(_("Saving song library."))
     library.save(const.LIBRARY)

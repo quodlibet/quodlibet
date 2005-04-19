@@ -606,6 +606,7 @@ class PreferencesWindow(gtk.Window):
         def __toggled(self, render, path, model):
             render.set_active(not render.get_active())
             widgets.main.pm.enable(model[path][0], render.get_active())
+            widgets.main.pm.save()
             model[path][0] = model[path][0]
 
         def __refresh(self, activator, view, desc):
