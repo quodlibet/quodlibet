@@ -1862,6 +1862,7 @@ class MainWindow(gtk.Window):
         widgets.watcher.connect('paused', self.__update_paused, True)
         widgets.watcher.connect('unpaused', self.__update_paused, False)
 
+        self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
 
     def __delete_event(self, event):
