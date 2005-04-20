@@ -4876,6 +4876,12 @@ def save_library(mainwindow, thread):
         qltk.ErrorMessage(
            None, _("Unable to save library"), error).run()
 
+    try: config.write(const.CONFIG)
+    except EnvironmentError, err:
+        error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+        qltk.ErrorMessage(
+           None, _("Unable to save preferences"), error).run()
+
     for fn in [const.PAUSED, const.CURRENT, const.CONTROL]:
         try: os.unlink(fn)
         except EnvironmentError: pass
