@@ -582,6 +582,7 @@ class PreferencesWindow(gtk.Window):
             bbox.set_layout(gtk.BUTTONBOX_END)
             refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
             refresh.connect('clicked', self.__refresh, tv, desc)
+            refresh.set_focus_on_click(False)
             bbox.pack_start(refresh)
             self.pack_start(bbox, expand=False)
             self.__description(tv.get_selection(), desc)
@@ -589,17 +590,14 @@ class PreferencesWindow(gtk.Window):
 
         def __description(self, selection, frame):
             model, iter = selection.get_selected()
-            if iter:
-                if frame.child: frame.child.destroy()
-                plugin = model[iter][0]
-                try:
-                    description = gtk.Label(model[iter][0].PLUGIN_DESC)
-                except AttributeError: pass
-                else:
-                    description.set_alignment(0, 0)
-                    description.set_padding(6, 6)
-                    description.set_line_wrap(True)
-                    frame.add(description)
+            if frame.child: frame.child.destroy()
+            try: description = model[iter][0].PLUGIN_DESC
+            except (TypeError, AttributeError): description = ''
+            description = gtk.Label(description)
+            description.set_alignment(0, 0)
+            description.set_padding(6, 6)
+            description.set_line_wrap(True)
+            frame.add(description)
             if frame.child: frame.show_all()
             else: frame.hide()
 
@@ -610,13 +608,16 @@ class PreferencesWindow(gtk.Window):
             model[path][0] = model[path][0]
 
         def __refresh(self, activator, view, desc):
-            model = view.get_model()
+            model, sel = view.get_selection().get_selected()
+            if sel: sel = model[sel][0]
             model.clear()
             widgets.main.pm.rescan()
             plugins = widgets.main.pm.list()
-            for plugin in plugins: model.append(row=[plugin])
-            if plugins: view.get_selection().select_path((0,))
-            else:
+            for plugin in plugins:
+                it = model.append(row=[plugin])
+                if plugin is sel: view.get_selection().select_iter(it)
+            if not plugins:
+                if desc.child: desc.child.destroy()
                 desc.add(gtk.Label(_("No plugins found.")))
                 desc.child.set_padding(6, 6)
 
