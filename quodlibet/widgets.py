@@ -597,7 +597,7 @@ class PreferencesWindow(gtk.Window):
                 except AttributeError: pass
                 else:
                     description.set_alignment(0, 0)
-                    description.set_padding(6, 3)
+                    description.set_padding(6, 6)
                     description.set_line_wrap(True)
                     frame.add(description)
             if frame.child: frame.show_all()
@@ -618,7 +618,7 @@ class PreferencesWindow(gtk.Window):
             if plugins: view.get_selection().select_path((0,))
             else:
                 desc.add(gtk.Label(_("No plugins found.")))
-                desc.child.set_padding(3, 6)
+                desc.child.set_padding(6, 6)
 
     def __init__(self, parent):
         gtk.Window.__init__(self)
