@@ -44,23 +44,23 @@ class FSInterface(object):
 
     def __paused(self, watcher):
         try: file(const.PAUSED, "w").close()
-        except (OSError, IOError): pass
+        except EnvironmentError: pass
 
     def __unpaused(self, watcher):
         try: os.unlink(const.PAUSED)
-        except OSError: pass
+        except EnvironmentError: pass
 
     def __started(self, watcher, song):
         if song:
             try: f = file(const.CURRENT, "w")
-            except (OSError, IOError): pass
+            except EnvironmentError: pass
             else:
                 f.write(song.to_dump())
                 f.close()
 
     def __ended(self, watcher, song, stopped):
         try: os.unlink(const.CURRENT)
-        except OSError: pass
+        except EnvironmentError: pass
 
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(gtk.FileChooserDialog):
@@ -1883,7 +1883,8 @@ class MainWindow(gtk.Window):
              None, None, LibraryBrowser),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
-            ("Quit", gtk.STOCK_QUIT, None, None, None, gtk.main_quit),
+            ("Quit", gtk.STOCK_QUIT, None, None, None,
+             lambda *args: self.destroy()),
             ('Filters', None, _("_Filters")),
 
             ("NotPlayedDay", gtk.STOCK_FIND, _("Not played to_day"),
@@ -2002,7 +2003,7 @@ class MainWindow(gtk.Window):
             self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             gobject.io_add_watch(
                 self.fifo, gtk.gdk.INPUT_READ, self._input_check)
-        except (IOError, OSError): pass
+        except EnvironmentError: pass
 
     def _input_check(self, source, condition):
         c = os.read(source, 1)
@@ -3403,7 +3404,7 @@ class SongProperties(gtk.Window):
                 for song in songs:
                     time += song["~#length"]
                     try: size += os.path.getsize(song["~filename"])
-                    except OSError: pass
+                    except EnvironmentError: pass
                 table = gtk.Table(2, 2)
                 table.set_col_spacings(6)
                 table.attach(self.Label(_("Total length:")), 0, 1, 0, 1,
@@ -4622,7 +4623,7 @@ class DirectoryTree(gtk.TreeView):
             dir = util.fsencode(dir.decode('utf-8'))
             fullpath = os.path.realpath(os.path.join(directory, dir))
             try: os.makedirs(fullpath)
-            except OSError, err:
+            except EnvironmentError, err:
                 error = "<b>%s</b>: %s" % (err.filename, err.strerror)
                 qltk.ErrorMessage(
                     None, _("Unable to create folder"), error).run()
@@ -4635,7 +4636,7 @@ class DirectoryTree(gtk.TreeView):
         if len(rows) != 1: return
         directory = model[rows[0]][0]
         try: os.rmdir(directory)
-        except OSError, err:
+        except EnvironmentError, err:
             error = "<b>%s</b>: %s" % (err.filename, err.strerror)
             qltk.ErrorMessage(
                 None, _("Unable to delete folder"), error).run()
@@ -4864,6 +4865,22 @@ def init():
     signal.signal(signal.SIGTERM, gtk.main_quit)
     signal.signal(signal.SIGHUP, gtk.main_quit)
     return widgets.main
+
+def save_library(mainwindow, thread):
+    player.playlist.quitting()
+    thread.join()
+    print to(_("Saving song library."))
+    try: library.save(const.LIBRARY)
+    except EnvironmentError, err:
+        error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+        qltk.ErrorMessage(
+           None, _("Unable to save library"), error).run()
+
+    for fn in [const.PAUSED, const.CURRENT, const.CONTROL]:
+        try: os.unlink(fn)
+        except EnvironmentError: pass
+
+    gtk.main_quit()
 
 def error_and_quit():
     qltk.ErrorMessage(None,

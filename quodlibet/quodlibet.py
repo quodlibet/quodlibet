@@ -139,11 +139,11 @@ def main():
     window = widgets.init()
 
     from threading import Thread
-    for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     enable_periodic_save()
     gtk.threads_enter()
     t = Thread(target=player.playlist.play, args=(widgets.widgets.watcher,))
-    gtk.quit_add(0, save_and_quit, t, player.playlist, window)
+    window.connect('destroy', widgets.save_library, t)
+    for sig in SIGNALS: signal.signal(sig, lambda *args: window.destroy())
     t.start()
     gtk.main()
     gtk.threads_leave()
@@ -152,18 +152,6 @@ def print_status():
     if not os.path.exists(const.CURRENT): print "stopped"
     elif os.path.exists(const.PAUSED): print "paused"
     else: print "playing"
-    raise SystemExit
-
-def save_and_quit(thread, playlist, main):
-    from library import library
-    playlist.quitting()
-    thread.join()
-    print to(_("Saving song library."))
-    library.save(const.LIBRARY)
-    config.write(const.CONFIG)
-    for filename in [const.CURRENT, const.CONTROL]:
-        try: os.unlink(filename)
-        except OSError: pass
     raise SystemExit
 
 def refresh_cache():
