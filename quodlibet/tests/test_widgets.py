@@ -56,8 +56,16 @@ class TestEmptyBar(TestCase):
         self._bar.filter("~#track", [3, 4])
 
     def test_filter_text(self):
-        self._expected = "artist = 'some guy'c"
+        self._expected = "artist = |('some guy'c)"
         self._bar.filter("artist", ["some guy"])
+
+    def test_filter_text_multi(self):
+        self._expected = "artist = |('A'c, 'B'c)"
+        self._bar.filter("artist", ["A", "B"])
+
+    def test_filter_text_escape(self):
+        self._expected = "artist = |('A\\''c)"
+        self._bar.filter("artist", ["A'"])
 
     def tearDown(self):
         self._bar.destroy()
