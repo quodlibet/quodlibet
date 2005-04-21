@@ -1549,8 +1549,6 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         self.__refresh(None, view.get_model())
         self.show_all()
 
-        self.connect_object('destroy', view.set_enable_search, False)
-
     def activate(self):
         self.child.get_selection().emit('changed')
 
