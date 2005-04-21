@@ -1479,6 +1479,83 @@ class SearchBar(EmptyBar):
             color, util.escape(text))
         layout.set_markup(markup)
 
+class AlbumList(Browser, gtk.ScrolledWindow):
+    background = False
+    expand = True
+
+    def __init__(self, cb):
+        gtk.ScrolledWindow.__init__(self)
+        self.__cb = cb
+        self.set_size_request(-1, 120)
+        self.set_shadow_type(gtk.SHADOW_IN)
+        view = gtk.TreeView()
+        view.set_headers_visible(False)
+        view.set_model(gtk.ListStore(str, str, object, int))
+
+        render = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("albums", render)
+        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+
+        def cell_data(column, cell, model, iter):
+            title = util.escape(model[iter][0])
+            date = model[iter][1]
+            people = ", ".join(map(util.escape, model[iter][2]))
+            count = model[iter][3]
+            text = "<i><b>%s</b></i>" % title
+            if date: text += " (%s)" % date
+            text += " - " + _("%d tracks") % count
+            text += "\n" + people
+            cell.set_property('markup', text)
+
+        column.set_cell_data_func(render, cell_data)
+        view.append_column(column)
+        view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        view.get_selection().connect('changed', self.__selection_changed)
+        widgets.watcher.connect('refresh', self.__refresh, view.get_model())
+        view.set_rules_hint(True)
+        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.add(view)
+        self.__refresh(view.get_model())
+        self.show_all()
+
+    def activate(self):
+        self.child.get_selection().emit('changed')
+
+    def can_filter(self, key): return False
+
+    def __selection_changed(self, selection):
+        model, rows = selection.get_selected_rows()
+        albums = [model[row][0] for row in rows]
+        text = ", ".join(
+            ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
+             for v in albums])
+        self.__cb(u"album = |(%s)" % text, None)
+
+    def __refresh(self, model):
+        # the model contains [album_name, date, [people involved]]
+        model.clear()
+        names = set([])
+        people = {}
+        dates = {}
+        counts = {}
+        for song in library.values():
+            for album in song.list('album'):
+                names.add(album)
+                if "date" in song:
+                    dates[album] = dates.get(album) or song.list("date")[0]
+                ppl = set(song.list("artist") + song.list("performer"))
+                people[album] = (
+                    set(song.list("artist") + song.list("performer")) |
+                    people.get(album, set([])))
+                counts[album] = counts.get(album, 0) + 1
+
+        names = list(names); names.sort()
+
+        for name in names:
+            ppl = list(people.get(name, []))
+            ppl.sort()
+            model.append(row=[name, dates.get(name), ppl, counts[name]])
+
 class MainWindow(gtk.Window):
     class StopAfterMenu(gtk.Menu):
         def __init__(self):
@@ -1950,7 +2027,8 @@ class MainWindow(gtk.Window):
             ("BrowserDisable", None, _("_Disable browsing"), None, None, 0),
             ("BrowserSearch", None, _("_Search library"), None, None, 1),
             ("BrowserPlaylist", None, _("_Playlists"), None, None, 2),
-            ("BrowserPaned", None, _("_Paned browser"), None, None, 3)
+            ("BrowserPaned", None, _("_Paned browser"), None, None, 3),
+            ("BrowserAlbum", None, _("_Album list"), None, None, 4),
             ], config.getint("memory", "browser"), self.__select_browser)
 
         for i in range(5):
@@ -1988,7 +2066,8 @@ class MainWindow(gtk.Window):
     def __select_browser(self, activator, current):
         if not isinstance(current, int): current = current.get_current_value()
         config.set("memory", "browser", str(current))
-        Browser = [EmptyBar, SearchBar, PlaylistBar, PanedBrowser][current]
+        Browser = [EmptyBar, SearchBar, PlaylistBar, PanedBrowser,
+                   AlbumList][current]
         if self.browser: self.browser.destroy()
         self.browser = Browser(self.__browser_cb)
         self.child.pack_start(self.browser, self.browser.expand)

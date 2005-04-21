@@ -109,6 +109,7 @@ MENU = """<ui>
       <menuitem action='BrowserSearch'/>
       <menuitem action='BrowserPlaylist'/>
       <menuitem action='BrowserPaned'/>
+      <menuitem action='BrowserAlbum'/>
     </menu>
     <menu action='Help'>
       <menuitem action='About'/>
