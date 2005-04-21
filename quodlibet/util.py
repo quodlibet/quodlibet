@@ -51,9 +51,7 @@ def parse_time(timestr):
 
 def format_rating(value):
     """Turn a number into a sequence of music notes."""
-    text = '\xe2\x99\xab ' * int(value)
-    if value > int(value): text += '\xe2\x99\xaa'
-    return text
+    return ('\xe2\x99\xaa' * int(value)).decode('utf-8')
 
 def format_size(size):
     """Turn an integer size value into something human-readable."""

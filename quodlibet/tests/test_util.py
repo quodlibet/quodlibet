@@ -69,10 +69,9 @@ class StringTests(TestCase):
 
     def test_rating(self):
         self.failUnlessEqual(util.format_rating(0), "")
-        rat4 = util.format_rating(4).decode('utf-8').replace(' ', '')
-        rat25 = util.format_rating(2.5).decode('utf-8').replace(' ', '')
-        self.failUnlessEqual(len(rat4), 4)
-        self.failUnlessEqual(len(rat25), 3)
+        for i in range(1, 5):
+            self.failUnlessEqual(i, len(util.format_rating(i)))
+        self.failUnlessEqual(util.format_rating(2.5), util.format_rating(2))
 
     def test_escape(self):
         for s in ["foo&amp;", "<&>", "&", "&amp;", "<&testing&amp;>amp;"]:

@@ -2552,9 +2552,8 @@ class MainWindow(gtk.Window):
             item = gtk.MenuItem(_("Set rating..."))
             m2 = gtk.Menu()
             item.set_submenu(m2)
-            for i in [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]:
-                itm = gtk.MenuItem("%0.1f\t%s" %(
-                    i, util.format_rating(i)))
+            for i in range(5):
+                itm = gtk.MenuItem("%d\t%s" %(i, util.format_rating(i)))
                 m2.append(itm)
                 itm.connect('activate', self.set_selected_ratings, i)
             menu.append(item)
