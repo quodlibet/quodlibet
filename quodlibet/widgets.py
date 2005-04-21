@@ -2031,8 +2031,7 @@ class MainWindow(gtk.Window):
              None, None, LibraryBrowser),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
-            ("Quit", gtk.STOCK_QUIT, None, None, None,
-             lambda *args: self.destroy()),
+            ("Quit", gtk.STOCK_QUIT, None, None, None, gtk.main_quit),
             ('Filters', None, _("_Filters")),
 
             ("NotPlayedDay", gtk.STOCK_FIND, _("Not played to_day"),
@@ -5023,33 +5022,23 @@ def init():
     Osd(watcher)
 
     util.mkdir(const.DIR)
-    import signal
-    signal.signal(signal.SIGINT, gtk.main_quit)
-    signal.signal(signal.SIGTERM, gtk.main_quit)
-    signal.signal(signal.SIGHUP, gtk.main_quit)
     return widgets.main
 
-def save_library(mainwindow, thread):
+def save_library(thread):
     player.playlist.quitting()
     thread.join()
     print to(_("Saving song library."))
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:
-        error = "<b>%s</b>: %s" % (err.filename, err.strerror)
-        qltk.ErrorMessage(
-           None, _("Unable to save library"), error).run()
+        print err
 
     try: config.write(const.CONFIG)
     except EnvironmentError, err:
-        error = "<b>%s</b>: %s" % (err.filename, err.strerror)
-        qltk.ErrorMessage(
-           None, _("Unable to save preferences"), error).run()
+        print err
 
     for fn in [const.PAUSED, const.CURRENT, const.CONTROL]:
         try: os.unlink(fn)
         except EnvironmentError: pass
-
-    gtk.main_quit()
 
 def error_and_quit():
     qltk.ErrorMessage(None,
