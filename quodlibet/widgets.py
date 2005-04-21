@@ -1591,19 +1591,36 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         view.append_column(column)
 
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        view.get_selection().connect('changed', self.__selection_changed)
-        widgets.watcher.connect('refresh', self.__refresh, view.get_model())
         view.set_rules_hint(True)
-
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.add(view)
+
+        view.connect('row-activated', self.__play_selection)
+        view.get_selection().connect('changed', self.__selection_changed)
+        widgets.watcher.connect('refresh', self.__refresh, view.get_model())
+
         self.__refresh(None, view.get_model())
         self.show_all()
+
+    def __play_selection(self, view, indices, col):
+        player.playlist.next()
+        player.playlist.reset()
+
+    def filter(self, key, values):
+        assert(key == "album")
+        view = self.child
+        model = view.get_model()
+        selection = view.get_selection()
+        selection.unselect_all()
+        for i, row in enumerate(iter(model)):
+            if row[0].title in values:
+                selection.select_path(i)
 
     def activate(self):
         self.child.get_selection().emit('changed')
 
-    def can_filter(self, key): return False
+    def can_filter(self, key):
+        return (key == "album")
 
     def __selection_changed(self, selection):
         model, rows = selection.get_selected_rows()
@@ -1978,6 +1995,7 @@ class MainWindow(gtk.Window):
             None, sort[1:], refresh=True, order=int(sort[0]))
         self.songlist.connect('row-activated', self.__select_song)
         self.songlist.connect('button-press-event', self.__songs_button_press)
+        self.songlist.connect('key-press-event', self.__key_press)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
 
@@ -2415,18 +2433,26 @@ class MainWindow(gtk.Window):
         self.browser.update()
 
     def __songs_button_press(self, view, event):
-        if event.button != 3:
-            return False
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
         view.grab_focus()
         selection = view.get_selection()
-        if not selection.path_is_selected(path):
-            view.set_cursor(path, col, 0)
         header = col.header_name
-        self.prep_main_popup(header, event.button, event.time)
-        return True
+        if event.button == 3:
+            if not selection.path_is_selected(path):
+                view.set_cursor(path, col, 0)
+            self.prep_main_popup(header, event.button, event.time)
+        elif event.button == 1 and header == "~rating":
+            width = col.get_property('width')
+            song = view.get_model()[path][0]
+            parts = (width / 4.0)
+            if cellx < parts + 1:
+                rating = (song["~#rating"] & 1) ^ 1
+            elif cellx < 2*parts: rating = 2
+            elif cellx < 3*parts: rating = 3
+            else: rating = 4
+            self.__set_rating(col, rating, [song])
 
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
@@ -2513,6 +2539,10 @@ class MainWindow(gtk.Window):
 
     def set_selected_ratings(self, item, value):
         self.__set_rating(item, value, self.songlist.get_selected_songs())
+
+    def __key_press(self, songlist, event):
+        if event.string in ["0", "1", "2", "3", "4"]:
+            self.set_selected_ratings(songlist, int(event.string))
 
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
