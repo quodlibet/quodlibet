@@ -1976,11 +1976,12 @@ class MainWindow(gtk.Window):
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(
             None, sort[1:], refresh=True, order=int(sort[0]))
-        self.child.pack_end(sw)
         self.songlist.connect('row-activated', self.__select_song)
         self.songlist.connect('button-press-event', self.__songs_button_press)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
+
+        self.inter = gtk.VBox()
 
         # plugin support
         from plugins import PluginManager
@@ -2138,9 +2139,27 @@ class MainWindow(gtk.Window):
         config.set("memory", "browser", str(current))
         Browser = [EmptyBar, SearchBar, PlaylistBar, PanedBrowser,
                    AlbumList][current]
-        if self.browser: self.browser.destroy()
+        position = None
+        if self.browser:
+            c = self.child.get_children()[-2]
+            if isinstance(c, gtk.Paned): position = c.get_position()
+            c.remove(self.song_scroller)
+            c.remove(self.browser)
+            c.destroy()
+            self.browser.destroy()
         self.browser = Browser(self.__browser_cb)
-        self.child.pack_start(self.browser, self.browser.expand)
+        if self.browser.expand:
+            c = gtk.VPaned()
+            c.add1(self.browser)
+            c.add2(self.song_scroller)
+            if position is not None: c.set_position(position)
+            c.show()
+        else:
+            c = gtk.VBox()
+            c.pack_start(self.browser, expand=False)
+            c.pack_start(self.song_scroller)
+            c.show()
+        self.child.pack_end(c)
         self.__hide_menus()
         self.__refresh_size()
 
