@@ -2104,9 +2104,9 @@ class MainWindow(gtk.Window):
 
         for i in range(5):
             act = gtk.Action(
-                "Rate%d" % i, util.format_rating(i) or " ", None, None)
+                "Rate%d" % i, "%d %s" % (i, util.format_rating(i)), None, None)
             act.connect('activate', self.__set_rating, i)
-            ag.add_action_with_accel(act, str(i))
+            ag.add_action(act)
         
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, -1)
