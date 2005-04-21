@@ -1484,14 +1484,26 @@ class AlbumList(Browser, gtk.ScrolledWindow):
     expand = True
 
     class _Album(object):
+        __covers = {}
+
+        def clear_cache(klass): klass.__covers.clear()
+        clear_cache = classmethod(clear_cache)
+
         def __init__(self, title):
             self.length = 0
             self.discs = 1
             self.tracks = 0
-            self.cover = None
             self.people = set()
             self.title = title
             self.date = None
+            self.cover_done = False
+
+            if self.title in self.__covers:
+                self.cover = self.__covers[title]
+            else:
+                self.cover = None
+
+        def __cmp__(self, other): return cmp(self.title, other.title)
 
         def add(self, song):
             self.tracks += 1
@@ -1501,28 +1513,49 @@ class AlbumList(Browser, gtk.ScrolledWindow):
             self.people |= set(song.list("artist"))
             self.people |= set(song.list("performer"))
             self.people |= set(song.list("composer"))
+            if self.cover is None:
+                self.cover = False
+                gobject.idle_add(
+                    self.__get_cover, song, priority=gobject.PRIORITY_LOW)
 
-        def __cmp__(self, other):
-            return cmp(str(self), str(other))
+        def __get_cover(self, song):
+            cover = song.find_cover()
+            if cover is None: return
+            else:
+                try:
+                    cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                        cover.name, 50, 50)
+                except: pass
+                else:
+                    # add a black outline
+                    w, h = cover.get_width(), cover.get_height()
+                    newcover = gtk.gdk.Pixbuf(
+                        gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
+                    newcover.fill(0x000000ff)
+                    cover.copy_area(0, 0, w, h, newcover, 1, 1)
+                    self.cover = newcover
+                    self.__covers[self.title] = newcover
 
-        def __str__(self): return str(self.title)
+        def __str__(self): return unicode(self.title).encode('utf-8')
         def __unicode__(self): return unicode(self.title)
 
         def to_markup(self):
             text = "<i><b>%s</b></i>" % util.escape(self.title)
             if self.date: text += " (%s)" % self.date
-            text += "\n"
+            text += "\n<small>"
             if self.discs > 1: text += _("%d discs - ") % self.discs
             if self.tracks == 1: text += _("1 track")
             else: text += _("%d tracks") % self.tracks
             text += " - %s" % util.format_time_long(self.length)
             people = set(self.people)
             people = list(people); people.sort()
-            text += "\n" + ", ".join(map(util.escape, people))
+            text += "</small>\n" + ", ".join(map(util.escape, people))
             return text
 
     def __init__(self, cb):
         gtk.ScrolledWindow.__init__(self)
+        self._Album.clear_cache()
+
         self.__cb = cb
         self.set_size_request(-1, 120)
         self.set_shadow_type(gtk.SHADOW_IN)
@@ -1530,15 +1563,31 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         view.set_headers_visible(False)
         view.set_model(gtk.ListStore(object))
 
+        render = gtk.CellRendererPixbuf()
+        column = gtk.TreeViewColumn("covers", render)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+        render.set_property('xpad', 3)
+        render.set_property('width', 56)
+        
+        def cell_data_pb(column, cell, model, iter):
+            album = model[iter][0]
+            if album.cover:
+                cell.set_property('pixbuf', album.cover)
+                if not album.cover_done:
+                    model[iter][0] = model[iter][0]
+                    album.cover_done = True
+            else: cell.set_property('pixbuf', None)
+        column.set_cell_data_func(render, cell_data_pb)
+        view.append_column(column)
+
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn("albums", render)
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
-
         def cell_data(column, cell, model, iter):
             cell.set_property('markup', model[iter][0].to_markup())
-
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
+
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         view.get_selection().connect('changed', self.__selection_changed)
         widgets.watcher.connect('refresh', self.__refresh, view.get_model())
@@ -1563,7 +1612,6 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         self.__cb(u"album = |(%s)" % text, None)
 
     def __refresh(self, watcher, model):
-        # the model contains [album_name, date, [people involved]]
         model.clear()
         albums = {}
         for song in library.values():
