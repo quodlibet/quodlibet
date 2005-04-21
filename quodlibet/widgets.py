@@ -1524,7 +1524,7 @@ class AlbumList(Browser, gtk.ScrolledWindow):
             else:
                 try:
                     cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                        cover.name, 50, 50)
+                        cover.name, 48, 48)
                 except: pass
                 else:
                     # add a black outline
@@ -1566,8 +1566,10 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         render = gtk.CellRendererPixbuf()
         column = gtk.TreeViewColumn("covers", render)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
-        render.set_property('xpad', 3)
+        render.set_property('xpad', 2)
+        render.set_property('ypad', 2)
         render.set_property('width', 56)
+        render.set_property('height', 56)
         
         def cell_data_pb(column, cell, model, iter):
             album = model[iter][0]
