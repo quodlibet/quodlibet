@@ -1515,7 +1515,7 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         view.set_rules_hint(True)
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.add(view)
-        self.__refresh(view.get_model())
+        self.__refresh(None, view.get_model())
         self.show_all()
 
     def activate(self):
@@ -1531,7 +1531,7 @@ class AlbumList(Browser, gtk.ScrolledWindow):
              for v in albums])
         self.__cb(u"album = |(%s)" % text, None)
 
-    def __refresh(self, model):
+    def __refresh(self, watcher, model):
         # the model contains [album_name, date, [people involved]]
         model.clear()
         names = set([])
