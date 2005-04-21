@@ -1483,6 +1483,44 @@ class AlbumList(Browser, gtk.ScrolledWindow):
     background = False
     expand = True
 
+    class _Album(object):
+        def __init__(self, title):
+            self.length = 0
+            self.discs = 1
+            self.tracks = 0
+            self.cover = None
+            self.people = set()
+            self.title = title
+            self.date = None
+
+        def add(self, song):
+            self.tracks += 1
+            self.date = song.get("date")
+            self.discs = max(self.discs, song("~#disc", 0))
+            self.length += song["~#length"]
+            self.people |= set(song.list("artist"))
+            self.people |= set(song.list("performer"))
+            self.people |= set(song.list("composer"))
+
+        def __cmp__(self, other):
+            return cmp(str(self), str(other))
+
+        def __str__(self): return str(self.title)
+        def __unicode__(self): return unicode(self.title)
+
+        def to_markup(self):
+            text = "<i><b>%s</b></i>" % util.escape(self.title)
+            if self.date: text += " (%s)" % self.date
+            text += "\n"
+            if self.discs > 1: text += _("%d discs - ") % self.discs
+            if self.tracks == 1: text += _("1 track")
+            else: text += _("%d tracks") % self.tracks
+            text += " - %s" % util.format_time_long(self.length)
+            people = set(self.people)
+            people = list(people); people.sort()
+            text += "\n" + ", ".join(map(util.escape, people))
+            return text
+
     def __init__(self, cb):
         gtk.ScrolledWindow.__init__(self)
         self.__cb = cb
@@ -1490,22 +1528,14 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         self.set_shadow_type(gtk.SHADOW_IN)
         view = gtk.TreeView()
         view.set_headers_visible(False)
-        view.set_model(gtk.ListStore(str, str, object, int))
+        view.set_model(gtk.ListStore(object))
 
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn("albums", render)
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
         def cell_data(column, cell, model, iter):
-            title = util.escape(model[iter][0])
-            date = model[iter][1]
-            people = ", ".join(map(util.escape, model[iter][2]))
-            count = model[iter][3]
-            text = "<i><b>%s</b></i>" % title
-            if date: text += " (%s)" % date
-            text += " - " + _("%d tracks") % count
-            text += "\n" + people
-            cell.set_property('markup', text)
+            cell.set_property('markup', model[iter][0].to_markup())
 
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
@@ -1513,10 +1543,13 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         view.get_selection().connect('changed', self.__selection_changed)
         widgets.watcher.connect('refresh', self.__refresh, view.get_model())
         view.set_rules_hint(True)
+
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.add(view)
         self.__refresh(None, view.get_model())
         self.show_all()
+
+        self.connect_object('destroy', view.set_enable_search, False)
 
     def activate(self):
         self.child.get_selection().emit('changed')
@@ -1527,34 +1560,23 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         text = ", ".join(
-            ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
-             for v in albums])
+            ["'%s'c" % a.title.replace("\\", "\\\\").replace("'", "\\'")
+             for a in albums])
         self.__cb(u"album = |(%s)" % text, None)
 
     def __refresh(self, watcher, model):
         # the model contains [album_name, date, [people involved]]
         model.clear()
-        names = set([])
-        people = {}
-        dates = {}
-        counts = {}
+        albums = {}
         for song in library.values():
             for album in song.list('album'):
-                names.add(album)
-                if "date" in song:
-                    dates[album] = dates.get(album) or song.list("date")[0]
-                ppl = set(song.list("artist") + song.list("performer"))
-                people[album] = (
-                    set(song.list("artist") + song.list("performer")) |
-                    people.get(album, set([])))
-                counts[album] = counts.get(album, 0) + 1
+                if album not in albums:
+                    albums[album] = self._Album(album)
+                albums[album].add(song)
 
-        names = list(names); names.sort()
-
-        for name in names:
-            ppl = list(people.get(name, []))
-            ppl.sort()
-            model.append(row=[name, dates.get(name), ppl, counts[name]])
+        albums = albums.values()
+        albums.sort()
+        for album in albums: model.append(row=[album])
 
 class MainWindow(gtk.Window):
     class StopAfterMenu(gtk.Menu):
