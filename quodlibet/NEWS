@@ -10,7 +10,17 @@ Running Ex Falso and Quod Libet at the same time is not recommended
 (Ex Falso will warn you if you do this).
 
 0.11
- * Plugins can be made for the context menu in the song list.
+ * Plugins (either appearing in the right-click menu, or triggered on a
+   player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins. (#5)
+ * Browse songs by album, with a cover display. (#6)
+ * "Library Browser" added to search/edit files without disturbing your
+   playlist. (#10)
+ * Played songs are automatically removed from dynamic playlists. (#20)
+ * "Background filters" for the paned browser and search entry. (#36)
+ * Create/remove empty folders from within Ex Falso. (#40)
+ * '0' to '4' keys set the current song's rating.
+ * Depends on PyGTK 2.6 (as well as GTK 2.6).
+ * --status to print the player's status.
 
 0.10.1 - What if I said I'm not really kidding?
  * The main window stays hidden when the song changes.
