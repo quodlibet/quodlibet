@@ -2392,8 +2392,6 @@ class MainWindow(gtk.Window):
             b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
             menu.append(b)
             b.set_submenu(submenu)
-            submenu.connect('expose-event', self.__refresh_plugins_menu,
-                            self.pm, submenu)
             if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
@@ -2409,9 +2407,6 @@ class MainWindow(gtk.Window):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
-
-    def __refresh_plugins_menu(self, item, event, pm, menu):
-        if pm.rescan(): self.__create_plugins_menu(pm, menu)
 
     def __create_plugins_menu(self, pm, menu):
         for child in menu.get_children(): menu.remove(child)
