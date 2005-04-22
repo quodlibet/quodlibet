@@ -215,7 +215,7 @@ class PreferencesWindow(gtk.Window):
                  [("~#track", _("_Track")),
                   ("artist", _("A_rtist")),
                   ("~basename",_("_Filename"))],
-                 [("title",_("Title")),
+                 [("title", tag("title")),
                   ("date", _("Dat_e")),
                   ("~length",_("_Length"))]]):
                 for i, (k, t) in enumerate(l):
@@ -572,7 +572,7 @@ class PreferencesWindow(gtk.Window):
             selection = tv.get_selection()
             desc = gtk.Frame()
             lab = gtk.Label()
-            lab.set_markup("<b>%s</b>" % _("Description"))
+            lab.set_markup("<b>%s</b>" % tag("description"))
             desc.set_label_widget(lab)
             selection.connect('changed', self.__description, desc)
             self.pack_start(desc, expand=False)
@@ -1545,7 +1545,7 @@ class AlbumList(Browser, gtk.VBox):
             text = "<i><b>%s</b></i>" % util.escape(self.title)
             if self.date: text += " (%s)" % self.date
             text += "\n<small>"
-            if self.discs > 1: text += _("%d discs - ") % self.discs
+            if self.discs > 1: text += (_("%d discs") % self.discs) + " -"
             if self.tracks == 1: text += _("1 track")
             else: text += _("%d tracks") % self.tracks
             text += " - %s" % util.format_time_long(self.length)
@@ -2139,7 +2139,7 @@ class MainWindow(gtk.Window):
              None, self.cur_album_filter),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.current_song_prop),
-            ("Rating", None, _("Rating")),
+            ("Rating", None, tag("rating")),
 
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
              "<control>J", None, self.__jump_to_current),
@@ -2158,13 +2158,13 @@ class MainWindow(gtk.Window):
         act.connect('activate', self.__rebuild, True)
         ag.add_action(act)
 
-        for (tag, accel, label) in [
+        for (tag_, accel, label) in [
             ("genre", "G", _("Random _genre")),
             ("artist", "T", _("Random _artist")),
             ("album", "M", _("Random al_bum"))]:
-            act = gtk.Action("Random%s" % util.capitalize(tag), label,
+            act = gtk.Action("Random%s" % util.capitalize(tag_), label,
                              None, gtk.STOCK_DIALOG_QUESTION)
-            act.connect('activate', self.__random, tag)
+            act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
 
         ag.add_toggle_actions([
@@ -4836,7 +4836,7 @@ class DirectoryTree(gtk.TreeView):
         else: pass
 
         menu = gtk.Menu()
-        m = gtk.ImageMenuItem(_("New folder.."))
+        m = gtk.ImageMenuItem(_("New folder..."))
         m.get_image().set_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_MENU)
         m.connect('activate', self.__mkdir)
         menu.append(m)

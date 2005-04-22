@@ -27,7 +27,7 @@ if __name__ == "__main__":
     import quodlibet
     opts = quodlibet.OptionParser(
         "Ex Falso", const.VERSION,
-        _("an audio tag editor"), _("[directory]"))
+        _("an audio tag editor"), "[%s]" % _("directory"))
 
     import config
     config.init(const.CONFIG)

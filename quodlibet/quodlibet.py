@@ -263,7 +263,7 @@ def process_arguments():
         ("shuffle", _("Turn shuffle off, on, or toggle it"), "0|1|t"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "+|-|0..100"),
-        ("query", _("Search your library"), _("search-string")),
+        ("query", _("Search your audio library"), _("search-string")),
         ("play-file", _("Play a file"), _("filename"))
         ]: options.add(opt, help=help, arg=arg)
 
