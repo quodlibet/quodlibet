@@ -789,6 +789,9 @@ class TrayIcon(object):
 
     tooltip = property(None, __set_tooltip)
 
+    def destroy(self):
+        if self.__icon: self.__icon.destroy()
+
 class PlaylistWindow(gtk.Window):
 
     # If we open a playlist whose window is already displayed, bring it
@@ -1590,6 +1593,14 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
 
+        # Uncommenting causing segfaults when the window is destroyed.
+        #view.set_search_column(0)
+        #def search_cell(model, column, key, iter):
+        #    return not model[iter][0].title.startswith(key.decode('utf-8'))
+        #view.set_search_equal_func(search_cell)
+        # ... Whether or not we include this.
+        #self.connect_object('destroy', view.set_enable_search, False)
+
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         view.set_rules_hint(True)
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -1906,9 +1917,6 @@ class MainWindow(gtk.Window):
         self.set_default_size(
             *map(int, config.get('memory', 'size').split()))
         self.add(gtk.VBox())
-        self.connect('configure-event', MainWindow.__save_size)
-        self.connect('destroy', gtk.main_quit)
-        self.connect('delete-event', MainWindow.__delete_event)
 
         # create main menubar, load/restore accelerator groups
         self._create_menu(tips)
@@ -1993,11 +2001,6 @@ class MainWindow(gtk.Window):
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(
             None, sort[1:], refresh=True, order=int(sort[0]))
-        self.songlist.connect('row-activated', self.__select_song)
-        self.songlist.connect('button-press-event', self.__songs_button_press)
-        self.songlist.connect('key-press-event', self.__key_press)
-        self.songlist.connect('popup-menu', self.__songs_popup_menu)
-        self.songlist.connect('columns-changed', self.__cols_changed)
 
         self.inter = gtk.VBox()
 
@@ -2018,6 +2021,17 @@ class MainWindow(gtk.Window):
 
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
+
+        self.connect('configure-event', MainWindow.__save_size)
+        self.connect('delete-event', MainWindow.__delete_event)
+        self.connect_object('destroy', TrayIcon.destroy, self.icon)
+        self.connect('destroy', gtk.main_quit)
+
+        self.songlist.connect('row-activated', self.__select_song)
+        self.songlist.connect('button-press-event', self.__songs_button_press)
+        self.songlist.connect('key-press-event', self.__key_press)
+        self.songlist.connect('popup-menu', self.__songs_popup_menu)
+        self.songlist.connect('columns-changed', self.__cols_changed)
 
         widgets.watcher.connect('removed', self.__song_removed)
         widgets.watcher.connect('changed', self.__update_title)
@@ -2443,6 +2457,7 @@ class MainWindow(gtk.Window):
             if not selection.path_is_selected(path):
                 view.set_cursor(path, col, 0)
             self.prep_main_popup(header, event.button, event.time)
+            return True
         elif event.button == 1 and header == "~rating":
             width = col.get_property('width')
             song = view.get_model()[path][0]
