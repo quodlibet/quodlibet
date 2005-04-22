@@ -1482,7 +1482,7 @@ class SearchBar(EmptyBar):
             color, util.escape(text))
         layout.set_markup(markup)
 
-class AlbumList(Browser, gtk.ScrolledWindow):
+class AlbumList(Browser, gtk.VBox):
     background = False
     expand = gtk.HPaned
 
@@ -1556,11 +1556,11 @@ class AlbumList(Browser, gtk.ScrolledWindow):
             return text
 
     def __init__(self, cb):
-        gtk.ScrolledWindow.__init__(self)
+        gtk.VBox.__init__(self)
 
         self.__cb = cb
-        self.set_size_request(-1, 120)
-        self.set_shadow_type(gtk.SHADOW_IN)
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_IN)
         view = gtk.TreeView()
         view.set_headers_visible(False)
         view.set_model(gtk.ListStore(object))
@@ -1602,29 +1602,45 @@ class AlbumList(Browser, gtk.ScrolledWindow):
 
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         view.set_rules_hint(True)
-        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.add(view)
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.add(view)
+        e = qltk.ValidatingEntry(parser.is_valid_color)
+        e.set_text(config.get("browsers", "background"))
 
         view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed)
-        widgets.watcher.connect('refresh', self.__refresh, view.get_model())
+        widgets.watcher.connect('refresh', self.__refresh, view.get_model(), e)
 
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         menu.append(button)
-        menu.append(gtk.SeparatorMenuItem())
         menu.append(props)
         menu.show_all()
-        button.connect('activate', self.__refresh, view.get_model(), True)
+        button.connect('activate', self.__refresh, view.get_model(), e, True)
         props.connect('activate', self.__properties, view)
 
         view.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
         view.connect('button-press-event', self.__button_press, menu)
 
-        self.__refresh(None, view.get_model(), True)
+        e.connect('changed', self.__filter_changed, view.get_model())
+        self.__refill_sig = 0
+        self.pack_start(e, expand=False)
+        self.pack_start(sw, expand=True)
+
+        self.__refresh(None, view.get_model(), e, True)
         self.show_all()
+
+    def __filter_changed(self, entry, model):
+        self.__refill_sig += 1
+        if parser.is_parsable(entry.get_text().decode('utf-8')):
+            gobject.timeout_add(
+                500, self.__refresh_timeout, self.__refill_sig, entry, model)
+
+    def __refresh_timeout(self, id, entry, model):
+        if id == self.__refill_sig:
+            self.__refresh(entry, model, entry)
 
     def __properties(self, activator, view):
         model, rows = view.get_selection().get_selected_rows()
@@ -1634,7 +1650,9 @@ class AlbumList(Browser, gtk.ScrolledWindow):
                 ["'%s'c" % a.replace("\\", "\\\\").replace("'", "\\'")
                  for a in albums])
             songs = library.query("album = |(%s)" % text)
-            if songs: SongProperties(songs)
+            if songs:
+                songs.sort()
+                SongProperties(songs)
 
     def __button_press(self, view, event, menu):
         if event.button == 3:
@@ -1646,7 +1664,7 @@ class AlbumList(Browser, gtk.ScrolledWindow):
 
     def filter(self, key, values):
         assert(key == "album")
-        view = self.child
+        view = self.get_children()[1].child
         model = view.get_model()
         selection = view.get_selection()
         selection.unselect_all()
@@ -1655,7 +1673,7 @@ class AlbumList(Browser, gtk.ScrolledWindow):
                 selection.select_path(i)
 
     def activate(self):
-        self.child.get_selection().emit('changed')
+        self.get_children()[1].child.get_selection().emit('changed')
 
     def can_filter(self, key):
         return (key == "album")
@@ -1668,11 +1686,14 @@ class AlbumList(Browser, gtk.ScrolledWindow):
              for a in albums])
         self.__cb(u"album = |(%s)" % text, None)
 
-    def __refresh(self, watcher, model, clear_cache=False):
+    def __refresh(self, watcher, model, entry, clear_cache=False):
         if clear_cache: self._Album.clear_cache()
         model.clear()
         albums = {}
-        for song in library.values():
+        bg = entry.get_text().decode('utf-8')
+        if parser.is_parsable(bg): songs = library.query(bg)
+        else: songs = library.values()
+        for song in songs:
             for album in song.list('album'):
                 if album not in albums:
                     albums[album] = self._Album(album)
