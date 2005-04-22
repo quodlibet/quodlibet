@@ -1172,7 +1172,7 @@ class PanedBrowser(Browser, gtk.VBox):
         hbox.pack_start(e)
         a = gtk.Alignment(xalign=1.0, xscale=0.3)
         a.add(hbox)
-        self.__refill_sig = 0
+        self.__refill_id = None
 
         self.pack_start(a, expand=False)
         self.refresh_panes(restore=False)
@@ -1186,18 +1186,17 @@ class PanedBrowser(Browser, gtk.VBox):
             else: self.__filter_changed(entry)
 
     def __filter_changed(self, entry):
-        self.__refill_sig += 1
-        gobject.timeout_add(
-            500, self.__refill_panes_timeout, entry, self.__refill_sig)
+        if self.__refill_id: gobject.source_remove(self.__refill_id)
+        self.__refill_id = gobject.timeout_add(
+            500, self.__refill_panes_timeout, entry)
 
-    def __refill_panes_timeout(self, entry, id):
-        if id == self.__refill_sig:
-            filter = entry.get_text().strip()
-            if parser.is_parsable(filter.decode('utf-8')):
-                entry.set_position(10000) # at the end
-                config.set("browsers", "background", filter)
-                values = library.query(filter.decode('utf-8'))
-                self.__panes[0].fill(values)
+    def __refill_panes_timeout(self, entry):
+        filter = entry.get_text().strip()
+        if parser.is_parsable(filter.decode('utf-8')):
+            entry.set_position(10000) # at the end
+            config.set("browsers", "background", filter)
+            values = library.query(filter.decode('utf-8'))
+            self.__panes[0].fill(values)
 
     def refresh_panes(self, restore=True):
         try: hbox = self.get_children()[1]
@@ -1625,7 +1624,7 @@ class AlbumList(Browser, gtk.VBox):
         view.connect('button-press-event', self.__button_press, menu)
 
         e.connect('changed', self.__filter_changed, view.get_model())
-        self.__refill_sig = 0
+        self.__refill_id = None
         self.pack_start(e, expand=False)
         self.pack_start(sw, expand=True)
 
@@ -1633,14 +1632,13 @@ class AlbumList(Browser, gtk.VBox):
         self.show_all()
 
     def __filter_changed(self, entry, model):
-        self.__refill_sig += 1
         if parser.is_parsable(entry.get_text().decode('utf-8')):
-            gobject.timeout_add(
-                500, self.__refresh_timeout, self.__refill_sig, entry, model)
+            if self.__refill_id: gobject.source_remove(self.__refill_id)
+            self.__refill_id = gobject.timeout_add(
+                500, self.__refresh_timeout, entry, model)
 
-    def __refresh_timeout(self, id, entry, model):
-        if id == self.__refill_sig:
-            self.__refresh(entry, model, entry)
+    def __refresh_timeout(self, entry, model):
+        self.__refresh(entry, model, entry)
 
     def __properties(self, activator, view):
         model, rows = view.get_selection().get_selected_rows()
