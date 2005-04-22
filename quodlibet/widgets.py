@@ -1557,7 +1557,6 @@ class AlbumList(Browser, gtk.ScrolledWindow):
 
     def __init__(self, cb):
         gtk.ScrolledWindow.__init__(self)
-        self._Album.clear_cache()
 
         self.__cb = cb
         self.set_size_request(-1, 120)
@@ -1573,7 +1572,7 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         render.set_property('ypad', 2)
         render.set_property('width', 56)
         render.set_property('height', 56)
-        
+
         def cell_data_pb(column, cell, model, iter):
             album = model[iter][0]
             if album.cover:
@@ -1610,8 +1609,36 @@ class AlbumList(Browser, gtk.ScrolledWindow):
         view.get_selection().connect('changed', self.__selection_changed)
         widgets.watcher.connect('refresh', self.__refresh, view.get_model())
 
-        self.__refresh(None, view.get_model())
+        menu = gtk.Menu()
+        button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        menu.append(button)
+        menu.append(gtk.SeparatorMenuItem())
+        menu.append(props)
+        menu.show_all()
+        button.connect('activate', self.__refresh, view.get_model(), True)
+        props.connect('activate', self.__properties, view)
+
+        view.connect_object('popup-menu', gtk.Menu.popup, menu,
+                            None, None, None, 2, 0)
+        view.connect('button-press-event', self.__button_press, menu)
+
+        self.__refresh(None, view.get_model(), True)
         self.show_all()
+
+    def __properties(self, activator, view):
+        model, rows = view.get_selection().get_selected_rows()
+        albums = [model[row][0].title for row in rows]
+        if albums:
+            text = ", ".join(
+                ["'%s'c" % a.replace("\\", "\\\\").replace("'", "\\'")
+                 for a in albums])
+            songs = library.query("album = |(%s)" % text)
+            if songs: SongProperties(songs)
+
+    def __button_press(self, view, event, menu):
+        if event.button == 3:
+            menu.popup(None, None, None, event.button, event.time)
 
     def __play_selection(self, view, indices, col):
         player.playlist.next()
@@ -1641,7 +1668,8 @@ class AlbumList(Browser, gtk.ScrolledWindow):
              for a in albums])
         self.__cb(u"album = |(%s)" % text, None)
 
-    def __refresh(self, watcher, model):
+    def __refresh(self, watcher, model, clear_cache=False):
+        if clear_cache: self._Album.clear_cache()
         model.clear()
         albums = {}
         for song in library.values():
