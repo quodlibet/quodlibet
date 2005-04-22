@@ -1050,7 +1050,7 @@ class Browser(object):
         return False
 
 class PanedBrowser(Browser, gtk.VBox):
-    expand = True
+    expand = gtk.VPaned
     
     class Pane(gtk.ScrolledWindow):
         def __init__(self, mytag, next):
@@ -1484,7 +1484,7 @@ class SearchBar(EmptyBar):
 
 class AlbumList(Browser, gtk.ScrolledWindow):
     background = False
-    expand = True
+    expand = gtk.HPaned
 
     class _Album(object):
         __covers = {}
@@ -2198,20 +2198,17 @@ class MainWindow(gtk.Window):
         config.set("memory", "browser", str(current))
         Browser = [EmptyBar, SearchBar, PlaylistBar, PanedBrowser,
                    AlbumList][current]
-        position = None
         if self.browser:
             c = self.child.get_children()[-2]
-            if isinstance(c, gtk.Paned): position = c.get_position()
             c.remove(self.song_scroller)
             c.remove(self.browser)
             c.destroy()
             self.browser.destroy()
         self.browser = Browser(self.__browser_cb)
         if self.browser.expand:
-            c = gtk.VPaned()
-            c.add1(self.browser)
-            c.add2(self.song_scroller)
-            if position is not None: c.set_position(position)
+            c = self.browser.expand()
+            c.pack1(self.browser, resize=True)
+            c.pack2(self.song_scroller, resize=True)
             c.show()
         else:
             c = gtk.VBox()
