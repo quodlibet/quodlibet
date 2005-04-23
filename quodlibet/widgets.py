@@ -1650,7 +1650,7 @@ class AlbumList(Browser, gtk.VBox):
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
 
-        self.__refresh(None, view, e, True)
+        self.__refresh(None, view, e)
         self.show_all()
 
     def __filter_changed(self, entry, view):
