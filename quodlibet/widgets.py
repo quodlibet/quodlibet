@@ -1693,7 +1693,7 @@ class AlbumList(Browser, gtk.VBox):
             if row[0] and row[0].title in values:
                 selection.select_path(i)
                 first = first or i
-        if first: view.scroll_to_cell((i,))
+        if first: view.scroll_to_cell(first)
 
     def activate(self):
         self.get_children()[1].child.get_selection().emit('changed')
