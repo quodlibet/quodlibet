@@ -325,12 +325,7 @@ class PreferencesWindow(gtk.Window):
                 c, _("Display simple searches in blue, "
                      "advanced ones in green, and invalid ones in red"))
                          
-            vb = gtk.VBox()
-            c.set_active(config.getboolean("browsers", "color"))
-            c.connect('toggled', self._toggle, "color", "browsers")
-            vb.pack_start(c)
-
-            hb = gtk.HBox(spacing=3)
+            hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
             e = qltk.ValidatingEntry(parser.is_valid_color)
@@ -339,9 +334,11 @@ class PreferencesWindow(gtk.Window):
             l.set_mnemonic_widget(e)
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
-            vb.pack_start(hb)
+            self.pack_start(hb, expand=False)
 
-            f = qltk.Frame(_("Search Bar"), bold=True, child=vb)
+            c.set_active(config.getboolean("browsers", "color"))
+            c.connect('toggled', self._toggle, "color", "browsers")
+            f = qltk.Frame(_("Search Bar"), bold=True, child=c)
             self.pack_start(f, expand=False)
 
             t = gtk.Table(2, 4)
