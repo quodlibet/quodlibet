@@ -1076,10 +1076,7 @@ class Osd(object):
 
 class Browser(object):
     expand = False # Packing options
-    background = False # Use browsers/filter as a background filter
-
-    # called when the library has been updated (new/removed/edited songs)
-    def update(self): pass
+    background = True # Use browsers/filter as a background filter
 
     # read/write from config data
     def restore(self): pass
@@ -1093,7 +1090,7 @@ class PanedBrowser(Browser, gtk.VBox):
     expand = gtk.VPaned
     
     class Pane(gtk.ScrolledWindow):
-        def __init__(self, mytag, next):
+        def __init__(self, mytag, next, play=True):
             gtk.ScrolledWindow.__init__(self)
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             self.set_shadow_type(gtk.SHADOW_IN)
@@ -1112,7 +1109,8 @@ class PanedBrowser(Browser, gtk.VBox):
             self.child.connect_object('destroy', self.child.set_model, None)
             self.__sig = self.child.get_selection().connect(
                 'changed', self.__selection_changed)
-            self.child.connect('row-activated', self.__play_selection)
+            if play:
+                self.child.connect('row-activated', self.__play_selection)
 
         def __play_selection(self, view, indices, col):
             player.playlist.next()
@@ -1198,45 +1196,16 @@ class PanedBrowser(Browser, gtk.VBox):
                 return ("%s = |(%s)" %(
                     self.tag, ", ".join(selected))).decode("utf-8")
 
-    def __init__(self, cb):
+    def __init__(self, cb, save=True, play=True):
         gtk.VBox.__init__(self, spacing=0)
         self.__cb = cb
-        hbox = gtk.HBox(spacing=6)
-        c = gtk.CheckButton(_("_Global filter:"))
-        e = qltk.ValidatingEntry(parser.is_valid_color)
-        e.set_text(config.get("browsers", "background"))
-        e.set_sensitive(False)
-        e.connect('changed', self.__filter_changed)
-        c.connect('toggled', self.__filter_toggled, e)
-        hbox.pack_start(c, expand=False)
-        hbox.pack_start(e)
-        a = gtk.Alignment(xalign=1.0, xscale=0.3)
-        a.add(hbox)
-        self.__refill_id = None
+        self.__save = save
+        self.__play = play
 
-        self.pack_start(a, expand=False)
         self.refresh_panes(restore=False)
 
-    def __filter_toggled(self, toggle, entry):
-        self.background = toggle.get_active()
-        entry.set_text(config.get("browsers", "background"))
-        entry.set_sensitive(toggle.get_active())
-        if entry.get_text():
-            if not self.background: self.__panes[0].fill(library.values())
-            else: self.__filter_changed(entry)
-
-    def __filter_changed(self, entry):
-        if self.__refill_id: gobject.source_remove(self.__refill_id)
-        self.__refill_id = gobject.timeout_add(
-            500, self.__refill_panes_timeout, entry)
-
-    def __refill_panes_timeout(self, entry):
-        filter = entry.get_text().strip()
-        if parser.is_parsable(filter.decode('utf-8')):
-            entry.set_position(10000) # at the end
-            config.set("browsers", "background", filter)
-            values = library.query(filter.decode('utf-8'))
-            self.__panes[0].fill(values)
+        s = widgets.watcher.connect('refresh', self.__refresh)
+        self.connect_object('destroy', widgets.watcher.disconnect, s)
 
     def refresh_panes(self, restore=True):
         try: hbox = self.get_children()[1]
@@ -1250,16 +1219,13 @@ class PanedBrowser(Browser, gtk.VBox):
         self.__panes = [self]
         panes = config.get("browsers", "panes").split(); panes.reverse()
         for pane in panes:
-            self.__panes.insert(0, self.Pane(pane, self.__panes[0]))
+            self.__panes.insert(
+                0, self.Pane(pane, self.__panes[0], self.__play))
         self.__panes.pop() # remove self
         map(hbox.pack_start, self.__panes)
         self.pack_start(hbox)
         self.__inhibit = True
-        filter = config.get("browsers", "background")
-        if not (self.background and filter and parser.is_parsable(filter)):
-            values = library.values()
-        else: values = library.query(filter)
-        self.__panes[0].fill(values)
+        self.__panes[0].fill(library.values())
         if restore: self.restore()
         self.show_all()
 
@@ -1296,18 +1262,20 @@ class PanedBrowser(Browser, gtk.VBox):
     def activate(self):
         self.fill(None)
 
-    def update(self):
+    def __refresh(self, watcher):
         self.__inhibit = True
         self.__panes[0].fill(library.values())
 
     def fill(self, songs):
         if self.__inhibit: self.__inhibit = False
         else:
-            self.save()
+            if self.__save: self.save()
             self.__cb(
                 "&(%s)" % ", ".join(map(self.Pane.query, self.__panes)), None)
 
 class PlaylistBar(Browser, gtk.HBox):
+    background = False
+
     def __init__(self, cb):
         gtk.HBox.__init__(self)
         combo = gtk.ComboBox(PlayList.lists_model())
@@ -1422,8 +1390,6 @@ class CoverImage(gtk.Frame):
             BigCenteredImage(self.__song.comma("album"), cover.name)
 
 class EmptyBar(Browser, gtk.HBox):
-    background = True
-    
     def __init__(self, cb):
         gtk.HBox.__init__(self)
         self._text = ""
@@ -1460,7 +1426,7 @@ class EmptyBar(Browser, gtk.HBox):
         self.activate()
 
 class SearchBar(EmptyBar):
-    def __init__(self, cb, button=gtk.STOCK_FIND, save=True):
+    def __init__(self, cb, button=gtk.STOCK_FIND, save=True, play=True):
         EmptyBar.__init__(self, cb)
         self.__save = save
 
@@ -1522,7 +1488,6 @@ class SearchBar(EmptyBar):
         layout.set_markup(markup)
 
 class AlbumList(Browser, gtk.VBox):
-    background = False
     expand = gtk.HPaned
 
     class _Album(object):
@@ -1598,10 +1563,12 @@ class AlbumList(Browser, gtk.VBox):
             text += "</small>\n" + ", ".join(map(util.escape, people))
             return text
 
-    def __init__(self, cb):
+    def __init__(self, cb, save=True, play=True):
         gtk.VBox.__init__(self)
 
         self.__cb = cb
+        self.__save = save
+
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         view = gtk.TreeView()
@@ -1658,9 +1625,11 @@ class AlbumList(Browser, gtk.VBox):
         e = qltk.ValidatingEntry(parser.is_valid_color)
         e.set_text(config.get("browsers", "background"))
 
-        view.connect('row-activated', self.__play_selection)
+        if play: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed)
-        widgets.watcher.connect('refresh', self.__refresh, view.get_model(), e)
+        s = widgets.watcher.connect(
+            'refresh', self.__refresh, view.get_model(), e)
+        self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
@@ -1759,7 +1728,7 @@ class AlbumList(Browser, gtk.VBox):
         albums = [model[row][0] for row in rows]
         if None in albums:
             self.__cb(u"", None)
-            config.set("browsers", "albums", "")
+            if self.__save: config.set("browsers", "albums", "")
         else:
             names = [a.title for a in albums]
             text = ", ".join(
@@ -1768,7 +1737,7 @@ class AlbumList(Browser, gtk.VBox):
             confval = "\n".join(names)
             # Since ConfigParser strips a trailing \n...
             if confval and confval[-1] == "\n": confval = "\n" + confval[:-1]
-            config.set("browsers", "albums", confval)
+            if self.__save: config.set("browsers", "albums", confval)
             self.__cb(u"album = |(%s)" % text, None)
 
     def __refresh(self, watcher, model, entry, clear_cache=False):
@@ -2176,7 +2145,6 @@ class MainWindow(gtk.Window):
 
         widgets.watcher.connect('removed', self.__song_removed)
         widgets.watcher.connect('changed', self.__update_title)
-        widgets.watcher.connect('refresh', self.__update_browser)
         widgets.watcher.connect('song-started', self.__song_started)
         widgets.watcher.connect('song-ended', self.__song_ended)
         widgets.watcher.connect(
@@ -2582,7 +2550,7 @@ class MainWindow(gtk.Window):
         win.destroy()
         player.playlist.refilter()
         self.refresh_songlist()
-        self.browser.update()
+        widgets.watcher.refresh()
 
     def __songs_button_press(self, view, event):
         x, y = map(int, [event.x, event.y])
@@ -2630,9 +2598,6 @@ class MainWindow(gtk.Window):
             widgets.watcher.removed(song)
         widgets.watcher.refresh()
 
-    def __update_browser(self, watcher):
-        self.browser.update()
-
     def __song_removed(self, watcher, song):
         player.playlist.remove(song)
         self.__set_time()
@@ -2674,7 +2639,7 @@ class MainWindow(gtk.Window):
                 else:
                     w.step(w.current + 1, w.count)
             w.destroy()
-            self.browser.update()
+            widgets.watcher.refresh()
 
     def current_song_prop(self, *args):
         song = widgets.watcher.song
