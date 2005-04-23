@@ -1727,7 +1727,7 @@ class AlbumList(Browser, gtk.VBox):
                  for album in names])
             confval = "\n".join(names)
             # Since ConfigParser strips a trailing \n...
-            if confval[-1] == "\n": confval = "\n" + confval[:-1]
+            if confval and confval[-1] == "\n": confval = "\n" + confval[:-1]
             config.set("browsers", "albums", confval)
             self.__cb(u"album = |(%s)" % text, None)
 
