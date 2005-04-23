@@ -626,7 +626,13 @@ class PreferencesWindow(gtk.Window):
             try: prefs = model[iter][0].Preferences()
             except (TypeError, AttributeError): frame.hide()
             else:
-                frame.add(prefs)
+                if isinstance(prefs, gtk.Window):
+                    b = gtk.Button(stock=gtk.STOCK_PREFERENCES)
+                    b.connect_object('clicked', gtk.Window.show, prefs)
+                    b.connect_object('destroy', gtk.Window.destroy, prefs)
+                    frame.add(b)
+                else:
+                    frame.add(prefs)
                 frame.show_all()
 
         def __toggled(self, render, path, model):
