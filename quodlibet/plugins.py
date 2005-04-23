@@ -133,8 +133,8 @@ class PluginManager(object):
         for event, handle in self.all_events:
             self.events[event] = {}
             if watcher:
-                def handler(watcher, *args): invoke(event, *args)
-                watcher.connect(event, handler)
+                def handler(watcher, *args): invoke(args[-1], *args[:-1])
+                watcher.connect(event, handler, event)
 
     def rescan(self):
         import os, sys, dircache
