@@ -1549,7 +1549,7 @@ class AlbumList(Browser, gtk.VBox):
                 self.title or _("Songs not in an album"))
             if self.date: text += " (%s)" % self.date
             text += "\n<small>"
-            if self.discs > 1: text += (_("%d discs") % self.discs) + " -"
+            if self.discs > 1: text += (_("%d discs") % self.discs) + " - "
             if self.tracks == 1: text += _("1 track")
             else: text += _("%d tracks") % self.tracks
             text += " - %s" % util.format_time_long(self.length)
