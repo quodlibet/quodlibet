@@ -23,7 +23,7 @@ def plugin_on_song_started(song):
             f.write(cover.read())
             f.close()
 
-def Preferences():
+def PluginPreferences(parent):
     def changed(entry):
         fn = entry.get_text()
         try: shutil.move(config.get("plugins", __name__), fn)

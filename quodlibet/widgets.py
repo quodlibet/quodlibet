@@ -623,8 +623,10 @@ class PreferencesWindow(gtk.Window):
         def __preferences(self, selection, frame):
             model, iter = selection.get_selected()
             if frame.child: frame.child.destroy()
-            if iter and hasattr(model[iter][0], 'Preferences'):
-                try: prefs = model[iter][0].Preferences()
+            if iter and hasattr(model[iter][0], 'PluginPreferences'):
+                try:
+                    prefs = model[iter][0].PluginPreferences(
+                        self.parent.parent.parent)
                 except:
                     import traceback; traceback.print_exc()
                     frame.hide()
