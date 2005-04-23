@@ -1620,7 +1620,6 @@ class AlbumList(Browser, gtk.VBox):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
         e = qltk.ValidatingEntry(parser.is_valid_color)
-        e.set_text(config.get("browsers", "background"))
 
         if play: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed)
@@ -1643,7 +1642,15 @@ class AlbumList(Browser, gtk.VBox):
 
         e.connect('changed', self.__filter_changed, view)
         self.__refill_id = None
-        self.pack_start(e, expand=False)
+
+        hb = gtk.HBox(spacing=0)
+        lab = gtk.Label(_("_Search:"))
+        lab.set_padding(6, 0)
+        lab.set_mnemonic_widget(e)
+        lab.set_use_underline(True)
+        hb.pack_start(lab, expand=False)
+        hb.pack_start(e)
+        self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
 
         self.__refresh(None, view, e, True)
