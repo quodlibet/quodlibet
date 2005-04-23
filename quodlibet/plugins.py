@@ -129,10 +129,11 @@ class PluginManager(object):
         self.watcher = watcher
 
         self.events = {}
+        invoke = self.invoke_event
         for event, handle in self.all_events:
             self.events[event] = {}
-            handler = getattr(self, 'on_' + event, None)
-            if handler and watcher:
+            if watcher:
+                def handler(watcher, *args): invoke(event, *args)
                 watcher.connect(event, handler)
 
     def rescan(self):
@@ -332,30 +333,3 @@ class PluginManager(object):
                         except Exception: print_exc()
         finally:
             self.check_change_and_refresh(args[0:1])
-
-    def on_changed(self, watcher, song):
-        self.invoke_event('changed', song)
-
-    def on_removed(self, watcher, song):
-        self.invoke_event('removed', song)
-
-    def on_refresh(self, watcher):
-        self.invoke_event('refresh')
-
-    def on_song_started(self, watcher, song):
-        self.invoke_event('song_started', song)
-
-    def on_song_ended(self, watcher, song, stopped):
-        self.invoke_event('song_ended', song, stopped)
-
-    def on_paused(self, watcher):
-        self.invoke_event('paused')
-
-    def on_unpaused(self, watcher):
-        self.invoke_event('unpaused')
-
-    def on_missing(self, watcher, song):
-        self.invoke_event('missing', song)
-
-    def on_seek(self, watcher, song, msec):
-        self.invoke_event('seek', song, msec)
