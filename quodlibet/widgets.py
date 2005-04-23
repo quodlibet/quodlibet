@@ -459,7 +459,7 @@ class PreferencesWindow(gtk.Window):
             self.title = _("Library")
             f = qltk.Frame(_("Scan _Directories"), bold=True)
             hb = gtk.HBox(spacing=6)
-            b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
+            b = qltk.Button(_("_Select"), gtk.STOCK_OPEN)
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "scan")))
             f.get_label_widget().set_mnemonic_widget(e)
@@ -485,7 +485,7 @@ class PreferencesWindow(gtk.Window):
             l.set_justify(gtk.JUSTIFY_FILL)
             vb.pack_start(l, expand=False)
             hb = gtk.HBox(spacing=6)
-            b = qltk.Button(_("_Select..."), gtk.STOCK_OPEN)
+            b = qltk.Button(_("_Select"), gtk.STOCK_OPEN)
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "masked")))
             f.get_label_widget().set_mnemonic_widget(e)
@@ -2220,11 +2220,11 @@ class MainWindow(gtk.Window):
             ])
 
         act = gtk.Action(
-            "RefreshLibrary", _("Re_fresh library"), None, gtk.STOCK_REFRESH)
+            "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild)
         ag.add_action(act)
         act = gtk.Action(
-            "ReloadLibrary", _("Re_load library"), None, gtk.STOCK_REFRESH)
+            "ReloadLibrary", _("Re_load Library"), None, gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, True)
         ag.add_action(act)
 
@@ -2238,22 +2238,22 @@ class MainWindow(gtk.Window):
             ag.add_action_with_accel(act, "<control>" + accel)
 
         ag.add_toggle_actions([
-            ("Songlist", None, _("Song _list"), None, None,
+            ("Songlist", None, _("Song _List"), None, None,
              self.showhide_playlist,
              config.getboolean("memory", "songlist"))])
 
         ag.add_radio_actions([
-            ("BrowserDisable", None, _("_Disable browsing"), None, None, 0),
-            ("BrowserSearch", None, _("_Search library"), None, None, 1),
+            ("BrowserDisable", None, _("_Disable Browser"), None, None, 0),
+            ("BrowserSearch", None, _("_Search Library"), None, None, 1),
             ("BrowserPlaylist", None, _("_Playlists"), None, None, 2),
-            ("BrowserPaned", None, _("_Paned browser"), None, None, 3),
-            ("BrowserAlbum", None, _("_Album list"), None, None, 4),
+            ("BrowserPaned", None, _("_Paned Browser"), None, None, 3),
+            ("BrowserAlbum", None, _("_Album List"), None, None, 4),
             ], config.getint("memory", "browser"), self.__select_browser)
 
         for id, label, Kind in [
-            ("BrowseSearch", _("_Search..."), SearchBar),
-            ("BrowsePaned", _("_Paned browser..."), PanedBrowser),
-            ("BrowseAlbumList", _("_Album list..."), AlbumList)]:
+            ("BrowseSearch", _("_Search Library"), SearchBar),
+            ("BrowsePaned", _("_Paned Browser"), PanedBrowser),
+            ("BrowseAlbumList", _("_Album List"), AlbumList)]:
             act = gtk.Action(id, label, None, None)
             act.connect('activate', LibraryBrowser, Kind)
             ag.add_action(act)
@@ -2432,7 +2432,7 @@ class MainWindow(gtk.Window):
 
     def __new_playlist(self, activator):
         options = map(PlayList.prettify_name, library.playlists())
-        name = GetStringDialog(self, _("New Playlist..."),
+        name = GetStringDialog(self, _("New/Edit Playlist"),
                                _("Enter a name for the new playlist. If it "
                                  "already exists it will be opened for "
                                  "editing."), options).run()
@@ -2683,7 +2683,7 @@ class MainWindow(gtk.Window):
         menu = gtk.Menu()
 
         if header == "~rating":
-            item = gtk.MenuItem(_("Set rating..."))
+            item = gtk.MenuItem(_("Set Rating"))
             m2 = gtk.Menu()
             item.set_submenu(m2)
             for i in range(5):
@@ -4922,7 +4922,7 @@ class DirectoryTree(gtk.TreeView):
         else: pass
 
         menu = gtk.Menu()
-        m = gtk.ImageMenuItem(_("New folder..."))
+        m = gtk.ImageMenuItem(_("New Folder..."))
         m.get_image().set_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_MENU)
         m.connect('activate', self.__mkdir)
         menu.append(m)
