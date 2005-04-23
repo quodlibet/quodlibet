@@ -1695,15 +1695,40 @@ class AlbumList(Browser, gtk.VBox):
     def can_filter(self, key):
         return (key == "album")
 
+    def restore(self):
+        albums = config.get("browsers", "albums").split("\n")
+        selection = self.get_children()[1].child.get_selection()
+        # there's an ambiguity here -- if albums is "" then it could be
+        # either all albums or no albums. If it's "" and some other
+        # stuff, assume no albums, otherwise all albums.
+        selection.unselect_all()
+        if albums == [""]: # all songs
+            selection.select_path((0,))
+        else:
+            model = selection.get_tree_view().get_model()
+            first = None
+            for i, row in enumerate(iter(model)):
+                if row[0] and row[0].title in albums:
+                    selection.select_path(i)
+                    first = first or i
+
+            if first: selection.get_tree_view().scroll_to_cell(first)
+
     def __selection_changed(self, selection):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         if None in albums:
             self.__cb(u"", None)
+            config.set("browsers", "albums", "")
         else:
+            names = [a.title for a in albums]
             text = ", ".join(
-                ["'%s'c" % a.title.replace("\\", "\\\\").replace("'", "\\'")
-                 for a in albums])
+                ["'%s'c" % album.replace("\\", "\\\\").replace("'", "\\'")
+                 for album in names])
+            confval = "\n".join(names)
+            # Since ConfigParser strips a trailing \n...
+            if confval[-1] == "\n": confval = "\n" + confval[:-1]
+            config.set("browsers", "albums", confval)
             self.__cb(u"album = |(%s)" % text, None)
 
     def __refresh(self, watcher, model, entry, clear_cache=False):
