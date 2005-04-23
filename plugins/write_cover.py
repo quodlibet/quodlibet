@@ -3,7 +3,7 @@ import os, util, config, shutil, gtk
 try: config.get("plugins", __name__)
 except:
     out = os.path.expanduser("~/.quodlibet/current.cover")
-    config.set("plugins", "write_cover", out)
+    config.set("plugins", __name__, out)
 
 PLUGIN_NAME = "Picture Saver"
 PLUGIN_DESC = "The cover image of the current song is saved to a file."
