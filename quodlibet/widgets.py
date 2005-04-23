@@ -1546,9 +1546,6 @@ class AlbumList(Browser, gtk.VBox):
                     self.cover = newcover
                     self.__covers[self.title] = newcover
 
-        def __str__(self): return unicode(self.title).encode('utf-8')
-        def __unicode__(self): return unicode(self.title)
-
         def to_markup(self):
             text = "<i><b>%s</b></i>" % util.escape(
                 self.title or _("Songs not in an album"))
@@ -1644,22 +1641,19 @@ class AlbumList(Browser, gtk.VBox):
                             None, None, None, 2, 0)
         view.connect('button-press-event', self.__button_press, menu)
 
-        e.connect('changed', self.__filter_changed, view.get_model())
+        e.connect('changed', self.__filter_changed, view)
         self.__refill_id = None
         self.pack_start(e, expand=False)
         self.pack_start(sw, expand=True)
 
-        self.__refresh(None, view.get_model(), e, True)
+        self.__refresh(None, view, e, True)
         self.show_all()
 
-    def __filter_changed(self, entry, model):
+    def __filter_changed(self, entry, view):
         if parser.is_parsable(entry.get_text().decode('utf-8')):
             if self.__refill_id: gobject.source_remove(self.__refill_id)
             self.__refill_id = gobject.timeout_add(
-                500, self.__refresh_timeout, entry, model)
-
-    def __refresh_timeout(self, entry, model):
-        self.__refresh(entry, model, entry)
+                500, self.__refresh, entry, view, entry)
 
     def __properties(self, activator, view):
         model, rows = view.get_selection().get_selected_rows()
@@ -1691,12 +1685,15 @@ class AlbumList(Browser, gtk.VBox):
     def filter(self, key, values):
         assert(key == "album")
         view = self.get_children()[1].child
-        model = view.get_model()
         selection = view.get_selection()
         selection.unselect_all()
+        model = view.get_model()
+        first = None
         for i, row in enumerate(iter(model)):
-            if row[0].title in values:
+            if row[0] and row[0].title in values:
                 selection.select_path(i)
+                first = first or i
+        if first: view.scroll_to_cell((i,))
 
     def activate(self):
         self.get_children()[1].child.get_selection().emit('changed')
@@ -1740,7 +1737,11 @@ class AlbumList(Browser, gtk.VBox):
             if self.__save: config.set("browsers", "albums", confval)
             self.__cb(u"album = |(%s)" % text, None)
 
-    def __refresh(self, watcher, model, entry, clear_cache=False):
+    def __refresh(self, watcher, view, entry, clear_cache=False):
+        selection = view.get_selection()
+        model, rows = selection.get_selected_rows()
+        selected = [(model[row][0] and model[row][0].title) for row in rows]
+        model = view.get_model()
         if clear_cache: self._Album.clear_cache()
         model.clear()
         albums = {}
@@ -1763,6 +1764,9 @@ class AlbumList(Browser, gtk.VBox):
             albums.append(albums.pop(0))
         model.append(row=[None])
         for album in albums: model.append(row=[album])
+        for i, row in enumerate(iter(model)):
+             if (row[0] and row[0].title) in selected:
+                  selection.select_path(i)
 
 class MainWindow(gtk.Window):
     class StopAfterMenu(gtk.Menu):
