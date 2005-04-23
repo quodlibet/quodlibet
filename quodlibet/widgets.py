@@ -287,6 +287,7 @@ class PreferencesWindow(gtk.Window):
 
             frame = qltk.Frame(_("Visible Columns"), bold=True, child=vbox)
             self.pack_start(frame, expand=False)
+            self.show_all()
 
         def __apply(self, button, buttons, rat, tiv, aip, fip, others):
             headers = []
@@ -368,6 +369,7 @@ class PreferencesWindow(gtk.Window):
             self.pack_start(
                 qltk.Frame(_("Paned Browser"), bold=True, child=t),
                 expand=False)
+            self.show_all()
 
         def _entry(self, entry, name, section="settings"):
             config.set(section, name, entry.get_text())
@@ -435,6 +437,7 @@ class PreferencesWindow(gtk.Window):
             hb.pack_start(font)
             vbox.pack_start(hb, expand=False)
             self.pack_start(f, expand=False)
+            self.show_all()
 
         def __font_set(self, font):
             config.set("settings", "osdfont", font.get_font_name())
@@ -521,6 +524,7 @@ class PreferencesWindow(gtk.Window):
             vbox.pack_start(cb, expand=False)
             f.child.add(vbox)
             self.pack_start(f)
+            self.show_all()
 
         def __select(self, button, entry, initial):
             chooser = FileChooser(self.parent.parent.parent,
@@ -584,6 +588,13 @@ class PreferencesWindow(gtk.Window):
             selection.connect('changed', self.__description, desc)
             self.pack_start(desc, expand=False)
 
+            prefs = gtk.Frame()
+            lab = gtk.Label()
+            lab.set_markup("<b>%s</b>" % _("Preferences"))
+            prefs.set_label_widget(lab)
+            selection.connect('changed', self.__preferences, prefs)
+            self.pack_start(prefs, expand=False)
+
             bbox = gtk.HButtonBox()
             bbox.set_spacing(6)
             bbox.set_layout(gtk.BUTTONBOX_END)
@@ -592,21 +603,31 @@ class PreferencesWindow(gtk.Window):
             refresh.set_focus_on_click(False)
             bbox.pack_start(refresh)
             self.pack_start(bbox, expand=False)
-            self.__description(tv.get_selection(), desc)
+            self.show_all()
+            tv.get_selection().emit('changed')
             refresh.clicked()
 
         def __description(self, selection, frame):
             model, iter = selection.get_selected()
             if frame.child: frame.child.destroy()
             try: description = model[iter][0].PLUGIN_DESC
-            except (TypeError, AttributeError): description = ''
-            description = gtk.Label(description)
-            description.set_alignment(0, 0)
-            description.set_padding(6, 6)
-            description.set_line_wrap(True)
-            frame.add(description)
-            if frame.child: frame.show_all()
-            else: frame.hide()
+            except (TypeError, AttributeError): frame.hide()
+            else:
+                description = gtk.Label(description)
+                description.set_alignment(0, 0)
+                description.set_padding(6, 6)
+                description.set_line_wrap(True)
+                frame.add(description)
+                frame.show_all()
+
+        def __preferences(self, selection, frame):
+            model, iter = selection.get_selected()
+            if frame.child: frame.child.destroy()
+            try: prefs = model[iter][0].Preferences()
+            except (TypeError, AttributeError): frame.hide()
+            else:
+                frame.add(prefs)
+                frame.show_all()
 
         def __toggled(self, render, path, model):
             render.set_active(not render.get_active())
@@ -640,10 +661,6 @@ class PreferencesWindow(gtk.Window):
         self.add(gtk.VBox(spacing=12))
         tips = gtk.Tooltips()
         n = qltk.Notebook()
-        for Page in [self.SongList, self.Browsers, self.Player,
-                     self.Library, self.Plugins]:
-            n.append_page(Page())
-
         self.child.pack_start(n)
 
         bbox = gtk.HButtonBox()
@@ -654,6 +671,10 @@ class PreferencesWindow(gtk.Window):
         self.connect_object('destroy', PreferencesWindow.__destroy, self)
         self.child.pack_start(bbox, expand=False)
         self.child.show_all()
+
+        for Page in [self.SongList, self.Browsers, self.Player,
+                     self.Library, self.Plugins]:
+            n.append_page(Page())
 
     def __destroy(self):
         del(widgets.preferences)
