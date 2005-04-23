@@ -98,6 +98,10 @@ class SongWatcher(gtk.Object):
         # A new song started playing (or the current one was restarted).
         'song-started': SIG_PYOBJECT,
 
+        # The song was seeked within.
+        'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                 (object, int)),
+
         # A new song started playing (or the current one was restarted).
         # The boolean is True if the song was stopped rather than simply
         # ended.
@@ -148,6 +152,9 @@ class SongWatcher(gtk.Object):
     def set_paused(self, paused):
         if paused: gobject.idle_add(self.emit, 'paused')
         else: gobject.idle_add(self.emit, 'unpaused')
+
+    def seek(self, song, position_in_msec):
+        gobject.idle_add(self.emit, 'seek', song, position_in_msec)
 
     def error(self, song):
         try: song.reload()

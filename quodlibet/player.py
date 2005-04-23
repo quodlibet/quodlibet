@@ -104,6 +104,7 @@ class PlaylistPlayer(object):
                 pos = self.__player.length
 
             self.info.time = (pos, self.__player.length)
+            self.info.seek(self.__song, pos)
             self.__player.seek(pos)
         self.__lock.release()
 
