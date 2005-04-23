@@ -35,6 +35,7 @@ characteristics:
         obj.plugin_on_refresh()
         obj.plugin_on_paused()
         obj.plugin_on_unpaused()
+        obj.plugin_on_seek(song, msec)
 
     All matching provided callables on a single object are called in the above
     order if they match until one returns a true value.  A plugin should
@@ -116,6 +117,7 @@ class PluginManager(object):
         ('paused', 'plugin_on_paused'),
         ('unpaused', 'plugin_on_unpaused'),
         ('missing', 'plugin_on_missing'),
+        ('seek', 'plugin_on_seek'),
     ]
 
     def __init__(self, watcher=None, folders=[]):
@@ -127,8 +129,7 @@ class PluginManager(object):
         self.watcher = watcher
 
         self.events = {}
-        for event in 'changed removed refresh song_started song_ended ' \
-                'paused unpaused missing'.split():
+        for event, handle in self.all_events:
             self.events[event] = {}
             handler = getattr(self, 'on_' + event, None)
             if handler and watcher:
@@ -355,3 +356,6 @@ class PluginManager(object):
 
     def on_missing(self, watcher, song):
         self.invoke_event('missing', song)
+
+    def on_seek(self, watcher, song, msec):
+        self.invoke_event('seek', song, msec)
