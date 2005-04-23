@@ -1624,7 +1624,7 @@ class AlbumList(Browser, gtk.VBox):
         if play: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed)
         s = widgets.watcher.connect(
-            'refresh', self.__refresh, view.get_model(), e)
+            'refresh', self.__refresh, view, e)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         menu = gtk.Menu()
@@ -1633,7 +1633,7 @@ class AlbumList(Browser, gtk.VBox):
         menu.append(button)
         menu.append(props)
         menu.show_all()
-        button.connect('activate', self.__refresh, view.get_model(), e, True)
+        button.connect('activate', self.__refresh, view, e, True)
         props.connect('activate', self.__properties, view)
 
         view.connect_object('popup-menu', gtk.Menu.popup, menu,
@@ -1738,11 +1738,13 @@ class AlbumList(Browser, gtk.VBox):
             text = ", ".join(
                 ["'%s'c" % album.replace("\\", "\\\\").replace("'", "\\'")
                  for album in names])
-            confval = "\n".join(names)
-            # Since ConfigParser strips a trailing \n...
-            if confval and confval[-1] == "\n": confval = "\n" + confval[:-1]
-            if self.__save: config.set("browsers", "albums", confval)
-            self.__cb(u"album = |(%s)" % text, None)
+            if text:
+                confval = "\n".join(names)
+                # Since ConfigParser strips a trailing \n...
+                if confval and confval[-1] == "\n":
+                    confval = "\n" + confval[:-1]
+                if self.__save: config.set("browsers", "albums", confval)
+                self.__cb(u"album = |(%s)" % text, None)
 
     def __refresh(self, watcher, view, entry, clear_cache=False):
         selection = view.get_selection()
@@ -2114,7 +2116,6 @@ class MainWindow(gtk.Window):
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.songlist = MainSongList()
         self.songlist.set_rules_hint(True)
-        self.songlist.set_size_request(200, 150)
         sw.add(self.songlist)
         self.songlist.set_model(gtk.ListStore(object))
         SongList.set_all_column_headers(
@@ -2179,8 +2180,7 @@ class MainWindow(gtk.Window):
              self.open_chooser),
             ('NewPlaylist', gtk.STOCK_EDIT, _('_New/Edit Playlist...'),
              None, None, self.__new_playlist),
-            ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library...'),
-             None, None, LibraryBrowser),
+            ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library')),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
             ("Quit", gtk.STOCK_QUIT, None, None, None, gtk.main_quit),
@@ -2252,6 +2252,14 @@ class MainWindow(gtk.Window):
             ("BrowserPaned", None, _("_Paned browser"), None, None, 3),
             ("BrowserAlbum", None, _("_Album list"), None, None, 4),
             ], config.getint("memory", "browser"), self.__select_browser)
+
+        for id, label, Kind in [
+            ("BrowseSearch", _("_Search..."), SearchBar),
+            ("BrowsePaned", _("_Paned browser..."), PanedBrowser),
+            ("BrowseAlbumList", _("_Album list..."), AlbumList)]:
+            act = gtk.Action(id, label, None, None)
+            act.connect('activate', LibraryBrowser, Kind)
+            ag.add_action(act)
 
         for i in range(5):
             act = gtk.Action(
@@ -2834,6 +2842,8 @@ class SongList(gtk.TreeView):
 
     def __init__(self, recall=0):
         gtk.TreeView.__init__(self)
+        self.set_size_request(200, 150)
+        self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.songlistviews[self] = None     # register self
         self.recall_size = recall
@@ -2963,26 +2973,34 @@ class SongList(gtk.TreeView):
         column.set_visible(True)
 
 class LibraryBrowser(gtk.Window):
-    def __init__(self, activator):
+    def __init__(self, activator, Kind=SearchBar):
         gtk.Window.__init__(self)
-        self.set_default_size(400, 400)
         self.set_border_width(12)
         self.set_title(_("Library Browser"))
         icon_theme = gtk.icon_theme_get_default()
         self.set_icon(icon_theme.load_icon(
             const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
-        vbox = gtk.VBox(spacing=6)
 
         view = SongList()
         view.set_model(gtk.ListStore(object))
         self.__view = view
-        vbox.pack_start(SearchBar(self.__search), expand=False)
+
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        vbox.pack_start(sw)
-        self.add(vbox)
+
+        browser = Kind(self.__search, save=False, play=False)
+        if Kind.expand:
+            container = Kind.expand()
+            container.pack1(browser, resize=True)
+            container.pack2(sw, resize=True)
+            self.add(container)
+        else:
+            vbox = gtk.VBox(spacing=6)
+            vbox.pack_start(browser, expand=False)
+            vbox.pack_start(sw)
+            self.add(vbox)
 
         menu = gtk.Menu()
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
@@ -2997,6 +3015,7 @@ class LibraryBrowser(gtk.Window):
         view.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
 
+        self.set_default_size(500, 300)
         self.show_all()
 
     def __remove_selected_songs(self, activator, view):

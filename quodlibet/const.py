@@ -60,7 +60,11 @@ MENU = """<ui>
     <menu action='Music'>
       <menuitem action='AddMusic'/>
       <menuitem action='NewPlaylist'/>
-      <menuitem action='BrowseLibrary'/>
+      <menu action='BrowseLibrary'>
+          <menuitem action='BrowseSearch'/>
+          <menuitem action='BrowsePaned'/>
+          <menuitem action='BrowseAlbumList'/>
+      </menu>
       <separator/>
       <menuitem action='Preferences'/>
       <separator/>
