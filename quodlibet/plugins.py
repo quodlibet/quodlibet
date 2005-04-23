@@ -56,6 +56,9 @@ characteristics:
 
 from util import mtime
 from traceback import print_exc
+
+import widgets, gobject
+
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
 
@@ -108,17 +111,8 @@ class PluginManager(object):
         'plural': all_callables[2::3],
     }
 
-    all_events = [
-        ('changed', 'plugin_on_changed'),
-        ('removed', 'plugin_on_removed'),
-        ('refresh', 'plugin_on_refresh'),
-        ('song_started', 'plugin_on_song_started'),
-        ('song_ended', 'plugin_on_song_ended'),
-        ('paused', 'plugin_on_paused'),
-        ('unpaused', 'plugin_on_unpaused'),
-        ('missing', 'plugin_on_missing'),
-        ('seek', 'plugin_on_seek'),
-    ]
+    all_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
+                  for s in gobject.signal_list_names(widgets.SongWatcher)]
 
     def __init__(self, watcher=None, folders=[]):
         self.scan = []
