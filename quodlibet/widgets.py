@@ -623,17 +623,21 @@ class PreferencesWindow(gtk.Window):
         def __preferences(self, selection, frame):
             model, iter = selection.get_selected()
             if frame.child: frame.child.destroy()
-            try: prefs = model[iter][0].Preferences()
-            except (TypeError, AttributeError): frame.hide()
-            else:
-                if isinstance(prefs, gtk.Window):
-                    b = gtk.Button(stock=gtk.STOCK_PREFERENCES)
-                    b.connect_object('clicked', gtk.Window.show, prefs)
-                    b.connect_object('destroy', gtk.Window.destroy, prefs)
-                    frame.add(b)
+            if iter and hasattr(model[iter][0], 'Preferences'):
+                try: prefs = model[iter][0].Preferences()
+                except:
+                    import traceback; traceback.print_exc()
+                    frame.hide()
                 else:
-                    frame.add(prefs)
-                frame.show_all()
+                    if isinstance(prefs, gtk.Window):
+                        b = gtk.Button(stock=gtk.STOCK_PREFERENCES)
+                        b.connect_object('clicked', gtk.Window.show, prefs)
+                        b.connect_object('destroy', gtk.Window.destroy, prefs)
+                        frame.add(b)
+                    else:
+                        frame.add(prefs)
+                    frame.show_all()
+            else: frame.hide()
 
         def __toggled(self, render, path, model):
             render.set_active(not render.get_active())
