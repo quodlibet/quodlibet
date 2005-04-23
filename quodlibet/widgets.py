@@ -1500,25 +1500,28 @@ class AlbumList(Browser, gtk.VBox):
             self.date = None
             self.cover_done = False
 
-            if self.title in self.__covers:
-                self.cover = self.__covers[title]
+            if self.title:
+                if self.title in self.__covers:
+                    self.cover = self.__covers[title]
+                else:
+                    self.cover = None
             else:
+                self.cover_done = True
                 self.cover = None
-
-        def __cmp__(self, other): return cmp(self.title, other.title)
 
         def add(self, song):
             self.tracks += 1
-            self.date = song.get("date")
-            self.discs = max(self.discs, song("~#disc", 0))
+            if self.title:
+                self.date = song.get("date")
+                self.discs = max(self.discs, song("~#disc", 0))
+                if self.cover is None:
+                    self.cover = False
+                    gobject.idle_add(
+                        self.__get_cover, song, priority=gobject.PRIORITY_LOW)
             self.length += song["~#length"]
             self.people |= set(song.list("artist"))
             self.people |= set(song.list("performer"))
             self.people |= set(song.list("composer"))
-            if self.cover is None:
-                self.cover = False
-                gobject.idle_add(
-                    self.__get_cover, song, priority=gobject.PRIORITY_LOW)
 
         def __get_cover(self, song):
             cover = song.find_cover()
@@ -1542,7 +1545,8 @@ class AlbumList(Browser, gtk.VBox):
         def __unicode__(self): return unicode(self.title)
 
         def to_markup(self):
-            text = "<i><b>%s</b></i>" % util.escape(self.title)
+            text = "<i><b>%s</b></i>" % util.escape(
+                self.title or _("Songs not in an album"))
             if self.date: text += " (%s)" % self.date
             text += "\n<small>"
             if self.discs > 1: text += (_("%d discs") % self.discs) + " -"
@@ -1574,7 +1578,9 @@ class AlbumList(Browser, gtk.VBox):
 
         def cell_data_pb(column, cell, model, iter):
             album = model[iter][0]
-            if album.cover:
+            if album is None:
+                cell.set_property('pixbuf', None)
+            elif album.cover:
                 cell.set_property('pixbuf', album.cover)
                 if not album.cover_done:
                     model[iter][0] = model[iter][0]
@@ -1587,7 +1593,13 @@ class AlbumList(Browser, gtk.VBox):
         column = gtk.TreeViewColumn("albums", render)
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         def cell_data(column, cell, model, iter):
-            cell.set_property('markup', model[iter][0].to_markup())
+            album = model[iter][0]
+            if album is None:
+                text = "<b>%s</b>" % _("All albums")
+                text += "\n" + _("%d albums") % (len(model) - 1)
+                cell.set_property('markup', text)
+            else:
+                cell.set_property('markup', model[iter][0].to_markup())
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
 
@@ -1642,10 +1654,11 @@ class AlbumList(Browser, gtk.VBox):
 
     def __properties(self, activator, view):
         model, rows = view.get_selection().get_selected_rows()
-        albums = [model[row][0].title for row in rows]
+        albums = [model[row][0] for row in rows]
+        if None in albums: albums.remove(None)
         if albums:
             text = ", ".join(
-                ["'%s'c" % a.replace("\\", "\\\\").replace("'", "\\'")
+                ["'%s'c" % a.title.replace("\\", "\\\\").replace("'", "\\'")
                  for a in albums])
             songs = library.query("album = |(%s)" % text)
             if songs:
@@ -1653,8 +1666,14 @@ class AlbumList(Browser, gtk.VBox):
                 SongProperties(songs)
 
     def __button_press(self, view, event, menu):
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
         if event.button == 3:
+            for c in menu.get_children():
+                c.set_sensitive(path != (0,))
             menu.popup(None, None, None, event.button, event.time)
+            return True
 
     def __play_selection(self, view, indices, col):
         player.playlist.next()
@@ -1679,10 +1698,13 @@ class AlbumList(Browser, gtk.VBox):
     def __selection_changed(self, selection):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
-        text = ", ".join(
-            ["'%s'c" % a.title.replace("\\", "\\\\").replace("'", "\\'")
-             for a in albums])
-        self.__cb(u"album = |(%s)" % text, None)
+        if None in albums:
+            self.__cb(u"", None)
+        else:
+            text = ", ".join(
+                ["'%s'c" % a.title.replace("\\", "\\\\").replace("'", "\\'")
+                 for a in albums])
+            self.__cb(u"album = |(%s)" % text, None)
 
     def __refresh(self, watcher, model, entry, clear_cache=False):
         if clear_cache: self._Album.clear_cache()
@@ -1692,13 +1714,20 @@ class AlbumList(Browser, gtk.VBox):
         if parser.is_parsable(bg): songs = library.query(bg)
         else: songs = library.values()
         for song in songs:
-            for album in song.list('album'):
-                if album not in albums:
-                    albums[album] = self._Album(album)
-                albums[album].add(song)
+            if "album" not in song:
+                if "" not in albums: albums[""] = self._Album("")
+                albums[""].add(song)
+            else:
+                for album in song.list('album'):
+                    if album not in albums:
+                        albums[album] = self._Album(album)
+                    albums[album].add(song)
 
         albums = albums.values()
-        albums.sort()
+        albums.sort(lambda a, b: cmp(a.title, b.title))
+        if albums and albums[0].title == "":
+            albums.append(albums.pop(0))
+        model.append(row=[None])
         for album in albums: model.append(row=[album])
 
 class MainWindow(gtk.Window):
