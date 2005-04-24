@@ -87,9 +87,10 @@ class PlaylistPlayer(object):
     def __iter__(self): return iter(self.__orig_playlist)
 
     def __set_paused(self, paused):
-        self.__paused = paused
-        try: self.info.set_paused(paused)
-        except AttributeError: pass
+        if paused != self.__paused:
+            self.__paused = paused
+            try: self.info.set_paused(paused)
+            except AttributeError: pass
 
     def __get_paused(self): return self.__paused
 
