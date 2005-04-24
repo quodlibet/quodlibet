@@ -76,6 +76,7 @@ class PlaylistPlayer(object):
         self.__shuffle = False
         self.__player = None
         self.__song = None
+        self.__paused = False
         self.__sort = cmp
         self.__lock = threading.Lock()
         self.filter = None
