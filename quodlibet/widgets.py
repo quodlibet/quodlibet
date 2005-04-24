@@ -3426,6 +3426,7 @@ class SongProperties(gtk.Window):
                         util.escape(song.comma("producer"))))
 
                 w.set_markup("\n".join(text))
+                w.set_ellipsize(pango.ELLIPSIZE_END)
                 cover = song.find_cover()
                 if cover:
                     hb = gtk.HBox(spacing=12)
