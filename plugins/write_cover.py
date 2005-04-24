@@ -1,9 +1,17 @@
+# Copyright 2005 Joe Wreschnig
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+#
+# $Id$
+
 import os, util, config, shutil, gtk
 
 try: config.get("plugins", __name__)
 except:
     out = os.path.expanduser("~/.quodlibet/current.cover")
-    config.set("plugins", "write_cover", out)
+    config.set("plugins", __name__, out)
 
 PLUGIN_NAME = "Picture Saver"
 PLUGIN_DESC = "The cover image of the current song is saved to a file."

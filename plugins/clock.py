@@ -1,10 +1,18 @@
+# Copyright 2005 Joe Wreschnig
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+#
+# $Id$
+
 import time
 import gobject, gtk
 import player
 
 class Lullaby(object):
     PLUGIN_NAME = "Lullaby"
-    PLUGIN_DESC = "Slowly fade out your music."
+    PLUGIN_DESC = "Fade out your music while you go to sleep."
 
     def __init__(self):
         self.__starttime = -1
@@ -35,7 +43,7 @@ class Lullaby(object):
         else: self.__starttime = hour * 60 + minute
 
     def PluginPreferences(self, parent):
-        hb = gtk.HBox(spacing=12)
+        hb = gtk.HBox(spacing=6)
         hb.set_border_width(6)
         cb = gtk.CheckButton("Fade out at:")
         e = gtk.Entry()
@@ -43,8 +51,9 @@ class Lullaby(object):
         else: e.set_text("%d:%02d" % (
             self.__starttime / 60, self.__starttime % 60))
         e.connect('changed', self.__set_time)
-        cb = gtk.CheckButton("Set alarm")
+        cb = gtk.CheckButton("Fade out at:")
         cb.set_active(self.__enabled)
+        e.set_sensitive(self.__enabled)
         cb.connect('clicked', self.__clicked, e)
         hb.pack_start(cb, expand=False)
         hb.pack_start(e, expand=True)
