@@ -1945,7 +1945,9 @@ class MainWindow(gtk.Window):
                 widgets.main, _("Add Music"), widgets.main.last_dir)
             resp, fns = chooser.run()
             chooser.destroy()
-            if resp == gtk.RESPONSE_OK: widgets.main.scan_dirs(fns)
+            if resp == gtk.RESPONSE_OK:
+                widgets.main.scan_dirs(fns)
+                widgets.watcher.refresh()
             if fns: widgets.main.last_dir = fns[0]
             library.save(const.LIBRARY)
 
@@ -2534,6 +2536,7 @@ class MainWindow(gtk.Window):
             library.save(const.LIBRARY)
             player.playlist.refilter()
             self.refresh_songlist()
+        widgets.watcher.refresh()
 
     # Set up the preferences window.
     def __preferences(self, activator):
@@ -2552,7 +2555,9 @@ class MainWindow(gtk.Window):
         chooser = FileChooser(self, _("Add Music"), self.last_dir)
         resp, fns = chooser.run()
         chooser.destroy()
-        if resp == gtk.RESPONSE_OK: self.scan_dirs(fns)
+        if resp == gtk.RESPONSE_OK:
+            self.scan_dirs(fns)
+            widgets.watcher.refresh()
         if fns: self.last_dir = fns[0]
         library.save(const.LIBRARY)
 
@@ -2566,7 +2571,6 @@ class MainWindow(gtk.Window):
         win.destroy()
         player.playlist.refilter()
         self.refresh_songlist()
-        widgets.watcher.refresh()
 
     def __songs_button_press(self, view, event):
         x, y = map(int, [event.x, event.y])
