@@ -546,6 +546,7 @@ class PreferencesWindow(gtk.Window):
             tv = gtk.TreeView()
             model = gtk.ListStore(object)
             tv.set_model(model)
+            tv.set_rules_hint(True)
 
             render = gtk.CellRendererToggle()
             def cell_data(col, render, model, iter):
@@ -566,15 +567,23 @@ class PreferencesWindow(gtk.Window):
             tv.append_column(column)
 
             render = gtk.CellRendererText()
+
             column = gtk.TreeViewColumn("name", render)
             def cell_data(col, render, model, iter):
-                plugin = model[iter][0]
-                text = plugin.PLUGIN_NAME
-                try: text += " (%s)" % plugin.PLUGIN_VERSION
-                except AttributeError: pass
-                render.set_property('text', text)
+                render.set_property('xalign', 0.0)
+                render.set_property('text', model[iter][0].PLUGIN_NAME)
+            column.set_cell_data_func(render, cell_data)
+            column.set_expand(True)
+            tv.append_column(column)
+
+            column = gtk.TreeViewColumn("version", render)
+            def cell_data(col, render, model, iter):
+                render.set_property('xalign', 1.0)
+                render.set_property(
+                    'text', getattr(model[iter][0], 'PLUGIN_VERSION', ''))
             column.set_cell_data_func(render, cell_data)
             tv.append_column(column)
+
             sw.add(tv)
             sw.set_shadow_type(gtk.SHADOW_IN)
             self.pack_start(sw, expand=True)
