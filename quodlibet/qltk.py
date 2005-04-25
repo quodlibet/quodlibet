@@ -68,6 +68,19 @@ class Notebook(gtk.Notebook):
                 gtk.Notebook.append_page(self, page, title)
             else: raise TypeError("no page.title and no label given")
 
+class ConfigCheckButton(gtk.CheckButton):
+    """A CheckButton that connects to QL's config module, and toggles
+    a boolean configuration value when it is toggled.
+
+    It is *not* set to the current config value initially."""
+
+    def __init__(self, label, section, option):
+        gtk.CheckButton.__init__(self, label)
+        self.connect('toggled', ConfigCheckButton.__toggled, section, option)
+
+    def __toggled(self, section, option):
+        config.set(section, option, str(bool(self.get_active())).lower())
+
 class ComboBoxEntrySave(gtk.ComboBoxEntry):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
     and can save itself to (and load itself from) a filename or file-like."""

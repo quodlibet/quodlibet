@@ -204,11 +204,11 @@ class PreferencesWindow(gtk.Window):
             vbox = gtk.VBox(spacing=12)
             tips = gtk.Tooltips()
 
-            c = gtk.CheckButton(_("_Jump to current song automatically"))
+            c = qltk.ConfigCheckButton(
+                _("_Jump to current song automatically"), 'settings', 'jump')
             tips.set_tip(c, _("When the playing song changes, "
                               "scroll to it in the song list"))
             c.set_active(config.state("jump"))
-            c.connect('toggled', self._toggle, "jump")
             self.pack_start(c, expand=False)
 
             buttons = {}
@@ -320,7 +320,9 @@ class PreferencesWindow(gtk.Window):
             self.set_border_width(12)
             self.title = _("Browsers")
             tips = gtk.Tooltips()
-            c = gtk.CheckButton(_("Color _search terms"))
+            c = qltk.ConfigCheckButton(
+                _("Color _search terms"), 'browsers', 'color')
+            c.set_active(config.getboolean("browsers", "color"))
             tips.set_tip(
                 c, _("Display simple searches in blue, "
                      "advanced ones in green, and invalid ones in red"))
@@ -336,8 +338,6 @@ class PreferencesWindow(gtk.Window):
             hb.pack_start(e)
             self.pack_start(hb, expand=False)
 
-            c.set_active(config.getboolean("browsers", "color"))
-            c.connect('toggled', self._toggle, "color", "browsers")
             f = qltk.Frame(_("Search Bar"), bold=True, child=c)
             self.pack_start(f, expand=False)
 
@@ -384,7 +384,8 @@ class PreferencesWindow(gtk.Window):
             self.title = _("Player")
             tips = gtk.Tooltips()
             vbox = gtk.VBox()
-            c = gtk.CheckButton(_("Show _album cover images"))
+            c = qltk.ConfigCheckButton(
+                _("Show _album cover images"), 'settings', 'cover')
             c.set_active(config.state("cover"))
             c.connect('toggled', self.__toggle_cover)
             vbox.pack_start(c)
@@ -448,7 +449,6 @@ class PreferencesWindow(gtk.Window):
                        "#%02x%02x%02x #%02x%02x%02x" % (ct1+ct2))
 
         def __toggle_cover(self, c):
-            config.set("settings", "cover", str(bool(c.get_active())))
             if config.state("cover"): widgets.main.image.show()
             else: widgets.main.image.hide()
 
@@ -514,9 +514,9 @@ class PreferencesWindow(gtk.Window):
             l.set_mnemonic_widget(e)
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
-            cb = gtk.CheckButton(_("Show _programmatic comments"))
+            cb = qltk.ConfigCheckButton(
+                _("Show _programmatic comments"), 'settings', 'allcomments')
             cb.set_active(config.state("allcomments"))
-            cb.connect('toggled', self._toggle, 'allcomments')
             vbox.pack_start(hb, expand=False)
             vbox.pack_start(cb, expand=False)
             f.child.add(vbox)
@@ -973,7 +973,6 @@ class QLTrayIcon(HIGTrayIcon):
             7: lambda *args: player.playlist.previous()
             }
 
-
         icon_theme = gtk.icon_theme_get_default()
         p = icon_theme.load_icon(
             const.ICON, 16, gtk.ICON_LOOKUP_USE_BUILTIN)
@@ -1075,13 +1074,11 @@ class Browser(object):
     expand = False # Packing options
     background = True # Use browsers/filter as a background filter
 
-    # read/write from config data
+    # read config data
     def restore(self): pass
-    def save(self): pass
 
     # decides whether "filter on foo" menu entries are available
-    def can_filter(self, key):
-        return False
+    def can_filter(self, key): return False
 
 class PanedBrowser(Browser, gtk.VBox):
     expand = gtk.VPaned
@@ -2136,9 +2133,9 @@ class MainWindow(gtk.Window):
         self.browser.activate()
 
         self.open_fifo()
-        self.__keys = MmKeys({"mm_prev": self.previous_song,
-                              "mm_next": self.next_song,
-                              "mm_playpause": self.play_pause})
+        self.__keys = MmKeys({"mm_prev": self.__previous_song,
+                              "mm_next": self.__next_song,
+                              "mm_playpause": self.__play_pause})
 
         self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
@@ -2155,6 +2152,7 @@ class MainWindow(gtk.Window):
         self.songlist.connect('columns-changed', self.__cols_changed)
 
         widgets.watcher.connect('removed', self.__song_removed)
+        widgets.watcher.connect('refresh', self.__set_time)
         widgets.watcher.connect('changed', self.__update_title)
         widgets.watcher.connect('song-started', self.__song_started)
         widgets.watcher.connect('song-ended', self.__song_ended)
@@ -2193,24 +2191,18 @@ class MainWindow(gtk.Window):
              "", None, self.lastplayed_month),
             ("NotPlayedEver", gtk.STOCK_FIND, _("_Never played"),
              "", None, self.lastplayed_never),
-            ("Top", gtk.STOCK_GO_UP, _("_Top 40"), "", None, self.top40),
+            ("Top", gtk.STOCK_GO_UP, _("_Top 40"), "", None, self.__top40),
             ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
-             None, self.bottom40),
+             None, self.__bottom40),
             ("Song", None, _("S_ong")),
             ("Previous", gtk.STOCK_MEDIA_PREVIOUS, None, "<control>Left",
-             None, self.previous_song),
+             None, self.__previous_song),
             ("PlayPause", gtk.STOCK_MEDIA_PLAY, None, "<control>space",
-             None, self.play_pause),
+             None, self.__play_pause),
             ("Next", gtk.STOCK_MEDIA_NEXT, None, "<control>Right",
-             None, self.next_song),
-            ("FilterGenre", gtk.STOCK_INDEX, _("Filter on _genre"), "",
-             None, self.cur_genre_filter),
-            ("FilterArtist", gtk.STOCK_INDEX, _("Filter on _artist"), "",
-             None, self.cur_artist_filter),
-            ("FilterAlbum", gtk.STOCK_INDEX, _("Filter on al_bum"), "",
-             None, self.cur_album_filter),
+             None, self.__next_song),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
-             self.current_song_prop),
+             self.__current_song_prop),
             ("Rating", None, tag("rating")),
 
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
@@ -2229,6 +2221,15 @@ class MainWindow(gtk.Window):
             "ReloadLibrary", _("Re_load Library"), None, gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, True)
         ag.add_action(act)
+
+        for tag_, lab in [
+            ("genre", _("Filter on _genre")),
+            ("artist", _("Filter on _artist")),
+            ("album", _("Filter on al_bum"))]:
+            act = gtk.Action(
+                "Filter%s" % util.capitalize(tag_), lab, None, gtk.STOCK_INDEX)
+            act.connect_object('activate', self.__filter_on, tag_)
+            ag.add_action(act)
 
         for (tag_, accel, label) in [
             ("genre", "G", _("Random _genre")),
@@ -2325,15 +2326,15 @@ class MainWindow(gtk.Window):
                 os.mkfifo(const.CONTROL, 0600)
             self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             gobject.io_add_watch(
-                self.fifo, gtk.gdk.INPUT_READ, self._input_check)
+                self.fifo, gtk.gdk.INPUT_READ, self.__input_check)
         except EnvironmentError: pass
 
-    def _input_check(self, source, condition):
+    def __input_check(self, source, condition):
         c = os.read(source, 1)
         toggles = { "@": self.repeat, "&": self.shuffle }
-        if c == "<": self.previous_song()
-        elif c == ">": self.next_song()
-        elif c == "-": self.play_pause()
+        if c == "<": self.__previous_song()
+        elif c == ">": self.__next_song()
+        elif c == "-": self.__play_pause()
         elif c == ")": player.playlist.paused = False
         elif c == "|": player.playlist.paused = True
         elif c == "0": player.playlist.seek(0)
@@ -2356,7 +2357,7 @@ class MainWindow(gtk.Window):
             if not self.get_property('visible'):
                 self.move(*self.window_pos)
             self.present()
-        elif c == "q": self.make_query(os.read(source, 4096))
+        elif c == "q": self.__make_query(os.read(source, 4096))
         elif c == "s":
             time = os.read(source, 20)
             seek_to = widgets.watcher.time[0]
@@ -2371,7 +2372,7 @@ class MainWindow(gtk.Window):
                 song = library[filename]
                 if song not in player.playlist.get_playlist():
                     e_fn = sre.escape(filename)
-                    self.make_query("filename = /^%s/c" % e_fn)
+                    self.__make_query("filename = /^%s/c" % e_fn)
                 player.playlist.go_to(library[filename])
                 player.playlist.paused = False
             else:
@@ -2379,7 +2380,7 @@ class MainWindow(gtk.Window):
         elif c == "d":
             filename = os.read(source, 4096)
             for a, c in library.scan([filename]): pass
-            self.make_query("filename = /^%s/c" % sre.escape(filename))
+            self.__make_query("filename = /^%s/c" % sre.escape(filename))
 
         os.close(self.fifo)
         self.open_fifo()
@@ -2456,7 +2457,7 @@ class MainWindow(gtk.Window):
         config.set("memory", "songlist", str(toggle.get_active()))
         self.__refresh_size()
 
-    def play_pause(self, *args):
+    def __play_pause(self, *args):
         if widgets.watcher.song is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
@@ -2467,10 +2468,10 @@ class MainWindow(gtk.Window):
             path = songlist.get_model().get_path(iter)
             songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
 
-    def next_song(self, *args):
+    def __next_song(self, *args):
         player.playlist.next()
 
-    def previous_song(self, *args):
+    def __previous_song(self, *args):
         player.playlist.previous()
 
     def toggle_repeat(self, button):
@@ -2487,31 +2488,31 @@ class MainWindow(gtk.Window):
             if value is not None: self.browser.filter(key, [value])
 
     def lastplayed_day(self, menuitem):
-        self.make_query("#(lastplayed > today)")
+        self.__make_query("#(lastplayed > today)")
     def lastplayed_week(self, menuitem):
-        self.make_query("#(lastplayed > 7 days ago)")
+        self.__make_query("#(lastplayed > 7 days ago)")
     def lastplayed_month(self, menuitem):
-        self.make_query("#(lastplayed > 30 days ago)")
+        self.__make_query("#(lastplayed > 30 days ago)")
     def lastplayed_never(self, menuitem):
-        self.make_query("#(playcount = 0)")
+        self.__make_query("#(playcount = 0)")
 
-    def top40(self, menuitem):
+    def __top40(self, menuitem):
         songs = [song["~#playcount"] for song in library.values()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
-            self.make_query("#(playcount > %d)" % (songs[0] - 1))
+            self.__make_query("#(playcount > %d)" % (songs[0] - 1))
         else:
-            self.make_query("#(playcount > %d)" % (songs[-40] - 1))
+            self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
-    def bottom40(self, menuitem):
+    def __bottom40(self, menuitem):
         songs = [song["~#playcount"] for song in library.values()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
-            self.make_query("#(playcount < %d)" % (songs[0] + 1))
+            self.__make_query("#(playcount < %d)" % (songs[0] + 1))
         else:
-            self.make_query("#(playcount < %d)" % (songs[-40] + 1))
+            self.__make_query("#(playcount < %d)" % (songs[-40] + 1))
 
     def __rebuild(self, activator, hard=False):
         window = qltk.WaitLoadWindow(self, len(library) // 7,
@@ -2535,7 +2536,7 @@ class MainWindow(gtk.Window):
         if c + r != 0:
             library.save(const.LIBRARY)
             player.playlist.refilter()
-            self.refresh_songlist()
+            self.songlist.refresh()
         widgets.watcher.refresh()
 
     # Set up the preferences window.
@@ -2570,7 +2571,7 @@ class MainWindow(gtk.Window):
             if win.step(added): break
         win.destroy()
         player.playlist.refilter()
-        self.refresh_songlist()
+        self.songlist.refresh()
 
     def __songs_button_press(self, view, event):
         x, y = map(int, [event.x, event.y])
@@ -2599,13 +2600,6 @@ class MainWindow(gtk.Window):
         path, col = songlist.get_cursor()
         header = col.header_name
         self.prep_main_popup(header, 1, 0)
-
-    def cur_artist_filter(self, item):
-        self.__filter_on('artist', [widgets.watcher.song])
-    def cur_album_filter(self, item):
-        self.__filter_on('album', [widgets.watcher.song])
-    def cur_genre_filter(self, item):
-        self.__filter_on('genre', [widgets.watcher.song])
 
     def remove_song(self, item):
         view = self.songlist
@@ -2661,7 +2655,7 @@ class MainWindow(gtk.Window):
             w.destroy()
             widgets.watcher.refresh()
 
-    def current_song_prop(self, *args):
+    def __current_song_prop(self, *args):
         song = widgets.watcher.song
         if song: SongProperties([song])
 
@@ -2795,13 +2789,15 @@ class MainWindow(gtk.Window):
         if player.playlist.playlist_from_filters(text, bg):
             if sort:
                 self.songlist.set_sort_by(None, tag=sort, refresh=False)
-            self.refresh_songlist()
+            self.songlist.refresh()
+            self.__set_time()
 
     def __filter_on(self, header, songs=None):
         if not self.browser or not self.browser.can_filter(header):
             return
         if songs is None:
-            songs = self.songlist.get_selected_songs()
+            if widgets.watcher.song: songs = [widgets.watcher.song]
+            else: return
 
         values = set()
         if header.startswith("~#"):
@@ -2816,16 +2812,12 @@ class MainWindow(gtk.Window):
             # Not an addition or removal (handled separately)
             config.set("settings", "headers", " ".join(headers))
 
-    def make_query(self, query):
+    def __make_query(self, query):
         if self.browser.can_filter(None):
             self.browser.set_text(query.encode('utf-8'))
             self.browser.activate()
 
-    def refresh_songlist(self):
-        self.songlist.refresh()
-        self.__set_time()
-
-    def __set_time(self):
+    def __set_time(self, watcher=None):
         statusbar = self.__statusbar
         model = self.songlist.get_model()
         songs = [row[0] for row in model]
