@@ -1,5 +1,5 @@
-pymusepack (1.1-1) unstable; urgency=low
+pymusepack (0.2-1) unstable; urgency=low
 
   * Initial upload. (Closes: #292107)
 
- -- Joe Wreschnig <piman@debian.org>  Tue, 25 Jan 2005 15:17:16 -0600
+ -- Joe Wreschnig <piman@debian.org>  Mon, 25 Apr 2005 15:43:12 -0500
