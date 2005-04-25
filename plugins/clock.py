@@ -41,6 +41,8 @@ class ClockPlug(object):
 class Alarm(ClockPlug):
     PLUGIN_NAME = "Alarm"
     PLUGIN_DESC = "Wake you up with loud music."
+    PLUGIN_ICON = gtk.STOCK_DIALOG_INFO
+    PLUGIN_VERSION = "$Id$".split()[2]
 
     message = "Wake up at:"
 
@@ -82,6 +84,8 @@ class Alarm(ClockPlug):
 class Lullaby(ClockPlug):
     PLUGIN_NAME = "Lullaby"
     PLUGIN_DESC = "Turn off your music after you go to sleep."
+    PLUGIN_ICON = gtk.STOCK_QUIT
+    PLUGIN_VERSION = "$Id$".split()[2]
 
     message = "Turn off at:"
 

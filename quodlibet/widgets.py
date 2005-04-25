@@ -568,7 +568,11 @@ class PreferencesWindow(gtk.Window):
             render = gtk.CellRendererText()
             column = gtk.TreeViewColumn("name", render)
             def cell_data(col, render, model, iter):
-                render.set_property('text', model[iter][0].PLUGIN_NAME)
+                plugin = model[iter][0]
+                text = plugin.PLUGIN_NAME
+                try: text += " (%s)" % plugin.PLUGIN_VERSION
+                except AttributeError: pass
+                render.set_property('text', text)
             column.set_cell_data_func(render, cell_data)
             tv.append_column(column)
             sw.add(tv)
