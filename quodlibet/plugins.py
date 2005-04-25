@@ -84,6 +84,7 @@ class SongWrapper(object):
     def __contains__(self, key): return key in self._song
     def __call__(self, *args): return self._song(*args)
     def realkeys(self): return self._song.realkeys()
+    def keys(self): return self._song.keys()
     def comma(self, key): return self._song.comma(key)
     def list(self, key): return self._song.list(key)
     def rename(self, newname): return self._song.rename(newname)
