@@ -27,7 +27,7 @@ typedef struct {
 
   FILE *file;
   unsigned int size;
-  BOOL seekable;
+  mpc_bool_t seekable;
 
   int frequency;
   int channels;
@@ -56,7 +56,7 @@ mpc_int32_t read_impl(void *data, void *ptr, mpc_int32_t size) {
   return fread(ptr, 1, size, d->file);
 }
 
-BOOL seek_impl(void *data, mpc_int32_t offset) {
+mpc_bool_t seek_impl(void *data, mpc_int32_t offset) {
   MPCFile *d = (MPCFile *)data;
   return (d->seekable && !fseek(d->file, offset, SEEK_SET));
 }
@@ -71,7 +71,7 @@ mpc_int32_t get_size_impl(void *data) {
   return d->size;
 }
 
-BOOL canseek_impl(void *data) {
+mpc_bool_t canseek_impl(void *data) {
   MPCFile *d = (MPCFile *)data;
   return d->seekable;
 }

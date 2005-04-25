@@ -9,7 +9,7 @@ libmusepack can be found at http://www.musepack.net/index.php?pg=src.
 Compiling:
 ----------
 This module has only been tested on Python 2.3. It definitely won't
-work on 2.1 or earlier.
+work on 2.1 or earlier. It also requires libmusepack 1.1.1.
 
 $ ./setup.py build
 
