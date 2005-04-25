@@ -31,9 +31,9 @@ class Message(gtk.MessageDialog):
 class ConfirmAction(Message):
     """A message dialog that asks a yes/no question."""
 
-    def __init__(self, *args):
-        Message.__init__(self, gtk.MESSAGE_WARNING,
-                         buttons=gtk.BUTTONS_YES_NO, *args)
+    def __init__(self, *args, **kwargs):
+        kwargs["buttons"] = gtk.BUTTONS_YES_NO
+        Message.__init__(self, gtk.MESSAGE_WARNING, *args, **kwargs)
 
     def run(self, destroy = True):
         """Returns True if yes was clicked, False otherwise."""
