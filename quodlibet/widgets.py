@@ -1396,6 +1396,101 @@ class CoverImage(gtk.Frame):
             cover = self.__song.find_cover()
             BigCenteredImage(self.__song.comma("album"), cover.name)
 
+class TreeViewHints(object):
+    """Handle 'hints' for treeviews. This includes expansions of truncated
+    columns, and in the future, tooltips."""
+
+    def __init__(self, view):
+        view.connect('motion-notify-event', self.__motion)
+        view.connect('button-press-event', self.__undisplay)
+        view.connect('scroll-event', self.__undisplay)
+        view.connect('destroy', self.__destroy)
+        self.__info = None
+        self.__id = None
+        self.__win = win = gtk.Window(gtk.WINDOW_POPUP)
+        win.set_keep_above(True)
+        self.__label = label = gtk.Label()
+        self.__ev = ev1 = gtk.EventBox()
+        ev1.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("#000000"))
+        win.add(ev1)
+        ev2 = gtk.EventBox()
+        ev2.set_border_width(1)
+        ev2.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("#ffffff"))
+        hbox = gtk.HBox()
+        hbox.set_border_width(1)
+        ev1.add(ev2)
+        ev2.add(hbox)
+        hbox.pack_start(label)
+        label.set_alignment(0.5, 1.0)
+        win.realize()
+
+        for event in ['motion-notify-event', 'button-press-event',
+                'button-release-event', 'scroll-event']:
+            self.__ev.connect(event, self.__pass_event, view, event)
+        self.__ev.connect('leave-notify-event', self.__check_undisplay)
+
+    def __destroy(self, view):
+        self.__win.destroy()
+
+    def __pass_event(self, eb, event, target, signal):
+        x, y = map(int, [event.x, event.y])
+        event.x += eb.dx
+        event.y += eb.dy
+        event.window = target.window
+        event.put()
+
+    def __motion(self, view, event):
+        x, y = map(int, [event.x, event.y])
+
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return self.__undisplay()
+
+        info = [path, col]
+        if self.__info == info:
+            #if self.__id: gobject.source_remove(self.__id)
+            #self.__id = gobject.timeout_add(2000, self.__undisplay)
+            return
+
+        if self.__info: self.__undisplay()
+        self.__info = info
+        win = self.__win
+        renders = col.get_cell_renderers()
+        if len(renders) != 1 or \
+                not isinstance(renders[0], gtk.CellRendererText):
+            return
+
+        r = renders[0]
+        model = view.get_model()
+        col.cell_set_cell_data(model, model.get_iter(path), False, False)
+        cellw = col.cell_get_position(r)[1]
+
+        rect = gtk.gdk.Rectangle(0, 0, 4, 4) # arbitrary small size
+        r.render(win.window, win, rect, rect, rect, gtk.CELL_RENDERER_PRELIT)
+        self.__label.set_text(r.get_property('text'))
+        w, h = self.__label.get_layout().get_pixel_size()
+        if w + 5 >= cellw:
+            self.__time = event.time
+            self.__display(view, path, col, (w, h))
+
+    def __display(self, view, path, col, (w, h)):
+        x, y, cw, h =  list(view.get_cell_area(path, col))
+        self.__ev.dx = x + 1
+        self.__ev.dy = y + 1
+        y += view.get_bin_window().get_position()[1]
+        ox, oy = view.window.get_origin()
+        x += ox ; y += oy ; w += 5
+        self.__win.set_size_request(w, h)
+        self.__win.resize(w, h)
+        self.__win.move(x, y)
+        self.__win.show_all()
+
+    def __check_undisplay(self, ev1, event):
+        if self.__time < event.time + 50: self.__undisplay()
+
+    def __undisplay(self, *args):
+        self.__info = None
+        self.__win.hide()
+
 class EmptyBar(Browser, gtk.HBox):
     def __init__(self, cb):
         gtk.HBox.__init__(self)
@@ -1576,6 +1671,7 @@ class AlbumList(Browser, gtk.VBox):
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         view = gtk.TreeView()
+        self.__hint = TreeViewHints(view)
         view.set_headers_visible(False)
         view.set_model(gtk.ListStore(object))
 
@@ -2863,6 +2959,7 @@ class SongList(gtk.TreeView):
                 ]
         for sig in sigs:
             self.connect_object('destroy', widgets.watcher.disconnect, sig)
+        self.hints = TreeViewHints(self)
 
     def __redraw_current(self, watcher):
         model = self.get_model()
