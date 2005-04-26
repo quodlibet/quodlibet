@@ -542,7 +542,7 @@ class PreferencesWindow(gtk.Window):
             self.title = _("Plugins")
 
             sw = gtk.ScrolledWindow()
-            sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
             tv = gtk.TreeView()
             model = gtk.ListStore(object)
             tv.set_model(model)
