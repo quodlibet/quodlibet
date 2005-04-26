@@ -225,7 +225,7 @@ class Library(dict):
                 if not os.path.ismount(m): self.mask(m)
                 else: self.unmask(m)
 
-        added, changed = 0, 0
+        added, changed, removed = [], [], []
 
         for d in dirs:
             print to(_("Checking %s") % d)
@@ -237,10 +237,13 @@ class Library(dict):
                         if not self[m_fn].valid():
                             try: self[m_fn].reload()
                             except:
+                                self[m_fn]["~filename"] = m_fn
+                                removed.append(self[m_fn])
                                 del(self[m_fn])
-                            changed += 1
-                    else: added += self.add(m_fn)
-                yield added, changed
+                            else: changed.append(self[m_fn])
+                    elif self.add(m_fn):
+                        added.append(self[m_fn])
+                yield added, changed, removed
 
     def rebuild(self, force=False):
         if config.get("settings", "masked"):
@@ -248,15 +251,18 @@ class Library(dict):
                 if not os.path.ismount(m): self.mask(m)
                 else: self.unmask(m)
 
-        changed, removed = 0, 0
+        changed, removed = [], []
 
         for fn in self.keys():
             if force or not self[fn].valid():
                 try: self[fn].reload()
                 except:
+                    # guarantee at least a filename key even in songs
+                    # that are totally gone.
+                    self[fn]["~filename"] = fn
+                    removed.append(self[fn])
                     del(self[fn])
-                    removed += 1
-                else: changed += 1
+                else: changed.append(self[fn])
             yield changed, removed
 
 def init(cache_fn=None):

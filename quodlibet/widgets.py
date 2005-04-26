@@ -91,6 +91,9 @@ class SongWatcher(gtk.Object):
         # A song was removed from the library; remove it from all views.
         'removed': SIG_PYOBJECT,
 
+        # A song was added to the library.
+        'added': SIG_PYOBJECT,
+
         # A group of changes has been finished; all library views should
         # do a global refresh if necessary
         'refresh': SIG_NONE,
@@ -129,6 +132,9 @@ class SongWatcher(gtk.Object):
 
     def changed(self, song):
         gobject.idle_add(self.emit, 'changed', song)
+
+    def added(self, song):
+        gobject.idle_add(self.emit, 'added', song)
 
     def removed(self, song):
         gobject.idle_add(self.emit, 'removed', song)
@@ -2489,7 +2495,10 @@ class MainWindow(gtk.Window):
                 print to(_("W: Unable to load %s") % filename)
         elif c == "d":
             filename = os.read(source, 4096)
-            for a, c in library.scan([filename]): pass
+            for added, changed, removed in library.scan([filename]): pass
+            for song in added: widgets.watcher.added(song)
+            for song in changed: widgets.watcher.changed(song)
+            for song in removed: widgets.watcher.removed(song)
             self.__make_query("filename = /^%s/c" % sre.escape(filename))
 
         os.close(self.fifo)
@@ -2634,7 +2643,7 @@ class MainWindow(gtk.Window):
         c = r = 0
         for c, r in library.rebuild(hard):
             if iter == 7:
-                if window.step(c, r):
+                if window.step(len(c), len(r)):
                     window.destroy()
                     break
                 iter = 0
@@ -2643,7 +2652,9 @@ class MainWindow(gtk.Window):
             window.destroy()
             if config.get("settings", "scan"):
                 self.scan_dirs(config.get("settings", "scan").split(":"))
-        if c + r != 0:
+        for song in c: widgets.watcher.changed(song)
+        for song in r: widgets.watcher.removed(song)
+        if c or r:
             library.save(const.LIBRARY)
             player.playlist.refilter()
             self.songlist.refresh()
@@ -2677,8 +2688,11 @@ class MainWindow(gtk.Window):
                                   _("Quod Libet is scanning for new songs and "
                                     "adding them to your library.\n\n"
                                     "%d songs added"), 0)
-        for added, changed in library.scan(fns):
-            if win.step(added): break
+        for added, changed, removed in library.scan(fns):
+            if win.step(len(added)): break
+        for song in changed: widgets.watcher.changed(song)
+        for song in added: widgets.watcher.added(song)
+        for song in removed: widgets.watcher.removed(song)
         win.destroy()
         player.playlist.refilter()
         self.songlist.refresh()

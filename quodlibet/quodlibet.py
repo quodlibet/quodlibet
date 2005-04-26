@@ -290,7 +290,7 @@ def load_library():
     from library import library
 
     if config.get("settings", "scan"):
-        for a, c in library.scan(config.get("settings", "scan").split(":")):
+        for a, c, r in library.scan(config.get("settings", "scan").split(":")):
             pass
 
 def load_player():
