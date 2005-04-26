@@ -1356,7 +1356,7 @@ class CoverImage(gtk.Frame):
         gtk.Frame.__init__(self)
         self.add(gtk.EventBox())
         self.child.add(gtk.Image())
-        self.__size = size or [100, 100]
+        self.__size = size or [120, 100]
         self.child.child.set_size_request(-1, self.__size[1])
         self.child.connect_object(
             'button-press-event', CoverImage.__show_cover, self)
