@@ -18,6 +18,7 @@ Running Ex Falso and Quod Libet at the same time is not recommended
  * Played songs are automatically removed from dynamic playlists. (#20)
  * "Background filters" for the paned browser and search entry. (#36)
  * Create/remove empty folders from within Ex Falso. (#40)
+ * '0' to '4' keys or mouse clicks can set song ratings.
  * Depends on PyGTK 2.6 (as well as GTK 2.6).
  * --status to print the player's status.
 
