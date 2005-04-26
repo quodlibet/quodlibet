@@ -53,7 +53,8 @@ class AudioFile(dict):
                 return " - ".join(filter(None, parts))
             elif key == "basename": return os.path.basename(self["~filename"])
             elif key == "dirname": return os.path.dirname(self["~filename"])
-            elif key == "length": return util.format_time(self["~#length"])
+            elif key == "length":
+                return util.format_time(self.get("~#length", 0))
             elif key == "rating":
                 return util.format_rating(self.get("~#rating", 0))
             elif key == "#track":
@@ -74,9 +75,7 @@ class AudioFile(dict):
                     util.fscoding(), "replace"), UNKNOWN)
             else: return v
         elif (key == "artist" or key == "album"):
-            v = dict.get(self, key)
-            if v is None: return UNKNOWN
-            else: return v
+            return self.get(key, UNKNOWN)
         else: return dict.get(self, key, default)
 
     def comma(self, key):
