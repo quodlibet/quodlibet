@@ -15,15 +15,10 @@
 import os, struct
 from cStringIO import StringIO
 
-# This module works with the new left-shift.
-import warnings
-warnings.filterwarnings("ignore", "x<<y", FutureWarning)
-warnings.filterwarnings("ignore", "%u/%o/%x/%X of negative int", FutureWarning)
-
 # There are three different kinds of APE tag values.
 TEXT, BINARY, EXTERNAL = range(3)
 
-HAS_HEADER = 1 << 31
+HAS_HEADER = 1 << 31L
 HAS_FOOTER = 1 << 30
 IS_HEADER  = 1 << 29
 
@@ -168,7 +163,7 @@ class APETag(object):
 
         header = "APETAGEX%s%s" %(
             # version, tag size, item count, flags
-            struct.pack("<iiii", 2000, len(tags) + 32, num_tags,
+            struct.pack("<4I", 2000, len(tags) + 32, num_tags,
                         HAS_HEADER | HAS_FOOTER | IS_HEADER),
             "\0" * 8)
         f.write(header)
@@ -177,7 +172,7 @@ class APETag(object):
 
         footer = "APETAGEX%s%s" %(
             # version, tag size, item count, flags
-            struct.pack("<iiii", 2000, len(tags) + 32, num_tags,
+            struct.pack("<4I", 2000, len(tags) + 32, num_tags,
                         HAS_HEADER | HAS_FOOTER),
             "\0" * 8)
         f.write(footer)
@@ -217,7 +212,7 @@ class _APEValue(object):
 
     def _internal(self, key):
         return "%s%s\0%s" %(
-            struct.pack("<ii", len(self.value), self.kind << 1),
+            struct.pack("<2I", len(self.value), self.kind << 1),
             key, self.value)
 
 class APETextValue(_APEValue):
@@ -261,7 +256,7 @@ class APEExtValue(_APEValue):
 
 def _read_int(data):
     # ints in APE are LE
-    return struct.unpack('<i', data)[0]
+    return struct.unpack('<I', data)[0]
 
 def _utf8(data):
     if isinstance(data, str):
