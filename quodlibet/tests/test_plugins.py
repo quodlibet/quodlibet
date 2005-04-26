@@ -75,5 +75,18 @@ class TestPlugins(TestCase):
         self.pm.rescan()
         self.assertEquals(len(self.pm.list()), 2)
 
+class TestSongWrapper(TestCase):
+    from plugins import SongWrapper
+    from formats.audio import AudioFile
+
+    def test_setitem(self):
+        w = self.SongWrapper(self.AudioFile(
+            {"title": "woo", "~filename": "/dev/null"}))
+        self.failIf(w._was_updated())
+        self.failUnlessEqual(w["title"], "woo")
+        w["title"] = "bar"
+        self.failUnless(w._was_updated())
+        self.failUnlessEqual(w["title"], "bar")
 
 registerCase(TestPlugins)
+registerCase(TestSongWrapper)

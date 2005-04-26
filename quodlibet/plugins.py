@@ -73,9 +73,9 @@ class SongWrapper(object):
     def _was_changed(self): return self._mtime < mtime(self["~filename"])
 
     def __setitem__(self, *args):
-        self.__updated = True
-        if self.__song.can_change(args[0]):
-            return self.__song.__setitem__(*args)
+        self._updated = True
+        if self._song.can_change(args[0]):
+            return self._song.__setitem__(*args)
         else:
             raise ValueError, "Can not set %s" % args[0]
 
