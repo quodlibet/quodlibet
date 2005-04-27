@@ -1442,7 +1442,7 @@ class TreeViewHints(object):
         ev1.add(ev2)
         ev2.add(hbox)
         hbox.pack_start(label)
-        label.set_alignment(0.5, 1.0)
+        label.set_alignment(0.5, 0.5)
         win.realize()
 
         for event in ['button-press-event', 'button-release-event',
