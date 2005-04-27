@@ -1618,12 +1618,12 @@ class SearchBar(EmptyBar):
 
     def __text_parse(self, entry):
         text = entry.get_text()
-        if (parser.is_valid(text) or ("#" not in text and "=" not in text)):
+        if parser.is_parsable(text):
             self._text = text
             self.get_children()[0].prepend_text(text)
-        self._cb(text, None)
-        if self.__save: self.save()
-        self.get_children()[0].write(const.QUERIES)
+            self._cb(text, None)
+            if self.__save: self.save()
+            self.get_children()[0].write(const.QUERIES)
 
     def __test_filter(self, textbox):
         if not config.getboolean('browsers', 'color'): return
