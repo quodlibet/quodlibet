@@ -1487,7 +1487,8 @@ class TreeViewHints(object):
         win = self.__win
         renders = col.get_cell_renderers()
         if len(renders) != 1 or \
-                not isinstance(renders[0], gtk.CellRendererText):
+                not isinstance(renders[0], gtk.CellRendererText) or \
+                renders[0].get_property('ellipsize') == pango.ELLIPSIZE_NONE:
             return
 
         r = renders[0]
@@ -1499,9 +1500,12 @@ class TreeViewHints(object):
         r.render(win.window, win, rect, rect, rect, gtk.CELL_RENDERER_PRELIT)
         self.__label.set_text(r.get_property('text'))
         w, h0 = self.__label.get_layout().get_pixel_size()
-        try: self.__label.set_markup(r.markup)
+        try: markup = r.markup
         except AttributeError: h1 = h0
-        else: w, h1 = self.__label.get_layout().get_pixel_size()
+        else:
+            if isinstance(markup, int): markup = model[path][markup]
+            self.__label.set_markup(markup)
+            w, h1 = self.__label.get_layout().get_pixel_size()
         if w + 5 >= cellw:
             self.__time = event.time
             cursor = map(int, [event.x_root, event.y_root])
@@ -3976,6 +3980,7 @@ class SongProperties(gtk.Window):
             render.set_property('ellipsize', pango.ELLIPSIZE_END)
             render.set_property('editable', True)
             render.connect('edited', self.edit_tag, self.model, 1)
+            render.markup = 1
             column = gtk.TreeViewColumn(_('Value'), render, markup=1,
                                         editable=3, strikethrough=4)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
