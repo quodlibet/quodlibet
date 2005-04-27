@@ -1459,7 +1459,10 @@ class TreeViewHints(object):
         ]
 
     def disconnect_view(self, view):
-        for handler in self.__handlers[view]: view.disconnect(handler)
+        try:
+            for handler in self.__handlers[view]: view.disconnect(handler)
+            del self.__handlers[view]
+        except KeyError: pass
 
     def __pass_event(self, eb, event, signal):
         x, y = map(int, [event.x, event.y])
