@@ -549,7 +549,7 @@ class PreferencesWindow(gtk.Window):
 
             sw = gtk.ScrolledWindow()
             sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-            tv = gtk.TreeView()
+            tv = HintedTreeView()
             model = gtk.ListStore(object)
             tv.set_model(model)
             tv.set_rules_hint(True)
@@ -573,6 +573,7 @@ class PreferencesWindow(gtk.Window):
             tv.append_column(column)
 
             render = gtk.CellRendererText()
+            render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
             column = gtk.TreeViewColumn("name", render)
             def cell_data(col, render, model, iter):
@@ -1107,7 +1108,7 @@ class PanedBrowser(Browser, gtk.VBox):
             gtk.ScrolledWindow.__init__(self)
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             self.set_shadow_type(gtk.SHADOW_IN)
-            self.add(gtk.TreeView(gtk.ListStore(str)))
+            self.add(HintedTreeView(gtk.ListStore(str)))
             render = gtk.CellRendererText()
             render.set_property('ellipsize', pango.ELLIPSIZE_END)
             column = gtk.TreeViewColumn(tag(mytag), render, markup=0)
@@ -1402,26 +1403,40 @@ class CoverImage(gtk.Frame):
             cover = self.__song.find_cover()
             BigCenteredImage(self.__song.comma("album"), cover.name)
 
+class HintedTreeView(gtk.TreeView):
+    def __init__(self, *args):
+        gtk.TreeView.__init__(self, *args)
+        try: tvh = widgets.treeviewhints
+        except AttributeError: tvh = widgets.treeviewhints = TreeViewHints()
+        tvh.connect_view(self)
+
 class TreeViewHints(object):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
 
-    def __init__(self, view):
-        view.connect('motion-notify-event', self.__motion)
-        view.connect('button-press-event', self.__undisplay)
-        view.connect('scroll-event', self.__undisplay)
-        view.connect('destroy', self.__destroy)
+    def __init__(self):
+        self.__handlers = {}
         self.__info = None
         self.__id = None
         self.__win = win = gtk.Window(gtk.WINDOW_POPUP)
-        win.set_keep_above(True)
         self.__label = label = gtk.Label()
-        self.__ev = ev1 = gtk.EventBox()
-        ev1.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("#000000"))
-        win.add(ev1)
+        self.__ev = ev0 = gtk.EventBox()
+        win.add(ev0)
+
+        # Instantiate a tooltip to grab its colors.  Yeah, hokey.
+        tip = gtk.Tooltips(); tip.force_window(); tip.tip_window.realize()
+        fg = tip.tip_window.get_style().fg[gtk.STATE_NORMAL]
+        bg = tip.tip_window.get_style().bg[gtk.STATE_NORMAL]
+        tip.destroy()
+        del tip
+
+        # event boxes to create the tooltip look.  Yeah, hokey.
+        ev1 = gtk.EventBox()
+        ev0.add(ev1)
+        ev1.modify_bg(gtk.STATE_NORMAL, fg)
         ev2 = gtk.EventBox()
+        ev2.modify_bg(gtk.STATE_NORMAL, bg)
         ev2.set_border_width(1)
-        ev2.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("#ffffff"))
         hbox = gtk.HBox()
         hbox.set_border_width(1)
         ev1.add(ev2)
@@ -1430,19 +1445,28 @@ class TreeViewHints(object):
         label.set_alignment(0.5, 1.0)
         win.realize()
 
-        for event in ['motion-notify-event', 'button-press-event',
-                'button-release-event', 'scroll-event']:
-            self.__ev.connect(event, self.__pass_event, view, event)
+        for event in ['button-press-event', 'button-release-event',
+            'scroll-event']:
+            self.__ev.connect(event, self.__pass_event, event)
         self.__ev.connect('leave-notify-event', self.__check_undisplay)
 
-    def __destroy(self, view):
-        self.__win.destroy()
+    def connect_view(self, view):
+        self.__handlers[view] = [
+            view.connect('motion-notify-event', self.__motion),
+            view.connect('button-press-event', self.__undisplay),
+            view.connect('scroll-event', self.__undisplay),
+            view.connect('destroy', self.disconnect_view),
+        ]
 
-    def __pass_event(self, eb, event, target, signal):
+    def disconnect_view(self, view):
+        for handler in self.__handlers[view]: view.disconnect(handler)
+
+    def __pass_event(self, eb, event, signal):
         x, y = map(int, [event.x, event.y])
-        event.x += eb.dx
-        event.y += eb.dy
-        event.window = target.window
+        if signal != 'scroll-event':
+            event.x += eb.dx
+            event.y += eb.dy
+        event.window = self.__target.get_bin_window()
         event.put()
 
     def __motion(self, view, event):
@@ -1453,10 +1477,7 @@ class TreeViewHints(object):
         except TypeError: return
 
         info = [path, col]
-        if self.__info == info:
-            #if self.__id: gobject.source_remove(self.__id)
-            #self.__id = gobject.timeout_add(2000, self.__undisplay)
-            return
+        if self.__info == info: return
 
         if self.__info: self.__undisplay()
         self.__info = info
@@ -1474,22 +1495,29 @@ class TreeViewHints(object):
         rect = gtk.gdk.Rectangle(0, 0, 4, 4) # arbitrary small size
         r.render(win.window, win, rect, rect, rect, gtk.CELL_RENDERER_PRELIT)
         self.__label.set_text(r.get_property('text'))
-        w, h = self.__label.get_layout().get_pixel_size()
+        w, h0 = self.__label.get_layout().get_pixel_size()
+        try: self.__label.set_markup(r.markup)
+        except AttributeError: h1 = h0
+        else: w, h1 = self.__label.get_layout().get_pixel_size()
         if w + 5 >= cellw:
             self.__time = event.time
-            self.__display(view, path, col, (w, h))
+            cursor = map(int, [event.x_root, event.y_root])
+            self.__display(view, path, col, (w, h0 - h1), cursor)
 
-    def __display(self, view, path, col, (w, h)):
+    def __display(self, view, path, col, (w, dh), cursor):
         x, y, cw, h =  list(view.get_cell_area(path, col))
         self.__ev.dx = x + 1
         self.__ev.dy = y + 1
         y += view.get_bin_window().get_position()[1]
         ox, oy = view.window.get_origin()
-        x += ox ; y += oy ; w += 5
+        x += ox ; y += oy ; h -= dh ; w += 5
+        self.__win.move(x, y)
         self.__win.set_size_request(w, h)
         self.__win.resize(w, h)
-        self.__win.move(x, y)
         self.__win.show_all()
+        self.__target = view
+        if not ((x <= cursor[0] < x+w) and (y <= cursor[1] < y+h)):
+            self.__undisplay() # reject if cursor isn't over window
 
     def __check_undisplay(self, ev1, event):
         if self.__time < event.time + 50: self.__undisplay()
@@ -1677,8 +1705,7 @@ class AlbumList(Browser, gtk.VBox):
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
-        view = gtk.TreeView()
-        self.__hint = TreeViewHints(view)
+        view = HintedTreeView()
         view.set_headers_visible(False)
         view.set_model(gtk.ListStore(object))
 
@@ -1711,9 +1738,10 @@ class AlbumList(Browser, gtk.VBox):
             if album is None:
                 text = "<b>%s</b>" % _("All albums")
                 text += "\n" + _("%d albums") % (len(model) - 1)
-                cell.set_property('markup', text)
+                cell.markup = text
             else:
-                cell.set_property('markup', model[iter][0].to_markup())
+                cell.markup = model[iter][0].to_markup()
+            cell.set_property('markup', cell.markup)
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
 
@@ -2952,13 +2980,13 @@ class MainWindow(gtk.Window):
         else: statusbar.set_text(
             _("%d song (%s)") % (i, util.format_time_long(length)))
 
-class SongList(gtk.TreeView):
+class SongList(HintedTreeView):
     """Wrap a treeview that works like a songlist"""
     songlistviews = {}
     headers = []
 
     def __init__(self, recall=0):
-        gtk.TreeView.__init__(self)
+        HintedTreeView.__init__(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
@@ -2974,7 +3002,6 @@ class SongList(gtk.TreeView):
                 ]
         for sig in sigs:
             self.connect_object('destroy', widgets.watcher.disconnect, sig)
-        self.hints = TreeViewHints(self)
 
     def __redraw_current(self, watcher):
         model = self.get_model()
@@ -3907,7 +3934,7 @@ class SongProperties(gtk.Window):
             self.prop = parent
 
             self.model = gtk.ListStore(str, str, bool, bool, bool, str)
-            self.view = gtk.TreeView(self.model)
+            self.view = HintedTreeView(self.model)
             selection = self.view.get_selection()
             selection.connect('changed', self.tag_select)
             render = gtk.CellRendererPixbuf()
@@ -4758,7 +4785,7 @@ class SongProperties(gtk.Window):
             hbox2.pack_start(preview, expand=True, fill=False)
 
             model = gtk.ListStore(object, str, str)
-            view = gtk.TreeView(model)
+            view = HintedTreeView(model)
 
             self.pack_start(hbox2, expand=False)
 
@@ -4887,7 +4914,7 @@ class SongProperties(gtk.Window):
 
         fbasemodel = gtk.ListStore(object, str, str, str)
         fmodel = gtk.TreeModelSort(fbasemodel)
-        fview = gtk.TreeView(fmodel)
+        fview = HintedTreeView(fmodel)
         selection = fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         selection.connect('changed', self.__selection_changed)
@@ -5135,7 +5162,7 @@ class FileSelector(gtk.VPaned):
         self.__filter = filter
 
         dirlist = DirectoryTree(initial)
-        filelist = gtk.TreeView(gtk.ListStore(str))
+        filelist = HintedTreeView(gtk.ListStore(str))
         column = gtk.TreeViewColumn(_("Audio files"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
