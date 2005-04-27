@@ -1514,6 +1514,13 @@ class TreeViewHints(object):
         y += view.get_bin_window().get_position()[1]
         ox, oy = view.window.get_origin()
         x += ox ; y += oy ; h -= dh ; w += 5
+        screen_width = gtk.gdk.screen_width()
+        x_overflow = min([x, x + w - screen_width])
+        if x_overflow > 0:
+            self.__ev.dx -= x_overflow
+            x -= x_overflow
+            w = min(w, screen_width)
+            self.__label.set_ellipsize(pango.ELLIPSIZE_END)
         self.__win.move(x, y)
         self.__win.set_size_request(w, h)
         self.__win.resize(w, h)
