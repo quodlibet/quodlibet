@@ -134,6 +134,7 @@ class PlaylistPlayer(object):
         except ValueError: pass
         try: self.__played.remove(song)
         except ValueError: pass
+        if self.__song is song and self.__player: self.__player.end()
         self.__lock.release()
 
     def __get_song(self):
