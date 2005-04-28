@@ -88,5 +88,14 @@ class TestSongWrapper(TestCase):
         self.failUnless(w._was_updated())
         self.failUnlessEqual(w["title"], "bar")
 
+    def test_not_really_updated(self):
+        w = self.SongWrapper(self.AudioFile(
+            {"title": "woo", "~filename": "/dev/null"}))
+        self.failIf(w._was_updated())
+        w["title"] = "woo"
+        self.failIf(w._was_updated())
+        w["title"] = "quux"
+        self.failUnless(w._was_updated())
+
 registerCase(TestPlugins)
 registerCase(TestSongWrapper)
