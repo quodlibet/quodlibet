@@ -1453,7 +1453,6 @@ class TreeViewHints(object):
     def connect_view(self, view):
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
-            view.connect('button-press-event', self.__undisplay),
             view.connect('scroll-event', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
         ]
