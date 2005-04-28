@@ -1417,7 +1417,8 @@ class TreeViewHints(object):
     def __init__(self):
         self.__handlers = {}
         self.__info = None
-        self.__id = None
+        self.__renderer = None
+        self.__editid = None
         self.__win = win = gtk.Window(gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
         self.__ev = ev0 = gtk.EventBox()
@@ -1508,9 +1509,9 @@ class TreeViewHints(object):
         if w + 5 >= cellw:
             self.__time = event.time
             cursor = map(int, [event.x_root, event.y_root])
-            self.__display(view, path, col, (w, h0 - h1), cursor)
+            self.__display(view, r, path, col, (w, h0 - h1), cursor)
 
-    def __display(self, view, path, col, (w, dh), cursor):
+    def __display(self, view, render, path, col, (w, dh), cursor):
         x, y, cw, h =  list(view.get_cell_area(path, col))
         self.__ev.dx = x + 1
         self.__ev.dy = y + 1
@@ -1530,6 +1531,8 @@ class TreeViewHints(object):
         self.__win.resize(w, h)
         self.__win.show_all()
         self.__target = view
+        self.__renderer = render
+        self.__editid = render.connect('editing-started', self.__undisplay)
         if not ((x <= cursor[0] < x+w) and (y <= cursor[1] < y+h)):
             self.__undisplay() # reject if cursor isn't over window
 
@@ -1537,7 +1540,8 @@ class TreeViewHints(object):
         if self.__time < event.time + 50: self.__undisplay()
 
     def __undisplay(self, *args):
-        self.__info = None
+        if self.__renderer: self.__renderer.disconnect(self.__editid)
+        self.__renderer = self.__editid = self.__info = None
         self.__win.hide()
 
 class EmptyBar(Browser, gtk.HBox):
