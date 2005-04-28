@@ -73,7 +73,8 @@ class SongWrapper(object):
     def _was_changed(self): return self._mtime < mtime(self["~filename"])
 
     def __setitem__(self, key, value):
-        self._updated = (value != self._song.__getitem__(key))
+        self._updated = (key not in self._song or
+                         value != self._song.__getitem__(key))
         if self._song.can_change(key):
             return self._song.__setitem__(key, value)
         else:

@@ -97,5 +97,12 @@ class TestSongWrapper(TestCase):
         w["title"] = "quux"
         self.failUnless(w._was_updated())
 
+    def test_new_tag(self):
+        w = self.SongWrapper(self.AudioFile(
+            {"title": "woo", "~filename": "/dev/null"}))
+        self.failIf(w._was_updated())
+        w["version"] = "bar"
+        self.failUnless(w._was_updated())
+
 registerCase(TestPlugins)
 registerCase(TestSongWrapper)
