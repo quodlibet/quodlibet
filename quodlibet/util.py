@@ -165,6 +165,7 @@ def capitalize(str):
 
 # Split a string on ;s and ,s.
 def split_value(s, splitters=",;&"):
+    if not splitters: return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
         new_values = []
