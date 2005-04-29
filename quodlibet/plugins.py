@@ -57,24 +57,28 @@ characteristics:
 from util import mtime
 from traceback import print_exc
 
-import widgets, gobject
+import gobject
+import widgets
 
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
 
 class SongWrapper(object):
-    __slots__ = ['_song', '_updated', '_mtime']
+    __slots__ = ['_song', '_updated', '_mtime', '_needs_write']
     def __init__(self, song):
         self._song = song
         self._updated = False
+        self._needs_write = False
         self._mtime = mtime(self["~filename"])
 
     def _was_updated(self): return self._updated
-    def _was_changed(self): return self._mtime < mtime(self["~filename"])
+    def _was_changed(self):
+        return self._updated or self._mtime < mtime(self["~filename"])
 
     def __setitem__(self, key, value):
-        self._updated = (key not in self._song or
-                         value != self._song.__getitem__(key))
+        if key in self and self[key] == value: return
+        self._updated = True
+        self._needs_write = (self._needs_write or not key.startswith("~"))
         if self._song.can_change(key):
             return self._song.__setitem__(key, value)
         else:
@@ -85,6 +89,7 @@ class SongWrapper(object):
     def __contains__(self, key): return key in self._song
     def __call__(self, *args): return self._song(*args)
     def realkeys(self): return self._song.realkeys()
+    def can_change(self, key): return self._song.can_change(key)
     def keys(self): return self._song.keys()
     def comma(self, key): return self._song.comma(key)
     def list(self, key): return self._song.list(key)
@@ -309,8 +314,30 @@ class PluginManager(object):
 
     def check_change_and_refresh(self, args):
         updated = False
-        for song in args:
-            if song and song._was_changed():
+        songs = filter(None, args)
+        needs_write = filter(lambda s: s._needs_write, songs)
+
+        if needs_write:
+            win = widgets.WritingWindow(None, len(needs_write))
+            for song in needs_write:
+                try: song._song.write()
+                except Exception, err:
+                    try: song.reload()
+                    except: self.watcher.error(song)
+
+                    gtk.threads_enter()
+                    qltk.ErrorMessage(
+                        None, _("Unable to edit song"),
+                        _("Saving <b>%s</b> failed. The file "
+                          "may be read-only, corrupted, or you "
+                          "do not have permission to edit it.")%(
+                        util.escape(song('~basename')))).run()
+                    gtk.threads_leave()
+                win.step()
+            win.destroy()
+
+        for song in songs:
+            if song._was_changed():
                 self.watcher.changed(song._song)
                 updated = True
         if updated:

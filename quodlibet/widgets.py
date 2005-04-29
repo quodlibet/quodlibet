@@ -574,18 +574,18 @@ class PreferencesWindow(gtk.Window):
 
             render = gtk.CellRendererText()
             render.set_property('ellipsize', pango.ELLIPSIZE_END)
-
+            render.set_property('xalign', 0.0)
             column = gtk.TreeViewColumn("name", render)
             def cell_data(col, render, model, iter):
-                render.set_property('xalign', 0.0)
                 render.set_property('text', model[iter][0].PLUGIN_NAME)
             column.set_cell_data_func(render, cell_data)
             column.set_expand(True)
             tv.append_column(column)
 
+            render = gtk.CellRendererText()
+            render.set_property('xalign', 1.0)
             column = gtk.TreeViewColumn("version", render)
             def cell_data(col, render, model, iter):
-                render.set_property('xalign', 1.0)
                 render.set_property(
                     'text', getattr(model[iter][0], 'PLUGIN_VERSION', ''))
             column.set_cell_data_func(render, cell_data)
