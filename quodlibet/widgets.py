@@ -2147,7 +2147,7 @@ class MainWindow(gtk.Window):
                 'song-started', self.__song_changed, scale, l)
 
             gobject.timeout_add(
-                200, self.__update_time, widgets.watcher, scale, l)
+                500, self.__update_time, widgets.watcher, scale, l)
 
         def __song_changed(self, watcher, song, position, label):
             if song:
