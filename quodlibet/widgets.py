@@ -1419,6 +1419,7 @@ class TreeViewHints(object):
         self.__info = None
         self.__renderer = None
         self.__editid = None
+        self.__timeoutid = None
         self.__win = win = gtk.Window(gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
         self.__ev = ev0 = gtk.EventBox()
@@ -1450,6 +1451,7 @@ class TreeViewHints(object):
             'scroll-event']:
             self.__ev.connect(event, self.__pass_event, event)
         self.__ev.connect('leave-notify-event', self.__check_undisplay)
+        self.__ev.connect('enter-notify-event', self.__timeout)
 
     def connect_view(self, view):
         self.__handlers[view] = [
@@ -1529,12 +1531,16 @@ class TreeViewHints(object):
         self.__win.move(x, y)
         self.__win.set_size_request(w, h)
         self.__win.resize(w, h)
-        self.__win.show_all()
         self.__target = view
         self.__renderer = render
         self.__editid = render.connect('editing-started', self.__undisplay)
-        if not ((x <= cursor[0] < x+w) and (y <= cursor[1] < y+h)):
-            self.__undisplay() # reject if cursor isn't over window
+        self.__timeout(id=gobject.timeout_add(100, self.__undisplay))
+        if x <= cursor[0] < x+w and y <= cursor[1] < y+h: self.__win.show_all()
+        else: self.__undisplay() # reject if cursor isn't over window
+
+    def __timeout(self, ev=None, event=None, id=None):
+        if self.__timeoutid: gobject.source_remove(self.__timeoutid)
+        self.__timeoutid = id
 
     def __check_undisplay(self, ev1, event):
         if self.__time < event.time + 50: self.__undisplay()
