@@ -670,6 +670,7 @@ class PreferencesWindow(gtk.Window):
             model.clear()
             widgets.main.pm.rescan()
             plugins = widgets.main.pm.list()
+            plugins.sort(lambda a, b: cmp(a.PLUGIN_NAME, b.PLUGIN_NAME))
             for plugin in plugins:
                 it = model.append(row=[plugin])
                 if plugin is sel: view.get_selection().select_iter(it)
