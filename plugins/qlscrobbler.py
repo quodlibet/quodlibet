@@ -1,10 +1,11 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.1
-# (C) 2005 by Joshua Kwan <joshk@triplehelix.org>
+# version 0.2
+# (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
+#             Joe Wreschnig <piman@sacredchao.net>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
-import httplib, md5, urllib, time, threading
-import player, config
+import httplib, md5, urllib, time, threading, os
+import player, config, const
 import gobject, gtk
 from qltk import Message
 
@@ -12,9 +13,10 @@ class QLScrobbler(object):
 	# session invariants
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "AudioScrobbler client for Quod Libet"
-	PLUGIN_VERSION = "1.0"
-	CLIENT = "tst"
+	PLUGIN_VERSION = "0.2"
+	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
+	DUMP = os.path.join(const.DIR, "scrobbler_cache")
 
 	# things that could change
 	
@@ -36,12 +38,80 @@ class QLScrobbler(object):
 	locked = False
 
 	# we need to store this because not all events get the song
-	song_artist = ""
-	song_title = ""
-	song_album = ""
-	song_length = 0
+	song = None
 
 	queue = []
+
+	def __init__(self):
+		# Read dumped queue and delete it
+		try:
+			dump = open(self.DUMP, 'r')
+			self.read_dump(dump)
+		except: pass
+		
+		# Set up exit hook to dump queue
+		gtk.quit_add(0, self.dump_queue)
+
+	def read_dump(self, dump):
+		print "Loading dumped queue."
+	
+		current = {}
+
+		for line in dump.readlines():
+			key = ""
+			value = ""
+			
+			line = line.rstrip()
+			try: (key, value) = line.split(" = ", 1)
+			except:
+				if line == "-":
+					for key in ["album", "mbid"]:
+						if key not in current:
+							current[key] = ""
+					
+					for reqkey in ["artist", "title", "length", "stamp"]:
+						# discard if somehow invalid
+						if reqkey not in current:
+							current = {}
+
+					if current != {}:
+						self.queue.append(current)
+						current = {}
+				continue
+				
+			if key == "length": current[key] = int(value)
+			else: current[key] = value
+
+		dump.close()
+
+		os.remove(self.DUMP)
+
+#		print "Queue contents:"
+#		for item in self.queue:
+#			print "\t%s - %s" % (item['artist'], item['title'])
+
+	def dump_queue(self):
+		if len(self.queue) == 0: return 0
+		
+		print "Dumping offline queue, will submit next time."
+
+		dump = open(self.DUMP, 'w')
+		
+		for i in range(len(self.queue)):
+			dump.write("artist = %s\n" % self.queue[i]['artist'])
+			dump.write("title = %s\n" % self.queue[i]['title'])
+			dump.write("length = %s\n" % self.queue[i]['length'])
+			dump.write("album = %s\n" % self.queue[i]['album'])
+			dump.write("mbid = %s\n" % self.queue[i]['mbid'])
+			dump.write("stamp = %s\n-\n" % self.queue[i]['stamp'])
+
+		dump.close()
+
+		return 0
+		
+	def plugin_on_removed(song):
+		if self.song is song:
+			self.already_submitted = True
 
 	def plugin_on_song_ended(self, song, stopped):
 		if self.timeout_id > 0:
@@ -57,16 +127,14 @@ class QLScrobbler(object):
 
 		if song is None: return
 		# Protocol stipulation:
+		#	* don't submit when length < 00:30 or length > 30:00
 		#	* don't submit if artist and title are not available
-		if not 'title' in song or not 'artist' in song:	return
-		
-		self.song_artist = song.comma("artist").encode("utf-8")
-		self.song_title = song.comma("title").encode("utf-8")
-		try: # Not required
-			self.song_album = song.comma("album").encode("utf-8")
-		except: self.song_album = ""
-		self.song_length = int(song['~#length'])
-		
+		if song["~#length"] > 30 * 60 or song["~#length"] < 30: return
+		elif 'title' not in song: return
+		elif "artist" not in song:
+			if ("composer" not in song) and ("performer" not in song): return
+
+		self.song = song
 		if player.playlist.paused == False:
 			self.prepare()
 
@@ -90,14 +158,12 @@ class QLScrobbler(object):
 			self.already_submitted = True # cancel
 		
 	def prepare(self):
+		if not self.song: return
+
 		# Protocol stipulations:
-		#	* don't submit when length < 00:30 or length > 30:00
 		#	* submit 240 seconds in or at 50%, whichever comes first
-		delay = 0
-	
-		if self.song_length > 30 * 60 or self.song_length < 30: return
-		elif self.song_length / 2 < 240: delay = int(self.song_length / 2)
-		else: delay = 240
+		delay = 0	
+		delay = int(min(self.song["~#length"] / 2, 240))
 
 		if self.timeout_id == -2: # change delta based on current progress
 			# assumption is that self.already_submitted == 0, therefore
@@ -202,15 +268,25 @@ class QLScrobbler(object):
 		stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 	
 		store = {
-			"artist": self.song_artist,
-			"title": self.song_title,
-			"length": str(self.song_length),
-			"album": self.song_album,
+			"title": self.song.comma("title"),
+			"length": str(self.song["~#length"]),
+			"album": self.song.comma("album"),
 			"mbid": "", # XXX
 			"stamp": stamp
 		}
 
-		self.queue.insert(0, store)
+		if "artist" in self.song:
+			store["artist"] = self.song.comma("artist")
+		elif "composer" in self.song:
+			store["artist"] = self.song.comma("composer")
+		elif "performer" in self.song:
+			performer = self.song.comma('performer')
+			if performer[-1] == ")" and "(" in performer:
+				store["artist"] = performer[:performer.rindex("(")].strip()
+			else:
+				store["artist"] = performer
+
+		self.queue.append(store)
 		
 		if self.locked == True:
 			# another instance running, let it deal with this
@@ -218,8 +294,6 @@ class QLScrobbler(object):
 
 		self.locked = True
 
-		if self.waiting == True:
-			print "Waiting for INTERVAL to elapse before submitting."
 		while self.waiting == True: time.sleep(1)
 
 		# Read config, handshake, and send challenge if not already done
@@ -228,30 +302,25 @@ class QLScrobbler(object):
 			if self.broken == False and self.need_config == False:
 				self.send_handshake()
 		
+		# INTERVAL may have been set during handshake.
+		while self.waiting == True: time.sleep(1)
+			
+		if self.challenge_sent == False:
+			self.locked = False
+			return
+		
 		data = {
 			'u': self.username,
 			's': self.pwhash
 		}
 		
-		# INTERVAL may have been set during handshake.
-		if self.waiting == True:
-			print "Waiting for INTERVAL to elapse before submitting."
-		while self.waiting == True: time.sleep(1)
-			
-		if self.challenge_sent == False:
-			print "Deferring submission; no challenge has been sent yet."
-			self.locked = False
-			return
-		
-		print "Beginning submission"
-
 		# Flush the cache
 		for i in range(len(self.queue)):
 			print "Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title'])
-			data["a[%d]" % i] = self.queue[i]['artist']
-			data["t[%d]" % i] = self.queue[i]['title']
+			data["a[%d]" % i] = self.queue[i]['artist'].encode('utf-8')
+			data["t[%d]" % i] = self.queue[i]['title'].encode('utf-8')
 			data["l[%d]" % i] = str(self.queue[i]['length'])
-			data["b[%d]" % i] = self.queue[i]['album']
+			data["b[%d]" % i] = self.queue[i]['album'].encode('utf-8')
 			data["m[%d]" % i] = self.queue[i]['mbid']
 			data["i[%d]" % i] = self.queue[i]['stamp']
 		
@@ -264,16 +333,10 @@ class QLScrobbler(object):
 		
 		try:
 			data_str = urllib.urlencode(data)
-			print "Sending request: %s" % data_str
 			conn.request("POST", "/" + file, data_str, headers)
 			resp = conn.getresponse()
 			conn.close()
 		except:
-			# self-imposed INTERVAL
-			self.waiting = True
-			gobject.timeout_add(30000, self.clear_waiting)
-			print "Failed to connect, will try later."
-			self.locked = False
 			return # preserve the queue, yadda yadda
 
 		lines = resp.read().rstrip().split("\n")
@@ -304,12 +367,9 @@ class QLScrobbler(object):
 		self.locked = False
 
 	def PluginPreferences(self, parent):
-		def changed(entry):
+		def changed(entry, key):
 			# having two functions is unnecessary..
-			if entry.get_visibility() == False:
-				config.set("plugins", "scrobbler_password", entry.get_text())
-			else:
-				config.set("plugins", "scrobbler_username", entry.get_text())
+			config.set("plugins", "scrobbler_" + key, entry.get_text())
 
 		def destroyed(*args):
 			# if changed, let's say that things just got better and we should
@@ -333,6 +393,7 @@ class QLScrobbler(object):
 		pwent = gtk.Entry()
 		pwent.set_visibility(False)
 		pwent.set_invisible_char('*')
+		table.set_border_width(6)
 		
 		try: userent.set_text(config.get("plugins", "scrobbler_username"))
 		except: pass
@@ -341,7 +402,7 @@ class QLScrobbler(object):
 		
 		table.attach(userent, 1, 2, 1, 2)
 		table.attach(pwent, 1, 2, 2, 3)
-		pwent.connect('changed', changed)
-		userent.connect('changed', changed)
+		pwent.connect('changed', changed, 'password')
+		userent.connect('changed', changed, 'username')
 		table.connect('destroy', destroyed)
 		return table
