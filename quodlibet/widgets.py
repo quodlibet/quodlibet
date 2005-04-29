@@ -1535,8 +1535,10 @@ class TreeViewHints(object):
         self.__renderer = render
         self.__editid = render.connect('editing-started', self.__undisplay)
         self.__timeout(id=gobject.timeout_add(100, self.__undisplay))
-        if x <= cursor[0] < x+w and y <= cursor[1] < y+h: self.__win.show_all()
-        else: self.__undisplay() # reject if cursor isn't over window
+        if (x <= cursor[0] < x+w) and (y <= cursor[1] < y+h):
+            self.__win.show_all()
+        else:
+            self.__undisplay() # reject if cursor isn't over window
 
     def __timeout(self, ev=None, event=None, id=None):
         if self.__timeoutid: gobject.source_remove(self.__timeoutid)
