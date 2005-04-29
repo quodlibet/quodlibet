@@ -3342,9 +3342,10 @@ class MainSongList(SongList):
                 h.set_sort_indicator(True)
                 h.set_sort_order(s)
             else: h.set_sort_indicator(False)
-        player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
         config.set('memory', 'sortby', "%d%s" % (s == gtk.SORT_ASCENDING,
                                                  tag))
+        if tag == "~album~part": tag = "album"
+        player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
         if refresh: self.refresh()
 
     # Clear the songlist and readd the songs currently wanted.
