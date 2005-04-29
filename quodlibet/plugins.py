@@ -318,6 +318,7 @@ class PluginManager(object):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
+            gtk.threads_enter()
             win = widgets.WritingWindow(None, len(needs_write))
             for song in needs_write:
                 try: song._song.write()
@@ -325,16 +326,15 @@ class PluginManager(object):
                     try: song.reload()
                     except: self.watcher.error(song)
 
-                    gtk.threads_enter()
                     qltk.ErrorMessage(
                         None, _("Unable to edit song"),
                         _("Saving <b>%s</b> failed. The file "
                           "may be read-only, corrupted, or you "
                           "do not have permission to edit it.")%(
                         util.escape(song('~basename')))).run()
-                    gtk.threads_leave()
                 win.step()
             win.destroy()
+            gtk.threads_leave()
 
         for song in songs:
             if song._was_changed():
