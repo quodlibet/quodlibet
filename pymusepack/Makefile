@@ -18,5 +18,5 @@ clean:
 distclean: clean
 	rm -f *~ */*~
 
-test:
+test: musepack/mpc.so
 	@python -c "import tests; tests.unit()"
