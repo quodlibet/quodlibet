@@ -24,6 +24,8 @@ class ValidityTests(TestCase):
 
     def test_empty(self):
         self.failUnless(parser.is_valid(''))
+        self.failUnless(parser.is_parsable(''))
+        self.failUnless(parser.parse(''))
 
     def test_emptylist(self):
         self.failIf(parser.is_valid("a = &()"))

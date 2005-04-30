@@ -225,7 +225,8 @@ class QueryParser(object):
             self.lookahead = QueryLexeme(EOF, "")
 
 def parse(string):
-    if string and not set("#=").intersection(string):
+    if string == "": return match.Inter([])
+    elif not set("#=").intersection(string):
         parts = ["* = /" + sre.escape(p) + "/" for p in string.split()]
         string = "&(" + ",".join(parts) + ")"
     return QueryParser(QueryLexer(string)).StartQuery()
@@ -238,8 +239,7 @@ def is_valid(string):
     else: return True
 
 def is_parsable(string):
-    if string == "": return True
-    elif not set("#=").intersection(string): return True
+    if not set("#=").intersection(string): return True
     else: return is_valid(string)
 
 def is_valid_color(string):
