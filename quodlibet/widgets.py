@@ -1417,7 +1417,8 @@ class TreeViewHints(gtk.Window):
     columns, and in the future, tooltips."""
 
     __gsignals__ = dict.fromkeys(
-        ['button-press-event', 'button-release-event', 'motion-notify-event'],
+        ['button-press-event', 'button-release-event',
+        'motion-notify-event', 'scroll-event'],
         'override')
 
     def __init__(self):
@@ -1438,7 +1439,6 @@ class TreeViewHints(gtk.Window):
         self.connect('expose-event', self.__expose)
         self.connect('enter-notify-event', self.__enter)
         self.connect('leave-notify-event', self.__check_undisplay)
-        self.connect('scroll-event', self.__scroll)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
@@ -1473,7 +1473,6 @@ class TreeViewHints(gtk.Window):
     def __motion(self, view, event):
         # trigger over row area, not column headers
         if event.window is not view.get_bin_window(): return
-        # don't display while modifiers (e.g. alt of alt+drag) held
         if event.get_state() & gtk.gdk.MODIFIER_MASK: return
 
         x, y = map(int, [event.x, event.y])
@@ -1550,24 +1549,21 @@ class TreeViewHints(gtk.Window):
         if id is not None: self.__timeout_id = id
 
     def __event(self, event):
-        e2 = event.copy()
-        e2.x += self.__dx
-        e2.y += self.__dy 
-        e2.window = self.__target.get_bin_window()
-        return e2
+        if event.type != gtk.gdk.SCROLL:
+            event.x += self.__dx
+            event.y += self.__dy 
 
-    def do_button_press_event(self, event):
-        return gtk.main_do_event(self.__event(event))
-
-    def do_button_release_event(self, event):
-        return gtk.main_do_event(self.__event(event))
-
-    def do_motion_notify_event(self, event):
-        return gtk.main_do_event(self.__event(event))
-
-    def __scroll(self, widget, event):
+        # modifying event.window is a necessary evil, made okay because
+        # nobody else should tie to any TreeViewHints events ever.
         event.window = self.__target.get_bin_window()
-        event.put()
+
+        gtk.main_do_event(event)
+        return True
+
+    def do_button_press_event(self, event): return self.__event(event)
+    def do_button_release_event(self, event): return self.__event(event)
+    def do_motion_notify_event(self, event): return self.__event(event)
+    def do_scroll_event(self, event): return self.__event(event)
 
 gobject.type_register(TreeViewHints)
 
