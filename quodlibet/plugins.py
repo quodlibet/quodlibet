@@ -317,7 +317,6 @@ class PluginManager(object):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
-            gtk.threads_enter()
             win = widgets.WritingWindow(None, len(needs_write))
             for song in needs_write:
                 try: song._song.write()
@@ -333,7 +332,6 @@ class PluginManager(object):
                         util.escape(song('~basename')))).run()
                 win.step()
             win.destroy()
-            gtk.threads_leave()
 
         for song in songs:
             if song._was_changed():
