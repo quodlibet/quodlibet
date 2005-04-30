@@ -1678,6 +1678,22 @@ class AlbumList(Browser, gtk.VBox):
                 self.cover_done = True
                 self.cover = None
 
+        def __getitem__(self, key):
+            if key == "~#length": return self.length
+            elif key == "~#tracks": return self.tracks
+            elif key == "~#discs": return self.discs
+            elif key == "~length": return util.format_time(self.length)
+            elif key == "title": return self.title
+            elif key == "date": return self.date
+            elif key == "people" or key == "artist" or key == "artists":
+                return "\n".join(self.people)
+            else: return ""
+
+        def get(self, key, default=None):
+            return self[key] or default
+
+        __call__ = get
+
         def add(self, song):
             self.tracks += 1
             if self.title:
@@ -1751,7 +1767,7 @@ class AlbumList(Browser, gtk.VBox):
             elif album.cover:
                 cell.set_property('pixbuf', album.cover)
                 if not album.cover_done:
-                    model[iter][0] = model[iter][0]
+                    model.row_changed(model.get_path(iter), iter)
                     album.cover_done = True
             else: cell.set_property('pixbuf', None)
         column.set_cell_data_func(render, cell_data_pb)
@@ -1819,13 +1835,14 @@ class AlbumList(Browser, gtk.VBox):
         self.pack_start(sw, expand=True)
 
         self.__refresh(None, view, e)
+        self.__filter_changed(e, view)
         self.show_all()
 
     def __filter_changed(self, entry, view):
         if parser.is_parsable(entry.get_text().decode('utf-8')):
             if self.__refill_id: gobject.source_remove(self.__refill_id)
             self.__refill_id = gobject.timeout_add(
-                500, self.__refresh, entry, view, entry)
+                300, self.__refresh, entry, view, entry)
 
     def __properties(self, activator, view):
         model, rows = view.get_selection().get_selected_rows()
@@ -1920,8 +1937,10 @@ class AlbumList(Browser, gtk.VBox):
         model.clear()
         albums = {}
         bg = entry.get_text().decode('utf-8')
-        if parser.is_parsable(bg): songs = library.query(bg)
-        else: songs = library.values()
+        songs = library.values()
+        if parser.is_parsable(bg): filt = parser.parse(bg).search
+        else: filt = None
+
         for song in songs:
             if "album" not in song:
                 if "" not in albums: albums[""] = self._Album("")
@@ -1932,11 +1951,11 @@ class AlbumList(Browser, gtk.VBox):
                         albums[album] = self._Album(album)
                     albums[album].add(song)
 
-        albums = albums.values()
+        albums = filter(filt, albums.values())
         albums.sort(lambda a, b: cmp(a.title, b.title))
         if albums and albums[0].title == "":
             albums.append(albums.pop(0))
-        model.append(row=[None])
+        if filt is None: model.append(row=[None])
         for album in albums: model.append(row=[album])
         for i, row in enumerate(iter(model)):
              if (row[0] and row[0].title) in selected:
