@@ -1105,14 +1105,15 @@ class PanedBrowser(Browser, gtk.VBox):
     expand = gtk.VPaned
     
     class Pane(gtk.ScrolledWindow):
+        __render = gtk.CellRendererText()
+        __render.set_property('ellipsize', pango.ELLIPSIZE_END)
+
         def __init__(self, mytag, next, play=True):
             gtk.ScrolledWindow.__init__(self)
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             self.set_shadow_type(gtk.SHADOW_IN)
             self.add(HintedTreeView(gtk.ListStore(str)))
-            render = gtk.CellRendererText()
-            render.set_property('ellipsize', pango.ELLIPSIZE_END)
-            column = gtk.TreeViewColumn(tag(mytag), render, markup=0)
+            column = gtk.TreeViewColumn(tag(mytag), self.__render, markup=0)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
             self.child.append_column(column)
@@ -4864,12 +4865,11 @@ class SongProperties(gtk.Window):
 
             self.pack_start(hbox2, expand=False)
 
-            column = gtk.TreeViewColumn(
-                _('File'), gtk.CellRendererText(), text=1)
+            render = gtk.CellRendererText()
+            column = gtk.TreeViewColumn(_('File'), render, text=1)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
-            column = gtk.TreeViewColumn(
-                _('Track'), gtk.CellRendererText(), text=2)
+            column = gtk.TreeViewColumn(_('Track'), render, text=2)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
             view.set_reorderable(True)
@@ -4995,11 +4995,12 @@ class SongProperties(gtk.Window):
         selection.connect('changed', self.__selection_changed)
 
         if len(songs) > 1:
+            render = gtk.CellRendererText()
             expander = gtk.Expander(_("Apply to these _files..."))
-            c1 = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(), text=1)
+            c1 = gtk.TreeViewColumn(_('File'), render, text=1)
             c1.set_sort_column_id(1)
             c1.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            c2 = gtk.TreeViewColumn(_('Path'), gtk.CellRendererText(), text=2)
+            c2 = gtk.TreeViewColumn(_('Path'), render, text=2)
             c2.set_sort_column_id(3)
             c2.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             fview.append_column(c1)
