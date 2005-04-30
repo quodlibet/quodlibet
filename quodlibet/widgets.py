@@ -1839,7 +1839,7 @@ class AlbumList(Browser, gtk.VBox):
         self.show_all()
 
     def __filter_changed(self, entry, view):
-        if parser.is_parsable(entry.get_text().decode('utf-8')):
+        if parser.is_parsable(entry.get_text().decode('utf-8').strip()):
             if self.__refill_id: gobject.source_remove(self.__refill_id)
             self.__refill_id = gobject.timeout_add(
                 300, self.__refresh, entry, view, entry)
@@ -1862,8 +1862,8 @@ class AlbumList(Browser, gtk.VBox):
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
         if event.button == 3:
-            for c in menu.get_children():
-                c.set_sensitive(path != (0,))
+            sens = bool(view.get_model()[path][0])
+            for c in menu.get_children(): c.set_sensitive(sens)
             menu.popup(None, None, None, event.button, event.time)
             return True
 
@@ -1936,9 +1936,9 @@ class AlbumList(Browser, gtk.VBox):
         if clear_cache: self._Album.clear_cache()
         model.clear()
         albums = {}
-        bg = entry.get_text().decode('utf-8')
+        bg = entry.get_text().decode('utf-8').strip()
         songs = library.values()
-        if parser.is_parsable(bg): filt = parser.parse(bg).search
+        if bg and parser.is_parsable(bg): filt = parser.parse(bg).search
         else: filt = None
 
         for song in songs:
