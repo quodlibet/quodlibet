@@ -14,12 +14,11 @@ import config
 import match
 import parser
 import audioop
-from formats import MusicPlayer
 from library import library
 
-BUFFER_SIZE = 2**8
-
 class OSSAudioDevice(object):
+    from formats import MusicPlayer as open
+
     def __init__(self):
         import ossaudiodev
         self.__dev = ossaudiodev.open("w")
@@ -44,6 +43,8 @@ class OSSAudioDevice(object):
             self.__dev.nonblock()
 
 class AOAudioDevice(object):
+    from formats import MusicPlayer as open
+
     def __init__(self, dev):
         import ao
         try:
@@ -143,7 +144,7 @@ class PlaylistPlayer(object):
         fn = song['~filename']
         config.set("memory", "song", fn)
         if self.shuffle: random.shuffle(self.__playlist)
-        try: player = MusicPlayer(self.__output, song)
+        try: player = self.__output.open(song)
         except Exception, err:
             sys.stderr.write(str(err) + "\n")
             player = None
