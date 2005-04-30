@@ -221,9 +221,12 @@ class FindCoverTest(TestCase):
                       ]
         for f in self.files: file(f, "w").close()
 
+    def test_dir_not_exist(self):
+        self.failIf(bar_2_1.find_cover())
+
     def test_nothing(self):
         self.failIf(quux.find_cover())
-    
+
     def test_labelid(self):
         quux["labelid"] = "12345"
         self.failUnlessEqual(quux.find_cover().name,

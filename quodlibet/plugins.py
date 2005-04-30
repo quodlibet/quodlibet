@@ -79,10 +79,7 @@ class SongWrapper(object):
         if key in self and self[key] == value: return
         self._updated = True
         self._needs_write = (self._needs_write or not key.startswith("~"))
-        if self._song.can_change(key):
-            return self._song.__setitem__(key, value)
-        else:
-            raise ValueError, "Can not set %s" % key
+        return self._song.__setitem__(key, value)
 
     def __getitem__(self, *args): return self._song.__getitem__(*args)
     def __cmp__(self, other): return cmp(self._song, other)
@@ -91,6 +88,8 @@ class SongWrapper(object):
     def realkeys(self): return self._song.realkeys()
     def can_change(self, key): return self._song.can_change(key)
     def keys(self): return self._song.keys()
+    def values(self): return self._song.values()
+    def items(self): return self._song.items()
     def comma(self, key): return self._song.comma(key)
     def list(self, key): return self._song.list(key)
     def rename(self, newname): return self._song.rename(newname)

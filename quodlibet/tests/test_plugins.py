@@ -79,30 +79,84 @@ class TestSongWrapper(TestCase):
     from plugins import SongWrapper
     from formats.audio import AudioFile
 
-    def test_setitem(self):
-        w = self.SongWrapper(self.AudioFile(
+    psong = AudioFile({
+        "~filename": "does not/exist",
+        "title": "more songs",
+        "discnumber": "2/2", "tracknumber": "1",
+        "artist": "Foo\nI have two artists", "album": "Bar" })
+    pwrap = SongWrapper(psong)
+
+    def setUp(self):
+        self.wrap = self.SongWrapper(self.AudioFile(
             {"title": "woo", "~filename": "/dev/null"}))
-        self.failIf(w._was_updated())
-        self.failUnlessEqual(w["title"], "woo")
-        w["title"] = "bar"
-        self.failUnless(w._was_updated())
-        self.failUnlessEqual(w["title"], "bar")
+
+    def test_slots(self):
+        def breakme(): self.wrap.woo = 1
+        self.failUnlessRaises(AttributeError, breakme)
+
+    def test_needs_write_yes(self):
+        self.failIf(self.wrap._needs_write)
+        self.wrap["woo"] = "bar"
+        self.failUnless(self.wrap._needs_write)
+
+    def test_needs_write_no(self):
+        self.failIf(self.wrap._needs_write)
+        self.wrap["~woo"] = "bar"
+        self.failIf(self.wrap._needs_write)
+
+    def test_getitem(self):
+        self.failUnlessEqual(self.wrap["title"], "woo")
+
+    def test_realkeys(self):
+        self.failUnlessEqual( self.pwrap.realkeys(), self.psong.realkeys())
+
+    def test_website(self):
+        self.failUnlessEqual(self.pwrap.website(), self.psong.website())
+
+    def test_find_cover(self):
+        self.failUnlessEqual(self.pwrap.find_cover(), self.psong.find_cover())
+
+    def test_can_change(self):
+        for key in ["~foo", "title", "whee", "a test", "foo=bar", ""]:
+            self.failUnlessEqual(
+                self.pwrap.can_change(key), self.psong.can_change(key))
+
+    def test_comma(self):
+        for key in ["title", "artist", "album", "notexist", "~#length"]:
+            self.failUnlessEqual(self.pwrap.comma(key), self.psong.comma(key))
+
+    def test_list(self):
+        for key in ["title", "artist", "album", "notexist", "~#length"]:
+            self.failUnlessEqual(self.pwrap.list(key), self.psong.list(key))
+
+    def test_dicty(self):
+        self.failUnlessEqual(self.pwrap.keys(), self.psong.keys())
+        self.failUnlessEqual(self.pwrap.values(), self.psong.values())
+        self.failUnlessEqual(self.pwrap.items(), self.psong.items())
+
+    def test_mtime(self):
+        self.failIf(self.wrap._was_changed())
+        self.wrap._mtime = os.path.getmtime("/dev/null") - 2
+        self.wrap._updated = False
+        self.failUnless(self.wrap._was_changed())
+
+    def test_setitem(self):
+        self.failIf(self.wrap._was_updated())
+        self.wrap["title"] = "bar"
+        self.failUnless(self.wrap._was_updated())
+        self.failUnlessEqual(self.wrap["title"], "bar")
 
     def test_not_really_updated(self):
-        w = self.SongWrapper(self.AudioFile(
-            {"title": "woo", "~filename": "/dev/null"}))
-        self.failIf(w._was_updated())
-        w["title"] = "woo"
-        self.failIf(w._was_updated())
-        w["title"] = "quux"
-        self.failUnless(w._was_updated())
+        self.failIf(self.wrap._was_updated())
+        self.wrap["title"] = "woo"
+        self.failIf(self.wrap._was_updated())
+        self.wrap["title"] = "quux"
+        self.failUnless(self.wrap._was_updated())
 
     def test_new_tag(self):
-        w = self.SongWrapper(self.AudioFile(
-            {"title": "woo", "~filename": "/dev/null"}))
-        self.failIf(w._was_updated())
-        w["version"] = "bar"
-        self.failUnless(w._was_updated())
+        self.failIf(self.wrap._was_updated())
+        self.wrap["version"] = "bar"
+        self.failUnless(self.wrap._was_updated())
 
 registerCase(TestPlugins)
 registerCase(TestSongWrapper)

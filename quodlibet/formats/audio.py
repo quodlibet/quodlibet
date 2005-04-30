@@ -197,7 +197,8 @@ class AudioFile(dict):
     # Try to find an album cover for the file
     def find_cover(self):
         base = self('~dirname')
-        fns = os.listdir(base)
+        try: fns = os.listdir(base)
+        except EnvironmentError:  return None
         images = []
         fns.sort()
         for fn in fns:
