@@ -1864,6 +1864,10 @@ class AlbumList(Browser, gtk.VBox):
         if event.button == 3:
             sens = bool(view.get_model()[path][0])
             for c in menu.get_children(): c.set_sensitive(sens)
+            view.grab_focus()
+            selection = view.get_selection()
+            if not selection.path_is_selected(path):
+                view.set_cursor(path, col, 0)
             menu.popup(None, None, None, event.button, event.time)
             return True
 
