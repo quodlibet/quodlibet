@@ -1013,7 +1013,7 @@ class QLTrayIcon(HIGTrayIcon):
         else: player.playlist.reset()
 
     def __properties(self, activator):
-        if widgets.watcher.song: SongProperties([self.__song])
+        if widgets.watcher.song: SongProperties([widgets.watcher.song])
 
     def __set_song(self, watcher, song, *items):
         for item in items: item.set_sensitive(bool(song))
