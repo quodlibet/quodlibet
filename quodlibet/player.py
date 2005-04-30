@@ -156,6 +156,14 @@ class PlaylistPlayer(object):
         self.__lock.release()
         return song, player
 
+    def __play_internal(self):
+        while self.paused: time.sleep(0.05)
+        for t in self.__player:
+            self.info.time = (t, self.__player.length)
+            while self.paused and not self.quit:
+                time.sleep(0.05)
+            if self.quit: break
+
     def play(self, info):
         self.info = info
         self.__lock.acquire()
@@ -170,12 +178,7 @@ class PlaylistPlayer(object):
             while self.__playlist and not self.quit:
                 self.__song, self.__player = self.__get_song()
                 if not self.__player: continue
-                while self.paused: time.sleep(0.05)
-                for t in self.__player:
-                    self.info.time = (t, self.__player.length)
-                    while self.paused and not self.quit:
-                        time.sleep(0.05)
-                    if self.quit: break
+                self.__play_internal()
                 if not self.__player.stopped:
                     self.__song["~#lastplayed"] = int(time.time())
                     self.__song["~#playcount"] += 1
