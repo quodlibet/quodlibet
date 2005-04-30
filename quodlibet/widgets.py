@@ -1530,6 +1530,7 @@ class TreeViewHints(gtk.Window):
         self.__time = event.time
         self.__timeout(id=gobject.timeout_add(100, self.__undisplay))
         self.set_size_request(w, h)
+        self.resize(w, h)
         self.move(x, y)
         self.show_all()
 
