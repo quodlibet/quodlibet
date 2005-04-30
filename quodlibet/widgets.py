@@ -1473,6 +1473,8 @@ class TreeViewHints(gtk.Window):
     def __motion(self, view, event):
         # trigger over row area, not column headers
         if event.window is not view.get_bin_window(): return
+        # don't display while modifiers (e.g. alt of alt+drag) held
+        if event.get_state() & gtk.gdk.MODIFIER_MASK: return
 
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
