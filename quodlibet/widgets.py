@@ -1417,15 +1417,13 @@ class TreeViewHints(gtk.Window):
 
     __gsignals__ = dict.fromkeys(
             ['button-press-event', 'button-release-event',
-            'motion-notify-event', 'scroll-event', 'key-press-event',
-            'key-release-event'],
+            'motion-notify-event', 'key-press-event', 'key-release-event'],
             'override')
 
     def __init__(self):
         gtk.Window.__init__(self, gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
         label.set_alignment(0.5, 0.5)
-        label.set_line_wrap(True)
         self.realize()
         self.add_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.BUTTON_PRESS_MASK |
                 gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.KEY_PRESS_MASK |
@@ -1440,9 +1438,11 @@ class TreeViewHints(gtk.Window):
         self.connect('expose-event', self.__expose)
         self.connect('enter-notify-event', self.__enter)
         self.connect('leave-notify-event', self.__check_undisplay)
+        self.connect('scroll-event', self.__scroll)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
+        self.__current_renderer = None
 
     def connect_view(self, view):
         self.__handlers[view] = [
@@ -1564,9 +1564,9 @@ class TreeViewHints(gtk.Window):
         event.window = self.__target.get_bin_window()
         return self.__target.do_motion_notify_event(self.__target, event)
 
-    def do_button_scroll_event(self, event):
+    def __scroll(self, widget, event):
         event.window = self.__target.get_bin_window()
-        return self.__target.do_scroll_event(self.__target, event)
+        event.put()
 
     def do_key_press_event(self, event):
         return self.__target.do_key_press_event(self.__target, event)
