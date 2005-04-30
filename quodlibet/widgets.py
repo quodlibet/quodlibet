@@ -1411,48 +1411,38 @@ class HintedTreeView(gtk.TreeView):
         except AttributeError: tvh = widgets.treeviewhints = TreeViewHints()
         tvh.connect_view(self)
 
-class TreeViewHints(object):
+class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
 
+    __gsignals__ = dict.fromkeys(
+            ['button-press-event', 'button-release-event',
+            'motion-notify-event', 'scroll-event', 'key-press-event',
+            'key-release-event'],
+            'override')
+
     def __init__(self):
-        self.__handlers = {}
-        self.__info = None
-        self.__renderer = None
-        self.__editid = None
-        self.__timeoutid = None
-        self.__win = win = gtk.Window(gtk.WINDOW_POPUP)
+        gtk.Window.__init__(self, gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
-        self.__ev = ev0 = gtk.EventBox()
-        win.add(ev0)
-
-        # Instantiate a tooltip to grab its colors.  Yeah, hokey.
-        tip = gtk.Tooltips(); tip.force_window(); tip.tip_window.realize()
-        fg = tip.tip_window.get_style().fg[gtk.STATE_NORMAL]
-        bg = tip.tip_window.get_style().bg[gtk.STATE_NORMAL]
-        tip.destroy()
-        del tip
-
-        # event boxes to create the tooltip look.  Yeah, hokey.
-        ev1 = gtk.EventBox()
-        ev0.add(ev1)
-        ev1.modify_bg(gtk.STATE_NORMAL, fg)
-        ev2 = gtk.EventBox()
-        ev2.modify_bg(gtk.STATE_NORMAL, bg)
-        ev2.set_border_width(1)
-        hbox = gtk.HBox()
-        hbox.set_border_width(1)
-        ev1.add(ev2)
-        ev2.add(hbox)
-        hbox.pack_start(label)
         label.set_alignment(0.5, 0.5)
-        win.realize()
+        label.set_line_wrap(True)
+        self.realize()
+        self.add_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.BUTTON_PRESS_MASK |
+                gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.KEY_PRESS_MASK |
+                gtk.gdk.KEY_RELEASE_MASK | gtk.gdk.ENTER_NOTIFY_MASK |
+                gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK)
+        self.add(label)
 
-        for event in ['button-press-event', 'button-release-event',
-            'scroll-event']:
-            self.__ev.connect(event, self.__pass_event, event)
-        self.__ev.connect('leave-notify-event', self.__check_undisplay)
-        self.__ev.connect('enter-notify-event', self.__timeout)
+        self.set_app_paintable(True)
+        self.set_resizable(False)
+        self.set_name("gtk-tooltips")
+        self.set_border_width(1)
+        self.connect('expose-event', self.__expose)
+        self.connect('enter-notify-event', self.__enter)
+        self.connect('leave-notify-event', self.__check_undisplay)
+
+        self.__handlers = {}
+        self.__current_path = self.__current_col = None
 
     def connect_view(self, view):
         self.__handlers[view] = [
@@ -1467,91 +1457,124 @@ class TreeViewHints(object):
             del self.__handlers[view]
         except KeyError: pass
 
-    def __pass_event(self, eb, event, signal):
-        x, y = map(int, [event.x, event.y])
-        if signal != 'scroll-event':
-            event.x += eb.dx
-            event.y += eb.dy
-        event.window = self.__target.get_bin_window()
-        event.put()
+    def __expose(self, widget, event):
+        w, h = self.get_size_request()
+        self.style.paint_flat_box(self.window,
+                gtk.STATE_NORMAL, gtk.SHADOW_OUT,
+                None, self, "tooltip", 0, 0, w, h)
+
+    def __enter(self, widget, event):
+        # on entry, kill the hiding timeout
+        try: gobject.source_remove(self.__timeout_id)
+        except AttributeError: pass
+        else: del self.__timeout_id
 
     def __motion(self, view, event):
+        # trigger over row area, not column headers
         if event.window is not view.get_bin_window(): return
+
         x, y = map(int, [event.x, event.y])
-
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return
+        except TypeError: return # no hints where no rows exist
 
-        info = [path, col]
-        if self.__info == info: return
+        if self.__current_path == path and self.__current_col == col: return
 
-        if self.__info: self.__undisplay()
-        self.__info = info
-        win = self.__win
-        renders = col.get_cell_renderers()
-        if len(renders) != 1 or \
-                not isinstance(renders[0], gtk.CellRendererText) or \
-                renders[0].get_property('ellipsize') == pango.ELLIPSIZE_NONE:
-            return
+        # need to handle more renderers later...
+        try: renderer, = col.get_cell_renderers()
+        except ValueError: return
+        if not isinstance(renderer, gtk.CellRendererText): return
+        if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE: return
 
-        r = renders[0]
         model = view.get_model()
         col.cell_set_cell_data(model, model.get_iter(path), False, False)
-        cellw = col.cell_get_position(r)[1]
+        cellw = col.cell_get_position(renderer)[1]
 
-        rect = gtk.gdk.Rectangle(0, 0, 4, 4) # arbitrary small size
-        r.render(win.window, win, rect, rect, rect, gtk.CELL_RENDERER_PRELIT)
-        self.__label.set_text(r.get_property('text'))
-        w, h0 = self.__label.get_layout().get_pixel_size()
-        try: markup = r.markup
+        label = self.__label
+        rect = gtk.gdk.Rectangle(0, 0, 4, 4) # small rect, use to get text
+        renderer.render(self.window, self, rect, rect, rect, 0)
+        label.set_text(renderer.get_property('text'))
+        w, h0 = label.get_layout().get_pixel_size()
+        try: markup = renderer.markup
         except AttributeError: h1 = h0
         else:
             if isinstance(markup, int): markup = model[path][markup]
             self.__label.set_markup(markup)
-            w, h1 = self.__label.get_layout().get_pixel_size()
-        if w + 5 >= cellw:
-            self.__time = event.time
-            cursor = map(int, [event.x_root, event.y_root])
-            self.__display(view, r, path, col, (w, h0 - h1), cursor)
+            w, h1 = label.get_layout().get_pixel_size()
 
-    def __display(self, view, render, path, col, (w, dh), cursor):
-        x, y, cw, h =  list(view.get_cell_area(path, col))
-        self.__ev.dx = x + 1
-        self.__ev.dy = y + 1
+        if w + 5 < cellw: return # don't display if it doesn't need expansion
+
+        x, y, cw, h = list(view.get_cell_area(path, col))
+        self.__dx = x + 1
+        self.__dy = y + 1
         y += view.get_bin_window().get_position()[1]
         ox, oy = view.window.get_origin()
-        x += ox ; y += oy ; h -= dh ; w += 5
+        x += ox; y += oy; h += h1 - h0; w += 5
         screen_width = gtk.gdk.screen_width()
         x_overflow = min([x, x + w - screen_width])
-        self.__label.set_ellipsize(pango.ELLIPSIZE_NONE)
+        label.set_ellipsize(pango.ELLIPSIZE_NONE)
         if x_overflow > 0:
-            self.__ev.dx -= x_overflow
+            self.__dx -= x_overflow
             x -= x_overflow
-            w = min(w, screen_width)
-            self.__label.set_ellipsize(pango.ELLIPSIZE_END)
-        self.__win.move(x, y)
-        self.__win.set_size_request(w, h)
-        self.__win.resize(w, h)
-        self.__target = view
-        self.__renderer = render
-        self.__editid = render.connect('editing-started', self.__undisplay)
-        self.__timeout(id=gobject.timeout_add(100, self.__undisplay))
-        if (x <= cursor[0] < x+w) and (y <= cursor[1] < y+h):
-            self.__win.show_all()
-        else:
-            self.__undisplay() # reject if cursor isn't over window
+            w = min([w, screen_width])
+            label.set_ellipsize(pango.ELLIPSIZE_END)
+        if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
+            return # reject if cursor isn't above hint
 
-    def __timeout(self, ev=None, event=None, id=None):
-        if self.__timeoutid: gobject.source_remove(self.__timeoutid)
-        self.__timeoutid = id
+        self.__target = view
+        self.__current_renderer = renderer
+        self.__edit_id = renderer.connect('editing-started', self.__undisplay)
+        self.__current_path = path
+        self.__current_col = col
+        self.__time = event.time
+        self.__timeout(id=gobject.timeout_add(100, self.__undisplay))
+        self.set_size_request(w, h)
+        self.move(x, y)
+        self.show_all()
 
     def __check_undisplay(self, ev1, event):
         if self.__time < event.time + 50: self.__undisplay()
 
     def __undisplay(self, *args):
-        if self.__renderer: self.__renderer.disconnect(self.__editid)
-        self.__renderer = self.__editid = self.__info = None
-        self.__win.hide()
+        if self.__current_renderer and self.__edit_id:
+            self.__current_renderer.disconnect(self.__edit_id)
+        self.__current_renderer = self.__edit_id = None
+        self.__current_path = self.__current_col = None
+        self.hide()
+
+    def __timeout(self, ev=None, event=None, id=None):
+        try: gobject.source_remove(self.__timeout_id)
+        except AttributeError: pass
+        if id is not None: self.__timeout_id = id
+
+    def do_button_press_event(self, event):
+        event.x += self.__dx
+        event.y += self.__dy 
+        event.window = self.__target.get_bin_window()
+        return self.__target.do_button_press_event(self.__target, event)
+
+    def do_button_release_event(self, event):
+        event.x += self.__dx
+        event.y += self.__dy 
+        event.window = self.__target.get_bin_window()
+        return self.__target.do_button_release_event(self.__target, event)
+
+    def do_motion_notify_event(self, event):
+        event.x += self.__dx
+        event.y += self.__dy 
+        event.window = self.__target.get_bin_window()
+        return self.__target.do_motion_notify_event(self.__target, event)
+
+    def do_button_scroll_event(self, event):
+        event.window = self.__target.get_bin_window()
+        return self.__target.do_scroll_event(self.__target, event)
+
+    def do_key_press_event(self, event):
+        return self.__target.do_key_press_event(self.__target, event)
+
+    def do_key_release_event(self, event):
+        return self.__target.do_key_release_event(self.__target, event)
+
+gobject.type_register(TreeViewHints)
 
 class EmptyBar(Browser, gtk.HBox):
     def __init__(self, cb):
