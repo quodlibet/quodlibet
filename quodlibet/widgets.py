@@ -1682,18 +1682,17 @@ class AlbumList(Browser, gtk.VBox):
             self.people = set()
             self.title = title
             self.date = None
-            self.cover_done = False
+            self._path = None
 
             if self.title:
                 if self.title in self.__covers:
                     self.cover = self.__covers[title]
                 else:
-                    self.cover = None
+                    self.cover = False
             else:
-                self.cover_done = True
-                self.cover = None
+                self.cover = False
 
-        def __getitem__(self, key):
+        def get(self, key, default=None):
             if key == "~#length": return self.length
             elif key == "~#tracks": return self.tracks
             elif key == "~#discs": return self.discs
@@ -1702,10 +1701,7 @@ class AlbumList(Browser, gtk.VBox):
             elif key == "date": return self.date
             elif key == "people" or key == "artist" or key == "artists":
                 return "\n".join(self.people)
-            else: return ""
-
-        def get(self, key, default=None):
-            return self[key] or default
+            else: return default
 
         __call__ = get
 
@@ -1714,8 +1710,8 @@ class AlbumList(Browser, gtk.VBox):
             if self.title:
                 self.date = song.get("date")
                 self.discs = max(self.discs, song("~#disc", 0))
-                if self.cover is None:
-                    self.cover = False
+                if self.cover is False:
+                    self.cover = None
                     gobject.idle_add(
                         self.__get_cover, song, priority=gobject.PRIORITY_LOW)
             self.length += song["~#length"]
@@ -1723,14 +1719,19 @@ class AlbumList(Browser, gtk.VBox):
             self.people |= set(song.list("performer"))
             self.people |= set(song.list("composer"))
 
+        # Check to see if the song has a cover; if it doesn't, or if
+        # it fails to load, try again in 15 seconds. If it does then load
+        # it up, and alert the model that our row has changed.
         def __get_cover(self, song):
+            # If we're no longer in the model (due to a search), then stop.
+            if self._path is None: return
             cover = song.find_cover()
-            if cover is None: return
-            else:
+            if cover is not None:
                 try:
                     cover = gtk.gdk.pixbuf_new_from_file_at_size(
                         cover.name, 48, 48)
-                except: pass
+                except:
+                    gobject.timeout_add(15000, self.__get_cover, song)
                 else:
                     # add a black outline
                     w, h = cover.get_width(), cover.get_height()
@@ -1740,6 +1741,9 @@ class AlbumList(Browser, gtk.VBox):
                     cover.copy_area(0, 0, w, h, newcover, 1, 1)
                     self.cover = newcover
                     self.__covers[self.title] = newcover
+                    self._model.row_changed(
+                        self._path, self._model.get_iter(self._path))
+            else: gobject.timeout_add(15000, self.__get_cover, song)
 
         def to_markup(self):
             text = "<i><b>%s</b></i>" % util.escape(
@@ -1777,13 +1781,8 @@ class AlbumList(Browser, gtk.VBox):
 
         def cell_data_pb(column, cell, model, iter):
             album = model[iter][0]
-            if album is None:
-                cell.set_property('pixbuf', None)
-            elif album.cover:
-                cell.set_property('pixbuf', album.cover)
-                if not album.cover_done:
-                    model.row_changed(model.get_path(iter), iter)
-                    album.cover_done = True
+            if album is None: cell.set_property('pixbuf', None)
+            elif album.cover: cell.set_property('pixbuf', album.cover)
             else: cell.set_property('pixbuf', None)
         column.set_cell_data_func(render, cell_data_pb)
         view.append_column(column)
@@ -1953,6 +1952,8 @@ class AlbumList(Browser, gtk.VBox):
         selected = [(model[row][0] and model[row][0].title) for row in rows]
         model = view.get_model()
         if clear_cache: self._Album.clear_cache()
+        for row in iter(model):
+            if row[0]: row[0]._path = row[0]._model = None
         model.clear()
         albums = {}
         bg = entry.get_text().decode('utf-8').strip()
@@ -1975,7 +1976,9 @@ class AlbumList(Browser, gtk.VBox):
         if albums and albums[0].title == "":
             albums.append(albums.pop(0))
         if filt is None: model.append(row=[None])
-        for album in albums: model.append(row=[album])
+        for album in albums:
+            album._path = model.get_path(model.append(row=[album]))
+            album._model = model
         for i, row in enumerate(iter(model)):
              if (row[0] and row[0].title) in selected:
                   selection.select_path(i)
