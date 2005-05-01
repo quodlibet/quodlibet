@@ -1730,8 +1730,7 @@ class AlbumList(Browser, gtk.VBox):
                 try:
                     cover = gtk.gdk.pixbuf_new_from_file_at_size(
                         cover.name, 48, 48)
-                except:
-                    gobject.timeout_add(15000, self.__get_cover, song)
+                except: pass
                 else:
                     # add a black outline
                     w, h = cover.get_width(), cover.get_height()
@@ -1743,7 +1742,6 @@ class AlbumList(Browser, gtk.VBox):
                     self.__covers[self.title] = newcover
                     self._model.row_changed(
                         self._path, self._model.get_iter(self._path))
-            else: gobject.timeout_add(15000, self.__get_cover, song)
 
         def to_markup(self):
             text = "<i><b>%s</b></i>" % util.escape(
