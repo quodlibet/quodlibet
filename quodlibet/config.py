@@ -96,6 +96,10 @@ def init(*rc_files):
           "active": "", # activated plugins
           },
 
+        "editing":
+        { "id3encoding": "shift-jis big5", # ID3 encodings to try
+          },
+
         "exfalso":
         { "shutup": "false", # don't whine about QL running.
           }

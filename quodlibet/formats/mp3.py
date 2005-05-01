@@ -7,6 +7,7 @@
 # $Id$
 
 from formats.audio import AudioFile, AudioPlayer
+import config
 import re
 try: import pyid3lib, mad
 except ImportError: extensions = []
@@ -125,6 +126,11 @@ class MP3File(AudioFile):
                "RX": "Remix",
                }
 
+    CODECS = ["utf-8"]
+    try: CODECS.extend(config.get("editing", "id3encoding").strip().split())
+    except: pass # Uninitialized config...
+    CODECS.append("iso-8859-1")
+
     SERNEG = dict([(v, k) for k, v in GENRES.iteritems()])
 
     # Matches "(1)", "(99)Dark Ambience" and "Blues".
@@ -160,7 +166,7 @@ class MP3File(AudioFile):
             try:
                 text = frame["text"]
                 if not text: continue
-                for codec in ["utf-8", "shift-jis", "big5", "iso-8859-1"]:
+                for codec in self.CODECS:
                     try: text = text.decode(codec)
                     except (UnicodeError, LookupError): pass
                     else: break
