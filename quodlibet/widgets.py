@@ -3143,7 +3143,8 @@ class SongList(HintedTreeView):
         render.set_property('xalign', 0.5)
         column = gtk.TreeViewColumn("", render)
         column.header_name = "~current"
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.set_fixed_width(20)
         column.set_cell_data_func(render, cell_data_current)
         self.append_column(column)
         if "~current" in headers: headers.remove("~current")
