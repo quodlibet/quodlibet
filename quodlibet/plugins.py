@@ -287,7 +287,8 @@ class PluginManager(object):
 
             elif fn in self.callables['album_callables']:
                 albums = {}
-                for song in selection: albums[song.comma('album')] = song
+                for song in selection:
+                    albums.setdefault(song.comma('album'),[]).append(song)
                 args = [ListWrapper(album) for album in albums.values()]
 
             if fn in self.callables['single']:
@@ -309,7 +310,10 @@ class PluginManager(object):
                 except Exception:
                     print_exc()
 
-        self.check_change_and_refresh(args, lock=False)
+            if fn in self.callables['song_callables']:
+                self.check_change_and_refresh(args, lock=False)
+            elif fn in self.callables['album_callables']:
+                self.check_change_and_refresh(sum(args, []), lock=False)
 
     def check_change_and_refresh(self, args, lock=True):
         updated = False
