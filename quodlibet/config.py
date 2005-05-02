@@ -64,9 +64,6 @@ def init(*rc_files):
           "gain": "2", # replaygain - none, radio, audiophile
           "cover": "true", # display album cover images
           "jump": "true", # scroll song list on current song change
-          "osd": "0", # OSD - none, top, bottom
-          "osdcolors": "#ffbb00 #ff8700", # color for the OSD, fed to Pango
-          "osdfont": "Sans 18", # font for the OSD, fed to Pango
 
           # probably belong in memory
           "shuffle": "false",

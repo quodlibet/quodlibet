@@ -23,8 +23,7 @@ AUTHORS = ["Joe Wreschnig <quodlibet@lists.sacredchao.net>",
            "Niklas Janlert",
 
            "Anders Carlsson (trayicon)",
-           "Lee Willis, Jan Arne Petersen (mmkeys)",
-           "Gustavo J. A. M. Carneiro (GNOME OSD)"]
+           "Lee Willis, Jan Arne Petersen (mmkeys)"]
 
 TRANSLATORS =[
     "Michal Nowikowski (pl)",

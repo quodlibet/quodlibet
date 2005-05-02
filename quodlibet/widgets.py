@@ -415,44 +415,7 @@ class PreferencesWindow(gtk.Window):
             cb.connect('changed', self._changed, 'gain')
             self.pack_start(f, expand=False)
 
-            f = qltk.Frame(_("_On-Screen Display"), bold=True)
-            cb = gtk.combo_box_new_text()
-            cb.append_text(_("No on-screen display"))
-            cb.append_text(_('Display OSD on the top'))
-            cb.append_text(_('Display OSD on the bottom'))
-            cb.set_active(config.getint('settings', 'osd'))
-            cb.connect('changed', self._changed, 'osd')
-            f.get_label_widget().set_mnemonic_widget(cb)
-            vbox = gtk.VBox(spacing=6)
-            f.child.add(vbox)
-            f.child.child.pack_start(cb, expand=False)
-            hb = gtk.HBox(spacing=6)
-            c1, c2 = config.get("settings", "osdcolors").split()
-            color1 = gtk.ColorButton(gtk.gdk.color_parse(c1))
-            color2 = gtk.ColorButton(gtk.gdk.color_parse(c2))
-            tips.set_tip(color1, _("Select a color for the OSD"))
-            tips.set_tip(color2, _("Select a second color for the OSD"))
-            color1.connect('color-set', self.__color_set, color1, color2)
-            color2.connect('color-set', self.__color_set, color1, color2)
-            font = gtk.FontButton(config.get("settings", "osdfont"))
-            font.connect('font-set', self.__font_set)
-            hb.pack_start(color1, expand=False)
-            hb.pack_start(color2, expand=False)
-            hb.pack_start(font)
-            vbox.pack_start(hb, expand=False)
-            self.pack_start(f, expand=False)
             self.show_all()
-
-        def __font_set(self, font):
-            config.set("settings", "osdfont", font.get_font_name())
-
-        def __color_set(self, color, c1, c2):
-            color = c1.get_color()
-            ct1 = (color.red // 256, color.green // 256, color.blue // 256)
-            color = c2.get_color()
-            ct2 = (color.red // 256, color.green // 256, color.blue // 256)
-            config.set("settings", "osdcolors",
-                       "#%02x%02x%02x #%02x%02x%02x" % (ct1+ct2))
 
         def __toggle_cover(self, c):
             if config.state("cover"): widgets.main.image.show()
@@ -653,6 +616,7 @@ class PreferencesWindow(gtk.Window):
                         b.connect_object('clicked', gtk.Window.show, prefs)
                         b.connect_object('destroy', gtk.Window.destroy, prefs)
                         frame.add(b)
+                        frame.child.set_border_width(6)
                     else:
                         frame.add(prefs)
                     frame.show_all()
@@ -1037,59 +1001,6 @@ class MmKeys(object):
             self.__keys = mmkeys.MmKeys()
             map(self.__keys.connect, *zip(*cbs.items()))
             print to(_("Initialized multimedia key support."))
-
-class Osd(object):
-    def __init__(self, watcher):
-        try: import gosd
-        except: pass
-        else:
-            self.__gosd = gosd
-            self.__level = 0
-            self.__window = None
-            watcher.connect('song-started', self.__show_osd)
-
-    def __show_osd(self, watcher, song):
-        if song is None or config.getint("settings", "osd") == 0: return
-        color1, color2 = config.get("settings", "osdcolors").split()
-        font = config.get("settings", "osdfont")
-
-        if self.__window: self.__window.destroy()
-
-        # \xe2\x99\xaa is a music note.
-        msg = "\xe2\x99\xaa "
-
-        msg += "<span foreground='%s' style='italic'>%s</span>" %(
-            color2, util.escape(song("~title~version")))
-        msg += " <span size='small'>(%s)</span> " % song("~length")
-        msg += "\xe2\x99\xaa\n"
-
-        msg += "<span size='x-small'>"
-        for key in ["artist", "album", "tracknumber"]:
-            if key in song:
-                msg += ("<span foreground='%s' size='xx-small' "
-                        "style='italic'>%s</span> %s   "%(
-                    (color2, tag(key), util.escape(song.comma(key)))))
-        msg = msg.strip() + "</span>"
-        if isinstance(msg, unicode):
-            msg = msg.encode("utf-8")
-
-        self.__window = self.__gosd.osd(msg, "black", color1, font)
-        if config.getint("settings", "osd") == 1:
-            self.__window.move(
-                gtk.gdk.screen_width()/2 - self.__window.width/2, 5)
-        else:
-            self.__window.move(
-                gtk.gdk.screen_width()/2 - self.__window.width/2,
-                gtk.gdk.screen_height() - self.__window.height-48)
-        self.__window.show()
-        self.__level += 1
-        gobject.timeout_add(7500, self.__unshow)
-
-    def __unshow(self):
-        self.__level -= 1
-        if self.__level == 0 and self.__window:
-            self.__window.destroy()
-            self.__window = None
 
 class Browser(object):
     expand = False # Packing options
@@ -1510,7 +1421,7 @@ class TreeViewHints(gtk.Window):
         self.__dy = y
         y += view.get_bin_window().get_position()[1]
         ox, oy = view.window.get_origin()
-        x += ox; y += oy; h += h1 - h0; w += 5
+        x += ox; y += oy; w += 5#; h += h1 - h0
         screen_width = gtk.gdk.screen_width()
         x_overflow = min([x, x + w - screen_width])
         label.set_ellipsize(pango.ELLIPSIZE_NONE)
@@ -5404,14 +5315,9 @@ def init():
 
     gtk.about_dialog_set_url_hook(website_wrap)
     watcher = widgets.watcher = SongWatcher()
-    FSInterface(watcher)
+    FSInterface(watcher) # Keeps itself alive in the watcher.
     widgets.main = MainWindow()
     player.playlist.info = widgets.watcher
-
-    # If the OSD module is not available, no signal is registered and
-    # the reference is dropped. If it is available, a reference to it is
-    # stored in its signal registered with SongWatcher.
-    Osd(watcher)
 
     util.mkdir(const.DIR)
     return widgets.main
