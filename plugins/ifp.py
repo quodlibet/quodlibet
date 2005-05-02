@@ -11,7 +11,8 @@ import os, gtk, qltk
 class IFPUpload(object):
     PLUGIN_NAME = "Send to iFP"
     PLUGIN_DESC = "Upload songs to an iRiver iFP device"
-    PLUGIN_ICON = gtk.STOCK_JUMP_TO
+    PLUGIN_VERSION = "0.11"
+    PLUGIN_ICON = gtk.STOCK_CONVERT
 
     def plugin_songs(self, songs):        
         if os.system("ifp typestring"):

@@ -13,7 +13,8 @@ class QLScrobbler(object):
 	# session invariants
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "AudioScrobbler client for Quod Libet"
-	PLUGIN_VERSION = "0.2"
+	PLUGIN_ICON = gtk.STOCK_CONNECT
+	PLUGIN_VERSION = "0.2piman"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -109,7 +110,7 @@ class QLScrobbler(object):
 
 		return 0
 		
-	def plugin_on_removed(song):
+	def plugin_on_removed(self, song):
 		if self.song is song:
 			self.already_submitted = True
 

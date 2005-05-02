@@ -14,7 +14,7 @@ class SplitTags(object):
     PLUGIN_DESC = ("Split the disc number from the album and the version "
                    "from the title at the same time.")
     PLUGIN_ICON = 'gtk-find-and-replace'
-    PLUGIN_VERSION = "$Id$".split()[2]
+    PLUGIN_VERSION = "0.11"
 
     def plugin_song(self, song):
         if ("title" in song and

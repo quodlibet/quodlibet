@@ -15,6 +15,8 @@ except:
 
 PLUGIN_NAME = "Picture Saver"
 PLUGIN_DESC = "The cover image of the current song is saved to a file."
+PLUGIN_ICON = gtk.STOCK_SAVE
+PLUGIN_VERSION = "0.11"
 
 def plugin_on_song_started(song):
     outfile = config.get("plugins", __name__)

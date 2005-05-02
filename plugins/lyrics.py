@@ -25,7 +25,7 @@ import util
 PLUGIN_NAME = "Show the lyrics"
 PLUGIN_DESC = "Search for and save the lyrics of songs, using lyrc.com.ar."
 PLUGIN_ICON = gtk.STOCK_EDIT #For now
-PLUGIN_VERSION = "$Id$".split()[2]
+PLUGIN_VERSION = "0.11"
 
 class LyricWindow(gtk.Window):
     def __init__(self, song):
