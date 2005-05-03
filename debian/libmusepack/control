@@ -7,7 +7,7 @@ Standards-Version: 3.6.1.1
 Package: libmusepack-dev
 Section: libdevel
 Architecture: any
-Depends: libmusepack2 (= ${Source-Version})
+Depends: libmusepack3 (= ${Source-Version})
 Description: Musepack (MPC) format library [development files]
  This package contains files used to develop or compile programs that
  use libmusepack.
@@ -17,7 +17,7 @@ Description: Musepack (MPC) format library [development files]
  like MP3 or Ogg Vorbis. It is based on the MPEG-1 Layer-2 / MP2 algorithms,
  but has vastly improved.
 
-Package: libmusepack2
+Package: libmusepack3
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}

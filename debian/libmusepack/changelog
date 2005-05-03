@@ -1,3 +1,10 @@
+libmusepack (1.2-1) unstable; urgency=low
+
+  * New upstream version.
+  * libmusepack2 -> libmusepack3.
+
+ -- Joe Wreschnig <piman@debian.org>  Tue, 03 May 2005 13:23:37 -0500
+
 libmusepack (1.1.1-1) unstable; urgency=low
 
   * New upstream version.
