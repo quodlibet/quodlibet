@@ -84,7 +84,7 @@ class Alarm(ClockPlug):
 class Lullaby(ClockPlug):
     PLUGIN_NAME = "Lullaby"
     PLUGIN_DESC = "Turn off your music after you go to sleep."
-    PLUGIN_ICON = gtk.STOCK_QUIT
+    PLUGIN_ICON = gtk.STOCK_MEDIA_PAUSE
     PLUGIN_VERSION = "0.11"
 
     message = "Turn off at:"
