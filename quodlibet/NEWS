@@ -21,6 +21,8 @@ Running Ex Falso and Quod Libet at the same time is not recommended
  * '0' to '4' keys or mouse clicks can set song ratings.
  * Depends on PyGTK 2.6 (as well as GTK 2.6).
  * --status to print the player's status.
+ * Russian translation, thanks to Sergey Fedoseev.
+ * Partial French translation, thanks to Joshua Kwan.
 
 0.10.1 - What if I said I'm not really kidding?
  * The main window stays hidden when the song changes.
