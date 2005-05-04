@@ -293,22 +293,16 @@ class PluginManager(object):
 
             if fn in self.callables['single']:
                 if len(selection) == 1:
-                    try:
-                        if getattr(plugin, fn)(args[0]): break
-                    except Exception:
-                        print_exc()
+                    try: getattr(plugin, fn)(args[0])
+                    except Exception: print_exc()
 
             elif fn in self.callables['mapped']:
-                try:
-                    if map(getattr(plugin, fn), args): break
-                except Exception:
-                    print_exc()
+                try: map(getattr(plugin, fn), args)
+                except Exception: print_exc()
 
             elif fn in self.callables['plural']:
-                try:
-                    if getattr(plugin, fn)(args): break
-                except Exception:
-                    print_exc()
+                try: getattr(plugin, fn)(args)
+                except Exception: print_exc()
 
             if fn in self.callables['song_callables']:
                 self.check_change_and_refresh(args, lock=False)
