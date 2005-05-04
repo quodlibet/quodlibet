@@ -2243,7 +2243,7 @@ class MainWindow(gtk.Window):
 
         # plugin support
         from plugins import PluginManager
-        self.pm = PluginManager(widgets.watcher, [const.PLUGINS])
+        self.pm = PluginManager(widgets.watcher, [const.PLUGINS, "./plugins"])
         self.pm.rescan()
         
         self.browser = None
