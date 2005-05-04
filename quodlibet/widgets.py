@@ -1403,15 +1403,13 @@ class TreeViewHints(gtk.Window):
         cellw = col.cell_get_position(renderer)[1]
 
         label = self.__label
-        rect = gtk.gdk.Rectangle(0, 0, 4, 4) # small rect, use to get text
-        renderer.render(self.window, self, rect, rect, rect, 0)
         label.set_text(renderer.get_property('text'))
         w, h0 = label.get_layout().get_pixel_size()
         try: markup = renderer.markup
         except AttributeError: h1 = h0
         else:
             if isinstance(markup, int): markup = model[path][markup]
-            self.__label.set_markup(markup)
+            label.set_markup(markup)
             w, h1 = label.get_layout().get_pixel_size()
 
         if w + 5 < cellw: return # don't display if it doesn't need expansion
