@@ -15,6 +15,9 @@ $ ./setup.py build
 
 Usage:
 ------
+$ pydoc musepack.mpc
+$ pydoc musepack.apev2
+
 See 'plaympc.py' for an example of a simple player.
 
 License:

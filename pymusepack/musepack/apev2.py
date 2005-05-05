@@ -9,22 +9,23 @@
 # $Id$
 
 # Based off the documentation found at
+# http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification
+# which is in turn a copy of the old
 # http://www.personal.uni-jena.de/~pfk/mpp/sv8/apetag.html
-# (Available at http://web.archive.org/web/20040205023703/http://www.personal.uni-jena.de/~pfk/mpp/sv8/apetag.html)
 
 import os, struct
 from cStringIO import StringIO
 
 # There are three different kinds of APE tag values.
+# "0: Item contains text information coded in UTF-8
+#  1: Item contains binary information
+#  2: Item is a locator of external stored information [e.g. URL]
+#  3: reserved"
 TEXT, BINARY, EXTERNAL = range(3)
 
 HAS_HEADER = 1 << 31L
 HAS_FOOTER = 1 << 30
 IS_HEADER  = 1 << 29
-
-def _debug(str): print str
-def _dummy(str): pass
-debug = _dummy
 
 class error(IOError): pass
 class FileNotFoundError(error, OSError): pass
@@ -54,9 +55,9 @@ class APETag(object):
         for i in range(count):
             size = _read_int(f.read(4))
             flags = _read_int(f.read(4))
-            debug("size: %d, flags %#x" % (size, flags))
 
-            # 1 and 2 bits are flags, 0-3
+            # Bits 1 and 2 bits are flags, 0-3
+            # Bit 0 is read/write flag, ignored
             kind = (flags & 6) >> 1
             if kind == 3:
                 raise InvalidTagFormat("value type must be 0, 1, or 2")
@@ -65,7 +66,6 @@ class APETag(object):
             key = key[:-1]
             value = f.read(size)
             self.__dict[APEKey(key)] = APEValue(value, kind)
-            debug("key %s, value %r" % (key, value))
 
     def __tag_start(self, f):
         try: f.seek(-32, 2)
@@ -79,6 +79,18 @@ class APETag(object):
             f.seek(0, 2)
             return f.tell()
 
+    # 32 bytes header/footer; they should be identical except
+    # for the IS_HEADER bit.
+    # 4B: Int tag version (== 2000, 2.000)
+    # 4B: Tag size including footer, not including header
+    # 4B: Item count
+    # 4B: Global flags; the important part is the IS_HEADER flag.
+
+    # "An APE tag at the end of a file (strongly recommended) must have at
+    # least a footer, a APE tag in the beginning of a file (strongly
+    # unrcommneded) must have at least a header."
+    # This module only supports tags at the end.
+
     def __find_tag(self, f):
         try: f.seek(-32, 2)
         except IOError: return None, 0
@@ -86,22 +98,18 @@ class APETag(object):
         if data.startswith("APETAGEX"):
             # 4 byte version
             version = _read_int(data[8:12])
-            debug("tag version: %d" % version)
             if version < 2000 or version >= 3000:
                 raise InvalidTagError(
                     "module only supports APEv2 (2000-2999), has %d" % version)
 
             # 4 byte tag size
             tag_size = _read_int(data[12:16])
-            debug("tag size: %d" % tag_size)
 
             # 4 byte item count
             item_count = _read_int(data[16:20])
-            debug("item count: %d" % item_count)
 
             # 4 byte flags
             flags = _read_int(data[20:24])
-            debug("flags: %#x" % flags)
             if flags & IS_HEADER:
                 raise InvalidTagError("found header at end of file")
 
@@ -112,7 +120,6 @@ class APETag(object):
             f.seek(0, 0)
             if f.read(8) == "APETAGEX":
                 raise IOError("APEv2 at start of file is not (yet) supported")
-            debug("no APE tag found")
             return None, 0
 
     def __iter__(self): return self.__dict.iteritems()
@@ -150,7 +157,10 @@ class APETag(object):
 
     def write(self, filename = None):
         """Saves any changes you've made to the file, or to a different
-        file if you specify one. Any existing tag will be removed."""
+        file if you specify one. Any existing tag will be removed.
+
+        Tags are always written at the end of the file, and include
+        a header and a footer."""
         filename = filename or self.filename
         f = file(filename, "ab+")
         offset = self.__tag_start(f)
@@ -158,11 +168,13 @@ class APETag(object):
         f.seek(offset, 0)
         f.truncate()
 
+        # "APE tags items should be sorted ascending by size... This is
+        # not a MUST, but STRONGLY recommended. Actually the items should
+        # be sorted by importance/byte, but this is not feasible."
         tags = [v._internal(k) for k, v in self]
         tags.sort(lambda a, b: cmp(len(a), len(b)))
         num_tags = len(tags)
         tags = "".join(tags)
-        debug("writing %s" % str(tags))
 
         header = "APETAGEX%s%s" %(
             # version, tag size, item count, flags
@@ -185,6 +197,10 @@ class APEKey(str):
     """An APE key is an ASCII string of length 2 to 255. The specification's
     case rules are silly, so this object is case-preserving but not
     case-sensitive, i.e. "album" == "Album"."""
+
+    # "APE Tags Item Key are case sensitive. Nevertheless it is forbidden
+    # to use APE Tags Item Key which only differs in case. And nevertheless
+    # Tag readers are recommended to be case insensitive."
 
     def __cmp__(self, o):
         return cmp(str(self).lower(), str(o).lower())
@@ -213,6 +229,12 @@ class _APEValue(object):
     def __len__(self): return len(self.value)
     def __str__(self): return self.value
 
+    # Packed format for an item:
+    # 4B: Value length
+    # 4B: Value type
+    # Key name
+    # 1B: Null
+    # Key value
     def _internal(self, key):
         return "%s%s\0%s" %(
             struct.pack("<2I", len(self.value), self.kind << 1),
@@ -224,9 +246,9 @@ class APETextValue(_APEValue):
     def __unicode__(self):
         return unicode(str(self), "utf-8")
 
-    """Iterating over an APETextValue will iterate over the Unicode strings,
-    not the characters in the string."""
     def __iter__(self):
+        """Iterating over an APETextValue will iterate over the Unicode
+        strings, not the characters in the string."""
         return iter(unicode(self).split("\0"))
 
     def __getitem__(self, i):
@@ -257,9 +279,9 @@ class APEExtValue(_APEValue):
     def __repr__(self):
         return "<APEExtValue ref=%s>" % len(self.value)
 
-def _read_int(data):
-    # ints in APE are LE
-    return struct.unpack('<I', data)[0]
+# The standard doesn't say anything about the byte ordering, but
+# based on files tested, it's little-endian.
+def _read_int(data): return struct.unpack('<I', data)[0]
 
 def _utf8(data):
     if isinstance(data, str):
