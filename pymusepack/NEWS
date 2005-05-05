@@ -1,0 +1,11 @@
+0.3 - 2005.05.10
+ * Raise an IOError when an unsupported APE tag is found.
+ * MPCFile#set_scale to adjust volume scaling.
+
+0.2 - 2005.04.25
+ * Expose most of the stream information (thanks to Wim Speekenbrink).
+ * Fix compilation failure with libmusepack 1.1.1.
+ * Regression/unit test suite.
+
+0.1 - 2005.02.03
+ * Initial release.
