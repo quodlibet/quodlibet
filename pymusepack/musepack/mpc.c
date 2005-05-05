@@ -50,32 +50,6 @@ typedef struct {
   double position;
 } MPCFile;
 
-/* standard MPC reader callbacks */
-mpc_int32_t read_impl(void *data, void *ptr, mpc_int32_t size) {
-  MPCFile *d = (MPCFile *)data;
-  return fread(ptr, 1, size, d->file);
-}
-
-mpc_bool_t seek_impl(void *data, mpc_int32_t offset) {
-  MPCFile *d = (MPCFile *)data;
-  return (d->seekable && !fseek(d->file, offset, SEEK_SET));
-}
-
-mpc_int32_t tell_impl(void *data) {
-  MPCFile *d = (MPCFile *)data;
-  return ftell(d->file);
-}
-
-mpc_int32_t get_size_impl(void *data) {
-  MPCFile *d = (MPCFile *)data;
-  return d->size;
-}
-
-mpc_bool_t canseek_impl(void *data) {
-  MPCFile *d = (MPCFile *)data;
-  return d->seekable;
-}
-
 static PyObject
 *MPCFile_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
   MPCFile *self;
@@ -84,7 +58,6 @@ static PyObject
   if (self != NULL) {
     self->length = 0;
     self->size = 0;
-    self->seekable = FALSE;
     self->file = NULL;
     self->reader = NULL;
     self->decoder = NULL;
@@ -127,20 +100,13 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
   }
 
   self->file = f;
-  self->size = st.st_size;
-  self->seekable = TRUE;
 
   if (!(self->reader = (mpc_reader *)malloc(sizeof(mpc_reader)))) {
     PyErr_SetString(PyExc_MemoryError, "unable to allocate reader");
     return -1;
   }
 
-  self->reader->read = read_impl;
-  self->reader->seek = seek_impl;
-  self->reader->tell = tell_impl;
-  self->reader->get_size = get_size_impl;
-  self->reader->canseek = canseek_impl;
-  self->reader->data = self;
+  mpc_reader_setup_file_reader(self->reader, f);
 
   if (mpc_streaminfo_read(&info, self->reader) != ERROR_CODE_OK) {
     free(self->reader);
@@ -305,6 +271,20 @@ static PyObject *MPCFile_seek(MPCFile *self, PyObject *args, PyObject *kwds) {
   }
 }
 
+static PyObject *MPCFile_scale(MPCFile *self, PyObject *args, PyObject *kwds) {
+  static char *kwlist[] = {"scale", NULL};
+  double scale = 1.0;
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "d", kwlist, &scale))
+    return NULL;
+  if (scale < 0.0) {
+    PyErr_SetString(PyExc_ValueError, "scale must be at least 0");
+    return NULL;
+  } else {
+    mpc_decoder_scale_output(self->decoder, scale);
+    return Py_BuildValue("");
+  }
+}
+
 static PyMethodDef MPCFile_methods[] = {
   {"read", (PyCFunction)MPCFile_read, METH_NOARGS,
    "Return stereo audio data in a Python string. If\n\
@@ -315,6 +295,10 @@ static PyMethodDef MPCFile_methods[] = {
    "Seek to the specified position (in milliseconds).\n\
     An IOError will be thrown if you attempt to seek past\n\
     the end of the file."
+    },
+  {"set_scale", (PyCFunction)MPCFile_scale, METH_KEYWORDS,
+   "Scale decoded audio output.\n\
+    All decoded samples will be multiplied by this scale factor."
     },
     {NULL}
 };

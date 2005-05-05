@@ -190,6 +190,19 @@ class MPCTest(TestCase):
         self.mpc.read() # clear out end of buffer
         self.failIf(self.mpc.read())
 
+    def test_set_scale(self):
+        f1 = musepack.MPCFile(SAMPLE)
+        fe = musepack.MPCFile(SAMPLE)
+        f2 = musepack.MPCFile(SAMPLE)
+        f2.set_scale(0.5)
+        # sanity check to make sure equal decodes do happen...
+        self.failUnlessEqual(fe.read(), self.mpc.read())
+        # and so a scaled decode should not be equal.
+        self.failIfEqual(f1.read(), f2.read())
+
+    def test_set_scale_fail(self):
+        self.failUnlessRaises(ValueError, self.mpc.set_scale, -1.0)
+
     def tearDown(self):
         del(self.mpc)
 

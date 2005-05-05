@@ -43,12 +43,12 @@ class APETag(object):
         self.__dict = {}
 
         f = file(filename)
-        tag, count = self._find_tag(f)
+        tag, count = self.__find_tag(f)
         f.close()
 
-        if tag: self._parse_tag(tag, count)
+        if tag: self.__parse_tag(tag, count)
 
-    def _parse_tag(self, tag, count):
+    def __parse_tag(self, tag, count):
         f = StringIO(tag)
 
         for i in range(count):
@@ -67,7 +67,7 @@ class APETag(object):
             self.__dict[APEKey(key)] = APEValue(value, kind)
             debug("key %s, value %r" % (key, value))
 
-    def _tag_start(self, f):
+    def __tag_start(self, f):
         try: f.seek(-32, 2)
         except IOError: f.seek(0, 0)
         if f.read(8) == "APETAGEX":
@@ -79,7 +79,7 @@ class APETag(object):
             f.seek(0, 2)
             return f.tell()
 
-    def _find_tag(self, f):
+    def __find_tag(self, f):
         try: f.seek(-32, 2)
         except IOError: return None, 0
         data = f.read(32)
@@ -109,6 +109,9 @@ class APETag(object):
             # tag size includes footer
             return f.read(tag_size - 32), item_count
         else:
+            f.seek(0, 0)
+            if f.read(8) == "APETAGEX":
+                raise IOError("APEv2 at start of file is not (yet) supported")
             debug("no APE tag found")
             return None, 0
 
@@ -150,7 +153,7 @@ class APETag(object):
         file if you specify one. Any existing tag will be removed."""
         filename = filename or self.filename
         f = file(filename, "ab+")
-        offset = self._tag_start(f)
+        offset = self.__tag_start(f)
 
         f.seek(offset, 0)
         f.truncate()
