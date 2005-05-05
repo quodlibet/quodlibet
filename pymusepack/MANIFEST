@@ -6,3 +6,4 @@ musepack/mpc.c
 Makefile
 COPYING
 plaympc.py
+NEWS
