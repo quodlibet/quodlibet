@@ -6,22 +6,23 @@
 #
 # $Id$
 
+import os
 from os.path import dirname, basename, isdir, join
 
 base = dirname(__file__)
 if isdir(base):
     from glob import glob
-    modules = [f[:-3] for f in glob(base + "/*.py")]
+    modules = [f[:-3] for f in glob(join(base, "*.py"))]
 else: # zip file
     from zipfile import ZipFile
     z = ZipFile(dirname(base))
     modules = [f[:-3] for f in z.namelist() if
-               (f.endswith(".py") and f.startswith("formats/"))]
+               (f.endswith(".py") and f.startswith("formats" + os.sep))]
 
 modules = [join(basename(dirname(m)), basename(m)) for m in modules]
 
-modules.remove(basename(base) + "/__init__")
-modules.remove(basename(base) + "/audio")
+modules.remove(join(basename(base), "__init__"))
+modules.remove(join(basename(base), "audio"))
 
 modules = zip(modules, map(__import__, modules))
 _infos = {}
