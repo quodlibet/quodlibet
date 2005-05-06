@@ -39,6 +39,8 @@ def MusicFile(filename):
                 return _infos[ext](filename)
             except:
                 print ("W: Error loading %s") % filename
+                import traceback
+                traceback.print_exc()
                 return None
     else: return None
 
