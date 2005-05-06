@@ -2960,13 +2960,12 @@ class SongList(HintedTreeView):
     songlistviews = {}
     headers = []
 
-    def __init__(self, recall=0):
+    def __init__(self):
         HintedTreeView.__init__(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.songlistviews[self] = None     # register self
-        self.recall_size = recall
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList._destroy, self)
         sigs = [widgets.watcher.connect('changed', self.__song_updated),
