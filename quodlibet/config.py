@@ -9,8 +9,7 @@
 # Simple proxy to a Python ConfigParser.
 import os
 
-# Need to use a RawConfigParser because the PMP-related keys can
-# contain %s, which breaks the "smart" ConfigParser's interpolation.
+# We don't need/want variable interpolation.
 from ConfigParser import RawConfigParser as ConfigParser
 
 _config = ConfigParser()
