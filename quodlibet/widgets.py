@@ -3201,7 +3201,7 @@ class PlayList(SongList):
         plname = 'playlist_' + PlayList.normalize_name(name)
         self.__key = key = '~#' + plname
         model = gtk.ListStore(object)
-        super(PlayList, self).__init__(400)
+        super(PlayList, self).__init__()
 
         for song in library.query('#(%s > 0)' % plname, sort=key):
             model.append([song])
