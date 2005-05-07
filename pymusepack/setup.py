@@ -9,9 +9,9 @@ setup(name = "pymusepack", version = "0.3",
       license = "GNU GPL v2",
       long_description = """
 This Python module lets you load and decode Musepack (MPC/MP+)
-files using libmusepack. It resembles the Python MAD, Vorbis,
-and ModPlug interfaces.""",
+files using libmpcdec. It resembles the Python MAD, Vorbis,
+and ModPlug interfaces. It also lets you read and edit APEv2 tags.""",
       packages = ["musepack"],
       ext_modules=[Extension('musepack.mpc', ['musepack/mpc.c'],
-                             libraries = ['musepack'])]
+                             libraries = ['mpcdec'])]
     )

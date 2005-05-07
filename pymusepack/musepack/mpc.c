@@ -1,14 +1,12 @@
 /* A Musepack (MPC) decoder wrapper for Python
-   Based upon the work for the C libmusepack wrapper, available
-       http://svn.musepack.net/svn/libmusepack/trunk/
+   Uses libmpcdec, http://www.musepack.net/index.php?pg=src
+   Copyright 2005 Joe Wreschnig, Wim Speekenbrink
 
-  Copyright 2005 Joe Wreschnig, Wim Speekenbrink
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License version 2 as
+   published by the Free Software Foundation.
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License version 2 as
-  published by the Free Software Foundation.
-
-  $Id$
+   $Id$
 */
 
 #include <Python.h>
@@ -17,17 +15,14 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <fcntl.h>
-#include <musepack/musepack.h>
+#include <mpcdec/mpcdec.h>
+#include <mpcdec/reader.h>
 #include <structmember.h>
 
 typedef struct {
   PyObject_HEAD
   mpc_decoder *decoder;
-  mpc_reader *reader;
-
-  FILE *file;
-  unsigned int size;
-  mpc_bool_t seekable;
+  mpc_reader_file *reader;
 
   int frequency;
   int channels;
@@ -57,8 +52,6 @@ static PyObject
   self = (MPCFile *)type->tp_alloc(type, 0);
   if (self != NULL) {
     self->length = 0;
-    self->size = 0;
-    self->file = NULL;
     self->reader = NULL;
     self->decoder = NULL;
     self->frequency = 0;
@@ -82,15 +75,16 @@ static PyObject
 
 static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
   static char *kwlist[] = {"filename", NULL}, *filename;
-  struct stat st;
   mpc_streaminfo info;
   FILE *f;
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &filename))
     return -1;
   
-  if (stat(filename, &st) != 0) {
-    PyErr_SetFromErrno(PyExc_OSError);
+  if (!(self->reader = (mpc_reader_file *)malloc(sizeof(mpc_reader_file)))) {
+    PyErr_SetString(PyExc_MemoryError, "unable to allocate reader");
     return -1;
+  } else {
+    self->reader->file = NULL;
   }
 
   f = fopen(filename, "r");
@@ -98,32 +92,20 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
     PyErr_SetFromErrno(PyExc_OSError);
     return -1;
   }
-
-  self->file = f;
-
-  if (!(self->reader = (mpc_reader *)malloc(sizeof(mpc_reader)))) {
-    PyErr_SetString(PyExc_MemoryError, "unable to allocate reader");
-    return -1;
-  }
-
   mpc_reader_setup_file_reader(self->reader, f);
 
-  if (mpc_streaminfo_read(&info, self->reader) != ERROR_CODE_OK) {
-    free(self->reader);
+  if (mpc_streaminfo_read(&info, &(self->reader->reader)) != ERROR_CODE_OK) {
     PyErr_SetString(PyExc_IOError, "not a valid musepack file");
     return -1;
   }
 
   if (!(self->decoder = malloc(sizeof(mpc_decoder)))) {
-    free(self->reader);
     PyErr_SetString(PyExc_MemoryError, "unable to allocate decoder");
     return -1;
   }
 
-  mpc_decoder_setup(self->decoder, self->reader);
+  mpc_decoder_setup(self->decoder, &(self->reader->reader));
   if (!mpc_decoder_initialize(self->decoder, &info)) {
-    free(self->decoder);
-    free(self->reader);
     PyErr_SetString(PyExc_IOError, "error initializing decoder");
     return -1;
   }
@@ -153,10 +135,10 @@ static int MPCFile_init(MPCFile *self, PyObject *args, PyObject *kwds) {
 static void MPCFile_dealloc(MPCFile *self) {
   if (self == NULL) return;
   if (self->decoder) free(self->decoder);
+  if (self->reader->file) fclose(self->reader->file);
   if (self->reader) free(self->reader);
-  if (self->file) fclose(self->file);
-  if (self->profile_name) free(self->profile_name);
   if (self->encoder) free(self->encoder);
+  if (self->profile_name) free(self->profile_name);
   self->ob_type->tp_free((PyObject*)self);
 }
 
