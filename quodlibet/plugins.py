@@ -72,8 +72,7 @@ class SongWrapper(object):
         self._mtime = mtime(self["~filename"])
 
     def _was_updated(self): return self._updated
-    def _was_changed(self):
-        return self._updated or self._mtime < mtime(self["~filename"])
+    def _was_changed(self): return self._mtime < mtime(self["~filename"])
 
     def __setitem__(self, key, value):
         if key in self and self[key] == value: return
@@ -335,8 +334,11 @@ class PluginManager(object):
             if lock: gtk.threads_leave()
 
         for song in songs:
-            if song._was_changed():
+            if song._was_updated():
                 self.watcher.changed(song._song)
+                updated = True
+            elif song._was_changed():
+                song._song.reload()
                 updated = True
         if updated:
             self.watcher.refresh()
