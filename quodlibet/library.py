@@ -228,7 +228,7 @@ class Library(dict):
         added, changed, removed = [], [], []
 
         for d in dirs:
-            print to(_("Checking %s") % d)
+            print to(_("Checking %s") % util.fsdecode(d))
             d = os.path.expanduser(d)
             for path, dnames, fnames in os.walk(d):
                 for fn in fnames:
