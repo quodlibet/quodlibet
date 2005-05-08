@@ -69,10 +69,8 @@ class SongWrapper(object):
         self._song = song
         self._updated = False
         self._needs_write = False
-        self._mtime = mtime(self["~filename"])
 
     def _was_updated(self): return self._updated
-    def _was_changed(self): return self._mtime < mtime(self["~filename"])
 
     def __setitem__(self, key, value):
         if key in self and self[key] == value: return
@@ -93,6 +91,7 @@ class SongWrapper(object):
     def list(self, key): return self._song.list(key)
     def rename(self, newname): return self._song.rename(newname)
     def website(self): return self._song.website()
+    def valid(self): return self._song.valid()
     def find_cover(self): return self._song.find_cover()
 
 def ListWrapper(songs):
@@ -319,9 +318,7 @@ class PluginManager(object):
             for song in needs_write:
                 try: song._song.write()
                 except Exception, err:
-                    try: song.reload()
-                    except: self.watcher.error(song)
-
+                    self.watcher.error(song._song)
                     qltk.ErrorMessage(
                         None, _("Unable to edit song"),
                         _("Saving <b>%s</b> failed. The file "
@@ -337,8 +334,8 @@ class PluginManager(object):
             if song._was_updated():
                 self.watcher.changed(song._song)
                 updated = True
-            elif song._was_changed():
-                song._song.reload()
+            elif not song.valid():
+                self.watcher.reload(song._song)
                 updated = True
         if updated:
             self.watcher.refresh()

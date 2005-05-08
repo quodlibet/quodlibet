@@ -135,10 +135,11 @@ class TestSongWrapper(TestCase):
         self.failUnlessEqual(self.pwrap.items(), self.psong.items())
 
     def test_mtime(self):
-        self.failIf(self.wrap._was_changed())
-        self.wrap._mtime = os.path.getmtime("/dev/null") - 2
+        self.wrap._song.sanitize()
+        self.failUnless(self.wrap.valid())
+        self.wrap["~#mtime"] = os.path.getmtime("/dev/null") - 2
         self.wrap._updated = False
-        self.failUnless(self.wrap._was_changed())
+        self.failIf(self.wrap.valid())
 
     def test_setitem(self):
         self.failIf(self.wrap._was_updated())

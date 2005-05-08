@@ -162,13 +162,15 @@ class SongWatcher(gtk.Object):
     def seek(self, song, position_in_msec):
         gobject.idle_add(self.emit, 'seek', song, position_in_msec)
 
-    def error(self, song):
+    def reload(self, song):
         try: song.reload()
         except Exception, err:
             sys.stdout.write(str(err) + "\n")
             library.remove(song)
             self.removed(song)
         else: self.changed(song)
+
+    error = reload
 
 gobject.type_register(SongWatcher)
 
