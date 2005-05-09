@@ -11,7 +11,7 @@ import config
 import re
 try: import pyid3lib, mad
 except ImportError: extensions = []
-else: extensions = [".mp3", ".mp2", ".mpg", ".mpeg"]
+else: extensions = [".mp3", ".mp2"]
 
 # ID3 is absolutely the worst thing ever.
 
