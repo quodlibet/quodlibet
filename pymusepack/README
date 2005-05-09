@@ -4,12 +4,12 @@ This Python module lets you load and decode Musepack (MPC/MP+ files).
 Its API has been chosen to mostly match pyvorbis and pymad. It also
 includes a module to read and write APEv2 metadata tags.
 
-libmusepack can be found at http://www.musepack.net/index.php?pg=src.
+libmpcdec can be found at http://www.musepack.net/index.php?pg=src.
 
 Compiling:
 ----------
 This module has only been tested on Python 2.3. It definitely won't
-work on 2.1 or earlier. It also requires libmusepack 1.1.1.
+work on 2.1 or earlier. It also requires libmpcdec 1.2.
 
 $ ./setup.py build
 

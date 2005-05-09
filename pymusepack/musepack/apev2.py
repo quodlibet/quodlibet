@@ -13,6 +13,12 @@
 # which is in turn a copy of the old
 # http://www.personal.uni-jena.de/~pfk/mpp/sv8/apetag.html
 
+"""This module reads and writes APEv2 metadata tags, the kind
+usually found in Musepack files. For more information, see
+http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification
+
+It does not support APE tags at the start of a file, only at the end."""
+
 import os, struct
 from cStringIO import StringIO
 
