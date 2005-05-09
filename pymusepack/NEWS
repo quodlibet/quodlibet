@@ -1,4 +1,4 @@
-0.3 - 2005.05.10
+0.3 - 2005.05.08
  * Raise an IOError when an unsupported APE tag is found.
  * MPCFile#set_scale to adjust volume scaling.
  * Use the new 'libmpcdec' instead of libmusepack.
