@@ -9,7 +9,7 @@ Recent upgrade notes:
 Running Ex Falso and Quod Libet at the same time is not recommended
 (Ex Falso will warn you if you do this).
 
-0.11
+0.11 - spicy burnsauce with a side of ZING!
  * Plugins (either appearing in the right-click menu, or triggered on a
    player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins. (#5)
  * Browse songs by album, with a cover display. (#6)
@@ -21,8 +21,9 @@ Running Ex Falso and Quod Libet at the same time is not recommended
  * '0' to '4' keys or mouse clicks can set song ratings.
  * Depends on PyGTK 2.6 (as well as GTK 2.6).
  * --status to print the player's status.
- * Russian translation, thanks to Sergey Fedoseev.
+ * Russian translation, thanks to Sergey and Andrey Fedoseev.
  * Partial French translation, thanks to Joshua Kwan.
+ * OSD moved to a plugin.
 
 0.10.1 - What if I said I'm not really kidding?
  * The main window stays hidden when the song changes.
