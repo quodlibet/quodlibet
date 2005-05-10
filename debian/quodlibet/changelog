@@ -1,3 +1,10 @@
+quodlibet (0.11-1) unstable; urgency=low
+
+  * New upstream release.
+  * gosd.py is no longer included; remove from quodlibet.copyright.
+
+ -- Joe Wreschnig <piman@debian.org>  Tue, 10 May 2005 00:29:13 -0500
+
 quodlibet (0.10.1-1) unstable; urgency=low
 
   * New upstream release.
