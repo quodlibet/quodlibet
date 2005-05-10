@@ -36,8 +36,8 @@ class Osd(object):
         w.child.pack_start(c, expand=False)
 
         cb = gtk.combo_box_new_text()
-        cb.append_text(_('Display OSD on the top'))
-        cb.append_text(_('Display OSD on the bottom'))
+        cb.append_text('Display OSD on the top')
+        cb.append_text('Display OSD on the bottom')
         cb.set_active(config.getint('plugins', 'osd_position'))
         cb.connect('changed', self.__changed)
         box = gtk.VBox(spacing=6)
