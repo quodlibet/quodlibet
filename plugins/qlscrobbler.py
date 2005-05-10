@@ -14,7 +14,7 @@ class QLScrobbler(object):
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "AudioScrobbler client for Quod Libet"
 	PLUGIN_ICON = gtk.STOCK_CONNECT
-	PLUGIN_VERSION = "0.2piman"
+	PLUGIN_VERSION = "0.2"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -90,6 +90,10 @@ class QLScrobbler(object):
 #		print "Queue contents:"
 #		for item in self.queue:
 #			print "\t%s - %s" % (item['artist'], item['title'])
+
+		# Try to flush it immediately
+		if len(self.queue) > 0:
+			self.submit_song(True)
 
 	def dump_queue(self):
 		if len(self.queue) == 0: return 0
@@ -210,12 +214,15 @@ class QLScrobbler(object):
 		# construct url
 		url = "/?hs=true&p=1.1&c=%s&v=%s&u=%s" % ( self.CLIENT, self.PLUGIN_VERSION, self.username )
 		
+		print "Sending handshake to AudioScrobbler."
+
 		try:
 			conn = httplib.HTTPConnection("post.audioscrobbler.com")
 			conn.request("GET", url)
 			resp = conn.getresponse()
 			conn.close()
 		except:
+			print "Server not responding, handshake failed."
 			return # challenge_sent is NOT set to 1
 			
 		if resp.status == 200:
@@ -259,35 +266,37 @@ class QLScrobbler(object):
 				self.waiting = True
 				gobject.timeout_add(interval * 1000, self.clear_waiting)
 
-	def submit_song(self):
-		bg = threading.Thread(None, self.submit_song_helper)
+	def submit_song(self, old = False):
+		bg = threading.Thread(None, self.submit_song_helper, None, [old])
+		bg.setDaemon(True)
 		bg.start()
 
-	def submit_song_helper(self):
+	def submit_song_helper(self, old = False):
 		if self.already_submitted == True or self.broken == True: return
 
-		stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+		if old == False:
+			stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 	
-		store = {
-			"title": self.song.comma("title"),
-			"length": str(self.song["~#length"]),
-			"album": self.song.comma("album"),
-			"mbid": "", # XXX
-			"stamp": stamp
-		}
+			store = {
+				"title": self.song.comma("title"),
+				"length": str(self.song["~#length"]),
+				"album": self.song.comma("album"),
+				"mbid": "", # XXX
+				"stamp": stamp
+			}
 
-		if "artist" in self.song:
-			store["artist"] = self.song.comma("artist")
-		elif "composer" in self.song:
-			store["artist"] = self.song.comma("composer")
-		elif "performer" in self.song:
-			performer = self.song.comma('performer')
-			if performer[-1] == ")" and "(" in performer:
-				store["artist"] = performer[:performer.rindex("(")].strip()
-			else:
-				store["artist"] = performer
+			if "artist" in self.song:
+				store["artist"] = self.song.comma("artist")
+			elif "composer" in self.song:
+				store["artist"] = self.song.comma("composer")
+			elif "performer" in self.song:
+				performer = self.song.comma('performer')
+				if performer[-1] == ")" and "(" in performer:
+					store["artist"] = performer[:performer.rindex("(")].strip()
+				else:
+					store["artist"] = performer
 
-		self.queue.append(store)
+			self.queue.append(store)
 		
 		if self.locked == True:
 			# another instance running, let it deal with this
@@ -338,6 +347,8 @@ class QLScrobbler(object):
 			resp = conn.getresponse()
 			conn.close()
 		except:
+			print "Audioscrobbler server not responding, will try later."
+			self.locked = False
 			return # preserve the queue, yadda yadda
 
 		lines = resp.read().rstrip().split("\n")
