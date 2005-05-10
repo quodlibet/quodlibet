@@ -2979,6 +2979,21 @@ class SongList(HintedTreeView):
         for sig in sigs:
             self.connect_object('destroy', widgets.watcher.disconnect, sig)
 
+        targets = [
+            ('other-model-row', gtk.TARGET_SAME_APP, 1),
+            ]
+        self.drag_source_set(
+            gtk.gdk.BUTTON1_MASK, targets,
+            gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
+        self.connect('drag-data-get', self.__drag_data_get)
+
+    def __drag_data_get(self, view, ctx, sel, tid, etime):
+        model, paths = self.get_selection().get_selected_rows()
+        if model is None: return
+        else:
+            song = model[paths[0]][0]
+            sel.set(sel.target, 8, song.get("~filename", "dne"))
+
     def __redraw_current(self, watcher):
         model = self.get_model()
         iter = self.song_to_iter(watcher.song)
@@ -3208,10 +3223,6 @@ class PlayList(SongList):
         for song in library.query('#(%s > 0)' % plname, sort=key):
             model.append([song])
 
-        self.set_model(model)
-        self.connect_object('drag-end', self.__refresh_indices, key)
-        self.set_reorderable(True)
-
         menu = gtk.Menu()
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         rem.connect('activate', self.__remove_selected_songs, key)
@@ -3227,6 +3238,78 @@ class PlayList(SongList):
 
         sig = widgets.watcher.connect('refresh', self.__refresh_indices, key)
         self.connect_object('destroy', widgets.watcher.disconnect, sig)
+
+        self.set_model(model)
+        self.connect_object('drag-end', self.__refresh_indices, key)
+
+        targets = [
+            ('my-model-row', gtk.TARGET_SAME_WIDGET, 0),
+            ('other-model-row', gtk.TARGET_SAME_APP, 1),
+            ]
+        self.enable_model_drag_source(
+            gtk.gdk.BUTTON1_MASK, targets,
+            gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_MOVE)
+        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
+        self.connect('drag-data-get', self.__drag_data_get)
+        self.connect('drag-data-received', self.__drag_data_received)
+        self.connect('drag-begin', self.__drag_begin)
+        self.connect('drag-end', self.__drag_end)
+
+    def __drag_begin(self, view, ctx):
+        model, paths = self.get_selection().get_selected_rows()
+        paths.sort()
+        iters = [model.get_iter(path) for path in paths]
+        self.__self_drag_iters = iters
+
+        # why oh why is this overridden? And where!?
+        if not len(iters): ctx.drag_abort(gtk.get_current_event_time())
+        elif len(iters) == 1: ctx.set_icon_stock(gtk.STOCK_DND, 0, 0)
+        else: ctx.set_icon_stock(gtk.STOCK_DND_MULTIPLE, 0, 0)
+        return True
+
+    def __drag_end(self, view, ctx):
+        del(self.__self_drag_iters[:])
+
+    def __drag_data_get(self, view, ctx, sel, tid, etime):
+        if len(self.__self_drag_iters):
+            sel.set(sel.target, 8, 'playlist_self_drag')
+
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+        model = view.get_model()
+        if sel.data == 'playlist_self_drag':
+            data = self.__self_drag_iters
+            first = data.pop(0)
+            drop_info = view.get_dest_row_at_pos(x, y)
+
+            if not drop_info:
+                prev = model.append([model[first][0]])
+            else:
+                path, position = drop_info
+                iter = model.get_iter(path)
+                if position in (gtk.TREE_VIEW_DROP_BEFORE,
+                                gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                    prev = model.insert_before(iter, [model[first][0]])
+                else:
+                    prev = model.insert_after(iter, [model[first][0]])
+            model.remove(first)
+            for drop in data:
+                prev = model.insert_after(prev, [model[drop][0]])
+                model.remove(drop)
+            ctx.finish(True, True, etime)
+        elif sel.data in library:
+            data = []
+            song = library[sel.data]
+            try: path, position = view.get_dest_row_at_pos(x, y)
+            except TypeError: model.append([song])
+            else:
+                iter = model.get_iter(path)
+                if position in (gtk.TREE_VIEW_DROP_BEFORE,
+                                gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                    model.insert_before(iter, [song])
+                else:
+                    model.insert_after(iter, [song])
+            ctx.finish(True, True, etime)
+            self.__refresh_indices(ctx, self.__key)
 
     def append_songs(self, songs):
         model = self.get_model()
