@@ -1616,6 +1616,12 @@ class AlbumList(Browser, gtk.VBox):
 
         __call__ = get
 
+        # All songs added, cache info.
+        def finalize(self):
+            self.__long_length = util.format_time_long(self.length)
+            self.people = list(self.people)
+            self.people.sort()
+
         def add(self, song):
             self.tracks += 1
             if self.title:
@@ -1662,10 +1668,8 @@ class AlbumList(Browser, gtk.VBox):
             if self.discs > 1: text += (_("%d discs") % self.discs) + " - "
             if self.tracks == 1: text += _("1 track")
             else: text += _("%d tracks") % self.tracks
-            text += " - %s" % util.format_time_long(self.length)
-            people = set(self.people)
-            people = list(people); people.sort()
-            text += "</small>\n" + ", ".join(map(util.escape, people))
+            text += " - " + self.__long_length
+            text += "</small>\n" + ", ".join(map(util.escape, self.people))
             return text
 
     class FilterEntry(qltk.ValidatingEntry):
@@ -1714,18 +1718,15 @@ class AlbumList(Browser, gtk.VBox):
 
         def __compare_title(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if a1 is None or a2 is None: return cmp(a1, a2)
+            if (a1 and a2) is None: return cmp(a1, a2)
             else: return cmp(a1.title, a2.title)
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if not (a1 and a2): return cmp(a1, a2)
-            else:
-                p1 = list(a1.people); p1.sort()
-                p2 = list(a2.people); p2.sort()
-                return (cmp(p1, p2) or
-                        cmp(a1.date, a2.date) or
-                        cmp(a1.title, a2.title))
+            if (a1 and a2) is None: return cmp(a1, a2)
+            else: return (cmp(a1.people, a2.people) or
+                          cmp(a1.date, a2.date) or
+                          cmp(a1.title, a2.title))
 
     def __init__(self, cb, save=True, play=True):
         gtk.VBox.__init__(self)
@@ -1921,6 +1922,7 @@ class AlbumList(Browser, gtk.VBox):
             albums.append(albums.pop(0))
         model.append(row=[None])
         for album in albums:
+            album.finalize()
             album._path = model.get_path(model.append(row=[album]))
             album._model = model
         for i, row in enumerate(iter(model)):
