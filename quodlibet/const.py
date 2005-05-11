@@ -3,7 +3,7 @@
 
 import os
 
-VERSION = "0.11"
+VERSION = "0.12"
 
 HOME    = os.path.expanduser("~")
 DIR     = os.path.join(HOME, ".quodlibet")
@@ -24,12 +24,6 @@ AUTHORS = ["Joe Wreschnig <quodlibet@lists.sacredchao.net>",
 
            "Anders Carlsson (trayicon)",
            "Lee Willis, Jan Arne Petersen (mmkeys)"]
-
-TRANSLATORS =[
-    "Michal Nowikowski (pl)",
-    "Bastian Kleineidam (de)",
-    "Andrey Fedoseev (ru)",
-    ]
 
 TBP = os.path.join(DIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\

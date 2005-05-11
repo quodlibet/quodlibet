@@ -9,6 +9,8 @@ Recent upgrade notes:
 Running Ex Falso and Quod Libet at the same time is not recommended
 (Ex Falso will warn you if you do this).
 
+0.12
+
 0.11 - spicy burnsauce with a side of ZING!
  * Plugins (either appearing in the right-click menu, or triggered on a
    player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins. (#5)
