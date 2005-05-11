@@ -1694,25 +1694,31 @@ class AlbumList(Browser, gtk.VBox):
 
     class SortCombo(gtk.ComboBox):
         def __init__(self, model):
-            gtk.ComboBox.__init__(self, gtk.ListStore(str))
+            mymodel = gtk.ListStore(str, object)
+            gtk.ComboBox.__init__(self, mymodel)
             cell = gtk.CellRendererText()
             self.pack_start(cell, True)
             self.add_attribute(cell, 'text', 0)
-            self.append_text(_("Sort by title"))
-            self.append_text(_("Sort by artists"))
+
+            for text, func in [
+                (_("Sort by title"), self.__compare_title),
+                (_("Sort by artist"), self.__compare_artist)
+                ]: mymodel.append(row=[text, func])
+
             self.connect_object('changed', self.__set_cmp_func, model)
             self.set_active(0)
 
         def __set_cmp_func(self, model):
-            self.__cmp_func = [self.__compare_title,
-                               self.__compare_artists][self.get_active()]
-            model.set_default_sort_func(self.__compare)
+            model.set_default_sort_func(
+                self.get_model()[(self.get_active(),)][1])
 
-        def __compare_title(self, a1, a2):
+        def __compare_title(self, model, i1, i2):
+            a1, a2 = model[i1][0], model[i2][0]
             if a1 is None or a2 is None: return cmp(a1, a2)
             else: return cmp(a1.title, a2.title)
 
-        def __compare_artists(self, a1, a2):
+        def __compare_artist(self, model, i1, i2):
+            a1, a2 = model[i1][0], model[i2][0]
             if not (a1 and a2): return cmp(a1, a2)
             else:
                 p1 = list(a1.people); p1.sort()
@@ -1720,9 +1726,6 @@ class AlbumList(Browser, gtk.VBox):
                 return (cmp(p1, p2) or
                         cmp(a1.date, a2.date) or
                         cmp(a1.title, a2.title))
-
-        def __compare(self, model, iter1, iter2):
-            return self.__cmp_func(model[iter1][0], model[iter2][0])
 
     def __init__(self, cb, save=True, play=True):
         gtk.VBox.__init__(self)
