@@ -1677,9 +1677,9 @@ class AlbumList(Browser, gtk.VBox):
             model.set_visible_func(self.__parse)
 
         def __parse(self, model, iter):
-            return ((model[iter][0]) and
-                    (not self.__filter or
-                     self.__filter.search(model[iter][0])))
+            if self.__filter is None: return True
+            elif model[iter][0] is None: return False
+            else: return self.__filter.search(model[iter][0])
 
         def __filter_changed(self, model):
             if self.__refill_id:
@@ -1887,6 +1887,7 @@ class AlbumList(Browser, gtk.VBox):
         albums.sort(lambda a, b: cmp(a.title, b.title))
         if albums and albums[0].title == "":
             albums.append(albums.pop(0))
+        model.append(row=[None])
         for album in albums:
             album._path = model.get_path(model.append(row=[album]))
             album._model = model
