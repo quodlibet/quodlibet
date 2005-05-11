@@ -3253,7 +3253,10 @@ class PlayList(SongList):
 
         try: path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
-            for song in songs: model.append([song])
+            for song in songs:
+                it = self.song_to_iter(song)
+                if it: model.remove(it)
+                model.append([song])
         else:
             iter = model.get_iter(path)
             song = songs.pop(0)
