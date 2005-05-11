@@ -1692,6 +1692,38 @@ class AlbumList(Browser, gtk.VBox):
                         self.get_text().decode('utf-8'))
                 self.__refill_id = gobject.timeout_add(500, model.refilter)
 
+    class SortCombo(gtk.ComboBox):
+        def __init__(self, model):
+            gtk.ComboBox.__init__(self, gtk.ListStore(str))
+            cell = gtk.CellRendererText()
+            self.pack_start(cell, True)
+            self.add_attribute(cell, 'text', 0)
+            self.append_text(_("Sort by title"))
+            self.append_text(_("Sort by artists"))
+            self.connect_object('changed', self.__set_cmp_func, model)
+            self.set_active(0)
+
+        def __set_cmp_func(self, model):
+            self.__cmp_func = [self.__compare_title,
+                               self.__compare_artists][self.get_active()]
+            model.set_default_sort_func(self.__compare)
+
+        def __compare_title(self, a1, a2):
+            if a1 is None or a2 is None: return cmp(a1, a2)
+            else: return cmp(a1.title, a2.title)
+
+        def __compare_artists(self, a1, a2):
+            if not (a1 and a2): return cmp(a1, a2)
+            else:
+                p1 = list(a1.people); p1.sort()
+                p2 = list(a2.people); p2.sort()
+                return (cmp(p1, p2) or
+                        cmp(a1.date, a2.date) or
+                        cmp(a1.title, a2.title))
+
+        def __compare(self, model, iter1, iter2):
+            return self.__cmp_func(model[iter1][0], model[iter2][0])
+
     def __init__(self, cb, save=True, play=True):
         gtk.VBox.__init__(self)
 
@@ -1703,7 +1735,8 @@ class AlbumList(Browser, gtk.VBox):
         view = HintedTreeView()
         view.set_headers_visible(False)
         model = gtk.ListStore(object)
-        model_filter = model.filter_new()
+        model_sort = gtk.TreeModelSort(model)
+        model_filter = model_sort.filter_new()
         view.set_model(model_filter)
 
         render = gtk.CellRendererPixbuf()
@@ -1761,12 +1794,8 @@ class AlbumList(Browser, gtk.VBox):
                             None, None, None, 2, 0)
         view.connect('button-press-event', self.__button_press, menu)
 
-        hb = gtk.HBox(spacing=0)
-        lab = gtk.Label(_("_Search:"))
-        lab.set_padding(6, 0)
-        lab.set_mnemonic_widget(e)
-        lab.set_use_underline(True)
-        hb.pack_start(lab, expand=False)
+        hb = gtk.HBox(spacing=6)
+        hb.pack_start(self.SortCombo(model_sort), expand=False)
         hb.pack_start(e)
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
