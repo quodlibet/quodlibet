@@ -1668,6 +1668,30 @@ class AlbumList(Browser, gtk.VBox):
             text += "</small>\n" + ", ".join(map(util.escape, people))
             return text
 
+    class FilterEntry(qltk.ValidatingEntry):
+        def __init__(self, model):
+            qltk.ValidatingEntry.__init__(self, parser.is_valid_color)
+            self.connect_object('changed', self.__filter_changed, model)
+            self.__refill_id = None
+            self.__filter = None
+            model.set_visible_func(self.__parse)
+
+        def __parse(self, model, iter):
+            return ((model[iter][0]) and
+                    (not self.__filter or
+                     self.__filter.search(model[iter][0])))
+
+        def __filter_changed(self, model):
+            if self.__refill_id:
+                gobject.source_remove(self.__refill_id)
+                self.__refill_id = None
+            if parser.is_parsable(self.get_text().decode('utf-8')):
+                if not self.get_text(): self.__filter = None
+                else:
+                    self.__filter = parser.parse(
+                        self.get_text().decode('utf-8'))
+                self.__refill_id = gobject.timeout_add(500, model.refilter)
+
     def __init__(self, cb, save=True, play=True):
         gtk.VBox.__init__(self)
 
@@ -1678,7 +1702,9 @@ class AlbumList(Browser, gtk.VBox):
         sw.set_shadow_type(gtk.SHADOW_IN)
         view = HintedTreeView()
         view.set_headers_visible(False)
-        view.set_model(gtk.ListStore(object))
+        model = gtk.ListStore(object)
+        model_filter = model.filter_new()
+        view.set_model(model_filter)
 
         render = gtk.CellRendererPixbuf()
         column = gtk.TreeViewColumn("covers", render)
@@ -1711,24 +1737,15 @@ class AlbumList(Browser, gtk.VBox):
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
 
-        # Uncommenting causing segfaults when the window is destroyed.
-        #view.set_search_column(0)
-        #def search_cell(model, column, key, iter):
-        #    return not model[iter][0].title.startswith(key.decode('utf-8'))
-        #view.set_search_equal_func(search_cell)
-        # ... Whether or not we include this.
-        #self.connect_object('destroy', view.set_enable_search, False)
-
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         view.set_rules_hint(True)
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
-        e = qltk.ValidatingEntry(parser.is_valid_color)
+        e = self.FilterEntry(model_filter)
 
         if play: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed)
-        s = widgets.watcher.connect(
-            'refresh', self.__refresh, view, e)
+        s = widgets.watcher.connect('refresh', self.__refresh, view, model)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         menu = gtk.Menu()
@@ -1737,15 +1754,12 @@ class AlbumList(Browser, gtk.VBox):
         menu.append(button)
         menu.append(props)
         menu.show_all()
-        button.connect('activate', self.__refresh, view, e, True)
+        button.connect('activate', self.__refresh, view, model, True)
         props.connect('activate', self.__properties, view)
 
         view.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
         view.connect('button-press-event', self.__button_press, menu)
-
-        e.connect('changed', self.__filter_changed, view)
-        self.__refill_id = None
 
         hb = gtk.HBox(spacing=0)
         lab = gtk.Label(_("_Search:"))
@@ -1757,15 +1771,8 @@ class AlbumList(Browser, gtk.VBox):
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
 
-        self.__refresh(None, view, e)
-        self.__filter_changed(e, view)
+        self.__refresh(None, view, model)
         self.show_all()
-
-    def __filter_changed(self, entry, view):
-        if parser.is_parsable(entry.get_text().decode('utf-8').strip()):
-            if self.__refill_id: gobject.source_remove(self.__refill_id)
-            self.__refill_id = gobject.timeout_add(
-                300, self.__refresh, entry, view, entry)
 
     def __properties(self, activator, view):
         model, rows = view.get_selection().get_selected_rows()
@@ -1855,21 +1862,17 @@ class AlbumList(Browser, gtk.VBox):
                 if self.__save: config.set("browsers", "albums", confval)
                 self.__cb(u"album = |(%s)" % text, None)
 
-    def __refresh(self, watcher, view, entry, clear_cache=False):
+    def __refresh(self, watcher, view, model, clear_cache=False):
         selection = view.get_selection()
-        model, rows = selection.get_selected_rows()
-        selected = [(model[row][0] and model[row][0].title) for row in rows]
-        model = view.get_model()
+        fmodel, rows = selection.get_selected_rows()
+        selected = [(fmodel[row][0] and fmodel[row][0].title) for row in rows]
+
         if clear_cache: self._Album.clear_cache()
         for row in iter(model):
             if row[0]: row[0]._path = row[0]._model = None
         model.clear()
         albums = {}
-        bg = entry.get_text().decode('utf-8').strip()
         songs = library.values()
-        if bg and parser.is_parsable(bg): filt = parser.parse(bg).search
-        else: filt = None
-
         for song in songs:
             if "album" not in song:
                 if "" not in albums: albums[""] = self._Album("")
@@ -1880,11 +1883,10 @@ class AlbumList(Browser, gtk.VBox):
                         albums[album] = self._Album(album)
                     albums[album].add(song)
 
-        albums = filter(filt, albums.values())
+        albums = albums.values()
         albums.sort(lambda a, b: cmp(a.title, b.title))
         if albums and albums[0].title == "":
             albums.append(albums.pop(0))
-        if filt is None: model.append(row=[None])
         for album in albums:
             album._path = model.get_path(model.append(row=[album]))
             album._model = model
