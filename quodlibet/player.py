@@ -42,6 +42,67 @@ class OSSAudioDevice(object):
             self.__rate = self.__dev.speed(rate)
             self.__dev.nonblock()
 
+class GStreamerDevice(object):
+    __play = None
+
+    def __init__(self): pass
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.__play.get_state() == gst.STATE_NULL:
+            raise StopIteration
+        else:
+            time.sleep(0.2)
+            position = self.__play.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
+            return position
+
+    def seek(self, ms):
+        pass
+
+    def end(self):
+        self.__play.set_state(gst.STATE_NULL)
+        self.stopped = True
+
+    def open(self, song):
+        if self.__play:
+            # Dismantle the old pipeline
+            state = self.__play.get_state()
+            sink, spider, source = self.__play.get_list()
+            source.unlink(spider)
+            self.__play.remove(source)
+            self.__play.set_state(gst.STATE_NULL)
+            bin = self.__play
+        else:
+            # Or, construct it for the first time
+            state = gst.STATE_PAUSED
+            spider = gst.element_factory_make('spider', 'spider')
+            sink = gst.element_factory_make('osssink', 'sink')
+            bin = gst.Thread('player')
+            spider.link(sink)
+            bin.add(spider)
+            bin.add(sink)
+
+        self.stopped = False
+
+        source = gst.element_factory_make('filesrc', 'src')
+        source.set_property('location', song["~filename"])
+        bin.add(source)
+        source.link(spider)
+        bin.set_state(state)
+        self.__play = bin
+        self.length = self.__play.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
+        self.length /= gst.MSECOND
+        return self
+
+    def __set_paused(self, paused):
+        if self.__play:
+            if paused: self.__play.set_state(gst.STATE_PAUSED)
+            else: self.__play.set_state(gst.STATE_PLAYING)
+
+    paused = property(None, __set_paused)
+
 class AOAudioDevice(object):
     from formats import MusicPlayer as open
 
@@ -93,6 +154,7 @@ class PlaylistPlayer(object):
             self.__paused = paused
             try: self.info.set_paused(paused)
             except AttributeError: pass
+            self.__output.paused = paused
 
     def __get_paused(self): return self.__paused
 
@@ -314,6 +376,10 @@ def OSSProxy(*args):
 
 supported = {}
 outputs = { 'oss': OSSAudioDevice }
+
+try: import gst.play
+except ImportError: pass
+else: outputs["gst"] = GStreamerDevice
 
 global device, playlist
 device = None
