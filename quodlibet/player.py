@@ -45,13 +45,27 @@ class OSSAudioDevice(object):
 class GStreamerDevice(object):
     __play = None
 
-    def __init__(self): pass
+    def __init__(self):
+        self.__sink = gst.element_factory_make('osssink', 'sink')
+        self.__spider = gst.element_factory_make('spider', 'spider')
+        self.__volume = gst.element_factory_make('volume', 'volume')
+        self.__spider.link(self.__volume)
+        self.__volume.link(self.__sink)
+        bin = gst.Thread('player')
+        bin.add_many(self.__sink, self.__spider, self.__volume)
+        self.__play = bin
+
+    def get_volume(self, v):
+        return self.__volume.get_property('volume')
+    def set_volume(self, v):
+        return self.__volume.set_property('volume', v)
+    volume = property(get_volume, set_volume)
 
     def __iter__(self):
         return self
 
     def next(self):
-        if self.__play.get_state() == gst.STATE_NULL:
+        if self.__play.get_state() == gst.STATE_READY:
             raise StopIteration
         else:
             time.sleep(0.2)
@@ -67,7 +81,7 @@ class GStreamerDevice(object):
         ms *= gst.MSECOND
         event = gst.event_new_seek(
             gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
-        self.__play.get_list()[1].send_event(event)
+        self.__play.get_list()[2].send_event(event)
         self.__play.set_state(state)
 
     def end(self):
@@ -75,23 +89,15 @@ class GStreamerDevice(object):
         self.stopped = True
 
     def open(self, song):
-        if self.__play:
-            # Dismantle the old pipeline
-            state = self.__play.get_state()
-            sink, spider, source = self.__play.get_list()
+        # Dismantle the old pipeline
+        state = self.__play.get_state()
+        try: sink, spider, volume, source = self.__play.get_list()
+        except ValueError: sink, spider, volume = self.__play.get_list()
+        else:
             source.unlink(spider)
             self.__play.remove(source)
             self.__play.set_state(gst.STATE_NULL)
-            bin = self.__play
-        else:
-            # Or, construct it for the first time
-            state = gst.STATE_PAUSED
-            spider = gst.element_factory_make('spider', 'spider')
-            sink = gst.element_factory_make('osssink', 'sink')
-            bin = gst.Thread('player')
-            spider.link(sink)
-            bin.add(spider)
-            bin.add(sink)
+        bin = self.__play
 
         self.stopped = False
 
