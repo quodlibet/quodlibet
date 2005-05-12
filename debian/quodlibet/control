@@ -2,12 +2,12 @@ Source: quodlibet
 Section: sound
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
-Build-Depends: debhelper (>= 4.2.21), python-dev, python-gtk2-dev (>= 2.4.1), pkg-config, libgtk2.0-dev
+Build-Depends: debhelper (>= 4.2.21), python-dev, python-gtk2-dev (>= 2.6), pkg-config, libgtk2.0-dev
 Standards-Version: 3.6.1.1
 
 Package: quodlibet
 Architecture: all
-Depends: ${python:Depends}, python-gtk2 (>= 2.4.1), python-pymad, python-pyvorbis, python-id3lib, quodlibet-ext (= ${Source-Version}), libgtk2.0-0 (>= 2.6.0-1)
+Depends: ${python:Depends}, python-gtk2 (>= 2.6), python-pymad, python-pyvorbis, python-id3lib, quodlibet-ext (= ${Source-Version}), libgtk2.0-0 (>= 2.6.0-1)
 Recommends: python-pyao, ttf-freefont
 Suggests: python-modplug, python-flac, python-musepack, albumart, vorbisgain (>= 0.35-2)
 Description: audio library manager and player for GTK+
