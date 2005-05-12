@@ -55,11 +55,20 @@ class GStreamerDevice(object):
             raise StopIteration
         else:
             time.sleep(0.2)
-            position = self.__play.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
+            # Querying the bin doesn't work, we need to query the spider.
+            position = self.__play.get_list()[1].query(
+                gst.QUERY_POSITION, gst.FORMAT_TIME)
+            position /= gst.MSECOND
             return position
 
     def seek(self, ms):
-        pass
+        state = self.__play.get_state()
+        self.__play.set_state(gst.STATE_PAUSED)
+        ms *= gst.MSECOND
+        event = gst.event_new_seek(
+            gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
+        self.__play.get_list()[1].send_event(event)
+        self.__play.set_state(state)
 
     def end(self):
         self.__play.set_state(gst.STATE_NULL)
@@ -92,8 +101,8 @@ class GStreamerDevice(object):
         source.link(spider)
         bin.set_state(state)
         self.__play = bin
-        self.length = self.__play.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
-        self.length /= gst.MSECOND
+        self.length = source.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
+        self.length = song["~#length"] * 1000
         return self
 
     def __set_paused(self, paused):
