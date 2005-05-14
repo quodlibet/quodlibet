@@ -72,9 +72,6 @@ def init(*rc_files):
           "addreplace": "0", # 0 - replace tags, 1 - add tags, in TBP
           "titlecase": "false", # titlecase values in TBP
           "splitval": "true", # split values in TBP
-          "nbp_space": "false", # replace spaces with _s in renaming
-          "windows": "true", # replace invalid Win32 characters with _s
-          "ascii": "false", # replace non-ASCII characters with _s
           "allcomments": "true", # show all comments, or just "human" ones
           "splitters": ",;&/",
 
@@ -82,6 +79,12 @@ def init(*rc_files):
 
           # initial column headers
           "headers": "~#track ~title~version ~album~part artist ~length"
+          },
+
+        "rename":
+        { "spaces": "false",
+          "windows": "true",
+          "ascii": "false",
           },
 
         "plugins":

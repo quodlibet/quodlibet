@@ -4669,13 +4669,18 @@ class SongProperties(gtk.Window):
             self.pack_start(sw)
 
             # Checkboxes
-            replace = gtk.CheckButton(_("Replace spaces with _underscores"))
-            replace.set_active(config.state("nbp_space"))
-            windows = gtk.CheckButton(_(
-                "Replace _Windows-incompatible characters"))
-            windows.set_active(config.state("windows"))
-            ascii = gtk.CheckButton(_("Replace non-_ASCII characters"))
-            ascii.set_active(config.state("ascii"))
+            replace = qltk.ConfigCheckButton(
+                _("Replace spaces with _underscores"),
+                "rename", "spaces")
+            replace.set_active(config.getboolean("rename", "spaces"))
+            windows = qltk.ConfigCheckButton(
+                _("Replace _Windows-incompatible characters"),
+                "rename", "windows")
+            windows.set_active(config.getboolean("rename", "windows"))
+            ascii = qltk.ConfigCheckButton(
+                _("Replace non-_ASCII characters"),
+                "rename", "ascii")
+            ascii.set_active(config.getboolean("rename", "ascii"))
 
             vbox = gtk.VBox()
             vbox.pack_start(replace)
@@ -4704,25 +4709,20 @@ class SongProperties(gtk.Window):
             # Connect callbacks
             preview_args = [combo, prop, model, save, preview,
                             replace, windows, ascii]
-            preview.connect(
-                'clicked', self.__preview_files, *preview_args)
+            preview.connect('clicked', self.__preview_files, *preview_args)
             prop.connect_object(
                 'changed', self.__class__.__update, self, *preview_args)
 
-            changed_args = [replace, windows, ascii, save, preview,
-                            combo.child]
             for w in [replace, windows, ascii]:
-                w.connect_object('toggled', self.__changed, *changed_args)
+                w.connect('toggled', self.__preview_files, *preview_args)
+            changed_args = [save, preview, combo.child]
             combo.child.connect_object(
                 'changed', self.__changed, *changed_args)
 
             save.connect_object(
                 'clicked', self.__rename_files, prop, save, model)
 
-        def __changed(self, replace, windows, ascii, save, preview, entry):
-            config.set("settings", "windows", str(windows.get_active()))
-            config.set("settings", "ascii", str(ascii.get_active()))
-            config.set("settings", "nbp_space", str(replace.get_active()))
+        def __changed(self, save, preview, entry):
             save.set_sensitive(False)
             preview.set_sensitive(bool(entry.get_text()))
 
