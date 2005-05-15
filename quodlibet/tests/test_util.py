@@ -312,8 +312,14 @@ class NBPTests(TestCase):
         s.assertEquals(pat.match(s.c), '<>. test_subdir.flac')
 
     def test_generated(s):
-        pat = FileFromPattern('<~basename>', filename = False)
+        pat = FileFromPattern('<~basename>', filename=False)
         s.assertEquals(pat.match(s.a), os.path.basename(s.a["~filename"]))
+
+    def test_generated_and_not_generated(s):
+        pat = FileFromPattern('<~basename> <title>', filename=False)
+        res = pat.match(s.a)
+        s.assertEquals(
+            res, os.path.basename(s.a["~filename"]) + " " + s.a["title"])
 
     def test_number_dot_title_dot(s):
         pat = FileFromPattern('<tracknumber>. <title>.')
