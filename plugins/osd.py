@@ -167,7 +167,8 @@ class Osd(object):
         layout.set_alignment(pango.ALIGN_CENTER)
         layout.set_font_description(fontdesc)
 
-        MAX_WIDTH = gdk.screen_width() - 8
+        monitor = gdk.Screen.get_monitor_geometry(gdk.screen_get_default(), 0)
+        MAX_WIDTH = monitor.width - 8
         layout.set_width(pango.SCALE*MAX_WIDTH)
         layout.set_wrap(pango.WRAP_WORD)
         width, height = layout.get_pixel_size()
@@ -212,7 +213,8 @@ class Osd(object):
         at_bottom = config.getboolean("plugins", "osd_position")
         position = (at_bottom and gdk.screen_height() - win.height - 48) or 5
         gobject.idle_add(
-            win.move, gtk.gdk.screen_width() / 2 - win.width / 2, position)
+            win.move, monitor.x + monitor.width / 2 - win.width / 2,
+            monitor.y + position)
         gobject.idle_add(win.show_all)
         self.__window = win
         gobject.timeout_add(7500, self.__unshow)
