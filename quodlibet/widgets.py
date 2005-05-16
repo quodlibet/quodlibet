@@ -2730,6 +2730,7 @@ class MainWindow(gtk.Window):
                                   _("Quod Libet is scanning for new songs and "
                                     "adding them to your library.\n\n"
                                     "%d songs added"), 0)
+        added, changed, removed = [], [], []
         for added, changed, removed in library.scan(fns):
             if win.step(len(added)): break
         for song in changed: widgets.watcher.changed(song)
