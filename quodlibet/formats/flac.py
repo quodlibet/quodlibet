@@ -80,12 +80,12 @@ class FLACPlayer(AudioPlayer):
         self.dec.set_write_callback(self._player)
         self.dec.set_metadata_callback(self._grab_stream_info)
         self.dec.set_error_callback(lambda *args: None)
-        self.dev.set_info(44100, 2)
         self.dec.init()
         self.dec.process_until_end_of_metadata()
         self.pos = 0
         self._size = os.stat(filename)[stat.ST_SIZE]
         self.replay_gain(song)
+        self.dev.set_info(self.dec.get_sample_rate(), self.dec.get_channels())
 
     def _grab_stream_info(self, dec, block):
         if block.type == self.STREAMINFO:
@@ -95,7 +95,6 @@ class FLACPlayer(AudioPlayer):
             self._chan = streaminfo.channels
             self._samples = streaminfo.total_samples
             self.length = (self._samples * 1000) // self._srate
-            self.dev.self.set_info(self._srate, self._chan)
         return self.OK
 
     def _player(self, dec, buff, size):

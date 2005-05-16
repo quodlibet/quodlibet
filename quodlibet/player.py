@@ -134,7 +134,7 @@ class AOAudioDevice(object):
          self.__ratestate = None
          if rate != 44100: self.__rate_conv = audioop.ratecv
          else: self.__rate_conv = lambda *args: (args[0], None)
-         if channels != 2: self.__chan_conv = audioop.tostereo
+         if channels == 1: self.__chan_conv = audioop.tostereo
          else: self.__chan_conv = lambda *args: args[0]
 
     def play(self, buf):
