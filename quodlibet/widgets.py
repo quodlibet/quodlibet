@@ -41,6 +41,7 @@ class FSInterface(object):
         watcher.connect('unpaused', self.__unpaused)
         watcher.connect('song-started', self.__started)
         watcher.connect('song-ended', self.__ended)
+        self.__paused(watcher)
 
     def __paused(self, watcher):
         try: file(const.PAUSED, "w").close()
