@@ -1,8 +1,10 @@
 from unittest import TestCase
 from tests import registerCase, Mock
 import os, gtk
+import __builtin__
+__builtin__.__dict__['_'] = lambda a: a
 import widgets
-from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList
+from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList, VALIDATERS
 
 import config
 
@@ -208,10 +210,40 @@ class SongWatcher(TestCase):
     def tearDown(self):
         self.watcher.destroy()
 
+class ValidaterTests(TestCase):
+    def validate(self, key, values):
+        for val in values: self.failUnless(VALIDATERS[key][0](val))
+    def invalidate(self, key, values):
+        for val in values: self.failIf(VALIDATERS[key][0](val))
+
+    def test_date_valid(self):
+        self.validate("date", ["2002-10-12", "2000", "1200", "0000-00-00"])
+    def test_date_invalid(self):
+        self.invalidate(
+            "date", ["200", "1000-10", "date-or-no", "", "2000-00-00-00"])
+
+    def test_gain_valid(self):
+        gains = ["2.12 dB", "99. dB", "-1.11 dB", "-0.99 dB", "0 dB"]
+        self.validate('replaygain_track_gain', gains)
+        self.validate('replaygain_album_gain', gains)
+    def test_gain_invalid(self):
+        gains = ["12.12", "hooray", "", "dB dB"]
+        self.invalidate('replaygain_track_gain', gains)
+        self.invalidate('replaygain_album_gain', gains)
+
+    def test_peak_valid(self):
+        peaks = ["12.12", "100", "0.999", "123.145"]
+        self.validate('replaygain_track_peak', peaks)
+        self.validate('replaygain_album_peak', peaks)
+    def test_peak_invalid(self):
+        peaks = ["", "100 dB", "woooo", "12.12.12"]
+        self.invalidate('replaygain_track_peak', peaks)
+        self.invalidate('replaygain_album_peak', peaks)
+
 registerCase(TestDirTree)
 registerCase(TestEmptyBar)
 registerCase(TestSearchBar)
 registerCase(TestPlayList)
 registerCase(StopAfterTest)
 registerCase(SongWatcher)
-
+registerCase(ValidaterTests)

@@ -938,12 +938,26 @@ class QLTrayIcon(HIGTrayIcon):
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         props.connect('activate', self.__properties)
 
+        rating = gtk.Menu()
+        def set_rating(value):
+            if widgets.watcher.song is None: return
+            else:
+                widgets.watcher.song["~#rating"] = value
+                widgets.watcher.changed(widgets.watcher.song)
+        for i in range(5):
+            item = gtk.MenuItem("%s %d" % (util.format_rating(i), i))
+            item.connect_object('activate', set_rating, i)
+            rating.append(item)
+        ratings = gtk.MenuItem(_("Set Rating"))
+        ratings.set_submenu(rating)
+
         quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         quit.connect('activate', gtk.main_quit)
 
         for item in [playpause, gtk.SeparatorMenuItem(), previous, next,
-                     gtk.SeparatorMenuItem(), props, gtk.SeparatorMenuItem(),
-                     quit]: menu.append(item)
+                     gtk.SeparatorMenuItem(), props, ratings,
+                     gtk.SeparatorMenuItem(), quit]:
+            menu.append(item)
 
         menu.show_all()
 
@@ -3540,6 +3554,23 @@ class AddTagDialog(gtk.Dialog):
         self.__tag.grab_focus()
         return gtk.Dialog.run(self)
 
+VALIDATERS = {
+    'date': (sre.compile(r"^\d{4}(-\d{2}-\d{2})?$").match,
+             _("The date must be entered in YYYY or YYYY-MM-DD format.")),
+
+    'replaygain_album_gain': (
+    sre.compile(r"^-?\d+\.?\d* dB$").match,
+    _("ReplayGain gains must be entered in 'x.yy dB' format.")),
+
+    'replaygain_album_peak': (
+    sre.compile(r"^-?\d+\.?\d+?$").match,
+    _("ReplayGain peaks must be entered in x.yy format.")),
+
+    }
+
+VALIDATERS["replaygain_track_peak"] = VALIDATERS["replaygain_album_peak"]
+VALIDATERS["replaygain_track_gain"] = VALIDATERS["replaygain_album_gain"]
+
 class SongProperties(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (object,))
@@ -4239,8 +4270,7 @@ class SongProperties(gtk.Window):
 
         def add_tag(self, *args):
             add = AddTagDialog(
-                self.prop, self.songinfo.can_change(), util.VALIDATERS)
-                 
+                self.prop, self.songinfo.can_change(), VALIDATERS)
 
             while True:
                 resp = add.run()
@@ -4350,12 +4380,12 @@ class SongProperties(gtk.Window):
         def edit_tag(self, renderer, path, new, model, colnum):
             new = ', '.join(new.splitlines())
             row = model[path]
-            if (row[0] in util.VALIDATERS and
-                not util.VALIDATERS[row[0]][0](new)):
+            if (row[0] in VALIDATERS and
+                not VALIDATERS[row[0]][0](new)):
                 qltk.WarningMessage(
                     self.prop, _("Invalid value"),
                     _("Invalid value") + (": <b>%s</b>\n\n" % new) +
-                    util.VALIDATERS[row[0]][1]).run()
+                    VALIDATERS[row[0]][1]).run()
             elif row[colnum].replace('<i>','').replace('</i>','') != new:
                 row[colnum] = util.escape(new)
                 row[2] = True # Edited

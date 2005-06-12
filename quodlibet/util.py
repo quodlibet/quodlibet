@@ -376,20 +376,3 @@ def website(site):
             else: s += " \"%s\"" % site
             if os.system(s + " &") == 0: return True
     else: return False
-
-VALIDATERS = {
-    'date': (sre.compile(r"^\d{4}(-\d{2}-\d{2})?$").match,
-             _("The date must be entered in YYYY or YYYY-MM-DD format.")),
-
-    'replaygain_album_gain': (
-    sre.compile(r"^-?\d+\.?\d* dB$").match,
-    _("ReplayGain gains must be entered in 'x.yy dB' format.")),
-
-    'replaygain_album_peak': (
-    sre.compile(r"^-?\d+\.?\d+?$").match,
-    _("ReplayGain peaks must be entered in x.yy format.")),
-
-    }
-
-VALIDATERS["replaygain_track_peak"] = VALIDATERS["replaygain_album_peak"]
-VALIDATERS["replaygain_track_gain"] = VALIDATERS["replaygain_album_gain"]
