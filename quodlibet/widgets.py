@@ -3018,9 +3018,7 @@ class SongList(HintedTreeView):
         for sig in sigs:
             self.connect_object('destroy', widgets.watcher.disconnect, sig)
 
-        targets = [
-            ('other-model-row', gtk.TARGET_SAME_APP, 1),
-            ]
+        targets = [("text/uri-list", 0, 1)]
         self.drag_source_set(
             gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
             gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
@@ -3029,9 +3027,10 @@ class SongList(HintedTreeView):
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
         paths.sort()
-        filenames = "\0".join(
-            [model[path][0].get("~filename", "") for path in paths])
-        sel.set(sel.target, 8, filenames)
+        from urllib import pathname2url as tourl
+        filenames = ["file:" + tourl(model[path][0].get("~filename", ""))
+                     for path in paths]
+        sel.set_uris(filenames)
 
     def __redraw_current(self, watcher):
         model = self.get_model()
@@ -3281,13 +3280,16 @@ class PlayList(SongList):
         self.set_model(model)
         self.connect_object('drag-end', self.__refresh_indices, key)
 
-        targets = [('other-model-row', gtk.TARGET_SAME_APP, 1)]
+        targets = [("text/uri-list", 0, 1)]
         self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
         self.connect('drag-data-received', self.__drag_data_received)
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
         model = view.get_model()
-        songs = filter(None, [library.get(f) for f in sel.data.split("\0")])
+        from urllib import splittype as split, url2pathname as topath
+        filenames = [topath(split(s)[1]) for s in sel.get_uris()
+                     if split(s)[0] == "file"]
+        songs = filter(None, [library.get(f) for f in filenames])
         if not songs: return True
 
         try: path, position = view.get_dest_row_at_pos(x, y)
