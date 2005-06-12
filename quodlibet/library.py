@@ -200,8 +200,9 @@ class Library(dict):
         # Prune old entries.
         removed, changed = 0, 0
         for song in songs:
-            if not formats.supported(song): continue
-            if song.valid(): self[song["~filename"]] = song
+            if "~filename" not in song: continue # library corruption
+            elif not formats.supported(song): continue
+            elif song.valid(): self[song["~filename"]] = song
             else:
                 if song.exists():
                     try: song.reload()
