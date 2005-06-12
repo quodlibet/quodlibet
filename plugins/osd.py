@@ -274,8 +274,8 @@ class Osd(object):
                     self.__cover.name, cover_dim, cover_dim)
             except: self.__cover = None
             else:
-                left = self.BORDER + (cover_dim - coverPixmap.get_width())/2
-                top = self.BORDER + (cover_dim - coverPixmap.get_height())/2
+                left = self.BORDER + (cover_dim - cover.get_width())/2
+                top = self.BORDER + (cover_dim - cover.get_height())/2
                 pixmap.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL],
                                    cover, 0, 0, left, top)
                 # Draw a border around the cover image.
