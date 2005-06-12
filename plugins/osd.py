@@ -24,7 +24,6 @@ class Osd(object):
     BORDER = 4
     __sid = None
     __window = None
-    __level = 0
 
     def PluginPreferences(self, parent):
         w = gtk.Window()
@@ -160,7 +159,6 @@ class Osd(object):
         border_color = config.get("plugins", "osd_colors").split()[2]
 
         if self.__window: self.__window.destroy()
-        self.__level += 1
 
         try:
             fontdesc = pango.FontDescription(config.get("plugins", "osd_font"))
@@ -306,7 +304,6 @@ class Osd(object):
         gobject.timeout_add(7500, self.__unshow)
 
     def __unshow(self, *args):
-        self.__level -= 1
-        if self.__level == 0 and self.__window:
+        if self.__window:
             gobject.idle_add(self.__window.destroy)
             self.__window = None
