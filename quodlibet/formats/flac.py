@@ -85,7 +85,6 @@ class FLACPlayer(AudioPlayer):
         self.pos = 0
         self._size = os.stat(filename)[stat.ST_SIZE]
         self.replay_gain(song)
-        self.dev.set_info(self.dec.get_sample_rate(), self.dec.get_channels())
 
     def _grab_stream_info(self, dec, block):
         if block.type == self.STREAMINFO:
@@ -101,6 +100,7 @@ class FLACPlayer(AudioPlayer):
         self.pos += 1000 * (float(len(buff))/self._chan/self._bps/self._srate)
         if self.scale != 1:
             buff = audioop.mul(buff, self._chan, self.scale)
+        self.dev.set_info(self.dec.get_sample_rate(), self.dec.get_channels())
         self.dev.play(buff)
         return self.OK
 
