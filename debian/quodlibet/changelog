@@ -1,6 +1,8 @@
 quodlibet (0.11-2) unstable; urgency=low
 
-  * Versioned dep on pygtk 2.6 (thanks to Rene Dudfield).
+  * Versioned dependency on PyGTK 2.6 (thanks to Rene Dudfield).
+  * quodlibet: Recommend current quodlibet-ext, conflict with others;
+    quodlibet-ext: Depend on current quodlibet. (Closes: #313216)
 
  -- Joe Wreschnig <piman@debian.org>
 

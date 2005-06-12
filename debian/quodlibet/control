@@ -7,8 +7,9 @@ Standards-Version: 3.6.1.1
 
 Package: quodlibet
 Architecture: all
-Depends: ${python:Depends}, python-gtk2 (>= 2.6), python-pymad, python-pyvorbis, python-id3lib, quodlibet-ext (= ${Source-Version}), libgtk2.0-0 (>= 2.6.0-1)
-Recommends: python-pyao, ttf-freefont
+Depends: ${python:Depends}, python-gtk2 (>= 2.6), python-pymad, python-pyvorbis, python-id3lib, libgtk2.0-0 (>= 2.6.0-1)
+Recommends: python-pyao, ttf-freefont, quodlibet-ext (= ${Source-Version})
+Conflicts: quodlibet-ext (>> ${Source-Version}), quodlibet-ext (<< ${Source-Version})
 Suggests: python-modplug, python-flac, python-musepack, albumart, vorbisgain (>= 0.35-2)
 Description: audio library manager and player for GTK+
  Quod Libet is a music library management program. Rather than categorize
@@ -26,8 +27,7 @@ Description: audio library manager and player for GTK+
 
 Package: quodlibet-ext
 Architecture: any
-Depends: ${shlibs:Depends}
-Recommends: quodlibet
+Depends: ${shlibs:Depends}, quodlibet (= ${Source-Version})
 Description: extensions for the Quod Libet audio player
  This package contains architecture-dependent extensions to Quod
  Libet. It adds a notification area icon and multimedia key support
