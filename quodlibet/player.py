@@ -43,80 +43,87 @@ class OSSAudioDevice(object):
             self.__dev.nonblock()
 
 class GStreamerDevice(object):
-    __play = None
+    paused = True
+    volume = 1.0
+    player = None
 
-    def __init__(self):
-        self.__sink = gst.element_factory_make('osssink', 'sink')
-        self.__spider = gst.element_factory_make('spider', 'spider')
-        self.__volume = gst.element_factory_make('volume', 'volume')
-        self.__spider.link(self.__volume)
-        self.__volume.link(self.__sink)
-        bin = gst.Thread('player')
-        bin.add_many(self.__sink, self.__spider, self.__volume)
-        self.__play = bin
+    class Player(object):
+        def __init__(self, song):
+            print "Opening", song["~filename"]
+            bin = self.bin = gst.Thread()
+            source = gst.element_factory_make('filesrc', 'src')
+            source.set_property('location', song["~filename"])
+            decoder = gst.element_factory_make('spider', 'decoder')
+            sink = gst.element_factory_make('osssink', 'sink')
+            gst.element_link_many(source, decoder, sink)
+            bin.add_many(source, decoder, sink)
+            self.stopped = False
+            self.position = 0.0
+            self.set_state = bin.set_state
+            self.get_state = bin.get_state
+            self.source = source
+            self.decoder = decoder
+            self.sink = sink
+            bin.set_state(gst.STATE_READY)
 
-    def get_volume(self, v):
-        return self.__volume.get_property('volume')
-    def set_volume(self, v):
-        return self.__volume.set_property('volume', v)
-    volume = property(get_volume, set_volume)
+            print decoder.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
+            print source.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
+            print sink.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
+            self.length = song["~#length"] * 1000
 
-    def __iter__(self):
-        return self
+            self.finished = False
+            bin.connect('eos', self.eos)
 
-    def next(self):
-        if self.__play.get_state() == gst.STATE_READY:
-            raise StopIteration
-        else:
-            time.sleep(0.2)
-            # Querying the bin doesn't work, we need to query the spider.
-            position = self.__play.get_list()[1].query(
-                gst.QUERY_POSITION, gst.FORMAT_TIME)
-            position /= gst.MSECOND
-            return position
+            print "Done, ready."
 
-    def seek(self, ms):
-        state = self.__play.get_state()
-        self.__play.set_state(gst.STATE_PAUSED)
-        ms *= gst.MSECOND
-        event = gst.event_new_seek(
-            gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
-        self.__play.get_list()[2].send_event(event)
-        self.__play.set_state(state)
+        def eos(self, *args):
+            print "got callback"
+            bin.set_state(gst.STATE_READY)
 
-    def end(self):
-        self.__play.set_state(gst.STATE_NULL)
-        self.stopped = True
+        def __iter__(self):
+            return self
 
-    def open(self, song):
-        # Dismantle the old pipeline
-        state = self.__play.get_state()
-        try: sink, spider, volume, source = self.__play.get_list()
-        except ValueError: sink, spider, volume = self.__play.get_list()
-        else:
-            source.unlink(spider)
-            self.__play.remove(source)
-            self.__play.set_state(gst.STATE_NULL)
-        bin = self.__play
+        def seek(self, ms):
+            state = self.bin.get_state()
+            self.bin.set_state(gst.STATE_PAUSED)
+            ms *= gst.MSECOND
+            event = gst.event_new_seek(
+                gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
+            self.sink.send_event(event)
+            self.bin.set_state(state)
 
-        self.stopped = False
+        def next(self):
+            if self.stopped or self.bin.get_state() == gst.STATE_READY:
+                print "stopped iter"
+                raise StopIteration
+            else:
+                time.sleep(0.5)
+                position = self.sink.query(
+                    gst.QUERY_POSITION, gst.FORMAT_TIME)
+                position /= gst.MSECOND
+                return position
 
-        source = gst.element_factory_make('filesrc', 'src')
-        source.set_property('location', song["~filename"])
-        bin.add(source)
-        source.link(spider)
-        bin.set_state(state)
-        self.__play = bin
-        self.length = source.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
-        self.length = song["~#length"] * 1000
-        return self
+        def end(self):
+            self.stopped = True
 
-    def __set_paused(self, paused):
-        if self.__play:
-            if paused: self.__play.set_state(gst.STATE_PAUSED)
-            else: self.__play.set_state(gst.STATE_PLAYING)
+    def open(self, *args):
+        if self.player:
+            old_state = self.player.get_state()
+            self.player.set_state(gst.STATE_NULL)
+        else: old_state = 0
+        if old_state < gst.STATE_PAUSED: old_state = gst.STATE_PAUSED
+        self.player = self.Player(*args)
+        self.player.set_state(old_state)
+        return self.player
 
-    paused = property(None, __set_paused)
+    def set_paused(self, p):
+        if self.player:
+            if p: self.player.set_state(gst.STATE_PAUSED)
+            else: self.player.set_state(gst.STATE_PLAYING)
+    def get_paused(self):
+        if self.player is None: return False
+        else: return self.player.get_state() == gst.STATE_PAUSED
+    paused = property(get_paused, set_paused)
 
 class AOAudioDevice(object):
     from formats import MusicPlayer as open
