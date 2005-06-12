@@ -2,7 +2,7 @@ from unittest import TestCase
 from tests import registerCase
 from shutil import copyfileobj
 from tempfile import mkstemp, mkdtemp
-import os, formats, formats.mp3
+import os, formats
 
 class TestMetaData(TestCase):
     base = 'tests/data/silence-44-s'
@@ -60,11 +60,16 @@ class TestMetaData(TestCase):
         self._test_tag('wackjob', ['Jelly\nDanish', 'Muppet',
              u'\u30cf\u30f3\u30d0\u30fc\u30ac\u30fc'])
 
+tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
+'conductor', 'copyright', 'discnumber', 'encodedby', 'genre', 'isrc',
+'language', 'license', 'lyricist', 'organization', 'performer', 'title',
+'tracknumber', 'version', 'website', 'xyzzy_undefined_tag']
+
 for ext in formats._infos.keys():
     if os.path.exists(TestMetaData.base + ext):
 
         extra_tests = {}
-        for tag in formats.mp3.MP3File.IDS.itervalues():
+        for tag in tags:
             if tag in ['artist', 'date', 'genre']: continue
             def test_tag(self, tag=tag): self._test_tag(tag, ['a'])
             extra_tests['test_tag_' + tag] = test_tag
