@@ -4238,9 +4238,9 @@ class SongProperties(gtk.Window):
             self.revert.set_sensitive(True)
 
         def add_tag(self, *args):
-            add = AddTagDialog(self.prop, self.songinfo.can_change(),
-                {'date': [sre.compile(r"^\d{4}(-\d{2}-\d{2})?$").match,
-                _("The date must be entered in YYYY or YYYY-MM-DD format.")]})
+            add = AddTagDialog(
+                self.prop, self.songinfo.can_change(), util.VALIDATERS)
+                 
 
             while True:
                 resp = add.run()
@@ -4350,12 +4350,12 @@ class SongProperties(gtk.Window):
         def edit_tag(self, renderer, path, new, model, colnum):
             new = ', '.join(new.splitlines())
             row = model[path]
-            date = sre.compile("^\d{4}(-\d{2}-\d{2})?$")
-            if row[0] == "date" and not date.match(new):
-                qltk.WarningMessage(self.prop, _("Invalid date format"),
-                                    _("Invalid date: <b>%s</b>.\n\n"
-                                      "The date must be entered in YYYY or "
-                                      "YYYY-MM-DD format.") % new).run()
+            if (row[0] in util.VALIDATERS and
+                not util.VALIDATERS[row[0]][0](new)):
+                qltk.WarningMessage(
+                    self.prop, _("Invalid value"),
+                    _("Invalid value") + (": <b>%s</b>\n\n" % new) +
+                    util.VALIDATERS[row[0]][1]).run()
             elif row[colnum].replace('<i>','').replace('</i>','') != new:
                 row[colnum] = util.escape(new)
                 row[2] = True # Edited

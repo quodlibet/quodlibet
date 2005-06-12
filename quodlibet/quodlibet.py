@@ -313,12 +313,12 @@ if __name__ == "__main__":
     import locale, gettext
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
-    from util import to
 
     gettext.bindtextdomain("quodlibet")
     gettext.textdomain("quodlibet")
     gettext.install("quodlibet", unicode=True)
 
+    from util import to
     import const
     process_arguments()
     if os.path.exists(const.CONTROL):
