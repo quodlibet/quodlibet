@@ -1,10 +1,10 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.2
+# version 0.5
 # (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
 #             Joe Wreschnig <piman@sacredchao.net>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
-import httplib, md5, urllib, time, threading, os
+import md5, urllib, urllib2, time, threading, os
 import player, config, const
 import gobject, gtk
 from qltk import Message
@@ -12,9 +12,9 @@ from qltk import Message
 class QLScrobbler(object):
 	# session invariants
 	PLUGIN_NAME = "QLScrobbler"
-	PLUGIN_DESC = "AudioScrobbler client for Quod Libet"
+	PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
 	PLUGIN_ICON = gtk.STOCK_CONNECT
-	PLUGIN_VERSION = "0.2"
+	PLUGIN_VERSION = "0.5"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -37,6 +37,7 @@ class QLScrobbler(object):
 	need_update = False
 	already_submitted = False
 	locked = False
+	flushing = False
 
 	# we need to store this because not all events get the song
 	song = None
@@ -93,7 +94,8 @@ class QLScrobbler(object):
 
 		# Try to flush it immediately
 		if len(self.queue) > 0:
-			self.submit_song(True)
+			self.flushing = True
+			self.submit_song()
 
 	def dump_queue(self):
 		if len(self.queue) == 0: return 0
@@ -214,67 +216,65 @@ class QLScrobbler(object):
 		# construct url
 		url = "/?hs=true&p=1.1&c=%s&v=%s&u=%s" % ( self.CLIENT, self.PLUGIN_VERSION, self.username )
 		
-		print "Sending handshake to AudioScrobbler."
+		print "Sending handshake to Audioscrobbler."
+
+		resp = None
 
 		try:
-			conn = httplib.HTTPConnection("post.audioscrobbler.com")
-			conn.request("GET", url)
-			resp = conn.getresponse()
-			conn.close()
+			resp = urllib2.urlopen("http://post.audioscrobbler.com" + url);
 		except:
 			print "Server not responding, handshake failed."
 			return # challenge_sent is NOT set to 1
 			
-		if resp.status == 200:
-			# check response
-			lines = resp.read().rstrip().split("\n")
-			status = lines.pop(0)
+		# check response
+		lines = resp.read().rstrip().split("\n")
+		status = lines.pop(0)
 
-			print "Handshake status: %s" % status
+		print "Handshake status: %s" % status
 			
-			if status == "UPTODATE":
-				# Scan for submit URL and challenge.
-				self.challenge = lines.pop(0)
+		if status == "UPTODATE":
+			# Scan for submit URL and challenge.
+			self.challenge = lines.pop(0)
 
-				print "Challenge: %s" % self.challenge
+			print "Challenge: %s" % self.challenge
 
-				# determine password
-				hasher = md5.new()
-				hasher.update(self.password)
-				hasher.update(self.challenge)
-				self.pwhash = hasher.hexdigest()
+			# determine password
+			hasher = md5.new()
+			hasher.update(self.password)
+			hasher.update(self.challenge)
+			self.pwhash = hasher.hexdigest()
 
-				self.submit_url = lines.pop(0)
+			self.submit_url = lines.pop(0)
 			
-				self.challenge_sent = True
-			elif status.startswith("FAILED"):
-				# Try again later. Check the INTERVAL...
-				print "Server says to try later."
-			elif status == "BADUSER":
-				self.quick_error("Authentication failed: invalid username %s or bad password." % self.username)
+			self.challenge_sent = True
+		elif status.startswith("FAILED"):
+			# Try again later. Check the INTERVAL...
+			print "Server says to try later."
+		elif status == "BADUSER":
+			self.quick_error("Authentication failed: invalid username %s or bad password." % self.username)
 				
-				self.broken = True
-			elif status.startswith("UPDATE"):
-				self.quick_info("A new plugin is available at %s! Please download it,\nor this message will be displayed every session." % status.split(" ")[1])
-				self.need_update = True
-				lines.pop(0)
+			self.broken = True
+		elif status.startswith("UPDATE"):
+			self.quick_info("A new plugin is available at %s! Please download it,\nor this message will be displayed every session." % status.split(" ")[1])
+			self.need_update = True
+			lines.pop(0)
 
-			# Honor INTERVAL
-			interval = int(lines.pop(0).split(" ")[1])
+		# Honor INTERVAL
+		interval = int(lines.pop(0).split(" ")[1])
 
-			if interval > 0:
-				self.waiting = True
-				gobject.timeout_add(interval * 1000, self.clear_waiting)
-
-	def submit_song(self, old = False):
-		bg = threading.Thread(None, self.submit_song_helper, None, [old])
+		if interval > 0:
+			self.waiting = True
+			gobject.timeout_add(interval * 1000, self.clear_waiting)
+	
+	def submit_song(self):
+		bg = threading.Thread(None, self.submit_song_helper)
 		bg.setDaemon(True)
 		bg.start()
 
-	def submit_song_helper(self, old = False):
+	def submit_song_helper(self):
 		if self.already_submitted == True or self.broken == True: return
 
-		if old == False:
+		if self.flushing == False:
 			stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 	
 			store = {
@@ -297,6 +297,7 @@ class QLScrobbler(object):
 					store["artist"] = performer
 
 			self.queue.append(store)
+		else: self.flushing = False
 		
 		if self.locked == True:
 			# another instance running, let it deal with this
@@ -336,27 +337,27 @@ class QLScrobbler(object):
 		
 		(host, file) = self.submit_url[7:].split("/") 
 
-		conn = httplib.HTTPConnection(host)
-		headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
-
 		resp = None
 		
 		try:
 			data_str = urllib.urlencode(data)
-			conn.request("POST", "/" + file, data_str, headers)
-			resp = conn.getresponse()
-			conn.close()
+			resp = urllib2.urlopen("http://" + host + "/" + file, data_str)
 		except:
 			print "Audioscrobbler server not responding, will try later."
 			self.locked = False
 			return # preserve the queue, yadda yadda
 
-		lines = resp.read().rstrip().split("\n")
+		resp_save = resp.read()
+		lines = resp_save.rstrip().split("\n")
+		
 		try: (status, interval) = lines
 		except:
-			print "Truncated server response, will try later..."
-			self.locked = False
-			return
+			try: status = lines[0]
+			except:
+				print "Truncated server response, will try later..."
+				self.locked = False
+				return
+			interval = None
 		
 		print "Submission status: %s" % status
 
@@ -368,8 +369,13 @@ class QLScrobbler(object):
 			print "Server says to try later."
 		elif status == "OK":
 			self.queue = []
+		else:
+			print "Unknown response from server: %s" % status
+			print "Dumping full response:"
+			print resp_save
 
-		interval_secs = int(interval.split()[1])
+		if interval != None: interval_secs = int(interval.split()[1])
+		else: interval_secs = 0
 
 		if interval_secs > 0:
 			self.waiting = True
