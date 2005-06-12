@@ -7,7 +7,7 @@ class Mock(object):
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
 
 # well-tested code
-import test_util, test_audio, test_parser
+import test_util, test_audio, test_parser, test_metadata
 # good but incomplete
 import test_leaks, test_qltk, test_widgets
 # not well-tested code
