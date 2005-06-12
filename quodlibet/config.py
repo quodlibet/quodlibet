@@ -52,6 +52,7 @@ def init(*rc_files):
           "pane_selection": "", # selected pane values
           "background": "", # "global" filter for SearchBar
           "albums": "", # album list
+          "album_sort": "0", # album sorting mode, default is title
           },
 
         # Kind of a dumping ground right now, should probably be

@@ -1711,9 +1711,12 @@ class AlbumList(Browser, gtk.VBox):
                 ]: mymodel.append(row=[text, func])
 
             self.connect_object('changed', self.__set_cmp_func, model)
-            self.set_active(0)
+            try: active = config.getint('browsers', 'album_sort')
+            except: active = 0
+            self.set_active(active)
 
         def __set_cmp_func(self, model):
+            config.set("browsers", "album_sort", str(self.get_active()))
             model.set_default_sort_func(
                 self.get_model()[(self.get_active(),)][1])
 
