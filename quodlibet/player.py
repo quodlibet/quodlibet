@@ -147,7 +147,7 @@ class PlaylistPlayer(object):
         self.__playlist = playlist
         self.__played = []
         self.__orig_playlist = playlist[:]
-        self.__shuffle = False
+        self.__shuffle = 0
         self.__player = None
         self.__song = None
         self.__paused = False
@@ -214,10 +214,20 @@ class PlaylistPlayer(object):
 
     def __get_song(self):
         self.__lock.acquire()
-        song = self.__playlist.pop(0)
+        if self.shuffle == 2: # weighted random
+            slist = self.__orig_playlist[:]
+            random.shuffle(slist)
+            total_rating = sum([song.get("~#rating", 2) for song in slist])
+            choice = random.random() * total_rating
+            current = 0.0
+            for song in slist:
+                current += song.get("~#rating", 2)
+                if current >= choice: break
+        else:
+            song = self.__playlist.pop(0)
+            if self.shuffle: random.shuffle(self.__playlist)
         fn = song['~filename']
         config.set("memory", "song", fn)
-        if self.shuffle: random.shuffle(self.__playlist)
         try: player = self.__output.open(song)
         except Exception, err:
             sys.stderr.write(str(err) + "\n")

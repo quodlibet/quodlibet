@@ -42,7 +42,8 @@ def init(*rc_files):
           "volume": "1.0", # internal volume, [0.0, 1.0]
           "browser": "1", # none, search, playlist, panes
           "songlist": "true", # on or off
-          "sortby": "1artist" # <asc/desc>tagname, song list sort
+          "sortby": "1artist", # <asc/desc>tagname, song list sort
+          "shuffle": "0", # none, shuffle, weighted
           },
 
         "browsers":
@@ -66,7 +67,6 @@ def init(*rc_files):
           "jump": "true", # scroll song list on current song change
 
           # probably belong in memory
-          "shuffle": "false",
           "repeat": "false",
 
           "tbp_space": "false", # replace _s with spaces in TBP

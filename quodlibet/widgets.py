@@ -2259,10 +2259,15 @@ class MainWindow(gtk.Window):
 
         # status area
         hbox = gtk.HBox(spacing=6)
-        self.shuffle = shuffle = gtk.CheckButton(_("_Shuffle"))
+        self.shuffle = shuffle = gtk.combo_box_new_text()
+        self.shuffle.append_text(_("In Order"))
+        self.shuffle.append_text(_("Shuffle"))
+        self.shuffle.append_text(_("Weighted"))
         tips.set_tip(shuffle, _("Play songs in a random order"))
-        shuffle.connect('toggled', self.toggle_shuffle)
-        shuffle.set_active(config.getboolean('settings', 'shuffle'))
+        shuffle.connect('changed', self.__shuffle)
+        try: shf = config.getint('memory', 'shuffle')
+        except: shf = int(config.getboolean('memory', 'shuffle'))
+        shuffle.set_active(shf)
         hbox.pack_start(shuffle, expand=False)
         self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
         repeat.connect('toggled', self.toggle_repeat)
@@ -2507,7 +2512,6 @@ class MainWindow(gtk.Window):
 
     def __input_check(self, source, condition):
         c = os.read(source, 1)
-        toggles = { "@": self.repeat, "&": self.shuffle }
         if c == "<": self.__previous_song()
         elif c == ">": self.__next_song()
         elif c == "-": self.__play_pause()
@@ -2523,12 +2527,18 @@ class MainWindow(gtk.Window):
             else:
                 try: self.volume.set_value(int(c2) / 100.0)
                 except ValueError: pass
-        elif c in toggles:
-            wid = toggles[c]
+        elif c == "&":
             c2 = os.read(source, 1)
-            if c2 == "0": wid.set_active(False)
-            elif c2 == "t": wid.set_active(not wid.get_active())
-            else: wid.set_active(True)
+            if c2 in "012": self.shuffle.set_active(int(c2))
+            elif c2 == "t":
+                self.shuffle.set_active(
+                    int(not bool(self.shuffle.get_active())))
+        elif c == "@":
+            c2 = os.read(source, 1)
+            if c2 == "0": self.repeat.set_active(False)
+            elif c2 == "t":
+                self.repeat.set_active(not self.repeat.get_active())
+            else: self.repeat.set_active(True)
         elif c == "!":
             if not self.get_property('visible'):
                 self.move(*self.window_pos)
@@ -2657,9 +2667,9 @@ class MainWindow(gtk.Window):
         player.playlist.repeat = button.get_active()
         config.set("settings", "repeat", str(bool(button.get_active())))
 
-    def toggle_shuffle(self, button):
+    def __shuffle(self, button):
         player.playlist.shuffle = button.get_active()
-        config.set("settings", "shuffle", str(bool(button.get_active())))
+        config.set("memory", "shuffle", str(button.get_active()))
 
     def __random(self, item, key):
         if self.browser.can_filter(key):
