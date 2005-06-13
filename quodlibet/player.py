@@ -49,14 +49,14 @@ class GStreamerDevice(object):
     from formats.audio import AudioPlayer
 
     class Player(AudioPlayer):
-        def __init__(self, volume, song):
+        def __init__(self, sink, vol, song):
             super(self.__class__, self).__init__()
             bin = self.bin = gst.Thread()
             source = gst.element_factory_make('filesrc', 'src')
             source.set_property('location', song["~filename"])
             decoder = gst.element_factory_make('spider', 'decoder')
             volume = gst.element_factory_make('volume', 'volume')
-            sink = gst.element_factory_make('osssink', 'sink')
+            sink = gst.element_factory_make(sink, 'sink')
             bin.add_many(source, decoder, volume, sink)
             gst.element_link_many(source, decoder, volume)
 
@@ -76,7 +76,8 @@ class GStreamerDevice(object):
             self.volume = volume
             bin.set_state(gst.STATE_READY)
             self.length = song["~#length"] * 1000
-            self.finished = False
+
+            volume.set_property('volume', vol)
 
         def __iter__(self):
             return self
@@ -104,13 +105,28 @@ class GStreamerDevice(object):
         def end(self):
             self.stopped = True
 
+    def __init__(self, sinkname="gconf"):
+        if sinkname == "gconf":
+            try: import gconf
+            except ImportError: sinkname = "osssink"
+            else:
+                c = gconf.client_get_default()
+                val = c.get("/system/gstreamer/0.8/default/audiosink")
+                if val.type == gconf.VALUE_STRING: sinkname = val.get_string()
+                else: sinkname == "osssink"
+
+        if gst.element_factory_make(sinkname): self.sinkname = sinkname
+        else: self.sinkname = "osssink"
+
+    def __repr__(self): return "<GStreamerDevice (%s)>" % self.sinkname
+
     def open(self, *args):
         if self.player:
             old_state = self.player.get_state()
             self.player.set_state(gst.STATE_NULL)
         else: old_state = 0
         if old_state < gst.STATE_PAUSED: old_state = gst.STATE_PAUSED
-        self.player = self.Player(self.__volume, *args)
+        self.player = self.Player(self.sinkname, self.__volume, *args)
         self.player.set_state(old_state)
         return self.player
 
