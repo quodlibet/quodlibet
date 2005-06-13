@@ -43,8 +43,6 @@ class OSSAudioDevice(object):
             self.__dev.nonblock()
 
 class GStreamerDevice(object):
-    paused = True
-    volume = 1.0
     player = None
 
     class Player(object):
@@ -65,20 +63,11 @@ class GStreamerDevice(object):
             self.decoder = decoder
             self.sink = sink
             bin.set_state(gst.STATE_READY)
-
-            print decoder.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
-            print source.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
-            print sink.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
             self.length = song["~#length"] * 1000
 
             self.finished = False
-            bin.connect('eos', self.eos)
 
             print "Done, ready."
-
-        def eos(self, *args):
-            print "got callback"
-            bin.set_state(gst.STATE_READY)
 
         def __iter__(self):
             return self
@@ -93,11 +82,12 @@ class GStreamerDevice(object):
             self.bin.set_state(state)
 
         def next(self):
-            if self.stopped or self.bin.get_state() == gst.STATE_READY:
+            if (self.stopped or
+                self.source.get_state() != self.sink.get_state()):
                 print "stopped iter"
                 raise StopIteration
             else:
-                time.sleep(0.5)
+                time.sleep(0.2)
                 position = self.sink.query(
                     gst.QUERY_POSITION, gst.FORMAT_TIME)
                 position /= gst.MSECOND
