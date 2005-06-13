@@ -44,30 +44,39 @@ class OSSAudioDevice(object):
 
 class GStreamerDevice(object):
     player = None
+    __volume = 1.0
 
-    class Player(object):
-        def __init__(self, song):
-            print "Opening", song["~filename"]
+    from formats.audio import AudioPlayer
+
+    class Player(AudioPlayer):
+        def __init__(self, volume, song):
+            super(self.__class__, self).__init__()
             bin = self.bin = gst.Thread()
             source = gst.element_factory_make('filesrc', 'src')
             source.set_property('location', song["~filename"])
             decoder = gst.element_factory_make('spider', 'decoder')
+            volume = gst.element_factory_make('volume', 'volume')
             sink = gst.element_factory_make('osssink', 'sink')
-            gst.element_link_many(source, decoder, sink)
-            bin.add_many(source, decoder, sink)
-            self.stopped = False
+            bin.add_many(source, decoder, volume, sink)
+            gst.element_link_many(source, decoder, volume)
+
+            self.replay_gain(song)
+            if self.scale != 1:
+                rg = gst.element_factory_make('volume', 'replaygain')
+                rg.set_property('volume', self.scale)
+                bin.add(rg)
+                gst.element_link_many(volume, rg, sink)
+            else: volume.link(sink)
+
             self.position = 0.0
             self.set_state = bin.set_state
             self.get_state = bin.get_state
             self.source = source
-            self.decoder = decoder
             self.sink = sink
+            self.volume = volume
             bin.set_state(gst.STATE_READY)
             self.length = song["~#length"] * 1000
-
             self.finished = False
-
-            print "Done, ready."
 
         def __iter__(self):
             return self
@@ -84,7 +93,6 @@ class GStreamerDevice(object):
         def next(self):
             if (self.stopped or
                 self.source.get_state() != self.sink.get_state()):
-                print "stopped iter"
                 raise StopIteration
             else:
                 time.sleep(0.2)
@@ -102,9 +110,15 @@ class GStreamerDevice(object):
             self.player.set_state(gst.STATE_NULL)
         else: old_state = 0
         if old_state < gst.STATE_PAUSED: old_state = gst.STATE_PAUSED
-        self.player = self.Player(*args)
+        self.player = self.Player(self.__volume, *args)
         self.player.set_state(old_state)
         return self.player
+
+    def set_volume(self, v):
+        self.__volume = v
+        if self.player: self.player.volume.set_property('volume', v)
+    def get_volume(self, v): return self.__volume
+    volume = property(get_volume, set_volume)
 
     def set_paused(self, p):
         if self.player:
