@@ -183,7 +183,9 @@ class MP3File(AudioFile):
         # Avoid garbage at the start of the file.
         md.seek_time(md.total_time()); md.read()
         self["~#length"] = md.total_time() // 1000
-        self["~#bitrate"] = md.bitrate()
+        md.seek_time(md.total_time() / 2); md.read()
+        bitrates = [md.bitrate() for i in range(10) if md.read()]
+        self["~#bitrate"] = int(sum(bitrates) / len(bitrates))
         if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
 
