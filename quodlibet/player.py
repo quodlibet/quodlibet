@@ -245,12 +245,11 @@ class PlaylistPlayer(object):
     def __get_song(self):
         self.__lock.acquire()
         if self.shuffle == 2: # weighted random
-            slist = self.__orig_playlist[:]
-            random.shuffle(slist)
-            total_rating = sum([song.get("~#rating", 2) for song in slist])
+            plist = self.__orig_playlist
+            total_rating = sum([song.get("~#rating", 2) for song in plist])
             choice = random.random() * total_rating
             current = 0.0
-            for song in slist:
+            for song in plist:
                 current += song.get("~#rating", 2)
                 if current >= choice: break
         else:
