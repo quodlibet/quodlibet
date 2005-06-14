@@ -927,12 +927,22 @@ class HIGTrayIcon(TrayIcon):
 class QLTrayIcon(HIGTrayIcon):
     def __init__(self, window, volume):
         menu = gtk.Menu()
-        playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
+        playpause = gtk.ImageMenuItem(const.SM_PLAY)
+        pp_img = gtk.Image()
+        pp_img.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
+        playpause.set_image(pp_img)
         playpause.connect('activate', self.__playpause)
 
-        previous = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PREVIOUS)
+        previous = gtk.ImageMenuItem(const.SM_PREVIOUS)
+        prev_img = gtk.Image()
+        prev_img.set_from_stock(gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_MENU)
+        previous.set_image(prev_img)
         previous.connect('activate', lambda *args: player.playlist.previous())
-        next = gtk.ImageMenuItem(gtk.STOCK_MEDIA_NEXT)
+
+        next = gtk.ImageMenuItem(const.SM_NEXT)
+        next_img = gtk.Image()
+        next_img.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
+        next.set_image(next_img)
         next.connect('activate', lambda *args: player.playlist.next())
 
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
@@ -2352,7 +2362,8 @@ class MainWindow(gtk.Window):
 
     def _create_menu(self, tips):
         ag = gtk.ActionGroup('MainWindowActions')
-        ag.add_actions([
+
+        actions = [
             ('Music', None, _("_Music")),
             ('AddMusic', gtk.STOCK_ADD, _('_Add Music...'), "<control>O", None,
              self.open_chooser),
@@ -2376,12 +2387,6 @@ class MainWindow(gtk.Window):
             ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
              None, self.__bottom40),
             ("Song", None, _("S_ong")),
-            ("Previous", gtk.STOCK_MEDIA_PREVIOUS, None, "<control>Left",
-             None, self.__previous_song),
-            ("PlayPause", gtk.STOCK_MEDIA_PLAY, None, "<control>space",
-             None, self.__play_pause),
-            ("Next", gtk.STOCK_MEDIA_NEXT, None, "<control>Right",
-             None, self.__next_song),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.__current_song_prop),
             ("Rating", None, tag("rating")),
@@ -2392,7 +2397,22 @@ class MainWindow(gtk.Window):
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
             ("About", gtk.STOCK_ABOUT, None, None, None, AboutWindow),
-            ])
+            ]
+
+        if const.SM_PREVIOUS.startswith("gtk-"): label = None
+        else: label = const.SM_PREVIOUS
+        actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, label,
+                        "<control>Left", None, self.__previous_song))
+
+        actions.append(("PlayPause", gtk.STOCK_MEDIA_PLAY, _("_Play"),
+                        "<control>space", None, self.__play_pause))
+
+        if const.SM_NEXT.startswith("gtk-"): label = None
+        else: label = const.SM_NEXT
+        actions.append(("Next", gtk.STOCK_MEDIA_NEXT, label,
+                        "<control>Right", None, self.__next_song))
+
+        ag.add_actions(actions)
 
         act = gtk.Action(
             "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
@@ -2917,7 +2937,14 @@ class MainWindow(gtk.Window):
             b.set_submenu(submenu)
             if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
-        b = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        # Translators: Only translate this if your GTK locale uses
+        # identical strings for "Remove" and "Delete". Otherwise do not
+        # translate it, or translate it verbatim.
+        text = _('gtk-remove')
+        b = gtk.ImageMenuItem(text)
+        b_img = gtk.Image()
+        b_img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        b.set_image(b_img)
         b.connect('activate', self.remove_song)
         menu.append(b)
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
@@ -3205,7 +3232,11 @@ class LibraryBrowser(gtk.Window):
             self.add(vbox)
 
         menu = gtk.Menu()
-        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        text = _('gtk-remove')
+        rem = gtk.ImageMenuItem(text)
+        rem_img = gtk.Image()
+        rem_img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        rem.set_image(rem_img)
         rem.connect('activate', self.__remove_selected_songs, view)
         menu.append(rem)
         prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
@@ -3704,7 +3735,10 @@ class SongProperties(gtk.Window):
                     l = self.Label(song["artist"])
                     l.set_ellipsize(pango.ELLIPSIZE_END)
                     vb.pack_start(l)
-                else: title = _("People")
+                else:
+                    # Translators: This is used as a group header in
+                    # Properties when a song has performers/composers/etc.
+                    title = _("People")
                 for names, tag_ in [
                     (_("performers"), "performer"),
                     (_("lyricists"),  "lyricist"),
@@ -5436,6 +5470,16 @@ def website_wrap(activator, link):
               "/usr/bin/sensible-browser exists.")).run()
 
 def init():
+    # Translators: Only translate this if GTK does so incorrectly.
+    const.SM_NEXT = _('gtk-media-next')
+    # Translators: Only translate this if GTK does so incorrectly.
+    const.SM_PREVIOUS = _('gtk-media-previous')
+    # Translators: Only translate this if GTK does so incorrectly.
+    const.SM_PLAY = _('gtk-media-play')
+    # Translators: Only translate this if GTK does so incorrectly.
+    const.SM_PAUSE = _('gtk-media-pause')
+    # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
+
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
     for opt in config.options("header_maps"):
@@ -5449,6 +5493,7 @@ def init():
     player.playlist.info = widgets.watcher
 
     util.mkdir(const.DIR)
+
     return widgets.main
 
 def save_library(thread):
