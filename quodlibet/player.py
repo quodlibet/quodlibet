@@ -78,11 +78,10 @@ class GStreamerDevice(object):
             self.volume = volume
             bin.set_state(gst.STATE_READY)
             self.length = song["~#length"] * 1000
-            self.__finished = False
-            bin.connect('eos', self.finished)
+            bin.connect_object('eos', bin.set_state, gst.STATE_NULL)
             volume.set_property('volume', vol)
 
-        def finished(self, bin): self.__finished = True
+            import gobject; self.idle_add = gobject.idle_add
 
         def __iter__(self):
             return self
@@ -91,13 +90,12 @@ class GStreamerDevice(object):
             state = self.bin.get_state()
             self.bin.set_state(gst.STATE_PAUSED)
             ms *= gst.MSECOND
-            event = gst.event_new_seek(
-                gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
-            self.sink.send_event(event)
+            event = gst.event_new_seek(gst.FORMAT_TIME|gst.SEEK_METHOD_SET, ms)
+            self.volume.send_event(event)
             self.bin.set_state(state)
 
         def next(self):
-            if (self.stopped or self.__finished):
+            if self.bin.get_state() < gst.STATE_READY:
                 raise StopIteration
             else:
                 time.sleep(0.2)
@@ -107,6 +105,7 @@ class GStreamerDevice(object):
                 return position
 
         def end(self):
+            self.set_state(gst.STATE_NULL)
             self.stopped = True
 
     def __init__(self, sinkname="gconf"):
@@ -126,17 +125,11 @@ class GStreamerDevice(object):
 
         self.name = "gst:" + self.sinkname
 
-    def __repr__(self): return "<GStreamerDevice (%s)>" % self.sinkname
-
     def open(self, *args):
-        if self.player:
-            if self.player.finished: old_state = gst.STATE_PLAYING
-            else: old_state = self.player.get_state()
-            self.player.set_state(gst.STATE_NULL)
-        else: old_state = 0
-        if old_state < gst.STATE_PAUSED: old_state = gst.STATE_PAUSED
+        if self.player: state = gst.STATE_PLAYING
+        else: state = gst.STATE_PAUSED
         self.player = self.Player(self.sinkname, self.__volume, *args)
-        self.player.set_state(old_state)
+        self.player.set_state(state)
         return self.player
 
     def set_volume(self, v):
