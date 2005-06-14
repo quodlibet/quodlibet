@@ -78,8 +78,11 @@ class GStreamerDevice(object):
             self.volume = volume
             bin.set_state(gst.STATE_READY)
             self.length = song["~#length"] * 1000
-
+            self.__finished = False
+            bin.connect('eos', self.finished)
             volume.set_property('volume', vol)
+
+        def finished(self, bin): self.__finished = True
 
         def __iter__(self):
             return self
@@ -94,8 +97,7 @@ class GStreamerDevice(object):
             self.bin.set_state(state)
 
         def next(self):
-            if (self.stopped or
-                self.source.get_state() != self.sink.get_state()):
+            if (self.stopped or self.__finished):
                 raise StopIteration
             else:
                 time.sleep(0.2)
@@ -108,6 +110,8 @@ class GStreamerDevice(object):
             self.stopped = True
 
     def __init__(self, sinkname="gconf"):
+        os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
+        gst.use_threads(True)
         if sinkname == "gconf":
             try: import gconf
             except ImportError: sinkname = "osssink"
@@ -126,7 +130,8 @@ class GStreamerDevice(object):
 
     def open(self, *args):
         if self.player:
-            old_state = self.player.get_state()
+            if self.player.finished: old_state = gst.STATE_PLAYING
+            else: old_state = self.player.get_state()
             self.player.set_state(gst.STATE_NULL)
         else: old_state = 0
         if old_state < gst.STATE_PAUSED: old_state = gst.STATE_PAUSED
