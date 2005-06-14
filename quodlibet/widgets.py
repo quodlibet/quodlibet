@@ -927,7 +927,7 @@ class HIGTrayIcon(TrayIcon):
 class QLTrayIcon(HIGTrayIcon):
     def __init__(self, window, volume):
         menu = gtk.Menu()
-        playpause = gtk.ImageMenuItem(const.SM_PLAY)
+        playpause = gtk.ImageMenuItem(_("_Play"))
         pp_img = gtk.Image()
         pp_img.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
         playpause.set_image(pp_img)
