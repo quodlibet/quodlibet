@@ -19,6 +19,8 @@ from library import library
 class OSSAudioDevice(object):
     from formats import MusicPlayer as open
 
+    name = "oss"
+
     def __init__(self):
         import ossaudiodev
         self.__dev = ossaudiodev.open("w")
@@ -118,6 +120,8 @@ class GStreamerDevice(object):
         if gst.element_factory_make(sinkname): self.sinkname = sinkname
         else: self.sinkname = "osssink"
 
+        self.name = "gst:" + self.sinkname
+
     def __repr__(self): return "<GStreamerDevice (%s)>" % self.sinkname
 
     def open(self, *args):
@@ -155,6 +159,7 @@ class AOAudioDevice(object):
         except ao.aoError: raise IOError
         self.volume = 1.0
         self.set_info(44100, 2)
+        self.name = "ao:" + dev
 
     def set_info(self, rate, channels):
          self.__rate = rate

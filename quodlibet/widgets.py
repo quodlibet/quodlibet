@@ -181,7 +181,10 @@ class AboutWindow(gtk.AboutDialog):
         self.set_name("Quod Libet")
         self.set_version(const.VERSION)
         self.set_authors(const.AUTHORS)
-        self.set_comments(_("An audio player and tag editor"))
+        fmts = ", ".join([os.path.basename(name) for name, mod
+                          in formats.modules if mod.extensions])
+        text = _("Supported formats: %s\nAudio device: %s")
+        self.set_comments(text % (fmts, player.device.name))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
         self.set_translator_credits(_('translator-credits'))
