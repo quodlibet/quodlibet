@@ -5474,10 +5474,6 @@ def init():
     const.SM_NEXT = _('gtk-media-next')
     # Translators: Only translate this if GTK does so incorrectly.
     const.SM_PREVIOUS = _('gtk-media-previous')
-    # Translators: Only translate this if GTK does so incorrectly.
-    const.SM_PLAY = _('gtk-media-play')
-    # Translators: Only translate this if GTK does so incorrectly.
-    const.SM_PAUSE = _('gtk-media-pause')
     # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
 
     if config.get("settings", "headers").split() == []:
