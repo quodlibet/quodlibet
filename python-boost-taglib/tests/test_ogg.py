@@ -18,11 +18,11 @@ class VorbisLoad(TestCase):
         data = self.OGG.read(10)
         self.failUnless(data)
         self.failUnless(self.OGG.tell() > pos)
-    def test_seektell(self):
-        pos = self.OGG.seek(0, taglib.POSITION_START)
-        self.OGG.seek(0, taglib.POSITION_END)
+    def test_seektoendandback(self):
+        pos = self.OGG.tell()
+        self.OGG.seek(0, taglib.Position.END)
         self.failUnlessEqual(self.OGG.size, self.OGG.tell())
-        self.OGG.seek(pos)
+        self.OGG.seek(pos, taglib.Position.BEGINNING)
         self.failUnlessEqual(self.OGG.tell(), pos)
 
 class DNEVorbisLoad(TestCase):
@@ -46,5 +46,13 @@ class VorbisProperties(TestCase):
     def test_length(self):
         self.failUnlessEqual(3, self.PROPS.length)
 
+class VorbisTag(TestCase):
+    OGG = taglib.VorbisFile(OGG_FN)
+    TAG = OGG.tag()
 
-cases = [VorbisLoad, VorbisProperties, DNEVorbisLoad]
+    def test_title(self): self.failUnlessEqual(self.TAG.title, "Silence")
+    def test_year(self): self.failUnlessEqual(self.TAG.year, 2004)
+    def test_comment(self): self.failIf(self.TAG.comment)
+    def test_artist(self): self.failUnlessEqual(self.TAG.artist, "piman")
+
+cases = [VorbisLoad, VorbisProperties, DNEVorbisLoad, VorbisTag]

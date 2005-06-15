@@ -13,10 +13,17 @@ using namespace boost::python;
 using namespace TagLib;
 
 struct StringToUnicode {
-    static PyObject* convert(String const& s) {
-      return Py_BuildValue("");
+    static PyObject* convert(String const &s) {
+      const char *ustr = s.toCString();
+      return PyUnicode_DecodeUTF8(ustr, strlen(ustr), "strict");
     }
 };
+
+/* TagLib uses isNull, isOpen; Python wants __nonzero__, file.closed.
+   The "right" way is to subclass, but that's annoyingly painful for
+   a simple !. */
+bool FileRef_nonzero(FileRef &f) { return ! f.isNull(); }
+bool File_isClosed(File &f) { return ! f.isOpen(); }
 
 BOOST_PYTHON_MODULE(taglib) {
   // Enumerations //
@@ -24,6 +31,12 @@ BOOST_PYTHON_MODULE(taglib) {
     .value("FAST", AudioProperties::Fast)
     .value("AVERAGE", AudioProperties::Average)
     .value("ACCURATE", AudioProperties::Accurate)
+    ;
+
+  enum_<File::Position>("Position")
+    .value("BEGINNING", File::Beginning)
+    .value("CURRENT", File::Current)
+    .value("END", File::End)
     ;
 
   // Utility classes //
@@ -39,6 +52,7 @@ BOOST_PYTHON_MODULE(taglib) {
 	 return_value_policy<reference_existing_object>())
     .def("file", &FileRef::file,
 	 return_value_policy<reference_existing_object>())
+    .def("__nonzero__", &FileRef_nonzero)
     ;
 
   // Base abstract classes //
@@ -54,6 +68,7 @@ BOOST_PYTHON_MODULE(taglib) {
 	 return_value_policy<reference_existing_object>())
     .def("audioProperties", &File::audioProperties,
 	 return_value_policy<reference_existing_object>())
+    .add_property("closed", &File_isClosed)
     ;
 
   class_<AudioProperties, boost::noncopyable>
