@@ -12,11 +12,61 @@
 using namespace boost::python;
 using namespace TagLib;
 
-struct StringToUnicode {
-    static PyObject* convert(String const &s) {
-      const char *ustr = s.toCString();
-      return PyUnicode_DecodeUTF8(ustr, strlen(ustr), "strict");
-    }
+struct StringUnicodeConv {
+  static PyObject *convert(String const &s) {
+    const char *ustr = s.toCString();
+    return PyUnicode_DecodeUTF8(ustr, strlen(ustr), "strict");
+  }
+};
+
+struct ByteVectorToStr {
+  static PyObject* convert(ByteVector const &b) {
+    return PyString_FromStringAndSize(b.data(), b.size());
+  }
+};
+
+// http://www.boost.org/libs/python/doc/v2/faq.html#custom_string
+struct StringFromStr {
+  StringFromStr() {
+    converter::registry::push_back(&convertible, &construct,
+				   type_id<String>());
+  }
+
+  static void *convertible(PyObject* o) {
+    if (PyString_Check(o) || PyUnicode_Check(o)) return o;
+    else return 0;
+  }
+
+  static void construct(PyObject* o,
+			converter::rvalue_from_python_stage1_data *data) {
+    if (PyUnicode_Check(o)) o = PyUnicode_AsUTF8String(o);
+    const char *value = PyString_AsString(o);
+    if (value == 0) throw_error_already_set();
+    void* storage = ((converter::rvalue_from_python_storage<String> *)
+		     data)->storage.bytes;
+    new (storage) String(value);
+    data->convertible = storage;
+  }
+};
+
+struct ByteVectorFromStr {
+  ByteVectorFromStr() {
+    converter::registry::push_back(&convertible, &construct,
+				   type_id<ByteVector>());
+  }
+
+  static void *convertible(PyObject* o) {
+    if (PyString_Check(o)) return o;
+    else return 0;
+  }
+
+  static void construct(PyObject* o,
+			converter::rvalue_from_python_stage1_data *data) {
+    void* storage = ((converter::rvalue_from_python_storage<ByteVector> *)
+		     data)->storage.bytes;
+    new (storage) ByteVector(PyString_AsString(o), PyString_Size(o));
+    data->convertible = storage;
+  }
 };
 
 /* TagLib uses isNull, isOpen; Python wants __nonzero__, file.closed.
@@ -39,10 +89,11 @@ BOOST_PYTHON_MODULE(taglib) {
     .value("END", File::End)
     ;
 
-  // Utility classes //
-  class_<ByteVector>("ByteVector", no_init);
-
-  to_python_converter<String, StringToUnicode>();
+  // Utility classes <-> Python types //
+  to_python_converter<ByteVector, ByteVectorToStr>();
+  to_python_converter<String, StringUnicodeConv>();
+  ByteVectorFromStr();
+  StringFromStr();
 
   class_<FileRef>("FileRef", init<const char *>())
     .def("save", &FileRef::save)
