@@ -102,7 +102,7 @@ class GStreamerDevice(object):
                 position = self.sink.query(
                     gst.QUERY_POSITION, gst.FORMAT_TIME)
                 position /= gst.MSECOND
-                return position
+                return max(0, position)
 
         def end(self):
             self.set_state(gst.STATE_NULL)
