@@ -12,6 +12,8 @@ using namespace boost::python;
 BOOST_PYTHON_MODULE(taglib) {
   class_<TagLib::FileRef>("FileRef", init<const char *>())
     .def("isNull", &TagLib::FileRef::isNull)
+    .def("audioProperties", &TagLib::File::audioProperties,
+	 return_value_policy<reference_existing_object>())
     ;
 
   class_<TagLib::ByteVector>("ByteVector", no_init);
@@ -30,7 +32,8 @@ BOOST_PYTHON_MODULE(taglib) {
     .def("read", &TagLib::File::readBlock)
     .def("seek", &TagLib::File::seek)
     .def("tell", &TagLib::File::tell)
-    //.def("audioProperties", pure_virtual(&TagLib::File::audioProperties))
+    .def("audioProperties", &TagLib::File::audioProperties,
+	 return_value_policy<reference_existing_object>())
     ;
 
   class_<TagLib::Ogg::File, boost::noncopyable, bases<TagLib::File> >
