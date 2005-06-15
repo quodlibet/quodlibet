@@ -8,6 +8,8 @@
 #include <taglib/oggfile.h>
 #include <taglib/vorbisfile.h>
 #include <taglib/vorbisproperties.h>
+#include <taglib/mpegfile.h>
+#include <taglib/mpegproperties.h>
 
 using namespace boost::python;
 using namespace TagLib;
@@ -87,6 +89,14 @@ BOOST_PYTHON_MODULE(taglib) {
     .value("BEGINNING", File::Beginning)
     .value("CURRENT", File::Current)
     .value("END", File::End)
+    ;
+
+  enum_<MPEG::File::TagTypes>("TagTypes")
+    .value("NOTAGS", MPEG::File::NoTags)
+    .value("ID3V1", MPEG::File::ID3v1)
+    .value("ID3V2", MPEG::File::ID3v2)
+    .value("APE", MPEG::File::APE)
+    .value("ALLTAGS", MPEG::File::AllTags)
     ;
 
   // Utility classes <-> Python types //
@@ -172,4 +182,15 @@ BOOST_PYTHON_MODULE(taglib) {
     ("XiphComment", init<>())
     ;
 
+  // MPEG //
+
+  class_<MPEG::File, boost::noncopyable, bases<File> >
+    ("MPEGFile", init<const char *>())
+    ;
+
+  class_<MPEG::Properties, boost::noncopyable, bases<AudioProperties> >
+    ("MPEGProperties",
+     init<MPEG::File *, optional<AudioProperties::ReadStyle> >())
+    .add_property("layer", &MPEG::Properties::layer)
+    ;
 }
