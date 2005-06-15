@@ -106,6 +106,7 @@ class GStreamerDevice(object):
 
         def end(self):
             self.set_state(gst.STATE_NULL)
+            self.set_state = lambda *args: 0 # prevent unpausing
             self.stopped = True
 
     def __init__(self, sinkname="gconf"):
