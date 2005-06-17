@@ -1,0 +1,1666 @@
+# Finnish translation of Quod Libet.
+# Copyright (C) 2005 Jari Rahkonen
+# This file is distributed under the same license as the Quod Libet package.
+# Jari Rahkonen <jari.rahkonen@pp1.inet.fi>, 2005.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: quodlibet\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-17 10:30-0500\n"
+"PO-Revision-Date: 2005-06-15 17:06+0300\n"
+"Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../library.py:41
+#, python-format
+msgid "(shared across all %d songs)"
+msgstr "(sama kaikissa %d kappaleessa)"
+
+#: ../library.py:43
+#, python-format
+msgid "(missing from %d songs)"
+msgstr "(puuttuu %d kappaleesta)"
+
+#: ../library.py:45
+#, python-format
+msgid "(different across %d songs)"
+msgstr "(eri %d kappaleessa)"
+
+#: ../library.py:47
+#, python-format
+msgid "(different across %d songs, missing from %d songs)"
+msgstr "(eri %d kappaleessa, puuttuu %d kappaleesta)"
+
+#: ../library.py:192
+#, python-format
+msgid "W: %s is not a QL song database."
+msgstr "VAROITUS: %s ei ole QL-kappaletietokanta"
+
+#: ../library.py:232
+#, python-format
+msgid "Checking %s"
+msgstr "Tarkastetaan %s"
+
+#: ../library.py:271
+msgid "Supported formats:"
+msgstr "Tuetut tiedostomuodot:"
+
+#: ../quodlibet.py:26
+msgid "Display brief usage information"
+msgstr "Näytä lyhyt käyttöohje"
+
+#: ../quodlibet.py:28
+msgid "Display version and copyright"
+msgstr "Näytä versio ja tekijänoikeustiedot"
+
+#: ../quodlibet.py:64
+#, python-format
+msgid "Usage: %s %s"
+msgstr "Käyttö: %s %s"
+
+#: ../quodlibet.py:65
+#, python-format
+msgid "Usage: %s [options]"
+msgstr "Käyttö: %s [valitsimet]"
+
+#: ../quodlibet.py:86
+#, python-format
+msgid ""
+"%s %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others\n"
+"\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"%s %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman, ja muut\n"
+"\n"
+"Tämä on vapaa ohjelma; kopiointiehdot löydät lähdekoodista. Minkäänlaista\n"
+"takuuta EI ole; ei edes koskien KAUPPAKELPOISUUTTA tai TIETTYYN TEHTÄVÄÄN\n"
+"SOVELTUVUUTTA.\n"
+
+#: ../quodlibet.py:104
+#, python-format
+msgid "E: Option '%s' not recognized."
+msgstr "VIRHE: Valitsin '%s' ei kelpaa."
+
+#: ../quodlibet.py:107
+#, python-format
+msgid "E: Option '%s' requires an argument."
+msgstr "VIRHE: Valitsin '%s' vaatii argumentin."
+
+#: ../quodlibet.py:110
+#, python-format
+msgid "E: '%s' is not a unique prefix."
+msgstr "VIRHE: '%s' ei ole ainutkertainen etuliite."
+
+#: ../quodlibet.py:112
+#, python-format
+msgid "E: Try %s --help."
+msgstr "VIRHE: Kokeile kirjoittaa %s --help"
+
+#: ../quodlibet.py:160
+msgid "The library cannot be refreshed while Quod Libet is running."
+msgstr "Kirjastoa ei voi virkistää Quod Libetin ollessa käynnissä."
+
+#: ../quodlibet.py:164
+msgid "Loading, scanning, and saving your library."
+msgstr "Ladataan, käydään läpi ja tallennetaan kirjastosi."
+
+#: ../quodlibet.py:191
+msgid "No song is currently playing."
+msgstr "Ei kappaletta soitossa."
+
+#: ../quodlibet.py:199
+msgid "Quod Libet is not running."
+msgstr "Quod Libet ei ole käynnissä."
+
+#: ../quodlibet.py:211
+#, python-format
+msgid "Unable to write to %s. Removing it."
+msgstr "Ei voi kirjoittaa kohteeseen %s. Poistetaan."
+
+#: ../quodlibet.py:244
+msgid "a music library and player"
+msgstr "musiikkikirjasto ja soitin"
+
+#: ../quodlibet.py:245
+msgid "[ --refresh-library | --print-playing | control ]"
+msgstr "[ --refresh-library | --print-playing | control ]"
+
+#: ../quodlibet.py:247
+msgid "Rescan your library and exit"
+msgstr "Käy kirjasto läpi ja poistu"
+
+#: ../quodlibet.py:248
+msgid "Print the playing song and exit"
+msgstr "Tulosta soiva kappale ja poistu"
+
+#: ../quodlibet.py:251
+msgid "Jump to next song"
+msgstr "Hyppää seuraavaan kappaleeseen"
+
+#: ../quodlibet.py:252
+msgid "Jump to previous song"
+msgstr "Hyppää edelliseen kappaleeseen"
+
+#: ../quodlibet.py:253
+msgid "Start playback"
+msgstr "Aloita soitto"
+
+#: ../quodlibet.py:254
+msgid "Pause playback"
+msgstr "Keskeytä soitto"
+
+#: ../quodlibet.py:255
+msgid "Toggle play/pause mode"
+msgstr "Vaihda soitto- ja keskeytystilojen välillä"
+
+#: ../quodlibet.py:256
+msgid "Turn up volume"
+msgstr "Lisää äänenvoimakkuutta"
+
+#: ../quodlibet.py:257
+msgid "Turn down volume"
+msgstr "Vähennä äänenvoimakkuutta"
+
+#: ../quodlibet.py:258
+msgid "Print playing status"
+msgstr "Tulosta soiton tila"
+
+#: ../quodlibet.py:262
+msgid "Seek within the playing song"
+msgstr "Siirry soitettavassa kappaleessa"
+
+#: ../quodlibet.py:262
+msgid "[+|-][HH:]MM:SS"
+msgstr "[+|-][HH:]MM:SS"
+
+#: ../quodlibet.py:263
+msgid "Turn shuffle off, on, or toggle it"
+msgstr "Aseta sekoitus päälle, pois, tai vaihda sen tilaa"
+
+#: ../quodlibet.py:264
+msgid "Turn repeat off, on, or toggle it"
+msgstr "Aseta toisto päälle, pois, tai vaihda sen tilaa"
+
+#: ../quodlibet.py:265
+msgid "Set the volume"
+msgstr "Aseta äänenvoimakkuus"
+
+#: ../quodlibet.py:266 ../widgets.py:1564
+msgid "Search your audio library"
+msgstr "Hae äänikirjastostasi"
+
+#: ../quodlibet.py:266
+msgid "search-string"
+msgstr "haettava merkkijono"
+
+#: ../quodlibet.py:267
+msgid "Play a file"
+msgstr "Soita tiedosto"
+
+#. just file name, foo.ogg
+#: ../quodlibet.py:267 ../po/tag-names.py:17
+msgid "filename"
+msgstr "tiedostonimi"
+
+#: ../quodlibet.py:289
+msgid "Loaded song library."
+msgstr "Musiikkikirjasto ladattu."
+
+#. Try to initialize the playlist and audio output.
+#: ../quodlibet.py:298
+msgid "Opening audio device."
+msgstr "Avataan äänilaite."
+
+#: ../quodlibet.py:325
+msgid "Quod Libet is already running."
+msgstr "Quod Libet on jo käynnissä"
+
+#: ../quodlibet.py:336
+msgid "E: You need GTK+ 2.6 and PyGTK 2.6 or greater."
+msgstr "VIRHE: tarvitset GTK+ 2.6:n ja PyGTK 2.4:n tai uudemman."
+
+#: ../quodlibet.py:337
+#, python-format
+msgid "E: You have GTK+ %s and PyGTK %s."
+msgstr "VIRHE: Sinulla on GTK+ %s ja PyGTK %s."
+
+#: ../quodlibet.py:340
+msgid "E: Please upgrade GTK+/PyGTK."
+msgstr "VIRHE: Ole hyvä ja päivitä GTK+/PyGTK."
+
+#: ../util.py:81 ../widgets.py:2292
+msgid "No time information"
+msgstr "Ei aikatietoa"
+
+#: ../util.py:83
+#, python-format
+msgid "%d seconds"
+msgstr "%d sekuntia"
+
+#: ../util.py:83
+msgid "1 second"
+msgstr "1 sekunti"
+
+#: ../util.py:84
+#, python-format
+msgid "%d minutes"
+msgstr "%d minuuttia"
+
+#: ../util.py:84
+msgid "1 minute"
+msgstr "1 minuutti"
+
+#: ../util.py:85
+#, python-format
+msgid "%d hours"
+msgstr "%d tuntia"
+
+#: ../util.py:85
+msgid "1 hour"
+msgstr "1 tunti"
+
+#: ../util.py:86
+#, python-format
+msgid "%d days"
+msgstr "%d päivää"
+
+#: ../util.py:86
+msgid "1 day"
+msgstr "1 päivä"
+
+#: ../util.py:87
+#, python-format
+msgid "%d years"
+msgstr "%d vuotta"
+
+#: ../util.py:87
+msgid "1 year"
+msgstr "1 vuosi"
+
+#: ../util.py:126 ../util.py:134
+msgid "[Invalid Encoding]"
+msgstr "[Epäkelpo koodaus]"
+
+#. Translations for tag names
+#. Note that although tag names are translated in the main list view,
+#. they are *not* when editing tags.
+#: ../po/tag-names.py:6
+msgid "title"
+msgstr "nimi"
+
+#: ../po/tag-names.py:7 ../widgets.py:3817
+msgid "length"
+msgstr "kesto"
+
+#: ../po/tag-names.py:8
+msgid "artist"
+msgstr "artisti"
+
+#: ../po/tag-names.py:9
+msgid "album"
+msgstr "albumi"
+
+#: ../po/tag-names.py:10
+msgid "disc"
+msgstr "levy"
+
+#: ../po/tag-names.py:11
+msgid "track"
+msgstr "raita"
+
+#. date the song was last heard on
+#: ../po/tag-names.py:13 ../widgets.py:3787
+msgid "last played"
+msgstr "viimeksi soitettu"
+
+#. file name plus path, /.../.../foo.ogg
+#: ../po/tag-names.py:15
+msgid "full name"
+msgstr "täydellinen nimi"
+
+#. just path, /.../...
+#: ../po/tag-names.py:19 ../exfalso.py:30
+msgid "directory"
+msgstr "hakemisto"
+
+#: ../po/tag-names.py:20 ../widgets.py:3788
+msgid "play count"
+msgstr "soittokerrat"
+
+#: ../po/tag-names.py:21 ../widgets.py:3789
+msgid "skip count"
+msgstr "ohituskerrat"
+
+#: ../po/tag-names.py:22
+msgid "version"
+msgstr "versio"
+
+#: ../po/tag-names.py:23
+msgid "arranger"
+msgstr "sovittaja"
+
+#: ../po/tag-names.py:24
+msgid "conductor"
+msgstr "kapellimestari"
+
+#: ../po/tag-names.py:25
+msgid "author"
+msgstr "kirjoittaja"
+
+#: ../po/tag-names.py:26
+msgid "performer"
+msgstr "esittäjä"
+
+#: ../po/tag-names.py:27
+msgid "website"
+msgstr "web-sivusto"
+
+#: ../po/tag-names.py:28 ../po/tag-names.py:34
+msgid "language"
+msgstr "kieli"
+
+#. alternately, "movement"
+#: ../po/tag-names.py:30
+msgid "part"
+msgstr "osa"
+
+#: ../po/tag-names.py:31
+msgid "lyricist"
+msgstr "lyyrikko"
+
+#. alternately, "record label"
+#: ../po/tag-names.py:33
+msgid "organization"
+msgstr "organisaatio"
+
+#: ../po/tag-names.py:35
+msgid "contact"
+msgstr "yhteys"
+
+#: ../po/tag-names.py:36
+msgid "location"
+msgstr "sijainti"
+
+#: ../po/tag-names.py:37
+msgid "copyright"
+msgstr "tekijänoikeus"
+
+#: ../po/tag-names.py:38
+msgid "description"
+msgstr "kuvaus"
+
+#: ../po/tag-names.py:39
+msgid "genre"
+msgstr "tyylilaji"
+
+#: ../po/tag-names.py:40
+msgid "license"
+msgstr "lisenssi"
+
+#: ../po/tag-names.py:41
+msgid "composer"
+msgstr "säveltäjä"
+
+#. date the song was added to the library
+#: ../po/tag-names.py:43 ../widgets.py:3786
+msgid "added"
+msgstr "lisätty"
+
+#. date song was last modified/edited
+#: ../po/tag-names.py:45 ../widgets.py:3819
+msgid "modified"
+msgstr "muokattu"
+
+#: ../po/tag-names.py:46
+msgid "date"
+msgstr "päivämäärä"
+
+#: ../po/tag-names.py:47 ../widgets.py:3790
+msgid "rating"
+msgstr "arvosana"
+
+#: ../formats/audio.py:21 ../widgets.py:1136 ../widgets.py:3772
+#: ../widgets.py:3778 ../widgets.py:3803
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: ../exfalso.py:30
+msgid "an audio tag editor"
+msgstr "äänitiedostojen tunniste-editori"
+
+#: ../exfalso.py:51
+msgid "Quod Libet is running"
+msgstr "Quod Libet on käynnissä"
+
+#: ../exfalso.py:52
+msgid ""
+"It looks like you are running Quod Libet right now. If you edit songs also "
+"in Quod Libet's library while it is running, you may need to refresh or re-"
+"add them.\n"
+"\n"
+"If you are not running Quod Libet, or are editing songs outside of its "
+"library, you may ignore this warning."
+msgstr ""
+"Näyttää siltä, että Quod Libet on käynnissä tällä hetkellä. Jos muokkaat "
+"Quod Libetin kirjastossa olevia kappaleita sen ollessa käynnissä, ne täytyy "
+"ehkä virkistää tai lisätä uudelleen.\n"
+"\n"
+"Jos Quod Libet ei ole käynnissä, tai muokkaat kappaleita kirjaston "
+"ulkopuolella, voit jättää tämän varoituksen huomiotta."
+
+#: ../widgets.py:186
+#, python-format
+msgid ""
+"Supported formats: %s\n"
+"Audio device: %s"
+msgstr ""
+"Tuetut tiedostomuodot: %s\n"
+"Äänilaite: %s"
+
+#. Translators: Replace this with your name/email to have it appear
+#. in the "About" dialog.
+#: ../widgets.py:190
+msgid "translator-credits"
+msgstr "Jari Rahkonen <jari.rahkonen@pp1.inet.fi>"
+
+#: ../widgets.py:215
+msgid "Song List"
+msgstr "Kappalelista"
+
+#: ../widgets.py:220
+msgid "_Jump to current song automatically"
+msgstr "_Hyppää soitettavaan kappaleeseen automaattisesti"
+
+#: ../widgets.py:221
+msgid "When the playing song changes, scroll to it in the song list"
+msgstr "Kun soitettava kappale vaihtuu, vieritä soittolistaa sen kohdalle"
+
+#: ../widgets.py:231
+msgid "_Disc"
+msgstr "_Levy"
+
+#: ../widgets.py:232
+msgid "Al_bum"
+msgstr "Al_bumi"
+
+#: ../widgets.py:233
+msgid "_Genre"
+msgstr "T_yylilaji"
+
+#: ../widgets.py:234
+msgid "_Track"
+msgstr "_Raita"
+
+#: ../widgets.py:235
+msgid "A_rtist"
+msgstr "_Artisti"
+
+#: ../widgets.py:236
+msgid "_Filename"
+msgstr "Tie_dostonimi"
+
+#: ../widgets.py:238
+msgid "Dat_e"
+msgstr "_Päivämäärä"
+
+#: ../widgets.py:239
+msgid "_Length"
+msgstr "_Kesto"
+
+#: ../widgets.py:251
+msgid "Display song _rating"
+msgstr "Näytä kappaleen ar_vosana"
+
+#: ../widgets.py:255
+msgid "Title includes _version"
+msgstr "Nimi sisältää v_ersion"
+
+#: ../widgets.py:260
+msgid "Album includes _part"
+msgstr "Albumi sisältää _osan"
+
+#: ../widgets.py:265
+msgid "Filename includes _folder"
+msgstr "Tiedostonimi sisältää hake_miston"
+
+#: ../widgets.py:280
+msgid "_Others:"
+msgstr "M_uut:"
+
+#: ../widgets.py:285
+msgid "List other headers you want displayed, separated by spaces"
+msgstr "Listaa muut näytettävät otsakkeet erotettuna välilyönneillä"
+
+#: ../widgets.py:300
+msgid "Visible Columns"
+msgstr "Näytettävät sarakkeet"
+
+#: ../widgets.py:333
+msgid "Browsers"
+msgstr "Selaimet"
+
+#: ../widgets.py:336
+msgid "Color _search terms"
+msgstr "Väritä _hakuehdot"
+
+#: ../widgets.py:339
+msgid ""
+"Display simple searches in blue, advanced ones in green, and invalid ones in "
+"red"
+msgstr ""
+"Näytä yksinkertaiset haut sinisinä, erityishaut vihreinä ja epäkelvot haut "
+"punaisina"
+
+#: ../widgets.py:343
+msgid "_Global filter:"
+msgstr "_Yleissuodatin:"
+
+#: ../widgets.py:353
+msgid "Search Bar"
+msgstr "Hakupalkki"
+
+#: ../widgets.py:367
+#, python-format
+msgid "_Pane %d:"
+msgstr "_Paneeli %d:"
+
+#: ../widgets.py:379
+msgid "Paned Browser"
+msgstr "Paneeliselain"
+
+#: ../widgets.py:396
+msgid "Player"
+msgstr "Soitin"
+
+#: ../widgets.py:400
+msgid "Show _album cover images"
+msgstr "Näytä _albumien kansikuvat"
+
+#: ../widgets.py:405
+msgid "Closing _minimizes to system tray"
+msgstr "Pienennä suljettaessa j_ärjestelmälokeroon"
+
+#: ../widgets.py:413
+msgid "_Volume Normalization"
+msgstr "_Äänenvoimakkuuden normalisointi"
+
+#: ../widgets.py:415
+msgid "No volume adjustment"
+msgstr "Ei äänenvoimakkuuden säätöä"
+
+#: ../widgets.py:416
+msgid "Per-song (\"Radio\") volume adjustment"
+msgstr "Kappalekohtainen (\"Radio\") äänenvoimakkuuden säätö"
+
+#: ../widgets.py:417
+msgid "Per-album (\"Audiophile\") volume adjustment"
+msgstr "Albumikohtainen (\"Audiofiili\") äänenvoimakkuuden säätö"
+
+#: ../widgets.py:434 ../widgets.py:3799
+msgid "Library"
+msgstr "Kirjasto"
+
+#: ../widgets.py:435
+msgid "Scan _Directories"
+msgstr "Käy läpi _hakemistot"
+
+#: ../widgets.py:437 ../widgets.py:463
+msgid "_Select"
+msgstr "_Valitse"
+
+#: ../widgets.py:443
+msgid ""
+"On start up, any files found in these directories will be added to your "
+"library"
+msgstr ""
+"Käynnistyksen yhteydessä kaikki näistä hakemistoista löytyvät tiedostot "
+"lisätään kirjastoosi"
+
+#: ../widgets.py:451
+msgid "_Masked Directories"
+msgstr "_Peitetyt hakemistot"
+
+#: ../widgets.py:454
+msgid ""
+"If you have songs in directories that will not always be mounted (for "
+"example, a removable device or an NFS shared drive), list those mount points "
+"here. Files in these directories will not be removed from the library if the "
+"device is not mounted."
+msgstr ""
+"Jos sinulla on kappaleita hakemistoissa, jotka eivät ole aina liitettyinä"
+"(esim. vaihdettavalla levyllä tai jaetulla NFS-asemalla), listaa "
+"liitoskohdat tähän. Näissä hakemistoissa olevia tiedostoja ei poisteta "
+"kirjastosta, jos laite ei ole liitettynä."
+
+#: ../widgets.py:478
+msgid "Tag Editing"
+msgstr "Tunnisteiden muokkaus"
+
+#: ../widgets.py:485
+msgid ""
+"These characters will be used as separators when \"Split values\" is "
+"selected in the tag editor"
+msgstr ""
+"Näitä merkkejä käytetään erottimina, kun \"Jaa useampaan arvoon\" on "
+"valittuna tunniste-editorissa"
+
+#: ../widgets.py:487
+msgid "Split _on:"
+msgstr "_Erotin:"
+
+#: ../widgets.py:493
+msgid "Show _programmatic comments"
+msgstr "Näytä _sovelluskommentit"
+
+#: ../widgets.py:503
+msgid "Select Directories"
+msgstr "Valitse hakemistot"
+
+#: ../widgets.py:517 ../widgets.py:2938
+msgid "Plugins"
+msgstr "Liitännäiset"
+
+#: ../widgets.py:579
+msgid "Preferences"
+msgstr "Asetukset"
+
+#: ../widgets.py:649
+msgid "No plugins found."
+msgstr "Liitännäisiä ei löytynyt."
+
+#: ../widgets.py:654
+msgid "Quod Libet Preferences"
+msgstr "Quod Libetin asetukset"
+
+#: ../widgets.py:685
+msgid "Deleting files"
+msgstr "Tiedostojen poistaminen"
+
+#: ../widgets.py:694
+msgid "_Move to Trash"
+msgstr "_Siirrä roskakoriin"
+
+#: ../widgets.py:710
+msgid "Permanently delete this file?"
+msgstr "Poistetaanko tiedosto lopullisesti?"
+
+#: ../widgets.py:713
+msgid "Permanently delete these files?"
+msgstr "Poistetaanko tiedostot lopullisesti?"
+
+#: ../widgets.py:714
+#, python-format
+msgid "%s and %d more..."
+msgstr "%s ja %d muuta..."
+
+#: ../widgets.py:791
+msgid "Initialized status icon."
+msgstr "Tilakuvake alustettu."
+
+#: ../widgets.py:933 ../widgets.py:2411 ../widgets.py:2606
+msgid "_Play"
+msgstr "_Soita"
+
+#: ../widgets.py:964 ../widgets.py:2903
+msgid "Set Rating"
+msgstr "Aseta arvosana"
+
+#: ../widgets.py:1023 ../widgets.py:1991
+msgid "Not playing"
+msgstr "Ei soiteta"
+
+#: ../widgets.py:1033
+msgid "Initialized multimedia key support."
+msgstr "Multimedianäppäintuki alustettu."
+
+#: ../widgets.py:1131
+msgid "All"
+msgstr "Kaikki"
+
+#: ../widgets.py:1261
+msgid "Edit the current playlist"
+msgstr "Muokkaa nykyistä soittolistaa"
+
+#: ../widgets.py:1262
+msgid "Refresh the current playlist"
+msgstr "Virkistä nykyinen soittolista"
+
+#: ../widgets.py:1556
+msgid "Clear search text"
+msgstr "Tyhjennä hakuteksti"
+
+#: ../widgets.py:1562
+msgid "Search"
+msgstr "Hae"
+
+#: ../widgets.py:1693
+msgid "Songs not in an album"
+msgstr "Kappaleet, jotka eivät ole millään albumilla"
+
+#: ../widgets.py:1696 ../widgets.py:3862
+#, python-format
+msgid "%d discs"
+msgstr "%d levyä"
+
+#: ../widgets.py:1697
+msgid "1 track"
+msgstr "1 raita"
+
+#: ../widgets.py:1698 ../widgets.py:3863
+#, python-format
+msgid "%d tracks"
+msgstr "%d raitaa"
+
+#: ../widgets.py:1736
+msgid "Sort by title"
+msgstr "Järjestä nimen mukaan"
+
+#: ../widgets.py:1737
+msgid "Sort by artist"
+msgstr "Järjestä artistin mukaan"
+
+#: ../widgets.py:1799
+msgid "All albums"
+msgstr "Kaikki albumit"
+
+#: ../widgets.py:1800
+#, python-format
+msgid "%d albums"
+msgstr "%d albumia"
+
+#: ../widgets.py:1967
+msgid "Stop after this song"
+msgstr "Pysäytä tämän kappaleen jälkeen"
+
+#: ../widgets.py:2005
+#, python-format
+msgid "by %s"
+msgstr "%s"
+
+#: ../widgets.py:2008
+#, python-format
+msgid "Performed by %s"
+msgstr "Esittäjä %s"
+
+#: ../widgets.py:2012
+#, python-format
+msgid "arranged by %s"
+msgstr "sovitus %s"
+
+#: ../widgets.py:2013
+#, python-format
+msgid "lyrics by %s"
+msgstr "sanoitus %s"
+
+#: ../widgets.py:2014
+#, python-format
+msgid "conducted by %s"
+msgstr "johtanut %s"
+
+#: ../widgets.py:2015
+#, python-format
+msgid "composed by %s"
+msgstr "säveltänyt %s"
+
+#: ../widgets.py:2016
+#, python-format
+msgid "written by %s"
+msgstr "kirjoittanut %s"
+
+#: ../widgets.py:2028 ../widgets.py:3703 ../widgets.py:3931
+#, python-format
+msgid "Disc %s"
+msgstr "Levy %s"
+
+#: ../widgets.py:2033 ../widgets.py:3708
+#, python-format
+msgid "Track %s"
+msgstr "Raita %s"
+
+#: ../widgets.py:2070
+msgid "Add songs to your library"
+msgstr "Lisää kappaleita kirjastoosi"
+
+#: ../widgets.py:2077 ../widgets.py:2499
+msgid "View and edit tags in the playing song"
+msgstr "Näytä ja muokkaa soivan kappaleen tunnisteita"
+
+#: ../widgets.py:2084
+msgid "Visit the artist's website"
+msgstr "Käy artistin kotisivulla"
+
+#: ../widgets.py:2131 ../widgets.py:2771
+msgid "Add Music"
+msgstr "Lisää musiikkia"
+
+#: ../widgets.py:2199
+msgid "Adjust audio volume"
+msgstr "Säädä äänenvoimakkuutta"
+
+#: ../widgets.py:2276
+msgid "In Order"
+msgstr "Järjestyksessä"
+
+#: ../widgets.py:2277
+msgid "Shuffle"
+msgstr "Sekoita"
+
+#: ../widgets.py:2278
+msgid "Weighted"
+msgstr "Painotettu"
+
+#: ../widgets.py:2279
+msgid "Play songs in a random order"
+msgstr "Soita kappaleita satunnaisessa järjestyksessä"
+
+#: ../widgets.py:2285
+msgid "_Repeat"
+msgstr "_Toisto"
+
+#: ../widgets.py:2289
+msgid "Restart the playlist after all songs are played"
+msgstr "Aloita soittolista alusta, kun kaikki kappaleet on soitettu"
+
+#: ../widgets.py:2371
+msgid "_Music"
+msgstr "_Musiikki"
+
+#: ../widgets.py:2372
+msgid "_Add Music..."
+msgstr "Lisää _musiikkia..."
+
+#: ../widgets.py:2374
+msgid "_New/Edit Playlist..."
+msgstr "_Uusi/muokkaa soittolistaa..."
+
+#: ../widgets.py:2376
+msgid "_Browse Library"
+msgstr "_Selaa kirjastoa"
+
+#: ../widgets.py:2380
+msgid "_Filters"
+msgstr "S_uodattimet"
+
+#: ../widgets.py:2382
+msgid "Not played to_day"
+msgstr "Ei soitettu _tänään"
+
+#: ../widgets.py:2384
+msgid "Not played in a _week"
+msgstr "Ei soitettu _viikkoon"
+
+#: ../widgets.py:2386
+msgid "Not played in a _month"
+msgstr "Ei soitettu _kuukauteen"
+
+#: ../widgets.py:2388
+msgid "_Never played"
+msgstr "_Ei soitettu koskaan"
+
+#: ../widgets.py:2390
+msgid "_Top 40"
+msgstr "_Top 40"
+
+#: ../widgets.py:2391
+msgid "B_ottom 40"
+msgstr "_Viimeiset 40"
+
+#: ../widgets.py:2393
+msgid "S_ong"
+msgstr "_Kappale"
+
+#: ../widgets.py:2398
+msgid "_Jump to playing song"
+msgstr "_Hyppää soivaan kappaleeseen"
+
+#: ../widgets.py:2401
+msgid "_View"
+msgstr "_Näytä"
+
+#: ../widgets.py:2402
+msgid "_Help"
+msgstr "_Ohje"
+
+#: ../widgets.py:2422
+msgid "Re_fresh Library"
+msgstr "_Virkistä kirjasto"
+
+#: ../widgets.py:2426
+msgid "Re_load Library"
+msgstr "Lataa _kirjasto uudelleen"
+
+#: ../widgets.py:2431
+msgid "Filter on _genre"
+msgstr "Suodata t_yylilajin perusteella"
+
+#: ../widgets.py:2432 ../widgets.py:2916
+msgid "Filter on _artist"
+msgstr "Suodata _artistin perusteella"
+
+#: ../widgets.py:2433 ../widgets.py:2921
+msgid "Filter on al_bum"
+msgstr "Suodata al_bumin perusteella"
+
+#: ../widgets.py:2440
+msgid "Random _genre"
+msgstr "Satunnainen _tyylilaji"
+
+#: ../widgets.py:2441
+msgid "Random _artist"
+msgstr "Satunnainen _artisti"
+
+#: ../widgets.py:2442
+msgid "Random al_bum"
+msgstr "Satunnainen al_bumi"
+
+#: ../widgets.py:2449
+msgid "Song _List"
+msgstr "_Kappalelista"
+
+#: ../widgets.py:2454
+msgid "_Disable Browser"
+msgstr "_Sulje selain"
+
+#: ../widgets.py:2455 ../widgets.py:2462
+msgid "_Search Library"
+msgstr "_Hae kirjastosta"
+
+#: ../widgets.py:2456
+msgid "_Playlists"
+msgstr "Soitto_listat"
+
+#: ../widgets.py:2457 ../widgets.py:2463
+msgid "_Paned Browser"
+msgstr "_Paneeliselain"
+
+#: ../widgets.py:2458 ../widgets.py:2464
+msgid "_Album List"
+msgstr "_Albumilista"
+
+#: ../widgets.py:2484
+msgid "Check for changes in the library made since the program was started"
+msgstr ""
+"Tarkista kirjasto ohjelman käynnistämisen jälkeen tehtyjen muutosten varalta"
+
+#: ../widgets.py:2488
+msgid "Reload all songs in your library (this can take a long time)"
+msgstr "Lataa kaikki kirjaston kappaleet uudelleen (tämä saattaa kestää kauan)"
+
+#: ../widgets.py:2491
+msgid ""
+"The 40 songs you've played most (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"40 eniten soittamaasi kappaletta (tasapelitilanteissa saatetaan valita "
+"enemmän, kuin 40)"
+
+#: ../widgets.py:2495
+msgid ""
+"The 40 songs you've played least (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"40 vähiten soittamaasi kappaletta (tasapelitilanteissa saatetaan valita "
+"enemmän, kuin 40)"
+
+#: ../widgets.py:2589
+#, python-format
+msgid "W: Unable to load %s"
+msgstr "VAROITUS: Tiedoston %s lataaminen ei onnistu"
+
+#: ../widgets.py:2610
+msgid "_Pause"
+msgstr "_Tauko"
+
+#: ../widgets.py:2614
+#, python-format
+msgid "Could not play %s."
+msgstr "Kappaletta %s ei voi soittaa."
+
+#: ../widgets.py:2651
+msgid "New/Edit Playlist"
+msgstr "Uusi/muokkaa soittolistaa"
+
+#: ../widgets.py:2652
+msgid ""
+"Enter a name for the new playlist. If it already exists it will be opened "
+"for editing."
+msgstr ""
+"Syötä uuden soittolistan nimi. Jos lista on jo olemassa, se avataan "
+"muokattavaksi."
+
+#: ../widgets.py:2732
+#, python-format
+msgid ""
+"Quod Libet is scanning your library. This may take several minutes.\n"
+"\n"
+"%d songs reloaded\n"
+"%d songs removed"
+msgstr ""
+"Quod Libet käy läpi kirjastoasi. Tämä voi kestää useita minuutteja.\n"
+"\n"
+"%d kappaletta ladattu uudelleen\n"
+"%d kappaletta poistettu"
+
+#: ../widgets.py:2782
+#, python-format
+msgid ""
+"Quod Libet is scanning for new songs and adding them to your library.\n"
+"\n"
+"%d songs added"
+msgstr ""
+"Quod Libet etsii uusia kappaleita ja lisää ne kirjastoosi.\n"
+"\n"
+"%d kappaletta lisätty"
+
+#: ../widgets.py:2849
+#, python-format
+msgid "Moving %d/%d."
+msgstr "Siirretään %d/%d."
+
+#: ../widgets.py:2850
+#, python-format
+msgid "Deleting %d/%d."
+msgstr "Poistetaan %d/%d."
+
+#: ../widgets.py:2866
+msgid "Unable to delete file"
+msgstr "Ei voi poistaa tiedostoa"
+
+#: ../widgets.py:2867
+#, python-format
+msgid ""
+"Deleting <b>%s</b> failed. Possibly the target file does not exist, or you "
+"do not have permission to delete it."
+msgstr ""
+"Kappaleen <b>%s</b> poistaminen epäonnistui. Tiedostoa ei mahdollisesti ole "
+"olemassa, tai sinulla ei ole oikeuksia sen poistamiseen."
+
+#: ../widgets.py:2930
+#, python-format
+msgid "_Filter on %s"
+msgstr "_Suodata nimellä %s"
+
+#. Translators: Only translate this if your GTK locale uses
+#. identical strings for "Remove" and "Delete". Otherwise do not
+#. translate it, or translate it verbatim.
+#: ../widgets.py:2947 ../widgets.py:3242
+msgid "gtk-remove"
+msgstr "Poista listalta"
+
+#: ../widgets.py:3055
+#, python-format
+msgid "%d songs (%s)"
+msgstr "%d kappaletta (%s)"
+
+#: ../widgets.py:3056
+#, python-format
+msgid "%d song (%s)"
+msgstr "%d kappale (%s)"
+
+#: ../widgets.py:3215
+msgid "Library Browser"
+msgstr "Kirjaston selain"
+
+#: ../widgets.py:3315
+msgid "All songs"
+msgstr "Kaikki kappaleet"
+
+#: ../widgets.py:3519
+msgid "Add a new tag"
+msgstr "Lisää tunniste"
+
+#: ../widgets.py:3541
+msgid "_Tag:"
+msgstr "_Tunniste:"
+
+#: ../widgets.py:3549
+msgid "_Value:"
+msgstr "_Arvo:"
+
+#: ../widgets.py:3607
+msgid "The date must be entered in YYYY or YYYY-MM-DD format."
+msgstr "Päivämäärä täytyy syöttää muodossa VVVV·tai VVVV-KK-PP."
+
+#: ../widgets.py:3611
+msgid "ReplayGain gains must be entered in 'x.yy dB' format."
+msgstr "ReplayGainin lisäys täytyy syöttää muodossa 'x.yy dB'."
+
+#: ../widgets.py:3615
+msgid "ReplayGain peaks must be entered in x.yy format."
+msgstr "ReplayGainin huiput täytyy syöttää muodossa x.yy."
+
+#: ../widgets.py:3682
+msgid "No songs are selected."
+msgstr "Ei kappaleita valittuna"
+
+#: ../widgets.py:3739 ../widgets.py:3909 ../widgets.py:4018
+msgid "artists"
+msgstr "artistit"
+
+#. Translators: This is used as a group header in
+#. Properties when a song has performers/composers/etc.
+#: ../widgets.py:3748
+msgid "People"
+msgstr "Henkilöt"
+
+#: ../widgets.py:3750 ../widgets.py:3913
+msgid "performers"
+msgstr "esittäjää"
+
+#: ../widgets.py:3751
+msgid "lyricists"
+msgstr "lyyrikkoa"
+
+#: ../widgets.py:3752
+msgid "arrangers"
+msgstr "sovittajaa"
+
+#: ../widgets.py:3753
+msgid "composers"
+msgstr "säveltäjää"
+
+#: ../widgets.py:3754
+msgid "conductors"
+msgstr "orkesterinjohtajaa"
+
+#: ../widgets.py:3755
+msgid "authors"
+msgstr "kirjoittajaa"
+
+#: ../widgets.py:3768 ../widgets.py:3779
+msgid "Never"
+msgstr "Ei koskaan"
+
+#: ../widgets.py:3769
+msgid "1 time"
+msgstr "1 kerran"
+
+#: ../widgets.py:3770
+#, python-format
+msgid "%d times"
+msgstr "%d kertaa"
+
+#: ../widgets.py:3811
+#, python-format
+msgid "%d kbps"
+msgstr "%d kb/s"
+
+#: ../widgets.py:3818
+msgid "file size"
+msgstr "tiedostokoko"
+
+#: ../widgets.py:3821
+msgid "bitrate"
+msgstr "bittinopeus"
+
+#: ../widgets.py:3832 ../widgets.py:4625 ../widgets.py:4744 ../widgets.py:4943
+#: ../widgets.py:5074
+msgid "File"
+msgstr "Tiedosto"
+
+#: ../widgets.py:3865
+#, python-format
+msgid "%d selected"
+msgstr "%d valittuna"
+
+#: ../widgets.py:3877
+#, python-format
+msgid "Produced by %s"
+msgstr "Tuottanut %s"
+
+#: ../widgets.py:3941
+msgid "No information available"
+msgstr "Ei tietoja saatavilla"
+
+#: ../widgets.py:3948
+msgid "Track List"
+msgstr "Kappalelista"
+
+#: ../widgets.py:3974 ../widgets.py:4031
+#, python-format
+msgid "%d songs with no album"
+msgstr "%d albumitonta kappaletta"
+
+#: ../widgets.py:3977
+msgid "Selected Discography"
+msgstr "Valittu diskografia"
+
+#: ../widgets.py:4002
+#, python-format
+msgid "%d songs"
+msgstr "%d kappaletta"
+
+#: ../widgets.py:4016
+#, python-format
+msgid "%d songs with no artist"
+msgstr "%d kappaletta, joiden artisti tuntematon"
+
+#: ../widgets.py:4033
+msgid "albums"
+msgstr "albumit"
+
+#: ../widgets.py:4045
+msgid "Total length:"
+msgstr "Kesto yhteensä:"
+
+#: ../widgets.py:4049
+msgid "Total size:"
+msgstr "Koko yhteensä:"
+
+#: ../widgets.py:4052
+msgid "Files"
+msgstr "Tiedostot"
+
+#: ../widgets.py:4056
+msgid "Information"
+msgstr "Tiedot"
+
+#: ../widgets.py:4082
+msgid "Edit Tags"
+msgstr "Muokkaa tunnisteita"
+
+#: ../widgets.py:4091
+msgid "Write"
+msgstr "Kirjoita"
+
+#: ../widgets.py:4109
+msgid "Tag"
+msgstr "Tunniste"
+
+#: ../widgets.py:4119
+msgid "Value"
+msgstr "Arvo"
+
+#: ../widgets.py:4164
+msgid "Double-click a tag value to change it, right-click for other options"
+msgstr ""
+"Kaksoisnapsauta arvoa muuttaaksesi, oikeanpuoleisella painikkeella lisää "
+"valintoja"
+
+#: ../widgets.py:4166
+msgid "Add a new tag to the file"
+msgstr "Lisää tunniste tiedostoon"
+
+#: ../widgets.py:4167
+msgid "Remove a tag from the file"
+msgstr "Poista tunniste tiedostosta"
+
+#: ../widgets.py:4250
+msgid "_Split into multiple values"
+msgstr "_Jaa useaan arvoon"
+
+#: ../widgets.py:4259
+msgid "Split disc out of _album"
+msgstr "Jaa levyn numero _albumin nimestä"
+
+#: ../widgets.py:4267
+msgid "Split version out of title"
+msgstr "Jaa versio kappaleen nimestä"
+
+#: ../widgets.py:4277
+msgid "Split arranger out of ar_tist"
+msgstr "Jaa sovittaja ar_tistin nimestä"
+
+#: ../widgets.py:4284
+msgid "Split _performer out of artist"
+msgstr "Erota _esittäjä artistikentästä"
+
+#: ../widgets.py:4333 ../widgets.py:4604
+msgid "Invalid tag"
+msgstr "Virheellinen tunniste"
+
+#: ../widgets.py:4334 ../widgets.py:4605
+#, python-format
+msgid ""
+"Invalid tag <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing this tag."
+msgstr ""
+"Virheellinen tunniste <b>%s</b>\n"
+"\n"
+"Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
+
+#: ../widgets.py:4378 ../widgets.py:4669 ../widgets.py:4991
+msgid "Tag may not be accurate"
+msgstr "Tunniste saattaa olla epätarkka"
+
+#: ../widgets.py:4379 ../widgets.py:4670 ../widgets.py:4992
+#, python-format
+msgid ""
+"<b>%s</b> looks like it was changed while the program was running. Saving "
+"now without refreshing your library might overwrite other changes to tag.\n"
+"\n"
+"Save this tag anyway?"
+msgstr ""
+"Näyttää siltä, että <b>%s</b> muuttui ohjelman ollessa käynnissä. Jos "
+"tallennat nyt virkistämättä kirjastoa, saatat korvata muut "
+"tunnisteeseentehdyt muutokset.\n"
+"\n"
+"Tallennetaanko tunniste siitä huolimatta?"
+
+#: ../widgets.py:4412 ../widgets.py:4694 ../widgets.py:5003
+msgid "Unable to edit song"
+msgstr "Kappaletta ei voi muokata"
+
+#: ../widgets.py:4413 ../widgets.py:4695 ../widgets.py:5004
+#, python-format
+msgid ""
+"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
+"have permission to edit it."
+msgstr ""
+"Kappaleen <b>%s</b> tallentaminen epäonnistui. Tiedosto saattaa olla vain "
+"luku -muodossa, viallinen, tai sinulla ei ole oikeuksia sen muokkaamiseen."
+
+#: ../widgets.py:4437 ../widgets.py:4438
+msgid "Invalid value"
+msgstr "Arvo ei kelpaa"
+
+#: ../widgets.py:4504
+msgid "Tag by Filename"
+msgstr "Tunnisteet tiedostonimestä"
+
+#. Main buttons
+#: ../widgets.py:4509 ../widgets.py:4736 ../widgets.py:4931
+msgid "_Preview"
+msgstr "_Esikatsele"
+
+#: ../widgets.py:4530
+msgid "Replace _underscores with spaces"
+msgstr "Korvaa alaviivat _välilyönneillä"
+
+#: ../widgets.py:4532
+msgid "_Title-case resulting values"
+msgstr "_Arvot otsakemuodossa"
+
+#: ../widgets.py:4534
+msgid "Split into _multiple values"
+msgstr "Jaa _useampaan arvoon"
+
+#: ../widgets.py:4537
+msgid "Tags should replace existing ones"
+msgstr "Korvaa olemassaolevat tunnisteet"
+
+#: ../widgets.py:4538
+msgid "Tags should be added to existing ones"
+msgstr "Lisää olemassaoleviin tunnisteisiin"
+
+#: ../widgets.py:4554
+msgid "The first letter of each word will be capitalized"
+msgstr "Jokaisen sanan ensimmäinen kirjain isolla"
+
+#: ../widgets.py:4586
+msgid "Invalid pattern"
+msgstr "Hakukaava ei kelpaa"
+
+#: ../widgets.py:4587
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; / &gt;)."
+msgstr ""
+"Kaava\n"
+"\t<b>%s</b>\n"
+"ei kelpaa. Se saattaa sisältää saman tunnisteen kahdesti, tai parittomia "
+"pienemmyys/suuremmuusmerkkejä (&lt; / &gt;)."
+
+#: ../widgets.py:4608
+msgid "Invalid tags"
+msgstr "Tunnisteet eivät kelpaa"
+
+#: ../widgets.py:4609
+#, python-format
+msgid ""
+"Invalid tags <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing these tags."
+msgstr ""
+"Tunnisteet <b>%s</b> eivät kelpaa\n"
+"\n"
+"Valitut tiedostot eivät tue näiden tunnisteiden muokkaamista."
+
+#: ../widgets.py:4728
+msgid "Rename Files"
+msgstr "Nimeä tiedostot"
+
+#: ../widgets.py:4750
+msgid "New Name"
+msgstr "Uusi nimi"
+
+#: ../widgets.py:4761
+msgid "Replace spaces with _underscores"
+msgstr "Korvaa välilyönnit _alaviivoilla"
+
+#: ../widgets.py:4765
+msgid "Replace _Windows-incompatible characters"
+msgstr "Korvaa _Windows-yhteensopimattomat merkit"
+
+#: ../widgets.py:4769
+msgid "Replace non-_ASCII characters"
+msgstr "Korvaa ASCII:hin kuulumattomat merkit"
+
+#: ../widgets.py:4790
+msgid ""
+"Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
+"underscores"
+msgstr ""
+"Merkit, joita ei sallita Windows-tiedostonimissä (\\:?;\"<>|), korvataan "
+"alaviivoilla"
+
+#: ../widgets.py:4793
+msgid ""
+"Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
+"replaced by underscores"
+msgstr ""
+"ASCII-merkistöön (A-Z, a-z, 0-9, sekä välimerkit) kuulumattomat merkit "
+"korvataan alaviivoilla"
+
+#: ../widgets.py:4844
+msgid "Unable to rename file"
+msgstr "Tiedoston nimeäminen ei onnistu"
+
+#: ../widgets.py:4845
+#, python-format
+msgid ""
+"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
+"exists, or you do not have permission to make the new file or remove the old "
+"one."
+msgstr ""
+"Nimeäminen lähteestä <b>%s</b> kohteeseen <b>%s</b> ei onnistu. "
+"Kohdetiedosto on mahdollisesti jo olemassa, tai sinulla ei ole oikeuksia "
+"uuden tiedoston luomiseen tai vanhan poistamiseen."
+
+#: ../widgets.py:4874
+msgid "Pattern with subdirectories is not absolute"
+msgstr "Alihakemistoja sisältävä kaava ei ole absoluuttinen"
+
+#: ../widgets.py:4875
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed directories, root "
+"your pattern by starting it from the / directory."
+msgstr ""
+"Kaava\n"
+"\t<b>%s</b>\n"
+"sisältää merkin /, mutta ei ala juurihakemistosta. Välttääksesi "
+"hakemistojen, väärinnimeämisiä, aloita kaavasi /-hakemistosta."
+
+#: ../widgets.py:4906
+msgid "Track Numbers"
+msgstr "Raitojen numerot"
+
+#: ../widgets.py:4912
+msgid "Start fro_m:"
+msgstr "Aloitus_kohta:"
+
+#: ../widgets.py:4923
+msgid "_Total tracks:"
+msgstr "Raitoja _yhteensä:"
+
+#: ../widgets.py:4946
+msgid "Track"
+msgstr "Raita"
+
+#: ../widgets.py:5073
+msgid "Apply to these _files..."
+msgstr "Aseta _näille tiedostoille..."
+
+#: ../widgets.py:5077
+msgid "Path"
+msgstr "Polku"
+
+#: ../widgets.py:5141 ../widgets.py:5433
+#, python-format
+msgid "%s and %d more"
+msgstr "%s ja %d muuta"
+
+#: ../widgets.py:5143 ../widgets.py:5144
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+#: ../widgets.py:5174
+msgid "Folders"
+msgstr "Kansiot"
+
+#: ../widgets.py:5224
+msgid "New Folder..."
+msgstr "Uusi kansio..."
+
+#: ../widgets.py:5254
+msgid "New folder"
+msgstr "Uusi kansio"
+
+#: ../widgets.py:5254
+msgid "Enter a name for the new folder:"
+msgstr "Anna uuden kansion nimi:"
+
+#: ../widgets.py:5264
+msgid "Unable to create folder"
+msgstr "Kansion luominen epäonnistui"
+
+#: ../widgets.py:5277
+msgid "Unable to delete folder"
+msgstr "Kansion poistaminen epäonnistui"
+
+#: ../widgets.py:5316
+msgid "Audio files"
+msgstr "Äänitiedostot"
+
+#: ../widgets.py:5441
+#, python-format
+msgid ""
+"Saving the songs you changed.\n"
+"\n"
+"%d/%d songs saved"
+msgstr ""
+"Tallennetaan muuttamasi kappaleet.\n"
+"\n"
+"%d/%d kappaletta tallennettu"
+
+#: ../widgets.py:5459
+msgid "Invalid tag name"
+msgstr "Tunnisteen nimi ei kelpaa"
+
+#: ../widgets.py:5474
+msgid "Unable to start a web browser"
+msgstr "Web-selainta ei voi käynnistää"
+
+#: ../widgets.py:5475
+msgid ""
+"A web browser could not be found. Please set your $BROWSER variable, or make "
+"sure /usr/bin/sensible-browser exists."
+msgstr ""
+"Web-selainta ei löydy. Aseta $BROWSER-muuttujasi, tai varmista, että /usr/"
+"bin/sensible-browser on olemassa."
+
+#. Translators: Only translate this if GTK does so incorrectly.
+#: ../widgets.py:5481
+msgid "gtk-media-next"
+msgstr "S_euraava"
+
+#. Translators: Only translate this if GTK does so incorrectly.
+#: ../widgets.py:5483
+msgid "gtk-media-previous"
+msgstr ""
+
+#: ../widgets.py:5505
+msgid "Saving song library."
+msgstr "Tallennetaan musiikkikirjasto."
+
+#: ../widgets.py:5520
+msgid "No audio device found"
+msgstr "Äänilaitetta ei löydy"
+
+#: ../widgets.py:5521
+msgid ""
+"Quod Libet was unable to open your audio device. Often this means another "
+"program is using it, or your audio drivers are not configured.\n"
+"\n"
+"Quod Libet will now exit."
+msgstr ""
+"Quod Libet ei voinut avata äänilaitettasi. Tämä tarkoittaa usein, että "
+"toinen ohjelma käyttää sitä, tai että ääniajureita ei ole asetettu.\n"
+"\n"
+"Quod Libet suljetaan."
+
+#~ msgid "An audio player and tag editor"
+#~ msgstr "Soitin ja äänitiedostojen tunniste-editori"
+
+#~ msgid "_Search:"
+#~ msgstr "_Hae:"
+
+#~ msgid "Invalid date format"
+#~ msgstr "Päivämäärän muoto ei kelpaa"
+
+#~ msgid ""
+#~ "Invalid date: <b>%s</b>.\n"
+#~ "\n"
+#~ "The date must be entered in YYYY or YYYY-MM-DD format."
+#~ msgstr ""
+#~ "Epäkelpo päivämäärä: <b>%s</b>.\n"
+#~ "\n"
+#~ "Päivämäärä täytyy syöttää muodossa VVVV tai VVVV-KK-PP."
+
+#~ msgid "_On-Screen Display"
+#~ msgstr "_Kuvaruutunäyttö"
+
+#~ msgid "No on-screen display"
+#~ msgstr "Ei kuvaruutunäyttöä"
+
+#~ msgid "Display OSD on the top"
+#~ msgstr "Kuvaruutunäyttö näytön yläreunassa"
+
+#~ msgid "Display OSD on the bottom"
+#~ msgstr "Kuvaruurunäyttö näytön alareunassa"
+
+#~ msgid "Select a color for the OSD"
+#~ msgstr "Valitse kuvaruutunäytön väri"
+
+#~ msgid "Select a second color for the OSD"
+#~ msgstr "valitse kuvaruutunäytön toinen väri"
+
+#~ msgid "0|1|t"
+#~ msgstr "0|1|t"
+
+#~ msgid "+|-|0..100"
+#~ msgstr "+|-|0..100"
+
+#~ msgid "[directory]"
+#~ msgstr "[hakemisto]"
+
+#~ msgid "About Quod Libet"
+#~ msgstr "Tietoja Quod Libetistä"
+
+#~ msgid "Quod Libet is free software licensed under the GNU GPL v2."
+#~ msgstr "Quod Libet on GNU GPL v2 -lisenssin alainen vapaa ohjelma."
