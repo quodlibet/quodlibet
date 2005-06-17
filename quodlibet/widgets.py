@@ -2344,6 +2344,7 @@ class MainWindow(gtk.Window):
         self.songlist.connect('key-press-event', self.__key_press)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
+        self.songlist.get_selection().connect('changed', self.__set_time)
 
         widgets.watcher.connect('removed', self.__song_removed)
         widgets.watcher.connect('refresh', self.__set_time)
@@ -3044,8 +3045,11 @@ class MainWindow(gtk.Window):
 
     def __set_time(self, watcher=None):
         statusbar = self.__statusbar
-        model = self.songlist.get_model()
-        songs = [row[0] for row in model]
+        model, selected = self.songlist.get_selection().get_selected_rows()
+        if len(selected):
+            songs = [model[row][0] for row in selected]
+        else:
+            songs = [row[0] for row in model]
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
         if i != 1: statusbar.set_text(
