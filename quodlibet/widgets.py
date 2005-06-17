@@ -150,8 +150,13 @@ class SongWatcher(gtk.Object):
         gobject.idle_add(self.emit, 'song-started', song)
 
     def song_ended(self, song, stopped):
-        self.changed(song)
-        gobject.idle_add(self.emit, 'song-ended', song, stopped)
+        if song.exists():
+            self.changed(song)
+            gobject.idle_add(self.emit, 'song-ended', song, stopped)
+        else:
+            # This happens if a song disappears in the middle of playback.
+            # This is probably *NOT* the right place to handle this.
+            self.missing(song)
 
     def refresh(self):
         gobject.idle_add(self.emit, 'refresh')
@@ -2611,10 +2616,11 @@ class MainWindow(gtk.Window):
         menu.child.set_use_underline(True)
 
     def __song_missing(self, watcher, song, statusbar):
-        statusbar.set_text(_("Could not play %s.") % song['~filename'])
         try: library.remove(song)
         except KeyError: pass
         else: watcher.removed(song)
+        gobject.idle_add(
+            statusbar.set_text, _("Could not play %s.") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
         if player.playlist.filter and not player.playlist.filter(song):

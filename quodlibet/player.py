@@ -47,7 +47,7 @@ class OSSAudioDevice(object):
 class GStreamerDevice(object):
     player = None
     __volume = 1.0
-
+    __paused = True
     from formats.audio import AudioPlayer
 
     class Player(AudioPlayer):
@@ -56,6 +56,7 @@ class GStreamerDevice(object):
             bin = self.bin = gst.Thread()
             source = gst.element_factory_make('filesrc', 'src')
             source.set_property('location', song["~filename"])
+            os.path.getsize(song["~filename"]) # make sure it exists
             decoder = gst.element_factory_make('spider', 'decoder')
             volume = gst.element_factory_make('volume', 'volume')
             sink = gst.element_factory_make(sink, 'sink')
@@ -128,7 +129,9 @@ class GStreamerDevice(object):
 
     def open(self, *args):
         if self.player: state = gst.STATE_PLAYING
-        else: state = gst.STATE_PAUSED
+        elif self.__paused: state = gst.STATE_PAUSED
+        else: state = gst.STATE_PLAYING
+        self.player = None
         self.player = self.Player(self.sinkname, self.__volume, *args)
         self.player.set_state(state)
         return self.player
@@ -143,6 +146,7 @@ class GStreamerDevice(object):
         if self.player:
             if p: self.player.set_state(gst.STATE_PAUSED)
             else: self.player.set_state(gst.STATE_PLAYING)
+        self.__paused = p
     def get_paused(self):
         if self.player is None: return False
         else: return self.player.get_state() == gst.STATE_PAUSED

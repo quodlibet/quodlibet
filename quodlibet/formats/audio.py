@@ -39,6 +39,7 @@ class AudioFile(dict):
             if key in MIGRATE or key.startswith("~#playlist_"):
                 saved[key] = self[key]
         self.clear()
+        self["~filename"] = fn
         self.__init__(fn)
         self.update(saved)
 

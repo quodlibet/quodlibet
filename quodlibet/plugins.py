@@ -100,8 +100,8 @@ def ListWrapper(songs):
 class PluginManager(object):
     """PluginManager manages all the plugins"""
 
-    # by being in here, you can tweak the behavior by subclassing and overriding
-    # these class attributes
+    # by being in here, you can tweak the behavior by subclassing and
+    # overriding these class attributes
     all_callables = [
         'plugin_single_song', 'plugin_song', 'plugin_songs',
         'plugin_single_album', 'plugin_album', 'plugin_albums',
@@ -352,4 +352,5 @@ class PluginManager(object):
                         try: handler(*args)
                         except Exception: print_exc()
         finally:
-            self.check_change_and_refresh(args[0:1])
+            if event not in ["removed", "missing"]:
+                self.check_change_and_refresh(args[0:1])
