@@ -3046,7 +3046,7 @@ class MainWindow(gtk.Window):
     def __set_time(self, watcher=None):
         statusbar = self.__statusbar
         model, selected = self.songlist.get_selection().get_selected_rows()
-        if len(selected): songs = [model[row][0] for row in selected]
+        if len(selected) > 1: songs = [model[row][0] for row in selected]
         elif model: songs = [row[0] for row in model]
         else: songs = []
 
