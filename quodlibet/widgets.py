@@ -3046,16 +3046,16 @@ class MainWindow(gtk.Window):
     def __set_time(self, watcher=None):
         statusbar = self.__statusbar
         model, selected = self.songlist.get_selection().get_selected_rows()
-        if len(selected):
-            songs = [model[row][0] for row in selected]
-        else:
-            songs = [row[0] for row in model]
+        if len(selected): songs = [model[row][0] for row in selected]
+        elif model: songs = [row[0] for row in model]
+        else: songs = []
+
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
-        if i != 1: statusbar.set_text(
-            _("%d songs (%s)") % (i, util.format_time_long(length)))
-        else: statusbar.set_text(
-            _("%d song (%s)") % (i, util.format_time_long(length)))
+        if i != 1: t = _("%d songs (%s)") % (i, util.format_time_long(length))
+        else: t = _("%d song (%s)") % (i, util.format_time_long(length))
+        statusbar.set_property('label', t)
+        gobject.idle_add(statusbar.queue_resize)
 
 class SongList(HintedTreeView):
     """Wrap a treeview that works like a songlist"""
