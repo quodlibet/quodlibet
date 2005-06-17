@@ -10,11 +10,11 @@ import pango
 import gtk
 import gtk.gdk as gdk
 import gobject
-
+import re
 import config
 import util
 from widgets import tag
-from qltk import ConfigCheckButton
+import qltk
 
 class Osd(object):
     PLUGIN_NAME = "On-Screen Display"
@@ -24,105 +24,193 @@ class Osd(object):
     BORDER = 4
     __sid = None
     __window = None
+    __cover = None
+    __startDragPosition = None
+    __width = 0
 
     def PluginPreferences(self, parent):
         w = gtk.Window()
         w.set_title("OSD Preferences")
         w.set_resizable(False)
         w.set_border_width(12)
-        w.add(gtk.HBox(spacing=12))
+        w.add(gtk.VBox(spacing=12))
 
         def Label(t): l = gtk.Label(t); l.set_alignment(0.0, 0.5); return l
 
-        t = gtk.Table(2, 3)
+        colors = config.get("plugins", "osd_colors").split()
+
+        # Font and colour options.
+        fc_box = gtk.VBox(spacing = 6)
+
+        self.__textColorAButton = gtk.ColorButton(gtk.gdk.color_parse(colors[0]))
+        self.__textColorBButton = gtk.ColorButton(gtk.gdk.color_parse(colors[1]))
+        self.__panelBorderColorButton = gtk.ColorButton(gtk.gdk.color_parse(colors[2]))
+        self.__panelColorButton = gtk.ColorButton(gtk.gdk.color_parse(colors[3]))
+        self.__panelColorButton.set_use_alpha(True)
+        self.__textColorAButton.connect('color-set', self.__color_set)
+        self.__textColorBButton.connect('color-set', self.__color_set)
+        self.__panelBorderColorButton.connect('color-set', self.__color_set)
+        self.__panelColorButton.connect('color-set', self.__color_set)
+
+        alpha = int(float(config.get('plugins', 'osd_transparency')) / 256 * 65535)
+        self.__panelColorButton.set_alpha(alpha)
+
+        t = gtk.Table(2, 4)
         t.set_col_spacings(6)
         t.set_row_spacings(6)
         t.attach(Label("Text color #1:"), 0, 1, 0, 1)
         t.attach(Label("Text color #2:"), 0, 1, 1, 2)
-        t.attach(Label("Background:"), 0, 1, 2, 3)
-        c1, c2, c3 = config.get("plugins", "osd_colors").split()
-        color1 = gtk.ColorButton(gtk.gdk.color_parse(c1))
-        color2 = gtk.ColorButton(gtk.gdk.color_parse(c2))
-        color3 = gtk.ColorButton(gtk.gdk.color_parse(c3))
-        t.attach(color1, 1, 2, 0, 1)
-        t.attach(color2, 1, 2, 1, 2)
-        t.attach(color3, 1, 2, 2, 3)
-        color1.connect('color-set', self.__color_set, color1, color2, color3)
-        color2.connect('color-set', self.__color_set, color1, color2, color3)
-        color3.connect('color-set', self.__color_set, color1, color2, color3)
-
-        w.child.pack_start(t, expand=False)
-
-        cb = gtk.combo_box_new_text()
-        cb.append_text('Display OSD on the top')
-        cb.append_text('Display OSD on the bottom')
-        cb.set_active(config.getint('plugins', 'osd_position'))
-        cb.connect('changed', self.__changed)
-        box = gtk.VBox(spacing=6)
-        box.pack_start(cb, expand=False)
+        t.attach(Label("Panel color:"), 2, 3, 0, 1)
+        t.attach(Label("Panel border color:"), 2, 3, 1, 2)
+        t.attach(self.__textColorAButton, 1, 2, 0, 1, gtk.SHRINK)
+        t.attach(self.__textColorBButton, 1, 2, 1, 2, gtk.SHRINK)
+        t.attach(self.__panelColorButton, 3, 4, 0, 1, gtk.SHRINK)
+        t.attach(self.__panelBorderColorButton, 3, 4, 1, 2, gtk.SHRINK)
 
         font = gtk.FontButton(config.get("plugins", "osd_font"))
         font.set_size_request(200, -1)
         font.connect('font-set', self.__font_set)
-        box.pack_start(font, expand=False)
 
-        hbox = gtk.HBox(spacing=6)
-        hbox.pack_start(Label("Background Transparency:"))
-        transparency = gtk.SpinButton(gtk.Adjustment(
-            config.getint("plugins", "osd_transparency"), 0, 100, 1, 10, 10))
-        transparency.connect('value-changed', self.__transparency_set)
-        hbox.pack_start(transparency, expand=False)
-        box.pack_start(hbox, expand=False)
+        fc_box.pack_start(t, expand = False)
+        fc_box.pack_start(font, expand = False)
 
-        w.child.pack_start(box)
+        # Positioning options.
+        pos_box = gtk.HBox(spacing = 6)
+
+        __cb_center_y = gtk.CheckButton('Center vertically')
+        __cb_center_y.set_active(config.get("plugins", "osd_center_y") == "1")
+        __cb_center_y.connect('toggled', self.__centering_toggled)
+        __cb_center_y.set_name("y")
+
+        __cb_center_x = gtk.CheckButton('Center horizontally')
+        __cb_center_x.set_active(config.get("plugins", "osd_center_x") == "1")
+        __cb_center_x.connect('toggled', self.__centering_toggled)
+        __cb_center_x.set_name("x")
+
+        pos_box.pack_start(__cb_center_x, expand = False)
+        pos_box.pack_start(__cb_center_y, expand = False)
+
+        # Miscellaneous options.
+        misc_box = gtk.HBox(spacing = 6)
+
+        timeout = gtk.SpinButton(gtk.Adjustment(float(config.get('plugins', 'osd_timeout')), 0, 60.0, 0.1, 1.0, 1.0), 0.1, 1)
+        timeout.set_numeric(True)
+        timeout.connect('value-changed', self.__timeout_changed);
+
+        misc_box.pack_start(Label("Display delay: "), expand = False)
+        misc_box.pack_start(timeout, expand = False);
+        misc_box.pack_start(Label("seconds"), expand = False)
+
+        color_frame = qltk.Frame(_("Font & colors"), bold = True, child = fc_box);
+        positioning_frame = qltk.Frame(_("Positioning"), bold = True, child = pos_box);
+        misc_frame = qltk.Frame(_("Miscellaneous"), bold = True, child = misc_box);
+
+        w.child.pack_start(color_frame)
+        w.child.pack_start(positioning_frame)
+        w.child.pack_start(misc_frame)
         w.child.show_all()
 
         w.set_transient_for(parent)
-        w.connect('delete-event', self.__delete)
+        w.connect('delete-event', self.__hide_preferences)
+        w.connect('show', self.__show_panel)
+
         return w
 
-    def __delete(self, prefs, event):
+    def __centering_toggled(self, togglebutton):
+        if togglebutton.get_active(): 
+            status = "1" 
+        else: 
+            status = "0"
+
+        if togglebutton.get_name() == "y":
+            config.set('plugins', 'osd_center_y', status)
+        else:
+            config.set('plugins', 'osd_center_x', status)
+
+        self.__show_panel()
+
+    def __show_panel(self, widget = None):
+        if self.__sid:
+            gobject.source_remove(self.__sid)
+            self.__sid = None
+
+        self.__display(self.__get_preview_msg(), True)
+
+    def __hide_preferences(self, prefs, event):
+        config.set("plugins", "osd_custom_position", "%d %d" %(self.__custom_position[0], self.__custom_position[1]))
+        self.__hide_panel()
         prefs.hide()
         return True
 
+    def __timeout_changed(self, spinbutton):
+        config.set("plugins", "osd_timeout", spinbutton.get_value())
+
     def __font_set(self, font):
         config.set("plugins", "osd_font", font.get_font_name())
+        self.__show_panel()
 
-    def __color_set(self, color, c1, c2, c3):
-        color = c1.get_color()
-        ct1 = (color.red // 256, color.green // 256, color.blue // 256)
-        color = c2.get_color()
-        ct2 = (color.red // 256, color.green // 256, color.blue // 256)
-        color = c3.get_color()
-        ct3 = (color.red // 256, color.green // 256, color.blue // 256)
-        config.set("plugins", "osd_colors",
-                   "#%02x%02x%02x #%02x%02x%02x #%02x%02x%02x" % (ct1+ct2+ct3))
+    def __get_preview_msg(self):
+        otherTextColor = config.get('plugins', 'osd_colors').split()[1]
+        msg = "<span foreground='%s'>\xe2\x99\xaa</span> Drag to position <span foreground='%s'>\xe2\x99\xaa</span>" % (otherTextColor, otherTextColor)
+        msg = "<message id='quodlibet'>%s</message>" % msg
+        return msg
 
-    def __transparency_set(self, transparency):
-        config.set(
-            "plugins", "osd_transparency",str(int(transparency.get_value())))
+    def __color_set(self, color):
+        colors = []
+        for colorButton in [self.__textColorAButton, self.__textColorBButton, self.__panelBorderColorButton, self.__panelColorButton]:
+            color = colorButton.get_color()
+            colors.append("#%02x%02x%02x" % (color.red // 256, color.green // 256, color.blue // 256))
 
-    def __changed(self, cb):
-        config.set("plugins", "osd_position",  str(cb.get_active()))
+            # Write panel border transparency.
+            if colorButton.get_use_alpha():
+                config.set('plugins', 'osd_transparency', str(colorButton.get_alpha() // 256))
+
+        config.set('plugins', 'osd_colors', ' '.join(colors))
+
+        # Refresh OSD panel.
+        self.__show_panel()
+
+    def __dragging(self, widget, event):
+        widget.move(int(event.x_root - self.__startDragPosition[0]), int(event.y_root - self.__startDragPosition[1]))
+
+    def __start_dragging(self, widget, event):
+        self.__startDragPosition = event.x, event.y
+        self.__motionHandler = self.__window.connect('motion_notify_event', self.__dragging)
+
+    def __end_dragging(self, widget, event):
+        self.__window.disconnect(self.__motionHandler)
+        self.__custom_position = self.__window.get_position()
+
+        # Refresh OSD panel.
+        self.__show_panel()
 
     def __init__(self):
         for key, value in {
-            "position": "0",
-            "colors": "#ffbb00 #ff8800 #000000",
+            "custom_position": "-1 -1",
+            "colors": "#ffbb00 #ff8800 #000000 #303030",
             "font": "Sans 22",
-            "transparency": "75"}.items():
+            "timeout": "7.5",
+            "transparency": "75",
+            "center_x": "1",
+            "center_y": "0"}.items():
             try: config.get("plugins", "osd_" + key)
             except: config.set("plugins", "osd_" + key, value)
-        if len(config.get("plugins", "osd_colors").split()) == 2:
-            config.set("plugins", "osd_colors",
-                config.get("plugins", "osd_colors") + " #000000")
+
+        color_str = config.get("plugins", "osd_colors") 
+        for i in [len(config.get("plugins", "osd_colors").split()),4]:
+            if len(config.get("plugins", "osd_colors").split()) < 4:
+                color_str += " #000000"
+
+        config.set("plugins", "osd_colors", color_str)
+
+        self.__custom_position = map(int, config.get("plugins", "osd_custom_position").split())
 
     def plugin_on_song_started(self, song):
         if song is None: return
 
         self.__cover = song.find_cover()
 
-        color1, color2 = config.get("plugins", "osd_colors").split()[:2]
+        color2 = config.get("plugins", "osd_colors").split()[1]
 
         # \xe2\x99\xaa is a music note.
         msg = "\xe2\x99\xaa "
@@ -142,7 +230,11 @@ class Osd(object):
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
         msg = "<message id='quodlibet'>%s</message>" % msg
-        self.__sid = gobject.timeout_add(500, self.__display, msg)
+        self.__display(msg)
+
+    def __panel_destroy_callback(self, msg, is_preview, bgcolor):
+        self.__window = None
+        self.__display(msg, is_preview, bgcolor)
 
     def plugin_on_song_ended(self, song, stopped):
         if self.__window:
@@ -152,29 +244,42 @@ class Osd(object):
             gobject.source_remove(self.__sid)
             self.__sid = None
 
-    def __display(self, msg, bgcolor="black"):
+    def __display(self, msg, is_preview = False, bgcolor = "black"):
         text = msg[msg.index(">")+1:msg.rindex("<")]
 
-        fgcolor = config.get("plugins", "osd_colors").split()[0]
-        border_color = config.get("plugins", "osd_colors").split()[2]
+        if self.__window: 
+            self.__window.destroy()
+            
+            # We need to be sure that the panel is removed for the transparency effect to work. Therefore,
+            # be sure to give the window manager enough time to remove the window. 
+            gobject.idle_add(self.__panel_destroy_callback, msg, is_preview, bgcolor)
+            return
 
-        if self.__window: self.__window.destroy()
+        fgcolor = config.get('plugins', 'osd_colors').split()[0]
+        panelBorderColor = config.get('plugins', 'osd_colors').split()[2]
+        panelColor = config.get('plugins', 'osd_colors').split()[3]
+        center_x = config.get('plugins', 'osd_center_x') == "1"
+        center_y = config.get('plugins', 'osd_center_y') == "1"
 
         try:
             fontdesc = pango.FontDescription(config.get("plugins", "osd_font"))
         except: fontdesc = pango.FontDescription("Sans 22")
 
         win = gtk.Window(gtk.WINDOW_POPUP)
-        ev = gtk.EventBox()
-        win.add(ev)
-        win.connect('button-press-event', self.__unshow)
+        win.add_events(gtk.gdk.POINTER_MOTION_MASK)
+        win.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        win.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
 
         darea = gtk.DrawingArea()
-        ev.add(darea)
+        win.add(darea)
         darea.show()
 
+        # Generate shadow text from colored markup text.
+        p = re.compile('#[0-9a-zA-Z]{6}')
+        shadow_text = p.sub('#000000', text)
+
         layout = win.create_pango_layout('')
-        layout.set_markup(text)
+        layout.set_markup(shadow_text)
         layout.set_justify(False)
         layout.set_alignment(pango.ALIGN_CENTER)
         layout.set_font_description(fontdesc)
@@ -185,125 +290,130 @@ class Osd(object):
         layout.set_wrap(pango.WRAP_WORD)
 
         # Initialize width and height with the size of the pango layout.
-        width, height = layout.get_pixel_size()
+        self.__width, height = layout.get_pixel_size()
         
         # Calculate final panel height by adding a border.
         height += self.BORDER * 4
 
         # Calculate the cover dimensions (if one is available)
-        if not self.__cover is None:
+        draw_cover = not self.__cover is None and not is_preview
+        if draw_cover:
             cover_dim = height - 2 * self.BORDER
         else:
             cover_dim = 0
 
         # Calculate text offsets.
-        off_x = self.BORDER * 4 + cover_dim + width / 2 - MAX_WIDTH / 2
+        off_x = self.BORDER * 4 + cover_dim + self.__width / 2 - MAX_WIDTH / 2
         off_y = self.BORDER * 2
 
         # Calculate panel width.
-        width += self.BORDER * 6 + cover_dim
+        self.__width += self.BORDER * 6 + cover_dim
 
-        darea.set_size_request(width, height)
+        darea.set_size_request(self.__width, height)
         darea.realize()
 
         # Draw the surrounding panel.
-        pixmap = gtk.gdk.Pixmap(darea.window, width, height)
+        pixmap = gtk.gdk.Pixmap(darea.window, self.__width, height)
         bg_gc = gdk.GC(pixmap)
         bg_gc.copy(darea.style.fg_gc[gtk.STATE_NORMAL])
         bg_gc.set_colormap(darea.window.get_colormap())
 
-        win.width = width
+        win.width = self.__width
         win.height = height
 
-        at_bottom = config.getboolean("plugins", "osd_position")
-        position = (at_bottom and gdk.screen_height() - win.height - 48) or 5
+        # Draw contents.
+        panelBgColor = '#%02x%02x%02x' % (int(panelColor[1:3], 16), int(panelColor[3:5], 16),  int(panelColor[5:7], 16))
 
-        x = monitor.x + monitor.width / 2 - win.width / 2
-        y = monitor.y + position
+        bg_gc.set_foreground(darea.get_colormap().alloc_color(panelBgColor))
+        pixmap.draw_rectangle(bg_gc, True, 1, 1, self.__width - 2, height - 2)
 
-        transparency = config.getint("plugins", "osd_transparency")
-        if transparency < 100:
-            # Draw contents.
-            bg_color = (min(int(border_color[1:3], 16) + 30, 255),
-                        min(int(border_color[3:5], 16) + 30, 255),
-                        min(int(border_color[5:7], 16) + 30, 255))
-            bg_color = '#%02x%02x%02x' % bg_color
+        #
+        # Get root window contents at panel position.
+        #
+        if self.__custom_position[0] == -1:
+            # Initially, position the OSD at the bottom
+            # at_bottom = config.getboolean("plugins", "osd_position")
+            # position = (at_bottom and gdk.screen_height() - win.height - 48) or 5
+            position = gdk.screen_height() - win.height - 48
+            winX = monitor.x + monitor.width / 2 - win.width / 2
+            winY = monitor.y + position
+        else:
+            if center_x:
+                winX = monitor.x + monitor.width / 2 - win.width / 2
+            else:
+                winX = self.__custom_position[0]
 
-            bg_gc.set_foreground(darea.get_colormap().alloc_color(bg_color))
-            pixmap.draw_rectangle(bg_gc, True, 1, 1, width - 2, height - 2)
+            if center_y:
+                winY = monitor.y + monitor.height / 2 - win.height / 2 
+            else:
+                winY = self.__custom_position[1]
 
-            # Get root window contents at panel position.
-            root_win = gdk.Screen.get_root_window(gdk.screen_get_default())
-            root_pb = gtk.gdk.Pixbuf(
-                gtk.gdk.COLORSPACE_RGB, 0, 8, width, height)
-            root_pb.get_from_drawable(
-                root_win, root_win.get_colormap(), x, y, 0, 0, width, height)
+        # Transparency is not enabled in preview mode.
+        root_win = gdk.Screen.get_root_window(gdk.screen_get_default())
+        root_pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, self.__width, height)
+        root_pb.get_from_drawable(root_win, root_win.get_colormap(), winX, winY, 0, 0, self.__width, height)
 
-            # Composite panel pixbuf with root pixbuf.
-            composited = gtk.gdk.Pixbuf(
-                gtk.gdk.COLORSPACE_RGB, 0, 8, width, height)
-            composited.get_from_drawable(
-                pixmap, pixmap.get_colormap(), 0, 0, 0, 0, width, height)
+        # Composite panel pixbuf with root pixbuf
+        compositedPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, self.__width, height)
+        compositedPixBuf.get_from_drawable(pixmap, pixmap.get_colormap(), 0, 0, 0, 0, self.__width, height)
+        alpha = int(config.get('plugins', 'osd_transparency'))
+        compositedPixBuf.composite(root_pb, 0, 0, self.__width, height, 0, 0, 1, 1, gtk.gdk.INTERP_BILINEAR, alpha)
+        pixmap.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL], root_pb, 0, 0, 0, 0, -1, -1)
 
-            alpha = 255 - int((transparency / 100.0) * 255)
-            composited.composite(
-                root_pb, 0, 0, width, height, 0, 0, 1, 1,
-                gtk.gdk.INTERP_BILINEAR, alpha)
-            pixmap.draw_pixbuf(
-                darea.style.fg_gc[gtk.STATE_NORMAL], root_pb,
-                0, 0, 0, 0, -1, -1)
-
-            # Draw panel border.
-            bg_gc.set_foreground(
-                darea.get_colormap().alloc_color(border_color))
-            pixmap.draw_rectangle(bg_gc, False, 0, 0, width - 1, height - 1)
+        # Draw panel border.
+        bg_gc.set_foreground(darea.get_colormap().alloc_color(panelBorderColor))
+        pixmap.draw_rectangle(bg_gc, False, 0, 0, self.__width - 1, height - 1)
 
         # Draw layout.
         fg_gc = gdk.GC(pixmap) 
         fg_gc.copy(darea.style.fg_gc[gtk.STATE_NORMAL])
         fg_gc.set_colormap(darea.window.get_colormap())
+        fg_gc.set_foreground(darea.get_colormap().alloc_color("black"))
+
+        # Draw shadow.
+        pixmap.draw_layout(fg_gc, off_x + 1, off_y + 1, layout)
+
+        # Draw actual text.
         fg_gc.set_foreground(darea.get_colormap().alloc_color(fgcolor))
+        layout.set_markup(text)
         pixmap.draw_layout(fg_gc, off_x, off_y, layout)
 
         # Draw the cover image (if available).
-        if not self.__cover is None:
+        if not self.__cover is None and not is_preview:
             try:
-                cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self.__cover.name, cover_dim, cover_dim)
-            except: self.__cover = None
+                cover = gtk.gdk.pixbuf_new_from_file_at_size(self.__cover.name, cover_dim, cover_dim)
+            except: 
+                self.__cover = None
             else:
                 left = self.BORDER + (cover_dim - cover.get_width())/2
                 top = self.BORDER + (cover_dim - cover.get_height())/2
-                pixmap.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL],
-                                   cover, 0, 0, left, top)
+                pixmap.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL], cover, 0, 0, left, top)
                 # Draw a border around the cover image.
                 bg_gc.set_foreground(darea.get_colormap().alloc_color("black"))
-                pixmap.draw_rectangle(
-                    bg_gc, False, left - 1, top - 1,
-                    cover.get_width() + 1, cover.get_height() + 1)
+                pixmap.draw_rectangle( bg_gc, False, left - 1, top - 1, cover.get_width() + 1, cover.get_height() + 1)
 
         darea.window.set_back_pixmap(pixmap, False)
-        if transparency == 100:
-            bitmap = gtk.gdk.Pixmap(None, width, height, 1)
-            fg_gc = gdk.GC(bitmap)
-            bg_gc = gdk.GC(bitmap)
-            fg_gc.set_colormap(darea.window.get_colormap())
-            bg_gc.set_colormap(darea.window.get_colormap())
-            fg_gc.set_foreground(gdk.Color(pixel=-1))
-            bg_gc.set_background(gdk.Color(pixel=0))
-            bitmap.draw_rectangle(bg_gc, True, 0, 0, width, height)
-            for dx in range(-self.BORDER, self.BORDER + 1):
-                for dy in range(-self.BORDER, self.BORDER + 1):
-                    if dx*dx + dy*dy >= self.BORDER * self.BORDER: continue
-                    bitmap.draw_layout(fg_gc, off_x + dx, off_y + dy, layout)
 
-            win.window.shape_combine_mask(bitmap, 0, 0)
-        gobject.idle_add(win.move, x, y)
+        gobject.idle_add(win.move, winX, winY)
         gobject.idle_add(win.show_all)
         self.__window = win
-        gobject.timeout_add(7500, self.__unshow)
 
-    def __unshow(self, *args):
+        # An active OSD window can be closed by clicking it.
+        if not is_preview: 
+            self.__sid = gobject.timeout_add(int(float(config.get('plugins', 'osd_timeout')) * 1000), self.__hide_panel)
+            win.connect('button-press-event', self.__hide_panel_callback)
+        # A preview OSD can be dragged around.
+        else: 
+            win.connect('button-press-event', self.__start_dragging)
+            win.connect('button-release-event', self.__end_dragging)
+
+    def __hide_panel(self):
         if self.__window:
             gobject.idle_add(self.__window.destroy)
             self.__window = None
+        if self.__sid:
+            gobject.source_remove(self.__sid)
+            self.__sid = None
+
+    def __hide_panel_callback(self, widget, event):
+        self.__hide_panel()
