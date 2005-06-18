@@ -12,7 +12,7 @@
 #include <taglib/mpegproperties.h>
 
 #include <taglib/textidentificationframe.h>
-#include <taglib/id3v2framefactory.h>
+#include <taglib/id3v2tag.h>
 
 using namespace boost::python;
 using namespace TagLib;
@@ -243,6 +243,7 @@ BOOST_PYTHON_MODULE(taglib) {
 
   class_<MPEG::File, boost::noncopyable, bases<File> >
     ("MPEGFile", init<const char *>())
+    .def("ID3v2Tag", &MPEG::File::ID3v2Tag, return_internal_reference<1>())
     ;
 
   class_<MPEG::Properties, boost::noncopyable, bases<AudioProperties> >
@@ -260,6 +261,14 @@ BOOST_PYTHON_MODULE(taglib) {
     .add_property("data", &ID3v2::Frame::render, &ID3v2::Frame::setData)
     .def("__unicode__", &ID3v2::Frame::toString)
     ;
+
+  std::list<ID3v2::Frame*>::const_iterator (ID3v2::FrameList::*begin)() const =
+    &ID3v2::FrameList::begin;
+  std::list<ID3v2::Frame*>::const_iterator (ID3v2::FrameList::*end)() const =
+    &ID3v2::FrameList::end;
+  class_<ID3v2::FrameList, boost::noncopyable>("_ID3v2FrameList", no_init)
+    .def("__iter__", range(begin, end))
+    ;
  
   void (ID3v2::TextIdentificationFrame::*setTextList)(const StringList &) =
     &ID3v2::TextIdentificationFrame::setText;
@@ -272,5 +281,12 @@ BOOST_PYTHON_MODULE(taglib) {
     .add_property("fields", &ID3v2::TextIdentificationFrame::fieldList,
 		  setTextList)
 
+    ;
+
+  const ID3v2::FrameList &(ID3v2::Tag::*frameList)() const =
+    &ID3v2::Tag::frameList;
+
+  class_<ID3v2::Tag, boost::noncopyable, bases<Tag> >("ID3v2Tag")
+    .def("frames", frameList, return_internal_reference<>())
     ;
 }
