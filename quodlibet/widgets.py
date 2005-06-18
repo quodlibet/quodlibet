@@ -3978,7 +3978,7 @@ class SongProperties(gtk.Window):
                 covers = [(a, s.find_cover(), s) for d, s, a in albums]
                 albums = map(format, albums)
                 if noalbum:
-                    albums.append(ngettext("%d song with no album"
+                    albums.append(ngettext("%d song with no album",
                         "%d songs with no album", noalbum) % noalbum)
                 l = self.Label("\n".join(albums))
                 l.set_ellipsize(pango.ELLIPSIZE_END)
