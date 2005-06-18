@@ -151,13 +151,8 @@ class SongWatcher(gtk.Object):
         gobject.idle_add(self.emit, 'song-started', song)
 
     def song_ended(self, song, stopped):
-        if song.exists():
-            self.changed(song)
-            gobject.idle_add(self.emit, 'song-ended', song, stopped)
-        else:
-            # This happens if a song disappears in the middle of playback.
-            # This is probably *NOT* the right place to handle this.
-            self.missing(song)
+        self.changed(song)
+        gobject.idle_add(self.emit, 'song-ended', song, stopped)
 
     def refresh(self):
         gobject.idle_add(self.emit, 'refresh')

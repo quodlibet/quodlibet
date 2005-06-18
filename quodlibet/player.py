@@ -87,6 +87,9 @@ class GStreamerDevice(object):
         def __iter__(self):
             return self
 
+        def __nonzero__(self):
+            return (self.bin.get_state() != gst.STATE_NULL)
+
         def seek(self, ms):
             state = self.bin.get_state()
             self.bin.set_state(gst.STATE_PAUSED)
@@ -279,11 +282,18 @@ class PlaylistPlayer(object):
 
     def __play_internal(self):
         while self.paused: time.sleep(0.05)
-        for t in self.__player:
-            self.info.time = (t, self.__player.length)
-            while self.paused and not self.quit:
-                time.sleep(0.05)
-            if self.quit: break
+        try:
+            for t in self.__player:
+                self.info.time = (t, self.__player.length)
+                while self.paused and not self.quit:
+                    time.sleep(0.05)
+                if self.quit: break
+        except Exception, err:
+            sys.stderr.write(str(err) + "\n")
+            return False
+        else:
+            # We might have stopped because the file is gone/corrupt.
+            return self.__song.exists()
 
     def play(self, info):
         self.info = info
@@ -299,11 +309,14 @@ class PlaylistPlayer(object):
             while self.__playlist and not self.quit:
                 self.__song, self.__player = self.__get_song()
                 if not self.__player: continue
-                self.__play_internal()
-                if not self.__player.stopped:
-                    self.__song["~#lastplayed"] = int(time.time())
-                    self.__song["~#playcount"] += 1
-                self.info.song_ended(self.__song, self.__player.stopped)
+                if self.__play_internal():
+                    if not self.__player.stopped:
+                        self.__song["~#lastplayed"] = int(time.time())
+                        self.__song["~#playcount"] += 1
+                    self.info.song_ended(self.__song, self.__player.stopped)
+                else:
+                    self.paused = True
+                    self.info.missing(self.__song)
 
             while self.paused and not self.quit:
                 time.sleep(0.05)
