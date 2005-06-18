@@ -310,13 +310,21 @@ class FileFromPattern(object):
             # stdtag | < tagname ( \| [^<>] | stdtag )+ >
             r'''( <\w+(?:\~\w+)*> | <\~\w+> |
                 < \w+ (?: \| (?: [^<>] | <\w+(?:\~\w+)*> )* )+ > )''', sre.X)):
-            pieces = filter(None, tagre.split(pattern))
-            self.replacers = [
-                FileFromPattern.PatternReplacer(piece, filename=filename)
-                for piece in pieces]
+            self.replacers = [ (tagre.match(piece) and
+                FileFromPattern.PatternReplacer or
+                FileFromPattern.PassThroughReplacer)(piece, filename=filename)
+            for piece in tagre.split(pattern) if piece]
 
         def match(self, song):
             return ''.join([r.match(song) for r in self.replacers])
+
+    class PassThroughReplacer(object):
+        def __init__(self, pattern, filename=True):
+            self.filename = filename
+            self.pattern = pattern
+
+        def match(self, song):
+            return self.pattern
 
     class PatternReplacer(object):
         def __init__(self, pattern, filename=True):
