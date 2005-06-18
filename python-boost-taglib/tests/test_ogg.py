@@ -34,8 +34,7 @@ class DNEVorbisLoad(TestCase):
     def test_properties(self): self.failIf(self.OGG.audioProperties())
 
 class VorbisProperties(TestCase):
-    OGG = taglib.VorbisFile(OGG_FN)
-    PROPS = OGG.audioProperties()
+    PROPS = taglib.VorbisFile(OGG_FN).audioProperties()
 
     def test_bitrate(self):
         self.failUnlessEqual(45, self.PROPS.bitrate)
@@ -47,8 +46,7 @@ class VorbisProperties(TestCase):
         self.failUnlessEqual(3, self.PROPS.length)
 
 class VorbisTag(TestCase):
-    OGG = taglib.VorbisFile(OGG_FN)
-    TAG = OGG.tag()
+    TAG = taglib.VorbisFile(OGG_FN).tag()
 
     def test_title(self): self.failUnlessEqual(self.TAG.title, "Silence")
     def test_year(self): self.failUnlessEqual(self.TAG.year, 2004)
