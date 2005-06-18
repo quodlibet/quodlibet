@@ -315,6 +315,12 @@ class NBPTests(TestCase):
         pat = FileFromPattern('<~basename>', filename=False)
         s.assertEquals(pat.match(s.a), os.path.basename(s.a["~filename"]))
 
+        # less confusing than discarding ~basename - disallowed
+        pat = FileFromPattern('foo <~basename~artist>', filename=False)
+        s.assertEquals(pat.match(s.a), 'foo <~basename~artist>')
+        pat = FileFromPattern('<~basename~artist>', filename=False)
+        s.assertEquals(pat.match(s.a), '<~basename~artist>')
+
     def test_generated_and_not_generated(s):
         pat = FileFromPattern('<~basename> <title>', filename=False)
         res = pat.match(s.a)
