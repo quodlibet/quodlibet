@@ -308,7 +308,7 @@ class FileFromPattern(object):
     class Pattern(object):
         def __init__(self, pattern, filename=True, tagre=sre.compile(
             # stdtag | < tagname ( \| [^<>] | stdtag )+ >
-            r'''( <\w+(?:\~\w+)*> |
+            r'''( <\~?\w+(?:\~\w+)*> |
                 < \w+ (?: \| (?: [^<>] | <\w+(?:\~\w+)*> )* )+ > )''', sre.X)):
             pieces = filter(None, tagre.split(pattern))
             self.replacers = [
