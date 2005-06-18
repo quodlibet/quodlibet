@@ -255,7 +255,11 @@ class PlaylistPlayer(object):
 
     def __get_song(self):
         self.__lock.acquire()
-        if self.shuffle == 2: # weighted random
+        if self.shuffle == 1: # regular shuffle
+            random.shuffle(self.__playlist)
+        elif (self.shuffle == 2 and
+              (len(self.__playlist) == len(self.__orig_playlist))):
+            # Weighted random without songs pending
             plist = self.__orig_playlist
             total_rating = sum([song.get("~#rating", 2) for song in plist])
             choice = random.random() * total_rating
@@ -263,11 +267,10 @@ class PlaylistPlayer(object):
             for song in plist:
                 current += song.get("~#rating", 2)
                 if current >= choice: break
-        else:
-            song = self.__playlist.pop(0)
-            if self.shuffle: random.shuffle(self.__playlist)
-        fn = song['~filename']
-        config.set("memory", "song", fn)
+            self.__playlist.insert(0, song)
+
+        song = self.__playlist.pop(0)
+        config.set("memory", "song", song["~filename"])
         try: player = self.__output.open(song)
         except Exception, err:
             sys.stderr.write(str(err) + "\n")
@@ -339,7 +342,7 @@ class PlaylistPlayer(object):
         self.paused = False
         self.__lock.release()
 
-    def sort_by(self, header, reverse = False):
+    def sort_by(self, header, reverse=False):
         self.__lock.acquire()
         pl = self.__orig_playlist[:]
         if header == "~#track": header = "album"
@@ -350,7 +353,7 @@ class PlaylistPlayer(object):
         else:
             f = lambda a, b: (cmp(a(header), b(header)) or cmp(a, b))
         self.__sort = f
-        self.set_playlist(pl, lock = False)
+        self.set_playlist(pl, lock=False)
         self.__lock.release()
 
     def get_playlist(self):
@@ -378,6 +381,7 @@ class PlaylistPlayer(object):
             if self.__song and self.__song in self.__orig_playlist:
                 self.__played = [self.__song]
             else: self.__played = []
+
             self.__playlist = self.__orig_playlist[:]
             random.shuffle(self.__playlist)
         else:
@@ -436,7 +440,7 @@ class PlaylistPlayer(object):
         else:
             del(self.__playlist[:])
             self.__playlist.extend(self.__orig_playlist)
-            self.__playlist.remove(song)
+            if self.shuffle == 1: self.__playlist.remove(song)
             self.__playlist.insert(0, song)
             if self.__player: self.__player.end()
         if lock: self.__lock.release()
