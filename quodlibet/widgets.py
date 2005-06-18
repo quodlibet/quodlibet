@@ -24,6 +24,7 @@ import formats
 import util
 
 from util import to
+from gettext import ngettext
 from library import library
 
 if sys.version_info < (2, 4):
@@ -711,13 +712,14 @@ class DeleteDialog(gtk.Dialog):
         hbox.pack_start(i, expand=False)
         vbox = gtk.VBox(spacing=6)
         base = os.path.basename(files[0])
+        l = ngettext("Permanently delete this file?",
+                "Permanently delete these files?", len(files))
         if len(files) == 1:
-            l = _("Permanently delete this file?")
             exp = gtk.Expander("%s" % util.fsdecode(base))
         else:
-            l = _("Permanently delete these files?")
-            exp = gtk.Expander(_("%s and %d more...") %(
-                util.fsdecode(base), len(files) - 1))
+            exp = gtk.Expander(ngettext("%(title)s and %(count)d more...",
+                "%(title)s and %(count)d more...", len(files)-1) %
+                {'title': util.fsdecode(base), 'count': len(files) - 1})
 
         lab = gtk.Label()
         lab.set_markup("<big><b>%s</b></big>" % l)
@@ -1698,9 +1700,10 @@ class AlbumList(Browser, gtk.VBox):
                 self.title or _("Songs not in an album"))
             if self.date: text += " (%s)" % self.date
             text += "\n<small>"
-            if self.discs > 1: text += (_("%d discs") % self.discs) + " - "
-            if self.tracks == 1: text += _("1 track")
-            else: text += _("%d tracks") % self.tracks
+            if self.discs > 1: text += ngettext("%d disc", "%d discs",
+                    self.discs) % self.discs + " - "
+            text += ngettext("%d track", _("%d tracks"),
+                    self.tracks) % self.tracks
             text += " - " + self.__long_length
             text += "</small>\n" + ", ".join(map(util.escape, self.people))
             return text
@@ -1802,7 +1805,8 @@ class AlbumList(Browser, gtk.VBox):
             album = model[iter][0]
             if album is None:
                 text = "<b>%s</b>" % _("All albums")
-                text += "\n" + _("%d albums") % (len(model) - 1)
+                text += "\n" + ngettext("%d album", "%d albums",
+                        len(model) - 1) % (len(model) - 1)
                 cell.markup = text
             else:
                 cell.markup = model[iter][0].to_markup()
@@ -3058,8 +3062,8 @@ class MainWindow(gtk.Window):
 
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
-        if i != 1: t = _("%d songs (%s)") % (i, util.format_time_long(length))
-        else: t = _("%d song (%s)") % (i, util.format_time_long(length))
+        t = ngettext("%(count)d song (%(time)s)", "%(count)d songs (%(time)s)",
+                i) % {'count': i, 'time': util.format_time_long(length)}
         statusbar.set_property('label', t)
         gobject.idle_add(statusbar.queue_resize)
 
@@ -3772,8 +3776,7 @@ class SongProperties(gtk.Window):
             def _library(self, (song,)):
                 def counter(i):
                     if i == 0: return _("Never")
-                    elif i == 1: return _("1 time")
-                    else: return _("%d times") % i
+                    else: return ngettext("%d time", "%d times", i) % i
                 def ftime(t):
                     if t == 0: return _("Unknown")
                     else: return time.strftime("%c", time.localtime(t))
@@ -3865,10 +3868,13 @@ class SongProperties(gtk.Window):
                 if tracks == 0 or tracks < len(songs): tracks = len(songs)
 
                 parts = []
-                if discs > 1: parts.append(_("%d discs") % discs)
-                parts.append(_("%d tracks") % tracks)
+                if discs > 1:
+                    text += ngettext("%d disc", "%d discs", discs) % \
+                            discs + " - "
+                parts.append(ngettext("%d track", "%d tracks", tracks)%tracks)
                 if tracks != len(songs):
-                    parts.append(_("%d selected") % len(songs))
+                    parts.append(ngettext("%d selected", "%d selected",
+                        len(songs)) % len(songs))
 
                 text.append(", ".join(parts))
                 text.append(util.format_time_long(length))
@@ -3977,7 +3983,8 @@ class SongProperties(gtk.Window):
                 covers = [(a, s.find_cover(), s) for d, s, a in albums]
                 albums = map(format, albums)
                 if noalbum:
-                    albums.append(_("%d songs with no album") % noalbum)
+                    albums.append(ngettext("%d song with no album"
+                        "%d songs with no album", noalbum) % noalbum)
                 l = self.Label("\n".join(albums))
                 l.set_ellipsize(pango.ELLIPSIZE_END)
                 self.pack_frame(_("Selected Discography"), l)
@@ -4005,7 +4012,7 @@ class SongProperties(gtk.Window):
         class ManySongs(SongInfo):
             def _title(self, songs):
                 l = self.Label()
-                t = _("%d songs") % len(songs)
+                t = ngettext("%d song", "%d songs", len(songs)) % len(songs)
                 l.set_markup("<big><b>%s</b></big>" % t)
                 self.pack_start(l, expand=False)
 
@@ -4019,7 +4026,8 @@ class SongProperties(gtk.Window):
                 artists.sort()
                 num_artists = len(artists)
 
-                if none: artists.append(_("%d songs with no artist") % none)
+                if none: artists.append(ngettext("%d song with no artist",
+                        "%d songs with no artist", none) % none)
                 self.pack_frame(
                     "%s (%d)" % (util.capitalize(_("artists")), num_artists),
                     self.Label("\n".join(artists)))
@@ -4034,7 +4042,8 @@ class SongProperties(gtk.Window):
                 albums.sort()
                 num_albums = len(albums)
 
-                if none: albums.append(_("%d songs with no album") % none)
+                if none: albums.append(ngettext("%d song with no album",
+                    "%d songs with no album", none) % none)
                 self.pack_frame(
                     "%s (%d)" % (util.capitalize(_("albums")), num_albums),
                     self.Label("\n".join(albums)))
@@ -4606,14 +4615,13 @@ class SongProperties(gtk.Window):
                 if not songinfo.can_change(header):
                     invalid.append(header)
             if len(invalid) and songs:
-                if len(invalid) == 1:
-                    title = _("Invalid tag")
-                    msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
-                            " selected do not support editing this tag.")
-                else:
-                    title = _("Invalid tags")
-                    msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
-                            " selected do not support editing these tags.")
+                title = ngettext("Invalid tag", "Invalid tags", len(invalid))
+                msg = ngettext(
+                        "Invalid tag <b>%s</b>\n\nThe files currently"
+                        " selected do not support editing this tag.",
+                        "Invalid tags <b>%s</b>\n\nThe files currently"
+                        " selected do not support editing these tags.",
+                        len(invalid))
 
                 qltk.ErrorMessage(parent, title,
                                   msg % ", ".join(invalid)).run()
@@ -5076,7 +5084,8 @@ class SongProperties(gtk.Window):
 
         if len(songs) > 1:
             render = gtk.CellRendererText()
-            expander = gtk.Expander(_("Apply to these _files..."))
+            expander = gtk.Expander(ngettext("Apply to this _file...",
+                    "Apply to these _files...", len(songs)))
             c1 = gtk.TreeViewColumn(_('File'), render, text=1)
             c1.set_sort_column_id(1)
             c1.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -5144,8 +5153,8 @@ class SongProperties(gtk.Window):
     def __set_title(self, songs):
         if songs:
             if len(songs) == 1: title = songs[0].comma("title")
-            else: title = _("%s and %d more") % (
-                songs[0].comma("title"), len(songs) - 1)
+            else: title = _("%(title)s and %(count)d more") % (
+                    {'title':songs[0].comma("title"), 'count':len(songs) - 1})
             self.set_title("%s - %s" % (title, _("Properties")))
         else: self.set_title(_("Properties"))
 
@@ -5434,9 +5443,8 @@ class ExFalsoWindow(gtk.Window):
         elif len(files) == 1:
             self.set_title("%s - Ex Falso" % files[0]("title"))
         else:
-            self.set_title(
-                "%s - Ex Falso" %
-                (_("%s and %d more") % (files[0]("title"), len(files) - 1)))
+            self.set_title("%s - Ex Falso" % (_("%(title)s and %(count)d more")
+                % {'title': files[0]("title"), 'count': len(files) - 1}))
         self.__cache = dict([(song["~filename"], song) for song in files])
 
 gobject.type_register(ExFalsoWindow)

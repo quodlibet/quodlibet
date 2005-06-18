@@ -7,6 +7,8 @@
 # $Id$
 
 import os, sre, stat, string, locale
+from gettext import ngettext
+N_ = str 
 
 def to(string, frm="utf-8"):
     """Convert a string to the system encoding; used if you need to
@@ -80,20 +82,18 @@ def format_time_long(time):
     """Turn a time value in seconds into x hours, x minutes, etc."""
     if time < 1: return _("No time information")
     cutoffs = [
-        (60, _("%d seconds"), _("1 second")),
-        (60, _("%d minutes"), _("1 minute")),
-        (24, _("%d hours"), _("1 hour")),
-        (365, _("%d days"), _("1 day")),
-        (None, _("%d years"), _("1 year")),
+        (60, N_("%d seconds"), N_("%d second")),
+        (60, N_("%d minutes"), N_("%d minute")),
+        (24, N_("%d hours"), N_("%d hour")),
+        (365, N_("%d days"), N_("%d day")),
+        (None, N_("%d years"), N_("%d year")),
     ]
     time_str = []
     for divisor, plural, single in cutoffs:
         if time < 1: break
         if divisor is None: time, unit = 0, time
         else: time, unit = divmod(time, divisor)
-        if unit == 0: pass
-        elif unit == 1: time_str.append(single)
-        else: time_str.append(plural % unit)
+        if unit: time_str.append(ngettext(single, plural, unit) % unit)
     time_str.reverse()
     if len(time_str) > 2: time_str.pop()
     return ", ".join(time_str)
