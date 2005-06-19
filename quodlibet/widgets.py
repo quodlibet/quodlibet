@@ -3873,9 +3873,10 @@ class SongProperties(gtk.Window):
 
                 parts = []
                 if discs > 1:
-                    text += ngettext("%d disc", "%d discs", discs) % \
-                            discs + " - "
-                parts.append(ngettext("%d track", "%d tracks", tracks)%tracks)
+                    parts.append(
+                        ngettext("%d disc", "%d discs", discs) % discs)
+                parts.append(
+                        ngettext("%d track", "%d tracks", tracks) % tracks)
                 if tracks != len(songs):
                     parts.append(ngettext("%d selected", "%d selected",
                         len(songs)) % len(songs))
