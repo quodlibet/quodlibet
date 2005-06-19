@@ -3481,7 +3481,8 @@ class MainSongList(SongList):
 class GetStringDialog(gtk.Dialog):
     def __init__(self, parent, title, text, options=[]):
         gtk.Dialog.__init__(self, title, parent)
-        self.set_border_width(6)        
+        self.set_border_width(6)
+        self.set_has_separator(False)
         self.set_resizable(False)
         self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                          gtk.STOCK_OPEN, gtk.RESPONSE_OK)
