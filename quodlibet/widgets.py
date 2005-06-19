@@ -299,6 +299,8 @@ class PreferencesWindow(gtk.Window):
             vbox.pack_start(b)
 
             frame = qltk.Frame(_("Visible Columns"), bold=True, child=vbox)
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             self.pack_start(frame, expand=False)
             self.show_all()
 
@@ -339,7 +341,8 @@ class PreferencesWindow(gtk.Window):
             tips.set_tip(
                 c, _("Display simple searches in blue, "
                      "advanced ones in green, and invalid ones in red"))
-                         
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
@@ -395,7 +398,6 @@ class PreferencesWindow(gtk.Window):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Player")
-            tips = gtk.Tooltips()
             vbox = gtk.VBox()
             c = qltk.ConfigCheckButton(
                 _("Show _album cover images"), 'settings', 'cover')
@@ -496,6 +498,8 @@ class PreferencesWindow(gtk.Window):
             vbox.pack_start(hb, expand=False)
             vbox.pack_start(cb, expand=False)
             f.child.add(vbox)
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             self.pack_start(f)
             self.show_all()
 
@@ -660,7 +664,6 @@ class PreferencesWindow(gtk.Window):
         self.set_icon(icon_theme.load_icon(
             const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         self.add(gtk.VBox(spacing=12))
-        tips = gtk.Tooltips()
         n = qltk.Notebook()
         self.child.pack_start(n)
 
@@ -2200,7 +2203,9 @@ class MainWindow(gtk.Window):
             slider.connect('value-changed', self.__volume_changed, device)
             self.pack_start(slider)
             tips = gtk.Tooltips()
-            tips.set_tip(slider, _("Adjust audio volume"))            
+            tips.set_tip(slider, _("Adjust audio volume"))
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             self.get_value = slider.get_value
             self.set_value = slider.set_value
             slider.set_inverted(True)
@@ -2501,6 +2506,8 @@ class MainWindow(gtk.Window):
         tips.set_tip(
             self.ui.get_widget("/Menu/Song/Properties"),
             _("View and edit tags in the playing song"))
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+        tips.enable()
 
     def __select_browser(self, activator, current):
         if not isinstance(current, int): current = current.get_current_value()
@@ -3575,6 +3582,8 @@ class AddTagDialog(gtk.Dialog):
             entry.connect(
                 'changed', self.__validate, validators, add, invalid, tips,
                 valuebox)
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+
 
     def get_tag(self):
         try: return self.__tag.child.get_text().lower().strip()
@@ -4002,6 +4011,7 @@ class SongProperties(gtk.Window):
                     except: pass
                     added.add(cover.name)
                 self.pack_start(t, expand=False)
+                tips.enable()
                 self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
         class ManySongs(SongInfo):
@@ -4067,7 +4077,6 @@ class SongProperties(gtk.Window):
             self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             self.add(gtk.Viewport())
             self.child.set_shadow_type(gtk.SHADOW_NONE)
-            self.tips = gtk.Tooltips()
             parent.connect_object(
                 'changed', self.__class__.__update, self, library)
 
@@ -4176,6 +4185,8 @@ class SongProperties(gtk.Window):
                 (self.add, _("Add a new tag to the file")),
                 (self.remove, _("Remove a tag from the file"))]:
                 tips.set_tip(widget, tip)
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             parent.connect_object('changed', self.__class__.__update, self)
 
         def popup_menu(self, view):
@@ -4257,7 +4268,7 @@ class SongProperties(gtk.Window):
             menu = gtk.Menu()        
             spls = config.get("settings", "splitters")
 
-            b = gtk.ImageMenuItem(_("_Split into multiple values"))
+            b = gtk.ImageMenuItem(_("Split into _multiple values"))
             b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
                                          gtk.ICON_SIZE_MENU)
             b.set_sensitive(len(util.split_value(row[1], spls)) > 1)
@@ -4562,6 +4573,8 @@ class SongProperties(gtk.Window):
             tips.set_tip(
                 titlecase,
                 _("The first letter of each word will be capitalized"))
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             # Changing things -> need to preview again
             kw = { "titlecase": titlecase,
@@ -4802,6 +4815,8 @@ class SongProperties(gtk.Window):
                  _("Characters outside of the ASCII set (A-Z, a-z, 0-9, "
                    "and punctuation) will be replaced by underscores"))]:
                 tips.set_tip(widget, tip)
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             # Connect callbacks
             preview_args = [combo, prop, model, save, preview,
