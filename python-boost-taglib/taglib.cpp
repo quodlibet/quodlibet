@@ -12,6 +12,7 @@
 #include <taglib/mpegproperties.h>
 
 #include <taglib/textidentificationframe.h>
+#include <taglib/unknownframe.h>
 #include <taglib/id3v2tag.h>
 
 using namespace boost::python;
@@ -267,7 +268,8 @@ BOOST_PYTHON_MODULE(taglib) {
   std::list<ID3v2::Frame*>::const_iterator (ID3v2::FrameList::*end)() const =
     &ID3v2::FrameList::end;
   class_<ID3v2::FrameList, boost::noncopyable>("_ID3v2FrameList", no_init)
-    .def("__iter__", range(begin, end))
+    .def("__iter__", range<return_value_policy<reference_existing_object> >
+	 (begin, end))
     ;
  
   void (ID3v2::TextIdentificationFrame::*setTextList)(const StringList &) =
@@ -282,6 +284,9 @@ BOOST_PYTHON_MODULE(taglib) {
 		  setTextList)
 
     ;
+
+  class_<ID3v2::UnknownFrame, boost::noncopyable, bases<ID3v2::Frame> >
+    ("UnknownFrame", init<ByteVector>());
 
   const ID3v2::FrameList &(ID3v2::Tag::*frameList)() const =
     &ID3v2::Tag::frameList;
