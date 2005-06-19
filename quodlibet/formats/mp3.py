@@ -9,7 +9,8 @@
 from formats.audio import AudioFile, AudioPlayer
 import config
 import re
-try: import pyid3lib, mad
+import tempfile
+try: import eyeD3, pyid3lib, mad
 except ImportError: extensions = []
 else: extensions = [".mp3", ".mp2"]
 
@@ -137,40 +138,55 @@ class MP3File(AudioFile):
     GENRE_RE = re.compile(r"(?:\((?P<id>[0-9]+|RX|CR)\))?(?P<str>.+)?")
             
     def __init__(self, filename):
-        tag = pyid3lib.tag(filename)
+        tag = eyeD3.Tag(eyeD3.ID3_V2_4)
+        tag.link(filename)
         date = ["", "", ""]
 
-        for frame in tag:
-            if frame["frameid"] == "TDAT" and len(frame["text"]) == 4:
-                date[1] = frame["text"][0:2]
-                date[2] = frame["text"][2:4]
+        for frame in tag.frames:
+            if frame.header.id == "TDAT" and len(frame.text) == 4:
+                date[1] = frame.text[0:2]
+                date[2] = frame.text[2:4]
                 continue
-            elif frame["frameid"] == "TYER" and len(frame["text"]) == 4:
-                date[0] = frame["text"]
+            elif frame.header.id == "TYER" and len(frame.text) == 4:
+                date[0] = frame.text
                 continue
-            elif frame["frameid"] == "APIC" and frame["data"]:
+            elif frame.header.id == "APIC" and len(frame.imageData):
                 self["~picture"] = "y"
                 continue
-            elif frame["frameid"] == "TCON":
-                self.__fix_genre(frame["text"])
+            elif frame.header.id == "TCON":
+                self.__fix_genre(frame.text)
                 continue            
-            elif frame["frameid"] == "COMM":
-                if frame["description"].startswith("QuodLibet::"):
-                    name = frame["description"][11:]
-                elif frame["description"] == "ID3v1 Comment": continue
+            elif frame.header.id == "COMM":
+                if frame.description.startswith("QuodLibet::"):
+                    name = frame.description[11:]
+                elif frame.description == "ID3v1 Comment": continue
                 else: name = "comment"
-            else: name = self.IDS.get(frame["frameid"], "").lower()
+            else: name = self.IDS.get(frame.header.id, "").lower()
 
             if not name: continue
 
             try:
-                text = frame["text"]
-                if not text: continue
-                for codec in self.CODECS:
-                    try: text = text.decode(codec)
-                    except (UnicodeError, LookupError): pass
-                    else: break
+                id3id = frame.header.id
+                if id3id.startswith("T"): text = frame.text
+                elif id3id == "COMM": text = frame.comment
+                elif id3id.startswith("W"):
+                    dec = eyeD3.id3EncodingToString(frame.encoding)
+                    text = frame.url[1:].decode(dec)
+                elif id3id == "USER":
+                    dec = eyeD3.id3EncodingToString(frame.encoding)
+                    text = frame.data[1:].decode(dec)
                 else: continue
+
+                if not text: continue
+                if not isinstance(text, unicode):
+                    assert isinstance(text, unicode)
+                if frame.encoding == eyeD3.LATIN1_ENCODING:
+                    text = text.encode('iso-8859-1')
+                    for codec in self.CODECS:
+                        try: text = text.decode(codec)
+                        except (UnicodeError, LookupError): pass
+                        else: break
+                    else: continue
                 if name in self:
                     if text in self[name]: pass
                     elif self[name] in text: self[name] = text
@@ -178,6 +194,10 @@ class MP3File(AudioFile):
                 else: self[name] = text
                 self[name] = self[name].strip()
             except: pass
+
+        d = tag.getDate()
+        if d and len(d): d = d[0]
+        if d: date = list(d.getDate().split("T")[0].split("-")) + [None, None]
 
         md = mad.MadFile(filename)
         # Avoid garbage at the start of the file.
@@ -224,44 +244,60 @@ class MP3File(AudioFile):
             self.add("genre", genrename)
 
     def write(self):
-        import pyid3lib
-        tag = pyid3lib.tag(self['~filename'])
+        tag = eyeD3.Tag()
+        tag.link(self['~filename'])
 
-        ql_comments = [i for i, frame in enumerate(tag)
-                       if (frame["frameid"] == "COMM" and
-                           frame["description"].startswith("QuodLibet::"))]
-        ql_comments.reverse()
-        for comm in ql_comments: del(tag[comm])
-        
+        for frame in tag.frames[eyeD3.COMMENT_FID]:
+            if frame.description.startswith("QuodLibet::"):
+                tag.frames.remove(frame)
+
         for key, id3name in self.SDI.items():
-            try:
-                while True: tag.remove(id3name)
-            except ValueError: pass
+            for frame in tag.frames[id3name]:
+                tag.frames.remove(frame)
             for value in self.list(key):
-                value = value.encode("utf-8")
-                tag.append({'frameid': id3name, 'text': value })
+                h = eyeD3.FrameHeader(tag.frames.tagHeader)
+                h.id = id3name
+                if id3name != "COMM":
+                    f = eyeD3.TextFrame(h, text=unicode(value))
+                else:
+                    # XXX what's up with the three leading chars?
+                    f = eyeD3.UserTextFrame(h, text=unicode(value),
+                            description=u"\x00\x00\x00")
+                tag.frames.addFrame(f)
 
         for key in filter(lambda x: x not in self.SDI and x != "date",
                           self.realkeys()):
             for value in self.list(key):
-                value = value.encode('utf-8')
-                tag.append({'frameid': "COMM", 'text': value,
-                            'description': "QuodLibet::%s" % key})
+                h = eyeD3.FrameHeader(tag.frames.tagHeader)
+                h.id = id3name
+                f = eyeD3.UserTextFrame(h, text=unicode(value),
+                        # XXX what's up with the three leading chars?
+                        description=u"\x00\x00\x00QuodLibet::%s" % key)
+                tag.frames.addFrame(f)
 
         for date in self.list("date"):
             y, m, d = (date + "--").split("-")[0:3]
-            if y:
-                try:
-                    while True: tag.remove("TYER")
-                except ValueError: pass
-                tag.append({'frameid': "TYER", 'text': str(y)})
-            if m and d:
-                try:
-                    while True: tag.remove("TDAT")
-                except ValueError: pass
-                tag.append({'frameid': "TDAT", 'text': str(m+d)})
-        tag.update()
+            if y and m and d:
+                tag.setDate(year=y, month=m, dayOfMonth=d)
+            elif y:
+                tag.setDate(year=y)
+        tag.setVersion(eyeD3.ID3_V2_4)
+        tag.setTextEncoding(eyeD3.UTF_8_ENCODING)
+        tag.update(eyeD3.ID3_V2_4)
         self.sanitize()
+
+    def get_format_cover(self):
+        f = tempfile.NamedTemporaryFile()
+        tag = eyeD3.Tag(eyeD3.ID3_V2_4)
+        tag.link(self['~filename'])
+        for frame in tag.frames[eyeD3.IMAGE_FID]:
+            f.write(frame.imageData)
+            f.flush()
+            f.seek(0, 0)
+            return f
+        else:
+            f.close()
+            return None
 
 class MP3Player(AudioPlayer):
     def __init__(self, dev, song):

@@ -7,7 +7,6 @@
 # $Id$
 
 import os
-import tempfile
 import gettext
 import shutil
 import time
@@ -216,18 +215,7 @@ class AudioFile(dict):
         if images: return file(max(images)[1], "rb")
         elif "~picture" in self:
             # Otherwise, we might have a picture stored in the metadata...
-            import pyid3lib
-            f = tempfile.NamedTemporaryFile()
-            tag = pyid3lib.tag(self['~filename'])
-            for frame in tag:
-                if frame["frameid"] == "APIC":
-                    f.write(frame["data"])
-                    f.flush()
-                    f.seek(0, 0)
-                    return f
-            else:
-                f.close()
-                return None
+            return self.get_format_cover()
         else: return None
 
 class AudioPlayer(object):
