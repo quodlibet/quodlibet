@@ -10,7 +10,7 @@ from formats.audio import AudioFile, AudioPlayer
 import config
 import re
 import tempfile
-try: import eyeD3, pyid3lib, mad
+try: import eyeD3, mad
 except ImportError: extensions = []
 else: extensions = [".mp3", ".mp2"]
 
