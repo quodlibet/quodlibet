@@ -285,6 +285,7 @@ class PatternFromFile(object):
 
 class FileFromPattern(object):
     def __init__(self, pattern, filename=True):
+        pattern = os.path.expanduser(pattern)
         if filename and '/' in pattern and not pattern.startswith('/'):
             raise ValueError("Pattern %r is not rooted" % pattern)
 

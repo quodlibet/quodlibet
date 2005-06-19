@@ -184,7 +184,7 @@ class AboutWindow(gtk.AboutDialog):
         self.set_authors(const.AUTHORS)
         fmts = ", ".join([os.path.basename(name) for name, mod
                           in formats.modules if mod.extensions])
-        text = _("Supported formats: %s\nAudio device: %s")
+        text = "%s\n%s" % (_("Supported formats:"), _("Audio device: %s"))
         self.set_comments(text % (fmts, player.device.name))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
@@ -218,7 +218,7 @@ class PreferencesWindow(gtk.Window):
             tips = gtk.Tooltips()
 
             c = qltk.ConfigCheckButton(
-                _("_Jump to current song automatically"), 'settings', 'jump')
+                _("_Jump to playing song automatically"), 'settings', 'jump')
             tips.set_tip(c, _("When the playing song changes, "
                               "scroll to it in the song list"))
             c.set_active(config.state("jump"))
@@ -283,8 +283,8 @@ class PreferencesWindow(gtk.Window):
             others = gtk.Entry()
             if "~current" in checks: checks.remove("~current")
             others.set_text(" ".join(checks))
-            tips.set_tip(others, _("List other headers you want displayed, "
-                                   "separated by spaces"))
+            tips.set_tip(
+                others, _("Other headers to display, separated by spaces"))
             l.set_mnemonic_widget(others)
             l.set_use_underline(True)
             hbox.pack_start(others)
@@ -400,7 +400,7 @@ class PreferencesWindow(gtk.Window):
             self.title = _("Player")
             vbox = gtk.VBox()
             c = qltk.ConfigCheckButton(
-                _("Show _album cover images"), 'settings', 'cover')
+                _("Show _album covers"), 'settings', 'cover')
             c.set_active(config.state("cover"))
             c.connect('toggled', self.__toggle_cover)
             vbox.pack_start(c)
@@ -443,8 +443,8 @@ class PreferencesWindow(gtk.Window):
             f.get_label_widget().set_mnemonic_widget(e)
             hb.pack_start(e)
             tips = gtk.Tooltips()
-            tips.set_tip(e, _("On start up, any files found in these "
-                              "directories will be added to your library"))
+            tips.set_tip(e, _("Songs placed in these folders will "
+                              "be added to your library"))
             hb.pack_start(b, expand=False)
             b.connect('clicked', self.__select, e, const.HOME)
             e.connect('changed', self._changed, 'scan')
@@ -484,9 +484,7 @@ class PreferencesWindow(gtk.Window):
             e = gtk.Entry()
             e.set_text(config.get("settings", "splitters"))
             e.connect('changed', self._changed, 'splitters')
-            tips.set_tip(
-                e, _('These characters will be used as separators '
-                     'when "Split values" is selected in the tag editor'))
+            tips.set_tip(e, _('Separators for splitting tags'))
             l = gtk.Label(_("Split _on:"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(e)
@@ -686,9 +684,10 @@ class PreferencesWindow(gtk.Window):
 
 class DeleteDialog(gtk.Dialog):
     def __init__(self, parent, files):
-        gtk.Dialog.__init__(self, _("Deleting files"), parent)
+        gtk.Dialog.__init__(self, _("Delete Files"), parent)
         self.set_border_width(6)
         self.vbox.set_spacing(6)
+        self.set_has_separator(False)
         self.action_area.set_border_width(0)
         self.set_resizable(False)
         # This is the GNOME trash can for at least some versions.
@@ -711,7 +710,7 @@ class DeleteDialog(gtk.Dialog):
         vbox = gtk.VBox(spacing=6)
         base = os.path.basename(files[0])
         l = ngettext("Permanently delete this file?",
-                "Permanently delete these files?", len(files))
+                     "Permanently delete these files?", len(files))
         if len(files) == 1:
             exp = gtk.Expander("%s" % util.fsdecode(base))
         else:
@@ -793,7 +792,6 @@ class TrayIcon(object):
             self.__icon.child.connect("scroll-event", self.__scroll)
             self.__cbs = cbs
             self.__icon.show_all()
-            print to(_("Initialized status icon."))
 
     def __got_mapped(self, s, event, value):
         self.__mapped = value
@@ -966,7 +964,7 @@ class QLTrayIcon(HIGTrayIcon):
             item = gtk.MenuItem("%s %d" % (util.format_rating(i), i))
             item.connect_object('activate', set_rating, i)
             rating.append(item)
-        ratings = gtk.MenuItem(_("Set Rating"))
+        ratings = gtk.MenuItem(_("Rating"))
         ratings.set_submenu(rating)
 
         quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
@@ -1035,7 +1033,6 @@ class MmKeys(object):
         else:
             self.__keys = mmkeys.MmKeys()
             map(self.__keys.connect, *zip(*cbs.items()))
-            print to(_("Initialized multimedia key support."))
 
 class Browser(object):
     expand = False # Packing options
@@ -1558,7 +1555,7 @@ class SearchBar(EmptyBar):
             const.QUERIES, model="searchbar", count=15)
         clear = gtk.Button()
         clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
-        tips.set_tip(clear, _("Clear search text"))
+        tips.set_tip(clear, _("Clear search"))
         clear.connect('clicked', self.__clear, combo)
                   
         search = gtk.Button()
@@ -1802,7 +1799,7 @@ class AlbumList(Browser, gtk.VBox):
         def cell_data(column, cell, model, iter):
             album = model[iter][0]
             if album is None:
-                text = "<b>%s</b>" % _("All albums")
+                text = "<b>%s</b>" % _("All Albums")
                 text += "\n" + ngettext("%d album", "%d albums",
                         len(model) - 1) % (len(model) - 1)
                 cell.markup = text
@@ -2203,7 +2200,7 @@ class MainWindow(gtk.Window):
             slider.connect('value-changed', self.__volume_changed, device)
             self.pack_start(slider)
             tips = gtk.Tooltips()
-            tips.set_tip(slider, _("Adjust audio volume"))
+            tips.set_tip(slider, _("Change volume"))
             tips.enable()
             self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             self.get_value = slider.get_value
@@ -2285,7 +2282,7 @@ class MainWindow(gtk.Window):
         self.shuffle.append_text(_("In Order"))
         self.shuffle.append_text(_("Shuffle"))
         self.shuffle.append_text(_("Weighted"))
-        tips.set_tip(shuffle, _("Play songs in a random order"))
+        tips.set_tip(shuffle, _("Play songs in random order"))
         shuffle.connect('changed', self.__shuffle)
         try: shf = config.getint('memory', 'shuffle')
         except: shf = int(config.getboolean('memory', 'shuffle'))
@@ -2295,7 +2292,7 @@ class MainWindow(gtk.Window):
         repeat.connect('toggled', self.toggle_repeat)
         repeat.set_active(config.getboolean('settings', 'repeat'))
         tips.set_tip(
-            repeat, _("Restart the playlist after all songs are played"))
+            repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
@@ -2402,7 +2399,7 @@ class MainWindow(gtk.Window):
             ("Song", None, _("S_ong")),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.__current_song_prop),
-            ("Rating", None, tag("rating")),
+            ("Rating", None, _("Rating")),
 
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
              "<control>J", None, self.__jump_to_current),
@@ -2490,8 +2487,7 @@ class MainWindow(gtk.Window):
         # attach them.
         tips.set_tip(
             self.ui.get_widget("/Menu/Music/RefreshLibrary"),
-            _("Check for changes in the library made since the program "
-              "was started"))
+            _("Check for changes made to the library"))
         tips.set_tip(
             self.ui.get_widget("/Menu/Music/ReloadLibrary"),
             _("Reload all songs in your library (this can take a long time)"))
@@ -2912,7 +2908,7 @@ class MainWindow(gtk.Window):
         menu = gtk.Menu()
 
         if header == "~rating":
-            item = gtk.MenuItem(_("Set Rating"))
+            item = gtk.MenuItem(_("Rating"))
             m2 = gtk.Menu()
             item.set_submenu(m2)
             for i in range(5):
@@ -2939,6 +2935,8 @@ class MainWindow(gtk.Window):
         if (header not in ["artist", "album"] and
             self.browser.can_filter(header) and
             (header[0] != "~" or header[1] == "#")):
+            # Translators: The substituted string is the name of the
+            # selected column (a translated tag name).
             b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
             b.connect_object('activate', self.__filter_on, header, songs)
             b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
@@ -3528,8 +3526,9 @@ class AddTagDialog(gtk.Dialog):
         else: can = can_change
         can.sort()
 
-        gtk.Dialog.__init__(self, _("Add a new tag"), parent)
+        gtk.Dialog.__init__(self, _("Add a Tag"), parent)
         self.set_border_width(6)
+        self.set_has_separator(False)
         self.set_resizable(False)
         self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         add = self.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
@@ -3954,7 +3953,7 @@ class SongProperties(gtk.Window):
                     ts = "    " * (bool(disc) + bool(part))
                     while cur_track < track:
                         text.append("%s<b>%d.</b> <i>%s</i>" %(
-                            ts, cur_track, _("No information available")))
+                            ts, cur_track, _("Track unavailable")))
                         cur_track += 1
                     text.append("%s<b>%d.</b> %s" %(
                         ts, track, util.escape(song.comma("~title~version"))))
@@ -4182,8 +4181,8 @@ class SongProperties(gtk.Window):
             for widget, tip in [
                 (self.view, _("Double-click a tag value to change it, "
                               "right-click for other options")),
-                (self.add, _("Add a new tag to the file")),
-                (self.remove, _("Remove a tag from the file"))]:
+                (self.add, _("Add a new tag")),
+                (self.remove, _("Remove selected tag"))]:
                 tips.set_tip(widget, tip)
             tips.enable()
             self.connect_object('destroy', gtk.Tooltips.destroy, tips)
@@ -4397,11 +4396,10 @@ class SongProperties(gtk.Window):
             for song in self.songs:
                 if not song.valid() and not qltk.ConfirmAction(
                     self.prop, _("Tag may not be accurate"),
-                    _("<b>%s</b> looks like it was changed while the "
-                      "program was running. Saving now without "
-                      "refreshing your library might overwrite other "
-                      "changes to tag.\n\n"
-                      "Save this tag anyway?") % song("~basename")
+                    _("<b>%s</b> changed while the program was running. "
+                      "Saving without refreshing your library may "
+                      "overwrite other changes to the song.\n\n"
+                      "Save this song anyway?") % song("~basename")
                     ).run():
                     break
 
@@ -4430,7 +4428,7 @@ class SongProperties(gtk.Window):
                     try: song.write()
                     except:
                         qltk.ErrorMessage(
-                            self.prop, _("Unable to edit song"),
+                            self.prop, _("Unable to save song"),
                             _("Saving <b>%s</b> failed. The file "
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
@@ -4555,8 +4553,8 @@ class SongProperties(gtk.Window):
             split = gtk.CheckButton(_("Split into _multiple values"))
             split.set_active(config.state("splitval"))
             addreplace = gtk.combo_box_new_text()
-            addreplace.append_text(_("Tags should replace existing ones"))
-            addreplace.append_text(_("Tags should be added to existing ones"))
+            addreplace.append_text(_("Tags replace existing ones"))
+            addreplace.append_text(_("Tags are added to existing ones"))
             addreplace.set_active(config.getint("settings", "addreplace"))
             for i in [space, titlecase, split]:
                 vbox.pack_start(i)
@@ -4689,11 +4687,10 @@ class SongProperties(gtk.Window):
                 changed = False
                 if not song.valid() and not qltk.ConfirmAction(
                     parent, _("Tag may not be accurate"),
-                    _("<b>%s</b> looks like it was changed while the "
-                      "program was running. Saving now without "
-                      "refreshing your library might overwrite other "
-                      "changes to tag.\n\n"
-                      "Save this tag anyway?") % song("~basename")
+                    _("<b>%s</b> changed while the program was running. "
+                      "Saving without refreshing your library may "
+                      "overwrite other changes to the song.\n\n"
+                      "Save this song anyway?") % song("~basename")
                     ).run():
                     return True
 
@@ -4895,11 +4892,11 @@ class SongProperties(gtk.Window):
             except ValueError: 
                 qltk.ErrorMessage(
                     parent,
-                    _("Pattern with subdirectories is not absolute"),
+                    _("Path is not absolute"),
                     _("The pattern\n\t<b>%s</b>\ncontains / but "
                       "does not start from root. To avoid misnamed "
-                      "directories, root your pattern by starting "
-                      "it from the / directory.")%(
+                      "folders, root your pattern by starting "
+                      "it with / or ~/.")%(
                     util.escape(pattern))).run()
                 return
             else:
@@ -5013,18 +5010,17 @@ class SongProperties(gtk.Window):
                 if song.get("tracknumber") == track: return win.step()
                 if not song.valid() and not qltk.ConfirmAction(
                     win, _("Tag may not be accurate"),
-                    _("<b>%s</b> looks like it was changed while the "
-                      "program was running. Saving now without "
-                      "refreshing your library might overwrite other "
-                      "changes to tag.\n\n"
-                      "Save this tag anyway?") % song("~basename")
+                    _("<b>%s</b> changed while the program was running. "
+                      "Saving without refreshing your library may "
+                      "overwrite other changes to the song.\n\n"
+                      "Save this song anyway?") % song("~basename")
                     ).run():
                     return True
                 song["tracknumber"] = track
                 try: song.write()
                 except:
                     qltk.ErrorMessage(
-                        win, _("Unable to edit song"),
+                        win, _("Unable to save song"),
                         _("Saving <b>%s</b> failed. The file may be "
                           "read-only, corrupted, or you do not have "
                           "permission to edit it.")%(
@@ -5276,7 +5272,7 @@ class DirectoryTree(gtk.TreeView):
         directory = model[row][0]
         uparent = util.unexpand(directory)
         dir = GetStringDialog(
-            None, _("New folder"), _("Enter a name for the new folder:"),
+            None, _("New Folder"), _("Enter a name for the new folder:"),
             ).run()
 
         if dir:
@@ -5338,7 +5334,7 @@ class FileSelector(gtk.VPaned):
 
         dirlist = DirectoryTree(initial)
         filelist = HintedTreeView(gtk.ListStore(str))
-        column = gtk.TreeViewColumn(_("Audio files"))
+        column = gtk.TreeViewColumn(_("Songs"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_FILE)
@@ -5480,7 +5476,7 @@ def tag(name, cap=True):
         if cap: parts = map(util.capitalize, parts)
         return " / ".join(parts)
     except IndexError:
-        return _("Invalid tag name")
+        return _("Invalid tag")
 
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
