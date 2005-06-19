@@ -37,6 +37,7 @@ class MP3File(AudioFile):
             "TCOP": "copyright",
             "TPUB": "organization",
             "USER": "license",
+            "TSST": "part",
             "WOAR": "website",
             "TOLY": "author",
             "COMM": "comment",
@@ -156,7 +157,7 @@ class MP3File(AudioFile):
             elif frame.header.id == "TCON":
                 self.__fix_genre(frame.text)
                 continue            
-            elif frame.header.id == "COMM":
+            elif frame.header.id in ["COMM", "TXXX"]:
                 if frame.description.startswith("QuodLibet::"):
                     name = frame.description[11:]
                 elif frame.description == "ID3v1 Comment": continue
@@ -250,29 +251,33 @@ class MP3File(AudioFile):
         for frame in tag.frames[eyeD3.COMMENT_FID]:
             if frame.description.startswith("QuodLibet::"):
                 tag.frames.remove(frame)
+        for frame in tag.frames[eyeD3.USERTEXT_FID]:
+            if frame.description.startswith("QuodLibet::"):
+                tag.frames.remove(frame)
 
         for key, id3name in self.SDI.items():
             for frame in tag.frames[id3name]:
                 tag.frames.remove(frame)
-            for value in self.list(key):
+            if id3name == "COMM" and key in self:
                 h = eyeD3.FrameHeader(tag.frames.tagHeader)
-                h.id = id3name
-                if id3name != "COMM":
-                    f = eyeD3.TextFrame(h, text=unicode(value))
-                else:
-                    # XXX what's up with the three leading chars?
-                    f = eyeD3.UserTextFrame(h, text=unicode(value),
-                            description=u"\x00\x00\x00")
+                h.id = "COMM"
+                f = eyeD3.CommentFrame(
+                    h, comment=unicode(self[key]), description=u"", lang="")
                 tag.frames.addFrame(f)
+            else:
+                for value in self.list(key):
+                    h = eyeD3.FrameHeader(tag.frames.tagHeader)
+                    h.id = id3name
+                    f = eyeD3.TextFrame(h, text=unicode(value))
+                    tag.frames.addFrame(f)
 
         for key in filter(lambda x: x not in self.SDI and x != "date",
                           self.realkeys()):
             for value in self.list(key):
                 h = eyeD3.FrameHeader(tag.frames.tagHeader)
-                h.id = id3name
-                f = eyeD3.UserTextFrame(h, text=unicode(value),
-                        # XXX what's up with the three leading chars?
-                        description=u"\x00\x00\x00QuodLibet::%s" % key)
+                h.id = "TXXX"
+                f = eyeD3.UserTextFrame(
+                    h, text=unicode(value), description=u"QuodLibet::%s" % key)
                 tag.frames.addFrame(f)
 
         for date in self.list("date"):
