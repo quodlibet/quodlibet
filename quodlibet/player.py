@@ -255,10 +255,8 @@ class PlaylistPlayer(object):
 
     def __get_song(self):
         self.__lock.acquire()
-        if self.shuffle == 1: # regular shuffle
-            random.shuffle(self.__playlist)
-        elif (self.shuffle == 2 and
-              (len(self.__playlist) == len(self.__orig_playlist))):
+        if (self.shuffle == 2 and
+            (len(self.__playlist) == len(self.__orig_playlist))):
             # Weighted random without songs pending
             plist = self.__orig_playlist
             total_rating = sum([song.get("~#rating", 2) for song in plist])
@@ -270,6 +268,7 @@ class PlaylistPlayer(object):
             self.__playlist.insert(0, song)
 
         song = self.__playlist.pop(0)
+        if self.shuffle == 1: random.shuffle(self.__playlist)
         config.set("memory", "song", song["~filename"])
         try: player = self.__output.open(song)
         except Exception, err:
