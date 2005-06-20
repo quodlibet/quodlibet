@@ -4123,7 +4123,13 @@ class SongProperties(gtk.Window):
                             for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
             def cdf_write(col, rend, model, iter, (write, delete)):
                 row = model[iter]
-                rend.set_property('pixbuf', pixbufs[2*row[write]+row[delete]])
+                if not self.songinfo.can_change(row[0]):
+                    rend.set_property(
+                        'stock-id', gtk.STOCK_DIALOG_AUTHENTICATION)
+                else:
+                    rend.set_property('stock-id', None)
+                    rend.set_property(
+                        'pixbuf', pixbufs[2*row[write]+row[delete]])
             column.set_cell_data_func(render, cdf_write, (2, 4))
             self.view.connect('button-press-event',
                               self.write_toggle, (column, 2))
