@@ -41,7 +41,9 @@ class MP3File(AudioFile):
             "WOAR": "website",
             "TOLY": "author",
             "COMM": "comment",
-            "TCON": "genre"
+            "TCON": "genre",
+            "TMOO": "mood",
+            "TBPM": "bpm",
             }
     SDI = dict([(v, k) for k, v in IDS.iteritems()])
 
