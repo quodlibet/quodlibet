@@ -37,6 +37,18 @@ class MPCFile(AudioFile):
         self["~#length"] = int(f.length / 1000)
         try: self["~#bitrate"] = int(f.bitrate)
         except AttributeError: pass
+        try:
+            track_g = "%+0.2f dB" % (f.gain_radio / 100.0)
+            album_g = "%+0.2f dB" % (f.gain_audiophile / 100.0)
+            track_p = str(f.peak_radio / 32767.0)
+            album_p = str(f.peak_audiophile / 32767.0)
+        except AttributeError: pass
+        else:
+            self["replaygain_track_gain"] = track_g
+            self["replaygain_track_peak"] = track_p
+            self["replaygain_album_gain"] = album_g
+            self["replaygain_album_peak"] = album_p
+
         self.sanitize(filename)
 
     def can_change(self, key = None):
@@ -72,6 +84,8 @@ class MPCPlayer(AudioPlayer):
         self.pos = 0
         self.dev = dev
         self.dev.set_info(self.audio.frequency, 2)
+        self.replay_gain(song)
+        if self.scale != 1: self.audio.set_scale(self.scale)
 
     def __iter__(self): return self
 
