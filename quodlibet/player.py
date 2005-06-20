@@ -193,7 +193,6 @@ class PlaylistPlayer(object):
         self.__paused = False
         self.__sort = cmp
         self.__lock = threading.Lock()
-        self.filter = None
         self.repeat = False
         self.paused = True
         self.quit = False

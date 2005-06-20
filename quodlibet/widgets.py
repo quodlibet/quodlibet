@@ -1037,6 +1037,7 @@ class MmKeys(object):
 class Browser(object):
     expand = False # Packing options
     background = True # Use browsers/filter as a background filter
+    dynamic = False # Check songs for removal after playing
 
     # read config data
     def restore(self): pass
@@ -1508,10 +1509,16 @@ class TreeViewHints(gtk.Window):
 gobject.type_register(TreeViewHints)
 
 class EmptyBar(Browser, gtk.HBox):
+    dynamic = True
+
     def __init__(self, cb):
         gtk.HBox.__init__(self)
         self._text = ""
         self._cb = cb
+
+    def matches(self, song):
+        try: return parser.parse(self._text).search(song)
+        except parser.error: return True
 
     def set_text(self, text):
         self._text = text
@@ -2627,7 +2634,7 @@ class MainWindow(gtk.Window):
             statusbar.set_text, _("Could not play %s.") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
-        if player.playlist.filter and not player.playlist.filter(song):
+        if self.browser.dynamic and not self.browser.matches(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
             if iter: self.songlist.get_model().remove(iter)
