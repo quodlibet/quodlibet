@@ -226,22 +226,6 @@ class PlaylistPlayer(object):
             self.__player.seek(pos)
         self.__lock.release()
 
-    def refilter(self):
-        self.set_playlist(filter(self.filter, library.values()))
-
-    def playlist_from_filters(self, *filters):
-        if not filter(None, filters): self.filter = None
-        else:
-            def parse(text):
-                try: return parser.parse(text)
-                except parser.error: return None
-            filters = filter(None, map(parse, filters))
-            if not filters: return False
-            elif len(filters) == 1: self.filter = filters[0].search
-            else: self.filter = match.Inter(filters).search
-        self.refilter()
-        return True
-
     def remove(self, song):
         self.__lock.acquire()
         try: self.__orig_playlist.remove(song)

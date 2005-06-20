@@ -5,7 +5,7 @@ import __builtin__
 __builtin__.__dict__['_'] = lambda a: a
 import widgets
 from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList, VALIDATERS
-
+import library; library.init("dummyfn")
 import config
 
 class TestDirTree(TestCase):
@@ -28,85 +28,23 @@ class TestDirTree(TestCase):
 
 class TestEmptyBar(TestCase):
     def setUp(self):
-        self._bar = EmptyBar(self._check_cb)
-
-    def _check_cb(self, query, sort):
-        self.failUnlessEqual(query, self._expected)
-        del(self._expected)
+        self._bar = EmptyBar(None)
 
     def test_initial(self):
         self._bar.set_text("a test")
         self._expected = "a test"
-        self._bar.activate()
+        self.failUnlessEqual("a test", self._bar._text)
 
     def test_restore(self):
         self._bar.set_text("a test")
         self._bar.save()
         self._bar.set_text("not a test")
         self._bar.restore()
-        self._expected = "a test"
-        self._bar.activate()
+        self.failUnlessEqual("a test", self._bar._text)
 
     def test_can_filter(self):
         for key in ["artist", "album", "dummy", "~#track", "woo~bar~fake"]:
             self.failUnless(self._bar.can_filter(key))
-
-    # not the best tests, but until we get a more structured way of
-    # comparing queries they'll do...
-    def test_filter_num(self):
-        self._expected = "|(#(track = 3), #(track = 4))"
-        self._bar.filter("~#track", [3, 4])
-
-    def test_filter_text(self):
-        self._expected = "artist = |('some guy'c)"
-        self._bar.filter("artist", ["some guy"])
-
-    def test_filter_text_multi(self):
-        self._expected = "artist = |('A'c, 'B'c)"
-        self._bar.filter("artist", ["A", "B"])
-
-    def test_filter_text_escape(self):
-        self._expected = "artist = |('A\\''c)"
-        self._bar.filter("artist", ["A'"])
-
-    def tearDown(self):
-        self._bar.destroy()
-
-# SearchBar shares most of its code with EmptyBar, except for its
-# implementation of activate(). So all we need to test is set_text and
-# save/restore.
-class TestSearchBar(TestCase):
-    def setUp(self):
-        self._bar = SearchBar(self._check_cb)
-    
-    def _check_cb(self, query, sort):
-        self.failUnlessEqual(query, self._expected)
-        del(self._expected)
-
-    def test_initial(self):
-        self._bar.set_text("a test")
-        self._expected = "a test"
-        self._bar.activate()
-
-    def test_savenosave(self):
-        bar = SearchBar(self._check_cb, save=False)
-        bar.set_text("a test")
-        bar.save()
-        bar.set_text("another test")
-        self._expected = "another test"
-        bar.activate()
-        bar.restore()
-        self._expected = "a test"
-        bar.activate()
-        bar.destroy()
-
-    def test_restore(self):
-        self._bar.set_text("a test")
-        self._bar.save()
-        self._bar.set_text("not a test")
-        self._bar.restore()
-        self._expected = "a test"
-        self._bar.activate()
 
     def tearDown(self):
         self._bar.destroy()
@@ -242,7 +180,6 @@ class ValidaterTests(TestCase):
 
 registerCase(TestDirTree)
 registerCase(TestEmptyBar)
-registerCase(TestSearchBar)
 registerCase(TestPlayList)
 registerCase(StopAfterTest)
 registerCase(SongWatcher)

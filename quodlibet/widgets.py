@@ -1219,7 +1219,7 @@ class PanedBrowser(Browser, gtk.VBox):
                     pane.select(sel, escape=False)
 
     def activate(self):
-        self.fill(None)
+        self.__panes[0].fill(library.values())
 
     def __refresh(self, watcher):
         self.__inhibit = True
@@ -1229,8 +1229,7 @@ class PanedBrowser(Browser, gtk.VBox):
         if self.__inhibit: self.__inhibit = False
         else:
             if self.__save: self.save()
-            self.__cb(
-                "&(%s)" % ", ".join(map(self.Pane.query, self.__panes)), None)
+            self.__cb(songs, None)
 
 class PlaylistBar(Browser, gtk.HBox):
     background = False
@@ -1294,10 +1293,10 @@ class PlaylistBar(Browser, gtk.HBox):
         refresh.set_sensitive(active != 0)
         self.save()
         if active == 0:
-            self.__cb("", None)
+            self.__cb(library.values(), None)
         else:
-            playlist = "playlist_" + combo.get_model()[active][1]
-            self.__cb("#(%s > 0)" % playlist, "~#"+playlist)
+            key = "~#playlist_" + combo.get_model()[active][1]
+            self.__cb(filter(lambda s: key in s, library.values()), key)
 
     def __edit_current(self, edit, combo):
         active = combo.get_active()
@@ -1526,8 +1525,11 @@ class EmptyBar(Browser, gtk.HBox):
         except Exception: pass
 
     def activate(self):
-        self._cb(self._text, None)
-        self.save()
+        try: songs = filter(parser.parse(self._text).search, library.values())
+        except parser.error: pass
+        else:
+            self._cb(songs, None)
+            self.save()
 
     def can_filter(self, key):
         return True
@@ -1589,9 +1591,14 @@ class SearchBar(EmptyBar):
         if parser.is_parsable(text):
             self._text = text
             self.get_children()[0].prepend_text(text)
-            self._cb(text, None)
-            if self.__save: self.save()
-            self.get_children()[0].write(const.QUERIES)
+            try:
+                songs = filter(
+                    parser.parse(self._text).search, library.values())
+            except parser.error: pass
+            else:
+                self._cb(songs, None)
+                if self.__save: self.save()
+                self.get_children()[0].write(const.QUERIES)
 
     def __test_filter(self, textbox):
         if not config.getboolean('browsers', 'color'): return
@@ -1915,20 +1922,18 @@ class AlbumList(Browser, gtk.VBox):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         if None in albums:
-            self.__cb(u"", None)
+            self.__cb(library.values(), None)
             if self.__save: config.set("browsers", "albums", "")
         else:
-            names = [a.title for a in albums]
-            text = ", ".join(
-                ["'%s'c" % album.replace("\\", "\\\\").replace("'", "\\'")
-                 for album in names])
-            if text:
-                confval = "\n".join(names)
-                # Since ConfigParser strips a trailing \n...
-                if confval and confval[-1] == "\n":
-                    confval = "\n" + confval[:-1]
-                if self.__save: config.set("browsers", "albums", confval)
-                self.__cb(u"album = |(%s)" % text, None)
+            names = set([a.title for a in albums])
+            songs = filter(lambda s: names.intersection(s.list('album')),
+                           library.values())
+            confval = "\n".join(names)
+            # Since ConfigParser strips a trailing \n...
+            if confval and confval[-1] == "\n":
+                confval = "\n" + confval[:-1]
+            if self.__save: config.set("browsers", "albums", confval)
+            self.__cb(songs, None)
 
     def __refresh(self, watcher, view, model, clear_cache=False):
         selection = view.get_selection()
@@ -2758,8 +2763,7 @@ class MainWindow(gtk.Window):
         for song in r: widgets.watcher.removed(song)
         if c or r:
             library.save(const.LIBRARY)
-            player.playlist.refilter()
-            self.songlist.refresh()
+            self.browser.activate()
         widgets.watcher.refresh()
 
     # Set up the preferences window.
@@ -2797,8 +2801,7 @@ class MainWindow(gtk.Window):
         for song in added: widgets.watcher.added(song)
         for song in removed: widgets.watcher.removed(song)
         win.destroy()
-        player.playlist.refilter()
-        self.songlist.refresh()
+        self.browser.activate()
 
     def __songs_button_press(self, view, event):
         x, y = map(int, [event.x, event.y])
@@ -3015,18 +3018,18 @@ class MainWindow(gtk.Window):
             for widget in widgets:
                 self.ui.get_widget(widget).set_property('visible', c)
 
-    def __browser_cb(self, text, sort):
-        if isinstance(text, str): text = text.decode("utf-8")
-        text = text.strip()
+    def __browser_cb(self, songs, sort):
         if self.browser.background:
             try: bg = config.get("browsers", "background").decode('utf-8')
             except UnicodeError: bg = ""
-        else: bg = ""
-        if player.playlist.playlist_from_filters(text, bg):
-            if sort:
-                self.songlist.set_sort_by(None, tag=sort, refresh=False)
-            self.songlist.refresh()
-            self.__set_time()
+            try: songs = filter(parser.parse(bg).search, songs)
+            except parser.error: pass
+
+        player.playlist.set_playlist(songs)
+        if sort:
+            self.songlist.set_sort_by(None, tag=sort, refresh=False)
+        self.songlist.refresh()
+        self.__set_time()
 
     def __filter_on(self, header, songs=None):
         if not self.browser or not self.browser.can_filter(header):
@@ -3264,7 +3267,8 @@ class LibraryBrowser(gtk.Window):
         view.connect('button-press-event', self.__button_press, menu)
         view.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
-
+        sid = widgets.watcher.connect_object('refresh', Kind.activate, browser)
+        self.connect_object('destroy', widgets.watcher.disconnect, sid)
         self.set_default_size(500, 300)
         self.show_all()
 
@@ -3291,12 +3295,9 @@ class LibraryBrowser(gtk.Window):
         menu.popup(None, None, None, event.button, event.time)
         return True
 
-    def __search(self, text, dummy):
+    def __search(self, songs, dummy):
         model = self.__view.get_model()
         model.clear()
-        if isinstance(text, str): text = text.decode("utf-8")
-        if text is None: songs = library.values()
-        else: songs = library.query(text)
         songs.sort()
         for song in songs: model.append([song])
 
