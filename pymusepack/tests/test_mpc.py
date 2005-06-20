@@ -172,10 +172,10 @@ class MPCTest(TestCase):
         self.failUnlessEqual(self.mpc.bitrate, 194530.0)
 
     def test_replaygain(self):
-        self.failUnlessEqual(self.mpc.gain_radio, 0)
-        self.failUnlessEqual(self.mpc.gain_audiophile, 0)
-        self.failUnlessEqual(self.mpc.peak_radio, 0)
-        self.failUnlessEqual(self.mpc.peak_audiophile, 0)
+        self.failUnlessEqual(self.mpc.gain_radio, 927) # +9.27 dB
+        self.failUnlessEqual(self.mpc.gain_audiophile, 927)
+        self.failUnlessEqual(self.mpc.peak_radio, 7527) # / 32767
+        self.failUnlessEqual(self.mpc.peak_audiophile, 7527)
 
     def test_seek(self):
         self.failUnlessEqual(self.mpc.position, 0.0)
