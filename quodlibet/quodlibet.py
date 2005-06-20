@@ -131,7 +131,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
             return transopts, args
 
 def main():
-    import signal, gtk, widgets, player
+    import signal, gtk, widgets, player, library
     gtk.threads_init()
 
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
@@ -141,7 +141,9 @@ def main():
     from threading import Thread
     enable_periodic_save()
     gtk.threads_enter()
-    t = Thread(target=player.playlist.play, args=(widgets.widgets.watcher,))
+    song = library.library.get(config.get("memory", "song"))
+    t = Thread(
+        target=player.playlist.play, args=(widgets.widgets.watcher, song))
     gtk.quit_add(0, widgets.save_library, t)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     t.start()

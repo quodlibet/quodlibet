@@ -14,7 +14,6 @@ import config
 import match
 import parser
 import audioop
-from library import library
 
 class OSSAudioDevice(object):
     from formats import MusicPlayer as open
@@ -281,14 +280,10 @@ class PlaylistPlayer(object):
             # We might have stopped because the file is gone/corrupt.
             return self.__song.exists()
 
-    def play(self, info):
+    def play(self, info, song):
         self.info = info
         self.__lock.acquire()
-        last_song = config.get("memory", "song")
-        if last_song in library:
-            song = library[last_song]
-            if song in self.__playlist:
-                self.go_to(song, lock=False)
+        if song and song in self.__playlist: self.go_to(song, lock=False)
         self.__lock.release()
 
         while not self.quit:
