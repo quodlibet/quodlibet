@@ -146,8 +146,8 @@ class Library(dict):
         else: return True
 
     def query(self, text, sort=None):
-        if text == "": songs = self.values()
-        else: songs = filter(parser.parse(text).search, self.values())
+        if text == "": songs = self.itervalues()
+        else: songs = filter(parser.parse(text).search, self.itervalues())
 
         if sort is None: pass
         elif callable(sort):

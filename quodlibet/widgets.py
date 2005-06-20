@@ -184,7 +184,7 @@ class AboutWindow(gtk.AboutDialog):
         self.set_authors(const.AUTHORS)
         fmts = ", ".join([os.path.basename(name) for name, mod
                           in formats.modules if mod.extensions])
-        text = "%s\n%s" % (_("Supported formats:"), _("Audio device: %s"))
+        text = "%s\n%s" % (_("Supported formats: %s"), _("Audio device: %s"))
         self.set_comments(text % (fmts, player.device.name))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
@@ -1183,8 +1183,7 @@ class PanedBrowser(Browser, gtk.VBox):
         self.__panes.pop() # remove self
         map(hbox.pack_start, self.__panes)
         self.pack_start(hbox)
-        self.__inhibit = True
-        self.__panes[0].fill(library.values())
+        self.__refresh(None)
         if restore: self.restore()
         self.show_all()
 
@@ -1223,7 +1222,7 @@ class PanedBrowser(Browser, gtk.VBox):
 
     def __refresh(self, watcher):
         self.__inhibit = True
-        self.__panes[0].fill(library.values())
+        self.activate()
 
     def fill(self, songs):
         if self.__inhibit: self.__inhibit = False
@@ -1293,10 +1292,10 @@ class PlaylistBar(Browser, gtk.HBox):
         refresh.set_sensitive(active != 0)
         self.save()
         if active == 0:
-            self.__cb(library.values(), None)
+            self.__cb(library.itervalues(), None)
         else:
             key = "~#playlist_" + combo.get_model()[active][1]
-            self.__cb(filter(lambda s: key in s, library.values()), key)
+            self.__cb(filter(lambda s: key in s, library.itervalues()), key)
 
     def __edit_current(self, edit, combo):
         active = combo.get_active()
@@ -1525,7 +1524,7 @@ class EmptyBar(Browser, gtk.HBox):
         except Exception: pass
 
     def activate(self):
-        try: songs = filter(parser.parse(self._text).search, library.values())
+        try: songs = library.query(self._text)
         except parser.error: pass
         else:
             self._cb(songs, None)
@@ -1591,9 +1590,7 @@ class SearchBar(EmptyBar):
         if parser.is_parsable(text):
             self._text = text
             self.get_children()[0].prepend_text(text)
-            try:
-                songs = filter(
-                    parser.parse(self._text).search, library.values())
+            try: songs = library.query(self._text)
             except parser.error: pass
             else:
                 self._cb(songs, None)
@@ -1922,12 +1919,12 @@ class AlbumList(Browser, gtk.VBox):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         if None in albums:
-            self.__cb(library.values(), None)
+            self.__cb(library.itervalues(), None)
             if self.__save: config.set("browsers", "albums", "")
         else:
             names = set([a.title for a in albums])
             songs = filter(lambda s: names.intersection(s.list('album')),
-                           library.values())
+                           library.itervalues())
             confval = "\n".join(names)
             # Since ConfigParser strips a trailing \n...
             if confval and confval[-1] == "\n":
@@ -1945,7 +1942,7 @@ class AlbumList(Browser, gtk.VBox):
             if row[0]: row[0]._path = row[0]._model = None
         model.clear()
         albums = {}
-        songs = library.values()
+        songs = library.itervalues()
         for song in songs:
             if "album" not in song:
                 if "" not in albums: albums[""] = self._Album("")
@@ -2723,7 +2720,7 @@ class MainWindow(gtk.Window):
         self.__make_query("#(playcount = 0)")
 
     def __top40(self, menuitem):
-        songs = [song["~#playcount"] for song in library.values()]
+        songs = [song["~#playcount"] for song in library.itervalues()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -2732,7 +2729,7 @@ class MainWindow(gtk.Window):
             self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def __bottom40(self, menuitem):
-        songs = [song["~#playcount"] for song in library.values()]
+        songs = [song["~#playcount"] for song in library.itervalues()]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
