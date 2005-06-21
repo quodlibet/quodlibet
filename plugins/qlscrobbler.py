@@ -1,5 +1,5 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.5
+# version 0.6
 # (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
 #             Joe Wreschnig <piman@sacredchao.net>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
@@ -14,7 +14,7 @@ class QLScrobbler(object):
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
 	PLUGIN_ICON = gtk.STOCK_CONNECT
-	PLUGIN_VERSION = "0.5"
+	PLUGIN_VERSION = "0.6"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -134,9 +134,10 @@ class QLScrobbler(object):
 
 		if song is None: return
 		# Protocol stipulation:
-		#	* don't submit when length < 00:30 or length > 30:00
+		#	* don't submit when length < 00:30
+		#     NOTE: >30:00 stipulation has been REMOVED as of Protocol1.1
 		#	* don't submit if artist and title are not available
-		if song["~#length"] > 30 * 60 or song["~#length"] < 30: return
+		if song["~#length"] < 30: return
 		elif 'title' not in song: return
 		elif "artist" not in song:
 			if ("composer" not in song) and ("performer" not in song): return
@@ -214,14 +215,14 @@ class QLScrobbler(object):
 		
 	def send_handshake(self):
 		# construct url
-		url = "/?hs=true&p=1.1&c=%s&v=%s&u=%s" % ( self.CLIENT, self.PLUGIN_VERSION, self.username )
+		url = "http://post.audioscrobbler.com/?hs=true&p=%s&c=%s&v=%s&u=%s" % ( self.PROTOCOL_VERSION, self.CLIENT, self.PLUGIN_VERSION, self.username )
 		
 		print "Sending handshake to Audioscrobbler."
 
 		resp = None
 
 		try:
-			resp = urllib2.urlopen("http://post.audioscrobbler.com" + url);
+			resp = urllib2.urlopen(url);
 		except:
 			print "Server not responding, handshake failed."
 			return # challenge_sent is NOT set to 1
@@ -232,7 +233,11 @@ class QLScrobbler(object):
 
 		print "Handshake status: %s" % status
 			
-		if status == "UPTODATE":
+		if status == "UPTODATE" or status.startswith("UPDATE"):
+			if status.startswith("UPDATE"):
+				self.quick_info("A new plugin is available at %s! Please download it, or your Audioscrobbler stats may not be updated, and this message will be displayed every session." % status.split()[1])
+				self.need_update = True
+
 			# Scan for submit URL and challenge.
 			self.challenge = lines.pop(0)
 
@@ -247,24 +252,18 @@ class QLScrobbler(object):
 			self.submit_url = lines.pop(0)
 			
 			self.challenge_sent = True
-		elif status.startswith("FAILED"):
-			# Try again later. Check the INTERVAL...
-			print "Server says to try later."
 		elif status == "BADUSER":
 			self.quick_error("Authentication failed: invalid username %s or bad password." % self.username)
 				
 			self.broken = True
-		elif status.startswith("UPDATE"):
-			self.quick_info("A new plugin is available at %s! Please download it,\nor this message will be displayed every session." % status.split(" ")[1])
-			self.need_update = True
-			lines.pop(0)
 
 		# Honor INTERVAL
-		interval = int(lines.pop(0).split(" ")[1])
+		interval = int(lines.pop(0).split()[1])
 
-		if interval > 0:
+		if interval > 1:
 			self.waiting = True
 			gobject.timeout_add(interval * 1000, self.clear_waiting)
+			print "Server says to wait for %d seconds." % interval
 	
 	def submit_song(self):
 		bg = threading.Thread(None, self.submit_song_helper)
@@ -364,12 +363,9 @@ class QLScrobbler(object):
 		if status == "BADAUTH":
 			self.quick_error("Your Audioscrobbler login data is incorrect, so you must re-enter it before any songs will be submitted.\n\nThis message will not be shown again.")
 			self.broken = True
-		elif status.startswith("FAILED"):
-			# server error, no dialog, just try again
-			print "Server says to try later."
 		elif status == "OK":
 			self.queue = []
-		else:
+		elif not status.startswith("FAILED"):
 			print "Unknown response from server: %s" % status
 			print "Dumping full response:"
 			print resp_save
@@ -377,9 +373,10 @@ class QLScrobbler(object):
 		if interval != None: interval_secs = int(interval.split()[1])
 		else: interval_secs = 0
 
-		if interval_secs > 0:
+		if interval_secs > 1:
 			self.waiting = True
 			gobject.timeout_add(interval_secs * 1000, self.clear_waiting)
+			print "Server says to wait for %d seconds." % interval_secs
 
 		self.already_submitted = True
 		self.locked = False
