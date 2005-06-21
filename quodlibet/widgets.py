@@ -1764,11 +1764,15 @@ class AlbumList(Browser, gtk.VBox):
         def __compare_title(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
+            elif a1.title == "": return 1
+            elif a2.title == "": return -1
             else: return cmp(a1.title, a2.title)
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
+            elif a1.title == "": return 1
+            elif a2.title == "": return -1
             else: return (cmp(a1.people, a2.people) or
                           cmp(a1.date, a2.date) or
                           cmp(a1.title, a2.title))
@@ -1886,6 +1890,7 @@ class AlbumList(Browser, gtk.VBox):
 
     def filter(self, key, values):
         assert(key == "album")
+        if not values: values = [""]
         view = self.get_children()[1].child
         selection = view.get_selection()
         selection.unselect_all()
@@ -1930,7 +1935,13 @@ class AlbumList(Browser, gtk.VBox):
             if self.__save: config.set("browsers", "albums", "")
         else:
             names = set([a.title for a in albums])
-            songs = filter(lambda s: names.intersection(s.list('album')),
+            if "" in names:
+                unalbum = True
+                names.remove("")
+            else: unalbum = False
+
+            songs = filter(lambda s: (names.intersection(s.list('album')) or
+                                      unalbum and "album" not in s),
                            library.itervalues())
             confval = "\n".join(names)
             # Since ConfigParser strips a trailing \n...
