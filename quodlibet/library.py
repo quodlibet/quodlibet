@@ -146,6 +146,7 @@ class Library(dict):
         else: return True
 
     def query(self, text, sort=None):
+        if isinstance(text, str): text = text.decode('utf-8')
         if text == "": songs = self.itervalues()
         else: songs = filter(parser.parse(text).search, self.itervalues())
 
