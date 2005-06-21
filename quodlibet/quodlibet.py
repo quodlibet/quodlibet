@@ -269,13 +269,32 @@ def process_arguments():
         ("play-file", _("Play a file"), _("filename"))
         ]: options.add(opt, help=help, arg=arg)
 
+    def is_time(str):
+        if str[0] not in "+-0123456789": return False
+        elif str[0] in "+-": str = str[1:]
+        parts = str.split(":")
+        if len(parts) > 3: return False
+        else: return not (False in [p.isdigit() for p in parts])
+
+    validators = {"shuffle": lambda a: a in list("012t"),
+                  "repeat": lambda a: a in list("01t"),
+                  "volume": str.isdigit,
+                  "seek": is_time,
+                  }
+
     opts, args = options.parse()
 
     for command, arg in opts.items():
         if command == "refresh-library": refresh_cache()
-        elif command in controls: control(controls[command])
+        elif command in controls:
+            control(controls[command])
         elif command in controls_opt:
-            control(controls_opt[command] + arg)
+            if command in validators and not validators[command](arg):
+                sys.stderr.write(
+                    to(_("E: Invalid argument for '%s'.") % command))
+                sys.stderr.write("\n")
+                raise SystemExit(to(_("E: Try %s --help.") % sys.argv[0]))
+            else:  control(controls_opt[command] + arg)
         elif command == "status": print_status()
         elif command == "play-file":
             filename = os.path.abspath(os.path.expanduser(arg))
