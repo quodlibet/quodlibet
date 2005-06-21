@@ -15,36 +15,27 @@
 import sys
 import const
 import config
+import formats
 config.init(const.CONFIG)
 
 class sink(object):
     def __getattr__(self, attr): return self
     def __call__(self, *args, **kwargs): return self
 
-import library
 import __builtin__
 __builtin__._ = str
 
-library.init()
-from library import library
-for fn in sys.argv[2:]:
-    library.add(fn)
-
 import player
 player.init(sys.argv[1])
-player.playlist.filter = lambda s: True
-player.playlist.refilter()
 from threading import Thread
-t = Thread(target=player.playlist.play, args=(sink(),))
+t = Thread(target=player.playlist.play, args=(sink(), None))
 t.start()
 import time
 try:
-    for fn in sys.argv[2:]:
-        song = library[fn]
-        player.playlist.go_to(song)
-        player.playlist.paused = False
-        while not player.playlist.paused:
-            time.sleep(1)
+    songs = map(formats.MusicFile, sys.argv[1:])
+    player.playlist.set_playlist(songs)
+    player.playlist.paused = False
+    while not player.playlist.paused: time.sleep(1)
 finally:
     player.playlist.quitting()
     t.join()
