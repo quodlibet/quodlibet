@@ -7,7 +7,7 @@
 # $Id$
 
 import os, sys
-import cPickle
+import pickle
 import util; from util import escape, to
 import fcntl
 import random
@@ -169,7 +169,7 @@ class Library(dict):
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         songs = self.values()
         for v in self.__masked_files.values(): songs.extend(v.values())
-        cPickle.dump(songs, f, cPickle.HIGHEST_PROTOCOL)
+        pickle.dump(songs, f, pickle.HIGHEST_PROTOCOL)
         f.close()
         os.rename(fn + ".tmp", fn)
 
@@ -188,7 +188,7 @@ class Library(dict):
         try:
             if os.path.exists(fn):
                 f = file(fn, "rb")
-                try: songs = cPickle.load(f)
+                try: songs = pickle.load(f)
                 except:
                     print to(_("W: %s is not a QL song database.") % fn)
                     try: shutil.copy(fn, fn + ".not-valid")
