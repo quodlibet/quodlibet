@@ -1623,6 +1623,7 @@ class AlbumList(Browser, gtk.VBox):
 
     class _Album(object):
         __covers = {}
+        __pending_covers = []
 
         def clear_cache(klass): klass.__covers.clear()
         clear_cache = classmethod(clear_cache)
@@ -1670,12 +1671,19 @@ class AlbumList(Browser, gtk.VBox):
                 self.discs = max(self.discs, song("~#disc", 0))
                 if self.cover is False:
                     self.cover = None
-                    gobject.idle_add(
-                        self.__get_cover, song, priority=gobject.PRIORITY_LOW)
+                    if not self.__pending_covers: gobject.idle_add(
+                            self.__get_covers, priority=gobject.PRIORITY_LOW)
+                    self.__pending_covers.append([self.__get_cover, song])
             self.length += song["~#length"]
             self.people |= set(song.list("artist"))
             self.people |= set(song.list("performer"))
             self.people |= set(song.list("composer"))
+
+        def __get_covers(self):
+            try: get, song = self.__pending_covers.pop()
+            except IndexError: return
+            get(song)
+            gobject.idle_add(self.__get_covers, priority=gobject.PRIORITY_LOW)
 
         # Check to see if the song has a cover; if it doesn't, or if
         # it fails to load, try again in 15 seconds. If it does then load
