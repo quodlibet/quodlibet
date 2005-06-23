@@ -1424,7 +1424,6 @@ class AlbumList(Browser, gtk.VBox):
         hb.pack_start(e)
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
-
         self.__refresh(None, view, model)
         self.show_all()
 
@@ -1515,6 +1514,7 @@ class AlbumList(Browser, gtk.VBox):
         # FIXME: This is a bit of a waste, but album-listing should be fast,
         # so not a huge waste.
         albums = self.__get_selected_albums(selection)
+        if not albums: return
         self.__cb(songs, None)
         if self.__save:
             if None in albums: config.set("browsers", "albums", "")
@@ -1804,7 +1804,7 @@ class PlaylistBar(Browser, gtk.HBox):
         refresh.set_sensitive(active != 0)
         self.save()
         if active == 0:
-            self.__cb(library.itervalues(), None)
+            self.__cb(library.values(), None)
         else:
             key = "~#playlist_" + combo.get_model()[active][1]
             self.__cb(filter(lambda s: key in s, library.itervalues()), key)
@@ -2577,13 +2577,12 @@ class MainWindow(gtk.Window):
             c = self.browser.expand()
             c.pack1(self.browser, resize=True)
             c.pack2(self.song_scroller, resize=True)
-            c.show()
         else:
             c = gtk.VBox()
             c.pack_start(self.browser, expand=False)
             c.pack_start(self.song_scroller)
-            c.show()
         self.child.pack_end(c)
+        c.show()
         self.__hide_menus()
         self.__refresh_size()
 
