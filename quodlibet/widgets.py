@@ -1437,7 +1437,7 @@ class AlbumList(Browser, gtk.VBox):
 
     def __get_selected_songs(self, selection):
         albums = self.__get_selected_albums(selection)
-        if None in albums: return library.itervalues()
+        if None in albums: return library.values()
         else:
             if "" in albums:
                 unalbum = True
