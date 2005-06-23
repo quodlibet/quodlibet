@@ -1034,16 +1034,527 @@ class MmKeys(object):
             self.__keys = mmkeys.MmKeys()
             map(self.__keys.connect, *zip(*cbs.items()))
 
+# Browers are how the audio library is presented to the user; they
+# create the list of songs that MainSongList is filled with, and pass
+# them back via a (non-glib) callback function.
+# FIXME: use a glib callback instead, 'songs-selected' or something.
+# Also a 'songs-appended' to use in Browser#dynamic so a new song can
+# be automatically appended when one ends.
 class Browser(object):
+    # Packing options. False if the browser should be packed into the
+    # window's VBox with expand=False. Otherwise, this should be
+    # a function that returns an object like a Paned; the browser
+    # and MainSongList are both packed into it.
     expand = False # Packing options
-    background = True # Use browsers/filter as a background filter
-    dynamic = False # Check songs for removal after playing
 
-    # read config data
-    def restore(self): pass
+    # If true, the global filter will be applied by MainSongList to
+    # the songs returned.
+    background = True
 
-    # decides whether "filter on foo" menu entries are available
+    # If a function, it is called after a song is finished playing.
+    # It returns true if the song should remain on the song list.
+    dynamic = False
+
+    # Save/restore selected songlist. Browsers should save whatever
+    # they need to recreate the criteria for the current song list (not
+    # the list itself). restore is called at startup if the browser
+    # is the first loaded.
+    def save(*args): raise NotImplementedError
+    def restore(*args): raise NotImplementedError
+
+    # Decides whether "filter on foo" menu entries are available.
     def can_filter(self, key): return False
+
+    # Actually do the filtering (with a union of values).
+    def filter(self, key, values): raise NotImplementedError
+
+# A browser that the user only interacts with indirectly, via the
+# Filter menu. The HBox remains empty.
+class EmptyBar(Browser, gtk.HBox):
+    def __init__(self, cb):
+        gtk.HBox.__init__(self)
+        # When _text is None, calls to activate are ignored. This is to
+        # avoid the song list changing when the user switches browses and
+        # then refreshes.
+        self._text = None
+        self._cb = cb
+
+    def dynamic(self, song):
+        if self._text is not None:
+            try: return parser.parse(self._text).search(song)
+            except parser.error: return True
+        else: return True
+
+    def set_text(self, text):
+        self._text = text
+
+    def save(self):
+        config.set("browsers", "query_text", self._text)
+
+    def restore(self):
+        try: self.set_text(config.get("browsers", "query_text"))
+        except Exception: pass
+
+    def activate(self):
+        if self._text is not None:
+            try: songs = library.query(self._text)
+            except parser.error: pass
+            else:
+                self._cb(songs, None)
+                self.save()
+
+    def can_filter(self, key): return True
+
+    def filter(self, key, values):
+        if key.startswith("~#"):
+            nheader = key[2:]
+            queries = ["#(%s = %d)" % (nheader, i) for i in values]
+            self.set_text("|(" + ", ".join(queries) + ")")
+        else:
+            text = ", ".join(
+                ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
+                 for v in values])
+            if key.startswith("~"): key = key[1:]
+            self.set_text(u"%s = |(%s)" % (key, text))
+        self.activate()
+
+# Like EmptyBar, but the user can also enter a query manually. This
+# is QL's default browser.
+class SearchBar(EmptyBar):
+    # Most browsers implement something like save/play. If save is
+    # false, Browser#save should do nothing. Likewise, if play is false,
+    # the browser should never start songs playing. These are used
+    # when making browsers for the Library Browser windows.
+    def __init__(self, cb, save=True, play=True):
+        EmptyBar.__init__(self, cb)
+        self.__save = save
+
+        tips = gtk.Tooltips()
+        combo = qltk.ComboBoxEntrySave(
+            const.QUERIES, model="searchbar", count=15)
+        clear = gtk.Button()
+        clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
+        tips.set_tip(clear, _("Clear search"))
+        clear.connect_object('clicked', self.set_text, "")
+                  
+        search = gtk.Button()
+        b = gtk.HBox(spacing=2)
+        b.pack_start(gtk.image_new_from_stock(
+            gtk.STOCK_FIND, gtk.ICON_SIZE_MENU))
+        b.pack_start(gtk.Label(_("Search")))
+        search.add(b)
+        tips.set_tip(search, _("Search your audio library"))
+        search.connect_object('clicked', self.__text_parse, combo.child)
+        combo.child.connect('activate', self.__text_parse)
+        combo.child.connect('changed', self.__test_filter)
+        tips.enable()
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+        self.pack_start(combo)
+        self.pack_start(clear, expand=False)
+        self.pack_start(search, expand=False)
+        self.show_all()
+
+    def activate(self):
+        if self._text is not None:
+            try: songs = library.query(self._text)
+            except parser.error: pass
+            else:
+                self.get_children()[0].prepend_text(self._text)
+                self._cb(songs, None)
+                if self.__save: self.save()
+                self.get_children()[0].write(const.QUERIES)
+
+    def set_text(self, text):
+        self.get_children()[0].child.set_text(text)
+        self._text = text
+
+    def __text_parse(self, entry):
+        text = entry.get_text()
+        if parser.is_parsable(text):
+            self._text = text
+            self.activate()
+
+    def __test_filter(self, textbox):
+        if not config.getboolean('browsers', 'color'): return
+        text = textbox.get_text()
+        gobject.idle_add(
+            self.__set_entry_color, textbox, parser.is_valid_color(text))
+
+    def __set_entry_color(self, entry, color):
+        layout = entry.get_layout()
+        text = layout.get_text()
+        markup = '<span foreground="%s">%s</span>' %(
+            color, util.escape(text))
+        layout.set_markup(markup)
+
+class AlbumList(Browser, gtk.VBox):
+    expand = gtk.HPaned
+
+    # Something like an AudioFile, but for a whole album.
+    class _Album(object):
+        __covers = {}
+        __pending_covers = []
+
+        def clear_cache(klass): klass.__covers.clear()
+        clear_cache = classmethod(clear_cache)
+
+        def __init__(self, title):
+            self.length = 0
+            self.discs = 1
+            self.tracks = 0
+            self.date = None
+            self.people = set()
+            self._path = False
+            self.title = title
+            self.cover = self.__covers.get(self.title, False)
+
+        def get(self, key, default=None):
+            if key == "~#length": return self.length
+            elif key == "~#tracks": return self.tracks
+            elif key == "~#discs": return self.discs
+            elif key == "~length": return self.__length
+            elif key == "title": return self.title
+            elif key == "date": return self.date
+            elif key == "people" or key == "artist" or key == "artists":
+                return "\n".join(self.people)
+            else: return default
+
+        __call__ = get
+
+        # All songs added, cache info.
+        def finalize(self):
+            self.__long_length = util.format_time_long(self.length)
+            self.__length = util.format_time(self.length)
+            self.people = list(self.people)
+            self.people.sort()
+
+            text = "<i><b>%s</b></i>" % util.escape(
+                self.title or _("Songs not in an album"))
+            if self.date: text += " (%s)" % self.date
+            text += "\n<small>"
+            if self.discs > 1:
+                text += ngettext(
+                    "%d disc", "%d discs", self.discs) % self.discs + " - "
+            text += ngettext(
+                "%d track", "%d tracks", self.tracks) % self.tracks
+            text += " - " + self.__long_length
+            text += "</small>\n" + ", ".join(map(util.escape, self.people))
+            self.markup = text
+
+        def add(self, song):
+            self.tracks += 1
+            if self.title:
+                if self.date is None: self.date = song.get("date")
+                self.discs = max(self.discs, song("~#disc", 0))
+                if self.cover is False:
+                    self.cover = None
+                    if not self.__pending_covers: gobject.idle_add(
+                        self.__get_covers, priority=gobject.PRIORITY_LOW)
+                    self.__pending_covers.append([self.__get_cover, song])
+            self.length += song["~#length"]
+            for key in ["artist", "performer", "composer"]:
+                self.people.update(song.list(key))
+
+        def __get_covers(self):
+            try: get, song = self.__pending_covers.pop()
+            except IndexError: return
+            get(song)
+            gobject.idle_add(self.__get_covers, priority=gobject.PRIORITY_LOW)
+
+
+        def __get_cover(self, song):
+            if self._path is None: return
+            cover = song.find_cover()
+            if cover is not None:
+                try:
+                    cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                        cover.name, 48, 48)
+                except: pass
+                else:
+                    # add a black outline
+                    w, h = cover.get_width(), cover.get_height()
+                    newcover = gtk.gdk.Pixbuf(
+                        gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
+                    newcover.fill(0x000000ff)
+                    cover.copy_area(0, 0, w, h, newcover, 1, 1)
+                    self.cover = newcover
+                    self.__covers[self.title] = newcover
+                    self._model.row_changed(
+                        self._path, self._model.get_iter(self._path))
+
+    # An auto-searching entry; it wraps is a TreeModelFilter whose parent
+    # is the album list.
+    class FilterEntry(qltk.ValidatingEntry):
+        def __init__(self, model):
+            qltk.ValidatingEntry.__init__(self, parser.is_valid_color)
+            self.connect_object('changed', self.__filter_changed, model)
+            self.__refill_id = None
+            self.__filter = None
+            model.set_visible_func(self.__parse)
+
+        def __parse(self, model, iter):
+            if self.__filter is None: return True
+            elif model[iter][0] is None: return False
+            else: return self.__filter(model[iter][0])
+
+        def __filter_changed(self, model):
+            if self.__refill_id is not None:
+                gobject.source_remove(self.__refill_id)
+                self.__refill_id = None
+            text = self.get_text().decode('utf-8')
+            if parser.is_parsable(text):
+                if not text: self.__filter = None
+                else: self.__filter = parser.parse(text).search
+                self.__refill_id = gobject.timeout_add(500, model.refilter)
+
+    # Sorting, either by people or album title. It wraps a TreeModelSort
+    # whose parent is the album list.
+    class SortCombo(gtk.ComboBox):
+        def __init__(self, model):
+            # Contains string to display, function to do sorting
+            cbmodel = gtk.ListStore(str, object)
+            gtk.ComboBox.__init__(self, cbmodel)
+            cell = gtk.CellRendererText()
+            self.pack_start(cell, True)
+            self.add_attribute(cell, 'text', 0)
+
+            for text, func in [
+                (_("Sort by title"), self.__compare_title),
+                (_("Sort by artist"), self.__compare_artist)
+                ]: cbmodel.append(row=[text, func])
+
+            self.connect_object('changed', self.__set_cmp_func, model)
+            try: active = config.getint('browsers', 'album_sort')
+            except: active = 0
+            self.set_active(active)
+
+        def __set_cmp_func(self, model):
+            active = self.get_active()
+            config.set("browsers", "album_sort", str(active))
+            model.set_default_sort_func(self.get_model()[(active,)][1])
+
+        def __compare_title(self, model, i1, i2):
+            a1, a2 = model[i1][0], model[i2][0]
+            if (a1 and a2) is None: return cmp(a1, a2)
+            elif not a1.title: return 1
+            elif not a2.title: return -1
+            else: return cmp(a1.title, a2.title)
+
+        def __compare_artist(self, model, i1, i2):
+            a1, a2 = model[i1][0], model[i2][0]
+            if (a1 and a2) is None: return cmp(a1, a2)
+            elif a1.title == "": return 1
+            elif a2.title == "": return -1
+            else: return (cmp(a1.people, a2.people) or
+                          cmp(a1.date, a2.date) or
+                          cmp(a1.title, a2.title))
+
+    def __init__(self, cb, save=True, play=True):
+        gtk.VBox.__init__(self)
+
+        self.__cb = cb
+        self.__save = save
+
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        view = HintedTreeView()
+        view.set_headers_visible(False)
+        model = gtk.ListStore(object)
+        model_sort = gtk.TreeModelSort(model)
+        model_filter = model_sort.filter_new()
+        view.set_model(model_filter)
+
+        render = gtk.CellRendererPixbuf()
+        column = gtk.TreeViewColumn("covers", render)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+        render.set_property('xpad', 2)
+        render.set_property('ypad', 2)
+        render.set_property('width', 56)
+        render.set_property('height', 56)
+
+        def cell_data_pb(column, cell, model, iter):
+            album = model[iter][0]
+            if album is None: cell.set_property('pixbuf', None)
+            elif album.cover: cell.set_property('pixbuf', album.cover)
+            else: cell.set_property('pixbuf', None)
+        column.set_cell_data_func(render, cell_data_pb)
+        view.append_column(column)
+
+        render = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("albums", render)
+        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        def cell_data(column, cell, model, iter):
+            album = model[iter][0]
+            if album is None:
+                text = "<b>%s</b>" % _("All Albums")
+                text += "\n" + ngettext("%d album", "%d albums",
+                        len(model) - 1) % (len(model) - 1)
+                cell.markup = text
+            else: cell.markup = model[iter][0].markup
+            cell.set_property('markup', cell.markup)
+        column.set_cell_data_func(render, cell_data)
+        view.append_column(column)
+
+        view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        view.set_rules_hint(True)
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.add(view)
+        e = self.FilterEntry(model_filter)
+
+        if play: view.connect('row-activated', self.__play_selection)
+        view.get_selection().connect('changed', self.__selection_changed)
+        s = widgets.watcher.connect('refresh', self.__refresh, view, model)
+        self.connect_object('destroy', widgets.watcher.disconnect, s)
+
+        menu = gtk.Menu()
+        button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        menu.append(button)
+        menu.append(props)
+        menu.show_all()
+        button.connect('activate', self.__refresh, view, model, True)
+        props.connect('activate', self.__properties, view)
+
+        view.connect_object('popup-menu', gtk.Menu.popup, menu,
+                            None, None, None, 2, 0)
+        view.connect('button-press-event', self.__button_press, menu)
+
+        hb = gtk.HBox(spacing=6)
+        hb.pack_start(self.SortCombo(model_sort), expand=False)
+        hb.pack_start(e)
+        self.pack_start(hb, expand=False)
+        self.pack_start(sw, expand=True)
+
+        self.__refresh(None, view, model)
+        self.show_all()
+
+    def __get_selected_albums(self, selection):
+        model, rows = selection.get_selected_rows()
+        if not model or not rows: return set([])
+        albums = [model[row][0] for row in rows]
+        if None in albums: return set([None])
+        else: return set([a.title for a in albums])
+
+    def __get_selected_songs(self, selection):
+        albums = self.__get_selected_albums(selection)
+        if None in albums: return library.itervalues()
+        else:
+            if "" in albums:
+                unalbum = True
+                albums.remove("")
+            else: unalbum = False
+
+            return filter(lambda s: (albums.intersection(s.list('album')) or
+                                     unalbum and "album" not in s),
+                          library.itervalues())
+
+    def __properties(self, activator, view):
+        songs = self.__get_selected_songs(view.get_selection())
+        if songs:
+            songs.sort()
+            SongProperties(songs)
+
+    def __button_press(self, view, event, menu):
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
+        if event.button == 3:
+            sens = bool(view.get_model()[path][0])
+            for c in menu.get_children(): c.set_sensitive(sens)
+            view.grab_focus()
+            selection = view.get_selection()
+            if not selection.path_is_selected(path):
+                view.set_cursor(path, col, 0)
+            menu.popup(None, None, None, event.button, event.time)
+            return True
+
+    def __play_selection(self, view, indices, col):
+        player.playlist.next()
+        player.playlist.reset()
+
+    def filter(self, key, values):
+        assert(key == "album")
+        if not values: values = [""]
+        view = self.get_children()[1].child
+        selection = view.get_selection()
+        selection.unselect_all()
+        model = view.get_model()
+        first = None
+        for i, row in enumerate(iter(model)):
+            if row[0] and row[0].title in values:
+                selection.select_path(i)
+                first = first or i
+        if first: view.scroll_to_cell(first)
+
+    def activate(self):
+        self.get_children()[1].child.get_selection().emit('changed')
+
+    def can_filter(self, key):
+        return (key == "album")
+
+    def restore(self):
+        albums = config.get("browsers", "albums").split("\n")
+        selection = self.get_children()[1].child.get_selection()
+        # FIXME: If albums is "" then it could be either all albums or
+        # no albums. If it's "" and some other stuff, assume no albums,
+        # otherwise all albums.
+        selection.unselect_all()
+        if albums == [""]:  selection.select_path((0,))
+        else:
+            model = selection.get_tree_view().get_model()
+            first = None
+            for i, row in enumerate(iter(model)):
+                if row[0] and row[0].title in albums:
+                    selection.select_path(i)
+                    first = first or i
+
+            if first: selection.get_tree_view().scroll_to_cell(first)
+
+    def __selection_changed(self, selection):
+        songs = self.__get_selected_songs(selection)
+        # FIXME: This is a bit of a waste, but album-listing should be fast,
+        # so not a huge waste.
+        albums = self.__get_selected_albums(selection)
+        self.__cb(songs, None)
+        if self.__save:
+            if None in albums: config.set("browsers", "albums", "")
+            else:
+                confval = "\n".join(albums)
+                # Since ConfigParser strips a trailing \n...
+                if confval and confval[-1] == "\n":
+                    confval = "\n" + confval[:-1]
+                config.set("browsers", "albums", confval)
+
+    def __refresh(self, watcher, view, model, clear_cache=False):
+        selected = self.__get_selected_albums(view.get_selection())
+
+        if clear_cache: self._Album.clear_cache()
+        for row in iter(model):
+            if row[0]: row[0]._path = row[0]._model = None
+        model.clear()
+        albums = {}
+        songs = library.itervalues()
+        for song in songs:
+            if "album" not in song:
+                if "" not in albums: albums[""] = self._Album("")
+                albums[""].add(song)
+            else:
+                for album in song.list('album'):
+                    if album not in albums:
+                        albums[album] = self._Album(album)
+                    albums[album].add(song)
+
+        albums = albums.values()
+        albums.sort(lambda a, b: cmp(a.title, b.title))
+        if albums and albums[0].title == "":
+            albums.append(albums.pop(0))
+        model.append(row=[None])
+        for album in albums:
+            album.finalize()
+            album._path = model.get_path(model.append(row=[album]))
+            album._model = model
+
+        if selected: self.filter("album", selected)
 
 class PanedBrowser(Browser, gtk.VBox):
     expand = gtk.VPaned
@@ -1508,490 +2019,6 @@ class TreeViewHints(gtk.Window):
 
 gobject.type_register(TreeViewHints)
 
-class EmptyBar(Browser, gtk.HBox):
-    dynamic = True
-
-    def __init__(self, cb):
-        gtk.HBox.__init__(self)
-        self._text = ""
-        self._cb = cb
-
-    def matches(self, song):
-        try: return parser.parse(self._text).search(song)
-        except parser.error: return True
-
-    def set_text(self, text):
-        self._text = text
-
-    def save(self):
-        config.set("browsers", "query_text", self._text)
-
-    def restore(self):
-        try: self.set_text(config.get("browsers", "query_text"))
-        except Exception: pass
-
-    def activate(self):
-        try: songs = library.query(self._text)
-        except parser.error: pass
-        else:
-            self._cb(songs, None)
-            self.save()
-
-    def can_filter(self, key):
-        return True
-
-    def filter(self, key, values):
-        if key.startswith("~#"):
-            nheader = key[2:]
-            queries = ["#(%s = %d)" % (nheader, i) for i in values]
-            self.set_text("|(" + ", ".join(queries) + ")")
-        else:
-            text = ", ".join(
-                ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
-                 for v in values])
-            if key.startswith("~"): key = key[1:]
-            self.set_text(u"%s = |(%s)" % (key, text))
-        self.activate()
-
-class SearchBar(EmptyBar):
-    def __init__(self, cb, button=gtk.STOCK_FIND, save=True, play=True):
-        EmptyBar.__init__(self, cb)
-        self.__save = save
-
-        tips = gtk.Tooltips()
-        combo = qltk.ComboBoxEntrySave(
-            const.QUERIES, model="searchbar", count=15)
-        clear = gtk.Button()
-        clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
-        tips.set_tip(clear, _("Clear search"))
-        clear.connect('clicked', self.__clear, combo)
-                  
-        search = gtk.Button()
-        b = gtk.HBox(spacing=2)
-        b.pack_start(gtk.image_new_from_stock(button, gtk.ICON_SIZE_MENU))
-        b.pack_start(gtk.Label(_("Search")))
-        search.add(b)
-        tips.set_tip(search, _("Search your audio library"))
-        search.connect_object('clicked', self.__text_parse, combo.child)
-        combo.child.connect('activate', self.__text_parse)
-        combo.child.connect('changed', self.__test_filter)
-        tips.enable()
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
-        self.pack_start(combo)
-        self.pack_start(clear, expand=False)
-        self.pack_start(search, expand=False)
-        self.show_all()
-
-    def __clear(self, button, combo):
-        combo.child.set_text("")
-
-    def activate(self):
-        self.get_children()[-1].clicked()
-
-    def set_text(self, text):
-        self.get_children()[0].child.set_text(text)
-        self._text = text
-
-    def __text_parse(self, entry):
-        text = entry.get_text()
-        if parser.is_parsable(text):
-            self._text = text
-            self.get_children()[0].prepend_text(text)
-            try: songs = library.query(self._text)
-            except parser.error: pass
-            else:
-                self._cb(songs, None)
-                if self.__save: self.save()
-                self.get_children()[0].write(const.QUERIES)
-
-    def __test_filter(self, textbox):
-        if not config.getboolean('browsers', 'color'): return
-        text = textbox.get_text()
-        gobject.idle_add(
-            self.__set_entry_color, textbox, parser.is_valid_color(text))
-
-    # Set the color of some text.
-    def __set_entry_color(self, entry, color):
-        layout = entry.get_layout()
-        text = layout.get_text()
-        markup = '<span foreground="%s">%s</span>' %(
-            color, util.escape(text))
-        layout.set_markup(markup)
-
-class AlbumList(Browser, gtk.VBox):
-    expand = gtk.HPaned
-
-    class _Album(object):
-        __covers = {}
-        __pending_covers = []
-
-        def clear_cache(klass): klass.__covers.clear()
-        clear_cache = classmethod(clear_cache)
-
-        def __init__(self, title):
-            self.length = 0
-            self.discs = 1
-            self.tracks = 0
-            self.people = set()
-            self.title = title
-            self.date = None
-            self._path = None
-
-            if self.title:
-                if self.title in self.__covers:
-                    self.cover = self.__covers[title]
-                else:
-                    self.cover = False
-            else:
-                self.cover = False
-
-        def get(self, key, default=None):
-            if key == "~#length": return self.length
-            elif key == "~#tracks": return self.tracks
-            elif key == "~#discs": return self.discs
-            elif key == "~length": return util.format_time(self.length)
-            elif key == "title": return self.title
-            elif key == "date": return self.date
-            elif key == "people" or key == "artist" or key == "artists":
-                return "\n".join(self.people)
-            else: return default
-
-        __call__ = get
-
-        # All songs added, cache info.
-        def finalize(self):
-            self.__long_length = util.format_time_long(self.length)
-            self.people = list(self.people)
-            self.people.sort()
-
-        def add(self, song):
-            self.tracks += 1
-            if self.title:
-                self.date = song.get("date")
-                self.discs = max(self.discs, song("~#disc", 0))
-                if self.cover is False:
-                    self.cover = None
-                    if not self.__pending_covers: gobject.idle_add(
-                            self.__get_covers, priority=gobject.PRIORITY_LOW)
-                    self.__pending_covers.append([self.__get_cover, song])
-            self.length += song["~#length"]
-            self.people |= set(song.list("artist"))
-            self.people |= set(song.list("performer"))
-            self.people |= set(song.list("composer"))
-
-        def __get_covers(self):
-            try: get, song = self.__pending_covers.pop()
-            except IndexError: return
-            get(song)
-            gobject.idle_add(self.__get_covers, priority=gobject.PRIORITY_LOW)
-
-        # Check to see if the song has a cover; if it doesn't, or if
-        # it fails to load, try again in 15 seconds. If it does then load
-        # it up, and alert the model that our row has changed.
-        def __get_cover(self, song):
-            # If we're no longer in the model (due to a search), then stop.
-            if self._path is None: return
-            cover = song.find_cover()
-            if cover is not None:
-                try:
-                    cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                        cover.name, 48, 48)
-                except: pass
-                else:
-                    # add a black outline
-                    w, h = cover.get_width(), cover.get_height()
-                    newcover = gtk.gdk.Pixbuf(
-                        gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
-                    newcover.fill(0x000000ff)
-                    cover.copy_area(0, 0, w, h, newcover, 1, 1)
-                    self.cover = newcover
-                    self.__covers[self.title] = newcover
-                    self._model.row_changed(
-                        self._path, self._model.get_iter(self._path))
-
-        def to_markup(self):
-            text = "<i><b>%s</b></i>" % util.escape(
-                self.title or _("Songs not in an album"))
-            if self.date: text += " (%s)" % self.date
-            text += "\n<small>"
-            if self.discs > 1: text += ngettext("%d disc", "%d discs",
-                    self.discs) % self.discs + " - "
-            text += ngettext("%d track", _("%d tracks"),
-                    self.tracks) % self.tracks
-            text += " - " + self.__long_length
-            text += "</small>\n" + ", ".join(map(util.escape, self.people))
-            return text
-
-    class FilterEntry(qltk.ValidatingEntry):
-        def __init__(self, model):
-            qltk.ValidatingEntry.__init__(self, parser.is_valid_color)
-            self.connect_object('changed', self.__filter_changed, model)
-            self.__refill_id = None
-            self.__filter = None
-            model.set_visible_func(self.__parse)
-
-        def __parse(self, model, iter):
-            if self.__filter is None: return True
-            elif model[iter][0] is None: return False
-            else: return self.__filter.search(model[iter][0])
-
-        def __filter_changed(self, model):
-            if self.__refill_id:
-                gobject.source_remove(self.__refill_id)
-                self.__refill_id = None
-            if parser.is_parsable(self.get_text().decode('utf-8')):
-                if not self.get_text(): self.__filter = None
-                else:
-                    self.__filter = parser.parse(
-                        self.get_text().decode('utf-8'))
-                self.__refill_id = gobject.timeout_add(500, model.refilter)
-
-    class SortCombo(gtk.ComboBox):
-        def __init__(self, model):
-            mymodel = gtk.ListStore(str, object)
-            gtk.ComboBox.__init__(self, mymodel)
-            cell = gtk.CellRendererText()
-            self.pack_start(cell, True)
-            self.add_attribute(cell, 'text', 0)
-
-            for text, func in [
-                (_("Sort by title"), self.__compare_title),
-                (_("Sort by artist"), self.__compare_artist)
-                ]: mymodel.append(row=[text, func])
-
-            self.connect_object('changed', self.__set_cmp_func, model)
-            try: active = config.getint('browsers', 'album_sort')
-            except: active = 0
-            self.set_active(active)
-
-        def __set_cmp_func(self, model):
-            config.set("browsers", "album_sort", str(self.get_active()))
-            model.set_default_sort_func(
-                self.get_model()[(self.get_active(),)][1])
-
-        def __compare_title(self, model, i1, i2):
-            a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
-            elif a1.title == "": return 1
-            elif a2.title == "": return -1
-            else: return cmp(a1.title, a2.title)
-
-        def __compare_artist(self, model, i1, i2):
-            a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
-            elif a1.title == "": return 1
-            elif a2.title == "": return -1
-            else: return (cmp(a1.people, a2.people) or
-                          cmp(a1.date, a2.date) or
-                          cmp(a1.title, a2.title))
-
-    def __init__(self, cb, save=True, play=True):
-        gtk.VBox.__init__(self)
-
-        self.__cb = cb
-        self.__save = save
-
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        view = HintedTreeView()
-        view.set_headers_visible(False)
-        model = gtk.ListStore(object)
-        model_sort = gtk.TreeModelSort(model)
-        model_filter = model_sort.filter_new()
-        view.set_model(model_filter)
-
-        render = gtk.CellRendererPixbuf()
-        column = gtk.TreeViewColumn("covers", render)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
-        render.set_property('xpad', 2)
-        render.set_property('ypad', 2)
-        render.set_property('width', 56)
-        render.set_property('height', 56)
-
-        def cell_data_pb(column, cell, model, iter):
-            album = model[iter][0]
-            if album is None: cell.set_property('pixbuf', None)
-            elif album.cover: cell.set_property('pixbuf', album.cover)
-            else: cell.set_property('pixbuf', None)
-        column.set_cell_data_func(render, cell_data_pb)
-        view.append_column(column)
-
-        render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("albums", render)
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        def cell_data(column, cell, model, iter):
-            album = model[iter][0]
-            if album is None:
-                text = "<b>%s</b>" % _("All Albums")
-                text += "\n" + ngettext("%d album", "%d albums",
-                        len(model) - 1) % (len(model) - 1)
-                cell.markup = text
-            else:
-                cell.markup = model[iter][0].to_markup()
-            cell.set_property('markup', cell.markup)
-        column.set_cell_data_func(render, cell_data)
-        view.append_column(column)
-
-        view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        view.set_rules_hint(True)
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.add(view)
-        e = self.FilterEntry(model_filter)
-
-        if play: view.connect('row-activated', self.__play_selection)
-        view.get_selection().connect('changed', self.__selection_changed)
-        s = widgets.watcher.connect('refresh', self.__refresh, view, model)
-        self.connect_object('destroy', widgets.watcher.disconnect, s)
-
-        menu = gtk.Menu()
-        button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
-        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        menu.append(button)
-        menu.append(props)
-        menu.show_all()
-        button.connect('activate', self.__refresh, view, model, True)
-        props.connect('activate', self.__properties, view)
-
-        view.connect_object('popup-menu', gtk.Menu.popup, menu,
-                            None, None, None, 2, 0)
-        view.connect('button-press-event', self.__button_press, menu)
-
-        hb = gtk.HBox(spacing=6)
-        hb.pack_start(self.SortCombo(model_sort), expand=False)
-        hb.pack_start(e)
-        self.pack_start(hb, expand=False)
-        self.pack_start(sw, expand=True)
-
-        self.__refresh(None, view, model)
-        self.show_all()
-
-    def __properties(self, activator, view):
-        model, rows = view.get_selection().get_selected_rows()
-        albums = [model[row][0] for row in rows]
-        if None in albums: albums.remove(None)
-        if albums:
-            text = ", ".join(
-                ["'%s'c" % a.title.replace("\\", "\\\\").replace("'", "\\'")
-                 for a in albums])
-            songs = library.query("album = |(%s)" % text)
-            if songs:
-                songs.sort()
-                SongProperties(songs)
-
-    def __button_press(self, view, event, menu):
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        if event.button == 3:
-            sens = bool(view.get_model()[path][0])
-            for c in menu.get_children(): c.set_sensitive(sens)
-            view.grab_focus()
-            selection = view.get_selection()
-            if not selection.path_is_selected(path):
-                view.set_cursor(path, col, 0)
-            menu.popup(None, None, None, event.button, event.time)
-            return True
-
-    def __play_selection(self, view, indices, col):
-        player.playlist.next()
-        player.playlist.reset()
-
-    def filter(self, key, values):
-        assert(key == "album")
-        if not values: values = [""]
-        view = self.get_children()[1].child
-        selection = view.get_selection()
-        selection.unselect_all()
-        model = view.get_model()
-        first = None
-        for i, row in enumerate(iter(model)):
-            if row[0] and row[0].title in values:
-                selection.select_path(i)
-                first = first or i
-        if first: view.scroll_to_cell(first)
-
-    def activate(self):
-        self.get_children()[1].child.get_selection().emit('changed')
-
-    def can_filter(self, key):
-        return (key == "album")
-
-    def restore(self):
-        albums = config.get("browsers", "albums").split("\n")
-        selection = self.get_children()[1].child.get_selection()
-        # there's an ambiguity here -- if albums is "" then it could be
-        # either all albums or no albums. If it's "" and some other
-        # stuff, assume no albums, otherwise all albums.
-        selection.unselect_all()
-        if albums == [""]: # all songs
-            selection.select_path((0,))
-        else:
-            model = selection.get_tree_view().get_model()
-            first = None
-            for i, row in enumerate(iter(model)):
-                if row[0] and row[0].title in albums:
-                    selection.select_path(i)
-                    first = first or i
-
-            if first: selection.get_tree_view().scroll_to_cell(first)
-
-    def __selection_changed(self, selection):
-        model, rows = selection.get_selected_rows()
-        albums = [model[row][0] for row in rows]
-        if None in albums:
-            self.__cb(library.itervalues(), None)
-            if self.__save: config.set("browsers", "albums", "")
-        else:
-            names = set([a.title for a in albums])
-            if "" in names:
-                unalbum = True
-                names.remove("")
-            else: unalbum = False
-
-            songs = filter(lambda s: (names.intersection(s.list('album')) or
-                                      unalbum and "album" not in s),
-                           library.itervalues())
-            confval = "\n".join(names)
-            # Since ConfigParser strips a trailing \n...
-            if confval and confval[-1] == "\n":
-                confval = "\n" + confval[:-1]
-            if self.__save: config.set("browsers", "albums", confval)
-            self.__cb(songs, None)
-
-    def __refresh(self, watcher, view, model, clear_cache=False):
-        selection = view.get_selection()
-        fmodel, rows = selection.get_selected_rows()
-        selected = [(fmodel[row][0] and fmodel[row][0].title) for row in rows]
-
-        if clear_cache: self._Album.clear_cache()
-        for row in iter(model):
-            if row[0]: row[0]._path = row[0]._model = None
-        model.clear()
-        albums = {}
-        songs = library.itervalues()
-        for song in songs:
-            if "album" not in song:
-                if "" not in albums: albums[""] = self._Album("")
-                albums[""].add(song)
-            else:
-                for album in song.list('album'):
-                    if album not in albums:
-                        albums[album] = self._Album(album)
-                    albums[album].add(song)
-
-        albums = albums.values()
-        albums.sort(lambda a, b: cmp(a.title, b.title))
-        if albums and albums[0].title == "":
-            albums.append(albums.pop(0))
-        model.append(row=[None])
-        for album in albums:
-            album.finalize()
-            album._path = model.get_path(model.append(row=[album]))
-            album._model = model
-        for i, row in enumerate(iter(model)):
-             if (row[0] and row[0].title) in selected:
-                  selection.select_path(i)
-
 class MainWindow(gtk.Window):
     class StopAfterMenu(gtk.Menu):
         def __init__(self):
@@ -2326,6 +2353,7 @@ class MainWindow(gtk.Window):
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
+        self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
         hbox.pack_start(self.__statusbar)
         hbox.set_border_width(3)
         self.child.pack_end(hbox, expand=False)
@@ -2653,7 +2681,7 @@ class MainWindow(gtk.Window):
             statusbar.set_text, _("Could not play %s.") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
-        if self.browser.dynamic and not self.browser.matches(song):
+        if self.browser.dynamic and not self.browser.dynamic(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
             if iter: self.songlist.get_model().remove(iter)
@@ -2979,7 +3007,10 @@ class MainWindow(gtk.Window):
 
         # Translators: Only translate this if your GTK locale uses
         # identical strings for "Remove" and "Delete". Otherwise do not
-        # translate it, or translate it verbatim.
+        # translate it, or translate it verbatim. This means
+        # "Remove from library"; Remove in the context of removing a song
+        # from a playlist gets its default GTK translation since "Delete"
+        # is not available there.
         text = _('gtk-remove')
         b = gtk.ImageMenuItem(text)
         b_img = gtk.Image()
@@ -3181,19 +3212,17 @@ class SongList(HintedTreeView):
                 cell.set_property('stock-id', stock)
             except AttributeError: pass
 
-        def cell_data(column, cell, model, iter,
-                attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
+        def cell_data(column, cell, model, iter, tag):
             try:
                 song = model[iter][0]
-                cell.set_property('text', song.comma(column.header_name))
+                cell.set_property('text', song.comma(tag))
             except AttributeError: pass
 
-        def cell_data_fn(column, cell, model, iter, code,
-                attr = (pango.WEIGHT_NORMAL, pango.WEIGHT_BOLD)):
+        def cell_data_fn(column, cell, model, iter, code, tag):
             try:
                 song = model[iter][0]
                 cell.set_property('text', util.unexpand(
-                    song.comma(column.header_name).decode(code, 'replace')))
+                    song.comma(tag).decode(code, 'replace')))
             except AttributeError: pass
 
         # indicator column
@@ -3224,10 +3253,10 @@ class SongList(HintedTreeView):
                 column.connect('clicked', self.set_sort_by)
             self._set_column_settings(column)
             if t in ["~filename", "~basename", "~dirname"]:
-                column.set_cell_data_func(render, cell_data_fn,
-                                          util.fscoding())
+                column.set_cell_data_func(
+                    render, cell_data_fn, util.fscoding(), t)
             else:
-                column.set_cell_data_func(render, cell_data)
+                column.set_cell_data_func(render, cell_data, t)
             if t == "~length":
                 column.set_alignment(1.0)
                 render.set_property('xalign', 1.0)
