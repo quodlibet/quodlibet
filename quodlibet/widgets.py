@@ -1290,6 +1290,7 @@ class AlbumList(Browser, gtk.VBox):
             self.connect_object('changed', self.__filter_changed, model)
             self.__refill_id = None
             self.__filter = None
+            self.inhibit = False
             model.set_visible_func(self.__parse)
 
         def __parse(self, model, iter):
@@ -1305,7 +1306,13 @@ class AlbumList(Browser, gtk.VBox):
             if parser.is_parsable(text):
                 if not text: self.__filter = None
                 else: self.__filter = parser.parse(text).search
-                self.__refill_id = gobject.timeout_add(500, model.refilter)
+                self.__refill_id = gobject.timeout_add(
+                    500, self.__refilter, model)
+
+        def __refilter(self, model):
+            self.inhibit = True
+            model.refilter()
+            self.inhibit = False
 
     # Sorting, either by people or album title. It wraps a TreeModelSort
     # whose parent is the album list.
@@ -1402,7 +1409,7 @@ class AlbumList(Browser, gtk.VBox):
         e = self.FilterEntry(model_filter)
 
         if play: view.connect('row-activated', self.__play_selection)
-        view.get_selection().connect('changed', self.__selection_changed)
+        view.get_selection().connect('changed', self.__selection_changed, e)
         s = widgets.watcher.connect('refresh', self.__refresh, view, model)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
 
@@ -1509,7 +1516,8 @@ class AlbumList(Browser, gtk.VBox):
 
             if first: selection.get_tree_view().scroll_to_cell(first)
 
-    def __selection_changed(self, selection):
+    def __selection_changed(self, selection, sort):
+        if sort.inhibit: return
         songs = self.__get_selected_songs(selection)
         # FIXME: This is a bit of a waste, but album-listing should be fast,
         # so not a huge waste.
