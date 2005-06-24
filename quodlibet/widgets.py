@@ -2360,7 +2360,6 @@ class MainWindow(gtk.Window):
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
-        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
         hbox.pack_start(self.__statusbar)
         hbox.set_border_width(3)
