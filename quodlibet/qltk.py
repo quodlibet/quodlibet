@@ -8,7 +8,7 @@
 
 # Widget wrappers for GTK.
 import os
-import gobject, gtk
+import gobject, gtk, gtk.gdk
 import config
 import util
 
@@ -243,6 +243,7 @@ class WaitLoadWindow(gtk.Window):
             self.connect_object(
                 'destroy', WaitLoadWindow.__disconnect, self, sig)
             self.set_transient_for(parent)
+            parent.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         self.set_modal(True)
         self.set_decorated(False)
         self.set_resizable(False)
@@ -320,4 +321,5 @@ class WaitLoadWindow(gtk.Window):
         self.move(x + dx/2 - dx2/2, y + dy/2 - dy2/2)
 
     def __disconnect(self, sig):
+        self.get_transient_for().window.set_cursor(None)
         self.get_transient_for().disconnect(sig)
