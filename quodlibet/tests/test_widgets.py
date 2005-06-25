@@ -26,29 +26,6 @@ class TestDirTree(TestCase):
             dirlist.destroy()
             self.failUnlessEqual([path], selected)
 
-class TestEmptyBar(TestCase):
-    def setUp(self):
-        self._bar = EmptyBar(None)
-
-    def test_initial(self):
-        self._bar.set_text("a test")
-        self._expected = "a test"
-        self.failUnlessEqual("a test", self._bar._text)
-
-    def test_restore(self):
-        self._bar.set_text("a test")
-        self._bar.save()
-        self._bar.set_text("not a test")
-        self._bar.restore()
-        self.failUnlessEqual("a test", self._bar._text)
-
-    def test_can_filter(self):
-        for key in ["artist", "album", "dummy", "~#track", "woo~bar~fake"]:
-            self.failUnless(self._bar.can_filter(key))
-
-    def tearDown(self):
-        self._bar.destroy()
-
 class TestPlayList(TestCase):
     def test_normalize_safe(self):
         for string in ["", "foo", "bar", "a_title", "some_keys"]:
@@ -179,7 +156,6 @@ class ValidaterTests(TestCase):
         self.invalidate('replaygain_album_peak', peaks)
 
 registerCase(TestDirTree)
-registerCase(TestEmptyBar)
 registerCase(TestPlayList)
 registerCase(StopAfterTest)
 registerCase(SongWatcher)
