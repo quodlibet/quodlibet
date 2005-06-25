@@ -878,8 +878,9 @@ class PlaylistWindow(gtk.Window):
         vbox = gtk.VBox(spacing=6)
         self.add(vbox)
 
-        self.__view = view = PlayList(name)
-        bar = SearchBar(self.__add_query_results, gtk.STOCK_ADD, save=False)
+        view = PlayList(name)
+        bar = SearchBar(save=False)
+        bar.connect('songs-selected', self.__add_query_results, view)
         vbox.pack_start(bar, expand=False, fill=False)
 
         hbox = gtk.HButtonBox()
@@ -902,13 +903,9 @@ class PlaylistWindow(gtk.Window):
         close.connect_object('clicked', gtk.Window.destroy, self)
         self.show_all()
 
-    def __add_query_results(self, text, sort):
-        query = text.decode('utf-8').strip()
-        try:
-           songs = library.query(query)
-           songs.sort()
-           self.__view.append_songs(songs)
-        except ValueError: pass
+    def __add_query_results(self, browser, songs, sort, view):
+        songs.sort()
+        view.append_songs(songs)
 
 # A tray icon aware of UI policy -- left click shows/hides, right
 # click makes a callback.
@@ -1037,11 +1034,15 @@ class MmKeys(object):
 
 # Browers are how the audio library is presented to the user; they
 # create the list of songs that MainSongList is filled with, and pass
-# them back via a (non-glib) callback function.
-# FIXME: use a glib callback instead, 'songs-selected' or something.
-# Also a 'songs-appended' to use in Browser#dynamic so a new song can
-# be automatically appended when one ends.
+# them back via a callback function.
 class Browser(object):
+    # Unfortunately, GObjects do not play with Python multiple inheritance.
+    # So, we need to reasssign this in every subclass.
+    __gsignals__ = {
+        'songs-selected':
+        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object))
+        }
+
     # Packing options. False if the browser should be packed into the
     # window's VBox with expand=False. Otherwise, this should be
     # a function that returns an object like a Paned; the browser
@@ -1071,14 +1072,15 @@ class Browser(object):
 
 # A browser that the user only interacts with indirectly, via the
 # Filter menu. The HBox remains empty.
-class EmptyBar(Browser, gtk.HBox):
-    def __init__(self, cb):
+class EmptyBar(gtk.HBox, Browser):
+    __gsignals__ = Browser.__gsignals__
+
+    def __init__(self):
         gtk.HBox.__init__(self)
         # When _text is None, calls to activate are ignored. This is to
         # avoid the song list changing when the user switches browses and
         # then refreshes.
         self._text = None
-        self._cb = cb
 
     def dynamic(self, song):
         if self._text is not None:
@@ -1101,7 +1103,7 @@ class EmptyBar(Browser, gtk.HBox):
             try: songs = library.query(self._text)
             except parser.error: pass
             else:
-                self._cb(songs, None)
+                self.emit('songs-selected', songs, None)
                 self.save()
 
     def can_filter(self, key): return True
@@ -1119,15 +1121,17 @@ class EmptyBar(Browser, gtk.HBox):
             self.set_text(u"%s = |(%s)" % (key, text))
         self.activate()
 
+gobject.type_register(EmptyBar)
+
 # Like EmptyBar, but the user can also enter a query manually. This
-# is QL's default browser.
+# is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
     # Most browsers implement something like save/play. If save is
     # false, Browser#save should do nothing. Likewise, if play is false,
     # the browser should never start songs playing. These are used
     # when making browsers for the Library Browser windows.
-    def __init__(self, cb, save=True, play=True):
-        EmptyBar.__init__(self, cb)
+    def __init__(self, save=True, play=True):
+        EmptyBar.__init__(self)
         self.__save = save
 
         tips = gtk.Tooltips()
@@ -1161,7 +1165,7 @@ class SearchBar(EmptyBar):
             except parser.error: pass
             else:
                 self.get_children()[0].prepend_text(self._text)
-                self._cb(songs, None)
+                self.emit('songs-selected', songs, None)
                 if self.__save: self.save()
                 self.get_children()[0].write(const.QUERIES)
 
@@ -1190,6 +1194,7 @@ class SearchBar(EmptyBar):
 
 class AlbumList(Browser, gtk.VBox):
     expand = gtk.HPaned
+    __gsignals__ = Browser.__gsignals__
 
     # Something like an AudioFile, but for a whole album.
     class _Album(object):
@@ -1357,10 +1362,9 @@ class AlbumList(Browser, gtk.VBox):
                           cmp(a1.date, a2.date) or
                           cmp(a1.title, a2.title))
 
-    def __init__(self, cb, save=True, play=True):
+    def __init__(self, save=True, play=True):
         gtk.VBox.__init__(self)
 
-        self.__cb = cb
         self.__save = save
 
         sw = gtk.ScrolledWindow()
@@ -1524,7 +1528,7 @@ class AlbumList(Browser, gtk.VBox):
         # so not a huge waste.
         albums = self.__get_selected_albums(selection)
         if not albums: return
-        self.__cb(songs, None)
+        self.emit('songs-selected', songs, None)
         if self.__save:
             if None in albums: config.set("browsers", "albums", "")
             else:
@@ -1565,7 +1569,10 @@ class AlbumList(Browser, gtk.VBox):
 
         if selected: self.filter("album", selected)
 
-class PanedBrowser(Browser, gtk.VBox):
+gobject.type_register(AlbumList)
+
+class PanedBrowser(gtk.VBox, Browser):
+    __gsignals__ = Browser.__gsignals__
     expand = gtk.VPaned
     
     class Pane(gtk.ScrolledWindow):
@@ -1664,9 +1671,8 @@ class PanedBrowser(Browser, gtk.VBox):
             selection.handler_unblock(self.__sig)
             self.__selection_changed(selection, check=False, jump=True)
 
-    def __init__(self, cb, save=True, play=True):
+    def __init__(self, save=True, play=True):
         gtk.VBox.__init__(self, spacing=0)
-        self.__cb = cb
         self.__save = save
         self.__play = play
 
@@ -1737,13 +1743,17 @@ class PanedBrowser(Browser, gtk.VBox):
         if self.__inhibit: self.__inhibit = False
         else:
             if self.__save: self.save()
-            self.__cb(songs, None)
+            self.emit('songs-selected', songs, None)
+
+gobject.type_register(PanedBrowser)
 
 class PlaylistBar(Browser, gtk.HBox):
+    __gsignals__ = Browser.__gsignals__
     background = False
 
-    def __init__(self, cb):
+    def __init__(self):
         gtk.HBox.__init__(self)
+        Browser.__init__(self)
         combo = gtk.ComboBox(PlayList.lists_model())
         cell = gtk.CellRendererText()
         combo.pack_start(cell, True)
@@ -1765,7 +1775,6 @@ class PlaylistBar(Browser, gtk.HBox):
         refresh.connect_object(
             'clicked', self.__list_selected, combo, edit, refresh)
 
-        self.__cb = cb
         tips = gtk.Tooltips()
         tips.set_tip(edit, _("Edit the current playlist"))
         tips.set_tip(refresh, _("Refresh the current playlist"))
@@ -1801,14 +1810,17 @@ class PlaylistBar(Browser, gtk.HBox):
         refresh.set_sensitive(active != 0)
         self.save()
         if active == 0:
-            self.__cb(library.values(), None)
+            self.emit('songs-selected', library.values(), None)
         else:
             key = "~#playlist_" + combo.get_model()[active][1]
-            self.__cb(filter(lambda s: key in s, library.itervalues()), key)
+            songs = filter(lambda s: key in s, library.itervalues())
+            self.emit('songs-selected', songs, key)
 
     def __edit_current(self, edit, combo):
         active = combo.get_active()
         if active > 0: PlaylistWindow(combo.get_model()[active][0])
+
+gobject.type_register(PlaylistBar)
 
 class CoverImage(gtk.Frame):
     def __init__(self, size=None):
@@ -2568,7 +2580,8 @@ class MainWindow(gtk.Window):
             c.remove(self.browser)
             c.destroy()
             self.browser.destroy()
-        self.browser = Browser(self.__browser_cb)
+        self.browser = Browser()
+        self.browser.connect('songs-selected', self.__browser_cb)
         if self.browser.expand:
             c = self.browser.expand()
             c.pack1(self.browser, resize=True)
@@ -3067,8 +3080,8 @@ class MainWindow(gtk.Window):
             for widget in widgets:
                 self.ui.get_widget(widget).set_property('visible', c)
 
-    def __browser_cb(self, songs, sort):
-        if self.browser.background:
+    def __browser_cb(self, browser, songs, sort):
+        if browser.background:
             try: bg = config.get("browsers", "background").decode('utf-8')
             except UnicodeError: bg = ""
             try: songs = filter(parser.parse(bg).search, songs)
@@ -3286,7 +3299,8 @@ class LibraryBrowser(gtk.Window):
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        browser = Kind(self.__search, save=False, play=False)
+        browser = Kind(save=False, play=False)
+        browser.connect('songs-selected', self.__search)
         if Kind.expand:
             container = Kind.expand()
             container.pack1(browser, resize=True)
@@ -3342,7 +3356,7 @@ class LibraryBrowser(gtk.Window):
         menu.popup(None, None, None, event.button, event.time)
         return True
 
-    def __search(self, songs, dummy):
+    def __search(self, browser, songs, dummy):
         model = self.__view.get_model()
         model.clear()
         songs.sort()
