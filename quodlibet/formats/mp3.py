@@ -318,6 +318,7 @@ class MP3Player(AudioPlayer):
         # using. Seek to the end of the file to get relaible information.
         audio.seek_time(audio.total_time())
         audio.read()
+        self.filename = song["~filename"]
         self.__expected_sr = audio.samplerate()
         self.dev.set_info(self.__expected_sr, 2)
         self.length = audio.total_time()
@@ -334,7 +335,7 @@ class MP3Player(AudioPlayer):
         if self.stopped: raise StopIteration
         buff = self.audio.read(256)
         if self.audio.samplerate() != self.__expected_sr:
-            print "W: Skipping what doesn't look like audio data..."
+            print "W: %s: Skipping what doesn't look like audio data..." % self.filename
             while self.audio.samplerate() != self.__expected_sr and buff:
                 buff = self.audio.read(256)
             buff = self.audio.read(256)
