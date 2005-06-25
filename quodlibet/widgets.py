@@ -1583,7 +1583,6 @@ class PanedBrowser(Browser, gtk.VBox):
             self.tag = mytag
             self.__next = next
             self.__songs = []
-            self.__selected_items = []
             self.child.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
             self.child.connect_object('destroy', self.child.set_model, None)
             self.__sig = self.child.get_selection().connect(
@@ -1596,22 +1595,25 @@ class PanedBrowser(Browser, gtk.VBox):
             player.playlist.reset()
 
         def __selection_changed(self, selection, check=True, jump=False):
-            if check: # verify we've actually changed...
-                model, rows = selection.get_selected_rows()
-                selected_items = [model[row][0] for row in rows]
-                if rows == []: rows = [(0,)]
-                if self.__selected_items == selected_items: return
-                else: self.__selected_items = selected_items
-            else:
-                model, rows = selection.get_selected_rows()
-                self.__selected_items = [model[row][0] for row in rows]
-            if jump:
-                model, rows = selection.get_selected_rows()
-                if rows: self.child.scroll_to_cell(rows[0])
-            # pass on the remaining songs to the next pane
-            self.__next.fill(
-                filter(parser.parse(self.query()).search, self.__songs))
+            model, rows = selection.get_selected_rows()
+            if jump and rows: self.child.scroll_to_cell(rows[0])
 
+            if rows == [] or rows[0][0] == 0: # All
+                self.__next.fill(self.__songs)
+            else:
+                selected = [util.unescape(model[row][0]).decode('utf-8')
+                            for row in rows]
+                if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
+                    selected.pop()
+                    selected = set(selected)
+                    filt = (lambda s: self.tag not in s or
+                         selected.intersection(s.list(self.tag)))
+                else:
+                    selected = set(selected)
+                    filt = lambda s: selected.intersection(s.list(self.tag))
+
+                self.__next.fill(filter(filt, self.__songs))
+            
         def select(self, values, escape=True):
             selection = self.child.get_selection()
             selection.handler_block(self.__sig)
@@ -1660,20 +1662,6 @@ class PanedBrowser(Browser, gtk.VBox):
             for i in to_select: selection.select_path((i,))
             selection.handler_unblock(self.__sig)
             self.__selection_changed(selection, check=False, jump=True)
-
-        def query(self):
-            selection = self.child.get_selection()
-            model, rows = selection.get_selected_rows()
-            if rows == [] or rows[0][0] == 0: # All
-                return "%s = /.?/" % self.tag
-            else:
-                selected = ["/^%s$/c"%sre.escape(util.unescape(model[row][0]))
-                            for row in rows]
-                if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
-                    selected.pop()
-                    selected.append("!/./")
-                return ("%s = |(%s)" %(
-                    self.tag, ", ".join(selected))).decode("utf-8")
 
     def __init__(self, cb, save=True, play=True):
         gtk.VBox.__init__(self, spacing=0)
