@@ -1,6 +1,6 @@
 top_srcdir = ../
 NAME = quodlibet
-ALL_LINGUAS = en_GB en_CA de pl ru fr fi
+ALL_LINGUAS = en_GB en_CA de pl ru fr fi nl_NL
 PO_DIR ?= /usr/share/locale
 
 all:
@@ -17,6 +17,9 @@ quodlibet.pot: ../quodlibet.py ../library.py tag-names.py ../util.py ../widgets.
 
 clean:
 	rm -f untitled.pot
+
+mo-clean: distclean
+	rm -f *.mo
 
 distclean: clean
 	rm -f *~
