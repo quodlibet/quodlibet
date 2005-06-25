@@ -11,8 +11,6 @@ import time
 import threading
 import random
 import config
-import match
-import parser
 import audioop
 
 class OSSAudioDevice(object):
@@ -122,7 +120,7 @@ class GStreamerDevice(object):
                 c = gconf.client_get_default()
                 val = c.get("/system/gstreamer/0.8/default/audiosink")
                 if val.type == gconf.VALUE_STRING: sinkname = val.get_string()
-                else: sinkname == "osssink"
+                else: sinkname = "osssink"
 
         if gst.element_factory_make(sinkname): self.sinkname = sinkname
         else: self.sinkname = "osssink"
@@ -141,7 +139,7 @@ class GStreamerDevice(object):
     def set_volume(self, v):
         self.__volume = v
         if self.player: self.player.volume.set_property('volume', v)
-    def get_volume(self, v): return self.__volume
+    def get_volume(self): return self.__volume
     volume = property(get_volume, set_volume)
 
     def set_paused(self, p):

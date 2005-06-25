@@ -22,7 +22,6 @@ if __name__ == "__main__":
     sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
 
     import const
-    from util import to
 
     import quodlibet
     opts = quodlibet.OptionParser(

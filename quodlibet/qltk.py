@@ -8,7 +8,7 @@
 
 # Widget wrappers for GTK.
 import os
-import gobject, gtk, gtk.gdk
+import gobject, gtk
 import config
 import util
 

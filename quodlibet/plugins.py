@@ -54,10 +54,10 @@ characteristics:
         An album is a list of songs all with the same album tag.
 """
 
-from util import mtime
+import util; from util import mtime
 from traceback import print_exc
 
-import gobject, gtk
+import gobject, gtk, qltk
 import widgets
 
 def hascallable(obj, attr):
@@ -136,7 +136,6 @@ class PluginManager(object):
 
     def rescan(self):
         import os, sys, dircache
-        from stat import ST_MTIME
 
         changes = False;
 

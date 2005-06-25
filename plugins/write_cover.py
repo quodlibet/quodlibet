@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, util, config, shutil, gtk
+import os, config, shutil, gtk
 
 try: config.get("plugins", __name__)
 except:

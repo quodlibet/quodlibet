@@ -49,7 +49,7 @@ class QueryLexer(sre.Scanner):
     def tag(self, scanner, string):
         return QueryLexeme(TAG, string.strip())
 
-    def relop(self, scannr, string):
+    def relop(self, scanner, string):
         return QueryLexeme(RELOP, string)
 
     def table(self, scanner, string):

@@ -8,15 +8,12 @@
 
 import os, sys
 import pickle
-import util; from util import escape, to
+import util; from util import to
 import fcntl
 import random
-import time
 import shutil
 import config
-import tempfile
 import parser
-import sre
 import formats
 from formats import MusicFile
 

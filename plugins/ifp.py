@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, gtk, qltk
+import os, gtk, util, qltk
 
 class IFPUpload(object):
     PLUGIN_NAME = "Send to iFP"

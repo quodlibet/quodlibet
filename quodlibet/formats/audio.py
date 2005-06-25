@@ -12,7 +12,6 @@ import shutil
 import time
 
 import util, config
-from util import escape
 
 _ = gettext.gettext
 

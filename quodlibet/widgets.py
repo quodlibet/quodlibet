@@ -913,8 +913,9 @@ class PlaylistWindow(gtk.Window):
 # A tray icon aware of UI policy -- left click shows/hides, right
 # click makes a callback.
 class HIGTrayIcon(TrayIcon):
-    def __init__(self, pixbuf, window, cbs={}):
+    def __init__(self, pixbuf, window, cbs=None):
         self.__window = window
+        cbs = cbs or {}
         cbs[1] = self.__showhide
         TrayIcon.__init__(self, pixbuf, cbs)
 
@@ -1059,8 +1060,8 @@ class Browser(object):
     # they need to recreate the criteria for the current song list (not
     # the list itself). restore is called at startup if the browser
     # is the first loaded.
-    def save(*args): raise NotImplementedError
-    def restore(*args): raise NotImplementedError
+    def save(self): raise NotImplementedError
+    def restore(self): raise NotImplementedError
 
     # Decides whether "filter on foo" menu entries are available.
     def can_filter(self, key): return False
@@ -3497,7 +3498,7 @@ class MainSongList(SongList):
                         s = gtk.SORT_ASCENDING
                     else: s = gtk.SORT_DESCENDING
                 else:
-                    if order: s == gtk.SORT_ASCENDING
+                    if order: s = gtk.SORT_ASCENDING
                     else: s = gtk.SORT_DESCENDING
                 h.set_sort_indicator(True)
                 h.set_sort_order(s)

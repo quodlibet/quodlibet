@@ -30,7 +30,7 @@ class OptionParser(object):
     def add(self, canon, help=None, arg="", shorts="", longs=[]):
         self.__args[canon] = arg
         for s in shorts: self.__translate_short[s] = canon
-        for l in longs: self.__translate_longs[s] = canon
+        for l in longs: self.__translate_longs[l] = canon
         if help: self.__help[canon] = help
 
     def __shorts(self):
@@ -170,7 +170,7 @@ def refresh_cache():
     raise SystemExit
 
 def print_playing(fstring = "<artist~album~tracknumber~title>"):
-    import util; from util import to, FileFromPattern
+    from util import to, FileFromPattern
     from formats.audio import AudioFile
     try:
         fn = file(const.CURRENT)

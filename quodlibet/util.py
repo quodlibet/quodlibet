@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, sre, stat, string, locale
+import os, sre, string, locale
 from gettext import ngettext
 N_ = str 
 

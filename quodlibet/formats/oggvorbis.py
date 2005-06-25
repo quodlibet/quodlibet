@@ -67,6 +67,5 @@ class OggPlayer(AudioPlayer):
             self.dev.play(buff)
         return int(self.audio.time_tell() * 1000)
 
-
 info = OggFile
 player = OggPlayer

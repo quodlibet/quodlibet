@@ -316,7 +316,6 @@ class MP3Player(AudioPlayer):
         # Lots of MP3s report incorrect bitrates/samplerates/lengths if
         # the ID3 tag is busted in whatever way the ID3 tag reader is
         # using. Seek to the end of the file to get relaible information.
-        initial_sr = audio.samplerate()
         audio.seek_time(audio.total_time())
         audio.read()
         self.__expected_sr = audio.samplerate()
@@ -340,8 +339,6 @@ class MP3Player(AudioPlayer):
                 buff = self.audio.read(256)
             buff = self.audio.read(256)
         if buff is None: raise StopIteration
-        if self.scale != 1:
-            buff = audioop.mul(buff, 2, self.scale)
         self.dev.play(buff)
         return self.audio.current_time()
 

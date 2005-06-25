@@ -45,7 +45,8 @@ class APETag(object):
         if not os.path.exists(filename):
             raise FileNotFoundError("%s does not exist" % filename)
         elif os.path.getsize(filename) < 32:
-            raise InvalidTagError("%s does not contain an APE tag" % filename)
+            raise InvalidFormatError(
+                "%s does not contain an APE tag" % filename)
         self.filename = filename
         self.__dict = {}
 
@@ -66,7 +67,7 @@ class APETag(object):
             # Bit 0 is read/write flag, ignored
             kind = (flags & 6) >> 1
             if kind == 3:
-                raise InvalidTagFormat("value type must be 0, 1, or 2")
+                raise InvalidFormatError("value type must be 0, 1, or 2")
             key = ""
             while key[-1:] != '\0': key += f.read(1)
             key = key[:-1]
@@ -105,7 +106,7 @@ class APETag(object):
             # 4 byte version
             version = _read_int(data[8:12])
             if version < 2000 or version >= 3000:
-                raise InvalidTagError(
+                raise InvalidFormatError(
                     "module only supports APEv2 (2000-2999), has %d" % version)
 
             # 4 byte tag size
@@ -117,7 +118,7 @@ class APETag(object):
             # 4 byte flags
             flags = _read_int(data[20:24])
             if flags & IS_HEADER:
-                raise InvalidTagError("found header at end of file")
+                raise InvalidFormatError("found header at end of file")
 
             f.seek(-tag_size, 2)
             # tag size includes footer
