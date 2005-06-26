@@ -3811,10 +3811,8 @@ class SongProperties(gtk.Window):
             def _people(self, (song,)):
                 vb = SongProperties.Information.SongInfo(3, 0)
                 if "artist" in song:
-                    if "\n" in song["artist"]:
-                        title = util.capitalize(_("artists"))
-                    else:
-                        title = tag("artist")
+                    title = util.capitalize(ngettext(
+                        "artist", "artists", len(song.list('artist'))))
                     l = self.Label(song["artist"])
                     l.set_ellipsize(pango.ELLIPSIZE_END)
                     vb.pack_start(l)
@@ -3823,19 +3821,17 @@ class SongProperties(gtk.Window):
                     # Properties when a song has performers/composers/etc.
                     title = _("People")
                 for names, tag_ in [
-                    (_("performers"), "performer"),
-                    (_("lyricists"),  "lyricist"),
-                    (_("arrangers"),  "arranger"),
-                    (_("composers"),  "composer"),
-                    (_("conductors"), "conductor"),
-                    (_("authors"),    "author")]:
+                    ("performers", "performer"),
+                    ("lyricists", "lyricist"),
+                    ("arrangers", "arranger"),
+                    ("composers", "composer"),
+                    ("conductors", "conductor"),
+                    ("authors", "author")]:
                     if tag_ in song:
                         l = self.Label(song[tag_])
                         l.set_ellipsize(pango.ELLIPSIZE_END)
-                        if "\n" in song[tag_]:
-                            vb.pack_frame(util.capitalize(names), l)
-                        else:
-                            vb.pack_frame(tag(tag_), l)
+                        name = ngettext(tag_, names, len(song.list(tag_)))
+                        vb.pack_frame(util.capitalize(name), l)
                 if not vb.get_children(): vb.destroy()
                 else: self.pack_frame(title, vb)
 
@@ -3984,10 +3980,12 @@ class SongProperties(gtk.Window):
                 performers = list(performers); performers.sort()
 
                 if artists:
-                    if len(artists) == 1: title = tag("artist")
-                    else: title = util.capitalize(_("artists"))
+                    title = util.capitalize(
+                        ngettext("artist", "artists", len(artists)))
                     self.pack_frame(title, self.Label("\n".join(artists)))
                 if performers:
+                    title = util.capitalize(
+                        ngettext("performer", "performers", len(performers)))
                     if len(performers) == 1: title = tag("performer")
                     else: title = util.capitalize(_("performers"))
                     self.pack_frame(title, self.Label("\n".join(performers)))
