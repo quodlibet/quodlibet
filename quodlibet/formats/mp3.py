@@ -141,6 +141,7 @@ class MP3File(AudioFile):
     GENRE_RE = re.compile(r"(?:\((?P<id>[0-9]+|RX|CR)\))?(?P<str>.+)?")
             
     def __init__(self, filename):
+        audio = eyeD3.tag.Mp3AudioFile(filename)
         tag = eyeD3.Tag(eyeD3.ID3_V2_4)
         tag.link(filename)
         date = ["", "", ""]
@@ -196,13 +197,8 @@ class MP3File(AudioFile):
         if d and len(d): d = d[0]
         if d: date = list(d.getDate().split("T")[0].split("-")) + [None, None]
 
-        md = mad.MadFile(filename)
-        # Avoid garbage at the start of the file.
-        md.seek_time(md.total_time()); md.read()
-        self["~#length"] = md.total_time() // 1000
-        md.seek_time(md.total_time() / 2); md.read()
-        bitrates = [md.bitrate() for i in range(10) if md.read()]
-        self["~#bitrate"] = int(sum(bitrates) / len(bitrates))
+        self["~#length"] = audio.getPlayTime()
+        self["~#bitrate"] = audio.getBitRate()[1] * 1000
         if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
 
