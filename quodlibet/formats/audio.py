@@ -13,10 +13,7 @@ import time
 
 import util, config
 
-_ = gettext.gettext
-
 class Unknown(unicode): pass
-UNKNOWN = Unknown(_("Unknown"))
 
 MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
 
@@ -71,10 +68,10 @@ class AudioFile(dict):
             if v is None:
                 return "%s [%s]" %(
                     os.path.basename(self["~filename"]).decode(
-                    util.fscoding(), "replace"), UNKNOWN)
+                    util.fscoding(), "replace"), Unknown(_("Unknown")))
             else: return v
         elif (key == "artist" or key == "album"):
-            return self.get(key, UNKNOWN)
+            return self.get(key, Unknown(_("Unknown")))
         else: return dict.get(self, key, default)
 
     def comma(self, key):

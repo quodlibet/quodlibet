@@ -2,7 +2,7 @@ import os, config
 
 from unittest import TestCase
 from tests import registerCase
-from formats.audio import AudioFile, AudioPlayer, Unknown, UNKNOWN
+from formats.audio import AudioFile, AudioPlayer, Unknown
 
 try: from sets import Set as set
 except ImportError: pass
@@ -55,7 +55,7 @@ class AudioFileTest(TestCase):
         # fake/generated key checks
         self.failIf(quux("not a key"))
         self.failUnlessEqual(quux("not a key", "foo"), "foo")
-        self.failUnlessEqual(quux("artist"), UNKNOWN)
+        self.failUnlessEqual(quux("artist"), _("Unknown"))
         self.failUnlessEqual(quux("~basename"), "asong.ogg")
         self.failUnlessEqual(quux("~dirname"), "tests/data")
         self.failUnlessEqual(quux("title"), "asong.ogg [Unknown]")
