@@ -11,15 +11,17 @@ po: quodlibet.pot
 quodlibet.pot: ../quodlibet.py ../library.py tag-names.py ../util.py ../widgets.py ../exfalso.py ../formats/audio.py
 	intltool-update --pot --gettext-package=$(NAME)
 
+%.po: quodlibet.pot
+	intltool-update --gettext-package=$(NAME) `echo $@ | sed s/.po//`
+
 %.mo: %.po quodlibet.pot
-	intltool-update --gettext-package=$(NAME) `echo $< | sed s/.po//`
 	msgfmt -o $@ $<
 
 clean:
 	rm -f untitled.pot
 
 mo-clean: distclean
-	rm -f *.mo
+	rm -f *.mo quodlibet.pot quodlibet.gmo
 
 distclean: clean
 	rm -f *~
