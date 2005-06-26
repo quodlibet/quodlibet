@@ -157,7 +157,8 @@ class MP3File(AudioFile):
                 self["~picture"] = "y"
                 continue
             elif frame.header.id == "TCON":
-                self.__fix_genre(frame.text)
+                text = self.__distrust_latin1(frame.text, frame.encoding)
+                if text is not None: self.__fix_genre(text)
                 continue            
             elif frame.header.id in ["COMM", "TXXX"]:
                 if frame.description.startswith("QuodLibet::"):
@@ -181,15 +182,8 @@ class MP3File(AudioFile):
                 else: continue
 
                 if not text: continue
-                if not isinstance(text, unicode):
-                    assert isinstance(text, unicode)
-                if frame.encoding == eyeD3.LATIN1_ENCODING:
-                    text = text.encode('iso-8859-1')
-                    for codec in self.CODECS:
-                        try: text = text.decode(codec)
-                        except (UnicodeError, LookupError): pass
-                        else: break
-                    else: continue
+                text = self.__distrust_latin1(text, frame.encoding)
+                if text is None: continue
                 if name in self:
                     if text in self[name]: pass
                     elif self[name] in text: self[name] = text
@@ -211,6 +205,18 @@ class MP3File(AudioFile):
         self["~#bitrate"] = int(sum(bitrates) / len(bitrates))
         if date[0]: self["date"] = "-".join(filter(None, date))
         self.sanitize(filename)
+
+    def __distrust_latin1(self, text, encoding):
+        if not isinstance(text, unicode):
+            assert isinstance(text, unicode)
+        if encoding == eyeD3.LATIN1_ENCODING:
+            text = text.encode('iso-8859-1')
+            for codec in self.CODECS:
+                try: text = text.decode(codec)
+                except (UnicodeError, LookupError): pass
+                else: break
+            else: return None
+        return text
 
     def __fix_genre(self, gstr):
         # http://www.id3.org/id3v2.3.0.html#TCON
