@@ -1758,7 +1758,6 @@ class PlaylistBar(Browser, gtk.HBox):
         cell = gtk.CellRendererText()
         combo.pack_start(cell, True)
         combo.add_attribute(cell, 'text', 0)
-        combo.set_active(0)
         self.pack_start(combo)
 
         edit = gtk.Button()
@@ -1791,7 +1790,7 @@ class PlaylistBar(Browser, gtk.HBox):
 
     def restore(self):
         try: key = config.get("browsers", "playlist")
-        except Exception: pass
+        except Exception: self.get_children()[0].set_active(0)
         else:
             combo = self.get_children()[0]
             model = combo.get_model()
@@ -1806,8 +1805,9 @@ class PlaylistBar(Browser, gtk.HBox):
 
     def __list_selected(self, combo, edit, refresh):
         active = combo.get_active()
-        edit.set_sensitive(active != 0)
-        refresh.set_sensitive(active != 0)
+        edit.set_sensitive(active > 0)
+        refresh.set_sensitive(active > 0)
+        if active == -1: return # Unset
         self.save()
         if active == 0:
             self.emit('songs-selected', library.values(), None)
