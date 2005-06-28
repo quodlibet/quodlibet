@@ -14,6 +14,8 @@ try: import eyeD3, mad
 except ImportError: extensions = []
 else: extensions = [".mp3", ".mp2"]
 
+def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
+
 # ID3 is absolutely the worst thing ever.
 
 class MP3File(AudioFile):
@@ -259,9 +261,11 @@ class MP3File(AudioFile):
             if frame.description.startswith("QuodLibet::"):
                 tag.frames.remove(frame)
 
+        needs_utf16 = False
         for key, id3name in self.SDI.items():
             for frame in tag.frames[id3name]:
                 tag.frames.remove(frame)
+            needs_utf16 = needs_utf16 or not isascii(self.get(key, ""))
             if id3name == "COMM" and key in self:
                 h = eyeD3.FrameHeader(tag.frames.tagHeader)
                 h.id = "COMM"
@@ -277,6 +281,7 @@ class MP3File(AudioFile):
 
         for key in filter(lambda x: x not in self.SDI and x != "date",
                           self.realkeys()):
+            needs_utf16 = needs_utf16 or not isascii(self.get(key, ""))
             for value in self.list(key):
                 h = eyeD3.FrameHeader(tag.frames.tagHeader)
                 h.id = "TXXX"
@@ -291,7 +296,8 @@ class MP3File(AudioFile):
             elif y:
                 tag.setDate(year=y)
         tag.setVersion(eyeD3.ID3_V2_4)
-        tag.setTextEncoding(eyeD3.UTF_8_ENCODING)
+        if needs_utf16: tag.setTextEncoding(eyeD3.UTF_16_ENCODING)
+        else: tag.setTextEncoding(eyeD3.UTF_8_ENCODING)
         tag.update(eyeD3.ID3_V2_4)
         self.sanitize()
 
