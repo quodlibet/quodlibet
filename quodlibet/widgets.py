@@ -2634,10 +2634,7 @@ class MainWindow(gtk.Window):
             elif c2 == "t":
                 self.repeat.set_active(not self.repeat.get_active())
             else: self.repeat.set_active(True)
-        elif c == "!":
-            if not self.get_property('visible'):
-                self.move(*self.window_pos)
-            self.present()
+        elif c == "!": self.present()
         elif c == "q": self.__make_query(os.read(source, 4096))
         elif c == "s":
             time = os.read(source, 20)
