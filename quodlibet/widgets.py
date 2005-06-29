@@ -4830,7 +4830,7 @@ class SongProperties(gtk.Window):
             view.append_column(column)
             render = gtk.CellRendererText()
             render.set_property('editable', True)
-            render.connect('edited', self.__row_edited, model, preview)
+
             column = gtk.TreeViewColumn(_('New Name'), render, text=2)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
@@ -4896,15 +4896,18 @@ class SongProperties(gtk.Window):
             save.connect_object(
                 'clicked', self.__rename_files, prop, save, model)
 
+            render.connect('edited', self.__row_edited, model, preview, save)
+
         def __changed(self, save, preview, entry):
             save.set_sensitive(False)
             preview.set_sensitive(bool(entry.get_text()))
 
-        def __row_edited(self, renderer, path, new, model, preview):
+        def __row_edited(self, renderer, path, new, model, preview, save):
             row = model[path]
             if row[2] != new:
                 row[2] = new
                 preview.set_sensitive(True)
+                save.set_sensitive(True)
 
         def __preview_files(self, button, *args):
             self.__update(self.__songs, *args)
