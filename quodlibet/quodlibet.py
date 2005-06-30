@@ -170,6 +170,7 @@ def refresh_cache():
     raise SystemExit
 
 def print_playing(fstring = "<artist~album~tracknumber~title>"):
+    import util
     from util import to, FileFromPattern
     from formats.audio import AudioFile
     try:
