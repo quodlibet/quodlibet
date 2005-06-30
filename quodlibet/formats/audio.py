@@ -17,6 +17,17 @@ class Unknown(unicode): pass
 
 MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
 
+# Tags to display in the "Add Tag" dialogs
+USEFUL_TAGS = (
+    # Ogg Vorbis spec tags
+    "title version album tracknumber artist genre performer copyright "
+    "license organization description location contact isrc "
+
+    # Other tags we like
+    "arranger author composer conductor lyricist discnumber labelid part "
+    "website language bpm"
+    ).split()
+
 class AudioFile(dict):
     def __cmp__(self, other):
         if not other: return -1

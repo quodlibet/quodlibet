@@ -1659,11 +1659,14 @@ class PanedBrowser(gtk.VBox, Browser):
             model = self.child.get_model()
             model.clear()
             to_select = []
+            i = 0
             if len(values) + (not bool(complete)) > 1:
                 model.append(["<b>%s</b>" % _("All")])
-            for i, value in enumerate(map(util.escape, values)):
+                i += 1
+            for value in map(util.escape, values):
                 model.append([value])
-                if value in selected_items: to_select.append(i + 1)
+                if value in selected_items: to_select.append(i)
+                i += 1
             if not complete:
                 model.append(["<b>%s</b>" % _("Unknown")])
             if to_select == []: to_select = [0]
@@ -1682,7 +1685,7 @@ class PanedBrowser(gtk.VBox, Browser):
         self.connect_object('destroy', widgets.watcher.disconnect, s)
 
     def refresh_panes(self, restore=True):
-        try: hbox = self.get_children()[1]
+        try: hbox = self.get_children()[0]
         except IndexError: pass # first call
         else: hbox.destroy()
 
@@ -3580,9 +3583,7 @@ class GetStringDialog(gtk.Dialog):
 
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change, validators):
-        if can_change == True:
-            can = ["title", "version", "artist", "album",
-                   "performer", "discnumber", "tracknumber"]
+        if can_change == True: can = formats.audio.USEFUL_TAGS
         else: can = can_change
         can.sort()
 
