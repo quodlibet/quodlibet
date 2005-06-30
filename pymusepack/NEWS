@@ -1,3 +1,6 @@
+0.4 - 2005.06.29
+ * Fix some stupid thinkos in error handling.
+
 0.3 - 2005.05.08
  * Raise an IOError when an unsupported APE tag is found.
  * MPCFile#set_scale to adjust volume scaling.
