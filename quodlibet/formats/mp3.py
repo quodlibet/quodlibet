@@ -253,6 +253,7 @@ class MP3File(AudioFile):
     def write(self):
         tag = eyeD3.Tag()
         tag.link(self['~filename'])
+        tag.setVersion(eyeD3.ID3_V2_4)
 
         for frame in tag.frames[eyeD3.COMMENT_FID]:
             if frame.description.startswith("QuodLibet::"):
@@ -295,7 +296,6 @@ class MP3File(AudioFile):
                 tag.setDate(year=y, month=m, dayOfMonth=d)
             elif y:
                 tag.setDate(year=y)
-        tag.setVersion(eyeD3.ID3_V2_4)
         if needs_utf16: tag.setTextEncoding(eyeD3.UTF_16_ENCODING)
         else: tag.setTextEncoding(eyeD3.UTF_8_ENCODING)
         tag.update(eyeD3.ID3_V2_4)
