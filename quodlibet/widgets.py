@@ -5178,13 +5178,6 @@ class SongProperties(gtk.Window):
             expander.set_use_underline(True)
             vbox.pack_start(expander, expand=False)
 
-        bbox = gtk.HButtonBox()
-        bbox.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock=gtk.STOCK_CLOSE)
-        button.connect_object('clicked', gtk.Window.destroy, self)
-        bbox.pack_start(button)
-        vbox.pack_start(bbox, expand=False)
-
         for song in songs:
             fbasemodel.append(
                 row = [song,
