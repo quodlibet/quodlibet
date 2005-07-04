@@ -4162,16 +4162,16 @@ class SongProperties(gtk.Window):
             self.prop = parent
 
             self.model = gtk.ListStore(str, str, bool, bool, bool, str)
-            self.view = HintedTreeView(self.model)
-            selection = self.view.get_selection()
+            view = view = HintedTreeView(self.model)
+            selection = view.get_selection()
             selection.connect('changed', self.tag_select)
             render = gtk.CellRendererPixbuf()
             column = gtk.TreeViewColumn(_("Write"), render)
 
-            style = self.view.get_style()
+            style = view.get_style()
             pixbufs = [ style.lookup_icon_set(stock)
                         .render_icon(style, gtk.TEXT_DIR_NONE, state,
-                            gtk.ICON_SIZE_MENU, self.view, None)
+                            gtk.ICON_SIZE_MENU, view, None)
                         for state in (gtk.STATE_INSENSITIVE, gtk.STATE_NORMAL)
                             for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
             def cdf_write(col, rend, model, iter, (write, delete)):
@@ -4184,16 +4184,16 @@ class SongProperties(gtk.Window):
                     rend.set_property(
                         'pixbuf', pixbufs[2*row[write]+row[delete]])
             column.set_cell_data_func(render, cdf_write, (2, 4))
-            self.view.connect('button-press-event',
+            view.connect('button-press-event',
                               self.write_toggle, (column, 2))
-            self.view.append_column(column)
+            view.append_column(column)
 
             render = gtk.CellRendererText()
             render.connect('edited', self.edit_tag, self.model, 0)
             column = gtk.TreeViewColumn(_('Tag'), render, text=0,
                                         strikethrough=4)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            self.view.append_column(column)
+            view.append_column(column)
 
             render = gtk.CellRendererText()
             render.set_property('ellipsize', pango.ELLIPSIZE_END)
@@ -4203,15 +4203,15 @@ class SongProperties(gtk.Window):
             column = gtk.TreeViewColumn(_('Value'), render, markup=1,
                                         editable=3, strikethrough=4)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            self.view.append_column(column)
+            view.append_column(column)
 
-            self.view.connect('popup-menu', self.popup_menu)
-            self.view.connect('button-press-event', self.button_press)
+            view.connect('popup-menu', self.popup_menu)
+            view.connect('button-press-event', self.button_press)
 
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            sw.add(self.view)
+            sw.add(view)
             self.pack_start(sw)
 
             self.buttonbox = gtk.HBox(spacing=18)
@@ -4221,7 +4221,7 @@ class SongProperties(gtk.Window):
             self.add = gtk.Button(stock=gtk.STOCK_ADD)
             self.add.connect('clicked', self.add_tag)
             self.remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-            self.remove.connect('clicked', self.remove_tag)
+            self.remove.connect('clicked', self.remove_tag, view)
             self.remove.set_sensitive(False)
             bbox1.pack_start(self.add)
             bbox1.pack_start(self.remove)
@@ -4230,7 +4230,6 @@ class SongProperties(gtk.Window):
             bbox2.set_spacing(6)
             bbox2.set_layout(gtk.BUTTONBOX_END)
             self.revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
-            self.revert.connect('clicked', self.revert_files)
             self.save = gtk.Button(stock=gtk.STOCK_SAVE)
             self.save.connect('clicked', self.save_files)
             self.revert.set_sensitive(False)
@@ -4245,19 +4244,24 @@ class SongProperties(gtk.Window):
 
             tips = gtk.Tooltips()
             for widget, tip in [
-                (self.view, _("Double-click a tag value to change it, "
+                (view, _("Double-click a tag value to change it, "
                               "right-click for other options")),
                 (self.add, _("Add a new tag")),
                 (self.remove, _("Remove selected tag"))]:
                 tips.set_tip(widget, tip)
             tips.enable()
             self.connect_object('destroy', gtk.Tooltips.destroy, tips)
-            parent.connect_object('changed', self.__class__.__update, self)
+
+            UPDATE_ARGS = [view]
+            parent.connect_object(
+                'changed', self.__class__.__update, self, *UPDATE_ARGS)
+            self.revert.connect_object(
+                'clicked', self.__update, None, *UPDATE_ARGS)
 
         def popup_menu(self, view):
             path, col = view.get_cursor()
             row = view.get_model()[path]
-            self.show_menu(row, 1, 0)
+            self.show_menu(row, 1, 0, view)
 
         def button_press(self, view, event):
             if event.button not in (2, 3): return False
@@ -4281,14 +4285,14 @@ class SongProperties(gtk.Window):
                 else: return False
 
             elif event.button == 3: # right click menu
-                self.show_menu(row, event.button, event.time)
+                self.show_menu(row, event.button, event.time, view)
                 return True
 
         def _paste(self, clip, text, (rend, path)):
             if text: rend.emit('edited', path, text.strip())
 
-        def split_into_list(self, activator):
-            model, iter = self.view.get_selection().get_selected()
+        def split_into_list(self, activator, view):
+            model, iter = view.get_selection().get_selected()
             row = model[iter]
             spls = config.get("settings", "splitters")
             vals = util.split_value(util.unescape(row[1]), spls)
@@ -4297,8 +4301,8 @@ class SongProperties(gtk.Window):
                 row[2] = True
                 for val in vals[1:]: self.add_new_tag(row[0], val)
 
-        def split_title(self, activator):
-            model, iter = self.view.get_selection().get_selected()
+        def split_title(self, activator, view):
+            model, iter = view.get_selection().get_selected()
             row = model[iter]
             spls = config.get("settings", "splitters")
             title, versions = util.split_title(util.unescape(row[1]), spls)
@@ -4307,8 +4311,8 @@ class SongProperties(gtk.Window):
                 row[2] = True
                 for val in versions: self.add_new_tag("version", val)
 
-        def split_album(self, activator):
-            model, iter = self.view.get_selection().get_selected()
+        def split_album(self, activator, view):
+            model, iter = view.get_selection().get_selected()
             row = model[iter]
             album, disc = util.split_album(util.unescape(row[1]))
             if album != util.unescape(row[1]):
@@ -4316,8 +4320,8 @@ class SongProperties(gtk.Window):
                 row[2] = True
                 self.add_new_tag("discnumber", disc)
 
-        def split_people(self, tag):
-            model, iter = self.view.get_selection().get_selected()
+        def split_people(self, activator, tag, view):
+            model, iter = view.get_selection().get_selected()
             row = model[iter]
             spls = config.get("settings", "splitters")
             person, others = util.split_people(util.unescape(row[1]), spls)
@@ -4326,10 +4330,7 @@ class SongProperties(gtk.Window):
                 row[2] = True
                 for val in others: self.add_new_tag(tag, val)
 
-        def split_performer(self, activator): self.split_people("performer")
-        def split_arranger(self, activator): self.split_people("arranger")
-
-        def show_menu(self, row, button, time):
+        def show_menu(self, row, button, time, view):
             menu = gtk.Menu()        
             spls = config.get("settings", "splitters")
 
@@ -4345,7 +4346,7 @@ class SongProperties(gtk.Window):
                 b = gtk.ImageMenuItem(_("Split disc out of _album"))
                 b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
                                              gtk.ICON_SIZE_MENU)
-                b.connect('activate', self.split_album)
+                b.connect('activate', self.split_album, view)
                 b.set_sensitive(util.split_album(row[1])[1] is not None)
                 menu.append(b)
 
@@ -4353,7 +4354,7 @@ class SongProperties(gtk.Window):
                 b = gtk.ImageMenuItem(_("Split version out of title"))
                 b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
                                              gtk.ICON_SIZE_MENU)
-                b.connect('activate', self.split_title)
+                b.connect('activate', self.split_title, view)
                 b.set_sensitive(util.split_title(row[1], spls)[1] != [])
                 menu.append(b)
 
@@ -4363,14 +4364,14 @@ class SongProperties(gtk.Window):
                 b = gtk.ImageMenuItem(_("Split arranger out of ar_tist"))
                 b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
                                              gtk.ICON_SIZE_MENU)
-                b.connect('activate', self.split_arranger)
+                b.connect('activate', self.split_people, "arranger", view)
                 b.set_sensitive(ok)
                 menu.append(b)
 
                 b = gtk.ImageMenuItem(_("Split _performer out of artist"))
                 b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
                                              gtk.ICON_SIZE_MENU)
-                b.connect('activate', self.split_performer)
+                b.connect('activate', self.split_people, "performer", view)
                 b.set_sensitive(ok)
                 menu.append(b)
 
@@ -4378,7 +4379,7 @@ class SongProperties(gtk.Window):
                 menu.append(gtk.SeparatorMenuItem())
 
             b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
-            b.connect('activate', self.remove_tag)
+            b.connect('activate', self.remove_tag, view)
             menu.append(b)
 
             menu.show_all()
@@ -4426,8 +4427,8 @@ class SongProperties(gtk.Window):
 
             add.destroy()
 
-        def remove_tag(self, *args):
-            model, iter = self.view.get_selection().get_selected()
+        def remove_tag(self, activator, view):
+            model, iter = view.get_selection().get_selected()
             row = model[iter]
             if row[0] in self.songinfo:
                 row[2] = True # Edited
@@ -4510,9 +4511,6 @@ class SongProperties(gtk.Window):
             self.save.set_sensitive(False)
             self.revert.set_sensitive(False)
 
-        def revert_files(self, *args):
-            self.__update(self.songs)
-
         def edit_tag(self, renderer, path, new, model, colnum):
             new = ', '.join(new.splitlines())
             row = model[path]
@@ -4542,13 +4540,15 @@ class SongProperties(gtk.Window):
                 self.revert.set_sensitive(True)
                 return True
 
-        def __update(self, songs):
+        def __update(self, songs, view):
+            if songs is None: songs = self.songs
+
             from library import AudioFileGroup
             self.songinfo = songinfo = AudioFileGroup(songs)
             self.songs = songs
-            self.view.set_model(None)
+            view.set_model(None)
             self.model.clear()
-            self.view.set_model(self.model)
+            view.set_model(self.model)
 
             keys = songinfo.realkeys()
             keys.sort()
