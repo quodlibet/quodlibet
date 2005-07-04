@@ -202,6 +202,11 @@ class MP3File(AudioFile):
         self["~#length"] = audio.getPlayTime()
         self["~#bitrate"] = audio.getBitRate()[1] * 1000
         if date[0]: self["date"] = "-".join(filter(None, date))
+
+        for key in self.realkeys():
+            # MP3s love their nulls...
+            self[key] = self[key].replace("\x00", "")
+
         self.sanitize(filename)
 
     def __distrust_latin1(self, text, encoding):
