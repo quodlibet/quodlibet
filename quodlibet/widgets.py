@@ -1539,6 +1539,8 @@ class AlbumList(Browser, gtk.VBox):
                 config.set("browsers", "albums", confval)
 
     def __refresh(self, watcher, view, model, clear_cache=False):
+        # Prevent refiltering while the view is being refreshed.
+        view.freeze_child_notify()
         selected = self.__get_selected_albums(view.get_selection())
 
         if clear_cache: self._Album.clear_cache()
@@ -1567,6 +1569,7 @@ class AlbumList(Browser, gtk.VBox):
             album._path = model.get_path(model.append(row=[album]))
             album._model = model
 
+        view.thaw_child_notify()
         if selected: self.filter("album", selected)
 
 gobject.type_register(AlbumList)
