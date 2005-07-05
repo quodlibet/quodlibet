@@ -632,8 +632,8 @@ class PreferencesWindow(gtk.Window):
             vbox = gtk.VBox(spacing=6)
             hb = gtk.HBox(spacing=6)
             e = gtk.Entry()
-            e.set_text(config.get("settings", "splitters"))
-            e.connect('changed', self._changed, 'splitters')
+            e.set_text(config.get("editing", "split_on"))
+            e.connect('changed', self._changed, 'split_on', 'editing')
             tips.set_tip(e, _('Separators for splitting tags'))
             l = gtk.Label(_("Split _on:"))
             l.set_use_underline(True)
@@ -660,8 +660,7 @@ class PreferencesWindow(gtk.Window):
                 entry.set_text(":".join(map(util.fsdecode, fns)))
 
         def _changed(self, entry, name):
-            config.set('settings', name,
-                       util.fsencode(entry.get_text().decode('utf-8')))
+            config.set('settings', name, entry.get_text())
 
     def __init__(self, parent):
         gtk.Window.__init__(self)
@@ -672,21 +671,13 @@ class PreferencesWindow(gtk.Window):
         icon_theme = gtk.icon_theme_get_default()
         self.set_icon(icon_theme.load_icon(
             const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
-        self.add(gtk.VBox(spacing=12))
-        n = qltk.Notebook()
-        self.child.pack_start(n)
 
-        bbox = gtk.HButtonBox()
-        bbox.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock=gtk.STOCK_CLOSE)
-        button.connect_object('clicked', gtk.Window.destroy, self)
-        bbox.pack_start(button)
-        self.connect_object('destroy', PreferencesWindow.__destroy, self)
-        self.child.pack_start(bbox, expand=False)
-        self.child.show_all()
-
+        self.add(qltk.Notebook())
         for Page in [self.SongList, self.Browsers, self.Player, self.Library]:
-            n.append_page(Page())
+            self.child.append_page(Page())
+
+        self.connect_object('destroy', PreferencesWindow.__destroy, self)
+        self.show_all()
 
     def __destroy(self):
         del(widgets.preferences)
@@ -4314,7 +4305,7 @@ class SongProperties(gtk.Window):
         def split_into_list(self, activator, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
-            spls = config.get("settings", "splitters")
+            spls = config.get("editing", "split_on").split()
             vals = util.split_value(util.unescape(row[1]), spls)
             if vals[0] != util.unescape(row[1]):
                 row[1] = util.escape(vals[0])
@@ -4324,7 +4315,7 @@ class SongProperties(gtk.Window):
         def split_title(self, activator, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
-            spls = config.get("settings", "splitters")
+            spls = config.get("editing", "split_on").split()
             title, versions = util.split_title(util.unescape(row[1]), spls)
             if title != util.unescape(row[1]):
                 row[1] = util.escape(title)
@@ -4343,7 +4334,7 @@ class SongProperties(gtk.Window):
         def split_people(self, activator, tag, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
-            spls = config.get("settings", "splitters")
+            spls = config.get("editing", "split_on").split()
             person, others = util.split_people(util.unescape(row[1]), spls)
             if person != util.unescape(row[1]):
                 row[1] = util.escape(person)
@@ -4352,7 +4343,7 @@ class SongProperties(gtk.Window):
 
         def show_menu(self, row, button, time, view):
             menu = gtk.Menu()        
-            spls = config.get("settings", "splitters")
+            spls = config.get("editing", "split_on").split()
 
             b = gtk.ImageMenuItem(_("Split into _multiple values"))
             b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
@@ -4742,7 +4733,7 @@ class SongProperties(gtk.Window):
                 col = gtk.TreeViewColumn(header, render, text=i + 2)
                 col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
                 view.append_column(col)
-            spls = config.get("settings", "splitters")
+            spls = config.get("editing", "split_on")
 
             for song in songs:
                 basename = song("~basename")

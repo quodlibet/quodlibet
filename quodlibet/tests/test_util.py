@@ -109,9 +109,10 @@ class StringTests(TestCase):
     def test_split(self):
         self.failUnlessEqual(split_value("a b"), ["a b"])
         self.failUnlessEqual(split_value("a, b"), ["a", "b"])
-        self.failUnlessEqual(split_value("a, b; c"), ["a", "b", "c"])
-        self.failUnlessEqual(split_value("a b", " "), ["a", "b"])
-        self.failUnlessEqual(split_value("a b", ""), ["a b"])
+        self.failUnlessEqual(
+            split_value("a, b and c", [",", "and"]), ["a", "b", "c"])
+        self.failUnlessEqual(split_value("a b", [" "]), ["a", "b"])
+        self.failUnlessEqual(split_value("a b", []), ["a b"])
 
     def test_subtitle(self):
         # these tests shouldn't be necessary; we're really only

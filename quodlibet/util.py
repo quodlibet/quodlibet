@@ -163,8 +163,7 @@ def capitalize(str):
     """Capitalize a string, not affecting any character after the first."""
     return str[:1].upper() + str[1:]
 
-# Split a string on ;s and ,s.
-def split_value(s, splitters=",;&"):
+def split_value(s, splitters=["/", "&", ","]):
     if not splitters: return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
@@ -174,12 +173,12 @@ def split_value(s, splitters=",;&"):
         values = new_values
     return values
 
-def split_title(s, splitters=",;&"):
+def split_title(s, splitters=["/", "&", ","]):
     title, subtitle = find_subtitle(s)
     if not subtitle: return (s, [])
     else: return (title.strip(), split_value(subtitle, splitters))
 
-def split_people(s, splitters=",;&"):
+def split_people(s, splitters=["/", "&", ","]):
     title, subtitle = find_subtitle(s)
     if not subtitle:
         parts = s.split(" ")
