@@ -60,6 +60,7 @@ MENU = """<ui>
       </menu>
       <separator/>
       <menuitem action='Preferences'/>
+      <menuitem action='Plugins'/>
       <separator/>
       <menuitem action='RefreshLibrary'/>
       <menuitem action='ReloadLibrary'/>
