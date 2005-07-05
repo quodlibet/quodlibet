@@ -4486,7 +4486,8 @@ class SongProperties(gtk.Window):
                     _("<b>%s</b> changed while the program was running. "
                       "Saving without refreshing your library may "
                       "overwrite other changes to the song.\n\n"
-                      "Save this song anyway?") % song("~basename")
+                      "Save this song anyway?") % util.escape(util.fsdecode(
+                    song("~basename")))
                     ).run():
                     break
 
@@ -4519,7 +4520,8 @@ class SongProperties(gtk.Window):
                             _("Saving <b>%s</b> failed. The file "
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
-                            util.escape(song('~basename')))).run()
+                            util.escape(util.fsdecode(
+                            song('~basename'))))).run()
                         widgets.watcher.error(song)
                         break
                     widgets.watcher.changed(song)
@@ -4776,7 +4778,8 @@ class SongProperties(gtk.Window):
                     _("<b>%s</b> changed while the program was running. "
                       "Saving without refreshing your library may "
                       "overwrite other changes to the song.\n\n"
-                      "Save this song anyway?") % song("~basename")
+                      "Save this song anyway?") %(
+                    util.escape(util.fsdecode(song("~basename"))))
                     ).run():
                     return True
 
@@ -5102,7 +5105,8 @@ class SongProperties(gtk.Window):
                     _("<b>%s</b> changed while the program was running. "
                       "Saving without refreshing your library may "
                       "overwrite other changes to the song.\n\n"
-                      "Save this song anyway?") % song("~basename")
+                      "Save this song anyway?") %(
+                    util.escape(util.fsdecode(song("~basename"))))
                     ).run():
                     return True
                 song["tracknumber"] = track
@@ -5113,7 +5117,7 @@ class SongProperties(gtk.Window):
                         _("Saving <b>%s</b> failed. The file may be "
                           "read-only, corrupted, or you do not have "
                           "permission to edit it.")%(
-                        util.escape(song('~basename')))).run()
+                        util.escape(util.fsdecode(song('~basename'))))).run()
                     widgets.watcher.error(song)
                     return True
                 widgets.watcher.changed(song)
