@@ -4803,7 +4803,8 @@ class SongProperties(gtk.Window):
                             _("Saving <b>%s</b> failed. The file "
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
-                            util.escape(song('~basename')))).run()
+                            util.escape(util.fsdecode(song('~basename'))))
+                            ).run()
                         widgets.watcher.error(song)
                         return True
                     widgets.watcher.changed(song)
@@ -4959,7 +4960,8 @@ class SongProperties(gtk.Window):
                           "Possibly the target file already exists, "
                           "or you do not have permission to make the "
                           "new file or remove the old one.") %(
-                        util.escape(oldname), util.escape(newname))).run()
+                        util.escape(util.fsdecode(oldname)),
+                        util.escape(util.fsdecode(newname)))).run()
                     widgets.watcher.error(song)
                     return True
                 return win.step()
