@@ -356,8 +356,8 @@ class PreferencesWindow(gtk.Window):
         def _toggle(self, c, name, section="settings"):
             config.set(section, name, str(bool(c.get_active())))
 
-        def _changed(self, cb, name):
-            config.set("settings", name, str(cb.get_active()))
+        def _changed(self, cb, name, section="settings"):
+            config.set(section, name, str(cb.get_active()))
 
     class SongList(_Pane, gtk.VBox):
         def __init__(self):
@@ -659,8 +659,8 @@ class PreferencesWindow(gtk.Window):
             if resp == gtk.RESPONSE_OK:
                 entry.set_text(":".join(map(util.fsdecode, fns)))
 
-        def _changed(self, entry, name):
-            config.set('settings', name, entry.get_text())
+        def _changed(self, entry, name, section="settings"):
+            config.set(section, name, entry.get_text())
 
     def __init__(self, parent):
         gtk.Window.__init__(self)
