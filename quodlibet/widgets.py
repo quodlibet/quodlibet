@@ -5604,13 +5604,17 @@ def save_library(thread):
     print to(_("Saving song library."))
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:
-        print err
+        err = str(err).decode('utf-8', 'replace')
+        qltk.ErrorMessage(None, _("Unable to save library"), err).run()
 
     try: config.write(const.CONFIG)
     except EnvironmentError, err:
-        print err
+        err = str(err).decode('utf-8', 'replace')
+        qltk.ErrorMessage(None, _("Unable to save library"), err).run()
 
     for fn in [const.PAUSED, const.CURRENT, const.CONTROL]:
+        # No big deal if these fail, we'll just get a few inconsistent
+        # --status reports. Not worth a dialog.
         try: os.unlink(fn)
         except EnvironmentError: pass
 
