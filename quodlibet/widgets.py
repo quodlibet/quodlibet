@@ -4349,7 +4349,7 @@ class SongProperties(gtk.Window):
             b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
                                          gtk.ICON_SIZE_MENU)
             b.set_sensitive(len(util.split_value(row[1], spls)) > 1)
-            b.connect('activate', self.__split_into_list)
+            b.connect('activate', self.__split_into_list, view)
             menu.append(b)
             menu.append(gtk.SeparatorMenuItem())
 
