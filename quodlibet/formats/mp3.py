@@ -22,7 +22,8 @@ class MP3File(AudioFile):
 
     # http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
     # http://www.id3.org/id3v2.4.0-frames.txt
-    IDS = { "TIT2": "title",
+    IDS = { "TIT1": "grouping",
+            "TIT2": "title",
             "TIT3": "version",
             "TPE1": "artist",
             "TPE2": "performer", 
