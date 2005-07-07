@@ -3,48 +3,48 @@
 # Note that although tag names are translated in the main list view,
 # they are *not* when editing tags.
 
-_("title")
-_("length")
-_("artist")
-_("album")
-_("disc")
-_("track")
-# date the song was last heard on
-_("last played")
-# file name plus path, /.../.../foo.ogg
-_("full name")
-# just file name, foo.ogg
-_("filename")
-# just path, /.../...
-_("directory")
-_("play count")
-_("skip count")
-_("version")
-_("arranger")
-_("conductor")
-_("author")
-_("performer")
-_("website")
-_("language")
-# alternately, "movement"
-_("part")
-_("lyricist")
-# alternately, "record label"
-_("organization")
-_("language")
-_("contact")
-_("location")
-_("copyright")
-_("description")
-_("genre")
-_("license")
-_("composer")
 # date the song was added to the library
 _("added")
+_("album")
+_("arranger")
+_("artist")
+_("author")
+_("composer")
+_("conductor")
+_("contact")
+_("copyright")
+_("date")
+_("description")
+# just path, /.../...
+_("directory")
+_("disc")
+# just file name, foo.ogg
+_("filename")
+# file name plus path, /.../.../foo.ogg
+_("full name")
+_("genre")
+_("grouping")
+_("language")
+# date the song was last heard on
+_("last played")
+_("length")
+_("license")
+_("location")
+_("lyricist")
 # date song was last modified/edited
 _("modified")
-_("date")
+# alternately, "movement", "section"
+_("part")
+_("play count")
 _("rating")
+_("skip count")
+_("title")
+_("track")
+# alternately, "record label"
+_("organization")
+_("performer")
+_("website")
+_("version")
 
 ngettext("performer", "performers", 1)
 ngettext("lyricist", "lyricists", 1)
