@@ -144,7 +144,6 @@ class MP3File(AudioFile):
     GENRE_RE = re.compile(r"(?:\((?P<id>[0-9]+|RX|CR)\))?(?P<str>.+)?")
             
     def __init__(self, filename):
-        audio = eyeD3.tag.Mp3AudioFile(filename)
         tag = eyeD3.Tag(eyeD3.ID3_V2_4)
         tag.link(filename)
         date = ["", "", ""]
@@ -200,8 +199,20 @@ class MP3File(AudioFile):
         if d and len(d): d = d[0]
         if d: date = list(d.getDate().split("T")[0].split("-")) + [None, None]
 
-        self["~#length"] = audio.getPlayTime()
-        self["~#bitrate"] = audio.getBitRate()[1] * 1000
+        try: audio = eyeD3.tag.Mp3AudioFile(filename)
+        except eyeD3.InvalidAudioFormatException:
+            # eyeD3 barfs too easily on MP3s with weird bitrates. MAD
+            # is more lenient, but less accurate.
+            import mad
+            audio = mad.MadFile(filename)
+            audio.seek_time(audio.total_time())
+            audio.read()
+            self["~#bitrate"] = audio.bitrate()
+            self["~#length"] = audio.total_time() / 1000
+        else:
+            self["~#length"] = audio.getPlayTime()
+            self["~#bitrate"] = audio.getBitRate()[1] * 1000
+            
         if date[0]: self["date"] = "-".join(filter(None, date))
 
         for key in self.realkeys():
