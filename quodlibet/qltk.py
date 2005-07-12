@@ -323,3 +323,18 @@ class WaitLoadWindow(gtk.Window):
     def __disconnect(self, sig):
         self.get_transient_for().window.set_cursor(None)
         self.get_transient_for().disconnect(sig)
+
+class RPaned(object):
+    """A Paned that supports relative (percentage) width/height setting."""
+
+    _v = None # Not implemented
+    def get_relative(self):
+        if self.get_property('max-position') > 0:
+            return float(self.get_position())/self.get_property('max-position')
+        else: return 0.5
+
+    def set_relative(self, v):
+        return self.set_position(int(v * self.get_property('max-position')))
+
+class RHPaned(RPaned, gtk.HPaned): _v = 0
+class RVPaned(RPaned, gtk.VPaned): _v = 1

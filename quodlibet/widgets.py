@@ -1194,7 +1194,7 @@ class SearchBar(EmptyBar):
         layout.set_markup(markup)
 
 class AlbumList(Browser, gtk.VBox):
-    expand = gtk.HPaned
+    expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
 
     # Something like an AudioFile, but for a whole album.
@@ -1577,7 +1577,7 @@ gobject.type_register(AlbumList)
 
 class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
-    expand = gtk.VPaned
+    expand = qltk.RVPaned
     
     class Pane(gtk.ScrolledWindow):
         __render = gtk.CellRendererText()
@@ -2578,6 +2578,11 @@ class MainWindow(gtk.Window):
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         tips.enable()
 
+    def __browser_configure(self, paned, event, browser):
+        if paned.get_property('position-set'):
+            key = "%s_pos" % browser.__class__.__name__
+            config.set("browsers", key, str(paned.get_relative()))
+
     def __select_browser(self, activator, current):
         if not isinstance(current, int): current = current.get_current_value()
         config.set("memory", "browser", str(current))
@@ -2595,6 +2600,19 @@ class MainWindow(gtk.Window):
             c = self.browser.expand()
             c.pack1(self.browser, resize=True)
             c.pack2(self.song_scroller, resize=True)
+            try:
+                key = "%s_pos" % self.browser.__class__.__name__
+                val = config.getfloat("browsers", key)
+            except: val = 0.4
+            c.connect(
+                'notify::position', self.__browser_configure, self.browser)
+            def set_size(paned, alloc, pos):
+                paned.set_relative(pos)
+                paned.disconnect(paned._size_sig)
+                # The signal disconnects itself! I hate GTK sizing.
+                del(paned._size_sig)
+            sig = c.connect('size-allocate', set_size, val)
+            c._size_sig = sig
         else:
             c = gtk.VBox()
             c.pack_start(self.browser, expand=False)
