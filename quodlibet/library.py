@@ -200,7 +200,9 @@ class Library(dict):
         for song in songs:
             if "~filename" not in song: continue # library corruption
             elif not formats.supported(song): continue
-            elif song.valid(): self[song["~filename"]] = song
+
+            song["~filename"] = os.path.realpath(song["~filename"])
+            if song.valid(): self[song["~filename"]] = song
             else:
                 if song.exists():
                     try: song.reload()
@@ -230,8 +232,10 @@ class Library(dict):
             print to(_("Checking %s") % util.fsdecode(d))
             d = os.path.expanduser(d)
             for path, dnames, fnames in os.walk(d):
+                # don't re-resolve this path every time
+                path = os.path.realpath(path)
                 for fn in fnames:
-                    m_fn = os.path.join(path, fn)
+                    m_fn = os.path.realpath(os.path.join(path, fn))
                     if m_fn in self:
                         if not self[m_fn].valid():
                             try: self[m_fn].reload()
