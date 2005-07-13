@@ -327,7 +327,6 @@ class WaitLoadWindow(gtk.Window):
 class RPaned(object):
     """A Paned that supports relative (percentage) width/height setting."""
 
-    _v = None # Not implemented
     def get_relative(self):
         if self.get_property('max-position') > 0:
             return float(self.get_position())/self.get_property('max-position')
@@ -336,5 +335,5 @@ class RPaned(object):
     def set_relative(self, v):
         return self.set_position(int(v * self.get_property('max-position')))
 
-class RHPaned(RPaned, gtk.HPaned): _v = 0
-class RVPaned(RPaned, gtk.VPaned): _v = 1
+class RHPaned(RPaned, gtk.HPaned): pass
+class RVPaned(RPaned, gtk.VPaned): pass
