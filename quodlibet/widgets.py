@@ -4188,12 +4188,10 @@ class SongProperties(gtk.Window):
             gtk.VBox.__init__(self, spacing=12)
             self.title = _("Edit Tags")
             self.set_border_width(12)
-            self.prop = parent
 
             model = gtk.ListStore(str, str, bool, bool, bool, str)
             view = HintedTreeView(model)
             selection = view.get_selection()
-            selection.connect('changed', self.__tag_select)
             render = gtk.CellRendererPixbuf()
             column = gtk.TreeViewColumn(_("Write"), render)
 
@@ -4249,22 +4247,21 @@ class SongProperties(gtk.Window):
             bbox1.set_layout(gtk.BUTTONBOX_START)
             add = gtk.Button(stock=gtk.STOCK_ADD)
             add.connect('clicked', self.__add_tag, model)
-            self.remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-            self.remove.connect('clicked', self.__remove_tag, view)
-            self.remove.set_sensitive(False)
+            remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+            remove.connect('clicked', self.__remove_tag, view)
+            remove.set_sensitive(False)
             bbox1.pack_start(add)
-            bbox1.pack_start(self.remove)
+            bbox1.pack_start(remove)
 
             bbox2 = gtk.HButtonBox()
             bbox2.set_spacing(6)
             bbox2.set_layout(gtk.BUTTONBOX_END)
-            self.revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
-            self.save = gtk.Button(stock=gtk.STOCK_SAVE)
-            self.save.connect('clicked', self.save_files, model)
-            self.revert.set_sensitive(False)
-            self.save.set_sensitive(False)
-            bbox2.pack_start(self.revert)
-            bbox2.pack_start(self.save)
+            revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
+            save = gtk.Button(stock=gtk.STOCK_SAVE)
+            revert.set_sensitive(False)
+            save.set_sensitive(False)
+            bbox2.pack_start(revert)
+            bbox2.pack_start(save)
 
             buttonbox.pack_start(bbox1)
             buttonbox.pack_start(bbox2)
@@ -4276,16 +4273,26 @@ class SongProperties(gtk.Window):
                 (view, _("Double-click a tag value to change it, "
                               "right-click for other options")),
                 (add, _("Add a new tag")),
-                (self.remove, _("Remove selected tag"))]:
+                (remove, _("Remove selected tag"))]:
                 tips.set_tip(widget, tip)
             tips.enable()
             self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
-            UPDATE_ARGS = [view, buttonbox, model, add]
+            UPDATE_ARGS = [
+                view, buttonbox, model, add, [save, revert, remove]]
             parent.connect_object(
                 'changed', self.__class__.__update, self, *UPDATE_ARGS)
-            self.revert.connect_object(
+            revert.connect_object(
                 'clicked', self.__update, None, *UPDATE_ARGS)
+            selection.connect('changed', self.__tag_select, remove)
+
+            save.connect('clicked', self.__save_files, revert, model, parent)
+            for sig in ['row-inserted', 'row-deleted', 'row-changed']:
+                model.connect(sig, self.__enable_save, [save, revert])
+
+        def __enable_save(self, *args):
+            buttons = args[-1]
+            for b in buttons: b.set_sensitive(True)
 
         def __popup_menu(self, view):
             path, col = view.get_cursor()
@@ -4328,7 +4335,8 @@ class SongProperties(gtk.Window):
             if vals[0] != util.unescape(row[1]):
                 row[1] = util.escape(vals[0])
                 row[2] = True
-                for val in vals[1:]: self.__add_new_tag(model, row[0], val)
+                for val in vals[1:]:
+                    self.__add_new_tag(model, row[0], val)
 
         def __split_title(self, activator, view):
             model, iter = view.get_selection().get_selected()
@@ -4338,7 +4346,8 @@ class SongProperties(gtk.Window):
             if title != util.unescape(row[1]):
                 row[1] = util.escape(title)
                 row[2] = True
-                for val in versions: self.__add_new_tag(model, "version", val)
+                for val in versions:
+                    self.__add_new_tag(model, "version", val)
 
         def __split_album(self, activator, view):
             model, iter = view.get_selection().get_selected()
@@ -4357,7 +4366,8 @@ class SongProperties(gtk.Window):
             if person != util.unescape(row[1]):
                 row[1] = util.escape(person)
                 row[2] = True
-                for val in others: self.__add_new_tag(model, tag, val)
+                for val in others:
+                    self.__add_new_tag(model, tag, val)
 
         def __show_menu(self, row, button, time, view):
             menu = gtk.Menu()        
@@ -4415,9 +4425,9 @@ class SongProperties(gtk.Window):
             menu.connect('selection-done', lambda m: m.destroy())
             menu.popup(None, None, None, button, time)
 
-        def __tag_select(self, selection):
+        def __tag_select(self, selection, remove):
             model, iter = selection.get_selected()
-            self.remove.set_sensitive(
+            remove.set_sensitive(
                 bool(selection.count_selected_rows()) and model[iter][3])
 
         def __add_new_tag(self, model, comment, value):
@@ -4432,12 +4442,10 @@ class SongProperties(gtk.Window):
             row = [comment, util.escape(value), edited, edit,deleted,orig]
             if len(iters): model.insert_after(iters[-1], row=row)
             else: model.append(row=row)
-            self.save.set_sensitive(True)
-            self.revert.set_sensitive(True)
 
         def __add_tag(self, activator, model):
             add = AddTagDialog(
-                self.prop, self.songinfo.can_change(), VALIDATERS)
+                None, self.songinfo.can_change(), VALIDATERS)
 
             while True:
                 resp = add.run()
@@ -4446,7 +4454,7 @@ class SongProperties(gtk.Window):
                 value = add.get_value()
                 if not self.songinfo.can_change(comment):
                     qltk.ErrorMessage(
-                        self.prop, _("Invalid tag"),
+                        None, _("Invalid tag"),
                         _("Invalid tag <b>%s</b>\n\nThe files currently"
                           " selected do not support editing this tag.")%
                         util.escape(comment)).run()
@@ -4464,10 +4472,8 @@ class SongProperties(gtk.Window):
                 row[4] = True # Deleted
             else:
                 model.remove(iter)
-            self.save.set_sensitive(True)
-            self.revert.set_sensitive(True)
 
-        def save_files(self, save, model):
+        def __save_files(self, save, revert, model, parent):
             updated = {}
             deleted = {}
             added = {}
@@ -4488,10 +4494,10 @@ class SongProperties(gtk.Window):
                         deleted[row[0]].append(util.decode(row[5]))
             model.foreach(create_property_dict)
 
-            win = WritingWindow(self.prop, len(self.songs))
+            win = WritingWindow(parent, len(self.songs))
             for song in self.songs:
                 if not song.valid() and not qltk.ConfirmAction(
-                    self.prop, _("Tag may not be accurate"),
+                    None, _("Tag may not be accurate"),
                     _("<b>%s</b> changed while the program was running. "
                       "Saving without refreshing your library may "
                       "overwrite other changes to the song.\n\n"
@@ -4525,7 +4531,7 @@ class SongProperties(gtk.Window):
                     try: song.write()
                     except:
                         qltk.ErrorMessage(
-                            self.prop, _("Unable to save song"),
+                            None, _("Unable to save song"),
                             _("Saving <b>%s</b> failed. The file "
                               "may be read-only, corrupted, or you "
                               "do not have permission to edit it.")%(
@@ -4539,8 +4545,7 @@ class SongProperties(gtk.Window):
 
             win.destroy()
             widgets.watcher.refresh()
-            save.set_sensitive(False)
-            self.revert.set_sensitive(False)
+            for b in [save, revert]: b.set_sensitive(False)
 
         def __edit_tag(self, renderer, path, new, model, colnum):
             new = ', '.join(new.splitlines())
@@ -4548,15 +4553,13 @@ class SongProperties(gtk.Window):
             if (row[0] in VALIDATERS and
                 not VALIDATERS[row[0]][0](new)):
                 qltk.WarningMessage(
-                    self.prop, _("Invalid value"),
+                    None, _("Invalid value"),
                     _("Invalid value") + (": <b>%s</b>\n\n" % new) +
                     VALIDATERS[row[0]][1]).run()
             elif row[colnum].replace('<i>','').replace('</i>','') != new:
                 row[colnum] = util.escape(new)
                 row[2] = True # Edited
                 row[4] = False # not Deleted
-                self.save.set_sensitive(True)
-                self.revert.set_sensitive(True)
 
         def __write_toggle(self, view, event, (writecol, edited)):
             if event.button != 1: return False
@@ -4567,11 +4570,9 @@ class SongProperties(gtk.Window):
             if col is writecol:
                 row = view.get_model()[path]
                 row[edited] = not row[edited]
-                self.save.set_sensitive(True)
-                self.revert.set_sensitive(True)
                 return True
 
-        def __update(self, songs, view, buttonbox, model, add):
+        def __update(self, songs, view, buttonbox, model, add, buttons):
             if songs is None: songs = self.songs
 
             from library import AudioFileGroup
@@ -4608,9 +4609,7 @@ class SongProperties(gtk.Window):
                                       orig_value[i]])
 
             buttonbox.set_sensitive(bool(songinfo.can_change()))
-            self.remove.set_sensitive(False)
-            self.save.set_sensitive(False)
-            self.revert.set_sensitive(False)
+            for b in buttons: b.set_sensitive(False)
             add.set_sensitive(bool(songs))
             self.songs = songs
 
