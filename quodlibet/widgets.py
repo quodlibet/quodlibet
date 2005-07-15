@@ -601,33 +601,6 @@ class PreferencesWindow(gtk.Window):
             f.child.add(hb)
             self.pack_start(f, expand=False)
 
-            f = qltk.Frame(_("_Masked Directories"), bold=True)
-            vb = gtk.VBox(spacing=6)
-            l = gtk.Label(_(
-                "If you have songs in directories that will not always be "
-                "mounted (for example, a removable device or an NFS shared "
-                "drive), list those mount points here. Files in these "
-                "directories will not be removed from the library if the "
-                "device is not mounted."))
-            l.set_line_wrap(True)
-            l.set_justify(gtk.JUSTIFY_FILL)
-            vb.pack_start(l, expand=False)
-            hb = gtk.HBox(spacing=6)
-            b = qltk.Button(_("_Select"), gtk.STOCK_OPEN)
-            e = gtk.Entry()
-            e.set_text(util.fsdecode(config.get("settings", "masked")))
-            f.get_label_widget().set_mnemonic_widget(e)
-            hb.pack_start(e)
-            hb.pack_start(b, expand=False)
-            vb.pack_start(hb, expand=False)
-            if os.path.exists("/media"): dir = "/media"
-            elif os.path.exists("/mnt"): dir = "/mnt"
-            else: dir = "/"
-            b.connect('clicked', self.__select, e, dir)
-            e.connect('changed', self._changed, 'masked')
-            f.child.add(vb)
-            self.pack_start(f, expand=False)
-
             f = qltk.Frame(_("Tag Editing"), bold=True)
             vbox = gtk.VBox(spacing=6)
             hb = gtk.HBox(spacing=6)

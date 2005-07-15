@@ -106,20 +106,6 @@ class Library(dict):
         self.__masked_files = {}
         dict.__init__(self, initial)
 
-    def mask(self, mountp):
-        mountd = mountp + "/"
-        files = [f for f in self if f.startswith(mountd)]
-        if files:
-            self.__masked_files[mountp] = {}
-            for f in files:
-                self.__masked_files[mountp][f] = self[f]
-                del(self[f])
-
-    def unmask(self, mountp):
-        if mountp in self.__masked_files:
-            self.update(self.__masked_files[mountp])
-            del(self.__masked_files[mountp])
-
     def random(self, tag):
         songs = set()
         for song in self.values(): songs.update(song.list(tag))
@@ -202,31 +188,52 @@ class Library(dict):
             elif not formats.supported(song): continue
 
             song["~filename"] = os.path.realpath(song["~filename"])
+            if "~mountpoint" not in song: song.sanitize()
+
             if song.valid(): self[song["~filename"]] = song
-            else:
-                if song.exists():
-                    try: song.reload()
-                    except: removed += 1
-                    else:
-                        self[song["~filename"]] = song
-                        changed += 1
-                elif config.get("settings", "masked"):
-                    fn = song["~filename"]
-                    for m in config.get("settings", "masked").split(":"):
-                        if fn.startswith(m) and not os.path.ismount(m):
-                            self.__masked_files.setdefault(m, {})
-                            self.__masked_files[m][fn] = song
-                            break
-                    else: removed += 1
+            elif song.exists():
+                try: song.reload()
+                except: removed += 1
+                else:
+                    self[song["~filename"]] = song
+                    changed += 1
+            elif not song.mounted():
+                fn = song["~filename"]
+                mp = song["~mountpoint"]
+                self.__masked_files.setdefault(mp, {})
+                self.__masked_files[mp][fn] = song
+            else: removed += 1
+
         return changed, removed
 
-    def scan(self, dirs):
-        if config.get("settings", "masked"):
-            for m in config.get("settings", "masked").split(":"):
-                if not os.path.ismount(m): self.mask(m)
-                else: self.unmask(m)
+    # Reload, mask, or remove a song, adjusting given lists as necessary.
+    def reload(self, song, changed=None, removed=None):
+        changed = changed or []
+        removed = removed or []
+        if song.exists():
+            try: self[m_fn].reload()
+            except:
+                self[m_fn]["~filename"] = m_fn
+                self.remove(song)
+                removed.append(self[m_fn])
+            else: changed.append(self[m_fn])
+        elif not song.mounted():
+            mp = song["~mountpoint"]
+            self.__masked_files.setdefault(mp, {})
+            self.__masked_files[mp][fn] = song
+            self.remove(song)
+            removed.append(song)
+        else:
+            self.remove(song)
+            removed.append(song)
 
+    def scan(self, dirs):
         added, changed, removed = [], [], []
+
+        for mp, songs in self.__masked_files.items():
+            if os.path.ismount(mp):
+                self.update(songs)
+                del(self.__masked_files[mp])
 
         for d in dirs:
             print to(_("Checking %s") % util.fsdecode(d))
@@ -237,35 +244,20 @@ class Library(dict):
                 for fn in fnames:
                     m_fn = os.path.realpath(os.path.join(path, fn))
                     if m_fn in self:
-                        if not self[m_fn].valid():
-                            try: self[m_fn].reload()
-                            except:
-                                self[m_fn]["~filename"] = m_fn
-                                removed.append(self[m_fn])
-                                del(self[m_fn])
-                            else: changed.append(self[m_fn])
+                        song = self[m_fn]
+                        if not song.valid():
+                            self.reload(song, changed, removed)
                     elif self.add(m_fn):
                         added.append(self[m_fn])
                 yield added, changed, removed
 
     def rebuild(self, force=False):
-        if config.get("settings", "masked"):
-            for m in config.get("settings", "masked").split(":"):
-                if not os.path.ismount(m): self.mask(m)
-                else: self.unmask(m)
-
         changed, removed = [], []
 
-        for fn in self.keys():
-            if force or not self[fn].valid():
-                try: self[fn].reload()
-                except:
-                    # guarantee at least a filename key even in songs
-                    # that are totally gone.
-                    self[fn]["~filename"] = fn
-                    removed.append(self[fn])
-                    del(self[fn])
-                else: changed.append(self[fn])
+        for fn, song in self.iteritems():
+            song = self[fn]
+            if song.valid() and not force: continue
+            else: self.reload(self[m_fn], changed, removed)
             yield changed, removed
 
 def init(cache_fn=None):

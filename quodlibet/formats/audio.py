@@ -101,6 +101,9 @@ class AudioFile(dict):
         return (self.exists() and
                 self["~#mtime"] == util.mtime(self["~filename"]))
 
+    def mounted(self):
+        return os.path.ismount(self.get("~mountpoint", "/"))
+
     def can_change(self, k=None):
         if k is None:
             if os.access(self["~filename"], os.W_OK): return True
@@ -157,6 +160,13 @@ class AudioFile(dict):
         except KeyError: pass
 
         self["~#mtime"] = util.mtime(self['~filename'])
+
+        # Find mount point (terminating at "/" if necessary)
+        head = self["~filename"]
+        while "~mountpoint" not in self:
+            head, tail = os.path.split(head)
+            if os.path.ismount(head):
+                self["~mountpoint"] = head
 
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):

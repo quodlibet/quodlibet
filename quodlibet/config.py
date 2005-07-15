@@ -60,7 +60,6 @@ def init(*rc_files):
         # cleaned out later.
         "settings":
         { "scan": "", # scan directories, :-separated
-          "masked": "", # masked directories, :-separated
 
           "gain": "2", # replaygain - none, radio, audiophile
           "cover": "true", # display album cover images
