@@ -165,6 +165,9 @@ class AudioFile(dict):
         head = self["~filename"]
         while "~mountpoint" not in self:
             head, tail = os.path.split(head)
+            # Prevent infinite loop without a fully-qualified filename
+            # (the unit tests use these).
+            head = head or "/"
             if os.path.ismount(head):
                 self["~mountpoint"] = head
 
