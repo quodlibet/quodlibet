@@ -219,7 +219,11 @@ extreme case.
 By default QL uses the ao ALSA 0.9 driver for playing audio, and falls back
 to an OSS driver if that fails. You can change this in ~/.quodlibet/config
 by editing the 'backend' option. Common settings include 'oss', 'ao:oss',
-'ao:alsa09', 'ao:esd', and 'ao:arts'.
+\'ao:alsa09', 'ao:esd', and 'ao:arts'.
+.PP
+You can also pass in the device name using another colon, for example
+\'ao:oss:/dev/sound/dsp2', 'ao:alsa09:hw:1', or
+\'ao:esd:music.example.com:5555'.
 .SH FILES
 .IP ~/.quodlibet/songs 4
 A cached list of songs to load initially. The format is a pickled
