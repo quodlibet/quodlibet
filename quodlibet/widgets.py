@@ -1019,7 +1019,7 @@ class Browser(object):
 
     # Packing options. False if the browser should be packed into the
     # window's VBox with expand=False. Otherwise, this should be
-    # a function that returns an object like a Paned; the browser
+    # a function that returns an object like an RPaned; the browser
     # and MainSongList are both packed into it.
     expand = False # Packing options
 
@@ -1027,9 +1027,9 @@ class Browser(object):
     # the songs returned.
     background = True
 
-    # If a function, it is called after a song is finished playing.
-    # It returns true if the song should remain on the song list.
-    dynamic = False
+    # Returns true if the song should remain on the song list. Used to
+    # implement dynamic playlist removal when a song ends.
+    def dynamic(self, song): return True
 
     # Save/restore selected songlist. Browsers should save whatever
     # they need to recreate the criteria for the current song list (not
@@ -1240,7 +1240,6 @@ class AlbumList(Browser, gtk.VBox):
             except IndexError: return
             get(song)
             gobject.idle_add(self.__get_covers, priority=gobject.PRIORITY_LOW)
-
 
         def __get_cover(self, song):
             if self._path is None: return
@@ -2686,7 +2685,7 @@ class MainWindow(gtk.Window):
             statusbar.set_text, _("Could not play %s.") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
-        if self.browser.dynamic and not self.browser.dynamic(song):
+        if not self.browser.dynamic(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
             if iter: self.songlist.get_model().remove(iter)
