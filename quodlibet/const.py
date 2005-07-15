@@ -16,14 +16,15 @@ PAUSED  = os.path.join(DIR, "paused")
 PLUGINS = os.path.join(DIR, "plugins")
 QUERIES = os.path.join(DIR, "lists", "queries")
 
-AUTHORS = ["Joe Wreschnig <quodlibet@lists.sacredchao.net>",
-           "Michael Urman",
-           "Iñigo Serna",
-           "Ben Zeigler",
-           "Niklas Janlert",
+AUTHORS = [
+    "Joe Wreschnig",
+    "Michael Urman",
+    "Iñigo Serna",
+    "Ben Zeigler",
+    "Niklas Janlert",
 
-           "Anders Carlsson (trayicon)",
-           "Lee Willis, Jan Arne Petersen (mmkeys)"]
+    "Anders Carlsson (trayicon)",
+    "Lee Willis, Jan Arne Petersen (mmkeys)"]
 
 TBP = os.path.join(DIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\
@@ -41,12 +42,6 @@ NBP_EXAMPLES = """\
 <tracknumber> - <artist> - <title>
 /path/<artist> - <album>/<tracknumber>. <title>
 /path/<artist>/<album>/<tracknumber> - <title>"""
-
-COPYRIGHT = """\
-<u><span weight="bold" size="xx-large">Quod Libet %s</span></u>
-&lt;quodlibet@lists.sacredchao.net&gt;
-http://www.sacredchao.net/quodlibet
-Copyright © 2004-2005""" % VERSION
 
 MENU = """<ui>
   <menubar name='Menu'>
