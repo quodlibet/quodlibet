@@ -5534,7 +5534,7 @@ class WritingWindow(qltk.WaitLoadWindow):
         qltk.WaitLoadWindow.__init__(
             self, parent, count,
             (_("Saving the songs you changed.") + "\n\n" +
-             _("%d/%d songs saved"), (0, count)))
+             _("%d/%d songs saved")), (0, count))
 
     def step(self):
         return qltk.WaitLoadWindow.step(self, self.current + 1, self.count)
