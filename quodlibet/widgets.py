@@ -5340,8 +5340,7 @@ class DirectoryTree(gtk.TreeView):
         directory = model[row][0]
         uparent = util.unexpand(directory)
         dir = GetStringDialog(
-            None, _("New Folder"), _("Enter a name for the new folder:"),
-            ).run()
+            None, _("New Folder"), _("Enter a name for the new folder:")).run()
 
         if dir:
             dir = util.fsencode(dir.decode('utf-8'))
@@ -5508,9 +5507,7 @@ class ExFalsoWindow(gtk.Window):
             if not os.path.exists(filename): pass
             elif filename in self.__cache: files.append(self.__cache[filename])
             else: files.append(formats.MusicFile(model[row][0]))
-        try:
-            while True: files.remove(None)
-        except ValueError: pass
+        files = filter(None, files)
         self.emit('changed', files)
         self.__cache.clear()
         if len(files) == 0: self.set_title("Ex Falso")
@@ -5525,9 +5522,10 @@ gobject.type_register(ExFalsoWindow)
 
 class WritingWindow(qltk.WaitLoadWindow):
     def __init__(self, parent, count):
-        qltk.WaitLoadWindow.__init__(self, parent, count,
-                                _("Saving the songs you changed.\n\n"
-                                  "%d/%d songs saved"), (0, count))
+        qltk.WaitLoadWindow.__init__(
+            self, parent, count,
+            (_("Saving the songs you changed.") + "\n\n" +
+             _("%d/%d songs saved"), (0, count)))
 
     def step(self):
         return qltk.WaitLoadWindow.step(self, self.current + 1, self.count)
@@ -5567,10 +5565,11 @@ def website_wrap(activator, link):
 
 def init():
     # Translators: Only translate this if GTK does so incorrectly.
+    # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
     const.SM_NEXT = _('gtk-media-next')
     # Translators: Only translate this if GTK does so incorrectly.
-    const.SM_PREVIOUS = _('gtk-media-previous')
     # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
+    const.SM_PREVIOUS = _('gtk-media-previous')
 
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
@@ -5609,10 +5608,10 @@ def save_library(thread):
         except EnvironmentError: pass
 
 def error_and_quit():
-    qltk.ErrorMessage(None,
-                      _("No audio device found"),
-                      _("Quod Libet was unable to open your audio device. "
-                        "Often this means another program is using it, or "
-                        "your audio drivers are not configured.\n\nQuod Libet "
-                        "will now exit.")).run()
+    qltk.ErrorMessage(
+        None, _("No audio device found"),
+        _("Quod Libet was unable to open your audio device. "
+          "Often this means another program is using it, or "
+          "your audio drivers are not configured.\n\nQuod Libet "
+          "will now exit.")).run()
     gtk.main_quit()
