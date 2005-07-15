@@ -31,7 +31,7 @@ if __name__ == "__main__":
     import config
     config.init(const.CONFIG)
 
-    sys.argv.append(os.environ["HOME"])
+    sys.argv.append(os.path.abspath("."))
     opts, args = opts.parse()
     args[0] = os.path.realpath(args[0])
     os.chdir(basedir)
