@@ -4203,7 +4203,7 @@ class SongProperties(gtk.Window):
                             for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
             def cdf_write(col, rend, model, iter, (write, delete)):
                 row = model[iter]
-                if not self.songinfo.can_change(row[0]):
+                if not self.__songinfo.can_change(row[0]):
                     rend.set_property(
                         'stock-id', gtk.STOCK_DIALOG_AUTHENTICATION)
                 else:
@@ -4445,14 +4445,14 @@ class SongProperties(gtk.Window):
 
         def __add_tag(self, activator, model):
             add = AddTagDialog(
-                None, self.songinfo.can_change(), VALIDATERS)
+                None, self.__songinfo.can_change(), VALIDATERS)
 
             while True:
                 resp = add.run()
                 if resp != gtk.RESPONSE_OK: break
                 comment = add.get_tag()
                 value = add.get_value()
-                if not self.songinfo.can_change(comment):
+                if not self.__songinfo.can_change(comment):
                     qltk.ErrorMessage(
                         None, _("Invalid tag"),
                         _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -4467,7 +4467,7 @@ class SongProperties(gtk.Window):
         def __remove_tag(self, activator, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
-            if row[0] in self.songinfo:
+            if row[0] in self.__songinfo:
                 row[2] = True # Edited
                 row[4] = True # Deleted
             else:
@@ -4494,8 +4494,8 @@ class SongProperties(gtk.Window):
                         deleted[row[0]].append(util.decode(row[5]))
             model.foreach(create_property_dict)
 
-            win = WritingWindow(parent, len(self.songs))
-            for song in self.songs:
+            win = WritingWindow(parent, len(self.__songs))
+            for song in self.__songs:
                 if not song.valid() and not qltk.ConfirmAction(
                     None, _("Tag may not be accurate"),
                     _("<b>%s</b> changed while the program was running. "
@@ -4573,11 +4573,11 @@ class SongProperties(gtk.Window):
                 return True
 
         def __update(self, songs, view, buttonbox, model, add, buttons):
-            if songs is None: songs = self.songs
+            if songs is None: songs = self.__songs
 
             from library import AudioFileGroup
-            self.songinfo = songinfo = AudioFileGroup(songs)
-            self.songs = songs
+            self.__songinfo = songinfo = AudioFileGroup(songs)
+            self.__songs = songs
             view.set_model(None)
             model.clear()
             view.set_model(model)
@@ -4611,7 +4611,6 @@ class SongProperties(gtk.Window):
             buttonbox.set_sensitive(bool(songinfo.can_change()))
             for b in buttons: b.set_sensitive(False)
             add.set_sensitive(bool(songs))
-            self.songs = songs
 
     class TagByFilename(gtk.VBox):
         def __init__(self, prop):
