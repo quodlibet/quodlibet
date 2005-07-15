@@ -5274,7 +5274,7 @@ class DirectoryTree(gtk.TreeView):
         folders = [os.environ["HOME"], "/"]
         # Read in the GTK bookmarks list; gjc says this is the right way
         try: f = file(os.path.join(os.environ["HOME"], ".gtk-bookmarks"))
-        except: pass
+        except EnvironmentError: pass
         else:
             import urlparse
             for line in f.readlines():
@@ -5285,8 +5285,8 @@ class DirectoryTree(gtk.TreeView):
             niter = self.get_model().append(None, [path])
             self.get_model().append(niter, ["dummy"])
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        self.connect('test-expand-row', DirectoryTree.__expanded,
-                     self.get_model())
+        self.connect(
+            'test-expand-row', DirectoryTree.__expanded, self.get_model())
 
         if initial:
             path = []
@@ -5316,6 +5316,9 @@ class DirectoryTree(gtk.TreeView):
         menu.append(m)
         m = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         m.connect('activate', self.__rmdir)
+        menu.append(m)
+        m = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        m.connect('activate', self.__refresh)
         menu.append(m)
         menu.show_all()
         self.connect('button-press-event', DirectoryTree.__button_press, menu)
@@ -5368,6 +5371,13 @@ class DirectoryTree(gtk.TreeView):
             expanded = self.row_expanded(prow)
             self.emit('test-expand-row', model.get_iter(prow), prow)
             if expanded: self.expand_row(prow, False)
+
+    def __refresh(self, button):
+        model, rows = self.get_selection().get_selected_rows()
+        for row in rows:
+            if self.row_expanded(row):
+                self.emit('test-expand-row', model.get_iter(row), row)
+                self.expand_row(row, False)
 
     def __expanded(self, iter, path, model):
         if model is None: return
