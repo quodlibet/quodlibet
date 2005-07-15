@@ -321,8 +321,8 @@ def load_player():
     import player
     try: player.init(config.get("settings", "backend"))
     except IOError:
-        import widgets
-        gtk.idle_add(widgets.error_and_quit)
+        import widgets, gobject
+        gobject.idle_add(widgets.error_and_quit)
         gtk.main()
         config.write(const.CONFIG)
         raise SystemExit(True)
