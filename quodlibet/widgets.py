@@ -5553,8 +5553,9 @@ HEADERS_FILTER = { "tracknumber": "track",
                    "playcount": "play count",
                    "skipcount": "skip count",
                    "mtime": "modified",
+                   "mountpoint": "mount point",
                    "basename": "filename",
-                   "dirname": "directory"}
+                   "dirname": "directory" }
 
 def website_wrap(activator, link):
     if not util.website(link):

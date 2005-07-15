@@ -33,18 +33,19 @@ _("location")
 _("lyricist")
 # date song was last modified/edited
 _("modified")
+_("mount point")
 # alternately, "movement", "section"
+# alternately, "record label"
+_("organization")
 _("part")
+_("performer")
 _("play count")
 _("rating")
 _("skip count")
 _("title")
 _("track")
-# alternately, "record label"
-_("organization")
-_("performer")
-_("website")
 _("version")
+_("website")
 
 ngettext("performer", "performers", 1)
 ngettext("lyricist", "lyricists", 1)
