@@ -155,14 +155,23 @@ class GStreamerDevice(object):
 class AOAudioDevice(object):
     from formats import MusicPlayer as open
 
-    def __init__(self, dev):
+    def __init__(self, driver, *device):
         import ao
-        try:
-            self.__dev = ao.AudioDevice(dev, rate=44100, channels=2, bits=16)
+        options = {}
+        if device:
+            device = ":".join(device)
+            if driver == "oss": options = {"dsp": device}
+            elif driver == "esd": options = {"host": device}
+            elif driver in ["alsa09", "sun", "aixs"]:
+                options = {"dev": device}
+            self.name = ":".join(["ao", driver, device])
+        else: self.name = ":".join(["ao", driver])
+
+        try: self.__dev = ao.AudioDevice(
+            driver, bits=16, rate=44100, channels=2, options=options)
         except ao.aoError: raise IOError
         self.volume = 1.0
         self.set_info(44100, 2)
-        self.name = "ao:" + dev
 
     def set_info(self, rate, channels):
          self.__rate = rate
