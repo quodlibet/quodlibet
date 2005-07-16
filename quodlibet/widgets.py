@@ -614,8 +614,8 @@ class PreferencesWindow(gtk.Window):
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
             cb = qltk.ConfigCheckButton(
-                _("Show _programmatic comments"), 'settings', 'allcomments')
-            cb.set_active(config.state("allcomments"))
+                _("Show _programmatic comments"), 'editing', 'allcomments')
+            cb.set_active(config.getboolean("editing", "allcomments"))
             vbox.pack_start(hb, expand=False)
             vbox.pack_start(cb, expand=False)
             f.child.add(vbox)
@@ -4183,14 +4183,11 @@ class SongProperties(gtk.Window):
                     rend.set_property(
                         'pixbuf', pixbufs[2*row[write]+row[delete]])
             column.set_cell_data_func(render, cdf_write, (2, 4))
-            view.connect('button-press-event',
-                              self.__write_toggle, (column, 2))
             view.append_column(column)
 
             render = gtk.CellRendererText()
-            render.connect('edited', self.__edit_tag, model, 0)
-            column = gtk.TreeViewColumn(_('Tag'), render, text=0,
-                                        strikethrough=4)
+            column = gtk.TreeViewColumn(
+                _('Tag'), render, text=0, strikethrough=4)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
 
@@ -4199,13 +4196,10 @@ class SongProperties(gtk.Window):
             render.set_property('editable', True)
             render.connect('edited', self.__edit_tag, model, 1)
             render.markup = 1
-            column = gtk.TreeViewColumn(_('Value'), render, markup=1,
-                                        editable=3, strikethrough=4)
+            column = gtk.TreeViewColumn(
+                _('Value'), render, markup=1, editable=3, strikethrough=4)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
-
-            view.connect('popup-menu', self.__popup_menu)
-            view.connect('button-press-event', self.__button_press)
 
             sw = gtk.ScrolledWindow()
             sw.set_shadow_type(gtk.SHADOW_IN)
@@ -4243,11 +4237,12 @@ class SongProperties(gtk.Window):
             tips = gtk.Tooltips()
             for widget, tip in [
                 (view, _("Double-click a tag value to change it, "
-                              "right-click for other options")),
+                         "right-click for other options")),
                 (add, _("Add a new tag")),
                 (remove, _("Remove selected tag"))]:
                 tips.set_tip(widget, tip)
             tips.enable()
+
             self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             UPDATE_ARGS = [
@@ -4256,11 +4251,16 @@ class SongProperties(gtk.Window):
                 'changed', self.__class__.__update, self, *UPDATE_ARGS)
             revert.connect_object(
                 'clicked', self.__update, None, *UPDATE_ARGS)
-            selection.connect('changed', self.__tag_select, remove)
 
             save.connect('clicked', self.__save_files, revert, model, parent)
             for sig in ['row-inserted', 'row-deleted', 'row-changed']:
                 model.connect(sig, self.__enable_save, [save, revert])
+
+            view.connect(
+                'button-press-event', self.__write_toggle, (column, 2))
+            view.connect('popup-menu', self.__popup_menu)
+            view.connect('button-press-event', self.__button_press)
+            selection.connect('changed', self.__tag_select, remove)
 
         def __enable_save(self, *args):
             buttons = args[-1]
@@ -4399,8 +4399,7 @@ class SongProperties(gtk.Window):
 
         def __tag_select(self, selection, remove):
             model, iter = selection.get_selected()
-            remove.set_sensitive(
-                bool(selection.count_selected_rows()) and model[iter][3])
+            remove.set_sensitive(bool(iter and model[iter][3]))
 
         def __add_new_tag(self, model, comment, value):
             edited = True
@@ -4411,7 +4410,7 @@ class SongProperties(gtk.Window):
             def find_same_comments(model, path, iter):
                 if model[path][0] == comment: iters.append(iter)
             model.foreach(find_same_comments)
-            row = [comment, util.escape(value), edited, edit,deleted,orig]
+            row = [comment, util.escape(value), edited, edit,deleted, orig]
             if len(iters): model.insert_after(iters[-1], row=row)
             else: model.append(row=row)
 
@@ -4557,7 +4556,7 @@ class SongProperties(gtk.Window):
             keys = songinfo.realkeys()
             keys.sort()
 
-            if not config.state("allcomments"):
+            if not config.getboolean("editing", "allcomments"):
                 machine_comments = set(['replaygain_album_gain',
                                         'replaygain_album_peak',
                                         'replaygain_track_gain',

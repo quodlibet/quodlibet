@@ -72,7 +72,6 @@ def init(*rc_files):
           "addreplace": "0", # 0 - replace tags, 1 - add tags, in TBP
           "titlecase": "false", # titlecase values in TBP
           "splitval": "true", # split values in TBP
-          "allcomments": "true", # show all comments, or just "human" ones
 
           "backend": "ao:alsa09", # audio backend
 
@@ -97,6 +96,7 @@ def init(*rc_files):
         "editing":
         { "split_on": "& , /", # words to split on
           "id3encoding": "shift-jis big5", # ID3 encodings to try
+          "allcomments": "true", # show all comments, or just "human" ones
           },
 
         "exfalso":
