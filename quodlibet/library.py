@@ -255,7 +255,7 @@ class Library(dict):
     def rebuild(self, force=False):
         changed, removed = [], []
 
-        for fn, song in self.iteritems():
+        for fn, song in self.items():
             song = self[fn]
             if song.valid() and not force: continue
             else: self.reload(song, changed, removed)
