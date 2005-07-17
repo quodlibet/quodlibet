@@ -208,15 +208,16 @@ class Library(dict):
 
     # Reload, mask, or remove a song, adjusting given lists as necessary.
     def reload(self, song, changed=None, removed=None):
-        changed = changed or []
-        removed = removed or []
+        if changed is None: changed = []
+        if removed is None: removed = []
+        fn = song["~filename"]
         if song.exists():
-            try: self[m_fn].reload()
+            try: song.reload()
             except:
-                self[m_fn]["~filename"] = m_fn
+                song["~filename"] = fn
                 self.remove(song)
-                removed.append(self[m_fn])
-            else: changed.append(self[m_fn])
+                removed.append(song)
+            else: changed.append(song)
         elif not song.mounted():
             mp = song["~mountpoint"]
             self.__masked_files.setdefault(mp, {})
@@ -257,7 +258,7 @@ class Library(dict):
         for fn, song in self.iteritems():
             song = self[fn]
             if song.valid() and not force: continue
-            else: self.reload(self[m_fn], changed, removed)
+            else: self.reload(song, changed, removed)
             yield changed, removed
 
 def init(cache_fn=None):
