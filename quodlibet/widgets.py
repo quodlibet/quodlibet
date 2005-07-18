@@ -2025,7 +2025,6 @@ class MainWindow(gtk.Window):
             gtk.Label.__init__(self)
             self.set_ellipsize(pango.ELLIPSIZE_END)
             self.set_alignment(0.0, 0.0)
-            self.set_padding(3, 3)
             widgets.watcher.connect('song-started', self.__song_started)
             widgets.watcher.connect('changed', self.__check_change)
 
@@ -2298,7 +2297,12 @@ class MainWindow(gtk.Window):
 
         # song text
         text = self.SongInfo()
-        hb2.pack_start(text)
+        # Packing the text directly into the hbox causes clipping problems
+        # with Hebrew, so use an Alignment instead.
+        alignment = gtk.Alignment(xalign=0, yalign=0, xscale=1, yscale=1)
+        alignment.set_padding(3, 3, 3, 3)
+        alignment.add(text)
+        hb2.pack_start(alignment)
 
         vbox.pack_start(hb2, expand=True)
         hbox.pack_start(vbox, expand=True)
