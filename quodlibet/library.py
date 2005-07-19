@@ -257,8 +257,8 @@ class Library(dict):
 
         for fn, song in self.items():
             song = self[fn]
-            if song.valid() and not force: continue
-            else: self.reload(song, changed, removed)
+            if not song.valid() or force:
+                self.reload(song, changed, removed)
             yield changed, removed
 
 def init(cache_fn=None):

@@ -2798,7 +2798,8 @@ class MainWindow(gtk.Window):
                                        "%d songs reloaded\n%d songs removed"),
                                      (0, 0))
         iter = 7
-        c = r = 0
+        c = []
+        r = []
         for c, r in library.rebuild(hard):
             if iter == 7:
                 if window.step(len(c), len(r)):
@@ -4183,6 +4184,8 @@ class SongProperties(gtk.Window):
                         'pixbuf', pixbufs[2*row[write]+row[delete]])
             column.set_cell_data_func(render, cdf_write, (2, 4))
             view.append_column(column)
+            view.connect(
+                'button-press-event', self.__write_toggle, (column, 2))
 
             render = gtk.CellRendererText()
             column = gtk.TreeViewColumn(
@@ -4255,8 +4258,6 @@ class SongProperties(gtk.Window):
             for sig in ['row-inserted', 'row-deleted', 'row-changed']:
                 model.connect(sig, self.__enable_save, [save, revert])
 
-            view.connect(
-                'button-press-event', self.__write_toggle, (column, 2))
             view.connect('popup-menu', self.__popup_menu)
             view.connect('button-press-event', self.__button_press)
             selection.connect('changed', self.__tag_select, remove)
