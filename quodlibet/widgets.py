@@ -2215,10 +2215,10 @@ class MainWindow(gtk.Window):
         def __update_time(self, watcher, position, timer):
             cur, end = watcher.time
             position.set_value(cur)
+            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
+            end = "%d:%02d" % (end // 60000, (end % 60000) // 1000)
             timer.set_text(
-                "%d:%02d/%d:%02d" %
-                (cur // 60000, (cur % 60000) // 1000,
-                 end // 60000, (end % 60000) // 1000))
+                "%(current)s/%(total)s" % dict(current=cur, total=end))
             return True
 
     gobject.type_register(PositionSlider)
