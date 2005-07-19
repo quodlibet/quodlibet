@@ -2173,15 +2173,7 @@ class MainWindow(gtk.Window):
         def __next(self, button): player.playlist.next()
 
         def __add_music(self, button):
-            chooser = FileChooser(
-                widgets.main, _("Add Music"), widgets.main.last_dir)
-            resp, fns = chooser.run()
-            chooser.destroy()
-            if resp == gtk.RESPONSE_OK:
-                widgets.main.scan_dirs(fns)
-                widgets.watcher.refresh()
-            if fns: widgets.main.last_dir = fns[0]
-            library.save(const.LIBRARY)
+            widgets.main.open_chooser(button)
 
         def __properties(self, button):
             if widgets.watcher.song:
@@ -2844,14 +2836,17 @@ class MainWindow(gtk.Window):
         player.playlist.paused = False
 
     def open_chooser(self, *args):
+        if not os.path.exists(self.last_dir):
+            self.last_dir = os.environ["HOME"]
         chooser = FileChooser(self, _("Add Music"), self.last_dir)
         resp, fns = chooser.run()
         chooser.destroy()
         if resp == gtk.RESPONSE_OK:
             self.scan_dirs(fns)
             widgets.watcher.refresh()
-        if fns: self.last_dir = fns[0]
-        library.save(const.LIBRARY)
+            library.save(const.LIBRARY)
+        if fns:
+            self.last_dir = fns[0]
 
     def scan_dirs(self, fns):
         win = qltk.WaitLoadWindow(self, 0,
