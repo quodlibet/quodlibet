@@ -10,11 +10,18 @@ from formats.audio import AudioFile, AudioPlayer
 import config
 import re
 import tempfile
-try: import eyeD3, mad
+try: import mutagen.id3, mad
 except ImportError: extensions = []
 else: extensions = [".mp3", ".mp2"]
 
 def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
+
+class ID3hack(mutagen.id3.ID3):
+    "Override 'correct' behavior with desired behavior"
+    def loaded_frame(self, name, tag):
+        if tag.HashKey in self and tag.FrameID[0] == "T":
+            self[tag.HashKey].extend(tag[:])
+        else: self[tag.HashKey] = tag
 
 # ID3 is absolutely the worst thing ever.
 
@@ -39,192 +46,71 @@ class MP3File(AudioFile):
             "TSRC": "isrc",
             "TCOP": "copyright",
             "TPUB": "organization",
-            "USER": "license",
             "TSST": "part",
-            "WOAR": "website",
             "TOLY": "author",
-            "COMM": "comment",
-            "TCON": "genre",
             "TMOO": "mood",
             "TBPM": "bpm",
+            "TDRC": "date",
+            "WOAR": "website",
             }
-    SDI = dict([(v, k) for k, v in IDS.iteritems()])
 
-    GENRES = { "0": "Blues",
-               "1": "Classic Rock",
-               "2": "Country",
-               "3": "Dance",
-               "4": "Disco",
-               "5": "Funk",
-               "6": "Grunge",
-               "7": "Hip-Hop",
-               "8": "Jazz",
-               "9": "Metal",
-               "10": "New Age",
-               "11": "Oldies",
-               "12": "Other",
-               "13": "Pop",
-               "14": "R&B",
-               "15": "Rap",
-               "16": "Reggae",
-               "17": "Rock",
-               "18": "Techno",
-               "19": "Industrial",
-               "20": "Alternative",
-               "21": "Ska",
-               "22": "Death Metal",
-               "23": "Pranks",
-               "24": "Soundtrack",
-               "25": "Euro-Techno",
-               "26": "Ambient",
-               "27": "Trip-Hop",
-               "28": "Vocal",
-               "29": "Jazz+Funk",
-               "30": "Fusion",
-               "31": "Trance",
-               "32": "Classical",
-               "33": "Instrumental",
-               "34": "Acid",
-               "35": "House",
-               "36": "Game",
-               "37": "Sound Clip",
-               "38": "Gospel",
-               "39": "Noise",
-               "40": "AlternRock",
-               "41": "Bass",
-               "42": "Soul",
-               "43": "Punk",
-               "44": "Space",
-               "45": "Meditative",
-               "46": "Instrumental Pop",
-               "47": "Instrumental Rock",
-               "48": "Ethnic",
-               "49": "Gothic",
-               "50": "Darkwave",
-               "51": "Techno-Industrial",
-               "52": "Electronic",
-               "53": "Pop-Folk",
-               "54": "Eurodance",
-               "55": "Dream",
-               "56": "Southern Rock",
-               "57": "Comedy",
-               "58": "Cult",
-               "59": "Gangsta",
-               "60": "Top 40",
-               "61": "Christian Rap",
-               "62": "Pop/Funk",
-               "63": "Jungle",
-               "64": "Native American",
-               "65": "Cabaret",
-               "66": "New Wave",
-               "67": "Psychadelic",
-               "68": "Rave",
-               "69": "Showtunes",
-               "70": "Trailer",
-               "71": "Lo-Fi",
-               "72": "Tribal",
-               "73": "Acid Punk",
-               "74": "Acid Jazz",
-               "75": "Polka",
-               "76": "Retro",
-               "77": "Musical",
-               "78": "Rock & Roll",
-               "CR": "Cover",
-               "RX": "Remix",
-               }
+    SDI = dict([(v, k) for k, v in IDS.iteritems()])
 
     CODECS = ["utf-8"]
     try: CODECS.extend(config.get("editing", "id3encoding").strip().split())
     except: pass # Uninitialized config...
     CODECS.append("iso-8859-1")
 
-    SERNEG = dict([(v, k) for k, v in GENRES.iteritems()])
-
-    # Matches "(1)", "(99)Dark Ambience" and "Blues".
-    GENRE_RE = re.compile(r"(?:\((?P<id>[0-9]+|RX|CR)\))?(?P<str>.+)?")
-            
     def __init__(self, filename):
-        tag = eyeD3.Tag(eyeD3.ID3_V2_4)
-        tag.link(filename)
-        date = ["", "", ""]
+        try: tag = ID3hack(filename)
+        except mutagen.id3.error: tag = {}
 
-        for frame in tag.frames:
-            if frame.header.id == "TDAT" and len(frame.text) == 4:
-                date[1] = frame.text[0:2]
-                date[2] = frame.text[2:4]
-                continue
-            elif frame.header.id == "TYER" and len(frame.text) == 4:
-                date[0] = frame.text
-                continue
-            elif frame.header.id == "APIC" and len(frame.imageData):
+        for frame in tag.values():
+            if frame.FrameID == "APIC" and len(frame.data):
                 self["~picture"] = "y"
                 continue
-            elif frame.header.id == "TCON":
-                text = self.__distrust_latin1(frame.text, frame.encoding)
-                if text is not None: self.__fix_genre(text)
-                continue            
-            elif frame.header.id in ["COMM", "TXXX"]:
-                if frame.description.startswith("QuodLibet::"):
-                    name = frame.description[11:]
-                elif frame.description == "ID3v1 Comment": continue
+            elif frame.FrameID == "TCON":
+                self["genre"] = "\n".join(frame.genres)
+                continue
+            elif frame.FrameID in ["COMM", "TXXX"]:
+                if frame.desc.startswith("QuodLibet::"):
+                    name = frame.desc[11:]
+                elif frame.desc == "ID3v1 Comment": continue
                 else: name = "comment"
-            else: name = self.IDS.get(frame.header.id, "").lower()
+            else: name = self.IDS.get(frame.FrameID, "").lower()
 
             if not name: continue
 
-            try:
-                id3id = frame.header.id
-                if id3id.startswith("T"): text = frame.text
-                elif id3id == "COMM": text = frame.comment
-                elif id3id.startswith("W"):
-                    dec = eyeD3.id3EncodingToString(frame.encoding)
-                    text = frame.url[1:].decode(dec)
-                elif id3id == "USER":
-                    dec = eyeD3.id3EncodingToString(frame.encoding)
-                    text = frame.data[1:].decode(dec)
-                else: continue
+            id3id = frame.FrameID
+            if id3id.startswith("T"):
+                text = "\n".join(map(unicode, frame.text))
+            elif id3id == "COMM" and frame.desc == "":
+                text = "\n".join(frame.text)
+            elif id3id.startswith("W"):
+                text = frame.url
+                frame.encoding = 0
+            else: continue
 
-                if not text: continue
-                text = self.__distrust_latin1(text, frame.encoding)
-                if text is None: continue
-                if name in self:
-                    if text in self[name]: pass
-                    elif self[name] in text: self[name] = text
-                    else: self[name] += "\n" + text
-                else: self[name] = text
-                self[name] = self[name].strip()
-            except: pass
+            if not text: continue
+            text = self.__distrust_latin1(text, frame.encoding)
+            if text is None: continue
 
-        d = tag.getDate()
-        if d and len(d): d = d[0]
-        if d: date = list(d.getDate().split("T")[0].split("-")) + [None, None]
+            if name in self: self[name] += "\n" + text
+            else: self[name] = text
+            self[name] = self[name].strip()
 
-        try: audio = eyeD3.tag.Mp3AudioFile(filename)
-        except eyeD3.InvalidAudioFormatException:
-            # eyeD3 barfs too easily on MP3s with weird bitrates. MAD
-            # is more lenient, but less accurate.
-            import mad
-            audio = mad.MadFile(filename)
-            audio.seek_time(audio.total_time())
-            audio.read()
-            self["~#bitrate"] = audio.bitrate()
-            self["~#length"] = audio.total_time() / 1000
-        else:
-            self["~#length"] = audio.getPlayTime()
-            self["~#bitrate"] = audio.getBitRate()[1] * 1000
-            
-        if date[0]: self["date"] = "-".join(filter(None, date))
-
-        for key in self.realkeys():
-            # MP3s love their nulls...
-            self[key] = self[key].replace("\x00", "")
+        import mad
+        audio = mad.MadFile(filename)
+        audio.seek_time(audio.total_time())
+        audio.read()
+        self["~#bitrate"] = audio.bitrate()
+        self["~#length"] = audio.total_time() / 1000
 
         self.sanitize(filename)
 
     def __distrust_latin1(self, text, encoding):
-        if not isinstance(text, unicode):
-            assert isinstance(text, unicode)
-        if encoding == eyeD3.LATIN1_ENCODING:
+        assert isinstance(text, unicode)
+        if encoding == 0:
             text = text.encode('iso-8859-1')
             for codec in self.CODECS:
                 try: text = text.decode(codec)
@@ -233,97 +119,49 @@ class MP3File(AudioFile):
             else: return None
         return text
 
-    def __fix_genre(self, gstr):
-        # http://www.id3.org/id3v2.3.0.html#TCON
-        # TCON is in one of the following formats:
-        # (xx)
-        # (xx)Refinement
-        # Refinement
-
-        # Where 'xx' is the genre numeric ID. De facto 'Refinement' has
-        # become the same as the ID so if it's present ignore the numeric one.
-        # In theory there can be more than one genre per frame. I have
-        # never seen this, and this doesn't yet support it.
-
-        # This is only for reading them. Writing should work fine with
-        # existing code, since we'll just write out the strings once
-        # per frame.
-
-        # strip null string.. might be needed? -- niklasjanlert
-        gstr = gstr.rstrip("\x00")
-
-        genreid, genrename = self.GENRE_RE.match(gstr).groups()
-        if genrename: genrename = genrename.strip()
-
-        if not genreid:
-            try: genreid = str(int(gstr)) # Try id3v1 style..
-            except ValueError: pass
-
-        if genreid or genreid == 0: # ID3v1 style 'Blues' == 0.
-            genreid = str(int(genreid)) # "01" to "1"
-            try: self.add("genre", self.GENRES[genreid])
-            except KeyError: pass
-
-        if genrename and genrename not in self.list("genre"):
-            self.add("genre", genrename)
-
     def write(self):
-        tag = eyeD3.Tag()
-        tag.link(self['~filename'])
-        tag.setVersion(eyeD3.ID3_V2_4)
+        tag = mutagen.id3.ID3(self['~filename'])
+        tag.delall("COMM:QuodLibet:")
+        tag.delall("TXXX:QuodLibet:")
 
-        for frame in tag.frames[eyeD3.COMMENT_FID]:
-            if frame.description.startswith("QuodLibet::"):
-                tag.frames.remove(frame)
-        for frame in tag.frames[eyeD3.USERTEXT_FID]:
-            if frame.description.startswith("QuodLibet::"):
-                tag.frames.remove(frame)
-
-        needs_utf16 = False
         for key, id3name in self.SDI.items():
-            for frame in tag.frames[id3name]:
-                tag.frames.remove(frame)
-            needs_utf16 = needs_utf16 or not isascii(self.get(key, ""))
-            if id3name == "COMM" and key in self:
-                h = eyeD3.FrameHeader(tag.frames.tagHeader)
-                h.id = "COMM"
-                f = eyeD3.CommentFrame(
-                    h, comment=unicode(self[key]), description=u"", lang="")
-                tag.frames.addFrame(f)
-            else:
-                for value in self.list(key):
-                    h = eyeD3.FrameHeader(tag.frames.tagHeader)
-                    h.id = id3name
-                    f = eyeD3.TextFrame(h, text=unicode(value))
-                    tag.frames.addFrame(f)
+            tag.delall(id3name)
 
-        for key in filter(lambda x: x not in self.SDI and x != "date",
+            if key not in self: continue
+            elif not isascii(self[key]): enc = 1
+            else: enc = 3
+
+            Kind = mutagen.id3.Frames[id3name]
+            text = self[key].split("\n")
+            if id3name == "WOAR":
+                for t in text:
+                    tag.loaded_frame(id3name, Kind(url=t))
+            else: tag.loaded_frame(id3name, Kind(encoding=enc, text=text))
+
+        for key in filter(lambda x: x not in self.SDI and x not in ['genre'],
                           self.realkeys()):
-            needs_utf16 = needs_utf16 or not isascii(self.get(key, ""))
-            for value in self.list(key):
-                h = eyeD3.FrameHeader(tag.frames.tagHeader)
-                h.id = "TXXX"
-                f = eyeD3.UserTextFrame(
-                    h, text=unicode(value), description=u"QuodLibet::%s" % key)
-                tag.frames.addFrame(f)
+            if not isascii(self[key]): enc = 1
+            else: enc = 3
+            f = mutagen.id3.TXXX(
+                encoding=enc, text=self[key].split("\n"),
+                desc=u"QuodLibet::%s" % key)
+            tag.loaded_frame("TXXX", f)
 
-        for date in self.list("date"):
-            y, m, d = (date + "--").split("-")[0:3]
-            if y and m and d:
-                tag.setDate(year=y, month=m, dayOfMonth=d)
-            elif y:
-                tag.setDate(year=y)
-        if needs_utf16: tag.setTextEncoding(eyeD3.UTF_16_ENCODING)
-        else: tag.setTextEncoding(eyeD3.UTF_8_ENCODING)
-        tag.update(eyeD3.ID3_V2_4)
+        if "genre" in self:
+            if not isascii(self["genre"]): enc = 1
+            else: enc = 3
+            t = self["genre"].split("\n")
+            tag.loaded_frame("TCON", mutagen.id3.TCON(encoding=enc, text=t))
+        else: del(tag["TCON"])
+
+        tag.save()
         self.sanitize()
 
     def get_format_cover(self):
         f = tempfile.NamedTemporaryFile()
-        tag = eyeD3.Tag(eyeD3.ID3_V2_4)
-        tag.link(self['~filename'])
-        for frame in tag.frames[eyeD3.IMAGE_FID]:
-            f.write(frame.imageData)
+        tag = mutagen.id3.ID3(self["~filename"])
+        for frame in tag.frames["APIC"]:
+            f.write(frame.data)
             f.flush()
             f.seek(0, 0)
             return f

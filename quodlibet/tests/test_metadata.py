@@ -68,7 +68,7 @@ class TestMetaData(TestCase):
 tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
 'conductor', 'copyright', 'discnumber', 'encodedby', 'genre', 'isrc',
 'language', 'license', 'lyricist', 'organization', 'performer', 'title',
-'tracknumber', 'version', 'website', 'xyzzy_undefined_tag']
+'tracknumber', 'version', 'xyzzy_undefined_tag']
 
 for ext in formats._infos.keys():
     if os.path.exists(TestMetaData.base + ext):
