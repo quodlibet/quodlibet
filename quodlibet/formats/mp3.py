@@ -160,7 +160,7 @@ class MP3File(AudioFile):
     def get_format_cover(self):
         f = tempfile.NamedTemporaryFile()
         tag = mutagen.id3.ID3(self["~filename"])
-        for frame in tag.frames["APIC"]:
+        for frame in tag.getall("APIC"):
             f.write(frame.data)
             f.flush()
             f.seek(0, 0)
