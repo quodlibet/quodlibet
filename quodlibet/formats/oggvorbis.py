@@ -63,7 +63,6 @@ class OggPlayer(AudioPlayer):
             if bytes == 0: raise StopIteration
             if self.scale != 1:
                 buff = audioop.mul(buff, 2, self.scale)
-                bytes = len(buff)
             self.dev.play(buff)
         return int(self.audio.time_tell() * 1000)
 

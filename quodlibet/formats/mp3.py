@@ -9,6 +9,7 @@
 from formats.audio import AudioFile, AudioPlayer
 import config
 import re
+import audioop
 import tempfile
 try: import mutagen.id3, mad
 except ImportError: extensions = []
@@ -76,7 +77,11 @@ class MP3File(AudioFile):
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
                 elif frame.desc == "ID3v1 Comment": continue
-                else: name = "comment"
+                elif frame.desc == "": name = "comment"
+                else: continue
+            elif frame.FrameID == "RVA2":
+                self.__process_rg(frame)
+                continue
             else: name = self.IDS.get(frame.FrameID, "").lower()
 
             if not name: continue
@@ -108,6 +113,23 @@ class MP3File(AudioFile):
 
         self.sanitize(filename)
 
+    def can_change(self, k=None):
+        if k is None: return AudioFile.can_change(self, k)
+        else:
+            return (AudioFile.can_change(self, k) and
+                    k not in ["replaygain_track_peak",
+                              "replaygain_album_peak"])
+        
+
+    def __process_rg(self, frame):
+        if frame.channel == 1:            
+            if frame.desc == "album": k = "album"
+            elif frame.desc == "track": k = "track"
+            elif "replaygain_track_gain" not in self: k = "track" # fallback
+            else: return
+            self["replaygain_%s_gain" % k] = "%+f dB" % frame.gain
+            self["replaygain_%s_peak" % k] = str(frame.peak)
+
     def __distrust_latin1(self, text, encoding):
         assert isinstance(text, unicode)
         if encoding == 0:
@@ -138,7 +160,10 @@ class MP3File(AudioFile):
                     tag.loaded_frame(id3name, Kind(url=t))
             else: tag.loaded_frame(id3name, Kind(encoding=enc, text=text))
 
-        for key in filter(lambda x: x not in self.SDI and x not in ['genre'],
+        dontwrite = ["genre", "comment", "replaygain_album_peak",
+                     "replaygain_track_peak", "replaygain_album_gain",
+                     "replaygain_track_gain"]
+        for key in filter(lambda x: x not in self.SDI and x not in dontwrite,
                           self.realkeys()):
             if not isascii(self[key]): enc = 1
             else: enc = 3
@@ -161,9 +186,20 @@ class MP3File(AudioFile):
             else: enc = 3
             t = self["comment"].split("\n")
             tag.loaded_frame(
-                "COMM", mutagen.id3.COMM(encoding=enc, text=t, desc=u""))
+                "COMM", mutagen.id3.COMM(
+                encoding=enc, text=t, desc=u"", lang="\x00\x00\x00"))
         else:
             tag.delall("COMM:")
+
+        for k in ["normalize", "album", "track"]:
+            try: del(tag["RVA2:"+k])
+            except KeyError: pass
+
+        for k in ["track", "album"]:
+            if ('replaygain_%s_gain' % k) in self:
+                gain = float(self["replaygain_%s_gain" % k].split()[0])
+                f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=0)
+                tag.loaded_frame("RVA2", f)
 
         tag.save()
         self.sanitize()
@@ -209,11 +245,14 @@ class MP3Player(AudioPlayer):
         if self.stopped: raise StopIteration
         buff = self.audio.read(256)
         if self.audio.samplerate() != self.__expected_sr:
-            print "W: %s: Skipping what doesn't look like audio data..." % self.filename
+            print "W: %s: Skipping what doesn't look like audio data..." %(
+                self.filename)
             while self.audio.samplerate() != self.__expected_sr and buff:
                 buff = self.audio.read(256)
             buff = self.audio.read(256)
         if buff is None: raise StopIteration
+        if self.scale != 1:
+            buff = audioop.mul(buff, 2, self.scale)
         self.dev.play(buff)
         return self.audio.current_time()
 
