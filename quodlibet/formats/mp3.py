@@ -152,7 +152,18 @@ class MP3File(AudioFile):
             else: enc = 3
             t = self["genre"].split("\n")
             tag.loaded_frame("TCON", mutagen.id3.TCON(encoding=enc, text=t))
-        else: del(tag["TCON"])
+        else:
+            try: del(tag["TCON"])
+            except KeyError: pass
+
+        if "comment" in self:
+            if not isascii(self["comment"]): enc = 1
+            else: enc = 3
+            t = self["comment"].split("\n")
+            tag.loaded_frame(
+                "COMM", mutagen.id3.COMM(encoding=enc, text=t, desc=u""))
+        else:
+            tag.delall("COMM:")
 
         tag.save()
         self.sanitize()
