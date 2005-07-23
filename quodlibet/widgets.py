@@ -4254,10 +4254,13 @@ class SongProperties(gtk.Window):
                 'changed', self.__class__.__update, self, *UPDATE_ARGS)
             revert.connect_object(
                 'clicked', self.__update, None, *UPDATE_ARGS)
+            revert.connect_object('clicked', parent.set_pending, None)
 
             save.connect('clicked', self.__save_files, revert, model, parent)
+            save.connect_object('clicked', parent.set_pending, None)
             for sig in ['row-inserted', 'row-deleted', 'row-changed']:
                 model.connect(sig, self.__enable_save, [save, revert])
+                model.connect_object(sig, parent.set_pending, save)
 
             view.connect('popup-menu', self.__popup_menu)
             view.connect('button-press-event', self.__button_press)
@@ -5158,9 +5161,11 @@ class SongProperties(gtk.Window):
         fbasemodel = gtk.ListStore(object, str, str, str)
         fmodel = gtk.TreeModelSort(fbasemodel)
         fview = HintedTreeView(fmodel)
+        fview.connect('button-press-event', self.__pre_selection_changed)
         selection = fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         selection.connect('changed', self.__selection_changed)
+        self.__save = None
 
         if len(songs) > 1:
             render = gtk.CellRendererText()
@@ -5208,6 +5213,7 @@ class SongProperties(gtk.Window):
         self.connect_object('destroy', widgets.watcher.disconnect, s1)
         self.connect_object('destroy', widgets.watcher.disconnect, s2)
         self.connect_object('destroy', widgets.watcher.disconnect, s3)
+        self.connect_object('changed', self.set_pending, None)
 
         self.emit('changed', songs)
         self.show_all()
@@ -5239,6 +5245,16 @@ class SongProperties(gtk.Window):
             model[iter][2] = song("~dirname")
             model[iter][3] = song["~filename"]
         model.foreach(refresh)
+
+    def set_pending(self, button, *excess):
+        self.__save = button
+
+    def __pre_selection_changed(self, view, event):
+        if self.__save:
+            resp = qltk.CancelRevertSave(self).run()
+            if resp == gtk.RESPONSE_YES: self.__save.clicked()
+            elif resp == gtk.RESPONSE_NO: return False
+            else: return True # cancel or closed
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()
@@ -5507,7 +5523,21 @@ class ExFalsoWindow(gtk.Window):
         s = widgets.watcher.connect_object('refresh', FileSelector.rescan, fs)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
         self.connect('destroy', gtk.main_quit)
+        self.__save = None
+        self.connect_object('changed', self.set_pending, None)
+        for c in fs.get_children():
+            c.child.connect('button-press-event', self.__pre_selection_changed)
         self.emit('changed', [])
+
+    def set_pending(self, button, *excess):
+        self.__save = button
+
+    def __pre_selection_changed(self, view, event):
+        if self.__save:
+            resp = qltk.CancelRevertSave(self).run()
+            if resp == gtk.RESPONSE_YES: self.__save.clicked()
+            elif resp == gtk.RESPONSE_NO: return False
+            else: return True # cancel or closed
 
     def __changed(self, selector, selection, notebook):
         model, rows = selection.get_selected_rows()
