@@ -1,4 +1,4 @@
-MODULES = config.py const.py library.py match.py parser.py player.py plugins.py qltk.py util.py widgets.py formats/*.py
+MODULES = config.py const.py library.py match.py parser.py player.py plugins.py qltk.py util.py widgets.py formats/*.py mutagen/*.py
 SUBDIRS = trayicon mmkeys po
 EXTENSIONS = trayicon.so mmkeys.so
 PREFIX ?= /usr/local
