@@ -1127,6 +1127,7 @@ class SearchBar(EmptyBar):
         combo.child.connect('activate', self.__text_parse)
         combo.child.connect('changed', self.__test_filter)
         tips.enable()
+        combo.child.connect('realize', lambda w: w.grab_focus())
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.pack_start(combo)
         self.pack_start(clear, expand=False)
