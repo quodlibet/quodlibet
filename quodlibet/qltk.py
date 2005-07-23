@@ -42,6 +42,25 @@ class ConfirmAction(Message):
         if resp == gtk.RESPONSE_YES: return True
         else: return False
 
+class CancelRevertSave(gtk.MessageDialog):
+    def __init__(self, parent):
+        title = _("Discard tag edits?")
+        description = _("Tags have been changed but not saved. Save these "
+                        "files, or revert and discard changes?")
+        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
+        gtk.MessageDialog.__init__(
+            self, parent, flags=0, type=gtk.MESSAGE_WARNING,
+            buttons=gtk.BUTTONS_NONE, message_format=text)
+        self.add_buttons(((gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL),
+                          (gtk.STOCK_REVERT, gtk.RESPONSE_NO),
+                          (gtk.STOCK_SAVE, gtk.RESPONSE_YES)))
+        self.set_default_response(gtk.RESPONSE_YES)
+
+    def run(self):
+        resp = gtk.MessageDialog.run(self)
+        self.destroy()
+        return resp
+
 class ErrorMessage(Message):
     """Like Message, but uses an error-indicating picture."""
     def __init__(self, *args):
