@@ -1437,7 +1437,7 @@ class AlbumList(Browser, gtk.VBox):
         songs = self.__get_selected_songs(view.get_selection())
         if songs:
             songs.sort()
-            SongProperties(songs)
+            SongProperties(songs, initial=0)
 
     def __button_press(self, view, event, menu):
         x, y = map(int, [event.x, event.y])
@@ -5137,7 +5137,7 @@ class SongProperties(gtk.Window):
             save.set_sensitive(False)
             revert.set_sensitive(False)
 
-    def __init__(self, songs):
+    def __init__(self, songs, initial=1):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
@@ -5211,6 +5211,7 @@ class SongProperties(gtk.Window):
 
         self.emit('changed', songs)
         self.show_all()
+        notebook.set_current_page(initial)
 
     def __remove(self, song, model, selection):
         to_remove = [None]
