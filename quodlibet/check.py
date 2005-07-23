@@ -39,13 +39,6 @@ if __name__ == "__main__":
                "(http://www.mars.org/home/rob/proj/mpeg/)" % NAME)
     else: print "found"
 
-    print "Checking for eyeD3:",
-    try: import eyeD3
-    except ImportError:
-        print ("not found\n%s recommends eyeD3. "
-               "(http://eyed3.nicfit.net/)" % NAME)
-    else: print "found"
-
     print "Checking for ao:",
     try: import ao
     except ImportError:

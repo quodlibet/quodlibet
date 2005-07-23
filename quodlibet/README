@@ -39,7 +39,6 @@ of them probably come with your OS distribution.
  PyGTK (>= 2.6):	http://www.pygtk.org
  PyVorbis:		http://www.andrewchatham.com/pyogg/
  Pymad (MP3):		http://spacepants.org/src/pymad
- eyeD3:			http://eyed3.nicfit.net
 
 Optional:
  Modplug:		http://modplug-xmms.sourceforge.net
