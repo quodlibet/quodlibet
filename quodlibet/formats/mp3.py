@@ -88,7 +88,7 @@ class MP3File(AudioFile):
             id3id = frame.FrameID
             if id3id.startswith("T"):
                 text = "\n".join(map(unicode, frame.text))
-            elif id3id == "COMM" and frame.desc == "":
+            elif id3id == "COMM":
                 text = "\n".join(frame.text)
             elif id3id.startswith("W"):
                 text = frame.url
