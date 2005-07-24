@@ -5578,7 +5578,14 @@ def tag(name, cap=True):
         if name[0] == "~":
             if name[1] == "#": name = name[2:]
             else: name = name[1:]
-        parts = [_(HEADERS_FILTER.get(n, n)) for n in name.split("~")]
+        if name in ["artist", "performer", "lyricist", "arranger", "composer",
+                    "conductor", "author"]: # tags retrieved by ngettext
+            # This is a pretty big hack, but seems to be necessary.
+            # Without it, the raw "artist" string doesn't get retrieved.
+            import gettext
+            t = lambda x: gettext.ngettext(x, x+"s", 1)
+        else: t = _
+        parts = [t(HEADERS_FILTER.get(n, n)) for n in name.split("~")]
         if cap: parts = map(util.capitalize, parts)
         return " / ".join(parts)
     except IndexError:
