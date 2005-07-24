@@ -40,7 +40,6 @@ class MP3File(AudioFile):
             "TEXT": "lyricist",
             "TCOM": "composer",
             "TENC": "encodedby",
-            "TLAN": "language",
             "TALB": "album",
             "TRCK": "tracknumber",
             "TPOS": "discnumber",
