@@ -53,3 +53,11 @@ ngettext("arranger", "arrangers", 1)
 ngettext("composer", "composers", 1)
 ngettext("conductor", "conductors", 1)
 ngettext("author", "authors", 1)
+
+# Not really tag names, but this is the best place for them so far.
+
+ngettext("%d second", "%d seconds", 1)
+ngettext("%d minute", "%d minutes", 1)
+ngettext("%d hour", "%d hours", 1)
+ngettext("%d day", "%d days", 1)
+ngettext("%d year", "%d years", 1)

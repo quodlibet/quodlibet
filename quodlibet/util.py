@@ -8,7 +8,6 @@
 
 import os, sre, string, locale
 from gettext import ngettext
-N_ = str 
 
 def to(string, frm="utf-8"):
     """Convert a string to the system encoding; used if you need to
@@ -82,11 +81,11 @@ def format_time_long(time):
     """Turn a time value in seconds into x hours, x minutes, etc."""
     if time < 1: return _("No time information")
     cutoffs = [
-        (60, N_("%d seconds"), N_("%d second")),
-        (60, N_("%d minutes"), N_("%d minute")),
-        (24, N_("%d hours"), N_("%d hour")),
-        (365, N_("%d days"), N_("%d day")),
-        (None, N_("%d years"), N_("%d year")),
+        (60, "%d seconds", "%d second"),
+        (60, "%d minutes", "%d minute"),
+        (24, "%d hours", "%d hour"),
+        (365, "%d days", "%d day"),
+        (None, "%d years", "%d year"),
     ]
     time_str = []
     for divisor, plural, single in cutoffs:
