@@ -5164,7 +5164,10 @@ class SongProperties(gtk.Window):
             revert.set_sensitive(True)
 
         def __update(self, songs, total, model, save, revert):
-            songs = songs[:]; songs.sort()
+            songs = songs[:]
+            songs.sort(lambda a, b: (cmp(a("~#track"), b("~#track")) or
+                                     cmp(a("~basename"), b("~basename")) or
+                                     cmp(a, b)))
             self.__songs = songs
             model.clear()
             total.set_value(len(songs))
