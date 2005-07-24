@@ -141,7 +141,8 @@ class MP3File(AudioFile):
         return text
 
     def write(self):
-        tag = mutagen.id3.ID3(self['~filename'])
+        try: tag = mutagen.id3.ID3(self['~filename'])
+        except mutagen.id3.error: tag = mutagen.id3.ID3()
         tag.delall("COMM:QuodLibet:")
         tag.delall("TXXX:QuodLibet:")
 
@@ -200,7 +201,7 @@ class MP3File(AudioFile):
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=0)
                 tag.loaded_frame("RVA2", f)
 
-        tag.save()
+        tag.save(self["~filename"])
         self.sanitize()
 
     def get_format_cover(self):
