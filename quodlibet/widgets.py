@@ -4428,14 +4428,13 @@ class SongProperties(gtk.Window):
                 comment = add.get_tag()
                 value = add.get_value()
                 if not self.__songinfo.can_change(comment):
-                    title = ngettext(
-                        "Invalid tag", "Invalid tags", len(invalid))
+                    title = ngettext("Invalid tag", "Invalid tags", 1)
                     msg = ngettext(
                         "Invalid tag <b>%s</b>\n\nThe files currently"
                         " selected do not support editing this tag.",
                         "Invalid tags <b>%s</b>\n\nThe files currently"
                         " selected do not support editing these tags.",
-                        len(invalid)) % util.escape(comment)
+                        1) % util.escape(comment)
                     qltk.ErrorMessage(None, title, msg).run
                 else:
                     self.__add_new_tag(model, comment, value)
