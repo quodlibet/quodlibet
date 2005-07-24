@@ -3679,8 +3679,8 @@ class AddTagDialog(gtk.Dialog):
         return gtk.Dialog.run(self)
 
 VALIDATERS = {
-    'date': (sre.compile(r"^\d{4}(-\d{2}-\d{2})?$").match,
-             _("The date must be entered in YYYY or YYYY-MM-DD format.")),
+    'date': (sre.compile(r"^\d{4}([-/.]\d{2}([-/.]\d{2}([T ]\d{2}([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match,
+            _("The date must be entered in YYYY, YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format.")),
 
     'replaygain_album_gain': (
     sre.compile(r"^-?\d+\.?\d* dB$").match,
@@ -4266,6 +4266,9 @@ class SongProperties(gtk.Window):
             view.connect('button-press-event', self.__button_press)
             selection.connect('changed', self.__tag_select, remove)
 
+            self.__user_updates = []
+            view.get_selection().connect('changed', self.__selection_changed)
+
         def __enable_save(self, *args):
             buttons = args[-1]
             for b in buttons: b.set_sensitive(True)
@@ -4406,6 +4409,7 @@ class SongProperties(gtk.Window):
             remove.set_sensitive(bool(iter and model[iter][3]))
 
         def __add_new_tag(self, model, comment, value):
+            self.__user_updates.append([self.__add_new_tag, model, comment, value])
             edited = True
             edit = True
             orig = None
@@ -4440,6 +4444,7 @@ class SongProperties(gtk.Window):
             add.destroy()
 
         def __remove_tag(self, activator, view):
+            self.__user_updates.append([self.__remove_tag, activator, view])
             model, iter = view.get_selection().get_selected()
             row = model[iter]
             if row[0] in self.__songinfo:
@@ -4521,8 +4526,10 @@ class SongProperties(gtk.Window):
             win.destroy()
             widgets.watcher.refresh()
             for b in [save, revert]: b.set_sensitive(False)
+            del self.__user_updates[:]
 
         def __edit_tag(self, renderer, path, new, model, colnum):
+            self.__user_updates.append([self.__edit_tag, renderer, path, new, model, colnum])
             new = ', '.join(new.splitlines())
             row = model[path]
             if (row[0] in VALIDATERS and
@@ -4543,12 +4550,40 @@ class SongProperties(gtk.Window):
             except TypeError: return False
 
             if col is writecol:
-                row = view.get_model()[path]
-                row[edited] = not row[edited]
-                return True
+                return self.__write_toggle_impl(view, path, edited)
+
+        def __write_toggle_impl(self, view, path, edited):
+            self.__user_updates.append([self.__write_toggle_impl, view, path, edited])
+            row = view.get_model()[path]
+            row[edited] = not row[edited]
+            return True
+
+        def __selection_changed(self, selection):
+            model, row = selection.get_selected()
+            tag = model[row][0]
+            path = model.get_path(row)
+            while path[0] >= 0 and model[path][0] == tag:
+                path = path[0]-1,
+            nth = model.get_path(row)[0] - path[0] - 1
+            self.__user_updates.append([self.__select, selection, tag, nth])
+
+        def __select(self, selection, tag, nth):
+            iters = []
+            model, row = selection.get_selected()
+            def matchtags(model, path, iter):
+                if model[iter][0] == tag: iters.append(iter)
+            model.foreach(matchtags)
+            if not iters: pass
+            elif len(iters) <= nth: 
+                selection.select_iter(iters[-1])
+            else: selection.select_iter(iters[nth])
 
         def __update(self, songs, view, buttonbox, model, add, buttons):
-            if songs is None: songs = self.__songs
+            user_updates = self.__user_updates[:]
+
+            if songs is None:
+                songs = self.__songs
+                user_updates = []
 
             from library import AudioFileGroup
             self.__songinfo = songinfo = AudioFileGroup(songs)
@@ -4586,6 +4621,10 @@ class SongProperties(gtk.Window):
             buttonbox.set_sensitive(bool(songinfo.can_change()))
             for b in buttons: b.set_sensitive(False)
             add.set_sensitive(bool(songs))
+
+            self.__user_updates = []
+            for update in user_updates:
+                update[0](*update[1:])
 
     class TagByFilename(gtk.VBox):
         def __init__(self, prop):
@@ -5265,6 +5304,7 @@ class SongProperties(gtk.Window):
                 songs.append(model[iter][0])
             selection.selected_foreach(get_songs, songs)
             self.emit('changed', songs)
+            self.dirty = False
 
 gobject.type_register(SongProperties)
 
