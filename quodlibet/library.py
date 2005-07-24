@@ -16,6 +16,7 @@ import config
 import parser
 import formats
 from formats import MusicFile
+from gettext import ngettext
 
 if sys.version_info < (2, 4):
     from sets import Set as set
@@ -34,20 +35,29 @@ class AudioFileGroup(dict):
             return util.escape(self)
 
         def paren(self):
-            if self.shared and self.complete:
-                return _('(shared across all %d songs)') % self.total
-            elif self.shared:
-                return _('(missing from %d songs)') % self.missing
+            if self.shared:
+                return ngettext('missing from %d song',
+                                'missing from %d songs',
+                                self.missing) % self.missing
             elif self.complete:
-                return _('(different across %d songs)') % self.total
+                return ngettext('different across %d song',
+                                'different across %d songs',
+                                self.total) % self.total
             else:
-                return _('(different across %d songs, missing from %d songs)')%(
-                        self.have, self.missing)
+                d = ngettext('different across %d song',
+                              'different across %d songs',
+                              self.have) % self.have
+                m = ngettext('missing from %d song',
+                              'missing from %d songs',
+                              self.missing) % self.missing
+                return _("%(different)s, %(missing)s") % dict(
+                    different=d, missing=m)
 
         def safenicestr(self):
             if self.shared and self.complete: return str(self)
-            elif self.shared: return '%s <i>%s</i>' % (str(self), self.paren())
-            else: return '<i>%s</i>' % self.paren()
+            elif self.shared:
+                return '%s <i>(%s)</i>' % (str(self), self.paren())
+            else: return '<i>(%s)</i>' % self.paren()
 
     class SharedComment(Comment): shared = True
     class UnsharedComment(Comment): shared = False
