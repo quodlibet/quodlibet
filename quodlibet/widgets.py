@@ -383,10 +383,10 @@ class PreferencesWindow(gtk.Window):
                   ("album", _("Al_bum")),
                   ("genre", _("_Genre"))],
                  [("~#track", _("_Track")),
-                  ("artist", _("A_rtist")),
+                  ("artist", _("_Artist")),
                   ("~basename",_("_Filename"))],
                  [("title", tag("title")),
-                  ("date", _("Dat_e")),
+                  ("date", _("_Date")),
                   ("~length",_("_Length"))]]):
                 for i, (k, t) in enumerate(l):
                     buttons[k] = gtk.CheckButton(t)
@@ -4428,11 +4428,15 @@ class SongProperties(gtk.Window):
                 comment = add.get_tag()
                 value = add.get_value()
                 if not self.__songinfo.can_change(comment):
-                    qltk.ErrorMessage(
-                        None, _("Invalid tag"),
-                        _("Invalid tag <b>%s</b>\n\nThe files currently"
-                          " selected do not support editing this tag.")%
-                        util.escape(comment)).run()
+                    title = ngettext(
+                        "Invalid tag", "Invalid tags", len(invalid))
+                    msg = ngettext(
+                        "Invalid tag <b>%s</b>\n\nThe files currently"
+                        " selected do not support editing this tag.",
+                        "Invalid tags <b>%s</b>\n\nThe files currently"
+                        " selected do not support editing these tags.",
+                        len(invalid)) % util.escape(comment)
+                    qltk.ErrorMessage(None, title, msg).run
                 else:
                     self.__add_new_tag(model, comment, value)
                     break
@@ -5592,7 +5596,7 @@ def tag(name, cap=True):
         if cap: parts = map(util.capitalize, parts)
         return " / ".join(parts)
     except IndexError:
-        return _("Invalid tag")
+        return ngettext("Invalid tag", "Invalid tags", 1)
 
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
