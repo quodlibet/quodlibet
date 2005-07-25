@@ -35,7 +35,7 @@ msgstr[1] "(verschilt over %d songs)"
 #: ../library.py:53
 #, python-format
 msgid "%(different)s, %(missing)s"
-msgstr "%(verschilt)s, %(ontbreekt)s"
+msgstr "%(different)s, %(missing)s"
 
 #: ../library.py:186
 #, python-format
@@ -697,8 +697,8 @@ msgstr[1] "Permanent deze bestanden verwijderen?"
 #, python-format
 msgid "%(title)s and %(count)d more..."
 msgid_plural "%(title)s and %(count)d more..."
-msgstr[0] "%(titel)s en %(aantal)d meer..."
-msgstr[1] "%(titel)s en %(aantal)d meer..."
+msgstr[0] "%(title)s en %(count)d meer..."
+msgstr[1] "%(title)s en %(count)d meer..."
 
 #: ../widgets.py:908 ../widgets.py:2459 ../widgets.py:2670
 msgid "_Play"
@@ -833,7 +833,7 @@ msgstr "Bezoek de website van de artiest"
 #: ../widgets.py:2222
 #, python-format
 msgid "%(current)s/%(total)s"
-msgstr "%(huidig)s/%(totaal)s"
+msgstr "%(current)s/%(total)s"
 
 #: ../widgets.py:2238
 msgid "Change volume"
@@ -1109,8 +1109,8 @@ msgstr "gtk-verwijder"
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
-msgstr[0] "%(aantal)d song (%(tijd)s)"
-msgstr[1] "%(aantal)d songs (%(tijd)s)"
+msgstr[0] "%(count)d song (%(time)s)"
+msgstr[1] "%(count)d songs (%(time)s)"
 
 #: ../widgets.py:3290
 msgid "Library Browser"
@@ -1514,7 +1514,7 @@ msgstr "Pad"
 #: ../widgets.py:5242 ../widgets.py:5563
 #, python-format
 msgid "%(title)s and %(count)d more"
-msgstr "%(titel)s en %(aantal)d meer"
+msgstr "%(title)s en %(count)d meer"
 
 #: ../widgets.py:5244 ../widgets.py:5245
 msgid "Properties"
