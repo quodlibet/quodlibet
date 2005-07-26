@@ -2026,6 +2026,7 @@ class MainWindow(gtk.Window):
             gtk.Label.__init__(self)
             self.set_ellipsize(pango.ELLIPSIZE_END)
             self.set_alignment(0.0, 0.0)
+            self.set_direction(gtk.TEXT_DIR_LTR)
             widgets.watcher.connect('song-started', self.__song_started)
             widgets.watcher.connect('changed', self.__check_change)
 
@@ -2193,7 +2194,10 @@ class MainWindow(gtk.Window):
         def __init__(self):
             gtk.HBox.__init__(self)
             l = gtk.Label("0:00/0:00")
-            l.set_padding(6, 0)
+            l.set_padding(3, 0)
+            # Without this, the text is clipped off the side. Since the
+            # format string is reversible, this is not a problem.
+            l.set_direction(gtk.TEXT_DIR_LTR)
             self.pack_start(l, expand=False)
             scale = gtk.HScale(gtk.Adjustment(0, 0, 0, 3600, 15000, 0))
             scale.set_update_policy(gtk.UPDATE_DELAYED)

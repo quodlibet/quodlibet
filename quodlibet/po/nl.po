@@ -490,7 +490,7 @@ msgstr "Geen plugins gevonden"
 #: ../widgets.py:337
 #, python-format
 msgid "Supported formats: %s"
-msgstr "Ondersteunde formaten:"
+msgstr "Ondersteunde formaten: %s"
 
 #: ../widgets.py:337
 #, python-format
