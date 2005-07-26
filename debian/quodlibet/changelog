@@ -1,10 +1,15 @@
-quodlibet (0.11-2) unstable; urgency=low
+quodlibet (0.12-1) unstable; urgency=low
 
+  * New upstream release:
+    * Use a new ID3 tag reader. (Closes: #307540)
+    * Escape filenames properly in warning dialogs. (Closes: #316659)
+    * Updated German translation. (Closes: #313814)
   * Versioned dependency on PyGTK 2.6 (thanks to Rene Dudfield).
   * quodlibet: Recommend current quodlibet-ext, conflict with others;
     quodlibet-ext: Depend on current quodlibet. (Closes: #313216)
+  * Update URLs in copyright files.
 
- -- Joe Wreschnig <piman@debian.org>
+ -- Joe Wreschnig <piman@debian.org>  Tue, 26 Jul 2005 13:30:00 -0500
 
 quodlibet (0.11-1) unstable; urgency=low
 
