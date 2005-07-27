@@ -151,7 +151,7 @@ class SongWatcher(gtk.Object):
         gobject.idle_add(self.emit, 'song-started', song)
 
     def song_ended(self, song, stopped):
-        self.changed(song)
+        self.changed([song])
         gobject.idle_add(self.emit, 'song-ended', song, stopped)
 
     def refresh(self):
@@ -170,7 +170,7 @@ class SongWatcher(gtk.Object):
             sys.stdout.write(str(err) + "\n")
             library.remove(song)
             self.removed(song)
-        else: self.changed(song)
+        else: self.changed([song])
 
     error = reload
 
