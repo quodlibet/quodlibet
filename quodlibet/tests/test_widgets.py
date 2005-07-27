@@ -132,10 +132,10 @@ class ValidaterTests(TestCase):
         for val in values: self.failIf(VALIDATERS[key][0](val))
 
     def test_date_valid(self):
-        self.validate("date", ["2002-10-12", "2000", "1200", "0000-00-00"])
+        self.validate("date", ["2002-10-12", "2000", "1200-10", "0000-00-00"])
     def test_date_invalid(self):
         self.invalidate(
-            "date", ["200", "1000-10", "date-or-no", "", "2000-00-00-00"])
+            "date", ["200", "date-or-no", "", "2000-00-00-00"])
 
     def test_gain_valid(self):
         gains = ["2.12 dB", "99. dB", "-1.11 dB", "-0.99 dB", "0 dB"]
