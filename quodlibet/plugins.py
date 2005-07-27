@@ -341,8 +341,10 @@ class PluginManager(object):
 
     def invoke_event(self, event, *args):
         try:
-            try: args = [args[0] and SongWrapper(args[0])] + list(args[1:])
-            except IndexError: pass
+            args = list(args)
+            if args and args[0]:
+                if isinstance(args[0], dict): args[0] = SongWrapper(args[0])
+                elif isinstance(args[0], list): args[0] = ListWrapper(args[0])
             for plugins in self.events[event].values():
                 for plugin in plugins:
                     if not self.enabled(plugin): continue
@@ -351,5 +353,8 @@ class PluginManager(object):
                         try: handler(*args)
                         except Exception: print_exc()
         finally:
-            if event not in ["removed", "missing"]:
-                self.check_change_and_refresh(args[0:1])
+            if event not in ["removed", "missing"] and args:
+                if isinstance(args[0], list):
+                    self.check_change_and_refresh(args[0])
+                else:
+                    self.check_change_and_refresh([args[0]])
