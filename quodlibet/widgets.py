@@ -132,11 +132,11 @@ class SongWatcher(gtk.Object):
     # the currently playing song.
     song = None
 
-    def changed(self, song):
-        gobject.idle_add(self.emit, 'changed', song)
+    def changed(self, songs):
+        gobject.idle_add(self.emit, 'changed', songs)
 
-    def added(self, song):
-        gobject.idle_add(self.emit, 'added', song)
+    def added(self, songs):
+        gobject.idle_add(self.emit, 'added', songs)
 
     def removed(self, song):
         gobject.idle_add(self.emit, 'removed', song)
@@ -931,7 +931,7 @@ class QLTrayIcon(HIGTrayIcon):
             if widgets.watcher.song is None: return
             else:
                 widgets.watcher.song["~#rating"] = value
-                widgets.watcher.changed(widgets.watcher.song)
+                widgets.watcher.changed([widgets.watcher.song])
         for i in range(5):
             item = gtk.MenuItem("%s %d" % (util.format_rating(i), i))
             item.connect_object('activate', set_rating, i)
@@ -2055,8 +2055,9 @@ class MainWindow(gtk.Window):
             widgets.watcher.connect('song-started', self.__song_started)
             widgets.watcher.connect('changed', self.__check_change)
 
-        def __check_change(self, watcher, song):
-            if song is watcher.song: self.__song_started(watcher, song)
+        def __check_change(self, watcher, songs):
+            if watcher.song in songs:
+                self.__song_started(watcher, watcher.song)
 
         def __song_started(self, watcher, song):
             if song:
@@ -2683,8 +2684,8 @@ class MainWindow(gtk.Window):
         elif c == "d":
             filename = os.read(source, 4096)
             for added, changed, removed in library.scan([filename]): pass
-            for song in added: widgets.watcher.added(song)
-            for song in changed: widgets.watcher.changed(song)
+            widgets.watcher.added(added)
+            widgets.watcher.changed(changed)
             for song in removed: widgets.watcher.removed(song)
             self.__make_query("filename = /^%s/c" % sre.escape(filename))
 
@@ -2717,14 +2718,15 @@ class MainWindow(gtk.Window):
             if iter: self.songlist.get_model().remove(iter)
             self.__set_time()
 
-    def __update_title(self, watcher, song):
-        if song is watcher.song:
+    def __update_title(self, watcher, songs):
+        if watcher.song in songs:
+            song = watcher.song
             if song:
                 self.set_title("Quod Libet - " + song.comma("~title~version"))
             else: self.set_title("Quod Libet")
 
     def __song_started(self, watcher, song):
-        self.__update_title(watcher, song)
+        self.__update_title(watcher, [song])
 
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum", "Rating"]:
@@ -2842,7 +2844,7 @@ class MainWindow(gtk.Window):
             window.destroy()
             if config.get("settings", "scan"):
                 self.scan_dirs(config.get("settings", "scan").split(":"))
-        for song in c: widgets.watcher.changed(song)
+        widgets.watcher.changed(c)
         for song in r: widgets.watcher.removed(song)
         if c or r:
             library.save(const.LIBRARY)
@@ -2888,8 +2890,8 @@ class MainWindow(gtk.Window):
         added, changed, removed = [], [], []
         for added, changed, removed in library.scan(fns):
             if win.step(len(added)): break
-        for song in changed: widgets.watcher.changed(song)
-        for song in added: widgets.watcher.added(song)
+        widgets.watcher.changed(changed)
+        widgets.watcher.added(added)
         for song in removed: widgets.watcher.removed(song)
         win.destroy()
         self.browser.activate()
@@ -2986,9 +2988,8 @@ class MainWindow(gtk.Window):
     def __set_rating(self, item, value, songs=[]):
         songs = songs or [widgets.watcher.song]
         if songs[0] is None: return
-        for song in songs:
-            song["~#rating"] = value
-            widgets.watcher.changed(song)
+        for song in songs: song["~#rating"] = value
+        widgets.watcher.changed(songs)
 
     def set_selected_ratings(self, item, value):
         self.__set_rating(item, value, self.songlist.get_selected_songs())
@@ -3224,11 +3225,14 @@ class SongList(HintedTreeView):
         model.foreach(find, it)
         return it[-1]
 
-    def __song_updated(self, watcher, song):
-        iter = self.song_to_iter(song)
-        if iter:
-            model = self.get_model()
-            model[iter][0] = model[iter][0]
+    def __song_updated(self, watcher, songs):
+        pi = []
+        model = self.get_model()
+        def find(model, path, iter, pi, songs):
+            if model[iter][0] in songs:
+                pi.append((path, iter))
+        for p, i in pi:
+            model.row_changed(path, iter)
 
     def __song_removed(self, watcher, song):
         iter = self.song_to_iter(song)
@@ -4547,7 +4551,7 @@ class SongProperties(gtk.Window):
                             song('~basename'))))).run()
                         widgets.watcher.error(song)
                         break
-                    widgets.watcher.changed(song)
+                    widgets.watcher.changed([song])
 
                 if win.step(): break
 
@@ -4822,7 +4826,7 @@ class SongProperties(gtk.Window):
                             ).run()
                         widgets.watcher.error(song)
                         return True
-                    widgets.watcher.changed(song)
+                    widgets.watcher.changed([song])
 
                 return win.step()
         
@@ -4967,7 +4971,7 @@ class SongProperties(gtk.Window):
                     newname = newname.encode(util.fscoding(), "replace")
                     if library: library.rename(song, newname)
                     else: song.rename(newname)
-                    widgets.watcher.changed(song)
+                    widgets.watcher.changed([song])
                 except:
                     qltk.ErrorMessage(
                         win, _("Unable to rename file"),
@@ -5137,7 +5141,7 @@ class SongProperties(gtk.Window):
                         util.escape(util.fsdecode(song('~basename'))))).run()
                     widgets.watcher.error(song)
                     return True
-                widgets.watcher.changed(song)
+                widgets.watcher.changed([song])
                 return win.step()
             model.foreach(settrack)
             widgets.watcher.refresh()
