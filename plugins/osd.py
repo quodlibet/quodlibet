@@ -398,9 +398,12 @@ class Osd(object):
         gobject.idle_add(win.show_all)
         self.__window = win
 
-        # An active OSD window can be closed by clicking it.
-        if not is_preview: 
-            self.__sid = gobject.timeout_add(int(float(config.get('plugins', 'osd_timeout')) * 1000), self.__hide_panel)
+        if not is_preview:
+            # An active OSD window is closed after a user-specified time.
+            timeout = config.get('plugins', 'osd_timeout')
+            if timeout > 0:
+                self.__sid = gobject.timeout_add(int(float(timeout) * 1000), self.__hide_panel)
+            # And it can be closed by clicking it.
             win.connect('button-press-event', self.__hide_panel_callback)
         # A preview OSD can be dragged around.
         else: 
