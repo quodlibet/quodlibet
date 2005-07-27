@@ -1044,6 +1044,9 @@ class Browser(object):
     # Actually do the filtering (with a union of values).
     def filter(self, key, values): raise NotImplementedError
 
+    # Scroll to something related to the current song.
+    def scroll(self): pass
+
 # A browser that the user only interacts with indirectly, via the
 # Filter menu. The HBox remains empty.
 class EmptyBar(gtk.HBox, Browser):
@@ -1495,6 +1498,15 @@ class AlbumList(Browser, gtk.VBox):
 
             if first: selection.get_tree_view().scroll_to_cell(first)
 
+    def scroll(self):
+        view = self.get_children()[1].child
+        model = view.get_model()
+        values = widgets.watcher.song.list("album")
+        for i, row in enumerate(iter(model)):
+            if row[0] and row[0].title in values:
+                view.scroll_to_cell(i, use_align=True, row_align=0.5)
+                break
+
     def __selection_changed(self, selection, sort):
         if sort.inhibit: return
         songs = self.__get_selected_songs(selection)
@@ -1598,6 +1610,15 @@ class PanedBrowser(gtk.VBox, Browser):
                     filt = lambda s: selected.intersection(s.list(self.tag))
 
                 self.__next.fill(filter(filt, self.__songs))
+
+        def scroll(self, song):
+            values = map(util.escape, song.list(self.tag))
+            view = self.child
+            for i, row in enumerate(iter(view.get_model())):
+                if row[0] in values:
+                    view.scroll_to_cell(i, use_align=True, row_align=0.5)
+                    break
+
             
         def select(self, values, escape=True):
             selection = self.child.get_selection()
@@ -1660,6 +1681,10 @@ class PanedBrowser(gtk.VBox, Browser):
 
         s = widgets.watcher.connect('refresh', self.__refresh)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
+
+    def scroll(self):
+        for pane in self.__panes:
+            pane.scroll(widgets.watcher.song)
 
     def refresh_panes(self, restore=True):
         try: hbox = self.get_children()[0]
@@ -2710,7 +2735,7 @@ class MainWindow(gtk.Window):
                     "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
         if song and config.getboolean("settings", "jump"):
-            self.__jump_to_current()
+            self.__jump_to_current(False)
 
     def __save_size(self, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
@@ -2743,12 +2768,13 @@ class MainWindow(gtk.Window):
         if widgets.watcher.song is None: player.playlist.reset()
         else: player.playlist.paused ^= True
 
-    def __jump_to_current(self, *args):
+    def __jump_to_current(self, explicit):
         watcher, songlist = widgets.watcher, self.songlist
         iter = songlist.song_to_iter(watcher.song)
         if iter:
             path = songlist.get_model().get_path(iter)
             songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
+            if explicit: self.browser.scroll()
 
     def __next_song(self, *args):
         player.playlist.next()

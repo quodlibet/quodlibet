@@ -10,6 +10,21 @@ Running Ex Falso and Quod Libet at the same time is not recommended
 (Ex Falso will warn you if you do this).
 
 0.12
+ * New Mutagen ID3 reader/writer. (#3)
+ * Experimental GStreamer backend. (#4)
+ * Drag-and-drop to playlists. (#22, #23)
+ * Weighted random playback. (#60)
+ * MP3 and Musepack ReplayGain support. (#86)
+ * Larger plugin manager window. (#105)
+ * Automatic mount point detection. (#106)
+ * Support for multiple soundcards. (#157)
+ * Localization enhancements. (#85, #102, #161*)
+ * Translation updates:
+   * Dutch, thanks to Hans van Dok.
+   * Finnish, thanks to Jari Rahkonen.
+   * Hebrew, thanks to Roee Haimovich. (#170)
+   * Russian, thanks to Sergey Fedoseev.
+ * The usual round of interface tweaks and bug fixes.
 
 0.11 - spicy burnsauce with a side of ZING!
  * Plugins (either appearing in the right-click menu, or triggered on a
