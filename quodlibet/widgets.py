@@ -1066,10 +1066,11 @@ class EmptyBar(gtk.HBox, Browser):
         else: return True
 
     def set_text(self, text):
+        if isinstance(text, str): text = text.decode('utf-8')
         self._text = text
 
     def save(self):
-        config.set("browsers", "query_text", self._text)
+        config.set("browsers", "query_text", self._text.encode('utf-8'))
 
     def restore(self):
         try: self.set_text(config.get("browsers", "query_text"))
@@ -1149,17 +1150,18 @@ class SearchBar(EmptyBar):
 
     def set_text(self, text):
         self.get_children()[0].child.set_text(text)
+        if isinstance(text, str): text = text.decode('utf-8')
         self._text = text
 
     def __text_parse(self, entry):
         text = entry.get_text()
         if parser.is_parsable(text):
-            self._text = text
+            self._text = text.decode('utf-8')
             self.activate()
 
     def __test_filter(self, textbox):
         if not config.getboolean('browsers', 'color'): return
-        text = textbox.get_text()
+        text = textbox.get_text().decode('utf-8')
         gobject.idle_add(
             self.__set_entry_color, textbox, parser.is_valid_color(text))
 
@@ -3179,7 +3181,7 @@ class SongList(HintedTreeView):
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList._destroy, self)
         sigs = [widgets.watcher.connect('changed', self.__song_updated),
-                widgets.watcher.connect('song-started', self.__song_updated),
+                widgets.watcher.connect('song-started', self.__redraw_current),
                 widgets.watcher.connect('removed', self.__song_removed),
                 widgets.watcher.connect('paused', self.__redraw_current),
                 widgets.watcher.connect('unpaused', self.__redraw_current)
@@ -3201,7 +3203,7 @@ class SongList(HintedTreeView):
                      for path in paths]
         sel.set_uris(filenames)
 
-    def __redraw_current(self, watcher):
+    def __redraw_current(self, watcher, song=None):
         model = self.get_model()
         iter = self.song_to_iter(watcher.song)
         if iter: model[iter][0] = model[iter][0]
