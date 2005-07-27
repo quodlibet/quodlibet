@@ -3230,11 +3230,17 @@ class SongList(HintedTreeView):
     def __song_updated(self, watcher, songs):
         pi = []
         model = self.get_model()
-        def find(model, path, iter, pi, songs):
+        def find(model, path, iter):
+            if model[iter][0] in songs: pi.append((path, iter))
+        # Optimize the common case
+        def find_one(model, path, iter):
             if model[iter][0] in songs:
                 pi.append((path, iter))
+                return True
+        if len(songs) == 1: model.foreach(find_one)
+        else: model.foreach(find)
         for p, i in pi:
-            model.row_changed(path, iter)
+            model.row_changed(p, i)
 
     def __song_removed(self, watcher, song):
         iter = self.song_to_iter(song)
