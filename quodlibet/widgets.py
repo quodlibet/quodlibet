@@ -3270,7 +3270,7 @@ class SongList(HintedTreeView):
                 cell.set_property('text', song.comma(tag))
             except AttributeError: pass
 
-        def cell_data_fn(column, cell, model, iter, code, tag):
+        def cell_data_fn(column, cell, model, iter, (code, tag)):
             try:
                 song = model[iter][0]
                 cell.set_property('text', util.unexpand(
@@ -3306,7 +3306,7 @@ class SongList(HintedTreeView):
             self._set_column_settings(column)
             if t in ["~filename", "~basename", "~dirname"]:
                 column.set_cell_data_func(
-                    render, cell_data_fn, util.fscoding(), t)
+                    render, cell_data_fn, (util.fscoding(), t))
             else:
                 column.set_cell_data_func(render, cell_data, t)
             if t == "~length":
