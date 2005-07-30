@@ -19,7 +19,7 @@ def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
 
 class ID3hack(mutagen.id3.ID3):
     "Override 'correct' behavior with desired behavior"
-    def loaded_frame(self, name, tag):
+    def loaded_frame(self, tag):
         if tag.HashKey in self and tag.FrameID[0] == "T":
             self[tag.HashKey].extend(tag[:])
         else: self[tag.HashKey] = tag
@@ -157,8 +157,8 @@ class MP3File(AudioFile):
             text = self[key].split("\n")
             if id3name == "WOAR":
                 for t in text:
-                    tag.loaded_frame(id3name, Kind(url=t))
-            else: tag.loaded_frame(id3name, Kind(encoding=enc, text=text))
+                    tag.loaded_frame(Kind(url=t))
+            else: tag.loaded_frame(Kind(encoding=enc, text=text))
 
         dontwrite = ["genre", "comment", "replaygain_album_peak",
                      "replaygain_track_peak", "replaygain_album_gain",
@@ -170,13 +170,13 @@ class MP3File(AudioFile):
             f = mutagen.id3.TXXX(
                 encoding=enc, text=self[key].split("\n"),
                 desc=u"QuodLibet::%s" % key)
-            tag.loaded_frame("TXXX", f)
+            tag.loaded_frame(f)
 
         if "genre" in self:
             if not isascii(self["genre"]): enc = 1
             else: enc = 3
             t = self["genre"].split("\n")
-            tag.loaded_frame("TCON", mutagen.id3.TCON(encoding=enc, text=t))
+            tag.loaded_frame(mutagen.id3.TCON(encoding=enc, text=t))
         else:
             try: del(tag["TCON"])
             except KeyError: pass
@@ -185,8 +185,7 @@ class MP3File(AudioFile):
             if not isascii(self["comment"]): enc = 1
             else: enc = 3
             t = self["comment"].split("\n")
-            tag.loaded_frame(
-                "COMM", mutagen.id3.COMM(
+            tag.loaded_frame(mutagen.id3.COMM(
                 encoding=enc, text=t, desc=u"", lang="\x00\x00\x00"))
         else:
             tag.delall("COMM:")
@@ -199,7 +198,7 @@ class MP3File(AudioFile):
             if ('replaygain_%s_gain' % k) in self:
                 gain = float(self["replaygain_%s_gain" % k].split()[0])
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=0)
-                tag.loaded_frame("RVA2", f)
+                tag.loaded_frame(f)
 
         tag.save(self["~filename"])
         self.sanitize()
