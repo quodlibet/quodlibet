@@ -280,7 +280,6 @@ class QLScrobbler(object):
 				"title": self.song.comma("title"),
 				"length": str(self.song["~#length"]),
 				"album": self.song.comma("album"),
-				"mbid": "", # XXX
 				"stamp": stamp
 			}
 
@@ -294,6 +293,11 @@ class QLScrobbler(object):
 					store["artist"] = performer[:performer.rindex("(")].strip()
 				else:
 					store["artist"] = performer
+
+			if "musicbrainz_trackid" in self.song:
+				store["mbid"] = self.song["musicbrainz_trackid"]
+			else:
+				store["mbid"] = ""
 
 			self.queue.append(store)
 		else: self.flushing = False
@@ -401,15 +405,23 @@ class QLScrobbler(object):
 				self.broken = False
 
 		table = gtk.Table(3, 2)
-		table.attach(gtk.Label(_("Please enter your Audioscrobbler username and password.")), 0, 2, 0, 1)
-		table.attach(gtk.Label(_("Username:")), 0, 1, 1, 2)
-		table.attach(gtk.Label(_("Password:")), 0, 1, 2, 3)
+		table.set_col_spacings(3)
+		lt = gtk.Label(_("Please enter your Audioscrobbler username and password.\n"))
+                lt.set_size_request(260, -1)
+		lu = gtk.Label(_("Username:"))
+		lp = gtk.Label(_("Password:"))
+		for l in [lt, lu, lp]:
+			l.set_line_wrap(True)
+			l.set_alignment(0.0, 0.5)
+		table.attach(lt, 0, 2, 0, 1, xoptions=gtk.FILL)
+		table.attach(lu, 0, 1, 1, 2, xoptions=gtk.FILL)
+		table.attach(lp, 0, 1, 2, 3, xoptions=gtk.FILL)
 		userent = gtk.Entry()
 		pwent = gtk.Entry()
 		pwent.set_visibility(False)
 		pwent.set_invisible_char('*')
 		table.set_border_width(6)
-		
+
 		try: userent.set_text(config.get("plugins", "scrobbler_username"))
 		except: pass
 		try: pwent.set_text(config.get("plugins", "scrobbler_password"))
