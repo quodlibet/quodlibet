@@ -1,7 +1,8 @@
 top_srcdir = ../
 NAME = quodlibet
 ALL_LINGUAS = en_GB en_CA de pl ru fr fi nl he
-PO_DIR ?= $(PREFIX)/usr/share/locale
+PREFIX ?= /usr
+PO_DIR ?= $(PREFIX)/share/locale
 
 all:
 
@@ -16,6 +17,12 @@ quodlibet.pot: ../quodlibet.py ../library.py tag-names.py ../util.py ../widgets.
 
 %.mo: %.po quodlibet.pot
 	msgfmt -o $@ $<
+
+check:
+	for F in $(ALL_LINGUAS); do make check-$$F; done
+
+check-%: %.po
+	msgfmt -c $<
 
 clean:
 	rm -f untitled.pot
