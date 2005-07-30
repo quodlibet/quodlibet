@@ -20,6 +20,7 @@ def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
 class ID3hack(mutagen.id3.ID3):
     "Override 'correct' behavior with desired behavior"
     def loaded_frame(self, tag):
+        if len(type(tag).__name__) == 3: tag = type(tag).__base__(tag)
         if tag.HashKey in self and tag.FrameID[0] == "T":
             self[tag.HashKey].extend(tag[:])
         else: self[tag.HashKey] = tag
