@@ -3,13 +3,13 @@ Section: sound
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
 Build-Depends: debhelper (>= 4.2.21), python-dev, python-gtk2-dev (>= 2.6), pkg-config, libgtk2.0-dev
-Standards-Version: 3.6.1.1
+Standards-Version: 3.6.2
 
 Package: quodlibet
 Architecture: all
-Depends: ${python:Depends}, python-gtk2 (>= 2.6), python-pymad, python-pyvorbis, python-id3lib, libgtk2.0-0 (>= 2.6.0-1)
+Depends: ${python:Depends}, python-gtk2 (>= 2.6), python-pymad, python-pyvorbis, libgtk2.0-0 (>= 2.6.0-1)
 Recommends: python-pyao, ttf-freefont, quodlibet-ext (= ${Source-Version})
-Suggests: python-modplug, python-flac, python-musepack, albumart, vorbisgain (>= 0.35-2)
+Suggests: python-modplug, python-flac, python-musepack, albumart, vorbisgain (>= 0.35-2), normalize-audio
 Description: audio library manager and player for GTK+
  Quod Libet is a music library management program. Rather than categorize
  songs by genre, artist, and album, it lets you search and display them
