@@ -5249,8 +5249,6 @@ class SongProperties(gtk.Window):
         self.add(vbox)
         self.connect_object('destroy', fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
-        self.connect_object(
-            'destroy', gtk.TreeModelSort.clear_cache, fmodel)
 
         s1 = widgets.watcher.connect_object(
             'refresh', SongProperties.__refill, self, fbasemodel)
