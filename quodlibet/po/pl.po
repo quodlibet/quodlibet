@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-31 13:23-0500\n"
-"PO-Revision-Date: 2005-07-31 13:29-0500\n"
+"POT-Creation-Date: 2005-07-31 14:30-0500\n"
+"PO-Revision-Date: 2005-07-31 14:09-0500\n"
 "Last-Translator: pambuk <pambuk@gmail.com>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
 "MIME-Version: 1.0\n"
@@ -505,7 +505,9 @@ msgstr "Urządzenie audio: %s"
 #. in the "About" dialog.
 #: ../widgets.py:341
 msgid "translator-credits"
-msgstr "Michal Nowikowski"
+msgstr ""
+"Michal Nowikowski\n"
+"Witold Kieraś <pambuk@gmail.com>"
 
 #: ../widgets.py:366
 msgid "Song List"

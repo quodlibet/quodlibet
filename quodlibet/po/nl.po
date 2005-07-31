@@ -10,13 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-25 15:42-0500\n"
+"POT-Creation-Date: 2005-07-31 14:30-0500\n"
 "PO-Revision-Date: 2005-07-25 22:22+0200\n"
 "Last-Translator: FOAD <dok@xs4all.nl>\n"
 "Language-Team: Dutch <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../library.py:39 ../library.py:50
 #, python-format
@@ -47,9 +48,10 @@ msgstr "W: %s is geen QL song database."
 msgid "Checking %s"
 msgstr "Controleert %s"
 
-#: ../library.py:276
-msgid "Supported formats:"
-msgstr "Ondersteunde formaten:"
+#: ../library.py:278 ../widgets.py:337
+#, python-format
+msgid "Supported formats: %s"
+msgstr "Ondersteunde formaten: %s"
 
 #: ../quodlibet.py:26
 msgid "Display brief usage information"
@@ -124,7 +126,7 @@ msgstr "Quod Libet draait niet."
 #: ../quodlibet.py:214
 #, python-format
 msgid "Unable to write to %s. Removing it."
-msgstr "Niet in staat om naar %s te schrijven. %s wordt verwijdert."
+msgstr "Niet in staat om naar %s te schrijven."
 
 #: ../quodlibet.py:247
 msgid "a music library and player"
@@ -194,7 +196,7 @@ msgstr "Zet repeat aan, uit, of toggle ht"
 msgid "Set the volume"
 msgstr "Bepaal volume"
 
-#: ../quodlibet.py:269 ../widgets.py:1125
+#: ../quodlibet.py:269 ../widgets.py:1129
 msgid "Search your audio library"
 msgstr "Zoek in je audio bibliotheek"
 
@@ -242,7 +244,7 @@ msgstr "E: Je hebt GTK+ %s en PyGTK %s."
 msgid "E: Please upgrade GTK+/PyGTK."
 msgstr "E: Upgrade GTK+/PyGTK AUB."
 
-#: ../util.py:82 ../widgets.py:2338
+#: ../util.py:82 ../widgets.py:2370
 msgid "No time information"
 msgstr "Geen tijdsinformatie"
 
@@ -254,7 +256,7 @@ msgstr "[Ongeldige codering]"
 #. Note that although tag names are translated in the main list view,
 #. they are *not* when editing tags.
 #. date the song was added to the library
-#: ../po/tag-names.py:7 ../widgets.py:3857
+#: ../po/tag-names.py:7 ../widgets.py:3899
 msgid "added"
 msgstr "toegevoegd"
 
@@ -268,7 +270,7 @@ msgid_plural "arrangers"
 msgstr[0] "arrangeur"
 msgstr[1] "arrangeurs"
 
-#: ../po/tag-names.py:10 ../widgets.py:3815 ../widgets.py:3984
+#: ../po/tag-names.py:10 ../widgets.py:3857 ../widgets.py:4026
 msgid "artist"
 msgid_plural "artists"
 msgstr[0] "artiest"
@@ -335,11 +337,11 @@ msgid "language"
 msgstr "taal"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:29 ../widgets.py:3858
+#: ../po/tag-names.py:29 ../widgets.py:3900
 msgid "last played"
 msgstr "laatst gespeeld"
 
-#: ../po/tag-names.py:30 ../widgets.py:3888
+#: ../po/tag-names.py:30 ../widgets.py:3930
 msgid "length"
 msgstr "lengte"
 
@@ -358,7 +360,7 @@ msgstr[0] "tekstschrijver"
 msgstr[1] "tekstschrijvers"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:35 ../widgets.py:3890
+#: ../po/tag-names.py:35 ../widgets.py:3932
 msgid "modified"
 msgstr "gewijzigd"
 
@@ -376,21 +378,21 @@ msgstr "organisatie"
 msgid "part"
 msgstr "deel"
 
-#: ../po/tag-names.py:41 ../po/tag-names.py:50 ../widgets.py:3988
+#: ../po/tag-names.py:41 ../po/tag-names.py:50 ../widgets.py:4030
 msgid "performer"
 msgid_plural "performers"
 msgstr[0] "uitvoerende"
 msgstr[1] "uitvoerenden"
 
-#: ../po/tag-names.py:42 ../widgets.py:3859
+#: ../po/tag-names.py:42 ../widgets.py:3901
 msgid "play count"
 msgstr "keren-gespeeld"
 
-#: ../po/tag-names.py:43 ../widgets.py:3861
+#: ../po/tag-names.py:43 ../widgets.py:3903
 msgid "rating"
 msgstr "cijfer"
 
-#: ../po/tag-names.py:44 ../widgets.py:3860
+#: ../po/tag-names.py:44 ../widgets.py:3902
 msgid "skip count"
 msgstr "keren overgeslagen"
 
@@ -446,8 +448,8 @@ msgid_plural "%d years"
 msgstr[0] "%d jaar"
 msgstr[1] "%d jaren"
 
-#: ../formats/audio.py:82 ../formats/audio.py:85 ../widgets.py:1648
-#: ../widgets.py:3843 ../widgets.py:3849 ../widgets.py:3874
+#: ../formats/audio.py:82 ../formats/audio.py:85 ../widgets.py:1671
+#: ../widgets.py:3885 ../widgets.py:3891 ../widgets.py:3916
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -486,11 +488,6 @@ msgstr "Voorkeuren"
 #: ../widgets.py:327
 msgid "No plugins found."
 msgstr "Geen plugins gevonden"
-
-#: ../widgets.py:337
-#, python-format
-msgid "Supported formats: %s"
-msgstr "Ondersteunde formaten: %s"
 
 #: ../widgets.py:337
 #, python-format
@@ -637,7 +634,7 @@ msgstr "Per-song (\"Radio\") volume aanpassing"
 msgid "Per-album (\"Audiophile\") volume adjustment"
 msgstr "Per album (\"Audiofiele\") volume aanpassing"
 
-#: ../widgets.py:587 ../widgets.py:3870
+#: ../widgets.py:587 ../widgets.py:3912
 msgid "Library"
 msgstr "Bibliotheek"
 
@@ -700,298 +697,298 @@ msgid_plural "%(title)s and %(count)d more..."
 msgstr[0] "%(title)s en %(count)d meer..."
 msgstr[1] "%(title)s en %(count)d meer..."
 
-#: ../widgets.py:908 ../widgets.py:2459 ../widgets.py:2670
+#: ../widgets.py:908 ../widgets.py:2491 ../widgets.py:2702
 msgid "_Play"
 msgstr "_Speel"
 
-#: ../widgets.py:939 ../widgets.py:2444 ../widgets.py:2975
+#: ../widgets.py:939 ../widgets.py:2476 ../widgets.py:3008
 msgid "Rating"
 msgstr "Cijfer"
 
-#: ../widgets.py:998 ../widgets.py:2038
+#: ../widgets.py:998 ../widgets.py:2067
 msgid "Not playing"
 msgstr "Speelt niet"
 
-#: ../widgets.py:1116
+#: ../widgets.py:1120
 msgid "Clear search"
 msgstr "Schoon zoektekst"
 
-#: ../widgets.py:1123
+#: ../widgets.py:1127
 msgid "Search"
 msgstr "Zoek"
 
-#: ../widgets.py:1213
+#: ../widgets.py:1218
 msgid "Songs not in an album"
 msgstr "Songs niet in een album"
 
-#: ../widgets.py:1218 ../widgets.py:3935
+#: ../widgets.py:1223 ../widgets.py:3977
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d disc"
 msgstr[1] "%d discs"
 
-#: ../widgets.py:1220 ../widgets.py:3937
+#: ../widgets.py:1225 ../widgets.py:3979
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d track"
 msgstr[1] "%d tracks"
 
-#: ../widgets.py:1309
+#: ../widgets.py:1314
 msgid "Sort by title"
 msgstr "Sorteer op titel"
 
-#: ../widgets.py:1310
+#: ../widgets.py:1315
 msgid "Sort by artist"
 msgstr "Sorteer op artiest"
 
-#: ../widgets.py:1375
+#: ../widgets.py:1380
 msgid "All Albums"
 msgstr "Alle albums"
 
-#: ../widgets.py:1376
+#: ../widgets.py:1381
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../widgets.py:1641
+#: ../widgets.py:1664
 msgid "All"
 msgstr "Alles"
 
-#: ../widgets.py:1758
+#: ../widgets.py:1785
 msgid "Edit the current playlist"
 msgstr "Bewerk de huidige speellijst"
 
-#: ../widgets.py:1759
+#: ../widgets.py:1786
 msgid "Refresh the current playlist"
 msgstr "Ververs de huidige speellijst"
 
-#: ../widgets.py:2015
+#: ../widgets.py:2042
 msgid "Stop after this song"
 msgstr "Stop na deze song"
 
-#: ../widgets.py:2052
+#: ../widgets.py:2081
 #, python-format
 msgid "by %s"
 msgstr "door %s"
 
-#: ../widgets.py:2055
+#: ../widgets.py:2084
 #, python-format
 msgid "Performed by %s"
 msgstr "Uitgevoerd door %s"
 
-#: ../widgets.py:2059
+#: ../widgets.py:2088
 #, python-format
 msgid "arranged by %s"
 msgstr "gearrangeerd door %s"
 
-#: ../widgets.py:2060
+#: ../widgets.py:2089
 #, python-format
 msgid "lyrics by %s"
 msgstr "teksten van %s"
 
-#: ../widgets.py:2061
+#: ../widgets.py:2090
 #, python-format
 msgid "conducted by %s"
 msgstr "gedirigeerd door %s"
 
-#: ../widgets.py:2062
+#: ../widgets.py:2091
 #, python-format
 msgid "composed by %s"
 msgstr "gecomponeerd door %s"
 
-#: ../widgets.py:2063
+#: ../widgets.py:2092
 #, python-format
 msgid "written by %s"
 msgstr "geschreven door %s"
 
-#: ../widgets.py:2075 ../widgets.py:3779 ../widgets.py:4008
+#: ../widgets.py:2104 ../widgets.py:3821 ../widgets.py:4050
 #, python-format
 msgid "Disc %s"
 msgstr "Schijf %s"
 
-#: ../widgets.py:2080 ../widgets.py:3784
+#: ../widgets.py:2109 ../widgets.py:3826
 #, python-format
 msgid "Track %s"
 msgstr "Track %s"
 
-#: ../widgets.py:2117
+#: ../widgets.py:2146
 msgid "Add songs to your library"
 msgstr "Voeg songs aan je bibliotheek toe"
 
-#: ../widgets.py:2124 ../widgets.py:2546
+#: ../widgets.py:2153 ../widgets.py:2578
 msgid "View and edit tags in the playing song"
 msgstr "Bekijk en bewerk tags in de spelende song"
 
-#: ../widgets.py:2131
+#: ../widgets.py:2160
 msgid "Visit the artist's website"
 msgstr "Bezoek de website van de artiest"
 
-#: ../widgets.py:2222
+#: ../widgets.py:2254
 #, python-format
 msgid "%(current)s/%(total)s"
 msgstr "%(current)s/%(total)s"
 
-#: ../widgets.py:2238
+#: ../widgets.py:2270
 msgid "Change volume"
 msgstr "Verander volume"
 
-#: ../widgets.py:2322
+#: ../widgets.py:2354
 msgid "In Order"
 msgstr "In Volgorde"
 
-#: ../widgets.py:2323
+#: ../widgets.py:2355
 msgid "Shuffle"
 msgstr "_Shuffle"
 
-#: ../widgets.py:2324
+#: ../widgets.py:2356
 msgid "Weighted"
 msgstr "Gewogen"
 
-#: ../widgets.py:2325
+#: ../widgets.py:2357
 msgid "Play songs in random order"
 msgstr "Speel songs in willekeurige volgorde"
 
-#: ../widgets.py:2331
+#: ../widgets.py:2363
 msgid "_Repeat"
 msgstr "_Herhaal"
 
-#: ../widgets.py:2335
+#: ../widgets.py:2367
 msgid "Restart the playlist when finished"
 msgstr "Start de playlist opnieuw nadat alle songs gespeeld zijn"
 
-#: ../widgets.py:2417
+#: ../widgets.py:2449
 msgid "_Music"
 msgstr "_Muziek"
 
-#: ../widgets.py:2418
+#: ../widgets.py:2450
 msgid "_Add Music..."
 msgstr "_Voeg Muziek Toe"
 
-#: ../widgets.py:2420
+#: ../widgets.py:2452
 msgid "_New/Edit Playlist..."
 msgstr "_Nieuw/Bewerk Speellijst"
 
-#: ../widgets.py:2422
+#: ../widgets.py:2454
 msgid "_Browse Library"
 msgstr "_Bekijk Bibliotheek"
 
-#: ../widgets.py:2425
+#: ../widgets.py:2457
 msgid "_Plugins"
 msgstr "_Plugins"
 
-#: ../widgets.py:2428
+#: ../widgets.py:2460
 msgid "_Filters"
 msgstr "_Filters"
 
-#: ../widgets.py:2430
+#: ../widgets.py:2462
 msgid "Not played to_day"
 msgstr "_Vandaag niet ge_speeld"
 
-#: ../widgets.py:2432
+#: ../widgets.py:2464
 msgid "Not played in a _week"
 msgstr "_Een _week niet gespeeld"
 
-#: ../widgets.py:2434
+#: ../widgets.py:2466
 msgid "Not played in a _month"
 msgstr "Een _maand niet gespeeld"
 
-#: ../widgets.py:2436
+#: ../widgets.py:2468
 msgid "_Never played"
 msgstr "_Nooit gespeeld"
 
-#: ../widgets.py:2438
+#: ../widgets.py:2470
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: ../widgets.py:2439
+#: ../widgets.py:2471
 msgid "B_ottom 40"
 msgstr "Onderste 40"
 
-#: ../widgets.py:2441
+#: ../widgets.py:2473
 msgid "S_ong"
 msgstr "S_ong"
 
-#: ../widgets.py:2446
+#: ../widgets.py:2478
 msgid "_Jump to playing song"
 msgstr "_Ga naar spelende song"
 
-#: ../widgets.py:2449
+#: ../widgets.py:2481
 msgid "_View"
 msgstr "_Bekijk"
 
-#: ../widgets.py:2450
+#: ../widgets.py:2482
 msgid "_Help"
 msgstr "_Help"
 
-#: ../widgets.py:2470
+#: ../widgets.py:2502
 msgid "Re_fresh Library"
 msgstr "Ver_vers bibliotheek"
 
-#: ../widgets.py:2474
+#: ../widgets.py:2506
 msgid "Re_load Library"
 msgstr "Her_laad Bibliotheek"
 
-#: ../widgets.py:2479
+#: ../widgets.py:2511
 msgid "Filter on _genre"
 msgstr "Filter op _genre"
 
-#: ../widgets.py:2480 ../widgets.py:2988
+#: ../widgets.py:2512 ../widgets.py:3021
 msgid "Filter on _artist"
 msgstr "Filter op _artiest"
 
-#: ../widgets.py:2481 ../widgets.py:2993
+#: ../widgets.py:2513 ../widgets.py:3026
 msgid "Filter on al_bum"
 msgstr "Filter op al_bum"
 
-#: ../widgets.py:2488
+#: ../widgets.py:2520
 msgid "Random _genre"
 msgstr "Random _genre"
 
-#: ../widgets.py:2489
+#: ../widgets.py:2521
 msgid "Random _artist"
 msgstr "Random _artiest"
 
-#: ../widgets.py:2490
+#: ../widgets.py:2522
 msgid "Random al_bum"
 msgstr "Random al_bum"
 
-#: ../widgets.py:2497
+#: ../widgets.py:2529
 msgid "Song _List"
 msgstr "Song_lijst"
 
-#: ../widgets.py:2502
+#: ../widgets.py:2534
 msgid "_Disable Browser"
 msgstr "_Zet Browser Uit"
 
-#: ../widgets.py:2503 ../widgets.py:2510
+#: ../widgets.py:2535 ../widgets.py:2542
 msgid "_Search Library"
 msgstr "_Doorzoek Bibliotheek"
 
-#: ../widgets.py:2504
+#: ../widgets.py:2536
 msgid "_Playlists"
 msgstr "_Speellijsten"
 
-#: ../widgets.py:2505 ../widgets.py:2511
+#: ../widgets.py:2537 ../widgets.py:2543
 msgid "_Paned Browser"
 msgstr "_Panebrowser"
 
-#: ../widgets.py:2506 ../widgets.py:2512
+#: ../widgets.py:2538 ../widgets.py:2544
 msgid "_Album List"
 msgstr "_Albumlijst"
 
-#: ../widgets.py:2532
+#: ../widgets.py:2564
 msgid "Check for changes made to the library"
 msgstr "Controleer op wijzigingen in de bibliotheek"
 
-#: ../widgets.py:2535
+#: ../widgets.py:2567
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Herlaad alle songs in je bibliotheek (dit kan lang duren)"
 
-#: ../widgets.py:2538
+#: ../widgets.py:2570
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -999,7 +996,7 @@ msgstr ""
 "De 40 songs die je het meest hebt beluistered (meer dan 40 kunnen worden "
 "gekozen als er sprake is van gelijkspel)"
 
-#: ../widgets.py:2542
+#: ../widgets.py:2574
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1007,25 +1004,25 @@ msgstr ""
 "De 40 songs die je het minst heb beluisterd (meer dan 40 kunnen worden "
 "gekozen als er sprake is van gelijkspel)"
 
-#: ../widgets.py:2653
+#: ../widgets.py:2685
 #, python-format
 msgid "W: Unable to load %s"
 msgstr "W: Niet in staat om %s te laden"
 
-#: ../widgets.py:2674
+#: ../widgets.py:2706
 msgid "_Pause"
 msgstr "_Pauze"
 
-#: ../widgets.py:2682
+#: ../widgets.py:2714
 #, python-format
 msgid "Could not play %s."
 msgstr "Kan %s niet spelen."
 
-#: ../widgets.py:2716
+#: ../widgets.py:2749
 msgid "New/Edit Playlist"
 msgstr "Nieuw/Bewerk Speellijst"
 
-#: ../widgets.py:2717
+#: ../widgets.py:2750
 msgid ""
 "Enter a name for the new playlist. If it already exists it will be opened "
 "for editing."
@@ -1033,7 +1030,7 @@ msgstr ""
 "Voor een naam in voor de nieuwe speellijst. Als de naam al bestaat wordt "
 "deze geopend om hem te bewerken."
 
-#: ../widgets.py:2797
+#: ../widgets.py:2831
 #, python-format
 msgid ""
 "Quod Libet is scanning your library. This may take several minutes.\n"
@@ -1046,11 +1043,11 @@ msgstr ""
 "%d songs opnieuw geladen\n"
 "%d songs verwijderd"
 
-#: ../widgets.py:2843
+#: ../widgets.py:2877
 msgid "Add Music"
 msgstr "Voeg Muziek Toe"
 
-#: ../widgets.py:2855
+#: ../widgets.py:2889
 #, python-format
 msgid ""
 "Quod Libet is scanning for new songs and adding them to your library.\n"
@@ -1061,21 +1058,21 @@ msgstr ""
 "\n"
 "%d songs toegevoegd"
 
-#: ../widgets.py:2921
+#: ../widgets.py:2955
 #, python-format
 msgid "Moving %d/%d."
 msgstr "Verplaatst %d/%d."
 
-#: ../widgets.py:2922
+#: ../widgets.py:2956
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "Verwijdert %d/%d."
 
-#: ../widgets.py:2938
+#: ../widgets.py:2972
 msgid "Unable to delete file"
 msgstr "Niet in staat om bestand te verwijderen"
 
-#: ../widgets.py:2939
+#: ../widgets.py:2973
 #, python-format
 msgid ""
 "Deleting <b>%s</b> failed. Possibly the target file does not exist, or you "
@@ -1086,12 +1083,12 @@ msgstr ""
 
 #. Translators: The substituted string is the name of the
 #. selected column (a translated tag name).
-#: ../widgets.py:3004
+#: ../widgets.py:3037
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filter op %s"
 
-#: ../widgets.py:3012
+#: ../widgets.py:3045
 msgid "Plugins"
 msgstr "Plugins"
 
@@ -1101,219 +1098,219 @@ msgstr "Plugins"
 #. "Remove from library"; Remove in the context of removing a song
 #. from a playlist gets its default GTK translation since "Delete"
 #. is not available there.
-#: ../widgets.py:3024 ../widgets.py:3318
+#: ../widgets.py:3057 ../widgets.py:3360
 msgid "gtk-remove"
 msgstr "gtk-verwijder"
 
-#: ../widgets.py:3132
+#: ../widgets.py:3165
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d song (%(time)s)"
 msgstr[1] "%(count)d songs (%(time)s)"
 
-#: ../widgets.py:3290
+#: ../widgets.py:3332
 msgid "Library Browser"
 msgstr "Bibliotheek Browser"
 
-#: ../widgets.py:3389
+#: ../widgets.py:3431
 msgid "All songs"
 msgstr "Alle songs"
 
-#: ../widgets.py:3592
+#: ../widgets.py:3634
 msgid "Add a Tag"
 msgstr "Voeg een nieuwe tag toe"
 
-#: ../widgets.py:3615
+#: ../widgets.py:3657
 msgid "_Tag:"
 msgstr "_Tag:"
 
-#: ../widgets.py:3623
+#: ../widgets.py:3665
 msgid "_Value:"
 msgstr "_Waarde:"
 
-#: ../widgets.py:3683
+#: ../widgets.py:3725
 msgid ""
 "The date must be entered in YYYY, YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format."
 msgstr "De datum moet ingevoerd worden in JJJJ of JJJJ-MM-DD formaat."
 
-#: ../widgets.py:3687
+#: ../widgets.py:3729
 msgid "ReplayGain gains must be entered in 'x.yy dB' format."
 msgstr "ReplayGain moet worden ingevoerd in 'x.yy dB' formaat."
 
-#: ../widgets.py:3691
+#: ../widgets.py:3733
 msgid "ReplayGain peaks must be entered in x.yy format."
 msgstr "ReplayGain pieken moeten worden ingevoerd in x.yy formaat."
 
-#: ../widgets.py:3758
+#: ../widgets.py:3800
 msgid "No songs are selected."
 msgstr "Er zijn geen songs geselecteerd."
 
 #. Translators: This is used as a group header in
 #. Properties when a song has performers/composers/etc.
-#: ../widgets.py:3822
+#: ../widgets.py:3864
 msgid "People"
 msgstr "Mensen"
 
-#: ../widgets.py:3840 ../widgets.py:3850
+#: ../widgets.py:3882 ../widgets.py:3892
 msgid "Never"
 msgstr "Nooit"
 
-#: ../widgets.py:3841
+#: ../widgets.py:3883
 #, python-format
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "%d keer"
 msgstr[1] "%d keren"
 
-#: ../widgets.py:3882
+#: ../widgets.py:3924
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: ../widgets.py:3889
+#: ../widgets.py:3931
 msgid "file size"
 msgstr "bestandsgrootte"
 
-#: ../widgets.py:3892
+#: ../widgets.py:3934
 msgid "bitrate"
 msgstr "bitrate"
 
-#: ../widgets.py:3903 ../widgets.py:4718 ../widgets.py:4838 ../widgets.py:5043
-#: ../widgets.py:5180
+#: ../widgets.py:3945 ../widgets.py:4760 ../widgets.py:4880 ../widgets.py:5085
+#: ../widgets.py:5222
 msgid "File"
 msgstr "Bestand"
 
-#: ../widgets.py:3939
+#: ../widgets.py:3981
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d geselecteerd"
 msgstr[1] "%d geselecteerd"
 
-#: ../widgets.py:3952
+#: ../widgets.py:3994
 #, python-format
 msgid "Produced by %s"
 msgstr "Geproduceerd door %s"
 
-#: ../widgets.py:3990
+#: ../widgets.py:4032
 msgid "performers"
 msgstr "uitvoerenden"
 
-#: ../widgets.py:4018
+#: ../widgets.py:4060
 msgid "Track unavailable"
 msgstr "Track niet beschikbaar"
 
-#: ../widgets.py:4025
+#: ../widgets.py:4067
 msgid "Track List"
 msgstr "Tracklijst"
 
-#: ../widgets.py:4051 ../widgets.py:4111
+#: ../widgets.py:4093 ../widgets.py:4153
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "%d song zonder album"
 msgstr[1] "%d songs zonder album"
 
-#: ../widgets.py:4055
+#: ../widgets.py:4097
 msgid "Selected Discography"
 msgstr "Selectieve Discografie"
 
-#: ../widgets.py:4081
+#: ../widgets.py:4123
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d song"
 msgstr[1] "%d songs"
 
-#: ../widgets.py:4095
+#: ../widgets.py:4137
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] "%d song zonder artiest"
 msgstr[1] "%d songs zonder artiest"
 
-#: ../widgets.py:4098
+#: ../widgets.py:4140
 msgid "artists"
 msgstr "artiesten"
 
-#: ../widgets.py:4114
+#: ../widgets.py:4156
 msgid "albums"
 msgstr "albums"
 
-#: ../widgets.py:4126
+#: ../widgets.py:4168
 msgid "Total length:"
 msgstr "totale lengte:"
 
-#: ../widgets.py:4130
+#: ../widgets.py:4172
 msgid "Total size:"
 msgstr "totale grootte:"
 
-#: ../widgets.py:4133
+#: ../widgets.py:4175
 msgid "Files"
 msgstr "Bestanden"
 
-#: ../widgets.py:4137
+#: ../widgets.py:4179
 msgid "Information"
 msgstr "Informatie"
 
-#: ../widgets.py:4162
+#: ../widgets.py:4204
 msgid "Edit Tags"
 msgstr "Bewerk Tags"
 
-#: ../widgets.py:4169
+#: ../widgets.py:4211
 msgid "Write"
 msgstr "Schrijf"
 
-#: ../widgets.py:4193
+#: ../widgets.py:4235
 msgid "Tag"
 msgstr "Tag"
 
-#: ../widgets.py:4203
+#: ../widgets.py:4245
 msgid "Value"
 msgstr "Waarde"
 
-#: ../widgets.py:4242
+#: ../widgets.py:4284
 msgid "Double-click a tag value to change it, right-click for other options"
 msgstr ""
 "Dubbel-klik op een tag waarde om hem aan te passen, rechts-klik voor andere "
 "opties"
 
-#: ../widgets.py:4244
+#: ../widgets.py:4286
 msgid "Add a new tag"
 msgstr "Voeg een nieuwe tag toe"
 
-#: ../widgets.py:4245
+#: ../widgets.py:4287
 msgid "Remove selected tag"
 msgstr "Verwijder geselecteerde tag"
 
-#: ../widgets.py:4352 ../widgets.py:4626
+#: ../widgets.py:4394 ../widgets.py:4668
 msgid "Split into _multiple values"
 msgstr "Splits in _verschillende waarden"
 
-#: ../widgets.py:4361
+#: ../widgets.py:4403
 msgid "Split disc out of _album"
 msgstr "Splits disk van album"
 
-#: ../widgets.py:4369
+#: ../widgets.py:4411
 msgid "Split version out of title"
 msgstr "Splits versie uit titel"
 
-#: ../widgets.py:4379
+#: ../widgets.py:4421
 msgid "Split arranger out of ar_tist"
 msgstr "Splits arrangeerder van ar_tiest"
 
-#: ../widgets.py:4386
+#: ../widgets.py:4428
 msgid "Split _performer out of artist"
 msgstr "Splits uitvoerende van artiest"
 
-#: ../widgets.py:4431 ../widgets.py:4697 ../widgets.py:5598
+#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5640
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Ongeldige tag"
 msgstr[1] "Ongeldige tags"
 
-#: ../widgets.py:4433 ../widgets.py:4699
+#: ../widgets.py:4475 ../widgets.py:4741
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1332,11 +1329,11 @@ msgstr[1] ""
 "\n"
 "De geselecteerde bestanden ondersteunen het bewerken van deze tags niet."
 
-#: ../widgets.py:4478 ../widgets.py:4762 ../widgets.py:5091
+#: ../widgets.py:4520 ../widgets.py:4804 ../widgets.py:5133
 msgid "Tag may not be accurate"
 msgstr "Tag is mogelijk niet juist"
 
-#: ../widgets.py:4479 ../widgets.py:4763 ../widgets.py:5092
+#: ../widgets.py:4521 ../widgets.py:4805 ../widgets.py:5134
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -1350,11 +1347,11 @@ msgstr ""
 "\n"
 "Deze tag toch opslaan?"
 
-#: ../widgets.py:4512 ../widgets.py:5103
+#: ../widgets.py:4554 ../widgets.py:5145
 msgid "Unable to save song"
 msgstr "Niet in staat om song op te slaan"
 
-#: ../widgets.py:4513 ../widgets.py:4788 ../widgets.py:5104 ../plugins.py:323
+#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:323
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1363,44 +1360,44 @@ msgstr ""
 "Opslaan van <b>%s</b> mislukt. Het bestand is read-only, corrupt, of u heeft "
 "geen permissies om het aan te passen."
 
-#: ../widgets.py:4534 ../widgets.py:4535
+#: ../widgets.py:4576 ../widgets.py:4577
 msgid "Invalid value"
 msgstr "Ongeldige waarde"
 
-#: ../widgets.py:4596
+#: ../widgets.py:4638
 msgid "Tag by Filename"
 msgstr "Tag via bestandsnaam"
 
 #. Main buttons
-#: ../widgets.py:4601 ../widgets.py:4830 ../widgets.py:5031
+#: ../widgets.py:4643 ../widgets.py:4872 ../widgets.py:5073
 msgid "_Preview"
 msgstr "_Vooruitblik"
 
-#: ../widgets.py:4622
+#: ../widgets.py:4664
 msgid "Replace _underscores with spaces"
 msgstr "Vervang _underscores door spaties"
 
-#: ../widgets.py:4624
+#: ../widgets.py:4666
 msgid "_Title-case resulting values"
 msgstr "_Resultaat in hoofdletters"
 
-#: ../widgets.py:4629
+#: ../widgets.py:4671
 msgid "Tags replace existing ones"
 msgstr "Tags vervangen bestaande tags"
 
-#: ../widgets.py:4630
+#: ../widgets.py:4672
 msgid "Tags are added to existing ones"
 msgstr "Tags worden toegevoegd aan de bestaande tags"
 
-#: ../widgets.py:4646
+#: ../widgets.py:4688
 msgid "The first letter of each word will be capitalized"
 msgstr "De eerste letter van elk woord wordt gekapitaliseerd"
 
-#: ../widgets.py:4680
+#: ../widgets.py:4722
 msgid "Invalid pattern"
 msgstr "Ongeldig patroon"
 
-#: ../widgets.py:4681
+#: ../widgets.py:4723
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1413,31 +1410,31 @@ msgstr ""
 "is ongeldig. Mogelijk bevat het dezelfde tag twee keer of heeft het "
 "ongebalanceerde haakjes·(&lt;·/·&gt;)."
 
-#: ../widgets.py:4787 ../plugins.py:322
+#: ../widgets.py:4829 ../plugins.py:322
 msgid "Unable to edit song"
 msgstr "Niet in staat om song aan te passen"
 
-#: ../widgets.py:4822
+#: ../widgets.py:4864
 msgid "Rename Files"
 msgstr "Hernoem bestanden"
 
-#: ../widgets.py:4844
+#: ../widgets.py:4886
 msgid "New Name"
 msgstr "Nieuwe naam"
 
-#: ../widgets.py:4855
+#: ../widgets.py:4897
 msgid "Replace spaces with _underscores"
 msgstr "Vervangen spaties door _underscores"
 
-#: ../widgets.py:4859
+#: ../widgets.py:4901
 msgid "Replace _Windows-incompatible characters"
 msgstr "Vervangen Windows-incompatible karakters"
 
-#: ../widgets.py:4863
+#: ../widgets.py:4905
 msgid "Replace non-_ASCII characters"
 msgstr "Vervangen niet-ASCII karakters"
 
-#: ../widgets.py:4884
+#: ../widgets.py:4926
 msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
@@ -1445,7 +1442,7 @@ msgstr ""
 "Karakters die niet toegestaan zijn in Windows bestandnamen (\\:?;\"<>|) "
 "worden vervangen door underscores"
 
-#: ../widgets.py:4887
+#: ../widgets.py:4929
 msgid ""
 "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
 "replaced by underscores"
@@ -1453,11 +1450,11 @@ msgstr ""
 "Karakters die geen onderdeel zijn van de ASCII set (A-Z, a-z, 0-9 en "
 "interpunctie) worden vervangen door underscores"
 
-#: ../widgets.py:4943
+#: ../widgets.py:4985
 msgid "Unable to rename file"
 msgstr "Niet in staan om het bestand te hernoemen"
 
-#: ../widgets.py:4944
+#: ../widgets.py:4986
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1468,11 +1465,11 @@ msgstr ""
 "al, of heeft u geen permissie om het nieuwe bestand te maken of het oude "
 "bestand te verwijderen."
 
-#: ../widgets.py:4974
+#: ../widgets.py:5016
 msgid "Path is not absolute"
 msgstr "Pad is niet absoluut"
 
-#: ../widgets.py:4975
+#: ../widgets.py:5017
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1485,83 +1482,83 @@ msgstr ""
 "bevat / maar begint niet op root niveau. Om verkeerd genaamde directories te "
 "voorkomen, moet je het patroon rooten door te beginnen met de / directory."
 
-#: ../widgets.py:5006
+#: ../widgets.py:5048
 msgid "Track Numbers"
 msgstr "Track nummers"
 
-#: ../widgets.py:5012
+#: ../widgets.py:5054
 msgid "Start fro_m:"
 msgstr "Begin va_n:"
 
-#: ../widgets.py:5023
+#: ../widgets.py:5065
 msgid "_Total tracks:"
 msgstr "_Totaal tracks:"
 
-#: ../widgets.py:5046
+#: ../widgets.py:5088
 msgid "Track"
 msgstr "Track"
 
-#: ../widgets.py:5178
+#: ../widgets.py:5220
 msgid "Apply to this _file..."
 msgid_plural "Apply to these _files..."
 msgstr[0] "Pas toe op dit _bestand..."
 msgstr[1] "Pas toe op deze _bestanden..."
 
-#: ../widgets.py:5183
+#: ../widgets.py:5225
 msgid "Path"
 msgstr "Pad"
 
-#: ../widgets.py:5242 ../widgets.py:5563
+#: ../widgets.py:5284 ../widgets.py:5605
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s en %(count)d meer"
 
-#: ../widgets.py:5244 ../widgets.py:5245
+#: ../widgets.py:5286 ../widgets.py:5287
 msgid "Properties"
 msgstr "Eigenschappen"
 
-#: ../widgets.py:5285
+#: ../widgets.py:5327
 msgid "Folders"
 msgstr "Folders"
 
-#: ../widgets.py:5335
+#: ../widgets.py:5377
 msgid "New Folder..."
 msgstr "Nieuwe folder"
 
-#: ../widgets.py:5368
+#: ../widgets.py:5410
 msgid "New Folder"
 msgstr "Nieuwe folder"
 
-#: ../widgets.py:5368
+#: ../widgets.py:5410
 msgid "Enter a name for the new folder:"
 msgstr "Voer een naam in voor de nieuwe folder:"
 
-#: ../widgets.py:5377
+#: ../widgets.py:5419
 msgid "Unable to create folder"
 msgstr "Niet in staat om folder te maken"
 
-#: ../widgets.py:5390
+#: ../widgets.py:5432
 msgid "Unable to delete folder"
 msgstr "Niet in staat om folder te verwijderen"
 
-#: ../widgets.py:5436
+#: ../widgets.py:5478
 msgid "Songs"
 msgstr "Songs"
 
-#: ../widgets.py:5573
+#: ../widgets.py:5615
 msgid "Saving the songs you changed."
 msgstr "Slaat aangepaste songs op."
 
-#: ../widgets.py:5574
+#: ../widgets.py:5616
 #, python-format
 msgid "%d/%d songs saved"
 msgstr "%d/%d songs opgeslagen"
 
-#: ../widgets.py:5614
+#: ../widgets.py:5656
 msgid "Unable to start a web browser"
 msgstr "Niet in staat om een webbrowser te starten"
 
-#: ../widgets.py:5615
+#: ../widgets.py:5657
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1571,29 +1568,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5622
+#: ../widgets.py:5664
 msgid "gtk-media-next"
 msgstr "gtk-media-volgende"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5625
+#: ../widgets.py:5667
 msgid "gtk-media-previous"
 msgstr "gtk-media-vorige"
 
-#: ../widgets.py:5646
+#: ../widgets.py:5688
 msgid "Saving song library."
 msgstr "song bibliotheek opslaan"
 
-#: ../widgets.py:5650 ../widgets.py:5655
+#: ../widgets.py:5692 ../widgets.py:5697
 msgid "Unable to save library"
 msgstr "Niet in staat om bibliotheek op te slaan"
 
-#: ../widgets.py:5665
+#: ../widgets.py:5707
 msgid "No audio device found"
 msgstr "Geen audio device gevonden"
 
-#: ../widgets.py:5666
+#: ../widgets.py:5708
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1617,6 +1614,9 @@ msgid ""
 msgstr ""
 "Tags zijn gewijzigd maar niet opgeslagen. Deze bestanden opslaan, of "
 "teruggaan en wijzigingen weggooien?"
+
+#~ msgid "Supported formats:"
+#~ msgstr "Ondersteunde formaten:"
 
 #~ msgid ""
 #~ "Invalid tag <b>%s</b>\n"

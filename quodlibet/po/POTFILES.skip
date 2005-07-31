@@ -1,1 +1,2 @@
 tests/test_util.py
+tests/test_audio.py

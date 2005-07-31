@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-30 13:02-0500\n"
+"POT-Creation-Date: 2005-07-31 14:30-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1065,7 +1065,7 @@ msgstr ""
 #: ../widgets.py:3037
 #, python-format
 msgid "_Filter on %s"
-msgstr "מיין _לפי"
+msgstr "מיין _לפי %s"
 
 #: ../widgets.py:3045
 msgid "Plugins"
@@ -1341,7 +1341,7 @@ msgstr "ערך שגוי"
 
 #: ../widgets.py:4638
 msgid "Tag by Filename"
-msgstr "תיגת לפי שם קובץ"
+msgstr "תגית לפי שם קובץ"
 
 #. Main buttons
 #: ../widgets.py:4643 ../widgets.py:4872 ../widgets.py:5073

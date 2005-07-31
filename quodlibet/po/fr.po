@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-09 18:53-0500\n"
+"POT-Creation-Date: 2005-07-31 14:30-0500\n"
 "PO-Revision-Date: 2005-06-07 15:17+0200\n"
 "Last-Translator: Mathieu Morey <kwiskas@gmail.com>\n"
 "Language-Team: Mathieu Morey <kwiskas@gmail.com>\n"
@@ -16,38 +16,38 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../library.py:41
-#, python-format
-msgid "(shared across all %d songs)"
-msgstr "(dans toutes les %d chansons)"
+#: ../library.py:39 ../library.py:50
+#, fuzzy, python-format
+msgid "missing from %d song"
+msgid_plural "missing from %d songs"
+msgstr[0] "(manquant dans %d chansons)"
+msgstr[1] "(manquant dans %d chansons)"
 
-#: ../library.py:43
-#, python-format
-msgid "(missing from %d songs)"
-msgstr "(manquant dans %d chansons)"
+#: ../library.py:43 ../library.py:47
+#, fuzzy, python-format
+msgid "different across %d song"
+msgid_plural "different across %d songs"
+msgstr[0] "(différent parmi %d chansons)"
+msgstr[1] "(différent parmi %d chansons)"
 
-#: ../library.py:45
-#, python-format
-msgid "(different across %d songs)"
+#: ../library.py:53
+#, fuzzy, python-format
+msgid "%(different)s, %(missing)s"
 msgstr "(différent parmi %d chansons)"
 
-#: ../library.py:47
-#, python-format
-msgid "(different across %d songs, missing from %d songs)"
-msgstr "(différent parmi %d chansons, manquant dans %d songs)"
-
-#: ../library.py:192
+#: ../library.py:186
 #, python-format
 msgid "W: %s is not a QL song database."
 msgstr "W: %s n'est pas une base de données de chansons QL"
 
-#: ../library.py:232
+#: ../library.py:250
 #, python-format
 msgid "Checking %s"
 msgstr "Vérification de %s"
 
-#: ../library.py:271
-msgid "Supported formats:"
+#: ../library.py:278 ../widgets.py:337
+#, fuzzy, python-format
+msgid "Supported formats: %s"
 msgstr "Formats supportés :"
 
 #: ../quodlibet.py:26
@@ -99,350 +99,375 @@ msgstr "E: L'option '%s' nécessite un argument"
 msgid "E: '%s' is not a unique prefix."
 msgstr "E: '%s' n'est pas un préfixe unique."
 
-#: ../quodlibet.py:112
+#: ../quodlibet.py:112 ../quodlibet.py:297
 #, python-format
 msgid "E: Try %s --help."
 msgstr "E: Essayez %s --help."
 
-#: ../quodlibet.py:160
+#: ../quodlibet.py:162
 msgid "The library cannot be refreshed while Quod Libet is running."
 msgstr ""
 "La bibliothèque ne peut pas être mise à jour quand Quod Libet est en "
 "fonctionnement."
 
-#: ../quodlibet.py:164
+#: ../quodlibet.py:166
 msgid "Loading, scanning, and saving your library."
 msgstr "Chargement, lecture, et enregistrement de votre bibliothèque."
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:194
 msgid "No song is currently playing."
 msgstr "Il n'y a pas de chanson en cours de lecture."
 
-#: ../quodlibet.py:199
+#: ../quodlibet.py:202
 msgid "Quod Libet is not running."
 msgstr "Quod Libet n'est pas en fonctionnement."
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:214
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Impossible d'écrire le fichier %s. On le supprime."
 
-#: ../quodlibet.py:244
+#: ../quodlibet.py:247
 msgid "a music library and player"
 msgstr "un lecteur et une bibliothèque de musique"
 
-#: ../quodlibet.py:245
+#: ../quodlibet.py:248
 msgid "[ --refresh-library | --print-playing | control ]"
 msgstr "[ --refresh-library | --print-playing | action ]"
 
-#: ../quodlibet.py:247
+#: ../quodlibet.py:250
 msgid "Rescan your library and exit"
 msgstr "Reparcourir votre bibliothèque et quitter"
 
-#: ../quodlibet.py:248
+#: ../quodlibet.py:251
 msgid "Print the playing song and exit"
 msgstr "Afficher la chanson en cours de lecture et quitter"
 
-#: ../quodlibet.py:251
+#: ../quodlibet.py:254
 msgid "Jump to next song"
 msgstr "Aller à la chanson suivante"
 
-#: ../quodlibet.py:252
+#: ../quodlibet.py:255
 msgid "Jump to previous song"
 msgstr "Aller à la chanson précédente"
 
-#: ../quodlibet.py:253
+#: ../quodlibet.py:256
 msgid "Start playback"
 msgstr "Commencer la lecture"
 
-#: ../quodlibet.py:254
+#: ../quodlibet.py:257
 msgid "Pause playback"
 msgstr "Suspendre la lecture"
 
-#: ../quodlibet.py:255
+#: ../quodlibet.py:258
 msgid "Toggle play/pause mode"
 msgstr "Mode de basculement entre lecture et suspension"
 
-#: ../quodlibet.py:256
+#: ../quodlibet.py:259
 msgid "Turn up volume"
 msgstr "Augmenter le volume"
 
-#: ../quodlibet.py:257
+#: ../quodlibet.py:260
 msgid "Turn down volume"
 msgstr "Baisser le volume"
 
-#: ../quodlibet.py:258
+#: ../quodlibet.py:261
 msgid "Print playing status"
 msgstr "Afficher l'état de la lecture"
 
-#: ../quodlibet.py:262
+#: ../quodlibet.py:265
 msgid "Seek within the playing song"
 msgstr "Avancer dans la chanson"
 
-#: ../quodlibet.py:262
+#: ../quodlibet.py:265
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: ../quodlibet.py:263
+#: ../quodlibet.py:266
 msgid "Turn shuffle off, on, or toggle it"
 msgstr "(Dés)activer le mode aléatoire ou le passer en basculement"
 
-#: ../quodlibet.py:264
+#: ../quodlibet.py:267
 msgid "Turn repeat off, on, or toggle it"
 msgstr "(Dés)activer le mode répétitif ou le passer en basculement"
 
-#: ../quodlibet.py:265
+#: ../quodlibet.py:268
 msgid "Set the volume"
 msgstr "Régler le volume"
 
-#: ../quodlibet.py:266 ../widgets.py:1537
+#: ../quodlibet.py:269 ../widgets.py:1129
 msgid "Search your audio library"
 msgstr "Rechercher dans votre bibliothèque de musique"
 
-#: ../quodlibet.py:266
+#: ../quodlibet.py:269
 msgid "search-string"
 msgstr "chaîne de recherche"
 
-#: ../quodlibet.py:267
+#: ../quodlibet.py:270
 msgid "Play a file"
 msgstr "Lire un fichier"
 
 #. just file name, foo.ogg
-#: ../quodlibet.py:267 ../po/tag-names.py:17
+#: ../quodlibet.py:270 ../po/tag-names.py:22
 msgid "filename"
 msgstr "nom de fichier"
 
-#: ../quodlibet.py:289
+#: ../quodlibet.py:295
+#, python-format
+msgid "E: Invalid argument for '%s'."
+msgstr ""
+
+#: ../quodlibet.py:311
 msgid "Loaded song library."
 msgstr "Bibliothèque de chansons chargée."
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:298
+#: ../quodlibet.py:320
 msgid "Opening audio device."
 msgstr "Ouverture du périphérique audio."
 
-#: ../quodlibet.py:325
+#: ../quodlibet.py:347
 msgid "Quod Libet is already running."
 msgstr "Quod Libet est déjà en fonctionnement."
 
-#: ../quodlibet.py:336
+#: ../quodlibet.py:358
 msgid "E: You need GTK+ 2.6 and PyGTK 2.6 or greater."
 msgstr "E: Vous devez avoir GTK+ 2.6 et PyGTK 2.6, ou versions supérieures."
 
-#: ../quodlibet.py:337
+#: ../quodlibet.py:359
 #, python-format
 msgid "E: You have GTK+ %s and PyGTK %s."
 msgstr "E: Vous avez GTK+ %s et PyGTK %s."
 
-#: ../quodlibet.py:340
+#: ../quodlibet.py:362
 msgid "E: Please upgrade GTK+/PyGTK."
 msgstr "E: Veuillez mettre GTK+/PyGTK à jour."
 
-#: ../util.py:81 ../widgets.py:2260
+#: ../util.py:82 ../widgets.py:2370
 msgid "No time information"
 msgstr "Aucun renseignement de durée"
 
-#: ../util.py:83
-#, python-format
-msgid "%d seconds"
-msgstr "%d secondes"
-
-#: ../util.py:83
-msgid "1 second"
-msgstr "1 seconde"
-
-#: ../util.py:84
-#, python-format
-msgid "%d minutes"
-msgstr "%d minutes"
-
-#: ../util.py:84
-msgid "1 minute"
-msgstr "1 minute"
-
-#: ../util.py:85
-#, python-format
-msgid "%d hours"
-msgstr "%d heures"
-
-#: ../util.py:85
-msgid "1 hour"
-msgstr "1 heure"
-
-#: ../util.py:86
-#, python-format
-msgid "%d days"
-msgstr "%d jours"
-
-#: ../util.py:86
-msgid "1 day"
-msgstr "1 jour"
-
-#: ../util.py:87
-#, python-format
-msgid "%d years"
-msgstr "%d ans"
-
-#: ../util.py:87
-msgid "1 year"
-msgstr "1 an"
-
-#: ../util.py:126 ../util.py:134
+#: ../util.py:125 ../util.py:133
 msgid "[Invalid Encoding]"
 msgstr "[Codage invalide]"
 
 #. Translations for tag names
 #. Note that although tag names are translated in the main list view,
 #. they are *not* when editing tags.
-#: ../po/tag-names.py:6
-msgid "title"
-msgstr "titre"
-
-#: ../po/tag-names.py:7 ../widgets.py:3735
-msgid "length"
-msgstr "durée"
-
-#: ../po/tag-names.py:8
-msgid "artist"
-msgstr "artiste"
-
-#: ../po/tag-names.py:9
-msgid "album"
-msgstr "album"
-
-#: ../po/tag-names.py:10
-msgid "disc"
-msgstr "disque"
-
-#: ../po/tag-names.py:11
-msgid "track"
-msgstr "piste"
-
-#. date the song was last heard on
-#: ../po/tag-names.py:13 ../widgets.py:3705
-msgid "last played"
-msgstr "dernière écoute"
-
-#. file name plus path, /.../.../foo.ogg
-#: ../po/tag-names.py:15
-msgid "full name"
-msgstr "chemin complet"
-
-#. just path, /.../...
-#: ../po/tag-names.py:19 ../exfalso.py:30
-msgid "directory"
-msgstr "répertoire"
-
-#: ../po/tag-names.py:20 ../widgets.py:3706
-msgid "play count"
-msgstr "nombre de lectures"
-
-#: ../po/tag-names.py:21 ../widgets.py:3707
-msgid "skip count"
-msgstr "Nombre de fois où elle a été évitée"
-
-#: ../po/tag-names.py:22
-msgid "version"
-msgstr "version"
-
-#: ../po/tag-names.py:23
-msgid "arranger"
-msgstr "arrangeur"
-
-#: ../po/tag-names.py:24
-msgid "conductor"
-msgstr "conducteur"
-
-#: ../po/tag-names.py:25
-msgid "author"
-msgstr "auteur"
-
-#: ../po/tag-names.py:26
-msgid "performer"
-msgstr "interprète"
-
-#: ../po/tag-names.py:27
-msgid "website"
-msgstr "site web"
-
-#: ../po/tag-names.py:28 ../po/tag-names.py:34
-msgid "language"
-msgstr "langue"
-
-#. alternately, "movement"
-#: ../po/tag-names.py:30
-msgid "part"
-msgstr "partie"
-
-#: ../po/tag-names.py:31
-msgid "lyricist"
-msgstr "parolier"
-
-#. alternately, "record label"
-#: ../po/tag-names.py:33
-msgid "organization"
-msgstr "organisation"
-
-#: ../po/tag-names.py:35
-msgid "contact"
-msgstr "contact"
-
-#: ../po/tag-names.py:36
-msgid "location"
-msgstr "endroit"
-
-#: ../po/tag-names.py:37
-msgid "copyright"
-msgstr "copyright"
-
-#: ../po/tag-names.py:38
-msgid "description"
-msgstr "description"
-
-#: ../po/tag-names.py:39
-msgid "genre"
-msgstr "genre"
-
-#: ../po/tag-names.py:40
-msgid "license"
-msgstr "licence"
-
-#: ../po/tag-names.py:41
-msgid "composer"
-msgstr "compositeur"
-
 #. date the song was added to the library
-#: ../po/tag-names.py:43 ../widgets.py:3704
+#: ../po/tag-names.py:7 ../widgets.py:3899
 msgid "added"
 msgstr "ajoutée"
 
-#. date song was last modified/edited
-#: ../po/tag-names.py:45 ../widgets.py:3737
-msgid "modified"
-msgstr "modifiée"
+#: ../po/tag-names.py:8
+msgid "album"
+msgstr "album"
 
-#: ../po/tag-names.py:46
+#: ../po/tag-names.py:9 ../po/tag-names.py:52
+#, fuzzy
+msgid "arranger"
+msgid_plural "arrangers"
+msgstr[0] "arrangeur"
+msgstr[1] "arrangeur"
+
+#: ../po/tag-names.py:10 ../widgets.py:3857 ../widgets.py:4026
+#, fuzzy
+msgid "artist"
+msgid_plural "artists"
+msgstr[0] "artiste"
+msgstr[1] "artiste"
+
+#: ../po/tag-names.py:11 ../po/tag-names.py:55
+#, fuzzy
+msgid "author"
+msgid_plural "authors"
+msgstr[0] "auteur"
+msgstr[1] "auteur"
+
+#: ../po/tag-names.py:12 ../po/tag-names.py:53
+#, fuzzy
+msgid "composer"
+msgid_plural "composers"
+msgstr[0] "compositeur"
+msgstr[1] "compositeur"
+
+#: ../po/tag-names.py:13 ../po/tag-names.py:54
+#, fuzzy
+msgid "conductor"
+msgid_plural "conductors"
+msgstr[0] "conducteur"
+msgstr[1] "conducteur"
+
+#: ../po/tag-names.py:14
+msgid "contact"
+msgstr "contact"
+
+#: ../po/tag-names.py:15
+msgid "copyright"
+msgstr "copyright"
+
+#: ../po/tag-names.py:16
 msgid "date"
 msgstr "date"
 
-#: ../po/tag-names.py:47 ../widgets.py:3708
+#: ../po/tag-names.py:17
+msgid "description"
+msgstr "description"
+
+#. just path, /.../...
+#: ../po/tag-names.py:19 ../exfalso.py:29
+msgid "directory"
+msgstr "répertoire"
+
+#: ../po/tag-names.py:20
+msgid "disc"
+msgstr "disque"
+
+#. file name plus path, /.../.../foo.ogg
+#: ../po/tag-names.py:24
+msgid "full name"
+msgstr "chemin complet"
+
+#: ../po/tag-names.py:25
+msgid "genre"
+msgstr "genre"
+
+#: ../po/tag-names.py:26
+msgid "grouping"
+msgstr ""
+
+#: ../po/tag-names.py:27
+msgid "language"
+msgstr "langue"
+
+#. date the song was last heard on
+#: ../po/tag-names.py:29 ../widgets.py:3900
+msgid "last played"
+msgstr "dernière écoute"
+
+#: ../po/tag-names.py:30 ../widgets.py:3930
+msgid "length"
+msgstr "durée"
+
+#: ../po/tag-names.py:31
+msgid "license"
+msgstr "licence"
+
+#: ../po/tag-names.py:32
+msgid "location"
+msgstr "endroit"
+
+#: ../po/tag-names.py:33 ../po/tag-names.py:51
+#, fuzzy
+msgid "lyricist"
+msgid_plural "lyricists"
+msgstr[0] "parolier"
+msgstr[1] "parolier"
+
+#. date song was last modified/edited
+#: ../po/tag-names.py:35 ../widgets.py:3932
+msgid "modified"
+msgstr "modifiée"
+
+#: ../po/tag-names.py:36
+msgid "mount point"
+msgstr ""
+
+#. alternately, "movement", "section"
+#. alternately, "record label"
+#: ../po/tag-names.py:39
+msgid "organization"
+msgstr "organisation"
+
+#: ../po/tag-names.py:40
+msgid "part"
+msgstr "partie"
+
+#: ../po/tag-names.py:41 ../po/tag-names.py:50 ../widgets.py:4030
+#, fuzzy
+msgid "performer"
+msgid_plural "performers"
+msgstr[0] "interprète"
+msgstr[1] "interprète"
+
+#: ../po/tag-names.py:42 ../widgets.py:3901
+msgid "play count"
+msgstr "nombre de lectures"
+
+#: ../po/tag-names.py:43 ../widgets.py:3903
 msgid "rating"
 msgstr "notation"
 
-#: ../formats/audio.py:21 ../widgets.py:1109 ../widgets.py:3690
-#: ../widgets.py:3696 ../widgets.py:3721
+#: ../po/tag-names.py:44 ../widgets.py:3902
+msgid "skip count"
+msgstr "Nombre de fois où elle a été évitée"
+
+#: ../po/tag-names.py:45
+msgid "title"
+msgstr "titre"
+
+#: ../po/tag-names.py:46
+msgid "track"
+msgstr "piste"
+
+#: ../po/tag-names.py:47
+msgid "version"
+msgstr "version"
+
+#: ../po/tag-names.py:48
+msgid "website"
+msgstr "site web"
+
+#. Not really tag names, but this is the best place for them so far.
+#: ../po/tag-names.py:59
+#, fuzzy, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d secondes"
+msgstr[1] "%d secondes"
+
+#: ../po/tag-names.py:60
+#, fuzzy, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minutes"
+msgstr[1] "%d minutes"
+
+#: ../po/tag-names.py:61
+#, fuzzy, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d heures"
+msgstr[1] "%d heures"
+
+#: ../po/tag-names.py:62
+#, fuzzy, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d jours"
+msgstr[1] "%d jours"
+
+#: ../po/tag-names.py:63
+#, fuzzy, python-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] "%d ans"
+msgstr[1] "%d ans"
+
+#: ../formats/audio.py:82 ../formats/audio.py:85 ../widgets.py:1671
+#: ../widgets.py:3885 ../widgets.py:3891 ../widgets.py:3916
 msgid "Unknown"
 msgstr "Inconnu(e)"
 
-#: ../exfalso.py:30
+#: ../exfalso.py:29
 msgid "an audio tag editor"
 msgstr "un éditeur d'étiquettes audio"
 
-#: ../exfalso.py:51
+#: ../exfalso.py:50
 msgid "Quod Libet is running"
 msgstr "Quod Libet est en fonctionnement"
 
-#: ../exfalso.py:52
+#: ../exfalso.py:51
 msgid ""
 "It looks like you are running Quod Libet right now. If you edit songs also "
 "in Quod Libet's library while it is running, you may need to refresh or re-"
@@ -459,101 +484,119 @@ msgstr ""
 "Si vous ne faites pas fonctionner Quod Libet, ou que vous éditez des "
 "chansons en dehors de sa bibliothèque, vous pouvez ignorer cet avertissement."
 
-#: ../widgets.py:184
-msgid "An audio player and tag editor"
-msgstr "Un lecteur audio et éditeur d'étiquettes"
+#: ../widgets.py:182
+#, fuzzy
+msgid "Quod Libet Plugins"
+msgstr "Quod Libet est en fonctionnement"
+
+#: ../widgets.py:251
+msgid "Preferences"
+msgstr "Préférences"
+
+#: ../widgets.py:327
+msgid "No plugins found."
+msgstr "Pas de greffon trouvé."
+
+#: ../widgets.py:337
+#, fuzzy, python-format
+msgid "Audio device: %s"
+msgstr "Fichiers audio"
 
 #. Translators: Replace this with your name/email to have it appear
 #. in the "About" dialog.
-#: ../widgets.py:187
+#: ../widgets.py:341
 msgid "translator-credits"
 msgstr "Joshua Kwan <joshk@triplehelix.org>kwikwi <kwiskas@gmail.com>"
 
-#: ../widgets.py:212
+#: ../widgets.py:366
 msgid "Song List"
 msgstr "Liste de chansons"
 
-#: ../widgets.py:217
-msgid "_Jump to current song automatically"
+#: ../widgets.py:371
+#, fuzzy
+msgid "_Jump to playing song automatically"
 msgstr "_Aller à la chanson courante automatiquement"
 
-#: ../widgets.py:218
+#: ../widgets.py:372
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr ""
 "Quand la chanson jouée change, défiler jusqu'à elle dans la liste des "
 "chansons"
 
-#: ../widgets.py:228
+#: ../widgets.py:382
 msgid "_Disc"
 msgstr "_Disque"
 
-#: ../widgets.py:229
+#: ../widgets.py:383
 msgid "Al_bum"
 msgstr "Al_bum"
 
-#: ../widgets.py:230
+#: ../widgets.py:384
 msgid "_Genre"
 msgstr "_Genre"
 
-#: ../widgets.py:231
+#: ../widgets.py:385
 msgid "_Track"
 msgstr "Pis_te"
 
-#: ../widgets.py:232
-msgid "A_rtist"
+#: ../widgets.py:386
+#, fuzzy
+msgid "_Artist"
 msgstr "A_rtiste"
 
-#: ../widgets.py:233
+#: ../widgets.py:387
 msgid "_Filename"
 msgstr "Nom de _fichier"
 
-#: ../widgets.py:235
-msgid "Dat_e"
+#: ../widgets.py:389
+#, fuzzy
+msgid "_Date"
 msgstr "Dat_e"
 
-#: ../widgets.py:236
+#: ../widgets.py:390
 msgid "_Length"
 msgstr "_Durée"
 
-#: ../widgets.py:248
+#: ../widgets.py:402
 msgid "Display song _rating"
 msgstr "Afficher la _notation"
 
-#: ../widgets.py:252
+#: ../widgets.py:406
 msgid "Title includes _version"
 msgstr "Le titre contient la _version"
 
-#: ../widgets.py:257
+#: ../widgets.py:411
 msgid "Album includes _part"
 msgstr "L'album contient la _partie"
 
-#: ../widgets.py:262
+#: ../widgets.py:416
 msgid "Filename includes _folder"
 msgstr "Le nom de fichier contient le _répertoire"
 
-#: ../widgets.py:277
+#: ../widgets.py:431
 msgid "_Others:"
 msgstr "A_utres :"
 
-#: ../widgets.py:282
-msgid "List other headers you want displayed, separated by spaces"
+#: ../widgets.py:437
+#, fuzzy
+msgid "Other headers to display, separated by spaces"
 msgstr ""
 "Listez les autres en-têtes que vous voulez voir affichés, séparés par des "
 "espaces."
 
-#: ../widgets.py:297
+#: ../widgets.py:451
 msgid "Visible Columns"
 msgstr "Colonnes visibles"
 
-#: ../widgets.py:330
+#: ../widgets.py:486
 msgid "Browsers"
 msgstr "Navigateurs"
 
-#: ../widgets.py:333
+#: ../widgets.py:489
 msgid "Color _search terms"
 msgstr "Colorer les termes de _recherche"
 
-#: ../widgets.py:336
+#: ../widgets.py:492
 msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
@@ -561,430 +604,422 @@ msgstr ""
 "Afficher les recherches simples en bleu, les avancées en vert, et les "
 "invalides en rouge"
 
-#: ../widgets.py:340
+#: ../widgets.py:497
 msgid "_Global filter:"
 msgstr "Filtre _global :"
 
-#: ../widgets.py:350
+#: ../widgets.py:507
 msgid "Search Bar"
 msgstr "Barre de recherche"
 
-#: ../widgets.py:364
+#: ../widgets.py:521
 #, python-format
 msgid "_Pane %d:"
 msgstr "_Panneau %d:"
 
-#: ../widgets.py:376
+#: ../widgets.py:533
 msgid "Paned Browser"
 msgstr "Navigateur pannelé"
 
-#: ../widgets.py:393
+#: ../widgets.py:550
 msgid "Player"
 msgstr "Lecteur"
 
-#: ../widgets.py:397
-msgid "Show _album cover images"
+#: ../widgets.py:553
+#, fuzzy
+msgid "Show _album covers"
 msgstr "Afficher les images de couvertures d'album"
 
-#: ../widgets.py:402
+#: ../widgets.py:558
 msgid "Closing _minimizes to system tray"
 msgstr "Fermer la fenêtre provoque la _minimisation dans la tray"
 
-#: ../widgets.py:410
+#: ../widgets.py:566
 msgid "_Volume Normalization"
 msgstr "_Normalisation du volume"
 
-#: ../widgets.py:412
+#: ../widgets.py:568
 msgid "No volume adjustment"
 msgstr "Aucun réglage de volume"
 
-#: ../widgets.py:413
+#: ../widgets.py:569
 msgid "Per-song (\"Radio\") volume adjustment"
 msgstr "Réglage du volume par chanson (« Radio »)"
 
-#: ../widgets.py:414
+#: ../widgets.py:570
 msgid "Per-album (\"Audiophile\") volume adjustment"
 msgstr "Réglage du volume par album (« Audiophile »)"
 
-#: ../widgets.py:431 ../widgets.py:3717
+#: ../widgets.py:587 ../widgets.py:3912
 msgid "Library"
 msgstr "Bibliothèque"
 
-#: ../widgets.py:432
+#: ../widgets.py:588
 msgid "Scan _Directories"
 msgstr "Parcourir des _répertoires"
 
-#: ../widgets.py:434 ../widgets.py:460
+#: ../widgets.py:590
 msgid "_Select"
 msgstr "_Choisir"
 
-#: ../widgets.py:440
-msgid ""
-"On start up, any files found in these directories will be added to your "
-"library"
+#: ../widgets.py:596
+#, fuzzy
+msgid "Songs placed in these folders will be added to your library"
 msgstr ""
 "Au démarrage, tous les fichiers trouvés dans ces répertoires seront ajoutés "
 "à votre bibliothèque"
 
-#: ../widgets.py:448
-msgid "_Masked Directories"
-msgstr "Dossiers _cachés"
-
-#: ../widgets.py:451
-msgid ""
-"If you have songs in directories that will not always be mounted (for "
-"example, a removable device or an NFS shared drive), list those mount points "
-"here. Files in these directories will not be removed from the library if the "
-"device is not mounted."
-msgstr ""
-"Si vous avez des chansons dans des répertoires qui ne seront pas toujours "
-"disponibles (par exemple les périphériques amovibles ou un partage NFS), "
-"listez ces points de montage ici. Les fichiers dans ces répertoires ne "
-"seront pas enlevés si le périphérique n'est pas monté."
-
-#: ../widgets.py:475
+#: ../widgets.py:604
 msgid "Tag Editing"
 msgstr "Édition d'étiquettes"
 
-#: ../widgets.py:482
-msgid ""
-"These characters will be used as separators when \"Split values\" is "
-"selected in the tag editor"
+#: ../widgets.py:610
+msgid "Separators for splitting tags"
 msgstr ""
-"Ces caractères seront utilisés comme séparateurs quand \"Séparer les valeurs"
-"\" est sélectionné dans l'éditeur d'étiquettes"
 
-#: ../widgets.py:484
+#: ../widgets.py:611
 msgid "Split _on:"
 msgstr "Séparer _sur:"
 
-#: ../widgets.py:490
+#: ../widgets.py:617
 msgid "Show _programmatic comments"
 msgstr "Montrer les commentaires de _programmation"
 
-#: ../widgets.py:500
+#: ../widgets.py:629
 msgid "Select Directories"
 msgstr "Choisir des répertoires"
 
-#: ../widgets.py:514 ../widgets.py:2890
-msgid "Plugins"
-msgstr "Greffons"
-
-#: ../widgets.py:576
-msgid "Preferences"
-msgstr "Préférences"
-
-#: ../widgets.py:646
-msgid "No plugins found."
-msgstr "Pas de greffon trouvé."
-
-#: ../widgets.py:651
+#: ../widgets.py:640
 msgid "Quod Libet Preferences"
 msgstr "Préférences de Quod Libet"
 
-#: ../widgets.py:682
-msgid "Deleting files"
+#: ../widgets.py:661
+#, fuzzy
+msgid "Delete Files"
 msgstr "Suppression des fichiers"
 
-#: ../widgets.py:691
+#: ../widgets.py:671
 msgid "_Move to Trash"
 msgstr "_Mettre à la corbeille"
 
-#: ../widgets.py:707
+#: ../widgets.py:686
+#, fuzzy
 msgid "Permanently delete this file?"
-msgstr "Supprimer définitivement ce fichier?"
+msgid_plural "Permanently delete these files?"
+msgstr[0] "Supprimer définitivement ce fichier?"
+msgstr[1] "Supprimer définitivement ce fichier?"
 
-#: ../widgets.py:710
-msgid "Permanently delete these files?"
-msgstr "Supprimer définitivement ces fichiers?"
+#: ../widgets.py:691
+#, fuzzy, python-format
+msgid "%(title)s and %(count)d more..."
+msgid_plural "%(title)s and %(count)d more..."
+msgstr[0] "%s et %d de plus..."
+msgstr[1] "%s et %d de plus..."
 
-#: ../widgets.py:711
-#, python-format
-msgid "%s and %d more..."
-msgstr "%s et %d de plus..."
+#: ../widgets.py:908 ../widgets.py:2491 ../widgets.py:2702
+msgid "_Play"
+msgstr "_Lire"
 
-#: ../widgets.py:788
-msgid "Initialized status icon."
-msgstr "Icône de statut initialisée."
+#: ../widgets.py:939 ../widgets.py:2476 ../widgets.py:3008
+#, fuzzy
+msgid "Rating"
+msgstr "notation"
 
-#: ../widgets.py:996 ../widgets.py:1964
+#: ../widgets.py:998 ../widgets.py:2067
 msgid "Not playing"
 msgstr "Pas en cours de lecture"
 
-#: ../widgets.py:1006
-msgid "Initialized multimedia key support."
-msgstr "Support des touches multimédias initialisé."
-
-#: ../widgets.py:1104
-msgid "All"
-msgstr "Tous"
-
-#: ../widgets.py:1234
-msgid "Edit the current playlist"
-msgstr "Édite la liste de lecture courante"
-
-#: ../widgets.py:1235
-msgid "Refresh the current playlist"
-msgstr "Rafraîchir la liste de lecture courante"
-
-#: ../widgets.py:1529
-msgid "Clear search text"
+#: ../widgets.py:1120
+#, fuzzy
+msgid "Clear search"
 msgstr "Effacer la chaîne de recherche"
 
-#: ../widgets.py:1535
+#: ../widgets.py:1127
 msgid "Search"
 msgstr "Rechercher"
 
-#: ../widgets.py:1666
+#: ../widgets.py:1218
 msgid "Songs not in an album"
 msgstr "Chansons pas dans un album"
 
-#: ../widgets.py:1669 ../widgets.py:3780
-#, python-format
-msgid "%d discs"
-msgstr "%s disques"
+#: ../widgets.py:1223 ../widgets.py:3977
+#, fuzzy, python-format
+msgid "%d disc"
+msgid_plural "%d discs"
+msgstr[0] "%s disques"
+msgstr[1] "%s disques"
 
-#: ../widgets.py:1670
-msgid "1 track"
-msgstr "1 piste"
+#: ../widgets.py:1225 ../widgets.py:3979
+#, fuzzy, python-format
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d pistes"
+msgstr[1] "%d pistes"
 
-#: ../widgets.py:1671 ../widgets.py:3781
-#, python-format
-msgid "%d tracks"
-msgstr "%d pistes"
-
-#: ../widgets.py:1709
+#: ../widgets.py:1314
 msgid "Sort by title"
 msgstr ""
 
-#: ../widgets.py:1710
+#: ../widgets.py:1315
 #, fuzzy
 msgid "Sort by artist"
 msgstr "artiste"
 
-#: ../widgets.py:1772
-msgid "All albums"
+#: ../widgets.py:1380
+#, fuzzy
+msgid "All Albums"
 msgstr "Tous les albums"
 
-#: ../widgets.py:1773
-#, python-format
-msgid "%d albums"
-msgstr "%d albums"
+#: ../widgets.py:1381
+#, fuzzy, python-format
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d albums"
+msgstr[1] "%d albums"
 
-#: ../widgets.py:1940
+#: ../widgets.py:1664
+msgid "All"
+msgstr "Tous"
+
+#: ../widgets.py:1785
+msgid "Edit the current playlist"
+msgstr "Édite la liste de lecture courante"
+
+#: ../widgets.py:1786
+msgid "Refresh the current playlist"
+msgstr "Rafraîchir la liste de lecture courante"
+
+#: ../widgets.py:2042
 msgid "Stop after this song"
 msgstr "Arrêter après cette chanson"
 
-#: ../widgets.py:1978
+#: ../widgets.py:2081
 #, python-format
 msgid "by %s"
 msgstr "par %s"
 
-#: ../widgets.py:1981
+#: ../widgets.py:2084
 #, python-format
 msgid "Performed by %s"
 msgstr "Interprété par %s"
 
-#: ../widgets.py:1985
+#: ../widgets.py:2088
 #, python-format
 msgid "arranged by %s"
 msgstr "arrangé par %s"
 
-#: ../widgets.py:1986
+#: ../widgets.py:2089
 #, python-format
 msgid "lyrics by %s"
 msgstr "paroles par %s"
 
-#: ../widgets.py:1987
+#: ../widgets.py:2090
 #, python-format
 msgid "conducted by %s"
 msgstr "dirigé par %s"
 
-#: ../widgets.py:1988
+#: ../widgets.py:2091
 #, python-format
 msgid "composed by %s"
 msgstr "composé par %s"
 
-#: ../widgets.py:1989
+#: ../widgets.py:2092
 #, python-format
 msgid "written by %s"
 msgstr "écrit par %s"
 
-#: ../widgets.py:2001 ../widgets.py:3624 ../widgets.py:3849
+#: ../widgets.py:2104 ../widgets.py:3821 ../widgets.py:4050
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
 
-#: ../widgets.py:2006 ../widgets.py:3629
+#: ../widgets.py:2109 ../widgets.py:3826
 #, python-format
 msgid "Track %s"
 msgstr "Piste %s"
 
-#: ../widgets.py:2043
+#: ../widgets.py:2146
 msgid "Add songs to your library"
 msgstr "Ajouter des chansons à votre bibliothèque"
 
-#: ../widgets.py:2050 ../widgets.py:2456
+#: ../widgets.py:2153 ../widgets.py:2578
 msgid "View and edit tags in the playing song"
 msgstr "Voir et éditer les étiquettes de la chanson courante"
 
-#: ../widgets.py:2057
+#: ../widgets.py:2160
 msgid "Visit the artist's website"
 msgstr "Visitez le site web de l'artiste"
 
-#: ../widgets.py:2104 ../widgets.py:2723
-msgid "Add Music"
-msgstr "Ajouter de la musique"
+#: ../widgets.py:2254
+#, python-format
+msgid "%(current)s/%(total)s"
+msgstr ""
 
-#: ../widgets.py:2172
-msgid "Adjust audio volume"
+#: ../widgets.py:2270
+#, fuzzy
+msgid "Change volume"
 msgstr "Régler le volume"
 
-#: ../widgets.py:2248
-msgid "_Shuffle"
+#: ../widgets.py:2354
+msgid "In Order"
+msgstr ""
+
+#: ../widgets.py:2355
+#, fuzzy
+msgid "Shuffle"
 msgstr "_Aléatoire"
 
-#: ../widgets.py:2249
-msgid "Play songs in a random order"
+#: ../widgets.py:2356
+#, fuzzy
+msgid "Weighted"
+msgstr "Écrire"
+
+#: ../widgets.py:2357
+#, fuzzy
+msgid "Play songs in random order"
 msgstr "Jouer les chansons dans un ordre aléatoire"
 
-#: ../widgets.py:2253
+#: ../widgets.py:2363
 msgid "_Repeat"
 msgstr "_Répéter"
 
-#: ../widgets.py:2257
-msgid "Restart the playlist after all songs are played"
+#: ../widgets.py:2367
+#, fuzzy
+msgid "Restart the playlist when finished"
 msgstr ""
 "Recommencer la liste de lecture après que toutes les chansons ont été jouées"
 
-#: ../widgets.py:2337
+#: ../widgets.py:2449
 msgid "_Music"
 msgstr "_Musique"
 
-#: ../widgets.py:2338
+#: ../widgets.py:2450
 msgid "_Add Music..."
 msgstr "_Ajouter de la musique..."
 
-#: ../widgets.py:2340
+#: ../widgets.py:2452
 msgid "_New/Edit Playlist..."
 msgstr "_Créer/Éditer une liste de lecture..."
 
-#: ../widgets.py:2342
+#: ../widgets.py:2454
 msgid "_Browse Library"
 msgstr "_Parcourir la bibliothèque"
 
-#: ../widgets.py:2346
+#: ../widgets.py:2457
+#, fuzzy
+msgid "_Plugins"
+msgstr "Greffons"
+
+#: ../widgets.py:2460
 msgid "_Filters"
 msgstr "_Filtres"
 
-#: ../widgets.py:2348
+#: ../widgets.py:2462
 msgid "Not played to_day"
 msgstr "Pas jouée aujourd'hui"
 
-#: ../widgets.py:2350
+#: ../widgets.py:2464
 msgid "Not played in a _week"
 msgstr "Pas jouée pendant une _semaine"
 
-#: ../widgets.py:2352
+#: ../widgets.py:2466
 msgid "Not played in a _month"
 msgstr "Pas jouée pendant un _mois"
 
-#: ../widgets.py:2354
+#: ../widgets.py:2468
 msgid "_Never played"
 msgstr "_Jamais jouée"
 
-#: ../widgets.py:2356
+#: ../widgets.py:2470
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: ../widgets.py:2357
+#: ../widgets.py:2471
 msgid "B_ottom 40"
 msgstr "Fl_op 40"
 
-#: ../widgets.py:2359
+#: ../widgets.py:2473
 msgid "S_ong"
 msgstr "_Chanson"
 
-#: ../widgets.py:2370
+#: ../widgets.py:2478
 msgid "_Jump to playing song"
 msgstr "_Aller à la chanson en cours"
 
-#: ../widgets.py:2373
+#: ../widgets.py:2481
 msgid "_View"
 msgstr "Afficha_ge"
 
-#: ../widgets.py:2374
+#: ../widgets.py:2482
 msgid "_Help"
 msgstr "_Aide"
 
-#: ../widgets.py:2379
+#: ../widgets.py:2502
 msgid "Re_fresh Library"
 msgstr "Ra_fraîchir la bibliothèque"
 
-#: ../widgets.py:2383
+#: ../widgets.py:2506
 msgid "Re_load Library"
 msgstr "Re_charger la bibliothèque"
 
-#: ../widgets.py:2388
+#: ../widgets.py:2511
 msgid "Filter on _genre"
 msgstr "Filtrer sur le _genre"
 
-#: ../widgets.py:2389 ../widgets.py:2868
+#: ../widgets.py:2512 ../widgets.py:3021
 msgid "Filter on _artist"
 msgstr "Filtrer sur l'_artiste"
 
-#: ../widgets.py:2390 ../widgets.py:2873
+#: ../widgets.py:2513 ../widgets.py:3026
 msgid "Filter on al_bum"
 msgstr "Filtrer sur l'al_bum"
 
-#: ../widgets.py:2397
+#: ../widgets.py:2520
 msgid "Random _genre"
 msgstr "_Genre aléatoire"
 
-#: ../widgets.py:2398
+#: ../widgets.py:2521
 msgid "Random _artist"
 msgstr "_Artiste aléatoire"
 
-#: ../widgets.py:2399
+#: ../widgets.py:2522
 msgid "Random al_bum"
 msgstr "Al_bum aléatoire"
 
-#: ../widgets.py:2406
+#: ../widgets.py:2529
 msgid "Song _List"
 msgstr "_Liste de chansons"
 
-#: ../widgets.py:2411
+#: ../widgets.py:2534
 msgid "_Disable Browser"
 msgstr "_Désactiver le navigateur"
 
-#: ../widgets.py:2412 ../widgets.py:2419
+#: ../widgets.py:2535 ../widgets.py:2542
 msgid "_Search Library"
 msgstr "_Rechercher dans la bibliothèque"
 
-#: ../widgets.py:2413
+#: ../widgets.py:2536
 msgid "_Playlists"
 msgstr "_Listes de lecture"
 
-#: ../widgets.py:2414 ../widgets.py:2420
+#: ../widgets.py:2537 ../widgets.py:2543
 msgid "_Paned Browser"
 msgstr "Navigateur _pannelé"
 
-#: ../widgets.py:2415 ../widgets.py:2421
+#: ../widgets.py:2538 ../widgets.py:2544
 msgid "_Album List"
 msgstr "Liste d'_albums"
 
-#: ../widgets.py:2441
-msgid "Check for changes in the library made since the program was started"
+#: ../widgets.py:2564
+msgid "Check for changes made to the library"
 msgstr ""
-"Chercher des changements faits dans la bibliothèque depuis que le programme "
-"a été lancé"
 
-#: ../widgets.py:2445
+#: ../widgets.py:2567
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr ""
 "Recharger toutes les chansons de votre bibliothèque (peut durer longtemps)"
 
-#: ../widgets.py:2448
+#: ../widgets.py:2570
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -992,7 +1027,7 @@ msgstr ""
 "Les 40 chansons que vous avez le plus jouées (plus de 40 peuvent être "
 "choisies en cas d'égalité)"
 
-#: ../widgets.py:2452
+#: ../widgets.py:2574
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1000,29 +1035,25 @@ msgstr ""
 "Les 40 chansons que vous avez le moins jouées (plus de 40 peuvent être "
 "choisies en cas d'égalité)"
 
-#: ../widgets.py:2541
+#: ../widgets.py:2685
 #, python-format
 msgid "W: Unable to load %s"
 msgstr "W: Impossible de charger %s"
 
-#: ../widgets.py:2558
-msgid "_Play"
-msgstr "_Lire"
-
-#: ../widgets.py:2562
+#: ../widgets.py:2706
 msgid "_Pause"
 msgstr "_Suspendre"
 
-#: ../widgets.py:2566
+#: ../widgets.py:2714
 #, python-format
 msgid "Could not play %s."
 msgstr "Impossible de jouer %s."
 
-#: ../widgets.py:2603
+#: ../widgets.py:2749
 msgid "New/Edit Playlist"
 msgstr "Créer/Éditer liste de lecture..."
 
-#: ../widgets.py:2604
+#: ../widgets.py:2750
 msgid ""
 "Enter a name for the new playlist. If it already exists it will be opened "
 "for editing."
@@ -1030,7 +1061,7 @@ msgstr ""
 "Saisissez un nom pour la nouvelle liste de lecture. Si la liste existe, elle "
 "sera ouverte pour l'édition."
 
-#: ../widgets.py:2684
+#: ../widgets.py:2831
 #, python-format
 msgid ""
 "Quod Libet is scanning your library. This may take several minutes.\n"
@@ -1043,7 +1074,11 @@ msgstr ""
 "%d chansons rechargées\n"
 "%d chansons retirées"
 
-#: ../widgets.py:2734
+#: ../widgets.py:2877
+msgid "Add Music"
+msgstr "Ajouter de la musique"
+
+#: ../widgets.py:2889
 #, python-format
 msgid ""
 "Quod Libet is scanning for new songs and adding them to your library.\n"
@@ -1054,21 +1089,21 @@ msgstr ""
 "votre bibliothèque.\n"
 "%d chansons ajoutées"
 
-#: ../widgets.py:2801
+#: ../widgets.py:2955
 #, python-format
 msgid "Moving %d/%d."
 msgstr "Déplacement de %d/%d."
 
-#: ../widgets.py:2802
+#: ../widgets.py:2956
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "Suppression de %d/%d"
 
-#: ../widgets.py:2818
+#: ../widgets.py:2972
 msgid "Unable to delete file"
 msgstr "Impossible de supprimer le fichier"
 
-#: ../widgets.py:2819
+#: ../widgets.py:2973
 #, python-format
 msgid ""
 "Deleting <b>%s</b> failed. Possibly the target file does not exist, or you "
@@ -1078,250 +1113,273 @@ msgstr ""
 "n'existe pas, ou que vous n'avez pas les droits nécessaires pour le "
 "supprimer."
 
-#: ../widgets.py:2855
-msgid "Set Rating"
-msgstr "Régler la notation"
-
-#: ../widgets.py:2882
+#. Translators: The substituted string is the name of the
+#. selected column (a translated tag name).
+#: ../widgets.py:3037
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtrer sur %s"
 
-#: ../widgets.py:2998
-#, python-format
-msgid "%d songs (%s)"
-msgstr "%d chansons (%s)"
+#: ../widgets.py:3045
+msgid "Plugins"
+msgstr "Greffons"
 
-#: ../widgets.py:3000
-#, python-format
-msgid "%d song (%s)"
-msgstr "%d chanson (%s)"
+#. Translators: Only translate this if your GTK locale uses
+#. identical strings for "Remove" and "Delete". Otherwise do not
+#. translate it, or translate it verbatim. This means
+#. "Remove from library"; Remove in the context of removing a song
+#. from a playlist gets its default GTK translation since "Delete"
+#. is not available there.
+#: ../widgets.py:3057 ../widgets.py:3360
+msgid "gtk-remove"
+msgstr ""
 
-#: ../widgets.py:3157
+#: ../widgets.py:3165
+#, fuzzy, python-format
+msgid "%(count)d song (%(time)s)"
+msgid_plural "%(count)d songs (%(time)s)"
+msgstr[0] "%d chanson (%s)"
+msgstr[1] "%d chanson (%s)"
+
+#: ../widgets.py:3332
 msgid "Library Browser"
 msgstr "Navigateur de bibliothèque"
 
-#: ../widgets.py:3253
+#: ../widgets.py:3431
 msgid "All songs"
 msgstr "Toutes les chansons"
 
-#: ../widgets.py:3457
-msgid "Add a new tag"
+#: ../widgets.py:3634
+#, fuzzy
+msgid "Add a Tag"
 msgstr "Ajouter une nouvelle étiquette"
 
-#: ../widgets.py:3479
+#: ../widgets.py:3657
 msgid "_Tag:"
 msgstr "É_tiquette :"
 
-#: ../widgets.py:3487
+#: ../widgets.py:3665
 msgid "_Value:"
 msgstr "_Valeur :"
 
-#: ../widgets.py:3603
+#: ../widgets.py:3725
+#, fuzzy
+msgid ""
+"The date must be entered in YYYY, YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format."
+msgstr "La date doit être saisie au format AAAA ou AAAA-MM-JJ."
+
+#: ../widgets.py:3729
+msgid "ReplayGain gains must be entered in 'x.yy dB' format."
+msgstr ""
+
+#: ../widgets.py:3733
+#, fuzzy
+msgid "ReplayGain peaks must be entered in x.yy format."
+msgstr "La date doit être saisie au format AAAA ou AAAA-MM-JJ."
+
+#: ../widgets.py:3800
 msgid "No songs are selected."
 msgstr "Aucune chanson n'est sélectionnée."
 
-#: ../widgets.py:3660 ../widgets.py:3827 ../widgets.py:3936
-msgid "artists"
-msgstr "artistes"
-
-#: ../widgets.py:3666
+#. Translators: This is used as a group header in
+#. Properties when a song has performers/composers/etc.
+#: ../widgets.py:3864
 msgid "People"
 msgstr "Personnes"
 
-#: ../widgets.py:3668 ../widgets.py:3831
-msgid "performers"
-msgstr "interprètes"
-
-#: ../widgets.py:3669
-msgid "lyricists"
-msgstr "paroliers"
-
-#: ../widgets.py:3670
-msgid "arrangers"
-msgstr "arrangeurs"
-
-#: ../widgets.py:3671
-msgid "composers"
-msgstr "compositeurs"
-
-#: ../widgets.py:3672
-msgid "conductors"
-msgstr "conducteurs"
-
-#: ../widgets.py:3673
-msgid "authors"
-msgstr "auteurs"
-
-#: ../widgets.py:3686 ../widgets.py:3697
+#: ../widgets.py:3882 ../widgets.py:3892
 msgid "Never"
 msgstr "Jamais"
 
-#: ../widgets.py:3687
-msgid "1 time"
-msgstr "1 fois"
+#: ../widgets.py:3883
+#, fuzzy, python-format
+msgid "%d time"
+msgid_plural "%d times"
+msgstr[0] "%d fois"
+msgstr[1] "%d fois"
 
-#: ../widgets.py:3688
-#, python-format
-msgid "%d times"
-msgstr "%d fois"
-
-#: ../widgets.py:3729
+#: ../widgets.py:3924
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: ../widgets.py:3736
+#: ../widgets.py:3931
 msgid "file size"
 msgstr "taille du fichier"
 
-#: ../widgets.py:3739
+#: ../widgets.py:3934
 msgid "bitrate"
 msgstr "débit des données"
 
-#: ../widgets.py:3750 ../widgets.py:4544 ../widgets.py:4663 ../widgets.py:4862
-#: ../widgets.py:4993
+#: ../widgets.py:3945 ../widgets.py:4760 ../widgets.py:4880 ../widgets.py:5085
+#: ../widgets.py:5222
 msgid "File"
 msgstr "Fichier"
 
-#: ../widgets.py:3783
-#, python-format
+#: ../widgets.py:3981
+#, fuzzy, python-format
 msgid "%d selected"
-msgstr "%d sélectionnées"
+msgid_plural "%d selected"
+msgstr[0] "%d sélectionnées"
+msgstr[1] "%d sélectionnées"
 
-#: ../widgets.py:3795
+#: ../widgets.py:3994
 #, python-format
 msgid "Produced by %s"
 msgstr "Produit par %s"
 
-#: ../widgets.py:3859
-msgid "No information available"
-msgstr "Aucun renseignement disponible"
+#: ../widgets.py:4032
+msgid "performers"
+msgstr "interprètes"
 
-#: ../widgets.py:3866
+#: ../widgets.py:4060
+#, fuzzy
+msgid "Track unavailable"
+msgstr "Numéros de pistes"
+
+#: ../widgets.py:4067
 msgid "Track List"
 msgstr "Liste de pistes"
 
-#: ../widgets.py:3892 ../widgets.py:3949
-#, python-format
-msgid "%d songs with no album"
-msgstr "%d chansons sans album"
+#: ../widgets.py:4093 ../widgets.py:4153
+#, fuzzy, python-format
+msgid "%d song with no album"
+msgid_plural "%d songs with no album"
+msgstr[0] "%d chansons sans album"
+msgstr[1] "%d chansons sans album"
 
-#: ../widgets.py:3895
+#: ../widgets.py:4097
 msgid "Selected Discography"
 msgstr "Discographie sélectionnée"
 
-#: ../widgets.py:3920
-#, python-format
-msgid "%d songs"
-msgstr "%d chansons"
+#: ../widgets.py:4123
+#, fuzzy, python-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "%d chansons"
+msgstr[1] "%d chansons"
 
-#: ../widgets.py:3934
-#, python-format
-msgid "%d songs with no artist"
-msgstr "%d songs sans artiste"
+#: ../widgets.py:4137
+#, fuzzy, python-format
+msgid "%d song with no artist"
+msgid_plural "%d songs with no artist"
+msgstr[0] "%d songs sans artiste"
+msgstr[1] "%d songs sans artiste"
 
-#: ../widgets.py:3951
+#: ../widgets.py:4140
+msgid "artists"
+msgstr "artistes"
+
+#: ../widgets.py:4156
 msgid "albums"
 msgstr "albums"
 
-#: ../widgets.py:3963
+#: ../widgets.py:4168
 msgid "Total length:"
 msgstr "Durée totale :"
 
-#: ../widgets.py:3967
+#: ../widgets.py:4172
 msgid "Total size:"
 msgstr "Taille totale :"
 
-#: ../widgets.py:3970
+#: ../widgets.py:4175
 msgid "Files"
 msgstr "Fichiers"
 
-#: ../widgets.py:3974
+#: ../widgets.py:4179
 msgid "Information"
 msgstr "Information"
 
-#: ../widgets.py:4000
+#: ../widgets.py:4204
 msgid "Edit Tags"
 msgstr "Éditer les étiquettes"
 
-#: ../widgets.py:4009
+#: ../widgets.py:4211
 msgid "Write"
 msgstr "Écrire"
 
-#: ../widgets.py:4027
+#: ../widgets.py:4235
 msgid "Tag"
 msgstr "Étiquette"
 
-#: ../widgets.py:4037
+#: ../widgets.py:4245
 msgid "Value"
 msgstr "Valeur"
 
-#: ../widgets.py:4082
+#: ../widgets.py:4284
 msgid "Double-click a tag value to change it, right-click for other options"
 msgstr ""
 "Double-cliquez sur la valeur d'une étiquette pour la changer, cliquez-droit "
 "pour d'autres options"
 
-#: ../widgets.py:4084
-msgid "Add a new tag to the file"
-msgstr "Ajouter une nouvelle étiquette au fichier"
+#: ../widgets.py:4286
+msgid "Add a new tag"
+msgstr "Ajouter une nouvelle étiquette"
 
-#: ../widgets.py:4085
-msgid "Remove a tag from the file"
-msgstr "Supprimer une étiquette du fichier"
+#: ../widgets.py:4287
+#, fuzzy
+msgid "Remove selected tag"
+msgstr "%d sélectionnées"
 
-#: ../widgets.py:4168
-msgid "_Split into multiple values"
-msgstr "_Séparer en plusieurs valeurs"
+#: ../widgets.py:4394 ../widgets.py:4668
+msgid "Split into _multiple values"
+msgstr "Séparer en _plusieurs valeurs"
 
-#: ../widgets.py:4177
+#: ../widgets.py:4403
 msgid "Split disc out of _album"
 msgstr "Séparer le disque de l'_album"
 
-#: ../widgets.py:4185
+#: ../widgets.py:4411
 msgid "Split version out of title"
 msgstr "Séparer la version du titre"
 
-#: ../widgets.py:4195
+#: ../widgets.py:4421
 msgid "Split arranger out of ar_tist"
 msgstr "Séparer l'arrangeur de l'ar_tiste"
 
-#: ../widgets.py:4202
+#: ../widgets.py:4428
 msgid "Split _performer out of artist"
 msgstr "Séparer l'intér_prète de l'artiste"
 
-#: ../widgets.py:4243
-msgid "The date must be entered in YYYY or YYYY-MM-DD format."
-msgstr "La date doit être saisie au format AAAA ou AAAA-MM-JJ."
-
-#: ../widgets.py:4252 ../widgets.py:4523
+#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5640
+#, fuzzy
 msgid "Invalid tag"
-msgstr "Étiquette non valide"
+msgid_plural "Invalid tags"
+msgstr[0] "Étiquette non valide"
+msgstr[1] "Étiquette non valide"
 
-#: ../widgets.py:4253 ../widgets.py:4524
-#, python-format
+#: ../widgets.py:4475 ../widgets.py:4741
+#, fuzzy, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
 "\n"
 "The files currently selected do not support editing this tag."
-msgstr ""
+msgid_plural ""
+"Invalid tags <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing these tags."
+msgstr[0] ""
+"Étiquette invalide <b>%s</b>\n"
+"\n"
+"Les fichiers sélectionnés actuellement ne permettent pas l'édition de cette "
+"étiquette."
+msgstr[1] ""
 "Étiquette invalide <b>%s</b>\n"
 "\n"
 "Les fichiers sélectionnés actuellement ne permettent pas l'édition de cette "
 "étiquette."
 
-#: ../widgets.py:4297 ../widgets.py:4588 ../widgets.py:4910
+#: ../widgets.py:4520 ../widgets.py:4804 ../widgets.py:5133
 msgid "Tag may not be accurate"
 msgstr "L'étiquette peut ne pas être correcte"
 
-#: ../widgets.py:4298 ../widgets.py:4589 ../widgets.py:4911
-#, python-format
+#: ../widgets.py:4521 ../widgets.py:4805 ../widgets.py:5134
+#, fuzzy, python-format
 msgid ""
-"<b>%s</b> looks like it was changed while the program was running. Saving "
-"now without refreshing your library might overwrite other changes to tag.\n"
+"<b>%s</b> changed while the program was running. Saving without refreshing "
+"your library may overwrite other changes to the song.\n"
 "\n"
-"Save this tag anyway?"
+"Save this song anyway?"
 msgstr ""
 "<b>%s</b>·semble avoir été changée·pendant le fonctionnement du programme."
 "·Sauvegarder maintenant sans réactualiser votre bibliothèque pourrait "
@@ -1329,11 +1387,12 @@ msgstr ""
 "\n"
 "Sauvegarder tout de même cette étiquette?"
 
-#: ../widgets.py:4331 ../widgets.py:4613 ../widgets.py:4922
-msgid "Unable to edit song"
+#: ../widgets.py:4554 ../widgets.py:5145
+#, fuzzy
+msgid "Unable to save song"
 msgstr "Impossible d'éditer la chanson"
 
-#: ../widgets.py:4332 ../widgets.py:4614 ../widgets.py:4923
+#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:323
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1342,59 +1401,47 @@ msgstr ""
 "La sauvegarde de <b>%s</b>·a échoué.·Le fichier peut être en lecture seule, "
 "corrompu, ou vous n'avez pas la permission de l'éditer."
 
-#: ../widgets.py:4355
-msgid "Invalid date format"
-msgstr "Format de date non valide"
+#: ../widgets.py:4576 ../widgets.py:4577
+#, fuzzy
+msgid "Invalid value"
+msgstr "Étiquette non valide"
 
-#: ../widgets.py:4356
-#, python-format
-msgid ""
-"Invalid date: <b>%s</b>.\n"
-"\n"
-"The date must be entered in YYYY or YYYY-MM-DD format."
-msgstr ""
-"Date non valide : <b>%s</b>.\n"
-"\n"
-"La date doit être saisie au format AAAA ou AAAA-MM-JJ."
-
-#: ../widgets.py:4423
+#: ../widgets.py:4638
 msgid "Tag by Filename"
 msgstr "Étiqueter par nom de fichier"
 
 #. Main buttons
-#: ../widgets.py:4428 ../widgets.py:4655 ../widgets.py:4850
+#: ../widgets.py:4643 ../widgets.py:4872 ../widgets.py:5073
 msgid "_Preview"
 msgstr "A_perçu"
 
-#: ../widgets.py:4449
+#: ../widgets.py:4664
 msgid "Replace _underscores with spaces"
 msgstr "Remplacer les so_ulignés par des espaces"
 
-#: ../widgets.py:4451
+#: ../widgets.py:4666
 msgid "_Title-case resulting values"
 msgstr "Mettre une majuscule aux valeurs resultantes"
 
-#: ../widgets.py:4453
-msgid "Split into _multiple values"
-msgstr "Séparer en _plusieurs valeurs"
-
-#: ../widgets.py:4456
-msgid "Tags should replace existing ones"
+#: ../widgets.py:4671
+#, fuzzy
+msgid "Tags replace existing ones"
 msgstr "Les étiquettes devraient remplacer les existantes."
 
-#: ../widgets.py:4457
-msgid "Tags should be added to existing ones"
+#: ../widgets.py:4672
+#, fuzzy
+msgid "Tags are added to existing ones"
 msgstr "Les étiquettes devraient être ajoutées aux existantes"
 
-#: ../widgets.py:4473
+#: ../widgets.py:4688
 msgid "The first letter of each word will be capitalized"
 msgstr "La première lettre de chaque mot sera mise en majuscule"
 
-#: ../widgets.py:4505
+#: ../widgets.py:4722
 msgid "Invalid pattern"
 msgstr "Motif non valide"
 
-#: ../widgets.py:4506
+#: ../widgets.py:4723
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1407,43 +1454,31 @@ msgstr ""
 "n'est pas valide.·Il peut contenir deux fois la même étiquette ou des "
 "parenthèses sans correspondance·(&lt;·/·&gt;)."
 
-#: ../widgets.py:4527
-msgid "Invalid tags"
-msgstr "Étiquettes non valides"
+#: ../widgets.py:4829 ../plugins.py:322
+msgid "Unable to edit song"
+msgstr "Impossible d'éditer la chanson"
 
-#: ../widgets.py:4528
-#, python-format
-msgid ""
-"Invalid tags <b>%s</b>\n"
-"\n"
-"The files currently selected do not support editing these tags."
-msgstr ""
-"Étiquettes non valides <b>%s</b>\n"
-"\n"
-"Les fichiers sélectionnés actuellement ne permettent pas l'édition de ces "
-"étiquettes."
-
-#: ../widgets.py:4647
+#: ../widgets.py:4864
 msgid "Rename Files"
 msgstr "Renommer les fichiers"
 
-#: ../widgets.py:4669
+#: ../widgets.py:4886
 msgid "New Name"
 msgstr "Nouveau nom"
 
-#: ../widgets.py:4680
+#: ../widgets.py:4897
 msgid "Replace spaces with _underscores"
 msgstr "Remplacer les espaces par des so_ulignés"
 
-#: ../widgets.py:4684
+#: ../widgets.py:4901
 msgid "Replace _Windows-incompatible characters"
 msgstr "Remplacer les caractères incompatibles avec _Windows"
 
-#: ../widgets.py:4688
+#: ../widgets.py:4905
 msgid "Replace non-_ASCII characters"
 msgstr "Remplacer les caractères non _ASCII"
 
-#: ../widgets.py:4709
+#: ../widgets.py:4926
 msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
@@ -1451,7 +1486,7 @@ msgstr ""
 "Les caractères non autorisés dans les noms de fichiers Windows (\\:?;\"<>|) "
 "seront remplacés par des soulignés"
 
-#: ../widgets.py:4712
+#: ../widgets.py:4929
 msgid ""
 "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
 "replaced by underscores"
@@ -1459,11 +1494,11 @@ msgstr ""
 "Les caractères n'appartenant pas à l'ensemble ASCII (A-Z,·a-z,·0-9,"
 "·et·ponctuation) seront remplacés par des soulignés"
 
-#: ../widgets.py:4763
+#: ../widgets.py:4985
 msgid "Unable to rename file"
 msgstr "Impossible de renommer le fichier"
 
-#: ../widgets.py:4764
+#: ../widgets.py:4986
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1474,104 +1509,108 @@ msgstr ""
 "destination existe déjà, ou que vous n'ayez pas la permission de créer le "
 "nouveau fichier ou de supprimer l'ancien."
 
-#: ../widgets.py:4793
-msgid "Pattern with subdirectories is not absolute"
+#: ../widgets.py:5016
+#, fuzzy
+msgid "Path is not absolute"
 msgstr "Un motif avec des sous-répertoires n'est pas absolu"
 
-#: ../widgets.py:4794
-#, python-format
+#: ../widgets.py:5017
+#, fuzzy, python-format
 msgid ""
 "The pattern\n"
 "\t<b>%s</b>\n"
-"contains / but does not start from root. To avoid misnamed directories, root "
-"your pattern by starting it from the / directory."
+"contains / but does not start from root. To avoid misnamed folders, root "
+"your pattern by starting it with / or ~/."
 msgstr ""
 "Le motif\n"
 "\t<b>%s</b>\n"
 "contient / mais ne commence pas à la racine. Pour éviter des répertoires mal "
 "nommés, enracinez votre motif en le commençant par le répertoire /."
 
-#: ../widgets.py:4825
+#: ../widgets.py:5048
 msgid "Track Numbers"
 msgstr "Numéros de pistes"
 
-#: ../widgets.py:4831
+#: ../widgets.py:5054
 msgid "Start fro_m:"
 msgstr "Com_mencer à:"
 
-#: ../widgets.py:4842
+#: ../widgets.py:5065
 msgid "_Total tracks:"
 msgstr "Nombre _total de pistes :"
 
-#: ../widgets.py:4865
+#: ../widgets.py:5088
 msgid "Track"
 msgstr "Piste"
 
-#: ../widgets.py:4992
-msgid "Apply to these _files..."
-msgstr "Appliquer à ces _fichiers..."
+#: ../widgets.py:5220
+#, fuzzy
+msgid "Apply to this _file..."
+msgid_plural "Apply to these _files..."
+msgstr[0] "Appliquer à ces _fichiers..."
+msgstr[1] "Appliquer à ces _fichiers..."
 
-#: ../widgets.py:4996
+#: ../widgets.py:5225
 msgid "Path"
 msgstr "Chemin"
 
-#: ../widgets.py:5060 ../widgets.py:5352
-#, python-format
-msgid "%s and %d more"
+#: ../widgets.py:5284 ../widgets.py:5605
+#, fuzzy, python-format
+msgid "%(title)s and %(count)d more"
 msgstr "%s et %d de plus"
 
-#: ../widgets.py:5062 ../widgets.py:5063
+#: ../widgets.py:5286 ../widgets.py:5287
 msgid "Properties"
 msgstr "Propriétés"
 
-#: ../widgets.py:5093
+#: ../widgets.py:5327
 msgid "Folders"
 msgstr "Dossiers"
 
-#: ../widgets.py:5143
+#: ../widgets.py:5377
 msgid "New Folder..."
 msgstr "Nouveau dossier..."
 
-#: ../widgets.py:5173
-msgid "New folder"
+#: ../widgets.py:5410
+#, fuzzy
+msgid "New Folder"
 msgstr "Nouveau dossier"
 
-#: ../widgets.py:5173
+#: ../widgets.py:5410
 msgid "Enter a name for the new folder:"
 msgstr "Saisissez un nom pour le nouveau dossier :"
 
-#: ../widgets.py:5183
+#: ../widgets.py:5419
 msgid "Unable to create folder"
 msgstr "Impossible de créer le dossier"
 
-#: ../widgets.py:5196
+#: ../widgets.py:5432
 msgid "Unable to delete folder"
 msgstr "Impossible de supprimer le dossier"
 
-#: ../widgets.py:5235
-msgid "Audio files"
-msgstr "Fichiers audio"
+#: ../widgets.py:5478
+#, fuzzy
+msgid "Songs"
+msgstr "_Chanson"
 
-#: ../widgets.py:5360
-#, python-format
-msgid ""
-"Saving the songs you changed.\n"
-"\n"
-"%d/%d songs saved"
+#: ../widgets.py:5615
+#, fuzzy
+msgid "Saving the songs you changed."
 msgstr ""
 "Sauvegarde des chansons que vous avez modifiées.\n"
 "\n"
 "%d/%d chansons sauvegardées"
 
-#: ../widgets.py:5378
-msgid "Invalid tag name"
-msgstr "Nom d'étiquette non valide"
+#: ../widgets.py:5616
+#, fuzzy, python-format
+msgid "%d/%d songs saved"
+msgstr "%d chansons (%s)"
 
-#: ../widgets.py:5393
+#: ../widgets.py:5656
 msgid "Unable to start a web browser"
 msgstr "Impossible de lancer un navigateur web"
 
-#: ../widgets.py:5394
+#: ../widgets.py:5657
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1579,15 +1618,32 @@ msgstr ""
 "Aucun navigateur web n'a pu être trouvé. Veuillez positionner votre variable "
 "$BROWSER, ou assurez-vous de l'existence de /usr/bin/sensible-browser."
 
-#: ../widgets.py:5417
+#. Translators: Only translate this if GTK does so incorrectly.
+#. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
+#: ../widgets.py:5664
+msgid "gtk-media-next"
+msgstr ""
+
+#. Translators: Only translate this if GTK does so incorrectly.
+#. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
+#: ../widgets.py:5667
+msgid "gtk-media-previous"
+msgstr ""
+
+#: ../widgets.py:5688
 msgid "Saving song library."
 msgstr "Enregistrement de la bibliothèque de chansons."
 
-#: ../widgets.py:5432
+#: ../widgets.py:5692 ../widgets.py:5697
+#, fuzzy
+msgid "Unable to save library"
+msgstr "Impossible de lancer un navigateur web"
+
+#: ../widgets.py:5707
 msgid "No audio device found"
 msgstr "Aucun périphérique audio trouvé"
 
-#: ../widgets.py:5433
+#: ../widgets.py:5708
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1599,6 +1655,142 @@ msgstr ""
 "pas configurés.\n"
 "\n"
 "Quod Libet va maintenant se terminer."
+
+#: ../qltk.py:47
+msgid "Discard tag changes?"
+msgstr ""
+
+#: ../qltk.py:48
+msgid ""
+"Tags have been changed but not saved. Save these files, or revert and "
+"discard changes?"
+msgstr ""
+
+#~ msgid "(shared across all %d songs)"
+#~ msgstr "(dans toutes les %d chansons)"
+
+#~ msgid "(different across %d songs, missing from %d songs)"
+#~ msgstr "(différent parmi %d chansons, manquant dans %d songs)"
+
+#~ msgid "1 second"
+#~ msgstr "1 seconde"
+
+#~ msgid "1 minute"
+#~ msgstr "1 minute"
+
+#~ msgid "1 hour"
+#~ msgstr "1 heure"
+
+#~ msgid "1 day"
+#~ msgstr "1 jour"
+
+#~ msgid "1 year"
+#~ msgstr "1 an"
+
+#~ msgid "An audio player and tag editor"
+#~ msgstr "Un lecteur audio et éditeur d'étiquettes"
+
+#~ msgid "_Masked Directories"
+#~ msgstr "Dossiers _cachés"
+
+#~ msgid ""
+#~ "If you have songs in directories that will not always be mounted (for "
+#~ "example, a removable device or an NFS shared drive), list those mount "
+#~ "points here. Files in these directories will not be removed from the "
+#~ "library if the device is not mounted."
+#~ msgstr ""
+#~ "Si vous avez des chansons dans des répertoires qui ne seront pas toujours "
+#~ "disponibles (par exemple les périphériques amovibles ou un partage NFS), "
+#~ "listez ces points de montage ici. Les fichiers dans ces répertoires ne "
+#~ "seront pas enlevés si le périphérique n'est pas monté."
+
+#~ msgid ""
+#~ "These characters will be used as separators when \"Split values\" is "
+#~ "selected in the tag editor"
+#~ msgstr ""
+#~ "Ces caractères seront utilisés comme séparateurs quand \"Séparer les "
+#~ "valeurs\" est sélectionné dans l'éditeur d'étiquettes"
+
+#~ msgid "Permanently delete these files?"
+#~ msgstr "Supprimer définitivement ces fichiers?"
+
+#~ msgid "Initialized status icon."
+#~ msgstr "Icône de statut initialisée."
+
+#~ msgid "Initialized multimedia key support."
+#~ msgstr "Support des touches multimédias initialisé."
+
+#~ msgid "1 track"
+#~ msgstr "1 piste"
+
+#~ msgid "Adjust audio volume"
+#~ msgstr "Régler le volume"
+
+#~ msgid "Check for changes in the library made since the program was started"
+#~ msgstr ""
+#~ "Chercher des changements faits dans la bibliothèque depuis que le "
+#~ "programme a été lancé"
+
+#~ msgid "Set Rating"
+#~ msgstr "Régler la notation"
+
+#~ msgid "lyricists"
+#~ msgstr "paroliers"
+
+#~ msgid "arrangers"
+#~ msgstr "arrangeurs"
+
+#~ msgid "composers"
+#~ msgstr "compositeurs"
+
+#~ msgid "conductors"
+#~ msgstr "conducteurs"
+
+#~ msgid "authors"
+#~ msgstr "auteurs"
+
+#~ msgid "1 time"
+#~ msgstr "1 fois"
+
+#~ msgid "No information available"
+#~ msgstr "Aucun renseignement disponible"
+
+#~ msgid "Add a new tag to the file"
+#~ msgstr "Ajouter une nouvelle étiquette au fichier"
+
+#~ msgid "Remove a tag from the file"
+#~ msgstr "Supprimer une étiquette du fichier"
+
+#~ msgid "_Split into multiple values"
+#~ msgstr "_Séparer en plusieurs valeurs"
+
+#~ msgid "Invalid date format"
+#~ msgstr "Format de date non valide"
+
+#~ msgid ""
+#~ "Invalid date: <b>%s</b>.\n"
+#~ "\n"
+#~ "The date must be entered in YYYY or YYYY-MM-DD format."
+#~ msgstr ""
+#~ "Date non valide : <b>%s</b>.\n"
+#~ "\n"
+#~ "La date doit être saisie au format AAAA ou AAAA-MM-JJ."
+
+#~ msgid "Invalid tags"
+#~ msgstr "Étiquettes non valides"
+
+#~ msgid ""
+#~ "Invalid tags <b>%s</b>\n"
+#~ "\n"
+#~ "The files currently selected do not support editing these tags."
+#~ msgstr ""
+#~ "Étiquettes non valides <b>%s</b>\n"
+#~ "\n"
+#~ "Les fichiers sélectionnés actuellement ne permettent pas l'édition de ces "
+#~ "étiquettes."
+
+#~ msgid "Invalid tag name"
+#~ msgstr "Nom d'étiquette non valide"
 
 #~ msgid "_Search:"
 #~ msgstr "_Rechercher :"
