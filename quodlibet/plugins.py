@@ -333,7 +333,7 @@ class PluginManager(object):
 
         for song in songs:
             if song._was_updated():
-                self.watcher.changed(song._song)
+                self.watcher.changed([song._song])
                 updated = True
             elif not song.valid():
                 self.watcher.reload(song._song)
