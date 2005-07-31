@@ -210,12 +210,15 @@ class QLScrobbler(object):
 
 	def quick_error(self, str):
 		gobject.idle_add(self.quick_error_helper, str)
-
-	def quick_info(self, str):
+	
+	def quick_info_helper(self, str):
 		dialog = Message(gtk.MESSAGE_INFO, widgets.widgets.main, "QLScrobbler", str).run()
 		dialog.connect('response', self.__destroy_cb)
 		dialog.show()
 
+	def quick_info(self, str):
+		gobject.idle_add(self.quick_info_helper, str)
+	
 	def clear_waiting(self):
 		self.waiting = False
 
