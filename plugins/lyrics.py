@@ -125,22 +125,25 @@ class LyricWindow(gtk.Window):
 
             # We don't really need the top 100 matches, so I'm limiting it to ten
             matches = xmldoc.getElementsByTagName('result')[:10]
-            songs = map(lambda x: x.getElementsByTagName('name')[0].firstChild.nodeValue +
-			" - " +
+            songs = map(lambda x:
+                        x.getElementsByTagName('name')[0].firstChild.nodeValue
+			+ " - " +
 			x.getElementsByTagName('title')[0].firstChild.nodeValue,
 			matches)
             hids = map(lambda x: x.getAttribute('hid'), matches)
-
+            exacts = map(lambda x: x.getAttribute('exactMatch'), matches)
+            
             if len(hids) == 0:
                 #FIXME show other matches
-                gobject.idle_add(buffer.set_text, 'Unable to find an exact ' +
-                                 'match for this song. You can submit lyrics '+
-                                 'for this song by clicking the Add button.')
+                gobject.idle_add(buffer.set_text, 'Unable to find any ' +
+                                 'matches for this song. You can submit ' +
+                                 'lyrics for this song by clicking the Add ' +
+                                 'button.')
                 add.set_sensitive(True)
                 return
              
             for i in range(len(hids)):
-                self.songlist.append((songs[i], hids[i]))
+                self.songlist.append((songs[i], hids[i], exacts[i]))
                 
             xmldoc.unlink()
             
@@ -155,13 +158,18 @@ class LyricWindow(gtk.Window):
                                  "Please try again later.")
                 return
             sock.close()
-            text = xmldoc.getElementsByTagName('text')[0].firstChild.nodeValue
+
+            text = xmldoc.getElementsByTagName('title')[0].firstChild.nodeValue
+            text += ' - ' + xmldoc.getElementsByTagName('artist')[0].getElementsByTagName('name')[0].firstChild.nodeValue + '\n\n'
+            text += xmldoc.getElementsByTagName('text')[0].firstChild.nodeValue
             xmldoc.unlink()
 
             text += "\n\nLyrics provided by leoslyrics.com"
-            
+
             gobject.idle_add(buffer.set_text, text)
             gobject.idle_add(refresh.set_sensitive, True)
+            gobject.idle_add(add.set_sensitive, self.songlist[0][2] == 'false')
+                
         else: #failed
             gobject.idle_add(buffer.set_text, "Server busy, try again later.")
             xmldoc.unlink()

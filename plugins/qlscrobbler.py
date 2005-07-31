@@ -7,6 +7,7 @@
 import md5, urllib, urllib2, time, threading, os
 import player, config, const
 import gobject, gtk
+import widgets
 from qltk import Message
 
 class QLScrobbler(object):
@@ -170,7 +171,6 @@ class QLScrobbler(object):
 
 		# Protocol stipulations:
 		#	* submit 240 seconds in or at 50%, whichever comes first
-		delay = 0	
 		delay = int(min(self.song["~#length"] / 2, 240))
 
 		if self.timeout_id == -2: # change delta based on current progress
@@ -199,20 +199,26 @@ class QLScrobbler(object):
 		hasher.update(password);
 		self.password = hasher.hexdigest()
 		self.need_config = False
-	
+
+	def __destroy_cb(self, dialog, response_id):
+		dialog.destroy()
+
+	def quick_error_helper(self, str):
+		dialog = Message(gtk.MESSAGE_ERROR, None, "QLScrobbler", str)
+		dialog.connect('response', self.__destroy_cb)
+		dialog.show()
+
 	def quick_error(self, str):
-		gtk.threads_enter()
-		Message(gtk.MESSAGE_ERROR, None, "QLScrobbler", str).run()
-		gtk.threads_leave()
-	
+		gobject.idle_add(self.quick_error_helper, str)
+
 	def quick_info(self, str):
-		gtk.threads_enter()
-		Message(gtk.MESSAGE_INFO, None, "QLScrobbler", str).run()
-		gtk.threads_leave()
-	
+		dialog = Message(gtk.MESSAGE_INFO, widgets.widgets.main, "QLScrobbler", str).run()
+		dialog.connect('response', self.__destroy_cb)
+		dialog.show()
+
 	def clear_waiting(self):
 		self.waiting = False
-		
+
 	def send_handshake(self):
 		# construct url
 		url = "http://post.audioscrobbler.com/?hs=true&p=%s&c=%s&v=%s&u=%s" % ( self.PROTOCOL_VERSION, self.CLIENT, self.PLUGIN_VERSION, self.username )
@@ -280,6 +286,7 @@ class QLScrobbler(object):
 				"title": self.song.comma("title"),
 				"length": str(self.song["~#length"]),
 				"album": self.song.comma("album"),
+				"mbid": "", # XXX
 				"stamp": stamp
 			}
 
@@ -293,11 +300,6 @@ class QLScrobbler(object):
 					store["artist"] = performer[:performer.rindex("(")].strip()
 				else:
 					store["artist"] = performer
-
-			if "musicbrainz_trackid" in self.song:
-				store["mbid"] = self.song["musicbrainz_trackid"]
-			else:
-				store["mbid"] = ""
 
 			self.queue.append(store)
 		else: self.flushing = False
@@ -405,23 +407,15 @@ class QLScrobbler(object):
 				self.broken = False
 
 		table = gtk.Table(3, 2)
-		table.set_col_spacings(3)
-		lt = gtk.Label(_("Please enter your Audioscrobbler username and password.\n"))
-                lt.set_size_request(260, -1)
-		lu = gtk.Label(_("Username:"))
-		lp = gtk.Label(_("Password:"))
-		for l in [lt, lu, lp]:
-			l.set_line_wrap(True)
-			l.set_alignment(0.0, 0.5)
-		table.attach(lt, 0, 2, 0, 1, xoptions=gtk.FILL)
-		table.attach(lu, 0, 1, 1, 2, xoptions=gtk.FILL)
-		table.attach(lp, 0, 1, 2, 3, xoptions=gtk.FILL)
+		table.attach(gtk.Label(_("Please enter your Audioscrobbler username and password.")), 0, 2, 0, 1)
+		table.attach(gtk.Label(_("Username:")), 0, 1, 1, 2)
+		table.attach(gtk.Label(_("Password:")), 0, 1, 2, 3)
 		userent = gtk.Entry()
 		pwent = gtk.Entry()
 		pwent.set_visibility(False)
 		pwent.set_invisible_char('*')
 		table.set_border_width(6)
-
+		
 		try: userent.set_text(config.get("plugins", "scrobbler_username"))
 		except: pass
 		try: pwent.set_text(config.get("plugins", "scrobbler_password"))
