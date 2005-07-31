@@ -5212,7 +5212,7 @@ class SongProperties(gtk.Window):
         fview.connect('button-press-event', self.__pre_selection_changed)
         selection = fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
-        selection.connect('changed', self.__selection_changed)
+        csig = selection.connect('changed', self.__selection_changed)
         self.__save = None
 
         if len(songs) > 1:
@@ -5252,8 +5252,8 @@ class SongProperties(gtk.Window):
 
         s1 = widgets.watcher.connect_object(
             'refresh', SongProperties.__refill, self, fbasemodel)
-        s2 = widgets.watcher.connect_object(
-            'removed', SongProperties.__remove, self, fbasemodel, selection)
+        s2 = widgets.watcher.connect(
+            'removed', self.__remove, fbasemodel, selection, csig)
         s3 = widgets.watcher.connect_object(
             'refresh', selection.emit, 'changed')
         self.connect_object('destroy', widgets.watcher.disconnect, s1)
@@ -5265,16 +5265,17 @@ class SongProperties(gtk.Window):
         self.show_all()
         notebook.set_current_page(initial)
 
-    def __remove(self, song, model, selection):
+    def __remove(self, watcher, song, model, selection, sig):
         to_remove = [None]
         def remove(model, path, iter):
             if model[iter][0] == song: to_remove.append(iter)
             return bool(to_remove[-1])
         model.foreach(remove)
         if to_remove[-1]:
+            selection.handler_block(sig)
             model.remove(to_remove[-1])
+            selection.handler_unblock(sig)
             self.__refill(model)
-            selection.emit('changed')
 
     def __set_title(self, songs):
         if songs:
@@ -5306,10 +5307,8 @@ class SongProperties(gtk.Window):
         model = selection.get_tree_view().get_model()
         if model and len(model) == 1: self.emit('changed', [model[(0,)][0]])
         else:
-            songs = []
-            def get_songs(model, path, iter, songs):
-                songs.append(model[iter][0])
-            selection.selected_foreach(get_songs, songs)
+            model, rows = selection.get_selected_rows()
+            songs = [model[row][0] for row in rows]
             self.emit('changed', songs)
 
 gobject.type_register(SongProperties)
