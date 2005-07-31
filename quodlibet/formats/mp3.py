@@ -106,9 +106,13 @@ class MP3File(AudioFile):
 
         import mad
         audio = mad.MadFile(filename)
-        audio.seek_time(audio.total_time())
+        audio.seek_time(audio.total_time()/2)
         audio.read()
-        self["~#bitrate"] = audio.bitrate()
+        bitrate = 0
+        for i in range(5):
+            bitrate += audio.bitrate()
+            audio.read()
+        self["~#bitrate"] = bitrate/5
         self["~#length"] = audio.total_time() / 1000
 
         self.sanitize(filename)
@@ -225,8 +229,8 @@ class MP3Player(AudioPlayer):
         audio = mad.MadFile(filename)
         # Lots of MP3s report incorrect bitrates/samplerates/lengths if
         # the ID3 tag is busted in whatever way the ID3 tag reader is
-        # using. Seek to the end of the file to get relaible information.
-        audio.seek_time(audio.total_time())
+        # using. Seek to the middle of the file to get relaible information.
+        audio.seek_time(audio.total_time()/2)
         audio.read()
         self.filename = song["~filename"]
         self.__expected_sr = audio.samplerate()
