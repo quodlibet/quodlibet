@@ -135,7 +135,7 @@ class PluginManager(object):
                 watcher.connect(event, handler, event)
 
     def rescan(self):
-        import os, sys, dircache
+        import os, sys, dircache, imp
 
         changes = False;
 
@@ -157,8 +157,10 @@ class PluginManager(object):
                     if info[1] is None or info[1] < modified:
                         changes = True
                         if info[0] is None:
+                            try: modinfo = imp.find_module(name)
+                            except ImportError: continue
                             try:
-                                mod = __import__(name)
+                                mod = imp.load_module(name, *modinfo)
                             except Exception, err:
                                 print_exc()
                                 try: del sys.modules[name]
