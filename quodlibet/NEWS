@@ -9,6 +9,8 @@ Recent upgrade notes:
 Running Ex Falso and Quod Libet at the same time is not recommended
 (Ex Falso will warn you if you do this).
 
+0.13
+
 0.12 - focus ENTIRELY on the sexy bits.
  * New Mutagen ID3 reader/writer. (#3)
  * Experimental GStreamer backend. (#4)
