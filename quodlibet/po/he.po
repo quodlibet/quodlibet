@@ -7,12 +7,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-31 14:30-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2005-07-31 20:58-0500\n"
+"PO-Revision-Date: 2005-07-31 17:22:56-0500\n"
+"Last-Translator: johnny5 <johnny5@hde.co.il>\n"
+"Language-Team: Hebrew\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1281,7 +1281,7 @@ msgstr "פצל _מעבד מתוך אמן"
 msgid "Split _performer out of artist"
 msgstr "פצל מ_בצע מתוך אמן"
 
-#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5640
+#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5637
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "תגית שגויה"
@@ -1327,7 +1327,7 @@ msgstr ""
 msgid "Unable to save song"
 msgstr "לא ניתן לשמור שיר"
 
-#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:323
+#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:325
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1385,7 +1385,7 @@ msgstr ""
 "שגוייה. יתכן והיא מכילה את אותה תגית פעמיים או שהיא אינה סגורה עם מרכאות"
 "(&lt; / &gt;)."
 
-#: ../widgets.py:4829 ../plugins.py:322
+#: ../widgets.py:4829 ../plugins.py:324
 msgid "Unable to edit song"
 msgstr "לא ניתן לערוך שיר"
 
@@ -1480,57 +1480,57 @@ msgstr[1] "יישם עבור הקבצים הבאים..."
 msgid "Path"
 msgstr "נתיב"
 
-#: ../widgets.py:5284 ../widgets.py:5605
+#: ../widgets.py:5283 ../widgets.py:5602
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s ו %(count)d עוד"
 
-#: ../widgets.py:5286 ../widgets.py:5287
+#: ../widgets.py:5285 ../widgets.py:5286
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: ../widgets.py:5327
+#: ../widgets.py:5324
 msgid "Folders"
 msgstr "תיקיות"
 
-#: ../widgets.py:5377
+#: ../widgets.py:5374
 msgid "New Folder..."
 msgstr "תיקיה חדשה..."
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "New Folder"
 msgstr "תיקיה חדשה"
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "Enter a name for the new folder:"
 msgstr "הזן שם עבור התיקיה החדשה:"
 
-#: ../widgets.py:5419
+#: ../widgets.py:5416
 msgid "Unable to create folder"
 msgstr "לא ניתן ליצור תיקיה חדשה"
 
-#: ../widgets.py:5432
+#: ../widgets.py:5429
 msgid "Unable to delete folder"
 msgstr "לא ניתן למחוק תיקיה"
 
-#: ../widgets.py:5478
+#: ../widgets.py:5475
 msgid "Songs"
 msgstr "שירים"
 
-#: ../widgets.py:5615
+#: ../widgets.py:5612
 msgid "Saving the songs you changed."
 msgstr "שומר שירים שבוצעו בהם שינויים..."
 
-#: ../widgets.py:5616
+#: ../widgets.py:5613
 #, python-format
 msgid "%d/%d songs saved"
 msgstr "%d/%d שירים נשמרו"
 
-#: ../widgets.py:5656
+#: ../widgets.py:5653
 msgid "Unable to start a web browser"
 msgstr "לא ניתן להפעיל את דפדפן האינטרנט שלך"
 
-#: ../widgets.py:5657
+#: ../widgets.py:5654
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1540,29 +1540,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5664
+#: ../widgets.py:5661
 msgid "gtk-media-next"
 msgstr "הבא"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5667
+#: ../widgets.py:5664
 msgid "gtk-media-previous"
 msgstr "הקודם"
 
-#: ../widgets.py:5688
+#: ../widgets.py:5685
 msgid "Saving song library."
 msgstr "שומר ספרית שירים."
 
-#: ../widgets.py:5692 ../widgets.py:5697
+#: ../widgets.py:5689 ../widgets.py:5694
 msgid "Unable to save library"
 msgstr "לא ניתן לשמור ספרית שירים"
 
-#: ../widgets.py:5707
+#: ../widgets.py:5704
 msgid "No audio device found"
 msgstr ""
 
-#: ../widgets.py:5708
+#: ../widgets.py:5705
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"

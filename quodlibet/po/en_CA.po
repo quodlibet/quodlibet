@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-31 14:30-0500\n"
+"POT-Creation-Date: 2005-07-31 20:58-0500\n"
 "PO-Revision-Date: 2005-07-24 17:19-0500\n"
 "Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
@@ -498,7 +498,7 @@ msgstr "Audio device: %s"
 #. in the "About" dialog.
 #: ../widgets.py:341
 msgid "translator-credits"
-msgstr "Joe Wreschnig"
+msgstr ""
 
 #: ../widgets.py:366
 msgid "Song List"
@@ -1300,7 +1300,7 @@ msgstr "Split arranger out of ar_tist"
 msgid "Split _performer out of artist"
 msgstr "Split _performer out of artist"
 
-#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5640
+#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5637
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Invalid tag"
@@ -1346,7 +1346,7 @@ msgstr ""
 msgid "Unable to save song"
 msgstr "Unable to save song"
 
-#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:323
+#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:325
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1405,7 +1405,7 @@ msgstr ""
 "is invalid. Possibly it contains the same tag twice or it has unbalanced "
 "brackets (&lt; / &gt;)."
 
-#: ../widgets.py:4829 ../plugins.py:322
+#: ../widgets.py:4829 ../plugins.py:324
 msgid "Unable to edit song"
 msgstr "Unable to edit song"
 
@@ -1503,57 +1503,57 @@ msgstr[1] "Apply to these _files..."
 msgid "Path"
 msgstr "Path"
 
-#: ../widgets.py:5284 ../widgets.py:5605
+#: ../widgets.py:5283 ../widgets.py:5602
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s and %(count)d more"
 
-#: ../widgets.py:5286 ../widgets.py:5287
+#: ../widgets.py:5285 ../widgets.py:5286
 msgid "Properties"
 msgstr "Properties"
 
-#: ../widgets.py:5327
+#: ../widgets.py:5324
 msgid "Folders"
 msgstr "Folders"
 
-#: ../widgets.py:5377
+#: ../widgets.py:5374
 msgid "New Folder..."
 msgstr "New Folder..."
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "New Folder"
 msgstr "New Folder"
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "Enter a name for the new folder:"
 msgstr "Enter a name for the new folder:"
 
-#: ../widgets.py:5419
+#: ../widgets.py:5416
 msgid "Unable to create folder"
 msgstr "Unable to create folder"
 
-#: ../widgets.py:5432
+#: ../widgets.py:5429
 msgid "Unable to delete folder"
 msgstr "Unable to delete folder"
 
-#: ../widgets.py:5478
+#: ../widgets.py:5475
 msgid "Songs"
 msgstr "Songs"
 
-#: ../widgets.py:5615
+#: ../widgets.py:5612
 msgid "Saving the songs you changed."
 msgstr "Saving the songs you changed."
 
-#: ../widgets.py:5616
+#: ../widgets.py:5613
 #, python-format
 msgid "%d/%d songs saved"
 msgstr "%d/%d songs saved"
 
-#: ../widgets.py:5656
+#: ../widgets.py:5653
 msgid "Unable to start a web browser"
 msgstr "Unable to start a web browser"
 
-#: ../widgets.py:5657
+#: ../widgets.py:5654
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1563,29 +1563,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5664
+#: ../widgets.py:5661
 msgid "gtk-media-next"
 msgstr "gtk-media-next"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5667
+#: ../widgets.py:5664
 msgid "gtk-media-previous"
 msgstr "gtk-media-previous"
 
-#: ../widgets.py:5688
+#: ../widgets.py:5685
 msgid "Saving song library."
 msgstr "Saving song library."
 
-#: ../widgets.py:5692 ../widgets.py:5697
+#: ../widgets.py:5689 ../widgets.py:5694
 msgid "Unable to save library"
 msgstr "Unable to save library"
 
-#: ../widgets.py:5707
+#: ../widgets.py:5704
 msgid "No audio device found"
 msgstr "No audio device found"
 
-#: ../widgets.py:5708
+#: ../widgets.py:5705
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"

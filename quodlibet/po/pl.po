@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-31 14:30-0500\n"
+"POT-Creation-Date: 2005-07-31 20:58-0500\n"
 "PO-Revision-Date: 2005-07-31 14:09-0500\n"
 "Last-Translator: pambuk <pambuk@gmail.com>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
@@ -1314,7 +1314,7 @@ msgstr "Oddziel arranżera od _artysty"
 msgid "Split _performer out of artist"
 msgstr "Oddziej w_ykonawcę od artysty"
 
-#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5640
+#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5637
 #, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
@@ -1362,7 +1362,7 @@ msgstr ""
 msgid "Unable to save song"
 msgstr "Nie można zapisać utworu"
 
-#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:323
+#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:325
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1421,7 +1421,7 @@ msgstr ""
 "jest błędny. Prawdopodobnie zawiera on dwa razy ten sam znacznik albo "
 "niezamknięte nawiasy (&lt; i &gt;)."
 
-#: ../widgets.py:4829 ../plugins.py:322
+#: ../widgets.py:4829 ../plugins.py:324
 msgid "Unable to edit song"
 msgstr "Nie można edytować utworu"
 
@@ -1519,57 +1519,57 @@ msgstr[1] "Zastosuj do tego _pliku..."
 msgid "Path"
 msgstr "Katalog"
 
-#: ../widgets.py:5284 ../widgets.py:5605
+#: ../widgets.py:5283 ../widgets.py:5602
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s i %(count)d więcej"
 
-#: ../widgets.py:5286 ../widgets.py:5287
+#: ../widgets.py:5285 ../widgets.py:5286
 msgid "Properties"
 msgstr "Właściwości"
 
-#: ../widgets.py:5327
+#: ../widgets.py:5324
 msgid "Folders"
 msgstr "Katalogi"
 
-#: ../widgets.py:5377
+#: ../widgets.py:5374
 msgid "New Folder..."
 msgstr "Nowy Katalog..."
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "New Folder"
 msgstr "Nowy katalog"
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "Enter a name for the new folder:"
 msgstr "Wpisz nazwę dla nowego katalogu:"
 
-#: ../widgets.py:5419
+#: ../widgets.py:5416
 msgid "Unable to create folder"
 msgstr "Nie można stworzyć katalogu"
 
-#: ../widgets.py:5432
+#: ../widgets.py:5429
 msgid "Unable to delete folder"
 msgstr "Nie można usunąć katalogu"
 
-#: ../widgets.py:5478
+#: ../widgets.py:5475
 msgid "Songs"
 msgstr "Utwór"
 
-#: ../widgets.py:5615
+#: ../widgets.py:5612
 msgid "Saving the songs you changed."
 msgstr "Zapisywanie zmienionych utworów."
 
-#: ../widgets.py:5616
+#: ../widgets.py:5613
 #, python-format
 msgid "%d/%d songs saved"
 msgstr "zapisano %d/%d·utworów"
 
-#: ../widgets.py:5656
+#: ../widgets.py:5653
 msgid "Unable to start a web browser"
 msgstr "Nie można uruchomić przeglądarki WWW."
 
-#: ../widgets.py:5657
+#: ../widgets.py:5654
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1579,29 +1579,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5664
+#: ../widgets.py:5661
 msgid "gtk-media-next"
 msgstr "gtk-media-next"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5667
+#: ../widgets.py:5664
 msgid "gtk-media-previous"
 msgstr "gtk-media-previous"
 
-#: ../widgets.py:5688
+#: ../widgets.py:5685
 msgid "Saving song library."
 msgstr "Zapisywanie biblioteki utworów."
 
-#: ../widgets.py:5692 ../widgets.py:5697
+#: ../widgets.py:5689 ../widgets.py:5694
 msgid "Unable to save library"
 msgstr "Nie można zapisać biblioteki."
 
-#: ../widgets.py:5707
+#: ../widgets.py:5704
 msgid "No audio device found"
 msgstr "Nie znaleziono urządzenia audio"
 
-#: ../widgets.py:5708
+#: ../widgets.py:5705
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"

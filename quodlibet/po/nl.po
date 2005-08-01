@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-31 14:30-0500\n"
+"POT-Creation-Date: 2005-07-31 20:58-0500\n"
 "PO-Revision-Date: 2005-07-25 22:22+0200\n"
 "Last-Translator: FOAD <dok@xs4all.nl>\n"
 "Language-Team: Dutch <en@li.org>\n"
@@ -1304,7 +1304,7 @@ msgstr "Splits arrangeerder van ar_tiest"
 msgid "Split _performer out of artist"
 msgstr "Splits uitvoerende van artiest"
 
-#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5640
+#: ../widgets.py:4473 ../widgets.py:4739 ../widgets.py:5637
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Ongeldige tag"
@@ -1351,7 +1351,7 @@ msgstr ""
 msgid "Unable to save song"
 msgstr "Niet in staat om song op te slaan"
 
-#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:323
+#: ../widgets.py:4555 ../widgets.py:4830 ../widgets.py:5146 ../plugins.py:325
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1410,7 +1410,7 @@ msgstr ""
 "is ongeldig. Mogelijk bevat het dezelfde tag twee keer of heeft het "
 "ongebalanceerde haakjes·(&lt;·/·&gt;)."
 
-#: ../widgets.py:4829 ../plugins.py:322
+#: ../widgets.py:4829 ../plugins.py:324
 msgid "Unable to edit song"
 msgstr "Niet in staat om song aan te passen"
 
@@ -1508,57 +1508,57 @@ msgstr[1] "Pas toe op deze _bestanden..."
 msgid "Path"
 msgstr "Pad"
 
-#: ../widgets.py:5284 ../widgets.py:5605
+#: ../widgets.py:5283 ../widgets.py:5602
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s en %(count)d meer"
 
-#: ../widgets.py:5286 ../widgets.py:5287
+#: ../widgets.py:5285 ../widgets.py:5286
 msgid "Properties"
 msgstr "Eigenschappen"
 
-#: ../widgets.py:5327
+#: ../widgets.py:5324
 msgid "Folders"
 msgstr "Folders"
 
-#: ../widgets.py:5377
+#: ../widgets.py:5374
 msgid "New Folder..."
 msgstr "Nieuwe folder"
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "New Folder"
 msgstr "Nieuwe folder"
 
-#: ../widgets.py:5410
+#: ../widgets.py:5407
 msgid "Enter a name for the new folder:"
 msgstr "Voer een naam in voor de nieuwe folder:"
 
-#: ../widgets.py:5419
+#: ../widgets.py:5416
 msgid "Unable to create folder"
 msgstr "Niet in staat om folder te maken"
 
-#: ../widgets.py:5432
+#: ../widgets.py:5429
 msgid "Unable to delete folder"
 msgstr "Niet in staat om folder te verwijderen"
 
-#: ../widgets.py:5478
+#: ../widgets.py:5475
 msgid "Songs"
 msgstr "Songs"
 
-#: ../widgets.py:5615
+#: ../widgets.py:5612
 msgid "Saving the songs you changed."
 msgstr "Slaat aangepaste songs op."
 
-#: ../widgets.py:5616
+#: ../widgets.py:5613
 #, python-format
 msgid "%d/%d songs saved"
 msgstr "%d/%d songs opgeslagen"
 
-#: ../widgets.py:5656
+#: ../widgets.py:5653
 msgid "Unable to start a web browser"
 msgstr "Niet in staat om een webbrowser te starten"
 
-#: ../widgets.py:5657
+#: ../widgets.py:5654
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1568,29 +1568,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5664
+#: ../widgets.py:5661
 msgid "gtk-media-next"
 msgstr "gtk-media-volgende"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:5667
+#: ../widgets.py:5664
 msgid "gtk-media-previous"
 msgstr "gtk-media-vorige"
 
-#: ../widgets.py:5688
+#: ../widgets.py:5685
 msgid "Saving song library."
 msgstr "song bibliotheek opslaan"
 
-#: ../widgets.py:5692 ../widgets.py:5697
+#: ../widgets.py:5689 ../widgets.py:5694
 msgid "Unable to save library"
 msgstr "Niet in staat om bibliotheek op te slaan"
 
-#: ../widgets.py:5707
+#: ../widgets.py:5704
 msgid "No audio device found"
 msgstr "Geen audio device gevonden"
 
-#: ../widgets.py:5708
+#: ../widgets.py:5705
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
