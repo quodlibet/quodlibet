@@ -3636,11 +3636,17 @@ class AddTagDialog(gtk.Dialog):
         table.set_border_width(6)
 
         if can_change == True:
-            self.__tag = gtk.combo_box_entry_new_text()
-            for tag in can: self.__tag.append_text(tag)
+            model = gtk.ListStore(str, str)
+            self.__tag = gtk.ComboBoxEntry(model, column=0)
+            self.__tag.clear()
+            text = gtk.CellRendererText()
+            self.__tag.pack_start(text)
+            self.__tag.add_attribute(text, 'text', 1)
+            for t in can:
+                model.append(row=[t, "%s (%s)" % (tag(t), t)])
         else:
             self.__tag = gtk.combo_box_new_text()
-            for tag in can: self.__tag.append_text(tag)
+            for t in can: self.__tag.append_text(t)
             self.__tag.set_active(0)
 
         label = gtk.Label()
@@ -5629,6 +5635,9 @@ def tag(name, cap=True):
 
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",
+                   "labelid": "label ID",
+                   "bpm": "BPM",
+                   "isrc": "ISRC",
                    "lastplayed": "last played",
                    "filename": "full name",
                    "playcount": "play count",

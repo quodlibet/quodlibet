@@ -4,6 +4,7 @@
 # they are *not* when editing tags.
 
 # date the song was added to the library
+
 _("added")
 _("album")
 _("arranger")
@@ -24,6 +25,7 @@ _("filename")
 _("full name")
 _("genre")
 _("grouping")
+_("label ID")
 _("language")
 # date the song was last heard on
 _("last played")
@@ -46,6 +48,8 @@ _("title")
 _("track")
 _("version")
 _("website")
+# Beats per minute; I don't know if other languages use a different word.
+_("BPM")
 
 ngettext("performer", "performers", 1)
 ngettext("lyricist", "lyricists", 1)
