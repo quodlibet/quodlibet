@@ -381,10 +381,10 @@ class PreferencesWindow(gtk.Window):
             for j, l in enumerate(
                 [[("~#disc", _("_Disc")),
                   ("album", _("Al_bum")),
-                  ("genre", _("_Genre"))],
+                  ("~basename",_("_Filename"))],
                  [("~#track", _("_Track")),
                   ("artist", _("_Artist")),
-                  ("~basename",_("_Filename"))],
+                  ("~rating", _("_Rating"))],
                  [("title", tag("title")),
                   ("date", _("_Date")),
                   ("~length",_("_Length"))]]):
@@ -399,10 +399,6 @@ class PreferencesWindow(gtk.Window):
             vbox.pack_start(table, expand=False)
 
             vbox2 = gtk.VBox()
-            rat = gtk.CheckButton(_("Display song _rating"))
-            if "~rating" in checks:
-                rat.set_active(True)
-                checks.remove("~rating")
             tiv = gtk.CheckButton(_("Title includes _version"))
             if "~title~version" in checks:
                 buttons["title"].set_active(True)
@@ -424,7 +420,6 @@ class PreferencesWindow(gtk.Window):
             t.attach(tiv, 0, 1, 0, 1)
             t.attach(aip, 0, 1, 1, 2)
             t.attach(fip, 1, 2, 0, 1)
-            t.attach(rat, 1, 2, 1, 2)
             vbox.pack_start(t, expand=False)
 
             hbox = gtk.HBox(spacing=6)
@@ -442,7 +437,7 @@ class PreferencesWindow(gtk.Window):
 
             apply = gtk.Button(stock=gtk.STOCK_APPLY)
             apply.connect(
-                'clicked', self.__apply, buttons, rat, tiv, aip, fip, others)
+                'clicked', self.__apply, buttons, tiv, aip, fip, others)
             b = gtk.HButtonBox()
             b.set_layout(gtk.BUTTONBOX_END)
             b.pack_start(apply)
@@ -454,15 +449,11 @@ class PreferencesWindow(gtk.Window):
             self.pack_start(frame, expand=False)
             self.show_all()
 
-        def __apply(self, button, buttons, rat, tiv, aip, fip, others):
+        def __apply(self, button, buttons, tiv, aip, fip, others):
             headers = []
             for key in ["~#disc", "~#track", "title", "album", "artist",
-                        "date", "genre", "~basename", "~length"]:
+                        "date", "~basename", "~rating", "~length"]:
                 if buttons[key].get_active(): headers.append(key)
-            if rat.get_active():
-                if headers and headers[-1] == "~length":
-                    headers.insert(-1, "~rating")
-                else: headers.append("~rating")
             if tiv.get_active():
                 try: headers[headers.index("title")] = "~title~version"
                 except ValueError: pass
@@ -1565,7 +1556,7 @@ gobject.type_register(AlbumList)
 class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
-    
+
     class Pane(gtk.ScrolledWindow):
         __render = gtk.CellRendererText()
         __render.set_property('ellipsize', pango.ELLIPSIZE_END)
