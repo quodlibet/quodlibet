@@ -3574,6 +3574,7 @@ class MainSongList(SongList):
         if tag == "~#track": tag = "album"
         elif tag == "~#disc": tag = "album"
         elif tag == "~length": tag = "~#length"
+        elif tag == "~album~part": tag = "album"
         if tag != "album":
             if reverse:
                 songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
