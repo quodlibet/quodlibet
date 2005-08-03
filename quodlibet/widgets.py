@@ -3160,6 +3160,90 @@ class SongList(HintedTreeView):
     songlistviews = {}
     headers = []
 
+    # Displays the current song indicator
+    class CurrentColumn(gtk.TreeViewColumn):
+        _render = gtk.CellRendererPixbuf()
+        _render.set_property('xalign', 0.5)
+        header_name = "~current"
+
+        def _cdf(column, cell, model, iter,
+                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
+            try:
+                if model[iter][0] is not widgets.watcher.song: stock = ''
+                else: stock = pixbuf[player.playlist.paused]
+                cell.set_property('stock-id', stock)
+            except AttributeError: pass
+        _cdf = staticmethod(_cdf)
+
+        def __init__(self):
+            gtk.TreeViewColumn.__init__(self, "", self._render)
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_fixed_width(24)
+            self.set_cell_data_func(self._render, self._cdf)
+            self.header_name = "~current"
+
+    class TextColumn(gtk.TreeViewColumn):
+        _render = gtk.CellRendererText()
+
+        def _cdf(column, cell, model, iter, tag):
+            try:
+                song = model[iter][0]
+                cell.set_property('text', song.comma(tag))
+            except AttributeError: pass
+        _cdf = staticmethod(_cdf)
+
+        def __init__(self, t):
+            gtk.TreeViewColumn.__init__(self, tag(t), self._render)
+            self.header_name = t
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+            self.set_visible(True)
+            self.set_clickable(True)
+            self.set_reorderable(True)
+            self.set_sort_indicator(False)
+            self.set_cell_data_func(self._render, self._cdf, t)
+
+    class WideTextColumn(TextColumn):
+        _render = gtk.CellRendererText()
+        _render.set_property('ellipsize', pango.ELLIPSIZE_END)
+
+        def __init__(self, tag):
+            SongList.TextColumn.__init__(self, tag)
+            self.set_expand(True)
+            self.set_resizable(True)
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_fixed_width(1)
+
+    class NonSynthTextColumn(WideTextColumn):
+        def _cdf(column, cell, model, iter, tag):
+            try:
+                song = model[iter][0]
+                cell.set_property(
+                    'text', song.get(tag, "").replace("\n", ", "))
+            except AttributeError: pass
+        _cdf = staticmethod(_cdf)
+
+    class FSColumn(WideTextColumn):
+        def _cdf(column, cell, model, iter, tag, code=util.fscoding()):
+            try:
+                song = model[iter][0]
+                cell.set_property('text', util.unexpand(
+                    song.comma(tag).decode(code, 'replace')))
+            except AttributeError: pass
+        _cdf = staticmethod(_cdf)
+
+    class LengthColumn(TextColumn):
+        _render = gtk.CellRendererText()
+        _render.set_property('xalign', 1.0)
+
+        def __init__(self, tag="~length"):
+            SongList.TextColumn.__init__(self, tag)
+            self.set_alignment(1.0)
+
+    class NumericColumn(TextColumn):
+        _render = gtk.CellRendererText()
+        _render.set_property('xpad', 12)
+        _render.set_property('xalign', 1.0)
+
     def __init__(self):
         HintedTreeView.__init__(self)
         self.set_size_request(200, 150)
@@ -3305,69 +3389,22 @@ class SongList(HintedTreeView):
     # new values.
     def set_column_headers(self, headers):
         if len(headers) == 0: return
-        SHORT_COLS = ["tracknumber", "discnumber", "~length", "~rating"]
-
         for c in self.get_columns(): self.remove_column(c)
 
-        def cell_data_current(column, cell, model, iter,
-                pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
-            try:
-                if model[iter][0] is not widgets.watcher.song: stock = ''
-                else: stock = pixbuf[player.playlist.paused]
-                cell.set_property('stock-id', stock)
-            except AttributeError: pass
-
-        def cell_data(column, cell, model, iter, tag):
-            try:
-                song = model[iter][0]
-                cell.set_property('text', song.comma(tag))
-            except AttributeError: pass
-
-        def cell_data_fn(column, cell, model, iter, (code, tag)):
-            try:
-                song = model[iter][0]
-                cell.set_property('text', util.unexpand(
-                    song.comma(tag).decode(code, 'replace')))
-            except AttributeError: pass
-
-        # indicator column
-        render = gtk.CellRendererPixbuf()
-        render.set_property('xalign', 0.5)
-        column = gtk.TreeViewColumn("", render)
-        column.header_name = "~current"
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column.set_fixed_width(20)
-        column.set_cell_data_func(render, cell_data_current)
-        self.append_column(column)
+        self.append_column(self.CurrentColumn())
         if "~current" in headers: headers.remove("~current")
 
         for i, t in enumerate(headers):
-            render = gtk.CellRendererText()
-            title = tag(t)
-            column = gtk.TreeViewColumn(title, render)
-            column.header_name = t
-            if t in SHORT_COLS or t.startswith("~#"):
-                column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
-            else:
-                render.set_property('ellipsize', pango.ELLIPSIZE_END)
-                column.set_expand(True)
-                column.set_resizable(True)
-                column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-                column.set_fixed_width(1)
+            if t in ["tracknumber", "discnumber", "~rating"]:
+                column = self.TextColumn(t)
+            elif t.startswith("~#"): column = self.NumericColumn(t)
+            elif t in ["~filename", "~basename", "~dirname"]:
+                column = self.FSColumn(t)
+            elif t == "~length": column = self.LengthColumn()
+            elif "~" not in t and t != "title":
+                column = self.NonSynthTextColumn(t)
+            else: column = self.WideTextColumn(t)
             column.connect('clicked', self.set_sort_by)
-            self._set_column_settings(column)
-            if t in ["~filename", "~basename", "~dirname"]:
-                column.set_cell_data_func(
-                    render, cell_data_fn, (util.fscoding(), t))
-            else:
-                column.set_cell_data_func(render, cell_data, t)
-            if t == "~length":
-                column.set_alignment(1.0)
-                render.set_property('xalign', 1.0)
-            elif t.startswith("~#"):
-                render.set_property('xalign', 1.0)
-                render.set_property('xpad', 12)
-                
             self.append_column(column)
 
     def _destroy(self):
