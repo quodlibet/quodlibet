@@ -2380,8 +2380,7 @@ class MainWindow(gtk.Window):
         SongList.set_all_column_headers(
             config.get("settings", "headers").split())
         sort = config.get('memory', 'sortby')
-        self.songlist.set_sort_by(
-            None, sort[1:], refresh=True, order=int(sort[0]))
+        self.songlist.set_sort_by(None, sort[1:], order=int(sort[0]))
 
         self.inter = gtk.VBox()
 
@@ -3113,10 +3112,7 @@ class MainWindow(gtk.Window):
             try: songs = filter(parser.parse(bg).search, songs)
             except parser.error: pass
 
-        player.playlist.set_playlist(songs)
-        if sort:
-            self.songlist.set_sort_by(None, tag=sort, refresh=False)
-        self.songlist.refresh()
+        self.songlist.set_songs(songs, tag=sort)
         self.__set_time()
 
     def __filter_on(self, header, songs=None):
@@ -3204,6 +3200,9 @@ class SongList(HintedTreeView):
         for listview in cls.songlistviews:
             listview.set_column_headers(headers)
     set_all_column_headers = classmethod(set_all_column_headers)
+
+    def get_songs(self):
+        return [row[0] for row in self.get_model()]
 
     def get_selected_songs(self):
         model, rows = self.get_selection().get_selected_rows()
@@ -3533,9 +3532,17 @@ class MainSongList(SongList):
         column.set_reorderable(True)
         column.set_sort_indicator(False)
 
+    def get_sort_by(self):
+        for header in self.get_columns():
+            if header.get_sort_indicator():
+                return (header.header_name,
+                        header.get_sort_order() == gtk.SORT_DESCENDING)
+        else: return "artist", False
+
     # Resort based on the header clicked.
-    def set_sort_by(self, header, tag=None, refresh=True, order=None):
+    def set_sort_by(self, header, tag=None, order=None, refresh=True):
         s = gtk.SORT_ASCENDING
+
         if header and tag is None: tag = header.header_name
 
         for h in self.get_columns():
@@ -3554,20 +3561,34 @@ class MainSongList(SongList):
             else: h.set_sort_indicator(False)
         config.set('memory', 'sortby', "%d%s" % (s == gtk.SORT_ASCENDING,
                                                  tag))
-        if tag == "~album~part": tag = "album"
-        player.playlist.sort_by(tag, s == gtk.SORT_DESCENDING)
-        if refresh: self.refresh()
+        if refresh: self.set_songs(self.get_songs())
 
-    # Clear the songlist and readd the songs currently wanted.
-    def refresh(self):
+    def set_songs(self, songs, tag=None):
         model = self.get_model()
+
+        if tag is None: tag, reverse = self.get_sort_by()
+        else:
+            self.set_sort_by(None, refresh=False)
+            reverse = False
+
+        if tag == "~#track": tag = "album"
+        elif tag == "~#disc": tag = "album"
+        elif tag == "~length": tag = "~#length"
+        if tag != "album":
+            if reverse:
+                songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
+            else:
+                songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
+        else:
+            songs.sort()
+            if reverse: songs.reverse()
 
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])
 
+        player.playlist.set_playlist(songs)
         model.clear()
-        for song in player.playlist:
-            model.append([song])
+        for song in songs: model.append([song])
 
         # reselect what we can
         selection = self.get_selection()

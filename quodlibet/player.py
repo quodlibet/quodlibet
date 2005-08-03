@@ -198,12 +198,10 @@ class PlaylistPlayer(object):
         self.__player = None
         self.__song = None
         self.__paused = False
-        self.__sort = cmp
         self.__lock = threading.Lock()
         self.repeat = False
         self.paused = True
         self.quit = False
-        self.sort_by("artist")
 
     def __iter__(self): return iter(self.__orig_playlist)
 
@@ -326,26 +324,11 @@ class PlaylistPlayer(object):
         self.paused = False
         self.__lock.release()
 
-    def sort_by(self, header, reverse=False):
-        self.__lock.acquire()
-        pl = self.__orig_playlist[:]
-        if header == "~#track": header = "album"
-        elif header == "~#disc": header = "album"
-        elif header == "~length": header = "~#length"
-        if reverse:
-            f = lambda b, a: (cmp(a(header), b(header)) or cmp(a, b))
-        else:
-            f = lambda a, b: (cmp(a(header), b(header)) or cmp(a, b))
-        self.__sort = f
-        self.set_playlist(pl, lock=False)
-        self.__lock.release()
-
     def get_playlist(self):
         return self.__orig_playlist
 
     def set_playlist(self, pl, lock=True):
         if lock: self.__lock.acquire()
-        pl.sort(self.__sort)
         self.__played = []
         self.__playlist = pl
         self.__orig_playlist = pl[:]
