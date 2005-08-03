@@ -54,12 +54,12 @@ class AudioFile(dict):
     def realkeys(self):
         return filter(lambda s: s and s[0] != "~", self.keys())
 
-    def __call__(self, key, default=""):
+    def __call__(self, key, default="", connector=" - "):
         if key and key[0] == "~":
             key = key[1:]
             if "~" in key:
                 parts = [self(p) for p in key.split("~")]
-                return " - ".join(filter(None, parts))
+                return connector.join(filter(None, parts))
             elif key == "basename": return os.path.basename(self["~filename"])
             elif key == "dirname": return os.path.dirname(self["~filename"])
             elif key == "length":
@@ -94,8 +94,9 @@ class AudioFile(dict):
         else: return v.replace("\n", ", ")
 
     def list(self, key):
-        try: return self[key].split("\n")
-        except (KeyError, AttributeError): return []
+        v = self(key, connector="\n")
+        if v == "": return []
+        else: return v.split("\n")
 
     def listall(self, *keys):
         return reduce(set.union, map(self.list, keys), set())

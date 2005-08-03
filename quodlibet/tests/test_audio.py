@@ -74,7 +74,7 @@ class AudioFileTest(TestCase):
             self.failUnlessEqual(bar_1_1.list(key), [bar_1_1(key)])
 
         self.failUnlessEqual(quux.list("artist"), [])
-        self.failUnlessEqual(quux.list("title"), [])
+        self.failUnlessEqual(quux.list("title"), [quux("title")])
         self.failUnlessEqual(quux.list("not a key"), [])
 
         self.failUnlessEqual(len(bar_2_1.list("artist")), 2)

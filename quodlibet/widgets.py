@@ -1570,7 +1570,8 @@ class PanedBrowser(gtk.VBox, Browser):
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
             self.child.append_column(column)
-            self.tag = mytag
+            if "~" in mytag[1:]: self.tags = filter(None, mytag.split("~"))
+            else: self.tags = [mytag]
             self.__next = next
             self.__songs = []
             self.child.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
@@ -1595,24 +1596,24 @@ class PanedBrowser(gtk.VBox, Browser):
                             for row in rows]
                 if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
                     selected.pop()
-                    selected = set(selected)
-                    filt = (lambda s: self.tag not in s or
-                         selected.intersection(s.list(self.tag)))
+                    def filt(s):
+                        v = s.listall(*self.tags)
+                        return (not v) or selected.intersection(v)
                 else:
-                    selected = set(selected)
-                    filt = lambda s: selected.intersection(s.list(self.tag))
+                    def filt(s):
+                        return selected.intersection(s.listall(*self.tags))
 
+                selected = set(selected)
                 self.__next.fill(filter(filt, self.__songs))
 
         def scroll(self, song):
-            values = map(util.escape, song.list(self.tag))
+            values = map(util.escape, song.listall(*self.tags))
             view = self.child
             for i, row in enumerate(iter(view.get_model())):
                 if row[0] in values:
                     view.scroll_to_cell(i, use_align=True, row_align=0.5)
                     break
 
-            
         def select(self, values, escape=True):
             selection = self.child.get_selection()
             selection.handler_block(self.__sig)
@@ -1636,7 +1637,7 @@ class PanedBrowser(gtk.VBox, Browser):
             complete = True
             values = set()
             for song in songs:
-                l = song.list(self.tag)
+                l = song.listall(*self.tags)
                 values.update(l)
                 complete = complete and bool(l)
             values = list(values); values.sort()
@@ -1701,15 +1702,19 @@ class PanedBrowser(gtk.VBox, Browser):
         self.show_all()
 
     def can_filter(self, key):
-        return key in [pane.tag for pane in self.__panes]
+        for pane in self.__panes:
+            if key in pane.tags: return True
+        else: return False
 
     def filter(self, key, values):
+        thepane = None
         for pane in self.__panes:
             self.__inhibit = True
             pane.select(None)
+            if key in pane.tags: thepane = pane
 
-        pane = self.__panes[[pane.tag for pane in self.__panes].index(key)]
-        pane.select(values)
+        if thepane is not None:
+            thepane.select(values)
 
     def save(self):
         selected = []
