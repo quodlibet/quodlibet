@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os
+import os, sys
 import gettext
 import shutil
 import time
@@ -14,6 +14,8 @@ import time
 import util, config
 
 class Unknown(unicode): pass
+
+if sys.version_info < (2, 4): from sets import Set as set
 
 MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
 
@@ -93,6 +95,9 @@ class AudioFile(dict):
     def list(self, key):
         try: return self[key].split("\n")
         except (KeyError, AttributeError): return []
+
+    def listall(self, *keys):
+        return reduce(set.union, map(self.list, keys), set())
 
     def exists(self):
         return os.path.exists(self["~filename"])
