@@ -14,12 +14,14 @@ bar_1_1 = AudioFile({
 bar_1_2 = AudioFile({
     "title": "Perhaps another",
     "discnumber": "1", "tracknumber": "2/3",
-    "artist": "Lali-ho!", "album": "Bar" })
+    "artist": "Lali-ho!", "album": "Bar",
+    "~#playlist_test": 1})
 bar_2_1 = AudioFile({
     "~filename": "does not/exist",
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
-    "artist": "Foo\nI have two artists", "album": "Bar" })
+    "artist": "Foo\nI have two artists", "album": "Bar",
+    "~#playlist_test": 2, "~#playlist_hi%20there": 3})
 
 quux = AudioFile({
     "~filename": "tests/data/asong.ogg",
@@ -219,6 +221,13 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(song["foo"], "finally")
         song.change("foo", "finally", "we're done")
         self.failUnlessEqual(song["foo"], "we're done")
+
+    def test_playlist_synthesis(self):
+        self.assertEquals('', bar_1_1('~playlist'))
+        self.assertEquals('test', bar_1_2('~playlist'))
+        lists = bar_2_1('~playlist').split('\n')
+        lists.sort()
+        self.assertEquals(['hi there', 'test'], lists)
 
     def tearDown(self):
         os.unlink(quux["~filename"])

@@ -100,10 +100,10 @@ class ParserTests(TestCase):
     def setUp(self):
         self.s1 = self.AF(
             { "album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
-              "version": "cake mix", "~filename": "foobar.ogg" })
+              "version": "cake mix", "~filename": "/dir1/foobar.ogg" })
         self.s2 = self.AF(
             { "album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
-              "~filename": "something.mp3", "tracknumber": "12/15" })
+              "~filename": "/dir2/something.mp3", "tracknumber": "12/15" })
 
         self.s3 = self.AF({"artist": "piman\nmu"})
 
@@ -190,6 +190,12 @@ class ParserTests(TestCase):
         self.failUnless(parser.parse("Ate man").search(self.s1))
         self.failIf(parser.parse("woo man").search(self.s1))
         self.failIf(parser.parse("not crazy").search(self.s1))
+
+    def test_synth_search(self):
+        self.failUnless(parser.parse("~dirname=/dir1/").search(self.s1))
+        self.failUnless(parser.parse("~dirname=/dir2/").search(self.s2))
+        self.failIf(parser.parse("~dirname=/dirty/").search(self.s1))
+        self.failIf(parser.parse("~dirname=/dirty/").search(self.s2))
 
 class TestColors(TestCase):
     def test_red(self):

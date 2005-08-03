@@ -26,19 +26,6 @@ class TestDirTree(TestCase):
             dirlist.destroy()
             self.failUnlessEqual([path], selected)
 
-class TestPlayList(TestCase):
-    def test_normalize_safe(self):
-        for string in ["", "foo", "bar", "a_title", "some_keys"]:
-            self.failUnlessEqual(string, PlayList.normalize_name(string))
-
-    def test_normalize_unsafe(self):
-        for string in ["%%%", "bad_ string", "<woo>", "|%more%20&tests",
-                       "% % % %", "   ", ":=)", "#!=", "mixed # strings",
-                       "".join(PlayList.BAD)]:
-            nstring = PlayList.normalize_name(string)
-            self.failIfEqual(string, nstring)
-            self.failUnlessEqual(string, PlayList.prettify_name(nstring))
-
 class StopAfterTest(TestCase):
     def test_active(self):
         w = widgets.MainWindow.StopAfterMenu()
@@ -156,7 +143,6 @@ class ValidaterTests(TestCase):
         self.invalidate('replaygain_album_peak', peaks)
 
 registerCase(TestDirTree)
-registerCase(TestPlayList)
 registerCase(StopAfterTest)
 registerCase(SongWatcher)
 registerCase(ValidaterTests)

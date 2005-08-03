@@ -819,7 +819,7 @@ class PlaylistWindow(gtk.Window):
 
     def set_name(self, name):
         self.__prettyname = name
-        self.__plname = PlayList.normalize_name(name)
+        self.__plname = util.QuerySafe.encode(name)
         self.set_title('Quod Libet Playlist: %s' % name)
 
     def __destroy(self, view):
@@ -2735,7 +2735,7 @@ class MainWindow(gtk.Window):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
 
     def __new_playlist(self, activator):
-        options = map(PlayList.prettify_name, library.playlists())
+        options = map(util.QuerySafe.decode, library.playlists())
         name = GetStringDialog(self, _("New/Edit Playlist"),
                                _("Enter a name for the new playlist. If it "
                                  "already exists it will be opened for "
@@ -3455,25 +3455,11 @@ class LibraryBrowser(gtk.Window):
         return True
 
 class PlayList(SongList):
-    # ["%", " "] + parser.QueryLexeme.table.keys()
-    BAD = ["%", " ", "!", "&", "|", "(", ")", "=", ",", "/", "#", ">", "<"]
-    DAB = BAD[::-1]
-
-    def normalize_name(name):
-        for c in PlayList.BAD: name = name.replace(c, "%"+hex(ord(c))[2:])
-        return name
-    normalize_name = staticmethod(normalize_name)
-
-    def prettify_name(name):
-        for c in PlayList.DAB: name = name.replace("%"+hex(ord(c))[2:], c)
-        return name
-    prettify_name = staticmethod(prettify_name)
-
     def lists_model(cls):
         try: return cls._lists_model
         except AttributeError:
             model = cls._lists_model = gtk.ListStore(str, str)
-            playlists = [[PlayList.prettify_name(p), p] for p in
+            playlists = [[util.QuerySafe.decode(p), p] for p in
                           library.playlists()]
             playlists.sort()
             model.append([(_("All songs")), ""])
@@ -3482,7 +3468,7 @@ class PlayList(SongList):
     lists_model = classmethod(lists_model)
 
     def __init__(self, name):
-        plname = 'playlist_' + PlayList.normalize_name(name)
+        plname = 'playlist_' + util.QuerySafe.encode(name)
         self.__key = key = '~#' + plname
         model = gtk.ListStore(object)
         super(PlayList, self).__init__()

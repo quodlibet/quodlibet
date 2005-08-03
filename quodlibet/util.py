@@ -383,3 +383,19 @@ def website(site):
             else: s += " \"%s\"" % site
             if os.system(s + " &") == 0: return True
     else: return False
+
+class QuerySafe(object):
+    # ["%", " "] + parser.QueryLexeme.table.keys()
+    BAD = ["%", " ", "!", "&", "|", "(", ")", "=", ",", "/", "#", ">", "<"]
+    DAB = BAD[::-1]
+
+    def encode(name):
+        for c in QuerySafe.BAD: name = name.replace(c, "%"+hex(ord(c))[2:])
+        return name
+    encode = staticmethod(encode)
+
+    def decode(name):
+        for c in QuerySafe.DAB: name = name.replace("%"+hex(ord(c))[2:], c)
+        return name
+    decode = staticmethod(decode)
+

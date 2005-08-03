@@ -402,8 +402,22 @@ class FormatTimeTests(TestCase):
     def test_drop_zero(s):
         s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 
+class TestPlayList(TestCase):
+    def test_normalize_safe(self):
+        for string in ["", "foo", "bar", "a_title", "some_keys"]:
+            self.failUnlessEqual(string, util.QuerySafe.encode(string))
+
+    def test_normalize_unsafe(self):
+        for string in ["%%%", "bad_ string", "<woo>", "|%more%20&tests",
+                       "% % % %", "   ", ":=)", "#!=", "mixed # strings",
+                       "".join(util.QuerySafe.BAD)]:
+            nstring = util.QuerySafe.encode(string)
+            self.failIfEqual(string, nstring)
+            self.failUnlessEqual(string, util.QuerySafe.decode(nstring))
+
 registerCase(FSTests)
 registerCase(StringTests)
 registerCase(TBPTests)
 registerCase(NBPTests)
 registerCase(FormatTimeTests)
+registerCase(TestPlayList)

@@ -72,6 +72,9 @@ class AudioFile(dict):
             elif key == "#disc":
                 try: return int(self["discnumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default
+            elif key == "playlist":
+                lists = [s[11:] for s in self if s.startswith('~#playlist')]
+                return '\n'.join(map(util.QuerySafe.decode, lists))
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default

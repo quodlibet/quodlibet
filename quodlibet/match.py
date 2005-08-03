@@ -123,6 +123,17 @@ class Tag(object):
             self.__names.extend(
                 ["artist", "album", "title", "version", "performer"])
         if not isinstance(self.__res, list): self.__res = [self.__res]
+        if len([name for name in self.__names if name.startswith('~')]):
+            self.search = self.__search_synth
+
+    def __search_synth(self, data):
+        for name in self.__names:
+            for re in self.__res:
+                if name.startswith('~') and re.search(data(name)):
+                    return True
+                if re.search(data.get(name, data.get("~"+name, ""))):
+                    return True
+        return False
 
     def search(self, data):
         for name in self.__names:
