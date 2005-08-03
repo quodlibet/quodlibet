@@ -98,7 +98,7 @@ class AudioFile(dict):
         if v == "": return []
         else: return v.split("\n")
 
-    def listall(self, *keys):
+    def listall(self, keys):
         return reduce(set.union, map(self.list, keys), set())
 
     def exists(self):

@@ -83,13 +83,13 @@ class AudioFileTest(TestCase):
 
     def test_listall(self):
         l = list
-        self.failUnlessEqual(l(bar_1_1.listall("foo")), bar_1_1.list("foo"))
-        self.failIf(l(bar_1_1.listall("foo", "bar")), [])
+        self.failUnlessEqual(l(bar_1_1.listall(["foo"])), bar_1_1.list("foo"))
+        self.failIf(l(bar_1_1.listall(["foo", "bar"])), [])
         self.failUnlessEqual(
-            l(bar_1_1.listall("artist")), bar_1_1.list("artist"))
+            l(bar_1_1.listall(["artist"])), bar_1_1.list("artist"))
         self.failUnlessEqual(
-            bar_2_1.listall('artist'), set(["Foo", "I have two artists"]))
-        self.failUnlessEqual(bar_2_1.listall("artist", "title"),
+            bar_2_1.listall(['artist']), set(["Foo", "I have two artists"]))
+        self.failUnlessEqual(bar_2_1.listall(["artist", "title"]),
                              set(["Foo", "I have two artists", "more songs"]))
             
 

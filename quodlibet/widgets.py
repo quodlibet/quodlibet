@@ -1465,7 +1465,8 @@ class AlbumList(Browser, gtk.VBox):
             if row[0] and row[0].title in values:
                 selection.select_path(i)
                 first = first or i
-        if first: view.scroll_to_cell(first)
+        if first:
+            view.scroll_to_cell(first, use_align=True, row_align=0.5)
 
     def activate(self):
         self.get_children()[1].child.get_selection().emit('changed')
@@ -1489,7 +1490,8 @@ class AlbumList(Browser, gtk.VBox):
                     selection.select_path(i)
                     first = first or i
 
-            if first: selection.get_tree_view().scroll_to_cell(first)
+            if first: selection.get_tree_view().scroll_to_cell(
+                first, use_align=True, row_align=0.5)
 
     def scroll(self):
         view = self.get_children()[1].child
@@ -1587,7 +1589,9 @@ class PanedBrowser(gtk.VBox, Browser):
 
         def __selection_changed(self, selection, check=True, jump=False):
             model, rows = selection.get_selected_rows()
-            if jump and rows: self.child.scroll_to_cell(rows[0])
+            if jump and rows:
+                self.child.scroll_to_cell(
+                    rows[0][0], use_align=True, row_align=0.5)
 
             if rows == [] or rows[0][0] == 0: # All
                 self.__next.fill(self.__songs)
@@ -1597,17 +1601,17 @@ class PanedBrowser(gtk.VBox, Browser):
                 if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
                     selected.pop()
                     def filt(s):
-                        v = s.listall(*self.tags)
+                        v = s.listall(self.tags)
                         return (not v) or selected.intersection(v)
                 else:
                     def filt(s):
-                        return selected.intersection(s.listall(*self.tags))
+                        return selected.intersection(s.listall(self.tags))
 
                 selected = set(selected)
                 self.__next.fill(filter(filt, self.__songs))
 
         def scroll(self, song):
-            values = map(util.escape, song.listall(*self.tags))
+            values = map(util.escape, song.listall(self.tags))
             view = self.child
             for i, row in enumerate(iter(view.get_model())):
                 if row[0] in values:
@@ -1616,6 +1620,9 @@ class PanedBrowser(gtk.VBox, Browser):
 
         def select(self, values, escape=True):
             selection = self.child.get_selection()
+            model, rows = selection.get_selected_rows()
+            old_items = [model[row][0] for row in rows]
+
             selection.handler_block(self.__sig)
             selection.unselect_all()
             model = selection.get_tree_view().get_model()
@@ -1624,12 +1631,17 @@ class PanedBrowser(gtk.VBox, Browser):
             else:
                 if escape:
                     values = [util.escape(v.encode('utf-8')) for v in values]
-                def select_values(model, path, iter):
-                    if model[path][0] in values:
-                        selection.select_path(path)
-                model.foreach(select_values)
+                for i, row in enumerate(iter(model)):
+                    if row[0] in values:
+                        selection.select_path((i,))
+
             selection.handler_unblock(self.__sig)
-            self.__selection_changed(selection, check=False, jump=True)
+            model, rows = selection.get_selected_rows()
+            new_items = [model[row][0] for row in rows]
+            # Only update panes if the selection actually changed; this
+            # gives a notable speed boost to filtering.
+            if new_items != old_items:
+                self.__selection_changed(selection, check=False, jump=True)
 
         def fill(self, songs, handle_pending=True):
             self.__songs = songs
@@ -1637,7 +1649,7 @@ class PanedBrowser(gtk.VBox, Browser):
             complete = True
             values = set()
             for song in songs:
-                l = song.listall(*self.tags)
+                l = song.listall(self.tags)
                 values.update(l)
                 complete = complete and bool(l)
             values = list(values); values.sort()
