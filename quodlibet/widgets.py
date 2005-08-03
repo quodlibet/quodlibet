@@ -3587,7 +3587,7 @@ class MainSongList(SongList):
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])
 
-        player.playlist.set_playlist(songs)
+        player.playlist.set_playlist(songs[:])
         model.clear()
         for song in songs: model.append([song])
 
