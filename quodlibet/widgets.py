@@ -3134,6 +3134,7 @@ class MainWindow(gtk.Window):
         if len(headers) == len(config.get("settings", "headers").split()):
             # Not an addition or removal (handled separately)
             config.set("settings", "headers", " ".join(headers))
+            SongList.headers = headers
 
     def __make_query(self, query):
         if self.browser.can_filter(None):
@@ -3201,8 +3202,70 @@ class SongList(HintedTreeView):
             listview.set_column_headers(headers)
     set_all_column_headers = classmethod(set_all_column_headers)
 
+    def get_sort_by(self):
+        for header in self.get_columns():
+            if header.get_sort_indicator():
+                return (header.header_name,
+                        header.get_sort_order() == gtk.SORT_DESCENDING)
+        else: return "artist", False
+
+    # Resort based on the header clicked.
+    def set_sort_by(self, header, tag=None, order=None, refresh=True):
+        s = gtk.SORT_ASCENDING
+
+        if header and tag is None: tag = header.header_name
+
+        for h in self.get_columns():
+            if h.header_name == tag:
+                if order is None:
+                    s = header.get_sort_order()
+                    if (not header.get_sort_indicator() or
+                        s == gtk.SORT_DESCENDING):
+                        s = gtk.SORT_ASCENDING
+                    else: s = gtk.SORT_DESCENDING
+                else:
+                    if order: s = gtk.SORT_ASCENDING
+                    else: s = gtk.SORT_DESCENDING
+                h.set_sort_indicator(True)
+                h.set_sort_order(s)
+            else: h.set_sort_indicator(False)
+        if refresh: self.set_songs(self.get_songs())
+
     def get_songs(self):
         return [row[0] for row in self.get_model()]
+
+    def set_songs(self, songs, tag=None):
+        model = self.get_model()
+
+        if tag is None: tag, reverse = self.get_sort_by()
+        else:
+            self.set_sort_by(None, refresh=False)
+            reverse = False
+
+        if tag == "~#track": tag = "album"
+        elif tag == "~#disc": tag = "album"
+        elif tag == "~length": tag = "~#length"
+        elif tag == "~album~part": tag = "album"
+        if tag != "album":
+            if reverse:
+                songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
+            else:
+                songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
+        else:
+            songs.sort()
+            if reverse: songs.reverse()
+
+        selected = self.get_selected_songs()
+        selected = dict.fromkeys([song['~filename'] for song in selected])
+
+        model.clear()
+        for song in songs: model.append([song])
+
+        # reselect what we can
+        selection = self.get_selection()
+        for i, row in enumerate(iter(model)):
+            if row[0]['~filename'] in selected:
+                selection.select_path(i)
 
     def get_selected_songs(self):
         model, rows = self.get_selection().get_selected_rows()
@@ -3291,8 +3354,7 @@ class SongList(HintedTreeView):
                 column.set_resizable(True)
                 column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
                 column.set_fixed_width(1)
-            if hasattr(self, 'set_sort_by'):
-                column.connect('clicked', self.set_sort_by)
+            column.connect('clicked', self.set_sort_by)
             self._set_column_settings(column)
             if t in ["~filename", "~basename", "~dirname"]:
                 column.set_cell_data_func(
@@ -3314,6 +3376,9 @@ class SongList(HintedTreeView):
 
     def _set_column_settings(self, column):
         column.set_visible(True)
+        column.set_clickable(True)
+        column.set_reorderable(True)
+        column.set_sort_indicator(False)
 
 class LibraryBrowser(gtk.Window):
     def __init__(self, activator, Kind=SearchBar):
@@ -3326,7 +3391,6 @@ class LibraryBrowser(gtk.Window):
 
         view = SongList()
         view.set_model(gtk.ListStore(object))
-        self.__view = view
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
@@ -3334,7 +3398,7 @@ class LibraryBrowser(gtk.Window):
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
         browser = Kind(save=False, play=False)
-        browser.connect('songs-selected', self.__search)
+        browser.connect_object('songs-selected', SongList.set_songs, view)
         if Kind.expand:
             container = Kind.expand()
             container.pack1(browser, resize=True)
@@ -3389,12 +3453,6 @@ class LibraryBrowser(gtk.Window):
             view.set_cursor(path, col, 0)
         menu.popup(None, None, None, event.button, event.time)
         return True
-
-    def __search(self, browser, songs, dummy):
-        model = self.__view.get_model()
-        model.clear()
-        songs.sort()
-        for song in songs: model.append([song])
 
 class PlayList(SongList):
     # ["%", " "] + parser.QueryLexeme.table.keys()
@@ -3494,6 +3552,9 @@ class PlayList(SongList):
                 model.append([song])
                 song[self.__key] = len(model) # 1 based index; 0 means out
 
+    def set_sort_by(*args): pass
+    def get_sort_by(self, *args): return self__key, False
+
     def __remove_selected_songs(self, activator, key):
         model, rows = self.get_selection().get_selected_rows()
         rows.sort()
@@ -3527,75 +3588,14 @@ class PlayList(SongList):
 
 class MainSongList(SongList):
 
-    def _set_column_settings(self, column):
-        column.set_clickable(True)
-        column.set_reorderable(True)
-        column.set_sort_indicator(False)
+    def set_sort_by(self, *args, **kwargs):
+        SongList.set_sort_by(self, *args, **kwargs)
+        tag, reverse = self.get_sort_by()
+        config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
 
-    def get_sort_by(self):
-        for header in self.get_columns():
-            if header.get_sort_indicator():
-                return (header.header_name,
-                        header.get_sort_order() == gtk.SORT_DESCENDING)
-        else: return "artist", False
-
-    # Resort based on the header clicked.
-    def set_sort_by(self, header, tag=None, order=None, refresh=True):
-        s = gtk.SORT_ASCENDING
-
-        if header and tag is None: tag = header.header_name
-
-        for h in self.get_columns():
-            if h.header_name == tag:
-                if order is None:
-                    s = header.get_sort_order()
-                    if (not header.get_sort_indicator() or
-                        s == gtk.SORT_DESCENDING):
-                        s = gtk.SORT_ASCENDING
-                    else: s = gtk.SORT_DESCENDING
-                else:
-                    if order: s = gtk.SORT_ASCENDING
-                    else: s = gtk.SORT_DESCENDING
-                h.set_sort_indicator(True)
-                h.set_sort_order(s)
-            else: h.set_sort_indicator(False)
-        config.set('memory', 'sortby', "%d%s" % (s == gtk.SORT_ASCENDING,
-                                                 tag))
-        if refresh: self.set_songs(self.get_songs())
-
-    def set_songs(self, songs, tag=None):
-        model = self.get_model()
-
-        if tag is None: tag, reverse = self.get_sort_by()
-        else:
-            self.set_sort_by(None, refresh=False)
-            reverse = False
-
-        if tag == "~#track": tag = "album"
-        elif tag == "~#disc": tag = "album"
-        elif tag == "~length": tag = "~#length"
-        elif tag == "~album~part": tag = "album"
-        if tag != "album":
-            if reverse:
-                songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
-            else:
-                songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
-        else:
-            songs.sort()
-            if reverse: songs.reverse()
-
-        selected = self.get_selected_songs()
-        selected = dict.fromkeys([song['~filename'] for song in selected])
-
-        player.playlist.set_playlist(songs[:])
-        model.clear()
-        for song in songs: model.append([song])
-
-        # reselect what we can
-        selection = self.get_selection()
-        for i, row in enumerate(iter(model)):
-            if row[0]['~filename'] in selected:
-                selection.select_path(i)
+    def set_songs(self, *args, **kwargs):
+        SongList.set_songs(self, *args, **kwargs)
+        player.playlist.set_playlist(self.get_songs())
 
 class GetStringDialog(gtk.Dialog):
     def __init__(self, parent, title, text, options=[]):
