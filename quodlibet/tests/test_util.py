@@ -276,7 +276,7 @@ class NBPTests(TestCase):
         pat = FileFromPattern('<tracknumber|<genre|<genre> <tracknumber>|<tracknumber>>|<artist>>')
         s.assertEquals(pat.match(s.a), '<tracknumber|05|Artist>.mp3')
         s.assertEquals(pat.match(s.b), '<tracknumber|06|Artist>.ogg')
-        s.assertEquals(pat.match(s.c), '<tracknumber|_, _ |Unknown>.flac')
+        s.assertEquals(pat.match(s.c), '<tracknumber|_, _ |>.flac')
 
     def test_conditional_genre(s):
         pat = FileFromPattern('<genre|<genre>|music>')

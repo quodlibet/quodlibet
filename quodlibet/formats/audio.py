@@ -86,8 +86,6 @@ class AudioFile(dict):
                     os.path.basename(self["~filename"]).decode(
                     util.fscoding(), "replace"), Unknown(_("Unknown")))
             else: return v
-        elif (key == "artist" or key == "album"):
-            return self.get(key, Unknown(_("Unknown")))
         else: return dict.get(self, key, default)
 
     def comma(self, key):

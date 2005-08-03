@@ -57,7 +57,7 @@ class AudioFileTest(TestCase):
         # fake/generated key checks
         self.failIf(quux("not a key"))
         self.failUnlessEqual(quux("not a key", "foo"), "foo")
-        self.failUnlessEqual(quux("artist"), _("Unknown"))
+        self.failUnlessEqual(quux("artist"), "")
         self.failUnlessEqual(quux("~basename"), "asong.ogg")
         self.failUnlessEqual(quux("~dirname"), "tests/data")
         self.failUnlessEqual(quux("title"), "asong.ogg [Unknown]")
