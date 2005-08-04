@@ -1665,20 +1665,46 @@ class PanedBrowser(gtk.VBox, Browser):
     __play = False
     def __init__(self, save=True, play=True):
         gtk.VBox.__init__(self, spacing=0)
-        self.refresh_panes(restore=False)
+        self.__play = play
 
+        hb = gtk.HBox(spacing=3)
+        label = gtk.Label(_("_Search:"))
+        label.set_padding(3, 0)
+        search = qltk.ValidatingEntry(parser.is_valid_color)
+        label.set_mnemonic_widget(search)
+        label.set_use_underline(True)
+        hb.pack_start(label, expand=False)
+        hb.pack_start(search)
+        self.pack_start(hb, expand=False)
+        self.__refill_id = None
+        self.__filter = None
+        search.connect('changed', self.__filter_changed)
+
+        self.refresh_panes(restore=False)
         s = widgets.watcher.connect('refresh', self.__refresh)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         self.__save = save
-        self.__play = play
+
+    def __filter_changed(self, entry):
+        if self.__refill_id is not None:
+            gobject.source_remove(self.__refill_id)
+            self.__refill_id = None
+        text = entry.get_text().decode('utf-8')
+        if parser.is_parsable(text):
+            if text: filter = parser.parse(text).search
+            else: filter = None
+            self.__refill_id = gobject.timeout_add(500, self.__refill, filter)
+
+    def __refill(self, filt):
+        self.__panes[0].fill(filter(filt, library.values()))
 
     def scroll(self):
         for pane in self.__panes:
             pane.scroll(widgets.watcher.song)
 
     def refresh_panes(self, restore=True):
-        try: hbox = self.get_children()[0]
+        try: hbox = self.get_children()[1]
         except IndexError: pass # first call
         else: hbox.destroy()
 
