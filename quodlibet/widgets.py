@@ -1666,15 +1666,17 @@ class PanedBrowser(gtk.VBox, Browser):
                 songs = [model[row][1] for row in rows]
                 return list(reduce(set.union, songs, set()))
 
+    __save = False
+    __play = False
     def __init__(self, save=True, play=True):
         gtk.VBox.__init__(self, spacing=0)
-        self.__save = save
-        self.__play = play
-
         self.refresh_panes(restore=False)
 
         s = widgets.watcher.connect('refresh', self.__refresh)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
+
+        self.__save = save
+        self.__play = play
 
     def scroll(self):
         for pane in self.__panes:
@@ -1729,10 +1731,19 @@ class PanedBrowser(gtk.VBox, Browser):
             else: pane.set_selected(None, True)
 
     def save(self):
-        pass
+        selected = []
+        for pane in self.__panes:
+            selected.append("\t".join(pane.get_selected()))
+        config.set("browsers", "pane_selection", "\n".join(selected))
 
     def restore(self):
-        print "Restoring not supported"
+        selected = config.get("browsers", "pane_selection").split("\n")
+        if len(selected) == len(self.__panes):
+            self.__panes[-1].inhibit()
+            for values, pane in zip(selected, self.__panes[:-1]):
+                pane.set_selected(values.split("\t"), True)
+            self.__panes[-1].uninhibit()
+            self.__panes[-1].set_selected(selected[-1].split("\t"), True)
 
     def activate(self):
         self.__panes[0].fill(library.values())
