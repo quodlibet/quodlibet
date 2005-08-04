@@ -51,6 +51,9 @@ class AudioFile(dict):
         self.__init__(fn)
         self.update(saved)
 
+    def __hash__(self):
+        return hash(self["~filename"])
+
     def realkeys(self):
         return filter(lambda s: s and s[0] != "~", self.keys())
 

@@ -997,6 +997,13 @@ class MmKeys(object):
             self.__keys = mmkeys.MmKeys()
             map(self.__keys.connect, *zip(*cbs.items()))
 
+class HintedTreeView(gtk.TreeView):
+    def __init__(self, *args):
+        gtk.TreeView.__init__(self, *args)
+        try: tvh = widgets.treeviewhints
+        except AttributeError: tvh = widgets.treeviewhints = TreeViewHints()
+        tvh.connect_view(self)
+
 # Browers are how the audio library is presented to the user; they
 # create the list of songs that MainSongList is filled with, and pass
 # them back via a callback function.
@@ -1559,124 +1566,105 @@ class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
-    class Pane(gtk.ScrolledWindow):
+    class Pane(HintedTreeView):
         __render = gtk.CellRendererText()
         __render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
-        def __init__(self, mytag, next, play=True):
-            gtk.ScrolledWindow.__init__(self)
-            self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-            self.set_shadow_type(gtk.SHADOW_IN)
-            self.add(HintedTreeView(gtk.ListStore(str)))
-            column = gtk.TreeViewColumn(tag(mytag), self.__render, markup=0)
-            column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-            column.set_fixed_width(50)
-            self.child.append_column(column)
+        def __init__(self, mytag, next):
+            HintedTreeView.__init__(self)
             if "~" in mytag[1:]: self.tags = filter(None, mytag.split("~"))
             else: self.tags = [mytag]
             self.__next = next
-            self.__songs = []
-            self.child.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-            self.child.connect_object('destroy', self.child.set_model, None)
-            self.__sig = self.child.get_selection().connect(
-                'changed', self.__selection_changed)
-            if play:
-                self.child.connect('row-activated', self.__play_selection)
+            model = gtk.ListStore(str, object)
 
-        def __play_selection(self, view, indices, col):
-            player.playlist.next()
-            player.playlist.reset()
+            column = gtk.TreeViewColumn(tag(mytag), self.__render, markup=0)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            column.set_fixed_width(50)
+            self.append_column(column)
+            self.set_model(model)
 
-        def __selection_changed(self, selection, check=True, jump=False):
+            selection = self.get_selection()
+            selection.set_mode(gtk.SELECTION_MULTIPLE)
+            self.__sig = selection.connect('changed', self.__changed)
+
+            self.connect_object('destroy', self.__destroy, model)
+
+        def __destroy(self, model):
+            self.set_model(None)
+            model.clear()
+
+        def __changed(self, selection, jump=False):
             model, rows = selection.get_selected_rows()
             if jump and rows:
-                self.child.scroll_to_cell(
-                    rows[0][0], use_align=True, row_align=0.5)
+                self.scroll_to_cell(rows[0][0], use_align=True, row_align=0.5)
+            self.__next.fill(self.get_songs())
 
-            if rows == [] or rows[0][0] == 0: # All
-                self.__next.fill(self.__songs)
-            else:
-                selected = [util.unescape(model[row][0]).decode('utf-8')
-                            for row in rows]
-                if model[rows[-1]][0].startswith("<b>"): # Not All, so Unknown
-                    selected.pop()
-                    def filt(s):
-                        v = s.listall(self.tags)
-                        return (not v) or selected.intersection(v)
-                else:
-                    def filt(s):
-                        return selected.intersection(s.listall(self.tags))
+        def inhibit(self): self.get_selection().handler_block(self.__sig)
+        def uninhibit(self): self.get_selection().handler_unblock(self.__sig)
 
-                selected = set(selected)
-                self.__next.fill(filter(filt, self.__songs))
+        def fill(self, songs, inhibit=False):
+            selected = self.get_selected()
+            #print "Refilling", self.tags, selected
+            self.inhibit()
+            values = {}
+            unknown = set()
+            for song in songs:
+                songvals = song.listall(self.tags)
+                if songvals:
+                    for val in songvals:
+                        values.setdefault(val, set()).add(song)
+                else: unknown.add(song)
+            keys = values.keys()
+            keys.sort()
+
+            model = self.get_model()
+            model.clear()
+            if len(keys) + bool(unknown) > 1:
+                model.append(row=["<b>%s</b>" % _("All"), songs])
+            for k in keys: model.append(row=[util.escape(k), values[k]])
+            if unknown:
+                model.append(row=["<b>%s</b>" % _("Unknown"), unknown])
+
+            self.uninhibit()
+            if selected: self.set_selected(selected, jump=True)
+            else: self.set_selected(None)
 
         def scroll(self, song):
             values = map(util.escape, song.listall(self.tags))
-            view = self.child
-            for i, row in enumerate(iter(view.get_model())):
+            for i, row in enumerate(iter(self.get_model())):
                 if row[0] in values:
-                    view.scroll_to_cell(i, use_align=True, row_align=0.5)
+                    self.scroll_to_cell(i, use_align=True, row_align=0.5)
                     break
 
-        def select(self, values, escape=True):
-            selection = self.child.get_selection()
-            model, rows = selection.get_selected_rows()
-            old_items = [model[row][0] for row in rows]
+        def get_selected(self):
+            model, rows = self.get_selection().get_selected_rows()
+            return [model[row][0] for row in rows]
 
-            selection.handler_block(self.__sig)
+        def set_selected(self, values, jump=False):
+            if values == None: values = [self.get_model()[(0,)][0]]
+            if values == self.get_selected(): return
+            self.inhibit()
+            selection = self.get_selection()
             selection.unselect_all()
-            model = selection.get_tree_view().get_model()
-            if values == []: selection.select_path((len(model) - 1,))
-            elif values is None: selection.select_path((0,))
+            first = 0
+            if values is None: selection.select_path((0,))
             else:
-                if escape:
-                    values = [util.escape(v.encode('utf-8')) for v in values]
-                for i, row in enumerate(iter(model)):
+                for i, row in enumerate(iter(self.get_model())):
                     if row[0] in values:
                         selection.select_path((i,))
+                        first = first or i
+            if first == 0: selection.select_path((0,))
+            if jump: self.scroll_to_cell(first)
+            self.uninhibit()
+            self.get_selection().emit('changed')
 
-            selection.handler_unblock(self.__sig)
-            model, rows = selection.get_selected_rows()
-            new_items = [model[row][0] for row in rows]
-            # Only update panes if the selection actually changed; this
-            # gives a notable speed boost to filtering.
-            if new_items != old_items:
-                self.__selection_changed(selection, check=False, jump=True)
-
-        def fill(self, songs, handle_pending=True):
-            self.__songs = songs
-            # get values from song list
-            complete = True
-            values = set()
-            for song in songs:
-                l = song.listall(self.tags)
-                values.update(l)
-                complete = complete and bool(l)
-            values = list(values); values.sort()
-
-            # record old selection data to preserve as much as possible
-            selection = self.child.get_selection()
-            selection.handler_block(self.__sig)
-            model, rows = selection.get_selected_rows()
-            selected_items = [model[row][0] for row in rows]
-            # fill in the new model
-            model = self.child.get_model()
-            model.clear()
-            to_select = []
-            i = 0
-            if len(values) + (not bool(complete)) > 1:
-                model.append(["<b>%s</b>" % _("All")])
-                i += 1
-            for value in map(util.escape, values):
-                model.append([value])
-                if value in selected_items: to_select.append(i)
-                i += 1
-            if not complete:
-                model.append(["<b>%s</b>" % _("Unknown")])
-            if to_select == []: to_select = [0]
-            for i in to_select: selection.select_path((i,))
-            selection.handler_unblock(self.__sig)
-            self.__selection_changed(selection, check=False, jump=True)
+        def get_songs(self):
+            model, rows = self.get_selection().get_selected_rows()
+            # No reason to look further if "All" is selected.
+            if rows and rows[0][0] == 0: return model[(0,)][1]
+            else:
+                songs = [model[row][1] for row in rows]
+                return list(reduce(set.union, songs, set()))
 
     def __init__(self, save=True, play=True):
         gtk.VBox.__init__(self, spacing=0)
@@ -1704,14 +1692,28 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__panes = [self]
         panes = config.get("browsers", "panes").split(); panes.reverse()
         for pane in panes:
-            self.__panes.insert(
-                0, self.Pane(pane, self.__panes[0], self.__play))
+            self.__panes.insert(0, self.Pane(pane, self.__panes[0]))
         self.__panes.pop() # remove self
-        map(hbox.pack_start, self.__panes)
+
+        for pane in self.__panes:
+            if self.__play: pane.connect('row-activated', self.__start)
+            sw = gtk.ScrolledWindow()
+            sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            sw.add(pane)
+            hbox.pack_start(sw)
+
         self.pack_start(hbox)
-        self.__refresh(None)
         if restore: self.restore()
+        else:
+            self.__panes[-1].inhibit()
+            self.__refresh(None)
+            self.__panes[-1].uninhibit()
         self.show_all()
+
+    def __start(self, view, indices, col):
+        player.playlist.next()
+        player.playlist.reset()
 
     def can_filter(self, key):
         for pane in self.__panes:
@@ -1721,44 +1723,26 @@ class PanedBrowser(gtk.VBox, Browser):
     def filter(self, key, values):
         thepane = None
         for pane in self.__panes:
-            self.__inhibit = True
-            pane.select(None)
-            if key in pane.tags: thepane = pane
-
-        if thepane is not None:
-            thepane.select(values)
+            if key in pane.tags:
+                pane.set_selected(map(util.escape, values), True)
+                break
+            else: pane.set_selected(None, True)
 
     def save(self):
-        selected = []
-        for pane in self.__panes:
-            selection = pane.child.get_selection()
-            model, rows = selection.get_selected_rows()
-            selected.append("\t".join([model[row][0] for row in rows]))
-        config.set("browsers", "pane_selection", "\n".join(selected))
+        pass
 
     def restore(self):
-        try:
-            selections = [y.split("\t") for y in
-                          config.get("browsers", "pane_selection").split("\n")]
-        except: pass
-        else:
-            if len(selections) == len(self.__panes):
-                for sel, pane in zip(selections, self.__panes):
-                    self.__inhibit = True
-                    pane.select(sel, escape=False)
+        print "Restoring not supported"
 
     def activate(self):
         self.__panes[0].fill(library.values())
 
     def __refresh(self, watcher):
-        self.__inhibit = True
         self.activate()
 
     def fill(self, songs):
-        if self.__inhibit: self.__inhibit = False
-        else:
-            if self.__save: self.save()
-            self.emit('songs-selected', songs, None)
+        if self.__save: self.save()
+        self.emit('songs-selected', songs, None)
 
 gobject.type_register(PanedBrowser)
 
@@ -1881,13 +1865,6 @@ class CoverImage(gtk.Frame):
             event.type == gtk.gdk._2BUTTON_PRESS):
             cover = self.__song.find_cover()
             BigCenteredImage(self.__song.comma("album"), cover.name)
-
-class HintedTreeView(gtk.TreeView):
-    def __init__(self, *args):
-        gtk.TreeView.__init__(self, *args)
-        try: tvh = widgets.treeviewhints
-        except AttributeError: tvh = widgets.treeviewhints = TreeViewHints()
-        tvh.connect_view(self)
 
 class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
