@@ -1509,7 +1509,7 @@ class AlbumList(Browser, gtk.VBox):
         if sort.inhibit: return
         songs = self.__get_selected_songs(selection)
         albums = self.__get_selected_albums(selection)
-        if not albums: return
+        if not songs: return
         self.emit('songs-selected', songs, None)
         if self.__save:
             if albums is None: config.set("browsers", "albums", "")
