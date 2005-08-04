@@ -1190,6 +1190,7 @@ class AlbumList(Browser, gtk.VBox):
             self.people = set()
             self._path = False
             self.title = title
+            self.songs = set()
             self.cover = self.__covers.get(self.title, False)
 
         def get(self, key, default=None):
@@ -1207,6 +1208,8 @@ class AlbumList(Browser, gtk.VBox):
 
         # All songs added, cache info.
         def finalize(self):
+            self.tracks = len(self.songs)
+            self.length = sum([song["~#length"] for song in self.songs])
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
             self.people = list(self.people)
@@ -1226,7 +1229,7 @@ class AlbumList(Browser, gtk.VBox):
             self.markup = text
 
         def add(self, song):
-            self.tracks += 1
+            self.songs.add(song)
             if self.title:
                 if self.date is None: self.date = song.get("date")
                 self.discs = max(self.discs, song("~#disc", 0))
@@ -1235,9 +1238,7 @@ class AlbumList(Browser, gtk.VBox):
                     if not self.__pending_covers: gobject.idle_add(
                         self.__get_covers, priority=gobject.PRIORITY_LOW)
                     self.__pending_covers.append([self.__get_cover, song])
-            self.length += song["~#length"]
-            for key in ["artist", "performer", "composer"]:
-                self.people.update(song.list(key))
+            self.people.update(song.listall(["artist","performer","composer"]))
 
         def __get_covers(self):
             try: get, song = self.__pending_covers.pop()
@@ -1420,21 +1421,16 @@ class AlbumList(Browser, gtk.VBox):
         model, rows = selection.get_selected_rows()
         if not model or not rows: return set([])
         albums = [model[row][0] for row in rows]
-        if None in albums: return set([None])
-        else: return set([a.title for a in albums])
+        if None in albums: return None
+        else: return albums
 
     def __get_selected_songs(self, selection):
-        albums = self.__get_selected_albums(selection)
+        model, rows = selection.get_selected_rows()
+        if not model or not rows: return set([])
+        albums = [model[row][0] for row in rows]
         if None in albums: return library.values()
-        else:
-            if "" in albums:
-                unalbum = True
-                albums.remove("")
-            else: unalbum = False
-
-            return filter(lambda s: (albums.intersection(s.list('album')) or
-                                     unalbum and "album" not in s),
-                          library.itervalues())
+        else: return list(
+            reduce(set.union, [album.songs for album in albums], set()))
 
     def __properties(self, activator, view):
         songs = self.__get_selected_songs(view.get_selection())
@@ -1512,15 +1508,13 @@ class AlbumList(Browser, gtk.VBox):
     def __selection_changed(self, selection, sort):
         if sort.inhibit: return
         songs = self.__get_selected_songs(selection)
-        # FIXME: This is a bit of a waste, but album-listing should be fast,
-        # so not a huge waste.
         albums = self.__get_selected_albums(selection)
         if not albums: return
         self.emit('songs-selected', songs, None)
         if self.__save:
-            if None in albums: config.set("browsers", "albums", "")
+            if albums is None: config.set("browsers", "albums", "")
             else:
-                confval = "\n".join(albums)
+                confval = "\n".join([a.title for a in albums])
                 # Since ConfigParser strips a trailing \n...
                 if confval and confval[-1] == "\n":
                     confval = "\n" + confval[:-1]
@@ -1530,6 +1524,7 @@ class AlbumList(Browser, gtk.VBox):
         # Prevent refiltering while the view is being refreshed.
         view.freeze_child_notify()
         selected = self.__get_selected_albums(view.get_selection())
+        if selected is not None: selected = [a.title for a in selected]
 
         if clear_cache: self._Album.clear_cache()
         for row in iter(model):
