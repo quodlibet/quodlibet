@@ -36,7 +36,7 @@ class IFPUpload(object):
 
     def __upload(self, song):
         filename = song["~filename"]
-        basename = song["~basename"]
+        basename = song("~basename")
         dirname = os.path.basename(os.path.dirname(filename))
         target = os.path.join(dirname, basename)
 
