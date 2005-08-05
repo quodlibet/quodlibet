@@ -1,5 +1,5 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.6
+# version 0.6.1
 # (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
 #             Joe Wreschnig <piman@sacredchao.net>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
@@ -7,7 +7,6 @@
 import md5, urllib, urllib2, time, threading, os
 import player, config, const
 import gobject, gtk
-import widgets
 from qltk import Message
 
 class QLScrobbler(object):
@@ -15,7 +14,7 @@ class QLScrobbler(object):
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
 	PLUGIN_ICON = gtk.STOCK_CONNECT
-	PLUGIN_VERSION = "0.6"
+	PLUGIN_VERSION = "0.6.1"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -410,20 +409,28 @@ class QLScrobbler(object):
 				self.broken = False
 
 		table = gtk.Table(3, 2)
-		table.attach(gtk.Label(_("Please enter your Audioscrobbler username and password.")), 0, 2, 0, 1)
-		table.attach(gtk.Label(_("Username:")), 0, 1, 1, 2)
-		table.attach(gtk.Label(_("Password:")), 0, 1, 2, 3)
+		table.set_col_spacings(3)
+		lt = gtk.Label(_("Please enter your Audioscrobbler username and password."))
+		lt.set_size_request(260, -1)
+		lu = gtk.Label(_("Username:"))
+		lp = gtk.Label(_("Password:"))
+		for l in [lt, lu, lp]:
+			l.set_line_wrap(True)
+			l.set_alignment(0.0, 0.5)
+		table.attach(lt, 0, 2, 0, 1, xoptions=gtk.FILL)
+		table.attach(lu, 0, 1, 1, 2, xoptions=gtk.FILL)
+		table.attach(lp, 0, 1, 2, 3, xoptions=gtk.FILL)
 		userent = gtk.Entry()
 		pwent = gtk.Entry()
 		pwent.set_visibility(False)
 		pwent.set_invisible_char('*')
 		table.set_border_width(6)
-		
+
 		try: userent.set_text(config.get("plugins", "scrobbler_username"))
 		except: pass
 		try: pwent.set_text(config.get("plugins", "scrobbler_password"))
 		except: pass
-		
+
 		table.attach(userent, 1, 2, 1, 2)
 		table.attach(pwent, 1, 2, 2, 3)
 		pwent.connect('changed', changed, 'password')
