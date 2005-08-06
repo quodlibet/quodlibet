@@ -200,7 +200,7 @@ class PluginWindow(gtk.Window):
         render = gtk.CellRendererToggle()
         def cell_data(col, render, model, iter):
             render.set_active(
-                widgets.main.pm.enabled(model[iter][0]))
+                SongList.pm.enabled(model[iter][0]))
         render.connect('toggled', self.__toggled, model)
         column = gtk.TreeViewColumn("enabled", render)
         column.set_cell_data_func(render, cell_data)
@@ -309,16 +309,16 @@ class PluginWindow(gtk.Window):
 
     def __toggled(self, render, path, model):
         render.set_active(not render.get_active())
-        widgets.main.pm.enable(model[path][0], render.get_active())
-        widgets.main.pm.save()
+        SongList.pm.enable(model[path][0], render.get_active())
+        SongList.pm.save()
         model[path][0] = model[path][0]
 
     def __refresh(self, activator, view, desc):
         model, sel = view.get_selection().get_selected()
         if sel: sel = model[sel][0]
         model.clear()
-        widgets.main.pm.rescan()
-        plugins = widgets.main.pm.list()
+        SongList.pm.rescan()
+        plugins = SongList.pm.list()
         plugins.sort(lambda a, b: cmp(a.PLUGIN_NAME, b.PLUGIN_NAME))
         for plugin in plugins:
             it = model.append(row=[plugin])
