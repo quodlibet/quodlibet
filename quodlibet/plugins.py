@@ -360,3 +360,32 @@ class PluginManager(object):
                     self.check_change_and_refresh(args[0])
                 else:
                     self.check_change_and_refresh([args[0]])
+
+    try: import gtk
+    except: pass
+    else:
+
+        def create_plugins_menu(self, songs):
+            menu = gtk.Menu()
+            plugins = [(plugin.PLUGIN_NAME, plugin)
+                        for plugin in self.list(songs)]
+            plugins.sort()
+            for name, plugin in plugins:
+                if hasattr(plugin, 'PLUGIN_ICON'):
+                    b = gtk.ImageMenuItem(name)
+                    b.get_image().set_from_stock(plugin.PLUGIN_ICON,
+                            gtk.ICON_SIZE_MENU)
+                else:
+                    b = gtk.MenuItem(name)
+                b.connect('activate', self.__plugin_activate, plugin, songs)
+
+                menu.append(b)
+
+            if menu.get_children():
+                menu.show_all()
+                return menu
+            else:
+                menu.destroy()
+
+        def __plugin_activate(self, event, plugin, songs):
+            self.invoke(plugin, songs)

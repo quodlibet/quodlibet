@@ -3028,8 +3028,9 @@ class MainWindow(gtk.Window):
             menu.append(b)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
-        submenu = gtk.Menu()
-        if self.__create_plugins_menu(self.songlist.pm, submenu):
+        submenu = self.songlist.pm.create_plugins_menu(
+                self.songlist.get_selected_songs())
+        if submenu is not None:
             b = gtk.ImageMenuItem(_("Plugins"))
             b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
             menu.append(b)
@@ -3059,31 +3060,6 @@ class MainWindow(gtk.Window):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
-
-    def __create_plugins_menu(self, pm, menu):
-        for child in menu.get_children(): menu.remove(child)
-        songs = self.songlist.get_selected_songs()
-        plugins = [(plugin.PLUGIN_NAME, plugin) for plugin in pm.list(songs)]
-        plugins.sort()
-        for name, plugin in plugins:
-            if hasattr(plugin, 'PLUGIN_ICON'):
-                b = gtk.ImageMenuItem(name)
-                b.get_image().set_from_stock(plugin.PLUGIN_ICON,
-                    gtk.ICON_SIZE_MENU)
-            else:
-                b = gtk.MenuItem(name)
-            b.connect('activate', self.__invoke_plugin, pm, plugin, songs)
-            menu.append(b)
-
-        if menu.get_children():
-            menu.show_all()
-            return True
-        else:
-            menu.destroy()
-            return False
-
-    def __invoke_plugin(self, event, pm, plugin, songs):
-        pm.invoke(plugin, songs)
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Song/FilterGenre",
@@ -5636,7 +5612,14 @@ class ExFalsoWindow(gtk.Window):
         self.connect_object('changed', self.set_pending, None)
         for c in fs.get_children():
             c.child.connect('button-press-event', self.__pre_selection_changed)
+        fs.get_children()[1].child.connect('button-press-event',
+                self.__button_press)
         self.emit('changed', [])
+
+        # plugin support
+        from plugins import PluginManager
+        self.pm = PluginManager(widgets.watcher, [const.PLUGINS, "./plugins"])
+        self.pm.rescan()
 
     def set_pending(self, button, *excess):
         self.__save = button
@@ -5647,6 +5630,35 @@ class ExFalsoWindow(gtk.Window):
             if resp == gtk.RESPONSE_YES: self.__save.clicked()
             elif resp == gtk.RESPONSE_NO: return False
             else: return True # cancel or closed
+
+    def __button_press(self, view, event):
+        if event.button == 3:
+            x, y = map(int, [event.x, event.y])
+            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+            except TypeError: return True
+            view.grab_focus()
+            selection = view.get_selection()
+            if not selection.path_is_selected(path):
+                view.set_cursor(path, col, 0)
+            model, rows = selection.get_selected_rows()
+            songs = [self.__cache[model[row][0]] for row in rows]
+            menu = self.pm.create_plugins_menu(songs)
+            if menu is None: menu = gtk.Menu()
+            else: menu.prepend(gtk.SeparatorMenuItem())
+            b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+            b.connect('activate', self.__delete,
+                    [model[row][0] for row in rows])
+            menu.prepend(b)
+            menu.show_all()
+            menu.popup(None, None, None, event.button, event.time)
+            return True
+
+    def __delete(self, item, files):
+        raise NotImplementedError
+        d = DeleteDialog(self, [files])
+        resp = d.run()
+        d.destroy()
+        # see delete_song() on MainWindow to implement
 
     def __changed(self, selector, selection, notebook):
         model, rows = selection.get_selected_rows()
