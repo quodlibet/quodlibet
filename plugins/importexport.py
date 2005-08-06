@@ -14,10 +14,9 @@ class Export(object):
 
         chooser = gtk.FileChooserDialog(title="Export %s Metadata to ..." % songs[0]('album'), action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
         resp = chooser.run()
-        if resp != gtk.RESPONSE_ACCEPT: return
-
         fn = chooser.get_filename()
         chooser.destroy()
+        if resp != gtk.RESPONSE_ACCEPT: return
 
         out = open(fn, 'wU')
 
@@ -49,11 +48,10 @@ class Import(object):
         chooser.set_extra_widget(append)
 
         resp = chooser.run()
-        if resp != gtk.RESPONSE_ACCEPT: return
-
         append = append.get_active()
         fn = chooser.get_filename()
         chooser.destroy()
+        if resp != gtk.RESPONSE_ACCEPT: return
 
         metadata = []
         index = 0
