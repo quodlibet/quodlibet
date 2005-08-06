@@ -1198,7 +1198,7 @@ class AlbumList(Browser, gtk.VBox):
             elif key == "~#tracks": return self.tracks
             elif key == "~#discs": return self.discs
             elif key == "~length": return self.__length
-            elif key == ["title", "album"]: return self.title
+            elif key in ["title", "album"]: return self.title
             elif key == "date": return self.date
             elif key in ["people", "artist", "artists"]:
                 return "\n".join(self.people)
