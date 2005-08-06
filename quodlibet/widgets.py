@@ -2408,11 +2408,6 @@ class MainWindow(gtk.Window):
 
         self.inter = gtk.VBox()
 
-        # plugin support
-        from plugins import PluginManager
-        self.pm = PluginManager(widgets.watcher, [const.PLUGINS, "./plugins"])
-        self.pm.rescan()
-        
         self.browser = None
         self.__select_browser(self, config.getint("memory", "browser"))
         self.browser.restore()
@@ -3034,7 +3029,7 @@ class MainWindow(gtk.Window):
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
         submenu = gtk.Menu()
-        if self.__create_plugins_menu(self.pm, submenu):
+        if self.__create_plugins_menu(self.songlist.pm, submenu):
             b = gtk.ImageMenuItem(_("Plugins"))
             b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
             menu.append(b)
@@ -5741,10 +5736,16 @@ def init():
         val = config.get("header_maps", opt)
         HEADERS_FILTER[opt] = val
 
-    gtk.about_dialog_set_url_hook(website_wrap)
     watcher = widgets.watcher = SongWatcher()
-    FSInterface(watcher) # Keeps itself alive in the watcher.
+
+    # plugin support
+    from plugins import PluginManager
+    SongList.pm = PluginManager(widgets.watcher, [const.PLUGINS, "./plugins"])
+    SongList.pm.rescan()
+
+    gtk.about_dialog_set_url_hook(website_wrap)
     widgets.main = MainWindow()
+    FSInterface(watcher) # Keeps itself alive in the watcher.
     player.playlist.info = widgets.watcher
 
     util.mkdir(const.DIR)
