@@ -225,6 +225,7 @@ class QueryParser(object):
             self.lookahead = QueryLexeme(EOF, "")
 
 def parse(string):
+    if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])
     elif not set("#=").intersection(string):
         parts = ["* = /" + sre.escape(p) + "/" for p in string.split()]
