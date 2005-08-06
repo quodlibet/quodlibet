@@ -1636,7 +1636,8 @@ class PanedBrowser(gtk.VBox, Browser):
             return [model[row][0] for row in rows]
 
         def set_selected(self, values, jump=False):
-            if values == None: values = [self.get_model()[(0,)][0]]
+            model = self.get_model()
+            if values == None and len(model): values = [model[(0,)][0]]
             if values == self.get_selected(): return
             self.inhibit()
             selection = self.get_selection()
@@ -1644,12 +1645,12 @@ class PanedBrowser(gtk.VBox, Browser):
             first = 0
             if values is None: selection.select_path((0,))
             else:
-                for i, row in enumerate(iter(self.get_model())):
+                for i, row in enumerate(iter(model)):
                     if row[0] in values:
                         selection.select_path((i,))
                         first = first or i
             if first == 0: selection.select_path((0,))
-            if jump: self.scroll_to_cell(first)
+            if jump and len(model): self.scroll_to_cell(first)
             self.uninhibit()
             self.get_selection().emit('changed')
 
@@ -1692,12 +1693,12 @@ class PanedBrowser(gtk.VBox, Browser):
             self.__refill_id = None
         text = entry.get_text().decode('utf-8')
         if parser.is_parsable(text):
-            if text: filter = parser.parse(text).search
-            else: filter = None
-            self.__refill_id = gobject.timeout_add(500, self.__refill, filter)
+            if text: self.__filter = parser.parse(text).search
+            else: self.__filter = None
+            self.__refill_id = gobject.timeout_add(500, self.activate)
 
-    def __refill(self, filt):
-        self.__panes[0].fill(filter(filt, library.values()))
+    def activate(self):
+        self.__panes[0].fill(filter(self.__filter, library.values()))
 
     def scroll(self):
         for pane in self.__panes:
@@ -1730,7 +1731,7 @@ class PanedBrowser(gtk.VBox, Browser):
         if restore: self.restore()
         else:
             self.__panes[-1].inhibit()
-            self.__refresh(None)
+            self.activate()
             self.__panes[-1].uninhibit()
         self.show_all()
 
@@ -1765,9 +1766,6 @@ class PanedBrowser(gtk.VBox, Browser):
                 pane.set_selected(values.split("\t"), True)
             self.__panes[-1].uninhibit()
             self.__panes[-1].set_selected(selected[-1].split("\t"), True)
-
-    def activate(self):
-        self.__panes[0].fill(library.values())
 
     def __refresh(self, watcher):
         self.activate()
@@ -5063,7 +5061,6 @@ class SongProperties(gtk.Window):
             model.foreach(rename)
             widgets.watcher.refresh()
             save.set_sensitive(False)
-            widgets.watcher.refresh()
             win.destroy()
 
         def __update(self, songs, combo, parent, model, save, preview,
