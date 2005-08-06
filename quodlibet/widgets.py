@@ -3300,7 +3300,7 @@ class SongList(HintedTreeView):
         SongProperties(self.get_selected_songs())
 
     def __key_press(self, songlist, event):
-        if event.string in "01234":
+        if event.string in ['0', '1', '2', '3', '4']:
             self.__set_rating(int(event.string), self.get_selected_songs())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
