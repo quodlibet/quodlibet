@@ -2433,7 +2433,6 @@ class MainWindow(gtk.Window):
 
         self.songlist.connect('row-activated', self.__select_song)
         self.songlist.connect('button-press-event', self.__songs_button_press)
-        self.songlist.connect('key-press-event', self.__key_press)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.get_selection().connect('changed', self.__set_time)
@@ -2924,16 +2923,12 @@ class MainWindow(gtk.Window):
                 view.set_cursor(path, col, 0)
             self.prep_main_popup(header, event.button, event.time)
             return True
-        elif event.button == 1 and header == "~rating":
-            width = col.get_property('width')
-            song = view.get_model()[path][0]
-            parts = (width / 4.0)
-            if cellx < parts + 1:
-                rating = (song["~#rating"] & 1) ^ 1
-            elif cellx < 2*parts: rating = 2
-            elif cellx < 3*parts: rating = 3
-            else: rating = 4
-            self.__set_rating(col, rating, [song])
+
+    def __set_rating(self, item, value):
+        song = widgets.watcher.song
+        if song is not None:
+            song["~#rating"] = value
+            widgets.watcher.changed([song])
 
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
@@ -2997,22 +2992,6 @@ class MainWindow(gtk.Window):
     def __current_song_prop(self, *args):
         song = widgets.watcher.song
         if song: SongProperties([song])
-
-    def song_properties(self, item):
-        SongProperties(self.songlist.get_selected_songs())
-
-    def __set_rating(self, item, value, songs=[]):
-        songs = songs or [widgets.watcher.song]
-        if songs[0] is None: return
-        for song in songs: song["~#rating"] = value
-        widgets.watcher.changed(songs)
-
-    def set_selected_ratings(self, item, value):
-        self.__set_rating(item, value, self.songlist.get_selected_songs())
-
-    def __key_press(self, songlist, event):
-        if event.string in ["0", "1", "2", "3", "4"]:
-            self.set_selected_ratings(songlist, int(event.string))
 
     def prep_main_popup(self, header, button, time):
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
@@ -3290,6 +3269,39 @@ class SongList(HintedTreeView):
             gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
             gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
         self.connect('drag-data-get', self.__drag_data_get)
+        self.connect('button-press-event', self.__button_press)
+        self.connect('key-press-event', self.__key_press)
+
+    def __button_press(self, view, event):
+        if event.button != 1: return
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
+        header = col.header_name
+        if header == "~rating":
+            width = col.get_property('width')
+            song = view.get_model()[path][0]
+            parts = (width / 4.0)
+            if cellx < parts + 1:
+                rating = (song["~#rating"] & 1) ^ 1
+            elif cellx < 2*parts: rating = 2
+            elif cellx < 3*parts: rating = 3
+            else: rating = 4
+            self.__set_rating(rating, [song])
+
+    def __set_rating(self, value, songs):
+        for song in songs: song["~#rating"] = value
+        widgets.watcher.changed(songs)
+
+    def set_selected_ratings(self, item, value):
+        self.__set_rating(value, self.get_selected_songs())
+
+    def song_properties(self, item):
+        SongProperties(self.get_selected_songs())
+
+    def __key_press(self, songlist, event):
+        if event.string in "01234":
+            self.__set_rating(int(event.string), self.get_selected_songs())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
@@ -3480,7 +3492,7 @@ class LibraryBrowser(gtk.Window):
         rem.connect('activate', self.__remove_selected_songs, view)
         menu.append(rem)
         prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
-        prop.connect('activate', self.__song_properties, view)
+        prop.connect('activate', view.song_properties)
         menu.append(prop)
         menu.show_all()
         self.connect_object('destroy', gtk.Menu.destroy, menu)
@@ -3497,10 +3509,6 @@ class LibraryBrowser(gtk.Window):
         for row in rows:
             library.remove(model[row][0])
             widgets.watcher.removed(model[row][0])
-
-    def __song_properties(self, activator, view):
-        model, rows = view.get_selection().get_selected_rows()
-        SongProperties([model[row][0] for row in rows])
 
     def __button_press(self, view, event, menu):
         if event.button != 3:
@@ -3542,7 +3550,7 @@ class PlayList(SongList):
         rem.connect('activate', self.__remove_selected_songs, key)
         menu.append(rem)
         prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
-        prop.connect('activate', self.__song_properties)
+        prop.connect('activate', self.song_properties)
         menu.append(prop)
         menu.show_all()
         self.connect_object('destroy', gtk.Menu.destroy, menu)
@@ -3611,10 +3619,6 @@ class PlayList(SongList):
             iter = model.get_iter(row)
             model.remove(iter)
         self.__refresh_indices(activator, key)
-
-    def __song_properties(self, activator):
-        model, rows = self.get_selection().get_selected_rows()
-        SongProperties([model[row][0] for row in rows])
 
     def __refresh_indices(self, context, key):
         for i, row in enumerate(iter(self.get_model())):
