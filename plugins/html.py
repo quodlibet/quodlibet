@@ -50,7 +50,9 @@ def plugin_songs(songs):
                                     buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                                              gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
     resp = chooser.run()
-    if resp != gtk.RESPONSE_ACCEPT: return
+    if resp != gtk.RESPONSE_ACCEPT:
+        chooser.destroy()
+        return
 
     fn = chooser.get_filename()
     chooser.destroy()
