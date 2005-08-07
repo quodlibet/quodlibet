@@ -648,8 +648,8 @@ class PreferencesWindow(gtk.Window):
         config.write(const.CONFIG)
 
 class DeleteDialog(gtk.Dialog):
-    def __init__(self, parent, files):
-        gtk.Dialog.__init__(self, _("Delete Files"), parent)
+    def __init__(self, files):
+        gtk.Dialog.__init__(self, _("Delete Files"))
         self.set_border_width(6)
         self.vbox.set_spacing(6)
         self.set_has_separator(False)
@@ -1772,7 +1772,7 @@ class PanedBrowser(gtk.VBox, Browser):
 
     def fill(self, songs):
         if self.__save: self.save()
-        self.emit('songs-selected', songs, None)
+        self.emit('songs-selected', list(songs), None)
 
 gobject.type_register(PanedBrowser)
 
@@ -2930,133 +2930,17 @@ class MainWindow(gtk.Window):
         header = col.header_name
         self.prep_main_popup(header, 1, 0)
 
-    def remove_song(self, item):
-        view = self.songlist
-        selection = view.get_selection()
-        model, rows = selection.get_selected_rows()
-        iters = [model.get_iter(row) for row in rows]
-        for iter in iters:
-            song = model[iter][0]
-            library.remove(song)
-            widgets.watcher.removed(song)
-        widgets.watcher.refresh()
-
     def __song_removed(self, watcher, song):
         player.playlist.remove(song)
         self.__set_time()
-
-    def delete_song(self, item):
-        view = self.songlist
-        selection = view.get_selection()
-        model, rows = selection.get_selected_rows()
-        songs = [(model[r][0]["~filename"], model[r][0],
-                  model.get_iter(r)) for r in rows]
-        d = DeleteDialog(self, [song[0] for song in songs])
-        resp = d.run()
-        d.destroy()
-        if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
-        else:
-            if resp == 0: s = _("Moving %d/%d.")
-            elif resp == 2: s = _("Deleting %d/%d.")
-            else: return
-            w = qltk.WaitLoadWindow(self, len(songs), s, (0, len(songs)))
-            trash = os.path.expanduser("~/.Trash")
-            for filename, song, iter in songs:
-                try:
-                    if resp == 0:
-                        basename = os.path.basename(filename)
-                        shutil.move(filename, os.path.join(trash, basename))
-                    else:
-                        os.unlink(filename)
-                    library.remove(song)
-                    widgets.watcher.removed(song)
-
-                except:
-                    qltk.ErrorMessage(
-                        self, _("Unable to delete file"),
-                        _("Deleting <b>%s</b> failed. "
-                          "Possibly the target file does not exist, "
-                          "or you do not have permission to "
-                          "delete it.") % (filename)).run()
-                    break
-                else:
-                    w.step(w.current + 1, w.count)
-            w.destroy()
-            widgets.watcher.refresh()
 
     def __current_song_prop(self, *args):
         song = widgets.watcher.song
         if song: SongProperties([song])
 
     def prep_main_popup(self, header, button, time):
-        if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
-        menu = gtk.Menu()
-
-        if header == "~rating":
-            item = gtk.MenuItem(_("Rating"))
-            m2 = gtk.Menu()
-            item.set_submenu(m2)
-            for i in range(5):
-                itm = gtk.MenuItem("%d\t%s" %(i, util.format_rating(i)))
-                m2.append(itm)
-                itm.connect('activate', self.set_selected_ratings, i)
-            menu.append(item)
-            menu.append(gtk.SeparatorMenuItem())
-
-        songs = self.songlist.get_selected_songs()
-
-        if self.browser.can_filter("artist"):
-            b = gtk.ImageMenuItem(_("Filter on _artist"))
-            b.connect_object('activate', self.__filter_on, 'artist', songs)
-            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
-            menu.append(b)
-        if self.browser.can_filter("album"):
-            b = gtk.ImageMenuItem(_("Filter on al_bum"))
-            b.connect_object('activate', self.__filter_on, 'album', songs)
-            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
-            menu.append(b)
-        header = {"~rating":"~#rating", "~length":"~#length"}.get(
-            header, header)
-        if (header not in ["artist", "album"] and
-            self.browser.can_filter(header) and
-            (header[0] != "~" or header[1] == "#")):
-            # Translators: The substituted string is the name of the
-            # selected column (a translated tag name).
-            b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
-            b.connect_object('activate', self.__filter_on, header, songs)
-            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
-            menu.append(b)
-        if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
-
-        submenu = self.songlist.pm.create_plugins_menu(
-                self.songlist.get_selected_songs())
-        if submenu is not None:
-            b = gtk.ImageMenuItem(_("Plugins"))
-            b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
-            menu.append(b)
-            b.set_submenu(submenu)
-            if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
-
-        # Translators: Only translate this if your GTK locale uses
-        # identical strings for "Remove" and "Delete". Otherwise do not
-        # translate it, or translate it verbatim. This means
-        # "Remove from library"; Remove in the context of removing a song
-        # from a playlist gets its default GTK translation since "Delete"
-        # is not available there.
-        text = _('gtk-remove')
-        b = gtk.ImageMenuItem(text)
-        b_img = gtk.Image()
-        b_img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
-        b.set_image(b_img)
-        b.connect('activate', self.remove_song)
-        menu.append(b)
-        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        b.connect('activate', self.delete_song)
-        menu.append(b)
-        b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        b.connect_object('activate', SongProperties, songs)
-        menu.append(b)
-
+        menu = self.songlist.Menu(
+            header, self.browser.can_filter, self.__filter_on, True)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
@@ -3218,6 +3102,71 @@ class SongList(HintedTreeView):
         _render.set_property('xpad', 12)
         _render.set_property('xalign', 1.0)
 
+    def Menu(self, header, can_filter, filter, remove):
+        if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
+        menu = gtk.Menu()
+
+        if header == "~rating":
+            item = gtk.MenuItem(_("Rating"))
+            m2 = gtk.Menu()
+            item.set_submenu(m2)
+            for i in range(5):
+                itm = gtk.MenuItem("%d\t%s" %(i, util.format_rating(i)))
+                m2.append(itm)
+                itm.connect('activate', self.set_selected_ratings, i)
+            menu.append(item)
+            menu.append(gtk.SeparatorMenuItem())
+
+        songs = self.get_selected_songs()
+        if can_filter("artist"):
+            b = gtk.ImageMenuItem(_("Filter on _artist"))
+            b.connect_object('activate', filter, 'artist', songs)
+            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            menu.append(b)
+        if can_filter("album"):
+            b = gtk.ImageMenuItem(_("Filter on al_bum"))
+            b.connect_object('activate', filter, 'album', songs)
+            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            menu.append(b)
+        header = {"~rating":"~#rating", "~length":"~#length"}.get(
+            header, header)
+        if (header not in ["artist", "album"] and can_filter(header) and
+            (header[0] != "~" or header[1] == "#")):
+            # Translators: The substituted string is the name of the
+            # selected column (a translated tag name).
+            b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
+            b.connect_object('activate', filter, header, songs)
+            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            menu.append(b)
+        if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+
+        submenu = self.pm.create_plugins_menu(songs)
+        if submenu is not None:
+            b = gtk.ImageMenuItem(_("_Plugins"))
+            b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+            menu.append(b)
+            b.set_submenu(submenu)
+            if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+
+        if remove:
+            b = gtk.ImageMenuItem(_('Remove from Library'))
+            b_img = gtk.Image()
+            b_img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+            b.set_image(b_img)
+            b.connect_object('activate', self.remove_songs, songs)
+
+        menu.append(b)
+        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        b.connect_object('activate', self.delete_songs, songs)
+        menu.append(b)
+        b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        b.connect_object('activate', SongProperties, songs)
+        menu.append(b)
+
+        menu.show_all()
+        menu.connect('selection-done', lambda m: m.destroy())
+        return menu
+
     def __init__(self):
         HintedTreeView.__init__(self)
         self.set_size_request(200, 150)
@@ -3259,6 +3208,47 @@ class SongList(HintedTreeView):
             elif cellx < 3*parts: rating = 3
             else: rating = 4
             self.__set_rating(rating, [song])
+
+    def remove_songs(self, songs):
+        for song in songs:
+            library.remove(song)
+            widgets.watcher.removed(song)
+        widgets.watcher.refresh()
+
+    def delete_songs(self, songs):
+        songs = [(song["~filename"], song) for song in songs]
+        d = DeleteDialog([song[0] for song in songs])
+        resp = d.run()
+        d.destroy()
+        if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
+        else:
+            if resp == 0: s = _("Moving %d/%d.")
+            elif resp == 2: s = _("Deleting %d/%d.")
+            else: return
+            w = qltk.WaitLoadWindow(None, len(songs), s, (0, len(songs)))
+            trash = os.path.expanduser("~/.Trash")
+            for filename, song in songs:
+                try:
+                    if resp == 0:
+                        basename = os.path.basename(filename)
+                        shutil.move(filename, os.path.join(trash, basename))
+                    else:
+                        os.unlink(filename)
+                    library.remove(song)
+                    widgets.watcher.removed(song)
+
+                except:
+                    qltk.ErrorMessage(
+                        self, _("Unable to delete file"),
+                        _("Deleting <b>%s</b> failed. "
+                          "Possibly the target file does not exist, "
+                          "or you do not have permission to "
+                          "delete it.") % (filename)).run()
+                    break
+                else:
+                    w.step(w.current + 1, w.count)
+            w.destroy()
+            widgets.watcher.refresh()
 
     def __set_rating(self, value, songs):
         for song in songs: song["~#rating"] = value
@@ -3453,37 +3443,17 @@ class LibraryBrowser(gtk.Window):
             vbox.pack_start(browser, expand=False)
             vbox.pack_start(sw)
             self.add(vbox)
+        self.browser = browser
 
-        menu = gtk.Menu()
-        text = _('gtk-remove')
-        rem = gtk.ImageMenuItem(text)
-        rem_img = gtk.Image()
-        rem_img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
-        rem.set_image(rem_img)
-        rem.connect('activate', self.__remove_selected_songs, view)
-        menu.append(rem)
-        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
-        prop.connect('activate', view.song_properties)
-        menu.append(prop)
-        menu.show_all()
-        self.connect_object('destroy', gtk.Menu.destroy, menu)
-        view.connect('button-press-event', self.__button_press, menu)
-        view.connect_object('popup-menu', gtk.Menu.popup, menu,
-                            None, None, None, 2, 0)
+        view.connect('button-press-event', self.__button_press)
+        view.connect('popup-menu', self.__menu, 3, 0)
         sid = widgets.watcher.connect_object('refresh', Kind.activate, browser)
         self.connect_object('destroy', widgets.watcher.disconnect, sid)
         self.set_default_size(500, 300)
         self.show_all()
 
-    def __remove_selected_songs(self, activator, view):
-        model, rows = view.get_selection().get_selected_rows()
-        for row in rows:
-            library.remove(model[row][0])
-            widgets.watcher.removed(model[row][0])
-
-    def __button_press(self, view, event, menu):
-        if event.button != 3:
-            return False
+    def __button_press(self, view, event):
+        if event.button != 3: return False
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
@@ -3491,8 +3461,31 @@ class LibraryBrowser(gtk.Window):
         selection = view.get_selection()
         if not selection.path_is_selected(path):
             view.set_cursor(path, col, 0)
-        menu.popup(None, None, None, event.button, event.time)
+        self.__menu(view, event.button, event.time)
         return True
+
+    def __menu(self, view, button, time):
+        path, col = view.get_cursor()
+        header = col.header_name
+        menu = view.Menu(
+            header, self.browser.can_filter, self.__filter_on, True)
+        menu.show_all()
+        menu.connect('selection-done', lambda m: m.destroy())
+        menu.popup(None, None, None, button, time)
+
+    def __filter_on(self, header, songs=None):
+        if not self.browser or not self.browser.can_filter(header):
+            return
+        if songs is None:
+            if widgets.watcher.song: songs = [widgets.watcher.song]
+            else: return
+
+        values = set()
+        if header.startswith("~#"):
+            values.update([song(header, 0) for song in songs])
+        else:
+            for song in songs: values.update(song.list(header))
+        self.browser.filter(header, list(values))
 
 class PlayList(SongList):
     def lists_model(cls):
@@ -5655,7 +5648,7 @@ class ExFalsoWindow(gtk.Window):
 
     def __delete(self, item, files):
         raise NotImplementedError
-        d = DeleteDialog(self, [files])
+        d = DeleteDialog([files])
         resp = d.run()
         d.destroy()
         # see delete_song() on MainWindow to implement
