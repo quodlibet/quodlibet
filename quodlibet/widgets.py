@@ -87,13 +87,13 @@ class SongWatcher(gtk.Object):
     SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
     
     __gsignals__ = {
-        # A song in the library has been changed; update it in all views.
+        # Songs in the library have changed.
         'changed': SIG_PYOBJECT,
 
-        # A song was removed from the library; remove it from all views.
+        # Songs were removed from the library.
         'removed': SIG_PYOBJECT,
 
-        # A song was added to the library.
+        # Songs were added to the library.
         'added': SIG_PYOBJECT,
 
         # A group of changes has been finished; all library views should
@@ -138,8 +138,8 @@ class SongWatcher(gtk.Object):
     def added(self, songs):
         gobject.idle_add(self.emit, 'added', songs)
 
-    def removed(self, song):
-        gobject.idle_add(self.emit, 'removed', song)
+    def removed(self, songs):
+        gobject.idle_add(self.emit, 'removed', songs)
 
     def missing(self, song):
         gobject.idle_add(self.emit, 'missing', song)
@@ -169,7 +169,7 @@ class SongWatcher(gtk.Object):
         except Exception, err:
             sys.stdout.write(str(err) + "\n")
             library.remove(song)
-            self.removed(song)
+            self.removed([song])
         else: self.changed([song])
 
     error = reload
@@ -2696,7 +2696,7 @@ class MainWindow(gtk.Window):
             for added, changed, removed in library.scan([filename]): pass
             widgets.watcher.added(added)
             widgets.watcher.changed(changed)
-            for song in removed: widgets.watcher.removed(song)
+            widgets.watcher.removed(removed)
             self.__make_query("filename = /^%s/c" % sre.escape(filename))
 
         os.close(self.fifo)
@@ -2717,7 +2717,7 @@ class MainWindow(gtk.Window):
     def __song_missing(self, watcher, song, statusbar):
         try: library.remove(song)
         except KeyError: pass
-        else: watcher.removed(song)
+        else: watcher.removed([song])
         gobject.idle_add(
             statusbar.set_text, _("Could not play %s.") % song['~filename'])
 
@@ -2855,7 +2855,7 @@ class MainWindow(gtk.Window):
             if config.get("settings", "scan"):
                 self.scan_dirs(config.get("settings", "scan").split(":"))
         widgets.watcher.changed(c)
-        for song in r: widgets.watcher.removed(song)
+        widgets.watcher.removed(r)
         if c or r:
             library.save(const.LIBRARY)
             self.browser.activate()
@@ -2902,7 +2902,7 @@ class MainWindow(gtk.Window):
             if win.step(len(added)): break
         widgets.watcher.changed(changed)
         widgets.watcher.added(added)
-        for song in removed: widgets.watcher.removed(song)
+        widgets.watcher.removed(removed)
         win.destroy()
         self.browser.activate()
 
@@ -2930,8 +2930,8 @@ class MainWindow(gtk.Window):
         header = col.header_name
         self.prep_main_popup(header, 1, 0)
 
-    def __song_removed(self, watcher, song):
-        player.playlist.remove(song)
+    def __song_removed(self, watcher, songs):
+        map(player.playlist.remove, songs)
         self.__set_time()
 
     def __current_song_prop(self, *args):
@@ -3212,11 +3212,12 @@ class SongList(HintedTreeView):
     def remove_songs(self, songs):
         for song in songs:
             library.remove(song)
-            widgets.watcher.removed(song)
+        widgets.watcher.removed(songs)
         widgets.watcher.refresh()
 
     def delete_songs(self, songs):
         songs = [(song["~filename"], song) for song in songs]
+        removed = []
         d = DeleteDialog([song[0] for song in songs])
         resp = d.run()
         d.destroy()
@@ -3235,7 +3236,7 @@ class SongList(HintedTreeView):
                     else:
                         os.unlink(filename)
                     library.remove(song)
-                    widgets.watcher.removed(song)
+                    removed.append(songs)
 
                 except:
                     qltk.ErrorMessage(
@@ -3248,6 +3249,7 @@ class SongList(HintedTreeView):
                 else:
                     w.step(w.current + 1, w.count)
             w.destroy()
+            widgets.watcher.removed(removed)
             widgets.watcher.refresh()
 
     def __set_rating(self, value, songs):
@@ -3361,6 +3363,16 @@ class SongList(HintedTreeView):
         model.foreach(find, it)
         return it[-1]
 
+    def songs_to_iters(self, songs):
+        model = self.get_model()
+        it = []
+        def find(model, path, iter, it):
+            if model[iter][0] in songs: it.append(iter)
+            return len(it) == len(songs)
+        model.foreach(find, it)
+        return it
+        
+
     def __song_updated(self, watcher, songs):
         pi = []
         model = self.get_model()
@@ -3376,11 +3388,8 @@ class SongList(HintedTreeView):
         for p, i in pi:
             model.row_changed(p, i)
 
-    def __song_removed(self, watcher, song):
-        iter = self.song_to_iter(song)
-        if iter:
-            model = self.get_model()
-            model.remove(iter)
+    def __song_removed(self, watcher, songs):
+        map(self.get_model().remove, self.songs_to_iters(songs))
 
     # Build a new filter around our list model, set the headers to their
     # new values.
@@ -5298,15 +5307,15 @@ class SongProperties(gtk.Window):
         self.show_all()
         notebook.set_current_page(initial)
 
-    def __remove(self, watcher, song, model, selection, sig):
-        to_remove = [None]
+    def __remove(self, watcher, songs, model, selection, sig):
+        to_remove = []
         def remove(model, path, iter):
-            if model[iter][0] == song: to_remove.append(iter)
-            return bool(to_remove[-1])
+            if model[iter][0] in songs: to_remove.append(iter)
+            return len(to_remove) == len(songs)
         model.foreach(remove)
-        if to_remove[-1]:
+        if to_remove:
             selection.handler_block(sig)
-            model.remove(to_remove[-1])
+            map(model.remove, to_remove)
             selection.handler_unblock(sig)
             self.__refill(model)
 
