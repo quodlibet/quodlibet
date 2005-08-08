@@ -62,7 +62,7 @@ def plugin_songs(songs):
     cols_s = ""
     for col in cols:
         if col == "~current": continue
-        cols_s += '<th>%s</th>' % (col)
+        cols_s += '<th>%s</th>' % (col.strip('~#'))
     
     songs_s = ""
     for song in songs:
