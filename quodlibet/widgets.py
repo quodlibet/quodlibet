@@ -3292,7 +3292,7 @@ class SongList(HintedTreeView):
                     else:
                         os.unlink(filename)
                     library.remove(song)
-                    removed.append(songs)
+                    removed.append(song)
 
                 except:
                     qltk.ErrorMessage(
