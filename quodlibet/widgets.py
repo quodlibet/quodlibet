@@ -1272,7 +1272,7 @@ class AlbumList(Browser, gtk.VBox):
                     self.cover = newcover
                     self.__covers[self.title] = newcover
                     self._model.row_changed(
-                        self._path, self._model.get_iter(self._path))
+                        self._model.get_path(self._iter), self._iter)
 
     # An auto-searching entry; it wraps is a TreeModelFilter whose parent
     # is the album list.
@@ -1411,6 +1411,7 @@ class AlbumList(Browser, gtk.VBox):
         for s in [
             widgets.watcher.connect('refresh', self.__refresh, view, model),
             widgets.watcher.connect('removed', self.__remove_songs, model),
+            widgets.watcher.connect('added', self.__add_songs, model),
             ]:
             self.connect_object('destroy', widgets.watcher.disconnect, s)
 
@@ -1442,6 +1443,19 @@ class AlbumList(Browser, gtk.VBox):
         if None in albums: return None
         else: return albums
 
+    def __update(self, changed, model):
+        to_change = []
+        to_remove = []        
+        def update(model, path, iter):
+            album = model[iter][0]
+            if album is not None and album.title in changed:
+                if album: to_change.append((path, iter))
+                else: to_remove.append(iter)
+                album.finalize()
+        model.foreach(update)
+        if to_change: map(model.row_changed, *zip(*to_change))
+        if to_remove: map(model.remove, to_remove)
+
     def __remove_songs(self, watcher, removed, model):
         albums = model.get_albums()
         changed = set()
@@ -1454,18 +1468,32 @@ class AlbumList(Browser, gtk.VBox):
             else:
                 changed.add("")
                 albums[""].remove(song)
+        self.__update(changed, model)
 
-        to_change = []
-        to_remove = []
-        def update(model, path, iter):
-            album = model[iter][0]
-            if album is not None and album.title in changed:
-                if album: to_change.append((path, iter))
-                else: to_remove.append(iter)
-                album.finalize()
-        model.foreach(update)
-        if to_change: map(model.row_changed, *zip(*to_change))
-        if to_remove: map(model.remove, to_remove)
+    def __add_songs(self, watcher, added, model):
+        albums = model.get_albums()
+        changed = set()
+        new = []
+        for song in added:
+            if "album" in song:
+                for alb in song.list("album"):
+                    if alb in albums:
+                        changed.add(alb)
+                        albums[alb].add(song)
+                    else:
+                        albums[alb] = self._Album(alb)
+                        new.append(albums[alb])
+            else:
+                if "" not in albums:
+                    albums[""] = self._Album("")
+                    new.append(albums[""])
+                changed.add("")
+                albums[""].add(song)
+        for album in new:
+            album.finalize()
+            album._model = model
+            album._iter = model.append(row=[album])
+        self.__update(changed, model)
 
     def __get_selected_songs(self, selection):
         model, rows = selection.get_selected_rows()
@@ -1571,7 +1599,7 @@ class AlbumList(Browser, gtk.VBox):
 
         if clear_cache: self._Album.clear_cache()
         for row in iter(model):
-            if row[0]: row[0]._path = row[0]._model = None
+            if row[0]: row[0]._iter = row[0]._model = None
         model.clear()
         albums = {}
         songs = library.itervalues()
@@ -1592,7 +1620,7 @@ class AlbumList(Browser, gtk.VBox):
         model.append(row=[None])
         for album in albums:
             album.finalize()
-            album._path = model.get_path(model.append(row=[album]))
+            album._iter = model.append(row=[album])
             album._model = model
 
         view.thaw_child_notify()
@@ -3426,7 +3454,6 @@ class SongList(HintedTreeView):
             return len(it) == len(songs)
         model.foreach(find, it)
         return it
-        
 
     def __song_updated(self, watcher, songs):
         pi = []
