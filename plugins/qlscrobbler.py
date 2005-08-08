@@ -1,5 +1,5 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.6.1
+# version 0.7
 # (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
 #             Joe Wreschnig <piman@sacredchao.net>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
@@ -14,7 +14,7 @@ class QLScrobbler(object):
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
 	PLUGIN_ICON = gtk.STOCK_CONNECT
-	PLUGIN_VERSION = "0.6.1"
+	PLUGIN_VERSION = "0.7"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -24,7 +24,9 @@ class QLScrobbler(object):
 	username = ""
 	password = ""
 	pwhash = ""
+	
 	timeout_id = -1
+	submission_tid = -1
 
 	challenge = ""
 	submit_url = ""
@@ -38,6 +40,7 @@ class QLScrobbler(object):
 	already_submitted = False
 	locked = False
 	flushing = False
+	disabled = False
 
 	# we need to store this because not all events get the song
 	song = None
@@ -116,9 +119,14 @@ class QLScrobbler(object):
 
 		return 0
 		
-	def plugin_on_removed(self, song):
-		if self.song is song:
-			self.already_submitted = True
+	def plugin_on_removed(self, songs):
+		try:
+			if self.song in songs:
+				self.already_submitted = True
+		except:
+			# Older version compatibility.
+			if self.song is song:
+				self.already_submitted = True
 
 	def plugin_on_song_ended(self, song, stopped):
 		if self.timeout_id > 0:
@@ -265,8 +273,9 @@ class QLScrobbler(object):
 				
 			self.broken = True
 
-		# Honor INTERVAL
-		interval = int(lines.pop(0).split()[1])
+		# Honor INTERVAL if available
+		try: interval = int(lines.pop(0).split()[1])
+		except: interval = 0
 
 		if interval > 1:
 			self.waiting = True
@@ -279,6 +288,20 @@ class QLScrobbler(object):
 		bg.start()
 
 	def submit_song_helper(self):
+		enabled = getattr(self, 'PMEnFlag', False)
+		if enabled and self.disabled:
+			print "Plugin re-enabled - accepting new songs."
+			self.disabled = False
+			if self.submission_tid != -1:
+				gobject.source_remove(self.submission_tid);
+				self.submission_tid = -1
+		elif not enabled and not self.disabled: #if we've already printed
+			print "Plugin disabled - not accepting any new songs."
+			self.disabled = True
+			if len(self.queue) > 0:
+				self.submission_tid = gobject.timeout_add(120 * 1000, self.submit_song_helper)
+				print "Attempts will continue to submit the last %d songs." % len(self.queue)
+
 		if self.already_submitted == True or self.broken == True: return
 
 		if self.flushing == False:
@@ -385,6 +408,11 @@ class QLScrobbler(object):
 			self.waiting = True
 			gobject.timeout_add(interval_secs * 1000, self.clear_waiting)
 			print "Server says to wait for %d seconds." % interval_secs
+
+		if self.disabled and len(self.queue) == 0 and self.submission_tid != -1:
+			print "All songs submitted, disabling retries."
+			gobject.source_remove(self.submission_tid)
+			self.submission_tid = -1
 
 		self.already_submitted = True
 		self.locked = False
