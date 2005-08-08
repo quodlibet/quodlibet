@@ -1212,7 +1212,10 @@ class AlbumList(Browser, gtk.VBox):
             self.length = sum([song["~#length"] for song in self.songs])
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
-            self.people = list(self.people)
+            people = set()
+            for song in self.songs:
+                people.update(song.listall(["artist","performer","composer"]))
+            self.people = list(people)
             self.people.sort()
 
             text = "<i><b>%s</b></i>" % util.escape(
@@ -1238,7 +1241,12 @@ class AlbumList(Browser, gtk.VBox):
                     if not self.__pending_covers: gobject.idle_add(
                         self.__get_covers, priority=gobject.PRIORITY_LOW)
                     self.__pending_covers.append([self.__get_cover, song])
-            self.people.update(song.listall(["artist","performer","composer"]))
+
+        def remove(self, song):
+            try: self.songs.remove(song)
+            except KeyError: pass
+
+        def __nonzero__(self): return bool(self.songs)
 
         def __get_covers(self):
             try: get, song = self.__pending_covers.pop()
@@ -1340,6 +1348,13 @@ class AlbumList(Browser, gtk.VBox):
                           cmp(a1.date, a2.date) or
                           cmp(a1.title, a2.title))
 
+    class _AlbumStore(gtk.ListStore):
+        def get_albums(self):
+            albums = [row[0] for row in self]
+            try: albums.remove(None)
+            except ValueError: pass
+            return dict([(a.title, a) for a in albums])
+
     def __init__(self, save=True, play=True):
         gtk.VBox.__init__(self)
 
@@ -1349,7 +1364,7 @@ class AlbumList(Browser, gtk.VBox):
         sw.set_shadow_type(gtk.SHADOW_IN)
         view = HintedTreeView()
         view.set_headers_visible(False)
-        model = gtk.ListStore(object)
+        model = self._AlbumStore(object)
         model_sort = gtk.TreeModelSort(model)
         model_filter = model_sort.filter_new()
         view.set_model(model_filter)
@@ -1393,8 +1408,11 @@ class AlbumList(Browser, gtk.VBox):
 
         if play: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed, e)
-        s = widgets.watcher.connect('refresh', self.__refresh, view, model)
-        self.connect_object('destroy', widgets.watcher.disconnect, s)
+        for s in [
+            widgets.watcher.connect('refresh', self.__refresh, view, model),
+            widgets.watcher.connect('removed', self.__remove_songs, model),
+            ]:
+            self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
@@ -1423,6 +1441,31 @@ class AlbumList(Browser, gtk.VBox):
         albums = [model[row][0] for row in rows]
         if None in albums: return None
         else: return albums
+
+    def __remove_songs(self, watcher, removed, model):
+        albums = model.get_albums()
+        changed = set()
+        for song in removed:
+            if "album" in song:
+                for alb in song.list("album"):
+                    if alb in albums:
+                        changed.add(alb)
+                        albums[alb].remove(song)
+            else:
+                changed.add("")
+                albums[""].remove(song)
+
+        to_change = []
+        to_remove = []
+        def update(model, path, iter):
+            album = model[iter][0]
+            if album is not None and album.title in changed:
+                if album: to_change.append((path, iter))
+                else: to_remove.append(iter)
+                album.finalize()
+        model.foreach(update)
+        if to_change: map(model.row_changed, *zip(*to_change))
+        if to_remove: map(model.remove, to_remove)
 
     def __get_selected_songs(self, selection):
         model, rows = selection.get_selected_rows()
@@ -1582,6 +1625,11 @@ class PanedBrowser(gtk.VBox, Browser):
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__changed)
 
+            for s in [
+                widgets.watcher.connect('removed', self.__removed),
+                ]:
+                self.connect_object('destroy', widgets.watcher.disconnect, s)
+
             self.connect_object('destroy', self.__destroy, model)
 
         def __destroy(self, model):
@@ -1594,12 +1642,22 @@ class PanedBrowser(gtk.VBox, Browser):
                 self.scroll_to_cell(rows[0][0], use_align=True, row_align=0.5)
             self.__next.fill(self.get_songs())
 
+        def __removed(self, watcher, songs):
+            model = self.get_model()
+            to_remove = []
+            def update(model, path, iter):
+                data = model[iter][1]
+                for song in songs:
+                    if song in data: data.remove(song)
+                if not model[iter][1]: to_remove.append(iter)
+            model.foreach(update)
+            map(model.remove, to_remove)
+
         def inhibit(self): self.get_selection().handler_block(self.__sig)
         def uninhibit(self): self.get_selection().handler_unblock(self.__sig)
 
         def fill(self, songs, inhibit=False):
             selected = self.get_selected()
-            #print "Refilling", self.tags, selected
             self.inhibit()
             values = {}
             unknown = set()
@@ -3210,10 +3268,8 @@ class SongList(HintedTreeView):
             self.__set_rating(rating, [song])
 
     def remove_songs(self, songs):
-        for song in songs:
-            library.remove(song)
+        map(library.remove, songs)
         widgets.watcher.removed(songs)
-        widgets.watcher.refresh()
 
     def delete_songs(self, songs):
         songs = [(song["~filename"], song) for song in songs]
@@ -3250,7 +3306,6 @@ class SongList(HintedTreeView):
                     w.step(w.current + 1, w.count)
             w.destroy()
             widgets.watcher.removed(removed)
-            widgets.watcher.refresh()
 
     def __set_rating(self, value, songs):
         for song in songs: song["~#rating"] = value
