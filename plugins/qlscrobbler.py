@@ -125,7 +125,7 @@ class QLScrobbler(object):
 				self.already_submitted = True
 		except:
 			# Older version compatibility.
-			if self.song is song:
+			if self.song is songs:
 				self.already_submitted = True
 
 	def plugin_on_song_ended(self, song, stopped):
