@@ -7,7 +7,7 @@
 # $Id$
 
 import os, sys
-import pickle
+import cPickle as pickle
 import util; from util import to
 import fcntl
 import random
