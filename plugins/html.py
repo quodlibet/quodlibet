@@ -69,7 +69,7 @@ def plugin_songs(songs):
         s = '<tr>'
         for col in cols:
             if col == "~current": continue
-            s += '\n<td>%s</td>' % escape(str(song.comma(col)))
+            s += '\n<td>%s</td>' % (escape(str(song.comma(col))) or '&nbsp;')
         s += '</tr>'
         songs_s += s
 
