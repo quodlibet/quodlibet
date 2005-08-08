@@ -15,7 +15,7 @@ import os
 import util
 from qltk import ErrorMessage
 def plugin_songs(songs):
-    if not util.iscommand("k3a"):
+    if not util.iscommand("k3b"):
         ErrorMessage(None, "K3b not found",
                      "The K3b burning program was not found. "
                      "You can get K3b at http://k3b.sourceforge.net.").run()
