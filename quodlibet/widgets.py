@@ -1192,6 +1192,7 @@ class AlbumList(Browser, gtk.VBox):
             self.title = title
             self.songs = set()
             self.cover = self.__covers.get(self.title, False)
+            self.genre = set()
 
         def get(self, key, default=None):
             if key == "~#length": return self.length
@@ -1202,6 +1203,8 @@ class AlbumList(Browser, gtk.VBox):
             elif key == "date": return self.date
             elif key in ["people", "artist", "artists"]:
                 return "\n".join(self.people)
+            elif key in "genre":
+                return "\n".join(self.genre)
             else: return default
 
         __call__ = get
@@ -1212,11 +1215,17 @@ class AlbumList(Browser, gtk.VBox):
             self.length = sum([song["~#length"] for song in self.songs])
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
-            people = set()
+            people = {}
+            self.genre = set()
             for song in self.songs:
-                people.update(song.listall(["artist","performer","composer"]))
-            self.people = list(people)
+                for person in song.listall(["artist","performer","composer"]):
+                    if person not in people:
+                        people[person] = 0
+                    people[person] -= 1
+                self.genre.update(song.list("genre"))
+            self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
+            self.people = [person for (num, person) in self.people]
 
             text = "<i><b>%s</b></i>" % util.escape(
                 self.title or _("Songs not in an album"))
