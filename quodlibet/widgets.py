@@ -5323,7 +5323,6 @@ class SongProperties(gtk.Window):
     def __init__(self, songs, initial=1):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
-        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         icon_theme = gtk.icon_theme_get_default()
         self.set_icon(icon_theme.load_icon(
             const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
