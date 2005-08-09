@@ -1253,7 +1253,8 @@ class AlbumList(Browser, gtk.VBox):
 
         def remove(self, song):
             try: self.songs.remove(song)
-            except KeyError: pass
+            except KeyError: return False
+            else: return True
 
         def __nonzero__(self): return bool(self.songs)
 
@@ -1418,8 +1419,8 @@ class AlbumList(Browser, gtk.VBox):
         if play: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed, e)
         for s in [
-            widgets.watcher.connect('refresh', self.__refresh, view, model),
             widgets.watcher.connect('removed', self.__remove_songs, model),
+            widgets.watcher.connect('changed', self.__changed_songs, model),
             widgets.watcher.connect('added', self.__add_songs, model),
             ]:
             self.connect_object('destroy', widgets.watcher.disconnect, s)
@@ -1468,16 +1469,13 @@ class AlbumList(Browser, gtk.VBox):
     def __remove_songs(self, watcher, removed, model):
         albums = model.get_albums()
         changed = set()
-        for song in removed:
-            if "album" in song:
-                for alb in song.list("album"):
-                    if alb in albums:
-                        changed.add(alb)
-                        albums[alb].remove(song)
-            else:
-                changed.add("")
-                albums[""].remove(song)
+        for title, album in albums.iteritems():
+            if True in map(album.remove, removed): changed.add(title)
         self.__update(changed, model)
+
+    def __changed_songs(self, watcher, changed, model):
+        self.__remove_songs(watcher, changed, model)
+        self.__add_songs(watcher, changed, model)
 
     def __add_songs(self, watcher, added, model):
         albums = model.get_albums()
@@ -1492,6 +1490,7 @@ class AlbumList(Browser, gtk.VBox):
                     else:
                         albums[alb] = self._Album(alb)
                         new.append(albums[alb])
+                        albums[alb].add(song)
             else:
                 if "" not in albums:
                     albums[""] = self._Album("")
