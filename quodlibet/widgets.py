@@ -1186,9 +1186,8 @@ class AlbumList(Browser, gtk.VBox):
             self.length = 0
             self.discs = 1
             self.tracks = 0
-            self.date = None
+            self.date = ""
             self.people = set()
-            self._path = False
             self.title = title
             self.songs = set()
             self.cover = self.__covers.get(self.title, False)
@@ -1269,7 +1268,7 @@ class AlbumList(Browser, gtk.VBox):
             gobject.idle_add(self.__get_covers, priority=gobject.PRIORITY_LOW)
 
         def __get_cover(self, song):
-            if self._path is None: return
+            if self._iter is None: return
             cover = song.find_cover()
             if cover is not None:
                 try:
