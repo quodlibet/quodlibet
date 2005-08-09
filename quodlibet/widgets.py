@@ -1625,12 +1625,8 @@ class AlbumList(Browser, gtk.VBox):
                         albums[album] = self._Album(album)
                     albums[album].add(song)
 
-        albums = albums.values()
-        albums.sort(lambda a, b: cmp(a.title, b.title))
-        if albums and albums[0].title == "":
-            albums.append(albums.pop(0))
         model.append(row=[None])
-        for album in albums:
+        for album in albums.values():
             album.finalize()
             album._iter = model.append(row=[album])
             album._model = model
