@@ -6,7 +6,7 @@
 
 # TODO: * Use different lyrics sites for different languages
 
-import os
+import os 
 import gtk, gobject
 import urllib
 from xml.dom import minidom
@@ -17,7 +17,7 @@ import util
 PLUGIN_NAME = "Show the lyrics"
 PLUGIN_DESC = "Search for and save the lyrics of songs, using leolyrics.com."
 PLUGIN_ICON = gtk.STOCK_EDIT #For now
-PLUGIN_VERSION = "0.12"
+PLUGIN_VERSION = "0.12.1"
 
 class LyricWindow(gtk.Window):
     
@@ -179,8 +179,7 @@ class LyricWindow(gtk.Window):
         return util.fsencode(os.path.join(
             os.path.expanduser("~/.lyrics"),
             song.comma("artist").replace('/', '')[:64],
-            song.comma("album").replace('/', '')[:64],
-            song.comma("title").replace('/', '') + '.lyric'))
+            song.comma("~title~version").replace('/', '') + '.lyric'))
 
     def __save(self, save, lyricname, buffer, delete):
         if os.path.exists(lyricname):
