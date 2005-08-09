@@ -1227,6 +1227,12 @@ class AlbumList(Browser, gtk.VBox):
             self.people.sort()
             self.people = [person for (num, person) in self.people]
 
+            if self.title:
+                for song in self.songs:
+                    if "date" in song:
+                        self.date = song.list("date")[0]
+                    self.discs = max(self.discs, song("~#disc", 0))
+
             text = "<i><b>%s</b></i>" % util.escape(
                 self.title or _("Songs not in an album"))
             if self.date: text += " (%s)" % self.date
@@ -1243,8 +1249,6 @@ class AlbumList(Browser, gtk.VBox):
         def add(self, song):
             self.songs.add(song)
             if self.title:
-                if self.date is None: self.date = song.get("date")
-                self.discs = max(self.discs, song("~#disc", 0))
                 if self.cover is False:
                     self.cover = None
                     if not self.__pending_covers: gobject.idle_add(
