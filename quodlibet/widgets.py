@@ -1217,10 +1217,11 @@ class AlbumList(Browser, gtk.VBox):
             people = {}
             self.genre = set()
             for song in self.songs:
-                for person in song.listall(["artist","performer","composer"]):
-                    if person not in people:
-                        people[person] = 0
-                    people[person] -= 1
+                for w, key in enumerate(["performer", "composer", "artist"]):
+                    for person in song.list(key):
+                        if person not in people:
+                            people[person] = 0
+                        people[person] -= 1000 ** w
                 self.genre.update(song.list("genre"))
             self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
