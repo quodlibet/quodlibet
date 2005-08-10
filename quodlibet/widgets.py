@@ -2552,7 +2552,7 @@ class MainWindow(gtk.Window):
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.get_selection().connect('changed', self.__set_time)
 
-        widgets.watcher.connect('removed', self.__song_removed)
+        widgets.watcher.connect('removed', self.__set_time)
         widgets.watcher.connect('refresh', self.__refresh)
         widgets.watcher.connect('changed', self.__update_title)
         widgets.watcher.connect('song-started', self.__song_started)
@@ -3050,10 +3050,6 @@ class MainWindow(gtk.Window):
         header = col.header_name
         self.prep_main_popup(header, 1, 0)
 
-    def __song_removed(self, watcher, songs):
-        map(player.playlist.remove, songs)
-        self.__set_time()
-
     def __current_song_prop(self, *args):
         song = widgets.watcher.song
         if song: SongProperties([song])
@@ -3125,10 +3121,8 @@ class MainWindow(gtk.Window):
 
     def __set_time(self, *args):
         statusbar = self.__statusbar
-        model, selected = self.songlist.get_selection().get_selected_rows()
-        if len(selected) > 1: songs = [model[row][0] for row in selected]
-        elif model: songs = [row[0] for row in model]
-        else: songs = []
+        songs = self.songlist.get_selected_songs()
+        if len(songs) <= 1: songs = self.songlist.get_songs()
 
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
@@ -3730,6 +3724,12 @@ class PlayList(SongList):
         return True
 
 class MainSongList(SongList):
+
+    def __init__(self, *args, **kwargs):
+        SongList.__init__(self, *args, **kwargs)
+        s = widgets.watcher.connect_object(
+            'removed', map, player.playlist.remove)
+        self.connect_object('destroy', widgets.watcher.disconnect, s)
 
     def set_sort_by(self, *args, **kwargs):
         SongList.set_sort_by(self, *args, **kwargs)
