@@ -1661,10 +1661,8 @@ class PanedBrowser(gtk.VBox, Browser):
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__changed)
 
-            for s in [
-                widgets.watcher.connect('removed', self.__removed),
-                ]:
-                self.connect_object('destroy', widgets.watcher.disconnect, s)
+            s = widgets.watcher.connect('removed', self.__removed),
+            self.connect_object('destroy', widgets.watcher.disconnect, s)
 
             self.connect_object('destroy', self.__destroy, model)
 
@@ -1731,8 +1729,7 @@ class PanedBrowser(gtk.VBox, Browser):
 
         def set_selected(self, values, jump=False):
             model = self.get_model()
-            if values == None and len(model): values = [model[(0,)][0]]
-            if values == self.get_selected(): return
+            if values == None or values == self.get_selected(): return
             self.inhibit()
             selection = self.get_selection()
             selection.unselect_all()
@@ -1776,8 +1773,6 @@ class PanedBrowser(gtk.VBox, Browser):
         search.connect('changed', self.__filter_changed)
 
         self.refresh_panes(restore=False)
-        s = widgets.watcher.connect('refresh', self.__refresh)
-        self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         self.__save = save
 
@@ -2527,7 +2522,7 @@ class MainWindow(gtk.Window):
         self.songlist.get_selection().connect('changed', self.__set_time)
 
         widgets.watcher.connect('removed', self.__song_removed)
-        widgets.watcher.connect('refresh', self.__set_time)
+        widgets.watcher.connect('refresh', self.__refresh)
         widgets.watcher.connect('changed', self.__update_title)
         widgets.watcher.connect('song-started', self.__song_started)
         widgets.watcher.connect('song-ended', self.__song_ended)
@@ -2937,6 +2932,7 @@ class MainWindow(gtk.Window):
         iter = 7
         c = []
         r = []
+        s = False
         for c, r in library.rebuild(hard):
             if iter == 7:
                 if window.step(len(c), len(r)):
@@ -2947,13 +2943,12 @@ class MainWindow(gtk.Window):
         else:
             window.destroy()
             if config.get("settings", "scan"):
-                self.scan_dirs(config.get("settings", "scan").split(":"))
+                s = self.scan_dirs(config.get("settings", "scan").split(":"))
         widgets.watcher.changed(c)
         widgets.watcher.removed(r)
-        if c or r:
+        if c or r or s:
             library.save(const.LIBRARY)
-            self.browser.activate()
-        widgets.watcher.refresh()
+            widgets.watcher.refresh()
 
     # Set up the preferences window.
     def __preferences(self, activator):
@@ -2980,9 +2975,9 @@ class MainWindow(gtk.Window):
         resp, fns = chooser.run()
         chooser.destroy()
         if resp == gtk.RESPONSE_OK:
-            self.scan_dirs(fns)
-            widgets.watcher.refresh()
-            library.save(const.LIBRARY)
+            if self.scan_dirs(fns):
+                widgets.watcher.refresh()
+                library.save(const.LIBRARY)
         if fns:
             self.last_dir = fns[0]
 
@@ -2998,7 +2993,7 @@ class MainWindow(gtk.Window):
         widgets.watcher.added(added)
         widgets.watcher.removed(removed)
         win.destroy()
-        self.browser.activate()
+        return (added or changed or removed)
 
     def __songs_button_press(self, view, event):
         x, y = map(int, [event.x, event.y])
@@ -3093,7 +3088,11 @@ class MainWindow(gtk.Window):
             self.browser.set_text(query.encode('utf-8'))
             self.browser.activate()
 
-    def __set_time(self, watcher=None):
+    def __refresh(self, watcher):
+        self.browser.activate()
+        self.__set_time()
+
+    def __set_time(self, *args):
         statusbar = self.__statusbar
         model, selected = self.songlist.get_selection().get_selected_rows()
         if len(selected) > 1: songs = [model[row][0] for row in selected]
@@ -3618,14 +3617,11 @@ class PlayList(SongList):
         menu.show_all()
         self.connect_object('destroy', gtk.Menu.destroy, menu)
         self.connect('button-press-event', self.__button_press, menu)
-        self.connect_object('popup-menu', gtk.Menu.popup, menu,
-                            None, None, None, 2, 0)
-
-        sig = widgets.watcher.connect('refresh', self.__refresh_indices, key)
-        self.connect_object('destroy', widgets.watcher.disconnect, sig)
+        self.connect_object(
+            'popup-menu', gtk.Menu.popup, menu, None, None, None, 2, 0)
 
         self.set_model(model)
-        self.connect_object('drag-end', self.__refresh_indices, key)
+        self.connect('drag-end', self.__refresh_indices)
 
         targets = [("text/uri-list", 0, 1)]
         self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
@@ -3660,7 +3656,7 @@ class PlayList(SongList):
                 if it: model.remove(it)
                 iter = model.insert_after(iter, [song])
         ctx.finish(True, True, etime)
-        self.__refresh_indices(ctx, self.__key)
+        self.__refresh_indices()
 
     def append_songs(self, songs):
         model = self.get_model()
@@ -3681,9 +3677,9 @@ class PlayList(SongList):
             del(model[row][0][key])
             iter = model.get_iter(row)
             model.remove(iter)
-        self.__refresh_indices(activator, key)
+        self.__refresh_indices()
 
-    def __refresh_indices(self, context, key):
+    def __refresh_indices(self, *args):
         for i, row in enumerate(iter(self.get_model())):
             row[0][self.__key] = i + 1    # 1 indexed; 0 is not present
 
@@ -5381,15 +5377,12 @@ class SongProperties(gtk.Window):
         self.connect_object('destroy', fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
 
-        s1 = widgets.watcher.connect_object(
-            'refresh', SongProperties.__refill, self, fbasemodel)
+        s1 = widgets.watcher.connect(
+            'changed', self.__refresh, fbasemodel, selection)
         s2 = widgets.watcher.connect(
             'removed', self.__remove, fbasemodel, selection, csig)
-        s3 = widgets.watcher.connect_object(
-            'refresh', selection.emit, 'changed')
         self.connect_object('destroy', widgets.watcher.disconnect, s1)
         self.connect_object('destroy', widgets.watcher.disconnect, s2)
-        self.connect_object('destroy', widgets.watcher.disconnect, s3)
         self.connect_object('changed', self.set_pending, None)
 
         self.emit('changed', songs)
@@ -5415,6 +5408,10 @@ class SongProperties(gtk.Window):
                     {'title':songs[0].comma("title"), 'count':len(songs) - 1})
             self.set_title("%s - %s" % (title, _("Properties")))
         else: self.set_title(_("Properties"))
+
+    def __refresh(self, watcher, songs, model, selection):
+        self.__refill(model)
+        selection.emit('changed')
 
     def __refill(self, model):
         def refresh(model, iter, path):
