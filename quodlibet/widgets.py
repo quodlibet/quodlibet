@@ -848,25 +848,17 @@ class PlaylistWindow(gtk.Window):
         bar.connect('songs-selected', self.__add_query_results, view)
         vbox.pack_start(bar, expand=False, fill=False)
 
-        hbox = gtk.HButtonBox()
-        hbox.set_layout(gtk.BUTTONBOX_END)
-        vbox.pack_end(hbox, expand=False)
-        vbox.pack_end(gtk.HSeparator(), expand=False)
-
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
-        hbox.pack_end(close, expand=False)
-
         swin = gtk.ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         vbox.pack_start(swin)
-
         swin.add(view)
+        swin.show_all()
+        vbox.show()
 
         self.set_name(name)
         self.connect_object('destroy', self.__destroy, view)
-        close.connect_object('clicked', gtk.Window.destroy, self)
-        self.show_all()
+        self.show()
 
     def __add_query_results(self, browser, songs, sort, view):
         songs.sort()
@@ -1110,6 +1102,19 @@ class SearchBar(EmptyBar):
         EmptyBar.__init__(self)
         self.__save = save
 
+        hb = gtk.HBox()
+        lab = gtk.Label("_Limit:")
+        lab.set_padding(3, 0)
+        limit = gtk.SpinButton()
+        limit.set_numeric(True)
+        limit.set_range(0, 1000000)
+        limit.set_increments(5, 50)
+        lab.set_mnemonic_widget(limit)
+        lab.set_use_underline(True)
+        hb.pack_start(lab)
+        hb.pack_start(limit)
+        self.pack_start(hb, expand=False)
+
         tips = gtk.Tooltips()
         combo = qltk.ComboBoxEntrySave(
             const.QUERIES, model="searchbar", count=15)
@@ -1127,27 +1132,50 @@ class SearchBar(EmptyBar):
         tips.set_tip(search, _("Search your audio library"))
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
+        limit.connect_object_after('activate', self.__text_parse, combo.child)
         combo.child.connect('changed', self.__test_filter)
         tips.enable()
         combo.child.connect('realize', lambda w: w.grab_focus())
+        combo.child.connect('populate-popup', self.__menu, hb)
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.pack_start(combo)
         self.pack_start(clear, expand=False)
         self.pack_start(search, expand=False)
         self.show_all()
+        self.__limit = limit
+        hb.hide_all()
+
+    def __menu(self, entry, menu, hb):
+        sep = gtk.SeparatorMenuItem()
+        menu.prepend(sep)
+        item = gtk.CheckMenuItem(_("_Limit Results"))
+        menu.prepend(item)
+        item.set_active(hb.get_property('visible'))
+        item.connect('toggled', self.__showhide_limit, hb)
+        item.show(); sep.show()
+
+    def __showhide_limit(self, button, hb):
+        if button.get_active(): hb.show_all()
+        else: hb.hide_all()
 
     def activate(self):
         if self._text is not None:
             try: songs = library.query(self._text)
             except parser.error: pass
             else:
-                self.get_children()[0].prepend_text(self._text)
+                self.get_children()[1].prepend_text(self._text)
+                val = self.__limit.get_value_as_int()
+                if (self.__limit.get_property('visible') and
+                    val and len(songs) > val):
+                    import random
+                    random.shuffle(songs)
+                    songs = songs[:val]
                 self.emit('songs-selected', songs, None)
                 if self.__save: self.save()
-                self.get_children()[0].write(const.QUERIES)
+                self.get_children()[1].write(const.QUERIES)
 
     def set_text(self, text):
-        self.get_children()[0].child.set_text(text)
+        self.get_children()[1].child.set_text(text)
         if isinstance(text, str): text = text.decode('utf-8')
         self._text = text
 
@@ -1775,6 +1803,7 @@ class PanedBrowser(gtk.VBox, Browser):
         self.refresh_panes(restore=False)
 
         self.__save = save
+        self.show_all()
 
     def __filter_changed(self, entry):
         if self.__refill_id is not None:
@@ -1901,16 +1930,16 @@ class PlaylistBar(Browser, gtk.HBox):
         tips.enable()
 
     def save(self):
-        combo = self.get_children()[0]
+        combo = self.get_children()[1]
         active = combo.get_active()
         key = combo.get_model()[active][1]
         config.set("browsers", "playlist", key)
 
     def restore(self):
         try: key = config.get("browsers", "playlist")
-        except Exception: self.get_children()[0].set_active(0)
+        except Exception: self.get_children()[1].set_active(0)
         else:
-            combo = self.get_children()[0]
+            combo = self.get_children()[1]
             model = combo.get_model()
             def find_key(model, path, iter, key):
                 if model[iter][1] == key:
@@ -2497,6 +2526,9 @@ class MainWindow(gtk.Window):
 
         self.inter = gtk.VBox()
 
+        self.child.show_all()
+        self.songlist.show_all()
+
         self.browser = None
         self.__select_browser(self, config.getint("memory", "browser"))
         self.browser.restore()
@@ -2507,7 +2539,6 @@ class MainWindow(gtk.Window):
                               "mm_next": self.__next_song,
                               "mm_playpause": self.__play_pause})
 
-        self.child.show_all()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
 
         self.connect('configure-event', MainWindow.__save_size)
@@ -3528,6 +3559,7 @@ class LibraryBrowser(gtk.Window):
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw.show_all()
 
         browser = Kind(save=False, play=False)
         browser.connect_object('songs-selected', SongList.set_songs, view)
@@ -3548,7 +3580,8 @@ class LibraryBrowser(gtk.Window):
         sid = widgets.watcher.connect_object('refresh', Kind.activate, browser)
         self.connect_object('destroy', widgets.watcher.disconnect, sid)
         self.set_default_size(500, 300)
-        self.show_all()
+        self.child.show()
+        self.show()
 
     def __button_press(self, view, event):
         if event.button != 3: return False
