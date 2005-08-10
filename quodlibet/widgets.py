@@ -5739,6 +5739,8 @@ class ExFalsoWindow(gtk.Window):
 
         # plugin support
         from plugins import PluginManager
+        self.pm = PluginManager(widgets.watcher, ["./plugins", const.PLUGINS])
+        self.pm.rescan()
 
     def set_pending(self, button, *excess):
         self.__save = button
