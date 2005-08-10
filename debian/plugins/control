@@ -1,0 +1,26 @@
+Source: quodlibet-plugins
+Section: sound
+Maintainer: Joshua Kwan <joshk@triplehelix.org>
+Build-Depends: debhelper (>= 4.0)
+Standards-Version: 3.6.2
+
+Package: quodlibet-plugins
+Architecture: all
+Depends: quodlibet (>= 0.11)
+Suggests: k3b
+Description: various contributed plugins for Quod Libet
+ This package contains a number of contributed plugins for the Quod
+ Libet media player, each extending the player's functionality in
+ different ways.
+ .
+ Notable plugins in this package include:
+ .
+ - albumart.py: Retrieve album art from Amazon.com
+ - clock.py: Stop and begin playing music at specified times.
+ - html.py: Generate a HTML playlist of sorts from a list of tracks.
+ - jep118.py: Generate a Jabber User Tunes file to ~/.quodlibet/jabber.
+ - k3b.py: Burn tracks to a CD with k3b.
+ - lyrics.py: Search for song lyrics for a particular track.
+ - osd.py: Display track information on-screen when the current track changes.
+ - qlscrobbler.py: Submit listening data to the Audioscrobbler service
+   (see www.last.fm for more information.)
