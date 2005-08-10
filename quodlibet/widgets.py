@@ -1742,7 +1742,7 @@ class PanedBrowser(gtk.VBox, Browser):
 
             self.uninhibit()
             if selected: self.set_selected(selected, jump=True)
-            else: self.set_selected(None)
+            else: self.set_selected(None, jump=True)
 
         def scroll(self, song):
             values = map(util.escape, song.listall(self.tags))
@@ -1757,9 +1757,11 @@ class PanedBrowser(gtk.VBox, Browser):
 
         def set_selected(self, values, jump=False):
             model = self.get_model()
-            if values == None or values == self.get_selected(): return
-            self.inhibit()
             selection = self.get_selection()
+            if values == self.get_selected(): return
+            elif values is None and selection.path_is_selected((0,)): return
+
+            self.inhibit()
             selection.unselect_all()
             first = 0
             if values is None: selection.select_path((0,))
@@ -1863,11 +1865,13 @@ class PanedBrowser(gtk.VBox, Browser):
 
     def filter(self, key, values):
         thepane = None
+        self.__panes[-1].inhibit()
         for pane in self.__panes:
             if key in pane.tags:
                 pane.set_selected(map(util.escape, values), True)
-                break
             else: pane.set_selected(None, True)
+        self.__panes[-1].uninhibit()
+        self.__panes[-1].get_selection().emit('changed')
 
     def save(self):
         selected = []
