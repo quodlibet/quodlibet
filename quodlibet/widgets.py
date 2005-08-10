@@ -1801,7 +1801,6 @@ class PanedBrowser(gtk.VBox, Browser):
         search.connect('changed', self.__filter_changed)
 
         self.refresh_panes(restore=False)
-
         self.__save = save
         self.show_all()
 
@@ -1924,10 +1923,10 @@ class PlaylistBar(Browser, gtk.HBox):
         tips = gtk.Tooltips()
         tips.set_tip(edit, _("Edit the current playlist"))
         tips.set_tip(refresh, _("Refresh the current playlist"))
-        self.show_all()
         self.connect_object('destroy', combo.set_model, None)
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         tips.enable()
+        self.show_all()
 
     def save(self):
         combo = self.get_children()[1]
@@ -2526,19 +2525,18 @@ class MainWindow(gtk.Window):
 
         self.inter = gtk.VBox()
 
-        self.child.show_all()
-        self.songlist.show_all()
-
         self.browser = None
-        self.__select_browser(self, config.getint("memory", "browser"))
-        self.browser.restore()
-        self.browser.activate()
 
         self.open_fifo()
         self.__keys = MmKeys({"mm_prev": self.__previous_song,
                               "mm_next": self.__next_song,
                               "mm_playpause": self.__play_pause})
 
+        self.child.show_all()
+        sw.show_all()
+        self.__select_browser(self, config.getint("memory", "browser"))
+        self.browser.restore()
+        self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
 
         self.connect('configure-event', MainWindow.__save_size)
@@ -3553,7 +3551,6 @@ class LibraryBrowser(gtk.Window):
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.show_all()
 
         browser = Kind(save=False, play=False)
         browser.connect_object('songs-selected', SongList.set_songs, view)
@@ -3574,6 +3571,7 @@ class LibraryBrowser(gtk.Window):
         sid = widgets.watcher.connect_object('refresh', Kind.activate, browser)
         self.connect_object('destroy', widgets.watcher.disconnect, sid)
         self.set_default_size(500, 300)
+        sw.show_all()
         self.child.show()
         self.show()
 
