@@ -6,6 +6,9 @@ D := debian/quodlibet-plugins
 U := usr/lib/quodlibet/plugins
 P := $(D)/$(U)
 
+# wm_eddie is insecure
+EXCLUDE := albumart.py
+
 build binary-arch install:
 # Ye olde no-op.
 
@@ -14,7 +17,7 @@ binary: binary-indep
 binary-indep:
 	dh_clean -k
 	dh_installdirs $(U)
-	for plugin in *.py; do \
+	for plugin in $(filter-out $(EXCLUDE), $(wildcard *.py)); do \
 		install -m 644 -o 0 -g 0 $$plugin $(P)/; \
 	done
 	dh_installchangelogs
