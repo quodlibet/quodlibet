@@ -1661,7 +1661,7 @@ class PanedBrowser(gtk.VBox, Browser):
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__changed)
 
-            s = widgets.watcher.connect('removed', self.__removed),
+            s = widgets.watcher.connect('removed', self.__removed)
             self.connect_object('destroy', widgets.watcher.disconnect, s)
 
             self.connect_object('destroy', self.__destroy, model)
@@ -5706,8 +5706,6 @@ class ExFalsoWindow(gtk.Window):
 
         # plugin support
         from plugins import PluginManager
-        self.pm = PluginManager(widgets.watcher, [const.PLUGINS, "./plugins"])
-        self.pm.rescan()
 
     def set_pending(self, button, *excess):
         self.__save = button
@@ -5867,7 +5865,7 @@ def init():
 
     # plugin support
     from plugins import PluginManager
-    SongList.pm = PluginManager(widgets.watcher, [const.PLUGINS, "./plugins"])
+    SongList.pm = PluginManager(widgets.watcher, ["./plugins", const.PLUGINS])
     SongList.pm.rescan()
 
     gtk.about_dialog_set_url_hook(website_wrap)
