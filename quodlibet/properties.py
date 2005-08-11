@@ -17,10 +17,12 @@ import const
 import config
 import util
 import widgets
+import formats.audio
+
 from gettext import ngettext
 from library import library
 
-from widgets import tag
+from util import tag
 
 if sys.version_info < (2, 4): from sets import Set as set
 
@@ -40,6 +42,117 @@ VALIDATERS = {
 
 VALIDATERS["replaygain_track_peak"] = VALIDATERS["replaygain_album_peak"]
 VALIDATERS["replaygain_track_gain"] = VALIDATERS["replaygain_album_gain"]
+
+class WritingWindow(qltk.WaitLoadWindow):
+    def __init__(self, parent, count):
+        qltk.WaitLoadWindow.__init__(
+            self, parent, count,
+            (_("Saving the songs you changed.") + "\n\n" +
+             _("%d/%d songs saved")), (0, count))
+
+    def step(self):
+        return qltk.WaitLoadWindow.step(self, self.current + 1, self.count)
+
+class AddTagDialog(gtk.Dialog):
+    def __init__(self, parent, can_change, validators):
+        if can_change == True: can = formats.audio.USEFUL_TAGS
+        else: can = can_change
+        can.sort()
+
+        gtk.Dialog.__init__(self, _("Add a Tag"), parent)
+        self.set_border_width(6)
+        self.set_has_separator(False)
+        self.set_resizable(False)
+        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+        add = self.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
+        self.vbox.set_spacing(6)
+        self.set_default_response(gtk.RESPONSE_OK)
+        table = gtk.Table(2, 2)
+        table.set_row_spacings(12)
+        table.set_col_spacings(6)
+        table.set_border_width(6)
+
+        if can_change == True:
+            model = gtk.ListStore(str, str)
+            self.__tag = gtk.ComboBoxEntry(model, column=0)
+            self.__tag.clear()
+            text = gtk.CellRendererText()
+            self.__tag.pack_start(text)
+            self.__tag.add_attribute(text, 'text', 1)
+            for t in can:
+                model.append(row=[t, "%s (%s)" % (tag(t), t)])
+        else:
+            self.__tag = gtk.combo_box_new_text()
+            for t in can: self.__tag.append_text(t)
+            self.__tag.set_active(0)
+
+        label = gtk.Label()
+        label.set_alignment(0.0, 0.5)
+        label.set_text(_("_Tag:"))
+        label.set_use_underline(True)
+        label.set_mnemonic_widget(self.__tag)
+        table.attach(label, 0, 1, 0, 1)
+        table.attach(self.__tag, 1, 2, 0, 1)
+
+        self.__val = gtk.Entry()
+        label = gtk.Label()
+        label.set_text(_("_Value:"))
+        label.set_alignment(0.0, 0.5)
+        label.set_use_underline(True)
+        label.set_mnemonic_widget(self.__val)
+        valuebox = gtk.EventBox()
+        table.attach(label, 0, 1, 1, 2)
+        table.attach(valuebox, 1, 2, 1, 2)
+        hbox = gtk.HBox()
+        valuebox.add(hbox)
+        hbox.pack_start(self.__val)
+        hbox.set_spacing(6)
+        invalid = gtk.image_new_from_stock(
+            gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        hbox.pack_start(invalid)
+
+        self.vbox.pack_start(table)
+        self.child.show_all()
+        invalid.hide()
+
+        tips = gtk.Tooltips()
+        for entry in [self.__tag, self.__val]:
+            entry.connect(
+                'changed', self.__validate, validators, add, invalid, tips,
+                valuebox)
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+
+
+    def get_tag(self):
+        try: return self.__tag.child.get_text().lower().strip()
+        except AttributeError:
+            return self.__tag.get_model()[self.__tag.get_active()][0]
+
+    def get_value(self):
+        return self.__val.get_text().decode("utf-8")
+
+    def __validate(self, editable, validators, add, invalid, tips, box):
+        tag = self.get_tag()
+        try: validator, message = validators.get(tag)
+        except TypeError: valid = True
+        else: valid = bool(validator(self.get_value()))
+
+        add.set_sensitive(valid)
+        if valid:
+            invalid.hide()
+            tips.disable()
+        else:
+            invalid.show()
+            tips.set_tip(box, message)
+            tips.enable()
+
+    def run(self):
+        self.show()
+        try: self.__tag.child.set_activates_default(True)
+        except AttributeError: pass
+        self.__val.set_activates_default(True)
+        self.__tag.grab_focus()
+        return gtk.Dialog.run(self)
 
 class SongProperties(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
