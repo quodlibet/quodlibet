@@ -16,7 +16,6 @@ import qltk; from qltk import HintedTreeView, TreeViewHints
 import const
 import config
 import util
-import widgets
 import formats.audio
 
 from gettext import ngettext
@@ -616,7 +615,7 @@ class SongProperties(gtk.Window):
             self.child.add(Ctr(library=library, songs=songs))
 
     class EditTags(gtk.VBox):
-        def __init__(self, parent):
+        def __init__(self, parent, watcher):
             gtk.VBox.__init__(self, spacing=12)
             self.title = _("Edit Tags")
             self.set_border_width(12)
@@ -715,7 +714,8 @@ class SongProperties(gtk.Window):
                 'clicked', self.__update, None, *UPDATE_ARGS)
             revert.connect_object('clicked', parent.set_pending, None)
 
-            save.connect('clicked', self.__save_files, revert, model, parent)
+            save.connect(
+                'clicked', self.__save_files, revert, model, parent, watcher)
             save.connect_object('clicked', parent.set_pending, None)
             for sig in ['row-inserted', 'row-deleted', 'row-changed']:
                 model.connect(sig, self.__enable_save, [save, revert])
@@ -910,7 +910,7 @@ class SongProperties(gtk.Window):
             else:
                 model.remove(iter)
 
-        def __save_files(self, save, revert, model, parent):
+        def __save_files(self, save, revert, model, parent, watcher):
             updated = {}
             deleted = {}
             added = {}
@@ -974,14 +974,14 @@ class SongProperties(gtk.Window):
                               "do not have permission to edit it.")%(
                             util.escape(util.fsdecode(
                             song('~basename'))))).run()
-                        widgets.widgets.watcher.error(song)
+                        watcher.error(song)
                         break
-                    widgets.widgets.watcher.changed([song])
+                    watcher.changed([song])
 
                 if win.step(): break
 
             win.destroy()
-            widgets.widgets.watcher.refresh()
+            watcher.refresh()
             for b in [save, revert]: b.set_sensitive(False)
 
         def __edit_tag(self, renderer, path, new, model, colnum):
@@ -1050,7 +1050,7 @@ class SongProperties(gtk.Window):
             add.set_sensitive(bool(songs))
 
     class TagByFilename(gtk.VBox):
-        def __init__(self, prop):
+        def __init__(self, prop, watcher):
             gtk.VBox.__init__(self, spacing=6)
             self.title = _("Tag by Filename")
             self.set_border_width(12)
@@ -1123,7 +1123,7 @@ class SongProperties(gtk.Window):
 
             # Save changes
             save.connect('clicked', self.__save_files, prop, view, entry,
-                         addreplace)
+                         addreplace, watcher)
 
         def __update(self, songs, parent, view, combo, entry, preview, save,
                      space, titlecase, split):
@@ -1206,7 +1206,7 @@ class SongProperties(gtk.Window):
             preview.set_sensitive(False)
             save.set_sensitive(len(pattern.headers) > 0)
 
-        def __save_files(self, save, parent, view, entry, addreplace):
+        def __save_files(self, save, parent, view, entry, addreplace, watcher):
             pattern_text = entry.get_text().decode('utf-8')
             pattern = util.PatternFromFile(pattern_text)
             add = (addreplace.get_active() == 1)
@@ -1249,15 +1249,15 @@ class SongProperties(gtk.Window):
                               "do not have permission to edit it.")%(
                             util.escape(util.fsdecode(song('~basename'))))
                             ).run()
-                        widgets.widgets.watcher.error(song)
+                        watcher.error(song)
                         return True
-                    widgets.widgets.watcher.changed([song])
+                    watcher.changed([song])
 
                 return win.step()
         
             view.get_model().foreach(save_song)
             win.destroy()
-            widgets.widgets.watcher.refresh()
+            watcher.refresh()
             save.set_sensitive(False)
 
         def __row_edited(self, renderer, path, new, model, colnum, preview):
@@ -1276,7 +1276,7 @@ class SongProperties(gtk.Window):
             save.set_sensitive(False)
 
     class RenameFiles(gtk.VBox):
-        def __init__(self, prop):
+        def __init__(self, prop, watcher):
             gtk.VBox.__init__(self, spacing=6)
             self.title = _("Rename Files")
             self.set_border_width(12)
@@ -1363,7 +1363,7 @@ class SongProperties(gtk.Window):
                 'changed', self.__changed, *changed_args)
 
             save.connect_object(
-                'clicked', self.__rename_files, prop, save, model)
+                'clicked', self.__rename_files, prop, save, model, watcher)
 
             render.connect('edited', self.__row_edited, model, preview, save)
 
@@ -1385,7 +1385,7 @@ class SongProperties(gtk.Window):
             preview = args[4]
             preview.set_sensitive(False)
 
-        def __rename_files(self, parent, save, model):
+        def __rename_files(self, parent, save, model, watcher):
             win = WritingWindow(parent, len(self.__songs))
 
             def rename(model, path, iter):
@@ -1396,7 +1396,7 @@ class SongProperties(gtk.Window):
                     newname = newname.encode(util.fscoding(), "replace")
                     if library: library.rename(song, newname)
                     else: song.rename(newname)
-                    widgets.widgets.watcher.changed([song])
+                    watcher.changed([song])
                 except:
                     qltk.ErrorMessage(
                         win, _("Unable to rename file"),
@@ -1406,11 +1406,11 @@ class SongProperties(gtk.Window):
                           "new file or remove the old one.") %(
                         util.escape(util.fsdecode(oldname)),
                         util.escape(util.fsdecode(newname)))).run()
-                    widgets.widgets.watcher.error(song)
+                    watcher.error(song)
                     return True
                 return win.step()
             model.foreach(rename)
-            widgets.widgets.watcher.refresh()
+            watcher.refresh()
             save.set_sensitive(False)
             win.destroy()
 
@@ -1459,7 +1459,7 @@ class SongProperties(gtk.Window):
             save.set_sensitive(bool(combo.child.get_text()))
 
     class TrackNumbers(gtk.VBox):
-        def __init__(self, prop):
+        def __init__(self, prop, watcher):
             gtk.VBox.__init__(self, spacing=6)
             self.title = _("Track Numbers")
             self.set_border_width(12)
@@ -1516,7 +1516,7 @@ class SongProperties(gtk.Window):
             bbox.set_layout(gtk.BUTTONBOX_END)
             save = gtk.Button(stock=gtk.STOCK_SAVE)
             save.connect_object(
-                'clicked', self.__save_files, prop, model)
+                'clicked', self.__save_files, prop, model, watcher)
             revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
             revert.connect_object(
                 'clicked', self.__revert_files, spin_total, model,
@@ -1539,7 +1539,7 @@ class SongProperties(gtk.Window):
                 'changed', self.__class__.__update, self,
                 spin_total, model, save, revert)
 
-        def __save_files(self, parent, model):
+        def __save_files(self, parent, model, wacher):
             win = WritingWindow(parent, len(self.__songs))
             def settrack(model, path, iter):
                 song = model[iter][0]
@@ -1563,12 +1563,12 @@ class SongProperties(gtk.Window):
                           "read-only, corrupted, or you do not have "
                           "permission to edit it.")%(
                         util.escape(util.fsdecode(song('~basename'))))).run()
-                    widgets.widgets.watcher.error(song)
+                    watcher.error(song)
                     return True
-                widgets.widgets.watcher.changed([song])
+                watcher.changed([song])
                 return win.step()
             model.foreach(settrack)
-            widgets.widgets.watcher.refresh()
+            watcher.refresh()
             win.destroy()
 
         def __revert_files(self, *args):
@@ -1604,7 +1604,7 @@ class SongProperties(gtk.Window):
             save.set_sensitive(False)
             revert.set_sensitive(False)
 
-    def __init__(self, songs, initial=1):
+    def __init__(self, songs, watcher, initial=1):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
         icon_theme = gtk.icon_theme_get_default()
@@ -1612,10 +1612,10 @@ class SongProperties(gtk.Window):
             const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         notebook = qltk.Notebook()
         pages = [self.Information(self, library=True)]
-        pages.extend([Ctr(self) for Ctr in
+        pages.extend([Ctr(self, watcher) for Ctr in
                       [self.EditTags, self.TagByFilename, self.RenameFiles]])
         if len(songs) > 1:
-            pages.append(self.TrackNumbers(self))
+            pages.append(self.TrackNumbers(watcher, self))
         for page in pages: notebook.append_page(page)
         self.set_border_width(12)
         vbox = gtk.VBox(spacing=12)
@@ -1668,12 +1668,11 @@ class SongProperties(gtk.Window):
         # Although connecting 'changed' would be a better idea, it results
         # in segfaults as the model is updated while songs are being saved
         # as the sorted model goes nuts.
-        s1 = widgets.widgets.watcher.connect(
-            'refresh', self.__refresh, fbasemodel, selection)
-        s2 = widgets.widgets.watcher.connect(
+        s1 = watcher.connect('refresh', self.__refresh, fbasemodel, selection)
+        s2 = watcher.connect(
             'removed', self.__remove, fbasemodel, selection, csig)
-        self.connect_object('destroy', widgets.widgets.watcher.disconnect, s1)
-        self.connect_object('destroy', widgets.widgets.watcher.disconnect, s2)
+        self.connect_object('destroy', watcher.disconnect, s1)
+        self.connect_object('destroy', watcher.disconnect, s2)
         self.connect_object('changed', self.set_pending, None)
 
         self.emit('changed', songs)

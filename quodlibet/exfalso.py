@@ -39,8 +39,7 @@ if __name__ == "__main__":
     import pygtk
     pygtk.require('2.0')
     import gtk, widgets
-    widgets.widgets.watcher = widgets.SongWatcher()
-    w = widgets.ExFalsoWindow(args[0])
+    w = widgets.ExFalsoWindow(widgets.SongWatcher(), args[0])
     w.show_all()
 
     if (os.path.exists(const.CONTROL) and

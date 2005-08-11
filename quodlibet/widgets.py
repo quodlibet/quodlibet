@@ -965,7 +965,8 @@ class QLTrayIcon(HIGTrayIcon):
         else: player.playlist.reset()
 
     def __properties(self, activator):
-        if widgets.watcher.song: SongProperties([widgets.watcher.song])
+        if widgets.watcher.song:
+            SongProperties([widgets.watcher.song], widgets.watcher)
 
     def __set_song(self, watcher, song, *items):
         for item in items: item.set_sensitive(bool(song))
@@ -1540,7 +1541,7 @@ class AlbumList(Browser, gtk.VBox):
         songs = self.__get_selected_songs(view.get_selection())
         if songs:
             songs.sort()
-            SongProperties(songs, initial=0)
+            SongProperties(songs, widgets.watcher, initial=0)
 
     def __button_press(self, view, event, menu):
         x, y = map(int, [event.x, event.y])
@@ -2182,7 +2183,7 @@ class MainWindow(gtk.Window):
 
         def __properties(self, button):
             if widgets.watcher.song:
-                SongProperties([widgets.watcher.song])
+                SongProperties([widgets.watcher.song], widgets.watcher)
 
         def __website(self, button):
             song = widgets.watcher.song
@@ -2893,7 +2894,7 @@ class MainWindow(gtk.Window):
 
     def __current_song_prop(self, *args):
         song = widgets.watcher.song
-        if song: SongProperties([song])
+        if song: SongProperties([song], widgets.watcher)
 
     def prep_main_popup(self, header, button, time):
         menu = self.songlist.Menu(
@@ -3119,7 +3120,7 @@ class SongList(HintedTreeView):
         b.connect_object('activate', self.delete_songs, songs)
         menu.append(b)
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        b.connect_object('activate', SongProperties, songs)
+        b.connect_object('activate', SongProperties, songs, widgets.watcher)
         menu.append(b)
 
         menu.show_all()
@@ -3216,7 +3217,7 @@ class SongList(HintedTreeView):
         self.__set_rating(value, self.get_selected_songs())
 
     def song_properties(self, item):
-        SongProperties(self.get_selected_songs())
+        SongProperties(self.get_selected_songs(), widgets.watcher)
 
     def __key_press(self, songlist, event):
         if event.string in ['0', '1', '2', '3', '4']:
@@ -3856,7 +3857,7 @@ class ExFalsoWindow(gtk.Window):
                                  gobject.TYPE_NONE, (object,))
                      }
 
-    def __init__(self, dir=None):
+    def __init__(self, watcher, dir=None):
         gtk.Window.__init__(self)
         self.set_title("Ex Falso")
         icon_theme = gtk.icon_theme_get_default()
@@ -3875,24 +3876,24 @@ class ExFalsoWindow(gtk.Window):
                      SongProperties.TagByFilename,
                      SongProperties.RenameFiles,
                      SongProperties.TrackNumbers]:
-            nb.append_page(Page(self))
+            nb.append_page(Page(self, watcher))
         self.child.pack2(nb, resize=False, shrink=False)
         fs.connect('changed', self.__changed, nb)
         self.__cache = {}
-        s = widgets.watcher.connect_object('refresh', FileSelector.rescan, fs)
-        self.connect_object('destroy', widgets.watcher.disconnect, s)
+        s = watcher.connect_object('refresh', FileSelector.rescan, fs)
+        self.connect_object('destroy', watcher.disconnect, s)
         self.connect('destroy', gtk.main_quit)
         self.__save = None
         self.connect_object('changed', self.set_pending, None)
         for c in fs.get_children():
             c.child.connect('button-press-event', self.__pre_selection_changed)
-        fs.get_children()[1].child.connect('button-press-event',
-                self.__button_press)
+        fs.get_children()[1].child.connect(
+            'button-press-event', self.__button_press, fs)
         self.emit('changed', [])
 
         # plugin support
         from plugins import PluginManager
-        self.pm = PluginManager(widgets.watcher, ["./plugins", const.PLUGINS])
+        self.pm = PluginManager(watcher, ["./plugins", const.PLUGINS])
         self.pm.rescan()
 
     def set_pending(self, button, *excess):
@@ -3905,7 +3906,7 @@ class ExFalsoWindow(gtk.Window):
             elif resp == gtk.RESPONSE_NO: return False
             else: return True # cancel or closed
 
-    def __button_press(self, view, event):
+    def __button_press(self, view, event, fs):
         if event.button == 3:
             x, y = map(int, [event.x, event.y])
             try: path, col, cellx, celly = view.get_path_at_pos(x, y)
@@ -3921,13 +3922,13 @@ class ExFalsoWindow(gtk.Window):
             else: menu.prepend(gtk.SeparatorMenuItem())
             b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
             b.connect('activate', self.__delete,
-                    [model[row][0] for row in rows])
+                      [model[row][0] for row in rows], fs)
             menu.prepend(b)
             menu.show_all()
             menu.popup(None, None, None, event.button, event.time)
             return True
 
-    def __delete(self, item, files):
+    def __delete(self, item, files, fs):
         d = DeleteDialog(files)
         resp = d.run()
         d.destroy()
@@ -3959,7 +3960,7 @@ class ExFalsoWindow(gtk.Window):
                 else:
                     w.step(w.current + 1, w.count)
             w.destroy()
-            widgets.watcher.refresh()
+            fs.rescan()
 
     def __changed(self, selector, selection, notebook):
         model, rows = selection.get_selected_rows()
