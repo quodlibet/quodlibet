@@ -13,13 +13,13 @@ import gobject
 import re
 import config
 import util
-from widgets import tag
+from util import tag
 import qltk
 
 class Osd(object):
     PLUGIN_NAME = "On-Screen Display"
     PLUGIN_DESC = "Display song information on your screen when it changes."
-    PLUGIN_VERSION = "0.11.2"
+    PLUGIN_VERSION = "0.13"
 
     BORDER = 4
     __sid = None
