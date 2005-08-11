@@ -8,7 +8,7 @@
 
 # Widget wrappers for GTK.
 import os
-import gobject, gtk
+import gobject, gtk, pango
 import config
 import util
 
@@ -357,3 +357,164 @@ class RPaned(object):
 
 class RHPaned(RPaned, gtk.HPaned): pass
 class RVPaned(RPaned, gtk.VPaned): pass
+
+class TreeViewHints(gtk.Window):
+    """Handle 'hints' for treeviews. This includes expansions of truncated
+    columns, and in the future, tooltips."""
+
+    __gsignals__ = dict.fromkeys(
+        ['button-press-event', 'button-release-event',
+        'motion-notify-event', 'scroll-event'],
+        'override')
+
+    def __init__(self):
+        gtk.Window.__init__(self, gtk.WINDOW_POPUP)
+        self.__label = label = gtk.Label()
+        label.set_alignment(0.5, 0.5)
+        self.realize()
+        self.add_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.BUTTON_PRESS_MASK |
+                gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.KEY_PRESS_MASK |
+                gtk.gdk.KEY_RELEASE_MASK | gtk.gdk.ENTER_NOTIFY_MASK |
+                gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK)
+        self.add(label)
+
+        self.set_app_paintable(True)
+        self.set_resizable(False)
+        self.set_name("gtk-tooltips")
+        self.set_border_width(1)
+        self.connect('expose-event', self.__expose)
+        self.connect('enter-notify-event', self.__enter)
+        self.connect('leave-notify-event', self.__check_undisplay)
+
+        self.__handlers = {}
+        self.__current_path = self.__current_col = None
+        self.__current_renderer = None
+
+    def connect_view(self, view):
+        self.__handlers[view] = [
+            view.connect('motion-notify-event', self.__motion),
+            view.connect('scroll-event', self.__undisplay),
+            view.connect('key-press-event', self.__undisplay),
+            view.connect('destroy', self.disconnect_view),
+        ]
+
+    def disconnect_view(self, view):
+        try:
+            for handler in self.__handlers[view]: view.disconnect(handler)
+            del self.__handlers[view]
+        except KeyError: pass
+
+    def __expose(self, widget, event):
+        w, h = self.get_size_request()
+        self.style.paint_flat_box(self.window,
+                gtk.STATE_NORMAL, gtk.SHADOW_OUT,
+                None, self, "tooltip", 0, 0, w, h)
+
+    def __enter(self, widget, event):
+        # on entry, kill the hiding timeout
+        try: gobject.source_remove(self.__timeout_id)
+        except AttributeError: pass
+        else: del self.__timeout_id
+
+    def __motion(self, view, event):
+        # trigger over row area, not column headers
+        if event.window is not view.get_bin_window(): return
+        if event.get_state() & gtk.gdk.MODIFIER_MASK: return
+
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return # no hints where no rows exist
+
+        if self.__current_path == path and self.__current_col == col: return
+
+        # need to handle more renderers later...
+        try: renderer, = col.get_cell_renderers()
+        except ValueError: return
+        if not isinstance(renderer, gtk.CellRendererText): return
+        if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE: return
+
+        model = view.get_model()
+        col.cell_set_cell_data(model, model.get_iter(path), False, False)
+        cellw = col.cell_get_position(renderer)[1]
+
+        label = self.__label
+        label.set_text(renderer.get_property('text'))
+        w, h0 = label.get_layout().get_pixel_size()
+        try: markup = renderer.markup
+        except AttributeError: h1 = h0
+        else:
+            if isinstance(markup, int): markup = model[path][markup]
+            label.set_markup(markup)
+            w, h1 = label.get_layout().get_pixel_size()
+
+        if w + 5 < cellw: return # don't display if it doesn't need expansion
+
+        x, y, cw, h = list(view.get_cell_area(path, col))
+        self.__dx = x
+        self.__dy = y
+        y += view.get_bin_window().get_position()[1]
+        ox, oy = view.window.get_origin()
+        x += ox; y += oy; w += 5#; h += h1 - h0
+        screen_width = gtk.gdk.screen_width()
+        x_overflow = min([x, x + w - screen_width])
+        label.set_ellipsize(pango.ELLIPSIZE_NONE)
+        if x_overflow > 0:
+            self.__dx -= x_overflow
+            x -= x_overflow
+            w = min([w, screen_width])
+            label.set_ellipsize(pango.ELLIPSIZE_END)
+        if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
+            return # reject if cursor isn't above hint
+
+        self.__target = view
+        self.__current_renderer = renderer
+        self.__edit_id = renderer.connect('editing-started', self.__undisplay)
+        self.__current_path = path
+        self.__current_col = col
+        self.__time = event.time
+        self.__timeout(id=gobject.timeout_add(100, self.__undisplay))
+        self.set_size_request(w, h)
+        self.resize(w, h)
+        self.move(x, y)
+        self.show_all()
+
+    def __check_undisplay(self, ev1, event):
+        if self.__time < event.time + 50: self.__undisplay()
+
+    def __undisplay(self, *args):
+        if self.__current_renderer and self.__edit_id:
+            self.__current_renderer.disconnect(self.__edit_id)
+        self.__current_renderer = self.__edit_id = None
+        self.__current_path = self.__current_col = None
+        self.hide()
+
+    def __timeout(self, ev=None, event=None, id=None):
+        try: gobject.source_remove(self.__timeout_id)
+        except AttributeError: pass
+        if id is not None: self.__timeout_id = id
+
+    def __event(self, event):
+        if event.type != gtk.gdk.SCROLL:
+            event.x += self.__dx
+            event.y += self.__dy 
+
+        # modifying event.window is a necessary evil, made okay because
+        # nobody else should tie to any TreeViewHints events ever.
+        event.window = self.__target.get_bin_window()
+
+        gtk.main_do_event(event)
+        return True
+
+    def do_button_press_event(self, event): return self.__event(event)
+    def do_button_release_event(self, event): return self.__event(event)
+    def do_motion_notify_event(self, event): return self.__event(event)
+    def do_scroll_event(self, event): return self.__event(event)
+
+gobject.type_register(TreeViewHints)
+
+class HintedTreeView(gtk.TreeView):
+    def __init__(self, *args):
+        gtk.TreeView.__init__(self, *args)
+        try: tvh = HintedTreeView.hints
+        except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
+        tvh.connect_view(self)

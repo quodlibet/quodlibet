@@ -4,7 +4,8 @@ import os, gtk
 import __builtin__
 __builtin__.__dict__['_'] = lambda a: a
 import widgets
-from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList, VALIDATERS
+from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList
+from properties import VALIDATERS
 import library; library.init("dummyfn")
 import config
 

@@ -399,3 +399,37 @@ class QuerySafe(object):
         return name
     decode = staticmethod(decode)
 
+# Return a 'natural' version of the tag for human-readable bits.
+# Strips ~ and ~# from the start and runs it through a map (which
+# the user can configure).
+def tag(name, cap=True):
+    try:
+        if name[0] == "~":
+            if name[1] == "#": name = name[2:]
+            else: name = name[1:]
+        if name in ["artist", "performer", "lyricist", "arranger", "composer",
+                    "conductor", "author"]: # tags retrieved by ngettext
+            # This is a pretty big hack, but seems to be necessary.
+            # Without it, the raw "artist" string doesn't get retrieved.
+            t = lambda x: ngettext(x, x+"s", 1)
+        else: t = _
+        parts = [t(HEADERS_FILTER.get(n, n)) for n in name.split("~")]
+        if cap: parts = map(capitalize, parts)
+        return " / ".join(parts)
+    except IndexError:
+        return ngettext("Invalid tag", "Invalid tags", 1)
+
+HEADERS_FILTER = { "tracknumber": "track",
+                   "discnumber": "disc",
+                   "labelid": "label ID",
+                   "bpm": "BPM",
+                   "isrc": "ISRC",
+                   "lastplayed": "last played",
+                   "filename": "full name",
+                   "playcount": "play count",
+                   "skipcount": "skip count",
+                   "mtime": "modified",
+                   "mountpoint": "mount point",
+                   "basename": "filename",
+                   "dirname": "directory" }
+
