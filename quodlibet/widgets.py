@@ -3804,7 +3804,7 @@ class DirectoryTree(gtk.TreeView):
         delete = menu.get_children()[1]
         try: delete.set_sensitive(len(os.listdir(directory)) == 0)
         except OSError, err:
-            model.remove(model.get_iter(path))
+            if err.errno == 2: model.remove(model.get_iter(path))
         else:
             selection = self.get_selection()
             selection.unselect_all()
