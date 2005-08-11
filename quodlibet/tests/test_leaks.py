@@ -1,10 +1,10 @@
 from unittest import TestCase
 from tests import registerCase
-import os, gtk, widgets, gc, time
+import os, gtk, qltk, gc, time
 
 class TestWidgetLeaks(TestCase):
     def test_BCI(self):
-         self.failIfLeaky(widgets.BigCenteredImage, "woo", "exfalso.png")
+         self.failIfLeaky(qltk.BigCenteredImage, "woo", "exfalso.png")
 
     def failIfLeaky(self, Ctr, *args):
          gc.collect()

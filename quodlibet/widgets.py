@@ -550,42 +550,6 @@ class PreferencesWindow(gtk.Window):
         del(widgets.preferences)
         config.write(const.CONFIG)
 
-class BigCenteredImage(gtk.Window):
-    def __init__(self, title, filename):
-        gtk.Window.__init__(self)
-        width = gtk.gdk.screen_width() / 2
-        height = gtk.gdk.screen_height() / 2
-        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
-
-        x_rat = pixbuf.get_width() / float(width)
-        y_rat = pixbuf.get_height() / float(height)
-        if x_rat > 1 or y_rat > 1:
-            if x_rat > y_rat: height = int(pixbuf.get_height() / x_rat)
-            else: width = int(pixbuf.get_width() / y_rat)
-            pixbuf = pixbuf.scale_simple(
-                width, height, gtk.gdk.INTERP_BILINEAR)
-
-        self.set_title(title)
-        self.set_decorated(False)
-        self.set_position(gtk.WIN_POS_CENTER)
-        self.set_modal(False)
-        self.set_icon(pixbuf)
-        self.add(gtk.Frame())
-        self.child.set_shadow_type(gtk.SHADOW_OUT)
-        self.child.add(gtk.EventBox())
-        self.child.child.add(gtk.Image())
-        self.child.child.child.set_from_pixbuf(pixbuf)
-
-        # The eventbox
-        self.child.child.connect_object(
-            'button-press-event', BigCenteredImage.__destroy, self)
-        self.child.child.connect_object(
-            'key-press-event', BigCenteredImage.__destroy, self)
-        self.show_all()
-
-    def __destroy(self, event):
-        self.destroy()
-
 class TrayIcon(object):
     def __init__(self, pixbuf, cbs):
         try:
@@ -1859,7 +1823,7 @@ class CoverImage(gtk.Frame):
         if (self.__song and event.button == 1 and
             event.type == gtk.gdk._2BUTTON_PRESS):
             cover = self.__song.find_cover()
-            BigCenteredImage(self.__song.comma("album"), cover.name)
+            qltk.BigCenteredImage(self.__song.comma("album"), cover.name)
 
 class MainWindow(gtk.Window):
     class StopAfterMenu(gtk.Menu):

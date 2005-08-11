@@ -195,7 +195,7 @@ class SongProperties(gtk.Window):
                 if (event.button == 1 and
                     event.type == gtk.gdk._2BUTTON_PRESS):
                     cover = song.find_cover()
-                    try: BigCenteredImage(song.comma("album"), cover.name)
+                    try: qltk.BigCenteredImage(song.comma("album"), cover.name)
                     except: pass
 
             def _make_cover(self, cover, song):
