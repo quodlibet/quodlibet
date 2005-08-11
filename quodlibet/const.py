@@ -49,9 +49,7 @@ MENU = """<ui>
       <menuitem action='AddMusic'/>
       <menuitem action='NewPlaylist'/>
       <menu action='BrowseLibrary'>
-          <menuitem action='BrowseSearch'/>
-          <menuitem action='BrowsePaned'/>
-          <menuitem action='BrowseAlbumList'/>
+      %s
       </menu>
       <separator/>
       <menuitem action='Preferences'/>
@@ -98,11 +96,7 @@ MENU = """<ui>
     <menu action='View'>
       <menuitem action='Songlist'/>
       <separator/>
-      <menuitem action='BrowserDisable'/>
-      <menuitem action='BrowserSearch'/>
-      <menuitem action='BrowserPlaylist'/>
-      <menuitem action='BrowserPaned'/>
-      <menuitem action='BrowserAlbum'/>
+      %s
     </menu>
     <menu action='Help'>
       <menuitem action='About'/>
