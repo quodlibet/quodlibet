@@ -1665,8 +1665,11 @@ class SongProperties(gtk.Window):
         self.connect_object('destroy', fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
 
+        # Although connecting 'changed' would be a better idea, it results
+        # in segfaults as the model is updated while songs are being saved
+        # as the sorted model goes nuts.
         s1 = widgets.widgets.watcher.connect(
-            'changed', self.__refresh, fbasemodel, selection)
+            'refresh', self.__refresh, fbasemodel, selection)
         s2 = widgets.widgets.watcher.connect(
             'removed', self.__remove, fbasemodel, selection, csig)
         self.connect_object('destroy', widgets.widgets.watcher.disconnect, s1)
@@ -1697,7 +1700,7 @@ class SongProperties(gtk.Window):
             self.set_title("%s - %s" % (title, _("Properties")))
         else: self.set_title(_("Properties"))
 
-    def __refresh(self, watcher, songs, model, selection):
+    def __refresh(self, watcher, model, selection):
         self.__refill(model)
         selection.emit('changed')
 
