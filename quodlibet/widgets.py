@@ -3797,14 +3797,19 @@ class DirectoryTree(gtk.TreeView):
     def __button_press(self, event, menu):
         if event.button != 3: return False
         x, y = map(int, [event.x, event.y])
+        model = self.get_model()
         try: path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError: return True
-        directory = self.get_model()[path][0]
-        menu.get_children()[1].set_sensitive(len(os.listdir(directory)) == 0)
-        selection = self.get_selection()
-        selection.unselect_all()
-        selection.select_path(path)
-        menu.popup(None, None, None, event.button, event.time)
+        directory = model[path][0]
+        delete = menu.get_children()[1]
+        try: delete.set_sensitive(len(os.listdir(directory)) == 0)
+        except OSError, err:
+            model.remove(model.get_iter(path))
+        else:
+            selection = self.get_selection()
+            selection.unselect_all()
+            selection.select_path(path)
+            menu.popup(None, None, None, event.button, event.time)
 
     def __mkdir(self, button):
         model, rows = self.get_selection().get_selected_rows()
