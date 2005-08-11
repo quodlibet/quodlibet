@@ -9,3 +9,4 @@ widgets.py
 plugins.py
 qltk.py
 properties.py
+efwidgets.py

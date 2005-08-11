@@ -58,7 +58,6 @@ import util; from util import mtime
 from traceback import print_exc
 
 import gobject, gtk, qltk
-import widgets
 
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
@@ -116,7 +115,7 @@ class PluginManager(object):
     }
 
     all_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                  for s in gobject.signal_list_names(widgets.SongWatcher)]
+                  for s in gobject.signal_list_names(qltk.SongWatcher)]
 
     def __init__(self, watcher=None, folders=[]):
         self.scan = []
@@ -315,7 +314,7 @@ class PluginManager(object):
 
         if needs_write:
             if lock: gtk.threads_enter()
-            win = widgets.WritingWindow(None, len(needs_write))
+            win = qltk.WritingWindow(None, len(needs_write))
             for song in needs_write:
                 try: song._song.write()
                 except Exception, err:

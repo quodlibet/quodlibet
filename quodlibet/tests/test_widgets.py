@@ -4,10 +4,12 @@ import os, gtk
 import __builtin__
 __builtin__.__dict__['_'] = lambda a: a
 import widgets
-from widgets import DirectoryTree, EmptyBar, SearchBar, PlayList
+from widgets import EmptyBar, SearchBar, PlayList
 from properties import VALIDATERS
+from efwidgets import DirectoryTree
 import library; library.init("dummyfn")
 import config
+import qltk
 
 class TestDirTree(TestCase):
     def test_initial(self):
@@ -39,7 +41,7 @@ class StopAfterTest(TestCase):
 
 class SongWatcher(TestCase):
     def setUp(self):
-        self.watcher = widgets.SongWatcher()
+        self.watcher = qltk.SongWatcher()
 
     def __changed(self, watcher, song, expected):
         self.failUnlessEqual(expected.pop(0), song)

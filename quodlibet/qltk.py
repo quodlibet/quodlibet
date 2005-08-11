@@ -12,6 +12,102 @@ import gobject, gtk, pango
 import config
 import util
 
+# Everything connects to this to get updates about the library and player.
+class SongWatcher(gtk.Object):
+    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+    SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+    
+    __gsignals__ = {
+        # Songs in the library have changed.
+        'changed': SIG_PYOBJECT,
+
+        # Songs were removed from the library.
+        'removed': SIG_PYOBJECT,
+
+        # Songs were added to the library.
+        'added': SIG_PYOBJECT,
+
+        # A group of changes has been finished; all library views should
+        # do a global refresh if necessary
+        'refresh': SIG_NONE,
+
+        # A new song started playing (or the current one was restarted).
+        'song-started': SIG_PYOBJECT,
+
+        # The song was seeked within.
+        'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                 (object, int)),
+
+        # A new song started playing (or the current one was restarted).
+        # The boolean is True if the song was stopped rather than simply
+        # ended.
+        'song-ended': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                       (object, bool)),
+
+        # Playback was paused.
+        'paused': SIG_NONE,
+
+        # Playback was unpaused.
+        'unpaused': SIG_NONE,
+
+        # A song was missing (i.e. disappeared from the filesystem).
+        # When QL is running it will also result in a removed signal
+        # (caused by MainWindow).
+        'missing': SIG_PYOBJECT
+        }
+
+    # (current_in_msec, total_in_msec)
+    # (0, 1) when no song is playing.
+    time = (0, 1)
+
+    # the currently playing song.
+    song = None
+
+    def changed(self, songs):
+        gobject.idle_add(self.emit, 'changed', songs)
+
+    def added(self, songs):
+        gobject.idle_add(self.emit, 'added', songs)
+
+    def removed(self, songs):
+        gobject.idle_add(self.emit, 'removed', songs)
+
+    def missing(self, song):
+        gobject.idle_add(self.emit, 'missing', song)
+
+    def song_started(self, song):
+        if song: self.time = (0, song["~#length"] * 1000)
+        else: self.time = (0, 1)
+        self.song = song
+        gobject.idle_add(self.emit, 'song-started', song)
+
+    def song_ended(self, song, stopped):
+        self.changed([song])
+        gobject.idle_add(self.emit, 'song-ended', song, stopped)
+
+    def refresh(self):
+        gobject.idle_add(self.emit, 'refresh')
+
+    def set_paused(self, paused):
+        if paused: gobject.idle_add(self.emit, 'paused')
+        else: gobject.idle_add(self.emit, 'unpaused')
+
+    def seek(self, song, position_in_msec):
+        gobject.idle_add(self.emit, 'seek', song, position_in_msec)
+
+    def reload(self, song):
+        try: song.reload()
+        except Exception, err:
+            from library import library
+            sys.stdout.write(str(err) + "\n")
+            if library: library.remove(song)
+            self.removed([song])
+        else: self.changed([song])
+
+    error = reload
+
+gobject.type_register(SongWatcher)
+
 class Message(gtk.MessageDialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""

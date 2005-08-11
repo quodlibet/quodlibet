@@ -38,13 +38,12 @@ if __name__ == "__main__":
 
     import pygtk
     pygtk.require('2.0')
-    import gtk, widgets
-    w = widgets.ExFalsoWindow(widgets.SongWatcher(), args[0])
+    import gtk, qltk, efwidgets
+    w = efwidgets.ExFalsoWindow(qltk.SongWatcher(), args[0])
     w.show_all()
 
     if (os.path.exists(const.CONTROL) and
         not config.getboolean('exfalso', 'shutup')):
-        import qltk
         qltk.WarningMessage(
             w, _("Quod Libet is running"),
             _("It looks like you are running Quod Libet right now. "
