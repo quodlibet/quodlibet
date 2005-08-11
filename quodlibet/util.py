@@ -385,6 +385,9 @@ def website(site):
     else: return False
 
 class QuerySafe(object):
+    """Escape/unescape query-safe keys. This is used to turn human-readable
+    playlist names into internal ~#playlist_foo keys and vice-versa."""
+
     # ["%", " "] + parser.QueryLexeme.table.keys()
     BAD = ["%", " ", "!", "&", "|", "(", ")", "=", ",", "/", "#", ">", "<"]
     DAB = BAD[::-1]

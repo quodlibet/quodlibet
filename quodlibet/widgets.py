@@ -1777,16 +1777,16 @@ class PlaylistBar(Browser, gtk.HBox):
         self.show_all()
 
     def save(self):
-        combo = self.get_children()[1]
+        combo = self.get_children()[0]
         active = combo.get_active()
         key = combo.get_model()[active][1]
         config.set("browsers", "playlist", key)
 
     def restore(self):
         try: key = config.get("browsers", "playlist")
-        except Exception: self.get_children()[1].set_active(0)
+        except Exception: self.get_children()[0].set_active(0)
         else:
-            combo = self.get_children()[1]
+            combo = self.get_children()[0]
             model = combo.get_model()
             def find_key(model, path, iter, key):
                 if model[iter][1] == key:
@@ -2748,7 +2748,7 @@ class MainWindow(gtk.Window):
 
     def prep_main_popup(self, header, button, time):
         menu = self.songlist.Menu(
-            header, self.browser.can_filter, self.__filter_on, True)
+            header, self.browser.can_filter, self.__filter_on)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
@@ -2824,12 +2824,17 @@ class MainWindow(gtk.Window):
         gobject.idle_add(statusbar.queue_resize)
 
 class SongList(qltk.HintedTreeView):
-    """Wrap a treeview that works like a songlist"""
-    songlistviews = {}
-    headers = []
+    # A TreeView containing a list of songs.
 
-    # Displays the current song indicator
+    # When created SongLists add themselves to this dict so they get
+    # informed when headers are updated.
+    __songlistviews = {}
+    
+    headers = [] # The list of current headers.
+
     class CurrentColumn(gtk.TreeViewColumn):
+        # Displays the current song indicator, either a play or pause icon.
+    
         _render = gtk.CellRendererPixbuf()
         _render.set_property('xalign', 0.5)
         header_name = "~current"
@@ -2850,6 +2855,7 @@ class SongList(qltk.HintedTreeView):
             self.header_name = "~current"
 
     class TextColumn(gtk.TreeViewColumn):
+        # Base class for other kinds of columns.
         _render = gtk.CellRendererText()
 
         def _cdf(self, column, cell, model, iter, tag):
@@ -2869,6 +2875,8 @@ class SongList(qltk.HintedTreeView):
             self.set_cell_data_func(self._render, self._cdf, t)
 
     class WideTextColumn(TextColumn):
+        # Resizable and ellipsized at the end. Used for any key with
+        # a '~' in it, and 'title'.
         _render = gtk.CellRendererText()
         _render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
@@ -2880,6 +2888,8 @@ class SongList(qltk.HintedTreeView):
             self.set_fixed_width(1)
 
     class NonSynthTextColumn(WideTextColumn):
+        # Optimize for non-synthesized keys by grabbing them directly.
+        # Used for any tag without a '~' except 'title'.
         def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model[iter][0]
@@ -2888,6 +2898,8 @@ class SongList(qltk.HintedTreeView):
             except AttributeError: pass
 
     class FSColumn(WideTextColumn):
+        # Contains text in the filesystem encoding, so needs to be
+        # decoded safely (and also more slowly).
         def _cdf(self, column, cell, model, iter, tag, code=util.fscoding()):
             try:
                 song = model[iter][0]
@@ -2904,11 +2916,12 @@ class SongList(qltk.HintedTreeView):
             self.set_alignment(1.0)
 
     class NumericColumn(TextColumn):
+        # Any '~#' keys.
         _render = gtk.CellRendererText()
         _render.set_property('xpad', 12)
         _render.set_property('xalign', 1.0)
 
-    def Menu(self, header, can_filter, filter, remove):
+    def Menu(self, header, can_filter, filter):
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
         menu = gtk.Menu()
 
@@ -2919,7 +2932,7 @@ class SongList(qltk.HintedTreeView):
             for i in range(5):
                 itm = gtk.MenuItem("%d\t%s" %(i, util.format_rating(i)))
                 m2.append(itm)
-                itm.connect('activate', self.set_selected_ratings, i)
+                itm.connect('activate', self.__set_selected_ratings, i)
             menu.append(item)
             menu.append(gtk.SeparatorMenuItem())
 
@@ -2954,16 +2967,13 @@ class SongList(qltk.HintedTreeView):
             b.set_submenu(submenu)
             if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
-        if remove:
-            b = gtk.ImageMenuItem(_('Remove from Library'))
-            b_img = gtk.Image()
-            b_img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
-            b.set_image(b_img)
-            b.connect_object('activate', self.remove_songs, songs)
+        b = gtk.ImageMenuItem(_('Remove from Library'))
+        b.get_image().set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        b.connect('activate', self.__remove, songs)
 
         menu.append(b)
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        b.connect_object('activate', self.delete_songs, songs)
+        b.connect('activate', self.__delete, songs)
         menu.append(b)
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
@@ -2978,9 +2988,9 @@ class SongList(qltk.HintedTreeView):
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        self.songlistviews[self] = None     # register self
+        self.__songlistviews[self] = None     # register self
         self.set_column_headers(self.headers)
-        self.connect_object('destroy', SongList._destroy, self)
+        self.connect_object('destroy', SongList.__destroy, self)
         sigs = [widgets.watcher.connect('changed', self.__song_updated),
                 widgets.watcher.connect('song-started', self.__redraw_current),
                 widgets.watcher.connect('removed', self.__song_removed),
@@ -3003,8 +3013,10 @@ class SongList(qltk.HintedTreeView):
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
-        header = col.header_name
-        if header == "~rating":
+        if col.header_name == "~rating":
+            # Left-click in ~rating sets the song rating. Clicking the
+            # "1 note" area toggles it between 0 and 1.
+            # FIXME: Area calculation is not very accurate at all.
             width = col.get_property('width')
             song = view.get_model()[path][0]
             parts = (width / 4.0)
@@ -3015,11 +3027,12 @@ class SongList(qltk.HintedTreeView):
             else: rating = 4
             self.__set_rating(rating, [song])
 
-    def remove_songs(self, songs):
+    def __remove(self, item, songs):
+        # User requested that the selected songs be removed.
         map(library.remove, songs)
         widgets.watcher.removed(songs)
 
-    def delete_songs(self, songs):
+    def __delete(self, item, songs):
         songs = [(song["~filename"], song) for song in songs]
         removed = []
         d = qltk.DeleteDialog([song[0] for song in songs])
@@ -3059,11 +3072,8 @@ class SongList(qltk.HintedTreeView):
         for song in songs: song["~#rating"] = value
         widgets.watcher.changed(songs)
 
-    def set_selected_ratings(self, item, value):
+    def __set_selected_ratings(self, item, value):
         self.__set_rating(value, self.get_selected_songs())
-
-    def song_properties(self, item):
-        SongProperties(self.get_selected_songs(), widgets.watcher)
 
     def __key_press(self, songlist, event):
         if event.string in ['0', '1', '2', '3', '4']:
@@ -3078,13 +3088,14 @@ class SongList(qltk.HintedTreeView):
         sel.set_uris(filenames)
 
     def __redraw_current(self, watcher, song=None):
-        model = self.get_model()
         iter = self.song_to_iter(watcher.song)
-        if iter: model[iter][0] = model[iter][0]
+        if iter:
+            model = self.get_model()
+            model.row_changed(model.get_path(iter), iter)
 
     def set_all_column_headers(cls, headers):
         cls.headers = headers
-        for listview in cls.songlistviews:
+        for listview in cls.__songlistviews:
             listview.set_column_headers(headers)
     set_all_column_headers = classmethod(set_all_column_headers)
 
@@ -3158,13 +3169,9 @@ class SongList(qltk.HintedTreeView):
         return [model[row][0] for row in rows]
 
     def song_to_iter(self, song):
-        model = self.get_model()
-        it = [None]
-        def find(model, path, iter, it):
-            if model[iter][0] == song: it.append(iter)
-            return bool(it[-1])
-        model.foreach(find, it)
-        return it[-1]
+        iters = self.songs_to_iters([song])
+        if iters: return iters[0]
+        else: return None
 
     def songs_to_iters(self, songs):
         model = self.get_model()
@@ -3187,10 +3194,11 @@ class SongList(qltk.HintedTreeView):
                 return True
         if len(songs) == 1: model.foreach(find_one)
         else: model.foreach(find)
-        for p, i in pi:
-            model.row_changed(p, i)
+        if pi: map(model.row_changed, *zip(*pi))
 
     def __song_removed(self, watcher, songs):
+        # The selected songs are removed from the library and should
+        # be removed from the view.
         map(self.get_model().remove, self.songs_to_iters(songs))
 
     # Build a new filter around our list model, set the headers to their
@@ -3215,15 +3223,154 @@ class SongList(qltk.HintedTreeView):
             column.connect('clicked', self.set_sort_by)
             self.append_column(column)
 
-    def _destroy(self):
-        del(self.songlistviews[self])
+    def __destroy(self):
+        del(self.__songlistviews[self])
         self.set_model(None)
 
-    def _set_column_settings(self, column):
-        column.set_visible(True)
-        column.set_clickable(True)
-        column.set_reorderable(True)
-        column.set_sort_indicator(False)
+class PlayList(SongList):
+    # "Playlists" are a group of songs with an internal tag like
+    # ~#playlist_foo = 12. This SongList helps manage playlists.
+
+    # ~#playlist_foo keys order the playlist, from 1 to n. If the key
+    # is not present or equals 0, the song is not in the list.
+
+    def lists_model(cls):
+        # Track all playlists. PlaylistWindow updates this when you
+        # make a new playlist, and PlaylistBar reads it to show the
+        # playlist list.
+        try: return cls._lists_model
+        except AttributeError:
+            model = cls._lists_model = gtk.ListStore(str, str)
+            playlists = [[util.QuerySafe.decode(p), p] for p in
+                          library.playlists()]
+            playlists.sort()
+            model.append([(_("All songs")), ""])
+            for p in playlists: model.append(p)
+            return model
+    lists_model = classmethod(lists_model)
+
+    def __init__(self, name):
+        plname = 'playlist_' + util.QuerySafe.encode(name)
+        self.__key = key = '~#' + plname
+        model = gtk.ListStore(object)
+        super(PlayList, self).__init__()
+
+        for song in library.query('#(%s > 0)' % plname, sort=key):
+            model.append([song])
+
+        # "Remove" from a playlist means something different than
+        # "Remove from Library", so use a different menu. This means
+        # plugins can't be run from the playlist manager, but I don't
+        # think anyone will care.
+        menu = gtk.Menu()
+        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        rem.connect('activate', self.__remove, key)
+        menu.append(rem)
+        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
+        prop.connect('activate', self.__properties)
+        menu.append(prop)
+        menu.show_all()
+        self.connect_object('destroy', gtk.Menu.destroy, menu)
+        self.connect('button-press-event', self.__button_press, menu)
+        self.connect_object(
+            'popup-menu', gtk.Menu.popup, menu, None, None, None, 2, 0)
+
+        self.set_model(model)
+
+        self.connect('drag-end', self.__refresh_indices)
+        targets = [("text/uri-list", 0, 1)]
+        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
+        self.connect('drag-data-received', self.__drag_data_received)
+
+    def __properties(self, item):
+        SongProperties(self.get_selected_songs(), widgets.watcher)
+
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+        model = view.get_model()
+        from urllib import splittype as split, url2pathname as topath
+        filenames = [topath(split(s)[1]) for s in sel.get_uris()
+                     if split(s)[0] == "file"]
+        songs = filter(None, [library.get(f) for f in filenames])
+        if not songs: return True
+
+        try: path, position = view.get_dest_row_at_pos(x, y)
+        except TypeError:
+            for song in songs:
+                it = self.song_to_iter(song)
+                if it: model.remove(it)
+                model.append([song])
+        else:
+            iter = model.get_iter(path)
+            song = songs.pop(0)
+            it = self.song_to_iter(song)
+            if it: model.remove(it)
+            if position in (gtk.TREE_VIEW_DROP_BEFORE,
+                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                iter = model.insert_before(iter, [song])
+            else:
+                iter = model.insert_after(iter, [song])
+            for song in songs:
+                it = self.song_to_iter(song)
+                if it: model.remove(it)
+                iter = model.insert_after(iter, [song])
+        ctx.finish(True, True, etime)
+        self.__refresh_indices()
+
+    def append_songs(self, songs):
+        model = self.get_model()
+        current_songs = set(self.get_songs())
+        for song in songs:
+            if song not in current_songs:
+                model.append([song])
+                song[self.__key] = len(model)
+
+    # Sorting a playlist via a misclick is a good way to lose work.
+    def set_sort_by(*args): pass
+    def get_sort_by(self, *args): return self__key, False
+
+    def __remove(self, activator, key):
+        songs = self.get_selected_songs()
+        for song in songs: del(song[key])
+        map(self.get_model().remove, self.songs_to_iters(songs))
+        self.__refresh_indices()
+
+    def __refresh_indices(self, *args):
+        for i, row in enumerate(iter(self.get_model())):
+            row[0][self.__key] = i + 1
+
+    def __button_press(self, view, event, menu):
+        if event.button != 3:
+            return False
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError: return True
+        view.grab_focus()
+        selection = view.get_selection()
+        if not selection.path_is_selected(path):
+            view.set_cursor(path, col, 0)
+        menu.popup(None, None, None, event.button, event.time)
+        return True
+
+class MainSongList(SongList):
+    # The SongList that represents the current playlist.
+
+    # FIXME: Ideally all playlist management (shuffle, repeat, etc)
+    # is done here, and the player requests songs one at a time.
+
+    def __init__(self, *args, **kwargs):
+        SongList.__init__(self, *args, **kwargs)
+        s = widgets.watcher.connect_object(
+            'removed', map, player.playlist.remove)
+        self.connect_object('destroy', widgets.watcher.disconnect, s)
+
+    def set_sort_by(self, *args, **kwargs):
+        SongList.set_sort_by(self, *args, **kwargs)
+        tag, reverse = self.get_sort_by()
+        config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
+
+    def set_songs(self, *args, **kwargs):
+        SongList.set_songs(self, *args, **kwargs)
+        player.playlist.set_playlist(self.get_songs())
 
 class LibraryBrowser(gtk.Window):
     def __init__(self, activator, Kind=SearchBar):
@@ -3280,8 +3427,7 @@ class LibraryBrowser(gtk.Window):
     def __menu(self, view, button, time):
         path, col = view.get_cursor()
         header = col.header_name
-        menu = view.Menu(
-            header, self.browser.can_filter, self.__filter_on, True)
+        menu = view.Menu(header, self.browser.can_filter, self.__filter_on)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
@@ -3299,134 +3445,6 @@ class LibraryBrowser(gtk.Window):
         else:
             for song in songs: values.update(song.list(header))
         self.browser.filter(header, list(values))
-
-class PlayList(SongList):
-    def lists_model(cls):
-        try: return cls._lists_model
-        except AttributeError:
-            model = cls._lists_model = gtk.ListStore(str, str)
-            playlists = [[util.QuerySafe.decode(p), p] for p in
-                          library.playlists()]
-            playlists.sort()
-            model.append([(_("All songs")), ""])
-            for p in playlists: model.append(p)
-            return model
-    lists_model = classmethod(lists_model)
-
-    def __init__(self, name):
-        plname = 'playlist_' + util.QuerySafe.encode(name)
-        self.__key = key = '~#' + plname
-        model = gtk.ListStore(object)
-        super(PlayList, self).__init__()
-
-        for song in library.query('#(%s > 0)' % plname, sort=key):
-            model.append([song])
-
-        menu = gtk.Menu()
-        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
-        rem.connect('activate', self.__remove_selected_songs, key)
-        menu.append(rem)
-        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
-        prop.connect('activate', self.song_properties)
-        menu.append(prop)
-        menu.show_all()
-        self.connect_object('destroy', gtk.Menu.destroy, menu)
-        self.connect('button-press-event', self.__button_press, menu)
-        self.connect_object(
-            'popup-menu', gtk.Menu.popup, menu, None, None, None, 2, 0)
-
-        self.set_model(model)
-        self.connect('drag-end', self.__refresh_indices)
-
-        targets = [("text/uri-list", 0, 1)]
-        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
-        self.connect('drag-data-received', self.__drag_data_received)
-
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
-        model = view.get_model()
-        from urllib import splittype as split, url2pathname as topath
-        filenames = [topath(split(s)[1]) for s in sel.get_uris()
-                     if split(s)[0] == "file"]
-        songs = filter(None, [library.get(f) for f in filenames])
-        if not songs: return True
-
-        try: path, position = view.get_dest_row_at_pos(x, y)
-        except TypeError:
-            for song in songs:
-                it = self.song_to_iter(song)
-                if it: model.remove(it)
-                model.append([song])
-        else:
-            iter = model.get_iter(path)
-            song = songs.pop(0)
-            it = self.song_to_iter(song)
-            if it: model.remove(it)
-            if position in (gtk.TREE_VIEW_DROP_BEFORE,
-                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
-                iter = model.insert_before(iter, [song])
-            else:
-                iter = model.insert_after(iter, [song])
-            for song in songs:
-                it = self.song_to_iter(song)
-                if it: model.remove(it)
-                iter = model.insert_after(iter, [song])
-        ctx.finish(True, True, etime)
-        self.__refresh_indices()
-
-    def append_songs(self, songs):
-        model = self.get_model()
-        current_songs = set([row[0]['~filename'] for row in model])
-        for song in songs:
-            if song['~filename'] not in current_songs:
-                model.append([song])
-                song[self.__key] = len(model) # 1 based index; 0 means out
-
-    def set_sort_by(*args): pass
-    def get_sort_by(self, *args): return self__key, False
-
-    def __remove_selected_songs(self, activator, key):
-        model, rows = self.get_selection().get_selected_rows()
-        rows.sort()
-        rows.reverse()
-        for row in rows:
-            del(model[row][0][key])
-            iter = model.get_iter(row)
-            model.remove(iter)
-        self.__refresh_indices()
-
-    def __refresh_indices(self, *args):
-        for i, row in enumerate(iter(self.get_model())):
-            row[0][self.__key] = i + 1    # 1 indexed; 0 is not present
-
-    def __button_press(self, view, event, menu):
-        if event.button != 3:
-            return False
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        view.grab_focus()
-        selection = view.get_selection()
-        if not selection.path_is_selected(path):
-            view.set_cursor(path, col, 0)
-        menu.popup(None, None, None, event.button, event.time)
-        return True
-
-class MainSongList(SongList):
-
-    def __init__(self, *args, **kwargs):
-        SongList.__init__(self, *args, **kwargs)
-        s = widgets.watcher.connect_object(
-            'removed', map, player.playlist.remove)
-        self.connect_object('destroy', widgets.watcher.disconnect, s)
-
-    def set_sort_by(self, *args, **kwargs):
-        SongList.set_sort_by(self, *args, **kwargs)
-        tag, reverse = self.get_sort_by()
-        config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
-
-    def set_songs(self, *args, **kwargs):
-        SongList.set_songs(self, *args, **kwargs)
-        player.playlist.set_playlist(self.get_songs())
 
 class GetStringDialog(gtk.Dialog):
     def __init__(self, parent, title, text, options=[]):
