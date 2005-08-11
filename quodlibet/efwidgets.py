@@ -325,7 +325,7 @@ class ExFalsoWindow(gtk.Window):
             return True
 
     def __delete(self, item, files, fs):
-        d = DeleteDialog(files)
+        d = qltk.DeleteDialog(files)
         resp = d.run()
         d.destroy()
 

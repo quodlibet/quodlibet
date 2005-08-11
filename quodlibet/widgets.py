@@ -12,7 +12,7 @@ import sre
 import shutil # Move to Trash
 
 import gtk, pango, gobject
-import qltk; from qltk import HintedTreeView, TreeViewHints
+import qltk
 
 import const
 import config
@@ -95,7 +95,7 @@ class PluginWindow(gtk.Window):
 
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-        tv = HintedTreeView()
+        tv = qltk.HintedTreeView()
         model = gtk.ListStore(object)
         tv.set_model(model)
         tv.set_rules_hint(True)
@@ -549,59 +549,6 @@ class PreferencesWindow(gtk.Window):
     def __destroy(self):
         del(widgets.preferences)
         config.write(const.CONFIG)
-
-class DeleteDialog(gtk.Dialog):
-    def __init__(self, files):
-        gtk.Dialog.__init__(self, _("Delete Files"))
-        self.set_border_width(6)
-        self.vbox.set_spacing(6)
-        self.set_has_separator(False)
-        self.action_area.set_border_width(0)
-        self.set_resizable(False)
-        # This is the GNOME trash can for at least some versions.
-        # The FreeDesktop spec is complicated and I'm not sure it's
-        # actually used by anything.
-        if os.path.isdir(os.path.expanduser("~/.Trash")):
-            b = qltk.Button(_("_Move to Trash"), gtk.STOCK_DELETE)
-            self.add_action_widget(b, 0)
-
-        self.add_button(gtk.STOCK_CANCEL, 1)
-        self.add_button(gtk.STOCK_DELETE, 2)
-
-        hbox = gtk.HBox()
-        hbox.set_border_width(6)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_DIALOG)
-        i.set_padding(12, 0)
-        i.set_alignment(0.5, 0.0)
-        hbox.pack_start(i, expand=False)
-        vbox = gtk.VBox(spacing=6)
-        base = os.path.basename(files[0])
-        l = ngettext("Permanently delete this file?",
-                     "Permanently delete these files?", len(files))
-        if len(files) == 1:
-            exp = gtk.Expander("%s" % util.fsdecode(base))
-        else:
-            exp = gtk.Expander(ngettext("%(title)s and %(count)d more...",
-                "%(title)s and %(count)d more...", len(files)-1) %
-                {'title': util.fsdecode(base), 'count': len(files) - 1})
-
-        lab = gtk.Label()
-        lab.set_markup("<big><b>%s</b></big>" % l)
-        lab.set_alignment(0.0, 0.5)
-        vbox.pack_start(lab, expand=False)
-
-        lab = gtk.Label("\n".join(
-            map(util.fsdecode, map(util.unexpand, files))))
-        lab.set_alignment(0.1, 0.0)
-        exp.add(gtk.ScrolledWindow())
-        exp.child.add_with_viewport(lab)
-        exp.child.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        exp.child.child.set_shadow_type(gtk.SHADOW_NONE)
-        vbox.pack_start(exp)
-        hbox.pack_start(vbox)
-        self.vbox.pack_start(hbox)
-        self.vbox.show_all()
 
 class BigCenteredImage(gtk.Window):
     def __init__(self, title, filename):
@@ -1301,7 +1248,7 @@ class AlbumList(Browser, gtk.VBox):
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
-        view = HintedTreeView()
+        view = qltk.HintedTreeView()
         view.set_headers_visible(False)
         model = self._AlbumStore(object)
         model_sort = gtk.TreeModelSort(model)
@@ -1565,12 +1512,12 @@ class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
-    class Pane(HintedTreeView):
+    class Pane(qltk.HintedTreeView):
         __render = gtk.CellRendererText()
         __render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
         def __init__(self, mytag, next):
-            HintedTreeView.__init__(self)
+            qltk.HintedTreeView.__init__(self)
             if "~" in mytag[1:]: self.tags = filter(None, mytag.split("~"))
             else: self.tags = [mytag]
             self.__next = next
@@ -2876,7 +2823,7 @@ class MainWindow(gtk.Window):
         statusbar.set_property('label', t)
         gobject.idle_add(statusbar.queue_resize)
 
-class SongList(HintedTreeView):
+class SongList(qltk.HintedTreeView):
     """Wrap a treeview that works like a songlist"""
     songlistviews = {}
     headers = []
@@ -2887,14 +2834,13 @@ class SongList(HintedTreeView):
         _render.set_property('xalign', 0.5)
         header_name = "~current"
 
-        def _cdf(column, cell, model, iter,
+        def _cdf(self, column, cell, model, iter,
                  pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
             try:
                 if model[iter][0] is not widgets.watcher.song: stock = ''
                 else: stock = pixbuf[player.playlist.paused]
                 cell.set_property('stock-id', stock)
             except AttributeError: pass
-        _cdf = staticmethod(_cdf)
 
         def __init__(self):
             gtk.TreeViewColumn.__init__(self, "", self._render)
@@ -2906,12 +2852,11 @@ class SongList(HintedTreeView):
     class TextColumn(gtk.TreeViewColumn):
         _render = gtk.CellRendererText()
 
-        def _cdf(column, cell, model, iter, tag):
+        def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model[iter][0]
                 cell.set_property('text', song.comma(tag))
             except AttributeError: pass
-        _cdf = staticmethod(_cdf)
 
         def __init__(self, t):
             gtk.TreeViewColumn.__init__(self, tag(t), self._render)
@@ -2935,22 +2880,20 @@ class SongList(HintedTreeView):
             self.set_fixed_width(1)
 
     class NonSynthTextColumn(WideTextColumn):
-        def _cdf(column, cell, model, iter, tag):
+        def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model[iter][0]
                 cell.set_property(
                     'text', song.get(tag, "").replace("\n", ", "))
             except AttributeError: pass
-        _cdf = staticmethod(_cdf)
 
     class FSColumn(WideTextColumn):
-        def _cdf(column, cell, model, iter, tag, code=util.fscoding()):
+        def _cdf(self, column, cell, model, iter, tag, code=util.fscoding()):
             try:
                 song = model[iter][0]
                 cell.set_property('text', util.unexpand(
                     song.comma(tag).decode(code, 'replace')))
             except AttributeError: pass
-        _cdf = staticmethod(_cdf)
 
     class LengthColumn(TextColumn):
         _render = gtk.CellRendererText()
@@ -3031,7 +2974,7 @@ class SongList(HintedTreeView):
         return menu
 
     def __init__(self):
-        HintedTreeView.__init__(self)
+        qltk.HintedTreeView.__init__(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
@@ -3079,7 +3022,7 @@ class SongList(HintedTreeView):
     def delete_songs(self, songs):
         songs = [(song["~filename"], song) for song in songs]
         removed = []
-        d = DeleteDialog([song[0] for song in songs])
+        d = qltk.DeleteDialog([song[0] for song in songs])
         resp = d.run()
         d.destroy()
         if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
