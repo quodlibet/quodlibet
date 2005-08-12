@@ -6,8 +6,126 @@
 #
 # $Id$
 
-import os, sre, string, locale
+import os, sys, sre, string, locale
 from gettext import ngettext
+
+class OptionParser(object):
+    def __init__(self, name, version, description=None, usage=None):
+        self.__name = name
+        self.__version = version
+        self.__args = {}
+        self.__translate_short = {}
+        self.__translate_long = {}
+        self.__help = {}
+        self.__usage = usage
+        self.__description = description
+        self.add(
+            "help", shorts="h", help=_("Display brief usage information"))
+        self.add(
+            "version", shorts="v", help=_("Display version and copyright"))
+
+    def add(self, canon, help=None, arg="", shorts="", longs=[]):
+        self.__args[canon] = arg
+        for s in shorts: self.__translate_short[s] = canon
+        for l in longs: self.__translate_longs[l] = canon
+        if help: self.__help[canon] = help
+
+    def __shorts(self):
+        shorts = ""
+        for short, canon in self.__translate_short.items():
+            shorts += short + (self.__args[canon] and "=" or "")
+        return shorts
+
+    def __longs(self):
+        longs = []
+        for long, arg in self.__args.items():
+            longs.append(long + (arg and "=" or ""))
+        for long, canon in self.__translate_long.items():
+            longs.append(long + (self.__args[canon] and "=" or ""))
+        return longs
+
+    def __format_help(self, opt, space):
+        if opt in self.__help:
+            help = self.__help[opt]
+            if self.__args[opt]:
+                opt = "%s=%s" % (opt, self.__args[opt])
+            return "  --%s %s\n" % (opt.ljust(space), help)
+                
+        else: return ""
+
+    def help(self):
+        l = 0
+        for k in self.__help.keys():
+            l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
+
+        if self.__usage: s = _("Usage: %s %s") % (sys.argv[0], self.__usage)
+        else: s = _("Usage: %s [options]") % sys.argv[0]
+        s += "\n"
+        if self.__description:
+            s += "%s - %s\n" % (self.__name, self.__description)
+        s += "\n"
+        keys = self.__help.keys()
+        keys.sort()
+        try: keys.remove("help")
+        except ValueError: pass
+        try: keys.remove("version")
+        except ValueError: pass
+        for h in keys: s += self.__format_help(h, l)
+        if keys: s += "\n"
+        s += self.__format_help("help", l)
+        s += self.__format_help("version", l)
+        return s
+
+    def set_help(self, newhelp):
+        self.__help = newhelp
+
+    def version(self):
+        return _("""\
+%s %s - <quodlibet@lists.sacredchao.net>
+Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+""") % (self.__name, self.__version)
+
+    def parse(self, args=None):
+        from util import to
+        if args is None: args = sys.argv[1:]
+        from getopt import getopt, GetoptError
+        try: opts, args = getopt(args, self.__shorts(), self.__longs())
+        except GetoptError, s:
+            s = str(s)
+            text = []
+            if "not recognized" in s:
+                text.append(
+                    _("E: Option '%s' not recognized.") % s.split()[1])
+            elif "requires argument" in s:
+                text.append(
+                    _("E: Option '%s' requires an argument.") % s.split()[1])
+            elif "unique prefix" in s:
+                text.append(
+                    _("E: '%s' is not a unique prefix.") % s.split()[1])
+            if "help" in self.__args:
+                text.append(_("E: Try %s --help.") % sys.argv[0])
+
+            raise SystemExit(to("\n".join(text)))
+        else:
+            transopts = {}
+            for o, a in opts:
+                if o.startswith("--"):
+                    o = self.__translate_long.get(o[2:], o[2:])
+                elif o.startswith("-"):
+                    o = self.__translate_short.get(o[1:], o[1:])
+                if o == "help":
+                    print self.help()
+                    raise SystemExit
+                elif o == "version":
+                    print self.version()
+                    raise SystemExit
+                if self.__args[o]: transopts[o] = a
+                else: transopts[o] = True
+
+            return transopts, args
 
 def to(string, frm="utf-8"):
     """Convert a string to the system encoding; used if you need to

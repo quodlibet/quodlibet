@@ -22,9 +22,8 @@ if __name__ == "__main__":
     sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
 
     import const
-
-    import quodlibet
-    opts = quodlibet.OptionParser(
+    import util
+    opts = util.OptionParser(
         "Ex Falso", const.VERSION,
         _("an audio tag editor"), "[%s]" % _("directory"))
 
