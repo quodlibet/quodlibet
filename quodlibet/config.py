@@ -40,7 +40,7 @@ def init(*rc_files):
         { "size": "400 350", # player window size
           "song": "", # filename of last song
           "volume": "1.0", # internal volume, [0.0, 1.0]
-          "browser": "1", # none, search, playlist, panes
+          "browser": "SearchBar", # browser name
           "songlist": "true", # on or off
           "sortby": "1artist", # <asc/desc>tagname, song list sort
           "shuffle": "0", # none, shuffle, weighted

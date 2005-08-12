@@ -1202,7 +1202,7 @@ class MainWindow(gtk.Window):
 
         self.child.show_all()
         sw.show_all()
-        self.__select_browser(self, config.getint("memory", "browser"))
+        self.__select_browser(self, config.get("memory", "browser"))
         self.browser.restore()
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
@@ -1327,7 +1327,8 @@ class MainWindow(gtk.Window):
         ag.add_radio_actions([
             (a, None, l, None, None, i) for (i, (a, l, K)) in
             enumerate(browsers.get_view_browsers())
-            ], config.getint("memory", "browser"), self.__select_browser)
+            ], browsers.index(config.get("memory", "browser")),
+                             self.__select_browser)
 
         for id, label, Kind in browsers.get_browsers():
             act = gtk.Action(id, label, None, None)
@@ -1374,9 +1375,10 @@ class MainWindow(gtk.Window):
             config.set("browsers", key, str(paned.get_relative()))
 
     def __select_browser(self, activator, current):
-        if not isinstance(current, int): current = current.get_current_value()
-        config.set("memory", "browser", str(current))
+        if isinstance(current, gtk.RadioAction):
+            current = current.get_current_value()
         Browser = browsers.get(current)
+        config.set("memory", "browser", Browser.__name__)
         if self.browser:
             c = self.child.get_children()[-2]
             c.remove(self.song_scroller)
