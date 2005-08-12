@@ -1539,7 +1539,7 @@ class SongProperties(gtk.Window):
                 'changed', self.__class__.__update, self,
                 spin_total, model, save, revert)
 
-        def __save_files(self, parent, model, wacher):
+        def __save_files(self, parent, model, watcher):
             win = WritingWindow(parent, len(self.__songs))
             def settrack(model, path, iter):
                 song = model[iter][0]
@@ -1615,7 +1615,7 @@ class SongProperties(gtk.Window):
         pages.extend([Ctr(self, watcher) for Ctr in
                       [self.EditTags, self.TagByFilename, self.RenameFiles]])
         if len(songs) > 1:
-            pages.append(self.TrackNumbers(watcher, self))
+            pages.append(self.TrackNumbers(self, watcher))
         for page in pages: notebook.append_page(page)
         self.set_border_width(12)
         vbox = gtk.VBox(spacing=12)
