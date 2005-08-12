@@ -7,16 +7,17 @@
 #
 # $Id$
 
-import os
+import os, sys
+import const
 from os.path import dirname, basename, isdir, join
 from fnmatch import fnmatch
+from glob import glob
 
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
 base = dirname(__file__)
 mod = basename(base)
 if isdir(base):
-    from glob import glob
     modules = [f[:-3] for f in glob(join(base, "*.py"))]
 else: # zip file
     from zipfile import ZipFile
@@ -24,6 +25,12 @@ else: # zip file
     modules = [f[:-3] for f in z.namelist() if fnmatch(f, join(mod, "*.py"))]
 
 modules = ["%s.%s" % (mod, basename(m)) for m in modules]
+
+if isdir(const.BROWSERS):
+    sys.path.insert(0, const.BROWSERS)
+    modules.extend([basename(f)[:-3] for f in
+                    glob(join(const.BROWSERS, "*.py"))])
+
 modules.remove("browsers.__init__")
 modules.remove("browsers.base")
 
@@ -44,6 +51,9 @@ for mod in modules:
         print "W: %s doesn't contain any browsers." % mod.__name__
 if not browsers:
     raise SystemExit("No browsers found!")
+
+try: sys.path.remove(const.BROWSERS)
+except ValueError: pass
 
 browsers.sort()
 

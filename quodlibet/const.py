@@ -14,6 +14,7 @@ LIBRARY = os.path.join(DIR, "songs")
 ACCELS  = os.path.join(DIR, "accels")
 PAUSED  = os.path.join(DIR, "paused")
 PLUGINS = os.path.join(DIR, "plugins")
+BROWSERS = os.path.join(DIR, "browsers")
 QUERIES = os.path.join(DIR, "lists", "queries")
 
 AUTHORS = [
