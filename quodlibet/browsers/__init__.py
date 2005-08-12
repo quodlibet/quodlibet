@@ -14,16 +14,16 @@ from fnmatch import fnmatch
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
 base = dirname(__file__)
+mod = basename(base)
 if isdir(base):
     from glob import glob
     modules = [f[:-3] for f in glob(join(base, "*.py"))]
 else: # zip file
     from zipfile import ZipFile
     z = ZipFile(dirname(base))
-    modules = [f[:-3] for f in z.namelist()
-               if fnmatch(f, join("browsers", "*.py"))]
+    modules = [f[:-3] for f in z.namelist() if fnmatch(f, join(mod, "*.py"))]
 
-modules = [basename(dirname(m))+"."+basename(m) for m in modules]
+modules = ["%s.%s" % (mod, basename(m)) for m in modules]
 modules.remove("browsers.__init__")
 modules.remove("browsers.base")
 
