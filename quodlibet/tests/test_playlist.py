@@ -46,6 +46,20 @@ class Playlist(TestCase):
             self.pl.next()
             self.assertEqual(self.pl.current, None)
 
+    def test_weighted_shuffle(self):
+        self.pl.shuffle = 2
+        r0 = {'~#rating': 0}
+        r1 = {'~#rating': 1}
+        r2 = {'~#rating': 2}
+        r3 = {'~#rating': 3}
+        self.pl.set([r0, r1, r2, r3])
+        songs = [self.pl.current for i in range(100)
+                 if self.pl.next() or True]
+        self.assertEqual(songs.count(r0), 0)
+        self.assert_(songs.count(r1) > songs.count(r0))
+        self.assert_(songs.count(r2) > songs.count(r1))
+        self.assert_(songs.count(r3) > songs.count(r2))
+
     def test_shuffle_repeat(self):
         self.pl.shuffle = 1
         self.pl.repeat = True

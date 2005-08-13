@@ -57,7 +57,7 @@ class PlaylistModel(gtk.ListStore):
             self.__played.append(self.__path)
 
         if self.shuffle == 1: self.__next_shuffle_regular()
-        elif self.shuffle == 2: self.__next_shuffle_regular()
+        elif self.shuffle == 2: self.__next_shuffle_weighted()
         else: raise ValueError("Invalid shuffle %d" % self.shuffle)
 
     def __next_shuffle_regular(self):
@@ -74,7 +74,17 @@ class PlaylistModel(gtk.ListStore):
             self.__path = None
 
     def __next_shuffle_weighted(self):
-        raise NotImplementedError
+        songs = self.get()
+        max_score = sum([song.get('~#rating', 2) for song in songs])
+        choice = random.random() * max_score
+        current = 0.0
+        for i, song in enumerate(songs):
+            current += song.get("~#rating", 2)
+            if current >= choice:
+                self.__path = i
+                break
+
+        else: self.__path = 0
 
     def previous(self):
         if self.shuffle:
