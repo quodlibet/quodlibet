@@ -53,7 +53,7 @@ class Playlist(TestCase):
         r2 = {'~#rating': 2}
         r3 = {'~#rating': 3}
         self.pl.set([r0, r1, r2, r3])
-        songs = [self.pl.current for i in range(100)
+        songs = [self.pl.current for i in range(1000)
                  if self.pl.next() or True]
         self.assertEqual(songs.count(r0), 0)
         self.assert_(songs.count(r1) > songs.count(r0))
