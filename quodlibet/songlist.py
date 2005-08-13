@@ -1,4 +1,8 @@
+import sys
+import random
 import gtk
+
+if sys.version_info < (2, 4): from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED = range(3)
 
@@ -9,9 +13,11 @@ class PlaylistModel(gtk.ListStore):
 
     def __init__(self):
         gtk.ListStore.__init__(self, object)
+        self.__played = []
 
     def set(self, songs):
         oldsong = self.current
+        self.__played = []
         self.__path = None
         self.clear()
         for song in songs:
@@ -29,6 +35,10 @@ class PlaylistModel(gtk.ListStore):
     current = property(get_current)
 
     def next(self):
+        if self.shuffle:
+            self.__next_shuffle()
+            return
+        
         # If we're empty, the next song is no song.
         # If the current song is the last song,
         #  - If repeat is off, the next song is no song.
@@ -42,7 +52,35 @@ class PlaylistModel(gtk.ListStore):
         elif self.__path is None: self.__path = 0
         else: self.__path += 1
 
+    def __next_shuffle(self):
+        if self.__path is not None:
+            self.__played.append(self.__path)
+
+        if self.shuffle == 1: self.__next_shuffle_regular()
+        elif self.shuffle == 2: self.__next_shuffle_regular()
+        else: raise ValueError("Invalid shuffle %d" % self.shuffle)
+
+    def __next_shuffle_regular(self):
+        played = set(self.__played)
+        songs = set(range(len(self)))
+        remaining = songs.difference(played)
+        if remaining:
+            self.__path = random.choice(list(remaining))
+        elif self.repeat:
+            self.__played = []
+            self.__path = random.choice(list(songs))
+        else:
+            self.__played = []
+            self.__path = None
+
+    def __next_shuffle_weighted(self):
+        raise NotImplementedError
+
     def previous(self):
+        if self.shuffle:
+            self.__previous_shuffle()
+            return
+
         # If we're empty, the last song is no song.
         # Else if the current song is none, the previous is the last.
         # Else the previous song is the previous song.
@@ -51,9 +89,18 @@ class PlaylistModel(gtk.ListStore):
         elif self.__path is None: self.__path = len(self) - 1
         else: self.__path  = max(0, self.__path - 1)
 
+    def __previous_shuffle(self):
+        try: path = self.__played.pop(-1)
+        except IndexError: pass
+        else: self.__path = path
+
     def go_to(self, song):
+        if self.shuffle and self.__path is not None:
+            self.__played.append(self.__path)
+        
         if isinstance(song, gtk.TreeIter):
             self.__path = self.get_path(iter)
+        elif song is None: self.__path = None
         else:
             def _find(self, path, iter):
                 if self[iter][0] == song:
@@ -62,4 +109,5 @@ class PlaylistModel(gtk.ListStore):
                 else: return False
             self.foreach(_find)
 
-    def is_empty(self): return not bool(len(self))
+    def is_empty(self):
+        return not bool(len(self))
