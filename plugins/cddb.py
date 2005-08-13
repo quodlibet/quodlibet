@@ -9,7 +9,7 @@
 import CDDB
 import os
 from os import path
-from qltk import ErrorMessage, AskAction
+from qltk import ErrorMessage, ConfirmAction
 from util import tag, escape
 from gettext import ngettext
 
@@ -18,6 +18,13 @@ PLUGIN_DESC = 'Look up album information in FreeDB (requires CDDB.py)'
 PLUGIN_ICON = 'gtk-cdrom'
 
 __all__ = []
+
+class AskAction(ConfirmAction):
+    """A message dialog that asks a yes/no question."""
+    def __init__(self, *args, **kwargs):
+        kwargs["buttons"] = gtk.BUTTONS_YES_NO
+        Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
+
 
 def sumdigits(n): return sum(map(long, str(n)))
 
