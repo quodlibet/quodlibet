@@ -12,7 +12,6 @@ import util; from util import to
 import fcntl
 import random
 import shutil
-import config
 import parser
 import formats
 from formats import MusicFile

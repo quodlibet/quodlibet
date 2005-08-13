@@ -12,7 +12,7 @@ import sre
 import time
 import gtk, pango, gobject
 
-import qltk; from qltk import HintedTreeView, TreeViewHints
+import qltk; from qltk import HintedTreeView, WritingWindow
 import const
 import config
 import util
@@ -24,6 +24,8 @@ from library import library
 from util import tag
 
 if sys.version_info < (2, 4): from sets import Set as set
+
+import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
 VALIDATERS = {
     'date': (sre.compile(r"^\d{4}([-/.]\d{2}([-/.]\d{2}([T ]\d{2}([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match,
@@ -41,16 +43,6 @@ VALIDATERS = {
 
 VALIDATERS["replaygain_track_peak"] = VALIDATERS["replaygain_album_peak"]
 VALIDATERS["replaygain_track_gain"] = VALIDATERS["replaygain_album_gain"]
-
-class WritingWindow(qltk.WaitLoadWindow):
-    def __init__(self, parent, count):
-        qltk.WaitLoadWindow.__init__(
-            self, parent, count,
-            (_("Saving the songs you changed.") + "\n\n" +
-             _("%d/%d songs saved")), (0, count))
-
-    def step(self):
-        return qltk.WaitLoadWindow.step(self, self.current + 1, self.count)
 
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change, validators):

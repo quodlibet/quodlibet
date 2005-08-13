@@ -7,7 +7,7 @@
 # $Id$
 
 # Widget wrappers for GTK.
-import os
+import os, sys
 import gobject, gtk, pango
 import config
 import util
@@ -109,6 +109,47 @@ class SongWatcher(gtk.Object):
     error = reload
 
 gobject.type_register(SongWatcher)
+
+class GetStringDialog(gtk.Dialog):
+    def __init__(self, parent, title, text, options=[]):
+        gtk.Dialog.__init__(self, title, parent)
+        self.set_border_width(6)
+        self.set_has_separator(False)
+        self.set_resizable(False)
+        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                         gtk.STOCK_OPEN, gtk.RESPONSE_OK)
+        self.vbox.set_spacing(6)
+        self.set_default_response(gtk.RESPONSE_OK)
+
+        box = gtk.VBox(spacing=6)
+        lab = gtk.Label(text)
+        box.set_border_width(6)
+        lab.set_line_wrap(True)
+        lab.set_justify(gtk.JUSTIFY_CENTER)
+        box.pack_start(lab)
+
+        if options:
+            self.__entry = gtk.combo_box_entry_new_text()
+            for o in options: self.__entry.append_text(o)
+            self.__val = self.__entry.child
+            box.pack_start(self.__entry)
+        else:
+            self.__val = gtk.Entry()
+            box.pack_start(self.__val)
+        self.vbox.pack_start(box)
+        self.child.show_all()
+
+    def run(self):
+        self.show()
+        self.__val.set_text("")
+        self.__val.set_activates_default(True)
+        self.__val.grab_focus()
+        resp = gtk.Dialog.run(self)
+        if resp == gtk.RESPONSE_OK:
+            value = self.__val.get_text()
+        else: value = None
+        self.destroy()
+        return value
 
 class DeleteDialog(gtk.Dialog):
     def __init__(self, files):
@@ -494,6 +535,16 @@ class WaitLoadWindow(gtk.Window):
     def __disconnect(self, sig):
         self.get_transient_for().window.set_cursor(None)
         self.get_transient_for().disconnect(sig)
+
+class WritingWindow(WaitLoadWindow):
+    def __init__(self, parent, count):
+        WaitLoadWindow.__init__(
+            self, parent, count,
+            (_("Saving the songs you changed.") + "\n\n" +
+             _("%d/%d songs saved")), (0, count))
+
+    def step(self):
+        return WaitLoadWindow.step(self, self.current + 1, self.count)
 
 class RPaned(object):
     """A Paned that supports relative (percentage) width/height setting."""

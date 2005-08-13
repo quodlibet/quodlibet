@@ -7,10 +7,10 @@
 #
 # $Id$
 
-import os, sys
+import os
 import shutil
 import dircache
-import gtk, pango, gobject
+import gtk, gobject
 
 import const
 import formats
@@ -113,8 +113,7 @@ class DirectoryTree(gtk.TreeView):
 
         row = rows[0]
         directory = model[row][0]
-        uparent = util.unexpand(directory)
-        dir = GetStringDialog(
+        dir = qltk.GetStringDialog(
             None, _("New Folder"), _("Enter a name for the new folder:")).run()
 
         if dir:
@@ -235,7 +234,6 @@ class FileSelector(gtk.VPaned):
         fmodel.clear()
         dmodel, rows = selection.get_selected_rows()
         dirs = [dmodel[row][0] for row in rows]
-        files = []
         for dir in dirs:
             for file in filter(self.__filter, dircache.listdir(dir)):
                 fmodel.append([os.path.join(dir, file)])

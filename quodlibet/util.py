@@ -27,7 +27,7 @@ class OptionParser(object):
     def add(self, canon, help=None, arg="", shorts="", longs=[]):
         self.__args[canon] = arg
         for s in shorts: self.__translate_short[s] = canon
-        for l in longs: self.__translate_longs[l] = canon
+        for l in longs: self.__translate_long[l] = canon
         if help: self.__help[canon] = help
 
     def __shorts(self):
@@ -89,7 +89,6 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 """) % (self.__name, self.__version)
 
     def parse(self, args=None):
-        from util import to
         if args is None: args = sys.argv[1:]
         from getopt import getopt, GetoptError
         try: opts, args = getopt(args, self.__shorts(), self.__longs())

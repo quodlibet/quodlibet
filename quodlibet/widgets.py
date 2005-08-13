@@ -1536,10 +1536,10 @@ class MainWindow(gtk.Window):
 
     def __new_playlist(self, activator):
         options = map(util.QuerySafe.decode, library.playlists())
-        name = GetStringDialog(self, _("New/Edit Playlist"),
-                               _("Enter a name for the new playlist. If it "
-                                 "already exists it will be opened for "
-                                 "editing."), options).run()
+        name = qltk.GetStringDialog(
+            self, _("New/Edit Playlist"),
+            _("Enter a name for the new playlist. If it already exists it "
+              "will be opened for editing."), options).run()
         if name:
             PlaylistWindow(name)
 
@@ -2295,8 +2295,8 @@ class PlayList(SongList):
                 song[self.__key] = len(model)
 
     # Sorting a playlist via a misclick is a good way to lose work.
-    def set_sort_by(*args): pass
-    def get_sort_by(self, *args): return self__key, False
+    def set_sort_by(self, *args): pass
+    def get_sort_by(self, *args): return self.__key, False
 
     def __remove(self, activator, key):
         songs = self.get_selected_songs()
@@ -2415,47 +2415,6 @@ class LibraryBrowser(gtk.Window):
         else:
             for song in songs: values.update(song.list(header))
         self.browser.filter(header, list(values))
-
-class GetStringDialog(gtk.Dialog):
-    def __init__(self, parent, title, text, options=[]):
-        gtk.Dialog.__init__(self, title, parent)
-        self.set_border_width(6)
-        self.set_has_separator(False)
-        self.set_resizable(False)
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_OPEN, gtk.RESPONSE_OK)
-        self.vbox.set_spacing(6)
-        self.set_default_response(gtk.RESPONSE_OK)
-
-        box = gtk.VBox(spacing=6)
-        lab = gtk.Label(text)
-        box.set_border_width(6)
-        lab.set_line_wrap(True)
-        lab.set_justify(gtk.JUSTIFY_CENTER)
-        box.pack_start(lab)
-
-        if options:
-            self.__entry = gtk.combo_box_entry_new_text()
-            for o in options: self.__entry.append_text(o)
-            self.__val = self.__entry.child
-            box.pack_start(self.__entry)
-        else:
-            self.__val = gtk.Entry()
-            box.pack_start(self.__val)
-        self.vbox.pack_start(box)
-        self.child.show_all()
-
-    def run(self):
-        self.show()
-        self.__val.set_text("")
-        self.__val.set_activates_default(True)
-        self.__val.grab_focus()
-        resp = gtk.Dialog.run(self)
-        if resp == gtk.RESPONSE_OK:
-            value = self.__val.get_text()
-        else: value = None
-        self.destroy()
-        return value
 
 def website_wrap(activator, link):
     if not util.website(link):

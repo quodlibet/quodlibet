@@ -18,7 +18,7 @@ def main():
 
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
-    window = widgets.init()
+    widgets.init()
 
     from threading import Thread
     enable_periodic_save()
@@ -244,7 +244,7 @@ if __name__ == "__main__":
             ".".join(map(str, gtk.pygtk_version)))) + "\n")
         raise SystemExit(to(_("E: Please upgrade GTK+/PyGTK.")))
 
-    import util; from util import to
+    from util import to
 
     # Load configuration data and scan the library for new/changed songs.
     import config
