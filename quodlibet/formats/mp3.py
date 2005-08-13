@@ -113,6 +113,7 @@ class MP3File(AudioFile):
             bitrate += audio.bitrate()
             audio.read()
         self["~#bitrate"] = bitrate/5
+        audio.seek_time(audio.total_time()); audio.read()
         self["~#length"] = audio.total_time() / 1000
 
         self.sanitize(filename)
