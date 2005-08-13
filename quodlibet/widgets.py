@@ -2347,6 +2347,10 @@ class MainSongList(SongList):
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
 
+    def set_songs(self, *args, **kwargs):
+        SongList.set_songs(self, *args, **kwargs)
+        self.model.reset()
+
 class LibraryBrowser(gtk.Window):
     def __init__(self, activator, Kind):
         gtk.Window.__init__(self)

@@ -120,6 +120,12 @@ class Playlist(TestCase):
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 0)
 
+    def test_restart(self):
+        self.pl.go_to(1)
+        self.pl.set([101, 102, 103, 104])
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 101)
+
     def shutDown(self):
         self.pl.destroy()
 
