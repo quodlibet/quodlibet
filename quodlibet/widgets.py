@@ -2348,8 +2348,9 @@ class MainSongList(SongList):
         config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
 
     def set_songs(self, *args, **kwargs):
+        old = self.model.current
         SongList.set_songs(self, *args, **kwargs)
-        self.model.reset()
+        self.model.go_to(old)
 
 class LibraryBrowser(gtk.Window):
     def __init__(self, activator, Kind):
