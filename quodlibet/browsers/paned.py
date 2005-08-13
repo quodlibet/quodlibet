@@ -212,8 +212,8 @@ class PanedBrowser(gtk.VBox, Browser):
         self.show_all()
 
     def __start(self, view, indices, col):
-        player.playlist.next()
         player.playlist.reset()
+        player.playlist.next()
 
     def can_filter(self, key):
         for pane in self.__panes:

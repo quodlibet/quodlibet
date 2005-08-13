@@ -55,7 +55,6 @@ class Playlist(TestCase):
         self.pl.set([r0, r1, r2, r3])
         songs = [self.pl.current for i in range(1000)
                  if self.pl.next() or True]
-        self.assertEqual(songs.count(r0), 0)
         self.assert_(songs.count(r1) > songs.count(r0))
         self.assert_(songs.count(r2) > songs.count(r1))
         self.assert_(songs.count(r3) > songs.count(r2))
@@ -87,6 +86,39 @@ class Playlist(TestCase):
         self.pl.set([5, 10, 15, 20])
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 10)
+
+    def test_go_to_shuffle(self):
+        self.pl.shuffle = 1
+        for i in range(5):
+            self.pl.go_to(5)
+            self.failUnlessEqual(self.pl.current, 5)
+            self.pl.go_to(1)
+            self.failUnlessEqual(self.pl.current, 1)
+
+    def test_go_to_none(self):
+        self.pl.shuffle = 1
+        for i in range(5):
+            self.pl.go_to(None)
+            self.failUnlessEqual(self.pl.current, None)
+            self.pl.next()
+            self.failUnlessEqual(self.pl.current, 0)
+
+    def test_reset(self):
+        self.pl.go_to(5)
+        self.failUnlessEqual(self.pl.current, 5)
+        self.pl.reset()
+        self.failUnlessEqual(self.pl.current, None)
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 0)
+
+    def test_reset_shuffle(self):
+        self.pl.shuffle = 1
+        self.pl.go_to(5)
+        self.failUnlessEqual(self.pl.current, 5)
+        self.pl.reset()
+        self.failUnlessEqual(self.pl.current, None)
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 0)
 
     def shutDown(self):
         self.pl.destroy()

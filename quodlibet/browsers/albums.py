@@ -388,8 +388,8 @@ class AlbumList(Browser, gtk.VBox):
             return True
 
     def __play_selection(self, view, indices, col):
-        player.playlist.next()
         player.playlist.reset()
+        player.playlist.next()
 
     def filter(self, key, values):
         assert(key == "album")

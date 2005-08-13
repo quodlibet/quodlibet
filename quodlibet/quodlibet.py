@@ -18,14 +18,15 @@ def main():
 
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
-    widgets.init()
+    window = widgets.init()
 
     from threading import Thread
     enable_periodic_save()
     gtk.threads_enter()
     song = library.library.get(config.get("memory", "song"))
     t = Thread(
-        target=player.playlist.play, args=(widgets.widgets.watcher, song))
+        target=player.playlist.play,
+        args=(widgets.widgets.watcher, window.songlist.model, song))
     gtk.quit_add(1, widgets.save_library, t)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     t.start()

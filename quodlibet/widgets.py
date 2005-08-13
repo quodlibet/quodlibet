@@ -762,7 +762,9 @@ class QLTrayIcon(HIGTrayIcon):
 
     def __playpause(self, activator):
         if widgets.watcher.song: player.playlist.paused ^= True
-        else: player.playlist.reset()
+        else:
+            player.playlist.reset()
+            player.playlist.next()
 
     def __properties(self, activator):
         if widgets.watcher.song:
@@ -996,7 +998,9 @@ class MainWindow(gtk.Window):
             if stopped: stopafter.active = False
 
         def __playpause(self, button):
-            if widgets.watcher.song is None: player.playlist.reset()
+            if widgets.watcher.song is None:
+                player.playlist.reset()
+                player.playlist.next()
             else: player.playlist.paused ^= True
 
         def __previous(self, button): player.playlist.previous()
@@ -1156,13 +1160,8 @@ class MainWindow(gtk.Window):
         self.shuffle.append_text(_("Weighted"))
         tips.set_tip(shuffle, _("Play songs in random order"))
         shuffle.connect('changed', self.__shuffle)
-        try: shf = config.getint('memory', 'shuffle')
-        except: shf = int(config.getboolean('memory', 'shuffle'))
-        shuffle.set_active(shf)
         hbox.pack_start(shuffle, expand=False)
         self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
-        repeat.connect('toggled', self.toggle_repeat)
-        repeat.set_active(config.getboolean('settings', 'repeat'))
         tips.set_tip(
             repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
@@ -1185,7 +1184,6 @@ class MainWindow(gtk.Window):
         self.songlist = MainSongList()
         self.songlist.set_rules_hint(True)
         sw.add(self.songlist)
-        self.songlist.set_model(gtk.ListStore(object))
         SongList.set_all_column_headers(
             config.get("settings", "headers").split())
         sort = config.get('memory', 'sortby')
@@ -1206,6 +1204,12 @@ class MainWindow(gtk.Window):
         self.browser.restore()
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
+
+        try: shf = config.getint('memory', 'shuffle')
+        except: shf = int(config.getboolean('memory', 'shuffle'))
+        shuffle.set_active(shf)
+        repeat.connect('toggled', self.toggle_repeat)
+        repeat.set_active(config.getboolean('settings', 'repeat'))
 
         self.connect('configure-event', MainWindow.__save_size)
         self.connect('delete-event', MainWindow.__delete_event)
@@ -1559,7 +1563,9 @@ class MainWindow(gtk.Window):
         self.__refresh_size()
 
     def __play_pause(self, *args):
-        if widgets.watcher.song is None: player.playlist.reset()
+        if widgets.watcher.song is None:
+            player.playlist.reset()
+            player.playlist.next()
         else: player.playlist.paused ^= True
 
     def __jump_to_current(self, explicit):
@@ -1577,11 +1583,11 @@ class MainWindow(gtk.Window):
         player.playlist.previous()
 
     def toggle_repeat(self, button):
-        player.playlist.repeat = button.get_active()
+        self.songlist.model.repeat = button.get_active()
         config.set("settings", "repeat", str(bool(button.get_active())))
 
     def __shuffle(self, button):
-        player.playlist.shuffle = button.get_active()
+        self.songlist.model.shuffle = button.get_active()
         config.set("memory", "shuffle", str(button.get_active()))
 
     def __random(self, item, key):
@@ -2328,7 +2334,10 @@ class MainSongList(SongList):
     # is done here, and the player requests songs one at a time.
 
     def __init__(self, *args, **kwargs):
+        from songlist import PlaylistModel
         SongList.__init__(self, *args, **kwargs)
+        self.set_model(PlaylistModel())
+        self.model = self.get_model()
         s = widgets.watcher.connect_object(
             'removed', map, player.playlist.remove)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
@@ -2337,10 +2346,6 @@ class MainSongList(SongList):
         SongList.set_sort_by(self, *args, **kwargs)
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
-
-    def set_songs(self, *args, **kwargs):
-        SongList.set_songs(self, *args, **kwargs)
-        player.playlist.set_playlist(self.get_songs())
 
 class LibraryBrowser(gtk.Window):
     def __init__(self, activator, Kind):

@@ -55,6 +55,9 @@ class PlaylistModel(gtk.ListStore):
     def __next_shuffle(self):
         if self.__path is not None:
             self.__played.append(self.__path)
+        elif not self.is_empty():
+            self.__path = 0
+            return
 
         if self.shuffle == 1: self.__next_shuffle_regular()
         elif self.shuffle == 2: self.__next_shuffle_weighted()
@@ -107,10 +110,10 @@ class PlaylistModel(gtk.ListStore):
     def go_to(self, song):
         if self.shuffle and self.__path is not None:
             self.__played.append(self.__path)
-        
+
+        self.__path = None
         if isinstance(song, gtk.TreeIter):
             self.__path = self.get_path(iter)
-        elif song is None: self.__path = None
         else:
             def _find(self, path, iter):
                 if self[iter][0] == song:
@@ -121,3 +124,7 @@ class PlaylistModel(gtk.ListStore):
 
     def is_empty(self):
         return not bool(len(self))
+
+    def reset(self):
+        self.__played = []
+        self.go_to(None)
