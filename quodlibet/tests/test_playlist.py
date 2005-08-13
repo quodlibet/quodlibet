@@ -6,6 +6,7 @@ class Playlist(TestCase):
     def setUp(self):
         self.pl = PlaylistModel()
         self.pl.set(range(10))
+        self.failUnless(self.pl.current is None)
 
     def test_isempty(self):
         self.pl.set([])
@@ -17,7 +18,6 @@ class Playlist(TestCase):
         self.assertEqual(self.pl.get(), range(12))
 
     def test_next(self):
-        self.failUnless(self.pl.current is None)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 0)
         self.pl.next()
@@ -26,6 +26,14 @@ class Playlist(TestCase):
         self.failUnlessEqual(self.pl.current, 9)
         self.pl.next()
         self.failUnless(self.pl.current is None)
+
+    def test_next_repeat(self):
+        self.pl.repeat = True
+        self.pl.go_to(3)
+        for i in range(9): self.pl.next()
+        self.assertEqual(self.pl.current, 2)
+        for i in range(12): self.pl.next()
+        self.assertEqual(self.pl.current, 4)
 
     def test_previous(self):
         self.pl.go_to(2)
