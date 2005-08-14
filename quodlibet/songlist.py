@@ -10,9 +10,9 @@ class PlaylistMux(object):
     def __init__(self, watcher, q, pl):
         self.q = q
         self.pl = pl
-        watcher.connect('song-ended', self.__check_q)
+        watcher.connect('song-started', self.__check_q)
 
-    def __check_q(self, watcher, song, ended):
+    def __check_q(self, watcher, song):
         if song and not self.q.is_empty() and song == self.q[(0,)][0]:
             self.q.remove(self.q.get_iter((0,)))
 
@@ -55,6 +55,14 @@ class PlaylistModel(gtk.ListStore):
             iter = self.append(row=[song])
             if song == oldsong:
                 self.__path = self.get_path(iter)[0]
+
+    def remove(self, iter):
+        oldpath = self.__path
+        song = self.current
+        gtk.ListStore.remove(self, iter)
+        self.go_to(song)
+        if self.__path is None and not self.is_empty():
+            self.__path = min(oldpath, len(self) - 1)
 
     def get(self):
         return [row[0] for row in self]

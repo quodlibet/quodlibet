@@ -2354,7 +2354,6 @@ class SongQueue(SongList):
         self.set_size_request(-1, 120)
         self.set_model(PlaylistModel())
         self.model = self.get_model()
-        self.connect_object('row-activated', SongQueue.__select_song, self)
         targets = [("text/uri-list", 0, 1)]
         self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
         self.connect('drag-data-received', self.__drag_data_received)
@@ -2381,10 +2380,6 @@ class SongQueue(SongList):
             for song in songs:
                 iter = model.insert_after(iter, [song])
         ctx.finish(True, True, etime)
-
-    def __select_song(self, indices, col):
-        self.model.go_to(self.model[indices][0])
-        player.playlist.next()
 
     def set_sort_by(self, *args): pass
     def get_sort_by(self, *args): return "", False
