@@ -52,6 +52,8 @@ class QueueModel(gtk.ListStore):
         if self.__played:
             self.remove(self.get_iter((0,)))
 
+        if self.is_empty(): return None
+
         self.__played = True
         return self[(0,)][0]
 
