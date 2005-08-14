@@ -1,47 +1,6 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-from songlist import PlaylistModel, QueueModel
-
-class Queue(TestCase):
-    def setUp(self):
-        self.q = QueueModel()
-        self.q.extend(range(10))
-
-    def test_isempty(self):
-        self.failIf(self.q.is_empty())
-        self.q.clear()
-        self.failUnless(self.q.is_empty())
-
-    def test_get(self):
-        self.assertEquals(self.q.get(), 0)
-        self.assertEquals(self.q.get(), 1)
-        self.assertEquals(self.q.get(), 2)
-        self.assertEquals(self.q.get(), 3)
-        self.assertEquals(self.q.get(), 4)
-
-    def test_remove(self):
-        self.assertEquals(self.q.get(), 0)
-        self.q.remove_song(1)
-        self.assertEquals(self.q.get(), 2)
-        self.assertEquals(self.q.get(), 3)
-
-    def test_goto(self):
-        self.assertEquals(self.q.get(), 0)
-        self.q.go_to(3)
-        self.assertEquals(self.q.get(), 3)
-        self.assertEquals(self.q.get(), 1)
-        self.assertEquals(self.q.get(), 2)
-        self.assertEquals(self.q.get(), 4)
-
-    def test_shuffle(self):
-        self.q.shuffle = 1
-        numbers = [self.q.get() for i in range(10)]
-        self.assertNotEquals(numbers, range(10))
-        numbers.sort()
-        self.assertEquals(numbers, range(10))
-
-    def shutDown(self):
-        self.q.destroy()
+from songlist import PlaylistModel
 
 class Playlist(TestCase):
     def setUp(self):
@@ -68,6 +27,18 @@ class Playlist(TestCase):
         self.failUnlessEqual(self.pl.current, 9)
         self.pl.next()
         self.failUnless(self.pl.current is None)
+
+    def test_contains(self):
+        self.failUnless(1 in self.pl)
+        self.failUnless(8 in self.pl)
+        self.failIf(22 in self.pl)
+
+    def test_removal(self):
+        self.pl.go_to(8)
+        for i in range(3, 8):
+            self.pl.remove(self.pl.find(i))
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 9)
 
     def test_next_repeat(self):
         self.pl.repeat = True
@@ -172,4 +143,3 @@ class Playlist(TestCase):
         self.pl.destroy()
 
 registerCase(Playlist)
-registerCase(Queue)

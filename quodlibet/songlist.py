@@ -6,56 +6,36 @@ if sys.version_info < (2, 4): from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED = range(3)
 
-class QueueModel(gtk.ListStore):
-    shuffle = OFF
-    __played = False
+class PlaylistMux(object):
+    def __init__(self, watcher, q, pl):
+        self.q = q
+        self.pl = pl
+        watcher.connect('song-ended', self.__check_q)
 
-    def __init__(self): gtk.ListStore.__init__(self, object)
-        
-    def append(self, song): gtk.ListStore.append(self, row=[song])
+    def __check_q(self, watcher, song, ended):
+        if song and not self.q.is_empty() and song == self.q[(0,)][0]:
+            self.q.remove(self.q.get_iter((0,)))
 
-    def extend(self, songs): map(self.append, songs)
+    def get_current(self):
+        return self.q.current or self.pl.current
+    current = property(get_current)
 
-    def is_empty(self): return not bool(len(self))
+    def is_empty(self):
+        return self.q.is_empty() or self.p.is_empty()
+
+    def next(self):
+        if self.q.is_empty(): self.pl.next()
+        else: self.q.next()
+
+    def previous(self):
+        self.pl.previous()
 
     def go_to(self, song):
-        found_iter = []
-        def _find(self, path, iter):
-            if self[iter][0] == song:
-                found_iter.append(iter)
-                return True
-            else: return False
-        self.foreach(_find)
-        if self.__played: self.insert(1, [song])
-        else: self.insert(0, [song])
-        if found_iter: self.remove(found_iter[0])
+        if song in self.q: self.q.go_to(song)
+        else: self.pl.go_to(song)
 
-    def remove_song(self, song):
-        found_path = []
-        def _find(self, path, iter):
-            if self[iter][0] == song:
-                found_path.append(path)
-                return True
-            else: return False
-        self.foreach(_find)
-        if found_path:
-            if found_path[0] == (0,):
-                self.__played = False
-            self.remove(self.get_iter(found_path[0]))
-
-    def get(self):
-        if self.is_empty(): return None
-
-        if self.shuffle:
-            self.go_to(self[(random.randrange(0, len(self)),)][0])
-
-        if self.__played:
-            self.remove(self.get_iter((0,)))
-
-        if self.is_empty(): return None
-
-        self.__played = True
-        return self[(0,)][0]
+    def reset(self, song):
+        self.pl.reset()
 
 class PlaylistModel(gtk.ListStore):
     shuffle = OFF
@@ -81,6 +61,7 @@ class PlaylistModel(gtk.ListStore):
 
     def get_current(self):
         if self.__path == None: return None
+        elif self.is_empty(): return None
         else: return self[(self.__path,)][0]
 
     current = property(get_current)
@@ -172,6 +153,18 @@ class PlaylistModel(gtk.ListStore):
                     return True
                 else: return False
             self.foreach(_find)
+
+    def find(self, song):
+        iters = [None]
+        def _find(self, path, iter):
+            if self[iter][0] == song:
+                iters.append(iter)
+                return True
+            else: return False
+        self.foreach(_find)
+        return iters[-1]
+
+    def __contains__(self, song): return bool(self.find(song))
 
     def is_empty(self):
         return not bool(len(self))

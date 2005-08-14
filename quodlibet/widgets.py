@@ -1202,6 +1202,10 @@ class MainWindow(gtk.Window):
                          lambda e, p, c:
                          c.set_property('visible', e.get_expanded()), cb)
 
+        from songlist import PlaylistMux
+        self.playlist = PlaylistMux(
+            widgets.watcher, self.queue.model, self.songlist.model)
+
         self.songpane = songpane = gtk.VPaned()
         self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
         self.songpane.pack2(expander, resize=False, shrink=True)
@@ -2345,9 +2349,9 @@ class PlayList(SongList):
 
 class SongQueue(SongList):
     def __init__(self, *args, **kwargs):
-        from songlist import QueueModel
+        from songlist import PlaylistModel
         SongList.__init__(self, *args, **kwargs)
-        self.set_model(QueueModel())
+        self.set_model(PlaylistModel())
         self.model = self.get_model()
         self.connect_object('row-activated', SongQueue.__select_song, self)
         targets = [("text/uri-list", 0, 1)]
@@ -2363,7 +2367,8 @@ class SongQueue(SongList):
         if not songs: return True
 
         try: path, position = view.get_dest_row_at_pos(x, y)
-        except TypeError:  map(model.append, songs)
+        except TypeError:
+            for song in songs: model.append(row=[song])
         else:
             iter = model.get_iter(path)
             song = songs.pop(0)

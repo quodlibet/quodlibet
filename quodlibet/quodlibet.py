@@ -26,7 +26,7 @@ def main():
     song = library.library.get(config.get("memory", "song"))
     t = Thread(
         target=player.playlist.play,
-        args=(widgets.widgets.watcher, window.songlist.model, song))
+        args=(widgets.widgets.watcher, window.playlist, song))
     gtk.quit_add(1, widgets.save_library, t)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     t.start()
