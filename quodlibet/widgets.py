@@ -1189,13 +1189,24 @@ class MainWindow(gtk.Window):
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.queue = SongQueue()
         sw.add(self.queue)
-        expander = gtk.Expander(_("Play Queue"))
+        expander = gtk.Expander()
+        hb = gtk.HBox(spacing=12)
+        l = gtk.Label(_("_Play Queue"))
+        hb.pack_start(l)
+        l.set_use_underline(True)
+        cb = gtk.CheckButton(_("_Choose songs randomly"))
+        hb.pack_start(cb)
+        expander.set_label_widget(hb)
         expander.add(self.queue_scroller)
+        expander.connect('notify::expanded',
+                         lambda e, p, c:
+                         c.set_property('visible', e.get_expanded()), cb)
 
         self.songpane = songpane = gtk.VPaned()
-        songpane.add1(expander)
-        songpane.add2(self.song_scroller)
+        self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
+        self.songpane.pack2(expander, resize=False, shrink=True)
         self.songpane.show_all()
+        cb.hide()
 
         SongList.set_all_column_headers(
             config.get("settings", "headers").split())
