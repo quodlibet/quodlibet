@@ -29,7 +29,6 @@ class TestMetaData(TestCase):
 
     def test_mutability(self):
         self.failIf(self.song.can_change('=foo'))
-        self.failIf(self.song.can_change('vendor'))
         self.failIf(self.song.can_change('foo~bar'))
         self.failUnless(self.song.can_change('artist'))
         self.failUnless(self.song.can_change('title'))

@@ -21,9 +21,29 @@ class OggFile(AudioFile):
             if not isinstance(v, list): v = [v]
             v = u"\n".join(map(unicode, v))
             self[k.lower()] = v
+
         self["~#length"] = int(f.time_total(-1))
         self["~#bitrate"] = int(f.bitrate(-1))
+
+        try: del(self["vendor"])
+        except KeyError: pass
+
+        if "totaltracks" in self:
+            self["tracktotal"].setdefault(self["totaltracks"])
+            del(self["totaltracks"])
+
+        # tracktotal is incredibly stupid; use tracknumber=x/y instead.
+        if "tracktotal" in self:
+            if "tracknumber" in self:
+                self["tracknumber"] += "/" + self["tracktotal"]
+            del(self["tracktotal"])
+
         self.sanitize(filename)
+
+    def can_change(self, k=None):
+        if k is None: return AudioFile.can_change(self, None)
+        else: return (AudioFile.can_change(self, k) and
+                      k not in ["vendor", "totaltracks", "tracktotal"])
 
     def write(self):
         import ogg.vorbis

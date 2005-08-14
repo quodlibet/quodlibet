@@ -118,7 +118,7 @@ class AudioFile(dict):
         if k is None:
             if os.access(self["~filename"], os.W_OK): return True
             else: return []
-        else: return (k and k != "vendor" and "=" not in k and "~" not in k
+        else: return (k and "=" not in k and "~" not in k
                       and os.access(self["~filename"], os.W_OK))
 
     def rename(self, newname):
@@ -164,10 +164,6 @@ class AudioFile(dict):
         self.setdefault("~#bitrate", 0)
         self.setdefault("~#rating", 2)
         self.setdefault("~#added", int(time.time()))
-
-        # Clean up Vorbis garbage.
-        try: del(self["vendor"])
-        except KeyError: pass
 
         self["~#mtime"] = util.mtime(self['~filename'])
 

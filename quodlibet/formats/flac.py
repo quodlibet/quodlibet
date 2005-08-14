@@ -39,7 +39,26 @@ class FLACFile(AudioFile):
                 val = util.decode("=".join(parts[1:]))
                 if key in self: self[key] += "\n" + val
                 else: self[key] = val
+
+        try: del(self["vendor"])
+        except KeyError: pass
+
+        if "totaltracks" in self:
+            self["tracktotal"].setdefault(self["totaltracks"])
+            del(self["totaltracks"])
+
+        # tracktotal is incredibly stupid; use tracknumber=x/y instead.
+        if "tracktotal" in self:
+            if "tracknumber" in self:
+                self["tracknumber"] += "/" + self["tracktotal"]
+            del(self["tracktotal"])
+
         self.sanitize(filename)
+
+    def can_change(self, k=None):
+        if k is None: return AudioFile.can_change(self, None)
+        else: return (AudioFile.can_change(self, k) and
+                      k not in ["vendor", "totaltracks", "tracktotal"])
 
     def write(self):
         chain = flac.metadata.Chain()
