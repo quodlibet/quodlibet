@@ -82,7 +82,8 @@ class AlbumList(Browser, gtk.VBox):
             if self.title:
                 for song in self.songs:
                     if "date" in song:
-                        self.date = song.list("date")[0]
+                        try: self.date = song.list("date")[0]
+                        except IndexError: pass
                     self.discs = max(self.discs, song("~#disc", 0))
 
             text = "<i><b>%s</b></i>" % util.escape(
