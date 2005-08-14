@@ -25,7 +25,7 @@ class PlaylistMux(object):
 
     def next(self):
         if self.q.is_empty(): self.pl.next()
-        else: self.q.next()
+        elif self.q.current is None: self.q.next()
 
     def previous(self):
         self.pl.previous()
