@@ -69,9 +69,10 @@ class QLBrainz(object):
 			self.mb.Select(MBS_Rewind)
 			self.mb.Select1(MBS_SelectAlbum, i)
 
-			id, data = self.__cache_this_album(tracks) # pass required track#s
-			
-			candidates[id] = data
+			try:
+				id, data = self.__cache_this_album(tracks)
+				candidates[id] = data
+			except TypeError: pass # not the correct number of tracks
 
 		return candidates
 
