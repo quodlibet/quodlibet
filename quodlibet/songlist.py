@@ -162,7 +162,7 @@ class PlaylistModel(gtk.ListStore):
 
         self.__path = None
         if isinstance(song, gtk.TreeIter):
-            self.__path = self.get_path(iter)
+            self.__path = self.get_path(song)
         else:
             def _find(self, path, iter):
                 if self[iter][0] == song:

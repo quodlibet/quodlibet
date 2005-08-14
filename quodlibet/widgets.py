@@ -1182,8 +1182,21 @@ class MainWindow(gtk.Window):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.songlist = MainSongList()
-        self.songlist.set_rules_hint(True)
         sw.add(self.songlist)
+
+        self.queue_scroller = sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        self.queue = SongQueue()
+        sw.add(self.queue)
+        expander = gtk.Expander(_("Play Queue"))
+        expander.add(self.queue_scroller)
+
+        self.songpane = songpane = gtk.VPaned()
+        songpane.add1(expander)
+        songpane.add2(self.song_scroller)
+        self.songpane.show_all()
+
         SongList.set_all_column_headers(
             config.get("settings", "headers").split())
         sort = config.get('memory', 'sortby')
@@ -1216,7 +1229,6 @@ class MainWindow(gtk.Window):
         self.connect_object('destroy', TrayIcon.destroy, self.icon)
         self.connect('destroy', gtk.main_quit)
 
-        self.songlist.connect('row-activated', self.__select_song)
         self.songlist.connect('button-press-event', self.__songs_button_press)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
@@ -1385,7 +1397,7 @@ class MainWindow(gtk.Window):
         config.set("memory", "browser", Browser.__name__)
         if self.browser:
             c = self.child.get_children()[-2]
-            c.remove(self.song_scroller)
+            c.remove(self.songpane)
             c.remove(self.browser)
             c.destroy()
             self.browser.destroy()
@@ -1394,7 +1406,7 @@ class MainWindow(gtk.Window):
         if self.browser.expand:
             c = self.browser.expand()
             c.pack1(self.browser, resize=True)
-            c.pack2(self.song_scroller, resize=True)
+            c.pack2(self.songpane, resize=True)
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
@@ -1411,7 +1423,7 @@ class MainWindow(gtk.Window):
         else:
             c = gtk.VBox()
             c.pack_start(self.browser, expand=False)
-            c.pack_start(self.song_scroller)
+            c.pack_start(self.songpane)
         self.child.pack_end(c)
         c.show()
         self.__hide_menus()
@@ -1659,13 +1671,6 @@ class MainWindow(gtk.Window):
         if not hasattr(widgets, 'plugins'):
             widgets.plugins = PluginWindow(self)
         widgets.plugins.present()
-
-    def __select_song(self, songlist, indices, col):
-        model = songlist.get_model()
-        iter = model.get_iter(indices)
-        song = model.get_value(iter, 0)
-        player.playlist.go_to(song)
-        player.playlist.paused = False
 
     def open_chooser(self, *args):
         if not os.path.exists(self.last_dir):
@@ -2327,20 +2332,63 @@ class PlayList(SongList):
         menu.popup(None, None, None, event.button, event.time)
         return True
 
+class SongQueue(SongList):
+    def __init__(self, *args, **kwargs):
+        from songlist import QueueModel
+        SongList.__init__(self, *args, **kwargs)
+        self.set_model(QueueModel())
+        self.model = self.get_model()
+        self.connect_object('row-activated', SongQueue.__select_song, self)
+        targets = [("text/uri-list", 0, 1)]
+        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
+        self.connect('drag-data-received', self.__drag_data_received)
+
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+        model = view.get_model()
+        from urllib import splittype as split, url2pathname as topath
+        filenames = [topath(split(s)[1]) for s in sel.get_uris()
+                     if split(s)[0] == "file"]
+        songs = filter(None, [library.get(f) for f in filenames])
+        if not songs: return True
+
+        try: path, position = view.get_dest_row_at_pos(x, y)
+        except TypeError:  map(model.append, songs)
+        else:
+            iter = model.get_iter(path)
+            song = songs.pop(0)
+            if position in (gtk.TREE_VIEW_DROP_BEFORE,
+                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                iter = model.insert_before(iter, [song])
+            else:
+                iter = model.insert_after(iter, [song])
+            for song in songs:
+                iter = model.insert_after(iter, [song])
+        ctx.finish(True, True, etime)
+
+    def __select_song(self, indices, col):
+        self.model.go_to(self.model[indices][0])
+        player.playlist.next()
+
+    def set_sort_by(self, *args): pass
+    def get_sort_by(self, *args): return "", False
+
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
-
-    # FIXME: Ideally all playlist management (shuffle, repeat, etc)
-    # is done here, and the player requests songs one at a time.
 
     def __init__(self, *args, **kwargs):
         from songlist import PlaylistModel
         SongList.__init__(self, *args, **kwargs)
+        self.set_rules_hint(True)
         self.set_model(PlaylistModel())
         self.model = self.get_model()
         s = widgets.watcher.connect_object(
             'removed', map, player.playlist.remove)
         self.connect_object('destroy', widgets.watcher.disconnect, s)
+        self.connect_object('row-activated', MainSongList.__select_song, self)
+
+    def __select_song(self, indices, col):
+        player.playlist.go_to(self.model[indices][0])
+        player.playlist.paused = False
 
     def set_sort_by(self, *args, **kwargs):
         SongList.set_sort_by(self, *args, **kwargs)
