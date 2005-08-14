@@ -6,6 +6,55 @@ if sys.version_info < (2, 4): from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED = range(3)
 
+class QueueModel(gtk.ListStore):
+    shuffle = OFF
+    __played = False
+
+    def __init__(self): gtk.ListStore.__init__(self, object)
+        
+    def append(self, song): gtk.ListStore.append(self, row=[song])
+
+    def extend(self, songs): map(self.append, songs)
+
+    def is_empty(self): return not bool(len(self))
+
+    def go_to(self, song):
+        found_iter = []
+        def _find(self, path, iter):
+            if self[iter][0] == song:
+                found_iter.append(iter)
+                return True
+            else: return False
+        self.foreach(_find)
+        if self.__played: self.insert(1, [song])
+        else: self.insert(0, [song])
+        if found_iter: self.remove(found_iter[0])
+
+    def remove_song(self, song):
+        found_path = []
+        def _find(self, path, iter):
+            if self[iter][0] == song:
+                found_path.append(path)
+                return True
+            else: return False
+        self.foreach(_find)
+        if found_path:
+            if found_path[0] == (0,):
+                self.__played = False
+            self.remove(self.get_iter(found_path[0]))
+
+    def get(self):
+        if self.is_empty(): return None
+
+        if self.shuffle:
+            self.go_to(self[(random.randrange(0, len(self)),)][0])
+
+        if self.__played:
+            self.remove(self.get_iter((0,)))
+
+        self.__played = True
+        return self[(0,)][0]
+
 class PlaylistModel(gtk.ListStore):
     shuffle = OFF
     repeat = False

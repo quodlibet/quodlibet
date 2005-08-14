@@ -1,6 +1,47 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-from songlist import PlaylistModel
+from songlist import PlaylistModel, QueueModel
+
+class Queue(TestCase):
+    def setUp(self):
+        self.q = QueueModel()
+        self.q.extend(range(10))
+
+    def test_isempty(self):
+        self.failIf(self.q.is_empty())
+        self.q.clear()
+        self.failUnless(self.q.is_empty())
+
+    def test_get(self):
+        self.assertEquals(self.q.get(), 0)
+        self.assertEquals(self.q.get(), 1)
+        self.assertEquals(self.q.get(), 2)
+        self.assertEquals(self.q.get(), 3)
+        self.assertEquals(self.q.get(), 4)
+
+    def test_remove(self):
+        self.assertEquals(self.q.get(), 0)
+        self.q.remove_song(1)
+        self.assertEquals(self.q.get(), 2)
+        self.assertEquals(self.q.get(), 3)
+
+    def test_goto(self):
+        self.assertEquals(self.q.get(), 0)
+        self.q.go_to(3)
+        self.assertEquals(self.q.get(), 3)
+        self.assertEquals(self.q.get(), 1)
+        self.assertEquals(self.q.get(), 2)
+        self.assertEquals(self.q.get(), 4)
+
+    def test_shuffle(self):
+        self.q.shuffle = 1
+        numbers = [self.q.get() for i in range(10)]
+        self.assertNotEquals(numbers, range(10))
+        numbers.sort()
+        self.assertEquals(numbers, range(10))
+
+    def shutDown(self):
+        self.q.destroy()
 
 class Playlist(TestCase):
     def setUp(self):
@@ -9,7 +50,8 @@ class Playlist(TestCase):
         self.failUnless(self.pl.current is None)
 
     def test_isempty(self):
-        self.pl.set([])
+        self.failIf(self.pl.is_empty())
+        self.pl.clear()
         self.failUnless(self.pl.is_empty())
 
     def test_get(self):
@@ -130,3 +172,4 @@ class Playlist(TestCase):
         self.pl.destroy()
 
 registerCase(Playlist)
+registerCase(Queue)
