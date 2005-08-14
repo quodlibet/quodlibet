@@ -34,7 +34,7 @@ class PlaylistMux(object):
         if song in self.q: self.q.go_to(song)
         else: self.pl.go_to(song)
 
-    def reset(self, song):
+    def reset(self):
         self.pl.reset()
 
 class PlaylistModel(gtk.ListStore):
