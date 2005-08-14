@@ -1206,9 +1206,9 @@ class MainWindow(gtk.Window):
         self.playlist = PlaylistMux(
             widgets.watcher, self.queue.model, self.songlist.model)
 
-        self.songpane = songpane = gtk.VPaned()
-        self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
-        self.songpane.pack2(expander, resize=False, shrink=True)
+        self.songpane = songpane = gtk.VBox(spacing=6)
+        self.songpane.pack_start(self.song_scroller)
+        self.songpane.pack_start(expander, expand=False)
         self.songpane.show_all()
         cb.hide()
 
@@ -2351,6 +2351,7 @@ class SongQueue(SongList):
     def __init__(self, *args, **kwargs):
         from songlist import PlaylistModel
         SongList.__init__(self, *args, **kwargs)
+        self.set_size_request(-1, 120)
         self.set_model(PlaylistModel())
         self.model = self.get_model()
         self.connect_object('row-activated', SongQueue.__select_song, self)
