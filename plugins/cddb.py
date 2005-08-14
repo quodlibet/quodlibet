@@ -9,7 +9,8 @@
 import CDDB
 import os
 from os import path
-from qltk import ErrorMessage, ConfirmAction
+import gtk
+from qltk import ErrorMessage, ConfirmAction, Message
 from util import tag, escape
 from gettext import ngettext
 
