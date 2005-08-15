@@ -154,6 +154,7 @@ class MP3File(AudioFile):
         except mutagen.id3.error: tag = mutagen.id3.ID3()
         tag.delall("COMM:QuodLibet:")
         tag.delall("TXXX:QuodLibet:")
+        tag.delall("UFID:http://musicbrainz.org")
 
         for key, id3name in self.SDI.items():
             tag.delall(id3name)
