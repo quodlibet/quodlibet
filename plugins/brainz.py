@@ -3,13 +3,27 @@
 
 import musicbrainz, os, gtk
 from musicbrainz.queries import *
-import qltk
+from qltk import *
+
+class AlbumCandidate(object):
+	various = False
+	tracklist = []
+	id = ""
+
+# Shamelessly stolen from cddb.py
+class AskAction(ConfirmAction):
+    """A message dialog that asks a yes/no question."""
+    def __init__(self, *args, **kwargs):
+        kwargs["buttons"] = gtk.BUTTONS_YES_NO
+        Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
 
 class QLBrainz(object):
 	PLUGIN_NAME = 'MusicBrainz lookup'
 	PLUGIN_ICON = 'gtk-cdrom'
 	PLUGIN_DESC = 'Retag an album based on a MusicBrainz search.'
 	PLUGIN_VERSION = '0.1'
+
+	VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
 
 	mb = None
 	
@@ -26,10 +40,16 @@ class QLBrainz(object):
 			
 		this_numtracks = self.mb.GetResultInt(MBE_AlbumGetNumTracks)
 		this_title = self.mb.GetResultData(MBE_AlbumGetAlbumName)
+		this_artistid = self.mb.GetResultData(MBE_AlbumGetAlbumArtistId)
 
 		print "Album has %d tracks" % this_numtracks
 		if this_numtracks == tracks:
-			album_id = self.mb.GetIDFromURL(self.mb.GetResultData(MBE_AlbumGetAlbumId))
+			new_candidate = AlbumCandidate()
+			
+			new_candidate.id = self.mb.GetIDFromURL(self.mb.GetResultData(MBE_AlbumGetAlbumId))
+		
+			if this_artistid == self.VARIOUS_ARTISTS_ARTISTID:
+				new_candidate.various = True
 				
 			# Now cache EVERYTHING for all tracks
 			# If this tracklist is used, its dict will be merged into the
@@ -38,23 +58,24 @@ class QLBrainz(object):
 				track_data = {}
 					
 				track_data['musicbrainz_trackid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetTrackId, j))
-				track_data['musicbrainz_albumid'] = album_id
 
-				# VA album is possible
+				# VA album is possible, just obliquely cover all cases
 				track_data['artist'] = self.mb.GetResultData1(MBE_AlbumGetArtistName, j)
 				track_data['title'] = self.mb.GetResultData1(MBE_AlbumGetTrackName, j)
 				track_data['album'] = this_title
 				track_data['tracknumber'] = str(j)
 
-				tracklist.append(track_data)
+				new_candidate.tracklist.append(track_data)
 					
-			print "Album: %s" % tracklist[0]['album']
+			print "Album: %s" % new_candidate.tracklist[0]['album']
 			k = 1
-			for track in tracklist:
-				print "%d. %s - %s" % (k, track['artist'], track['title'])
+			for track in new_candidate.tracklist:
+				print "%d. %s - %s (%s)" % (k, track['artist'], track['title'],
+					track['musicbrainz_trackid'])
 				k = k + 1
 
-			return [album_id, tracklist]
+			return new_candidate
+		return None
 
 	def __lookup_by_album_name(self, album, tracks):
 		candidates = {}
@@ -69,19 +90,37 @@ class QLBrainz(object):
 			self.mb.Select(MBS_Rewind)
 			self.mb.Select1(MBS_SelectAlbum, i)
 
-			try:
-				id, data = self.__cache_this_album(tracks)
-				candidates[id] = data
-			except TypeError: pass # not the correct number of tracks
+			candidate = self.__cache_this_album(tracks)
+
+			if candidate != None:
+				candidates[candidate.id] = candidate
 
 		return candidates
 
-	def __do_tag(self, album, id, album_data):
+	def __do_tag(self, album, candidate):
 		i = 0
-		for i in range(i, len(album)):
-			for key in ['artist', 'title', 'album', 'musicbrainz_trackid', 'musicbrainz_albumid', 'tracknumber']:
-				if key not in album[i] or album[i][key] != album_data[i][key]:
-					album[i][key] = album_data[i][key]
+
+		message = [
+			"<b>Artist:</b> %s" % candidate.tracklist[0]['artist'],
+			"<b>Album:</b> %s" % candidate.tracklist[0]['album'],
+			"\n<u>%s</u>" % _("Track List")
+		]
+			
+		for i in range(0, len(album)):
+			if candidate.various:
+				message.append("<b>%d.</b> %s - %s" % (i + 1,
+					candidate.tracklist[i]['artist'],
+					candidate.tracklist[i]['title']))
+			else:
+				message.append("<b>%d.</b> %s" % (i + 1,
+					candidate.tracklist[i]['title']))
+
+		if AskAction(None, _("Save the following information?"),
+			"\n".join(message)).run():
+			for i in range(0, len(album)):
+				for key in ['artist', 'title', 'album', 'musicbrainz_trackid', 'tracknumber']:
+					if key not in album[i] or album[i][key] != candidate.tracklist[i][key]:
+						album[i][key] = candidate.tracklist[i][key]
 
 	def __do_tag_by_album_id(self, album, albumid):
 		self.mb.QueryWithArgs(MBQ_GetAlbumById, [albumid])
@@ -92,9 +131,9 @@ class QLBrainz(object):
 		if n_albums == 1: # there better only be one album per ID
 			self.mb.Select1(MBS_SelectAlbum, 1)
 			
-			id, data = self.__cache_this_album(len(album))
+			candidate = self.__cache_this_album(len(album))
 
-			self.__do_tag(album, id, data)
+			self.__do_tag(album, candidate)
 				
 	def __get_album_trm(self, album):
 		trm_this_album = []
@@ -109,8 +148,12 @@ class QLBrainz(object):
 		return trm_this_album
 
 	def __try_match_by_trm(self, album, candidates=[]):
-		qltk.ErrorMessage(None, "", _("TRM matching feature not done yet, sorry.")).run()
+		ErrorMessage(None, "", _("TRM matching feature not done yet, sorry.")).run()
 
+#	def __get_album_id_from_track_id(self, track):
+#		self.mb.QueryWithArgs(MBQ_GetTrackById, [track])
+
+		
 	def plugin_album(self, album, override=None):
 		# If there is already an album name. When plugin_album is called,
 		# all of the 'album' entries are guaranteed to be the same.
@@ -118,10 +161,11 @@ class QLBrainz(object):
 		
 		# Test for user error.
 		if 'tracknumber' in album[0] and int(album[0]('tracknumber').split("/")[0]) != 1:
-			qltk.ErrorMessage(None, "",
+			ErrorMessage(None, "",
 			_("Please select the entire album (starting from track 1!)")).run()
-		elif 'musicbrainz_albumid' in album[0]: # Updating? Shrug.
-			self.__do_tag_by_album_id(album, album[0]('musicbrainz_albumid'))
+#		elif 'musicbrainz_trackid' in album[0]: # Fetch album information
+#			albumid = self.__get_album_id_from_track_id(album[0]('musicbrainz_trackid'))
+#			self.__do_tag_by_album_id(album, albumid)
 		elif override is not None or 'album' in album[0]:
 			album_name = ""
 			if override is not None: album_name = override
@@ -134,7 +178,7 @@ class QLBrainz(object):
 				self.__try_match_by_trm(album, candidates)
 
 			elif len(candidates) == 0:
-				name = qltk.GetStringDialog(
+				name = GetStringDialog(
 					None, _("Couldn't locate album by name"),
 					_("Couldn't find an album with the name \"%s\". To retry "
 					  "with another possible album name, enter it here. If "
@@ -146,9 +190,9 @@ class QLBrainz(object):
 				else: self.__try_match_by_trm(album)
 					
 			else:
-				self.__do_tag(album, candidates.keys()[0], candidates[candidates.keys()[0]])
+				self.__do_tag(album, candidates[candidates.keys()[0]])
 		elif 'album' not in album[0]: # and override is None
-			name = qltk.GetStringDialog(
+			name = GetStringDialog(
 				None, _("Not enough information to locate album"),
 				_("Please enter an album name to match this one to, or just "
 				  "hit OK to attempt to match these tracks to an album based "
