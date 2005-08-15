@@ -39,6 +39,10 @@ VALIDATERS = {
     sre.compile(r"^-?\d+\.?\d+?$").match,
     _("ReplayGain peaks must be entered in x.yy format.")),
 
+    'musicbrainz_trackid': (
+    sre.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8}$").match,
+    _("MusicBrainz track IDs must be in UUID format.")),
+
     }
 
 VALIDATERS["replaygain_track_peak"] = VALIDATERS["replaygain_album_peak"]
