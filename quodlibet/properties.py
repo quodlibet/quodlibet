@@ -1015,7 +1015,8 @@ class SongProperties(gtk.Window):
             keys.sort()
 
             if not config.getboolean("editing", "allcomments"):
-                machine_comments = set(['replaygain_album_gain',
+                machine_comments = set(['musicbrainz_trackid',
+                                        'replaygain_album_gain',
                                         'replaygain_album_peak',
                                         'replaygain_track_gain',
                                         'replaygain_track_peak'])
