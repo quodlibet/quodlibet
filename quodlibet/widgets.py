@@ -2357,6 +2357,31 @@ class SongQueue(SongList):
         targets = [("text/uri-list", 0, 1)]
         self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
         self.connect('drag-data-received', self.__drag_data_received)
+        menu = gtk.Menu()
+        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        rem.connect('activate', self.__remove)
+        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        props.connect('activate', self.__properties)
+        menu.append(rem); menu.append(props); menu.show_all()
+        self.connect_object('button-press-event', self.__button_press, menu)
+
+    def __properties(self, item):
+        SongProperties(self.get_selected_songs(), widgets.watcher)
+
+    def __remove(self, item):
+        map(self.model.remove, self.songs_to_iters(self.get_selected_songs()))
+
+    def __button_press(self, menu, event):
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError: return True
+        self.grab_focus()
+        selection = self.get_selection()
+        if event.button == 3:
+            if not selection.path_is_selected(path):
+                self.set_cursor(path, col, 0)
+            menu.popup(None, None, None, event.button, event.time)
+            return True
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
         model = view.get_model()
