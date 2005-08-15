@@ -52,7 +52,6 @@ class MP3File(AudioFile):
             "TMOO": "mood",
             "TBPM": "bpm",
             "TDRC": "date",
-            "UFID": "uuid", # not really used - see __init__
             "WOAR": "website",
             }
 
@@ -63,13 +62,9 @@ class MP3File(AudioFile):
     except: pass # Uninitialized config...
     CODECS.append("iso-8859-1")
 
-    mbid = None
-
     def __init__(self, filename):
         try: tag = ID3hack(filename)
         except mutagen.id3.error: tag = {}
-
-        self.mbid = re.compile("[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}")
 
         for frame in tag.values():
             if frame.FrameID == "APIC" and len(frame.data):
@@ -79,11 +74,8 @@ class MP3File(AudioFile):
                 self["genre"] = "\n".join(frame.genres)
                 continue
             elif frame.FrameID == "UFID" and frame.owner == "http://musicbrainz.org":
-                # ignore it if it doesn't match a MusicBrainz track id,
-                # musicbrainz_trackid otherwise
-                if self.mbid.match(frame.data):
-                    self["musicbrainz_trackid"] = frame.data
-                    continue
+                self["musicbrainz_trackid"] = frame.data
+                continue
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
@@ -182,12 +174,9 @@ class MP3File(AudioFile):
                      "replaygain_track_gain", "musicbrainz_trackid"]
 
         if "musicbrainz_trackid" in self.realkeys():
-            if self.mbid.match(self["musicbrainz_trackid"]):
-                f = mutagen.id3.UFID(owner="http://musicbrainz.org",
-                      data=self["musicbrainz_trackid"])
-                tag.loaded_frame(f)
-            #else:
-            #   print "mismatch with: %s" % self["musicbrainz_trackid"]
+            f = mutagen.id3.UFID(owner="http://musicbrainz.org",
+                  data=self["musicbrainz_trackid"])
+            tag.loaded_frame(f)
             
         for key in filter(lambda x: x not in self.SDI and x not in dontwrite,
                           self.realkeys()):
