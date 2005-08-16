@@ -1195,6 +1195,7 @@ class MainWindow(gtk.Window):
         hb.pack_start(l)
         l.set_use_underline(True)
         cb = gtk.CheckButton(_("_Choose songs randomly"))
+        cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         hb.pack_start(cb)
         expander.set_label_widget(hb)
         expander.add(self.queue_scroller)
@@ -1616,6 +1617,9 @@ class MainWindow(gtk.Window):
     def __shuffle(self, button):
         self.songlist.model.shuffle = button.get_active()
         config.set("memory", "shuffle", str(button.get_active()))
+
+    def __queue_shuffle(self, button, model):
+        model.shuffle = button.get_active()
 
     def __random(self, item, key):
         if self.browser.can_filter(key):
@@ -2402,16 +2406,20 @@ class SongQueue(SongList):
 
         try: path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
-            for song in songs: model.append(row=[song])
+            for song in songs:
+                it = model.find(song)
+                if it: model.remove(it)
+                model.append([song])
         else:
             iter = model.get_iter(path)
-            song = songs.pop(0)
+            map(model.remove, self.songs_to_iters(songs))
             if position in (gtk.TREE_VIEW_DROP_BEFORE,
                             gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                song = songs.pop(0)
                 iter = model.insert_before(iter, [song])
-            else:
-                iter = model.insert_after(iter, [song])
             for song in songs:
+                it = model.find(song)
+                if it: model.remove(it)
                 iter = model.insert_after(iter, [song])
         ctx.finish(True, True, etime)
 

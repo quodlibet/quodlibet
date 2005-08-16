@@ -109,7 +109,6 @@ class Playlist(TestCase):
             self.failUnlessEqual(self.pl.current, 1)
 
     def test_go_to_none(self):
-        self.pl.shuffle = 1
         for i in range(5):
             self.pl.go_to(None)
             self.failUnlessEqual(self.pl.current, None)
@@ -130,8 +129,6 @@ class Playlist(TestCase):
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.reset()
         self.failUnlessEqual(self.pl.current, None)
-        self.pl.next()
-        self.failUnlessEqual(self.pl.current, 0)
 
     def test_restart(self):
         self.pl.go_to(1)

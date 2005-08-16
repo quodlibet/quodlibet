@@ -13,8 +13,10 @@ class PlaylistMux(object):
         watcher.connect('song-started', self.__check_q)
 
     def __check_q(self, watcher, song):
-        if song and not self.q.is_empty() and song == self.q[(0,)][0]:
-            self.q.remove(self.q.get_iter((0,)))
+        if song:
+            iter = self.q.find(song)
+            if iter: self.q.remove(iter)
+            self.q.go_to(None); self.q.next()
 
     def get_current(self):
         return self.q.current or self.pl.current
@@ -95,9 +97,6 @@ class PlaylistModel(gtk.ListStore):
     def __next_shuffle(self):
         if self.__path is not None:
             self.__played.append(self.__path)
-        elif not self.is_empty():
-            self.__path = 0
-            return
 
         if self.shuffle == 1: self.__next_shuffle_regular()
         elif self.shuffle == 2: self.__next_shuffle_weighted()
