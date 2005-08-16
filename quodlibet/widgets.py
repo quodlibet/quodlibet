@@ -1737,6 +1737,7 @@ class MainWindow(gtk.Window):
         path, col = songlist.get_cursor()
         header = col.header_name
         self.prep_main_popup(header, 1, 0)
+        return True
 
     def __current_song_prop(self, *args):
         song = widgets.watcher.song
@@ -2268,8 +2269,7 @@ class PlayList(SongList):
         menu.show_all()
         self.connect_object('destroy', gtk.Menu.destroy, menu)
         self.connect('button-press-event', self.__button_press, menu)
-        self.connect_object(
-            'popup-menu', gtk.Menu.popup, menu, None, None, None, 2, 0)
+        self.connect_object('popup-menu', self.__popup, menu)
 
         self.set_model(model)
 
@@ -2277,6 +2277,10 @@ class PlayList(SongList):
         targets = [("text/uri-list", 0, 1)]
         self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
         self.connect('drag-data-received', self.__drag_data_received)
+
+    def __popup(self, menu):
+        menu.popup(None, None, None, 3, 0)
+        return True
 
     def __properties(self, item):
         SongProperties(self.get_selected_songs(), widgets.watcher)
@@ -2364,6 +2368,11 @@ class SongQueue(SongList):
         props.connect('activate', self.__properties)
         menu.append(rem); menu.append(props); menu.show_all()
         self.connect_object('button-press-event', self.__button_press, menu)
+        self.connect_object('popup-menu', self.__popup, menu)
+
+    def __popup(self, menu):
+        menu.popup(None, None, None, 3, 0)
+        return True
 
     def __properties(self, item):
         SongProperties(self.get_selected_songs(), widgets.watcher)
@@ -2496,6 +2505,7 @@ class LibraryBrowser(gtk.Window):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
+        return True
 
     def __filter_on(self, header, songs=None):
         if not self.browser or not self.browser.can_filter(header):
