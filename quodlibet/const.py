@@ -96,6 +96,7 @@ MENU = """<ui>
     </menu>
     <menu action='View'>
       <menuitem action='Songlist'/>
+      <menuitem action='PlayQueue'/>
       <separator/>
       %s
     </menu>

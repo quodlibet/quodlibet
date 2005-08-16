@@ -1184,34 +1184,16 @@ class MainWindow(gtk.Window):
         self.songlist = MainSongList()
         sw.add(self.songlist)
 
-        self.queue_scroller = sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        self.queue = SongQueue()
-        sw.add(self.queue)
-        expander = gtk.Expander()
-        hb = gtk.HBox(spacing=12)
-        l = gtk.Label(_("_Play Queue"))
-        hb.pack_start(l)
-        l.set_use_underline(True)
-        cb = gtk.CheckButton(_("_Choose songs randomly"))
-        cb.connect('toggled', self.__queue_shuffle, self.queue.model)
-        hb.pack_start(cb)
-        expander.set_label_widget(hb)
-        expander.add(self.queue_scroller)
-        expander.connect('notify::expanded',
-                         lambda e, p, c:
-                         c.set_property('visible', e.get_expanded()), cb)
+        self.qexpander = QueueExpander()
 
         from songlist import PlaylistMux
         self.playlist = PlaylistMux(
-            widgets.watcher, self.queue.model, self.songlist.model)
+            widgets.watcher, self.qexpander.model, self.songlist.model)
 
         self.songpane = songpane = gtk.VBox(spacing=6)
         self.songpane.pack_start(self.song_scroller)
-        self.songpane.pack_start(expander, expand=False)
+        self.songpane.pack_start(self.qexpander, expand=False)
         self.songpane.show_all()
-        cb.hide()
 
         SongList.set_all_column_headers(
             config.get("settings", "headers").split())
@@ -1233,6 +1215,7 @@ class MainWindow(gtk.Window):
         self.browser.restore()
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
+        self.showhide_playqueue(self.ui.get_widget("/Menu/View/PlayQueue"))
 
         try: shf = config.getint('memory', 'shuffle')
         except: shf = int(config.getboolean('memory', 'shuffle'))
@@ -1355,6 +1338,11 @@ class MainWindow(gtk.Window):
             ("Songlist", None, _("Song _List"), None, None,
              self.showhide_playlist,
              config.getboolean("memory", "songlist"))])
+
+        ag.add_toggle_actions([
+            ("PlayQueue", None, _("_Play Queue"), None, None,
+             self.showhide_playqueue,
+             config.getboolean("memory", "playqueue"))])
 
         ag.add_radio_actions([
             (a, None, l, None, None, i) for (i, (a, l, K)) in
@@ -1590,6 +1578,10 @@ class MainWindow(gtk.Window):
         config.set("memory", "songlist", str(toggle.get_active()))
         self.__refresh_size()
 
+    def showhide_playqueue(self, toggle):
+        self.qexpander.set_property('visible', toggle.get_active())
+        self.__refresh_size()
+
     def __play_pause(self, *args):
         if widgets.watcher.song is None:
             player.playlist.reset()
@@ -1617,9 +1609,6 @@ class MainWindow(gtk.Window):
     def __shuffle(self, button):
         self.songlist.model.shuffle = button.get_active()
         config.set("memory", "shuffle", str(button.get_active()))
-
-    def __queue_shuffle(self, button, model):
-        model.shuffle = button.get_active()
 
     def __random(self, item, key):
         if self.browser.can_filter(key):
@@ -1823,6 +1812,61 @@ class MainWindow(gtk.Window):
                 i) % {'count': i, 'time': util.format_time_long(length)}
         statusbar.set_property('label', t)
         gobject.idle_add(statusbar.queue_resize)
+
+class QueueExpander(gtk.Expander):
+    def __init__(self):
+        gtk.Expander.__init__(self)
+        queue_scroller = sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        self.queue = SongQueue()
+        sw.add(self.queue)
+        hb = gtk.HBox(spacing=12)
+        l = gtk.Label(_("_Play Queue"))
+        hb.pack_start(l)
+        l.set_use_underline(True)
+        cb = gtk.CheckButton(_("_Choose songs randomly"))
+        cb.connect('toggled', self.__queue_shuffle, self.queue.model)
+        hb.pack_start(cb)
+        self.set_label_widget(hb)
+        self.add(queue_scroller)
+        self.connect_object('notify::expanded', self.__expand, cb)
+        self.connect_object(
+            'notify::visible', self.__visible, self.queue.model, cb)
+
+        targets = [("text/uri-list", 0, 1)]
+        self.drag_dest_set(
+            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
+        self.connect('drag-data-received', self.__drag_data_received)
+
+        self.model = self.queue.model
+        self.show_all()
+        cb.hide()
+
+    def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
+        # FIXME: this doesn't seem to get called...
+        from urllib import splittype as split, url2pathname as topath
+        filenames = [topath(split(s)[1]) for s in sel.get_uris()
+                     if split(s)[0] == "file"]
+        songs = filter(None, [library.get(f) for f in filenames])
+        if not songs: return True
+        for song in songs:
+            iter = self.model.find(song)
+            if iter: self.model.remove(iter)
+            self.model.append(row=[song])
+        ctx.finish(True, True, etime)
+
+    def __queue_shuffle(self, button, model):
+        model.shuffle = button.get_active()
+
+    def __expand(self, cb, prop):
+        cb.set_property('visible', self.get_expanded())
+
+    def __visible(self, model, prop, cb):
+        value = self.get_property('visible')
+        config.set("memory", "playqueue", str(value))
+        self.set_expanded(not model.is_empty())
+        cb.set_property('visible', self.get_expanded())
 
 class SongList(qltk.HintedTreeView):
     # A TreeView containing a list of songs.
