@@ -1229,6 +1229,7 @@ class MainWindow(gtk.Window):
         self.connect('destroy', gtk.main_quit)
 
         self.songlist.connect('button-press-event', self.__songs_button_press)
+        self.songlist.connect('key-press-event', self.__songs_queue_add)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.get_selection().connect('changed', self.__set_time)
@@ -1245,6 +1246,16 @@ class MainWindow(gtk.Window):
 
         self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
+
+    def __songs_queue_add(self, songlist, event):
+        if event.string == "Q":
+            self.__add_to_queue(songlist.get_selected_songs())
+            return True
+
+    def __add_to_queue(self, songs):
+        for song in songs:
+            iter = self.qexpander.model.find(song)
+            if iter is None: self.qexpander.model.append(row=[song])
 
     def __delete_event(self, event):
         if self.icon.enabled and config.getboolean("plugins", "icon_close"):
@@ -1841,7 +1852,13 @@ class QueueExpander(gtk.Expander):
 
         self.model = self.queue.model
         self.show_all()
+        self.queue.model.connect('row-inserted', self.__check_expand)
         cb.hide()
+
+    def __check_expand(self, model, path, iter):
+        # FIXME: This doesn't check View/PlayQueue.
+        self.show()
+        if not model.is_empty(): self.set_expanded(True)
 
     def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
         # FIXME: this doesn't seem to get called...
