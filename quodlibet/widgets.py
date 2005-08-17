@@ -1834,7 +1834,9 @@ class QueueExpander(gtk.Expander):
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
         l = gtk.Label(_("_Play Queue"))
+        l2 = gtk.Label()
         hb.pack_start(l)
+        hb.pack_start(l2)
         l.set_use_underline(True)
         cb = gtk.CheckButton(_("_Choose songs randomly"))
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
@@ -1848,20 +1850,32 @@ class QueueExpander(gtk.Expander):
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
             gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
+        self.connect('drag-motion', self.__motion)
         self.connect('drag-data-received', self.__drag_data_received)
 
         self.model = self.queue.model
         self.show_all()
-        self.queue.model.connect('row-inserted', self.__check_expand)
+        
+        self.queue.model.connect('row-inserted', self.__check_expand, l2)
+        self.queue.model.connect('row-deleted', self.__update_count, l2)
         cb.hide()
 
-    def __check_expand(self, model, path, iter):
+    def __motion(self, wid, context, x, y, time):
+        context.drag_status(gtk.gdk.ACTION_COPY, time)
+        return True
+
+    def __update_count(self, model, path, lab):
+        if len(model) == 0: text = ""
+        else: text = ngettext("%d song", "%d songs", len(model)) % len(model)
+        lab.set_text(text)
+
+    def __check_expand(self, model, path, iter, lab):
         # FIXME: This doesn't check View/PlayQueue.
         self.show()
-        if not model.is_empty(): self.set_expanded(True)
+        if iter and not model.is_empty(): self.set_expanded(True)
+        self.__update_count(model, path, lab)
 
     def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
-        # FIXME: this doesn't seem to get called...
         from urllib import splittype as split, url2pathname as topath
         filenames = [topath(split(s)[1]) for s in sel.get_uris()
                      if split(s)[0] == "file"]
