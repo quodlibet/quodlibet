@@ -1864,6 +1864,11 @@ class QueueExpander(gtk.Expander):
         self.queue.model.connect('row-deleted', self.__update_count, l2)
         cb.hide()
 
+        tips = gtk.Tooltips()
+        tips.set_tip(self, _("Drag songs here to add them to the play queue"))
+        tips.enable()
+        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+
     def __motion(self, wid, context, x, y, time):
         context.drag_status(gtk.gdk.ACTION_COPY, time)
         return True
