@@ -2048,14 +2048,20 @@ class SongList(qltk.HintedTreeView):
             b.set_submenu(submenu)
             if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
+        b = gtk.ImageMenuItem(_("Add to Queue"))
+        b.get_image().set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+        b.connect('activate', self.__enqueue, songs)
+        menu.append(b)
+
         b = gtk.ImageMenuItem(_('Remove from Library'))
         b.get_image().set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         b.connect('activate', self.__remove, songs)
-
         menu.append(b)
+
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         b.connect('activate', self.__delete, songs)
         menu.append(b)
+
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
         menu.append(b)
@@ -2112,6 +2118,12 @@ class SongList(qltk.HintedTreeView):
         # User requested that the selected songs be removed.
         map(library.remove, songs)
         widgets.watcher.removed(songs)
+
+    def __enqueue(self, item, songs):
+        model = widgets.main.playlist.q
+        for song in songs:
+            iter = model.find(song)
+            if iter is None: model.append(row=[song])
 
     def __delete(self, item, songs):
         songs = [(song["~filename"], song) for song in songs]
