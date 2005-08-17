@@ -1841,7 +1841,7 @@ class QueueExpander(gtk.Expander):
         hb.pack_start(l)
         hb.pack_start(l2)
         l.set_use_underline(True)
-        cb = gtk.CheckButton(_("_Choose songs randomly"))
+        cb = gtk.CheckButton(_("_Choose randomly"))
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         hb.pack_start(cb)
         self.set_label_widget(hb)
