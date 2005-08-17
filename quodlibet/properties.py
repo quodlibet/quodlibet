@@ -927,6 +927,7 @@ class SongProperties(gtk.Window):
                         deleted[row[0]].append(util.decode(row[5]))
             model.foreach(create_property_dict)
 
+            was_changed = []
             win = WritingWindow(parent, len(self.__songs))
             for song in self.__songs:
                 if not song.valid() and not qltk.ConfirmAction(
@@ -972,11 +973,12 @@ class SongProperties(gtk.Window):
                             song('~basename'))))).run()
                         watcher.error(song)
                         break
-                    watcher.changed([song])
+                    was_changed.append(song)
 
                 if win.step(): break
 
             win.destroy()
+            watcher.changed(was_changed)
             watcher.refresh()
             for b in [save, revert]: b.set_sensitive(False)
 
@@ -1210,6 +1212,7 @@ class SongProperties(gtk.Window):
             config.set("settings", "addreplace", str(addreplace.get_active()))
             win = WritingWindow(parent, len(self.__songs))
 
+            was_changed = []
             def save_song(model, path, iter):
                 song = model[path][0]
                 row = model[path]
@@ -1248,12 +1251,13 @@ class SongProperties(gtk.Window):
                             ).run()
                         watcher.error(song)
                         return True
-                    watcher.changed([song])
+                    was_changed.append(song)
 
                 return win.step()
         
             view.get_model().foreach(save_song)
             win.destroy()
+            watcher.changed(was_changed)
             watcher.refresh()
             save.set_sensitive(False)
 
@@ -1384,6 +1388,7 @@ class SongProperties(gtk.Window):
 
         def __rename_files(self, parent, save, model, watcher):
             win = WritingWindow(parent, len(self.__songs))
+            was_changed = []
 
             def rename(model, path, iter):
                 song = model[path][0]
@@ -1393,7 +1398,7 @@ class SongProperties(gtk.Window):
                     newname = newname.encode(util.fscoding(), "replace")
                     if library: library.rename(song, newname)
                     else: song.rename(newname)
-                    watcher.changed([song])
+                    was_changed.append(song)
                 except:
                     qltk.ErrorMessage(
                         win, _("Unable to rename file"),
@@ -1407,9 +1412,10 @@ class SongProperties(gtk.Window):
                     return True
                 return win.step()
             model.foreach(rename)
+            win.destroy()
+            watcher.changed(was_changed)
             watcher.refresh()
             save.set_sensitive(False)
-            win.destroy()
 
         def __update(self, songs, combo, parent, model, save, preview,
                      replace, windows, ascii):
@@ -1538,6 +1544,7 @@ class SongProperties(gtk.Window):
 
         def __save_files(self, parent, model, watcher):
             win = WritingWindow(parent, len(self.__songs))
+            was_changed = []
             def settrack(model, path, iter):
                 song = model[iter][0]
                 track = model[iter][2]
@@ -1562,9 +1569,10 @@ class SongProperties(gtk.Window):
                         util.escape(util.fsdecode(song('~basename'))))).run()
                     watcher.error(song)
                     return True
-                watcher.changed([song])
+                was_changed.append(song)
                 return win.step()
             model.foreach(settrack)
+            watcher.changed(was_changed)
             watcher.refresh()
             win.destroy()
 
