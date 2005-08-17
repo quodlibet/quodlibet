@@ -1187,7 +1187,8 @@ class MainWindow(gtk.Window):
         self.songlist = MainSongList()
         sw.add(self.songlist)
 
-        self.qexpander = QueueExpander()
+        self.qexpander = QueueExpander(
+            self.ui.get_widget("/Menu/View/PlayQueue"))
 
         from songlist import PlaylistMux
         self.playlist = PlaylistMux(
@@ -1828,7 +1829,7 @@ class MainWindow(gtk.Window):
         gobject.idle_add(statusbar.queue_resize)
 
 class QueueExpander(gtk.Expander):
-    def __init__(self):
+    def __init__(self, menu):
         gtk.Expander.__init__(self)
         queue_scroller = sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
@@ -1848,7 +1849,7 @@ class QueueExpander(gtk.Expander):
         self.add(queue_scroller)
         self.connect_object('notify::expanded', self.__expand, cb)
         self.connect_object(
-            'notify::visible', self.__visible, self.queue.model, cb)
+            'notify::visible', self.__visible, self.queue.model, cb, menu)
 
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
@@ -1896,9 +1897,10 @@ class QueueExpander(gtk.Expander):
     def __expand(self, cb, prop):
         cb.set_property('visible', self.get_expanded())
 
-    def __visible(self, model, prop, cb):
+    def __visible(self, model, prop, cb, menu):
         value = self.get_property('visible')
         config.set("memory", "playqueue", str(value))
+        menu.set_active(value)
         self.set_expanded(not model.is_empty())
         cb.set_property('visible', self.get_expanded())
 
