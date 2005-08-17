@@ -13,13 +13,15 @@ class PlaylistMux(object):
         watcher.connect('song-started', self.__check_q)
 
     def __check_q(self, watcher, song):
-        if song:
+        if song is not None:
             iter = self.q.find(song)
             if iter: self.q.remove(iter)
             self.q.go_to(None); self.q.next()
 
     def get_current(self):
-        return self.q.current or self.pl.current
+        if self.q.current is not None: return self.q.current
+        else: return self.pl.current
+
     current = property(get_current)
 
     def is_empty(self):

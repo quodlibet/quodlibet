@@ -1,6 +1,15 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-from songlist import PlaylistModel
+from songlist import PlaylistModel, PlaylistMux
+import gobject, gtk
+
+class SongWatcher(gtk.Object):
+    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))    
+    __gsignals__ = {'song-started': SIG_PYOBJECT}
+
+    def song_started(self, song): self.emit('song-started', song)
+
+gobject.type_register(SongWatcher)
 
 class Playlist(TestCase):
     def setUp(self):
@@ -140,3 +149,68 @@ class Playlist(TestCase):
         self.pl.destroy()
 
 registerCase(Playlist)
+
+class Mux(TestCase):
+    def setUp(self):
+        self.q = PlaylistModel()
+        self.pl = PlaylistModel()
+        self.w = SongWatcher()
+        self.mux = PlaylistMux(self.w, self.q, self.pl)
+        self.failUnless(self.pl.current is None)
+
+    def test_only_pl(self):
+        self.pl.set(range(10))
+        self.failUnless(self.mux.current is None)
+        songs = [self.next() for i in range(10)]
+        self.failUnlessEqual(songs, range(10))
+        self.next()
+        self.failUnless(self.mux.current is None)
+
+    def test_only_q(self):
+        self.q.set(range(10))
+        self.failUnless(self.mux.current is None)
+        songs = [self.next() for i in range(10)]
+        self.failUnlessEqual(songs, range(10))
+        self.next()
+        self.failUnless(self.mux.current is None)
+
+    def test_mixed(self):
+        self.q.set(range(5))
+        self.pl.set(range(5, 10))
+        self.failUnless(self.mux.current is None)
+        songs = [self.next() for i in range(10)]
+        self.failUnlessEqual(songs, range(10))
+        self.next()
+        self.failUnless(self.mux.current is None)
+
+    def test_halfway(self):
+        self.pl.set(range(10))
+        self.failUnless(self.mux.current is None)
+        songs = [self.next() for i in range(5)]
+        self.q.set(range(100, 105))
+        songs.extend([self.next() for i in range(10)])
+        self.failUnlessEqual(
+            songs, [0, 1, 2, 3, 4, 100, 101, 102, 103, 104, 5, 6, 7, 8, 9])
+        self.next()
+        self.failUnless(self.mux.current is None)
+
+    def test_removal(self):
+        self.pl.set(range(0, 5))
+        self.q.set(range(10, 15))
+        songs = [self.next() for i in range(3)]
+        self.q.remove(self.q.find(14))
+        self.q.remove(self.q.find(13))
+        songs.extend([self.next() for i in range(5)])
+        self.failUnlessEqual(songs, [10, 11, 12, 0, 1, 2, 3, 4])
+
+    def next(self):
+        self.mux.next()
+        song = self.mux.current
+        self.w.song_started(self.mux.current)
+        while gtk.events_pending(): gtk.main_iteration()
+        return song
+
+    def tearDown(self):
+        self.w.destroy()
+
+registerCase(Mux)
