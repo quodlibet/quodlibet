@@ -553,24 +553,27 @@ class PreferencesWindow(gtk.Window):
 class TrayIcon(object):
     def __init__(self, pixbuf, cbs):
         try:
-            import trayicon
-        except:
-            self.__icon = None
-        else:
-            self.__icon = trayicon.TrayIcon('quodlibet')
-            self.__tips = gtk.Tooltips()
-            eb = gtk.EventBox()
-            i = gtk.Image()
-            i.set_from_pixbuf(pixbuf)
-            eb.add(i)
-            self.__mapped = False
-            self.__icon.connect('map-event', self.__got_mapped, True)
-            self.__icon.connect('unmap-event', self.__got_mapped, False)
-            self.__icon.add(eb)
-            self.__icon.child.connect("button-press-event", self.__event)
-            self.__icon.child.connect("scroll-event", self.__scroll)
-            self.__cbs = cbs
-            self.__icon.show_all()
+            import egg.trayicon as trayicon
+        except ImportError:
+            try: import trayicon
+            except:
+                self.__icon = None
+                return
+
+        self.__icon = trayicon.TrayIcon('quodlibet')
+        self.__tips = gtk.Tooltips()
+        eb = gtk.EventBox()
+        i = gtk.Image()
+        i.set_from_pixbuf(pixbuf)
+        eb.add(i)
+        self.__mapped = False
+        self.__icon.connect('map-event', self.__got_mapped, True)
+        self.__icon.connect('unmap-event', self.__got_mapped, False)
+        self.__icon.add(eb)
+        self.__icon.child.connect("button-press-event", self.__event)
+        self.__icon.child.connect("scroll-event", self.__scroll)
+        self.__cbs = cbs
+        self.__icon.show_all()
 
     def __got_mapped(self, s, event, value):
         self.__mapped = value
