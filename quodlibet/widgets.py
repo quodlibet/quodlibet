@@ -1608,7 +1608,8 @@ class MainWindow(gtk.Window):
         iter = songlist.song_to_iter(watcher.song)
         if iter:
             path = songlist.get_model().get_path(iter)
-            songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
+            if path:
+                songlist.scroll_to_cell(path[0], use_align=True, row_align=0.5)
             if explicit: self.browser.scroll()
 
     def __next_song(self, *args):
@@ -1848,8 +1849,6 @@ class QueueExpander(gtk.Expander):
         self.set_label_widget(hb)
         self.add(queue_scroller)
         self.connect_object('notify::expanded', self.__expand, cb)
-        self.connect_object(
-            'notify::visible', self.__visible, self.queue.model, cb, menu)
 
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
@@ -1868,6 +1867,8 @@ class QueueExpander(gtk.Expander):
         tips.set_tip(self, _("Drag songs here to add them to the play queue"))
         tips.enable()
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+        self.connect_object(
+            'notify::visible', self.__visible, self.queue.model, cb, menu)
 
     def __motion(self, wid, context, x, y, time):
         context.drag_status(gtk.gdk.ACTION_COPY, time)
@@ -1879,10 +1880,10 @@ class QueueExpander(gtk.Expander):
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):
-        # FIXME: This doesn't check View/PlayQueue.
-        self.show()
-        if iter and not model.is_empty(): self.set_expanded(True)
+        # Interfere as little as possible with the current size.
+        if not self.get_property('visible'): self.set_expanded(False)
         self.__update_count(model, path, lab)
+        self.show()
 
     def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
         from urllib import splittype as split, url2pathname as topath
@@ -1918,27 +1919,7 @@ class SongList(qltk.HintedTreeView):
     
     headers = [] # The list of current headers.
 
-    class CurrentColumn(gtk.TreeViewColumn):
-        # Displays the current song indicator, either a play or pause icon.
-    
-        _render = gtk.CellRendererPixbuf()
-        _render.set_property('xalign', 0.5)
-        header_name = "~current"
-
-        def _cdf(self, column, cell, model, iter,
-                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
-            try:
-                if model[iter][0] is not widgets.watcher.song: stock = ''
-                else: stock = pixbuf[player.playlist.paused]
-                cell.set_property('stock-id', stock)
-            except AttributeError: pass
-
-        def __init__(self):
-            gtk.TreeViewColumn.__init__(self, "", self._render)
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-            self.set_fixed_width(24)
-            self.set_cell_data_func(self._render, self._cdf)
-            self.header_name = "~current"
+    CurrentColumn = None
 
     class TextColumn(gtk.TreeViewColumn):
         # Base class for other kinds of columns.
@@ -2305,8 +2286,9 @@ class SongList(qltk.HintedTreeView):
         if len(headers) == 0: return
         for c in self.get_columns(): self.remove_column(c)
 
-        self.append_column(self.CurrentColumn())
-        if "~current" in headers: headers.remove("~current")
+        if self.CurrentColumn:
+            self.append_column(self.CurrentColumn())
+            if "~current" in headers: headers.remove("~current")
 
         for i, t in enumerate(headers):
             if t in ["tracknumber", "discnumber", "~rating"]:
@@ -2453,6 +2435,14 @@ class PlayList(SongList):
         return True
 
 class SongQueue(SongList):
+    class CurrentColumn(gtk.TreeViewColumn):
+        # Match MainSongList column sizes by default.
+        header_name = "~current"
+        def __init__(self):
+            gtk.TreeViewColumn.__init__(self)
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_fixed_width(24)
+
     def __init__(self, *args, **kwargs):
         from songlist import PlaylistModel
         SongList.__init__(self, *args, **kwargs)
@@ -2525,6 +2515,28 @@ class SongQueue(SongList):
 
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
+
+    class CurrentColumn(gtk.TreeViewColumn):
+        # Displays the current song indicator, either a play or pause icon.
+    
+        _render = gtk.CellRendererPixbuf()
+        _render.set_property('xalign', 0.5)
+        header_name = "~current"
+
+        def _cdf(self, column, cell, model, iter,
+                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
+            try:
+                if model[iter][0] is not widgets.watcher.song: stock = ''
+                else: stock = pixbuf[player.playlist.paused]
+                cell.set_property('stock-id', stock)
+            except AttributeError: pass
+
+        def __init__(self):
+            gtk.TreeViewColumn.__init__(self, "", self._render)
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_fixed_width(24)
+            self.set_cell_data_func(self._render, self._cdf)
+            self.header_name = "~current"
 
     def __init__(self, *args, **kwargs):
         from songlist import PlaylistModel
