@@ -266,11 +266,11 @@ def title(string):
 def iscommand(s):
     """True if 's' exists in the user's path, or is a fully-qualified
     existing path."""
-    if s == "" or "/" in s:
+    if s == "" or os.path.sep in s:
         return os.path.exists(s)
     else:
         s = s.split()[0]
-        for p in os.environ["PATH"].split(":"):
+        for p in os.environ["PATH"].split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if os.path.exists(p2): return True
         else: return False
@@ -358,7 +358,7 @@ class PatternFromFile(object):
 
     def compile(self, pattern):
         self.headers = []
-        self.slashes = len(pattern) - len(pattern.replace('/','')) + 1
+        self.slashes = len(pattern) - len(pattern.replace(os.path.sep,'')) + 1
         self.pattern = None
         # patterns look like <tagname> non regexy stuff <tagname> ...
         pieces = sre.split(r'(<[A-Za-z0-9_]+>)', pattern)
@@ -379,7 +379,7 @@ class PatternFromFile(object):
         # and if it's not a tag, trust the user
         if pattern.startswith('<') and not pattern.startswith('<tracknumber>')\
                 and not pattern.startswith('<discnumber>'):
-            pieces.insert(0, '/')
+            pieces.insert(0, os.path.sep)
         if pattern.endswith('>') and not pattern.endswith('<tracknumber>')\
                 and not pattern.endswith('<discnumber>'):
             pieces.append(r'(?:\.\w+)$')
@@ -391,7 +391,8 @@ class PatternFromFile(object):
             song = song['~filename'].decode(fscoding(), "replace")
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
-        matchon = '/'+'/'.join(song.split('/')[-self.slashes:])
+        sep = os.path.sep
+        matchon = sep+sep.join(song.split(sep)[-self.slashes:])
         match = self.pattern.search(matchon)
 
         # dicts for all!
@@ -401,7 +402,7 @@ class PatternFromFile(object):
 class FileFromPattern(object):
     def __init__(self, pattern, filename=True):
         pattern = os.path.expanduser(pattern)
-        if filename and '/' in pattern and not pattern.startswith('/'):
+        if filename and os.path.sep in pattern and not os.path.isabs(pattern):
             raise ValueError("Pattern %r is not rooted" % pattern)
 
         self.replacers = [self.Pattern(pattern, filename)]
@@ -481,7 +482,7 @@ class FileFromPattern(object):
             if tag.startswith('~') or '~' not in tag:
                 text = song.comma(tag)
                 if self.filename:
-                    try: text = text.replace('/', '_')
+                    try: text = text.replace(os.path.sep, '_')
                     except AttributeError: pass
                 try: return fmt % text
                 except TypeError: return text
