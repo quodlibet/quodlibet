@@ -210,6 +210,19 @@ class Mux(TestCase):
         while gtk.events_pending(): gtk.main_iteration()
         return song
 
+    def test_goto(self):
+        self.pl.set(range(10))
+        self.q.set(range(10, 20))
+        self.failUnless(self.mux.current is None)
+        self.mux.go_to(5)
+        self.failUnlessEqual(self.mux.current, 5)
+        self.mux.go_to(2)
+        self.failUnlessEqual(self.mux.current, 2)
+        self.failUnlessEqual(self.next(), 10)
+        self.mux.go_to(7)
+        self.failUnlessEqual(self.mux.current, 7)
+        self.failUnlessEqual(self.next(), 11)
+
     def tearDown(self):
         self.w.destroy()
 

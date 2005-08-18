@@ -35,8 +35,8 @@ class PlaylistMux(object):
         self.pl.previous()
 
     def go_to(self, song):
-        if song in self.q: self.q.go_to(song)
-        else: self.pl.go_to(song)
+        self.pl.go_to(song)
+        self.q.go_to(None)
 
     def reset(self):
         self.pl.reset()
