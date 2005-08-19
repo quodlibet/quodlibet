@@ -70,6 +70,23 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     def activate(self):
         self.__find_songs(self.child.get_selection())
 
+    def Menu(self, songs):
+        m = gtk.Menu()
+        i = qltk.MenuItem(_("_Add to Library"), gtk.STOCK_ADD)
+        i.connect('activate', self.__add_songs, songs)
+        m.append(i)
+        return m
+
+    def __add_songs(self, item, songs):
+        from widgets import widgets
+        added = []
+        for song in songs:
+            if song["~filename"] not in glibrary:
+                glibrary[song["~filename"]] = song
+                added.append(song)
+        self.__refresh_library()
+        if added: widgets.watcher.added(added)
+
     def __find_songs(self, selection):
         model, rows = selection.get_selected_rows()
         dirs = [model[row][0] for row in rows]
