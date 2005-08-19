@@ -52,3 +52,7 @@ class Browser(object):
 
     # Do whatever is needed to emit songs-selected again.
     def activate(self): raise NotImplementedError
+
+    # Return an initial context menu appropriate to the browser.
+    # songs is the list of selected songs.
+    def Menu(self, songs): return None

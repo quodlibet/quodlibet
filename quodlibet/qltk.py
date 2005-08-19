@@ -379,6 +379,11 @@ def Frame(label=None, border=0, bold=False, child=None):
     frame.set_label_widget(label)
     return frame
 
+def MenuItem(text, image):
+    i = gtk.ImageMenuItem(text)
+    i.get_image().set_from_stock(image, gtk.ICON_SIZE_MENU)
+    return i
+
 def Button(text, image):
     # Stock image with custom label.
     hbox = gtk.HBox(spacing=2)

@@ -705,22 +705,13 @@ class HIGTrayIcon(TrayIcon):
 class QLTrayIcon(HIGTrayIcon):
     def __init__(self, window, volume):
         menu = gtk.Menu()
-        playpause = gtk.ImageMenuItem(_("_Play"))
-        pp_img = gtk.Image()
-        pp_img.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
-        playpause.set_image(pp_img)
+        playpause = qltk.MenuItem(_("_Play"), gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__playpause)
 
-        previous = gtk.ImageMenuItem(const.SM_PREVIOUS)
-        prev_img = gtk.Image()
-        prev_img.set_from_stock(gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_MENU)
-        previous.set_image(prev_img)
+        previous = qltk.MenuItem(const.SM_PREVIOUS, gtk.STOCK_MEDIA_PREVIOUS)
         previous.connect('activate', lambda *args: player.playlist.previous())
 
-        next = gtk.ImageMenuItem(const.SM_NEXT)
-        next_img = gtk.Image()
-        next_img.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
-        next.set_image(next_img)
+        next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
         next.connect('activate', lambda *args: player.playlist.next())
 
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
@@ -1772,8 +1763,7 @@ class MainWindow(gtk.Window):
         if song: SongProperties([song], widgets.watcher)
 
     def prep_main_popup(self, header, button, time):
-        menu = self.songlist.Menu(
-            header, self.browser.can_filter, self.__filter_on)
+        menu = self.songlist.Menu(header, self.browser)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
@@ -2007,9 +1997,14 @@ class SongList(qltk.HintedTreeView):
         _render.set_property('xpad', 12)
         _render.set_property('xalign', 1.0)
 
-    def Menu(self, header, can_filter, filter):
+    def Menu(self, header, browser):
+        songs = self.get_selected_songs()
+        if not songs: return
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
-        menu = gtk.Menu()
+
+        menu = browser.Menu(songs)
+        if menu is None: menu = gtk.Menu()
+        can_filter = browser.can_filter
 
         if header == "~rating":
             item = gtk.MenuItem(_("Rating"))
@@ -2022,25 +2017,25 @@ class SongList(qltk.HintedTreeView):
             menu.append(item)
             menu.append(gtk.SeparatorMenuItem())
 
-        songs = self.get_selected_songs()
         if can_filter("artist"):
-            b = gtk.ImageMenuItem(_("Filter on _artist"))
-            b.connect_object('activate', filter, 'artist', songs)
-            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            b = qltk.MenuItem(_("Filter on _artist"), gtk.STOCK_INDEX)
+            b.connect_object(
+                'activate', self.__filter_on, 'artist', songs, browser)
             menu.append(b)
         if can_filter("album"):
-            b = gtk.ImageMenuItem(_("Filter on al_bum"))
-            b.connect_object('activate', filter, 'album', songs)
-            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            b = qltk.MenuItem(_("Filter on al_bum"), gtk.STOCK_INDEX)
+            b.connect_object(
+                'activate', self.__filter_on, 'album', songs, browser)
             menu.append(b)
         header = {"~rating":"~#rating", "~length":"~#length"}.get(
             header, header)
         if (header not in ["artist", "album"] and can_filter(header)):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
-            b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
-            b.connect_object('activate', filter, header, songs)
-            b.get_image().set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+            b = qltk.MenuItem(
+                _("_Filter on %s") % tag(header, False), gtk.STOCK_INDEX)
+            b.connect_object(
+                'activate', self.__filter_on, header, songs, browser)
             menu.append(b)
         if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
@@ -2102,6 +2097,19 @@ class SongList(qltk.HintedTreeView):
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('button-press-event', self.__button_press)
         self.connect('key-press-event', self.__key_press)
+
+    def __filter_on(self, header, songs, browser):
+        if not browser or not browser.can_filter(header): return
+        if songs is None:
+            if widgets.watcher.song: songs = [widgets.watcher.song]
+            else: return
+
+        values = set()
+        if header.startswith("~#"):
+            values.update([song(header, 0) for song in songs])
+        else:
+            for song in songs: values.update(song.list(header))
+        browser.filter(header, list(values))
 
     def __button_press(self, view, event):
         if event.button != 1: return
@@ -2652,25 +2660,11 @@ class LibraryBrowser(gtk.Window):
     def __menu(self, view, button, time):
         path, col = view.get_cursor()
         header = col.header_name
-        menu = view.Menu(header, self.browser.can_filter, self.__filter_on)
+        menu = view.Menu(header, self.browser)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
         return True
-
-    def __filter_on(self, header, songs=None):
-        if not self.browser or not self.browser.can_filter(header):
-            return
-        if songs is None:
-            if widgets.watcher.song: songs = [widgets.watcher.song]
-            else: return
-
-        values = set()
-        if header.startswith("~#"):
-            values.update([song(header, 0) for song in songs])
-        else:
-            for song in songs: values.update(song.list(header))
-        self.browser.filter(header, list(values))
 
 def website_wrap(activator, link):
     if not util.website(link):
