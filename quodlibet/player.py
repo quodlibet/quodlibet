@@ -262,10 +262,7 @@ class PlaylistPlayer(object):
                 self.__song, self.__player = self.__get_song()
                 if not self.__player: continue
                 if self.__play_internal():
-                    if not (self.__player.stopped or self.quit):
-                        self.__song["~#lastplayed"] = int(time.time())
-                        self.__song["~#playcount"] += 1
-                        self.__source.next()
+                    if not self.__player.stopped: self.__source.next()
                     self.info.song_ended(self.__song, self.__player.stopped)
                 else:
                     self.paused = True
@@ -287,38 +284,25 @@ class PlaylistPlayer(object):
     def get_playlist(self):
         return self.__source.get()
 
-    def __set_shuffle(self, shuffle):
-        self.__source.shuffle = shuffle
-
-    def __get_shuffle(self): return self.__source.shuffle
-
-    shuffle = property(__get_shuffle, __set_shuffle)
-
     def next(self):
-        if self.__player:
-            self.__player.end()
-            self.__song["~#skipcount"] = self.__song.get("~#skipcount", 0) + 1
+        if self.__player: self.__player.end()
         self.paused = False
         self.__source.next()
 
     def quitting(self):
         self.quit = True
         self.paused = False
-        if self.__player: self.__player.end()
+        if self.__player:
+            self.__player.end()
+            self.__player.stopped = False
 
     def previous(self):
         self.paused = False
         self.__source.previous()
-        if self.__player:
-            self.__player.end()
-            if self.__source.current != self.__song:
-                self.__song["~#skipcount"] = self.__song.get(
-                    "~#skipcount", 0) + 1
+        if self.__player: self.__player.end()
 
     def go_to(self, song):
         self.__source.go_to(song)
-        if self.__song and self.__song is not song:
-            self.__song["~#skipcount"] = self.__song.get("~#skipcount", 0) + 1
         if self.__player: self.__player.end()
 
 def OSSProxy(*args):

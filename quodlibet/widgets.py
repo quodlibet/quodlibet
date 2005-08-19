@@ -20,6 +20,7 @@ import player
 import parser
 import formats
 import util
+import time
 
 from util import to, tag
 from gettext import ngettext
@@ -78,6 +79,19 @@ class FileChooser(gtk.FileChooserDialog):
         resp = gtk.FileChooserDialog.run(self)
         fns = self.get_filenames()
         return resp, fns
+
+class CountManager(object):
+    def __init__(self, watcher, pl):
+        watcher.connect('song-ended', self.__end, pl)
+
+    def __end(self, watcher, song, ended, pl):
+        if not ended:
+            song["~#lastplayed"] = int(time.time())
+            song["~#playcount"] += 1
+            watcher.changed([song])
+        elif pl.current is not song:
+            song["~#skipcount"] += 1
+            watcher.changed([song])
 
 class PluginWindow(gtk.Window):
     def __init__(self, parent):
@@ -2690,7 +2704,9 @@ def init():
 
     gtk.about_dialog_set_url_hook(website_wrap)
     widgets.main = MainWindow()
-    FSInterface(watcher) # Keeps itself alive in the watcher.
+    # These stay alive in the watcher.
+    FSInterface(watcher)
+    CountManager(watcher, widgets.main.playlist)
     player.playlist.info = widgets.watcher
 
     util.mkdir(const.DIR)

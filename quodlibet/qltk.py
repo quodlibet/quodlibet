@@ -84,7 +84,6 @@ class SongWatcher(gtk.Object):
         gobject.idle_add(self.emit, 'song-started', song)
 
     def song_ended(self, song, stopped):
-        self.changed([song])
         gobject.idle_add(self.emit, 'song-ended', song, stopped)
 
     def refresh(self):
