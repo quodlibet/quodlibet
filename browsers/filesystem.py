@@ -73,7 +73,12 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     def Menu(self, songs):
         m = gtk.Menu()
         i = qltk.MenuItem(_("_Add to Library"), gtk.STOCK_ADD)
+        i.set_sensitive(False)
         i.connect('activate', self.__add_songs, songs)
+        for song in songs:
+            if song["~filename"] not in glibrary:
+                i.set_sensitive(True)
+                break
         m.append(i)
         return m
 
