@@ -2015,6 +2015,9 @@ class SongList(qltk.HintedTreeView):
                 m2.append(itm)
                 itm.connect('activate', self.__set_selected_ratings, i)
             menu.append(item)
+
+        if (menu.get_children() and
+            not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
             menu.append(gtk.SeparatorMenuItem())
 
         if can_filter("artist"):
@@ -2037,23 +2040,27 @@ class SongList(qltk.HintedTreeView):
             b.connect_object(
                 'activate', self.__filter_on, header, songs, browser)
             menu.append(b)
-        if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+
+        if (menu.get_children() and
+            not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
+            menu.append(gtk.SeparatorMenuItem())
 
         submenu = self.pm.create_plugins_menu(songs)
         if submenu is not None:
-            b = gtk.ImageMenuItem(_("_Plugins"))
-            b.get_image().set_from_stock(gtk.STOCK_EXECUTE, gtk.ICON_SIZE_MENU)
+            b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
             menu.append(b)
             b.set_submenu(submenu)
-            if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
-        b = gtk.ImageMenuItem(_("Add to Queue"))
-        b.get_image().set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+            if (menu.get_children() and
+                not isinstance(menu.get_children()[-1],
+                               gtk.SeparatorMenuItem)):
+                menu.append(gtk.SeparatorMenuItem())
+
+        b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
 
-        b = gtk.ImageMenuItem(_('Remove from Library'))
-        b.get_image().set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
         b.connect('activate', self.__remove, songs)
         menu.append(b)
         for song in songs:
@@ -2385,10 +2392,10 @@ class PlayList(SongList):
         # plugins can't be run from the playlist manager, but I don't
         # think anyone will care.
         menu = gtk.Menu()
-        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         rem.connect('activate', self.__remove, key)
         menu.append(rem)
-        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_MENU)
+        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         prop.connect('activate', self.__properties)
         menu.append(prop)
         menu.show_all()

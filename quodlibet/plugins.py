@@ -366,9 +366,7 @@ class PluginManager(object):
         plugins.sort()
         for name, plugin in plugins:
             if hasattr(plugin, 'PLUGIN_ICON'):
-                b = gtk.ImageMenuItem(name)
-                b.get_image().set_from_stock(plugin.PLUGIN_ICON,
-                        gtk.ICON_SIZE_MENU)
+                b = qltk.MenuItem(name, plugin.PLUGIN_ICON)
             else:
                 b = gtk.MenuItem(name)
             b.connect('activate', self.__plugin_activate, plugin, songs)

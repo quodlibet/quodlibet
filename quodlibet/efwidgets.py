@@ -58,8 +58,7 @@ class DirectoryTree(gtk.TreeView):
         if initial: self.go_to(initial)
 
         menu = gtk.Menu()
-        m = gtk.ImageMenuItem(_("New Folder..."))
-        m.get_image().set_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_MENU)
+        m = qltk.MenuItem(_("New Folder..."), gtk.STOCK_NEW)
         m.connect('activate', self.__mkdir)
         menu.append(m)
         m = gtk.ImageMenuItem(gtk.STOCK_DELETE)

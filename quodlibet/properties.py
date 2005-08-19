@@ -804,26 +804,23 @@ class SongProperties(gtk.Window):
             menu = gtk.Menu()        
             spls = config.get("editing", "split_on").split()
 
-            b = gtk.ImageMenuItem(_("Split into _multiple values"))
-            b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
-                                         gtk.ICON_SIZE_MENU)
+            b = qltk.MenuItem(
+                _("Split into _multiple values"), gtk.STOCK_FIND_AND_REPLACE)
             b.set_sensitive(len(util.split_value(row[1], spls)) > 1)
             b.connect('activate', self.__split_into_list, view)
             menu.append(b)
             menu.append(gtk.SeparatorMenuItem())
 
             if row[0] == "album":
-                b = gtk.ImageMenuItem(_("Split disc out of _album"))
-                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
-                                             gtk.ICON_SIZE_MENU)
+                b = qltk.MenuItem(
+                    _("Split disc out of _album"), gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_album, view)
                 b.set_sensitive(util.split_album(row[1])[1] is not None)
                 menu.append(b)
 
             elif row[0] == "title":
-                b = gtk.ImageMenuItem(_("Split version out of title"))
-                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
-                                             gtk.ICON_SIZE_MENU)
+                b = qltk.MenuItem(_("Split version out of title"),
+                                  gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_title, view)
                 b.set_sensitive(util.split_title(row[1], spls)[1] != [])
                 menu.append(b)
@@ -831,16 +828,14 @@ class SongProperties(gtk.Window):
             elif row[0] == "artist":
                 ok = (util.split_people(row[1], spls)[1] != [])
 
-                b = gtk.ImageMenuItem(_("Split arranger out of ar_tist"))
-                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
-                                             gtk.ICON_SIZE_MENU)
+                b = qltk.MenuItem(_("Split arranger out of ar_tist"),
+                                  gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_people, "arranger", view)
                 b.set_sensitive(ok)
                 menu.append(b)
 
-                b = gtk.ImageMenuItem(_("Split _performer out of artist"))
-                b.get_image().set_from_stock(gtk.STOCK_FIND_AND_REPLACE,
-                                             gtk.ICON_SIZE_MENU)
+                b = qltk.MenuItem(_("Split _performer out of artist"),
+                                  gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_people, "performer", view)
                 b.set_sensitive(ok)
                 menu.append(b)
