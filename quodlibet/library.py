@@ -129,9 +129,7 @@ class Library(dict):
             self[song['~filename']] = song
 
     def remove(self, song):
-        try: del(self[song['~filename']])
-        except KeyError:
-            print "W: Trying to remove %s, not in library." % song["~filename"]
+        del(self[song['~filename']])
 
     def add(self, fn):
         if fn not in self:

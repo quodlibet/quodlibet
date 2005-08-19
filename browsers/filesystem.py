@@ -11,8 +11,6 @@
 # to support this by automatically adding songs to the library when it
 # needs them to be there.
 
-# FIXME: "Remove from Library" doesn't work as expected when this is up.
-
 import os
 import gobject, gtk
 import qltk
