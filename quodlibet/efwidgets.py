@@ -55,26 +55,7 @@ class DirectoryTree(gtk.TreeView):
         self.connect(
             'test-expand-row', DirectoryTree.__expanded, self.get_model())
 
-        if initial:
-            path = []
-            head, tail = os.path.split(initial)
-            while head != os.path.dirname(os.environ["HOME"]) and tail != '':
-                if tail:
-                    dirs = [d for d in dircache.listdir(head) if
-                            (d[0] != "." and
-                             os.path.isdir(os.path.join(head,d)))]
-                    try: path.insert(0, dirs.index(tail))
-                    except ValueError: break
-                head, tail = os.path.split(head)
-
-            if initial.startswith(os.environ["HOME"]): path.insert(0, 0)
-            else: path.insert(0, 1)
-            for i in range(len(path)):
-                self.expand_row(tuple(path[:i+1]), False)
-            self.get_selection().select_path(tuple(path))
-            self.scroll_to_cell(tuple(path))
-
-        else: pass
+        if initial: self.go_to(initial)
 
         menu = gtk.Menu()
         m = gtk.ImageMenuItem(_("New Folder..."))
@@ -89,6 +70,25 @@ class DirectoryTree(gtk.TreeView):
         menu.append(m)
         menu.show_all()
         self.connect('button-press-event', DirectoryTree.__button_press, menu)
+
+    def go_to(self, initial):
+        path = []
+        head, tail = os.path.split(initial)
+        while head != os.path.dirname(os.environ["HOME"]) and tail != '':
+            if tail:
+                dirs = [d for d in dircache.listdir(head) if
+                        (d[0] != "." and
+                         os.path.isdir(os.path.join(head,d)))]
+                try: path.insert(0, dirs.index(tail))
+                except ValueError: break
+            head, tail = os.path.split(head)
+
+        if initial.startswith(os.environ["HOME"]): path.insert(0, 0)
+        else: path.insert(0, 1)
+        for i in range(len(path)):
+            self.expand_row(tuple(path[:i+1]), False)
+        self.get_selection().select_path(tuple(path))
+        self.scroll_to_cell(tuple(path))
 
     def __button_press(self, event, menu):
         if event.button != 3: return False
