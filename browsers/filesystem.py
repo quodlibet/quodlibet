@@ -22,7 +22,7 @@ from browsers.base import Browser
 from library import Library, library as glibrary
 from efwidgets import DirectoryTree
 
-class Filesystem(Browser, gtk.ScrolledWindow):
+class FileSystem(Browser, gtk.ScrolledWindow):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
     __lib = Library()
@@ -47,6 +47,13 @@ class Filesystem(Browser, gtk.ScrolledWindow):
 
     def __play(self, *args):
         player.playlist.next()
+
+    def can_filter(self, key):
+        return (key == "~dirname")
+
+    def filter(self, key, values):
+        self.child.get_selection().unselect_all()
+        for v in values: self.child.go_to(v)
 
     def restore(self):
         try: paths = config.get("browsers", "filesystem").split("\n")
@@ -74,10 +81,13 @@ class Filesystem(Browser, gtk.ScrolledWindow):
                 elif fn not in self.__lib:
                     song = formats.MusicFile(fn)
                     if song: self.__lib[song["~filename"]] = song
-                if fn in self.__lib: songs.append(self.__lib[fn])
+                if fn in self.__lib:
+                    if not self.__lib[fn].valid():
+                        self.__lib.reload(self.__lib[fn])
+                    if fn in self.__lib: songs.append(self.__lib[fn])
 
         self.save()
         self.emit('songs-selected', songs, None)
 
-gobject.type_register(Filesystem)
-browsers = [(10, _("_Filesystem"), Filesystem, True)]
+gobject.type_register(FileSystem)
+browsers = [(10, _("_File System"), FileSystem, True)]
