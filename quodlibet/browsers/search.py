@@ -65,7 +65,6 @@ class EmptyBar(gtk.HBox, Browser):
             text = ", ".join(
                 ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
                  for v in values])
-            if key.startswith("~"): key = key[1:]
             self.set_text(u"%s = |(%s)" % (key, text))
         self.activate()
 
