@@ -8,7 +8,24 @@
 
 import gtk
 from qltk import ErrorMessage
+from os.path import splitext, extsep, dirname
+from const import HOME as lastfolder
 __all__ = ['Export', 'Import']
+
+def filechooser(save, title):
+    chooser = gtk.FileChooserDialog(
+        title=(save and "Export %s Metadata to ..." or "Import %s Metadata from ...") % title,
+        action=(save and gtk.FILE_CHOOSER_ACTION_SAVE or gtk.FILE_CHOOSER_ACTION_OPEN),
+        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+
+    for name, pattern in [('Tag files (*.tags)','*.tags'), ('All Files','*')]:
+        filter = gtk.FileFilter()
+        filter.set_name(name)
+        filter.add_pattern(pattern)
+        chooser.add_filter(filter)
+
+    chooser.set_current_folder(lastfolder)
+    return chooser
 
 class Export(object):
 
@@ -20,12 +37,16 @@ class Export(object):
 
         songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or cmp(a('~basename'), b('~basename')) or cmp(a, b))
 
-        chooser = gtk.FileChooserDialog(title="Export %s Metadata to ..." % songs[0]('album'), action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        chooser = filechooser(save=True, title=songs[0]('album'))
         resp = chooser.run()
         fn = chooser.get_filename()
+        base, ext = splitext(fn)
+        if not ext: fn = extsep.join([fn, 'tags'])
         chooser.destroy()
         if resp != gtk.RESPONSE_ACCEPT: return
 
+        global lastfolder
+        lastfolder = dirname(fn)
         out = open(fn, 'wU')
 
         for song in songs:
@@ -48,8 +69,7 @@ class Import(object):
 
         songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or cmp(a('~basename'), b('~basename')) or cmp(a, b))
 
-        chooser = gtk.FileChooserDialog(title="Import %s Metadata from ..." % songs[0]('album'), action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
-
+        chooser = filechooser(save=False, title=songs[0]('album'))
         append = gtk.CheckButton("Append Metadata")
         append.set_active(True)
         append.show()
@@ -60,6 +80,9 @@ class Import(object):
         fn = chooser.get_filename()
         chooser.destroy()
         if resp != gtk.RESPONSE_ACCEPT: return
+
+        global lastfolder
+        lastfolder = dirname(fn)
 
         metadata = []
         index = 0
