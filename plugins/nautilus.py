@@ -17,4 +17,4 @@ def plugin_songs(songs):
     if len(dirs) < 4 or ConfirmAction(None, "Open %d Windows?" % len(dirs),
             "Do you want to open %d Nautilus windows?" % len(dirs)).run():
         nautilus = bonobo.get_object('OAFIID:Nautilus_Shell', 'Nautilus/Shell')
-        nautilus.open_windows(dirs, '', '')
+        nautilus.open_windows(dirs, '', '', '')
