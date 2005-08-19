@@ -124,8 +124,9 @@ class Library(dict):
     def rename(self, song, newfn):
         oldfn = song['~filename']
         song.rename(newfn)
-        del(self[oldfn])
-        self[song['~filename']] = song
+        if oldfn in self:
+            del(self[oldfn])
+            self[song['~filename']] = song
 
     def remove(self, song):
         try: del(self[song['~filename']])
