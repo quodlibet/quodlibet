@@ -1257,9 +1257,14 @@ class MainWindow(gtk.Window):
             return True
 
     def __add_to_queue(self, songs):
+        added = []
         for song in songs:
+            if song["~filename"] not in library:
+                library[song["~filename"]] = song
+                added.append(song)
             iter = self.qexpander.model.find(song)
             if iter is None: self.qexpander.model.append(row=[song])
+        if added: widgets.watcher.added(added)
 
     def __delete_event(self, event):
         if self.icon.enabled and config.getboolean("plugins", "icon_close"):
@@ -2107,9 +2112,14 @@ class SongList(qltk.HintedTreeView):
 
     def __enqueue(self, item, songs):
         model = widgets.main.playlist.q
+        added = []
         for song in songs:
+            if song["~filename"] not in library:
+                library[song["~filename"]] = song
+                added.append(song)
             iter = model.find(song)
             if iter is None: model.append(row=[song])
+        if added: widgets.watcher.added(added)
 
     def __delete(self, item, songs):
         songs = [(song["~filename"], song) for song in songs]
@@ -2161,10 +2171,17 @@ class SongList(qltk.HintedTreeView):
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
         paths.sort()
+        songs = [model[path][0] for path in paths]
+        added = []
+        filenames = []
         from urllib import pathname2url as tourl
-        filenames = ["file:" + tourl(model[path][0].get("~filename", ""))
-                     for path in paths]
+        for song in songs:
+            if song["~filename"] not in library:
+                library[song["~filename"]] = song
+                added.append(song)
+            filenames.append("file:" + tourl(song.get("~filename", "")))
         sel.set_uris(filenames)
+        widgets.watcher.added(added)
 
     def __redraw_current(self, watcher, song=None):
         iter = self.song_to_iter(watcher.song)
