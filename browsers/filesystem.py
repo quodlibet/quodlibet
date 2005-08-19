@@ -51,6 +51,9 @@ class Filesystem(Browser, gtk.ScrolledWindow):
 
     def restore(self): pass
 
+    def activate(self):
+        self.__find_songs(self.child.get_selection())
+
     def __find_songs(self, selection):
         model, rows = selection.get_selected_rows()
         dirs = [model[row][0] for row in rows]
