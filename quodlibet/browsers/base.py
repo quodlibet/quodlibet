@@ -49,3 +49,6 @@ class Browser(object):
 
     # Scroll to something related to the current song.
     def scroll(self): pass
+
+    # Do whatever is needed to emit songs-selected again.
+    def activate(self): raise NotImplementedError
