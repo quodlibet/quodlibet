@@ -2035,8 +2035,7 @@ class SongList(qltk.HintedTreeView):
             menu.append(b)
         header = {"~rating":"~#rating", "~length":"~#length"}.get(
             header, header)
-        if (header not in ["artist", "album"] and can_filter(header) and
-            (header[0] != "~" or header[1] == "#")):
+        if (header not in ["artist", "album"] and can_filter(header)):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = gtk.ImageMenuItem(_("_Filter on %s") % tag(header, False))
