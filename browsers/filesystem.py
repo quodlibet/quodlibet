@@ -7,22 +7,21 @@
 #
 # $Id$
 
-# FIXME: Files not in the library tend to do bad things:
-# - Renaming breaks QL
-# - Attempting to remove causes KeyErrors
-# - DnD doesn't work since we exchange filenames
-# Mostly, I'm surprised they work at all.
+# Some sort of crazy directory-based browser. QL is full of minor hacks
+# to support this by automatically adding songs to the library when it
+# needs them to be there.
+
+# FIXME: "Remove from Library" doesn't work as expected when this is up.
 
 import os
 import gobject, gtk
 import qltk
-import config
 import player
 import formats
-from efwidgets import DirectoryTree
 
 from browsers.base import Browser
 from library import Library, library as glibrary
+from efwidgets import DirectoryTree
 
 class Filesystem(Browser, gtk.ScrolledWindow):
     __gsignals__ = Browser.__gsignals__
