@@ -2048,6 +2048,10 @@ class SongList(qltk.HintedTreeView):
         b.get_image().set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         b.connect('activate', self.__remove, songs)
         menu.append(b)
+        for song in songs:
+            if song["~filename"] not in library:
+                b.set_sensitive(False)
+                break
 
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         b.connect('activate', self.__delete, songs)
