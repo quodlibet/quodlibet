@@ -88,9 +88,9 @@ class AudioFileTest(TestCase):
         self.failUnlessEqual(
             l(bar_1_1.listall(["artist"])), bar_1_1.list("artist"))
         self.failUnlessEqual(
-            bar_2_1.listall(['artist']), set(["Foo", "I have two artists"]))
+            bar_2_1.listall(['artist']), ["Foo", "I have two artists"])
         self.failUnlessEqual(bar_2_1.listall(["artist", "title"]),
-                             set(["Foo", "I have two artists", "more songs"]))
+                             ["Foo", "I have two artists", "more songs"])
             
 
     def test_comma(self):

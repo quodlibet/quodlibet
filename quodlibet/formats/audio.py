@@ -102,7 +102,9 @@ class AudioFile(dict):
         else: return v.split("\n")
 
     def listall(self, keys):
-        return reduce(set.union, map(self.list, keys), set())
+        r = []
+        for key in keys: r.extend(self.list(key))
+        return r
 
     def exists(self):
         return os.path.exists(self["~filename"])
