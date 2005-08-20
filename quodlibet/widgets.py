@@ -862,6 +862,7 @@ class MainWindow(gtk.Window):
         def __init__(self):
             gtk.Label.__init__(self)
             self.set_ellipsize(pango.ELLIPSIZE_END)
+            self.set_selectable(True)
             self.set_alignment(0.0, 0.0)
             self.set_direction(gtk.TEXT_DIR_LTR)
             widgets.watcher.connect('song-started', self.__song_started)
