@@ -1202,8 +1202,14 @@ class MainWindow(gtk.Window):
 
         self.songpane = songpane = gtk.VBox(spacing=6)
         self.songpane.pack_start(self.song_scroller)
-        self.songpane.pack_start(self.qexpander, expand=False)
+        self.songpane.pack_start(self.qexpander, expand=False, fill=True)
         self.songpane.show_all()
+        self.song_scroller.connect(
+            'notify::visible', self.__show_or,
+            self.qexpander, self.songpane)
+        self.qexpander.connect(
+            'notify::visible', self.__show_or,
+            self.song_scroller, self.songpane)
 
         SongList.set_all_column_headers(
             config.get("settings", "headers").split())
@@ -1256,6 +1262,11 @@ class MainWindow(gtk.Window):
 
         self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
+
+    def __show_or(self, pane1, prop, pane2, parent):
+        parent.set_property(
+            'visible', pane1.get_property('visible') or
+            pane2.get_property('visible'))
 
     def __songs_queue_add(self, songlist, event):
         if event.string == "Q":
