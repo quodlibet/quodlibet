@@ -273,7 +273,7 @@ class SongProperties(gtk.Window):
                 else:
                     # Translators: This is used as a group header in
                     # Properties when a song has performers/composers/etc.
-                    title = _("People")
+                    title = tag("people")
                 for names, tag_ in [
                     ("performers", "performer"),
                     ("lyricists", "lyricist"),

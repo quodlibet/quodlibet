@@ -419,7 +419,7 @@ class PreferencesWindow(gtk.Window):
             t.set_col_spacings(3)
             t.set_row_spacings(3)
             cbes = [gtk.combo_box_entry_new_text() for i in range(3)]
-            values = ["", "genre", "artist", "album"]
+            values = ["", "genre", "artist", "~people", "album"]
             current = config.get("browsers", "panes").split()
             for i, c in enumerate(cbes):
                 for v in values:

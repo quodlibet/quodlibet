@@ -40,6 +40,7 @@ _("mount point")
 # alternately, "record label"
 _("organization")
 _("part")
+_("people")
 _("performer")
 _("play count")
 _("rating")
