@@ -1856,7 +1856,7 @@ class QueueExpander(gtk.Expander):
         queue_scroller = sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.queue = SongQueue()
+        self.queue = PlayQueue()
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
         l = gtk.Label(_("_Play Queue"))
@@ -1890,6 +1890,7 @@ class QueueExpander(gtk.Expander):
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.connect_object(
             'notify::visible', self.__visible, self.queue.model, cb, menu)
+        self.__update_count(self.model, None, l2)
 
     def __motion(self, wid, context, x, y, time):
         context.drag_status(gtk.gdk.ACTION_COPY, time)
@@ -2495,7 +2496,7 @@ class PlayList(SongList):
         menu.popup(None, None, None, event.button, event.time)
         return True
 
-class SongQueue(SongList):
+class PlayQueue(SongList):
     class CurrentColumn(gtk.TreeViewColumn):
         # Match MainSongList column sizes by default.
         header_name = "~current"
@@ -2521,6 +2522,23 @@ class SongQueue(SongList):
         menu.append(rem); menu.append(props); menu.show_all()
         self.connect_object('button-press-event', self.__button_press, menu)
         self.connect_object('popup-menu', self.__popup, menu)
+
+        self.connect('destroy', self.__write)
+        self.__fill()
+
+    def __fill(self):
+        try: filenames = file(const.QUEUE, "rU").readlines()
+        except EnvironmentError: pass
+        else:
+            for fn in map(str.strip, filenames):
+                if fn in library:
+                    self.model.append([library[fn]])
+
+    def __write(self, *args):
+        filenames = "\n".join([row[0]["~filename"] for row in self.model])
+        f = file(const.QUEUE, "w")
+        f.write(filenames)
+        f.close()
 
     def __popup(self, menu):
         menu.popup(None, None, None, 3, 0)
