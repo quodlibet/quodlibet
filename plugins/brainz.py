@@ -1,7 +1,7 @@
 # (C) 2005 Joshua Kwan <joshk@triplehelix.org>
 # redistributable under the terms of the GNU GPL, version 2 or later
 
-import musicbrainz, os, gtk
+import musicbrainz, os, gtk, gobject
 from musicbrainz.queries import *
 from qltk import GetStringDialog, ErrorMessage, ConfirmAction, Message
 from util import tag, escape
@@ -24,6 +24,130 @@ class AskAction(ConfirmAction):
     def __init__(self, *args, **kwargs):
         kwargs["buttons"] = gtk.BUTTONS_YES_NO
         Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
+
+class AlbumChooser(gtk.Window):
+	active_candidate = None
+	candidates = {}
+	yes = None
+	first = True
+
+	def __title_match(self, a, b):
+		c = filter(lambda x: x.isalnum(), a.lower())
+		d = filter(lambda x: x.isalnum(), b.lower())
+
+		return (c == d or c.startswith(d) or c.endswith(d) or d.startswith(c) or d.endswith(c))
+	
+	def __cursor_changed(self, view):
+		selection = view.get_selection()
+		selection.set_mode(gtk.SELECTION_SINGLE)
+		model, iter = view.get_selection().get_selected()
+
+		# This MAY be the parent node or not.
+		while model.iter_parent(iter) != None: iter = model.iter_parent(iter)
+
+		if model[iter][2] != self.active_candidate:
+			selection.unselect_all()
+			view.collapse_all()
+			view.expand_row(model.get_path(iter), False)
+			selection.set_mode(gtk.SELECTION_MULTIPLE)
+			selection.select_iter(iter)
+			for i in range(0, model.iter_n_children(iter)):
+				view.get_selection().select_iter(model.iter_nth_child(iter, i))
+			self.active_candidate = model[iter][2]
+			# Now select all children
+			print "%s selected" % model[iter][2] # id
+		
+		self.yes.set_sensitive(True)
+
+		return
+
+	# Exists only to prune the 'button' argument
+	def __do_destroy(self, button):
+		self.destroy()
+
+	# Exists only to prune the 'brainz' argument
+	def __yes_clicked(self, button, brainz, album):
+		if self.active_candidate:
+			self.hide() # Caller hooks hide signal
+			self.destroy()
+		
+	def __init__(self, brainz, album, candidates):
+		gtk.Window.__init__(self)
+		self.set_title(_("Album selection"))
+
+		self.candidates = candidates
+		
+		label = gtk.Label(_("Multiple albums found, please select one. (Bold entries denote a track title match with the tags this album already has.)"))
+		label.set_line_wrap(True)
+
+		# Initialize the TreeStore and seed it with data from candidates
+		treestore = gtk.TreeStore(str, str, str)
+		
+		for candidate in candidates.values():
+			iter = treestore.append(None,
+				["<i>%s</i>" % escape(candidate.tracklist[0]['album']),
+				"", candidate.id])
+			i = 1
+			for track in candidate.tracklist:
+				if album[i - 1]['title'] and self.__title_match(album[i - 1]['title'], track['title']):
+					treestore.append(iter,
+						[track['artist'], "%d. <b>%s</b>" %
+						  (i, escape(track['title'])), ""])
+				else:
+					treestore.append(iter,
+						[track['artist'], "%d. %s" %
+						  (i, escape(track['title'])), ""])
+				i = i + 1
+		
+		view = gtk.TreeView(treestore)
+		
+		i = 0
+
+		def pango_format(column, cell, model, iter, arg):
+			cell.set_property('markup', model[iter][arg])
+
+		for column in ["Album / Artist", "Title"]:
+			renderer = gtk.CellRendererText()
+			tvcolumn = gtk.TreeViewColumn(column, renderer, text=i)
+			if column is "Title":
+				tvcolumn.set_cell_data_func(renderer, pango_format, 1)
+			else:
+				tvcolumn.set_cell_data_func(renderer, pango_format, 0)
+			
+			tvcolumn.set_clickable(False)
+			tvcolumn.set_resizable(True)
+			view.append_column(tvcolumn)
+			i = i + 1
+		
+		self.yes = gtk.Button(label="Select this Album", stock=gtk.STOCK_OK)
+		cancel = gtk.Button("Cancel", gtk.STOCK_CANCEL)
+		
+		self.yes.connect('clicked', self.__yes_clicked, brainz, album)
+		cancel.connect('clicked', self.__do_destroy)
+		view.connect('cursor-changed', self.__cursor_changed)
+
+		self.set_size_request(400, 300)
+		
+		self.yes.set_sensitive(False)
+		cancel.set_sensitive(True)
+
+		hbox = gtk.HBox(spacing=12)
+		hbox.pack_start(self.yes)
+		hbox.pack_start(cancel)
+
+		swin = gtk.ScrolledWindow()
+		swin.add(view)
+
+		swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+
+		vbox = gtk.VBox(spacing=12)
+		vbox.pack_start(label, expand=False, fill=True)
+		vbox.pack_start(swin)
+		vbox.pack_start(hbox, expand=False, fill=True)
+
+		self.add(vbox)
+
+		self.show_all()
 
 class QLBrainz(object):
 	PLUGIN_NAME = 'MusicBrainz lookup'
@@ -50,7 +174,7 @@ class QLBrainz(object):
 		this_title = self.mb.GetResultData(MBE_AlbumGetAlbumName)
 		this_artistid = self.mb.GetIDFromURL(self.mb.GetResultData(MBE_AlbumGetAlbumArtistId))
 
-		print "Album has %d tracks" % this_numtracks
+#		print "Album has %d tracks" % this_numtracks
 		if this_numtracks == tracks:
 			new_candidate = AlbumCandidate()
 			
@@ -82,12 +206,12 @@ class QLBrainz(object):
 
 #				self.mb.Select(MBS_Back)
 
-			print "Album: %s" % new_candidate.tracklist[0]['album']
-			k = 1
-			for track in new_candidate.tracklist:
-				print "%d. %s - %s (%s)" % (k, track['artist'], track['title'],
-					track['musicbrainz_trackid'])
-				k = k + 1
+#			print "Album: %s" % new_candidate.tracklist[0]['album']
+#			k = 1
+#			for track in new_candidate.tracklist:
+#				print "%d. %s - %s (%s)" % (k, track['artist'], track['title'],
+#					track['musicbrainz_trackid'])
+#				k = k + 1
 
 			return new_candidate
 		return None
@@ -112,7 +236,7 @@ class QLBrainz(object):
 
 		return candidates
 
-	def __do_tag(self, album, candidate):
+	def do_tag(self, album, candidate):
 		i = 0
 
 		album_artist = ""
@@ -142,19 +266,6 @@ class QLBrainz(object):
 					if key not in album[i] or album[i][key] != candidate.tracklist[i][key]:
 						album[i][key] = candidate.tracklist[i][key]
 
-	def __do_tag_by_album_id(self, album, albumid):
-		self.mb.QueryWithArgs(MBQ_GetAlbumById, [albumid])
-		
-		n_albums = self.mb.GetResultInt(MBE_GetNumAlbums)
-		print "Found %d albums" % n_albums
-
-		if n_albums == 1: # there better only be one album per ID
-			self.mb.Select1(MBS_SelectAlbum, 1)
-			
-			candidate = self.__cache_this_album(len(album))
-
-			self.__do_tag(album, candidate)
-				
 	def __get_album_trm(self, album):
 		trm_this_album = []
 		for track in album:
@@ -167,8 +278,13 @@ class QLBrainz(object):
 
 		return trm_this_album
 
-	def __try_match_by_trm(self, album, candidates):
-		ErrorMessage(None, "", _("TRM matching feature not done yet, sorry.")).run()
+	def __signal_do_tag(self, w, album, chooser, candidates):
+		self.do_tag(album, candidates[chooser.active_candidate])
+		
+	def __choose_album(self, album, candidates):
+		chooser = AlbumChooser(self, album, candidates)
+		chooser.connect('hide', self.__signal_do_tag, album, chooser, candidates)
+		gobject.idle_add(chooser.show_all)
 
 	def plugin_album(self, album, override=None):
 		# If there is already an album name. When plugin_album is called,
@@ -186,9 +302,8 @@ class QLBrainz(object):
 			
 			candidates = self.__lookup_by_album_name(album_name, len(album))
 
-			# differentiate by TRM
 			if len(candidates) > 1:
-				self.__try_match_by_trm(album, candidates)
+				self.__choose_album(album, candidates)
 
 			elif len(candidates) == 0:
 				name = GetStringDialog(
@@ -200,7 +315,7 @@ class QLBrainz(object):
 				if name: self.plugin_album(album, name)
 					
 			else:
-				self.__do_tag(album, candidates[candidates.keys()[0]])
+				self.do_tag(album, candidates[candidates.keys()[0]])
 		elif 'album' not in album[0]: # and override is None
 			name = GetStringDialog(
 				None, _("Not enough information to locate album"),
