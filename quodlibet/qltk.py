@@ -412,22 +412,17 @@ class ValidatingEntry(gtk.Entry):
         if validator: self.connect_object('changed', self.__color, validator)
 
     def __color(self, validator):
-        if not config.getboolean('browsers', 'color'): return
-        value = validator(self.get_text())
-        if value is True: color = "dark green"
-        elif value is False: color = "red"
-        elif isinstance(value, str): color = value
-        else: color = None
+        if config.getboolean('browsers', 'color'):
+            value = validator(self.get_text())
+            if value is True: color = "dark green"
+            elif value is False: color = "red"
+            elif isinstance(value, str): color = value
+            else: color = None
 
-        if color: gobject.idle_add(self.__set_color, color)
-
-    def __set_color(self, color):
-        if self.get_property('sensitive'):
-            layout = self.get_layout()
-            text = layout.get_text()
-            markup = '<span foreground="%s">%s</span>' %(
-                color, util.escape(text))
-            layout.set_markup(markup)
+            if color and self.get_property('sensitive'):
+                self.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(color))
+        else:
+            self.modify_text(gtk.STATE_NORMAL, None)
 
 class WaitLoadWindow(gtk.Window):
     """A window with a progress bar and some nice updating text,

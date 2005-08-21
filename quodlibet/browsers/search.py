@@ -165,17 +165,13 @@ class SearchBar(EmptyBar):
             self.activate()
 
     def __test_filter(self, textbox):
-        if not config.getboolean('browsers', 'color'): return
+        if not config.getboolean('browsers', 'color'):
+            textbox.modify_text(gtk.STATE_NORMAL, None)
+            return
         text = textbox.get_text().decode('utf-8')
-        gobject.idle_add(
-            self.__set_entry_color, textbox, parser.is_valid_color(text))
-
-    def __set_entry_color(self, entry, color):
-        layout = entry.get_layout()
-        text = layout.get_text()
-        markup = '<span foreground="%s">%s</span>' %(
-            color, util.escape(text))
-        layout.set_markup(markup)
+        color = parser.is_valid_color(text)
+        if color and textbox.get_property('sensitive'):
+            textbox.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(color))
 
 browsers = [
     (0, _("_Disable Browser"), EmptyBar, False),
