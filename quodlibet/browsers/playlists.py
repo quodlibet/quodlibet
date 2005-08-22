@@ -21,7 +21,7 @@ class PlaylistBar(Browser, gtk.HBox):
     __gsignals__ = Browser.__gsignals__
     background = False
 
-    def __init__(self):
+    def __init__(self, main=True):
         gtk.HBox.__init__(self)
         Browser.__init__(self)
         combo = gtk.ComboBox(PlayList.lists_model())

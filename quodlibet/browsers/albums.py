@@ -222,10 +222,10 @@ class AlbumList(Browser, gtk.VBox):
             except ValueError: pass
             return dict([(a.title, a) for a in albums])
 
-    def __init__(self, save=True, play=True):
+    def __init__(self, main=True):
         gtk.VBox.__init__(self)
 
-        self.__save = save
+        self.__save = main
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
@@ -273,7 +273,7 @@ class AlbumList(Browser, gtk.VBox):
         sw.add(view)
         e = self.FilterEntry(model_filter)
 
-        if play: view.connect('row-activated', self.__play_selection)
+        if main: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed, e)
         for s in [
             widgets.watcher.connect('removed', self.__remove_songs, model),

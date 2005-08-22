@@ -140,11 +140,9 @@ class PanedBrowser(gtk.VBox, Browser):
                 songs = [model[row][1] for row in rows]
                 return list(reduce(set.union, songs, set()))
 
-    __save = False
-    __play = False
-    def __init__(self, save=True, play=True):
+    def __init__(self, main=True):
         gtk.VBox.__init__(self, spacing=0)
-        self.__play = play
+        self.__save = main
 
         hb = gtk.HBox(spacing=3)
         label = gtk.Label(_("_Search:"))
@@ -180,6 +178,14 @@ class PanedBrowser(gtk.VBox, Browser):
         for pane in self.__panes:
             pane.scroll(widgets.watcher.song)
 
+    def __button_press_event(self, pane, event):
+        print "event"
+        if event.button == 2:
+            print "woo"
+            pane.stop_emission('button-press-event')
+            return True
+        
+
     def refresh_panes(self, restore=True):
         try: hbox = self.get_children()[1]
         except IndexError: pass # first call
@@ -196,10 +202,11 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__panes.pop() # remove self
 
         for pane in self.__panes:
-            if self.__play: pane.connect('row-activated', self.__start)
+            if self.__save: pane.connect('row-activated', self.__start)
             sw = gtk.ScrolledWindow()
             sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             sw.set_shadow_type(gtk.SHADOW_IN)
+            pane.connect('button-press-event', self.__button_press_event)
             sw.add(pane)
             hbox.pack_start(sw)
 

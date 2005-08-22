@@ -22,7 +22,7 @@ from library import library
 class EmptyBar(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
 
-    def __init__(self):
+    def __init__(self, main=True):
         gtk.HBox.__init__(self)
         # When _text is None, calls to activate are ignored. This is to
         # avoid the song list changing when the user switches browses and
@@ -77,9 +77,9 @@ class SearchBar(EmptyBar):
     # false, Browser#save should do nothing. Likewise, if play is false,
     # the browser should never start songs playing. These are used
     # when making browsers for the Library Browser windows.
-    def __init__(self, save=True, play=True):
+    def __init__(self, main=True):
         EmptyBar.__init__(self)
-        self.__save = save
+        self.__save = main
 
         hb = gtk.HBox()
         lab = gtk.Label("_Limit:")

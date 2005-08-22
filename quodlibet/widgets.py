@@ -2659,7 +2659,7 @@ class LibraryBrowser(gtk.Window):
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        browser = Kind(save=False, play=False)
+        browser = Kind(main=False)
         browser.connect_object('songs-selected', SongList.set_songs, view)
         if Kind.expand:
             container = Kind.expand()

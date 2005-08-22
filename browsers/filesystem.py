@@ -27,7 +27,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     expand = qltk.RHPaned
     __lib = Library()
 
-    def __init__(self, play=True, save=True):
+    def __init__(self, main=True):
         gtk.ScrolledWindow.__init__(self)
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
@@ -35,7 +35,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         sel = dt.get_selection()
         sel.unselect_all()
         sel.connect('changed', self.__find_songs)
-        if save: dt.connect('row-activated', self.__play)
+        if main: dt.connect('row-activated', self.__play)
+        self.__save = main
         self.add(dt)
         self.__refresh_library()
         self.show_all()
@@ -108,7 +109,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
                         self.__lib.reload(self.__lib[fn])
                     if fn in self.__lib: songs.append(self.__lib[fn])
 
-        self.save()
+        if self.__save: self.save()
         self.emit('songs-selected', songs, None)
 
 gobject.type_register(FileSystem)
