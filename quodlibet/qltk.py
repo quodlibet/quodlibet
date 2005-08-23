@@ -762,3 +762,90 @@ class BigCenteredImage(gtk.Window):
 
     def __destroy(self, event):
         self.destroy()
+
+class PopupHSlider(gtk.EventBox):
+    # Based on the Rhythmbox volume control button; thanks to Colin Walters,
+    # Richard Hult, Michael Fulbright, Miguel de Icaza, and Federico Mena.
+
+    def __init__(self):
+        gtk.EventBox.__init__(self)
+        button = gtk.Button()
+        button.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_IN))
+        self.add(button)
+        button.connect('clicked', self.__clicked)
+        self.show_all()
+
+        window = self.__window = gtk.Window(gtk.WINDOW_POPUP)
+        self.__adj = gtk.Adjustment(0, 0, 0, 3600, 15000, 0)
+
+        frame = gtk.Frame()
+        frame.set_border_width(0)
+        frame.set_shadow_type(gtk.SHADOW_OUT)
+
+        hscale = gtk.HScale(self.__adj)
+        hscale.set_size_request(190, -1)
+        window.connect('button-press-event', self.__button)
+        hscale.connect('key-press-event', self.__key)
+        hscale.set_draw_value(False)
+        hscale.set_update_policy(gtk.UPDATE_DELAYED)
+        self.scale = hscale
+        window.add(frame)
+        frame.add(hscale)
+        button.connect('scroll-event', self.__scroll, hscale)
+        self.__window.connect('scroll-event', self.__scroll, hscale)
+
+    def __clicked(self, button):
+        if self.__window.get_property('visible'): return
+        max_y = gtk.gdk.screen_height()
+        req = self.__window.size_request()
+        x, y = self.child.child.window.get_origin()
+        w, h = self.child.child.window.get_size()
+        self.__window.show_all()
+        ww, wh = self.__window.child.parent.get_size()
+
+        sx = x + w + 3
+        sy = y + (h - wh)/2
+        self.__window.move(sx, sy)
+        self.__window.grab_focus()
+        self.__window.grab_add()
+        pointer = gtk.gdk.pointer_grab(
+            self.__window.window, True,
+            gtk.gdk.BUTTON_PRESS_MASK |
+            gtk.gdk.BUTTON_RELEASE_MASK |
+            gtk.gdk.BUTTON_MOTION_MASK |
+            gtk.gdk.POINTER_MOTION_MASK |
+            gtk.gdk.SCROLL_MASK, None, None, gtk.get_current_event_time())
+        keyboard = gtk.gdk.keyboard_grab(
+            self.__window.window, True, gtk.get_current_event_time())
+
+        if pointer != gtk.gdk.GRAB_SUCCESS or keyboard != gtk.gdk.GRAB_SUCCESS:
+            self.__window.grab_remove()
+            self.__window.hide()
+
+            if pointer == gtk.gdk.GRAB_SUCCESS:
+                gtk.gdk.pointer_ungrab(gtk.get_current_event_time())
+            if keyboard == gtk.gdk.GRAB_SUCCESS:
+                gtk.gdk.keyboark_ungrab(gtk.get_current_event_time())
+
+    def __scroll(self, widget, ev, hscale):
+        adj = self.__adj
+        v = hscale.get_value()
+        if ev.direction in [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_LEFT]:
+            v += adj.step_increment
+        elif ev.direction in [gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_RIGHT]:
+            v -= adj.step_increment
+        print v
+        hscale.set_value(min(adj.upper, max(adj.lower, v)))
+
+    def __button(self, widget, ev):
+        self.__popup_hide()
+
+    def __key(self, hscale, ev):
+        if ev.string in ["\n", "\r", " ", "\x1b"]: # enter, space, escape
+            self.__popup_hide()
+
+    def __popup_hide(self):
+        self.__window.grab_remove()
+        gtk.gdk.pointer_ungrab(gtk.get_current_event_time())
+        gtk.gdk.keyboard_ungrab(gtk.get_current_event_time())
+        self.__window.hide()

@@ -805,7 +805,7 @@ class CoverImage(gtk.Frame):
         gtk.Frame.__init__(self)
         self.add(gtk.EventBox())
         self.child.add(gtk.Image())
-        self.__size = size or [120, 100]
+        self.__size = size or [125, 102]
         self.child.child.set_size_request(-1, self.__size[1])
         self.child.connect_object(
             'button-press-event', CoverImage.__show_cover, self)
@@ -935,10 +935,44 @@ class MainWindow(gtk.Window):
                         song.comma("tracknumber")))
             return " - ".join(t)
 
+    class PositionSlider(gtk.HBox):
+        __gsignals__ = {
+            'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
+            }
+                    
+        def __init__(self, watcher):
+            gtk.HBox.__init__(self, spacing=3)
+            l = gtk.Label("0:00")
+            self.pack_start(l)
+
+            b = qltk.PopupHSlider()
+
+            b.scale.connect(
+                'adjust-bounds', lambda a, b: player.playlist.seek(b))
+            self.pack_start(b, expand=False, fill=False)
+
+            watcher.connect('song-started', self.__song_changed, b.scale, l)
+            gobject.timeout_add(1000, self.__update_time, watcher, b.scale, l)
+
+        def __song_changed(self, watcher, song, position, label):
+            if song:
+                length = song["~#length"]
+                position.set_range(0, length * 1000)
+            else: position.set_range(0, 1)
+
+        def __update_time(self, watcher, position, timer):
+            cur, end = watcher.time
+            position.set_value(cur)
+            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
+            timer.set_text(cur)
+            return True
+
+    gobject.type_register(PositionSlider)
+
     class PlayControls(gtk.Table):
         def __init__(self, watcher):
-            gtk.Table.__init__(self, 2, 2)
-            self.set_homogeneous(True)
+            gtk.Table.__init__(self, 3, 2)
+            self.set_homogeneous(False)
             self.set_row_spacings(3)
             self.set_col_spacings(3)
             self.set_border_width(3)
@@ -960,6 +994,10 @@ class MainWindow(gtk.Window):
                 gtk.STOCK_MEDIA_NEXT, gtk.ICON_SIZE_LARGE_TOOLBAR))
             next.connect('clicked', self.__next)
             self.attach(next, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
+
+
+            self.attach(MainWindow.PositionSlider(watcher), 0, 2, 2, 3,
+                        xoptions=gtk.FILL, yoptions=gtk.FILL)
 
             tips = gtk.Tooltips()
 
@@ -1002,48 +1040,6 @@ class MainWindow(gtk.Window):
             song = watcher.song
             if not song: return
             website_wrap(button, song.website())
-
-    class PositionSlider(gtk.HBox):
-        __gsignals__ = {
-            'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
-            }
-                    
-        def __init__(self):
-            gtk.HBox.__init__(self)
-            l = gtk.Label("0:00/0:00")
-            l.set_padding(3, 0)
-            # Without this, the text is clipped off the side. Since the
-            # format string is reversible, this is not a problem.
-            l.set_direction(gtk.TEXT_DIR_LTR)
-            self.pack_start(l, expand=False)
-            scale = gtk.HScale(gtk.Adjustment(0, 0, 0, 3600, 15000, 0))
-            scale.set_update_policy(gtk.UPDATE_DELAYED)
-            scale.connect_object('adjust-bounds', self.emit, 'seek')
-            scale.set_draw_value(False)
-            self.pack_start(scale)
-
-            widgets.watcher.connect(
-                'song-started', self.__song_changed, scale, l)
-
-            gobject.timeout_add(
-                500, self.__update_time, widgets.watcher, scale, l)
-
-        def __song_changed(self, watcher, song, position, label):
-            if song:
-                length = song["~#length"]
-                position.set_range(0, length * 1000)
-            else: position.set_range(0, 1)
-
-        def __update_time(self, watcher, position, timer):
-            cur, end = watcher.time
-            position.set_value(cur)
-            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
-            end = "%d:%02d" % (end // 60000, (end % 60000) // 1000)
-            timer.set_text(
-                _("%(current)s/%(total)s") % dict(current=cur, total=end))
-            return True
-
-    gobject.type_register(PositionSlider)
 
     class VolumeSlider(gtk.VBox):
         def __init__(self, device):
@@ -1099,15 +1095,11 @@ class MainWindow(gtk.Window):
 
         # song info (top part of window)
         hbox = gtk.HBox()
-        hbox.set_size_request(-1, 102)
-
-        vbox = gtk.VBox()
-
-        hb2 = gtk.HBox()
+        hbox.set_size_request(-1, 105)
 
         # play controls
         t = self.PlayControls(widgets.watcher)
-        hb2.pack_start(t, expand=False, fill=False)
+        hbox.pack_start(t, expand=False, fill=False)
 
         # song text
         text = self.SongInfo(widgets.watcher)
@@ -1116,15 +1108,7 @@ class MainWindow(gtk.Window):
         alignment = gtk.Alignment(xalign=0, yalign=0, xscale=1, yscale=1)
         alignment.set_padding(3, 3, 3, 3)
         alignment.add(text)
-        hb2.pack_start(alignment)
-
-        vbox.pack_start(hb2, expand=True)
-        hbox.pack_start(vbox, expand=True)
-
-        # position slider
-        scale = self.PositionSlider()
-        scale.connect('seek', lambda s, pos: player.playlist.seek(pos))
-        vbox.pack_start(scale, expand=False)
+        hbox.pack_start(alignment, expand=True)
 
         # cover image
         self.image = CoverImage()
