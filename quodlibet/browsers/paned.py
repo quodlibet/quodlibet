@@ -158,7 +158,6 @@ class PanedBrowser(gtk.VBox, Browser):
         search.connect('changed', self.__filter_changed)
 
         self.refresh_panes(restore=False)
-        self.__save = save
         self.show_all()
 
     def __filter_changed(self, entry):
