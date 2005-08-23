@@ -937,61 +937,37 @@ class MainWindow(gtk.Window):
 
     class PlayControls(gtk.Table):
         def __init__(self, watcher):
-            gtk.Table.__init__(self, 2, 3)
+            gtk.Table.__init__(self, 2, 2)
             self.set_homogeneous(True)
             self.set_row_spacings(3)
             self.set_col_spacings(3)
             self.set_border_width(3)
 
+            play = gtk.ToggleButton()
+            play.add(gtk.image_new_from_stock(
+                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
+            play.connect('toggled', self.__playpause)
+            self.attach(play, 0, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+
             prev = gtk.Button()
             prev.add(gtk.image_new_from_stock(
                 gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_LARGE_TOOLBAR))
             prev.connect('clicked', self.__previous)
-            self.attach(prev, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
-
-            play = gtk.Button()
-            play.add(gtk.image_new_from_stock(
-                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            play.connect('clicked', self.__playpause)
-            self.attach(play, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+            self.attach(prev, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
 
             next = gtk.Button()
             next.add(gtk.image_new_from_stock(
                 gtk.STOCK_MEDIA_NEXT, gtk.ICON_SIZE_LARGE_TOOLBAR))
             next.connect('clicked', self.__next)
-            self.attach(next, 2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+            self.attach(next, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
 
             tips = gtk.Tooltips()
 
-            add = gtk.Button()
-            add.add(gtk.image_new_from_stock(
-                gtk.STOCK_ADD, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            add.connect('clicked', self.__add_music)
-            self.attach(add, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
-            tips.set_tip(add, _("Add songs to your library"))
-
-            prop = gtk.Button()
-            prop.add(gtk.image_new_from_stock(
-                gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            prop.connect('clicked', self.__properties, watcher)
-            self.attach(prop, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
-            tips.set_tip(prop, _("View and edit tags in the playing song"))
-
-            info = gtk.Button()
-            info.add(gtk.image_new_from_stock(
-                gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            info.connect('clicked', self.__website, watcher)
-            self.attach(info, 2, 3, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
-            tips.set_tip(info, _("Visit the artist's website"))
-
             stopafter = MainWindow.StopAfterMenu(watcher)
 
-            watcher.connect(
-                'song-started', self.__song_started, [next, prop, info])
-            watcher.connect(
-                'paused', self.__paused, play.child, gtk.STOCK_MEDIA_PLAY)
-            watcher.connect(
-                'unpaused', self.__paused, play.child, gtk.STOCK_MEDIA_PAUSE)
+            watcher.connect('song-started', self.__song_started, next)
+            watcher.connect_object('paused', play.set_active, False)
+            watcher.connect_object('unpaused', play.set_active, True)
 
             play.connect(
                 'button-press-event', self.__popup_stopafter, stopafter)
@@ -1002,18 +978,16 @@ class MainWindow(gtk.Window):
         def __popup_stopafter(self, activator, event, stopafter):
             if event.button == 3:
                 stopafter.popup(None, None, None, event.button, event.time)
+                return True
 
-        def __song_started(self, watcher, song, buttons):
-            for b in buttons: b.set_sensitive(bool(song))
-
-        def __paused(self, watcher, image, stock):
-            image.set_from_stock(stock, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        def __song_started(self, watcher, song, next):
+            next.set_sensitive(bool(song))
 
         def __playpause(self, button):
             if widgets.watcher.song is None:
                 player.playlist.reset()
                 player.playlist.next()
-            else: player.playlist.paused ^= True
+            else: player.playlist.paused = not button.get_active()
 
         def __previous(self, button): player.playlist.previous()
         def __next(self, button): player.playlist.next()
