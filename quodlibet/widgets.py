@@ -847,26 +847,40 @@ class CoverImage(gtk.Frame):
 
 class MainWindow(gtk.Window):
     class StopAfterMenu(gtk.Menu):
-        def __init__(self):
+        def __init__(self, watcher):
             gtk.Menu.__init__(self)
             self.__item = gtk.CheckMenuItem(_("Stop after this song"))
             self.__item.set_active(False)
             self.append(self.__item)
+
+            watcher.connect('song-started', self.__started)
+            watcher.connect('paused', self.__paused)
+            watcher.connect('song-ended', self.__ended)
+
             self.__item.show()
+
+        def __started(self, watcher, song):
+            if song and self.active: player.playlist.paused = True
+
+        def __paused(self, watcher):
+            self.active = False
+
+        def __ended(self, watcher, song, stopped):
+            if stopped: self.active = False
 
         def __get_active(self): return self.__item.get_active()
         def __set_active(self, v): return self.__item.set_active(v)
         active = property(__get_active, __set_active)
 
     class SongInfo(gtk.Label):
-        def __init__(self):
+        def __init__(self, watcher):
             gtk.Label.__init__(self)
             self.set_ellipsize(pango.ELLIPSIZE_END)
             self.set_selectable(True)
             self.set_alignment(0.0, 0.0)
             self.set_direction(gtk.TEXT_DIR_LTR)
-            widgets.watcher.connect('song-started', self.__song_started)
-            widgets.watcher.connect('changed', self.__check_change)
+            watcher.connect('song-started', self.__song_started)
+            watcher.connect('changed', self.__check_change)
 
         def __check_change(self, watcher, songs):
             if watcher.song in songs:
@@ -922,7 +936,7 @@ class MainWindow(gtk.Window):
             return " - ".join(t)
 
     class PlayControls(gtk.Table):
-        def __init__(self):
+        def __init__(self, watcher):
             gtk.Table.__init__(self, 2, 3)
             self.set_homogeneous(True)
             self.set_row_spacings(3)
@@ -959,30 +973,25 @@ class MainWindow(gtk.Window):
             prop = gtk.Button()
             prop.add(gtk.image_new_from_stock(
                 gtk.STOCK_PROPERTIES, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            prop.connect('clicked', self.__properties)
+            prop.connect('clicked', self.__properties, watcher)
             self.attach(prop, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
             tips.set_tip(prop, _("View and edit tags in the playing song"))
 
             info = gtk.Button()
             info.add(gtk.image_new_from_stock(
                 gtk.STOCK_DIALOG_INFO, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            info.connect('clicked', self.__website)
+            info.connect('clicked', self.__website, watcher)
             self.attach(info, 2, 3, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL)
             tips.set_tip(info, _("Visit the artist's website"))
 
-            stopafter = MainWindow.StopAfterMenu()
+            stopafter = MainWindow.StopAfterMenu(watcher)
 
-            widgets.watcher.connect(
-                'song-started', self.__song_started, stopafter,
-                next, prop, info)
-            widgets.watcher.connect(
-                'song-ended', self.__song_ended, stopafter)
-            widgets.watcher.connect(
-                'paused', self.__paused, stopafter, play.child,
-                gtk.STOCK_MEDIA_PLAY),
-            widgets.watcher.connect(
-                'unpaused', self.__paused, stopafter, play.child,
-                gtk.STOCK_MEDIA_PAUSE),
+            watcher.connect(
+                'song-started', self.__song_started, [next, prop, info])
+            watcher.connect(
+                'paused', self.__paused, play.child, gtk.STOCK_MEDIA_PLAY)
+            watcher.connect(
+                'unpaused', self.__paused, play.child, gtk.STOCK_MEDIA_PAUSE)
 
             play.connect(
                 'button-press-event', self.__popup_stopafter, stopafter)
@@ -994,17 +1003,11 @@ class MainWindow(gtk.Window):
             if event.button == 3:
                 stopafter.popup(None, None, None, event.button, event.time)
 
-        def __song_started(self, watcher, song, stopafter, *buttons):
-            if song and stopafter.active:
-                player.playlist.paused = True
+        def __song_started(self, watcher, song, buttons):
             for b in buttons: b.set_sensitive(bool(song))
 
-        def __paused(self, watcher, stopafter, image, stock):
-            stopafter.active = False
+        def __paused(self, watcher, image, stock):
             image.set_from_stock(stock, gtk.ICON_SIZE_LARGE_TOOLBAR)
-
-        def __song_ended(self, watcher, song, stopped, stopafter):
-            if stopped: stopafter.active = False
 
         def __playpause(self, button):
             if widgets.watcher.song is None:
@@ -1018,12 +1021,11 @@ class MainWindow(gtk.Window):
         def __add_music(self, button):
             widgets.main.open_chooser(button)
 
-        def __properties(self, button):
-            if widgets.watcher.song:
-                SongProperties([widgets.watcher.song], widgets.watcher)
+        def __properties(self, button, watcher):
+            if watcher.song: SongProperties([watcher.song], watcher)
 
-        def __website(self, button):
-            song = widgets.watcher.song
+        def __website(self, button, watcher):
+            song = watcher.song
             if not song: return
             website_wrap(button, song.website())
 
@@ -1130,11 +1132,11 @@ class MainWindow(gtk.Window):
         hb2 = gtk.HBox()
 
         # play controls
-        t = self.PlayControls()
+        t = self.PlayControls(widgets.watcher)
         hb2.pack_start(t, expand=False, fill=False)
 
         # song text
-        text = self.SongInfo()
+        text = self.SongInfo(widgets.watcher)
         # Packing the text directly into the hbox causes clipping problems
         # with Hebrew, so use an Alignment instead.
         alignment = gtk.Alignment(xalign=0, yalign=0, xscale=1, yscale=1)
