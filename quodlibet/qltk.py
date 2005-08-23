@@ -770,7 +770,11 @@ class PopupHSlider(gtk.EventBox):
     def __init__(self):
         gtk.EventBox.__init__(self)
         button = gtk.Button()
-        button.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_IN))
+        button.add(gtk.HBox(spacing=3))
+        self.label = gtk.Label()
+        button.child.pack_start(self.label)
+        button.child.pack_start(
+            gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_IN), expand=False)
         self.add(button)
         button.connect('clicked', self.__clicked)
         self.show_all()
@@ -834,8 +838,9 @@ class PopupHSlider(gtk.EventBox):
             v += adj.step_increment
         elif ev.direction in [gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_RIGHT]:
             v -= adj.step_increment
-        print v
-        hscale.set_value(min(adj.upper, max(adj.lower, v)))
+        v = min(adj.upper, max(adj.lower, v))
+        hscale.set_value(v)
+        hscale.emit('adjust-bounds', v)
 
     def __button(self, widget, ev):
         self.__popup_hide()

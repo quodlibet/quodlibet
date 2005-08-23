@@ -935,36 +935,29 @@ class MainWindow(gtk.Window):
                         song.comma("tracknumber")))
             return " - ".join(t)
 
-    class PositionSlider(gtk.HBox):
-        __gsignals__ = {
-            'seek': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
-            }
-                    
+    class PositionSlider(qltk.PopupHSlider):
         def __init__(self, watcher):
-            gtk.HBox.__init__(self, spacing=3)
-            l = gtk.Label("0:00")
-            self.pack_start(l)
-
-            b = qltk.PopupHSlider()
-
-            b.scale.connect(
+            qltk.PopupHSlider.__init__(self)
+            self.label.set_text("0:00/0:00")
+            self.scale.connect(
                 'adjust-bounds', lambda a, b: player.playlist.seek(b))
-            self.pack_start(b, expand=False, fill=False)
+            watcher.connect('song-started', self.__song_changed)
+            watcher.connect('seek', self.__update_time)
+            gobject.timeout_add(1000, self.__update_time, watcher)
 
-            watcher.connect('song-started', self.__song_changed, b.scale, l)
-            gobject.timeout_add(1000, self.__update_time, watcher, b.scale, l)
-
-        def __song_changed(self, watcher, song, position, label):
+        def __song_changed(self, watcher, song):
             if song:
                 length = song["~#length"]
-                position.set_range(0, length * 1000)
-            else: position.set_range(0, 1)
+                self.scale.set_range(0, length * 1000)
+            else: self.scale.set_range(0, 1)
 
-        def __update_time(self, watcher, position, timer):
+        def __update_time(self, watcher, *args):
             cur, end = watcher.time
-            position.set_value(cur)
-            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
-            timer.set_text(cur)
+            self.scale.set_value(cur)
+            cur = "%d:%02d" % divmod((cur // 1000), 60)
+            end = "%d:%02d" % divmod((end // 1000), 60)
+            self.label.set_text(_("%(current)s/%(total)s") % dict(
+                current=cur, total=end))
             return True
 
     gobject.type_register(PositionSlider)
