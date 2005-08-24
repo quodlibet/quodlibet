@@ -28,6 +28,15 @@ class OggFile(AudioFile):
         try: del(self["vendor"])
         except KeyError: pass
 
+        if "rating" in self:
+            try: self["~#rating"] = int(float(self["rating"]) * 4)
+            except ValueError: pass
+            del(self["rating"])
+        if "playcount" in self:
+            try: self["~#playcount"] = int(self["playcount"])
+            except ValueError: pass
+            del(self["playcount"])
+
         if "totaltracks" in self:
             self["tracktotal"].setdefault(self["totaltracks"])
             del(self["totaltracks"])
@@ -43,7 +52,8 @@ class OggFile(AudioFile):
     def can_change(self, k=None):
         if k is None: return AudioFile.can_change(self, None)
         else: return (AudioFile.can_change(self, k) and
-                      k not in ["vendor", "totaltracks", "tracktotal"])
+                      k not in ["vendor", "totaltracks", "tracktotal",
+                                "rating", "playcount"])
 
     def write(self):
         import ogg.vorbis
@@ -53,6 +63,10 @@ class OggFile(AudioFile):
         for key in self.realkeys():
             value = self.list(key)
             for line in value: comments[key] = line
+        if self["~#rating"] != 2:
+            comments["rating"] = str(self["~#rating"] / 4.0)
+        if self["~#playcount"] != 0:
+            comments["playcount"] = str(self["~#playcount"])
         comments.write_to(self['~filename'])
         self.sanitize()
 
