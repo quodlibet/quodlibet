@@ -902,7 +902,7 @@ class MainWindow(gtk.Window):
             return t
 
         def __people(self, song):
-            p = song.comma("~people")
+            p = util.escape(song.comma("~people"))
             if p: return "\n" + _("by %s") % p
             else: return ""
 
