@@ -6,6 +6,8 @@ from musicbrainz.queries import *
 from qltk import GetStringDialog, ErrorMessage, ConfirmAction, Message
 from util import tag, escape
 
+__all__ = ["QLBrainz"]
+
 class AlbumCandidate(object):
 	various = False
 	tracklist = []
