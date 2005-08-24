@@ -30,16 +30,6 @@ class TestDirTree(TestCase):
             dirlist.destroy()
             self.failUnlessEqual([path], selected)
 
-class StopAfterTest(TestCase):
-    def test_active(self):
-        w = widgets.MainWindow.StopAfterMenu()
-        self.failIf(w.active)
-        for b in [True, False, True, False, False]:
-            w.active = b
-            if b: self.failUnless(w.active)
-            else: self.failIf(w.active)
-        w.destroy()
-
 class SongWatcher(TestCase):
     def setUp(self):
         self.watcher = qltk.SongWatcher()
