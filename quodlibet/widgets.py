@@ -2198,7 +2198,7 @@ class SongList(qltk.HintedTreeView):
         if refresh: self.set_songs(self.get_songs())
 
     def get_songs(self):
-        return [row[0] for row in self.get_model()]
+        return self.get_model().get()
 
     def set_songs(self, songs, tag=None):
         model = self.get_model()
@@ -2224,8 +2224,7 @@ class SongList(qltk.HintedTreeView):
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])
 
-        model.clear()
-        for song in songs: model.append([song])
+        model.set(songs)
 
         # reselect what we can
         selection = self.get_selection()
@@ -2238,37 +2237,21 @@ class SongList(qltk.HintedTreeView):
         return [model[row][0] for row in rows]
 
     def song_to_iter(self, song):
-        iters = self.songs_to_iters([song])
-        if iters: return iters[0]
-        else: return None
+        return self.get_model().find(song)
 
     def songs_to_iters(self, songs):
-        model = self.get_model()
-        it = []
-        def find(model, path, iter, it):
-            if model[iter][0] in songs: it.append(iter)
-            return len(it) == len(songs)
-        model.foreach(find, it)
-        return it
+        return self.get_model().find_all(songs)
 
     def __song_updated(self, watcher, songs):
-        pi = []
         model = self.get_model()
-        def find(model, path, iter):
-            if model[iter][0] in songs: pi.append((path, iter))
-        # Optimize the common case
-        def find_one(model, path, iter):
-            if model[iter][0] in songs:
-                pi.append((path, iter))
-                return True
-        if len(songs) == 1: model.foreach(find_one)
-        else: model.foreach(find)
-        if pi: map(model.row_changed, *zip(*pi))
+        iters = model.find_all(songs)
+        for iter in iters:
+            model.row_changed(model.get_path(iter), iter)
 
     def __song_removed(self, watcher, songs):
         # The selected songs are removed from the library and should
         # be removed from the view.
-        map(self.get_model().remove, self.songs_to_iters(songs))
+        map(self.get_model().remove, self.get_model().find_all(songs))
 
     # Build a new filter around our list model, set the headers to their
     # new values.

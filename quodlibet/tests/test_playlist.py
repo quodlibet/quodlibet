@@ -30,6 +30,36 @@ class Playlist(TestCase):
         self.pl.next()
         self.failUnless(self.pl.current is None)
 
+    def test_find(self):
+        self.failUnlessEqual(self.pl[self.pl.find(8)][0], 8)
+    def test_find_not_there(self):
+        self.failUnless(self.pl.find(22) is None)
+
+    def test_find_all(self):
+        to_find = [1, 4, 5, 8, 9]
+        iters = self.pl.find_all(to_find)
+        for i, v in zip(iters, to_find):
+            self.failUnlessEqual(self.pl[i][0], v)
+
+    def test_find_all(self):
+        to_find = [1, 4, 5, 8, 9]
+        iters = self.pl.find_all(to_find)
+        for i, v in zip(iters, to_find):
+            self.failUnlessEqual(self.pl[i][0], v)
+
+    def test_find_all_some_missing(self):
+        to_find = [1, 4, 18, 5, 8, 9, -1]
+        iters = self.pl.find_all(to_find)
+        to_find.remove(18)
+        to_find.remove(-1)
+        for i, v in zip(iters, to_find):
+            self.failUnlessEqual(self.pl[i][0], v)
+
+    def test_find_all_empty(self):
+        to_find = [100, 200, -11]
+        iters = self.pl.find_all(to_find)
+        self.failUnlessEqual(iters, [])
+
     def test_contains(self):
         self.failUnless(1 in self.pl)
         self.failUnless(8 in self.pl)

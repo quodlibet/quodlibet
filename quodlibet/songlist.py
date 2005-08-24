@@ -173,6 +173,14 @@ class PlaylistModel(gtk.ListStore):
         self.foreach(_find)
         return iters[-1]
 
+    def find_all(self, songs):
+        iters = []
+        def _find(self, path, iter, it):
+            if self[iter][0] in songs: it.append(iter)
+            return len(it) == len(songs)
+        self.foreach(_find, iters)
+        return iters
+
     def __contains__(self, song): return bool(self.find(song))
 
     def is_empty(self):
