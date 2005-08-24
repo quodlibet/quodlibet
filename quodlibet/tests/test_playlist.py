@@ -2,14 +2,7 @@ from unittest import TestCase, makeSuite
 from tests import registerCase
 from songlist import PlaylistModel, PlaylistMux
 import gobject, gtk
-
-class SongWatcher(gtk.Object):
-    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))    
-    __gsignals__ = {'song-started': SIG_PYOBJECT}
-
-    def song_started(self, song): self.emit('song-started', song)
-
-gobject.type_register(SongWatcher)
+from qltk import SongWatcher
 
 class Playlist(TestCase):
     def setUp(self):

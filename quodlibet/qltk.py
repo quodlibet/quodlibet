@@ -78,8 +78,8 @@ class SongWatcher(gtk.Object):
         gobject.idle_add(self.emit, 'missing', song)
 
     def song_started(self, song):
-        if song: self.time = (0, song["~#length"] * 1000)
-        else: self.time = (0, 1)
+        try: self.time = (0, song["~#length"] * 1000)
+        except (AttributeError, TypeError): self.time = (0, 1)
         self.song = song
         gobject.idle_add(self.emit, 'song-started', song)
 

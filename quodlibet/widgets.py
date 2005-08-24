@@ -64,6 +64,11 @@ class FSInterface(object):
         try: os.unlink(const.CURRENT)
         except EnvironmentError: pass
 
+    def destroy(self):
+        for f in [const.PAUSED, const.CURRENT]:
+            try: os.unlink(f)
+            except EnvironmentError: pass
+
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir=None):
