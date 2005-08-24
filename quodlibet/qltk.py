@@ -831,10 +831,8 @@ class PopupSlider(gtk.EventBox):
     def __scroll(self, widget, ev, hscale):
         adj = self.__adj
         v = hscale.get_value()
-        if ev.direction in [gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_LEFT]:
-            v += adj.step_increment
-        elif ev.direction in [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_RIGHT]:
-            v -= adj.step_increment
+        if ev.direction in self.UP: v += adj.step_increment
+        else: v -= adj.step_increment
         v = min(adj.upper, max(adj.lower, v))
         hscale.set_value(v)
         hscale.emit('adjust-bounds', v)
@@ -856,6 +854,7 @@ class PopupHSlider(PopupSlider):
     Scale = gtk.HScale
     _req = (170, -1)
     _adj = gtk.Adjustment(0, 0, 0, 3600, 15000, 0)
+    UP = [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_RIGHT]
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         return ((x + w + pad), (y + (h - wh)//2))
@@ -863,7 +862,8 @@ class PopupHSlider(PopupSlider):
 class PopupVSlider(PopupSlider):
     Scale = gtk.VScale
     _req = (-1, 170)
-    _adj = gtk.Adjustment(0, 0, 1, 0.02, 0.1, 0)
+    _adj = gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0)
+    UP = [gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_LEFT]
  
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         return ((x + (w - ww)//2), y + h + pad)

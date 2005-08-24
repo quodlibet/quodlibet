@@ -1,4 +1,4 @@
-MODULES = config.py const.py efwidgets.py library.py match.py parser.py player.py plugins.py properties.py qltk.py songlist.py util.py widgets.py formats/*.py mutagen/*.py browsers/*.py
+MODULES = config.py const.py efwidgets.py library.py match.py parser.py player.py plugins.py properties.py qltk.py songlist.py stock.py util.py widgets.py formats/*.py mutagen/*.py browsers/*.py
 SUBDIRS = trayicon mmkeys po
 EXTENSIONS = trayicon.so mmkeys.so
 PREFIX ?= /usr/local
@@ -16,7 +16,7 @@ make-install-dirs:
 
 install: make-install-dirs install-exfalso install-quodlibet
 	./quickzip.py quodlibet.zip $(MODULES)
-	install -m 644 quodlibet.zip volume.png $(DESTDIR)$(PREFIX)/$(TO)
+	install -m 644 quodlibet.zip ql-*.png $(DESTDIR)$(PREFIX)/$(TO)
 	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 $$E $(DESTDIR)$(PREFIX)/$(TO)); done
 	cd po && make install-po DESTDIR=$(DESTDIR)
 

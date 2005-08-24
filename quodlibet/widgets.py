@@ -12,6 +12,7 @@ import sre
 import shutil # Move to Trash
 
 import gtk, pango, gobject
+import stock
 import qltk
 
 import const
@@ -101,8 +102,7 @@ class PluginWindow(gtk.Window):
         self.set_resizable(False)
         self.set_transient_for(parent)
         icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
+        self.set_icon_name(const.ICON)
 
         hbox = gtk.HBox(spacing=12)        
         vbox = gtk.VBox(spacing=6)
@@ -805,7 +805,7 @@ class CoverImage(gtk.Frame):
         gtk.Frame.__init__(self)
         self.add(gtk.EventBox())
         self.child.add(gtk.Image())
-        self.__size = size or [100, 70]
+        self.__size = size or [100, 75]
         self.child.child.set_size_request(-1, self.__size[1])
         self.child.connect_object(
             'button-press-event', CoverImage.__show_cover, self)
@@ -951,9 +951,9 @@ class MainWindow(gtk.Window):
             self.pack_start(hbox, expand=False, fill=False)
 
             hbox = gtk.HBox(spacing=3)
-            hbox.pack_start(MainWindow.VolumeSlider(player.device))
-            self.volume = MainWindow.PositionSlider(watcher)
+            self.volume = MainWindow.VolumeSlider(player.device)
             hbox.pack_start(self.volume, expand=False)
+            hbox.pack_start(MainWindow.PositionSlider(watcher))
             self.pack_start(hbox, expand=False, fill=False)
 
             watcher.connect('song-started', self.__song_started, next)
@@ -982,8 +982,10 @@ class MainWindow(gtk.Window):
     class PositionSlider(qltk.PopupHSlider):
         def __init__(self, watcher):
             hbox = gtk.HBox(spacing=3)
-            l = gtk.Label("0:00/0:00")
+            l = gtk.Label("0:00")
             hbox.pack_start(l)
+            hbox.pack_start(
+                gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
             qltk.PopupHSlider.__init__(self, hbox)
             
             self.scale.connect('adjust-bounds', self.__seek, watcher, l)
@@ -1004,15 +1006,13 @@ class MainWindow(gtk.Window):
             cur, end = watcher.time
             self.scale.set_value(cur)
             cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
-            end = "%d:%02d" % (end // 60000, (end % 60000) // 1000)
-            timer.set_text(
-                _("%(current)s/%(total)s") % dict(current=cur, total=end))
+            timer.set_text(cur)
             return True
 
     class VolumeSlider(qltk.PopupVSlider):
         def __init__(self, device):
-            i = gtk.Image()
-            i.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file("volume.png"))
+            i = gtk.image_new_from_stock(
+                stock.VOLUME_MAX, gtk.ICON_SIZE_LARGE_TOOLBAR)
             qltk.PopupVSlider.__init__(self, i)
             self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
             self.scale.connect('value-changed', self.__volume_changed, device)
@@ -1024,6 +1024,12 @@ class MainWindow(gtk.Window):
 
         def __volume_changed(self, slider, device):
             val = slider.get_value()
+            if val == 0: img = stock.VOLUME_OFF
+            elif val < 0.33: img = stock.VOLUME_MIN
+            elif val < 0.66: img = stock.VOLUME_MED
+            else: img = stock.VOLUME_MAX
+            self.child.child.set_from_stock(img, gtk.ICON_SIZE_LARGE_TOOLBAR)
+
             val = (2 ** val) - 1
             device.volume = val
             config.set("memory", "volume", str(slider.get_value()))
@@ -2629,6 +2635,7 @@ def website_wrap(activator, link):
               "/usr/bin/sensible-browser exists.")).run()
 
 def init():
+    stock.init()
     # Translators: Only translate this if GTK does so incorrectly.
     # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
     const.SM_NEXT = _('gtk-media-next')
