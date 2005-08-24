@@ -931,21 +931,17 @@ class MainWindow(gtk.Window):
             prev = gtk.Button()
             prev.add(gtk.image_new_from_stock(
                 gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            prev.connect('clicked', self.__previous)
             hbox.pack_start(prev)
 
             play = gtk.ToggleButton()
             play.add(gtk.image_new_from_stock(
                 gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            play.connect('toggled', self.__playpause)
             safter = MainWindow.StopAfterMenu(watcher)
-            play.connect('button-press-event', self.__popup_stopafter, safter)
             hbox.pack_start(play)
 
             next = gtk.Button()
             next.add(gtk.image_new_from_stock(
                 gtk.STOCK_MEDIA_NEXT, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            next.connect('clicked', self.__next)
             hbox.pack_start(next)
 
             self.pack_start(hbox, expand=False, fill=False)
@@ -956,6 +952,10 @@ class MainWindow(gtk.Window):
             hbox.pack_start(MainWindow.PositionSlider(watcher))
             self.pack_start(hbox, expand=False, fill=False)
 
+            prev.connect('clicked', self.__previous)
+            play.connect('toggled', self.__playpause, watcher)
+            play.connect('button-press-event', self.__popup_stopafter, safter)
+            next.connect('clicked', self.__next)
             watcher.connect('song-started', self.__song_started, next)
             watcher.connect_object('paused', play.set_active, False)
             watcher.connect_object('unpaused', play.set_active, True)
@@ -970,8 +970,8 @@ class MainWindow(gtk.Window):
         def __song_started(self, watcher, song, next):
             next.set_sensitive(bool(song))
 
-        def __playpause(self, button):
-            if widgets.watcher.song is None:
+        def __playpause(self, button, watcher):
+            if button.get_active() and watcher.song is None:
                 player.playlist.reset()
                 player.playlist.next()
             else: player.playlist.paused = not button.get_active()
