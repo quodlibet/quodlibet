@@ -257,9 +257,6 @@ class QLBrainz(object):
 
 		return trm_this_album
 
-	def __signal_do_tag(self, w, album, chooser, candidates):
-		self.do_tag(album, candidates[chooser.active_candidate])
-		
 	def __choose_album(self, album, candidates):
 		ret = AlbumChooser(self, album, candidates).run()
 		if ret is None: return
