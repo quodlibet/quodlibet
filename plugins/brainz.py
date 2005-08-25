@@ -1,7 +1,7 @@
 # (C) 2005 Joshua Kwan <joshk@triplehelix.org>
 # redistributable under the terms of the GNU GPL, version 2 or later
 
-import musicbrainz, os, gtk, gobject
+import musicbrainz, os, gtk
 from musicbrainz.queries import *
 from qltk import GetStringDialog, ErrorMessage, ConfirmAction, Message
 from util import tag, escape
@@ -27,10 +27,9 @@ class AskAction(ConfirmAction):
         kwargs["buttons"] = gtk.BUTTONS_YES_NO
         Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
 
-class AlbumChooser(gtk.Window):
+class AlbumChooser(gtk.Dialog):
 	active_candidate = None
 	candidates = {}
-	yes = None
 	first = True
 
 	def __title_match(self, a, b):
@@ -47,35 +46,31 @@ class AlbumChooser(gtk.Window):
 		# This MAY be the parent node or not.
 		while model.iter_parent(iter) != None: iter = model.iter_parent(iter)
 
-		if model[iter][2] != self.active_candidate:
-			selection.unselect_all()
-			view.collapse_all()
-			view.expand_row(model.get_path(iter), False)
-			selection.set_mode(gtk.SELECTION_MULTIPLE)
-			selection.select_iter(iter)
-			for i in range(0, model.iter_n_children(iter)):
-				view.get_selection().select_iter(model.iter_nth_child(iter, i))
-			self.active_candidate = model[iter][2]
-			# Now select all children
-			print "%s selected" % model[iter][2] # id
+		selection.unselect_all()
+		view.collapse_all()
+		view.expand_row(model.get_path(iter), False)
+		selection.set_mode(gtk.SELECTION_MULTIPLE)
+		selection.select_iter(iter)
+		for i in range(0, model.iter_n_children(iter)):
+			view.get_selection().select_iter(model.iter_nth_child(iter, i))
+		self.active_candidate = model[iter][2]
 		
-		self.yes.set_sensitive(True)
-
 		return
 
-	# Exists only to prune the 'button' argument
-	def __do_destroy(self, button):
+	def run(self):
+		self.show_all()
+		resp = gtk.Dialog.run(self)
+		if resp == gtk.RESPONSE_OK:
+			value = self.active_candidate
+		else: value = None
 		self.destroy()
+		return value
 
-	# Exists only to prune the 'brainz' argument
-	def __yes_clicked(self, button, brainz, album):
-		if self.active_candidate:
-			self.hide() # Caller hooks hide signal
-			self.destroy()
-		
 	def __init__(self, brainz, album, candidates):
-		gtk.Window.__init__(self)
-		self.set_title(_("Album selection"))
+		gtk.Dialog.__init__(self, "Album selection")
+
+		self.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK,
+			gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
 
 		self.candidates = candidates
 		
@@ -93,11 +88,11 @@ class AlbumChooser(gtk.Window):
 			for track in candidate.tracklist:
 				if album[i - 1]['title'] and self.__title_match(album[i - 1]['title'], track['title']):
 					treestore.append(iter,
-						[track['artist'], "%d. <b>%s</b>" %
+						[escape(track['artist']), "%d. <b>%s</b>" %
 						  (i, escape(track['title'])), ""])
 				else:
 					treestore.append(iter,
-						[track['artist'], "%d. %s" %
+						[escape(track['artist']), "%d. %s" %
 						  (i, escape(track['title'])), ""])
 				i = i + 1
 		
@@ -121,35 +116,17 @@ class AlbumChooser(gtk.Window):
 			view.append_column(tvcolumn)
 			i = i + 1
 		
-		self.yes = gtk.Button(label="Select this Album", stock=gtk.STOCK_OK)
-		cancel = gtk.Button("Cancel", gtk.STOCK_CANCEL)
-		
-		self.yes.connect('clicked', self.__yes_clicked, brainz, album)
-		cancel.connect('clicked', self.__do_destroy)
-		view.connect('cursor-changed', self.__cursor_changed)
-
 		self.set_size_request(400, 300)
 		
-		self.yes.set_sensitive(False)
-		cancel.set_sensitive(True)
-
-		hbox = gtk.HBox(spacing=12)
-		hbox.pack_start(self.yes)
-		hbox.pack_start(cancel)
-
 		swin = gtk.ScrolledWindow()
 		swin.add(view)
 
 		swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
 
-		vbox = gtk.VBox(spacing=12)
-		vbox.pack_start(label, expand=False, fill=True)
-		vbox.pack_start(swin)
-		vbox.pack_start(hbox, expand=False, fill=True)
+		self.vbox.pack_start(label, expand=False, fill=True)
+		self.vbox.pack_start(swin)
 
-		self.add(vbox)
-
-		self.show_all()
+		view.connect('cursor-changed', self.__cursor_changed)
 
 class QLBrainz(object):
 	PLUGIN_NAME = 'MusicBrainz lookup'
@@ -284,9 +261,9 @@ class QLBrainz(object):
 		self.do_tag(album, candidates[chooser.active_candidate])
 		
 	def __choose_album(self, album, candidates):
-		chooser = AlbumChooser(self, album, candidates)
-		chooser.connect('hide', self.__signal_do_tag, album, chooser, candidates)
-		gobject.idle_add(chooser.show_all)
+		ret = AlbumChooser(self, album, candidates).run()
+		if ret is None: return
+		else: self.do_tag(album, candidates[ret])
 
 	def plugin_album(self, album, override=None):
 		# If there is already an album name. When plugin_album is called,
