@@ -9,7 +9,7 @@
 PLUGIN_NAME = 'Random Album Playback'
 PLUGIN_DESC = ("When your playlist reaches its end a new album will "
                "be chosen randomly and started. It requires that your "
-               "active browser support filtering by album.")
+               "active browser supports filtering by album.")
 PLUGIN_VERSION = '0.13'
 
 import gobject
