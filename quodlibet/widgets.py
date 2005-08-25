@@ -1947,6 +1947,14 @@ class SongList(qltk.HintedTreeView):
         if menu is None: menu = gtk.Menu()
         can_filter = browser.can_filter
 
+        def Filter(tag):
+            # Translators: The substituted string is the name of the
+            # selected column (a translated tag name).
+            tag = {"~rating":"~#rating", "~length":"~#length"}.get(tag, tag)
+            b = qltk.MenuItem(_("_Filter on %s") % tag, gtk.STOCK_INDEX)
+            b.connect_object('activate', self.__filter_on, tag, songs, browser)
+            return b
+
         if header == "~rating":
             item = gtk.MenuItem(_("Rating"))
             m2 = gtk.Menu()
@@ -1961,26 +1969,10 @@ class SongList(qltk.HintedTreeView):
             not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
             menu.append(gtk.SeparatorMenuItem())
 
-        if can_filter("artist"):
-            b = qltk.MenuItem(_("Filter on _artist"), gtk.STOCK_INDEX)
-            b.connect_object(
-                'activate', self.__filter_on, 'artist', songs, browser)
-            menu.append(b)
-        if can_filter("album"):
-            b = qltk.MenuItem(_("Filter on al_bum"), gtk.STOCK_INDEX)
-            b.connect_object(
-                'activate', self.__filter_on, 'album', songs, browser)
-            menu.append(b)
-        header = {"~rating":"~#rating", "~length":"~#length"}.get(
-            header, header)
+        if can_filter("artist"): menu.append(Filter("artist"))
+        if can_filter("album"): menu.append(Filter("album"))
         if (header not in ["artist", "album"] and can_filter(header)):
-            # Translators: The substituted string is the name of the
-            # selected column (a translated tag name).
-            b = qltk.MenuItem(
-                _("_Filter on %s") % tag(header, False), gtk.STOCK_INDEX)
-            b.connect_object(
-                'activate', self.__filter_on, header, songs, browser)
-            menu.append(b)
+            menu.append(Filter(header))
 
         if (menu.get_children() and
             not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
@@ -2563,7 +2555,8 @@ class LibraryBrowser(gtk.Window):
             const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
 
         view = SongList()
-        view.set_model(gtk.ListStore(object))
+        from songlist import PlaylistModel
+        view.set_model(PlaylistModel())
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
