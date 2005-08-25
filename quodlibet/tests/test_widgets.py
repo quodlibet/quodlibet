@@ -11,9 +11,6 @@ import qltk
 class TFSInterface(TestCase):
     from formats.audio import AudioFile as AF
     def setUp(self):
-        const.PAUSED = "./const-paused"
-        const.CURRENT = "./const-current"
-
         self.w = qltk.SongWatcher()
         self.fs = FSInterface(self.w)
 
@@ -48,8 +45,6 @@ class TFSInterface(TestCase):
         except EnvironmentError: pass
         try: os.unlink(const.CURRENT)
         except EnvironmentError: pass
-        const.PAUSED = os.path.join(const.DIR, "paused")
-        const.CURRENT = os.path.join(const.DIR, "current")
 
 registerCase(TFSInterface)
 
@@ -106,7 +101,6 @@ registerCase(TCountManager)
 
 class TPluginWindow(TestCase):
     def test_create(self):
-        const.CONFIG = "./const-config"
         from plugins import PluginManager
         from widgets import SongList
         SongList.pm = PluginManager(qltk.SongWatcher(), [])
@@ -114,7 +108,6 @@ class TPluginWindow(TestCase):
         w.destroy()
         del(SongList.pm)
         os.unlink(const.CONFIG)
-        const.CONFIG = os.path.join(const.DIR, "config")
 
 registerCase(TPluginWindow)
 
@@ -122,6 +115,7 @@ class TPreferencesWindow(TestCase):
     def test_create(self):
         w = PreferencesWindow(None)
         w.destroy()
+        os.unlink(const.CONFIG)
 
 registerCase(TPreferencesWindow)
 

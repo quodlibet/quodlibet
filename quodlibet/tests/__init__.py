@@ -3,6 +3,13 @@ suites = []
 registerCase = suites.append
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
+import const
+const.CONFIG = "./const-config"
+const.CURRENT = "./const-current"
+const.PAUSED = "./const-paused"
+const.LIBRARY = "./const-songs"
+const.QUEUE = "./const-queue"
+
 class Mock(object):
     # A generic mocking object.
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
