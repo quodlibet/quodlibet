@@ -282,6 +282,12 @@ class AlbumList(Browser, gtk.VBox):
             ]:
             self.connect_object('destroy', widgets.watcher.disconnect, s)
 
+        targets = [("text/uri-list", 0, 1)]
+        view.drag_source_set(
+            gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
+            gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
+        view.connect("drag-data-get", self.__drag_data_get)
+
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
@@ -388,6 +394,13 @@ class AlbumList(Browser, gtk.VBox):
             menu.popup(None, None, None, event.button, event.time)
             return True
 
+    def __drag_data_get(self, view, ctx, sel, tid, etime):
+        songs = self.__get_selected_songs(view.get_selection())
+        songs.sort()
+        from urllib import pathname2url as tourl
+        filenames = ["file:" + tourl(s.get("~filename", "")) for s in songs]
+        sel.set_uris(filenames)
+        
     def __play_selection(self, view, indices, col):
         player.playlist.reset()
         player.playlist.next()
