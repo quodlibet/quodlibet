@@ -1,14 +1,11 @@
 from unittest import TestCase
-from tests import registerCase, Mock
+from tests import registerCase
 import os, gtk, const
-import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
-import widgets
 from browsers.search import EmptyBar, SearchBar
-from widgets import PlayList, FileChooser, CountManager, FSInterface
 from properties import VALIDATERS
 from efwidgets import DirectoryTree
-import library; library.init("dummyfn")
-import config
+
+from widgets import PlayList, FileChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow
 import qltk
 
 class TFSInterface(TestCase):
@@ -45,15 +42,12 @@ class TFSInterface(TestCase):
         self.do()
         self.failIf(os.path.exists(const.CURRENT))
 
-    def test_destroy(self):
-        self.w.song_started(self.AF({"woo": "bar", "~#length": 10}))
-        self.fs.destroy()
-        self.failIf(os.path.exists(const.CURRENT))
-        self.failIf(os.path.exists(const.PAUSED))
-
     def tearDown(self):
         self.w.destroy()
-        self.fs.destroy()
+        try: os.unlink(const.PAUSED)
+        except EnvironmentError: pass
+        try: os.unlink(const.CURRENT)
+        except EnvironmentError: pass
         const.PAUSED = os.path.join(const.DIR, "paused")
         const.CURRENT = os.path.join(const.DIR, "current")
 
@@ -109,6 +103,24 @@ class TCountManager(TestCase):
         self.w.destroy()
 
 registerCase(TCountManager)
+
+class TPluginWindow(TestCase):
+    def test_create(self):
+        from plugins import PluginManager
+        from widgets import SongList
+        SongList.pm = PluginManager(qltk.SongWatcher(), [])
+        w = PluginWindow(None)
+        w.destroy()
+        del(SongList.pm)
+
+registerCase(TPluginWindow)
+
+class TPreferencesWindow(TestCase):
+    def test_create(self):
+        w = PreferencesWindow(None)
+        w.destroy()
+
+registerCase(TPreferencesWindow)
 
 class TestDirTree(TestCase):
     def test_initial(self):

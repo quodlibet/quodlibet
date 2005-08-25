@@ -63,11 +63,8 @@ class FSInterface(object):
     def __ended(self, watcher, song, stopped):
         try: os.unlink(const.CURRENT)
         except EnvironmentError: pass
-
-    def destroy(self):
-        for f in [const.PAUSED, const.CURRENT]:
-            try: os.unlink(f)
-            except EnvironmentError: pass
+        try: os.unlink(const.PAUSED)
+        except EnvironmentError: pass
 
 # Make a standard directory-chooser, and return the filenames and response.
 class FileChooser(gtk.FileChooserDialog):
@@ -191,7 +188,8 @@ class PluginWindow(gtk.Window):
         self.show_all()
 
     def __destroy(self):
-        del(widgets.plugins)
+        try: del(widgets.plugins)
+        except AttributeError: pass
         config.write(const.CONFIG)
 
     def __description(self, selection, frame):
@@ -461,20 +459,11 @@ class PreferencesWindow(gtk.Window):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Player")
-            vbox = gtk.VBox()
             c = qltk.ConfigCheckButton(
                 _("Show _album covers"), 'settings', 'cover')
             c.set_active(config.state("cover"))
             c.connect('toggled', self.__toggle_cover)
-            vbox.pack_start(c)
-
-            c = gtk.CheckButton(_("Closing _minimizes to system tray"))
-            c.set_sensitive(widgets.main.icon.enabled)
-            c.set_active(config.getboolean('plugins', 'icon_close') and
-                         c.get_property('sensitive'))
-            c.connect('toggled', self._toggle, 'icon_close', 'plugins')
-            vbox.pack_start(c)
-            self.pack_start(vbox, expand=False)
+            self.pack_start(c, expand=False)
 
             f = qltk.Frame(_("_Volume Normalization"), bold=True)
             cb = gtk.combo_box_new_text()
@@ -555,8 +544,7 @@ class PreferencesWindow(gtk.Window):
         self.set_resizable(False)
         self.set_transient_for(parent)
         icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
+        self.set_icon_name(const.ICON)
 
         self.add(qltk.Notebook())
         for Page in [self.SongList, self.Browsers, self.Player, self.Library]:
@@ -566,7 +554,8 @@ class PreferencesWindow(gtk.Window):
         self.show_all()
 
     def __destroy(self):
-        del(widgets.preferences)
+        try: del(widgets.preferences)
+        except AttributeError: pass
         config.write(const.CONFIG)
 
 class TrayIcon(object):
@@ -1212,7 +1201,7 @@ class MainWindow(gtk.Window):
         if added: widgets.watcher.added(added)
 
     def __delete_event(self, event):
-        if self.icon.enabled and config.getboolean("plugins", "icon_close"):
+        if self.icon.enabled:
             self.icon.hide_window()
             return True
 
@@ -2650,23 +2639,25 @@ def init():
 
 def save_library(thread):
     player.playlist.quitting()
-    thread.join()
+
+    # If something goes wrong here, it'll probably be caught
+    # saving the library anyway.
+    try: config.write(const.CONFIG)
+    except EnvironmentError, err: pass
+
+    for fn in [const.CONTROL, const.PAUSED, const.CURRENT]:
+        # FIXME: PAUSED and CURRENT should be handled by
+        # FSInterface.
+        try: os.unlink(fn)
+        except EnvironmentError: pass
+
     print to(_("Saving song library."))
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
         qltk.ErrorMessage(None, _("Unable to save library"), err).run()
 
-    try: config.write(const.CONFIG)
-    except EnvironmentError, err:
-        err = str(err).decode('utf-8', 'replace')
-        qltk.ErrorMessage(None, _("Unable to save library"), err).run()
-
-    for fn in [const.PAUSED, const.CURRENT, const.CONTROL]:
-        # No big deal if these fail, we'll just get a few inconsistent
-        # --status reports. Not worth a dialog.
-        try: os.unlink(fn)
-        except EnvironmentError: pass
+    thread.join()
 
 def error_and_quit():
     qltk.ErrorMessage(

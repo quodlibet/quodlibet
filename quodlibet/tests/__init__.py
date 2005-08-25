@@ -1,6 +1,7 @@
 import unittest, sys
 suites = []
 registerCase = suites.append
+import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
 class Mock(object):
     # A generic mocking object.
