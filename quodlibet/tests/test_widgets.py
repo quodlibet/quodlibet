@@ -106,12 +106,15 @@ registerCase(TCountManager)
 
 class TPluginWindow(TestCase):
     def test_create(self):
+        const.CONFIG = "./const-config"
         from plugins import PluginManager
         from widgets import SongList
         SongList.pm = PluginManager(qltk.SongWatcher(), [])
         w = PluginWindow(None)
         w.destroy()
         del(SongList.pm)
+        os.unlink(const.CONFIG)
+        const.CONFIG = os.path.join(const.DIR, "config")
 
 registerCase(TPluginWindow)
 
