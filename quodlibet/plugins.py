@@ -146,7 +146,8 @@ class PluginManager(object):
                 pathname = os.path.realpath(os.path.join(scandir, name))
                 if not os.path.isdir(pathname):
                     name = name[: name.rfind('.')]
-                if '.' in name or name in justscanned: continue
+                if '.' in name or name in justscanned or name.startswith("_"):
+                    continue
                 else: justscanned[name] = True
                 modified = mtime(pathname)
                 info = self.files.setdefault(name, [None, None])
