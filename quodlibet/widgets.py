@@ -1549,7 +1549,7 @@ class MainWindow(gtk.Window):
             path = songlist.get_model().get_path(iter)
             if path:
                 songlist.scroll_to_cell(path[0], use_align=True, row_align=0.5)
-            if explicit: self.browser.scroll()
+        if explicit: self.browser.scroll()
 
     def __next_song(self, *args):
         player.playlist.next()
