@@ -291,11 +291,14 @@ class AlbumList(Browser, gtk.VBox):
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        queue = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
         menu.append(button)
         menu.append(props)
+        menu.append(queue)
         menu.show_all()
         button.connect('activate', self.__refresh, view, model, True)
         props.connect('activate', self.__properties, view)
+        queue.connect('activate', self.__enqueue, view)
 
         view.connect_object('popup-menu', gtk.Menu.popup, menu,
                             None, None, None, 2, 0)
@@ -401,6 +404,15 @@ class AlbumList(Browser, gtk.VBox):
         filenames = ["file:" + tourl(s.get("~filename", "")) for s in songs]
         sel.set_uris(filenames)
         
+    def __enqueue(self, item, view):
+        songs = self.__get_selected_songs(view.get_selection())
+        songs.sort()
+        model = widgets.main.playlist.q
+        for song in songs:
+            iter = model.find(song)
+            if iter is None:
+                model.append(row=[song])
+
     def __play_selection(self, view, indices, col):
         player.playlist.reset()
         player.playlist.next()
