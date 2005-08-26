@@ -47,6 +47,13 @@ if __name__ == "__main__":
                " (http://www.andrewchatham.com/pyogg/)" % NAME)
     else: print "found"
 
+    print "Checking for egg.trayicon:",
+    try: import egg.trayicon
+    except ImportError:
+        print ("not found\n%s recommends gnome-python-extras.\n"
+               "\t(http://ftp.gnome.org/pub/GNOME/sources/gnome-python-extras)" % NAME)
+    else: print "found"
+
     print "\nYour system meets the requirements to install %s." % NAME
     print "Type 'make install' (as root) to install it."
     print "You may want to make some extensions first; see the README file."
