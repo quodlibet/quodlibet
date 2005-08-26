@@ -407,11 +407,7 @@ class AlbumList(Browser, gtk.VBox):
     def __enqueue(self, item, view):
         songs = self.__get_selected_songs(view.get_selection())
         songs.sort()
-        model = widgets.main.playlist.q
-        for song in songs:
-            iter = model.find(song)
-            if iter is None:
-                model.append(row=[song])
+        widgets.main.playlist.enqueue(songs)
 
     def __play_selection(self, view, indices, col):
         player.playlist.reset()

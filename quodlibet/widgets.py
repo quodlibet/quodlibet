@@ -1196,8 +1196,7 @@ class MainWindow(gtk.Window):
             if song["~filename"] not in library:
                 library[song["~filename"]] = song
                 added.append(song)
-            iter = self.qexpander.model.find(song)
-            if iter is None: self.qexpander.model.append(row=[song])
+        self.playlist.enqueue(songs)
         if added: widgets.watcher.added(added)
 
     def __delete_event(self, event):
@@ -2065,14 +2064,12 @@ class SongList(qltk.HintedTreeView):
         widgets.watcher.removed(songs)
 
     def __enqueue(self, item, songs):
-        model = widgets.main.playlist.q
         added = []
         for song in songs:
             if song["~filename"] not in library:
                 library[song["~filename"]] = song
                 added.append(song)
-            iter = model.find(song)
-            if iter is None: model.append(row=[song])
+        widgets.main.playlist.enqueue(songs)
         if added: widgets.watcher.added(added)
 
     def __delete(self, item, songs):
@@ -2340,6 +2337,7 @@ class PlayList(SongList):
             iter = model.get_iter(path)
             song = songs.pop(0)
             it = self.song_to_iter(song)
+            if it == iter: return
             if it: model.remove(it)
             if position in (gtk.TREE_VIEW_DROP_BEFORE,
                             gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
@@ -2428,6 +2426,7 @@ class PlayQueue(SongList):
 
     def __write(self, *args):
         filenames = "\n".join([row[0]["~filename"] for row in self.model])
+        print filenames
         f = file(const.QUEUE, "w")
         f.write(filenames)
         f.close()
@@ -2650,6 +2649,8 @@ def save_library(thread):
         # FSInterface.
         try: os.unlink(fn)
         except EnvironmentError: pass
+
+    widgets.main.destroy()
 
     print to(_("Saving song library."))
     try: library.save(const.LIBRARY)

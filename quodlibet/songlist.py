@@ -41,6 +41,10 @@ class PlaylistMux(object):
     def reset(self):
         self.pl.reset()
 
+    def enqueue(self, songs):
+        for song in songs:
+            if song not in self.q: self.q.append(row=[song])
+
 class PlaylistModel(gtk.ListStore):
     shuffle = OFF
     repeat = False
