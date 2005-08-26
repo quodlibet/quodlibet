@@ -1121,12 +1121,8 @@ class MainWindow(gtk.Window):
         self.songpane.pack_start(self.song_scroller)
         self.songpane.pack_start(self.qexpander, expand=False, fill=True)
         self.songpane.show_all()
-        self.song_scroller.connect(
-            'notify::visible', self.__show_or,
-            self.qexpander, self.songpane)
-        self.qexpander.connect(
-            'notify::visible', self.__show_or,
-            self.song_scroller, self.songpane)
+        self.song_scroller.connect('notify::visible', self.__show_or)
+        self.qexpander.connect('notify::visible', self.__show_or)
 
         SongList.set_all_column_headers(
             config.get("settings", "headers").split())
@@ -1180,10 +1176,15 @@ class MainWindow(gtk.Window):
         self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
 
-    def __show_or(self, pane1, prop, pane2, parent):
-        parent.set_property(
-            'visible', pane1.get_property('visible') or
-            pane2.get_property('visible'))
+    def __show_or(self, widget, prop):
+        ssv = self.song_scroller.get_property('visible')
+        qxv = self.qexpander.get_property('visible')
+        self.songpane.set_property('visible', ssv or qxv)
+        self.songpane.set_child_packing(
+            self.qexpander, expand=not ssv, fill=True, padding=0,
+            pack_type=gtk.PACK_START)
+        if not ssv:
+            self.qexpander.set_expanded(True)
 
     def __songs_queue_add(self, songlist, event):
         if event.string == "Q":
