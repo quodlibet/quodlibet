@@ -131,11 +131,18 @@ class Library(dict):
     def remove(self, song):
         del(self[song['~filename']])
 
+    def add_song(self, song):
+        if song["~filename"] not in self:
+            self[song["~filename"]] = song
+            return True
+        return False
+
     def add(self, fn):
+        fn = os.path.realpath(fn)
         if fn not in self:
             song = MusicFile(fn)
-            if song: self[fn] = song
-            return bool(song)
+            if song: return self.add_song(song)
+            else: return False
         else: return True
 
     def query(self, text, sort=None):

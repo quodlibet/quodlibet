@@ -1192,11 +1192,7 @@ class MainWindow(gtk.Window):
             return True
 
     def __add_to_queue(self, songs):
-        added = []
-        for song in songs:
-            if song["~filename"] not in library:
-                library[song["~filename"]] = song
-                added.append(song)
+        added = filter(library.add_song, songs)
         self.playlist.enqueue(songs)
         if added: widgets.watcher.added(added)
 
@@ -2065,11 +2061,7 @@ class SongList(qltk.HintedTreeView):
         widgets.watcher.removed(songs)
 
     def __enqueue(self, item, songs):
-        added = []
-        for song in songs:
-            if song["~filename"] not in library:
-                library[song["~filename"]] = song
-                added.append(song)
+        added = filter(library.add_song, songs)
         widgets.main.playlist.enqueue(songs)
         if added: widgets.watcher.added(added)
 
@@ -2127,10 +2119,8 @@ class SongList(qltk.HintedTreeView):
         added = []
         filenames = []
         from urllib import pathname2url as tourl
+        added = filter(library.add_song, songs)
         for song in songs:
-            if song["~filename"] not in library:
-                library[song["~filename"]] = song
-                added.append(song)
             filenames.append("file:" + tourl(song.get("~filename", "")))
         sel.set_uris(filenames)
         widgets.watcher.added(added)
@@ -2284,7 +2274,8 @@ class PlayList(SongList):
     def __init__(self, name):
         plname = 'playlist_' + util.QuerySafe.encode(name)
         self.__key = key = '~#' + plname
-        model = gtk.ListStore(object)
+        from songlist import PlaylistModel
+        model = PlaylistModel()
         super(PlayList, self).__init__()
 
         for song in library.query('#(%s > 0)' % plname, sort=key):
