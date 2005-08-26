@@ -17,7 +17,7 @@ import util
 PLUGIN_NAME = "Show the lyrics"
 PLUGIN_DESC = "Search for and save the lyrics of songs, using leolyrics.com."
 PLUGIN_ICON = gtk.STOCK_EDIT #For now
-PLUGIN_VERSION = "0.12.1"
+PLUGIN_VERSION = "0.12.2"
 
 class LyricWindow(gtk.Window):
     
@@ -25,7 +25,7 @@ class LyricWindow(gtk.Window):
         gtk.Window.__init__(self)
         self.set_border_width(12)
         self.songlist = []
-        self.set_title(song.comma("title") + " - " +
+        self.set_title(song.comma("~title~version") + " - " +
 		       song.comma("artist") + " - Lyrics")
 
         icon_theme = gtk.icon_theme_get_default()
@@ -107,18 +107,20 @@ class LyricWindow(gtk.Window):
         title = song.comma("title")
         self.songlist = []
         
-        sock = urllib.urlopen(
-            "http://api.leoslyrics.com/api_search.php?auth=QuodLibet&artist=%s&songtitle=%s"%(
-            urllib.quote(artist.encode('utf-8')),
-            urllib.quote(title.encode('utf-8'))))
-        
-        try: xmldoc = minidom.parse(sock).documentElement
+        try:
+            sock = urllib.urlopen(
+                "http://api.leoslyrics.com/api_search.php?auth="
+                "QuodLibet&artist=%s&songtitle=%s"%(
+                urllib.quote(artist.encode('utf-8')),
+                urllib.quote(title.encode('utf-8'))))        
+            xmldoc = minidom.parse(sock).documentElement
         except:
             gobject.idle_add(buffer.set_text, "Server did not respond.")
             return
 
         sock.close()
-        result_code = xmldoc.getElementsByTagName('response')[0].getAttribute('code')
+        result_code = xmldoc.getElementsByTagName(
+            'response')[0].getAttribute('code')
         #print "Result code: ", result_code
         if result_code == '0': #success
             # This is 0 even if there are no matches.
@@ -148,10 +150,12 @@ class LyricWindow(gtk.Window):
             xmldoc.unlink()
             
             # Show the first match
-            sock = urllib.urlopen(
-                "http://api.leoslyrics.com/api_lyrics.php?auth=QuodLibet&hid=%s"%(
-                urllib.quote(self.songlist[0][1].encode('utf-8'))))
-            try: xmldoc = minidom.parse(sock).documentElement
+            try:
+                sock = urllib.urlopen(
+                    "http://api.leoslyrics.com/api_lyrics.php?auth="
+                    "QuodLibet&hid=%s"%(
+                    urllib.quote(self.songlist[0][1].encode('utf-8'))))
+                xmldoc = minidom.parse(sock).documentElement
             except:
                 gobject.idle_add(buffer.set_text,
                                  "Unable to get the lyrics. " +
@@ -179,7 +183,7 @@ class LyricWindow(gtk.Window):
         return util.fsencode(os.path.join(
             os.path.expanduser("~/.lyrics"),
             song.comma("artist").replace('/', '')[:64],
-            song.comma("~title~version").replace('/', '') + '.lyric'))
+            song.comma("~title~version").replace('/', '')[:64] + '.lyric'))
 
     def __save(self, save, lyricname, buffer, delete):
         if os.path.exists(lyricname):
@@ -204,12 +208,9 @@ class LyricWindow(gtk.Window):
     def __delete(self, delete, lyricname, save):
         try: os.unlink(lyricname)
         except EnvironmentError: pass
-        valid = 3 # .lyrics, artist, album
-        while valid:
-            lyricname = os.path.dirname(lyricname)
-            try: os.rmdir(lyricname)
-            except EnvironmentError: valid = False
-            else: valid -= 1
+        lyricname = os.path.dirname(lyricname)
+        try: os.rmdir(lyricname)
+        except EnvironmentError: pass
         delete.set_sensitive(False)
         save.set_sensitive(True)
 
