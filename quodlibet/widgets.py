@@ -2426,7 +2426,6 @@ class PlayQueue(SongList):
 
     def __write(self, *args):
         filenames = "\n".join([row[0]["~filename"] for row in self.model])
-        print filenames
         f = file(const.QUEUE, "w")
         f.write(filenames)
         f.close()
