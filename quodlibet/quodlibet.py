@@ -228,7 +228,7 @@ if __name__ == "__main__":
     import const
     process_arguments()
     if os.path.exists(const.CONTROL):
-        print _("Quod Libet is already running.")
+        print to(_("Quod Libet is already running."))
         control('!')
 
     # Get to the right directory for our data.
