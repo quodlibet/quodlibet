@@ -1,0 +1,105 @@
+# Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+#
+# $Id$
+
+from formats.audio import AudioFile, AudioPlayer
+
+try: import musepack
+except ImportError: extensions = []
+else: extensions = [".mpc", ".mp+"]
+
+class MPCFile(AudioFile):
+    # Map APE names to QL names. APE tags are also usually capitalized.
+    # Also blacklist a number of tags.
+    IGNORE = ["file", "index", "introplay", "dummy",
+              "replaygain_track_peak", "replaygain_album_peak",
+              "replaygain_track_gain", "replaygain_album_gain"]
+    TRANS = { "subtitle": "version",
+              "track": "tracknumber",
+              "catalog": "labelid",
+              "record date": "date",
+              "record location": "location"
+              }
+    SNART = dict([(v, k) for k, v in TRANS.iteritems()])
+    
+    def __init__(self, filename):
+        tag = musepack.APETag(filename)
+        for key, value in tag:
+            key = MPCFile.TRANS.get(key.lower(), key.lower())
+            if (value.kind == musepack.apev2.TEXT and
+                key not in MPCFile.IGNORE):
+                self[key] = "\n".join(list(value))
+        f = musepack.MPCFile(filename)
+        self["~#length"] = int(f.length / 1000)
+        try: self["~#bitrate"] = int(f.bitrate)
+        except AttributeError: pass
+        try:
+            track_g = "%+0.2f dB" % (f.gain_radio / 100.0)
+            album_g = "%+0.2f dB" % (f.gain_audiophile / 100.0)
+            track_p = str(f.peak_radio / 32767.0)
+            album_p = str(f.peak_audiophile / 32767.0)
+        except AttributeError: pass
+        else:
+            self["replaygain_track_gain"] = track_g
+            self["replaygain_track_peak"] = track_p
+            self["replaygain_album_gain"] = album_g
+            self["replaygain_album_peak"] = album_p
+
+        self.sanitize(filename)
+
+    def can_change(self, key = None):
+        if key is None: return True
+        else: return (AudioFile.can_change(self, key) and
+                      key not in MPCFile.IGNORE)
+
+    def write(self):
+        import musepack
+        tag = musepack.APETag(self['~filename'])
+
+        keys = tag.keys()
+        for key in keys:
+            # remove any text keys we read in
+            value = tag[key]
+            if (value.kind == musepack.apev2.TEXT and
+                key not in MPCFile.IGNORE):
+                del(tag[key])
+        for key in self.realkeys():
+            value = self[key]
+            key = MPCFile.SNART.get(key, key)
+            if key in ["isrc", "isbn", "ean/upc"]: key = key.upper()
+            else: key = key.title()
+            tag[key] = value.split("\n")
+        tag.write()
+        self.sanitize()
+
+class MPCPlayer(AudioPlayer):
+    def __init__(self, dev, song):
+        AudioPlayer.__init__(self)
+        self.audio = musepack.MPCFile(song["~filename"])
+        self.length = self.audio.length
+        self.pos = 0
+        self.dev = dev
+        self.dev.set_info(self.audio.frequency, 2)
+        self.replay_gain(song)
+        if self.scale != 1: self.audio.set_scale(self.scale)
+
+    def __iter__(self): return self
+
+    def seek(self, ms):
+        self.audio.seek(ms)
+        self.pos = ms
+
+    def next(self):
+        if self.stopped: raise StopIteration
+        else:
+            s = self.audio.read()
+            if s: self.dev.play(s)
+            else: raise StopIteration
+        return int(self.audio.position)
+
+info = MPCFile
+player = MPCPlayer

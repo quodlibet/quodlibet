@@ -1,0 +1,55 @@
+Ex Falso / Quod Libet - A Music Library/Editor/Player
+========================================================================
+Quod Libet is a music library management program. Rather than categorize
+songs by genre, artist, and album, it lets you search and display them
+however you want. Ex Falso is a tag editor that has the same editing
+features found in Quod Libet, but does not play audio files.
+
+EF/QL support the Ogg Vorbis, FLAC, MP3, MOD/XM/IT, and MPC file formats
+for playback. Tag editing and other features may vary from format to format.
+
+To report bugs, suggest features, ask a question, get the latest version,
+or help us out, visit http://www.sacredchao.net/quodlibet.
+
+====[ Using EF/QL
+To run the programs, use
+ $ ./quodlibet.py
+or
+ $ ./exfalso.py
+
+After installing, you can just run `quodlibet' or `exfalso'.
+
+For help on using them, run
+ $ man -l ./quodlibet.1
+
+Or visit http://www.sacredchao.net/quodlibet/wiki/Guide.
+
+Whenever you upgrade, it's a good idea to select "Reload library" from
+the Music menu. This upgrades your library to take advantage of new
+tag features found in the release. You should also read the NEWS
+file for any important upgrade notes.
+
+====[ Requirements
+
+==[ Source
+
+EF/QL have a long, but not very complicated, dependency list. Many
+of them probably come with your OS distribution.
+ Python (>= 2.3):	http://www.python.org
+ PyGTK (>= 2.6):	http://www.pygtk.org
+ PyVorbis:		http://www.andrewchatham.com/pyogg/
+ Pymad (MP3):		http://spacepants.org/src/pymad
+
+Optional:
+ Modplug:		http://modplug-xmms.sourceforge.net
+ PyAO (for ALSA):	http://www.andrewchatham.com/pyogg/
+ PyFLAC/PyModPlug/PyMusepack:
+	http://www.sacredchao.net/quodlibet/wiki/Download
+
+To compile the status icon and multimedia key support, run
+ $ make extensions
+
+To install EF/QL system-wide, run
+ # make install
+
+For more information, see http://www.sacredchao.net/quodlibet/wiki/Download.
