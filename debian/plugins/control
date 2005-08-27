@@ -16,7 +16,8 @@ Description: various contributed plugins for Quod Libet
  .
  Notable plugins in this package include:
  .
-  - albumart.py: Retrieve album art from Amazon.com
+  - brainz.py, cddb.py: Retag your albums from data found on MusicBrainz and
+    FreeDB, respectively.
   - clock.py: Stop and begin playing music at specified times.
   - html.py: Generate a HTML playlist of sorts from a list of tracks.
   - jep118.py: Generate a Jabber User Tunes file to ~/.quodlibet/jabber.

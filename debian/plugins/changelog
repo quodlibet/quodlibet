@@ -1,3 +1,10 @@
+quodlibet-plugins (20050827-1) unstable; urgency=low
+
+  * New Subversion checkout.
+  * Fix description; albumart.py isn't included (yet), closes: #323714
+
+ -- Joshua Kwan <joshk@triplehelix.org>  Sat, 27 Aug 2005 15:44:50 -0700
+
 quodlibet-plugins (20050810-1) unstable; urgency=low
 
   * Initial release.
