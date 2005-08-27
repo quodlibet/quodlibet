@@ -368,6 +368,12 @@ class NBPTests(TestCase):
         s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')
 
+    def test_markup_passthrough(s):
+        pat = FileFromPattern('<|b><<title>><|/b>', filename=False, esc=True)
+        s.assertEquals(pat.match(s.a), '<b>&lt;Title5&gt;</b>')
+        s.assertEquals(pat.match(s.b), '<b>&lt;Title6&gt;</b>')
+        s.assertEquals(pat.match(s.c), '<b>&lt;test/subdir&gt;</b>')
+
 class FormatTimeTests(TestCase):
     def test_second(s):
         s.assertEquals(f_t_l(1).split(", ")[0], _("1 second"))
