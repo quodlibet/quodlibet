@@ -9,37 +9,8 @@
 import os, sys
 import time
 import threading
-import random
 import config
-import audioop
-
-class OSSAudioDevice(object):
-    from formats import MusicPlayer as open
-
-    name = "oss"
-
-    def __init__(self):
-        import ossaudiodev
-        self.__dev = ossaudiodev.open("w")
-        self.__dev.setfmt(ossaudiodev.AFMT_S16_LE)
-        self.__channels = self.__dev.channels(2)
-        self.__rate = self.__dev.speed(44100)
-        self.volume = 1.0
-        self.__dev.nonblock()
-
-    def play(self, buf):
-        if self.volume != 1.0: buf = audioop.mul(buf, 2, self.volume)
-        self.__dev.writeall(buf)
-
-    def set_info(self, rate, channels):
-        if rate != self.__rate or channels != self.__channels:
-            import ossaudiodev
-            self.__dev.close()
-            self.__dev = ossaudiodev.open("w")
-            self.__dev.setfmt(ossaudiodev.AFMT_S16_LE)
-            self.__channels = self.__dev.channels(channels)
-            self.__rate = self.__dev.speed(rate)
-            self.__dev.nonblock()
+import gst.play
 
 class GStreamerDevice(object):
     player = None
@@ -151,42 +122,6 @@ class GStreamerDevice(object):
         if self.player is None: return False
         else: return self.player.get_state() == gst.STATE_PAUSED
     paused = property(get_paused, set_paused)
-
-class AOAudioDevice(object):
-    from formats import MusicPlayer as open
-
-    def __init__(self, driver, *device):
-        import ao
-        options = {}
-        if device:
-            device = ":".join(device)
-            if driver == "oss": options = {"dsp": device}
-            elif driver == "esd": options = {"host": device}
-            elif driver in ["alsa09", "sun", "aixs"]:
-                options = {"dev": device}
-            self.name = ":".join(["ao", driver, device])
-        else: self.name = ":".join(["ao", driver])
-
-        try: self.__dev = ao.AudioDevice(
-            driver, bits=16, rate=44100, channels=2, options=options)
-        except ao.aoError: raise IOError
-        self.volume = 1.0
-        self.set_info(44100, 2)
-
-    def set_info(self, rate, channels):
-         self.__rate = rate
-         self.__ratestate = None
-         if rate != 44100: self.__rate_conv = audioop.ratecv
-         else: self.__rate_conv = lambda *args: (args[0], None)
-         if channels == 1: self.__chan_conv = audioop.tostereo
-         else: self.__chan_conv = lambda *args: args[0]
-
-    def play(self, buf):
-        buf = self.__chan_conv(buf, 2, 1, 1)
-        if self.volume != 1.0: buf = audioop.mul(buf, 2, self.volume)
-        buf, self.__ratestate = self.__rate_conv(
-            buf, 2, 2, self.__rate, 44100, self.__ratestate)
-        self.__dev.play(buf, len(buf))
 
 class PlaylistPlayer(object):
     def __init__(self, output, playlist=[]):
@@ -305,33 +240,17 @@ class PlaylistPlayer(object):
         self.__source.go_to(song)
         if self.__player: self.__player.end()
 
-def OSSProxy(*args):
-    print "W: Unable to open the requested audio device."
-    print "W: Falling back to Open Sound System support."
-    return OSSAudioDevice()
-
-supported = {}
-outputs = { 'oss': OSSAudioDevice }
-
-try: import gst.play
-except ImportError: pass
-else: outputs["gst"] = GStreamerDevice
-
 global device, playlist
 device = None
 playlist = None
 
 def init(devid):
-    try: import ao
-    except ImportError: outputs['ao'] = OSSProxy
-    else: outputs['ao'] = AOAudioDevice
-
     if ":" in devid:
         name, args = devid.split(":")[0], devid.split(":")[1:]
     else: name, args = devid, []
+    name = "gst"
 
     global device, playlist
-    try: device = outputs.get(name, OSSProxy)(*args)
-    except: device = OSSProxy(*args)
+    device = GStreamerDevice(*args)
     playlist = PlaylistPlayer(output=device)
     return playlist
