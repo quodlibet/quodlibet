@@ -23,7 +23,7 @@ MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
 USEFUL_TAGS = (
     # Ogg Vorbis spec tags
     "title version album tracknumber artist genre performer copyright "
-    "license organization description location contact isrc "
+    "license organization description location contact isrc date "
 
     # Other tags we like
     "arranger author composer conductor lyricist discnumber labelid part "
