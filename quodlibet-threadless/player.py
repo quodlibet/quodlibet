@@ -31,7 +31,6 @@ def GStreamerSink(sinkname):
 
 class PlaylistPlayer(object):
     __paused = False
-    __player = None
     __song = None
     __length = 1
     __volume = 1.0
@@ -75,9 +74,7 @@ class PlaylistPlayer(object):
     volume = property(get_volume, set_volume)
 
     def __load_song(self, song):
-        output = GStreamerSink(self.__device)
         self.bin = gst.element_factory_make('playbin', 'player')
-        self.bin.set_property('audio-sink', output)
         from urllib import pathname2url as tourl
         self.bin.set_property('uri', "file://" + tourl(song["~filename"]))
         self.__length = song["~#length"] * 1000
@@ -85,7 +82,7 @@ class PlaylistPlayer(object):
         else: self.bin.set_state(gst.STATE_PLAYING)
 
     def seek(self, pos):
-        if self.__player:
+        if self.bin:
             pos = max(0, int(pos))
             if pos >= self.__length:
                 self.paused = True
@@ -110,10 +107,10 @@ class PlaylistPlayer(object):
         song = self.__source.current
         if song is None:
             self.__update_time()
-            return None, None
+            return None
 
         config.set("memory", "song", song["~filename"])
-        try: player = self.__load_song(song)
+        try: self.__load_song(song)
         except Exception, err:
             sys.stderr.write(str(err) + "\n")
             player = None
@@ -123,19 +120,19 @@ class PlaylistPlayer(object):
         else:
             self.info.song_started(song)
         self.__update_time()
-        return song, player
+        return song
 
     def __end(self, stopped=True):
-        if self.__player is not None:
-            self.__player.set_state(gst.STATE_NULL)
-            self.info.song_ended(self.__song, self.__player.stopped)
-            self.__player = None
+        if self.bin is not None:
+            self.bin.set_state(gst.STATE_NULL)
+            self.bin = None
+            self.info.song_ended(self.__song, stopped)
             self.__song = None
 
         if not stopped: self.__do()
 
     def __do(self):
-        self.__song, self.__player = self.__get_song()
+        self.__song = self.__get_song()
         if self.bin is not None:
             self.bin.connect_object('eos', self.__end, False)
             
