@@ -46,6 +46,14 @@ class PlaylistPlayer(object):
         self.info = info
         self.go_to(song)
 
+    def __update_time(self):
+        if self.bin is None:
+            self.__info.time = (0, 1)
+        else:
+            pos = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
+            len = self.bin.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
+            self.info.time = (pos // gst.MSECOND, len // gst.MSECOND)
+
     def __iter__(self): return iter(self.__source)
 
     def __set_paused(self, paused):
@@ -53,25 +61,28 @@ class PlaylistPlayer(object):
             self.__paused = paused
             try: self.info.set_paused(paused)
             except AttributeError: pass
+            state = ((paused and gst.STATE_PAUSED) or gst.STATE_PLAYING)
+            try: self.bin.set_state(state)
+            except AttributeError: pass
     def __get_paused(self): return self.__paused
     paused = property(__get_paused, __set_paused)
 
     def set_volume(self, v):
         self.__volume = v
-        if self.__player:
-            self.__player.set_property('volume', v)
+        try: self.bin.set_property('volume', v)
+        except AttributeError: pass
     def get_volume(self): return self.__volume
     volume = property(get_volume, set_volume)
 
     def __load_song(self, song):
-        if self.bin is not None: self.bin.set_state(gst.STATE_NULL)
         output = GStreamerSink(self.__device)
         self.bin = gst.element_factory_make('playbin', 'player')
         self.bin.set_property('audio-sink', output)
         from urllib import pathname2url as tourl
         self.bin.set_property('uri', "file://" + tourl(song["~filename"]))
         self.__length = song["~#length"] * 1000
-        self.bin.set_state(gst.STATE_PLAYING)
+        if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
+        else: self.bin.set_state(gst.STATE_PLAYING)
 
     def seek(self, pos):
         if self.__player:
@@ -91,11 +102,15 @@ class PlaylistPlayer(object):
             self.info.seek(self.__song, pos)
 
     def remove(self, song):
-        if self.__song is song: self.__end()
+        if self.__song is song: self.__end(False)
 
     def __get_song(self):
+        if self.bin is not None:
+            self.bin.set_state(gst.STATE_NULL)
         song = self.__source.current
-        if song is None: return None, None
+        if song is None:
+            self.__update_time()
+            return None, None
 
         config.set("memory", "song", song["~filename"])
         try: player = self.__load_song(song)
@@ -104,8 +119,10 @@ class PlaylistPlayer(object):
             player = None
             self.paused = True
             self.info.missing(song)
+            self.info.time = (0, 1)
         else:
             self.info.song_started(song)
+        self.__update_time()
         return song, player
 
     def __end(self, stopped=True):
@@ -115,19 +132,15 @@ class PlaylistPlayer(object):
             self.__player = None
             self.__song = None
 
-        if not stopped: self.__source.next()
+        if not stopped: self.__do()
 
     def __do(self):
-        self.__end()
         self.__song, self.__player = self.__get_song()
-        if self.__player:
-            self.__sig = self.__player.bin.connect('eos', self.__end, False)
+        if self.bin is not None:
+            self.bin.connect_object('eos', self.__end, False)
             
     def reset(self):
         self.__source.reset()
-
-    def get_playlist(self):
-        return self.__source.get()
 
     def next(self):
         self.__end()
