@@ -20,7 +20,7 @@ import test_playlist
 # good but incomplete
 import test_leaks, test_qltk, test_widgets
 # not well-tested code
-import test_library, test_player, test_plugins
+import test_library, test_plugins
 
 class Result(unittest.TestResult):
 

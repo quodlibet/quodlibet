@@ -44,12 +44,6 @@ def MusicFile(filename):
                 return None
     else: return None
 
-def MusicPlayer(dev, song):
-    for ext in _players.keys():
-        if song["~filename"].lower().endswith(ext):
-            return _players[ext](dev, song)
-    else: raise RuntimeError("Unknown file format: %s" % song["~filename"])
-
 def supported(song): return type(song) in _infos.values()
 
 def filter(filename):

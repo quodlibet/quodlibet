@@ -70,35 +70,5 @@ class OggFile(AudioFile):
         comments.write_to(self['~filename'])
         self.sanitize()
 
-class OggPlayer(AudioPlayer):
-    def __init__(self, dev, song):
-        AudioPlayer.__init__(self)
-        filename = song['~filename']
-        import ogg.vorbis
-        self.error = ogg.vorbis.VorbisError
-        self.dev = dev
-        self.audio = ogg.vorbis.VorbisFile(filename)
-        rate = self.audio.info().rate
-        channels = self.audio.info().channels
-        self.dev.set_info(rate, channels)
-        self.length = int(self.audio.time_total(-1) * 1000)
-        self.replay_gain(song)
-
-    def __iter__(self): return self
-
-    def seek(self, ms):
-        self.audio.time_seek(ms / 1000.0)
-
-    def next(self):
-        if self.stopped: raise StopIteration
-        try: (buff, bytes, bit) = self.audio.read(256)
-        except self.error: pass
-        else:
-            if bytes == 0: raise StopIteration
-            if self.scale != 1:
-                buff = audioop.mul(buff, 2, self.scale)
-            self.dev.play(buff)
-        return int(self.audio.time_tell() * 1000)
-
 info = OggFile
-player = OggPlayer
+player = None

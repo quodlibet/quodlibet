@@ -2627,9 +2627,7 @@ def init():
 
     return widgets.main
 
-def save_library(thread):
-    player.playlist.quitting()
-
+def save_library():
     # If something goes wrong here, it'll probably be caught
     # saving the library anyway.
     try: config.write(const.CONFIG)
@@ -2648,8 +2646,6 @@ def save_library(thread):
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
         qltk.ErrorMessage(None, _("Unable to save library"), err).run()
-
-    thread.join()
 
 def error_and_quit():
     qltk.ErrorMessage(
