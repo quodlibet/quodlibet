@@ -314,7 +314,6 @@ class PluginManager(object):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
-            if lock: gtk.threads_enter()
             win = qltk.WritingWindow(None, len(needs_write))
             for song in needs_write:
                 try: song._song.write()
@@ -329,7 +328,6 @@ class PluginManager(object):
                 win.step()
             win.destroy()
             while gtk.events_pending(): gtk.main_iteration()
-            if lock: gtk.threads_leave()
 
         for song in songs:
             if song._was_updated():
