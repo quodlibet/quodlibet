@@ -47,7 +47,7 @@ class PlaylistPlayer(object):
 
     def __update_time(self):
         if self.bin is None:
-            self.__info.time = (0, 1)
+            self.info.time = (0, 1)
         else:
             pos = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
             len = self.bin.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
