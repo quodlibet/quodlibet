@@ -88,7 +88,8 @@ class CountManager(object):
         watcher.connect('song-ended', self.__end, pl)
 
     def __end(self, watcher, song, ended, pl):
-        if not ended:
+        if song is None: return
+        elif not ended:
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] += 1
             watcher.changed([song])
@@ -1474,6 +1475,7 @@ class MainWindow(gtk.Window):
             statusbar.set_text, _("Could not play %s.") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
+        if song is None: return
         if not self.browser.dynamic(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
