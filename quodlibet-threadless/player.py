@@ -160,8 +160,10 @@ def init(devid):
     if ":" in devid:
         name, args = devid.split(":")[0], devid.split(":")[1:]
     else: name, args = devid, []
-    name = "gst"
 
+    os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
+    gst.use_threads(True)
+    
     global device, playlist
     playlist = PlaylistPlayer(*args)
     device = playlist
