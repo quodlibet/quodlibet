@@ -105,6 +105,8 @@ class StringTests(TestCase):
         self.failUnlessEqual(util.title("foo bar"), "Foo Bar")
         self.failUnlessEqual(util.title("foo 1bar"), "Foo 1bar")
         self.failUnlessEqual(util.title("foo 1  bar"), "Foo 1  Bar")
+        self.failUnlessEqual(util.title("2nd"), "2nd")
+        self.failUnlessEqual(util.title("it's"), "It's")
 
     def test_split(self):
         self.failUnlessEqual(split_value("a b"), ["a b"])
