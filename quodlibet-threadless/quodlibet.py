@@ -18,11 +18,12 @@ def main():
 
     window = widgets.init()
 
-    enable_periodic_save()
+    #enable_periodic_save()
     song = library.library.get(config.get("memory", "song"))
     player.playlist.setup(widgets.widgets.watcher, window.playlist, song)
     gtk.quit_add(1, widgets.save_library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
+    gtk.threads_init()
     gtk.main()
 
 def print_status():
