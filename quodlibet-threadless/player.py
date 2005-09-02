@@ -34,12 +34,12 @@ class PlaylistPlayer(object):
     __volume = 1.0
 
     def __init__(self, device):
-        self.bin = gst.play.Play()
-        self.bin.set_data_src(gst.element_factory_make('filesrc'))
         device = GStreamerSink(device)
         self.name = device.get_name()
+        self.bin = gst.element_factory_make('playbin')
+        self.bin.set_property('video-sink', None)
+        self.bin.set_property('audio-sink', device)
         self.__device = device
-        self.bin.set_audio_sink(device)
         self.bin.connect_object('eos', self.__end, False)
         self.paused = True
 
@@ -49,7 +49,7 @@ class PlaylistPlayer(object):
         self.go_to(song)
 
     def __update_time(self):
-        if self.bin.get_location():
+        if self.bin.get_property('uri'):
             pos = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
             len = self.bin.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
         else: pos, len = 0, 1
@@ -62,7 +62,7 @@ class PlaylistPlayer(object):
             self.__paused = paused
             try: self.info.set_paused(paused)
             except AttributeError: pass
-            if self.bin.get_location():
+            if self.bin.get_property('uri'):
                 if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
                 else: self.bin.set_state(gst.STATE_PLAYING)
     def __get_paused(self): return self.__paused
@@ -70,13 +70,14 @@ class PlaylistPlayer(object):
 
     def set_volume(self, v):
         self.__volume = v
-        try: self.__device.set_volume(v)
-        except AttributeError: pass
+        self.bin.set_property('volume', v)
     def get_volume(self): return self.__volume
     volume = property(get_volume, set_volume)
 
     def __load_song(self, song):
-        self.bin.set_location(song["~filename"])
+        from urllib import pathname2url as tourl
+        self.bin.set_state(gst.STATE_NULL)
+        self.bin.set_property('uri', "file://" + tourl(song["~filename"]))
         self.__length = song["~#length"] * 1000
         if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
         else: self.bin.set_state(gst.STATE_PLAYING)
