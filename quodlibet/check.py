@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     print "Checking for PyGSt >= 0.8.2:",
     try:
-        import gstsdf
+        import gst
         if gst.pygst_version < (0, 8, 2):
             raise ImportError
     except ImportError:
