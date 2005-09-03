@@ -105,6 +105,8 @@ class StringTests(TestCase):
         self.failUnlessEqual(util.title("foo bar"), "Foo Bar")
         self.failUnlessEqual(util.title("foo 1bar"), "Foo 1bar")
         self.failUnlessEqual(util.title("foo 1  bar"), "Foo 1  Bar")
+        self.failUnlessEqual(util.title("2nd"), "2nd")
+        self.failUnlessEqual(util.title("it's"), "It's")
 
     def test_split(self):
         self.failUnlessEqual(split_value("a b"), ["a b"])
@@ -367,6 +369,12 @@ class NBPTests(TestCase):
     def test_directory_rooting(s):
         s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')
+
+    def test_markup_passthrough(s):
+        pat = FileFromPattern('<|b><<title>><|/b>', filename=False, esc=True)
+        s.assertEquals(pat.match(s.a), '<b>&lt;Title5&gt;</b>')
+        s.assertEquals(pat.match(s.b), '<b>&lt;Title6&gt;</b>')
+        s.assertEquals(pat.match(s.c), '<b>&lt;test/subdir&gt;</b>')
 
 class FormatTimeTests(TestCase):
     def test_second(s):

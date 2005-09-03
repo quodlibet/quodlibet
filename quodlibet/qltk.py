@@ -458,6 +458,7 @@ class WaitLoadWindow(gtk.Window):
         self.set_modal(True)
         self.set_decorated(False)
         self.set_resizable(False)
+        self.set_focus_on_map(False)
         self.add(gtk.Frame())
         self.child.set_shadow_type(gtk.SHADOW_OUT)
         vbox = gtk.VBox(spacing=12)
