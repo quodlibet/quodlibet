@@ -2101,7 +2101,8 @@ class SongList(qltk.HintedTreeView):
             if resp == 0: s = _("Moving %d/%d.")
             elif resp == 2: s = _("Deleting %d/%d.")
             else: return
-            w = qltk.WaitLoadWindow(None, len(songs), s, (0, len(songs)))
+            w = qltk.WaitLoadWindow(
+                widgets.main, len(songs), s, (0, len(songs)))
             trash = os.path.expanduser("~/.Trash")
             for filename, song in songs:
                 try:
@@ -2110,12 +2111,13 @@ class SongList(qltk.HintedTreeView):
                         shutil.move(filename, os.path.join(trash, basename))
                     else:
                         os.unlink(filename)
-                    library.remove(song)
+                    try: library.remove(song)
+                    except KeyError: pass
                     removed.append(song)
 
                 except:
                     qltk.ErrorMessage(
-                        self, _("Unable to delete file"),
+                        widgets.main, _("Unable to delete file"),
                         _("Deleting <b>%s</b> failed. "
                           "Possibly the target file does not exist, "
                           "or you do not have permission to "
