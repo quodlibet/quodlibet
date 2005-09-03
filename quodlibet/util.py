@@ -400,12 +400,12 @@ class PatternFromFile(object):
         else: return match.groupdict()
 
 class FileFromPattern(object):
-    def __init__(self, pattern, filename=True, esc=False):
+    def __init__(self, pattern, filename=True):
         pattern = os.path.expanduser(pattern)
         if filename and os.path.sep in pattern and not os.path.isabs(pattern):
             raise ValueError("Pattern %r is not rooted" % pattern)
 
-        self.replacers = [self.Pattern(pattern, filename, esc)]
+        self.replacers = [self.Pattern(pattern, filename)]
         # simple magic to decide whether to append the extension
         # if the pattern has no . in it, or if it has a > (probably a tag)
         #   after the last . or if the last character is the . append .foo
@@ -423,29 +423,29 @@ class FileFromPattern(object):
             return oldname[oldname.rfind('.'):]
 
     class Pattern(object):
-        tagre=sre.compile(
-            # stdtag | < tagname ( \| [^<>] | stdtag )+ > | <\|output>
+        def __init__(self, pattern, filename=True, tagre=sre.compile(
+            # stdtag | < tagname ( \| [^<>] | stdtag )+ >
             r'''( <\w+(?:\~\w+)*> | <\~\w+> |
-                < \w* (?: \| (?: [^<>] | <\w+(?:\~\w+)*> )* )+ > )''', sre.X)
-
-        def __init__(self, pattern, filename=True, esc=False):
-            self.replacers = [ (self.tagre.match(piece) and
+                < \w+ (?: \| (?: [^<>] | <\w+(?:\~\w+)*> )* )+ > )''', sre.X)):
+            self.replacers = [ (tagre.match(piece) and
                 FileFromPattern.PatternReplacer or
-                FileFromPattern.PassThroughReplacer)(piece, filename=filename, esc=esc)
-            for piece in self.tagre.split(pattern) if piece]
+                FileFromPattern.PassThroughReplacer)(piece, filename=filename)
+            for piece in tagre.split(pattern) if piece]
 
         def match(self, song):
             return ''.join([r.match(song) for r in self.replacers])
 
     class PassThroughReplacer(object):
-        def __init__(self, pattern, filename=True, esc=False):
-            if esc: self.match = lambda song: escape(pattern)
-            else: self.match = lambda song: pattern
+        def __init__(self, pattern, filename=True):
+            self.filename = filename
+            self.pattern = pattern
+
+        def match(self, song):
+            return self.pattern
 
     class PatternReplacer(object):
-        def __init__(self, pattern, filename=True, esc=False):
+        def __init__(self, pattern, filename=True):
             self.filename = filename
-            self.esc = esc
             if filename:
                 self.__format = { 'tracknumber': '%02d', 'discnumber': '%d' }
                 self.__override = {
@@ -459,21 +459,13 @@ class FileFromPattern(object):
             elif '|' not in pattern:
                 self.match = lambda song: self.format(pattern[1:-1], song)
             else:
-                self.match = self.pattern(pattern, filename, esc)
-
-        def pattern(self, pattern, filename=True, esc=False):
-            parts = pattern[1:-1].split('|')
-            check = parts.pop(0)
-            if not check:
-                if len(parts) != 1:
-                    raise ValueError("pattern %s has extra sections" % pattern)
-                return lambda song: parts[0].join('<>')
-            else:
+                parts = pattern[1:-1].split('|')
+                check = parts.pop(0)
                 parts.append('')
                 if len(parts) > 3: # 1 or 2 real, 1 fallback; >2 real is bad
                     raise ValueError("pattern %s has extra sections" % pattern)
-                r = [FileFromPattern.Pattern(p, filename, esc) for p in parts]
-                return lambda s: self.condmatch(check, r[0], r[1], s)
+                r = [FileFromPattern.Pattern(p, filename) for p in parts]
+                self.match = lambda s: self.condmatch(check, r[0], r[1], s)
 
         def condmatch(self, check, true, false, song):
             if check in song: return true.match(song)
@@ -482,7 +474,7 @@ class FileFromPattern(object):
         def format(self, tag, song):
             if ((tag.startswith('~') or not tag.replace('~', '').isalnum())
                 and (song(tag, None) is None)):
-                return self.escape(tag.join('<>'))
+                return tag.join('<>')
 
             fmt = self.__format.get(tag, '%s')
             tag = self.__override.get(tag, tag)
@@ -493,14 +485,10 @@ class FileFromPattern(object):
                     try: text = text.replace(os.path.sep, '_')
                     except AttributeError: pass
                 try: return fmt % text
-                except TypeError: return self.escape(text)
+                except TypeError: return text
             else:
                 fmtd = [self.format(t, song) for t in tag.split('~')]
-                return self.escape(' - '.join(filter(None, fmtd)))
-
-        def escape(self, text):
-            if self.esc: return escape(text)
-            else: return text
+                return ' - '.join(filter(None, fmtd))
 
 def website(site):
     site = site.replace("\\", "\\\\").replace("\"", "\\\"")

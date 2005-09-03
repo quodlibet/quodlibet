@@ -6,15 +6,17 @@
 #
 # $Id$
 
-from formats.audio import AudioFile, AudioPlayer
+import gst
+from formats.audio import AudioFile
 
 try: import modplug
 except ImportError: extensions = []
-# Based on the supported format list at http://www.linuks.mine.nu/modplugplay
-else: extensions = ['.669', '.amf', '.ams', '.dbm', '.dmf', '.dsm', '.far',
-                    '.it', '.j2b', '.mdl', '.med', '.mod', '.mt2', '.mtm',
-                    '.okt', '.psm', '.ptm', '.s3m', '.stm', '.ult', '.umx',
-                    '.xm']
+else:
+    if gst.element_factory_make("mikmod"):
+        extensions = ['.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med',
+                      '.mod', '.mt2', '.mtm', '.okt', '.s3m', '.stm', '.ult',
+                      '.gdm', '.xm']
+    else: extensions = []
 
 class ModFile(AudioFile):
     def __init__(self, filename):
@@ -31,26 +33,5 @@ class ModFile(AudioFile):
         if k is None: return []
         else: return False
 
-class ModPlayer(AudioPlayer):
-    def __init__(self, dev, song):
-        AudioPlayer.__init__(self)
-        self.audio = modplug.ModFile(song["~filename"])
-        self.length = self.audio.length
-        self.dev = dev
-        self.dev.set_info(44100, 2)
-
-    def __iter__(self): return self
-
-    def seek(self, ms):
-        self.audio.seek(ms)
-
-    def next(self):
-        if self.stopped: raise StopIteration
-        else:
-            s = self.audio.read(256)
-            if s: self.dev.play(s)
-            else: raise StopIteration
-        return int(self.audio.position)
-
 info = ModFile
-player = ModPlayer
+

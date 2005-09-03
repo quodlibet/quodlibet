@@ -26,11 +26,9 @@ modules.remove(join(basename(base), "audio"))
 
 modules = zip(modules, map(__import__, modules))
 _infos = {}
-_players = {}
 for name, mod in modules:
     for ext in mod.extensions:
         _infos[ext] = mod.info
-        _players[ext] = mod.player
 
 def MusicFile(filename):
     for ext in _infos.keys():
@@ -43,12 +41,6 @@ def MusicFile(filename):
                 traceback.print_exc()
                 return None
     else: return None
-
-def MusicPlayer(dev, song):
-    for ext in _players.keys():
-        if song["~filename"].lower().endswith(ext):
-            return _players[ext](dev, song)
-    else: raise RuntimeError("Unknown file format: %s" % song["~filename"])
 
 def supported(song): return type(song) in _infos.values()
 

@@ -194,11 +194,6 @@ class PluginManager(object):
             try: obj = obj()
             except TypeError:
                 if obj is not mod: continue # let the module through
-            except (KeyboardInterrupt,MemoryError):
-                raise
-            except:
-                print_exc()
-                continue
 
             # if an object doesn't have all required metadata, skip it
             try:
@@ -319,7 +314,6 @@ class PluginManager(object):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
-            if lock: gtk.threads_enter()
             win = qltk.WritingWindow(None, len(needs_write))
             for song in needs_write:
                 try: song._song.write()
@@ -334,7 +328,6 @@ class PluginManager(object):
                 win.step()
             win.destroy()
             while gtk.events_pending(): gtk.main_iteration()
-            if lock: gtk.threads_leave()
 
         for song in songs:
             if song._was_updated():

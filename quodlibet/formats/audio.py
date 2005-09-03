@@ -249,27 +249,19 @@ class AudioFile(dict):
             return self.get_format_cover()
         else: return None
 
-class AudioPlayer(object):
-    def __init__(self):
-        self.stopped = False
-
-    def end(self):
-        self.stopped = True
-
-    def replay_gain(self, song):
+    def replay_gain(self):
         gain = config.getint("settings", "gain")
         try:
             if gain == 0: raise ValueError
-            elif gain == 2 and "replaygain_album_gain" in song:
-                db = float(song["replaygain_album_gain"].split()[0])
-                peak = float(song["replaygain_album_peak"])
-            elif gain > 0 and "replaygain_track_gain" in song:
-                db = float(song["replaygain_track_gain"].split()[0])
-                peak = float(song["replaygain_track_peak"])
+            elif gain == 2 and "replaygain_album_gain" in self:
+                db = float(self["replaygain_album_gain"].split()[0])
+                peak = float(self["replaygain_album_peak"])
+            elif gain > 0 and "replaygain_track_gain" in self:
+                db = float(self["replaygain_track_gain"].split()[0])
+                peak = float(self["replaygain_track_peak"])
             else: raise ValueError
-            self.scale = 10.**(db / 20)
-            if self.scale * peak > 1: self.scale = 1.0 / peak # don't clip
-            if self.scale > 15: self.scale = 15 # probably messed up...
+            scale = 10.**(db / 20)
+            if scale * peak > 1: scale = 1.0 / peak # don't clip
+            return min(15, scale)
         except (KeyError, ValueError):
-            self.scale = 1
-
+            return 1

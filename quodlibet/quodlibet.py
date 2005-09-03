@@ -14,24 +14,17 @@ import os, sys
 
 def main():
     import signal, gtk, widgets, player, library
-    gtk.threads_init()
-
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
     window = widgets.init()
 
-    from threading import Thread
-    enable_periodic_save()
-    gtk.threads_enter()
+    #enable_periodic_save()
     song = library.library.get(config.get("memory", "song"))
-    t = Thread(
-        target=player.playlist.play,
-        args=(widgets.widgets.watcher, window.playlist, song))
-    gtk.quit_add(1, widgets.save_library, t)
+    player.playlist.setup(widgets.widgets.watcher, window.playlist, song)
+    gtk.quit_add(1, widgets.save_library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
-    t.start()
+    gtk.threads_init()
     gtk.main()
-    gtk.threads_leave()
 
 def print_status():
     if not os.path.exists(const.CURRENT): print "stopped"
@@ -203,7 +196,7 @@ def load_player():
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
     import player
-    try: player.init(config.get("settings", "backend"))
+    try: player.init(config.get("settings", "pipeline"))
     except IOError:
         import widgets, gobject
         gobject.idle_add(widgets.error_and_quit)

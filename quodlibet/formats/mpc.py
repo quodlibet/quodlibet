@@ -6,11 +6,14 @@
 #
 # $Id$
 
-from formats.audio import AudioFile, AudioPlayer
+import gst
+from formats.audio import AudioFile
 
 try: import musepack
 except ImportError: extensions = []
-else: extensions = [".mpc", ".mp+"]
+else:
+    if gst.element_factory_make('musepackdec'): extensions = [".mpc", ".mp+"]
+    else: extensions = []
 
 class MPCFile(AudioFile):
     # Map APE names to QL names. APE tags are also usually capitalized.
@@ -76,30 +79,4 @@ class MPCFile(AudioFile):
         tag.write()
         self.sanitize()
 
-class MPCPlayer(AudioPlayer):
-    def __init__(self, dev, song):
-        AudioPlayer.__init__(self)
-        self.audio = musepack.MPCFile(song["~filename"])
-        self.length = self.audio.length
-        self.pos = 0
-        self.dev = dev
-        self.dev.set_info(self.audio.frequency, 2)
-        self.replay_gain(song)
-        if self.scale != 1: self.audio.set_scale(self.scale)
-
-    def __iter__(self): return self
-
-    def seek(self, ms):
-        self.audio.seek(ms)
-        self.pos = ms
-
-    def next(self):
-        if self.stopped: raise StopIteration
-        else:
-            s = self.audio.read()
-            if s: self.dev.play(s)
-            else: raise StopIteration
-        return int(self.audio.position)
-
 info = MPCFile
-player = MPCPlayer

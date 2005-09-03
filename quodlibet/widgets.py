@@ -88,7 +88,8 @@ class CountManager(object):
         watcher.connect('song-ended', self.__end, pl)
 
     def __end(self, watcher, song, ended, pl):
-        if not ended:
+        if song is None: return
+        elif not ended:
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] += 1
             watcher.changed([song])
@@ -975,33 +976,56 @@ class MainWindow(gtk.Window):
 
     class PositionSlider(qltk.PopupHSlider):
         def __init__(self, watcher):
+            self.__lock = False
+            self.__sig = None
             hbox = gtk.HBox(spacing=3)
             l = gtk.Label("0:00")
             hbox.pack_start(l)
             hbox.pack_start(
                 gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
             qltk.PopupHSlider.__init__(self, hbox)
-            
-            self.scale.connect('adjust-bounds', self.__seek, watcher, l)
-            watcher.connect('song-started', self.__song_changed, l)
-            gobject.timeout_add(1000, self.__update_time, watcher, l)
 
-        def __seek(self, widget, val, watcher, l):
-            player.playlist.seek(val)
-            self.__update_time(watcher, l)
+            self.scale.connect('button-press-event', self.__seek_lock)
+            self.scale.connect('button-release-event', self.__seek_unlock)
+            self.scale.connect('key-press-event', self.__seek_lock)
+            self.scale.connect('key-release-event', self.__seek_unlock)
+            self.connect('scroll-event', self.__scroll)
+            self.scale.connect('value-changed', self.__update_time, l)
+
+            gobject.timeout_add(1000, self.__check_time, self.scale)
+            watcher.connect('song-started', self.__song_changed, l)
+
+        def __scroll(self, widget, event):
+            self.__lock = True
+            if self.__sig is not None:
+                gobject.source_remove(self.__sig)
+            self.__sig = gobject.timeout_add(100, self.__scroll_timeout)
+
+        def __scroll_timeout(self):
+            self.__lock = False
+            player.playlist.seek(self.scale.get_value())
+            self.__sig = None
+
+        def __seek_lock(self, scale, event): self.__lock = True
+        def __seek_unlock(self, scale, event):
+            self.__lock = False
+            player.playlist.seek(self.scale.get_value())
+
+        def __check_time(self, widget=None):
+            if not self.__lock:
+                self.scale.set_value(player.playlist.get_position())
+            return True
+
+        def __update_time(self, scale, timer):
+            cur = scale.get_value()
+            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
+            timer.set_text(cur)
 
         def __song_changed(self, watcher, song, label):
             if song:
                 length = song["~#length"]
                 self.scale.set_range(0, length * 1000)
             else: self.scale.set_range(0, 1)
-
-        def __update_time(self, watcher, timer):
-            cur, end = watcher.time
-            self.scale.set_value(cur)
-            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
-            timer.set_text(cur)
-            return True
 
     class VolumeSlider(qltk.PopupVSlider):
         def __init__(self, device):
@@ -1474,6 +1498,7 @@ class MainWindow(gtk.Window):
             statusbar.set_text, _("Could not play %s.") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
+        if song is None: return
         if not self.browser.dynamic(song):
             player.playlist.remove(song)
             iter = self.songlist.song_to_iter(song)
@@ -2627,8 +2652,8 @@ def init():
 
     return widgets.main
 
-def save_library(thread):
-    player.playlist.quitting()
+def save_library():
+    player.playlist.quit()
 
     # If something goes wrong here, it'll probably be caught
     # saving the library anyway.
@@ -2648,8 +2673,6 @@ def save_library(thread):
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
         qltk.ErrorMessage(None, _("Unable to save library"), err).run()
-
-    thread.join()
 
 def error_and_quit():
     qltk.ErrorMessage(

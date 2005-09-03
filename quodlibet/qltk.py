@@ -458,7 +458,6 @@ class WaitLoadWindow(gtk.Window):
         self.set_modal(True)
         self.set_decorated(False)
         self.set_resizable(False)
-        self.set_focus_on_map(False)
         self.add(gtk.Frame())
         self.child.set_shadow_type(gtk.SHADOW_OUT)
         vbox = gtk.VBox(spacing=12)
@@ -788,12 +787,16 @@ class PopupSlider(gtk.EventBox):
         window.connect('button-press-event', self.__button)
         hscale.connect('key-press-event', self.__key)
         hscale.set_draw_value(False)
-        hscale.set_update_policy(gtk.UPDATE_DELAYED)
+        hscale.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self.scale = hscale
         window.add(frame)
         frame.add(hscale)
         self.connect('scroll-event', self.__scroll, hscale)
-        self.__window.connect('scroll-event', self.__scroll, hscale)
+        self.__window.connect('scroll-event', self.__window_scroll)
+        self.scale.connect_object('scroll-event', self.emit, 'scroll-event')
+
+    def __window_scroll(self, window, event):
+        self.emit('scroll-event', event)
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError
@@ -836,7 +839,6 @@ class PopupSlider(gtk.EventBox):
         else: v -= adj.step_increment
         v = min(adj.upper, max(adj.lower, v))
         hscale.set_value(v)
-        hscale.emit('adjust-bounds', v)
 
     def __button(self, widget, ev):
         self.__popup_hide()
