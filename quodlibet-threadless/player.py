@@ -133,11 +133,6 @@ class PlaylistPlayer(object):
         self.__source.next()
         self.__get_song()
 
-    def quitting(self):
-        self.quit = True
-        self.paused = False
-        self.__end()
-
     def previous(self):
         self.paused = False
         self.__source.previous()
