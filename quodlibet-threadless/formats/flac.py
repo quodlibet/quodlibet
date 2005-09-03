@@ -7,7 +7,7 @@
 # $Id$
 
 import os, stat, audioop
-from formats.audio import AudioFile, AudioPlayer
+from formats.audio import AudioFile
 import util
 
 try: import flac.metadata, flac.decoder
@@ -83,4 +83,3 @@ class FLACFile(AudioFile):
             chain.write(True, True)
 
 info = FLACFile
-player = None

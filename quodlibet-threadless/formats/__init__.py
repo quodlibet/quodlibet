@@ -26,11 +26,9 @@ modules.remove(join(basename(base), "audio"))
 
 modules = zip(modules, map(__import__, modules))
 _infos = {}
-_players = {}
 for name, mod in modules:
     for ext in mod.extensions:
         _infos[ext] = mod.info
-        _players[ext] = mod.player
 
 def MusicFile(filename):
     for ext in _infos.keys():

@@ -6,7 +6,7 @@
 #
 # $Id$
 
-from formats.audio import AudioFile, AudioPlayer
+from formats.audio import AudioFile
 
 try: import modplug
 except ImportError: extensions = []
@@ -32,4 +32,4 @@ class ModFile(AudioFile):
         else: return False
 
 info = ModFile
-player = None
+

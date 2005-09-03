@@ -71,7 +71,8 @@ class PlaylistPlayer(object):
 
     def set_volume(self, v):
         self.__volume = v
-        self.bin.set_property('volume', v)
+        if self.__song is None: self.bin.set_property('volume', v)
+        else: self.bin.set_property('volume', v * self.__song.replay_gain())
     def get_volume(self): return self.__volume
     volume = property(get_volume, set_volume)
 
@@ -124,6 +125,7 @@ class PlaylistPlayer(object):
 
     def __do(self):
         self.__song = self.__get_song()
+        self.volume = self.__volume
             
     def reset(self):
         self.__source.reset()

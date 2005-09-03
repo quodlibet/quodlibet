@@ -2,7 +2,7 @@ import os, config
 
 from unittest import TestCase
 from tests import registerCase
-from formats.audio import AudioFile, AudioPlayer, Unknown
+from formats.audio import AudioFile, Unknown
 
 try: from sets import Set as set
 except ImportError: pass
@@ -232,6 +232,32 @@ class AudioFileTest(TestCase):
     def tearDown(self):
         os.unlink(quux["~filename"])
 
+class ReplayGain(TestCase):
+    def test_replaygain(self):
+        song = AudioFile({"replaygain_album_gain": "-1.00 dB",
+                          "replaygain_album_peak": "1.1",
+                          "replaygain_track_gain": "+1.0 dB",
+                          "replaygain_track_peak": "0.9"})
+
+        config.set("settings", "gain", 0)
+        self.failUnlessEqual(song.replay_gain(), 1)
+
+        config.set("settings", "gain", 1)
+        self.failUnless(song.replay_gain() > 1)
+        radio_rg = song.replay_gain()
+
+        config.set("settings", "gain", 2)
+        self.failUnless(song.replay_gain() < 1)
+
+        # verify complete ignorance of RG when tags aren't right
+        song["replaygain_album_gain"] = "fdsodgbdf"
+        self.failUnlessEqual(song.replay_gain(), 1)
+
+        del(song["replaygain_album_gain"])
+        del(song["replaygain_album_peak"])
+        # verify defaulting to track when album is present
+        self.failUnlessAlmostEqual(song.replay_gain(), radio_rg)
+
 # Special test case for find_cover since it has to create/remove
 # various files.
 class FindCoverTest(TestCase):
@@ -269,45 +295,7 @@ class FindCoverTest(TestCase):
     def tearDown(self):
         for f in self.files: os.unlink(f)
 
-class AudioPlayerTest(TestCase):
-    def test_stopped(self):
-        f = AudioPlayer()
-        self.failIf(f.stopped)
-        f.end()
-        self.failUnless(f.stopped)
-
-    def test_replaygain(self):
-        song = AudioPlayer()
-        rg = {"replaygain_album_gain": "-1.00 dB",
-              "replaygain_album_peak": "1.1",
-              "replaygain_track_gain": "+1.0 dB",
-              "replaygain_track_peak": "0.9"}
-
-        config.set("settings", "gain", 0)
-        song.replay_gain(rg)
-        self.failUnlessEqual(song.scale, 1)
-
-        config.set("settings", "gain", 1)
-        song.replay_gain(rg)
-        self.failUnless(song.scale > 1)
-        radio_rg = song.scale
-
-        config.set("settings", "gain", 2)
-        song.replay_gain(rg)
-        self.failUnless(song.scale < 1)
-
-        # verify complete ignorance of RG when tags aren't right
-        rg["replaygain_album_gain"] = "fdsodgbdf"
-        song.replay_gain(rg)
-        self.failUnlessEqual(song.scale, 1)
-
-        del(rg["replaygain_album_gain"])
-        del(rg["replaygain_album_peak"])
-        # verify defaulting to track when album is present
-        song.replay_gain(rg)
-        self.failUnlessAlmostEqual(song.scale, radio_rg)
-
 registerCase(UnknownTest)
 registerCase(AudioFileTest)
 registerCase(FindCoverTest)
-registerCase(AudioPlayerTest)
+registerCase(ReplayGain)

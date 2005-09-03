@@ -7,7 +7,7 @@
 # $Id$
 
 import audioop
-from formats.audio import AudioFile, AudioPlayer
+from formats.audio import AudioFile
 
 try: import ogg.vorbis
 except ImportError: extensions = []
@@ -71,4 +71,3 @@ class OggFile(AudioFile):
         self.sanitize()
 
 info = OggFile
-player = None

@@ -6,7 +6,7 @@
 #
 # $Id$
 
-from formats.audio import AudioFile, AudioPlayer
+from formats.audio import AudioFile
 import config
 import re
 import audioop
@@ -245,4 +245,3 @@ class MP3File(AudioFile):
             return None
 
 info = MP3File
-player = None

@@ -6,7 +6,7 @@
 #
 # $Id$
 
-from formats.audio import AudioFile, AudioPlayer
+from formats.audio import AudioFile
 
 try: import musepack
 except ImportError: extensions = []
@@ -77,4 +77,3 @@ class MPCFile(AudioFile):
         self.sanitize()
 
 info = MPCFile
-player = None
