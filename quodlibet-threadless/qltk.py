@@ -792,7 +792,11 @@ class PopupSlider(gtk.EventBox):
         window.add(frame)
         frame.add(hscale)
         self.connect('scroll-event', self.__scroll, hscale)
-        self.__window.connect('scroll-event', self.__scroll, hscale)
+        self.__window.connect('scroll-event', self.__window_scroll)
+        self.scale.connect_object('scroll-event', self.emit, 'scroll-event')
+
+    def __window_scroll(self, window, event):
+        self.emit('scroll-event', event)
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError

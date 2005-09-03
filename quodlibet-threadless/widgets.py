@@ -977,24 +977,41 @@ class MainWindow(gtk.Window):
     class PositionSlider(qltk.PopupHSlider):
         def __init__(self, watcher):
             self.__lock = False
+            self.__sig = None
             hbox = gtk.HBox(spacing=3)
             l = gtk.Label("0:00")
             hbox.pack_start(l)
             hbox.pack_start(
                 gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
             qltk.PopupHSlider.__init__(self, hbox)
+
             self.scale.connect('button-press-event', self.__seek_lock)
             self.scale.connect('button-release-event', self.__seek_unlock)
+            self.scale.connect('key-press-event', self.__seek_lock)
+            self.scale.connect('key-release-event', self.__seek_unlock)
+            self.connect('scroll-event', self.__scroll)
             self.scale.connect('value-changed', self.__update_time, l)
+
             gobject.timeout_add(1000, self.__check_time, self.scale)
             watcher.connect('song-started', self.__song_changed, l)
+
+        def __scroll(self, widget, event):
+            self.__lock = True
+            if self.__sig is not None:
+                gobject.source_remove(self.__sig)
+            self.__sig = gobject.timeout_add(100, self.__scroll_timeout)
+
+        def __scroll_timeout(self):
+            self.__lock = False
+            player.playlist.seek(self.scale.get_value())
+            self.__sig = None
 
         def __seek_lock(self, scale, event): self.__lock = True
         def __seek_unlock(self, scale, event):
             self.__lock = False
-            player.playlist.seek(scale.get_value())
+            player.playlist.seek(self.scale.get_value())
 
-        def __check_time(self, scale):
+        def __check_time(self, widget=None):
             if not self.__lock:
                 self.scale.set_value(player.playlist.get_position())
             return True
