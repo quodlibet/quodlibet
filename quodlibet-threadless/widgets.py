@@ -998,7 +998,9 @@ class MainWindow(gtk.Window):
             else: self.scale.set_range(0, 1)
 
         def __update_time(self, watcher, timer):
-            cur, end = watcher.time
+            cur, end = player.playlist.time()
+            if cur < 0 or end < 0: return True
+            watcher.time = (cur, end)
             self.scale.set_value(cur)
             cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
             timer.set_text(cur)

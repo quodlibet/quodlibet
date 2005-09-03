@@ -47,16 +47,16 @@ class PlaylistPlayer(object):
         self.__source = source
         self.info = info
         self.go_to(song)
-        gobject.timeout_add(500, self.__update_time)
 
-    def __update_time(self):
-        p =self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
-        p = max(p, 0) // gst.MSECOND
-        t = self.bin.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
-        t = max(t, gst.MSECOND) // gst.MSECOND
-        self.info.time = (p, t)
-        return True
-
+    def time(self):
+        if self.bin.get_property('uri'):
+            p = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
+            p //= gst.MSECOND
+            t = self.bin.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
+            t //= gst.MSECOND
+            return (p, t)
+        else: return (0, 1)
+        
     def __iter__(self): return iter(self.__source)
 
     def __set_paused(self, paused):
@@ -85,6 +85,7 @@ class PlaylistPlayer(object):
         else: self.bin.set_state(gst.STATE_PLAYING)
 
     def seek(self, pos):
+        print "request to seek to", pos
         if self.bin.get_property('uri'):
             pos = max(0, int(pos))
             if pos >= self.__length:
@@ -95,8 +96,6 @@ class PlaylistPlayer(object):
             event = gst.event_new_seek(
                 gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
             self.bin.send_event(event)
-
-            self.info.time = (pos, self.__length)
             self.info.seek(self.__song, pos)
 
     def remove(self, song):
@@ -104,9 +103,7 @@ class PlaylistPlayer(object):
 
     def __get_song(self):
         song = self.__source.current
-        if song is None:
-            self.__update_time()
-            return None
+        if song is None: return None
 
         config.set("memory", "song", song["~filename"])
         try: self.__load_song(song)
@@ -118,7 +115,6 @@ class PlaylistPlayer(object):
             self.info.time = (0, 1)
         else:
             self.info.song_started(song)
-        self.__update_time()
         return song
 
     def __end(self, stopped=True):
