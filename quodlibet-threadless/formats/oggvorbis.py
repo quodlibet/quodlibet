@@ -6,12 +6,14 @@
 #
 # $Id$
 
-import audioop
+import gst
 from formats.audio import AudioFile
 
 try: import ogg.vorbis
 except ImportError: extensions = []
-else: extensions = [".ogg"]
+else:
+    if gst.element_factory_make('vorbisdec'): extensions = [".ogg"]
+    else: pass
 
 class OggFile(AudioFile):
     def __init__(self, filename):

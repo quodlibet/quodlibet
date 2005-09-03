@@ -6,11 +6,14 @@
 #
 # $Id$
 
+import gst
 from formats.audio import AudioFile
 
 try: import musepack
 except ImportError: extensions = []
-else: extensions = [".mpc", ".mp+"]
+else:
+    if gst.element_factory_make('musepackdec'): extensions = [".mpc", ".mp+"]
+    else: extensions = []
 
 class MPCFile(AudioFile):
     # Map APE names to QL names. APE tags are also usually capitalized.

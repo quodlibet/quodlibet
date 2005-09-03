@@ -6,15 +6,17 @@
 #
 # $Id$
 
+import gst
 from formats.audio import AudioFile
 
 try: import modplug
 except ImportError: extensions = []
-# Based on the supported format list at http://www.linuks.mine.nu/modplugplay
-else: extensions = ['.669', '.amf', '.ams', '.dbm', '.dmf', '.dsm', '.far',
-                    '.it', '.j2b', '.mdl', '.med', '.mod', '.mt2', '.mtm',
-                    '.okt', '.psm', '.ptm', '.s3m', '.stm', '.ult', '.umx',
-                    '.xm']
+else:
+    if gst.element_factory_make("mikmod"):
+        extensions = ['.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med',
+                      '.mod', '.mt2', '.mtm', '.okt', '.s3m', '.stm', '.ult',
+                      '.gdm', '.xm']
+    else: extensions = []
 
 class ModFile(AudioFile):
     def __init__(self, filename):

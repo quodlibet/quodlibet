@@ -9,11 +9,14 @@
 from formats.audio import AudioFile
 import config
 import re
-import audioop
 import tempfile
+import gst
+
 try: import mutagen.id3, mad
 except ImportError: extensions = []
-else: extensions = [".mp3", ".mp2"]
+else:
+    if gst.element_factory_make("mad"): extensions = [".mp3", ".mp2"]
+    else: extensions = []
 
 def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
 

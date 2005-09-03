@@ -6,13 +6,16 @@
 #
 # $Id$
 
-import os, stat, audioop
+import os, stat
+import gst
 from formats.audio import AudioFile
 import util
 
 try: import flac.metadata, flac.decoder
 except: extensions = []
-else: extensions = [".flac"]
+else:
+    if gst.element_factory_make('flacdec'): extensions = [".flac"]
+    else: extensions = []
 
 class FLACFile(AudioFile):
     def __init__(self, filename):
