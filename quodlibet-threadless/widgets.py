@@ -2636,6 +2636,8 @@ def init():
     return widgets.main
 
 def save_library():
+    player.playlist.quit()
+
     # If something goes wrong here, it'll probably be caught
     # saving the library anyway.
     try: config.write(const.CONFIG)

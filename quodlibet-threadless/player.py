@@ -84,6 +84,9 @@ class PlaylistPlayer(object):
         if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
         else: self.bin.set_state(gst.STATE_PLAYING)
 
+    def quit(self):
+        self.bin.set_state(gst.STATE_NULL)
+
     def seek(self, pos):
         if self.bin.get_property('uri'):
             pos = max(0, int(pos))
@@ -102,31 +105,25 @@ class PlaylistPlayer(object):
 
     def __get_song(self):
         song = self.__source.current
-        if song is None: return None
-
-        config.set("memory", "song", song["~filename"])
-        try: self.__load_song(song)
-        except Exception, err:
-            sys.stderr.write(str(err) + "\n")
-            player = None
-            self.paused = True
-            self.info.missing(song)
-            self.info.time = (0, 1)
-        else:
-            self.info.song_started(song)
-        return song
+        if song is not None:
+            config.set("memory", "song", song["~filename"])
+            try: self.__load_song(song)
+            except Exception, err:
+                sys.stderr.write(str(err) + "\n")
+                self.paused = True
+                self.info.missing(song)
+                song = None
+        self.__song = song
+        self.info.song_started(song)
+        self.volume = self.__volume
 
     def __end(self, stopped=True):
         self.info.song_ended(self.__song, stopped)
         self.__song = None
         if not stopped:
             self.__source.next()
-            gobject.idle_add(self.__do)
+            gobject.idle_add(self.__get_song)
 
-    def __do(self):
-        self.__song = self.__get_song()
-        self.volume = self.__volume
-            
     def reset(self):
         self.__source.reset()
 
@@ -134,7 +131,7 @@ class PlaylistPlayer(object):
         self.__end()
         self.paused = False
         self.__source.next()
-        self.__do()
+        self.__get_song()
 
     def quitting(self):
         self.quit = True
@@ -145,12 +142,12 @@ class PlaylistPlayer(object):
         self.paused = False
         self.__source.previous()
         self.__end()
-        self.__do()
+        self.__get_song()
 
     def go_to(self, song):
         self.__source.go_to(song)
         self.__end()
-        self.__do()
+        self.__get_song()
 
 global device, playlist
 playlist = None
