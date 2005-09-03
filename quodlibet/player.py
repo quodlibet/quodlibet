@@ -146,15 +146,13 @@ class PlaylistPlayer(object):
         self.__end()
         self.__get_song()
 
-global device, playlist
+global playlist
 playlist = None
-device = None
 
 def init(pipeline):
     os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
     gst.use_threads(True)
 
-    global device, playlist
+    global playlist
     playlist = PlaylistPlayer(pipeline or "gconf")
-    device = playlist
     return playlist

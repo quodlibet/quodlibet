@@ -256,7 +256,7 @@ class AboutWindow(gtk.AboutDialog):
         fmts = ", ".join([os.path.basename(name) for name, mod
                           in formats.modules if mod.extensions])
         text = "%s\n%s" % (_("Supported formats: %s"), _("Audio device: %s"))
-        self.set_comments(text % (fmts, player.device.name))
+        self.set_comments(text % (fmts, player.playlist.name))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
         self.set_translator_credits(_('translator-credits'))
@@ -942,7 +942,7 @@ class MainWindow(gtk.Window):
             self.pack_start(hbox, expand=False, fill=False)
 
             hbox = gtk.HBox(spacing=3)
-            self.volume = MainWindow.VolumeSlider(player.device)
+            self.volume = MainWindow.VolumeSlider(player.playlist)
             hbox.pack_start(self.volume, expand=False)
             hbox.pack_start(MainWindow.PositionSlider(watcher))
             self.pack_start(hbox, expand=False, fill=False)
@@ -1052,7 +1052,7 @@ class MainWindow(gtk.Window):
             device.volume = val
             config.set("memory", "volume", str(slider.get_value()))
 
-    def __init__(self):
+    def __init__(self, watcher):
         gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
 
@@ -1082,12 +1082,12 @@ class MainWindow(gtk.Window):
         hbox = gtk.HBox()
 
         # play controls
-        t = self.PlayControls(widgets.watcher)
+        t = self.PlayControls(watcher)
         self.volume = t.volume
         hbox.pack_start(t, expand=False, fill=False)
 
         # song text
-        text = self.SongInfo(widgets.watcher)
+        text = self.SongInfo(watcher)
         # Packing the text directly into the hbox causes clipping problems
         # with Hebrew, so use an Alignment instead.
         alignment = gtk.Alignment(xalign=0, yalign=0, xscale=1, yscale=1)
@@ -1097,7 +1097,7 @@ class MainWindow(gtk.Window):
 
         # cover image
         self.image = CoverImage()
-        widgets.watcher.connect('song-started', self.image.set_song)
+        watcher.connect('song-started', self.image.set_song)
         hbox.pack_start(self.image, expand=False)
 
         self.child.pack_start(hbox, expand=False)
@@ -1139,7 +1139,7 @@ class MainWindow(gtk.Window):
 
         from songlist import PlaylistMux
         self.playlist = PlaylistMux(
-            widgets.watcher, self.qexpander.model, self.songlist.model)
+            watcher, self.qexpander.model, self.songlist.model)
 
         self.songpane = songpane = gtk.VBox(spacing=6)
         self.songpane.pack_start(self.song_scroller)
@@ -1187,15 +1187,14 @@ class MainWindow(gtk.Window):
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.get_selection().connect('changed', self.__set_time)
 
-        widgets.watcher.connect('removed', self.__set_time)
-        widgets.watcher.connect('refresh', self.__refresh)
-        widgets.watcher.connect('changed', self.__update_title)
-        widgets.watcher.connect('song-started', self.__song_started)
-        widgets.watcher.connect('song-ended', self.__song_ended)
-        widgets.watcher.connect(
-            'missing', self.__song_missing, self.__statusbar)
-        widgets.watcher.connect('paused', self.__update_paused, True)
-        widgets.watcher.connect('unpaused', self.__update_paused, False)
+        watcher.connect('removed', self.__set_time)
+        watcher.connect('refresh', self.__refresh)
+        watcher.connect('changed', self.__update_title)
+        watcher.connect('song-started', self.__song_started)
+        watcher.connect('song-ended', self.__song_ended)
+        watcher.connect('missing', self.__song_missing, self.__statusbar)
+        watcher.connect('paused', self.__update_paused, True)
+        watcher.connect('unpaused', self.__update_paused, False)
 
         self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
@@ -2636,23 +2635,23 @@ def init():
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    watcher = widgets.watcher = qltk.SongWatcher()
+    watcher = qltk.SongWatcher()
 
     # plugin support
     from plugins import PluginManager
-    SongList.pm = PluginManager(widgets.watcher, ["./plugins", const.PLUGINS])
+    SongList.pm = PluginManager(watcher, ["./plugins", const.PLUGINS])
     SongList.pm.rescan()
 
+    widgets.watcher = watcher
+    widgets.main = MainWindow(watcher)
     gtk.about_dialog_set_url_hook(website_wrap)
-    widgets.main = MainWindow()
+
+    song = library.get(config.get("memory", "song"))
+    player.playlist.setup(watcher, widgets.main.playlist, song)
+
     # These stay alive in the watcher.
     FSInterface(watcher)
     CountManager(watcher, widgets.main.playlist)
-    player.playlist.info = widgets.watcher
-
-    util.mkdir(const.DIR)
-
-    return widgets.main
 
 def save_library():
     player.playlist.quit()

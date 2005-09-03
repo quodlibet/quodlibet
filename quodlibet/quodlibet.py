@@ -13,14 +13,13 @@
 import os, sys
 
 def main():
-    import signal, gtk, widgets, player, library
+    import util; util.mkdir(const.DIR)
+
+    import signal, gtk, widgets
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
-    window = widgets.init()
-
+    widgets.init()
     #enable_periodic_save()
-    song = library.library.get(config.get("memory", "song"))
-    player.playlist.setup(widgets.widgets.watcher, window.playlist, song)
     gtk.quit_add(1, widgets.save_library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
