@@ -86,7 +86,7 @@ class AlbumChooser(gtk.Dialog):
 				"", candidate.id])
 			i = 1
 			for track in candidate.tracklist:
-				if album[i - 1]['title'] and self.__title_match(album[i - 1]['title'], track['title']):
+				if 'title' in album[i - 1] and self.__title_match(album[i - 1]['title'], track['title']):
 					treestore.append(iter,
 						[escape(track['artist']), "%d. <b>%s</b>" %
 						  (i, escape(track['title'])), ""])
