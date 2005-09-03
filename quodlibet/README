@@ -37,12 +37,12 @@ EF/QL have a long, but not very complicated, dependency list. Many
 of them probably come with your OS distribution.
  Python (>= 2.3):	http://www.python.org
  PyGTK (>= 2.6):	http://www.pygtk.org
+ PyGSt (>= 0.8.2):	http://gstreamer.freedesktop.org/
  PyVorbis:		http://www.andrewchatham.com/pyogg/
  Pymad (MP3):		http://spacepants.org/src/pymad
 
 Optional:
  Modplug:		http://modplug-xmms.sourceforge.net
- PyAO (for ALSA):	http://www.andrewchatham.com/pyogg/
  PyFLAC/PyModPlug/PyMusepack:
 	http://www.sacredchao.net/quodlibet/wiki/Download
 

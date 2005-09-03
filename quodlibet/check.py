@@ -25,6 +25,17 @@ if __name__ == "__main__":
                          "(http://www.pygtk.org)" % NAME)
     else: print "found"
 
+    print "Checking for PyGSt >= 0.8.2:",
+    try:
+        import gstsdf
+        if gst.pygst_version < (0, 8, 2):
+            raise ImportError
+    except ImportError:
+        raise SystemExit("not found\n%s requires PyGSt 0.8.2. "
+                         "(http://gstreamer.freedesktop.org)" % NAME)
+    else: print "found"
+
+
     print "Checking for ogg.vorbis:",
     try: import ogg.vorbis
     except ImportError:
@@ -37,14 +48,6 @@ if __name__ == "__main__":
     except ImportError:
         print ("not found\n%s recommends MAD/pymad. "
                "(http://www.mars.org/home/rob/proj/mpeg/)" % NAME)
-    else: print "found"
-
-    print "Checking for ao:",
-    try: import ao
-    except ImportError:
-        print ("not found\n%s recommends libao/pyao "
-               "(for ALSA/aRts/ESD output).\n"
-               " (http://www.andrewchatham.com/pyogg/)" % NAME)
     else: print "found"
 
     print "Checking for egg.trayicon:",
