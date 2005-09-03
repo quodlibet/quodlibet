@@ -194,6 +194,11 @@ class PluginManager(object):
             try: obj = obj()
             except TypeError:
                 if obj is not mod: continue # let the module through
+            except (KeyboardInterrupt,MemoryError):
+                raise
+            except:
+                print_exc()
+                continue
 
             # if an object doesn't have all required metadata, skip it
             try:
