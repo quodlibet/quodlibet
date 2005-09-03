@@ -10,6 +10,9 @@ import os, sys
 import config
 import gobject, gst
 
+os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
+gst.use_threads(True)
+
 def GStreamerSink(pipeline):
     if pipeline == "gconf":
         try: import gconf
@@ -150,9 +153,6 @@ global playlist
 playlist = None
 
 def init(pipeline):
-    os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
-    gst.use_threads(True)
-
     global playlist
     playlist = PlaylistPlayer(pipeline or "gconf")
     return playlist

@@ -18,7 +18,7 @@ class Mock(object):
 import test_util, test_audio, test_parser, test_metadata
 import test_playlist
 # good but incomplete
-import test_leaks, test_qltk, test_widgets
+import test_leaks, test_qltk, test_widgets, test_player
 # not well-tested code
 import test_library, test_plugins
 
