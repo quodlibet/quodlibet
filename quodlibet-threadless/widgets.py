@@ -976,35 +976,39 @@ class MainWindow(gtk.Window):
 
     class PositionSlider(qltk.PopupHSlider):
         def __init__(self, watcher):
+            self.__lock = False
             hbox = gtk.HBox(spacing=3)
             l = gtk.Label("0:00")
             hbox.pack_start(l)
             hbox.pack_start(
                 gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
             qltk.PopupHSlider.__init__(self, hbox)
-            
-            self.scale.connect('adjust-bounds', self.__seek, watcher, l)
+            self.scale.connect('button-press-event', self.__seek_lock)
+            self.scale.connect('button-release-event', self.__seek_unlock)
+            self.scale.connect('value-changed', self.__update_time, l)
+            gobject.timeout_add(1000, self.__check_time, self.scale)
             watcher.connect('song-started', self.__song_changed, l)
-            gobject.timeout_add(1000, self.__update_time, watcher, l)
 
-        def __seek(self, widget, val, watcher, l):
-            player.playlist.seek(val)
-            self.__update_time(watcher, l)
+        def __seek_lock(self, scale, event): self.__lock = True
+        def __seek_unlock(self, scale, event):
+            self.__lock = False
+            player.playlist.seek(scale.get_value())
+
+        def __check_time(self, scale):
+            if not self.__lock:
+                self.scale.set_value(player.playlist.get_position())
+            return True
+
+        def __update_time(self, scale, timer):
+            cur = scale.get_value()
+            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
+            timer.set_text(cur)
 
         def __song_changed(self, watcher, song, label):
             if song:
                 length = song["~#length"]
                 self.scale.set_range(0, length * 1000)
             else: self.scale.set_range(0, 1)
-
-        def __update_time(self, watcher, timer):
-            cur, end = player.playlist.time()
-            if cur < 0 or end < 0: return True
-            watcher.time = (cur, end)
-            self.scale.set_value(cur)
-            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
-            timer.set_text(cur)
-            return True
 
     class VolumeSlider(qltk.PopupVSlider):
         def __init__(self, device):

@@ -787,7 +787,7 @@ class PopupSlider(gtk.EventBox):
         window.connect('button-press-event', self.__button)
         hscale.connect('key-press-event', self.__key)
         hscale.set_draw_value(False)
-        hscale.set_update_policy(gtk.UPDATE_DELAYED)
+        hscale.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self.scale = hscale
         window.add(frame)
         frame.add(hscale)
@@ -835,7 +835,6 @@ class PopupSlider(gtk.EventBox):
         else: v -= adj.step_increment
         v = min(adj.upper, max(adj.lower, v))
         hscale.set_value(v)
-        hscale.emit('adjust-bounds', v)
 
     def __button(self, widget, ev):
         self.__popup_hide()

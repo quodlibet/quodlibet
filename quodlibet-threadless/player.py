@@ -48,14 +48,12 @@ class PlaylistPlayer(object):
         self.info = info
         self.go_to(song)
 
-    def time(self):
+    def get_position(self):
         if self.bin.get_property('uri'):
             p = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
             p //= gst.MSECOND
-            t = self.bin.query(gst.QUERY_TOTAL, gst.FORMAT_TIME)
-            t //= gst.MSECOND
-            return (p, t)
-        else: return (0, 1)
+            return p
+        else: return 0
         
     def __iter__(self): return iter(self.__source)
 
@@ -85,7 +83,6 @@ class PlaylistPlayer(object):
         else: self.bin.set_state(gst.STATE_PLAYING)
 
     def seek(self, pos):
-        print "request to seek to", pos
         if self.bin.get_property('uri'):
             pos = max(0, int(pos))
             if pos >= self.__length:
