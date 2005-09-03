@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup, Extension
-setup(name = "pyflac", version = "0.0.3",
+setup(name = "pyflac", version = "0.0.4",
       url="http://sacredchao.net/~piman/software/python.shtml",
       description = "libFLAC wrapper",
       author = "David Collett",
