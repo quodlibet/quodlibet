@@ -196,7 +196,7 @@ def load_player():
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
     import player
-    try: player.init(config.get("settings", "backend"))
+    try: player.init(config.get("settings", "pipeline"))
     except IOError:
         import widgets, gobject
         gobject.idle_add(widgets.error_and_quit)

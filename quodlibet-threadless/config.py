@@ -73,8 +73,7 @@ def init(*rc_files):
           "addreplace": "0", # 0 - replace tags, 1 - add tags, in TBP
           "titlecase": "false", # titlecase values in TBP
           "splitval": "true", # split values in TBP
-
-          "backend": "ao:alsa09", # audio backend
+          "pipeline": "", # GStreamer audio pipeline
 
           # initial column headers
           "headers": "~#track ~title~version ~album~part artist ~length"

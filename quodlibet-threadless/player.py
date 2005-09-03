@@ -8,24 +8,25 @@
 
 import os, sys
 import config
-import gobject, gst, gst.play
+import gobject, gst
 
-def GStreamerSink(sinkname):
-    if sinkname == "gconf":
+def GStreamerSink(pipeline):
+    if pipeline == "gconf":
         try: import gconf
         except ImportError: sinkname = "osssink"
         else:
             c = gconf.client_get_default()
             val = c.get("/system/gstreamer/0.8/default/audiosink")
-            if val.type == gconf.VALUE_STRING: sinkname = val.get_string()
-            else: sinkname = "osssink"
+            if val.type == gconf.VALUE_STRING: pipeline = val.get_string()
+            else: pipeline = "osssink"
 
-    s = gst.element_factory_make(sinkname)
-    if s: return s
-    elif sinkname != "osssink":
-        return gst.element_factory_make("osssink")
-    else:
-        raise SystemExit("No valid GStreamer sinks found.")
+    try: return gst.parse_launch(pipeline), pipeline
+    except gobject.GError, err:
+        if pipeline != "osssink":
+            print "%r failed, falling back to osssink (%s)." % (pipeline, err)
+            try: return gst.parse_launch("osssink"), "osssink"
+            except gobject.GError: pass
+    raise SystemExit("No valid GStreamer sinks found.")
 
 class PlaylistPlayer(object):
     __paused = False
@@ -34,8 +35,8 @@ class PlaylistPlayer(object):
     __volume = 1.0
 
     def __init__(self, device):
-        device = GStreamerSink(device)
-        self.name = device.get_name()
+        device, pipeline = GStreamerSink(device)
+        self.name = pipeline
         self.bin = gst.element_factory_make('playbin')
         self.bin.set_property('video-sink', None)
         self.bin.set_property('audio-sink', device)
@@ -151,16 +152,13 @@ class PlaylistPlayer(object):
 
 global device, playlist
 playlist = None
+device = None
 
-def init(devid):
-    if ":" in devid:
-        name, args = devid.split(":")[0], devid.split(":")[1:]
-    else: name, args = devid, []
-
+def init(pipeline):
     os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
     gst.use_threads(True)
-    
+
     global device, playlist
-    playlist = PlaylistPlayer(*args)
+    playlist = PlaylistPlayer(pipeline or "gconf")
     device = playlist
     return playlist
