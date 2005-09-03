@@ -2,6 +2,7 @@ pyflac (0.0.4-1) unstable; urgency=low
 
   * New upstream version.
   * Build-Depend on >= 1.1.2-1 to ensure we use libflac7.
+  * Build-Depend on SWIG again.
   * Standards-Version 3.6.2.
 
  -- Joe Wreschnig <piman@debian.org>  Sat, 03 Sep 2005 13:17:28 -0500

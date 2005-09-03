@@ -2,7 +2,7 @@ Source: pyflac
 Section: python
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
-Build-Depends: debhelper (>= 4.0.0), libflac-dev (>= 1.1.2-1), python-dev
+Build-Depends: debhelper (>= 4.0.0), libflac-dev (>= 1.1.2-1), python-dev, swig (>= 1.3.24-1)
 Standards-Version: 3.6.2
 
 Package: python-flac
