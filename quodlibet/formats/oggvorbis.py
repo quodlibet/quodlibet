@@ -13,7 +13,7 @@ try: import ogg.vorbis
 except ImportError: extensions = []
 else:
     if gst.element_factory_make('vorbisdec'): extensions = [".ogg"]
-    else: pass
+    else: extensions = []
 
 class OggFile(AudioFile):
     def __init__(self, filename):
