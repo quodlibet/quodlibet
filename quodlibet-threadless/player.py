@@ -110,9 +110,11 @@ class PlaylistPlayer(object):
             try: self.__load_song(song)
             except Exception, err:
                 sys.stderr.write(str(err) + "\n")
-                self.paused = True
                 self.info.missing(song)
-                song = None
+                self.next()
+                self.paused = True
+                return
+        else: self.bin.set_state(gst.STATE_NULL)
         self.__song = song
         self.info.song_started(song)
         self.volume = self.__volume
