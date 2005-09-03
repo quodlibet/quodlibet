@@ -203,7 +203,7 @@ typedef struct FLAC__Metadata_Iterator {} FLAC__Metadata_Iterator;
 // which makes the output into a python string of the correct length :)
 %extend FLAC__StreamMetadata_VorbisComment_Entry {
     FLAC__bool matches(const char *field_name, unsigned field_name_length) {
-        return FLAC__metadata_object_vorbiscomment_entry_matches(self, field_name, field_name_length);
+        return FLAC__metadata_object_vorbiscomment_entry_matches(*self, field_name, field_name_length);
     }
     FLAC__StreamMetadata_VorbisComment_Entry *__getitem__(int index) {
         return self+index;

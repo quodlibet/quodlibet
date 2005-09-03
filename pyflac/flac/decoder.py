@@ -4,7 +4,7 @@
 
 import _decoder
 
-def _swig_setattr(self,class_type,name,value):
+def _swig_setattr_nondynamic(self,class_type,name,value,static=1):
     if (name == "this"):
         if isinstance(value, class_type):
             self.__dict__[name] = value.this
@@ -13,7 +13,13 @@ def _swig_setattr(self,class_type,name,value):
             return
     method = class_type.__swig_setmethods__.get(name,None)
     if method: return method(self,value)
-    self.__dict__[name] = value
+    if (not static) or hasattr(self,name) or (name == "thisown"):
+        self.__dict__[name] = value
+    else:
+        raise AttributeError("You cannot add attributes to %s" % self)
+
+def _swig_setattr(self,class_type,name,value):
+    return _swig_setattr_nondynamic(self,class_type,name,value,0)
 
 def _swig_getattr(self,class_type,name):
     method = class_type.__swig_getmethods__.get(name,None)
@@ -45,7 +51,7 @@ class FileDecoder(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, FileDecoder, name)
     def __repr__(self):
-        return "<C FLAC__FileDecoder instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__FileDecoder instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["protected_"] = _decoder.FileDecoder_protected__set
     __swig_getmethods__["protected_"] = _decoder.FileDecoder_protected__get
     if _newclass:protected_ = property(_decoder.FileDecoder_protected__get, _decoder.FileDecoder_protected__set)
@@ -89,6 +95,7 @@ class FileDecoder(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class FileDecoderPtr(FileDecoder):
     def __init__(self, this):
         _swig_setattr(self, FileDecoder, 'this', this)
@@ -110,7 +117,7 @@ class FileEncoder(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, FileEncoder, name)
     def __repr__(self):
-        return "<C FLAC__FileEncoder instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__FileEncoder instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["protected_"] = _decoder.FileEncoder_protected__set
     __swig_getmethods__["protected_"] = _decoder.FileEncoder_protected__get
     if _newclass:protected_ = property(_decoder.FileEncoder_protected__get, _decoder.FileEncoder_protected__set)
@@ -125,6 +132,7 @@ class FileEncoder(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class FileEncoderPtr(FileEncoder):
     def __init__(self, this):
         _swig_setattr(self, FileEncoder, 'this', this)
@@ -138,7 +146,7 @@ class Metadata(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, Metadata, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["type"] = _decoder.Metadata_type_set
     __swig_getmethods__["type"] = _decoder.Metadata_type_get
     if _newclass:type = property(_decoder.Metadata_type_get, _decoder.Metadata_type_set)
@@ -158,6 +166,7 @@ class Metadata(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class MetadataPtr(Metadata):
     def __init__(self, this):
         _swig_setattr(self, Metadata, 'this', this)
@@ -171,7 +180,7 @@ class FLAC__StreamMetadata_data(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, FLAC__StreamMetadata_data, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_data instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_data instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["stream_info"] = _decoder.FLAC__StreamMetadata_data_stream_info_set
     __swig_getmethods__["stream_info"] = _decoder.FLAC__StreamMetadata_data_stream_info_get
     if _newclass:stream_info = property(_decoder.FLAC__StreamMetadata_data_stream_info_get, _decoder.FLAC__StreamMetadata_data_stream_info_set)
@@ -201,6 +210,7 @@ class FLAC__StreamMetadata_data(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class FLAC__StreamMetadata_dataPtr(FLAC__StreamMetadata_data):
     def __init__(self, this):
         _swig_setattr(self, FLAC__StreamMetadata_data, 'this', this)
@@ -214,7 +224,7 @@ class StreamInfo(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, StreamInfo, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_StreamInfo instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_StreamInfo instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["min_blocksize"] = _decoder.StreamInfo_min_blocksize_set
     __swig_getmethods__["min_blocksize"] = _decoder.StreamInfo_min_blocksize_get
     if _newclass:min_blocksize = property(_decoder.StreamInfo_min_blocksize_get, _decoder.StreamInfo_min_blocksize_set)
@@ -250,6 +260,7 @@ class StreamInfo(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class StreamInfoPtr(StreamInfo):
     def __init__(self, this):
         _swig_setattr(self, StreamInfo, 'this', this)
@@ -263,7 +274,7 @@ class Padding(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, Padding, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_Padding instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_Padding instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["dummy"] = _decoder.Padding_dummy_set
     __swig_getmethods__["dummy"] = _decoder.Padding_dummy_get
     if _newclass:dummy = property(_decoder.Padding_dummy_get, _decoder.Padding_dummy_set)
@@ -274,6 +285,7 @@ class Padding(_object):
         try:
             if self.thisown: destroy(self)
         except: pass
+
 
 class PaddingPtr(Padding):
     def __init__(self, this):
@@ -288,7 +300,7 @@ class Application(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, Application, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_Application instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_Application instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["id"] = _decoder.Application_id_set
     __swig_getmethods__["id"] = _decoder.Application_id_get
     if _newclass:id = property(_decoder.Application_id_get, _decoder.Application_id_set)
@@ -303,6 +315,7 @@ class Application(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class ApplicationPtr(Application):
     def __init__(self, this):
         _swig_setattr(self, Application, 'this', this)
@@ -316,7 +329,7 @@ class SeekPoint(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, SeekPoint, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_SeekPoint instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_SeekPoint instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["sample_number"] = _decoder.SeekPoint_sample_number_set
     __swig_getmethods__["sample_number"] = _decoder.SeekPoint_sample_number_get
     if _newclass:sample_number = property(_decoder.SeekPoint_sample_number_get, _decoder.SeekPoint_sample_number_set)
@@ -334,6 +347,7 @@ class SeekPoint(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class SeekPointPtr(SeekPoint):
     def __init__(self, this):
         _swig_setattr(self, SeekPoint, 'this', this)
@@ -347,7 +361,7 @@ class SeekTable(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, SeekTable, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_SeekTable instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_SeekTable instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["num_points"] = _decoder.SeekTable_num_points_set
     __swig_getmethods__["num_points"] = _decoder.SeekTable_num_points_get
     if _newclass:num_points = property(_decoder.SeekTable_num_points_get, _decoder.SeekTable_num_points_set)
@@ -362,6 +376,7 @@ class SeekTable(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class SeekTablePtr(SeekTable):
     def __init__(self, this):
         _swig_setattr(self, SeekTable, 'this', this)
@@ -375,7 +390,7 @@ class VorbisCommentEntry(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, VorbisCommentEntry, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_VorbisComment_Entry instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_VorbisComment_Entry instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["length"] = _decoder.VorbisCommentEntry_length_set
     __swig_getmethods__["length"] = _decoder.VorbisCommentEntry_length_get
     if _newclass:length = property(_decoder.VorbisCommentEntry_length_get, _decoder.VorbisCommentEntry_length_set)
@@ -390,6 +405,7 @@ class VorbisCommentEntry(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class VorbisCommentEntryPtr(VorbisCommentEntry):
     def __init__(self, this):
         _swig_setattr(self, VorbisCommentEntry, 'this', this)
@@ -403,7 +419,7 @@ class VorbisComment(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, VorbisComment, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_VorbisComment instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_VorbisComment instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["vendor_string"] = _decoder.VorbisComment_vendor_string_set
     __swig_getmethods__["vendor_string"] = _decoder.VorbisComment_vendor_string_get
     if _newclass:vendor_string = property(_decoder.VorbisComment_vendor_string_get, _decoder.VorbisComment_vendor_string_set)
@@ -421,6 +437,7 @@ class VorbisComment(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class VorbisCommentPtr(VorbisComment):
     def __init__(self, this):
         _swig_setattr(self, VorbisComment, 'this', this)
@@ -434,7 +451,7 @@ class CueSheetIndex(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, CueSheetIndex, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_CueSheet_Index instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_CueSheet_Index instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["offset"] = _decoder.CueSheetIndex_offset_set
     __swig_getmethods__["offset"] = _decoder.CueSheetIndex_offset_get
     if _newclass:offset = property(_decoder.CueSheetIndex_offset_get, _decoder.CueSheetIndex_offset_set)
@@ -449,6 +466,7 @@ class CueSheetIndex(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class CueSheetIndexPtr(CueSheetIndex):
     def __init__(self, this):
         _swig_setattr(self, CueSheetIndex, 'this', this)
@@ -462,7 +480,7 @@ class CueSheetTrack(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, CueSheetTrack, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_CueSheet_Track instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_CueSheet_Track instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["offset"] = _decoder.CueSheetTrack_offset_set
     __swig_getmethods__["offset"] = _decoder.CueSheetTrack_offset_get
     if _newclass:offset = property(_decoder.CueSheetTrack_offset_get, _decoder.CueSheetTrack_offset_set)
@@ -492,6 +510,7 @@ class CueSheetTrack(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class CueSheetTrackPtr(CueSheetTrack):
     def __init__(self, this):
         _swig_setattr(self, CueSheetTrack, 'this', this)
@@ -505,7 +524,7 @@ class CueSheet(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, CueSheet, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_CueSheet instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_CueSheet instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["media_catalog_number"] = _decoder.CueSheet_media_catalog_number_set
     __swig_getmethods__["media_catalog_number"] = _decoder.CueSheet_media_catalog_number_get
     if _newclass:media_catalog_number = property(_decoder.CueSheet_media_catalog_number_get, _decoder.CueSheet_media_catalog_number_set)
@@ -529,6 +548,7 @@ class CueSheet(_object):
             if self.thisown: destroy(self)
         except: pass
 
+
 class CueSheetPtr(CueSheet):
     def __init__(self, this):
         _swig_setattr(self, CueSheet, 'this', this)
@@ -542,7 +562,7 @@ class Unknown(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, Unknown, name)
     def __repr__(self):
-        return "<C FLAC__StreamMetadata_Unknown instance at %s>" % (self.this,)
+        return "<%s.%s; proxy of C FLAC__StreamMetadata_Unknown instance at %s>" % (self.__class__.__module__, self.__class__.__name__, self.this,)
     __swig_setmethods__["data"] = _decoder.Unknown_data_set
     __swig_getmethods__["data"] = _decoder.Unknown_data_get
     if _newclass:data = property(_decoder.Unknown_data_get, _decoder.Unknown_data_set)
@@ -553,6 +573,7 @@ class Unknown(_object):
         try:
             if self.thisown: destroy(self)
         except: pass
+
 
 class UnknownPtr(Unknown):
     def __init__(self, this):
