@@ -191,7 +191,7 @@ class PluginWindow(gtk.Window):
     def __destroy(self):
         try: del(widgets.plugins)
         except AttributeError: pass
-        config.write(const.CONFIG)
+        else: config.write(const.CONFIG)
 
     def __description(self, selection, frame):
         model, iter = selection.get_selected()
@@ -273,14 +273,7 @@ class AboutWindow(gtk.AboutDialog):
         self.destroy()
 
 class PreferencesWindow(gtk.Window):
-    class _Pane(object):
-        def _toggle(self, c, name, section="settings"):
-            config.set(section, name, str(bool(c.get_active())))
-
-        def _changed(self, cb, name, section="settings"):
-            config.set(section, name, str(cb.get_active()))
-
-    class SongList(_Pane, gtk.VBox):
+    class SongList(gtk.VBox):
         def __init__(self):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
@@ -384,7 +377,7 @@ class PreferencesWindow(gtk.Window):
             config.set("settings", "headers", " ".join(headers))
             SongList.set_all_column_headers(headers)
 
-    class Browsers(_Pane, gtk.VBox):
+    class Browsers(gtk.VBox):
         def __init__(self):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
@@ -448,7 +441,7 @@ class PreferencesWindow(gtk.Window):
             if hasattr(widgets.main.browser, 'refresh_panes'):
                 widgets.main.browser.refresh_panes(restore=True)
 
-    class Player(_Pane, gtk.VBox):
+    class Player(gtk.VBox):
         def __init__(self):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
@@ -473,12 +466,15 @@ class PreferencesWindow(gtk.Window):
             f.get_label_widget().set_mnemonic_widget(cb)
             f.child.add(cb)
             cb.set_active(config.getint("settings", "gain"))
-            cb.connect('changed', self._changed, 'gain')
+            cb.connect('changed', self.__changed, "settings", "gain")
             self.pack_start(f, expand=False)
 
             self.show_all()
 
-    class Library(_Pane, gtk.VBox):
+        def __changed(self, cb, section, name):
+            config.set(section, name, str(cb.get_active()))
+
+    class Library(gtk.VBox):
         def __init__(self):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
@@ -495,7 +491,7 @@ class PreferencesWindow(gtk.Window):
                               "be added to your library"))
             hb.pack_start(b, expand=False)
             b.connect('clicked', self.__select, e, const.HOME)
-            e.connect('changed', self._changed, 'scan')
+            e.connect('changed', self.__changed, 'settings', 'scan')
             f.child.add(hb)
             self.pack_start(f, expand=False)
 
@@ -504,7 +500,7 @@ class PreferencesWindow(gtk.Window):
             hb = gtk.HBox(spacing=6)
             e = gtk.Entry()
             e.set_text(config.get("editing", "split_on"))
-            e.connect('changed', self._changed, 'split_on', 'editing')
+            e.connect('changed', self.__changed, 'editing', 'split_on')
             tips.set_tip(e, _('Separators for splitting tags'))
             l = gtk.Label(_("Split _on:"))
             l.set_use_underline(True)
@@ -530,7 +526,7 @@ class PreferencesWindow(gtk.Window):
             if resp == gtk.RESPONSE_OK:
                 entry.set_text(":".join(map(util.fsdecode, fns)))
 
-        def _changed(self, entry, name, section="settings"):
+        def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
 
     def __init__(self, parent):
@@ -552,7 +548,7 @@ class PreferencesWindow(gtk.Window):
     def __destroy(self):
         try: del(widgets.preferences)
         except AttributeError: pass
-        config.write(const.CONFIG)
+        else: config.write(const.CONFIG)
 
 class TrayIcon(object):
     def __init__(self, pixbuf, cbs):
