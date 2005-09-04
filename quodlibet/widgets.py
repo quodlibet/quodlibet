@@ -288,13 +288,6 @@ class PreferencesWindow(gtk.Window):
             vbox = gtk.VBox(spacing=12)
             tips = gtk.Tooltips()
 
-            c = qltk.ConfigCheckButton(
-                _("_Jump to playing song automatically"), 'settings', 'jump')
-            tips.set_tip(c, _("When the playing song changes, "
-                              "scroll to it in the song list"))
-            c.set_active(config.state("jump"))
-            self.pack_start(c, expand=False)
-
             buttons = {}
             table = gtk.Table(3, 3)
             table.set_homogeneous(True)
@@ -460,11 +453,17 @@ class PreferencesWindow(gtk.Window):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Player")
+
+            tips = gtk.Tooltips()
             c = qltk.ConfigCheckButton(
-                _("Show _album covers"), 'settings', 'cover')
-            c.set_active(config.state("cover"))
-            c.connect('toggled', self.__toggle_cover)
+                _("_Jump to playing song automatically"), 'settings', 'jump')
+            tips.set_tip(c, _("When the playing song changes, "
+                              "scroll to it in the song list"))
+            c.set_active(config.state("jump"))
             self.pack_start(c, expand=False)
+
+            tips.enable()
+            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             f = qltk.Frame(_("_Volume Normalization"), bold=True)
             cb = gtk.combo_box_new_text()
@@ -478,10 +477,6 @@ class PreferencesWindow(gtk.Window):
             self.pack_start(f, expand=False)
 
             self.show_all()
-
-        def __toggle_cover(self, c):
-            if config.state("cover"): widgets.main.image.show()
-            else: widgets.main.image.hide()
 
     class Library(_Pane, gtk.VBox):
         def __init__(self):
@@ -831,8 +826,7 @@ class CoverImage(gtk.Frame):
                     self.show()
 
     def show(self):
-        if config.state("cover") and self.__albumfn:
-            gtk.Frame.show(self)
+        if self.__albumfn: gtk.Frame.show(self)
 
     def __show_cover(self, event):
         if (self.__song and event.button == 1 and

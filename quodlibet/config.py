@@ -63,7 +63,6 @@ def init(*rc_files):
         { "scan": "", # scan directories, :-separated
 
           "gain": "2", # replaygain - none, radio, audiophile
-          "cover": "true", # display album cover images
           "jump": "true", # scroll song list on current song change
 
           # probably belong in memory
