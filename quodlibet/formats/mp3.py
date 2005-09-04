@@ -228,7 +228,7 @@ class MP3File(AudioFile):
 
         if self["~#rating"] != 2 or self["~#playcount"] != 0:
             t = mutagen.id3.POPM(email="quodlibet@lists.sacredchao.net",
-                                 rating=(64*self["~#rating"])-1,
+                                 rating=max(0, (64*self["~#rating"])-1),
                                  count=self["~#playcount"])
             tag.loaded_frame(t)
 
