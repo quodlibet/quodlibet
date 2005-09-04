@@ -107,7 +107,6 @@ class TPluginWindow(TestCase):
         w = PluginWindow(None)
         w.destroy()
         del(SongList.pm)
-        os.unlink(const.CONFIG)
 
 registerCase(TPluginWindow)
 
@@ -115,7 +114,6 @@ class TPreferencesWindow(TestCase):
     def test_create(self):
         w = PreferencesWindow(None)
         w.destroy()
-        os.unlink(const.CONFIG)
 
 registerCase(TPreferencesWindow)
 
