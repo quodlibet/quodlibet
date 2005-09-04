@@ -1006,7 +1006,7 @@ class MainWindow(gtk.Window):
             player.playlist.seek(self.scale.get_value())
 
         def __check_time(self, widget=None):
-            if not self.__lock:
+            if not (self.__lock or player.playlist.paused):
                 self.scale.set_value(player.playlist.get_position())
             return True
 
