@@ -1170,6 +1170,8 @@ class MainWindow(gtk.Window):
         self.connect('delete-event', MainWindow.__delete_event)
         self.connect_object('destroy', TrayIcon.destroy, self.icon)
         self.connect('destroy', gtk.main_quit)
+        self.connect('window-state-event', self.__window_state_changed)
+        self.__hidden_state = 0
 
         self.songlist.connect('button-press-event', self.__songs_button_press)
         self.songlist.connect('key-press-event', self.__songs_queue_add)
@@ -1188,6 +1190,21 @@ class MainWindow(gtk.Window):
 
         self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
+
+    def __window_state_changed(self, window, event):
+        assert window is self
+        self.__window_state = event.new_window_state
+
+    def hide(self):
+        self.__hidden_state = self.__window_state
+        if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            self.unmaximize()
+        super(MainWindow, self).hide()
+
+    def show(self):
+        super(MainWindow, self).show()
+        if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            self.maximize()
 
     def __show_or(self, widget, prop):
         ssv = self.song_scroller.get_property('visible')
