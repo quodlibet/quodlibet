@@ -129,7 +129,8 @@ class Library(dict):
             self[song['~filename']] = song
 
     def remove(self, song):
-        del(self[song['~filename']])
+        try: del(self[song['~filename']])
+        except KeyError: print "W: %s not in library." % song["~filename"]
 
     def add_song(self, song):
         if song["~filename"] not in self:
