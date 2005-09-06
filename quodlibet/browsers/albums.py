@@ -321,7 +321,7 @@ class AlbumList(Browser, gtk.VBox):
 
     def __update(self, changed, model):
         to_change = []
-        to_remove = []        
+        to_remove = []
         def update(model, path, iter):
             album = model[iter][0]
             if album is not None and album.title in changed:
@@ -340,6 +340,8 @@ class AlbumList(Browser, gtk.VBox):
         self.__update(changed, model)
 
     def __changed_songs(self, watcher, changed, model):
+        changed = filter(lambda x: x["~filename"] in library, changed)
+        if not changed: return
         self.__remove_songs(watcher, changed, model)
         self.__add_songs(watcher, changed, model)
 
