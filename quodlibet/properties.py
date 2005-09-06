@@ -1030,6 +1030,13 @@ class SongProperties(gtk.Window):
                 else: keys.insert(0, comment)
 
             for comment in keys:
+                # FIXME: This is really bad. It leads to problems removing
+                # a tag from songs with different values since only the
+                # first value gets noticed (since we safenicestr the displayed
+                # value). However, without it, changing breaks from the
+                # inverse problem: since the safenicestr'd orig_value isn't
+                # in the file, the whole tag is changed, not just the one
+                # value.
                 orig_value = songinfo[comment].split("\n")
                 value = songinfo[comment].safenicestr()
                 edited = False
