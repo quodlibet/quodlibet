@@ -286,7 +286,7 @@ class QLBrainz(object):
 					None, _("Couldn't locate album by name"),
 					_("Couldn't find an album with the name \"%s\". To retry "
 					  "with another possible album name, enter it here.") %
-					  escape(album_name), [], gtk.STOCK_OK).run()
+					  album_name, [], gtk.STOCK_OK).run()
 				# recursion. well...
 				if name: self.plugin_album(album, name)
 					
