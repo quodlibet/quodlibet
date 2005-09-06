@@ -1187,7 +1187,7 @@ class SongProperties(gtk.Window):
                 col = gtk.TreeViewColumn(header, render, text=i + 2)
                 col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
                 view.append_column(col)
-            spls = config.get("editing", "split_on")
+            spls = config.get("editing", "split_on").split()
 
             for song in songs:
                 basename = song("~basename")
