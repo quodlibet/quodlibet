@@ -75,9 +75,10 @@ class DirectoryTree(gtk.TreeView):
         head, tail = os.path.split(initial)
         while head != os.path.dirname(os.environ["HOME"]) and tail != '':
             if tail:
-                dirs = [d for d in dircache.listdir(head) if
-                        (d[0] != "." and
-                         os.path.isdir(os.path.join(head,d)))]
+                def isvisibledir(t):
+                    return t[0] != "." and os.path.isdir(os.path.join(head, t))
+                try: dirs = filter(isvisibledir, dircache.listdir(head))
+                except OSError: break
                 try: path.insert(0, dirs.index(tail))
                 except ValueError: break
             head, tail = os.path.split(head)

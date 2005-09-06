@@ -117,7 +117,7 @@ class TPreferencesWindow(TestCase):
 
 registerCase(TPreferencesWindow)
 
-class TestDirTree(TestCase):
+class TDirectoryTree(TestCase):
     def test_initial(self):
         for path in ["/", "/home", os.environ["HOME"], "/usr/bin"]:
             dirlist = DirectoryTree(path)
@@ -134,6 +134,12 @@ class TestDirTree(TestCase):
             selected = [model[row][0] for row in rows]
             dirlist.destroy()
             self.failUnlessEqual([path], selected)
+
+    def test_bad_go_to(self):
+         newpath = "/woooooo/bar/fun/broken"
+         dirlist = DirectoryTree("/")
+         dirlist.go_to(newpath)
+         dirlist.destroy()
 
 class SongWatcher(TestCase):
     def setUp(self):
@@ -241,6 +247,6 @@ class ValidaterTests(TestCase):
         self.invalidate('replaygain_track_peak', peaks)
         self.invalidate('replaygain_album_peak', peaks)
 
-registerCase(TestDirTree)
+registerCase(TDirectoryTree)
 registerCase(SongWatcher)
 registerCase(ValidaterTests)
