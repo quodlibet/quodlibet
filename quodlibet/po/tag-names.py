@@ -52,12 +52,14 @@ _("website")
 # Beats per minute; I don't know if other languages use a different word.
 _("BPM")
 
-ngettext("performer", "performers", 1)
-ngettext("lyricist", "lyricists", 1)
-ngettext("arranger", "arrangers", 1)
-ngettext("composer", "composers", 1)
-ngettext("conductor", "conductors", 1)
-ngettext("author", "authors", 1)
+_("performers")
+_("lyricists")
+_("arrangers")
+_("composers")
+_("conductors")
+_("authors")
+_("artists")
+_("albums")
 
 # Not really tag names, but this is the best place for them so far.
 

@@ -177,8 +177,8 @@ class DeleteDialog(gtk.Dialog):
         hbox.pack_start(i, expand=False)
         vbox = gtk.VBox(spacing=6)
         base = os.path.basename(files[0])
-        l = ngettext("Permanently delete this file?",
-                     "Permanently delete these files?", len(files))
+        if len(files) == 1: l = _("Permanently delete this file?")
+        else: l = _("Permanently delete these files?")
         if len(files) == 1:
             exp = gtk.Expander("%s" % util.fsdecode(base))
         else:

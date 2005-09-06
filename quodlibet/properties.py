@@ -265,8 +265,9 @@ class SongProperties(gtk.Window):
             def _people(self, (song,)):
                 vb = SongProperties.Information.SongInfo(3, 0)
                 if "artist" in song:
-                    title = util.capitalize(ngettext(
-                        "artist", "artists", len(song.list('artist'))))
+                    if len(song.list("artist")) == 1: title = _("artist")
+                    else: title = _("artists")
+                    title = util.capitalize(title)
                     l = self.Label(song["artist"])
                     l.set_ellipsize(pango.ELLIPSIZE_END)
                     vb.pack_start(l)
@@ -284,7 +285,8 @@ class SongProperties(gtk.Window):
                     if tag_ in song:
                         l = self.Label(song[tag_])
                         l.set_ellipsize(pango.ELLIPSIZE_END)
-                        name = ngettext(tag_, names, len(song.list(tag_)))
+                        if len(song.list(tag_)) == 1: name = tag_
+                        else: name = names
                         vb.pack_frame(util.capitalize(name), l)
                 if not vb.get_children(): vb.destroy()
                 else: self.pack_frame(title, vb)
@@ -434,14 +436,14 @@ class SongProperties(gtk.Window):
                 performers = list(performers); performers.sort()
 
                 if artists:
-                    title = util.capitalize(
-                        ngettext("artist", "artists", len(artists)))
+                    if len(artists) == 1: title = _("artist")
+                    else: title = _("artists")
+                    title = util.capitalize(title)
                     self.pack_frame(title, self.Label("\n".join(artists)))
                 if performers:
-                    title = util.capitalize(
-                        ngettext("performer", "performers", len(performers)))
-                    if len(performers) == 1: title = tag("performer")
-                    else: title = util.capitalize(_("performers"))
+                    if len(artists) == 1: title = _("performer")
+                    else: title = _("performers")
+                    title = util.capitalize(title)
                     self.pack_frame(title, self.Label("\n".join(performers)))
 
             def _description(self, songs):
@@ -878,14 +880,11 @@ class SongProperties(gtk.Window):
                 comment = add.get_tag()
                 value = add.get_value()
                 if not self.__songinfo.can_change(comment):
-                    title = ngettext("Invalid tag", "Invalid tags", 1)
-                    msg = ngettext(
-                        "Invalid tag <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing this tag.",
-                        "Invalid tags <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing these tags.",
-                        1) % util.escape(comment)
-                    qltk.ErrorMessage(None, title, msg).run
+                    title = _("Invalid tag")
+                    msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
+                            " selected do not support editing this tag."
+                            ) % util.escape(comment)
+                    qltk.ErrorMessage(None, title, msg).run()
                 else:
                     self.__add_new_tag(model, comment, value)
                     break
@@ -1154,16 +1153,16 @@ class SongProperties(gtk.Window):
                 if not songinfo.can_change(header):
                     invalid.append(header)
             if len(invalid) and songs:
-                title = ngettext("Invalid tag", "Invalid tags", len(invalid))
-                msg = ngettext(
-                        "Invalid tag <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing this tag.",
-                        "Invalid tags <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing these tags.",
-                        len(invalid))
-
-                qltk.ErrorMessage(parent, title,
-                                  msg % ", ".join(invalid)).run()
+                if len(invalid) == 1:
+                    title = _("Invalid tag")
+                    msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
+                            " selected do not support editing this tag.")
+                else:
+                    title = _("Invalid tags")
+                    msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
+                            " selected do not support editing these tags.")
+                qltk.ErrorMessage(
+                    parent, title, msg % ", ".join(invalid)).run()
                 pattern = util.PatternFromFile("")
 
             view.set_model(None)
@@ -1639,8 +1638,7 @@ class SongProperties(gtk.Window):
 
         if len(songs) > 1:
             render = gtk.CellRendererText()
-            expander = gtk.Expander(ngettext("Apply to this _file...",
-                    "Apply to these _files...", len(songs)))
+            expander = gtk.Expander(_("Apply to these _files..."))
             c1 = gtk.TreeViewColumn(_('File'), render, text=1)
             c1.set_sort_column_id(1)
             c1.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
