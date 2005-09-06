@@ -1903,7 +1903,6 @@ class SongList(qltk.HintedTreeView):
             self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
             self.set_visible(True)
             self.set_clickable(True)
-            self.set_reorderable(True)
             self.set_sort_indicator(False)
             self.set_cell_data_func(self._render, self._cdf, t)
 
