@@ -1464,9 +1464,10 @@ class MainWindow(gtk.Window):
             player.playlist.seek(seek_to)
         elif c == "p":
             filename = os.read(source, 4096)
-            if library.add(filename):
+            if library.add(filename): widgets.watcher.added(filename)
+            if filename in library:
                 song = library[filename]
-                if song not in player.playlist.get_playlist():
+                if song not in self.playlist.pl:
                     e_fn = sre.escape(filename)
                     self.__make_query("filename = /^%s/c" % e_fn)
                 player.playlist.go_to(library[filename])
@@ -1476,9 +1477,10 @@ class MainWindow(gtk.Window):
         elif c == "d":
             filename = os.read(source, 4096)
             for added, changed, removed in library.scan([filename]): pass
-            widgets.watcher.added(added)
-            widgets.watcher.changed(changed)
-            widgets.watcher.removed(removed)
+            if added: widgets.watcher.added(added)
+            if changed: widgets.watcher.changed(changed)
+            if removed: widgets.watcher.removed(removed)
+            if added or changed or removed: widgets.watcher.refresh()
             self.__make_query("filename = /^%s/c" % sre.escape(filename))
 
         os.close(self.fifo)
