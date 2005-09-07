@@ -1456,7 +1456,7 @@ class MainWindow(gtk.Window):
         elif c == "q": self.__make_query(os.read(source, 4096))
         elif c == "s":
             time = os.read(source, 20)
-            seek_to = widgets.watcher.time[0]
+            seek_to = player.playlist.get_position()
             if time[0] == "+": seek_to += util.parse_time(time[1:]) * 1000
             elif time[0] == "-": seek_to -= util.parse_time(time[1:]) * 1000
             else: seek_to = util.parse_time(time) * 1000
