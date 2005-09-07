@@ -6,15 +6,19 @@
 #
 # $Id$
 
-PLUGIN_NAME = 'View in Nautilus'
-PLUGIN_DESC = 'View directories in Nautilus.'
-PLUGIN_ICON = 'gtk-open'
-PLUGIN_VERSION = '0.11'
-
 import bonobo; from qltk import ConfirmAction
-def plugin_songs(songs):
-    dirs = dict.fromkeys([song('~dirname') for song in songs]).keys()
-    if len(dirs) < 4 or ConfirmAction(None, "Open %d Windows?" % len(dirs),
+
+class ViewNautilus(object):
+    PLUGIN_NAME = 'View in Nautilus'
+    PLUGIN_DESC = 'View directories in Nautilus.'
+    PLUGIN_ICON = 'gtk-open'
+    PLUGIN_VERSION = '0.13'
+
+    def plugin_songs(self, songs):
+        dirs = dict.fromkeys([song('~dirname') for song in songs]).keys()
+        if len(dirs) < 4 or ConfirmAction(
+            None, "Open %d Windows?" % len(dirs),
             "Do you want to open %d Nautilus windows?" % len(dirs)).run():
-        nautilus = bonobo.get_object('OAFIID:Nautilus_Shell', 'Nautilus/Shell')
-        nautilus.open_windows(dirs, '', '', '')
+            nautilus = bonobo.get_object(
+                'OAFIID:Nautilus_Shell', 'Nautilus/Shell')
+            nautilus.open_windows(dirs, '', '', '')

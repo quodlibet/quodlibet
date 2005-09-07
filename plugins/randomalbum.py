@@ -6,30 +6,29 @@
 #
 # $Id$
 
-PLUGIN_NAME = 'Random Album Playback'
-PLUGIN_DESC = ("When your playlist reaches its end a new album will "
-               "be chosen randomly and started. It requires that your "
-               "active browser supports filtering by album.")
-PLUGIN_VERSION = '0.13'
-
 import gobject
 import library, player
 from widgets import widgets
 
-def plugin_on_song_started(song):
-    if song is None:
-        browser = widgets.main.browser
-        album = library.library.random("album")
-        if browser.can_filter('album') and album:
-            browser.filter('album', [album])
-            gobject.idle_add(unpause)
+class RandomAlbum(object):
+    PLUGIN_NAME = 'Random Album Playback'
+    PLUGIN_DESC = ("When your playlist reaches its end a new album will "
+                   "be chosen randomly and started. It requires that your "
+                   "active browser supports filtering by album.")
+    PLUGIN_VERSION = '0.13'
 
-def unpause():
-    # Wait for the next GTK loop to make sure everything's tidied up
-    # after the song ended. Also, if this is program startup and the
-    # previous current song wasn't found, we'll get this condition
-    # as well, so just leave the player paused if that's the case.
-    try: player.playlist.next()
-    except AttributeError: player.playlist.paused = True
-        
-    
+    def plugin_on_song_started(self, song):
+        if song is None:
+            browser = widgets.main.browser
+            album = library.library.random("album")
+            if browser.can_filter('album') and album:
+                browser.filter('album', [album])
+                gobject.idle_add(self.unpause)
+
+    def unpause(self):
+        # Wait for the next GTK loop to make sure everything's tidied up
+        # after the song ended. Also, if this is program startup and the
+        # previous current song wasn't found, we'll get this condition
+        # as well, so just leave the player paused if that's the case.
+        try: player.playlist.next()
+        except AttributeError: player.playlist.paused = True
