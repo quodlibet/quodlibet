@@ -339,7 +339,7 @@ msgstr "groupage"
 
 #: ../po/tag-names.py:28
 msgid "label ID"
-msgstr "numéro sérial"
+msgstr "numéro catalogue"
 
 #: ../po/tag-names.py:29
 msgid "language"
