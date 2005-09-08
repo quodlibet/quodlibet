@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-06 17:04-0500\n"
+"POT-Creation-Date: 2005-09-08 01:35-0500\n"
 "PO-Revision-Date: 2005-09-06 16:59-0500\n"
 "Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
@@ -132,8 +132,8 @@ msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
 #: ../quodlibet.py:142
-msgid "Turn shuffle off, on, or toggle it"
-msgstr "Turn shuffle off, on, or toggle it"
+msgid "Set or toggle the playback order"
+msgstr "Set or toggle the playback order"
 
 #: ../quodlibet.py:143
 msgid "Turn repeat off, on, or toggle it"
@@ -252,7 +252,7 @@ msgstr "No time information"
 msgid "[Invalid Encoding]"
 msgstr "[Invalid Encoding]"
 
-#: ../util.py:553 ../properties.py:883 ../properties.py:1157
+#: ../util.py:547 ../properties.py:883 ../properties.py:1157
 msgid "Invalid tag"
 msgstr "Invalid tag"
 
@@ -1586,6 +1586,17 @@ msgstr "_Disable Browser"
 #: ../browsers/search.py:178
 msgid "_Search Library"
 msgstr "_Search Library"
+
+#: ../browsers/filesystem.py:76
+msgid "_Add to Library"
+msgstr "_Add to Library"
+
+#: ../browsers/filesystem.py:116
+msgid "_File System"
+msgstr "_File System"
+
+#~ msgid "Turn shuffle off, on, or toggle it"
+#~ msgstr "Turn shuffle off, on, or toggle it"
 
 #~ msgid "_Genre"
 #~ msgstr "_Genre"
