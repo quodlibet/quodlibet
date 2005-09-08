@@ -1,4 +1,4 @@
-.TH quodlibet 1 "March 21st, 2005"
+.TH quodlibet 1 "September 8th, 2005"
 .SH NAME
 quodlibet \- audio library manager and player
 .br
@@ -216,14 +216,11 @@ tie any number of tags together;
 "~artist~album~discnumber~part~tracknumber~title~version" is an
 extreme case.
 .SH AUDIO BACKENDS
-By default QL uses the ao ALSA 0.9 driver for playing audio, and falls back
-to an OSS driver if that fails. You can change this in ~/.quodlibet/config
-by editing the 'backend' option. Common settings include 'oss', 'ao:oss',
-\'ao:alsa09', 'ao:esd', and 'ao:arts'.
-.PP
-You can also pass in the device name using another colon, for example
-\'ao:oss:/dev/sound/dsp2', 'ao:alsa09:hw:1', or
-\'ao:esd:music.example.com:5555'.
+Quod Libet uses GStreamer for audio playback. It tries to read your GConf
+GStreamer configuration, but if that fails it falls back to osssink. You
+can change the 'pipeline' option in ~/.quodlibet/config to use a different
+sink, or pass options to the sink. For example, you might use \fBesdsink\fR
+or \fBalsasink device=hw:1\fR.
 .SH FILES
 .IP ~/.quodlibet/songs 4
 A cached list of songs to load initially. The format is a pickled
@@ -238,6 +235,10 @@ A "key=value" file containing information about the currently playing song.
 .IP ~/.quodlibet/control 4
 A FIFO connected to the most-recently-started instance of the program.
 \-\-next, \-\-previous, etc., use this to control the player.
+.IP ~/.quodlibet/plugins/ 4
+Put plugins (from http://www.sacredchao.net/quodlibet/wiki/Plugins) here.
+.IP ~/.quodlibet/browsers/ 4
+Put custom library browsers here.
 .SH BUGS
 Editing/playing the same files with both Ex Falso and Quod Libet at
 the same time can lead to Quod Libet having an inconsistent library
@@ -253,8 +254,10 @@ Joe Wreschnig and Michael Urman are the primary authors of Ex Falso and
 Quod Libet.
 .SH SEE ALSO
 http://www.sacredchao.net/quodlibet/wiki/Guide,
+http://www.sacredchao.net/quodlibet/wiki/FAQ,
 .br
 .BR regex (7),
 .BR vorbiscomment (1),
 .BR id3v2 (1),
-.BR vorbisgain (1)
+.BR vorbisgain (1),
+.BR gst-launch (1)
