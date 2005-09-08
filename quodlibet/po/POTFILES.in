@@ -14,3 +14,4 @@ browsers/albums.py
 browsers/paned.py
 browsers/playlists.py
 browsers/search.py
+browsers/filesystem.py
