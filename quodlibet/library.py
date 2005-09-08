@@ -252,7 +252,7 @@ class Library(dict):
         for mp, songs in self.__masked_files.items():
             if os.path.ismount(mp):
                 self.update(songs)
-                added.extend(songs)
+                added.extend(songs.values())
                 del(self.__masked_files[mp])
 
         for d in dirs:
