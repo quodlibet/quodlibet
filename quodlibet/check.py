@@ -28,10 +28,10 @@ if __name__ == "__main__":
     print "Checking for PyGSt >= 0.8.2:",
     try:
         import gst
-        if gst.pygst_version < (0, 8, 2):
+        if gst.pygst_version < (0, 8, 1):
             raise ImportError
     except ImportError:
-        raise SystemExit("not found\n%s requires PyGSt 0.8.2. "
+        raise SystemExit("not found\n%s requires PyGSt 0.8.1. "
                          "(http://gstreamer.freedesktop.org)" % NAME)
     else: print "found"
 
