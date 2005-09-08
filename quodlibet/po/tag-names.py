@@ -25,6 +25,7 @@ _("filename")
 _("full name")
 _("genre")
 _("grouping")
+# alternately, "catalog number", "catalog ID", "label number"
 _("label ID")
 _("language")
 # date the song was last heard on
