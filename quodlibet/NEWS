@@ -21,6 +21,8 @@ Running Ex Falso and Quod Libet at the same time is not recommended
  * ~/.quodlibet/browsers is now scanned for custom browsers.
  * All synthetic tags (~dirname, ~basename, &c.) can be searched on.
  * All synthetic tags (notably, ~people) can be used in the Paned Browser.
+ * If the tray icon is visible, closing QL's main window will minimize it.
+   To actually quit, choose "Quit" from the Music menu or icon.
  * Ex Falso supports plugins.
  * Updated Russian translation by Nikolai Prokoschenko and Sergey Fedoseev.
  * Updated French translation by Joshua Kwan.
