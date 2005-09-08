@@ -10,6 +10,22 @@ Running Ex Falso and Quod Libet at the same time is not recommended
 (Ex Falso will warn you if you do this).
 
 0.13
+ * The GStreamer backend is cleaned up, and is now the only backend.
+   This results in lower background CPU usage and many fixes to
+   our audio processing. Gapless playback is gone.
+ * A play queue was added. (#69, #104)
+ * A file system browser has been added. This can view, edit, and play
+   files outside of your library. (#125)
+ * The Paned Browser has a search entry. (#163)
+ * Search Library lets you limit the number of results. (#166)
+ * ~/.quodlibet/browsers is now scanned for custom browsers.
+ * All synthetic tags (~dirname, ~basename, &c.) can be searched on.
+ * All synthetic tags (notably, ~people) can be used in the Paned Browser.
+ * Ex Falso supports plugins.
+ * Updated Russian translation by Nikolai Prokoschenko and Sergey Fedoseev.
+ * Updated French translation by Joshua Kwan.
+ * Updated Finnish translation by Jari Rahkonen.
+ * Updated Dutch translation by Hans van Dok.
 
 0.12 - focus ENTIRELY on the sexy bits.
  * New Mutagen ID3 reader/writer. (#3)
