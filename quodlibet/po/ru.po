@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-07 23:33-0500\n"
-"PO-Revision-Date: 2005-09-07 22:00+0200\n"
+"POT-Creation-Date: 2005-09-08 10:58-0500\n"
+"PO-Revision-Date: 2005-09-08 16:26+0200\n"
 "Last-Translator: Russian L10N Team <debian-l10n-russian@lists.debian.org>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -138,7 +138,7 @@ msgstr "[+|-][ЧЧ:]ММ:СС"
 
 #: ../quodlibet.py:142
 msgid "Set or toggle the playback order"
-msgstr ""
+msgstr "Переключить порядок проигрывания"
 
 #: ../quodlibet.py:143
 msgid "Turn repeat off, on, or toggle it"
@@ -332,130 +332,131 @@ msgstr "жанр"
 msgid "grouping"
 msgstr "группировка"
 
-#: ../po/tag-names.py:28
-msgid "label ID"
-msgstr ""
-
+#. alternately, "catalog number", "catalog ID", "label number"
 #: ../po/tag-names.py:29
+msgid "label ID"
+msgstr "ID издателя"
+
+#: ../po/tag-names.py:30
 msgid "language"
 msgstr "язык"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:31 ../properties.py:314
+#: ../po/tag-names.py:32 ../properties.py:314
 msgid "last played"
 msgstr "последнее воспроизведение"
 
-#: ../po/tag-names.py:32 ../properties.py:344
+#: ../po/tag-names.py:33 ../properties.py:344
 msgid "length"
 msgstr "время"
 
-#: ../po/tag-names.py:33
+#: ../po/tag-names.py:34
 msgid "license"
 msgstr "лицензия"
 
-#: ../po/tag-names.py:34
+#: ../po/tag-names.py:35
 msgid "location"
 msgstr "место записи"
 
-#: ../po/tag-names.py:35
+#: ../po/tag-names.py:36
 msgid "lyricist"
 msgstr "автор слов"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:37 ../properties.py:346
+#: ../po/tag-names.py:38 ../properties.py:346
 msgid "modified"
 msgstr "изменён"
 
-#: ../po/tag-names.py:38
+#: ../po/tag-names.py:39
 msgid "mount point"
 msgstr "точка монтирования"
 
 #. alternately, "movement", "section"
 #. alternately, "record label"
-#: ../po/tag-names.py:41
+#: ../po/tag-names.py:42
 msgid "organization"
 msgstr "организация"
 
-#: ../po/tag-names.py:42
+#: ../po/tag-names.py:43
 msgid "part"
 msgstr "часть"
 
-#: ../po/tag-names.py:43
+#: ../po/tag-names.py:44
 msgid "people"
 msgstr "Люди"
 
-#: ../po/tag-names.py:44 ../properties.py:444
+#: ../po/tag-names.py:45 ../properties.py:444
 msgid "performer"
 msgstr "исполнитель"
 
-#: ../po/tag-names.py:45 ../properties.py:315
+#: ../po/tag-names.py:46 ../properties.py:315
 msgid "play count"
 msgstr "воспроизводился"
 
-#: ../po/tag-names.py:46 ../properties.py:317
+#: ../po/tag-names.py:47 ../properties.py:317
 msgid "rating"
 msgstr "рейтинг"
 
-#: ../po/tag-names.py:47 ../properties.py:316
+#: ../po/tag-names.py:48 ../properties.py:316
 msgid "skip count"
 msgstr "количество пропусков"
 
-#: ../po/tag-names.py:48
+#: ../po/tag-names.py:49
 msgid "title"
 msgstr "название"
 
-#: ../po/tag-names.py:49
+#: ../po/tag-names.py:50
 msgid "track"
 msgstr "трек"
 
-#: ../po/tag-names.py:50
+#: ../po/tag-names.py:51
 msgid "version"
 msgstr "версия"
 
-#: ../po/tag-names.py:51
+#: ../po/tag-names.py:52
 msgid "website"
 msgstr "веб-сайт"
 
 #. Beats per minute; I don't know if other languages use a different word.
-#: ../po/tag-names.py:53
+#: ../po/tag-names.py:54
 msgid "BPM"
 msgstr "ударов в минуту"
 
-#: ../po/tag-names.py:55 ../properties.py:445
+#: ../po/tag-names.py:56 ../properties.py:445
 msgid "performers"
 msgstr "исполнители"
 
-#: ../po/tag-names.py:56
+#: ../po/tag-names.py:57
 msgid "lyricists"
 msgstr "авторы слов"
 
-#: ../po/tag-names.py:57
+#: ../po/tag-names.py:58
 msgid "arrangers"
 msgstr "аранжировщики"
 
-#: ../po/tag-names.py:58
+#: ../po/tag-names.py:59
 msgid "composers"
 msgstr "композиторы"
 
-#: ../po/tag-names.py:59
+#: ../po/tag-names.py:60
 msgid "conductors"
 msgstr "дирижёры"
 
-#: ../po/tag-names.py:60
+#: ../po/tag-names.py:61
 msgid "authors"
 msgstr "авторы"
 
-#: ../po/tag-names.py:61 ../properties.py:269 ../properties.py:440
+#: ../po/tag-names.py:62 ../properties.py:269 ../properties.py:440
 #: ../properties.py:554
 msgid "artists"
 msgstr "исполнители"
 
-#: ../po/tag-names.py:62 ../properties.py:570
+#: ../po/tag-names.py:63 ../properties.py:570
 msgid "albums"
 msgstr "альбомы"
 
 #. Not really tag names, but this is the best place for them so far.
-#: ../po/tag-names.py:66
+#: ../po/tag-names.py:67
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -463,7 +464,7 @@ msgstr[0] "%d секунда"
 msgstr[1] "%d секунды"
 msgstr[2] "%d секунд"
 
-#: ../po/tag-names.py:67
+#: ../po/tag-names.py:68
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -471,7 +472,7 @@ msgstr[0] "%d минута"
 msgstr[1] "%d минуты"
 msgstr[2] "%d минут"
 
-#: ../po/tag-names.py:68
+#: ../po/tag-names.py:69
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -479,7 +480,7 @@ msgstr[0] "%d час"
 msgstr[1] "%d часа"
 msgstr[2] "%d часов"
 
-#: ../po/tag-names.py:69
+#: ../po/tag-names.py:70
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -487,7 +488,7 @@ msgstr[0] "%d день"
 msgstr[1] "%d дня"
 msgstr[2] "%d дней"
 
-#: ../po/tag-names.py:70
+#: ../po/tag-names.py:71
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -1624,6 +1625,10 @@ msgstr "_Выключить браузер"
 msgid "_Search Library"
 msgstr "_Поиск по библиотеке"
 
-#~ msgid "Turn shuffle off, on, or toggle it"
-#~ msgstr ""
-#~ "Включить, выключить или переключить воспроизведение в случайном порядке"
+#: ../browsers/filesystem.py:76
+msgid "_Add to Library"
+msgstr "Добавить в фонотеку"
+
+#: ../browsers/filesystem.py:116
+msgid "_File System"
+msgstr "Файловая система"

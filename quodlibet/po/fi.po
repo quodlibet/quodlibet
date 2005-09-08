@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-06 17:04-0500\n"
-"PO-Revision-Date: 2005-07-25 19:56+0300\n"
+"POT-Creation-Date: 2005-09-08 10:57-0500\n"
+"PO-Revision-Date: 2005-09-08 10:52+0200\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -129,8 +129,8 @@ msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
 #: ../quodlibet.py:142
-msgid "Turn shuffle off, on, or toggle it"
-msgstr "Aseta sekoitus päälle, pois, tai vaihda sen tilaa"
+msgid "Set or toggle the playback order"
+msgstr "Aseta tai vaihda soittojärjestystä"
 
 #: ../quodlibet.py:143
 msgid "Turn repeat off, on, or toggle it"
@@ -250,9 +250,9 @@ msgstr "Ei aikatietoa"
 msgid "[Invalid Encoding]"
 msgstr "[Epäkelpo koodaus]"
 
-#: ../util.py:553 ../properties.py:883 ../properties.py:1157
+#: ../util.py:547 ../properties.py:883 ../properties.py:1157
 msgid "Invalid tag"
-msgstr "Virheellinen tunniste"
+msgstr "Epäkelpo tunniste"
 
 #. Translations for tag names
 #. Note that although tag names are translated in the main list view,
@@ -324,159 +324,159 @@ msgstr "tyylilaji"
 msgid "grouping"
 msgstr "ryhmittely"
 
-#: ../po/tag-names.py:28
-msgid "label ID"
-msgstr ""
-
+#. alternately, "catalog number", "catalog ID", "label number"
 #: ../po/tag-names.py:29
+msgid "label ID"
+msgstr "nimikkeen tunniste"
+
+#: ../po/tag-names.py:30
 msgid "language"
 msgstr "kieli"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:31 ../properties.py:314
+#: ../po/tag-names.py:32 ../properties.py:314
 msgid "last played"
 msgstr "viimeksi soitettu"
 
-#: ../po/tag-names.py:32 ../properties.py:344
+#: ../po/tag-names.py:33 ../properties.py:344
 msgid "length"
 msgstr "kesto"
 
-#: ../po/tag-names.py:33
+#: ../po/tag-names.py:34
 msgid "license"
 msgstr "lisenssi"
 
-#: ../po/tag-names.py:34
+#: ../po/tag-names.py:35
 msgid "location"
 msgstr "sijainti"
 
-#: ../po/tag-names.py:35
+#: ../po/tag-names.py:36
 msgid "lyricist"
 msgstr "solisti"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:37 ../properties.py:346
+#: ../po/tag-names.py:38 ../properties.py:346
 msgid "modified"
 msgstr "muokattu"
 
-#: ../po/tag-names.py:38
+#: ../po/tag-names.py:39
 msgid "mount point"
 msgstr "liitoskohta"
 
 #. alternately, "movement", "section"
 #. alternately, "record label"
-#: ../po/tag-names.py:41
+#: ../po/tag-names.py:42
 msgid "organization"
 msgstr "organisaatio"
 
-#: ../po/tag-names.py:42
+#: ../po/tag-names.py:43
 msgid "part"
 msgstr "osa"
 
-#: ../po/tag-names.py:43
-#, fuzzy
+#: ../po/tag-names.py:44
 msgid "people"
-msgstr "Henkilöt"
+msgstr "henkilöt"
 
-#: ../po/tag-names.py:44 ../properties.py:444
+#: ../po/tag-names.py:45 ../properties.py:444
 msgid "performer"
 msgstr "esittäjä"
 
-#: ../po/tag-names.py:45 ../properties.py:315
+#: ../po/tag-names.py:46 ../properties.py:315
 msgid "play count"
 msgstr "soittokerrat"
 
-#: ../po/tag-names.py:46 ../properties.py:317
+#: ../po/tag-names.py:47 ../properties.py:317
 msgid "rating"
 msgstr "arvosana"
 
-#: ../po/tag-names.py:47 ../properties.py:316
+#: ../po/tag-names.py:48 ../properties.py:316
 msgid "skip count"
 msgstr "ohituskerrat"
 
-#: ../po/tag-names.py:48
+#: ../po/tag-names.py:49
 msgid "title"
 msgstr "nimi"
 
-#: ../po/tag-names.py:49
+#: ../po/tag-names.py:50
 msgid "track"
 msgstr "raita"
 
-#: ../po/tag-names.py:50
+#: ../po/tag-names.py:51
 msgid "version"
 msgstr "versio"
 
-#: ../po/tag-names.py:51
+#: ../po/tag-names.py:52
 msgid "website"
 msgstr "web-sivusto"
 
 #. Beats per minute; I don't know if other languages use a different word.
-#: ../po/tag-names.py:53
+#: ../po/tag-names.py:54
 msgid "BPM"
-msgstr ""
+msgstr "BPM"
 
-#: ../po/tag-names.py:55 ../properties.py:445
+#: ../po/tag-names.py:56 ../properties.py:445
 msgid "performers"
-msgstr "esittäjät"
-
-#: ../po/tag-names.py:56
-msgid "lyricists"
-msgstr "solistit"
+msgstr "esittäjää"
 
 #: ../po/tag-names.py:57
-msgid "arrangers"
-msgstr "sovittajat"
+msgid "lyricists"
+msgstr "lyyrikkoa"
 
 #: ../po/tag-names.py:58
-msgid "composers"
-msgstr "säveltäjät"
+msgid "arrangers"
+msgstr "sovittajaa"
 
 #: ../po/tag-names.py:59
-msgid "conductors"
-msgstr "kapellimestarit"
+msgid "composers"
+msgstr "säveltäjää"
 
 #: ../po/tag-names.py:60
-msgid "authors"
-msgstr "kirjoittajat"
+msgid "conductors"
+msgstr "orkesterinjohtajaa"
 
-#: ../po/tag-names.py:61 ../properties.py:269 ../properties.py:440
+#: ../po/tag-names.py:61
+msgid "authors"
+msgstr "kirjoittajaa"
+
+#: ../po/tag-names.py:62 ../properties.py:269 ../properties.py:440
 #: ../properties.py:554
 msgid "artists"
 msgstr "artistit"
 
-#: ../po/tag-names.py:62 ../properties.py:570
+#: ../po/tag-names.py:63 ../properties.py:570
 msgid "albums"
 msgstr "albumit"
 
 #. Not really tag names, but this is the best place for them so far.
-#: ../po/tag-names.py:66
+#: ../po/tag-names.py:67
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekunti"
 msgstr[1] "%d sekuntia"
 
-#: ../po/tag-names.py:67
+#: ../po/tag-names.py:68
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuutti"
 msgstr[1] "%d minuuttia"
 
-#: ../po/tag-names.py:68
+#: ../po/tag-names.py:69
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d tunti"
 msgstr[1] "%d tuntia"
 
-#: ../po/tag-names.py:69
+#: ../po/tag-names.py:70
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d päivä"
 msgstr[1] "%d päivää"
 
-#: ../po/tag-names.py:70
+#: ../po/tag-names.py:71
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -560,9 +560,8 @@ msgid "_Artist"
 msgstr "_Artisti"
 
 #: ../widgets.py:294
-#, fuzzy
 msgid "_Rating"
-msgstr "Arvosana"
+msgstr "A_rvosana"
 
 #: ../widgets.py:296
 msgid "_Date"
@@ -853,9 +852,8 @@ msgid "Song _List"
 msgstr "_Kappalelista"
 
 #: ../widgets.py:1323 ../widgets.py:1808
-#, fuzzy
 msgid "_Play Queue"
-msgstr "_Soita"
+msgstr "_Soita jono"
 
 #: ../widgets.py:1354
 msgid "Check for changes made to the library"
@@ -948,11 +946,11 @@ msgstr[1] "%(count)d kappaletta (%(time)s)"
 
 #: ../widgets.py:1813
 msgid "_Choose randomly"
-msgstr ""
+msgstr "_Valitse satunnaisesti"
 
 #: ../widgets.py:1834
 msgid "Drag songs here to add them to the play queue"
-msgstr ""
+msgstr "Raahaa tähän kappaleita lisätäksesi ne soittojonoon"
 
 #: ../widgets.py:1847 ../properties.py:537
 #, python-format
@@ -968,12 +966,11 @@ msgstr "_Suodata sarakkeen \"%s\" perusteella"
 
 #: ../widgets.py:2009 ../browsers/albums.py:294
 msgid "Add to Queue"
-msgstr ""
+msgstr "Lisää jonoon"
 
 #: ../widgets.py:2013
-#, fuzzy
 msgid "Remove from Library"
-msgstr "_Virkistä kirjasto"
+msgstr "Poista kirjastosta"
 
 #: ../widgets.py:2108 ../efwidgets.py:333
 #, python-format
@@ -1128,7 +1125,7 @@ msgstr "ReplayGainin huiput täytyy syöttää muodossa x.yy."
 
 #: ../properties.py:44
 msgid "MusicBrainz track IDs must be in UUID format."
-msgstr ""
+msgstr "MusicBrainz-kappaletunnisteet täytyy syöttää UUID-muodossa."
 
 #: ../properties.py:57
 msgid "Add a Tag"
@@ -1300,7 +1297,7 @@ msgid ""
 "\n"
 "The files currently selected do not support editing this tag."
 msgstr ""
-"Virheellinen tunniste <b>%s</b>\n"
+"Epäkelpo tunniste <b>%s</b>\n"
 "\n"
 "Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
 
@@ -1377,7 +1374,7 @@ msgstr ""
 
 #: ../properties.py:1161
 msgid "Invalid tags"
-msgstr "Virheellisiä tunnisteita"
+msgstr "Tunnisteet eivät kelpaa"
 
 #: ../properties.py:1162
 #, python-format
@@ -1386,7 +1383,7 @@ msgid ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr ""
-"Virheellisiä tunnisteita <b>%s</b>\n"
+"Tunnisteet <b>%s</b> eivät kelpaa\n"
 "\n"
 "Valitut tiedostot eivät tue näiden tunnisteiden muokkaamista."
 
@@ -1580,7 +1577,7 @@ msgstr "Hae"
 
 #: ../browsers/search.py:130
 msgid "_Limit Results"
-msgstr ""
+msgstr "Tulosten _määrä"
 
 #: ../browsers/search.py:177
 msgid "_Disable Browser"
@@ -1590,185 +1587,10 @@ msgstr "_Sulje selain"
 msgid "_Search Library"
 msgstr "_Hae kirjastosta"
 
-#~ msgid "_Genre"
-#~ msgstr "T_yylilaji"
+#: ../browsers/filesystem.py:76
+msgid "_Add to Library"
+msgstr "_Lisää kirjastoon"
 
-#~ msgid "Display song _rating"
-#~ msgstr "Näytä kappaleen ar_vosana"
-
-#~ msgid "Show _album covers"
-#~ msgstr "Näytä _albumien kansikuvat"
-
-#~ msgid "Closing _minimizes to system tray"
-#~ msgstr "Pienennä suljettaessa j_ärjestelmälokeroon"
-
-#~ msgid "Performed by %s"
-#~ msgstr "Esittäjä %s"
-
-#~ msgid "arranged by %s"
-#~ msgstr "sovitus %s"
-
-#~ msgid "lyrics by %s"
-#~ msgstr "sanoitus %s"
-
-#~ msgid "conducted by %s"
-#~ msgstr "johtanut %s"
-
-#~ msgid "composed by %s"
-#~ msgstr "säveltänyt %s"
-
-#~ msgid "written by %s"
-#~ msgstr "kirjoittanut %s"
-
-#~ msgid "Add songs to your library"
-#~ msgstr "Lisää kappaleita kirjastoosi"
-
-#~ msgid "Visit the artist's website"
-#~ msgstr "Käy artistin kotisivulla"
-
-#~ msgid "%(current)s/%(total)s"
-#~ msgstr "%(current)s/%(total)s"
-
-#~ msgid "Change volume"
-#~ msgstr "Muuta äänenvoimakkuutta"
-
-#~ msgid "Plugins"
-#~ msgstr "Liitännäiset"
-
-#~ msgid "gtk-remove"
-#~ msgstr "Poista _kirjastosta"
-
-#~ msgid "Supported formats:"
-#~ msgstr "Tuetut tiedostomuodot:"
-
-#~ msgid "(shared across all %d songs)"
-#~ msgstr "(sama kaikissa %d kappaleessa)"
-
-#~ msgid "(different across %d songs, missing from %d songs)"
-#~ msgstr "(eri %d kappaleessa, puuttuu %d kappaleesta)"
-
-#~ msgid "1 second"
-#~ msgstr "1 sekunti"
-
-#~ msgid "1 minute"
-#~ msgstr "1 minuutti"
-
-#~ msgid "1 hour"
-#~ msgstr "1 tunti"
-
-#~ msgid "1 day"
-#~ msgstr "1 päivä"
-
-#~ msgid "1 year"
-#~ msgstr "1 vuosi"
-
-#~ msgid ""
-#~ "Supported formats: %s\n"
-#~ "Audio device: %s"
-#~ msgstr ""
-#~ "Tuetut tiedostomuodot: %s\n"
-#~ "Äänilaite: %s"
-
-#~ msgid "_Masked Directories"
-#~ msgstr "_Peitetyt hakemistot"
-
-#~ msgid ""
-#~ "If you have songs in directories that will not always be mounted (for "
-#~ "example, a removable device or an NFS shared drive), list those mount "
-#~ "points here. Files in these directories will not be removed from the "
-#~ "library if the device is not mounted."
-#~ msgstr ""
-#~ "Jos sinulla on kappaleita hakemistoissa, jotka eivät ole aina liitettyinä"
-#~ "(esim. vaihdettavalla levyllä tai jaetulla NFS-asemalla), listaa "
-#~ "liitoskohdat tähän. Näissä hakemistoissa olevia tiedostoja ei poisteta "
-#~ "kirjastosta, jos laite ei ole liitettynä."
-
-#~ msgid ""
-#~ "These characters will be used as separators when \"Split values\" is "
-#~ "selected in the tag editor"
-#~ msgstr ""
-#~ "Näitä merkkejä käytetään erottimina, kun \"Jaa useampaan arvoon\" on "
-#~ "valittuna tunniste-editorissa"
-
-#~ msgid "Initialized status icon."
-#~ msgstr "Tilakuvake alustettu."
-
-#~ msgid "Set Rating"
-#~ msgstr "Aseta arvosana"
-
-#~ msgid "Initialized multimedia key support."
-#~ msgstr "Multimedianäppäintuki alustettu."
-
-#~ msgid "1 track"
-#~ msgstr "1 raita"
-
-#~ msgid "Adjust audio volume"
-#~ msgstr "Säädä äänenvoimakkuutta"
-
-#~ msgid "Check for changes in the library made since the program was started"
-#~ msgstr ""
-#~ "Tarkista kirjasto ohjelman käynnistämisen jälkeen tehtyjen muutosten "
-#~ "varalta"
-
-#~ msgid "1 time"
-#~ msgstr "1 kerran"
-
-#~ msgid "No information available"
-#~ msgstr "Ei tietoja saatavilla"
-
-#~ msgid "Add a new tag to the file"
-#~ msgstr "Lisää tunniste tiedostoon"
-
-#~ msgid "Remove a tag from the file"
-#~ msgstr "Poista tunniste tiedostosta"
-
-#~ msgid "_Split into multiple values"
-#~ msgstr "_Jaa useaan arvoon"
-
-#~ msgid "An audio player and tag editor"
-#~ msgstr "Soitin ja äänitiedostojen tunniste-editori"
-
-#~ msgid "Invalid date format"
-#~ msgstr "Päivämäärän muoto ei kelpaa"
-
-#~ msgid ""
-#~ "Invalid date: <b>%s</b>.\n"
-#~ "\n"
-#~ "The date must be entered in YYYY or YYYY-MM-DD format."
-#~ msgstr ""
-#~ "Epäkelpo päivämäärä: <b>%s</b>.\n"
-#~ "\n"
-#~ "Päivämäärä täytyy syöttää muodossa VVVV tai VVVV-KK-PP."
-
-#~ msgid "_On-Screen Display"
-#~ msgstr "_Kuvaruutunäyttö"
-
-#~ msgid "No on-screen display"
-#~ msgstr "Ei kuvaruutunäyttöä"
-
-#~ msgid "Display OSD on the top"
-#~ msgstr "Kuvaruutunäyttö näytön yläreunassa"
-
-#~ msgid "Display OSD on the bottom"
-#~ msgstr "Kuvaruurunäyttö näytön alareunassa"
-
-#~ msgid "Select a color for the OSD"
-#~ msgstr "Valitse kuvaruutunäytön väri"
-
-#~ msgid "Select a second color for the OSD"
-#~ msgstr "valitse kuvaruutunäytön toinen väri"
-
-#~ msgid "0|1|t"
-#~ msgstr "0|1|t"
-
-#~ msgid "+|-|0..100"
-#~ msgstr "+|-|0..100"
-
-#~ msgid "[directory]"
-#~ msgstr "[hakemisto]"
-
-#~ msgid "About Quod Libet"
-#~ msgstr "Tietoja Quod Libetistä"
-
-#~ msgid "Quod Libet is free software licensed under the GNU GPL v2."
-#~ msgstr "Quod Libet on GNU GPL v2 -lisenssin alainen vapaa ohjelma."
+#: ../browsers/filesystem.py:116
+msgid "_File System"
+msgstr "S_uodattimet"
