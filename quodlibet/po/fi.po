@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-08 10:57-0500\n"
-"PO-Revision-Date: 2005-09-08 10:52+0200\n"
+"POT-Creation-Date: 2005-09-08 15:47-0500\n"
+"PO-Revision-Date: 2005-09-08 22:00+0200\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -160,7 +160,7 @@ msgstr "tiedostonimi"
 #: ../quodlibet.py:171
 #, python-format
 msgid "E: Invalid argument for '%s'."
-msgstr "VIRHE: Epäkelpo argumentti valitsimelle \"%s\""
+msgstr "VIRHE: Virheellinen argumentti valitsimelle \"%s\""
 
 #: ../quodlibet.py:173 ../util.py:108
 #, python-format
@@ -248,11 +248,11 @@ msgstr "Ei aikatietoa"
 
 #: ../util.py:242 ../util.py:250
 msgid "[Invalid Encoding]"
-msgstr "[Epäkelpo koodaus]"
+msgstr "[Virheellinen koodaus]"
 
 #: ../util.py:547 ../properties.py:883 ../properties.py:1157
 msgid "Invalid tag"
-msgstr "Epäkelpo tunniste"
+msgstr "Virheellinen tunniste"
 
 #. Translations for tag names
 #. Note that although tag names are translated in the main list view,
@@ -352,7 +352,7 @@ msgstr "sijainti"
 
 #: ../po/tag-names.py:36
 msgid "lyricist"
-msgstr "solisti"
+msgstr "sanoittaja"
 
 #. date song was last modified/edited
 #: ../po/tag-names.py:38 ../properties.py:346
@@ -420,7 +420,7 @@ msgstr "esittäjää"
 
 #: ../po/tag-names.py:57
 msgid "lyricists"
-msgstr "lyyrikkoa"
+msgstr "sanoittajaa"
 
 #: ../po/tag-names.py:58
 msgid "arrangers"
@@ -608,8 +608,8 @@ msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
 msgstr ""
-"Näytä yksinkertaiset haut sinisinä, erityishaut vihreinä ja epäkelvot haut "
-"punaisina"
+"Näytä yksinkertaiset haut sinisinä, erityishaut vihreinä ja virheelliset "
+"haut punaisina"
 
 #: ../widgets.py:395
 msgid "_Global filter:"
@@ -1297,7 +1297,7 @@ msgid ""
 "\n"
 "The files currently selected do not support editing this tag."
 msgstr ""
-"Epäkelpo tunniste <b>%s</b>\n"
+"Tunniste <b>%s</b> ei kelpaa\n"
 "\n"
 "Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
 
@@ -1324,7 +1324,7 @@ msgstr "Kappaletta ei voi tallentaa"
 
 #: ../properties.py:985 ../properties.py:986
 msgid "Invalid value"
-msgstr "Arvo ei kelpaa"
+msgstr "Virheellinen arvo"
 
 #: ../properties.py:1055
 msgid "Tag by Filename"
@@ -1357,7 +1357,7 @@ msgstr "Jokaisen sanan ensimmäinen kirjain isolla"
 
 #: ../properties.py:1139
 msgid "Invalid pattern"
-msgstr "Hakukaava ei kelpaa"
+msgstr "Virheellinen hakukaava"
 
 #: ../properties.py:1140
 #, python-format
@@ -1369,8 +1369,8 @@ msgid ""
 msgstr ""
 "Kaava\n"
 "\t<b>%s</b>\n"
-"ei kelpaa. Se saattaa sisältää saman tunnisteen kahdesti tai parittomia "
-"pienemmyys/suuremmuusmerkkejä (&lt; / &gt;)."
+"on virheellinen. Se saattaa sisältää saman tunnisteen kahdesti tai "
+"parittomia pienemmyys/suuremmuusmerkkejä (&lt; / &gt;)."
 
 #: ../properties.py:1161
 msgid "Invalid tags"
