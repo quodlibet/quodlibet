@@ -2,14 +2,13 @@
 # Copyright (C) 2005 THE QuodLibet'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the QuodLibet package.
 # johnny5 <johnny5@hde.co.il>, 2005.
-# , fuzzy
 # 
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-06 17:04-0500\n"
+"POT-Creation-Date: 2005-09-08 13:05-0500\n"
 "PO-Revision-Date: 2005-07-31 17:22:56-0500\n"
 "Last-Translator: johnny5 <johnny5@hde.co.il>\n"
 "Language-Team: Hebrew\n"
@@ -50,7 +49,7 @@ msgstr ""
 #: ../library.py:287 ../widgets.py:258
 #, python-format
 msgid "Supported formats: %s"
-msgstr "תסדירים נתמכים: %s"
+msgstr "Supported formats: %s"
 
 #: ../quodlibet.py:37
 msgid "The library cannot be refreshed while Quod Libet is running."
@@ -130,7 +129,7 @@ msgid "[+|-][HH:]MM:SS"
 msgstr ""
 
 #: ../quodlibet.py:142
-msgid "Turn shuffle off, on, or toggle it"
+msgid "Set or toggle the playback order"
 msgstr ""
 
 #: ../quodlibet.py:143
@@ -245,7 +244,7 @@ msgstr "נתוני זמן חסרים"
 msgid "[Invalid Encoding]"
 msgstr "[קידוד לא נתמך]"
 
-#: ../util.py:553 ../properties.py:883 ../properties.py:1157
+#: ../util.py:547 ../properties.py:883 ../properties.py:1157
 msgid "Invalid tag"
 msgstr "תגית שגויה"
 
@@ -319,159 +318,159 @@ msgstr "סגנון"
 msgid "grouping"
 msgstr "איגוד"
 
-#: ../po/tag-names.py:28
-msgid "label ID"
-msgstr ""
-
+#. alternately, "catalog number", "catalog ID", "label number"
 #: ../po/tag-names.py:29
+msgid "label ID"
+msgstr "זיהוי תגית"
+
+#: ../po/tag-names.py:30
 msgid "language"
 msgstr "שפה"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:31 ../properties.py:314
+#: ../po/tag-names.py:32 ../properties.py:314
 msgid "last played"
 msgstr "נוגן לאחרונה"
 
-#: ../po/tag-names.py:32 ../properties.py:344
+#: ../po/tag-names.py:33 ../properties.py:344
 msgid "length"
 msgstr "משך"
 
-#: ../po/tag-names.py:33
+#: ../po/tag-names.py:34
 msgid "license"
 msgstr "רישוי"
 
-#: ../po/tag-names.py:34
+#: ../po/tag-names.py:35
 msgid "location"
 msgstr "מיקום"
 
-#: ../po/tag-names.py:35
+#: ../po/tag-names.py:36
 msgid "lyricist"
 msgstr "מילים"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:37 ../properties.py:346
+#: ../po/tag-names.py:38 ../properties.py:346
 msgid "modified"
 msgstr "שונה לאחרונה"
 
-#: ../po/tag-names.py:38
+#: ../po/tag-names.py:39
 msgid "mount point"
 msgstr "נקודת עגינה"
 
 #. alternately, "movement", "section"
 #. alternately, "record label"
-#: ../po/tag-names.py:41
+#: ../po/tag-names.py:42
 msgid "organization"
 msgstr "ארגון"
 
-#: ../po/tag-names.py:42
+#: ../po/tag-names.py:43
 msgid "part"
 msgstr "חלק"
 
-#: ../po/tag-names.py:43
-#, fuzzy
+#: ../po/tag-names.py:44
 msgid "people"
 msgstr "יוצרים"
 
-#: ../po/tag-names.py:44 ../properties.py:444
+#: ../po/tag-names.py:45 ../properties.py:444
 msgid "performer"
 msgstr "מבצע"
 
-#: ../po/tag-names.py:45 ../properties.py:315
+#: ../po/tag-names.py:46 ../properties.py:315
 msgid "play count"
 msgstr "מספר פעמים שהושמע"
 
-#: ../po/tag-names.py:46 ../properties.py:317
+#: ../po/tag-names.py:47 ../properties.py:317
 msgid "rating"
 msgstr "דירוג"
 
-#: ../po/tag-names.py:47 ../properties.py:316
+#: ../po/tag-names.py:48 ../properties.py:316
 msgid "skip count"
 msgstr "מספר פעמים שדולג"
 
-#: ../po/tag-names.py:48
+#: ../po/tag-names.py:49
 msgid "title"
 msgstr "שם"
 
-#: ../po/tag-names.py:49
+#: ../po/tag-names.py:50
 msgid "track"
 msgstr "רצועה"
 
-#: ../po/tag-names.py:50
+#: ../po/tag-names.py:51
 msgid "version"
 msgstr "גרסה"
 
-#: ../po/tag-names.py:51
+#: ../po/tag-names.py:52
 msgid "website"
 msgstr "אתר אינטרנט"
 
 #. Beats per minute; I don't know if other languages use a different word.
-#: ../po/tag-names.py:53
+#: ../po/tag-names.py:54
 msgid "BPM"
 msgstr ""
 
-#: ../po/tag-names.py:55 ../properties.py:445
+#: ../po/tag-names.py:56 ../properties.py:445
 msgid "performers"
 msgstr "מבצעים"
 
-#: ../po/tag-names.py:56
+#: ../po/tag-names.py:57
 msgid "lyricists"
 msgstr "מילים"
 
-#: ../po/tag-names.py:57
+#: ../po/tag-names.py:58
 msgid "arrangers"
 msgstr "מעבדים"
 
-#: ../po/tag-names.py:58
+#: ../po/tag-names.py:59
 msgid "composers"
 msgstr "מלחינים"
 
-#: ../po/tag-names.py:59
+#: ../po/tag-names.py:60
 msgid "conductors"
 msgstr "מנצחים"
 
-#: ../po/tag-names.py:60
+#: ../po/tag-names.py:61
 msgid "authors"
 msgstr "מחברים"
 
-#: ../po/tag-names.py:61 ../properties.py:269 ../properties.py:440
+#: ../po/tag-names.py:62 ../properties.py:269 ../properties.py:440
 #: ../properties.py:554
 msgid "artists"
 msgstr "אמנים"
 
-#: ../po/tag-names.py:62 ../properties.py:570
+#: ../po/tag-names.py:63 ../properties.py:570
 msgid "albums"
 msgstr "אלבומים"
 
 #. Not really tag names, but this is the best place for them so far.
-#: ../po/tag-names.py:66
+#: ../po/tag-names.py:67
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d שניה"
 msgstr[1] "%d שניות"
 
-#: ../po/tag-names.py:67
+#: ../po/tag-names.py:68
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d דקה"
 msgstr[1] "%d דקות"
 
-#: ../po/tag-names.py:68
+#: ../po/tag-names.py:69
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d שעה"
 msgstr[1] "%d שעות"
 
-#: ../po/tag-names.py:69
+#: ../po/tag-names.py:70
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "$d יממה"
 msgstr[1] "%d יממות"
 
-#: ../po/tag-names.py:70
+#: ../po/tag-names.py:71
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -549,9 +548,8 @@ msgid "_Artist"
 msgstr "א_מן"
 
 #: ../widgets.py:294
-#, fuzzy
 msgid "_Rating"
-msgstr "דירוג"
+msgstr "ד_ירוג"
 
 #: ../widgets.py:296
 msgid "_Date"
@@ -571,7 +569,7 @@ msgstr "כלול חל_ק באלבום"
 
 #: ../widgets.py:319
 msgid "Filename includes _folder"
-msgstr "כלול מ_חיצה בשם הקובץ"
+msgstr "כלול _נתיב בשם הקובץ"
 
 #: ../widgets.py:333
 msgid "_Others:"
@@ -793,7 +791,7 @@ msgstr "_שיר"
 
 #: ../widgets.py:1267
 msgid "_Jump to playing song"
-msgstr "_דלק לשיר נוכחי"
+msgstr "_דלג לשיר נוכחי"
 
 #: ../widgets.py:1270
 msgid "_View"
@@ -840,9 +838,8 @@ msgid "Song _List"
 msgstr "רשימת _שירים"
 
 #: ../widgets.py:1323 ../widgets.py:1808
-#, fuzzy
 msgid "_Play Queue"
-msgstr "_נגן"
+msgstr "_סדר השמעה"
 
 #: ../widgets.py:1354
 msgid "Check for changes made to the library"
@@ -933,11 +930,11 @@ msgstr[1] "%(count)d שירים (%(time)s)"
 
 #: ../widgets.py:1813
 msgid "_Choose randomly"
-msgstr ""
+msgstr "_בחר אקראית"
 
 #: ../widgets.py:1834
 msgid "Drag songs here to add them to the play queue"
-msgstr ""
+msgstr "גרור שירים לכאן על מנת להוסיפם לסדר ההשמעה"
 
 #: ../widgets.py:1847 ../properties.py:537
 #, python-format
@@ -953,12 +950,11 @@ msgstr "מיין _לפי %s"
 
 #: ../widgets.py:2009 ../browsers/albums.py:294
 msgid "Add to Queue"
-msgstr ""
+msgstr "הוסף לסדר ההשמעה"
 
 #: ../widgets.py:2013
-#, fuzzy
 msgid "Remove from Library"
-msgstr "_רענן ספרית שירים"
+msgstr "ה_סר מספרית השירים"
 
 #: ../widgets.py:2108 ../efwidgets.py:333
 #, python-format
@@ -1016,7 +1012,7 @@ msgstr "הקודם"
 
 #: ../widgets.py:2680
 msgid "Saving song library."
-msgstr "שומר ספרית שירים."
+msgstr ""
 
 #: ../widgets.py:2684
 msgid "Unable to save library"
@@ -1110,7 +1106,7 @@ msgstr "על העוצמת המירבית של ReplayGain להיות מוזנת �
 
 #: ../properties.py:44
 msgid "MusicBrainz track IDs must be in UUID format."
-msgstr ""
+msgstr "רצועות בעלות סימול של MusicBrainz חייבות להיות בתסדיר UUID"
 
 #: ../properties.py:57
 msgid "Add a Tag"
@@ -1324,7 +1320,7 @@ msgstr "החלף _קווים תחתיים ברווחים"
 
 #: ../properties.py:1083
 msgid "_Title-case resulting values"
-msgstr "_שנה לאות גדולה ראונה בכל מילה"
+msgstr "_שנה לאות גדולה ראשונה בכל מילה"
 
 #: ../properties.py:1088
 msgid "Tags replace existing ones"
@@ -1415,7 +1411,7 @@ msgid ""
 "exists, or you do not have permission to make the new file or remove the old "
 "one."
 msgstr ""
-"שינוי השם של <b>%s</b> ל <b>%s</b> נכשל. יתכן ששם היעד קיים כבר אושאין לך "
+"שינוי השם של <b>%s</b> ל <b>%s</b> נכשל. יתכן ששם היעד קיים כבר או שאין לך "
 "הרשאות מתאימות ליצור או למחוק קובץ קודם."
 
 #: ../properties.py:1436
@@ -1432,7 +1428,7 @@ msgid ""
 msgstr ""
 "התבנית\n"
 "\t<b>%s</b>\n"
-"מכילה / אך אינה מתחילה מספרית השורש. על מנת למנוע שמות תיקיות שגויותעל "
+"מכילה / אך אינה מתחילה מספרית השורש. על מנת למנוע שמות תיקיות שגויות על "
 "התבנית להתחיל מ / או מ /~."
 
 #: ../properties.py:1468
@@ -1528,9 +1524,8 @@ msgid "All"
 msgstr "הכל"
 
 #: ../browsers/paned.py:148
-#, fuzzy
 msgid "_Search:"
-msgstr "חפש"
+msgstr ":חפש_"
 
 #: ../browsers/paned.py:263
 msgid "_Paned Browser"
@@ -1558,7 +1553,7 @@ msgstr "חפש"
 
 #: ../browsers/search.py:130
 msgid "_Limit Results"
-msgstr ""
+msgstr "ה_גבל תוצאות"
 
 #: ../browsers/search.py:177
 msgid "_Disable Browser"
@@ -1567,6 +1562,14 @@ msgstr "_הסתר דפדפן שירים"
 #: ../browsers/search.py:178
 msgid "_Search Library"
 msgstr "_חפש בספרית השירים"
+
+#: ../browsers/filesystem.py:76
+msgid "_Add to Library"
+msgstr "_הוסף לספרית השירים"
+
+#: ../browsers/filesystem.py:116
+msgid "_File System"
+msgstr "_מערכת קבצים"
 
 #~ msgid "_Genre"
 #~ msgstr "_סגנון"
