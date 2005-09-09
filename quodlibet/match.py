@@ -118,10 +118,6 @@ class Tag(object):
     def __init__(self, names, res):
         self.__names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
         self.__res = res
-        if "*" in self.__names:
-            self.__names.remove("*")
-            self.__names.extend(
-                ["artist", "album", "title", "version", "performer"])
         if not isinstance(self.__res, list): self.__res = [self.__res]
         if len([name for name in self.__names if name.startswith('~')]):
             self.search = self.__search_synth

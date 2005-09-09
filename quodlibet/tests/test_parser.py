@@ -119,7 +119,7 @@ class ParserTests(TestCase):
         self.failUnless(f(self.s2))
 
     def test_abbrs(self):
-        for s in ["b = /i hate/", "a = /pi*/", "* = /x.y/"]:
+        for s in ["b = /i hate/", "a = /pi*/", "t = /x.y/"]:
             self.failUnless(parser.parse(s).search(self.s1))
             self.failIf(parser.parse(s).search(self.s2))
 

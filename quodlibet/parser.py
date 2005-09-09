@@ -224,11 +224,13 @@ class QueryParser(object):
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
 
-def parse(string):
+STAR = ["artist", "album", "title", "version", "performer"]
+def parse(string, star=STAR):
     if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])
     elif not set("#=").intersection(string):
-        parts = ["* = /" + sre.escape(p) + "/" for p in string.split()]
+        parts = ["%s = /%s/" % (", ".join(star), sre.escape(p))
+                 for p in string.split()]
         string = "&(" + ",".join(parts) + ")"
     return QueryParser(QueryLexer(string)).StartQuery()
 
