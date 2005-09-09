@@ -861,7 +861,10 @@ class PopupHSlider(PopupSlider):
     UP = [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_RIGHT]
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
-        return ((x + w + pad), (y + (h - wh)//2))
+        if gtk.widget_get_default_direction() == gtk.TEXT_DIR_LTR:
+            return ((x + w + pad), (y + (h - wh)//2))
+        else:
+            return ((x - (ww + pad)), (y + (h - wh)//2))
 
 class PopupVSlider(PopupSlider):
     Scale = gtk.VScale
