@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-08 13:05-0500\n"
+"POT-Creation-Date: 2005-09-09 17:16-0500\n"
 "PO-Revision-Date: 2005-07-31 17:22:56-0500\n"
 "Last-Translator: johnny5 <johnny5@hde.co.il>\n"
 "Language-Team: Hebrew\n"
@@ -467,7 +467,7 @@ msgstr[1] "%d שעות"
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] "$d יממה"
+msgstr[0] "%d יממה"
 msgstr[1] "%d יממות"
 
 #: ../po/tag-names.py:71
