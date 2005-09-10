@@ -24,7 +24,6 @@ class MPCFile(AudioFile):
     TRANS = { "subtitle": "version",
               "track": "tracknumber",
               "catalog": "labelid",
-              "record date": "date",
               "record location": "location"
               }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
