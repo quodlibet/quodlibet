@@ -1878,6 +1878,73 @@ class QueueExpander(gtk.Expander):
         self.set_expanded(not model.is_empty())
         cb.set_property('visible', self.get_expanded())
 
+class EntryWordCompletion(gtk.EntryCompletion):
+    leftsep = "(<>=, "
+    rightsep = "<>=!,) "
+    def __init__(self):
+        super(EntryWordCompletion, self).__init__()
+        self.set_match_func(self.__match_filter)
+        self.connect('match-selected', self.__match_selected)
+
+    def __match_filter(self, completion, entrytext, iter):
+        model = completion.get_model()
+        entry = self.get_entry()
+        cursor = entry.get_position()
+
+        # find the border to the right
+        faketext = entrytext + self.rightsep
+        right = min([faketext.find(c, cursor) for c in self.rightsep])
+        # if not at the border or end of the string, no match
+        if cursor + 1 < right < len(entrytext):
+            return False
+
+        # find the border to the left (no fake required, as nomatch=-1
+        left = max([entrytext.rfind(c, 0, cursor) for c in self.leftsep]) + 1
+
+        if left == cursor: return False
+        key = entrytext[left:cursor]
+
+        value = model.get_value(iter, self.get_property('text-column'))
+        return value.startswith(key)
+
+    def __match_selected(self, completion, model, iter):
+        value = model.get_value(iter, self.get_property('text-column'))
+        entry = self.get_entry()
+        cursor = entry.get_position()
+
+        text = entry.get_text()
+        left = max([text.rfind(c, 0, cursor) for c in self.leftsep]) + 1
+        offset = cursor - left
+
+        entry.insert_text(value[offset:], cursor)
+        entry.set_position(left + len(value))
+        return True
+
+class LibraryTagCompletion(EntryWordCompletion):
+    def __init__(self):
+        super(LibraryTagCompletion, self).__init__()
+        try: model = self.__model
+        except AttributeError:
+            model = type(self).__model = gtk.ListStore(str)
+            widgets.watcher.connect('refresh', self.__refreshmodel)
+            widgets.watcher.connect('added', self.__refreshmodel)
+            widgets.watcher.connect('removed', self.__refreshmodel)
+            self.__refreshmodel()
+        self.set_model(model)
+        self.set_text_column(0)
+
+    def __refreshmodel(self, *args):
+        from library import library
+        tags = set()
+        for song in library.itervalues():
+            for tag in song.keys():
+                if tag.startswith('~#'):
+                    tag = tag[2:]
+                tags.add(tag)
+        self.__model.clear()
+        for tag in tags:
+            self.__model.append([tag])
+
 class SongList(qltk.HintedTreeView):
     # A TreeView containing a list of songs.
 
