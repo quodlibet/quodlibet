@@ -1725,6 +1725,7 @@ class MainWindow(gtk.Window):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
+        return True
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Song/FilterGenre",
@@ -1889,6 +1890,7 @@ class EntryWordCompletion(gtk.EntryCompletion):
     def __match_filter(self, completion, entrytext, iter):
         model = completion.get_model()
         entry = self.get_entry()
+        if entry is None: return False
         cursor = entry.get_position()
 
         # find the border to the right
@@ -1905,6 +1907,7 @@ class EntryWordCompletion(gtk.EntryCompletion):
         key = entrytext[left:cursor]
 
         value = model.get_value(iter, self.get_property('text-column'))
+        if value is None: return False
         return value.startswith(key)
 
     def __match_selected(self, completion, model, iter):

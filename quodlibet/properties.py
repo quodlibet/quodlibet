@@ -731,6 +731,7 @@ class SongProperties(gtk.Window):
             path, col = view.get_cursor()
             row = view.get_model()[path]
             self.__show_menu(row, 1, 0, view)
+            return True
 
         def __button_press(self, view, event):
             if event.button not in (2, 3): return False

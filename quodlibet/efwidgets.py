@@ -106,6 +106,7 @@ class DirectoryTree(gtk.TreeView):
             selection.unselect_all()
             selection.select_path(path)
             menu.popup(None, None, None, event.button, event.time)
+            return True
 
     def __mkdir(self, button):
         model, rows = self.get_selection().get_selected_rows()
@@ -283,6 +284,8 @@ class ExFalsoWindow(gtk.Window):
             c.child.connect('button-press-event', self.__pre_selection_changed)
         fs.get_children()[1].child.connect(
             'button-press-event', self.__button_press, fs)
+        fs.get_children()[1].child.connect(
+            'popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
         # plugin support
@@ -305,22 +308,29 @@ class ExFalsoWindow(gtk.Window):
             x, y = map(int, [event.x, event.y])
             try: path, col, cellx, celly = view.get_path_at_pos(x, y)
             except TypeError: return True
-            view.grab_focus()
             selection = view.get_selection()
             if not selection.path_is_selected(path):
                 view.set_cursor(path, col, 0)
-            model, rows = selection.get_selected_rows()
-            songs = [self.__cache[model[row][0]] for row in rows]
-            menu = self.pm.create_plugins_menu(songs)
-            if menu is None: menu = gtk.Menu()
-            else: menu.prepend(gtk.SeparatorMenuItem())
-            b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-            b.connect('activate', self.__delete,
-                      [model[row][0] for row in rows], fs)
-            menu.prepend(b)
-            menu.show_all()
-            menu.popup(None, None, None, event.button, event.time)
-            return True
+            return self.__show_menu(view, fs, event.button, event.time)
+
+    def __popup_menu(self, view, fs):
+        return self.__show_menu(view, fs)
+
+    def __show_menu(self, view, fs, button=1, time=0):
+        view.grab_focus()
+        selection = view.get_selection()
+        model, rows = selection.get_selected_rows()
+        songs = [self.__cache[model[row][0]] for row in rows]
+        menu = self.pm.create_plugins_menu(songs)
+        if menu is None: menu = gtk.Menu()
+        else: menu.prepend(gtk.SeparatorMenuItem())
+        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        b.connect('activate', self.__delete,
+                  [model[row][0] for row in rows], fs)
+        menu.prepend(b)
+        menu.show_all()
+        menu.popup(None, None, None, button, time)
+        return True
 
     def __delete(self, item, files, fs):
         d = qltk.DeleteDialog(files)
