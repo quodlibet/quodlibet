@@ -8,7 +8,7 @@
 
 import os, stat
 import gst
-from formats._audio import AudioFile
+from formats._vorbis import VCFile
 import util
 
 try: import flac.metadata, flac.decoder
@@ -17,7 +17,7 @@ else:
     if gst.element_factory_make('flacdec'): extensions = [".flac"]
     else: extensions = []
 
-class FLACFile(AudioFile):
+class FLACFile(VCFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
             raise IOError("%s does not exist" % filename)
@@ -42,26 +42,7 @@ class FLACFile(AudioFile):
                 val = util.decode("=".join(parts[1:]))
                 if key in self: self[key] += "\n" + val
                 else: self[key] = val
-
-        try: del(self["vendor"])
-        except KeyError: pass
-
-        if "totaltracks" in self:
-            self["tracktotal"].setdefault(self["totaltracks"])
-            del(self["totaltracks"])
-
-        # tracktotal is incredibly stupid; use tracknumber=x/y instead.
-        if "tracktotal" in self:
-            if "tracknumber" in self:
-                self["tracknumber"] += "/" + self["tracktotal"]
-            del(self["tracktotal"])
-
         self.sanitize(filename)
-
-    def can_change(self, k=None):
-        if k is None: return AudioFile.can_change(self, None)
-        else: return (AudioFile.can_change(self, k) and
-                      k not in ["vendor", "totaltracks", "tracktotal"])
 
     def write(self):
         chain = flac.metadata.Chain()
@@ -83,6 +64,7 @@ class FLACFile(AudioFile):
                 value = self.list(key)
                 for line in value:
                     vc.comments[key] = util.encode(line)
+            self._prep_write(vc.comments)
             chain.write(True, True)
 
 info = FLACFile
