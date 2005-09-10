@@ -2283,7 +2283,45 @@ class SongList(qltk.HintedTreeView):
         del(self.__songlistviews[self])
         self.set_model(None)
 
-class PlayList(SongList):
+class DestSongList(SongList):
+    def __init__(self):
+        super(DestSongList, self).__init__()
+        targets = [("text/uri-list", 0, 1)]
+        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
+        self.connect('drag-data-received', self.__drag_data_received)
+
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+        model = view.get_model()
+        from urllib import splittype as split, url2pathname as topath
+        filenames = [topath(split(s)[1]) for s in sel.get_uris()
+                     if split(s)[0] == "file"]
+        songs = filter(None, [library.get(f) for f in filenames])
+        if not songs: return True
+
+        try: path, position = view.get_dest_row_at_pos(x, y)
+        except TypeError:
+            for song in songs:
+                it = model.find(song)
+                if it: model.remove(it)
+                model.append([song])
+        else:
+            iter = model.get_iter(path)
+            song = songs.pop(0)
+            it = self.song_to_iter(song)
+            if model.get_path(it) == model.get_path(iter): return
+            if it: model.remove(it)
+            if position in (gtk.TREE_VIEW_DROP_BEFORE,
+                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                iter = model.insert_before(iter, [song])
+            else:
+                iter = model.insert_after(iter, [song])
+            for song in songs:
+                it = self.song_to_iter(song)
+                if it: model.remove(it)
+                iter = model.insert_after(iter, [song])
+        ctx.finish(True, True, etime)
+
+class PlayList(DestSongList):
     # "Playlists" are a group of songs with an internal tag like
     # ~#playlist_foo = 12. This SongList helps manage playlists.
 
@@ -2334,9 +2372,6 @@ class PlayList(SongList):
         self.set_model(model)
 
         self.connect('drag-end', self.__refresh_indices)
-        targets = [("text/uri-list", 0, 1)]
-        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
-        self.connect('drag-data-received', self.__drag_data_received)
 
     def __popup(self, menu):
         menu.popup(None, None, None, 3, 0)
@@ -2344,38 +2379,6 @@ class PlayList(SongList):
 
     def __properties(self, item):
         SongProperties(self.get_selected_songs(), widgets.watcher)
-
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
-        model = view.get_model()
-        from urllib import splittype as split, url2pathname as topath
-        filenames = [topath(split(s)[1]) for s in sel.get_uris()
-                     if split(s)[0] == "file"]
-        songs = filter(None, [library.get(f) for f in filenames])
-        if not songs: return True
-
-        try: path, position = view.get_dest_row_at_pos(x, y)
-        except TypeError:
-            for song in songs:
-                it = self.song_to_iter(song)
-                if it: model.remove(it)
-                model.append([song])
-        else:
-            iter = model.get_iter(path)
-            song = songs.pop(0)
-            it = self.song_to_iter(song)
-            if it == iter: return
-            if it: model.remove(it)
-            if position in (gtk.TREE_VIEW_DROP_BEFORE,
-                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
-                iter = model.insert_before(iter, [song])
-            else:
-                iter = model.insert_after(iter, [song])
-            for song in songs:
-                it = self.song_to_iter(song)
-                if it: model.remove(it)
-                iter = model.insert_after(iter, [song])
-        ctx.finish(True, True, etime)
-        self.__refresh_indices()
 
     def append_songs(self, songs):
         model = self.get_model()
@@ -2412,7 +2415,7 @@ class PlayList(SongList):
         menu.popup(None, None, None, event.button, event.time)
         return True
 
-class PlayQueue(SongList):
+class PlayQueue(DestSongList):
     class CurrentColumn(gtk.TreeViewColumn):
         # Match MainSongList column sizes by default.
         header_name = "~current"
@@ -2423,13 +2426,10 @@ class PlayQueue(SongList):
 
     def __init__(self, *args, **kwargs):
         from songlist import PlaylistModel
-        SongList.__init__(self, *args, **kwargs)
+        super(PlayQueue, self).__init__(*args, **kwargs)
         self.set_size_request(-1, 120)
         self.set_model(PlaylistModel())
         self.model = self.get_model()
-        targets = [("text/uri-list", 0, 1)]
-        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
-        self.connect('drag-data-received', self.__drag_data_received)
         menu = gtk.Menu()
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         rem.connect('activate', self.__remove)
@@ -2477,33 +2477,6 @@ class PlayQueue(SongList):
                 self.set_cursor(path, col, 0)
             menu.popup(None, None, None, event.button, event.time)
             return True
-
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
-        model = view.get_model()
-        from urllib import splittype as split, url2pathname as topath
-        filenames = [topath(split(s)[1]) for s in sel.get_uris()
-                     if split(s)[0] == "file"]
-        songs = filter(None, [library.get(f) for f in filenames])
-        if not songs: return True
-
-        try: path, position = view.get_dest_row_at_pos(x, y)
-        except TypeError:
-            for song in songs:
-                it = model.find(song)
-                if it: model.remove(it)
-                model.append([song])
-        else:
-            iter = model.get_iter(path)
-            map(model.remove, self.songs_to_iters(songs))
-            if position in (gtk.TREE_VIEW_DROP_BEFORE,
-                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
-                song = songs.pop(0)
-                iter = model.insert_before(iter, [song])
-            for song in songs:
-                it = model.find(song)
-                if it: model.remove(it)
-                iter = model.insert_after(iter, [song])
-        ctx.finish(True, True, etime)
 
     def set_sort_by(self, *args): pass
     def get_sort_by(self, *args): return "", False
