@@ -35,6 +35,8 @@ class AlbumTagCompletion(EntryWordCompletion):
     def __refreshmodel(self, *args):
         for tag in ["title", "album", "date", "people", "artist", "genre"]:
             self.__model.append(row=[tag])
+        for tag in ["tracks", "discs", "length", "date"]:
+            self.__model.append(row=["#(" + tag])
 
 class AlbumList(Browser, gtk.VBox):
     expand = qltk.RHPaned

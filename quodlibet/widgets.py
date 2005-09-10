@@ -1880,8 +1880,9 @@ class QueueExpander(gtk.Expander):
         cb.set_property('visible', self.get_expanded())
 
 class EntryWordCompletion(gtk.EntryCompletion):
-    leftsep = "(<>=, "
-    rightsep = "<>=!,) "
+    leftsep = ["&(", "|(", ",", ", "]
+    rightsep = [" ", ")", ","]
+
     def __init__(self):
         super(EntryWordCompletion, self).__init__()
         self.set_match_func(self.__match_filter)
@@ -1892,16 +1893,15 @@ class EntryWordCompletion(gtk.EntryCompletion):
         entry = self.get_entry()
         if entry is None: return False
         cursor = entry.get_position()
-
-        # find the border to the right
-        faketext = entrytext + self.rightsep
-        right = min([faketext.find(c, cursor) for c in self.rightsep])
-        # if not at the border or end of the string, no match
-        if cursor + 1 < right < len(entrytext):
+        if (cursor != len(entrytext) and not
+            max([entrytext[cursor:].startswith(s) for s in self.rightsep])):
             return False
 
-        # find the border to the left (no fake required, as nomatch=-1
-        left = max([entrytext.rfind(c, 0, cursor) for c in self.leftsep]) + 1
+        # find the border to the left
+        left, f = max(
+            [(entrytext.rfind(c, 0, cursor), c) for c in self.leftsep])
+        if left < 0: left += 1
+        else: left += len(f)
 
         if left == cursor: return False
         key = entrytext[left:cursor]
@@ -1916,7 +1916,10 @@ class EntryWordCompletion(gtk.EntryCompletion):
         cursor = entry.get_position()
 
         text = entry.get_text()
-        left = max([text.rfind(c, 0, cursor) for c in self.leftsep]) + 1
+        left, f = max(
+            [(text.rfind(c, 0, cursor), c) for c in self.leftsep])
+        if left == -1: left += 1
+        else: left += len(f)
         offset = cursor - left
 
         entry.insert_text(value[offset:], cursor)
@@ -1943,6 +1946,12 @@ class LibraryTagCompletion(EntryWordCompletion):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
+        tags.update(["~dirname", "~basename", "~people"])
+        for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
+                    "mtime", "added", "rating", "length"]:
+            tags.add("#(" + tag)
+        for tag in ["date", "bpm"]:
+            if tag in tags: tags.add("#(" + tag)
         self.__model.clear()
         for tag in tags:
             self.__model.append([tag])
