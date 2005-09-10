@@ -14,13 +14,27 @@ import parser
 import player
 import qltk
 import util
-from widgets import widgets
+from widgets import widgets, EntryWordCompletion
 
 if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers.base import Browser
 from properties import SongProperties
 from gettext import ngettext
+
+class AlbumTagCompletion(EntryWordCompletion):
+    def __init__(self):
+        super(AlbumTagCompletion, self).__init__()
+        try: model = self.__model
+        except AttributeError:
+            model = type(self).__model = gtk.ListStore(str)
+            self.__refreshmodel()
+        self.set_model(model)
+        self.set_text_column(0)
+
+    def __refreshmodel(self, *args):
+        for tag in ["title", "album", "date", "people", "artist", "genre"]:
+            self.__model.append(row=[tag])
 
 class AlbumList(Browser, gtk.VBox):
     expand = qltk.RHPaned
@@ -52,6 +66,9 @@ class AlbumList(Browser, gtk.VBox):
             elif key == "~length": return self.__length
             elif key in ["title", "album"]: return self.title
             elif key == "date": return self.date
+            elif key == "~#date":
+                try: return int(self.date[:4])
+                except (TypeError, ValueError): return 0
             elif key in ["people", "artist", "artists"]:
                 return "\n".join(self.people)
             elif key in "genre":
@@ -147,6 +164,7 @@ class AlbumList(Browser, gtk.VBox):
         def __init__(self, model):
             qltk.ValidatingEntry.__init__(self, parser.is_valid_color)
             self.connect_object('changed', self.__filter_changed, model)
+            self.set_completion(AlbumTagCompletion())
             self.__refill_id = None
             self.__filter = None
             self.inhibit = False
