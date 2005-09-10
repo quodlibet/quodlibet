@@ -2343,6 +2343,7 @@ class SongList(qltk.HintedTreeView):
                 column = self.NonSynthTextColumn(t)
             else: column = self.WideTextColumn(t)
             column.connect('clicked', self.set_sort_by)
+            column.set_reorderable(True)
             self.append_column(column)
 
     def __destroy(self):
