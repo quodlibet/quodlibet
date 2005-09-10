@@ -59,8 +59,6 @@ class PlaylistPlayer(object):
             return p
         else: return 0
         
-    def __iter__(self): return iter(self.__source)
-
     def __set_paused(self, paused):
         if paused != self.__paused:
             self.__paused = paused
@@ -127,7 +125,7 @@ class PlaylistPlayer(object):
         self.__song = None
         if not stopped:
             self.__source.next()
-            gobject.idle_add(self.__get_song)
+            self.__get_song()
 
     def reset(self):
         self.__source.reset()
