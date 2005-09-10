@@ -61,5 +61,5 @@ USEFUL_TAGS = (
 
 MACHINE_TAGS = (
     "musicbrainz_trackid replaygain_album_peak replaygain_track_peak "
-    "replygain_track_gain replaygain_album_gain"
+    "replaygain_track_gain replaygain_album_gain"
     ).split()
