@@ -2,7 +2,7 @@ import os, config
 
 from unittest import TestCase
 from tests import registerCase
-from formats.audio import AudioFile, Unknown
+from formats._audio import AudioFile, Unknown
 
 try: from sets import Set as set
 except ImportError: pass

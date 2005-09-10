@@ -9,7 +9,7 @@ from widgets import PlayList, FileChooser, CountManager, FSInterface, PluginWind
 import qltk
 
 class TFSInterface(TestCase):
-    from formats.audio import AudioFile as AF
+    from formats._audio import AudioFile as AF
     def setUp(self):
         self.w = qltk.SongWatcher()
         self.fs = FSInterface(self.w)

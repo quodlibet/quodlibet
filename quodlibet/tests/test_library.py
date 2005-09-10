@@ -1,6 +1,6 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-from formats.audio import AudioFile, Unknown
+from formats._audio import AudioFile, Unknown
 from formats import MusicFile
 import config; config.init()
 

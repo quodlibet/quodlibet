@@ -77,7 +77,7 @@ class TestPlugins(TestCase):
 
 class TestSongWrapper(TestCase):
     from plugins import SongWrapper
-    from formats.audio import AudioFile
+    from formats._audio import AudioFile
 
     psong = AudioFile({
         "~filename": "does not/exist",

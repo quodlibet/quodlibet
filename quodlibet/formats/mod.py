@@ -7,7 +7,7 @@
 # $Id$
 
 import gst
-from formats.audio import AudioFile
+from formats._audio import AudioFile
 
 try: import modplug
 except ImportError: extensions = []

@@ -240,7 +240,7 @@ class TBPTests(TestCase):
         self.assertEquals(pat.match(self.b2), self.nomatch)
 
 class NBPTests(TestCase):
-    from formats.audio import AudioFile
+    from formats._audio import AudioFile
 
     def setUp(self):
         s1 = { 'tracknumber': '5/6', 'artist':'Artist', 'title':'Title5',

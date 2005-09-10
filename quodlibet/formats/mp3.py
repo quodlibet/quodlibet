@@ -6,7 +6,7 @@
 #
 # $Id$
 
-from formats.audio import AudioFile
+from formats._audio import AudioFile
 import config
 import re
 import tempfile

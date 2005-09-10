@@ -8,7 +8,7 @@
 
 import os, stat
 import gst
-from formats.audio import AudioFile
+from formats._audio import AudioFile
 import util
 
 try: import flac.metadata, flac.decoder

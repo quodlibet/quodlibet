@@ -21,8 +21,7 @@ else: # zip file
 
 modules = [join(basename(dirname(m)), basename(m)) for m in modules]
 
-modules.remove(join(basename(base), "__init__"))
-modules.remove(join(basename(base), "audio"))
+map(modules.remove, filter(lambda f: basename(f).startswith("_"), modules))
 
 modules = zip(modules, map(__import__, modules))
 _infos = {}
@@ -48,3 +47,14 @@ def filter(filename):
     for ext in _infos.keys():
         if filename.lower().endswith(ext): return True
     return False
+
+# Tags to display in the "Add Tag" dialogs
+USEFUL_TAGS = (
+    # Ogg Vorbis spec tags
+    "title version album tracknumber artist genre performer copyright "
+    "license organization description location contact isrc date "
+
+    # Other tags we like
+    "arranger author composer conductor lyricist discnumber labelid part "
+    "website language bpm"
+    ).split()

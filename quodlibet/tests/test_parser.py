@@ -95,7 +95,7 @@ class ValidityTests(TestCase):
         self.failUnless(parser.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
 
 class ParserTests(TestCase):
-    from formats.audio import AudioFile as AF
+    from formats._audio import AudioFile as AF
 
     def setUp(self):
         self.s1 = self.AF(

@@ -16,7 +16,7 @@ import qltk; from qltk import HintedTreeView, WritingWindow
 import const
 import config
 import util
-import formats.audio
+import formats
 
 from gettext import ngettext
 from library import library
@@ -50,7 +50,7 @@ VALIDATERS["replaygain_track_gain"] = VALIDATERS["replaygain_album_gain"]
 
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change, validators):
-        if can_change == True: can = formats.audio.USEFUL_TAGS
+        if can_change == True: can = formats.USEFUL_TAGS
         else: can = can_change
         can.sort()
 
