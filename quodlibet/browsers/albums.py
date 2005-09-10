@@ -318,8 +318,7 @@ class AlbumList(Browser, gtk.VBox):
         props.connect('activate', self.__properties, view)
         queue.connect('activate', self.__enqueue, view)
 
-        view.connect_object('popup-menu', gtk.Menu.popup, menu,
-                            None, None, None, 2, 0)
+        view.connect_object('popup-menu', self.__popup, menu)
         view.connect('button-press-event', self.__button_press, menu)
 
         hb = gtk.HBox(spacing=6)
@@ -329,6 +328,10 @@ class AlbumList(Browser, gtk.VBox):
         self.pack_start(sw, expand=True)
         self.__refresh(None, view, model)
         self.show_all()
+
+    def __popup(self, menu):
+        menu.popup(None, None, None, 2, gtk.get_current_event_time())
+        return True
 
     def __get_selected_albums(self, selection):
         model, rows = selection.get_selected_rows()
