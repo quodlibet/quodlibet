@@ -1015,12 +1015,7 @@ class SongProperties(gtk.Window):
             keys.sort()
 
             if not config.getboolean("editing", "allcomments"):
-                machine_comments = set(['musicbrainz_trackid',
-                                        'replaygain_album_gain',
-                                        'replaygain_album_peak',
-                                        'replaygain_track_gain',
-                                        'replaygain_track_peak'])
-                keys = filter(lambda k: k not in machine_comments, keys)
+                keys = filter(lambda k: k not in formats.MACHINE_TAGS, keys)
 
             # reverse order here so insertion puts them in proper order.
             for comment in ['album', 'artist', 'title']:

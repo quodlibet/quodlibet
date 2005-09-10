@@ -1938,9 +1938,8 @@ class LibraryTagCompletion(EntryWordCompletion):
         tags = set()
         for song in library.itervalues():
             for tag in song.keys():
-                if tag.startswith('~#'):
-                    tag = tag[2:]
-                tags.add(tag)
+                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
+                    tags.add(tag)
         self.__model.clear()
         for tag in tags:
             self.__model.append([tag])
