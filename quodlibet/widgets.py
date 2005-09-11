@@ -1891,6 +1891,7 @@ class EntryWordCompletion(gtk.EntryCompletion):
     def __match_filter(self, completion, entrytext, iter):
         model = completion.get_model()
         entry = self.get_entry()
+        entrytext = entrytext.decode('utf-8')
         if entry is None: return False
         cursor = entry.get_position()
         if (cursor != len(entrytext) and not
@@ -1916,6 +1917,7 @@ class EntryWordCompletion(gtk.EntryCompletion):
         cursor = entry.get_position()
 
         text = entry.get_text()
+        text = text.decode('utf-8')
         left, f = max(
             [(text.rfind(c, 0, cursor), c) for c in self.leftsep])
         if left == -1: left += 1
