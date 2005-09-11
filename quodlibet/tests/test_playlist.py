@@ -206,6 +206,17 @@ class Mux(TestCase):
         self.next()
         self.failUnless(self.mux.current is None)
 
+    def test_newplaylist(self):
+        self.pl.set(range(5, 10))
+        self.failUnless(self.mux.current is None)
+        self.mux.go_to(7)
+        self.failUnlessEqual(self.mux.current, 7)
+        self.pl.set([3, 5, 9, 11])
+        self.failUnlessEqual(self.mux.current, 7)
+        self.pl.set([3, 7, 9, 11])
+        self.mux.next()
+        self.failUnlessEqual(self.mux.current, 9)
+
     def test_halfway(self):
         self.pl.set(range(10))
         self.failUnless(self.mux.current is None)
