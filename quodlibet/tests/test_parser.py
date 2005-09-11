@@ -1,3 +1,4 @@
+# -*- encoding: UTF-8 -*-
 from unittest import TestCase
 from tests import registerCase
 
@@ -106,6 +107,7 @@ class ParserTests(TestCase):
               "~filename": "/dir2/something.mp3", "tracknumber": "12/15" })
 
         self.s3 = self.AF({"artist": "piman\nmu"})
+        self.s4 = self.AF({"title": u"Ångström"})
 
     def test_empty(self):
         self.failIf(parser.parse("foobar = /./").search(self.s1))
@@ -151,7 +153,9 @@ class ParserTests(TestCase):
         self.failUnless(parser.parse("album = /I Hate/").search(self.s1))
         self.failUnless(parser.parse("album = /i Hate/").search(self.s1))
         self.failUnless(parser.parse("album = /i Hate/i").search(self.s1))
+        self.failUnless(parser.parse(u"title = /ångström/").search(self.s4))
         self.failIf(parser.parse("album = /i hate/c").search(self.s1))
+        self.failIf(parser.parse(u"title = /ångström/c").search(self.s4))
 
     def test_re_and(self):
         self.failUnless(parser.parse("album = &(/ate/,/est/)").search(self.s1))
@@ -190,6 +194,12 @@ class ParserTests(TestCase):
         self.failUnless(parser.parse("Ate man").search(self.s1))
         self.failIf(parser.parse("woo man").search(self.s1))
         self.failIf(parser.parse("not crazy").search(self.s1))
+
+    def test_unslashed_search(self):
+        self.failUnless(parser.parse("artist=piman").search(self.s1))
+        self.failUnless(parser.parse(u"title=ång").search(self.s4))
+        self.failIf(parser.parse("artist=mu").search(self.s1))
+        self.failIf(parser.parse(u"title=äng").search(self.s4))
 
     def test_synth_search(self):
         self.failUnless(parser.parse("~dirname=/dir1/").search(self.s1))
