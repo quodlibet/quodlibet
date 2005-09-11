@@ -192,7 +192,7 @@ class QueryParser(object):
     def MatchTag(self):
         tag = self.lookahead.lexeme
         self.match(TAG)
-        try: return sre.compile(sre.escape(tag), sre.IGNORECASE)
+        try: return sre.compile(sre.escape(tag), sre.IGNORECASE | sre.UNICODE)
         except sre.error:
             raise ParseError("The regular expression was invalid")
 
