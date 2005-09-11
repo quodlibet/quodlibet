@@ -312,13 +312,17 @@ class AlbumList(Browser, gtk.VBox):
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         queue = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
+        rem = qltk.MenuItem(_("Remove from Library"), gtk.STOCK_REMOVE)
         menu.append(button)
-        menu.append(props)
+        menu.append(gtk.SeparatorMenuItem())
         menu.append(queue)
+        menu.append(rem)
+        menu.append(props)
         menu.show_all()
         button.connect('activate', self.__refresh, view, model, True)
-        props.connect('activate', self.__properties, view)
         queue.connect('activate', self.__enqueue, view)
+        rem.connect('activate', self.__remove, view.get_selection())
+        props.connect('activate', self.__properties, view)
 
         view.connect_object('popup-menu', self.__popup, menu)
         view.connect('button-press-event', self.__button_press, menu)
@@ -330,6 +334,17 @@ class AlbumList(Browser, gtk.VBox):
         self.pack_start(sw, expand=True)
         self.__refresh(None, view, model)
         self.show_all()
+
+    def __remove(self, menuitem, selection):
+        model, rows = selection.get_selected_rows()
+        albums = [model[row][0] for row in rows]
+        songs = set()
+        for album in albums: songs.union_update(album.songs)
+        songs = list(songs)
+        if songs:
+            map(library.remove, songs)
+            widgets.watcher.removed(songs)
+            selection.unselect_all()
 
     def __popup(self, menu):
         menu.popup(None, None, None, 2, gtk.get_current_event_time())
