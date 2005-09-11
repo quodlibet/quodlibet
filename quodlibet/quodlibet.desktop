@@ -2,10 +2,13 @@
 Encoding=UTF-8
 Name=Quod Libet
 Name[fi]=Quod Libet
+Name[ru]=Quod Libet
 GenericName=Music Player
 GenericName[fi]=Musiikkisoitin
+GenericName[ru]=Музыкальный проигрыватель
 Comment=Listen to, browse, or edit your audio collection
 Comment[fi]=Kuuntele, selaa tai muokkaa äänikokoelmaasi
+Comment[ru]=Программа для прослушивания и управления аудио-коллекцией
 Exec=quodlibet
 Terminal=false
 Type=Application

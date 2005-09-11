@@ -3,7 +3,7 @@ library.py
 quodlibet.py
 util.py
 po/tag-names.py
-formats/audio.py
+formats/_audio.py
 exfalso.py
 widgets.py
 plugins.py
