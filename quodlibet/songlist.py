@@ -49,6 +49,7 @@ class PlaylistModel(gtk.ListStore):
     shuffle = OFF
     repeat = False
     __path = None
+    __old_value = None
 
     def __init__(self):
         gtk.ListStore.__init__(self, object)
@@ -56,6 +57,8 @@ class PlaylistModel(gtk.ListStore):
 
     def set(self, songs):
         oldsong = self.current
+        if oldsong is None: oldsong = self.__old_value
+        else: self.__old_value = oldsong
         self.__played = []
         self.__path = None
         self.clear()
@@ -63,6 +66,7 @@ class PlaylistModel(gtk.ListStore):
             iter = self.append(row=[song])
             if song == oldsong:
                 self.__path = self.get_path(iter)[0]
+        if self.current is not None: self.__old_value = None
 
     def remove(self, iter):
         oldpath = self.__path
@@ -76,7 +80,7 @@ class PlaylistModel(gtk.ListStore):
         return [row[0] for row in self]
 
     def get_current(self):
-        if self.__path == None: return None
+        if self.__path is None: return None
         elif self.is_empty(): return None
         else: return self[(self.__path,)][0]
 
@@ -98,7 +102,8 @@ class PlaylistModel(gtk.ListStore):
             if self.repeat: self.__path = 0
             else: self.__path = None
         elif self.__path is None: self.__path = 0
-        else: self.__path += 1
+        else:
+            self.__path += 1
 
     def __next_shuffle(self):
         if self.__path is not None:

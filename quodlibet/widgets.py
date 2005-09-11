@@ -1580,11 +1580,8 @@ class MainWindow(gtk.Window):
                 songlist.scroll_to_cell(path[0], use_align=True, row_align=0.5)
         if explicit: self.browser.scroll()
 
-    def __next_song(self, *args):
-        player.playlist.next()
-
-    def __previous_song(self, *args):
-        player.playlist.previous()
+    def __next_song(self, *args): player.playlist.next()
+    def __previous_song(self, *args): player.playlist.previous()
 
     def toggle_repeat(self, button):
         self.songlist.model.repeat = button.get_active()
@@ -2606,11 +2603,6 @@ class MainSongList(SongList):
         SongList.set_sort_by(self, *args, **kwargs)
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
-
-    def set_songs(self, *args, **kwargs):
-        old = self.model.current
-        SongList.set_songs(self, *args, **kwargs)
-        self.model.go_to(old)
 
 class LibraryBrowser(gtk.Window):
     def __init__(self, activator, Kind):
