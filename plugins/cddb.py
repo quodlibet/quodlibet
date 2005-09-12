@@ -138,7 +138,7 @@ def plugin_album(album):
         n = len(album)
         albumname = album[0]('album')
         if not albumname: albumname = ngettext('%d track', '%d tracks', n) % n
-        ErrorMessage(None, _("Could not find %s") % escape(albumname),
+        ErrorMessage(None, _("CDDB lookup failed"),
                 ngettext("%(title)s and %(count)d more...",
                     "%(title)s and %(count)d more...", n-1) % {
                     'title': album[0]('~basename'), 'count': n-1}).run()
