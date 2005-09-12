@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-11 10:27-0500\n"
+"POT-Creation-Date: 2005-09-11 20:55-0500\n"
 "PO-Revision-Date: 2005-09-11 11:54+0600\n"
 "Last-Translator: Sergey Fedoseev <fedoseev.sergey@gmail.com>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -993,7 +993,7 @@ msgstr "_Фильтровать по %s"
 msgid "Add to Queue"
 msgstr "Добавить в очередь"
 
-#: ../widgets.py:2090
+#: ../widgets.py:2090 ../browsers/albums.py:315
 msgid "Remove from Library"
 msgstr "Удалить из фонотеки"
 
@@ -1573,7 +1573,7 @@ msgstr[0] "%d альбом"
 msgstr[1] "%d альбома"
 msgstr[2] "%d альбомов"
 
-#: ../browsers/albums.py:538
+#: ../browsers/albums.py:553
 msgid "_Album List"
 msgstr "Список _альбомов"
 

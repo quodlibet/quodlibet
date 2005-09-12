@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-08 11:18-0500\n"
+"POT-Creation-Date: 2005-09-11 20:55-0500\n"
 "PO-Revision-Date: 2005-09-08 18:06+0200\n"
 "Last-Translator: FOAD <dok@xs4all.nl>\n"
 "Language-Team: Dutch <en@li.org>\n"
@@ -142,7 +142,7 @@ msgstr "Zet repeat aan, uit, of toggle ht"
 msgid "Set the volume"
 msgstr "Bepaal volume"
 
-#: ../quodlibet.py:145 ../browsers/search.py:111
+#: ../quodlibet.py:145 ../browsers/search.py:113
 msgid "Search your audio library"
 msgstr "Zoek in je audio bibliotheek"
 
@@ -252,7 +252,7 @@ msgstr "Geen tijdsinformatie"
 msgid "[Invalid Encoding]"
 msgstr "[Ongeldige codering]"
 
-#: ../util.py:547 ../properties.py:883 ../properties.py:1157
+#: ../util.py:547 ../properties.py:884 ../properties.py:1153
 msgid "Invalid tag"
 msgstr "Ongeldige tag"
 
@@ -485,7 +485,7 @@ msgid_plural "%d years"
 msgstr[0] "%d jaar"
 msgstr[1] "%d jaren"
 
-#: ../formats/audio.py:93 ../properties.py:299 ../properties.py:305
+#: ../formats/_audio.py:82 ../properties.py:299 ../properties.py:305
 #: ../properties.py:330 ../browsers/paned.py:98
 msgid "Unknown"
 msgstr "Onbekend"
@@ -705,7 +705,7 @@ msgstr "Quod Libet Voorkeuren"
 msgid "_Play"
 msgstr "_Speel"
 
-#: ../widgets.py:716 ../widgets.py:1265 ../widgets.py:1976
+#: ../widgets.py:716 ../widgets.py:1265 ../widgets.py:2053
 msgid "Rating"
 msgstr "Cijfer"
 
@@ -772,7 +772,7 @@ msgstr "_Nieuw/Bewerk Speellijst"
 msgid "_Browse Library"
 msgstr "_Bekijk Bibliotheek"
 
-#: ../widgets.py:1246 ../widgets.py:2000
+#: ../widgets.py:1246 ../widgets.py:2077
 msgid "_Plugins"
 msgstr "_Plugins"
 
@@ -856,7 +856,7 @@ msgstr "Random al_bum"
 msgid "Song _List"
 msgstr "Song_lijst"
 
-#: ../widgets.py:1323 ../widgets.py:1808
+#: ../widgets.py:1323 ../widgets.py:1806
 msgid "_Play Queue"
 msgstr "_Speel Wachtrij"
 
@@ -914,7 +914,7 @@ msgstr ""
 "Voor een naam in voor de nieuwe speellijst. Als de naam al bestaat wordt "
 "deze geopend om hem te bewerken."
 
-#: ../widgets.py:1631
+#: ../widgets.py:1628
 #, python-format
 msgid ""
 "Quod Libet is scanning your library. This may take several minutes.\n"
@@ -927,11 +927,11 @@ msgstr ""
 "%d songs opnieuw geladen\n"
 "%d songs verwijderd"
 
-#: ../widgets.py:1670
+#: ../widgets.py:1667
 msgid "Add Music"
 msgstr "Voeg Muziek Toe"
 
-#: ../widgets.py:1682
+#: ../widgets.py:1679
 #, python-format
 msgid ""
 "Quod Libet is scanning for new songs and adding them to your library.\n"
@@ -942,56 +942,56 @@ msgstr ""
 "\n"
 "%d songs toegevoegd"
 
-#: ../widgets.py:1794
+#: ../widgets.py:1792
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d song (%(time)s)"
 msgstr[1] "%(count)d songs (%(time)s)"
 
-#: ../widgets.py:1813
+#: ../widgets.py:1811
 msgid "_Choose randomly"
 msgstr "_Kies willekeurig"
 
-#: ../widgets.py:1834
+#: ../widgets.py:1832
 msgid "Drag songs here to add them to the play queue"
 msgstr "Sleep songs hiernaartoe om ze toe te voegen aan de wachtrij"
 
-#: ../widgets.py:1847 ../properties.py:537
+#: ../widgets.py:1845 ../properties.py:537
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d song"
 msgstr[1] "%d songs"
 
-#: ../widgets.py:1971
+#: ../widgets.py:2048
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filter op %s"
 
-#: ../widgets.py:2009 ../browsers/albums.py:294
+#: ../widgets.py:2086 ../browsers/albums.py:314
 msgid "Add to Queue"
 msgstr "Voeg toe aan de wachtrij"
 
-#: ../widgets.py:2013
+#: ../widgets.py:2090 ../browsers/albums.py:315
 msgid "Remove from Library"
 msgstr "Verwijder uit bibliotheek"
 
-#: ../widgets.py:2108 ../efwidgets.py:333
+#: ../widgets.py:2185 ../efwidgets.py:343
 #, python-format
 msgid "Moving %d/%d."
 msgstr "Verplaatst %d/%d."
 
-#: ../widgets.py:2109 ../efwidgets.py:334
+#: ../widgets.py:2186 ../efwidgets.py:344
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "Verwijdert %d/%d."
 
-#: ../widgets.py:2127 ../efwidgets.py:348
+#: ../widgets.py:2204 ../efwidgets.py:358
 msgid "Unable to delete file"
 msgstr "Niet in staat om bestand te verwijderen"
 
-#: ../widgets.py:2128 ../efwidgets.py:349
+#: ../widgets.py:2205 ../efwidgets.py:359
 #, python-format
 msgid ""
 "Deleting <b>%s</b> failed. Possibly the target file does not exist, or you "
@@ -1000,19 +1000,19 @@ msgstr ""
 "Verwijderen van <b>%s</b> mislukt. Mogelijk bestaat het bestand niet, of heb "
 "je geen permissie om het bestand te verwijderen."
 
-#: ../widgets.py:2303
+#: ../widgets.py:2419
 msgid "All songs"
 msgstr "Alle songs"
 
-#: ../widgets.py:2565
+#: ../widgets.py:2611
 msgid "Library Browser"
 msgstr "Bibliotheek Browser"
 
-#: ../widgets.py:2626
+#: ../widgets.py:2672
 msgid "Unable to start a web browser"
 msgstr "Niet in staat om een webbrowser te starten"
 
-#: ../widgets.py:2627
+#: ../widgets.py:2673
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1022,29 +1022,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2635
+#: ../widgets.py:2681
 msgid "gtk-media-next"
 msgstr "gtk-media-volgende"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2638
+#: ../widgets.py:2684
 msgid "gtk-media-previous"
 msgstr "gtk-media-vorige"
 
-#: ../widgets.py:2680
+#: ../widgets.py:2726
 msgid "Saving song library."
 msgstr "song bibliotheek opslaan"
 
-#: ../widgets.py:2684
+#: ../widgets.py:2730
 msgid "Unable to save library"
 msgstr "Niet in staat om bibliotheek op te slaan"
 
-#: ../widgets.py:2688
+#: ../widgets.py:2734
 msgid "No audio device found"
 msgstr "Geen audio device gevonden"
 
-#: ../widgets.py:2689
+#: ../widgets.py:2735
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1057,12 +1057,12 @@ msgstr ""
 "\n"
 "Quod Libet wordt nu afgesloten."
 
-#: ../plugins.py:328 ../properties.py:1247
+#: ../plugins.py:328 ../properties.py:1243
 msgid "Unable to edit song"
 msgstr "Niet in staat om song aan te passen"
 
-#: ../plugins.py:329 ../properties.py:963 ../properties.py:1248
-#: ../properties.py:1567
+#: ../plugins.py:329 ../properties.py:964 ../properties.py:1244
+#: ../properties.py:1563
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1172,19 +1172,19 @@ msgstr "bestandsgrootte"
 msgid "bitrate"
 msgstr "bitrate"
 
-#: ../properties.py:359 ../properties.py:1177 ../properties.py:1299
-#: ../properties.py:1505 ../properties.py:1642
+#: ../properties.py:359 ../properties.py:1173 ../properties.py:1295
+#: ../properties.py:1501 ../properties.py:1638
 msgid "File"
 msgstr "Bestand"
 
-#: ../properties.py:391 ../browsers/albums.py:95
+#: ../properties.py:391 ../browsers/albums.py:114
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d disc"
 msgstr[1] "%d discs"
 
-#: ../properties.py:393 ../browsers/albums.py:97
+#: ../properties.py:393 ../browsers/albums.py:116
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -1275,27 +1275,27 @@ msgstr "Voeg een nieuwe tag toe"
 msgid "Remove selected tag"
 msgstr "Verwijder geselecteerde tag"
 
-#: ../properties.py:810 ../properties.py:1085
+#: ../properties.py:811 ../properties.py:1081
 msgid "Split into _multiple values"
 msgstr "Splits in _verschillende waarden"
 
-#: ../properties.py:818
+#: ../properties.py:819
 msgid "Split disc out of _album"
 msgstr "Splits disk van album"
 
-#: ../properties.py:824
+#: ../properties.py:825
 msgid "Split version out of title"
 msgstr "Splits versie uit titel"
 
-#: ../properties.py:833
+#: ../properties.py:834
 msgid "Split arranger out of ar_tist"
 msgstr "Splits arrangeerder van ar_tiest"
 
-#: ../properties.py:839
+#: ../properties.py:840
 msgid "Split _performer out of artist"
 msgstr "Splits uitvoerende van artiest"
 
-#: ../properties.py:884 ../properties.py:1158
+#: ../properties.py:885 ../properties.py:1154
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1306,11 +1306,11 @@ msgstr ""
 "\n"
 "De geselecteerde bestanden ondersteunen het bewerken van deze tag niet."
 
-#: ../properties.py:928 ../properties.py:1222 ../properties.py:1554
+#: ../properties.py:929 ../properties.py:1218 ../properties.py:1550
 msgid "Tag may not be accurate"
 msgstr "Tag is mogelijk niet juist"
 
-#: ../properties.py:929 ../properties.py:1223 ../properties.py:1555
+#: ../properties.py:930 ../properties.py:1219 ../properties.py:1551
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -1324,48 +1324,48 @@ msgstr ""
 "\n"
 "Deze tag toch opslaan?"
 
-#: ../properties.py:962 ../properties.py:1566
+#: ../properties.py:963 ../properties.py:1562
 msgid "Unable to save song"
 msgstr "Niet in staat om song op te slaan"
 
-#: ../properties.py:985 ../properties.py:986
+#: ../properties.py:986 ../properties.py:987
 msgid "Invalid value"
 msgstr "Ongeldige waarde"
 
-#: ../properties.py:1055
+#: ../properties.py:1051
 msgid "Tag by Filename"
 msgstr "Tag via bestandsnaam"
 
 #. Main buttons
-#: ../properties.py:1060 ../properties.py:1291 ../properties.py:1493
+#: ../properties.py:1056 ../properties.py:1287 ../properties.py:1489
 msgid "_Preview"
 msgstr "_Vooruitblik"
 
-#: ../properties.py:1081
+#: ../properties.py:1077
 msgid "Replace _underscores with spaces"
 msgstr "Vervang _underscores door spaties"
 
-#: ../properties.py:1083
+#: ../properties.py:1079
 msgid "_Title-case resulting values"
 msgstr "_Resultaat in hoofdletters"
 
-#: ../properties.py:1088
+#: ../properties.py:1084
 msgid "Tags replace existing ones"
 msgstr "Tags vervangen bestaande tags"
 
-#: ../properties.py:1089
+#: ../properties.py:1085
 msgid "Tags are added to existing ones"
 msgstr "Tags worden toegevoegd aan de bestaande tags"
 
-#: ../properties.py:1105
+#: ../properties.py:1101
 msgid "The first letter of each word will be capitalized"
 msgstr "De eerste letter van elk woord wordt gekapitaliseerd"
 
-#: ../properties.py:1139
+#: ../properties.py:1135
 msgid "Invalid pattern"
 msgstr "Ongeldig patroon"
 
-#: ../properties.py:1140
+#: ../properties.py:1136
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1378,11 +1378,11 @@ msgstr ""
 "is ongeldig. Mogelijk bevat het dezelfde tag twee keer of heeft het "
 "ongebalanceerde haakjes·(&lt;·/·&gt;)."
 
-#: ../properties.py:1161
+#: ../properties.py:1157
 msgid "Invalid tags"
 msgstr "Ongeldige tags"
 
-#: ../properties.py:1162
+#: ../properties.py:1158
 #, python-format
 msgid ""
 "Invalid tags <b>%s</b>\n"
@@ -1393,27 +1393,27 @@ msgstr ""
 "\n"
 "De geselecteerde bestanden ondersteunen het bewerken van deze tags niet."
 
-#: ../properties.py:1283
+#: ../properties.py:1279
 msgid "Rename Files"
 msgstr "Hernoem bestanden"
 
-#: ../properties.py:1305
+#: ../properties.py:1301
 msgid "New Name"
 msgstr "Nieuwe naam"
 
-#: ../properties.py:1316
+#: ../properties.py:1312
 msgid "Replace spaces with _underscores"
 msgstr "Vervangen spaties door _underscores"
 
-#: ../properties.py:1320
+#: ../properties.py:1316
 msgid "Replace _Windows-incompatible characters"
 msgstr "Vervangen Windows-incompatible karakters"
 
-#: ../properties.py:1324
+#: ../properties.py:1320
 msgid "Replace non-_ASCII characters"
 msgstr "Vervangen niet-ASCII karakters"
 
-#: ../properties.py:1345
+#: ../properties.py:1341
 msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
@@ -1421,7 +1421,7 @@ msgstr ""
 "Karakters die niet toegestaan zijn in Windows bestandnamen (\\:?;\"<>|) "
 "worden vervangen door underscores"
 
-#: ../properties.py:1348
+#: ../properties.py:1344
 msgid ""
 "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
 "replaced by underscores"
@@ -1429,11 +1429,11 @@ msgstr ""
 "Karakters die geen onderdeel zijn van de ASCII set (A-Z, a-z, 0-9 en "
 "interpunctie) worden vervangen door underscores"
 
-#: ../properties.py:1405
+#: ../properties.py:1401
 msgid "Unable to rename file"
 msgstr "Niet in staan om het bestand te hernoemen"
 
-#: ../properties.py:1406
+#: ../properties.py:1402
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1444,11 +1444,11 @@ msgstr ""
 "al, of heeft u geen permissie om het nieuwe bestand te maken of het oude "
 "bestand te verwijderen."
 
-#: ../properties.py:1436
+#: ../properties.py:1432
 msgid "Path is not absolute"
 msgstr "Pad is niet absoluut"
 
-#: ../properties.py:1437
+#: ../properties.py:1433
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1461,36 +1461,36 @@ msgstr ""
 "bevat / maar begint niet op root niveau. Om verkeerd genaamde directories te "
 "voorkomen, moet je het patroon rooten door te beginnen met de / directory."
 
-#: ../properties.py:1468
+#: ../properties.py:1464
 msgid "Track Numbers"
 msgstr "Track nummers"
 
-#: ../properties.py:1474
+#: ../properties.py:1470
 msgid "Start fro_m:"
 msgstr "Begin va_n:"
 
-#: ../properties.py:1485
+#: ../properties.py:1481
 msgid "_Total tracks:"
 msgstr "_Totaal tracks:"
 
-#: ../properties.py:1508
+#: ../properties.py:1504
 msgid "Track"
 msgstr "Track"
 
-#: ../properties.py:1641
+#: ../properties.py:1637
 msgid "Apply to these _files..."
 msgstr "Pas toe op deze _bestanden..."
 
-#: ../properties.py:1645
+#: ../properties.py:1641
 msgid "Path"
 msgstr "Pad"
 
-#: ../properties.py:1702 ../efwidgets.py:374
+#: ../properties.py:1698 ../efwidgets.py:384
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s en %(count)d meer"
 
-#: ../properties.py:1704 ../properties.py:1705
+#: ../properties.py:1700 ../properties.py:1701
 msgid "Properties"
 msgstr "Eigenschappen"
 
@@ -1502,50 +1502,50 @@ msgstr "Folders"
 msgid "New Folder..."
 msgstr "Nieuwe folder"
 
-#: ../efwidgets.py:117
+#: ../efwidgets.py:118
 msgid "New Folder"
 msgstr "Nieuwe folder"
 
-#: ../efwidgets.py:117
+#: ../efwidgets.py:118
 msgid "Enter a name for the new folder:"
 msgstr "Voer een naam in voor de nieuwe folder:"
 
-#: ../efwidgets.py:126
+#: ../efwidgets.py:127
 msgid "Unable to create folder"
 msgstr "Niet in staat om folder te maken"
 
-#: ../efwidgets.py:139
+#: ../efwidgets.py:140
 msgid "Unable to delete folder"
 msgstr "Niet in staat om folder te verwijderen"
 
-#: ../efwidgets.py:185
+#: ../efwidgets.py:186
 msgid "Songs"
 msgstr "Songs"
 
-#: ../browsers/albums.py:90
+#: ../browsers/albums.py:109
 msgid "Songs not in an album"
 msgstr "Songs niet in een album"
 
-#: ../browsers/albums.py:188
+#: ../browsers/albums.py:208
 msgid "Sort by title"
 msgstr "Sorteer op titel"
 
-#: ../browsers/albums.py:189
+#: ../browsers/albums.py:209
 msgid "Sort by artist"
 msgstr "Sorteer op artiest"
 
-#: ../browsers/albums.py:261
+#: ../browsers/albums.py:281
 msgid "All Albums"
 msgstr "Alle albums"
 
-#: ../browsers/albums.py:262
+#: ../browsers/albums.py:282
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../browsers/albums.py:515
+#: ../browsers/albums.py:553
 msgid "_Album List"
 msgstr "_Albumlijst"
 
@@ -1573,23 +1573,23 @@ msgstr "Ververs de huidige speellijst"
 msgid "_Playlists"
 msgstr "_Speellijsten"
 
-#: ../browsers/search.py:102
+#: ../browsers/search.py:104
 msgid "Clear search"
 msgstr "Schoon zoektekst"
 
-#: ../browsers/search.py:109
+#: ../browsers/search.py:111
 msgid "Search"
 msgstr "Zoek"
 
-#: ../browsers/search.py:130
+#: ../browsers/search.py:132
 msgid "_Limit Results"
 msgstr "_Beperk Resultaten"
 
-#: ../browsers/search.py:177
+#: ../browsers/search.py:179
 msgid "_Disable Browser"
 msgstr "_Zet Browser Uit"
 
-#: ../browsers/search.py:178
+#: ../browsers/search.py:180
 msgid "_Search Library"
 msgstr "_Doorzoek Bibliotheek"
 

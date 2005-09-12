@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-08 15:47-0500\n"
+"POT-Creation-Date: 2005-09-11 20:55-0500\n"
 "PO-Revision-Date: 2005-09-08 22:00+0200\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish\n"
@@ -140,7 +140,7 @@ msgstr "Aseta toisto päälle, pois, tai vaihda sen tilaa"
 msgid "Set the volume"
 msgstr "Aseta äänenvoimakkuus"
 
-#: ../quodlibet.py:145 ../browsers/search.py:111
+#: ../quodlibet.py:145 ../browsers/search.py:113
 msgid "Search your audio library"
 msgstr "Hae äänikirjastostasi"
 
@@ -250,7 +250,7 @@ msgstr "Ei aikatietoa"
 msgid "[Invalid Encoding]"
 msgstr "[Virheellinen koodaus]"
 
-#: ../util.py:547 ../properties.py:883 ../properties.py:1157
+#: ../util.py:547 ../properties.py:884 ../properties.py:1153
 msgid "Invalid tag"
 msgstr "Virheellinen tunniste"
 
@@ -483,7 +483,7 @@ msgid_plural "%d years"
 msgstr[0] "%d vuosi"
 msgstr[1] "%d vuotta"
 
-#: ../formats/audio.py:93 ../properties.py:299 ../properties.py:305
+#: ../formats/_audio.py:82 ../properties.py:299 ../properties.py:305
 #: ../properties.py:330 ../browsers/paned.py:98
 msgid "Unknown"
 msgstr "Tuntematon"
@@ -700,7 +700,7 @@ msgstr "Quod Libetin asetukset"
 msgid "_Play"
 msgstr "_Soita"
 
-#: ../widgets.py:716 ../widgets.py:1265 ../widgets.py:1976
+#: ../widgets.py:716 ../widgets.py:1265 ../widgets.py:2053
 msgid "Rating"
 msgstr "Arvosana"
 
@@ -767,7 +767,7 @@ msgstr "_Uusi/muokkaa soittolistaa..."
 msgid "_Browse Library"
 msgstr "_Selaa kirjastoa"
 
-#: ../widgets.py:1246 ../widgets.py:2000
+#: ../widgets.py:1246 ../widgets.py:2077
 msgid "_Plugins"
 msgstr "L_iitännäiset"
 
@@ -851,7 +851,7 @@ msgstr "Satunnainen al_bumi"
 msgid "Song _List"
 msgstr "_Kappalelista"
 
-#: ../widgets.py:1323 ../widgets.py:1808
+#: ../widgets.py:1323 ../widgets.py:1806
 msgid "_Play Queue"
 msgstr "_Soita jono"
 
@@ -909,7 +909,7 @@ msgstr ""
 "Syötä uuden soittolistan nimi. Jos lista on jo olemassa, se avataan "
 "muokattavaksi."
 
-#: ../widgets.py:1631
+#: ../widgets.py:1628
 #, python-format
 msgid ""
 "Quod Libet is scanning your library. This may take several minutes.\n"
@@ -922,11 +922,11 @@ msgstr ""
 "%d kappaletta ladattu uudelleen\n"
 "%d kappaletta poistettu"
 
-#: ../widgets.py:1670
+#: ../widgets.py:1667
 msgid "Add Music"
 msgstr "Lisää musiikkia"
 
-#: ../widgets.py:1682
+#: ../widgets.py:1679
 #, python-format
 msgid ""
 "Quod Libet is scanning for new songs and adding them to your library.\n"
@@ -937,56 +937,56 @@ msgstr ""
 "\n"
 "%d kappaletta lisätty"
 
-#: ../widgets.py:1794
+#: ../widgets.py:1792
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d kappale (%(time)s)"
 msgstr[1] "%(count)d kappaletta (%(time)s)"
 
-#: ../widgets.py:1813
+#: ../widgets.py:1811
 msgid "_Choose randomly"
 msgstr "_Valitse satunnaisesti"
 
-#: ../widgets.py:1834
+#: ../widgets.py:1832
 msgid "Drag songs here to add them to the play queue"
 msgstr "Raahaa tähän kappaleita lisätäksesi ne soittojonoon"
 
-#: ../widgets.py:1847 ../properties.py:537
+#: ../widgets.py:1845 ../properties.py:537
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d kappale"
 msgstr[1] "%d kappaletta"
 
-#: ../widgets.py:1971
+#: ../widgets.py:2048
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Suodata sarakkeen \"%s\" perusteella"
 
-#: ../widgets.py:2009 ../browsers/albums.py:294
+#: ../widgets.py:2086 ../browsers/albums.py:314
 msgid "Add to Queue"
 msgstr "Lisää jonoon"
 
-#: ../widgets.py:2013
+#: ../widgets.py:2090 ../browsers/albums.py:315
 msgid "Remove from Library"
 msgstr "Poista kirjastosta"
 
-#: ../widgets.py:2108 ../efwidgets.py:333
+#: ../widgets.py:2185 ../efwidgets.py:343
 #, python-format
 msgid "Moving %d/%d."
 msgstr "Siirretään %d/%d."
 
-#: ../widgets.py:2109 ../efwidgets.py:334
+#: ../widgets.py:2186 ../efwidgets.py:344
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "Poistetaan %d/%d."
 
-#: ../widgets.py:2127 ../efwidgets.py:348
+#: ../widgets.py:2204 ../efwidgets.py:358
 msgid "Unable to delete file"
 msgstr "Ei voi poistaa tiedostoa"
 
-#: ../widgets.py:2128 ../efwidgets.py:349
+#: ../widgets.py:2205 ../efwidgets.py:359
 #, python-format
 msgid ""
 "Deleting <b>%s</b> failed. Possibly the target file does not exist, or you "
@@ -995,19 +995,19 @@ msgstr ""
 "Kappaleen <b>%s</b> poistaminen epäonnistui. Tiedostoa ei mahdollisesti ole "
 "olemassa, tai sinulla ei ole oikeuksia sen poistamiseen."
 
-#: ../widgets.py:2303
+#: ../widgets.py:2419
 msgid "All songs"
 msgstr "Kaikki kappaleet"
 
-#: ../widgets.py:2565
+#: ../widgets.py:2611
 msgid "Library Browser"
 msgstr "Kirjaston selain"
 
-#: ../widgets.py:2626
+#: ../widgets.py:2672
 msgid "Unable to start a web browser"
 msgstr "Web-selainta ei voi käynnistää"
 
-#: ../widgets.py:2627
+#: ../widgets.py:2673
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1017,29 +1017,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2635
+#: ../widgets.py:2681
 msgid "gtk-media-next"
 msgstr "S_euraava"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2638
+#: ../widgets.py:2684
 msgid "gtk-media-previous"
 msgstr ""
 
-#: ../widgets.py:2680
+#: ../widgets.py:2726
 msgid "Saving song library."
 msgstr "Tallennetaan musiikkikirjasto."
 
-#: ../widgets.py:2684
+#: ../widgets.py:2730
 msgid "Unable to save library"
 msgstr "Kirjastoa ei voi tallentaa"
 
-#: ../widgets.py:2688
+#: ../widgets.py:2734
 msgid "No audio device found"
 msgstr "Äänilaitetta ei löydy"
 
-#: ../widgets.py:2689
+#: ../widgets.py:2735
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1051,12 +1051,12 @@ msgstr ""
 "\n"
 "Quod Libet suljetaan."
 
-#: ../plugins.py:328 ../properties.py:1247
+#: ../plugins.py:328 ../properties.py:1243
 msgid "Unable to edit song"
 msgstr "Kappaletta ei voi muokata"
 
-#: ../plugins.py:329 ../properties.py:963 ../properties.py:1248
-#: ../properties.py:1567
+#: ../plugins.py:329 ../properties.py:964 ../properties.py:1244
+#: ../properties.py:1563
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1167,19 +1167,19 @@ msgstr "tiedostokoko"
 msgid "bitrate"
 msgstr "bittinopeus"
 
-#: ../properties.py:359 ../properties.py:1177 ../properties.py:1299
-#: ../properties.py:1505 ../properties.py:1642
+#: ../properties.py:359 ../properties.py:1173 ../properties.py:1295
+#: ../properties.py:1501 ../properties.py:1638
 msgid "File"
 msgstr "Tiedosto"
 
-#: ../properties.py:391 ../browsers/albums.py:95
+#: ../properties.py:391 ../browsers/albums.py:114
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d levy"
 msgstr[1] "%d levyä"
 
-#: ../properties.py:393 ../browsers/albums.py:97
+#: ../properties.py:393 ../browsers/albums.py:116
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -1270,27 +1270,27 @@ msgstr "Lisää tunniste"
 msgid "Remove selected tag"
 msgstr "Poista valittu tunniste"
 
-#: ../properties.py:810 ../properties.py:1085
+#: ../properties.py:811 ../properties.py:1081
 msgid "Split into _multiple values"
 msgstr "Jaa _useampaan arvoon"
 
-#: ../properties.py:818
+#: ../properties.py:819
 msgid "Split disc out of _album"
 msgstr "Jaa levyn numero _albumin nimestä"
 
-#: ../properties.py:824
+#: ../properties.py:825
 msgid "Split version out of title"
 msgstr "Jaa versio kappaleen nimestä"
 
-#: ../properties.py:833
+#: ../properties.py:834
 msgid "Split arranger out of ar_tist"
 msgstr "Jaa sovittaja ar_tistin nimestä"
 
-#: ../properties.py:839
+#: ../properties.py:840
 msgid "Split _performer out of artist"
 msgstr "Erota _esittäjä artistikentästä"
 
-#: ../properties.py:884 ../properties.py:1158
+#: ../properties.py:885 ../properties.py:1154
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1301,11 +1301,11 @@ msgstr ""
 "\n"
 "Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
 
-#: ../properties.py:928 ../properties.py:1222 ../properties.py:1554
+#: ../properties.py:929 ../properties.py:1218 ../properties.py:1550
 msgid "Tag may not be accurate"
 msgstr "Tunniste saattaa olla epätarkka"
 
-#: ../properties.py:929 ../properties.py:1223 ../properties.py:1555
+#: ../properties.py:930 ../properties.py:1219 ../properties.py:1551
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -1318,48 +1318,48 @@ msgstr ""
 "\n"
 "Tallennetaanko kappale siitä huolimatta?"
 
-#: ../properties.py:962 ../properties.py:1566
+#: ../properties.py:963 ../properties.py:1562
 msgid "Unable to save song"
 msgstr "Kappaletta ei voi tallentaa"
 
-#: ../properties.py:985 ../properties.py:986
+#: ../properties.py:986 ../properties.py:987
 msgid "Invalid value"
 msgstr "Virheellinen arvo"
 
-#: ../properties.py:1055
+#: ../properties.py:1051
 msgid "Tag by Filename"
 msgstr "Tunnisteet tiedostonimestä"
 
 #. Main buttons
-#: ../properties.py:1060 ../properties.py:1291 ../properties.py:1493
+#: ../properties.py:1056 ../properties.py:1287 ../properties.py:1489
 msgid "_Preview"
 msgstr "_Esikatsele"
 
-#: ../properties.py:1081
+#: ../properties.py:1077
 msgid "Replace _underscores with spaces"
 msgstr "Korvaa alaviivat _välilyönneillä"
 
-#: ../properties.py:1083
+#: ../properties.py:1079
 msgid "_Title-case resulting values"
 msgstr "_Arvot otsakemuodossa"
 
-#: ../properties.py:1088
+#: ../properties.py:1084
 msgid "Tags replace existing ones"
 msgstr "Tunnisteet korvaavat olemassaolevat"
 
-#: ../properties.py:1089
+#: ../properties.py:1085
 msgid "Tags are added to existing ones"
 msgstr "Tunnisteet lisätään olemassaoleviin"
 
-#: ../properties.py:1105
+#: ../properties.py:1101
 msgid "The first letter of each word will be capitalized"
 msgstr "Jokaisen sanan ensimmäinen kirjain isolla"
 
-#: ../properties.py:1139
+#: ../properties.py:1135
 msgid "Invalid pattern"
 msgstr "Virheellinen hakukaava"
 
-#: ../properties.py:1140
+#: ../properties.py:1136
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1372,11 +1372,11 @@ msgstr ""
 "on virheellinen. Se saattaa sisältää saman tunnisteen kahdesti tai "
 "parittomia pienemmyys/suuremmuusmerkkejä (&lt; / &gt;)."
 
-#: ../properties.py:1161
+#: ../properties.py:1157
 msgid "Invalid tags"
 msgstr "Tunnisteet eivät kelpaa"
 
-#: ../properties.py:1162
+#: ../properties.py:1158
 #, python-format
 msgid ""
 "Invalid tags <b>%s</b>\n"
@@ -1387,27 +1387,27 @@ msgstr ""
 "\n"
 "Valitut tiedostot eivät tue näiden tunnisteiden muokkaamista."
 
-#: ../properties.py:1283
+#: ../properties.py:1279
 msgid "Rename Files"
 msgstr "Nimeä tiedostot"
 
-#: ../properties.py:1305
+#: ../properties.py:1301
 msgid "New Name"
 msgstr "Uusi nimi"
 
-#: ../properties.py:1316
+#: ../properties.py:1312
 msgid "Replace spaces with _underscores"
 msgstr "Korvaa välilyönnit _alaviivoilla"
 
-#: ../properties.py:1320
+#: ../properties.py:1316
 msgid "Replace _Windows-incompatible characters"
 msgstr "Korvaa _Windows-yhteensopimattomat merkit"
 
-#: ../properties.py:1324
+#: ../properties.py:1320
 msgid "Replace non-_ASCII characters"
 msgstr "Korvaa ASCII:hin kuulumattomat merkit"
 
-#: ../properties.py:1345
+#: ../properties.py:1341
 msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
@@ -1415,7 +1415,7 @@ msgstr ""
 "Merkit, joita ei sallita Windows-tiedostonimissä (\\:?;\"<>|), korvataan "
 "alaviivoilla"
 
-#: ../properties.py:1348
+#: ../properties.py:1344
 msgid ""
 "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
 "replaced by underscores"
@@ -1423,11 +1423,11 @@ msgstr ""
 "ASCII-merkistöön (A-Z, a-z, 0-9 sekä välimerkit) kuulumattomat merkit "
 "korvataan alaviivoilla"
 
-#: ../properties.py:1405
+#: ../properties.py:1401
 msgid "Unable to rename file"
 msgstr "Tiedoston nimeäminen ei onnistu"
 
-#: ../properties.py:1406
+#: ../properties.py:1402
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1438,11 +1438,11 @@ msgstr ""
 "Kohdetiedosto on mahdollisesti jo olemassa, tai sinulla ei ole oikeuksia "
 "uuden tiedoston luomiseen tai vanhan poistamiseen."
 
-#: ../properties.py:1436
+#: ../properties.py:1432
 msgid "Path is not absolute"
 msgstr "Polku ei ole absoluuttinen"
 
-#: ../properties.py:1437
+#: ../properties.py:1433
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1455,36 +1455,36 @@ msgstr ""
 "sisältää merkin /, mutta ei ala juurihakemistosta. Välttääksesi hakemistojen "
 "väärinnimeämistä, aloita kaavasi merkeillä / tai ~/."
 
-#: ../properties.py:1468
+#: ../properties.py:1464
 msgid "Track Numbers"
 msgstr "Raitanumerot"
 
-#: ../properties.py:1474
+#: ../properties.py:1470
 msgid "Start fro_m:"
 msgstr "Aloitus_kohta:"
 
-#: ../properties.py:1485
+#: ../properties.py:1481
 msgid "_Total tracks:"
 msgstr "Raitoja _yhteensä:"
 
-#: ../properties.py:1508
+#: ../properties.py:1504
 msgid "Track"
 msgstr "Raita"
 
-#: ../properties.py:1641
+#: ../properties.py:1637
 msgid "Apply to these _files..."
 msgstr "Aseta n_äille tiedostoille..."
 
-#: ../properties.py:1645
+#: ../properties.py:1641
 msgid "Path"
 msgstr "Polku"
 
-#: ../properties.py:1702 ../efwidgets.py:374
+#: ../properties.py:1698 ../efwidgets.py:384
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s ja %(count)d muuta"
 
-#: ../properties.py:1704 ../properties.py:1705
+#: ../properties.py:1700 ../properties.py:1701
 msgid "Properties"
 msgstr "Ominaisuudet"
 
@@ -1496,50 +1496,50 @@ msgstr "Kansiot"
 msgid "New Folder..."
 msgstr "Uusi kansio..."
 
-#: ../efwidgets.py:117
+#: ../efwidgets.py:118
 msgid "New Folder"
 msgstr "Uusi kansio"
 
-#: ../efwidgets.py:117
+#: ../efwidgets.py:118
 msgid "Enter a name for the new folder:"
 msgstr "Anna uuden kansion nimi:"
 
-#: ../efwidgets.py:126
+#: ../efwidgets.py:127
 msgid "Unable to create folder"
 msgstr "Kansion luominen epäonnistui"
 
-#: ../efwidgets.py:139
+#: ../efwidgets.py:140
 msgid "Unable to delete folder"
 msgstr "Kansion poistaminen epäonnistui"
 
-#: ../efwidgets.py:185
+#: ../efwidgets.py:186
 msgid "Songs"
 msgstr "Kappaleet"
 
-#: ../browsers/albums.py:90
+#: ../browsers/albums.py:109
 msgid "Songs not in an album"
 msgstr "Kappaleet, jotka eivät ole millään albumilla"
 
-#: ../browsers/albums.py:188
+#: ../browsers/albums.py:208
 msgid "Sort by title"
 msgstr "Järjestä nimen mukaan"
 
-#: ../browsers/albums.py:189
+#: ../browsers/albums.py:209
 msgid "Sort by artist"
 msgstr "Järjestä artistin mukaan"
 
-#: ../browsers/albums.py:261
+#: ../browsers/albums.py:281
 msgid "All Albums"
 msgstr "Kaikki albumit"
 
-#: ../browsers/albums.py:262
+#: ../browsers/albums.py:282
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
-#: ../browsers/albums.py:515
+#: ../browsers/albums.py:553
 msgid "_Album List"
 msgstr "_Albumilista"
 
@@ -1567,23 +1567,23 @@ msgstr "Virkistä nykyinen soittolista"
 msgid "_Playlists"
 msgstr "Soitto_listat"
 
-#: ../browsers/search.py:102
+#: ../browsers/search.py:104
 msgid "Clear search"
 msgstr "Tyhjennä haku"
 
-#: ../browsers/search.py:109
+#: ../browsers/search.py:111
 msgid "Search"
 msgstr "Hae"
 
-#: ../browsers/search.py:130
+#: ../browsers/search.py:132
 msgid "_Limit Results"
 msgstr "Tulosten _määrä"
 
-#: ../browsers/search.py:177
+#: ../browsers/search.py:179
 msgid "_Disable Browser"
 msgstr "_Sulje selain"
 
-#: ../browsers/search.py:178
+#: ../browsers/search.py:180
 msgid "_Search Library"
 msgstr "_Hae kirjastosta"
 
