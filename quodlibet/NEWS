@@ -8,6 +8,9 @@ Recent upgrade notes:
 ---------------------
 You need GStreamer and gst-python.
 
+0.13.1 - 
+ * Fix playlist creation. (#250)
+
 0.13 - So, um... let's- fletcherize?
  * The GStreamer backend is cleaned up, and is now the only backend.
    This results in lower background CPU usage and many fixes to
