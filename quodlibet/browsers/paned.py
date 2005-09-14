@@ -177,14 +177,6 @@ class PanedBrowser(gtk.VBox, Browser):
         for pane in self.__panes:
             pane.scroll(widgets.watcher.song)
 
-    def __button_press_event(self, pane, event):
-        print "event"
-        if event.button == 2:
-            print "woo"
-            pane.stop_emission('button-press-event')
-            return True
-        
-
     def refresh_panes(self, restore=True):
         try: hbox = self.get_children()[1]
         except IndexError: pass # first call
@@ -205,7 +197,6 @@ class PanedBrowser(gtk.VBox, Browser):
             sw = gtk.ScrolledWindow()
             sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             sw.set_shadow_type(gtk.SHADOW_IN)
-            pane.connect('button-press-event', self.__button_press_event)
             sw.add(pane)
             hbox.pack_start(sw)
 
