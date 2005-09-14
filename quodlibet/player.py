@@ -115,7 +115,9 @@ class PlaylistPlayer(object):
                 self.next()
                 self.paused = True
                 return
-        else: self.bin.set_state(gst.STATE_NULL)
+        else:
+            self.paused = True
+            self.bin.set_state(gst.STATE_NULL)
         self.__song = song
         self.info.song_started(song)
         self.volume = self.__volume
