@@ -2449,7 +2449,7 @@ class PlayList(DestSongList):
 
         self.set_model(model)
 
-        self.connect('drag-end', self.__refresh_indices)
+        self.connect('drag-data-received', self.__refresh_indices)
 
     def __popup(self, menu):
         menu.popup(None, None, None, 3, 0)
