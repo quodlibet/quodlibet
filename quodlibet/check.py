@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python
 # check.py -- check for system requirements
 # public domain
 
