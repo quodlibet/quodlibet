@@ -409,9 +409,14 @@ class FileFromPattern(object):
         # simple magic to decide whether to append the extension
         # if the pattern has no . in it, or if it has a > (probably a tag)
         #   after the last . or if the last character is the . append .foo
+        # do not append .foo after a trailing ~basename or ~filename copy
         if filename and pattern and (
-            '.' not in pattern or pattern.endswith('.') or
-            '>' in pattern[pattern.rfind('.'):]):
+                '.' not in pattern or pattern.endswith('.') or
+                '>' in pattern[pattern.rfind('.'):]
+            ) and not (
+                pattern.endswith('<~filename>') or
+                pattern.endswith('<~basename>')
+            ):
             self.replacers.append(self.ExtensionCopy())
 
     def match(self, song):

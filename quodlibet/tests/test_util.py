@@ -268,7 +268,7 @@ class NBPTests(TestCase):
     def test_escape_slash(s):
         fpat = FileFromPattern('<~filename>', filename=True)
         pat = FileFromPattern('<~filename>', filename=False)
-        s.assertEquals(fpat.match(s.a), "_path_to_a.mp3.mp3")
+        s.assertEquals(fpat.match(s.a), "_path_to_a.mp3")
         s.assertEquals(pat.match(s.a), "/path/to/a.mp3")
 
     def test_conditional_other_other(s):
@@ -341,6 +341,16 @@ class NBPTests(TestCase):
         s.assertEquals(pat.match(s.a), '05. Title5.flac')
         s.assertEquals(pat.match(s.b), '06. Title6.flac')
         s.assertEquals(pat.match(s.c), '. test_subdir.flac')
+
+    def test_specialcase_anti_ext(s):
+        p1 = FileFromPattern('<~filename>')
+        p2 = FileFromPattern('<~dirname>_<~basename>')
+        s.assertEquals(p1.match(s.a), p2.match(s.a))
+        s.assertEquals(p1.match(s.a), '_path_to_a.mp3')
+        s.assertEquals(p1.match(s.b), p2.match(s.b))
+        s.assertEquals(p1.match(s.b), '_path_to_b.ogg')
+        s.assertEquals(p1.match(s.c), p2.match(s.c))
+        s.assertEquals(p1.match(s.c), '_one_more_a.flac')
 
     def test_number_dot_genre(s):
         pat = FileFromPattern('<tracknumber>. <genre>')
