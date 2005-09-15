@@ -1,3 +1,10 @@
+quodlibet (0.13.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Suggest quodlibet-plugins.
+
+ -- Joe Wreschnig <piman@debian.org>  Thu, 15 Sep 2005 00:11:44 -0500
+
 quodlibet (0.13-1) unstable; urgency=low
 
   * New upstream release.
