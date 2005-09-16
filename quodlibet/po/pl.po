@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-11 20:55-0500\n"
-"PO-Revision-Date: 2005-07-31 14:09-0500\n"
+"POT-Creation-Date: 2005-09-16 18:05-0500\n"
+"PO-Revision-Date: 2005-09-17 00:04+0200\n"
 "Last-Translator: pambuk <pambuk@gmail.com>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "Obsługiwane formaty: %s"
 
 #: ../quodlibet.py:37
 msgid "The library cannot be refreshed while Quod Libet is running."
-msgstr "Nie można odświerzyć biblioteki w chwili gdy działa Quod Libet."
+msgstr "Nie można odświeżyć biblioteki gdy działa Quod Libet."
 
 #: ../quodlibet.py:41
 msgid "Loading, scanning, and saving your library."
@@ -65,7 +65,7 @@ msgstr "Żaden utwór nie jest w tej chwili odtwarzany."
 
 #: ../quodlibet.py:77
 msgid "Quod Libet is not running."
-msgstr "Quod Libet działa."
+msgstr "Quod Libet nie działa."
 
 #: ../quodlibet.py:89
 #, python-format
@@ -114,7 +114,7 @@ msgstr "Głośniej"
 
 #: ../quodlibet.py:136
 msgid "Turn down volume"
-msgstr "Cieszej"
+msgstr "Ciszej"
 
 #: ../quodlibet.py:137
 msgid "Print playing status"
@@ -130,7 +130,7 @@ msgstr "[+|-][GG:]MM:SS"
 
 #: ../quodlibet.py:142
 msgid "Set or toggle the playback order"
-msgstr ""
+msgstr "Ustaw kolejność odtwarzania"
 
 #: ../quodlibet.py:143
 msgid "Turn repeat off, on, or toggle it"
@@ -250,7 +250,7 @@ msgstr "Brak informacji o czasie"
 msgid "[Invalid Encoding]"
 msgstr "[Błędne Kodowanie]"
 
-#: ../util.py:547 ../properties.py:884 ../properties.py:1153
+#: ../util.py:552 ../properties.py:884 ../properties.py:1153
 #, fuzzy
 msgid "Invalid tag"
 msgstr "Błędny znacznik"
@@ -392,7 +392,7 @@ msgstr "ocena"
 
 #: ../po/tag-names.py:48 ../properties.py:316
 msgid "skip count"
-msgstr "nie zliczaj"
+msgstr "liczba pominięć"
 
 #: ../po/tag-names.py:49
 msgid "title"
@@ -506,9 +506,9 @@ msgid ""
 "If you are not running Quod Libet, or are editing songs outside of its "
 "library, you may ignore this warning."
 msgstr ""
-"Wygląda na to, że jest obecnie uruchomiony Quod Libet. Jeśli "
-"będzieszmodyfikował znaczniki utworów znajdujących się w biliotece Quod "
-"Libetw trakcie jego działania, to będziesz musiał je odświeżyć lub ponownie "
+"Wygląda na to, że jest obecnie uruchomiony Quod Libet. Jeśli będziesz "
+"modyfikował znaczniki utworów znajdujących się w biliotece Quod Libetw "
+"trakcie jego działania, to będziesz musiał je odświeżyć lub ponownie "
 "dodać. \n"
 "\n"
 "Jeśli Quod Libet w tej chwili nie jest uruchomiony lub masz zamiar "
@@ -538,7 +538,8 @@ msgstr "Urządzenie audio: %s"
 msgid "translator-credits"
 msgstr ""
 "Michal Nowikowski\n"
-"Witold Kieraś <pambuk@gmail.com>"
+"Witold Kieraś <pambuk@gmail.com>\n"
+"Tomasz Torcz <zdzichu@irc.pl>"
 
 #: ../widgets.py:280
 msgid "Song List"
@@ -740,7 +741,7 @@ msgstr "W Porządku"
 
 #: ../widgets.py:1099
 msgid "Shuffle"
-msgstr "Mie_szaj"
+msgstr "Mieszaj"
 
 #: ../widgets.py:1100
 msgid "Weighted"
@@ -859,9 +860,8 @@ msgid "Song _List"
 msgstr "Lista utworów"
 
 #: ../widgets.py:1323 ../widgets.py:1806
-#, fuzzy
 msgid "_Play Queue"
-msgstr "_Odtwarzaj"
+msgstr "_Odtwarzaj kolejkę"
 
 #: ../widgets.py:1354
 msgid "Check for changes made to the library"
@@ -877,7 +877,7 @@ msgid ""
 "ties)"
 msgstr ""
 "40 najczęściej odtwarzanych utworów "
-"(może·być·więcej·jeśli·utwowry·mają·tę·samą·liczbę·odtworzeń)"
+"(może·być·więcej·jeśli·utwory·mają·tę·samą·liczbę·odtworzeń)"
 
 #: ../widgets.py:1364
 msgid ""
@@ -951,16 +951,16 @@ msgstr ""
 #, fuzzy, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
-msgstr[0] "%(count)d song (%(time)s)"
-msgstr[1] "%(count)d song (%(time)s)"
+msgstr[0] "%(count)d utworów (%(time)s)"
+msgstr[1] "%(count)d utworów (%(time)s)"
 
 #: ../widgets.py:1811
 msgid "_Choose randomly"
-msgstr ""
+msgstr "Wybieraj _losowo"
 
 #: ../widgets.py:1832
 msgid "Drag songs here to add them to the play queue"
-msgstr ""
+msgstr "Przeciągnij utwory tutaj aby dodać je do kolejki"
 
 #: ../widgets.py:1845 ../properties.py:537
 #, fuzzy, python-format
@@ -976,12 +976,11 @@ msgstr "_Filtr %s"
 
 #: ../widgets.py:2086 ../browsers/albums.py:314
 msgid "Add to Queue"
-msgstr ""
+msgstr "Dodaj do kolejki"
 
 #: ../widgets.py:2090 ../browsers/albums.py:315
-#, fuzzy
 msgid "Remove from Library"
-msgstr "_Odśwież bibliotekę"
+msgstr "Usuń z Biblioteki"
 
 #: ../widgets.py:2185 ../efwidgets.py:343
 #, python-format
@@ -1097,8 +1096,8 @@ msgstr "Usunąć wskazane pliki?"
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more..."
 msgid_plural "%(title)s and %(count)d more..."
-msgstr[0] "%(title)s·and·%(count)d·more..."
-msgstr[1] "%(title)s·and·%(count)d·more..."
+msgstr[0] "%(title)s·i·%(count)d·więcej..."
+msgstr[1] "%(title)s·i·%(count)d·więcej..."
 
 #: ../qltk.py:238
 msgid "Discard tag changes?"
@@ -1109,8 +1108,8 @@ msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
 msgstr ""
-"Znaczniki zostały zmienione, ale nie zapisane. Zapisać pliki czy "
-"przywrócićstarą wersję i porzucić zmiany?"
+"Znaczniki zostały zmienione, ale nie zapisane. Zapisać pliki czy przywrócić "
+"starą wersję i porzucić zmiany?"
 
 #: ../qltk.py:543
 msgid "Saving the songs you changed."
@@ -1124,7 +1123,7 @@ msgstr "zapisano %d/%d·utworów"
 #: ../properties.py:32
 msgid ""
 "The date must be entered in YYYY, YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format."
-msgstr "Data musi mieć format YYYY albo YYYY-MM-DD."
+msgstr "Data musi mieć format YYYY, YYYY-MM-DD albo YYYY-MM-DD·HH:MM:SS."
 
 #: ../properties.py:36
 msgid "ReplayGain gains must be entered in 'x.yy dB' format."
@@ -1136,7 +1135,7 @@ msgstr "ReplayGain·peaks·must·be·entered·in·x.yy·format."
 
 #: ../properties.py:44
 msgid "MusicBrainz track IDs must be in UUID format."
-msgstr ""
+msgstr "Identyfikatory MusicBrainz muszą być w formacie UUID."
 
 #: ../properties.py:57
 msgid "Add a Tag"
@@ -1152,7 +1151,7 @@ msgstr "_Wartość:"
 
 #: ../properties.py:212
 msgid "No songs are selected."
-msgstr "Ni wybrano żadnych utworów."
+msgstr "Nie wybrano żadnych utworów."
 
 #: ../properties.py:296 ../properties.py:306
 msgid "Never"
@@ -1162,8 +1161,8 @@ msgstr "Nigdy"
 #, fuzzy, python-format
 msgid "%d time"
 msgid_plural "%d times"
-msgstr[0] "%d razy"
-msgstr[1] "%d razy"
+msgstr[0] "%d raz"
+msgstr[1] "%d raz"
 
 #: ../properties.py:338
 #, python-format
@@ -1270,7 +1269,7 @@ msgstr "Wartość"
 #: ../properties.py:698
 msgid "Double-click a tag value to change it, right-click for other options"
 msgstr ""
-"Dwa razy kliknij na wartości znacznika aby ją zmenić, kliknij prawym "
+"Dwa razy kliknij na wartości znacznika aby ją zmienić, kliknij prawym "
 "klawiszem myszy aby wyświetlić inne opcje"
 
 #: ../properties.py:700
@@ -1295,7 +1294,7 @@ msgstr "Oddziel wersję od tytułu"
 
 #: ../properties.py:834
 msgid "Split arranger out of ar_tist"
-msgstr "Oddziel arranżera od _artysty"
+msgstr "Oddziel aranżera od _artysty"
 
 #: ../properties.py:840
 msgid "Split _performer out of artist"
@@ -1325,7 +1324,7 @@ msgid ""
 "Save this song anyway?"
 msgstr ""
 "<b>%s</b>·Wygląda na to, że znacznik zmieniono w trakcie działa programu."
-"Zapisanie bez odświeżenia biblioteki może spowodować nadpisanie innychzmian "
+"Zapisanie bez odświeżenia biblioteki może spowodować nadpisanie innych zmian "
 "w znacznikach.\n"
 "\n"
 "Czy zapiasać mimo to?"
@@ -1424,7 +1423,7 @@ msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
 msgstr ""
-"Znaki nie dozwolone w nazwach plików Windows (\\:*?;\"<>|) będą zastąpione "
+"Znaki niedozwolone w nazwach plików Windows (\\:*?;\"<>|) będą zastąpione "
 "znakami podkreślenia"
 
 #: ../properties.py:1344
@@ -1483,9 +1482,8 @@ msgid "Track"
 msgstr "Ścieżka"
 
 #: ../properties.py:1637
-#, fuzzy
 msgid "Apply to these _files..."
-msgstr "Zastosuj do tego _pliku..."
+msgstr "Zastosuj do tych _plików..."
 
 #: ../properties.py:1641
 msgid "Path"
@@ -1526,7 +1524,7 @@ msgstr "Nie można usunąć katalogu"
 
 #: ../efwidgets.py:186
 msgid "Songs"
-msgstr "Utwór"
+msgstr "Utwory"
 
 #: ../browsers/albums.py:109
 msgid "Songs not in an album"
@@ -1553,7 +1551,7 @@ msgstr[1] "%d albumy/albumów"
 
 #: ../browsers/albums.py:553
 msgid "_Album List"
-msgstr "Lista _Album"
+msgstr "Lista _Albumów"
 
 #: ../browsers/paned.py:95
 msgid "All"
@@ -1563,7 +1561,7 @@ msgstr "Wszystkie"
 msgid "_Search:"
 msgstr "_Szukaj:"
 
-#: ../browsers/paned.py:263
+#: ../browsers/paned.py:254
 msgid "_Paned Browser"
 msgstr "Przeglądarka _warstwowa"
 
@@ -1588,9 +1586,8 @@ msgid "Search"
 msgstr "Szukaj"
 
 #: ../browsers/search.py:132
-#, fuzzy
 msgid "_Limit Results"
-msgstr "Dodaj utwory"
+msgstr "Ogranicz _Liczbę Wyników"
 
 #: ../browsers/search.py:179
 msgid "_Disable Browser"
@@ -1601,14 +1598,12 @@ msgid "_Search Library"
 msgstr "_Wyszukiwanie w bibliotece"
 
 #: ../browsers/filesystem.py:76
-#, fuzzy
 msgid "_Add to Library"
-msgstr "_Załaduj ponownie bibliotekę"
+msgstr "_Dodaj do biblioteki"
 
 #: ../browsers/filesystem.py:116
-#, fuzzy
 msgid "_File System"
-msgstr "_Filtr"
+msgstr "System _Plików"
 
 #~ msgid "Turn shuffle off, on, or toggle it"
 #~ msgstr "Włącz, wyłącz lub odwróć stan losowego odtwarzania"
