@@ -13,6 +13,9 @@ import time
 
 import util, config
 
+from urllib import pathname2url
+def to_uri(filename): return "file://" + pathname2url(filename)
+
 class Unknown(unicode): pass
 
 if sys.version_info < (2, 4): from sets import Set as set
@@ -70,6 +73,9 @@ class AudioFile(dict):
             elif key == "people":
                 return "\n".join(
                     self.listall(["artist", "composer", "performer"]))
+            elif key == "uri":
+                try: return self["~uri"]
+                except KeyError: return to_uri(self["~filename"])
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default

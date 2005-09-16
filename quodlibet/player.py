@@ -78,9 +78,8 @@ class PlaylistPlayer(object):
     volume = property(get_volume, set_volume)
 
     def __load_song(self, song):
-        from urllib import pathname2url as tourl
         self.bin.set_state(gst.STATE_NULL)
-        self.bin.set_property('uri', "file://" + tourl(song["~filename"]))
+        self.bin.set_property('uri', song("~uri"))
         self.__length = song["~#length"] * 1000
         if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
         else: self.bin.set_state(gst.STATE_PLAYING)

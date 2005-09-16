@@ -440,8 +440,7 @@ class AlbumList(Browser, gtk.VBox):
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())
         songs.sort()
-        from urllib import pathname2url as tourl
-        filenames = ["file:" + tourl(s.get("~filename", "")) for s in songs]
+        filenames = [s("~uri") for s in songs]
         sel.set_uris(filenames)
         
     def __enqueue(self, item, view):

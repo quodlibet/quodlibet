@@ -1853,8 +1853,8 @@ class QueueExpander(gtk.Expander):
 
     def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
         from urllib import splittype as split, url2pathname as topath
-        filenames = [topath(split(s)[1]) for s in sel.get_uris()
-                     if split(s)[0] == "file"]
+        filenames = [os.path.normpath(topath(split(s)[1]))
+                     for s in sel.get_uris() if split(s)[0] == "file"]
         songs = filter(None, [library.get(f) for f in filenames])
         if not songs: return True
         for song in songs:
@@ -2228,11 +2228,8 @@ class SongList(qltk.HintedTreeView):
         paths.sort()
         songs = [model[path][0] for path in paths]
         added = []
-        filenames = []
-        from urllib import pathname2url as tourl
         added = filter(library.add_song, songs)
-        for song in songs:
-            filenames.append("file:" + tourl(song.get("~filename", "")))
+        filenames = [song("~uri") for song in songs]
         sel.set_uris(filenames)
         widgets.watcher.added(added)
 
@@ -2371,8 +2368,8 @@ class DestSongList(SongList):
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
         model = view.get_model()
         from urllib import splittype as split, url2pathname as topath
-        filenames = [topath(split(s)[1]) for s in sel.get_uris()
-                     if split(s)[0] == "file"]
+        filenames = [os.path.normpath(topath(split(s)[1]))
+                     for s in sel.get_uris() if split(s)[0] == "file"]
         songs = filter(None, [library.get(f) for f in filenames])
         if not songs: return True
 
