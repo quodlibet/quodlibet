@@ -18,7 +18,7 @@ configure-stamp:
 build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
-	$(MAKE)
+	CFLAGS=$(CFLAGS) $(MAKE)
 	touch build-stamp
 
 clean:
