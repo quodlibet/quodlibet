@@ -139,6 +139,11 @@ def mtime(filename):
     try: return os.path.getmtime(filename)
     except OSError: return 0
 
+def size(filename):
+    """Return the size of a file, or 0 if an error occurs."""
+    try: return os.path.getsize(filename)
+    except OSError: return 0
+
 def mkdir(dir):
     """Make a directory, including all its parent directories. This does not
     raise an exception if the directory already exists (and is a

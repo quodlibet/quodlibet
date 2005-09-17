@@ -23,6 +23,8 @@ if sys.version_info < (2, 4): from sets import Set as set
 MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
 
 class AudioFile(dict):
+    local = True
+
     def __cmp__(self, other):
         if not other: return -1
         return (cmp(self("album"), other("album")) or

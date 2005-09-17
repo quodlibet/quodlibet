@@ -332,7 +332,7 @@ class SongProperties(gtk.Window):
 
                 fn = util.fsdecode(util.unexpand(song["~filename"]))
                 length = util.format_time_long(song["~#length"])
-                size = util.format_size(os.path.getsize(song["~filename"]))
+                size = util.format_size(util.size(song["~filename"]))
                 mtime = ftime(util.mtime(song["~filename"]))
                 if "~#bitrate" in song and song["~#bitrate"] != 0:
                     bitrate = _("%d kbps") % int(song["~#bitrate"]/1000)
@@ -575,7 +575,7 @@ class SongProperties(gtk.Window):
                 size = 0
                 for song in songs:
                     time += song["~#length"]
-                    try: size += os.path.getsize(song["~filename"])
+                    try: size += util.size(song["~filename"])
                     except EnvironmentError: pass
                 table = gtk.Table(2, 2)
                 table.set_col_spacings(6)

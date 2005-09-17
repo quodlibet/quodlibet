@@ -993,16 +993,20 @@ class MainWindow(gtk.Window):
 
         def __scroll_timeout(self):
             self.__lock = False
-            player.playlist.seek(self.scale.get_value())
+            if self.__seekable: player.playlist.seek(self.scale.get_value())
             self.__sig = None
 
         def __seek_lock(self, scale, event): self.__lock = True
         def __seek_unlock(self, scale, event):
             self.__lock = False
-            player.playlist.seek(self.scale.get_value())
+            if self.__seekable: player.playlist.seek(self.scale.get_value())
 
         def __check_time(self, widget=None):
             if not (self.__lock or player.playlist.paused):
+                position = player.playlist.get_position()
+                if (not self.__seekable and
+                    position > self.scale.get_adjustment().upper):
+                    self.scale.set_range(0, position)
                 self.scale.set_value(player.playlist.get_position())
             return True
 
@@ -1014,8 +1018,15 @@ class MainWindow(gtk.Window):
         def __song_changed(self, watcher, song, label):
             if song:
                 length = song["~#length"]
-                self.scale.set_range(0, length * 1000)
-            else: self.scale.set_range(0, 1)
+                if length <= 0:
+                    self.scale.set_range(0, 1)
+                    self.__seekable = False
+                else:
+                    self.scale.set_range(0, length * 1000)
+                    self.__seekable = True
+            else:
+                self.scale.set_range(0, 1)
+                self.__seekable = False
 
     class VolumeSlider(qltk.PopupVSlider):
         def __init__(self, device):
@@ -1855,7 +1866,7 @@ class QueueExpander(gtk.Expander):
         from urllib import splittype as split, url2pathname as topath
         filenames = [os.path.normpath(topath(split(s)[1]))
                      for s in sel.get_uris() if split(s)[0] == "file"]
-        songs = filter(None, [library.get(f) for f in filenames])
+        songs = filter(None, map(library.get, filenames))
         if not songs: return True
         for song in songs:
             iter = self.model.find(song)
@@ -2072,32 +2083,33 @@ class SongList(qltk.HintedTreeView):
             not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
             menu.append(gtk.SeparatorMenuItem())
 
-        submenu = self.pm.create_plugins_menu(songs)
-        if submenu is not None:
-            b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
+        if browser.manageable:
+            submenu = self.pm.create_plugins_menu(songs)
+            if submenu is not None:
+                b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
+                menu.append(b)
+                b.set_submenu(submenu)
+
+                if (menu.get_children() and
+                    not isinstance(menu.get_children()[-1],
+                                   gtk.SeparatorMenuItem)):
+                    menu.append(gtk.SeparatorMenuItem())
+
+            b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
+            b.connect('activate', self.__enqueue, songs)
             menu.append(b)
-            b.set_submenu(submenu)
 
-            if (menu.get_children() and
-                not isinstance(menu.get_children()[-1],
-                               gtk.SeparatorMenuItem)):
-                menu.append(gtk.SeparatorMenuItem())
+            b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
+            b.connect('activate', self.__remove, songs)
+            menu.append(b)
+            for song in songs:
+                if song["~filename"] not in library:
+                    b.set_sensitive(False)
+                    break
 
-        b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
-        b.connect('activate', self.__enqueue, songs)
-        menu.append(b)
-
-        b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
-        b.connect('activate', self.__remove, songs)
-        menu.append(b)
-        for song in songs:
-            if song["~filename"] not in library:
-                b.set_sensitive(False)
-                break
-
-        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        b.connect('activate', self.__delete, songs)
-        menu.append(b)
+            b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+            b.connect('activate', self.__delete, songs)
+            menu.append(b)
 
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
@@ -2370,7 +2382,7 @@ class DestSongList(SongList):
         from urllib import splittype as split, url2pathname as topath
         filenames = [os.path.normpath(topath(split(s)[1]))
                      for s in sel.get_uris() if split(s)[0] == "file"]
-        songs = filter(None, [library.get(f) for f in filenames])
+        songs = filter(None, map(library.get, filenames))
         if not songs: return True
 
         try: path, position = view.get_dest_row_at_pos(x, y)

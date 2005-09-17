@@ -13,46 +13,12 @@ import qltk
 from browsers.base import Browser
 from formats._audio import AudioFile
 
-URIS = ["http://64.236.34.196:80/stream/1018",
-        "http://sc1.magnatune.com:8000/"
-        ]
-NAMES =  ["Groove Salad", "Magnatune Classical"]
-
-class AddNewStation(gtk.Dialog):
-    def __init__(self):
-        gtk.Dialog.__init__(self)
-        self.set_title(_("New Station"))
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        self.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
-        self.set_default_response(gtk.RESPONSE_OK)
-        table = gtk.Table(2, 2)
-        table.attach(gtk.Label(_("Name:")), 0, 1, 0, 1)
-        self.__name = gtk.Entry()
-        self.__name.set_activates_default(True)
-        table.attach(self.__name, 1, 2, 0, 1)
-        table.attach(gtk.Label(_("Location:")), 0, 1, 1, 2)
-        self.__loc = gtk.Entry()
-        self.__loc.set_activates_default(True)
-        table.attach(self.__loc, 1, 2, 1, 2)
-        table.show_all()
-        table.set_border_width(12)
-        table.set_col_spacings(6)
-        table.set_row_spacings(12)
-        self.vbox.pack_start(table)
-
-    def run(self):
-        resp = gtk.Dialog.run(self)
-        if resp == gtk.RESPONSE_OK:
-            ret = self.__name.get_text(), self.__loc.get_text()
-        else: ret = None, None
-        self.destroy()
-        return ret
-
 class IRFile(AudioFile):
-    def __init__(self, uri, name):
+    local = False
+
+    def __init__(self, uri):
         self["~uri"] = self["~filename"] = uri
         self["~mountpoint"] = ""
-        self["title"] = name
         self.sanitize(uri)
 
     def rename(self, newname): pass
@@ -60,12 +26,56 @@ class IRFile(AudioFile):
     def exists(self): return True
     def valid(self): return True
     def mounted(self): return True
+    def write(self): pass
     def can_change(self, k=None):
         if k is None: return []
         else: return False
 
+def ParsePLS(file):
+    data = {}
+    lines = file.readlines()
+    if not lines or "[playlist]" not in lines.pop(0): return []
+
+    for line in lines:
+        try: head, val = line.strip().split("=", 1)
+        except TypeError: continue
+        else:
+            head = head.lower()
+            if head.startswith("length") and val == "-1": continue
+            else: data[head] = val.decode('utf-8', 'replace')
+
+    count = 1
+    files = []
+    while True:
+        if "file%d" % count in data:
+            irf = IRFile(data["file%d" % count])
+            for key in ["title", "genre"]:
+                try: irf[key] = data["%s%d" % (key, count)]
+                except KeyError: pass
+            try: irf["~#rating"] = int(data["rating%d" % count])
+            except (KeyError, TypeError, ValueError): pass
+            try: irf["~#length"] = int(data["length%d" % count])
+            except (KeyError, TypeError, ValueError): pass
+        else: break
+    return files
+
+FILES = map(IRFile, ["http://64.236.34.196:80/stream/1018",
+                     "http://sc1.magnatune.com:8000/",
+                     "http://64.236.34.4:80/stream/1065",
+                     ]
+            )
+
+class AddNewStation(qltk.GetStringDialog):
+    def __init__(self):
+        qltk.GetStringDialog.__init__(
+            self, None, _("New Station"),
+            _("Please enter the location of an Internet radio station."),
+            okbutton = gtk.STOCK_ADD)
+
 class InternetRadio(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
+    manageable = False
+
     def __init__(self, main=True):
         gtk.HBox.__init__(self)
         add = qltk.Button(_("New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
@@ -78,18 +88,19 @@ class InternetRadio(gtk.HBox, Browser):
         add.connect('clicked', self.__add)
         gobject.idle_add(self.activate)
 
-    def __add(self, buton):
+    def __add(self, button):
         name, uri = AddNewStation().run()
-        if name and uri:
-            NAMES.append(name)
-            URIS.append(uri)
+        if uri.lower().endswith(".pls"):
+            print "PLS files unsupported yet!"
+        else:
+            FILES.append(uri)
             self.activate()
 
     def restore(self):
         self.activate()
 
     def activate(self):
-        self.emit('songs-selected', map(IRFile, URIS, NAMES), None)
+        self.emit('songs-selected', FILES, None)
         
     def save(self): pass
 
