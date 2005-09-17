@@ -89,7 +89,7 @@ class InternetRadio(gtk.HBox, Browser):
         gobject.idle_add(self.activate)
 
     def __add(self, button):
-        name, uri = AddNewStation().run()
+        uri = AddNewStation().run()
         if uri.lower().endswith(".pls"):
             print "PLS files unsupported yet!"
         else:
