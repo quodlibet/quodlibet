@@ -1233,9 +1233,11 @@ class MainWindow(gtk.Window):
             return True
 
     def __add_to_queue(self, songs):
-        added = filter(library.add_song, songs)
-        self.playlist.enqueue(songs)
-        if added: widgets.watcher.added(added)
+        songs = filter(lambda s: s.local, songs)
+        if songs:
+            added = filter(library.add_song, songs)
+            self.playlist.enqueue(songs)
+            if added: widgets.watcher.added(added)
 
     def __delete_event(self, event):
         if self.icon.enabled:
@@ -2182,9 +2184,11 @@ class SongList(qltk.HintedTreeView):
         widgets.watcher.removed(songs)
 
     def __enqueue(self, item, songs):
-        added = filter(library.add_song, songs)
-        widgets.main.playlist.enqueue(songs)
-        if added: widgets.watcher.added(added)
+        songs = filter(lambda s: s.local)
+        if songs:
+            added = filter(library.add_song, songs)
+            widgets.main.playlist.enqueue(songs)
+            if added: widgets.watcher.added(added)
 
     def __delete(self, item, songs):
         songs = [(song["~filename"], song) for song in songs]
@@ -2239,9 +2243,8 @@ class SongList(qltk.HintedTreeView):
         model, paths = self.get_selection().get_selected_rows()
         paths.sort()
         songs = [model[path][0] for path in paths]
-        added = []
         added = filter(library.add_song, songs)
-        filenames = [song("~uri") for song in songs]
+        filenames = [song("~uri") for song in songs if song.local]
         sel.set_uris(filenames)
         widgets.watcher.added(added)
 
