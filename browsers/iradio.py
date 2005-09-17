@@ -15,6 +15,7 @@ from formats._audio import AudioFile
 
 class IRFile(AudioFile):
     local = False
+    __CAN_CHANGE = "title artist genre grouping".split()
 
     def __init__(self, uri):
         self["~uri"] = self["~filename"] = uri
@@ -28,8 +29,8 @@ class IRFile(AudioFile):
     def mounted(self): return True
     def write(self): pass
     def can_change(self, k=None):
-        if k is None: return []
-        else: return False
+        if k is None: return self.__CAN_CHANGE
+        else: return k in self.__CAN_CHANGE
 
 def ParsePLS(file):
     data = {}
@@ -75,12 +76,13 @@ class AddNewStation(qltk.GetStringDialog):
 class InternetRadio(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
     manageable = False
+    __stations = []
 
     def __init__(self, main=True):
         gtk.HBox.__init__(self)
         add = qltk.Button(_("New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         search = qltk.Button(_("Search"), gtk.STOCK_FIND, gtk.ICON_SIZE_MENU)
-        entry = gtk.Entry()
+        self.__search = entry = gtk.Entry()
         self.pack_start(add, expand=False)
         self.pack_start(entry)
         self.pack_start(search, expand=False)
@@ -88,19 +90,27 @@ class InternetRadio(gtk.HBox, Browser):
         add.connect('clicked', self.__add)
         gobject.idle_add(self.activate)
 
+        self.__load_stations()
+
     def __add(self, button):
         uri = AddNewStation().run()
         if uri.lower().endswith(".pls"):
             print "PLS files unsupported yet!"
         else:
-            FILES.append(uri)
+            FILES.append(IRFile(uri))
             self.activate()
 
-    def restore(self):
-        self.activate()
+    def __load_stations(self): pass
 
-    def activate(self):
-        self.emit('songs-selected', FILES, None)
+    def Menu(self, songs):
+        m = gtk.Menu()
+        rem = qltk.MenuItem(_("Remove Station"), gtk.STOCK_REMOVE)
+        m.append(rem)
+        rem.show()
+        return m
+
+    def restore(self): self.activate()
+    def activate(self): self.emit('songs-selected', FILES, None)
         
     def save(self): pass
 
