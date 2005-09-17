@@ -384,11 +384,11 @@ def MenuItem(text, image):
     i.get_image().set_from_stock(image, gtk.ICON_SIZE_MENU)
     return i
 
-def Button(text, image):
+def Button(text, image, size=gtk.ICON_SIZE_BUTTON):
     # Stock image with custom label.
     hbox = gtk.HBox(spacing=2)
     i = gtk.Image()
-    i.set_from_stock(image, gtk.ICON_SIZE_BUTTON)
+    i.set_from_stock(image, size)
     hbox.pack_start(i)
     l = gtk.Label(text)
     l.set_use_underline(True)
