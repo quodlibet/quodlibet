@@ -133,7 +133,7 @@ class Library(dict):
         except KeyError: print "W: %s not in library." % song["~filename"]
 
     def add_song(self, song):
-        if song["~filename"] not in self:
+        if song.local and song["~filename"] not in self:
             self[song["~filename"]] = song
             return True
         return False
