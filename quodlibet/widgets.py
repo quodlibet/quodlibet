@@ -1226,13 +1226,6 @@ class MainWindow(gtk.Window):
         if not ssv:
             self.qexpander.set_expanded(True)
 
-    def __add_to_queue(self, songs):
-        songs = filter(lambda s: s.local, songs)
-        if songs:
-            added = filter(library.add_song, songs)
-            self.playlist.enqueue(songs)
-            if added: widgets.watcher.added(added)
-
     def __delete_event(self, event):
         if self.icon.enabled:
             self.icon.hide_window()
