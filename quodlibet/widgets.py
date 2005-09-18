@@ -1185,7 +1185,6 @@ class MainWindow(gtk.Window):
         self.__hidden_state = 0
 
         self.songlist.connect('button-press-event', self.__songs_button_press)
-        self.songlist.connect('key-press-event', self.__songs_queue_add)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.get_selection().connect('changed', self.__set_time)
@@ -1226,11 +1225,6 @@ class MainWindow(gtk.Window):
             pack_type=gtk.PACK_START)
         if not ssv:
             self.qexpander.set_expanded(True)
-
-    def __songs_queue_add(self, songlist, event):
-        if event.string == "Q":
-            self.__add_to_queue(songlist.get_selected_songs())
-            return True
 
     def __add_to_queue(self, songs):
         songs = filter(lambda s: s.local, songs)
@@ -2184,7 +2178,7 @@ class SongList(qltk.HintedTreeView):
         widgets.watcher.removed(songs)
 
     def __enqueue(self, item, songs):
-        songs = filter(lambda s: s.local)
+        songs = filter(lambda s: s.local, songs)
         if songs:
             added = filter(library.add_song, songs)
             widgets.main.playlist.enqueue(songs)
@@ -2238,6 +2232,8 @@ class SongList(qltk.HintedTreeView):
     def __key_press(self, songlist, event):
         if event.string in ['0', '1', '2', '3', '4']:
             self.__set_rating(int(event.string), self.get_selected_songs())
+        elif event.string == 'Q':
+            self.__enqueue(None, self.get_selected_songs())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
