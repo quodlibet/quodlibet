@@ -20,11 +20,6 @@ class Browser(object):
         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object))
         }
 
-    # Whether or not the songs in the browser are manageable via the
-    # normal plugin and library functions. If false, several context
-    # menu options are hidden.
-    manageable = True
-
     # Packing options. False if the browser should be packed into the
     # window's VBox with expand=False. Otherwise, this should be
     # a function that returns an object like an RPaned; the browser

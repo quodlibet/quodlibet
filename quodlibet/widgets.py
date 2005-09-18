@@ -2072,33 +2072,32 @@ class SongList(qltk.HintedTreeView):
             not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
             menu.append(gtk.SeparatorMenuItem())
 
-        if browser.manageable:
-            submenu = self.pm.create_plugins_menu(songs)
-            if submenu is not None:
-                b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
-                menu.append(b)
-                b.set_submenu(submenu)
-
-                if (menu.get_children() and
-                    not isinstance(menu.get_children()[-1],
-                                   gtk.SeparatorMenuItem)):
-                    menu.append(gtk.SeparatorMenuItem())
-
-            b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
-            b.connect('activate', self.__enqueue, songs)
+        submenu = self.pm.create_plugins_menu(songs)
+        if submenu is not None:
+            b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
             menu.append(b)
+            b.set_submenu(submenu)
 
-            b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
-            b.connect('activate', self.__remove, songs)
-            menu.append(b)
-            for song in songs:
-                if song["~filename"] not in library:
-                    b.set_sensitive(False)
-                    break
+            if (menu.get_children() and
+                not isinstance(menu.get_children()[-1],
+                               gtk.SeparatorMenuItem)):
+                menu.append(gtk.SeparatorMenuItem())
 
-            b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-            b.connect('activate', self.__delete, songs)
-            menu.append(b)
+        b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
+        b.connect('activate', self.__enqueue, songs)
+        menu.append(b)
+
+        b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
+        b.connect('activate', self.__remove, songs)
+        menu.append(b)
+        for song in songs:
+            if song["~filename"] not in library:
+                b.set_sensitive(False)
+                break
+
+        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        b.connect('activate', self.__delete, songs)
+        menu.append(b)
 
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
