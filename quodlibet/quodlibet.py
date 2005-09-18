@@ -19,7 +19,7 @@ def main():
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
     widgets.init()
-    #enable_periodic_save()
+    enable_periodic_save()
     gtk.quit_add(1, widgets.save_library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
