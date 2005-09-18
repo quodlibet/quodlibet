@@ -23,6 +23,9 @@ if sys.version_info < (2, 4): from sets import Set as set
 MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
 
 class AudioFile(dict):
+    # This is true if the file is file Python can use "local" functions
+    # with. If it's false, queue and library management and renaming
+    # are disabled.
     local = True
 
     def __cmp__(self, other):

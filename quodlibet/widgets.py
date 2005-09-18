@@ -2242,9 +2242,9 @@ class SongList(qltk.HintedTreeView):
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
         paths.sort()
-        songs = [model[path][0] for path in paths]
+        songs = [model[path][0] for path in paths if model[path][0].local]
         added = filter(library.add_song, songs)
-        filenames = [song("~uri") for song in songs if song.local]
+        filenames = [song("~uri") for song in songs]
         sel.set_uris(filenames)
         widgets.watcher.added(added)
 
