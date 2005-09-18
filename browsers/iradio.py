@@ -7,11 +7,18 @@
 #
 # $Id$
 
+import os
 import gobject, gtk
+
+import const
 import qltk
 
 from browsers.base import Browser
 from formats._audio import AudioFile
+from library import Library
+from widgets import widgets
+
+STATIONS = os.path.join(const.DIR, "stations")
 
 class IRFile(AudioFile):
     local = False
@@ -60,12 +67,6 @@ def ParsePLS(file):
         else: break
     return files
 
-FILES = map(IRFile, ["http://64.236.34.196:80/stream/1018",
-                     "http://sc1.magnatune.com:8000/",
-                     "http://64.236.34.4:80/stream/1065",
-                     ]
-            )
-
 class AddNewStation(qltk.GetStringDialog):
     def __init__(self):
         qltk.GetStringDialog.__init__(
@@ -76,12 +77,13 @@ class AddNewStation(qltk.GetStringDialog):
 class InternetRadio(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
     manageable = False
-    __stations = []
+    __stations = Library()
+    __sig = None
 
     def __init__(self, main=True):
         gtk.HBox.__init__(self)
-        add = qltk.Button(_("New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
-        search = qltk.Button(_("Search"), gtk.STOCK_FIND, gtk.ICON_SIZE_MENU)
+        add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+        search = qltk.Button(_("_Search"), gtk.STOCK_FIND, gtk.ICON_SIZE_MENU)
         self.__search = entry = gtk.Entry()
         self.pack_start(add, expand=False)
         self.pack_start(entry)
@@ -89,31 +91,57 @@ class InternetRadio(gtk.HBox, Browser):
         self.show_all()
         add.connect('clicked', self.__add)
         gobject.idle_add(self.activate)
+        if InternetRadio.__sig is None:
+            InternetRadio.__sig = widgets.watcher.connect(
+                'changed', InternetRadio.__changed)
 
+        for s in [widgets.watcher.connect('removed', self.activate),
+                  widgets.watcher.connect('added', self.activate),
+                  ]:
+            self.connect_object('destroy', widgets.watcher.disconnect, s)
         self.__load_stations()
+
+    def Menu(self, songs):
+        m = gtk.Menu()
+        rem = qltk.MenuItem(_("_Remove Station"), gtk.STOCK_REMOVE)
+        m.append(rem)
+        rem.connect('activate', self.__remove, songs)
+        rem.show()
+        return m
+
+    def __remove(self, button, songs):
+        map(self.__stations.remove, songs)
+        widgets.watcher.removed(songs)
+        self.__stations.save(STATIONS)
+        self.activate()
+
+    def __changed(self, watcher, songs):
+        lib = self.__stations.values()
+        if filter(lambda s: s in lib, songs):
+            self.__stations.save(STATIONS)
+    __changed = classmethod(__changed)
 
     def __add(self, button):
         uri = AddNewStation().run()
         if uri.lower().endswith(".pls"):
             print "PLS files unsupported yet!"
         else:
-            FILES.append(IRFile(uri))
-            self.activate()
+            if uri in self.__stations: print "URI already in library!"
+            else:
+                f = IRFile(uri)
+                if self.__stations.add_song(f):
+                    self.__stations.save(STATIONS)
+                    widgets.watcher.added([f])
 
-    def __load_stations(self): pass
-
-    def Menu(self, songs):
-        m = gtk.Menu()
-        rem = qltk.MenuItem(_("Remove Station"), gtk.STOCK_REMOVE)
-        m.append(rem)
-        rem.show()
-        return m
+    def __load_stations(self):
+        if not self.__stations: self.__stations.load(STATIONS)
 
     def restore(self): self.activate()
-    def activate(self): self.emit('songs-selected', FILES, None)
+    def activate(self, *args):
+        self.emit('songs-selected', self.__stations.values(), None)
         
     def save(self): pass
 
 gobject.type_register(InternetRadio)
 
-browsers = [(15, _("_Internet Radio"), InternetRadio, False)]
+browsers = [(15, _("_Internet Radio"), InternetRadio, True)]

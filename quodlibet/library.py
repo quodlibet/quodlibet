@@ -133,7 +133,7 @@ class Library(dict):
         except KeyError: print "W: %s not in library." % song["~filename"]
 
     def add_song(self, song):
-        if song.local and song["~filename"] not in self:
+        if song["~filename"] not in self:
             self[song["~filename"]] = song
             return True
         return False
@@ -203,10 +203,10 @@ class Library(dict):
         removed, changed = 0, 0
         for song in songs:
             if "~filename" not in song: continue # library corruption
-            elif not formats.supported(song): continue
-
-            song["~filename"] = os.path.realpath(song["~filename"])
-            if "~mountpoint" not in song: song.sanitize()
+            elif song.local:
+                if not formats.supported(song): continue
+                song["~filename"] = os.path.realpath(song["~filename"])
+                if "~mountpoint" not in song: song.sanitize()
 
             if song.valid(): self[song["~filename"]] = song
             elif song.exists():
