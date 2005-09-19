@@ -373,7 +373,6 @@ class PreferencesWindow(gtk.Window):
 
             headers.extend(others.get_text().split())
             if "~current" in headers: headers.remove("~current")
-            headers.insert(0, "~current")
             config.set("settings", "headers", " ".join(headers))
             SongList.set_all_column_headers(headers)
 
@@ -2243,6 +2242,8 @@ class SongList(qltk.HintedTreeView):
             model.row_changed(model.get_path(iter), iter)
 
     def set_all_column_headers(cls, headers):
+        try: headers.remove("~current")
+        except ValueError: pass
         cls.headers = headers
         for listview in cls.__songlistviews:
             listview.set_column_headers(headers)
@@ -2337,11 +2338,10 @@ class SongList(qltk.HintedTreeView):
     # new values.
     def set_column_headers(self, headers):
         if len(headers) == 0: return
-        for c in self.get_columns(): self.remove_column(c)
+        map(self.remove_column, self.get_columns())
 
-        if self.CurrentColumn:
+        if self.CurrentColumn is not None:
             self.append_column(self.CurrentColumn())
-            if "~current" in headers: headers.remove("~current")
 
         for i, t in enumerate(headers):
             if t in ["tracknumber", "discnumber", "~rating"]:
