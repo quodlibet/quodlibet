@@ -93,7 +93,7 @@ def init(*rc_files):
 
         "editing":
         { "split_on": "& , /", # words to split on
-          "id3encoding": "shift-jis big5", # ID3 encodings to try
+          "id3encoding": "", # ID3 encodings to try
           "allcomments": "true", # show all comments, or just "human" ones
           },
 
