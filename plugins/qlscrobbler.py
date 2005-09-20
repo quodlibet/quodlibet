@@ -8,6 +8,7 @@ import md5, urllib, urllib2, time, threading, os
 import player, config, const
 import gobject, gtk
 from qltk import Message
+from util import to
 
 class QLScrobbler(object):
 	# session invariants
@@ -357,7 +358,7 @@ class QLScrobbler(object):
 		
 		# Flush the cache
 		for i in range(len(self.queue)):
-			print "Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title'])
+			print to("Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title']))
 			data["a[%d]" % i] = self.queue[i]['artist'].encode('utf-8')
 			data["t[%d]" % i] = self.queue[i]['title'].encode('utf-8')
 			data["l[%d]" % i] = str(self.queue[i]['length'])
