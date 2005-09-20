@@ -778,12 +778,18 @@ class QLTrayIcon(HIGTrayIcon):
 
 class MmKeys(object):
     def __init__(self, cbs):
-        try:
-            import mmkeys
-        except: pass
+        self.__sigs = []
+        try: import mmkeys
+        except:
+            class F(object):
+                handler_block = handler_unblock = lambda s, a: False
+            self.__keys = F()
         else:
             self.__keys = mmkeys.MmKeys()
-            map(self.__keys.connect, *zip(*cbs.items()))
+            self.__sigs = map(self.__keys.connect, *zip(*cbs.items()))
+
+    def block(self): map(self.__keys.handler_block, self.__sigs)
+    def unblock(self): map(self.__keys.handler_unblock, self.__sigs)
 
 class CoverImage(gtk.Frame):
     def __init__(self, size=None):
@@ -1623,6 +1629,7 @@ class MainWindow(gtk.Window):
             self.__make_query("#(playcount < %d)" % (songs[-40] + 1))
 
     def __rebuild(self, activator, hard=False):
+        self.__keys.block()
         window = qltk.WaitLoadWindow(self, len(library) // 7,
                                      _("Quod Libet is scanning your library. "
                                        "This may take several minutes.\n\n"
@@ -1648,6 +1655,7 @@ class MainWindow(gtk.Window):
         if c or r or s:
             library.save(const.LIBRARY)
             widgets.watcher.refresh()
+        self.__keys.unblock()
 
     # Set up the preferences window.
     def __preferences(self, activator):
