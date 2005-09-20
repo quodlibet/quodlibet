@@ -1547,7 +1547,7 @@ class MainWindow(gtk.Window):
 
     def __refresh_size(self):
         if (not self.browser.expand and
-            not self.song_scroller.get_property('visible')):
+            not self.songpane.get_property('visible')):
             width, height = self.get_size()
             self.resize(width, 1)
             self.set_geometry_hints(None, max_height=1, max_width=32000)
