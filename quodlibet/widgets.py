@@ -1775,6 +1775,8 @@ class MainWindow(gtk.Window):
 
     def __cols_changed(self, songlist):
         headers = [col.header_name for col in songlist.get_columns()]
+        try: headers.remove('~current')
+        except ValueError: pass
         if len(headers) == len(config.get("settings", "headers").split()):
             # Not an addition or removal (handled separately)
             config.set("settings", "headers", " ".join(headers))
