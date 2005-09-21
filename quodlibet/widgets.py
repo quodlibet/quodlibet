@@ -22,6 +22,7 @@ import parser
 import formats
 import util
 import time
+import datetime
 
 from util import to, tag
 from gettext import ngettext
@@ -1994,6 +1995,23 @@ class SongList(qltk.HintedTreeView):
             self.set_sort_indicator(False)
             self.set_cell_data_func(self._render, self._cdf, t)
 
+    class DateColumn(TextColumn):
+        # The '~#' keys that are dates.
+        def _cdf(self, column, cell, model, iter, tag):
+            try:
+                stamp = model[iter][0](tag)
+                if not stamp: cell.set_property('text', _("Never"))
+                else:
+                    date = datetime.datetime.fromtimestamp(stamp).date()
+                    today = datetime.datetime.now().date()
+                    days = (today - date).days
+                    stamp = time.localtime(stamp)
+                    if days == 0: rep = time.strftime("%X", stamp)
+                    elif days < 7: rep = time.strftime("%A", stamp)
+                    else: rep = time.strftime("%x", stamp)
+                    cell.set_property('text', rep)
+            except AttributeError: pass
+
     class WideTextColumn(TextColumn):
         # Resizable and ellipsized at the end. Used for any key with
         # a '~' in it, and 'title'.
@@ -2036,7 +2054,7 @@ class SongList(qltk.HintedTreeView):
             self.set_alignment(1.0)
 
     class NumericColumn(TextColumn):
-        # Any '~#' keys.
+        # Any '~#' keys except dates.
         _render = gtk.CellRendererText()
         _render.set_property('xpad', 12)
         _render.set_property('xalign', 1.0)
@@ -2356,6 +2374,8 @@ class SongList(qltk.HintedTreeView):
         for i, t in enumerate(headers):
             if t in ["tracknumber", "discnumber", "~rating"]:
                 column = self.TextColumn(t)
+            elif t in ["~#added", "~#mtime", "~#lastplayed"]:
+                column = self.DateColumn(t)
             elif t.startswith("~#"): column = self.NumericColumn(t)
             elif t in ["~filename", "~basename", "~dirname"]:
                 column = self.FSColumn(t)
