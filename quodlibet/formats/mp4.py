@@ -36,15 +36,15 @@ class MP4File(AudioFile):
               "cpil": "compilation"
             }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
-    BINARY = [mp4info.itunes.COVER, mp4info.itunes.FREE_FORM_BINARY]
-    
+
     def __init__(self, filename):
+        self.BINARY = [mp4info.itunes.COVER, mp4info.itunes.FREE_FORM_BINARY]
         tag = mp4info.iTunesTag(filename)
         for key, value in tag:
             if key == "gnre":
                 key = "genre"
                 self[key] = tag.genre_to_string(str(value))
-            elif value.kind not in MP4File.BINARY:
+            elif value.kind not in self.BINARY:
                 key = MP4File.TRANS.get(key, key)
                 self[key] = "\n".join(list(value))
         f = mp4info.MP4File(filename)
@@ -63,7 +63,7 @@ class MP4File(AudioFile):
         for key in keys:
             # remove any text keys we read in
             value = tag[key]
-            if value.kind not in MP4File.BINARY:
+            if value.kind not in self.BINARY:
                 del(tag[key])
         for key in self.realkeys():
             value = self[key]
