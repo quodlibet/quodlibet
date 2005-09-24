@@ -1,0 +1,2 @@
+1.2
+ * Replace custom C wrapper with ctypes interface. No compilation needed.

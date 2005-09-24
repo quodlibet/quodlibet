@@ -4,18 +4,14 @@ This Python module lets you load and decode files supported by the ModPlug
 library (which includes MODs, ITs, XMs, and so on). Its API has been chosen
 to mostly match pyvorbis and pymad.
 
-Currently it always outputs in 44100khz stereo, 16 bits per channel. Noise
-reduction, oversampling, and the highest-quality resampling filter are
-enabled.
-
 libmodplug can be found at http://modplug-xmms.sourceforge.net.
+
+It uses (and requires) the ctypes FFI, which can be found at
+http://starship.python.net/crew/theller/ctypes/.
 
 Compiling:
 ----------
-This module has only been tested on Python 2.3. It definitely won't
-work on 2.1 or earlier.
-
-$ ./setup.py build
+$ make && su -c "make install"
 
 Usage:
 ------

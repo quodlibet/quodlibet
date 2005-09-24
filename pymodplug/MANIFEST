@@ -1,6 +1,7 @@
 README
-modplug.c
+modplug.py
 setup.py
 Makefile
 COPYING
 playmod.py
+NEWS

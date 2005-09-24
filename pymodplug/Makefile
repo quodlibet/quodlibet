@@ -2,10 +2,7 @@
 
 all: build
 
-modplug.so: modplug.c build
-	cp build/lib*/modplug.so .
-
-build: modplug.c
+build: modplug.py
 	./setup.py build
 
 install: build
@@ -14,7 +11,6 @@ install: build
 clean:
 	./setup.py clean
 	rm -rf build dist
-	rm -f modplug.so
 
 distclean: clean
-	rm -f *~
+	rm -f *~ *.pyc
