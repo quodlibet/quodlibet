@@ -22,7 +22,6 @@ else:
 class MP4File(AudioFile):
     TRANS = { "\251nam": "title",
               "\251ART": "artist",
-              "\251wri": "lyricist",
               "\251alb": "album",
               "\251too": "encoder",
               "\251wrt": "composer",
