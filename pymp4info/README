@@ -1,0 +1,23 @@
+pymp4info - information about MP4 file in Python
+-----------------------
+A simple wrapper for FAAD2 library to get information about audio
+track length, average bitrate and frequency. There is also tagger
+for handling iTunes metadata.
+
+FAAD2 can be found at http://www.audiocoding.com/
+
+Building / Installation:
+------------------------
+The module has only been tested on Python 2.3. To build pymp4info 
+you must have the FAAD2 and Python development files installed.
+
+ $ make && make install
+
+License:
+--------
+Copyright 2005 Alexey Bobyakov <claymore.ws@gmail.com>
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License, version 2, as published
+by the Free Software Foundation. A copy of the GNU GPL v2 is included
+as 'COPYING' with the source of this module.
