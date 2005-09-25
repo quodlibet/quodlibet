@@ -75,6 +75,8 @@ _mpcdec.mpc_reader_setup_file_reader.argtypes = [
 _mpcdec.mpc_streaminfo_read.argtypes = [
     ctypes.POINTER(_MPCStreamInfo), ctypes.POINTER(_MPCReader)]
 
+_mpcdec.mpc_streaminfo_get_length.restype = ctypes.c_double
+
 class MPCFile(ctypes.Structure):
     position = 0
     __reader = None
@@ -108,9 +110,8 @@ class MPCFile(ctypes.Structure):
         self.gain_audiophile = info.gain_album
         self.peak_radio = info.peak_title
         self.peak_audiophile = info.peak_album
-        self.length = int(self.samples / (self.frequency / 1000.0))
-        #self.length = _mpcdec.mpc_streaminfo_get_length(ctypes.byref(info))
-        #self.length *= 1000
+        self.length = int(
+            _mpcdec.mpc_streaminfo_get_length(ctypes.byref(info)) * 1000)
 
     def __del__(self):
         if self.__reader and self.__reader.file:
