@@ -1,9 +1,6 @@
-all: musepack/mpc.so
+all: musepack/mpc.py musepack/apev2.py
 
-musepack/mpc.so: build
-	cp build/lib*/musepack/mpc.so musepack
-
-build: musepack/mpc.c
+build:
 	./setup.py build
 
 install: build
@@ -12,11 +9,10 @@ install: build
 clean:
 	./setup.py clean
 	rm -rf build dist
-	rm -f musepack/mpc.so
 	rm -f */*.pyc
 
 distclean: clean
 	rm -f *~ */*~
 
-test: musepack/mpc.so
+test: musepack/mpc.py musepack/apev2.py
 	@python -c "import tests; tests.unit()"
