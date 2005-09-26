@@ -22,13 +22,15 @@ else:
 class MP4File(AudioFile):
     TRANS = { "\251nam": "title",
               "\251ART": "artist",
+              "\251wrt": "composer",
               "\251alb": "album",
               "\251too": "encoder",
               "\251wrt": "composer",
               "\251cmt": "comment",
-              "\251gen": "genre",
               "\251grp": "grouping",
               "\251day": "date",
+              "\251lyr": "lyrics",
+              "\251gen": "genre",
               "disk": "discnumber",
               "trkn": "tracknumber",
               "tmpo": "bpm",
@@ -37,13 +39,9 @@ class MP4File(AudioFile):
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
 
     def __init__(self, filename):
-        self.BINARY = [mp4info.itunes.COVER, mp4info.itunes.FREE_FORM_BINARY]
         tag = mp4info.iTunesTag(filename)
         for key, value in tag:
-            if key == "gnre":
-                key = "genre"
-                self[key] = tag.genre_to_string(str(value))
-            elif value.kind not in self.BINARY:
+            if value.kind != mp4info.itunes.BINARY:
                 key = MP4File.TRANS.get(key, key)
                 self[key] = "\n".join(list(value))
         f = mp4info.MP4File(filename)
@@ -62,7 +60,7 @@ class MP4File(AudioFile):
         for key in keys:
             # remove any text keys we read in
             value = tag[key]
-            if value.kind not in self.BINARY:
+            if value.kind != mp4info.itunes.BINARY:
                 del(tag[key])
         for key in self.realkeys():
             value = self[key]
