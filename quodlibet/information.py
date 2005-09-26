@@ -1,6 +1,9 @@
+import os
 import gtk
+import urllib
 from util import escape
 
+__windows = {}
 class FakeHref(gtk.Button):
     def __init__(self, url, text):
         gtk.Button.__init__(self, use_underline=False)
@@ -12,22 +15,21 @@ class FakeHref(gtk.Button):
         self.add(l)
         self.connect_object('clicked', SongInformation, url)
 
-class SongInformation(gtk.Window):
-    __windows = {}
-    
-    def __new__(klass, uri):
-        win = klass.__windows.get(uri, None)
-        if win is None:
-            win = gtk.Window.__new__(klass)
-            win.__real_init(uri)
-            klass.__windows[uri] = win
-            win.connect_object('destroy', klass.__windows.__delitem__, uri)
-        return win
+def SongInformation(uri):
+    win = __windows.get(uri, None)
+    if win is None:
+        type, string = urllib.splittype(uri)
+        if type == "file": win = FileInformation(uri)
+        else: raise ValueError("Unknown URI scheme: %s" % type)
+        __windows[uri] = win
+        win.connect_object('destroy', __windows.__delitem__, uri)
+    else: win.present()
+    return win
 
-    def __init__(self, uri): self.present()
-
-    def __real_init(self, uri):
+class FileInformation(gtk.Window):
+    def __init__(self, uri):
         gtk.Window.__init__(self)
+        filename = os.path.realpath(urllib.url2pathname(uri))
         self.set_border_width(12)
         vb = gtk.VBox(spacing=6)
         vb.pack_start(gtk.Label("What, you were expecting something?"))
