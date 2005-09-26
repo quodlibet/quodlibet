@@ -1,6 +1,8 @@
-/* A simple wrapper for FAAD2 library. It provides information about
-   audio track length, average bitrate and frequency.
+/* A simple wrapper for FAAD2 metadata interface. It also provides
+   information about audio track length, average bitrate and
+   frequency.
    Uses FAAD2, http://www.audiocoding.com/
+   Partly based on the code from faad2/plugins/foo_mp4/foo_mp4.cpp
    Copyright 2005 Alexey Bobyakov
 
    This program is free software; you can redistribute it and/or modify
@@ -50,7 +52,8 @@ GetAACTrack(MP4FileHandle infile)
 
 typedef struct
 {
-    PyObject_HEAD MP4FileHandle file;
+    PyObject_HEAD
+    MP4FileHandle file;
     char *filename;
 
     unsigned int length;
@@ -78,17 +81,17 @@ MP4File_new(PyTypeObject * type, PyObject * args, PyObject * kwds)
 static int
 MP4File_init(MP4File * self, PyObject * args, PyObject * kwds)
 {
-    static char *kwlist[] = { "filename", NULL };
-    char *filename;
+    static char *kwlist[] = { "filename", "modify", NULL };
+    char *filename, modify = 0;
     unsigned char *config = NULL;
     int track;
     MP4Duration duration;
 
     if (!PyArg_ParseTupleAndKeywords
-        (args, kwds, "s", kwlist, &filename)) {
+        (args, kwds, "s|b", kwlist, &filename, &modify)) {
         return -1;
     }
-
+    
     self->file = MP4Read(filename, 0);
     if (!self->file) {
         PyErr_SetString(PyExc_IOError, "not a valid MP4 file");
@@ -111,6 +114,15 @@ MP4File_init(MP4File * self, PyObject * args, PyObject * kwds)
 
     self->bitrate = (double) (MP4GetTrackBitRate(self->file, track) + 500);
     self->filename = strdup(filename);
+    if (modify) {
+        MP4Close(self->file);
+        self->file = MP4Modify(filename, 0, 0);
+        if (self->file == MP4_INVALID_FILE_HANDLE) {
+            PyErr_SetString(PyExc_IOError, "not a valid MP4 file");
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -127,6 +139,92 @@ MP4File_dealloc(MP4File * self)
     self->ob_type->tp_free((PyObject *) self);
 }
 
+static PyObject *
+MP4File_deleteAllTags(MP4File * self, PyObject * args)
+{
+    MP4Close(self->file);
+    self->file = MP4Modify(self->filename, 0, 0);
+    if (self->file == MP4_INVALID_FILE_HANDLE) {
+        PyErr_SetString(PyExc_IOError, "deleteAllTags: not a valid MP4 file #1");
+        return NULL;
+    }
+    MP4MetadataDelete(self->file);
+    MP4Close(self->file);
+
+//    MP4Optimize(self->filename, NULL, 0);
+
+    self->file = MP4Modify(self->filename, 0, 0);
+    if (self->file == MP4_INVALID_FILE_HANDLE) {
+        PyErr_SetString(PyExc_IOError, "deleteAllTags: not a valid MP4 file #2");
+        return NULL;
+    }
+    return Py_BuildValue("");
+}
+
+static PyObject *
+MP4File_setTag(MP4File * self, PyObject * args, PyObject * kwds)
+{
+    static char *kwlist[] = { "key", "value", NULL };
+    char *key, *value, kind;
+    int size;
+
+    if (!PyArg_ParseTupleAndKeywords
+        (args, kwds, "ss#", kwlist, &key, &value, &size)) {
+        return NULL;
+    }
+
+    if (strcasecmp(key, "©nam") == 0) {
+        MP4SetMetadataName(self->file, value);
+    } else if (strcasecmp(key, "©ART") == 0) {
+        MP4SetMetadataArtist(self->file, value);
+    } else if (strcasecmp(key, "©wrt") == 0) {
+        MP4SetMetadataWriter(self->file, value);
+    } else if (strcasecmp(key, "©alb") == 0) {
+        MP4SetMetadataAlbum(self->file, value);
+    } else if (strcasecmp(key, "©day") == 0) {
+        MP4SetMetadataYear(self->file, value);
+    } else if (strcasecmp(key, "©cmt") == 0) {
+        MP4SetMetadataComment(self->file, value);
+    } else if (strcasecmp(key, "©gen") == 0) {
+        MP4SetMetadataGenre(self->file, value);
+    } else if (strcasecmp(key, "trkn") == 0) {
+        char *p = strchr(value, '/');
+        u_int16_t trkn = 0, tot = 0;
+        if (!p) {
+            trkn = atoi(value);
+        } else {
+            *p = 0;
+            trkn = atoi(value);
+            tot = atoi(++p);
+        }
+        MP4SetMetadataTrack(self->file, trkn, tot);
+    } else if (strcasecmp(key, "disk") == 0) {
+        char *p = strchr(value, '/');
+        u_int16_t disk = 0, tot = 0;
+        if (!p) {
+            disk = atoi(value);
+        } else {
+            *p = 0;
+            disk = atoi(value);
+            tot = atoi(++p);
+        }
+        MP4SetMetadataDisk(self->file, disk, tot);
+    } else if (strcasecmp(key, "cpil") == 0) {
+        u_int8_t cpil = atoi(value);
+        MP4SetMetadataCompilation(self->file, cpil);
+    } else if (strcasecmp(key, "tmpo") == 0) {
+        u_int16_t tempo = atoi(value);
+        MP4SetMetadataTempo(self->file, tempo);
+    } else if (strcasecmp(key, "covr") == 0) {
+        MP4SetMetadataCoverArt(self->file, (u_int8_t *) value, size);
+    } else {
+        MP4SetMetadataFreeForm(self->file, key, (u_int8_t *) value,
+                               size);
+    }
+
+    return Py_BuildValue("");
+}
+
 static PyMemberDef MP4File_members[] = {
     {"length", T_INT, offsetof(MP4File, length), 0,
      "the song length in milliseconds"},
@@ -139,6 +237,10 @@ static PyMemberDef MP4File_members[] = {
 
 
 static PyMethodDef MP4File_methods[] = {
+    {"setTag", (PyCFunction) MP4File_setTag, METH_KEYWORDS,
+     "Sets tag with 'key' to 'value'"},
+    {"deleteAllTags", (PyCFunction) MP4File_deleteAllTags, METH_NOARGS,
+     "Deletes all tags in the file"},
     {NULL}
 };
 
@@ -201,7 +303,7 @@ initmp4(void)
     }
 
     m = Py_InitModule3("mp4", module_methods,
-                       "A simple wrapper for some FAAD2 functions");
+                       "A simple wrapper for FAAD2 metadata interface");
 
     if (m == NULL) {
         return;
