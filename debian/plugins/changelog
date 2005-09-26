@@ -1,3 +1,10 @@
+quodlibet-plugins (20050925-1) unstable; urgency=low
+
+  * Add Recommends on python-cddb, python-gnome2, and python-musicbrainz.
+    closes: #328258
+
+ -- Joshua Kwan <joshk@triplehelix.org>  Sun, 25 Sep 2005 23:25:30 -0700
+
 quodlibet-plugins (20050827-1) unstable; urgency=low
 
   * New Subversion checkout.
