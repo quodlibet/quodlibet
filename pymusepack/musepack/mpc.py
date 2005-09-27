@@ -113,6 +113,55 @@ class MPCFile(ctypes.Structure):
         self.length = int(
             _mpcdec.mpc_streaminfo_get_length(ctypes.byref(info)) * 1000)
 
+        # 122212 is the size of the decoder structure as of 1.2.1
+        self.__decoder = ctypes.create_string_buffer(122212)
+        _mpcdec.mpc_decoder_setup(
+            ctypes.byref(self.__decoder), ctypes.byref(self.__reader.reader))
+        if not _mpcdec.mpc_decoder_initialize(
+            ctypes.byref(self.__decoder), ctypes.byref(info)):
+            raise IOError("error initializing decoder")
+
+
     def __del__(self):
         if self.__reader and self.__reader.file:
             _libc.fclose(self.__reader.file)
+
+    def set_scale(self, factor=1.0):
+        if factor < 0: raise ValueError("factor must be at least 0")
+        _mpcdec.mpc_decoder_scale_output(self.__decoder)
+
+    def read(self):
+        buffer = (ctypes.c_float * (4 * 36 * 32))()
+        status = _mpcdec.mpc_decoder_decode(
+            ctypes.byref(self.__decoder), ctypes.byref(buffer), 0, 0)
+        if status == -1:
+            raise IOError("unable to read from file")
+        elif status == 0: return ""
+        else:
+            to = ctypes.create_string_buffer(status * 4)
+            self.__mpc_to_str(buffer, to, status)
+            self.position += 1000 * (float(status) / self.frequency)
+            return str(to.raw)
+
+    def __mpc_to_str(self, buffer, to, status):
+        m_bps = 16
+        float_scale = 1 << (m_bps -1 )
+        clip_min = -float_scale
+        clip_max = float_scale - 1
+
+        for n in range(0, status*2):
+            shift = 0
+            val = max(min(int(buffer[n] * float_scale), clip_max), clip_min)
+            to[n * 2 + (shift // 8)] = chr((val >> shift) & (0xFF))
+            shift += 8
+            while shift < m_bps:
+                to[n * 2 + (shift // 8)] = chr((val >> shift) & (0xFF))
+                shift += 8
+
+    def seek(self, position):
+        if position <= self.length:
+            _mpcdec.mpc_decoder_seek_seconds(
+                ctypes.byref(self.__decoder), ctypes.c_double(position/1000.0))
+            self.position = position
+        else:
+            raise IOError("attempt to seek past end of file")

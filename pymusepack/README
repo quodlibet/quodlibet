@@ -6,6 +6,9 @@ includes a module to read and write APEv2 metadata tags.
 
 libmpcdec can be found at http://www.musepack.net/index.php?pg=src.
 
+It uses (and requires) the ctypes FFI, which can be found at
+http://starship.python.net/crew/theller/ctypes/.
+
 Compiling:
 ----------
 This module has only been tested on Python 2.3. It definitely won't
