@@ -10,6 +10,7 @@
 import os, sys
 import sre
 import time
+import locale
 import gtk, pango, gobject
 
 import qltk; from qltk import HintedTreeView, WritingWindow
@@ -297,7 +298,8 @@ class SongProperties(gtk.Window):
                     else: return ngettext("%d time", "%d times", i) % i
                 def ftime(t):
                     if t == 0: return _("Unknown")
-                    else: return time.strftime("%c", time.localtime(t))
+                    else: return time.strftime("%c", time.localtime(t)).decode(
+                        locale.getpreferredencoding())
 
                 playcount = counter(song.get("~#playcount", 0))
                 skipcount = counter(song.get("~#skipcount", 0))
@@ -328,7 +330,8 @@ class SongProperties(gtk.Window):
             def _file(self, (song,)):
                 def ftime(t):
                     if t == 0: return _("Unknown")
-                    else: return time.strftime("%c", time.localtime(t))
+                    else: return time.strftime("%c", time.localtime(t)).decode(
+                        locale.getpreferredencoding())
 
                 fn = util.fsdecode(util.unexpand(song["~filename"]))
                 length = util.format_time_long(song["~#length"])

@@ -23,6 +23,7 @@ import formats
 import util
 import time
 import datetime
+import locale
 
 from util import to, tag
 from gettext import ngettext
@@ -2015,9 +2016,12 @@ class SongList(qltk.HintedTreeView):
                     today = datetime.datetime.now().date()
                     days = (today - date).days
                     stamp = time.localtime(stamp)
-                    if days == 0: rep = time.strftime("%X", stamp)
-                    elif days < 7: rep = time.strftime("%A", stamp)
-                    else: rep = time.strftime("%x", stamp)
+                    if days == 0: rep = time.strftime("%X", stamp).decode(
+                        locale.getpreferredencoding())
+                    elif days < 7: rep = time.strftime("%A", stamp).decode(
+                        locale.getpreferredencoding())
+                    else: rep = time.strftime("%x", stamp).decode(
+                        locale.getpreferredencoding())
                     cell.set_property('text', rep)
             except AttributeError: pass
 
