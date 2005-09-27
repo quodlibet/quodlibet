@@ -30,12 +30,12 @@ class AudioFile(dict):
 
     def __cmp__(self, other):
         if not other: return -1
-        return (cmp(self("album"), other("album")) or
+        return (cmp(self.get("album"), other.get("album")) or
                 cmp(self("~#disc"), other("~#disc")) or
                 cmp(self("~#track"), other("~#track")) or
-                cmp(self("artist"), other("artist")) or
-                cmp(self("title"), other("title")) or
-                cmp(self("~filename"), other("~filename")))
+                cmp(self.get("artist"), other.get("artist")) or
+                cmp(self.get("title"), other.get("title")) or
+                cmp(self.get("~filename"), other.get("~filename")))
 
     def reload(self):
         fn = self["~filename"]
