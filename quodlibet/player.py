@@ -14,22 +14,15 @@ os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
 gst.use_threads(True)
 
 def GStreamerSink(pipeline):
-    if pipeline == "gconf":
-        try: import gconf
-        except ImportError: sinkname = "osssink"
-        else:
-            c = gconf.client_get_default()
-            val = c.get("/system/gstreamer/0.8/default/audiosink")
-            if val.type == gconf.VALUE_STRING: pipeline = val.get_string()
-            else: pipeline = "osssink"
-
+    if pipeline == "gconf": pipeline = "gconfaudiosink"
     try: return gst.parse_launch(pipeline), pipeline
     except gobject.GError, err:
         if pipeline != "osssink":
             print "%r failed, falling back to osssink (%s)." % (pipeline, err)
             try: return gst.parse_launch("osssink"), "osssink"
             except gobject.GError: pass
-    raise SystemExit("No valid GStreamer sinks found.")
+    raise SystemExit("E: No valid GStreamer sinks found.\n"
+                     "E: Set 'pipeline' in ~/.quodlibet/config.")
 
 class PlaylistPlayer(object):
     __paused = False
@@ -153,5 +146,5 @@ playlist = None
 
 def init(pipeline):
     global playlist
-    playlist = PlaylistPlayer(pipeline or "gconf")
+    playlist = PlaylistPlayer(pipeline or "gconfaudiosink")
     return playlist
