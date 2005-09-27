@@ -81,6 +81,7 @@ class SongWrapper(object):
     def __cmp__(self, other): return cmp(self._song, other)
     def __contains__(self, key): return key in self._song
     def __call__(self, *args): return self._song(*args)
+    def get(self, key): return self._song.get(key)
     def realkeys(self): return self._song.realkeys()
     def can_change(self, key): return self._song.can_change(key)
     def keys(self): return self._song.keys()
