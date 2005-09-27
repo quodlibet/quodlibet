@@ -2430,8 +2430,9 @@ class DestSongList(SongList):
             iter = model.get_iter(path)
             song = songs.pop(0)
             it = self.song_to_iter(song)
-            if model.get_path(it) == model.get_path(iter): return
-            if it: model.remove(it)
+            if it:
+                if model.get_path(it) == model.get_path(iter): return
+                else: model.remove(it)
             if position in (gtk.TREE_VIEW_DROP_BEFORE,
                             gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
                 iter = model.insert_before(iter, [song])
