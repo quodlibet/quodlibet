@@ -14,7 +14,17 @@ os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
 gst.use_threads(True)
 
 def GStreamerSink(pipeline):
-    if pipeline == "gconf": pipeline = "gconfaudiosink"
+    if pipeline == "gconf":
+        # We can't use gconfaudiosink/autoaudiosink -- querying its
+        # current time fails.
+        try: import gconf
+        except ImportError: sinkname = "alsasink"
+        else:
+            c = gconf.client_get_default()
+            val = c.get("/system/gstreamer/0.8/default/audiosink")
+            if val.type == gconf.VALUE_STRING: pipeline = val.get_string()
+            else: pipeline = "alsasink"
+
     try: return gst.parse_launch(pipeline), pipeline
     except gobject.GError, err:
         if pipeline != "osssink":
@@ -146,5 +156,5 @@ playlist = None
 
 def init(pipeline):
     global playlist
-    playlist = PlaylistPlayer(pipeline or "gconfaudiosink")
+    playlist = PlaylistPlayer(pipeline or "gconf")
     return playlist
