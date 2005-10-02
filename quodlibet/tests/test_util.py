@@ -42,7 +42,7 @@ class FSTests(TestCase):
 
     def test_fscoding(self):
         import locale
-        if locale.getpreferredencoding() != "utf":
+        if locale.getpreferredencoding() != "UTF-8":
             print "WARNING: Skipping fscoding test."
         else:
             try:
