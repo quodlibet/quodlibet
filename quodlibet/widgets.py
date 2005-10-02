@@ -838,6 +838,103 @@ class CoverImage(gtk.Frame):
             cover = self.__song.find_cover()
             qltk.BigCenteredImage(self.__song.comma("album"), cover.name)
 
+class SongInfo(gtk.Label):
+    # Translators: Only worry about "by", "Disc", and "Track" below.
+    pattern = _("""\
+\\<span weight='bold' size='large'\\><title>\\</span\\> - <~length><version|
+\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
+by <~people>><album|
+\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
+<part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
+
+    filename = os.path.join(const.DIR, "songinfo")
+
+    class EditDisplay(gtk.Window):
+        def __init__(self, main):
+            gtk.Window.__init__(self)
+            self.set_title(_("Edit Display"))
+            self.set_transient_for(main)
+            self.set_border_width(12)
+            self.set_default_size(400, 200)
+            self.add(gtk.VBox(spacing=12))
+
+            sw = gtk.ScrolledWindow()
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            sw.add(gtk.TextView())
+            self.child.pack_start(sw)
+            self.buffer = sw.child.get_buffer()
+
+            box = gtk.HButtonBox()
+            box.set_spacing(12)
+            box.set_layout(gtk.BUTTONBOX_END)
+            rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
+            app = gtk.Button(stock=gtk.STOCK_APPLY)
+            box.pack_start(rev)
+            box.pack_start(app)
+            self.child.pack_start(box, expand=False)
+
+            rev.connect_object(
+                'clicked', self.buffer.set_text, SongInfo.pattern)
+            self.apply = app
+            self.show_all()
+
+    def __init__(self, watcher, main):
+        gtk.Label.__init__(self)
+        self.set_ellipsize(pango.ELLIPSIZE_END)
+        self.set_selectable(True)
+        self.set_alignment(0.0, 0.0)
+        self.set_direction(gtk.TEXT_DIR_LTR)
+        watcher.connect('song-started', self.__song_started)
+        watcher.connect('changed', self.__check_change)
+
+        self.connect_object('populate-popup', self.__menu, main)
+
+        try: self.pattern = file(self.filename).read().rstrip()
+        except (IOError, OSError): pass
+
+    def __menu(self, main, menu):
+        item = qltk.MenuItem(_("Edit Display..."), gtk.STOCK_EDIT)
+        item.show()
+        item.connect_object('activate', self.__edit, main)
+        menu.append(item)
+
+    def __edit(self, main):
+        w = self.EditDisplay(main)
+        w.buffer.set_text(self.pattern)
+        w.apply.connect_object('clicked', self.__set, w, w.buffer)
+
+    def __set(self, window, buffer):
+        try:
+            text = buffer.get_text(*buffer.get_bounds()).decode('utf-8')
+            from formats._audio import AudioFile
+            f = AudioFile({"~filename":"dummy"})
+            pango.parse_markup(pattern.XMLFromPattern(text) % f, "\u0000")
+        except (ValueError, gobject.GError), e:
+            qltk.ErrorMessage(
+                window, _("Invalid Pattern"),
+                _("The pattern you entered was invalid. Make sure you enter "
+                  "&lt; and &gt; as \\&lt; and \\&gt; and that your tags are "
+                  "balanced.\n\n%s") % util.escape(str(e))).run()
+        else:
+            self.pattern = text.rstrip()
+            if (text == SongInfo.pattern):
+                try: os.unlink(os.path.join(const.DIR, "songinfo"))
+                except OSError: pass
+            else:
+                f = file(os.path.join(const.DIR, "songinfo"), "w")
+                f.write(self.pattern + "\n")
+                f.close()
+            self.__song_started(widgets.watcher, widgets.watcher.song)
+
+    def __check_change(self, watcher, songs):
+        if watcher.song in songs:
+            self.__song_started(watcher, watcher.song)
+
+    def __song_started(self, watcher, song):
+        if song: t = pattern.XMLFromPattern(self.pattern) % song
+        else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
+        self.set_markup(t)
+
 class MainWindow(gtk.Window):
     class StopAfterMenu(gtk.Menu):
         def __init__(self, watcher):
@@ -864,90 +961,6 @@ class MainWindow(gtk.Window):
         def __get_active(self): return self.__item.get_active()
         def __set_active(self, v): return self.__item.set_active(v)
         active = property(__get_active, __set_active)
-
-    class SongInfo(gtk.Label):
-        # Translators: Only worry about "by", "Disc", and "Track" below.
-        pattern = _("""\
-\\<span weight='bold' size='large'\\><title>\\</span\\> - <~length><version|
-\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
-by <~people>><album|
-\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
-<part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
-
-        def __init__(self, watcher):
-            gtk.Label.__init__(self)
-            self.set_ellipsize(pango.ELLIPSIZE_END)
-            self.set_selectable(True)
-            self.set_alignment(0.0, 0.0)
-            self.set_direction(gtk.TEXT_DIR_LTR)
-            watcher.connect('song-started', self.__song_started)
-            watcher.connect('changed', self.__check_change)
-
-            self.connect_object('populate-popup', self.__class__.__menu, self)
-
-            if os.path.exists(os.path.join(const.DIR, "songinfo")):
-                pat = file(os.path.join(const.DIR, "songinfo")).read()
-                self.pattern = pat.rstrip()
-
-        def __menu(self, menu):
-            item = qltk.MenuItem(_("Edit Display..."), gtk.STOCK_EDIT)
-            item.show()
-            item.connect('activate', self.__edit)
-            menu.append(item)
-
-        def __edit(self, menuitem):
-            w = gtk.Window()
-            w.set_title("Edit Song Display")
-            w.set_transient_for(widgets.main)
-            w.set_default_size(300, 200)
-            sw = gtk.ScrolledWindow()
-            sw.set_shadow_type(gtk.SHADOW_IN)
-            w.set_border_width(12)
-            w.add(gtk.VBox(spacing=12))
-            w.child.pack_start(sw)
-            tv = gtk.TextView()
-            sw.add(tv)
-            box = gtk.HButtonBox()
-            box.set_spacing(12)
-            box.set_layout(gtk.BUTTONBOX_END)
-            rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
-            app = gtk.Button(stock=gtk.STOCK_APPLY)
-            box.pack_start(rev)
-            box.pack_start(app)
-            w.child.pack_start(box, expand=False)
-            buffer = tv.get_buffer()
-            buffer.set_text(self.pattern)
-
-            def settext(buffer):
-                text = buffer.get_text(*buffer.get_bounds()).decode('utf-8')
-                try: pattern.XMLFromPattern(text)
-                except ValueError: text = self.pattern
-                self.pattern = text.rstrip()
-                self.__song_started(widgets.watcher, widgets.watcher.song)
-
-                if (text == MainWindow.SongInfo.pattern):
-                    try: os.unlink(os.path.join(const.DIR, "songinfo"))
-                    except OSError: pass
-                else:
-                    f = file(os.path.join(const.DIR, "songinfo"), "w")
-                    f.write(self.pattern + "\n")
-                    f.close()
-            rev.connect_object(
-                'clicked', buffer.set_text, MainWindow.SongInfo.pattern)
-
-            app.connect_object('clicked', settext, buffer)
-
-            w.child.show_all()
-            w.show()
-
-        def __check_change(self, watcher, songs):
-            if watcher.song in songs:
-                self.__song_started(watcher, watcher.song)
-
-        def __song_started(self, watcher, song):
-            if song: t = pattern.XMLFromPattern(self.pattern) % song
-            else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
-            self.set_markup(t)
 
     class PlayControls(gtk.VBox):
         def __init__(self, watcher):
@@ -1131,7 +1144,7 @@ by <~people>><album|
         hbox.pack_start(t, expand=False, fill=False)
 
         # song text
-        text = self.SongInfo(watcher)
+        text = SongInfo(watcher, self)
         # Packing the text directly into the hbox causes clipping problems
         # with Hebrew, so use an Alignment instead.
         alignment = gtk.Alignment(xalign=0, yalign=0, xscale=1, yscale=1)
