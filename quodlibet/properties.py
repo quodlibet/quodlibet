@@ -21,7 +21,7 @@ import formats
 
 from gettext import ngettext
 from library import library
-
+from pattern import FileFromPattern
 from util import tag
 
 if sys.version_info < (2, 4): from sets import Set as set
@@ -1428,7 +1428,7 @@ class SongProperties(gtk.Window):
             ascii = ascii.get_active()
 
             try:
-                pattern = util.FileFromPattern(pattern)
+                pattern = FileFromPattern(pattern)
             except ValueError: 
                 qltk.ErrorMessage(
                     parent,
@@ -1445,7 +1445,7 @@ class SongProperties(gtk.Window):
                     combo.write(const.NBP)
 
             for song in self.__songs:
-                newname = pattern.match(song)
+                newname = pattern.format(song)
                 code = util.fscoding()
                 newname = newname.encode(code, "replace").decode(code)
                 basename = song("~basename").decode(code, "replace")

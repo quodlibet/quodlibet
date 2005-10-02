@@ -769,14 +769,14 @@ class QLTrayIcon(HIGTrayIcon):
     def __set_song(self, watcher, song, *items):
         for item in items: item.set_sensitive(bool(song))
         if song:
+            from pattern import Pattern
             try:
-                pattern = util.FileFromPattern(
-                    config.get("plugins", "icon_tooltip"), filename=False)
+                pattern = Pattern(config.get("plugins", "icon_tooltip"))
             except ValueError:
-                pattern = util.FileFromPattern(
+                pattern = Pattern(
                     "<album|<album~discnumber~part~tracknumber~title~version>|"
-                    "<artist~title~version>>", filename=False)
-            self.tooltip = pattern.match(song)
+                    "<artist~title~version>>")
+            self.tooltip = pattern.format(song)
         else: self.tooltip = _("Not playing")
 
 class MmKeys(object):

@@ -46,7 +46,8 @@ def refresh_cache():
 
 def print_playing(fstring = "<artist~album~tracknumber~title>"):
     import util
-    from util import to, FileFromPattern
+    from util import to
+    from pattern import Pattern
     from formats._audio import AudioFile
     try:
         fn = file(const.CURRENT)
@@ -63,7 +64,7 @@ def print_playing(fstring = "<artist~album~tracknumber~title>"):
                 if key != "~filename": val = util.decode(val)
                 if key in data: data[key] += "\n" + val
                 else: data[key] = val
-        print to(FileFromPattern(fstring, False).match(AudioFile(data)))
+        print to(Pattern(fstring).format(AudioFile(data)))
         raise SystemExit
     except (OSError, IOError):
         print to(_("No song is currently playing."))
