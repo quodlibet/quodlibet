@@ -107,7 +107,7 @@ class PatternParser(object):
             except ParseError:
                 text.pop(-1)
                 text.append("<")
-                text.append("|".join(filter(None, [tag, ifcase, elsecase])))
+                text.append(tag)
                 while self.lookahead.type not in [EOF, OPEN]:
                     text.append(self.lookahead.lexeme)
                     self.match(self.lookahead.type)
