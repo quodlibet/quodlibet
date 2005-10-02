@@ -24,6 +24,7 @@ import util
 import time
 import datetime
 import locale
+import pattern
 
 from util import to, tag
 from gettext import ngettext
@@ -769,14 +770,13 @@ class QLTrayIcon(HIGTrayIcon):
     def __set_song(self, watcher, song, *items):
         for item in items: item.set_sensitive(bool(song))
         if song:
-            from pattern import Pattern
             try:
-                pattern = Pattern(config.get("plugins", "icon_tooltip"))
+                p = pattern.Pattern(config.get("plugins", "icon_tooltip"))
             except ValueError:
-                pattern = Pattern(
+                p = pattern.Pattern(
                     "<album|<album~discnumber~part~tracknumber~title~version>|"
                     "<artist~title~version>>")
-            self.tooltip = pattern.format(song)
+            self.tooltip = p % song
         else: self.tooltip = _("Not playing")
 
 class MmKeys(object):
@@ -866,6 +866,14 @@ class MainWindow(gtk.Window):
         active = property(__get_active, __set_active)
 
     class SongInfo(gtk.Label):
+        # Translators: Only worry about "by", "Disc", and "Track" below.
+        PATTERN = _("""\
+\\<span weight='bold' size='large'\\><title>\\</span\\> - <~length><version|
+\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
+by <~people>><album|
+\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
+<part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
+
         def __init__(self, watcher):
             gtk.Label.__init__(self)
             self.set_ellipsize(pango.ELLIPSIZE_END)
@@ -880,39 +888,9 @@ class MainWindow(gtk.Window):
                 self.__song_started(watcher, watcher.song)
 
         def __song_started(self, watcher, song):
-            if song:
-                t = "".join([self.__title(song), self.__people(song),
-                             self.__album(song)])
+            if song: t = pattern.XMLFromPattern(self.PATTERN) % song
             else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
             self.set_markup(t)
-
-        def __title(self, song):
-            t = "<span weight='bold' size='large'>%s</span>" %(
-                util.escape(song.comma("title")))
-            if "version" in song:
-                t += "\n<small><b>%s</b></small>" %(
-                    util.escape(song.comma("version")))
-            return t
-
-        def __people(self, song):
-            p = util.escape(song.comma("~people"))
-            if p: return "\n" + _("by %s") % p
-            else: return ""
-
-        def __album(self, song):
-            t = []
-            if "album" in song:
-                t.append("<b>%s</b>" % util.escape(song.comma("album")))
-                if "discnumber" in song:
-                    t.append(_("Disc %s") % util.escape(
-                        song.comma("discnumber")))
-                if "part" in song:
-                    t.append("<b>%s</b>" % util.escape(song.comma("part")))
-                if "tracknumber" in song:
-                    t.append(_("Track %s") % util.escape(
-                        song.comma("tracknumber")))
-                return "\n" + " - ".join(t)
-            else: return ""
 
     class PlayControls(gtk.VBox):
         def __init__(self, watcher):
