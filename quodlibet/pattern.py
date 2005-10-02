@@ -73,9 +73,15 @@ class PatternParser(object):
         return "".join(text)
 
     def Tags(self, song):
+        text = []
         tag = self.lookahead.lexeme
         if not tag.startswith("~") and "~" in tag: tag = "~" + tag
-        self.match(TEXT)
+        try: self.match(TEXT)
+        except ParseError:
+            while self.lookahead.type not in [CLOSE, EOF]:
+                text.append(self.lookahead.lexeme)
+                self.match(self.lookahead.type)
+            return "".join(text)
         if self.lookahead.type == COND:
             self.match(COND)
             ifcase = self.Pattern(song)
@@ -84,12 +90,28 @@ class PatternParser(object):
                 elsecase = self.Pattern(song)
             else: elsecase = ""
 
-            self.match(CLOSE)
-            if song.comma(tag): return ifcase
-            else: return elsecase
+            if song.comma(tag): text.append(ifcase)
+            else: text.append(elsecase)
+
+            try: self.match(CLOSE)
+            except ParseError:
+                text.pop(-1)
+                text.append("<")
+                text.append("|".join(filter(None, [tag, ifcase, elsecase])))
+                while self.lookahead.type not in [EOF, OPEN]:
+                    text.append(self.lookahead.lexeme)
+                    self.match(self.lookahead.type)
         else:
-            self.match(CLOSE)
-            return song.comma(tag)
+            text.append(song.comma(tag))
+            try: self.match(CLOSE)
+            except ParseError:
+                text.pop(-1)
+                text.append("<")
+                text.append("|".join(filter(None, [tag, ifcase, elsecase])))
+                while self.lookahead.type not in [EOF, OPEN]:
+                    text.append(self.lookahead.lexeme)
+                    self.match(self.lookahead.type)
+        return "".join(text)
 
     def match(self, *tokens):
         if tokens != [EOF] and self.lookahead.type == EOF:

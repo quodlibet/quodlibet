@@ -32,7 +32,8 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(s.c), '00. test/subdir')
 
     def test_conditional_other_other(s):
-        s.assertRaises(ValueError, Pattern, '<tracknumber|a|b|c>')
+        s.assertEqual(Pattern('<tracknumber|a|b|c>').format(s.a),
+                      "<tracknumber|a|b|c>")
 
     def test_conditional_genre(s):
         pat = Pattern('<genre|<genre>|music>')
