@@ -85,7 +85,6 @@ MENU = """<ui>
       <menuitem action='FilterAlbum'/>
       <separator/>
       <menuitem action='Properties'/>
-      <menuitem action='Information'/>
       <menu action='Rating'>
          <menuitem action='Rate0'/>
          <menuitem action='Rate1'/>

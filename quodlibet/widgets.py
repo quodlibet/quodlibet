@@ -32,7 +32,6 @@ from library import library
 
 if sys.version_info < (2, 4): from sets import Set as set
 from properties import SongProperties
-from information import SongInformation
 
 # Give us a namespace for now.. FIXME: We need to remove this later.
 # Or, replace it with nicer wrappers!
@@ -1318,8 +1317,6 @@ class MainWindow(gtk.Window):
             ("Song", None, _("S_ong")),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.__current_song_prop),
-            ("Information", gtk.STOCK_DIALOG_INFO, None, None, None,
-             self.__current_song_info),
             ("Rating", None, _("Rating")),
 
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
@@ -1581,7 +1578,7 @@ class MainWindow(gtk.Window):
     def __song_started(self, watcher, song):
         self.__update_title(watcher, [song])
 
-        for wid in ["Jump", "Next", "Properties", "Information", "FilterGenre",
+        for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum", "Rating"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
@@ -1776,12 +1773,6 @@ class MainWindow(gtk.Window):
     def __current_song_prop(self, *args):
         song = widgets.watcher.song
         if song: SongProperties([song], widgets.watcher)
-
-    def __current_song_info(self, *args):
-        song = widgets.watcher.song
-        if song:
-            uri = song("~uri")
-            SongInformation("ql://song/"+uri).show()
 
     def prep_main_popup(self, header, button, time):
         menu = self.songlist.Menu(header, self.browser)
@@ -2190,11 +2181,6 @@ class SongList(qltk.HintedTreeView):
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
         menu.append(b)
-
-        if len(songs) == 1:
-            b = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
-            b.connect_object('activate', SongInformation, songs[0]('~uri'))
-            menu.append(b)
 
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
