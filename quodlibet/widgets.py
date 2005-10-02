@@ -867,7 +867,7 @@ class MainWindow(gtk.Window):
 
     class SongInfo(gtk.Label):
         # Translators: Only worry about "by", "Disc", and "Track" below.
-        PATTERN = _("""\
+        pattern = _("""\
 \\<span weight='bold' size='large'\\><title>\\</span\\> - <~length><version|
 \\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
 by <~people>><album|
@@ -883,12 +883,69 @@ by <~people>><album|
             watcher.connect('song-started', self.__song_started)
             watcher.connect('changed', self.__check_change)
 
+            self.connect_object('populate-popup', self.__class__.__menu, self)
+
+            if os.path.exists(os.path.join(const.DIR, "songinfo")):
+                pat = file(os.path.join(const.DIR, "songinfo")).read()
+                self.pattern = pat.rstrip()
+
+        def __menu(self, menu):
+            item = qltk.MenuItem(_("Edit Display..."), gtk.STOCK_EDIT)
+            item.show()
+            item.connect('activate', self.__edit)
+            menu.append(item)
+
+        def __edit(self, menuitem):
+            w = gtk.Window()
+            w.set_title("Edit Song Display")
+            w.set_transient_for(widgets.main)
+            w.set_default_size(300, 200)
+            sw = gtk.ScrolledWindow()
+            sw.set_shadow_type(gtk.SHADOW_IN)
+            w.set_border_width(12)
+            w.add(gtk.VBox(spacing=12))
+            w.child.pack_start(sw)
+            tv = gtk.TextView()
+            sw.add(tv)
+            box = gtk.HButtonBox()
+            box.set_spacing(12)
+            box.set_layout(gtk.BUTTONBOX_END)
+            rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
+            app = gtk.Button(stock=gtk.STOCK_APPLY)
+            box.pack_start(rev)
+            box.pack_start(app)
+            w.child.pack_start(box, expand=False)
+            buffer = tv.get_buffer()
+            buffer.set_text(self.pattern)
+
+            def settext(buffer):
+                text = buffer.get_text(*buffer.get_bounds()).decode('utf-8')
+                try: pattern.XMLFromPattern(text)
+                except ValueError: text = self.pattern
+                self.pattern = text.rstrip()
+                self.__song_started(widgets.watcher, widgets.watcher.song)
+
+                if (text == MainWindow.SongInfo.pattern):
+                    try: os.unlink(os.path.join(const.DIR, "songinfo"))
+                    except OSError: pass
+                else:
+                    f = file(os.path.join(const.DIR, "songinfo"), "w")
+                    f.write(self.pattern + "\n")
+                    f.close()
+            rev.connect_object(
+                'clicked', buffer.set_text, MainWindow.SongInfo.pattern)
+
+            app.connect_object('clicked', settext, buffer)
+
+            w.child.show_all()
+            w.show()
+
         def __check_change(self, watcher, songs):
             if watcher.song in songs:
                 self.__song_started(watcher, watcher.song)
 
         def __song_started(self, watcher, song):
-            if song: t = pattern.XMLFromPattern(self.PATTERN) % song
+            if song: t = pattern.XMLFromPattern(self.pattern) % song
             else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
             self.set_markup(t)
 
