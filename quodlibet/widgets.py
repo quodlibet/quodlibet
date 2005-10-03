@@ -1776,8 +1776,6 @@ class MainWindow(gtk.Window):
 
     def prep_main_popup(self, header, button, time):
         menu = self.songlist.Menu(header, self.browser)
-        menu.show_all()
-        menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, button, time)
         return True
 
@@ -2162,21 +2160,27 @@ class SongList(qltk.HintedTreeView):
                                gtk.SeparatorMenuItem)):
                 menu.append(gtk.SeparatorMenuItem())
 
+        buttons = []
+
         b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
+        buttons.append(b)
 
         b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
         b.connect('activate', self.__remove, songs)
         menu.append(b)
-        for song in songs:
-            if song["~filename"] not in library:
-                b.set_sensitive(False)
-                break
+        buttons.append(b)
 
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         b.connect('activate', self.__delete, songs)
         menu.append(b)
+        buttons.append(b)
+        
+        for song in songs:
+            if song["~filename"] not in library:
+                for b in buttons: b.set_sensitive(False)
+                break
 
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
@@ -2743,10 +2747,7 @@ class LibraryBrowser(gtk.Window):
     def __menu(self, view, button, time):
         path, col = view.get_cursor()
         header = col.header_name
-        menu = view.Menu(header, self.browser)
-        menu.show_all()
-        menu.connect('selection-done', lambda m: m.destroy())
-        menu.popup(None, None, None, button, time)
+        view.Menu(header, self.browser).popup(None, None, None, button, time)
         return True
 
 def website_wrap(activator, link):
