@@ -8,7 +8,8 @@
 # $Id$
 
 import os
-import gobject, gtk
+import gobject, gtk, pango
+import urllib
 
 import const
 import qltk
@@ -22,7 +23,7 @@ STATIONS = os.path.join(const.DIR, "stations")
 
 class IRFile(AudioFile):
     local = False
-    __CAN_CHANGE = "title artist genre grouping".split()
+    __CAN_CHANGE = "title artist genre grouping version website".split()
 
     def __init__(self, uri):
         self["~uri"] = self["~filename"] = uri
@@ -41,6 +42,7 @@ class IRFile(AudioFile):
 
 def ParsePLS(file):
     data = {}
+
     lines = file.readlines()
     if not lines or "[playlist]" not in lines.pop(0): return []
 
@@ -60,17 +62,56 @@ def ParsePLS(file):
             for key in ["title", "genre"]:
                 try: irf[key] = data["%s%d" % (key, count)]
                 except KeyError: pass
-            try: irf["~#rating"] = int(data["rating%d" % count])
-            except (KeyError, TypeError, ValueError): pass
             try: irf["~#length"] = int(data["length%d" % count])
             except (KeyError, TypeError, ValueError): pass
+            files.append(irf)
         else: break
+        count += 1
     return files
+
+class ChooseNewStations(gtk.Dialog):
+    def __init__(self, irfs):
+        gtk.Dialog.__init__(self, title=_("Choose New Stations"))
+        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                         gtk.STOCK_ADD, gtk.RESPONSE_OK)
+        self.set_border_width(12)
+        self.set_default_size(400, 300)
+
+        tv = qltk.HintedTreeView()
+        model = gtk.ListStore(object, bool, str)
+        tv.set_model(model)
+        render = gtk.CellRendererToggle()
+        render.connect('toggled', self.__toggled)
+        c = gtk.TreeViewColumn(_("Add"), render, active=1)
+        tv.append_column(c)
+        render = gtk.CellRendererText()
+        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        c = gtk.TreeViewColumn(_("Title"), render, text=2)
+        tv.append_column(c)
+
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw.add(tv)
+
+        self.vbox.pack_start(sw)
+
+        for song in irfs:
+            model.append([song, False, song("title")])
+        self.model = model
+        self.connect_object('destroy', tv.set_model, None)
+        self.child.show_all()
+
+    def __toggled(self, toggle, path):
+        self.model[path][1] ^= True
+
+    def get_irfs(self):
+        return [row[0] for row in self.model if row[1]]
 
 class AddNewStation(qltk.GetStringDialog):
     def __init__(self):
         qltk.GetStringDialog.__init__(
-            self, None, _("New Station"),
+            self, widgets.main, _("New Station"),
             _("Please enter the location of an Internet radio station."),
             okbutton = gtk.STOCK_ADD)
 
@@ -123,11 +164,30 @@ class InternetRadio(gtk.HBox, Browser):
 
     def __add(self, button):
         uri = AddNewStation().run()
-        if uri.lower().endswith(".pls"):
-            print "PLS files unsupported yet!"
-        else:
-            if uri in self.__stations: print "URI already in library!"
+        if uri is None: return
+        elif uri.lower().endswith(".pls"):
+            sock = urllib.urlopen(uri)
+            irfs = ParsePLS(sock)
+            if not irfs:
+                qltk.ErrorMessage(
+                    None, _("No stations found"),
+                    _("No internet radio stations were found at %s.") %
+                    uri).run()
+            elif len(irfs) == 1:
+                if self.__stations.add_song(irfs[0]):
+                    self.__stations.save(STATIONS)
+                    widgets.watcher.added(irfs)
             else:
+                d = ChooseNewStations(irfs)
+                if d.run() == gtk.RESPONSE_OK:
+                    irfs = d.get_irfs()
+                    if irfs:
+                        added = filter(self.__stations.add_song, irfs)
+                        self.__stations.save(STATIONS)
+                        widgets.watcher.added(irfs)
+            d.destroy()
+        else:
+            if uri not in self.__stations:
                 f = IRFile(uri)
                 if self.__stations.add_song(f):
                     self.__stations.save(STATIONS)
