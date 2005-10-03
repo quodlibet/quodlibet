@@ -48,7 +48,7 @@ def ParsePLS(file):
 
     for line in lines:
         try: head, val = line.strip().split("=", 1)
-        except TypeError: continue
+        except (TypeError, ValueError): continue
         else:
             head = head.lower()
             if head.startswith("length") and val == "-1": continue
@@ -74,7 +74,6 @@ class ChooseNewStations(gtk.Dialog):
         gtk.Dialog.__init__(self, title=_("Choose New Stations"))
         self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                          gtk.STOCK_ADD, gtk.RESPONSE_OK)
-        self.set_border_width(12)
         self.set_default_size(400, 300)
 
         tv = qltk.HintedTreeView()
@@ -93,6 +92,7 @@ class ChooseNewStations(gtk.Dialog):
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.add(tv)
+        sw.set_border_width(6)
 
         self.vbox.pack_start(sw)
 
