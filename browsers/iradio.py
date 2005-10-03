@@ -185,7 +185,7 @@ class InternetRadio(gtk.HBox, Browser):
                         added = filter(self.__stations.add_song, irfs)
                         self.__stations.save(STATIONS)
                         widgets.watcher.added(irfs)
-            d.destroy()
+                d.destroy()
         else:
             if uri not in self.__stations:
                 f = IRFile(uri)
