@@ -89,9 +89,16 @@ class FileChooser(gtk.FileChooserDialog):
 class CountManager(object):
     def __init__(self, watcher, pl):
         watcher.connect('song-ended', self.__end, pl)
+        watcher.connect('song-started', self.__start)
+
+    def __start(self, watcher, song):
+        if song is not None and song.stream:
+            song["~#lastplayed"] = int(time.time())
+            song["~#playcount"] += 1
+            watcher.changed([song])
 
     def __end(self, watcher, song, ended, pl):
-        if song is None: return
+        if song is None or song.stream: return
         elif not ended:
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] += 1
@@ -707,10 +714,10 @@ class QLTrayIcon(HIGTrayIcon):
 
         rating = gtk.Menu()
         def set_rating(value):
-            if widgets.watcher.song is None: return
+            if player.playlist.song is None: return
             else:
-                widgets.watcher.song["~#rating"] = value
-                widgets.watcher.changed([widgets.watcher.song])
+                player.playlist.song["~#rating"] = value
+                widgets.watcher.changed([player.playlist.song])
         for i in range(5):
             item = gtk.MenuItem("%s %d" % (util.format_rating(i), i))
             item.connect_object('activate', set_rating, i)
@@ -757,14 +764,14 @@ class QLTrayIcon(HIGTrayIcon):
         menu.prepend(playpause)
 
     def __playpause(self, activator):
-        if widgets.watcher.song: player.playlist.paused ^= True
+        if player.playlist.song: player.playlist.paused ^= True
         else:
             player.playlist.reset()
             player.playlist.next()
 
     def __properties(self, activator):
-        if widgets.watcher.song:
-            SongProperties([widgets.watcher.song], widgets.watcher)
+        if player.playlist.song:
+            SongProperties([player.playlist.song], widgets.watcher)
 
     def __set_song(self, watcher, song, *items):
         for item in items: item.set_sensitive(bool(song))
@@ -923,11 +930,11 @@ by <~people>><album|
                 f = file(os.path.join(const.DIR, "songinfo"), "w")
                 f.write(self.pattern + "\n")
                 f.close()
-            self.__song_started(widgets.watcher, widgets.watcher.song)
+            self.__song_started(widgets.watcher, player.playlist.song)
 
     def __check_change(self, watcher, songs):
-        if watcher.song in songs:
-            self.__song_started(watcher, watcher.song)
+        if player.playlist.song in songs:
+            self.__song_started(watcher, player.playlist.song)
 
     def __song_started(self, watcher, song):
         if song: t = pattern.XMLFromPattern(self.pattern) % song
@@ -1011,7 +1018,7 @@ class MainWindow(gtk.Window):
             next.set_sensitive(bool(song))
 
         def __playpause(self, button, watcher):
-            if button.get_active() and watcher.song is None:
+            if button.get_active() and player.playlist.song is None:
                 player.playlist.reset()
                 player.playlist.next()
             else: player.playlist.paused = not button.get_active()
@@ -1515,7 +1522,8 @@ class MainWindow(gtk.Window):
             if time[0] == "+": seek_to += util.parse_time(time[1:]) * 1000
             elif time[0] == "-": seek_to -= util.parse_time(time[1:]) * 1000
             else: seek_to = util.parse_time(time) * 1000
-            seek_to = min(widgets.watcher.time[1] - 1, max(0, seek_to))
+            seek_to = min(player.playlist.song["~#length"] * 1000 - 1,
+                          max(0, seek_to))
             player.playlist.seek(seek_to)
         elif c == "p":
             filename = os.read(source, 4096)
@@ -1569,8 +1577,8 @@ class MainWindow(gtk.Window):
             self.__set_time()
 
     def __update_title(self, watcher, songs):
-        if watcher.song in songs:
-            song = watcher.song
+        if player.playlist.song in songs:
+            song = player.playlist.song
             if song:
                 self.set_title("Quod Libet - " + song.comma("~title~version"))
             else: self.set_title("Quod Libet")
@@ -1621,14 +1629,14 @@ class MainWindow(gtk.Window):
         self.__refresh_size()
 
     def __play_pause(self, *args):
-        if widgets.watcher.song is None:
+        if player.playlist.song is None:
             player.playlist.reset()
             player.playlist.next()
         else: player.playlist.paused ^= True
 
     def __jump_to_current(self, explicit):
         watcher, songlist = widgets.watcher, self.songlist
-        iter = songlist.song_to_iter(watcher.song)
+        iter = songlist.song_to_iter(player.playlist.song)
         if iter:
             path = songlist.get_model().get_path(iter)
             if path:
@@ -1759,7 +1767,7 @@ class MainWindow(gtk.Window):
             return True
 
     def __set_rating(self, item, value):
-        song = widgets.watcher.song
+        song = player.playlist.song
         if song is not None:
             song["~#rating"] = value
             widgets.watcher.changed([song])
@@ -1771,7 +1779,7 @@ class MainWindow(gtk.Window):
         return True
 
     def __current_song_prop(self, *args):
-        song = widgets.watcher.song
+        song = player.playlist.song
         if song: SongProperties([song], widgets.watcher)
 
     def prep_main_popup(self, header, button, time):
@@ -1811,7 +1819,7 @@ class MainWindow(gtk.Window):
         if not self.browser or not self.browser.can_filter(header):
             return
         if songs is None:
-            if widgets.watcher.song: songs = [widgets.watcher.song]
+            if player.playlist.song: songs = [player.playlist.song]
             else: return
 
         values = set()
@@ -2218,7 +2226,7 @@ class SongList(qltk.HintedTreeView):
     def __filter_on(self, header, songs, browser):
         if not browser or not browser.can_filter(header): return
         if songs is None:
-            if widgets.watcher.song: songs = [widgets.watcher.song]
+            if player.playlist.song: songs = [player.playlist.song]
             else: return
 
         values = set()
@@ -2320,7 +2328,7 @@ class SongList(qltk.HintedTreeView):
         widgets.watcher.added(added)
 
     def __redraw_current(self, watcher, song=None):
-        iter = self.song_to_iter(watcher.song)
+        iter = self.song_to_iter(player.playlist.song)
         if iter:
             model = self.get_model()
             model.row_changed(model.get_path(iter), iter)
@@ -2659,7 +2667,7 @@ class MainSongList(SongList):
         def _cdf(self, column, cell, model, iter,
                  pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
             try:
-                if model[iter][0] is not widgets.watcher.song: stock = ''
+                if model[iter][0] is not player.playlist.song: stock = ''
                 else: stock = pixbuf[player.playlist.paused]
                 cell.set_property('stock-id', stock)
             except AttributeError: pass

@@ -10,6 +10,8 @@ import os, sys
 import config
 import gobject, gst
 
+from formats._audio import AudioFile
+
 os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
 gst.use_threads(True)
 
@@ -36,7 +38,7 @@ def GStreamerSink(pipeline):
 
 class PlaylistPlayer(object):
     __paused = False
-    __song = None
+    song = None
     __length = 1
     __volume = 1.0
 
@@ -48,6 +50,7 @@ class PlaylistPlayer(object):
         self.bin.set_property('audio-sink', device)
         self.__device = device
         self.bin.connect_object('eos', self.__end, False)
+        self.bin.connect('found-tag', self.__tag)
         self.paused = True
 
     def setup(self, info, source, song):
@@ -75,8 +78,8 @@ class PlaylistPlayer(object):
 
     def set_volume(self, v):
         self.__volume = v
-        if self.__song is None: self.bin.set_property('volume', v)
-        else: self.bin.set_property('volume', v * self.__song.replay_gain())
+        if self.song is None: self.bin.set_property('volume', v)
+        else: self.bin.set_property('volume', v * self.song.replay_gain())
     def get_volume(self): return self.__volume
     volume = property(get_volume, set_volume)
 
@@ -101,10 +104,10 @@ class PlaylistPlayer(object):
             event = gst.event_new_seek(
                 gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
             self.bin.send_event(event)
-            self.info.seek(self.__song, pos)
+            self.info.seek(self.song, pos)
 
     def remove(self, song):
-        if self.__song is song: self.__end(False)
+        if self.song is song: self.__end(False)
 
     def __get_song(self):
         song = self.__source.current
@@ -120,16 +123,34 @@ class PlaylistPlayer(object):
         else:
             self.paused = True
             self.bin.set_state(gst.STATE_NULL)
-        self.__song = song
+        self.song = song
         self.info.song_started(song)
         self.volume = self.__volume
 
     def __end(self, stopped=True):
-        self.info.song_ended(self.__song, stopped)
-        self.__song = None
+        self.info.song_ended(self.song, stopped)
+        self.song = None
         if not stopped:
             self.__source.next()
             self.__get_song()
+
+    def __tag(self, pipeline, source, tags):
+        if getattr(self.song, 'stream', False):
+            for k in tags.keys():
+                value = str(tags[k]).strip()
+                if not value: continue
+                if k == "location": k = "website"
+                if k in ["website", "genre", "comment"]:
+                    self.song[k] = unicode(value, errors='replace')
+                if k == "bitrate":
+                    try: self.song["~#bitrate"] = int(value)
+                    except ValueError: pass
+            fakesong = type(self.song)(self.song["~filename"])
+            fakesong.update(self.song)
+            if "title" in tags.keys():
+                fakesong["title"] = unicode(tags["title"], errors='replace')
+            if self.info.song != fakesong:
+                self.info.song_started(fakesong)
 
     def reset(self):
         self.__source.reset()

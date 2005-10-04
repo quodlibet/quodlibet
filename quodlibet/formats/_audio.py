@@ -28,6 +28,11 @@ class AudioFile(dict):
     # are disabled.
     local = True
 
+    # This is true if the player should send "fake" song-started events
+    # over the course of the song (currently whenever it finds a new tag,
+    # but potentially at other times).
+    stream = False
+
     def __cmp__(self, other):
         if not other: return -1
         return (cmp(self.get("album"), other.get("album")) or

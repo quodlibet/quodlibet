@@ -495,7 +495,7 @@ class AlbumList(Browser, gtk.VBox):
     def scroll(self):
         view = self.get_children()[1].child
         model = view.get_model()
-        values = widgets.watcher.song.list("album")
+        values = player.playlist.song.list("album")
         for i, row in enumerate(iter(model)):
             if row[0] and row[0].title in values:
                 view.scroll_to_cell(i, use_align=True, row_align=0.5)
