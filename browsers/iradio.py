@@ -22,8 +22,10 @@ from widgets import widgets
 STATIONS = os.path.join(const.DIR, "stations")
 
 class IRFile(AudioFile):
+    stream = True
     local = False
-    __CAN_CHANGE = "title artist genre grouping version website".split()
+
+    __CAN_CHANGE = "title artist grouping".split()
 
     def __init__(self, uri):
         self["~uri"] = self["~filename"] = uri
@@ -58,7 +60,7 @@ def ParsePLS(file):
     files = []
     while True:
         if "file%d" % count in data:
-            irf = IRFile(data["file%d" % count])
+            irf = IRFile(data["file%d" % count].encode('utf-8', 'replace'))
             for key in ["title", "genre"]:
                 try: irf[key] = data["%s%d" % (key, count)]
                 except KeyError: pass
@@ -140,6 +142,7 @@ class InternetRadio(gtk.HBox, Browser):
                   widgets.watcher.connect('added', self.activate),
                   ]:
             self.connect_object('destroy', widgets.watcher.disconnect, s)
+        self.connect_object('destroy', self.__stations.save, STATIONS)
         self.__load_stations()
 
     def Menu(self, songs):
@@ -166,6 +169,7 @@ class InternetRadio(gtk.HBox, Browser):
         uri = AddNewStation().run()
         if uri is None: return
         elif uri.lower().endswith(".pls"):
+            if isinstance(uri, unicode): uri = uri.encode('utf-8')
             sock = urllib.urlopen(uri)
             irfs = ParsePLS(sock)
             if not irfs:
