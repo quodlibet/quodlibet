@@ -2261,7 +2261,7 @@ class SongList(qltk.HintedTreeView):
         widgets.watcher.removed(songs)
 
     def __enqueue(self, item, songs):
-        songs = filter(lambda s: s.local, songs)
+        songs = filter(lambda s: not s.stream, songs)
         if songs:
             added = filter(library.add_song, songs)
             widgets.main.playlist.enqueue(songs)
@@ -2321,7 +2321,7 @@ class SongList(qltk.HintedTreeView):
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
         paths.sort()
-        songs = [model[path][0] for path in paths if model[path][0].local]
+        songs = [model[path][0] for path in paths if not model[path][0].stream]
         added = filter(library.add_song, songs)
         filenames = [song("~uri") for song in songs]
         sel.set_uris(filenames)
