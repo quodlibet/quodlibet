@@ -191,7 +191,7 @@ class AudioFile(dict):
     def to_dump(self):
         s = ""
         for k in self.keys():
-            if isinstance(self[k], int):
+            if isinstance(self[k], int) or isinstance(self[k], long):
                 s += "%s=%d\n" % (k, self[k])
             else:
                 for v2 in self.list(k):

@@ -185,6 +185,11 @@ class AudioFileTest(TestCase):
             self.failUnless(key in dump)
             self.failUnless(value in dump)
 
+    def test_to_dump_long(self):
+        b = AudioFile(bar_1_1); b["~#length"] = 200000000000L
+        dump = b.to_dump()
+        self.failUnlessEqual(dump.count("\n"), len(b))
+
     def test_add(self):
         song = AudioFile()
         self.failIf("foo" in song)
