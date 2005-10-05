@@ -810,9 +810,12 @@ class SongProperties(gtk.Window):
             menu = gtk.Menu()        
             spls = config.get("editing", "split_on").split()
 
+            can_change = self.__songinfo.can_change(row[0])
+
             b = qltk.MenuItem(
                 _("Split into _multiple values"), gtk.STOCK_FIND_AND_REPLACE)
-            b.set_sensitive(len(util.split_value(row[1], spls)) > 1)
+            b.set_sensitive(
+                (len(util.split_value(row[1], spls)) > 1) and can_change)
             b.connect('activate', self.__split_into_list, view)
             menu.append(b)
             menu.append(gtk.SeparatorMenuItem())
@@ -821,14 +824,16 @@ class SongProperties(gtk.Window):
                 b = qltk.MenuItem(
                     _("Split disc out of _album"), gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_album, view)
-                b.set_sensitive(util.split_album(row[1])[1] is not None)
+                b.set_sensitive((util.split_album(row[1])[1] is not None) and
+                                self._songinfo.can_change("album"))
                 menu.append(b)
 
             elif row[0] == "title":
                 b = qltk.MenuItem(_("Split version out of title"),
                                   gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_title, view)
-                b.set_sensitive(util.split_title(row[1], spls)[1] != [])
+                b.set_sensitive((util.split_title(row[1], spls)[1] != []) and
+                                self.__songinfo.can_change("version"))
                 menu.append(b)
 
             elif row[0] == "artist":
@@ -837,13 +842,13 @@ class SongProperties(gtk.Window):
                 b = qltk.MenuItem(_("Split arranger out of ar_tist"),
                                   gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_people, "arranger", view)
-                b.set_sensitive(ok)
+                b.set_sensitive(ok and self.__songinfo.can_change("arranger"))
                 menu.append(b)
 
                 b = qltk.MenuItem(_("Split _performer out of artist"),
                                   gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_people, "performer", view)
-                b.set_sensitive(ok)
+                b.set_sensitive(ok and self.__songinfo.can_change("performer"))
                 menu.append(b)
 
             if len(menu.get_children()) > 2:
@@ -851,6 +856,7 @@ class SongProperties(gtk.Window):
 
             b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
             b.connect('activate', self.__remove_tag, view)
+            b.set_sensitive(can_change)
             menu.append(b)
 
             menu.show_all()
