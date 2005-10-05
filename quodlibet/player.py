@@ -149,8 +149,10 @@ class PlaylistPlayer(object):
             fakesong.update(self.song)
             if "title" in tags.keys():
                 fakesong["title"] = unicode(tags["title"], errors='replace')
-            if self.info.song != fakesong:
-                self.info.song_started(fakesong)
+            for k in tags.keys():
+                if self.info.song.get(k) != fakesong.get(k):
+                    self.info.song_started(fakesong)
+                    break
 
     def reset(self):
         self.__source.reset()
