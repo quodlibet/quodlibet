@@ -128,24 +128,24 @@ class GetStringDialog(gtk.Dialog):
         box.pack_start(lab)
 
         if options:
-            self.__entry = gtk.combo_box_entry_new_text()
-            for o in options: self.__entry.append_text(o)
-            self.__val = self.__entry.child
-            box.pack_start(self.__entry)
+            self._entry = gtk.combo_box_entry_new_text()
+            for o in options: self._entry.append_text(o)
+            self._val = self._entry.child
+            box.pack_start(self._entry)
         else:
-            self.__val = gtk.Entry()
-            box.pack_start(self.__val)
+            self._val = gtk.Entry()
+            box.pack_start(self._val)
         self.vbox.pack_start(box)
         self.child.show_all()
 
     def run(self):
         self.show()
-        self.__val.set_text("")
-        self.__val.set_activates_default(True)
-        self.__val.grab_focus()
+        self._val.set_text("")
+        self._val.set_activates_default(True)
+        self._val.grab_focus()
         resp = gtk.Dialog.run(self)
         if resp == gtk.RESPONSE_OK:
-            value = self.__val.get_text()
+            value = self._val.get_text()
         else: value = None
         self.destroy()
         return value
