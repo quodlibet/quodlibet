@@ -7,6 +7,16 @@
 #
 # $Id$
 
+# TODO:
+# - Recursive parsing of PLS files.
+# - Error message when trying to drag streams to a playlist/queue (or
+#   better, disallow the drag? But we still want to drag to non-QL
+#   windows).
+# - Error message when parsing/downloading fails.
+
+SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
+              "Master.qlpls?format=txt")
+
 import os
 import gobject, gtk, pango
 import urllib
@@ -61,7 +71,7 @@ def ParsePLS(file):
     while True:
         if "file%d" % count in data:
             irf = IRFile(data["file%d" % count].encode('utf-8', 'replace'))
-            for key in ["title", "genre"]:
+            for key in ["title", "genre", "artist"]:
                 try: irf[key] = data["%s%d" % (key, count)]
                 except KeyError: pass
             try: irf["~#length"] = int(data["length%d" % count])
@@ -99,7 +109,7 @@ class ChooseNewStations(gtk.Dialog):
         self.vbox.pack_start(sw)
 
         for song in irfs:
-            model.append([song, False, song("title")])
+            model.append([song, False, song("~artist~title")])
         self.model = model
         self.connect_object('destroy', tv.set_model, None)
         self.child.show_all()
@@ -115,7 +125,13 @@ class AddNewStation(qltk.GetStringDialog):
         qltk.GetStringDialog.__init__(
             self, widgets.main, _("New Station"),
             _("Please enter the location of an Internet radio station."),
-            okbutton = gtk.STOCK_ADD)
+            okbutton=gtk.STOCK_ADD)
+        b = qltk.Button(_("Stations..."), gtk.STOCK_CONNECT)
+        b.connect_object('clicked', self._val.set_text, SACREDCHAO)
+        b.connect_object('clicked', self.response, gtk.RESPONSE_OK)
+        b.show_all()
+        self.action_area.pack_start(b, expand=False)
+        self.action_area.reorder_child(b, 0)
 
 class InternetRadio(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
@@ -168,7 +184,7 @@ class InternetRadio(gtk.HBox, Browser):
     def __add(self, button):
         uri = AddNewStation().run()
         if uri is None: return
-        elif uri.lower().endswith(".pls"):
+        elif uri.lower().endswith(".pls") or uri == SACREDCHAO:
             if isinstance(uri, unicode): uri = uri.encode('utf-8')
             sock = urllib.urlopen(uri)
             irfs = ParsePLS(sock)
