@@ -29,8 +29,10 @@ class APEFile(AudioFile):
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
     
     def __init__(self, filename):
-        if file(filename).read(3) != "MAC":
+        if file(filename).read(4) != "MAC ":
             raise IOError("Not an APE file.")
+        if file(filename).read(2) > "\x8c\x00":
+            raise IOError("MonkeysAudio > 3.97 not supported.")
 
         tag = musepack.APETag(filename)
         for key, value in tag:
