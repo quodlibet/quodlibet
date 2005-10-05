@@ -8,11 +8,10 @@
 # $Id$
 
 # TODO:
-# - Recursive parsing of PLS files.
 # - Error message when trying to drag streams to a playlist/queue (or
 #   better, disallow the drag? But we still want to drag to non-QL
 #   windows).
-# - Error message when parsing/downloading fails.
+# - Search entry should actually work.
 
 SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
               "Master.qlpls?format=txt")
@@ -23,6 +22,7 @@ import urllib
 
 import const
 import qltk
+import util
 
 from browsers.base import Browser
 from formats._audio import AudioFile
@@ -68,17 +68,31 @@ def ParsePLS(file):
 
     count = 1
     files = []
+    warnings = []
     while True:
         if "file%d" % count in data:
-            irf = IRFile(data["file%d" % count].encode('utf-8', 'replace'))
-            for key in ["title", "genre", "artist"]:
-                try: irf[key] = data["%s%d" % (key, count)]
-                except KeyError: pass
-            try: irf["~#length"] = int(data["length%d" % count])
-            except (KeyError, TypeError, ValueError): pass
-            files.append(irf)
+            filename = data["file%d" % count].encode('utf-8', 'replace')
+            if filename.lower()[-4:] in [".pls", ".m3u"]:
+                warnings.append(filename)
+            else:
+                irf = IRFile(filename)
+                for key in ["title", "genre", "artist"]:
+                    try: irf[key] = data["%s%d" % (key, count)]
+                    except KeyError: pass
+                try: irf["~#length"] = int(data["length%d" % count])
+                except (KeyError, TypeError, ValueError): pass
+                files.append(irf)
         else: break
         count += 1
+
+    if warnings:
+        qltk.WarningMessage(
+            None, _("Unsupported file type"),
+            _("Station lists can only contain locations of stations, "
+              "not other station lists or playlists. The following locations "
+              "cannot be loaded.\n%s" % "\n  ".join(map(util.escape,warnings)))
+            ).run()
+
     return files
 
 class ChooseNewStations(gtk.Dialog):
@@ -88,7 +102,7 @@ class ChooseNewStations(gtk.Dialog):
                          gtk.STOCK_ADD, gtk.RESPONSE_OK)
         self.set_default_size(400, 300)
 
-        tv = qltk.HintedTreeView()
+        tv = gtk.TreeView()
         model = gtk.ListStore(object, bool, str)
         tv.set_model(model)
         render = gtk.CellRendererToggle()
@@ -126,7 +140,7 @@ class AddNewStation(qltk.GetStringDialog):
             self, widgets.main, _("New Station"),
             _("Please enter the location of an Internet radio station."),
             okbutton=gtk.STOCK_ADD)
-        b = qltk.Button(_("Stations..."), gtk.STOCK_CONNECT)
+        b = qltk.Button(_("_Stations..."), gtk.STOCK_CONNECT)
         b.connect_object('clicked', self._val.set_text, SACREDCHAO)
         b.connect_object('clicked', self.response, gtk.RESPONSE_OK)
         b.show_all()
@@ -186,13 +200,27 @@ class InternetRadio(gtk.HBox, Browser):
         if uri is None: return
         elif uri.lower().endswith(".pls") or uri == SACREDCHAO:
             if isinstance(uri, unicode): uri = uri.encode('utf-8')
-            sock = urllib.urlopen(uri)
+            try: sock = urllib.urlopen(uri)
+            except EnvironmentError, e:
+                try: err = unicode(e.strerror, errors='replace')
+                except TypeError:
+                    err = unicode(e.strerror[1], errors='replace')
+                qltk.ErrorMessage(None, _("Unable to add station"), err).run()
+                return
             irfs = ParsePLS(sock)
             if not irfs:
                 qltk.ErrorMessage(
                     None, _("No stations found"),
-                    _("No internet radio stations were found at %s.") %
+                    _("No Internet radio stations were found at %s.") %
                     uri).run()
+                return
+
+            irfs = filter(
+                lambda s: not self.__stations.has_key(s["~uri"]), irfs)
+            if not irfs:
+                qltk.ErrorMessage(
+                    None, _("No new stations"),
+                    _("All stations listed are already in your library.").run()
             elif len(irfs) == 1:
                 if self.__stations.add_song(irfs[0]):
                     self.__stations.save(STATIONS)
@@ -207,12 +235,21 @@ class InternetRadio(gtk.HBox, Browser):
                         self.__stations.save(STATIONS)
                         widgets.watcher.added(irfs)
                 d.destroy()
+        elif uri.lower().endswith(".m3u"):
+            qltk.WarningMessage(
+                None, _("Unsupported file type"),
+                _("M3U playlists cannot be loaded.")).run()
         else:
             if uri not in self.__stations:
                 f = IRFile(uri)
                 if self.__stations.add_song(f):
                     self.__stations.save(STATIONS)
                     widgets.watcher.added([f])
+                else:
+                    qltk.WarningMessage(
+                        None, _("No new stations"),
+                        _("This station is already in your library.") %
+                        uri).run()
 
     def __load_stations(self):
         if not self.__stations: self.__stations.load(STATIONS)
