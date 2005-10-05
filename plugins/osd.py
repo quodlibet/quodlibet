@@ -404,19 +404,19 @@ class Osd(object):
             if timeout > 0:
                 self.__sid = gobject.timeout_add(int(float(timeout) * 1000), self.__hide_panel)
             # And it can be closed by clicking it.
-            win.connect('button-press-event', self.__hide_panel_callback)
+            win.connect('button-press-event', self.__hide_panel)
         # A preview OSD can be dragged around.
         else: 
             win.connect('button-press-event', self.__start_dragging)
             win.connect('button-release-event', self.__end_dragging)
 
-    def __hide_panel(self):
+    def __hide_panel(self, window=None, event=None):
+        if window and window != self.__window:
+            gobject.idle_add(window.destroy)
+            return
         if self.__window:
             gobject.idle_add(self.__window.destroy)
             self.__window = None
         if self.__sid:
             gobject.source_remove(self.__sid)
             self.__sid = None
-
-    def __hide_panel_callback(self, widget, event):
-        self.__hide_panel()
