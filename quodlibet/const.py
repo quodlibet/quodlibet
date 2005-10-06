@@ -18,15 +18,19 @@ PLUGINS = os.path.join(DIR, "plugins")
 BROWSERS = os.path.join(DIR, "browsers")
 QUERIES = os.path.join(DIR, "lists", "queries")
 
-AUTHORS = [
-    "Joe Wreschnig",
-    "Michael Urman",
-    "Iñigo Serna",
-    "Ben Zeigler",
-    "Niklas Janlert",
+AUTHORS = """\
+Joe Wreschnig
+Michael Urman
+Iñigo Serna
+Ben Zeigler
+Niklas Janlert
+Joshua Kwan
+Nikolai Prokoschenko
+Lalo Martins
+Tomasz Torcz
 
-    "Anders Carlsson (trayicon)",
-    "Lee Willis, Jan Arne Petersen (mmkeys)"]
+Anders Carlsson (trayicon)
+Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")
 
 TBP = os.path.join(DIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\
