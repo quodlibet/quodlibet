@@ -8,6 +8,9 @@ Recent upgrade notes:
 ---------------------
 You need GStreamer and gst-python.
 
+0.14 -
+ * New Galician translation by Johám-Luís Miguéns Vila.
+
 0.13.1 - People will fall for this for sure!
  * Fix playlist creation. (#250)
  * Unplay when no song is playing.
