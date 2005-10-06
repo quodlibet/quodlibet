@@ -11,7 +11,6 @@
 # - Error message when trying to drag streams to a playlist/queue (or
 #   better, disallow the drag? But we still want to drag to non-QL
 #   windows).
-# - Search entry should actually work.
 
 SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
               "Master.qlpls?format=txt")
@@ -23,6 +22,7 @@ import urllib
 import const
 import qltk
 import util
+import parser
 
 from browsers.base import Browser
 from formats._audio import AudioFile
@@ -137,7 +137,7 @@ class ChooseNewStations(gtk.Dialog):
 class AddNewStation(qltk.GetStringDialog):
     def __init__(self):
         qltk.GetStringDialog.__init__(
-            self, widgets.main, _("New Station"),
+            self, widgets.main, _("New Station..."),
             _("Please enter the location of an Internet radio station."),
             okbutton=gtk.STOCK_ADD)
         b = qltk.Button(_("_Stations..."), gtk.STOCK_CONNECT)
@@ -149,19 +149,16 @@ class AddNewStation(qltk.GetStringDialog):
 
 class InternetRadio(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
-    manageable = False
     __stations = Library()
     __sig = None
+    __filter = None
+    __refill_id = None
 
     def __init__(self, main=True):
-        gtk.HBox.__init__(self)
+        gtk.HBox.__init__(self, spacing=12)
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
-        search = qltk.Button(_("_Search"), gtk.STOCK_FIND, gtk.ICON_SIZE_MENU)
         self.__search = entry = gtk.Entry()
         self.pack_start(add, expand=False)
-        self.pack_start(entry)
-        self.pack_start(search, expand=False)
-        self.show_all()
         add.connect('clicked', self.__add)
         gobject.idle_add(self.activate)
         if InternetRadio.__sig is None:
@@ -173,7 +170,34 @@ class InternetRadio(gtk.HBox, Browser):
                   ]:
             self.connect_object('destroy', widgets.watcher.disconnect, s)
         self.connect_object('destroy', self.__stations.save, STATIONS)
+
+        hb = gtk.HBox(spacing=3)
+        lab = gtk.Label(_("_Search:"))
+        search = qltk.ValidatingEntry(parser.is_valid_color)
+        lab.set_use_underline(True)
+        lab.set_mnemonic_widget(search)
+        clear = gtk.Button()
+        clear.add(
+            gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU))
+        search.connect('changed', self.__filter_changed)
+        clear.connect_object('clicked', search.set_text, "")
+        hb.pack_start(lab, expand=False)
+        hb.pack_start(search)
+        hb.pack_start(clear, expand=False)
+        self.pack_start(hb)
+
         self.__load_stations()
+        self.show_all()
+
+    def __filter_changed(self, entry):
+        if self.__refill_id is not None:
+            gobject.source_remove(self.__refill_id)
+            self.__refill_id = None
+        text = entry.get_text().decode('utf-8')
+        if parser.is_parsable(text):
+            if text: self.__filter = parser.parse(text).search
+            else: self.__filter = None
+            self.__refill_id = gobject.timeout_add(500, self.activate)
 
     def Menu(self, songs):
         m = gtk.Menu()
@@ -257,7 +281,8 @@ class InternetRadio(gtk.HBox, Browser):
 
     def restore(self): self.activate()
     def activate(self, *args):
-        self.emit('songs-selected', self.__stations.values(), None)
+        self.emit('songs-selected',
+                  filter(self.__filter, self.__stations.values()), None)
         
     def save(self): pass
 
