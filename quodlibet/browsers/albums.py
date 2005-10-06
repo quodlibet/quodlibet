@@ -412,7 +412,7 @@ class AlbumList(Browser, gtk.VBox):
 
     def __get_selected_songs(self, selection):
         model, rows = selection.get_selected_rows()
-        if not model or not rows: return set([])
+        if not model or not rows: return []
         albums = [model[row][0] for row in rows]
         if None in albums: return library.values()
         else: return list(
