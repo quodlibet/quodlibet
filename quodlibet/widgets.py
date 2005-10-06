@@ -2220,6 +2220,7 @@ class SongList(qltk.HintedTreeView):
             gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
             gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
         self.connect('drag-data-get', self.__drag_data_get)
+        self.connect('drag-begin', self.__drag_begin)
         self.connect('button-press-event', self.__button_press)
         self.connect('key-press-event', self.__key_press)
 
@@ -2317,6 +2318,13 @@ class SongList(qltk.HintedTreeView):
             self.__set_rating(int(event.string), self.get_selected_songs())
         elif event.string == 'Q':
             self.__enqueue(None, self.get_selected_songs())
+
+    def __drag_begin(self, view, ctx):
+        model, paths = self.get_selection().get_selected_rows()
+        if paths:
+            icon = self.create_row_drag_icon(paths[-1])
+            self.drag_source_set_icon(icon.get_colormap(), icon)
+        else: return True
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()

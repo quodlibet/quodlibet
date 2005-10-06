@@ -306,6 +306,7 @@ class AlbumList(Browser, gtk.VBox):
         view.drag_source_set(
             gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
             gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
+        view.connect("drag-begin", self.__drag_begin)
         view.connect("drag-data-get", self.__drag_data_get)
 
         menu = gtk.Menu()
@@ -436,6 +437,13 @@ class AlbumList(Browser, gtk.VBox):
                 view.set_cursor(path, col, 0)
             menu.popup(None, None, None, event.button, event.time)
             return True
+
+    def __drag_begin(self, view, ctx):
+        model, paths = view.get_selection().get_selected_rows()
+        if paths:
+            icon = view.create_row_drag_icon(paths[-1])
+            view.drag_source_set_icon(icon.get_colormap(), icon)
+        else: return True
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())
