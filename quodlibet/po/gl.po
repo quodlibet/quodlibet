@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-06 15:11-0500\n"
+"POT-Creation-Date: 2005-10-06 15:36-0500\n"
 "PO-Revision-Date: 2005-10-06 15:10-0500\n"
 "Last-Translator: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "Language-Team: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
@@ -41,7 +41,7 @@ msgstr[1] "diferente ao longo de %d cançõess"
 #: ../library.py:52
 #, python-format
 msgid "%(different)s, %(missing)s"
-msgstr "%(diferente)s, %(nom atopado)s"
+msgstr "%(different)s, %(missing)s"
 
 #: ../library.py:194
 #, python-format
