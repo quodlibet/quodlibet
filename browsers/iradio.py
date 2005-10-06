@@ -220,7 +220,8 @@ class InternetRadio(gtk.HBox, Browser):
             if not irfs:
                 qltk.ErrorMessage(
                     None, _("No new stations"),
-                    _("All stations listed are already in your library.").run()
+                    _("All stations listed are already in your library.")
+                    ).run()
             elif len(irfs) == 1:
                 if self.__stations.add_song(irfs[0]):
                     self.__stations.save(STATIONS)
