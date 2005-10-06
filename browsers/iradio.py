@@ -195,7 +195,8 @@ class InternetRadio(gtk.HBox, Browser):
             self.__refill_id = None
         text = entry.get_text().decode('utf-8')
         if parser.is_parsable(text):
-            if text: self.__filter = parser.parse(text).search
+            star = ["artist", "album", "title", "website", "genre", "comment"]
+            if text: self.__filter = parser.parse(text, star).search
             else: self.__filter = None
             self.__refill_id = gobject.timeout_add(500, self.activate)
 
