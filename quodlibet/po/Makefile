@@ -25,10 +25,10 @@ check-%: %.po
 	msgfmt -c $<
 
 clean:
-	rm -f untitled.pot
+	rm -f untitled.pot messages.mo quodlibet.gmo
 
 mo-clean: distclean
-	rm -f *.mo quodlibet.pot quodlibet.gmo
+	rm -f *.mo quodlibet.pot
 
 distclean: clean
 	rm -f *~

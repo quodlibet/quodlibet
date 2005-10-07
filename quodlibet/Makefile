@@ -29,7 +29,7 @@ install-%: make-install-dirs
 	ln -sf ../$(TO)/$*.py $(DESTDIR)$(PREFIX)/bin/$*
 
 clean:
-	rm -f *.pyc */*.pyc quodlibet.zip $(EXTENSIONS)
+	rm -f *.pyc */*.pyc quodlibet.zip $(EXTENSIONS) messages.mo
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean

@@ -18,6 +18,8 @@ class TPO(unittest.TestCase):
     def test_pos(self):
         for f in glob.glob("po/*.po"):
             self.failIf(os.system("msgfmt -c %s > /dev/null" % f))
+        try: os.unlink("messages.mo")
+        except OSError: pass
 registerCase(TPO)
 
 # well-tested code
