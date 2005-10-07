@@ -1,4 +1,4 @@
-import unittest, sys
+import unittest, os, sys, glob
 suites = []
 registerCase = suites.append
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
@@ -13,6 +13,12 @@ const.QUEUE = "./const-queue"
 class Mock(object):
     # A generic mocking object.
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
+
+class TPO(unittest.TestCase):
+    def test_pos(self):
+        for f in glob.glob("po/*.po"):
+            self.failIf(os.system("msgfmt -c %s > /dev/null" % f))
+registerCase(TPO)
 
 # well-tested code
 import test_util, test_audio, test_parser, test_metadata

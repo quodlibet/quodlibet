@@ -4,6 +4,7 @@ import os, gtk, const
 from browsers.search import EmptyBar, SearchBar
 from properties import VALIDATERS
 from efwidgets import DirectoryTree
+from formats._audio import AudioFile as AF
 
 from widgets import PlayList, FileChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow
 import qltk
@@ -64,8 +65,8 @@ registerCase(TFileChooser)
 class TCountManager(TestCase):
     def setUp(self):
         self.w = qltk.SongWatcher()
-        self.s1 = {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10}
-        self.s2 = {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10}
+        self.s1 = AF({"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
+        self.s2 = AF({"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
         self.cm = CountManager(self.w, self)
         self.current = None
 

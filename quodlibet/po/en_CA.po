@@ -6,7 +6,6 @@
 # NB: I am not actually Canadian, but I need a translation to test my i18n
 # support, and I know Canadian better than, say, Kurdish.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
