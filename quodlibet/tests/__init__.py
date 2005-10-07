@@ -1,6 +1,7 @@
 import unittest, os, sys, glob
+from unittest import TestCase
 suites = []
-registerCase = suites.append
+add = registerCase = suites.append
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
 import const
@@ -24,7 +25,7 @@ registerCase(TPO)
 
 # well-tested code
 import test_util, test_audio, test_parser, test_metadata
-import test_playlist, test_pattern
+import test_playlist, test_pattern, test_stock
 # good but incomplete
 import test_leaks, test_qltk, test_widgets, test_player
 # not well-tested code
@@ -71,10 +72,14 @@ class Runner:
         suite(result)
         result.printErrors()
 
-def unit(run = []):
+def unit(run=[]):
     runner = Runner()
-    for test in suites:
-        if not run or test.__name__ in run: runner.run(test)
+    if not run: map(runner.run, suites)
+    else:
+        for t in suites:
+            if (t.__name__ in run or
+                (t.__name__.startswith("T") and t.__name__[1:] in run)):
+                runner.run(t)
 
 if __name__ == "__main__":
     unit(sys.argv[1:])
