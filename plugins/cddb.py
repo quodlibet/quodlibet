@@ -7,16 +7,20 @@
 # $Id$
 
 import CDDB
+CDDB.proto = 6 # utf8 instead of latin1
 import os
 from os import path
 import gtk
 from qltk import ErrorMessage, ConfirmAction, Message
+from const import VERSION
 from util import tag, escape
 from gettext import ngettext
 
 PLUGIN_NAME = 'CDDB lookup'
 PLUGIN_DESC = 'Look up album information in FreeDB (requires CDDB.py)'
 PLUGIN_ICON = 'gtk-cdrom'
+
+CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION }
 
 __all__ = []
 
@@ -65,7 +69,7 @@ def query(category, discid):
     except EnvironmentError: pass
     else: return discinfo, tracktitles
 
-    read, info = CDDB.read(category, discid)
+    read, info = CDDB.read(category, discid, **CLIENTINFO)
     if read != 210: return None
 
     try: os.makedirs(path.join(path.expanduser("~"), '.cddb'))
@@ -94,7 +98,7 @@ def query(category, discid):
 
     return discinfo, tracktitles
 
-def ask_save_info((disc, track), album):
+def ask_save_info((disc, track), album, discid, (n, m)):
     message = []
 
     if 'artist' in disc:
@@ -105,6 +109,8 @@ def ask_save_info((disc, track), album):
         message.append('%s:\t<b>%s</b>' % (tag("date"), escape(disc['year'])))
     if 'genre' in disc:
         message.append('%s:\t<b>%s</b>' % (tag("genre"), escape(disc['genre'])))
+    if discid:
+        message.append('%s:\t<b>%s</b> (%d/%d)' % (tag("discid"), escape(discid), n, m))
 
     message.append('\n<u>%s</u>' % _('Track List'))
     keys = track.keys()
@@ -113,35 +119,40 @@ def ask_save_info((disc, track), album):
         message.append('    <b>%d.</b> %s' % (key+1,
             escape(track[key].encode('utf-8'))))
 
-    if AskAction(None, _("Save the following information?"),
+    if not AskAction(None, _("Save the following information?"),
             '\n'.join(message)).run():
+        return False
 
-        for key, song in zip(keys, album):
-            song['title'] = track[key]
-            song['tracknumber'] = '%d/%d' % (key+1, len(album))
-            if 'artist' in disc: song['artist'] = disc['artist']
-            if 'title' in disc: song['album'] = disc['title']
-            if 'year' in disc: song['date'] = disc['year']
-            if 'genre' in disc: song['genre'] = disc['genre']
+    for key, song in zip(keys, album):
+        song['title'] = track[key]
+        song['tracknumber'] = '%d/%d' % (key+1, len(album))
+        if 'artist' in disc: song['artist'] = disc['artist']
+        if 'title' in disc: song['album'] = disc['title']
+        if 'year' in disc: song['date'] = disc['year']
+        if 'genre' in disc: song['genre'] = disc['genre']
+
+    return True
 
 def plugin_album(album):
     album.sort()
 
     discid = calculate_discid(album)
 
-    stat, discs = CDDB.query(discid)
+    stat, discs = CDDB.query(discid, **CLIENTINFO)
     info = None
-    if stat in (200,211):
-        info = query(discs[0]['category'], discs[0]['disc_id'])
+    for i, disc in enumerate(discs):
+        if stat in (200,211):
+            info = query(disc['category'], disc['disc_id'])
 
-    if not info:
-        n = len(album)
-        albumname = album[0]('album')
-        if not albumname: albumname = ngettext('%d track', '%d tracks', n) % n
-        ErrorMessage(None, _("CDDB lookup failed"),
-                ngettext("%(title)s and %(count)d more...",
-                    "%(title)s and %(count)d more...", n-1) % {
-                    'title': album[0]('~basename'), 'count': n-1}).run()
-        return
+        if not info:
+            n = len(album)
+            albumname = album[0]('album')
+            if not albumname: albumname = ngettext('%d track', '%d tracks', n) % n
+            ErrorMessage(None, _("CDDB lookup failed"),
+                    ngettext("%(title)s and %(count)d more...",
+                        "%(title)s and %(count)d more...", n-1) % {
+                        'title': album[0]('~basename'), 'count': n-1}).run()
+            return
 
-    ask_save_info(info, album)
+        if ask_save_info(info, album, disc['disc_id'], (i+1, len(discs))):
+            return
