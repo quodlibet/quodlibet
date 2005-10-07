@@ -50,13 +50,14 @@ class AlbumList(Browser, gtk.VBox):
         def clear_cache(klass): klass.__covers.clear()
         clear_cache = classmethod(clear_cache)
 
-        def __init__(self, title):
+        def __init__(self, title, labelid):
             self.length = 0
             self.discs = 1
             self.tracks = 0
             self.date = ""
             self.people = set()
             self.title = title
+            self.labelid = labelid
             self.songs = set()
             self.cover = self.__covers.get(self.title, False)
             self.genre = set()
@@ -66,6 +67,7 @@ class AlbumList(Browser, gtk.VBox):
             elif key == "~#tracks": return self.tracks
             elif key == "~#discs": return self.discs
             elif key == "~length": return self.__length
+            elif key == "labelid": return self.labelid
             elif key in ["title", "album"]: return self.title
             elif key == "date": return self.date
             elif key == "~#date":
@@ -88,6 +90,8 @@ class AlbumList(Browser, gtk.VBox):
             people = {}
             self.genre = set()
             for song in self.songs:
+                # Rank people by "relevance" -- artists before composers
+                # before performers, then by number of appearances.
                 for w, key in enumerate(["performer", "composer", "artist"]):
                     for person in song.list(key):
                         if person not in people:
@@ -240,7 +244,7 @@ class AlbumList(Browser, gtk.VBox):
             albums = [row[0] for row in self]
             try: albums.remove(None)
             except ValueError: pass
-            return dict([(a.title, a) for a in albums])
+            return dict([(a.title + "\u0000" + a.labelid, a) for a in albums])
 
     def __init__(self, main=True):
         gtk.VBox.__init__(self)
@@ -374,12 +378,12 @@ class AlbumList(Browser, gtk.VBox):
     def __remove_songs(self, watcher, removed, model):
         albums = model.get_albums()
         changed = set()
-        for title, album in albums.iteritems():
-            if True in map(album.remove, removed): changed.add(title)
+        for album in albums.itervalues():
+            if True in map(album.remove, removed): changed.add(album.title)
         self.__update(changed, model)
 
     def __changed_songs(self, watcher, changed, model):
-        changed = filter(lambda x: x["~filename"] in library, changed)
+        changed = filter(lambda x: x.get("~filename") in library, changed)
         if not changed: return
         self.__remove_songs(watcher, changed, model)
         self.__add_songs(watcher, changed, model)
@@ -391,16 +395,18 @@ class AlbumList(Browser, gtk.VBox):
         for song in added:
             if "album" in song:
                 for alb in song.list("album"):
-                    if alb in albums:
+                    labelid = song.get("labelid", "")
+                    key = alb + "\u0000" + labelid
+                    if key in albums:
                         changed.add(alb)
-                        albums[alb].add(song)
+                        albums[key].add(song)
                     else:
-                        albums[alb] = self._Album(alb)
-                        new.append(albums[alb])
-                        albums[alb].add(song)
+                        albums[key] = self._Album(alb, labelid)
+                        new.append(albums[key])
+                        albums[key].add(song)
             else:
                 if "" not in albums:
-                    albums[""] = self._Album("")
+                    albums[""] = self._Album("", "")
                     new.append(albums[""])
                 changed.add("")
                 albums[""].add(song)
@@ -536,22 +542,8 @@ class AlbumList(Browser, gtk.VBox):
         model.clear()
         albums = {}
         songs = library.itervalues()
-        for song in songs:
-            if "album" not in song:
-                if "" not in albums: albums[""] = self._Album("")
-                albums[""].add(song)
-            else:
-                for album in song.list('album'):
-                    if album not in albums:
-                        albums[album] = self._Album(album)
-                    albums[album].add(song)
-
+        self.__add_songs(watcher, songs, model)
         model.append(row=[None])
-        for album in albums.values():
-            album.finalize()
-            album._iter = model.append(row=[album])
-            album._model = model
-
         view.thaw_child_notify()
         if selected: self.filter("album", selected)
 

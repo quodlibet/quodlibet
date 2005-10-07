@@ -36,6 +36,7 @@ class AudioFile(dict):
     def __cmp__(self, other):
         if not other: return -1
         return (cmp(self.get("album"), other.get("album")) or
+                cmp(self.get("labelid"), other.get("labelid")) or
                 cmp(self("~#disc"), other("~#disc")) or
                 cmp(self("~#track"), other("~#track")) or
                 cmp(self.get("artist"), other.get("artist")) or
