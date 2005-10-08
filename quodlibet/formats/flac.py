@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, stat
+import os
 import gst
 from formats._vorbis import VCFile
 import util

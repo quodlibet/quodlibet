@@ -8,7 +8,6 @@
 
 from formats._audio import AudioFile
 import config
-import re
 import tempfile
 import gst
 
@@ -116,7 +115,6 @@ class MP3File(AudioFile):
             else: self[name] = text
             self[name] = self[name].strip()
 
-        import mad
         audio = mad.MadFile(filename)
         audio.seek_time(audio.total_time()/2)
         audio.read()

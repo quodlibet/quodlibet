@@ -10,8 +10,6 @@ import os, sys
 import config
 import gobject, gst
 
-from formats._audio import AudioFile
-
 os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
 gst.use_threads(True)
 

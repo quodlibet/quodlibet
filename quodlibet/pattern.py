@@ -11,7 +11,6 @@
 # Tags := "<" String "|" Pattern [ "|" Pattern ] ">"
 
 import os, sys
-import string
 import sre
 import util
 

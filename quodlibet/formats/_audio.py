@@ -7,7 +7,6 @@
 # $Id$
 
 import os, sys
-import gettext
 import shutil
 import time
 
@@ -17,8 +16,6 @@ from urllib import pathname2url
 def to_uri(filename): return "file://" + pathname2url(filename)
 
 class Unknown(unicode): pass
-
-if sys.version_info < (2, 4): from sets import Set as set
 
 MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
 
