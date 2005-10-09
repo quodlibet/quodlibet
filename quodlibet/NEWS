@@ -10,6 +10,7 @@ it hasn't strictly been necessary since 0.10).
  * Album List separates albums with different labelids. (#198)
  * Ex Falso displays all available plugins in its menu. (#240)
  * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins. (#262)
+ * New Album List search keys and sorting options. (#280, #281)
  * New Galician translation by Johám-Luís Miguéns Vila.
 
 0.13.1 - People will fall for this for sure!

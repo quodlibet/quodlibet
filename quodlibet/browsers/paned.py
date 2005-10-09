@@ -145,13 +145,19 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__save = main
 
         hb = gtk.HBox(spacing=3)
+        hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
         label.set_padding(3, 0)
         search = qltk.ValidatingEntry(parser.is_valid_color)
         label.set_mnemonic_widget(search)
         label.set_use_underline(True)
+        clr = gtk.Button()
+        clr.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU))
+        clr.connect_object('clicked', search.set_text, "")
+        hb2.pack_start(search)
+        hb2.pack_start(clr, expand=False)
         hb.pack_start(label, expand=False)
-        hb.pack_start(search)
+        hb.pack_start(hb2)
         self.pack_start(hb, expand=False)
         self.__refill_id = None
         self.__filter = None
