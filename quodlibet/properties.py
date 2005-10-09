@@ -28,29 +28,63 @@ if sys.version_info < (2, 4): from sets import Set as set
 
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
-VALIDATERS = {
-    'date': (sre.compile(r"^\d{4}([-/.]\d{2}([-/.]\d{2}([T ]\d{2}([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match,
-            _("The date must be entered in YYYY, YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format.")),
+class Formatter(object):
+    tags = []
+    error = "Metaerror. This should be overridden in subclasses."
+    def validate(self, value): raise NotImplementedError
 
-    'replaygain_album_gain': (
-    sre.compile(r"^-?\d+\.?\d* dB$").match,
-    _("ReplayGain gains must be entered in 'x.yy dB' format.")),
+    def init(klass):
+        klass.fmt = {}
+        for f in globals().values():
+            if isinstance(f, type) and issubclass(f, klass):
+                for t in f.tags: klass.fmt[t] = f()
+    init = classmethod(init)
 
-    'replaygain_album_peak': (
-    sre.compile(r"^-?\d+\.?\d+?$").match,
-    _("ReplayGain peaks must be entered in x.yy format.")),
+# FIXME: Most of these validators/normalizers could be much more forgiving.
 
-    'musicbrainz_trackid': (
-    sre.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8}$").match,
-    _("MusicBrainz track IDs must be in UUID format.")),
+class DateFormatter(Formatter):
+    tags = ["date"]
+    error = _("The date must be entered in YYYY, YYYY-MM-DD or "
+              "YYYY-MM-DD HH:MM:SS format.")
+    __match = sre.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
+                          "([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
+    def validate(self, value):
+        value = value.strip().replace("/", "-")
+        return self.__match(value) and value
 
-    }
+class GainFormatter(Formatter):
+    tags = ["replaygain_album_gain", "replaygain_track_gain"]
+    error = _("ReplayGain gains must be entered in 'x.yy dB' format.")
+    __match = sre.compile(r"^[+-]\d+\.?\d+?\s+dB$").match
 
-VALIDATERS["replaygain_track_peak"] = VALIDATERS["replaygain_album_peak"]
-VALIDATERS["replaygain_track_gain"] = VALIDATERS["replaygain_album_gain"]
+    def validate(self, value):
+        if self.__match(value): return value
+        else:
+            try: f = float(value.split()[0])
+            except (IndexError, TypeError, ValueError): return False
+            else: return ("%+f" % f).rstrip("0") + " dB"
+
+class PeakFormatter(Formatter):
+    tags = ["replaygain_album_peak", "replaygain_track_peak"]
+    error = _("ReplayGain peaks must be entered in x.yy format.")
+    def validate(self, value):
+        value = value.strip()
+        try: f = float(value)
+        except (TypeError, ValueError): return False
+        else: return (f > 0) and str(f)
+
+class MBIDFormatter(Formatter):
+    tags = ["musicbrainz_trackid"]
+    error = _("MusicBrainz track IDs must be in UUID format.")
+    __match = sre.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8}$").match
+    def validate(self, value):
+        value = value.strip().lower()
+        return self.__match(value) and value
+
+Formatter.init()
 
 class AddTagDialog(gtk.Dialog):
-    def __init__(self, parent, can_change, validators):
+    def __init__(self, parent, can_change):
         if can_change == True: can = formats.USEFUL_TAGS
         else: can = can_change
         can.sort()
@@ -114,8 +148,7 @@ class AddTagDialog(gtk.Dialog):
         tips = gtk.Tooltips()
         for entry in [self.__tag, self.__val]:
             entry.connect(
-                'changed', self.__validate, validators, add, invalid, tips,
-                valuebox)
+                'changed', self.__validate, add, invalid, tips, valuebox)
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
 
@@ -127,19 +160,19 @@ class AddTagDialog(gtk.Dialog):
     def get_value(self):
         return self.__val.get_text().decode("utf-8")
 
-    def __validate(self, editable, validators, add, invalid, tips, box):
+    def __validate(self, editable, add, invalid, tips, box):
         tag = self.get_tag()
-        try: validator, message = validators.get(tag)
-        except TypeError: valid = True
-        else: valid = bool(validator(self.get_value()))
-
+        value = self.get_value()
+        fmt = Formatter.fmt.get(tag)
+        if fmt: valid = bool(fmt.validate(value))
+        else: valid = True
         add.set_sensitive(valid)
         if valid:
             invalid.hide()
             tips.disable()
         else:
             invalid.show()
-            tips.set_tip(box, message)
+            tips.set_tip(box, fmt.error)
             tips.enable()
 
     def run(self):
@@ -881,14 +914,15 @@ class SongProperties(gtk.Window):
             else: model.append(row=row)
 
         def __add_tag(self, activator, model):
-            add = AddTagDialog(
-                None, self.__songinfo.can_change(), VALIDATERS)
+            add = AddTagDialog(None, self.__songinfo.can_change())
 
             while True:
                 resp = add.run()
                 if resp != gtk.RESPONSE_OK: break
                 comment = add.get_tag()
                 value = add.get_value()
+                if comment in Formatter.fmt:
+                    value = Formatter.fmt[comment].validate(value)
                 if not self.__songinfo.can_change(comment):
                     title = _("Invalid tag")
                     msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -989,13 +1023,16 @@ class SongProperties(gtk.Window):
         def __edit_tag(self, renderer, path, new, model, colnum):
             new = ', '.join(new.splitlines())
             row = model[path]
-            if (row[0] in VALIDATERS and
-                not VALIDATERS[row[0]][0](new)):
-                qltk.WarningMessage(
-                    None, _("Invalid value"),
-                    _("Invalid value") + (": <b>%s</b>\n\n" % new) +
-                    VALIDATERS[row[0]][1]).run()
-            elif row[colnum].replace('<i>','').replace('</i>','') != new:
+            if row[0] in Formatter.fmt:
+                fmt = Formatter.fmt[row[0]]
+                newnew = fmt.validate(new)
+                if not newnew:
+                    qltk.WarningMessage(
+                        None, _("Invalid value"), _("Invalid value") +
+                        (": <b>%s</b>\n\n%s" % (new, fmt.error))).run()
+                    return
+                else: new = newnew
+            if row[colnum].replace('<i>','').replace('</i>','') != new:
                 row[colnum] = util.escape(new)
                 row[2] = True # Edited
                 row[4] = False # not Deleted
