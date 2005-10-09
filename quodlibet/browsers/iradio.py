@@ -215,9 +215,9 @@ class InternetRadio(gtk.HBox, Browser):
         self.activate()
 
     def __changed(klass, watcher, songs):
-        lib = self.__stations.values()
+        lib = klass.__stations.values()
         if filter(lambda s: s in lib, songs):
-            self.__stations.save(STATIONS)
+            klass.__stations.save(STATIONS)
     __changed = classmethod(__changed)
 
     def __add(self, button):
