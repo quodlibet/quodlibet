@@ -37,6 +37,9 @@ class AlbumTagCompletion(EntryWordCompletion):
             self.__model.append(row=[tag])
         for tag in ["tracks", "discs", "length", "date"]:
             self.__model.append(row=["#(" + tag])
+        for tag in ["rating", "playcount", "skipcount"]:
+            for suffix in ["avg", "max", "min", "sum"]:
+                self.__model.append(row=["#(%s:%s" % (tag, suffix)])
 
 class AlbumList(Browser, gtk.VBox):
     expand = qltk.RHPaned
@@ -60,7 +63,7 @@ class AlbumList(Browser, gtk.VBox):
             self.labelid = labelid
             self.songs = set()
             self.cover = self.__covers.get(self.title, False)
-            self.genre = set()
+            self.genre = []
 
         def get(self, key, default=None):
             if key == "~#length": return self.length
@@ -75,9 +78,18 @@ class AlbumList(Browser, gtk.VBox):
                 except (TypeError, ValueError): return 0
             elif key in ["people", "artist", "artists"]:
                 return "\n".join(self.people)
-            elif key in "genre":
-                return "\n".join(self.genre)
-            else: return default
+            elif key == "genre": return self.genre
+            elif key.startswith("~#") and key[-4:-3] != ":": key += ":avg"
+
+            if key.startswith("~#") and key[-4:-3] == ":":
+                # Using key.<func> runs the resulting list of values
+                # through the function before returning it.
+                func = key[-3:]
+                key = key[:-4]
+                func = {"max": max, "min": min, "sum": sum,
+                        "avg": lambda s: float(sum(s)) / len(s)}.get(func)
+                if func: return func([song(key, 0) for song in self.songs])
+            return default
 
         __call__ = get
 
@@ -88,7 +100,7 @@ class AlbumList(Browser, gtk.VBox):
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
             people = {}
-            self.genre = set()
+            genre = set()
             for song in self.songs:
                 # Rank people by "relevance" -- artists before composers
                 # before performers, then by number of appearances.
@@ -97,7 +109,8 @@ class AlbumList(Browser, gtk.VBox):
                         if person not in people:
                             people[person] = 0
                         people[person] -= 1000 ** w
-                self.genre.update(song.list("genre"))
+                genre.update(song.list("genre"))
+            self.genre = "\n".join(genre)
             self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
             self.people = [person for (num, person) in self.people]
