@@ -141,7 +141,10 @@ class Pattern(PatternParser):
             self.__formatters = formatters
 
         def comma(self, *args):
-            value = str(self.__song.comma(*args))
+            value = self.__song.comma(*args)
+            if isinstance(value, str):
+                value = value.decode(util.fscoding(), "replace")
+            elif not isinstance(value, unicode): value = unicode(value)
             for f in self.__formatters:
                 value = f(args[0], value)
             return value

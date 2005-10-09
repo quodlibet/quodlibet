@@ -19,6 +19,8 @@ class _TPattern(TestCase):
         self.c = self.AudioFile(s3)
 
 class TPattern(_TPattern):
+    from formats._audio import AudioFile
+
     def test_conditional_number_dot_title(s):
         pat = Pattern('<tracknumber|<tracknumber>. ><title>')
         s.assertEquals(pat.format(s.a), '5/6. Title5')
@@ -90,6 +92,13 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(s.a), '5/6. ')
         s.assertEquals(pat.format(s.b), '6. ')
         s.assertEquals(pat.format(s.c), '. /, /')
+
+    def test_unicode_with_int(s):
+        song = s.AudioFile({"tracknumber": "5/6",
+            "title": "\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8')})
+        pat = Pattern('<~#track>. <title>')
+        s.assertEquals(pat.format(song),
+            "5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
 
 class TFileFromPattern(_TPattern):
     def test_escape_slash(s):
