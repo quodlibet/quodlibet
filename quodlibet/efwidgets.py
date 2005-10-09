@@ -18,6 +18,17 @@ import qltk
 import util
 
 from properties import SongProperties
+from plugins import PluginManager
+
+class EFPluginManager(PluginManager):
+    # Ex Falso doesn't send events; it also should enable all
+    # invokable plugins since there's no configuration.
+    def rescan(self):
+        changes = super(EFPluginManager, self).rescan()
+        for plugin in self.plugins.values(): self.enable(plugin, True)
+        return []
+
+    def invoke_event(self, event, *args): pass
 
 class DirectoryTree(gtk.TreeView):
     def cell_data(column, cell, model, iter):
@@ -289,8 +300,7 @@ class ExFalsoWindow(gtk.Window):
         self.emit('changed', [])
 
         # plugin support
-        from plugins import PluginManager
-        self.pm = PluginManager(watcher, ["./plugins", const.PLUGINS])
+        self.pm = EFPluginManager(watcher, ["./plugins", const.PLUGINS])
         self.pm.rescan()
 
     def set_pending(self, button, *excess):
