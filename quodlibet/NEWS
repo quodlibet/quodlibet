@@ -2,13 +2,14 @@ Quod Libet is only upwards-compatible; your library will remain intact
 if you upgrade to the next version. Skipping a version or downgrading
 may require you to re-add any songs in the library.
 
-Reloading your library after upgrading is always a good idea.
-
-Recent upgrade notes:
----------------------
-You need GStreamer and gst-python.
+Reloading your library after upgrading is always a good idea (though
+it hasn't strictly been necessary since 0.10).
 
 0.14 -
+ * Internet radio / Shoutcast browser. (#88)
+ * Album List separates albums with different labelids. (#198)
+ * Ex Falso displays all available plugins in its menu. (#240)
+ * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins. (#262)
  * New Galician translation by Johám-Luís Miguéns Vila.
 
 0.13.1 - People will fall for this for sure!
