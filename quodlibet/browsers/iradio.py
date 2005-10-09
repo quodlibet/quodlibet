@@ -157,7 +157,7 @@ class InternetRadio(gtk.HBox, Browser):
     def __init__(self, main=True):
         gtk.HBox.__init__(self, spacing=12)
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
-        self.__search = entry = gtk.Entry()
+        self.__search = gtk.Entry()
         self.pack_start(add, expand=False)
         add.connect('clicked', self.__add)
         gobject.idle_add(self.activate)
@@ -214,7 +214,7 @@ class InternetRadio(gtk.HBox, Browser):
         self.__stations.save(STATIONS)
         self.activate()
 
-    def __changed(self, watcher, songs):
+    def __changed(klass, watcher, songs):
         lib = self.__stations.values()
         if filter(lambda s: s in lib, songs):
             self.__stations.save(STATIONS)
@@ -259,7 +259,7 @@ class InternetRadio(gtk.HBox, Browser):
                     if irfs:
                         added = filter(self.__stations.add_song, irfs)
                         self.__stations.save(STATIONS)
-                        widgets.watcher.added(irfs)
+                        widgets.watcher.added(added)
                 d.destroy()
         elif uri.lower().endswith(".m3u"):
             qltk.WarningMessage(

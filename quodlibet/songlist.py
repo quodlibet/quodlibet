@@ -32,9 +32,6 @@ class PlaylistMux(object):
 
     current = property(get_current)
 
-    def is_empty(self):
-        return self.q.is_empty() or self.p.is_empty()
-
     def next(self):
         if self.q.is_empty(): self.pl.next()
         elif self.q.current is None: self.q.next()

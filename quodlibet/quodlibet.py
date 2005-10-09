@@ -46,7 +46,6 @@ def refresh_cache():
 
 def print_playing(fstring = "<artist~album~tracknumber~title>"):
     import util
-    from util import to
     from pattern import Pattern
     from formats._audio import AudioFile
     try:
@@ -101,14 +100,14 @@ def enable_periodic_save():
     import gobject, time, util
     from library import library
     from threading import Thread
-    def save(save_library, save_config):
+    def save():
         if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
             library.save(const.LIBRARY)
         if (time.time() - util.mtime(const.CONFIG)) > 15*60:
             config.write(const.CONFIG)
-        thread = Thread(target=save, args=(True, True))
+        thread = Thread(target=save)
         gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
-    thread = Thread(target=save, args=(False, False))
+    thread = Thread(target=save)
     gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
 
 def process_arguments():

@@ -24,7 +24,7 @@ class EFPluginManager(PluginManager):
     # Ex Falso doesn't send events; it also should enable all
     # invokable plugins since there's no configuration.
     def rescan(self):
-        changes = super(EFPluginManager, self).rescan()
+        super(EFPluginManager, self).rescan()
         for plugin in self.plugins.values(): self.enable(plugin, True)
         return []
 

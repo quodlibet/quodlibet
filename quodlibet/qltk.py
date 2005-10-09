@@ -643,7 +643,7 @@ class TreeViewHints(gtk.Window):
         label.set_text(renderer.get_property('text'))
         w, h0 = label.get_layout().get_pixel_size()
         try: markup = renderer.markup
-        except AttributeError: h1 = h0
+        except AttributeError: pass
         else:
             if isinstance(markup, int): markup = model[path][markup]
             label.set_markup(markup)
@@ -656,7 +656,7 @@ class TreeViewHints(gtk.Window):
         self.__dy = y
         y += view.get_bin_window().get_position()[1]
         ox, oy = view.window.get_origin()
-        x += ox; y += oy; w += 5#; h += h1 - h0
+        x += ox; y += oy; w += 5
         screen_width = gtk.gdk.screen_width()
         x_overflow = min([x, x + w - screen_width])
         label.set_ellipsize(pango.ELLIPSIZE_NONE)
@@ -805,7 +805,7 @@ class PopupSlider(gtk.EventBox):
     def __clicked(self, button):
         if self.__window.get_property('visible'): return
         self.__window.child.show_all()
-        req = self.__window.size_request()
+        self.__window.size_request()
         x, y = self.child.window.get_origin()
         w, h = self.child.window.get_size()        
         ww, wh = self.__window.child.parent.get_size()

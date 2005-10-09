@@ -10,7 +10,6 @@
 import gobject, gtk
 import const
 import qltk
-import util
 import parser
 import config
 from widgets import LibraryTagCompletion

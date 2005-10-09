@@ -7,7 +7,7 @@
 #
 # $Id$
 
-import os, sys
+import sys
 import const
 from os.path import dirname, basename, isdir, join
 from fnmatch import fnmatch

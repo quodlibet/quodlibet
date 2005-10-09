@@ -218,7 +218,6 @@ class PanedBrowser(gtk.VBox, Browser):
         else: return False
 
     def filter(self, key, values):
-        thepane = None
         self.__panes[-1].inhibit()
         for pane in self.__panes:
             if key in pane.tags:

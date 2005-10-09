@@ -142,7 +142,7 @@ class PluginManager(object):
         justscanned = {}
         for scandir in self.scan:
             try: names = dircache.listdir(scandir)
-            except OSError, err: continue
+            except OSError: continue
             for name in names:
                 pathname = os.path.realpath(os.path.join(scandir, name))
                 if not os.path.isdir(pathname):
@@ -310,11 +310,11 @@ class PluginManager(object):
                 except Exception: print_exc()
 
             if fn in self.callables['song_callables']:
-                self.check_change_and_refresh(args, lock=False)
+                self.check_change_and_refresh(args)
             elif fn in self.callables['album_callables']:
-                self.check_change_and_refresh(sum(args, []), lock=False)
+                self.check_change_and_refresh(sum(args, []))
 
-    def check_change_and_refresh(self, args, lock=True):
+    def check_change_and_refresh(self, args):
         updated = False
         songs = filter(None, args)
         needs_write = filter(lambda s: s._needs_write, songs)

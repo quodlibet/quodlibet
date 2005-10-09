@@ -7,11 +7,8 @@
 #
 # $Id$
 
-import gobject, gtk, pango
+import gobject, gtk
 import config
-import parser
-import player
-import qltk
 
 from widgets import PlayList, PlaylistWindow
 from browsers.base import Browser

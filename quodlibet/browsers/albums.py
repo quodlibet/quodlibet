@@ -540,7 +540,6 @@ class AlbumList(Browser, gtk.VBox):
         for row in iter(model):
             if row[0]: row[0]._iter = row[0]._model = None
         model.clear()
-        albums = {}
         songs = library.itervalues()
         self.__add_songs(watcher, songs, model)
         model.append(row=[None])

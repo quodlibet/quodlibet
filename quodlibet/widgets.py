@@ -35,7 +35,9 @@ from properties import SongProperties
 
 # Give us a namespace for now.. FIXME: We need to remove this later.
 # Or, replace it with nicer wrappers!
-class widgets(object): pass
+class __widgets(object):
+    __slots__ = ["watcher", "preferences", "main", "plugins"]
+widgets = __widgets()
 
 # Provides some files in ~/.quodlibet to indicate what song is playing
 # and whether the player is paused or not.
@@ -114,7 +116,6 @@ class PluginWindow(gtk.Window):
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
-        icon_theme = gtk.icon_theme_get_default()
         self.set_icon_name(const.ICON)
 
         hbox = gtk.HBox(spacing=12)        
@@ -544,7 +545,6 @@ class PreferencesWindow(gtk.Window):
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
-        icon_theme = gtk.icon_theme_get_default()
         self.set_icon_name(const.ICON)
 
         self.add(qltk.Notebook())
@@ -1204,7 +1204,7 @@ class MainWindow(gtk.Window):
         self.playlist = PlaylistMux(
             watcher, self.qexpander.model, self.songlist.model)
 
-        self.songpane = songpane = gtk.VBox(spacing=6)
+        self.songpane = gtk.VBox(spacing=6)
         self.songpane.pack_start(self.song_scroller)
         self.songpane.pack_start(self.qexpander, expand=False, fill=True)
         self.songpane.show_all()
