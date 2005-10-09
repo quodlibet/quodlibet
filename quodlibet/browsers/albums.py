@@ -210,7 +210,8 @@ class AlbumList(Browser, gtk.VBox):
 
             for text, func in [
                 (_("Sort by title"), self.__compare_title),
-                (_("Sort by artist"), self.__compare_artist)
+                (_("Sort by artist"), self.__compare_artist),
+                (_("Sort by date"), self.__compare_date),
                 ]: cbmodel.append(row=[text, func])
 
             self.connect_object('changed', self.__set_cmp_func, model)
@@ -228,7 +229,7 @@ class AlbumList(Browser, gtk.VBox):
             if (a1 and a2) is None: return cmp(a1, a2)
             elif not a1.title: return 1
             elif not a2.title: return -1
-            else: return cmp(a1.title, a2.title)
+            else: return cmp(a1.title, a2.title) or cmp(a1.labelid, a2.labelid)
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
@@ -237,7 +238,17 @@ class AlbumList(Browser, gtk.VBox):
             elif a2.title == "": return -1
             else: return (cmp(a1.people, a2.people) or
                           cmp(a1.date, a2.date) or
-                          cmp(a1.title, a2.title))
+                          cmp(a1.title, a2.title) or
+                          cmp(a1.labelid, a2.labelid))
+
+        def __compare_date(self, model, i1, i2):
+            a1, a2 = model[i1][0], model[i2][0]
+            if (a1 and a2) is None: return cmp(a1, a2)
+            elif a1.date == "": return 1
+            elif a2.date == "": return -1
+            else: return (cmp(a1.date, a2.date) or
+                          cmp(a1.title, a2.title) or
+                          cmp(a1.labelid, a2.labelid))
 
     class _AlbumStore(gtk.ListStore):
         def get_albums(self):
