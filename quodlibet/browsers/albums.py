@@ -393,9 +393,10 @@ class AlbumList(Browser, gtk.VBox):
         def update(model, path, iter):
             album = model[iter][0]
             if album is not None and album.title in changed:
-                if album: to_change.append((path, iter))
+                if album:
+                    to_change.append((path, iter))
+                    album.finalize()
                 else: to_remove.append(iter)
-                album.finalize()
         model.foreach(update)
         if to_change: map(model.row_changed, *zip(*to_change))
         if to_remove: map(model.remove, to_remove)
@@ -426,8 +427,9 @@ class AlbumList(Browser, gtk.VBox):
                         changed.add(alb)
                         albums[key].add(song)
                     else:
-                        albums[key] = self._Album(alb, labelid)
+                        changed.add(alb)
                         new.append(albums[key])
+                        albums[key] = self._Album(alb, labelid)
                         albums[key].add(song)
             else:
                 if "" not in albums:
@@ -436,7 +438,6 @@ class AlbumList(Browser, gtk.VBox):
                 changed.add("")
                 albums[""].add(song)
         for album in new:
-            album.finalize()
             album._model = model
             album._iter = model.append(row=[album])
         self.__update(changed, model)
