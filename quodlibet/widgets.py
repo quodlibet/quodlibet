@@ -1774,7 +1774,8 @@ class MainWindow(gtk.Window):
             else:
                 added = []
                 self.last_dir = os.path.basename(fns[0])
-                for filename in fns:
+                for filename in map(os.path.realpath, fns):
+                    if filename in library: continue
                     song = library.add(filename)
                     if song: added.append(song)
                     else:
