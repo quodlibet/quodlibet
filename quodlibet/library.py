@@ -205,7 +205,6 @@ class Library(dict):
             if "~filename" not in song: continue # library corruption
             elif song.local:
                 if not formats.supported(song): continue
-                song["~filename"] = os.path.realpath(song["~filename"])
                 if "~mountpoint" not in song: song.sanitize()
 
             if song.valid(): self[song["~filename"]] = song

@@ -163,6 +163,7 @@ class AudioFile(dict):
     def sanitize(self, filename=None):
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
+        self["~filename"] = os.path.realpath(self["~filename"])
 
         # Fill in necessary values.
         self.setdefault("~#lastplayed", 0)
