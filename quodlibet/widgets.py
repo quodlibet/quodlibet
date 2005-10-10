@@ -71,10 +71,10 @@ class FSInterface(object):
         try: os.unlink(const.PAUSED)
         except EnvironmentError: pass
 
-# Make a standard directory-chooser, and return the filenames and response.
-class FileChooser(gtk.FileChooserDialog):
+# Choose folders, return the list.
+class FolderChooser(gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir=None):
-        super(FileChooser, self).__init__(
+        super(FolderChooser, self).__init__(
             title=title, parent=parent,
             action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
@@ -86,7 +86,32 @@ class FileChooser(gtk.FileChooserDialog):
     def run(self):
         resp = gtk.FileChooserDialog.run(self)
         fns = self.get_filenames()
-        return resp, fns
+        if resp == gtk.RESPONSE_OK: return fns
+        else: return []
+
+# Choose folders, return the list.
+class FileChooser(gtk.FileChooserDialog):
+    def __init__(self, parent, title, filter, initial_dir=None):
+        super(FileChooser, self).__init__(
+            title=title, parent=parent,
+            action=gtk.FILE_CHOOSER_ACTION_OPEN,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        if initial_dir: self.set_current_folder(initial_dir)
+        self.set_local_only(True)
+        self.set_select_multiple(True)
+        if filter:
+            def new_filter(args, realfilter): return realfilter(args[0])
+            f = gtk.FileFilter()
+            f.set_name(_("Songs"))
+            f.add_custom(gtk.FILE_FILTER_FILENAME, new_filter, filter)
+            self.add_filter(f)
+
+    def run(self):
+        resp = gtk.FileChooserDialog.run(self)
+        fns = self.get_filenames()
+        if resp == gtk.RESPONSE_OK: return fns
+        else: return []
 
 class CountManager(object):
     def __init__(self, watcher, pl):
@@ -529,11 +554,11 @@ class PreferencesWindow(gtk.Window):
             self.show_all()
 
         def __select(self, button, entry, initial):
-            chooser = FileChooser(self.parent.parent.parent,
-                                  _("Select Directories"), initial)
-            resp, fns = chooser.run()
+            chooser = FolderChooser(self.parent.parent.parent,
+                                    _("Select Directories"), initial)
+            fns = chooser.run()
             chooser.destroy()
-            if resp == gtk.RESPONSE_OK:
+            if fns:
                 entry.set_text(":".join(map(util.fsdecode, fns)))
 
         def __changed(self, entry, section, name):
@@ -1298,11 +1323,13 @@ class MainWindow(gtk.Window):
 
         actions = [
             ('Music', None, _("_Music")),
-            ('AddMusic', gtk.STOCK_ADD, _('_Add Music...'), "<control>O", None,
-             self.open_chooser),
+            ('AddFolders', gtk.STOCK_ADD, _('_Add a Folder...'),
+             "<control>O", None, self.open_chooser),
+            ('AddFiles', gtk.STOCK_ADD, _('_Add a File...'),
+             None, None, self.open_chooser),
             ('NewPlaylist', gtk.STOCK_EDIT, _('_New/Edit Playlist...'),
              None, None, self.__new_playlist),
-            ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library')),
+            ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library'), ""),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
             ("Plugins", gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
@@ -1726,18 +1753,45 @@ class MainWindow(gtk.Window):
             widgets.plugins = PluginWindow(self)
         widgets.plugins.present()
 
-    def open_chooser(self, *args):
+    def open_chooser(self, action):
         if not os.path.exists(self.last_dir):
             self.last_dir = os.environ["HOME"]
-        chooser = FileChooser(self, _("Add Music"), self.last_dir)
-        resp, fns = chooser.run()
+
+        if action.get_name() == "AddFolders":
+            chooser = FolderChooser(self, _("Add Music"), self.last_dir)
+        else:
+            chooser = FileChooser(
+                self, _("Add Music"), formats.filter, self.last_dir)
+        
+        fns = chooser.run()
         chooser.destroy()
-        if resp == gtk.RESPONSE_OK:
-            if self.scan_dirs(fns):
-                widgets.watcher.refresh()
-                library.save(const.LIBRARY)
         if fns:
-            self.last_dir = fns[0]
+            if action.get_name() == "AddFolders":
+                self.last_dir = fns[0]
+                if self.scan_dirs(fns):
+                    widgets.watcher.refresh()
+                    library.save(const.LIBRARY)
+            else:
+                added = []
+                self.last_dir = os.path.basename(fns[0])
+                for filename in fns:
+                    song = library.add(filename)
+                    if song: added.append(song)
+                    else:
+                        from traceback import format_exception_only as feo
+                        tb = feo(sys.last_type, sys.last_value)
+                        msg = _("%s could not be added to your library.\n\n")
+                        msg %= util.escape(util.fsdecode(
+                            os.path.basename(filename)))
+                        msg += util.escape(util.fsdecode(
+                            "".join(tb).decode(locale.getpreferredencoding())))
+                        d = qltk.ErrorMessage(
+                            self, _("Unable to add song"), msg)
+                        d.label.set_selectable(True)
+                        d.run()
+                        continue
+                if added:
+                    widgets.watcher.added(added)
 
     def scan_dirs(self, fns):
         win = qltk.WaitLoadWindow(self, 0,

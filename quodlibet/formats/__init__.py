@@ -33,11 +33,21 @@ def MusicFile(filename):
     for ext in _infos.keys():
         if filename.lower().endswith(ext):
             try:
+                # The sys module docs say this is where the interactive
+                # interpreter stores exceptions, so it should be safe for
+                # us to do it -- if we're in the interpreter this does
+                # nothing, and if we're not it lets us access them elsewhere.
+                # WARNING: Not threadsafe. Don't add files from threads
+                # other than the main one.
+                import sys
+                sys.last_type = sys.last_value = sys.last_traceback = None
                 return _infos[ext](filename)
             except:
                 print ("W: Error loading %s") % filename
-                import traceback
+                import sys, traceback
                 traceback.print_exc()
+                lt, lv, tb = sys.exc_info()
+                sys.last_type, sys.last_value, sys.last_traceback = lt, lv, tb
                 return None
     else: return None
 

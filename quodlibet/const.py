@@ -52,7 +52,8 @@ NBP_EXAMPLES = """\
 MENU = """<ui>
   <menubar name='Menu'>
     <menu action='Music'>
-      <menuitem action='AddMusic'/>
+      <menuitem action='AddFolders'/>
+      <menuitem action='AddFiles'/>
       <menuitem action='NewPlaylist'/>
       <menu action='BrowseLibrary'>
       %s

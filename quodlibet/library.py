@@ -135,7 +135,7 @@ class Library(dict):
     def add_song(self, song):
         if song["~filename"] not in self:
             self[song["~filename"]] = song
-            return True
+            return song
         return False
 
     def add(self, fn):
