@@ -58,7 +58,7 @@ class AlbumList(Browser, gtk.VBox):
             self.discs = 1
             self.tracks = 0
             self.date = ""
-            self.people = set()
+            self.people = []
             self.title = title
             self.labelid = labelid
             self.songs = set()
@@ -423,14 +423,11 @@ class AlbumList(Browser, gtk.VBox):
                 for alb in song.list("album"):
                     labelid = song.get("labelid", "")
                     key = alb + "\u0000" + labelid
-                    if key in albums:
-                        changed.add(alb)
-                        albums[key].add(song)
-                    else:
-                        changed.add(alb)
-                        new.append(albums[key])
+                    if key not in albums:
                         albums[key] = self._Album(alb, labelid)
-                        albums[key].add(song)
+                        new.append(albums[key])
+                    albums[key].add(song)
+                    changed.add(alb)
             else:
                 if "" not in albums:
                     albums[""] = self._Album("", "")
@@ -438,6 +435,7 @@ class AlbumList(Browser, gtk.VBox):
                 changed.add("")
                 albums[""].add(song)
         for album in new:
+            album.finalize()
             album._model = model
             album._iter = model.append(row=[album])
         self.__update(changed, model)
