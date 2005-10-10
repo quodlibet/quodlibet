@@ -71,11 +71,12 @@ class AlbumList(Browser, gtk.VBox):
             elif key == "~#discs": return self.discs
             elif key == "~length": return self.__length
             elif key == "labelid": return self.labelid
-            elif key in ["title", "album"]: return self.title
             elif key == "date": return self.date
             elif key == "~#date":
                 try: return int(self.date[:4])
                 except (TypeError, ValueError): return 0
+            elif key in ["cover", "~cover"]: return (self.cover and "y") or ""
+            elif key in ["title", "album"]: return self.title
             elif key in ["people", "artist", "artists"]:
                 return "\n".join(self.people)
             elif key == "genre": return self.genre
