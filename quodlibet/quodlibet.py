@@ -204,7 +204,10 @@ def load_player():
         raise SystemExit(True)
 
 if __name__ == "__main__":
-    basedir = os.path.split(os.path.realpath(__file__))[0]
+    basedir = os.path.dirname(os.path.realpath(__file__))
+    if not os.path.exists(os.path.join(basedir, "quodlibet.py")):
+        if os.path.exists(os.path.join(os.getcwd(), "quodlibet.py")):
+            basedir = os.getcwd()
     sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
     i18ndir = "/usr/share/locale"
 

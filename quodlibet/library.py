@@ -275,7 +275,7 @@ class Library(dict):
 
         for fn, song in self.items():
             song = self[fn]
-            if not song.valid() or force:
+            if force or not song.valid():
                 self.reload(song, changed, removed)
             yield changed, removed
 
