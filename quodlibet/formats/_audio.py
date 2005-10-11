@@ -116,7 +116,7 @@ class AudioFile(dict):
         return os.path.exists(self["~filename"])
 
     def valid(self):
-        return (self["~#mtime"] and
+        return (self.get("~#mtime", 0) and
                 self["~#mtime"] == util.mtime(self["~filename"]))
 
     def mounted(self):

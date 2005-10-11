@@ -6,7 +6,7 @@ from properties import Formatter
 from efwidgets import DirectoryTree
 from formats._audio import AudioFile as AF
 
-from widgets import PlayList, FileChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow
+from widgets import PlayList, FolderChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow
 import qltk
 
 class TFSInterface(TestCase):
@@ -49,18 +49,18 @@ class TFSInterface(TestCase):
 
 registerCase(TFSInterface)
 
-class TFileChooser(TestCase):
+class TFolderChooser(TestCase):
     def test_init_nodir(self):
-        f = FileChooser(None, "A file chooser")
+        f = FolderChooser(None, "A file chooser")
         self.assertEqual(f.get_current_folder(), os.path.realpath("."))
         f.destroy()
 
     def test_init_dir(self):
-        f = FileChooser(None, "A file chooser", "/home")
+        f = FolderChooser(None, "A file chooser", "/home")
         self.assertEqual(f.get_current_folder(), "/home")
         f.destroy()
 
-registerCase(TFileChooser)
+registerCase(TFolderChooser)
 
 class TCountManager(TestCase):
     def setUp(self):
