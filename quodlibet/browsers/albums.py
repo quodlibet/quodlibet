@@ -97,9 +97,7 @@ class AlbumList(Browser, gtk.VBox):
         # All songs added, cache info.
         def finalize(self):
             self.tracks = len(self.songs)
-            self.length = sum([song["~#length"] for song in self.songs])
-            self.__long_length = util.format_time_long(self.length)
-            self.__length = util.format_time(self.length)
+            self.length = 0
             people = {}
             genre = set()
             for song in self.songs:
@@ -111,17 +109,23 @@ class AlbumList(Browser, gtk.VBox):
                             people[person] = 0
                         people[person] -= 1000 ** w
                 genre.update(song.list("genre"))
+
+                if "date" in song:
+                    try: self.date = song.list("date")[0]
+                    except IndexError: pass
+                self.discs = max(self.discs, song("~#disc", 0))
+                self.length += song.get("~#length", 0)
+
             self.genre = "\n".join(genre)
             self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
             self.people = [person for (num, person) in self.people]
+            self.__long_length = util.format_time_long(self.length)
+            self.__length = util.format_time(self.length)
 
-            if self.title:
-                for song in self.songs:
-                    if "date" in song:
-                        try: self.date = song.list("date")[0]
-                        except IndexError: pass
-                    self.discs = max(self.discs, song("~#disc", 0))
+            if not self.title:
+                self.date = ""
+                self.discs = 1
 
             text = "<i><b>%s</b></i>" % util.escape(
                 self.title or _("Songs not in an album"))
