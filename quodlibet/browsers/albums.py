@@ -105,12 +105,10 @@ class AlbumList(Browser, gtk.VBox):
                 # before performers, then by number of appearances.
                 for w, key in enumerate(["performer", "composer", "artist"]):
                     for person in song.list(key):
-                        if person not in people:
-                            people[person] = 0
-                        people[person] -= 1000 ** w
+                        people[person] = people.get(person, 0) - 1000 ** w
                 genre.update(song.list("genre"))
 
-                if "date" in song:
+                if not self.date:
                     try: self.date = song.list("date")[0]
                     except IndexError: pass
                 self.discs = max(self.discs, song("~#disc", 0))
