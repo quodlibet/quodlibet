@@ -1,10 +1,8 @@
-from unittest import TestCase
-from tests import registerCase
+from tests import TestCase, add
 import os, gtk, const
-from browsers.search import EmptyBar, SearchBar
 from formats._audio import AudioFile as AF
 
-from widgets import PlayList, FolderChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow
+from widgets import PlayList, FolderChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow, TrayIcon
 import qltk
 
 class TFSInterface(TestCase):
@@ -45,7 +43,7 @@ class TFSInterface(TestCase):
         try: os.unlink(const.CURRENT)
         except EnvironmentError: pass
 
-registerCase(TFSInterface)
+add(TFSInterface)
 
 class TFolderChooser(TestCase):
     def test_init_nodir(self):
@@ -58,7 +56,7 @@ class TFolderChooser(TestCase):
         self.assertEqual(f.get_current_folder(), "/home")
         f.destroy()
 
-registerCase(TFolderChooser)
+add(TFolderChooser)
 
 class TCountManager(TestCase):
     def setUp(self):
@@ -96,7 +94,7 @@ class TCountManager(TestCase):
     def tearDown(self):
         self.w.destroy()
 
-registerCase(TCountManager)
+add(TCountManager)
 
 class TPluginWindow(TestCase):
     def test_create(self):
@@ -107,11 +105,19 @@ class TPluginWindow(TestCase):
         w.destroy()
         del(SongList.pm)
 
-registerCase(TPluginWindow)
+add(TPluginWindow)
 
 class TPreferencesWindow(TestCase):
     def test_create(self):
         w = PreferencesWindow(None)
         w.destroy()
+add(TPreferencesWindow)
 
-registerCase(TPreferencesWindow)
+class TTrayIcon(TestCase):
+    def setUp(self):
+        self.ti = TrayIcon(None, {})
+
+    def test_enabled(self):
+        self.failIf(self.ti.enabled)
+add(TTrayIcon)
+
