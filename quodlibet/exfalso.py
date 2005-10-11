@@ -18,7 +18,10 @@ if __name__ == "__main__":
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
 
-    basedir = os.path.split(os.path.realpath(__file__))[0]
+    basedir = os.path.dirname(os.path.realpath(__file__))
+    if not os.path.exists(os.path.join(basedir, "exfalso.py")):
+        if os.path.exists(os.path.join(os.getcwd(), "exfalso.py")):
+            basedir = os.getcwd()
     sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
 
     import const
