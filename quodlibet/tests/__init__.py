@@ -26,10 +26,8 @@ registerCase(TPO)
 # well-tested code
 import test_util, test_audio, test_parser, test_metadata
 import test_playlist, test_pattern, test_stock
-# good but incomplete
 import test_leaks, test_qltk, test_widgets, test_player
-# not well-tested code
-import test_library, test_plugins
+import test_library, test_plugins, test_efwidgets, test_properties
 
 class Result(unittest.TestResult):
 

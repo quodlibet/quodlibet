@@ -5,7 +5,7 @@ sys.modules['dircache'] = os # cheat the dircache effects
 from tempfile import mkstemp, mkdtemp
 from plugins import PluginManager
 
-class TestPlugins(TestCase):
+class TPluginManager(TestCase):
 
     def setUp(self):
         self.tempdir = mkdtemp()
@@ -75,7 +75,21 @@ class TestPlugins(TestCase):
         self.pm.rescan()
         self.assertEquals(len(self.pm.list()), 2)
 
-class TestSongWrapper(TestCase):
+    def test_disables_plugin(self):
+        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
+        self.pm.rescan()
+        self.failIf(self.pm.enabled(self.pm.list()[0]))
+
+    def test_enabledisable_plugin(self):
+        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
+        self.pm.rescan()
+        plug = self.pm.list()[0]
+        self.pm.enable(plug, True)
+        self.failUnless(self.pm.enabled(plug))
+        self.pm.enable(plug, False)
+        self.failIf(self.pm.enabled(plug))
+
+class TSongWrapper(TestCase):
     from plugins import SongWrapper
     from formats._audio import AudioFile
 
@@ -159,5 +173,5 @@ class TestSongWrapper(TestCase):
         self.wrap["version"] = "bar"
         self.failUnless(self.wrap._was_updated())
 
-registerCase(TestPlugins)
-registerCase(TestSongWrapper)
+registerCase(TPluginManager)
+registerCase(TSongWrapper)

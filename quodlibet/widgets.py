@@ -73,10 +73,10 @@ class FSInterface(object):
 
 # Choose folders, return the list.
 class FolderChooser(gtk.FileChooserDialog):
-    def __init__(self, parent, title, initial_dir=None):
+    def __init__(self, parent, title, initial_dir=None,
+                 action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER):
         super(FolderChooser, self).__init__(
-            title=title, parent=parent,
-            action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+            title=title, parent=parent, action=action,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                      gtk.STOCK_OPEN, gtk.RESPONSE_OK))
         if initial_dir: self.set_current_folder(initial_dir)
@@ -90,28 +90,16 @@ class FolderChooser(gtk.FileChooserDialog):
         else: return []
 
 # Choose folders, return the list.
-class FileChooser(gtk.FileChooserDialog):
-    def __init__(self, parent, title, filter, initial_dir=None):
+class FileChooser(FolderChooser):
+    def __init__(self, parent, title, filter=None, initial_dir=None):
         super(FileChooser, self).__init__(
-            title=title, parent=parent,
-            action=gtk.FILE_CHOOSER_ACTION_OPEN,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                     gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-        if initial_dir: self.set_current_folder(initial_dir)
-        self.set_local_only(True)
-        self.set_select_multiple(True)
+            parent, title, initial_dir, gtk.FILE_CHOOSER_ACTION_OPEN)
         if filter:
             def new_filter(args, realfilter): return realfilter(args[0])
             f = gtk.FileFilter()
             f.set_name(_("Songs"))
             f.add_custom(gtk.FILE_FILTER_FILENAME, new_filter, filter)
             self.add_filter(f)
-
-    def run(self):
-        resp = gtk.FileChooserDialog.run(self)
-        fns = self.get_filenames()
-        if resp == gtk.RESPONSE_OK: return fns
-        else: return []
 
 class CountManager(object):
     def __init__(self, watcher, pl):
