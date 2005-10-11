@@ -70,7 +70,7 @@ class PlaylistPlayer(object):
             except AttributeError: pass
             if self.bin.get_property('uri'):
                 if self.__paused:
-                   if self.song.stream: self.bin.set_state(gst.STATE_READY)
+                   if self.song.stream: self.bin.set_state(gst.STATE_NULL)
                    else: self.bin.set_state(gst.STATE_PAUSED)
                 else: self.bin.set_state(gst.STATE_PLAYING)
     def __get_paused(self): return self.__paused
