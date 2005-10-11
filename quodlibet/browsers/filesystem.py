@@ -99,7 +99,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         songs = []
         for dir in dirs:
             for file in filter(formats.filter, os.listdir(dir)):
-                fn = os.path.join(dir, file)
+                fn = os.path.realpath(os.path.join(dir, file))
                 if fn in glibrary: songs.append(glibrary[fn])
                 elif fn not in self.__lib:
                     song = formats.MusicFile(fn)
