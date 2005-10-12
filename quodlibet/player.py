@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, sys
+import os, sys, locale
 import config
 import gobject, gst
 
@@ -25,14 +25,17 @@ def GStreamerSink(pipeline):
             if val.type == gconf.VALUE_STRING: pipeline = val.get_string()
             else: pipeline = "alsasink"
 
-    try: return gst.parse_launch(pipeline), pipeline
+    try: pipe = gst.parse_launch(pipeline)
     except gobject.GError, err:
         if pipeline != "osssink":
             print "%r failed, falling back to osssink (%s)." % (pipeline, err)
-            try: return gst.parse_launch("osssink"), "osssink"
-            except gobject.GError: pass
-    raise SystemExit("E: No valid GStreamer sinks found.\n"
-                     "E: Set 'pipeline' in ~/.quodlibet/config.")
+            try: pipe = gst.parse_launch("osssink")
+            except gobject.GError: pipe = None
+            else: pipeline = "osssink"
+    locale.getlocale(locale.LC_NUMERIC)
+    if pipe: return pipe, pipeline
+    else: raise SystemExit("E: No valid GStreamer sinks found.\n"
+                           "E: Set 'pipeline' in ~/.quodlibet/config.")
 
 class PlaylistPlayer(object):
     __paused = False
