@@ -90,7 +90,7 @@ def ParsePLS(file):
             None, _("Unsupported file type"),
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
-              "cannot be loaded.\n%s" % "\n  ".join(map(util.escape,warnings)))
+              "cannot be loaded.\n%s") % "\n  ".join(map(util.escape,warnings))
             ).run()
 
     return files
@@ -137,7 +137,7 @@ class ChooseNewStations(gtk.Dialog):
 class AddNewStation(qltk.GetStringDialog):
     def __init__(self):
         qltk.GetStringDialog.__init__(
-            self, widgets.main, _("New Station..."),
+            self, widgets.main, _("New Station"),
             _("Please enter the location of an Internet radio station."),
             okbutton=gtk.STOCK_ADD)
         b = qltk.Button(_("_Stations..."), gtk.STOCK_CONNECT)

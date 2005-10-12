@@ -912,7 +912,7 @@ by <~people>><album|
         except (IOError, OSError): pass
 
     def __menu(self, main, menu):
-        item = qltk.MenuItem(_("Edit Display..."), gtk.STOCK_EDIT)
+        item = qltk.MenuItem(_("_Edit Display..."), gtk.STOCK_EDIT)
         item.show()
         item.connect_object('activate', self.__edit, main)
         menu.append(item)
