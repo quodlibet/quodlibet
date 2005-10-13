@@ -1,3 +1,10 @@
+quodlibet (0.14-1) unstable; urgency=low
+
+  * New upstream release.
+  * Reset Python locale settings after gst.parse_launch. (Closes: #328587)
+
+ -- Joe Wreschnig <piman@debian.org>  
+
 quodlibet (0.13.1-1) unstable; urgency=low
 
   * New upstream release.
