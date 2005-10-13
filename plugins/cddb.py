@@ -98,7 +98,7 @@ def query(category, discid):
 
     return discinfo, tracktitles
 
-def ask_save_info((disc, track), album, discid, (n, m)):
+def ask_save_info((disc, track), album, discid):
     message = []
 
     if 'artist' in disc:
@@ -110,7 +110,7 @@ def ask_save_info((disc, track), album, discid, (n, m)):
     if 'genre' in disc:
         message.append('%s:\t<b>%s</b>' % (tag("genre"), escape(disc['genre'])))
     if discid:
-        message.append('%s:\t<b>%s</b> (%d/%d)' % (tag("discid"), escape(discid), n, m))
+        message.append('%s:\t<b>%s</b>' % (tag("CDDB ID"), escape(discid)))
 
     message.append('\n<u>%s</u>' % _('Track List'))
     keys = track.keys()
@@ -119,19 +119,16 @@ def ask_save_info((disc, track), album, discid, (n, m)):
         message.append('    <b>%d.</b> %s' % (key+1,
             escape(track[key].encode('utf-8'))))
 
-    if not AskAction(None, _("Save the following information?"),
+    if AskAction(None, _("Save the following information?"),
             '\n'.join(message)).run():
-        return False
 
-    for key, song in zip(keys, album):
-        song['title'] = track[key]
-        song['tracknumber'] = '%d/%d' % (key+1, len(album))
-        if 'artist' in disc: song['artist'] = disc['artist']
-        if 'title' in disc: song['album'] = disc['title']
-        if 'year' in disc: song['date'] = disc['year']
-        if 'genre' in disc: song['genre'] = disc['genre']
-
-    return True
+        for key, song in zip(keys, album):
+            song['title'] = track[key]
+            song['tracknumber'] = '%d/%d' % (key+1, len(album))
+            if 'artist' in disc: song['artist'] = disc['artist']
+            if 'title' in disc: song['album'] = disc['title']
+            if 'year' in disc: song['date'] = disc['year']
+            if 'genre' in disc: song['genre'] = disc['genre']
 
 def plugin_album(album):
     album.sort()
@@ -140,19 +137,17 @@ def plugin_album(album):
 
     stat, discs = CDDB.query(discid, **CLIENTINFO)
     info = None
-    for i, disc in enumerate(discs):
-        if stat in (200,211):
-            info = query(disc['category'], disc['disc_id'])
+    if stat in (200,211):
+        info = query(discs[0]['category'], discs[0]['disc_id'])
 
-        if not info:
-            n = len(album)
-            albumname = album[0]('album')
-            if not albumname: albumname = ngettext('%d track', '%d tracks', n) % n
-            ErrorMessage(None, _("CDDB lookup failed"),
-                    ngettext("%(title)s and %(count)d more...",
-                        "%(title)s and %(count)d more...", n-1) % {
-                        'title': album[0]('~basename'), 'count': n-1}).run()
-            return
+    if not info:
+        n = len(album)
+        albumname = album[0]('album')
+        if not albumname: albumname = ngettext('%d track', '%d tracks', n) % n
+        ErrorMessage(None, _("CDDB lookup failed"),
+                ngettext("%(title)s and %(count)d more...",
+                    "%(title)s and %(count)d more...", n-1) % {
+                    'title': album[0]('~basename'), 'count': n-1}).run()
+        return
 
-        if ask_save_info(info, album, disc['disc_id'], (i+1, len(discs))):
-            return
+    ask_save_info(info, album, discs[0]['disc_id'])
