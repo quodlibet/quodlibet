@@ -319,8 +319,8 @@ class SongProperties(gtk.Window):
                     if tag_ in song:
                         l = self.Label(song[tag_])
                         l.set_ellipsize(pango.ELLIPSIZE_END)
-                        if len(song.list(tag_)) == 1: name = tag_
-                        else: name = names
+                        if len(song.list(tag_)) == 1: name = tag(tag_)
+                        else: name = _(names)
                         vb.pack_frame(util.capitalize(name), l)
                 if not vb.get_children(): vb.destroy()
                 else: self.pack_frame(title, vb)
