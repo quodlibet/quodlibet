@@ -119,5 +119,7 @@ class TTrayIcon(TestCase):
 
     def test_enabled(self):
         self.failIf(self.ti.enabled)
-add(TTrayIcon)
 
+    def tearDown(self): self.ti.destroy()
+
+add(TTrayIcon)
