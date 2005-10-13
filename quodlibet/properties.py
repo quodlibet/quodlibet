@@ -678,7 +678,7 @@ class SongProperties(gtk.Window):
             column.set_cell_data_func(render, cdf_write, (2, 4))
             view.append_column(column)
             view.connect(
-                'button-press-event', self.__write_toggle, (column, 2))
+                'button-press-event', self.__write_toggle, (column, 1, 2))
 
             render = gtk.CellRendererText()
             column = gtk.TreeViewColumn(
@@ -1037,7 +1037,7 @@ class SongProperties(gtk.Window):
                 row[2] = True # Edited
                 row[4] = False # not Deleted
 
-        def __write_toggle(self, view, event, (writecol, edited)):
+        def __write_toggle(self, view, event, (writecol, textcol, edited)):
             if event.button != 1: return False
             x, y = map(int, [event.x, event.y])
             try: path, col, cellx, celly = view.get_path_at_pos(x, y)
@@ -1046,6 +1046,9 @@ class SongProperties(gtk.Window):
             if col is writecol:
                 row = view.get_model()[path]
                 row[edited] = not row[edited]
+                if row[edited]:
+                    idx = row[textcol].find(' <i>')
+                    if idx >= 0: row[textcol] = row[textcol][:idx]
                 return True
 
         def __update(self, songs, view, buttonbox, model, add, buttons):
