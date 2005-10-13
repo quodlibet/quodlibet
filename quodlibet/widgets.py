@@ -2169,12 +2169,13 @@ class SongList(qltk.HintedTreeView):
         if menu is None: menu = gtk.Menu()
         can_filter = browser.can_filter
 
-        def Filter(tag):
+        def Filter(t):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
-            tag = {"~rating":"~#rating", "~length":"~#length"}.get(tag, tag)
-            b = qltk.MenuItem(_("_Filter on %s") % tag, gtk.STOCK_INDEX)
-            b.connect_object('activate', self.__filter_on, tag, songs, browser)
+            t = {"~rating":"~#rating", "~length":"~#length"}.get(t, t)
+            b = qltk.MenuItem(
+                _("_Filter on %s") % tag(t, False), gtk.STOCK_INDEX)
+            b.connect_object('activate', self.__filter_on, t, songs, browser)
             return b
 
         if header == "~rating":
