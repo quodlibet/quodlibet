@@ -713,6 +713,7 @@ class HIGTrayIcon(TrayIcon):
 class QLTrayIcon(HIGTrayIcon):
     def __init__(self, window, volume):
         menu = gtk.Menu()
+        # FIXME: Post 0.14, use _('gtk-stock-media-play').
         playpause = qltk.MenuItem(_("_Play"), gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__playpause)
 
@@ -771,7 +772,8 @@ class QLTrayIcon(HIGTrayIcon):
     def __set_paused(self, watcher, menu, paused):
         menu.get_children()[0].destroy()
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
-        playpause = gtk.ImageMenuItem(stock)
+        text = [_("_Pause"), _("_Play")][paused]
+        playpause = qltk.MenuItem(text, stock)
         playpause.connect('activate', self.__playpause)
         playpause.show()
         menu.prepend(playpause)
