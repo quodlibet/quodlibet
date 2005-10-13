@@ -930,7 +930,7 @@ by <~people>><album|
             pango.parse_markup(pattern.XMLFromPattern(text) % f, "\u0000")
         except (ValueError, gobject.GError), e:
             qltk.ErrorMessage(
-                window, _("Invalid Pattern"),
+                window, _("Invalid pattern"),
                 _("The pattern you entered was invalid. Make sure you enter "
                   "&lt; and &gt; as \\&lt; and \\&gt; and that your tags are "
                   "balanced.\n\n%s") % util.escape(str(e))).run()
