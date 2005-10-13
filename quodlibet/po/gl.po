@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-11 18:05-0500\n"
-"PO-Revision-Date: 2005-10-11 23:31+0200\n"
+"POT-Creation-Date: 2005-10-13 12:40-0500\n"
+"PO-Revision-Date: 2005-10-13 12:14+0200\n"
 "Last-Translator: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "Language-Team: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -746,8 +746,8 @@ msgid "Edit Display"
 msgstr "Editar vista"
 
 #: ../widgets.py:915
-msgid "Edit Display..."
-msgstr "Editar vista..."
+msgid "_Edit Display..."
+msgstr "_Editar vista..."
 
 #: ../widgets.py:933
 msgid "Invalid Pattern"
@@ -1682,14 +1682,6 @@ msgstr ""
 "puideromser carregados.\n"
 "%s"
 
-#: ../browsers/iradio.py:93
-msgid ""
-"\n"
-"  "
-msgstr ""
-"\n"
-".."
-
 #: ../browsers/iradio.py:100
 msgid "Choose New Stations"
 msgstr "Escolha Novas Emisoras"
@@ -1703,8 +1695,8 @@ msgid "Title"
 msgstr "Título"
 
 #: ../browsers/iradio.py:140
-msgid "New Station..."
-msgstr "Nova Emisora..."
+msgid "New Station"
+msgstr "Nova Emisora"
 
 #: ../browsers/iradio.py:141
 msgid "Please enter the location of an Internet radio station."
@@ -1754,6 +1746,16 @@ msgstr "Esta emisora já está na sua colecçom"
 #: ../browsers/iradio.py:292
 msgid "_Internet Radio"
 msgstr "_Emisora por Internet"
+
+#~ msgid ""
+#~ "\n"
+#~ "  "
+#~ msgstr ""
+#~ "\n"
+#~ ".."
+
+#~ msgid "New Station..."
+#~ msgstr "Nova Emisora..."
 
 #~ msgid "by %s"
 #~ msgstr "by %s"
