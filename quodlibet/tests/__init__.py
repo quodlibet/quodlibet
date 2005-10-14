@@ -78,5 +78,11 @@ def unit(run=[]):
                 (t.__name__.startswith("T") and t.__name__[1:] in run)):
                 runner.run(t)
 
+    for f in [const.CONFIG, const.CURRENT, const.LIBRARY, const.PAUSED,
+              const.QUEUE]:
+       try: os.unlink(f)
+       except OSError: pass
+
 if __name__ == "__main__":
     unit(sys.argv[1:])
+
