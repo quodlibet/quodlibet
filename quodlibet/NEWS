@@ -12,6 +12,9 @@ it hasn't strictly been necessary since 0.10).
  * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins. (#262)
  * New Album List search keys and sorting options. (#280, #281)
  * New Galician translation by Johám-Luís Miguéns Vila.
+ * Updated Finnish translation by Jari Rahkonen.
+ * Updated Polish translation by Tomasz Torcz.
+ * Updated Dutch translation by Hans van Dok.
 
 0.13.1 - People will fall for this for sure!
  * Fix playlist creation. (#250)
