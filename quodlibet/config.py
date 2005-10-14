@@ -50,7 +50,7 @@ def init(*rc_files):
         "browsers":
         { "query_text": "", # none/search bar text
           "color": "true", # color search terms in search bar
-          "panes": "artist album", # panes in paned browser
+          "panes": "~people album", # panes in paned browser
           "pane_selection": "", # selected pane values
           "background": "", # "global" filter for SearchBar
           "albums": "", # album list
