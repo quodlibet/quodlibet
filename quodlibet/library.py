@@ -204,7 +204,9 @@ class Library(dict):
         for song in songs:
             if "~filename" not in song: continue # library corruption
             elif song.local:
-                if not formats.supported(song): continue
+                if not formats.supported(song):
+                    removed += 1
+                    continue
                 if "~mountpoint" not in song: song.sanitize()
 
             if song.valid(): self[song["~filename"]] = song
