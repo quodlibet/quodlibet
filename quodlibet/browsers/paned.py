@@ -207,11 +207,10 @@ class PanedBrowser(gtk.VBox, Browser):
             hbox.pack_start(sw)
 
         self.pack_start(hbox)
+        self.__panes[-1].inhibit()
+        self.activate()
+        self.__panes[-1].uninhibit()
         if restore: self.restore()
-        else:
-            self.__panes[-1].inhibit()
-            self.activate()
-            self.__panes[-1].uninhibit()
         self.show_all()
 
     def __start(self, view, indices, col):
