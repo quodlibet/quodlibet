@@ -45,9 +45,8 @@ class PanedBrowser(gtk.VBox, Browser):
             selection = self.get_selection()
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__changed)
-
-            s = widgets.watcher.connect('removed', self.__removed)
-            self.connect_object('destroy', widgets.watcher.disconnect, s)
+            #s = widgets.watcher.connect('removed', self.__removed)
+            #self.connect_object('destroy', widgets.watcher.disconnect, s)
 
             self.connect_object('destroy', self.__destroy, model)
 
@@ -162,6 +161,8 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__refill_id = None
         self.__filter = None
         search.connect('changed', self.__filter_changed)
+        widgets.watcher.connect('refresh', self.__refresh)
+        widgets.watcher.connect('removed', self.__refresh)
 
         self.refresh_panes(restore=False)
         self.show_all()
@@ -246,8 +247,10 @@ class PanedBrowser(gtk.VBox, Browser):
             self.__panes[-1].uninhibit()
             self.__panes[-1].set_selected(selected[-1].split("\t"), True)
 
-    def __refresh(self, watcher):
+    def __refresh(self, watcher, songs=None):
+        self.__panes[-1].inhibit()
         self.activate()
+        self.__panes[-1].uninhibit()
 
     def fill(self, songs):
         if self.__save: self.save()

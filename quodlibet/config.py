@@ -75,7 +75,7 @@ def init(*rc_files):
           "pipeline": "", # GStreamer audio pipeline
 
           # initial column headers
-          "headers": "~#track ~title~version ~album~part artist ~length"
+          "headers": "~#track ~title~version ~album~part artist ~#length"
           },
 
         "rename":
@@ -108,6 +108,12 @@ def init(*rc_files):
             _config.set(section, key, value)
 
     _config.read(rc_files)
+
+    # FIXME: Remove after 0.14
+    headers = _config.get("settings", "headers").split()
+    try: headers[headers.index("~length")] = "~#length"
+    except ValueError: pass
+    else: _config.set("settings", "headers", " ".join(headers))
 
 def state(arg):
     return _config.getboolean("settings", arg)

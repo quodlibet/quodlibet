@@ -318,7 +318,7 @@ class PreferencesWindow(gtk.Window):
                   ("~rating", _("_Rating"))],
                  [("title", tag("title")),
                   ("date", _("_Date")),
-                  ("~length",_("_Length"))]]):
+                  ("~#length",_("_Length"))]]):
                 for i, (k, t) in enumerate(l):
                     buttons[k] = gtk.CheckButton(t)
                     if k in checks:
@@ -383,7 +383,7 @@ class PreferencesWindow(gtk.Window):
         def __apply(self, button, buttons, tiv, aip, fip, others):
             headers = []
             for key in ["~#disc", "~#track", "title", "album", "artist",
-                        "date", "~basename", "~rating", "~length"]:
+                        "date", "~basename", "~rating", "~#length"]:
                 if buttons[key].get_active(): headers.append(key)
             if tiv.get_active():
                 try: headers[headers.index("title")] = "~title~version"
@@ -1226,8 +1226,9 @@ class MainWindow(gtk.Window):
         self.song_scroller.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::visible', self.__show_or)
 
-        SongList.set_all_column_headers(
-            config.get("settings", "headers").split())
+        headers = config.get("settings", "headers").split()
+        SongList.set_all_column_headers(headers)
+            
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(None, sort[1:], order=int(sort[0]))
 
@@ -1889,7 +1890,6 @@ class MainWindow(gtk.Window):
             self.browser.activate()
 
     def __refresh(self, watcher):
-        self.browser.activate()
         self.__set_time()
 
     def __set_time(self, *args):
@@ -2151,8 +2151,14 @@ class SongList(qltk.HintedTreeView):
     class LengthColumn(TextColumn):
         _render = gtk.CellRendererText()
         _render.set_property('xalign', 1.0)
+        def _cdf(self, column, cell, model, iter, tag):
+            try:
+                song = model[iter][0]
+                cell.set_property(
+                    'text', util.format_time(song.get("~#length", 0)))
+            except AttributeError: pass
 
-        def __init__(self, tag="~length"):
+        def __init__(self, tag="~#length"):
             SongList.TextColumn.__init__(self, tag)
             self.set_alignment(1.0)
 
@@ -2494,10 +2500,10 @@ class SongList(qltk.HintedTreeView):
                 column = self.TextColumn(t)
             elif t in ["~#added", "~#mtime", "~#lastplayed"]:
                 column = self.DateColumn(t)
+            elif t in ["~length", "~#length"]: column = self.LengthColumn()
             elif t.startswith("~#"): column = self.NumericColumn(t)
             elif t in ["~filename", "~basename", "~dirname"]:
                 column = self.FSColumn(t)
-            elif t == "~length": column = self.LengthColumn()
             elif "~" not in t and t != "title":
                 column = self.NonSynthTextColumn(t)
             else: column = self.WideTextColumn(t)
@@ -2787,8 +2793,6 @@ class LibraryBrowser(gtk.Window):
 
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__menu, 3, 0)
-        sid = widgets.watcher.connect_object('refresh', Kind.activate, browser)
-        self.connect_object('destroy', widgets.watcher.disconnect, sid)
         self.set_default_size(500, 300)
         sw.show_all()
         self.child.show()
