@@ -800,7 +800,8 @@ class SongProperties(gtk.Window):
         def __split_into_list(self, activator, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
-            spls = config.get("editing", "split_on").split()
+            spls = config.get("editing", "split_on").decode(
+                'utf-8', 'replace').split()
             vals = util.split_value(util.unescape(row[1]), spls)
             if vals[0] != util.unescape(row[1]):
                 row[1] = util.escape(vals[0])
@@ -811,7 +812,8 @@ class SongProperties(gtk.Window):
         def __split_title(self, activator, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
-            spls = config.get("editing", "split_on").split()
+            spls = config.get("editing", "split_on").decode(
+                'utf-8', 'replace').split()
             title, versions = util.split_title(util.unescape(row[1]), spls)
             if title != util.unescape(row[1]):
                 row[1] = util.escape(title)
@@ -831,7 +833,8 @@ class SongProperties(gtk.Window):
         def __split_people(self, activator, tag, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
-            spls = config.get("editing", "split_on").split()
+            spls = config.get("editing", "split_on").decode(
+                'utf-8', 'replace').split()
             person, others = util.split_people(util.unescape(row[1]), spls)
             if person != util.unescape(row[1]):
                 row[1] = util.escape(person)
@@ -841,7 +844,8 @@ class SongProperties(gtk.Window):
 
         def __show_menu(self, row, button, time, view):
             menu = gtk.Menu()        
-            spls = config.get("editing", "split_on").split()
+            spls = config.get("editing", "split_on").decode(
+                'utf-8', 'replace').split()
 
             can_change = self.__songinfo.can_change(row[0])
 
@@ -1231,7 +1235,8 @@ class SongProperties(gtk.Window):
                 col = gtk.TreeViewColumn(header, render, text=i + 2)
                 col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
                 view.append_column(col)
-            spls = config.get("editing", "split_on").split()
+            spls = config.get("editing", "split_on").decode(
+                'utf-8', 'replace').split()
 
             for song in songs:
                 basename = song("~basename")

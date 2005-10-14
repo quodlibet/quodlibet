@@ -116,6 +116,10 @@ class StringTests(TestCase):
         self.failUnlessEqual(split_value("a b", [" "]), ["a", "b"])
         self.failUnlessEqual(split_value("a b", []), ["a b"])
 
+    def test_split_wordboundry(self):
+        self.failUnlessEqual(split_value("Andromeda and the Band", ["and"]),
+                             ["Andromeda", "the Band"])
+
     def test_subtitle(self):
         # these tests shouldn't be necessary; we're really only
         # interested in split_foo.
