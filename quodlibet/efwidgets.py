@@ -170,20 +170,26 @@ class DirectoryTree(gtk.TreeView):
                 self.expand_row(row, False)
 
     def __expanded(self, iter, path, model):
-        if model is None: return
-        while model.iter_has_child(iter):
-            model.remove(model.iter_children(iter))
-        dir = model[iter][0]
-        for base in dircache.listdir(dir):
-            path = os.path.join(dir, base)
-            if (base[0] != "." and os.access(path, os.R_OK) and
-                os.path.isdir(path)):
-                niter = model.append(iter, [path])
-                if filter(os.path.isdir,
-                          [os.path.join(path, d) for d in
-                           dircache.listdir(path) if d[0] != "."]):
-                    model.append(niter, ["dummy"])
-        if not model.iter_has_child(iter): return True
+        window = self.window
+        if window: window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        while gtk.events_pending(): gtk.main_iteration()
+        try:
+            if model is None: return
+            while model.iter_has_child(iter):
+                model.remove(model.iter_children(iter))
+            folder = model[iter][0]
+            for base in dircache.listdir(folder):
+                path = os.path.join(folder, base)
+                if (base[0] != "." and os.access(path, os.R_OK) and
+                    os.path.isdir(path)):
+                    niter = model.append(iter, [path])
+                    if filter(os.path.isdir,
+                              [os.path.join(path, d) for d in
+                               dircache.listdir(path) if d[0] != "."]):
+                        model.append(niter, ["dummy"])
+            if not model.iter_has_child(iter): return True
+        finally:
+            if window: window.set_cursor(None)
 
 class FileSelector(gtk.VPaned):
     def cell_data(column, cell, model, iter):
