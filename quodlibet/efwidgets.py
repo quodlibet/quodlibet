@@ -30,6 +30,12 @@ class EFPluginManager(PluginManager):
 
     def invoke_event(self, event, *args): pass
 
+def search_func(model, column, key, iter, handledirs):
+    check = model.get_value(iter, 0)
+    if not handledirs or '/' not in key:
+        check = os.path.basename(check) or '/'
+    return key not in check.lower() and key not in check
+
 class DirectoryTree(gtk.TreeView):
     def cell_data(column, cell, model, iter):
         cell.set_property('text', util.fsdecode(
@@ -49,6 +55,7 @@ class DirectoryTree(gtk.TreeView):
 
         column.set_attributes(render, text=0)
         self.append_column(column)
+        self.set_search_equal_func(search_func, True)
         folders = [os.environ["HOME"], "/"]
         # Read in the GTK bookmarks list; gjc says this is the right way
         try: f = file(os.path.join(os.environ["HOME"], ".gtk-bookmarks"))
@@ -206,6 +213,7 @@ class FileSelector(gtk.VPaned):
         filelist.append_column(column)
         filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        #filelist.set_search_equal_func(search_func, False)
 
         self.__sig = filelist.get_selection().connect(
             'changed', self.__changed)
