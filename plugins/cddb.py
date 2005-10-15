@@ -47,7 +47,7 @@ def calculate_discid(album):
 def query(category, discid):
     discinfo = {}
     tracktitles = {}
-    dump = path.join(path.expanduser("~"), '.cddb', discid)
+    dump = path.join(path.expanduser("~"), '.cddb', category, discid)
     try:
         for line in file(dump):
             if line.startswith("TTITLE"):
@@ -138,7 +138,38 @@ def plugin_album(album):
     stat, discs = CDDB.query(discid, **CLIENTINFO)
     info = None
     if stat in (200,211):
-        info = query(discs[0]['category'], discs[0]['disc_id'])
+        if len(discs) > 1:
+            dlg = gtk.Dialog()
+            dlg.set_border_width(6)
+            dlg.set_has_separator(False)
+            dlg.set_resizable(False)
+            dlg.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                    gtk.STOCK_OK, gtk.RESPONSE_OK)
+            dlg.vbox.set_spacing(6)
+            dlg.set_default_response(gtk.RESPONSE_OK)
+            model = gtk.ListStore(str, str, str)
+            for disc in discs:
+                model.append([disc[s] for s in ('title','category','disc_id')])
+            box = gtk.ComboBox(model)
+            box.set_active(0)
+            for i in range(3):
+                crt = gtk.CellRendererText()
+                box.pack_start(crt)
+                box.set_attributes(crt, text=i)
+            dlg.vbox.pack_start(gtk.Label(
+                _("Select the album you wish to retrieve.")))
+            dlg.vbox.pack_start(box)
+            dlg.vbox.show_all()
+            resp = dlg.run()
+
+            try: title, cat, discid = model[box.get_active()]
+            except (ValueError, IndexError): resp = gtk.RESPONSE_CANCEL
+            dlg.destroy()
+
+            if resp == gtk.RESPONSE_OK: info = query(cat, discid)
+            else: return
+        else:
+            info = query(discs[0]['category'], discs[0]['disc_id'])
 
     if not info:
         n = len(album)
