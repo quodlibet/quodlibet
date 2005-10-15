@@ -139,7 +139,7 @@ def plugin_album(album):
     info = None
     if stat in (200,211):
         if len(discs) > 1:
-            dlg = gtk.Dialog()
+            dlg = gtk.Dialog(_('Select an album'))
             dlg.set_border_width(6)
             dlg.set_has_separator(False)
             dlg.set_resizable(False)
