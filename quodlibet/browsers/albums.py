@@ -252,7 +252,8 @@ class AlbumList(Browser, gtk.VBox):
             if (a1 and a2) is None: return cmp(a1, a2)
             elif a1.title == "": return 1
             elif a2.title == "": return -1
-            else: return (cmp(a1.people, a2.people) or
+            else: return (cmp(a1.people and a1.people[0],
+                              a2.people and a2.people[0]) or
                           cmp(a1.date, a2.date) or
                           cmp(a1.title, a2.title) or
                           cmp(a1.labelid, a2.labelid))
