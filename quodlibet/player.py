@@ -71,7 +71,7 @@ class PlaylistPlayer(object):
             self.__paused = paused
             try: self.info.set_paused(paused)
             except AttributeError: pass
-            if self.bin.get_property('uri'):
+            if self.song:
                 if self.__paused:
                    if getattr(self.song, 'stream', False):
                        self.bin.set_state(gst.STATE_NULL)
@@ -165,16 +165,16 @@ class PlaylistPlayer(object):
         self.__source.reset()
 
     def next(self):
-        self.__end()
-        self.paused = False
         self.__source.next()
+        self.__end()
         self.__get_song()
+        if self.song: self.paused = False
 
     def previous(self):
-        self.paused = False
         self.__source.previous()
         self.__end()
         self.__get_song()
+        if self.song: self.paused = False
 
     def go_to(self, song):
         self.__source.go_to(song)

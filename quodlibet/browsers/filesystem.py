@@ -47,6 +47,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
             elif not song.valid(): self.__lib.reload(song)
 
     def __play(self, *args):
+        player.playlist.reset()
         player.playlist.next()
 
     def can_filter(self, key):
