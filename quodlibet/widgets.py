@@ -2222,25 +2222,31 @@ class SongList(qltk.HintedTreeView):
 
         buttons = []
 
+        in_lib = True
+        streams = False
+        local = True
+        for song in songs:
+            if song.get("~filename") not in library: in_lib = False
+            if song.stream: streams = True
+            if not song.local: local = False
+
         b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
         buttons.append(b)
+        b.set_sensitive(streams)
 
         b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
         b.connect('activate', self.__remove, songs)
         menu.append(b)
         buttons.append(b)
+        b.set_sensitive(in_lib)
 
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         b.connect('activate', self.__delete, songs)
         menu.append(b)
         buttons.append(b)
-        
-        for song in songs:
-            if song["~filename"] not in library:
-                for b in buttons: b.set_sensitive(False)
-                break
+        b.set_sensitive(local)
 
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
