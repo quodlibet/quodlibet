@@ -243,6 +243,15 @@ class TBPTests(TestCase):
         self.assertEquals(pat.match(self.b1), self.nomatch)
         self.assertEquals(pat.match(self.b2), self.nomatch)
 
+    def test_disctrack(self):
+        pat = PatternFromFile('<discnumber><tracknumber>. <title>')
+        self.assertEquals(pat.match('101. T1.ogg'),
+            dict(discnumber='1', tracknumber='01', title='T1'))
+        self.assertEquals(pat.match('1318. T18.ogg'),
+            dict(discnumber='13', tracknumber='18', title='T18'))
+        self.assertEquals(pat.match('24. T4.ogg'),
+            dict(discnumber='2', tracknumber='4', title='T4'))
+
 class FormatTimeTests(TestCase):
     def test_second(s):
         s.assertEquals(f_t_l(1).split(", ")[0], _("1 second"))
