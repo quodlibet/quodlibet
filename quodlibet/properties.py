@@ -862,7 +862,7 @@ class SongProperties(gtk.Window):
                     _("Split disc out of _album"), gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_album, view)
                 b.set_sensitive((util.split_album(row[1])[1] is not None) and
-                                self._songinfo.can_change("album"))
+                                self.__songinfo.can_change("album"))
                 menu.append(b)
 
             elif row[0] == "title":
