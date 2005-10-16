@@ -372,7 +372,7 @@ class AlbumList(Browser, gtk.VBox):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         songs = set()
-        for album in albums: songs.union_update(album.songs)
+        for album in albums: songs.update(album.songs)
         songs = list(songs)
         if songs:
             map(library.remove, songs)
