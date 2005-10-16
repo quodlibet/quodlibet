@@ -161,8 +161,10 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__refill_id = None
         self.__filter = None
         search.connect('changed', self.__filter_changed)
-        widgets.watcher.connect('refresh', self.__refresh)
-        widgets.watcher.connect('removed', self.__refresh)
+        for s in [widgets.watcher.connect('refresh', self.__refresh),
+                  widgets.watcher.connect('removed', self.__refresh)
+                  ]:
+            self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         self.refresh_panes(restore=False)
         self.show_all()
