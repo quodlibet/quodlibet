@@ -11,12 +11,15 @@ it hasn't strictly been necessary since 0.10).
  * Ex Falso displays all available plugins in its menu. (#240)
  * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins. (#262)
  * New Album List search keys and sorting options. (#280, #281)
- * New Galician translation by Johám-Luís Miguéns Vila.
- * New Italian translation by Filippo Pappalardo.
- * Updated Finnish translation by Jari Rahkonen.
- * Updated Polish translation by Tomasz Torcz.
- * Updated Dutch translation by Hans van Dok.
- * Updated Hebrew translation by Roee Haimovich.
+ * New translations:
+   * Galician, by Johám-Luís Miguéns Vila.
+   * Italian, by Filippo Pappalardo.
+ * Updated translations:
+   * Finnish, by Jari Rahkonen.
+   * Polish, by Tomasz Torcz.
+   * Dutch, by Hans van Dok.
+   * Hebrew, by Roee Haimovich.
+   * German, by Rüdiger Arp.
 
 0.13.1 - People will fall for this for sure!
  * Fix playlist creation. (#250)
