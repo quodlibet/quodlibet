@@ -45,18 +45,18 @@ class TFormatters(TestCase):
 
     def test_mbid_valid(self):
         self.validate("musicbrainz_trackid",
-                      ["cafebabe-ffff-eeee-0101-deadbeaf",
-                       "Fef1F0f4-dead-a5da-d0D0-86753099"])
+                      ["cafebabe-ffff-eeee-0101-deadbeafffff",
+                       "Fef1F0f4-dead-a5da-d0D0-86753099ffff"])
     def test_mbid_invalid(self):
         self.invalidate("musicbrainz_trackid",
                         ["", "cafebab!-ffff-eeee-0101-deadbeaf",
                          "Fef1F0f4-dead-a5da-d0D0-8675309z"])
     def test_mbid_equivs(self):
         self.equivs("musicbrainz_trackid",
-                    {"cafebabe-ffff-eeee-0101-deadbeaf":
-                     "cafebabe-ffff-eeee-0101-deadbeaf",
-                     "Fef1F0f4-dead-a5da-d0D0-86753099":
-                     "fef1f0f4-dead-a5da-d0d0-86753099"
+                    {"cafebabe-ffff-eeee-0101-deadbeafffff":
+                     "cafebabe-ffff-eeee-0101-deadbeafffff",
+                     "Fef1F0f4-dead-a5da-d0D0-86753099ffff":
+                     "fef1f0f4-dead-a5da-d0d0-86753099ffff"
                      })
 
 add(TFormatters)

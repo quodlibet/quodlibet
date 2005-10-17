@@ -74,9 +74,10 @@ class PeakFormatter(Formatter):
         else: return (f > 0) and str(f)
 
 class MBIDFormatter(Formatter):
-    tags = ["musicbrainz_trackid"]
+    tags = ["musicbrainz_trackid", "musicbrainz_albumid",
+            "musicbrainz_artistid"]
     error = _("MusicBrainz track IDs must be in UUID format.")
-    __match = sre.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8}$").match
+    __match = sre.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$").match
     def validate(self, value):
         value = value.strip().lower()
         return self.__match(value) and value
