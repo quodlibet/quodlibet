@@ -2234,7 +2234,7 @@ class SongList(qltk.HintedTreeView):
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
         buttons.append(b)
-        b.set_sensitive(streams)
+        b.set_sensitive(not streams)
 
         b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
         b.connect('activate', self.__remove, songs)
