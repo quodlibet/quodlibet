@@ -2440,42 +2440,36 @@ class SongList(qltk.HintedTreeView):
         return self.get_model().get()
 
     def set_songs(self, songs, tag=None):
-        if self.window: self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-        try:
-            while gtk.events_pending(): gtk.main_iteration() # apply cursor
-            model = self.get_model()
+        model = self.get_model()
 
-            if tag is None: tag, reverse = self.get_sort_by()
+        if tag is None: tag, reverse = self.get_sort_by()
+        else:
+            self.set_sort_by(None, refresh=False)
+            reverse = False
+
+        if tag == "~#track": tag = "album"
+        elif tag == "~#disc": tag = "album"
+        elif tag == "~length": tag = "~#length"
+        elif tag == "~album~part": tag = "album"
+        if tag != "album":
+            if reverse:
+                songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
             else:
-                self.set_sort_by(None, refresh=False)
-                reverse = False
+                songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
+        else:
+            songs.sort()
+            if reverse: songs.reverse()
 
-            if tag == "~#track": tag = "album"
-            elif tag == "~#disc": tag = "album"
-            elif tag == "~length": tag = "~#length"
-            elif tag == "~album~part": tag = "album"
-            if tag != "album":
-                if reverse:
-                    songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
-                else:
-                    songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
-            else:
-                songs.sort()
-                if reverse: songs.reverse()
+        selected = self.get_selected_songs()
+        selected = dict.fromkeys([song['~filename'] for song in selected])
 
-            selected = self.get_selected_songs()
-            selected = dict.fromkeys([song['~filename'] for song in selected])
+        model.set(songs)
 
-            model.set(songs)
-
-            # reselect what we can
-            selection = self.get_selection()
-            for i, row in enumerate(iter(model)):
-                if row[0]['~filename'] in selected:
-                    selection.select_path(i)
-        finally:
-            while gtk.events_pending(): gtk.main_iteration() # apply list
-            if self.window: self.window.set_cursor(None)
+        # reselect what we can
+        selection = self.get_selection()
+        for i, row in enumerate(iter(model)):
+            if row[0]['~filename'] in selected:
+                selection.select_path(i)
 
     def get_selected_songs(self):
         model, rows = self.get_selection().get_selected_rows()
