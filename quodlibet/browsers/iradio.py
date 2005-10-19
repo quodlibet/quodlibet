@@ -160,7 +160,6 @@ class InternetRadio(gtk.HBox, Browser):
         self.__search = gtk.Entry()
         self.pack_start(add, expand=False)
         add.connect('clicked', self.__add)
-        gobject.idle_add(self.activate)
         if InternetRadio.__sig is None:
             InternetRadio.__sig = widgets.watcher.connect(
                 'changed', InternetRadio.__changed)
@@ -188,6 +187,7 @@ class InternetRadio(gtk.HBox, Browser):
 
         self.__load_stations()
         self.show_all()
+        gobject.idle_add(self.activate)
 
     def __filter_changed(self, entry):
         if self.__refill_id is not None:
@@ -221,8 +221,8 @@ class InternetRadio(gtk.HBox, Browser):
     __changed = classmethod(__changed)
 
     def __add(self, button):
-        uri = AddNewStation().run()
-        if uri is None: return
+        uri = AddNewStation().run().strip()
+        if uri is None or uri == "": return
         elif uri.lower().endswith(".pls") or uri == SACREDCHAO:
             if isinstance(uri, unicode): uri = uri.encode('utf-8')
             try: sock = urllib.urlopen(uri)
