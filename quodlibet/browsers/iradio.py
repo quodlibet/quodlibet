@@ -169,6 +169,7 @@ class InternetRadio(gtk.HBox, Browser):
                   ]:
             self.connect_object('destroy', widgets.watcher.disconnect, s)
         self.connect_object('destroy', self.__stations.save, STATIONS)
+        self.connect_object('destroy', self.emit, 'songs-selected', [], None)
 
         hb = gtk.HBox(spacing=3)
         lab = gtk.Label(_("_Search:"))
@@ -221,8 +222,8 @@ class InternetRadio(gtk.HBox, Browser):
     __changed = classmethod(__changed)
 
     def __add(self, button):
-        uri = AddNewStation().run().strip()
-        if uri is None or uri == "": return
+        uri = (AddNewStation().run() or "").strip()
+        if uri == "": return
         elif uri.lower().endswith(".pls") or uri == SACREDCHAO:
             if isinstance(uri, unicode): uri = uri.encode('utf-8')
             try: sock = urllib.urlopen(uri)
