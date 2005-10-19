@@ -1111,10 +1111,11 @@ class MainWindow(gtk.Window):
                 stock.VOLUME_MAX, gtk.ICON_SIZE_LARGE_TOOLBAR)
             qltk.PopupVSlider.__init__(self, i)
             self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
-            self.scale.connect('value-changed', self.__volume_changed, device)
             self.scale.set_inverted(True)
             self.get_value = self.scale.get_value
             self.set_value = self.scale.set_value
+            self.set_value(1.0)
+            self.scale.connect('value-changed', self.__volume_changed, device)
             self.set_value(config.getfloat("memory", "volume"))
             self.show_all()
 
