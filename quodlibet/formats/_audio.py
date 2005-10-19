@@ -163,7 +163,18 @@ class AudioFile(dict):
     def sanitize(self, filename=None):
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
-        self["~filename"] = os.path.realpath(self["~filename"])
+        if self.local:
+            self["~filename"] = os.path.realpath(self["~filename"])
+            # Find mount point (terminating at "/" if necessary)
+            head = self["~filename"]
+            while "~mountpoint" not in self:
+                head, tail = os.path.split(head)
+                # Prevent infinite loop without a fully-qualified filename
+                # (the unit tests use these).
+                head = head or "/"
+                if os.path.ismount(head): self["~mountpoint"] = head
+        else: self["~mountpoint"] = "/"
+
 
         # Fill in necessary values.
         self.setdefault("~#lastplayed", 0)
@@ -175,16 +186,6 @@ class AudioFile(dict):
         self.setdefault("~#added", int(time.time()))
 
         self["~#mtime"] = util.mtime(self['~filename'])
-
-        # Find mount point (terminating at "/" if necessary)
-        head = self["~filename"]
-        while "~mountpoint" not in self:
-            head, tail = os.path.split(head)
-            # Prevent infinite loop without a fully-qualified filename
-            # (the unit tests use these).
-            head = head or "/"
-            if os.path.ismount(head):
-                self["~mountpoint"] = head
 
     # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
