@@ -121,6 +121,12 @@ class TSongWrapper(TestCase):
     def test_getitem(self):
         self.failUnlessEqual(self.wrap["title"], "woo")
 
+    def test_delitem(self):
+        self.failUnless("title" in self.wrap)
+        del(self.wrap["title"])
+        self.failIf("title" in self.wrap)
+        self.failUnless(self.wrap._needs_write)
+
     def test_realkeys(self):
         self.failUnlessEqual( self.pwrap.realkeys(), self.psong.realkeys())
 

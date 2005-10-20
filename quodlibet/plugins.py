@@ -77,6 +77,12 @@ class SongWrapper(object):
         self._needs_write = (self._needs_write or not key.startswith("~"))
         return self._song.__setitem__(key, value)
 
+    def __delitem__(self, *args):
+        retval = self._song.__delitem__(*args)
+        self._updated = True
+        self._needs_write = True
+        return retval
+
     def __getitem__(self, *args): return self._song.__getitem__(*args)
     def __cmp__(self, other): return cmp(self._song, other)
     def __contains__(self, key): return key in self._song
