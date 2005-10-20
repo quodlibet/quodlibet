@@ -109,17 +109,17 @@ class CountManager(object):
     def __start(self, watcher, song):
         if song is not None and song.stream:
             song["~#lastplayed"] = int(time.time())
-            song["~#playcount"] += 1
+            song["~#playcount"] = song.get("~#playcount", 0) + 1
             watcher.changed([song])
 
     def __end(self, watcher, song, ended, pl):
         if song is None or song.stream: return
         elif not ended:
             song["~#lastplayed"] = int(time.time())
-            song["~#playcount"] += 1
+            song["~#playcount"] = song.get("~#playcount", 0) + 1
             watcher.changed([song])
         elif pl.current is not song:
-            song["~#skipcount"] += 1
+            song["~#skipcount"] = song.get("~#skipcount", 0) + 1
             watcher.changed([song])
 
 class PluginWindow(gtk.Window):
@@ -1114,9 +1114,9 @@ class MainWindow(gtk.Window):
             self.scale.set_inverted(True)
             self.get_value = self.scale.get_value
             self.set_value = self.scale.set_value
-            self.set_value(1.0)
             self.scale.connect('value-changed', self.__volume_changed, device)
             self.set_value(config.getfloat("memory", "volume"))
+            self.__volume_changed(self.scale, device)
             self.show_all()
 
         def __volume_changed(self, slider, device):
