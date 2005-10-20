@@ -432,11 +432,11 @@ class AlbumList(Browser, gtk.VBox):
                     albums[key].add(song)
                     changed.add(alb)
             else:
-                if "" not in albums:
-                    albums[""] = self._Album("", "")
-                    new.append(albums[""])
+                if "\u0000" not in albums:
+                    albums["\u0000"] = self._Album("", "")
+                    new.append(albums["\u0000"])
                 changed.add("")
-                albums[""].add(song)
+                albums["\u0000"].add(song)
         for album in new:
             album.finalize()
             album._model = model
