@@ -20,6 +20,8 @@ it hasn't strictly been necessary since 0.10).
    * Dutch, by Hans van Dok.
    * Hebrew, by Roee Haimovich.
    * German, by Rüdiger Arp.
+   * Russian, by Nikolai Prokoschenko.
+ * Many bug fixes.
 
 0.13.1 - People will fall for this for sure!
  * Fix playlist creation. (#250)
