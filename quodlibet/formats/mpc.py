@@ -66,10 +66,10 @@ class MPCFile(AudioFile):
         for key in keys:
             # remove any text keys we read in
             value = tag[key]
-            if (value.kind == musepack.apev2.TEXT and
-                key not in MPCFile.IGNORE):
+            if (value.kind == musepack.apev2.TEXT and key not in self.IGNORE):
                 del(tag[key])
         for key in self.realkeys():
+            if key in self.IGNORE: continue
             value = self[key]
             key = MPCFile.SNART.get(key, key)
             if key in ["isrc", "isbn", "ean/upc"]: key = key.upper()
