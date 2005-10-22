@@ -28,6 +28,7 @@ class EmptyBar(gtk.HBox, Browser):
         # avoid the song list changing when the user switches browses and
         # then refreshes.
         self._text = None
+        self.__main = main
 
     def dynamic(self, song):
         if self._text is not None:
@@ -52,7 +53,7 @@ class EmptyBar(gtk.HBox, Browser):
             except parser.error: pass
             else:
                 self.emit('songs-selected', songs, None)
-                self.save()
+                if self.__main: self.save()
 
     def can_filter(self, key): return True
 
@@ -122,7 +123,7 @@ class SearchBar(EmptyBar):
         self.pack_start(clear, expand=False)
         self.pack_start(search, expand=False)
         self.show_all()
-        self.__limit = limit
+        self._limit = limit
         hb.hide_all()
 
     def __menu(self, entry, menu, hb):
@@ -144,8 +145,8 @@ class SearchBar(EmptyBar):
             except parser.error: pass
             else:
                 self.get_children()[1].prepend_text(self._text)
-                val = self.__limit.get_value_as_int()
-                if (self.__limit.get_property('visible') and
+                val = self._limit.get_value_as_int()
+                if (self._limit.get_property('visible') and
                     val and len(songs) > val):
                     import random
                     random.shuffle(songs)

@@ -1,0 +1,89 @@
+import gobject, gtk
+from tests import TestCase, add
+
+import browsers.search
+from browsers.search import EmptyBar, SearchBar
+from formats._audio import AudioFile as AF
+
+import __builtin__
+__builtin__.__dict__['_'] = lambda a: a
+
+from library import Library
+browsers.search.library = Library()
+
+SONGS = [AF({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
+         AF({"title": "two", "artist": "mu", "~filename": "/dev/zero"}),
+         AF({"title": "three", "artist": "boris", "~filename": "/bin/ls"})
+         ]
+SONGS.sort()
+
+for af in SONGS:
+    af.sanitize()
+    browsers.search.library.add_song(af)
+
+class TEmptyBar(TestCase):
+    Bar = EmptyBar
+    def setUp(self):
+        self.bar = self.Bar(False)
+        self.bar.connect('songs-selected', self._expected)
+
+    def _expected(self, bar, songs, sort):
+        songs.sort()
+        self.failUnlessEqual(songs, self.expected)
+        self.expected = None
+
+    def _do(self):
+        self.bar.activate()
+        while gtk.events_pending(): gtk.main_iteration()
+        self.failUnless(self.expected is None)
+
+    def test_can_filter(self):
+        for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
+            self.failUnless(self.bar.can_filter(key))
+
+    def test_default_none(self):
+        self.expected = None
+        self._do()
+
+    def test_empty_is_all(self):
+        self.bar.set_text("")
+        self.expected = list(SONGS)
+        self._do()
+
+    def test_dynamic(self):
+        self.failUnless(self.bar.dynamic(SONGS[0]))
+        self.bar.set_text("this does not match any song")
+        self.failIf(self.bar.dynamic(SONGS[0]))
+
+    def test_filter(self):
+        self.expected = [SONGS[1]]
+        self.bar.filter("title", ["two"])
+
+    def test_filter_notvalue(self):
+        self.expected = SONGS[1:3]
+        self.bar.filter("artist", ["notvalue", "mu", "piman"])
+
+    def test_filter_none(self):
+        self.expected = []
+        self.bar.filter("title", ["not a value"])
+
+    def test_filter_numeric(self):
+        self.expected = list(SONGS)
+        self.bar.filter("~#length", [0])
+
+    def test_saverestore(self):
+        self.bar.set_text("title = %s" % SONGS[0]["title"])
+        self.expected = [SONGS[0]]
+        self._do()
+        self.bar.save()
+        self.bar.set_text("")
+        self.expected = list(SONGS)
+        self._do()
+        self.bar.restore()
+        self.expected = [SONGS[0]]
+        self._do()
+
+    def tearDown(self):
+        self.bar.destroy()
+
+add(TEmptyBar)

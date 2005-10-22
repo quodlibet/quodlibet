@@ -27,7 +27,7 @@ registerCase(TPO)
 
 import test_util, test_audio, test_parser, test_metadata
 import test_playlist, test_pattern, test_stock
-import test_qltk, test_widgets, test_player
+import test_qltk, test_widgets, test_player, test_search
 import test_library, test_plugins, test_efwidgets, test_properties
 
 class Result(unittest.TestResult):
