@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-13 21:01-0500\n"
+"POT-Creation-Date: 2005-10-21 19:51-0500\n"
 "PO-Revision-Date: 2005-07-31 17:22:56-0500\n"
 "Last-Translator: johnny5 <johnny5@hde.co.il>\n"
 "Language-Team: Hebrew\n"
@@ -41,12 +41,12 @@ msgstr "%(different)s, %(missing)s"
 msgid "W: %s is not a QL song database."
 msgstr ""
 
-#: ../library.py:261
+#: ../library.py:260
 #, python-format
 msgid "Checking %s"
 msgstr ""
 
-#: ../library.py:289 ../widgets.py:282
+#: ../library.py:288 ../widgets.py:282
 #, python-format
 msgid "Supported formats: %s"
 msgstr "Supported formats: %s"
@@ -236,7 +236,7 @@ msgstr ""
 msgid "E: '%s' is not a unique prefix."
 msgstr ""
 
-#: ../util.py:204 ../widgets.py:1197
+#: ../util.py:204 ../widgets.py:1198
 msgid "No time information"
 msgstr "נתוני זמן חסרים"
 
@@ -244,7 +244,7 @@ msgstr "נתוני זמן חסרים"
 msgid "[Invalid Encoding]"
 msgstr "[קידוד לא נתמך]"
 
-#: ../util.py:449 ../properties.py:927 ../properties.py:1202
+#: ../util.py:450 ../properties.py:932 ../properties.py:1207
 msgid "Invalid tag"
 msgstr "תגית שגויה"
 
@@ -252,7 +252,7 @@ msgstr "תגית שגויה"
 #. Note that although tag names are translated in the main list view,
 #. they are *not* when editing tags.
 #. date the song was added to the library
-#: ../po/tag-names.py:8 ../properties.py:348
+#: ../po/tag-names.py:8 ../properties.py:349
 msgid "added"
 msgstr "נוסף"
 
@@ -264,7 +264,7 @@ msgstr "אלבום"
 msgid "arranger"
 msgstr "מעבד"
 
-#: ../po/tag-names.py:11 ../properties.py:302 ../properties.py:475
+#: ../po/tag-names.py:11 ../properties.py:303 ../properties.py:476
 msgid "artist"
 msgstr "אמן"
 
@@ -328,11 +328,11 @@ msgid "language"
 msgstr "שפה"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:32 ../properties.py:349
+#: ../po/tag-names.py:32 ../properties.py:350
 msgid "last played"
 msgstr "נוגן לאחרונה"
 
-#: ../po/tag-names.py:33 ../properties.py:380
+#: ../po/tag-names.py:33 ../properties.py:381
 msgid "length"
 msgstr "משך"
 
@@ -349,7 +349,7 @@ msgid "lyricist"
 msgstr "מילים"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:38 ../properties.py:382
+#: ../po/tag-names.py:38 ../properties.py:383
 msgid "modified"
 msgstr "שונה לאחרונה"
 
@@ -371,19 +371,19 @@ msgstr "חלק"
 msgid "people"
 msgstr "יוצרים"
 
-#: ../po/tag-names.py:45 ../properties.py:480
+#: ../po/tag-names.py:45 ../properties.py:481
 msgid "performer"
 msgstr "מבצע"
 
-#: ../po/tag-names.py:46 ../properties.py:350
+#: ../po/tag-names.py:46 ../properties.py:351
 msgid "play count"
 msgstr "מספר פעמים שהושמע"
 
-#: ../po/tag-names.py:47 ../properties.py:352
+#: ../po/tag-names.py:47 ../properties.py:353
 msgid "rating"
 msgstr "דירוג"
 
-#: ../po/tag-names.py:48 ../properties.py:351
+#: ../po/tag-names.py:48 ../properties.py:352
 msgid "skip count"
 msgstr "מספר פעמים שדולג"
 
@@ -408,7 +408,7 @@ msgstr "אתר אינטרנט"
 msgid "BPM"
 msgstr ""
 
-#: ../po/tag-names.py:56 ../properties.py:481
+#: ../po/tag-names.py:56 ../properties.py:482
 msgid "performers"
 msgstr "מבצעים"
 
@@ -432,12 +432,12 @@ msgstr "מנצחים"
 msgid "authors"
 msgstr "מחברים"
 
-#: ../po/tag-names.py:62 ../properties.py:303 ../properties.py:476
-#: ../properties.py:590
+#: ../po/tag-names.py:62 ../properties.py:304 ../properties.py:477
+#: ../properties.py:591
 msgid "artists"
 msgstr "אמנים"
 
-#: ../po/tag-names.py:63 ../properties.py:606
+#: ../po/tag-names.py:63 ../properties.py:607
 msgid "albums"
 msgstr "אלבומים"
 
@@ -477,8 +477,8 @@ msgid_plural "%d years"
 msgstr[0] "%d שנה"
 msgstr[1] "%d שנים"
 
-#: ../formats/_audio.py:96 ../properties.py:333 ../properties.py:340
-#: ../properties.py:365 ../browsers/paned.py:98
+#: ../formats/_audio.py:96 ../properties.py:334 ../properties.py:341
+#: ../properties.py:366 ../browsers/paned.py:97
 msgid "Unknown"
 msgstr "לא ידוע"
 
@@ -500,7 +500,7 @@ msgid ""
 "library, you may ignore this warning."
 msgstr ""
 
-#: ../widgets.py:100 ../efwidgets.py:197
+#: ../widgets.py:100 ../efwidgets.py:211
 msgid "Songs"
 msgstr "שירים"
 
@@ -646,7 +646,7 @@ msgstr "ייצוב עוצמה לפי שיר (רדיו)"
 msgid "Per-album (\"Audiophile\") volume adjustment"
 msgstr "ייצוב עוצמה לפי אלבום (אודיופיל)"
 
-#: ../widgets.py:504 ../properties.py:361
+#: ../widgets.py:504 ../properties.py:362
 msgid "Library"
 msgstr "ספריה"
 
@@ -687,15 +687,15 @@ msgid "Quod Libet Preferences"
 msgstr "מאפייני Quod Libet"
 
 #. FIXME: Post 0.14, use _('gtk-stock-media-play').
-#: ../widgets.py:717 ../widgets.py:775 ../widgets.py:1359 ../widgets.py:1574
+#: ../widgets.py:717 ../widgets.py:775 ../widgets.py:1361 ../widgets.py:1576
 msgid "_Play"
 msgstr "_נגן"
 
-#: ../widgets.py:739 ../widgets.py:1344 ../widgets.py:2184
+#: ../widgets.py:739 ../widgets.py:1346 ../widgets.py:2191
 msgid "Rating"
 msgstr "דירוג"
 
-#: ../widgets.py:775 ../widgets.py:1578
+#: ../widgets.py:775 ../widgets.py:1580
 msgid "_Pause"
 msgstr "ה_שהה"
 
@@ -728,7 +728,7 @@ msgstr "ת_צוגת עריכה"
 msgid "_Edit Display..."
 msgstr "תצוגת _עריכה..."
 
-#: ../widgets.py:935 ../properties.py:1184
+#: ../widgets.py:935 ../properties.py:1189
 msgid "Invalid pattern"
 msgstr "תבנית שגויה"
 
@@ -745,147 +745,147 @@ msgstr ""
 msgid "Stop after this song"
 msgstr "עצור לאחר השיר הנוכחי"
 
-#: ../widgets.py:1186
+#: ../widgets.py:1187
 msgid "In Order"
 msgstr "לפי הסדר"
 
-#: ../widgets.py:1187
+#: ../widgets.py:1188
 msgid "Shuffle"
 msgstr "מעורבב"
 
-#: ../widgets.py:1188
+#: ../widgets.py:1189
 msgid "Weighted"
 msgstr "לפי דירוג"
 
-#: ../widgets.py:1189
+#: ../widgets.py:1190
 msgid "Play songs in random order"
 msgstr "נגן שירים בסדר אקראי"
 
-#: ../widgets.py:1192
+#: ../widgets.py:1193
 msgid "_Repeat"
 msgstr "_חזור"
 
-#: ../widgets.py:1194
+#: ../widgets.py:1195
 msgid "Restart the playlist when finished"
 msgstr "התחל את הרשימת שירים בהגיע לסופה"
 
-#: ../widgets.py:1315
+#: ../widgets.py:1317
 msgid "_Music"
 msgstr "_מוסיקה"
 
-#: ../widgets.py:1316
+#: ../widgets.py:1318
 msgid "_Add a Folder..."
 msgstr "הוסף _תיקיה..."
 
-#: ../widgets.py:1318
+#: ../widgets.py:1320
 msgid "_Add a File..."
 msgstr "_הוסף קובץ..."
 
-#: ../widgets.py:1320
+#: ../widgets.py:1322
 msgid "_New/Edit Playlist..."
 msgstr "_ערוך/צור רשימת שירים..."
 
-#: ../widgets.py:1322
+#: ../widgets.py:1324
 msgid "_Browse Library"
 msgstr "_צפה בספרית השירים"
 
-#: ../widgets.py:1325 ../widgets.py:2208
+#: ../widgets.py:1327 ../widgets.py:2215
 msgid "_Plugins"
 msgstr "ה_רחבות"
 
-#: ../widgets.py:1328
+#: ../widgets.py:1330
 msgid "_Filters"
 msgstr "_מסננים"
 
-#: ../widgets.py:1330
+#: ../widgets.py:1332
 msgid "Not played to_day"
 msgstr "לא נוגנו ה_יום"
 
-#: ../widgets.py:1332
+#: ../widgets.py:1334
 msgid "Not played in a _week"
 msgstr "לא נוגנו ב_שבוע האחרון"
 
-#: ../widgets.py:1334
+#: ../widgets.py:1336
 msgid "Not played in a _month"
 msgstr "לא נוגנו ב_חודש האחרון"
 
-#: ../widgets.py:1336
+#: ../widgets.py:1338
 msgid "_Never played"
 msgstr "לא נוגנו מ_עולם"
 
-#: ../widgets.py:1338
+#: ../widgets.py:1340
 msgid "_Top 40"
 msgstr "40 ה_פופולארים"
 
-#: ../widgets.py:1339
+#: ../widgets.py:1341
 msgid "B_ottom 40"
 msgstr "40 ה_לא פופלארים"
 
-#: ../widgets.py:1341
+#: ../widgets.py:1343
 msgid "S_ong"
 msgstr "_שיר"
 
-#: ../widgets.py:1346
+#: ../widgets.py:1348
 msgid "_Jump to playing song"
 msgstr "_דלג לשיר נוכחי"
 
-#: ../widgets.py:1349
+#: ../widgets.py:1351
 msgid "_View"
 msgstr "_תצוגה"
 
-#: ../widgets.py:1350
+#: ../widgets.py:1352
 msgid "_Help"
 msgstr "_עזרה"
 
-#: ../widgets.py:1370
+#: ../widgets.py:1372
 msgid "Re_fresh Library"
 msgstr "_רענן ספרית שירים"
 
-#: ../widgets.py:1374
+#: ../widgets.py:1376
 msgid "Re_load Library"
 msgstr "_טען מחדש את ספרית השירים"
 
-#: ../widgets.py:1379
+#: ../widgets.py:1381
 msgid "Filter on _genre"
 msgstr "סנן לפי _סגנון"
 
-#: ../widgets.py:1380
+#: ../widgets.py:1382
 msgid "Filter on _artist"
 msgstr "סנן לפי _אמן"
 
-#: ../widgets.py:1381
+#: ../widgets.py:1383
 msgid "Filter on al_bum"
 msgstr "סנן לפי א_לבום"
 
-#: ../widgets.py:1388
+#: ../widgets.py:1390
 msgid "Random _genre"
 msgstr "ס_גנון אקראי"
 
-#: ../widgets.py:1389
+#: ../widgets.py:1391
 msgid "Random _artist"
 msgstr "א_מן אקראי"
 
-#: ../widgets.py:1390
+#: ../widgets.py:1392
 msgid "Random al_bum"
 msgstr "א_לבום אקראי"
 
-#: ../widgets.py:1397
+#: ../widgets.py:1399
 msgid "Song _List"
 msgstr "רשימת _שירים"
 
-#: ../widgets.py:1402 ../widgets.py:1916
+#: ../widgets.py:1404 ../widgets.py:1917
 msgid "_Play Queue"
 msgstr "_סדר השמעה"
 
-#: ../widgets.py:1433
+#: ../widgets.py:1435
 msgid "Check for changes made to the library"
 msgstr "בדוק אם נעשו שינויים בספרית השירים"
 
-#: ../widgets.py:1436
+#: ../widgets.py:1438
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "טען את כל השירים בספרית השירים (פעולה זו עלולה לקחת זמן ארוך)"
 
-#: ../widgets.py:1439
+#: ../widgets.py:1441
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -893,7 +893,7 @@ msgstr ""
 "40 השירים שהושמעו מספר הפעמים הרב ביותר (ניתן לבחור יותר מ 40 שירים אם ישנם "
 "קשרים בינם)"
 
-#: ../widgets.py:1443
+#: ../widgets.py:1445
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -901,31 +901,31 @@ msgstr ""
 "40 השירים שהושמעו מספר הפעמים המועט ביותר (ניתן לבחור יותר מ 40 שירים אם "
 "ישנם קשרים בינם)"
 
-#: ../widgets.py:1447
+#: ../widgets.py:1449
 msgid "View and edit tags in the playing song"
 msgstr "הצג וערוך תגיות בשיר נוכחי"
 
-#: ../widgets.py:1556
+#: ../widgets.py:1558
 #, python-format
 msgid "W: Unable to load %s"
 msgstr ""
 
-#: ../widgets.py:1586
+#: ../widgets.py:1588
 #, python-format
 msgid "Could not play %s."
 msgstr "לא ניתן להשמיע %s"
 
-#: ../widgets.py:1623
+#: ../widgets.py:1625
 msgid "New/Edit Playlist"
 msgstr "ערוך/צור רשימת שירים"
 
-#: ../widgets.py:1624
+#: ../widgets.py:1626
 msgid ""
 "Enter a name for the new playlist. If it already exists it will be opened "
 "for editing."
 msgstr "הזן שם לרשימת השירים, במידה והשם קיים תיפתח רשימת השירים לעריכה."
 
-#: ../widgets.py:1709
+#: ../widgets.py:1711
 #, python-format
 msgid ""
 "Quod Libet is scanning your library. This may take several minutes.\n"
@@ -938,11 +938,11 @@ msgstr ""
 "%d שירים הוטענו\n"
 "%d שירים הוסרו"
 
-#: ../widgets.py:1751 ../widgets.py:1754
+#: ../widgets.py:1753 ../widgets.py:1756
 msgid "Add Music"
 msgstr "הוסף מוסיקה"
 
-#: ../widgets.py:1774
+#: ../widgets.py:1776
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -951,11 +951,11 @@ msgstr ""
 "לא ניתן להוסיף את %s לספריה שלך\n"
 "\n"
 
-#: ../widgets.py:1780
+#: ../widgets.py:1782
 msgid "Unable to add song"
 msgstr "לא ניתן להוסיף שיר"
 
-#: ../widgets.py:1789
+#: ../widgets.py:1791
 #, python-format
 msgid ""
 "Quod Libet is scanning for new songs and adding them to your library.\n"
@@ -966,60 +966,60 @@ msgstr ""
 "\n"
 "%d שירים נוספו"
 
-#: ../widgets.py:1902
+#: ../widgets.py:1903
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "שיר %(count)d (%(time)s)"
 msgstr[1] "%(count)d שירים (%(time)s)"
 
-#: ../widgets.py:1921
+#: ../widgets.py:1922
 msgid "_Choose randomly"
 msgstr "_בחר אקראית"
 
-#: ../widgets.py:1942
+#: ../widgets.py:1943
 msgid "Drag songs here to add them to the play queue"
 msgstr "גרור שירים לכאן על מנת להוסיפם לסדר ההשמעה"
 
-#: ../widgets.py:1955 ../properties.py:573
+#: ../widgets.py:1956 ../properties.py:574
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "שיר %d"
 msgstr[1] "%d שירים"
 
-#: ../widgets.py:2103 ../properties.py:330 ../properties.py:341
+#: ../widgets.py:2104 ../properties.py:331 ../properties.py:342
 msgid "Never"
 msgstr "מעולם לא"
 
-#: ../widgets.py:2179
+#: ../widgets.py:2186
 #, python-format
 msgid "_Filter on %s"
 msgstr "מיין לפי %s"
 
-#: ../widgets.py:2219 ../browsers/albums.py:346
+#: ../widgets.py:2234 ../browsers/albums.py:347
 msgid "Add to Queue"
 msgstr "הוסף לסדר ההשמעה"
 
-#: ../widgets.py:2224 ../browsers/albums.py:347
+#: ../widgets.py:2240 ../browsers/albums.py:348
 msgid "Remove from Library"
 msgstr "ה_סר מספרית השירים"
 
-#: ../widgets.py:2325 ../efwidgets.py:353
+#: ../widgets.py:2338 ../efwidgets.py:368
 #, python-format
 msgid "Moving %d/%d."
 msgstr "מעביר %d/%d."
 
-#: ../widgets.py:2326 ../efwidgets.py:354
+#: ../widgets.py:2339 ../efwidgets.py:369
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "מוחק %d/%d."
 
-#: ../widgets.py:2344 ../efwidgets.py:368
+#: ../widgets.py:2357 ../efwidgets.py:383
 msgid "Unable to delete file"
 msgstr "לא ניתן למחוק קובץ"
 
-#: ../widgets.py:2345 ../efwidgets.py:369
+#: ../widgets.py:2358 ../efwidgets.py:384
 #, python-format
 msgid ""
 "Deleting <b>%s</b> failed. Possibly the target file does not exist, or you "
@@ -1027,19 +1027,19 @@ msgid ""
 msgstr ""
 "המחיקה של <b>%s</b> נכשלה. יתכן שהקובץ אינו קיים או שאין לך הרשאות מתאימות"
 
-#: ../widgets.py:2568
+#: ../widgets.py:2581
 msgid "All songs"
 msgstr "כל השירים"
 
-#: ../widgets.py:2760
+#: ../widgets.py:2773
 msgid "Library Browser"
 msgstr "דפדפן הספריה"
 
-#: ../widgets.py:2818
+#: ../widgets.py:2829
 msgid "Unable to start a web browser"
 msgstr "לא ניתן להפעיל את דפדפן האינטרנט שלך"
 
-#: ../widgets.py:2819
+#: ../widgets.py:2830
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1049,29 +1049,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2827
+#: ../widgets.py:2838
 msgid "gtk-media-next"
 msgstr "הבא"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2830
+#: ../widgets.py:2841
 msgid "gtk-media-previous"
 msgstr "הקודם"
 
-#: ../widgets.py:2872
+#: ../widgets.py:2883
 msgid "Saving song library."
 msgstr "שונר ספרית שירים"
 
-#: ../widgets.py:2876
+#: ../widgets.py:2887
 msgid "Unable to save library"
 msgstr "לא ניתן לשמור ספרית שירים"
 
-#: ../widgets.py:2880
+#: ../widgets.py:2891
 msgid "No audio device found"
 msgstr "לא נמצא התקן קול"
 
-#: ../widgets.py:2881
+#: ../widgets.py:2892
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1083,12 +1083,12 @@ msgstr ""
 "\n"
 "Quod Libet תיסגר"
 
-#: ../plugins.py:329 ../properties.py:1292
+#: ../plugins.py:329 ../properties.py:1298
 msgid "Unable to edit song"
 msgstr "לא ניתן לערוך שיר"
 
-#: ../plugins.py:330 ../properties.py:1007 ../properties.py:1293
-#: ../properties.py:1613
+#: ../plugins.py:330 ../properties.py:1012 ../properties.py:1299
+#: ../properties.py:1619
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1153,178 +1153,178 @@ msgstr "על הגברת העוצמה של ReplayGain להיות מוזנת בת�
 msgid "ReplayGain peaks must be entered in x.yy format."
 msgstr "על העוצמת המירבית של ReplayGain להיות מוזנת בתצורה 'x.yy dB'"
 
-#: ../properties.py:78
+#: ../properties.py:79
 msgid "MusicBrainz track IDs must be in UUID format."
 msgstr "רצועות בעלות סימול של MusicBrainz חייבות להיות בתסדיר UUID"
 
-#: ../properties.py:92
+#: ../properties.py:93
 msgid "Add a Tag"
 msgstr "הוסף תגית"
 
-#: ../properties.py:121
+#: ../properties.py:122
 msgid "_Tag:"
 msgstr "_תגית:"
 
-#: ../properties.py:129
+#: ../properties.py:130
 msgid "_Value:"
 msgstr "_ערך:"
 
-#: ../properties.py:246
+#: ../properties.py:247
 msgid "No songs are selected."
 msgstr "לא נבחרו שירים"
 
-#: ../properties.py:267 ../properties.py:500
+#: ../properties.py:268 ../properties.py:501
 #, python-format
 msgid "Disc %s"
 msgstr "תקליטור %s"
 
-#: ../properties.py:272
+#: ../properties.py:273
 #, python-format
 msgid "Track %s"
 msgstr "רצועה %s"
 
-#: ../properties.py:331
+#: ../properties.py:332
 #, python-format
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "פעם %d"
 msgstr[1] "%d פעמים"
 
-#: ../properties.py:374
+#: ../properties.py:375
 #, python-format
 msgid "%d kbps"
 msgstr ""
 
-#: ../properties.py:381
+#: ../properties.py:382
 msgid "file size"
 msgstr "גודל קובץ"
 
-#: ../properties.py:384
+#: ../properties.py:385
 msgid "bitrate"
 msgstr "איכות"
 
-#: ../properties.py:395 ../properties.py:1222 ../properties.py:1344
-#: ../properties.py:1551 ../properties.py:1688
+#: ../properties.py:396 ../properties.py:1227 ../properties.py:1350
+#: ../properties.py:1557 ../properties.py:1694
 msgid "File"
 msgstr "קובץ"
 
-#: ../properties.py:427 ../browsers/albums.py:134
+#: ../properties.py:428 ../browsers/albums.py:134
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d תקליטור"
 msgstr[1] "%d תקליטורים"
 
-#: ../properties.py:429 ../browsers/albums.py:136
+#: ../properties.py:430 ../browsers/albums.py:136
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d רצועה"
 msgstr[1] "%d רצועות"
 
-#: ../properties.py:431
+#: ../properties.py:432
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d נבחר"
 msgstr[1] "%d נבחרו"
 
-#: ../properties.py:444
+#: ../properties.py:445
 #, python-format
 msgid "Produced by %s"
 msgstr "הופק על ידי %s"
 
-#: ../properties.py:510
+#: ../properties.py:511
 msgid "Track unavailable"
 msgstr "רצועה לא זמינה"
 
-#: ../properties.py:517
+#: ../properties.py:518
 msgid "Track List"
 msgstr "רשימת רצועות"
 
-#: ../properties.py:543 ../properties.py:603
+#: ../properties.py:544 ../properties.py:604
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "שיר %d ללא אלבום"
 msgstr[1] "%d שירים ללא אלבום"
 
-#: ../properties.py:547
+#: ../properties.py:548
 msgid "Selected Discography"
 msgstr "דיסקוגרפיה נבחרת"
 
-#: ../properties.py:587
+#: ../properties.py:588
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] "שיר %d ללא אמן"
 msgstr[1] "%d שירים ללא אמן"
 
-#: ../properties.py:618
+#: ../properties.py:619
 msgid "Total length:"
 msgstr "משך כללי:"
 
-#: ../properties.py:622
+#: ../properties.py:623
 msgid "Total size:"
 msgstr "גודל כללי:"
 
-#: ../properties.py:625
+#: ../properties.py:626
 msgid "Files"
 msgstr "קבצים"
 
-#: ../properties.py:629
+#: ../properties.py:630
 msgid "Information"
 msgstr "מידע"
 
-#: ../properties.py:654
+#: ../properties.py:655
 msgid "Edit Tags"
 msgstr "ערוך תגיות"
 
-#: ../properties.py:661
+#: ../properties.py:662
 msgid "Write"
 msgstr "שמור"
 
-#: ../properties.py:685
+#: ../properties.py:686
 msgid "Tag"
 msgstr "תגית"
 
-#: ../properties.py:695
+#: ../properties.py:696
 msgid "Value"
 msgstr "ערך"
 
-#: ../properties.py:734
+#: ../properties.py:735
 msgid "Double-click a tag value to change it, right-click for other options"
 msgstr "הקש פעמים על מנת לשנות ערך, מקש ימני לאפשרויות נוספות"
 
-#: ../properties.py:736
+#: ../properties.py:737
 msgid "Add a new tag"
 msgstr "הוסף תגית חדשה"
 
-#: ../properties.py:737
+#: ../properties.py:738
 msgid "Remove selected tag"
 msgstr "הסר תגית נבחרת"
 
-#: ../properties.py:849 ../properties.py:1130
+#: ../properties.py:854 ../properties.py:1135
 msgid "Split into _multiple values"
 msgstr "פצל ל_ערכים נפרדים"
 
-#: ../properties.py:858
+#: ../properties.py:863
 msgid "Split disc out of _album"
 msgstr "פצל תקליטור מתוך _אלבום"
 
-#: ../properties.py:865
+#: ../properties.py:870
 msgid "Split version out of title"
 msgstr "פצל _גרסה מתוך שם"
 
-#: ../properties.py:875
+#: ../properties.py:880
 msgid "Split arranger out of ar_tist"
 msgstr "פצל _מעבד מתוך אמן"
 
-#: ../properties.py:881
+#: ../properties.py:886
 msgid "Split _performer out of artist"
 msgstr "פצל מ_בצע מתוך אמן"
 
-#: ../properties.py:928 ../properties.py:1203
+#: ../properties.py:933 ../properties.py:1208
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1335,11 +1335,11 @@ msgstr ""
 "\n"
 "הקבצים שנבחרו אינם תומכים בעריכת התגית הזו"
 
-#: ../properties.py:972 ../properties.py:1267 ../properties.py:1600
+#: ../properties.py:977 ../properties.py:1273 ../properties.py:1606
 msgid "Tag may not be accurate"
 msgstr "יתכן שהתגית לא תהייה מדוייקת"
 
-#: ../properties.py:973 ../properties.py:1268 ../properties.py:1601
+#: ../properties.py:978 ../properties.py:1274 ../properties.py:1607
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -1352,44 +1352,44 @@ msgstr ""
 "\n"
 "לשמור את השיר?"
 
-#: ../properties.py:1006 ../properties.py:1612
+#: ../properties.py:1011 ../properties.py:1618
 msgid "Unable to save song"
 msgstr "לא ניתן לשמור שיר"
 
-#: ../properties.py:1031
+#: ../properties.py:1036
 msgid "Invalid value"
 msgstr "ערך שגוי"
 
-#: ../properties.py:1100
+#: ../properties.py:1105
 msgid "Tag by Filename"
 msgstr "תגית לפי שם קובץ"
 
 #. Main buttons
-#: ../properties.py:1105 ../properties.py:1336 ../properties.py:1539
+#: ../properties.py:1110 ../properties.py:1342 ../properties.py:1545
 msgid "_Preview"
 msgstr "_תצוגה מקדימה"
 
-#: ../properties.py:1126
+#: ../properties.py:1131
 msgid "Replace _underscores with spaces"
 msgstr "החלף _קווים תחתיים ברווחים"
 
-#: ../properties.py:1128
+#: ../properties.py:1133
 msgid "_Title-case resulting values"
 msgstr "_שנה לאות גדולה ראשונה בכל מילה"
 
-#: ../properties.py:1133
+#: ../properties.py:1138
 msgid "Tags replace existing ones"
 msgstr "תגיות מחליפות תגיות קיימות"
 
-#: ../properties.py:1134
+#: ../properties.py:1139
 msgid "Tags are added to existing ones"
 msgstr "תגיות נוספות לתגיות קיימות"
 
-#: ../properties.py:1150
+#: ../properties.py:1155
 msgid "The first letter of each word will be capitalized"
 msgstr "האות הראשונה של כל מילה תהייה אות גדולה"
 
-#: ../properties.py:1185
+#: ../properties.py:1190
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1402,11 +1402,11 @@ msgstr ""
 "שגוייה. יתכן והיא מכילה את אותה תגית פעמיים או שהיא אינה סגורה עם מרכאות"
 "(&lt; / &gt;)."
 
-#: ../properties.py:1206
+#: ../properties.py:1211
 msgid "Invalid tags"
 msgstr "תגיות שגויות"
 
-#: ../properties.py:1207
+#: ../properties.py:1212
 #, python-format
 msgid ""
 "Invalid tags <b>%s</b>\n"
@@ -1417,33 +1417,33 @@ msgstr ""
 "\n"
 "הקבצים שנבחרו אינם תומכים בעריכת התגיות האלו"
 
-#: ../properties.py:1328
+#: ../properties.py:1334
 msgid "Rename Files"
 msgstr "שינוי שמות קבצים"
 
-#: ../properties.py:1350
+#: ../properties.py:1356
 msgid "New Name"
 msgstr "שם חדש"
 
-#: ../properties.py:1361
+#: ../properties.py:1367
 msgid "Replace spaces with _underscores"
 msgstr "החלף _רווחים בקווים תחתיים"
 
-#: ../properties.py:1365
+#: ../properties.py:1371
 msgid "Replace _Windows-incompatible characters"
 msgstr "החלף תווים שאינם נתמכים ב_חלונות"
 
-#: ../properties.py:1369
+#: ../properties.py:1375
 msgid "Replace non-_ASCII characters"
 msgstr "החלף תווים ש_אינם תווי ASCII"
 
-#: ../properties.py:1390
+#: ../properties.py:1396
 msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
 msgstr "התווים (\\:?;\"<>|) אינם מורשים בחלונות ולכן יוחלפו בקווים תחתיים"
 
-#: ../properties.py:1393
+#: ../properties.py:1399
 msgid ""
 "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
 "replaced by underscores"
@@ -1451,11 +1451,11 @@ msgstr ""
 "תווים שאינם בטווח תווי ה ASCII כדוגמת (A-Z, a-z, 0-9, וסימני פיסוק) יוחלפו "
 "בקווים תחתיים"
 
-#: ../properties.py:1450
+#: ../properties.py:1456
 msgid "Unable to rename file"
 msgstr "לא ניתן לשנות שם קובץ"
 
-#: ../properties.py:1451
+#: ../properties.py:1457
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1465,11 +1465,11 @@ msgstr ""
 "שינוי השם של <b>%s</b> ל <b>%s</b> נכשל. יתכן ששם היעד קיים כבר או שאין לך "
 "הרשאות מתאימות ליצור או למחוק קובץ קודם."
 
-#: ../properties.py:1481
+#: ../properties.py:1487
 msgid "Path is not absolute"
 msgstr "הנתיב אינו מלא"
 
-#: ../properties.py:1482
+#: ../properties.py:1488
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1482,60 +1482,60 @@ msgstr ""
 "מכילה / אך אינה מתחילה מספרית השורש. על מנת למנוע שמות תיקיות שגויות על "
 "התבנית להתחיל מ / או מ /~."
 
-#: ../properties.py:1514
+#: ../properties.py:1520
 msgid "Track Numbers"
 msgstr "מספרי רצועות"
 
-#: ../properties.py:1520
+#: ../properties.py:1526
 msgid "Start fro_m:"
 msgstr "התחל _מ:"
 
-#: ../properties.py:1531
+#: ../properties.py:1537
 msgid "_Total tracks:"
 msgstr "_סך הכל רצועות:"
 
-#: ../properties.py:1554
+#: ../properties.py:1560
 msgid "Track"
 msgstr "רצועה"
 
-#: ../properties.py:1687
+#: ../properties.py:1693
 msgid "Apply to these _files..."
 msgstr "יישם עבור הקבצים הבאים..."
 
-#: ../properties.py:1691
+#: ../properties.py:1697
 msgid "Path"
 msgstr "נתיב"
 
-#: ../properties.py:1748 ../efwidgets.py:394
+#: ../properties.py:1754 ../efwidgets.py:409
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s ו %(count)d עוד"
 
-#: ../properties.py:1750 ../properties.py:1751
+#: ../properties.py:1756 ../properties.py:1757
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: ../efwidgets.py:41
+#: ../efwidgets.py:47
 msgid "Folders"
 msgstr "תיקיות"
 
-#: ../efwidgets.py:72
+#: ../efwidgets.py:80
 msgid "New Folder..."
 msgstr "תיקיה חדשה..."
 
-#: ../efwidgets.py:129
+#: ../efwidgets.py:137
 msgid "New Folder"
 msgstr "תיקיה חדשה"
 
-#: ../efwidgets.py:129
+#: ../efwidgets.py:137
 msgid "Enter a name for the new folder:"
 msgstr "הזן שם עבור התיקיה החדשה:"
 
-#: ../efwidgets.py:138
+#: ../efwidgets.py:146
 msgid "Unable to create folder"
 msgstr "לא ניתן ליצור תיקיה חדשה"
 
-#: ../efwidgets.py:151
+#: ../efwidgets.py:159
 msgid "Unable to delete folder"
 msgstr "לא ניתן למחוק תיקיה"
 
@@ -1555,30 +1555,30 @@ msgstr "מיין לפי אמן"
 msgid "Sort by date"
 msgstr "מיין לפי תאריך"
 
-#: ../browsers/albums.py:312
+#: ../browsers/albums.py:313
 msgid "All Albums"
 msgstr "כל האלבומים"
 
-#: ../browsers/albums.py:313
+#: ../browsers/albums.py:314
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d אלבום"
 msgstr[1] "%d אלבומים"
 
-#: ../browsers/albums.py:577
+#: ../browsers/albums.py:578
 msgid "_Album List"
 msgstr "רשימת א_לבומים"
 
-#: ../browsers/paned.py:95
+#: ../browsers/paned.py:94
 msgid "All"
 msgstr "הכל"
 
-#: ../browsers/paned.py:149 ../browsers/iradio.py:175
+#: ../browsers/paned.py:148 ../browsers/iradio.py:175
 msgid "_Search:"
 msgstr "חפש:_"
 
-#: ../browsers/paned.py:258
+#: ../browsers/paned.py:263
 msgid "_Paned Browser"
 msgstr "_תצוגת חלוניות"
 
@@ -1614,15 +1614,15 @@ msgstr "_הסתר דפדפן שירים"
 msgid "_Search Library"
 msgstr "_חפש בספרית השירים"
 
-#: ../browsers/filesystem.py:76
+#: ../browsers/filesystem.py:77
 msgid "_Add to Library"
 msgstr "_הוסף לספרית השירים"
 
-#: ../browsers/filesystem.py:116
+#: ../browsers/filesystem.py:117
 msgid "_File System"
 msgstr "_מערכת קבצים"
 
-#: ../browsers/iradio.py:90 ../browsers/iradio.py:266
+#: ../browsers/iradio.py:90 ../browsers/iradio.py:267
 msgid "Unsupported file type"
 msgstr "תסדיר זה אינו נתמך"
 
@@ -1664,40 +1664,40 @@ msgstr "ת_חנות..."
 msgid "_New Station"
 msgstr "_תחנה חדשה"
 
-#: ../browsers/iradio.py:205
+#: ../browsers/iradio.py:206
 msgid "_Remove Station"
 msgstr "_הסר תחנה"
 
-#: ../browsers/iradio.py:233
+#: ../browsers/iradio.py:234
 msgid "Unable to add station"
 msgstr "לא ניתן להוסיף תחנה"
 
-#: ../browsers/iradio.py:238
+#: ../browsers/iradio.py:239
 msgid "No stations found"
 msgstr "לא נמצאו תחנות"
 
-#: ../browsers/iradio.py:239
+#: ../browsers/iradio.py:240
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "לא נמצאו תחנות ב %s"
 
-#: ../browsers/iradio.py:247 ../browsers/iradio.py:276
+#: ../browsers/iradio.py:248 ../browsers/iradio.py:277
 msgid "No new stations"
 msgstr "אין תחנות חדשות"
 
-#: ../browsers/iradio.py:248
+#: ../browsers/iradio.py:249
 msgid "All stations listed are already in your library."
 msgstr "כל התחנות שנבחרו כבר נמצאות בספריה שלך"
 
-#: ../browsers/iradio.py:267
+#: ../browsers/iradio.py:268
 msgid "M3U playlists cannot be loaded."
 msgstr "לא ניתן לטעון רשימת M3U"
 
-#: ../browsers/iradio.py:277
+#: ../browsers/iradio.py:278
 msgid "This station is already in your library."
 msgstr "תחנה זו כבר נמצאת בספריה שלך"
 
-#: ../browsers/iradio.py:292
+#: ../browsers/iradio.py:293
 msgid "_Internet Radio"
 msgstr "רדיו _אינטרנט"
 

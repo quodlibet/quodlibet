@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-11 20:56-0500\n"
+"POT-Creation-Date: 2005-10-21 19:51-0500\n"
 "PO-Revision-Date: 2005-09-06 16:37-0500\n"
 "Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -40,12 +40,12 @@ msgstr ""
 msgid "W: %s is not a QL song database."
 msgstr "W: %s не е база данни за песни на Quod Libet"
 
-#: ../library.py:259
+#: ../library.py:260
 #, python-format
 msgid "Checking %s"
 msgstr "Проверяване на %s"
 
-#: ../library.py:287 ../widgets.py:258
+#: ../library.py:288 ../widgets.py:282
 #, python-format
 msgid "Supported formats: %s"
 msgstr "Поддържани формати: %s"
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Set the volume"
 msgstr "Настройване силата на звука"
 
-#: ../quodlibet.py:145 ../browsers/search.py:113
+#: ../quodlibet.py:145 ../browsers/search.py:112
 msgid "Search your audio library"
 msgstr "Търсене из аудио библиотеката"
 
@@ -175,20 +175,20 @@ msgstr "Заредена е библиотеката с песни."
 msgid "Opening audio device."
 msgstr "Отваряне на аудио устройството."
 
-#: ../quodlibet.py:223
+#: ../quodlibet.py:226
 msgid "Quod Libet is already running."
 msgstr "Quod Libet вече е стартиран."
 
-#: ../quodlibet.py:234
+#: ../quodlibet.py:237
 msgid "E: You need GTK+ 2.6 and PyGTK 2.6 or greater."
 msgstr "E: Нуждаете се от GTK+ 2.6 и PyGTK 2.6 или по-високи версии."
 
-#: ../quodlibet.py:235
+#: ../quodlibet.py:238
 #, python-format
 msgid "E: You have GTK+ %s and PyGTK %s."
 msgstr "E: Имате GTK+ %s и PyGTK %s."
 
-#: ../quodlibet.py:238
+#: ../quodlibet.py:241
 msgid "E: Please upgrade GTK+/PyGTK."
 msgstr "Е: Обновете GTK+/PyGTK"
 
@@ -235,15 +235,15 @@ msgstr "E: Опцията \"%s\" изисква аргумент."
 msgid "E: '%s' is not a unique prefix."
 msgstr "E: \"%s\" не е уникална представка."
 
-#: ../util.py:199 ../widgets.py:1109
+#: ../util.py:204 ../widgets.py:1198
 msgid "No time information"
 msgstr "Няма времева информация"
 
-#: ../util.py:242 ../util.py:250
+#: ../util.py:247 ../util.py:255
 msgid "[Invalid Encoding]"
 msgstr "[невалидна кодировка]"
 
-#: ../util.py:547 ../properties.py:884 ../properties.py:1153
+#: ../util.py:450 ../properties.py:932 ../properties.py:1207
 msgid "Invalid tag"
 msgstr "Невалиден етикет"
 
@@ -251,7 +251,7 @@ msgstr "Невалиден етикет"
 #. Note that although tag names are translated in the main list view,
 #. they are *not* when editing tags.
 #. date the song was added to the library
-#: ../po/tag-names.py:8 ../properties.py:313
+#: ../po/tag-names.py:8 ../properties.py:349
 msgid "added"
 msgstr "добавено"
 
@@ -263,7 +263,7 @@ msgstr "албум"
 msgid "arranger"
 msgstr "аранжимент"
 
-#: ../po/tag-names.py:11 ../properties.py:268 ../properties.py:439
+#: ../po/tag-names.py:11 ../properties.py:303 ../properties.py:476
 msgid "artist"
 msgstr "изпълнител"
 
@@ -296,7 +296,7 @@ msgid "description"
 msgstr "описание"
 
 #. just path, /.../...
-#: ../po/tag-names.py:20 ../exfalso.py:28
+#: ../po/tag-names.py:20 ../exfalso.py:31
 msgid "directory"
 msgstr "папка"
 
@@ -327,11 +327,11 @@ msgid "language"
 msgstr "език"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:32 ../properties.py:314
+#: ../po/tag-names.py:32 ../properties.py:350
 msgid "last played"
 msgstr "последно слушана"
 
-#: ../po/tag-names.py:33 ../properties.py:344
+#: ../po/tag-names.py:33 ../properties.py:381
 msgid "length"
 msgstr "времетраене"
 
@@ -348,7 +348,7 @@ msgid "lyricist"
 msgstr "текстописец"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:38 ../properties.py:346
+#: ../po/tag-names.py:38 ../properties.py:383
 msgid "modified"
 msgstr "променено"
 
@@ -371,19 +371,19 @@ msgstr "част"
 msgid "people"
 msgstr "Хора"
 
-#: ../po/tag-names.py:45 ../properties.py:444
+#: ../po/tag-names.py:45 ../properties.py:481
 msgid "performer"
 msgstr ""
 
-#: ../po/tag-names.py:46 ../properties.py:315
+#: ../po/tag-names.py:46 ../properties.py:351
 msgid "play count"
 msgstr "брой слушания"
 
-#: ../po/tag-names.py:47 ../properties.py:317
+#: ../po/tag-names.py:47 ../properties.py:353
 msgid "rating"
 msgstr "оценка"
 
-#: ../po/tag-names.py:48 ../properties.py:316
+#: ../po/tag-names.py:48 ../properties.py:352
 msgid "skip count"
 msgstr "брой пропускания"
 
@@ -408,7 +408,7 @@ msgstr "интернет сайт"
 msgid "BPM"
 msgstr ""
 
-#: ../po/tag-names.py:56 ../properties.py:445
+#: ../po/tag-names.py:56 ../properties.py:482
 msgid "performers"
 msgstr ""
 
@@ -432,12 +432,12 @@ msgstr "диригенти"
 msgid "authors"
 msgstr "автори"
 
-#: ../po/tag-names.py:62 ../properties.py:269 ../properties.py:440
-#: ../properties.py:554
+#: ../po/tag-names.py:62 ../properties.py:304 ../properties.py:477
+#: ../properties.py:591
 msgid "artists"
 msgstr "изпълнители"
 
-#: ../po/tag-names.py:63 ../properties.py:570
+#: ../po/tag-names.py:63 ../properties.py:607
 msgid "albums"
 msgstr "албуми"
 
@@ -477,20 +477,20 @@ msgid_plural "%d years"
 msgstr[0] "%d година"
 msgstr[1] "%d години"
 
-#: ../formats/_audio.py:82 ../properties.py:299 ../properties.py:305
-#: ../properties.py:330 ../browsers/paned.py:98
+#: ../formats/_audio.py:96 ../properties.py:334 ../properties.py:341
+#: ../properties.py:366 ../browsers/paned.py:97
 msgid "Unknown"
 msgstr "непознат"
 
-#: ../exfalso.py:28
+#: ../exfalso.py:31
 msgid "an audio tag editor"
 msgstr "редактор на музикални етикети"
 
-#: ../exfalso.py:47
+#: ../exfalso.py:50
 msgid "Quod Libet is running"
 msgstr "Quod Libet е стартиран"
 
-#: ../exfalso.py:48
+#: ../exfalso.py:51
 msgid ""
 "It looks like you are running Quod Libet right now. If you edit songs also "
 "in Quod Libet's library while it is running, you may need to refresh or re-"
@@ -500,364 +500,397 @@ msgid ""
 "library, you may ignore this warning."
 msgstr ""
 
-#: ../widgets.py:103
+#: ../widgets.py:100 ../efwidgets.py:211
+msgid "Songs"
+msgstr "Песни"
+
+#: ../widgets.py:128
 msgid "Quod Libet Plugins"
 msgstr "Приставки за Quod Libet"
 
-#: ../widgets.py:171
+#: ../widgets.py:195
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../widgets.py:248
+#: ../widgets.py:272
 msgid "No plugins found."
 msgstr "Няма открити приставки."
 
-#: ../widgets.py:258
+#: ../widgets.py:282
 #, python-format
 msgid "Audio device: %s"
 msgstr "Аудио устройство: %s"
 
 #. Translators: Replace this with your name/email to have it appear
 #. in the "About" dialog.
-#: ../widgets.py:262
+#: ../widgets.py:286
 msgid "translator-credits"
 msgstr ""
 "Ростислав \"zbrox\" Райков <zbrox@i-space.org>Проектът за превод на GNOME "
 "има нужда от подкрепа.Научете повече за нас на http://gnome.cult."
 "bgДокладвайте за грешки на http://gnome.cult.bg/bugs"
 
-#: ../widgets.py:280
+#: ../widgets.py:304
 msgid "Song List"
 msgstr "Списък на песните"
 
-#: ../widgets.py:289
+#: ../widgets.py:313
 msgid "_Disc"
 msgstr "Д_иск"
 
-#: ../widgets.py:290
+#: ../widgets.py:314
 msgid "Al_bum"
 msgstr "Алб_ум"
 
-#: ../widgets.py:291
+#: ../widgets.py:315
 msgid "_Filename"
 msgstr "_Файлово име"
 
-#: ../widgets.py:292
+#: ../widgets.py:316
 msgid "_Track"
 msgstr "Песен н_омер"
 
-#: ../widgets.py:293
+#: ../widgets.py:317
 msgid "_Artist"
 msgstr "_Изпълнител"
 
-#: ../widgets.py:294
+#: ../widgets.py:318
 msgid "_Rating"
 msgstr "_Оценка"
 
-#: ../widgets.py:296
+#: ../widgets.py:320
 msgid "_Date"
 msgstr "_Дата"
 
-#: ../widgets.py:297
+#: ../widgets.py:321
 msgid "_Length"
 msgstr "_Времетраене"
 
-#: ../widgets.py:309
+#: ../widgets.py:333
 msgid "Title includes _version"
 msgstr "Заглавието включва _версията"
 
-#: ../widgets.py:314
+#: ../widgets.py:338
 msgid "Album includes _part"
 msgstr ""
 
-#: ../widgets.py:319
+#: ../widgets.py:343
 msgid "Filename includes _folder"
 msgstr "Името на файла вклю_чва папката"
 
-#: ../widgets.py:333
+#: ../widgets.py:357
 msgid "_Others:"
 msgstr "_Други:"
 
-#: ../widgets.py:339
+#: ../widgets.py:363
 msgid "Other headers to display, separated by spaces"
 msgstr ""
 
-#: ../widgets.py:353
+#: ../widgets.py:377
 msgid "Visible Columns"
 msgstr "Видими колони"
 
-#: ../widgets.py:384
+#: ../widgets.py:407
 msgid "Browsers"
 msgstr ""
 
-#: ../widgets.py:387
+#: ../widgets.py:410
 msgid "Color _search terms"
 msgstr ""
 
-#: ../widgets.py:390
+#: ../widgets.py:413
 msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
 msgstr ""
 
-#: ../widgets.py:395
+#: ../widgets.py:418
 msgid "_Global filter:"
 msgstr "_Глобален филтър:"
 
-#: ../widgets.py:405
+#: ../widgets.py:428
 msgid "Search Bar"
 msgstr "Лента за търсене"
 
-#: ../widgets.py:419
+#: ../widgets.py:442
 #, python-format
 msgid "_Pane %d:"
 msgstr ""
 
-#: ../widgets.py:431
+#: ../widgets.py:454
 msgid "Paned Browser"
 msgstr "Изглед на панели"
 
-#: ../widgets.py:448
+#: ../widgets.py:471
 msgid "Player"
 msgstr ""
 
-#: ../widgets.py:452
+#: ../widgets.py:475
 msgid "_Jump to playing song automatically"
 msgstr ""
 
-#: ../widgets.py:453
+#: ../widgets.py:476
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr ""
 "Когато слушана песен се смени, автоматично да се селектира нея в списъка с "
 "песни"
 
-#: ../widgets.py:461
+#: ../widgets.py:484
 msgid "_Volume Normalization"
 msgstr "_Нормализиране на звука"
 
-#: ../widgets.py:463
+#: ../widgets.py:486
 msgid "No volume adjustment"
 msgstr "Без нагласяне на силата на звука"
 
-#: ../widgets.py:464
+#: ../widgets.py:487
 msgid "Per-song (\"Radio\") volume adjustment"
 msgstr "Нагласяне на силата на звука за всяка песен (\"Радио\")"
 
-#: ../widgets.py:465
+#: ../widgets.py:488
 msgid "Per-album (\"Audiophile\") volume adjustment"
 msgstr "Нагласяне·на·силата·на·звука·за·всеки албум·(\"Аудиофил\")"
 
-#: ../widgets.py:481 ../properties.py:326
+#: ../widgets.py:504 ../properties.py:362
 msgid "Library"
 msgstr "Библиотека"
 
-#: ../widgets.py:482
+#: ../widgets.py:505
 msgid "Scan _Directories"
 msgstr "Сканиране на пап_ки"
 
-#: ../widgets.py:484
+#: ../widgets.py:507
 msgid "_Select"
 msgstr "_Избор"
 
-#: ../widgets.py:490
+#: ../widgets.py:513
 msgid "Songs placed in these folders will be added to your library"
 msgstr "Песните поставени в тези папки ще бъдат добавяни към библиотеката"
 
-#: ../widgets.py:498
+#: ../widgets.py:521
 msgid "Tag Editing"
 msgstr "Редактиране на етикети"
 
-#: ../widgets.py:504
+#: ../widgets.py:527
 msgid "Separators for splitting tags"
 msgstr "Разделители за разделяне на етикети"
 
-#: ../widgets.py:505
+#: ../widgets.py:528
 msgid "Split _on:"
 msgstr ""
 
-#: ../widgets.py:511
+#: ../widgets.py:534
 msgid "Show _programmatic comments"
 msgstr ""
 
-#: ../widgets.py:523
+#: ../widgets.py:546
 msgid "Select Directories"
 msgstr "Избор на папки"
 
-#: ../widgets.py:534
+#: ../widgets.py:557
 msgid "Quod Libet Preferences"
 msgstr "Настройки на Quod Libet"
 
-#: ../widgets.py:694 ../widgets.py:1280 ../widgets.py:1494
+#. FIXME: Post 0.14, use _('gtk-stock-media-play').
+#: ../widgets.py:717 ../widgets.py:775 ../widgets.py:1361 ../widgets.py:1576
 msgid "_Play"
 msgstr "_Слушане"
 
-#: ../widgets.py:716 ../widgets.py:1265 ../widgets.py:2053
+#: ../widgets.py:739 ../widgets.py:1346 ../widgets.py:2191
 msgid "Rating"
 msgstr "Оценка"
 
-#: ../widgets.py:778 ../widgets.py:878
+#: ../widgets.py:775 ../widgets.py:1580
+msgid "_Pause"
+msgstr "П_ауза"
+
+#: ../widgets.py:801 ../widgets.py:956
 msgid "Not playing"
 msgstr "Не се изпълнява нищо"
 
-#: ../widgets.py:837
+#. Translators: Only worry about "by", "Disc", and "Track" below.
+#: ../widgets.py:864
+msgid ""
+"\\<span weight='bold' size='large'\\><title>\\</span\\> - "
+"<~length><version|\n"
+"\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
+"by <~people>><album|\n"
+"\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b\\><part>"
+"\\</b\\>><tracknumber| - Track <tracknumber>>>"
+msgstr ""
+
+#: ../widgets.py:876
+msgid "Edit Display"
+msgstr ""
+
+#: ../widgets.py:917
+#, fuzzy
+msgid "_Edit Display..."
+msgstr "_Нов/Редактиране на списък с песни..."
+
+#: ../widgets.py:935 ../properties.py:1189
+msgid "Invalid pattern"
+msgstr "Невалиден шаблон"
+
+#: ../widgets.py:936
+#, python-format
+msgid ""
+"The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
+"\\&lt; and \\&gt; and that your tags are balanced.\n"
+"\n"
+"%s"
+msgstr ""
+
+#: ../widgets.py:963
 msgid "Stop after this song"
 msgstr "Спиране след тази песен"
 
-#: ../widgets.py:891
-#, python-format
-msgid "by %s"
-msgstr "от %s"
-
-#: ../widgets.py:899 ../properties.py:233 ../properties.py:464
-#, python-format
-msgid "Disc %s"
-msgstr "Диск %s"
-
-#: ../widgets.py:904 ../properties.py:238
-#, python-format
-msgid "Track %s"
-msgstr "Песен номер %s"
-
-#: ../widgets.py:1098
+#: ../widgets.py:1187
 msgid "In Order"
 msgstr "Подред"
 
-#: ../widgets.py:1099
+#: ../widgets.py:1188
 msgid "Shuffle"
 msgstr "В разбъркан ред"
 
-#: ../widgets.py:1100
+#: ../widgets.py:1189
 msgid "Weighted"
 msgstr ""
 
-#: ../widgets.py:1101
+#: ../widgets.py:1190
 msgid "Play songs in random order"
 msgstr "Слушане на песните в разбъркан ред"
 
-#: ../widgets.py:1104
+#: ../widgets.py:1193
 msgid "_Repeat"
 msgstr "П_овтаряне"
 
-#: ../widgets.py:1106
+#: ../widgets.py:1195
 msgid "Restart the playlist when finished"
 msgstr "Започване наново списъка с песни след приключване"
 
-#: ../widgets.py:1238
+#: ../widgets.py:1317
 msgid "_Music"
 msgstr "_Музика"
 
-#: ../widgets.py:1239
-msgid "_Add Music..."
+#: ../widgets.py:1318
+#, fuzzy
+msgid "_Add a Folder..."
+msgstr "Нова папка..."
+
+#: ../widgets.py:1320
+#, fuzzy
+msgid "_Add a File..."
 msgstr "_Добавяне на музика..."
 
-#: ../widgets.py:1241
+#: ../widgets.py:1322
 msgid "_New/Edit Playlist..."
 msgstr "_Нов/Редактиране на списък с песни..."
 
-#: ../widgets.py:1243
+#: ../widgets.py:1324
 msgid "_Browse Library"
 msgstr "Р_азглеждане на библиотеката"
 
-#: ../widgets.py:1246 ../widgets.py:2077
+#: ../widgets.py:1327 ../widgets.py:2215
 msgid "_Plugins"
 msgstr "П_риставки"
 
-#: ../widgets.py:1249
+#: ../widgets.py:1330
 msgid "_Filters"
 msgstr "_Филтри"
 
-#: ../widgets.py:1251
+#: ../widgets.py:1332
 msgid "Not played to_day"
 msgstr "Не е слушана _днес"
 
-#: ../widgets.py:1253
+#: ../widgets.py:1334
 msgid "Not played in a _week"
 msgstr "Не е слушана 1 _седмица"
 
-#: ../widgets.py:1255
+#: ../widgets.py:1336
 msgid "Not played in a _month"
 msgstr "Не е слушана 1 _месец"
 
-#: ../widgets.py:1257
+#: ../widgets.py:1338
 msgid "_Never played"
 msgstr "Н_икога не е слушано"
 
-#: ../widgets.py:1259
+#: ../widgets.py:1340
 msgid "_Top 40"
 msgstr "_Топ 40"
 
-#: ../widgets.py:1260
+#: ../widgets.py:1341
 msgid "B_ottom 40"
 msgstr "Пос_ледните 40"
 
-#: ../widgets.py:1262
+#: ../widgets.py:1343
 msgid "S_ong"
 msgstr "П_есен"
 
-#: ../widgets.py:1267
+#: ../widgets.py:1348
 msgid "_Jump to playing song"
 msgstr "П_рескачане към текущата песен"
 
-#: ../widgets.py:1270
+#: ../widgets.py:1351
 msgid "_View"
 msgstr "_Преглед"
 
-#: ../widgets.py:1271
+#: ../widgets.py:1352
 msgid "_Help"
 msgstr "Помощ"
 
-#: ../widgets.py:1291
+#: ../widgets.py:1372
 msgid "Re_fresh Library"
 msgstr "Опресн_яване на библиотеката"
 
-#: ../widgets.py:1295
+#: ../widgets.py:1376
 msgid "Re_load Library"
 msgstr "Пре_зареждане на библиотеката"
 
-#: ../widgets.py:1300
+#: ../widgets.py:1381
 msgid "Filter on _genre"
 msgstr "Само този _жанр"
 
-#: ../widgets.py:1301
+#: ../widgets.py:1382
 msgid "Filter on _artist"
 msgstr "Само този _изпълнител"
 
-#: ../widgets.py:1302
+#: ../widgets.py:1383
 msgid "Filter on al_bum"
 msgstr "Само този _албум"
 
-#: ../widgets.py:1309
+#: ../widgets.py:1390
 msgid "Random _genre"
 msgstr "Произволен _жанр"
 
-#: ../widgets.py:1310
+#: ../widgets.py:1391
 msgid "Random _artist"
 msgstr ""
 
-#: ../widgets.py:1311
+#: ../widgets.py:1392
 msgid "Random al_bum"
 msgstr "Произволен _албум"
 
-#: ../widgets.py:1318
+#: ../widgets.py:1399
 msgid "Song _List"
 msgstr "Списък с пес_ни"
 
-#: ../widgets.py:1323 ../widgets.py:1806
+#: ../widgets.py:1404 ../widgets.py:1917
 #, fuzzy
 msgid "_Play Queue"
 msgstr "_Слушане"
 
-#: ../widgets.py:1354
+#: ../widgets.py:1435
 msgid "Check for changes made to the library"
 msgstr "Проверка за промени в библиотеката Ви"
 
-#: ../widgets.py:1357
+#: ../widgets.py:1438
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr ""
 "Презареждане на всички песни от библиотеката ви (това може да отнеме много "
 "време)"
 
-#: ../widgets.py:1360
+#: ../widgets.py:1441
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -865,7 +898,7 @@ msgstr ""
 "40те песни, които сте слушали най-много (може да са повече от 40, ако някой "
 "имат равен брой пускания)"
 
-#: ../widgets.py:1364
+#: ../widgets.py:1445
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -873,29 +906,25 @@ msgstr ""
 "40те песни, които сте слушали най-малко (може да са повече от 40, ако някои "
 "имат равен брой пускания)"
 
-#: ../widgets.py:1368
+#: ../widgets.py:1449
 msgid "View and edit tags in the playing song"
 msgstr "Преглед и редакция на етикетите на вървящата песен"
 
-#: ../widgets.py:1476
+#: ../widgets.py:1558
 #, python-format
 msgid "W: Unable to load %s"
 msgstr "W: Не може да се зареди %s"
 
-#: ../widgets.py:1498
-msgid "_Pause"
-msgstr "П_ауза"
-
-#: ../widgets.py:1506
+#: ../widgets.py:1588
 #, python-format
 msgid "Could not play %s."
 msgstr "Не може да се пусне %s"
 
-#: ../widgets.py:1543
+#: ../widgets.py:1625
 msgid "New/Edit Playlist"
 msgstr "Нов/редакция на списък с песни"
 
-#: ../widgets.py:1544
+#: ../widgets.py:1626
 msgid ""
 "Enter a name for the new playlist. If it already exists it will be opened "
 "for editing."
@@ -903,7 +932,7 @@ msgstr ""
 "Въвеждане на име за новия списък с песни. Ако такъв вече съществува, ще бъде "
 "отворен за редактиране."
 
-#: ../widgets.py:1628
+#: ../widgets.py:1711
 #, python-format
 msgid ""
 "Quod Libet is scanning your library. This may take several minutes.\n"
@@ -912,11 +941,23 @@ msgid ""
 "%d songs removed"
 msgstr ""
 
-#: ../widgets.py:1667
+#: ../widgets.py:1753 ../widgets.py:1756
 msgid "Add Music"
 msgstr "Добавяне на музика"
 
-#: ../widgets.py:1679
+#: ../widgets.py:1776
+#, fuzzy, python-format
+msgid ""
+"%s could not be added to your library.\n"
+"\n"
+msgstr "Песните поставени в тези папки ще бъдат добавяни към библиотеката"
+
+#: ../widgets.py:1782
+#, fuzzy
+msgid "Unable to add song"
+msgstr "Неуспех при редактиране на песента"
+
+#: ../widgets.py:1791
 #, python-format
 msgid ""
 "Quod Libet is scanning for new songs and adding them to your library.\n"
@@ -924,75 +965,79 @@ msgid ""
 "%d songs added"
 msgstr ""
 
-#: ../widgets.py:1792
+#: ../widgets.py:1903
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../widgets.py:1811
+#: ../widgets.py:1922
 msgid "_Choose randomly"
 msgstr ""
 
-#: ../widgets.py:1832
+#: ../widgets.py:1943
 msgid "Drag songs here to add them to the play queue"
 msgstr ""
 
-#: ../widgets.py:1845 ../properties.py:537
+#: ../widgets.py:1956 ../properties.py:574
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d песен"
 msgstr[1] "%d песни"
 
-#: ../widgets.py:2048
+#: ../widgets.py:2104 ../properties.py:331 ../properties.py:342
+msgid "Never"
+msgstr "Никога"
+
+#: ../widgets.py:2186
 #, python-format
 msgid "_Filter on %s"
 msgstr ""
 
-#: ../widgets.py:2086 ../browsers/albums.py:314
+#: ../widgets.py:2234 ../browsers/albums.py:347
 msgid "Add to Queue"
 msgstr ""
 
-#: ../widgets.py:2090 ../browsers/albums.py:315
+#: ../widgets.py:2240 ../browsers/albums.py:348
 msgid "Remove from Library"
 msgstr "Премахване от библиотеката"
 
-#: ../widgets.py:2185 ../efwidgets.py:343
+#: ../widgets.py:2338 ../efwidgets.py:368
 #, python-format
 msgid "Moving %d/%d."
 msgstr "Преместване на %d/%d."
 
-#: ../widgets.py:2186 ../efwidgets.py:344
+#: ../widgets.py:2339 ../efwidgets.py:369
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "Изтриване на %d/%d."
 
-#: ../widgets.py:2204 ../efwidgets.py:358
+#: ../widgets.py:2357 ../efwidgets.py:383
 msgid "Unable to delete file"
 msgstr "Неуспех при изтриването на файл"
 
-#: ../widgets.py:2205 ../efwidgets.py:359
+#: ../widgets.py:2358 ../efwidgets.py:384
 #, python-format
 msgid ""
 "Deleting <b>%s</b> failed. Possibly the target file does not exist, or you "
 "do not have permission to delete it."
 msgstr ""
 
-#: ../widgets.py:2419
+#: ../widgets.py:2581
 msgid "All songs"
 msgstr "Всички песни"
 
-#: ../widgets.py:2611
+#: ../widgets.py:2773
 msgid "Library Browser"
 msgstr "Разглеждане на библиотеката"
 
-#: ../widgets.py:2672
+#: ../widgets.py:2829
 msgid "Unable to start a web browser"
 msgstr "Неуспех при стартирането на интернет браузър."
 
-#: ../widgets.py:2673
+#: ../widgets.py:2830
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1002,29 +1047,29 @@ msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2681
+#: ../widgets.py:2838
 msgid "gtk-media-next"
 msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
-#: ../widgets.py:2684
+#: ../widgets.py:2841
 msgid "gtk-media-previous"
 msgstr ""
 
-#: ../widgets.py:2726
+#: ../widgets.py:2883
 msgid "Saving song library."
 msgstr "Запазване на библиотеката"
 
-#: ../widgets.py:2730
+#: ../widgets.py:2887
 msgid "Unable to save library"
 msgstr "Неуспех при запазване на библиотеката"
 
-#: ../widgets.py:2734
+#: ../widgets.py:2891
 msgid "No audio device found"
 msgstr "Няма открито аудио устройство"
 
-#: ../widgets.py:2735
+#: ../widgets.py:2892
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1032,12 +1077,12 @@ msgid ""
 "Quod Libet will now exit."
 msgstr ""
 
-#: ../plugins.py:328 ../properties.py:1243
+#: ../plugins.py:329 ../properties.py:1298
 msgid "Unable to edit song"
 msgstr "Неуспех при редактиране на песента"
 
-#: ../plugins.py:329 ../properties.py:964 ../properties.py:1244
-#: ../properties.py:1563
+#: ../plugins.py:330 ../properties.py:1012 ../properties.py:1299
+#: ../properties.py:1619
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1088,189 +1133,195 @@ msgstr "Запазване на песните, които сте промени
 msgid "%d/%d songs saved"
 msgstr "%d/%d песни запазени"
 
-#: ../properties.py:32
+#: ../properties.py:47
 msgid ""
 "The date must be entered in YYYY, YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format."
 msgstr ""
 "Датата трябва да бъде въведета във един от следните формати: ГГГГ, ГГГГ-ММ-"
 "ДД или ГГГГ-ММ-ДД ЧЧ:ММ:СС"
 
-#: ../properties.py:36
+#: ../properties.py:57
 msgid "ReplayGain gains must be entered in 'x.yy dB' format."
 msgstr ""
 
-#: ../properties.py:40
+#: ../properties.py:69
 msgid "ReplayGain peaks must be entered in x.yy format."
 msgstr ""
 
-#: ../properties.py:44
+#: ../properties.py:79
 msgid "MusicBrainz track IDs must be in UUID format."
 msgstr ""
 
-#: ../properties.py:57
+#: ../properties.py:93
 msgid "Add a Tag"
 msgstr "Добавяне на етикет"
 
-#: ../properties.py:86
+#: ../properties.py:122
 msgid "_Tag:"
 msgstr "_Етикет:"
 
-#: ../properties.py:94
+#: ../properties.py:130
 msgid "_Value:"
 msgstr "С_тойност:"
 
-#: ../properties.py:212
+#: ../properties.py:247
 msgid "No songs are selected."
 msgstr "Няма избрани песни."
 
-#: ../properties.py:296 ../properties.py:306
-msgid "Never"
-msgstr "Никога"
+#: ../properties.py:268 ../properties.py:501
+#, python-format
+msgid "Disc %s"
+msgstr "Диск %s"
 
-#: ../properties.py:297
+#: ../properties.py:273
+#, python-format
+msgid "Track %s"
+msgstr "Песен номер %s"
+
+#: ../properties.py:332
 #, python-format
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "%d времетраене"
 msgstr[1] "%d пъти"
 
-#: ../properties.py:338
+#: ../properties.py:375
 #, python-format
 msgid "%d kbps"
 msgstr ""
 
-#: ../properties.py:345
+#: ../properties.py:382
 msgid "file size"
 msgstr "размер на файла"
 
-#: ../properties.py:348
+#: ../properties.py:385
 msgid "bitrate"
 msgstr ""
 
-#: ../properties.py:359 ../properties.py:1173 ../properties.py:1295
-#: ../properties.py:1501 ../properties.py:1638
+#: ../properties.py:396 ../properties.py:1227 ../properties.py:1350
+#: ../properties.py:1557 ../properties.py:1694
 msgid "File"
 msgstr "Файл"
 
-#: ../properties.py:391 ../browsers/albums.py:114
+#: ../properties.py:428 ../browsers/albums.py:134
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d диск"
 msgstr[1] "%d диска"
 
-#: ../properties.py:393 ../browsers/albums.py:116
+#: ../properties.py:430 ../browsers/albums.py:136
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../properties.py:395
+#: ../properties.py:432
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../properties.py:408
+#: ../properties.py:445
 #, python-format
 msgid "Produced by %s"
 msgstr "Продуцирано от %s"
 
-#: ../properties.py:474
+#: ../properties.py:511
 msgid "Track unavailable"
 msgstr "Песента е неналична"
 
-#: ../properties.py:481
+#: ../properties.py:518
 msgid "Track List"
 msgstr "Списък с песни"
 
-#: ../properties.py:507 ../properties.py:567
+#: ../properties.py:544 ../properties.py:604
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "%d песен без албум"
 msgstr[1] "%d песни без албум"
 
-#: ../properties.py:511
+#: ../properties.py:548
 msgid "Selected Discography"
 msgstr "Избор на дискография"
 
-#: ../properties.py:551
+#: ../properties.py:588
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../properties.py:582
+#: ../properties.py:619
 msgid "Total length:"
 msgstr "Общо времетраене:"
 
-#: ../properties.py:586
+#: ../properties.py:623
 msgid "Total size:"
 msgstr "Общ размер:"
 
-#: ../properties.py:589
+#: ../properties.py:626
 msgid "Files"
 msgstr "Файлове"
 
-#: ../properties.py:593
+#: ../properties.py:630
 msgid "Information"
 msgstr "Информация"
 
-#: ../properties.py:618
+#: ../properties.py:655
 msgid "Edit Tags"
 msgstr "Редактиране на етикетите"
 
-#: ../properties.py:625
+#: ../properties.py:662
 msgid "Write"
 msgstr "Запис"
 
-#: ../properties.py:649
+#: ../properties.py:686
 msgid "Tag"
 msgstr "Етикет"
 
-#: ../properties.py:659
+#: ../properties.py:696
 msgid "Value"
 msgstr "Стойност"
 
-#: ../properties.py:698
+#: ../properties.py:735
 msgid "Double-click a tag value to change it, right-click for other options"
 msgstr ""
 "Двойно натискане върху етикет за промяната му. Дясно натискане за повече "
 "опции."
 
-#: ../properties.py:700
+#: ../properties.py:737
 msgid "Add a new tag"
 msgstr "Добавяне на нов етикет"
 
-#: ../properties.py:701
+#: ../properties.py:738
 msgid "Remove selected tag"
 msgstr "Премахване на избрания етикет"
 
-#: ../properties.py:811 ../properties.py:1081
+#: ../properties.py:854 ../properties.py:1135
 msgid "Split into _multiple values"
 msgstr "Разделяне на _множество стойности"
 
-#: ../properties.py:819
+#: ../properties.py:863
 msgid "Split disc out of _album"
 msgstr "Разделяне на диска извън _албума"
 
-#: ../properties.py:825
+#: ../properties.py:870
 msgid "Split version out of title"
 msgstr "Разделяне на версията извън заглавието"
 
-#: ../properties.py:834
+#: ../properties.py:880
 msgid "Split arranger out of ar_tist"
 msgstr ""
 
-#: ../properties.py:840
+#: ../properties.py:886
 msgid "Split _performer out of artist"
 msgstr ""
 
-#: ../properties.py:885 ../properties.py:1154
+#: ../properties.py:933 ../properties.py:1208
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1278,11 +1329,11 @@ msgid ""
 "The files currently selected do not support editing this tag."
 msgstr ""
 
-#: ../properties.py:929 ../properties.py:1218 ../properties.py:1550
+#: ../properties.py:977 ../properties.py:1273 ../properties.py:1606
 msgid "Tag may not be accurate"
 msgstr "Етикетът може да не е точен"
 
-#: ../properties.py:930 ../properties.py:1219 ../properties.py:1551
+#: ../properties.py:978 ../properties.py:1274 ../properties.py:1607
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -1291,48 +1342,44 @@ msgid ""
 "Save this song anyway?"
 msgstr ""
 
-#: ../properties.py:963 ../properties.py:1562
+#: ../properties.py:1011 ../properties.py:1618
 msgid "Unable to save song"
 msgstr "Не може да се запази песента"
 
-#: ../properties.py:986 ../properties.py:987
+#: ../properties.py:1036
 msgid "Invalid value"
 msgstr "Невалидна стойност"
 
-#: ../properties.py:1051
+#: ../properties.py:1105
 msgid "Tag by Filename"
 msgstr "Етикет по файловото име"
 
 #. Main buttons
-#: ../properties.py:1056 ../properties.py:1287 ../properties.py:1489
+#: ../properties.py:1110 ../properties.py:1342 ../properties.py:1545
 msgid "_Preview"
 msgstr "Пре_глед"
 
-#: ../properties.py:1077
+#: ../properties.py:1131
 msgid "Replace _underscores with spaces"
 msgstr "Замяна на _долните черти с интервали"
 
-#: ../properties.py:1079
+#: ../properties.py:1133
 msgid "_Title-case resulting values"
 msgstr ""
 
-#: ../properties.py:1084
+#: ../properties.py:1138
 msgid "Tags replace existing ones"
 msgstr "Етикетите заменят съществуващите"
 
-#: ../properties.py:1085
+#: ../properties.py:1139
 msgid "Tags are added to existing ones"
 msgstr "Етикетите се добавят към съществуващите"
 
-#: ../properties.py:1101
+#: ../properties.py:1155
 msgid "The first letter of each word will be capitalized"
 msgstr "Първата буква от всяка дума ще бъде направена главна"
 
-#: ../properties.py:1135
-msgid "Invalid pattern"
-msgstr "Невалиден шаблон"
-
-#: ../properties.py:1136
+#: ../properties.py:1190
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1341,11 +1388,11 @@ msgid ""
 "brackets (&lt; / &gt;)."
 msgstr ""
 
-#: ../properties.py:1157
+#: ../properties.py:1211
 msgid "Invalid tags"
 msgstr "Невалидни етикети"
 
-#: ../properties.py:1158
+#: ../properties.py:1212
 #, python-format
 msgid ""
 "Invalid tags <b>%s</b>\n"
@@ -1353,27 +1400,27 @@ msgid ""
 "The files currently selected do not support editing these tags."
 msgstr ""
 
-#: ../properties.py:1279
+#: ../properties.py:1334
 msgid "Rename Files"
 msgstr "Преименуване на файлове"
 
-#: ../properties.py:1301
+#: ../properties.py:1356
 msgid "New Name"
 msgstr "Ново име"
 
-#: ../properties.py:1312
+#: ../properties.py:1367
 msgid "Replace spaces with _underscores"
 msgstr "Заменяне на интервалите с долни черти"
 
-#: ../properties.py:1316
+#: ../properties.py:1371
 msgid "Replace _Windows-incompatible characters"
 msgstr "Заменяне на несъвместимите с Windows символи"
 
-#: ../properties.py:1320
+#: ../properties.py:1375
 msgid "Replace non-_ASCII characters"
 msgstr "Замяна на не-ASCII символи"
 
-#: ../properties.py:1341
+#: ../properties.py:1396
 msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
@@ -1381,7 +1428,7 @@ msgstr ""
 "Символите непозволени в Windows файловите имена (\\:?;\"<>|) ще бъдат "
 "заменени с долни черти."
 
-#: ../properties.py:1344
+#: ../properties.py:1399
 msgid ""
 "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
 "replaced by underscores"
@@ -1389,11 +1436,11 @@ msgstr ""
 "Символи извън ASCII набора (A-Z, a-z, 0-9 и пунктуация) ще бъдат заменени с "
 "долни черти."
 
-#: ../properties.py:1401
+#: ../properties.py:1456
 msgid "Unable to rename file"
 msgstr "Неуспех при преименуване на файл."
 
-#: ../properties.py:1402
+#: ../properties.py:1457
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1401,11 +1448,11 @@ msgid ""
 "one."
 msgstr ""
 
-#: ../properties.py:1432
+#: ../properties.py:1487
 msgid "Path is not absolute"
 msgstr "Местоположението не е абсолютно"
 
-#: ../properties.py:1433
+#: ../properties.py:1488
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1414,99 +1461,100 @@ msgid ""
 "your pattern by starting it with / or ~/."
 msgstr ""
 
-#: ../properties.py:1464
+#: ../properties.py:1520
 msgid "Track Numbers"
 msgstr "Номера на песните"
 
-#: ../properties.py:1470
+#: ../properties.py:1526
 msgid "Start fro_m:"
 msgstr "Запо_чване от:"
 
-#: ../properties.py:1481
+#: ../properties.py:1537
 msgid "_Total tracks:"
 msgstr "_Общо песни:"
 
-#: ../properties.py:1504
+#: ../properties.py:1560
 msgid "Track"
 msgstr ""
 
-#: ../properties.py:1637
+#: ../properties.py:1693
 msgid "Apply to these _files..."
 msgstr "Прилагане към тези _файлове..."
 
-#: ../properties.py:1641
+#: ../properties.py:1697
 msgid "Path"
 msgstr "Път"
 
-#: ../properties.py:1698 ../efwidgets.py:384
+#: ../properties.py:1754 ../efwidgets.py:409
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr ""
 
-#: ../properties.py:1700 ../properties.py:1701
+#: ../properties.py:1756 ../properties.py:1757
 msgid "Properties"
 msgstr "Информация"
 
-#: ../efwidgets.py:30
+#: ../efwidgets.py:47
 msgid "Folders"
 msgstr "Папки"
 
-#: ../efwidgets.py:61
+#: ../efwidgets.py:80
 msgid "New Folder..."
 msgstr "Нова папка..."
 
-#: ../efwidgets.py:118
+#: ../efwidgets.py:137
 msgid "New Folder"
 msgstr "Нова папка"
 
-#: ../efwidgets.py:118
+#: ../efwidgets.py:137
 msgid "Enter a name for the new folder:"
 msgstr "Въведете име за новата папка:"
 
-#: ../efwidgets.py:127
+#: ../efwidgets.py:146
 msgid "Unable to create folder"
 msgstr "Неуспех при създаването на папка"
 
-#: ../efwidgets.py:140
+#: ../efwidgets.py:159
 msgid "Unable to delete folder"
 msgstr "Неуспех при изтриването на папка"
 
-#: ../efwidgets.py:186
-msgid "Songs"
-msgstr "Песни"
-
-#: ../browsers/albums.py:109
+#: ../browsers/albums.py:129
 msgid "Songs not in an album"
 msgstr "Песните не са в албум"
 
-#: ../browsers/albums.py:208
+#: ../browsers/albums.py:228
 msgid "Sort by title"
 msgstr "Сортиране по заглавие"
 
-#: ../browsers/albums.py:209
+#: ../browsers/albums.py:229
 msgid "Sort by artist"
 msgstr "Сортиране по изпълнител"
 
-#: ../browsers/albums.py:281
+#: ../browsers/albums.py:230
+#, fuzzy
+msgid "Sort by date"
+msgstr "Сортиране по заглавие"
+
+#: ../browsers/albums.py:313
 msgid "All Albums"
 msgstr "Всички албуми"
 
-#: ../browsers/albums.py:282
+#: ../browsers/albums.py:314
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d албум"
 msgstr[1] "%d албума"
 
-#: ../browsers/albums.py:553
+#: ../browsers/albums.py:578
 msgid "_Album List"
 msgstr "Спис_ък с албуми"
 
-#: ../browsers/paned.py:95
+#: ../browsers/paned.py:94
 msgid "All"
 msgstr "Всички"
 
-#: ../browsers/paned.py:148
+#: ../browsers/paned.py:148 ../browsers/iradio.py:175
 msgid "_Search:"
 msgstr "_Търсене:"
 
@@ -1514,47 +1562,131 @@ msgstr "_Търсене:"
 msgid "_Paned Browser"
 msgstr "_Изглед на панели"
 
-#: ../browsers/playlists.py:48
+#: ../browsers/playlists.py:45
 msgid "Edit the current playlist"
 msgstr "Редактиране на текущия списък с песни"
 
-#: ../browsers/playlists.py:49
+#: ../browsers/playlists.py:46
 msgid "Refresh the current playlist"
 msgstr "Опресняване на текущия списък с песни"
 
-#: ../browsers/playlists.py:95
+#: ../browsers/playlists.py:92
 msgid "_Playlists"
 msgstr "Сп_исъци с песни"
 
-#: ../browsers/search.py:104
+#: ../browsers/search.py:103
 msgid "Clear search"
 msgstr "Изчистване на търсенето"
 
-#: ../browsers/search.py:111
+#: ../browsers/search.py:110
 msgid "Search"
 msgstr "Търсене"
 
-#: ../browsers/search.py:132
+#: ../browsers/search.py:131
 msgid "_Limit Results"
 msgstr ""
 
-#: ../browsers/search.py:179
+#: ../browsers/search.py:178
 msgid "_Disable Browser"
 msgstr "_Изключване на разглеждането"
 
-#: ../browsers/search.py:180
+#: ../browsers/search.py:179
 msgid "_Search Library"
 msgstr "Т_ърсене в библиотеката"
 
-#: ../browsers/filesystem.py:76
+#: ../browsers/filesystem.py:77
 #, fuzzy
 msgid "_Add to Library"
 msgstr "Пре_зареждане на библиотеката"
 
-#: ../browsers/filesystem.py:116
+#: ../browsers/filesystem.py:117
 #, fuzzy
 msgid "_File System"
 msgstr "_Филтри"
+
+#: ../browsers/iradio.py:90 ../browsers/iradio.py:267
+msgid "Unsupported file type"
+msgstr ""
+
+#: ../browsers/iradio.py:91
+#, python-format
+msgid ""
+"Station lists can only contain locations of stations, not other station "
+"lists or playlists. The following locations cannot be loaded.\n"
+"%s"
+msgstr ""
+
+#: ../browsers/iradio.py:100
+msgid "Choose New Stations"
+msgstr ""
+
+#: ../browsers/iradio.py:110
+msgid "Add"
+msgstr ""
+
+#: ../browsers/iradio.py:114
+#, fuzzy
+msgid "Title"
+msgstr "заглавие"
+
+#: ../browsers/iradio.py:140
+msgid "New Station"
+msgstr ""
+
+#: ../browsers/iradio.py:141
+msgid "Please enter the location of an Internet radio station."
+msgstr ""
+
+#: ../browsers/iradio.py:143
+msgid "_Stations..."
+msgstr ""
+
+#: ../browsers/iradio.py:159
+msgid "_New Station"
+msgstr ""
+
+#: ../browsers/iradio.py:206
+msgid "_Remove Station"
+msgstr ""
+
+#: ../browsers/iradio.py:234
+#, fuzzy
+msgid "Unable to add station"
+msgstr "Неуспех при редактиране на песента"
+
+#: ../browsers/iradio.py:239
+#, fuzzy
+msgid "No stations found"
+msgstr "Няма открити приставки."
+
+#: ../browsers/iradio.py:240
+#, python-format
+msgid "No Internet radio stations were found at %s."
+msgstr ""
+
+#: ../browsers/iradio.py:248 ../browsers/iradio.py:277
+msgid "No new stations"
+msgstr ""
+
+#: ../browsers/iradio.py:249
+msgid "All stations listed are already in your library."
+msgstr ""
+
+#: ../browsers/iradio.py:268
+msgid "M3U playlists cannot be loaded."
+msgstr ""
+
+#: ../browsers/iradio.py:278
+#, fuzzy
+msgid "This station is already in your library."
+msgstr "Зареждане, сканиране и запазване на библиотеката Ви"
+
+#: ../browsers/iradio.py:293
+msgid "_Internet Radio"
+msgstr ""
+
+#~ msgid "by %s"
+#~ msgstr "от %s"
 
 #~ msgid "Show _album covers"
 #~ msgstr "Показване _обложките на албумите"
