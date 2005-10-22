@@ -5,7 +5,7 @@ may require you to re-add any songs in the library.
 Reloading your library after upgrading is always a good idea (though
 it hasn't strictly been necessary since 0.10).
 
-0.14 -
+0.14 - I'm almost certain!
  * Internet radio / Shoutcast browser. (#88)
  * Album List separates albums with different labelids. (#198)
  * Ex Falso displays all available plugins in its menu. (#240)
