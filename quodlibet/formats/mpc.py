@@ -68,6 +68,9 @@ class MPCFile(AudioFile):
             value = tag[key]
             if (value.kind == musepack.apev2.TEXT and key not in self.IGNORE):
                 del(tag[key])
+            elif key.startswith("replaygain_"):
+                # Leftovers from QL 0.13
+                del(tag[key])
         for key in self.realkeys():
             if key in self.IGNORE: continue
             value = self[key]
