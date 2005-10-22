@@ -18,7 +18,7 @@ def GStreamerSink(pipeline):
         # We can't use gconfaudiosink/autoaudiosink -- querying its
         # current time fails.
         try: import gconf
-        except ImportError: sinkname = "alsasink"
+        except ImportError: pipeline = "alsasink"
         else:
             c = gconf.client_get_default()
             val = c.get("/system/gstreamer/0.8/default/audiosink")
