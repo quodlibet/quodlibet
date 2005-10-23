@@ -1042,9 +1042,11 @@ class MainWindow(gtk.Window):
         def __next(self, button): player.playlist.next()
 
     class PositionSlider(qltk.PopupHSlider):
+        __lock = False
+        __sig = None
+        __seekable = True
+
         def __init__(self, watcher):
-            self.__lock = False
-            self.__sig = None
             hbox = gtk.HBox(spacing=3)
             l = gtk.Label("0:00")
             hbox.pack_start(l)
