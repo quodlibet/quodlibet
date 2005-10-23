@@ -2227,18 +2227,22 @@ class SongList(qltk.HintedTreeView):
         in_lib = True
         streams = False
         local = True
+        allinqueue = True
         for song in songs:
             if song.get("~filename") not in library: in_lib = False
             if song.stream: streams = True
             if not song.local: local = False
+            if allinqueue and song not in widgets.main.playlist.q:
+                # this one's a bit expensive to check.
+                allinqueue = False
 
-        b = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
+        b = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
         buttons.append(b)
-        b.set_sensitive(not streams)
+        b.set_sensitive(not (streams or allinqueue))
 
-        b = qltk.MenuItem(_('Remove from Library'), gtk.STOCK_REMOVE)
+        b = qltk.MenuItem(_('_Remove from Library'), gtk.STOCK_REMOVE)
         b.connect('activate', self.__remove, songs)
         menu.append(b)
         buttons.append(b)
