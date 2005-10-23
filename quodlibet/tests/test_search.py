@@ -1,6 +1,7 @@
 import gobject, gtk
 from tests import TestCase, add
 
+import widgets
 import browsers.search
 from browsers.search import EmptyBar, SearchBar
 from formats._audio import AudioFile as AF
@@ -9,7 +10,6 @@ import __builtin__
 __builtin__.__dict__['_'] = lambda a: a
 
 from library import Library
-browsers.search.library = Library()
 
 SONGS = [AF({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
          AF({"title": "two", "artist": "mu", "~filename": "/dev/zero"}),
@@ -17,19 +17,19 @@ SONGS = [AF({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
          ]
 SONGS.sort()
 
-for af in SONGS:
-    af.sanitize()
-    browsers.search.library.add_song(af)
-
 class TEmptyBar(TestCase):
     Bar = EmptyBar
     def setUp(self):
+        widgets.library = browsers.search.library = Library()
+        for af in SONGS:
+            af.sanitize()
+            browsers.search.library.add_song(af)
         self.bar = self.Bar(False)
         self.bar.connect('songs-selected', self._expected)
 
     def _expected(self, bar, songs, sort):
         songs.sort()
-        self.failUnlessEqual(songs, self.expected)
+        self.failUnlessEqual(self.expected, songs)
         self.expected = None
 
     def _do(self):
@@ -85,5 +85,33 @@ class TEmptyBar(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-
+        widgets.library = browsers.search.library = None
 add(TEmptyBar)
+
+class TSearchBar(TEmptyBar):
+    Bar = SearchBar
+    def setUp(self):
+        import qltk
+        from widgets import widgets
+        widgets.watcher = qltk.SongWatcher()
+        super(TSearchBar, self).setUp()
+
+    def test_initial_limit(self):
+        self.failUnlessEqual(0, self.bar._limit.get_value_as_int())
+
+    def test_limit_two(self):
+        class dummy:
+            # equal anything with length two, since it'll be random.
+            def __eq__(self, other): return len(other) == 2
+        self.expected = dummy()
+        self.bar._limit.show()
+        self.bar._limit.set_value(2)
+        self.bar.set_text("")
+        self._do()
+
+    def tearDown(self):
+        super(TSearchBar, self).tearDown()
+        from widgets import widgets
+        widgets.watcher.destroy()
+        del(widgets.watcher)
+add(TSearchBar)
