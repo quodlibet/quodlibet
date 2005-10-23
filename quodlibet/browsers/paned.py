@@ -175,7 +175,9 @@ class PanedBrowser(gtk.VBox, Browser):
             self.__refill_id = None
         text = entry.get_text().decode('utf-8')
         if parser.is_parsable(text):
-            if text: self.__filter = parser.parse(text).search
+            star = dict.fromkeys(parser.STAR)
+            star.update(self.__star)
+            if text: self.__filter = parser.parse(text, star.keys()).search
             else: self.__filter = None
             self.__refill_id = gobject.timeout_add(500, self.activate)
 
@@ -215,6 +217,9 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__panes[-1].uninhibit()
         if restore: self.restore()
         self.show_all()
+
+        self.__star = {}
+        for p in self.__panes: self.__star.update(dict.fromkeys(p.tags))
 
     def __start(self, view, indices, col):
         player.playlist.reset()
