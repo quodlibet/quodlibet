@@ -1937,8 +1937,8 @@ class QueueExpander(gtk.Expander):
         self.model = self.queue.model
         self.show_all()
         
-        self.queue.model.connect('row-inserted', self.__check_expand, l2)
-        self.queue.model.connect('row-deleted', self.__update_count, l2)
+        self.queue.model.connect_after('row-changed', self.__check_expand, l2)
+        self.queue.model.connect_after('row-deleted', self.__update_count, l2)
         cb.hide()
 
         tips = gtk.Tooltips()
@@ -1955,7 +1955,12 @@ class QueueExpander(gtk.Expander):
 
     def __update_count(self, model, path, lab):
         if len(model) == 0: text = ""
-        else: text = ngettext("%d song", "%d songs", len(model)) % len(model)
+        else:
+            time = sum([row[0].get("~#length", 0) for row in model])
+            text = ngettext("%(count)d song (%(time)s)",
+                            "%(count)d songs (%(time)s)",
+                            len(model)) % {
+                "count": len(model), "time": util.format_time(time) }
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):
