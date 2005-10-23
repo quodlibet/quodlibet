@@ -2052,7 +2052,6 @@ class LibraryTagCompletion(EntryWordCompletion):
         self.set_text_column(0)
 
     def __refreshmodel(self, *args):
-        from library import library
         tags = set()
         for song in library.itervalues():
             for tag in song.keys():
