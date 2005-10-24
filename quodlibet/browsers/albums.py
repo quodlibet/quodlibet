@@ -147,6 +147,18 @@ class AlbumList(Browser, gtk.VBox):
                         self.__get_covers, priority=gobject.PRIORITY_LOW)
                     self.__pending_covers.append([self.__get_cover, song])
 
+        def refresh(self):
+            if self.title:
+                self.cover = False
+                song = self.songs.pop()
+                self.songs.add(song)
+                if self.cover is False:
+                    self.cover = None
+                    if not self.__pending_covers: gobject.idle_add(
+                        self.__get_covers, priority=gobject.PRIORITY_LOW)
+                    self.__pending_covers.append([self.__get_cover, song])
+            self.finalize()
+
         def remove(self, song):
             try: self.songs.remove(song)
             except KeyError: return False
@@ -344,15 +356,14 @@ class AlbumList(Browser, gtk.VBox):
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        queue = qltk.MenuItem(_("Add to Queue"), gtk.STOCK_ADD)
-        rem = qltk.MenuItem(_("Remove from Library"), gtk.STOCK_REMOVE)
+        queue = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
+        rem = qltk.MenuItem(_("_Remove from Library"), gtk.STOCK_REMOVE)
         menu.append(button)
-        menu.append(gtk.SeparatorMenuItem())
         menu.append(queue)
         menu.append(rem)
         menu.append(props)
         menu.show_all()
-        button.connect('activate', self.__refresh, view, model, True)
+        button.connect('activate', self.__refresh_album, view.get_selection())
         queue.connect('activate', self.__enqueue, view)
         rem.connect('activate', self.__remove, view.get_selection())
         props.connect('activate', self.__properties, view)
@@ -367,6 +378,11 @@ class AlbumList(Browser, gtk.VBox):
         self.pack_start(sw, expand=True)
         self.__refresh(None, view, model)
         self.show_all()
+
+    def __refresh_album(self, menuitem, selection):
+        model, rows = selection.get_selected_rows()
+        albums = [model[row][0] for row in rows]
+        for album in albums: album.refresh()
 
     def __remove(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
