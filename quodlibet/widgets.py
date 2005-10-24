@@ -2055,19 +2055,19 @@ class EntryWordCompletion(gtk.EntryCompletion):
         return True
 
 class LibraryTagCompletion(EntryWordCompletion):
-    def __init__(self):
+    def __init__(self, lib):
         super(LibraryTagCompletion, self).__init__()
         try: model = self.__model
         except AttributeError:
             model = type(self).__model = gtk.ListStore(str)
-            widgets.watcher.connect('refresh', self.__refreshmodel)
-            widgets.watcher.connect('added', self.__refreshmodel)
-            widgets.watcher.connect('removed', self.__refreshmodel)
-            self.__refreshmodel()
+            widgets.watcher.connect('changed', self.__refreshmodel, lib)
+            widgets.watcher.connect('added', self.__refreshmodel, lib)
+            widgets.watcher.connect('removed', self.__refreshmodel, lib)
+            self.__refreshmodel(None, None, lib)
         self.set_model(model)
         self.set_text_column(0)
 
-    def __refreshmodel(self, *args):
+    def __refreshmodel(self, watcher, songs, library):
         tags = set()
         for song in library.itervalues():
             for tag in song.keys():

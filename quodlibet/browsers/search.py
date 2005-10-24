@@ -98,7 +98,7 @@ class SearchBar(EmptyBar):
         tips = gtk.Tooltips()
         combo = qltk.ComboBoxEntrySave(
             const.QUERIES, model="searchbar", count=15)
-        combo.child.set_completion(LibraryTagCompletion())
+        combo.child.set_completion(LibraryTagCompletion(library))
         clear = gtk.Button()
         clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
         tips.set_tip(clear, _("Clear search"))

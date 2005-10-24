@@ -20,7 +20,7 @@ SONGS.sort()
 class TEmptyBar(TestCase):
     Bar = EmptyBar
     def setUp(self):
-        widgets.library = browsers.search.library = Library()
+        browsers.search.library = Library()
         for af in SONGS:
             af.sanitize()
             browsers.search.library.add_song(af)
@@ -85,7 +85,7 @@ class TEmptyBar(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        widgets.library = browsers.search.library = None
+        browsers.search.library = None
 add(TEmptyBar)
 
 class TSearchBar(TEmptyBar):
