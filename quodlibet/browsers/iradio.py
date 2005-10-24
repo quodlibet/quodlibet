@@ -154,6 +154,9 @@ class InternetRadio(gtk.HBox, Browser):
     __filter = None
     __refill_id = None
 
+    headers = ("title artist grouping genre website "
+               "~rating ~#added ~#lastplayed ~#bitrate").split()
+
     def __init__(self, main=True):
         gtk.HBox.__init__(self, spacing=12)
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)

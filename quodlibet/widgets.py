@@ -1268,6 +1268,7 @@ class MainWindow(gtk.Window):
         self.songlist.connect('button-press-event', self.__songs_button_press)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
+        self.songlist.connect('columns-changed', self.__hide_headers)
         self.songlist.get_selection().connect('changed', self.__set_time)
 
         watcher.connect('removed', self.__set_time)
@@ -1494,6 +1495,7 @@ class MainWindow(gtk.Window):
         self.child.pack_end(c)
         c.show()
         self.__hide_menus()
+        self.__hide_headers()
         self.__refresh_size()
 
     def open_fifo(self):
@@ -1877,6 +1879,15 @@ class MainWindow(gtk.Window):
         else:
             for song in songs: values.update(song.list(header))
         self.browser.filter(header, list(values))
+
+    def __hide_headers(self, activator=None):
+        for column in self.songlist.get_columns():
+            if self.browser.headers is None:
+                column.set_visible(True)
+            else:
+                tag = column.header_name
+                if "~" in tag[1:]: tag = filter(None, tag.split("~"))[0]
+                column.set_visible(tag in self.browser.headers)
 
     def __cols_changed(self, songlist):
         headers = [col.header_name for col in songlist.get_columns()]
@@ -2810,10 +2821,19 @@ class LibraryBrowser(gtk.Window):
 
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__menu, 3, 0)
+        if browser.headers is not None:
+            view.connect('columns-changed', self.__cols_changed, browser)
+            self.__cols_changed(view, browser)
         self.set_default_size(500, 300)
         sw.show_all()
         self.child.show()
         self.show()
+
+    def __cols_changed(self, view, browser):
+        for header in view.get_columns():
+            tag = header.header_name
+            if "~" in tag[1:]: tag = filter(None, tag.split("~"))[0]
+            header.set_visible(tag in browser.headers)
 
     def __button_press(self, view, event):
         if event.button != 3: return False

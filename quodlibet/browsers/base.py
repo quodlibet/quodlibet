@@ -30,6 +30,9 @@ class Browser(object):
     # the songs returned.
     background = True
 
+    # A list of column headers to display; None means all are okay.
+    headers = None
+
     # Returns true if the song should remain on the song list. Used to
     # implement dynamic playlist removal when a song ends.
     def dynamic(self, song): return True
