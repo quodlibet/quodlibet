@@ -224,7 +224,7 @@ class QueryParser(object):
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
 
-STAR = ["artist", "album", "title", "version", "performer"]
+STAR = ["artist", "album", "title"]
 def parse(string, star=STAR):
     if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])

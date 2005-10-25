@@ -146,10 +146,11 @@ class Library(dict):
             else: return False
         else: return True
 
-    def query(self, text, sort=None):
+    def query(self, text, sort=None, star=parser.STAR):
         if isinstance(text, str): text = text.decode('utf-8')
         if text == "": songs = self.values()
-        else: songs = filter(parser.parse(text).search, self.itervalues())
+        else:
+            songs = filter(parser.parse(text, star).search, self.itervalues())
 
         if sort is None: pass
         elif callable(sort):

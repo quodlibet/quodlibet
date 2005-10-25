@@ -1860,7 +1860,7 @@ class MainWindow(gtk.Window):
         if browser.background:
             try: bg = config.get("browsers", "background").decode('utf-8')
             except UnicodeError: bg = ""
-            try: songs = filter(parser.parse(bg).search, songs)
+            try: songs = filter(parser.parse(bg, SongList.star).search, songs)
             except parser.error: pass
 
         self.songlist.set_songs(songs, tag=sort)
@@ -2091,6 +2091,7 @@ class SongList(qltk.HintedTreeView):
     __songlistviews = {}
     
     headers = [] # The list of current headers.
+    star = list(parser.STAR)
 
     CurrentColumn = None
 
@@ -2427,6 +2428,13 @@ class SongList(qltk.HintedTreeView):
         cls.headers = headers
         for listview in cls.__songlistviews:
             listview.set_column_headers(headers)
+
+        star = list(parser.STAR)
+        for header in headers:
+            if not header.startswith("~#") and header not in star:
+                star.append(header)
+        SongList.star = star
+
     set_all_column_headers = classmethod(set_all_column_headers)
 
     def get_sort_by(self):

@@ -12,7 +12,7 @@ import const
 import qltk
 import parser
 import config
-from widgets import LibraryTagCompletion
+from widgets import LibraryTagCompletion, SongList
 
 from browsers.base import Browser
 from library import library
@@ -32,7 +32,7 @@ class EmptyBar(gtk.HBox, Browser):
 
     def dynamic(self, song):
         if self._text is not None:
-            try: return parser.parse(self._text).search(song)
+            try: return parser.parse(self._text, SongList.star).search(song)
             except parser.error: return True
         else: return True
 
@@ -49,7 +49,7 @@ class EmptyBar(gtk.HBox, Browser):
 
     def activate(self):
         if self._text is not None:
-            try: songs = library.query(self._text)
+            try: songs = library.query(self._text, star=SongList.star)
             except parser.error: pass
             else:
                 self.emit('songs-selected', songs, None)
@@ -141,7 +141,7 @@ class SearchBar(EmptyBar):
 
     def activate(self):
         if self._text is not None:
-            try: songs = library.query(self._text)
+            try: songs = library.query(self._text, star=SongList.star)
             except parser.error: pass
             else:
                 self.get_children()[1].prepend_text(self._text)

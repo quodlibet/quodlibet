@@ -175,7 +175,8 @@ class PanedBrowser(gtk.VBox, Browser):
             self.__refill_id = None
         text = entry.get_text().decode('utf-8')
         if parser.is_parsable(text):
-            star = dict.fromkeys(parser.STAR)
+            from widgets import SongList
+            star = dict.fromkeys(SongList.star)
             star.update(self.__star)
             if text: self.__filter = parser.parse(text, star.keys()).search
             else: self.__filter = None
