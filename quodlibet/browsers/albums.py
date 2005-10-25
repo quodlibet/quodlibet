@@ -16,6 +16,9 @@ import qltk
 import util
 from widgets import widgets, EntryWordCompletion
 
+from formats._audio import PEOPLE
+ELPOEP = list(PEOPLE); ELPOEP.reverse()
+
 if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers.base import Browser
@@ -103,7 +106,7 @@ class AlbumList(Browser, gtk.VBox):
             for song in self.songs:
                 # Rank people by "relevance" -- artists before composers
                 # before performers, then by number of appearances.
-                for w, key in enumerate(["performer", "composer", "artist"]):
+                for w, key in enumerate(ELPOEP):
                     for person in song.list(key):
                         people[person] = people.get(person, 0) - 1000 ** w
                 genre.update(song.list("genre"))

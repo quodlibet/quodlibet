@@ -15,9 +15,8 @@ import util, config
 from urllib import pathname2url
 def to_uri(filename): return "file://" + pathname2url(filename)
 
-class Unknown(unicode): pass
-
-MIGRATE = ["~#playcount", "~#lastplayed", "~#added", "~#skipcount", "~#rating"]
+MIGRATE = "~#playcount ~#lastplayed ~#added ~#skipcount ~#rating".split()
+PEOPLE = "artist author composer performer lyricist arranger conductor".split()
 
 class AudioFile(dict):
     # This is true if the file is file Python can use "local" functions
@@ -61,8 +60,8 @@ class AudioFile(dict):
         if key and key[0] == "~":
             key = key[1:]
             if "~" in key:
-                parts = [self(p) for p in key.split("~")]
-                return connector.join(filter(None, parts))
+                parts = filter(None, map(self.__call__, key.split("~")))
+                return connector.join(parts)
             elif key == "basename": return os.path.basename(self["~filename"])
             elif key == "dirname": return os.path.dirname(self["~filename"])
             elif key == "length":
@@ -79,8 +78,7 @@ class AudioFile(dict):
                 lists = [s[11:] for s in self if s.startswith('~#playlist')]
                 return '\n'.join(map(util.QuerySafe.decode, lists))
             elif key == "people":
-                return "\n".join(
-                    self.listall(["artist", "composer", "performer"]))
+                return "\n".join(self.listall(PEOPLE))
             elif key == "uri":
                 try: return self["~uri"]
                 except KeyError: return to_uri(self["~filename"])
@@ -93,7 +91,7 @@ class AudioFile(dict):
             if v is None:
                 return "%s [%s]" %(
                     os.path.basename(self["~filename"]).decode(
-                    util.fscoding(), "replace"), Unknown(_("Unknown")))
+                    util.fscoding(), "replace"), _("Unknown"))
             else: return v
         else: return dict.get(self, key, default)
 

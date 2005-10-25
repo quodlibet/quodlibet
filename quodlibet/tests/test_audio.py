@@ -2,7 +2,7 @@ import os, config
 
 from unittest import TestCase
 from tests import registerCase
-from formats._audio import AudioFile, Unknown
+from formats._audio import AudioFile
 
 try: from sets import Set as set
 except ImportError: pass
@@ -27,10 +27,6 @@ quux = AudioFile({
     "~filename": "tests/data/asong.ogg",
     "album": "Quuxly"
     })
-
-class UnknownTest(TestCase):
-    def test_eq(self):
-        self.failUnlessEqual(Unknown("foo"), "foo")
 
 class AudioFileTest(TestCase):
     def setUp(self):
@@ -300,7 +296,6 @@ class FindCoverTest(TestCase):
     def tearDown(self):
         for f in self.files: os.unlink(f)
 
-registerCase(UnknownTest)
 registerCase(AudioFileTest)
 registerCase(FindCoverTest)
 registerCase(ReplayGain)
