@@ -27,11 +27,6 @@ class Osd(object):
     __startDragPosition = None
     __width = 0
 
-    __window = gtk.Window(gtk.WINDOW_POPUP)
-    __window.add_events(gtk.gdk.POINTER_MOTION_MASK)
-    __window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-    __window.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
-
     def PluginPreferences(self, parent):
         w = gtk.Window()
         w.set_title("OSD Preferences")
@@ -205,7 +200,12 @@ class Osd(object):
 
         config.set("plugins", "osd_colors", color_str)
 
-        self.__custom_position = map(int, config.get("plugins", "osd_custom_position").split())
+        self.__custom_position = map(
+            int, config.get("plugins", "osd_custom_position").split())
+        self.__window = gtk.Window(gtk.WINDOW_POPUP)
+        self.__window.add_events(gtk.gdk.POINTER_MOTION_MASK)
+        self.__window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.__window.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
 
     def plugin_on_song_started(self, song):
         if song is None: return
@@ -242,11 +242,14 @@ class Osd(object):
     def __display(self, msg, cover=None, is_preview=False):
         text = msg[msg.index(">")+1:msg.rindex("<")]
 
-        if self.__window.child:
-            self.__window.child.destroy()
+        if self.__window.get_property('visible'):
+            if self.__window.child:
+                child = self.__window.child
+                self.__window.remove(self.__window.child)
+                child.destroy()
             self.__window.hide()
-            while self.__window.get_property('visible'):
-                gtk.main_iteration()
+            gobject.idle_add(self.__display, msg, cover, is_preview)
+            return
 
         fgcolor = config.get('plugins', 'osd_colors').split()[0]
         panelBorderColor = config.get('plugins', 'osd_colors').split()[2]
