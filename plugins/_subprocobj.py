@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-#    <one line to give the program's name and a brief idea of what it does.>
 #    Copyright (C) 2005  Michael Urman
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -22,7 +21,6 @@ __all__ = []
 
 class Subprocess(gobject.GObject):
 
-    #SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
     SIG_INT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))
     SIG_INTSTR = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int, str))
 
@@ -30,7 +28,6 @@ class Subprocess(gobject.GObject):
         'output-line': SIG_INTSTR,
         'output-chunk': SIG_INTSTR,
         'output-eof': SIG_INT,
-        #'terminate': SIG_NONE,
     }
 
     __gproperties__ = {
@@ -67,9 +64,6 @@ class Subprocess(gobject.GObject):
         from popen2 import Popen3
         self.__child = Popen3(self.process, capturestderr=True)
 
-        #self.__in_id = gobject.io_add_watch(self.stdin,
-        #       gobject.IO_OUT|gobject.IO_ERR|gobject.IO_HUP|gobject.IO_NVAL,
-        #       self.__on_input)
         self.__out_id = gobject.io_add_watch(self.stdout,
                 gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP|gobject.IO_NVAL,
                 self.__on_output)
@@ -137,25 +131,3 @@ class Subprocess(gobject.GObject):
             return False
 
 gobject.type_register(Subprocess)
-
-if __name__ == '__main__':
-    import gtk, pango
-    win = gtk.Dialog()
-    win.set_default_size(400,100)
-    label = gtk.Label()
-    label.set_ellipsize(pango.ELLIPSIZE_END)
-    label.show()
-    win.vbox.pack_start(label)
-    print 'create process'
-    process = Subprocess(['vorbisgain', '-a', '-d', '-s'], newlines='\r\n')
-    print 'process created'
-    def update_label(process, fd, line, label):
-        if line:
-            label.set_text(line)
-            print '*', 
-        print repr(line)
-    process.connect('output-line', update_label, label)
-    print 'connected'
-    process.run()
-    print 'running'
-    win.run()
