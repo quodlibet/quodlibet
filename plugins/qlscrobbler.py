@@ -110,13 +110,9 @@ class QLScrobbler(object):
 
 		dump = open(self.DUMP, 'w')
 		
-		for i in range(len(self.queue)):
-			dump.write("artist = %s\n" % self.queue[i]['artist'])
-			dump.write("title = %s\n" % self.queue[i]['title'])
-			dump.write("length = %s\n" % self.queue[i]['length'])
-			dump.write("album = %s\n" % self.queue[i]['album'])
-			dump.write("mbid = %s\n" % self.queue[i]['mbid'])
-			dump.write("stamp = %s\n-\n" % self.queue[i]['stamp'])
+		for item in self.queue:
+			for key in item:
+				dump.write("%s = %s\n" % (key, item[key]))
 
 		dump.close()
 
@@ -408,7 +404,14 @@ class QLScrobbler(object):
 				self.broken = True
 		elif status == "OK":
 			self.queue = []
-		elif not status.startswith("FAILED"):
+		elif status.startswith("FAILED"):
+			if status.startswith("FAILED Plugin bug"):
+				print "Plugin bug!? Ridiculous! Dumping queue contents."
+				for item in self.queue:
+					for key in item:
+						print "%s = %s" % (key, item[key])
+			# possibly handle other specific cases here for debugging later
+		else:
 			print "Unknown response from server: %s" % status
 			print "Dumping full response:"
 			print resp_save
