@@ -24,9 +24,13 @@ class Osd(object):
     BORDER = 4
     __sid = None
     __window = None
-    __cover = None
     __startDragPosition = None
     __width = 0
+
+    __window = gtk.Window(gtk.WINDOW_POPUP)
+    __window.add_events(gtk.gdk.POINTER_MOTION_MASK)
+    __window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+    __window.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
 
     def PluginPreferences(self, parent):
         w = gtk.Window()
@@ -129,10 +133,9 @@ class Osd(object):
             gobject.source_remove(self.__sid)
             self.__sid = None
 
-        self.__display(self.__get_preview_msg(), True)
+        self.__display(self.__get_preview_msg(), is_preview=True)
 
     def __hide_preferences(self, prefs, event):
-        print self.__custom_position
         config.set("plugins", "osd_custom_position", "%d %d" % (
             tuple(self.__custom_position)))
         self.__hide_panel()
@@ -147,10 +150,12 @@ class Osd(object):
         self.__show_panel()
 
     def __get_preview_msg(self):
-        otherTextColor = config.get('plugins', 'osd_colors').split()[1]
-        msg = "<span foreground='%s'>\xe2\x99\xaa</span> Drag to position <span foreground='%s'>\xe2\x99\xaa</span>" % (otherTextColor, otherTextColor)
-        msg = "<message id='quodlibet'>%s</message>" % msg
-        return msg
+        color = config.get('plugins', 'osd_colors').split()[1]
+        return ("<message id='quodlibet'>"
+                "<span foreground='%s'>\xe2\x99\xaa</span> "
+                "Drag to position "
+                "<span foreground='%s'>\xe2\x99\xaa</span>"
+                "</message>") % (color, color)
 
     def __color_set(self, color):
         colors = []
@@ -205,7 +210,7 @@ class Osd(object):
     def plugin_on_song_started(self, song):
         if song is None: return
 
-        self.__cover = song.find_cover()
+        cover = song.find_cover()
 
         color2 = config.get("plugins", "osd_colors").split()[1]
 
@@ -227,30 +232,21 @@ class Osd(object):
         if isinstance(msg, unicode):
             msg = msg.encode("utf-8")
         msg = "<message id='quodlibet'>%s</message>" % msg
-        self.__display(msg)
-
-    def __panel_destroy_callback(self, msg, is_preview, bgcolor):
-        self.__window = None
-        self.__display(msg, is_preview, bgcolor)
+        self.__display(msg, cover)
 
     def plugin_on_song_ended(self, song, stopped):
-        if self.__window:
-            self.__window.destroy()
-            self.__window = None
         if self.__sid:
             gobject.source_remove(self.__sid)
             self.__sid = None
 
-    def __display(self, msg, is_preview=False, bgcolor="black"):
+    def __display(self, msg, cover=None, is_preview=False):
         text = msg[msg.index(">")+1:msg.rindex("<")]
 
-        if self.__window: 
-            self.__window.destroy()
-            
-            # We need to be sure that the panel is removed for the transparency effect to work. Therefore,
-            # be sure to give the window manager enough time to remove the window. 
-            gobject.idle_add(self.__panel_destroy_callback, msg, is_preview, bgcolor)
-            return
+        if self.__window.child:
+            self.__window.child.destroy()
+            self.__window.hide()
+            while self.__window.get_property('visible'):
+                gtk.main_iteration()
 
         fgcolor = config.get('plugins', 'osd_colors').split()[0]
         panelBorderColor = config.get('plugins', 'osd_colors').split()[2]
@@ -262,12 +258,8 @@ class Osd(object):
             fontdesc = pango.FontDescription(config.get("plugins", "osd_font"))
         except: fontdesc = pango.FontDescription("Sans 22")
 
-        win = gtk.Window(gtk.WINDOW_POPUP)
-        win.add_events(gtk.gdk.POINTER_MOTION_MASK)
-        win.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        win.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
-
         darea = gtk.DrawingArea()
+        win = self.__window
         win.add(darea)
         darea.show()
 
@@ -293,7 +285,7 @@ class Osd(object):
         height += self.BORDER * 4
 
         # Calculate the cover dimensions (if one is available)
-        draw_cover = not self.__cover is None and not is_preview
+        draw_cover = not cover is None and not is_preview
         if draw_cover:
             cover_dim = height - 2 * self.BORDER
         else:
@@ -373,11 +365,12 @@ class Osd(object):
         pixmap.draw_layout(fg_gc, off_x, off_y, layout)
 
         # Draw the cover image (if available).
-        if not self.__cover is None and not is_preview:
+        if not cover is None and not is_preview:
             try:
-                cover = gtk.gdk.pixbuf_new_from_file_at_size(self.__cover.name, cover_dim, cover_dim)
+                cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                    cover.name, cover_dim, cover_dim)
             except: 
-                self.__cover = None
+                cover = None
             else:
                 left = self.BORDER + (cover_dim - cover.get_width())/2
                 top = self.BORDER + (cover_dim - cover.get_height())/2
@@ -388,8 +381,8 @@ class Osd(object):
 
         darea.window.set_back_pixmap(pixmap, False)
 
-        gobject.idle_add(win.move, winX, winY)
-        gobject.idle_add(win.show_all)
+        win.move(winX, winY)
+        win.show_all()
         self.__window = win
 
         if not is_preview:
@@ -405,12 +398,11 @@ class Osd(object):
             win.connect('button-release-event', self.__end_dragging)
 
     def __hide_panel(self, window=None, event=None):
-        if window and window != self.__window:
-            gobject.idle_add(window.destroy)
-            return
-        if self.__window:
-            gobject.idle_add(self.__window.destroy)
-            self.__window = None
+        if self.__window.child:
+            c = self.__window.child
+            self.__window.remove(c)
+            c.destroy()
+            self.__window.hide()
         if self.__sid:
             gobject.source_remove(self.__sid)
             self.__sid = None
