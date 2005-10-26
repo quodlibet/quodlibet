@@ -19,7 +19,7 @@ import qltk
 class Osd(object):
     PLUGIN_NAME = "On-Screen Display"
     PLUGIN_DESC = "Display song information on your screen when it changes."
-    PLUGIN_VERSION = "0.13"
+    PLUGIN_VERSION = "0.14.1"
 
     BORDER = 4
     __sid = None
@@ -40,20 +40,20 @@ class Osd(object):
         colors = config.get("plugins", "osd_colors").split()
 
         # Font and colour options.
-        fc_box = gtk.VBox(spacing = 6)
+        fc_box = gtk.VBox(spacing=6)
 
-        self.__textColorAButton = gtk.ColorButton(gtk.gdk.color_parse(colors[0]))
-        self.__textColorBButton = gtk.ColorButton(gtk.gdk.color_parse(colors[1]))
-        self.__panelBorderColorButton = gtk.ColorButton(gtk.gdk.color_parse(colors[2]))
-        self.__panelColorButton = gtk.ColorButton(gtk.gdk.color_parse(colors[3]))
-        self.__panelColorButton.set_use_alpha(True)
-        self.__textColorAButton.connect('color-set', self.__color_set)
-        self.__textColorBButton.connect('color-set', self.__color_set)
-        self.__panelBorderColorButton.connect('color-set', self.__color_set)
-        self.__panelColorButton.connect('color-set', self.__color_set)
+        text_a = gtk.ColorButton(gtk.gdk.color_parse(colors[0]))
+        text_b = gtk.ColorButton(gtk.gdk.color_parse(colors[1]))
+        border = gtk.ColorButton(gtk.gdk.color_parse(colors[2]))
+        panel = gtk.ColorButton(gtk.gdk.color_parse(colors[3]))
+        panel.set_use_alpha(True)
 
-        alpha = int(float(config.get('plugins', 'osd_transparency')) / 256 * 65535)
-        self.__panelColorButton.set_alpha(alpha)
+        buttons = [text_a, text_b, border, panel]
+        for button in buttons:
+            button.connect('color-set', self.__color_set, buttons)
+
+        alpha = float(config.get('plugins', 'osd_transparency')) / 256.0
+        panel.set_alpha(int(alpha * 65536))
 
         t = gtk.Table(2, 4)
         t.set_col_spacings(6)
@@ -62,48 +62,51 @@ class Osd(object):
         t.attach(Label("Text color #2:"), 0, 1, 1, 2)
         t.attach(Label("Panel color:"), 2, 3, 0, 1)
         t.attach(Label("Panel border color:"), 2, 3, 1, 2)
-        t.attach(self.__textColorAButton, 1, 2, 0, 1, gtk.SHRINK)
-        t.attach(self.__textColorBButton, 1, 2, 1, 2, gtk.SHRINK)
-        t.attach(self.__panelColorButton, 3, 4, 0, 1, gtk.SHRINK)
-        t.attach(self.__panelBorderColorButton, 3, 4, 1, 2, gtk.SHRINK)
+        t.attach(text_a, 1, 2, 0, 1, gtk.SHRINK)
+        t.attach(text_b, 1, 2, 1, 2, gtk.SHRINK)
+        t.attach(panel, 3, 4, 0, 1, gtk.SHRINK)
+        t.attach(border, 3, 4, 1, 2, gtk.SHRINK)
 
         font = gtk.FontButton(config.get("plugins", "osd_font"))
         font.set_size_request(200, -1)
         font.connect('font-set', self.__font_set)
 
-        fc_box.pack_start(t, expand = False)
-        fc_box.pack_start(font, expand = False)
+        fc_box.pack_start(t, expand=False)
+        fc_box.pack_start(font, expand=False)
 
         # Positioning options.
-        pos_box = gtk.HBox(spacing = 6)
+        pos_box = gtk.HBox(spacing=6)
 
-        __cb_center_y = gtk.CheckButton('Center vertically')
-        __cb_center_y.set_active(config.get("plugins", "osd_center_y") == "1")
-        __cb_center_y.connect('toggled', self.__centering_toggled)
-        __cb_center_y.set_name("y")
+        cb_center_y = gtk.CheckButton('Center vertically')
+        cb_center_y.set_active(config.getboolean("plugins", "osd_center_y"))
+        cb_center_y.connect('toggled', self.__centering_toggled)
+        cb_center_y.set_name("y")
 
-        __cb_center_x = gtk.CheckButton('Center horizontally')
-        __cb_center_x.set_active(config.get("plugins", "osd_center_x") == "1")
-        __cb_center_x.connect('toggled', self.__centering_toggled)
-        __cb_center_x.set_name("x")
+        cb_center_x = gtk.CheckButton('Center horizontally')
+        cb_center_x.set_active(config.getboolean("plugins", "osd_center_x"))
+        cb_center_x.connect('toggled', self.__centering_toggled)
+        cb_center_x.set_name("x")
 
-        pos_box.pack_start(__cb_center_x, expand = False)
-        pos_box.pack_start(__cb_center_y, expand = False)
+        pos_box.pack_start(cb_center_x, expand=False)
+        pos_box.pack_start(cb_center_y, expand=False)
 
         # Miscellaneous options.
-        misc_box = gtk.HBox(spacing = 6)
+        misc_box = gtk.HBox(spacing=6)
 
-        timeout = gtk.SpinButton(gtk.Adjustment(float(config.get('plugins', 'osd_timeout')), 0, 60.0, 0.1, 1.0, 1.0), 0.1, 1)
+        timeout = gtk.SpinButton(
+            gtk.Adjustment(float(config.get('plugins', 'osd_timeout')),
+                           0, 60.0, 0.1, 1.0, 1.0),
+            0.1, 1)
         timeout.set_numeric(True)
         timeout.connect('value-changed', self.__timeout_changed);
 
-        misc_box.pack_start(Label("Display delay: "), expand = False)
-        misc_box.pack_start(timeout, expand = False);
-        misc_box.pack_start(Label("seconds"), expand = False)
+        misc_box.pack_start(Label("Display delay: "), expand=False)
+        misc_box.pack_start(timeout, expand=False);
+        misc_box.pack_start(Label("seconds"), expand=False)
 
-        color_frame = qltk.Frame(_("Font & colors"), bold = True, child = fc_box);
-        positioning_frame = qltk.Frame(_("Positioning"), bold = True, child = pos_box);
-        misc_frame = qltk.Frame(_("Miscellaneous"), bold = True, child = misc_box);
+        color_frame = qltk.Frame(_("Font & colors"), bold=True, child=fc_box);
+        positioning_frame = qltk.Frame(_("Positioning"), bold=True, child=pos_box);
+        misc_frame = qltk.Frame(_("Miscellaneous"), bold=True, child=misc_box);
 
         w.child.pack_start(color_frame)
         w.child.pack_start(positioning_frame)
@@ -116,20 +119,12 @@ class Osd(object):
 
         return w
 
-    def __centering_toggled(self, togglebutton):
-        if togglebutton.get_active(): 
-            status = "1" 
-        else: 
-            status = "0"
-
-        if togglebutton.get_name() == "y":
-            config.set('plugins', 'osd_center_y', status)
-        else:
-            config.set('plugins', 'osd_center_x', status)
-
+    def __centering_toggled(self, toggle):
+        opt = "osd_center_" + toggle.get_name()
+        config.set('plugins', opt, str(toggle.get_active()))
         self.__show_panel()
 
-    def __show_panel(self, widget = None):
+    def __show_panel(self, widget=None):
         if self.__sid:
             gobject.source_remove(self.__sid)
             self.__sid = None
@@ -137,7 +132,9 @@ class Osd(object):
         self.__display(self.__get_preview_msg(), True)
 
     def __hide_preferences(self, prefs, event):
-        config.set("plugins", "osd_custom_position", "%d %d" %(self.__custom_position[0], self.__custom_position[1]))
+        print self.__custom_position
+        config.set("plugins", "osd_custom_position", "%d %d" % (
+            tuple(self.__custom_position)))
         self.__hide_panel()
         prefs.hide()
         return True
@@ -244,7 +241,7 @@ class Osd(object):
             gobject.source_remove(self.__sid)
             self.__sid = None
 
-    def __display(self, msg, is_preview = False, bgcolor = "black"):
+    def __display(self, msg, is_preview=False, bgcolor="black"):
         text = msg[msg.index(">")+1:msg.rindex("<")]
 
         if self.__window: 
@@ -258,8 +255,8 @@ class Osd(object):
         fgcolor = config.get('plugins', 'osd_colors').split()[0]
         panelBorderColor = config.get('plugins', 'osd_colors').split()[2]
         panelColor = config.get('plugins', 'osd_colors').split()[3]
-        center_x = config.get('plugins', 'osd_center_x') == "1"
-        center_y = config.get('plugins', 'osd_center_y') == "1"
+        center_x = config.getboolean('plugins', 'osd_center_x')
+        center_y = config.getboolean('plugins', 'osd_center_y')
 
         try:
             fontdesc = pango.FontDescription(config.get("plugins", "osd_font"))
@@ -331,9 +328,6 @@ class Osd(object):
         # Get root window contents at panel position.
         #
         if self.__custom_position[0] == -1:
-            # Initially, position the OSD at the bottom
-            # at_bottom = config.getboolean("plugins", "osd_position")
-            # position = (at_bottom and gdk.screen_height() - win.height - 48) or 5
             position = gdk.screen_height() - win.height - 48
             winX = monitor.x + monitor.width / 2 - win.width / 2
             winY = monitor.y + position
