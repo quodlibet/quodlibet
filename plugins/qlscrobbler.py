@@ -4,6 +4,7 @@
 #             Joe Wreschnig <piman@sacredchao.net>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
+import random
 import md5, urllib, urllib2, time, threading, os
 import player, config, const
 import gobject, gtk
@@ -100,6 +101,7 @@ class QLScrobbler(object):
 		if len(self.queue) > 0:
 			self.flushing = True
 			self.submit_song()
+		else: print "Queue was empty!"
 
 	def dump_queue(self):
 		if len(self.queue) == 0: return 0
@@ -130,18 +132,21 @@ class QLScrobbler(object):
 				self.already_submitted = True
 
 	def plugin_on_song_ended(self, song, stopped):
+		if song is None: return
+
 		if self.timeout_id > 0:
 			gobject.source_remove(self.timeout_id)
 			self.timeout_id = -1
 	
 	def plugin_on_song_started(self, song):
+		if song is None: return
+		
 		self.already_submitted = False
 		if self.timeout_id > 0:
 			gobject.source_remove(self.timeout_id)
 		
 		self.timeout_id = -1
 
-		if song is None: return
 		# Protocol stipulation:
 		#	* don't submit when length < 00:30
 		#     NOTE: >30:00 stipulation has been REMOVED as of Protocol1.1
@@ -162,7 +167,7 @@ class QLScrobbler(object):
 			self.timeout_id = -2
 
 	def plugin_on_unpaused(self):
-		if self.already_submitted == False: self.prepare()
+		if self.already_submitted == False and self.timeout_id == -1: self.prepare()
 		
 	def plugin_on_seek(self, song, msec):
 		if self.timeout_id > 0:
@@ -175,7 +180,7 @@ class QLScrobbler(object):
 			self.already_submitted = True # cancel
 		
 	def prepare(self):
-		if not self.song: return
+		if self.song is None: return
 
 		# Protocol stipulations:
 		#	* submit 240 seconds in or at 50%, whichever comes first
@@ -312,7 +317,7 @@ class QLScrobbler(object):
 				"title": self.song.comma("title"),
 				"length": str(self.song["~#length"]),
 				"album": self.song.comma("album"),
-				"mbid": "", # XXX
+				"mbid": "", # will be correctly set if available
 				"stamp": stamp
 			}
 
@@ -326,6 +331,8 @@ class QLScrobbler(object):
 					store["artist"] = performer[:performer.rindex("(")].strip()
 				else:
 					store["artist"] = performer
+			elif "musicbrainz_trackid" in self.song:
+				store["mbid"] = self.song["musicbrainz_trackid"]
 
 			self.queue.append(store)
 		else: self.flushing = False
@@ -393,8 +400,12 @@ class QLScrobbler(object):
 		print "Submission status: %s" % status
 
 		if status == "BADAUTH":
-			self.quick_error("Your Audioscrobbler login data is incorrect, so you must re-enter it before any songs will be submitted.\n\nThis message will not be shown again.")
-			self.broken = True
+			print "Attempting to re-authenticate."
+			self.challenge_sent = False
+			self.send_handshake()
+			if self.challenge_sent == False:
+				self.quick_error("Your Audioscrobbler login data is incorrect, so you must re-enter it before any songs will be submitted.\n\nThis message will not be shown again.")
+				self.broken = True
 		elif status == "OK":
 			self.queue = []
 		elif not status.startswith("FAILED"):
