@@ -1928,16 +1928,28 @@ class QueueExpander(gtk.Expander):
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
         l = gtk.Label(_("_Play Queue"))
-        l2 = gtk.Label()
         hb.pack_start(l)
-        hb.pack_start(l2)
         l.set_use_underline(True)
+
+        clear = gtk.image_new_from_stock(
+            gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU)
+        b = gtk.Button()
+        b.add(clear)
+        b.connect('clicked', self.__clear_queue)
+        b.hide()
+        b.set_relief(gtk.RELIEF_NONE)
+        hb.pack_start(b, expand=False, fill=False)
+
+        l2 = gtk.Label()
+        hb.pack_start(l2)
+
         cb = gtk.CheckButton(_("_Choose randomly"))
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         hb.pack_start(cb)
+
         self.set_label_widget(hb)
         self.add(queue_scroller)
-        self.connect_object('notify::expanded', self.__expand, cb)
+        self.connect_object('notify::expanded', self.__expand, cb, b)
 
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
@@ -1954,11 +1966,14 @@ class QueueExpander(gtk.Expander):
 
         tips = gtk.Tooltips()
         tips.set_tip(self, _("Drag songs here to add them to the play queue"))
+        tips.set_tip(b, _("Remove all songs from the play queue"))
         tips.enable()
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
-        self.connect_object(
-            'notify::visible', self.__visible, self.queue.model, cb, menu)
+        self.connect_object('notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, l2)
+
+    def __clear_queue(self, activator):
+        self.model.clear()
 
     def __motion(self, wid, context, x, y, time):
         context.drag_status(gtk.gdk.ACTION_COPY, time)
@@ -1995,15 +2010,17 @@ class QueueExpander(gtk.Expander):
     def __queue_shuffle(self, button, model):
         model.shuffle = button.get_active()
 
-    def __expand(self, cb, prop):
+    def __expand(self, cb, prop, clear):
         cb.set_property('visible', self.get_expanded())
+        clear.set_property('visible', self.get_expanded())
 
-    def __visible(self, model, prop, cb, menu):
+    def __visible(self, cb, prop, menu, clear):
         value = self.get_property('visible')
         config.set("memory", "playqueue", str(value))
         menu.set_active(value)
-        self.set_expanded(not model.is_empty())
+        self.set_expanded(self.model.is_empty())
         cb.set_property('visible', self.get_expanded())
+        clear.set_property('visible', self.get_expanded())
 
 class EntryWordCompletion(gtk.EntryCompletion):
     leftsep = ["&(", "|(", ",", ", "]
