@@ -733,7 +733,8 @@ class QLTrayIcon(HIGTrayIcon):
                 player.playlist.song["~#rating"] = value
                 widgets.watcher.changed([player.playlist.song])
         for i in range(5):
-            item = gtk.MenuItem("%s %d" % (util.format_rating(i), i))
+            i /= 4.0
+            item = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
             item.connect_object('activate', set_rating, i)
             rating.append(item)
         ratings = gtk.MenuItem(_("Rating"))
@@ -1419,10 +1420,12 @@ class MainWindow(gtk.Window):
             act.connect('activate', LibraryBrowser, Kind)
             ag.add_action(act)
 
-        for i in range(5):
+        for i in range(0, int(1.0/util.RATING_PRECISION)+1):
+            j = i * util.RATING_PRECISION
             act = gtk.Action(
-                "Rate%d" % i, "%d %s" % (i, util.format_rating(i)), None, None)
-            act.connect('activate', self.__set_rating, i)
+                "Rate%d" % i, "%0.2f\t%s" % (j, util.format_rating(j)),
+                None, None)
+            act.connect('activate', self.__set_rating, j)
             ag.add_action(act)
         
         self.ui = gtk.UIManager()
@@ -2226,8 +2229,9 @@ class SongList(qltk.HintedTreeView):
             item = gtk.MenuItem(_("Rating"))
             m2 = gtk.Menu()
             item.set_submenu(m2)
-            for i in range(5):
-                itm = gtk.MenuItem("%d\t%s" %(i, util.format_rating(i)))
+            for i in range(0, int(1.0/util.RATING_PRECISION)+1):
+                i *= util.RATING_PRECISION
+                itm = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
                 m2.append(itm)
                 itm.connect('activate', self.__set_selected_ratings, i)
             menu.append(item)
@@ -2341,18 +2345,9 @@ class SongList(qltk.HintedTreeView):
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
         if col.header_name == "~rating":
-            # Left-click in ~rating sets the song rating. Clicking the
-            # "1 note" area toggles it between 0 and 1.
-            # FIXME: Area calculation is not very accurate at all.
-            width = col.get_property('width')
-            song = view.get_model()[path][0]
-            parts = (width / 4.0)
-            if cellx < parts + 1:
-                rating = (song["~#rating"] & 1) ^ 1
-            elif cellx < 2*parts: rating = 2
-            elif cellx < 3*parts: rating = 3
-            else: rating = 4
-            self.__set_rating(rating, [song])
+            # FIXME: With the new rating system this simply doesn't
+            # work, we need a new display.
+            pass
 
     def __remove(self, item, songs):
         # User requested that the selected songs be removed.
@@ -2413,7 +2408,8 @@ class SongList(qltk.HintedTreeView):
 
     def __key_press(self, songlist, event):
         if event.string in ['0', '1', '2', '3', '4']:
-            self.__set_rating(int(event.string), self.get_selected_songs())
+            self.__set_rating(int(event.string) * util.RATING_PRECISION,
+                              self.get_selected_songs())
         elif event.string == 'Q':
             self.__enqueue(None, self.get_selected_songs())
 

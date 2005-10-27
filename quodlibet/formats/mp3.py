@@ -82,7 +82,7 @@ class MP3File(AudioFile):
             elif (frame.FrameID == "POPM" and
                 frame.email == "quodlibet@lists.sacredchao.net"):
                 self["~#playcount"] = frame.count
-                self["~#rating"] = frame.rating // 63
+                self["~#rating"] = frame.rating / 255.0
                 continue
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
@@ -224,9 +224,9 @@ class MP3File(AudioFile):
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=0)
                 tag.loaded_frame(f)
 
-        if self["~#rating"] != 2 or self["~#playcount"] != 0:
+        if self["~#rating"] != 0.5 or self["~#playcount"] != 0:
             t = mutagen.id3.POPM(email="quodlibet@lists.sacredchao.net",
-                                 rating=max(0, (64*self["~#rating"])-1),
+                                 rating=int(255*self["~#rating"]),
                                  count=self["~#playcount"])
             tag.loaded_frame(t)
 

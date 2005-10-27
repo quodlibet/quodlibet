@@ -17,7 +17,7 @@ class VCFile(AudioFile):
         except KeyError: pass
 
         if "rating" in self:
-            try: self["~#rating"] = int(float(self["rating"]) * 4)
+            try: self["~#rating"] = float(self["rating"])
             except ValueError: pass
             del(self["rating"])
         if "playcount" in self:
@@ -44,8 +44,8 @@ class VCFile(AudioFile):
                                 "rating", "playcount"])
 
     def _prep_write(self, comments):
-        if self["~#rating"] != 2:
-            comments["rating"] = str(self["~#rating"] / 4.0)
+        if self["~#rating"] != 0.5:
+            comments["rating"] = str(self["~#rating"])
         if self["~#playcount"] != 0:
             comments["playcount"] = str(self["~#playcount"])
         

@@ -98,6 +98,7 @@ class AudioFile(dict):
     def comma(self, key):
         v = self(key, "")
         if isinstance(v, int): return v
+        elif isinstance(v, float): return v
         else: return v.replace("\n", ", ")
 
     def list(self, key):
@@ -180,7 +181,7 @@ class AudioFile(dict):
         self.setdefault("~#skipcount", 0)
         self.setdefault("~#length", 0)
         self.setdefault("~#bitrate", 0)
-        self.setdefault("~#rating", 2)
+        self.setdefault("~#rating", 0.5)
         self.setdefault("~#added", int(time.time()))
 
         self["~#mtime"] = util.mtime(self['~filename'])
@@ -191,6 +192,8 @@ class AudioFile(dict):
         for k in self.keys():
             if isinstance(self[k], int) or isinstance(self[k], long):
                 s += "%s=%d\n" % (k, self[k])
+            elif isinstance(self[k], float):
+                s += "%s=%f\n" % (k, self[k])
             else:
                 for v2 in self.list(k):
                     if isinstance(v2, str):

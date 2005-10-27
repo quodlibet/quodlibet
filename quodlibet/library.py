@@ -203,6 +203,10 @@ class Library(dict):
         # Prune old entries.
         removed, changed = 0, 0
         for song in songs:
+            if "~#rating" in song:
+                if isinstance(song["~#rating"], int):
+                    song["~#rating"] /= 4.0
+
             if "~filename" not in song: continue # library corruption
             elif song.local:
                 if not formats.supported(song):
