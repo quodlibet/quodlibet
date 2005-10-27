@@ -128,8 +128,8 @@ class AlbumList(Browser, gtk.VBox):
                 self.date = ""
                 self.discs = 1
 
-            text = "<i><b>%s</b></i>" % util.escape(
-                self.title or _("Songs not in an album"))
+            if self.title: text = "<i><b>%s</b></i>" % util.escape(self.title)
+            else: text = "<b>%s</b>" % _("Songs not in an album")
             if self.date: text += " (%s)" % self.date
             text += "\n<small>"
             if self.discs > 1:
@@ -209,7 +209,7 @@ class AlbumList(Browser, gtk.VBox):
 
         def __parse(self, model, iter):
             if self.__filter is None: return True
-            elif model[iter][0] is None: return False
+            elif model[iter][0] is None: return True
             else: return self.__filter(model[iter][0])
 
         def __filter_changed(self, model):
@@ -466,8 +466,8 @@ class AlbumList(Browser, gtk.VBox):
         model, rows = selection.get_selected_rows()
         if not model or not rows: return []
         albums = [model[row][0] for row in rows]
-        if None in albums: return library.values()
-        else: return list(
+        if None in albums: albums = [row[0] for row in model if row[0]]
+        return list(
             reduce(set.union, [album.songs for album in albums], set()))
 
     def __properties(self, activator, view):
