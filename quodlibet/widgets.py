@@ -1753,12 +1753,6 @@ class MainWindow(gtk.Window):
         if name:
             from formats.remote import RemoteFile
             from urllib import quote, splittype
-            type, name = splittype(name)
-            # Check to see if the URL is unquoted...
-            if set(";?:@&=+$ ,").intersection(name):
-                print "unquoted", name, set(";?:@&=+$ ,").intersection(name)
-                name = quote(name)
-            name = ":".join([type, name])
             if name not in library:
                 song = library.add_song(RemoteFile(name))
                 if song: widgets.watcher.added([song])

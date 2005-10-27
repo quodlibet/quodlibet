@@ -6,7 +6,11 @@
 #
 # $Id$
 
+import sys
+import urllib
 from formats._audio import AudioFile
+if sys.version_info < (2, 4): from sets import Set as set
+
 extensions = []
 
 class RemoteFile(AudioFile):
@@ -14,6 +18,12 @@ class RemoteFile(AudioFile):
     format = "Remote File"
 
     def __init__(self, uri):
+        # FIXME: Add tests!
+        type, location = urllib.splittype(uri)
+        host, path = urllib.splithost(location)
+        # Check to see if the URL is unquoted...
+        if set(";?:@&=+$ ,").intersection(path): path = urllib.quote(path)
+        uri = ":".join([type, "//" + host + path])
         self["~uri"] = self["~filename"] = uri
         self["~mountpoint"] = ""
         self.sanitize(uri)
