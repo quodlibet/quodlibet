@@ -2093,7 +2093,7 @@ class LibraryTagCompletion(EntryWordCompletion):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
-        tags.update(["~dirname", "~basename", "~people"])
+        tags.update(["~dirname", "~basename", "~people", "~format"])
         for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
                     "mtime", "added", "rating", "length"]:
             tags.add("#(" + tag)
