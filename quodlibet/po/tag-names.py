@@ -4,7 +4,6 @@
 # they are *not* when editing tags.
 
 # date the song was added to the library
-
 _("added")
 _("album")
 _("arranger")
@@ -21,6 +20,8 @@ _("directory")
 _("disc")
 # just file name, foo.ogg
 _("filename")
+# as in "file format"
+_("format")
 # file name plus path, /.../.../foo.ogg
 _("full name")
 _("genre")
@@ -37,9 +38,9 @@ _("lyricist")
 # date song was last modified/edited
 _("modified")
 _("mount point")
-# alternately, "movement", "section"
 # alternately, "record label"
 _("organization")
+# alternately, "movement", "section"
 _("part")
 _("people")
 _("performer")
