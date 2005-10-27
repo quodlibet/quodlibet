@@ -32,6 +32,7 @@ def GStreamerSink(pipeline):
             try: pipe = gst.parse_launch("osssink")
             except gobject.GError: pipe = None
             else: pipeline = "osssink"
+        else: pipe = None
     locale.getlocale(locale.LC_NUMERIC)
     if pipe: return pipe, pipeline
     else: raise SystemExit("E: No valid GStreamer sinks found.\n"
