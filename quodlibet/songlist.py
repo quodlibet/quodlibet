@@ -91,6 +91,12 @@ class PlaylistModel(gtk.ListStore):
 
     current = property(get_current)
 
+    def get_current_path(self):
+        if self.__path is None: return None
+        elif self.is_empty(): return None
+        else: return (self.__path,)
+    current_path = property(get_current_path)
+
     def next(self):
         if self.shuffle:
             self.__next_shuffle()
@@ -168,7 +174,7 @@ class PlaylistModel(gtk.ListStore):
 
         self.__path = None
         if isinstance(song, gtk.TreeIter):
-            self.__path = self.get_path(song)
+            self.__path = self.get_path(song)[0]
         else:
             def _find(self, path, iter):
                 if self[iter][0] == song:

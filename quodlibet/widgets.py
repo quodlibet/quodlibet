@@ -1551,8 +1551,7 @@ class MainWindow(gtk.Window):
             if filename in library:
                 song = library[filename]
                 if song not in self.playlist.pl:
-                    e_fn = sre.escape(filename)
-                    self.__make_query("filename = /^%s/c" % e_fn)
+                    self.__make_query("filename = %rc" % filename)
                 player.playlist.go_to(library[filename])
                 player.playlist.paused = False
             else:
@@ -2781,7 +2780,7 @@ class MainSongList(SongList):
         def _cdf(self, column, cell, model, iter,
                  pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
             try:
-                if model[iter][0] is not player.playlist.song: stock = ''
+                if model.get_path(iter) != model.current_path: stock = ''
                 else: stock = pixbuf[player.playlist.paused]
                 cell.set_property('stock-id', stock)
             except AttributeError: pass
@@ -2805,7 +2804,8 @@ class MainSongList(SongList):
         self.connect_object('row-activated', MainSongList.__select_song, self)
 
     def __select_song(self, indices, col):
-        player.playlist.go_to(self.model[indices][0])
+        iter = self.model.get_iter(indices)
+        player.playlist.go_to(iter)
         player.playlist.paused = False
 
     def set_sort_by(self, *args, **kwargs):
