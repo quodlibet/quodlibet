@@ -95,7 +95,7 @@ class Numcmp(object):
         if   self.__op == ">":  return num >  self.__value
         elif self.__op == "<":  return num <  self.__value
         elif self.__op == "=":  return num == self.__value
-        elif self.__op == ">=": return num <= self.__value
+        elif self.__op == ">=": return num >= self.__value
         elif self.__op == "<=": return num <= self.__value
         elif self.__op == "!=": return num != self.__value
         else: raise ValueError("Unknown operator %s" % self.__op)

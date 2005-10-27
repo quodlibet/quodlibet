@@ -112,6 +112,9 @@ class ParserTests(TestCase):
     def test_empty(self):
         self.failIf(parser.parse("foobar = /./").search(self.s1))
 
+    def test_gte(self):
+        self.failUnless(parser.parse("#(track >= 11)").search(self.s2))
+
     def test_re(self):
         for s in ["album = /i hate/", "artist = /pi*/", "title = /x.y/"]:
             self.failUnless(parser.parse(s).search(self.s1))
