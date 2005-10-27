@@ -189,7 +189,7 @@ class PlaylistPlayer(object):
 
             if changed:
                 if self.song.stream: self.info.song_started(proxy)
-                else: self.info.changed(proxy)
+                else: self.info.changed([proxy])
 
     def reset(self):
         self.__source.reset()
