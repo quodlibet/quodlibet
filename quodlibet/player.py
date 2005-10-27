@@ -144,7 +144,7 @@ class PlaylistPlayer(object):
     def __tag(self, pipeline, source, tags):
         # If the song isn't a local file, we need to fill in its
         # metadata as best we can, via what GStreamer gives us.
-        if not self.song.local:
+        if self.song and not self.song.local:
             # For streams, we shouldn't modify the original file since
             # it has the tags the user gave us, and the ones GSt is
             # giving us are probably for the song, not the stream.
