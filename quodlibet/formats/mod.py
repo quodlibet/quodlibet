@@ -19,6 +19,9 @@ else:
     else: extensions = []
 
 class ModFile(AudioFile):
+
+    format = "MOD/XM/IT"
+
     def __init__(self, filename):
         f = modplug.ModFile(filename)
         self["~#length"] = f.length // 1000

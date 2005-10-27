@@ -38,6 +38,8 @@ class MP4File(AudioFile):
             }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
 
+    format = "MP4 AAC"
+
     def __init__(self, filename):
         tag = mp4info.iTunesTag(filename)
         for key, value in tag:

@@ -34,6 +34,7 @@ STATIONS = os.path.join(const.DIR, "stations")
 class IRFile(AudioFile):
     stream = True
     local = False
+    format = "Radio Station"
 
     __CAN_CHANGE = "title artist grouping".split()
 

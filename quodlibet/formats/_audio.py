@@ -29,6 +29,8 @@ class AudioFile(dict):
     # but potentially at other times).
     stream = False
 
+    format = "Unknown Audio File"
+
     def __cmp__(self, other):
         if not other: return -1
         return (cmp(self.get("album"), other.get("album")) or
@@ -82,6 +84,8 @@ class AudioFile(dict):
             elif key == "uri":
                 try: return self["~uri"]
                 except KeyError: return to_uri(self["~filename"])
+            elif key == "format":
+                return self.format
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default

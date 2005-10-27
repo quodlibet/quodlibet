@@ -16,6 +16,9 @@ else:
     else: extensions = []
 
 class OggFile(VCFile):
+
+    format = "Ogg Vorbis"
+
     def __init__(self, filename):
         import ogg.vorbis
         f = ogg.vorbis.VorbisFile(filename)

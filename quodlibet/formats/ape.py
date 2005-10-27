@@ -27,6 +27,8 @@ class APEFile(AudioFile):
               "record location": "location"
               }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
+
+    format = "MonkeysAudio"
     
     def __init__(self, filename):
         f = file(filename)

@@ -18,6 +18,9 @@ else:
     else: extensions = []
 
 class FLACFile(VCFile):
+
+    format = "FLAC"
+
     def __init__(self, filename):
         if not os.path.exists(filename):
             raise IOError("%s does not exist" % filename)

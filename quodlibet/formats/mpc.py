@@ -27,6 +27,8 @@ class MPCFile(AudioFile):
               "record location": "location"
               }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
+
+    format = "Musepack"
     
     def __init__(self, filename):
         tag = musepack.APETag(filename)

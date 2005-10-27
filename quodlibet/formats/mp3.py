@@ -64,6 +64,8 @@ class MP3File(AudioFile):
     except: pass # Uninitialized config...
     CODECS.append("iso-8859-1")
 
+    format = "MP3"
+
     def __init__(self, filename):
         try: tag = ID3hack(filename)
         except mutagen.id3.error: tag = {}
