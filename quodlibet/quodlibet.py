@@ -18,6 +18,10 @@ def main():
     import signal, gtk, widgets
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
+    try: ratings = config.getint("settings", "ratings")
+    except (ValueError, TypeError): pass
+    else: util.RATING_PRECISION = 1.0/ratings
+
     widgets.init()
     enable_periodic_save()
     gtk.quit_add(1, widgets.save_library)

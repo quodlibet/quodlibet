@@ -732,10 +732,10 @@ class QLTrayIcon(HIGTrayIcon):
             else:
                 player.playlist.song["~#rating"] = value
                 widgets.watcher.changed([player.playlist.song])
-        for i in range(5):
-            i /= 4.0
-            item = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
-            item.connect_object('activate', set_rating, i)
+        for i in range(0, int(1.0/util.RATING_PRECISION)+1):
+            j = i * util.RATING_PRECISION
+            item = gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))
+            item.connect_object('activate', set_rating, j)
             rating.append(item)
         ratings = gtk.MenuItem(_("Rating"))
         ratings.set_submenu(rating)
@@ -1420,14 +1420,6 @@ class MainWindow(gtk.Window):
             act.connect('activate', LibraryBrowser, Kind)
             ag.add_action(act)
 
-        for i in range(0, int(1.0/util.RATING_PRECISION)+1):
-            j = i * util.RATING_PRECISION
-            act = gtk.Action(
-                "Rate%d" % i, "%0.2f\t%s" % (j, util.format_rating(j)),
-                None, None)
-            act.connect('activate', self.__set_rating, j)
-            ag.add_action(act)
-        
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, -1)
         menustr = const.MENU%(browsers.BrowseLibrary(), browsers.ViewBrowser())
@@ -1613,7 +1605,7 @@ class MainWindow(gtk.Window):
         self.__update_title(watcher, [song])
 
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
-                    "FilterArtist", "FilterAlbum", "Rating"]:
+                    "FilterArtist", "FilterAlbum"]:
             self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
         if song:
             for h in ['genre', 'artist', 'album']:

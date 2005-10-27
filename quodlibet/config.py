@@ -64,6 +64,7 @@ def init(*rc_files):
 
           "gain": "2", # replaygain - none, radio, audiophile
           "jump": "true", # scroll song list on current song change
+          "ratings": "4", # maximum rating value
 
           # probably belong in memory
           "repeat": "false",
