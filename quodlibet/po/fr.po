@@ -1126,7 +1126,7 @@ msgstr "Impossible d'éditer la chanson"
 #: ../properties.py:1619
 #, python-format
 msgid "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not have permission to edit it."
-msgstr "La sauvegarde de <b>%s</b>·a échoué.·Le fichier peut être en lecture seule, corrompu, ou vous n'avez pas la permission de l'éditer."
+msgstr "La sauvegarde de <b>%s</b> a échoué. Le fichier peut être en lecture seule, corrompu, ou vous n'avez pas la permission de l'éditer."
 
 #: ../qltk.py:155
 msgid "Delete Files"
@@ -1386,7 +1386,7 @@ msgid ""
 "\n"
 "Save this song anyway?"
 msgstr ""
-"<b>%s</b>·semble avoir été changée·pendant le fonctionnement du programme.·Sauvegarder maintenant sans réactualiser votre bibliothèque pourrait écraser d'autres modifications à la chanson.\n"
+"<b>%s</b> semble avoir été changée pendant le fonctionnement du programme. Sauvegarder maintenant sans réactualiser votre bibliothèque pourrait écraser d'autres modifications à la chanson.\n"
 "\n"
 "Sauvegarder tout de même cette étiquette?"
 
@@ -1437,9 +1437,9 @@ msgid ""
 "\t<b>%s</b>\n"
 "is invalid. Possibly it contains the same tag twice or it has unbalanced brackets (&lt; / &gt;)."
 msgstr ""
-"Le·motif\n"
+"Le motif\n"
 "\t<b>%s</b>\n"
-"n'est pas valide.·Il peut contenir deux fois la même étiquette ou des parenthèses sans correspondance·(&lt;·/·&gt;)."
+"n'est pas valide. Il peut contenir deux fois la même étiquette ou des parenthèses sans correspondance (&lt; / &gt;)."
 
 #: ../properties.py:1211
 msgid "Invalid tags"
@@ -1482,7 +1482,7 @@ msgstr "Les caractères non autorisés dans les noms de fichiers Windows (\\:?;\
 
 #: ../properties.py:1399
 msgid "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be replaced by underscores"
-msgstr "Les caractères n'appartenant pas à l'ensemble ASCII (A-Z,·a-z,·0-9,·et·ponctuation) seront remplacés par des soulignés"
+msgstr "Les caractères n'appartenant pas à l'ensemble ASCII (A-Z, a-z, 0-9, et ponctuation) seront remplacés par des soulignés"
 
 #: ../properties.py:1456
 msgid "Unable to rename file"

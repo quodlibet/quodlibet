@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: 0.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-10-21 19:51-0500\n"
-"PO-Revision-Date: 2005-10-12 19:26+0200\n"
+"PO-Revision-Date: 2005-10-27 14:20-0500\n"
 "Last-Translator: Tomasz Torcz <zdzichu@irc.pl>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
 "MIME-Version: 1.0\n"
@@ -83,7 +83,7 @@ msgstr "biblioteka muzyki i odtwarzacz"
 
 #: ../quodlibet.py:124
 msgid "[ --refresh-library | --print-playing | control ]"
-msgstr "[·--refresh-library·|·--print-playing·|·control·]"
+msgstr "[ --refresh-library | --print-playing | control ]"
 
 #: ../quodlibet.py:126
 msgid "Rescan your library and exit"
@@ -245,7 +245,7 @@ msgstr "E: Opcja `%s' wymaga podania argumentu."
 #: ../util.py:106
 #, python-format
 msgid "E: '%s' is not a unique prefix."
-msgstr "E:·'%s'·nie jest unikalnym prefiksem."
+msgstr "E: '%s' nie jest unikalnym prefiksem."
 
 #: ../util.py:204 ../widgets.py:1198
 msgid "No time information"
@@ -643,7 +643,7 @@ msgstr "Pasek Wyszukiwania"
 #: ../widgets.py:442
 #, python-format
 msgid "_Pane %d:"
-msgstr "_Warstwa·%d:"
+msgstr "_Warstwa %d:"
 
 #: ../widgets.py:454
 msgid "Paned Browser"
@@ -745,12 +745,10 @@ msgid ""
 "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b\\><part>"
 "\\</b\\>><tracknumber| - Track <tracknumber>>>"
 msgstr ""
-"\\<span·weight='bold'·size='large'\\><title>\\</span\\>·-"
-"·<~length><version|\n"
+"\\<span weight='bold' size='large'\\><title>\\</span\\> - <~length><version|\n"
 "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-"przez·<~people>><album|\n"
-"\\<b\\><album>\\</b\\><discnumber|·-·Płyta·<discnumber>><part|·-·\\<b"
-"\\><part>\\</b\\>><tracknumber|·-·Ścieżka·<tracknumber>>>"
+"przez <~people>><album|\n"
+"\\<b\\><album>\\</b\\><discnumber| - Płyta <discnumber>><part| - \\<b\\><part>\\</b\\>><tracknumber| - Ścieżka <tracknumber>>>"
 
 #: ../widgets.py:876
 msgid "Edit Display"
@@ -926,9 +924,7 @@ msgstr "Przeładowuje wszystkie utwory w bibliotece (to może chwilę potrwać)"
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
-msgstr ""
-"40 najczęściej odtwarzanych utworów "
-"(może·być·więcej·jeśli·utwory·mają·tę·samą·liczbę·odtworzeń)"
+msgstr "40 najczęściej odtwarzanych utworów (może być więcej jeśli utwory mają tę samą liczbę odtworzeń)"
 
 #: ../widgets.py:1445
 msgid ""
@@ -972,7 +968,7 @@ msgid ""
 "%d songs reloaded\n"
 "%d songs removed"
 msgstr ""
-"Quod·Libet·skanuje·bibliotekę.\n"
+"Quod Libet skanuje bibliotekę.\n"
 "Może to trwać kilka minut.\n"
 "\n"
 "przeładowano %d utworów\n"
@@ -1162,9 +1158,9 @@ msgstr "Usunąć wskazane pliki?"
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more..."
 msgid_plural "%(title)s and %(count)d more..."
-msgstr[0] "%(title)s·i·%(count)d·więcej..."
-msgstr[1] "%(title)s·i·%(count)d·więcej..."
-msgstr[2] "%(title)s·i·%(count)d·więcej..."
+msgstr[0] "%(title)s i %(count)d więcej..."
+msgstr[1] "%(title)s i %(count)d więcej..."
+msgstr[2] "%(title)s i %(count)d więcej..."
 
 #: ../qltk.py:238
 msgid "Discard tag changes?"
@@ -1185,20 +1181,20 @@ msgstr "Zapisywanie zmienionych utworów."
 #: ../qltk.py:544
 #, python-format
 msgid "%d/%d songs saved"
-msgstr "zapisano %d/%d·utworów"
+msgstr "zapisano %d/%d utworów"
 
 #: ../properties.py:47
 msgid ""
 "The date must be entered in YYYY, YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format."
-msgstr "Data musi mieć format YYYY, YYYY-MM-DD albo YYYY-MM-DD·HH:MM:SS."
+msgstr "Data musi mieć format YYYY, YYYY-MM-DD albo YYYY-MM-DD HH:MM:SS."
 
 #: ../properties.py:57
 msgid "ReplayGain gains must be entered in 'x.yy dB' format."
-msgstr "ReplayGain·gains·must·be·entered·in·'x.yy·dB'·format."
+msgstr "ReplayGain gains must be entered in 'x.yy dB' format."
 
 #: ../properties.py:69
 msgid "ReplayGain peaks must be entered in x.yy format."
-msgstr "ReplayGain·peaks·must·be·entered·in·x.yy·format."
+msgstr "ReplayGain peaks must be entered in x.yy format."
 
 #: ../properties.py:79
 msgid "MusicBrainz track IDs must be in UUID format."
@@ -1241,7 +1237,7 @@ msgstr[2] "%d raz"
 #: ../properties.py:375
 #, python-format
 msgid "%d kbps"
-msgstr "%d·kbps"
+msgstr "%d kbps"
 
 #: ../properties.py:382
 msgid "file size"
@@ -1402,7 +1398,7 @@ msgid ""
 "\n"
 "Save this song anyway?"
 msgstr ""
-"<b>%s</b>·Wygląda na to, że znacznik zmieniono w trakcie działa programu."
+"<b>%s</b> Wygląda na to, że znacznik zmieniono w trakcie działa programu."
 "Zapisanie bez odświeżenia biblioteki może spowodować nadpisanie innych zmian "
 "w znacznikach.\n"
 "\n"
@@ -2199,34 +2195,6 @@ msgstr "Radio _Internetowe"
 #~ "\t2. Rezultat zapomnienia łaciny ze szkoły przed ???</small>"
 
 #~ msgid ""
-#~ "<u><span weight=\"bold\" size=\"xx-large\">Quod Libet</span></u>\n"
-#~ "Copyright ©2004 Joe Wreschnig and Michael Urman\n"
-#~ "<quodlibet@lists.sacredchao.net>\n"
-#~ "<span size='small'>Tray icon code by Anders Carlsson and Sun "
-#~ "Microsystems, Inc.\n"
-#~ "Multimedia key code by Lee Willis and Jan Arne Petersen.\n"
-#~ "OSD code by Iñigo Serna and Gustavo J. A. M. Carneiro.</span>"
-#~ msgstr ""
-#~ "<u><span·weight=\"bold\"·size=\"xx-large\">Quod·Libet</span></u>\n"
-#~ "Copyright·©2004·Joe·Wreschnig·i·Michael·Urman\n"
-#~ "<quodlibet@lists.sacredchao.net>\n"
-#~ "<span·size='small'>Kod do Tray·icon·- "
-#~ "Anders·Carlsson·and·Sun·Microsystems,·Inc.\n"
-#~ "Kod do klawiszy multimedi·-·Lee·Willis·and·Jan·Arne·Petersen.\n"
-#~ "kod OSD·-·Iñigo·Serna·and·Gustavo·J.·A.·M.·Carneiro.</span>"
-
-#~ msgid ""
-#~ "Choose \"Regular filesystem\" above. When this driver is enabled, files "
-#~ "will be copied from their normal location to another one when you select "
-#~ "\"Upload to PMP\" from the context menu. Use this driver for players that "
-#~ "appear as hard drives."
-#~ msgstr ""
-#~ "Wybierz powyżej \"Zwykły system plików\". Gdy·wykonasz \"Zapis do PMP\" z "
-#~ "menu kontekstowego, kopiowanie plików będzie się odbywało z ich "
-#~ "normalnego położenia do innego. Używaj tej opcji dla odtwarzaczy, które "
-#~ "są widoczne jako urządzenie dyskowe (montowane w systemie plików)."
-
-#~ msgid ""
 #~ "Choose \"Run command\" from above. When this driver is enabled, the "
 #~ "specified program will be called once per filename. '%s' will be replaced "
 #~ "with the filename."
@@ -2250,7 +2218,7 @@ msgstr "Radio _Internetowe"
 #~ msgid ""
 #~ "Display changes that will be made to tags based on the current pattern"
 #~ msgstr ""
-#~ "Wyświetlanie zmian w tagach, które·zostaną·wykonane·na·podstawie·wzorca"
+#~ "Wyświetlanie zmian w tagach, które zostaną wykonane na podstawie wzorca"
 
 #~ msgid "Display changes that will be made to track numbers"
 #~ msgstr "Wyświetlanie zmian numeracji ścieżek"
@@ -2276,7 +2244,7 @@ msgstr "Radio _Internetowe"
 #~ msgstr "Usuwanie zaznaczonych utworów z biblioteki"
 
 #~ msgid "Show only songs by the same artists as the selected ones"
-#~ msgstr "Pokaż utwory tylko·zaznaczonych artystów"
+#~ msgstr "Pokaż utwory tylko zaznaczonych artystów"
 
 #~ msgid "Show only songs in the same albums as the selected ones"
 #~ msgstr "Pokaż utwory tylko z zaznaczonych albumów"

@@ -1431,7 +1431,7 @@ msgstr ""
 "Het patroon\n"
 "\t<b>%s</b>\n"
 "is ongeldig. Mogelijk bevat het dezelfde tag twee keer of heeft het "
-"ongebalanceerde haakjes·(&lt;·/·&gt;)."
+"ongebalanceerde haakjes (&lt; / &gt;)."
 
 #: ../properties.py:1211
 msgid "Invalid tags"

@@ -17,16 +17,8 @@ class Mock(object):
     # A generic mocking object.
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
 
-class TPO(unittest.TestCase):
-    def test_pos(self):
-        for f in glob.glob("po/*.po"):
-            self.failIf(os.system("msgfmt -c %s > /dev/null" % f))
-        try: os.unlink("messages.mo")
-        except OSError: pass
-registerCase(TPO)
-
 import test_util, test_audio, test_parser, test_metadata
-import test_playlist, test_pattern, test_stock
+import test_playlist, test_pattern, test_stock, test_po
 import test_qltk, test_widgets, test_player, test_search, test_paned
 import test_library, test_plugins, test_efwidgets, test_properties
 
