@@ -25,29 +25,18 @@ import util
 import parser
 
 from browsers.base import Browser
-from formats._audio import AudioFile
+from formats.remote import RemoteFile
 from library import Library
 from widgets import widgets
 
 STATIONS = os.path.join(const.DIR, "stations")
 
-class IRFile(AudioFile):
-    stream = True
+class IRFile(RemoteFile):
     local = False
     format = "Radio Station"
 
     __CAN_CHANGE = "title artist grouping".split()
 
-    def __init__(self, uri):
-        self["~uri"] = self["~filename"] = uri
-        self["~mountpoint"] = ""
-        self.sanitize(uri)
-
-    def rename(self, newname): pass
-    def reload(self): pass
-    def exists(self): return True
-    def valid(self): return True
-    def mounted(self): return True
     def write(self): pass
     def can_change(self, k=None):
         if k is None: return self.__CAN_CHANGE

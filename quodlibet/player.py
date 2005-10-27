@@ -142,24 +142,54 @@ class PlaylistPlayer(object):
             gobject.idle_add(self.__get_song)
 
     def __tag(self, pipeline, source, tags):
-        if getattr(self.song, 'stream', False):
+        # If the song isn't a local file, we need to fill in its
+        # metadata as best we can, via what GStreamer gives us.
+        if not self.song.local:
+            # For streams, we shouldn't modify the original file since
+            # it has the tags the user gave us, and the ones GSt is
+            # giving us are probably for the song, not the stream.
+            # So create a proxy to use instead.
+            if self.song.stream:
+                proxy = type(self.song)(self.song["~filename"])
+                proxy.update(self.song)
+            # Otherwise, our proxy is the song itself.
+            else: proxy = self.song
+
+            changed = False
             for k in tags.keys():
                 value = str(tags[k]).strip()
                 if not value: continue
-                if k == "location": k = "website"
-                if k in ["website", "genre", "comment"]:
-                    self.song[k] = unicode(value, errors='replace')
                 if k == "bitrate":
-                    try: self.song["~#bitrate"] = int(value)
-                    except ValueError: pass
-            fakesong = type(self.song)(self.song["~filename"])
-            fakesong.update(self.song)
-            if "title" in tags.keys():
-                fakesong["title"] = unicode(tags["title"], errors='replace')
-            for k in tags.keys():
-                if self.info.song.get(k) != fakesong.get(k):
-                    self.info.song_started(fakesong)
-                    break
+                    try: bitrate = int(value)
+                    except (ValueError, TypeError): pass
+                    else:
+                        if bitrate != self.song.get("~#bitrate"):
+                            changed = True
+                            proxy["~#bitrate"] = bitrate
+                elif k == "duration":
+                    try: length = int(long(value) / gst.SECOND)
+                    except (ValueError, TypeError): pass
+                    else:
+                        if length != self.song.get("~#length"):
+                            changed = True
+                            proxy["~#length"] = length
+                elif k in ["emphasis", "mode", "layer"]: continue
+                elif isinstance(value, basestring):
+                    value = unicode(value, errors='replace')
+                    k = {"track-number": "tracknumber",
+                         "location": "website"}.get(k, k)
+                    if proxy.get(k) == value: continue
+                    # If the title changes for a stream, we want to change
+                    # *only* the proxy.
+                    elif k == "title" and self.song.stream: proxy[k] = value
+                    # Otherwise, if any other tag changes, or the song isn't
+                    # a stream, change the actual song.
+                    else: self.song[k] = value
+                    changed = True
+
+            if changed:
+                if self.song.stream: self.info.song_started(proxy)
+                else: self.info.changed(proxy)
 
     def reset(self):
         self.__source.reset()

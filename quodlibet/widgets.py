@@ -1323,6 +1323,8 @@ class MainWindow(gtk.Window):
              "<control>O", None, self.open_chooser),
             ('AddFiles', gtk.STOCK_ADD, _('_Add a File...'),
              None, None, self.open_chooser),
+            ('AddLocation', gtk.STOCK_ADD, _('_Add a Location...'),
+             None, None, self.open_location),
             ('NewPlaylist', gtk.STOCK_EDIT, _('_New/Edit Playlist...'),
              None, None, self.__new_playlist),
             ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library'), ""),
@@ -1743,6 +1745,23 @@ class MainWindow(gtk.Window):
         if not hasattr(widgets, 'plugins'):
             widgets.plugins = PluginWindow(self)
         widgets.plugins.present()
+
+    def open_location(self, action):
+        name = qltk.GetStringDialog(self, _("Add a Location"),
+            _("Enter the location of an audio file."),
+            okbutton=gtk.STOCK_ADD).run()
+        if name:
+            from formats.remote import RemoteFile
+            from urllib import quote, splittype
+            type, name = splittype(name)
+            # Check to see if the URL is unquoted...
+            if set(";?:@&=+$ ,").intersection(name):
+                print "unquoted", name, set(";?:@&=+$ ,").intersection(name)
+                name = quote(name)
+            name = ":".join([type, name])
+            if name not in library:
+                song = library.add_song(RemoteFile(name))
+                if song: widgets.watcher.added([song])
 
     def open_chooser(self, action):
         if not os.path.exists(self.last_dir):
