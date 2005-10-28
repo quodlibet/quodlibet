@@ -1597,7 +1597,7 @@ msgstr "Nach Künstler sortieren"
 
 #: ../browsers/albums.py:230
 msgid "Sort by date"
-msgstr "Nach Künstler sortieren"
+msgstr "Nach Datum sortieren"
 
 #: ../browsers/albums.py:313
 msgid "All Albums"
