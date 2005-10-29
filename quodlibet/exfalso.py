@@ -42,6 +42,7 @@ if __name__ == "__main__":
     pygtk.require('2.0')
     import gtk, qltk, efwidgets
     w = efwidgets.ExFalsoWindow(qltk.SongWatcher(), args[0])
+    w.connect('destroy', gtk.main_quit)
     w.show_all()
 
     if (os.path.exists(const.CONTROL) and
