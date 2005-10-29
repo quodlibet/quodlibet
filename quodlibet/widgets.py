@@ -2480,6 +2480,10 @@ class SongList(qltk.HintedTreeView):
             else: h.set_sort_indicator(False)
         if refresh: self.set_songs(self.get_songs())
 
+    def set_model(self, model):
+        super(SongList, self).set_model(model)
+        if model is not None: model.connect('songs-set', self.__songs_set)
+
     def get_songs(self):
         return self.get_model().get()
 
@@ -2507,6 +2511,10 @@ class SongList(qltk.HintedTreeView):
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])
 
+        for column in self.get_columns():
+            column.set_clickable(False)
+            column.set_reorderable(False)
+
         model.set(songs)
 
         # reselect what we can
@@ -2514,6 +2522,11 @@ class SongList(qltk.HintedTreeView):
         for i, row in enumerate(iter(model)):
             if row[0]['~filename'] in selected:
                 selection.select_path(i)
+
+    def __songs_set(self, songlist):
+        for column in self.get_columns():
+            column.set_clickable(True)
+            column.set_reorderable(True)
 
     def get_selected_songs(self):
         model, rows = self.get_selection().get_selected_rows()
