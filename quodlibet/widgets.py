@@ -2237,7 +2237,7 @@ class SongList(qltk.HintedTreeView):
                 i *= util.RATING_PRECISION
                 itm = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
                 m2.append(itm)
-                itm.connect('activate', self.__set_selected_ratings, i)
+                itm.connect_object('activate', self.__set_rating, i, songs)
             menu.append(item)
 
         if (menu.get_children() and
@@ -2407,13 +2407,10 @@ class SongList(qltk.HintedTreeView):
         for song in songs: song["~#rating"] = value
         widgets.watcher.changed(songs)
 
-    def __set_selected_ratings(self, item, value):
-        self.__set_rating(value, self.get_selected_songs())
-
     def __key_press(self, songlist, event):
         if event.string in ['0', '1', '2', '3', '4']:
-            self.__set_rating(int(event.string) * util.RATING_PRECISION,
-                              self.get_selected_songs())
+            rating = min(1.0, int(event.string) * util.RATING_PRECISION)
+            self.__set_rating(rating, self.get_selected_songs())
         elif event.string == 'Q':
             self.__enqueue(None, self.get_selected_songs())
 
