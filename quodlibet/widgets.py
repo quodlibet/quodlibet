@@ -1249,6 +1249,7 @@ class MainWindow(gtk.Window):
         sw.show_all()
         self.__select_browser(self, config.get("memory", "browser"))
         self.browser.restore()
+        self.songlist.model.connect('songs-set', self.__set_time)
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/PlayQueue"))
@@ -1871,7 +1872,6 @@ class MainWindow(gtk.Window):
             except parser.error: pass
 
         self.songlist.set_songs(songs, tag=sort)
-        self.__set_time()
 
     def __filter_on(self, header, songs=None):
         if not self.browser or not self.browser.can_filter(header):

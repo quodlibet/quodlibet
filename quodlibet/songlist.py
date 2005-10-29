@@ -8,7 +8,7 @@
 
 import sys
 import random
-import gtk
+import gobject, gtk
 
 if sys.version_info < (2, 4): from sets import Set as set
 
@@ -55,23 +55,44 @@ class PlaylistModel(gtk.ListStore):
     repeat = False
     __path = None
     __old_value = None
+    __sig = None
+
+    __gsignals__ = {
+        'songs-set': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        }
 
     def __init__(self):
         gtk.ListStore.__init__(self, object)
         self.__played = []
 
     def set(self, songs):
+        if self.__sig is not None:
+            gobject.source_remove(self.__sig)
+            self.__sig = None
+
         oldsong = self.current
         if oldsong is None: oldsong = self.__old_value
         else: self.__old_value = oldsong
         self.__played = []
         self.__path = None
         self.clear()
-        for song in songs:
+        if len(songs) < 100:
+            self.__set_idle(oldsong, songs[:])
+        else:
+            self.__sig = gobject.idle_add(self.__set_idle, oldsong, songs[:])
+
+    def __set_idle(self, oldsong, songs):
+        to_add = songs[:100]
+        del(songs[:100])
+        for song in to_add:
             iter = self.append(row=[song])
-            if song == oldsong:
-                self.__path = self.get_path(iter)[0]
-        if self.current is not None: self.__old_value = None
+            if song == oldsong: self.__path = self.get_path(iter)[0]
+        if songs: return True
+        else:
+            if self.current is not None: self.__old_value = None
+            self.__sig = None
+            self.emit('songs-set')
+            return False
 
     def remove(self, iter):
         oldpath = self.__path
@@ -209,3 +230,4 @@ class PlaylistModel(gtk.ListStore):
     def reset(self):
         self.__played = []
         self.go_to(None)
+gobject.type_register(PlaylistModel)
