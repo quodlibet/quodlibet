@@ -76,10 +76,9 @@ class PlaylistModel(gtk.ListStore):
         self.__played = []
         self.__path = None
         self.clear()
-        if len(songs) < 100:
-            self.__set_idle(oldsong, songs[:])
-        else:
-            self.__sig = gobject.idle_add(self.__set_idle, oldsong, songs[:])
+        songs = songs[:]
+        if self.__set_idle(oldsong, songs):
+            self.__sig = gobject.idle_add(self.__set_idle, oldsong, songs)
 
     def __set_idle(self, oldsong, songs):
         to_add = songs[:100]
