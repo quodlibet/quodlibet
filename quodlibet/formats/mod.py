@@ -30,11 +30,17 @@ class ModFile(AudioFile):
         self.sanitize(filename)
 
     def write(self):
-        raise TypeError("ModFiles do not support writing!")
+        pass
 
-    def can_change(self, k = None):
-        if k is None: return []
-        else: return False
+    def reload(self, *args):
+        artist = self.get("artist")
+        super(ModFile, self).reload(*args)
+        if artist and "artist" not in self:
+            self["artist"] = artist
+
+    def can_change(self, k=None):
+        if k is None: return ["artist"]
+        else: return k == "artist"
 
 info = ModFile
 
