@@ -2190,7 +2190,7 @@ class SongList(qltk.HintedTreeView):
             l.set_text(util.format_rating(1.0))
             s = l.size_request()
             # Magic scaling constant tested on Sans 10 to Sans 26.
-            self.set_min_width(int(s[0] * 1.1))
+            self.set_min_width(int(s[0] * 1.2))
             l.destroy()
 
     class NonSynthTextColumn(WideTextColumn):
