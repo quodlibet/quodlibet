@@ -2025,7 +2025,7 @@ class QueueExpander(gtk.Expander):
         value = self.get_property('visible')
         config.set("memory", "playqueue", str(value))
         menu.set_active(value)
-        self.set_expanded(self.model.is_empty())
+        self.set_expanded(not self.model.is_empty())
         cb.set_property('visible', self.get_expanded())
         clear.set_property('visible', self.get_expanded())
 
@@ -2525,8 +2525,9 @@ class SongList(qltk.HintedTreeView):
 
     def __songs_set(self, songlist):
         for column in self.get_columns():
-            column.set_clickable(True)
-            column.set_reorderable(True)
+            if column.header_name not in["~current"]:
+                column.set_clickable(True)
+                column.set_reorderable(True)
 
     def get_selected_songs(self):
         model, rows = self.get_selection().get_selected_rows()
