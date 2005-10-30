@@ -315,7 +315,7 @@ class PreferencesWindow(gtk.Window):
                   ("~basename",_("_Filename"))],
                  [("~#track", _("_Track")),
                   ("artist", _("_Artist")),
-                  ("~rating", _("_Rating"))],
+                  ("~#rating", _("_Rating"))],
                  [("title", tag("title")),
                   ("date", _("_Date")),
                   ("~#length",_("_Length"))]]):
@@ -383,7 +383,7 @@ class PreferencesWindow(gtk.Window):
         def __apply(self, button, buttons, tiv, aip, fip, others):
             headers = []
             for key in ["~#disc", "~#track", "title", "album", "artist",
-                        "date", "~basename", "~rating", "~#length"]:
+                        "date", "~basename", "~#rating", "~#length"]:
                 if buttons[key].get_active(): headers.append(key)
             if tiv.get_active():
                 try: headers[headers.index("title")] = "~title~version"
@@ -2171,6 +2171,28 @@ class SongList(qltk.HintedTreeView):
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_fixed_width(1)
 
+    class RatingColumn(TextColumn):
+        # Render ~#rating directly (simplifies filtering, saves
+        # a function call).
+        def _cdf(self, column, cell, model, iter, tag):
+            try:
+                song = model[iter][0]
+                cell.set_property(
+                    'text', util.format_rating(song.get("~#rating", 0.5)))
+            except AttributeError: pass
+
+        def __init__(self):
+            SongList.TextColumn.__init__(self, "~#rating")
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+            # Neither of TreeViewColumn or CellRendererText is a GTK
+            # widget, so we need a new one to use Pango. Lame.
+            l = gtk.Label()
+            l.set_text(util.format_rating(1.0))
+            s = l.size_request()
+            # Magic scaling constant tested on Sans 10 to Sans 26.
+            self.set_min_width(int(s[0] * 1.1))
+            l.destroy()
+
     class NonSynthTextColumn(WideTextColumn):
         # Optimize for non-synthesized keys by grabbing them directly.
         # Used for any tag without a '~' except 'title'.
@@ -2223,13 +2245,12 @@ class SongList(qltk.HintedTreeView):
         def Filter(t):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
-            t = {"~rating":"~#rating", "~length":"~#length"}.get(t, t)
             b = qltk.MenuItem(
                 _("_Filter on %s") % tag(t, False), gtk.STOCK_INDEX)
             b.connect_object('activate', self.__filter_on, t, songs, browser)
             return b
 
-        if header == "~rating":
+        if header == "~#rating":
             item = gtk.MenuItem(_("Rating"))
             m2 = gtk.Menu()
             item.set_submenu(m2)
@@ -2348,7 +2369,7 @@ class SongList(qltk.HintedTreeView):
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
-        if col.header_name == "~rating":
+        if col.header_name == "~#rating":
             # FIXME: With the new rating system this simply doesn't
             # work, we need a new display.
             pass
@@ -2560,11 +2581,12 @@ class SongList(qltk.HintedTreeView):
             self.append_column(self.CurrentColumn())
 
         for i, t in enumerate(headers):
-            if t in ["tracknumber", "discnumber", "~rating"]:
+            if t in ["tracknumber", "discnumber"]:
                 column = self.TextColumn(t)
             elif t in ["~#added", "~#mtime", "~#lastplayed"]:
                 column = self.DateColumn(t)
             elif t in ["~length", "~#length"]: column = self.LengthColumn()
+            elif t in ["~rating", "~#rating"]: column = self.RatingColumn()
             elif t.startswith("~#"): column = self.NumericColumn(t)
             elif t in ["~filename", "~basename", "~dirname"]:
                 column = self.FSColumn(t)

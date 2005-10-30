@@ -110,9 +110,9 @@ def init(*rc_files):
 
     _config.read(rc_files)
 
-    # FIXME: Remove after 0.14
+    # FIXME: Remove after 0.15
     headers = _config.get("settings", "headers").split()
-    try: headers[headers.index("~length")] = "~#length"
+    try: headers[headers.index("~rating")] = "~#rating"
     except ValueError: pass
     else: _config.set("settings", "headers", " ".join(headers))
 
