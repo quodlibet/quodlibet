@@ -349,10 +349,10 @@ class AlbumList(Browser, gtk.VBox):
             ]:
             self.connect_object('destroy', widgets.watcher.disconnect, s)
 
-        targets = [("text/uri-list", 0, 1)]
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+                   ("text/uri-list", 0, 2)]
         view.drag_source_set(
-            gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
-            gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
+            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         view.connect("drag-begin", self.__drag_begin)
         view.connect("drag-data-get", self.__drag_data_get)
 
@@ -493,15 +493,30 @@ class AlbumList(Browser, gtk.VBox):
     def __drag_begin(self, view, ctx):
         model, paths = view.get_selection().get_selected_rows()
         if paths:
-            icon = view.create_row_drag_icon(paths[-1])
-            view.drag_source_set_icon(icon.get_colormap(), icon)
-        else: return True
+            icons = map(view.create_row_drag_icon, paths)
+            gc = icons[0].new_gc()
+            height = (sum(map(lambda s: s.get_size()[1], icons))-len(icons))+1
+            width = max(map(lambda s: s.get_size()[0], icons))
+            final = gtk.gdk.Pixmap(icons[0], width, height)
+            count_y = 0
+            for icon in icons:
+                final.draw_drawable(gc, icon, 0, 0, 0, count_y, -1, -1)
+                count_y += icon.get_size()[1] - 1
+            view.drag_source_set_icon(final.get_colormap(), final)
+        else:
+            gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
+            view.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())
         songs.sort()
-        filenames = [s("~uri") for s in songs]
-        sel.set_uris(filenames)
+        if tid == 1:
+            filenames = [song("~filename") for song in songs]
+            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+        else:
+            uris = [model[path][0]("~uri") for path in paths]
+            sel.set_uris(uris)
+        return True
         
     def __enqueue(self, item, view):
         songs = self.__get_selected_songs(view.get_selection())

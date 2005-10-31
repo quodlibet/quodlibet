@@ -2385,7 +2385,6 @@ class SongList(qltk.HintedTreeView):
             else: self.__drag_iters = []
             added = filter(library.add_song, songs)
             filenames = [song("~filename") for song in songs]
-            # We also add them to the library here.
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
             if added: widgets.watcher.added(added)
         else:
