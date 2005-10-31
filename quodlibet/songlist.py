@@ -95,11 +95,13 @@ class PlaylistModel(gtk.ListStore):
 
     def remove(self, iter):
         oldpath = self.__path
-        song = self.current
+        iterpath = self.get_path(iter)[0]
         gtk.ListStore.remove(self, iter)
-        self.go_to(song)
-        if self.__path is None and not self.is_empty():
-            self.__path = min(oldpath, len(self) - 1)
+        if self.is_empty(): self.__path = None
+        elif oldpath >= iterpath:
+            # If the iter removed was before the path, we decrease
+            # by one. Otherwise, we're still the same path.
+            self.__path = min(oldpath, len(self)) - 1
 
     def get(self):
         return [row[0] for row in self]
