@@ -16,11 +16,11 @@ class View(gtk.TreeView):
                    ("text/uri-list", 0, 3)]
         self.drag_source_set(
             gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
-            gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
-        self.drag_dest_set(
-            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
-        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
+            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
+        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
+                           gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
         self.connect('drag-begin', self.__drag_begin)
+        self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received)
 
@@ -30,6 +30,13 @@ class View(gtk.TreeView):
             icon = self.create_row_drag_icon(paths[-1])
             self.drag_source_set_icon(icon.get_colormap(), icon)
         else: return True
+
+    def __drag_motion(self, view, ctx, x, y, time):
+        self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))        
+        if ctx.get_source_widget() == self: kind = gtk.gdk.ACTION_MOVE
+        else: kind = gtk.gdk.ACTION_COPY
+        ctx.drag_status(kind, time)
+        return True
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
@@ -51,6 +58,7 @@ class View(gtk.TreeView):
         print "dropping at", path
         ctx.finish(True, True, etime)
         print "END DRAG DATA RECEIVED"
+        return True
 
     def _make_model(self):
         m = gtk.ListStore(str)
