@@ -1958,9 +1958,9 @@ class QueueExpander(gtk.Expander):
         self.add(queue_scroller)
         self.connect_object('notify::expanded', self.__expand, cb, b)
 
-        targets = [("text/uri-list", 0, 1)]
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1)]
         self.drag_dest_set(
-            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
+            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
         self.connect('drag-motion', self.__motion)
         self.connect('drag-data-received', self.__drag_data_received)
 
@@ -2003,16 +2003,12 @@ class QueueExpander(gtk.Expander):
         self.show()
 
     def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
-        from urllib import splittype as split, url2pathname as topath
-        filenames = [os.path.normpath(topath(split(s)[1]))
-                     for s in sel.get_uris() if split(s)[0] == "file"]
+        filenames = sel.data.split("\x00")
         songs = filter(None, map(library.get, filenames))
         if not songs: return True
-        for song in songs:
-            iter = self.model.find(song)
-            if iter: self.model.remove(iter)
-            self.model.append(row=[song])
+        for song in songs: self.model.append(row=[song])
         ctx.finish(True, True, etime)
+        return True
 
     def __queue_shuffle(self, button, model):
         model.shuffle = button.get_active()
@@ -2113,7 +2109,8 @@ class SongList(qltk.HintedTreeView):
     # When created SongLists add themselves to this dict so they get
     # informed when headers are updated.
     __songlistviews = {}
-    
+
+    __drag_iters = [] # iters involved in a DnD operation
     headers = [] # The list of current headers.
     star = list(parser.STAR)
 
@@ -2342,14 +2339,52 @@ class SongList(qltk.HintedTreeView):
         for sig in sigs:
             self.connect_object('destroy', widgets.watcher.disconnect, sig)
 
-        targets = [("text/uri-list", 0, 1)]
-        self.drag_source_set(
-            gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
-            gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_COPY)
-        self.connect('drag-data-get', self.__drag_data_get)
-        self.connect('drag-begin', self.__drag_begin)
         self.connect('button-press-event', self.__button_press)
         self.connect('key-press-event', self.__key_press)
+
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+                   ("text/uri-list", 0, 2)]
+
+        self.drag_source_set(
+            gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
+            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
+        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
+                           gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
+        self.connect('drag-begin', self.__drag_begin)
+        self.connect('drag-data-delete', self.__drag_data_delete)
+        self.connect('drag-data-get', self.__drag_data_get)
+
+    def __drag_begin(self, view, ctx):
+        model, paths = self.get_selection().get_selected_rows()
+        if paths:
+            icon = self.create_row_drag_icon(paths[-1])
+            self.drag_source_set_icon(icon.get_colormap(), icon)
+        else: return True
+
+    def __drag_data_delete(self, view, ctx):
+        if ctx.is_source and ctx.action == gtk.gdk.ACTION_MOVE:
+            # For some reason it wants to delete twice, even with
+            # the above sanity checks.
+            map(self.get_model().remove, self.__drag_iters)
+            self.__drag_iters = []
+
+    def __drag_data_get(self, view, ctx, sel, tid, etime):
+        model, paths = self.get_selection().get_selected_rows()
+        if tid == 1:
+            songs = [model[path][0] for path in paths
+                     if not model[path][0].stream]
+            if ctx.action == gtk.gdk.ACTION_MOVE:
+                self.__drag_iters = map(model.get_iter, paths)
+            else: self.__drag_iters = []
+            added = filter(library.add_song, songs)
+            filenames = [song("~filename") for song in songs]
+            # We also add them to the library here.
+            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            if added: widgets.watcher.added(added)
+        else:
+            uris = [model[path][0]("~uri") for path in paths]
+            sel.set_uris(uris)
+        return True
 
     def __filter_on(self, header, songs, browser):
         if not browser or not browser.can_filter(header): return
@@ -2434,22 +2469,6 @@ class SongList(qltk.HintedTreeView):
             self.__set_rating(rating, self.get_selected_songs())
         elif event.string == 'Q':
             self.__enqueue(None, self.get_selected_songs())
-
-    def __drag_begin(self, view, ctx):
-        model, paths = self.get_selection().get_selected_rows()
-        if paths:
-            icon = self.create_row_drag_icon(paths[-1])
-            self.drag_source_set_icon(icon.get_colormap(), icon)
-        else: return True
-
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
-        model, paths = self.get_selection().get_selected_rows()
-        paths.sort()
-        songs = [model[path][0] for path in paths if not model[path][0].stream]
-        added = filter(library.add_song, songs)
-        filenames = [song("~uri") for song in songs]
-        sel.set_uris(filenames)
-        widgets.watcher.added(added)
 
     def __redraw_current(self, watcher, song=None):
         iter = self.song_to_iter(player.playlist.song)
@@ -2604,41 +2623,56 @@ class SongList(qltk.HintedTreeView):
 class DestSongList(SongList):
     def __init__(self):
         super(DestSongList, self).__init__()
-        targets = [("text/uri-list", 0, 1)]
-        self.enable_model_drag_dest(targets, gtk.gdk.ACTION_DEFAULT)
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+                   ("text/uri-list", 0, 2)]
+        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
+                           gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
         self.connect('drag-data-received', self.__drag_data_received)
+        self.connect('drag-motion', self.__drag_motion)
+
+    def __drag_motion(self, view, ctx, x, y, time):
+        try: self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
+        except TypeError:
+            if len(self.get_model()) == 0: path = 0
+            else: path = len(self.get_model()) - 1
+            self.set_drag_dest_row(path, gtk.TREE_VIEW_DROP_AFTER)
+        if ctx.get_source_widget() == self: kind = gtk.gdk.ACTION_MOVE
+        else: kind = gtk.gdk.ACTION_COPY
+        ctx.drag_status(kind, time)
+        return True
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
         model = view.get_model()
-        from urllib import splittype as split, url2pathname as topath
-        filenames = [os.path.normpath(topath(split(s)[1]))
-                     for s in sel.get_uris() if split(s)[0] == "file"]
+        if info == 1:
+            filenames = sel.data.split("\x00")
+        elif info == 2:
+            from urllib import splittype as split, url2pathname as topath
+            filenames = [os.path.normpath(topath(split(s)[1]))
+                         for s in sel.get_uris()]
+        else:
+            print "W: Unknown target ID!"
+            return False
+
         songs = filter(None, map(library.get, filenames))
         if not songs: return True
 
         try: path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
-            for song in songs:
-                it = model.find(song)
-                if it: model.remove(it)
-                model.append([song])
+            if len(model) == 0: path = 0
+            else: path = len(model) - 1
+            position = gtk.TREE_VIEW_DROP_AFTER
+
+        song = songs.pop(0)
+        try: iter = model.get_iter(path)
+        except ValueError: iter = model.append(row=[song]) # empty model
         else:
-            iter = model.get_iter(path)
-            song = songs.pop(0)
-            it = self.song_to_iter(song)
-            if it:
-                if model.get_path(it) == model.get_path(iter): return
-                else: model.remove(it)
             if position in (gtk.TREE_VIEW_DROP_BEFORE,
                             gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
                 iter = model.insert_before(iter, [song])
-            else:
-                iter = model.insert_after(iter, [song])
-            for song in songs:
-                it = self.song_to_iter(song)
-                if it: model.remove(it)
-                iter = model.insert_after(iter, [song])
+            else: iter = model.insert_after(iter, [song])
+        for song in songs: iter = model.insert_after(iter, [song])
         ctx.finish(True, True, etime)
+        return True
 
 class PlayList(DestSongList):
     # "Playlists" are a group of songs with an internal tag like
