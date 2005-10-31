@@ -2346,10 +2346,7 @@ class SongList(qltk.HintedTreeView):
                    ("text/uri-list", 0, 2)]
 
         self.drag_source_set(
-            gtk.gdk.BUTTON1_MASK|gtk.gdk.CONTROL_MASK, targets,
-            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
-        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
-                           gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
+            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         self.connect('drag-begin', self.__drag_begin)
         self.connect('drag-data-delete', self.__drag_data_delete)
         self.connect('drag-data-get', self.__drag_data_get)
@@ -2358,7 +2355,7 @@ class SongList(qltk.HintedTreeView):
         model, paths = self.get_selection().get_selected_rows()
         if paths:
             icons = map(self.create_row_drag_icon, paths)
-            gc = icons[0].new_gc(foreground=gtk.gdk.color_parse("white"))
+            gc = icons[0].new_gc()
             height = (sum(map(lambda s: s.get_size()[1], icons))-len(icons))+1
             width = max(map(lambda s: s.get_size()[0], icons))
             final = gtk.gdk.Pixmap(icons[0], width, height)
@@ -2366,8 +2363,10 @@ class SongList(qltk.HintedTreeView):
             for icon in icons:
                 final.draw_drawable(gc, icon, 0, 0, 0, count_y, -1, -1)
                 count_y += icon.get_size()[1] - 1
-            self.drag_source_set_icon(icon.get_colormap(), final)
-        else: return True
+            self.drag_source_set_icon(final.get_colormap(), final)
+        else:
+            gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
+            self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
     def __drag_data_delete(self, view, ctx):
         if ctx.is_source and ctx.action == gtk.gdk.ACTION_MOVE:
@@ -2633,6 +2632,10 @@ class DestSongList(SongList):
         super(DestSongList, self).__init__()
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        # Destinations are the sources for moves as well as copies.
+        self.drag_source_set(
+            gtk.gdk.BUTTON1_MASK, targets,
+            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
         self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
                            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
         self.connect('drag-data-received', self.__drag_data_received)
