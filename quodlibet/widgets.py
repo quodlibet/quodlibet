@@ -2357,8 +2357,16 @@ class SongList(qltk.HintedTreeView):
     def __drag_begin(self, view, ctx):
         model, paths = self.get_selection().get_selected_rows()
         if paths:
-            icon = self.create_row_drag_icon(paths[-1])
-            self.drag_source_set_icon(icon.get_colormap(), icon)
+            icons = map(self.create_row_drag_icon, paths)
+            gc = icons[0].new_gc(foreground=gtk.gdk.color_parse("white"))
+            height = (sum(map(lambda s: s.get_size()[1], icons))-len(icons))+1
+            width = max(map(lambda s: s.get_size()[0], icons))
+            final = gtk.gdk.Pixmap(icons[0], width, height)
+            count_y = 0
+            for icon in icons:
+                final.draw_drawable(gc, icon, 0, 0, 0, count_y, -1, -1)
+                count_y += icon.get_size()[1] - 1
+            self.drag_source_set_icon(icon.get_colormap(), final)
         else: return True
 
     def __drag_data_delete(self, view, ctx):
