@@ -56,7 +56,6 @@ MENU = """<ui>
       <menuitem action='AddFiles'/>
       <menuitem action='AddLocation'/>
       <separator/>
-      <menuitem action='NewPlaylist'/>
       <menu action='BrowseLibrary'>
       %s
       </menu>
