@@ -627,68 +627,6 @@ class TrayIcon(object):
     def destroy(self):
         if self.__icon: self.__icon.destroy()
 
-class PlaylistWindow(gtk.Window):
-
-    # If we open a playlist whose window is already displayed, bring it
-    # to the forefront rather than make a new one.
-    __list_windows = {}
-    def __new__(klass, name, *args, **kwargs):
-        win = klass.__list_windows.get(name, None)
-        if win is None:
-            win = super(PlaylistWindow, klass).__new__(
-                klass, name, *args, **kwargs)
-            win.__initialize_window(name)
-            klass.__list_windows[name] = win
-            # insert sorted, unless present
-            def insert_sorted(model, path, iter, last_try):
-                if model[iter][1] == win.__plname:
-                    return True # already present
-                if model[iter][1] > win.__plname:
-                    model.insert_before(iter, [win.__prettyname, win.__plname])
-                    return True # inserted
-                if path[0] == last_try:
-                    model.insert_after(iter, [win.__prettyname, win.__plname])
-                    return True # appended
-            model = PlayList.lists_model()
-            model.foreach(insert_sorted, len(model) - 1)
-        return win
-
-    def __init__(self, name):
-        self.present()
-
-    def set_name(self, name):
-        self.__prettyname = name
-        self.__plname = util.QuerySafe.encode(name)
-        self.set_title('Quod Libet Playlist: %s' % name)
-
-    def __destroy(self, view):
-        del(self.__list_windows[self.__prettyname])
-        if not len(view.get_model()):
-            def remove_matching(model, path, iter, name):
-                if model[iter][1] == name:
-                    model.remove(iter)
-                    return True
-            PlayList.lists_model().foreach(remove_matching, self.__plname)
-
-    def __initialize_window(self, name):
-        gtk.Window.__init__(self)
-        icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
-        self.set_destroy_with_parent(True)
-        self.set_default_size(400, 400)
-        self.set_border_width(12)
-
-        view = PlayList(name)
-        swin = gtk.ScrolledWindow()
-        swin.set_shadow_type(gtk.SHADOW_IN)
-        swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        swin.add(view)
-        self.add(swin)
-        self.set_name(name)
-        self.connect_object('destroy', self.__destroy, view)
-        self.show_all()
-
 # A tray icon aware of UI policy -- left click shows/hides, right
 # click makes a callback.
 class HIGTrayIcon(TrayIcon):
@@ -1326,8 +1264,6 @@ class MainWindow(gtk.Window):
              None, None, self.open_chooser),
             ('AddLocation', gtk.STOCK_ADD, _('_Add a Location...'),
              None, None, self.open_location),
-            ('NewPlaylist', gtk.STOCK_EDIT, _('_New/Edit Playlist...'),
-             None, None, self.__new_playlist),
             ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library'), ""),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
@@ -1619,15 +1555,6 @@ class MainWindow(gtk.Window):
 
     def __save_size(self, event):
         config.set("memory", "size", "%d %d" % (event.width, event.height))
-
-    def __new_playlist(self, activator):
-        options = map(util.QuerySafe.decode, library.playlists())
-        name = qltk.GetStringDialog(
-            self, _("New/Edit Playlist"),
-            _("Enter a name for the new playlist. If it already exists it "
-              "will be opened for editing."), options).run()
-        if name:
-            PlaylistWindow(name)
 
     def __refresh_size(self):
         if (not self.browser.expand and
@@ -2682,100 +2609,6 @@ class SongList(qltk.HintedTreeView):
     def __destroy(self):
         del(self.__songlistviews[self])
         self.set_model(None)
-
-class PlayList(SongList):
-    # "Playlists" are a group of songs with an internal tag like
-    # ~#playlist_foo = 12. This SongList helps manage playlists.
-
-    # ~#playlist_foo keys order the playlist, from 1 to n. If the key
-    # is not present or equals 0, the song is not in the list.
-
-    def lists_model(cls):
-        # Track all playlists. PlaylistWindow updates this when you
-        # make a new playlist, and PlaylistBar reads it to show the
-        # playlist list.
-        try: return cls._lists_model
-        except AttributeError:
-            model = cls._lists_model = gtk.ListStore(str, str)
-            playlists = [[util.QuerySafe.decode(p), p] for p in
-                          library.playlists()]
-            playlists.sort()
-            model.append([(_("All songs")), ""])
-            for p in playlists: model.append(p)
-            return model
-    lists_model = classmethod(lists_model)
-
-    def __init__(self, name):
-        plname = 'playlist_' + util.QuerySafe.encode(name)
-        self.__key = key = '~#' + plname
-        from songlist import PlaylistModel
-        model = PlaylistModel()
-        super(PlayList, self).__init__()
-
-        for song in library.query('#(%s > 0)' % plname, sort=key):
-            model.append([song])
-
-        # "Remove" from a playlist means something different than
-        # "Remove from Library", so use a different menu. This means
-        # plugins can't be run from the playlist manager, but I don't
-        # think anyone will care.
-        menu = gtk.Menu()
-        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
-        rem.connect('activate', self.__remove, key)
-        menu.append(rem)
-        prop = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        prop.connect('activate', self.__properties)
-        menu.append(prop)
-        menu.show_all()
-        self.connect_object('destroy', gtk.Menu.destroy, menu)
-        self.connect('button-press-event', self.__button_press, menu)
-        self.connect_object('popup-menu', self.__popup, menu)
-
-        self.set_model(model)
-        self.enable_drop()
-        self.connect('drag-data-received', self.__refresh_indices)
-
-    def __popup(self, menu):
-        menu.popup(None, None, None, 3, 0)
-        return True
-
-    def __properties(self, item):
-        SongProperties(self.get_selected_songs(), widgets.watcher)
-
-    def append_songs(self, songs):
-        model = self.get_model()
-        current_songs = set(self.get_songs())
-        for song in songs:
-            if song not in current_songs:
-                model.append([song])
-                song[self.__key] = len(model)
-
-    # Sorting a playlist via a misclick is a good way to lose work.
-    def set_sort_by(self, *args): pass
-    def get_sort_by(self, *args): return self.__key, False
-
-    def __remove(self, activator, key):
-        songs = self.get_selected_songs()
-        for song in songs: del(song[key])
-        map(self.get_model().remove, self.songs_to_iters(songs))
-        self.__refresh_indices()
-
-    def __refresh_indices(self, *args):
-        for i, row in enumerate(iter(self.get_model())):
-            row[0][self.__key] = i + 1
-
-    def __button_press(self, view, event, menu):
-        if event.button != 3:
-            return False
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        view.grab_focus()
-        selection = view.get_selection()
-        if not selection.path_is_selected(path):
-            view.set_cursor(path, col, 0)
-        menu.popup(None, None, None, event.button, event.time)
-        return True
 
 class PlayQueue(SongList):
     class CurrentColumn(gtk.TreeViewColumn):
