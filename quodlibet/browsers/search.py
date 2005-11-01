@@ -74,10 +74,8 @@ gobject.type_register(EmptyBar)
 # Like EmptyBar, but the user can also enter a query manually. This
 # is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
-    # Most browsers implement something like save/play. If save is
-    # false, Browser#save should do nothing. Likewise, if play is false,
-    # the browser should never start songs playing. These are used
-    # when making browsers for the Library Browser windows.
+    reordered = True
+
     def __init__(self, main=True):
         EmptyBar.__init__(self)
         self.__save = main

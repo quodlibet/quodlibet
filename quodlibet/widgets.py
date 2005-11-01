@@ -1152,6 +1152,7 @@ class MainWindow(gtk.Window):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.songlist = MainSongList()
+        self.songlist.connect('drag-end', self.__songlist_drag_end)
         sw.add(self.songlist)
 
         self.qexpander = QueueExpander(
@@ -1222,6 +1223,10 @@ class MainWindow(gtk.Window):
 
         self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
+
+    def __songlist_drag_end(self, view, ctx):
+        if callable(self.browser.reordered): self.browser.reordered(view)
+        self.songlist.set_sort_by(None, refresh=False)
 
     def __window_state_changed(self, window, event):
         assert window is self
@@ -1403,8 +1408,11 @@ class MainWindow(gtk.Window):
             c.remove(self.browser)
             c.destroy()
             self.browser.destroy()
-        self.browser = Browser()
+        self.browser = Browser(main=True)
         self.browser.connect('songs-selected', self.__browser_cb)
+        if self.browser.reordered: self.songlist.enable_drop()
+        else: self.songlist.disable_drop()
+
         if self.browser.expand:
             c = self.browser.expand()
             c.pack1(self.browser, resize=True)
@@ -2740,8 +2748,10 @@ class LibraryBrowser(gtk.Window):
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        browser = Kind(main=False)
+        self.browser = browser = Kind(main=False)
         browser.connect_object('songs-selected', SongList.set_songs, view)
+        if browser.reordered: view.enable_drop()
+
         if Kind.expand:
             container = Kind.expand()
             container.pack1(browser, resize=True)
@@ -2752,10 +2762,10 @@ class LibraryBrowser(gtk.Window):
             vbox.pack_start(browser, expand=False)
             vbox.pack_start(sw)
             self.add(vbox)
-        self.browser = browser
 
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__menu, 3, 0)
+        view.connect('drag-end', self.__drag_end)
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
@@ -2763,6 +2773,9 @@ class LibraryBrowser(gtk.Window):
         sw.show_all()
         self.child.show()
         self.show()
+
+    def __drag_end(self, view, context):
+        if callable(self.browser.reordered): self.browser.reordered(view)
 
     def __cols_changed(self, view, browser):
         for header in view.get_columns():

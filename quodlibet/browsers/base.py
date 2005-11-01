@@ -56,6 +56,11 @@ class Browser(object):
     # Do whatever is needed to emit songs-selected again.
     def activate(self): raise NotImplementedError
 
+    # Called when the song list is reordered. If it's not callable
+    # but true, no call is made but the song list is still reorderable.
+    # def reordered(self, songlist): ...
+    reordered = None
+
     # Return an initial context menu appropriate to the browser.
     # songs is the list of selected songs.
     def Menu(self, songs): return None
