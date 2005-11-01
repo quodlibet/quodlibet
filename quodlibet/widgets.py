@@ -2045,7 +2045,6 @@ class SongList(qltk.HintedTreeView):
     # informed when headers are updated.
     __songlistviews = {}
 
-    __drag_iters = [] # iters involved in a DnD operation
     headers = [] # The list of current headers.
     star = list(parser.STAR)
 
@@ -2279,7 +2278,6 @@ class SongList(qltk.HintedTreeView):
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received)
-        self.connect('drag-data-delete', self.__drag_data_delete)
 
     def enable_drop(self):
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
@@ -2332,26 +2330,29 @@ class SongList(qltk.HintedTreeView):
         if tid == 1:
             songs = [model[path][0] for path in paths
                      if not model[path][0].stream]
-            if ctx.action == gtk.gdk.ACTION_MOVE:
-                self.__drag_iters = map(model.get_iter, paths)
-            else: self.__drag_iters = []
             added = filter(library.add_song, songs)
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
             if added: widgets.watcher.added(added)
+            if ctx.action == gtk.gdk.ACTION_MOVE:
+                self.__drag_iters = map(model.get_iter, paths)
+            else: self.__drag_iters = []
         else:
             uris = [model[path][0]("~uri") for path in paths]
             sel.set_uris(uris)
+            self.__drag_iters = []
         return True
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
         model = view.get_model()
         if info == 1:
             filenames = sel.data.split("\x00")
+            move = (ctx.get_source_widget() == view)
         elif info == 2:
             from urllib import splittype as split, url2pathname as topath
             filenames = [os.path.normpath(topath(split(s)[1]))
                          for s in sel.get_uris()]
+            move = False
         else:
             print "W: Unknown target ID!"
             return False
@@ -2365,24 +2366,28 @@ class SongList(qltk.HintedTreeView):
             else: path = len(model) - 1
             position = gtk.TREE_VIEW_DROP_AFTER
 
-        song = songs.pop(0)
-        try: iter = model.get_iter(path)
-        except ValueError: iter = model.append(row=[song]) # empty model
-        else:
+        if move:
+            iter = model.get_iter(path) # model can't be empty, we're moving
             if position in (gtk.TREE_VIEW_DROP_BEFORE,
                             gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
-                iter = model.insert_before(iter, [song])
-            else: iter = model.insert_after(iter, [song])
-        for song in songs: iter = model.insert_after(iter, [song])
+                while self.__drag_iters:
+                    model.move_before(self.__drag_iters.pop(0), iter)
+            else:
+                while self.__drag_iters:
+                    model.move_after(self.__drag_iters.pop(), iter)
+        else:
+            song = songs.pop(0)
+            try: iter = model.get_iter(path)
+            except ValueError: iter = model.append(row=[song]) # empty model
+            else:
+                if position in (gtk.TREE_VIEW_DROP_BEFORE,
+                                gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                    iter = model.insert_before(iter, [song])
+                else: iter = model.insert_after(iter, [song])
+            for song in songs:
+                iter = model.insert_after(iter, [song])
         ctx.finish(True, True, etime)
         return True
-
-    def __drag_data_delete(self, view, ctx):
-        if ctx.is_source and ctx.action == gtk.gdk.ACTION_MOVE:
-            # For some reason it wants to delete twice, even with
-            # the above sanity checks.
-            map(self.get_model().remove, self.__drag_iters)
-            self.__drag_iters = []
 
     def __filter_on(self, header, songs, browser):
         if not browser or not browser.can_filter(header): return

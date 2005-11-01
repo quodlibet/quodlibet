@@ -118,6 +118,12 @@ class PlaylistModel(gtk.ListStore):
         else: return (self.__path,)
     current_path = property(get_current_path)
 
+    def get_current_iter(self):
+        if self.__path is None: return None
+        elif self.is_empty(): return None
+        else: return self.get_iter(self.__path)
+    current_iter = property(get_current_iter)
+
     def next(self):
         if self.shuffle:
             self.__next_shuffle()
@@ -230,4 +236,27 @@ class PlaylistModel(gtk.ListStore):
     def reset(self):
         self.__played = []
         self.go_to(None)
+
+    def insert_before(self, iter, row):
+        citer = self.current_iter
+        r = super(PlaylistModel, self).insert_before(iter, row)
+        if citer is not None: self.__path = self.get_path(citer)[0]
+        return r
+
+    def insert_after(self, iter, row):
+        citer = self.current_iter
+        r = super(PlaylistModel, self).insert_after(iter, row)
+        if citer is not None: self.__path = self.get_path(citer)[0]
+        return r
+
+    def move_before(self, iter, position):
+        citer = self.current_iter
+        super(PlaylistModel, self).move_before(iter, position)
+        if citer is not None: self.__path = self.get_path(citer)[0]
+
+    def move_after(self, iter, position):
+        citer = self.current_iter
+        super(PlaylistModel, self).move_after(iter, position)
+        if citer is not None: self.__path = self.get_path(citer)[0]
+
 gobject.type_register(PlaylistModel)
