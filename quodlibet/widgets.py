@@ -2339,19 +2339,33 @@ class SongList(qltk.HintedTreeView):
         self.connect('button-press-event', self.__button_press)
         self.connect('key-press-event', self.__key_press)
 
+        self.disable_drop()
+        self.connect('drag-begin', self.__drag_begin)
+        self.connect('drag-motion', self.__drag_motion)
+        self.connect('drag-data-get', self.__drag_data_get)
+        self.connect('drag-data-received', self.__drag_data_received)
+        self.connect('drag-data-delete', self.__drag_data_delete)
+
+    def enable_drop(self):
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        self.drag_source_set(
+            gtk.gdk.BUTTON1_MASK, targets,
+            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
+        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
+                           gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
 
+    def disable_drop(self):
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+                   ("text/uri-list", 0, 2)]
         self.drag_source_set(
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
-        self.connect('drag-begin', self.__drag_begin)
-        self.connect('drag-data-delete', self.__drag_data_delete)
-        self.connect('drag-data-get', self.__drag_data_get)
+        self.drag_dest_unset()
 
     def __drag_begin(self, view, ctx):
         model, paths = self.get_selection().get_selected_rows()
         if paths:
-            icons = map(self.create_row_drag_icon, paths)
+            icons = map(self.create_row_drag_icon, paths[:100])
             gc = icons[0].new_gc()
             height = (sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
             width = max(map(lambda s: s.get_size()[0], icons))
@@ -2367,12 +2381,16 @@ class SongList(qltk.HintedTreeView):
             gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
             self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
-    def __drag_data_delete(self, view, ctx):
-        if ctx.is_source and ctx.action == gtk.gdk.ACTION_MOVE:
-            # For some reason it wants to delete twice, even with
-            # the above sanity checks.
-            map(self.get_model().remove, self.__drag_iters)
-            self.__drag_iters = []
+    def __drag_motion(self, view, ctx, x, y, time):
+        try: self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
+        except TypeError:
+            if len(self.get_model()) == 0: path = 0
+            else: path = len(self.get_model()) - 1
+            self.set_drag_dest_row(path, gtk.TREE_VIEW_DROP_AFTER)
+        if ctx.get_source_widget() == self: kind = gtk.gdk.ACTION_MOVE
+        else: kind = gtk.gdk.ACTION_COPY
+        ctx.drag_status(kind, time)
+        return True
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
@@ -2390,6 +2408,46 @@ class SongList(qltk.HintedTreeView):
             uris = [model[path][0]("~uri") for path in paths]
             sel.set_uris(uris)
         return True
+
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+        model = view.get_model()
+        if info == 1:
+            filenames = sel.data.split("\x00")
+        elif info == 2:
+            from urllib import splittype as split, url2pathname as topath
+            filenames = [os.path.normpath(topath(split(s)[1]))
+                         for s in sel.get_uris()]
+        else:
+            print "W: Unknown target ID!"
+            return False
+
+        songs = filter(None, map(library.get, filenames))
+        if not songs: return True
+
+        try: path, position = view.get_dest_row_at_pos(x, y)
+        except TypeError:
+            if len(model) == 0: path = 0
+            else: path = len(model) - 1
+            position = gtk.TREE_VIEW_DROP_AFTER
+
+        song = songs.pop(0)
+        try: iter = model.get_iter(path)
+        except ValueError: iter = model.append(row=[song]) # empty model
+        else:
+            if position in (gtk.TREE_VIEW_DROP_BEFORE,
+                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                iter = model.insert_before(iter, [song])
+            else: iter = model.insert_after(iter, [song])
+        for song in songs: iter = model.insert_after(iter, [song])
+        ctx.finish(True, True, etime)
+        return True
+
+    def __drag_data_delete(self, view, ctx):
+        if ctx.is_source and ctx.action == gtk.gdk.ACTION_MOVE:
+            # For some reason it wants to delete twice, even with
+            # the above sanity checks.
+            map(self.get_model().remove, self.__drag_iters)
+            self.__drag_iters = []
 
     def __filter_on(self, header, songs, browser):
         if not browser or not browser.can_filter(header): return
@@ -2625,65 +2683,7 @@ class SongList(qltk.HintedTreeView):
         del(self.__songlistviews[self])
         self.set_model(None)
 
-class DestSongList(SongList):
-    def __init__(self):
-        super(DestSongList, self).__init__()
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
-        # Destinations are the sources for moves as well as copies.
-        self.drag_source_set(
-            gtk.gdk.BUTTON1_MASK, targets,
-            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
-        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
-                           gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
-        self.connect('drag-data-received', self.__drag_data_received)
-        self.connect('drag-motion', self.__drag_motion)
-
-    def __drag_motion(self, view, ctx, x, y, time):
-        try: self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
-        except TypeError:
-            if len(self.get_model()) == 0: path = 0
-            else: path = len(self.get_model()) - 1
-            self.set_drag_dest_row(path, gtk.TREE_VIEW_DROP_AFTER)
-        if ctx.get_source_widget() == self: kind = gtk.gdk.ACTION_MOVE
-        else: kind = gtk.gdk.ACTION_COPY
-        ctx.drag_status(kind, time)
-        return True
-
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
-        model = view.get_model()
-        if info == 1:
-            filenames = sel.data.split("\x00")
-        elif info == 2:
-            from urllib import splittype as split, url2pathname as topath
-            filenames = [os.path.normpath(topath(split(s)[1]))
-                         for s in sel.get_uris()]
-        else:
-            print "W: Unknown target ID!"
-            return False
-
-        songs = filter(None, map(library.get, filenames))
-        if not songs: return True
-
-        try: path, position = view.get_dest_row_at_pos(x, y)
-        except TypeError:
-            if len(model) == 0: path = 0
-            else: path = len(model) - 1
-            position = gtk.TREE_VIEW_DROP_AFTER
-
-        song = songs.pop(0)
-        try: iter = model.get_iter(path)
-        except ValueError: iter = model.append(row=[song]) # empty model
-        else:
-            if position in (gtk.TREE_VIEW_DROP_BEFORE,
-                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
-                iter = model.insert_before(iter, [song])
-            else: iter = model.insert_after(iter, [song])
-        for song in songs: iter = model.insert_after(iter, [song])
-        ctx.finish(True, True, etime)
-        return True
-
-class PlayList(DestSongList):
+class PlayList(SongList):
     # "Playlists" are a group of songs with an internal tag like
     # ~#playlist_foo = 12. This SongList helps manage playlists.
 
@@ -2732,7 +2732,7 @@ class PlayList(DestSongList):
         self.connect_object('popup-menu', self.__popup, menu)
 
         self.set_model(model)
-
+        self.enable_drop()
         self.connect('drag-data-received', self.__refresh_indices)
 
     def __popup(self, menu):
@@ -2777,7 +2777,7 @@ class PlayList(DestSongList):
         menu.popup(None, None, None, event.button, event.time)
         return True
 
-class PlayQueue(DestSongList):
+class PlayQueue(SongList):
     class CurrentColumn(gtk.TreeViewColumn):
         # Match MainSongList column sizes by default.
         header_name = "~current"
@@ -2800,7 +2800,7 @@ class PlayQueue(DestSongList):
         menu.append(rem); menu.append(props); menu.show_all()
         self.connect_object('button-press-event', self.__button_press, menu)
         self.connect_object('popup-menu', self.__popup, menu)
-
+        self.enable_drop()
         self.connect('destroy', self.__write)
         self.__fill()
 
