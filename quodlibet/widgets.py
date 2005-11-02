@@ -2568,6 +2568,7 @@ class SongList(qltk.HintedTreeView):
                     songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
                 else:
                     songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
+            else: songs.sort()
         else:
             self.set_sort_by(None, refresh=False)
 
