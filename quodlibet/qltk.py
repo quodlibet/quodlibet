@@ -386,6 +386,7 @@ def MenuItem(text, image):
 
 def Button(text, image, size=gtk.ICON_SIZE_BUTTON):
     # Stock image with custom label.
+    align = gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
     hbox = gtk.HBox(spacing=2)
     i = gtk.Image()
     i.set_from_stock(image, size)
@@ -393,8 +394,9 @@ def Button(text, image, size=gtk.ICON_SIZE_BUTTON):
     l = gtk.Label(text)
     l.set_use_underline(True)
     hbox.pack_start(l)
+    align.add(hbox)
     b = gtk.Button()
-    b.add(hbox)
+    b.add(align)
     return b
 
 class ValidatingEntry(gtk.Entry):
