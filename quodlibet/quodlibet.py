@@ -23,8 +23,9 @@ def main():
     else: util.RATING_PRECISION = 1.0/ratings
 
     widgets.init()
-    enable_periodic_save()
-    gtk.quit_add(1, widgets.save_library)
+    if "--debug" not in sys.argv:
+        enable_periodic_save()
+        gtk.quit_add(1, widgets.save_library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
     gtk.main()
@@ -225,10 +226,11 @@ if __name__ == "__main__":
 
     from util import to
     import const
-    process_arguments()
-    if os.path.exists(const.CONTROL):
-        print to(_("Quod Libet is already running."))
-        control('!')
+    if "--debug" not in sys.argv:
+        process_arguments()
+        if os.path.exists(const.CONTROL):
+            print to(_("Quod Libet is already running."))
+            control('!')
 
     # Get to the right directory for our data.
     os.chdir(basedir)
