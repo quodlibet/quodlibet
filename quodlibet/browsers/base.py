@@ -33,6 +33,11 @@ class Browser(object):
     # A list of column headers to display; None means all are okay.
     headers = None
 
+    # Called after library and MainWindow initialization, before the
+    # GTK main loop starts.
+    def init(klass): pass
+    init = classmethod(init)
+
     # Returns true if the song should remain on the song list. Used to
     # implement dynamic playlist removal when a song ends.
     def dynamic(self, song): return True

@@ -2847,6 +2847,8 @@ def init():
     FSInterface(watcher)
     CountManager(watcher, widgets.main.playlist)
 
+    for browser in map(browsers.get, browsers.get_browsers()): browser.init()
+
 def save_library():
     player.playlist.quit()
 
