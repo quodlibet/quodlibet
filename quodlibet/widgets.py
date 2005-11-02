@@ -71,7 +71,7 @@ class FSInterface(object):
         try: os.unlink(const.PAUSED)
         except EnvironmentError: pass
 
-# Choose folders, return the list.
+# Choose folders and return them when run.
 class FolderChooser(gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir=None,
                  action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER):
@@ -89,7 +89,7 @@ class FolderChooser(gtk.FileChooserDialog):
         if resp == gtk.RESPONSE_OK: return fns
         else: return []
 
-# Choose folders, return the list.
+# Choose files and return them when run.
 class FileChooser(FolderChooser):
     def __init__(self, parent, title, filter=None, initial_dir=None):
         super(FileChooser, self).__init__(
