@@ -12,6 +12,7 @@ import urllib
 import gobject, pango, gtk
 from gettext import ngettext
 
+import config
 import const
 import qltk
 import util
@@ -38,7 +39,8 @@ class Playlist(list):
             if self.name: self.write()
 
     def rename(self, newname):
-        if os.path.exists(os.path.join(PLAYLISTS, self.quote(newname))):
+        if newname == self.name: return
+        elif os.path.exists(os.path.join(PLAYLISTS, self.quote(newname))):
             raise ValueError(
                 _("A playlist named %s already exists.") % newname)
         else:
@@ -46,6 +48,11 @@ class Playlist(list):
             except EnvironmentError: pass
             self.name = newname
             self.write()
+
+    def delete(self):
+        del(self[:])
+        try: os.unlink(os.path.join(PLAYLISTS, self.quote(self.name)))
+        except EnvironmentError: pass
 
     def write(self):
         basename = self.quote(self.name)
@@ -73,6 +80,9 @@ class Playlists(gtk.VBox, Browser):
             model.append(row=[Playlist(Playlist.unquote(playlist))])
         widgets.watcher.connect('removed', klass.__removed)
     init = classmethod(init)
+
+    def playlists(klass): return [row[0] for row in self.__lists]
+    playlists = classmethod(playlists)
 
     def __removed(klass, watcher, songs):
         for row in klass.__lists:
@@ -105,7 +115,7 @@ class Playlists(gtk.VBox, Browser):
     def __init__(self, main):
         gtk.VBox.__init__(self, spacing=6)
 
-        view = qltk.HintedTreeView()
+        self.__view = view = qltk.HintedTreeView()
         render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.set_property('editable', True)
@@ -133,7 +143,44 @@ class Playlists(gtk.VBox, Browser):
         align.add(hb)
         self.pack_start(align, expand=False)
 
+        view.connect('button-press-event', self.__button_press)
+        view.connect('popup-menu', self.__popup_menu)
+        view.get_selection().connect('changed', self.__changed)
         self.show_all()
+
+    def __button_press(self, view, event):
+        if event.button == 3:
+            x, y = map(int, [event.x, event.y])
+            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+            except TypeError: return True
+            else: view.get_selection().select_path(path)
+            self.__menu(view).popup(None, None, None, event.button, event.time)
+            return True
+
+    def __popup_menu(self, view):
+        self.__menu(view).popup(
+            None, None, None, 0, gtk.get_current_event_time())
+        return True
+
+    def __menu(self, view):
+        model, iter = view.get_selection().get_selected()
+        menu = gtk.Menu()
+        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        def remove(model, iter):
+            model[iter][0].delete()
+            model.get_model().remove(
+                model.convert_iter_to_child_iter(None, iter))
+        rem.connect_object('activate', remove, model, iter)
+        menu.append(rem)
+        menu.show_all()
+        menu.connect('selection-done', lambda m: m.destroy())
+        return menu
+
+    def __changed(self, selection):
+        model, iter = selection.get_selected()
+        if iter:
+            config.set("browsers", "playlist", model[iter][0].name)
+            self.emit('songs-selected', list(model[iter][0]), True)
 
     def __new_playlist(self, activator): 
         i = 0
@@ -155,10 +202,22 @@ class Playlists(gtk.VBox, Browser):
         else: self.__lists[path] = self.__lists[path]
 
     def restore(self):
-        pass
+        try: name = config.get("browsers", "playlist")
+        except: pass
+        else:
+            for i, row in enumerate(self.__lists):
+                if row[0].name == name:
+                    self.view.get_selection().select_path((i,))
+                    break
 
     def reordered(self, songlist):
-        pass
+        songs = songlist.get_songs()
+        model, iter = self.__view.get_selection().get_selected()
+        if iter:
+            del(model[iter][0][:])
+            model[iter][0].extend(songs)
+            model[iter][0].write()
+            model.row_changed(model.get_path(iter), iter)
 
 gobject.type_register(Playlists)
 
