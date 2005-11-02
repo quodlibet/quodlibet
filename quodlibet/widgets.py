@@ -1799,14 +1799,14 @@ class MainWindow(gtk.Window):
             for widget in widgets:
                 self.ui.get_widget(widget).set_property('visible', c)
 
-    def __browser_cb(self, browser, songs, sort):
+    def __browser_cb(self, browser, songs, sorted):
         if browser.background:
             try: bg = config.get("browsers", "background").decode('utf-8')
             except UnicodeError: bg = ""
             try: songs = filter(parser.parse(bg, SongList.star).search, songs)
             except parser.error: pass
 
-        self.songlist.set_songs(songs, tag=sort)
+        self.songlist.set_songs(songs, sorted)
 
     def __filter_on(self, header, songs=None):
         if not self.browser or not self.browser.can_filter(header):
@@ -2530,26 +2530,22 @@ class SongList(qltk.HintedTreeView):
     def get_songs(self):
         return self.get_model().get()
 
-    def set_songs(self, songs, tag=None):
+    def set_songs(self, songs, sorted=False):
         model = self.get_model()
 
-        if tag is None: tag, reverse = self.get_sort_by()
+        if not sorted:
+            tag, reverse = self.get_sort_by()
+            if tag == "~#track": tag = "album"
+            elif tag == "~#disc": tag = "album"
+            elif tag == "~length": tag = "~#length"
+            elif tag == "~album~part": tag = "album"
+            if tag != "album":
+                if reverse:
+                    songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
+                else:
+                    songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
         else:
             self.set_sort_by(None, refresh=False)
-            reverse = False
-
-        if tag == "~#track": tag = "album"
-        elif tag == "~#disc": tag = "album"
-        elif tag == "~length": tag = "~#length"
-        elif tag == "~album~part": tag = "album"
-        if tag != "album":
-            if reverse:
-                songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
-            else:
-                songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
-        else:
-            songs.sort()
-            if reverse: songs.reverse()
 
         selected = self.get_selected_songs()
         selected = dict.fromkeys([song['~filename'] for song in selected])

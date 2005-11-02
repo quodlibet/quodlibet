@@ -13,6 +13,7 @@ import gobject, pango, gtk
 from gettext import ngettext
 
 import config
+import player
 import const
 import qltk
 import util
@@ -27,14 +28,26 @@ class Playlist(list):
     quote = staticmethod(lambda text: urllib.quote(text, safe=""))    
     unquote = staticmethod(urllib.unquote)
 
+    def new(klass, base = _("New Playlist")):
+        p = Playlist("")
+        i = 0
+        try: p.rename(base)
+        except ValueError:
+            while not p.name:
+                i += 1
+                try: p.rename("%s %d" % (base, i))
+                except ValueError: pass
+        return p
+    new = classmethod(new)
+
     def __init__(self, name):
         super(Playlist, self).__init__()
         self.name = name
         basename = self.quote(name)
         try:
             for line in file(os.path.join(PLAYLISTS, basename), "r"):
-                if line.rstrip() in library:
-                    self.append(library[line.rstrip()])
+                line = line.rstrip()
+                if line in library: self.append(library[line])
         except IOError:
             if self.name: self.write()
 
@@ -57,7 +70,7 @@ class Playlist(list):
     def write(self):
         basename = self.quote(self.name)
         f = file(os.path.join(PLAYLISTS, basename), "w")
-        for song in self: f.write(song("~filename"))
+        for song in self: f.write(song("~filename") + "\n")
         f.close()
 
     def format(self):
@@ -114,7 +127,7 @@ class Playlists(gtk.VBox, Browser):
 
     def __init__(self, main):
         gtk.VBox.__init__(self, spacing=6)
-
+        self.__main = main
         self.__view = view = qltk.HintedTreeView()
         render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
@@ -125,6 +138,7 @@ class Playlists(gtk.VBox, Browser):
         col.set_cell_data_func(render, Playlists.cell_data)
         view.append_column(col)
         view.set_model(self.__lists)
+        view.set_rules_hint(True)
         swin = gtk.ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -145,8 +159,51 @@ class Playlists(gtk.VBox, Browser):
 
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__popup_menu)
+
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1)]
+        view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
+        view.connect('drag-data-received', self.__drag_data_received)
+        view.connect('drag-motion', self.__drag_motion)
+        if main: view.connect('row-activated', self.__play)
         view.get_selection().connect('changed', self.__changed)
         self.show_all()
+
+    def __play(self, view, row):
+        player.playlist.reset()
+        player.playlist.next()
+
+    def __drag_motion(self, view, ctx, x, y, time):
+        try: path = view.get_dest_row_at_pos(x, y)[0]
+        except TypeError:
+            path = (len(view.get_model()) - 1,)
+            pos = gtk.TREE_VIEW_DROP_AFTER
+        else: pos = gtk.TREE_VIEW_DROP_INTO_OR_AFTER
+        if path > (-1,): view.set_drag_dest_row(path, pos)
+        return True
+
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+        # TreeModelSort doesn't support GtkTreeDragDestDrop.
+        view.emit_stop_by_name('drag-data-received')
+        model = view.get_model()
+        filenames = sel.data.split("\x00")
+        songs = filter(None, map(library.get, filenames))
+        if not songs: return True
+        try: path, pos = view.get_dest_row_at_pos(x, y)
+        except TypeError:
+            if len(songs) == 1: title = songs[0].comma("title")
+            else: title = _("%(title)s and %(count)d more") % (
+                    {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+            playlist = Playlist.new(title)
+            iter = model.get_model().append(row=[playlist])
+            iter = model.convert_child_iter_to_iter(None, iter)
+        else:
+            playlist = model[path][0]
+            iter = model.get_iter(path)
+        playlist.extend(songs)
+        playlist.write()
+        model.row_changed(model.get_path(iter), iter)
+        ctx.finish(True, True, etime)
+        return True
 
     def __button_press(self, view, event):
         if event.button == 3:
@@ -179,17 +236,12 @@ class Playlists(gtk.VBox, Browser):
     def __changed(self, selection):
         model, iter = selection.get_selected()
         if iter:
-            config.set("browsers", "playlist", model[iter][0].name)
+            if self.__main:
+                config.set("browsers", "playlist", model[iter][0].name)
             self.emit('songs-selected', list(model[iter][0]), True)
 
-    def __new_playlist(self, activator): 
-        i = 0
-        playlist = Playlist("")
-        while not playlist.name:
-            i += 1
-            try: playlist.rename("%s %d" % (_("New Playlist"), i))
-            except ValueError: pass
-        self.__lists.get_model().append(row=[playlist])
+    def __new_playlist(self, activator):
+        self.__lists.get_model().append(row=[Playlist.new()])
 
     def __start_editing(self, render, editable, path):
         editable.set_text(self.__lists[path][0].name)

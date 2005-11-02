@@ -418,24 +418,6 @@ def website(site):
             if os.system(s + " &") == 0: return True
     else: return False
 
-class QuerySafe(object):
-    """Escape/unescape query-safe keys. This is used to turn human-readable
-    playlist names into internal ~#playlist_foo keys and vice-versa."""
-
-    # ["%", " "] + parser.QueryLexeme.table.keys()
-    BAD = ["%", " ", "!", "&", "|", "(", ")", "=", ",", "/", "#", ">", "<"]
-    DAB = BAD[::-1]
-
-    def encode(name):
-        for c in QuerySafe.BAD: name = name.replace(c, "%"+hex(ord(c))[2:])
-        return name
-    encode = staticmethod(encode)
-
-    def decode(name):
-        for c in QuerySafe.DAB: name = name.replace("%"+hex(ord(c))[2:], c)
-        return name
-    decode = staticmethod(decode)
-
 # Return a 'natural' version of the tag for human-readable bits.
 # Strips ~ and ~# from the start and runs it through a map (which
 # the user can configure).

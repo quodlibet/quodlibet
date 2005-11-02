@@ -223,13 +223,6 @@ class AudioFileTest(TestCase):
         song.change("foo", "finally", "we're done")
         self.failUnlessEqual(song["foo"], "we're done")
 
-    def test_playlist_synthesis(self):
-        self.assertEquals('', bar_1_1('~playlist'))
-        self.assertEquals('test', bar_1_2('~playlist'))
-        lists = bar_2_1('~playlist').split('\n')
-        lists.sort()
-        self.assertEquals(['hi there', 'test'], lists)
-
     def tearDown(self):
         os.unlink(quux["~filename"])
 
