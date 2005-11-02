@@ -9,7 +9,7 @@
 
 import os, sys
 import urllib
-import gobject, gtk
+import gobject, pango, gtk
 from gettext import ngettext
 
 import const
@@ -34,7 +34,8 @@ class Playlist(list):
             for line in file(os.path.join(PLAYLISTS, basename), "r"):
                 if line.rstrip() in library:
                     self.append(library[line.rstrip()])
-        except IOError: self.write()
+        except IOError:
+            if self.name: self.write()
 
     def rename(self, newname):
         if os.path.exists(os.path.join(PLAYLISTS, self.quote(newname))):
@@ -58,16 +59,18 @@ class Playlist(list):
             ngettext("%d song", "%d songs", len(self)) % len(self),
             util.format_time(sum([t.get("~#length") for t in self])))
 
-    def __cmp__(self, other): return cmp(self.name, other.name)
+    def __cmp__(self, other):
+        try: return cmp(self.name, other.name)
+        except AttributeError: return -1
 
 class Playlists(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
-    __lists = gtk.ListStore(object)
 
     def init(klass):
+        model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):
-            __lists.append(row=[Playlist.unquote(playlist)])
+            model.append(row=[Playlist(Playlist.unquote(playlist))])
         widgets.watcher.connect('removed', klass.__removed)
     init = classmethod(init)
 
@@ -81,11 +84,13 @@ class Playlists(gtk.VBox, Browser):
                     changed = True
                     del(playlist[index])
                     index = playlist.find(song)
-            if changed: playlist.write()
+            if changed:
+                playlist.write()
+                row[0] = row[0]
     __removed = classmethod(__removed)
 
     def cell_data(col, render, model, iter):
-        render.set_markup(model[iter][0].format())
+        render.set_property('markup', model[iter][0].format())
     cell_data = staticmethod(cell_data)
 
     def Menu(self, songs):
@@ -94,15 +99,22 @@ class Playlists(gtk.VBox, Browser):
         m.append(i)
         return m
 
-    __render = gtk.CellRendererText()
+    __lists = gtk.TreeModelSort(gtk.ListStore(object))
+    __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
 
     def __init__(self, main):
         gtk.VBox.__init__(self, spacing=6)
 
         view = qltk.HintedTreeView()
-        col = gtk.TreeViewColumn("Playlists", self.__render)
-        col.set_cell_data_func(self.__render, Playlists.cell_data)
+        render = gtk.CellRendererText()
+        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        render.set_property('editable', True)
+        render.connect('editing-started', self.__start_editing)
+        render.connect('edited', self.__edited)
+        col = gtk.TreeViewColumn("Playlists", render)
+        col.set_cell_data_func(render, Playlists.cell_data)
         view.append_column(col)
+        view.set_model(self.__lists)
         swin = gtk.ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -110,6 +122,7 @@ class Playlists(gtk.VBox, Browser):
         self.pack_start(swin)
 
         newpl = gtk.Button(stock=gtk.STOCK_NEW)
+        newpl.connect('clicked', self.__new_playlist)
         importpl = qltk.Button(_("_Import"), gtk.STOCK_ADD)
         hb = gtk.HBox(spacing=6)
         align = gtk.Alignment(xscale=1.0)
@@ -121,6 +134,25 @@ class Playlists(gtk.VBox, Browser):
         self.pack_start(align, expand=False)
 
         self.show_all()
+
+    def __new_playlist(self, activator): 
+        i = 0
+        playlist = Playlist("")
+        while not playlist.name:
+            i += 1
+            try: playlist.rename("%s %d" % (_("New Playlist"), i))
+            except ValueError: pass
+        self.__lists.get_model().append(row=[playlist])
+
+    def __start_editing(self, render, editable, path):
+        editable.set_text(self.__lists[path][0].name)
+
+    def __edited(self, render, path, newname):
+        try: self.__lists[path][0].rename(newname)
+        except ValueError, s:
+            qltk.ErrorMessage(
+                widgets.main, _("Unable to rename playlist"), s).run()
+        else: self.__lists[path] = self.__lists[path]
 
     def restore(self):
         pass
