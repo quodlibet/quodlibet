@@ -291,7 +291,7 @@ class Playlists(gtk.VBox, Browser):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             playlist = model[iter][0]
-            del(playlist[:])
+            playlist[:] = songs
             Playlists.changed(playlist)
 
 gobject.type_register(Playlists)
