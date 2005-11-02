@@ -17,12 +17,61 @@ import player
 import const
 import qltk
 import util
+import formats
 from library import library
 from browsers.base import Browser
+
+from widgets import FileChooser
 from widgets import widgets
 
 PLAYLISTS = os.path.join(const.DIR, "playlists")
 if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)
+
+def ParseM3U(filename):
+    plname = util.fsdecode(os.path.basename(
+        os.path.splitext(filename)[0])).encode('utf-8')
+    filenames = []
+    for line in file(filename):
+        line = line.strip()
+        if line.startswith("#"): continue
+        else: filenames.append(line)
+    return __ParsePlaylist(plname, filename, filenames)
+
+def ParsePLS(filename):
+    plname = util.fsdecode(os.path.basename(filename)).encode('utf-8')
+    filenames = []
+    for line in file(filename):
+        line = line.strip()
+        if not line.lower().startswith("file"): continue
+        else:
+            try: line = line[line.index("=")+1:].strip()
+            except ValueError: pass
+            else: filenames.append(line)
+    return __ParsePlaylist(plname, filename, filenames)
+
+def __ParsePlaylist(name, plfilename, files):
+    playlist = Playlist.new(name)
+    songs = []
+    for filename in files:
+        type, path = urllib.splittype(filename)
+        if type is None:
+            # Plain filename.
+            filename = os.path.realpath(os.path.join(
+                os.path.dirname(plfilename), filename))
+            if filename in library: songs.append(library[filename])
+            else: songs.append(formats.MusicFile(filename))
+        elif type == "file":
+            # URI-encoded local filename.
+            filename = os.path.realpath(os.path.join(
+                os.path.dirname(plfilename), urllib.url2pathname(path)))
+            if filename in library: songs.append(library[filename])
+            else: songs.append(formats.MusicFile(filename))
+        else:
+            # Who knows! Hand it off to GStreamer.
+            songs.append(formats.remote.RemoteFile(filename))
+    playlist.extend(filter(None, songs))
+    widgets.watcher.added(filter(library.add_song, playlist))
+    return playlist
 
 class Playlist(list):
     quote = staticmethod(lambda text: urllib.quote(text, safe=""))    
@@ -124,7 +173,8 @@ class Playlists(gtk.VBox, Browser):
     __removed = classmethod(__removed)
 
     def cell_data(col, render, model, iter):
-        render.set_property('markup', model[iter][0].format())
+        render.markup = model[iter][0].format()
+        render.set_property('markup', render.markup)
     cell_data = staticmethod(cell_data)
 
     def Menu(self, songs):
@@ -161,6 +211,7 @@ class Playlists(gtk.VBox, Browser):
         newpl = gtk.Button(stock=gtk.STOCK_NEW)
         newpl.connect('clicked', self.__new_playlist)
         importpl = qltk.Button(_("_Import"), gtk.STOCK_ADD)
+        importpl.connect('clicked', self.__import)
         hb = gtk.HBox(spacing=6)
         align = gtk.Alignment(xscale=1.0)
         align.set_padding(0, 3, 6, 6)
@@ -276,6 +327,18 @@ class Playlists(gtk.VBox, Browser):
             qltk.ErrorMessage(
                 widgets.main, _("Unable to rename playlist"), s).run()
         else: self.__lists[path] = self.__lists[path]
+
+    def __import(self, activator):
+        filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
+        chooser = FileChooser(
+            widgets.main, _("Import Playlist"), filt, os.getenv("HOME"))
+        files = chooser.run()
+        chooser.destroy()
+        for filename in files:
+            if filename.endswith(".m3u"):
+                Playlists.changed(ParseM3U(filename))
+            elif filename.endswith(".pls"):
+                Playlists.changed(ParsePLS(filename))
 
     def restore(self):
         try: name = config.get("browsers", "playlist")
