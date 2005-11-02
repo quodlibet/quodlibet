@@ -2229,15 +2229,21 @@ class SongList(qltk.HintedTreeView):
 
         b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
         menu.append(b)
-        playlists = browsers.playlists.Playlists.playlists()
-        if playlists:
-            submenu = gtk.Menu()
-            for playlist in playlists:
-                i = gtk.MenuItem(playlist.name)
-                i.connect('activate', self.__add_to_playlist, playlist, songs)
-                submenu.append(i)
-            b.set_submenu(submenu)
-        else: b.set_sensitive(False)
+
+        submenu = gtk.Menu()
+        if len(songs) == 1: title = songs[0].comma("title")
+        else: title = _("%(title)s and %(count)d more") % (
+            {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+        playlist = browsers.playlists.Playlist.new(title)
+        i = gtk.MenuItem(_("New Playlist"))
+        i.connect('activate', self.__add_to_playlist, playlist, songs)
+        submenu.append(i)
+        submenu.append(gtk.SeparatorMenuItem())
+        for playlist in browsers.playlists.Playlists.playlists():
+            i = gtk.MenuItem(playlist.name)
+            i.connect('activate', self.__add_to_playlist, playlist, songs)
+            submenu.append(i)
+        b.set_submenu(submenu)
         
         b = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
         b.connect('activate', self.__enqueue, songs)

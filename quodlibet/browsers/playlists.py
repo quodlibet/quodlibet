@@ -104,6 +104,10 @@ class Playlists(gtk.VBox, Browser):
                 path = (i,)
                 klass.__lists.row_changed(path, model.get_iter(path))
                 playlist.write()
+                break
+        else:
+            model.append(row=[playlist])
+            playlist.write()
     changed = classmethod(changed)
 
     def __removed(klass, watcher, songs):
