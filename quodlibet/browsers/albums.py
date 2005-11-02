@@ -109,15 +109,13 @@ class AlbumList(Browser, gtk.VBox):
                 for w, key in enumerate(ELPOEP):
                     for person in song.list(key):
                         people[person] = people.get(person, 0) - 1000 ** w
-                genre.update(song.list("genre"))
+                genre.update(song("genre").split("\n"))
 
-                if not self.date:
-                    try: self.date = song.list("date")[0]
-                    except IndexError: pass
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
 
-            self.genre = "\n".join(genre)
+            self.date = song.comma("date")
+            self.genre = "\n".join(filter(None, genre))
             self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
             self.people = [person for (num, person) in self.people]
@@ -140,27 +138,11 @@ class AlbumList(Browser, gtk.VBox):
             text += " - " + self.__long_length
             text += "</small>\n" + ", ".join(map(util.escape, self.people))
             self.markup = text
-
-        def add(self, song):
-            self.songs.add(song)
-            if self.title:
-                if self.cover is False:
-                    self.cover = None
-                    if not self.__pending_covers: gobject.idle_add(
-                        self.__get_covers, priority=gobject.PRIORITY_LOW)
-                    self.__pending_covers.append([self.__get_cover, song])
-
-        def refresh(self):
             if self.title:
                 self.cover = False
-                song = self.songs.pop()
-                self.songs.add(song)
-                if self.cover is False:
-                    self.cover = None
-                    if not self.__pending_covers: gobject.idle_add(
-                        self.__get_covers, priority=gobject.PRIORITY_LOW)
-                    self.__pending_covers.append([self.__get_cover, song])
-            self.finalize()
+                if not self.__pending_covers: gobject.idle_add(
+                    self.__get_covers, priority=gobject.PRIORITY_LOW)
+                self.__pending_covers.append([self.__get_cover, song])
 
         def remove(self, song):
             try: self.songs.remove(song)
@@ -301,7 +283,6 @@ class AlbumList(Browser, gtk.VBox):
         model = self._AlbumStore(object)
         model_sort = gtk.TreeModelSort(model)
         model_filter = model_sort.filter_new()
-        view.set_model(model_filter)
 
         render = gtk.CellRendererPixbuf()
         column = gtk.TreeViewColumn("covers", render)
@@ -379,13 +360,15 @@ class AlbumList(Browser, gtk.VBox):
         hb.pack_start(e)
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
-        self.__refresh(None, view, model)
+        self.__add_songs(widgets.watcher, library.values(), model)
+        model.append(row=[None])
+        view.set_model(model_filter)
         self.show_all()
 
     def __refresh_album(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
-        for album in albums: album.refresh()
+        for album in albums: album.finalize()
 
     def __remove(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
@@ -441,23 +424,15 @@ class AlbumList(Browser, gtk.VBox):
         changed = set()
         new = []
         for song in added:
-            if "album" in song:
-                for alb in song.list("album"):
-                    labelid = song.get("labelid", "")
-                    key = alb + "\u0000" + labelid
-                    if key not in albums:
-                        albums[key] = self._Album(alb, labelid)
-                        new.append(albums[key])
-                    albums[key].add(song)
-                    changed.add(alb)
-            else:
-                if "\u0000" not in albums:
-                    albums["\u0000"] = self._Album("", "")
-                    new.append(albums["\u0000"])
-                changed.add("")
-                albums["\u0000"].add(song)
+            labelid = song.get("labelid", "")
+            for alb in song("album").split("\n"):
+                key = alb + "\u0000" + labelid
+                if key not in albums:
+                    albums[key] = self._Album(alb, labelid)
+                    new.append(albums[key])
+                albums[key].songs.add(song)
+                changed.add(alb)
         for album in new:
-            album.finalize()
             album._model = model
             album._iter = model.append(row=[album])
         self.__update(changed, model)
@@ -592,22 +567,6 @@ class AlbumList(Browser, gtk.VBox):
                 if confval and confval[-1] == "\n":
                     confval = "\n" + confval[:-1]
                 config.set("browsers", "albums", confval)
-
-    def __refresh(self, watcher, view, model, clear_cache=False):
-        # Prevent refiltering while the view is being refreshed.
-        view.freeze_child_notify()
-        selected = self.__get_selected_albums(view.get_selection())
-        if selected is not None: selected = [a.title for a in selected]
-
-        if clear_cache: self._Album.clear_cache()
-        for row in iter(model):
-            if row[0]: row[0]._iter = row[0]._model = None
-        model.clear()
-        songs = library.itervalues()
-        self.__add_songs(watcher, songs, model)
-        model.append(row=[None])
-        view.thaw_child_notify()
-        if selected: self.filter("album", selected)
 
 gobject.type_register(AlbumList)
 
