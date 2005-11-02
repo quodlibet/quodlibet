@@ -59,7 +59,7 @@ class AudioFile(dict):
         return filter(lambda s: s and s[0] != "~", self.keys())
 
     def __call__(self, key, default="", connector=" - "):
-        if key and key[0] == "~":
+        if key[:1] == "~":
             key = key[1:]
             if "~" in key:
                 parts = filter(None, map(self.__call__, key.split("~")))
@@ -103,9 +103,12 @@ class AudioFile(dict):
         else: return v.replace("\n", ", ")
 
     def list(self, key):
-        v = self(key, connector="\n")
-        if v == "": return []
-        else: return v.split("\n")
+        if "~" in key or key == "title":
+            v = self(key, connector="\n")
+            if v == "": return []
+            else: return v.split("\n")
+        elif key in self: return self[key].split("\n")
+        else: return []
 
     def listall(self, keys):
         r = []
