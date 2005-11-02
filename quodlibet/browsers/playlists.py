@@ -94,22 +94,29 @@ class Playlists(gtk.VBox, Browser):
         widgets.watcher.connect('removed', klass.__removed)
     init = classmethod(init)
 
-    def playlists(klass): return [row[0] for row in self.__lists]
+    def playlists(klass): return [row[0] for row in klass.__lists]
     playlists = classmethod(playlists)
+
+    def changed(klass, playlist):
+        model = klass.__lists.get_model()
+        for i, row in enumerate(model):
+            if row[0] == playlist:
+                path = (i,)
+                klass.__lists.row_changed(path, model.get_iter(path))
+                playlist.write()
+    changed = classmethod(changed)
 
     def __removed(klass, watcher, songs):
         for row in klass.__lists:
             playlist = row[0]
             changed = False
             for song in songs:
-                index = playlist.find(song)
-                while index >= 0:
-                    changed = True
-                    del(playlist[index])
-                    index = playlist.find(song)
-            if changed:
-                playlist.write()
-                row[0] = row[0]
+                try:
+                    while True:
+                        playlist.remove(song)
+                        changed = True
+                except ValueError: pass
+            if changed: Playlists.changed(playlist)
     __removed = classmethod(__removed)
 
     def cell_data(col, render, model, iter):
@@ -119,6 +126,8 @@ class Playlists(gtk.VBox, Browser):
     def Menu(self, songs):
         m = gtk.Menu()
         i = qltk.MenuItem(_("_Remove from Playlist"), gtk.STOCK_REMOVE)
+        i.connect_object('activate', self.__remove, songs)
+        i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
         m.append(i)
         return m
 
@@ -181,6 +190,16 @@ class Playlists(gtk.VBox, Browser):
         if path > (-1,): view.set_drag_dest_row(path, pos)
         return True
 
+    def __remove(self, songs):
+        model, iter = self.__view.get_selection().get_selected()
+        if iter:
+            playlist = model[iter][0]
+            for song in songs:
+                try: playlist.remove(song)
+                except ValueError: pass
+            Playlists.changed(playlist)
+            self.activate()
+
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
@@ -200,8 +219,7 @@ class Playlists(gtk.VBox, Browser):
             playlist = model[path][0]
             iter = model.get_iter(path)
         playlist.extend(songs)
-        playlist.write()
-        model.row_changed(model.get_path(iter), iter)
+        Playlists.changed(playlist)
         ctx.finish(True, True, etime)
         return True
 
@@ -232,6 +250,8 @@ class Playlists(gtk.VBox, Browser):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         return menu
+
+    def activate(self): self.__changed(self.__view.get_selection())
 
     def __changed(self, selection):
         model, iter = selection.get_selected()
@@ -266,10 +286,9 @@ class Playlists(gtk.VBox, Browser):
         songs = songlist.get_songs()
         model, iter = self.__view.get_selection().get_selected()
         if iter:
-            del(model[iter][0][:])
-            model[iter][0].extend(songs)
-            model[iter][0].write()
-            model.row_changed(model.get_path(iter), iter)
+            playlist = model[iter][0]
+            del(playlist[:])
+            Playlists.changed(playlist)
 
 gobject.type_register(Playlists)
 

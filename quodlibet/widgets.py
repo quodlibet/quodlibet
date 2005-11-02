@@ -2227,11 +2227,25 @@ class SongList(qltk.HintedTreeView):
             if song.stream: streams = True
             if not song.local: local = False
 
+        b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
+        menu.append(b)
+        playlists = browsers.playlists.Playlists.playlists()
+        if playlists:
+            submenu = gtk.Menu()
+            for playlist in playlists:
+                i = gtk.MenuItem(playlist.name)
+                i.connect('activate', self.__add_to_playlist, playlist, songs)
+                submenu.append(i)
+            b.set_submenu(submenu)
+        else: b.set_sensitive(False)
+        
         b = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
         buttons.append(b)
         b.set_sensitive(not streams)
+
+        menu.append(gtk.SeparatorMenuItem())
 
         b = qltk.MenuItem(_('_Remove from Library'), gtk.STOCK_REMOVE)
         b.connect('activate', self.__remove, songs)
@@ -2252,6 +2266,10 @@ class SongList(qltk.HintedTreeView):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         return menu
+
+    def __add_to_playlist(self, activator, playlist, songs):
+        playlist.extend(songs)
+        browsers.playlists.Playlists.changed(playlist)
 
     def __init__(self):
         qltk.HintedTreeView.__init__(self)
