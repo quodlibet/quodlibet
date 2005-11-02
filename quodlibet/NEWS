@@ -5,6 +5,26 @@ may require you to re-add any songs in the library.
 Reloading your library after upgrading is always a good idea (though
 it hasn't strictly been necessary since 0.10).
 
+0.15 - 
+ * An 'artist' tag can be stored in the library for MODs. (#277)
+ * 'All Albums' remains on the album list after a search. (#282)
+ * The Play Queue displays its total time and has a clear button. (#297, #304)
+ * Songs can be enqueued multiple times.
+ * '~people' includes more people. (#298)
+ * Files can be added from remote URIs (e.g. HTTP). (#304)
+ * "Dumb" searches match any visible tags. (#306)
+ * Ratings are now searched with values of 0.0 to 1.0, and the number of
+   visible notes is configurable. (#307)
+ * Useless columns are not displayed in Internet Radio. (#309)
+ * A single album cover can be refreshed in the Album List. (#310)
+ * Playlists have been rewritten: (#324)
+   * Songs may now be in a playlist multiple times.
+   * Playlists can be reordered directly, without a special window.
+   * Songs can be added to playlists directly from the context menu.
+   * M3U and PLS playlists (along with their songs) can be imported.
+   * The interface is much more attractive.
+ * Drag-and-drop is generally more usable, faster, and attractive.
+
 0.14 - I'm almost certain!
  * Internet radio / Shoutcast browser. (#88)
  * Album List separates albums with different labelids. (#198)
