@@ -148,7 +148,7 @@ class Playlists(gtk.VBox, Browser):
     playlists = classmethod(playlists)
 
     def changed(klass, playlist):
-        model = klass.__lists.get_model()
+        model = klass.__lists
         for i, row in enumerate(model):
             if row[0] == playlist:
                 path = (i,)
@@ -231,11 +231,19 @@ class Playlists(gtk.VBox, Browser):
         view.connect('drag-motion', self.__drag_motion)
         if main: view.connect('row-activated', self.__play)
         view.get_selection().connect('changed', self.__changed)
+
+        s = view.get_model().connect('row-changed', self.__check_current)
+        self.connect_object('destroy', view.get_model().disconnect, s)
+
         self.show_all()
 
     def __play(self, view, row):
         player.playlist.reset()
         player.playlist.next()
+
+    def __check_current(self, model, path, iter):
+        model, citer = self.__view.get_selection().get_selected()
+        if citer and model.get_path(citer) == path: self.activate()
 
     def __drag_motion(self, view, ctx, x, y, time):
         try: path = view.get_dest_row_at_pos(x, y)[0]
