@@ -74,7 +74,6 @@ gobject.type_register(EmptyBar)
 # Like EmptyBar, but the user can also enter a query manually. This
 # is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
-    reordered = True
 
     def __init__(self, main=True):
         EmptyBar.__init__(self)
