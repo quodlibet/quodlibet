@@ -1,3 +1,11 @@
+quodlibet (0.15-1) unstable; urgency=low
+
+  * New upstream release.
+    * Properly errors when no pipeline is found. (Closes: #337009)
+  * Depend on a gstreamer0.8-audiosink.
+
+ -- Joe Wreschnig <piman@debian.org>
+
 quodlibet (0.14-1) unstable; urgency=low
 
   * New upstream release.
