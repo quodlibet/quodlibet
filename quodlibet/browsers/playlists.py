@@ -90,6 +90,7 @@ class Playlist(list):
 
     def __init__(self, name):
         super(Playlist, self).__init__()
+        if isinstance(name, unicode): name = name.encode('utf-8')
         self.name = name
         basename = self.quote(name)
         try:
@@ -100,6 +101,7 @@ class Playlist(list):
             if self.name: self.write()
 
     def rename(self, newname):
+        if isinstance(newname, unicode): newname = newname.encode('utf-8')
         if newname == self.name: return
         elif os.path.exists(os.path.join(PLAYLISTS, self.quote(newname))):
             raise ValueError(
