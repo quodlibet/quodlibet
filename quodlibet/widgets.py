@@ -2230,7 +2230,7 @@ class SongList(qltk.HintedTreeView):
         menu.append(b)
 
         submenu = gtk.Menu()
-        i = gtk.MenuItem(_("New Playlist"))
+        i = gtk.MenuItem(_("_New Playlist"))
         i.connect('activate', self.__add_to_playlist, None, songs)
         submenu.append(i)
         submenu.append(gtk.SeparatorMenuItem())
