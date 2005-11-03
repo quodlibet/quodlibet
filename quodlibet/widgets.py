@@ -2168,7 +2168,7 @@ class SongList(qltk.HintedTreeView):
         if not songs: return
         if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
 
-        menu = browser.Menu(songs)
+        menu = browser.Menu(songs, self)
         if menu is None: menu = gtk.Menu()
         can_filter = browser.can_filter
 

@@ -77,7 +77,6 @@ class Playlist(list):
     unquote = staticmethod(urllib.unquote)
 
     def new(klass, base=_("New Playlist")):
-        print "I AM MAKING A NEW PLAYLIST"
         p = Playlist("")
         i = 0
         try: p.rename(base)
@@ -177,10 +176,12 @@ class Playlists(gtk.VBox, Browser):
         render.set_property('markup', render.markup)
     cell_data = staticmethod(cell_data)
 
-    def Menu(self, songs):
+    def Menu(self, songs, songlist):
+        model, rows = songlist.get_selection().get_selected_rows()
+        iters = map(model.get_iter, rows)
         m = gtk.Menu()
         i = qltk.MenuItem(_("_Remove from Playlist"), gtk.STOCK_REMOVE)
-        i.connect_object('activate', self.__remove, songs)
+        i.connect_object('activate', self.__remove, iters, model)
         i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
         m.append(i)
         return m
@@ -253,13 +254,13 @@ class Playlists(gtk.VBox, Browser):
         if path > (-1,): view.set_drag_dest_row(path, pos)
         return True
 
-    def __remove(self, songs):
+    def __remove(self, iters, smodel):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
-            playlist = model[iter][0]
-            for song in songs:
-                try: playlist.remove(song)
-                except ValueError: pass
+            map(smodel.remove, iters)
+            playlist = model[iter][0]            
+            del(playlist[:])
+            for row in smodel: playlist.append(row[0])
             Playlists.changed(playlist)
             self.activate()
 

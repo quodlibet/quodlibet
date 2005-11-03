@@ -68,4 +68,4 @@ class Browser(object):
 
     # Return an initial context menu appropriate to the browser.
     # songs is the list of selected songs.
-    def Menu(self, songs): return None
+    def Menu(self, songs, songlist): return None
