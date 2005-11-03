@@ -2231,12 +2231,8 @@ class SongList(qltk.HintedTreeView):
         menu.append(b)
 
         submenu = gtk.Menu()
-        if len(songs) == 1: title = songs[0].comma("title")
-        else: title = _("%(title)s and %(count)d more") % (
-            {'title':songs[0].comma("title"), 'count':len(songs) - 1})
-        playlist = browsers.playlists.Playlist.new(title)
         i = gtk.MenuItem(_("New Playlist"))
-        i.connect('activate', self.__add_to_playlist, playlist, songs)
+        i.connect('activate', self.__add_to_playlist, None, songs)
         submenu.append(i)
         submenu.append(gtk.SeparatorMenuItem())
         for playlist in browsers.playlists.Playlists.playlists():
@@ -2274,6 +2270,11 @@ class SongList(qltk.HintedTreeView):
         return menu
 
     def __add_to_playlist(self, activator, playlist, songs):
+        if playlist is None:
+            if len(songs) == 1: title = songs[0].comma("title")
+            else: title = _("%(title)s and %(count)d more") % (
+                {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+            playlist = browsers.playlists.Playlist.new(title)
         playlist.extend(songs)
         browsers.playlists.Playlists.changed(playlist)
 

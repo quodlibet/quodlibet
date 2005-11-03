@@ -77,7 +77,8 @@ class Playlist(list):
     quote = staticmethod(lambda text: urllib.quote(text, safe=""))    
     unquote = staticmethod(urllib.unquote)
 
-    def new(klass, base = _("New Playlist")):
+    def new(klass, base=_("New Playlist")):
+        print "I AM MAKING A NEW PLAYLIST"
         p = Playlist("")
         i = 0
         try: p.rename(base)
