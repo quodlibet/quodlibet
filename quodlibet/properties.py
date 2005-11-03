@@ -19,7 +19,6 @@ import config
 import util
 import formats
 
-from gettext import ngettext
 from library import library
 from pattern import FileFromPattern
 from util import tag

@@ -7,7 +7,14 @@
 # $Id$
 
 import os, sys, sre, string, locale
-from gettext import ngettext
+
+def gettext_install(domain, localedir=None, unicode=False):
+    import gettext, __builtin__
+    t = gettext.translation(domain, localedir, fallback=True)
+    if unicode: gettext, ngettext = t.ugettext, t.ungettext
+    else: gettext, ngettext = t.gettext, t.ngettext
+    __builtin__.__dict__["_"] = gettext
+    __builtin__.__dict__["ngettext"] = ngettext
 
 class OptionParser(object):
     def __init__(self, name, version, description=None, usage=None):

@@ -12,8 +12,6 @@ import gobject, gtk, pango
 import config
 import util
 
-from gettext import ngettext
-
 # Everything connects to this to get updates about the library and player.
 class SongWatcher(gtk.Object):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))

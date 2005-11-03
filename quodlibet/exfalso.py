@@ -11,21 +11,20 @@
 import os, sys
 
 if __name__ == "__main__":
-    import locale, gettext
-    gettext.bindtextdomain("quodlibet")
-    gettext.textdomain("quodlibet")
-    gettext.install("quodlibet", unicode=True)
-    try: locale.setlocale(locale.LC_ALL, '')
-    except: pass
-
     basedir = os.path.dirname(os.path.realpath(__file__))
     if not os.path.exists(os.path.join(basedir, "exfalso.py")):
         if os.path.exists(os.path.join(os.getcwd(), "exfalso.py")):
             basedir = os.getcwd()
     sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
 
+    import locale, gettext, util
+    try: locale.setlocale(locale.LC_ALL, '')
+    except: pass
+    gettext.bindtextdomain("quodlibet")
+    gettext.textdomain("quodlibet")
+    util.gettext_install("quodlibet", unicode=True)
+
     import const
-    import util
     opts = util.OptionParser(
         "Ex Falso", const.VERSION,
         _("an audio tag editor"), "[%s]" % _("directory"))

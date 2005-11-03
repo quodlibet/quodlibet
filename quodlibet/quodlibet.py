@@ -216,13 +216,13 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
     i18ndir = "/usr/share/locale"
 
-    import locale, gettext
+    import locale, gettext, util
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
 
     gettext.bindtextdomain("quodlibet")
     gettext.textdomain("quodlibet")
-    gettext.install("quodlibet", unicode=True)
+    util.gettext_install("quodlibet", unicode=True)
 
     from util import to
     import const

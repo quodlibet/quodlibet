@@ -27,7 +27,6 @@ import locale
 import pattern
 
 from util import to, tag
-from gettext import ngettext
 from library import library
 
 if sys.version_info < (2, 4): from sets import Set as set

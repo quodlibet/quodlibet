@@ -23,7 +23,6 @@ if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers.base import Browser
 from properties import SongProperties
-from gettext import ngettext
 
 class AlbumTagCompletion(EntryWordCompletion):
     def __init__(self):

@@ -15,7 +15,6 @@ import shutil
 import parser
 import formats
 from formats import MusicFile
-from gettext import ngettext
 
 if sys.version_info < (2, 4):
     from sets import Set as set

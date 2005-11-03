@@ -1,10 +1,8 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
 
-import __builtin__
-__builtin__.__dict__['_'] = lambda a: a
-
 import util
+util.gettext_install("quodlibet")
 from util import re_esc, encode, decode, mkdir, iscommand
 from util import find_subtitle, split_album, split_title, split_value
 from util import PatternFromFile

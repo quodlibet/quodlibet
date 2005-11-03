@@ -10,7 +10,6 @@
 import os, sys
 import urllib
 import gobject, pango, gtk
-from gettext import ngettext
 
 import config
 import player
