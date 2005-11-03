@@ -139,7 +139,6 @@ class Library(dict):
         return False
 
     def add(self, fn):
-        fn = os.path.realpath(fn)
         if fn not in self:
             song = MusicFile(fn)
             if song: return self.add_song(song)
@@ -203,9 +202,8 @@ class Library(dict):
         # Prune old entries.
         removed, changed = 0, 0
         for song in songs:
-            if "~#rating" in song:
-                if isinstance(song["~#rating"], int):
-                    song["~#rating"] /= 4.0
+            if isinstance(song.get("~#rating"), int):
+                song["~#rating"] /= 4.0
 
             if "~filename" not in song: continue # library corruption
             elif song.local:
@@ -266,15 +264,12 @@ class Library(dict):
             d = os.path.expanduser(d)
             for path, dnames, fnames in os.walk(d):
                 # don't re-resolve this path every time
-                path = os.path.realpath(path)
                 for fn in fnames:
-                    m_fn = os.path.realpath(os.path.join(path, fn))
-                    if m_fn in self:
-                        song = self[m_fn]
-                        if not song.valid():
-                            self.reload(song, changed, removed)
-                    elif self.add(m_fn):
-                        added.append(self[m_fn])
+                    m_fn = os.path.join(path, fn)
+                    if m_fn not in library:
+                        m_fn = os.path.realpath(m_fn)
+                        if m_fn not in self and self.add(m_fn):
+                            added.append(self[m_fn])
                 yield added, changed, removed
 
     def rebuild(self, force=False):
