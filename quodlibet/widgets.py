@@ -650,8 +650,9 @@ class HIGTrayIcon(TrayIcon):
 class QLTrayIcon(HIGTrayIcon):
     def __init__(self, window, volume):
         menu = gtk.Menu()
-        # FIXME: Post 0.14, use _('gtk-stock-media-play').
-        playpause = qltk.MenuItem(_("_Play"), gtk.STOCK_MEDIA_PLAY)
+        if const.SM_PLAY.startswith('gtk-'):
+            playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
+        else: playpause = qltk.MenuItem(const.SM_PLAY, gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__playpause)
 
         previous = qltk.MenuItem(const.SM_PREVIOUS, gtk.STOCK_MEDIA_PREVIOUS)
@@ -710,8 +711,9 @@ class QLTrayIcon(HIGTrayIcon):
     def __set_paused(self, watcher, menu, paused):
         menu.get_children()[0].destroy()
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
-        text = [_("_Pause"), _("_Play")][paused]
-        playpause = qltk.MenuItem(text, stock)
+        text = [const.SM_PAUSE, const.SM_PLAY][paused]
+        if text.startswith('gtk-'): playpause = gtk.ImageMenuItem(text)
+        else: playpause = qltk.MenuItem(text, stock)
         playpause.connect('activate', self.__playpause)
         playpause.show()
         menu.prepend(playpause)
@@ -1304,7 +1306,9 @@ class MainWindow(gtk.Window):
         actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, label,
                         "<control>Left", None, self.__previous_song))
 
-        actions.append(("PlayPause", gtk.STOCK_MEDIA_PLAY, _("_Play"),
+        if const.SM_PLAY.startswith('gtk-'): label = None
+        else: label = const.SM_PLAY
+        actions.append(("PlayPause", gtk.STOCK_MEDIA_PLAY, label,
                         "<control>space", None, self.__play_pause))
 
         if const.SM_NEXT.startswith("gtk-"): label = None
@@ -1516,11 +1520,14 @@ class MainWindow(gtk.Window):
         if paused:
             menu.get_image().set_from_stock(
                 gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
-            menu.child.set_text(_("_Play"))
+            label = const.SM_PLAY
         else:
             menu.get_image().set_from_stock(
                 gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU)
-            menu.child.set_text(_("_Pause"))
+            label = const.SM_PAUSE
+        text = gtk.stock_lookup(label)
+        text = (text and text[1]) or label
+        menu.child.set_text(text)
         menu.child.set_use_underline(True)
 
     def __song_missing(self, watcher, song, statusbar):
@@ -2849,6 +2856,11 @@ def init():
     # Translators: Only translate this if GTK does so incorrectly.
     # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
     const.SM_PREVIOUS = _('gtk-media-previous')
+
+    # Translators: Only translate this if GTK does so incorrectly.
+    const.SM_PLAY = _('gtk-media-play')
+    # Translators: Only translate this if GTK does so incorrectly.
+    const.SM_PAUSE = _('gtk-media-pause')
 
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
