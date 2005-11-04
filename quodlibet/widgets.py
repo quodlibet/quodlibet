@@ -2579,6 +2579,9 @@ class SongList(qltk.HintedTreeView):
             column.set_clickable(False)
             column.set_reorderable(False)
 
+        if self.window:
+            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+
         model.set(songs)
 
         # reselect what we can
@@ -2592,6 +2595,7 @@ class SongList(qltk.HintedTreeView):
             if column.header_name not in["~current"]:
                 column.set_clickable(True)
                 column.set_reorderable(True)
+        if self.window: self.window.set_cursor(None)
 
     def get_selected_songs(self):
         model, rows = self.get_selection().get_selected_rows()
