@@ -1187,7 +1187,6 @@ class MainWindow(gtk.Window):
         sw.show_all()
         self.__select_browser(self, config.get("memory", "browser"))
         self.browser.restore()
-        self.songlist.model.connect('songs-set', self.__set_time)
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/PlayQueue"))
@@ -1805,6 +1804,7 @@ class MainWindow(gtk.Window):
             try: songs = filter(parser.parse(bg, SongList.star).search, songs)
             except parser.error: pass
 
+        self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 
     def __filter_on(self, header, songs=None):
@@ -1847,9 +1847,9 @@ class MainWindow(gtk.Window):
     def __refresh(self, watcher):
         self.__set_time()
 
-    def __set_time(self, *args):
+    def __set_time(self, *args, **kwargs):
         statusbar = self.__statusbar
-        songs = self.songlist.get_selected_songs()
+        songs = kwargs.get("songs") or self.songlist.get_selected_songs()
         if len(songs) <= 1: songs = self.songlist.get_songs()
 
         i = len(songs)
