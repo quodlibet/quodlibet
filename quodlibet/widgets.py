@@ -1884,8 +1884,10 @@ class QueueExpander(gtk.Expander):
         l2 = gtk.Label()
         hb.pack_start(l2)
 
-        cb = gtk.CheckButton(_("_Choose randomly"))
+        cb = qltk.ConfigCheckButton(
+            _("_Choose randomly"), "memory", "shufflequeue")
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
+        cb.set_active(config.getboolean("memory", "shufflequeue"))
         hb.pack_start(cb)
 
         self.set_label_widget(hb)

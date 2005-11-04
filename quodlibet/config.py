@@ -43,6 +43,7 @@ def init(*rc_files):
           "browser": "SearchBar", # browser name
           "songlist": "true", # on or off
           "playqueue": "false", # on or off
+          "shufflequeue": "false", # on or off
           "sortby": "1artist", # <asc/desc>tagname, song list sort
           "shuffle": "0", # none, shuffle, weighted
           },
