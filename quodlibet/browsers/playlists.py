@@ -195,9 +195,8 @@ class Playlists(gtk.VBox, Browser):
         gtk.VBox.__init__(self, spacing=6)
         self.__main = main
         self.__view = view = qltk.HintedTreeView()
-        render = gtk.CellRendererText()
+        self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        render.set_property('editable', True)
         render.connect('editing-started', self.__start_editing)
         render.connect('edited', self.__edited)
         col = gtk.TreeViewColumn("Playlists", render)
@@ -239,7 +238,7 @@ class Playlists(gtk.VBox, Browser):
 
         self.show_all()
 
-    def __play(self, view, row):
+    def __play(self, *args):
         player.playlist.reset()
         player.playlist.next()
 
@@ -306,6 +305,13 @@ class Playlists(gtk.VBox, Browser):
     def __menu(self, view):
         model, iter = view.get_selection().get_selected()
         menu = gtk.Menu()
+        ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
+        def rename(path):
+            self.__render.set_property('editable', True)
+            view.set_cursor(path, view.get_columns()[0], start_editing=True)
+        ren.connect_object('activate', rename, model.get_path(iter))
+        menu.append(ren)
+
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         def remove(model, iter):
             model[iter][0].delete()
@@ -338,6 +344,7 @@ class Playlists(gtk.VBox, Browser):
             qltk.ErrorMessage(
                 widgets.main, _("Unable to rename playlist"), s).run()
         else: self.__lists[path] = self.__lists[path]
+        render.set_property('editable', False)
 
     def __import(self, activator):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
