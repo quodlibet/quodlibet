@@ -1068,7 +1068,7 @@ class SongProperties(gtk.Window):
             keys = songinfo.realkeys()
             keys.sort()
 
-            if not config.getboolean("editing", "allcomments"):
+            if not config.getboolean("editing", "alltags"):
                 keys = filter(lambda k: k not in formats.MACHINE_TAGS, keys)
 
             # reverse order here so insertion puts them in proper order.

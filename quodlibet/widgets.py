@@ -530,8 +530,8 @@ class PreferencesWindow(gtk.Window):
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
             cb = qltk.ConfigCheckButton(
-                _("Show _programmatic comments"), 'editing', 'allcomments')
-            cb.set_active(config.getboolean("editing", "allcomments"))
+                _("Show _programmatic tags"), 'editing', 'alltags')
+            cb.set_active(config.getboolean("editing", 'alltags'))
             vbox.pack_start(hb, expand=False)
             vbox.pack_start(cb, expand=False)
             f.child.add(vbox)
@@ -675,7 +675,7 @@ class QLTrayIcon(HIGTrayIcon):
             item = gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))
             item.connect_object('activate', set_rating, j)
             rating.append(item)
-        ratings = gtk.MenuItem(_("Rating"))
+        ratings = gtk.MenuItem(_("_Rating"))
         ratings.set_submenu(rating)
 
         quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
@@ -1291,7 +1291,7 @@ class MainWindow(gtk.Window):
             ("Song", None, _("S_ong")),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.__current_song_prop),
-            ("Rating", None, _("Rating")),
+            ("Rating", None, _("_Rating")),
 
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
              "<control>J", None, self.__jump_to_current),
@@ -2190,7 +2190,7 @@ class SongList(qltk.HintedTreeView):
             return b
 
         if header == "~#rating":
-            item = gtk.MenuItem(_("Rating"))
+            item = gtk.MenuItem(_("_Rating"))
             m2 = gtk.Menu()
             item.set_submenu(m2)
             for i in range(0, int(1.0/util.RATING_PRECISION)+1):
