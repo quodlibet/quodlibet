@@ -312,7 +312,7 @@ class Playlists(gtk.VBox, Browser):
         ren.connect_object('activate', rename, model.get_path(iter))
         menu.append(ren)
 
-        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         def remove(model, iter):
             model[iter][0].delete()
             model.get_model().remove(
