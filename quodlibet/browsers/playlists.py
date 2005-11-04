@@ -156,7 +156,7 @@ class Playlists(gtk.VBox, Browser):
                 playlist.write()
                 break
         else:
-            model.append(row=[playlist])
+            model.get_model().append(row=[playlist])
             playlist.write()
     changed = classmethod(changed)
 
