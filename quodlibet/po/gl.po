@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-05 02:03-0600\n"
+"POT-Creation-Date: 2005-11-05 12:17-0600\n"
 "PO-Revision-Date: 2005-11-05 02:06-0600\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: galician\n"
@@ -760,7 +760,8 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"O padrom introduzido resultou inválido. Assegure-se de que pus &lt; e &gt; como \\&lt; e \\&gt; e que as tags estám equilibradas.\n"
+"O padrom introduzido resultou inválido. Assegure-se de que pus &lt; e &gt; "
+"como \\&lt; e \\&gt; e que as tags estám equilibradas.\n"
 "\n"
 "%s"
 
@@ -1081,23 +1082,23 @@ msgstr ""
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
 #: ../widgets.py:2855
 msgid "gtk-media-next"
-msgstr "gtk-media-seguinte"
+msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. See http://www.sacredchao.net/quodlibet/ticket/85 for more details
 #: ../widgets.py:2858
 msgid "gtk-media-previous"
-msgstr "gtk-media-anterior"
+msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #: ../widgets.py:2861
 msgid "gtk-media-play"
-msgstr "gtk-media-tocar"
+msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #: ../widgets.py:2863
 msgid "gtk-media-pause"
-msgstr "gtk-media-parar"
+msgstr ""
 
 #: ../widgets.py:2907
 msgid "Saving song library."
