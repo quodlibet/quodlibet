@@ -12,16 +12,16 @@ class TParsePlaylist(TestCase):
     def test_parse_empty(self):
         name = makename()
         file(name, "w").close()
-        self.failUnlessEqual(self.Parse(name), [])
+        pl = self.Parse(name)
+        self.failUnlessEqual(pl, [])
         os.unlink(name)
+        pl.delete()
 
     def test_parse_garbage(self):
         name = makename()
         f = file(name, "w")
         f.write("this file\nis on\ncrack")
         f.close()
-        self.failUnlessEqual(self.Parse(name), [])
-        os.unlink(name)
 
     def test_parse_onesong(self):
         name = makename()
@@ -34,6 +34,7 @@ class TParsePlaylist(TestCase):
         self.failUnlessEqual(len(list), 1)
         self.failUnlessEqual(list[0]("title"), "Silence")
         os.unlink(name)
+        list.delete()
 
     def test_parse_onesong_uri(self):
         name = makename()
@@ -48,6 +49,7 @@ class TParsePlaylist(TestCase):
         self.failUnlessEqual(len(list), 1)
         self.failUnlessEqual(list[0]("title"), "Silence")
         os.unlink(name)
+        list.delete()
 
 class TParseM3U(TParsePlaylist):
     Parse = staticmethod(ParseM3U)
