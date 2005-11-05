@@ -142,6 +142,7 @@ class Playlists(gtk.VBox, Browser):
         for playlist in os.listdir(PLAYLISTS):
             model.append(row=[Playlist(Playlist.unquote(playlist))])
         widgets.watcher.connect('removed', klass.__removed)
+        widgets.watcher.connect('changed', klass.__changed)
     init = classmethod(init)
 
     def playlists(klass): return [row[0] for row in klass.__lists]
@@ -172,6 +173,15 @@ class Playlists(gtk.VBox, Browser):
                 except ValueError: pass
             if changed: Playlists.changed(playlist)
     __removed = classmethod(__removed)
+
+    def __changed(klass, watcher, songs):
+        for row in klass.__lists:
+            playlist = row[0]
+            for song in songs:
+                if song in playlist:
+                    Playlists.changed(playlist)
+                    break
+    __changed = classmethod(__changed)
 
     def cell_data(col, render, model, iter):
         render.markup = model[iter][0].format()
