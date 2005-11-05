@@ -204,6 +204,7 @@ class Playlists(gtk.VBox, Browser):
         view.append_column(col)
         view.set_model(self.__lists)
         view.set_rules_hint(True)
+        view.set_headers_visible(False)
         swin = gtk.ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
