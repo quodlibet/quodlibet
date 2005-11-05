@@ -90,9 +90,10 @@ class PanedBrowser(gtk.VBox, Browser):
 
             model = self.get_model()
             model.clear()
-            if len(keys) + bool(unknown) > 1:
-                model.append(row=["<b>%s</b>" % _("All"), songs])
             for k in keys: model.append(row=[util.escape(k), values[k]])
+            if len(keys) + bool(unknown) > 1:
+                model.insert(
+                    0, row=["<b>%s (%d)</b>" % (_("All"), len(model)), songs])
             if unknown:
                 model.append(row=["<b>%s</b>" % _("Unknown"), unknown])
 
