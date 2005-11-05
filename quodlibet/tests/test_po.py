@@ -8,7 +8,7 @@ class TPO(TestCase):
         try: os.unlink("messages.mo")
         except OSError: pass
 
-    def test_gstreamer_blows_goats(self):
+    def test_gtranslator_blows_goats(self):
         for f in glob.glob("po/*.po"):
             for line in file(f):
                 if line.strip().startswith("#"): continue
