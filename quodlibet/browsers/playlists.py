@@ -231,6 +231,7 @@ class Playlists(gtk.VBox, Browser):
         view.connect('drag-data-received', self.__drag_data_received)
         view.connect('drag-motion', self.__drag_motion)
         if main: view.connect('row-activated', self.__play)
+        else: render.set_property('editable', True)
         view.get_selection().connect('changed', self.__changed)
 
         s = view.get_model().connect('row-changed', self.__check_current)
@@ -344,7 +345,7 @@ class Playlists(gtk.VBox, Browser):
             qltk.ErrorMessage(
                 widgets.main, _("Unable to rename playlist"), s).run()
         else: self.__lists[path] = self.__lists[path]
-        render.set_property('editable', False)
+        render.set_property('editable', not self.__main)
 
     def __import(self, activator):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
