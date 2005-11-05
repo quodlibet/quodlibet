@@ -15,5 +15,16 @@ class TPO(TestCase):
                 self.failIf(
                     "\xc2\xb7" in line,
                     "Broken GTranslator copy/paste in %s:\n%s" % (f, line))
-        
+
+    def test_gtk_stock_items(self):
+        for f in glob.glob("po/*.po"):
+            for line in file(f):
+                if line.strip().startswith('msgstr "gtk-'):
+                    parts = line.strip().split()
+                    value = parts[1].strip('"')[4:]
+                    self.failIf(value and value not in [
+                        'media-next', 'media-previous', 'media-play',
+                        'media-pause'],
+                                "Invalid stock translation in %s\n%s" %(
+                        f, line))
 add(TPO)

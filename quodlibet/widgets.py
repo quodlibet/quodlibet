@@ -2850,16 +2850,18 @@ def website_wrap(activator, link):
 
 def init():
     stock.init()
-    # Translators: Only translate this if GTK does so incorrectly.
-    # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
+    # Translators: Only translate this if GTK's stock item is incorrect
+    # or missing. Don't literally translate media/next/previous/play/pause.
     const.SM_NEXT = _('gtk-media-next')
     # Translators: Only translate this if GTK does so incorrectly.
-    # See http://www.sacredchao.net/quodlibet/ticket/85 for more details
+    # or missing. Don't literally translate media/next/previous/play/pause.
     const.SM_PREVIOUS = _('gtk-media-previous')
 
     # Translators: Only translate this if GTK does so incorrectly.
+    # or missing. Don't literally translate media/next/previous/play/pause.
     const.SM_PLAY = _('gtk-media-play')
     # Translators: Only translate this if GTK does so incorrectly.
+    # or missing. Don't literally translate media/next/previous/play/pause.
     const.SM_PAUSE = _('gtk-media-pause')
 
     if config.get("settings", "headers").split() == []:
