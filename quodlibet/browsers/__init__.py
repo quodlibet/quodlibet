@@ -18,20 +18,20 @@ import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 base = dirname(__file__)
 mod = basename(base)
 if isdir(base):
-    modules = [f[:-3] for f in glob(join(base, "*.py"))]
+    modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
 else: # zip file
     from zipfile import ZipFile
     z = ZipFile(dirname(base))
-    modules = [f[:-3] for f in z.namelist() if fnmatch(f, join(mod, "*.py"))]
+    modules = [f[:-3] for f in z.namelist() if
+               fnmatch(f, join(mod, "[!_]*.py"))]
 
 modules = ["%s.%s" % (mod, basename(m)) for m in modules]
 
 if isdir(const.BROWSERS):
     sys.path.insert(0, const.BROWSERS)
     modules.extend([basename(f)[:-3] for f in
-                    glob(join(const.BROWSERS, "*.py"))])
+                    glob(join(const.BROWSERS, "[!_]*.py"))])
 
-modules.remove("browsers.__init__")
 modules.remove("browsers.base")
 
 # Browsers are declared and stored as a magic 4-tuple. The first element is
