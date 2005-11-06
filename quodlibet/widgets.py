@@ -1216,7 +1216,7 @@ class MainWindow(gtk.Window):
         watcher.connect('refresh', self.__refresh)
         watcher.connect('changed', self.__update_title)
         watcher.connect('song-started', self.__song_started)
-        watcher.connect('song-ended', self.__song_ended)
+        watcher.connect_after('song-ended', self.__song_ended)
         watcher.connect('missing', self.__song_missing, self.__statusbar)
         watcher.connect('paused', self.__update_paused, True)
         watcher.connect('unpaused', self.__update_paused, False)
