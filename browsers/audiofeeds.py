@@ -8,6 +8,7 @@
 # $Id$
 
 import os, sys
+import time
 
 import gobject, gtk, pango
 import const
@@ -33,6 +34,9 @@ class Feed(list):
         self.website = ""
         self.__lastgot = 0
 
+    def get_age(self):
+        return time.time() - self.__lastgot
+
     def parse(self):
         doc = feedparser.parse(self.uri)
         album = doc.channel.title
@@ -55,7 +59,7 @@ class Feed(list):
                         uris.add(uri)
                         break
 
-        for i, entry in list(self):
+        for entry in list(self):
             if entry["~uri"] not in uris: self.remove(entry)
             else: uris.remove(entry["~uri"])
 
@@ -67,6 +71,7 @@ class Feed(list):
                 song["album"] = self.name
                 if self.website: song["website"] = self.website
                 self.insert(0, song)
+        self.__lastgot = time.time()
         return bool(uris)
 
 class AddFeedDialog(qltk.GetStringDialog):
@@ -110,7 +115,24 @@ class AudioFeeds(Browser, gtk.VBox):
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[False, feed])
+        gobject.idle_add(klass.__do_check)
     init = classmethod(init)
+
+    def __do_check(klass):
+        import threading
+        thread = threading.Thread(target=klass.__check, args=())
+        thread.setDaemon(True)
+        thread.start()
+    __do_check = classmethod(__do_check)
+
+    def __check(klass):
+        for row in klass.__feeds:
+            feed = row[1]
+            if feed.get_age() < 2*60*60: continue
+            elif feed.parse(): row[0] = True
+        klass.write()
+        gobject.timeout_add(60*60*1000, klass.__do_check)
+    __check = classmethod(__check)
 
     def __init__(self, main):
         gtk.VBox.__init__(self)
