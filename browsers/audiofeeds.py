@@ -16,6 +16,8 @@ import parser
 import qltk
 import util
 
+import cPickle as pickle
+
 from widgets import widgets
 from browsers.base import Browser
 from formats.remote import RemoteFile
@@ -75,7 +77,7 @@ class AddFeedDialog(qltk.GetStringDialog):
 
     def run(self):
         uri = super(AddFeedDialog, self).run()
-        if uri: return Feed(uri)
+        if uri: return Feed(uri.encode('ascii', 'replace'))
         else: return None
 
 class AudioFeeds(Browser, gtk.VBox):
@@ -83,16 +85,31 @@ class AudioFeeds(Browser, gtk.VBox):
 
     __feeds = gtk.ListStore(bool, object) # unread, Feed
 
-    headers = "title ~#rating ~#added ~#lastplayed".split()
+    headers = "~current title ~#rating ~#added ~#lastplayed".split()
 
     expand = qltk.RHPaned
 
     def cell_data(col, render, model, iter):
         if model[iter][0]:
             render.markup = "<b>%s</b>" % util.escape(model[iter][1].name)
-        else: render.markup = util.escape(model[iter][1])
+        else: render.markup = util.escape(model[iter][1].name)
         render.set_property('markup', render.markup)
     cell_data = staticmethod(cell_data)
+
+    def write(klass):
+        feeds = [row[1] for row in klass.__feeds]
+        f = file(FEEDS, "wb")
+        pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+    write = classmethod(write)
+
+    def init(klass):
+        try: feeds = pickle.load(file(FEEDS, "rb"))
+        except EnvironmentError: pass
+        else:
+            for feed in feeds:
+                klass.__feeds.append(row=[False, feed])
+    init = classmethod(init)
 
     def __init__(self, main):
         gtk.VBox.__init__(self)
@@ -125,6 +142,7 @@ class AudioFeeds(Browser, gtk.VBox):
     def __changed(self, selection):
         model, iter = selection.get_selected()
         if iter:
+            model[iter][0] = False
             self.emit('songs-selected', list(model[iter][1]), True)
 
     def __new_feed(self, activator):
@@ -132,6 +150,7 @@ class AudioFeeds(Browser, gtk.VBox):
         if feed is not None:
             feed.parse()
             self.__feeds.append(row=[True, feed])
+            AudioFeeds.write()
 
     def restore(self): pass
 
