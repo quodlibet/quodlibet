@@ -243,7 +243,7 @@ class Playlists(gtk.VBox, Browser):
         view.connect('drag-motion', self.__drag_motion)
         if main: view.connect('row-activated', self.__play)
         else: render.set_property('editable', True)
-        view.get_selection().connect('changed', self.__changed)
+        view.get_selection().connect('changed', self.activate)
 
         s = view.get_model().connect('row-changed', self.__check_current)
         self.connect_object('destroy', view.get_model().disconnect, s)
@@ -335,10 +335,8 @@ class Playlists(gtk.VBox, Browser):
         menu.connect('selection-done', lambda m: m.destroy())
         return menu
 
-    def activate(self): self.__changed(self.__view.get_selection())
-
-    def __changed(self, selection):
-        model, iter = selection.get_selected()
+    def activate(self, *args):
+        model, iter = self.__view.get_selection().get_selected()
         if iter:
             if self.__main:
                 config.set("browsers", "playlist", model[iter][0].name)
