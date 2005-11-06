@@ -113,7 +113,6 @@ class AlbumList(Browser, gtk.VBox):
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
 
-            self.date = song.comma("date")
             self.genre = "\n".join(filter(None, genre))
             self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
@@ -124,6 +123,7 @@ class AlbumList(Browser, gtk.VBox):
             if not self.title:
                 self.date = ""
                 self.discs = 1
+            else: self.date = song.comma("date")
 
             if self.title: text = "<i><b>%s</b></i>" % util.escape(self.title)
             else: text = "<b>%s</b>" % _("Songs not in an album")
