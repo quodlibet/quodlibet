@@ -50,8 +50,9 @@ class Feed(list):
             else:
                 for enclosure in enclosures:
                     if "audio" in enclosure.type:
-                        entries.append((entry.title, enclosure.url))
-                        uris.add(enclosure.url)
+                        uri = enclosure.url.encode('ascii', 'replace')
+                        entries.append((entry.title, uri))
+                        uris.add(uri)
                         break
 
         for i, entry in list(self):
