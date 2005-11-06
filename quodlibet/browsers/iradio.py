@@ -145,7 +145,7 @@ class InternetRadio(gtk.HBox, Browser):
     __refill_id = None
 
     headers = ("title artist grouping genre website "
-               "~rating ~#added ~#lastplayed ~#bitrate").split()
+               "~#rating ~#added ~#lastplayed ~#bitrate").split()
 
     def __init__(self, main=True):
         gtk.HBox.__init__(self, spacing=12)
