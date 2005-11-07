@@ -1,20 +1,15 @@
-# Copyright (C) Joshua Kwan <joshk@triplehelix.org>,
-#               Mathieu Morey <kwiskas@gmail.com>
-# This file is distributed under the same license as Quod Libet.
-# Joshua Kwan <joshk@triplehelix.org>, Mathieu Morey <kwiskas@gmail.com>, 2005
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.11\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-05 16:28-0600\n"
-"PO-Revision-Date: 2005-11-05 21:58+0100\n"
+"POT-Creation-Date: 2005-11-07 11:18-0600\n"
+"PO-Revision-Date: 2005-11-07 01:42+0100\n"
 "Last-Translator: Fabien Devaux <fab AT gnux DOT info>\n"
-"Language-Team: Mathieu Morey <kwiskas@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n>1;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../library.py:37 ../library.py:48
 #, python-format
@@ -123,7 +118,7 @@ msgstr "Afficher l'état de la lecture"
 
 #: ../quodlibet.py:146
 msgid "Seek within the playing song"
-msgstr "Avancer dans la chanson en cours de lecture"
+msgstr "Se déplacer dans la chanson en cours de lecture"
 
 #: ../quodlibet.py:146
 msgid "[+|-][HH:]MM:SS"
@@ -642,7 +637,7 @@ msgstr "_Panneau %d:"
 
 #: ../widgets.py:453
 msgid "Paned Browser"
-msgstr "Navigateur à parties"
+msgstr "Navigateur à panneaux"
 
 #: ../widgets.py:470
 msgid "Player"
@@ -757,9 +752,8 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Motif invalide. Assurez vous que vous avez saisi &lt; comme \\&lt; et &gt; "
-"comme \\&gt;, et que vos étiquettes sont bien balancées.\n"
-"\n"
+"Le motif entré est invalide. Assurez-vous d'avoir entré &lt; et &gt; comme "
+"\\&lt; et \\&gt; et que vos balises sont bien balancées.\n"
 "%s"
 
 #: ../widgets.py:903
@@ -768,11 +762,11 @@ msgstr "Arrêter après cette chanson"
 
 #: ../widgets.py:1129
 msgid "In Order"
-msgstr "En ordre"
+msgstr "Dans l'ordre"
 
 #: ../widgets.py:1130
 msgid "Shuffle"
-msgstr "_Mélangé"
+msgstr "Mélangé"
 
 #: ../widgets.py:1131
 msgid "Weighted"
@@ -806,7 +800,7 @@ msgstr "_Ajouter un fichier..."
 
 #: ../widgets.py:1270
 msgid "_Add a Location..."
-msgstr "_Ajouter un chemin..."
+msgstr "_Ajouter une adresse..."
 
 #: ../widgets.py:1272
 msgid "_Browse Library"
@@ -870,15 +864,15 @@ msgstr "Re_charger la bibliothèque"
 
 #: ../widgets.py:1331
 msgid "Filter on _genre"
-msgstr "Filtrer sur le _genre"
+msgstr "Filtrer sur ce _genre"
 
 #: ../widgets.py:1332
 msgid "Filter on _artist"
-msgstr "Filtrer sur l'_artiste"
+msgstr "Filtrer sur cet _artiste"
 
 #: ../widgets.py:1333
 msgid "Filter on al_bum"
-msgstr "Filtrer sur l'al_bum"
+msgstr "Filtrer sur cet al_bum"
 
 #: ../widgets.py:1340
 msgid "Random _genre"
@@ -949,6 +943,7 @@ msgid ""
 msgstr ""
 "Quod Libet parcourt votre bibliothèque. Cela peut prendre plusieurs "
 "minutes.\n"
+"\n"
 "%d chansons rechargées\n"
 "%d chansons retirées"
 
@@ -997,7 +992,7 @@ msgstr[1] "%(count)d chansons (%(time)s)"
 
 #: ../widgets.py:1895
 msgid "_Choose randomly"
-msgstr "_Sélection aléatoire"
+msgstr "Prendre au _hazard"
 
 #: ../widgets.py:1918
 msgid "Drag songs here to add them to the play queue"
@@ -1033,7 +1028,7 @@ msgid "_Remove from Library"
 msgstr "_Supprimer de la bibliothèque"
 
 #: ../widgets.py:2283 ../properties.py:1753 ../efwidgets.py:408
-#: ../browsers/playlists.py:280
+#: ../browsers/playlists.py:290 ../browsers/playlists.py:385
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s et %(count)d de plus"
@@ -1102,19 +1097,19 @@ msgstr ""
 msgid "gtk-media-pause"
 msgstr ""
 
-#: ../widgets.py:2909
+#: ../widgets.py:2913
 msgid "Saving song library."
 msgstr "Enregistrement de la bibliothèque de chansons."
 
-#: ../widgets.py:2913
+#: ../widgets.py:2917
 msgid "Unable to save library"
 msgstr "Impossible d'enregistrer la bibliothèque de données."
 
-#: ../widgets.py:2917
+#: ../widgets.py:2921
 msgid "No audio device found"
 msgstr "Aucun périphérique audio trouvé"
 
-#: ../widgets.py:2918
+#: ../widgets.py:2922
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1494,7 +1489,7 @@ msgstr "Remplacer les caractères incompatibles avec _Windows"
 
 #: ../properties.py:1374
 msgid "Replace non-_ASCII characters"
-msgstr "Remplacer les caractères non _ASCII"
+msgstr "Remplacer les caractères non-_ASCII"
 
 #: ../properties.py:1395
 msgid ""
@@ -1626,19 +1621,19 @@ msgstr[1] "%d albums"
 
 #: ../browsers/albums.py:572
 msgid "_Album List"
-msgstr "Liste d'_albums"
+msgstr "Liste des _albums"
 
 #: ../browsers/paned.py:96
 msgid "All"
 msgstr "Tous"
 
-#: ../browsers/paned.py:149 ../browsers/iradio.py:168
+#: ../browsers/paned.py:149 ../browsers/iradio.py:167
 msgid "_Search:"
 msgstr "_Rechercher :"
 
 #: ../browsers/paned.py:270
 msgid "_Paned Browser"
-msgstr "Navigateur à _parties"
+msgstr "Navigateur à _panneaux"
 
 #: ../browsers/playlists.py:79
 msgid "New Playlist"
@@ -1649,27 +1644,27 @@ msgstr "Créer une liste de lecture..."
 msgid "A playlist named %s already exists."
 msgstr "Une liste de lecture appelée %s existe déjà."
 
-#: ../browsers/playlists.py:185
+#: ../browsers/playlists.py:195
 msgid "_Remove from Playlist"
 msgstr "Supp_rimer de la bibliothèque"
 
-#: ../browsers/playlists.py:216
+#: ../browsers/playlists.py:226
 msgid "_Import"
 msgstr "_Importer"
 
-#: ../browsers/playlists.py:310
+#: ../browsers/playlists.py:316
 msgid "_Rename"
 msgstr "Re_nommer"
 
-#: ../browsers/playlists.py:347
+#: ../browsers/playlists.py:352
 msgid "Unable to rename playlist"
 msgstr "Impossible de renommer la liste de lecture"
 
-#: ../browsers/playlists.py:354
+#: ../browsers/playlists.py:359
 msgid "Import Playlist"
 msgstr "Importer une liste de lecture"
 
-#: ../browsers/playlists.py:382
+#: ../browsers/playlists.py:393
 msgid "_Playlists"
 msgstr "_Listes de lecture"
 
@@ -1701,7 +1696,7 @@ msgstr "A_jouter à la bibliothèque"
 msgid "_File System"
 msgstr "_Système de fichiers"
 
-#: ../browsers/iradio.py:80 ../browsers/iradio.py:260
+#: ../browsers/iradio.py:80 ../browsers/iradio.py:259
 msgid "Unsupported file type"
 msgstr "Type de fichier non supporté"
 
@@ -1741,43 +1736,43 @@ msgstr "Saisissez l'adresse d'une radio Internet."
 msgid "_Stations..."
 msgstr "_Radios internet..."
 
-#: ../browsers/iradio.py:152
+#: ../browsers/iradio.py:151
 msgid "_New Station"
 msgstr "_Nouvelle radio internet"
 
-#: ../browsers/iradio.py:199
+#: ../browsers/iradio.py:198
 msgid "_Remove Station"
 msgstr "_Supprimer une radio internet"
 
-#: ../browsers/iradio.py:227
+#: ../browsers/iradio.py:226
 msgid "Unable to add station"
 msgstr "Impossible d'ajouter la radio"
 
-#: ../browsers/iradio.py:232
+#: ../browsers/iradio.py:231
 msgid "No stations found"
 msgstr "Pas de radio trouvée."
 
-#: ../browsers/iradio.py:233
+#: ../browsers/iradio.py:232
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Une radio internet n'existe pas à %s."
 
-#: ../browsers/iradio.py:241 ../browsers/iradio.py:270
+#: ../browsers/iradio.py:240 ../browsers/iradio.py:269
 msgid "No new stations"
 msgstr "Pas de nouvelles radios"
 
-#: ../browsers/iradio.py:242
+#: ../browsers/iradio.py:241
 msgid "All stations listed are already in your library."
 msgstr "Tous les radios listées sont déjà dans votre bibliothèque."
 
-#: ../browsers/iradio.py:261
+#: ../browsers/iradio.py:260
 msgid "M3U playlists cannot be loaded."
 msgstr "Impossible de charger des listes de lecture M3U."
 
-#: ../browsers/iradio.py:271
+#: ../browsers/iradio.py:270
 msgid "This station is already in your library."
 msgstr "Ce radio est déjà dans votre bibliothèque."
 
-#: ../browsers/iradio.py:286
+#: ../browsers/iradio.py:285
 msgid "_Internet Radio"
 msgstr "_Radio Internet"
