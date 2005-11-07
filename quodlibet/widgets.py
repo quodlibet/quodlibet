@@ -1153,7 +1153,8 @@ class MainWindow(gtk.Window):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.songlist = MainSongList()
-        self.songlist.connect('drag-end', self.__songlist_drag_end)
+        self.songlist.connect_after(
+            'drag-data-received', self.__songlist_drag_data_recv)
         sw.add(self.songlist)
 
         self.qexpander = QueueExpander(
@@ -1224,7 +1225,7 @@ class MainWindow(gtk.Window):
         self.resize(*map(int, config.get("memory", "size").split()))
         self.show()
 
-    def __songlist_drag_end(self, view, ctx):
+    def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
         self.songlist.set_sort_by(None, refresh=False)
 
