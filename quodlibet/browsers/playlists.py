@@ -337,10 +337,11 @@ class Playlists(gtk.VBox, Browser):
 
     def activate(self, *args):
         model, iter = self.__view.get_selection().get_selected()
-        if iter:
-            if self.__main:
-                config.set("browsers", "playlist", model[iter][0].name)
-            self.emit('songs-selected', list(model[iter][0]), True)
+        songs = iter and list(model[iter][0]) or []
+        name = iter and model[iter][0].name or ""
+        if self.__main:
+            config.set("browsers", "playlist", name)
+        self.emit('songs-selected', songs, True)
 
     def __new_playlist(self, activator):
         self.__lists.get_model().append(row=[Playlist.new()])
