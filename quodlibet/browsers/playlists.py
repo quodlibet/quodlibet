@@ -290,11 +290,7 @@ class Playlists(gtk.VBox, Browser):
             else: title = _("%(title)s and %(count)d more") % (
                     {'title':songs[0].comma("title"), 'count':len(songs) - 1})
             playlist = Playlist.new(title)
-            iter = model.get_model().append(row=[playlist])
-            iter = model.convert_child_iter_to_iter(None, iter)
-        else:
-            playlist = model[path][0]
-            iter = model.get_iter(path)
+        else: playlist = model[path][0]
         playlist.extend(songs)
         Playlists.changed(playlist)
         ctx.finish(True, True, etime)
@@ -384,7 +380,13 @@ class Playlists(gtk.VBox, Browser):
         if iter:
             playlist = model[iter][0]
             playlist[:] = songs
-            Playlists.changed(playlist)
+        else:
+            if len(songs) == 1: title = songs[0].comma("title")
+            else: title = _("%(title)s and %(count)d more") % (
+                    {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+            playlist = Playlist.new(title)
+            playlist.extend(songs)
+        Playlists.changed(playlist)
 
 gobject.type_register(Playlists)
 
