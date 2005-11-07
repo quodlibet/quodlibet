@@ -41,6 +41,10 @@ class AudioFile(dict):
                 cmp(self.get("title"), other.get("title")) or
                 cmp(self.get("~filename"), other.get("~filename")))
 
+    def __eq__(self, other):
+        try: return self.get("~filename") == other.get("~filename")
+        except: return False
+
     def reload(self):
         fn = self["~filename"]
         saved = {}
