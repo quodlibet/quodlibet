@@ -173,6 +173,11 @@ class Library(dict):
         f.close()
         os.rename(fn + ".tmp", fn)
 
+    def masked(self, filename):
+        for v in self.__masked_files.values():
+            if filename in v: return True
+        return False
+
     def playlists(self):
         # Return a set of playlists, normalized names.
         playlists = set()
