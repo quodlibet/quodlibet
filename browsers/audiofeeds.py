@@ -116,7 +116,7 @@ class AudioFeeds(Browser, gtk.VBox):
     def changed(klass, feeds):
         for row in klass.__feeds:
             if row[0] in feeds:
-                feeds.changed = True
+                row[0].changed = True
                 row[0] = row[0]
         AudioFeeds.write()
     changed = classmethod(changed)
