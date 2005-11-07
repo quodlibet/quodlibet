@@ -151,7 +151,7 @@ class Playlists(gtk.VBox, Browser):
     def changed(klass, playlist):
         model = klass.__lists
         for i, row in enumerate(model):
-            if row[0] == playlist:
+            if row[0] is playlist:
                 path = (i,)
                 klass.__lists.row_changed(path, model.get_iter(path))
                 playlist.write()
