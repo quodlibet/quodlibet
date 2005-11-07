@@ -2888,7 +2888,11 @@ def init():
     FSInterface(watcher)
     CountManager(watcher, widgets.main.playlist)
 
-    for Kind in zip(*browsers.browsers)[2]: Kind.init()
+    in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
+             "~#added ~#bitrate").split()
+    for Kind in zip(*browsers.browsers)[2]:
+        if Kind.headers is not None: Kind.headers.extend(in_all)
+        Kind.init()
 
 def save_library():
     player.playlist.quit()
