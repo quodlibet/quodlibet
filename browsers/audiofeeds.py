@@ -27,10 +27,13 @@ FEEDS = os.path.join(const.DIR, "feeds")
 
 if sys.version_info < (2, 4): from sets import Set as set
 
+class InvalidFeed(ValueError): pass
+
 class Feed(list):
     def __init__(self, uri):
         self.name = _("Unknown")
         self.uri = uri
+        self.changed = False
         self.website = ""
         self.__lastgot = 0
 
@@ -39,8 +42,12 @@ class Feed(list):
 
     def parse(self):
         doc = feedparser.parse(self.uri)
-        album = doc.channel.title
-        website = doc.channel.link
+        try:
+            album = doc.channel.title
+            website = doc.channel.link
+        except AttributeError:
+            # Most likely a transient network error.
+            return False
 
         if album: self.name = album
         else: self.name = _("Unknown")
@@ -55,7 +62,7 @@ class Feed(list):
                 for enclosure in enclosures:
                     if "audio" in enclosure.type:
                         uri = enclosure.url.encode('ascii', 'replace')
-                        entries.append((entry.title, uri))
+                        entries.append((uri, entry))
                         uris.add(uri)
                         break
 
@@ -64,12 +71,16 @@ class Feed(list):
             else: uris.remove(entry["~uri"])
 
         entries.reverse()
-        for title, uri in entries:
+        for uri, entry in entries:
             if uri in uris:
                 song = RemoteFile(uri)
-                song["title"] = title
+                if entry.title: song["title"] = entry.title
+                if entry.modified_parsed:
+                    song["date"] = "%04d-%02d-%02d" % entry.modified_parsed[:3]
                 song["album"] = self.name
-                if self.website: song["website"] = self.website
+                try: song["website"] = entry.link
+                except AttributeError:
+                    if self.website: song["website"] = self.website
                 self.insert(0, song)
         self.__lastgot = time.time()
         return bool(uris)
@@ -89,21 +100,29 @@ class AddFeedDialog(qltk.GetStringDialog):
 class AudioFeeds(Browser, gtk.VBox):
     __gsignals__ = Browser.__gsignals__
 
-    __feeds = gtk.ListStore(bool, object) # unread, Feed
+    __feeds = gtk.ListStore(object) # unread
 
-    headers = "~current title ~#rating ~#added ~#lastplayed".split()
+    headers = "title date album website".split()
 
     expand = qltk.RHPaned
 
     def cell_data(col, render, model, iter):
-        if model[iter][0]:
-            render.markup = "<b>%s</b>" % util.escape(model[iter][1].name)
-        else: render.markup = util.escape(model[iter][1].name)
+        if model[iter][0].changed:
+            render.markup = "<b>%s</b>" % util.escape(model[iter][0].name)
+        else: render.markup = util.escape(model[iter][0].name)
         render.set_property('markup', render.markup)
     cell_data = staticmethod(cell_data)
 
+    def changed(klass, feeds):
+        for row in klass.__feeds:
+            if row[0] in feeds:
+                feeds.changed = True
+                row[0] = row[0]
+        AudioFeeds.write()
+    changed = classmethod(changed)
+
     def write(klass):
-        feeds = [row[1] for row in klass.__feeds]
+        feeds = [row[0] for row in klass.__feeds]
         f = file(FEEDS, "wb")
         pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
         f.close()
@@ -114,7 +133,7 @@ class AudioFeeds(Browser, gtk.VBox):
         except EnvironmentError: pass
         else:
             for feed in feeds:
-                klass.__feeds.append(row=[False, feed])
+                klass.__feeds.append(row=[feed])
         gobject.idle_add(klass.__do_check)
     init = classmethod(init)
 
@@ -127,9 +146,11 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def __check(klass):
         for row in klass.__feeds:
-            feed = row[1]
+            feed = row[0]
             if feed.get_age() < 2*60*60: continue
-            elif feed.parse(): row[0] = True
+            elif feed.parse():
+                feed.changed = True
+                row[0] = feed
         klass.write()
         gobject.timeout_add(60*60*1000, klass.__do_check)
     __check = classmethod(__check)
@@ -156,24 +177,74 @@ class AudioFeeds(Browser, gtk.VBox):
         newpl = gtk.Button(stock=gtk.STOCK_NEW)
         newpl.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
+        view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        view.connect('button-press-event', self.__button_press)
+        view.connect('popup-menu', self.__popup_menu)
 
         self.pack_start(newpl, expand=False)
         self.show_all()
 
+    def __menu(self, view):
+        model, paths = view.get_selection().get_selected_rows()
+        menu = gtk.Menu()
+        refresh = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        delete = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+
+        refresh.connect_object(
+            'activate', self.__refresh, [model[p][0] for p in paths])
+        delete.connect_object(
+            'activate', map, model.remove, map(model.get_iter, paths))
+
+        menu.append(refresh)
+        menu.append(delete)
+        menu.show_all()
+        menu.connect('selection-done', lambda m: m.destroy())
+        return menu
+
+    def __button_press(self, view, event):
+        if event.button == 3:
+            x, y = map(int, [event.x, event.y])
+            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
+            except TypeError: return True
+            selection = view.get_selection()
+            if not selection.path_is_selected(path):
+                view.set_cursor(path, col, 0)
+            self.__menu(view).popup(None, None, None, event.button, event.time)
+            return True
+
+    def __popup_menu(self, view):
+        self.__menu(view).popup(
+            None, None, None, 0, gtk.get_current_event_time())
+        return True
+
+    def __refresh(self, feeds):
+        changed = filter(Feed.parse, feeds)
+        AudioFeeds.changed(changed)
+
     def activate(self): self.__changed(self.__view.get_selection())
 
     def __changed(self, selection):
-        model, iter = selection.get_selected()
-        if iter:
-            model[iter][0] = False
-            self.emit('songs-selected', list(model[iter][1]), True)
+        model, paths = selection.get_selected_rows()
+        if model and paths:
+            songs = []
+            for path in paths:
+                model[path][0].changed = False
+                songs.extend(model[path][0])
+            self.emit('songs-selected', songs, True)
 
     def __new_feed(self, activator):
         feed = AddFeedDialog().run()
         if feed is not None:
-            feed.parse()
-            self.__feeds.append(row=[True, feed])
-            AudioFeeds.write()
+            feed.changed = feed.parse()
+            if feed:
+                self.__feeds.append(row=[feed])
+                AudioFeeds.write()
+            else:
+                qltk.ErrorMessage(
+                    widgets.main, _("Unable to add feed"),
+                    _("<b>%s</b> could not be added. The server may be down, "
+                      "or the location may not be an audio feed.") %(
+                    feed.uri)).run()
 
     def restore(self): pass
 
