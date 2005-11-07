@@ -19,9 +19,11 @@ import util
 import formats
 from library import library
 from browsers.base import Browser
-
+from formats._audio import AudioFile
 from widgets import FileChooser
 from widgets import widgets
+
+if sys.version_info < (2, 4): from sets import Set as set
 
 PLAYLISTS = os.path.join(const.DIR, "playlists")
 if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)
@@ -97,6 +99,7 @@ class Playlist(list):
             for line in file(os.path.join(PLAYLISTS, basename), "r"):
                 line = line.rstrip()
                 if line in library: self.append(library[line])
+                elif library.masked(line): self.append(line)
         except IOError:
             if self.name: self.write()
 
@@ -112,6 +115,27 @@ class Playlist(list):
             self.name = newname
             self.write()
 
+    def add_songs(self, filenames):
+        changed = False
+        for i in range(len(self)):
+            if isinstance(self[i], basestring) and self[i] in filenames:
+                self[i] = library[self[i]]
+                changed = True
+        return changed
+
+    def remove_songs(self, songs):
+        changed = False
+        for song in songs:
+            if library.masked(song("~filename")):
+                while True:
+                    try: self[self.index(song)] = song("~filename")
+                    except ValueError: break
+                    else: changed = True
+            else:
+                while song in self: self.remove(song)
+                else: changed = True
+        return changed
+
     def delete(self):
         del(self[:])
         try: os.unlink(os.path.join(PLAYLISTS, self.quote(self.name)))
@@ -120,14 +144,17 @@ class Playlist(list):
     def write(self):
         basename = self.quote(self.name)
         f = file(os.path.join(PLAYLISTS, basename), "w")
-        for song in self: f.write(song("~filename") + "\n")
+        for song in self:
+            try: f.write(song("~filename") + "\n")
+            except TypeError: f.write(song + "\n")
         f.close()
 
     def format(self):
         return "<b>%s</b>\n<small>%s (%s)</small>" % (
             util.escape(self.name),
             ngettext("%d song", "%d songs", len(self)) % len(self),
-            util.format_time(sum([t.get("~#length") for t in self])))
+            util.format_time(sum([t.get("~#length") for t in self
+                                  if isinstance(t, AudioFile)])))
 
     def __cmp__(self, other):
         try: return cmp(self.name, other.name)
@@ -142,6 +169,7 @@ class Playlists(gtk.VBox, Browser):
         for playlist in os.listdir(PLAYLISTS):
             model.append(row=[Playlist(Playlist.unquote(playlist))])
         widgets.watcher.connect('removed', klass.__removed)
+        widgets.watcher.connect('added', klass.__added)
         widgets.watcher.connect('changed', klass.__changed)
     init = classmethod(init)
 
@@ -162,21 +190,18 @@ class Playlists(gtk.VBox, Browser):
     changed = classmethod(changed)
 
     def __removed(klass, watcher, songs):
-        for row in klass.__lists:
-            playlist = row[0]
-            changed = False
-            for song in songs:
-                try:
-                    while True:
-                        playlist.remove(song)
-                        changed = True
-                except ValueError: pass
-            if changed: Playlists.changed(playlist)
+        for playlist in klass.playlists():
+            if playlist.remove_songs(songs): Playlists.changed(playlist)
     __removed = classmethod(__removed)
 
+    def __added(klass, watcher, songs):
+        filenames = set([song("~filename") for song in songs])
+        for playlist in klass.playlists():
+            if playlist.add_songs(filenames): Playlists.changed(playlist)
+    __added = classmethod(__added)
+
     def __changed(klass, watcher, songs):
-        for row in klass.__lists:
-            playlist = row[0]
+        for playlist in klass.playlists():
             for song in songs:
                 if song in playlist:
                     Playlists.changed(playlist)
@@ -334,9 +359,9 @@ class Playlists(gtk.VBox, Browser):
     def activate(self, *args):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
+        songs = filter(lambda s: isinstance(s, AudioFile), songs)
         name = iter and model[iter][0].name or ""
-        if self.__main:
-            config.set("browsers", "playlist", name)
+        if self.__main: config.set("browsers", "playlist", name)
         self.emit('songs-selected', songs, True)
 
     def __new_playlist(self, activator):
