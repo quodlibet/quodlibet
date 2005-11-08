@@ -28,7 +28,7 @@ quux = AudioFile({
     "album": "Quuxly"
     })
 
-class AudioFileTest(TestCase):
+class TAudioFile(TestCase):
     def setUp(self):
         file(quux["~filename"], "w")
 
@@ -38,7 +38,7 @@ class AudioFileTest(TestCase):
         self.assertEqual(l, [bar_1_1, bar_1_2, bar_2_1, quux])
         self.assertEqual(quux, quux)
         self.assertEqual(bar_1_1, bar_1_1)
-        self.assertNotEqual(bar_1_1, bar_1_2)
+        self.assertNotEqual(bar_2_1, bar_1_2)
         
     def test_realkeys(self):
         self.failIf("artist" in quux.realkeys())
@@ -289,6 +289,6 @@ class FindCoverTest(TestCase):
     def tearDown(self):
         for f in self.files: os.unlink(f)
 
-registerCase(AudioFileTest)
+registerCase(TAudioFile)
 registerCase(FindCoverTest)
 registerCase(ReplayGain)
