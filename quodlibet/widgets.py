@@ -2805,7 +2805,7 @@ class LibraryBrowser(gtk.Window):
 
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__menu, 3, 0)
-        view.connect('drag-end', self.__drag_end)
+        view.connect('drag-data-received', self.__drag_data_recv)
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
@@ -2814,8 +2814,9 @@ class LibraryBrowser(gtk.Window):
         self.child.show()
         self.show()
 
-    def __drag_end(self, view, context):
+    def __drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
+        view.set_sort_by(None, refresh=False)
 
     def __cols_changed(self, view, browser):
         for header in view.get_columns():
