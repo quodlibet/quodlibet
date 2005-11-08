@@ -1223,7 +1223,7 @@ class MainWindow(gtk.Window):
         watcher.connect('unpaused', self.__update_paused, False)
 
         self.resize(*map(int, config.get("memory", "size").split()))
-        self.show()
+        self.child.show()
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
@@ -2874,9 +2874,6 @@ def init():
     widgets.main = MainWindow(watcher)
     gtk.about_dialog_set_url_hook(website_wrap)
 
-    song = library.get(config.get("memory", "song"))
-    player.playlist.setup(watcher, widgets.main.playlist, song)
-
     # These stay alive in the watcher.
     FSInterface(watcher)
     CountManager(watcher, widgets.main.playlist)
@@ -2886,6 +2883,11 @@ def init():
     for Kind in zip(*browsers.browsers)[2]:
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init()
+
+    while gtk.events_pending(): gtk.main_iteration()
+    song = library.get(config.get("memory", "song"))
+    player.playlist.setup(watcher, widgets.main.playlist, song)
+    widgets.main.show()
 
 def save_library():
     player.playlist.quit()
