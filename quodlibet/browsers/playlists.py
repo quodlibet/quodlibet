@@ -90,6 +90,15 @@ class Playlist(list):
         return p
     new = classmethod(new)
 
+    def fromsongs(klass, songs):
+        if len(songs) == 1: title = songs[0].comma("title")
+        else: title = _("%(title)s and %(count)d more") % (
+                {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+        playlist = klass.new(title)
+        playlist.extend(songs)
+        return playlist
+    fromsongs = classmethod(fromsongs)
+
     def __init__(self, name):
         super(Playlist, self).__init__()
         if isinstance(name, unicode): name = name.encode('utf-8')
@@ -311,15 +320,21 @@ class Playlists(gtk.VBox, Browser):
         if not songs: return True
         try: path, pos = view.get_dest_row_at_pos(x, y)
         except TypeError:
-            if len(songs) == 1: title = songs[0].comma("title")
-            else: title = _("%(title)s and %(count)d more") % (
-                    {'title':songs[0].comma("title"), 'count':len(songs) - 1})
-            playlist = Playlist.new(title)
-        else: playlist = model[path][0]
-        playlist.extend(songs)
+            playlist = Playlist.fromsongs(songs)
+            gobject.idle_add(self.__select_playlist, playlist)
+        else:
+            playlist = model[path][0]
+            playlist.extend(songs)
         Playlists.changed(playlist)
         ctx.finish(True, True, etime)
         return True
+    
+    def __select_playlist(self, playlist):
+        view = self.__view
+        model = view.get_model()
+        for row in model:
+            if row[0] is playlist:
+                view.get_selection().select_iter(row.iter)
 
     def __button_press(self, view, event):
         if event.button == 3:
@@ -365,7 +380,9 @@ class Playlists(gtk.VBox, Browser):
         self.emit('songs-selected', songs, True)
 
     def __new_playlist(self, activator):
-        self.__lists.get_model().append(row=[Playlist.new()])
+        playlist = Playlist.new()
+        self.__lists.get_model().append(row=[playlist])
+        self.__select_playlist(playlist)
 
     def __start_editing(self, render, editable, path):
         editable.set_text(self.__lists[path][0].name)
@@ -406,11 +423,8 @@ class Playlists(gtk.VBox, Browser):
             playlist = model[iter][0]
             playlist[:] = songs
         else:
-            if len(songs) == 1: title = songs[0].comma("title")
-            else: title = _("%(title)s and %(count)d more") % (
-                    {'title':songs[0].comma("title"), 'count':len(songs) - 1})
-            playlist = Playlist.new(title)
-            playlist.extend(songs)
+            playlist = Playlist.fromsongs(songs)
+            gobject.idle_add(self.__select_playlist, playlist)
         Playlists.changed(playlist)
 
 gobject.type_register(Playlists)
