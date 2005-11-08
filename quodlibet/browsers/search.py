@@ -60,7 +60,7 @@ class EmptyBar(gtk.HBox, Browser):
     def filter(self, key, values):
         if key.startswith("~#"):
             nheader = key[2:]
-            queries = ["#(%s = %d)" % (nheader, i) for i in values]
+            queries = ["#(%s = %s)" % (nheader, i) for i in values]
             self.set_text("|(" + ", ".join(queries) + ")")
         else:
             text = ", ".join(
