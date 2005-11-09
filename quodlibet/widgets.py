@@ -1858,7 +1858,8 @@ class MainWindow(gtk.Window):
     def __set_time(self, *args, **kwargs):
         statusbar = self.__statusbar
         songs = kwargs.get("songs") or self.songlist.get_selected_songs()
-        if len(songs) <= 1: songs = self.songlist.get_songs()
+        if "songs" not in kwargs and len(songs) <= 1:
+            songs = self.songlist.get_songs()
 
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
