@@ -2129,8 +2129,8 @@ class SongList(qltk.HintedTreeView):
             l = gtk.Label()
             l.set_text(util.format_rating(1.0))
             s = l.size_request()
-            # Magic scaling constant tested on Sans 10 to Sans 26.
-            self.set_min_width(int(s[0] * 1.2))
+            # Magic offset constant tested on Sans 10 to Sans 26.
+            self.set_min_width(int(s[0] + 10))
             l.destroy()
 
     class NonSynthTextColumn(WideTextColumn):
@@ -2442,9 +2442,16 @@ class SongList(qltk.HintedTreeView):
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
         if col.header_name == "~#rating":
-            # FIXME: With the new rating system this simply doesn't
-            # work, we need a new display.
-            pass
+            song = view.get_model()[path][0]
+            l = gtk.Label()
+            l.set_text(util.format_rating(util.RATING_PRECISION))
+            width = l.size_request()[0]
+            l.destroy()
+            count = int(float(cellx - 5) / width) + 1
+            rating = max(0.0, min(1.0, count * util.RATING_PRECISION))
+            if (rating <= util.RATING_PRECISION and
+                song["~#rating"] == util.RATING_PRECISION): rating = 0
+            self.__set_rating(rating, [song])
 
     def __remove(self, item, songs):
         # User requested that the selected songs be removed.
