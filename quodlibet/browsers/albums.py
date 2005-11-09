@@ -137,7 +137,7 @@ class AlbumList(Browser, gtk.VBox):
             text += " - " + self.__long_length
             text += "</small>\n" + ", ".join(map(util.escape, self.people))
             self.markup = text
-            if self.title:
+            if self.title and self.cover is None:
                 self.cover = False
                 if not self.__pending_covers: gobject.idle_add(
                     self.__get_covers, priority=gobject.PRIORITY_LOW)
@@ -367,7 +367,9 @@ class AlbumList(Browser, gtk.VBox):
     def __refresh_album(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
-        for album in albums: album.finalize()
+        for album in albums:
+            album.cover = None
+            album.finalize()
 
     def __remove(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
