@@ -471,7 +471,7 @@ class AlbumList(Browser, gtk.VBox):
     def __drag_begin(self, view, ctx):
         model, paths = view.get_selection().get_selected_rows()
         if paths:
-            icons = map(view.create_row_drag_icon, paths)
+            icons = map(view.create_row_drag_icon, paths[:50])
             gc = icons[0].new_gc()
             height = (sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
             width = max(map(lambda s: s.get_size()[0], icons))
