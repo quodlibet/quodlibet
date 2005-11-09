@@ -64,7 +64,9 @@ class AlbumList(Browser, gtk.VBox):
             self.title = title
             self.labelid = labelid
             self.songs = set()
-            self.cover = self.__covers.get(self.title, False)
+            # cover = None indicates not gotten cover, cover = False
+            # indicates a failure to find a cover.
+            self.cover = self.__covers.get(self.title)
             self.genre = []
 
         def get(self, key, default=None):

@@ -2878,12 +2878,6 @@ def init():
     SongList.pm.rescan()
 
     widgets.watcher = watcher
-    widgets.main = MainWindow(watcher)
-    gtk.about_dialog_set_url_hook(website_wrap)
-
-    # These stay alive in the watcher.
-    FSInterface(watcher)
-    CountManager(watcher, widgets.main.playlist)
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate").split()
@@ -2891,7 +2885,15 @@ def init():
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init()
 
-    while gtk.events_pending(): gtk.main_iteration()
+    widgets.main = MainWindow(watcher)
+    gtk.about_dialog_set_url_hook(website_wrap)
+
+    # These stay alive in the watcher.
+    FSInterface(watcher)
+    CountManager(watcher, widgets.main.playlist)
+
+    flag = widgets.main.songlist.get_columns()[-1].get_clickable
+    while not flag(): gtk.main_iteration()
     song = library.get(config.get("memory", "song"))
     player.playlist.setup(watcher, widgets.main.playlist, song)
     widgets.main.show()
