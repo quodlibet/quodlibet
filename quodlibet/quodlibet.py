@@ -15,7 +15,7 @@ import os, sys
 def main():
     import util; util.mkdir(const.DIR)
 
-    import signal, gtk, widgets
+    import signal, widgets
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
     try: ratings = config.getint("settings", "ratings")

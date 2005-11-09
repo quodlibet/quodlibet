@@ -1171,9 +1171,6 @@ class MainWindow(gtk.Window):
         self.song_scroller.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::visible', self.__show_or)
 
-        headers = config.get("settings", "headers").split()
-        SongList.set_all_column_headers(headers)
-            
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(None, sort[1:], order=int(sort[0]))
 
@@ -1578,7 +1575,6 @@ class MainWindow(gtk.Window):
             self.set_geometry_hints(None, max_height=1, max_width=32000)
         else:
             self.set_geometry_hints(None, max_height=-1, max_width=-1)
-        self.realize()
 
     def showhide_playlist(self, toggle):
         self.song_scroller.set_property('visible', toggle.get_active())
@@ -2125,14 +2121,14 @@ class SongList(qltk.HintedTreeView):
         def __init__(self):
             SongList.TextColumn.__init__(self, "~#rating")
             self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+
             # Neither of TreeViewColumn or CellRendererText is a GTK
             # widget, so we need a new one to use Pango. Lame.
-            l = gtk.Label()
-            l.set_text(util.format_rating(1.0))
-            s = l.size_request()
+            l = gtk.Label(util.format_rating(1.0))
             # Magic offset constant tested on Sans 10 to Sans 26.
-            self.set_min_width(int(s[0] + 10))
+            min_width = l.size_request()[0] + 10
             l.destroy()
+            self.set_min_width(min_width)
 
     class NonSynthTextColumn(WideTextColumn):
         # Optimize for non-synthesized keys by grabbing them directly.
@@ -2867,6 +2863,9 @@ def init():
 
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
+    headers = config.get("settings", "headers").split()
+    SongList.set_all_column_headers(headers)
+            
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
