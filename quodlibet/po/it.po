@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-09 20:37-0600\n"
+"POT-Creation-Date: 2005-11-10 14:14-0600\n"
 "PO-Revision-Date: 2005-11-09 20:39-0600\n"
 "Last-Translator: Filippo Pappalardo <filippo@email.it>\n"
 "Language-Team: Italian\n"
@@ -306,9 +306,8 @@ msgstr "disco"
 
 #. as in "file format"
 #: ../po/tag-names.py:24
-#, fuzzy
 msgid "format"
-msgstr "Informazioni"
+msgstr "formato"
 
 #. file name plus path, /.../.../foo.ogg
 #: ../po/tag-names.py:26
@@ -724,9 +723,8 @@ msgid "Edit Display"
 msgstr ""
 
 #: ../widgets.py:983
-#, fuzzy
 msgid "_Edit Display..."
-msgstr "_Nuova/Modifica Playlist..."
+msgstr ""
 
 #: ../widgets.py:1001 ../properties.py:1188
 msgid "Invalid pattern"
@@ -786,9 +784,8 @@ msgid "_Add a File..."
 msgstr "_Aggiungi un File..."
 
 #: ../widgets.py:1393
-#, fuzzy
 msgid "_Add a Location..."
-msgstr "_Aggiungi un File..."
+msgstr "_Aggiungi una Posizione..."
 
 #: ../widgets.py:1395
 msgid "_Browse Library"
@@ -925,14 +922,12 @@ msgstr ""
 "%d brani rimossi"
 
 #: ../widgets.py:1739
-#, fuzzy
 msgid "Add a Location"
-msgstr "posizione"
+msgstr "Aggiungi una Posizione"
 
 #: ../widgets.py:1740
-#, fuzzy
 msgid "Enter the location of an audio file."
-msgstr "Inserire l'indirizzo di una stazione Internet radio "
+msgstr "Inserire la posizione di un file audio."
 
 #: ../widgets.py:1754 ../widgets.py:1757
 msgid "Add Music"
@@ -976,9 +971,8 @@ msgid "Drag songs here to add them to the play queue"
 msgstr "Trascina qui i brani per metterli in coda"
 
 #: ../widgets.py:1969
-#, fuzzy
 msgid "Remove all songs from the play queue"
-msgstr "Trascina qui i brani per metterli in coda"
+msgstr "Rimuovi tutti i brani dalla coda"
 
 #: ../widgets.py:2135 ../properties.py:330 ../properties.py:341
 msgid "Never"
@@ -1006,7 +1000,7 @@ msgid "_Remove from Library"
 msgstr "_Rimuovi dalla Libreria"
 
 #: ../widgets.py:2333 ../properties.py:1753 ../efwidgets.py:408
-#: ../browsers/playlists.py:95
+#: ../browsers/playlists.py:97
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s e altri %(count)d..."
@@ -1270,7 +1264,7 @@ msgstr[1] "%d brani senza album"
 msgid "Selected Discography"
 msgstr "Disografia Selezionata"
 
-#: ../properties.py:573 ../browsers/playlists.py:164
+#: ../properties.py:573 ../browsers/playlists.py:166
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -1605,36 +1599,36 @@ msgstr "_Cerca:"
 msgid "_Paned Browser"
 msgstr "_Catalogo con Filtri"
 
-#: ../browsers/playlists.py:81
+#: ../browsers/playlists.py:83 ../browsers/playlists.py:353
 msgid "New Playlist"
 msgstr "Nuova Playlist"
 
-#: ../browsers/playlists.py:120
+#: ../browsers/playlists.py:122
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "Esiste già una playlist chiamata %s."
 
-#: ../browsers/playlists.py:229
+#: ../browsers/playlists.py:231
 msgid "_Remove from Playlist"
 msgstr "_Rimuovi dalla Playlist"
 
-#: ../browsers/playlists.py:260
+#: ../browsers/playlists.py:262
 msgid "_Import"
 msgstr "_Importa"
 
-#: ../browsers/playlists.py:356
+#: ../browsers/playlists.py:393
 msgid "_Rename"
 msgstr "_Rinomina"
 
-#: ../browsers/playlists.py:394
+#: ../browsers/playlists.py:431
 msgid "Unable to rename playlist"
 msgstr "Impossibile rinominare la playlist"
 
-#: ../browsers/playlists.py:401
+#: ../browsers/playlists.py:441
 msgid "Import Playlist"
 msgstr "Importa _Playlist"
 
-#: ../browsers/playlists.py:432
+#: ../browsers/playlists.py:472
 msgid "_Playlists"
 msgstr "_Playlist"
 
@@ -1745,6 +1739,3 @@ msgstr "Questa stazione è già nella libreria"
 #: ../browsers/iradio.py:285
 msgid "_Internet Radio"
 msgstr "_Internet Radio"
-
-#~ msgid "W: Unable to load %s"
-#~ msgstr "W: Impossibile caricare %s"
