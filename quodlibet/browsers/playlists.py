@@ -396,9 +396,12 @@ class Playlists(gtk.VBox, Browser):
         render.set_property('editable', not self.__main)
 
     def __import(self, activator):
+        parent = activator
+        while parent.parent is not None:
+            parent = parent.parent
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
         chooser = FileChooser(
-            None, _("Import Playlist"), filt, os.getenv("HOME"))
+            parent, _("Import Playlist"), filt, os.getenv("HOME"))
         files = chooser.run()
         chooser.destroy()
         for filename in files:
@@ -413,7 +416,7 @@ class Playlists(gtk.VBox, Browser):
         else:
             for i, row in enumerate(self.__lists):
                 if row[0].name == name:
-                    self.view.get_selection().select_path((i,))
+                    self.__view.get_selection().select_path((i,))
                     break
 
     def reordered(self, songlist):
