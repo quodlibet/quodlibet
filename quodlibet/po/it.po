@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 0.13\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-11-09 20:37-0600\n"
-"PO-Revision-Date: 2005-10-15 23:50+0200\n"
+"PO-Revision-Date: 2005-11-09 20:39-0600\n"
 "Last-Translator: Filippo Pappalardo <filippo@email.it>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -687,7 +687,6 @@ msgid "Split _on:"
 msgstr "Dividi c_on:"
 
 #: ../widgets.py:659
-#, fuzzy
 msgid "Show _programmatic tags"
 msgstr "Mostra _commenti"
 
@@ -991,24 +990,20 @@ msgid "_Filter on %s"
 msgstr "_Filtro su %s"
 
 #: ../widgets.py:2288
-#, fuzzy
 msgid "_Add to Playlist"
-msgstr "_Playlist"
+msgstr "Metti in _Playlist"
 
 #: ../widgets.py:2292
-#, fuzzy
 msgid "_New Playlist"
-msgstr "Nuova/Modifica Playlist"
+msgstr "_Nuova Playlist"
 
 #: ../widgets.py:2302 ../browsers/albums.py:344
-#, fuzzy
 msgid "Add to _Queue"
-msgstr "Metti in Coda"
+msgstr "Metti in _Coda"
 
 #: ../widgets.py:2310 ../browsers/albums.py:345
-#, fuzzy
 msgid "_Remove from Library"
-msgstr "Rimuovi dalla Libreria"
+msgstr "_Rimuovi dalla Libreria"
 
 #: ../widgets.py:2333 ../properties.py:1753 ../efwidgets.py:408
 #: ../browsers/playlists.py:95
