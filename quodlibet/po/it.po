@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-09 20:24-0600\n"
+"POT-Creation-Date: 2005-11-09 20:37-0600\n"
 "PO-Revision-Date: 2005-10-15 23:50+0200\n"
 "Last-Translator: Filippo Pappalardo <filippo@email.it>\n"
 "Language-Team: Italian\n"
@@ -1611,38 +1611,33 @@ msgid "_Paned Browser"
 msgstr "_Catalogo con Filtri"
 
 #: ../browsers/playlists.py:81
-#, fuzzy
 msgid "New Playlist"
-msgstr "Nuova/Modifica Playlist"
+msgstr "Nuova Playlist"
 
 #: ../browsers/playlists.py:120
 #, python-format
 msgid "A playlist named %s already exists."
-msgstr ""
+msgstr "Esiste già una playlist chiamata %s."
 
 #: ../browsers/playlists.py:229
-#, fuzzy
 msgid "_Remove from Playlist"
-msgstr "Rimuovi dalla Libreria"
+msgstr "_Rimuovi dalla Playlist"
 
 #: ../browsers/playlists.py:260
 msgid "_Import"
-msgstr ""
+msgstr "_Importa"
 
 #: ../browsers/playlists.py:356
-#, fuzzy
 msgid "_Rename"
-msgstr "Nome del _file"
+msgstr "_Rinomina"
 
 #: ../browsers/playlists.py:394
-#, fuzzy
 msgid "Unable to rename playlist"
-msgstr "Impossibile rinominare il file"
+msgstr "Impossibile rinominare la playlist"
 
 #: ../browsers/playlists.py:401
-#, fuzzy
 msgid "Import Playlist"
-msgstr "_Playlist"
+msgstr "Importa _Playlist"
 
 #: ../browsers/playlists.py:432
 msgid "_Playlists"
@@ -1756,33 +1751,5 @@ msgstr "Questa stazione è già nella libreria"
 msgid "_Internet Radio"
 msgstr "_Internet Radio"
 
-#~ msgid "_Play"
-#~ msgstr "_Suona"
-
-#~ msgid "Rating"
-#~ msgstr "Giudizio"
-
-#~ msgid "_Pause"
-#~ msgstr "_Pausa"
-
-#~ msgid "_New/Edit Playlist..."
-#~ msgstr "_Nuova/Modifica Playlist..."
-
 #~ msgid "W: Unable to load %s"
 #~ msgstr "W: Impossibile caricare %s"
-
-#~ msgid ""
-#~ "Enter a name for the new playlist. If it already exists it will be opened "
-#~ "for editing."
-#~ msgstr ""
-#~ "Inserire un nome per la nuova playlist. Se esiste già sarà aperta per la "
-#~ "modifica"
-
-#~ msgid "All songs"
-#~ msgstr "Tutti i brani"
-
-#~ msgid "Edit the current playlist"
-#~ msgstr "Modifica la playlist attuale"
-
-#~ msgid "Refresh the current playlist"
-#~ msgstr "Aggiorna la playlist attuale"
