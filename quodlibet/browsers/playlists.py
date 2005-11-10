@@ -10,6 +10,7 @@
 import os, sys
 import urllib
 import gobject, pango, gtk
+from tempfile import NamedTemporaryFile
 
 import config
 import player
@@ -38,8 +39,9 @@ def ParseM3U(filename):
         else: filenames.append(line)
     return __ParsePlaylist(plname, filename, filenames)
 
-def ParsePLS(filename):
-    plname = util.fsdecode(os.path.basename(filename)).encode('utf-8')
+def ParsePLS(filename, name=""):
+    plname = util.fsdecode(os.path.basename(
+        os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
     for line in file(filename):
         line = line.strip()
@@ -271,10 +273,14 @@ class Playlists(gtk.VBox, Browser):
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__popup_menu)
 
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1)]
-        view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 0),
+                   ("text/uri-list", 0, 1),
+                   ("text/x-moz-url", 0, 2)]
+        view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
+                           gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_DEFAULT)
         view.connect('drag-data-received', self.__drag_data_received)
         view.connect('drag-motion', self.__drag_motion)
+        view.connect('drag-leave', self.__drag_leave)
         if main: view.connect('row-activated', self.__play)
         else: render.set_property('editable', True)
         view.get_selection().connect('changed', self.activate)
@@ -293,13 +299,21 @@ class Playlists(gtk.VBox, Browser):
         if citer and model.get_path(citer) == path: self.activate()
 
     def __drag_motion(self, view, ctx, x, y, time):
-        try: path = view.get_dest_row_at_pos(x, y)[0]
-        except TypeError:
-            path = (len(view.get_model()) - 1,)
-            pos = gtk.TREE_VIEW_DROP_AFTER
-        else: pos = gtk.TREE_VIEW_DROP_INTO_OR_AFTER
-        if path > (-1,): view.set_drag_dest_row(path, pos)
-        return True
+        if "text/x-quodlibet-songs" in ctx.targets:
+            try: path = view.get_dest_row_at_pos(x, y)[0]
+            except TypeError:
+                path = (len(view.get_model()) - 1,)
+                pos = gtk.TREE_VIEW_DROP_AFTER
+            else: pos = gtk.TREE_VIEW_DROP_INTO_OR_AFTER
+            if path > (-1,): view.set_drag_dest_row(path, pos)
+            return True
+        else:
+            # Highlighting the view itself doesn't work.
+            view.parent.drag_highlight()
+            return True
+
+    def __drag_leave(self, view, ctx, time):
+        view.parent.drag_unhighlight()
 
     def __remove(self, iters, smodel):
         model, iter = self.__view.get_selection().get_selected()
@@ -311,22 +325,45 @@ class Playlists(gtk.VBox, Browser):
             Playlists.changed(playlist)
             self.activate()
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
         model = view.get_model()
-        filenames = sel.data.split("\x00")
-        songs = filter(None, map(library.get, filenames))
-        if not songs: return True
-        try: path, pos = view.get_dest_row_at_pos(x, y)
-        except TypeError:
-            playlist = Playlist.fromsongs(songs)
-            gobject.idle_add(self.__select_playlist, playlist)
+        if tid == 0:
+            filenames = sel.data.split("\x00")
+            songs = filter(None, map(library.get, filenames))
+            if not songs: return True
+            try: path, pos = view.get_dest_row_at_pos(x, y)
+            except TypeError:
+                playlist = Playlist.fromsongs(songs)
+                gobject.idle_add(self.__select_playlist, playlist)
+            else:
+                playlist = model[path][0]
+                playlist.extend(songs)
+            Playlists.changed(playlist)
+            ctx.finish(True, True, etime)
+            return True
         else:
-            playlist = model[path][0]
-            playlist.extend(songs)
-        Playlists.changed(playlist)
-        ctx.finish(True, True, etime)
+            if tid == 1:
+                uri = sel.get_uris()[0]
+                name = os.path.basename(uri)
+            elif tid == 2:
+                uri, name = sel.data.decode('ucs-2', 'replace').split('\n')
+            else: raise ValueError('invalid tid')
+            name = name or os.path.basename(uri) or _("New Playlist")
+            uri = uri.encode('utf-8')
+            sock = urllib.urlopen(uri)
+            f = NamedTemporaryFile()
+            f.write(sock.read()); f.flush()
+            if uri.lower().endswith('.pls'): playlist = ParsePLS(f.name)
+            elif uri.lower().endswith('.m3u'): playlist = ParseM3U(f.name)
+            else: playlist = None
+            if playlist:
+                if name: playlist.rename(name)
+                Playlists.changed(playlist)
+                ctx.finish(True, False, etime)
+                return True
+        ctx.finish(False, False, etime)
         return True
     
     def __select_playlist(self, playlist):
