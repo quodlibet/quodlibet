@@ -391,14 +391,14 @@ class Playlists(gtk.VBox, Browser):
         try: self.__lists[path][0].rename(newname)
         except ValueError, s:
             qltk.ErrorMessage(
-                widgets.main, _("Unable to rename playlist"), s).run()
+                None, _("Unable to rename playlist"), s).run()
         else: self.__lists[path] = self.__lists[path]
         render.set_property('editable', not self.__main)
 
     def __import(self, activator):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
         chooser = FileChooser(
-            widgets.main, _("Import Playlist"), filt, os.getenv("HOME"))
+            None, _("Import Playlist"), filt, os.getenv("HOME"))
         files = chooser.run()
         chooser.destroy()
         for filename in files:
