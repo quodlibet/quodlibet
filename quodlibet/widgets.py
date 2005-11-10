@@ -70,6 +70,132 @@ class FSInterface(object):
         try: os.unlink(const.PAUSED)
         except EnvironmentError: pass
 
+class FIFOControl(object):
+    def __volume(value):
+        if value[0] == "+":
+            widgets.main.volume.set_value(
+                widgets.main.volume.get_value() + 0.05)
+        elif value == "-":
+            widgets.main.volume.set_value(
+                widgets.main.volume.get_value() - 0.05)
+        else:
+            try: widgets.main.volume.set_value(int(value) / 100.0)
+            except ValueError: pass
+
+    def __shuffle(value):
+        shuffle = widgets.main.shuffle
+        try:
+            shuffle.set_active(
+                ["in-order", "shuffle", "weighted"].index(value))
+        except ValueError:
+            try: shuffle.set_active(int(value))
+            except (ValueError, TypeError):
+                if value in ["t", "toggle"]:
+                    shuffle.set_active(not shuffle.get_active())
+
+    def __repeat(value):
+        repeat = widgets.main.repeat
+        if value in ["0", "off"]: repeat.set_active(False)
+        elif value in ["1", "on"]: repeat.set_active(True)
+        elif value in ["t", "toggle"]:
+            repeat.set_active(not repeat.get_active())
+
+    def __query(value):
+        if widgets.main.browser.can_filter(None):
+            widgets.main.browser.set_text(value)
+            widgets.main.browser.activate()
+
+    def __seek(time):
+        seek_to = player.playlist.get_position()
+        if time[0] == "+": seek_to += util.parse_time(time[1:]) * 1000
+        elif time[0] == "-": seek_to -= util.parse_time(time[1:]) * 1000
+        else: seek_to = util.parse_time(time) * 1000
+        seek_to = min(player.playlist.song.get("~#length", 0) * 1000 -1,
+                      max(0, seek_to))
+        player.playlist.seek(seek_to)
+
+    def __add_file(value):
+        filename = os.path.realpath(value)
+        song = library.add(filename)
+        if song:
+            if song != True: widgets.watcher.added([song])
+            else: song = library[filename]
+            if (song not in widgets.main.playlist.pl
+                and widgets.main.browser.can_filter("filename")):
+                widgets.main.browser.filter(
+                    "filename", [filename])
+            player.playlist.go_to(library[filename])
+            player.playlist.paused = False
+
+    def __add_directory(value):
+        filename = os.path.realpath(value)
+        for added, changed, removed in library.scan([filename]): pass
+        if added: widgets.watcher.added(added)
+        if changed: widgets.watcher.changed(changed)
+        if removed: widgets.watcher.removed(removed)
+        if added or changed or removed: widgets.watcher.refresh()
+        if widgets.main.browser.can_filter(None):
+            widgets.main.browser.set_text(
+                "filename = /^%s/c" % sre.escape(filename))
+            widgets.main.browser.activate()
+            player.playlist.next()
+
+    def __toggle_window():
+        if widgets.main.get_property('visible'): widgets.main.hide()
+        else: widgets.main.show()
+
+    def __rating(value):
+        song = player.playlist.song
+        if song:
+            try: song["~#rating"] = max(0.0, min(1.0, float(value)))
+            except (ValueError, TypeError): pass
+            else: widgets.watcher.changed([song])
+
+    callbacks = {
+        "previous-song": player.playlist.previous,
+        "next-song": player.playlist.next,
+        "play": lambda: setattr(player.playlist, 'paused', False),
+        "pause": lambda: setattr(player.playlist, 'paused', True),
+        "play-pause": lambda: setattr(player.playlist, 'paused',
+                                      not player.playlist.paused),
+        "volume": __volume,
+        "shuffle": __shuffle,
+        "repeat": __repeat,
+        "present": lambda: widgets.main.present(),
+        "query": __query,
+        "seek": __seek,
+        "add-file": __add_file,
+        "add-directory": __add_directory,
+        "hide-window": lambda: widgets.main.hide(),
+        "show-window": lambda: widgets.main.show(),
+        "toggle-window": __toggle_window,
+        "set-rating": __rating,
+        }
+
+    def __init__(self):
+        try:
+            if not os.path.exists(const.CONTROL):
+                util.mkdir(const.DIR)
+                os.mkfifo(const.CONTROL, 0600)
+            fifo = os.open(const.CONTROL, os.O_NONBLOCK)
+            gobject.io_add_watch(fifo, gtk.gdk.INPUT_READ, self.__process)
+        except EnvironmentError: pass
+
+    def __process(self, source, condition):
+        data = os.read(source, 1024*1024).strip()
+        lines = [s.strip() for s in data.split("\n") if s.strip()]
+        try:
+            for command in lines:
+                try:
+                    try: command, arg = command.split(' ', 1)
+                    except: self.callbacks[command]()
+                    else: self.callbacks[command](arg)
+                except:
+                    print "W: Invalid command %s received." % command
+        finally:
+            os.close(source)
+            self.__init__() # Reopen the FIFO
+
 # Choose folders and return them when run.
 class FolderChooser(gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir=None,
@@ -1178,7 +1304,6 @@ class MainWindow(gtk.Window):
 
         self.browser = None
 
-        self.open_fifo()
         self.__keys = MmKeys({"mm_prev": self.__previous_song,
                               "mm_next": self.__next_song,
                               "mm_playpause": self.__play_pause})
@@ -1439,79 +1564,6 @@ class MainWindow(gtk.Window):
         self.__hide_menus()
         self.__hide_headers()
         self.__refresh_size()
-
-    def open_fifo(self):
-        try:
-            if not os.path.exists(const.CONTROL):
-                util.mkdir(const.DIR)
-                os.mkfifo(const.CONTROL, 0600)
-            self.fifo = os.open(const.CONTROL, os.O_NONBLOCK)
-            gobject.io_add_watch(
-                self.fifo, gtk.gdk.INPUT_READ, self.__input_check)
-        except EnvironmentError: pass
-
-    def __input_check(self, source, condition):
-        c = os.read(source, 1)
-        if c == "<": self.__previous_song()
-        elif c == ">": self.__next_song()
-        elif c == "-": self.__play_pause()
-        elif c == ")": player.playlist.paused = False
-        elif c == "|": player.playlist.paused = True
-        elif c == "0": player.playlist.seek(0)
-        elif c == "v":
-            c2 = os.read(source, 3)
-            if c2 == "+":
-                self.volume.set_value(self.volume.get_value() + 0.05)
-            elif c2 == "-":
-                self.volume.set_value(self.volume.get_value() - 0.05)
-            else:
-                try: self.volume.set_value(int(c2) / 100.0)
-                except ValueError: pass
-        elif c == "&":
-            c2 = os.read(source, 1)
-            if c2 in "012": self.shuffle.set_active(int(c2))
-            elif c2 == "t":
-                self.shuffle.set_active(
-                    int(not bool(self.shuffle.get_active())))
-        elif c == "@":
-            c2 = os.read(source, 1)
-            if c2 == "0": self.repeat.set_active(False)
-            elif c2 == "t":
-                self.repeat.set_active(not self.repeat.get_active())
-            else: self.repeat.set_active(True)
-        elif c == "!": self.present()
-        elif c == "q": self.__make_query(os.read(source, 4096))
-        elif c == "s":
-            time = os.read(source, 20)
-            seek_to = player.playlist.get_position()
-            if time[0] == "+": seek_to += util.parse_time(time[1:]) * 1000
-            elif time[0] == "-": seek_to -= util.parse_time(time[1:]) * 1000
-            else: seek_to = util.parse_time(time) * 1000
-            seek_to = min(player.playlist.song["~#length"] * 1000 - 1,
-                          max(0, seek_to))
-            player.playlist.seek(seek_to)
-        elif c == "p":
-            filename = os.read(source, 4096)
-            if library.add(filename): widgets.watcher.added(filename)
-            if filename in library:
-                song = library[filename]
-                if song not in self.playlist.pl:
-                    self.__make_query("filename = %rc" % filename)
-                player.playlist.go_to(library[filename])
-                player.playlist.paused = False
-            else:
-                print to(_("W: Unable to load %s") % filename)
-        elif c == "d":
-            filename = os.read(source, 4096)
-            for added, changed, removed in library.scan([filename]): pass
-            if added: widgets.watcher.added(added)
-            if changed: widgets.watcher.changed(changed)
-            if removed: widgets.watcher.removed(removed)
-            if added or changed or removed: widgets.watcher.refresh()
-            self.__make_query("filename = /^%s/c" % sre.escape(filename))
-
-        os.close(self.fifo)
-        self.open_fifo()
 
     def __update_paused(self, watcher, paused):
         menu = self.ui.get_widget("/Menu/Song/PlayPause")
@@ -2888,9 +2940,10 @@ def init():
     widgets.main = MainWindow(watcher)
     gtk.about_dialog_set_url_hook(website_wrap)
 
-    # These stay alive in the watcher.
+    # These stay alive in the watcher/other callbacks.
     FSInterface(watcher)
     CountManager(watcher, widgets.main.playlist)
+    FIFOControl()
 
     flag = widgets.main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()

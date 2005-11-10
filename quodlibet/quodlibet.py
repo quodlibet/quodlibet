@@ -94,7 +94,7 @@ def control(c):
             print to(_("Unable to write to %s. Removing it.") % const.CONTROL)
             try: os.unlink(const.CONTROL)
             except OSError: pass
-            if c != '!': raise SystemExit(True)
+            if c != 'present': raise SystemExit(True)
         else:
             raise SystemExit
 
@@ -116,11 +116,10 @@ def enable_periodic_save():
     gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
 
 def process_arguments():
-    controls = {"next": ">", "previous": "<", "play": ")",
-                "pause": "|", "play-pause": "-", "volume-up": "v+",
-                "volume-down": "v-", }
-    controls_opt = { "seek": "s", "shuffle": "&",
-                     "repeat": "@", "query": "q", "volume": "v" }
+    controls = ["next", "previous", "play", "pause", "play-pause",
+                "hide-window", "show-window", "toggle-window"]
+    controls_opt = ["seek", "shuffle", "repeat", "query", "volume",
+                    "set-rating"]
 
     from util import OptionParser
     options = OptionParser(
@@ -158,30 +157,33 @@ def process_arguments():
         if len(parts) > 3: return False
         else: return not (False in [p.isdigit() for p in parts])
 
-    validators = {"shuffle": lambda a: a in list("012t"),
-                  "repeat": lambda a: a in list("01t"),
-                  "volume": str.isdigit,
-                  "seek": is_time,
-                  }
+    validators = {
+        "shuffle": ["0", "1", "2", "t" ,"toggle", "in-order", "shuffle",
+                    "weighted"].__contains__,
+        "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
+        "volume": str.isdigit,
+        "seek": is_time,
+        }
 
     opts, args = options.parse()
 
     for command, arg in opts.items():
         if command == "refresh-library": refresh_cache()
-        elif command in controls:
-            control(controls[command])
+        elif command in controls: control(command)
         elif command in controls_opt:
             if command in validators and not validators[command](arg):
                 sys.stderr.write(
                     to(_("E: Invalid argument for '%s'.") % command))
                 sys.stderr.write("\n")
                 raise SystemExit(to(_("E: Try %s --help.") % sys.argv[0]))
-            else:  control(controls_opt[command] + arg)
+            else: control(command + " " + arg)
         elif command == "status": print_status()
+        elif command == "volume-up": control("volume +")
+        elif command == "volume-down": control("volume -")
         elif command == "play-file":
             filename = os.path.abspath(os.path.expanduser(arg))
-            if os.path.isdir(filename): control("d" + filename)
-            else: control("p" + filename)
+            if os.path.isdir(filename): control("add-directory " + filename)
+            else: control("add-file " + filename)
         elif command == "print-playing":
             try: print_playing(args[0])
             except IndexError: print_playing()
@@ -230,7 +232,7 @@ if __name__ == "__main__":
         process_arguments()
         if os.path.exists(const.CONTROL):
             print to(_("Quod Libet is already running."))
-            control('!')
+            control('present')
 
     # Get to the right directory for our data.
     os.chdir(basedir)
