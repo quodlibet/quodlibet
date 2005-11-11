@@ -169,6 +169,11 @@ class Library(dict):
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         songs = self.values()
         for v in self.__masked_files.values(): songs.extend(v.values())
+        # Cold cache start without sorting: 11.9 +/- 0.2s
+        # Cold cache start with sorting: 10.5 +/- 0.1s
+        songs = [(song.get("~filename"), song) for song in songs]
+        songs.sort()
+        songs = [s[1] for s in songs]
         pickle.dump(songs, f, pickle.HIGHEST_PROTOCOL)
         f.close()
         os.rename(fn + ".tmp", fn)
