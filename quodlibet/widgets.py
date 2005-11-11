@@ -152,8 +152,8 @@ class FIFOControl(object):
             else: widgets.watcher.changed([song])
 
     callbacks = {
-        "previous-song": lambda: player.playlist.previous(),
-        "next-song": lambda: player.playlist.next(),
+        "previous": lambda: player.playlist.previous(),
+        "next": lambda: player.playlist.next(),
         "play": lambda: setattr(player.playlist, 'paused', False),
         "pause": lambda: setattr(player.playlist, 'paused', True),
         "play-pause": lambda: setattr(player.playlist, 'paused',
