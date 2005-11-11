@@ -6,20 +6,18 @@ PO_DIR ?= $(PREFIX)/share/locale
 
 all:
 
-po: quodlibet.pot
-	for F in $(ALL_LINGUAS); do make $$F.mo; done
+po: $(addsuffix .mo, $(ALL_LINGUAS))
 
 quodlibet.pot: ../*.py ../formats/*.py ../browsers/*.py
 	intltool-update --pot --gettext-package=$(NAME)
 
 %.po: quodlibet.pot
-	intltool-update --gettext-package=$(NAME) `echo $@ | sed s/.po//`
+	intltool-update --dist --gettext-package=$(NAME) `echo $@ | sed s/.po//`
 
-%.mo: %.po quodlibet.pot
+%.mo: %.po
 	msgfmt -o $@ $<
 
-check:
-	for F in $(ALL_LINGUAS); do make check-$$F; done
+check: $(addprefix check-, $(ALL_LINGUAS))
 
 check-%: %.po
 	msgfmt -c $<
@@ -33,5 +31,7 @@ mo-clean: distclean
 distclean: clean
 	rm -f *~
 
-install-po:
+install-po: po
 	for F in $(ALL_LINGUAS); do mkdir -p $(DESTDIR)$(PO_DIR)/$$F/LC_MESSAGES && install -m 644 $$F.mo $(DESTDIR)$(PO_DIR)/$$F/LC_MESSAGES/$(NAME).mo; done
+
+.PHONY: po check check-% clean mo-clean distclean install-po

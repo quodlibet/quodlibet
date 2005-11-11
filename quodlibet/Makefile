@@ -14,11 +14,16 @@ make-install-dirs:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)
 
+# Failure to build POT/MO files is non-fatal in case there is a clock
+# skew on the user's system and they don't have intltool/gettext installed;
+# then at least the QL install will not fail mysteriously, it will just
+# have (potentially) outdated translations. Ideally any developers
+# installing the SVN version will have intltool and so it will build fine.
 install: make-install-dirs install-exfalso install-quodlibet
 	./quickzip.py quodlibet.zip $(MODULES)
 	install -m 644 quodlibet.zip ql-*.png $(DESTDIR)$(PREFIX)/$(TO)
 	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 $$E $(DESTDIR)$(PREFIX)/$(TO)); done
-	cd po && make install-po DESTDIR=$(DESTDIR)
+	-cd po && make install-po DESTDIR=$(DESTDIR)
 
 install-%: make-install-dirs
 	install -m 755 $*.py $(DESTDIR)$(PREFIX)/$(TO)
