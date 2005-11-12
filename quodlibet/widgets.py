@@ -1857,8 +1857,10 @@ class MainWindow(gtk.Window):
         if browser.background:
             try: bg = config.get("browsers", "background").decode('utf-8')
             except UnicodeError: bg = ""
-            try: songs = filter(parser.parse(bg, SongList.star).search, songs)
-            except parser.error: pass
+            if bg:
+                try: search = parser.parse(bg, SongList.star).search
+                except parser.error: pass
+                else: songs = filter(search, songs)
 
         self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
