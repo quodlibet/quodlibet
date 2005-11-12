@@ -32,6 +32,9 @@ class AudioFile(dict):
     format = "Unknown Audio File"
 
     def __cmp__(self, other):
+        # 338377    4.100    0.000    8.170    0.000 _audio.py:34(__cmp__)
+        # FIXME: In other words, tiny optimizations here will pay off a lot.
+        # We should totally be DSUing with some kind of sortkey attribute.
         if not other: return -1
         return (cmp(self.get("album"), other.get("album")) or
                 cmp(self.get("labelid"), other.get("labelid")) or
@@ -101,7 +104,8 @@ class AudioFile(dict):
         else: return dict.get(self, key, default)
 
     def comma(self, key):
-        v = self(key, "")
+        if "~" in key or key == "title": v = self(key, "")
+        else: v = self.get(key, "")
         if isinstance(v, int): return v
         elif isinstance(v, float): return v
         else: return v.replace("\n", ", ")
