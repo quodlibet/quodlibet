@@ -150,8 +150,6 @@ class AlbumList(Browser, gtk.VBox):
             except KeyError: return False
             else: return True
 
-        def __nonzero__(self): return bool(self.songs)
-
         def __get_covers(self):
             try: get, song = self.__pending_covers.pop()
             except IndexError: return
@@ -240,14 +238,14 @@ class AlbumList(Browser, gtk.VBox):
 
         def __compare_title(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
+            if a1 is None or a2 is None: return cmp(a1, a2)
             elif not a1.title: return 1
             elif not a2.title: return -1
             else: return cmp(a1.title, a2.title) or cmp(a1.labelid, a2.labelid)
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
+            if a1 is None or a2 is None: return cmp(a1, a2)
             elif a1.title == "": return 1
             elif a2.title == "": return -1
             else: return (cmp(a1.people and a1.people[0],
@@ -258,7 +256,7 @@ class AlbumList(Browser, gtk.VBox):
 
         def __compare_date(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
+            if a1 is None or a2 is None: return cmp(a1, a2)
             elif a1.date == "": return 1
             elif a2.date == "": return -1
             else: return (cmp(a1.date, a2.date) or
@@ -401,7 +399,7 @@ class AlbumList(Browser, gtk.VBox):
         def update(model, path, iter):
             album = model[iter][0]
             if album is not None and album.title in changed:
-                if album:
+                if album.songs:
                     to_change.append((path, iter))
                     album.finalize()
                 else: to_remove.append(iter)
@@ -445,8 +443,9 @@ class AlbumList(Browser, gtk.VBox):
         if not model or not rows: return []
         albums = [model[row][0] for row in rows]
         if None in albums: albums = [row[0] for row in model if row[0]]
-        return list(
-            reduce(set.union, [album.songs for album in albums], set()))
+        songs = set()
+        map(songs.update, [album.songs for album in albums])
+        return list(songs)
 
     def __properties(self, activator, view):
         songs = self.__get_selected_songs(view.get_selection())
@@ -516,7 +515,7 @@ class AlbumList(Browser, gtk.VBox):
         model = view.get_model()
         first = None
         for i, row in enumerate(iter(model)):
-            if row[0] and row[0].title in values:
+            if row[0] is not None and row[0].title in values:
                 selection.select_path(i)
                 first = first or i
         if first:
@@ -540,7 +539,7 @@ class AlbumList(Browser, gtk.VBox):
             model = selection.get_tree_view().get_model()
             first = None
             for i, row in enumerate(iter(model)):
-                if row[0] and row[0].title in albums:
+                if row[0] is not None and row[0].title in albums:
                     selection.select_path(i)
                     first = first or i
 
@@ -552,7 +551,7 @@ class AlbumList(Browser, gtk.VBox):
         model = view.get_model()
         values = player.playlist.song.list("album")
         for i, row in enumerate(iter(model)):
-            if row[0] and row[0].title in values:
+            if row[0] is not None and row[0].title in values:
                 view.scroll_to_cell(i, use_align=True, row_align=0.5)
                 break
 
