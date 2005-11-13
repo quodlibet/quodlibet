@@ -821,7 +821,7 @@ class QLTrayIcon(HIGTrayIcon):
             7: lambda *args: player.playlist.previous()
             }
 
-        p = gtk.gdk.pixbuf_new_from_file("quodlibet.png")
+        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
         HIGTrayIcon.__init__(self, p, window, cbs)
 
     def __set_paused(self, watcher, menu, paused):
