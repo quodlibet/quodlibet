@@ -40,6 +40,7 @@ if __name__ == "__main__":
     import pygtk
     pygtk.require('2.0')
     import gtk, qltk, efwidgets
+    gtk.window_set_default_icon_from_file("exfalso.png")
     w = efwidgets.ExFalsoWindow(qltk.SongWatcher(), args[0])
     w.connect('destroy', gtk.main_quit)
     w.show_all()

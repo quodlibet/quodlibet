@@ -281,11 +281,6 @@ class ExFalsoWindow(gtk.Window):
     def __init__(self, watcher, dir=None):
         gtk.Window.__init__(self)
         self.set_title("Ex Falso")
-        icon_theme = gtk.icon_theme_get_default()
-        p = gtk.gdk.pixbuf_new_from_file("exfalso.png")
-        gtk.icon_theme_add_builtin_icon(const.ICON, 64, p)
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         self.set_border_width(12)
         self.set_default_size(700, 500)
         self.add(gtk.HPaned())

@@ -254,7 +254,6 @@ class PluginWindow(gtk.Window):
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
-        self.set_icon_name(const.ICON)
 
         hbox = gtk.HBox(spacing=12)        
         vbox = gtk.VBox(spacing=6)
@@ -409,15 +408,10 @@ class AboutWindow(gtk.AboutDialog):
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
         self.set_translator_credits(_('translator-credits'))
-        # The icon looks pretty ugly at this size.
-        #self.set_logo_icon_name(const.ICON)
         self.set_website("http://www.sacredchao.net/quodlibet")
         self.set_copyright(
             "Copyright © 2004-2005 Joe Wreschnig, Michael Urman, & others\n"
             "<quodlibet@lists.sacredchao.net>")
-        icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(const.ICON, 64,
-            gtk.ICON_LOOKUP_USE_BUILTIN))
         gtk.AboutDialog.run(self)
         self.destroy()
 
@@ -683,7 +677,6 @@ class PreferencesWindow(gtk.Window):
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
-        self.set_icon_name(const.ICON)
 
         self.add(qltk.Notebook())
         for Page in [self.SongList, self.Browsers, self.Player, self.Library]:
@@ -828,10 +821,7 @@ class QLTrayIcon(HIGTrayIcon):
             7: lambda *args: player.playlist.previous()
             }
 
-        icon_theme = gtk.icon_theme_get_default()
-        p = icon_theme.load_icon(
-            const.ICON, 16, gtk.ICON_LOOKUP_USE_BUILTIN)
-
+        p = gtk.gdk.pixbuf_new_from_file("quodlibet.png")
         HIGTrayIcon.__init__(self, p, window, cbs)
 
     def __set_paused(self, watcher, menu, paused):
@@ -1205,12 +1195,6 @@ class MainWindow(gtk.Window):
 
         tips = gtk.Tooltips()
         self.set_title("Quod Libet")
-
-        icon_theme = gtk.icon_theme_get_default()
-        p = gtk.gdk.pixbuf_new_from_file("quodlibet.png")
-        gtk.icon_theme_add_builtin_icon(const.ICON, 64, p)
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
 
         self.set_default_size(
             *map(int, config.get('memory', 'size').split()))
@@ -2824,9 +2808,6 @@ class LibraryBrowser(gtk.Window):
         gtk.Window.__init__(self)
         self.set_border_width(12)
         self.set_title(_("Library Browser"))
-        icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
 
         view = SongList()
         from songlist import PlaylistModel
@@ -2914,6 +2895,8 @@ def init():
     # Translators: Only translate this if GTK does so incorrectly.
     # or missing. Don't literally translate media/next/previous/play/pause.
     const.SM_PAUSE = _('gtk-media-pause')
+
+    gtk.window_set_default_icon_from_file("quodlibet.png")
 
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")

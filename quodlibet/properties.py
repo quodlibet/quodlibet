@@ -1664,9 +1664,6 @@ class SongProperties(gtk.Window):
     def __init__(self, songs, watcher, initial=1):
         gtk.Window.__init__(self)
         self.set_default_size(300, 430)
-        icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            const.ICON, 64, gtk.ICON_LOOKUP_USE_BUILTIN))
         notebook = qltk.Notebook()
         pages = [self.Information(self, library=True)]
         pages.extend([Ctr(self, watcher) for Ctr in
