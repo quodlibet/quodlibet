@@ -152,6 +152,15 @@ by <~people>>'''
         # iter 1: prerender the whole thing, including composite; then
         # recomposite for alpha effect
 
+        mask = gtk.gdk.Pixmap(darea.window, w, h, 1)
+        maskoff = gtk.gdk.GC(mask)
+        maskoff.set_colormap(darea.window.get_colormap())
+        maskoff.set_foreground(gtk.gdk.Color(pixel=0))
+        mask.draw_rectangle(maskoff, True, 0, 0, w, h)
+        maskon = maskoff
+        del maskoff
+        maskon.set_foreground(gtk.gdk.Color(pixel=-1))
+
         # panel background overlay
         dareacmap = darea.get_colormap()
         img = gtk.gdk.Pixmap(darea.window, w, h)
@@ -161,6 +170,7 @@ by <~people>>'''
         if self.conf.fill is not None:
             bg_gc.set_foreground(dareacmap.alloc_color(self.conf.fill[:7]))
             img.draw_rectangle(bg_gc, True, 0, 0, w, h)
+            mask.draw_rectangle(maskon, True, 0, 0, w, h)
 
         # composite with root
         try: alpha = int(self.conf.fill[7:], 16)
@@ -177,6 +187,7 @@ by <~people>>'''
         if self.conf.bcolor is not None:
             bg_gc.set_foreground(dareacmap.alloc_color(self.conf.bcolor))
             img.draw_rectangle(bg_gc, False, 0, 0, w - 1, h - 1)
+            mask.draw_rectangle(maskon, False, 0, 0, w - 1, h - 1)
 
         # text
         fg_gc = gtk.gdk.GC(img)
@@ -188,6 +199,8 @@ by <~people>>'''
         if self.conf.shadow is not None:
             fg_gc.set_foreground(dareacmap.alloc_color(self.conf.shadow))
             img.draw_layout(fg_gc, tx + 2, ty + 2, layout)
+            if self.conf.fill is None:
+                mask.draw_layout(maskon, tx + 2, ty + 2, layout)
 
         if self.conf.outline is not None:
             fg_gc.set_foreground(dareacmap.alloc_color(self.conf.outline))
@@ -195,9 +208,13 @@ by <~people>>'''
                           ( 0,-1),          ( 0, 1),
                           ( 1,-1), ( 1, 0), ( 1, 1)]:
                     img.draw_layout(fg_gc, tx + dx, ty + dy, layout)
+                    if self.conf.fill is None:
+                        mask.draw_layout(maskon, tx + dx, ty + dy, layout)
 
         fg_gc.set_foreground(dareacmap.alloc_color(self.conf.text))
         img.draw_layout(fg_gc, tx, ty, layout)
+        if self.conf.fill is None:
+            mask.draw_layout(maskon, tx, ty, layout)
 
         # cover
         if self.__cover is not None:
@@ -207,16 +224,23 @@ by <~people>>'''
                 fg_gc.set_foreground(dareacmap.alloc_color(self.conf.shadow))
                 img.draw_rectangle(bg_gc, True,
                         self.__coverx + 2, self.__covery + 2, cw, ch)
+                mask.draw_rectangle(maskon, True,
+                        self.__coverx + 2, self.__covery + 2, cw, ch)
 
             if self.conf.outline is not None:
                 fg_gc.set_foreground(dareacmap.alloc_color(self.conf.outline))
                 img.draw_rectangle(bg_gc, False,
                         self.__coverx - 1, self.__covery - 1, cw + 1, ch + 1)
+                mask.draw_rectangle(maskon, False,
+                        self.__coverx - 1, self.__covery - 1, cw + 1, ch + 1)
 
             img.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL],
                     self.__cover, 0, 0, self.__coverx, self.__covery)
+            mask.draw_rectangle(maskon, True,
+                    0, 0, self.__coverx, self.__covery)
 
         self.__img = img
+        self.__window.shape_combine_mask(mask, 0, 0)
 
     def render(self):
         w = self.__width
