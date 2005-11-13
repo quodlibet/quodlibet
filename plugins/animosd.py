@@ -54,7 +54,7 @@ by <~people>>'''
         geom = gtk.gdk.Screen.get_monitor_geometry(self.__screen, 0)
         self.__screenwidth = geom.width
         self.__screenheight = geom.height
-        self.__coverwidth = min(120, self.__screenwidth/8)
+        self.__coverwidth = min(120, self.__screenwidth // 8)
         self.__width = self.__height = self.__coverwidth + 2 * self.conf.border
         self.__delayhide = None
 
@@ -101,10 +101,10 @@ by <~people>>'''
             try:
                 self.__cover = gtk.gdk.pixbuf_new_from_file_at_size(
                     cover.name, self.__coverwidth, self.__coverwidth)
-                self.__coverx = self.conf.border + (
-                        self.__coverwidth - self.__cover.get_width())/2
-                self.__covery = self.conf.border + (
-                        self.__coverwidth - self.__cover.get_height())/2
+                cw = self.__cover.get_width()
+                ch = self.__cover.get_height()
+                self.__coverx = self.conf.border + (self.__coverwidth - cw) // 2
+                self.__covery = self.conf.border + (self.__coverwidth - ch) // 2
             except:
                 from traceback import print_exc; print_exc()
                 self.__cover = None
@@ -126,6 +126,7 @@ by <~people>>'''
             w += self.__coverwidth + self.conf.border
         h = max(self.__cover and self.__coverwidth or 0,
                 self.__textsize[1]) + 2 * self.conf.border
+        self.__covery = (h - ch) // 2
         darea = self.__darea
         darea.set_size_request(w, h)
         self.__width = w
@@ -218,8 +219,6 @@ by <~people>>'''
 
         # cover
         if self.__cover is not None:
-            cw = self.__cover.get_width()
-            ch = self.__cover.get_height()
             if self.conf.shadow is not None:
                 fg_gc.set_foreground(dareacmap.alloc_color(self.conf.shadow))
                 img.draw_rectangle(bg_gc, True,
@@ -241,6 +240,8 @@ by <~people>>'''
 
         self.__img = img
         self.__window.shape_combine_mask(mask, 0, 0)
+        self.__window.move(x, y)
+        self.__window.resize(w, h)
 
     def render(self):
         w = self.__width
@@ -266,8 +267,6 @@ by <~people>>'''
 
         darea.window.set_back_pixmap(img, False)
         darea.queue_draw_area(0, 0, w, h)
-        self.__window.move(x, y)
-        self.__window.resize(w, h)
 
         # has it finished hiding?
         if self.__step <= 0:
