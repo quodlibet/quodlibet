@@ -178,11 +178,10 @@ by <~people>>'''
         except (ValueError,TypeError): alpha = 0
         buf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, w, h)
         buf.get_from_drawable(img, img.get_colormap(), 0, 0, 0, 0, w, h)
-        out = self.__bg.copy()
         if self.conf.fill is not None: # else just use pure background
-            buf.composite(out, 0, 0, w, h, 0, 0, 1, 1,
-                    gtk.gdk.INTERP_NEAREST, alpha)
-        img.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL], out, 0, 0, 0, 0)
+            self.__bg.composite(buf, 0, 0, w, h, 0, 0, 1, 1,
+                    gtk.gdk.INTERP_NEAREST, 255-alpha)
+        img.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL], buf, 0, 0, 0, 0)
 
         # border
         if self.conf.bcolor is not None:
@@ -253,15 +252,14 @@ by <~people>>'''
 
         if 0 < self.__step < 255:
             # recomposite
-            pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, w, h)
-            pixbuf.get_from_drawable(self.__img, self.__img.get_colormap(),
+            buf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, w, h)
+            buf.get_from_drawable(self.__img, self.__img.get_colormap(),
                     0, 0, 0, 0, w, h)
-            out = self.__bg.copy()
-            pixbuf.composite(out, 0, 0, w, h,
-                    0, 0, 1, 1, gtk.gdk.INTERP_NEAREST, self.__step)
+            self.__bg.composite(buf, 0, 0, w, h,
+                    0, 0, 1, 1, gtk.gdk.INTERP_NEAREST, 255-self.__step)
             img = gtk.gdk.Pixmap(darea.window, w, h)
             img.draw_pixbuf(darea.style.fg_gc[gtk.STATE_NORMAL],
-                    out, 0, 0, 0, 0)
+                    buf, 0, 0, 0, 0)
         else:
             img = self.__img
 
