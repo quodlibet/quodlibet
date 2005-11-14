@@ -222,6 +222,20 @@ class TestWLW(TestCase):
     def tearDown(self):
         self.wlw.destroy()
 
+class TGetTopParent(TestCase):
+    def test_gtp(self):
+        w = gtk.HBox(); l = gtk.Label()
+        self.failUnlessEqual(qltk.get_top_parent(w), w)
+        self.failUnlessEqual(qltk.get_top_parent(l), l)
+        w.destroy(); l.destroy()
+
+    def test_gtp_packed(self):
+        w = gtk.HBox(); l = gtk.Label(); w.pack_start(l)
+        self.failUnlessEqual(qltk.get_top_parent(w), w)
+        self.failUnlessEqual(qltk.get_top_parent(l), w)
+        w.destroy(); l.destroy()
+registerCase(TGetTopParent)
+
 registerCase(TestNotebook)
 registerCase(TestComboSave)
 registerCase(TestWLW)

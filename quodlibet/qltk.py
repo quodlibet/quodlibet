@@ -874,3 +874,7 @@ class PopupVSlider(PopupSlider):
  
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         return ((x + (w - ww)//2), y + h + pad)
+
+def get_top_parent(widget):
+    while widget.parent is not None: widget = widget.parent
+    return widget
