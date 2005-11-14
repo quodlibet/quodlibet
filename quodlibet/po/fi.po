@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-13 19:04-0600\n"
+"POT-Creation-Date: 2005-11-14 15:11-0600\n"
 "PO-Revision-Date: 2005-11-06 0:27+0200\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish\n"
@@ -488,7 +488,7 @@ msgid_plural "%d years"
 msgstr[0] "%d vuosi"
 msgstr[1] "%d vuotta"
 
-#: ../formats/_audio.py:102 ../properties.py:333 ../properties.py:340
+#: ../formats/_audio.py:101 ../properties.py:333 ../properties.py:340
 #: ../properties.py:365 ../browsers/paned.py:98
 msgid "Unknown"
 msgstr "Tuntematon"
@@ -1042,15 +1042,15 @@ msgstr ""
 "Kappaleen <b>%s</b> poistaminen epäonnistui. Tiedostoa ei mahdollisesti ole "
 "olemassa, tai sinulla ei ole oikeuksia sen poistamiseen."
 
-#: ../widgets.py:2810
+#: ../widgets.py:2809
 msgid "Library Browser"
 msgstr "Kirjaston selain"
 
-#: ../widgets.py:2878
+#: ../widgets.py:2877
 msgid "Unable to start a web browser"
 msgstr "Web-selainta ei voi käynnistää"
 
-#: ../widgets.py:2879
+#: ../widgets.py:2878
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1060,41 +1060,41 @@ msgstr ""
 
 #. Translators: Only translate this if GTK's stock item is incorrect
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2887
+#: ../widgets.py:2886
 msgid "gtk-media-next"
 msgstr "S_euraava"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2890
+#: ../widgets.py:2889
 msgid "gtk-media-previous"
 msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2894
+#: ../widgets.py:2893
 msgid "gtk-media-play"
 msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2897
+#: ../widgets.py:2896
 msgid "gtk-media-pause"
 msgstr ""
 
-#: ../widgets.py:2955
+#: ../widgets.py:2954
 msgid "Saving song library."
 msgstr "Tallennetaan musiikkikirjasto."
 
-#: ../widgets.py:2959
+#: ../widgets.py:2958
 msgid "Unable to save library"
 msgstr "Kirjastoa ei voi tallentaa"
 
-#: ../widgets.py:2963
+#: ../widgets.py:2962
 msgid "No audio device found"
 msgstr "Äänilaitetta ei löydy"
 
-#: ../widgets.py:2964
+#: ../widgets.py:2963
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1755,39 +1755,20 @@ msgstr "Kanava on jo kirjastossasi."
 msgid "_Internet Radio"
 msgstr "_Internet-radio"
 
-#~ msgid "W: Unable to load %s"
-#~ msgstr "VAROITUS: Tiedoston %s lataaminen ei onnistu"
+#: ../exfalso.desktop.in.h:1
+#, fuzzy
+msgid "Audio tag editor"
+msgstr "äänitiedostojen tunniste-editori"
 
-#~ msgid "_Play"
-#~ msgstr "_Soita"
+#: ../exfalso.desktop.in.h:2
+#, fuzzy
+msgid "Edit tags in your audio files"
+msgstr "Syötä äänitiedoston sijainti"
 
-#~ msgid "Rating"
-#~ msgstr "Arvosana"
+#: ../quodlibet.desktop.in.h:1
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "Kuuntele, selaa tai muokkaa äänikokoelmaasi"
 
-#~ msgid "_Pause"
-#~ msgstr "_Tauko"
-
-#~ msgid "_New/Edit Playlist..."
-#~ msgstr "_Uusi/muokkaa soittolistaa..."
-
-#~ msgid ""
-#~ "Enter a name for the new playlist. If it already exists it will be opened "
-#~ "for editing."
-#~ msgstr ""
-#~ "Syötä uuden soittolistan nimi. Jos lista on jo olemassa, se avataan "
-#~ "muokattavaksi."
-
-#~ msgid "All songs"
-#~ msgstr "Kaikki kappaleet"
-
-#~ msgid "Edit the current playlist"
-#~ msgstr "Muokkaa nykyistä soittolistaa"
-
-#~ msgid "Refresh the current playlist"
-#~ msgstr "Virkistä nykyinen soittolista"
-
-#~ msgid "Invalid Pattern"
-#~ msgstr "Hakukaava ei kelpaa"
-
-#~ msgid "by %s"
-#~ msgstr "%s"
+#: ../quodlibet.desktop.in.h:2
+msgid "Music Player"
+msgstr "Musiikkisoitin"

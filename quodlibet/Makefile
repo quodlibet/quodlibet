@@ -25,12 +25,12 @@ install: make-install-dirs install-exfalso install-quodlibet
 	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 $$E $(DESTDIR)$(PREFIX)/$(TO)); done
 	-cd po && make install-po DESTDIR=$(DESTDIR)
 
-install-%: make-install-dirs
+install-%: make-install-dirs %.desktop
 	install -m 755 $*.py $(DESTDIR)$(PREFIX)/$(TO)
 	install -m 644 $*.1 $(DESTDIR)$(PREFIX)/share/man/man1/$*.1
 	install -D -m 644 $*.png $(DESTDIR)$(PREFIX)/share/pixmaps/$*.png
 	install -m 644 $*.png $(DESTDIR)$(PREFIX)/$(TO)
-	install -D -m 644 $*.desktop $(DESTDIR)$(PREFIX)/share/applications/$*.desktop
+	-install -D -m 644 $*.desktop $(DESTDIR)$(PREFIX)/share/applications/$*.desktop
 	ln -sf ../$(TO)/$*.py $(DESTDIR)$(PREFIX)/bin/$*
 
 clean:
@@ -41,6 +41,10 @@ distclean: clean
 	rm -f *~ */*~ \#* *.bak *.orig $(NAME).gladep
 	for D in $(SUBDIRS); do cd $$D && make distclean && cd ..; done
 
+superclean: distclean
+	rm -f *.desktop
+	cd po && make mo-clean
+
 extensions: $(EXTENSIONS)
 
 %.so: %
@@ -49,3 +53,8 @@ extensions: $(EXTENSIONS)
 
 po-data:
 	cd po && make po
+
+%.desktop: %.desktop.in po/*.po
+	-intltool-merge -d po $< $@
+
+.PHONY: all make-install-dirs install install-% clean distclean po-data

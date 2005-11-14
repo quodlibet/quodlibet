@@ -16,3 +16,5 @@ browsers/playlists.py
 browsers/search.py
 browsers/filesystem.py
 browsers/iradio.py
+exfalso.desktop.in
+quodlibet.desktop.in

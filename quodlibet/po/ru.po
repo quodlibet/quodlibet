@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-13 19:04-0600\n"
+"POT-Creation-Date: 2005-11-14 15:11-0600\n"
 "PO-Revision-Date: 2005-11-05 11:23+0500\n"
 "Last-Translator: Sergey Fedoseev <fedoseev.sergey@gmail.com>\n"
 "Language-Team:  <en@li.org>\n"
@@ -501,7 +501,7 @@ msgstr[0] "%d год"
 msgstr[1] "%d года"
 msgstr[2] "%d лет"
 
-#: ../formats/_audio.py:102 ../properties.py:333 ../properties.py:340
+#: ../formats/_audio.py:101 ../properties.py:333 ../properties.py:340
 #: ../properties.py:365 ../browsers/paned.py:98
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -1067,15 +1067,15 @@ msgstr ""
 "Не удалось удалить <b>%s</b>. Возможно файл не существует, или вы не имеете "
 "прав на его удаление."
 
-#: ../widgets.py:2810
+#: ../widgets.py:2809
 msgid "Library Browser"
 msgstr "Окно просмотра библиотеки"
 
-#: ../widgets.py:2878
+#: ../widgets.py:2877
 msgid "Unable to start a web browser"
 msgstr "Не удалось запустить веб-браузер"
 
-#: ../widgets.py:2879
+#: ../widgets.py:2878
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1085,41 +1085,41 @@ msgstr ""
 
 #. Translators: Only translate this if GTK's stock item is incorrect
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2887
+#: ../widgets.py:2886
 msgid "gtk-media-next"
 msgstr "Сле_дующая"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2890
+#: ../widgets.py:2889
 msgid "gtk-media-previous"
 msgstr "_Предыдущая"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2894
+#: ../widgets.py:2893
 msgid "gtk-media-play"
 msgstr "_Воспроизведение"
 
 #. Translators: Only translate this if GTK does so incorrectly.
 #. or missing. Don't literally translate media/next/previous/play/pause.
-#: ../widgets.py:2897
+#: ../widgets.py:2896
 msgid "gtk-media-pause"
 msgstr "gtk-media-pause"
 
-#: ../widgets.py:2955
+#: ../widgets.py:2954
 msgid "Saving song library."
 msgstr "Сохранение библиотеки."
 
-#: ../widgets.py:2959
+#: ../widgets.py:2958
 msgid "Unable to save library"
 msgstr "Не удалось сохранить библиотеку"
 
-#: ../widgets.py:2963
+#: ../widgets.py:2962
 msgid "No audio device found"
 msgstr "Не найдено аудио-устройство"
 
-#: ../widgets.py:2964
+#: ../widgets.py:2963
 msgid ""
 "Quod Libet was unable to open your audio device. Often this means another "
 "program is using it, or your audio drivers are not configured.\n"
@@ -1790,5 +1790,18 @@ msgstr "Эта станция уже существует в вашей фоно
 msgid "_Internet Radio"
 msgstr "_Интернет-радио"
 
-#~ msgid "W: Unable to load %s"
-#~ msgstr "W: Не удалось загрузить %s"
+#: ../exfalso.desktop.in.h:1
+msgid "Audio tag editor"
+msgstr "Программа-редактор аудио-тегов"
+
+#: ../exfalso.desktop.in.h:2
+msgid "Edit tags in your audio files"
+msgstr "Программа для редактирования тегов аудио-файлов"
+
+#: ../quodlibet.desktop.in.h:1
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "Программа для прослушивания и управления аудио-коллекцией"
+
+#: ../quodlibet.desktop.in.h:2
+msgid "Music Player"
+msgstr "Музыкальный проигрыватель"
