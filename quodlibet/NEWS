@@ -5,7 +5,7 @@ may require you to re-add any songs in the library.
 Reloading your library after upgrading is always a good idea (though
 it hasn't strictly been necessary since 0.10).
 
-0.15 - 
+0.15 - Maybe I will.
  * An 'artist' tag can be stored in the library for MODs. (#277)
  * 'All Albums' remains on the album list after a search. (#282)
  * The Play Queue displays its total time and has a clear button. (#297, #304)
@@ -24,6 +24,7 @@ it hasn't strictly been necessary since 0.10).
    * M3U and PLS playlists (along with their songs) can be imported.
    * The interface is much more attractive.
  * Drag-and-drop is generally more usable, faster, and attractive.
+ * Many optimizations, especially during startup.
  * Updated translations:
    * Russian, by Sergey Fedoseev.
    * Galician, by Johám-Luís Miguéns Vila.
