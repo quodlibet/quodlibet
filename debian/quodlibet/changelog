@@ -4,7 +4,7 @@ quodlibet (0.15-1) unstable; urgency=low
     * Properly errors when no pipeline is found. (Closes: #337009)
   * Depend on a gstreamer0.8-audiosink.
 
- -- Joe Wreschnig <piman@debian.org>
+ -- Joe Wreschnig <piman@debian.org>  Sun, 13 Nov 2005 19:12:15 -0600
 
 quodlibet (0.14-1) unstable; urgency=low
 
