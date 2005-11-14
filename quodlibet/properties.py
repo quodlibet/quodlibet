@@ -1511,7 +1511,11 @@ class SongProperties(gtk.Window):
                 model.append(row=[song, basename, newname])
             preview.set_sensitive(False)
             save.set_sensitive(bool(combo.child.get_text()))
-            self.set_sensitive(not filter(lambda s: not s.local, songs))
+            for song in songs:
+                if not song.is_file:
+                    self.set_sensitive(False)
+                    break
+            else: self.set_sensitive(True)
 
     class TrackNumbers(gtk.VBox):
         def __init__(self, prop, watcher):

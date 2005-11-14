@@ -14,7 +14,9 @@ if sys.version_info < (2, 4): from sets import Set as set
 extensions = []
 
 class RemoteFile(AudioFile):
-    local = False
+    is_file = False
+    fill_metadata = True
+
     format = "Remote File"
 
     def __init__(self, uri):

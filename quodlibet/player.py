@@ -143,17 +143,11 @@ class PlaylistPlayer(object):
             gobject.idle_add(self.__get_song)
 
     def __tag(self, pipeline, source, tags):
-        # If the song isn't a local file, we need to fill in its
-        # metadata as best we can, via what GStreamer gives us.
-        if self.song and not self.song.local:
-            # For streams, we shouldn't modify the original file since
-            # it has the tags the user gave us, and the ones GSt is
-            # giving us are probably for the song, not the stream.
-            # So create a proxy to use instead.
-            if self.song.stream:
+        if self.song and self.song.fill_metadata:
+            if self.song.multisong:
                 proxy = type(self.song)(self.song["~filename"])
+                proxy.multisong = False
                 proxy.update(self.song)
-            # Otherwise, our proxy is the song itself.
             else: proxy = self.song
 
             changed = False
@@ -182,14 +176,15 @@ class PlaylistPlayer(object):
                     if proxy.get(k) == value: continue
                     # If the title changes for a stream, we want to change
                     # *only* the proxy.
-                    elif k == "title" and self.song.stream: proxy[k] = value
+                    elif k == "title" and self.song.multisong:
+                        proxy[k] = value
                     # Otherwise, if any other tag changes, or the song isn't
                     # a stream, change the actual song.
                     else: self.song[k] = value
                     changed = True
 
             if changed:
-                if self.song.stream: self.info.song_started(proxy)
+                if self.song.multisong: self.info.song_started(proxy)
                 else: self.info.changed([proxy])
 
     def reset(self):

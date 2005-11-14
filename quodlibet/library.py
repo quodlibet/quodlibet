@@ -215,7 +215,7 @@ class Library(dict):
                 song["~#rating"] /= 4.0
 
             if "~filename" not in song: continue # library corruption
-            elif song.local:
+            elif song.is_file:
                 if not formats.supported(song):
                     removed += 1
                     continue

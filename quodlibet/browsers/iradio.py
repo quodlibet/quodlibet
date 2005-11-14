@@ -32,7 +32,9 @@ from widgets import widgets
 STATIONS = os.path.join(const.DIR, "stations")
 
 class IRFile(RemoteFile):
-    local = False
+    multisong = True
+    can_add = False
+
     format = "Radio Station"
 
     __CAN_CHANGE = "title artist grouping".split()

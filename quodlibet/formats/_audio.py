@@ -19,15 +19,10 @@ MIGRATE = "~#playcount ~#lastplayed ~#added ~#skipcount ~#rating".split()
 PEOPLE = "artist author composer performer lyricist arranger conductor".split()
 
 class AudioFile(dict):
-    # This is true if the file is file Python can use "local" functions
-    # with. If it's false, queue and library management and renaming
-    # are disabled.
-    local = True
-
-    # This is true if the player should send "fake" song-started events
-    # over the course of the song (currently whenever it finds a new tag,
-    # but potentially at other times).
-    stream = False
+    fill_metadata = False
+    multisong = False
+    can_add = True
+    is_file = True
 
     format = "Unknown Audio File"
 
@@ -173,7 +168,7 @@ class AudioFile(dict):
     def sanitize(self, filename=None):
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
-        if self.local:
+        if self.is_file:
             self["~filename"] = os.path.realpath(self["~filename"])
             # Find mount point (terminating at "/" if necessary)
             head = self["~filename"]
@@ -184,7 +179,6 @@ class AudioFile(dict):
                 head = head or "/"
                 if os.path.ismount(head): self["~mountpoint"] = head
         else: self["~mountpoint"] = "/"
-
 
         # Fill in necessary values.
         self.setdefault("~#lastplayed", 0)

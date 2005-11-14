@@ -232,13 +232,13 @@ class CountManager(object):
         watcher.connect('song-started', self.__start)
 
     def __start(self, watcher, song):
-        if song is not None and song.stream:
+        if song is not None and song.multisong:
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] = song.get("~#playcount", 0) + 1
             watcher.changed([song])
 
     def __end(self, watcher, song, ended, pl):
-        if song is None or song.stream: return
+        if song is None or song.multisong: return
         elif not ended:
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] = song.get("~#playcount", 0) + 1
@@ -2262,16 +2262,16 @@ class SongList(qltk.HintedTreeView):
         buttons = []
 
         in_lib = True
-        streams = False
-        local = True
-        allinqueue = True
+        can_add = False
+        is_file = True
         for song in songs:
             if song.get("~filename") not in library: in_lib = False
-            if song.stream: streams = True
-            if not song.local: local = False
+            if song.can_add: streams = False
+            if not song.is_file: is_file = False
 
         b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
         menu.append(b)
+        b.set_sensitive(can_add)
 
         submenu = gtk.Menu()
         i = gtk.MenuItem(_("_New Playlist"))
@@ -2288,7 +2288,7 @@ class SongList(qltk.HintedTreeView):
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
         buttons.append(b)
-        b.set_sensitive(not streams)
+        b.set_sensitive(can_add)
 
         menu.append(gtk.SeparatorMenuItem())
 
@@ -2302,7 +2302,7 @@ class SongList(qltk.HintedTreeView):
         b.connect('activate', self.__delete, songs)
         menu.append(b)
         buttons.append(b)
-        b.set_sensitive(local)
+        b.set_sensitive(is_file)
 
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, widgets.watcher)
@@ -2397,7 +2397,7 @@ class SongList(qltk.HintedTreeView):
         model, paths = self.get_selection().get_selected_rows()
         if tid == 1:
             songs = [model[path][0] for path in paths
-                     if not model[path][0].stream]
+                     if model[path][0].can_add]
             added = filter(library.add_song, songs)
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
@@ -2493,7 +2493,7 @@ class SongList(qltk.HintedTreeView):
         widgets.watcher.removed(songs)
 
     def __enqueue(self, item, songs):
-        songs = filter(lambda s: not s.stream, songs)
+        songs = filter(lambda s: s.can_add, songs)
         if songs:
             added = filter(library.add_song, songs)
             widgets.main.playlist.enqueue(songs)

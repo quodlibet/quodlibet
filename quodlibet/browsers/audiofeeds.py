@@ -74,6 +74,7 @@ class Feed(list):
         for uri, entry in entries:
             if uri in uris:
                 song = RemoteFile(uri)
+                song.fill_metadata = False
                 if entry.title: song["title"] = entry.title
                 if entry.modified_parsed:
                     song["date"] = "%04d-%02d-%02d" % entry.modified_parsed[:3]
