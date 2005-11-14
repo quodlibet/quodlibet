@@ -2615,12 +2615,11 @@ class SongList(qltk.HintedTreeView):
             elif tag == "~#disc": tag = "album"
             elif tag == "~length": tag = "~#length"
             elif tag == "~album~part": tag = "album"
-            if tag != "album":
-                if reverse:
-                    songs.sort(lambda b, a: (cmp(a(tag), b(tag)) or cmp(a, b)))
-                else:
-                    songs.sort(lambda a, b: (cmp(a(tag), b(tag)) or cmp(a, b)))
-            else: songs.sort()
+
+            songs = [(song(tag), song.sort_key, song) for song in songs]
+            songs.sort()
+            if reverse: songs.reverse()
+            songs = [song[2] for song in songs]
         else:
             self.set_sort_by(None, refresh=False)
 

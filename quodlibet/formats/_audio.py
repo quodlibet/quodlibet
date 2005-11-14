@@ -31,18 +31,17 @@ class AudioFile(dict):
 
     format = "Unknown Audio File"
 
+    def __sort_key(self):
+        return (self.get("album"), self.get("labelid"),
+                self("~#disc"), self("~#track"),
+                self.get("artist"), self.get("title"),
+                self.get("~filename"))
+    sort_key = property(__sort_key)
+
     def __cmp__(self, other):
-        # 338377    4.100    0.000    8.170    0.000 _audio.py:34(__cmp__)
-        # FIXME: In other words, tiny optimizations here will pay off a lot.
-        # We should totally be DSUing with some kind of sortkey attribute.
         if not other: return -1
-        return (cmp(self.get("album"), other.get("album")) or
-                cmp(self.get("labelid"), other.get("labelid")) or
-                cmp(self("~#disc"), other("~#disc")) or
-                cmp(self("~#track"), other("~#track")) or
-                cmp(self.get("artist"), other.get("artist")) or
-                cmp(self.get("title"), other.get("title")) or
-                cmp(self.get("~filename"), other.get("~filename")))
+        try: return cmp(self.sort_key, other.sort_key)
+        except AttributeError: return -1
 
     def __eq__(self, other):
         try: return self.get("~filename") == other.get("~filename")
