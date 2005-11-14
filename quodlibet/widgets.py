@@ -2262,11 +2262,11 @@ class SongList(qltk.HintedTreeView):
         buttons = []
 
         in_lib = True
-        can_add = False
+        can_add = True
         is_file = True
         for song in songs:
             if song.get("~filename") not in library: in_lib = False
-            if song.can_add: streams = False
+            if not song.can_add: can_add = False
             if not song.is_file: is_file = False
 
         b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
