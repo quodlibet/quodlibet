@@ -74,7 +74,7 @@ class PlaylistPlayer(object):
             except AttributeError: pass
             if self.song:
                 if self.__paused:
-                   if getattr(self.song, 'stream', False):
+                   if not self.song.is_file:
                        self.bin.set_state(gst.STATE_NULL)
                    else: self.bin.set_state(gst.STATE_PAUSED)
                 else: self.bin.set_state(gst.STATE_PLAYING)
