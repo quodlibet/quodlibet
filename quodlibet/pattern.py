@@ -8,9 +8,9 @@
 
 # Pattern := (<String> | <Tags>)*
 # String := ([^<>|\\]|\\.)+, a string
-# Tags := "<" String "|" Pattern [ "|" Pattern ] ">"
+# Tags := "<" String [ "|" Pattern [ "|" Pattern ] ] ">"
 
-import os, sys
+import os
 import sre
 import util
 

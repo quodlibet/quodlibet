@@ -1725,7 +1725,6 @@ class MainWindow(gtk.Window):
             okbutton=gtk.STOCK_ADD).run()
         if name:
             from formats.remote import RemoteFile
-            from urllib import quote, splittype
             if name not in library:
                 song = library.add_song(RemoteFile(name))
                 if song: widgets.watcher.added([song])
