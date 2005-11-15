@@ -78,7 +78,12 @@ class AudioFile(dict):
                 try: return int(self["discnumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default
             elif key == "people":
-                return "\n".join(self.listall(PEOPLE))
+                join = "\n".join
+                people = filter(None, map(self.get, PEOPLE))
+                people = join(people).split("\n")
+                index = people.index
+                return join([person for (i,person) in enumerate(people)
+                        if index(person)==i])
             elif key == "uri":
                 try: return self["~uri"]
                 except KeyError: return to_uri(self["~filename"])

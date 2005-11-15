@@ -21,6 +21,7 @@ bar_2_1 = AudioFile({
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
     "artist": "Foo\nI have two artists", "album": "Bar",
+    "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists",
     "~#playlist_test": 2, "~#playlist_hi%20there": 3})
 
 quux = AudioFile({
@@ -64,6 +65,12 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_1("~#track"), 1)
         self.failUnlessEqual(bar_1_2("~#track"), 2)
         self.failUnlessEqual(bar_2_1("~#track"), 1)
+
+    def test_call_people(self):
+        self.failUnlessEqual(quux("~people"), "")
+        self.failUnlessEqual(bar_1_1("~people"), "Foo")
+        self.failUnlessEqual(bar_1_2("~people"), "Lali-ho!")
+        self.failUnlessEqual(bar_2_1("~people"), "Foo\nI have two artists")
 
     def test_list(self):
         for key in bar_1_1.realkeys():
