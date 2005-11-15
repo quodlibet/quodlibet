@@ -84,18 +84,6 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_2_1.list("artist"),
                              bar_2_1["artist"].split("\n"))
 
-    def test_listall(self):
-        l = list
-        self.failUnlessEqual(l(bar_1_1.listall(["foo"])), bar_1_1.list("foo"))
-        self.failIf(l(bar_1_1.listall(["foo", "bar"])), [])
-        self.failUnlessEqual(
-            l(bar_1_1.listall(["artist"])), bar_1_1.list("artist"))
-        self.failUnlessEqual(
-            bar_2_1.listall(['artist']), ["Foo", "I have two artists"])
-        self.failUnlessEqual(bar_2_1.listall(["artist", "title"]),
-                             ["Foo", "I have two artists", "more songs"])
-            
-
     def test_comma(self):
         for key in bar_1_1.realkeys():
             self.failUnlessEqual(bar_1_1.comma(key), bar_1_1(key))
