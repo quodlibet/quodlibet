@@ -1641,7 +1641,7 @@ msgstr "Une liste de lecture appelée %s existe déjà."
 
 #: ../browsers/playlists.py:231
 msgid "_Remove from Playlist"
-msgstr "Supp_rimer de la bibliothèque"
+msgstr "Supp_rimer de la liste de lecture"
 
 #: ../browsers/playlists.py:262
 msgid "_Import"
