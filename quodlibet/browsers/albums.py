@@ -46,6 +46,65 @@ class AlbumTagCompletion(EntryWordCompletion):
 class AlbumList(Browser, gtk.VBox):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
+    __model = None
+
+    def _init_model(klass):
+        klass.__model = model = klass._AlbumStore(object)
+        widgets.watcher.connect('removed', klass.__remove_songs, model)
+        widgets.watcher.connect('changed', klass.__changed_songs, model)
+        widgets.watcher.connect('added', klass.__add_songs, model)
+        klass.__add_songs(widgets.watcher, library.values(), model)
+        model.append(row=[None])
+    _init_model = classmethod(_init_model)
+
+    def __changed_songs(klass, watcher, changed, model):
+        changed = filter(lambda x: x.get("~filename") in library, changed)
+        if not changed: return
+        klass.__remove_songs(watcher, changed, model)
+        klass.__add_songs(watcher, changed, model)
+    __changed_songs = classmethod(__changed_songs)
+
+    def __update(klass, changed, model):
+        to_change = []
+        to_remove = []
+        def update(model, path, iter):
+            album = model[iter][0]
+            if album is not None and album.title in changed:
+                if album.songs:
+                    to_change.append((path, iter))
+                    album.finalize()
+                else: to_remove.append(iter)
+        model.foreach(update)
+        if to_change: map(model.row_changed, *zip(*to_change))
+        if to_remove: map(model.remove, to_remove)
+    __update = classmethod(__update)
+
+    def __remove_songs(klass, watcher, removed, model):
+        albums = model.get_albums()
+        changed = set()
+        for album in albums.itervalues():
+            if True in map(album.remove, removed): changed.add(album.title)
+        klass.__update(changed, model)
+    __remove_songs = classmethod(__remove_songs)
+
+    def __add_songs(klass, watcher, added, model):
+        albums = model.get_albums()
+        changed = set()
+        new = []
+        for song in added:
+            labelid = song.get("labelid", "")
+            for alb in song("album").split("\n"):
+                key = alb + "\u0000" + labelid
+                if key not in albums:
+                    albums[key] = klass._Album(alb, labelid)
+                    new.append(albums[key])
+                albums[key].songs.add(song)
+                changed.add(alb)
+        for album in new:
+            album._model = model
+            album._iter = model.append(row=[album])
+        klass.__update(changed, model)
+    __add_songs = classmethod(__add_songs)
 
     # Something like an AudioFile, but for a whole album.
     class _Album(object):
@@ -273,14 +332,14 @@ class AlbumList(Browser, gtk.VBox):
     def __init__(self, main=True):
         gtk.VBox.__init__(self)
 
+        if self.__model is None: AlbumList._init_model()
         self.__save = main
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         view = qltk.HintedTreeView()
         view.set_headers_visible(False)
-        model = self._AlbumStore(object)
-        model_sort = gtk.TreeModelSort(model)
+        model_sort = gtk.TreeModelSort(self.__model)
         model_filter = model_sort.filter_new()
 
         render = gtk.CellRendererPixbuf()
@@ -322,12 +381,6 @@ class AlbumList(Browser, gtk.VBox):
 
         if main: view.connect('row-activated', self.__play_selection)
         view.get_selection().connect('changed', self.__selection_changed, e)
-        for s in [
-            widgets.watcher.connect('removed', self.__remove_songs, model),
-            widgets.watcher.connect('changed', self.__changed_songs, model),
-            widgets.watcher.connect('added', self.__add_songs, model),
-            ]:
-            self.connect_object('destroy', widgets.watcher.disconnect, s)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -359,8 +412,6 @@ class AlbumList(Browser, gtk.VBox):
         hb.pack_start(e)
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
-        self.__add_songs(widgets.watcher, library.values(), model)
-        model.append(row=[None])
         view.set_model(model_filter)
         self.show_all()
 
@@ -372,11 +423,7 @@ class AlbumList(Browser, gtk.VBox):
             album.finalize()
 
     def __remove(self, menuitem, selection):
-        model, rows = selection.get_selected_rows()
-        albums = [model[row][0] for row in rows]
-        songs = set()
-        for album in albums: songs.update(album.songs)
-        songs = list(songs)
+        songs = self.__get_selected_songs(selection)
         if songs:
             map(library.remove, songs)
             widgets.watcher.removed(songs)
@@ -392,51 +439,6 @@ class AlbumList(Browser, gtk.VBox):
         albums = [model[row][0] for row in rows]
         if None in albums: return None
         else: return albums
-
-    def __update(self, changed, model):
-        to_change = []
-        to_remove = []
-        def update(model, path, iter):
-            album = model[iter][0]
-            if album is not None and album.title in changed:
-                if album.songs:
-                    to_change.append((path, iter))
-                    album.finalize()
-                else: to_remove.append(iter)
-        model.foreach(update)
-        if to_change: map(model.row_changed, *zip(*to_change))
-        if to_remove: map(model.remove, to_remove)
-
-    def __remove_songs(self, watcher, removed, model):
-        albums = model.get_albums()
-        changed = set()
-        for album in albums.itervalues():
-            if True in map(album.remove, removed): changed.add(album.title)
-        self.__update(changed, model)
-
-    def __changed_songs(self, watcher, changed, model):
-        changed = filter(lambda x: x.get("~filename") in library, changed)
-        if not changed: return
-        self.__remove_songs(watcher, changed, model)
-        self.__add_songs(watcher, changed, model)
-
-    def __add_songs(self, watcher, added, model):
-        albums = model.get_albums()
-        changed = set()
-        new = []
-        for song in added:
-            labelid = song.get("labelid", "")
-            for alb in song("album").split("\n"):
-                key = alb + "\u0000" + labelid
-                if key not in albums:
-                    albums[key] = self._Album(alb, labelid)
-                    new.append(albums[key])
-                albums[key].songs.add(song)
-                changed.add(alb)
-        for album in new:
-            album._model = model
-            album._iter = model.append(row=[album])
-        self.__update(changed, model)
 
     def __get_selected_songs(self, selection):
         model, rows = selection.get_selected_rows()
