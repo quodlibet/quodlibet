@@ -140,9 +140,10 @@ by <~people>>'''
         y = int((sh - h) * self.conf.pos[1])
         y = self.__winy = max(m, min(sh - m - h, y))
 
-        self.__textx = self.__texty = self.conf.border
+        self.__textx = self.conf.border
         if self.__cover is not None:
             self.__textx += self.__coverwidth + self.conf.border
+        self.__texty = (h - self.__textsize[1]) // 2
 
         # scrape root for pseudo transparancy
         root = gtk.gdk.Screen.get_root_window(self.__screen)
