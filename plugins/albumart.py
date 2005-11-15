@@ -42,10 +42,6 @@ class AlbumArtWindow(gtk.Window):
         self.set_title("AlbumArt")
         self.set_default_size(650, 350)
         
-        icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            'quodlibet-icon', 64, gtk.ICON_LOOKUP_USE_BUILTIN))
-
         #TreeView stuff
         self.liststore = liststore = gtk.ListStore(object, str)
         treeview = gtk.TreeView(liststore)

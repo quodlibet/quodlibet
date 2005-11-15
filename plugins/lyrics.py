@@ -28,10 +28,6 @@ class LyricWindow(gtk.Window):
         self.set_title(song.comma("~title~version") + " - " +
 		       song.comma("artist") + " - Lyrics")
 
-        icon_theme = gtk.icon_theme_get_default()
-        self.set_icon(icon_theme.load_icon(
-            'quodlibet-icon', 64, gtk.ICON_LOOKUP_USE_BUILTIN))
-        
         vbox = gtk.VBox(spacing=12)
         view = gtk.TextView()
         sw = gtk.ScrolledWindow()
