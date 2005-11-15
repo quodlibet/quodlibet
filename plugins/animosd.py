@@ -122,11 +122,11 @@ by <~people>>'''
 
         # size window to text + cover
         w = self.__textsize[0] + 2 * self.conf.border
-        if self.__cover is not None:
-            w += self.__coverwidth + self.conf.border
         h = max(self.__cover and self.__coverwidth or 0,
                 self.__textsize[1]) + 2 * self.conf.border
-        self.__covery = (h - ch) // 2
+        if self.__cover is not None:
+            w += self.__coverwidth + self.conf.border
+            self.__covery = (h - ch) // 2
         darea = self.__darea
         darea.set_size_request(w, h)
         self.__width = w
