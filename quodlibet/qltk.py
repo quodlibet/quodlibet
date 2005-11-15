@@ -107,6 +107,20 @@ class SongWatcher(gtk.Object):
 
 gobject.type_register(SongWatcher)
 
+class Window(gtk.Window):
+    __gsignals__ = {"close-accel": (
+        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
+    def __init__(self, *args, **kwargs):
+        super(Window, self).__init__(*args, **kwargs)
+        ag = gtk.AccelGroup()
+        self.add_accel_group(ag)
+        self.add_accelerator(
+            'close-accel', ag, ord('w'), gtk.gdk.CONTROL_MASK, 0)
+
+    def do_close_accel(self):
+        self.destroy()
+gobject.type_register(Window)
+
 class GetStringDialog(gtk.Dialog):
     def __init__(self, parent, title, text, options=[], okbutton=gtk.STOCK_OPEN):
         gtk.Dialog.__init__(self, title, parent)

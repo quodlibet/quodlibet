@@ -183,7 +183,7 @@ class AddTagDialog(gtk.Dialog):
         self.__tag.grab_focus()
         return gtk.Dialog.run(self)
 
-class SongProperties(gtk.Window):
+class SongProperties(qltk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (object,))
                      }
@@ -1666,7 +1666,7 @@ class SongProperties(gtk.Window):
             revert.set_sensitive(False)
 
     def __init__(self, songs, watcher, initial=1):
-        gtk.Window.__init__(self)
+        super(SongProperties, self).__init__()
         self.set_default_size(300, 430)
         notebook = qltk.Notebook()
         pages = [self.Information(self, library=True)]

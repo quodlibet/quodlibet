@@ -247,9 +247,9 @@ class CountManager(object):
             song["~#skipcount"] = song.get("~#skipcount", 0) + 1
             watcher.changed([song])
 
-class PluginWindow(gtk.Window):
+class PluginWindow(qltk.Window):
     def __init__(self, parent):
-        gtk.Window.__init__(self)
+        super(PluginWindow, self).__init__()
         self.set_title(_("Quod Libet Plugins"))
         self.set_border_width(12)
         self.set_resizable(False)
@@ -415,7 +415,7 @@ class AboutWindow(gtk.AboutDialog):
         gtk.AboutDialog.run(self)
         self.destroy()
 
-class PreferencesWindow(gtk.Window):
+class PreferencesWindow(qltk.Window):
     class SongList(gtk.VBox):
         def __init__(self):
             gtk.VBox.__init__(self, spacing=12)
@@ -672,7 +672,7 @@ class PreferencesWindow(gtk.Window):
             config.set(section, name, entry.get_text())
 
     def __init__(self, parent):
-        gtk.Window.__init__(self)
+        super(PreferencesWindow, self).__init__()
         self.set_title(_("Quod Libet Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)
@@ -2801,9 +2801,9 @@ class MainSongList(SongList):
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
 
-class LibraryBrowser(gtk.Window):
+class LibraryBrowser(qltk.Window):
     def __init__(self, activator, Kind):
-        gtk.Window.__init__(self)
+        super(LibraryBrowser, self).__init__()
         self.set_border_width(12)
         self.set_title(_("Library Browser"))
 
