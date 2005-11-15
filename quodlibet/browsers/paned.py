@@ -79,8 +79,10 @@ class PanedBrowser(gtk.VBox, Browser):
             self.inhibit()
             values = {}
             unknown = set()
+            tag = "~".join(self.tags)
+            if len(self.tags) > 1 and tag[0] != "~": tag = "~" + tag
             for song in songs:
-                songvals = song.listall(self.tags)
+                songvals = song.list(tag)
                 if songvals:
                     for val in songvals:
                         values.setdefault(val, set()).add(song)
@@ -102,7 +104,9 @@ class PanedBrowser(gtk.VBox, Browser):
             else: self.set_selected(None, jump=True)
 
         def scroll(self, song):
-            values = map(util.escape, song.listall(self.tags))
+            tag = "~".join(self.tags)
+            if len(self.tags) > 1 and tag[0] != "~": tag = "~" + tag
+            values = map(util.escape, song.list(tag))
             for i, row in enumerate(iter(self.get_model())):
                 if row[0] in values:
                     self.scroll_to_cell(i, use_align=True, row_align=0.5)
