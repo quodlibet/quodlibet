@@ -151,6 +151,17 @@ class FIFOControl(object):
             except (ValueError, TypeError): pass
             else: widgets.watcher.changed([song])
 
+    def __set_browser(browsername):
+        Kind = browsers.get(browsername)
+        if Kind is not browsers.search.EmptyBar:
+            widgets.main.select_browser(None, browsername)
+        else: print "W: Unknown browser type %r." % browsername
+
+    def __open_browser(browsername):
+        Kind = browsers.get(browsername)
+        if Kind is not browsers.search.EmptyBar: LibraryBrowser(None, Kind)
+        else: print "W: Unknown browser type %r." % browsername
+
     callbacks = {
         "previous": lambda: player.playlist.previous(),
         "next": lambda: player.playlist.next(),
@@ -170,6 +181,8 @@ class FIFOControl(object):
         "show-window": lambda: widgets.main.show(),
         "toggle-window": __toggle_window,
         "set-rating": __rating,
+        "set-browser": __set_browser,
+        "open-browser": __open_browser,
         }
 
     def __init__(self):
@@ -1294,7 +1307,7 @@ class MainWindow(gtk.Window):
 
         self.child.show_all()
         sw.show_all()
-        self.__select_browser(self, config.get("memory", "browser"))
+        self.select_browser(self, config.get("memory", "browser"))
         self.browser.restore()
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
@@ -1466,7 +1479,7 @@ class MainWindow(gtk.Window):
             (a, None, l, None, None, i) for (i, (a, l, K)) in
             enumerate(browsers.get_view_browsers())
             ], browsers.index(config.get("memory", "browser")),
-                             self.__select_browser)
+                             self.select_browser)
 
         for id, label, Kind in browsers.get_browsers():
             act = gtk.Action(id, label, None, None)
@@ -1506,7 +1519,7 @@ class MainWindow(gtk.Window):
             key = "%s_pos" % browser.__class__.__name__
             config.set("browsers", key, str(paned.get_relative()))
 
-    def __select_browser(self, activator, current):
+    def select_browser(self, activator, current):
         if isinstance(current, gtk.RadioAction):
             current = current.get_current_value()
         Browser = browsers.get(current)

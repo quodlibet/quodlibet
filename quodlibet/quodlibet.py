@@ -117,9 +117,10 @@ def enable_periodic_save():
 
 def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause",
-                "hide-window", "show-window", "toggle-window"]
+                "hide-window", "show-window", "toggle-window",
+                "present"]
     controls_opt = ["seek", "shuffle", "repeat", "query", "volume",
-                    "set-rating"]
+                    "set-rating", "set-browser", "open-browser"]
 
     from util import OptionParser
     options = OptionParser(
@@ -139,6 +140,10 @@ def process_arguments():
         ("volume-up", _("Turn up volume")),
         ("volume-down", _("Turn down volume")),
         ("status", _("Print playing status")),
+        ("hide-window", _("Hide main window")),
+        ("show-window", _("Hide main window")),
+        ("toggle-window", _("Hide main window")),
+        ("present", _("Show main window on the current screen")),
         ]: options.add(opt, help=help)
 
     for opt, help, arg in [
@@ -147,7 +152,10 @@ def process_arguments():
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "+|-|0..100"),
         ("query", _("Search your audio library"), _("search-string")),
-        ("play-file", _("Play a file"), _("filename"))
+        ("play-file", _("Play a file"), _("filename")),
+        ("set-rating", _("Rate the playing song"), "0.0..1.0"),
+        ("set-browser", _("Set the current browser"), "BrowserName"),
+        ("open-browser", _("Open a new browser"), "BrowserName"),
         ]: options.add(opt, help=help, arg=arg)
 
     def is_time(str):
@@ -156,6 +164,10 @@ def process_arguments():
         parts = str.split(":")
         if len(parts) > 3: return False
         else: return not (False in [p.isdigit() for p in parts])
+    def is_float(str):
+        try: float(str)
+        except ValueError: return False
+        else: return True
 
     validators = {
         "shuffle": ["0", "1", "2", "t" ,"toggle", "in-order", "shuffle",
@@ -163,6 +175,7 @@ def process_arguments():
         "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "volume": str.isdigit,
         "seek": is_time,
+        "set-rating": is_float,
         }
 
     opts, args = options.parse()
