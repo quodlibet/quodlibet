@@ -187,12 +187,13 @@ class Playlists(gtk.VBox, Browser):
     def playlists(klass): return [row[0] for row in klass.__lists]
     playlists = classmethod(playlists)
 
-    def changed(klass, playlist):
+    def changed(klass, playlist, refresh=True):
         model = klass.__lists
         for i, row in enumerate(model):
             if row[0] is playlist:
                 path = (i,)
-                klass.__lists.row_changed(path, model.get_iter(path))
+                if refresh:
+                    klass.__lists.row_changed(path, model.get_iter(path))
                 playlist.write()
                 break
         else:
@@ -215,7 +216,7 @@ class Playlists(gtk.VBox, Browser):
         for playlist in klass.playlists():
             for song in songs:
                 if song in playlist:
-                    Playlists.changed(playlist)
+                    Playlists.changed(playlist, refresh=False)
                     break
     __changed = classmethod(__changed)
 
