@@ -11,6 +11,8 @@
 # $Id$
 
 import os, sys
+global play
+play = False
 
 def main():
     import util; util.mkdir(const.DIR)
@@ -28,6 +30,9 @@ def main():
         gtk.quit_add(1, widgets.save_library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
+    if play:
+        import player
+        player.playlist.paused = False
     gtk.main()
 
 def print_status():
@@ -94,7 +99,7 @@ def control(c):
             print to(_("Unable to write to %s. Removing it.") % const.CONTROL)
             try: os.unlink(const.CONTROL)
             except OSError: pass
-            if c != 'present': raise SystemExit(True)
+            if c != 'focus': raise SystemExit(True)
         else:
             raise SystemExit
 
@@ -118,7 +123,7 @@ def enable_periodic_save():
 def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause",
                 "hide-window", "show-window", "toggle-window",
-                "present"]
+                "focus", "quit"]
     controls_opt = ["seek", "shuffle", "repeat", "query", "volume",
                     "set-rating", "set-browser", "open-browser"]
 
@@ -143,7 +148,9 @@ def process_arguments():
         ("hide-window", _("Hide main window")),
         ("show-window", _("Hide main window")),
         ("toggle-window", _("Hide main window")),
-        ("present", _("Show main window on the current screen")),
+        ("focus", _("Focus the running player")),
+        ("quit", _("Exit Quod Libet")),
+        ("start-playing", _("Begin playing immediately")),
         ]: options.add(opt, help=help)
 
     for opt, help, arg in [
@@ -200,6 +207,9 @@ def process_arguments():
         elif command == "print-playing":
             try: print_playing(args[0])
             except IndexError: print_playing()
+        elif command == "start-playing":
+            global play
+            play = True
 
 def load_library():
     import library
@@ -245,7 +255,7 @@ if __name__ == "__main__":
         process_arguments()
         if os.path.exists(const.CONTROL):
             print to(_("Quod Libet is already running."))
-            control('present')
+            control('focus')
 
     # Get to the right directory for our data.
     os.chdir(basedir)

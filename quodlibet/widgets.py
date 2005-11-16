@@ -172,7 +172,7 @@ class FIFOControl(object):
         "volume": __volume,
         "shuffle": __shuffle,
         "repeat": __repeat,
-        "present": lambda: widgets.main.present(),
+        "focus": lambda: widgets.main.present(),
         "query": __query,
         "seek": __seek,
         "add-file": __add_file,
@@ -183,6 +183,7 @@ class FIFOControl(object):
         "set-rating": __rating,
         "set-browser": __set_browser,
         "open-browser": __open_browser,
+        "quit": gtk.main_quit,
         }
 
     def __init__(self):
