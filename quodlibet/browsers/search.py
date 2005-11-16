@@ -107,7 +107,7 @@ class SearchBar(EmptyBar):
             gtk.STOCK_FIND, gtk.ICON_SIZE_MENU))
         b.pack_start(gtk.Label(_("Search")))
         search.add(b)
-        tips.set_tip(search, _("Search your audio library"))
+        tips.set_tip(search, _("Search your library"))
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
         limit.connect_object_after('activate', self.__text_parse, combo.child)

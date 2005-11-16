@@ -122,7 +122,8 @@ class Window(gtk.Window):
 gobject.type_register(Window)
 
 class GetStringDialog(gtk.Dialog):
-    def __init__(self, parent, title, text, options=[], okbutton=gtk.STOCK_OPEN):
+    def __init__(
+        self, parent, title, text, options=[], okbutton=gtk.STOCK_OPEN):
         gtk.Dialog.__init__(self, title, parent)
         self.set_border_width(6)
         self.set_has_separator(False)

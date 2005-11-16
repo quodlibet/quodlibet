@@ -90,7 +90,7 @@ class AddFeedDialog(qltk.GetStringDialog):
     def __init__(self):
         super(AddFeedDialog, self).__init__(
             widgets.main, _("New Feed"),
-            _("Enter the location of an audio feed."),
+            _("Enter the location of an audio feed:"),
             okbutton=gtk.STOCK_ADD)
 
     def run(self):

@@ -43,8 +43,8 @@ class Formatter(object):
 
 class DateFormatter(Formatter):
     tags = ["date"]
-    error = _("The date must be entered in YYYY, YYYY-MM-DD or "
-              "YYYY-MM-DD HH:MM:SS format.")
+    error = _("The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
+              "'YYYY-MM-DD HH:MM:SS' format.")
     __match = sre.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
                           "([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
     def validate(self, value):
@@ -65,7 +65,7 @@ class GainFormatter(Formatter):
 
 class PeakFormatter(Formatter):
     tags = ["replaygain_album_peak", "replaygain_track_peak"]
-    error = _("ReplayGain peaks must be entered in x.yy format.")
+    error = _("ReplayGain peaks must be entered in 'x.yy' format.")
     def validate(self, value):
         value = value.strip()
         try: f = float(value)
@@ -75,7 +75,7 @@ class PeakFormatter(Formatter):
 class MBIDFormatter(Formatter):
     tags = ["musicbrainz_trackid", "musicbrainz_albumid",
             "musicbrainz_artistid"]
-    error = _("MusicBrainz track IDs must be in UUID format.")
+    error = _("MusicBrainz IDs must be in UUID format.")
     __match = sre.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$").match
     def validate(self, value):
         value = value.strip().lower()
@@ -850,7 +850,7 @@ class SongProperties(qltk.Window):
             can_change = self.__songinfo.can_change(row[0])
 
             b = qltk.MenuItem(
-                _("Split into _multiple values"), gtk.STOCK_FIND_AND_REPLACE)
+                _("Split into _Multiple Values"), gtk.STOCK_FIND_AND_REPLACE)
             b.set_sensitive(
                 (len(util.split_value(row[1], spls)) > 1) and can_change)
             b.connect('activate', self.__split_into_list, view)
@@ -859,14 +859,14 @@ class SongProperties(qltk.Window):
 
             if row[0] == "album":
                 b = qltk.MenuItem(
-                    _("Split disc out of _album"), gtk.STOCK_FIND_AND_REPLACE)
+                    _("Split Disc out of _Album"), gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_album, view)
                 b.set_sensitive((util.split_album(row[1])[1] is not None) and
                                 self.__songinfo.can_change("album"))
                 menu.append(b)
 
             elif row[0] == "title":
-                b = qltk.MenuItem(_("Split version out of title"),
+                b = qltk.MenuItem(_("Split Version out of Title"),
                                   gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_title, view)
                 b.set_sensitive((util.split_title(row[1], spls)[1] != []) and
@@ -876,13 +876,13 @@ class SongProperties(qltk.Window):
             elif row[0] == "artist":
                 ok = (util.split_people(row[1], spls)[1] != [])
 
-                b = qltk.MenuItem(_("Split arranger out of ar_tist"),
+                b = qltk.MenuItem(_("Split Arranger out of Ar_tist"),
                                   gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_people, "arranger", view)
                 b.set_sensitive(ok and self.__songinfo.can_change("arranger"))
                 menu.append(b)
 
-                b = qltk.MenuItem(_("Split _performer out of artist"),
+                b = qltk.MenuItem(_("Split _Performer out of Artist"),
                                   gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_people, "performer", view)
                 b.set_sensitive(ok and self.__songinfo.can_change("performer"))

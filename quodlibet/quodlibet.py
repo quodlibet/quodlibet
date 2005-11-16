@@ -135,6 +135,7 @@ def process_arguments():
 
     options.add("refresh-library", help=_("Rescan your library and exit"))
     options.add("print-playing", help=_("Print the playing song and exit"))
+    options.add("start-playing", help=_("Begin playing immediately"))
 
     for opt, help in [
         ("next", _("Jump to next song")),
@@ -150,7 +151,6 @@ def process_arguments():
         ("toggle-window", _("Hide main window")),
         ("focus", _("Focus the running player")),
         ("quit", _("Exit Quod Libet")),
-        ("start-playing", _("Begin playing immediately")),
         ]: options.add(opt, help=help)
 
     for opt, help, arg in [

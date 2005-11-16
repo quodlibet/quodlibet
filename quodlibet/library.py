@@ -48,8 +48,7 @@ class AudioFileGroup(dict):
                 m = ngettext('missing from %d song',
                               'missing from %d songs',
                               self.missing) % self.missing
-                return _("%(different)s, %(missing)s") % dict(
-                    different=d, missing=m)
+                return ", ".join([d, m])
 
         def safenicestr(self):
             if self.shared and self.complete: return str(self)

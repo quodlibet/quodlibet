@@ -66,7 +66,7 @@ class OptionParser(object):
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         if self.__usage: s = _("Usage: %s %s") % (sys.argv[0], self.__usage)
-        else: s = _("Usage: %s [options]") % sys.argv[0]
+        else: s = _("Usage: %s %s") % (sys.argv[0], _("[options]"))
         s += "\n"
         if self.__description:
             s += "%s - %s\n" % (self.__name, self.__description)

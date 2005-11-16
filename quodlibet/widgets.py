@@ -493,7 +493,7 @@ class PreferencesWindow(qltk.Window):
             if "~current" in checks: checks.remove("~current")
             others.set_text(" ".join(checks))
             tips.set_tip(
-                others, _("Other headers to display, separated by spaces"))
+                others, _("Other columns to display, separated by spaces"))
             l.set_mnemonic_widget(others)
             l.set_use_underline(True)
             hbox.pack_start(others)
@@ -558,7 +558,7 @@ class PreferencesWindow(qltk.Window):
             hb.pack_start(e)
             self.pack_start(hb, expand=False)
 
-            f = qltk.Frame(_("Search Bar"), bold=True, child=c)
+            f = qltk.Frame(_("Search Library"), bold=True, child=c)
             self.pack_start(f, expand=False)
 
             t = gtk.Table(2, 4)
@@ -675,8 +675,8 @@ class PreferencesWindow(qltk.Window):
             self.show_all()
 
         def __select(self, button, entry, initial):
-            chooser = FolderChooser(self.parent.parent.parent,
-                                    _("Select Directories"), initial)
+            chooser = FolderChooser(
+                qltk.get_top_parent(self), _("Select Directories"), initial)
             fns = chooser.run()
             chooser.destroy()
             if fns:
@@ -1253,12 +1253,11 @@ class MainWindow(gtk.Window):
         self.shuffle.append_text(_("In Order"))
         self.shuffle.append_text(_("Shuffle"))
         self.shuffle.append_text(_("Weighted"))
-        tips.set_tip(shuffle, _("Play songs in random order"))
+        tips.set_tip(shuffle, _("Set play order"))
         shuffle.connect('changed', self.__shuffle)
         hbox.pack_start(shuffle, expand=False)
         self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
-        tips.set_tip(
-            repeat, _("Restart the playlist when finished"))
+        tips.set_tip(repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
@@ -1282,7 +1281,7 @@ class MainWindow(gtk.Window):
         sw.add(self.songlist)
 
         self.qexpander = QueueExpander(
-            self.ui.get_widget("/Menu/View/PlayQueue"))
+            self.ui.get_widget("/Menu/View/Queue"))
 
         from songlist import PlaylistMux
         self.playlist = PlaylistMux(
@@ -1311,8 +1310,8 @@ class MainWindow(gtk.Window):
         self.select_browser(self, config.get("memory", "browser"))
         self.browser.restore()
         self.browser.activate()
-        self.showhide_playlist(self.ui.get_widget("/Menu/View/Songlist"))
-        self.showhide_playqueue(self.ui.get_widget("/Menu/View/PlayQueue"))
+        self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
+        self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
         try: shf = config.getint('memory', 'shuffle')
         except: shf = int(config.getboolean('memory', 'shuffle'))
@@ -1398,23 +1397,23 @@ class MainWindow(gtk.Window):
             ("Quit", gtk.STOCK_QUIT, None, None, None, gtk.main_quit),
             ('Filters', None, _("_Filters")),
 
-            ("NotPlayedDay", gtk.STOCK_FIND, _("Not played to_day"),
+            ("NotPlayedDay", gtk.STOCK_FIND, _("Not Played To_day"),
              "", None, self.lastplayed_day),
-            ("NotPlayedWeek", gtk.STOCK_FIND, _("Not played in a _week"),
+            ("NotPlayedWeek", gtk.STOCK_FIND, _("Not Played in a _Week"),
              "", None, self.lastplayed_week),
-            ("NotPlayedMonth", gtk.STOCK_FIND, _("Not played in a _month"),
+            ("NotPlayedMonth", gtk.STOCK_FIND, _("Not Played in a _Month"),
              "", None, self.lastplayed_month),
-            ("NotPlayedEver", gtk.STOCK_FIND, _("_Never played"),
+            ("NotPlayedEver", gtk.STOCK_FIND, _("_Never Played"),
              "", None, self.lastplayed_never),
             ("Top", gtk.STOCK_GO_UP, _("_Top 40"), "", None, self.__top40),
             ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
              None, self.__bottom40),
-            ("Song", None, _("S_ong")),
+            ("Song", None, _("_Song")),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.__current_song_prop),
             ("Rating", None, _("_Rating")),
 
-            ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to playing song"),
+            ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to Playing Song"),
              "<control>J", None, self.__jump_to_current),
 
             ("View", None, _("_View")),
@@ -1449,32 +1448,32 @@ class MainWindow(gtk.Window):
         ag.add_action(act)
 
         for tag_, lab in [
-            ("genre", _("Filter on _genre")),
-            ("artist", _("Filter on _artist")),
-            ("album", _("Filter on al_bum"))]:
+            ("genre", _("Filter on _Genre")),
+            ("artist", _("Filter on _Artist")),
+            ("album", _("Filter on Al_bum"))]:
             act = gtk.Action(
                 "Filter%s" % util.capitalize(tag_), lab, None, gtk.STOCK_INDEX)
             act.connect_object('activate', self.__filter_on, tag_)
             ag.add_action(act)
 
         for (tag_, accel, label) in [
-            ("genre", "G", _("Random _genre")),
-            ("artist", "T", _("Random _artist")),
-            ("album", "M", _("Random al_bum"))]:
+            ("genre", "G", _("Random _Genre")),
+            ("artist", "T", _("Random _Artist")),
+            ("album", "M", _("Random Al_bum"))]:
             act = gtk.Action("Random%s" % util.capitalize(tag_), label,
                              None, gtk.STOCK_DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
 
         ag.add_toggle_actions([
-            ("Songlist", None, _("Song _List"), None, None,
+            ("SongList", None, _("Song _List"), None, None,
              self.showhide_playlist,
              config.getboolean("memory", "songlist"))])
 
         ag.add_toggle_actions([
-            ("PlayQueue", None, _("_Play Queue"), None, None,
+            ("Queue", None, _("_Queue"), None, None,
              self.showhide_playqueue,
-             config.getboolean("memory", "playqueue"))])
+             config.getboolean("memory", "queue"))])
 
         ag.add_radio_actions([
             (a, None, l, None, None, i) for (i, (a, l, K)) in
@@ -1497,7 +1496,7 @@ class MainWindow(gtk.Window):
         # attach them.
         tips.set_tip(
             self.ui.get_widget("/Menu/Music/RefreshLibrary"),
-            _("Check for changes made to the library"))
+            _("Check for changes in your library"))
         tips.set_tip(
             self.ui.get_widget("/Menu/Music/ReloadLibrary"),
             _("Reload all songs in your library (this can take a long time)"))
@@ -1583,7 +1582,7 @@ class MainWindow(gtk.Window):
         except KeyError: pass
         else: watcher.removed([song])
         gobject.idle_add(
-            statusbar.set_text, _("Could not play %s.") % song['~filename'])
+            statusbar.set_text, _("Unable to play %s") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
         if song is None: return
@@ -1735,7 +1734,7 @@ class MainWindow(gtk.Window):
 
     def open_location(self, action):
         name = qltk.GetStringDialog(self, _("Add a Location"),
-            _("Enter the location of an audio file."),
+            _("Enter the location of an audio file:"),
             okbutton=gtk.STOCK_ADD).run()
         if name:
             from formats.remote import RemoteFile
@@ -1924,7 +1923,7 @@ class QueueExpander(gtk.Expander):
         self.queue = PlayQueue()
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
-        l = gtk.Label(_("_Play Queue"))
+        l = gtk.Label(_("_Queue"))
         hb.pack_start(l)
         l.set_use_underline(True)
 
@@ -1941,7 +1940,7 @@ class QueueExpander(gtk.Expander):
         hb.pack_start(l2)
 
         cb = qltk.ConfigCheckButton(
-            _("_Choose randomly"), "memory", "shufflequeue")
+            _("_Random"), "memory", "shufflequeue")
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         cb.set_active(config.getboolean("memory", "shufflequeue"))
         hb.pack_start(cb)
@@ -1964,8 +1963,7 @@ class QueueExpander(gtk.Expander):
         cb.hide()
 
         tips = gtk.Tooltips()
-        tips.set_tip(self, _("Drag songs here to add them to the play queue"))
-        tips.set_tip(b, _("Remove all songs from the play queue"))
+        tips.set_tip(b, _("Remove all songs from the queue"))
         tips.enable()
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
@@ -2011,7 +2009,7 @@ class QueueExpander(gtk.Expander):
 
     def __visible(self, cb, prop, menu, clear):
         value = self.get_property('visible')
-        config.set("memory", "playqueue", str(value))
+        config.set("memory", "queue", str(value))
         menu.set_active(value)
         self.set_expanded(not self.model.is_empty())
         cb.set_property('visible', self.get_expanded())
@@ -2234,7 +2232,7 @@ class SongList(qltk.HintedTreeView):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = qltk.MenuItem(
-                _("_Filter on %s") % tag(t, False), gtk.STOCK_INDEX)
+                _("_Filter on %s") % tag(t, True), gtk.STOCK_INDEX)
             b.connect_object('activate', self.__filter_on, t, songs, browser)
             return b
 
@@ -2887,7 +2885,7 @@ class LibraryBrowser(qltk.Window):
 def website_wrap(activator, link):
     if not util.website(link):
         qltk.ErrorMessage(
-            widgets.main, _("Unable to start a web browser"),
+            widgets.main, _("Unable to start web browser"),
             _("A web browser could not be found. Please set "
               "your $BROWSER variable, or make sure "
               "/usr/bin/sensible-browser exists.")).run()
@@ -2964,7 +2962,7 @@ def save_library():
 
     widgets.main.destroy()
 
-    print to(_("Saving song library."))
+    print to(_("Saving library."))
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
@@ -2972,8 +2970,8 @@ def save_library():
 
 def error_and_quit():
     qltk.ErrorMessage(
-        None, _("No audio device found"),
-        _("Quod Libet was unable to open your audio device. "
+        None, _("Unable to open audio device"),
+        _("Quod Libet could not access your audio device. "
           "Often this means another program is using it, or "
           "your audio drivers are not configured.\n\nQuod Libet "
           "will now exit.")).run()

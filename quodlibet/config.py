@@ -42,7 +42,7 @@ def init(*rc_files):
           "volume": "1.0", # internal volume, [0.0, 1.0]
           "browser": "SearchBar", # browser name
           "songlist": "true", # on or off
-          "playqueue": "false", # on or off
+          "queue": "false", # on or off
           "shufflequeue": "false", # on or off
           "sortby": "1artist", # <asc/desc>tagname, song list sort
           "shuffle": "0", # none, shuffle, weighted
