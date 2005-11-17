@@ -252,6 +252,7 @@ class CancelRevertSave(gtk.MessageDialog):
         description = _("Tags have been changed but not saved. Save these "
                         "files, or revert and discard changes?")
         text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
+        parent = get_top_parent(parent)
         gtk.MessageDialog.__init__(
             self, parent, flags=0, type=gtk.MESSAGE_WARNING,
             buttons=gtk.BUTTONS_NONE)

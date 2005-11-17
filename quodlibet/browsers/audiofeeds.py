@@ -256,5 +256,7 @@ except ImportError:
     try: import _feedparser as feedparser
     except ImportError: feedparser = None
 
-if feedparser: browsers = [(20, _("_Audio Feeds"), AudioFeeds, True)]
+import gst
+if feedparser and gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
+    browsers = [(20, _("_Audio Feeds"), AudioFeeds, True)]
 else: browsers = []

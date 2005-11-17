@@ -11,7 +11,7 @@ import os, sys
 import sre
 import shutil # Move to Trash
 
-import gtk, pango, gobject
+import gtk, pango, gobject, gst
 import stock
 import qltk
 
@@ -1737,10 +1737,21 @@ class MainWindow(gtk.Window):
             _("Enter the location of an audio file:"),
             okbutton=gtk.STOCK_ADD).run()
         if name:
-            from formats.remote import RemoteFile
-            if name not in library:
-                song = library.add_song(RemoteFile(name))
-                if song: widgets.watcher.added([song])
+            if not gst.uri_is_valid(name):
+                qltk.ErrorMessage(
+                    self, _("Unable to add location"),
+                    _("<b>%s</b> is not a valid location.") %(
+                    util.escape(name))).run()
+            elif not gst.element_make_from_uri(gst.URI_SRC, name, ""):
+                qltk.ErrorMessage(
+                    self, _("Unable to add location"),
+                    _("<b>%s</b> uses an unsupported protocol.") %(
+                    util.escape(name))).run()
+            else:
+                from formats.remote import RemoteFile
+                if name not in library:
+                    song = library.add_song(RemoteFile(name))
+                    if song: widgets.watcher.added([song])
 
     def open_chooser(self, action):
         if not os.path.exists(self.last_dir):

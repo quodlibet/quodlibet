@@ -284,4 +284,7 @@ class InternetRadio(gtk.HBox, Browser):
 
 gobject.type_register(InternetRadio)
 
-browsers = [(15, _("_Internet Radio"), InternetRadio, True)]
+import gst
+if gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
+    browsers = [(15, _("_Internet Radio"), InternetRadio, True)]
+else: browsers = []
