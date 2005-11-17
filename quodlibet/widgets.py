@@ -2846,6 +2846,7 @@ class LibraryBrowser(qltk.Window):
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__menu, 3, 0)
         view.connect('drag-data-received', self.__drag_data_recv)
+        view.connect('row-activated', self.__enqueue)
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
@@ -2853,6 +2854,9 @@ class LibraryBrowser(qltk.Window):
         sw.show_all()
         self.child.show()
         self.show()
+
+    def __enqueue(self, view, path, column):
+        widgets.main.playlist.enqueue([view.get_model()[path][0]])
 
     def __drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
