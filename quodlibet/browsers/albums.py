@@ -418,9 +418,15 @@ class AlbumList(Browser, gtk.VBox):
     def __refresh_album(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
-        for album in albums:
-            album.cover = None
-            album.finalize()
+        if None in albums:
+            for row in model:
+                if row[0]:
+                    row[0].cover = None
+                    row[0].finalize()
+        else:
+            for album in albums:
+                album.cover = None
+                album.finalize()
 
     def __remove(self, menuitem, selection):
         songs = self.__get_selected_songs(selection)
@@ -461,7 +467,7 @@ class AlbumList(Browser, gtk.VBox):
         except TypeError: return True
         if event.button == 3:
             sens = bool(view.get_model()[path][0])
-            for c in menu.get_children(): c.set_sensitive(sens)
+            for c in menu.get_children()[1:]: c.set_sensitive(sens)
             view.grab_focus()
             selection = view.get_selection()
             if not selection.path_is_selected(path):
