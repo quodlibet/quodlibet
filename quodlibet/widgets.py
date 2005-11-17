@@ -1424,7 +1424,7 @@ class MainWindow(gtk.Window):
         if const.SM_PREVIOUS.startswith("gtk-"): label = None
         else: label = const.SM_PREVIOUS
         actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, label,
-                        "<control>minus", None, self.__previous_song))
+                        "<control>comma", None, self.__previous_song))
 
         if const.SM_PLAY.startswith('gtk-'): label = None
         else: label = const.SM_PLAY
@@ -1434,7 +1434,7 @@ class MainWindow(gtk.Window):
         if const.SM_NEXT.startswith("gtk-"): label = None
         else: label = const.SM_NEXT
         actions.append(("Next", gtk.STOCK_MEDIA_NEXT, label,
-                        "<control>equal", None, self.__next_song))
+                        "<control>period", None, self.__next_song))
 
         ag.add_actions(actions)
 
