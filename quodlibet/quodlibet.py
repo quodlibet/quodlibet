@@ -229,7 +229,13 @@ def load_player():
     try: player.init(sink)
     except player.NoSinkError:
         import widgets, gobject
-        gobject.idle_add(widgets.error_and_quit, sink)
+        gobject.idle_add(widgets.no_sink_quit, sink)
+        gtk.main()
+        config.write(const.CONFIG)
+        raise SystemExit(True)
+    except player.NoSourceError:
+        import widgets, gobject
+        gobject.idle_add(widgets.no_source_quit)
         gtk.main()
         config.write(const.CONFIG)
         raise SystemExit(True)

@@ -14,6 +14,7 @@ os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
 gst.use_threads(True)
 
 class NoSinkError(ValueError): pass
+class NoSourceError(ValueError): pass
 
 def GStreamerSink(pipeline):
     if pipeline == "gconf":
@@ -212,6 +213,8 @@ global playlist
 playlist = None
 
 def init(pipeline):
-    global playlist
-    playlist = PlaylistPlayer(pipeline or "gconf")
-    return playlist
+    if gst.element_make_from_uri(gst.URI_SRC, "file://", ""):
+        global playlist
+        playlist = PlaylistPlayer(pipeline or "gconf")
+        return playlist
+    else: raise NoSourceError

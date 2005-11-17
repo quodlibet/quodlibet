@@ -2983,13 +2983,20 @@ def save_library():
         err = str(err).decode('utf-8', 'replace')
         qltk.ErrorMessage(None, _("Unable to save library"), err).run()
 
-def error_and_quit(sink):
+def no_sink_quit(sink):
     header = _("Unable to open audio device")
     body = _("Quod Libet tried to access the 'alsasink', 'osssink', and "
              "'%(sink)s' drivers but could not open any of them. Set your "
              "GStreamer pipeline by changing the\n"
              "    <b>pipeline = %(sink)s</b>\n"
              "line in ~/.quodlibet/config.") % {"sink": sink}
+    qltk.ErrorMessage(None, header, body).run()
+    gtk.main_quit()
+
+def no_source_quit():
+    header = _("Unable to open files")
+    body = _("Quod Libet could not find the 'filesrc' GStreamer element. "
+             "Check your GStreamer installation.")
     qltk.ErrorMessage(None, header, body).run()
     gtk.main_quit()
 
