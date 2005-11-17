@@ -43,6 +43,7 @@ def GStreamerSink(pipeline):
 class PlaylistPlayer(object):
     __paused = False
     song = None
+    info = None
     __length = 1
     __volume = 1.0
 
@@ -72,8 +73,7 @@ class PlaylistPlayer(object):
     def __set_paused(self, paused):
         if paused != self.__paused:
             self.__paused = paused
-            try: self.info.set_paused(paused)
-            except AttributeError: pass
+            if self.info: self.info.set_paused(paused)
             if self.song:
                 if self.__paused:
                    if not self.song.is_file:
@@ -90,12 +90,22 @@ class PlaylistPlayer(object):
     def get_volume(self): return self.__volume
     volume = property(get_volume, set_volume)
 
-    def __load_song(self, song):
+    def error(self, code):
+        self.bin.set_property('uri', '')
         self.bin.set_state(gst.STATE_NULL)
+        self.song = None
+        self.paused = True
+        self.info.error(code)
+        self.info.song_started(None)
+
+    def __load_song(self, song):
+        st = self.bin.set_state(gst.STATE_NULL)
+        if st != gst.STATE_SUCCESS: raise Exception(st)
         self.bin.set_property('uri', song("~uri"))
         self.__length = song["~#length"] * 1000
-        if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
-        else: self.bin.set_state(gst.STATE_PLAYING)
+        if self.__paused: st = self.bin.set_state(gst.STATE_PAUSED)
+        else: st = self.bin.set_state(gst.STATE_PLAYING)
+        if st != gst.STATE_SUCCESS: raise Exception(st)
 
     def quit(self):
         self.bin.set_state(gst.STATE_NULL)
@@ -122,14 +132,13 @@ class PlaylistPlayer(object):
             config.set("memory", "song", song["~filename"])
             try: self.__load_song(song)
             except Exception, err:
-                sys.stderr.write(str(err) + "\n")
-                self.info.missing(song)
-                self.next()
-                self.paused = True
+                import traceback; traceback.print_exc()
+                self.error(err)
                 return
         else:
             self.paused = True
             self.bin.set_state(gst.STATE_NULL)
+            self.bin.set_property('uri', '')
         self.song = song
         self.info.song_started(song)
         self.volume = self.__volume

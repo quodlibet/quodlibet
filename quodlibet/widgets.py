@@ -1337,7 +1337,6 @@ class MainWindow(gtk.Window):
         watcher.connect('changed', self.__update_title)
         watcher.connect('song-started', self.__song_started)
         watcher.connect_after('song-ended', self.__song_ended)
-        watcher.connect('missing', self.__song_missing, self.__statusbar)
         watcher.connect('paused', self.__update_paused, True)
         watcher.connect('unpaused', self.__update_paused, False)
 
@@ -1576,13 +1575,6 @@ class MainWindow(gtk.Window):
         text = (text and text[1]) or label
         menu.child.set_text(text)
         menu.child.set_use_underline(True)
-
-    def __song_missing(self, watcher, song, statusbar):
-        try: library.remove(song)
-        except KeyError: pass
-        else: watcher.removed([song])
-        gobject.idle_add(
-            statusbar.set_text, _("Unable to play %s") % song['~filename'])
 
     def __song_ended(self, watcher, song, stopped):
         if song is None: return
@@ -2817,7 +2809,7 @@ class MainSongList(SongList):
     def __select_song(self, indices, col):
         iter = self.model.get_iter(indices)
         player.playlist.go_to(iter)
-        player.playlist.paused = False
+        if player.playlist.song: player.playlist.paused = False
 
     def set_sort_by(self, *args, **kwargs):
         SongList.set_sort_by(self, *args, **kwargs)

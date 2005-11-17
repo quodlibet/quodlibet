@@ -50,10 +50,6 @@ class SongWatcher(gtk.Object):
         # Playback was unpaused.
         'unpaused': SIG_NONE,
 
-        # A song was missing (i.e. disappeared from the filesystem).
-        # When QL is running it will also result in a removed signal
-        # (caused by MainWindow).
-        'missing': SIG_PYOBJECT
         }
 
     # (current_in_msec, total_in_msec)
@@ -94,16 +90,20 @@ class SongWatcher(gtk.Object):
     def seek(self, song, position_in_msec):
         gobject.idle_add(self.emit, 'seek', song, position_in_msec)
 
+    def error(self, code):
+        from widgets import widgets
+        ErrorMessage(
+            widgets.main, _("Unable to play song"),
+            _("GStreamer was unable to load the selected song.")).run()
+
     def reload(self, song):
         try: song.reload()
         except Exception, err:
+            import traceback; traceback.print_exc()
             from library import library
-            sys.stdout.write(str(err) + "\n")
             if library: library.remove(song)
             self.removed([song])
         else: self.changed([song])
-
-    error = reload
 
 gobject.type_register(SongWatcher)
 
