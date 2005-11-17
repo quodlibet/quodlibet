@@ -13,6 +13,8 @@ import gobject, gst
 os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
 gst.use_threads(True)
 
+class NoSinkError(ValueError): pass
+
 def GStreamerSink(pipeline):
     if pipeline == "gconf":
         # We can't use gconfaudiosink/autoaudiosink -- querying its
@@ -35,8 +37,7 @@ def GStreamerSink(pipeline):
         else: pipe = None
     locale.getlocale(locale.LC_NUMERIC)
     if pipe: return pipe, pipeline
-    else: raise SystemExit("E: No valid GStreamer sinks found.\n"
-                           "E: Set 'pipeline' in ~/.quodlibet/config.")
+    else: raise NoSinkError(pipeline)
 
 class PlaylistPlayer(object):
     __paused = False
