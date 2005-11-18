@@ -52,6 +52,10 @@ characteristics:
         plural tense is called with a list of songs/albums.
 
         An album is a list of songs all with the same album tag.
+
+        To make your plugin insensitive if unsupported songs are selected, use
+            obj.plugin_handles(songs)
+        And return False if your plugin's entry should be insensitive.
 """
 
 import util; from util import mtime
@@ -381,7 +385,9 @@ class PluginManager(object):
             else:
                 b = gtk.MenuItem(name)
             b.connect('activate', self.__plugin_activate, plugin, songs)
-
+            b.set_sensitive(
+                getattr(plugin, 'plugin_handles', lambda s: True)(songs))
+                                    
             menu.append(b)
 
         if menu.get_children():
