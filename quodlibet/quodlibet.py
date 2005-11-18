@@ -24,6 +24,7 @@ def main():
     except (ValueError, TypeError): pass
     else: util.RATING_PRECISION = 1.0/ratings
 
+    locale.getlocale(locale.LC_NUMERIC)
     widgets.init()
     if "--debug" not in sys.argv:
         enable_periodic_save()
