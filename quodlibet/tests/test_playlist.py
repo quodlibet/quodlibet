@@ -4,7 +4,7 @@ from songlist import PlaylistModel, PlaylistMux
 import gtk
 from qltk import SongWatcher
 
-class Playlist(TestCase):
+class TPlaylistModel(TestCase):
     def setUp(self):
         self.pl = PlaylistModel()
         self.pl.set(range(10))
@@ -80,7 +80,7 @@ class Playlist(TestCase):
         for i in range(12): self.pl.next()
         self.assertEqual(self.pl.current, 4)
 
-    def test_order(self):
+    def test_shuffle(self):
         self.pl.order = 1
         for i in range(5):
             numbers = [self.pl.current for i in range(10)
@@ -91,7 +91,7 @@ class Playlist(TestCase):
             self.pl.next()
             self.assertEqual(self.pl.current, None)
 
-    def test_weighted_order(self):
+    def test_weighted(self):
         self.pl.order = 2
         r0 = {'~#rating': 0}
         r1 = {'~#rating': 1}
@@ -104,7 +104,7 @@ class Playlist(TestCase):
         self.assert_(songs.count(r2) > songs.count(r1))
         self.assert_(songs.count(r3) > songs.count(r2))
 
-    def test_order_repeat(self):
+    def test_shuffle_repeat(self):
         self.pl.order = 1
         self.pl.repeat = True
         numbers = [self.pl.current for i in range(30)
@@ -114,6 +114,25 @@ class Playlist(TestCase):
         self.assertNotEqual(numbers, allnums)
         numbers.sort()
         self.assertEqual(numbers, allnums)
+
+    def test_onesong(self):
+        self.pl.go_to(3)
+        self.pl.order = 3
+        self.failUnlessEqual(self.pl.current, 3)
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 4)
+        self.pl.next_ended()
+        self.failUnlessEqual(self.pl.current, None)
+
+    def test_onesong_repeat(self):
+        self.pl.go_to(3)
+        self.pl.order = 3
+        self.pl.repeat = True
+        self.failUnlessEqual(self.pl.current, 3)
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 4)
+        self.pl.next_ended()
+        self.failUnlessEqual(self.pl.current, 4)
 
     def test_previous(self):
         self.pl.go_to(2)
@@ -171,7 +190,7 @@ class Playlist(TestCase):
     def shutDown(self):
         self.pl.destroy()
 
-registerCase(Playlist)
+registerCase(TPlaylistModel)
 
 class Mux(TestCase):
     def setUp(self):
