@@ -12,7 +12,7 @@ import gobject, gtk
 
 if sys.version_info < (2, 4): from sets import Set as set
 
-OFF, SHUFFLE, WEIGHTED = range(3)
+OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
 
 class PlaylistMux(object):
     def __init__(self, watcher, q, pl):
@@ -36,6 +36,10 @@ class PlaylistMux(object):
         if self.q.is_empty(): self.pl.next()
         elif self.q.current is None: self.q.next()
 
+    def next_ended(self):
+        if self.q.is_empty(): self.pl.next_ended()
+        elif self.q.current is None: self.q.next()
+
     def previous(self):
         self.pl.previous()
 
@@ -50,7 +54,7 @@ class PlaylistMux(object):
         for song in songs: self.q.append(row=[song])
 
 class PlaylistModel(gtk.ListStore):
-    shuffle = OFF
+    order = OFF
     repeat = False
     __path = None
     __old_value = None
@@ -125,7 +129,7 @@ class PlaylistModel(gtk.ListStore):
     current_iter = property(get_current_iter)
 
     def next(self):
-        if self.shuffle:
+        if self.order in [WEIGHTED, SHUFFLE]:
             self.__next_shuffle()
             return
         
@@ -143,13 +147,17 @@ class PlaylistModel(gtk.ListStore):
         else:
             self.__path += 1
 
+    def next_ended(self):
+        if self.order != ONESONG: self.next()
+        elif not self.repeat: self.__path = None
+
     def __next_shuffle(self):
         if self.__path is not None:
             self.__played.append(self.__path)
 
-        if self.shuffle == 1: self.__next_shuffle_regular()
-        elif self.shuffle == 2: self.__next_shuffle_weighted()
-        else: raise ValueError("Invalid shuffle %d" % self.shuffle)
+        if self.order == SHUFFLE: self.__next_shuffle_regular()
+        elif self.order == WEIGHTED: self.__next_shuffle_weighted()
+        else: raise ValueError("Invalid shuffle %d" % self.order)
 
     def __next_shuffle_regular(self):
         played = set(self.__played)
@@ -178,7 +186,7 @@ class PlaylistModel(gtk.ListStore):
         else: self.__path = 0
 
     def previous(self):
-        if self.shuffle:
+        if self.order in [SHUFFLE, WEIGHTED]:
             self.__previous_shuffle()
             return
 
@@ -196,7 +204,7 @@ class PlaylistModel(gtk.ListStore):
         else: self.__path = path
 
     def go_to(self, song):
-        if self.shuffle and self.__path is not None:
+        if self.order and self.__path is not None:
             self.__played.append(self.__path)
 
         self.__path = None

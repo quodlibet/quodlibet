@@ -82,16 +82,16 @@ class FIFOControl(object):
             try: widgets.main.volume.set_value(int(value) / 100.0)
             except ValueError: pass
 
-    def __shuffle(value):
-        shuffle = widgets.main.shuffle
+    def __order(value):
+        order = widgets.main.order
         try:
-            shuffle.set_active(
-                ["in-order", "shuffle", "weighted"].index(value))
+            order.set_active(
+                ["in-order", "shuffle", "weighted", "onesong"].index(value))
         except ValueError:
-            try: shuffle.set_active(int(value))
+            try: order.set_active(int(value))
             except (ValueError, TypeError):
                 if value in ["t", "toggle"]:
-                    shuffle.set_active(not shuffle.get_active())
+                    order.set_active(not order.get_active())
 
     def __repeat(value):
         repeat = widgets.main.repeat
@@ -170,7 +170,7 @@ class FIFOControl(object):
         "play-pause": lambda: setattr(player.playlist, 'paused',
                                       not player.playlist.paused),
         "volume": __volume,
-        "shuffle": __shuffle,
+        "order": __order,
         "repeat": __repeat,
         "focus": lambda: widgets.main.present(),
         "query": __query,
@@ -1027,32 +1027,6 @@ by <~people>><album|
         self.set_markup(t)
 
 class MainWindow(gtk.Window):
-    class StopAfterMenu(gtk.Menu):
-        def __init__(self, watcher):
-            gtk.Menu.__init__(self)
-            self.__item = gtk.CheckMenuItem(_("Stop after this song"))
-            self.__item.set_active(False)
-            self.append(self.__item)
-
-            watcher.connect('song-started', self.__started)
-            watcher.connect('paused', self.__paused)
-            watcher.connect('song-ended', self.__ended)
-
-            self.__item.show()
-
-        def __started(self, watcher, song):
-            if song and self.active: player.playlist.paused = True
-
-        def __paused(self, watcher):
-            self.active = False
-
-        def __ended(self, watcher, song, stopped):
-            if stopped: self.active = False
-
-        def __get_active(self): return self.__item.get_active()
-        def __set_active(self, v): return self.__item.set_active(v)
-        active = property(__get_active, __set_active)
-
     class PlayControls(gtk.VBox):
         def __init__(self, watcher):
             gtk.VBox.__init__(self, spacing=3)
@@ -1068,7 +1042,6 @@ class MainWindow(gtk.Window):
             play = gtk.ToggleButton()
             play.add(gtk.image_new_from_stock(
                 gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            safter = MainWindow.StopAfterMenu(watcher)
             hbox.pack_start(play)
 
             next = gtk.Button()
@@ -1086,18 +1059,12 @@ class MainWindow(gtk.Window):
 
             prev.connect('clicked', self.__previous)
             play.connect('toggled', self.__playpause, watcher)
-            play.connect('button-press-event', self.__popup_stopafter, safter)
             next.connect('clicked', self.__next)
             watcher.connect('song-started', self.__song_started, next)
             watcher.connect_object('paused', play.set_active, False)
             watcher.connect_object('unpaused', play.set_active, True)
 
             self.show_all()
-
-        def __popup_stopafter(self, activator, event, stopafter):
-            if event.button == 3:
-                stopafter.popup(None, None, None, event.button, event.time)
-                return True
 
         def __song_started(self, watcher, song, next):
             next.set_sensitive(bool(song))
@@ -1249,13 +1216,14 @@ class MainWindow(gtk.Window):
 
         # status area
         hbox = gtk.HBox(spacing=6)
-        self.shuffle = shuffle = gtk.combo_box_new_text()
-        self.shuffle.append_text(_("In Order"))
-        self.shuffle.append_text(_("Shuffle"))
-        self.shuffle.append_text(_("Weighted"))
-        tips.set_tip(shuffle, _("Set play order"))
-        shuffle.connect('changed', self.__shuffle)
-        hbox.pack_start(shuffle, expand=False)
+        self.order = order = gtk.combo_box_new_text()
+        self.order.append_text(_("In Order"))
+        self.order.append_text(_("Shuffle"))
+        self.order.append_text(_("Weighted"))
+        self.order.append_text(_("One Song"))
+        tips.set_tip(order, _("Set play order"))
+        order.connect('changed', self.__order)
+        hbox.pack_start(order, expand=False)
         self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
         tips.set_tip(repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
@@ -1313,9 +1281,9 @@ class MainWindow(gtk.Window):
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
-        try: shf = config.getint('memory', 'shuffle')
-        except: shf = int(config.getboolean('memory', 'shuffle'))
-        shuffle.set_active(shf)
+        try: shf = config.getint('memory', 'order')
+        except: shf = int(config.getboolean('memory', 'order'))
+        order.set_active(shf)
         repeat.connect('toggled', self.toggle_repeat)
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
@@ -1648,9 +1616,9 @@ class MainWindow(gtk.Window):
         self.songlist.model.repeat = button.get_active()
         config.set("settings", "repeat", str(bool(button.get_active())))
 
-    def __shuffle(self, button):
-        self.songlist.model.shuffle = button.get_active()
-        config.set("memory", "shuffle", str(button.get_active()))
+    def __order(self, button):
+        self.songlist.model.order = button.get_active()
+        config.set("memory", "order", str(button.get_active()))
 
     def __random(self, item, key):
         if self.browser.can_filter(key):
@@ -2004,7 +1972,7 @@ class QueueExpander(gtk.Expander):
         return True
 
     def __queue_shuffle(self, button, model):
-        model.shuffle = button.get_active()
+        model.order = button.get_active()
 
     def __expand(self, cb, prop, clear):
         cb.set_property('visible', self.get_expanded())

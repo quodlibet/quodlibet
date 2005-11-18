@@ -147,7 +147,7 @@ class PlaylistPlayer(object):
         self.info.song_ended(self.song, stopped)
         self.song = None
         if not stopped:
-            self.__source.next()
+            self.__source.next_ended()
             # Avoids a deadlock if the song ends and the user presses a
             # a button that calls __end at the same time; both threads
             # end up waiting for something inside GSt.

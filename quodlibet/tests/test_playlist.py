@@ -80,8 +80,8 @@ class Playlist(TestCase):
         for i in range(12): self.pl.next()
         self.assertEqual(self.pl.current, 4)
 
-    def test_shuffle(self):
-        self.pl.shuffle = 1
+    def test_order(self):
+        self.pl.order = 1
         for i in range(5):
             numbers = [self.pl.current for i in range(10)
                        if self.pl.next() or True]
@@ -91,8 +91,8 @@ class Playlist(TestCase):
             self.pl.next()
             self.assertEqual(self.pl.current, None)
 
-    def test_weighted_shuffle(self):
-        self.pl.shuffle = 2
+    def test_weighted_order(self):
+        self.pl.order = 2
         r0 = {'~#rating': 0}
         r1 = {'~#rating': 1}
         r2 = {'~#rating': 2}
@@ -104,8 +104,8 @@ class Playlist(TestCase):
         self.assert_(songs.count(r2) > songs.count(r1))
         self.assert_(songs.count(r3) > songs.count(r2))
 
-    def test_shuffle_repeat(self):
-        self.pl.shuffle = 1
+    def test_order_repeat(self):
+        self.pl.order = 1
         self.pl.repeat = True
         numbers = [self.pl.current for i in range(30)
                    if self.pl.next() or True]
@@ -132,8 +132,8 @@ class Playlist(TestCase):
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 10)
 
-    def test_go_to_shuffle(self):
-        self.pl.shuffle = 1
+    def test_go_to_order(self):
+        self.pl.order = 1
         for i in range(5):
             self.pl.go_to(5)
             self.failUnlessEqual(self.pl.current, 5)
@@ -155,8 +155,8 @@ class Playlist(TestCase):
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 0)
 
-    def test_reset_shuffle(self):
-        self.pl.shuffle = 1
+    def test_reset_order(self):
+        self.pl.order = 1
         self.pl.go_to(5)
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.reset()

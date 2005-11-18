@@ -45,7 +45,7 @@ def init(*rc_files):
           "queue": "false", # on or off
           "shufflequeue": "false", # on or off
           "sortby": "1artist", # <asc/desc>tagname, song list sort
-          "shuffle": "0", # none, shuffle, weighted
+          "order": "0", # none, shuffle, weighted, single
           },
 
         "browsers":
