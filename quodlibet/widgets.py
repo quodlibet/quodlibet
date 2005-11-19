@@ -781,7 +781,7 @@ class HIGTrayIcon(TrayIcon):
             self.__window.show()
 
 class QLTrayIcon(HIGTrayIcon):
-    def __init__(self, window, volume):
+    def Menu(self):
         menu = gtk.Menu()
         if const.SM_PLAY.startswith('gtk-'):
             playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
@@ -794,6 +794,14 @@ class QLTrayIcon(HIGTrayIcon):
         next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
         next.connect('activate', lambda *args: player.playlist.next())
 
+        browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
+        m2 = gtk.Menu()
+        for id, label, Kind in browsers.get_browsers():
+            i = gtk.MenuItem(label)
+            i.connect('activate', LibraryBrowser, Kind)
+            m2.append(i)
+        browse.set_submenu(m2)
+        
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         props.connect('activate', self.__properties)
 
@@ -814,14 +822,22 @@ class QLTrayIcon(HIGTrayIcon):
         quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         quit.connect('activate', gtk.main_quit)
 
-        for item in [playpause, gtk.SeparatorMenuItem(), previous, next,
+        for item in [playpause,
+                     gtk.SeparatorMenuItem(), previous, next,
+                     gtk.SeparatorMenuItem(), browse,
                      gtk.SeparatorMenuItem(), props, ratings,
                      gtk.SeparatorMenuItem(), quit]:
             menu.append(item)
+        # Entries to desensitize when no song is playing
+        menu.sensitives = [props, next]
+        return menu
 
+    def __init__(self, window, volume):
+        menu = self.Menu()
         menu.show_all()
 
-        widgets.watcher.connect('song-started', self.__set_song, next, props)
+        widgets.watcher.connect(
+            'song-started', self.__set_song, menu.sensitives)
         widgets.watcher.connect('paused', self.__set_paused, menu, True)
         widgets.watcher.connect('unpaused', self.__set_paused, menu, False)
 
@@ -858,7 +874,7 @@ class QLTrayIcon(HIGTrayIcon):
         if player.playlist.song:
             SongProperties([player.playlist.song], widgets.watcher)
 
-    def __set_song(self, watcher, song, *items):
+    def __set_song(self, watcher, song, items):
         for item in items: item.set_sensitive(bool(song))
         if song:
             try:
