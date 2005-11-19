@@ -21,7 +21,7 @@ import cPickle as pickle
 
 from widgets import widgets
 from browsers.base import Browser
-from formats.remote import RemoteFile
+import formats; from formats.remote import RemoteFile
 
 FEEDS = os.path.join(const.DIR, "feeds")
 
@@ -60,7 +60,8 @@ class Feed(list):
             except (TypeError, AttributeError): pass
             else:
                 for enclosure in enclosures:
-                    if "audio" in enclosure.type:
+                    if ("audio" in enclosure.type or
+                        formats.filter(enclosure.url)):
                         uri = enclosure.url.encode('ascii', 'replace')
                         entries.append((uri, entry))
                         uris.add(uri)
