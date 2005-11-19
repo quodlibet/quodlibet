@@ -7,7 +7,7 @@
 # $Id$
 
 import gst
-from formats._audio import AudioFile
+from formats._apev2 import APEv2File
 
 try: import musepack
 except ImportError: extensions = []
@@ -15,19 +15,7 @@ else:
     if gst.element_factory_make('monkeysdec'): extensions = [".ape"]
     else: extensions = []
 
-class APEFile(AudioFile):
-    # Map APE names to QL names. APE tags are also usually capitalized.
-    # Also blacklist a number of tags.
-    IGNORE = ["file", "index", "introplay", "dummy",
-              "replaygain_track_peak", "replaygain_album_peak",
-              "replaygain_track_gain", "replaygain_album_gain"]
-    TRANS = { "subtitle": "version",
-              "track": "tracknumber",
-              "catalog": "labelid",
-              "record location": "location"
-              }
-    SNART = dict([(v, k) for k, v in TRANS.iteritems()])
-
+class APEFile(APEv2File):
     format = "MonkeysAudio"
     
     def __init__(self, filename):
@@ -37,13 +25,7 @@ class APEFile(AudioFile):
         if f.read(2) > "\x8c\x00":
             raise IOError("MonkeysAudio > 3.97 not supported.")
 
-        tag = musepack.APETag(filename)
-        for key, value in tag:
-            key = APEFile.TRANS.get(key.lower(), key.lower())
-            if (value.kind == musepack.apev2.TEXT and
-                key not in APEFile.IGNORE):
-                self[key] = "\n".join(list(value))
-
+        super(APEFile, self).__init__(filename)
         bin = gst.Pipeline()
         src = gst.element_factory_make('filesrc')
         src.set_property('location', filename)
@@ -64,30 +46,5 @@ class APEFile(AudioFile):
             bin.iterate()
         self["~#bitrate"] = 0
         self.sanitize(filename)
-
-    def can_change(self, key = None):
-        if key is None: return True
-        else: return (AudioFile.can_change(self, key) and
-                      key not in APEFile.IGNORE)
-
-    def write(self):
-        import musepack
-        tag = musepack.APETag(self['~filename'])
-
-        keys = tag.keys()
-        for key in keys:
-            # remove any text keys we read in
-            value = tag[key]
-            if (value.kind == musepack.apev2.TEXT and
-                key not in APEFile.IGNORE):
-                del(tag[key])
-        for key in self.realkeys():
-            value = self[key]
-            key = APEFile.SNART.get(key, key)
-            if key in ["isrc", "isbn", "ean/upc"]: key = key.upper()
-            else: key = key.title()
-            tag[key] = value.split("\n")
-        tag.write()
-        self.sanitize()
 
 info = APEFile
