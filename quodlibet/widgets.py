@@ -794,6 +794,28 @@ class QLTrayIcon(HIGTrayIcon):
         next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
         next.connect('activate', lambda *args: player.playlist.next())
 
+        submenu = gtk.Menu()
+        repeat = gtk.CheckMenuItem(_("_Repeat"))
+        repeat.connect(
+            'toggled',
+            lambda s: widgets.main.repeat.set_active(s.get_active()))
+        menu.repeat = repeat
+        submenu.append(repeat)
+        submenu.append(gtk.SeparatorMenuItem())
+        items = [None]
+        def set_order(widget, num):
+            if widget.get_active(): widgets.main.order.set_active(num)
+        for i, s in enumerate(
+            [_("_In Order"), _("_Shuffle"), _("_Weighted"), _("_One Song")]):
+            items.append(gtk.RadioMenuItem(items[-1], s))
+            items[-1].connect('toggled', set_order, i)
+        items.remove(None)
+        menu.orders = items
+        map(submenu.append, items)
+        orders = gtk.MenuItem(_("Play _Order"))
+        submenu.show_all()
+        orders.set_submenu(submenu)
+
         browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
         m2 = gtk.Menu()
         for id, label, Kind in browsers.get_browsers():
@@ -823,28 +845,27 @@ class QLTrayIcon(HIGTrayIcon):
         quit.connect('activate', gtk.main_quit)
 
         for item in [playpause,
-                     gtk.SeparatorMenuItem(), previous, next,
+                     gtk.SeparatorMenuItem(), previous, next, orders,
                      gtk.SeparatorMenuItem(), browse,
                      gtk.SeparatorMenuItem(), props, ratings,
                      gtk.SeparatorMenuItem(), quit]:
             menu.append(item)
         # Entries to desensitize when no song is playing
         menu.sensitives = [props, next]
+
         return menu
 
     def __init__(self, window, volume):
-        menu = self.Menu()
+        self.__menu = menu = self.Menu()
         menu.show_all()
 
-        widgets.watcher.connect(
-            'song-started', self.__set_song, menu.sensitives)
-        widgets.watcher.connect('paused', self.__set_paused, menu, True)
-        widgets.watcher.connect('unpaused', self.__set_paused, menu, False)
+        widgets.watcher.connect('song-started', self.__set_song)
+        widgets.watcher.connect('paused', self.__set_paused, True)
+        widgets.watcher.connect('unpaused', self.__set_paused, False)
 
         cbs = {
             2: lambda *args: self.__playpause(args[0]),
-            3: lambda ev, *args:
-            menu.popup(None, None, None, ev.button, ev.time),
+            3: self.__popup,
             4: lambda *args: volume.set_value(volume.get_value()-0.05),
             5: lambda *args: volume.set_value(volume.get_value()+0.05),
             6: lambda *args: player.playlist.next(),
@@ -854,15 +875,22 @@ class QLTrayIcon(HIGTrayIcon):
         p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
         HIGTrayIcon.__init__(self, p, window, cbs)
 
-    def __set_paused(self, watcher, menu, paused):
-        menu.get_children()[0].destroy()
+    def __popup(self, event, *args):
+        order = widgets.main.order.get_active()
+        self.__menu.orders[order].set_active(True)
+        self.__menu.repeat.set_active(widgets.main.repeat.get_active())
+        self.__menu.popup(None, None, None, event.button, event.time)
+        return True
+
+    def __set_paused(self, watcher, paused):
+        self.__menu.get_children()[0].destroy()
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
         text = [const.SM_PAUSE, const.SM_PLAY][paused]
         if text.startswith('gtk-'): playpause = gtk.ImageMenuItem(text)
         else: playpause = qltk.MenuItem(text, stock)
         playpause.connect('activate', self.__playpause)
         playpause.show()
-        menu.prepend(playpause)
+        self.__menu.prepend(playpause)
 
     def __playpause(self, activator):
         if player.playlist.song: player.playlist.paused ^= True
@@ -874,7 +902,8 @@ class QLTrayIcon(HIGTrayIcon):
         if player.playlist.song:
             SongProperties([player.playlist.song], widgets.watcher)
 
-    def __set_song(self, watcher, song, items):
+    def __set_song(self, watcher, song):
+        items = self.__menu.sensitives
         for item in items: item.set_sensitive(bool(song))
         if song:
             try:
