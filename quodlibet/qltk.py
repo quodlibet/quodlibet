@@ -730,12 +730,37 @@ class TreeViewHints(gtk.Window):
 
 gobject.type_register(TreeViewHints)
 
-class HintedTreeView(gtk.TreeView):
+class PrettyDragTreeView(gtk.TreeView):
+    def __init__(self, *args):
+        super(PrettyDragTreeView, self).__init__(*args)
+        self.connect_object('drag-begin', PrettyDragTreeView.__begin, self)
+
+    def __begin(self, ctx):
+        model, paths = self.get_selection().get_selected_rows()
+        if paths:
+            icons = map(self.create_row_drag_icon, paths[:50])
+            gc = icons[0].new_gc()
+            height = (
+                sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
+            width = max(map(lambda s: s.get_size()[0], icons))
+            final = gtk.gdk.Pixmap(icons[0], width, height)
+            count_y = 1
+            for icon in icons:
+                w, h = icon.get_size()
+                final.draw_drawable(gc, icon, 1, 1, 1, count_y, w-2, h-2)
+                count_y += h - 2
+            final.draw_rectangle(gc, False, 0, 0, width-1, height-1)
+            self.drag_source_set_icon(final.get_colormap(), final)
+        else:
+            gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
+            self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
+
+class HintedTreeView(PrettyDragTreeView):
     """A TreeView that pops up a tooltip when you hover over a cell that
     contains ellipsized text."""
 
     def __init__(self, *args):
-        gtk.TreeView.__init__(self, *args)
+        super(HintedTreeView, self).__init__(*args)
         try: tvh = HintedTreeView.hints
         except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
         tvh.connect_view(self)

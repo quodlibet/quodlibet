@@ -386,7 +386,6 @@ class AlbumList(Browser, gtk.VBox):
                    ("text/uri-list", 0, 2)]
         view.drag_source_set(
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
-        view.connect("drag-begin", self.__drag_begin)
         view.connect("drag-data-get", self.__drag_data_get)
 
         menu = gtk.Menu()
@@ -474,25 +473,6 @@ class AlbumList(Browser, gtk.VBox):
                 view.set_cursor(path, col, 0)
             menu.popup(None, None, None, event.button, event.time)
             return True
-
-    def __drag_begin(self, view, ctx):
-        model, paths = view.get_selection().get_selected_rows()
-        if paths:
-            icons = map(view.create_row_drag_icon, paths[:50])
-            gc = icons[0].new_gc()
-            height = (sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
-            width = max(map(lambda s: s.get_size()[0], icons))
-            final = gtk.gdk.Pixmap(icons[0], width, height)
-            count_y = 1
-            for icon in icons:
-                w, h = icon.get_size()
-                final.draw_drawable(gc, icon, 1, 1, 1, count_y, w-2, h-2)
-                count_y += h - 2
-            final.draw_rectangle(gc, False, 0, 0, width-1, height-1)
-            view.drag_source_set_icon(final.get_colormap(), final)
-        else:
-            gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
-            view.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())

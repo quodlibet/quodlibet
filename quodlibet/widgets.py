@@ -2339,7 +2339,6 @@ class SongList(qltk.HintedTreeView):
         self.connect('key-press-event', self.__key_press)
 
         self.disable_drop()
-        self.connect('drag-begin', self.__drag_begin)
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received)
@@ -2359,26 +2358,6 @@ class SongList(qltk.HintedTreeView):
         self.drag_source_set(
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         self.drag_dest_unset()
-
-    def __drag_begin(self, view, ctx):
-        model, paths = self.get_selection().get_selected_rows()
-        if paths:
-            icons = map(self.create_row_drag_icon, paths[:100])
-            gc = icons[0].new_gc()
-            height = (
-                sum(map(lambda s: s.get_size()[1], icons)) - 2*len(icons)) + 2
-            width = max(map(lambda s: s.get_size()[0], icons))
-            final = gtk.gdk.Pixmap(icons[0], width, height)
-            count_y = 1
-            for icon in icons:
-                w, h = icon.get_size()
-                final.draw_drawable(gc, icon, 1, 1, 1, count_y, w-2, h-2)
-                count_y += h - 2
-            final.draw_rectangle(gc, False, 0, 0, width-1, height-1)
-            self.drag_source_set_icon(final.get_colormap(), final)
-        else:
-            gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
-            self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
     def __drag_motion(self, view, ctx, x, y, time):
         try: self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
