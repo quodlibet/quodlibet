@@ -1,3 +1,11 @@
+quodlibet (1.0-1) unstable; urgency=low
+
+  * Default to gstreamer0.8-alsa instead of gstreamer0.8-oss for a sink.
+  * Recommend, rather than suggest, MOD/FLAC/Musepack support, and plugins.
+  * Suggest gstreamer0.8-wavpack.
+
+ -- Joe Wreschnig <piman@debian.org>  
+
 quodlibet (0.15-1) unstable; urgency=low
 
   * New upstream release.
