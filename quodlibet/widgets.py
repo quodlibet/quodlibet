@@ -2410,17 +2410,16 @@ class SongList(qltk.HintedTreeView):
             move = False
         else:
             ctx.finish(False, False, etime)
-            rturn
+            return
 
         songs = filter(None, map(library.get, filenames))
         if not songs:
-            ctx.finish(False, False, etime)
+            ctx.finish(bool(not filenames), False, etime)
             return
 
         try: path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
-            if len(model) == 0: path = 0
-            else: path = len(model) - 1
+            path = max(0, len(model) - 1)
             position = gtk.TREE_VIEW_DROP_AFTER
 
         if move and ctx.get_source_widget() == view:
