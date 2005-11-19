@@ -182,16 +182,6 @@ class Library(dict):
             if filename in v: return True
         return False
 
-    def playlists(self):
-        # Return a set of playlists, normalized names.
-        playlists = set()
-        for song_fn in self:
-            song = self[song_fn]
-            for key in song:
-                if key.startswith("~#playlist_"):
-                    playlists.add(key[11:])
-        return playlists
-
     def load(self, fn):
         # Load the database and read it in.
         try:

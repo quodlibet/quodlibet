@@ -46,8 +46,7 @@ class AudioFile(dict):
         fn = self["~filename"]
         saved = {}
         for key in self:
-            if key in MIGRATE or key.startswith("~#playlist_"):
-                saved[key] = self[key]
+            if key in MIGRATE: saved[key] = self[key]
         self.clear()
         self["~filename"] = fn
         self.__init__(fn)
