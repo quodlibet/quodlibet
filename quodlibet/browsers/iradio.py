@@ -7,11 +7,6 @@
 #
 # $Id$
 
-# TODO:
-# - Error message when trying to drag streams to a playlist/queue (or
-#   better, disallow the drag? But we still want to drag to non-QL
-#   windows).
-
 SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
               "Master.qlpls?format=txt")
 

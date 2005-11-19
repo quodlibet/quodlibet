@@ -500,9 +500,7 @@ class AlbumList(Browser, gtk.VBox):
         if tid == 1:
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
-        else:
-            sel.set_uris([song("~uri") for song in songs])
-        return True
+        else: sel.set_uris([song("~uri") for song in songs])
         
     def __enqueue(self, item, view):
         songs = self.__get_selected_songs(view.get_selection())

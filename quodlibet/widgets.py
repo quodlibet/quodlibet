@@ -1982,10 +1982,8 @@ class QueueExpander(gtk.Expander):
     def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
         filenames = sel.data.split("\x00")
         songs = filter(None, map(library.get, filenames))
-        if not songs: return True
         for song in songs: self.model.append(row=[song])
-        ctx.finish(True, True, etime)
-        return True
+        ctx.finish(bool(songs), False, etime)
 
     def __queue_shuffle(self, button, model):
         model.order = button.get_active()
@@ -2367,7 +2365,8 @@ class SongList(qltk.HintedTreeView):
         if paths:
             icons = map(self.create_row_drag_icon, paths[:100])
             gc = icons[0].new_gc()
-            height = (sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
+            height = (
+                sum(map(lambda s: s.get_size()[1], icons)) - 2*len(icons)) + 2
             width = max(map(lambda s: s.get_size()[0], icons))
             final = gtk.gdk.Pixmap(icons[0], width, height)
             count_y = 1
@@ -2392,11 +2391,22 @@ class SongList(qltk.HintedTreeView):
         ctx.drag_status(kind, time)
         return True
 
+    def __drag_data_delete(self, view, ctx):
+        map(view.get_model(), self.__drag_iters)
+        self.__drag_iters = []
+
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
         if tid == 1:
             songs = [model[path][0] for path in paths
                      if model[path][0].can_add]
+            if len(songs) != len(paths):
+                qltk.ErrorMessage(
+                    qltk.get_top_parent(self), _("Unable to copy songs"),
+                    _("The files selected cannot be copied to other "
+                      "song lists or the queue.")).run()
+                ctx.drag_abort(etime)
+                return
             added = filter(library.add_song, songs)
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
@@ -2408,7 +2418,6 @@ class SongList(qltk.HintedTreeView):
             uris = [model[path][0]("~uri") for path in paths]
             sel.set_uris(uris)
             self.__drag_iters = []
-        return True
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
         model = view.get_model()
@@ -2421,11 +2430,13 @@ class SongList(qltk.HintedTreeView):
                          for s in sel.get_uris()]
             move = False
         else:
-            print "W: Unknown target ID!"
-            return False
+            ctx.finish(False, False, etime)
+            rturn
 
         songs = filter(None, map(library.get, filenames))
-        if not songs: return True
+        if not songs:
+            ctx.finish(False, False, etime)
+            return
 
         try: path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
@@ -2433,7 +2444,7 @@ class SongList(qltk.HintedTreeView):
             else: path = len(model) - 1
             position = gtk.TREE_VIEW_DROP_AFTER
 
-        if move:
+        if move and ctx.get_source_widget() == view:
             iter = model.get_iter(path) # model can't be empty, we're moving
             if position in (gtk.TREE_VIEW_DROP_BEFORE,
                             gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
@@ -2442,6 +2453,7 @@ class SongList(qltk.HintedTreeView):
             else:
                 while self.__drag_iters:
                     model.move_after(self.__drag_iters.pop(), iter)
+            ctx.finish(True, False, etime)
         else:
             song = songs.pop(0)
             try: iter = model.get_iter(path)
@@ -2453,8 +2465,7 @@ class SongList(qltk.HintedTreeView):
                 else: iter = model.insert_after(iter, [song])
             for song in songs:
                 iter = model.insert_after(iter, [song])
-        ctx.finish(True, True, etime)
-        return True
+            ctx.finish(True, move, etime)
 
     def __filter_on(self, header, songs, browser):
         if not browser or not browser.can_filter(header): return

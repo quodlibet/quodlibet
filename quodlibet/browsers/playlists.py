@@ -342,15 +342,16 @@ class Playlists(gtk.VBox, Browser):
                 playlist = model[path][0]
                 playlist.extend(songs)
             Playlists.changed(playlist)
-            ctx.finish(True, True, etime)
-            return True
+            ctx.finish(True, False, etime)
         else:
             if tid == 1:
                 uri = sel.get_uris()[0]
                 name = os.path.basename(uri)
             elif tid == 2:
                 uri, name = sel.data.decode('ucs-2', 'replace').split('\n')
-            else: raise ValueError('invalid tid')
+            else:
+                ctx.finish(False, False, etime)
+                return
             name = name or os.path.basename(uri) or _("New Playlist")
             uri = uri.encode('utf-8')
             sock = urllib.urlopen(uri)
@@ -363,10 +364,14 @@ class Playlists(gtk.VBox, Browser):
                 if name: playlist.rename(name)
                 Playlists.changed(playlist)
                 ctx.finish(True, False, etime)
-                return True
-        ctx.finish(False, False, etime)
-        return True
-    
+            else:
+                ctx.finish(False, False, etime)
+                qltk.ErrorMessage(
+                    qltk.get_top_parent(self),
+                    _("Unable to import playlist"),
+                    _("Quod Libet can only import playlists in the M3U "
+                      "and PLS formats.")).run()
+
     def __select_playlist(self, playlist):
         view = self.__view
         model = view.get_model()
@@ -445,6 +450,12 @@ class Playlists(gtk.VBox, Browser):
                 Playlists.changed(ParseM3U(filename))
             elif filename.endswith(".pls"):
                 Playlists.changed(ParsePLS(filename))
+            else:
+                qltk.ErrorMessage(
+                    qltk.get_top_parent(self),
+                    _("Unable to import playlist"),
+                    _("Quod Libet can only import playlists in the M3U "
+                      "and PLS formats.")).run()
 
     def restore(self):
         try: name = config.get("browsers", "playlist")
