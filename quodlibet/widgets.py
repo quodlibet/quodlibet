@@ -1324,8 +1324,64 @@ class MainWindow(gtk.Window):
         watcher.connect('paused', self.__update_paused, True)
         watcher.connect('unpaused', self.__update_paused, False)
 
+        
+        targets = [("text/uri-list", 0, 1), ("text/x-moz-url", 0, 2)]
+        self.drag_dest_set(
+            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
+        self.connect_object('drag-motion', MainWindow.__drag_motion, self)
+        self.connect_object('drag-leave', MainWindow.__drag_leave, self)
+        self.connect_object(
+            'drag-data-received', MainWindow.__drag_data_received, self)
+
         self.resize(*map(int, config.get("memory", "size").split()))
         self.child.show()
+
+    def __drag_motion(self, ctx, x, y, time):
+        # Don't accept drops from QL itself, since it offers text/uri-list.
+        if ctx.get_source_widget() is None:
+            self.drag_highlight()
+            return True
+        else: return False
+
+    def __drag_leave(self, ctx, time):
+        self.drag_unhighlight()
+
+    def __drag_data_received(self, ctx, x, y, sel, tid, etime):
+        if tid == 1: uris = sel.get_uris()
+        if tid == 2:
+            uri = sel.data.decode('ucs-2', 'replace').split('\n')[0]
+            uris = [uri.encode('ascii', 'replace')]
+
+        dirs = []
+        files = []
+        error = False
+        from formats.remote import RemoteFile
+        for uri in uris:
+            from urllib import splittype as split, url2pathname as topath
+            type, loc = split(uri)
+            if type == "file":
+                loc = os.path.normpath(topath(loc))
+                if os.path.isdir(loc): dirs.append(loc)
+                else:
+                    loc = os.path.realpath(loc)
+                    if loc not in library:
+                        song = library.add(loc)
+                        if song: files.append(song)
+            elif gst.element_make_from_uri(gst.URI_SRC, uri, ''):
+                if uri not in library:
+                    files.append(RemoteFile(uri))
+                    library.add_song(files[-1])
+            else:
+                error = True
+                break
+        ctx.finish(not error, False, etime)
+        if error:
+            qltk.ErrorWindow(
+                self, _("Unable to add songs"),
+                _("<b>%s</b> uses an unsupported protocol.") % uri).run()
+        else:
+            if dirs: self.scan_dirs(dirs)
+            if files: widgets.watcher.added(files)
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
