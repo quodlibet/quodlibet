@@ -14,7 +14,7 @@ import parser
 import player
 import qltk
 import util
-from widgets import widgets, EntryWordCompletion
+from widgets import EntryWordCompletion
 
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
@@ -48,12 +48,12 @@ class AlbumList(Browser, gtk.VBox):
     __gsignals__ = Browser.__gsignals__
     __model = None
 
-    def _init_model(klass):
+    def _init_model(klass, watcher):
         klass.__model = model = klass._AlbumStore(object)
-        widgets.watcher.connect('removed', klass.__remove_songs, model)
-        widgets.watcher.connect('changed', klass.__changed_songs, model)
-        widgets.watcher.connect('added', klass.__add_songs, model)
-        klass.__add_songs(widgets.watcher, library.values(), model)
+        watcher.connect('removed', klass.__remove_songs, model)
+        watcher.connect('changed', klass.__changed_songs, model)
+        watcher.connect('added', klass.__add_songs, model)
+        klass.__add_songs(watcher, library.values(), model)
         model.append(row=[None])
     _init_model = classmethod(_init_model)
 
@@ -329,10 +329,10 @@ class AlbumList(Browser, gtk.VBox):
             except ValueError: pass
             return dict([(a.title + "\u0000" + a.labelid, a) for a in albums])
 
-    def __init__(self, main=True):
+    def __init__(self, watcher, main):
         gtk.VBox.__init__(self)
 
-        if self.__model is None: AlbumList._init_model()
+        if self.__model is None: AlbumList._init_model(watcher)
         self.__save = main
 
         sw = gtk.ScrolledWindow()
@@ -400,8 +400,8 @@ class AlbumList(Browser, gtk.VBox):
         menu.show_all()
         button.connect('activate', self.__refresh_album, view.get_selection())
         queue.connect('activate', self.__enqueue, view)
-        rem.connect('activate', self.__remove, view.get_selection())
-        props.connect('activate', self.__properties, view)
+        rem.connect('activate', self.__remove, view.get_selection(), watcher)
+        props.connect('activate', self.__properties, view, watcher)
 
         view.connect_object('popup-menu', self.__popup, menu)
         view.connect('button-press-event', self.__button_press, menu)
@@ -427,11 +427,11 @@ class AlbumList(Browser, gtk.VBox):
                 album.cover = None
                 album.finalize()
 
-    def __remove(self, menuitem, selection):
+    def __remove(self, menuitem, selection, watcher):
         songs = self.__get_selected_songs(selection)
         if songs:
             map(library.remove, songs)
-            widgets.watcher.removed(songs)
+            watcher.removed(songs)
             selection.unselect_all()
 
     def __popup(self, menu):
@@ -454,11 +454,11 @@ class AlbumList(Browser, gtk.VBox):
         map(songs.update, [album.songs for album in albums])
         return list(songs)
 
-    def __properties(self, activator, view):
+    def __properties(self, activator, view, watcher):
         songs = self.__get_selected_songs(view.get_selection())
         if songs:
             songs.sort()
-            SongProperties(songs, widgets.watcher, initial=0)
+            SongProperties(songs, watcher, initial=0)
 
     def __button_press(self, view, event, menu):
         x, y = map(int, [event.x, event.y])
@@ -485,7 +485,8 @@ class AlbumList(Browser, gtk.VBox):
     def __enqueue(self, item, view):
         songs = self.__get_selected_songs(view.get_selection())
         songs.sort()
-        widgets.main.playlist.enqueue(songs)
+        from widgets.widgets import main
+        main.playlist.enqueue(songs)
 
     def __play_selection(self, view, indices, col):
         player.playlist.reset()

@@ -14,7 +14,6 @@ import parser
 import player
 import qltk
 import util
-from widgets import widgets
 
 if sys.version_info < (2, 4): from sets import Set as set
 from library import library
@@ -45,9 +44,6 @@ class PanedBrowser(gtk.VBox, Browser):
             selection = self.get_selection()
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__changed)
-            #s = widgets.watcher.connect('removed', self.__removed)
-            #self.connect_object('destroy', widgets.watcher.disconnect, s)
-
             self.connect_object('destroy', self.__destroy, model)
 
         def __destroy(self, model):
@@ -144,7 +140,7 @@ class PanedBrowser(gtk.VBox, Browser):
                 songs = [model[row][1] for row in rows]
                 return list(reduce(set.union, songs, set()))
 
-    def __init__(self, main=True):
+    def __init__(self, watcher, main):
         gtk.VBox.__init__(self, spacing=0)
         self.__save = main
 
@@ -166,10 +162,10 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__refill_id = None
         self.__filter = None
         search.connect('changed', self.__filter_changed)
-        for s in [widgets.watcher.connect('refresh', self.__refresh),
-                  widgets.watcher.connect('removed', self.__refresh)
+        for s in [watcher.connect('refresh', self.__refresh),
+                  watcher.connect('removed', self.__refresh)
                   ]:
-            self.connect_object('destroy', widgets.watcher.disconnect, s)
+            self.connect_object('destroy', watcher.disconnect, s)
 
         self.refresh_panes(restore=False)
         self.show_all()

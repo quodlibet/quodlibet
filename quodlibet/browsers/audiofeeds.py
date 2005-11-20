@@ -157,7 +157,7 @@ class AudioFeeds(Browser, gtk.VBox):
         gobject.timeout_add(60*60*1000, klass.__do_check)
     __check = classmethod(__check)
 
-    def __init__(self, main):
+    def __init__(self, watcher, main):
         gtk.VBox.__init__(self)
         self.__main = main
 

@@ -1565,7 +1565,7 @@ class MainWindow(gtk.Window):
             c.remove(self.browser)
             c.destroy()
             self.browser.destroy()
-        self.browser = Browser(main=True)
+        self.browser = Browser(widgets.watcher, main=True)
         self.browser.connect('songs-selected', self.__browser_cb)
         if self.browser.reordered: self.songlist.enable_drop()
         else: self.songlist.disable_drop()
@@ -2856,7 +2856,7 @@ class LibraryBrowser(qltk.Window):
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        self.browser = browser = Kind(main=False)
+        self.browser = browser = Kind(widgets.watcher, main=False)
         browser.connect_object('songs-selected', SongList.set_songs, view)
         if browser.reordered: view.enable_drop()
 

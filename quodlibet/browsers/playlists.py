@@ -238,7 +238,7 @@ class Playlists(gtk.VBox, Browser):
     __lists = gtk.TreeModelSort(gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
 
-    def __init__(self, main):
+    def __init__(self, watcher, main):
         gtk.VBox.__init__(self, spacing=6)
         self.__main = main
         self.__view = view = qltk.HintedTreeView()

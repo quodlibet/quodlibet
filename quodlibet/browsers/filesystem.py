@@ -27,7 +27,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     expand = qltk.RHPaned
     __lib = Library()
 
-    def __init__(self, main=True):
+    def __init__(self, watcher, main):
         gtk.ScrolledWindow.__init__(self)
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)

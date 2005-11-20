@@ -143,20 +143,20 @@ class InternetRadio(gtk.HBox, Browser):
 
     headers = "title artist grouping genre website".split()
 
-    def __init__(self, main=True):
+    def __init__(self, watcher, main):
         gtk.HBox.__init__(self, spacing=12)
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         self.__search = gtk.Entry()
         self.pack_start(add, expand=False)
         add.connect('clicked', self.__add)
         if InternetRadio.__sig is None:
-            InternetRadio.__sig = widgets.watcher.connect(
+            InternetRadio.__sig = watcher.connect(
                 'changed', InternetRadio.__changed)
 
-        for s in [widgets.watcher.connect('removed', self.activate),
-                  widgets.watcher.connect('added', self.activate),
+        for s in [watcher.connect('removed', self.activate),
+                  watcher.connect('added', self.activate),
                   ]:
-            self.connect_object('destroy', widgets.watcher.disconnect, s)
+            self.connect_object('destroy', watcher.disconnect, s)
         self.connect_object('destroy', self.__stations.save, STATIONS)
         self.connect_object('destroy', self.emit, 'songs-selected', [], None)
 
