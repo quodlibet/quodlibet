@@ -757,11 +757,10 @@ class PrettyDragTreeView(gtk.TreeView):
                 bgc = gtk.gdk.GC(final)
                 bgc.copy(self.style.base_gc[gtk.STATE_NORMAL])
                 final.draw_rectangle(bgc, True, 1, count_y, w-2, h-2)
-                layout = self.create_pango_layout(_("and %d more...") %
-                        (len(paths) - MAX + 1))
+                more = _("and %d more...") % (len(paths) - MAX + 1)
+                layout = self.create_pango_layout(more)
                 attrs = pango.AttrList()
-                attrs.insert(pango.AttrStyle(pango.STYLE_ITALIC, 0,
-                    len(layout.get_text())))
+                attrs.insert(pango.AttrStyle(pango.STYLE_ITALIC, 0, len(more)))
                 layout.set_attributes(attrs)
                 layout.set_width(pango.SCALE * (w - 2))
                 lw, lh = layout.get_pixel_size()
