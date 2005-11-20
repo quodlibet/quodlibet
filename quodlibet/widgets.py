@@ -704,116 +704,114 @@ class PreferencesWindow(qltk.Window):
         except AttributeError: pass
         else: config.write(const.CONFIG)
 
-class TrayIcon(object):
-    def __init__(self, pixbuf, cbs):
-        try:
-            import egg.trayicon as trayicon
+class QLTrayIcon(object):
+    __icon = False
+    __mapped = False
+    __tips = gtk.Tooltips()
+    __tips.enable()
+    __menu = None
+    __pattern = pattern.Pattern(
+        "<album|<album~discnumber~part~tracknumber~title~version>|"
+        "<artist~title~version>>")
+
+    def __init__(self, watcher, window):
+        try: import egg.trayicon as trayicon
         except ImportError:
             try: import trayicon
-            except:
-                self.__icon = None
-                return
+            except: return
 
-        self.__icon = trayicon.TrayIcon('quodlibet')
-        self.__tips = gtk.Tooltips()
-        eb = gtk.EventBox()
-        i = gtk.Image()
-        i.set_from_pixbuf(pixbuf)
-        eb.add(i)
+        self.__menu = self.__Menu(watcher, window)
+        self.__menu.show_all()
+
         self.__mapped = False
-        self.__icon.connect('map-event', self.__got_mapped, True)
-        self.__icon.connect('unmap-event', self.__got_mapped, False)
-        self.__icon.add(eb)
-        self.__icon.child.connect("button-press-event", self.__event)
-        self.__icon.child.connect("scroll-event", self.__scroll)
-        self.__cbs = cbs
-        self.__icon.show_all()
+        self.__icon = icon = trayicon.TrayIcon("quodlibet")
+        self.__tips.enable()
+        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+        img = gtk.Image(); img.set_from_pixbuf(p)
+        eb = gtk.EventBox(); eb.add(img)
+        icon.add(eb)
 
-    def __got_mapped(self, s, event, value):
-        self.__mapped = value
+        icon.connect('map-event', self.__map, True)
+        icon.connect('unmap-event', self.__map, False)
+        icon.connect('button-press-event', self.__button, window)
+        icon.connect('scroll-event', self.__scroll, window)
+
+        watcher.connect('song-started', self.__song_started)
+        watcher.connect('paused', self.__set_paused, True)
+        watcher.connect('unpaused', self.__set_paused, False)
+
+        icon.show_all()
 
     def __enabled(self):
-        return ((self.__icon is not None) and
-                (self.__mapped) and
-                (self.__icon.get_property('visible')))
-
+        return (self.__icon  and self.__mapped and
+                self.__icon.get_property('visible'))
     enabled = property(__enabled)
-
-    def __event(self, widget, event, button=None):
-        c = self.__cbs.get(button or event.button)
-        if callable(c): c(event)
-
-    def __scroll(self, widget, event):
-        button = {gtk.gdk.SCROLL_DOWN: 4,
-                  gtk.gdk.SCROLL_UP: 5,
-                  gtk.gdk.SCROLL_RIGHT: 6,
-                  gtk.gdk.SCROLL_LEFT: 7}.get(event.direction)
-        self.__event(widget, event, button)
-
 
     def __set_tooltip(self, tooltip):
         if self.__icon: self.__tips.set_tip(self.__icon, tooltip)
-
     tooltip = property(None, __set_tooltip)
 
-    def destroy(self):
-        if self.__icon: self.__icon.destroy()
+    def __map(self, icon, event, value):
+        self.__mapped = value
 
-# A tray icon aware of UI policy -- left click shows/hides, right
-# click makes a callback.
-class HIGTrayIcon(TrayIcon):
-    def __init__(self, pixbuf, window, cbs=None):
-        self.__window = window
-        cbs = cbs or {}
-        cbs[1] = self.__showhide
-        TrayIcon.__init__(self, pixbuf, cbs)
+    def hide_window(self, window):
+        window.__position = window.get_position()
+        window.hide()
 
-    def hide_window(self):
-        if self.__window.get_property('visible'):
-            self.__showhide(None)
+    def show_window(self, window):
+        window.move(*window.__position)
+        window.show()
 
-    def __showhide(self, event):
-        if self.__window.get_property('visible'):
-            self.__pos = self.__window.get_position()
-            self.__window.hide()
-        else:
-            self.__window.move(*self.__pos)
-            self.__window.show()
+    def __button(self, icon, event, window):
+        if event.button == 1:
+            if window.get_property('visible'): self.hide_window(window)
+            else: self.show_window(window)
+        elif event.button == 2: self.__play_pause(icon)
+        elif event.button == 3: self.__popup(event, window)
 
-class QLTrayIcon(HIGTrayIcon):
-    def Menu(self):
-        menu = gtk.Menu()
-        if const.SM_PLAY.startswith('gtk-'):
-            playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
-        else: playpause = qltk.MenuItem(const.SM_PLAY, gtk.STOCK_MEDIA_PLAY)
-        playpause.connect('activate', self.__playpause)
+    def __play_pause(self, activator):
+        if player.playlist.song: player.playlist.paused ^= True
 
+    def __scroll(self, widget, event, window):
+        if event.direction == gtk.gdk.SCROLL_UP: window.volume += 0.05
+        elif event.direction == gtk.gdk.SCROLL_DOWN: window.volume -= 0.05
+        elif event.direction == gtk.gdk.SCROLL_LEFT: player.playlist.previous()
+        elif event.direction == gtk.gdk.SCROLL_LEFT: player.playlist.next()
+
+    def __song_started(self, watcher, song):
+        items = self.__menu.sensitives
+        for item in items: item.set_sensitive(bool(song))
+        if song:
+            try:
+                p = pattern.Pattern(config.get("plugins", "icon_tooltip"))
+            except ValueError: p = self.__pattern
+            self.tooltip = p % song
+        else: self.tooltip = _("Not playing")
+
+    def __Menu(self, watcher, window):
+        playpause = qltk.MenuItem(const.SM_PLAY, gtk.STOCK_MEDIA_PLAY)
+        playpause.connect('activate', self.__play_pause)
         previous = qltk.MenuItem(const.SM_PREVIOUS, gtk.STOCK_MEDIA_PREVIOUS)
         previous.connect('activate', lambda *args: player.playlist.previous())
-
         next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
         next.connect('activate', lambda *args: player.playlist.next())
 
+        orders = gtk.MenuItem(_("Play _Order"))
         submenu = gtk.Menu()
         repeat = gtk.CheckMenuItem(_("_Repeat"))
         repeat.connect(
-            'toggled',
-            lambda s: widgets.main.repeat.set_active(s.get_active()))
-        menu.repeat = repeat
+            'toggled', lambda s: window.repeat.set_active(s.get_active()))
         submenu.append(repeat)
         submenu.append(gtk.SeparatorMenuItem())
         items = [None]
         def set_order(widget, num):
-            if widget.get_active(): widgets.main.order.set_active(num)
+            if widget.get_active(): window.order.set_active(num)
         for i, s in enumerate(
             [_("_In Order"), _("_Shuffle"), _("_Weighted"), _("_One Song")]):
             items.append(gtk.RadioMenuItem(items[-1], s))
             items[-1].connect('toggled', set_order, i)
         items.remove(None)
-        menu.orders = items
         map(submenu.append, items)
-        orders = gtk.MenuItem(_("Play _Order"))
-        submenu.show_all()
         orders.set_submenu(submenu)
 
         browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
@@ -823,16 +821,17 @@ class QLTrayIcon(HIGTrayIcon):
             i.connect('activate', LibraryBrowser, Kind)
             m2.append(i)
         browse.set_submenu(m2)
-        
+
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        props.connect('activate', self.__properties)
+        props.connect_object('activate', self.__properties, watcher)
 
         rating = gtk.Menu()
         def set_rating(value):
-            if player.playlist.song is None: return
+            song = player.playlist.song
+            if song is None: return
             else:
-                player.playlist.song["~#rating"] = value
-                widgets.watcher.changed([player.playlist.song])
+                song["~#rating"] = value
+                widgets.watcher.changed([song])
         for i in range(0, int(1.0/util.RATING_PRECISION)+1):
             j = i * util.RATING_PRECISION
             item = gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))
@@ -844,41 +843,22 @@ class QLTrayIcon(HIGTrayIcon):
         quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         quit.connect('activate', gtk.main_quit)
 
+        menu = gtk.Menu()
         for item in [playpause,
                      gtk.SeparatorMenuItem(), previous, next, orders,
                      gtk.SeparatorMenuItem(), browse,
                      gtk.SeparatorMenuItem(), props, ratings,
                      gtk.SeparatorMenuItem(), quit]:
             menu.append(item)
-        # Entries to desensitize when no song is playing
-        menu.sensitives = [props, next]
-
+        menu.repeat = repeat
+        menu.orders = items
+        menu.sensitives = [props, next, ratings]
         return menu
 
-    def __init__(self, window, volume):
-        self.__menu = menu = self.Menu()
-        menu.show_all()
-
-        widgets.watcher.connect('song-started', self.__set_song)
-        widgets.watcher.connect('paused', self.__set_paused, True)
-        widgets.watcher.connect('unpaused', self.__set_paused, False)
-
-        cbs = {
-            2: lambda *args: self.__playpause(args[0]),
-            3: self.__popup,
-            4: lambda *args: volume.set_value(volume.get_value()-0.05),
-            5: lambda *args: volume.set_value(volume.get_value()+0.05),
-            6: lambda *args: player.playlist.next(),
-            7: lambda *args: player.playlist.previous()
-            }
-
-        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-        HIGTrayIcon.__init__(self, p, window, cbs)
-
-    def __popup(self, event, *args):
-        order = widgets.main.order.get_active()
+    def __popup(self, event, window):
+        order = window.order.get_active()
         self.__menu.orders[order].set_active(True)
-        self.__menu.repeat.set_active(widgets.main.repeat.get_active())
+        self.__menu.repeat.set_active(window.repeat.get_active())
         self.__menu.popup(None, None, None, event.button, event.time)
         return True
 
@@ -886,34 +866,18 @@ class QLTrayIcon(HIGTrayIcon):
         self.__menu.get_children()[0].destroy()
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
         text = [const.SM_PAUSE, const.SM_PLAY][paused]
-        if text.startswith('gtk-'): playpause = gtk.ImageMenuItem(text)
-        else: playpause = qltk.MenuItem(text, stock)
-        playpause.connect('activate', self.__playpause)
+        playpause = qltk.MenuItem(text, stock)
+        playpause.connect('activate', self.__play_pause)
         playpause.show()
         self.__menu.prepend(playpause)
 
-    def __playpause(self, activator):
-        if player.playlist.song: player.playlist.paused ^= True
-        else:
-            player.playlist.reset()
-            player.playlist.next()
-
-    def __properties(self, activator):
+    def __properties(self, watcher):
         if player.playlist.song:
-            SongProperties([player.playlist.song], widgets.watcher)
+            SongProperties([player.playlist.song], watcher)
 
-    def __set_song(self, watcher, song):
-        items = self.__menu.sensitives
-        for item in items: item.set_sensitive(bool(song))
-        if song:
-            try:
-                p = pattern.Pattern(config.get("plugins", "icon_tooltip"))
-            except ValueError:
-                p = pattern.Pattern(
-                    "<album|<album~discnumber~part~tracknumber~title~version>|"
-                    "<artist~title~version>>")
-            self.tooltip = p % song
-        else: self.tooltip = _("Not playing")
+    def destroy(self):
+        if self.__icon: self.__icon.destroy()
+        if self.__menu: self.__menu.destroy()
 
 class MmKeys(object):
     def __init__(self, cbs):
@@ -1203,6 +1167,9 @@ class MainWindow(gtk.Window):
             self.__volume_changed(self.scale, device)
             self.show_all()
 
+        def __iadd__(self, v): self.set_value(min(1.0, self.get_value() + v))
+        def __isub__(self): self.set_value(max(0.0, self.get_value() - v))
+
         def __volume_changed(self, slider, device):
             val = slider.get_value()
             if val == 0: img = stock.VOLUME_OFF
@@ -1282,7 +1249,7 @@ class MainWindow(gtk.Window):
 
         # Set up the tray icon. It gets created even if we don't
         # actually use it (e.g. missing trayicon.so).
-        self.icon = QLTrayIcon(self, self.volume)
+        self.icon = QLTrayIcon(watcher, self)
 
         # song list
         self.song_scroller = sw = gtk.ScrolledWindow()
@@ -1334,7 +1301,7 @@ class MainWindow(gtk.Window):
 
         self.connect('configure-event', MainWindow.__save_size)
         self.connect('delete-event', MainWindow.__delete_event)
-        self.connect_object('destroy', TrayIcon.destroy, self.icon)
+        self.connect_object('destroy', QLTrayIcon.destroy, self.icon)
         self.connect('destroy', gtk.main_quit)
         self.connect('window-state-event', self.__window_state_changed)
         self.__hidden_state = 0
@@ -1443,7 +1410,7 @@ class MainWindow(gtk.Window):
 
     def __delete_event(self, event):
         if self.icon.enabled:
-            self.icon.hide_window()
+            self.icon.hide_window(self)
             return True
 
     def _create_menu(self, tips):

@@ -2,7 +2,7 @@ from tests import TestCase, add
 import os, gtk, const
 from formats._audio import AudioFile as AF
 
-from widgets import FolderChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow, TrayIcon
+from widgets import FolderChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow
 import qltk
 
 class TFSInterface(TestCase):
@@ -112,14 +112,3 @@ class TPreferencesWindow(TestCase):
         w = PreferencesWindow(None)
         w.destroy()
 add(TPreferencesWindow)
-
-class TTrayIcon(TestCase):
-    def setUp(self):
-        self.ti = TrayIcon(None, {})
-
-    def test_enabled(self):
-        self.failIf(self.ti.enabled)
-
-    def tearDown(self): self.ti.destroy()
-
-add(TTrayIcon)
