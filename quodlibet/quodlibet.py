@@ -246,7 +246,8 @@ if __name__ == "__main__":
     if not os.path.exists(os.path.join(basedir, "quodlibet.py")):
         if os.path.exists(os.path.join(os.getcwd(), "quodlibet.py")):
             basedir = os.getcwd()
-    sys.path.insert(0, os.path.join(basedir, "quodlibet.zip"))
+    if basedir.endswith("/share/quodlibet"):
+        sys.path.append(basedir[:-15] + "lib/quodlibet")
     i18ndir = "/usr/share/locale"
 
     import locale, gettext, util

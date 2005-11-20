@@ -15,7 +15,8 @@ if __name__ == "__main__":
     if not os.path.exists(os.path.join(basedir, "exfalso.py")):
         if os.path.exists(os.path.join(os.getcwd(), "exfalso.py")):
             basedir = os.getcwd()
-    sys.path.insert(1, os.path.join(basedir, "quodlibet.zip"))
+    if basedir.endswith("/share/quodlibet"):
+        sys.path.append(basedir[:-15] + "lib/quodlibet")
 
     import locale, gettext, util
     try: locale.setlocale(locale.LC_ALL, '')

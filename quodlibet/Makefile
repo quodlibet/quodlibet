@@ -1,8 +1,9 @@
-MODULES = config.py const.py efwidgets.py library.py match.py parser.py pattern.py player.py plugins.py properties.py qltk.py songlist.py stock.py util.py widgets.py formats/*.py mutagen/*.py browsers/*.py
+MODULES = config.py const.py efwidgets.py library.py match.py parser.py pattern.py player.py plugins.py properties.py qltk.py songlist.py stock.py util.py widgets.py
 SUBDIRS = trayicon mmkeys po
 EXTENSIONS = trayicon.so mmkeys.so
 PREFIX ?= /usr/local
-TO = lib/quodlibet
+TO = share/quodlibet
+TODEP = lib/quodlibet
 
 all:
 	@/bin/echo -n "Checking for Python... "
@@ -19,13 +20,20 @@ make-install-dirs:
 # then at least the QL install will not fail mysteriously, it will just
 # have (potentially) outdated translations. Ideally any developers
 # installing the SVN version will have intltool and so it will build fine.
-install: make-install-dirs install-exfalso install-quodlibet
-	./quickzip.py quodlibet.zip $(MODULES)
-	install -m 644 quodlibet.zip ql-*.png $(DESTDIR)$(PREFIX)/$(TO)
-	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 $$E $(DESTDIR)$(PREFIX)/$(TO)); done
+install: make-install-dirs install-dirs install-programs
+	install -m 644 $(MODULES) ql-*.png $(DESTDIR)$(PREFIX)/$(TO)
+	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E); done
 	-cd po && make install-po DESTDIR=$(DESTDIR)
 
-install-%: make-install-dirs %.desktop
+install-dirs: dir-install-mutagen dir-install-browsers dir-install-formats
+
+install-programs: app-install-exfalso app-install-quodlibet
+
+dir-install-%:
+	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)/$*
+	install -m 644 $*/*.py $(DESTDIR)$(PREFIX)/$(TO)/$*
+
+app-install-%: make-install-dirs %.desktop
 	install -m 755 $*.py $(DESTDIR)$(PREFIX)/$(TO)
 	install -m 644 $*.1 $(DESTDIR)$(PREFIX)/share/man/man1/$*.1
 	install -D -m 644 $*.png $(DESTDIR)$(PREFIX)/share/pixmaps/$*.png
@@ -34,11 +42,11 @@ install-%: make-install-dirs %.desktop
 	ln -sf ../$(TO)/$*.py $(DESTDIR)$(PREFIX)/bin/$*
 
 clean:
-	rm -f *.pyc */*.pyc quodlibet.zip $(EXTENSIONS) messages.mo
+	rm -f *.pyc */*.pyc $(EXTENSIONS) messages.mo
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean
-	rm -f *~ */*~ \#* *.bak *.orig $(NAME).gladep
+	rm -f *~ */*~ \#* *.bak *.orig
 	for D in $(SUBDIRS); do cd $$D && make distclean && cd ..; done
 
 superclean: distclean
