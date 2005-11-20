@@ -737,18 +737,36 @@ class PrettyDragTreeView(gtk.TreeView):
 
     def __begin(self, ctx):
         model, paths = self.get_selection().get_selected_rows()
+        MAX = 3
         if paths:
-            icons = map(self.create_row_drag_icon, paths[:50])
-            gc = icons[0].new_gc()
+            icons = map(self.create_row_drag_icon, paths[:MAX])
             height = (
                 sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
             width = max(map(lambda s: s.get_size()[0], icons))
             final = gtk.gdk.Pixmap(icons[0], width, height)
+            gc = gtk.gdk.GC(final)
+            gc.copy(self.style.fg_gc[gtk.STATE_NORMAL])
+            gc.set_colormap(self.window.get_colormap())
             count_y = 1
             for icon in icons:
                 w, h = icon.get_size()
                 final.draw_drawable(gc, icon, 1, 1, 1, count_y, w-2, h-2)
                 count_y += h - 2
+            if len(paths) > MAX:
+                count_y -= h - 2
+                bgc = gtk.gdk.GC(final)
+                bgc.copy(self.style.base_gc[gtk.STATE_NORMAL])
+                final.draw_rectangle(bgc, True, 1, count_y, w-2, h-2)
+                layout = self.create_pango_layout(_("and %d more...") %
+                        (len(paths) - MAX + 1))
+                attrs = pango.AttrList()
+                attrs.insert(pango.AttrStyle(pango.STYLE_ITALIC, 0,
+                    len(layout.get_text())))
+                layout.set_attributes(attrs)
+                layout.set_width(pango.SCALE * (w - 2))
+                lw, lh = layout.get_pixel_size()
+                final.draw_layout(gc, (w-lw)//2, count_y + (h-lh)//2, layout)
+
             final.draw_rectangle(gc, False, 0, 0, width-1, height-1)
             self.drag_source_set_icon(final.get_colormap(), final)
         else:
