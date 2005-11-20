@@ -1255,7 +1255,7 @@ class MainWindow(gtk.Window):
         self.song_scroller = sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.songlist = MainSongList()
+        self.songlist = MainSongList(watcher)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         sw.add(self.songlist)
@@ -1959,7 +1959,7 @@ class QueueExpander(gtk.Expander):
         queue_scroller = sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.queue = PlayQueue()
+        self.queue = PlayQueue(widgets.watcher)
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
         l = gtk.Label(_("_Queue"))
@@ -2370,7 +2370,7 @@ class SongList(qltk.HintedTreeView):
         playlist.extend(songs)
         browsers.playlists.Playlists.changed(playlist)
 
-    def __init__(self):
+    def __init__(self, watcher):
         qltk.HintedTreeView.__init__(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
@@ -2378,21 +2378,21 @@ class SongList(qltk.HintedTreeView):
         self.__songlistviews[self] = None     # register self
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList.__destroy, self)
-        sigs = [widgets.watcher.connect('changed', self.__song_updated),
-                widgets.watcher.connect('song-started', self.__redraw_current),
-                widgets.watcher.connect('removed', self.__song_removed),
-                widgets.watcher.connect('paused', self.__redraw_current),
-                widgets.watcher.connect('unpaused', self.__redraw_current)
+        sigs = [watcher.connect('changed', self.__song_updated),
+                watcher.connect('song-started', self.__redraw_current),
+                watcher.connect('removed', self.__song_removed),
+                watcher.connect('paused', self.__redraw_current),
+                watcher.connect('unpaused', self.__redraw_current)
                 ]
         for sig in sigs:
-            self.connect_object('destroy', widgets.watcher.disconnect, sig)
+            self.connect_object('destroy', watcher.disconnect, sig)
 
         self.connect('button-press-event', self.__button_press)
         self.connect('key-press-event', self.__key_press)
 
         self.disable_drop()
         self.connect('drag-motion', self.__drag_motion)
-        self.connect('drag-data-get', self.__drag_data_get)
+        self.connect('drag-data-get', self.__drag_data_get, watcher)
         self.connect('drag-data-received', self.__drag_data_received)
 
     def enable_drop(self):
@@ -2426,7 +2426,7 @@ class SongList(qltk.HintedTreeView):
         map(view.get_model(), self.__drag_iters)
         self.__drag_iters = []
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
+    def __drag_data_get(self, view, ctx, sel, tid, etime, watcher):
         model, paths = self.get_selection().get_selected_rows()
         if tid == 1:
             songs = [model[path][0] for path in paths
@@ -2441,7 +2441,7 @@ class SongList(qltk.HintedTreeView):
             added = filter(library.add_song, songs)
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
-            if added: widgets.watcher.added(added)
+            if added: watcher.added(added)
             if ctx.action == gtk.gdk.ACTION_MOVE:
                 self.__drag_iters = map(model.get_iter, paths)
             else: self.__drag_iters = []
@@ -2847,7 +2847,7 @@ class LibraryBrowser(qltk.Window):
         self.set_border_width(12)
         self.set_title(_("Library Browser"))
 
-        view = SongList()
+        view = SongList(widgets.watcher)
         from songlist import PlaylistModel
         view.set_model(PlaylistModel())
 
