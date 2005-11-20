@@ -91,11 +91,4 @@ class TLibrary(TestCase):
         songs = self.lib.query("C")
         self.failUnlessEqual(songs, [CORPUS[2]])
 
-    def test_playlists(self):
-        song = AF({"~filename": "/tmp/foo99", "~#playlist_foo": 12})
-        self.failUnlessEqual(list(self.lib.playlists()), [])
-        self.lib.add_song(song)
-        self.failUnlessEqual(list(self.lib.playlists()), ["foo"])
-        
-
 add(TLibrary)

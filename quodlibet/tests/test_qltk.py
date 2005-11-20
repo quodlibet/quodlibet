@@ -19,7 +19,6 @@ class TSongWatcher(TestCase):
 
     def test_changed(self): self.__test_signal('changed')
     def test_removed(self): self.__test_signal('removed')
-    def test_missing(self): self.__test_signal('missing')
 
     def __test_started_cb(self, watcher, song):
         self.failUnlessEqual(watcher.time[0], 0)
