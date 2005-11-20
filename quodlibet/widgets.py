@@ -1354,7 +1354,7 @@ class MainWindow(gtk.Window):
         watcher.connect('unpaused', self.__update_paused, False)
 
         
-        targets = [("text/uri-list", 0, 1), ("text/x-moz-url", 0, 2)]
+        targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
             gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
         self.connect_object('drag-motion', MainWindow.__drag_motion, self)
