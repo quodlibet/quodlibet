@@ -867,7 +867,7 @@ class LibraryBrowser(Window):
         self.show()
 
     def __enqueue(self, view, path, column):
-        from widgets import widget
+        from widgets import widgets
         widgets.main.playlist.enqueue([view.get_model()[path][0]])
 
     def __drag_data_recv(self, view, *args):
