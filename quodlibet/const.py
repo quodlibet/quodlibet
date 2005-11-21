@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Short string constants and long non-translated ones.
+# Constants used in various parts of QL, mostly strings.
 
 import os
 
@@ -107,3 +107,8 @@ MENU = """<ui>
 </ui>"""
 
 ICON = 'quodlibet-icon'
+
+MACHINE_TAGS = (
+    "musicbrainz_trackid replaygain_album_peak replaygain_track_peak "
+    "replaygain_track_gain replaygain_album_gain"
+    ).split()

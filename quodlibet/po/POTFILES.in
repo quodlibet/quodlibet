@@ -7,7 +7,8 @@ formats/_audio.py
 exfalso.py
 widgets.py
 plugins.py
-qltk.py
+songlist.py
+qltk/__init__.py
 properties.py
 efwidgets.py
 browsers/albums.py
@@ -16,5 +17,6 @@ browsers/playlists.py
 browsers/search.py
 browsers/filesystem.py
 browsers/iradio.py
+browsers/audiofeeds.py
 exfalso.desktop.in
 quodlibet.desktop.in

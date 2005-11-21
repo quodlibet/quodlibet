@@ -68,8 +68,3 @@ USEFUL_TAGS = (
     "arranger author composer conductor lyricist discnumber labelid part "
     "website language bpm"
     ).split()
-
-MACHINE_TAGS = (
-    "musicbrainz_trackid replaygain_album_peak replaygain_track_peak "
-    "replaygain_track_gain replaygain_album_gain"
-    ).split()

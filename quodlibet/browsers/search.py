@@ -12,7 +12,7 @@ import const
 import qltk
 import parser
 import config
-from qltk import LibraryTagCompletion
+from qltk.completion import LibraryTagCompletion
 
 from browsers.base import Browser
 from library import library

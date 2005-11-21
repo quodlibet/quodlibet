@@ -1,4 +1,6 @@
-MODULES = config.py const.py efwidgets.py library.py match.py parser.py pattern.py player.py plugins.py properties.py qltk.py songlist.py stock.py util.py widgets.py
+MODULES = config.py const.py efwidgets.py library.py match.py parser.py pattern.py player.py plugins.py properties.py songlist.py stock.py util.py widgets.py
+MODULE_DIRS = mutagen browsers formats qltk
+PROGRAMS = exfalso quodlibet
 SUBDIRS = trayicon mmkeys po
 EXTENSIONS = trayicon.so mmkeys.so
 PREFIX ?= /usr/local
@@ -25,11 +27,11 @@ install: make-install-dirs install-dirs install-programs
 	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E); done
 	-cd po && make install-po DESTDIR=$(DESTDIR)
 
-install-dirs: dir-install-mutagen dir-install-browsers dir-install-formats
+install-dirs: $(addprefix dir-install-, $(MODULE_DIRS))
 
-install-programs: app-install-exfalso app-install-quodlibet
+install-programs: $(addprefix app-install-, $(PROGRAMS))
 
-dir-install-%:
+dir-install-%: make-install-dirs
 	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)/$*
 	install -m 644 $*/*.py $(DESTDIR)$(PREFIX)/$(TO)/$*
 

@@ -1069,7 +1069,7 @@ class SongProperties(qltk.Window):
             keys.sort()
 
             if not config.getboolean("editing", "alltags"):
-                keys = filter(lambda k: k not in formats.MACHINE_TAGS, keys)
+                keys = filter(lambda k: k not in const.MACHINE_TAGS, keys)
 
             # reverse order here so insertion puts them in proper order.
             for comment in ['album', 'artist', 'title']:
