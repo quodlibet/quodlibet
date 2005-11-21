@@ -5,6 +5,7 @@ import widgets
 import browsers.search
 from browsers.search import EmptyBar, SearchBar
 from formats._audio import AudioFile as AF
+from qltk import SongWatcher
 
 import __builtin__
 __builtin__.__dict__['_'] = lambda a: a
@@ -24,7 +25,7 @@ class TEmptyBar(TestCase):
         for af in SONGS:
             af.sanitize()
             browsers.search.library.add_song(af)
-        self.bar = self.Bar(False)
+        self.bar = self.Bar(SongWatcher(), False)
         self.bar.connect('songs-selected', self._expected)
 
     def _expected(self, bar, songs, sort):

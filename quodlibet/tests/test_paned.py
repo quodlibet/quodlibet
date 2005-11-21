@@ -29,7 +29,7 @@ class TPanedBrowser(TestCase):
         for af in SONGS:
             af.sanitize()
             browsers.paned.library.add_song(af)
-        self.bar = self.Bar(False)
+        self.bar = self.Bar(ws.watcher, False)
         self.bar.connect('songs-selected', self._expected)
         while gtk.events_pending(): gtk.main_iteration()
 

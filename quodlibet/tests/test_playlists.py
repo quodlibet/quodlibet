@@ -1,8 +1,7 @@
 import os
 from tests import add, TestCase
 import library; library.init()
-from widgets import widgets; from qltk import SongWatcher
-widgets.watcher = SongWatcher()
+from qltk import SongWatcher
 from browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
 
 import tempfile
@@ -98,6 +97,6 @@ add(TPlaylist)
 
 class TPlaylists(TestCase):
     def test_ctr(self):
-        Playlists(False).destroy()
-        Playlists(True).destroy()
+        Playlists(SongWatcher(), False).destroy()
+        Playlists(SongWatcher(), True).destroy()
 add(TPlaylists)

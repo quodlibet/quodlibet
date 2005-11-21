@@ -71,8 +71,6 @@ def __ParsePlaylist(name, plfilename, files):
             # Who knows! Hand it off to GStreamer.
             songs.append(formats.remote.RemoteFile(filename))
     playlist.extend(filter(None, songs))
-    from widgets.widgets import watcher
-    watcher.added(filter(library.add_song, playlist))
     return playlist
 
 class Playlist(list):
@@ -260,7 +258,7 @@ class Playlists(gtk.VBox, Browser):
         newpl = gtk.Button(stock=gtk.STOCK_NEW)
         newpl.connect('clicked', self.__new_playlist)
         importpl = qltk.Button(_("_Import"), gtk.STOCK_ADD)
-        importpl.connect('clicked', self.__import)
+        importpl.connect('clicked', self.__import, watcher)
         hb = gtk.HBox(spacing=6)
         align = gtk.Alignment(xscale=1.0)
         align.set_padding(0, 3, 6, 6)
@@ -278,7 +276,7 @@ class Playlists(gtk.VBox, Browser):
                    ("text/x-moz-url", 0, 2)]
         view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
                            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_DEFAULT)
-        view.connect('drag-data-received', self.__drag_data_received)
+        view.connect('drag-data-received', self.__drag_data_received, watcher)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
         if main: view.connect('row-activated', self.__play)
@@ -360,6 +358,7 @@ class Playlists(gtk.VBox, Browser):
             elif uri.lower().endswith('.m3u'): playlist = ParseM3U(f.name)
             else: playlist = None
             if playlist:
+                watcher.added(filter(library.add_song, playlist))
                 if name: playlist.rename(name)
                 Playlists.changed(playlist)
                 ctx.finish(True, False, etime)
@@ -437,7 +436,7 @@ class Playlists(gtk.VBox, Browser):
         else: self.__lists[path] = self.__lists[path]
         render.set_property('editable', not self.__main)
 
-    def __import(self, activator):
+    def __import(self, activator, watcher):
         parent = qltk.get_top_parent(activator)
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
         from widgets import FileChooser
@@ -456,6 +455,7 @@ class Playlists(gtk.VBox, Browser):
                     _("Unable to import playlist"),
                     _("Quod Libet can only import playlists in the M3U "
                       "and PLS formats.")).run()
+            watcher.added(filter(library.add_song, playlist))
 
     def restore(self):
         try: name = config.get("browsers", "playlist")
