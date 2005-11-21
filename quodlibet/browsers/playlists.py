@@ -21,8 +21,6 @@ import formats
 from library import library
 from browsers.base import Browser
 from formats._audio import AudioFile
-from widgets import FileChooser
-from widgets import widgets
 
 if sys.version_info < (2, 4): from sets import Set as set
 
@@ -73,7 +71,8 @@ def __ParsePlaylist(name, plfilename, files):
             # Who knows! Hand it off to GStreamer.
             songs.append(formats.remote.RemoteFile(filename))
     playlist.extend(filter(None, songs))
-    widgets.watcher.added(filter(library.add_song, playlist))
+    from widgets.widgets import watcher
+    watcher.added(filter(library.add_song, playlist))
     return playlist
 
 class Playlist(list):
@@ -175,13 +174,13 @@ class Playlists(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
 
-    def init(klass):
+    def init(klass, watcher):
         model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):
             model.append(row=[Playlist(Playlist.unquote(playlist))])
-        widgets.watcher.connect('removed', klass.__removed)
-        widgets.watcher.connect('added', klass.__added)
-        widgets.watcher.connect('changed', klass.__changed)
+        watcher.connect('removed', klass.__removed)
+        watcher.connect('added', klass.__added)
+        watcher.connect('changed', klass.__changed)
     init = classmethod(init)
 
     def playlists(klass): return [row[0] for row in klass.__lists]
@@ -441,6 +440,7 @@ class Playlists(gtk.VBox, Browser):
     def __import(self, activator):
         parent = qltk.get_top_parent(activator)
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
+        from widgets import FileChooser
         chooser = FileChooser(
             parent, _("Import Playlist"), filt, os.getenv("HOME"))
         files = chooser.run()

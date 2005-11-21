@@ -35,7 +35,7 @@ class Browser(object):
 
     # Called after library and MainWindow initialization, before the
     # GTK main loop starts.
-    def init(klass): pass
+    def init(klass, watcher): pass
     init = classmethod(init)
 
     # Returns true if the song should remain on the song list. Used to

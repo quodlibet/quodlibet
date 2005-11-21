@@ -19,7 +19,6 @@ import util
 
 import cPickle as pickle
 
-from widgets import widgets
 from browsers.base import Browser
 import formats; from formats.remote import RemoteFile
 
@@ -88,9 +87,9 @@ class Feed(list):
         return bool(uris)
 
 class AddFeedDialog(qltk.GetStringDialog):
-    def __init__(self):
+    def __init__(self, parent):
         super(AddFeedDialog, self).__init__(
-            widgets.main, _("New Feed"),
+            parent, _("New Feed"),
             _("Enter the location of an audio feed:"),
             okbutton=gtk.STOCK_ADD)
 
@@ -130,7 +129,7 @@ class AudioFeeds(Browser, gtk.VBox):
         f.close()
     write = classmethod(write)
 
-    def init(klass):
+    def init(klass, watcher):
         try: feeds = pickle.load(file(FEEDS, "rb"))
         except EnvironmentError: pass
         else:
@@ -235,7 +234,7 @@ class AudioFeeds(Browser, gtk.VBox):
             self.emit('songs-selected', songs, True)
 
     def __new_feed(self, activator):
-        feed = AddFeedDialog().run()
+        feed = AddFeedDialog(qltk.get_top_parent(self)).run()
         if feed is not None:
             feed.changed = feed.parse()
             if feed:
@@ -243,7 +242,7 @@ class AudioFeeds(Browser, gtk.VBox):
                 AudioFeeds.write()
             else:
                 qltk.ErrorMessage(
-                    widgets.main, _("Unable to add feed"),
+                    qltk.get_top_parent(self), _("Unable to add feed"),
                     _("<b>%s</b> could not be added. The server may be down, "
                       "or the location may not be an audio feed.") %(
                     feed.uri)).run()

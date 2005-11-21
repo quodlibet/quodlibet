@@ -15,6 +15,7 @@ import gtk, pango, gobject, gst
 import stock
 import qltk
 
+import browsers
 import const
 import config
 import player
@@ -2275,7 +2276,7 @@ def init():
              "~#added ~#bitrate").split()
     for Kind in zip(*browsers.browsers)[2]:
         if Kind.headers is not None: Kind.headers.extend(in_all)
-        Kind.init()
+        Kind.init(watcher)
 
     widgets.main = MainWindow(watcher)
     gtk.about_dialog_set_url_hook(website_wrap)
@@ -2329,5 +2330,3 @@ def no_source_quit():
              "Check your GStreamer installation.")
     qltk.ErrorMessage(None, header, body).run()
     gtk.main_quit()
-
-import browsers

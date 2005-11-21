@@ -22,7 +22,6 @@ import parser
 from browsers.base import Browser
 from formats.remote import RemoteFile
 from library import Library
-from widgets import widgets
 
 STATIONS = os.path.join(const.DIR, "stations")
 
@@ -122,9 +121,9 @@ class ChooseNewStations(gtk.Dialog):
         return [row[0] for row in self.model if row[1]]
 
 class AddNewStation(qltk.GetStringDialog):
-    def __init__(self):
+    def __init__(self, parent):
         qltk.GetStringDialog.__init__(
-            self, widgets.main, _("New Station"),
+            self, parent, _("New Station"),
             _("Enter the location of an Internet radio station:"),
             okbutton=gtk.STOCK_ADD)
         b = qltk.Button(_("_Stations..."), gtk.STOCK_CONNECT)
@@ -148,7 +147,7 @@ class InternetRadio(gtk.HBox, Browser):
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         self.__search = gtk.Entry()
         self.pack_start(add, expand=False)
-        add.connect('clicked', self.__add)
+        add.connect('clicked', self.__add, watcher)
         if InternetRadio.__sig is None:
             InternetRadio.__sig = watcher.connect(
                 'changed', InternetRadio.__changed)
@@ -200,6 +199,7 @@ class InternetRadio(gtk.HBox, Browser):
 
     def __remove(self, button, songs):
         map(self.__stations.remove, songs)
+        from widgets import widgets
         widgets.watcher.removed(songs)
         self.__stations.save(STATIONS)
         self.activate()
@@ -210,8 +210,8 @@ class InternetRadio(gtk.HBox, Browser):
             klass.__stations.save(STATIONS)
     __changed = classmethod(__changed)
 
-    def __add(self, button):
-        uri = (AddNewStation().run() or "").strip()
+    def __add(self, button, watcher):
+        uri = (AddNewStation(qltk.get_top_parent(self)).run() or "").strip()
         if uri == "": return
         elif uri.lower().endswith(".pls") or uri == SACREDCHAO:
             if isinstance(uri, unicode): uri = uri.encode('utf-8')
@@ -240,7 +240,7 @@ class InternetRadio(gtk.HBox, Browser):
             elif len(irfs) == 1:
                 if self.__stations.add_song(irfs[0]):
                     self.__stations.save(STATIONS)
-                    widgets.watcher.added(irfs)
+                    watcher.added(irfs)
             else:
                 irfs.sort()
                 d = ChooseNewStations(irfs)
@@ -249,7 +249,7 @@ class InternetRadio(gtk.HBox, Browser):
                     if irfs:
                         added = filter(self.__stations.add_song, irfs)
                         self.__stations.save(STATIONS)
-                        widgets.watcher.added(added)
+                        watcher.added(added)
                 d.destroy()
         elif uri.lower().endswith(".m3u"):
             qltk.WarningMessage(
@@ -260,7 +260,7 @@ class InternetRadio(gtk.HBox, Browser):
                 f = IRFile(uri)
                 if self.__stations.add_song(f):
                     self.__stations.save(STATIONS)
-                    widgets.watcher.added([f])
+                    watcher.added([f])
                 else:
                     qltk.WarningMessage(
                         None, _("No new stations"),
