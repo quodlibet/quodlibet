@@ -9,6 +9,8 @@ widgets.py
 plugins.py
 songlist.py
 qltk/__init__.py
+qltk/chooser.py
+qltk/trayicon.py
 properties.py
 efwidgets.py
 browsers/albums.py

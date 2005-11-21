@@ -831,6 +831,7 @@ class LibraryBrowser(Window):
         self.set_border_width(12)
         self.set_title(_("Library Browser"))
 
+        from songlist import SongList
         view = SongList(watcher)
 
         sw = gtk.ScrolledWindow()
@@ -899,5 +900,6 @@ class LibraryBrowser(Window):
         return True
 
 def get_top_parent(widget):
-    while widget.parent is not None: widget = widget.parent
+    if widget is not None:
+        while widget.parent is not None: widget = widget.parent
     return widget

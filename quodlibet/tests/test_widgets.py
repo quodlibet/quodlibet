@@ -2,7 +2,8 @@ from tests import TestCase, add
 import os, gtk, const
 from formats._audio import AudioFile as AF
 
-from widgets import FolderChooser, CountManager, FSInterface, PluginWindow, PreferencesWindow
+from widgets import CountManager, FSInterface, PluginWindow, PreferencesWindow
+from qltk.chooser import FolderChooser
 import qltk
 
 class TFSInterface(TestCase):

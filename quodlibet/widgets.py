@@ -210,36 +210,6 @@ class FIFOControl(object):
             os.close(source)
             self.__init__() # Reopen the FIFO
 
-# Choose folders and return them when run.
-class FolderChooser(gtk.FileChooserDialog):
-    def __init__(self, parent, title, initial_dir=None,
-                 action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER):
-        super(FolderChooser, self).__init__(
-            title=title, parent=parent, action=action,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                     gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-        if initial_dir: self.set_current_folder(initial_dir)
-        self.set_local_only(True)
-        self.set_select_multiple(True)
-
-    def run(self):
-        resp = gtk.FileChooserDialog.run(self)
-        fns = self.get_filenames()
-        if resp == gtk.RESPONSE_OK: return fns
-        else: return []
-
-# Choose files and return them when run.
-class FileChooser(FolderChooser):
-    def __init__(self, parent, title, filter=None, initial_dir=None):
-        super(FileChooser, self).__init__(
-            parent, title, initial_dir, gtk.FILE_CHOOSER_ACTION_OPEN)
-        if filter:
-            def new_filter(args, realfilter): return realfilter(args[0])
-            f = gtk.FileFilter()
-            f.set_name(_("Songs"))
-            f.add_custom(gtk.FILE_FILTER_FILENAME, new_filter, filter)
-            self.add_filter(f)
-
 class CountManager(object):
     def __init__(self, watcher, pl):
         watcher.connect('song-ended', self.__end, pl)
@@ -675,12 +645,11 @@ class PreferencesWindow(qltk.Window):
             self.show_all()
 
         def __select(self, button, entry, initial):
-            chooser = FolderChooser(
-                qltk.get_top_parent(self), _("Select Directories"), initial)
+            from qltk.chooser import FolderChooser
+            chooser = FolderChooser(self, _("Select Directories"), initial)
             fns = chooser.run()
             chooser.destroy()
-            if fns:
-                entry.set_text(":".join(map(util.fsdecode, fns)))
+            if fns: entry.set_text(":".join(map(util.fsdecode, fns)))
 
         def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
@@ -703,181 +672,6 @@ class PreferencesWindow(qltk.Window):
         try: del(widgets.preferences)
         except AttributeError: pass
         else: config.write(const.CONFIG)
-
-class QLTrayIcon(object):
-    __icon = False
-    __mapped = False
-    __tips = gtk.Tooltips()
-    __tips.enable()
-    __menu = None
-    __pattern = pattern.Pattern(
-        "<album|<album~discnumber~part~tracknumber~title~version>|"
-        "<artist~title~version>>")
-
-    def __init__(self, watcher, window):
-        try: import egg.trayicon as trayicon
-        except ImportError:
-            try: import trayicon
-            except: return
-
-        self.__menu = self.__Menu(watcher, window)
-        self.__menu.show_all()
-
-        self.__mapped = False
-        self.__icon = icon = trayicon.TrayIcon("quodlibet")
-        self.__tips.enable()
-        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
-        img = gtk.Image(); img.set_from_pixbuf(p)
-        eb = gtk.EventBox(); eb.add(img)
-        icon.add(eb)
-
-        icon.connect('map-event', self.__map, True)
-        icon.connect('unmap-event', self.__map, False)
-        icon.connect('button-press-event', self.__button, window)
-        icon.connect('scroll-event', self.__scroll, window)
-
-        watcher.connect('song-started', self.__song_started)
-        watcher.connect('paused', self.__set_paused, True)
-        watcher.connect('unpaused', self.__set_paused, False)
-
-        icon.show_all()
-
-    def __enabled(self):
-        return (self.__icon  and self.__mapped and
-                self.__icon.get_property('visible'))
-    enabled = property(__enabled)
-
-    def __set_tooltip(self, tooltip):
-        if self.__icon: self.__tips.set_tip(self.__icon, tooltip)
-    tooltip = property(None, __set_tooltip)
-
-    def __map(self, icon, event, value):
-        self.__mapped = value
-
-    def hide_window(self, window):
-        window.__position = window.get_position()
-        window.hide()
-
-    def show_window(self, window):
-        window.move(*window.__position)
-        window.show()
-
-    def __button(self, icon, event, window):
-        if event.button == 1:
-            if window.get_property('visible'): self.hide_window(window)
-            else: self.show_window(window)
-        elif event.button == 2: self.__play_pause(icon)
-        elif event.button == 3: self.__popup(event, window)
-
-    def __play_pause(self, activator):
-        if player.playlist.song: player.playlist.paused ^= True
-
-    def __scroll(self, widget, event, window):
-        if event.direction == gtk.gdk.SCROLL_UP: window.volume += 0.05
-        elif event.direction == gtk.gdk.SCROLL_DOWN: window.volume -= 0.05
-        elif event.direction == gtk.gdk.SCROLL_LEFT: player.playlist.previous()
-        elif event.direction == gtk.gdk.SCROLL_LEFT: player.playlist.next()
-
-    def __song_started(self, watcher, song):
-        items = self.__menu.sensitives
-        for item in items: item.set_sensitive(bool(song))
-        if song:
-            try:
-                p = pattern.Pattern(config.get("plugins", "icon_tooltip"))
-            except ValueError: p = self.__pattern
-            self.tooltip = p % song
-        else: self.tooltip = _("Not playing")
-
-    def __Menu(self, watcher, window):
-        playpause = qltk.MenuItem(const.SM_PLAY, gtk.STOCK_MEDIA_PLAY)
-        playpause.connect('activate', self.__play_pause)
-        previous = qltk.MenuItem(const.SM_PREVIOUS, gtk.STOCK_MEDIA_PREVIOUS)
-        previous.connect('activate', lambda *args: player.playlist.previous())
-        next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
-        next.connect('activate', lambda *args: player.playlist.next())
-
-        orders = gtk.MenuItem(_("Play _Order"))
-        submenu = gtk.Menu()
-        repeat = gtk.CheckMenuItem(_("_Repeat"))
-        repeat.connect(
-            'toggled', lambda s: window.repeat.set_active(s.get_active()))
-        submenu.append(repeat)
-        submenu.append(gtk.SeparatorMenuItem())
-        items = [None]
-        def set_order(widget, num):
-            if widget.get_active(): window.order.set_active(num)
-        for i, s in enumerate(
-            [_("_In Order"), _("_Shuffle"), _("_Weighted"), _("_One Song")]):
-            items.append(gtk.RadioMenuItem(items[-1], s))
-            items[-1].connect('toggled', set_order, i)
-        items.remove(None)
-        map(submenu.append, items)
-        orders.set_submenu(submenu)
-
-        browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
-        m2 = gtk.Menu()
-        for id, label, Kind in browsers.get_browsers():
-            i = gtk.MenuItem(label)
-            i.connect_object('activate', qltk.LibraryBrowser, Kind, watcher)
-            m2.append(i)
-        browse.set_submenu(m2)
-
-        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        props.connect_object('activate', self.__properties, watcher)
-
-        rating = gtk.Menu()
-        def set_rating(value):
-            song = player.playlist.song
-            if song is None: return
-            else:
-                song["~#rating"] = value
-                widgets.watcher.changed([song])
-        for i in range(0, int(1.0/util.RATING_PRECISION)+1):
-            j = i * util.RATING_PRECISION
-            item = gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))
-            item.connect_object('activate', set_rating, j)
-            rating.append(item)
-        ratings = gtk.MenuItem(_("_Rating"))
-        ratings.set_submenu(rating)
-
-        quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        quit.connect('activate', gtk.main_quit)
-
-        menu = gtk.Menu()
-        for item in [playpause,
-                     gtk.SeparatorMenuItem(), previous, next, orders,
-                     gtk.SeparatorMenuItem(), browse,
-                     gtk.SeparatorMenuItem(), props, ratings,
-                     gtk.SeparatorMenuItem(), quit]:
-            menu.append(item)
-        menu.repeat = repeat
-        menu.orders = items
-        menu.sensitives = [props, next, ratings]
-        return menu
-
-    def __popup(self, event, window):
-        order = window.order.get_active()
-        self.__menu.orders[order].set_active(True)
-        self.__menu.repeat.set_active(window.repeat.get_active())
-        self.__menu.popup(None, None, None, event.button, event.time)
-        return True
-
-    def __set_paused(self, watcher, paused):
-        self.__menu.get_children()[0].destroy()
-        stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
-        text = [const.SM_PAUSE, const.SM_PLAY][paused]
-        playpause = qltk.MenuItem(text, stock)
-        playpause.connect('activate', self.__play_pause)
-        playpause.show()
-        self.__menu.prepend(playpause)
-
-    def __properties(self, watcher):
-        if player.playlist.song:
-            SongProperties([player.playlist.song], watcher)
-
-    def destroy(self):
-        if self.__icon: self.__icon.destroy()
-        if self.__menu: self.__menu.destroy()
 
 class MmKeys(object):
     def __init__(self, cbs):
@@ -1251,10 +1045,6 @@ class MainWindow(gtk.Window):
         hbox.set_border_width(3)
         self.child.pack_end(hbox, expand=False)
 
-        # Set up the tray icon. It gets created even if we don't
-        # actually use it (e.g. missing trayicon.so).
-        self.icon = QLTrayIcon(watcher, self)
-
         # song list
         self.song_scroller = sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
@@ -1304,8 +1094,6 @@ class MainWindow(gtk.Window):
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
         self.connect('configure-event', MainWindow.__save_size)
-        self.connect('delete-event', MainWindow.__delete_event)
-        self.connect_object('destroy', QLTrayIcon.destroy, self.icon)
         self.connect('destroy', gtk.main_quit)
         self.connect('window-state-event', self.__window_state_changed)
         self.__hidden_state = 0
@@ -1411,11 +1199,6 @@ class MainWindow(gtk.Window):
             pack_type=gtk.PACK_START)
         if not ssv:
             self.qexpander.set_expanded(True)
-
-    def __delete_event(self, event):
-        if self.icon.enabled:
-            self.icon.hide_window(self)
-            return True
 
     def _create_menu(self, tips):
         ag = gtk.ActionGroup('MainWindowActions')
@@ -1791,8 +1574,10 @@ class MainWindow(gtk.Window):
             self.last_dir = os.environ["HOME"]
 
         if action.get_name() == "AddFolders":
+            from qltk.chooser import FolderChooser
             chooser = FolderChooser(self, _("Add Music"), self.last_dir)
         else:
+            from qltk.chooser import FileChooser
             chooser = FileChooser(
                 self, _("Add Music"), formats.filter, self.last_dir)
         
@@ -1965,8 +1750,7 @@ class QueueExpander(gtk.Expander):
         hb.pack_start(l)
         l.set_use_underline(True)
 
-        clear = gtk.image_new_from_stock(
-            gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU)
+        clear = gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU)
         b = gtk.Button()
         b.add(clear)
         b.connect('clicked', self.__clear_queue)
@@ -2216,6 +2000,9 @@ def init():
     FSInterface(watcher)
     CountManager(watcher, widgets.main.playlist)
     FIFOControl()
+
+    from qltk.trayicon import TrayIcon
+    TrayIcon(watcher, widgets.main)
 
     flag = widgets.main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()

@@ -437,11 +437,10 @@ class Playlists(gtk.VBox, Browser):
         render.set_property('editable', not self.__main)
 
     def __import(self, activator, watcher):
-        parent = qltk.get_top_parent(activator)
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
-        from widgets import FileChooser
+        from qltk.chooser import FileChooser
         chooser = FileChooser(
-            parent, _("Import Playlist"), filt, os.getenv("HOME"))
+            self, _("Import Playlist"), filt, os.getenv("HOME"))
         files = chooser.run()
         chooser.destroy()
         for filename in files:
