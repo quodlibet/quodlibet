@@ -13,7 +13,8 @@ import shutil # Move to Trash
 
 import gtk, pango, gobject, gst
 import stock
-import qltk
+import qltk, qltk.sliderbutton
+
 
 import browsers
 import const
@@ -1085,7 +1086,7 @@ class MainWindow(gtk.Window):
         def __previous(self, button): player.playlist.previous()
         def __next(self, button): player.playlist.next()
 
-    class PositionSlider(qltk.PopupHSlider):
+    class PositionSlider(qltk.sliderbutton.HSlider):
         __lock = False
         __sig = None
         __seekable = True
@@ -1096,7 +1097,7 @@ class MainWindow(gtk.Window):
             hbox.pack_start(l)
             hbox.pack_start(
                 gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
-            qltk.PopupHSlider.__init__(self, hbox)
+            super(type(self), self).__init__(hbox)
 
             self.scale.connect('button-press-event', self.__seek_lock)
             self.scale.connect('button-release-event', self.__seek_unlock)
@@ -1151,11 +1152,11 @@ class MainWindow(gtk.Window):
                 self.scale.set_range(0, 1)
                 self.__seekable = False
 
-    class VolumeSlider(qltk.PopupVSlider):
+    class VolumeSlider(qltk.sliderbutton.VSlider):
         def __init__(self, device):
             i = gtk.image_new_from_stock(
                 stock.VOLUME_MAX, gtk.ICON_SIZE_LARGE_TOOLBAR)
-            qltk.PopupVSlider.__init__(self, i)
+            super(type(self), self).__init__(i)
             self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
             self.scale.set_inverted(True)
             self.get_value = self.scale.get_value
