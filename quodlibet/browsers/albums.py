@@ -14,7 +14,7 @@ import parser
 import player
 import qltk
 import util
-from widgets import EntryWordCompletion
+from qltk import EntryWordCompletion
 
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()

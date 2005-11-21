@@ -12,6 +12,8 @@ import gobject, gtk, pango
 import config
 import util
 
+if sys.version_info < (2, 4): from sets import Set as set
+
 # Everything connects to this to get updates about the library and player.
 class SongWatcher(gtk.Object):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
@@ -466,6 +468,7 @@ class WaitLoadWindow(gtk.Window):
 
         gtk.Window.__init__(self)
         if parent:
+            parent = get_top_parent(parent)
             sig = parent.connect('configure-event', self.__recenter)
             self.connect_object(
                 'destroy', WaitLoadWindow.__disconnect, self, sig)
@@ -936,3 +939,82 @@ class PopupVSlider(PopupSlider):
 def get_top_parent(widget):
     while widget.parent is not None: widget = widget.parent
     return widget
+
+class EntryWordCompletion(gtk.EntryCompletion):
+    leftsep = ["&(", "|(", ",", ", "]
+    rightsep = [" ", ")", ","]
+
+    def __init__(self):
+        super(EntryWordCompletion, self).__init__()
+        self.set_match_func(self.__match_filter)
+        self.connect('match-selected', self.__match_selected)
+
+    def __match_filter(self, completion, entrytext, iter):
+        model = completion.get_model()
+        entry = self.get_entry()
+        entrytext = entrytext.decode('utf-8')
+        if entry is None: return False
+        cursor = entry.get_position()
+        if (cursor != len(entrytext) and not
+            max([entrytext[cursor:].startswith(s) for s in self.rightsep])):
+            return False
+
+        # find the border to the left
+        left, f = max(
+            [(entrytext.rfind(c, 0, cursor), c) for c in self.leftsep])
+        if left < 0: left += 1
+        else: left += len(f)
+
+        if left == cursor: return False
+        key = entrytext[left:cursor]
+
+        value = model.get_value(iter, self.get_property('text-column'))
+        if value is None: return False
+        return value.startswith(key)
+
+    def __match_selected(self, completion, model, iter):
+        value = model.get_value(iter, self.get_property('text-column'))
+        entry = self.get_entry()
+        cursor = entry.get_position()
+
+        text = entry.get_text()
+        text = text.decode('utf-8')
+        left, f = max(
+            [(text.rfind(c, 0, cursor), c) for c in self.leftsep])
+        if left == -1: left += 1
+        else: left += len(f)
+        offset = cursor - left
+
+        entry.insert_text(value[offset:], cursor)
+        entry.set_position(left + len(value))
+        return True
+
+class LibraryTagCompletion(EntryWordCompletion):
+    def __init__(self, watcher, lib):
+        super(LibraryTagCompletion, self).__init__()
+        try: model = self.__model
+        except AttributeError:
+            model = type(self).__model = gtk.ListStore(str)
+            watcher.connect('changed', self.__refreshmodel, lib)
+            watcher.connect('added', self.__refreshmodel, lib)
+            watcher.connect('removed', self.__refreshmodel, lib)
+            self.__refreshmodel(None, None, lib)
+        self.set_model(model)
+        self.set_text_column(0)
+
+    def __refreshmodel(self, watcher, songs, library):
+        tags = set()
+        import formats
+        for song in library.itervalues():
+            for tag in song.keys():
+                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
+                    tags.add(tag)
+        tags.update(["~dirname", "~basename", "~people", "~format"])
+        for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
+                    "mtime", "added", "rating", "length"]:
+            tags.add("#(" + tag)
+        for tag in ["date", "bpm"]:
+            if tag in tags: tags.add("#(" + tag)
+        self.__model.clear()
+        for tag in tags:
+            self.__model.append([tag])
