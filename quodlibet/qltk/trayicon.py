@@ -9,6 +9,7 @@
 
 import gtk
 
+import config
 import const
 import browsers
 import pattern
