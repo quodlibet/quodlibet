@@ -3,8 +3,9 @@ sys.modules['dircache'] = os # cheat the dircache effects
 from tempfile import mkstemp, mkdtemp
 
 from tests import TestCase, add
-from efwidgets import DirectoryTree, EFPluginManager, FileSelector, ExFalsoWindow
+from efwidgets import EFPluginManager, ExFalsoWindow
 from tests.test_plugins import TPluginManager
+from qltk.filesel import DirectoryTree, FileSelector
 
 class TDirectoryTree(TestCase):
     def test_initial(self):

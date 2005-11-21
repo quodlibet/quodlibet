@@ -24,7 +24,6 @@ import parser
 import formats
 import util
 import time
-import datetime
 import locale
 import pattern
 

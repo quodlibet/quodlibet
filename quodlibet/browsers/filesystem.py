@@ -20,7 +20,7 @@ import config
 
 from browsers.base import Browser
 from library import Library, library as glibrary
-from efwidgets import DirectoryTree
+from qltk.filesel import DirectoryTree
 
 class FileSystem(Browser, gtk.ScrolledWindow):
     __gsignals__ = Browser.__gsignals__
