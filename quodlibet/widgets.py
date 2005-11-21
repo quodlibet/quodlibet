@@ -72,12 +72,8 @@ class FSInterface(object):
 
 class FIFOControl(object):
     def __volume(value):
-        if value[0] == "+":
-            widgets.main.volume.set_value(
-                widgets.main.volume.get_value() + 0.05)
-        elif value == "-":
-            widgets.main.volume.set_value(
-                widgets.main.volume.get_value() - 0.05)
+        if value[0] == "+": widgets.main.volume += 0.05
+        elif value == "-": widgets.main.volume -= 0.05
         else:
             try: widgets.main.volume.set_value(int(value) / 100.0)
             except ValueError: pass
@@ -1167,8 +1163,12 @@ class MainWindow(gtk.Window):
             self.__volume_changed(self.scale, device)
             self.show_all()
 
-        def __iadd__(self, v): self.set_value(min(1.0, self.get_value() + v))
-        def __isub__(self): self.set_value(max(0.0, self.get_value() - v))
+        def __iadd__(self, v):
+            self.set_value(min(1.0, self.get_value() + v))
+            return self
+        def __isub__(self, v):
+            self.set_value(max(0.0, self.get_value() - v))
+            return self
 
         def __volume_changed(self, slider, device):
             val = slider.get_value()
