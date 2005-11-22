@@ -18,6 +18,7 @@ import util
 if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers.base import Browser
+from qltk.songlist import SongList
 from util import tag
 
 class PanedBrowser(gtk.VBox, Browser):
@@ -176,7 +177,6 @@ class PanedBrowser(gtk.VBox, Browser):
             self.__refill_id = None
         text = entry.get_text().decode('utf-8')
         if parser.is_parsable(text):
-            from widgets import SongList
             star = dict.fromkeys(SongList.star)
             star.update(self.__star)
             if text: self.__filter = parser.parse(text, star.keys()).search

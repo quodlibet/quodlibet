@@ -16,6 +16,7 @@ from qltk.completion import LibraryTagCompletion
 
 from browsers.base import Browser
 from library import library
+from qltk.songlist import SongList
 
 # A browser that the user only interacts with indirectly, via the
 # Filter menu. The HBox remains empty.
@@ -32,7 +33,6 @@ class EmptyBar(gtk.HBox, Browser):
 
     def dynamic(self, song):
         if self._text is not None:
-            from songlist import SongList
             try: return parser.parse(self._text, SongList.star).search(song)
             except parser.error: return True
         else: return True
@@ -50,7 +50,6 @@ class EmptyBar(gtk.HBox, Browser):
 
     def activate(self):
         if self._text is not None:
-            from songlist import SongList
             try: songs = library.query(self._text, star=SongList.star)
             except parser.error: pass
             else:
@@ -140,7 +139,6 @@ class SearchBar(EmptyBar):
 
     def activate(self):
         if self._text is not None:
-            from songlist import SongList
             try: songs = library.query(self._text, star=SongList.star)
             except parser.error: pass
             else:

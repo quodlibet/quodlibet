@@ -15,7 +15,6 @@ import gtk, pango, gobject, gst
 import stock
 import qltk, qltk.sliderbutton
 
-
 import browsers
 import const
 import config
@@ -32,7 +31,7 @@ from library import library
 
 if sys.version_info < (2, 4): from sets import Set as set
 from properties import SongProperties
-from songlist import SongList
+from qltk.songlist import SongList
 
 # Give us a namespace for now.. FIXME: We need to remove this later.
 # Or, replace it with nicer wrappers!

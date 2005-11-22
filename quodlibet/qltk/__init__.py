@@ -831,7 +831,7 @@ class LibraryBrowser(Window):
         self.set_border_width(12)
         self.set_title(_("Library Browser"))
 
-        from songlist import SongList
+        from qltk.songlist import SongList
         view = SongList(watcher)
 
         sw = gtk.ScrolledWindow()
