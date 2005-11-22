@@ -90,13 +90,14 @@ class PlaylistPlayer(object):
     def get_volume(self): return self.__volume
     volume = property(get_volume, set_volume)
 
-    def error(self, code):
+    def error(self, code, lock):
         self.bin.set_property('uri', '')
         self.bin.set_state(gst.STATE_NULL)
         self.song = None
         self.paused = True
-        self.info.error(code)
+        self.info.error(code, lock)
         self.info.song_started(None)
+        config.set("memory", "song", "")
 
     def __load_song(self, song):
         st = self.bin.set_state(gst.STATE_NULL)
@@ -126,16 +127,17 @@ class PlaylistPlayer(object):
     def remove(self, song):
         if self.song is song: self.__end(False)
 
-    def __get_song(self):
+    def __get_song(self, lock=False):
         song = self.__source.current
         if song is not None:
             config.set("memory", "song", song["~filename"])
             try: self.__load_song(song)
             except Exception, err:
                 import traceback; traceback.print_exc()
-                self.error(err)
+                self.error(err, lock)
                 return
         else:
+            config.set("memory", "song", "")
             self.paused = True
             self.bin.set_state(gst.STATE_NULL)
             self.bin.set_property('uri', '')
@@ -151,7 +153,7 @@ class PlaylistPlayer(object):
             # Avoids a deadlock if the song ends and the user presses a
             # a button that calls __end at the same time; both threads
             # end up waiting for something inside GSt.
-            gobject.idle_add(self.__get_song)
+            gobject.idle_add(self.__get_song, True)
 
     def __tag(self, pipeline, source, tags):
         if self.song and self.song.fill_metadata:

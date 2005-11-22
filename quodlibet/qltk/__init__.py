@@ -92,11 +92,13 @@ class SongWatcher(gtk.Object):
     def seek(self, song, position_in_msec):
         gobject.idle_add(self.emit, 'seek', song, position_in_msec)
 
-    def error(self, code):
+    def error(self, code, lock=False):
         from widgets import widgets
+        if lock: gtk.threads_enter()
         ErrorMessage(
             widgets.main, _("Unable to play song"),
             _("GStreamer was unable to load the selected song.")).run()
+        if lock: gtk.threads_leave()
 
     def reload(self, song):
         try: song.reload()
