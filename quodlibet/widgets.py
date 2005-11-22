@@ -731,59 +731,6 @@ class CoverImage(gtk.Frame):
             qltk.BigCenteredImage(self.__song.comma("album"), cover.name)
 
 class MainWindow(gtk.Window):
-    class PlayControls(gtk.VBox):
-        def __init__(self, watcher):
-            gtk.VBox.__init__(self, spacing=3)
-            self.set_border_width(3)
-
-            hbox = gtk.HBox(spacing=3)
-
-            prev = gtk.Button()
-            prev.add(gtk.image_new_from_stock(
-                gtk.STOCK_MEDIA_PREVIOUS, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            hbox.pack_start(prev)
-
-            play = gtk.ToggleButton()
-            play.add(gtk.image_new_from_stock(
-                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            hbox.pack_start(play)
-
-            next = gtk.Button()
-            next.add(gtk.image_new_from_stock(
-                gtk.STOCK_MEDIA_NEXT, gtk.ICON_SIZE_LARGE_TOOLBAR))
-            hbox.pack_start(next)
-
-            self.pack_start(hbox, expand=False, fill=False)
-
-            hbox = gtk.HBox(spacing=3)
-            from qltk.volume import Volume
-            self.volume = Volume(player.playlist)
-            hbox.pack_start(self.volume, expand=False)
-            from qltk.seekbar import SeekBar
-            hbox.pack_start(SeekBar(watcher, player.playlist))
-            self.pack_start(hbox, expand=False, fill=False)
-
-            prev.connect('clicked', self.__previous)
-            play.connect('toggled', self.__playpause, watcher)
-            next.connect('clicked', self.__next)
-            watcher.connect('song-started', self.__song_started, next)
-            watcher.connect_object('paused', play.set_active, False)
-            watcher.connect_object('unpaused', play.set_active, True)
-
-            self.show_all()
-
-        def __song_started(self, watcher, song, next):
-            next.set_sensitive(bool(song))
-
-        def __playpause(self, button, watcher):
-            if button.get_active() and player.playlist.song is None:
-                player.playlist.reset()
-                player.playlist.next()
-            else: player.playlist.paused = not button.get_active()
-
-        def __previous(self, button): player.playlist.previous()
-        def __next(self, button): player.playlist.next()
-
     def __init__(self, watcher):
         gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
@@ -808,7 +755,8 @@ class MainWindow(gtk.Window):
         hbox = gtk.HBox()
 
         # play controls
-        t = self.PlayControls(watcher)
+        from qltk.controls import PlayControls
+        t = PlayControls(watcher, player.playlist)
         self.volume = t.volume
         hbox.pack_start(t, expand=False, fill=False)
 
