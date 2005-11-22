@@ -619,7 +619,7 @@ class MainWindow(gtk.Window):
         self.qexpander = QueueExpander(
             self.ui.get_widget("/Menu/View/Queue"), watcher)
 
-        from songlist import PlaylistMux
+        from qltk.songlist import PlaylistMux
         self.playlist = PlaylistMux(
             watcher, self.qexpander.model, self.songlist.model)
 
