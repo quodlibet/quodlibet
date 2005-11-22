@@ -19,8 +19,9 @@ class Mock(object):
 
 import test_util, test_audio, test_parser, test_metadata
 import test_playlist, test_pattern, test_stock, test_po, test_playlists
-import test_qltk, test_widgets, test_player, test_search, test_paned
+import test_qltk, test_widgets, test_search, test_paned
 import test_library, test_plugins, test_efwidgets, test_properties
+import test_volume
 
 class Result(unittest.TestResult):
 

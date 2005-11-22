@@ -13,7 +13,7 @@ import shutil # Move to Trash
 
 import gtk, pango, gobject, gst
 import stock
-import qltk, qltk.sliderbutton
+import qltk
 
 import browsers
 import const
@@ -756,9 +756,11 @@ class MainWindow(gtk.Window):
             self.pack_start(hbox, expand=False, fill=False)
 
             hbox = gtk.HBox(spacing=3)
-            self.volume = MainWindow.VolumeSlider(player.playlist)
+            from qltk.volume import Volume
+            self.volume = Volume(player.playlist)
             hbox.pack_start(self.volume, expand=False)
-            hbox.pack_start(MainWindow.PositionSlider(watcher))
+            from qltk.seekbar import SeekBar
+            hbox.pack_start(SeekBar(watcher, player.playlist))
             self.pack_start(hbox, expand=False, fill=False)
 
             prev.connect('clicked', self.__previous)
@@ -781,105 +783,6 @@ class MainWindow(gtk.Window):
 
         def __previous(self, button): player.playlist.previous()
         def __next(self, button): player.playlist.next()
-
-    class PositionSlider(qltk.sliderbutton.HSlider):
-        __lock = False
-        __sig = None
-        __seekable = True
-
-        def __init__(self, watcher):
-            hbox = gtk.HBox(spacing=3)
-            l = gtk.Label("0:00")
-            hbox.pack_start(l)
-            hbox.pack_start(
-                gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
-            super(type(self), self).__init__(hbox)
-
-            self.scale.connect('button-press-event', self.__seek_lock)
-            self.scale.connect('button-release-event', self.__seek_unlock)
-            self.scale.connect('key-press-event', self.__seek_lock)
-            self.scale.connect('key-release-event', self.__seek_unlock)
-            self.connect('scroll-event', self.__scroll)
-            self.scale.connect('value-changed', self.__update_time, l)
-
-            gobject.timeout_add(1000, self.__check_time, self.scale)
-            watcher.connect('song-started', self.__song_changed, l)
-
-        def __scroll(self, widget, event):
-            self.__lock = True
-            if self.__sig is not None:
-                gobject.source_remove(self.__sig)
-            self.__sig = gobject.timeout_add(100, self.__scroll_timeout)
-
-        def __scroll_timeout(self):
-            self.__lock = False
-            if self.__seekable: player.playlist.seek(self.scale.get_value())
-            self.__sig = None
-
-        def __seek_lock(self, scale, event): self.__lock = True
-        def __seek_unlock(self, scale, event):
-            self.__lock = False
-            if self.__seekable: player.playlist.seek(self.scale.get_value())
-
-        def __check_time(self, widget=None):
-            if not (self.__lock or player.playlist.paused):
-                position = player.playlist.get_position()
-                if (not self.__seekable and
-                    position > self.scale.get_adjustment().upper):
-                    self.scale.set_range(0, position)
-                self.scale.set_value(player.playlist.get_position())
-            return True
-
-        def __update_time(self, scale, timer):
-            cur = scale.get_value()
-            cur = "%d:%02d" % (cur // 60000, (cur % 60000) // 1000)
-            timer.set_text(cur)
-
-        def __song_changed(self, watcher, song, label):
-            if song:
-                length = song["~#length"]
-                if length <= 0:
-                    self.scale.set_range(0, 1)
-                    self.__seekable = False
-                else:
-                    self.scale.set_range(0, length * 1000)
-                    self.__seekable = True
-            else:
-                self.scale.set_range(0, 1)
-                self.__seekable = False
-
-    class VolumeSlider(qltk.sliderbutton.VSlider):
-        def __init__(self, device):
-            i = gtk.image_new_from_stock(
-                stock.VOLUME_MAX, gtk.ICON_SIZE_LARGE_TOOLBAR)
-            super(type(self), self).__init__(i)
-            self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
-            self.scale.set_inverted(True)
-            self.get_value = self.scale.get_value
-            self.set_value = self.scale.set_value
-            self.scale.connect('value-changed', self.__volume_changed, device)
-            self.set_value(config.getfloat("memory", "volume"))
-            self.__volume_changed(self.scale, device)
-            self.show_all()
-
-        def __iadd__(self, v):
-            self.set_value(min(1.0, self.get_value() + v))
-            return self
-        def __isub__(self, v):
-            self.set_value(max(0.0, self.get_value() - v))
-            return self
-
-        def __volume_changed(self, slider, device):
-            val = slider.get_value()
-            if val == 0: img = stock.VOLUME_OFF
-            elif val < 0.33: img = stock.VOLUME_MIN
-            elif val < 0.66: img = stock.VOLUME_MED
-            else: img = stock.VOLUME_MAX
-            self.child.child.set_from_stock(img, gtk.ICON_SIZE_LARGE_TOOLBAR)
-
-            val = (2 ** val) - 1
-            device.volume = val
-            config.set("memory", "volume", str(slider.get_value()))
 
     def __init__(self, watcher):
         gtk.Window.__init__(self)

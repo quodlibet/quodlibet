@@ -101,7 +101,7 @@ class _PopupSlider(gtk.EventBox):
 class HSlider(_PopupSlider):
     Scale = gtk.HScale
     _req = (200, -1)
-    _adj = gtk.Adjustment(0, 0, 0, 3600, 15000, 0)
+    _adj = gtk.Adjustment(0, 0, 0, 3, 15, 0)
     UP = [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_RIGHT]
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
