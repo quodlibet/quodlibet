@@ -9,7 +9,6 @@
 
 import os, sys
 import sre
-import shutil # Move to Trash
 
 import gtk, pango, gobject, gst
 import stock
@@ -686,50 +685,6 @@ class MmKeys(object):
     def block(self): map(self.__keys.handler_block, self.__sigs)
     def unblock(self): map(self.__keys.handler_unblock, self.__sigs)
 
-class CoverImage(gtk.Frame):
-    def __init__(self, size=None):
-        gtk.Frame.__init__(self)
-        self.add(gtk.EventBox())
-        self.child.add(gtk.Image())
-        self.__size = size or [100, 75]
-        self.child.child.set_size_request(-1, self.__size[1])
-        self.child.connect_object(
-            'button-press-event', CoverImage.__show_cover, self)
-        self.child.show_all()
-        self.__albumfn = None
-
-    def set_song(self, activator, song):
-        self.__song = song
-        if song is None:
-            self.child.child.set_from_pixbuf(None)
-            self.__albumfn = None
-            self.hide()
-        else:
-            cover = song.find_cover()
-            if cover is None:
-                self.__albumfn = None
-                self.child.child.set_from_pixbuf(None)
-                self.hide()
-            elif cover.name != self.__albumfn:
-                try:
-                    pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                        cover.name, *self.__size)
-                except gobject.GError:
-                    self.hide()
-                else:
-                    self.child.child.set_from_pixbuf(pixbuf)
-                    self.__albumfn = cover.name
-                    self.show()
-
-    def show(self):
-        if self.__albumfn: gtk.Frame.show(self)
-
-    def __show_cover(self, event):
-        if (self.__song and event.button == 1 and
-            event.type == gtk.gdk._2BUTTON_PRESS):
-            cover = self.__song.find_cover()
-            qltk.BigCenteredImage(self.__song.comma("album"), cover.name)
-
 class MainWindow(gtk.Window):
     def __init__(self, watcher):
         gtk.Window.__init__(self)
@@ -771,6 +726,7 @@ class MainWindow(gtk.Window):
         hbox.pack_start(alignment)
 
         # cover image
+        from qltk.cover import CoverImage
         self.image = CoverImage()
         watcher.connect('song-started', self.image.set_song)
         hbox.pack_start(self.image, expand=False)

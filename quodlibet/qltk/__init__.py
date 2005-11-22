@@ -785,46 +785,6 @@ class HintedTreeView(PrettyDragTreeView):
         except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
         tvh.connect_view(self)
 
-class BigCenteredImage(gtk.Window):
-    """Load an image and display it, scaling down to 1/2 the screen's
-    dimensions if necessary.
-
-    This might leak memory, but it could just be Python's GC being dumb."""
-
-    def __init__(self, title, filename):
-        gtk.Window.__init__(self)
-        width = gtk.gdk.screen_width() / 2
-        height = gtk.gdk.screen_height() / 2
-        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
-
-        x_rat = pixbuf.get_width() / float(width)
-        y_rat = pixbuf.get_height() / float(height)
-        if x_rat > 1 or y_rat > 1:
-            if x_rat > y_rat: height = int(pixbuf.get_height() / x_rat)
-            else: width = int(pixbuf.get_width() / y_rat)
-            pixbuf = pixbuf.scale_simple(
-                width, height, gtk.gdk.INTERP_BILINEAR)
-
-        self.set_title(title)
-        self.set_decorated(False)
-        self.set_position(gtk.WIN_POS_CENTER)
-        self.set_modal(False)
-        self.set_icon(pixbuf)
-        self.add(gtk.Frame())
-        self.child.set_shadow_type(gtk.SHADOW_OUT)
-        self.child.add(gtk.EventBox())
-        self.child.child.add(gtk.Image())
-        self.child.child.child.set_from_pixbuf(pixbuf)
-
-        self.child.child.connect_object(
-            'button-press-event', BigCenteredImage.__destroy, self)
-        self.child.child.connect_object(
-            'key-press-event', BigCenteredImage.__destroy, self)
-        self.show_all()
-
-    def __destroy(self, event):
-        self.destroy()
-
 class LibraryBrowser(Window):
     def __init__(self, Kind, watcher):
         super(LibraryBrowser, self).__init__()

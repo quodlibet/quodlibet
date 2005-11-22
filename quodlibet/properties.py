@@ -14,6 +14,7 @@ import locale
 import gtk, pango, gobject
 
 import qltk; from qltk import HintedTreeView, WritingWindow
+from qltk.cover import CoverImage
 import const
 import config
 import util
@@ -221,26 +222,6 @@ class SongProperties(qltk.Window):
                 a.add(widget)
                 self.pack_start(f, expand=expand)
 
-            def _show_big_cover(self, image, event, song):
-                if (event.button == 1 and
-                    event.type == gtk.gdk._2BUTTON_PRESS):
-                    cover = song.find_cover()
-                    try: qltk.BigCenteredImage(song.comma("album"), cover.name)
-                    except: pass
-
-            def _make_cover(self, cover, song):
-                p = gtk.gdk.pixbuf_new_from_file_at_size(cover.name, 70, 70)
-                i = gtk.Image()
-                i.set_from_pixbuf(p)
-                ev = gtk.EventBox()
-                ev.add(i)
-                ev.connect(
-                    'button-press-event', self._show_big_cover, song)
-                f = gtk.Frame()
-                f.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-                f.add(ev)
-                return f
-
         class NoSongs(SongInfo):
             def _description(self, songs):
                 self.pack_start(gtk.Label(_("No songs are selected.")))
@@ -282,19 +263,10 @@ class SongProperties(qltk.Window):
 
                 w.set_markup("\n".join(text))
                 w.set_ellipsize(pango.ELLIPSIZE_END)
-                cover = song.find_cover()
-                if cover:
-                    hb = gtk.HBox(spacing=12)
-                    try:
-                        hb.pack_start(
-                            self._make_cover(cover, song), expand=False)
-                    except:
-                        hb.destroy()
-                        self.pack_frame(tag("album"), w)
-                    else:
-                        hb.pack_start(w)
-                        self.pack_frame(tag("album"), hb)
-                else: self.pack_frame(tag("album"), w)
+                hb = gtk.HBox(spacing=12)
+                hb.pack_start(CoverImage([70, 70], song), expand=False)
+                hb.pack_start(w)
+                self.pack_frame(tag("album"), hb)
 
             def _people(self, (song,)):
                 vb = SongProperties.Information.SongInfo(3, 0)
@@ -447,19 +419,10 @@ class SongProperties(qltk.Window):
                 w = self.Label("")
                 w.set_ellipsize(pango.ELLIPSIZE_END)
                 w.set_markup("\n".join(text))
-                cover = song.find_cover()
-                if cover:
-                    hb = gtk.HBox(spacing=12)
-                    try:
-                        hb.pack_start(
-                            self._make_cover(cover, song), expand=False)
-                    except:
-                        hb.destroy()
-                        self.pack_start(w, expand=False)
-                    else:
-                        hb.pack_start(w)
-                        self.pack_start(hb, expand=False)
-                else: self.pack_start(w, expand=False)
+                hb = gtk.HBox(spacing=12)
+                hb.pack_start(CoverImage([70, 70], song), expand=False)
+                hb.pack_start(w)
+                self.pack_start(hb, expand=False)
 
             def _people(self, songs):
                 artists = set([])
@@ -554,14 +517,12 @@ class SongProperties(qltk.Window):
                 added = set()
                 for i, (album, cover, song) in enumerate(covers):
                     if cover.name in added: continue
-                    try:
-                        cov = self._make_cover(cover, song)
-                        tips.set_tip(cov.child, album)
-                        c = i % 4
-                        r = i // 4
-                        t.attach(cov, c, c + 1, r, r + 1,
-                                 xoptions=gtk.EXPAND, yoptions=0)
-                    except: pass
+                    cov = CoverImage([70, 70], song)
+                    tips.set_tip(cov.child, album)
+                    c = i % 4
+                    r = i // 4
+                    t.attach(cov, c, c + 1, r, r + 1,
+                             xoptions=gtk.EXPAND, yoptions=0)
                     added.add(cover.name)
                 self.pack_start(t, expand=False)
                 tips.enable()
