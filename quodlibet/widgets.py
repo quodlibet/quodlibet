@@ -1632,7 +1632,7 @@ def init():
     widgets.watcher = watcher
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
-             "~#added ~#bitrate").split()
+             "~#added ~#bitrate ~current").split()
     for Kind in zip(*browsers.browsers)[2]:
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(watcher)
