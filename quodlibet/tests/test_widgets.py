@@ -2,10 +2,11 @@ from tests import TestCase, add
 import os, gtk, const
 from formats._audio import AudioFile as AF
 
-from widgets import CountManager, PreferencesWindow
+from widgets import CountManager
 from qltk.chooser import FolderChooser
 from qltk.remote import FSInterface
 from qltk.plugins import PluginWindow
+from qltk.prefs import PreferencesWindow
 import qltk
 from qltk.watcher import SongWatcher
 
