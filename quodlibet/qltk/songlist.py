@@ -711,7 +711,7 @@ class SongList(HintedTreeView):
             if resp == 0: s = _("Moving %d/%d.")
             elif resp == 2: s = _("Deleting %d/%d.")
             else: return
-            w = qltk.WaitLoadWindow(self, len(songs), s, (0, len(songs)))
+            w = WaitLoadWindow(self, len(songs), s, (0, len(songs)))
             trash = os.path.expanduser("~/.Trash")
             for filename, song in songs:
                 try:
