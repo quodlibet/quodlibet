@@ -244,8 +244,9 @@ class PreferencesWindow(qltk.Window):
         def __update_panes(self, button, cbes):
             panes = " ".join([c.child.get_text() for c in cbes])
             config.set('browsers', 'panes', panes)
-            if hasattr(widgets.main.browser, 'refresh_panes'):
-                widgets.main.browser.refresh_panes(restore=True)
+            import browsers
+            try: browsers.paned.PanedBrowser.set_all_panes()
+            except AttributeError: pass
 
     class Player(gtk.VBox):
         def __init__(self):

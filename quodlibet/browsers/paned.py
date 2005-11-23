@@ -26,6 +26,12 @@ class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
+    __browsers = {}
+
+    def set_all_panes(klass):
+        for browser in klass.__browsers: browser.refresh_panes()
+    set_all_panes = classmethod(set_all_panes)
+
     class Pane(HintedTreeView):
         __render = gtk.CellRendererText()
         __render.set_property('ellipsize', pango.ELLIPSIZE_END)
@@ -145,7 +151,7 @@ class PanedBrowser(gtk.VBox, Browser):
     def __init__(self, watcher, main):
         gtk.VBox.__init__(self, spacing=0)
         self.__save = main
-
+        self.__browsers[self] = self
         hb = gtk.HBox(spacing=3)
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
@@ -168,9 +174,13 @@ class PanedBrowser(gtk.VBox, Browser):
                   watcher.connect('removed', self.__refresh)
                   ]:
             self.connect_object('destroy', watcher.disconnect, s)
-
+        self.connect('destroy', self.__destroy)
         self.refresh_panes(restore=False)
         self.show_all()
+
+    def __destroy(self, s2):
+        try: del(self.__browsers[self])
+        except KeyError: pass
 
     def __filter_changed(self, entry):
         if self.__refill_id is not None:
