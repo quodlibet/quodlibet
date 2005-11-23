@@ -154,7 +154,7 @@ class TrayIcon(object):
             if song is None: return
             else:
                 song["~#rating"] = value
-                widgets.watcher.changed([song])
+                watcher.changed([song])
         for i in range(0, int(1.0/util.RATING_PRECISION)+1):
             j = i * util.RATING_PRECISION
             item = gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))

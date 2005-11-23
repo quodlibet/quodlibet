@@ -9,7 +9,6 @@
 
 import gobject, gtk
 import const
-import qltk
 import parser
 import config
 

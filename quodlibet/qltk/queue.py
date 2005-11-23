@@ -10,10 +10,10 @@
 import gtk
 import const
 import config
-import qltk
 import util
 from qltk.songlist import SongList
 from qltk.ccb import ConfigCheckButton
+from properties import SongProperties
 from library import library
 
 class QueueExpander(gtk.Expander):

@@ -8,7 +8,6 @@
 # $Id$
 
 import os
-import shutil
 import dircache
 
 import gobject, gtk

@@ -9,7 +9,6 @@
 
 import os
 import shutil
-import dircache
 import gtk, gobject
 
 import const
@@ -18,7 +17,6 @@ import qltk
 from qltk.filesel import FileSelector
 from qltk.wlw import WaitLoadWindow
 from qltk.delete import DeleteDialog
-import util
 
 from properties import SongProperties
 from plugins import PluginManager

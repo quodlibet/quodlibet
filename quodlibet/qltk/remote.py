@@ -8,11 +8,11 @@
 # $Id$
 
 import os
+import sre
 import gobject, gtk
 import browsers
 import const
 import util
-import qltk
 
 from qltk.browser import LibraryBrowser
 
@@ -176,7 +176,7 @@ class FIFOControl(object):
     def _set_browser(self, value, watcher, window, player):
         Kind = browsers.get(value)
         if Kind is not browsers.search.EmptyBar:
-            window.select_browser(None, browsername)
+            window.select_browser(None, Kind)
         else: print "W: Unknown browser type %r." % value
 
     def _open_browser(self, value, watcher, window, player):

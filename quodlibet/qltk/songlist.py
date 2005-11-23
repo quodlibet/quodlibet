@@ -17,7 +17,7 @@ import gobject, gtk, pango
 import parser
 import qltk
 import player
-import util; from util import to, tag
+import util; from util import tag
 from library import library
 from properties import SongProperties
 from qltk.views import HintedTreeView

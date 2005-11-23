@@ -290,6 +290,7 @@ class Playlists(gtk.VBox, Browser):
         self.show_all()
 
     def __play(self, *args):
+        import player
         player.playlist.reset()
         player.playlist.next()
 
@@ -324,7 +325,7 @@ class Playlists(gtk.VBox, Browser):
             Playlists.changed(playlist)
             self.activate()
 
-    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
+    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime, watcher):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
         model = view.get_model()

@@ -8,7 +8,6 @@
 # $Id$
 
 import os, sys
-import sre
 
 import gtk, pango, gobject, gst
 import stock
@@ -22,9 +21,8 @@ import parser
 import formats
 import util
 import locale
-import pattern
 
-from util import to, tag
+from util import to
 from library import library
 
 if sys.version_info < (2, 4): from sets import Set as set

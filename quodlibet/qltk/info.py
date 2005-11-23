@@ -12,6 +12,7 @@ import gobject, gtk, pango
 import const
 import pattern
 import qltk
+import util
 
 class SongInfo(gtk.Label):
     # Translators: Only worry about "by", "Disc", and "Track" below.
