@@ -30,6 +30,7 @@ from library import library
 if sys.version_info < (2, 4): from sets import Set as set
 from properties import SongProperties
 from qltk.songlist import SongList
+from qltk.wlw import WaitLoadWindow
 
 # Give us a namespace for now.. FIXME: We need to remove this later.
 # Or, replace it with nicer wrappers!
@@ -591,11 +592,11 @@ class MainWindow(gtk.Window):
 
     def __rebuild(self, activator, hard=False):
         self.__keys.block()
-        window = qltk.WaitLoadWindow(self, len(library) // 7,
-                                     _("Quod Libet is scanning your library. "
-                                       "This may take several minutes.\n\n"
-                                       "%d songs reloaded\n%d songs removed"),
-                                     (0, 0))
+        window = WaitLoadWindow(self, len(library) // 7,
+                                _("Quod Libet is scanning your library. "
+                                  "This may take several minutes.\n\n"
+                                  "%d songs reloaded\n%d songs removed"),
+                                (0, 0))
         iter = 7
         c = []
         r = []
@@ -692,10 +693,10 @@ class MainWindow(gtk.Window):
                     widgets.watcher.added(added)
 
     def scan_dirs(self, fns):
-        win = qltk.WaitLoadWindow(self, 0,
-                                  _("Quod Libet is scanning for new songs and "
-                                    "adding them to your library.\n\n"
-                                    "%d songs added"), 0)
+        win = WaitLoadWindow(self, 0,
+                             _("Quod Libet is scanning for new songs and "
+                               "adding them to your library.\n\n"
+                               "%d songs added"), 0)
         added, changed, removed = [], [], []
         for added, changed, removed in library.scan(fns):
             if win.step(len(added)): break

@@ -3,6 +3,7 @@ from tests import registerCase, Mock
 import os, gtk, qltk
 from qltk.watcher import SongWatcher
 from qltk.cbes import ComboBoxEntrySave
+from qltk.wlw import WaitLoadWindow
 from StringIO import StringIO
 
 class TSongWatcher(TestCase):
@@ -194,11 +195,11 @@ class TestWLW(TestCase):
     
     def setUp(self):
         self.parent = self.DummyConnector()
-        self.wlw = qltk.WaitLoadWindow(self.parent, 5, "a test", show=False)
+        self.wlw = WaitLoadWindow(self.parent, 5, "a test", show=False)
         self.wlw.hide()
 
     def test_none(self):
-        wlw = qltk.WaitLoadWindow(None, 5, "a test", show=False)
+        wlw = WaitLoadWindow(None, 5, "a test", show=False)
         wlw.step()
         wlw.destroy()
 

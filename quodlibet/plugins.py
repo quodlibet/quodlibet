@@ -62,6 +62,7 @@ import util; from util import mtime
 from traceback import print_exc
 
 import gobject, gtk, qltk, qltk.watcher
+from qltk.wlw import WritingWindow
 
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
@@ -330,7 +331,7 @@ class PluginManager(object):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
-            win = qltk.WritingWindow(None, len(needs_write))
+            win = WritingWindow(None, len(needs_write))
             for song in needs_write:
                 try: song._song.write()
                 except Exception:

@@ -16,6 +16,7 @@ import const
 import formats
 import qltk
 from qltk.filesel import FileSelector
+from qltk.wlw import WaitLoadWindow
 import util
 
 from properties import SongProperties
@@ -120,7 +121,7 @@ class ExFalsoWindow(gtk.Window):
             if resp == 0: s = _("Moving %d/%d.")
             elif resp == 2: s = _("Deleting %d/%d.")
             else: return
-            w = qltk.WaitLoadWindow(None, len(files), s, (0, len(files)))
+            w = WaitLoadWindow(None, len(files), s, (0, len(files)))
             trash = os.path.expanduser("~/.Trash")
             for filename in files:
                 try:

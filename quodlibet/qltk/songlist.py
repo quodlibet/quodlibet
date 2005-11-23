@@ -21,6 +21,7 @@ import util; from util import to, tag
 from library import library
 from properties import SongProperties
 from qltk.views import HintedTreeView
+from qltk.wlw import WaitLoadWindow
 if sys.version_info < (2, 4): from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
