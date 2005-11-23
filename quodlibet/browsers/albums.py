@@ -15,6 +15,7 @@ import player
 import qltk
 import util
 from qltk.completion import EntryWordCompletion
+from qltk.views import HintedTreeView
 
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
@@ -337,7 +338,7 @@ class AlbumList(Browser, gtk.VBox):
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
-        view = qltk.HintedTreeView()
+        view = HintedTreeView()
         view.set_headers_visible(False)
         model_sort = gtk.TreeModelSort(self.__model)
         model_filter = model_sort.filter_new()

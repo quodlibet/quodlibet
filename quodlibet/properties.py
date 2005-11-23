@@ -13,7 +13,8 @@ import time
 import locale
 import gtk, pango, gobject
 
-import qltk; from qltk import HintedTreeView, WritingWindow
+import qltk; from qltk import WritingWindow
+from qltk.views import HintedTreeView
 from qltk.cover import CoverImage
 from qltk.cbes import ComboBoxEntrySave
 import const

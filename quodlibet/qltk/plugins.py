@@ -13,6 +13,8 @@ import config
 import qltk
 import util
 
+from qltk.views import HintedTreeView
+
 class PluginWindow(qltk.Window):
     _window = None
 
@@ -35,7 +37,7 @@ class PluginWindow(qltk.Window):
 
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-        tv = qltk.HintedTreeView()
+        tv = HintedTreeView()
         model = gtk.ListStore(object)
         tv.set_model(model)
         tv.set_rules_hint(True)

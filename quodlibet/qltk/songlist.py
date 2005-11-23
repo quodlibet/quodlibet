@@ -20,7 +20,7 @@ import player
 import util; from util import to, tag
 from library import library
 from properties import SongProperties
-
+from qltk.views import HintedTreeView
 if sys.version_info < (2, 4): from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
@@ -280,7 +280,7 @@ class PlaylistModel(gtk.ListStore):
 
 gobject.type_register(PlaylistModel)
 
-class SongList(qltk.HintedTreeView):
+class SongList(HintedTreeView):
     # A TreeView containing a list of songs.
 
     # When created SongLists add themselves to this dict so they get

@@ -20,6 +20,7 @@ import util
 import cPickle as pickle
 
 from browsers.base import Browser
+from qltk.views import HintedTreeView
 import formats; from formats.remote import RemoteFile
 
 FEEDS = os.path.join(const.DIR, "feeds")
@@ -160,7 +161,7 @@ class AudioFeeds(Browser, gtk.VBox):
         gtk.VBox.__init__(self)
         self.__main = main
 
-        self.__view = view = qltk.HintedTreeView()
+        self.__view = view = HintedTreeView()
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         col = gtk.TreeViewColumn("Audio Feeds", render)

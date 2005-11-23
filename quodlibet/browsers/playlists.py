@@ -21,6 +21,7 @@ import formats
 from library import library
 from browsers.base import Browser
 from formats._audio import AudioFile
+from qltk.views import HintedTreeView
 
 if sys.version_info < (2, 4): from sets import Set as set
 
@@ -238,7 +239,7 @@ class Playlists(gtk.VBox, Browser):
     def __init__(self, watcher, main):
         gtk.VBox.__init__(self, spacing=6)
         self.__main = main
-        self.__view = view = qltk.HintedTreeView()
+        self.__view = view = HintedTreeView()
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.connect('editing-started', self.__start_editing)

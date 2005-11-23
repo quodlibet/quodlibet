@@ -19,18 +19,19 @@ if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers.base import Browser
 from qltk.songlist import SongList
+from qltk.views import HintedTreeView
 from util import tag
 
 class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
-    class Pane(qltk.HintedTreeView):
+    class Pane(HintedTreeView):
         __render = gtk.CellRendererText()
         __render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
         def __init__(self, mytag, next):
-            qltk.HintedTreeView.__init__(self)
+            HintedTreeView.__init__(self)
             if "~" in mytag[1:]: self.tags = filter(None, mytag.split("~"))
             else: self.tags = [mytag]
             self.__next = next

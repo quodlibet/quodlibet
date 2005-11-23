@@ -17,6 +17,8 @@ import formats
 import qltk
 import util
 
+from qltk.views import HintedTreeView
+
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
     if not handledirs or '/' not in key:
@@ -195,7 +197,7 @@ class FileSelector(gtk.VPaned):
         self.__filter = filter
 
         dirlist = DirectoryTree(initial)
-        filelist = qltk.HintedTreeView(gtk.ListStore(str))
+        filelist = HintedTreeView(gtk.ListStore(str))
         column = gtk.TreeViewColumn(_("Songs"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
