@@ -31,7 +31,7 @@ class TrayIcon(object):
         "<artist~title~version>>")
 
     def __init__(self, watcher, window):
-        try: import egg.trayicona as trayicon
+        try: import egg.trayicon as trayicon
         except ImportError:
             try: import _trayicon as trayicon
             except: return
