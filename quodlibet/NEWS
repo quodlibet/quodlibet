@@ -5,6 +5,21 @@ may require you to re-add any songs in the library.
 Reloading your library after upgrading is always a good idea (though
 it hasn't strictly been necessary since 0.10).
 
+1.0
+ * Plugins can make themselves insensitive. (#66)
+ * More command-line options. (#75)
+ * Wavpack support. (#257)
+ * "One Song" (and repeat) play mode. (#351)
+ * Improved tray icon menu. (#360)
+ * New install system that is more FHS-compliant. (#362)
+ * UI improvements:
+   * ^W closes transient windows. (#326)
+   * More DnD support. (#337)
+   * HIG-compliance for strings.
+   * Double-click files in browsers to enqueue them. (#341)
+   * Ctrl-Left/Right changed to Ctrl-,/.. (#355)
+ * More memory and CPU optimizations. (#335, #346, #350)
+
 0.15 - Maybe I will.
  * An 'artist' tag can be stored in the library for MODs. (#277)
  * 'All Albums' remains on the album list after a search. (#282)
