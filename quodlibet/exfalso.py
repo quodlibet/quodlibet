@@ -50,7 +50,8 @@ if __name__ == "__main__":
 
     if (os.path.exists(const.CONTROL) and
         not config.getboolean('exfalso', 'shutup')):
-        qltk.WarningMessage(
+        from qltk.msg import WarningMessage
+        WarningMessage(
             w, _("Quod Libet is running"),
             _("It looks like you are running Quod Libet right now. "
               "If you edit songs also in Quod Libet's library while it is "
