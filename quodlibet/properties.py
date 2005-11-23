@@ -18,6 +18,7 @@ from qltk.wlw import WritingWindow
 from qltk.views import HintedTreeView
 from qltk.cover import CoverImage
 from qltk.cbes import ComboBoxEntrySave
+from qltk.ccb import ConfigCheckButton
 import const
 import config
 import util
@@ -1326,15 +1327,15 @@ class SongProperties(qltk.Window):
             self.pack_start(sw)
 
             # Checkboxes
-            replace = qltk.ConfigCheckButton(
+            replace = ConfigCheckButton(
                 _("Replace spaces with _underscores"),
                 "rename", "spaces")
             replace.set_active(config.getboolean("rename", "spaces"))
-            windows = qltk.ConfigCheckButton(
+            windows = ConfigCheckButton(
                 _("Replace _Windows-incompatible characters"),
                 "rename", "windows")
             windows.set_active(config.getboolean("rename", "windows"))
-            ascii = qltk.ConfigCheckButton(
+            ascii = ConfigCheckButton(
                 _("Replace non-_ASCII characters"),
                 "rename", "ascii")
             ascii.set_active(config.getboolean("rename", "ascii"))

@@ -16,6 +16,7 @@ import util
 from qltk.songlist import SongList
 from qltk.chooser import FolderChooser
 from qltk.entry import ValidatingEntry
+from qltk.ccb import ConfigCheckButton
 
 class PreferencesWindow(qltk.Window):
     __window = None
@@ -134,7 +135,7 @@ class PreferencesWindow(qltk.Window):
             self.set_border_width(12)
             self.title = _("Browsers")
             tips = gtk.Tooltips()
-            c = qltk.ConfigCheckButton(
+            c = ConfigCheckButton(
                 _("Color _search terms"), 'browsers', 'color')
             c.set_active(config.getboolean("browsers", "color"))
             tips.set_tip(
@@ -200,7 +201,7 @@ class PreferencesWindow(qltk.Window):
             self.title = _("Player")
 
             tips = gtk.Tooltips()
-            c = qltk.ConfigCheckButton(
+            c = ConfigCheckButton(
                 _("_Jump to playing song automatically"), 'settings', 'jump')
             tips.set_tip(c, _("When the playing song changes, "
                               "scroll to it in the song list"))
@@ -259,7 +260,7 @@ class PreferencesWindow(qltk.Window):
             l.set_mnemonic_widget(e)
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
-            cb = qltk.ConfigCheckButton(
+            cb = ConfigCheckButton(
                 _("Show _programmatic tags"), 'editing', 'alltags')
             cb.set_active(config.getboolean("editing", 'alltags'))
             vbox.pack_start(hb, expand=False)
