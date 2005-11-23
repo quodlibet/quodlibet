@@ -40,25 +40,48 @@ class __widgets(object):
     __slots__ = ["watcher", "main"]
 widgets = __widgets()
 
-class AboutWindow(gtk.AboutDialog):
-    def __init__(self, parent=None):
-        gtk.AboutDialog.__init__(self)
-        self.set_name("Quod Libet")
-        self.set_version(const.VERSION)
-        self.set_authors(const.AUTHORS)
-        fmts = ", ".join([os.path.basename(name) for name, mod
-                          in formats.modules if mod.extensions])
-        text = "%s\n%s" % (_("Supported formats: %s"), _("Audio device: %s"))
-        self.set_comments(text % (fmts, player.playlist.name))
-        # Translators: Replace this with your name/email to have it appear
-        # in the "About" dialog.
-        self.set_translator_credits(_('translator-credits'))
-        self.set_website("http://www.sacredchao.net/quodlibet")
-        self.set_copyright(
-            "Copyright © 2004-2005 Joe Wreschnig, Michael Urman, & others\n"
-            "<quodlibet@lists.sacredchao.net>")
-        gtk.AboutDialog.run(self)
-        self.destroy()
+class MainSongList(SongList):
+    # The SongList that represents the current playlist.
+
+    class CurrentColumn(gtk.TreeViewColumn):
+        # Displays the current song indicator, either a play or pause icon.
+    
+        _render = gtk.CellRendererPixbuf()
+        _render.set_property('xalign', 0.5)
+        header_name = "~current"
+
+        def _cdf(self, column, cell, model, iter,
+                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
+            try:
+                if model.get_path(iter) != model.current_path: stock = ''
+                else: stock = pixbuf[player.playlist.paused]
+                cell.set_property('stock-id', stock)
+            except AttributeError: pass
+
+        def __init__(self):
+            gtk.TreeViewColumn.__init__(self, "", self._render)
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_fixed_width(24)
+            self.set_cell_data_func(self._render, self._cdf)
+            self.header_name = "~current"
+
+    def __init__(self, watcher, player):
+        SongList.__init__(self, watcher)
+        self.set_rules_hint(True)
+        self.model = self.get_model()
+        s = watcher.connect_object('removed', map, player.remove)
+        self.connect_object('destroy', watcher.disconnect, s)
+        self.connect_object('row-activated', self.__select_song, player)
+
+    def __select_song(self, player, indices, col):
+        iter = self.model.get_iter(indices)
+        player.go_to(iter)
+        if player.song: player.playlist.paused = False
+
+    def set_sort_by(self, *args, **kwargs):
+        SongList.set_sort_by(self, *args, **kwargs)
+        tag, reverse = self.get_sort_by()
+        config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
 
 class MainWindow(gtk.Window):
     def __init__(self, watcher):
@@ -133,7 +156,7 @@ class MainWindow(gtk.Window):
         self.song_scroller = sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.songlist = MainSongList(watcher)
+        self.songlist = MainSongList(watcher, player.playlist)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         sw.add(self.songlist)
@@ -324,7 +347,6 @@ class MainWindow(gtk.Window):
 
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
-            ("About", gtk.STOCK_ABOUT, None, None, None, AboutWindow),
             ]
 
         if const.SM_PREVIOUS.startswith("gtk-"): label = None
@@ -343,6 +365,11 @@ class MainWindow(gtk.Window):
                         "<control>period", None, self.__next_song))
 
         ag.add_actions(actions)
+
+        from qltk.about import AboutWindow
+        act = gtk.Action("About", None, None, gtk.STOCK_ABOUT)
+        act.connect_object('activate', AboutWindow, self, player.playlist)
+        ag.add_action(act)
 
         act = gtk.Action(
             "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
@@ -818,50 +845,6 @@ class MainWindow(gtk.Window):
                 i) % {'count': i, 'time': util.format_time_long(length)}
         statusbar.set_property('label', t)
         gobject.idle_add(statusbar.queue_resize)
-
-class MainSongList(SongList):
-    # The SongList that represents the current playlist.
-
-    class CurrentColumn(gtk.TreeViewColumn):
-        # Displays the current song indicator, either a play or pause icon.
-    
-        _render = gtk.CellRendererPixbuf()
-        _render.set_property('xalign', 0.5)
-        header_name = "~current"
-
-        def _cdf(self, column, cell, model, iter,
-                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
-            try:
-                if model.get_path(iter) != model.current_path: stock = ''
-                else: stock = pixbuf[player.playlist.paused]
-                cell.set_property('stock-id', stock)
-            except AttributeError: pass
-
-        def __init__(self):
-            gtk.TreeViewColumn.__init__(self, "", self._render)
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-            self.set_fixed_width(24)
-            self.set_cell_data_func(self._render, self._cdf)
-            self.header_name = "~current"
-
-    def __init__(self, *args, **kwargs):
-        SongList.__init__(self, *args, **kwargs)
-        self.set_rules_hint(True)
-        self.model = self.get_model()
-        s = widgets.watcher.connect_object(
-            'removed', map, player.playlist.remove)
-        self.connect_object('destroy', widgets.watcher.disconnect, s)
-        self.connect_object('row-activated', MainSongList.__select_song, self)
-
-    def __select_song(self, indices, col):
-        iter = self.model.get_iter(indices)
-        player.playlist.go_to(iter)
-        if player.playlist.song: player.playlist.paused = False
-
-    def set_sort_by(self, *args, **kwargs):
-        SongList.set_sort_by(self, *args, **kwargs)
-        tag, reverse = self.get_sort_by()
-        config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
 
 def website_wrap(activator, link):
     if not util.website(link):
