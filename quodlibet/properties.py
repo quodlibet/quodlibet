@@ -323,8 +323,8 @@ class SongProperties(qltk.Window):
                 t.set_homogeneous(False)
                 table = [(_("added"), added),
                          (_("last played"), lastplayed),
-                         (_("play count"), playcount),
-                         (_("skip count"), skipcount),
+                         (_("plays"), playcount),
+                         (_("skips"), skipcount),
                          (_("rating"), rating)]
 
                 for i, (l, r) in enumerate(table):
