@@ -2,8 +2,10 @@ from tests import TestCase, add
 import os, gtk, const
 from formats._audio import AudioFile as AF
 
-from widgets import CountManager, FSInterface, PluginWindow, PreferencesWindow
+from widgets import CountManager, PreferencesWindow
 from qltk.chooser import FolderChooser
+from qltk.remote import FSInterface
+from qltk.plugins import PluginWindow
 import qltk
 
 class TFSInterface(TestCase):
@@ -101,10 +103,8 @@ class TPluginWindow(TestCase):
     def test_create(self):
         from plugins import PluginManager
         from widgets import SongList
-        SongList.pm = PluginManager(qltk.SongWatcher(), [])
-        w = PluginWindow(None)
+        w = PluginWindow(None, PluginManager(qltk.SongWatcher(), []))
         w.destroy()
-        del(SongList.pm)
 
 add(TPluginWindow)
 

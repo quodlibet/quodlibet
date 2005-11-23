@@ -1,6 +1,6 @@
 from unittest import TestCase, makeSuite
 from tests import registerCase
-from songlist import PlaylistModel, PlaylistMux
+from qltk.songlist import PlaylistModel, PlaylistMux
 import gtk
 from qltk import SongWatcher
 
