@@ -50,6 +50,7 @@ by <~people>>'''
         self.__step = 0 # 0=invisible; 255=fully visible
         self.__stepby = 0
         self.__song = None
+        self.__next = None
         self.__screen = gtk.gdk.screen_get_default()
         geom = gtk.gdk.Screen.get_monitor_geometry(self.__screen, 0)
         self.__screenwidth = geom.width
@@ -62,12 +63,8 @@ by <~people>>'''
     def plugin_single_song(self, song): self.plugin_on_song_started(song)
 
     def plugin_on_song_started(self, song):
-        self.hide()
-        if song is None: return
-        self.wait_until_hidden()
-        self.__song = song
-        self.render_setup(song)
-        self.show()
+        self.__next = song
+        gobject.idle_add(self.show)
 
     def wait_until_hidden(self):
         while self.__stepby < 0:
@@ -87,8 +84,20 @@ by <~people>>'''
             gobject.timeout_add(self.conf.ms, self.render)
 
     def show(self):
+        if self.__step > 0:
+            self.hide()
+            return
+
+        if self.__next is not None:
+            self.__song = self.__next
+            self.__next = None
+        if self.__song is None:
+            return
+
         if self.__step >= 255:
             return
+
+        self.render_setup(self.__song)
 
         if self.__stepby == 0:
             self.__stepby = self.conf.step
@@ -273,6 +282,9 @@ by <~people>>'''
             self.__window.hide()
             self.__stepby = 0
             self.__step = 0
+            self.__song = None
+            if self.__next is not None:
+                gobject.timeout_add(self.conf.ms, self.show)
             return
 
         gobject.idle_add(self.__window.show)
