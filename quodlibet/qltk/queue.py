@@ -13,6 +13,7 @@ import config
 import qltk
 import util
 from qltk.songlist import SongList
+from qltk.ccb import ConfigCheckButton
 from library import library
 
 class QueueExpander(gtk.Expander):
@@ -39,7 +40,7 @@ class QueueExpander(gtk.Expander):
         l2 = gtk.Label()
         hb.pack_start(l2)
 
-        cb = qltk.ConfigCheckButton(
+        cb = ConfigCheckButton(
             _("_Random"), "memory", "shufflequeue")
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         cb.set_active(config.getboolean("memory", "shufflequeue"))
