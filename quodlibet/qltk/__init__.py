@@ -12,21 +12,17 @@ import gobject, gtk, pango
 import config
 import util
 
-if sys.version_info < (2, 4): from sets import Set as set
+def get_top_parent(widget):
+    """Return the ultimate parent of a widget; the assumption that code
+    using this makes is that it will be a gtk.Window, i.e. the widget
+    is fully packed when this is called."""
+    if widget is not None:
+        while widget.parent is not None: widget = widget.parent
+    return widget
 
-class Window(gtk.Window):
-    __gsignals__ = {"close-accel": (
-        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
-    def __init__(self, *args, **kwargs):
-        super(Window, self).__init__(*args, **kwargs)
-        ag = gtk.AccelGroup()
-        self.add_accel_group(ag)
-        self.add_accelerator(
-            'close-accel', ag, ord('w'), gtk.gdk.CONTROL_MASK, 0)
-
-    def do_close_accel(self):
-        self.destroy()
-gobject.type_register(Window)
+# Legacy plugin/code support.
+from qltk.msg import *
+from qltk.x import *
 
 class GetStringDialog(gtk.Dialog):
     def __init__(
@@ -123,83 +119,6 @@ class DeleteDialog(gtk.Dialog):
         self.vbox.pack_start(hbox)
         self.vbox.show_all()
 
-class Message(gtk.MessageDialog):
-    """A message dialog that destroys itself after it is run, uses
-    markup, and defaults to an 'OK' button."""
-
-    def __init__(self, kind, parent, title, description, buttons=None):
-        buttons = buttons or gtk.BUTTONS_OK
-        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
-        gtk.MessageDialog.__init__(
-            self, parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            kind, buttons)
-        self.set_markup(text)
-
-    def run(self, destroy=True):
-        gtk.MessageDialog.run(self)
-        if destroy: self.destroy()
-
-class ConfirmAction(Message):
-    """A message dialog that asks a yes/no question."""
-
-    def __init__(self, *args, **kwargs):
-        kwargs["buttons"] = gtk.BUTTONS_YES_NO
-        Message.__init__(self, gtk.MESSAGE_WARNING, *args, **kwargs)
-
-    def run(self, destroy = True):
-        """Returns True if yes was clicked, False otherwise."""
-        resp = gtk.MessageDialog.run(self)
-        if destroy: self.destroy()
-        if resp == gtk.RESPONSE_YES: return True
-        else: return False
-
-class CancelRevertSave(gtk.MessageDialog):
-    def __init__(self, parent):
-        title = _("Discard tag changes?")
-        description = _("Tags have been changed but not saved. Save these "
-                        "files, or revert and discard changes?")
-        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
-        parent = get_top_parent(parent)
-        gtk.MessageDialog.__init__(
-            self, parent, flags=0, type=gtk.MESSAGE_WARNING,
-            buttons=gtk.BUTTONS_NONE)
-        self.add_buttons(gtk.STOCK_SAVE, gtk.RESPONSE_YES,
-                         gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_REVERT_TO_SAVED, gtk.RESPONSE_NO)
-        self.set_default_response(gtk.RESPONSE_NO)
-        self.set_markup(text)
-
-    def run(self):
-        resp = gtk.MessageDialog.run(self)
-        self.destroy()
-        return resp
-
-class ErrorMessage(Message):
-    """Like Message, but uses an error-indicating picture."""
-    def __init__(self, *args):
-        Message.__init__(self, gtk.MESSAGE_ERROR, *args)
-
-class WarningMessage(Message):
-    """Like Message, but uses an warning-indicating picture."""
-    def __init__(self, *args):
-        Message.__init__(self, gtk.MESSAGE_WARNING, *args)
-
-class Notebook(gtk.Notebook):
-    """A regular gtk.Notebook, except when appending a page, if no
-    label is given, the page's 'title' attribute (either a string or
-    a widget) is used."""
-    
-    def append_page(self, page, label=None):
-        if label is not None:
-            if not isinstance(label, gtk.Widget): label = gtk.Label(label)
-            gtk.Notebook.append_page(self, page, label)
-        else:
-            if hasattr(page, 'title'):
-                title = page.title
-                if not isinstance(title, gtk.Widget): title = gtk.Label(title)
-                gtk.Notebook.append_page(self, page, title)
-            else: raise TypeError("no page.title and no label given")
-
 class ConfigCheckButton(gtk.CheckButton):
     """A CheckButton that connects to QL's config module, and toggles
     a boolean configuration value when it is toggled.
@@ -212,46 +131,6 @@ class ConfigCheckButton(gtk.CheckButton):
 
     def __toggled(self, section, option):
         config.set(section, option, str(bool(self.get_active())).lower())
-
-def Frame(label=None, border=0, bold=False, child=None):
-    if isinstance(label, basestring):
-        format = "%s"
-        if bold: format  = "<b>%s</b>" % format
-        markup = util.escape(label)
-        markup = format % markup
-        label = gtk.Label()
-        label.set_markup(markup)
-        label.set_use_underline(True)
-
-    frame = gtk.Frame()
-    frame.set_border_width(border)
-    align = gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
-    align.set_padding(3, 0, 12, 0)
-    frame.add(align)
-    if child: align.add(child)
-    frame.set_shadow_type(gtk.SHADOW_NONE)
-    frame.set_label_widget(label)
-    return frame
-
-def MenuItem(text, image):
-    i = gtk.ImageMenuItem(text)
-    i.get_image().set_from_stock(image, gtk.ICON_SIZE_MENU)
-    return i
-
-def Button(text, image, size=gtk.ICON_SIZE_BUTTON):
-    # Stock image with custom label.
-    align = gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
-    hbox = gtk.HBox(spacing=2)
-    i = gtk.Image()
-    i.set_from_stock(image, size)
-    hbox.pack_start(i)
-    l = gtk.Label(text)
-    l.set_use_underline(True)
-    hbox.pack_start(l)
-    align.add(hbox)
-    b = gtk.Button()
-    b.add(align)
-    return b
 
 class ValidatingEntry(gtk.Entry):
     """An entry with visual feedback as to whether it is valid or not.
@@ -491,7 +370,3 @@ class LibraryBrowser(Window):
             None, None, None, button, time)
         return True
 
-def get_top_parent(widget):
-    if widget is not None:
-        while widget.parent is not None: widget = widget.parent
-    return widget

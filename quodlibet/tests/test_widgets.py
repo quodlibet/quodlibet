@@ -2,7 +2,7 @@ from tests import TestCase, add
 import os, gtk, const
 from formats._audio import AudioFile as AF
 
-from widgets import CountManager
+from qltk.count import CountManager
 from qltk.chooser import FolderChooser
 from qltk.remote import FSInterface
 from qltk.plugins import PluginWindow
