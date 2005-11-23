@@ -2,7 +2,7 @@ MODULES = config.py const.py efwidgets.py library.py match.py parser.py pattern.
 MODULE_DIRS = mutagen browsers formats qltk
 PROGRAMS = exfalso quodlibet
 SUBDIRS = trayicon mmkeys po
-EXTENSIONS = trayicon.so mmkeys.so
+EXTENSIONS = _trayicon.so _mmkeys.so
 PREFIX ?= /usr/local
 TO = share/quodlibet
 TODEP = lib/quodlibet
@@ -57,9 +57,12 @@ superclean: distclean
 
 extensions: $(EXTENSIONS)
 
-%.so: %
-	cd $^ && make $@ && cd ..
-	cp $^/$@ .
+_trayicon.so:
+	cd trayicon && make trayicon.so && cd ..
+	cp trayicon/trayicon.so _trayicon.so
+_mmkeys.so:
+	cd mmkeys && make mmkeys.so && cd ..
+	cp mmkeys/mmkeys.so _mmkeys.so
 
 po-data:
 	cd po && make po

@@ -6,12 +6,12 @@ void trayicon_register_classes (PyObject *d);
 
 extern PyMethodDef trayicon_functions[];
 
-DL_EXPORT(void) inittrayicon(void) {
+DL_EXPORT(void) init_trayicon(void) {
     PyObject *m, *d;
 	
     init_pygobject();
 
-    m = Py_InitModule("trayicon", trayicon_functions);
+    m = Py_InitModule("_trayicon", trayicon_functions);
     d = PyModule_GetDict(m);
 	
     trayicon_register_classes(d);

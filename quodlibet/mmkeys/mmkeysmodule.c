@@ -6,12 +6,12 @@ void mmkeys_register_classes(PyObject *d);
 
 extern PyMethodDef mmkeys_functions[];
 
-DL_EXPORT(void) initmmkeys(void) {
+DL_EXPORT(void) init_mmkeys(void) {
     PyObject *m, *d;
 	
     init_pygobject();
 
-    m = Py_InitModule("mmkeys", mmkeys_functions);
+    m = Py_InitModule("_mmkeys", mmkeys_functions);
     d = PyModule_GetDict(m);
 	
     mmkeys_register_classes(d);

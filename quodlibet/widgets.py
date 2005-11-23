@@ -522,21 +522,6 @@ class PreferencesWindow(qltk.Window):
         except AttributeError: pass
         else: config.write(const.CONFIG)
 
-class MmKeys(object):
-    def __init__(self, cbs):
-        self.__sigs = []
-        try: import mmkeys
-        except:
-            class F(object):
-                handler_block = handler_unblock = lambda s, a: False
-            self.__keys = F()
-        else:
-            self.__keys = mmkeys.MmKeys()
-            self.__sigs = map(self.__keys.connect, *zip(*cbs.items()))
-
-    def block(self): map(self.__keys.handler_block, self.__sigs)
-    def unblock(self): map(self.__keys.handler_unblock, self.__sigs)
-
 class MainWindow(gtk.Window):
     def __init__(self, watcher):
         gtk.Window.__init__(self)
@@ -637,9 +622,8 @@ class MainWindow(gtk.Window):
 
         self.browser = None
 
-        self.__keys = MmKeys({"mm_prev": self.__previous_song,
-                              "mm_next": self.__next_song,
-                              "mm_playpause": self.__play_pause})
+        from qltk.mmkeys import MmKeys
+        self.__keys = MmKeys(player.playlist)
 
         self.child.show_all()
         sw.show_all()
