@@ -61,7 +61,7 @@ characteristics:
 import util; from util import mtime
 from traceback import print_exc
 
-import gobject, gtk, qltk
+import gobject, gtk, qltk, qltk.watcher
 
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
@@ -126,7 +126,7 @@ class PluginManager(object):
     }
 
     all_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                  for s in gobject.signal_list_names(qltk.SongWatcher)]
+                  for s in gobject.signal_list_names(qltk.watcher.SongWatcher)]
 
     def __init__(self, watcher=None, folders=[]):
         self.scan = []

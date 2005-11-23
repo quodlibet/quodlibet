@@ -7,11 +7,12 @@ from qltk.chooser import FolderChooser
 from qltk.remote import FSInterface
 from qltk.plugins import PluginWindow
 import qltk
+from qltk.watcher import SongWatcher
 
 class TFSInterface(TestCase):
     from formats._audio import AudioFile as AF
     def setUp(self):
-        self.w = qltk.SongWatcher()
+        self.w = SongWatcher()
         self.fs = FSInterface(self.w)
 
     def do(self):
@@ -63,7 +64,7 @@ add(TFolderChooser)
 
 class TCountManager(TestCase):
     def setUp(self):
-        self.w = qltk.SongWatcher()
+        self.w = SongWatcher()
         self.s1 = AF({"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
         self.s2 = AF({"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
         self.cm = CountManager(self.w, self)
@@ -103,7 +104,7 @@ class TPluginWindow(TestCase):
     def test_create(self):
         from plugins import PluginManager
         from widgets import SongList
-        w = PluginWindow(None, PluginManager(qltk.SongWatcher(), []))
+        w = PluginWindow(None, PluginManager(SongWatcher(), []))
         w.destroy()
 
 add(TPluginWindow)

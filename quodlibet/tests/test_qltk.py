@@ -1,11 +1,13 @@
 from unittest import TestCase
 from tests import registerCase, Mock
 import os, gtk, qltk
+from qltk.watcher import SongWatcher
+from qltk.cbes import ComboBoxEntrySave
 from StringIO import StringIO
 
 class TSongWatcher(TestCase):
     def setUp(self):
-        self.watcher = qltk.SongWatcher()
+        self.watcher = SongWatcher()
 
     def __changed(self, watcher, song, expected):
         self.failUnlessEqual(expected.pop(0), song)
@@ -105,7 +107,7 @@ class TestNotebook(TestCase):
 
 class TestComboSave(TestCase):
     def test_apprepend(self):
-        c = qltk.ComboBoxEntrySave()
+        c = ComboBoxEntrySave()
         self.failUnlessEqual([], c.get_text())
         c.append_text("line 1")
         c.append_text("line 2")
@@ -114,12 +116,12 @@ class TestComboSave(TestCase):
         c.destroy()
 
     def test_initial(self):
-        c = qltk.ComboBoxEntrySave(initial = ["line 1", "line 2"])
+        c = ComboBoxEntrySave(initial = ["line 1", "line 2"])
         self.failUnlessEqual(["line 1", "line 2"], c.get_text())
         c.destroy()
 
     def test_count(self):
-        c = qltk.ComboBoxEntrySave(initial = ["line 1"], count = 2)
+        c = ComboBoxEntrySave(initial = ["line 1"], count = 2)
         self.failUnlessEqual(["line 1"], c.get_text())
         c.append_text("line 2")
         self.failUnlessEqual(["line 1", "line 2"], c.get_text())
@@ -133,31 +135,31 @@ class TestComboSave(TestCase):
         f = file("combo_test", "w")
         f.write("line 1\nline 2\nline 3\n")
         f.close()
-        c = qltk.ComboBoxEntrySave("combo_test")
+        c = ComboBoxEntrySave("combo_test")
         self.failUnlessEqual(["line 1", "line 2", "line 3"], c.get_text())
         os.unlink("combo_test")
         c.destroy()
 
     def test_read_filelike(self):
         f = StringIO("line 1\nline 2\nline 3\n")
-        c = qltk.ComboBoxEntrySave(f)
+        c = ComboBoxEntrySave(f)
         self.failUnlessEqual(["line 1", "line 2", "line 3"], c.get_text())
         c.destroy()
 
     def test_write_filelike(self):
         f = StringIO()
-        c = qltk.ComboBoxEntrySave(initial = ["line 1", "line 2", "line 3"])
+        c = ComboBoxEntrySave(initial = ["line 1", "line 2", "line 3"])
         c.write(f)
         f.seek(0)
-        c2 = qltk.ComboBoxEntrySave(f)
+        c2 = ComboBoxEntrySave(f)
         self.failUnlessEqual(c.get_text(), c2.get_text())
         c.destroy()
         c2.destroy()
 
     def test_write_filename(self):
-        c = qltk.ComboBoxEntrySave(initial = ["line 1", "line 2", "line 3"])
+        c = ComboBoxEntrySave(initial = ["line 1", "line 2", "line 3"])
         c.write("combo_test")
-        c2 = qltk.ComboBoxEntrySave("combo_test")
+        c2 = ComboBoxEntrySave("combo_test")
         self.failUnlessEqual(c.get_text(), c2.get_text())
         os.unlink("combo_test")
         c.destroy()
@@ -165,9 +167,9 @@ class TestComboSave(TestCase):
 
     def test_write_filedir(self):
         self.failIf(os.path.isdir('notdir'))
-        c = qltk.ComboBoxEntrySave(initial = ["line 1", "line 2", "line 3"])
+        c = ComboBoxEntrySave(initial = ["line 1", "line 2", "line 3"])
         c.write("notdir/combo_test")
-        c2 = qltk.ComboBoxEntrySave("notdir/combo_test")
+        c2 = ComboBoxEntrySave("notdir/combo_test")
         self.failUnlessEqual(c.get_text(), c2.get_text())
         os.unlink("notdir/combo_test")
         os.rmdir("notdir")
@@ -175,7 +177,7 @@ class TestComboSave(TestCase):
         c2.destroy()
 
     def test_initial_file_append(self):
-        c = qltk.ComboBoxEntrySave(
+        c = ComboBoxEntrySave(
             StringIO("line 0"), initial = ["line 1"])
         c.append_text("line 2")
         self.failUnlessEqual(["line 0", "line 1", "line 2"], c.get_text())

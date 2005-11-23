@@ -2,7 +2,7 @@ from unittest import TestCase, makeSuite
 from tests import registerCase
 from qltk.songlist import PlaylistModel, PlaylistMux
 import gtk
-from qltk import SongWatcher
+from qltk.watcher import SongWatcher
 
 class TPlaylistModel(TestCase):
     def setUp(self):

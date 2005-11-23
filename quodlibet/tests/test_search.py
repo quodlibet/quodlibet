@@ -5,7 +5,7 @@ import widgets
 import browsers.search
 from browsers.search import EmptyBar, SearchBar
 from formats._audio import AudioFile as AF
-from qltk import SongWatcher
+from qltk.watcher import SongWatcher
 
 import __builtin__
 __builtin__.__dict__['_'] = lambda a: a
@@ -94,7 +94,7 @@ class TSearchBar(TEmptyBar):
     def setUp(self):
         import qltk
         from widgets import widgets
-        widgets.watcher = qltk.SongWatcher()
+        widgets.watcher = SongWatcher()
         super(TSearchBar, self).setUp()
 
     def test_initial_limit(self):

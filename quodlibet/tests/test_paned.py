@@ -6,6 +6,7 @@ import widgets
 import browsers.paned
 from browsers.paned import PanedBrowser
 from formats._audio import AudioFile as AF
+from qltk.watcher import SongWatcher
 
 import __builtin__
 __builtin__.__dict__['_'] = lambda a: a
@@ -25,7 +26,7 @@ class TPanedBrowser(TestCase):
         config.set("browsers", "panes", "artist")
         widgets.library = browsers.paned.library = Library()
         from widgets import widgets as ws
-        ws.watcher = qltk.SongWatcher()
+        ws.watcher = SongWatcher()
         for af in SONGS:
             af.sanitize()
             browsers.paned.library.add_song(af)

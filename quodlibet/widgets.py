@@ -1192,7 +1192,8 @@ def init():
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    watcher = qltk.SongWatcher()
+    from qltk.watcher import SongWatcher
+    watcher = SongWatcher()
 
     # plugin support
     from plugins import PluginManager

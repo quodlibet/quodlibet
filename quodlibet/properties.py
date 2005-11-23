@@ -15,6 +15,7 @@ import gtk, pango, gobject
 
 import qltk; from qltk import HintedTreeView, WritingWindow
 from qltk.cover import CoverImage
+from qltk.cbes import ComboBoxEntrySave
 import const
 import config
 import util
@@ -1071,7 +1072,7 @@ class SongProperties(qltk.Window):
             save = gtk.Button(stock=gtk.STOCK_SAVE)
 
             # Text entry and preview button
-            combo = qltk.ComboBoxEntrySave(
+            combo = ComboBoxEntrySave(
                 const.TBP, const.TBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
             entry = combo.child
@@ -1296,7 +1297,7 @@ class SongProperties(qltk.Window):
 
             # ComboEntry and Preview button
             hbox = gtk.HBox(spacing=12)
-            combo = qltk.ComboBoxEntrySave(
+            combo = ComboBoxEntrySave(
                 const.NBP, const.NBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
             preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)

@@ -6,6 +6,7 @@ from tests import TestCase, add
 from efwidgets import EFPluginManager, ExFalsoWindow
 from tests.test_plugins import TPluginManager
 from qltk.filesel import DirectoryTree, FileSelector
+from qltk.watcher import SongWatcher
 
 class TDirectoryTree(TestCase):
     def test_initial(self):
@@ -77,7 +78,6 @@ add(TFileSelector)
 
 class TExFalsoWindow(TestCase):
     def setUp(self):
-        from qltk import SongWatcher
         self.ef = ExFalsoWindow(SongWatcher())
 
     def test_nothing(self):

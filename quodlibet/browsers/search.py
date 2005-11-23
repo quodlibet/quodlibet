@@ -12,11 +12,12 @@ import const
 import qltk
 import parser
 import config
-from qltk.completion import LibraryTagCompletion
 
+from qltk.completion import LibraryTagCompletion
+from qltk.cbes import ComboBoxEntrySave
+from qltk.songlist import SongList
 from browsers.base import Browser
 from library import library
-from qltk.songlist import SongList
 
 # A browser that the user only interacts with indirectly, via the
 # Filter menu. The HBox remains empty.
@@ -94,7 +95,7 @@ class SearchBar(EmptyBar):
         self.pack_start(hb, expand=False)
 
         tips = gtk.Tooltips()
-        combo = qltk.ComboBoxEntrySave(
+        combo = ComboBoxEntrySave(
             const.QUERIES, model="searchbar", count=15)
         combo.child.set_completion(LibraryTagCompletion(watcher, library))
         clear = gtk.Button()
