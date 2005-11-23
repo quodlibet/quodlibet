@@ -15,8 +15,8 @@ global play
 play = False
 
 def main():
+    import player
     import util; util.mkdir(const.DIR)
-
     import signal, widgets
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
@@ -25,15 +25,13 @@ def main():
     else: util.RATING_PRECISION = 1.0/ratings
 
     locale.getlocale(locale.LC_NUMERIC)
-    widgets.init()
+    window = widgets.init()
     if "--debug" not in sys.argv:
         enable_periodic_save()
-        gtk.quit_add(1, widgets.save_library)
+        gtk.quit_add(1, widgets.save_library, window, player.playlist)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
-    if play:
-        import player
-        player.playlist.paused = False
+    if play: player.playlist.paused = False
     gtk.main()
 
 def print_status():

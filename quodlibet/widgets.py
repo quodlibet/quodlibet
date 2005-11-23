@@ -21,7 +21,6 @@ import player
 import parser
 import formats
 import util
-import time
 import locale
 import pattern
 
@@ -37,27 +36,6 @@ from qltk.songlist import SongList
 class __widgets(object):
     __slots__ = ["watcher", "main"]
 widgets = __widgets()
-
-class CountManager(object):
-    def __init__(self, watcher, pl):
-        watcher.connect('song-ended', self.__end, pl)
-        watcher.connect('song-started', self.__start)
-
-    def __start(self, watcher, song):
-        if song is not None and song.multisong:
-            song["~#lastplayed"] = int(time.time())
-            song["~#playcount"] = song.get("~#playcount", 0) + 1
-            watcher.changed([song])
-
-    def __end(self, watcher, song, ended, pl):
-        if song is None or song.multisong: return
-        elif not ended:
-            song["~#lastplayed"] = int(time.time())
-            song["~#playcount"] = song.get("~#playcount", 0) + 1
-            watcher.changed([song])
-        elif pl.current is not song:
-            song["~#skipcount"] = song.get("~#skipcount", 0) + 1
-            watcher.changed([song])
 
 class AboutWindow(gtk.AboutDialog):
     def __init__(self, parent=None):
@@ -918,14 +896,12 @@ def init():
         util.HEADERS_FILTER[opt] = val
 
     from qltk.watcher import SongWatcher
-    watcher = SongWatcher()
+    widgets.watcher = watcher = SongWatcher()
 
     # plugin support
     from plugins import PluginManager
     SongList.pm = PluginManager(watcher, ["./plugins", const.PLUGINS])
     SongList.pm.rescan()
-
-    widgets.watcher = watcher
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current").split()
@@ -939,8 +915,10 @@ def init():
     # These stay alive in the watcher/other callbacks.
     from qltk.remote import FSInterface, FIFOControl
     FSInterface(watcher)
-    CountManager(watcher, widgets.main.playlist)
     FIFOControl(watcher, widgets.main, player.playlist)
+
+    from qltk.count import CountManager
+    CountManager(watcher, widgets.main.playlist)
 
     from qltk.trayicon import TrayIcon
     TrayIcon(watcher, widgets.main)
@@ -950,9 +928,10 @@ def init():
     song = library.get(config.get("memory", "song"))
     player.playlist.setup(watcher, widgets.main.playlist, song)
     widgets.main.show()
+    return widgets.main
 
-def save_library():
-    player.playlist.quit()
+def save_library(window, player):
+    player.quit()
 
     # If something goes wrong here, it'll probably be caught
     # saving the library anyway.
@@ -965,7 +944,7 @@ def save_library():
         try: os.unlink(fn)
         except EnvironmentError: pass
 
-    widgets.main.destroy()
+    window.destroy()
 
     print to(_("Saving library."))
     try: library.save(const.LIBRARY)
