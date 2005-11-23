@@ -654,7 +654,7 @@ class MainWindow(gtk.Window):
         PreferencesWindow(self)
 
     def __plugins(self, activator):
-        from qltk.plugins import PluginWindow
+        from qltk.pluginwin import PluginWindow
         PluginWindow(self, SongList.pm)
 
     def open_location(self, action):

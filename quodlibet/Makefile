@@ -1,4 +1,4 @@
-MODULES = config.py const.py efwidgets.py library.py match.py parser.py pattern.py player.py plugins.py properties.py songlist.py stock.py util.py widgets.py
+MODULES = config.py const.py library.py match.py parser.py pattern.py player.py plugins.py properties.py songlist.py stock.py util.py widgets.py
 MODULE_DIRS = mutagen browsers formats qltk
 PROGRAMS = exfalso quodlibet
 SUBDIRS = trayicon mmkeys po
