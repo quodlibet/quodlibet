@@ -133,6 +133,7 @@ class FIFOControl(object):
         player.seek(seek_to)
 
     def _add_file(self, value, watcher, window, player):
+        from library import library
         filename = os.path.realpath(value)
         song = library.add(filename)
         if song:
@@ -146,6 +147,7 @@ class FIFOControl(object):
             player.paused = False
 
     def _add_directory(self, value, watcher, window, player):
+        from library import library
         filename = os.path.realpath(value)
         for added, changed, removed in library.scan([filename]): pass
         if added: watcher.added(added)
