@@ -81,3 +81,17 @@ def Button(text, image, size=gtk.ICON_SIZE_BUTTON):
     b = gtk.Button()
     b.add(align)
     return b
+
+class RPaned(object):
+    """A Paned that supports relative (percentage) width/height setting."""
+
+    def get_relative(self):
+        if self.get_property('max-position') > 0:
+            return float(self.get_position())/self.get_property('max-position')
+        else: return 0.5
+
+    def set_relative(self, v):
+        return self.set_position(int(v * self.get_property('max-position')))
+
+class RHPaned(RPaned, gtk.HPaned): pass
+class RVPaned(RPaned, gtk.VPaned): pass

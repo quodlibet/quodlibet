@@ -14,6 +14,8 @@ import const
 import util
 import qltk
 
+from qltk.browser import LibraryBrowser
+
 # Provides some files in ~/.quodlibet to indicate what song is playing
 # and whether the player is paused or not.
 class FSInterface(object):
@@ -180,5 +182,5 @@ class FIFOControl(object):
     def _open_browser(self, value, watcher, window, player):
         Kind = browsers.get(value)
         if Kind is not browsers.search.EmptyBar:
-            qltk.LibraryBrowser(Kind, watcher)
+            LibraryBrowser(Kind, watcher)
         else: print "W: Unknown browser type %r." % value

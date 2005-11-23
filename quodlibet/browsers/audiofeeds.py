@@ -21,6 +21,7 @@ import cPickle as pickle
 
 from browsers.base import Browser
 from qltk.views import HintedTreeView
+from qltk.getstring import GetStringDialog
 import formats; from formats.remote import RemoteFile
 
 FEEDS = os.path.join(const.DIR, "feeds")
@@ -87,7 +88,7 @@ class Feed(list):
         self.__lastgot = time.time()
         return bool(uris)
 
-class AddFeedDialog(qltk.GetStringDialog):
+class AddFeedDialog(GetStringDialog):
     def __init__(self, parent):
         super(AddFeedDialog, self).__init__(
             parent, _("New Feed"),

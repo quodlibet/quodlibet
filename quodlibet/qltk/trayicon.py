@@ -18,7 +18,7 @@ import util
 import qltk
 
 from properties import SongProperties
-from qltk import LibraryBrowser
+from qltk.browser import LibraryBrowser
 
 class TrayIcon(object):
     __icon = False

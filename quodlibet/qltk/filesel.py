@@ -18,6 +18,7 @@ import qltk
 import util
 
 from qltk.views import HintedTreeView
+from qltk.getstring import GetStringDialog
 
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
@@ -122,7 +123,7 @@ class DirectoryTree(gtk.TreeView):
 
         row = rows[0]
         directory = model[row][0]
-        dir = qltk.GetStringDialog(
+        dir = GetStringDialog(
             None, _("New Folder"), _("Enter a name for the new folder:")).run()
 
         if dir:

@@ -31,6 +31,8 @@ if sys.version_info < (2, 4): from sets import Set as set
 from properties import SongProperties
 from qltk.songlist import SongList
 from qltk.wlw import WaitLoadWindow
+from qltk.getstring import GetStringDialog
+from qltk.browser import LibraryBrowser
 
 # Give us a namespace for now.. FIXME: We need to remove this later.
 # Or, replace it with nicer wrappers!
@@ -388,7 +390,7 @@ class MainWindow(gtk.Window):
         for id, label, Kind in browsers.get_browsers():
             act = gtk.Action(id, label, None, None)
             act.connect_object(
-                'activate', qltk.LibraryBrowser, Kind, widgets.watcher)
+                'activate', LibraryBrowser, Kind, widgets.watcher)
             ag.add_action(act)
 
         self.ui = gtk.UIManager()
@@ -629,7 +631,7 @@ class MainWindow(gtk.Window):
         PluginWindow(self, SongList.pm)
 
     def open_location(self, action):
-        name = qltk.GetStringDialog(self, _("Add a Location"),
+        name = GetStringDialog(self, _("Add a Location"),
             _("Enter the location of an audio file:"),
             okbutton=gtk.STOCK_ADD).run()
         if name:

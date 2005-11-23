@@ -22,6 +22,7 @@ import parser
 from browsers.base import Browser
 from formats.remote import RemoteFile
 from library import Library
+from qltk.getstring import GetStringDialog
 
 STATIONS = os.path.join(const.DIR, "stations")
 
@@ -120,10 +121,10 @@ class ChooseNewStations(gtk.Dialog):
     def get_irfs(self):
         return [row[0] for row in self.model if row[1]]
 
-class AddNewStation(qltk.GetStringDialog):
+class AddNewStation(GetStringDialog):
     def __init__(self, parent):
-        qltk.GetStringDialog.__init__(
-            self, parent, _("New Station"),
+        super(AddNewStation, self).__init__(
+            parent, _("New Station"),
             _("Enter the location of an Internet radio station:"),
             okbutton=gtk.STOCK_ADD)
         b = qltk.Button(_("_Stations..."), gtk.STOCK_CONNECT)
