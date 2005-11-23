@@ -2,9 +2,6 @@ Quod Libet is only upwards-compatible; your library will remain intact
 if you upgrade to the next version. Skipping a version or downgrading
 may require you to re-add any songs in the library.
 
-Reloading your library after upgrading is always a good idea (though
-it hasn't strictly been necessary since 0.10).
-
 1.0
  * Plugins can make themselves insensitive. (#66)
  * More command-line options. (#75)

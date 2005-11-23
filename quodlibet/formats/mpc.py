@@ -25,59 +25,60 @@ else:
         mpc_uint16_t = ctypes.c_ushort
         mpc_uint32_t = ctypes.c_uint
         mpc_streaminfo_off_t = mpc_int32_t
+
+        class _MPCReader(ctypes.Structure):
+            _fields_ = [('read', ctypes.c_void_p),
+                        ('seek', ctypes.c_void_p),
+                        ('tell', ctypes.c_void_p),
+                        ('get_size', ctypes.c_void_p),
+                        ('canseek', ctypes.c_void_p),
+                        # Actually, all the above are function pointers
+                        ('data', ctypes.c_void_p)
+                        ]
+
+        class _MPCReaderFile(ctypes.Structure):
+            _fields_ = [("reader", _MPCReader),
+                        ("file", ctypes.c_void_p), # actually FILE*
+                        ("file_size", ctypes.c_long),
+                        ("is_seekable", mpc_bool_t)]
+
+        class _MPCStreamInfo(ctypes.Structure):
+            _fields_ = [("sample_freq", mpc_uint32_t),
+                        ("channels", mpc_uint32_t),
+                        ("header_position", mpc_streaminfo_off_t),
+                        ("stream_version", mpc_uint32_t),
+                        ("bitrate", mpc_uint32_t),
+                        ("average_bitrate", ctypes.c_double),
+                        ("frames", mpc_uint32_t),
+                        ("pcm_samples", mpc_int64_t),
+                        ("max_band", mpc_uint32_t),
+                        ("istereo", mpc_uint32_t), # 'is' is a Python keyword
+                        ('ms', mpc_uint32_t),
+                        ("block_size", mpc_uint32_t),
+                        ("profile", mpc_uint32_t),
+                        ("profile_name", ctypes.c_char_p),
+                        ("gain_title", mpc_int16_t),
+                        ("gain_album", mpc_int16_t),
+                        ("peak_title", mpc_uint16_t),
+                        ("peak_album", mpc_uint16_t),
+
+                        ("is_true_gapless", mpc_uint32_t),
+                        ("last_frame_samples", mpc_uint32_t),
+                        ("encoder_version", mpc_uint32_t),
+                        ("encoder", ctypes.c_char * 256),
+                        ("tag_offset", mpc_streaminfo_off_t),
+                        ("total_file_length", mpc_streaminfo_off_t),
+                        ]
+
+        _mpcdec.mpc_reader_setup_file_reader.argtypes = [
+            ctypes.POINTER(_MPCReaderFile), ctypes.c_void_p]
+
+        _mpcdec.mpc_streaminfo_read.argtypes = [
+            ctypes.POINTER(_MPCStreamInfo), ctypes.POINTER(_MPCReader)]
+
+        _mpcdec.mpc_streaminfo_get_length.restype = ctypes.c_double
+
     else: extensions = []
-
-class _MPCReader(ctypes.Structure):
-    _fields_ = [('read', ctypes.c_void_p),
-                ('seek', ctypes.c_void_p),
-                ('tell', ctypes.c_void_p),
-                ('get_size', ctypes.c_void_p),
-                ('canseek', ctypes.c_void_p),
-                # Actually, all the above are function pointers
-                ('data', ctypes.c_void_p)
-                ]
-
-class _MPCReaderFile(ctypes.Structure):
-    _fields_ = [("reader", _MPCReader),
-                ("file", ctypes.c_void_p), # actually FILE*
-                ("file_size", ctypes.c_long),
-                ("is_seekable", mpc_bool_t)]
-
-class _MPCStreamInfo(ctypes.Structure):
-    _fields_ = [("sample_freq", mpc_uint32_t),
-                ("channels", mpc_uint32_t),
-                ("header_position", mpc_streaminfo_off_t),
-                ("stream_version", mpc_uint32_t),
-                ("bitrate", mpc_uint32_t),
-                ("average_bitrate", ctypes.c_double),
-                ("frames", mpc_uint32_t),
-                ("pcm_samples", mpc_int64_t),
-                ("max_band", mpc_uint32_t),
-                ("istereo", mpc_uint32_t), # 'is' is a Python keyword
-                ('ms', mpc_uint32_t),
-                ("block_size", mpc_uint32_t),
-                ("profile", mpc_uint32_t),
-                ("profile_name", ctypes.c_char_p),
-                ("gain_title", mpc_int16_t),
-                ("gain_album", mpc_int16_t),
-                ("peak_title", mpc_uint16_t),
-                ("peak_album", mpc_uint16_t),
-
-                ("is_true_gapless", mpc_uint32_t),
-                ("last_frame_samples", mpc_uint32_t),
-                ("encoder_version", mpc_uint32_t),
-                ("encoder", ctypes.c_char * 256),
-                ("tag_offset", mpc_streaminfo_off_t),
-                ("total_file_length", mpc_streaminfo_off_t),
-                ]
-
-_mpcdec.mpc_reader_setup_file_reader.argtypes = [
-    ctypes.POINTER(_MPCReaderFile), ctypes.c_void_p]
-
-_mpcdec.mpc_streaminfo_read.argtypes = [
-    ctypes.POINTER(_MPCStreamInfo), ctypes.POINTER(_MPCReader)]
-
-_mpcdec.mpc_streaminfo_get_length.restype = ctypes.c_double
 
 class MPCFile(APEv2File):
     format = "Musepack"
