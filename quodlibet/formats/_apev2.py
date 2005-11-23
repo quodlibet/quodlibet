@@ -7,7 +7,7 @@
 # $Id$
 
 from formats._audio import AudioFile
-try: import musepack.apev2
+try: import mutagen.apev2
 except ImportError: pass
 
 class APEv2File(AudioFile):
@@ -24,10 +24,10 @@ class APEv2File(AudioFile):
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
 
     def __init__(self, filename):
-        tag = musepack.apev2.APETag(filename)
-        for key, value in tag:
+        tag = mutagen.apev2.APEv2(filename)
+        for key, value in tag.items():
             key = self.TRANS.get(key.lower(), key.lower())
-            if (value.kind == musepack.apev2.TEXT and
+            if (value.kind == mutagen.apev2.TEXT and
                 key not in self.IGNORE):
                 self[key] = "\n".join(list(value))
     def can_change(self, key=None):
@@ -36,14 +36,13 @@ class APEv2File(AudioFile):
                       key not in self.IGNORE)
 
     def write(self):
-        import musepack.apev2
-        tag = musepack.apev2.APETag(self['~filename'])
+        tag = mutagen.apev2.APEv2(self['~filename'])
 
         keys = tag.keys()
         for key in keys:
             # remove any text keys we read in
             value = tag[key]
-            if (value.kind == musepack.apev2.TEXT and key not in self.IGNORE):
+            if (value.kind == mutagen.apev2.TEXT and key not in self.IGNORE):
                 del(tag[key])
         for key in self.realkeys():
             if key in self.IGNORE: continue
@@ -52,6 +51,6 @@ class APEv2File(AudioFile):
             if key in ["isrc", "isbn", "ean/upc"]: key = key.upper()
             else: key = key.title()
             tag[key] = value.split("\n")
-        tag.write()
+        tag.save()
         self.sanitize()
 
