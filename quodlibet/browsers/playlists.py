@@ -22,6 +22,7 @@ from library import library
 from browsers.base import Browser
 from formats._audio import AudioFile
 from qltk.views import HintedTreeView
+from qltk.wlw import WaitLoadWindow
 
 if sys.version_info < (2, 4): from sets import Set as set
 
@@ -54,7 +55,10 @@ def ParsePLS(filename, name=""):
 def __ParsePlaylist(name, plfilename, files):
     playlist = Playlist.new(name)
     songs = []
-    for filename in files:
+    win = WaitLoadWindow(
+        None, len(files), _("Importing playlist.\n\n%d/%d songs added."),
+        (0, 0))
+    for i, filename in enumerate(files):
         type, path = urllib.splittype(filename)
         if type is None:
             # Plain filename.
@@ -71,6 +75,8 @@ def __ParsePlaylist(name, plfilename, files):
         else:
             # Who knows! Hand it off to GStreamer.
             songs.append(formats.remote.RemoteFile(filename))
+        if win.step(i, len(files)): break
+    win.destroy()
     playlist.extend(filter(None, songs))
     return playlist
 
@@ -447,15 +453,17 @@ class Playlists(gtk.VBox, Browser):
         chooser.destroy()
         for filename in files:
             if filename.endswith(".m3u"):
-                Playlists.changed(ParseM3U(filename))
+                playlist = ParseM3U(filename)
             elif filename.endswith(".pls"):
-                Playlists.changed(ParsePLS(filename))
+                playlist = ParsePLS(filename)
             else:
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
                     _("Unable to import playlist"),
                     _("Quod Libet can only import playlists in the M3U "
                       "and PLS formats.")).run()
+                return
+            Playlists.changed(playlist)
             watcher.added(filter(library.add_song, playlist))
 
     def restore(self):

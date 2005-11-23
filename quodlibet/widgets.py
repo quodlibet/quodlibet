@@ -620,7 +620,7 @@ class MainWindow(gtk.Window):
     def __rebuild(self, activator, hard=False):
         self.__keys.block()
         window = WaitLoadWindow(self, len(library) // 7,
-                                _("Quod Libet is scanning your library. "
+                                _("Scanning your library. "
                                   "This may take several minutes.\n\n"
                                   "%d songs reloaded\n%d songs removed"),
                                 (0, 0))
@@ -721,7 +721,7 @@ class MainWindow(gtk.Window):
 
     def scan_dirs(self, fns):
         win = WaitLoadWindow(self, 0,
-                             _("Quod Libet is scanning for new songs and "
+                             _("Scanning for new songs and "
                                "adding them to your library.\n\n"
                                "%d songs added"), 0)
         added, changed, removed = [], [], []
