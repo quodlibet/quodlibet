@@ -23,6 +23,7 @@ from browsers.base import Browser
 from formats.remote import RemoteFile
 from library import Library
 from qltk.getstring import GetStringDialog
+from qltk.entry import ValidatingEntry
 
 STATIONS = os.path.join(const.DIR, "stations")
 
@@ -162,7 +163,7 @@ class InternetRadio(gtk.HBox, Browser):
 
         hb = gtk.HBox(spacing=3)
         lab = gtk.Label(_("_Search:"))
-        search = qltk.ValidatingEntry(parser.is_valid_color)
+        search = ValidatingEntry(parser.is_valid_color)
         lab.set_use_underline(True)
         lab.set_mnemonic_widget(search)
         clear = gtk.Button()

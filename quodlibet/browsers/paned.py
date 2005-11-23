@@ -20,6 +20,7 @@ from library import library
 from browsers.base import Browser
 from qltk.songlist import SongList
 from qltk.views import HintedTreeView
+from qltk.entry import ValidatingEntry
 from util import tag
 
 class PanedBrowser(gtk.VBox, Browser):
@@ -156,7 +157,7 @@ class PanedBrowser(gtk.VBox, Browser):
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
         label.set_padding(3, 0)
-        search = qltk.ValidatingEntry(parser.is_valid_color)
+        search = ValidatingEntry(parser.is_valid_color)
         label.set_mnemonic_widget(search)
         label.set_use_underline(True)
         clr = gtk.Button()

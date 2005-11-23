@@ -17,6 +17,7 @@ import formats
 import qltk
 from qltk.filesel import FileSelector
 from qltk.wlw import WaitLoadWindow
+from qltk.delete import DeleteDialog
 import util
 
 from properties import SongProperties
@@ -111,7 +112,7 @@ class ExFalsoWindow(gtk.Window):
         return True
 
     def __delete(self, item, files, fs):
-        d = qltk.DeleteDialog(files)
+        d = DeleteDialog(files)
         resp = d.run()
         d.destroy()
 

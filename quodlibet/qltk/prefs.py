@@ -15,6 +15,7 @@ import qltk
 import util
 from qltk.songlist import SongList
 from qltk.chooser import FolderChooser
+from qltk.entry import ValidatingEntry
 
 class PreferencesWindow(qltk.Window):
     __window = None
@@ -144,7 +145,7 @@ class PreferencesWindow(qltk.Window):
             hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
-            e = qltk.ValidatingEntry(parser.is_valid_color)
+            e = ValidatingEntry(parser.is_valid_color)
             e.set_text(config.get("browsers", "background"))
             e.connect('changed', self._entry, 'background', 'browsers')
             l.set_mnemonic_widget(e)

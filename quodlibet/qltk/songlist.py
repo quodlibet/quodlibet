@@ -22,6 +22,7 @@ from library import library
 from properties import SongProperties
 from qltk.views import HintedTreeView
 from qltk.wlw import WaitLoadWindow
+from qltk.delete import DeleteDialog
 if sys.version_info < (2, 4): from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
@@ -702,7 +703,7 @@ class SongList(HintedTreeView):
     def __delete(self, item, songs, watcher):
         songs = [(song["~filename"], song) for song in songs]
         removed = []
-        d = qltk.DeleteDialog([song[0] for song in songs])
+        d = DeleteDialog([song[0] for song in songs])
         resp = d.run()
         d.destroy()
         if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return

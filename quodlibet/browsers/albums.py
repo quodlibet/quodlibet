@@ -16,6 +16,7 @@ import qltk
 import util
 from qltk.completion import EntryWordCompletion
 from qltk.views import HintedTreeView
+from qltk.entry import ValidatingEntry
 
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
@@ -238,9 +239,9 @@ class AlbumList(Browser, gtk.VBox):
 
     # An auto-searching entry; it wraps is a TreeModelFilter whose parent
     # is the album list.
-    class FilterEntry(qltk.ValidatingEntry):
+    class FilterEntry(ValidatingEntry):
         def __init__(self, model):
-            qltk.ValidatingEntry.__init__(self, parser.is_valid_color)
+            ValidatingEntry.__init__(self, parser.is_valid_color)
             self.connect_object('changed', self.__filter_changed, model)
             self.set_completion(AlbumTagCompletion())
             self.__refill_id = None
