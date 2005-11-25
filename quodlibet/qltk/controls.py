@@ -7,12 +7,113 @@
 #
 # $Id$
 
-import gtk
+import gobject, gtk
 
-from qltk.volume import Volume
-from qltk.seekbar import SeekBar
+import stock
+import config
+import util
+
+from qltk.sliderbutton import HSlider
+from qltk.sliderbutton import VSlider
 
 SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
+
+class SeekBar(HSlider):
+    __lock = False
+    __sig = None
+    __seekable = True
+
+    def __init__(self, watcher, player):
+        hbox = gtk.HBox(spacing=3)
+        l = gtk.Label("0:00")
+        hbox.pack_start(l)
+        hbox.pack_start(
+            gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
+        super(type(self), self).__init__(hbox)
+
+        self.scale.connect('button-press-event', self.__seek_lock)
+        self.scale.connect('button-release-event', self.__seek_unlock, player)
+        self.scale.connect('key-press-event', self.__seek_lock)
+        self.scale.connect('key-release-event', self.__seek_unlock, player)
+        self.connect('scroll-event', self.__scroll, player)
+        self.scale.connect('value-changed', self.__update_time, l)
+
+        gobject.timeout_add(1000, self.__check_time, player)
+        watcher.connect('song-started', self.__song_changed, l)
+
+    def __scroll(self, widget, event, player):
+        self.__lock = True
+        if self.__sig is not None: gobject.source_remove(self.__sig)
+        self.__sig = gobject.timeout_add(100, self.__scroll_timeout, player)
+
+    def __scroll_timeout(self, player):
+        self.__lock = False
+        if self.__seekable: player.seek(self.scale.get_value() * 1000)
+        self.__sig = None
+
+    def __seek_lock(self, scale, event): self.__lock = True
+    def __seek_unlock(self, scale, event, player):
+        self.__lock = False
+        if self.__seekable: player.seek(self.scale.get_value() * 1000)
+
+    def __check_time(self, player):
+        if not (self.__lock or player.paused):
+            position = player.get_position() // 1000
+            if (not self.__seekable and
+                position > self.scale.get_adjustment().upper):
+                self.scale.set_range(0, position)
+            self.scale.set_value(position)
+        return True
+
+    def __update_time(self, scale, timer):
+        timer.set_text(util.format_time(scale.get_value()))
+
+    def __song_changed(self, watcher, song, label):
+        if song:
+            length = song["~#length"]
+            if length <= 0:
+                self.scale.set_range(0, 1)
+                self.__seekable = False
+            else:
+                self.scale.set_range(0, length)
+                self.__seekable = True
+        else:
+            self.scale.set_range(0, 1)
+            self.__seekable = False
+
+class Volume(VSlider):
+    def __init__(self, device):
+        i = gtk.image_new_from_stock(
+            stock.VOLUME_MAX, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        super(type(self), self).__init__(i)
+        self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
+        self.scale.set_inverted(True)
+        self.get_value = self.scale.get_value
+        self.scale.connect('value-changed', self.__volume_changed, device, i)
+        self.set_value(config.getfloat("memory", "volume"))
+        self.__volume_changed(self.scale, device, i)
+        self.show_all()
+
+    def set_value(self, v):
+        self.scale.set_value(max(0.0, min(1.0, v)))
+
+    def __iadd__(self, v):
+        self.set_value(min(1.0, self.get_value() + v))
+        return self
+    def __isub__(self, v):
+        self.set_value(max(0.0, self.get_value() - v))
+        return self
+
+    def __volume_changed(self, slider, device, image):
+        val = slider.get_value()
+        if val == 0: img = stock.VOLUME_OFF
+        elif val < 0.33: img = stock.VOLUME_MIN
+        elif val < 0.66: img = stock.VOLUME_MED
+        else: img = stock.VOLUME_MAX
+        image.set_from_stock(img, gtk.ICON_SIZE_LARGE_TOOLBAR)
+
+        device.volume = val
+        config.set("memory", "volume", str(slider.get_value()))
 
 class PlayControls(gtk.VBox):
     def __init__(self, watcher, player):
@@ -60,4 +161,3 @@ class PlayControls(gtk.VBox):
 
     def __previous(self, player): player.previous()
     def __next(self, player): player.next()
-
