@@ -6,7 +6,13 @@ if test "$1" = "--help" -o "$1" = "-h"; then
 elif [ "$1" = "--sanity" ]; then
  echo "Running static sanity checks."
  grep "except None:" *.py */*.py
- exit $?
+ for J in browsers qltk; do
+  for I in ${J}/*.py; do
+   if [ ! -e "tests/test_${J}_`basename $I | sed s:/:_:`" ]; then
+    echo "MISSING TESTS: $I"
+   fi
+  done
+ done
 else
  python -c "import tests; tests.unit('$*'.split())"
 fi
