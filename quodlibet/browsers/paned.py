@@ -11,7 +11,6 @@ import sys
 import gobject, gtk, pango
 import config
 import parser
-import player
 import qltk
 import util
 
@@ -149,9 +148,9 @@ class PanedBrowser(gtk.VBox, Browser):
                 songs = [model[row][1] for row in rows]
                 return list(reduce(set.union, songs, set()))
 
-    def __init__(self, watcher, main):
+    def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=0)
-        self.__save = main
+        self.__save = player
         self.__browsers[self] = self
         hb = gtk.HBox(spacing=3)
         hb2 = gtk.HBox(spacing=0)
@@ -199,8 +198,9 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__panes[0].fill(filter(self.__filter, library.values()))
 
     def scroll(self):
-        for pane in self.__panes:
-            pane.scroll(player.playlist.song)
+        if self.__save:
+            for pane in self.__panes:
+                pane.scroll(self.__save.song)
 
     def refresh_panes(self, restore=True):
         try: hbox = self.get_children()[1]
@@ -236,8 +236,8 @@ class PanedBrowser(gtk.VBox, Browser):
         for p in self.__panes: self.__star.update(dict.fromkeys(p.tags))
 
     def __start(self, view, indices, col):
-        player.playlist.reset()
-        player.playlist.next()
+        self.__save.reset()
+        self.__save.next()
 
     def can_filter(self, key):
         for pane in self.__panes:

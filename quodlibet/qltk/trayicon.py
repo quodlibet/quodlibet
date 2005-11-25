@@ -13,7 +13,6 @@ import config
 import const
 import browsers
 import pattern
-import player
 import util
 import qltk
 
@@ -30,13 +29,13 @@ class TrayIcon(object):
         "<album|<album~discnumber~part~tracknumber~title~version>|"
         "<artist~title~version>>")
 
-    def __init__(self, watcher, window):
+    def __init__(self, watcher, window, player):
         try: import egg.trayicon as trayicon
         except ImportError:
             try: import _trayicon as trayicon
             except: return
 
-        self.__menu = self.__Menu(watcher, window)
+        self.__menu = self.__Menu(watcher, window, player)
         self.__menu.show_all()
 
         self.__mapped = False
@@ -51,12 +50,12 @@ class TrayIcon(object):
 
         icon.connect('map-event', self.__map, True)
         icon.connect('unmap-event', self.__map, False)
-        icon.connect('button-press-event', self.__button, window)
-        icon.connect('scroll-event', self.__scroll, window)
+        icon.connect('button-press-event', self.__button, window, player)
+        icon.connect('scroll-event', self.__scroll, window, player)
 
         watcher.connect('song-started', self.__song_started)
-        watcher.connect('paused', self.__set_paused, True)
-        watcher.connect('unpaused', self.__set_paused, False)
+        watcher.connect('paused', self.__set_paused, player)
+        watcher.connect('unpaused', self.__set_paused, player)
 
         icon.show_all()
 
@@ -85,21 +84,21 @@ class TrayIcon(object):
         window.move(*window.__position)
         window.show()
 
-    def __button(self, icon, event, window):
+    def __button(self, icon, event, window, player):
         if event.button == 1:
             if window.get_property('visible'): self.hide_window(window)
             else: self.show_window(window)
-        elif event.button == 2: self.__play_pause(icon)
+        elif event.button == 2: self.__play_pause(icon, player)
         elif event.button == 3: self.__popup(event, window)
 
-    def __play_pause(self, activator):
-        if player.playlist.song: player.playlist.paused ^= True
+    def __play_pause(self, activator, player):
+        if player.song: player.paused ^= True
 
-    def __scroll(self, widget, event, window):
+    def __scroll(self, widget, event, window, player):
         if event.direction == gtk.gdk.SCROLL_UP: window.volume += 0.05
         elif event.direction == gtk.gdk.SCROLL_DOWN: window.volume -= 0.05
-        elif event.direction == gtk.gdk.SCROLL_LEFT: player.playlist.previous()
-        elif event.direction == gtk.gdk.SCROLL_LEFT: player.playlist.next()
+        elif event.direction == gtk.gdk.SCROLL_LEFT: player.previous()
+        elif event.direction == gtk.gdk.SCROLL_LEFT: player.next()
 
     def __song_started(self, watcher, song):
         items = self.__menu.sensitives
@@ -111,13 +110,13 @@ class TrayIcon(object):
             self.tooltip = p % song
         else: self.tooltip = _("Not playing")
 
-    def __Menu(self, watcher, window):
+    def __Menu(self, watcher, window, player):
         playpause = qltk.MenuItem(const.SM_PLAY, gtk.STOCK_MEDIA_PLAY)
-        playpause.connect('activate', self.__play_pause)
+        playpause.connect('activate', self.__play_pause, player)
         previous = qltk.MenuItem(const.SM_PREVIOUS, gtk.STOCK_MEDIA_PREVIOUS)
-        previous.connect('activate', lambda *args: player.playlist.previous())
+        previous.connect('activate', lambda *args: player.previous())
         next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
-        next.connect('activate', lambda *args: player.playlist.next())
+        next.connect('activate', lambda *args: player.next())
 
         orders = gtk.MenuItem(_("Play _Order"))
         submenu = gtk.Menu()
@@ -146,11 +145,11 @@ class TrayIcon(object):
         browse.set_submenu(m2)
 
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        props.connect_object('activate', self.__properties, watcher)
+        props.connect_object('activate', self.__properties, watcher, player)
 
         rating = gtk.Menu()
         def set_rating(value):
-            song = player.playlist.song
+            song = player.song
             if song is None: return
             else:
                 song["~#rating"] = value
@@ -185,18 +184,18 @@ class TrayIcon(object):
         self.__menu.popup(None, None, None, event.button, event.time)
         return True
 
-    def __set_paused(self, watcher, paused):
+    def __set_paused(self, watcher, player):
         self.__menu.get_children()[0].destroy()
-        stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][paused]
+        stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
         text = [const.SM_PAUSE, const.SM_PLAY][paused]
         playpause = qltk.MenuItem(text, stock)
-        playpause.connect('activate', self.__play_pause)
+        playpause.connect('activate', self.__play_pause, player)
         playpause.show()
         self.__menu.prepend(playpause)
 
-    def __properties(self, watcher):
-        if player.playlist.song:
-            SongProperties([player.playlist.song], watcher)
+    def __properties(self, watcher, player):
+        if player.song:
+            SongProperties([player.song], watcher)
 
     def destroy(self):
         if self.__icon: self.__icon.destroy()

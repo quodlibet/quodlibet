@@ -13,7 +13,6 @@ import gobject, pango, gtk
 from tempfile import NamedTemporaryFile
 
 import config
-import player
 import const
 import qltk
 import util
@@ -242,9 +241,9 @@ class Playlists(gtk.VBox, Browser):
     __lists = gtk.TreeModelSort(gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
 
-    def __init__(self, watcher, main):
+    def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=6)
-        self.__main = main
+        self.__main = bool(player)
         self.__view = view = HintedTreeView()
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
@@ -286,7 +285,7 @@ class Playlists(gtk.VBox, Browser):
         view.connect('drag-data-received', self.__drag_data_received, watcher)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
-        if main: view.connect('row-activated', self.__play)
+        if player: view.connect('row-activated', self.__play, player)
         else: render.set_property('editable', True)
         view.get_selection().connect('changed', self.activate)
 
@@ -295,10 +294,9 @@ class Playlists(gtk.VBox, Browser):
 
         self.show_all()
 
-    def __play(self, *args):
-        import player
-        player.playlist.reset()
-        player.playlist.next()
+    def __play(self, view, path, column, player):
+        player.reset()
+        player.next()
 
     def __check_current(self, model, path, iter):
         model, citer = self.__view.get_selection().get_selected()

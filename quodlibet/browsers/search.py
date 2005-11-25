@@ -23,13 +23,13 @@ from library import library
 class EmptyBar(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
 
-    def __init__(self, watcher, main):
+    def __init__(self, watcher, player):
         gtk.HBox.__init__(self)
         # When _text is None, calls to activate are ignored. This is to
         # avoid the song list changing when the user switches browses and
         # then refreshes.
         self._text = None
-        self.__main = main
+        self.__main = bool(player)
 
     def dynamic(self, song):
         if self._text is not None:
@@ -76,9 +76,9 @@ gobject.type_register(EmptyBar)
 # is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
 
-    def __init__(self, watcher, main):
-        EmptyBar.__init__(self, watcher, main)
-        self.__save = main
+    def __init__(self, watcher, player):
+        EmptyBar.__init__(self, watcher, player)
+        self.__save = bool(player)
 
         hb = gtk.HBox()
         lab = gtk.Label("_Limit:")

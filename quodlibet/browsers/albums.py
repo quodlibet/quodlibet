@@ -11,7 +11,6 @@ import sys
 import gobject, gtk, pango
 import config
 import parser
-import player
 import qltk
 import util
 from qltk.completion import EntryWordCompletion
@@ -331,11 +330,11 @@ class AlbumList(Browser, gtk.VBox):
             except ValueError: pass
             return dict([(a.title + "\u0000" + a.labelid, a) for a in albums])
 
-    def __init__(self, watcher, main):
+    def __init__(self, watcher, player):
         gtk.VBox.__init__(self)
 
         if self.__model is None: AlbumList._init_model(watcher)
-        self.__save = main
+        self.__save = bool(player)
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
@@ -381,7 +380,7 @@ class AlbumList(Browser, gtk.VBox):
         sw.add(view)
         e = self.FilterEntry(model_filter)
 
-        if main: view.connect('row-activated', self.__play_selection)
+        if player: view.connect('row-activated', self.__play_selection, player)
         view.get_selection().connect('changed', self.__selection_changed, e)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
@@ -490,9 +489,9 @@ class AlbumList(Browser, gtk.VBox):
         from widgets.widgets import main
         main.playlist.enqueue(songs)
 
-    def __play_selection(self, view, indices, col):
-        player.playlist.reset()
-        player.playlist.next()
+    def __play_selection(self, view, indices, col, player):
+        player.reset()
+        player.next()
 
     def filter(self, key, values):
         assert(key == "album")

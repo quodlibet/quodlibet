@@ -14,7 +14,6 @@
 import os
 import gobject, gtk
 import qltk
-import player
 import formats
 import config
 
@@ -27,7 +26,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     expand = qltk.RHPaned
     __lib = Library()
 
-    def __init__(self, watcher, main):
+    def __init__(self, watcher, player):
         gtk.ScrolledWindow.__init__(self)
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
@@ -35,8 +34,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         sel = dt.get_selection()
         sel.unselect_all()
         sel.connect('changed', self.__find_songs)
-        if main: dt.connect('row-activated', self.__play)
-        self.__save = main
+        if player: dt.connect('row-activated', self.__play, player)
+        self.__save = bool(player)
         self.add(dt)
         self.__refresh_library()
         self.show_all()
@@ -46,9 +45,9 @@ class FileSystem(Browser, gtk.ScrolledWindow):
             if fn in glibrary: self.__lib.remove(song)
             elif not song.valid(): self.__lib.reload(song)
 
-    def __play(self, *args):
-        player.playlist.reset()
-        player.playlist.next()
+    def __play(self, view, indices, column, player):
+        player.reset()
+        player.next()
 
     def can_filter(self, key):
         return (key == "~dirname")

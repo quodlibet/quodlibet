@@ -462,7 +462,7 @@ class MainWindow(gtk.Window):
             c.remove(self.browser)
             c.destroy()
             self.browser.destroy()
-        self.browser = Browser(widgets.watcher, main=True)
+        self.browser = Browser(widgets.watcher, player.playlist)
         self.browser.connect('songs-selected', self.__browser_cb)
         if self.browser.reordered: self.songlist.enable_drop()
         else: self.songlist.disable_drop()
@@ -905,7 +905,7 @@ def init():
     CountManager(watcher, widgets.main.playlist)
 
     from qltk.trayicon import TrayIcon
-    TrayIcon(watcher, widgets.main)
+    TrayIcon(watcher, widgets.main, player.playlist)
 
     flag = widgets.main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()
