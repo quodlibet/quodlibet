@@ -121,6 +121,11 @@ class TSongWrapper(TestCase):
     def test_getitem(self):
         self.failUnlessEqual(self.wrap["title"], "woo")
 
+    def test_get(self):
+        self.failUnlessEqual(self.wrap.get("title"), "woo")
+        self.failUnlessEqual(self.wrap.get("dne"), None)
+        self.failUnlessEqual(self.wrap.get("dne", "huh"), "huh")
+
     def test_delitem(self):
         self.failUnless("title" in self.wrap)
         del(self.wrap["title"])
