@@ -1,12 +1,7 @@
 import os, sys
 sys.modules['dircache'] = os # cheat the dircache effects
-from tempfile import mkstemp, mkdtemp
-
 from tests import TestCase, add
-from qltk.exfalso import EFPluginManager, ExFalsoWindow
-from tests.test_plugins import TPluginManager
 from qltk.filesel import DirectoryTree, FileSelector
-from qltk.watcher import SongWatcher
 
 class TDirectoryTree(TestCase):
     def test_initial(self):
@@ -31,24 +26,7 @@ class TDirectoryTree(TestCase):
          dirlist = DirectoryTree("/")
          dirlist.go_to(newpath)
          dirlist.destroy()
-
 add(TDirectoryTree)
-
-class TEFPluginManager(TPluginManager):
-    def setUp(self):
-        self.tempdir = mkdtemp()
-        self.pm = EFPluginManager(folders=[self.tempdir])
-        self.pm.rescan()
-        self.assertEquals(self.pm.list(), [])
-
-    def test_disables_plugin(self): pass
-
-    def test_enables_plugin(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
-        self.pm.rescan()
-        self.failUnless(self.pm.enabled(self.pm.list()[0]))
-
-add(TEFPluginManager)
 
 class TFileSelector(TestCase):
     def setUp(self):
@@ -75,14 +53,3 @@ class TFileSelector(TestCase):
     def tearDown(self):
         self.fs.destroy()
 add(TFileSelector)
-
-class TExFalsoWindow(TestCase):
-    def setUp(self):
-        self.ef = ExFalsoWindow(SongWatcher())
-
-    def test_nothing(self):
-        self.failUnless(self.ef.child)
-
-    def tearDown(self):
-        self.ef.destroy()
-add(TExFalsoWindow)

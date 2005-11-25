@@ -1,11 +1,7 @@
-from tests import TestCase, add
-import os, gtk, const
-from formats._audio import AudioFile as AF
-
+import os, gtk
+import const
+from tests import add, TestCase
 from qltk.remote import FSInterface
-from qltk.pluginwin import PluginWindow
-from qltk.prefs import PreferencesWindow
-import qltk
 from qltk.watcher import SongWatcher
 
 class TFSInterface(TestCase):
@@ -45,20 +41,4 @@ class TFSInterface(TestCase):
         except EnvironmentError: pass
         try: os.unlink(const.CURRENT)
         except EnvironmentError: pass
-
 add(TFSInterface)
-
-class TPluginWindow(TestCase):
-    def test_create(self):
-        from plugins import PluginManager
-        from widgets import SongList
-        w = PluginWindow(None, PluginManager(SongWatcher(), []))
-        w.destroy()
-
-add(TPluginWindow)
-
-class TPreferencesWindow(TestCase):
-    def test_create(self):
-        w = PreferencesWindow(None)
-        w.destroy()
-add(TPreferencesWindow)
