@@ -66,7 +66,7 @@ class TrayIcon(object):
 
     def __window_delete(self, window, event):
         if self.enabled:
-            self.hide_window(window)
+            self.__hide_window(window)
             return True
 
     def __set_tooltip(self, tooltip):
@@ -76,18 +76,18 @@ class TrayIcon(object):
     def __map(self, icon, event, value):
         self.__mapped = value
 
-    def hide_window(self, window):
+    def __hide_window(self, window):
         window.__position = window.get_position()
         window.hide()
 
-    def show_window(self, window):
+    def __show_window(self, window):
         window.move(*window.__position)
         window.show()
 
     def __button(self, icon, event, window, player):
         if event.button == 1:
-            if window.get_property('visible'): self.hide_window(window)
-            else: self.show_window(window)
+            if window.get_property('visible'): self.__hide_window(window)
+            else: self.__show_window(window)
         elif event.button == 2: self.__play_pause(icon, player)
         elif event.button == 3: self.__popup(event, window)
 
@@ -187,7 +187,7 @@ class TrayIcon(object):
     def __set_paused(self, watcher, player):
         self.__menu.get_children()[0].destroy()
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
-        text = [const.SM_PAUSE, const.SM_PLAY][paused]
+        text = [const.SM_PAUSE, const.SM_PLAY][player.paused]
         playpause = qltk.MenuItem(text, stock)
         playpause.connect('activate', self.__play_pause, player)
         playpause.show()
