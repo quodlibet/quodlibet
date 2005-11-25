@@ -184,3 +184,9 @@ class FIFOControl(object):
         if Kind is not browsers.search.EmptyBar:
             LibraryBrowser(Kind, watcher)
         else: print "W: Unknown browser type %r." % value
+
+    def _random(self, tag, watcher, window, player):
+        if window.browser.can_filter(tag):
+            from library import library
+            value = library.random(tag)
+            if value: window.browser.filter(tag, [value])

@@ -124,7 +124,7 @@ def process_arguments():
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit"]
     controls_opt = ["seek", "order", "repeat", "query", "volume",
-                    "set-rating", "set-browser", "open-browser"]
+                    "set-rating", "set-browser", "open-browser", "random"]
 
     from util import OptionParser
     options = OptionParser(
@@ -162,6 +162,7 @@ def process_arguments():
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
+        ("random", _("Filter on a random value"), _("tag")),
         ]: options.add(opt, help=help, arg=arg)
 
     def is_time(str):
