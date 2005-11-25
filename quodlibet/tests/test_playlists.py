@@ -1,6 +1,5 @@
 import os
 from tests import add, TestCase
-import library; library.init()
 from qltk.watcher import SongWatcher
 from browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
 

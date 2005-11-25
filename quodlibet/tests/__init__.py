@@ -12,16 +12,15 @@ const.LIBRARY = "./const-songs"
 const.QUEUE = "./const-queue"
 
 import config; config.init()
+import library; library.init()
 
 class Mock(object):
     # A generic mocking object.
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
 
-import test_util, test_audio, test_parser, test_metadata
-import test_playlist, test_pattern, test_stock, test_po, test_playlists
-import test_qltk, test_widgets, test_search, test_paned
-import test_library, test_plugins, test_efwidgets, test_properties
-import test_volume
+for fn in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
+    try: __import__(fn[:-3].replace("/", "."), globals(), locals(), "tests")
+    except None: pass
 
 class Result(unittest.TestResult):
 
@@ -31,24 +30,24 @@ class Result(unittest.TestResult):
     def addSuccess(self, test):
         unittest.TestResult.addSuccess(self, test)
         sys.stdout.write('.')
+        sys.stdout.flush()
 
     def addError(self, test, err):
         unittest.TestResult.addError(self, test, err)
         sys.stdout.write('E')
+        sys.stdout.flush()
 
     def addFailure(self, test, err):
         unittest.TestResult.addFailure(self, test, err)
         sys.stdout.write('F')
+        sys.stdout.flush()
 
     def printErrors(self):
-        succ = self.testsRun - (len(self.errors) + len(self.failures))
-        v = "%3d" % succ
-        count = 50 - self.testsRun
-        sys.stdout.write((" " * count) + v + "\n")
-        self.printErrorList('ERROR', self.errors)
-        self.printErrorList('FAIL', self.failures)
+        if self.errors: self.printErrorList('ERROR', self.errors)
+        if self.failures: self.printErrorList('FAIL', self.failures)
 
     def printErrorList(self, flavour, errors):
+        print
         for test, err in errors:
             sys.stdout.write(self.separator1 + "\n")
             sys.stdout.write("%s: %s\n" % (flavour, str(test)))
@@ -58,8 +57,6 @@ class Result(unittest.TestResult):
 class Runner:
     def run(self, test):
         suite = unittest.makeSuite(test)
-        pref = '%s (%d): ' % (test.__name__, len(suite._tests))
-        print pref + " " * (25 - len(pref)),
         result = Result()
         suite(result)
         result.printErrors()
@@ -77,6 +74,7 @@ def unit(run=[]):
               const.QUEUE]:
        try: os.unlink(f)
        except OSError: pass
+    print
 
 if __name__ == "__main__":
     unit(sys.argv[1:])

@@ -13,7 +13,7 @@ import const
 import formats
 
 class AboutWindow(gtk.AboutDialog):
-    def __init__(self, parent, player):
+    def __init__(self, parent, player, run=True):
         gtk.AboutDialog.__init__(self)
         self.set_name("Quod Libet")
         self.set_version(const.VERSION)
@@ -29,6 +29,6 @@ class AboutWindow(gtk.AboutDialog):
         self.set_copyright(
             "Copyright © 2004-2005 Joe Wreschnig, Michael Urman, & others\n"
             "<quodlibet@lists.sacredchao.net>")
-        gtk.AboutDialog.run(self)
+        if run: gtk.AboutDialog.run(self)
         self.destroy()
 
