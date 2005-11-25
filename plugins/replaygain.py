@@ -184,7 +184,7 @@ class ReplayGain(object):
         win.vbox.pack_start(swin)
         swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         swin.set_shadow_type(gtk.SHADOW_IN)
-        from qltk import HintedTreeView
+        from qltk.views import HintedTreeView
         ReplayGain.model = gtk.ListStore(object, str, str, int, str, str)
         ReplayGain.view = view = HintedTreeView(ReplayGain.model)
         swin.add(view)
