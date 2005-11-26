@@ -86,7 +86,7 @@ class SearchBar(EmptyBar):
         lab.set_padding(3, 0)
         limit = gtk.SpinButton()
         limit.set_numeric(True)
-        limit.set_range(0, 1000000)
+        limit.set_range(0, 99999)
         limit.set_increments(5, 50)
         lab.set_mnemonic_widget(limit)
         lab.set_use_underline(True)
