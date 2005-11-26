@@ -10,9 +10,7 @@ def get_top_parent(widget):
     """Return the ultimate parent of a widget; the assumption that code
     using this makes is that it will be a gtk.Window, i.e. the widget
     is fully packed when this is called."""
-    if widget is not None:
-        while widget.parent is not None: widget = widget.parent
-    return widget
+    return widget and widget.get_ancestor(gtk.Window)
 
 # Legacy plugin/code support.
 from qltk.msg import *
