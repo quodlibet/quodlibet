@@ -2,6 +2,7 @@ import os
 from tests import add, TestCase
 from qltk.watcher import SongWatcher
 from browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
+from player import PlaylistPlayer
 
 import tempfile
 def makename(): return tempfile.mkstemp()[1]
@@ -11,15 +12,9 @@ class TParsePlaylist(TestCase):
         name = makename()
         file(name, "w").close()
         pl = self.Parse(name)
-        self.failUnlessEqual(pl, [])
         os.unlink(name)
+        self.failUnlessEqual(pl, [])
         pl.delete()
-
-    def test_parse_garbage(self):
-        name = makename()
-        f = file(name, "w")
-        f.write("this file\nis on\ncrack")
-        f.close()
 
     def test_parse_onesong(self):
         name = makename()
@@ -29,9 +24,9 @@ class TParsePlaylist(TestCase):
         f.write(os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg"))
         f.close()
         list = self.Parse(name)
+        os.unlink(name)
         self.failUnlessEqual(len(list), 1)
         self.failUnlessEqual(list[0]("title"), "Silence")
-        os.unlink(name)
         list.delete()
 
     def test_parse_onesong_uri(self):
@@ -44,9 +39,9 @@ class TParsePlaylist(TestCase):
         f.write(target)
         f.close()
         list = self.Parse(name)
+        os.unlink(name)
         self.failUnlessEqual(len(list), 1)
         self.failUnlessEqual(list[0]("title"), "Silence")
-        os.unlink(name)
         list.delete()
 
 class TParseM3U(TParsePlaylist):
@@ -95,7 +90,13 @@ class TPlaylist(TestCase):
 add(TPlaylist)
 
 class TPlaylists(TestCase):
-    def test_ctr(self):
-        Playlists(SongWatcher(), False).destroy()
-        Playlists(SongWatcher(), True).destroy()
+    def setUp(self):
+        self.bar = Playlists(SongWatcher(), PlaylistPlayer('fakesink'))
+
+    def test_can_filter(self):
+        for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
+            self.failIf(self.bar.can_filter(key))
+
+    def tearDown(self):
+        self.bar.destroy()
 add(TPlaylists)
