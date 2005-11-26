@@ -31,6 +31,7 @@ from qltk.songlist import SongList
 from qltk.wlw import WaitLoadWindow
 from qltk.getstring import GetStringDialog
 from qltk.browser import LibraryBrowser
+from qltk.msg import ErrorMessage
 
 # Give us a namespace for now.. FIXME: We need to remove this later.
 # Or, replace it with nicer wrappers!
@@ -269,7 +270,7 @@ class MainWindow(gtk.Window):
                 break
         ctx.finish(not error, False, etime)
         if error:
-            qltk.ErrorWindow(
+            ErrorMessage(
                 self, _("Unable to add songs"),
                 _("<b>%s</b> uses an unsupported protocol.") % uri).run()
         else:
@@ -661,12 +662,12 @@ class MainWindow(gtk.Window):
             okbutton=gtk.STOCK_ADD).run()
         if name:
             if not gst.uri_is_valid(name):
-                qltk.ErrorMessage(
+                ErrorMessage(
                     self, _("Unable to add location"),
                     _("<b>%s</b> is not a valid location.") %(
                     util.escape(name))).run()
             elif not gst.element_make_from_uri(gst.URI_SRC, name, ""):
-                qltk.ErrorMessage(
+                ErrorMessage(
                     self, _("Unable to add location"),
                     _("<b>%s</b> uses an unsupported protocol.") %(
                     util.escape(name))).run()
@@ -711,8 +712,7 @@ class MainWindow(gtk.Window):
                             os.path.basename(filename)))
                         msg += util.escape(util.fsdecode(
                             "".join(tb).decode(locale.getpreferredencoding())))
-                        d = qltk.ErrorMessage(
-                            self, _("Unable to add song"), msg)
+                        d = ErrorMessage(self, _("Unable to add song"), msg)
                         d.label.set_selectable(True)
                         d.run()
                         continue
@@ -846,7 +846,7 @@ class MainWindow(gtk.Window):
 
 def website_wrap(activator, link):
     if not util.website(link):
-        qltk.ErrorMessage(
+        ErrorMessage(
             widgets.main, _("Unable to start web browser"),
             _("A web browser could not be found. Please set "
               "your $BROWSER variable, or make sure "
@@ -934,7 +934,7 @@ def save_library(window, player):
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
-        qltk.ErrorMessage(None, _("Unable to save library"), err).run()
+        ErrorMessage(None, _("Unable to save library"), err).run()
 
 def no_sink_quit(sink):
     header = _("Unable to open audio device")
@@ -943,12 +943,12 @@ def no_sink_quit(sink):
              "GStreamer pipeline by changing the\n"
              "    <b>pipeline = %(sink)s</b>\n"
              "line in ~/.quodlibet/config.") % {"sink": sink}
-    qltk.ErrorMessage(None, header, body).run()
+    ErrorMessage(None, header, body).run()
     gtk.main_quit()
 
 def no_source_quit():
     header = _("Unable to open files")
     body = _("Quod Libet could not find the 'filesrc' GStreamer element. "
              "Check your GStreamer installation.")
-    qltk.ErrorMessage(None, header, body).run()
+    ErrorMessage(None, header, body).run()
     gtk.main_quit()

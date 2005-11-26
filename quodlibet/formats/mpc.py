@@ -6,6 +6,7 @@
 #
 # $Id$
 
+import os
 import gst
 from formats._apev2 import APEv2File
 

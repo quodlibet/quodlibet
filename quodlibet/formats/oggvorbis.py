@@ -20,7 +20,6 @@ class OggFile(VCFile):
     format = "Ogg Vorbis"
 
     def __init__(self, filename):
-        import ogg.vorbis
         f = ogg.vorbis.VorbisFile(filename)
         for k, v in f.comment().as_dict().iteritems():
             if not isinstance(v, list): v = [v]
@@ -32,7 +31,6 @@ class OggFile(VCFile):
         self.sanitize(filename)
 
     def write(self):
-        import ogg.vorbis
         f = ogg.vorbis.VorbisFile(self['~filename'])
         comments = f.comment()
         comments.clear()

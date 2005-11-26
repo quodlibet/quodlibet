@@ -13,7 +13,6 @@ import time
 import gobject, gtk, pango
 import const
 import config
-import parser
 import qltk
 import util
 

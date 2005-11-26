@@ -9,11 +9,8 @@
 import gst
 from formats._apev2 import APEv2File
 
-try: import musepack
-except ImportError: extensions = []
-else:
-    if gst.element_factory_make('monkeysdec'): extensions = [".ape"]
-    else: extensions = []
+if gst.element_factory_make('monkeysdec'): extensions = [".ape"]
+else: extensions = []
 
 class APEFile(APEv2File):
     format = "MonkeysAudio"

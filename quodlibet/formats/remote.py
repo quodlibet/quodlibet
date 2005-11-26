@@ -44,5 +44,3 @@ class RemoteFile(AudioFile):
         else: return False
 
 info = RemoteFile
-
-

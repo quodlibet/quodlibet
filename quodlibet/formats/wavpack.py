@@ -9,7 +9,7 @@
 import gst
 from formats._apev2 import APEv2File
 
-try: import musepack.apev2, ctypes
+try: import ctypes
 except: extensions = []
 else:
     if gst.element_factory_make('wavpackdec'):

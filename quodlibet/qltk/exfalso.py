@@ -111,7 +111,7 @@ class ExFalsoWindow(gtk.Window):
 
     def __delete(self, item, files, fs):
         d = DeleteDialog(self, files)
-        removed = d.run()
+        d.run()
         d.destroy()
         fs.rescan()
 
