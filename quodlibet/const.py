@@ -86,7 +86,7 @@ MENU = """<ui>
       <menuitem action='Top'/>
       <menuitem action='Bottom'/>
     </menu>
-    <menu action='Song'>
+    <menu action='Control'>
       <menuitem action='Previous'/>
       <menuitem action='PlayPause'/>
       <menuitem action='Next'/>

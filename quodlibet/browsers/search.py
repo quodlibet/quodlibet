@@ -79,6 +79,7 @@ class SearchBar(EmptyBar):
     def __init__(self, watcher, player):
         EmptyBar.__init__(self, watcher, player)
         self.__save = bool(player)
+        self.set_spacing(12)
 
         hb = gtk.HBox()
         lab = gtk.Label("_Limit:")
@@ -93,21 +94,23 @@ class SearchBar(EmptyBar):
         hb.pack_start(limit)
         self.pack_start(hb, expand=False)
 
+        hb2 = gtk.HBox()
+        l = gtk.Label("_Search:")
         tips = gtk.Tooltips()
         combo = ComboBoxEntrySave(
             const.QUERIES, model="searchbar", count=15)
         combo.child.set_completion(LibraryTagCompletion(watcher, library))
+        l.set_mnemonic_widget(combo.child)
+        l.set_use_underline(True)
+        l.set_padding(3, 0)
         clear = gtk.Button()
         clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
         tips.set_tip(clear, _("Clear search"))
         clear.connect_object('clicked', self.set_text, "")
-                  
+
         search = gtk.Button()
-        b = gtk.HBox(spacing=2)
-        b.pack_start(gtk.image_new_from_stock(
+        search.add(gtk.image_new_from_stock(
             gtk.STOCK_FIND, gtk.ICON_SIZE_MENU))
-        b.pack_start(gtk.Label(_("Search")))
-        search.add(b)
         tips.set_tip(search, _("Search your library"))
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
@@ -117,11 +120,14 @@ class SearchBar(EmptyBar):
         combo.child.connect('realize', lambda w: w.grab_focus())
         combo.child.connect('populate-popup', self.__menu, hb)
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
-        self.pack_start(combo)
-        self.pack_start(clear, expand=False)
-        self.pack_start(search, expand=False)
+        hb2.pack_start(l, expand=False)
+        hb2.pack_start(combo)
+        hb2.pack_start(clear, expand=False)
+        hb2.pack_start(search, expand=False)
+        self.pack_start(hb2)
         self.show_all()
         self._limit = limit
+        self._combo = combo
         hb.hide_all()
 
     def __menu(self, entry, menu, hb):
@@ -142,7 +148,7 @@ class SearchBar(EmptyBar):
             try: songs = library.query(self._text, star=SongList.star)
             except parser.error: pass
             else:
-                self.get_children()[1].prepend_text(self._text)
+                self._combo.prepend_text(self._text)
                 val = self._limit.get_value_as_int()
                 if (self._limit.get_property('visible') and
                     val and len(songs) > val):
@@ -151,10 +157,10 @@ class SearchBar(EmptyBar):
                     songs = songs[:val]
                 self.emit('songs-selected', songs, None)
                 if self.__save: self.save()
-                self.get_children()[1].write(const.QUERIES)
+                self._combo.write(const.QUERIES)
 
     def set_text(self, text):
-        self.get_children()[1].child.set_text(text)
+        self._combo.child.set_text(text)
         if isinstance(text, str): text = text.decode('utf-8')
         self._text = text
 

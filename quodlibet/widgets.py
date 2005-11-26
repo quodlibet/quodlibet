@@ -335,7 +335,7 @@ class MainWindow(gtk.Window):
             ("Top", gtk.STOCK_GO_UP, _("_Top 40"), "", None, self.__top40),
             ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
              None, self.__bottom40),
-            ("Song", None, _("_Song")),
+            ("Control", None, _("_Control")),
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
              self.__current_song_prop),
             ("Rating", None, _("_Rating")),
@@ -441,7 +441,7 @@ class MainWindow(gtk.Window):
             _("The 40 songs you've played least (more than 40 may "
               "be chosen if there are ties)"))
         tips.set_tip(
-            self.ui.get_widget("/Menu/Song/Properties"),
+            self.ui.get_widget("/Menu/Control/Properties"),
             _("View and edit tags in the playing song"))
         self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         tips.enable()
@@ -495,7 +495,7 @@ class MainWindow(gtk.Window):
         self.__refresh_size()
 
     def __update_paused(self, watcher, paused):
-        menu = self.ui.get_widget("/Menu/Song/PlayPause")
+        menu = self.ui.get_widget("/Menu/Control/PlayPause")
         if paused:
             menu.get_image().set_from_stock(
                 gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
@@ -529,11 +529,11 @@ class MainWindow(gtk.Window):
 
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum"]:
-            self.ui.get_widget('/Menu/Song/' + wid).set_sensitive(bool(song))
+            self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
         if song:
             for h in ['genre', 'artist', 'album']:
                 self.ui.get_widget(
-                    "/Menu/Song/Filter%s" % h.capitalize()).set_sensitive(
+                    "/Menu/Control/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
         if song and config.getboolean("settings", "jump"):
             self.__jump_to_current(False)
@@ -762,11 +762,11 @@ class MainWindow(gtk.Window):
         return True
 
     def __hide_menus(self):
-        menus = {'genre': ["/Menu/Song/FilterGenre",
+        menus = {'genre': ["/Menu/Control/FilterGenre",
                            "/Menu/Filters/RandomGenre"],
-                 'artist': ["/Menu/Song/FilterArtist",
+                 'artist': ["/Menu/Control/FilterArtist",
                            "/Menu/Filters/RandomArtist"],
-                 'album':  ["/Menu/Song/FilterAlbum",
+                 'album':  ["/Menu/Control/FilterAlbum",
                            "/Menu/Filters/RandomAlbum"],
                  None: ["/Menu/Filters/NotPlayedDay",
                         "/Menu/Filters/NotPlayedWeek",
