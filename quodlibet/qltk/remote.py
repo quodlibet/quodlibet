@@ -76,7 +76,7 @@ class FIFOControl(object):
                     try: command, arg = command.split(' ', 1)
                     except: self[command](*args)
                     else: self[command](arg, *args)
-                except None:
+                except:
                     print "W: Invalid command %s received." % command
         finally:
             os.close(source)
