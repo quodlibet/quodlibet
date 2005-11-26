@@ -147,7 +147,7 @@ def process_arguments():
         ("status", _("Print playing status")),
         ("hide-window", _("Hide main window")),
         ("show-window", _("Hide main window")),
-        ("toggle-window", _("Hide main window")),
+        ("toggle-window", _("Toggle main window visibility")),
         ("focus", _("Focus the running player")),
         ("quit", _("Exit Quod Libet")),
         ]: options.add(opt, help=help)
