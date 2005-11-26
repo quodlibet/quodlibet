@@ -197,10 +197,9 @@ class PanedBrowser(gtk.VBox, Browser):
     def activate(self):
         self.__panes[0].fill(filter(self.__filter, library.values()))
 
-    def scroll(self):
-        if self.__save:
-            for pane in self.__panes:
-                pane.scroll(self.__save.song)
+    def scroll(self, song):
+        for pane in self.__panes:
+            pane.scroll(song)
 
     def refresh_panes(self, restore=True):
         try: hbox = self.get_children()[1]

@@ -533,10 +533,10 @@ class AlbumList(Browser, gtk.VBox):
             if first: selection.get_tree_view().scroll_to_cell(
                 first, use_align=True, row_align=0.5)
 
-    def scroll(self):
+    def scroll(self, song):
         view = self.get_children()[1].child
         model = view.get_model()
-        values = player.playlist.song.list("album")
+        values = song.list("album")
         for i, row in enumerate(iter(model)):
             if row[0] is not None and row[0].title in values:
                 view.scroll_to_cell(i, use_align=True, row_align=0.5)

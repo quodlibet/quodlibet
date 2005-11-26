@@ -55,8 +55,8 @@ class Browser(object):
     # Actually do the filtering (with a union of values).
     def filter(self, key, values): raise NotImplementedError
 
-    # Scroll to something related to the current song.
-    def scroll(self): pass
+    # Scroll to something related to the given song.
+    def scroll(self, song): pass
 
     # Do whatever is needed to emit songs-selected again.
     def activate(self): raise NotImplementedError
