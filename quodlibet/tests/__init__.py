@@ -19,8 +19,7 @@ class Mock(object):
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
 
 for fn in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
-    try: __import__(fn[:-3].replace("/", "."), globals(), locals(), "tests")
-    except None: pass
+    __import__(fn[:-3].replace("/", "."), globals(), locals(), "tests")
 
 class Result(unittest.TestResult):
 
