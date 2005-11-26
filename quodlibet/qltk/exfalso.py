@@ -110,38 +110,10 @@ class ExFalsoWindow(gtk.Window):
         return True
 
     def __delete(self, item, files, fs):
-        d = DeleteDialog(files)
-        resp = d.run()
+        d = DeleteDialog(self, files)
+        removed = d.run()
         d.destroy()
-
-        # FIXME: Largely copy/paste from SongList.
-        if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
-        else:
-            if resp == 0: s = _("Moving %d/%d.")
-            elif resp == 2: s = _("Deleting %d/%d.")
-            else: return
-            w = WaitLoadWindow(None, len(files), s, (0, len(files)))
-            trash = os.path.expanduser("~/.Trash")
-            for filename in files:
-                try:
-                    if resp == 0:
-                        basename = os.path.basename(filename)
-                        shutil.move(filename, os.path.join(trash, basename))
-                    else:
-                        os.unlink(filename)
-
-                except:
-                    qltk.ErrorMessage(
-                        self, _("Unable to delete file"),
-                        _("Deleting <b>%s</b> failed. "
-                          "Possibly the target file does not exist, "
-                          "or you do not have permission to "
-                          "delete it.") % (filename)).run()
-                    break
-                else:
-                    w.step(w.current + 1, w.count)
-            w.destroy()
-            fs.rescan()
+        fs.rescan()
 
     def __changed(self, selector, selection, notebook):
         model, rows = selection.get_selected_rows()

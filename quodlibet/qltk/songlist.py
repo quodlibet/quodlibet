@@ -701,40 +701,13 @@ class SongList(HintedTreeView):
             if added: widgets.watcher.added(added)
 
     def __delete(self, item, songs, watcher):
-        songs = [(song["~filename"], song) for song in songs]
-        removed = []
-        d = DeleteDialog([song[0] for song in songs])
-        resp = d.run()
+        files = [song["~filename"] for song in songs]
+        d = DeleteDialog(self, files)
+        removed = d.run()
         d.destroy()
-        if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return
-        else:
-            if resp == 0: s = _("Moving %d/%d.")
-            elif resp == 2: s = _("Deleting %d/%d.")
-            else: return
-            w = WaitLoadWindow(self, len(songs), s, (0, len(songs)))
-            trash = os.path.expanduser("~/.Trash")
-            for filename, song in songs:
-                try:
-                    if resp == 0:
-                        basename = os.path.basename(filename)
-                        shutil.move(filename, os.path.join(trash, basename))
-                    else:
-                        os.unlink(filename)
-                    try: library.remove(song)
-                    except KeyError: pass
-                    removed.append(song)
-
-                except:
-                    qltk.ErrorMessage(
-                        self, _("Unable to delete file"),
-                        _("Deleting <b>%s</b> failed. "
-                          "Possibly the target file does not exist, "
-                          "or you do not have permission to "
-                          "delete it.") % (filename)).run()
-                    break
-                else:
-                    w.step(w.current + 1, w.count)
-            w.destroy()
+        removed = filter(None, map(library.get, removed))
+        if removed:
+            map(library.remove, removed)
             watcher.removed(removed)
 
     def __set_rating(self, value, songs, watcher):
