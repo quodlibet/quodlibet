@@ -751,8 +751,6 @@ class SongList(HintedTreeView):
 
     # Resort based on the header clicked.
     def set_sort_by(self, header, tag=None, order=None, refresh=True):
-        s = gtk.SORT_ASCENDING
-
         if header and tag is None: tag = header.header_name
 
         for h in self.get_columns():
@@ -764,8 +762,8 @@ class SongList(HintedTreeView):
                         s = gtk.SORT_ASCENDING
                     else: s = gtk.SORT_DESCENDING
                 else:
-                    if order: s = gtk.SORT_ASCENDING
-                    else: s = gtk.SORT_DESCENDING
+                    if order: s = gtk.SORT_DESCENDING
+                    else: s = gtk.SORT_ASCENDING
                 h.set_sort_indicator(True)
                 h.set_sort_order(s)
             else: h.set_sort_indicator(False)

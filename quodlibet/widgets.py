@@ -79,7 +79,7 @@ class MainSongList(SongList):
     def set_sort_by(self, *args, **kwargs):
         SongList.set_sort_by(self, *args, **kwargs)
         tag, reverse = self.get_sort_by()
-        config.set('memory', 'sortby', "%d%s" % (int(not reverse), tag))
+        config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
 class MainWindow(gtk.Window):
     def __init__(self, watcher):
