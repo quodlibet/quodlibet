@@ -10,8 +10,8 @@ DEFS=`pkg-config --variable=defsdir pygtk-2.0`
 
 trayicon.c: trayicon.defs trayicon.override
 	pygtk-codegen-2.0 --prefix trayicon \
-	/usr/share/pygtk/2.0/defs/gdk-types.defs \
-	/usr/share/pygtk/2.0/defs/gtk-types.defs \
+	--register $(DEFS)/gdk-types.defs \
+	--register $(DEFS)/gtk-types.defs \
 	--override trayicon.override \
 	trayicon.defs > gen-tmp
 	mv gen-tmp $@
