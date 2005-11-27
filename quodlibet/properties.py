@@ -1416,16 +1416,23 @@ class SongProperties(qltk.Window):
                     else: song.rename(newname)
                     was_changed.append(song)
                 except:
-                    qltk.ErrorMessage(
-                        win, _("Unable to rename file"),
+                    buttons = (gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
+                               gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                               _("_Continue"), gtk.RESPONSE_OK)
+                    msg = qltk.Message(
+                        gtk.MESSAGE_ERROR, win, _("Unable to rename file"),
                         _("Renaming <b>%s</b> to <b>%s</b> failed. "
                           "Possibly the target file already exists, "
                           "or you do not have permission to make the "
                           "new file or remove the old one.") %(
                         util.escape(util.fsdecode(oldname)),
-                        util.escape(util.fsdecode(newname)))).run()
-                    watcher.error(song)
-                    return True
+                        util.escape(util.fsdecode(newname))),
+                        buttons=gtk.BUTTONS_NONE)
+                    msg.add_buttons(*buttons)
+                    msg.set_default_response(gtk.RESPONSE_OK)
+                    resp = msg.run()
+                    watcher.reload(song)
+                    return (resp != gtk.RESPONSE_OK)
                 return win.step()
             model.foreach(rename)
             win.destroy()

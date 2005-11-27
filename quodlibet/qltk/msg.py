@@ -13,8 +13,9 @@ class Message(gtk.MessageDialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 
-    def __init__(self, kind, parent, title, description, buttons=None):
-        buttons = buttons or gtk.BUTTONS_OK
+    def __init__(
+        self, kind, parent, title, description, buttons=gtk.BUTTONS_OK):
+        parent = get_top_parent(parent)
         text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
         gtk.MessageDialog.__init__(
             self, parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -22,8 +23,9 @@ class Message(gtk.MessageDialog):
         self.set_markup(text)
 
     def run(self, destroy=True):
-        gtk.MessageDialog.run(self)
+        resp = gtk.MessageDialog.run(self)
         if destroy: self.destroy()
+        return resp
 
 class ConfirmAction(Message):
     """A message dialog that asks a yes/no question."""
@@ -62,10 +64,10 @@ class CancelRevertSave(gtk.MessageDialog):
 
 class ErrorMessage(Message):
     """Like Message, but uses an error-indicating picture."""
-    def __init__(self, *args):
-        Message.__init__(self, gtk.MESSAGE_ERROR, *args)
+    def __init__(self, *args, **kwargs):
+        Message.__init__(self, gtk.MESSAGE_ERROR, *args, **kwargs)
 
 class WarningMessage(Message):
     """Like Message, but uses an warning-indicating picture."""
-    def __init__(self, *args):
-        Message.__init__(self, gtk.MESSAGE_WARNING, *args)
+    def __init__(self, *args, **kwargs):
+        Message.__init__(self, gtk.MESSAGE_WARNING, *args, **kwargs)
