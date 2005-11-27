@@ -106,7 +106,7 @@ class FIFOControl(object):
         order = window.order
         try:
             order.set_active(
-                ["in-order", "shuffle", "weighted", "onesong"].index(value))
+                ["inorder", "shuffle", "weighted", "onesong"].index(value))
         except ValueError:
             try: order.set_active(int(value))
             except (ValueError, TypeError):
