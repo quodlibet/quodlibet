@@ -58,8 +58,9 @@ class FIFOControl(object):
                 util.mkdir(const.DIR)
                 os.mkfifo(const.CONTROL, 0600)
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
+            f = os.fdopen(fifo, "r", 4096)
             gobject.io_add_watch(
-                fifo, gtk.gdk.INPUT_READ, self.__process, *args)
+                f, gtk.gdk.INPUT_READ, self.__process, *args)
         except EnvironmentError: pass
 
     def __getitem__(self, key):
@@ -68,19 +69,18 @@ class FIFOControl(object):
         else: return getattr(self, "_"+key)
 
     def __process(self, source, condition, *args):
-        data = os.read(source, 1024*1024).strip()
-        lines = [s.strip() for s in data.split("\n") if s.strip()]
-        try:
-            for command in lines:
-                try:
-                    try: command, arg = command.split(' ', 1)
-                    except: self[command](*args)
-                    else: self[command](arg, *args)
-                except:
-                    print "W: Invalid command %s received." % command
-        finally:
-            os.close(source)
-            self.__open(*args) # Reopen the FIFO
+        command = source.read().rstrip("\n")
+        if command == "":
+            self.__open(*args)
+            return False
+        else:
+            try:
+                try: command, arg = command.split(' ', 1)
+                except: self[command](*args)
+                else: self[command](arg, *args)
+            except:
+                print "W: Invalid command %s received." % command
+            return True
 
     def _previous(self, watcher, window, player): player.previous()
     def _next(self, watcher, window, player): player.next()

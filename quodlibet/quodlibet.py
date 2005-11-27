@@ -90,7 +90,7 @@ def control(c):
             # This is a total abuse of Python! Hooray!
             signal.signal(signal.SIGALRM, lambda: "" + 2)
             signal.alarm(1)
-            f = file(const.CONTROL, "w")
+            f = file(const.CONTROL, "w", 1)
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(c)
             f.close()
