@@ -21,7 +21,9 @@ import cPickle as pickle
 from browsers.base import Browser
 from qltk.views import HintedTreeView
 from qltk.getstring import GetStringDialog
+from qltk.msg import ErrorMessage
 import formats; from formats.remote import RemoteFile
+import config
 
 FEEDS = os.path.join(const.DIR, "feeds")
 
@@ -56,16 +58,17 @@ class Feed(list):
         entries = []
         uris = set()
         for entry in doc.entries:
-            try: enclosures = entry.enclosures
-            except (TypeError, AttributeError): pass
-            else:
-                for enclosure in enclosures:
-                    if ("audio" in enclosure.type or
-                        formats.filter(enclosure.url)):
-                        uri = enclosure.url.encode('ascii', 'replace')
-                        entries.append((uri, entry))
-                        uris.add(uri)
-                        break
+            try:
+                for enclosure in entry.enclosures:
+                    try:
+                        if ("audio" in enclosure.type or
+                            formats.filter(enclosure.url)):
+                            uri = enclosure.url.encode('ascii', 'replace')
+                            entries.append((uri, entry))
+                            uris.add(uri)
+                            break
+                    except AttributeError: pass
+            except AttributeError: pass
 
         for entry in list(self):
             if entry["~uri"] not in uris: self.remove(entry)
@@ -76,9 +79,11 @@ class Feed(list):
             if uri in uris:
                 song = RemoteFile(uri)
                 song.fill_metadata = False
-                if entry.title: song["title"] = entry.title
-                if entry.modified_parsed:
+                try: song["title"] = entry.title or _("Unknown")
+                except: song["title"] = _("Unknown")
+                try:
                     song["date"] = "%04d-%02d-%02d" % entry.modified_parsed[:3]
+                except AttributeError: pass
                 song["album"] = self.name
                 try: song["website"] = entry.link
                 except AttributeError:
@@ -90,7 +95,7 @@ class Feed(list):
 class AddFeedDialog(GetStringDialog):
     def __init__(self, parent):
         super(AddFeedDialog, self).__init__(
-            parent, _("New Feed"),
+            qltk.get_top_parent(parent), _("New Feed"),
             _("Enter the location of an audio feed:"),
             okbutton=gtk.STOCK_ADD)
 
@@ -159,7 +164,7 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def __init__(self, watcher, main):
         gtk.VBox.__init__(self)
-        self.__main = main
+        self.__main = bool(main)
 
         self.__view = view = HintedTreeView()
         self.__render = render = gtk.CellRendererText()
@@ -176,14 +181,16 @@ class AudioFeeds(Browser, gtk.VBox):
         swin.add(view)
         self.pack_start(swin)
 
-        newpl = gtk.Button(stock=gtk.STOCK_NEW)
-        newpl.connect('clicked', self.__new_feed)
+        new = gtk.Button(stock=gtk.STOCK_NEW)
+        new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__popup_menu)
 
-        self.pack_start(newpl, expand=False)
+        self.connect_object('destroy', self.__save, view)
+
+        self.pack_start(new, expand=False)
         self.show_all()
 
     def __menu(self, view):
@@ -202,6 +209,9 @@ class AudioFeeds(Browser, gtk.VBox):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
         return menu
+
+    def __save(self, view):
+        AudioFeeds.write()
 
     def __button_press(self, view, event):
         if event.button == 3:
@@ -233,22 +243,33 @@ class AudioFeeds(Browser, gtk.VBox):
                 model[path][0].changed = False
                 songs.extend(model[path][0])
             self.emit('songs-selected', songs, True)
+            config.set("browsers", "audiofeeds",
+                         "\t".join([model[path][0].name for path in paths]))
 
     def __new_feed(self, activator):
-        feed = AddFeedDialog(qltk.get_top_parent(self)).run()
+        feed = AddFeedDialog(self).run()
         if feed is not None:
             feed.changed = feed.parse()
             if feed:
                 self.__feeds.append(row=[feed])
                 AudioFeeds.write()
             else:
-                qltk.ErrorMessage(
-                    qltk.get_top_parent(self), _("Unable to add feed"),
+                ErrorMessage(
+                    self, _("Unable to add feed"),
                     _("<b>%s</b> could not be added. The server may be down, "
                       "or the location may not be an audio feed.") %(
-                    feed.uri)).run()
+                    util.escape(feed.uri))).run()
 
-    def restore(self): pass
+    def restore(self):
+        try: names = config.get("browsers", "audiofeeds").split("\t")
+        except: pass
+        else:
+            paths = [(i,) for i, row in enumerate(self.__feeds)
+                     if row[0].name in names]
+            if paths:
+                selection = self.__view.get_selection()
+                selection.unselect_all()
+                map(selection.select_path, paths)
 
 gobject.type_register(AudioFeeds)
 
