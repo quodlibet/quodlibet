@@ -1,12 +1,15 @@
 Ex Falso / Quod Libet - A Music Library/Editor/Player
 ========================================================================
-Quod Libet is a music library management program. Rather than categorize
-songs by genre, artist, and album, it lets you search and display them
-however you want. Ex Falso is a tag editor that has the same editing
-features found in Quod Libet, but does not play audio files.
+Quod Libet is a music management program. It provides several different ways
+to view your audio library, as well as support for Internet radio and
+audio feeds. It has extremely flexible metadata tag editing and searching
+capabilities.
 
-EF/QL support the Ogg Vorbis, FLAC, MP3, MOD/XM/IT, and MPC file formats
-for playback. Tag editing and other features may vary from format to format.
+Ex Falso is a tag editor with the same tag editing interface as Quod Libet,
+but it does not play files.
+
+Supported file formats include Ogg Vorbis, MP3, FLAC, MOD/XM/IT, Musepack,
+and Wavpack.
 
 To report bugs, suggest features, ask a question, get the latest version,
 or help us out, visit http://www.sacredchao.net/quodlibet.
@@ -19,32 +22,37 @@ or
 
 After installing, you can just run `quodlibet' or `exfalso'.
 
-For help on using them, run
+For help, visit http://www.sacredchao.net/quodlibet/wiki/Guide.
+
+The manual page contains a brief synopsis of command-line options,
+and search and foramtting pattern syntax.
  $ man -l ./quodlibet.1
-
-Or visit http://www.sacredchao.net/quodlibet/wiki/Guide.
-
-Whenever you upgrade, it's a good idea to select "Reload library" from
-the Music menu. This upgrades your library to take advantage of new
-tag features found in the release. You should also read the NEWS
-file for any important upgrade notes.
 
 ====[ Requirements
 
 ==[ Source
 
-EF/QL have a long, but not very complicated, dependency list. Many
-of them probably come with your OS distribution.
+Quod Libet depends on the Python runtime and associated libraries.
  Python (>= 2.3):	http://www.python.org
  PyGTK (>= 2.6):	http://www.pygtk.org
  PyGSt (>= 0.8.2):	http://gstreamer.freedesktop.org/
- PyVorbis:		http://www.andrewchatham.com/pyogg/
- Pymad (MP3):		http://spacepants.org/src/pymad
 
-Optional:
- Modplug:		http://modplug-xmms.sourceforge.net
- PyFLAC/PyModPlug/PyMusepack:
-	http://www.sacredchao.net/quodlibet/wiki/Download
+All file formats depend on their appropriate GStreamer decoding modules
+being available as well as the libraries listed below.
+	Ogg Vorbis: 	http://www.andrewchatham.com/pyogg/
+	MP3:		http://spacepants.org/src/pymad
+	FLAC:		https://www.sacredchao.net/quodlibet/wiki/Download
+
+The following formats all depend on ctypes, available at
+http://starship.python.net/crew/theller/ctypes/, as well as the libraries
+listed:
+	Musepack:	http://www.musepack.net/index.php?pg=src
+	MOD/XM/IT:	http://modplug-xmms.sourceforge.net/#download
+	Wavpack:	http://www.wavpack.com/
+
+Internet Radio depends on GNOME-VFS support in GStreamer.
+
+Audio Feed support depends on GNOME-VFS and http://www.feedparser.org/.
 
 To compile the status icon and multimedia key support, run
  $ make extensions
