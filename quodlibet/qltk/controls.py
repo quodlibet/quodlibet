@@ -132,7 +132,7 @@ class StopAfterMenu(gtk.Menu):
 
     def __ended(self, watcher, song, stopped, player):
         if stopped: self.active = False
-        else: player.paused = True
+        elif self.active: player.paused = True
 
     def __get_active(self): return self.__item.get_active()
     def __set_active(self, v): return self.__item.set_active(v)
