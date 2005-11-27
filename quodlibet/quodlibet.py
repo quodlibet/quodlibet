@@ -154,7 +154,8 @@ def process_arguments():
 
     for opt, help, arg in [
         ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
-        ("order", _("Set or toggle the playback order"), "0|1|2|t"),
+        ("order", _("Set or toggle the playback order"),
+         "inorder|shuffle|weighted|onesong|toggle"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "+|-|0..100"),
         ("query", _("Search your audio library"), _("search-string")),
@@ -177,7 +178,7 @@ def process_arguments():
         else: return True
 
     validators = {
-        "order": ["0", "1", "2", "t" ,"toggle", "in-order", "shuffle",
+        "order": ["0", "1", "t", "toggle", "inorder", "shuffle",
                   "weighted", "onesong"].__contains__,
         "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "volume": str.isdigit,
