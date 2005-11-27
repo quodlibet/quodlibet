@@ -115,6 +115,29 @@ class Volume(VSlider):
         device.volume = val
         config.set("memory", "volume", str(slider.get_value()))
 
+class StopAfterMenu(gtk.Menu):
+    def __init__(self, watcher, player):
+        gtk.Menu.__init__(self)
+        self.__item = gtk.CheckMenuItem(_("Stop after this song"))
+        self.__item.set_active(False)
+        self.append(self.__item)
+
+        watcher.connect('paused', self.__paused)
+        watcher.connect('song-ended', self.__ended, player)
+        
+        self.__item.show()
+
+    def __paused(self, watcher):
+        self.active = False
+
+    def __ended(self, watcher, song, stopped, player):
+        if stopped: self.active = False
+        else: player.paused = True
+
+    def __get_active(self): return self.__item.get_active()
+    def __set_active(self, v): return self.__item.set_active(v)
+    active = property(__get_active, __set_active)
+
 class PlayControls(gtk.VBox):
     def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=3)
@@ -128,6 +151,7 @@ class PlayControls(gtk.VBox):
         play = gtk.ToggleButton()
         play.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY, SIZE))
         hbox.pack_start(play)
+        safter = StopAfterMenu(watcher, player)
 
         next = gtk.Button()
         next.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_NEXT, SIZE))
@@ -143,12 +167,22 @@ class PlayControls(gtk.VBox):
 
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, watcher, player)
+        play.connect('button-press-event', self.__play_button_press, safter)
+        play.connect_object('popup-menu', self.__popup, safter)
         next.connect_object('clicked', self.__next, player)
         watcher.connect('song-started', self.__song_started, next)
         watcher.connect_object('paused', play.set_active, False)
         watcher.connect_object('unpaused', play.set_active, True)
-
         self.show_all()
+
+    def __play_button_press(self, activator, event, safter):
+        if event.button == 3:
+            return self.__popup(safter, event.button, event.time)
+            
+    def __popup(self, safter, button=3, time=None):
+        time = time or gtk.get_current_event_time()
+        safter.popup(None, None, None, button, time)
+        return True
 
     def __song_started(self, watcher, song, next):
         next.set_sensitive(bool(song))
