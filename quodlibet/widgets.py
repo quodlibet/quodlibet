@@ -94,6 +94,7 @@ class MainWindow(gtk.Window):
             *map(int, config.get('memory', 'size').split()))
         self.add(gtk.VBox())
 
+        from qltk.queue import QueueExpander
         # create main menubar, load/restore accelerator groups
         self._create_menu(tips)
         self.add_accel_group(self.ui.get_accel_group())
@@ -102,6 +103,16 @@ class MainWindow(gtk.Window):
         accelgroup.connect('accel-changed',
                 lambda *args: gtk.accel_map_save(const.ACCELS))
         self.child.pack_start(self.ui.get_widget("/Menu"), expand=False)
+
+        # get the playlist up before other stuff
+        self.songlist = MainSongList(watcher, player.playlist)
+        self.songlist.connect_after(
+            'drag-data-received', self.__songlist_drag_data_recv)
+        self.qexpander = QueueExpander(
+            self.ui.get_widget("/Menu/View/Queue"), watcher)
+        from qltk.songlist import PlaylistMux
+        self.playlist = PlaylistMux(
+            watcher, self.qexpander.model, self.songlist.model)
 
         # song info (top part of window)
         hbox = gtk.HBox()
@@ -132,15 +143,12 @@ class MainWindow(gtk.Window):
 
         # status area
         hbox = gtk.HBox(spacing=6)
-        self.order = order = gtk.combo_box_new_text()
-        self.order.append_text(_("In Order"))
-        self.order.append_text(_("Shuffle"))
-        self.order.append_text(_("Weighted"))
-        self.order.append_text(_("One Song"))
+        from qltk.playorder import PlayOrder
+        self.order = order = PlayOrder(self.songlist.model)
         tips.set_tip(order, _("Set play order"))
-        order.connect('changed', self.__order)
         hbox.pack_start(order, expand=False)
-        self.repeat = repeat = gtk.CheckButton(_("_Repeat"))
+        self.repeat = repeat = qltk.ccb.ConfigCheckButton(
+            _("_Repeat"), "settings", "repeat")
         tips.set_tip(repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
         self.__statusbar = gtk.Label()
@@ -155,18 +163,7 @@ class MainWindow(gtk.Window):
         self.song_scroller = sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.songlist = MainSongList(watcher, player.playlist)
-        self.songlist.connect_after(
-            'drag-data-received', self.__songlist_drag_data_recv)
         sw.add(self.songlist)
-
-        from qltk.queue import QueueExpander
-        self.qexpander = QueueExpander(
-            self.ui.get_widget("/Menu/View/Queue"), watcher)
-
-        from qltk.songlist import PlaylistMux
-        self.playlist = PlaylistMux(
-            watcher, self.qexpander.model, self.songlist.model)
 
         self.songpane = gtk.VBox(spacing=6)
         self.songpane.pack_start(self.song_scroller)
@@ -193,10 +190,7 @@ class MainWindow(gtk.Window):
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
-        try: shf = config.getint('memory', 'order')
-        except: shf = int(config.getboolean('memory', 'order'))
-        order.set_active(shf)
-        repeat.connect('toggled', self.toggle_repeat)
+        repeat.connect('toggled', self.__repeat, self.songlist.model)
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
         self.connect('configure-event', MainWindow.__save_size)
@@ -578,13 +572,8 @@ class MainWindow(gtk.Window):
     def __next_song(self, *args): player.playlist.next()
     def __previous_song(self, *args): player.playlist.previous()
 
-    def toggle_repeat(self, button):
-        self.songlist.model.repeat = button.get_active()
-        config.set("settings", "repeat", str(bool(button.get_active())))
-
-    def __order(self, button):
-        self.songlist.model.order = button.get_active()
-        config.set("memory", "order", str(button.get_active()))
+    def __repeat(self, button, model):
+        model.repeat = button.get_active()
 
     def __random(self, item, key):
         if self.browser.can_filter(key):
