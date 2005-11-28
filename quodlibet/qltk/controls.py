@@ -57,7 +57,7 @@ class SeekBar(HSlider):
         if self.__seekable: player.seek(self.scale.get_value() * 1000)
 
     def __check_time(self, player):
-        if not (self.__lock or player.paused):
+        if not self.__lock:
             position = player.get_position() // 1000
             if (not self.__seekable and
                 position > self.scale.get_adjustment().upper):
