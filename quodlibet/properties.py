@@ -1417,7 +1417,6 @@ class SongProperties(qltk.Window):
                     was_changed.append(song)
                 except:
                     buttons = (gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
-                               gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                _("_Continue"), gtk.RESPONSE_OK)
                     msg = qltk.Message(
                         gtk.MESSAGE_ERROR, win, _("Unable to rename file"),
