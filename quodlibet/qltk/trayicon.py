@@ -122,6 +122,13 @@ class TrayIcon(object):
 
         icon.show_all()
 
+    def __preferences(self, watcher):
+        p = Preferences(self, watcher)
+        p.connect_object('destroy', self.__prefs_destroy, watcher)
+
+    def __prefs_destroy(self, watcher):
+        self.__song_started(watcher, watcher.song)
+
     def __enabled(self):
         return (self.__icon  and self.__mapped and
                 self.__icon.get_property('visible'))
@@ -204,7 +211,7 @@ class TrayIcon(object):
         orders.set_submenu(submenu)
 
         preferences = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
-        preferences.connect('activate', Preferences, watcher)
+        preferences.connect_object('activate', self.__preferences, watcher)
 
         browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
         m2 = gtk.Menu()
