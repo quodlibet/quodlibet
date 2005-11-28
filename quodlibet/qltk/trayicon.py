@@ -7,7 +7,7 @@
 #
 # $Id$
 
-import gtk
+import gtk, pango
 
 import config
 import const
@@ -18,6 +18,69 @@ import qltk
 
 from properties import SongProperties
 from qltk.browser import LibraryBrowser
+from qltk.controls import StopAfterMenu
+
+class Preferences(qltk.Window):
+    def __init__(self, activator, watcher):
+        super(Preferences, self).__init__()
+        self.set_border_width(12)
+        self.set_title(_("Tray Preferences - Quod Libet"))
+
+        hbox = gtk.VBox(spacing=12)
+        table = gtk.Table(2, 4)
+        table.set_row_spacings(6)
+        table.set_col_spacings(12)
+        current = config.get("plugins", "icon_tooltip")[1:-1].split("~")
+
+        cbs = []
+        for i, tag in enumerate([
+            "genre", "artist", "album", "discnumber", "part", "tracknumber",
+            "title", "version"]):
+            cb = gtk.CheckButton(util.tag(tag))
+            cb.tag = tag
+            cbs.append(cb)
+            table.attach(cb, i%4, i%4+1, i//4, i//4+1)
+        hbox.pack_start(table)
+
+        entry = gtk.Entry()
+        hbox.pack_start(entry, expand=False)
+
+        preview = gtk.Label()
+        preview.set_ellipsize(pango.ELLIPSIZE_END)
+        hbox.pack_start(preview, expand=False)
+
+        self.add(qltk.Frame(child=hbox, label=_("Tooltip Display"), bold=True))
+
+        for cb in cbs: cb.connect('toggled', self.__changed_cb, cbs, entry)
+        entry.connect('changed', self.__changed_entry, cbs, preview, watcher)
+        entry.set_text(config.get("plugins", "icon_tooltip"))
+
+        self.show_all()
+
+    def __changed_cb(self, cb, cbs, entry):
+        text = "<%s>" % "~".join([cb.tag for cb in cbs if cb.get_active()])
+        entry.set_text(text)
+
+    def __changed_entry(self, entry, cbs, label, watcher):
+        text = entry.get_text()
+        if text[0:1] == "<" and text[-1:] == ">":
+            parts = text[1:-1].split("~")
+            for cb in cbs:
+                if parts and parts[0] == cb.tag: parts.pop(0)
+            if parts:
+                for cb in cbs: cb.set_inconsistent(True)
+            else:
+                parts = text[1:-1].split("~")
+                for cb in cbs:
+                    cb.set_inconsistent(False)
+                    cb.set_active(cb.tag in parts)
+        else:
+            for cb in cbs: cb.set_inconsistent(True)
+
+        if watcher.song is None: text = _("Not playing")
+        else: text = pattern.Pattern(entry.get_text()) % watcher.song
+        label.set_markup("<b>Preview:</b> %s" % util.escape(text))
+        config.set("plugins", "icon_tooltip", entry.get_text())
 
 class TrayIcon(object):
     __icon = False
@@ -113,6 +176,10 @@ class TrayIcon(object):
     def __Menu(self, watcher, window, player):
         playpause = qltk.MenuItem(const.SM_PLAY, gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__play_pause, player)
+        safter = StopAfterMenu(watcher, player)
+        playpause.connect(
+            'button-press-event', self.__play_button_press, safter)
+
         previous = qltk.MenuItem(const.SM_PREVIOUS, gtk.STOCK_MEDIA_PREVIOUS)
         previous.connect('activate', lambda *args: player.previous())
         next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
@@ -135,6 +202,9 @@ class TrayIcon(object):
         items.remove(None)
         map(submenu.append, items)
         orders.set_submenu(submenu)
+
+        preferences = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
+        preferences.connect('activate', Preferences, watcher)
 
         browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
         m2 = gtk.Menu()
@@ -168,7 +238,7 @@ class TrayIcon(object):
         menu = gtk.Menu()
         for item in [playpause,
                      gtk.SeparatorMenuItem(), previous, next, orders,
-                     gtk.SeparatorMenuItem(), browse,
+                     gtk.SeparatorMenuItem(), preferences, browse,
                      gtk.SeparatorMenuItem(), props, ratings,
                      gtk.SeparatorMenuItem(), quit]:
             menu.append(item)
@@ -176,6 +246,11 @@ class TrayIcon(object):
         menu.orders = items
         menu.sensitives = [props, next, ratings]
         return menu
+
+    def __play_button_press(self, activator, event, safter):
+        if event.button == 3:
+            safter.popup(None, None, None, event.button, event.time)
+            return True
 
     def __popup(self, event, window):
         order = window.order.get_active()
