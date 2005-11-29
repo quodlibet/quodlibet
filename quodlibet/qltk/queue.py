@@ -136,7 +136,7 @@ class PlayQueue(SongList):
         self.connect_object('button-press-event', self.__button_press, menu)
         self.connect_object('popup-menu', self.__popup, menu)
         self.enable_drop()
-        self.connect('destroy', self.__write)
+        self.connect_object('destroy', self.__write, self.model)
         self.__fill()
 
     def __fill(self):
@@ -147,8 +147,8 @@ class PlayQueue(SongList):
                 if fn in library:
                     self.model.append([library[fn]])
 
-    def __write(self, *args):
-        filenames = "\n".join([row[0]["~filename"] for row in self.model])
+    def __write(self, model):
+        filenames = "\n".join([row[0]["~filename"] for row in model])
         f = file(const.QUEUE, "w")
         f.write(filenames)
         f.close()
