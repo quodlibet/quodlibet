@@ -42,18 +42,50 @@ class Feed(list):
     def get_age(self):
         return time.time() - self.__lastgot
 
+    def __fill_af(feed, af):
+        for songkey, feedkey in [
+            ("website", "link"),
+            ("description", "tagline"),
+            ("language", "language"),
+            ("copyright", "copyright"),
+            ("artist", "author"),
+            ("organization", "publisher"),
+            ("license", "license")]:
+            try: value = getattr(feed, feedkey)
+            except: pass
+            else:
+                if value not in af.list(songkey): af.add(songkey, value)
+
+        try: values = feed.contributors
+        except AttributeError: pass
+        else:
+            for value in values:
+                try: value = value.name
+                except AttributeError: pass
+                else:
+                    if value not in af.list("performer"):
+                        af.add("performer", value)
+
+        try: values = dict(feed.categories).values()
+        except AttributeError: pass
+        else:
+            for value in values:
+                if value not in af.list("genre"):
+                    af.add("genre", value)
+    __fill_af = staticmethod(__fill_af)
+
     def parse(self):
         doc = feedparser.parse(self.uri)
-        try:
-            album = doc.channel.title
-            website = doc.channel.link
-        except AttributeError:
-            # Most likely a transient network error.
-            return False
+        try: album = doc.channel.title
+        except AttributeError: return False
 
         if album: self.name = album
         else: self.name = _("Unknown")
-        if website: self.website = website
+
+        from formats._audio import AudioFile
+        defaults = AudioFile({"feed": self.uri})
+        try: self.__fill_af(doc.channel, defaults)
+        except: return False
 
         entries = []
         uris = set()
@@ -79,16 +111,16 @@ class Feed(list):
             if uri in uris:
                 song = RemoteFile(uri)
                 song.fill_metadata = False
+                song.update(defaults)
+                song["album"] = self.name
                 try: song["title"] = entry.title or _("Unknown")
                 except: song["title"] = _("Unknown")
                 try:
                     song["date"] = "%04d-%02d-%02d" % entry.modified_parsed[:3]
                 except AttributeError: pass
-                song["album"] = self.name
-                try: song["website"] = entry.link
-                except AttributeError:
-                    if self.website: song["website"] = self.website
-                self.insert(0, song)
+                try: self.__fill_af(entry, song)
+                except: pass
+                else: self.insert(0, song)
         self.__lastgot = time.time()
         return bool(uris)
 
