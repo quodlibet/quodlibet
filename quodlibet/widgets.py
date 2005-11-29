@@ -508,9 +508,10 @@ class MainWindow(gtk.Window):
         if song is None: return
         if not self.browser.dynamic(song):
             player.playlist.remove(song)
-            iter = self.songlist.song_to_iter(song)
-            if iter: self.songlist.get_model().remove(iter)
-            self.__set_time()
+            iter = self.songlist.model.find(song)
+            if iter:
+                self.songlist.model.remove(iter)
+                self.__set_time()
 
     def __update_title(self, watcher, songs):
         if player.playlist.song in songs:
@@ -561,12 +562,10 @@ class MainWindow(gtk.Window):
         else: player.playlist.paused ^= True
 
     def __jump_to_current(self, explicit):
-        watcher, songlist = widgets.watcher, self.songlist
-        iter = songlist.song_to_iter(player.playlist.song)
-        if iter:
-            path = songlist.get_model().get_path(iter)
-            if path:
-                songlist.scroll_to_cell(path[0], use_align=True, row_align=0.5)
+        if player.playlist.song == self.songlist.model.current:
+            path = self.songlist.model.current_path
+            self.songlist.scroll_to_cell(
+                path[0], use_align=True, row_align=0.5)
         if explicit: self.browser.scroll(player.playlist.song)
 
     def __next_song(self, *args): player.playlist.next()

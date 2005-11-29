@@ -161,7 +161,8 @@ class PlayQueue(SongList):
         SongProperties(self.get_selected_songs(), watcher)
 
     def __remove(self, item):
-        map(self.model.remove, self.songs_to_iters(self.get_selected_songs()))
+        model, paths = self.get_selection().get_selected_paths()
+        if model: map(self.model.remove, map(model.get_iter, paths))
 
     def __button_press(self, menu, event):
         x, y = map(int, [event.x, event.y])

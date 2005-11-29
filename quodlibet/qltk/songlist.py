@@ -245,7 +245,7 @@ class PlaylistModel(gtk.ListStore):
         iters = []
         def _find(self, path, iter, it):
             if self[iter][0] in songs: it.append(iter)
-            return len(it) == len(songs)
+            return False
         self.foreach(_find, iters)
         return iters
 
@@ -722,10 +722,8 @@ class SongList(HintedTreeView):
             self.__enqueue(None, self.get_selected_songs())
 
     def __redraw_current(self, watcher, song=None):
-        iter = self.song_to_iter(player.playlist.song)
-        if iter:
-            model = self.get_model()
-            model.row_changed(model.get_path(iter), iter)
+        iter = self.model.current_iter
+        if iter: self.model.row_changed(self.model.get_path(iter), iter)
 
     def set_all_column_headers(cls, headers):
         try: headers.remove("~current")
@@ -813,12 +811,6 @@ class SongList(HintedTreeView):
         model, rows = self.get_selection().get_selected_rows()
         return [model[row][0] for row in rows]
 
-    def song_to_iter(self, song):
-        return self.get_model().find(song)
-
-    def songs_to_iters(self, songs):
-        return self.get_model().find_all(songs)
-
     def __song_updated(self, watcher, songs):
         model = self.get_model()
         iters = model.find_all(songs)
@@ -828,7 +820,7 @@ class SongList(HintedTreeView):
     def __song_removed(self, watcher, songs):
         # The selected songs are removed from the library and should
         # be removed from the view.
-        map(self.get_model().remove, self.get_model().find_all(songs))
+        map(self.model.remove, self.model.find_all(songs))
 
     # Build a new filter around our list model, set the headers to their
     # new values.
