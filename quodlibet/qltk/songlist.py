@@ -770,6 +770,7 @@ class SongList(HintedTreeView):
     def set_model(self, model):
         super(SongList, self).set_model(model)
         if model is not None: model.connect('songs-set', self.__songs_set)
+        self.model = model
 
     def get_songs(self):
         return self.get_model().get()

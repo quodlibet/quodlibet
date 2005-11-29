@@ -67,7 +67,6 @@ class MainSongList(SongList):
     def __init__(self, watcher, player):
         SongList.__init__(self, watcher)
         self.set_rules_hint(True)
-        self.model = self.get_model()
         s = watcher.connect_object('removed', map, player.remove)
         self.connect_object('destroy', watcher.disconnect, s)
         self.connect_object('row-activated', self.__select_song, player)
