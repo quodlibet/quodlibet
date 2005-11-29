@@ -54,7 +54,8 @@ class Feed(list):
             try: value = getattr(feed, feedkey)
             except: pass
             else:
-                if value not in af.list(songkey): af.add(songkey, value)
+                if value and value not in af.list(songkey):
+                    af.add(songkey, value)
 
         try: values = feed.contributors
         except AttributeError: pass
@@ -63,14 +64,14 @@ class Feed(list):
                 try: value = value.name
                 except AttributeError: pass
                 else:
-                    if value not in af.list("performer"):
+                    if value and value not in af.list("performer"):
                         af.add("performer", value)
 
         try: values = dict(feed.categories).values()
         except AttributeError: pass
         else:
             for value in values:
-                if value not in af.list("genre"):
+                if value and value not in af.list("genre"):
                     af.add("genre", value)
     __fill_af = staticmethod(__fill_af)
 
