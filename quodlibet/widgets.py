@@ -142,10 +142,17 @@ class MainWindow(gtk.Window):
 
         # status area
         hbox = gtk.HBox(spacing=6)
+
+        hb = gtk.HBox(spacing=3)
         from qltk.playorder import PlayOrder
+        label = gtk.Label(_("_Order:"))
         self.order = order = PlayOrder(self.songlist.model)
+        label.set_mnemonic_widget(order)
+        label.set_use_underline(True)
         tips.set_tip(order, _("Set play order"))
-        hbox.pack_start(order, expand=False)
+        hb.pack_start(label)
+        hb.pack_start(order)
+        hbox.pack_start(hb, expand=False)
         self.repeat = repeat = qltk.ccb.ConfigCheckButton(
             _("_Repeat"), "settings", "repeat")
         tips.set_tip(repeat, _("Restart the playlist when finished"))

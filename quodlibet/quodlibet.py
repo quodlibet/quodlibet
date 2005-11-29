@@ -146,7 +146,7 @@ def process_arguments():
         ("volume-down", _("Turn down volume")),
         ("status", _("Print playing status")),
         ("hide-window", _("Hide main window")),
-        ("show-window", _("Hide main window")),
+        ("show-window", _("Show main window")),
         ("toggle-window", _("Toggle main window visibility")),
         ("focus", _("Focus the running player")),
         ("quit", _("Exit Quod Libet")),
