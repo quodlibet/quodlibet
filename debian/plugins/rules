@@ -6,9 +6,6 @@ D := debian/quodlibet-plugins
 U := usr/lib/quodlibet/plugins
 P := $(D)/$(U)
 
-# wm_eddie is insecure
-EXCLUDE := albumart.py
-
 build binary-arch install:
 # Ye olde no-op.
 
@@ -22,6 +19,7 @@ binary-indep:
 	done
 	dh_installchangelogs
 	dh_installdocs
+	dh_python
 	dh_compress
 	dh_fixperms
 	dh_gencontrol
