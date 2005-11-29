@@ -17,7 +17,7 @@ import util
 class SongInfo(gtk.Label):
     # Translators: Only worry about "by", "Disc", and "Track" below.
     _pattern = _("""\
-\\<span weight='bold' size='large'\\><title>\\</span\\> - <~length><version|
+\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)><version|
 \\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
 by <~people>><album|
 \\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
