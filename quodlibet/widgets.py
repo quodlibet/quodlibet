@@ -685,6 +685,7 @@ class MainWindow(gtk.Window):
                 self.last_dir = fns[0]
                 if self.scan_dirs(fns):
                     widgets.watcher.refresh()
+                    self.browser.activate()
                     library.save(const.LIBRARY)
             else:
                 added = []
@@ -707,6 +708,7 @@ class MainWindow(gtk.Window):
                         continue
                 if added:
                     widgets.watcher.added(added)
+                    self.browser.activate()
 
     def scan_dirs(self, fns):
         win = WaitLoadWindow(self, 0,
