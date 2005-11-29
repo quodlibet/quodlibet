@@ -48,7 +48,6 @@ class Feed(list):
             ("description", "tagline"),
             ("language", "language"),
             ("copyright", "copyright"),
-            ("artist", "author"),
             ("organization", "publisher"),
             ("license", "license")]:
             try: value = getattr(feed, feedkey)
@@ -56,6 +55,19 @@ class Feed(list):
             else:
                 if value and value not in af.list(songkey):
                     af.add(songkey, value)
+
+        try: author = feed.author_detail
+        except AttributeError:
+            try: author = feed.author
+            except AttributeError: pass
+            else:
+                if author and author not in af.list("artist"):
+                    af.add('artist', author)
+        else:
+            if author.email and author.email not in af.list("contact"):
+                af.add("contact", author.email)
+            if author.name and author.name not in af.list("artist"):
+                af.add("artist", author.name)
 
         try: values = feed.contributors
         except AttributeError: pass
