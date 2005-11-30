@@ -155,7 +155,7 @@ def process_arguments():
     for opt, help, arg in [
         ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
         ("order", _("Set or toggle the playback order"),
-         "inorder|shuffle|weighted|onesong|toggle"),
+         "[order]|toggle"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "+|-|0..100"),
         ("query", _("Search your audio library"), _("search-string")),
