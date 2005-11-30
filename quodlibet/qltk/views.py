@@ -166,6 +166,20 @@ class PrettyDragTreeView(gtk.TreeView):
     def __init__(self, *args):
         super(PrettyDragTreeView, self).__init__(*args)
         self.connect_object('drag-begin', PrettyDragTreeView.__begin, self)
+        self.connect_object(
+            'button-press-event', PrettyDragTreeView.__check_popup, self)
+
+    def __check_popup(self, event):
+        if event.button == 3:
+            x, y = map(int, [event.x, event.y])
+            try: path, col, cellx, celly = self.get_path_at_pos(x, y)
+            except TypeError: return True
+            self.grab_focus()
+            selection = self.get_selection()
+            if not selection.path_is_selected(path):
+                self.set_cursor(path, col, 0)
+            self.emit('popup-menu')
+            return True
 
     def __begin(self, ctx):
         model, paths = self.get_selection().get_selected_rows()

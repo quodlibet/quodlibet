@@ -61,8 +61,6 @@ class ExFalsoWindow(gtk.Window):
         for c in fs.get_children():
             c.child.connect('button-press-event', self.__pre_selection_changed)
         fs.get_children()[1].child.connect(
-            'button-press-event', self.__button_press, fs)
-        fs.get_children()[1].child.connect(
             'popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
@@ -106,7 +104,8 @@ class ExFalsoWindow(gtk.Window):
                   [model[row][0] for row in rows], fs)
         menu.prepend(b)
         menu.show_all()
-        menu.popup(None, None, None, button, time)
+        menu.popup(
+            None, None, None, button, time or gtk.get_current_event_time())
         return True
 
     def __delete(self, item, files, fs):

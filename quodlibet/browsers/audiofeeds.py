@@ -230,7 +230,6 @@ class AudioFeeds(Browser, gtk.VBox):
         new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__popup_menu)
 
         self.connect_object('destroy', self.__save, view)
@@ -257,17 +256,6 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def __save(self, view):
         AudioFeeds.write()
-
-    def __button_press(self, view, event):
-        if event.button == 3:
-            x, y = map(int, [event.x, event.y])
-            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-            except TypeError: return True
-            selection = view.get_selection()
-            if not selection.path_is_selected(path):
-                view.set_cursor(path, col, 0)
-            self.__menu(view).popup(None, None, None, event.button, event.time)
-            return True
 
     def __popup_menu(self, view):
         self.__menu(view).popup(

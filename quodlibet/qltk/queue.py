@@ -132,7 +132,6 @@ class PlayQueue(SongList):
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         props.connect_object('activate', self.__properties, watcher)
         menu.append(rem); menu.append(props); menu.show_all()
-        self.connect_object('button-press-event', self.__button_press, menu)
         self.connect_object('popup-menu', self.__popup, menu)
         self.enable_drop()
         self.connect_object('destroy', self.__write, self.model)
@@ -153,27 +152,15 @@ class PlayQueue(SongList):
         f.close()
 
     def __popup(self, menu):
-        menu.popup(None, None, None, 3, 0)
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 
     def __properties(self, watcher):
         SongProperties(self.get_selected_songs(), watcher)
 
     def __remove(self, item):
-        model, paths = self.get_selection().get_selected_paths()
+        model, paths = self.get_selection().get_selected_rows()
         if model: map(self.model.remove, map(model.get_iter, paths))
-
-    def __button_press(self, menu, event):
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError: return True
-        self.grab_focus()
-        selection = self.get_selection()
-        if event.button == 3:
-            if not selection.path_is_selected(path):
-                self.set_cursor(path, col, 0)
-            menu.popup(None, None, None, event.button, event.time)
-            return True
 
     def set_sort_by(self, *args): pass
     def get_sort_by(self, *args): return "", False

@@ -274,7 +274,6 @@ class Playlists(gtk.VBox, Browser):
         align.add(hb)
         self.pack_start(align, expand=False)
 
-        view.connect('button-press-event', self.__button_press)
         view.connect('popup-menu', self.__popup_menu)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 0),
@@ -382,15 +381,6 @@ class Playlists(gtk.VBox, Browser):
         for row in model:
             if row[0] is playlist:
                 view.get_selection().select_iter(row.iter)
-
-    def __button_press(self, view, event):
-        if event.button == 3:
-            x, y = map(int, [event.x, event.y])
-            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-            except TypeError: return True
-            else: view.get_selection().select_path(path)
-            self.__menu(view).popup(None, None, None, event.button, event.time)
-            return True
 
     def __popup_menu(self, view):
         self.__menu(view).popup(

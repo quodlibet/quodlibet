@@ -16,7 +16,7 @@ import formats
 import qltk
 import util
 
-from qltk.views import HintedTreeView
+from qltk.views import HintedTreeView, PrettyDragTreeView
 from qltk.getstring import GetStringDialog
 
 def search_func(model, column, key, iter, handledirs):
@@ -25,14 +25,14 @@ def search_func(model, column, key, iter, handledirs):
         check = os.path.basename(check) or '/'
     return key not in check.lower() and key not in check
 
-class DirectoryTree(gtk.TreeView):
+class DirectoryTree(PrettyDragTreeView):
     def cell_data(column, cell, model, iter):
         cell.set_property('text', util.fsdecode(
             os.path.basename(model[iter][0])) or "/")
     cell_data = staticmethod(cell_data)
 
     def __init__(self, initial=None):
-        gtk.TreeView.__init__(self, gtk.TreeStore(str))
+        super(DirectoryTree, self).__init__(gtk.TreeStore(str))
         column = gtk.TreeViewColumn(_("Folders"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
@@ -76,7 +76,7 @@ class DirectoryTree(gtk.TreeView):
         m.connect('activate', self.__refresh)
         menu.append(m)
         menu.show_all()
-        self.connect('button-press-event', DirectoryTree.__button_press, menu)
+        self.connect_object('popup-menu', self.__popup_menu, menu)
 
     def go_to(self, initial):
         path = []
@@ -98,12 +98,9 @@ class DirectoryTree(gtk.TreeView):
         self.get_selection().select_path(tuple(path))
         self.scroll_to_cell(tuple(path))
 
-    def __button_press(self, event, menu):
-        if event.button != 3: return False
-        x, y = map(int, [event.x, event.y])
-        model = self.get_model()
-        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError: return True
+    def __popup_menu(self, menu):
+        try: model, (path,) = self.get_selection().get_selected_rows()
+        except ValueError: return True
         directory = model[path][0]
         delete = menu.get_children()[1]
         try: delete.set_sensitive(len(os.listdir(directory)) == 0)
@@ -113,7 +110,7 @@ class DirectoryTree(gtk.TreeView):
             selection = self.get_selection()
             selection.unselect_all()
             selection.select_path(path)
-            menu.popup(None, None, None, event.button, event.time)
+            menu.popup(None, None, None, 0, gtk.get_current_event_time())
             return True
 
     def __mkdir(self, button):

@@ -38,8 +38,7 @@ class LibraryBrowser(Window):
             vbox.pack_start(sw)
             self.add(vbox)
 
-        view.connect('button-press-event', self.__button_press, watcher)
-        view.connect('popup-menu', self.__menu, 3, 0, watcher)
+        view.connect('popup-menu', self.__menu, watcher)
         view.connect('drag-data-received', self.__drag_data_recv)
         view.connect('row-activated', self.__enqueue)
         if browser.headers is not None:
@@ -64,22 +63,9 @@ class LibraryBrowser(Window):
             if "~" in tag[1:]: tag = filter(None, tag.split("~"))[0]
             header.set_visible(tag in browser.headers)
 
-    def __button_press(self, view, event, watcher):
-        if event.button != 3: return False
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        view.grab_focus()
-        selection = view.get_selection()
-        if not selection.path_is_selected(path):
-            view.set_cursor(path, col, 0)
-        self.__menu(view, event.button, event.time, watcher)
-        return True
-
-    def __menu(self, view, button, time, watcher):
+    def __menu(self, view, watcher):
         path, col = view.get_cursor()
         header = col.header_name
         view.Menu(header, self.browser, watcher).popup(
-            None, None, None, button, time)
+            None, None, None, 0, gtk.get_current_event_time())
         return True
-

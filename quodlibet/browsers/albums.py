@@ -405,7 +405,6 @@ class AlbumList(Browser, gtk.VBox):
         props.connect('activate', self.__properties, view, watcher)
 
         view.connect_object('popup-menu', self.__popup, menu)
-        view.connect('button-press-event', self.__button_press, menu)
 
         hb = gtk.HBox(spacing=6)
         hb.pack_start(self.SortCombo(model_sort), expand=False)
@@ -436,7 +435,7 @@ class AlbumList(Browser, gtk.VBox):
             selection.unselect_all()
 
     def __popup(self, menu):
-        menu.popup(None, None, None, 2, gtk.get_current_event_time())
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 
     def __get_selected_albums(self, selection):
@@ -460,20 +459,6 @@ class AlbumList(Browser, gtk.VBox):
         if songs:
             songs.sort()
             SongProperties(songs, watcher, initial=0)
-
-    def __button_press(self, view, event, menu):
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        if event.button == 3:
-            sens = bool(view.get_model()[path][0])
-            for c in menu.get_children()[1:]: c.set_sensitive(sens)
-            view.grab_focus()
-            selection = view.get_selection()
-            if not selection.path_is_selected(path):
-                view.set_cursor(path, col, 0)
-            menu.popup(None, None, None, event.button, event.time)
-            return True
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())

@@ -203,7 +203,6 @@ class MainWindow(gtk.Window):
         self.connect('window-state-event', self.__window_state_changed)
         self.__hidden_state = 0
 
-        self.songlist.connect('button-press-event', self.__songs_button_press)
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.connect('columns-changed', self.__hide_headers)
@@ -726,33 +725,16 @@ class MainWindow(gtk.Window):
         win.destroy()
         return (added or changed or removed)
 
-    def __songs_button_press(self, view, event):
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        view.grab_focus()
-        selection = view.get_selection()
-        header = col.header_name
-        if event.button == 3:
-            if not selection.path_is_selected(path):
-                view.set_cursor(path, col, 0)
-            self.prep_main_popup(header, event.button, event.time)
-            return True
-
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
         header = col.header_name
-        self.prep_main_popup(header, 1, 0)
+        menu = self.songlist.Menu(header, self.browser, widgets.watcher)
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 
     def __current_song_prop(self, *args):
         song = player.playlist.song
         if song: SongProperties([song], widgets.watcher)
-
-    def prep_main_popup(self, header, button, time):
-        menu = self.songlist.Menu(header, self.browser, widgets.watcher)
-        menu.popup(None, None, None, button, time)
-        return True
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Control/FilterGenre",

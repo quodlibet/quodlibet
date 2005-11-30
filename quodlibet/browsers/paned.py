@@ -54,7 +54,6 @@ class PanedBrowser(gtk.VBox, Browser):
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__changed)
             self.connect_object('destroy', self.__destroy, model)
-            self.connect('button-press-event', self.__button_press)
             self.connect('popup-menu', self.__popup_menu)
 
         def __Menu(self):
@@ -75,13 +74,6 @@ class PanedBrowser(gtk.VBox, Browser):
             menu.show_all()
             menu.connect('selection-done', lambda m: m.destroy())
             return menu
-
-        def __button_press(self, view, event):
-            if event.button != 3: return
-            else:
-                self.__Menu().popup(
-                    None, None, None, event.button, event.time)
-                return True
 
         def __popup_menu(self, view):
             self.__Menu().popup(

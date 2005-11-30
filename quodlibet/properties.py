@@ -725,15 +725,14 @@ class SongProperties(qltk.Window):
         def __popup_menu(self, view):
             path, col = view.get_cursor()
             row = view.get_model()[path]
-            self.__show_menu(row, 1, 0, view)
+            self.__show_menu(row, 0, gtk.get_current_event_time(), view)
             return True
 
         def __button_press(self, view, event):
-            if event.button not in (2, 3): return False
+            if event.button != 2: return False
             x, y = map(int, [event.x, event.y])
             try: path, col, cellx, celly = view.get_path_at_pos(x, y)
             except TypeError: return True
-            view.grab_focus()
             selection = view.get_selection()
             if not selection.path_is_selected(path):
                 view.set_cursor(path, col, 0)
@@ -748,10 +747,6 @@ class SongProperties(qltk.Window):
                         clipboard.request_text(self.__paste, (rend, path[0]))
                         return True
                 else: return False
-
-            elif event.button == 3: # right click menu
-                self.__show_menu(row, event.button, event.time, view)
-                return True
 
         def __paste(self, clip, text, (rend, path)):
             if text: rend.emit('edited', path, text.strip())
