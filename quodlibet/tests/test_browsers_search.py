@@ -97,18 +97,7 @@ class TSearchBar(TEmptyBar):
         widgets.watcher = SongWatcher()
         super(TSearchBar, self).setUp()
 
-    def test_initial_limit(self):
-        self.failUnlessEqual(0, self.bar._limit.get_value_as_int())
-
-    def test_limit_two(self):
-        class dummy:
-            # equal anything with length two, since it'll be random.
-            def __eq__(self, other): return len(other) == 2
-        self.expected = dummy()
-        self.bar._limit.show()
-        self.bar._limit.set_value(2)
-        self.bar.set_text("")
-        self._do()
+    def test_ctr(self): pass
 
     def tearDown(self):
         super(TSearchBar, self).tearDown()
