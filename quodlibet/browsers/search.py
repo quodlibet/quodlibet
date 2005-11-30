@@ -113,7 +113,7 @@ class SearchBar(EmptyBar):
         self.pack_start(self.__limit, expand=False)
 
         hb2 = gtk.HBox()
-        l = gtk.Label("_Search:")
+        l = gtk.Label(_("_Search:"))
         tips = Tooltips(self)
         combo = ComboBoxEntrySave(
             QUERIES, model="searchbar", count=15)
