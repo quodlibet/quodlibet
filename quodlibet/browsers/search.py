@@ -7,6 +7,8 @@
 #
 # $Id$
 
+import os
+import random
 import gobject, gtk
 import const
 import parser
@@ -15,8 +17,11 @@ import config
 from qltk.completion import LibraryTagCompletion
 from qltk.cbes import ComboBoxEntrySave
 from qltk.songlist import SongList
+from qltk import Tooltips
 from browsers.base import Browser
 from library import library
+
+QUERIES = os.path.join(const.DIR, "lists", "queries")
 
 # A browser that the user only interacts with indirectly, via the
 # Filter menu. The HBox remains empty.
@@ -46,7 +51,7 @@ class EmptyBar(gtk.HBox, Browser):
 
     def restore(self):
         try: self.set_text(config.get("browsers", "query_text"))
-        except Exception: pass
+        except: pass
 
     def activate(self):
         if self._text is not None:
@@ -59,18 +64,41 @@ class EmptyBar(gtk.HBox, Browser):
     def can_filter(self, key): return True
 
     def filter(self, key, values):
+        if not values: return
         if key.startswith("~#"):
             nheader = key[2:]
             queries = ["#(%s = %s)" % (nheader, i) for i in values]
-            self.set_text("|(" + ", ".join(queries) + ")")
+            if len(queries) > 1: self.set_text(u"|(%s)" % ", ".join(queries))
+            else: self.set_text(queries[0])
         else:
             text = ", ".join(
                 ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
                  for v in values])
-            self.set_text(u"%s = |(%s)" % (key, text))
+            if len(values) == 1: self.set_text(u"%s = %s" % (key, text))
+            else: self.set_text(u"%s = |(%s)" % (key, text))
         self.activate()
 
 gobject.type_register(EmptyBar)
+
+class Limit(gtk.HBox):
+    def __init__(self):
+        super(Limit, self).__init__()
+        label = gtk.Label(_("_Limit:"))
+        label.set_padding(3, 0)
+        self.pack_start(label)
+        limit = gtk.SpinButton()
+        limit.set_numeric(True)
+        limit.set_range(0, 99999)
+        limit.set_increments(5, 50)
+        label.set_mnemonic_widget(limit)
+        label.set_use_underline(True)
+        self.pack_start(limit)
+        self.__limit = limit
+
+    def __get_value(self):
+        if not self.get_property('visible'): return 0
+        else: return self.__limit.get_value_as_int()
+    value = property(__get_value)
 
 # Like EmptyBar, but the user can also enter a query manually. This
 # is QL's default browser. EmptyBar handles all the GObject stuff.
@@ -81,24 +109,14 @@ class SearchBar(EmptyBar):
         self.__save = bool(player)
         self.set_spacing(12)
 
-        hb = gtk.HBox()
-        lab = gtk.Label("_Limit:")
-        lab.set_padding(3, 0)
-        limit = gtk.SpinButton()
-        limit.set_numeric(True)
-        limit.set_range(0, 99999)
-        limit.set_increments(5, 50)
-        lab.set_mnemonic_widget(limit)
-        lab.set_use_underline(True)
-        hb.pack_start(lab)
-        hb.pack_start(limit)
-        self.pack_start(hb, expand=False)
+        self.__limit = Limit()
+        self.pack_start(self.__limit, expand=False)
 
         hb2 = gtk.HBox()
         l = gtk.Label("_Search:")
-        tips = gtk.Tooltips()
+        tips = Tooltips(self)
         combo = ComboBoxEntrySave(
-            const.QUERIES, model="searchbar", count=15)
+            QUERIES, model="searchbar", count=15)
         combo.child.set_completion(LibraryTagCompletion(watcher, library))
         l.set_mnemonic_widget(combo.child)
         l.set_use_underline(True)
@@ -114,21 +132,18 @@ class SearchBar(EmptyBar):
         tips.set_tip(search, _("Search your library"))
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
-        limit.connect_object_after('activate', self.__text_parse, combo.child)
         combo.child.connect('changed', self.__test_filter)
         tips.enable()
         combo.child.connect('realize', lambda w: w.grab_focus())
-        combo.child.connect('populate-popup', self.__menu, hb)
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
+        combo.child.connect('populate-popup', self.__menu, self.__limit)
         hb2.pack_start(l, expand=False)
         hb2.pack_start(combo)
         hb2.pack_start(clear, expand=False)
         hb2.pack_start(search, expand=False)
         self.pack_start(hb2)
         self.show_all()
-        self._limit = limit
-        self._combo = combo
-        hb.hide_all()
+        self.__combo = combo
+        self.__limit.hide()
 
     def __menu(self, entry, menu, hb):
         sep = gtk.SeparatorMenuItem()
@@ -140,27 +155,25 @@ class SearchBar(EmptyBar):
         item.show(); sep.show()
 
     def __showhide_limit(self, button, hb):
-        if button.get_active(): hb.show_all()
-        else: hb.hide_all()
+        if button.get_active(): hb.show()
+        else: hb.hide()
 
     def activate(self):
         if self._text is not None:
             try: songs = library.query(self._text, star=SongList.star)
             except parser.error: pass
             else:
-                self._combo.prepend_text(self._text)
-                val = self._limit.get_value_as_int()
-                if (self._limit.get_property('visible') and
-                    val and len(songs) > val):
-                    import random
+                self.__combo.prepend_text(self._text)
+                val = self.__limit.value
+                if val and len(songs) > val:
                     random.shuffle(songs)
                     songs = songs[:val]
                 self.emit('songs-selected', songs, None)
                 if self.__save: self.save()
-                self._combo.write(const.QUERIES)
+                self.__combo.write(QUERIES)
 
     def set_text(self, text):
-        self._combo.child.set_text(text)
+        self.__combo.child.set_text(text)
         if isinstance(text, str): text = text.decode('utf-8')
         self._text = text
 

@@ -16,7 +16,6 @@ ACCELS  = os.path.join(DIR, "accels")
 PAUSED  = os.path.join(DIR, "paused")
 PLUGINS = os.path.join(DIR, "plugins")
 BROWSERS = os.path.join(DIR, "browsers")
-QUERIES = os.path.join(DIR, "lists", "queries")
 
 SM_PLAY = 'gtk-media-play'
 SM_PAUSE = 'gtk-media-pause'

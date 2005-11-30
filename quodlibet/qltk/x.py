@@ -95,3 +95,10 @@ class RPaned(object):
 
 class RHPaned(RPaned, gtk.HPaned): pass
 class RVPaned(RPaned, gtk.VPaned): pass
+
+class Tooltips(gtk.Tooltips):
+    """A Tooltip whose lifetime is tied to another widget's."""
+    def __init__(self, parent=None):
+        super(Tooltips, self).__init__()
+        if parent is not None:
+            parent.connect_object('destroy', gtk.Tooltips.destroy, self)
