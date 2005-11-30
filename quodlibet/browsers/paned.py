@@ -170,7 +170,7 @@ class PanedBrowser(gtk.VBox, Browser):
         def get_songs(self):
             model, rows = self.get_selection().get_selected_rows()
             # No reason to look further if "All" is selected.
-            if rows and rows[0][0] == 0: return model[(0,)][1]
+            if rows and rows[0][0] == 0: return list(model[(0,)][1])
             else:
                 songs = [model[row][1] for row in rows]
                 return list(reduce(set.union, songs, set()))
