@@ -76,16 +76,11 @@ class SeekBar(HSlider):
         timer.set_text(util.format_time(scale.get_value()))
 
     def __song_changed(self, watcher, song, label):
-        if song:
+        if song and song.get("~#length", 0) > 0:
             length = song["~#length"]
-            if length <= 0:
-                self.scale.set_range(0, 1)
-                self.scale.set_value(0)
-                self.__seekable = False
-            else:
-                self.scale.set_range(0, length)
-                self.scale.set_value(0)
-                self.__seekable = True
+            self.scale.set_range(0, length)
+            self.scale.set_value(0)
+            self.__seekable = True
         else:
             self.scale.set_range(0, 1)
             self.scale.set_value(0)
@@ -93,8 +88,7 @@ class SeekBar(HSlider):
 
 class Volume(VSlider):
     def __init__(self, device):
-        i = gtk.image_new_from_stock(
-            stock.VOLUME_MAX, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        i = gtk.image_new_from_stock(stock.VOLUME_MAX, SIZE)
         super(type(self), self).__init__(i)
         self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self.scale.set_inverted(True)
@@ -120,7 +114,7 @@ class Volume(VSlider):
         elif val < 0.33: img = stock.VOLUME_MIN
         elif val < 0.66: img = stock.VOLUME_MED
         else: img = stock.VOLUME_MAX
-        image.set_from_stock(img, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        image.set_from_stock(img, SIZE)
 
         device.volume = val
         config.set("memory", "volume", str(slider.get_value()))

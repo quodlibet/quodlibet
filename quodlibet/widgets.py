@@ -336,7 +336,8 @@ class MainWindow(gtk.Window):
             ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
              None, self.__bottom40),
             ("Control", None, _("_Control")),
-            ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return", None,
+            ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return",
+             _("View and edit tags in the playing song"),
              self.__current_song_prop),
             ("Rating", None, _("_Rating")),
 
@@ -495,15 +496,14 @@ class MainWindow(gtk.Window):
     def __update_paused(self, watcher, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
         if paused:
-            menu.get_image().set_from_stock(
-                gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_MENU)
+            image = gtk.STOCK_MEDIA_PLAY
             label = const.SM_PLAY
         else:
-            menu.get_image().set_from_stock(
-                gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU)
+            image = gtk.STOCK_MEDIA_PAUSE
             label = const.SM_PAUSE
         text = gtk.stock_lookup(label)
         text = (text and text[1]) or label
+        menu.get_image().set_from_stock(image, gtk.ICON_SIZE_MENU)
         menu.child.set_text(text)
         menu.child.set_use_underline(True)
 
