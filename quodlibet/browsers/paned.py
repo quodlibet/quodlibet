@@ -41,6 +41,7 @@ class PanedBrowser(gtk.VBox, Browser):
             if "~" in mytag[1:]: self.tags = filter(None, mytag.split("~"))
             else: self.tags = [mytag]
             self.__next = next
+            self.__mytag = mytag
             model = gtk.ListStore(str, object)
 
             column = gtk.TreeViewColumn(tag(mytag), self.__render, markup=0)
@@ -83,10 +84,8 @@ class PanedBrowser(gtk.VBox, Browser):
             self.inhibit()
             values = {}
             unknown = set()
-            tag = "~".join(self.tags)
-            if len(self.tags) > 1 and tag[0] != "~": tag = "~" + tag
             for song in songs:
-                songvals = song.list(tag)
+                songvals = song.list(self.__mytag)
                 if songvals:
                     for val in songvals:
                         values.setdefault(val, set()).add(song)
@@ -97,9 +96,14 @@ class PanedBrowser(gtk.VBox, Browser):
             model = self.get_model()
             model.clear()
             for k in keys: model.append(row=[util.escape(k), values[k]])
+
+            column = self.get_columns()[0]
+            if len(model) <= 1: column.set_title(tag(self.__mytag))
+            else:
+                column.set_title("%s (%d)" % (tag(self.__mytag), len(model)))
+
             if len(keys) + bool(unknown) > 1:
-                model.insert(
-                    0, row=["<b>%s (%d)</b>" % (_("All"), len(model)), songs])
+                model.insert(0, row=["<b>%s</b>" % _("All"), songs])
             if unknown:
                 model.append(row=["<b>%s</b>" % _("Unknown"), unknown])
 
@@ -108,9 +112,7 @@ class PanedBrowser(gtk.VBox, Browser):
             else: self.set_selected(None, jump=True)
 
         def scroll(self, song):
-            tag = "~".join(self.tags)
-            if len(self.tags) > 1 and tag[0] != "~": tag = "~" + tag
-            values = map(util.escape, song.list(tag))
+            values = map(util.escape, song.list(self.__mytag))
             for i, row in enumerate(iter(self.get_model())):
                 if row[0] in values:
                     self.scroll_to_cell(i, use_align=True, row_align=0.5)
@@ -239,14 +241,19 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__save.next()
 
     def can_filter(self, key):
+        from formats._audio import PEOPLE
         for pane in self.__panes:
-            if key in pane.tags: return True
+            if (key in pane.tags or
+                (key in PEOPLE and "~people" in pane.tags)):
+                return True
         else: return False
 
     def filter(self, key, values):
+        from formats._audio import PEOPLE
         self.__panes[-1].inhibit()
         for pane in self.__panes:
-            if key in pane.tags:
+            if (key in pane.tags or
+                (key in PEOPLE and "~people" in pane.tags)):
                 pane.set_selected(map(util.escape, values), True)
             else: pane.set_selected(None, True)
         self.__panes[-1].uninhibit()
