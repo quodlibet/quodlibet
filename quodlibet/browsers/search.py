@@ -133,7 +133,6 @@ class SearchBar(EmptyBar):
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
         combo.child.connect('changed', self.__test_filter)
-        tips.enable()
         combo.child.connect('realize', lambda w: w.grab_focus())
         combo.child.connect('populate-popup', self.__menu, self.__limit)
         hb2.pack_start(l, expand=False)

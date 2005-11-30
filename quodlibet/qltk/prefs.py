@@ -32,7 +32,7 @@ class PreferencesWindow(qltk.Window):
             self.set_border_width(12)
             self.title = _("Song List")
             vbox = gtk.VBox(spacing=12)
-            tips = gtk.Tooltips()
+            tips = qltk.Tooltips(self)
 
             buttons = {}
             table = gtk.Table(3, 3)
@@ -104,8 +104,6 @@ class PreferencesWindow(qltk.Window):
             vbox.pack_start(b)
 
             frame = qltk.Frame(_("Visible Columns"), bold=True, child=vbox)
-            tips.enable()
-            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             self.pack_start(frame, expand=False)
             self.show_all()
 
@@ -134,15 +132,13 @@ class PreferencesWindow(qltk.Window):
             gtk.VBox.__init__(self, spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
-            tips = gtk.Tooltips()
+            tips = qltk.Tooltips(self)
             c = ConfigCheckButton(
                 _("Color _search terms"), 'browsers', 'color')
             c.set_active(config.getboolean("browsers", "color"))
             tips.set_tip(
                 c, _("Display simple searches in blue, "
                      "advanced ones in green, and invalid ones in red"))
-            tips.enable()
-            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
@@ -200,16 +196,13 @@ class PreferencesWindow(qltk.Window):
             self.set_border_width(12)
             self.title = _("Player")
 
-            tips = gtk.Tooltips()
+            tips = qltk.Tooltips(self)
             c = ConfigCheckButton(
                 _("_Jump to playing song automatically"), 'settings', 'jump')
             tips.set_tip(c, _("When the playing song changes, "
                               "scroll to it in the song list"))
             c.set_active(config.state("jump"))
             self.pack_start(c, expand=False)
-
-            tips.enable()
-            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             f = qltk.Frame(_("_Volume Normalization"), bold=True)
             cb = gtk.combo_box_new_text()
@@ -239,7 +232,7 @@ class PreferencesWindow(qltk.Window):
             e.set_text(util.fsdecode(config.get("settings", "scan")))
             f.get_label_widget().set_mnemonic_widget(e)
             hb.pack_start(e)
-            tips = gtk.Tooltips()
+            tips = qltk.Tooltips(self)
             tips.set_tip(e, _("Songs placed in these folders will "
                               "be added to your library"))
             hb.pack_start(b, expand=False)
@@ -266,8 +259,6 @@ class PreferencesWindow(qltk.Window):
             vbox.pack_start(hb, expand=False)
             vbox.pack_start(cb, expand=False)
             f.child.add(vbox)
-            tips.enable()
-            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
             self.pack_start(f)
             self.show_all()
 

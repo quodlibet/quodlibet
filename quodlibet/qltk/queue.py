@@ -13,6 +13,7 @@ import config
 import util
 from qltk.songlist import SongList
 from qltk.ccb import ConfigCheckButton
+from qltk.x import Tooltips
 from properties import SongProperties
 from library import library
 
@@ -63,10 +64,8 @@ class QueueExpander(gtk.Expander):
         self.queue.model.connect_after('row-deleted', self.__update_count, l2)
         cb.hide()
 
-        tips = gtk.Tooltips()
+        tips = Tooltips(self)
         tips.set_tip(b, _("Remove all songs from the queue"))
-        tips.enable()
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, l2)
 

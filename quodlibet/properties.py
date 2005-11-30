@@ -150,12 +150,11 @@ class AddTagDialog(gtk.Dialog):
         self.child.show_all()
         invalid.hide()
 
-        tips = gtk.Tooltips()
+        tips = qltk.Tooltips(self)
+        tips.disable()
         for entry in [self.__tag, self.__val]:
             entry.connect(
                 'changed', self.__validate, add, invalid, tips, valuebox)
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
-
 
     def get_tag(self):
         try: return self.__tag.child.get_text().lower().strip()
@@ -513,7 +512,7 @@ class SongProperties(qltk.Window):
                 l.set_ellipsize(pango.ELLIPSIZE_END)
                 self.pack_frame(_("Selected Discography"), l)
 
-                tips = gtk.Tooltips()
+                tips = qltk.Tooltips(self)
                 covers = [ac for ac in covers if bool(ac[1])]
                 t = gtk.Table(4, (len(covers) // 4) + 1)
                 t.set_col_spacings(12)
@@ -529,8 +528,6 @@ class SongProperties(qltk.Window):
                              xoptions=gtk.EXPAND, yoptions=0)
                     added.add(cover.name)
                 self.pack_start(t, expand=False)
-                tips.enable()
-                self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
         class ManySongs(SongInfo):
             def _title(self, songs):
@@ -694,16 +691,13 @@ class SongProperties(qltk.Window):
 
             self.pack_start(buttonbox, expand=False)
 
-            tips = gtk.Tooltips()
+            tips = qltk.Tooltips(self)
             for widget, tip in [
                 (view, _("Double-click a tag value to change it, "
                          "right-click for other options")),
                 (add, _("Add a new tag")),
                 (remove, _("Remove selected tag"))]:
                 tips.set_tip(widget, tip)
-            tips.enable()
-
-            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             UPDATE_ARGS = [
                 view, buttonbox, model, add, [save, revert, remove]]
@@ -1113,12 +1107,10 @@ class SongProperties(qltk.Window):
             bbox.pack_start(save)
             self.pack_start(bbox, expand=False)
 
-            tips = gtk.Tooltips()
+            tips = qltk.Tooltips(self)
             tips.set_tip(
                 titlecase,
                 _("The first letter of each word will be capitalized"))
-            tips.enable()
-            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             # Changing things -> need to preview again
             kw = { "titlecase": titlecase,
@@ -1354,7 +1346,7 @@ class SongProperties(qltk.Window):
             self.pack_start(bbox, expand=False)
 
             # Set tooltips
-            tips = gtk.Tooltips()
+            tips = qltk.Tooltips(self)
             for widget, tip in [
                 (windows,
                  _("Characters not allowed in Windows filenames "
@@ -1363,8 +1355,6 @@ class SongProperties(qltk.Window):
                  _("Characters outside of the ASCII set (A-Z, a-z, 0-9, "
                    "and punctuation) will be replaced by underscores"))]:
                 tips.set_tip(widget, tip)
-            tips.enable()
-            self.connect_object('destroy', gtk.Tooltips.destroy, tips)
 
             # Connect callbacks
             preview_args = [combo, prop, model, save, preview,

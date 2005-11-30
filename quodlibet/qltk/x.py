@@ -102,3 +102,5 @@ class Tooltips(gtk.Tooltips):
         super(Tooltips, self).__init__()
         if parent is not None:
             parent.connect_object('destroy', gtk.Tooltips.destroy, self)
+        self.enable()
+

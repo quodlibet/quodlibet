@@ -86,7 +86,7 @@ class MainWindow(gtk.Window):
         gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
 
-        tips = gtk.Tooltips()
+        tips = qltk.Tooltips(self)
         self.set_title("Quod Libet")
 
         self.set_default_size(
@@ -149,7 +149,6 @@ class MainWindow(gtk.Window):
         self.order = order = PlayOrder(self.songlist.model)
         label.set_mnemonic_widget(order)
         label.set_use_underline(True)
-        tips.set_tip(order, _("Set play order"))
         hb.pack_start(label)
         hb.pack_start(order)
         hbox.pack_start(hb, expand=False)
@@ -444,8 +443,6 @@ class MainWindow(gtk.Window):
         tips.set_tip(
             self.ui.get_widget("/Menu/Control/Properties"),
             _("View and edit tags in the playing song"))
-        self.connect_object('destroy', gtk.Tooltips.destroy, tips)
-        tips.enable()
 
     def __browser_configure(self, paned, event, browser):
         if paned.get_property('position-set'):
