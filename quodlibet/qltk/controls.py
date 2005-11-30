@@ -40,6 +40,11 @@ class SeekBar(HSlider):
 
         gobject.timeout_add(1000, self.__check_time, player)
         watcher.connect('song-started', self.__song_changed, l)
+        watcher.connect_object('seek', self.__seeked, player)
+
+    def __seeked(self, player, song, ms):
+        # If it's not paused, we'll grab it in our next update.
+        if player.paused: self.scale.set_value(ms//1000)
 
     def __scroll(self, widget, event, player):
         self.__lock = True
@@ -57,7 +62,9 @@ class SeekBar(HSlider):
         if self.__seekable: player.seek(self.scale.get_value() * 1000)
 
     def __check_time(self, player):
-        if not self.__lock:
+        # When the song is paused GStreamer returns < 1 for position
+        # queries, so if it's paused just ignore it.
+        if not (player.paused or self.__lock):
             position = player.get_position() // 1000
             if (not self.__seekable and
                 position > self.scale.get_adjustment().upper):
@@ -73,12 +80,15 @@ class SeekBar(HSlider):
             length = song["~#length"]
             if length <= 0:
                 self.scale.set_range(0, 1)
+                self.scale.set_value(0)
                 self.__seekable = False
             else:
                 self.scale.set_range(0, length)
+                self.scale.set_value(0)
                 self.__seekable = True
         else:
             self.scale.set_range(0, 1)
+            self.scale.set_value(0)
             self.__seekable = False
 
 class Volume(VSlider):
