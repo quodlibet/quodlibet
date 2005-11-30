@@ -7,12 +7,83 @@
 # published by the Free Software Foundation.
 #
 
-import gtk, gobject, pango, pattern
+import gtk, gobject, pango
+import pattern
+import config
+import qltk
+
+def Label(text):
+    l = gtk.Label(text)
+    l.set_alignment(0.0, 0.5)
+    return l
 
 class AnimOsd(object):
     PLUGIN_NAME = "Animated On-Screen Display"
     PLUGIN_DESC = "Display song information on your screen when it changes."
     PLUGIN_VERSION = "0.14.1"
+
+    def PluginPreferences(self, parent):
+        def set_text(button):
+            color = button.get_color()
+            cstring = "#%02x%02x%02x" % (
+                color.red//256, color.green//256, color.blue//256)
+            config.set("plugins", "animosd_text", cstring)
+            self.conf.text = cstring
+        
+        def set_fill(button):
+            color = button.get_color()
+            cstring = "#%02x%02x%02x%02x" % (
+                color.red//256, color.green//256, color.blue//256,
+                button.get_alpha()//256)
+            config.set("plugins", "animosd_fill", cstring)
+            self.conf.fill = cstring
+
+        def set_font(button):
+            font = button.get_font().get_font_name()
+            config.set("plugins", "animosd_font", font)
+            self.conf.font = font
+
+        def change_ms(button):
+            value = int(button.get_value() * 1000)
+            config.set("plugins", "animosd_ms", value)
+            self.conf.ms = value
+
+        vb = gtk.VBox(spacing=12)
+        font = gtk.FontButton()
+        font.set_font_name(self.conf.font)
+        vb.pack_start(font, expand=False)
+
+        hb = gtk.HBox(spacing=3)
+        timeout = gtk.SpinButton(
+            gtk.Adjustment(self.conf.ms/1000.0, 0, 60, 0.1, 1.0, 1.0), 0.1, 1)
+        timeout.set_numeric(True)
+        timeout.connect('value-changed', change_ms)
+
+        hb.pack_start(Label("Display delay: "), expand=False)
+        hb.pack_start(timeout, expand=False);
+        hb.pack_start(Label("seconds"), expand=False)
+        vb.pack_start(hb, expand=False)
+
+        t = gtk.Table(2, 2)
+        t.set_col_spacings(3)
+        b = gtk.ColorButton(color=gtk.gdk.color_parse(self.conf.text))
+        l = Label(_("_Text:"))
+        l.set_mnemonic_widget(b); l.set_use_underline(True)
+        t.attach(l, 0, 1, 0, 1, xoptions=gtk.FILL)
+        t.attach(b, 1, 2, 0, 1)
+        b.connect('color-set', set_text)
+        b = gtk.ColorButton(color=gtk.gdk.color_parse(self.conf.fill[:7]))
+        b.set_use_alpha(True)
+        b.set_alpha(int(self.conf.fill[-2:], base=16))
+        b.connect('color-set', set_fill)
+        l = Label(_("_Fill:"))
+        l.set_mnemonic_widget(b); l.set_use_underline(True)
+        t.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
+        t.attach(b, 1, 2, 1, 2)
+
+        f = qltk.Frame(label=_("Colors"), bold=True, child=t, border=12)
+        vb.pack_start(f, expand=False, fill=False)
+        return vb
 
     # mu's default settings - this needs to be configurable
     class conf(object):
@@ -58,6 +129,16 @@ by <~people>>'''
         self.__coverwidth = min(120, self.__screenwidth // 8)
         self.__width = self.__height = self.__coverwidth + 2 * self.conf.border
         self.__delayhide = None
+
+        for key, value in {
+            "text": "#ffd096",
+            "fill": "#40404080",
+            "font": "Sans 22"}.items():
+            try: value = config.get("plugins", "animosd_" + key)
+            except: config.set("plugins", "animosd_" + key, value)
+            setattr(self.conf, key, value)
+        try: self.conf.ms = config.getint("plugins", "animosd_ms")
+        except: config.set("plugins", "animosd_ms", 2500)
 
     # for rapid debugging
     def plugin_single_song(self, song): self.plugin_on_song_started(song)
