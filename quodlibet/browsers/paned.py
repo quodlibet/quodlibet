@@ -58,7 +58,7 @@ class PanedBrowser(gtk.VBox, Browser):
 
         def __Menu(self):
             menu = gtk.Menu()
-            songs = self.get_songs()
+            songs = self.__get_songs()
             songs.sort()
             from widgets import widgets
             enqueue = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
@@ -88,7 +88,7 @@ class PanedBrowser(gtk.VBox, Browser):
             model, rows = selection.get_selected_rows()
             if jump and rows:
                 self.scroll_to_cell(rows[0][0], use_align=True, row_align=0.5)
-            self.__next.fill(self.get_songs())
+            self.__next.fill(self.__get_songs())
 
         def __removed(self, watcher, songs):
             model = self.get_model()
@@ -167,13 +167,14 @@ class PanedBrowser(gtk.VBox, Browser):
             self.uninhibit()
             self.get_selection().emit('changed')
 
-        def get_songs(self):
+        def __get_songs(self):
             model, rows = self.get_selection().get_selected_rows()
             # No reason to look further if "All" is selected.
             if rows and rows[0][0] == 0: return list(model[(0,)][1])
             else:
                 songs = [model[row][1] for row in rows]
-                return list(reduce(set.union, songs, set()))
+                if len(songs) == 1: return list(songs[0])
+                else: return list(reduce(set.union, songs, set()))
 
     def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=0)
