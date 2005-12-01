@@ -1,11 +1,11 @@
-quodlibet-plugins (20051129-1) unstable; urgency=low
+quodlibet-plugins (20051201-1) unstable; urgency=low
 
   * New upstream Subversion snapshot.
   * Use ${depends:Python} to ensure the correct version of Python
     is depended upon. closes: #339999
   * Include albumart.py now.
 
- -- Joshua Kwan <joshk@triplehelix.org>  Tue, 29 Nov 2005 14:42:54 -0800
+ -- Joshua Kwan <joshk@triplehelix.org>  Thu,  1 Dec 2005 15:08:00 -0800
 
 quodlibet-plugins (20050925-1) unstable; urgency=low
 
