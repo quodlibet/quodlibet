@@ -120,6 +120,7 @@ class Library(dict):
         else: return None
 
     def rename(self, song, newfn):
+        assert song.is_file
         oldfn = song['~filename']
         song.rename(newfn)
         if oldfn in self:
@@ -128,7 +129,7 @@ class Library(dict):
 
     def remove(self, song):
         try: del(self[song['~filename']])
-        except KeyError: print "W: %s not in library." % song["~filename"]
+        except KeyError: pass
 
     def add_song(self, song):
         if song["~filename"] not in self:
