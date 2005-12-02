@@ -11,7 +11,6 @@ import config
 import gobject, gst
 
 os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
-#gst.use_threads(True)
 
 class NoSinkError(ValueError): pass
 class NoSourceError(ValueError): pass
