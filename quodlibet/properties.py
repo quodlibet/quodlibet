@@ -1485,7 +1485,7 @@ class SongProperties(qltk.Window):
             label_start = gtk.Label(_("Start fro_m:"))
             label_start.set_use_underline(True)
             spin_start = gtk.SpinButton()
-            spin_start.set_range(1, 99)
+            spin_start.set_range(0, 99)
             spin_start.set_increments(1, 10)
             spin_start.set_value(1)
             label_start.set_mnemonic_widget(spin_start)
