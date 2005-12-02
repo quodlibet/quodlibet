@@ -2,12 +2,10 @@ from unittest import TestCase, makeSuite
 from tests import registerCase
 
 import util
-util.gettext_install("quodlibet")
 from util import re_esc, encode, decode, mkdir, iscommand
 from util import find_subtitle, split_album, split_title, split_value
 from util import PatternFromFile
 from util import format_time_long as f_t_l
-
 import os
 
 class FSTests(TestCase):
