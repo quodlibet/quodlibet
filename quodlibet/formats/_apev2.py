@@ -13,9 +13,7 @@ except ImportError: pass
 class APEv2File(AudioFile):
     # Map APE names to QL names. APE tags are also usually capitalized.
     # Also blacklist a number of tags.
-    IGNORE = ["file", "index", "introplay", "dummy",
-              "replaygain_track_peak", "replaygain_album_peak",
-              "replaygain_track_gain", "replaygain_album_gain"]
+    IGNORE = ["file", "index", "introplay", "dummy"]
     TRANS = { "subtitle": "version",
               "track": "tracknumber",
               "catalog": "labelid",
@@ -30,6 +28,7 @@ class APEv2File(AudioFile):
             if (value.kind == mutagen.apev2.TEXT and
                 key not in self.IGNORE):
                 self[key] = "\n".join(list(value))
+
     def can_change(self, key=None):
         if key is None: return True
         else: return (AudioFile.can_change(self, key) and

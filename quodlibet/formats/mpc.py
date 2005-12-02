@@ -83,7 +83,11 @@ else:
 
 class MPCFile(APEv2File):
     format = "Musepack"
-    
+
+    IGNORE = APEv2File.IGNORE + [
+        "replaygain_track_peak", "replaygain_album_peak",
+        "replaygain_track_gain", "replaygain_album_gain"]
+
     def __init__(self, filename):
         super(MPCFile, self).__init__(filename)
 
