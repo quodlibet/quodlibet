@@ -21,11 +21,10 @@ if sys.version_info < (2, 4): from sets import Set as set
 try:
     import amazon
 except ImportError:
-    qltk.ErrorMessage(None,
-                      "Module not found",
-                      "<b>Unable to load amazon.py</b>\n" +
-                      "Please make sure amazon.py is in your plugins folder. "+
-                      "A compatible version can be found in the Quod Libet " +
+    qltk.ErrorMessage(None, "Module not found",
+                      "<b>Unable to load amazon.py</b>\n"
+                      "Please make sure amazon.py is in your plugins folder. "
+                      "A compatible version can be found in the Quod Libet "
                       "Subversion repository.").run()
 
 __all__ = ["plugin_album"]
@@ -33,7 +32,7 @@ __all__ = ["plugin_album"]
 PLUGIN_NAME = "Download Album art"
 PLUGIN_DESC = "Downloads album covers from Amazon.com"
 PLUGIN_ICON = gtk.STOCK_FIND
-PLUGIN_VERSION = "0.20"
+PLUGIN_VERSION = "0.21"
 
 class AlbumArtWindow(gtk.Window):
     def __init__(self, songs):
@@ -111,22 +110,27 @@ class AlbumArtWindow(gtk.Window):
         amazon.setLicense("0RKH4ZH1JCFZHMND91G2")
 
         try:
+            query = songs[0]("artist") + "+" + songs[0]("album")
+            query.encode("latin1")
             bags = amazon.searchByKeyword(artist + '+' + album, type="lite", 
                                           product_line="music")
         except amazon.AmazonError, msg:
-            def destroy_cb(dialog, response, self):
-                dialog.destroy()
-                self.destroy()
-            def quick_error_helper(self, msg):
-                dialog = qltk.Message(gtk.MESSAGE_ERROR, None, "Search error", 
-                                      msg)
-                dialog.connect('response', destroy_cb, self)
-                dialog.show()
-            gobject.idle_add(quick_error_helper, self, msg)
+            dialog = qltk.Message(gtk.MESSAGE_ERROR, None, "Search error", msg)
+            dialog.connect('response', self.__destroy_cb)
+            gobject.idle_add(dialog.show)
+        except UnicodeEncodeError, msg:
+            dialog = qltk.Message(gtk.MESSAGE_ERROR, None, "Encoding error", 
+                                  msg)
+            dialog.connect('response', self.__destroy_cb)
+            gobject.idle_add(dialog.show)
         else:
             # Just keep the top 10 matches
             for bag in bags[:10]:
                 gobject.idle_add(self.__add_bag, self.liststore, bag)
+
+    def __destroy_cb(self, widget, *args):
+        widget.destroy()
+        self.destroy()
 
     def __add_bag(self, model, bag):
         # Text part
@@ -142,55 +146,69 @@ class AlbumArtWindow(gtk.Window):
             date = ""
         markup = "<i><b>%s</b></i> %s\n%s" %(title, date, artist)
 
-        # Image part
-        sock = urllib.urlopen(bag.ImageUrlSmall)
-        data = StringIO()
         item = {"bag": bag, "thumb": None, "thumb_data": ""}
+        iter = model.append([item, markup])
+
+        # Image part
+        urlinfo = urllib.urlopen(bag.ImageUrlSmall)
+        sock = urlinfo.fp._sock
+        sock.setblocking(0)
+        data = StringIO()
+
         loader = gtk.gdk.PixbufLoader()
-        w = h = 48
-        loader.set_size(w, h)
-        loader.connect("closed", self.__got_thumb_cb, data, item, w, h)
+        loader.connect("closed", self.__got_thumb_cb, data, item, model, iter)
 
-        gobject.io_add_watch(sock, gobject.IO_IN, self.__copy_image, loader, 
-                             data)
-        gobject.io_add_watch(sock, gobject.IO_ERR, self.__copy_err, loader)
-        model.append([item, markup])
+        gobject.io_add_watch(
+            sock, gobject.IO_IN | gobject.IO_ERR | gobject.IO_HUP, 
+            self.__copy_image, loader, data)
 
-    def __got_thumb_cb(self, loader, data, item, w, h):
-        item["thumb_data"] = data.getvalue()
+    def __got_thumb_cb(self, loader, data, item, model, iter):
         cover = loader.get_pixbuf()
-        thumb = gtk.gdk.Pixbuf(
-            gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
-        thumb.fill(0x000000ff)
-        cover.copy_area(0, 0, w, h, thumb, 1, 1)
-        item["thumb"] = thumb
+        if cover.get_width() > 1:
+            w = h = 48
+            cover = cover.scale_simple(w, h, gtk.gdk.INTERP_NEAREST)
+            thumb = gtk.gdk.Pixbuf(
+                gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
+            thumb.fill(0x000000ff)
+            cover.copy_area(0, 0, w, h, thumb, 1, 1)
+            item["thumb"] = thumb
+            item["thumb_data"] = data.getvalue()
+            model.row_changed(model.get_path(iter), iter)
         
     def __preview(self, selection):
         model, path = selection.get_selected()
         item = model[path][0]
+        self.image.hide()
         self.button.set_sensitive(False)
         
-        if "cover" not in item:
-            self.__get_cover(item, item["bag"].ImageUrlLarge)
-        else:
-            self.image.set_from_pixbuf(item["cover"])
-            self.button.set_sensitive(True)
+        if item["thumb"]: # If there exists no thumbnail, then nothing bigger.
+            if "cover" not in item:
+                self.__get_cover(item, item["bag"].ImageUrlLarge)
+            else:
+                self.image.set_from_pixbuf(item["cover"])
+                self.image.show()
+                self.button.set_sensitive(True)
 
     def __get_cover(self, item, url):
         data = StringIO()
-        sock = urllib.urlopen(url)
+        urlinfo = urllib.urlopen(url)
+        sock = urlinfo.fp._sock
+        sock.setblocking(0)
         loader = gtk.gdk.PixbufLoader()
-        gobject.io_add_watch(sock, gobject.IO_IN, self.__copy_image, 
-                             loader, data)
-        gobject.io_add_watch(sock, gobject.IO_ERR, self.__copy_err, loader)
+        gobject.io_add_watch(
+            sock, gobject.IO_IN | gobject.IO_ERR | gobject.IO_HUP, 
+            self.__copy_image, loader, data)
         loader.connect("closed", self.__got_cover_cb, data, item, url)
-        loader.connect("area-updated", 
-            lambda l, *a: self.image.set_from_pixbuf(l.get_pixbuf()))
+        def update(loader, x, y, w, h, image):
+            if (w, h) > (1, 1):
+                image.set_from_pixbuf(loader.get_pixbuf())
+                image.show()
+        loader.connect("area-updated", update, self.image)
 
     def __got_cover_cb(self, loader, data, item, url):
         cover = loader.get_pixbuf()
         # For some reason we get a 1x1 image if the given size didn't exist
-        if cover.get_width() > item["thumb"].get_width():
+        if cover.get_width() > 1:
             item["cover"] = cover
             item["cover_data"] = data.getvalue()
             self.image.set_from_pixbuf(item["cover"])
@@ -204,18 +222,20 @@ class AlbumArtWindow(gtk.Window):
             self.button.set_sensitive(True)
 
     def __copy_image(self, src, condition, loader, data):
-        buf = src.read(256)
-        if len(buf) > 0:
-            loader.write(buf)
-            data.write(buf)
-            return True # Run again
-        else:
+        if condition in (gobject.IO_ERR, gobject.IO_HUP):
             loader.close()
             src.close()
-            return False # Stop
-
-    def __copy_err(self, src, condition, loader):
-        loader.close()
+            return False
+        else: # Read
+            buf = src.recv(1024)
+            if buf:
+                loader.write(buf)
+                data.write(buf)
+                return True # Run again
+            else:
+                loader.close()
+                src.close()
+                return False
 
     def __save_cover(self, data, fname):
         if os.path.exists(fname) and not qltk.ConfirmAction(None, 
@@ -225,22 +245,12 @@ class AlbumArtWindow(gtk.Window):
 
         f = open(fname, "w")
         f.write(data)
+        f.close()
         self.destroy()
 
     def __get_fname(self, songs):
         dirname = songs[0]("~dirname")
         fname = os.path.join(dirname, ".folder.jpg")
-        #songsindir = library.query("~filename = /^%s/" % util.re_esc(dirname))
-        #if len(songsindir) < len(songs):
-        #    raise Exception #XXX
-        #if len(songsindir) > len(songs):
-        #    if "labelno" in songs[0]:
-        #        fname = os.path.join(dirname, ".%(labelno)s.jpg" %songs[0]
-        #    else:
-        #        raise Exception #XXX
-        #else:
-        #    fname = os.path.join(dirname, ".folder.jpg")
-        #    return 
 
         print "Will save to", fname
         return fname
