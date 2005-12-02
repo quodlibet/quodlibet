@@ -12,7 +12,8 @@ from formats.mp3 import MP3File
 
 class APEv2toID3v2(object):
     PLUGIN_NAME = "APEv2 to ID3v2"
-    PLUGIN_DESC = "Convert your APEv2 tags to ID3v2 tags."
+    PLUGIN_DESC = ("Convert your APEv2 tags to ID3v2 tags. This will delete "
+                   "the APEv2 tags after conversion.")
     PLUGIN_ICON = 'gtk-convert'
     PLUGIN_VERSION = '0.1'
 
