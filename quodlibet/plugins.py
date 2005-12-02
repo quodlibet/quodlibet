@@ -99,6 +99,10 @@ class SongWrapper(object):
     def keys(self): return self._song.keys()
     def values(self): return self._song.values()
     def items(self): return self._song.items()
+    def update(self, other):
+        self._updated = True
+        self._needs_write = True
+        return self._song.update(other)
     def comma(self, key): return self._song.comma(key)
     def list(self, key): return self._song.list(key)
     def rename(self, newname): return self._song.rename(newname)
