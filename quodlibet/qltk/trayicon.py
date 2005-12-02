@@ -151,7 +151,8 @@ class TrayIcon(object):
         window.hide()
 
     def __show_window(self, window):
-        window.move(*window.__position)
+        try: window.move(*window.__position)
+        except AttributeError: pass
         window.show()
 
     def __button(self, icon, event, window, player):
