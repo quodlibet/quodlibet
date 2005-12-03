@@ -11,11 +11,13 @@ properties.py
 qltk/about.py
 qltk/browser.py
 qltk/chooser.py
+qltk/controls.py
 qltk/delete.py
 qltk/exfalso.py
 qltk/filesel.py
 qltk/info.py
 qltk/msg.py
+qltk/playorder.py
 qltk/pluginwin.py
 qltk/prefs.py
 qltk/queue.py
