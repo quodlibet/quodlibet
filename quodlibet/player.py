@@ -130,6 +130,9 @@ class PlaylistPlayer(object):
 
     def __get_song(self, lock=False):
         song = self.__source.current
+        self.song = song
+        self.info.song_started(song)
+        self.volume = self.__volume
         if song is not None:
             config.set("memory", "song", song["~filename"])
             try: self.__load_song(song)
@@ -142,9 +145,6 @@ class PlaylistPlayer(object):
             self.paused = True
             self.bin.set_state(gst.STATE_NULL)
             self.bin.set_property('uri', '')
-        self.song = song
-        self.info.song_started(song)
-        self.volume = self.__volume
 
     def __end(self, stopped=True):
         self.info.song_ended(self.song, stopped)
