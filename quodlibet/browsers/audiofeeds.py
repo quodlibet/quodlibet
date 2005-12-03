@@ -109,7 +109,9 @@ class Feed(list):
                         if ("audio" in enclosure.type or
                             formats.filter(enclosure.url)):
                             uri = enclosure.url.encode('ascii', 'replace')
-                            entries.append((uri, entry))
+                            try: size = enclosure.length
+                            except AttributeError: size = 0
+                            entries.append((uri, entry, size))
                             uris.add(uri)
                             break
                     except AttributeError: pass
@@ -120,9 +122,10 @@ class Feed(list):
             else: uris.remove(entry["~uri"])
 
         entries.reverse()
-        for uri, entry in entries:
+        for uri, entry, size in entries:
             if uri in uris:
                 song = RemoteFile(uri)
+                song["~#size"] = size
                 song.fill_metadata = False
                 song.update(defaults)
                 song["album"] = self.name
@@ -182,7 +185,7 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def init(klass, watcher):
         try: feeds = pickle.load(file(FEEDS, "rb"))
-        except EnvironmentError: pass
+        except None: pass #EnvironmentError: pass
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
