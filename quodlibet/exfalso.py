@@ -41,7 +41,7 @@ if __name__ == "__main__":
     import pygtk
     pygtk.require('2.0')
     import gtk
-    gtk.window_set_default_icon_from_file("exfalso.png")
+    gtk.window_set_default_icon_from_file("exfalso.svg")
     from qltk.exfalso import ExFalsoWindow
     from qltk.watcher import SongWatcher
     w = ExFalsoWindow(SongWatcher(), args[0])
