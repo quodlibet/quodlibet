@@ -104,8 +104,11 @@ class TrayIcon(object):
         self.__mapped = False
         self.__icon = icon = trayicon.TrayIcon("quodlibet")
         self.__tips.enable()
-        p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.svg", 16, 16)
-        img = gtk.Image(); img.set_from_pixbuf(p)
+        try: p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.svg", 16, 16)
+        except:
+            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+        img = gtk.Image()
+        if p: img.set_from_pixbuf(p)
         eb = gtk.EventBox(); eb.add(img)
         icon.add(eb)
 

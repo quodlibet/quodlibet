@@ -39,7 +39,7 @@ app-install-%: make-install-dirs %.desktop
 	install -m 755 $*.py $(DESTDIR)$(PREFIX)/$(TO)
 	install -m 644 $*.1 $(DESTDIR)$(PREFIX)/share/man/man1/$*.1
 	install -D -m 644 $*.png $(DESTDIR)$(PREFIX)/share/pixmaps/$*.png
-	install -m 644 $*.svg $(DESTDIR)$(PREFIX)/$(TO)
+	install -m 644 $*.svg $*.png $(DESTDIR)$(PREFIX)/$(TO)
 	-install -D -m 644 $*.desktop $(DESTDIR)$(PREFIX)/share/applications/$*.desktop
 	ln -sf ../$(TO)/$*.py $(DESTDIR)$(PREFIX)/bin/$*
 
