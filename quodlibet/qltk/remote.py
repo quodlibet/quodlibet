@@ -190,3 +190,19 @@ class FIFOControl(object):
             from library import library
             value = library.random(tag)
             if value: window.browser.filter(tag, [value])
+
+    def _filter(self, value, watcher, window, player):
+        tag, values = value.split(' ', 1)
+        values = [v.decode("utf-8", "replace") for v in values.split("\x00")]
+        if window.browser.can_filter(tag) and values:
+            window.browser.filter(tag, values)
+
+    def _properties(self, value, watcher, window, player=None):
+        if player is None:
+            value, watcher, window, player = None, value, watcher, window
+        from properties import SongProperties
+        if value:
+            from library import library
+            songs = library.query(value)
+            SongProperties(songs, watcher, 0)
+        else: SongProperties([player.song], watcher)
