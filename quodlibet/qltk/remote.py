@@ -199,10 +199,21 @@ class FIFOControl(object):
 
     def _properties(self, value, watcher, window, player=None):
         if player is None:
+            # no value given, use the current song; slide arguments
+            # to the right.
             value, watcher, window, player = None, value, watcher, window
         from properties import SongProperties
         if value:
             from library import library
-            songs = library.query(value)
+            if value in library: songs = [library[value]]
+            else: songs = library.query(value)
             SongProperties(songs, watcher, 0)
         else: SongProperties([player.song], watcher)
+
+    def _enqueue(self, value, watcher, window, player):
+        from widgets import widgets
+        from library import library
+        playlist = widgets.main.playlist
+        if value in library: songs = [library[value]]
+        else: songs = library.query(value)
+        playlist.enqueue(songs)
