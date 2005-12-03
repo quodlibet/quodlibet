@@ -22,6 +22,7 @@ from browsers.base import Browser
 from qltk.views import HintedTreeView
 from qltk.getstring import GetStringDialog
 from qltk.msg import ErrorMessage
+from qltk.downloader import DownloadWindow
 import formats; from formats.remote import RemoteFile
 import config
 
@@ -209,6 +210,26 @@ class AudioFeeds(Browser, gtk.VBox):
         klass.write()
         gobject.timeout_add(60*60*1000, klass.__do_check)
     __check = classmethod(__check)
+
+    def Menu(self, songs, songlist):
+        if len(songs) == 1:
+            item = qltk.MenuItem(_("Download"), gtk.STOCK_CONNECT)
+            item.connect('activate', self.__download, songs[0]["~uri"])
+            m = gtk.Menu()
+            m.append(item)
+            return m
+
+    def __download(self, activator, source):
+        chooser = gtk.FileChooserDialog(
+            title=_("Download File"), parent=qltk.get_top_parent(self),
+            action=gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        resp = chooser.run()
+        if resp == gtk.RESPONSE_OK:
+            target = chooser.get_filename()
+            if target: DownloadWindow.download(source, target)
+        chooser.destroy()
 
     def __init__(self, watcher, main):
         gtk.VBox.__init__(self)
