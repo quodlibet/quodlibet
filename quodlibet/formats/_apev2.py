@@ -22,7 +22,8 @@ class APEv2File(AudioFile):
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
 
     def __init__(self, filename):
-        tag = mutagen.apev2.APEv2(filename)
+        try: tag = mutagen.apev2.APEv2(filename)
+        except mutagen.apev2.APENoHeaderError: tag = {}
         for key, value in tag.items():
             key = self.TRANS.get(key.lower(), key.lower())
             if (value.kind == mutagen.apev2.TEXT and
@@ -35,7 +36,9 @@ class APEv2File(AudioFile):
                       key not in self.IGNORE)
 
     def write(self):
-        tag = mutagen.apev2.APEv2(self['~filename'])
+        try: tag = mutagen.apev2.APEv2(self['~filename'])
+        except mutagen.apev2.APENoHeaderError:
+            tag = mutagen.apev2.APEv2(self["~filename"])
 
         keys = tag.keys()
         for key in keys:
@@ -50,6 +53,6 @@ class APEv2File(AudioFile):
             if key in ["isrc", "isbn", "ean/upc"]: key = key.upper()
             else: key = key.title()
             tag[key] = value.split("\n")
-        tag.save()
+        tag.save(self["~filename"])
         self.sanitize()
 
