@@ -13,7 +13,7 @@ from qltk.songlist import SongList
 class LibraryBrowser(Window):
     def __init__(self, Kind, watcher):
         super(LibraryBrowser, self).__init__()
-        self.set_border_width(12)
+        self.set_border_width(6)
         self.set_title(_("Library Browser"))
 
         view = SongList(watcher)
