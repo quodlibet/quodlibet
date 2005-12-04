@@ -263,7 +263,7 @@ class AudioFeeds(Browser, gtk.VBox):
         chooser.destroy()
 
     def __init__(self, watcher, main):
-        gtk.VBox.__init__(self)
+        super(AudioFeeds, self).__init__(spacing=6)
         self.__main = bool(main)
 
         self.__view = view = HintedTreeView()

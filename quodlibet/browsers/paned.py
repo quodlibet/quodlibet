@@ -177,13 +177,12 @@ class PanedBrowser(gtk.VBox, Browser):
                 else: return list(reduce(set.union, songs, set()))
 
     def __init__(self, watcher, player):
-        gtk.VBox.__init__(self, spacing=0)
+        gtk.VBox.__init__(self, spacing=6)
         self.__save = player
         self.__browsers[self] = self
-        hb = gtk.HBox(spacing=3)
+        hb = gtk.HBox(spacing=6)
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
-        label.set_padding(3, 0)
         search = ValidatingEntry(parser.is_valid_color)
         label.set_mnemonic_widget(search)
         label.set_use_underline(True)
@@ -234,7 +233,7 @@ class PanedBrowser(gtk.VBox, Browser):
         except IndexError: pass # first call
         else: hbox.destroy()
 
-        hbox = gtk.HBox(spacing=3)
+        hbox = gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
         hbox.set_size_request(100, 100)
         # fill in the pane list. the last pane reports back to us.

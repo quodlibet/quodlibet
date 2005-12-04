@@ -82,9 +82,8 @@ gobject.type_register(EmptyBar)
 
 class Limit(gtk.HBox):
     def __init__(self):
-        super(Limit, self).__init__()
+        super(Limit, self).__init__(spacing=3)
         label = gtk.Label(_("_Limit:"))
-        label.set_padding(3, 0)
         self.pack_start(label)
         limit = gtk.SpinButton()
         limit.set_numeric(True)
@@ -112,7 +111,7 @@ class SearchBar(EmptyBar):
         self.__limit = Limit()
         self.pack_start(self.__limit, expand=False)
 
-        hb2 = gtk.HBox()
+        hb2 = gtk.HBox(spacing=3)
         l = gtk.Label(_("_Search:"))
         tips = Tooltips(self)
         combo = ComboBoxEntrySave(
@@ -136,9 +135,11 @@ class SearchBar(EmptyBar):
         combo.child.connect('realize', lambda w: w.grab_focus())
         combo.child.connect('populate-popup', self.__menu, self.__limit)
         hb2.pack_start(l, expand=False)
-        hb2.pack_start(combo)
-        hb2.pack_start(clear, expand=False)
-        hb2.pack_start(search, expand=False)
+        hb3 = gtk.HBox()
+        hb3.pack_start(combo)
+        hb3.pack_start(clear, expand=False)
+        hb3.pack_start(search, expand=False)
+        hb2.pack_start(hb3)
         self.pack_start(hb2)
         self.show_all()
         self.__combo = combo

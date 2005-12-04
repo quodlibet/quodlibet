@@ -331,7 +331,7 @@ class AlbumList(Browser, gtk.VBox):
             return dict([(a.title + "\u0000" + a.labelid, a) for a in albums])
 
     def __init__(self, watcher, player):
-        gtk.VBox.__init__(self)
+        gtk.VBox.__init__(self, spacing=6)
 
         if self.__model is None: AlbumList._init_model(watcher)
         self.__save = bool(player)

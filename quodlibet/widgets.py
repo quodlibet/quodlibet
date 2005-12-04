@@ -93,7 +93,6 @@ class MainWindow(gtk.Window):
             *map(int, config.get('memory', 'size').split()))
         self.add(gtk.VBox())
 
-        from qltk.queue import QueueExpander
         # create main menubar, load/restore accelerator groups
         self._create_menu(tips)
         self.add_accel_group(self.ui.get_accel_group())
@@ -103,7 +102,12 @@ class MainWindow(gtk.Window):
                 lambda *args: gtk.accel_map_save(const.ACCELS))
         self.child.pack_start(self.ui.get_widget("/Menu"), expand=False)
 
+        self.__vbox = realvbox = gtk.VBox(spacing=6)
+        realvbox.set_border_width(6)
+        self.child.pack_start(realvbox)
+
         # get the playlist up before other stuff
+        from qltk.queue import QueueExpander
         self.songlist = MainSongList(watcher, player.playlist)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
@@ -114,7 +118,7 @@ class MainWindow(gtk.Window):
             watcher, self.qexpander.model, self.songlist.model)
 
         # song info (top part of window)
-        hbox = gtk.HBox()
+        hbox = gtk.HBox(spacing=6)
 
         # play controls
         from qltk.controls import PlayControls
@@ -125,12 +129,7 @@ class MainWindow(gtk.Window):
         # song text
         from qltk.info import SongInfo
         text = SongInfo(watcher, player.playlist)
-        # Packing the text directly into the hbox causes clipping problems
-        # with Hebrew, so use an Alignment instead.
-        alignment = gtk.Alignment(xalign=0, yalign=0, xscale=1, yscale=1)
-        alignment.set_padding(3, 3, 3, 3)
-        alignment.add(text)
-        hbox.pack_start(alignment)
+        hbox.pack_start(text)
 
         # cover image
         from qltk.cover import CoverImage
@@ -138,7 +137,7 @@ class MainWindow(gtk.Window):
         watcher.connect('song-started', self.image.set_song)
         hbox.pack_start(self.image, expand=False)
 
-        self.child.pack_start(hbox, expand=False)
+        realvbox.pack_start(hbox, expand=False)
 
         # status area
         hbox = gtk.HBox(spacing=6)
@@ -146,10 +145,13 @@ class MainWindow(gtk.Window):
         hb = gtk.HBox(spacing=3)
         from qltk.playorder import PlayOrder
         label = gtk.Label(_("_Order:"))
+        align = gtk.Alignment(xscale=1, yscale=1)
+        align.set_padding(0, 0, 6, 0)
+        align.add(label)
         self.order = order = PlayOrder(self.songlist.model)
         label.set_mnemonic_widget(order)
         label.set_use_underline(True)
-        hb.pack_start(label)
+        hb.pack_start(align)
         hb.pack_start(order)
         hbox.pack_start(hb, expand=False)
         self.repeat = repeat = qltk.ccb.ConfigCheckButton(
@@ -160,7 +162,10 @@ class MainWindow(gtk.Window):
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
-        hbox.pack_start(self.__statusbar)
+        align = gtk.Alignment(xscale=1, yscale=1)
+        align.set_padding(0, 0, 0, 6)
+        align.add(self.__statusbar)
+        hbox.pack_start(align)
         hbox.set_border_width(3)
         self.child.pack_end(hbox, expand=False)
 
@@ -226,7 +231,6 @@ class MainWindow(gtk.Window):
             'drag-data-received', MainWindow.__drag_data_received, self)
 
         self.resize(*map(int, config.get("memory", "size").split()))
-        self.child.show()
 
     def __drag_motion(self, ctx, x, y, time):
         # Don't accept drops from QL itself, since it offers text/uri-list.
@@ -455,7 +459,7 @@ class MainWindow(gtk.Window):
         Browser = browsers.get(current)
         config.set("memory", "browser", Browser.__name__)
         if self.browser:
-            c = self.child.get_children()[-2]
+            c = self.__vbox.get_children()[-1]
             c.remove(self.songpane)
             c.remove(self.browser)
             c.destroy()
@@ -483,10 +487,10 @@ class MainWindow(gtk.Window):
             sig = c.connect('size-allocate', set_size, val)
             c._size_sig = sig
         else:
-            c = gtk.VBox()
+            c = gtk.VBox(spacing=6)
             c.pack_start(self.browser, expand=False)
             c.pack_start(self.songpane)
-        self.child.pack_end(c)
+        self.__vbox.pack_end(c)
         c.show()
         self.__hide_menus()
         self.__hide_headers()

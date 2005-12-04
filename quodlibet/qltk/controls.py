@@ -145,8 +145,6 @@ class StopAfterMenu(gtk.Menu):
 class PlayControls(gtk.VBox):
     def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=3)
-        self.set_border_width(3)
-
         hbox = gtk.HBox(spacing=3)
         prev = gtk.Button()
         prev.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PREVIOUS, SIZE))

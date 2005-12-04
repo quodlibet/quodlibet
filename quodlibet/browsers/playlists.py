@@ -266,13 +266,10 @@ class Playlists(gtk.VBox, Browser):
         importpl = qltk.Button(_("_Import"), gtk.STOCK_ADD)
         importpl.connect('clicked', self.__import, watcher)
         hb = gtk.HBox(spacing=6)
-        align = gtk.Alignment(xscale=1.0)
-        align.set_padding(0, 3, 6, 6)
         hb.set_homogeneous(True)
         hb.pack_start(newpl)
         hb.pack_start(importpl)
-        align.add(hb)
-        self.pack_start(align, expand=False)
+        self.pack_start(hb, expand=False)
 
         view.connect('popup-menu', self.__popup_menu)
 
