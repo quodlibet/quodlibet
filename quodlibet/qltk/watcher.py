@@ -88,7 +88,7 @@ class SongWatcher(gtk.Object):
 
     def error(self, code, lock=False):
         from widgets import widgets
-        from qltk import ErrorMessage
+        from qltk.msg import ErrorMessage
         if lock: gtk.threads_enter()
         ErrorMessage(
             widgets.main, _("Unable to play song"),

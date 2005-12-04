@@ -100,14 +100,32 @@ class PlaylistPlayer(object):
         self.info.song_started(None)
         config.set("memory", "song", "")
 
-    def __load_song(self, song):
+    def __load_song(self, song, lock):
+        # Under as-yet-undetermined conditions, the initial set_state()
+        # can mysteriously fail -- if you turn GStreamer debugging on you
+        # get diagnostics like this:
+        #   alsa( 1481) gstalsa.c(1632):gst_alsa_open_audio:<alsasink0> 
+        #   ALSA device "default" is already in use by another program.
+        # 
+        # This is believed to be a GStreamer bug. If it happens, try again
+        # after pausing a little.
         st = self.bin.set_state(gst.STATE_NULL)
-        if st != gst.STATE_SUCCESS: raise Exception(st)
+        if st != gst.STATE_SUCCESS:
+            import time
+            time.sleep(0.01)
+            st = self.bin.set_state(gst.STATE_NULL)
+        if st != gst.STATE_SUCCESS:
+            # FIXME: feed self.error a useful error message
+            # (and do something sensible with it in SongWatcher#error)
+            self.error('', lock)
+            return
+
         self.bin.set_property('uri', song("~uri"))
         self.__length = song["~#length"] * 1000
         if self.__paused: st = self.bin.set_state(gst.STATE_PAUSED)
         else: st = self.bin.set_state(gst.STATE_PLAYING)
-        if st != gst.STATE_SUCCESS: raise Exception(st)
+        if st != gst.STATE_SUCCESS:
+            self.error('', lock)
 
     def quit(self):
         self.bin.set_state(gst.STATE_NULL)
@@ -135,11 +153,7 @@ class PlaylistPlayer(object):
         self.volume = self.__volume
         if song is not None:
             config.set("memory", "song", song["~filename"])
-            try: self.__load_song(song)
-            except Exception, err:
-                import traceback; traceback.print_exc()
-                self.error(err, lock)
-                return
+            self.__load_song(song, lock)
         else:
             config.set("memory", "song", "")
             self.paused = True
@@ -225,6 +239,7 @@ global playlist
 playlist = None
 
 def init(pipeline):
+    gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(gst.URI_SRC, "file://", ""):
         global playlist
         playlist = PlaylistPlayer(pipeline or "gconf")
