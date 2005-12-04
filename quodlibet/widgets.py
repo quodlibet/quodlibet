@@ -847,7 +847,7 @@ def init():
     # or missing. Don't literally translate media/next/previous/play/pause.
     const.SM_PAUSE = _('gtk-media-pause')
 
-    try: gtk.window_set_default_icon_from_file("quodlibet.svg")
+    try: gtk.window_set_default_icon_from_file_at_size("quodlibet.svg", 64, 64)
     except: gtk.window_set_default_icon_from_file("quodlibet.png")
 
     if config.get("settings", "headers").split() == []:
