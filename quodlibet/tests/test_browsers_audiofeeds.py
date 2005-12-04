@@ -8,7 +8,9 @@ from qltk.watcher import SongWatcher
 
 class TAudioFeeds(TestCase):
     def setUp(self):
-        self.bar = AudioFeeds(SongWatcher(), PlaylistPlayer('fakesink'))
+        watcher = SongWatcher()
+        AudioFeeds.init(watcher)
+        self.bar = AudioFeeds(watcher, PlaylistPlayer('fakesink'))
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
