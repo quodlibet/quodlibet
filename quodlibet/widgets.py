@@ -868,7 +868,7 @@ def init():
     SongList.pm.rescan()
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
-             "~#added ~#bitrate ~current").split()
+             "~#added ~#bitrate ~current ~#laststarted").split()
     for Kind in zip(*browsers.browsers)[2]:
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(watcher)

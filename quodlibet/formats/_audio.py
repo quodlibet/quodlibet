@@ -15,7 +15,8 @@ import util, config
 from urllib import pathname2url
 def to_uri(filename): return "file://" + pathname2url(filename)
 
-MIGRATE = "~#playcount ~#lastplayed ~#added ~#skipcount ~#rating".split()
+MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
+           "~#skipcount ~#rating").split()
 PEOPLE = "artist author composer performer lyricist arranger conductor".split()
 
 class AudioFile(dict):
@@ -182,6 +183,7 @@ class AudioFile(dict):
 
         # Fill in necessary values.
         self.setdefault("~#lastplayed", 0)
+        self.setdefault("~#laststarted", 0)
         self.setdefault("~#playcount", 0)
         self.setdefault("~#skipcount", 0)
         self.setdefault("~#length", 0)

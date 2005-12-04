@@ -8,7 +8,7 @@
 
 import time
 
-TIME_KEYS = ["added", "mtime", "lastplayed"]
+TIME_KEYS = ["added", "mtime", "lastplayed", "laststarted"]
 
 # True if the object matches any of its REs.
 class Union(object):

@@ -835,7 +835,7 @@ class SongList(HintedTreeView):
         for i, t in enumerate(headers):
             if t in ["tracknumber", "discnumber"]:
                 column = self.TextColumn(t)
-            elif t in ["~#added", "~#mtime", "~#lastplayed"]:
+            elif t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
                 column = self.DateColumn(t)
             elif t in ["~length", "~#length"]: column = self.LengthColumn()
             elif t in ["~rating", "~#rating"]: column = self.RatingColumn()

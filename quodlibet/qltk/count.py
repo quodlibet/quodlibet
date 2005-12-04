@@ -15,9 +15,11 @@ class CountManager(object):
         watcher.connect('song-started', self.__start)
 
     def __start(self, watcher, song):
-        if song is not None and song.multisong:
-            song["~#lastplayed"] = int(time.time())
-            song["~#playcount"] = song.get("~#playcount", 0) + 1
+        if song is not None:
+            if song.multisong:
+                song["~#lastplayed"] = int(time.time())
+                song["~#playcount"] = song.get("~#playcount", 0) + 1
+            song["~#laststarted"] = int(time.time())
             watcher.changed([song])
 
     def __end(self, watcher, song, ended, pl):
@@ -29,4 +31,3 @@ class CountManager(object):
         elif pl.current is not song:
             song["~#skipcount"] = song.get("~#skipcount", 0) + 1
             watcher.changed([song])
-
