@@ -267,6 +267,7 @@ class AudioFeeds(Browser, gtk.VBox):
         self.__main = bool(main)
 
         self.__view = view = HintedTreeView()
+        self.__view.set_reorderable(True)
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         col = gtk.TreeViewColumn("Audio Feeds", render)
