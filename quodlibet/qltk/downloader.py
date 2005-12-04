@@ -26,6 +26,8 @@ class DownloadWindow(gtk.Window):
         self.set_title("Quod Libet - " + _("Downloads"))
         self.set_default_size(300, 150)
         self.set_border_width(12)
+        self.__timeout = None
+
         model = gtk.ListStore(str, int)
         tv = gtk.TreeView()
         tv.set_model(model)
@@ -56,8 +58,20 @@ class DownloadWindow(gtk.Window):
         self.child.show_all()
 
     def __delete_event(self, window, event):
+        gobject.handler_disconnect(self.__timeout)
+        self.__timeout = None
         self.hide()
         return True
+
+    def __check_and_update(self):
+        model = self.child.child.get_model()
+        for i in range(len(model)):
+            model.row_changed(i, model.get_iter((i,)))
+        return True
+
+    def present(self):
+        super(DownloadWindow, self).present()
+        self.__timeout = gobject.timeout_add(1000, self.__check_and_update)
 
     def _download(self, source, target):
         fileobj = file(target, "wb")
@@ -77,15 +91,10 @@ class DownloadWindow(gtk.Window):
             return False
         else:
             buf = src.recv(1024*1024)
-            if buf:
-                model[iter][1] += len(buf)
-                model.row_changed(model.get_path(iter), iter)
-                fileobj.write(buf)
-                return True
+            model[iter][1] += len(buf)
+            if buf: fileobj.write(buf)
             else:
                 fileobj.close()
                 src.close()
                 model.remove(iter)
-                return False
-
-            
+            return bool(buf)

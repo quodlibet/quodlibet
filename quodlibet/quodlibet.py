@@ -29,6 +29,9 @@ def main():
     if "--debug" not in sys.argv:
         enable_periodic_save()
         gtk.quit_add(1, widgets.save_library, window, player.playlist)
+    else:
+        import gst
+        gst.debug_set_default_threshold(gst.LEVEL_DEBUG)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
     if play: player.playlist.paused = False

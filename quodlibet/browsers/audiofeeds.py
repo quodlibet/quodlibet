@@ -213,11 +213,37 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def Menu(self, songs, songlist):
         if len(songs) == 1:
-            item = qltk.MenuItem(_("Download"), gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_("Download..."), gtk.STOCK_CONNECT)
             item.connect('activate', self.__download, songs[0]["~uri"])
             m = gtk.Menu()
             m.append(item)
             return m
+        else:
+            uris = [song["~uri"] for song in songs]
+            item = qltk.MenuItem(_("Download..."), gtk.STOCK_CONNECT)
+            item.connect('activate', self.__download_many, uris)
+            m = gtk.Menu()
+            m.append(item)
+            return m
+
+    def __download_many(self, activator, sources):
+        chooser = gtk.FileChooserDialog(
+            title=_("Download Files"), parent=qltk.get_top_parent(self),
+            action=gtk.FILE_CHOOSER_ACTION_CREATE_FOLDER,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        resp = chooser.run()
+        if resp == gtk.RESPONSE_OK:
+            target = chooser.get_filename()
+            if target:
+                for i, source in enumerate(sources):
+                    base = os.path.basename(source)
+                    if not base:
+                        base = ("file%d" % i) + (
+                            os.path.splitext(source)[1] or ".audio")
+                    fulltarget = os.path.join(target, base)
+                    DownloadWindow.download(source, fulltarget)
+        chooser.destroy()
 
     def __download(self, activator, source):
         chooser = gtk.FileChooserDialog(
@@ -225,6 +251,8 @@ class AudioFeeds(Browser, gtk.VBox):
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                      gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        name = os.path.basename(source)
+        if name: chooser.set_current_name(name)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
             target = chooser.get_filename()
