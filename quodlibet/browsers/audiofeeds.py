@@ -44,6 +44,12 @@ class Feed(list):
         return time.time() - self.__lastgot
 
     def __fill_af(feed, af):
+        af["album"] = self.name
+        try: af["title"] = entry.title or _("Unknown")
+        except: af["title"] = _("Unknown")
+        try: song["date"] = "%04d-%02d-%02d" % entry.modified_parsed[:3]
+        except AttributeError: pass
+
         for songkey, feedkey in [
             ("website", "link"),
             ("description", "tagline"),
@@ -129,12 +135,6 @@ class Feed(list):
                 song["~#size"] = size
                 song.fill_metadata = False
                 song.update(defaults)
-                song["album"] = self.name
-                try: song["title"] = entry.title or _("Unknown")
-                except: song["title"] = _("Unknown")
-                try:
-                    song["date"] = "%04d-%02d-%02d" % entry.modified_parsed[:3]
-                except AttributeError: pass
                 try: self.__fill_af(entry, song)
                 except: pass
                 else: self.insert(0, song)
