@@ -140,18 +140,16 @@ class MainWindow(gtk.Window):
         realvbox.pack_start(hbox, expand=False)
 
         # status area
-        hbox = gtk.HBox(spacing=6)
-
+        align = gtk.Alignment(xscale=1, yscale=1)
+        align.set_padding(0, 6, 6, 6)
+        hbox = gtk.HBox(spacing=12)
         hb = gtk.HBox(spacing=3)
         from qltk.playorder import PlayOrder
         label = gtk.Label(_("_Order:"))
-        align = gtk.Alignment(xscale=1, yscale=1)
-        align.set_padding(0, 0, 6, 0)
-        align.add(label)
         self.order = order = PlayOrder(self.songlist.model)
         label.set_mnemonic_widget(order)
         label.set_use_underline(True)
-        hb.pack_start(align)
+        hb.pack_start(label)
         hb.pack_start(order)
         hbox.pack_start(hb, expand=False)
         self.repeat = repeat = qltk.ccb.ConfigCheckButton(
@@ -162,12 +160,9 @@ class MainWindow(gtk.Window):
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
-        align = gtk.Alignment(xscale=1, yscale=1)
-        align.set_padding(0, 0, 0, 6)
-        align.add(self.__statusbar)
-        hbox.pack_start(align)
-        hbox.set_border_width(3)
-        self.child.pack_end(hbox, expand=False)
+        hbox.pack_start(self.__statusbar)
+        align.add(hbox)
+        self.child.pack_end(align, expand=False)
 
         # song list
         self.song_scroller = sw = gtk.ScrolledWindow()
