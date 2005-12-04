@@ -47,7 +47,7 @@ class Feed(list):
         try: af["title"] = feed.title or _("Unknown")
         except: af["title"] = _("Unknown")
         try: af["date"] = "%04d-%02d-%02d" % feed.modified_parsed[:3]
-        except AttributeError: pass
+        except (AttributeError, TypeError): pass
 
         for songkey, feedkey in [
             ("website", "link"),
