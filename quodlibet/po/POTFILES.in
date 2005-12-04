@@ -13,6 +13,7 @@ qltk/browser.py
 qltk/chooser.py
 qltk/controls.py
 qltk/delete.py
+qltk/downloader.py
 qltk/exfalso.py
 qltk/filesel.py
 qltk/info.py
