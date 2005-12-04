@@ -217,3 +217,6 @@ class FIFOControl(object):
         if value in library: songs = [library[value]]
         else: songs = library.query(value)
         playlist.enqueue(songs)
+
+    def _quit(self, watcher, window, player):
+        window.destroy()
