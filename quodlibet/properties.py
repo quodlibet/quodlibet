@@ -967,7 +967,7 @@ class SongProperties(qltk.Window):
                               "do not have permission to edit it.")%(
                             util.escape(util.fsdecode(
                             song('~basename'))))).run()
-                        watcher.error(song)
+                        watcher.reload(song)
                         break
                     was_changed.append(song)
 
@@ -1252,7 +1252,7 @@ class SongProperties(qltk.Window):
                               "do not have permission to edit it.")%(
                             util.escape(util.fsdecode(song('~basename'))))
                             ).run()
-                        watcher.error(song)
+                        watcher.reload(song)
                         return True
                     was_changed.append(song)
 
@@ -1579,7 +1579,7 @@ class SongProperties(qltk.Window):
                           "read-only, corrupted, or you do not have "
                           "permission to edit it.")%(
                         util.escape(util.fsdecode(song('~basename'))))).run()
-                    watcher.error(song)
+                    watcher.reload(song)
                     return True
                 was_changed.append(song)
                 return win.step()

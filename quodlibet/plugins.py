@@ -340,7 +340,6 @@ class PluginManager(object):
             for song in needs_write:
                 try: song._song.write()
                 except Exception:
-                    self.watcher.error(song._song)
                     qltk.ErrorMessage(
                         None, _("Unable to edit song"),
                         _("Saving <b>%s</b> failed. The file "
