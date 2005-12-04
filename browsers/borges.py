@@ -19,9 +19,8 @@ class BorgesBar(Browser, gtk.HBox):
     __gsignals__ = Browser.__gsignals__
     background = False
 
-    def __init__(self, main=True):
-        gtk.HBox.__init__(self)
-        Browser.__init__(self)
+    def __init__(self, watcher, player):
+        super(BorgesBar, self).__init__()
         model = gtk.ListStore(str, str)
         for row in [
             ("those that belong to The Emperor", "organization = emperor"),
