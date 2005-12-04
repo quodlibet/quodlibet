@@ -192,7 +192,7 @@ class FIFOControl(object):
             if value: window.browser.filter(tag, [value])
 
     def _filter(self, value, watcher, window, player):
-        tag, values = value.split(' ', 1)
+        tag, values = value.split('=', 1)
         values = [v.decode("utf-8", "replace") for v in values.split("\x00")]
         if window.browser.can_filter(tag) and values:
             window.browser.filter(tag, values)
