@@ -51,7 +51,7 @@ class CoverImage(gtk.Frame):
         gtk.Frame.__init__(self)
         self.add(gtk.EventBox())
         self.child.add(gtk.Image())
-        self.__size = size or [100, 75]
+        self.__size = size or [100, 71]
         self.child.connect('button-press-event', self.__show_cover)
         self.child.show_all()
         self.__albumfn = None
