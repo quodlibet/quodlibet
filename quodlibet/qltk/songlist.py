@@ -539,7 +539,6 @@ class SongList(HintedTreeView):
         self.set_column_headers(self.headers)
         self.connect_object('destroy', SongList.__destroy, self)
         sigs = [watcher.connect('changed', self.__song_updated),
-                watcher.connect('song-started', self.__redraw_current),
                 watcher.connect('removed', self.__song_removed),
                 watcher.connect('paused', self.__redraw_current),
                 watcher.connect('unpaused', self.__redraw_current)
