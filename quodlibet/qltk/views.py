@@ -167,19 +167,54 @@ class PrettyDragTreeView(gtk.TreeView):
         super(PrettyDragTreeView, self).__init__(*args)
         self.connect_object('drag-begin', PrettyDragTreeView.__begin, self)
         self.connect_object(
-            'button-press-event', PrettyDragTreeView.__check_popup, self)
+            'button-press-event', PrettyDragTreeView.__button_press, self)
+        self.connect_object(
+            'button-release-event', PrettyDragTreeView.__button_release, self)
+        self.__pending_event = None
 
-    def __check_popup(self, event):
-        if event.button == 3:
+    def __button_press(self, event):
+        if event.button == 1: return self.__block_selection(event) 
+        elif event.button == 3: return self.__check_popup(event)
+
+    def __block_selection(self, event):
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError: return True
+        self.grab_focus()
+        selection = self.get_selection()
+        if ((selection.path_is_selected(path)
+            and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK)))):
+            self.__pending_event = event
+            selection.set_select_function(lambda *args: False)
+        elif event.type == gtk.gdk.BUTTON_PRESS:
+            self.__pending_event = None
+            selection.set_select_function(lambda *args: True)
+
+    def __button_release(self, event):
+        if self.__pending_event:
+            selection = self.get_selection()
+            selection.set_select_function(lambda *args: True)
+            oldevent = self.__pending_event
+            self.__pending_event = None
+            try:
+                if (oldevent.x, oldevent.y) != (event.x, event.y): return True
+            # I have no idea why this can happen...
+            except AttributeError: return True
             x, y = map(int, [event.x, event.y])
             try: path, col, cellx, celly = self.get_path_at_pos(x, y)
             except TypeError: return True
-            self.grab_focus()
-            selection = self.get_selection()
-            if not selection.path_is_selected(path):
-                self.set_cursor(path, col, 0)
-            self.emit('popup-menu')
-            return True
+            self.set_cursor(path, col, 0)
+
+    def __check_popup(self, event):
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError: return True
+        self.grab_focus()
+        selection = self.get_selection()
+        if not selection.path_is_selected(path):
+            self.set_cursor(path, col, 0)
+        self.emit('popup-menu')
+        return True
 
     def __begin(self, ctx):
         model, paths = self.get_selection().get_selected_rows()
