@@ -45,7 +45,6 @@ class ExFalsoWindow(gtk.Window):
         fs = FileSelector(dir)
         self.child.pack1(fs, resize=True)
         nb = qltk.Notebook()
-        nb.append_page(SongProperties.Information(self, library=False))
         for Page in [SongProperties.EditTags,
                      SongProperties.TagByFilename,
                      SongProperties.RenameFiles,

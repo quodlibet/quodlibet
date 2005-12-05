@@ -20,6 +20,7 @@ import player
 import util; from util import tag
 from library import library
 from properties import SongProperties
+from qltk.information import Information
 from qltk.views import HintedTreeView
 from qltk.wlw import WaitLoadWindow
 from qltk.delete import DeleteDialog
@@ -513,6 +514,11 @@ class SongList(HintedTreeView):
 
         b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         b.connect_object('activate', SongProperties, songs, watcher)
+        menu.append(b)
+
+        try: b = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        except AttributeError: b = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
+        b.connect_object('activate', Information, watcher, songs)
         menu.append(b)
 
         menu.show_all()
