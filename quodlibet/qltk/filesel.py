@@ -16,7 +16,7 @@ import formats
 import qltk
 import util
 
-from qltk.views import HintedTreeView, PrettyDragTreeView
+from qltk.views import HintedTreeView, RCMTreeView
 from qltk.getstring import GetStringDialog
 
 def search_func(model, column, key, iter, handledirs):
@@ -25,7 +25,7 @@ def search_func(model, column, key, iter, handledirs):
         check = os.path.basename(check) or '/'
     return key not in check.lower() and key not in check
 
-class DirectoryTree(PrettyDragTreeView):
+class DirectoryTree(RCMTreeView):
     def cell_data(column, cell, model, iter):
         cell.set_property('text', util.fsdecode(
             os.path.basename(model[iter][0])) or "/")

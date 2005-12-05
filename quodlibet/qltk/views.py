@@ -162,19 +162,23 @@ class TreeViewHints(gtk.Window):
 
 gobject.type_register(TreeViewHints)
 
-class PrettyDragTreeView(gtk.TreeView):
+class MultiDragTreeView(gtk.TreeView):
+    """TreeView with multirow drag support:
+    * Selections don't change until button-release-event...
+    * Unless they're a Shift/Ctrl modification, then they happen immediately
+    * Drag icons include 3 rows/2 plus a "and more" count"""
+    
     def __init__(self, *args):
-        super(PrettyDragTreeView, self).__init__(*args)
-        self.connect_object('drag-begin', PrettyDragTreeView.__begin, self)
+        super(MultiDragTreeView, self).__init__(*args)
         self.connect_object(
-            'button-press-event', PrettyDragTreeView.__button_press, self)
+            'button-press-event', MultiDragTreeView.__button_press, self)
         self.connect_object(
-            'button-release-event', PrettyDragTreeView.__button_release, self)
+            'button-release-event', MultiDragTreeView.__button_release, self)
+        self.connect_object('drag-begin', MultiDragTreeView.__begin, self)
         self.__pending_event = None
 
     def __button_press(self, event):
-        if event.button == 1: return self.__block_selection(event) 
-        elif event.button == 3: return self.__check_popup(event)
+        if event.button == 1: return self.__block_selection(event)
 
     def __block_selection(self, event):
         x, y = map(int, [event.x, event.y])
@@ -184,7 +188,7 @@ class PrettyDragTreeView(gtk.TreeView):
         selection = self.get_selection()
         if ((selection.path_is_selected(path)
             and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK)))):
-            self.__pending_event = event
+            self.__pending_event = [x, y]
             selection.set_select_function(lambda *args: False)
         elif event.type == gtk.gdk.BUTTON_PRESS:
             self.__pending_event = None
@@ -196,25 +200,11 @@ class PrettyDragTreeView(gtk.TreeView):
             selection.set_select_function(lambda *args: True)
             oldevent = self.__pending_event
             self.__pending_event = None
-            try:
-                if (oldevent.x, oldevent.y) != (event.x, event.y): return True
-            # I have no idea why this can happen...
-            except AttributeError: return True
+            if oldevent != [event.x, event.y]: return True
             x, y = map(int, [event.x, event.y])
             try: path, col, cellx, celly = self.get_path_at_pos(x, y)
             except TypeError: return True
             self.set_cursor(path, col, 0)
-
-    def __check_popup(self, event):
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError: return True
-        self.grab_focus()
-        selection = self.get_selection()
-        if not selection.path_is_selected(path):
-            self.set_cursor(path, col, 0)
-        self.emit('popup-menu')
-        return True
 
     def __begin(self, ctx):
         model, paths = self.get_selection().get_selected_rows()
@@ -253,7 +243,29 @@ class PrettyDragTreeView(gtk.TreeView):
             gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
             self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
-class HintedTreeView(PrettyDragTreeView):
+class RCMTreeView(MultiDragTreeView):
+    """Emits popup-menu when a row is right-clicked on."""
+
+    def __init__(self, *args):
+        super(RCMTreeView, self).__init__(*args)
+        self.connect_object(
+            'button-press-event', RCMTreeView.__button_press, self)
+
+    def __button_press(self, event):
+        if event.button == 3: return self.__check_popup(event)
+
+    def __check_popup(self, event):
+        x, y = map(int, [event.x, event.y])
+        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError: return True
+        self.grab_focus()
+        selection = self.get_selection()
+        if not selection.path_is_selected(path):
+            self.set_cursor(path, col, 0)
+        self.emit('popup-menu')
+        return True
+
+class HintedTreeView(RCMTreeView):
     """A TreeView that pops up a tooltip when you hover over a cell that
     contains ellipsized text."""
 
