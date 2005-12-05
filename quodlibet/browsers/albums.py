@@ -24,6 +24,7 @@ if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers.base import Browser
 from properties import SongProperties
+from qltk.information import Information
 
 class AlbumTagCompletion(EntryWordCompletion):
     def __init__(self):
@@ -392,17 +393,21 @@ class AlbumList(Browser, gtk.VBox):
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        try: info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        except AttributeError: info = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
         queue = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
         rem = qltk.MenuItem(_("_Remove from Library"), gtk.STOCK_REMOVE)
         menu.append(button)
         menu.append(queue)
         menu.append(rem)
         menu.append(props)
+        menu.append(info)
         menu.show_all()
         button.connect('activate', self.__refresh_album, view.get_selection())
         queue.connect('activate', self.__enqueue, view)
         rem.connect('activate', self.__remove, view.get_selection(), watcher)
         props.connect('activate', self.__properties, view, watcher)
+        info.connect('activate', self.__information, view, watcher)
 
         view.connect_object('popup-menu', self.__popup, menu)
 
@@ -458,7 +463,11 @@ class AlbumList(Browser, gtk.VBox):
         songs = self.__get_selected_songs(view.get_selection())
         if songs:
             songs.sort()
-            SongProperties(songs, watcher, initial=0)
+            SongProperties(songs, watcher)
+
+    def __information(self, activator, view, watcher):
+        songs = self.__get_selected_songs(view.get_selection())
+        if songs: Information(watcher, songs)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())

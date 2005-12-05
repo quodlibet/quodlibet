@@ -20,6 +20,8 @@ from browsers.base import Browser
 from qltk.songlist import SongList
 from qltk.views import HintedTreeView
 from qltk.entry import ValidatingEntry
+from qltk.information import Information
+from properties import SongProperties
 from util import tag
 
 class PanedBrowser(gtk.VBox, Browser):
@@ -66,11 +68,17 @@ class PanedBrowser(gtk.VBox, Browser):
                 'activate', widgets.main.playlist.enqueue, songs)
             menu.append(enqueue)
 
-            from properties import SongProperties
             props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
             props.connect_object(
                 'activate', SongProperties, songs, widgets.watcher, 0)
             menu.append(props)
+
+            try: info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+            except AttributeError:
+                info = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
+            info.connect_object(
+                'activate', Information, widgets.watcher, songs)
+            menu.append(info)
             menu.show_all()
             menu.connect('selection-done', lambda m: m.destroy())
             return menu

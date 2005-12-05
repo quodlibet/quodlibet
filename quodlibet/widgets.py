@@ -32,6 +32,7 @@ from qltk.wlw import WaitLoadWindow
 from qltk.getstring import GetStringDialog
 from qltk.browser import LibraryBrowser
 from qltk.msg import ErrorMessage
+from qltk.information import Information
 
 # Give us a namespace for now.. FIXME: We need to remove this later.
 # Or, replace it with nicer wrappers!
@@ -337,6 +338,8 @@ class MainWindow(gtk.Window):
             ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return",
              _("View and edit tags in the playing song"),
              self.__current_song_prop),
+            ("Information", gtk.STOCK_DIALOG_INFO, None, None, None,
+             self.__current_song_info),
             ("Rating", None, _("_Rating")),
 
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to Playing Song"),
@@ -525,7 +528,7 @@ class MainWindow(gtk.Window):
         self.__update_title(watcher, [song])
 
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
-                    "FilterArtist", "FilterAlbum"]:
+                    "FilterArtist", "FilterAlbum", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
         if song:
             for h in ['genre', 'artist', 'album']:
@@ -734,6 +737,10 @@ class MainWindow(gtk.Window):
     def __current_song_prop(self, *args):
         song = player.playlist.song
         if song: SongProperties([song], widgets.watcher)
+
+    def __current_song_info(self, *args):
+        song = player.playlist.song
+        if song: Information(widgets.watcher, [song])
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Control/FilterGenre",

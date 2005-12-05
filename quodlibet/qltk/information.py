@@ -11,6 +11,7 @@ import os, sys
 import time
 import locale
 import gobject, gtk, pango
+import qltk
 from qltk.cover import CoverImage
 import util; from util import tag
 
@@ -56,7 +57,7 @@ class OneSong(gtk.VBox):
             text += "\n" + util.escape(song.comma("version"))
         l.set_markup(text)
         l.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(l, expand=False)
+        self.pack_start(l, expand=False, fill=False)
         self.title = song("title")
 
     def _album(self, song):
@@ -89,7 +90,7 @@ class OneSong(gtk.VBox):
         hb = gtk.HBox(spacing=12)
         hb.pack_start(CoverImage([70, 70], song), expand=False)
         hb.pack_start(w)
-        self.pack_start(Frame(tag("album"), hb))
+        self.pack_start(Frame(tag("album"), hb), expand=False, fill=False)
 
     def _people(self, song):
         vb = gtk.VBox()
@@ -99,11 +100,9 @@ class OneSong(gtk.VBox):
             title = util.capitalize(title)
             l = Label(song["artist"])
             l.set_ellipsize(pango.ELLIPSIZE_END)
-            vb.pack_start(l)
+            vb.pack_start(l, expand=False)
         else:
-            # Translators: This is used as a group header in
-            # Properties when a song has performers/composers/etc.
-            title = tag("people")
+            title = tag("~people")
         for names, tag_ in [
             ("performers", "performer"),
             ("lyricists", "lyricist"),
@@ -116,9 +115,9 @@ class OneSong(gtk.VBox):
                 l.set_ellipsize(pango.ELLIPSIZE_END)
                 if len(song.list(tag_)) == 1: name = tag(tag_)
                 else: name = _(names)
-                vb.pack_frame(util.capitalize(name), l)
+                vb.pack_start(Frame(util.capitalize(name), l), expand=False)
         if not vb.get_children(): vb.destroy()
-        else: self.pack_start(Frame(title, vb))
+        else: self.pack_start(Frame(title, vb), expand=False, fill=False)
 
     def _library(self, song):
         def counter(i):
@@ -153,7 +152,7 @@ class OneSong(gtk.VBox):
             t.attach(lab, 0, 1, i + 1, i + 2, xoptions=gtk.FILL)
             t.attach(Label(r), 1, 2, i + 1, i + 2)
 
-        self.pack_start(Frame(_("Library"), t))
+        self.pack_start(Frame(_("Library"), t), expand=False, fill=False)
 
     def _file(self, song):
         def ftime(t):
@@ -187,7 +186,7 @@ class OneSong(gtk.VBox):
             t.attach(lab, 0, 1, i + 1, i + 2, xoptions=gtk.FILL)
             t.attach(Label(r), 1, 2, i + 1, i + 2)
 
-        self.pack_start(Frame(_("File"), t))
+        self.pack_start(Frame(_("File"), t), expand=False, fill=False)
 
 class OneAlbum(gtk.VBox):
     def __init__(self, songs):
@@ -204,7 +203,7 @@ class OneAlbum(gtk.VBox):
         text = "<big><b>%s</b></big>" % util.escape(song["album"])
         if "date" in song: text += "\n" + song["date"]
         l.set_markup(text)
-        self.pack_start(l, expand=False)
+        self.pack_start(l, expand=False, fill=False)
         self.title = song["album"]
 
     def _album(self, songs):
@@ -253,7 +252,7 @@ class OneAlbum(gtk.VBox):
         hb = gtk.HBox(spacing=12)
         hb.pack_start(CoverImage([70, 70], song), expand=False)
         hb.pack_start(w)
-        self.pack_start(hb, expand=False)
+        self.pack_start(hb, expand=False, fill=False)
 
     def _people(self, songs):
         artists = set([])
@@ -269,12 +268,14 @@ class OneAlbum(gtk.VBox):
             if len(artists) == 1: title = _("artist")
             else: title = _("artists")
             title = util.capitalize(title)
-            self.pack_start(Frame(title, Label("\n".join(artists))))
+            self.pack_start(Frame(title, Label("\n".join(artists))),
+                            expand=False, fill=False)
         if performers:
             if len(artists) == 1: title = _("performer")
             else: title = _("performers")
             title = util.capitalize(title)
-            self.pack_start(Frame(title, Label("\n".join(performers))))
+            self.pack_start(Frame(title, Label("\n".join(performers))),
+                            expand=False, fill=False)
 
     def _description(self, songs):
         text = []
@@ -308,7 +309,7 @@ class OneAlbum(gtk.VBox):
         l = Label()
         l.set_markup("\n".join(text))
         l.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(Frame(_("Track List"), l))
+        self.pack_start(Frame(_("Track List"), l), expand=False, fill=False)
 
 class OneArtist(gtk.VBox):
     def __init__(self, songs):
@@ -321,7 +322,7 @@ class OneArtist(gtk.VBox):
         l.set_ellipsize(pango.ELLIPSIZE_END)
         artist = util.escape(songs[0]("artist"))
         l.set_markup("<b><big>%s</big></b>" % artist)
-        self.pack_start(l, expand=False)
+        self.pack_start(l, expand=False, fill=False)
         self.title = songs[0]["artist"]
 
     def _album(self, songs):
@@ -361,7 +362,7 @@ class OneArtist(gtk.VBox):
             t.attach(cov, c, c + 1, r, r + 1,
                      xoptions=gtk.EXPAND, yoptions=0)
             added.add(cover.name)
-        self.pack_start(t, expand=False)
+        self.pack_start(t)
 
 class ManySongs(gtk.VBox):
     def __init__(self, songs):
@@ -376,7 +377,7 @@ class ManySongs(gtk.VBox):
         t = ngettext("%d song", "%d songs", len(songs)) % len(songs)
         l.set_markup("<big><b>%s</b></big>" % t)
         self.title = t
-        self.pack_start(l, expand=False)
+        self.pack_start(l, expand=False, fill=False)
 
     def _people(self, songs):
         artists = set([])
@@ -392,7 +393,8 @@ class ManySongs(gtk.VBox):
                 "%d songs with no artist", none) % none)
         self.pack_start(Frame(
             "%s (%d)" % (util.capitalize(_("artists")), num_artists),
-            Label("\n".join(artists))))
+            Label("\n".join(artists))),
+                        expand=False, fill=False)
 
     def _album(self, songs):
         albums = set([])
@@ -408,7 +410,8 @@ class ManySongs(gtk.VBox):
             "%d songs with no album", none) % none)
         self.pack_start(Frame(
             "%s (%d)" % (util.capitalize(_("albums")), num_albums),
-            Label("\n".join(albums))))
+            Label("\n".join(albums))),
+                        expand=False, fill=False)
 
     def _file(self, songs):
         time = 0
@@ -426,13 +429,14 @@ class ManySongs(gtk.VBox):
         table.attach(Label(_("Total size:")), 0, 1, 1, 2,
                      xoptions=gtk.FILL)
         table.attach(Label(util.format_size(size)), 1, 2, 1, 2)
-        self.pack_start(Frame(_("Files"), table))
+        self.pack_start(Frame(_("Files"), table),
+                        expand=False, fill=False)
 
 class Information(gtk.Window):
     def __init__(self, watcher, songs):
         super(Information, self).__init__()
         self.set_border_width(12)
-        self.set_default_size(300, 400)
+        self.set_default_size(400, 400)
         if self.child: self.child.destroy()
         swin = gtk.ScrolledWindow()
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)

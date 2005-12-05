@@ -95,6 +95,7 @@ MENU = """<ui>
       <menuitem action='FilterAlbum'/>
       <separator/>
       <menuitem action='Properties'/>
+      <menuitem action='Information'/>
       <separator/>
       <menuitem action='Jump'/>
     </menu>

@@ -19,6 +19,7 @@ import qltk
 from properties import SongProperties
 from qltk.browser import LibraryBrowser
 from qltk.controls import StopAfterMenu
+from qltk.information import Information
 
 class Preferences(qltk.Window):
     def __init__(self, activator, watcher):
@@ -228,6 +229,10 @@ class TrayIcon(object):
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         props.connect_object('activate', self.__properties, watcher, player)
 
+        try: info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        except AttributeError: info = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
+        info.connect_object('activate', self.__information, watcher, player)
+
         rating = gtk.Menu()
         def set_rating(value):
             song = player.song
@@ -250,12 +255,12 @@ class TrayIcon(object):
         for item in [playpause,
                      gtk.SeparatorMenuItem(), previous, next, orders,
                      gtk.SeparatorMenuItem(), preferences, browse,
-                     gtk.SeparatorMenuItem(), props, ratings,
+                     gtk.SeparatorMenuItem(), props, info, ratings,
                      gtk.SeparatorMenuItem(), quit]:
             menu.append(item)
         menu.repeat = repeat
         menu.orders = items
-        menu.sensitives = [props, next, ratings]
+        menu.sensitives = [props, next, ratings, info]
         return menu
 
     def __play_button_press(self, activator, event, safter):
@@ -280,8 +285,10 @@ class TrayIcon(object):
         self.__menu.prepend(playpause)
 
     def __properties(self, watcher, player):
-        if player.song:
-            SongProperties([player.song], watcher)
+        if player.song: SongProperties([player.song], watcher)
+
+    def __information(self, watcher, player):
+        if player.song: Information(watcher, [player.song])
 
     def destroy(self):
         if self.__icon: self.__icon.destroy()
