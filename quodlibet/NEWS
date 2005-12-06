@@ -2,7 +2,7 @@ Quod Libet is only upwards-compatible; your library will remain intact
 if you upgrade to the next version. Skipping a version or downgrading
 may require you to re-add any songs in the library.
 
-1.0
+0.16
  * Plugins can make themselves insensitive. (#66)
  * More command-line options. (#75)
  * Wavpack support. (#257)
