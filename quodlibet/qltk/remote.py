@@ -219,3 +219,10 @@ class FIFOControl(object):
 
     def _quit(self, watcher, window, player):
         window.destroy()
+
+    def _dump_playlist(self, value, watcher, window, player):
+        try: f = file(value, "w")
+        except EnvironmentError: pass
+        else:
+            for song in window.playlist.pl.get():
+                f.write(song("~uri") + "\n")
