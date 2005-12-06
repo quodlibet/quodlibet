@@ -14,6 +14,7 @@ import time, datetime
 
 import gobject, gtk, pango
 
+import stock
 import parser
 import qltk
 import player
@@ -453,7 +454,7 @@ class SongList(HintedTreeView):
 
         submenu = self.pm.create_plugins_menu(songs)
         if submenu is not None:
-            b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
+            b = gtk.ImageMenuItem(stock.PLUGINS)
             menu.append(b)
             b.set_submenu(submenu)
 
@@ -492,7 +493,7 @@ class SongList(HintedTreeView):
                 submenu.append(i)
             b.set_submenu(submenu)
         
-        b = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
+        b = gtk.ImageMenuItem(stock.ENQUEUE)
         b.connect('activate', self.__enqueue, songs)
         menu.append(b)
         buttons.append(b)
@@ -500,7 +501,7 @@ class SongList(HintedTreeView):
 
         menu.append(gtk.SeparatorMenuItem())
 
-        b = qltk.MenuItem(_('_Remove from Library'), gtk.STOCK_REMOVE)
+        b = gtk.ImageMenuItem(stock.REMOVE)
         b.connect('activate', self.__remove, songs, watcher)
         menu.append(b)
         buttons.append(b)
@@ -512,8 +513,8 @@ class SongList(HintedTreeView):
         buttons.append(b)
         b.set_sensitive(is_file)
 
-        b = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        b.connect_object('activate', SongProperties, songs, watcher)
+        b = gtk.ImageMenuItem(stock.EDIT_TAGS)
+        b.connect_object('activate', SongProperties, watcher, songs)
         menu.append(b)
 
         try: b = gtk.ImageMenuItem(gtk.STOCK_INFO)

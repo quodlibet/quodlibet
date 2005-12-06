@@ -13,6 +13,7 @@ import time
 import locale
 import gtk, pango, gobject
 
+import stock
 import qltk
 from qltk.wlw import WritingWindow
 from qltk.views import HintedTreeView
@@ -642,7 +643,7 @@ class SongProperties(qltk.Window):
             hbox = gtk.HBox(spacing=12)
 
             # Main buttons
-            preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
+            preview = gtk.Button(stock=stock.PREVIEW)
             save = gtk.Button(stock=gtk.STOCK_SAVE)
 
             # Text entry and preview button
@@ -872,7 +873,7 @@ class SongProperties(qltk.Window):
             combo = ComboBoxEntrySave(
                 const.NBP, const.NBP_EXAMPLES.split("\n"))
             hbox.pack_start(combo)
-            preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
+            preview = gtk.Button(stock=stock.PREVIEW)
             hbox.pack_start(preview, expand=False)
             self.pack_start(hbox, expand=False)
 
@@ -1083,7 +1084,7 @@ class SongProperties(qltk.Window):
             label_total.set_mnemonic_widget(spin_total)
             hbox_total.pack_start(label_total)
             hbox_total.pack_start(spin_total)
-            preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
+            preview = gtk.Button(stock=stock.PREVIEW)
 
             hbox2.pack_start(hbox_start, expand=True, fill=False)
             hbox2.pack_start(hbox_total, expand=True, fill=False)
@@ -1203,7 +1204,7 @@ class SongProperties(qltk.Window):
             save.set_sensitive(False)
             revert.set_sensitive(False)
 
-    def __init__(self, songs, watcher, initial=0):
+    def __init__(self, watcher, songs):
         super(SongProperties, self).__init__()
         self.set_default_size(300, 430)
         notebook = qltk.Notebook()
@@ -1272,7 +1273,6 @@ class SongProperties(qltk.Window):
 
         self.emit('changed', songs)
         self.show_all()
-        notebook.set_current_page(initial)
 
     def __remove(self, watcher, songs, model, selection, sig):
         to_remove = []

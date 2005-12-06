@@ -15,6 +15,7 @@ import browsers
 import pattern
 import util
 import qltk
+import stock
 
 from properties import SongProperties
 from qltk.browser import LibraryBrowser
@@ -186,15 +187,15 @@ class TrayIcon(object):
         else: self.tooltip = _("Not playing")
 
     def __Menu(self, watcher, window, player):
-        playpause = qltk.MenuItem(const.SM_PLAY, gtk.STOCK_MEDIA_PLAY)
+        playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__play_pause, player)
         safter = StopAfterMenu(watcher, player)
         playpause.connect(
             'button-press-event', self.__play_button_press, safter)
 
-        previous = qltk.MenuItem(const.SM_PREVIOUS, gtk.STOCK_MEDIA_PREVIOUS)
+        previous = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PREVIOUS)
         previous.connect('activate', lambda *args: player.previous())
-        next = qltk.MenuItem(const.SM_NEXT, gtk.STOCK_MEDIA_NEXT)
+        next = gtk.ImageMenuItem(gtk.STOCK_MEDIA_NEXT)
         next.connect('activate', lambda *args: player.next())
 
         orders = gtk.MenuItem(_("Play _Order"))
@@ -226,11 +227,10 @@ class TrayIcon(object):
             m2.append(i)
         browse.set_submenu(m2)
 
-        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
         props.connect_object('activate', self.__properties, watcher, player)
 
-        try: info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-        except AttributeError: info = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
+        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
         info.connect_object('activate', self.__information, watcher, player)
 
         rating = gtk.Menu()
@@ -278,14 +278,13 @@ class TrayIcon(object):
     def __set_paused(self, watcher, player):
         self.__menu.get_children()[0].destroy()
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
-        text = [const.SM_PAUSE, const.SM_PLAY][player.paused]
-        playpause = qltk.MenuItem(text, stock)
+        playpause = gtk.ImageMenuItem(stock)
         playpause.connect('activate', self.__play_pause, player)
         playpause.show()
         self.__menu.prepend(playpause)
 
     def __properties(self, watcher, player):
-        if player.song: SongProperties([player.song], watcher)
+        if player.song: SongProperties(watcher, [player.song])
 
     def __information(self, watcher, player):
         if player.song: Information(watcher, [player.song])

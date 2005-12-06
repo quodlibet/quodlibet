@@ -13,6 +13,7 @@ import config
 import parser
 import qltk
 import util
+import stock
 from qltk.completion import EntryWordCompletion
 from qltk.views import HintedTreeView
 from qltk.entry import ValidatingEntry
@@ -392,11 +393,10 @@ class AlbumList(Browser, gtk.VBox):
 
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
-        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        try: info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-        except AttributeError: info = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
-        queue = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
-        rem = qltk.MenuItem(_("_Remove from Library"), gtk.STOCK_REMOVE)
+        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
+        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        queue = gtk.ImageMenuItem(stock.ENQUEUE)
+        rem = gtk.ImageMenuItem(stock.REMOVE)
         menu.append(button)
         menu.append(queue)
         menu.append(rem)
@@ -461,9 +461,7 @@ class AlbumList(Browser, gtk.VBox):
 
     def __properties(self, activator, view, watcher):
         songs = self.__get_selected_songs(view.get_selection())
-        if songs:
-            songs.sort()
-            SongProperties(songs, watcher)
+        if songs: SongProperties(watcher, songs)
 
     def __information(self, activator, view, watcher):
         songs = self.__get_selected_songs(view.get_selection())

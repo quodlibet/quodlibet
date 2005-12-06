@@ -11,10 +11,13 @@ import gtk
 import const
 import config
 import util
+import stock
+
 from qltk.songlist import SongList
 from qltk.ccb import ConfigCheckButton
 from qltk.x import Tooltips
 from properties import SongProperties
+from qltk.information import Information
 from library import library
 
 class QueueExpander(gtk.Expander):
@@ -129,9 +132,12 @@ class PlayQueue(SongList):
         menu = gtk.Menu()
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         rem.connect('activate', self.__remove)
-        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
         props.connect_object('activate', self.__properties, watcher)
-        menu.append(rem); menu.append(props); menu.show_all()
+        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        info.connect_object('activate', self.__information, watcher)
+        menu.append(rem); menu.append(props); menu.append(info)
+        menu.show_all()
         self.connect_object('popup-menu', self.__popup, menu)
         self.enable_drop()
         self.connect_object('destroy', self.__write, self.model)
@@ -156,7 +162,10 @@ class PlayQueue(SongList):
         return True
 
     def __properties(self, watcher):
-        SongProperties(self.get_selected_songs(), watcher)
+        SongProperties(watcher, self.get_selected_songs())
+
+    def __information(self, watcher):
+        Information(watcher, self.get_selected_songs())
 
     def __remove(self, item):
         model, paths = self.get_selection().get_selected_rows()

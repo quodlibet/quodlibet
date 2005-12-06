@@ -17,11 +17,6 @@ PAUSED  = os.path.join(DIR, "paused")
 PLUGINS = os.path.join(DIR, "plugins")
 BROWSERS = os.path.join(DIR, "browsers")
 
-SM_PLAY = 'gtk-media-play'
-SM_PAUSE = 'gtk-media-pause'
-SM_NEXT = 'gtk-media-next'
-SM_PREVIOUS = 'gtk-media-previous'
-
 AUTHORS = """\
 Joe Wreschnig
 Michael Urman

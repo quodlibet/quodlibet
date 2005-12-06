@@ -1,4 +1,5 @@
 [encoding: UTF-8]
+stock.py
 library.py
 quodlibet.py
 util.py

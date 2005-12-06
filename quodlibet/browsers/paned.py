@@ -9,6 +9,7 @@
 
 import sys
 import gobject, gtk, pango
+import stock
 import config
 import parser
 import qltk
@@ -63,19 +64,17 @@ class PanedBrowser(gtk.VBox, Browser):
             songs = self.__get_songs()
             songs.sort()
             from widgets import widgets
-            enqueue = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
+            enqueue = gtk.ImageMenuItem(stock.ENQUEUE)
             enqueue.connect_object(
                 'activate', widgets.main.playlist.enqueue, songs)
             menu.append(enqueue)
 
-            props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+            props = gtk.ImageMenuItem(stock.EDIT_TAGS)
             props.connect_object(
-                'activate', SongProperties, songs, widgets.watcher, 0)
+                'activate', SongProperties, widgets.watcher, songs)
             menu.append(props)
 
-            try: info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-            except AttributeError:
-                info = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
+            info = gtk.ImageMenuItem(gtk.STOCK_INFO)
             info.connect_object(
                 'activate', Information, widgets.watcher, songs)
             menu.append(info)

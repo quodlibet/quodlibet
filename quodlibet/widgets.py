@@ -318,7 +318,7 @@ class MainWindow(gtk.Window):
             ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library'), ""),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
-            ("Plugins", gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
+            ("Plugins", stock.PLUGINS, None, None, None,
              self.__plugins),
             ("Quit", gtk.STOCK_QUIT, None, None, None, gtk.main_quit),
             ('Filters', None, _("_Filters")),
@@ -335,10 +335,9 @@ class MainWindow(gtk.Window):
             ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
              None, self.__bottom40),
             ("Control", None, _("_Control")),
-            ("Properties", gtk.STOCK_PROPERTIES, None, "<Alt>Return",
-             _("View and edit tags in the playing song"),
+            ("Properties", stock.EDIT_TAGS, None, "<Alt>Return", None,
              self.__current_song_prop),
-            ("Information", gtk.STOCK_DIALOG_INFO, None, None, None,
+            ("Information", gtk.STOCK_INFO, None, None, None,
              self.__current_song_info),
             ("Rating", None, _("_Rating")),
 
@@ -349,19 +348,13 @@ class MainWindow(gtk.Window):
             ("Help", None, _("_Help")),
             ]
 
-        if const.SM_PREVIOUS.startswith("gtk-"): label = None
-        else: label = const.SM_PREVIOUS
-        actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, label,
+        actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, None,
                         "<control>comma", None, self.__previous_song))
 
-        if const.SM_PLAY.startswith('gtk-'): label = None
-        else: label = const.SM_PLAY
-        actions.append(("PlayPause", gtk.STOCK_MEDIA_PLAY, label,
+        actions.append(("PlayPause", gtk.STOCK_MEDIA_PLAY, None,
                         "<control>space", None, self.__play_pause))
 
-        if const.SM_NEXT.startswith("gtk-"): label = None
-        else: label = const.SM_NEXT
-        actions.append(("Next", gtk.STOCK_MEDIA_NEXT, label,
+        actions.append(("Next", gtk.STOCK_MEDIA_NEXT, None,
                         "<control>period", None, self.__next_song))
 
         ag.add_actions(actions)
@@ -496,15 +489,10 @@ class MainWindow(gtk.Window):
 
     def __update_paused(self, watcher, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
-        if paused:
-            image = gtk.STOCK_MEDIA_PLAY
-            label = const.SM_PLAY
-        else:
-            image = gtk.STOCK_MEDIA_PAUSE
-            label = const.SM_PAUSE
-        text = gtk.stock_lookup(label)
-        text = (text and text[1]) or label
-        menu.get_image().set_from_stock(image, gtk.ICON_SIZE_MENU)
+        if paused: key = gtk.STOCK_MEDIA_PLAY
+        else: key = gtk.STOCK_MEDIA_PAUSE
+        text = gtk.stock_lookup(key)[1]
+        menu.get_image().set_from_stock(key, gtk.ICON_SIZE_MENU)
         menu.child.set_text(text)
         menu.child.set_use_underline(True)
 
@@ -736,7 +724,7 @@ class MainWindow(gtk.Window):
 
     def __current_song_prop(self, *args):
         song = player.playlist.song
-        if song: SongProperties([song], widgets.watcher)
+        if song: SongProperties(widgets.watcher, [song])
 
     def __current_song_info(self, *args):
         song = player.playlist.song
@@ -835,19 +823,6 @@ def website_wrap(activator, link):
 
 def init():
     stock.init()
-    # Translators: Only translate this if GTK's stock item is incorrect
-    # or missing. Don't literally translate media/next/previous/play/pause.
-    const.SM_NEXT = _('gtk-media-next')
-    # Translators: Only translate this if GTK does so incorrectly.
-    # or missing. Don't literally translate media/next/previous/play/pause.
-    const.SM_PREVIOUS = _('gtk-media-previous')
-
-    # Translators: Only translate this if GTK does so incorrectly.
-    # or missing. Don't literally translate media/next/previous/play/pause.
-    const.SM_PLAY = _('gtk-media-play')
-    # Translators: Only translate this if GTK does so incorrectly.
-    # or missing. Don't literally translate media/next/previous/play/pause.
-    const.SM_PAUSE = _('gtk-media-pause')
 
     try: gtk.window_set_default_icon_from_file_at_size("quodlibet.svg", 64, 64)
     except: gtk.window_set_default_icon_from_file("quodlibet.png")
