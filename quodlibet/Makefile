@@ -23,7 +23,7 @@ make-install-dirs:
 # have (potentially) outdated translations. Ideally any developers
 # installing the SVN version will have intltool and so it will build fine.
 install: make-install-dirs install-dirs install-programs
-	install -m 644 $(MODULES) ql-*.png $(DESTDIR)$(PREFIX)/$(TO)
+	install -m 644 $(MODULES) rhythmbox-*.png $(DESTDIR)$(PREFIX)/$(TO)
 	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E); done
 	-cd po && make install-po DESTDIR=$(DESTDIR)
 

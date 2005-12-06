@@ -9,10 +9,10 @@ PREVIEW = 'ql-preview'
 REMOVE = 'ql-remove'
 ENQUEUE = 'ql-enqueue'
 
-VOLUME_OFF = 'ql-volume-zero'
-VOLUME_MIN = 'ql-volume-min'
-VOLUME_MED = 'ql-volume-medium'
-VOLUME_MAX = 'ql-volume-max'
+VOLUME_OFF = 'rhythmbox-volume-zero'
+VOLUME_MIN = 'rhythmbox-volume-min'
+VOLUME_MED = 'rhythmbox-volume-medium'
+VOLUME_MAX = 'rhythmbox-volume-max'
 
 _ICONS = [QL_ICON, EF_ICON, VOLUME_OFF, VOLUME_MIN, VOLUME_MED, VOLUME_MAX]
 
