@@ -478,8 +478,8 @@ class AlbumList(Browser, gtk.VBox):
     def __enqueue(self, item, view):
         songs = self.__get_selected_songs(view.get_selection())
         songs.sort()
-        from widgets import widgets
-        widgets.main.playlist.enqueue(songs)
+        from widgets import main
+        main.playlist.enqueue(songs)
 
     def __play_selection(self, view, indices, col, player):
         player.reset()

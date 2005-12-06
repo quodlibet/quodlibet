@@ -33,9 +33,6 @@ if __name__ == "__main__":
     import config
     config.init(const.CONFIG)
 
-    import stock
-    stock.init()
-
     sys.argv.append(os.path.abspath("."))
     opts, args = opts.parse()
     args[0] = os.path.realpath(args[0])
@@ -46,6 +43,9 @@ if __name__ == "__main__":
     import gtk
     try: gtk.window_set_default_icon_from_file("exfalso.svg")
     except: gtk.window_set_default_icon_from_file("exfalso.png")
+
+    import stock
+    stock.init()
 
     from qltk.exfalso import ExFalsoWindow
     from qltk.watcher import SongWatcher

@@ -701,10 +701,10 @@ class SongList(HintedTreeView):
     def __enqueue(self, item, songs):
         songs = filter(lambda s: s.can_add, songs)
         if songs:
-            from widgets import widgets
+            from widgets import main, watcher
             added = filter(library.add_song, songs)
-            widgets.main.playlist.enqueue(songs)
-            if added: widgets.watcher.added(added)
+            main.playlist.enqueue(songs)
+            if added: watcher.added(added)
 
     def __delete(self, item, songs, watcher):
         files = [song["~filename"] for song in songs]

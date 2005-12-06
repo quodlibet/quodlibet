@@ -50,8 +50,8 @@ class LibraryBrowser(Window):
         self.show()
 
     def __enqueue(self, view, path, column):
-        from widgets import widgets
-        widgets.main.playlist.enqueue([view.get_model()[path][0]])
+        from widgets import main
+        main.playlist.enqueue([view.get_model()[path][0]])
 
     def __drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)

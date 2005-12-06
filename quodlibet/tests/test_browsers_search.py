@@ -93,7 +93,6 @@ class TSearchBar(TEmptyBar):
     Bar = SearchBar
     def setUp(self):
         import qltk
-        from widgets import widgets
         widgets.watcher = SongWatcher()
         super(TSearchBar, self).setUp()
 
@@ -101,7 +100,6 @@ class TSearchBar(TEmptyBar):
 
     def tearDown(self):
         super(TSearchBar, self).tearDown()
-        from widgets import widgets
         widgets.watcher.destroy()
         del(widgets.watcher)
 add(TSearchBar)

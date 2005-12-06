@@ -201,8 +201,8 @@ class InternetRadio(gtk.HBox, Browser):
 
     def __remove(self, button, songs):
         map(self.__stations.remove, songs)
-        from widgets import widgets
-        widgets.watcher.removed(songs)
+        from widgets import watcher
+        watcher.removed(songs)
         self.__stations.save(STATIONS)
         self.activate()
 

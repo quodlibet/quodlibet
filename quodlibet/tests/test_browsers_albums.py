@@ -13,9 +13,8 @@ class TAlbumList(TestCase):
     Bar = AlbumList
     def setUp(self):
         widgets.library = browsers.albums.library = Library()
-        from widgets import widgets as ws
-        ws.watcher = SongWatcher()
-        self.bar = self.Bar(ws.watcher, PlaylistPlayer('fakesink'))
+        widgets.watcher = SongWatcher()
+        self.bar = self.Bar(widgets.watcher, PlaylistPlayer('fakesink'))
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -25,7 +24,6 @@ class TAlbumList(TestCase):
     def tearDown(self):
         self.bar.destroy()
         widgets.library = browsers.search.library = None
-        from widgets import widgets as ws
-        ws.watcher.destroy()
-        del(ws.watcher)
+        widgets.watcher.destroy()
+        del(widgets.watcher)
 add(TAlbumList)

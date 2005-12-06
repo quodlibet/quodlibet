@@ -25,12 +25,11 @@ class TPanedBrowser(TestCase):
         import qltk
         config.set("browsers", "panes", "artist")
         widgets.library = browsers.paned.library = Library()
-        from widgets import widgets as ws
-        ws.watcher = SongWatcher()
+        widgets.watcher = SongWatcher()
         for af in SONGS:
             af.sanitize()
             browsers.paned.library.add_song(af)
-        self.bar = self.Bar(ws.watcher, False)
+        self.bar = self.Bar(widgets.watcher, False)
         self.bar.connect('songs-selected', self._expected)
         while gtk.events_pending(): gtk.main_iteration()
 
@@ -72,7 +71,6 @@ class TPanedBrowser(TestCase):
     def tearDown(self):
         self.bar.destroy()
         widgets.library = browsers.search.library = None
-        from widgets import widgets as ws
-        ws.watcher.destroy()
-        del(ws.watcher)
+        widgets.watcher.destroy()
+        del(widgets.watcher)
 add(TPanedBrowser)

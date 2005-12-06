@@ -211,9 +211,8 @@ class FIFOControl(object):
         else: SongProperties([player.song], watcher)
 
     def _enqueue(self, value, watcher, window, player):
-        from widgets import widgets
         from library import library
-        playlist = widgets.main.playlist
+        playlist = window.playlist
         if value in library: songs = [library[value]]
         else: songs = library.query(value)
         playlist.enqueue(songs)

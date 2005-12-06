@@ -60,23 +60,21 @@ class PanedBrowser(gtk.VBox, Browser):
             self.connect('popup-menu', self.__popup_menu)
 
         def __Menu(self):
+            from widgets import main, watcher
+
             menu = gtk.Menu()
             songs = self.__get_songs()
-            songs.sort()
-            from widgets import widgets
+
             enqueue = gtk.ImageMenuItem(stock.ENQUEUE)
-            enqueue.connect_object(
-                'activate', widgets.main.playlist.enqueue, songs)
+            enqueue.connect_object('activate', main.playlist.enqueue, songs)
             menu.append(enqueue)
 
             props = gtk.ImageMenuItem(stock.EDIT_TAGS)
-            props.connect_object(
-                'activate', SongProperties, widgets.watcher, songs)
+            props.connect_object('activate', SongProperties, watcher, songs)
             menu.append(props)
 
             info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-            info.connect_object(
-                'activate', Information, widgets.watcher, songs)
+            info.connect_object('activate', Information, watcher, songs)
             menu.append(info)
             menu.show_all()
             menu.connect('selection-done', lambda m: m.destroy())

@@ -84,14 +84,15 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         return m
 
     def __add_songs(self, item, songs):
-        from widgets import widgets
         added = []
         for song in songs:
             if song["~filename"] not in glibrary:
                 glibrary[song["~filename"]] = song
                 added.append(song)
         self.__refresh_library()
-        if added: widgets.watcher.added(added)
+        if added:
+            from widgets import watcher
+            watcher.added(added)
 
     def __find_songs(self, selection):
         model, rows = selection.get_selected_rows()
