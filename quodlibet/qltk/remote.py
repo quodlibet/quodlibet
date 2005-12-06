@@ -226,3 +226,4 @@ class FIFOControl(object):
         else:
             for song in window.playlist.pl.get():
                 f.write(song("~uri") + "\n")
+            f.close()
