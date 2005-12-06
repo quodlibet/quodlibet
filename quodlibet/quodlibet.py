@@ -273,15 +273,6 @@ if __name__ == "__main__":
     import pygtk
     pygtk.require('2.0')
     import gtk
-    if gtk.pygtk_version < (2, 6) or gtk.gtk_version < (2, 6):
-        sys.stderr.write(
-            to(_("E: You need GTK+ 2.6 and PyGTK 2.6 or greater."))+"\n")
-        sys.stderr.write(to(_("E: You have GTK+ %s and PyGTK %s.") % (
-            ".".join(map(str, gtk.gtk_version)),
-            ".".join(map(str, gtk.pygtk_version)))) + "\n")
-        raise SystemExit(to(_("E: Please upgrade GTK+/PyGTK.")))
-
-    from util import to
 
     # Load configuration data and scan the library for new/changed songs.
     import config
