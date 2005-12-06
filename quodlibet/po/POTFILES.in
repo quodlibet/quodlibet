@@ -8,7 +8,6 @@ formats/_audio.py
 exfalso.py
 widgets.py
 plugins.py
-properties.py
 qltk/about.py
 qltk/browser.py
 qltk/chooser.py
@@ -23,6 +22,7 @@ qltk/msg.py
 qltk/playorder.py
 qltk/pluginwin.py
 qltk/prefs.py
+qltk/properties.py
 qltk/queue.py
 qltk/quodlibet.py
 qltk/songlist.py
