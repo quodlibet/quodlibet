@@ -24,6 +24,7 @@ qltk/playorder.py
 qltk/pluginwin.py
 qltk/prefs.py
 qltk/queue.py
+qltk/quodlibet.py
 qltk/songlist.py
 qltk/trayicon.py
 qltk/views.py
