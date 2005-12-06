@@ -18,6 +18,7 @@ qltk/downloader.py
 qltk/exfalso.py
 qltk/filesel.py
 qltk/info.py
+qltk/information.py
 qltk/msg.py
 qltk/playorder.py
 qltk/pluginwin.py
