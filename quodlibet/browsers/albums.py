@@ -24,7 +24,7 @@ ELPOEP = list(PEOPLE); ELPOEP.reverse()
 if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers.base import Browser
-from properties import SongProperties
+from qltk.properties import SongProperties
 from qltk.information import Information
 
 class AlbumTagCompletion(EntryWordCompletion):

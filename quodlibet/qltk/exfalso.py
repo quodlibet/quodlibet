@@ -17,8 +17,8 @@ import qltk
 from qltk.filesel import FileSelector
 from qltk.wlw import WaitLoadWindow
 from qltk.delete import DeleteDialog
+from qltk.properties import SongProperties
 
-from properties import SongProperties
 from plugins import PluginManager
 
 class EFPluginManager(PluginManager):

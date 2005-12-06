@@ -202,7 +202,7 @@ class FIFOControl(object):
             # no value given, use the current song; slide arguments
             # to the right.
             value, watcher, window, player = None, value, watcher, window
-        from properties import SongProperties
+        from qltk.properties import SongProperties
         if value:
             from library import library
             if value in library: songs = [library[value]]

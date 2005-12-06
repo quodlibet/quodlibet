@@ -22,7 +22,7 @@ from qltk.songlist import SongList
 from qltk.views import HintedTreeView
 from qltk.entry import ValidatingEntry
 from qltk.information import Information
-from properties import SongProperties
+from qltk.properties import SongProperties
 from util import tag
 
 class PanedBrowser(gtk.VBox, Browser):

@@ -20,7 +20,7 @@ import qltk
 import player
 import util; from util import tag
 from library import library
-from properties import SongProperties
+from qltk.properties import SongProperties
 from qltk.information import Information
 from qltk.views import HintedTreeView
 from qltk.wlw import WaitLoadWindow

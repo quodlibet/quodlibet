@@ -17,7 +17,7 @@ import util
 import qltk
 import stock
 
-from properties import SongProperties
+from qltk.properties import SongProperties
 from qltk.browser import LibraryBrowser
 from qltk.controls import StopAfterMenu
 from qltk.information import Information

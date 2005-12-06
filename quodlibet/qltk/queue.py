@@ -16,7 +16,7 @@ import stock
 from qltk.songlist import SongList
 from qltk.ccb import ConfigCheckButton
 from qltk.x import Tooltips
-from properties import SongProperties
+from qltk.properties import SongProperties
 from qltk.information import Information
 from library import library
 

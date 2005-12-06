@@ -1,5 +1,5 @@
 from tests import TestCase, add
-from properties import Formatter
+from qltk.properties import Formatter
 
 class TFormatters(TestCase):
     def validate(self, key, values):

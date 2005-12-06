@@ -26,7 +26,7 @@ from util import to
 from library import library
 
 if sys.version_info < (2, 4): from sets import Set as set
-from properties import SongProperties
+from qltk.properties import SongProperties
 from qltk.songlist import SongList
 from qltk.wlw import WaitLoadWindow
 from qltk.getstring import GetStringDialog
