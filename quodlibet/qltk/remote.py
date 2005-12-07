@@ -220,6 +220,21 @@ class FIFOControl(object):
     def _quit(self, watcher, window, player):
         window.destroy()
 
+    def _status(self, value, watcher, window, player):
+        try: f = file(value, "w")
+        except EnvironmentError: pass
+        else:
+            if player.paused: strings = ["paused"]
+            else: strings = ["playing"]
+            strings.append(type(window.browser).__name__)
+            strings.append("%0.3f" % window.volume.get_value())
+            strings.append(window.order.get_active_name())
+            strings.append((window.repeat.get_active() and "on") or "off")
+            f.write(" ".join(strings))
+            try: f.write("\n" + window.browser.status)
+            except AttributeError: pass
+            f.close()
+
     def _dump_playlist(self, value, watcher, window, player):
         try: f = file(value, "w")
         except EnvironmentError: pass

@@ -22,6 +22,9 @@ class PlayOrder(gtk.ComboBox):
         try: super(PlayOrder, self).set_active(_ORDERS.index(value))
         except: super(PlayOrder, self).set_active(int(value))
 
+    def get_active_name(self):
+        return _ORDERS[self.get_active()]
+
     def __changed_order(self, model):
         model.order = self.get_active()
         config.set("memory", "order", _ORDERS[self.get_active()])

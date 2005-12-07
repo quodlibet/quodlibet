@@ -34,11 +34,31 @@ def main():
     if play: player.playlist.paused = False
     gtk.main()
 
-def print_status():
-    if not os.path.exists(const.CURRENT): print "stopped"
-    elif os.path.exists(const.PAUSED): print "paused"
-    else: print "playing"
-    raise SystemExit
+def print_fifo(command):
+    if not os.path.exists(const.CURRENT):
+        raise SystemExit("not-running")
+    else:
+        try:
+            from tempfile import mkstemp
+            fd, filename = mkstemp()
+            os.unlink(filename)
+            # mkfifo fails if the file exists, so this is safe.
+            os.mkfifo(filename, 0600)
+
+            import signal
+            signal.signal(signal.SIGALRM, lambda: "" + 2)
+            signal.alarm(1)
+            f = file(const.CONTROL, "w")
+            signal.signal(signal.SIGALRM, signal.SIG_IGN)
+            f.write(command + " " + filename)
+            f.close()
+            
+            f = file(filename, "r")
+            print f.read()
+            f.close()
+            raise SystemExit
+        except None:
+            raise SystemExit("not-running")
 
 def refresh_cache():
     if isrunning():
@@ -90,7 +110,7 @@ def control(c):
             # This is a total abuse of Python! Hooray!
             signal.signal(signal.SIGALRM, lambda: "" + 2)
             signal.alarm(1)
-            f = file(const.CONTROL, "w", 1)
+            f = file(const.CONTROL, "w")
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(c)
             f.close()
@@ -144,7 +164,7 @@ def process_arguments():
         ("play-pause", _("Toggle play/pause mode")),
         ("volume-up", _("Turn up volume")),
         ("volume-down", _("Turn down volume")),
-        ("status", _("Print playing status")),
+        ("status", _("Print player status")),
         ("hide-window", _("Hide main window")),
         ("show-window", _("Show main window")),
         ("toggle-window", _("Toggle main window visibility")),
@@ -199,7 +219,7 @@ def process_arguments():
                 sys.stderr.write("\n")
                 raise SystemExit(to(_("E: Try %s --help.") % sys.argv[0]))
             else: control(command + " " + arg)
-        elif command == "status": print_status()
+        elif command == "status": print_fifo("status")
         elif command == "volume-up": control("volume +")
         elif command == "volume-down": control("volume -")
         elif command == "play-file":
