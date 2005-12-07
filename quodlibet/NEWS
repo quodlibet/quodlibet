@@ -16,6 +16,8 @@ may require you to re-add any songs in the library.
    * Double-click files in browsers to enqueue them. (#341)
    * Ctrl-Left/Right changed to Ctrl-,/.. (#355)
  * More memory and CPU optimizations. (#335, #346, #350)
+ * Updated translations:
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
 
 0.15 - Maybe I will.
  * An 'artist' tag can be stored in the library for MODs. (#277)
