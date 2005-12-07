@@ -14,7 +14,7 @@ class ValidatingEntry(gtk.Entry):
     The given validator function gets a string and returns True (green),
     False (red), or a color string, or None (black).
 
-    parser.is_valid_color mimicks the behavior of the search bar.
+    parse.Query.is_valid_color mimicks the behavior of the search bar.
 
     If the "Color search terms" option is off, the entry will not
     change color."""

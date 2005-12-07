@@ -10,14 +10,13 @@
 import sys
 import gobject, gtk, pango
 import config
-import parser
 import qltk
 import util
 import stock
 from qltk.completion import EntryWordCompletion
 from qltk.views import HintedTreeView
 from qltk.entry import ValidatingEntry
-
+from parse import Query
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
 
@@ -242,7 +241,7 @@ class AlbumList(Browser, gtk.VBox):
     # is the album list.
     class FilterEntry(ValidatingEntry):
         def __init__(self, model):
-            ValidatingEntry.__init__(self, parser.is_valid_color)
+            ValidatingEntry.__init__(self, Query.is_valid_color)
             self.connect_object('changed', self.__filter_changed, model)
             self.set_completion(AlbumTagCompletion())
             self.__refill_id = None
@@ -260,9 +259,9 @@ class AlbumList(Browser, gtk.VBox):
                 gobject.source_remove(self.__refill_id)
                 self.__refill_id = None
             text = self.get_text().decode('utf-8')
-            if parser.is_parsable(text):
+            if Query.is_parsable(text):
                 if not text: self.__filter = None
-                else: self.__filter = parser.parse(text).search
+                else: self.__filter = Query(text).search
                 self.__refill_id = gobject.timeout_add(
                     500, self.__refilter, model)
 

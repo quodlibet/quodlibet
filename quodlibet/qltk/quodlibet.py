@@ -17,7 +17,6 @@ import browsers
 import const
 import config
 import player
-import parser
 import formats
 import util
 import locale
@@ -34,6 +33,7 @@ from qltk.getstring import GetStringDialog
 from qltk.browser import LibraryBrowser
 from qltk.msg import ErrorMessage
 from qltk.information import Information
+from parse import Query
 
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
@@ -748,8 +748,8 @@ class QuodLibetWindow(gtk.Window):
             try: bg = config.get("browsers", "background").decode('utf-8')
             except UnicodeError: bg = ""
             if bg:
-                try: search = parser.parse(bg, SongList.star).search
-                except parser.error: pass
+                try: search = Query(bg, SongList.star).search
+                except Query.error: pass
                 else: songs = filter(search, songs)
 
         self.__set_time(songs=songs)

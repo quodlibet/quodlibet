@@ -15,7 +15,6 @@ import time, datetime
 import gobject, gtk, pango
 
 import stock
-import parser
 import qltk
 import player
 import util; from util import tag
@@ -25,6 +24,8 @@ from qltk.information import Information
 from qltk.views import HintedTreeView
 from qltk.wlw import WaitLoadWindow
 from qltk.delete import DeleteDialog
+from parse import Query
+
 if sys.version_info < (2, 4): from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
@@ -292,7 +293,7 @@ class SongList(HintedTreeView):
     __songlistviews = {}
 
     headers = [] # The list of current headers.
-    star = list(parser.STAR)
+    star = list(Query.STAR)
 
     CurrentColumn = None
 
@@ -738,7 +739,7 @@ class SongList(HintedTreeView):
         for listview in cls.__songlistviews:
             listview.set_column_headers(headers)
 
-        star = list(parser.STAR)
+        star = list(Query.STAR)
         for header in headers:
             if not header.startswith("~#") and header not in star:
                 star.append(header)

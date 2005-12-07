@@ -11,7 +11,6 @@ import os
 import random
 import gobject, gtk
 import const
-import parser
 import config
 
 from qltk.completion import LibraryTagCompletion
@@ -20,6 +19,7 @@ from qltk.songlist import SongList
 from qltk import Tooltips
 from browsers.base import Browser
 from library import library
+from parse import Query
 
 QUERIES = os.path.join(const.DIR, "lists", "queries")
 
@@ -38,8 +38,8 @@ class EmptyBar(gtk.HBox, Browser):
 
     def dynamic(self, song):
         if self._text is not None:
-            try: return parser.parse(self._text, SongList.star).search(song)
-            except parser.error: return True
+            try: return Query(self._text, SongList.star).search(song)
+            except Query.error: return True
         else: return True
 
     def set_text(self, text):
@@ -56,7 +56,7 @@ class EmptyBar(gtk.HBox, Browser):
     def activate(self):
         if self._text is not None:
             try: songs = library.query(self._text, star=SongList.star)
-            except parser.error: pass
+            except Query.error: pass
             else:
                 self.emit('songs-selected', songs, None)
                 if self.__main: self.save()
@@ -161,7 +161,7 @@ class SearchBar(EmptyBar):
     def activate(self):
         if self._text is not None:
             try: songs = library.query(self._text, star=SongList.star)
-            except parser.error: pass
+            except Query.error: pass
             else:
                 self.__combo.prepend_text(self._text)
                 val = self.__limit.value
@@ -179,7 +179,7 @@ class SearchBar(EmptyBar):
 
     def __text_parse(self, entry):
         text = entry.get_text()
-        if parser.is_parsable(text):
+        if Query.is_parsable(text):
             self._text = text.decode('utf-8')
             self.activate()
 
@@ -188,7 +188,7 @@ class SearchBar(EmptyBar):
             textbox.modify_text(gtk.STATE_NORMAL, None)
             return
         text = textbox.get_text().decode('utf-8')
-        color = parser.is_valid_color(text)
+        color = Query.is_valid_color(text)
         if color and textbox.get_property('sensitive'):
             textbox.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(color))
 

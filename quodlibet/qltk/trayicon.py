@@ -12,7 +12,6 @@ import gtk, pango
 import config
 import const
 import browsers
-import pattern
 import util
 import qltk
 import stock
@@ -21,6 +20,7 @@ from qltk.properties import SongProperties
 from qltk.browser import LibraryBrowser
 from qltk.controls import StopAfterMenu
 from qltk.information import Information
+from parse import Pattern
 
 class Preferences(qltk.Window):
     def __init__(self, activator, watcher):
@@ -80,7 +80,7 @@ class Preferences(qltk.Window):
             for cb in cbs: cb.set_inconsistent(True)
 
         if watcher.song is None: text = _("Not playing")
-        else: text = pattern.Pattern(entry.get_text()) % watcher.song
+        else: text = Pattern(entry.get_text()) % watcher.song
         label.set_markup("<b>Preview:</b> %s" % util.escape(text))
         config.set("plugins", "icon_tooltip", entry.get_text())
 
@@ -90,7 +90,7 @@ class TrayIcon(object):
     __tips = gtk.Tooltips()
     __tips.enable()
     __menu = None
-    __pattern = pattern.Pattern(
+    __pattern = Pattern(
         "<album|<album~discnumber~part~tracknumber~title~version>|"
         "<artist~title~version>>")
 
@@ -181,7 +181,7 @@ class TrayIcon(object):
         for item in items: item.set_sensitive(bool(song))
         if song:
             try:
-                p = pattern.Pattern(config.get("plugins", "icon_tooltip"))
+                p = Pattern(config.get("plugins", "icon_tooltip"))
             except ValueError: p = self.__pattern
             self.tooltip = p % song
         else: self.tooltip = _("Not playing")

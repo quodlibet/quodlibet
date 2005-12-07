@@ -10,9 +10,9 @@
 import os
 import gobject, gtk, pango
 import const
-import pattern
 import qltk
 import util
+from parse import XMLFromPattern
 
 class SongInfo(gtk.Label):
     # Translators: Only worry about "by", "Disc", and "Track" below.
@@ -86,7 +86,7 @@ by <~people>><album|
             text = buffer.get_text(*buffer.get_bounds()).decode('utf-8')
             from formats._audio import AudioFile
             f = AudioFile({"~filename":"dummy"})
-            pango.parse_markup(pattern.XMLFromPattern(text) % f, "\u0000")
+            pango.parse_markup(XMLFromPattern(text) % f, "\u0000")
         except (ValueError, gobject.GError), e:
             qltk.ErrorMessage(
                 window, _("Invalid pattern"),
@@ -109,7 +109,7 @@ by <~people>><album|
             self.__song_started(watcher, playlist.song)
 
     def __song_started(self, watcher, song):
-        if song: t = pattern.XMLFromPattern(self._pattern) % song
+        if song: t = XMLFromPattern(self._pattern) % song
         else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
         self.set_markup(t)
 

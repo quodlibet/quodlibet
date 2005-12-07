@@ -225,7 +225,7 @@ class QueryParser(object):
             self.lookahead = QueryLexeme(EOF, "")
 
 STAR = ["artist", "album", "title"]
-def parse(string, star=STAR):
+def Query(string, star=STAR):
     if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])
     elif not set("#=").intersection(string):
@@ -233,6 +233,7 @@ def parse(string, star=STAR):
                  for p in string.split()]
         string = "&(" + ",".join(parts) + ")"
     return QueryParser(QueryLexer(string)).StartQuery()
+Query.STAR = STAR
 
 def is_valid(string):
     if string == "": return True
@@ -240,13 +241,18 @@ def is_valid(string):
     try: QueryParser(tokens).StartQuery()
     except error: return False
     else: return True
+Query.is_valid = is_valid
 
 def is_parsable(string):
     if not set("#=").intersection(string): return True
     else: return is_valid(string)
+Query.is_parsable = is_parsable
 
 def is_valid_color(string):
     if is_valid(string): return "dark green"
     elif not (string and set("#=").intersection(string)):
         return "blue"
     else: return "red"
+Query.is_valid_color = is_valid_color
+
+Query.error = error

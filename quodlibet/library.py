@@ -12,9 +12,9 @@ import util; from util import to
 import fcntl
 import random
 import shutil
-import parser
 import formats
 from formats import MusicFile
+from parse import Query
 
 if sys.version_info < (2, 4):
     from sets import Set as set
@@ -144,11 +144,11 @@ class Library(dict):
             else: return False
         else: return True
 
-    def query(self, text, sort=None, star=parser.STAR):
+    def query(self, text, sort=None, star=Query.STAR):
         if isinstance(text, str): text = text.decode('utf-8')
         if text == "": songs = self.values()
         else:
-            songs = filter(parser.parse(text, star).search, self.itervalues())
+            songs = filter(Query(text, star).search, self.itervalues())
 
         if sort is None: pass
         elif callable(sort):

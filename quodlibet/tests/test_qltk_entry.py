@@ -1,10 +1,10 @@
 from tests import add, TestCase
 from qltk.entry import ValidatingEntry
-import parser
+from parse import Query
 
 class TValidatingEntry(TestCase):
     def setUp(self):
-        self.entry = ValidatingEntry(parser.is_valid_color)
+        self.entry = ValidatingEntry(Query.is_valid_color)
 
     def test_changed_simple(self):
         self.entry.set_text("valid")

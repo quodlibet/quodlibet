@@ -17,13 +17,13 @@ import urllib
 import const
 import qltk
 import util
-import parser
 
 from browsers.base import Browser
 from formats.remote import RemoteFile
 from library import Library
 from qltk.getstring import GetStringDialog
 from qltk.entry import ValidatingEntry
+from parse import Query
 
 STATIONS = os.path.join(const.DIR, "stations")
 
@@ -163,7 +163,7 @@ class InternetRadio(gtk.HBox, Browser):
 
         hb = gtk.HBox(spacing=3)
         lab = gtk.Label(_("_Search:"))
-        search = ValidatingEntry(parser.is_valid_color)
+        search = ValidatingEntry(Query.is_valid_color)
         lab.set_use_underline(True)
         lab.set_mnemonic_widget(search)
         clear = gtk.Button()
@@ -185,9 +185,9 @@ class InternetRadio(gtk.HBox, Browser):
             gobject.source_remove(self.__refill_id)
             self.__refill_id = None
         text = entry.get_text().decode('utf-8')
-        if parser.is_parsable(text):
+        if Query.is_parsable(text):
             star = ["artist", "album", "title", "website", "genre", "comment"]
-            if text: self.__filter = parser.parse(text, star).search
+            if text: self.__filter = Query(text, star).search
             else: self.__filter = None
             self.__refill_id = gobject.timeout_add(500, self.activate)
 

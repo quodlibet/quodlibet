@@ -79,7 +79,7 @@ def refresh_cache():
 
 def print_playing(fstring = "<artist~album~tracknumber~title>"):
     import util
-    from pattern import Pattern
+    from parse import Pattern
     from formats._audio import AudioFile
     try:
         fn = file(const.CURRENT)

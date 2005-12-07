@@ -11,7 +11,6 @@ import sys
 import gobject, gtk, pango
 import stock
 import config
-import parser
 import qltk
 import util
 
@@ -24,6 +23,7 @@ from qltk.entry import ValidatingEntry
 from qltk.information import Information
 from qltk.properties import SongProperties
 from util import tag
+from parse import Query
 
 class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
@@ -188,7 +188,7 @@ class PanedBrowser(gtk.VBox, Browser):
         hb = gtk.HBox(spacing=6)
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
-        search = ValidatingEntry(parser.is_valid_color)
+        search = ValidatingEntry(Query.is_valid_color)
         label.set_mnemonic_widget(search)
         label.set_use_underline(True)
         clr = gtk.Button()
@@ -219,10 +219,10 @@ class PanedBrowser(gtk.VBox, Browser):
             gobject.source_remove(self.__refill_id)
             self.__refill_id = None
         text = entry.get_text().decode('utf-8')
-        if parser.is_parsable(text):
+        if Query.is_parsable(text):
             star = dict.fromkeys(SongList.star)
             star.update(self.__star)
-            if text: self.__filter = parser.parse(text, star.keys()).search
+            if text: self.__filter = Query(text, star.keys()).search
             else: self.__filter = None
             self.__refill_id = gobject.timeout_add(500, self.activate)
 

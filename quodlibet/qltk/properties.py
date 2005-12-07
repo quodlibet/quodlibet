@@ -26,7 +26,7 @@ import util
 import formats
 
 from library import library
-from pattern import FileFromPattern
+from parse import FileFromPattern
 from util import tag
 
 if sys.version_info < (2, 4): from sets import Set as set

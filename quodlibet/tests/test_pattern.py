@@ -1,6 +1,6 @@
 from unittest import TestCase
 from tests import registerCase
-from pattern import FileFromPattern, XMLFromPattern, Pattern
+from parse import FileFromPattern, XMLFromPattern, Pattern
 
 import os
 
