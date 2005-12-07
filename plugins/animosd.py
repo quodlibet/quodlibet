@@ -8,9 +8,9 @@
 #
 
 import gtk, gobject, pango
-import pattern
 import config
 import qltk
+from parse import XMLFromPattern
 
 def Label(text):
     l = gtk.Label(text)
@@ -204,7 +204,7 @@ by <~people>>'''
         if self.__cover is not None:
             tw -= self.__coverwidth + self.conf.border
         layout = self.__layout
-        layout.set_markup(pattern.XMLFromPattern(self.conf.string) % song)
+        layout.set_markup(XMLFromPattern(self.conf.string) % song)
         layout.set_width(pango.SCALE * tw)
         self.__textsize = layout.get_pixel_size()
         layout.set_width(pango.SCALE * min(self.__textsize[0], tw))
