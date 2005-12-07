@@ -92,7 +92,8 @@ class SongWatcher(gtk.Object):
         if lock: gtk.threads_enter()
         ErrorMessage(
             main, _("Unable to play song"),
-            _("GStreamer was unable to load the selected song.")).run()
+            _("GStreamer was unable to load the selected song.")
+            + "\n\n" + code).run()
         if lock: gtk.threads_leave()
 
     def reload(self, song):

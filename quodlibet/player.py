@@ -117,7 +117,10 @@ class PlaylistPlayer(object):
         if st != gst.STATE_SUCCESS:
             # FIXME: feed self.error a useful error message
             # (and do something sensible with it in SongWatcher#error)
-            self.error('', lock)
+            expected = gst.element_state_get_name(gst.STATE_SUCCESS)
+            found = gst.element_state_get_name(st)
+            self.error(
+                _('GStreamer status %r != %r') % (found, expected), lock)
             return
 
         self.bin.set_property('uri', song("~uri"))
@@ -125,7 +128,11 @@ class PlaylistPlayer(object):
         if self.__paused: st = self.bin.set_state(gst.STATE_PAUSED)
         else: st = self.bin.set_state(gst.STATE_PLAYING)
         if st != gst.STATE_SUCCESS:
-            self.error('', lock)
+            expected = gst.element_state_get_name(gst.STATE_SUCCESS)
+            found = gst.element_state_get_name(st)
+            self.error(
+                _('GStreamer status %r != %r') % (found, expected), lock)
+            return
 
     def quit(self):
         self.bin.set_state(gst.STATE_NULL)
