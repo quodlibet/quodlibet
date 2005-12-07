@@ -1,8 +1,13 @@
-quodlibet (1.0-1) unstable; urgency=low
+quodlibet (0.16-1) unstable; urgency=low
 
   * Default to gstreamer0.8-alsa instead of gstreamer0.8-oss for a sink.
   * Recommend, rather than suggest, MOD/FLAC/Musepack support, and plugins.
   * Suggest gstreamer0.8-wavpack.
+  * Unsuggest albumart.
+  * Install images and Python modules to /usr/share. (Closes: #340035)
+  * Better GStreamer error checking. (Closes: #341623, thanks to Zack Weinberg)
+  * Stop/Pause import dialog when loading playlists. (Closes: #340345)
+  * Tray icon tooltip is configurable. (Closes: #341062)
 
  -- Joe Wreschnig <piman@debian.org>  
 

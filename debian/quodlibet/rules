@@ -37,6 +37,7 @@ install: build
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/quodlibet PREFIX=/usr
 	-mkdir -p $(CURDIR)/debian/quodlibet-ext/usr/lib/quodlibet
 	mv $(CURDIR)/debian/quodlibet/usr/lib/quodlibet/*.so $(CURDIR)/debian/quodlibet-ext/usr/lib/quodlibet
+	rm -r $(CURDIR)/debian/quodlibet/usr/lib/
 	rm $(CURDIR)/debian/quodlibet/usr/share/man/man1/exfalso.1
 
 binary-indep: build install
