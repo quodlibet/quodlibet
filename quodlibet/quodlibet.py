@@ -38,9 +38,9 @@ def print_fifo(command):
     if not os.path.exists(const.CURRENT):
         raise SystemExit("not-running")
     else:
+        from tempfile import mkstemp
+        fd, filename = mkstemp()
         try:
-            from tempfile import mkstemp
-            fd, filename = mkstemp()
             os.unlink(filename)
             # mkfifo fails if the file exists, so this is safe.
             os.mkfifo(filename, 0600)
@@ -52,12 +52,16 @@ def print_fifo(command):
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(command + " " + filename)
             f.close()
-            
+
             f = file(filename, "r")
             print f.read()
+            try: os.unlink(filename)
+            except EnvironmentError: pass
             f.close()
             raise SystemExit
-        except None:
+        except TypeError:
+            try: os.unlink(filename)
+            except EnvironmentError: pass
             raise SystemExit("not-running")
 
 def refresh_cache():
