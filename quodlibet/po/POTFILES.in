@@ -8,6 +8,7 @@ formats/_audio.py
 exfalso.py
 widgets.py
 plugins.py
+player.py
 qltk/about.py
 qltk/browser.py
 qltk/chooser.py
