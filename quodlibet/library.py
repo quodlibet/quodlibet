@@ -207,6 +207,9 @@ class Library(dict):
                     removed += 1
                     continue
 
+            if isinstance(song.get("~#rating"), int):
+                song["~#rating"] /= 4.0
+
             if song.valid(): self[song["~filename"]] = song
             elif song.exists():
                 try: song.reload()
