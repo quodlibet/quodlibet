@@ -97,8 +97,8 @@ class DeleteDialog(gtk.Dialog):
                 except TypeError: s = unicode(s.strerror[1], errors='replace')
                 ErrorMessage(
                     self, _("Unable to delete file"),
-                    _("Deleting <b>%s</b> failed.\n\n%s"
-                      "delete it.") % (filename, s)).run()
+                    (_("Deleting <b>%s</b> failed.") % filename) +
+                    ("\n\n" + s)).run()
                 break
             else: w.step(w.current + 1, w.count)
         w.destroy()
