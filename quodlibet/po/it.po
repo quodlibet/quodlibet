@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-08 11:29-0600\n"
+"POT-Creation-Date: 2005-12-08 16:57-0600\n"
 "PO-Revision-Date: 2005-12-08 20:39-0600\n"
 "Last-Translator: Filippo Pappalardo <filippo@email.it>\n"
 "Language-Team: Italian\n"
@@ -717,11 +717,8 @@ msgstr "Impossibile eliminare il file"
 
 #: ../qltk/delete.py:100
 #, python-format
-msgid ""
-"Deleting <b>%s</b> failed.\n"
-"\n"
-"%sdelete it."
-msgstr ""
+msgid "Deleting <b>%s</b> failed."
+msgstr "Non è stato possibile eliminare <b>%s</b>."
 
 #: ../qltk/downloader.py:28
 msgid "Downloads"
@@ -735,7 +732,7 @@ msgstr "Nome del file"
 msgid "Size"
 msgstr "Dimensioni"
 
-#: ../qltk/exfalso.py:131 ../qltk/properties.py:1292 ../qltk/songlist.py:534
+#: ../qltk/exfalso.py:131 ../qltk/properties.py:1292 ../qltk/songlist.py:546
 #: ../browsers/playlists.py:100
 #, python-format
 msgid "%(title)s and %(count)d more"
@@ -807,7 +804,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../qltk/info.py:113 ../qltk/trayicon.py:82 ../qltk/trayicon.py:187
+#: ../qltk/info.py:113 ../qltk/trayicon.py:82 ../qltk/trayicon.py:196
 msgid "Not playing"
 msgstr "Non in esecuzione"
 
@@ -999,8 +996,8 @@ msgstr "_Traccia"
 msgid "_Artist"
 msgstr "_Artista"
 
-#: ../qltk/prefs.py:47 ../qltk/quodlibet.py:337 ../qltk/songlist.py:432
-#: ../qltk/trayicon.py:248
+#: ../qltk/prefs.py:47 ../qltk/quodlibet.py:337 ../qltk/songlist.py:444
+#: ../qltk/trayicon.py:257
 msgid "_Rating"
 msgstr "_Giudizio"
 
@@ -1429,7 +1426,7 @@ msgstr[1] "%(count)d brani (%(time)s)"
 msgid "_Order:"
 msgstr "In _Ordine"
 
-#: ../qltk/quodlibet.py:152 ../qltk/trayicon.py:203
+#: ../qltk/quodlibet.py:152 ../qltk/trayicon.py:212
 msgid "_Repeat"
 msgstr "_Ripeti"
 
@@ -1462,7 +1459,7 @@ msgstr "_Aggiungi un File..."
 msgid "_Add a Location..."
 msgstr "_Aggiungi una Posizione..."
 
-#: ../qltk/quodlibet.py:313 ../qltk/trayicon.py:222
+#: ../qltk/quodlibet.py:313 ../qltk/trayicon.py:231
 msgid "_Browse Library"
 msgstr "_Esplora la Libreria"
 
@@ -1626,24 +1623,24 @@ msgstr ""
 "\n"
 "%d brani aggiunti"
 
-#: ../qltk/songlist.py:427
+#: ../qltk/songlist.py:439
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtro su %s"
 
-#: ../qltk/songlist.py:482
+#: ../qltk/songlist.py:494
 msgid "_Add to Playlist"
 msgstr "Metti in _Playlist"
 
-#: ../qltk/songlist.py:486
+#: ../qltk/songlist.py:498
 msgid "_New Playlist"
 msgstr "_Nuova Playlist"
 
-#: ../qltk/songlist.py:603
+#: ../qltk/songlist.py:615
 msgid "Unable to copy songs"
 msgstr "Impossibile copiare i brani"
 
-#: ../qltk/songlist.py:604
+#: ../qltk/songlist.py:616
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "I Brani selezionati non possono essere copiati ad altre liste o alla coda"
@@ -1656,23 +1653,23 @@ msgstr "Preferenze sull'icona del vassoio - Quod Libet"
 msgid "Tooltip Display"
 msgstr "Mostra nel suggerimento"
 
-#: ../qltk/trayicon.py:201
+#: ../qltk/trayicon.py:210
 msgid "Play _Order"
 msgstr "_Ordine di riproduzione"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_In Order"
 msgstr "_In Ordine"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_Shuffle"
 msgstr "_Casuale"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_Weighted"
 msgstr "In base al Giudizio"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_One Song"
 msgstr "_Un Brano"
 
