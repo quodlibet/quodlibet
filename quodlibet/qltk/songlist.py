@@ -411,6 +411,18 @@ class SongList(HintedTreeView):
         _render.set_property('xpad', 12)
         _render.set_property('xalign', 1.0)
 
+    class PatternColumn(WideTextColumn):
+        def _cdf(self, column, cell, model, iter, tag):
+            try:
+                song = model[iter][0]
+                cell.set_property('text', self.__pattern % song)
+            except AttributeError: pass
+
+        def __init__(self, pattern):
+            SongList.WideTextColumn.__init__(self, pattern)
+            from parse import Pattern
+            self.__pattern = Pattern(pattern)
+
     def Menu(self, header, browser, watcher):
         songs = self.get_selected_songs()
         if not songs: return
@@ -851,6 +863,8 @@ class SongList(HintedTreeView):
                 column = self.FSColumn(t)
             elif "~" not in t and t != "title":
                 column = self.NonSynthTextColumn(t)
+            elif t.startswith("<"):
+                column = self.PatternColumn(t)
             else: column = self.WideTextColumn(t)
             column.connect('clicked', self.set_sort_by)
             column.set_reorderable(True)
