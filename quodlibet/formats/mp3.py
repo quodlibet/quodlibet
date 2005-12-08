@@ -89,6 +89,10 @@ class MP3File(AudioFile):
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
+                elif frame.desc.startswith("replaygain_"):
+                    # Some versions of Foobar2000 write broken ReplayGain
+                    # tags in this format.
+                    name = frame.desc
                 elif frame.desc == "ID3v1 Comment": continue
                 elif frame.desc == "": name = "comment"
                 else: continue
@@ -218,6 +222,11 @@ class MP3File(AudioFile):
 
         for k in ["normalize", "album", "track"]:
             try: del(tag["RVA2:"+k])
+            except KeyError: pass
+
+        for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
+            # Delete Foobar droppings.
+            try: del(tag["TXXX:replaygain_" + k])
             except KeyError: pass
 
         for k in ["track", "album"]:
