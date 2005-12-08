@@ -276,12 +276,12 @@ class TrayIcon(object):
         return True
 
     def __set_paused(self, watcher, player):
-        self.__menu.get_children()[0].destroy()
+        playpause = self.__menu.get_children()[0]
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
-        playpause = gtk.ImageMenuItem(stock)
-        playpause.connect('activate', self.__play_pause, player)
-        playpause.show()
-        self.__menu.prepend(playpause)
+        img = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
+        playpause.set_image(img)
+        playpause.child.set_text(gtk.stock_lookup(stock)[1])
+        playpause.child.set_use_underline(True)
 
     def __properties(self, watcher, player):
         if player.song: SongProperties(watcher, [player.song])
