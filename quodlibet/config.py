@@ -90,6 +90,7 @@ def init(*rc_files):
         { "icon_tooltip":
           "<album|<album~discnumber~part~tracknumber~title~version>|"
           "<artist~title~version>>", # tooltip for the tray icon
+          "icon_modifier_swap": "false",
           "active": "", # activated plugins
           },
 

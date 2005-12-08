@@ -171,10 +171,19 @@ class TrayIcon(object):
         if player.song: player.paused ^= True
 
     def __scroll(self, widget, event, window, player):
-        if event.direction == gtk.gdk.SCROLL_UP: window.volume += 0.05
-        elif event.direction == gtk.gdk.SCROLL_DOWN: window.volume -= 0.05
-        elif event.direction == gtk.gdk.SCROLL_LEFT: player.previous()
-        elif event.direction == gtk.gdk.SCROLL_LEFT: player.next()
+        from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
+        try: event.state ^= config.getboolean("plugins", "icon_modifier_swap")
+        except: pass
+        if event.direction in [SCROLL_LEFT, SCROLL_RIGHT]:
+            event.state = gtk.gdk.SHIFT_MASK
+        if event.state & gtk.gdk.SHIFT_MASK:
+            if event.direction in [SCROLL_UP, SCROLL_LEFT]: player.previous()
+            elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]: player.next()
+        else:
+            if event.direction in [SCROLL_UP, SCROLL_LEFT]:
+                window.volume += 0.05
+            elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]:
+                window.volume -= 0.05
 
     def __song_started(self, watcher, song):
         items = self.__menu.sensitives
