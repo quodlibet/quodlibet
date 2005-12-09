@@ -13,7 +13,6 @@ QUEUE   = os.path.join(DIR, "queue")
 CURRENT = os.path.join(DIR, "current")
 LIBRARY = os.path.join(DIR, "songs")
 ACCELS  = os.path.join(DIR, "accels")
-PAUSED  = os.path.join(DIR, "paused")
 PLUGINS = os.path.join(DIR, "plugins")
 BROWSERS = os.path.join(DIR, "browsers")
 

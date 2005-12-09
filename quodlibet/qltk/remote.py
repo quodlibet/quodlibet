@@ -20,19 +20,9 @@ from qltk.browser import LibraryBrowser
 # and whether the player is paused or not.
 class FSInterface(object):
     def __init__(self, watcher):
-        watcher.connect('paused', self.__paused)
-        watcher.connect('unpaused', self.__unpaused)
         watcher.connect('song-started', self.__started)
         watcher.connect('song-ended', self.__ended)
         self.__paused(watcher)
-
-    def __paused(self, watcher):
-        try: file(const.PAUSED, "w").close()
-        except EnvironmentError: pass
-
-    def __unpaused(self, watcher):
-        try: os.unlink(const.PAUSED)
-        except EnvironmentError: pass
 
     def __started(self, watcher, song):
         if song:
@@ -44,8 +34,6 @@ class FSInterface(object):
 
     def __ended(self, watcher, song, stopped):
         try: os.unlink(const.CURRENT)
-        except EnvironmentError: pass
-        try: os.unlink(const.PAUSED)
         except EnvironmentError: pass
 
 class FIFOControl(object):

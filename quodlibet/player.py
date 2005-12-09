@@ -115,8 +115,6 @@ class PlaylistPlayer(object):
             time.sleep(0.01)
             st = self.bin.set_state(gst.STATE_NULL)
         if st != gst.STATE_SUCCESS:
-            # FIXME: feed self.error a useful error message
-            # (and do something sensible with it in SongWatcher#error)
             expected = gst.element_state_get_name(gst.STATE_SUCCESS)
             found = gst.element_state_get_name(st)
             self.error(

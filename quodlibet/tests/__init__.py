@@ -10,7 +10,6 @@ __builtin__.__dict__.setdefault(
 import const
 const.CONFIG = "./const-config"
 const.CURRENT = "./const-current"
-const.PAUSED = "./const-paused"
 const.LIBRARY = "./const-songs"
 const.QUEUE = "./const-queue"
 
@@ -72,8 +71,7 @@ def unit(run=[]):
                 (t.__name__.startswith("T") and t.__name__[1:] in run)):
                 runner.run(t)
 
-    for f in [const.CONFIG, const.CURRENT, const.LIBRARY, const.PAUSED,
-              const.QUEUE]:
+    for f in [const.CONFIG, const.CURRENT, const.LIBRARY, const.QUEUE]:
        try: os.unlink(f)
        except OSError: pass
     print
