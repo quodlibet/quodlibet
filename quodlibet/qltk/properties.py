@@ -1106,6 +1106,8 @@ class SongProperties(qltk.Window):
             column = gtk.TreeViewColumn(_('File'), render, text=1)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
+            render = gtk.CellRendererText()
+            render.set_property('editable', True)
             column = gtk.TreeViewColumn(_('Track'), render, text=2)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(column)
@@ -1139,10 +1141,18 @@ class SongProperties(qltk.Window):
             view.connect_object(
                 'drag-end', self.__class__.__preview_tracks, self,
                 *preview_args)
+            render.connect('edited', self.__row_edited, model, preview, save)
 
             prop.connect_object(
                 'changed', self.__class__.__update, self,
                 spin_total, model, save, revert)
+
+        def __row_edited(self, render, path, new, model, preview, save):
+            row = model[path]
+            if row[2] != new:
+                row[2] = new
+                preview.set_sensitive(True)
+                save.set_sensitive(True)
 
         def __save_files(self, parent, model, watcher):
             win = WritingWindow(parent, len(self.__songs))
