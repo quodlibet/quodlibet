@@ -45,8 +45,6 @@ class Formatter(object):
                 for t in f.tags: klass.fmt[t] = f()
     init = classmethod(init)
 
-# FIXME: Most of these validators/normalizers could be much more forgiving.
-
 class DateFormatter(Formatter):
     tags = ["date"]
     error = _("The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
@@ -54,7 +52,7 @@ class DateFormatter(Formatter):
     __match = sre.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
                           "([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
     def validate(self, value):
-        value = value.strip().replace("/", "-")
+        value = value.strip().replace(".", "-").replace("/", "-")
         return self.__match(value) and value
 
 class GainFormatter(Formatter):
@@ -66,7 +64,9 @@ class GainFormatter(Formatter):
         if self.__match(value): return value
         else:
             try: f = float(value.split()[0])
-            except (IndexError, TypeError, ValueError): return False
+            except (IndexError, TypeError, ValueError):
+                try: f = locale.atof(value.split()[0])
+                except (IndexError, TypeError, ValueError): return False
             else: return ("%+f" % f).rstrip("0") + " dB"
 
 class PeakFormatter(Formatter):
@@ -75,17 +75,24 @@ class PeakFormatter(Formatter):
     def validate(self, value):
         value = value.strip()
         try: f = float(value)
-        except (TypeError, ValueError): return False
+        except (TypeError, ValueError):
+            try: f = locale.atof(value)
+            except (TypeError, ValueError): return False
         else: return (f > 0) and str(f)
 
 class MBIDFormatter(Formatter):
     tags = ["musicbrainz_trackid", "musicbrainz_albumid",
             "musicbrainz_artistid"]
     error = _("MusicBrainz IDs must be in UUID format.")
-    __match = sre.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$").match
     def validate(self, value):
-        value = value.strip().lower()
-        return self.__match(value) and value
+        value = value.encode('ascii', 'replace')
+        value = filter(str.isalnum, value.strip().lower())
+        try: int(value, 16)
+        except ValueError: return False
+        else:
+            if len(value) != 32: return False
+            else: return "-".join([value[:8], value[8:12], value[12:16],
+                                   value[16:20], value[20:]])
 
 Formatter.init()
 
