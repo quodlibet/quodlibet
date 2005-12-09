@@ -54,7 +54,7 @@ def init():
         gtk.stock_add([(REMOVE,)+gtk.stock_lookup(gtk.STOCK_REMOVE)[1:]])
     else:
         old = gtk.stock_lookup(gtk.STOCK_REMOVE)
-        gtk.stock_add([REMOVE, _("ql-remove"), 0, 0, ""])
+        gtk.stock_add([(REMOVE, _("ql-remove"), 0, 0, "")])
 
     for key, name in [
         # Translators: Only translate this if GTK does so incorrectly.
