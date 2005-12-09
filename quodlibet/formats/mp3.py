@@ -134,14 +134,6 @@ class MP3File(AudioFile):
 
         self.sanitize(filename)
 
-    def can_change(self, k=None):
-        if k is None: return AudioFile.can_change(self, k)
-        else:
-            return (AudioFile.can_change(self, k) and
-                    k not in ["replaygain_track_peak",
-                              "replaygain_album_peak"])
-        
-
     def __process_rg(self, frame):
         if frame.channel == 1:            
             if frame.desc == "album": k = "album"
@@ -232,7 +224,9 @@ class MP3File(AudioFile):
         for k in ["track", "album"]:
             if ('replaygain_%s_gain' % k) in self:
                 gain = float(self["replaygain_%s_gain" % k].split()[0])
-                f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=0)
+                try: peak = float(self["replaygain_%s_peak" % k])
+                except (ValueError, KeyError): peak = 0
+                f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=peak)
                 tag.loaded_frame(f)
 
         if self["~#rating"] != 0.5 or self["~#playcount"] != 0:
