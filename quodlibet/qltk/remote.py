@@ -22,7 +22,6 @@ class FSInterface(object):
     def __init__(self, watcher):
         watcher.connect('song-started', self.__started)
         watcher.connect('song-ended', self.__ended)
-        self.__paused(watcher)
 
     def __started(self, watcher, song):
         if song:
