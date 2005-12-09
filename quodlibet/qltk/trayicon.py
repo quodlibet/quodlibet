@@ -81,7 +81,8 @@ class Preferences(qltk.Window):
 
         if watcher.song is None: text = _("Not playing")
         else: text = Pattern(entry.get_text()) % watcher.song
-        label.set_markup("<b>Preview:</b> %s" % util.escape(text))
+        # FIXME: After string freeze re-add "Preview".
+        label.set_text(text)
         config.set("plugins", "icon_tooltip", entry.get_text())
 
 class TrayIcon(object):
