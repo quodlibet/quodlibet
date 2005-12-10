@@ -38,7 +38,7 @@ class APEv2File(AudioFile):
     def write(self):
         try: tag = mutagen.apev2.APEv2(self['~filename'])
         except mutagen.apev2.APENoHeaderError:
-            tag = mutagen.apev2.APEv2(self["~filename"])
+            tag = mutagen.apev2.APEv2()
 
         keys = tag.keys()
         for key in keys:
@@ -55,4 +55,3 @@ class APEv2File(AudioFile):
             tag[key] = value.split("\n")
         tag.save(self["~filename"])
         self.sanitize()
-
