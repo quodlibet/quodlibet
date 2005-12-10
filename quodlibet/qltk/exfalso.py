@@ -8,14 +8,12 @@
 # $Id$
 
 import os
-import shutil
 import gtk, gobject
 
 import const
 import formats
 import qltk
 from qltk.filesel import FileSelector
-from qltk.wlw import WaitLoadWindow
 from qltk.delete import DeleteDialog
 from qltk.properties import SongProperties
 
@@ -51,7 +49,7 @@ class ExFalsoWindow(gtk.Window):
                      SongProperties.TrackNumbers]:
             nb.append_page(Page(self, watcher))
         self.child.pack2(nb, resize=False, shrink=False)
-        fs.connect('changed', self.__changed, nb)
+        fs.connect('changed', self.__changed)
         self.__cache = {}
         s = watcher.connect_object('refresh', FileSelector.rescan, fs)
         self.connect_object('destroy', watcher.disconnect, s)
@@ -59,8 +57,7 @@ class ExFalsoWindow(gtk.Window):
         self.connect_object('changed', self.set_pending, None)
         for c in fs.get_children():
             c.child.connect('button-press-event', self.__pre_selection_changed)
-        fs.get_children()[1].child.connect(
-            'popup-menu', self.__popup_menu, fs)
+        fs.get_children()[1].child.connect('popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
         # plugin support
@@ -77,34 +74,20 @@ class ExFalsoWindow(gtk.Window):
             elif resp == gtk.RESPONSE_NO: return False
             else: return True # cancel or closed
 
-    def __button_press(self, view, event, fs):
-        if event.button == 3:
-            x, y = map(int, [event.x, event.y])
-            try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-            except TypeError: return True
-            selection = view.get_selection()
-            if not selection.path_is_selected(path):
-                view.set_cursor(path, col, 0)
-            return self.__show_menu(view, fs, event.button, event.time)
-
     def __popup_menu(self, view, fs):
-        return self.__show_menu(view, fs)
-
-    def __show_menu(self, view, fs, button=1, time=0):
         view.grab_focus()
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        songs = [self.__cache[model[row][0]] for row in rows]
+        filenames = [model[row][0] for row in rows]
+        songs = map(self.__cache.__getitem__, filenames)
         menu = self.pm.create_plugins_menu(songs)
         if menu is None: menu = gtk.Menu()
         else: menu.prepend(gtk.SeparatorMenuItem())
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        b.connect('activate', self.__delete,
-                  [model[row][0] for row in rows], fs)
+        b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
         menu.show_all()
-        menu.popup(
-            None, None, None, button, time or gtk.get_current_event_time())
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 
     def __delete(self, item, files, fs):
@@ -113,7 +96,7 @@ class ExFalsoWindow(gtk.Window):
         d.destroy()
         fs.rescan()
 
-    def __changed(self, selector, selection, notebook):
+    def __changed(self, selector, selection):
         model, rows = selection.get_selected_rows()
         files = []
         for row in rows:
