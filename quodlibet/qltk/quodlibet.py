@@ -22,7 +22,6 @@ import util
 import locale
 import widgets
 
-from util import to
 from library import library
 
 if sys.version_info < (2, 4): from sets import Set as set

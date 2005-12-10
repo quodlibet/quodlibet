@@ -10,7 +10,7 @@
 import os, sys
 import time
 import locale
-import gobject, gtk, pango
+import gtk, pango
 import qltk
 from qltk.cover import CoverImage
 import util; from util import tag

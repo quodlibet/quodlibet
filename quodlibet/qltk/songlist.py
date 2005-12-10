@@ -7,7 +7,6 @@
 # $Id$
 
 import os, sys
-import shutil
 import random
 import locale
 import time, datetime
@@ -22,7 +21,6 @@ from library import library
 from qltk.properties import SongProperties
 from qltk.information import Information
 from qltk.views import HintedTreeView
-from qltk.wlw import WaitLoadWindow
 from qltk.delete import DeleteDialog
 from parse import Query
 

@@ -24,7 +24,6 @@ from qltk.getstring import GetStringDialog
 from qltk.msg import ErrorMessage
 from qltk.downloader import DownloadWindow
 import formats; from formats.remote import RemoteFile
-import config
 
 FEEDS = os.path.join(const.DIR, "feeds")
 

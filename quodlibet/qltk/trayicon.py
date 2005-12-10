@@ -10,7 +10,6 @@
 import gtk, pango
 
 import config
-import const
 import browsers
 import util
 import qltk
