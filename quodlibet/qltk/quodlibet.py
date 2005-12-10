@@ -527,8 +527,9 @@ class QuodLibetWindow(gtk.Window):
         if (not self.browser.expand and
             not self.songpane.get_property('visible')):
             width, height = self.get_size()
-            self.resize(width, 1)
-            self.set_geometry_hints(None, max_height=1, max_width=32000)
+            height = self.size_request()[1]
+            self.resize(width, height)
+            self.set_geometry_hints(None, max_height=height, max_width=32000)
         else:
             self.set_geometry_hints(None, max_height=-1, max_width=-1)
 
