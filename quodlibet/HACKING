@@ -17,7 +17,7 @@ in PyGTK 2.6 and Python 2.3.
 
 Please prepare your patches against the Subversion release, or at
 least the most recent release. You can update a checked-out version
-to the latest trunk using `svn switche' and `svn update'.
+to the latest trunk using `svn switch' and `svn update'.
 
 Translation
 -----------
