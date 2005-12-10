@@ -437,6 +437,29 @@ class Information(gtk.Window):
         super(Information, self).__init__()
         self.set_border_width(12)
         self.set_default_size(400, 400)
+        s1 = watcher.connect('changed', self.__check_changed)
+        s2 = watcher.connect('removed', self.__check_removed)
+        self.connect_object('destroy', watcher.disconnect, s1)
+        self.connect_object('destroy', watcher.disconnect, s2)
+        self.__songs = songs
+        self.__update()
+        self.show_all()
+
+    def __check_changed(self, watcher, songs):
+        changed = set(songs)
+        for song in self.__songs:
+            if song in changed:
+                self.__update()
+                break
+
+    def __check_removed(self, watcher, songs):
+        gone = set(songs)
+        old = len(self.__songs)
+        self.__songs = filter(lambda s: s not in gone, self.__songs)
+        if len(self.__songs) != old: self.__update()
+
+    def __update(self):
+        songs = self.__songs
         if self.child: self.child.destroy()
         swin = gtk.ScrolledWindow()
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -457,4 +480,4 @@ class Information(gtk.Window):
         swin.child.set_shadow_type(gtk.SHADOW_NONE)
         self.child.child.set_border_width(12)
         self.set_title(swin.child.child.title + " - Quod Libet")
-        self.show_all()
+        self.child.show_all()
