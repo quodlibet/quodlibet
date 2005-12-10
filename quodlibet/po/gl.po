@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-07 13:43-0600\n"
+"POT-Creation-Date: 2005-12-09 16:29+0100\n"
 "PO-Revision-Date: 2005-11-05 02:06-0600\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: galician\n"
@@ -88,12 +88,12 @@ msgstr[1] "diferente ao longo de %d cançõess"
 msgid "W: %s is not a QL song database."
 msgstr "W: %s nom é umha cançom da Colecçom do QL."
 
-#: ../library.py:258
+#: ../library.py:261
 #, python-format
 msgid "Checking %s"
 msgstr "A comprovar %s"
 
-#: ../library.py:283 ../qltk/about.py:23
+#: ../library.py:286 ../qltk/about.py:23
 #, python-format
 msgid "Supported formats: %s"
 msgstr "Formatos suportados: %s"
@@ -337,7 +337,7 @@ msgstr "Nom há informaçom da duraçom"
 msgid "[Invalid Encoding]"
 msgstr "[Codificaçom inválida]"
 
-#: ../util.py:440 ../qltk/properties.py:468 ../qltk/properties.py:741
+#: ../util.py:440 ../qltk/properties.py:475 ../qltk/properties.py:748
 msgid "Invalid tag"
 msgstr "Tag inválida"
 
@@ -658,12 +658,12 @@ msgstr ""
 "O QL nom puido atopar o elemento do GStreamer 'filesrc'. Comprova a "
 "instalaçom do GStreamer."
 
-#: ../plugins.py:344 ../qltk/properties.py:832
+#: ../plugins.py:344 ../qltk/properties.py:839
 msgid "Unable to edit song"
 msgstr "Impossível editar a tag da cançom"
 
-#: ../plugins.py:345 ../qltk/properties.py:548 ../qltk/properties.py:833
-#: ../qltk/properties.py:1161
+#: ../plugins.py:345 ../qltk/properties.py:555 ../qltk/properties.py:840
+#: ../qltk/properties.py:1178
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -672,7 +672,7 @@ msgstr ""
 "Guardar <b>%s</b> errou. Pode ser que o ficheiro seja só de leitura, esteja "
 "corrompido, ou nom tenha permissões para o editar."
 
-#: ../player.py:123 ../player.py:134
+#: ../player.py:121 ../player.py:132
 #, python-format
 msgid "GStreamer status %r != %r"
 msgstr "Estado do GStreamer %r != %r"
@@ -741,14 +741,8 @@ msgstr "Impossível eliminar o ficheiro"
 
 #: ../qltk/delete.py:100
 #, python-format
-msgid ""
-"Deleting <b>%s</b> failed.\n"
-"\n"
-"%sdelete it."
-msgstr ""
-"A eliminaçom de <b>%s</b> errou. \n"
-"\n"
-"%selimina-o."
+msgid "Deleting <b>%s</b> failed."
+msgstr "A eliminaçom de <b>%s</b> errou."
 
 #: ../qltk/downloader.py:28
 msgid "Downloads"
@@ -762,7 +756,7 @@ msgstr "Nome"
 msgid "Size"
 msgstr "Tamanho"
 
-#: ../qltk/exfalso.py:131 ../qltk/properties.py:1292 ../qltk/songlist.py:534
+#: ../qltk/exfalso.py:131 ../qltk/properties.py:1309 ../qltk/songlist.py:546
 #: ../browsers/playlists.py:100
 #, python-format
 msgid "%(title)s and %(count)d more"
@@ -817,7 +811,7 @@ msgstr "Editar vista"
 msgid "_Edit Display..."
 msgstr "_Editar vista..."
 
-#: ../qltk/info.py:92 ../qltk/properties.py:723
+#: ../qltk/info.py:92 ../qltk/properties.py:730
 msgid "Invalid pattern"
 msgstr "Padrom inválido"
 
@@ -834,7 +828,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../qltk/info.py:113 ../qltk/trayicon.py:82 ../qltk/trayicon.py:187
+#: ../qltk/info.py:113 ../qltk/trayicon.py:82 ../qltk/trayicon.py:196
 msgid "Not playing"
 msgstr "Parado"
 
@@ -885,9 +879,9 @@ msgstr "tamaño do ficheiro"
 msgid "bitrate"
 msgstr "bitrate"
 
-#: ../qltk/information.py:189 ../qltk/properties.py:761
-#: ../qltk/properties.py:884 ../qltk/properties.py:1099
-#: ../qltk/properties.py:1233
+#: ../qltk/information.py:189 ../qltk/properties.py:768
+#: ../qltk/properties.py:891 ../qltk/properties.py:1106
+#: ../qltk/properties.py:1250
 msgid "File"
 msgstr "Ficheiro"
 
@@ -1026,8 +1020,8 @@ msgstr "_Pista"
 msgid "_Artist"
 msgstr "_Artista"
 
-#: ../qltk/prefs.py:47 ../qltk/quodlibet.py:337 ../qltk/songlist.py:432
-#: ../qltk/trayicon.py:248
+#: ../qltk/prefs.py:47 ../qltk/quodlibet.py:337 ../qltk/songlist.py:444
+#: ../qltk/trayicon.py:257
 msgid "_Rating"
 msgstr "_Qualificaçom"
 
@@ -1160,7 +1154,7 @@ msgstr "Seleccionar Cartafoles"
 msgid "Quod Libet Preferences"
 msgstr "Preferências do Quod Libet"
 
-#: ../qltk/properties.py:52
+#: ../qltk/properties.py:50
 msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
@@ -1168,7 +1162,7 @@ msgstr ""
 "A data há ser introduzida no formato 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:"
 "MM:SS'"
 
-#: ../qltk/properties.py:62
+#: ../qltk/properties.py:60
 msgid "ReplayGain gains must be entered in 'x.yy dB' format."
 msgstr "As ganháncias ReplayGain ham-de-ser introduzidas no formato 'x.yy dB'"
 
@@ -1176,72 +1170,72 @@ msgstr "As ganháncias ReplayGain ham-de-ser introduzidas no formato 'x.yy dB'"
 msgid "ReplayGain peaks must be entered in 'x.yy' format."
 msgstr "Os picos ReplayGain ham-de-ser introduzidos no formato 'x.yy'"
 
-#: ../qltk/properties.py:84
+#: ../qltk/properties.py:86
 msgid "MusicBrainz IDs must be in UUID format."
 msgstr "As IDs das pistas MusicBrainz ham-de-ser no formato UUID."
 
-#: ../qltk/properties.py:98
+#: ../qltk/properties.py:105
 msgid "Add a Tag"
 msgstr "Engadir umha Tag"
 
-#: ../qltk/properties.py:127
+#: ../qltk/properties.py:134
 msgid "_Tag:"
 msgstr "_Tag:"
 
-#: ../qltk/properties.py:135
+#: ../qltk/properties.py:142
 msgid "_Value:"
 msgstr "_Valor:"
 
-#: ../qltk/properties.py:199
+#: ../qltk/properties.py:206
 msgid "Edit Tags"
 msgstr "Editar Tags"
 
-#: ../qltk/properties.py:206
+#: ../qltk/properties.py:213
 msgid "Write"
 msgstr "Escrever"
 
-#: ../qltk/properties.py:230
+#: ../qltk/properties.py:237
 msgid "Tag"
 msgstr "Tag"
 
-#: ../qltk/properties.py:240
+#: ../qltk/properties.py:247
 msgid "Value"
 msgstr "Valor"
 
-#: ../qltk/properties.py:279
+#: ../qltk/properties.py:286
 msgid "Double-click a tag value to change it, right-click for other options"
 msgstr ""
 "Duplo-clic num valor da tag para mudá-lo, clic-direito para outras opções"
 
-#: ../qltk/properties.py:281
+#: ../qltk/properties.py:288
 msgid "Add a new tag"
 msgstr "Engadir umha nova tag"
 
-#: ../qltk/properties.py:282
+#: ../qltk/properties.py:289
 msgid "Remove selected tag"
 msgstr "Eliminar a tag seleccionada"
 
-#: ../qltk/properties.py:390
+#: ../qltk/properties.py:397
 msgid "Split into _Multiple Values"
 msgstr "Dividir em _múltiplos valores"
 
-#: ../qltk/properties.py:399
+#: ../qltk/properties.py:406
 msgid "Split Disc out of _Album"
 msgstr "Tirar o disco do _album"
 
-#: ../qltk/properties.py:406
+#: ../qltk/properties.py:413
 msgid "Split Version out of Title"
 msgstr "Tirar a versom do ficheiro"
 
-#: ../qltk/properties.py:416
+#: ../qltk/properties.py:423
 msgid "Split Arranger out of Ar_tist"
 msgstr "Tirar o arranxista do ar_tista"
 
-#: ../qltk/properties.py:422
+#: ../qltk/properties.py:429
 msgid "Split _Performer out of Artist"
 msgstr "Tirar o _executante do artista"
 
-#: ../qltk/properties.py:469 ../qltk/properties.py:742
+#: ../qltk/properties.py:476 ../qltk/properties.py:749
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1252,13 +1246,13 @@ msgstr ""
 "\n"
 "Os ficheiros seleccionados nom suportan a ediçom das tags."
 
-#: ../qltk/properties.py:513 ../qltk/properties.py:807
-#: ../qltk/properties.py:1148
+#: ../qltk/properties.py:520 ../qltk/properties.py:814
+#: ../qltk/properties.py:1165
 msgid "Tag may not be accurate"
 msgstr "A tag pode nom ser axeitada"
 
-#: ../qltk/properties.py:514 ../qltk/properties.py:808
-#: ../qltk/properties.py:1149
+#: ../qltk/properties.py:521 ../qltk/properties.py:815
+#: ../qltk/properties.py:1166
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -1272,43 +1266,43 @@ msgstr ""
 "\n"
 "Guardar de todos xeitos?"
 
-#: ../qltk/properties.py:547 ../qltk/properties.py:1160
+#: ../qltk/properties.py:554 ../qltk/properties.py:1177
 msgid "Unable to save song"
 msgstr "Impossível guardar a cançom"
 
-#: ../qltk/properties.py:572
+#: ../qltk/properties.py:579
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: ../qltk/properties.py:641
+#: ../qltk/properties.py:648
 msgid "Tag by Filename"
 msgstr "Tag a partires do Nome"
 
-#: ../qltk/properties.py:667
+#: ../qltk/properties.py:674
 msgid "Replace _underscores with spaces"
 msgstr "Reemprazar _barras baixas com espaços"
 
-#: ../qltk/properties.py:669
+#: ../qltk/properties.py:676
 msgid "_Title-case resulting values"
 msgstr "_Valores resultantes de letra capital"
 
-#: ../qltk/properties.py:671
+#: ../qltk/properties.py:678
 msgid "Split into _multiple values"
 msgstr "Dividir em _múltiplos valores"
 
-#: ../qltk/properties.py:674
+#: ../qltk/properties.py:681
 msgid "Tags replace existing ones"
 msgstr "As tags reemprazan as já existentes"
 
-#: ../qltk/properties.py:675
+#: ../qltk/properties.py:682
 msgid "Tags are added to existing ones"
 msgstr "As tags engadem-se às já existentes"
 
-#: ../qltk/properties.py:691
+#: ../qltk/properties.py:698
 msgid "The first letter of each word will be capitalized"
 msgstr "A primeira letra de cada palavra será posta em maiúsculas"
 
-#: ../qltk/properties.py:724
+#: ../qltk/properties.py:731
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1321,11 +1315,11 @@ msgstr ""
 "é inválido. Pode ser que contenha duas vezes a mesma tag ou que tenha "
 "marcadores dessajustados (&lt; / &gt;)."
 
-#: ../qltk/properties.py:745
+#: ../qltk/properties.py:752
 msgid "Invalid tags"
 msgstr "Tags inválidas"
 
-#: ../qltk/properties.py:746
+#: ../qltk/properties.py:753
 #, python-format
 msgid ""
 "Invalid tags <b>%s</b>\n"
@@ -1336,27 +1330,27 @@ msgstr ""
 "\n"
 "Os ficheiros seleccionados nom suportam a ediçom das tags."
 
-#: ../qltk/properties.py:868
+#: ../qltk/properties.py:875
 msgid "Rename Files"
 msgstr "Renomear Ficheiros"
 
-#: ../qltk/properties.py:890
+#: ../qltk/properties.py:897
 msgid "New Name"
 msgstr "Novo Nome"
 
-#: ../qltk/properties.py:901
+#: ../qltk/properties.py:908
 msgid "Replace spaces with _underscores"
 msgstr "Reemprazar espaços com _barras baixas"
 
-#: ../qltk/properties.py:905
+#: ../qltk/properties.py:912
 msgid "Replace _Windows-incompatible characters"
 msgstr "Reemprazar os caracteres nom compatíveis com _Windows"
 
-#: ../qltk/properties.py:909
+#: ../qltk/properties.py:916
 msgid "Replace non-_ASCII characters"
 msgstr "Reemprazar os caracteres nom-_ASCII"
 
-#: ../qltk/properties.py:930
+#: ../qltk/properties.py:937
 msgid ""
 "Characters not allowed in Windows filenames (\\:?;\"<>|) will be replaced by "
 "underscores"
@@ -1364,7 +1358,7 @@ msgstr ""
 "Os caracteres nom permitidos nos nomes de ficheiro de WindowsTM (\\:?;\"<>|) "
 "serám reemprazados por barras baixas"
 
-#: ../qltk/properties.py:933
+#: ../qltk/properties.py:940
 msgid ""
 "Characters outside of the ASCII set (A-Z, a-z, 0-9, and punctuation) will be "
 "replaced by underscores"
@@ -1372,15 +1366,15 @@ msgstr ""
 "Os caracteres além do conjunto ASCII (A-Z, a-z, 0-9, e pontuaçom) serám "
 "reemprazados com barras baixas"
 
-#: ../qltk/properties.py:988
+#: ../qltk/properties.py:995
 msgid "_Continue"
 msgstr "_Continuar"
 
-#: ../qltk/properties.py:990
+#: ../qltk/properties.py:997
 msgid "Unable to rename file"
 msgstr "Impossível renomear o ficheiro"
 
-#: ../qltk/properties.py:991
+#: ../qltk/properties.py:998
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1391,11 +1385,11 @@ msgstr ""
 "de destino já exista, ou nom tenha permissões para criar o novo ficheiro ou "
 "eliminar o antigo."
 
-#: ../qltk/properties.py:1025
+#: ../qltk/properties.py:1032
 msgid "Path is not absolute"
 msgstr "O endereço nom é absoluto"
 
-#: ../qltk/properties.py:1026
+#: ../qltk/properties.py:1033
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1408,31 +1402,31 @@ msgstr ""
 "contém / mais nom começa na raíz. Para previr cartafoles com nomes errados, "
 "comeze o seu padrom por / or ~/."
 
-#: ../qltk/properties.py:1062
+#: ../qltk/properties.py:1069
 msgid "Track Numbers"
 msgstr "Números de pista"
 
-#: ../qltk/properties.py:1068
+#: ../qltk/properties.py:1075
 msgid "Start fro_m:"
 msgstr "Começar de_nde:"
 
-#: ../qltk/properties.py:1079
+#: ../qltk/properties.py:1086
 msgid "_Total tracks:"
 msgstr "_Pistas totais:"
 
-#: ../qltk/properties.py:1102
+#: ../qltk/properties.py:1111
 msgid "Track"
 msgstr "Pista"
 
-#: ../qltk/properties.py:1232
+#: ../qltk/properties.py:1249
 msgid "Apply to these _files..."
 msgstr "Aplicar a estes _ficheiros..."
 
-#: ../qltk/properties.py:1236
+#: ../qltk/properties.py:1253
 msgid "Path"
 msgstr "Endereço"
 
-#: ../qltk/properties.py:1294 ../qltk/properties.py:1295
+#: ../qltk/properties.py:1311 ../qltk/properties.py:1312
 msgid "Properties"
 msgstr "Propriedades"
 
@@ -1459,7 +1453,7 @@ msgstr[1] "%(count)d canções (%(time)s)"
 msgid "_Order:"
 msgstr "_Ordem:"
 
-#: ../qltk/quodlibet.py:152 ../qltk/trayicon.py:203
+#: ../qltk/quodlibet.py:152 ../qltk/trayicon.py:212
 msgid "_Repeat"
 msgstr "_Repetir"
 
@@ -1492,7 +1486,7 @@ msgstr "_Engadir um Ficheiro..."
 msgid "_Add a Location..."
 msgstr "_Engadir umha Localizaçom..."
 
-#: ../qltk/quodlibet.py:313 ../qltk/trayicon.py:222
+#: ../qltk/quodlibet.py:313 ../qltk/trayicon.py:231
 msgid "_Browse Library"
 msgstr "_Examinar a colecçom"
 
@@ -1663,24 +1657,24 @@ msgstr ""
 "\n"
 "%d canções engadidas"
 
-#: ../qltk/songlist.py:427
+#: ../qltk/songlist.py:439
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Fitro activado %s"
 
-#: ../qltk/songlist.py:482
+#: ../qltk/songlist.py:494
 msgid "_Add to Playlist"
 msgstr "_Engadir à Lista"
 
-#: ../qltk/songlist.py:486
+#: ../qltk/songlist.py:498
 msgid "_New Playlist"
 msgstr "_Nova Lista"
 
-#: ../qltk/songlist.py:603
+#: ../qltk/songlist.py:615
 msgid "Unable to copy songs"
 msgstr "Impossível copiar canções"
 
-#: ../qltk/songlist.py:604
+#: ../qltk/songlist.py:616
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Os ficheiros seleccionados nom podem ser copiados a outras listas de "
@@ -1694,27 +1688,27 @@ msgstr "Preferências da icona - Quod Libet"
 msgid "Tooltip Display"
 msgstr "Editar vista"
 
-#: ../qltk/trayicon.py:201
+#: ../qltk/trayicon.py:210
 msgid "Play _Order"
 msgstr "Ordem de Repr_oduçom"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_In Order"
 msgstr "Ordenadamente"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_Shuffle"
 msgstr "Aleatoriamente"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_Weighted"
 msgstr "Dinâmica"
 
-#: ../qltk/trayicon.py:212
+#: ../qltk/trayicon.py:221
 msgid "_One Song"
 msgstr "Umha cançom"
 
-#: ../qltk/views.py:231
+#: ../qltk/views.py:232
 #, python-format
 msgid "and %d more..."
 msgstr "e %d  mais..."
