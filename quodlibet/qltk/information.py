@@ -471,9 +471,9 @@ class Information(gtk.Window):
         else:
             tags = [(s.get("artist"), s.get("album")) for s in songs]
             artists, albums = zip(*tags)
-            if min(albums) == max(albums):
+            if min(albums) == max(albums) and albums[0]:
                 swin.add_with_viewport(OneAlbum(songs))
-            elif min(artists) == max(artists):
+            elif min(artists) == max(artists) and artists[0]:
                 swin.add_with_viewport(OneArtist(songs))
             else: swin.add_with_viewport(ManySongs(songs))
 
