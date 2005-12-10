@@ -45,11 +45,11 @@ def init():
             icons.add(gtk.STOCK_INFO, lookup(gtk.STOCK_DIALOG_INFO))
             gtk.stock_add([(gtk.STOCK_INFO, _("_Information"), 0, 0, "")])
 
+    icons.add(REMOVE, lookup(gtk.STOCK_REMOVE))
     # Translators: Only translate this if it conflicts with "Delete",
     # as is the case in e.g. Finnish. It should be disambiguated as
     # "Remove from Library" (as opposed to, from playlist, from disk, etc.)
     # Don't literally translate "ql-remove".
-    icons.add(REMOVE, lookup(gtk.STOCK_REMOVE))
     if _("ql-remove") == "ql-remove":
         gtk.stock_add([(REMOVE,)+gtk.stock_lookup(gtk.STOCK_REMOVE)[1:]])
     else:
