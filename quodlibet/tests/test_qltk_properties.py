@@ -35,11 +35,11 @@ class TFormatters(TestCase):
         self.equivs("replaygain_album_gain", equivs)
 
     def test_peak_valid(self):
-        peaks = ["12.12", "100", "0.999", "123.145"]
+        peaks = ["0.54", "0.999", "0", "1.234", "1.99"]
         self.validate('replaygain_track_peak', peaks)
         self.validate('replaygain_album_peak', peaks)
     def test_peak_invalid(self):
-        peaks = ["", "100 dB", "woooo", "12.12.12", "-18"]
+        peaks = ["", "100 dB", "woooo", "12.12.12", "-18", "2.23"]
         self.invalidate('replaygain_track_peak', peaks)
         self.invalidate('replaygain_album_peak', peaks)
 

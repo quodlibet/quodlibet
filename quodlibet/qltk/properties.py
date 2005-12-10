@@ -78,7 +78,7 @@ class PeakFormatter(Formatter):
         except (TypeError, ValueError):
             try: f = locale.atof(value)
             except (TypeError, ValueError): return False
-        else: return (f > 0) and str(f)
+        else: return (f >= 0) and (f < 2) and str(f)
 
 class MBIDFormatter(Formatter):
     tags = ["musicbrainz_trackid", "musicbrainz_albumid",
