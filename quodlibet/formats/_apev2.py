@@ -17,6 +17,7 @@ class APEv2File(AudioFile):
     TRANS = { "subtitle": "version",
               "track": "tracknumber",
               "catalog": "labelid",
+              "year": "date",
               "record location": "location"
               }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
@@ -33,7 +34,7 @@ class APEv2File(AudioFile):
     def can_change(self, key=None):
         if key is None: return True
         else: return (AudioFile.can_change(self, key) and
-                      key not in self.IGNORE)
+                      key not in self.IGNORE and key not in self.TRANS)
 
     def write(self):
         try: tag = mutagen.apev2.APEv2(self['~filename'])
