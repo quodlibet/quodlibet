@@ -105,7 +105,9 @@ class SongWrapper(object):
         return self._song.update(other)
     def comma(self, key): return self._song.comma(key)
     def list(self, key): return self._song.list(key)
-    def rename(self, newname): return self._song.rename(newname)
+    def rename(self, newname):
+        self._updated = True
+        return self._song.rename(newname)
     def website(self): return self._song.website()
     def valid(self): return self._song.valid()
     def find_cover(self): return self._song.find_cover()
