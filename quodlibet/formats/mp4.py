@@ -15,7 +15,7 @@ from formats._audio import AudioFile
 try:
     import ctypes
     _mp4v2 = ctypes.cdll.LoadLibrary("libmp4v2.so.0")
-except ImportError: extensions = []
+except: extensions = []
 else:
     _mp4v2.MP4Read.restype = ctypes.c_void_p
     _mp4v2.MP4GetTrackType.restype = ctypes.c_char_p
