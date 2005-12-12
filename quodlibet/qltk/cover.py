@@ -84,7 +84,6 @@ class CoverImage(gtk.Frame):
         if self.__albumfn: gtk.Frame.show(self)
 
     def __show_cover(self, box, event):
-        if (self.__song and event.button == 1 and
-            event.type == gtk.gdk._2BUTTON_PRESS):
+        if self.__song and event.button == 1:
             cover = self.__song.find_cover()
             BigCenteredImage(self.__song.comma("album"), cover.name)
