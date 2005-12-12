@@ -23,7 +23,7 @@ edit their tags and save them again).
    * Double-click files in browsers to enqueue them. (#341)
    * Rename Files error dialog has a "Skip" button. (#354)
    * Ctrl-Left/Right changed to Ctrl-,/.. (#355)
-   * New icon that is not all black. (#371, thanks to Tobias)
+   * New icon that is not all black. (#371, thanks to Tobias and Fabien)
    * Paned Browser entries have context menus. (#375)
    * Volume icons follow GTK+/GNOME theme. (#389)
  * More memory and CPU optimizations. (#335, #346, #350)
