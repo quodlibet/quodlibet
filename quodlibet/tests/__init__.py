@@ -13,6 +13,7 @@ const.CURRENT = "./const-current"
 const.LIBRARY = "./const-songs"
 const.QUEUE = "./const-queue"
 
+import util; util.ctypes_init()
 import config; config.init()
 import library; library.init()
 

@@ -282,6 +282,7 @@ if __name__ == "__main__":
     gettext.bindtextdomain("quodlibet")
     gettext.textdomain("quodlibet")
     util.gettext_install("quodlibet", unicode=True)
+    util.ctypes_init()
 
     from util import to
     import const

@@ -16,6 +16,23 @@ def gettext_install(domain, localedir=None, unicode=False):
     __builtin__.__dict__["_"] = gettext
     __builtin__.__dict__["ngettext"] = ngettext
 
+def ctypes_init():
+    try: import ctypes
+    except ImportError: pass
+    else:
+        ctypes.c_int8 = ctypes.c_byte
+        ctypes.c_uint8 = ctypes.c_ubyte
+        from ctypes import c_short, c_int, c_long, c_longlong
+        for kind in [c_short, c_int, c_long, c_longlong]:
+            if ctypes.sizeof(kind) == 2: ctypes.c_int16 = kind
+            elif ctypes.sizeof(kind) == 4: ctypes.c_int32 = kind
+            elif ctypes.sizeof(kind) == 8: ctypes.c_int64 = kind
+        from ctypes import c_ushort, c_uint, c_ulong, c_ulonglong
+        for kind in [c_ushort, c_uint, c_ulong, c_ulonglong]:
+            if ctypes.sizeof(kind) == 2: ctypes.c_uint16 = kind
+            elif ctypes.sizeof(kind) == 4: ctypes.c_uint32 = kind
+            elif ctypes.sizeof(kind) == 8: ctypes.c_uint64 = kind
+
 class OptionParser(object):
     def __init__(self, name, version, description=None, usage=None):
         self.__name = name

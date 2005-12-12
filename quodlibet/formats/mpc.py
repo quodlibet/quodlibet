@@ -19,12 +19,12 @@ else:
     if gst.element_factory_make('musepackdec'):
         extensions = [".mpc", ".mp+"]
         def _get_errno(): return ctypes.c_int.in_dll(_libc, "errno").value
-        mpc_bool_t = ctypes.c_ubyte
-        mpc_int16_t = ctypes.c_short
-        mpc_int32_t = ctypes.c_int
-        mpc_int64_t = ctypes.c_longlong
-        mpc_uint16_t = ctypes.c_ushort
-        mpc_uint32_t = ctypes.c_uint
+        mpc_bool_t = ctypes.c_uint8
+        mpc_int16_t = ctypes.c_int16
+        mpc_int32_t = ctypes.c_int32
+        mpc_int64_t = ctypes.c_int64
+        mpc_uint16_t = ctypes.c_uint16
+        mpc_uint32_t = ctypes.c_uint32
         mpc_streaminfo_off_t = mpc_int32_t
 
         class _MPCReader(ctypes.Structure):
