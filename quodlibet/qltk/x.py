@@ -13,6 +13,9 @@ import gobject, gtk
 import util
 
 class Window(gtk.Window):
+    """A Window that binds the ^W accelerator to close. This should not
+    be used for dialogs; Escape closes (cancels) those."""
+    
     __gsignals__ = {"close-accel": (
         gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
     def __init__(self, *args, **kwargs):
@@ -22,8 +25,7 @@ class Window(gtk.Window):
         self.add_accelerator(
             'close-accel', ag, ord('w'), gtk.gdk.CONTROL_MASK, 0)
 
-    def do_close_accel(self):
-        self.destroy()
+    do_close_accel = gtk.Window.destroy
 gobject.type_register(Window)
 
 class Notebook(gtk.Notebook):
@@ -43,6 +45,8 @@ class Notebook(gtk.Notebook):
             else: raise TypeError("no page.title and no label given")
 
 def Frame(label=None, border=0, bold=False, child=None):
+    """A gtk.Frame with no shadow, 12px left padding, and 3px top padding."""
+
     if isinstance(label, basestring):
         format = "%s"
         if bold: format  = "<b>%s</b>" % format
@@ -62,19 +66,23 @@ def Frame(label=None, border=0, bold=False, child=None):
     frame.set_label_widget(label)
     return frame
 
-def MenuItem(text, image):
-    i = gtk.ImageMenuItem(text)
-    i.get_image().set_from_stock(image, gtk.ICON_SIZE_MENU)
+def MenuItem(label, stock_id):
+    """An ImageMenuItem with a custom label and stock image."""
+
+    i = gtk.ImageMenuItem(label)
+    i.get_image().set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
     return i
 
-def Button(text, image, size=gtk.ICON_SIZE_BUTTON):
-    # Stock image with custom label.
+def Button(label, stock_id, size=gtk.ICON_SIZE_BUTTON):
+    """A Button with a custom label and stock image. It should pack
+    exactly like a stock button."""
+
     align = gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
     hbox = gtk.HBox(spacing=2)
     i = gtk.Image()
-    i.set_from_stock(image, size)
+    i.set_from_stock(stock_id, size)
     hbox.pack_start(i)
-    l = gtk.Label(text)
+    l = gtk.Label(label)
     l.set_use_underline(True)
     hbox.pack_start(l)
     align.add(hbox)
@@ -86,18 +94,24 @@ class RPaned(object):
     """A Paned that supports relative (percentage) width/height setting."""
 
     def get_relative(self):
+        """Return the relative position of the separator, [0..1]."""
         if self.get_property('max-position') > 0:
             return float(self.get_position())/self.get_property('max-position')
         else: return 0.5
 
     def set_relative(self, v):
+        """Set the relative position of the separator, [0..1]."""
         return self.set_position(int(v * self.get_property('max-position')))
 
 class RHPaned(RPaned, gtk.HPaned): pass
 class RVPaned(RPaned, gtk.VPaned): pass
 
 class Tooltips(gtk.Tooltips):
-    """A Tooltip whose lifetime is tied to another widget's."""
+    """A Tooltip whose lifetime is tied to another widget's. When the
+    parent widget is destroyed, so is the tooltip object.
+
+    It is also enabled by default."""
+
     def __init__(self, parent=None):
         super(Tooltips, self).__init__()
         if parent is not None:

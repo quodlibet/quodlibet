@@ -16,9 +16,8 @@ import util
 
 from qltk.browser import LibraryBrowser
 
-# Provides some files in ~/.quodlibet to indicate what song is playing
-# and whether the player is paused or not.
 class FSInterface(object):
+    """Provides a file in ~/.quodlibet to indicate what song is playing."""
     def __init__(self, watcher):
         watcher.connect('song-started', self.__started)
         watcher.connect('song-ended', self.__ended)
@@ -36,6 +35,8 @@ class FSInterface(object):
         except EnvironmentError: pass
 
 class FIFOControl(object):
+    """A FIFO to control the player/library from."""
+
     def __init__(self, watcher, window, player):
         self.__open(watcher, window, player)
 

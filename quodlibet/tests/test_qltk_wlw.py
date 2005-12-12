@@ -13,11 +13,11 @@ class TWaitLoadWindow(TestCase):
     
     def setUp(self):
         self.parent = self.DummyConnector()
-        self.wlw = WaitLoadWindow(self.parent, 5, "a test", show=False)
+        self.wlw = WaitLoadWindow(self.parent, 5, "a test")
         self.wlw.hide()
 
     def test_none(self):
-        wlw = WaitLoadWindow(None, 5, "a test", show=False)
+        wlw = WaitLoadWindow(None, 5, "a test")
         wlw.step()
         wlw.destroy()
 

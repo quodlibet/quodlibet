@@ -22,6 +22,8 @@ from qltk.information import Information
 from parse import Pattern
 
 class Preferences(qltk.Window):
+    """A small window to configure the tray icon's tooltip."""
+
     def __init__(self, activator, watcher):
         super(Preferences, self).__init__()
         self.set_border_width(12)

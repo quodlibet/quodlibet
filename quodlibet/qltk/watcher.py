@@ -9,22 +9,24 @@
 import gobject, gtk
 
 # Everything connects to this to get updates about the library and player.
+# FIXME: This should be split up. The player should manage its signals
+# itself. The library should manage its signals itself.
 class SongWatcher(gtk.Object):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
     
     __gsignals__ = {
-        # Songs in the library have changed.
+        # Songs have changed.
         'changed': SIG_PYOBJECT,
 
-        # Songs were removed from the library.
+        # Songs were removed.
         'removed': SIG_PYOBJECT,
 
-        # Songs were added to the library.
+        # Songs were added.
         'added': SIG_PYOBJECT,
 
         # A group of changes has been finished; all library views should
-        # do a global refresh if necessary
+        # do a global refresh if necessary. This signal is deprecated.
         'refresh': SIG_NONE,
 
         # A new song started playing (or the current one was restarted).
@@ -63,9 +65,6 @@ class SongWatcher(gtk.Object):
 
     def removed(self, songs):
         gobject.idle_add(self.emit, 'removed', songs)
-
-    def missing(self, song):
-        gobject.idle_add(self.emit, 'missing', song)
 
     def song_started(self, song):
         try: self.time = (0, song["~#length"] * 1000)

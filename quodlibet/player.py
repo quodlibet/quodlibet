@@ -16,6 +16,13 @@ class NoSinkError(ValueError): pass
 class NoSourceError(ValueError): pass
 
 def GStreamerSink(pipeline):
+    """Try to create a GStreamer pipeline:
+    * If requested, look the pipeline up in GConf.
+    * Try making the pipeline.
+    * If it fails, fall back to alsasink.
+    * If that fails, fall back to osssink.
+    * Otherwise, complain loudly."""
+
     if pipeline == "gconf":
         # We can't use gconfaudiosink/autoaudiosink -- querying its
         # current time fails.
@@ -40,15 +47,17 @@ def GStreamerSink(pipeline):
     else: raise NoSinkError(pipeline)
 
 class PlaylistPlayer(object):
+    """Interfaces between a QL PlaylistModel and a GSt playbin."""
+
     __paused = False
     song = None
     info = None
     __length = 1
     __volume = 1.0
 
-    def __init__(self, device):
-        device, pipeline = GStreamerSink(device)
-        self.name = pipeline
+    def __init__(self, sinkname):
+        device, sinkname = GStreamerSink(sinkname)
+        self.name = sinkname
         self.bin = gst.element_factory_make('playbin')
         self.bin.set_property('video-sink', None)
         self.bin.set_property('audio-sink', device)
@@ -58,11 +67,14 @@ class PlaylistPlayer(object):
         self.paused = True
 
     def setup(self, info, source, song):
+        """Connect to a SongWatcher, a PlaylistModel, and load a song."""
         self.__source = source
         self.info = info
         self.go_to(song)
 
     def get_position(self):
+        """Return the current playback position in milliseconds,
+        or 0 if no song is playing."""
         if self.bin.get_property('uri'):
             p = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
             p //= gst.MSECOND
@@ -133,9 +145,11 @@ class PlaylistPlayer(object):
             return
 
     def quit(self):
+        """Shut down the playbin."""
         self.bin.set_state(gst.STATE_NULL)
 
     def seek(self, pos):
+        """Seek to a position in the song, in milliseconds."""
         if self.bin.get_property('uri'):
             pos = max(0, int(pos))
             if pos >= self.__length:

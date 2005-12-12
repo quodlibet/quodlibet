@@ -20,20 +20,18 @@ class WaitLoadWindow(gtk.Window):
     w.destroy()
     """
 
-    def __init__(self, parent, count, text, initial=(), limit=5,
-                 show=True):
+    def __init__(self, parent, count, text, initial=(), limit=5):
         """parent: the parent window, or None
-        count: the total amount of items expected, or 0 unknown/indefinite
+        count: the total amount of items expected, or 0 for unknown/indefinite
         text: text to display in the window; may contain % formats
         initial: initial values for % formats (text % initial)
         limit: count must be greater than limit (or 0) for pause/stop to appear
-        show: show the window right away; you want this to be True
 
         The current iteration of the counter can be gotten as
         window.current. count can be gotten as window.count.
         """
 
-        gtk.Window.__init__(self)
+        super(WaitLoadWindow, self).__init__()
         if parent:
             parent = get_top_parent(parent)
             sig = parent.connect('configure-event', self.__recenter)
@@ -82,7 +80,6 @@ class WaitLoadWindow(gtk.Window):
 
         self.__label.set_markup(self.__text % initial)
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
-        if show: self.show_all()
         while gtk.events_pending(): gtk.main_iteration()
 
     def __pause_clicked(self, button):
@@ -123,11 +120,13 @@ class WaitLoadWindow(gtk.Window):
         self.get_transient_for().disconnect(sig)
 
 class WritingWindow(WaitLoadWindow):
+    """A WaitLoadWindow that defaults to text suitable for saving files."""
+
     def __init__(self, parent, count):
-        WaitLoadWindow.__init__(
-            self, parent, count,
+        super(WritingWindow, self).__init__(
+            parent, count,
             (_("Saving the songs you changed.") + "\n\n" +
              _("%d/%d songs saved")), (0, count))
 
     def step(self):
-        return WaitLoadWindow.step(self, self.current + 1, self.count)
+        return super(WritingWindow, self).step(self.current + 1, self.count)
