@@ -13,6 +13,7 @@ import locale
 import gtk, pango
 import qltk
 from qltk.cover import CoverImage
+from qltk.x import Window
 import util; from util import tag
 
 if sys.version_info < (2, 4): from sets import Set as set
@@ -432,7 +433,7 @@ class ManySongs(gtk.VBox):
         self.pack_start(Frame(_("Files"), table),
                         expand=False, fill=False)
 
-class Information(gtk.Window):
+class Information(Window):
     def __init__(self, watcher, songs):
         super(Information, self).__init__()
         self.set_border_width(12)
