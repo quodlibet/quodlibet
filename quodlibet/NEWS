@@ -11,7 +11,7 @@ edit their tags and save them again).
  * Context menu plugins can make themselves insensitive. (#66)
  * More command-line and FIFO options. (#75)
  * Wavpack support. (#257)
- * Audio Feed (Podcast) support. (#322)
+ * Audio Feed (Podcast) support (requires http://www.feedparser.org). (#322)
  * "One Song" (and repeat) play mode. (#351)
  * Improved and configurable tray icon. (#360)
  * New install system that is more FHS-compliant. (#362)
