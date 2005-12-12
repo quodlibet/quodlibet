@@ -23,7 +23,7 @@ class TAlbumList(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        widgets.library = browsers.search.library = None
+        widgets.library = browsers.search.library = Library()
         widgets.watcher.destroy()
         del(widgets.watcher)
 add(TAlbumList)

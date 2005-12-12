@@ -86,7 +86,7 @@ class TEmptyBar(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        browsers.search.library = None
+        browsers.search.library = Library()
 add(TEmptyBar)
 
 class TSearchBar(TEmptyBar):
