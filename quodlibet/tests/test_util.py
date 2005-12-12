@@ -36,19 +36,6 @@ class FSTests(TestCase):
         self.failUnlessEqual(util.mtime("."), os.path.getmtime("."))
         self.failUnlessEqual(util.mtime("doesnotexist"), 0)
 
-    def test_fscoding(self):
-        import locale
-        if locale.getpreferredencoding() != "UTF-8":
-            print "WARNING: Skipping fscoding test."
-        else:
-            try:
-                self.failUnlessEqual(util.fscoding(), "utf-8")
-                import os
-                os.environ["CHARSET"] = "ascii"
-                self.failUnlessEqual(util.fscoding(), "ascii")
-            finally:
-                del(os.environ["CHARSET"])
-
     def test_unexpand(self):
         d = os.path.expanduser("~")
         self.failUnlessEqual(util.unexpand(d), "~")

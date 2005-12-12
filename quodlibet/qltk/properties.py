@@ -780,7 +780,7 @@ class SongProperties(qltk.Window):
 
             for song in songs:
                 basename = song("~basename")
-                basename = basename.decode(util.fscoding(), "replace")
+                basename = basename.decode(util.fscoding, "replace")
                 row = [song, basename]
                 match = pattern.match(song)
                 for h in pattern.headers:
@@ -984,7 +984,7 @@ class SongProperties(qltk.Window):
                 oldname = model[path][1]
                 newname = model[path][2]
                 try:
-                    newname = newname.encode(util.fscoding(), "replace")
+                    newname = newname.encode(util.fscoding, "replace")
                     if library: library.rename(song, newname)
                     else: song.rename(newname)
                     was_changed.append(song)
@@ -1041,7 +1041,7 @@ class SongProperties(qltk.Window):
 
             for song in self.__songs:
                 newname = pattern.format(song)
-                code = util.fscoding()
+                code = util.fscoding
                 newname = newname.encode(code, "replace").decode(code)
                 basename = song("~basename").decode(code, "replace")
                 if underscore: newname = newname.replace(" ", "_")

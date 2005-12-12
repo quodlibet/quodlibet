@@ -244,25 +244,28 @@ def format_time_long(time):
     if len(time_str) > 2: time_str.pop()
     return ", ".join(time_str)
 
-def fscoding():
-    """Return the character set the filesystem uses."""
-    if "CHARSET" in os.environ: return os.environ["CHARSET"]
-    elif "G_BROKEN_FILENAMES" in os.environ:
-        cset = os.environ.get("LC_CTYPE", "foo.utf-8")
-        if "." in cset: return cset.split(".")[-1]
-        else: return "utf-8"
-    else: return "utf-8"
+# http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
+if "G_FILENAME_ENCODING" in os.environ:
+    fscoding = os.environ["G_FILENAME_ENCODING"].split(",")[0]
+    if fscoding == "@locale": fscoding = locale.getpreferredencoding()
+elif "G_BROKEN_FILENAMES" in os.environ:
+    fscoding = locale.getpreferredencoding()
+elif "CHARSET" in os.environ:
+    # This is deprecated in favor of the G_* constants!
+    # FIXME: Remove after 0.16.
+    fscoding = os.environ["CHARSET"]
+else: fscoding = "utf-8"
 
 def fsdecode(s):
     """Decoding a string according to the filesystem encoding."""
     if isinstance(s, unicode): return s
-    else: return decode(s, fscoding())
+    else: return decode(s, fscoding)
 
 def fsencode(s):
     """Encode a string according to the filesystem encoding, replacing
     errors."""
     if isinstance(s, str): return s
-    else: return s.encode(fscoding(), 'replace')
+    else: return s.encode(fscoding, 'replace')
 
 def decode(s, charset="utf-8"):
     """Decode a string; if an error occurs, replace characters and append
@@ -419,7 +422,7 @@ class PatternFromFile(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = song['~filename'].decode(fscoding(), "replace")
+            song = song['~filename'].decode(fscoding, "replace")
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep

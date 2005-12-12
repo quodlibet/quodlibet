@@ -382,7 +382,7 @@ class SongList(HintedTreeView):
     class FSColumn(WideTextColumn):
         # Contains text in the filesystem encoding, so needs to be
         # decoded safely (and also more slowly).
-        def _cdf(self, column, cell, model, iter, tag, code=util.fscoding()):
+        def _cdf(self, column, cell, model, iter, tag, code=util.fscoding):
             try:
                 song = model[iter][0]
                 cell.set_property('text', util.unexpand(
