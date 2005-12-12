@@ -375,7 +375,7 @@ class PluginManager(object):
                         try: handler(*args)
                         except Exception: print_exc()
         finally:
-            if event not in ["removed", "missing", "changed"] and args:
+            if event not in ["removed", "changed"] and args:
                 if isinstance(args[0], list):
                     self.check_change_and_refresh(args[0])
                 else:
