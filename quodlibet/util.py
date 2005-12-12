@@ -433,7 +433,8 @@ def tag(name, cap=True):
         if name[0] == "~":
             if name[1] == "#": name = name[2:]
             else: name = name[1:]
-        parts = [_(HEADERS_FILTER.get(n, n)) for n in name.split("~")]
+        parts = [_(HEADERS_FILTER.get(n, n.replace("_", " ")))
+                 for n in name.split("~")]
         if cap: parts = map(capitalize, parts)
         return " / ".join(parts)
     except IndexError:
