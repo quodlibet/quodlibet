@@ -194,7 +194,6 @@ class QuodLibetWindow(gtk.Window):
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
         self.connect('configure-event', QuodLibetWindow.__save_size)
-        self.connect('destroy', gtk.main_quit)
         self.connect('window-state-event', self.__window_state_changed)
         self.__hidden_state = 0
 
