@@ -165,35 +165,7 @@ grab_mmkey (int key_code, GdkWindow *root)
 	gdk_error_trap_push ();
 
 	XGrabKey (GDK_DISPLAY (), key_code,
-		  0,
-		  GDK_WINDOW_XID (root), True,
-		  GrabModeAsync, GrabModeAsync);
-	XGrabKey (GDK_DISPLAY (), key_code,
-		  Mod2Mask,
-		  GDK_WINDOW_XID (root), True,
-		  GrabModeAsync, GrabModeAsync);
-	XGrabKey (GDK_DISPLAY (), key_code,
-		  Mod5Mask,
-		  GDK_WINDOW_XID (root), True,
-		  GrabModeAsync, GrabModeAsync);
-	XGrabKey (GDK_DISPLAY (), key_code,
-		  LockMask,
-		  GDK_WINDOW_XID (root), True,
-		  GrabModeAsync, GrabModeAsync);
-	XGrabKey (GDK_DISPLAY (), key_code,
-		  Mod2Mask | Mod5Mask,
-		  GDK_WINDOW_XID (root), True,
-		  GrabModeAsync, GrabModeAsync);
-	XGrabKey (GDK_DISPLAY (), key_code,
-		  Mod2Mask | LockMask,
-		  GDK_WINDOW_XID (root), True,
-		  GrabModeAsync, GrabModeAsync);
-	XGrabKey (GDK_DISPLAY (), key_code,
-		  Mod5Mask | LockMask,
-		  GDK_WINDOW_XID (root), True,
-		  GrabModeAsync, GrabModeAsync);
-	XGrabKey (GDK_DISPLAY (), key_code,
-		  Mod2Mask | Mod5Mask | LockMask,
+		  AnyModifier,
 		  GDK_WINDOW_XID (root), True,
 		  GrabModeAsync, GrabModeAsync);
 

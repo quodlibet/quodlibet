@@ -23,7 +23,6 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <stdio.h>
-#include <gtk/gtktogglebutton.h>
 
 #ifndef __MM_KEYS_H
 #define __MM_KEYS_H
