@@ -81,6 +81,7 @@ class WaitLoadWindow(gtk.Window):
         self.__label.set_markup(self.__text % initial)
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         while gtk.events_pending(): gtk.main_iteration()
+        self.show_all()
 
     def __pause_clicked(self, button):
         self.__paused = button.get_active()
