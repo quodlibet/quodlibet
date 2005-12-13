@@ -22,6 +22,7 @@ import const
 import config
 import util
 import formats
+import unicodedata
 
 from library import library
 from parse import FileFromPattern
@@ -983,7 +984,7 @@ class SongProperties(qltk.Window):
             for row in model:
                 song = row[0]
                 oldname = row[1]
-                newname = row[2]
+                newname = row[2].decode('utf-8')
                 try:
                     newname = newname.encode(util.fscoding, "replace")
                     if library: library.rename(song, newname)
@@ -1046,16 +1047,19 @@ class SongProperties(qltk.Window):
             for song in self.__songs:
                 newname = pattern.format(song)
                 code = util.fscoding
-                newname = newname.encode(code, "replace").decode(code)
+
+                if ascii:
+                    def noncomb(uc): return not unicodedata.combining(uc)
+                    newname = filter(
+                        noncomb, unicodedata.normalize('NFKD', newname))
+                    newname = newname.encode("ascii","replace").decode("ascii")
+                else:
+                    newname = newname.encode(code, "replace").decode(code)
                 basename = song("~basename").decode(code, "replace")
                 if underscore: newname = newname.replace(" ", "_")
                 if windows:
                     for c in '\\:*?;"<>|':
                         newname = newname.replace(c, "_")
-                if ascii:
-                    newname = "".join(
-                        map(lambda c: ((ord(c) < 127 and c) or "_"),
-                            newname))
                 model.append(row=[song, basename, newname])
             preview.set_sensitive(False)
             save.set_sensitive(bool(combo.child.get_text()))
