@@ -978,17 +978,19 @@ class SongProperties(qltk.Window):
         def __rename_files(self, parent, save, model, watcher):
             win = WritingWindow(parent, len(self.__songs))
             was_changed = []
+            skip_all = False
 
-            def rename(model, path, iter):
-                song = model[path][0]
-                oldname = model[path][1]
-                newname = model[path][2]
+            for row in model:
+                song = row[0]
+                oldname = row[1]
+                newname = row[2]
                 try:
                     newname = newname.encode(util.fscoding, "replace")
                     if library: library.rename(song, newname)
                     else: song.rename(newname)
                     was_changed.append(song)
                 except:
+                    if skip_all: continue
                     buttons = (gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
                                _("_Continue"), gtk.RESPONSE_OK)
                     msg = qltk.Message(
@@ -1003,10 +1005,12 @@ class SongProperties(qltk.Window):
                     msg.add_buttons(*buttons)
                     msg.set_default_response(gtk.RESPONSE_OK)
                     resp = msg.run()
+                    mods = gtk.gdk.display_get_default().get_pointer()[3]
+                    skip_all |= mods & gtk.gdk.SHIFT_MASK
                     watcher.reload(song)
-                    return (resp != gtk.RESPONSE_OK)
-                return win.step()
-            model.foreach(rename)
+                    if resp != gtk.RESPONSE_OK: break
+                if win.step(): break
+
             win.destroy()
             watcher.changed(was_changed)
             watcher.refresh()
