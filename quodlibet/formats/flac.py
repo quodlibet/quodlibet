@@ -24,6 +24,8 @@ class FLACFile(VCFile):
     def __init__(self, filename):
         if not os.path.exists(filename):
             raise IOError("%s does not exist" % filename)
+        elif file(filename, "rb").read(4) != "fLaC":
+            raise IOError("%s is not a FLAC file" % filename)
         chain = flac.metadata.Chain()
         chain.read(filename)
         it = flac.metadata.Iterator()
