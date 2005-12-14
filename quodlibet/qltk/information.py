@@ -192,6 +192,9 @@ class OneSong(gtk.VBox):
 class OneAlbum(gtk.VBox):
     def __init__(self, songs):
         super(OneAlbum, self).__init__(spacing=12)
+        songs = list(songs)
+        # Needed to get proper track/disc/part ordering
+        songs.sort()
         self._title(songs)
         self._album(songs)
         self._people(songs)
