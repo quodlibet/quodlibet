@@ -1,4 +1,4 @@
-MODULES = config.py const.py library.py match.py player.py plugins.py stock.py util.py widgets.py
+MODULES = config.py const.py library.py player.py plugins.py stock.py util.py widgets.py
 MODULE_DIRS = mutagen browsers formats qltk parse
 PROGRAMS = exfalso quodlibet
 SUBDIRS = trayicon mmkeys po

@@ -11,7 +11,7 @@
 # objects as it goes, which is where the interesting stuff will happen.
 
 import string
-import match
+import _match as match
 import sre
 import sys
 
