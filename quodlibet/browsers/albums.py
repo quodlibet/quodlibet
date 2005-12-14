@@ -299,16 +299,16 @@ class AlbumList(Browser, gtk.VBox):
 
         def __compare_title(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if a1 is None or a2 is None: return cmp(a1, a2)
+            if (a1 and a2) is None: return cmp(a1, a2)
             elif not a1.title: return 1
             elif not a2.title: return -1
             else: return cmp(a1.title, a2.title) or cmp(a1.labelid, a2.labelid)
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if a1 is None or a2 is None: return cmp(a1, a2)
-            elif a1.title == "": return 1
-            elif a2.title == "": return -1
+            if (a1 and a2) is None: return cmp(a1, a2)
+            elif not a1.title: return 1
+            elif not a2.title: return -1
             else: return (cmp(a1.people and a1.people[0],
                               a2.people and a2.people[0]) or
                           cmp(a1.date, a2.date) or
@@ -317,12 +317,12 @@ class AlbumList(Browser, gtk.VBox):
 
         def __compare_date(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
-            if a1 is None or a2 is None: return cmp(a1, a2)
-            elif a1.date == "": return 1
-            elif a2.date == "": return -1
-            else: return (cmp(a1.date, a2.date) or
-                          cmp(a1.title, a2.title) or
-                          cmp(a1.labelid, a2.labelid))
+            if (a1 and a2) is None: return cmp(a1, a2)
+            elif a1.title == "": return 1
+            elif a2.title == "": return -1
+            return (cmp(a1.date, a2.date) or
+                    cmp(a1.title, a2.title) or
+                    cmp(a1.labelid, a2.labelid))
 
     class _AlbumStore(gtk.ListStore):
         def get_albums(self):
