@@ -10,20 +10,13 @@
 import sys
 import const
 from os.path import dirname, basename, isdir, join
-from fnmatch import fnmatch
 from glob import glob
 
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
 base = dirname(__file__)
 mod = basename(base)
-if isdir(base):
-    modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
-else: # zip file
-    from zipfile import ZipFile
-    z = ZipFile(dirname(base))
-    modules = [f[:-3] for f in z.namelist() if
-               fnmatch(f, join(mod, "[!_]*.py"))]
+if isdir(base): modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
 
 modules = ["%s.%s" % (mod, basename(m)) for m in modules]
 
@@ -42,6 +35,8 @@ modules.remove("browsers.base")
 # and PlaylistBar are useless there, for example).
 #
 # Browser-tuples are stored as a list in <mod>.browsers.
+#
+# FIXME: Replace that crap with something sane.
 
 browsers = []
 for mod in modules:

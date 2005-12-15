@@ -8,16 +8,10 @@
 
 import os
 from os.path import dirname, basename, isdir, join
+from glob import glob
 
 base = dirname(__file__)
-if isdir(base):
-    from glob import glob
-    modules = [f[:-3] for f in glob(join(base, "*.py"))]
-else: # zip file
-    from zipfile import ZipFile
-    z = ZipFile(dirname(base))
-    modules = [f[:-3] for f in z.namelist() if
-               (f.endswith(".py") and f.startswith("formats" + os.sep))]
+if isdir(base): modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
 
 modules = [join(basename(dirname(m)), basename(m)) for m in modules]
 
