@@ -15,10 +15,9 @@ from glob import glob
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
 base = dirname(__file__)
-mod = basename(base)
-if isdir(base): modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
-
-modules = ["%s.%s" % (mod, basename(m)) for m in modules]
+self = basename(base)
+modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
+modules = ["%s.%s" % (self, basename(m)) for m in modules]
 
 if isdir(const.BROWSERS):
     sys.path.insert(0, const.BROWSERS)
@@ -37,11 +36,11 @@ if isdir(const.BROWSERS):
 # FIXME: Replace that crap with something sane.
 
 browsers = []
-for mod in modules:
-    mod = __import__(mod, globals(), locals(), "browsers")
-    try: browsers.extend(mod.browsers)
+for name in modules:
+    browser = __import__(name, globals(), locals(), self)
+    try: browsers.extend(browser.browsers)
     except AttributeError:
-        print "W: %s doesn't contain any browsers." % mod.__name__
+        print "W: %s doesn't contain any browsers." % browser.__name__
 if not browsers:
     raise SystemExit("No browsers found!")
 

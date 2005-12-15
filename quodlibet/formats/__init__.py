@@ -6,22 +6,25 @@
 #
 # $Id$
 
-import os
+import os, sys
 from os.path import dirname, basename, isdir, join
 from glob import glob
 
 base = dirname(__file__)
-if isdir(base): modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
+self = basename(base)
+modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
+modules = ["%s.%s" % (self, basename(m)) for m in modules]
 
-modules = [join(basename(dirname(m)), basename(m)) for m in modules]
-
-map(modules.remove, filter(lambda f: basename(f).startswith("_"), modules))
-
-modules = zip(modules, map(__import__, modules))
 _infos = {}
-for name, mod in modules:
-    for ext in mod.extensions:
-        _infos[ext] = mod.info
+for i, name in enumerate(modules):
+    format = __import__(name, globals(), locals(), self)
+    for ext in format.extensions:
+        _infos[ext] = format.info
+    # Migrate pre-0.16 library, which was using an undocumented "feature".
+    sys.modules[name.replace(".", "/")] = format
+    modules[i] = (format.extensions and name.split(".")[1])
+modules = filter(None, modules)
+modules.sort()
 
 def MusicFile(filename):
     for ext in _infos.keys():

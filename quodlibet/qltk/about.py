@@ -18,8 +18,7 @@ class AboutWindow(gtk.AboutDialog):
         self.set_name("Quod Libet")
         self.set_version(const.VERSION)
         self.set_authors(const.AUTHORS)
-        fmts = ", ".join([os.path.basename(name) for name, mod
-                          in formats.modules if mod.extensions])
+        fmts = ", ".join(formats.modules)
         text = "%s\n%s" % (_("Supported formats: %s"), _("Audio device: %s"))
         self.set_comments(text % (fmts, player.name))
         # Translators: Replace this with your name/email to have it appear

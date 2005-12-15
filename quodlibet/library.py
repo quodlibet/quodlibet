@@ -281,8 +281,7 @@ class Library(dict):
 
 def init(cache_fn=None):
     global library
-    s = ", ".join([os.path.basename(name) for name, mod in formats.modules
-                   if mod.extensions])
+    s = ", ".join(formats.modules)
     print to(_("Supported formats: %s")) % s
     library = Library()
     if cache_fn: library.load(cache_fn)
