@@ -75,7 +75,7 @@ def init():
         Kind.init(watcher)
 
     from qltk.quodlibet import QuodLibetWindow
-    main = widgets.main = QuodLibetWindow(watcher)
+    main = widgets.main = QuodLibetWindow(watcher, player.playlist)
     main.connect('destroy', gtk.main_quit)
 
     gtk.about_dialog_set_url_hook(website_wrap)

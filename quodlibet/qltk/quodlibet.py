@@ -77,7 +77,7 @@ class MainSongList(SongList):
         config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
 class QuodLibetWindow(gtk.Window):
-    def __init__(self, watcher):
+    def __init__(self, watcher, player):
         gtk.Window.__init__(self)
         self.last_dir = os.path.expanduser("~")
 
@@ -89,7 +89,7 @@ class QuodLibetWindow(gtk.Window):
         self.add(gtk.VBox())
 
         # create main menubar, load/restore accelerator groups
-        self._create_menu(tips)
+        self.__create_menu(tips, player)
         self.add_accel_group(self.ui.get_accel_group())
         gtk.accel_map_load(const.ACCELS)
         accelgroup = gtk.accel_groups_from_object(self)[0]
@@ -103,7 +103,7 @@ class QuodLibetWindow(gtk.Window):
 
         # get the playlist up before other stuff
         from qltk.queue import QueueExpander
-        self.songlist = MainSongList(watcher, player.playlist)
+        self.songlist = MainSongList(watcher, player)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.qexpander = QueueExpander(
@@ -117,13 +117,13 @@ class QuodLibetWindow(gtk.Window):
 
         # play controls
         from qltk.controls import PlayControls
-        t = PlayControls(watcher, player.playlist)
+        t = PlayControls(watcher, player)
         self.volume = t.volume
         hbox.pack_start(t, expand=False, fill=False)
 
         # song text
         from qltk.info import SongInfo
-        text = SongInfo(watcher, player.playlist)
+        text = SongInfo(watcher, player)
         hbox.pack_start(text)
 
         # cover image
@@ -180,11 +180,11 @@ class QuodLibetWindow(gtk.Window):
         self.browser = None
 
         from qltk.mmkeys import MmKeys
-        self.__keys = MmKeys(player.playlist)
+        self.__keys = MmKeys(player)
 
         self.child.show_all()
         sw.show_all()
-        self.select_browser(self, config.get("memory", "browser"))
+        self.select_browser(self, config.get("memory", "browser"), player)
         self.browser.restore()
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
@@ -204,13 +204,12 @@ class QuodLibetWindow(gtk.Window):
 
         watcher.connect('removed', self.__set_time)
         watcher.connect('refresh', self.__refresh)
-        watcher.connect('changed', self.__update_title)
-        watcher.connect('song-started', self.__song_started)
-        watcher.connect_after('song-ended', self.__song_ended)
+        watcher.connect('changed', self.__update_title, player)
+        watcher.connect('song-started', self.__song_started, player)
+        watcher.connect_after('song-ended', self.__song_ended, player)
         watcher.connect('paused', self.__update_paused, True)
         watcher.connect('unpaused', self.__update_paused, False)
 
-        
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
             gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
@@ -297,7 +296,7 @@ class QuodLibetWindow(gtk.Window):
         if not ssv:
             self.qexpander.set_expanded(True)
 
-    def _create_menu(self, tips):
+    def __create_menu(self, tips, player):
         ag = gtk.ActionGroup('QuodLibetWindowActions')
 
         actions = [
@@ -354,7 +353,7 @@ class QuodLibetWindow(gtk.Window):
 
         from qltk.about import AboutWindow
         act = gtk.Action("About", None, None, gtk.STOCK_ABOUT)
-        act.connect_object('activate', AboutWindow, self, player.playlist)
+        act.connect_object('activate', AboutWindow, self, player)
         ag.add_action(act)
 
         act = gtk.Action(
@@ -372,7 +371,7 @@ class QuodLibetWindow(gtk.Window):
             ("album", _("Filter on Al_bum"))]:
             act = gtk.Action(
                 "Filter%s" % util.capitalize(tag_), lab, None, gtk.STOCK_INDEX)
-            act.connect_object('activate', self.__filter_on, tag_)
+            act.connect_object('activate', self.__filter_on, tag_, None, player)
             ag.add_action(act)
 
         for (tag_, accel, label) in [
@@ -398,7 +397,7 @@ class QuodLibetWindow(gtk.Window):
             (a, None, l, None, None, i) for (i, (a, l, K)) in
             enumerate(browsers.get_view_browsers())
             ], browsers.index(config.get("memory", "browser")),
-                             self.select_browser)
+                             self.select_browser, player)
 
         for id, label, Kind in browsers.get_browsers():
             act = gtk.Action(id, label, None, None)
@@ -437,7 +436,7 @@ class QuodLibetWindow(gtk.Window):
             key = "%s_pos" % browser.__class__.__name__
             config.set("browsers", key, str(paned.get_relative()))
 
-    def select_browser(self, activator, current):
+    def select_browser(self, activator, current, player):
         if isinstance(current, gtk.RadioAction):
             current = current.get_current_value()
         Browser = browsers.get(current)
@@ -448,7 +447,7 @@ class QuodLibetWindow(gtk.Window):
             c.remove(self.browser)
             c.destroy()
             self.browser.destroy()
-        self.browser = Browser(widgets.watcher, player.playlist)
+        self.browser = Browser(widgets.watcher, player)
         self.browser.connect('songs-selected', self.__browser_cb)
         if self.browser.reordered: self.songlist.enable_drop()
         else: self.songlist.disable_drop()
@@ -489,24 +488,24 @@ class QuodLibetWindow(gtk.Window):
         menu.child.set_text(text)
         menu.child.set_use_underline(True)
 
-    def __song_ended(self, watcher, song, stopped):
+    def __song_ended(self, watcher, song, stopped, player):
         if song is None: return
         if not self.browser.dynamic(song):
-            player.playlist.remove(song)
+            player.remove(song)
             iter = self.songlist.model.find(song)
             if iter:
                 self.songlist.model.remove(iter)
                 self.__set_time()
 
-    def __update_title(self, watcher, songs):
-        if player.playlist.song in songs:
-            song = player.playlist.song
+    def __update_title(self, watcher, songs, player):
+        if player.song in songs:
+            song = player.song
             if song:
                 self.set_title("Quod Libet - " + song.comma("~title~version"))
             else: self.set_title("Quod Libet")
 
-    def __song_started(self, watcher, song):
-        self.__update_title(watcher, [song])
+    def __song_started(self, watcher, song, player):
+        self.__update_title(watcher, [song], player)
 
         for wid in ["Jump", "Next", "Properties", "FilterGenre",
                     "FilterArtist", "FilterAlbum", "Information"]:
@@ -754,11 +753,11 @@ class QuodLibetWindow(gtk.Window):
         self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 
-    def __filter_on(self, header, songs=None):
+    def __filter_on(self, header, songs, player):
         if not self.browser or not self.browser.can_filter(header):
             return
         if songs is None:
-            if player.playlist.song: songs = [player.playlist.song]
+            if player.song: songs = [player.song]
             else: return
 
         values = set()
