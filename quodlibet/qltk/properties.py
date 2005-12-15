@@ -98,7 +98,7 @@ Formatter.init()
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change):
         if can_change == True: can = formats.USEFUL_TAGS
-        else: can = can_change
+        else: can = list(can_change)
         can.sort()
 
         gtk.Dialog.__init__(self, _("Add a Tag"), parent)
