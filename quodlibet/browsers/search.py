@@ -46,6 +46,8 @@ class EmptyBar(gtk.HBox, Browser):
         if isinstance(text, str): text = text.decode('utf-8')
         self._text = text
 
+    status = property(lambda s: s._text)
+
     def save(self):
         config.set("browsers", "query_text", self._text.encode('utf-8'))
 
