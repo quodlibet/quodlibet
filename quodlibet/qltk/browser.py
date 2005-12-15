@@ -60,8 +60,15 @@ class LibraryBrowser(Window):
     def __cols_changed(self, view, browser):
         for header in view.get_columns():
             tag = header.header_name
-            if "~" in tag[1:]: tag = filter(None, tag.split("~"))[0]
-            header.set_visible(tag in browser.headers)
+            if "~" in tag[1:]:
+                for tag in tag.split("~"):
+                    if tag in browser.headers:
+                        header.set_visible(True)
+                        break
+                else:
+                    header.set_visible(False)
+            else:
+                header.set_visible(tag in browser.headers)
 
     def __menu(self, view, watcher):
         path, col = view.get_cursor()
