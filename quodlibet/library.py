@@ -7,7 +7,7 @@
 # $Id$
 
 import os, sys
-import cPickle as pickle
+import pickle, cPickle
 import util; from util import to
 import fcntl
 import random
@@ -18,6 +18,12 @@ from parse import Query
 
 if sys.version_info < (2, 4):
     from sets import Set as set
+
+class MigrateUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if module == "formats.flac" or module == "formats/flac":
+            module = "formats.flac_"
+        return pickle.Unpickler.find_class(self, module, name)
 
 global library
 library = None
@@ -174,7 +180,7 @@ class Library(dict):
         songs = [(song.get("~filename"), song) for song in songs]
         songs.sort()
         songs = [s[1] for s in songs]
-        pickle.dump(songs, f, pickle.HIGHEST_PROTOCOL)
+        cPickle.dump(songs, f, cPickle.HIGHEST_PROTOCOL)
         f.close()
         os.rename(fn + ".tmp", fn)
 
@@ -188,7 +194,7 @@ class Library(dict):
         try:
             if os.path.exists(fn):
                 f = file(fn, "rb")
-                try: songs = pickle.load(f)
+                try: songs = MigrateUnpickler(f).load()
                 except:
                     print to(_("W: %s is not a QL song database.") % fn)
                     try: shutil.copy(fn, fn + ".not-valid")
