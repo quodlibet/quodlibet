@@ -18,7 +18,7 @@ import qltk
 import util
 import formats
 from library import library
-from browsers.base import Browser
+from browsers._base import Browser
 from formats._audio import AudioFile
 from qltk.views import HintedTreeView
 from qltk.wlw import WaitLoadWindow

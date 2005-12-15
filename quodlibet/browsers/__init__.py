@@ -25,8 +25,6 @@ if isdir(const.BROWSERS):
     modules.extend([basename(f)[:-3] for f in
                     glob(join(const.BROWSERS, "[!_]*.py"))])
 
-modules.remove("browsers.base")
-
 # Browsers are declared and stored as a magic 4-tuple. The first element is
 # the sort order (built-in browsers are numbered with integers). The second
 # element is the label for the browser (should be marked for translation).

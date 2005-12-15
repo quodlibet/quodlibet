@@ -12,7 +12,7 @@ import config
 import parser
 import qltk
 
-from browsers.base import Browser
+from browsers._base import Browser
 from library import library
 
 class BorgesBar(Browser, gtk.HBox):

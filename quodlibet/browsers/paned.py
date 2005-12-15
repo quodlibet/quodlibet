@@ -16,7 +16,7 @@ import util
 
 if sys.version_info < (2, 4): from sets import Set as set
 from library import library
-from browsers.base import Browser
+from browsers._base import Browser
 from qltk.songlist import SongList
 from qltk.views import HintedTreeView
 from qltk.entry import ValidatingEntry

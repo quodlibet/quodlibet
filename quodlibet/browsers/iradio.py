@@ -18,7 +18,7 @@ import const
 import qltk
 import util
 
-from browsers.base import Browser
+from browsers._base import Browser
 from formats.remote import RemoteFile
 from library import Library
 from qltk.getstring import GetStringDialog

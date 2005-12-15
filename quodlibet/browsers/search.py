@@ -17,7 +17,7 @@ from qltk.completion import LibraryTagCompletion
 from qltk.cbes import ComboBoxEntrySave
 from qltk.songlist import SongList
 from qltk import Tooltips
-from browsers.base import Browser
+from browsers._base import Browser
 from library import library
 from parse import Query
 

@@ -18,7 +18,7 @@ import util
 
 import cPickle as pickle
 
-from browsers.base import Browser
+from browsers._base import Browser
 from qltk.views import HintedTreeView
 from qltk.getstring import GetStringDialog
 from qltk.msg import ErrorMessage

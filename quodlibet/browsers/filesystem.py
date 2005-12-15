@@ -17,7 +17,7 @@ import qltk
 import formats
 import config
 
-from browsers.base import Browser
+from browsers._base import Browser
 from library import Library, library as glibrary
 from qltk.filesel import DirectoryTree
 

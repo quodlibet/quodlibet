@@ -11,7 +11,7 @@
 
 import gobject, gtk, gst
 from formats.remote import RemoteFile
-from browsers.base import Browser
+from browsers._base import Browser
 drive = gst.element_make_from_uri(gst.URI_SRC, "cdda://", "")
 
 gst.FORMAT_TRACK = 6
