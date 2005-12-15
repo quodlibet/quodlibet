@@ -89,8 +89,8 @@ class MP4File(AudioFile):
             from ctypes import byref
             value = ctypes.c_char_p()
             size = ctypes.c_uint32()
-            f = _mp4v2.MP4Read(filename, ctypes.c_uint32(0))
-            if _mpv4v2.MP4GetMetadataCoverArt(f, byref(value), byref(size)):
+            f = _mp4v2.MP4Read(self["~filename"], ctypes.c_uint32(0))
+            if _mp4v2.MP4GetMetadataCoverArt(f, byref(value), byref(size)):
                 fn = tempfile.NamedTemporaryFile()
                 fn.write(value.value)
                 fn.flush()
