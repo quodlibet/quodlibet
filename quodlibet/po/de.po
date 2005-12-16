@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-15 16:37-0600\n"
+"POT-Creation-Date: 2005-12-16 17:02-0600\n"
 "PO-Revision-Date: 2005-12-15 20:13+0100\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN\n"
@@ -739,8 +739,9 @@ msgstr "Lösche %d/%d."
 msgid "Unable to delete file"
 msgstr "Datei konnte nicht gelöscht werden."
 
-#: ../qltk/delete.py:100
 # python-format
+#: ../qltk/delete.py:100
+#, python-format
 msgid "Deleting <b>%s</b> failed."
 msgstr "Löschen von <b>%s</b> fehlgeschlagen."
 
@@ -1772,12 +1773,12 @@ msgstr "_Albenliste"
 msgid "All"
 msgstr "Alle"
 
-#: ../browsers/paned.py:190 ../browsers/search.py:117
+#: ../browsers/paned.py:191 ../browsers/search.py:117
 #: ../browsers/iradio.py:165
 msgid "_Search:"
 msgstr "_Suche:"
 
-#: ../browsers/paned.py:318
+#: ../browsers/paned.py:319
 msgid "_Paned Browser"
 msgstr "Bro_wser"
 

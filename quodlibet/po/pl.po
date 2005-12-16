@@ -8,9 +8,9 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.15\n"
+"Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-15 22:43+0100\n"
+"POT-Creation-Date: 2005-12-16 17:02-0600\n"
 "PO-Revision-Date: 2005-12-11 14:06+0200\n"
 "Last-Translator: Tomasz Torcz <zdzichu@irc.pl>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
@@ -1782,12 +1782,12 @@ msgstr "Lista _Albumów"
 msgid "All"
 msgstr "Wszystkie"
 
-#: ../browsers/paned.py:190 ../browsers/search.py:115
+#: ../browsers/paned.py:191 ../browsers/search.py:117
 #: ../browsers/iradio.py:165
 msgid "_Search:"
 msgstr "_Szukaj:"
 
-#: ../browsers/paned.py:318
+#: ../browsers/paned.py:319
 msgid "_Paned Browser"
 msgstr "Przeglądarka _panelowa"
 
@@ -1843,27 +1843,27 @@ msgstr "Import listy utworów"
 msgid "_Playlists"
 msgstr "Przeglądanie _list utworów"
 
-#: ../browsers/search.py:86
+#: ../browsers/search.py:88
 msgid "_Limit:"
 msgstr "_Limit:"
 
-#: ../browsers/search.py:125
+#: ../browsers/search.py:127
 msgid "Clear search"
 msgstr "Wyczyść pole wyszukiwania"
 
-#: ../browsers/search.py:131
+#: ../browsers/search.py:133
 msgid "Search your library"
 msgstr "Szukaj w bibliotece"
 
-#: ../browsers/search.py:151
+#: ../browsers/search.py:153
 msgid "_Limit Results"
 msgstr "Ogranicz _Liczbę Wyników"
 
-#: ../browsers/search.py:196
+#: ../browsers/search.py:198
 msgid "_Disable Browser"
 msgstr "_Bez przeszukiwania"
 
-#: ../browsers/search.py:197
+#: ../browsers/search.py:199
 msgid "_Search Library"
 msgstr "_Wyszukiwanie w bibliotece"
 
