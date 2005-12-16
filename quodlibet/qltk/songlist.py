@@ -790,7 +790,8 @@ class SongList(HintedTreeView):
         self.model = model
 
     def get_songs(self):
-        return self.get_model().get()
+        try: return self.get_model().get()
+        except AttributeError: return [] # model is None
 
     def set_songs(self, songs, sorted=False):
         model = self.get_model()
