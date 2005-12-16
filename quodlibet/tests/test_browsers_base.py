@@ -1,6 +1,6 @@
 from tests import add, TestCase
 from qltk.watcher import SongWatcher
-from browsers.base import Browser
+from browsers._base import Browser
 
 class TBrowser(TestCase):
     def setUp(self):
