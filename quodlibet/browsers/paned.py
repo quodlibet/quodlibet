@@ -149,8 +149,9 @@ class PanedBrowser(gtk.VBox, Browser):
                     break
 
         def get_selected(self):
-            model, rows = self.get_selection().get_selected_rows()
-            return [model[row][0] for row in rows]
+            try: model, rows = self.get_selection().get_selected_rows()
+            except AttributeError: return []
+            else: return [model[row][0] for row in rows]
 
         def set_selected(self, values, jump=False):
             model = self.get_model()
