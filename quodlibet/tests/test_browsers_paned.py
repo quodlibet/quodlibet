@@ -21,6 +21,7 @@ SONGS.sort()
 
 class TPanedBrowser(TestCase):
     Bar = PanedBrowser
+
     def setUp(self):
         import qltk
         config.set("browsers", "panes", "artist")
@@ -30,13 +31,6 @@ class TPanedBrowser(TestCase):
             af.sanitize()
             browsers.paned.library.add_song(af)
         self.bar = self.Bar(widgets.watcher, False)
-        self.bar.connect('songs-selected', self._expected)
-        while gtk.events_pending(): gtk.main_iteration()
-
-    def _expected(self, bar, songs, sort):
-        songs.sort()
-        self.failUnlessEqual(self.expected, songs)
-        self.expected = None
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -49,24 +43,10 @@ class TPanedBrowser(TestCase):
     def test_filter_value(self):
         self.expected = [SONGS[0]]
         self.bar.filter("artist", ["boris"])
-        self.failUnless(self.expected is None)
 
     def test_filter_notvalue(self):
         self.expected = SONGS[1:3]
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
-        self.failUnless(self.expected is None)
-
-    def test_saverestore(self):
-        self.expected = [SONGS[0]]
-        self.bar.filter("artist", ["boris"])
-        self.failUnless(self.expected is None)
-        self.bar.save()
-        self.expected = list(SONGS)
-        self.bar.filter("artist", ["boris", "piman", "mu"])
-        self.failUnless(self.expected is None)
-        self.expected = [SONGS[0]]
-        self.bar.restore()
-        self.failUnless(self.expected is None)
 
     def tearDown(self):
         self.bar.destroy()
