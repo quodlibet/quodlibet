@@ -42,6 +42,7 @@ need to start setting G_FILENAME_ENCODING.
    * French, by Joshua Kwan.
    * Polish, by Tomasz Torcz.
    * German, by Rüdiger Arp.
+   * Hebrew, by Roee Haimovich.
 
 0.15 - Maybe I will.
  * An 'artist' tag can be stored in the library for MODs. (#277)
