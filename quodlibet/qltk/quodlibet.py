@@ -547,7 +547,8 @@ class QuodLibetWindow(gtk.Window):
         else: player.playlist.paused ^= True
 
     def __jump_to_current(self, explicit):
-        if player.playlist.song == self.songlist.model.current:
+        if player.playlist.song is None: return
+        elif player.playlist.song == self.songlist.model.current:
             path = self.songlist.model.current_path
             self.songlist.scroll_to_cell(
                 path[0], use_align=True, row_align=0.5)

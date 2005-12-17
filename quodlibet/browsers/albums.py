@@ -69,14 +69,13 @@ class AlbumList(Browser, gtk.VBox):
     def __update(klass, changed, model):
         to_change = []
         to_remove = []
-        def update(model, path, iter):
-            album = model[iter][0]
+        for row in model:
+            album = row[0]
             if album is not None and album.title in changed:
                 if album.songs:
-                    to_change.append((path, iter))
+                    to_change.append((row.path, row.iter))
                     album.finalize()
-                else: to_remove.append(iter)
-        model.foreach(update)
+                else: to_remove.append(row.iter)
         if to_change: map(model.row_changed, *zip(*to_change))
         if to_remove: map(model.remove, to_remove)
     __update = classmethod(__update)
@@ -492,10 +491,10 @@ class AlbumList(Browser, gtk.VBox):
         selection.unselect_all()
         model = view.get_model()
         first = None
-        for i, row in enumerate(iter(model)):
+        for row in model:
             if row[0] is not None and row[0].title in values:
-                selection.select_path(i)
-                first = first or i
+                selection.select_path(row.path)
+                first = first or row.path[0]
         if first:
             view.scroll_to_cell(first, use_align=True, row_align=0.5)
 
@@ -507,7 +506,8 @@ class AlbumList(Browser, gtk.VBox):
 
     def restore(self):
         albums = config.get("browsers", "albums").split("\n")
-        selection = self.get_children()[1].child.get_selection()
+        view = self.get_children()[1].child
+        selection = view.get_selection()
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
         # otherwise all albums.
@@ -516,21 +516,21 @@ class AlbumList(Browser, gtk.VBox):
         else:
             model = selection.get_tree_view().get_model()
             first = None
-            for i, row in enumerate(iter(model)):
+            for row in model:
                 if row[0] is not None and row[0].title in albums:
-                    selection.select_path(i)
-                    first = first or i
+                    selection.select_path(row.path)
+                    first = first or row.path
 
-            if first: selection.get_tree_view().scroll_to_cell(
-                first, use_align=True, row_align=0.5)
+            if first:
+                view.scroll_to_cell(first[0], use_align=True, row_align=0.5)
 
     def scroll(self, song):
         view = self.get_children()[1].child
         model = view.get_model()
         values = song.list("album")
-        for i, row in enumerate(iter(model)):
+        for row in model:
             if row[0] is not None and row[0].title in values:
-                view.scroll_to_cell(i, use_align=True, row_align=0.5)
+                view.scroll_to_cell(row.path[0], use_align=True, row_align=0.5)
                 break
 
     def __selection_changed(self, selection, sort):

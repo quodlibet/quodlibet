@@ -452,10 +452,7 @@ class SongProperties(qltk.Window):
             edit = True
             orig = None
             deleted = False
-            iters = []
-            def find_same_comments(model, path, iter):
-                if model[path][0] == comment: iters.append(iter)
-            model.foreach(find_same_comments)
+            iters = [row.iter for row in model if row[0] == comment]
             row = [comment, util.escape(value), edited, edit,deleted, orig]
             if len(iters): model.insert_after(iters[-1], row=row)
             else: model.append(row=row)
@@ -495,8 +492,7 @@ class SongProperties(qltk.Window):
             updated = {}
             deleted = {}
             added = {}
-            def create_property_dict(model, path, iter):
-                row = model[iter]
+            for row in model:
                 # Edited, and or and not Deleted
                 if row[2] and not row[4]:
                     if row[5] is not None:
@@ -510,7 +506,6 @@ class SongProperties(qltk.Window):
                     if row[5] is not None:
                         deleted.setdefault(row[0], [])
                         deleted[row[0]].append(util.decode(row[5]))
-            model.foreach(create_property_dict)
 
             was_changed = []
             win = WritingWindow(parent, len(self.__songs))
@@ -805,9 +800,9 @@ class SongProperties(qltk.Window):
             win = WritingWindow(parent, len(self.__songs))
 
             was_changed = []
-            def save_song(model, path, iter):
-                song = model[path][0]
-                row = model[path]
+
+            for row in view.get_model():
+                song = row[0]
                 changed = False
                 if not song.valid() and not qltk.ConfirmAction(
                     parent, _("Tag may not be accurate"),
@@ -845,9 +840,8 @@ class SongProperties(qltk.Window):
                         return True
                     was_changed.append(song)
 
-                return win.step()
+                if win.step(): break
         
-            view.get_model().foreach(save_song)
             win.destroy()
             watcher.changed(was_changed)
             watcher.refresh()
@@ -1163,9 +1157,9 @@ class SongProperties(qltk.Window):
         def __save_files(self, parent, model, watcher):
             win = WritingWindow(parent, len(self.__songs))
             was_changed = []
-            def settrack(model, path, iter):
-                song = model[iter][0]
-                track = model[iter][2]
+            for row in model:
+                song = row[0]
+                track = row[2]
                 if song.get("tracknumber") == track: return win.step()
                 if not song.valid() and not qltk.ConfirmAction(
                     win, _("Tag may not be accurate"),
@@ -1188,8 +1182,7 @@ class SongProperties(qltk.Window):
                     watcher.reload(song)
                     return True
                 was_changed.append(song)
-                return win.step()
-            model.foreach(settrack)
+                if win.step(): break
             watcher.changed(was_changed)
             watcher.refresh()
             win.destroy()
@@ -1200,11 +1193,10 @@ class SongProperties(qltk.Window):
         def __preview_tracks(self, ctx, start, total, model, save, revert):
             start = start.get_value_as_int()
             total = total.get_value_as_int()
-            def refill(model, path, iter):
-                if total: s = "%d/%d" % (path[0] + start, total)
-                else: s = str(path[0] + start)
-                model[iter][2] = s
-            model.foreach(refill)
+            for row in model:
+                if total: s = "%d/%d" % (row.path[0] + start, total)
+                else: s = str(row.path[0] + start)
+                row[2] = s
             save.set_sensitive(True)
             revert.set_sensitive(True)
 
@@ -1298,11 +1290,7 @@ class SongProperties(qltk.Window):
         self.show_all()
 
     def __remove(self, watcher, songs, model, selection, sig):
-        to_remove = []
-        def remove(model, path, iter):
-            if model[iter][0] in songs: to_remove.append(iter)
-            return len(to_remove) == len(songs)
-        model.foreach(remove)
+        to_remove = [row.iter for row in model if row[0] in songs]
         if to_remove:
             selection.handler_block(sig)
             map(model.remove, to_remove)
@@ -1322,12 +1310,11 @@ class SongProperties(qltk.Window):
         selection.emit('changed')
 
     def __refill(self, model):
-        def refresh(model, iter, path):
-            song = model[iter][0]
-            model[iter][1] = song("~basename")
-            model[iter][2] = song("~dirname")
-            model[iter][3] = song["~filename"]
-        model.foreach(refresh)
+        for row in model:
+            song = row[0]
+            row[1] = song("~basename")
+            row[2] = song("~dirname")
+            row[3] = song["~filename"]
 
     def set_pending(self, button, *excess):
         self.__save = button

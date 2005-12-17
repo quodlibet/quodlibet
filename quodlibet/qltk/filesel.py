@@ -254,10 +254,10 @@ class FileSelector(gtk.VPaned):
         for dir in dirs:
             for file in filter(self.__filter, dircache.listdir(dir)):
                 fmodel.append([os.path.join(dir, file)])
-        def select_paths(model, path, iter, selection):
-            if model[path][0] in selected:
-                selection.select_path(path)
-        if fmodel: fmodel.foreach(select_paths, fselect)
+
+        for row in fmodel:
+            if row[0] in selected:
+                fselect.select_path(row.path)
         fselect.handler_unblock(self.__sig)
         fselect.emit('changed')
 

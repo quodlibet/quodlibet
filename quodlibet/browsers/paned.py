@@ -98,12 +98,11 @@ class PanedBrowser(gtk.VBox, Browser):
         def __removed(self, watcher, songs):
             model = self.get_model()
             to_remove = []
-            def update(model, path, iter):
-                data = model[iter][1]
+            for row in model:
+                data = row[1]
                 for song in songs:
                     if song in data: data.remove(song)
-                if not model[iter][1]: to_remove.append(iter)
-            model.foreach(update)
+                if not model[row.iter][1]: to_remove.append(row.iter)
             map(model.remove, to_remove)
 
         def inhibit(self): self.get_selection().handler_block(self.__sig)
@@ -143,9 +142,10 @@ class PanedBrowser(gtk.VBox, Browser):
 
         def scroll(self, song):
             values = map(util.escape, song.list(self.__mytag))
-            for i, row in enumerate(iter(self.get_model())):
+            for row in self.get_model():
                 if row[0] in values:
-                    self.scroll_to_cell(i, use_align=True, row_align=0.5)
+                    self.scroll_to_cell(
+                        row.path[0], use_align=True, row_align=0.5)
                     break
 
         def get_selected(self):
@@ -164,10 +164,10 @@ class PanedBrowser(gtk.VBox, Browser):
             first = 0
             if values is None: selection.select_path((0,))
             else:
-                for i, row in enumerate(iter(model)):
+                for row in model:
                     if row[0] in values:
-                        selection.select_path((i,))
-                        first = first or i
+                        selection.select_path(row.path)
+                        first = first or row.path[0]
             if first == 0: selection.select_path((0,))
             if jump and len(model): self.scroll_to_cell(first)
             self.uninhibit()

@@ -225,30 +225,18 @@ class PlaylistModel(gtk.ListStore):
         if isinstance(song, gtk.TreeIter):
             self.__path = self.get_path(song)[0]
         else:
-            def _find(self, path, iter):
-                if self[iter][0] == song:
-                    self.__path = path[0]
-                    return True
-                else: return False
-            self.foreach(_find)
+            for row in self:
+                if row[0] == song:
+                    self.__path = row.path[0]
+                    break
 
     def find(self, song):
-        iters = [None]
-        def _find(self, path, iter):
-            if self[iter][0] == song:
-                iters.append(iter)
-                return True
-            else: return False
-        self.foreach(_find)
-        return iters[-1]
+        for row in self:
+            if row[0] == song: return row.iter
+        return None
 
     def find_all(self, songs):
-        iters = []
-        def _find(self, path, iter, it):
-            if self[iter][0] in songs: it.append(iter)
-            return False
-        self.foreach(_find, iters)
-        return iters
+        return [row.iter for row in self if row[0] in songs]
 
     def __contains__(self, song): return bool(self.find(song))
 

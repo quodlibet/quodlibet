@@ -80,6 +80,7 @@ class ExFalsoWindow(gtk.Window):
         model, rows = selection.get_selected_rows()
         filenames = [model[row][0] for row in rows]
         songs = map(self.__cache.__getitem__, filenames)
+        songs.sort()
         menu = self.pm.create_plugins_menu(songs)
         if menu is None: menu = gtk.Menu()
         else: menu.prepend(gtk.SeparatorMenuItem())
