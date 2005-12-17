@@ -59,7 +59,7 @@ class AudioFile(dict):
     def realkeys(self):
         return filter(lambda s: s and s[0] != "~", self.keys())
 
-    def __call__(self, key, default="", connector=" - "):
+    def __call__(self, key, default=u"", connector=" - "):
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
@@ -104,8 +104,8 @@ class AudioFile(dict):
         else: return dict.get(self, key, default)
 
     def comma(self, key):
-        if "~" in key or key == "title": v = self(key, "")
-        else: v = self.get(key, "")
+        if "~" in key or key == "title": v = self(key, u"")
+        else: v = self.get(key, u"")
         if isinstance(v, int): return v
         elif isinstance(v, float): return v
         else: return v.replace("\n", ", ")

@@ -15,7 +15,7 @@ import sre
 import util
 
 class _Dummy(dict):
-    def comma(self, *args): return ""
+    def comma(self, *args): return u""
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -69,7 +69,7 @@ class PatternParser(object):
             self.match(TEXT, OPEN)
             if la.type == TEXT: text.append(la.lexeme)
             elif la.type == OPEN: text.append(self.Tags(song))
-        return "".join(text)
+        return u"".join(text)
 
     def Tags(self, song):
         text = []
@@ -80,14 +80,14 @@ class PatternParser(object):
             while self.lookahead.type not in [CLOSE, EOF]:
                 text.append(self.lookahead.lexeme)
                 self.match(self.lookahead.type)
-            return "".join(text)
+            return u"".join(text)
         if self.lookahead.type == COND:
             self.match(COND)
             ifcase = self.Pattern(song)
             if self.lookahead.type == COND:
                 self.match(COND)
                 elsecase = self.Pattern(song)
-            else: elsecase = ""
+            else: elsecase = u""
 
             if song.comma(tag): text.append(ifcase)
             else: text.append(elsecase)
@@ -110,7 +110,7 @@ class PatternParser(object):
                 while self.lookahead.type not in [EOF, OPEN]:
                     text.append(self.lookahead.lexeme)
                     self.match(self.lookahead.type)
-        return "".join(text)
+        return u"".join(text)
 
     def match(self, *tokens):
         if tokens != [EOF] and self.lookahead.type == EOF:
