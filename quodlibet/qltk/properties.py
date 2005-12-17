@@ -1296,6 +1296,7 @@ class SongProperties(qltk.Window):
             map(model.remove, to_remove)
             selection.handler_unblock(sig)
             self.__refill(model)
+            selection.emit('changed')
 
     def __set_title(self, songs):
         if songs:
