@@ -445,20 +445,35 @@ def website(site):
             if os.system(s + " &") == 0: return True
     else: return False
 
-# Return a 'natural' version of the tag for human-readable bits.
-# Strips ~ and ~# from the start and runs it through a map (which
-# the user can configure).
 def tag(name, cap=True):
-    try:
-        if name[0] == "~":
-            if name[1] == "#": name = name[2:]
-            else: name = name[1:]
-        parts = [_(HEADERS_FILTER.get(n, n.replace("_", " ")))
-                 for n in name.split("~")]
+    # Return a 'natural' version of the tag for human-readable bits.
+    # Strips ~ and ~# from the start and runs it through a map (which
+    # the user can configure).
+    if not name: return _("Invalid tag")
+    else:
+        def readable(tag):
+            try:
+                if tag[0] == "~":
+                    if tag[1] == "#": tag = tag[2:]
+                    else: tag = tag[1:]
+            except IndexError: return _("Invalid tag")
+            else: return _(HEADERS_FILTER.get(tag, tag.replace("_", " ")))
+        parts = map(readable, tagsplit(name))
         if cap: parts = map(capitalize, parts)
         return " / ".join(parts)
-    except IndexError:
-        return _("Invalid tag")
+
+def tagsplit(tag):
+    """Split a (potentially) tied tag into a list of atomic tags. Two ~~s
+    make the next tag prefixed with a ~, so ~foo~~bar => [foo, ~bar]."""
+    if "~" in tag[1:]:
+        if tag.startswith("~") and not tag.startswith("~#"): tag = tag[1:]
+        tags = []
+        front = ""
+        for part in tag.split("~"):
+            if part: tags.append(front + part)
+            else: front = "~"
+        return tags
+    else: return [tag]
 
 HEADERS_FILTER = { "tracknumber": "track",
                    "discnumber": "disc",

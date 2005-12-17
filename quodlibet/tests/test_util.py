@@ -3,7 +3,7 @@ from tests import registerCase
 
 import util
 from util import re_esc, encode, decode, mkdir, iscommand
-from util import find_subtitle, split_album, split_title, split_value
+from util import find_subtitle, split_album, split_title, split_value, tagsplit
 from util import PatternFromFile
 from util import format_time_long as f_t_l
 import os
@@ -160,6 +160,23 @@ class StringTests(TestCase):
         # check via round-tripping
         for i in range(0, 60*60*3, 137):
             self.failUnlessEqual(util.parse_time(util.format_time(i)), i)
+
+class Ttagsplit(TestCase):
+    def test_single_tag(self):
+        self.failUnlessEqual(tagsplit("foo"), ["foo"])
+    def test_synth_tag(self):
+        self.failUnlessEqual(tagsplit("~foo"), ["~foo"])
+    def test_two_tags(self):
+        self.failUnlessEqual(tagsplit("foo~bar"), ["foo", "bar"])
+    def test_two_prefix(self):
+        self.failUnlessEqual(tagsplit("~foo~bar"), ["foo", "bar"])
+    def test_synth(self):
+        self.failUnlessEqual(tagsplit("~foo~~bar"), ["foo", "~bar"])
+    def test_numeric(self):
+        self.failUnlessEqual(tagsplit("~#bar"), ["~#bar"])
+    def test_two_numeric(self):
+        self.failUnlessEqual(tagsplit("~#foo~~#bar"), ["~#foo", "~#bar"])
+registerCase(Ttagsplit)
 
 class TBPTests(TestCase):
     def setUp(self):
