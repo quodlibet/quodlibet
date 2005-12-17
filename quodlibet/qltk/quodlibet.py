@@ -774,9 +774,11 @@ class QuodLibetWindow(gtk.Window):
             if self.browser.headers is None:
                 column.set_visible(True)
             else:
-                tag = column.header_name
-                if "~" in tag[1:]: tag = filter(None, tag.split("~"))[0]
-                column.set_visible(tag in self.browser.headers)
+                for tag in util.tagsplit(column.header_name):
+                    if tag in self.browser.headers:
+                        column.set_visible(True)
+                        break
+                else: column.set_visible(False)
 
     def __cols_changed(self, songlist):
         headers = [col.header_name for col in songlist.get_columns()]

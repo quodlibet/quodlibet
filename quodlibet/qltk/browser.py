@@ -9,6 +9,7 @@
 import gtk
 from qltk.x import Window
 from qltk.songlist import SongList
+import util
 
 class LibraryBrowser(Window):
     def __init__(self, Kind, watcher):
@@ -60,15 +61,11 @@ class LibraryBrowser(Window):
     def __cols_changed(self, view, browser):
         for header in view.get_columns():
             tag = header.header_name
-            if "~" in tag[1:]:
-                for tag in tag.split("~"):
-                    if tag in browser.headers:
-                        header.set_visible(True)
-                        break
-                else:
-                    header.set_visible(False)
-            else:
-                header.set_visible(tag in browser.headers)
+            for t in util.tagsplit(tag):
+                if t in browser.headers:
+                    header.set_visible(True)
+                    break
+            else: header.set_visible(False)
 
     def __menu(self, view, watcher):
         path, col = view.get_cursor()
