@@ -105,6 +105,7 @@ class TreeViewHints(gtk.Window):
         y += view.get_bin_window().get_position()[1]
         ox, oy = view.window.get_origin()
         x += ox; y += oy; w += 5
+        if gtk.gtk_version >= (2,8,0): w += 1 # width changed in 2.8?
         screen_width = gtk.gdk.screen_width()
         x_overflow = min([x, x + w - screen_width])
         label.set_ellipsize(pango.ELLIPSIZE_NONE)
