@@ -316,10 +316,10 @@ def split_value(s, splitters=["/", "&", ","]):
     if not splitters: return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
-        spl = r"\b\s*%s\s*\b" % sre.escape(spl)
+        spl = sre.compile(r"\b\s*%s\s*\b" % sre.escape(spl), sre.UNICODE)
         new_values = []
         for v in values:
-            new_values.extend(map(string.strip, sre.split(spl, v)))
+            new_values.extend(map(string.strip, spl.split(v)))
         values = new_values
     return values
 

@@ -98,6 +98,8 @@ class StringTests(TestCase):
             split_value("a, b and c", [",", "and"]), ["a", "b", "c"])
         self.failUnlessEqual(split_value("a b", [" "]), ["a", "b"])
         self.failUnlessEqual(split_value("a b", []), ["a b"])
+        val = '\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
+        self.failUnlessEqual(split_value(val), val.split("&"))
 
     def test_split_wordboundry(self):
         self.failUnlessEqual(split_value("Andromeda and the Band", ["and"]),

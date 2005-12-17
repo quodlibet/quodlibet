@@ -343,10 +343,11 @@ class SongProperties(qltk.Window):
         def __split_into_list(self, activator, view):
             model, iter = view.get_selection().get_selected()
             row = model[iter]
+            string = row[1].decode('utf-8')
             spls = config.get("editing", "split_on").decode(
                 'utf-8', 'replace').split()
-            vals = util.split_value(util.unescape(row[1]), spls)
-            if vals[0] != util.unescape(row[1]):
+            vals = util.split_value(util.unescape(string), spls)
+            if vals[0] != util.unescape(string):
                 row[1] = util.escape(vals[0])
                 row[2] = True
                 for val in vals[1:]:
@@ -392,10 +393,11 @@ class SongProperties(qltk.Window):
 
             can_change = self.__songinfo.can_change(row[0])
 
+            text = row[1].decode('utf-8')
             b = qltk.MenuItem(
                 _("Split into _Multiple Values"), gtk.STOCK_FIND_AND_REPLACE)
             b.set_sensitive(
-                (len(util.split_value(row[1], spls)) > 1) and can_change)
+                (len(util.split_value(text, spls)) > 1) and can_change)
             b.connect('activate', self.__split_into_list, view)
             menu.append(b)
             menu.append(gtk.SeparatorMenuItem())
@@ -404,7 +406,7 @@ class SongProperties(qltk.Window):
                 b = qltk.MenuItem(
                     _("Split Disc out of _Album"), gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_album, view)
-                b.set_sensitive((util.split_album(row[1])[1] is not None) and
+                b.set_sensitive((util.split_album(text)[1] is not None) and
                                 self.__songinfo.can_change("album"))
                 menu.append(b)
 
@@ -412,12 +414,12 @@ class SongProperties(qltk.Window):
                 b = qltk.MenuItem(_("Split Version out of Title"),
                                   gtk.STOCK_FIND_AND_REPLACE)
                 b.connect('activate', self.__split_title, view)
-                b.set_sensitive((util.split_title(row[1], spls)[1] != []) and
+                b.set_sensitive((util.split_title(text, spls)[1] != []) and
                                 self.__songinfo.can_change("version"))
                 menu.append(b)
 
             elif row[0] == "artist":
-                ok = (util.split_people(row[1], spls)[1] != [])
+                ok = (util.split_people(text, spls)[1] != [])
 
                 b = qltk.MenuItem(_("Split Arranger out of Ar_tist"),
                                   gtk.STOCK_FIND_AND_REPLACE)
