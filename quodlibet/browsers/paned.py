@@ -41,8 +41,7 @@ class PanedBrowser(gtk.VBox, Browser):
 
         def __init__(self, mytag, next):
             HintedTreeView.__init__(self)
-            if "~" in mytag[1:]: self.tags = filter(None, mytag.split("~"))
-            else: self.tags = [mytag]
+            self.tags = util.tagsplit(mytag)
             self.__next = next
             self.__mytag = mytag
             model = gtk.ListStore(str, object)
