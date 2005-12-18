@@ -72,6 +72,12 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_2("~people"), "Lali-ho!")
         self.failUnlessEqual(bar_2_1("~people"), "Foo\nI have two artists")
 
+    def test_call_multiple(self):
+        for song in [quux, bar_1_1, bar_2_1]:
+            self.failUnlessEqual(song("~~people"), song("~people"))
+            self.failUnlessEqual(song("~title~people"), song("title"))
+            self.failUnlessEqual(song("~title~~people"), song("~title~artist"))
+
     def test_list(self):
         for key in bar_1_1.realkeys():
             self.failUnlessEqual(bar_1_1.list(key), [bar_1_1(key)])
