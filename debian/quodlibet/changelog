@@ -1,13 +1,17 @@
 quodlibet (0.16-1) unstable; urgency=low
 
   * Default to gstreamer0.8-alsa instead of gstreamer0.8-oss for a sink.
+  * Depend on ctypes, so things don't mysteriously stop working.
   * Recommend, rather than suggest, MOD/FLAC/Musepack support, and plugins.
-  * Suggest gstreamer0.8-wavpack.
-  * Unsuggest albumart.
+  * Suggest faad, wavpack, libmp4v2 (not in Debian (yet)).
+  * Un-Suggest normalize-audio, vorbisgain, albumart-qt. quodlibet-plugins
+    should handle this.
   * Install images and Python modules to /usr/share. (Closes: #340035)
+    * Conflict with quodlibet-plugins that use /usr/lib.
   * Better GStreamer error checking. (Closes: #341623, thanks to Zack Weinberg)
   * Stop/Pause import dialog when loading playlists. (Closes: #340345)
   * Tray icon tooltip is configurable. (Closes: #341062)
+  * debian/compat: Level 5.
 
  -- Joe Wreschnig <piman@debian.org>  
 

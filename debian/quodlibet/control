@@ -2,19 +2,30 @@ Source: quodlibet
 Section: sound
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
-Build-Depends: debhelper (>= 4.2.21), python-dev, python-gtk2-dev (>= 2.6), pkg-config, libgtk2.0-dev
+Build-Depends: debhelper (>= 5), python-dev, python-gtk2-dev (>= 2.6), pkg-config, libgtk2.0-dev
 Standards-Version: 3.6.2
 
 Package: quodlibet
 Architecture: all
-Depends: ${python:Depends}, python-gtk2 (>= 2.6), python-pymad, gstreamer0.8-mad, python-pyvorbis, gstreamer0.8-vorbis, libgtk2.0-0 (>= 2.6.0-1), python-gst (>= 0.8.2), gstreamer0.8-alsa | gstreamer0.8-audiosink
-Recommends: quodlibet-ext (= ${Source-Version}), libgstreamer-gconf0.8-0, python2.3-gnome2, python-gnome2-extras, python-modplug, gstreamer0.8-mikmod, python-flac, gstreamer0.8-flac, python-musepack, gstreamer0.8-musepack, quodlibet-plugins
-Suggests: libwavpack0, gstreamer0.8-wavpack, vorbisgain (>= 0.35-2), normalize-audio
+Depends: ${python:Depends}, python-ctypes,
+	python-gtk2 (>= 2.6), libgtk2.0-0 (>= 2.6.0-1),
+	python-gst (>= 0.8.2), gstreamer0.8-alsa | gstreamer0.8-audiosink,
+	python-pymad, gstreamer0.8-mad,
+	python-pyvorbis, gstreamer0.8-vorbis
+Recommends: quodlibet-ext (= ${Source-Version}),
+	libgstreamer-gconf0.8-0, python-gnome2-extras,
+	gstreamer0.8-mikmod | gstreamer0.8-modplug,
+	python-flac, gstreamer0.8-flac
+	gstreamer0.8-musepack,
+	quodlibet-plugins
+Suggests: gstreamer0.8-wavpack,
+	gstreamer0.8-faad, libmp4v2-0
+Conflicts: quodlibet-plugins (<< 20051217)
 Description: audio library manager and player for GTK+
- Quod Libet is a music library management program. Rather than categorize
- songs by genre, artist, and album, it lets you search and display them
- however you want. It supports regexp-based searches, album cover display,
- tag editing, ReplayGain, multimedia keys, and an OSD.
+ Quod Libet is a music management program. It provides several different ways
+ to view your audio library, as well as support for Internet radio and
+ audio feeds. It has extremely flexible metadata tag editing and searching
+ capabilities.
  .
  Also included is Ex Falso, a tag editor that has the same editing features
  found in Quod Libet, but does not play audio files.
