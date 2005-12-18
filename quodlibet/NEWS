@@ -14,25 +14,30 @@ need to start setting G_FILENAME_ENCODING.
 
 0.16
  * Context menu plugins can make themselves insensitive. (#66)
- * More command-line and FIFO options. (#75)
+ * More command-line and FIFO options. (#75, #363)
+ * Read-only M4A support. (#199, thanks to Alexey Bobyakov)
  * Wavpack support. (#257)
  * Audio Feed (Podcast) support (requires http://www.feedparser.org). (#322)
  * "One Song" (and repeat) play mode. (#351)
  * Improved and configurable tray icon. (#360)
  * New install system that is more FHS-compliant. (#362)
  * ~#laststarted internal tag. (#392)
+ * Accents are stripped when renaming to ASCII filenames. (#415)
  * UI improvements:
+   * Ex Falso lists are searchable in GTK 2.8.8+. (#291)
    * ^W closes transient windows. (#326)
    * More DnD support. (#337)
    * HIG-compliance for strings.
    * Double-click files in browsers to enqueue them. (#341)
-   * Rename Files error dialog has a "Skip" button. (#354)
+   * Rename Files error dialog has a "Continue" button. (#354)
    * Ctrl-Left/Right changed to Ctrl-,/.. (#355)
+   * Playlist imports have a progress bar. (#368)
    * New icon that is not all black. (#371, thanks to Tobias and Fabien)
    * Paned Browser entries have context menus. (#375)
    * Volume icons follow GTK+/GNOME theme. (#389)
  * More memory and CPU optimizations. (#335, #346, #350)
  * GStreamer error handling. (thanks to Zack Weinberg and Bastian Kleineidam)
+ * Musepack, MOD support migrated to Mutagen/ctypes modules.
  * Updated translations:
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
    * Italian, by Filippo Pappalardo.
