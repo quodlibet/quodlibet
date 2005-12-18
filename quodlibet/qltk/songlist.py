@@ -412,7 +412,7 @@ class SongList(HintedTreeView):
     def Menu(self, header, browser, watcher):
         songs = self.get_selected_songs()
         if not songs: return
-        if "~" in header[1:]: header = header.lstrip("~").split("~")[0]
+        header = util.tagsplit(header)[0]
 
         menu = browser.Menu(songs, self)
         if menu is None: menu = gtk.Menu()
