@@ -3,7 +3,7 @@
 # It's obscenely simple. I feel bad.
 
 D := debian/quodlibet-plugins
-U := usr/lib/quodlibet/plugins
+U := usr/share/quodlibet/plugins
 P := $(D)/$(U)
 
 build binary-arch install:

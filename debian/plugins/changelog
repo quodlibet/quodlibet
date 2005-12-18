@@ -4,6 +4,7 @@ quodlibet-plugins (20051201-1) unstable; urgency=low
   * Use ${depends:Python} to ensure the correct version of Python
     is depended upon. closes: #339999
   * Include albumart.py now.
+  * Depend on quodlibet >= 0.16 for /usr/share/quodlibet/plugins.
 
  -- Joshua Kwan <joshk@triplehelix.org>  Thu,  1 Dec 2005 15:08:00 -0800
 
