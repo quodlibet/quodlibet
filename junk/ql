@@ -1,0 +1,39 @@
+#!/bin/sh
+# Public domain.
+
+VERSION="0.16"
+
+_ql() {
+	echo "$1" > ~/.quodlibet/control
+}
+
+_ql_arg() {
+	if [ "$2" = "" ]; then
+		echo "E: \`$1' needs an argument." 2>&1
+		exit 1
+	else _ql "$1 $2"
+	fi
+}
+
+_ql_reply() {
+	fn="`tempfile --prefix=ql_`"; rm -f "$fn"; mkfifo -m 0600 "$fn"
+	_ql "$1 $fn"
+	cat "$fn"
+	rm -f "$fn"
+}
+
+if [ "$1" = "--help" -o "$1" = "-h" ]; then
+	echo "ql - control Quod Libet $VERSION quickly" 1>&2
+	echo "Usage: $0 [command]" 1>&2
+	exit 1
+fi
+
+case "$1" in
+	play|next|previous|quit) _ql "$1" ;;
+	pause) _ql "play-pause" ;;
+	filter|query|order|repeat|volume|random) _ql_arg "$1" "$2" ;;
+	browser) _ql_arg "set-browser" "$2" ;;
+	open) _ql_arg "open-browser" "$2" ;;
+	ls) _ql_reply dump-playlist ;;
+	status|"") _ql_reply status; echo ;;
+esac
