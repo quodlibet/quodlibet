@@ -89,7 +89,11 @@ class OneSong(gtk.VBox):
         w.set_markup("\n".join(text))
         w.set_ellipsize(pango.ELLIPSIZE_END)
         hb = gtk.HBox(spacing=12)
-        hb.pack_start(CoverImage([70, 70], song), expand=False)
+
+        cover = CoverImage([70, 70], song)
+        if cover: hb.pack_start(cover, expand=False)
+        else: cover.destroy()
+                            
         hb.pack_start(w)
         self.pack_start(Frame(tag("album"), hb), expand=False, fill=False)
 
@@ -254,7 +258,11 @@ class OneAlbum(gtk.VBox):
         w.set_ellipsize(pango.ELLIPSIZE_END)
         w.set_markup("\n".join(text))
         hb = gtk.HBox(spacing=12)
-        hb.pack_start(CoverImage([70, 70], song), expand=False)
+
+        cover = CoverImage([70, 70], song)
+        if cover: hb.pack_start(cover, expand=False)
+        else: cover.destroy()
+
         hb.pack_start(w)
         self.pack_start(hb, expand=False, fill=False)
 

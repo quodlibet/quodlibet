@@ -83,6 +83,8 @@ class CoverImage(gtk.Frame):
     def show(self):
         if self.__albumfn: gtk.Frame.show(self)
 
+    def __nonzero__(self): return bool(self.__albumfn)
+
     def __show_cover(self, box, event):
         if (self.__song and event.button == 1 and
             event.type == gtk.gdk.BUTTON_PRESS):
