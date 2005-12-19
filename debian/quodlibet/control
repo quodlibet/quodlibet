@@ -15,7 +15,7 @@ Depends: ${python:Depends}, python-ctypes,
 Recommends: quodlibet-ext (= ${Source-Version}),
 	libgstreamer-gconf0.8-0, python-gnome2-extras,
 	gstreamer0.8-mikmod | gstreamer0.8-modplug,
-	python-flac, gstreamer0.8-flac
+	python-flac, gstreamer0.8-flac,
 	gstreamer0.8-musepack,
 	quodlibet-plugins
 Suggests: gstreamer0.8-wavpack,
