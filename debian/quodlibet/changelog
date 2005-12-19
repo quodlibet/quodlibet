@@ -13,7 +13,7 @@ quodlibet (0.16-1) unstable; urgency=low
   * Tray icon tooltip is configurable. (Closes: #341062)
   * debian/compat: Level 5.
 
- -- Joe Wreschnig <piman@debian.org>  
+ -- Joe Wreschnig <piman@debian.org>  Sun, 18 Dec 2005 20:56:49 -0600
 
 quodlibet (0.15-1) unstable; urgency=low
 
