@@ -21,8 +21,7 @@ if sys.version_info < (2, 4):
 
 class MigrateUnpickler(pickle.Unpickler):
     def find_class(self, module, name):
-        if module == "formats.flac" or module == "formats/flac":
-            module = "formats.flac_"
+        if module == "formats.flac_": module = "formats.flac"
         return pickle.Unpickler.find_class(self, module, name)
 
 global library

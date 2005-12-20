@@ -9,7 +9,6 @@
 import os
 import gst
 from formats._vorbis import VCFile
-import util
 
 try: import mutagen.flac
 except: extensions = []
