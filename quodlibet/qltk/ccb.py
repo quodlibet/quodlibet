@@ -21,3 +21,18 @@ class ConfigCheckButton(gtk.CheckButton):
 
     def __toggled(self, section, option):
         config.set(section, option, str(bool(self.get_active())).lower())
+
+class ConfigCheckMenuItem(gtk.CheckMenuItem):
+    """A CheckMenuItem that connects to QL's config module, and toggles
+    a boolean configuration value when it is toggled.
+
+    It is *not* set to the current config value initially."""
+
+    def __init__(self, label, section, option):
+        super(ConfigCheckMenuItem, self).__init__(label)
+        self.connect('toggled', ConfigCheckMenuItem.__toggled, section, option)
+
+    def __toggled(self, section, option):
+        config.set(section, option, str(bool(self.get_active())).lower())
+
+    

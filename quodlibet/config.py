@@ -35,6 +35,10 @@ def init(*rc_files):
         # User-defined tag name -> human name mappings
         "header_maps": {},
 
+        "player":
+        { "time_remaining": "false",
+          },
+
         # State about the player, to restore on startup
         "memory":
         { "size": "400 350", # player window size

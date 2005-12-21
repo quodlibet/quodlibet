@@ -15,6 +15,7 @@ import util
 
 from qltk.sliderbutton import HSlider
 from qltk.sliderbutton import VSlider
+from qltk.ccb import ConfigCheckMenuItem
 
 SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
 
@@ -38,9 +39,29 @@ class SeekBar(HSlider):
         self.connect('scroll-event', self.__scroll, player)
         self.scale.connect('value-changed', self.__update_time, l)
 
+        m = gtk.Menu()
+        c = ConfigCheckMenuItem(
+            _("Display remaining time"), "player", "time_remaining")
+        c.set_active(config.getboolean("player", "time_remaining"))
+        c.connect_object('toggled', self.scale.emit, 'value-changed')
+        self.__remaining = c
+        m.append(c)
+        m.show_all()
+        self.child.connect_object('button-press-event', self.__check_menu, m)
+        self.connect_object('popup-menu', self.__popup_menu, m)
+
         gobject.timeout_add(1000, self.__check_time, player)
         watcher.connect('song-started', self.__song_changed, l)
         watcher.connect_object('seek', self.__seeked, player)
+
+    def __check_menu(self, menu, event):
+        if event.button == 3:
+            menu.popup(None, None, None, event.button, event.time)
+            return True
+
+    def __popup_menu(self, menu):
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
+        return True
 
     def __seeked(self, player, song, ms):
         # If it's not paused, we'll grab it in our next update.
@@ -73,7 +94,10 @@ class SeekBar(HSlider):
         return True
 
     def __update_time(self, scale, timer):
-        timer.set_text(util.format_time(scale.get_value()))
+        value = scale.get_value()
+        max = scale.get_adjustment().upper
+        value -= self.__remaining.get_active() * max
+        timer.set_text(util.format_time(value))
 
     def __song_changed(self, watcher, song, label):
         if song and song.get("~#length", 0) > 0:
@@ -85,6 +109,7 @@ class SeekBar(HSlider):
             self.scale.set_range(0, 1)
             self.scale.set_value(0)
             self.__seekable = False
+        self.scale.emit('value-changed')
 
 class Volume(VSlider):
     def __init__(self, device):
