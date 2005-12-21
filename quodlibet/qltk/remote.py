@@ -154,7 +154,7 @@ class FIFOControl(object):
         if window.get_property('visible'): window.hide()
         else: window.show()
 
-    def _rating(self, value, watcher, window, player):
+    def _set_rating(self, value, watcher, window, player):
         song = player.song
         if song:
             try: song["~#rating"] = max(0.0, min(1.0, float(value)))
