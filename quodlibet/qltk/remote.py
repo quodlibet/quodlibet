@@ -223,6 +223,18 @@ class FIFOControl(object):
             except AttributeError: pass
             f.close()
 
+    def _song_list(self, value, watcher, window, player):
+        if value.startswith("t"):
+            value = not window.song_scroller.get_property('visible')
+        else: value = value not in ['0', 'off', 'false']
+        window.songlist.set_property('visible', value)
+
+    def _queue(self, value, watcher, window, player):
+        if value.startswith("t"):
+            value = not window.qexpander.get_property('visible')
+        else: value = value not in ['0', 'off', 'false']
+        window.qexpander.set_property('visible', value)
+
     def _dump_playlist(self, value, watcher, window, player):
         try: f = file(value, "w")
         except EnvironmentError: pass

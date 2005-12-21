@@ -59,12 +59,16 @@ class MainSongList(SongList):
             self.set_cell_data_func(self._render, self._cdf)
             self.header_name = "~current"
 
-    def __init__(self, watcher, player):
-        SongList.__init__(self, watcher)
+    def __init__(self, watcher, player, visible):
+        super(MainSongList, self).__init__(watcher)
         self.set_rules_hint(True)
         s = watcher.connect_object('removed', map, player.remove)
         self.connect_object('destroy', watcher.disconnect, s)
         self.connect_object('row-activated', self.__select_song, player)
+        self.connect_object('notify::visible', self.__visibility, visible)
+
+    def __visibility(self, visible, event):
+        visible.set_active(self.get_property('visible'))
 
     def __select_song(self, player, indices, col):
         iter = self.model.get_iter(indices)
@@ -103,7 +107,8 @@ class QuodLibetWindow(gtk.Window):
 
         # get the playlist up before other stuff
         from qltk.queue import QueueExpander
-        self.songlist = MainSongList(watcher, player)
+        self.songlist = MainSongList(
+            watcher, player, self.ui.get_widget("/Menu/View/SongList"))
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.qexpander = QueueExpander(

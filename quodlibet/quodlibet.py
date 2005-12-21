@@ -148,7 +148,8 @@ def process_arguments():
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit"]
     controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
-                    "set-rating", "set-browser", "open-browser", "random"]
+                    "set-rating", "set-browser", "open-browser", "random",
+                    "song-list", "queue"]
 
     from util import OptionParser
     options = OptionParser(
@@ -173,6 +174,7 @@ def process_arguments():
         ("show-window", _("Show main window")),
         ("toggle-window", _("Toggle main window visibility")),
         ("focus", _("Focus the running player")),
+        ("print-playlist", _("Print the current playlist")),
         ("quit", _("Exit Quod Libet")),
         ]: options.add(opt, help=help)
 
@@ -187,6 +189,8 @@ def process_arguments():
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
+        ("queue", _("Show or hide the queue"), "on|off|t"),
+        ("song-list", _("Show or hide the main song list"), "on|off|t"),
         ("random", _("Filter on a random value"), _("tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
         ]: options.add(opt, help=help, arg=arg)
@@ -224,6 +228,7 @@ def process_arguments():
                 raise SystemExit(to(_("E: Try %s --help.") % sys.argv[0]))
             else: control(command + " " + arg)
         elif command == "status": print_fifo("status")
+        elif command == "print-playlist": print_fifo("dump-playlist")
         elif command == "volume-up": control("volume +")
         elif command == "volume-down": control("volume -")
         elif command == "play-file":
