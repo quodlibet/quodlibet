@@ -216,7 +216,7 @@ def format_size(size):
 
 def format_time(time):
     """Turn a time value in seconds into hh:mm:ss or mm:ss."""
-    if time >= 3600: # 1 hour
+    if abs(time) >= 3600: # 1 hour
         # time, in hours:minutes:seconds
         return "%d:%02d:%02d" % (time // 3600,
                                  (time % 3600) // 60, time % 60)

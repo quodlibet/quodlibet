@@ -161,6 +161,8 @@ class StringTests(TestCase):
         for i in range(0, 60*60*3, 137):
             self.failUnlessEqual(util.parse_time(util.format_time(i)), i)
 
+        self.failUnlessEqual(util.format_time(-10000, "-3:13:20"))
+
 class Ttagsplit(TestCase):
     def test_single_tag(self):
         self.failUnlessEqual(tagsplit("foo"), ["foo"])
