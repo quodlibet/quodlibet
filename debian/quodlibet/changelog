@@ -1,3 +1,9 @@
+quodlibet (0.XX-Y) unstable; urgency=low
+
+  * modplug element is in gstreamer0.8-misc, not gstreamer0.8-modplug.
+
+ -- Joe Wreschnig <piman@debian.org>  
+
 quodlibet (0.16-1) unstable; urgency=low
 
   * Default to gstreamer0.8-alsa instead of gstreamer0.8-oss for a sink.
