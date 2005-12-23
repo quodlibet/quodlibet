@@ -15,7 +15,7 @@ import formats
 import qltk
 from qltk.filesel import FileSelector
 from qltk.delete import DeleteDialog
-from qltk.properties import SongProperties
+import qltk.properties
 
 from plugins import PluginManager
 
@@ -43,10 +43,10 @@ class ExFalsoWindow(gtk.Window):
         fs = FileSelector(dir)
         self.child.pack1(fs, resize=True)
         nb = qltk.Notebook()
-        for Page in [SongProperties.EditTags,
-                     SongProperties.TagByFilename,
-                     SongProperties.RenameFiles,
-                     SongProperties.TrackNumbers]:
+        for Page in [qltk.properties.EditTags,
+                     qltk.properties.TagByFilename,
+                     qltk.properties.RenameFiles,
+                     qltk.properties.TrackNumbers]:
             nb.append_page(Page(self, watcher))
         self.child.pack2(nb, resize=False, shrink=False)
         fs.connect('changed', self.__changed)
