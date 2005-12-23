@@ -1,8 +1,0 @@
-COPYING
-README
-Makefile
-setup.py
-mp4info/__init__.py
-mp4info/_constants.py
-mp4info/itunes.py
-mp4info/mp4.c

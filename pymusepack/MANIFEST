@@ -1,9 +1,0 @@
-README
-setup.py
-musepack/__init__.py
-musepack/apev2.py
-musepack/mpc.c
-Makefile
-COPYING
-plaympc.py
-NEWS
