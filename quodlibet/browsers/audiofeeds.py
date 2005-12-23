@@ -69,10 +69,14 @@ class Feed(list):
                 if author and author not in af.list("artist"):
                     af.add('artist', author)
         else:
-            if author.email and author.email not in af.list("contact"):
-                af.add("contact", author.email)
-            if author.name and author.name not in af.list("artist"):
-                af.add("artist", author.name)
+            try:
+                if author.email and author.email not in af.list("contact"):
+                    af.add("contact", author.email)
+            except AttributeError: pass
+            try:
+                if author.name and author.name not in af.list("artist"):
+                    af.add("artist", author.name)
+            except AttributeError: pass
 
         try: values = feed.contributors
         except AttributeError: pass
