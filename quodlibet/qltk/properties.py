@@ -1223,7 +1223,9 @@ class SongProperties(qltk.Window):
 
     def __init__(self, watcher, songs):
         super(SongProperties, self).__init__()
-        self.set_default_size(300, 430)
+        if len(songs) > 1: self.set_default_size(600, 400)
+        else: self.set_default_size(400, 400)
+        paned = gtk.HPaned()
         notebook = qltk.Notebook()
         pages = []
         pages.extend([Ctr(self, watcher) for Ctr in
@@ -1232,13 +1234,12 @@ class SongProperties(qltk.Window):
             pages.append(TrackNumbers(self, watcher))
         for page in pages: notebook.append_page(page)
         self.set_border_width(12)
-        vbox = gtk.VBox(spacing=12)
-        vbox.pack_start(notebook)
 
         fbasemodel = gtk.ListStore(object, str, str, str)
         fmodel = gtk.TreeModelSort(fbasemodel)
         fview = HintedTreeView(fmodel)
         fview.connect('button-press-event', self.__pre_selection_changed)
+        fview.set_rules_hint(True)
         selection = fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         csig = selection.connect('changed', self.__selection_changed)
@@ -1246,23 +1247,15 @@ class SongProperties(qltk.Window):
 
         if len(songs) > 1:
             render = gtk.CellRendererText()
-            expander = gtk.Expander(_("Apply to these _files..."))
             c1 = gtk.TreeViewColumn(_('File'), render, text=1)
+            render.set_property('ellipsize', pango.ELLIPSIZE_END)
             c1.set_sort_column_id(1)
-            c1.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            c2 = gtk.TreeViewColumn(_('Path'), render, text=2)
-            c2.set_sort_column_id(3)
-            c2.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             fview.append_column(c1)
-            fview.append_column(c2)
-            fview.set_size_request(-1, 130)
             sw = gtk.ScrolledWindow()
             sw.add(fview)
             sw.set_shadow_type(gtk.SHADOW_IN)
-            sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            expander.add(sw)
-            expander.set_use_underline(True)
-            vbox.pack_start(expander, expand=False)
+            sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            paned.pack1(sw, shrink=True, resize=True)
 
         for song in songs:
             fbasemodel.append(
@@ -1274,7 +1267,7 @@ class SongProperties(qltk.Window):
         self.connect_object('changed', SongProperties.__set_title, self)
 
         selection.select_all()
-        self.add(vbox)
+        paned.pack2(notebook, shrink=False, resize=True)
         self.connect_object('destroy', fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
 
@@ -1289,6 +1282,8 @@ class SongProperties(qltk.Window):
         self.connect_object('changed', self.set_pending, None)
 
         self.emit('changed', songs)
+        self.add(paned)
+        paned.set_position(175)
         self.show_all()
 
     def __remove(self, watcher, songs, model, selection, sig):
