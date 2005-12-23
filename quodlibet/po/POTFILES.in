@@ -26,6 +26,7 @@ qltk/prefs.py
 qltk/properties.py
 qltk/queue.py
 qltk/quodlibet.py
+qltk/renamefiles.py
 qltk/songlist.py
 qltk/trayicon.py
 qltk/views.py
