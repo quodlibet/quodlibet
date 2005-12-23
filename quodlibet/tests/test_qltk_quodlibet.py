@@ -1,13 +1,14 @@
 from tests import add, TestCase
 from qltk.watcher import SongWatcher
 from player import PlaylistPlayer
+import gtk
 
 class TMainSongList(TestCase):
     def setUp(self):
         self.watcher = SongWatcher()
         self.player = PlaylistPlayer('fakesink')
         from qltk.quodlibet import MainSongList
-        self.list = MainSongList(self.watcher, self.player)
+        self.list = MainSongList(self.watcher, self.player, gtk.CheckButton())
 
     def test_ctr(self):
         pass
