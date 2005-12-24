@@ -63,6 +63,7 @@ class PanedBrowser(gtk.VBox, Browser):
 
             menu = gtk.Menu()
             songs = self.__get_songs()
+            songs.sort()
 
             enqueue = gtk.ImageMenuItem(stock.ENQUEUE)
             enqueue.connect_object('activate', main.playlist.enqueue, songs)
