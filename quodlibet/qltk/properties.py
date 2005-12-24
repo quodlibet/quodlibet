@@ -299,6 +299,7 @@ class EditTags(gtk.VBox):
         view.connect('popup-menu', self.__popup_menu)
         view.connect('button-press-event', self.__button_press)
         selection.connect('changed', self.__tag_select, remove)
+        self.show_all()
 
     def __enable_save(self, *args):
         buttons = args[-1]
@@ -705,6 +706,8 @@ class TagByFilename(gtk.VBox):
         save.connect('clicked', self.__save_files, prop, view, entry,
                      addreplace, watcher)
 
+        self.show_all()
+
     def __update(self, songs, parent, view, combo, entry, preview, save,
                  space, titlecase, split):
         from library import AudioFileGroup
@@ -941,6 +944,8 @@ class TrackNumbers(gtk.VBox):
             'changed', self.__class__.__update, self,
             spin_total, model, save, revert)
 
+        self.show_all()
+
     def __row_edited(self, render, path, new, model, preview, save):
         row = model[path]
         if row[2] != new:
@@ -1052,6 +1057,7 @@ class SongProperties(qltk.Window):
             sw.add(fview)
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            sw.show_all()
             paned.pack1(sw, shrink=True, resize=True)
 
         for song in songs:
@@ -1081,7 +1087,9 @@ class SongProperties(qltk.Window):
         self.emit('changed', songs)
         self.add(paned)
         paned.set_position(175)
-        self.show_all()
+        notebook.show()
+        paned.show()
+        self.show()
 
     def __remove(self, watcher, songs, model, selection, sig):
         to_remove = [row.iter for row in model if row[0] in songs]

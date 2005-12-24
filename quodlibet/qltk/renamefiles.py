@@ -124,6 +124,7 @@ class RenameFiles(gtk.VBox):
             'clicked', self.__rename_files, prop, save, model, watcher)
 
         render.connect('edited', self.__row_edited, model, preview, save)
+        self.show_all()
 
     def __changed(self, save, preview, entry):
         save.set_sensitive(False)
