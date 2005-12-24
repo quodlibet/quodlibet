@@ -8,6 +8,7 @@
 # $Id$
 
 import os, sys
+import sre
 import gtk, pango, gobject
 
 import stock
@@ -24,7 +25,45 @@ import unicodedata
 from library import library
 from parse import FileFromPattern
 
+class FilterCheckButton(ConfigCheckButton):
+    def __init__(self):
+        super(FilterCheckButton, self).__init__(
+            self._label, "rename", self._key)
+        try: self.set_active(config.getboolean("rename", self._key))
+        except: pass
+    active = property(lambda s: s.get_active())
+
+    def filter(self, filename): raise NotImplementedError
+
+class SpacesToUnderscores(FilterCheckButton):
+    _label = _("Replace spaces with underscores")
+    _key = "spaces"
+    def filter(self, filename): return filename.replace(" ", "_")
+
+class StripWindowsIncompat(FilterCheckButton):
+    _label = _("Strip _Windows-incompatible characters")
+    _key = "windows"
+    BAD = '\:*?;"<>|'
+    def filter(self, filename):
+        return "".join(map(lambda s: (s in self.BAD and "_") or s, filename))
+
+class StripDiacriticals(FilterCheckButton):
+    _label = _("Strip _diacritical marks")
+    _key = "diacriticals"
+    def filter(self, filename):
+        return filter(lambda s: not unicodedata.combining(s),
+                      unicodedata.normalize('NFKD', filename))
+
+class StripNonASCII(FilterCheckButton):
+    _label = _("Strip non-_ASCII characters")
+    _key = "ascii"
+    def filter(self, filename):
+        return "".join(map(lambda s: (s <= "~" and s) or "_", filename))
+
 class RenameFiles(gtk.VBox):
+    FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
+               StripNonASCII]
+
     def __init__(self, prop, watcher):
         gtk.VBox.__init__(self, spacing=6)
         self.title = _("Rename Files")
@@ -58,24 +97,9 @@ class RenameFiles(gtk.VBox):
         sw.add(view)
         self.pack_start(sw)
 
-        # Checkboxes
-        replace = ConfigCheckButton(
-            _("Replace spaces with _underscores"),
-            "rename", "spaces")
-        replace.set_active(config.getboolean("rename", "spaces"))
-        windows = ConfigCheckButton(
-            _("Replace _Windows-incompatible characters"),
-            "rename", "windows")
-        windows.set_active(config.getboolean("rename", "windows"))
-        ascii = ConfigCheckButton(
-            _("Replace non-_ASCII characters"),
-            "rename", "ascii")
-        ascii.set_active(config.getboolean("rename", "ascii"))
-
         vbox = gtk.VBox()
-        vbox.pack_start(replace)
-        vbox.pack_start(windows)
-        vbox.pack_start(ascii)
+        self.__filters = [Kind() for Kind in self.FILTERS]
+        map(vbox.pack_start, self.__filters)
         self.pack_start(vbox, expand=False)
 
         # Save button
@@ -85,29 +109,16 @@ class RenameFiles(gtk.VBox):
         bbox.pack_start(save)
         self.pack_start(bbox, expand=False)
 
-        # Set tooltips
-        tips = qltk.Tooltips(self)
-        for widget, tip in [
-            (windows,
-             _("Characters not allowed in Windows filenames "
-               "(\:?;\"<>|) will be replaced by underscores")),
-            (ascii,
-             _("Characters outside of the ASCII set (A-Z, a-z, 0-9, "
-               "and punctuation) will be replaced by underscores"))]:
-            tips.set_tip(widget, tip)
-
         # Connect callbacks
-        preview_args = [combo, prop, model, save, preview,
-                        replace, windows, ascii]
+        preview_args = [combo, prop, model, save, preview]
         preview.connect('clicked', self.__preview_files, *preview_args)
         prop.connect_object(
             'changed', self.__class__.__update, self, *preview_args)
 
-        for w in [replace, windows, ascii]:
+        for w in self.__filters:
             w.connect('toggled', self.__preview_files, *preview_args)
         changed_args = [save, preview, combo.child]
-        combo.child.connect_object(
-            'changed', self.__changed, *changed_args)
+        combo.child.connect_object('changed', self.__changed, *changed_args)
 
         save.connect_object(
             'clicked', self.__rename_files, prop, save, model, watcher)
@@ -173,15 +184,10 @@ class RenameFiles(gtk.VBox):
         watcher.refresh()
         save.set_sensitive(False)
 
-    def __update(self, songs, combo, parent, model, save, preview,
-                 replace, windows, ascii):
+    def __update(self, songs, combo, parent, model, save, preview):
         self.__songs = songs
         model.clear()
         pattern = combo.child.get_text().decode("utf-8")
-
-        underscore = replace.get_active()
-        windows = windows.get_active()
-        ascii = ascii.get_active()
 
         try:
             pattern = FileFromPattern(pattern)
@@ -203,19 +209,10 @@ class RenameFiles(gtk.VBox):
         for song in self.__songs:
             newname = pattern.format(song)
             code = util.fscoding
-
-            if ascii:
-                def noncomb(uc): return not unicodedata.combining(uc)
-                newname = filter(
-                    noncomb, unicodedata.normalize('NFKD', newname))
-                newname = newname.encode("ascii","replace").decode("ascii")
-            else:
-                newname = newname.encode(code, "replace").decode(code)
+            newname = newname.encode(code, "replace").decode(code)
+            for f in self.__filters:
+                if f.active: newname = f.filter(newname)
             basename = song("~basename").decode(code, "replace")
-            if underscore: newname = newname.replace(" ", "_")
-            if windows:
-                for c in '\\:*?;"<>|':
-                    newname = newname.replace(c, "_")
             model.append(row=[song, basename, newname])
         preview.set_sensitive(False)
         save.set_sensitive(bool(combo.child.get_text()))
