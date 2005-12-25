@@ -97,17 +97,31 @@ class RenameFiles(gtk.VBox):
         sw.add(view)
         self.pack_start(sw)
 
-        vbox = gtk.VBox()
-        self.__filters = [Kind() for Kind in self.FILTERS]
-        map(vbox.pack_start, self.__filters)
-        self.pack_start(vbox, expand=False)
+        hb = gtk.HBox()
+        expander = gtk.Expander(label=_("_More options..."))
+        expander.set_use_underline(True)
+        adj = gtk.Alignment(yalign=1.0, xscale=1.0)
+        adj.add(expander)
+        hb.pack_start(adj)
 
         # Save button
         save = gtk.Button(stock=gtk.STOCK_SAVE)
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
         bbox.pack_start(save)
-        self.pack_start(bbox, expand=False)
+        hb.pack_start(bbox, expand=False)
+        self.pack_start(hb, expand=False)
+
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        vbox = gtk.VBox()
+        self.__filters = [Kind() for Kind in self.FILTERS]
+        map(vbox.pack_start, self.__filters)
+        sw.add_with_viewport(vbox)
+        self.pack_start(sw, expand=False)
+
+        expander.connect("notify::expanded", self.__notify_expanded, sw)
+        expander.set_expanded(False)
 
         # Connect callbacks
         preview_args = [combo, prop, model, save, preview]
@@ -125,6 +139,10 @@ class RenameFiles(gtk.VBox):
 
         render.connect('edited', self.__row_edited, model, preview, save)
         self.show_all()
+        sw.hide()
+
+    def __notify_expanded(self, expander, event, vbox):
+        vbox.set_property('visible', expander.get_property('expanded'))
 
     def __changed(self, save, preview, entry):
         save.set_sensitive(False)

@@ -52,7 +52,7 @@ if __name__ == "__main__":
     from qltk.watcher import SongWatcher
     w = ExFalsoWindow(SongWatcher(), args[0])
     w.connect('destroy', gtk.main_quit)
-    w.show_all()
+    w.show()
 
     if (os.path.exists(const.CONTROL) and
         not config.getboolean('exfalso', 'shutup')):

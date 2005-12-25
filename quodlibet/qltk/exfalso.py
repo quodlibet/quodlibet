@@ -41,8 +41,10 @@ class ExFalsoWindow(gtk.Window):
         self.set_default_size(700, 500)
         self.add(gtk.HPaned())
         fs = FileSelector(dir)
+        fs.show_all()
         self.child.pack1(fs, resize=True)
         nb = qltk.Notebook()
+        nb.show()
         for Page in [qltk.properties.EditTags,
                      qltk.properties.TagByFilename,
                      qltk.properties.RenameFiles,
@@ -63,6 +65,7 @@ class ExFalsoWindow(gtk.Window):
         # plugin support
         self.pm = EFPluginManager(watcher, ["./plugins", const.PLUGINS])
         self.pm.rescan()
+        self.child.show()
 
     def set_pending(self, button, *excess):
         self.__save = button
