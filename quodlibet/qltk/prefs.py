@@ -124,7 +124,7 @@ class PreferencesWindow(qltk.Window):
 
             headers.extend(others.get_text().split())
             if "~current" in headers: headers.remove("~current")
-            config.set("settings", "headers", " ".join(headers))
+            config.set("settings", "headers", " ".join(headers).lower())
             SongList.set_all_column_headers(headers)
 
     class Browsers(gtk.VBox):
@@ -184,7 +184,7 @@ class PreferencesWindow(qltk.Window):
             config.set(section, name, entry.get_text())
 
         def __update_panes(self, button, cbes):
-            panes = " ".join([c.child.get_text() for c in cbes])
+            panes = " ".join([c.child.get_text() for c in cbes]).lower()
             config.set('browsers', 'panes', panes)
             import browsers
             try: browsers.paned.PanedBrowser.set_all_panes()
