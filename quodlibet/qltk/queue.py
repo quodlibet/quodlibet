@@ -129,6 +129,8 @@ class PlayQueue(SongList):
         super(PlayQueue, self).__init__(watcher)
         self.set_size_request(-1, 120)
         self.model = self.get_model()
+        self.connect('row-activated', self.__go_to)
+
         menu = gtk.Menu()
         rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         rem.connect('activate', self.__remove)
@@ -142,6 +144,11 @@ class PlayQueue(SongList):
         self.enable_drop()
         self.connect_object('destroy', self.__write, self.model)
         self.__fill()
+
+    def __go_to(self, view, path, column):
+        self.model.go_to(self.model.get_iter(path))
+        from player import playlist as player
+        player.next()
 
     def __fill(self):
         try: filenames = file(const.QUEUE, "rU").readlines()
