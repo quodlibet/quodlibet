@@ -810,7 +810,7 @@ class TagByFilename(gtk.VBox):
                   "Save this song anyway?") %(
                 util.escape(util.fsdecode(song("~basename"))))
                 ).run():
-                return True
+                break
 
             for i, h in enumerate(pattern.headers):
                 if row[i + 2]:
@@ -835,7 +835,7 @@ class TagByFilename(gtk.VBox):
                         util.escape(util.fsdecode(song('~basename'))))
                         ).run()
                     watcher.reload(song)
-                    return True
+                    break
                 was_changed.append(song)
 
             if win.step(): break
@@ -959,7 +959,9 @@ class TrackNumbers(gtk.VBox):
         for row in model:
             song = row[0]
             track = row[2]
-            if song.get("tracknumber") == track: return win.step()
+            if song.get("tracknumber") == track:
+                win.step()
+                continue
             if not song.valid() and not qltk.ConfirmAction(
                 win, _("Tag may not be accurate"),
                 _("<b>%s</b> changed while the program was running. "
@@ -968,7 +970,7 @@ class TrackNumbers(gtk.VBox):
                   "Save this song anyway?") %(
                 util.escape(util.fsdecode(song("~basename"))))
                 ).run():
-                return True
+                break
             song["tracknumber"] = track
             try: song.write()
             except:
@@ -979,7 +981,7 @@ class TrackNumbers(gtk.VBox):
                       "permission to edit it.")%(
                     util.escape(util.fsdecode(song('~basename'))))).run()
                 watcher.reload(song)
-                return True
+                break
             was_changed.append(song)
             if win.step(): break
         watcher.changed(was_changed)
