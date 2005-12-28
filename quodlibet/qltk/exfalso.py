@@ -39,10 +39,12 @@ class ExFalsoWindow(gtk.Window):
         self.set_title("Ex Falso")
         self.set_border_width(12)
         self.set_default_size(700, 500)
-        self.add(gtk.HPaned())
+        hp = gtk.HPaned()
+        hp.set_position(250)
+        self.add(hp)
         fs = FileSelector(dir)
         fs.show_all()
-        self.child.pack1(fs, resize=True)
+        self.child.pack1(fs, resize=True, shrink=False)
         nb = qltk.Notebook()
         nb.show()
         for Page in [qltk.properties.EditTags,
@@ -50,7 +52,7 @@ class ExFalsoWindow(gtk.Window):
                      qltk.properties.RenameFiles,
                      qltk.properties.TrackNumbers]:
             nb.append_page(Page(self, watcher))
-        self.child.pack2(nb, resize=False, shrink=False)
+        self.child.pack2(nb, resize=True, shrink=False)
         fs.connect('changed', self.__changed)
         self.__cache = {}
         s = watcher.connect_object('refresh', FileSelector.rescan, fs)
