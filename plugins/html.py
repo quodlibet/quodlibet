@@ -22,7 +22,7 @@ HTML = '''<?xml version="1.0" encoding="UTF-8"?>
 <html>
 <head><title>Quod Libet Playlist</title>
  <style type="text/css">
-  table {table-collapse:collapse; border-spacing:0; width: 100%}
+  table {table-collapse:collapse; border-spacing:0; width: 100%%}
   td {border: 0; padding:7px}
   th {border: 0; padding:7px; text-align: left}
  </style>
