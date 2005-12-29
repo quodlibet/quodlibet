@@ -17,7 +17,7 @@ import util
 PLUGIN_NAME = "Show the lyrics"
 PLUGIN_DESC = "Search for and save the lyrics of songs, using leolyrics.com."
 PLUGIN_ICON = gtk.STOCK_EDIT #For now
-PLUGIN_VERSION = "0.12.2"
+PLUGIN_VERSION = "0.12.3"
 
 class LyricWindow(gtk.Window):
     
@@ -26,7 +26,7 @@ class LyricWindow(gtk.Window):
         self.set_border_width(12)
         self.songlist = []
         self.set_title(song.comma("~title~version") + " - " +
-		       song.comma("artist") + " - Lyrics")
+               song.comma("artist") + " - Lyrics")
 
         vbox = gtk.VBox(spacing=12)
         view = gtk.TextView()
@@ -124,10 +124,10 @@ class LyricWindow(gtk.Window):
             # We don't really need the top 100 matches, so I'm limiting it to ten
             matches = xmldoc.getElementsByTagName('result')[:10]
             songs = map(lambda x:
-                        x.getElementsByTagName('name')[0].firstChild.nodeValue
-			+ " - " +
-			x.getElementsByTagName('title')[0].firstChild.nodeValue,
-			matches)
+                x.getElementsByTagName('name')[0].firstChild.nodeValue
+                + " - " +
+                x.getElementsByTagName('title')[0].firstChild.nodeValue,
+                matches)
             hids = map(lambda x: x.getAttribute('hid'), matches)
             exacts = map(lambda x: x.getAttribute('exactMatch'), matches)
             
@@ -212,4 +212,4 @@ class LyricWindow(gtk.Window):
 
 class NoLyricsFoundException(Exception): pass
 
-plugin_song = LyricWindow
+plugin_single_song = LyricWindow
