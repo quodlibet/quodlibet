@@ -4,7 +4,6 @@ from tests import registerCase
 import util
 from util import re_esc, encode, decode, mkdir, iscommand
 from util import find_subtitle, split_album, split_title, split_value, tagsplit
-from util import PatternFromFile
 from util import format_time_long as f_t_l
 import os
 
@@ -42,6 +41,7 @@ class FSTests(TestCase):
         self.failUnlessEqual(util.unexpand(d + "/"), "~/")
         self.failUnlessEqual(util.unexpand(d + "foobar/"), d + "foobar/")
         self.failUnlessEqual(util.unexpand(os.path.join(d, "la/la")),"~/la/la")
+registerCase(FSTests)
 
 class StringTests(TestCase):
     def test_to(self):
@@ -162,6 +162,7 @@ class StringTests(TestCase):
             self.failUnlessEqual(util.parse_time(util.format_time(i)), i)
 
         self.failUnlessEqual(util.format_time(-124), "-2:04")
+registerCase(StringTests)
 
 class Ttagsplit(TestCase):
     def test_single_tag(self):
@@ -180,83 +181,7 @@ class Ttagsplit(TestCase):
         self.failUnlessEqual(tagsplit("~#foo~~#bar"), ["~#foo", "~#bar"])
 registerCase(Ttagsplit)
 
-class TBPTests(TestCase):
-    def setUp(self):
-        self.f1 = '/path/Artist/Album/01 - Title.mp3'
-        self.f2 = '/path/Artist - Album/01. Title.mp3'
-        self.f3 = '/path/01 - Artist - Title.mp3'
-        self.b1 = '/path/01 - Title'
-        self.b2 = '/path/01 - Artist - Title'
-        self.nomatch = {}
-
-    def test_empty(self):
-        pat = PatternFromFile('')
-        self.assertEquals(pat.match(self.f1), self.nomatch)
-        self.assertEquals(pat.match(self.f2), self.nomatch)
-        self.assertEquals(pat.match(self.f3), self.nomatch)
-        self.assertEquals(pat.match(self.b1), self.nomatch)
-        self.assertEquals(pat.match(self.b2), self.nomatch)
-
-    def test_tracktitle(self):
-        tracktitle = {'tracknumber': '01', 'title': 'Title' }
-        btracktitle = {'tracknumber': '01', 'title': 'Artist - Title' }
-        pat = PatternFromFile('<tracknumber> - <title>')
-        self.assertEquals(pat.match(self.f1), tracktitle)
-        self.assertEquals(pat.match(self.f2), self.nomatch)
-        self.assertEquals(pat.match(self.f3), btracktitle)
-        self.assertEquals(pat.match(self.b1), self.nomatch)
-        self.assertEquals(pat.match(self.b2), self.nomatch)
-
-    def test_path(self):
-        albumtracktitle = {'tracknumber': '01', 'title': 'Title',
-                           'album': 'Album' }
-        balbumtracktitle = {'tracknumber': '01', 'title': 'Artist - Title',
-                            'album': 'path' }
-        pat = PatternFromFile('<album>/<tracknumber> - <title>')
-        self.assertEquals(pat.match(self.f1), albumtracktitle)
-        self.assertEquals(pat.match(self.f2), self.nomatch)
-        self.assertEquals(pat.match(self.f3), balbumtracktitle)
-        self.assertEquals(pat.match(self.b1), self.nomatch)
-        self.assertEquals(pat.match(self.b2), self.nomatch)
-
-    def test_all(self):
-        all = {'tracknumber': '01', 'title': 'Title',
-               'album': 'Album', 'artist': 'Artist' }
-        pat = PatternFromFile('<artist>/<album>/<tracknumber> - <title>')
-        self.assertEquals(pat.match(self.f1), all)
-        self.assertEquals(pat.match(self.f2), self.nomatch)
-        self.assertEquals(pat.match(self.f3), self.nomatch)
-        self.assertEquals(pat.match(self.b1), self.nomatch)
-        self.assertEquals(pat.match(self.b2), self.nomatch)
-
-    def test_post(self):
-        btracktitle = {'tracknumber': '01', 'title': 'Titl' }
-        vbtracktitle = {'tracknumber': '01', 'title': 'Artist - Titl' }
-        pat = PatternFromFile('<tracknumber> - <title>e')
-        self.assertEquals(pat.match(self.f1), btracktitle)
-        self.assertEquals(pat.match(self.f2), self.nomatch)
-        self.assertEquals(pat.match(self.f3), vbtracktitle)
-        self.assertEquals(pat.match(self.b1), btracktitle)
-        self.assertEquals(pat.match(self.b2), vbtracktitle)
-
-    def test_nofakes(self):
-        pat = PatternFromFile('<~#track> - <title>')
-        self.assertEquals(pat.match(self.f1), self.nomatch)
-        self.assertEquals(pat.match(self.f2), self.nomatch)
-        self.assertEquals(pat.match(self.f3), self.nomatch)
-        self.assertEquals(pat.match(self.b1), self.nomatch)
-        self.assertEquals(pat.match(self.b2), self.nomatch)
-
-    def test_disctrack(self):
-        pat = PatternFromFile('<discnumber><tracknumber>. <title>')
-        self.assertEquals(pat.match('101. T1.ogg'),
-            dict(discnumber='1', tracknumber='01', title='T1'))
-        self.assertEquals(pat.match('1318. T18.ogg'),
-            dict(discnumber='13', tracknumber='18', title='T18'))
-        self.assertEquals(pat.match('24. T4.ogg'),
-            dict(discnumber='2', tracknumber='4', title='T4'))
-
-class FormatTimeTests(TestCase):
+class Tformat_time_long(TestCase):
     def test_second(s):
         s.assertEquals(f_t_l(1).split(", ")[0], _("1 second"))
     def test_seconds(s):
@@ -290,7 +215,4 @@ class FormatTimeTests(TestCase):
     def test_drop_zero(s):
         s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 
-registerCase(FSTests)
-registerCase(StringTests)
-registerCase(TBPTests)
-registerCase(FormatTimeTests)
+registerCase(Tformat_time_long)

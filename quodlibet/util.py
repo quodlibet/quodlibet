@@ -390,53 +390,6 @@ def unexpand(filename):
         filename = filename.replace(os.path.expanduser("~/"), "~/", 1)
     return filename
 
-class PatternFromFile(object):
-    def __init__(self, pattern):
-        self.compile(pattern)
-
-    def compile(self, pattern):
-        self.headers = []
-        self.slashes = len(pattern) - len(pattern.replace(os.path.sep,'')) + 1
-        self.pattern = None
-        # patterns look like <tagname> non regexy stuff <tagname> ...
-        pieces = sre.split(r'(<[A-Za-z0-9_]+>)', pattern)
-        override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d\d??' }
-        for i, piece in enumerate(pieces):
-            if not piece: continue
-            if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
-                piece = piece.lower()   # canonicalize to lowercase tag names
-                pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+'))
-                self.headers.append(piece[1:-1].encode("ascii", "replace"))
-            else:
-                pieces[i] = re_esc(piece)
-
-        # some slight magic to anchor searches "nicely"
-        # nicely means if it starts with a <tag>, anchor with a /
-        # if it ends with a <tag>, anchor with .xxx$
-        # but if it's a <tagnumber>, don't bother as \d+ is sufficient
-        # and if it's not a tag, trust the user
-        if pattern.startswith('<') and not pattern.startswith('<tracknumber>')\
-                and not pattern.startswith('<discnumber>'):
-            pieces.insert(0, os.path.sep)
-        if pattern.endswith('>') and not pattern.endswith('<tracknumber>')\
-                and not pattern.endswith('<discnumber>'):
-            pieces.append(r'(?:\.\w+)$')
-
-        self.pattern = sre.compile(''.join(pieces))
-
-    def match(self, song):
-        if isinstance(song, dict):
-            song = song['~filename'].decode(fscoding, "replace")
-        # only match on the last n pieces of a filename, dictated by pattern
-        # this means no pattern may effectively cross a /, despite .* doing so
-        sep = os.path.sep
-        matchon = sep+sep.join(song.split(sep)[-self.slashes:])
-        match = self.pattern.search(matchon)
-
-        # dicts for all!
-        if match is None: return {}
-        else: return match.groupdict()
-
 def website(site):
     site = site.replace("\\", "\\\\").replace("\"", "\\\"")
     for s in (["sensible-browser", "gnome-open"] +

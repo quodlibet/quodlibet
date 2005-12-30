@@ -7,6 +7,7 @@
 #
 # $Id$
 
+import os
 import sre
 import gtk
 
@@ -14,12 +15,88 @@ import stock
 import qltk
 from qltk.wlw import WritingWindow
 from qltk.cbes import ComboBoxEntrySave
+from qltk.ccb import ConfigCheckButton
 
 import const
 import config
 import util
 
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
+
+class TagsFromPattern(object):
+    def __init__(self, pattern):
+        self.compile(pattern)
+
+    def compile(self, pattern):
+        self.headers = []
+        self.slashes = len(pattern) - len(pattern.replace(os.path.sep,'')) + 1
+        self.pattern = None
+        # patterns look like <tagname> non regexy stuff <tagname> ...
+        pieces = sre.split(r'(<[A-Za-z0-9_]+>)', pattern)
+        override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d\d??' }
+        for i, piece in enumerate(pieces):
+            if not piece: continue
+            if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
+                piece = piece.lower()   # canonicalize to lowercase tag names
+                pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+'))
+                self.headers.append(piece[1:-1].encode("ascii", "replace"))
+            else:
+                pieces[i] = sre.escape(piece)
+
+        # some slight magic to anchor searches "nicely"
+        # nicely means if it starts with a <tag>, anchor with a /
+        # if it ends with a <tag>, anchor with .xxx$
+        # but if it's a <tagnumber>, don't bother as \d+ is sufficient
+        # and if it's not a tag, trust the user
+        if pattern.startswith('<') and not pattern.startswith('<tracknumber>')\
+                and not pattern.startswith('<discnumber>'):
+            pieces.insert(0, os.path.sep)
+        if pattern.endswith('>') and not pattern.endswith('<tracknumber>')\
+                and not pattern.endswith('<discnumber>'):
+            pieces.append(r'(?:\.\w+)$')
+
+        self.pattern = sre.compile(''.join(pieces))
+
+    def match(self, song):
+        if isinstance(song, dict):
+            song = song['~filename'].decode(fscoding, "replace")
+        # only match on the last n pieces of a filename, dictated by pattern
+        # this means no pattern may effectively cross a /, despite .* doing so
+        sep = os.path.sep
+        matchon = sep+sep.join(song.split(sep)[-self.slashes:])
+        match = self.pattern.search(matchon)
+
+        # dicts for all!
+        if match is None: return {}
+        else: return match.groupdict()
+
+class FilterCheckButton(ConfigCheckButton):
+    def __init__(self):
+        super(FilterCheckButton, self).__init__(
+            self._label, "tagsfrompath", self._key)
+        try: self.set_active(config.getboolean("tagsfrompath", self._key))
+        except: pass
+    active = property(lambda s: s.get_active())
+
+    def filter(self, filename): raise NotImplementedError
+
+class UnderscoresToSpaces(FilterCheckButton):
+    _label = _("Replace _underscores with spaces")
+    _key = "underscores"
+    def filter(self, tag): return tag.replace("_", " ")
+
+class TitleCase(FilterCheckButton):
+    _label = _("_Title-case tags")
+    _key = "titlecase"
+    def filter(self, tag): return util.title(tag)
+
+class SplitTag(FilterCheckButton):
+    _label = _("Split into _multiple values")
+    _key = "split"
+    def filter(self, tag):
+        spls = config.get("editing", "split_on").decode('utf-8', 'replace')
+        spls = spls.split()
+        return "\n".join(util.split_value(tag, spls))
 
 class TagsFromPath(gtk.VBox):
     def __init__(self, prop, watcher):
@@ -50,19 +127,17 @@ class TagsFromPath(gtk.VBox):
 
         # Options
         vbox = gtk.VBox()
-        space = gtk.CheckButton(_("Replace _underscores with spaces"))
-        space.set_active(config.state("tbp_space"))
-        titlecase = gtk.CheckButton(_("_Title-case resulting values"))
-        titlecase.set_active(config.state("titlecase"))
-        split = gtk.CheckButton(_("Split into _multiple values"))
-        split.set_active(config.state("splitval"))
+        space = UnderscoresToSpaces()
+        titlecase = TitleCase()
+        split = SplitTag()
         addreplace = gtk.combo_box_new_text()
         addreplace.append_text(_("Tags replace existing ones"))
         addreplace.append_text(_("Tags are added to existing ones"))
-        addreplace.set_active(config.getint("settings", "addreplace"))
-        for i in [space, titlecase, split]:
-            vbox.pack_start(i)
+        addreplace.set_active(config.getboolean("tagsfrompath", "add"))
+        addreplace.connect('changed', self.__add_changed)
         vbox.pack_start(addreplace)
+        self.__filters = [space, titlecase, split]
+        map(vbox.pack_start, self.__filters)
         self.pack_start(vbox, expand=False)
 
         # Save button
@@ -71,44 +146,37 @@ class TagsFromPath(gtk.VBox):
         bbox.pack_start(save)
         self.pack_start(bbox, expand=False)
 
-        tips = qltk.Tooltips(self)
-        tips.set_tip(
-            titlecase,
-            _("The first letter of each word will be capitalized"))
+        entry.connect_object('changed', preview.set_sensitive, True)
+        entry.connect_object('changed', save.set_sensitive, False)
 
-        # Changing things -> need to preview again
-        kw = { "titlecase": titlecase,
-               "splitval": split, "tbp_space": space }
-        for i in [space, titlecase, split]:
-            i.connect('toggled', self.__changed, preview, save, kw)
-        entry.connect('changed', self.__changed, preview, save, kw)
+        UPDATE_ARGS = [view, combo, entry, preview, save]
 
-        UPDATE_ARGS = [prop, view, combo, entry, preview, save,
-                       space, titlecase, split]
-
-        # Song selection changed, preview clicked
+        for f in self.__filters:
+            f.connect('clicked', self.__preview_tags, *UPDATE_ARGS)
         preview.connect('clicked', self.__preview_tags, *UPDATE_ARGS)
         prop.connect_object(
             'changed', self.__class__.__update, self, *UPDATE_ARGS)
 
         # Save changes
-        save.connect('clicked', self.__save_files, prop, view, entry,
+        save.connect('clicked', self.__save_files, view, entry,
                      addreplace, watcher)
 
         self.show_all()
 
-    def __update(self, songs, parent, view, combo, entry, preview, save,
-                 space, titlecase, split):
+    def __add_changed(self, combo):
+        config.set("tagsfrompath", "add", str(bool(combo.get_active())))
+
+    def __update(self, songs, view, combo, entry, preview, save):
         from library import AudioFileGroup
         self.__songs = songs
 
         songinfo = AudioFileGroup(songs)
         if songs: pattern_text = entry.get_text().decode("utf-8")
         else: pattern_text = ""
-        try: pattern = util.PatternFromFile(pattern_text)
+        try: pattern = TagsFromPattern(pattern_text)
         except sre.error:
             qltk.ErrorMessage(
-                parent, _("Invalid pattern"),
+                self, _("Invalid pattern"),
                 _("The pattern\n\t<b>%s</b>\nis invalid. "
                   "Possibly it contains the same tag twice or "
                   "it has unbalanced brackets (&lt; / &gt;).")%(
@@ -134,13 +202,10 @@ class TagsFromPath(gtk.VBox):
                 msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
                         " selected do not support editing these tags.")
             qltk.ErrorMessage(
-                parent, title, msg % ", ".join(invalid)).run()
-            pattern = util.PatternFromFile("")
+                self, title, msg % ", ".join(invalid)).run()
+            pattern = TagsFromPattern("")
 
         view.set_model(None)
-        rep = space.get_active()
-        title = titlecase.get_active()
-        split = split.get_active()
         model = gtk.ListStore(object, str,
                              *([str] * len(pattern.headers)))
         for col in view.get_columns():
@@ -158,8 +223,6 @@ class TagsFromPath(gtk.VBox):
             col = gtk.TreeViewColumn(header, render, text=i + 2)
             col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             view.append_column(col)
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
 
         for song in songs:
             basename = song("~basename")
@@ -168,9 +231,8 @@ class TagsFromPath(gtk.VBox):
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
-                if rep: text = text.replace("_", " ")
-                if title: text = util.title(text)
-                if split: text = "\n".join(util.split_value(text, spls))
+                for f in self.__filters:
+                    if f.active: text = f.filter(text)
                 row.append(text)
             model.append(row=row)
 
@@ -179,12 +241,11 @@ class TagsFromPath(gtk.VBox):
         preview.set_sensitive(False)
         save.set_sensitive(len(pattern.headers) > 0)
 
-    def __save_files(self, save, parent, view, entry, addreplace, watcher):
+    def __save_files(self, save, view, entry, addreplace, watcher):
         pattern_text = entry.get_text().decode('utf-8')
-        pattern = util.PatternFromFile(pattern_text)
-        add = (addreplace.get_active() == 1)
-        config.set("settings", "addreplace", str(addreplace.get_active()))
-        win = WritingWindow(parent, len(self.__songs))
+        pattern = TagsFromPattern(pattern_text)
+        add = bool(addreplace.get_active())
+        win = WritingWindow(self, len(self.__songs))
 
         was_changed = []
 
@@ -192,7 +253,7 @@ class TagsFromPath(gtk.VBox):
             song = row[0]
             changed = False
             if not song.valid() and not qltk.ConfirmAction(
-                parent, _("Tag may not be accurate"),
+                self, _("Tag may not be accurate"),
                 _("<b>%s</b> changed while the program was running. "
                   "Saving without refreshing your library may "
                   "overwrite other changes to the song.\n\n"
@@ -217,7 +278,7 @@ class TagsFromPath(gtk.VBox):
                 try: song.write()
                 except:
                     qltk.ErrorMessage(
-                        parent, _("Unable to edit song"),
+                        self, _("Unable to edit song"),
                         _("Saving <b>%s</b> failed. The file "
                           "may be read-only, corrupted, or you "
                           "do not have permission to edit it.")%(
@@ -243,8 +304,6 @@ class TagsFromPath(gtk.VBox):
     def __preview_tags(self, activator, *args):
         self.__update(self.__songs, *args)
 
-    def __changed(self, activator, preview, save, kw):
-        for key, widget in kw.items():
-            config.set("settings", key, str(widget.get_active()))
+    def __changed(self, activator, preview, save):
         preview.set_sensitive(True)
         save.set_sensitive(False)

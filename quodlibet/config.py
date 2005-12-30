@@ -74,10 +74,6 @@ def init(*rc_files):
           # probably belong in memory
           "repeat": "false",
 
-          "tbp_space": "false", # replace _s with spaces in TBP
-          "addreplace": "0", # 0 - replace tags, 1 - add tags, in TBP
-          "titlecase": "false", # titlecase values in TBP
-          "splitval": "true", # split values in TBP
           "pipeline": "", # GStreamer audio pipeline
 
           # initial column headers
@@ -88,6 +84,13 @@ def init(*rc_files):
         { "spaces": "false",
           "windows": "true",
           "ascii": "false",
+          },
+
+        "tagsfrompath":
+        { "underscores": "false",
+          "titlecase": "false",
+          "split": "false",
+          "add": "false",
           },
 
         "plugins":
