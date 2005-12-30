@@ -187,7 +187,6 @@ class MultiDragTreeView(gtk.TreeView):
         except TypeError: return True
         self.grab_focus()
         selection = self.get_selection()
-        if selection.get_mode() != gtk.SELECTION_MULTIPLE: return
         if ((selection.path_is_selected(path)
             and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK)))):
             self.__pending_event = [x, y]
