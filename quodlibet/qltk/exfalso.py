@@ -48,7 +48,7 @@ class ExFalsoWindow(gtk.Window):
         nb = qltk.Notebook()
         nb.show()
         for Page in [qltk.properties.EditTags,
-                     qltk.properties.TagByFilename,
+                     qltk.properties.TagsFromPath,
                      qltk.properties.RenameFiles,
                      qltk.properties.TrackNumbers]:
             nb.append_page(Page(self, watcher))

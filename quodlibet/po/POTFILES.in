@@ -16,6 +16,7 @@ qltk/chooser.py
 qltk/controls.py
 qltk/delete.py
 qltk/downloader.py
+qltk/edittags.py
 qltk/exfalso.py
 qltk/filesel.py
 qltk/info.py
@@ -29,6 +30,8 @@ qltk/queue.py
 qltk/quodlibet.py
 qltk/renamefiles.py
 qltk/songlist.py
+qltk/tagsfrompath.py
+qltk/tracknumbers.py
 qltk/trayicon.py
 qltk/views.py
 qltk/watcher.py
