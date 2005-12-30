@@ -414,6 +414,7 @@ class AlbumList(Browser, gtk.VBox):
         menu.append(info)
         # Build plugins Menu
         songs = self.__get_selected_songs(view.get_selection())
+        songs.sort()
         
         submenu = self.pm.create_plugins_menu(songs)
         if submenu is not None:
