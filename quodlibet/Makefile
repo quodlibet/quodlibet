@@ -48,7 +48,7 @@ clean:
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean
-	rm -f *~ */*~ \#* *.bak *.orig
+	rm -f *~ */*~ \#* */\#* *.bak */*.bak *.orig */*.orig
 	for D in $(SUBDIRS); do cd $$D && make distclean && cd ..; done
 
 superclean: distclean

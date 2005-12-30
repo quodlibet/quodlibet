@@ -23,7 +23,7 @@ check-%: %.po
 	msgfmt -c $<
 
 clean:
-	rm -f untitled.pot messages.mo quodlibet.gmo
+	rm -f untitled.pot messages.mo quodlibet.gmo notexist missing
 
 mo-clean: distclean
 	rm -f *.mo quodlibet.pot
