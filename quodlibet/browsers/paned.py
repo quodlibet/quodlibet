@@ -18,7 +18,7 @@ if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers._base import Browser
 from qltk.songlist import SongList
-from qltk.views import HintedTreeView
+from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
 from qltk.information import Information
 from qltk.properties import SongProperties
@@ -35,12 +35,12 @@ class PanedBrowser(gtk.VBox, Browser):
         for browser in klass.__browsers: browser.refresh_panes()
     set_all_panes = classmethod(set_all_panes)
 
-    class Pane(HintedTreeView):
+    class Pane(AllTreeView):
         __render = gtk.CellRendererText()
         __render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
         def __init__(self, mytag, next):
-            HintedTreeView.__init__(self)
+            super(PanedBrowser.Pane, self).__init__()
             self.tags = util.tagsplit(mytag)
             self.__next = next
             self.__mytag = mytag

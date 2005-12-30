@@ -19,7 +19,7 @@ import util
 import cPickle as pickle
 
 from browsers._base import Browser
-from qltk.views import HintedTreeView
+from qltk.views import AllTreeView
 from qltk.getstring import GetStringDialog
 from qltk.msg import ErrorMessage
 from qltk.downloader import DownloadWindow
@@ -269,7 +269,7 @@ class AudioFeeds(Browser, gtk.VBox):
         super(AudioFeeds, self).__init__(spacing=6)
         self.__main = bool(main)
 
-        self.__view = view = HintedTreeView()
+        self.__view = view = AllTreeView()
         self.__view.set_reorderable(True)
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)

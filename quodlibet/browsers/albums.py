@@ -14,7 +14,7 @@ import qltk
 import util
 import stock
 from qltk.completion import EntryWordCompletion
-from qltk.views import HintedTreeView
+from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
 from parse import Query
 from formats._audio import PEOPLE
@@ -338,7 +338,7 @@ class AlbumList(Browser, gtk.VBox):
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
-        view = HintedTreeView()
+        view = AllTreeView()
         view.set_headers_visible(False)
         model_sort = gtk.TreeModelSort(self.__model)
         model_filter = model_sort.filter_new()
