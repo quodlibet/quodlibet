@@ -1,16 +1,16 @@
 from tests import TestCase, add
-from qltk.properties import Formatter
+from massagers import Massager
 
-class TFormatters(TestCase):
+class TMassagers(TestCase):
     def validate(self, key, values):
         for val in values:
-            self.failUnless(Formatter.fmt[key].validate(val))
+            self.failUnless(Massager.fmt[key].validate(val))
     def invalidate(self, key, values):
         for val in values:
-            self.failIf(Formatter.fmt[key].validate(val))
+            self.failIf(Massager.fmt[key].validate(val))
     def equivs(self, key, equivs):
         for value, normed in equivs.items():
-            self.failUnlessEqual(normed, Formatter.fmt[key].validate(value))
+            self.failUnlessEqual(normed, Massager.fmt[key].validate(value))
 
     def test_date_valid(self):
         self.validate("date", ["2002-10-12", "2000", "1200-10", "0000-00-00",
@@ -59,4 +59,4 @@ class TFormatters(TestCase):
                      "fef1f0f4-dead-a5da-d0d0-86753099ffff"
                      })
 
-add(TFormatters)
+add(TMassagers)
