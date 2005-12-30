@@ -15,7 +15,10 @@ import formats
 import qltk
 from qltk.filesel import FileSelector
 from qltk.delete import DeleteDialog
-import qltk.properties
+from qltk.edittags import EditTags
+from qltk.tagsfrompath import TagsFromPath
+from qltk.renamefiles import RenameFiles
+from qltk.tracknumbers import TrackNumbers
 
 from plugins import PluginManager
 
@@ -47,10 +50,7 @@ class ExFalsoWindow(gtk.Window):
         self.child.pack1(fs, resize=True, shrink=False)
         nb = qltk.Notebook()
         nb.show()
-        for Page in [qltk.properties.EditTags,
-                     qltk.properties.TagsFromPath,
-                     qltk.properties.RenameFiles,
-                     qltk.properties.TrackNumbers]:
+        for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
             nb.append_page(Page(self, watcher))
         self.child.pack2(nb, resize=True, shrink=False)
         fs.connect('changed', self.__changed)
