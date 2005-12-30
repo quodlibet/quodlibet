@@ -10,6 +10,7 @@
 import sys
 import gobject, gtk, pango
 import config
+import const
 import qltk
 import util
 import stock
@@ -388,26 +389,7 @@ class AlbumList(Browser, gtk.VBox):
         view.drag_source_set(
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         view.connect("drag-data-get", self.__drag_data_get)
-
-        menu = gtk.Menu()
-        button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
-        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
-        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-        queue = gtk.ImageMenuItem(stock.ENQUEUE)
-        rem = gtk.ImageMenuItem(stock.REMOVE)
-        menu.append(button)
-        menu.append(queue)
-        menu.append(rem)
-        menu.append(props)
-        menu.append(info)
-        menu.show_all()
-        button.connect('activate', self.__refresh_album, view.get_selection())
-        queue.connect('activate', self.__enqueue, view)
-        rem.connect('activate', self.__remove, view.get_selection(), watcher)
-        props.connect('activate', self.__properties, view, watcher)
-        info.connect('activate', self.__information, view, watcher)
-
-        view.connect_object('popup-menu', self.__popup, menu)
+        view.connect_object('popup-menu', self.__popup, view, watcher)
 
         hb = gtk.HBox(spacing=6)
         hb.pack_start(self.SortCombo(model_sort), expand=False)
@@ -416,7 +398,38 @@ class AlbumList(Browser, gtk.VBox):
         self.pack_start(sw, expand=True)
         view.set_model(model_filter)
         self.show_all()
-
+        
+    def __build_menu(self, view, watcher):
+        menu = gtk.Menu()
+        button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
+        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        queue = gtk.ImageMenuItem(stock.ENQUEUE)
+        rem = gtk.ImageMenuItem(stock.REMOVE)
+        
+        menu.append(button)
+        menu.append(queue)
+        menu.append(rem)
+        menu.append(props)
+        menu.append(info)
+        # Build plugins Menu
+        songs = self.__get_selected_songs(view.get_selection())
+        
+        submenu = self.pm.create_plugins_menu(songs)
+        if submenu is not None:
+            b = gtk.ImageMenuItem(stock.PLUGINS)
+            menu.append(b)
+            b.set_submenu(submenu)
+        menu.show_all()
+        
+        button.connect('activate', self.__refresh_album, view.get_selection())
+        queue.connect('activate', self.__enqueue, view)
+        rem.connect('activate', self.__remove, view.get_selection(), watcher)
+        props.connect('activate', self.__properties, view, watcher)
+        info.connect('activate', self.__information, view, watcher)
+        
+        return menu
+        
     def __refresh_album(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
@@ -437,8 +450,9 @@ class AlbumList(Browser, gtk.VBox):
             watcher.removed(songs)
             selection.unselect_all()
 
-    def __popup(self, menu):
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
+    def __popup(self, view, watcher):
+        self.__build_menu(view, watcher).popup(None, None, None, 0, 
+                                               gtk.get_current_event_time())
         return True
 
     def __get_selected_albums(self, selection):
