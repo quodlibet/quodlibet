@@ -121,7 +121,6 @@ class SearchBar(EmptyBar):
         combo.child.set_completion(LibraryTagCompletion(watcher, library))
         l.set_mnemonic_widget(combo.child)
         l.set_use_underline(True)
-        l.set_padding(3, 0)
         clear = gtk.Button()
         clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
         tips.set_tip(clear, _("Clear search"))
