@@ -15,14 +15,13 @@ bar_1_2 = AudioFile({
     "title": "Perhaps another",
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
-    "~#playlist_test": 1})
+    "date": "2004-12-12"})
 bar_2_1 = AudioFile({
     "~filename": "does not/exist",
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
     "artist": "Foo\nI have two artists", "album": "Bar",
-    "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists",
-    "~#playlist_test": 2, "~#playlist_hi%20there": 3})
+    "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists"})
 
 quux = AudioFile({
     "~filename": "tests/data/asong.ogg",
@@ -65,6 +64,11 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_1("~#track"), 1)
         self.failUnlessEqual(bar_1_2("~#track"), 2)
         self.failUnlessEqual(bar_2_1("~#track"), 1)
+
+    def test_year(self):
+        self.failUnlessEqual(bar_1_2("~year"), "2004")
+        self.failUnlessEqual(bar_1_2("~#year"), 2004)
+        self.failUnlessEqual(bar_1_1("~#year", 1999), 1999)
 
     def test_call_people(self):
         self.failUnlessEqual(quux("~people"), "")

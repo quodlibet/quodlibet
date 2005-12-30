@@ -90,6 +90,11 @@ class AudioFile(dict):
                 except KeyError: return to_uri(self["~filename"])
             elif key == "format":
                 return self.format
+            elif key == "year":
+                return self.get("date", default)[:4]
+            elif key == "#year":
+                try: return int(self.get("date", default)[:4])
+                except (ValueError, TypeError, KeyError): return default
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default
