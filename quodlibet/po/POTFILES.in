@@ -9,6 +9,7 @@ exfalso.py
 widgets.py
 plugins.py
 player.py
+massagers.py
 qltk/about.py
 qltk/browser.py
 qltk/chooser.py

@@ -20,6 +20,7 @@ from qltk.cbes import ComboBoxEntrySave
 from qltk.ccb import ConfigCheckButton
 from qltk.renamefiles import RenameFiles
 from qltk.tracknumbers import TrackNumbers
+from massagers import Massager
 
 import const
 import config
@@ -31,69 +32,6 @@ from util import tag
 if sys.version_info < (2, 4): from sets import Set as set
 
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
-
-class Formatter(object):
-    tags = []
-    error = "Metaerror. This should be overridden in subclasses."
-    def validate(self, value): raise NotImplementedError
-
-    def init(klass):
-        klass.fmt = {}
-        for f in globals().values():
-            if isinstance(f, type) and issubclass(f, klass):
-                for t in f.tags: klass.fmt[t] = f()
-    init = classmethod(init)
-
-class DateFormatter(Formatter):
-    tags = ["date"]
-    error = _("The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
-              "'YYYY-MM-DD HH:MM:SS' format.")
-    __match = sre.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
-                          "([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
-    def validate(self, value):
-        value = value.strip().replace(".", "-").replace("/", "-")
-        return self.__match(value) and value
-
-class GainFormatter(Formatter):
-    tags = ["replaygain_album_gain", "replaygain_track_gain"]
-    error = _("ReplayGain gains must be entered in 'x.yy dB' format.")
-    __match = sre.compile(r"^[+-]\d+\.?\d+?\s+dB$").match
-
-    def validate(self, value):
-        if self.__match(value): return value
-        else:
-            try: f = float(value.split()[0])
-            except (IndexError, TypeError, ValueError):
-                try: f = locale.atof(value.split()[0])
-                except (IndexError, TypeError, ValueError): return False
-            else: return ("%+f" % f).rstrip("0") + " dB"
-
-class PeakFormatter(Formatter):
-    tags = ["replaygain_album_peak", "replaygain_track_peak"]
-    error = _("ReplayGain peaks must be entered in 'x.yy' format.")
-    def validate(self, value):
-        value = value.strip()
-        try: f = float(value)
-        except (TypeError, ValueError):
-            try: f = locale.atof(value)
-            except (TypeError, ValueError): return False
-        else: return (f >= 0) and (f < 2) and str(f)
-
-class MBIDFormatter(Formatter):
-    tags = ["musicbrainz_trackid", "musicbrainz_albumid",
-            "musicbrainz_artistid"]
-    error = _("MusicBrainz IDs must be in UUID format.")
-    def validate(self, value):
-        value = value.encode('ascii', 'replace')
-        value = filter(str.isalnum, value.strip().lower())
-        try: int(value, 16)
-        except ValueError: return False
-        else:
-            if len(value) != 32: return False
-            else: return "-".join([value[:8], value[8:12], value[12:16],
-                                   value[16:20], value[20:]])
-
-Formatter.init()
 
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change):
@@ -174,7 +112,7 @@ class AddTagDialog(gtk.Dialog):
     def __validate(self, editable, add, invalid, tips, box):
         tag = self.get_tag()
         value = self.get_value()
-        fmt = Formatter.fmt.get(tag)
+        fmt = Massager.fmt.get(tag)
         if fmt: valid = bool(fmt.validate(value))
         else: valid = True
         add.set_sensitive(valid)
@@ -467,8 +405,8 @@ class EditTags(gtk.VBox):
             if resp != gtk.RESPONSE_OK: break
             comment = add.get_tag()
             value = add.get_value()
-            if comment in Formatter.fmt:
-                value = Formatter.fmt[comment].validate(value)
+            if comment in Massager.fmt:
+                value = Massager.fmt[comment].validate(value)
             if not self.__songinfo.can_change(comment):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -567,8 +505,8 @@ class EditTags(gtk.VBox):
     def __edit_tag(self, renderer, path, new, model, colnum):
         new = ', '.join(new.splitlines())
         row = model[path]
-        if row[0] in Formatter.fmt:
-            fmt = Formatter.fmt[row[0]]
+        if row[0] in Massager.fmt:
+            fmt = Massager.fmt[row[0]]
             newnew = fmt.validate(new)
             if not newnew:
                 qltk.WarningMessage(
