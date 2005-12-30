@@ -15,7 +15,7 @@ import gtk, pango, gobject
 import stock
 import qltk
 from qltk.wlw import WritingWindow
-from qltk.views import HintedTreeView
+from qltk.views import HintedTreeView, RCMTreeView
 from qltk.cbes import ComboBoxEntrySave
 from qltk.ccb import ConfigCheckButton
 from qltk.renamefiles import RenameFiles
@@ -193,13 +193,15 @@ class AddTagDialog(gtk.Dialog):
         return gtk.Dialog.run(self)
 
 class EditTags(gtk.VBox):
+    class TV(HintedTreeView, RCMTreeView): pass
+
     def __init__(self, parent, watcher):
         gtk.VBox.__init__(self, spacing=12)
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
         model = gtk.ListStore(str, str, bool, bool, bool, str)
-        view = HintedTreeView(model)
+        view = self.TV(model)
         selection = view.get_selection()
         render = gtk.CellRendererPixbuf()
         column = gtk.TreeViewColumn(_("Write"), render)

@@ -14,7 +14,6 @@ import gtk, pango, gobject
 import stock
 import qltk
 from qltk.wlw import WritingWindow
-from qltk.views import HintedTreeView
 from qltk.cbes import ComboBoxEntrySave
 from qltk.ccb import ConfigCheckButton
 import const

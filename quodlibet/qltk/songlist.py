@@ -20,7 +20,7 @@ import util; from util import tag
 from library import library
 from qltk.properties import SongProperties
 from qltk.information import Information
-from qltk.views import HintedTreeView
+from qltk.views import AllTreeView
 from qltk.delete import DeleteDialog
 from parse import Query
 
@@ -271,7 +271,7 @@ class PlaylistModel(gtk.ListStore):
 
 gobject.type_register(PlaylistModel)
 
-class SongList(HintedTreeView):
+class SongList(AllTreeView):
     # A TreeView containing a list of songs.
 
     # When created SongLists add themselves to this dict so they get

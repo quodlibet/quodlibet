@@ -245,7 +245,7 @@ class MultiDragTreeView(gtk.TreeView):
             gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
             self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
-class RCMTreeView(MultiDragTreeView):
+class RCMTreeView(gtk.TreeView):
     """Emits popup-menu when a row is right-clicked on."""
 
     def __init__(self, *args):
@@ -267,7 +267,7 @@ class RCMTreeView(MultiDragTreeView):
         self.emit('popup-menu')
         return True
 
-class HintedTreeView(RCMTreeView):
+class HintedTreeView(gtk.TreeView):
     """A TreeView that pops up a tooltip when you hover over a cell that
     contains ellipsized text."""
 
@@ -276,3 +276,8 @@ class HintedTreeView(RCMTreeView):
         try: tvh = HintedTreeView.hints
         except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
         tvh.connect_view(self)
+
+class AllTreeView(HintedTreeView, RCMTreeView, MultiDragTreeView):
+    """A TreeView that has hints, a context menu, and multi-selection
+    dragging support."""
+    pass

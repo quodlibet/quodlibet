@@ -11,7 +11,7 @@ import urllib
 import gobject, gtk, pango
 import util
 
-from qltk.views import HintedTreeView
+from qltk.views import AllTreeView
 
 class DownloadWindow(gtk.Window):
     __window = None
@@ -30,7 +30,7 @@ class DownloadWindow(gtk.Window):
         self.set_border_width(12)
         self.__timeout = None
         model = gtk.ListStore(object, object, int) # fileobjs - source, target
-        tv = HintedTreeView()
+        tv = AllTreeView()
         tv.connect('popup-menu', self.__popup_menu)
         tv.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         tv.set_model(model)

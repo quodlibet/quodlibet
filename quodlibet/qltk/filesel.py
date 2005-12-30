@@ -16,7 +16,7 @@ import formats
 import qltk
 import util
 
-from qltk.views import HintedTreeView, RCMTreeView
+from qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 from qltk.getstring import GetStringDialog
 
 def search_func(model, column, key, iter, handledirs):
@@ -25,7 +25,7 @@ def search_func(model, column, key, iter, handledirs):
         check = os.path.basename(check) or '/'
     return key not in check.lower() and key not in check
 
-class DirectoryTree(RCMTreeView):
+class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def cell_data(column, cell, model, iter):
         cell.set_property('text', util.fsdecode(
             os.path.basename(model[iter][0])) or "/")
@@ -196,7 +196,7 @@ class FileSelector(gtk.VPaned):
         self.__filter = filter
 
         dirlist = DirectoryTree(initial)
-        filelist = HintedTreeView(gtk.ListStore(str))
+        filelist = AllTreeView(gtk.ListStore(str))
         column = gtk.TreeViewColumn(_("Songs"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
