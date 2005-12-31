@@ -174,7 +174,7 @@ class QLBrainz(object):
 				track_data['artist'] = self.mb.GetResultData1(MBE_AlbumGetArtistName, j)
 				track_data['title'] = self.mb.GetResultData1(MBE_AlbumGetTrackName, j)
 				track_data['album'] = this_title
-				track_data['tracknumber'] = str(j)
+				track_data['tracknumber'] = u"%d/%d" % (j, tracks)
 
 				new_candidate.tracklist.append(track_data)
 
