@@ -7,7 +7,7 @@ po/tag-names.py
 formats/_audio.py
 exfalso.py
 widgets.py
-plugins.py
+plugins/__init__.py
 player.py
 massagers.py
 qltk/about.py
