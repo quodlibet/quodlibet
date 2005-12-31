@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
@@ -14,6 +15,8 @@ import gtk, pango
 import qltk
 from qltk.cover import CoverImage
 from qltk.x import Window
+from qltk.lyrics import LyricsPane
+
 import util; from util import tag
 
 if sys.version_info < (2, 4): from sets import Set as set
@@ -37,31 +40,45 @@ def Frame(name, widget):
     a.add(widget)
     return f
 
+def SW():
+    swin = gtk.ScrolledWindow()
+    swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+    return swin
+
 class NoSongs(gtk.Label):
     def __init__(self):
         super(NoSongs, self).__init__(_("No songs are selected."))
         self.title = _("No Songs")
 
-class OneSong(gtk.VBox):
+class OneSong(qltk.Notebook):
     def __init__(self, song):
-        super(OneSong, self).__init__(spacing=12)
-        self._title(song)
-        self._album(song)
-        self._people(song)
-        self._library(song)
-        self._file(song)
+        super(OneSong, self).__init__()
+        vbox = gtk.VBox(spacing=12)
+        vbox.set_border_width(12)
+        self._title(song, vbox)
+        self._album(song, vbox)
+        self._people(song, vbox)
+        self._library(song, vbox)
+        self._file(song, vbox)
+        sw = SW()
+        sw.title = _("Information")
+        sw.add_with_viewport(vbox)
+        self.append_page(sw)
+        lyrics = LyricsPane(song)
+        lyrics.title = _("Lyrics")
+        self.append_page(lyrics)
 
-    def _title(self, song):
+    def _title(self, song, box):
         l = Label()
         text = "<big><b>%s</b></big>" % util.escape(song("title"))
         if "version" in song:
             text += "\n" + util.escape(song.comma("version"))
         l.set_markup(text)
         l.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, expand=False, fill=False)
         self.title = song("title")
 
-    def _album(self, song):
+    def _album(self, song, box):
         if "album" not in song: return
         w = Label("")
         text = []
@@ -95,9 +112,9 @@ class OneSong(gtk.VBox):
         else: cover.destroy()
                             
         hb.pack_start(w)
-        self.pack_start(Frame(tag("album"), hb), expand=False, fill=False)
+        box.pack_start(Frame(tag("album"), hb), expand=False, fill=False)
 
-    def _people(self, song):
+    def _people(self, song, box):
         vb = gtk.VBox()
         if "artist" in song:
             if len(song.list("artist")) == 1: title = _("artist")
@@ -122,9 +139,9 @@ class OneSong(gtk.VBox):
                 else: name = _(names)
                 vb.pack_start(Frame(util.capitalize(name), l), expand=False)
         if not vb.get_children(): vb.destroy()
-        else: self.pack_start(Frame(title, vb), expand=False, fill=False)
+        else: box.pack_start(Frame(title, vb), expand=False, fill=False)
 
-    def _library(self, song):
+    def _library(self, song, box):
         def counter(i):
             if i == 0: return _("Never")
             else: return ngettext("%d time", "%d times", i) % i
@@ -157,9 +174,9 @@ class OneSong(gtk.VBox):
             t.attach(lab, 0, 1, i + 1, i + 2, xoptions=gtk.FILL)
             t.attach(Label(r), 1, 2, i + 1, i + 2)
 
-        self.pack_start(Frame(_("Library"), t), expand=False, fill=False)
+        box.pack_start(Frame(_("Library"), t), expand=False, fill=False)
 
-    def _file(self, song):
+    def _file(self, song, box):
         def ftime(t):
             if t == 0: return _("Unknown")
             else: return time.strftime("%c", time.localtime(t)).decode(
@@ -191,30 +208,36 @@ class OneSong(gtk.VBox):
             t.attach(lab, 0, 1, i + 1, i + 2, xoptions=gtk.FILL)
             t.attach(Label(r), 1, 2, i + 1, i + 2)
 
-        self.pack_start(Frame(_("File"), t), expand=False, fill=False)
+        box.pack_start(Frame(_("File"), t), expand=False, fill=False)
 
-class OneAlbum(gtk.VBox):
+class OneAlbum(qltk.Notebook):
     def __init__(self, songs):
-        super(OneAlbum, self).__init__(spacing=12)
+        super(OneAlbum, self).__init__()
+        swin = SW()
+        swin.title = _("Information")
+        vbox = gtk.VBox(spacing=12)
+        vbox.set_border_width(12)
+        swin.add_with_viewport(vbox)
         songs = list(songs)
         # Needed to get proper track/disc/part ordering
         songs.sort()
-        self._title(songs)
-        self._album(songs)
-        self._people(songs)
-        self._description(songs)
+        self._title(songs, vbox)
+        self._album(songs, vbox)
+        self._people(songs, vbox)
+        self._description(songs, vbox)
+        self.append_page(swin)
 
-    def _title(self, songs):
+    def _title(self, songs, box):
         song = songs[0]
         l = Label()
         l.set_ellipsize(pango.ELLIPSIZE_END)
         text = "<big><b>%s</b></big>" % util.escape(song["album"])
         if "date" in song: text += "\n" + song["date"]
         l.set_markup(text)
-        self.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, expand=False, fill=False)
         self.title = song["album"]
 
-    def _album(self, songs):
+    def _album(self, songs, box):
         text = []
 
         discs = {}
@@ -264,9 +287,9 @@ class OneAlbum(gtk.VBox):
         else: cover.destroy()
 
         hb.pack_start(w)
-        self.pack_start(hb, expand=False, fill=False)
+        box.pack_start(hb, expand=False, fill=False)
 
-    def _people(self, songs):
+    def _people(self, songs, box):
         artists = set([])
         performers = set([])
         for song in songs:
@@ -280,16 +303,16 @@ class OneAlbum(gtk.VBox):
             if len(artists) == 1: title = _("artist")
             else: title = _("artists")
             title = util.capitalize(title)
-            self.pack_start(Frame(title, Label("\n".join(artists))),
-                            expand=False, fill=False)
+            box.pack_start(Frame(title, Label("\n".join(artists))),
+                           expand=False, fill=False)
         if performers:
             if len(artists) == 1: title = _("performer")
             else: title = _("performers")
             title = util.capitalize(title)
-            self.pack_start(Frame(title, Label("\n".join(performers))),
-                            expand=False, fill=False)
+            box.pack_start(Frame(title, Label("\n".join(performers))),
+                           expand=False, fill=False)
 
-    def _description(self, songs):
+    def _description(self, songs, box):
         text = []
         cur_disc = songs[0]("~#disc", 1) - 1
         cur_part = None
@@ -321,23 +344,29 @@ class OneAlbum(gtk.VBox):
         l = Label()
         l.set_markup("\n".join(text))
         l.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(Frame(_("Track List"), l), expand=False, fill=False)
+        box.pack_start(Frame(_("Track List"), l), expand=False, fill=False)
 
-class OneArtist(gtk.VBox):
+class OneArtist(qltk.Notebook):
     def __init__(self, songs):
-        super(OneArtist, self).__init__(spacing=12)
-        self._title(songs)
-        self._album(songs)
+        super(OneArtist, self).__init__()
+        swin = SW()
+        swin.title = _("Information")
+        vbox = gtk.VBox(spacing=12)
+        vbox.set_border_width(12)
+        swin.add_with_viewport(vbox)
+        self._title(songs, vbox)
+        self._album(songs, vbox)
+        self.append_page(swin)
 
-    def _title(self, songs):
+    def _title(self, songs, box):
         l = Label()
         l.set_ellipsize(pango.ELLIPSIZE_END)
         artist = util.escape(songs[0]("artist"))
         l.set_markup("<b><big>%s</big></b>" % artist)
-        self.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, expand=False, fill=False)
         self.title = songs[0]["artist"]
 
-    def _album(self, songs):
+    def _album(self, songs, box):
         noalbum = 0
         albums = {}
         for song in songs:
@@ -357,7 +386,7 @@ class OneArtist(gtk.VBox):
                 "%d songs with no album", noalbum) % noalbum)
         l = Label("\n".join(albums))
         l.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(Frame(_("Selected Discography"), l))
+        box.pack_start(Frame(_("Selected Discography"), l))
 
         tips = qltk.Tooltips(self)
         covers = [ac for ac in covers if bool(ac[1])]
@@ -374,24 +403,30 @@ class OneArtist(gtk.VBox):
             t.attach(cov, c, c + 1, r, r + 1,
                      xoptions=gtk.EXPAND, yoptions=0)
             added.add(cover.name)
-        self.pack_start(t)
+        box.pack_start(t)
 
-class ManySongs(gtk.VBox):
+class ManySongs(qltk.Notebook):
     def __init__(self, songs):
-        super(ManySongs, self).__init__(spacing=12)
-        self._title(songs)
-        self._people(songs)
-        self._album(songs)
-        self._file(songs)
+        super(ManySongs, self).__init__()
+        swin = SW()
+        swin.title = _("Information")
+        vbox = gtk.VBox(spacing=12)
+        vbox.set_border_width(12)
+        swin.add_with_viewport(vbox)
+        self._title(songs, vbox)
+        self._people(songs, vbox)
+        self._album(songs, vbox)
+        self._file(songs, vbox)
+        self.append_page(swin)
 
-    def _title(self, songs):
+    def _title(self, songs, box):
         l = Label()
         t = ngettext("%d song", "%d songs", len(songs)) % len(songs)
         l.set_markup("<big><b>%s</b></big>" % t)
         self.title = t
-        self.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, expand=False, fill=False)
 
-    def _people(self, songs):
+    def _people(self, songs, box):
         artists = set([])
         none = 0
         for song in songs:
@@ -403,12 +438,12 @@ class ManySongs(gtk.VBox):
 
         if none: artists.append(ngettext("%d song with no artist",
                 "%d songs with no artist", none) % none)
-        self.pack_start(Frame(
+        box.pack_start(Frame(
             "%s (%d)" % (util.capitalize(_("artists")), num_artists),
             Label("\n".join(artists))),
                         expand=False, fill=False)
 
-    def _album(self, songs):
+    def _album(self, songs, box):
         albums = set([])
         none = 0
         for song in songs:
@@ -420,12 +455,12 @@ class ManySongs(gtk.VBox):
 
         if none: albums.append(ngettext("%d song with no album",
             "%d songs with no album", none) % none)
-        self.pack_start(Frame(
+        box.pack_start(Frame(
             "%s (%d)" % (util.capitalize(_("albums")), num_albums),
             Label("\n".join(albums))),
                         expand=False, fill=False)
 
-    def _file(self, songs):
+    def _file(self, songs, box):
         time = 0
         size = 0
         for song in songs:
@@ -441,8 +476,8 @@ class ManySongs(gtk.VBox):
         table.attach(Label(_("Total size:")), 0, 1, 1, 2,
                      xoptions=gtk.FILL)
         table.attach(Label(util.format_size(size)), 1, 2, 1, 2)
-        self.pack_start(Frame(_("Files"), table),
-                        expand=False, fill=False)
+        box.pack_start(Frame(_("Files"), table),
+                       expand=False, fill=False)
 
 class Information(Window):
     def __init__(self, watcher, songs):
@@ -473,23 +508,17 @@ class Information(Window):
     def __update(self):
         songs = self.__songs
         if self.child: self.child.destroy()
-        swin = gtk.ScrolledWindow()
-        swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        swin.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        self.add(swin)
         self.__songs = songs
-        if not songs: swin.add_with_viewport(NoSongs())
-        elif len(songs) == 1: swin.add_with_viewport(OneSong(songs[0]))
+        if not songs: self.add(NoSongs())
+        elif len(songs) == 1: self.add(OneSong(songs[0]))
         else:
             tags = [(s.get("artist"), s.get("album")) for s in songs]
             artists, albums = zip(*tags)
             if min(albums) == max(albums) and albums[0]:
-                swin.add_with_viewport(OneAlbum(songs))
+                self.add(OneAlbum(songs))
             elif min(artists) == max(artists) and artists[0]:
-                swin.add_with_viewport(OneArtist(songs))
-            else: swin.add_with_viewport(ManySongs(songs))
+                self.add(OneArtist(songs))
+            else: self.add(ManySongs(songs))
 
-        swin.child.set_shadow_type(gtk.SHADOW_NONE)
-        self.child.child.set_border_width(12)
-        self.set_title(swin.child.child.title + " - Quod Libet")
+        self.set_title(self.child.title + " - Quod Libet")
         self.child.show_all()

@@ -21,6 +21,7 @@ qltk/exfalso.py
 qltk/filesel.py
 qltk/info.py
 qltk/information.py
+qltk/lyrics.py
 qltk/msg.py
 qltk/playorder.py
 qltk/pluginwin.py

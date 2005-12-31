@@ -1,38 +1,34 @@
-# Copyright 2005 Eduardo Gonzalez
+# Copyright 2005 Eduardo Gonzalez, Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+#
+# $Id$
 
-# TODO: * Use different lyrics sites for different languages
+# FIXME:
+# - Too many buttons -- saving should be automatic?
+# - Make purpose of 'Add' button clearer.
+# - Indicate when the match was fuzzy in the buffer text.
 
-import os 
-import gtk, gobject
-import urllib
-from xml.dom import minidom
+import os
+import locale
 import threading
+import urllib
+import gtk, gobject
 import qltk
 import util
 
-PLUGIN_NAME = "Show the lyrics"
-PLUGIN_DESC = "Search for and save the lyrics of songs, using leolyrics.com."
-PLUGIN_ICON = gtk.STOCK_EDIT #For now
-PLUGIN_VERSION = "0.12.3"
+from xml.dom import minidom
 
-class LyricWindow(gtk.Window):
-    
+class LyricsPane(gtk.VBox):
     def __init__(self, song):
-        gtk.Window.__init__(self)
+        super(LyricsPane, self).__init__(spacing=12)
         self.set_border_width(12)
-        self.songlist = []
-        self.set_title(song.comma("~title~version") + " - " +
-               song.comma("artist") + " - Lyrics")
-
-        vbox = gtk.VBox(spacing=12)
         view = gtk.TextView()
         sw = gtk.ScrolledWindow()
         sw.add(view)
-        refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
+        refresh = qltk.Button(_("_Download"), gtk.STOCK_CONNECT)
         save = gtk.Button(stock=gtk.STOCK_SAVE)
         delete = gtk.Button(stock=gtk.STOCK_DELETE)
         add = gtk.Button(stock=gtk.STOCK_ADD)
@@ -48,40 +44,30 @@ class LyricWindow(gtk.Window):
         add.connect('clicked', self.__add, song)
 
         sw.set_shadow_type(gtk.SHADOW_IN)
-        vbox.pack_start(sw, expand=True)
+        self.pack_start(sw, expand=True)
+
+        self.pack_start(gtk.Label(_("Lyrics provided by %s.") %(
+            "http://www.leoslyrics.com")), expand=False)
+
         bbox = gtk.HButtonBox()
         bbox.pack_start(save)
         bbox.pack_start(delete)
         bbox.pack_start(refresh)
         bbox.pack_start(add)
-        vbox.pack_start(bbox, expand=False)
+        self.pack_start(bbox, expand=False)
 
         save.set_sensitive(False)
         add.set_sensitive(False)
         
-        if os.path.exists(lyricname):
-            buffer.set_text(file(lyricname).read())
-        else:
-            buffer.set_text("Searching for lyrics...")
-            delete.set_sensitive(False)
-            refresh.set_sensitive(False)
-            add.set_sensitive(False)
-            thread = threading.Thread(
-                target=self.__search, args=(song, buffer, refresh, add))
-            thread.setDaemon(True)
-            thread.start()
-
+        if os.path.exists(lyricname): buffer.set_text(file(lyricname).read())
+        else: buffer.set_text(_("No lyrics found."))
         buffer.connect_object('changed', save.set_sensitive, True)
-
-        self.add(vbox)
-        self.set_default_size(400, 300)
-        self.show_all()
 
     def __add(self, add, song):
         artist = song.comma('artist').encode('utf-8')
         title = song.comma('title').encode('utf-8')
         album = song.comma('album').encode('utf-8')
-        
+
         util.website(
             "http://leoslyrics.com/submit.php?song=%s&artist=%s&album=%s" % (
             urllib.quote(title),
@@ -89,19 +75,17 @@ class LyricWindow(gtk.Window):
             urllib.quote(album)))
         add.set_sensitive(False)
 
-    def __refresh(self, refresh, buffer, song):
-        buffer.set_text("Searching for lyrics...\n\n")
+    def __refresh(self, refresh, add, buffer, song):
+        buffer.set_text(_("Searching for lyrics..."))
         refresh.set_sensitive(False)
         thread = threading.Thread(
-            target=self.__search, args=(song, buffer, refresh))
+            target=self.__search, args=(song, buffer, refresh, add))
         thread.setDaemon(True)
         thread.start()
-
         
     def __search(self, song, buffer, refresh, add):
         artist = song.comma("artist")
         title = song.comma("title")
-        self.songlist = []
         
         try:
             sock = urllib.urlopen(
@@ -110,38 +94,29 @@ class LyricWindow(gtk.Window):
                 urllib.quote(artist.encode('utf-8')),
                 urllib.quote(title.encode('utf-8'))))        
             xmldoc = minidom.parse(sock).documentElement
-        except:
-            gobject.idle_add(buffer.set_text, "Server did not respond.")
+        except Exception, err:
+            try: err = err.strerror.decode(locale.getpreferredencoding())
+            except: err = _("Unable to download lyrics.")
+            gobject.idle_add(buffer.set_text, err)
             return
 
         sock.close()
         result_code = xmldoc.getElementsByTagName(
             'response')[0].getAttribute('code')
-        #print "Result code: ", result_code
-        if result_code == '0': #success
-            # This is 0 even if there are no matches.
 
-            # We don't really need the top 100 matches, so I'm limiting it to ten
+        if result_code == '0': # This is success even if there are no matches.
+            # Grab the first 10 results.
             matches = xmldoc.getElementsByTagName('result')[:10]
-            songs = map(lambda x:
-                x.getElementsByTagName('name')[0].firstChild.nodeValue
-                + " - " +
-                x.getElementsByTagName('title')[0].firstChild.nodeValue,
-                matches)
             hids = map(lambda x: x.getAttribute('hid'), matches)
             exacts = map(lambda x: x.getAttribute('exactMatch'), matches)
             
             if len(hids) == 0:
-                #FIXME show other matches
-                gobject.idle_add(buffer.set_text, 'Unable to find any ' +
-                                 'matches for this song. You can submit ' +
-                                 'lyrics for this song by clicking the Add ' +
-                                 'button.')
+                gobject.idle_add(
+                    buffer.set_text, _("No lyrics found for this song."))
                 add.set_sensitive(True)
                 return
              
-            for i in range(len(hids)):
-                self.songlist.append((songs[i], hids[i], exacts[i]))
+            songlist = zip(hids, exacts)
                 
             xmldoc.unlink()
             
@@ -150,45 +125,34 @@ class LyricWindow(gtk.Window):
                 sock = urllib.urlopen(
                     "http://api.leoslyrics.com/api_lyrics.php?auth="
                     "QuodLibet&hid=%s"%(
-                    urllib.quote(self.songlist[0][1].encode('utf-8'))))
+                    urllib.quote(songlist[0][0].encode('utf-8'))))
                 xmldoc = minidom.parse(sock).documentElement
-            except:
-                gobject.idle_add(buffer.set_text,
-                                 "Unable to get the lyrics. " +
-                                 "Please try again later.")
+            except Exception, err:
+                try: err = err.strerror.decode(locale.getpreferredencoding())
+                except: err = _("Unable to download lyrics.")
+                gobject.idle_add(buffer.set_text, err)
                 return
             sock.close()
 
-            text = xmldoc.getElementsByTagName('title')[0].firstChild.nodeValue
-            text += ' - ' + xmldoc.getElementsByTagName('artist')[0].getElementsByTagName('name')[0].firstChild.nodeValue + '\n\n'
-            text += xmldoc.getElementsByTagName('text')[0].firstChild.nodeValue
+            text = xmldoc.getElementsByTagName('text')[0].firstChild.nodeValue
             xmldoc.unlink()
-
-            text += "\n\nLyrics provided by leoslyrics.com"
 
             gobject.idle_add(buffer.set_text, text)
             gobject.idle_add(refresh.set_sensitive, True)
-            gobject.idle_add(add.set_sensitive, self.songlist[0][2] == 'false')
-                
-        else: #failed
-            gobject.idle_add(buffer.set_text, "Server busy, try again later.")
+            gobject.idle_add(add.set_sensitive, songlist[0][1] == 'false')
+
+        else:
+            gobject.idle_add(buffer.set_text, _("Unable to download lyrics."))
             xmldoc.unlink()
             return
 
     def __lyricname(self, song):
         return util.fsencode(os.path.join(
             os.path.expanduser("~/.lyrics"),
-            song.comma("artist").replace('/', '')[:64],
-            song.comma("~title~version").replace('/', '')[:64] + '.lyric'))
+            song.comma("artist").replace('/', '')[:128],
+            song.comma("title").replace('/', '')[:128] + '.lyric'))
 
     def __save(self, save, lyricname, buffer, delete):
-        if os.path.exists(lyricname):
-            if not qltk.ConfirmAction(
-                self, "Overwrite lyric file?",
-                "<b>%s</b> already exists. Overwrite it?" %(
-                util.escape(lyricname))).run():
-                return
-
         try: os.makedirs(os.path.dirname(lyricname))
         except EnvironmentError, err: pass
 
@@ -209,7 +173,3 @@ class LyricWindow(gtk.Window):
         except EnvironmentError: pass
         delete.set_sensitive(False)
         save.set_sensitive(True)
-
-class NoLyricsFoundException(Exception): pass
-
-plugin_single_song = LyricWindow
