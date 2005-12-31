@@ -181,7 +181,8 @@ class Playlists(gtk.VBox, Browser):
     def init(klass, watcher):
         model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):
-            model.append(row=[Playlist(Playlist.unquote(playlist))])
+            try: model.append(row=[Playlist(Playlist.unquote(playlist))])
+            except EnvironmentError: pass
         watcher.connect('removed', klass.__removed)
         watcher.connect('added', klass.__added)
         watcher.connect('changed', klass.__changed)
