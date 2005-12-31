@@ -35,6 +35,11 @@ class TTagsFromPattern(TestCase):
         self.b2 = '/path/01 - Artist - Title'
         self.nomatch = {}
 
+    def test_dict(self):
+        tracktitle = {'tracknumber': '01', 'title': 'Title' }
+        pat = TagsFromPattern('<tracknumber> - <title>')
+        self.assertEquals(pat.match({"~filename":self.f1}), tracktitle)
+
     def test_empty(self):
         pat = TagsFromPattern('')
         self.assertEquals(pat.match(self.f1), self.nomatch)

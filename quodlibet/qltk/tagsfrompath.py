@@ -59,7 +59,7 @@ class TagsFromPattern(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = song['~filename'].decode(fscoding, "replace")
+            song = song['~filename'].decode(util.fscoding, "replace")
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep
