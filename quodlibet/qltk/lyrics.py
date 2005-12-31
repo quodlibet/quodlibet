@@ -60,7 +60,10 @@ class LyricsPane(gtk.VBox):
         add.set_sensitive(False)
         
         if os.path.exists(lyricname): buffer.set_text(file(lyricname).read())
-        else: buffer.set_text(_("No lyrics found."))
+        else: buffer.set_text(_("No lyrics found.\n\nYou can click the " 
+                                "Download button to have Quod Libet search "
+                                "for lyrics online.  You can also enter them "
+                                "yourself and click save."))
         buffer.connect_object('changed', save.set_sensitive, True)
 
     def __add(self, add, song):
