@@ -78,25 +78,25 @@ class FilterCheckButton(ConfigCheckButton):
         except: pass
     active = property(lambda s: s.get_active())
 
-    def filter(self, filename): raise NotImplementedError
+    def filter(self, tag, value): raise NotImplementedError
 
 class UnderscoresToSpaces(FilterCheckButton):
     _label = _("Replace _underscores with spaces")
     _key = "underscores"
-    def filter(self, tag): return tag.replace("_", " ")
+    def filter(self, tag, value): return value.replace("_", " ")
 
 class TitleCase(FilterCheckButton):
     _label = _("_Title-case tags")
     _key = "titlecase"
-    def filter(self, tag): return util.title(tag)
+    def filter(self, tag, value): return util.title(value)
 
 class SplitTag(FilterCheckButton):
     _label = _("Split into _multiple values")
     _key = "split"
-    def filter(self, tag):
+    def filter(self, tag, value):
         spls = config.get("editing", "split_on").decode('utf-8', 'replace')
         spls = spls.split()
-        return "\n".join(util.split_value(tag, spls))
+        return "\n".join(util.split_value(value, spls))
 
 class TagsFromPath(gtk.VBox):
     def __init__(self, prop, watcher):
@@ -232,7 +232,7 @@ class TagsFromPath(gtk.VBox):
             for h in pattern.headers:
                 text = match.get(h, '')
                 for f in self.__filters:
-                    if f.active: text = f.filter(text)
+                    if f.active: text = f.filter(h, text)
                 row.append(text)
             model.append(row=row)
 

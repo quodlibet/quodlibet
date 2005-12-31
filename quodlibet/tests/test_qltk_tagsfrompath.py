@@ -9,21 +9,21 @@ class FilterTestCase(TestCase):
 class TTitleCase(FilterTestCase):
     Kind = TitleCase
     def test_simple(self):
-        self.failUnlessEqual(self.c.filter("foo bar"), "Foo Bar")
+        self.failUnlessEqual(self.c.filter("title", "foo bar"), "Foo Bar")
     def test_apostrophe(self):
-        self.failUnlessEqual(self.c.filter("IT's"), "IT's")
+        self.failUnlessEqual(self.c.filter("title", "IT's"), "IT's")
 add(TTitleCase)
 
 class TSplitTag(FilterTestCase):
     Kind = SplitTag
     def test_simple(self):
-        self.failUnlessEqual(self.c.filter("foo & bar"), "foo\nbar")
+        self.failUnlessEqual(self.c.filter("title", "foo & bar"), "foo\nbar")
 add(TSplitTag)
 
 class TUnderscoresToSpaces(FilterTestCase):
     Kind = UnderscoresToSpaces
     def test_simple(self):
-        self.failUnlessEqual(self.c.filter("foo_bar"), "foo bar")
+        self.failUnlessEqual(self.c.filter("titke", "foo_bar"), "foo bar")
 add(TUnderscoresToSpaces)
 
 class TTagsFromPattern(TestCase):
