@@ -513,13 +513,14 @@ class QuodLibetWindow(gtk.Window):
     def __song_started(self, watcher, song, player):
         self.__update_title(watcher, [song], player)
 
-        for wid in ["Jump", "Next", "Properties", "FilterGenre",
-                    "FilterArtist", "FilterAlbum", "Information"]:
+        for wid in ["Jump", "Next", "Properties", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
+        for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
+            self.ui.get_widget('/Menu/Filters/'+wid).set_sensitive(bool(song))
         if song:
             for h in ['genre', 'artist', 'album']:
                 self.ui.get_widget(
-                    "/Menu/Control/Filter%s" % h.capitalize()).set_sensitive(
+                    "/Menu/Filters/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
         if song and config.getboolean("settings", "jump"):
             self.__jump_to_current(False)
@@ -731,11 +732,11 @@ class QuodLibetWindow(gtk.Window):
         if song: Information(widgets.watcher, [song])
 
     def __hide_menus(self):
-        menus = {'genre': ["/Menu/Control/FilterGenre",
+        menus = {'genre': ["/Menu/Filters/FilterGenre",
                            "/Menu/Filters/RandomGenre"],
-                 'artist': ["/Menu/Control/FilterArtist",
+                 'artist': ["/Menu/Filters/FilterArtist",
                            "/Menu/Filters/RandomArtist"],
-                 'album':  ["/Menu/Control/FilterAlbum",
+                 'album':  ["/Menu/Filters/FilterAlbum",
                            "/Menu/Filters/RandomAlbum"],
                  None: ["/Menu/Filters/NotPlayedDay",
                         "/Menu/Filters/NotPlayedWeek",

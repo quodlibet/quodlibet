@@ -67,6 +67,10 @@ MENU = """<ui>
       <menuitem action='Quit'/>
     </menu>
     <menu action='Filters'>
+      <menuitem action='FilterGenre'/>
+      <menuitem action='FilterArtist'/>
+      <menuitem action='FilterAlbum'/>
+      <separator/>
       <menuitem action='RandomGenre'/>
       <menuitem action='RandomArtist'/>
       <menuitem action='RandomAlbum'/>
@@ -83,10 +87,6 @@ MENU = """<ui>
       <menuitem action='Previous'/>
       <menuitem action='PlayPause'/>
       <menuitem action='Next'/>
-      <separator/>
-      <menuitem action='FilterGenre'/>
-      <menuitem action='FilterArtist'/>
-      <menuitem action='FilterAlbum'/>
       <separator/>
       <menuitem action='Properties'/>
       <menuitem action='Information'/>
