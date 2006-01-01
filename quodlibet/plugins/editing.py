@@ -65,6 +65,10 @@ class TagsFromPathPlugin(object):
     active = False
     def filter(self, tag, value): return value
 
+    def __cmp__(self, other):
+        return (cmp(self._order, other._order) or
+                cmp(type(self).__name__, type(other).__name__))
+
 class EditTagsPlugin(gtk.ImageMenuItem):
     """Plugins of this type are subclasses of gtk.ImageMenuItem.
     They will be added to the context menu of the EditTags tree view.
