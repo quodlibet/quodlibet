@@ -131,7 +131,7 @@ class EditTags(gtk.VBox):
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
-        model = gtk.ListStore(str, str, bool, bool, bool, str)
+        model = gtk.ListStore(str, str, bool, bool, bool, str, bool)
         view = self.TV(model)
         selection = view.get_selection()
         render = gtk.CellRendererPixbuf()
@@ -145,21 +145,17 @@ class EditTags(gtk.VBox):
                         for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
         def cdf_write(col, rend, model, iter, (write, delete)):
             row = model[iter]
-            if not self.__songinfo.can_change(row[0]):
-                rend.set_property(
-                    'stock-id', gtk.STOCK_DIALOG_AUTHENTICATION)
-            else:
+            if row[6]:
                 rend.set_property('stock-id', None)
-                rend.set_property(
-                    'pixbuf', pixbufs[2*row[write]+row[delete]])
+                rend.set_property('pixbuf', pixbufs[2*row[write]+row[delete]])
+            else:
+                rend.set_property('stock-id', gtk.STOCK_DIALOG_AUTHENTICATION)
         column.set_cell_data_func(render, cdf_write, (2, 4))
         view.append_column(column)
-        view.connect(
-            'button-press-event', self.__write_toggle, (column, 1, 2))
+        view.connect('button-press-event', self.__write_toggle, (column, 1, 2))
 
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(
-            _('Tag'), render, text=0, strikethrough=4)
+        column = gtk.TreeViewColumn(_('Tag'), render, text=0, strikethrough=4)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         view.append_column(column)
 
@@ -384,7 +380,7 @@ class EditTags(gtk.VBox):
         orig = None
         deleted = False
         iters = [row.iter for row in model if row[0] == comment]
-        row = [comment, util.escape(value), edited, edit,deleted, orig]
+        row = [comment, util.escape(value), edited, edit,deleted, orig, True]
         if len(iters): model.insert_after(iters[-1], row=row)
         else: model.append(row=row)
 
@@ -561,7 +557,7 @@ class EditTags(gtk.VBox):
             deleted = False
             for i, v in enumerate(value.split("\n")):
                 model.append(row=[comment, v, edited, edit, deleted,
-                                  orig_value[i]])
+                                  orig_value[i], songinfo.can_change(comment)])
 
         buttonbox.set_sensitive(bool(songinfo.can_change()))
         for b in buttons: b.set_sensitive(False)
