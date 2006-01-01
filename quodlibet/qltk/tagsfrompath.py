@@ -72,7 +72,7 @@ class TagsFromPattern(object):
 
 class FilterCheckButton(ConfigCheckButton):
     __gsignals__ = {
-        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
         }
 
     def __init__(self):
@@ -80,7 +80,7 @@ class FilterCheckButton(ConfigCheckButton):
             self._label, "tagsfrompath", self._key)
         try: self.set_active(config.getboolean("tagsfrompath", self._key))
         except: pass
-        self.connect_object('toggled', self.emit, 'changed')
+        self.connect_object('toggled', self.emit, 'preview')
     active = property(lambda s: s.get_active())
 
     def filter(self, tag, value): raise NotImplementedError
@@ -165,7 +165,7 @@ class TagsFromPath(gtk.VBox):
         self.pack_start(hb, expand=False)
 
         for f in filters:
-            f.connect_object('changed', self.__preview, None, combo)
+            f.connect_object('preview', self.__preview, None, combo)
 
         vbox = gtk.VBox()
 
@@ -184,10 +184,10 @@ class TagsFromPath(gtk.VBox):
                 import traceback
                 traceback.print_exc()
             else:
-                try: f.connect_object('changed', self.__preview, None, combo)
+                try: f.connect_object('preview', self.__preview, None, combo)
                 except:
                     try: f.connect_object(
-                        'preview', self.__changed, combo.child)
+                        'changed', self.__changed, combo.child)
                     except:
                         import traceback
                         traceback.print_exc()

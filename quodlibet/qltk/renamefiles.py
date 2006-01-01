@@ -26,7 +26,7 @@ from parse import FileFromPattern
 
 class FilterCheckButton(ConfigCheckButton):
     __gsignals__ = {
-        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
         }
 
     def __init__(self):
@@ -34,7 +34,7 @@ class FilterCheckButton(ConfigCheckButton):
             self._label, "rename", self._key)
         try: self.set_active(config.getboolean("rename", self._key))
         except: pass
-        self.connect_object('toggled', self.emit, 'changed')
+        self.connect_object('toggled', self.emit, 'preview')
     active = property(lambda s: s.get_active())
 
     def filter(self, filename): raise NotImplementedError
@@ -132,7 +132,7 @@ class RenameFiles(gtk.VBox):
         self.pack_start(hb, expand=False)
 
         for filt in filters:
-            filt.connect_object('toggled', self.__preview, None, combo)
+            filt.connect_object('preview', self.__preview, None, combo)
 
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -155,10 +155,10 @@ class RenameFiles(gtk.VBox):
                 import traceback
                 traceback.print_exc()
             else:
-                try: f.connect_object('changed', self.__preview, None, combo)
+                try: f.connect_object('preview', self.__preview, None, combo)
                 except:
                     try: f.connect_object(
-                        'preview', self.__changed, combo.child)
+                        'changed', self.__changed, combo.child)
                     except:
                         import traceback
                         traceback.print_exc()

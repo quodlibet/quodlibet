@@ -21,10 +21,9 @@ class RenameFilesPlugin(object):
     as a unicode object. It should return an appropriate-transformed
     filename, still as a unicode object.
 
-    The plugin must provide either a 'changed' or 'preview'. 'changed'
-    causes the entire display to be re-previewed (e.g. via a checkbox).
-    'preview' causes the Preview button to made sensitive, and Save
-    to be disabled.
+    The plugin must provide either a 'changed' or 'preview'. 'preview'
+    causes the entire display to be re-previewed. 'changed' causes the
+    Preview button to made sensitive, and Save to be disabled.
 
     If the 'active' attribute is false, the filter will not be called.
     This is particularly useful for gtk.CheckButtons.
@@ -51,10 +50,9 @@ class TagsFromPathPlugin(object):
     as a unicode object. It should return an appropriate-transformed
     filename, still as a unicode object.
 
-    The plugin must provide either a 'changed' or 'preview'. 'changed'
-    causes the entire display to be re-previewed (e.g. via a checkbox).
-    'preview' causes the Preview button to made sensitive, and Save
-    to be disabled.
+    The plugin must provide either a 'changed' or 'preview'. 'preview'
+    causes the entire display to be re-previewed. 'changed' causes the
+    Preview button to made sensitive, and Save to be disabled.
 
     If the 'active' attribute is false, the filter will not be called.
     This is particularly useful for gtk.CheckButtons.
