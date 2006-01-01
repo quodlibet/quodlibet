@@ -137,11 +137,9 @@ class TagsFromPath(EditPane):
         config.set("tagsfrompath", "add", str(bool(combo.get_active())))
 
     def __preview(self, songs):
-        from library import AudioFileGroup
         if songs is None: songs = self.__songs
         else: self.__songs = songs
 
-        songinfo = AudioFileGroup(songs)
         if songs: pattern_text = self.combo.child.get_text().decode("utf-8")
         else: pattern_text = ""
         try: pattern = TagsFromPattern(pattern_text)
@@ -161,7 +159,7 @@ class TagsFromPath(EditPane):
         invalid = []
 
         for header in pattern.headers:
-            if not songinfo.can_change(header):
+            if not min([song.can_change(header) for song in songs]):
                 invalid.append(header)
         if len(invalid) and songs:
             if len(invalid) == 1:
