@@ -38,23 +38,30 @@ class FilterCheckButton(ConfigCheckButton):
     active = property(lambda s: s.get_active())
 
     def filter(self, filename): raise NotImplementedError
+
+    def __cmp__(self, other):
+        return (cmp(self._order, other._order) or
+                cmp(type(self).__name__, type(other).__name__))
 gobject.type_register(FilterCheckButton)
 
 class SpacesToUnderscores(FilterCheckButton):
-    _label = _("Replace spaces with underscores")
+    _label = _("Replace spaces with _underscores")
     _key = "spaces"
+    _order = 1.0
     def filter(self, filename): return filename.replace(" ", "_")
 
 class StripWindowsIncompat(FilterCheckButton):
     _label = _("Strip _Windows-incompatible characters")
     _key = "windows"
     BAD = '\:*?;"<>|'
+    _order = 1.1
     def filter(self, filename):
         return "".join(map(lambda s: (s in self.BAD and "_") or s, filename))
 
 class StripDiacriticals(FilterCheckButton):
     _label = _("Strip _diacritical marks")
     _key = "diacriticals"
+    _order = 1.2
     def filter(self, filename):
         return filter(lambda s: not unicodedata.combining(s),
                       unicodedata.normalize('NFKD', filename))
@@ -62,6 +69,7 @@ class StripDiacriticals(FilterCheckButton):
 class StripNonASCII(FilterCheckButton):
     _label = _("Strip non-_ASCII characters")
     _key = "ascii"
+    _order = 1.3
     def filter(self, filename):
         return "".join(map(lambda s: (s <= "~" and s) or "_", filename))
 
@@ -102,6 +110,12 @@ class RenameFiles(gtk.VBox):
         sw.add(view)
         self.pack_start(sw)
 
+        filters = [Kind() for Kind in self.FILTERS]
+        filters.sort()
+        vbox = gtk.VBox()
+        map(vbox.pack_start, filters)
+        self.pack_start(vbox, expand=False)
+
         hb = gtk.HBox()
         expander = gtk.Expander(label=_("_More options..."))
         expander.set_use_underline(True)
@@ -120,14 +134,25 @@ class RenameFiles(gtk.VBox):
         preview_args = [combo, parent, model, save, preview]
         changed_args = [save, preview, combo.child]
 
+        for filt in filters:
+            filt.connect('toggled', self.__preview_files, *preview_args)
+
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+
         vbox = gtk.VBox()
-        filters = [Kind() for Kind in self.FILTERS]
-        filters.extend(
-            [Kind() for Kind in parent.plugins.RenamePlugins()])
+
         self.__filters = []
-        for f in filters:
+        plugins = parent.plugins.RenamePlugins()
+        plugins.sort()
+        
+        for Kind in plugins:
+            try: f = Kind()
+            except:
+                import traceback
+                traceback.print_exc()
+                continue
+                
             try: vbox.pack_start(f)
             except:
                 import traceback
@@ -142,6 +167,10 @@ class RenameFiles(gtk.VBox):
                         traceback.print_exc()
                     else: self.__filters.append(f)
                 else: self.__filters.append(f)
+
+        # Custom filters run before the premade ones.
+        self.__filters.extend(filters)
+        self.__filters.sort()
 
         sw.add_with_viewport(vbox)
         self.pack_start(sw, expand=False)
@@ -162,6 +191,8 @@ class RenameFiles(gtk.VBox):
 
         render.connect('edited', self.__row_edited, model, preview, save)
         self.show_all()
+        # Don't display the expander if there aren't any plugins.
+        if len(self.__filters) == len(self.FILTERS): expander.hide()
         sw.hide()
 
     def __notify_expanded(self, expander, event, vbox):

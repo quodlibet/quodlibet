@@ -8,6 +8,7 @@
 # $Id$
 
 import os
+import gtk
 import const
 from plugins._manager import Manager
 
@@ -26,11 +27,20 @@ class RenameFilesPlugin(object):
     to be disabled.
 
     If the 'active' attribute is false, the filter will not be called.
-    This is particularly useful for gtk.CheckButtons."""
+    This is particularly useful for gtk.CheckButtons.
+
+    The '_order' attribute decides the sort order of the plugin. The
+    default filters have orders between 1 and 2. Plugins have order 0 by
+    default. Plugins with equal orders are sorted by class name."""
+
+    _order = 0.0
 
     active = False
     def filter(self, value): return value
 
+    def __cmp__(self, other):
+        return (cmp(self._order, other._order) or
+                cmp(type(self).__name__, type(other).__name__))
 
 class TagsFromPathPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be
