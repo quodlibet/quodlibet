@@ -108,6 +108,13 @@ class TSongWrapper(TestCase):
         def breakme(): self.wrap.woo = 1
         self.failUnlessRaises(AttributeError, breakme)
 
+    def test_cmp(self):
+        songs = [self.SongWrapper(self.AudioFile({"tracknumber": str(i)}))
+                 for i in range(10)]
+        songs.reverse()
+        songs.sort()
+        self.failUnlessEqual([s("~#track") for s in songs], range(10))
+
     def test_needs_write_yes(self):
         self.failIf(self.wrap._needs_write)
         self.wrap["woo"] = "bar"

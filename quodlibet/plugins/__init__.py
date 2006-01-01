@@ -89,7 +89,9 @@ class SongWrapper(object):
         return retval
 
     def __getitem__(self, *args): return self._song.__getitem__(*args)
-    def __cmp__(self, other): return cmp(self._song, other)
+    def __cmp__(self, other):
+        try: return cmp(self._song, other._song)
+        except: return cmp(self._song, other)
     def __contains__(self, key): return key in self._song
     def __call__(self, *args): return self._song(*args)
     def get(self, key, default=None): return self._song.get(key, default)
