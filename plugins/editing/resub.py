@@ -4,7 +4,7 @@ from plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
 
 class RegExpSub(gtk.HBox):
     __gsignals__ = {
-        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
         }
     def __init__(self):
         super(RegExpSub, self).__init__()
@@ -16,8 +16,8 @@ class RegExpSub(gtk.HBox):
         self.pack_start(self._to)
         self.pack_start(gtk.Label("/"))
 
-        self._from.connect_object('changed', self.emit, 'preview')
-        self._to.connect_object('changed', self.emit, 'preview')
+        self._from.connect_object('changed', self.emit, 'changed')
+        self._to.connect_object('changed', self.emit, 'changed')
 gobject.type_register(RegExpSub)
 
 class RenameRESub(RenameFilesPlugin, RegExpSub):
