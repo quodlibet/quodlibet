@@ -87,27 +87,27 @@ class RenameFiles(gtk.VBox):
         combo = ComboBoxEntrySave(
             const.NBP, const.NBP_EXAMPLES.split("\n"))
         hbox.pack_start(combo)
-        preview = gtk.Button(stock=stock.PREVIEW)
-        hbox.pack_start(preview, expand=False)
+        self.preview = gtk.Button(stock=stock.PREVIEW)
+        hbox.pack_start(self.preview, expand=False)
         self.pack_start(hbox, expand=False)
 
         # Tree view in a scrolling window
         model = gtk.ListStore(object, str, str)
-        view = gtk.TreeView(model)
+        self.view = gtk.TreeView(model)
         column = gtk.TreeViewColumn(
             _('File'), gtk.CellRendererText(), text=1)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        view.append_column(column)
+        self.view.append_column(column)
         render = gtk.CellRendererText()
         render.set_property('editable', True)
 
         column = gtk.TreeViewColumn(_('New Name'), render, text=2)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        view.append_column(column)
+        self.view.append_column(column)
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.add(view)
+        sw.add(self.view)
         self.pack_start(sw)
 
         filters = [Kind() for Kind in self.FILTERS]
@@ -124,18 +124,15 @@ class RenameFiles(gtk.VBox):
         hb.pack_start(adj)
 
         # Save button
-        save = gtk.Button(stock=gtk.STOCK_SAVE)
+        self.save = gtk.Button(stock=gtk.STOCK_SAVE)
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        bbox.pack_start(save)
+        bbox.pack_start(self.save)
         hb.pack_start(bbox, expand=False)
         self.pack_start(hb, expand=False)
 
-        preview_args = [combo, parent, model, save, preview]
-        changed_args = [save, preview, combo.child]
-
         for filt in filters:
-            filt.connect('toggled', self.__preview_files, *preview_args)
+            filt.connect_object('toggled', self.__preview, None, combo)
 
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -158,10 +155,10 @@ class RenameFiles(gtk.VBox):
                 import traceback
                 traceback.print_exc()
             else:
-                try: f.connect('changed', self.__preview_files, *preview_args)
+                try: f.connect_object('changed', self.__preview, None, combo)
                 except:
                     try: f.connect_object(
-                        'preview', self.__changed, *changed_args)
+                        'preview', self.__changed, combo.child)
                     except:
                         import traceback
                         traceback.print_exc()
@@ -178,18 +175,13 @@ class RenameFiles(gtk.VBox):
         expander.connect("notify::expanded", self.__notify_expanded, sw)
         expander.set_expanded(False)
 
-        # Connect callbacks
-
-        preview.connect('clicked', self.__preview_files, *preview_args)
+        self.preview.connect_object('clicked', self.__preview, None, combo)
         parent.connect_object(
-            'changed', self.__class__.__update, self, *preview_args)
+            'changed', self.__class__.__preview, self, combo)
+        combo.child.connect('changed', self.__changed)
+        self.save.connect_object('clicked', self.__rename, watcher)
 
-        combo.child.connect_object('changed', self.__changed, *changed_args)
-
-        save.connect_object(
-            'clicked', self.__rename_files, parent, save, model, watcher)
-
-        render.connect('edited', self.__row_edited, model, preview, save)
+        render.connect('edited', self.__row_edited)
         self.show_all()
         # Don't display the expander if there aren't any plugins.
         if len(self.__filters) == len(self.FILTERS): expander.hide()
@@ -198,30 +190,23 @@ class RenameFiles(gtk.VBox):
     def __notify_expanded(self, expander, event, vbox):
         vbox.set_property('visible', expander.get_property('expanded'))
 
-    def __changed(self, save, preview, entry):
-        save.set_sensitive(False)
-        preview.set_sensitive(bool(entry.get_text()))
+    def __changed(self, entry):
+        self.save.set_sensitive(False)
+        self.preview.set_sensitive(bool(entry.get_text()))
 
-    def __row_edited(self, renderer, path, new, model, preview, save):
-        row = model[path]
+    def __row_edited(self, renderer, path, new):
+        row = self.view.get_model()[path]
         if row[2] != new:
             row[2] = new
-            preview.set_sensitive(True)
-            save.set_sensitive(True)
+            self.preview.set_sensitive(True)
+            self.save.set_sensitive(True)
 
-    def __preview_files(self, button, *args):
-        self.__update(self.__songs, *args)
-        save = args[3]
-        save.set_sensitive(True)
-        preview = args[4]
-        preview.set_sensitive(False)
-
-    def __rename_files(self, parent, save, model, watcher):
-        win = WritingWindow(parent, len(self.__songs))
+    def __rename(self, watcher):
+        win = WritingWindow(self, len(self.__songs))
         was_changed = []
         skip_all = False
 
-        for row in model:
+        for row in self.view.get_model():
             song = row[0]
             oldname = row[1]
             newname = row[2].decode('utf-8')
@@ -255,10 +240,12 @@ class RenameFiles(gtk.VBox):
         win.destroy()
         watcher.changed(was_changed)
         watcher.refresh()
-        save.set_sensitive(False)
+        self.save.set_sensitive(False)
 
-    def __update(self, songs, combo, parent, model, save, preview):
-        self.__songs = songs
+    def __preview(self, songs, combo):
+        if songs is None: songs = self.__songs
+        else: self.__songs = songs
+        model = self.view.get_model()
         model.clear()
         pattern = combo.child.get_text().decode("utf-8")
 
@@ -266,8 +253,7 @@ class RenameFiles(gtk.VBox):
             pattern = FileFromPattern(pattern)
         except ValueError: 
             qltk.ErrorMessage(
-                parent,
-                _("Path is not absolute"),
+                self, _("Path is not absolute"),
                 _("The pattern\n\t<b>%s</b>\ncontains / but "
                   "does not start from root. To avoid misnamed "
                   "folders, root your pattern by starting "
@@ -287,8 +273,8 @@ class RenameFiles(gtk.VBox):
                 if f.active: newname = f.filter(newname)
             basename = song("~basename").decode(code, "replace")
             model.append(row=[song, basename, newname])
-        preview.set_sensitive(False)
-        save.set_sensitive(bool(combo.child.get_text()))
+        self.preview.set_sensitive(False)
+        self.save.set_sensitive(bool(combo.child.get_text()))
         for song in songs:
             if not song.is_file:
                 self.set_sensitive(False)

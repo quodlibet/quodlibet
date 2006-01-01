@@ -126,8 +126,7 @@ class TagsFromPath(gtk.VBox):
             const.TBP, const.TBP_EXAMPLES.split("\n"))
         hbox.pack_start(combo)
         self.entry = combo.child
-        self.entry.connect_object('changed', self.preview.set_sensitive, True)
-        self.entry.connect_object('changed', self.save.set_sensitive, False)
+        self.entry.connect('changed', self.__changed)
 
         hbox.pack_start(self.preview, expand=False)
         self.pack_start(hbox, expand=False)
@@ -187,11 +186,8 @@ class TagsFromPath(gtk.VBox):
             else:
                 try: f.connect_object('changed', self.__preview, None, combo)
                 except:
-                    try:
-                        f.connect_object(
-                            'preview', self.preview.set_sensitive, True)
-                        f.connect_object(
-                            'preview', self.save.set_sensitive, False)
+                    try: f.connect_object(
+                        'preview', self.__changed, combo.child)
                     except:
                         import traceback
                         traceback.print_exc()
@@ -221,6 +217,10 @@ class TagsFromPath(gtk.VBox):
         # Don't display the expander if there aren't any plugins.
         if len(self.__filters) == len(self.FILTERS): expander.hide()
         sw.hide()
+
+    def __changed(self, entry):
+        self.save.set_sensitive(False)
+        self.preview.set_sensitive(bool(entry.get_text()))
 
     def __notify_expanded(self, expander, event, vbox):
         vbox.set_property('visible', expander.get_property('expanded'))
