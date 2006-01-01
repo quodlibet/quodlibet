@@ -118,19 +118,22 @@ class TagsFromPath(gtk.VBox):
         hbox = gtk.HBox(spacing=12)
 
         # Main buttons
-        preview = gtk.Button(stock=stock.PREVIEW)
-        save = gtk.Button(stock=gtk.STOCK_SAVE)
+        self.preview = gtk.Button(stock=stock.PREVIEW)
+        self.save = gtk.Button(stock=gtk.STOCK_SAVE)
 
         # Text entry and preview button
         combo = ComboBoxEntrySave(
             const.TBP, const.TBP_EXAMPLES.split("\n"))
         hbox.pack_start(combo)
-        entry = combo.child
-        hbox.pack_start(preview, expand=False)
+        self.entry = combo.child
+        self.entry.connect_object('changed', self.preview.set_sensitive, True)
+        self.entry.connect_object('changed', self.save.set_sensitive, False)
+
+        hbox.pack_start(self.preview, expand=False)
         self.pack_start(hbox, expand=False)
 
         # Header preview display
-        view = gtk.TreeView()
+        self.view = view = gtk.TreeView()
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -156,23 +159,14 @@ class TagsFromPath(gtk.VBox):
         adj = gtk.Alignment(yalign=1.0, xscale=1.0)
         adj.add(expander)
         hb.pack_start(adj)
-
-        # Save button
-        # Save button
-        save = gtk.Button(stock=gtk.STOCK_SAVE)
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
-        bbox.pack_start(save)
+        bbox.pack_start(self.save)
         hb.pack_start(bbox, expand=False)
         self.pack_start(hb, expand=False)
 
-        entry.connect_object('changed', preview.set_sensitive, True)
-        entry.connect_object('changed', save.set_sensitive, False)
-
-        UPDATE_ARGS = [view, combo, entry, preview, save]
-
         for f in filters:
-            f.connect('toggled', self.__preview_tags, *UPDATE_ARGS)
+            f.connect_object('changed', self.__preview, None, combo)
 
         vbox = gtk.VBox()
 
@@ -191,11 +185,13 @@ class TagsFromPath(gtk.VBox):
                 import traceback
                 traceback.print_exc()
             else:
-                try: f.connect('changed', self.__preview_tags, *UPDATE_ARGS)
+                try: f.connect_object('changed', self.__preview, None, combo)
                 except:
                     try:
-                        f.connect_object('preview', preview.set_sensitive, True)
-                        f.connect_object('preview', save.set_sensitive, False)
+                        f.connect_object(
+                            'preview', self.preview.set_sensitive, True)
+                        f.connect_object(
+                            'preview', self.save.set_sensitive, False)
                     except:
                         import traceback
                         traceback.print_exc()
@@ -215,13 +211,11 @@ class TagsFromPath(gtk.VBox):
         expander.connect("notify::expanded", self.__notify_expanded, sw)
         expander.set_expanded(False)
 
-        preview.connect('clicked', self.__preview_tags, *UPDATE_ARGS)
-        parent.connect_object(
-            'changed', self.__class__.__update, self, *UPDATE_ARGS)
+        self.preview.connect_object('clicked', self.__preview, None, combo)
+        parent.connect_object('changed', self.__class__.__preview, self, combo)
 
         # Save changes
-        save.connect('clicked', self.__save_files, view, entry,
-                     addreplace, watcher)
+        self.save.connect_object('clicked', self.__save, addreplace, watcher)
 
         self.show_all()
         # Don't display the expander if there aren't any plugins.
@@ -234,12 +228,13 @@ class TagsFromPath(gtk.VBox):
     def __add_changed(self, combo):
         config.set("tagsfrompath", "add", str(bool(combo.get_active())))
 
-    def __update(self, songs, view, combo, entry, preview, save):
+    def __preview(self, songs, combo):
         from library import AudioFileGroup
-        self.__songs = songs
+        if songs is None: songs = self.__songs
+        else: self.__songs = songs
 
         songinfo = AudioFileGroup(songs)
-        if songs: pattern_text = entry.get_text().decode("utf-8")
+        if songs: pattern_text = self.entry.get_text().decode("utf-8")
         else: pattern_text = ""
         try: pattern = TagsFromPattern(pattern_text)
         except sre.error:
@@ -273,24 +268,23 @@ class TagsFromPath(gtk.VBox):
                 self, title, msg % ", ".join(invalid)).run()
             pattern = TagsFromPattern("")
 
-        view.set_model(None)
-        model = gtk.ListStore(object, str,
-                             *([str] * len(pattern.headers)))
-        for col in view.get_columns():
-            view.remove_column(col)
+        self.view.set_model(None)
+        model = gtk.ListStore(
+            object, str, *([str] * len(pattern.headers)))
+        for col in self.view.get_columns():
+            self.view.remove_column(col)
 
         col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
                                  text=1)
         col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        view.append_column(col)
+        self.view.append_column(col)
         for i, header in enumerate(pattern.headers):
             render = gtk.CellRendererText()
             render.set_property('editable', True)
-            render.connect(
-                'edited', self.__row_edited, model, i + 2, preview)
+            render.connect('edited', self.__row_edited, model, i + 2)
             col = gtk.TreeViewColumn(header, render, text=i + 2)
             col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            view.append_column(col)
+            self.view.append_column(col)
 
         for song in songs:
             basename = song("~basename")
@@ -305,19 +299,19 @@ class TagsFromPath(gtk.VBox):
             model.append(row=row)
 
         # save for last to potentially save time
-        if songs: view.set_model(model)
-        preview.set_sensitive(False)
-        save.set_sensitive(len(pattern.headers) > 0)
+        if songs: self.view.set_model(model)
+        self.preview.set_sensitive(False)
+        self.save.set_sensitive(len(pattern.headers) > 0)
 
-    def __save_files(self, save, view, entry, addreplace, watcher):
-        pattern_text = entry.get_text().decode('utf-8')
+    def __save(self, addreplace, watcher):
+        pattern_text = self.entry.get_text().decode('utf-8')
         pattern = TagsFromPattern(pattern_text)
         add = bool(addreplace.get_active())
         win = WritingWindow(self, len(self.__songs))
 
         was_changed = []
 
-        for row in view.get_model():
+        for row in self.view.get_model():
             song = row[0]
             changed = False
             if not song.valid() and not qltk.ConfirmAction(
@@ -361,17 +355,10 @@ class TagsFromPath(gtk.VBox):
         win.destroy()
         watcher.changed(was_changed)
         watcher.refresh()
-        save.set_sensitive(False)
+        self.save.set_sensitive(False)
 
-    def __row_edited(self, renderer, path, new, model, colnum, preview):
+    def __row_edited(self, renderer, path, new, model, colnum):
         row = model[path]
         if row[colnum] != new:
             row[colnum] = new
-            preview.set_sensitive(True)
-
-    def __preview_tags(self, activator, *args):
-        self.__update(self.__songs, *args)
-
-    def __changed(self, activator, preview, save):
-        preview.set_sensitive(True)
-        save.set_sensitive(False)
+            self.preview.set_sensitive(True)
