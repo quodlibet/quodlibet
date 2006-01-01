@@ -16,6 +16,7 @@ import qltk
 from qltk.wlw import WritingWindow
 from qltk.cbes import ComboBoxEntrySave
 from qltk.ccb import ConfigCheckButton
+from qltk._editpane import EditPane
 import const
 import config
 import util
@@ -73,27 +74,16 @@ class StripNonASCII(FilterCheckButton):
     def filter(self, filename):
         return "".join(map(lambda s: (s <= "~" and s) or "_", filename))
 
-class RenameFiles(gtk.VBox):
+class RenameFiles(EditPane):
+    title = _("Rename Files")
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
                StripNonASCII]
 
     def __init__(self, parent, watcher):
-        gtk.VBox.__init__(self, spacing=6)
-        self.title = _("Rename Files")
-        self.set_border_width(12)
+        plugins = parent.plugins.RenamePlugins()
+        super(RenameFiles, self).__init__(
+            const.NBP, const.NBP_EXAMPLES.split("\n"), plugins)
 
-        # ComboEntry and Preview button
-        hbox = gtk.HBox(spacing=12)
-        combo = ComboBoxEntrySave(
-            const.NBP, const.NBP_EXAMPLES.split("\n"))
-        hbox.pack_start(combo)
-        self.preview = gtk.Button(stock=stock.PREVIEW)
-        hbox.pack_start(self.preview, expand=False)
-        self.pack_start(hbox, expand=False)
-
-        # Tree view in a scrolling window
-        model = gtk.ListStore(object, str, str)
-        self.view = gtk.TreeView(model)
         column = gtk.TreeViewColumn(
             _('File'), gtk.CellRendererText(), text=1)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -104,95 +94,13 @@ class RenameFiles(gtk.VBox):
         column = gtk.TreeViewColumn(_('New Name'), render, text=2)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         self.view.append_column(column)
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.add(self.view)
-        self.pack_start(sw)
 
-        filters = [Kind() for Kind in self.FILTERS]
-        filters.sort()
-        vbox = gtk.VBox()
-        map(vbox.pack_start, filters)
-        self.pack_start(vbox, expand=False)
+        self.preview.connect_object('clicked', self.__preview, None)
 
-        hb = gtk.HBox()
-        expander = gtk.Expander(label=_("_More options..."))
-        expander.set_use_underline(True)
-        adj = gtk.Alignment(yalign=1.0, xscale=1.0)
-        adj.add(expander)
-        hb.pack_start(adj)
-
-        # Save button
-        self.save = gtk.Button(stock=gtk.STOCK_SAVE)
-        bbox = gtk.HButtonBox()
-        bbox.set_layout(gtk.BUTTONBOX_END)
-        bbox.pack_start(self.save)
-        hb.pack_start(bbox, expand=False)
-        self.pack_start(hb, expand=False)
-
-        for filt in filters:
-            filt.connect_object('preview', self.__preview, None, combo)
-
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-
-        vbox = gtk.VBox()
-
-        self.__filters = []
-        plugins = parent.plugins.RenamePlugins()
-        plugins.sort()
-        
-        for Kind in plugins:
-            try: f = Kind()
-            except:
-                import traceback
-                traceback.print_exc()
-                continue
-                
-            try: vbox.pack_start(f)
-            except:
-                import traceback
-                traceback.print_exc()
-            else:
-                try: f.connect_object('preview', self.__preview, None, combo)
-                except:
-                    try: f.connect_object(
-                        'changed', self.__changed, combo.child)
-                    except:
-                        import traceback
-                        traceback.print_exc()
-                    else: self.__filters.append(f)
-                else: self.__filters.append(f)
-
-        # Custom filters run before the premade ones.
-        self.__filters.extend(filters)
-        self.__filters.sort()
-
-        sw.add_with_viewport(vbox)
-        self.pack_start(sw, expand=False)
-
-        expander.connect("notify::expanded", self.__notify_expanded, sw)
-        expander.set_expanded(False)
-
-        self.preview.connect_object('clicked', self.__preview, None, combo)
-        parent.connect_object(
-            'changed', self.__class__.__preview, self, combo)
-        combo.child.connect('changed', self.__changed)
+        parent.connect_object('changed', self.__class__.__preview, self)
         self.save.connect_object('clicked', self.__rename, watcher)
 
         render.connect('edited', self.__row_edited)
-        self.show_all()
-        # Don't display the expander if there aren't any plugins.
-        if len(self.__filters) == len(self.FILTERS): expander.hide()
-        sw.hide()
-
-    def __notify_expanded(self, expander, event, vbox):
-        vbox.set_property('visible', expander.get_property('expanded'))
-
-    def __changed(self, entry):
-        self.save.set_sensitive(False)
-        self.preview.set_sensitive(bool(entry.get_text()))
 
     def __row_edited(self, renderer, path, new):
         row = self.view.get_model()[path]
@@ -242,12 +150,12 @@ class RenameFiles(gtk.VBox):
         watcher.refresh()
         self.save.set_sensitive(False)
 
-    def __preview(self, songs, combo):
+    def __preview(self, songs):
         if songs is None: songs = self.__songs
         else: self.__songs = songs
         model = self.view.get_model()
         model.clear()
-        pattern = combo.child.get_text().decode("utf-8")
+        pattern = self.combo.child.get_text().decode("utf-8")
 
         try:
             pattern = FileFromPattern(pattern)
@@ -261,20 +169,20 @@ class RenameFiles(gtk.VBox):
                 util.escape(pattern))).run()
             return
         else:
-            if combo.child.get_text():
-                combo.prepend_text(combo.child.get_text())
-                combo.write(const.NBP)
+            if self.combo.child.get_text():
+                self.combo.prepend_text(self.combo.child.get_text())
+                self.combo.write(const.NBP)
 
         for song in self.__songs:
             newname = pattern.format(song)
             code = util.fscoding
             newname = newname.encode(code, "replace").decode(code)
-            for f in self.__filters:
+            for f in self.filters:
                 if f.active: newname = f.filter(newname)
             basename = song("~basename").decode(code, "replace")
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)
-        self.save.set_sensitive(bool(combo.child.get_text()))
+        self.save.set_sensitive(bool(self.combo.child.get_text()))
         for song in songs:
             if not song.is_file:
                 self.set_sensitive(False)
