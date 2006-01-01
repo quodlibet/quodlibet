@@ -57,7 +57,8 @@ class AudioFileGroup(dict):
         def safenicestr(self):
             if self.shared and self.complete: return str(self)
             elif self.shared:
-                return '%s <i>(%s)</i>' % (str(self), self.paren())
+                return "\n".join(['%s <i>(%s)</i>' % (s, self.paren())
+                                  for s in str(self).split("\n")])
             else: return '<i>(%s)</i>' % self.paren()
 
     class SharedComment(Comment): shared = True

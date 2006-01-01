@@ -131,7 +131,7 @@ class EditTags(gtk.VBox):
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
-        model = gtk.ListStore(str, str, bool, bool, bool, str, bool)
+        model = gtk.ListStore(str, str, bool, bool, bool, str)
         view = self.TV(model)
         selection = view.get_selection()
         render = gtk.CellRendererPixbuf()
@@ -145,7 +145,7 @@ class EditTags(gtk.VBox):
                         for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
         def cdf_write(col, rend, model, iter, (write, delete)):
             row = model[iter]
-            if row[6]:
+            if row[3]:
                 rend.set_property('stock-id', None)
                 rend.set_property('pixbuf', pixbufs[2*row[write]+row[delete]])
             else:
@@ -312,7 +312,7 @@ class EditTags(gtk.VBox):
             'utf-8', 'replace').split()
 
         model, rows = view.get_selection().get_selected_rows()
-        can_change = min([model[path][6] for path in rows])
+        can_change = min([model[path][3] for path in rows])
 
         if len(rows) == 1:
             row = model[rows[0]]
@@ -380,7 +380,7 @@ class EditTags(gtk.VBox):
         orig = None
         deleted = False
         iters = [row.iter for row in model if row[0] == comment]
-        row = [comment, util.escape(value), edited, edit,deleted, orig, True]
+        row = [comment, util.escape(value), edited, edit, deleted, orig]
         if len(iters): model.insert_after(iters[-1], row=row)
         else: model.append(row=row)
 
@@ -544,21 +544,19 @@ class EditTags(gtk.VBox):
             else: keys.insert(0, comment)
 
         for comment in keys:
-            # FIXME: This is really bad. It leads to problems removing
-            # a tag from songs with different values since only the
-            # first value gets noticed (since we safenicestr the displayed
-            # value). However, without it, changing breaks from the
-            # inverse problem: since the safenicestr'd orig_value isn't
-            # in the file, the whole tag is changed, not just the one
-            # value.
+            # Handle with care.
             orig_value = songinfo[comment].split("\n")
             value = songinfo[comment].safenicestr()
             edited = False
             edit = songinfo.can_change(comment)
             deleted = False
-            for i, v in enumerate(value.split("\n")):
-                model.append(row=[comment, v, edited, edit, deleted,
-                                  orig_value[i], songinfo.can_change(comment)])
+            if value[0] == "<": # "different etc."
+                model.append(row=[comment, value, edited, edit, deleted,
+                                  "\n".join(orig_value)])
+            else:
+                for i, v in enumerate(value.split("\n")):
+                    model.append(row=[comment, v, edited, edit, deleted,
+                                      orig_value[i]])
 
         buttonbox.set_sensitive(bool(songinfo.can_change()))
         for b in buttons: b.set_sensitive(False)
