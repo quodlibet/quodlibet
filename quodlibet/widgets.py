@@ -70,6 +70,10 @@ def init():
     AlbumList.pm = SongList.pm
     SongList.pm.rescan()
 
+    from plugins.editing import EditingPlugins
+    from qltk.properties import SongProperties
+    SongProperties.plugins = EditingPlugins()
+
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted").split()
     for Kind in zip(*browsers.browsers)[2]:

@@ -25,14 +25,20 @@ from library import library
 from parse import FileFromPattern
 
 class FilterCheckButton(ConfigCheckButton):
+    __gsignals__ = {
+        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        }
+
     def __init__(self):
         super(FilterCheckButton, self).__init__(
             self._label, "rename", self._key)
         try: self.set_active(config.getboolean("rename", self._key))
         except: pass
+        self.connect_object('toggled', self.emit, 'changed')
     active = property(lambda s: s.get_active())
 
     def filter(self, filename): raise NotImplementedError
+gobject.type_register(FilterCheckButton)
 
 class SpacesToUnderscores(FilterCheckButton):
     _label = _("Replace spaces with underscores")
@@ -63,7 +69,7 @@ class RenameFiles(gtk.VBox):
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
                StripNonASCII]
 
-    def __init__(self, prop, watcher):
+    def __init__(self, parent, watcher):
         gtk.VBox.__init__(self, spacing=6)
         self.title = _("Rename Files")
         self.set_border_width(12)
@@ -111,11 +117,32 @@ class RenameFiles(gtk.VBox):
         hb.pack_start(bbox, expand=False)
         self.pack_start(hb, expand=False)
 
+        preview_args = [combo, parent, model, save, preview]
+        changed_args = [save, preview, combo.child]
+
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         vbox = gtk.VBox()
-        self.__filters = [Kind() for Kind in self.FILTERS]
-        map(vbox.pack_start, self.__filters)
+        filters = [Kind() for Kind in self.FILTERS]
+        filters.extend(
+            [Kind() for Kind in parent.plugins.RenamePlugins()])
+        self.__filters = []
+        for f in filters:
+            try: vbox.pack_start(f)
+            except:
+                import traceback
+                traceback.print_exc()
+            else:
+                try: f.connect('changed', self.__preview_files, *preview_args)
+                except:
+                    try: f.connect_object(
+                        'preview', self.__changed, *changed_args)
+                    except:
+                        import traceback
+                        traceback.print_exc()
+                    else: self.__filters.append(f)
+                else: self.__filters.append(f)
+
         sw.add_with_viewport(vbox)
         self.pack_start(sw, expand=False)
 
@@ -123,18 +150,15 @@ class RenameFiles(gtk.VBox):
         expander.set_expanded(False)
 
         # Connect callbacks
-        preview_args = [combo, prop, model, save, preview]
+
         preview.connect('clicked', self.__preview_files, *preview_args)
-        prop.connect_object(
+        parent.connect_object(
             'changed', self.__class__.__update, self, *preview_args)
 
-        for w in self.__filters:
-            w.connect('toggled', self.__preview_files, *preview_args)
-        changed_args = [save, preview, combo.child]
         combo.child.connect_object('changed', self.__changed, *changed_args)
 
         save.connect_object(
-            'clicked', self.__rename_files, prop, save, model, watcher)
+            'clicked', self.__rename_files, parent, save, model, watcher)
 
         render.connect('edited', self.__row_edited, model, preview, save)
         self.show_all()

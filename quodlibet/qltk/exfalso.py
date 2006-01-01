@@ -21,6 +21,7 @@ from qltk.renamefiles import RenameFiles
 from qltk.tracknumbers import TrackNumbers
 
 from plugins import PluginManager
+from plugins.editing import EditingPlugins
 
 class EFPluginManager(PluginManager):
     # Ex Falso doesn't send events; it also should enable all
@@ -42,6 +43,13 @@ class ExFalsoWindow(gtk.Window):
         self.set_title("Ex Falso")
         self.set_border_width(12)
         self.set_default_size(700, 500)
+
+        # plugin support
+        self.pm = EFPluginManager(watcher, ["./plugins", const.PLUGINS])
+        self.pm.rescan()
+        self.plugins = EditingPlugins()
+        self.plugins.rescan()
+
         hp = gtk.HPaned()
         hp.set_position(250)
         self.add(hp)
@@ -64,9 +72,6 @@ class ExFalsoWindow(gtk.Window):
         fs.get_children()[1].child.connect('popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
-        # plugin support
-        self.pm = EFPluginManager(watcher, ["./plugins", const.PLUGINS])
-        self.pm.rescan()
         self.child.show()
 
     def set_pending(self, button, *excess):
