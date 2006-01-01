@@ -9,7 +9,7 @@
 
 import os
 import sre
-import gtk
+import gtk, gobject
 
 import stock
 import qltk
@@ -71,35 +71,47 @@ class TagsFromPattern(object):
         else: return match.groupdict()
 
 class FilterCheckButton(ConfigCheckButton):
+    __gsignals__ = {
+        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        }
+
     def __init__(self):
         super(FilterCheckButton, self).__init__(
             self._label, "tagsfrompath", self._key)
         try: self.set_active(config.getboolean("tagsfrompath", self._key))
         except: pass
+        self.connect_object('toggled', self.emit, 'changed')
     active = property(lambda s: s.get_active())
 
     def filter(self, tag, value): raise NotImplementedError
+gobject.type_register(FilterCheckButton)
 
 class UnderscoresToSpaces(FilterCheckButton):
     _label = _("Replace _underscores with spaces")
     _key = "underscores"
+    _order = 1.0
+
     def filter(self, tag, value): return value.replace("_", " ")
 
 class TitleCase(FilterCheckButton):
     _label = _("_Title-case tags")
     _key = "titlecase"
+    _order = 1.1
     def filter(self, tag, value): return util.title(value)
 
 class SplitTag(FilterCheckButton):
-    _label = _("Split into _multiple values")
+    _label = _("Split into multiple _values")
     _key = "split"
+    _order = 1.2
     def filter(self, tag, value):
         spls = config.get("editing", "split_on").decode('utf-8', 'replace')
         spls = spls.split()
         return "\n".join(util.split_value(value, spls))
 
 class TagsFromPath(gtk.VBox):
-    def __init__(self, prop, watcher):
+    FILTERS = [UnderscoresToSpaces, TitleCase, SplitTag]
+
+    def __init__(self, parent, watcher):
         gtk.VBox.__init__(self, spacing=6)
         self.title = _("Tags From Path")
         self.set_border_width(12)
@@ -127,34 +139,84 @@ class TagsFromPath(gtk.VBox):
 
         # Options
         vbox = gtk.VBox()
-        space = UnderscoresToSpaces()
-        titlecase = TitleCase()
-        split = SplitTag()
         addreplace = gtk.combo_box_new_text()
         addreplace.append_text(_("Tags replace existing ones"))
         addreplace.append_text(_("Tags are added to existing ones"))
         addreplace.set_active(config.getboolean("tagsfrompath", "add"))
         addreplace.connect('changed', self.__add_changed)
         vbox.pack_start(addreplace)
-        self.__filters = [space, titlecase, split]
-        map(vbox.pack_start, self.__filters)
+        filters = [Kind() for Kind in self.FILTERS]
+        filters.sort()
+        map(vbox.pack_start, filters)
         self.pack_start(vbox, expand=False)
 
+        hb = gtk.HBox()
+        expander = gtk.Expander(label=_("_More options..."))
+        expander.set_use_underline(True)
+        adj = gtk.Alignment(yalign=1.0, xscale=1.0)
+        adj.add(expander)
+        hb.pack_start(adj)
+
         # Save button
+        # Save button
+        save = gtk.Button(stock=gtk.STOCK_SAVE)
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
         bbox.pack_start(save)
-        self.pack_start(bbox, expand=False)
+        hb.pack_start(bbox, expand=False)
+        self.pack_start(hb, expand=False)
 
         entry.connect_object('changed', preview.set_sensitive, True)
         entry.connect_object('changed', save.set_sensitive, False)
 
         UPDATE_ARGS = [view, combo, entry, preview, save]
 
-        for f in self.__filters:
-            f.connect('clicked', self.__preview_tags, *UPDATE_ARGS)
+        for f in filters:
+            f.connect('toggled', self.__preview_tags, *UPDATE_ARGS)
+
+        vbox = gtk.VBox()
+
+        self.__filters = []
+        plugins = parent.plugins.TagsFromPathPlugins()
+        
+        for Kind in plugins:
+            try: f = Kind()
+            except:
+                import traceback
+                traceback.print_exc()
+                continue
+                
+            try: vbox.pack_start(f)
+            except:
+                import traceback
+                traceback.print_exc()
+            else:
+                try: f.connect('changed', self.__preview_tags, *UPDATE_ARGS)
+                except:
+                    try:
+                        f.connect_object('preview', preview.set_sensitive, True)
+                        f.connect_object('preview', save.set_sensitive, False)
+                    except:
+                        import traceback
+                        traceback.print_exc()
+                    else: self.__filters.append(f)
+                else: self.__filters.append(f)
+
+        # Custom filters run before the premade ones.
+        self.__filters.extend(filters)
+        self.__filters.sort()
+
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.add_with_viewport(vbox)
+        self.pack_start(sw, expand=False)
+
+        expander.connect("notify::expanded", self.__notify_expanded, sw)
+        expander.set_expanded(False)
+
         preview.connect('clicked', self.__preview_tags, *UPDATE_ARGS)
-        prop.connect_object(
+        parent.connect_object(
             'changed', self.__class__.__update, self, *UPDATE_ARGS)
 
         # Save changes
@@ -162,6 +224,12 @@ class TagsFromPath(gtk.VBox):
                      addreplace, watcher)
 
         self.show_all()
+        # Don't display the expander if there aren't any plugins.
+        if len(self.__filters) == len(self.FILTERS): expander.hide()
+        sw.hide()
+
+    def __notify_expanded(self, expander, event, vbox):
+        vbox.set_property('visible', expander.get_property('expanded'))
 
     def __add_changed(self, combo):
         config.set("tagsfrompath", "add", str(bool(combo.get_active())))
