@@ -24,6 +24,84 @@ from util import tag
 
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
+class SplitValues(gtk.ImageMenuItem):
+    tags = False
+    needs = []
+    _order = 0.0
+
+    def __init__(self, tag, value):
+        super(SplitValues, self).__init__(_("Split into _Multiple Values"))
+        self.set_image(gtk.image_new_from_stock(
+            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        spls = config.get("editing", "split_on").decode(
+            'utf-8', 'replace').split()
+        self.set_sensitive(len(util.split_value(value, spls)) > 1)
+
+    def activated(self, tag, value):
+        spls = config.get("editing", "split_on").decode(
+            'utf-8', 'replace').split()
+        return [(tag, value) for value in util.split_value(value, spls)]
+
+class SplitDisc(gtk.ImageMenuItem):
+    tags = ["album"]
+    needs = ["discnumber"]
+    _order = 0.5
+
+    def __init__(self, tag, value):
+        super(SplitDisc, self).__init__(_("Split Disc out of _Album"))
+        self.set_image(gtk.image_new_from_stock(
+            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        self.set_sensitive(util.split_album(value)[1] is not None)
+
+    def activated(self, tag, value):
+        album, disc = util.split_album(value)
+        return [(tag, album), ("discnumber", disc)]
+
+class SplitTitle(gtk.ImageMenuItem):
+    tags = ["title"]
+    needs = ["version"]
+    _order = 0.5
+
+    def __init__(self, tag, value):
+        super(SplitTitle, self).__init__(_("Split _Version out of Title"))
+        self.set_image(gtk.image_new_from_stock(
+            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        spls = config.get("editing", "split_on").decode(
+            'utf-8', 'replace').split()
+        self.set_sensitive(bool(util.split_title(value, spls)[1]))
+
+    def activated(self, tag, value):
+        spls = config.get("editing", "split_on").decode(
+            'utf-8', 'replace').split()
+        title, versions = util.split_title(value, spls)
+        return [(tag, title)] + [("version", v) for v in versions]
+
+class SplitPerson(gtk.ImageMenuItem):
+    tags = ["artist"]
+    _order = 0.5
+
+    def __init__(self, tag, value):
+        super(SplitPerson, self).__init__(self.title)
+        self.set_image(gtk.image_new_from_stock(
+            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        spls = config.get("editing", "split_on").decode(
+            'utf-8', 'replace').split()
+        self.set_sensitive(bool(util.split_people(value, spls)[1]))
+
+    def activated(self, tag, value):
+        spls = config.get("editing", "split_on").decode(
+            'utf-8', 'replace').split()
+        artist, others = util.split_people(value, spls)
+        return [(tag, artist)] + [(self.needs[0], o) for o in others]
+
+class SplitArranger(SplitPerson):
+    needs = ["arranger"]
+    title = _("Split Arranger out of Ar_tist")
+
+class SplitPerformer(SplitPerson):
+    needs = ["performer"]
+    title = _("Split _Performer out of Artist")
+
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change):
         if can_change == True: can = formats.USEFUL_TAGS
@@ -227,7 +305,7 @@ class EditTags(gtk.VBox):
             model.connect(sig, self.__enable_save, [save, revert])
             model.connect_object(sig, parent.set_pending, save)
 
-        view.connect('popup-menu', self.__popup_menu)
+        view.connect('popup-menu', self.__popup_menu, parent)
         view.connect('button-press-event', self.__button_press)
         selection.connect('changed', self.__tag_select, remove)
         selection.set_mode(gtk.SELECTION_MULTIPLE)
@@ -260,53 +338,24 @@ class EditTags(gtk.VBox):
     def __paste(self, clip, text, (rend, path)):
         if text: rend.emit('edited', path, text.strip())
 
-    def __split_into_list(self, activator, view):
+    def __menu_activate(self, activator, view):
         model, (iter,) = view.get_selection().get_selected_rows()
         row = model[iter]
-        string = row[1].decode('utf-8')
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
-        vals = util.split_value(util.unescape(string), spls)
-        if vals[0] != util.unescape(string):
-            row[1] = util.escape(vals[0])
-            row[2] = True
-            for val in vals[1:]:
-                self.__add_new_tag(model, row[0], val)
+        tag = row[0]
+        value = util.unescape(row[1].decode('utf-8'))
+        vals = activator.activated(tag, value)
+        replaced = False
+        if vals and (len(vals) != 1 or vals[0][1] != value):
+            for atag, aval in vals:
+                if atag == tag and not replaced:
+                    replaced = True
+                    row[1] = util.escape(aval)
+                    row[2] = True
+                else: self.__add_new_tag(model, atag, aval)
+        elif vals: replaced = True
+        if not replaced: row[2] = row[4] = True
 
-    def __split_title(self, activator, view):
-        model, (iter,) = view.get_selection().get_selected_rows()
-        row = model[iter]
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
-        title, versions = util.split_title(util.unescape(row[1]), spls)
-        if title != util.unescape(row[1]):
-            row[1] = util.escape(title)
-            row[2] = True
-            for val in versions:
-                self.__add_new_tag(model, "version", val)
-
-    def __split_album(self, activator, view):
-        model, (iter,) = view.get_selection().get_selected_rows()
-        row = model[iter]
-        album, disc = util.split_album(util.unescape(row[1]))
-        if album != util.unescape(row[1]):
-            row[1] = util.escape(album)
-            row[2] = True
-            self.__add_new_tag(model, "discnumber", disc)
-
-    def __split_people(self, activator, tag, view):
-        model, (iter,) = view.get_selection().get_selected_rows()
-        row = model[iter]
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
-        person, others = util.split_people(util.unescape(row[1]), spls)
-        if person != util.unescape(row[1]):
-            row[1] = util.escape(person)
-            row[2] = True
-            for val in others:
-                self.__add_new_tag(model, tag, val)
-
-    def __popup_menu(self, view):
+    def __popup_menu(self, view, parent):
         menu = gtk.Menu()        
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
@@ -314,58 +363,40 @@ class EditTags(gtk.VBox):
         model, rows = view.get_selection().get_selected_rows()
         can_change = min([model[path][3] for path in rows])
 
+        items = [SplitDisc, SplitTitle, SplitPerformer, SplitArranger,
+                 SplitValues]
+        items.extend(parent.plugins.EditTagsPlugins())
+        items.sort(lambda a, b:
+                   (cmp(a._order, b._order) or cmp(a.__name__, b.__name__)))
+
         if len(rows) == 1:
             row = model[rows[0]]
 
-            text = row[1].decode('utf-8')
-            b = qltk.MenuItem(
-                _("Split into _Multiple Values"), gtk.STOCK_FIND_AND_REPLACE)
-            b.set_sensitive(
-                (len(util.split_value(text, spls)) > 1) and can_change)
-            b.connect('activate', self.__split_into_list, view)
-            menu.append(b)
-            menu.append(gtk.SeparatorMenuItem())
+            text = util.unescape(row[1].decode('utf-8'))
 
-            if row[0] == "album":
-                b = qltk.MenuItem(
-                    _("Split Disc out of _Album"), gtk.STOCK_FIND_AND_REPLACE)
-                b.connect('activate', self.__split_album, view)
-                b.set_sensitive((util.split_album(text)[1] is not None) and
-                                self.__songinfo.can_change("album"))
-                menu.append(b)
+            for Item in items:
+                if Item.tags and row[0] not in Item.tags: continue
 
-            elif row[0] == "title":
-                b = qltk.MenuItem(_("Split Version out of Title"),
-                                  gtk.STOCK_FIND_AND_REPLACE)
-                b.connect('activate', self.__split_title, view)
-                b.set_sensitive((util.split_title(text, spls)[1] != []) and
-                                self.__songinfo.can_change("version"))
-                menu.append(b)
+                try: b = Item(row[0], text)
+                except:
+                    import traceback; traceback.print_exc()
+                else:
+                    b.connect('activate', self.__menu_activate, view)
 
-            elif row[0] == "artist":
-                ok = (util.split_people(text, spls)[1] != [])
-                
-                b = qltk.MenuItem(_("Split Arranger out of Ar_tist"),
-                                  gtk.STOCK_FIND_AND_REPLACE)
-                b.connect('activate', self.__split_people, "arranger", view)
-                b.set_sensitive(ok and self.__songinfo.can_change("arranger"))
-                menu.append(b)
-                
-                b = qltk.MenuItem(_("Split _Performer out of Artist"),
-                                  gtk.STOCK_FIND_AND_REPLACE)
-                b.connect('activate', self.__split_people, "performer", view)
-                b.set_sensitive(ok and self.__songinfo.can_change("performer"))
-                menu.append(b)
+                    if not min(map(self.__songinfo.can_change, b.needs)+[1]):
+                        b.set_sensitive(False)
 
-            if len(menu.get_children()) > 2:
-                menu.append(gtk.SeparatorMenuItem())
+                    menu.append(b)
+
+
+            if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         b.connect('activate', self.__remove_tag, view)
-        b.set_sensitive(can_change)
         menu.append(b)
 
         menu.show_all()
+        menu.set_sensitive(can_change)
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
 
@@ -411,7 +442,7 @@ class EditTags(gtk.VBox):
         iters = map(model.get_iter, rows)
         for iter in iters:
             row = model[iter]
-            if row[0] in self.__songinfo:
+            if row[5] is not None:
                 row[2] = True # Edited
                 row[4] = True # Deleted
             else: model.remove(iter)

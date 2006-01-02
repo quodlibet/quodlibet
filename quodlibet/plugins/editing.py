@@ -74,14 +74,28 @@ class EditTagsPlugin(gtk.ImageMenuItem):
     They will be added to the context menu of the EditTags tree view.
 
     The 'tags' attribute is a list of tags this plugin should appear on,
-    or false if it should appear for all tags.
+    or false if it should appear for all tags. This must be a class
+    attribute, as it is checked before instantiation.
+
+    The 'needs' attribute is a list of tags that must be editable in
+    the currently selected songs for the plugin to be sensitive.
 
     The constructor is called with the tag and value for that row. This
     can be used to set the sensitivity of the menu item, or change its
     text.
-    """
+
+    When clicked, the 'activated' function is called on the object,
+    again with the tag name and value. It should return a list of
+    (tag, value) tuples to replace the previous tag/value with.
+
+    The '_order' attribute decides the sort order of the plugin. The
+    default items have orders between 0 and 1. Plugins have order 2.0 by
+    default. Plugins with equal orders are sorted by class name."""
 
     tags = []
+    needs = []
+    _order = 2.0
+    def activated(self, tag, value): return [(tag, value)]
 
 class EditingPlugins(Manager):
     __PATHS = [os.path.join("./plugins", "editing"),
