@@ -283,3 +283,5 @@ class AudioFile(dict):
             return min(15, scale)
         except (KeyError, ValueError):
             return 1
+
+    def write(self): raise NotImplementedError

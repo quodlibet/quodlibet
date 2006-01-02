@@ -81,9 +81,6 @@ class MP4File(AudioFile):
         if key is None: return []
         else: return False
 
-    def write(self):
-        raise NotImplementedError
-    
     def get_format_cover(self):
         try:
             from ctypes import byref
