@@ -38,9 +38,12 @@ class FIFOControl(object):
     """A FIFO to control the player/library from."""
 
     def __init__(self, watcher, window, player):
+        from plugins.remote import RemotePlugins
+        self.plugins = RemotePlugins()
         self.__open(watcher, window, player)
 
     def __open(self, *args):
+        self.plugins.rescan()
         try:
             if not os.path.exists(const.CONTROL):
                 util.mkdir(const.DIR)
@@ -54,7 +57,9 @@ class FIFOControl(object):
     def __getitem__(self, key):
         key = key.replace("-", "_")
         if key.startswith("_"): raise ValueError
-        else: return getattr(self, "_"+key)
+        else:
+            try: return getattr(self, "_"+key)
+            except AttributeError: raise KeyError, key
 
     def __process(self, source, condition, *args):
         command = source.read().rstrip("\n")
@@ -63,11 +68,25 @@ class FIFOControl(object):
             return False
         else:
             try:
-                try: command, arg = command.split(' ', 1)
+                try: cmd, arg = command.split(' ', 1)
                 except: self[command](*args)
-                else: self[command](arg, *args)
-            except:
-                print "W: Invalid command %s received." % command
+                else: self[cmd](arg, *args)
+            except KeyError:
+                try: cmd, arg = command.split(' ', 1)
+                except:
+                    for Plugin in self.plugins.FIFOPlugins():
+                        if command in Plugin.commands:
+                            try: Plugin(command, *args)
+                            except: import traceback; traceback.print_exc()
+                            break
+                    else: print "W: Invalid command %s received." % command
+                else:
+                    for Plugin in self.plugins.FIFOPlugins():
+                        if cmd in Plugin.commands:
+                            try: Plugin(cmd, arg, *args)
+                            except: import traceback; traceback.print_exc()
+                            break
+                    else: print "W: Invalid command %s received." % command
             return True
 
     def _previous(self, watcher, window, player): player.previous()
