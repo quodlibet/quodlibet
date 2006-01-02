@@ -44,7 +44,7 @@ def calculate_discid(album):
     discid = ((checksum % 0xff) << 24) | (total_time << 8) | len(album)
     return [discid, len(album)] + [75 * o for o in offsets] + [total_time]
 
-def query(category, discid):
+def query(category, discid, xcode='utf8:utf8'):
     discinfo = {}
     tracktitles = {}
     dump = path.join(path.expanduser("~"), '.cddb', category, discid)
@@ -83,8 +83,9 @@ def query(category, discid):
         save.close()
     except EnvironmentError: pass
 
+    xf, xt = xcode.split(':')
     for key, value in info.iteritems():
-        try: value = value.decode('utf-8', 'replace').strip()
+        try: value = value.decode('utf-8', 'replace').strip().encode(xf, 'replace').decode(xt, 'replace')
         except AttributeError: pass
         if key.startswith('TTITLE'):
             try: tracktitles[int(key[6:])] = value
@@ -98,7 +99,7 @@ def query(category, discid):
 
     return discinfo, tracktitles
 
-def ask_save_info((disc, track), album, discid):
+def make_info_label((disc, track), album, discid):
     message = []
 
     if 'artist' in disc:
@@ -119,66 +120,105 @@ def ask_save_info((disc, track), album, discid):
         message.append('    <b>%d.</b> %s' % (key+1,
             escape(track[key].encode('utf-8'))))
 
-    if AskAction(None, _("Save the following information?"),
-            '\n'.join(message)).run():
-
-        for key, song in zip(keys, album):
-            song['title'] = track[key]
-            song['tracknumber'] = '%d/%d' % (key+1, len(album))
-            if 'artist' in disc: song['artist'] = disc['artist']
-            if 'title' in disc: song['album'] = disc['title']
-            if 'year' in disc: song['date'] = disc['year']
-            if 'genre' in disc: song['genre'] = disc['genre']
+    return '\n'.join(message)
+    
 
 def plugin_album(album):
     album.sort()
-
     discid = calculate_discid(album)
 
-    stat, discs = CDDB.query(discid, **CLIENTINFO)
+    try:
+        stat, discs = CDDB.query(discid, **CLIENTINFO)
+    except IOError:
+        ErrorMessage(None, _("Timeout"), _("Query could not be executed, connection timed out")).run()
+        return
+        
     info = None
     if stat in (200,211):
-        if len(discs) > 1:
-            dlg = gtk.Dialog(_('Select an album'))
-            dlg.set_border_width(6)
-            dlg.set_has_separator(False)
-            dlg.set_resizable(False)
-            dlg.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                    gtk.STOCK_OK, gtk.RESPONSE_OK)
-            dlg.vbox.set_spacing(6)
-            dlg.set_default_response(gtk.RESPONSE_OK)
-            model = gtk.ListStore(str, str, str)
-            for disc in discs:
-                model.append([disc[s] for s in ('title','category','disc_id')])
-            box = gtk.ComboBox(model)
-            box.set_active(0)
-            for i in range(3):
-                crt = gtk.CellRendererText()
-                box.pack_start(crt)
-                box.set_attributes(crt, text=i)
-            dlg.vbox.pack_start(gtk.Label(
-                _("Select the album you wish to retrieve.")))
-            dlg.vbox.pack_start(box)
-            dlg.vbox.show_all()
-            resp = dlg.run()
+        xcode = 'utf8:utf8'
+        dlg = gtk.Dialog(_('Select an album'))
+        dlg.set_border_width(6)
+        dlg.set_has_separator(False)
+        dlg.set_resizable(False)
+        dlg.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK)
+        dlg.vbox.set_spacing(6)
+        dlg.set_default_response(gtk.RESPONSE_OK)
+        model = gtk.ListStore(str, str, str, str, str, str)
+        for disc in discs:
+            model.append([disc[s] for s in ('title','category','disc_id')]*2)
+        box = gtk.ComboBox(model)
+        box.set_active(0)
+        for i in range(3):
+            crt = gtk.CellRendererText()
+            box.pack_start(crt)
+            box.set_attributes(crt, text=i)
+        discinfo = gtk.Label()
+        crosscode = gtk.ListStore(str)
+        crosscode.append(['utf8:utf8'])
+        crosscode.append(['latin1:latin2'])
+        crosscode.append(['latin1:cp1251'])
+        crosscode.append(['latin1:sjis'])
+        crosscode.append(['latin1:euc-jp'])
+        cbo = gtk.ComboBoxEntry(crosscode, column=0)
+        cbo.set_active(0)
 
-            try: title, cat, discid = model[box.get_active()]
-            except (ValueError, IndexError): resp = gtk.RESPONSE_CANCEL
-            dlg.destroy()
+        def update_discinfo(combo):
 
-            if resp == gtk.RESPONSE_OK: info = query(cat, discid)
-            else: return
-        else:
-            info = query(discs[0]['category'], discs[0]['disc_id'])
+            xcode = cbo.child.get_text()
+            t,c,d, title, cat, discid = combo.get_model()[box.get_active()]
+            info = query(cat, discid, xcode=xcode)
+            discinfo.set_markup(make_info_label(info, album, discs[0]['disc_id']))
+            
+        def crosscode_cddbinfo(combo):
+            try:
+                xf, xt = combo.child.get_text().split(':')
+                for row in model:
+                    for show, store in zip(range(0,3), range(3,6)):
+                        row[show] = row[store].encode(xf, 'replace').decode(xt, 'replace')
+            except:
+                for row in model:
+                    for show, store in zip(range(0,3), range(3,6)):
+                        row[show] = row[store]
+            update_discinfo(box)
+                
 
-    if not info:
+
+        cbo.connect('changed', crosscode_cddbinfo)
+        box.connect('changed', update_discinfo)
+        update_discinfo(box)
+        dlg.vbox.pack_start(gtk.Label(
+            _("Select the album you wish to retrieve.")))
+        dlg.vbox.pack_start(box)
+        dlg.vbox.pack_start(discinfo)
+        dlg.vbox.pack_start(cbo)
+        dlg.vbox.show_all()
+        resp = dlg.run()
+
+        xcode = cbo.child.get_text()
+        if resp == gtk.RESPONSE_OK:
+            t,c,d, title, cat, discid = model[box.get_active()]
+            (disc, track) = query(cat, discid, xcode=xcode)
+            keys = track.keys()
+            keys.sort()
+            for key, song in zip(keys, album):
+                if 'artist' in disc: song['artist'] = disc['artist']
+                if 'title' in disc: song['album'] = disc['title']
+                if 'year' in disc: song['date'] = disc['year']
+                if 'genre' in disc: song['genre'] = disc['genre']
+                s = track[key].split("/")
+                if len(s) == 2:
+                    song['artist'] = s[0]
+                    song['title'] = s[1]
+                else:
+                    song['title'] = track[key]
+                song['tracknumber'] = '%d/%d' % (key+1, len(album))
+        dlg.destroy()
+    else:
         n = len(album)
         albumname = album[0]('album')
         if not albumname: albumname = ngettext('%d track', '%d tracks', n) % n
-        ErrorMessage(None, _("CDDB lookup failed"),
+        ErrorMessage(None, _("CDDB lookup failed (%s)" % stat),
                 ngettext("%(title)s and %(count)d more...",
                     "%(title)s and %(count)d more...", n-1) % {
-                    'title': album[0]('~basename'), 'count': n-1}).run()
-        return
-
-    ask_save_info(info, album, discs[0]['disc_id'])
+                    'title': album[0]('~basename'), 'count':
+                    n-1}).run()
