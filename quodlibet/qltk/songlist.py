@@ -38,7 +38,7 @@ class PlaylistMux(object):
         if song is not None:
             iter = self.q.find(song)
             if iter: self.q.remove(iter)
-            self.q.go_to(None); self.q.next()
+            self.q.go_to(None)
 
     def get_current(self):
         if self.q.current is not None: return self.q.current
