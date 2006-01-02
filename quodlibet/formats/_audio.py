@@ -6,6 +6,10 @@
 #
 # $Id$
 
+# Much of this code is highly optimized, because many of the functions
+# are called in tight loops. Don't change things just to make them
+# more readable, unless they're also faster.
+
 import os
 import shutil
 import time
@@ -20,6 +24,13 @@ MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
 PEOPLE = "artist author composer performer lyricist arranger conductor".split()
 
 class AudioFile(dict):
+    """An audio file. It looks like a dict, but implements synthetic
+    and tied tags via __call__ rather than __getitem__. This means
+    __getitem__, get, and so on can be used for efficiency.
+
+    If you need to sort many AudioFiles, you can use their sort_key
+    attribute as a decoration."""
+
     fill_metadata = False
     multisong = False
     can_add = True
@@ -40,10 +51,15 @@ class AudioFile(dict):
         except AttributeError: return -1
 
     def __eq__(self, other):
+        """AudioFiles are equal if they have the same filename."""
+
         try: return self.get("~filename") == other.get("~filename")
         except: return False
 
     def reload(self):
+        """Reload an audio file from disk. The caller is responsible for
+        handling any errors."""
+
         fn = self["~filename"]
         saved = {}
         for key in self:
@@ -57,9 +73,21 @@ class AudioFile(dict):
         return hash(self["~filename"])
 
     def realkeys(self):
-        return filter(lambda s: s and s[0] != "~", self.keys())
+        """Returns a list of keys that are not internal, i.e. they don't
+        have '~' in them."""
+
+        return filter(lambda s: s[:1] != "~", self.keys())
 
     def __call__(self, key, default=u"", connector=" - "):
+        """Return a key, synthesizing it if necessary. A default value
+        may be given (like dict.get); the default default is an empty
+        unicode string (even if the tag is numeric).
+
+        If a tied tag ('a~b') is requested, the 'connector' keyword
+        argument may be used to specify what it is tied with.
+
+        For details on tied tags, see the documentation for util.tagsplit."""
+
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
@@ -109,6 +137,10 @@ class AudioFile(dict):
         else: return dict.get(self, key, default)
 
     def comma(self, key):
+        """Get all values of a tag, separated by commas. Synthetic
+        tags are supported, but will be slower. If the value is
+        numeric, that is returned rather than a list."""
+
         if "~" in key or key == "title": v = self(key, u"")
         else: v = self.get(key, u"")
         if isinstance(v, int): return v
@@ -116,6 +148,12 @@ class AudioFile(dict):
         else: return v.replace("\n", ", ")
 
     def list(self, key):
+        """Get all values of a tag, as a list. Synthetic tags are supported,
+        but will be slower. Numeric tags are not supported.
+
+        An empty synthetic tag cannot be distinguished from a non-existent
+        synthetic tag; both result in []."""
+
         if "~" in key or key == "title":
             v = self(key, connector="\n")
             if v == "": return []
@@ -124,16 +162,30 @@ class AudioFile(dict):
         else: return []
 
     def exists(self):
+        """Return true if the file still exists (or we can't tell)."""
+
         return os.path.exists(self["~filename"])
 
     def valid(self):
+        """Return true if the file cache is up-to-date (checked via
+        mtime), or we can't tell."""
         return (self.get("~#mtime", 0) and
                 self["~#mtime"] == util.mtime(self["~filename"]))
 
     def mounted(self):
+        """Return true if the disk the file is on is mounted, or
+        the file is not on a disk."""
         return os.path.ismount(self.get("~mountpoint", "/"))
 
     def can_change(self, k=None):
+        """See if this file supports changing the given tag. This may
+        be a limitation of the file type, or the file may not be
+        writable.
+
+        If no arguments are given, return a list of tags that can be
+        changed, or True if 'any' tags can be changed (specific tags
+        should be checked before adding)."""
+
         if k is None:
             if os.access(self["~filename"], os.W_OK): return True
             else: return []
@@ -141,6 +193,9 @@ class AudioFile(dict):
                       and os.access(self["~filename"], os.W_OK))
 
     def rename(self, newname):
+        """Rename a file. Errors are not handled. This shouldn't be used
+        directly; use library.rename instead."""
+
         if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
         else: newname = os.path.join(self('~dirname'), newname)
         if not os.path.exists(newname):
@@ -149,6 +204,9 @@ class AudioFile(dict):
         self.sanitize(newname)
 
     def website(self):
+        """Look for a URL in the audio metadata, or a Google search
+        if no URL can be found."""
+
         if "website" in self: return self.list("website")[0]
         for cont in self.list("contact") + self.list("comment"):
             c = cont.lower()
@@ -170,8 +228,10 @@ class AudioFile(dict):
             text += "&ie=UTF8"
             return text
 
-    # Sanity-check all sorts of things...
     def sanitize(self, filename=None):
+        """Fill in metadata defaults. Find ~mountpoint, ~#mtime,
+        and ~#added."""
+
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
         if self.is_file:
@@ -198,8 +258,8 @@ class AudioFile(dict):
 
         self["~#mtime"] = util.mtime(self['~filename'])
 
-    # key=value list, for ~/.quodlibet/current interface
     def to_dump(self):
+        """A string of 'key=value' lines, similar to vorbiscomment output."""
         s = ""
         for k in self.keys():
             if isinstance(self[k], int) or isinstance(self[k], long):
@@ -214,10 +274,9 @@ class AudioFile(dict):
                         s += "%s=%s\n" % (k, util.encode(v2))
         return s
 
-    # Try to change a value in the data to a new value; if the
-    # value being changed from doesn't exist, just overwrite the
-    # whole value.
     def change(self, key, old_value, new_value):
+        """Change 'old_value' to 'new_value' for the given metadata key.
+        If the old value is not found, set the key to the new value."""
         try:
             parts = self.list(key)
             try: parts[parts.index(old_value)] = new_value
@@ -228,11 +287,13 @@ class AudioFile(dict):
         except KeyError: self[key] = new_value
 
     def add(self, key, value):
+        """Add a value for the given metadata key."""
         if key not in self: self[key] = value
         else: self[key] += "\n" + value
 
-    # Like change, if the value isn't found, remove all values...
     def remove(self, key, value):
+        """Remove a value from the given key; if the value is not found,
+        remove all values for that key."""
         if key not in self: return
         elif self[key] == value: del(self[key])
         else:
@@ -243,8 +304,10 @@ class AudioFile(dict):
             except ValueError:
                 if key in self: del(self[key])
 
-    # Try to find an album cover for the file
     def find_cover(self):
+        """Return a file-like containing cover image data, or None if
+        no cover is available."""
+
         base = self('~dirname')
         try: fns = os.listdir(base)
         except EnvironmentError:  return None
@@ -268,6 +331,9 @@ class AudioFile(dict):
         else: return None
 
     def replay_gain(self):
+        """Return the recommended ReplayGain scale factor as a floating
+        point number, based on the current settings."""
+
         gain = config.getint("settings", "gain")
         try:
             if gain == 0: raise ValueError
@@ -284,4 +350,6 @@ class AudioFile(dict):
         except (KeyError, ValueError):
             return 1
 
-    def write(self): raise NotImplementedError
+    def write(self):
+        """Write metadata back to the file."""
+        raise NotImplementedError
