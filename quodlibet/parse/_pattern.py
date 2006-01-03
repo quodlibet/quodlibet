@@ -10,6 +10,10 @@
 # String := ([^<>|\\]|\\.)+, a string
 # Tags := "<" String [ "|" Pattern [ "|" Pattern ] ] ">"
 
+# FIXME: We eventually want to be able to call these formatters in a
+# tight loop, which isn't good if we're re-parsing the format string
+# every time. The Song proxy might also get in the way.
+
 import os
 import sre
 import util
@@ -37,7 +41,7 @@ class PatternLexeme(object):
                 " type=" + repr(self.type) + " (" +
                 str(PatternLexeme._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
-    
+
 class PatternLexer(sre.Scanner):
     def __init__(self, s):
         self.string = s.strip()
@@ -130,6 +134,7 @@ class Pattern(PatternParser):
 
     def __init__(self, string):
         self.__string = string
+        self.__tokens = list(PatternLexer(self.__string))
         self.format(_Dummy()) # Validate string
 
     def __repr__(self):
@@ -150,7 +155,7 @@ class Pattern(PatternParser):
             return value
 
     def format(self, song):
-        p = PatternParser(PatternLexer(self.__string))
+        p = PatternParser(self.__tokens)
         return self._post(p.Pattern(self.Song(song, self._formatters)), song)
 
     def _post(self, value, song): return value
