@@ -34,6 +34,7 @@ class Preferences(qltk.Window):
         table.set_row_spacings(6)
         table.set_col_spacings(12)
         current = config.get("plugins", "icon_tooltip")[1:-1].split("~")
+        tips = qltk.Tooltips(self)
 
         cbs = []
         for i, tag in enumerate([
@@ -50,12 +51,15 @@ class Preferences(qltk.Window):
 
         preview = gtk.Label()
         preview.set_ellipsize(pango.ELLIPSIZE_END)
-        hbox.pack_start(preview, expand=False)
+        ev = gtk.EventBox()
+        ev.add(preview)
+        hbox.pack_start(ev, expand=False)
 
         self.add(qltk.Frame(child=hbox, label=_("Tooltip Display"), bold=True))
 
         for cb in cbs: cb.connect('toggled', self.__changed_cb, cbs, entry)
-        entry.connect('changed', self.__changed_entry, cbs, preview, watcher)
+        entry.connect(
+            'changed', self.__changed_entry, cbs, preview, watcher, tips)
         entry.set_text(config.get("plugins", "icon_tooltip"))
 
         self.show_all()
@@ -64,7 +68,7 @@ class Preferences(qltk.Window):
         text = "<%s>" % "~".join([cb.tag for cb in cbs if cb.get_active()])
         entry.set_text(text)
 
-    def __changed_entry(self, entry, cbs, label, watcher):
+    def __changed_entry(self, entry, cbs, label, watcher, tips):
         text = entry.get_text()
         if text[0:1] == "<" and text[-1:] == ">":
             parts = text[1:-1].split("~")
@@ -82,8 +86,8 @@ class Preferences(qltk.Window):
 
         if watcher.song is None: text = _("Not playing")
         else: text = Pattern(entry.get_text()) % watcher.song
-        # FIXME: After string freeze re-add "Preview".
         label.set_text(text)
+        tips.set_tip(label.get_parent(), text)
         config.set("plugins", "icon_tooltip", entry.get_text())
 
 class TrayIcon(object):
