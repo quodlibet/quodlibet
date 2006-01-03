@@ -13,6 +13,7 @@ import const
 import qltk
 import util
 from parse import XMLFromPattern
+from qltk.textedit import TextEdit
 
 class SongInfo(gtk.Label):
     # Translators: Only worry about "by", "Disc", and "Track" below.
@@ -24,35 +25,6 @@ by <~people>><album|
 <part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
 
     __filename = os.path.join(const.DIR, "songinfo")
-
-    class EditDisplay(gtk.Window):
-        def __init__(self, parent):
-            gtk.Window.__init__(self)
-            self.set_title(_("Edit Display"))
-            self.set_transient_for(qltk.get_top_parent(parent))
-            self.set_border_width(12)
-            self.set_default_size(400, 200)
-            self.add(gtk.VBox(spacing=12))
-
-            sw = gtk.ScrolledWindow()
-            sw.set_shadow_type(gtk.SHADOW_IN)
-            sw.add(gtk.TextView())
-            self.child.pack_start(sw)
-            self.buffer = sw.child.get_buffer()
-
-            box = gtk.HButtonBox()
-            box.set_spacing(12)
-            box.set_layout(gtk.BUTTONBOX_END)
-            rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
-            app = gtk.Button(stock=gtk.STOCK_APPLY)
-            box.pack_start(rev)
-            box.pack_start(app)
-            self.child.pack_start(box, expand=False)
-
-            rev.connect_object(
-                'clicked', self.buffer.set_text, SongInfo._pattern)
-            self.apply = app
-            self.show_all()
 
     def __init__(self, watcher, playlist):
         gtk.Label.__init__(self)
@@ -76,7 +48,7 @@ by <~people>><album|
         menu.append(item)
 
     def __edit(self, watcher, playlist):
-        w = self.EditDisplay(self)
+        w = TextEdit(self, SongInfo._pattern)
         w.buffer.set_text(self._pattern)
         w.apply.connect_object(
             'clicked', self.__set, w, w.buffer, watcher, playlist)
