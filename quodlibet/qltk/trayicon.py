@@ -27,9 +27,22 @@ class Preferences(qltk.Window):
     def __init__(self, activator, watcher):
         super(Preferences, self).__init__()
         self.set_border_width(12)
-        self.set_title(_("Tray Preferences - Quod Libet"))
+        self.set_title(_("Tray Icon Preferences") + " - Quod Libet")
+        vbox = gtk.VBox(spacing=12)
 
-        hbox = gtk.VBox(spacing=12)
+        combo = gtk.combo_box_new_text()
+        combo.append_text(_("Scroll wheel adjusts volume;\n"
+                            "Shift and scroll wheel changes song"))
+        combo.append_text(_("Scroll wheel changes song;\n"
+                            "Shift and scroll adjusts volume"))
+        try: combo.set_active(int(
+            config.getboolean("plugins", "icon_modifier_swap")))
+        except: combo.set_active(0)
+        combo.connect('changed', self.__changed_combo)
+        vbox.pack_start(
+            qltk.Frame(child=combo, label=_("Scroll Wheel"), bold=True))
+
+        box = gtk.VBox(spacing=12)
         table = gtk.Table(2, 4)
         table.set_row_spacings(6)
         table.set_col_spacings(12)
@@ -44,25 +57,31 @@ class Preferences(qltk.Window):
             cb.tag = tag
             cbs.append(cb)
             table.attach(cb, i%4, i%4+1, i//4, i//4+1)
-        hbox.pack_start(table)
+        box.pack_start(table)
 
         entry = gtk.Entry()
-        hbox.pack_start(entry, expand=False)
+        box.pack_start(entry, expand=False)
 
         preview = gtk.Label()
         preview.set_ellipsize(pango.ELLIPSIZE_END)
         ev = gtk.EventBox()
         ev.add(preview)
-        hbox.pack_start(ev, expand=False)
+        box.pack_start(ev, expand=False)
 
-        self.add(qltk.Frame(child=hbox, label=_("Tooltip Display"), bold=True))
+        vbox.pack_start(
+            qltk.Frame(child=box, label=_("Tooltip Display"), bold=True))
 
         for cb in cbs: cb.connect('toggled', self.__changed_cb, cbs, entry)
         entry.connect(
             'changed', self.__changed_entry, cbs, preview, watcher, tips)
         entry.set_text(config.get("plugins", "icon_tooltip"))
 
+        self.add(vbox)
         self.show_all()
+
+    def __changed_combo(self, combo):
+        config.set(
+            "plugins", "icon_modifier_swap", str(bool(combo.get_active())))
 
     def __changed_cb(self, cb, cbs, entry):
         text = "<%s>" % "~".join([cb.tag for cb in cbs if cb.get_active()])
