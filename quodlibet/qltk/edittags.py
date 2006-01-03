@@ -201,11 +201,13 @@ class AddTagDialog(gtk.Dialog):
         self.__tag.grab_focus()
         return gtk.Dialog.run(self)
 
+TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE = range(6)
+
 class EditTags(gtk.VBox):
     class TV(HintedTreeView, RCMTreeView): pass
 
     def __init__(self, parent, watcher):
-        gtk.VBox.__init__(self, spacing=12)
+        super(EditTags, self).__init__(spacing=12)
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
@@ -223,14 +225,13 @@ class EditTags(gtk.VBox):
                         for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
         def cdf_write(col, rend, model, iter, (write, delete)):
             row = model[iter]
-            if row[3]:
+            if row[CANEDIT]:
                 rend.set_property('stock-id', None)
-                rend.set_property('pixbuf', pixbufs[2*row[write]+row[delete]])
+                rend.set_property('pixbuf', pixbufs[2*row[EDITED]+row[DELETED]])
             else:
                 rend.set_property('stock-id', gtk.STOCK_DIALOG_AUTHENTICATION)
         column.set_cell_data_func(render, cdf_write, (2, 4))
         view.append_column(column)
-        view.connect('button-press-event', self.__write_toggle, (column, 1, 2))
 
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_('Tag'), render, text=0, strikethrough=4)
@@ -240,7 +241,7 @@ class EditTags(gtk.VBox):
         render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.set_property('editable', True)
-        render.connect('edited', self.__edit_tag, model, 1)
+        render.connect('edited', self.__edit_tag, model)
         render.markup = 1
         column = gtk.TreeViewColumn(
             _('Value'), render, markup=1, editable=3, strikethrough=4)
@@ -282,14 +283,6 @@ class EditTags(gtk.VBox):
 
         self.pack_start(buttonbox, expand=False)
 
-        tips = qltk.Tooltips(self)
-        for widget, tip in [
-            (view, _("Double-click a tag value to change it, "
-                     "right-click for other options")),
-            (add, _("Add a new tag")),
-            (remove, _("Remove selected tag"))]:
-            tips.set_tip(widget, tip)
-
         UPDATE_ARGS = [
             view, buttonbox, model, add, [save, revert, remove]]
         parent.connect_object(
@@ -315,45 +308,25 @@ class EditTags(gtk.VBox):
         buttons = args[-1]
         for b in buttons: b.set_sensitive(True)
 
-    def __button_press(self, view, event):
-        if event.button != 2: return False
-        x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        selection = view.get_selection()
-        if not selection.path_is_selected(path):
-            view.set_cursor(path, col, 0)
-        row = view.get_model()[path]
-
-        if event.button == 2: # middle click paste
-            if col != view.get_columns()[2]: return False
-            display = gtk.gdk.display_manager_get().get_default_display()
-            clipboard = gtk.Clipboard(display, "PRIMARY")
-            for rend in col.get_cell_renderers():
-                if rend.get_property('editable'):
-                    clipboard.request_text(self.__paste, (rend, path[0]))
-                    return True
-            else: return False
-
     def __paste(self, clip, text, (rend, path)):
         if text: rend.emit('edited', path, text.strip())
 
     def __menu_activate(self, activator, view):
         model, (iter,) = view.get_selection().get_selected_rows()
         row = model[iter]
-        tag = row[0]
-        value = util.unescape(row[1].decode('utf-8'))
+        tag = row[TAG]
+        value = util.unescape(row[VALUE].decode('utf-8'))
         vals = activator.activated(tag, value)
         replaced = False
         if vals and (len(vals) != 1 or vals[0][1] != value):
             for atag, aval in vals:
                 if atag == tag and not replaced:
                     replaced = True
-                    row[1] = util.escape(aval)
-                    row[2] = True
+                    row[VALUE] = util.escape(aval)
+                    row[EDITED] = True
                 else: self.__add_new_tag(model, atag, aval)
         elif vals: replaced = True
-        if not replaced: row[2] = row[4] = True
+        if not replaced: row[EDITED] = row[DELETED] = True
 
     def __popup_menu(self, view, parent):
         menu = gtk.Menu()        
@@ -361,7 +334,7 @@ class EditTags(gtk.VBox):
             'utf-8', 'replace').split()
 
         model, rows = view.get_selection().get_selected_rows()
-        can_change = min([model[path][3] for path in rows])
+        can_change = min([model[path][CANEDIT] for path in rows])
 
         items = [SplitDisc, SplitTitle, SplitPerformer, SplitArranger,
                  SplitValues]
@@ -372,12 +345,12 @@ class EditTags(gtk.VBox):
         if len(rows) == 1:
             row = model[rows[0]]
 
-            text = util.unescape(row[1].decode('utf-8'))
+            text = util.unescape(row[VALUE].decode('utf-8'))
 
             for Item in items:
-                if Item.tags and row[0] not in Item.tags: continue
+                if Item.tags and row[TAG] not in Item.tags: continue
 
-                try: b = Item(row[0], text)
+                try: b = Item(row[TAG], text)
                 except:
                     import traceback; traceback.print_exc()
                 else:
@@ -403,15 +376,15 @@ class EditTags(gtk.VBox):
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()
         remove.set_sensitive(
-            bool(rows and min([model[row][3] for row in rows])))
+            bool(rows and min([model[row][CANEDIT] for row in rows])))
 
     def __add_new_tag(self, model, comment, value):
         edited = True
         edit = True
         orig = None
         deleted = False
-        iters = [row.iter for row in model if row[0] == comment]
-        row = [comment, util.escape(value), edited, edit, deleted, orig]
+        iters = [row.iter for row in model if row[TAG] == comment]
+        row = [comment, util.escape(value), True, True, False, None]
         if len(iters): model.insert_after(iters[-1], row=row)
         else: model.append(row=row)
 
@@ -438,33 +411,30 @@ class EditTags(gtk.VBox):
         add.destroy()
 
     def __remove_tag(self, activator, view):
-        model, rows = view.get_selection().get_selected_rows()
-        iters = map(model.get_iter, rows)
-        for iter in iters:
-            row = model[iter]
-            if row[5] is not None:
-                row[2] = True # Edited
-                row[4] = True # Deleted
-            else: model.remove(iter)
+        model, paths = view.get_selection().get_selected_rows()
+        rows = map(model.__getitem__, paths)
+        for row in rows:
+            if row[ORIGVALUE] is not None:
+                row[EDITED] = row[DELETED] = True
+            else: model.remove(row.iter)
 
     def __save_files(self, save, revert, model, parent, watcher):
         updated = {}
         deleted = {}
         added = {}
         for row in model:
-            # Edited, and or and not Deleted
-            if row[2] and not row[4]:
-                if row[5] is not None:
-                    updated.setdefault(row[0], [])
-                    updated[row[0]].append((util.decode(row[1]),
-                                            util.decode(row[5])))
+            if row[EDITED] and not row[DELETED]:
+                if row[ORIGVALUE] is not None:
+                    updated.setdefault(row[TAG], [])
+                    updated[row[TAG]].append((util.decode(row[VALUE]),
+                                              util.decode(row[ORIGVALUE])))
                 else:
-                    added.setdefault(row[0], [])
-                    added[row[0]].append(util.decode(row[1]))
-            if row[2] and row[4]:
-                if row[5] is not None:
-                    deleted.setdefault(row[0], [])
-                    deleted[row[0]].append(util.decode(row[5]))
+                    added.setdefault(row[TAG], [])
+                    added[row[TAG]].append(util.decode(row[VALUE]))
+            if row[EDITED] and row[DELETED]:
+                if row[ORIGVALUE] is not None:
+                    deleted.setdefault(row[TAG], [])
+                    deleted[row[TAG]].append(util.decode(row[ORIGVALUE]))
 
         was_changed = []
         win = WritingWindow(parent, len(self.__songs))
@@ -521,11 +491,11 @@ class EditTags(gtk.VBox):
         watcher.refresh()
         for b in [save, revert]: b.set_sensitive(False)
 
-    def __edit_tag(self, renderer, path, new, model, colnum):
+    def __edit_tag(self, renderer, path, new, model):
         new = ', '.join(new.splitlines())
         row = model[path]
-        if row[0] in Massager.fmt:
-            fmt = Massager.fmt[row[0]]
+        if row[TAG] in Massager.fmt:
+            fmt = Massager.fmt[row[TAG]]
             newnew = fmt.validate(new)
             if not newnew:
                 qltk.WarningMessage(
@@ -533,24 +503,33 @@ class EditTags(gtk.VBox):
                     (": <b>%s</b>\n\n%s" % (new, fmt.error))).run()
                 return
             else: new = newnew
-        if row[colnum].replace('<i>','').replace('</i>','') != new:
-            row[colnum] = util.escape(new)
-            row[2] = True # Edited
-            row[4] = False # not Deleted
+        if row[VALUE].replace('<i>','').replace('</i>','') != new:
+            row[VALUE] = util.escape(new)
+            row[EDITED] = True
+            row[DELETED] = False
 
-    def __write_toggle(self, view, event, (writecol, textcol, edited)):
-        if event.button != 1: return False
+    def __button_press(self, view, event):
+        if event.button not in [1, 2]: return False
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return False
 
-        if col is writecol:
+        if event.button == 1 and col is view.get_columns()[0]:
             row = view.get_model()[path]
-            row[edited] = not row[edited]
-            if row[edited]:
-                idx = row[textcol].find(' <i>')
-                if idx >= 0: row[textcol] = row[textcol][:idx]
+            row[EDITED] = not row[EDITED]
+            if row[EDITED]:
+                idx = row[VALUE].find(' <i>')
+                if idx >= 0: row[VALUE] = row[VALUE][:idx]
             return True
+        elif event.button == 2 and col == view.get_columns()[2]:
+            display = gtk.gdk.display_manager_get().get_default_display()
+            clipboard = gtk.Clipboard(display, "PRIMARY")
+            for rend in col.get_cell_renderers():
+                if rend.get_property('editable'):
+                    clipboard.request_text(self.__paste, (rend, path[0]))
+                    return True
+            else: return False
+        else: return False
 
     def __update(self, songs, view, buttonbox, model, add, buttons):
         if songs is None: songs = self.__songs
