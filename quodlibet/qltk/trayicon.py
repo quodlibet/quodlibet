@@ -295,6 +295,7 @@ class TrayIcon(object):
         menu.repeat = repeat
         menu.orders = items
         menu.sensitives = [props, next, ratings, info]
+        safter.connect_object('selection-done', gtk.Menu.popdown, menu)
         return menu
 
     def __play_button_press(self, activator, event, safter):
