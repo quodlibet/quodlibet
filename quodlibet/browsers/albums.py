@@ -17,7 +17,7 @@ import stock
 from qltk.completion import EntryWordCompletion
 from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
-from parse import Query
+from parse import Query, XMLFromPattern
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
 
@@ -26,6 +26,11 @@ from library import library
 from browsers._base import Browser
 from qltk.properties import SongProperties
 from qltk.information import Information
+
+EMPTY = _("Songs not in an album")
+PATTERN = r"""\<b\><title|\<i\><title>\</i\>|%s>\</b\><date| (<date>)>
+\<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
+<people>""" % EMPTY
 
 class AlbumTagCompletion(EntryWordCompletion):
     def __init__(self):
@@ -113,6 +118,8 @@ class AlbumList(Browser, gtk.VBox):
         __covers = {}
         __pending_covers = []
 
+        __pattern = XMLFromPattern(PATTERN)
+
         def clear_cache(klass): klass.__covers.clear()
         clear_cache = classmethod(clear_cache)
 
@@ -130,11 +137,12 @@ class AlbumList(Browser, gtk.VBox):
             self.cover = self.__covers.get(self.title)
             self.genre = []
 
-        def get(self, key, default=None):
+        def get(self, key, default=""):
             if key == "~#length": return self.length
             elif key == "~#tracks": return self.tracks
             elif key == "~#discs": return self.discs
             elif key == "~length": return self.__length
+            elif key == "~long-length": return self.__long_length
             elif key == "labelid": return self.labelid
             elif key == "date": return self.date
             elif key == "~#date":
@@ -146,6 +154,14 @@ class AlbumList(Browser, gtk.VBox):
                 return "\n".join(self.people)
             elif key == "genre": return self.genre
             elif key.startswith("~#") and key[-4:-3] != ":": key += ":avg"
+            elif key == "~tracks":
+                return ngettext(
+                    "%d track", "%d tracks", self.tracks) % self.tracks
+            elif key == "~discs":
+                if self.discs > 1:
+                    return ngettext(
+                        "%d disc", "%d discs", self.discs) % self.discs
+                else: return default
 
             if key.startswith("~#") and key[-4:-3] == ":":
                 # Using key.<func> runs the resulting list of values
@@ -158,6 +174,7 @@ class AlbumList(Browser, gtk.VBox):
             return default
 
         __call__ = get
+        def comma(self, *args): return self.get(*args).replace("\n", ", ")
 
         # All songs added, cache info.
         def finalize(self):
@@ -188,18 +205,8 @@ class AlbumList(Browser, gtk.VBox):
                 self.discs = 1
             else: self.date = song.comma("date")
 
-            if self.title: text = "<i><b>%s</b></i>" % util.escape(self.title)
-            else: text = "<b>%s</b>" % _("Songs not in an album")
-            if self.date: text += " (%s)" % self.date
-            text += "\n<small>"
-            if self.discs > 1:
-                text += ngettext(
-                    "%d disc", "%d discs", self.discs) % self.discs + " - "
-            text += ngettext(
-                "%d track", "%d tracks", self.tracks) % self.tracks
-            text += " - " + self.__long_length
-            text += "</small>\n" + ", ".join(map(util.escape, self.people))
-            self.markup = text
+            self.markup = self.__pattern % self
+
             if self.title and self.cover is None:
                 self.cover = False
                 if not self.__pending_covers: gobject.idle_add(
