@@ -406,7 +406,7 @@ class AlbumList(Browser, gtk.VBox):
         view.set_model(model_filter)
         self.show_all()
         
-    def __build_menu(self, view, watcher):
+    def __popup(self, view, watcher):
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(stock.EDIT_TAGS)
@@ -435,9 +435,10 @@ class AlbumList(Browser, gtk.VBox):
         rem.connect('activate', self.__remove, view.get_selection(), watcher)
         props.connect('activate', self.__properties, view, watcher)
         info.connect('activate', self.__information, view, watcher)
-        
-        return menu
-        
+        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
+        return True
+
     def __refresh_album(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
@@ -457,11 +458,6 @@ class AlbumList(Browser, gtk.VBox):
             map(library.remove, songs)
             watcher.removed(songs)
             selection.unselect_all()
-
-    def __popup(self, view, watcher):
-        self.__build_menu(view, watcher).popup(None, None, None, 0, 
-                                               gtk.get_current_event_time())
-        return True
 
     def __get_selected_albums(self, selection):
         model, rows = selection.get_selected_rows()

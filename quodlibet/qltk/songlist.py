@@ -521,8 +521,8 @@ class SongList(AllTreeView):
         b.connect_object('activate', Information, watcher, songs)
         menu.append(b)
 
+        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
         menu.show_all()
-        menu.connect('selection-done', lambda m: m.destroy())
         return menu
 
     def __add_to_playlist(self, activator, playlist, songs):

@@ -97,6 +97,7 @@ class ExFalsoWindow(gtk.Window):
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
+        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
         menu.show_all()
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
