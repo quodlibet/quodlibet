@@ -7,6 +7,7 @@
 # $Id$
 
 import gtk
+from qltk import get_top_parent
 
 class _PopupSlider(gtk.EventBox):
     # Based on the Rhythmbox volume control button; thanks to Colin Walters,
@@ -54,6 +55,7 @@ class _PopupSlider(gtk.EventBox):
         w, h = self.child.window.get_size()        
         ww, wh = self.__window.child.parent.get_size()
         sx, sy = self._move_to(x, y, w, h, ww, wh, pad=3)
+        self.__window.set_transient_for(get_top_parent(self))
         self.__window.move(sx, sy)
         self.__window.show()
         self.__window.grab_focus()
