@@ -63,6 +63,7 @@ from traceback import print_exc
 import gobject, gtk, qltk
 from qltk.watcher import SongWatcher
 from qltk.wlw import WritingWindow
+from plugins._manager import Manager
 
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
@@ -116,8 +117,8 @@ class SongWrapper(object):
 def ListWrapper(songs):
     return [(song and SongWrapper(song)) for song in songs]
 
-class PluginManager(object):
-    """PluginManager manages all the plugins"""
+class PluginManager(Manager):
+    """Manage SongList context menu and event plugins."""
 
     # by being in here, you can tweak the behavior by subclassing and
     # overriding these class attributes
@@ -138,9 +139,7 @@ class PluginManager(object):
                   for s in gobject.signal_list_names(SongWatcher)]
 
     def __init__(self, watcher=None, folders=[]):
-        self.scan = []
-        self.scan.extend(folders)
-        self.files = {}
+        super(PluginManager, self).__init__(folders)
         self.byfile = {}
         self.plugins = {}
         self.watcher = watcher
@@ -154,51 +153,10 @@ class PluginManager(object):
                 watcher.connect(event, handler, event)
 
     def rescan(self):
-        import os, sys, dircache, imp
-
-        changes = False;
-
-        justscanned = {}
-        for scandir in self.scan:
-            try: names = dircache.listdir(scandir)
-            except OSError: continue
-            for name in names:
-                pathname = os.path.realpath(os.path.join(scandir, name))
-                if not os.path.isdir(pathname):
-                    name = name[: name.rfind('.')]
-                if '.' in name or name in justscanned or name.startswith("_"):
-                    continue
-                else: justscanned[name] = True
-                modified = mtime(pathname)
-                info = self.files.setdefault(name, [None, None])
-
-                try:
-                    sys.path.insert(0, scandir)
-                    if info[1] is None or info[1] < modified:
-                        changes = True
-                        if info[0] is None:
-                            try: modinfo = imp.find_module(name)
-                            except ImportError: continue
-                            try:
-                                mod = imp.load_module(name, *modinfo)
-                            except Exception, err:
-                                print_exc()
-                                try: del sys.modules[name]
-                                except KeyError: pass
-                            else: info[0] = mod; self.load(name, mod)
-                        else:
-                            try: mod = reload(info[0])
-                            except Exception, err:
-                                print_exc()
-                            else: info[0] = mod; self.load(name, mod)
-                finally:
-                    del sys.path[0:1]
-                info[1] = modified
-
+        super(PluginManager, self).rescan()
         self.restore()
-        return changes
 
-    def load(self, name, mod):        
+    def _load(self, name, mod):        
         for pluginname in self.byfile.get(name, []):
             try: del self.plugins[pluginname]
             except KeyError: pass

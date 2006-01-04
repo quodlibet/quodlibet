@@ -60,17 +60,17 @@ class Manager(object):
                                 print_exc()
                                 try: del sys.modules[name]
                                 except KeyError: pass
-                            else: info[0] = mod; self.__load(name, mod)
+                            else: info[0] = mod; self._load(name, mod)
                         else:
                             try: mod = reload(info[0])
                             except Exception, err:
                                 print_exc()
-                            else: info[0] = mod; self.__load(name, mod)
+                            else: info[0] = mod; self._load(name, mod)
                 finally:
                     del sys.path[0:1]
                 info[1] = modified
 
-    def __load(self, name, module):
+    def _load(self, name, module):
         try: objs = [getattr(module, attr) for attr in module.__all__]
         except AttributeError:
             objs = [getattr(module, attr) for attr in vars(module)
