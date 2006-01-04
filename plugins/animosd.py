@@ -39,25 +39,27 @@ class AnimOsd(object):
             self.conf.fill = cstring
 
         def set_font(button):
-            font = button.get_font().get_font_name()
+            font = button.get_font_name()
             config.set("plugins", "animosd_font", font)
             self.conf.font = font
 
-        def change_ms(button):
+        def change_delay(button):
             value = int(button.get_value() * 1000)
-            config.set("plugins", "animosd_ms", value)
-            self.conf.ms = value
+            config.set("plugins", "animosd_delay", str(value))
+            self.conf.delay = value
 
         vb = gtk.VBox(spacing=12)
         font = gtk.FontButton()
         font.set_font_name(self.conf.font)
+        font.connect('font-set', set_font)
         vb.pack_start(font, expand=False)
 
         hb = gtk.HBox(spacing=3)
         timeout = gtk.SpinButton(
-            gtk.Adjustment(self.conf.ms/1000.0, 0, 60, 0.1, 1.0, 1.0), 0.1, 1)
+            gtk.Adjustment(
+            self.conf.delay/1000.0, 0, 60, 0.1, 1.0, 1.0), 0.1, 1)
         timeout.set_numeric(True)
-        timeout.connect('value-changed', change_ms)
+        timeout.connect('value-changed', change_delay)
 
         hb.pack_start(Label("Display delay: "), expand=False)
         hb.pack_start(timeout, expand=False);
@@ -116,7 +118,6 @@ by <~people>>'''
         layout = self.__layout = window.create_pango_layout("")
         layout.set_justify(False)
         layout.set_alignment(pango.ALIGN_CENTER)
-        layout.set_font_description(pango.FontDescription(self.conf.font))
         layout.set_wrap(pango.WRAP_WORD)
         self.__step = 0 # 0=invisible; 255=fully visible
         self.__stepby = 0
@@ -130,15 +131,15 @@ by <~people>>'''
         self.__width = self.__height = self.__coverwidth + 2 * self.conf.border
         self.__delayhide = None
 
-        for key, value in {
-            "text": "#ffd096",
-            "fill": "#40404080",
-            "font": "Sans 22"}.items():
+        for key, value in [
+            ("text", "#ffd096"),
+            ("fill", "#40404080"),
+            ("font", "Sans 22")]:
             try: value = config.get("plugins", "animosd_" + key)
             except: config.set("plugins", "animosd_" + key, value)
             setattr(self.conf, key, value)
-        try: self.conf.ms = config.getint("plugins", "animosd_ms")
-        except: config.set("plugins", "animosd_ms", 2500)
+        try: self.conf.delay = config.getint("plugins", "animosd_delay")
+        except: config.set("plugins", "animosd_delay", str(self.conf.delay))
 
     # for rapid debugging
     def plugin_single_song(self, song): self.plugin_on_song_started(song)
@@ -204,6 +205,7 @@ by <~people>>'''
         if self.__cover is not None:
             tw -= self.__coverwidth + self.conf.border
         layout = self.__layout
+        layout.set_font_description(pango.FontDescription(self.conf.font))
         layout.set_markup(XMLFromPattern(self.conf.string) % song)
         layout.set_width(pango.SCALE * tw)
         self.__textsize = layout.get_pixel_size()
