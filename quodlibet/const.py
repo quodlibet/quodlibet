@@ -26,6 +26,12 @@ Joshua Kwan
 Nikolai Prokoschenko
 Lalo Martins
 Tomasz Torcz
+Joshua Kwan
+Alexey Bobyakov
+Zack Weinberg
+Bastian Kleineidam
+Eduardo Gonzalez
+Decklin Foster
 
 Anders Carlsson (trayicon)
 Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")
