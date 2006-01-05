@@ -26,7 +26,6 @@ Joshua Kwan
 Nikolai Prokoschenko
 Lalo Martins
 Tomasz Torcz
-Joshua Kwan
 Alexey Bobyakov
 Zack Weinberg
 Bastian Kleineidam
