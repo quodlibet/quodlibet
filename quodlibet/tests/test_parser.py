@@ -95,7 +95,7 @@ class ValidityTests(TestCase):
     def test_nesting(self):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
 
-class QueryTests(TestCase):
+class TQuery(TestCase):
     from formats._audio import AudioFile as AF
 
     def setUp(self):
@@ -210,6 +210,11 @@ class QueryTests(TestCase):
         self.failIf(Query("~dirname=/dirty/").search(self.s1))
         self.failIf(Query("~dirname=/dirty/").search(self.s2))
 
+    def test_search_almostequal(self):
+        a, b = self.AF({"~#rating": 0.771}), self.AF({"~#rating": 0.769})
+        self.failUnless(Query("#(rating = 0.77)").search(a))
+        self.failUnless(Query("#(rating = 0.77)").search(b))
+
 class TestColors(TestCase):
     def test_red(self):
         for p in ["a = /w", "|(sa#"]:
@@ -224,5 +229,5 @@ class TestColors(TestCase):
             self.failUnlessEqual("dark green", Query.is_valid_color(p))
 
 registerCase(ValidityTests)
-registerCase(QueryTests)
+registerCase(TQuery)
 registerCase(TestColors)

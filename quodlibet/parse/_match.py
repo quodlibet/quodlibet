@@ -67,7 +67,7 @@ class Numcmp(object):
         elif value in ["today"]: value = int(time.time() - 24 * 60 * 60)
         else:
             parts = value.split()
-            try: value = float(parts[0])
+            try: value = round(float(parts[0]), 2)
             except ValueError:
                 try:
                     hms = map(int, value.split(":"))
@@ -92,6 +92,7 @@ class Numcmp(object):
     def search(self, data):
         if self.__shortcircuit: num = data.get(self.__ftag, 0)
         else: num = data(self.__ftag, 0)
+        num = round(num, 2)
         if   self.__op == ">":  return num >  self.__value
         elif self.__op == "<":  return num <  self.__value
         elif self.__op == "=":  return num == self.__value
