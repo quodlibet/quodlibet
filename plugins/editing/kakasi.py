@@ -12,7 +12,7 @@ class Kakasi(RenameFilesPlugin, gtk.CheckButton):
 
     active = property(lambda s: s.get_active())
 
-    def filter(self, value):
+    def filter(self, original, value):
         try: data = value.encode('shift-jis', 'replace')
         except None: return value
         line = ("kakasi -isjis -osjis -Ha -Ka -Ja -Ea -ka -s")
