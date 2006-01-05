@@ -287,6 +287,11 @@ class QuodLibetWindow(gtk.Window):
             self.unmaximize()
         super(QuodLibetWindow, self).hide()
 
+    def present(self):
+        super(QuodLibetWindow, self).present()
+        if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            self.maximize()
+
     def show(self):
         super(QuodLibetWindow, self).show()
         if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:

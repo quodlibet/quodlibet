@@ -171,7 +171,7 @@ class FIFOControl(object):
 
     def _toggle_window(self, watcher, window, player):
         if window.get_property('visible'): window.hide()
-        else: window.show()
+        else: window.present()
 
     def _set_rating(self, value, watcher, window, player):
         song = player.song
