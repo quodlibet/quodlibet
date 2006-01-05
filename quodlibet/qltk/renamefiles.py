@@ -38,7 +38,7 @@ class FilterCheckButton(ConfigCheckButton):
         self.connect_object('toggled', self.emit, 'preview')
     active = property(lambda s: s.get_active())
 
-    def filter(self, filename): raise NotImplementedError
+    def filter(self, original, filename): raise NotImplementedError
 
     def __cmp__(self, other):
         return (cmp(self._order, other._order) or
@@ -49,21 +49,21 @@ class SpacesToUnderscores(FilterCheckButton):
     _label = _("Replace spaces with _underscores")
     _key = "spaces"
     _order = 1.0
-    def filter(self, filename): return filename.replace(" ", "_")
+    def filter(self, original, filename): return filename.replace(" ", "_")
 
 class StripWindowsIncompat(FilterCheckButton):
     _label = _("Strip _Windows-incompatible characters")
     _key = "windows"
     BAD = '\:*?;"<>|'
     _order = 1.1
-    def filter(self, filename):
+    def filter(self, original, filename):
         return "".join(map(lambda s: (s in self.BAD and "_") or s, filename))
 
 class StripDiacriticals(FilterCheckButton):
     _label = _("Strip _diacritical marks")
     _key = "diacriticals"
     _order = 1.2
-    def filter(self, filename):
+    def filter(self, original, filename):
         return filter(lambda s: not unicodedata.combining(s),
                       unicodedata.normalize('NFKD', filename))
 
@@ -71,7 +71,7 @@ class StripNonASCII(FilterCheckButton):
     _label = _("Strip non-_ASCII characters")
     _key = "ascii"
     _order = 1.3
-    def filter(self, filename):
+    def filter(self, original, filename):
         return "".join(map(lambda s: (s <= "~" and s) or "_", filename))
 
 class RenameFiles(EditPane):
@@ -178,7 +178,7 @@ class RenameFiles(EditPane):
             code = util.fscoding
             newname = newname.encode(code, "replace").decode(code)
             for f in self.filters:
-                if f.active: newname = f.filter(newname)
+                if f.active: newname = f.filter(song["~filename"], newname)
             basename = song("~basename").decode(code, "replace")
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)

@@ -17,9 +17,10 @@ class RenameFilesPlugin(object):
     packed into the RenameFiles pane (currently a ScrolledWindow hidden
     with an expander, but that might change).
 
-    The 'filter' function will be called with the proposed filename
-    as a unicode object. It should return an appropriate-transformed
-    filename, still as a unicode object.
+    The 'filter' function will be called with the song's original filename
+    as a string (probably in the local filesystem encoding) and the proposed
+    new filename as a unicode object. It should return an
+    appropriate-transformed filename, still as a unicode object.
 
     The plugin must provide either a 'changed' or 'preview'. 'preview'
     causes the entire display to be re-previewed. 'changed' causes the
@@ -33,9 +34,9 @@ class RenameFilesPlugin(object):
     default. Plugins with equal orders are sorted by class name."""
 
     _order = 0.0
-
     active = False
-    def filter(self, value): return value
+
+    def filter(self, original_filename, value): return value
 
     def __cmp__(self, other):
         return (cmp(self._order, other._order) or
@@ -63,6 +64,7 @@ class TagsFromPathPlugin(object):
 
     _order = 0
     active = False
+
     def filter(self, tag, value): return value
 
     def __cmp__(self, other):
@@ -95,6 +97,7 @@ class EditTagsPlugin(gtk.ImageMenuItem):
     tags = []
     needs = []
     _order = 2.0
+
     def activated(self, tag, value): return [(tag, value)]
 
 class EditingPlugins(Manager):
