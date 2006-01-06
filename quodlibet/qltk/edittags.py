@@ -500,13 +500,24 @@ class EditTags(gtk.VBox):
         if new == row[TAG]: return
         elif self.__songinfo.can_change(new):
             if new in Massager.fmt:
-                value = Massager.fmt[new].validate(util.unescape(row[VALUE]))
+                fmt = Massager.fmt[new]
+                value = fmt.validate(util.unescape(row[VALUE]))
                 if not value:
                     qltk.WarningMessage(
                         None, _("Invalid value"), _("Invalid value") +
                         (": <b>%s</b>\n\n%s" % (row[VALUE], fmt.error))).run()
                 return
-            else: value = util.unescape(row[VALUE])
+            else:
+                value = row[VALUE]
+                idx = value.find('<i>')
+                if idx == 0:
+                    title = _("Unable to retag multiple values")
+                    msg = _("Changing the name of a tag with multiple "
+                            "values is not supported.")
+                    qltk.ErrorMessage(None, title, msg).run()
+                    return
+                elif idx >= 0: value = value[:idx].strip()
+                value = util.unescape(value)
 
             if row[ORIGVALUE] is None: row[0] = new
             else:
@@ -546,8 +557,8 @@ class EditTags(gtk.VBox):
             row = view.get_model()[path]
             row[EDITED] = not row[EDITED]
             if row[EDITED]:
-                idx = row[VALUE].find(' <i>')
-                if idx >= 0: row[VALUE] = row[VALUE][:idx]
+                idx = row[VALUE].find('<i>')
+                if idx >= 0: row[VALUE] = row[VALUE][:idx].strip()
             return True
         elif event.button == 2 and col == view.get_columns()[2]:
             display = gtk.gdk.display_manager_get().get_default_display()
