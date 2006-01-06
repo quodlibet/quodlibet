@@ -234,8 +234,11 @@ class EditTags(gtk.VBox):
         view.append_column(column)
 
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_('Tag'), render, text=0, strikethrough=4)
+        column = gtk.TreeViewColumn(
+            _('Tag'), render, text=0, editable=3, strikethrough=4)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        render.set_property('editable', True)
+        render.connect('edited', self.__edit_tag_name, model)
         view.append_column(column)
 
         render = gtk.CellRendererText()
@@ -490,6 +493,31 @@ class EditTags(gtk.VBox):
         watcher.changed(was_changed)
         watcher.refresh()
         for b in [save, revert]: b.set_sensitive(False)
+
+    def __edit_tag_name(self, renderer, path, new, model):
+        new = ' '.join(new.splitlines())
+        row = model[path]
+        if new == row[TAG]: return
+        elif self.__songinfo.can_change(new):
+            if new in Massager.fmt:
+                value = Massager.fmt[new].validate(util.unescape(row[VALUE]))
+                if not value:
+                    qltk.WarningMessage(
+                        None, _("Invalid value"), _("Invalid value") +
+                        (": <b>%s</b>\n\n%s" % (row[VALUE], fmt.error))).run()
+                return
+            else: value = util.unescape(row[VALUE])
+
+            if row[ORIGVALUE] is None: row[0] = new
+            else:
+                row[DELETED] = row[EDITED] = True
+                self.__add_new_tag(model, new, value)
+        elif not self.__songinfo.can_change(row[TAG]):
+            title = _("Invalid tag")
+            msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
+                    " selected do not support editing this tag."
+                    ) % util.escape(comment)
+            qltk.ErrorMessage(None, title, msg).run()            
 
     def __edit_tag(self, renderer, path, new, model):
         new = ', '.join(new.splitlines())
