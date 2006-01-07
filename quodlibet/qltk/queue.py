@@ -154,7 +154,7 @@ class PlayQueue(SongList):
         player.next()
 
     def __fill(self):
-        try: filenames = file(const.QUEUE, "rU").readlines()
+        try: filenames = file(QUEUE, "rU").readlines()
         except EnvironmentError: pass
         else:
             for fn in map(str.strip, filenames):
@@ -163,7 +163,7 @@ class PlayQueue(SongList):
 
     def __write(self, model):
         filenames = "\n".join([row[0]["~filename"] for row in model])
-        f = file(const.QUEUE, "w")
+        f = file(QUEUE, "w")
         f.write(filenames)
         f.close()
 
