@@ -39,6 +39,7 @@ class FilterCheckButton(ConfigCheckButton):
     active = property(lambda s: s.get_active())
 
     def filter(self, original, filename): raise NotImplementedError
+    def filter_list(self, origs, names): return map(self.filter, origs, names)
 
     def __cmp__(self, other):
         return (cmp(self._order, other._order) or
@@ -173,12 +174,14 @@ class RenameFiles(EditPane):
                 self.combo.prepend_text(self.combo.child.get_text())
                 self.combo.write(const.NBP)
 
-        for song in self.__songs:
-            newname = pattern.format(song)
-            code = util.fscoding
-            newname = newname.encode(code, "replace").decode(code)
-            for f in self.filters:
-                if f.active: newname = f.filter(song["~filename"], newname)
+        code = util.fscoding
+        orignames = [song["~filename"] for song in songs]
+        newnames = [pattern.format(song).encode(
+            code, "replace").decode(code) for song in self.__songs]
+        for f in self.filters:
+            if f.active: newnames = f.filter_list(orignames, newnames)
+
+        for song, newname in zip(self.__songs, newnames):
             basename = song("~basename").decode(code, "replace")
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)

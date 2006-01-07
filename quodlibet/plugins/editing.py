@@ -37,6 +37,7 @@ class RenameFilesPlugin(object):
     active = False
 
     def filter(self, original_filename, value): return value
+    def filter_list(self, origs, names): return map(self.filter, origs, names)
 
     def __cmp__(self, other):
         return (cmp(self._order, other._order) or
@@ -50,6 +51,11 @@ class TagsFromPathPlugin(object):
     The 'filter' function will be called with the tag and proposed value
     as a unicode object. It should return an appropriate-transformed
     filename, still as a unicode object.
+
+    If you need to work on a set of filenames at once, you should
+    instead overload the 'filter_list' function, which takes two lists;
+    one of original filenames, the other of proposed new filenames.
+    The default filter_list function calls filter on each item.
 
     The plugin must provide either a 'changed' or 'preview'. 'preview'
     causes the entire display to be re-previewed. 'changed' causes the
