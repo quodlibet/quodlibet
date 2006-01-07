@@ -1,6 +1,6 @@
 from tests import TestCase, add
 from qltk.exfalso import ExFalsoWindow, EFPluginManager
-from tests.test_plugins import TPluginManager
+from tests.test_plugins___init__ import TPluginManager
 from qltk.watcher import SongWatcher
 from tempfile import mkdtemp
 
