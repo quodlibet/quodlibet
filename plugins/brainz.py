@@ -2,7 +2,26 @@
 # redistributable under the terms of the GNU GPL, version 2 or later
 
 import musicbrainz, os, gtk
-from musicbrainz.queries import *
+
+# New musicbrainz python bindings don't have this layout. Grr!
+try: from musicbrainz.queries import *
+except:
+	MBE_AlbumGetAlbumArtistId = musicbrainz.MBE_AlbumGetAlbumArtistId
+	MBE_AlbumGetAlbumId = musicbrainz.MBE_AlbumGetAlbumId
+	MBE_AlbumGetAlbumName = musicbrainz.MBE_AlbumGetAlbumName
+	MBE_AlbumGetArtistName = musicbrainz.MBE_AlbumGetArtistName
+	MBE_AlbumGetNumTracks = musicbrainz.MBE_AlbumGetNumTracks
+	MBE_AlbumGetTrackId = musicbrainz.MBE_AlbumGetTrackId
+	MBE_AlbumGetTrackName = musicbrainz.MBE_AlbumGetTrackName
+	MBE_GetNumAlbums = musicbrainz.MBE_GetNumAlbums
+	MBE_GetNumTrmids = musicbrainz.MBE_GetNumTrmids
+	MBQ_FindAlbumByName = musicbrainz.MBQ_FindAlbumByName
+	MBS_Back = musicbrainz.MBS_Back
+	MBS_Rewind = musicbrainz.MBS_Rewind
+	MBS_SelectAlbum = musicbrainz.MBS_SelectAlbum
+	MBS_SelectTrack = musicbrainz.MBS_SelectTrack
+	MBS_SelectTrmid = musicbrainz.MBS_SelectTrmid
+
 from qltk import GetStringDialog, ErrorMessage, ConfirmAction, Message
 from util import tag, escape
 
@@ -132,8 +151,9 @@ class QLBrainz(object):
 	PLUGIN_NAME = 'MusicBrainz lookup'
 	PLUGIN_ICON = 'gtk-cdrom'
 	PLUGIN_DESC = 'Retag an album based on a MusicBrainz search.'
-	PLUGIN_VERSION = '0.1'
+	PLUGIN_VERSION = '0.2'
 
+	# MusicBrainz constant, for now.
 	VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
 
 	mb = None
