@@ -9,12 +9,9 @@ HOME    = os.path.expanduser("~")
 DIR     = os.path.join(HOME, ".quodlibet")
 CONTROL = os.path.join(DIR, "control")
 CONFIG  = os.path.join(DIR, "config")
-QUEUE   = os.path.join(DIR, "queue")
 CURRENT = os.path.join(DIR, "current")
 LIBRARY = os.path.join(DIR, "songs")
-ACCELS  = os.path.join(DIR, "accels")
 PLUGINS = os.path.join(DIR, "plugins")
-BROWSERS = os.path.join(DIR, "browsers")
 
 AUTHORS = """\
 Joe Wreschnig
@@ -109,8 +106,6 @@ MENU = """<ui>
     </menu>
   </menubar>
 </ui>"""
-
-ICON = 'quodlibet-icon'
 
 MACHINE_TAGS = (
     "musicbrainz_trackid replaygain_album_peak replaygain_track_peak "

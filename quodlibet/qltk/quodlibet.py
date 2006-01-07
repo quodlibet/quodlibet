@@ -95,10 +95,12 @@ class QuodLibetWindow(gtk.Window):
         # create main menubar, load/restore accelerator groups
         self.__create_menu(tips, player)
         self.add_accel_group(self.ui.get_accel_group())
-        gtk.accel_map_load(const.ACCELS)
+
+        accel_fn = os.path.join(const.DIR, "accels")
+        gtk.accel_map_load(accel_fn)
         accelgroup = gtk.accel_groups_from_object(self)[0]
         accelgroup.connect('accel-changed',
-                lambda *args: gtk.accel_map_save(const.ACCELS))
+                lambda *args: gtk.accel_map_save(accel_fn))
         self.child.pack_start(self.ui.get_widget("/Menu"), expand=False)
 
         self.__vbox = realvbox = gtk.VBox(spacing=6)

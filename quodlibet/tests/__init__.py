@@ -11,7 +11,6 @@ import const
 const.CONFIG = "./const-config"
 const.CURRENT = "./const-current"
 const.LIBRARY = "./const-songs"
-const.QUEUE = "./const-queue"
 
 import util; util.ctypes_init()
 import config; config.init()
@@ -72,7 +71,7 @@ def unit(run=[]):
                 (t.__name__.startswith("T") and t.__name__[1:] in run)):
                 runner.run(t)
 
-    for f in [const.CONFIG, const.CURRENT, const.LIBRARY, const.QUEUE]:
+    for f in [const.CONFIG, const.CURRENT, const.LIBRARY]:
        try: os.unlink(f)
        except OSError: pass
     print

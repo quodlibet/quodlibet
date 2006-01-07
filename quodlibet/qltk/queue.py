@@ -7,6 +7,7 @@
 #
 # $Id$
 
+import os
 import gtk
 import const
 import config
@@ -19,6 +20,8 @@ from qltk.x import Tooltips
 from qltk.properties import SongProperties
 from qltk.information import Information
 from library import library
+
+QUEUE = os.path.join(const.DIR, "queue")
 
 class QueueExpander(gtk.Expander):
     def __init__(self, menu, watcher):

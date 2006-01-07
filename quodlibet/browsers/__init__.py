@@ -7,22 +7,22 @@
 #
 # $Id$
 
-import sys
+import os, sys
 import const
 from os.path import dirname, basename, isdir, join
 from glob import glob
 
-import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
+BROWSERS = os.path.join(const.DIR, "browsers")
 
 base = dirname(__file__)
 self = basename(base)
 modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
 modules = ["%s.%s" % (self, basename(m)) for m in modules]
 
-if isdir(const.BROWSERS):
-    sys.path.insert(0, const.BROWSERS)
+if isdir(BROWSERS):
+    sys.path.insert(0, BROWSERS)
     modules.extend([basename(f)[:-3] for f in
-                    glob(join(const.BROWSERS, "[!_]*.py"))])
+                    glob(join(BROWSERS, "[!_]*.py"))])
 
 # Browsers are declared and stored as a magic 4-tuple. The first element is
 # the sort order (built-in browsers are numbered with integers). The second
@@ -44,7 +44,7 @@ for name in modules:
 if not browsers:
     raise SystemExit("No browsers found!")
 
-try: sys.path.remove(const.BROWSERS)
+try: sys.path.remove(BROWSERS)
 except ValueError: pass
 
 browsers.sort()
@@ -53,15 +53,15 @@ browsers.sort()
 def name(i): return browsers[i][2].__name__
 
 # Return a constructor for a browser, either given by number, a string
-# of the number, or the name. FIXME: String-of-number can go away after 0.13.
-# Defaults to the first browser if all else fails.
+# of the number, or the name. Defaults to the first browser if all else
+# fails.
 def get(i):
     try: return browsers[int(i)][2]
     except (IndexError, ValueError, TypeError):
         try: return get(index(i))
         except (IndexError, ValueError): return browsers[0][2]
-# Return the index of a browser given its name. FIXME: String-of-number can
-# go away after 0.13. Defaults to the first browser if all else fails.
+# Return the index of a browser given its name. Defaults to the first
+# browser if all else fails.
 def index(i):
     try: return int(i)
     except (ValueError, TypeError):
