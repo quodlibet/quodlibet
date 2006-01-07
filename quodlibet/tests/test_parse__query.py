@@ -177,20 +177,14 @@ class TQuery(TestCase):
         self.failIf(Query("a = /\\n/").search(self.s2))
 
     def test_exp_and(self):
-        self.failUnless(Query(
-            "&(album = ate, artist = man)").search(self.s1))
-        self.failIf(Query(
-            "&(album = ate, artist = nam)").search(self.s1))
-        self.failIf(Query(
-            "&(album = tea, artist = nam)").search(self.s1))
+        self.failUnless(Query("&(album = ate, artist = man)").search(self.s1))
+        self.failIf(Query("&(album = ate, artist = nam)").search(self.s1))
+        self.failIf(Query("&(album = tea, artist = nam)").search(self.s1))
 
     def test_exp_or(self):
-        self.failUnless(Query(
-            "|(album = ate, artist = man)").search(self.s1))
-        self.failUnless(Query(
-            "|(album = ate, artist = nam)").search(self.s1))
-        self.failIf(Query(
-            "&(album = tea, artist = nam)").search(self.s1))
+        self.failUnless(Query("|(album = ate, artist = man)").search(self.s1))
+        self.failUnless(Query("|(album = ate, artist = nam)").search(self.s1))
+        self.failIf(Query("&(album = tea, artist = nam)").search(self.s1))
 
     def test_dumb_search(self):
         self.failUnless(Query("ate man").search(self.s1))
