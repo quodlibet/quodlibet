@@ -6,9 +6,9 @@
 
 import random
 import md5, urllib, urllib2, time, threading, os
-import player, config, const
+import player, config, const, widgets
 import gobject, gtk
-from qltk import Message
+from qltk import Message, WarningMessage
 from util import to
 
 class QLScrobbler(object):
@@ -43,6 +43,7 @@ class QLScrobbler(object):
 	locked = False
 	flushing = False
 	disabled = False
+	offline = False
 
 	# we need to store this because not all events get the song
 	song = None
@@ -199,9 +200,12 @@ class QLScrobbler(object):
 			password = config.get("plugins", "scrobbler_password")
 		except:
 			if self.need_config == False:
-				self.quick_info("Please visit the Preferences window to set QLScrobbler up. Until then, songs will not be submitted.")
+				self.quick_dialog("Please visit the Preferences window to set QLScrobbler up. Until then, songs will not be submitted.", gtk.MESSAGE_INFO)
 				self.need_config = True
 				return
+
+		try: self.offline = (config.get("plugins", "scrobbler_offline") == "true")
+		except: pass
 		
 		self.username = username
 		
@@ -212,22 +216,14 @@ class QLScrobbler(object):
 
 	def __destroy_cb(self, dialog, response_id):
 		dialog.destroy()
-
-	def quick_error_helper(self, str):
-		dialog = Message(gtk.MESSAGE_ERROR, None, "QLScrobbler", str)
-		dialog.connect('response', self.__destroy_cb)
-		dialog.show()
-
-	def quick_error(self, str):
-		gobject.idle_add(self.quick_error_helper, str)
 	
-	def quick_info_helper(self, str):
-		dialog = Message(gtk.MESSAGE_INFO, widgets.widgets.main, "QLScrobbler", str).run()
+	def quick_dialog_helper(self, type, str):
+		dialog = Message(gtk.MESSAGE_INFO, widgets.main, "QLScrobbler", str)
 		dialog.connect('response', self.__destroy_cb)
 		dialog.show()
 
-	def quick_info(self, str):
-		gobject.idle_add(self.quick_info_helper, str)
+	def quick_dialog(self, str, type):
+		gobject.idle_add(self.quick_dialog_helper, type, str)
 	
 	def clear_waiting(self):
 		self.waiting = False
@@ -254,7 +250,7 @@ class QLScrobbler(object):
 			
 		if status == "UPTODATE" or status.startswith("UPDATE"):
 			if status.startswith("UPDATE"):
-				self.quick_info("A new plugin is available at %s! Please download it, or your Audioscrobbler stats may not be updated, and this message will be displayed every session." % status.split()[1])
+				self.quick_dialog("A new plugin is available at %s! Please download it, or your Audioscrobbler stats may not be updated, and this message will be displayed every session." % status.split()[1], gtk.MESSAGE_INFO)
 				self.need_update = True
 
 			# Scan for submit URL and challenge.
@@ -272,7 +268,7 @@ class QLScrobbler(object):
 			
 			self.challenge_sent = True
 		elif status == "BADUSER":
-			self.quick_error("Authentication failed: invalid username %s or bad password." % self.username)
+			self.quick_dialog("Authentication failed: invalid username %s or bad password." % self.username, gtk.MESSAGE_ERROR)
 				
 			self.broken = True
 
@@ -307,6 +303,9 @@ class QLScrobbler(object):
 
 		if self.already_submitted == True or self.broken == True: return
 
+		# Scope.
+		store = {}
+		
 		if self.flushing == False:
 			stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 	
@@ -333,9 +332,11 @@ class QLScrobbler(object):
 
 			self.queue.append(store)
 		else: self.flushing = False
-		
-		if self.locked == True:
-			# another instance running, let it deal with this
+
+		# Just note to stdout if either of these are true..
+		# locked means another instance if s_s_h is dealing with sending.
+		if self.offline or self.locked:
+			print "Queuing: %s - %s" % (store["artist"], store["title"])
 			return
 
 		self.locked = True
@@ -401,7 +402,7 @@ class QLScrobbler(object):
 			self.challenge_sent = False
 			self.send_handshake()
 			if self.challenge_sent == False:
-				self.quick_error("Your Audioscrobbler login data is incorrect, so you must re-enter it before any songs will be submitted.\n\nThis message will not be shown again.")
+				self.quick_dialog("Your Audioscrobbler login data is incorrect, so you must re-enter it before any songs will be submitted.\n\nThis message will not be shown again.", gtk.MESSAGE_ERROR)
 				self.broken = True
 		elif status == "OK":
 			self.queue = []
@@ -434,8 +435,16 @@ class QLScrobbler(object):
 		self.locked = False
 
 	def PluginPreferences(self, parent):
+		def toggled(widget):
+			if widget.get_active():
+				config.set("plugins", "scrobbler_offline", "true")
+				self.offline = True
+			else:
+				config.set("plugins", "scrobbler_offline", "false")
+				self.offline = False
+
 		def changed(entry, key):
-			# having two functions is unnecessary..
+			# having a function for each entry is unnecessary..
 			config.set("plugins", "scrobbler_" + key, entry.get_text())
 
 		def destroyed(*args):
@@ -452,18 +461,21 @@ class QLScrobbler(object):
 			if self.username != newu or self.password != newp:
 				self.broken = False
 
-		table = gtk.Table(3, 2)
+		table = gtk.Table(4, 2)
 		table.set_col_spacings(3)
 		lt = gtk.Label(_("Please enter your Audioscrobbler username and password."))
 		lt.set_size_request(260, -1)
 		lu = gtk.Label(_("Username:"))
 		lp = gtk.Label(_("Password:"))
+		off = gtk.CheckButton(_("Offline mode (don't submit anything)"))
 		for l in [lt, lu, lp]:
 			l.set_line_wrap(True)
 			l.set_alignment(0.0, 0.5)
 		table.attach(lt, 0, 2, 0, 1, xoptions=gtk.FILL)
 		table.attach(lu, 0, 1, 1, 2, xoptions=gtk.FILL)
 		table.attach(lp, 0, 1, 2, 3, xoptions=gtk.FILL)
+		table.attach(off, 0, 2, 3, 4, xoptions=gtk.FILL)
+	
 		userent = gtk.Entry()
 		pwent = gtk.Entry()
 		pwent.set_visibility(False)
@@ -474,10 +486,15 @@ class QLScrobbler(object):
 		except: pass
 		try: pwent.set_text(config.get("plugins", "scrobbler_password"))
 		except: pass
+		try:
+			if config.get("plugins", "scrobbler_offline") == "true":
+				off.set_active(True)
+		except: pass
 
 		table.attach(userent, 1, 2, 1, 2)
 		table.attach(pwent, 1, 2, 2, 3)
 		pwent.connect('changed', changed, 'password')
 		userent.connect('changed', changed, 'username')
 		table.connect('destroy', destroyed)
+		off.connect('toggled', toggled)
 		return table
