@@ -189,7 +189,7 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def init(klass, watcher):
         try: feeds = pickle.load(file(FEEDS, "rb"))
-        except EnvironmentError: pass
+        except (EnvironmentError, EOFError): pass
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
