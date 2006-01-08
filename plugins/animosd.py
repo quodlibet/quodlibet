@@ -20,7 +20,7 @@ def Label(text):
 class AnimOsd(object):
     PLUGIN_NAME = "Animated On-Screen Display"
     PLUGIN_DESC = "Display song information on your screen when it changes."
-    PLUGIN_VERSION = "0.14.1"
+    PLUGIN_VERSION = "0.14.2"
 
     def PluginPreferences(self, parent):
         def set_text(button):
@@ -48,7 +48,21 @@ class AnimOsd(object):
             config.set("plugins", "animosd_delay", str(value))
             self.conf.delay = value
 
-        vb = gtk.VBox(spacing=12)
+        def change_position(button):
+            value = button.get_active() / 2.0
+            config.set("plugins", "animosd_pos_y", str(value))
+            self.conf.pos = 0.5, value
+
+        vb = gtk.VBox(spacing=6)
+
+        cb = gtk.combo_box_new_text()
+        cb.append_text(_("Display on top of screen"))
+        cb.append_text(_("Display in middle of screen"))
+        cb.append_text(_("Display on bottom of screen"))
+        cb.set_active(int(self.conf.pos[1] * 2.0))
+        cb.connect('changed', change_position)
+        vb.pack_start(cb, expand=False)
+
         font = gtk.FontButton()
         font.set_font_name(self.conf.font)
         font.connect('font-set', set_font)
@@ -140,6 +154,8 @@ by <~people>>'''
             setattr(self.conf, key, value)
         try: self.conf.delay = config.getint("plugins", "animosd_delay")
         except: config.set("plugins", "animosd_delay", str(self.conf.delay))
+        try: self.conf.pos = 0.5, config.getfloat("plugins", "animosd_pos_y")
+        except: config.set("plugins", "animosd_pos_y", str(self.conf.pos[1]))
 
     # for rapid debugging
     def plugin_single_song(self, song): self.plugin_on_song_started(song)
