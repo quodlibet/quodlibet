@@ -68,7 +68,7 @@ class QLScrobbler(object):
 			key = ""
 			value = ""
 			
-			line = line.rstrip()
+			line = line.rstrip("\n")
 			try: (key, value) = line.split(" = ", 1)
 			except:
 				if line == "-":
