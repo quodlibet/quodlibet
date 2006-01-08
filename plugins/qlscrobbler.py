@@ -113,6 +113,7 @@ class QLScrobbler(object):
 		for item in self.queue:
 			for key in item:
 				dump.write("%s = %s\n" % (key, item[key]))
+			dump.write("-\n")
 
 		dump.close()
 
