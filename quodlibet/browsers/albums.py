@@ -81,7 +81,9 @@ class AlbumList(Browser, gtk.VBox):
                 if album.songs:
                     to_change.append((row.path, row.iter))
                     album.finalize()
-                else: to_remove.append(row.iter)
+                else:
+                    to_remove.append(row.iter)
+                    album._model = album._iter = None
         if to_change: map(model.row_changed, *zip(*to_change))
         if to_remove: map(model.remove, to_remove)
     __update = classmethod(__update)
