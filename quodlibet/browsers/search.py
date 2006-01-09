@@ -127,8 +127,11 @@ class SearchBar(EmptyBar):
         clear.connect_object('clicked', self.set_text, "")
 
         search = gtk.Button()
-        search.add(gtk.image_new_from_stock(
-            gtk.STOCK_FIND, gtk.ICON_SIZE_MENU))
+        hb = gtk.HBox(spacing=3)
+        hb.pack_start(gtk.image_new_from_stock(
+            gtk.STOCK_FIND, gtk.ICON_SIZE_MENU), expand=False)
+        hb.pack_start(gtk.Label(_("Search")))
+        search.add(hb)
         tips.set_tip(search, _("Search your library"))
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
