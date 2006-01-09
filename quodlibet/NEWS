@@ -21,6 +21,7 @@ G_FILENAME_ENCODING.
  * ~#year, ~year internal tags. (#444)
  * Numeric searches are rounded to two decimal places. (#448)
  * New plugin architecture for tag editing dialogs.
+ * Korean translation, by ChangBom Yoon and Byung-Hee HWANG.
  * Updated translations:
    * Finnish, by Jari Rahkonen.
    * Portguese, by Alexandre Passos.
