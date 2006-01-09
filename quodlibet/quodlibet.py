@@ -54,7 +54,7 @@ def print_fifo(command):
             f.close()
 
             f = file(filename, "r")
-            print f.read()
+            sys.stdout.write(f.read())
             try: os.unlink(filename)
             except EnvironmentError: pass
             f.close()
@@ -149,7 +149,7 @@ def process_arguments():
                 "focus", "quit"]
     controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "random",
-                    "song-list", "queue"]
+                    "song-list", "queue", "enqueue"]
 
     from util import OptionParser
     options = OptionParser(
@@ -175,6 +175,7 @@ def process_arguments():
         ("toggle-window", _("Toggle main window visibility")),
         ("focus", _("Focus the running player")),
         ("print-playlist", _("Print the current playlist")),
+        ("print-queue", _("Print the contents of the queue")),
         ("quit", _("Exit Quod Libet")),
         ]: options.add(opt, help=help)
 
@@ -184,7 +185,7 @@ def process_arguments():
          "[order]|toggle"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "+|-|0..100"),
-        ("query", _("Search your audio library"), _("search-string")),
+        ("query", _("Search your audio library"), _("query")),
         ("play-file", _("Play a file"), _("filename")),
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
@@ -193,6 +194,8 @@ def process_arguments():
         ("song-list", _("Show or hide the main song list"), "on|off|t"),
         ("random", _("Filter on a random value"), _("tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
+        ("enqueue", _("Enqueue a file or query"), "%s|%s" %(
+        _("filename"),_( "query"))),
         ]: options.add(opt, help=help, arg=arg)
 
     def is_time(str):
@@ -229,6 +232,7 @@ def process_arguments():
             else: control(command + " " + arg)
         elif command == "status": print_fifo("status")
         elif command == "print-playlist": print_fifo("dump-playlist")
+        elif command == "print-queue": print_fifo("dump-queue")
         elif command == "volume-up": control("volume +")
         elif command == "volume-down": control("volume -")
         elif command == "play-file":

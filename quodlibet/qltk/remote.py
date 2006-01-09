@@ -237,8 +237,8 @@ class FIFOControl(object):
             strings.append("%0.3f" % window.volume.get_value())
             strings.append(window.order.get_active_name())
             strings.append((window.repeat.get_active() and "on") or "off")
-            f.write(" ".join(strings))
-            try: f.write("\n" + window.browser.status)
+            f.write(" ".join(strings) + "\n")
+            try: f.write(window.browser.status + "\n")
             except AttributeError: pass
             f.close()
 
@@ -259,5 +259,13 @@ class FIFOControl(object):
         except EnvironmentError: pass
         else:
             for song in window.playlist.pl.get():
+                f.write(song("~uri") + "\n")
+            f.close()
+
+    def _dump_queue(self, value, watcher, window, player):
+        try: f = file(value, "w")
+        except EnvironmentError: pass
+        else:
+            for song in window.playlist.q.get():
                 f.write(song("~uri") + "\n")
             f.close()
