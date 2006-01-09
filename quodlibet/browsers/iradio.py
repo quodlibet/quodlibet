@@ -279,6 +279,9 @@ class InternetRadio(gtk.HBox, Browser):
         
     def save(self): pass
 
+    def statusbar(self, i):
+        return ngettext("%(count)d station", "%(count)d stations", i)
+
 gobject.type_register(InternetRadio)
 
 import gst

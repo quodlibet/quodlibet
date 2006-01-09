@@ -69,3 +69,7 @@ class Browser(object):
     # Return an initial context menu appropriate to the browser.
     # songs is the list of selected songs.
     def Menu(self, songs, songlist): return None
+
+    def statusbar(self, i):
+        return ngettext(
+            "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)

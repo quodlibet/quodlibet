@@ -39,6 +39,7 @@ qltk/trayicon.py
 qltk/views.py
 qltk/watcher.py
 qltk/wlw.py
+browsers/_base.py
 browsers/albums.py
 browsers/paned.py
 browsers/playlists.py

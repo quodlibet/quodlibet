@@ -818,7 +818,7 @@ class QuodLibetWindow(gtk.Window):
 
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
-        t = ngettext("%(count)d song (%(time)s)", "%(count)d songs (%(time)s)",
-                i) % {'count': i, 'time': util.format_time_long(length)}
-        statusbar.set_property('label', t)
+        t = self.browser.statusbar(i) % {
+            'count': i, 'time': util.format_time_long(length)}
+        statusbar.set_text(t)
         gobject.idle_add(statusbar.queue_resize)
