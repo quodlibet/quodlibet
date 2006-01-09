@@ -254,10 +254,6 @@ if "G_FILENAME_ENCODING" in os.environ:
     if fscoding == "@locale": fscoding = locale.getpreferredencoding()
 elif "G_BROKEN_FILENAMES" in os.environ:
     fscoding = locale.getpreferredencoding()
-elif "CHARSET" in os.environ:
-    # This is deprecated in favor of the G_* constants!
-    # FIXME: Remove after 0.16.
-    fscoding = os.environ["CHARSET"]
 else: fscoding = "utf-8"
 
 def fsdecode(s):
