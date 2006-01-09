@@ -223,8 +223,9 @@ class PlaylistPlayer(object):
                     if proxy.get(k) == value: continue
                     # If the title changes for a stream, we want to change
                     # *only* the proxy.
-                    elif k == "title" and self.song.multisong:
-                        proxy[k] = value
+                    elif k == "title":
+                        if value == self.info.song.get("title"): continue
+                        elif self.song.multisong: proxy[k] = value
                     # Otherwise, if any other tag changes, or the song isn't
                     # a stream, change the actual song.
                     else: self.song[k] = value
