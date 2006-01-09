@@ -78,7 +78,7 @@ by <~people>><album|
 
     def __check_change(self, watcher, songs, playlist):
         if playlist.song in songs:
-            self.__song_started(watcher, playlist.song)
+            self.__song_started(watcher, watcher.song)
 
     def __song_started(self, watcher, song):
         if song: t = XMLFromPattern(self._pattern) % song
