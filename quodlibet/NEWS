@@ -26,6 +26,8 @@ G_FILENAME_ENCODING.
    * Finnish, by Jari Rahkonen.
    * Portguese, by Alexandre Passos.
    * Italian, by Filippo Pappalardo.
+   * Dutch, by Hans van Dok.
+   * Galician, by Johám-Luís Miguéns Vila.
 
 0.16 - would it make a difference if it never really came up often?
  * Context menu plugins can make themselves insensitive. (#66)
