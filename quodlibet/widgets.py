@@ -88,9 +88,7 @@ def init():
 
     # These stay alive in the watcher/other callbacks.
     from qltk.remote import FSInterface, FIFOControl
-    from plugins.remote import RemotePlugins
     FSInterface(watcher)
-    FIFOControl.plugins = RemotePlugins()
     FIFOControl(watcher, main, player.playlist)
 
     from qltk.count import CountManager
