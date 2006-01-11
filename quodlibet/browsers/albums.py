@@ -198,7 +198,7 @@ class AlbumList(Browser, gtk.VBox):
             self.genre = "\n".join(filter(None, genre))
             self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
-            self.people = [person for (num, person) in self.people]
+            self.people = [person for (num, person) in self.people[:100]]
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
 
