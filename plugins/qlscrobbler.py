@@ -1,14 +1,15 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.7
+# version 0.8
 # (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
 #             Joe Wreschnig <piman@sacredchao.net>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
 import random
 import md5, urllib, urllib2, time, threading, os
-import player, config, const, widgets
+import player, config, const, widgets, parse
 import gobject, gtk
-from qltk import Message, WarningMessage
+from qltk.msg import Message, WarningMessage
+from qltk.entry import ValidatingEntry
 from util import to
 
 class QLScrobbler(object):
@@ -26,6 +27,7 @@ class QLScrobbler(object):
 	username = ""
 	password = ""
 	pwhash = ""
+	exclude = ""
 	
 	timeout_id = -1
 	submission_tid = -1
@@ -56,6 +58,9 @@ class QLScrobbler(object):
 			dump = open(self.DUMP, 'r')
 			self.read_dump(dump)
 		except: pass
+
+		# Read configuration
+		self.read_config()
 		
 		# Set up exit hook to dump queue
 		gtk.quit_add(0, self.dump_queue)
@@ -153,6 +158,12 @@ class QLScrobbler(object):
 		elif 'title' not in song: return
 		elif "artist" not in song:
 			if ("composer" not in song) and ("performer" not in song): return
+		
+		# Check to see if this song is not something we'd like to submit
+		#    e.g. "Hit Me Baby One More Time"
+		if self.exclude != "" and parse.Query(self.exclude).search(song):
+			print "Not submitting: %s - %s" % (song["artist"], song["title"])
+			return
 
 		self.song = song
 		if player.playlist.paused == False:
@@ -205,6 +216,8 @@ class QLScrobbler(object):
 				return
 
 		try: self.offline = (config.get("plugins", "scrobbler_offline") == "true")
+		except: pass
+		try: self.exclude = config.get("plugins", "scrobbler_exclude")
 		except: pass
 		
 		self.username = username
@@ -458,29 +471,38 @@ class QLScrobbler(object):
 			except:
 				return
 
+			try: self.exclude = config.get("plugins", "scrobbler_exclude")
+			except: pass
+
 			if self.username != newu or self.password != newp:
 				self.broken = False
 
-		table = gtk.Table(4, 2)
+		table = gtk.Table(6, 3)
 		table.set_col_spacings(3)
-		lt = gtk.Label(_("Please enter your Audioscrobbler username and password."))
-		lt.set_size_request(260, -1)
+		lt = gtk.Label(_("Please enter your Audioscrobbler\nusername and password."))
 		lu = gtk.Label(_("Username:"))
 		lp = gtk.Label(_("Password:"))
+		lv = gtk.Label(_("Exclude filter:"))
+		lvd = gtk.Label(_("Songs matching this filter will\nnot be sent to Audioscrobbler.\n"))
 		off = gtk.CheckButton(_("Offline mode (don't submit anything)"))
-		for l in [lt, lu, lp]:
+		ve = ValidatingEntry(parse.Query.is_valid_color)
+		for l in [lt, lu, lp, lv, lvd]:
 			l.set_line_wrap(True)
 			l.set_alignment(0.0, 0.5)
-		table.attach(lt, 0, 2, 0, 1, xoptions=gtk.FILL)
-		table.attach(lu, 0, 1, 1, 2, xoptions=gtk.FILL)
-		table.attach(lp, 0, 1, 2, 3, xoptions=gtk.FILL)
-		table.attach(off, 0, 2, 3, 4, xoptions=gtk.FILL)
-	
+		table.attach(lt, 0, 2, 0, 1, xoptions=gtk.FILL | gtk.SHRINK)
+		table.attach(lu, 0, 1, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
+		table.attach(lp, 0, 1, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
+		table.attach(lv, 0, 1, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
+			
 		userent = gtk.Entry()
 		pwent = gtk.Entry()
 		pwent.set_visibility(False)
 		pwent.set_invisible_char('*')
 		table.set_border_width(6)
+		
+		table.attach(ve, 1, 2, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
+		table.attach(lvd, 0, 2, 4, 5, xoptions=gtk.FILL | gtk.SHRINK)
+		table.attach(off, 0, 2, 5, 7, xoptions=gtk.FILL | gtk.SHRINK)
 
 		try: userent.set_text(config.get("plugins", "scrobbler_username"))
 		except: pass
@@ -490,11 +512,14 @@ class QLScrobbler(object):
 			if config.get("plugins", "scrobbler_offline") == "true":
 				off.set_active(True)
 		except: pass
+		try: ve.set_text(config.get("plugins", "scrobbler_exclude"))
+		except: pass
 
-		table.attach(userent, 1, 2, 1, 2)
-		table.attach(pwent, 1, 2, 2, 3)
+		table.attach(userent, 1, 2, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
+		table.attach(pwent, 1, 2, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
 		pwent.connect('changed', changed, 'password')
 		userent.connect('changed', changed, 'username')
+		ve.connect('changed', changed, 'exclude')
 		table.connect('destroy', destroyed)
 		off.connect('toggled', toggled)
 		return table
