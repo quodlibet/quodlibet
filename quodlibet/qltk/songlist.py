@@ -560,6 +560,16 @@ class SongList(AllTreeView):
         self.connect('drag-data-get', self.__drag_data_get, watcher)
         self.connect('drag-data-received', self.__drag_data_received)
 
+        self.set_search_column(0)
+        self.set_search_equal_func(self.__search_func)
+
+    def __search_func(self, model, column, key, iter, *args):
+        for column in self.get_columns():
+            value = model[iter][0](column.header_name)
+            if not isinstance(value, basestring): continue
+            elif key in value.lower() or key in value: return False
+        else: return True
+
     def enable_drop(self):
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
