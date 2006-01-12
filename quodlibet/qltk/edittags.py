@@ -599,7 +599,7 @@ class EditTags(gtk.VBox):
             edited = False
             edit = songinfo.can_change(comment)
             deleted = False
-            if value[0] == "<": # "different etc."
+            if value[0:1] == "<": # "different etc."
                 model.append(row=[comment, value, edited, edit, deleted,
                                   "\n".join(orig_value)])
             else:
