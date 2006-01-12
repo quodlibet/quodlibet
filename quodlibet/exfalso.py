@@ -44,6 +44,7 @@ if __name__ == "__main__":
     import gtk
     try: gtk.window_set_default_icon_from_file("exfalso.svg")
     except: gtk.window_set_default_icon_from_file("exfalso.png")
+    util.gtk_init()
 
     import stock
     stock.init()

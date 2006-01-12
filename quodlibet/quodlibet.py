@@ -307,6 +307,7 @@ if __name__ == "__main__":
     import pygtk
     pygtk.require('2.0')
     import gtk
+    util.gtk_init()
 
     # Load configuration data and scan the library for new/changed songs.
     import config

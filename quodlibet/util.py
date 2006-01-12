@@ -16,6 +16,17 @@ def gettext_install(domain, localedir=None, unicode=False):
     __builtin__.__dict__["_"] = gettext
     __builtin__.__dict__["ngettext"] = ngettext
 
+def gtk_init():
+    import gtk, gobject
+    if gtk.pygtk_version > (2, 8):
+        gobject.type_register = lambda Kind: True
+
+    # http://bugzilla.gnome.org/show_bug.cgi?id=318953
+    if gtk.gtk_version < (2, 8, 8):
+        class TVProxy(gtk.TreeView):
+            def set_search_equal_func(self, func, *args): pass
+        gtk.TreeView = TVProxy
+
 def ctypes_init():
     try: import ctypes
     except ImportError: pass

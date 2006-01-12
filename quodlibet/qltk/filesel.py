@@ -44,9 +44,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
         column.set_attributes(render, text=0)
         self.append_column(column)
-        if gtk.gtk_version >= (2, 8, 8):
-            # http://bugzilla.gnome.org/show_bug.cgi?id=318953
-            self.set_search_equal_func(search_func, True)
+        self.set_search_equal_func(search_func, True)
         folders = [os.environ["HOME"], "/"]
         # Read in the GTK bookmarks list; gjc says this is the right way
         try: f = file(os.path.join(os.environ["HOME"], ".gtk-bookmarks"))
@@ -209,9 +207,7 @@ class FileSelector(gtk.VPaned):
         filelist.append_column(column)
         filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        if gtk.gtk_version >= (2, 8, 8):
-            # http://bugzilla.gnome.org/show_bug.cgi?id=318953
-            filelist.set_search_equal_func(search_func, False)
+        filelist.set_search_equal_func(search_func, False)
 
         self.__sig = filelist.get_selection().connect(
             'changed', self.__changed)
