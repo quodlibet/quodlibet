@@ -560,8 +560,9 @@ class SongList(AllTreeView):
         self.connect('drag-data-get', self.__drag_data_get, watcher)
         self.connect('drag-data-received', self.__drag_data_received)
 
-        self.set_search_column(0)
-        self.set_search_equal_func(self.__search_func)
+        # Enabling this screws up rating and enqueuing
+        #self.set_search_column(0)
+        #self.set_search_equal_func(self.__search_func)
 
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
