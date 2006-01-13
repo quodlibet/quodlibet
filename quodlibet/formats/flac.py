@@ -27,7 +27,7 @@ class FLACFile(VCFile):
 
     def write(self):
         f = mutagen.flac.FLAC(self["~filename"])
-        if not f.vc: f.add_vorbiscomment()
+        if f.vc is None: f.add_vorbiscomment()
         del(f.vc[:])
         for key in self.realkeys(): f.vc[key] = self.list(key)
         self._prep_write(f.vc)
