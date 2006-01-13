@@ -1,47 +1,60 @@
-from unittest import TestCase, makeSuite
-from tests import registerCase
+from tests import TestCase, add
 
 import util
-from util import re_esc, encode, decode, mkdir, iscommand
+from util import re_esc, encode, decode
 from util import find_subtitle, split_album, split_title, split_value, tagsplit
 from util import format_time_long as f_t_l
 import os
 
-class FSTests(TestCase):
-    def test_mkdir(self):
-        self.failUnless(not os.path.isdir("nonext"))
-        mkdir("nonext/test/test2/test3")
-        self.failUnless(os.path.isdir("nonext/test/test2/test3"))
-        self.failUnless(os.path.isdir("nonext/test/test2"))
-        os.rmdir("nonext/test/test2/test3")
-        os.rmdir("nonext/test/test2")
-        os.rmdir("nonext/test")
-        mkdir("nonext/test/foo")
-        self.failUnless(os.path.isdir("nonext/test/foo"))
-        os.rmdir("nonext/test/foo")
-        os.rmdir("nonext/test")
-        mkdir("nonext")
-        os.rmdir("nonext")
-        self.failUnless(not os.path.isdir("nonext"))
+class Tmkdir(TestCase):
+    def test_exists(self):
+        util.mkdir(".")
 
-    def test_iscommand(self):
-        self.failUnless(iscommand("ls"))
-        self.failUnless(iscommand("/bin/ls"))
-        self.failIf(iscommand("/bin/asdfjkl"))
-        self.failIf(iscommand("asdfjkl"))
-        self.failIf(iscommand(""))
+    def test_notdirectory(self):
+        self.failUnlessRaises(OSError, util.mkdir, __file__)
 
-    def test_mtime(self):
+    def test_manydeep(self):
+        self.failUnless(not os.path.isdir("nonext"))
+        util.mkdir("nonext/test/test2/test3")
+        try:
+            self.failUnless(os.path.isdir("nonext/test/test2/test3"))
+        finally:
+            os.rmdir("nonext/test/test2/test3")
+            os.rmdir("nonext/test/test2")
+            os.rmdir("nonext/test")
+            os.rmdir("nonext")
+add(Tmkdir)
+
+class Tiscommand(TestCase):
+    def test_ispartial(self): self.failUnless(util.iscommand("ls"))
+    def test_isfull(self): self.failUnless(util.iscommand("/bin/ls"))
+    def test_notpartial(self): self.failIf(util.iscommand("zzzzzzzzz"))
+    def test_notfull(self): self.failIf(util.iscommand("/bin/zzzzzzzzz"))
+    def test_empty(self): self.failIf(util.iscommand(""))
+add(Tiscommand)
+
+class Tmtime(TestCase):
+    def test_equal(self):
         self.failUnlessEqual(util.mtime("."), os.path.getmtime("."))
-        self.failUnlessEqual(util.mtime("doesnotexist"), 0)
+    def test_bad(self):
+        self.failIf(os.path.exists("/dev/doesnotexist"))
+        self.failUnlessEqual(util.mtime("/dev/doesnotexist"), 0)
+add(Tmtime)
 
-    def test_unexpand(self):
-        d = os.path.expanduser("~")
-        self.failUnlessEqual(util.unexpand(d), "~")
-        self.failUnlessEqual(util.unexpand(d + "/"), "~/")
-        self.failUnlessEqual(util.unexpand(d + "foobar/"), d + "foobar/")
-        self.failUnlessEqual(util.unexpand(os.path.join(d, "la/la")),"~/la/la")
-registerCase(FSTests)
+class Tunexpand(TestCase):
+    d = os.path.expanduser("~")
+
+    def test_base(self):
+        self.failUnlessEqual(util.unexpand(self.d), "~")
+    def test_base_trailing(self):
+        self.failUnlessEqual(util.unexpand(self.d + "/"), "~/")
+    def test_noprefix(self):
+        self.failUnlessEqual(
+            util.unexpand(self.d + "foobar/"), self.d + "foobar/")
+    def test_subfile(self):
+        self.failUnlessEqual(
+            util.unexpand(os.path.join(self.d, "la/la")), "~/la/la")
+add(Tunexpand)
 
 class StringTests(TestCase):
     def test_to(self):
@@ -162,7 +175,7 @@ class StringTests(TestCase):
             self.failUnlessEqual(util.parse_time(util.format_time(i)), i)
 
         self.failUnlessEqual(util.format_time(-124), "-2:04")
-registerCase(StringTests)
+add(StringTests)
 
 class Ttagsplit(TestCase):
     def test_single_tag(self):
@@ -179,7 +192,7 @@ class Ttagsplit(TestCase):
         self.failUnlessEqual(tagsplit("~#bar"), ["~#bar"])
     def test_two_numeric(self):
         self.failUnlessEqual(tagsplit("~#foo~~#bar"), ["~#foo", "~#bar"])
-registerCase(Ttagsplit)
+add(Ttagsplit)
 
 class Tformat_time_long(TestCase):
     def test_second(s):
@@ -215,4 +228,4 @@ class Tformat_time_long(TestCase):
     def test_drop_zero(s):
         s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 
-registerCase(Tformat_time_long)
+add(Tformat_time_long)
