@@ -12,7 +12,7 @@ const.CONFIG = "./const-config"
 const.CURRENT = "./const-current"
 const.LIBRARY = "./const-songs"
 
-import util; util.ctypes_init()
+import util; util.ctypes_init(); util.gtk_init()
 import config; config.init()
 import library; library.init()
 
