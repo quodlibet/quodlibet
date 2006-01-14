@@ -65,17 +65,17 @@ def init():
         gtk.stock_add([(REMOVE, _("ql-remove"), 0, 0, "")])
 
     for key, name in [
-        # Translators: Only translate this if GTK does so incorrectly.
-        # or missing. Don't literally translate media/next/previous/play/pause.
+        # Translators: Only translate this if GTK does so incorrectly or not
+        # at all. Don't literally translate media/next/previous/play/pause.
         (gtk.STOCK_MEDIA_NEXT, _('gtk-media-next')),
-        # Translators: Only translate this if GTK does so incorrectly.
-        # or missing. Don't literally translate media/next/previous/play/pause.
+        # Translators: Only translate this if GTK does so incorrectly or not
+        # at all. Don't literally translate media/next/previous/play/pause.
         (gtk.STOCK_MEDIA_PREVIOUS, _('gtk-media-previous')),
-        # Translators: Only translate this if GTK does so incorrectly.
-        # or missing. Don't literally translate media/next/previous/play/pause.
+        # Translators: Only translate this if GTK does so incorrectly or not
+        # at all. Don't literally translate media/next/previous/play/pause.
         (gtk.STOCK_MEDIA_PLAY, _('gtk-media-play')),
-        # Translators: Only translate this if GTK does so incorrectly.
-        # or missing. Don't literally translate media/next/previous/play/pause.
+        # Translators: Only translate this if GTK does so incorrectly or not
+        # at all. Don't literally translate media/next/previous/play/pause.
         (gtk.STOCK_MEDIA_PAUSE, _('gtk-media-pause'))
         ]:
         if key != name: # translated, so re-register with a good name
