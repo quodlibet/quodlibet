@@ -34,6 +34,10 @@ class VCFile(AudioFile):
             if "tracknumber" in self:
                 self["tracknumber"] += "/" + self["tracktotal"]
             del(self["tracktotal"])
+        if "disctotal" in self:
+            if "discnumber" in self:
+                self["discnumber"] += "/" + self["disctotal"]
+            del(self["disctotal"])
 
         AudioFile.sanitize(self, *args, **kwargs)
 
