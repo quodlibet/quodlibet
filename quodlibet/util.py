@@ -201,9 +201,14 @@ sre.escape = re_esc
 
 def parse_time(timestr):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
+    if timestr[0:1] == "-":
+        m = -1
+        timestr = timestr[1:]
+    else: m = 1
+
     try:
-        return reduce(lambda s, a: s * 60 + int(a),
-                      sre.split(":|\\.", timestr), 0)
+        return m * reduce(lambda s, a: s * 60 + int(a),
+                          sre.split(":|\\.", timestr), 0)
     except (ValueError, sre.error):
         return 0
 
