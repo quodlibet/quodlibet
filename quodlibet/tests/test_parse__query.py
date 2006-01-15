@@ -1,10 +1,9 @@
 # -*- encoding: utf-8 -*-
-from unittest import TestCase
-from tests import registerCase
+from tests import TestCase, add
 
 from parse import Query
 
-class ValidityTests(TestCase):
+class TQuery_is_valid(TestCase):
     def test_re(self):
         self.failUnless(Query.is_valid('t = /an re/'))
         self.failUnless(Query.is_valid('t = /an re/c'))
@@ -94,6 +93,7 @@ class ValidityTests(TestCase):
 
     def test_nesting(self):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
+add(TQuery_is_valid)
 
 class TQuery(TestCase):
     from formats._audio import AudioFile as AF
@@ -208,8 +208,9 @@ class TQuery(TestCase):
         a, b = self.AF({"~#rating": 0.771}), self.AF({"~#rating": 0.769})
         self.failUnless(Query("#(rating = 0.77)").search(a))
         self.failUnless(Query("#(rating = 0.77)").search(b))
+add(TQuery)
 
-class TestColors(TestCase):
+class TQuery_is_valid_color(TestCase):
     def test_red(self):
         for p in ["a = /w", "|(sa#"]:
             self.failUnlessEqual("red", Query.is_valid_color(p))
@@ -221,7 +222,4 @@ class TestColors(TestCase):
     def test_green(self):
         for p in ["a = /b/", "&(a = b, c = d)"]:
             self.failUnlessEqual("dark green", Query.is_valid_color(p))
-
-registerCase(ValidityTests)
-registerCase(TQuery)
-registerCase(TestColors)
+add(TQuery_is_valid_color)

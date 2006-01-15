@@ -1,5 +1,4 @@
-from unittest import TestCase
-from tests import registerCase
+from tests import TestCase, add
 from parse import FileFromPattern, XMLFromPattern, Pattern
 
 import os
@@ -9,7 +8,7 @@ class _TPattern(TestCase):
 
     def setUp(self):
         s1 = { 'tracknumber': '5/6', 'artist':'Artist', 'title':'Title5',
-               '~filename':'/path/to/a.mp3' }
+               '~filename':'/path/to/a.mp3', 'xmltest': "<&>"}
         s2 = { 'tracknumber': '6', 'artist':'Artist', 'title':'Title6',
                '~filename': '/path/to/b.ogg', 'discnumber':'2' }
         s3 = { 'title': 'test/subdir', 'genre':'/\n/',
@@ -140,10 +139,14 @@ class TXMLFromPattern(_TPattern):
         s.assertEquals(pat.format(s.b), '<b>&lt;Title6&gt;</b>')
         s.assertEquals(pat.format(s.c), '<b>&lt;test/subdir&gt;</b>')
 
+    def test_escape(s):
+        pat = XMLFromPattern(r'\<b\>&lt;<xmltest>&gt;\</b\>')
+        s.assertEquals(pat.format(s.a), '<b>&lt;&lt;&amp;&gt;&gt;</b>')
+
     def test_cond_markup(s):
         pat = XMLFromPattern(r'<title|\<b\><title> woo\</b\>>')
         s.assertEquals(pat.format(s.a), '<b>Title5 woo</b>')
 
-registerCase(TPattern)
-registerCase(TFileFromPattern)
-registerCase(TXMLFromPattern)
+add(TPattern)
+add(TFileFromPattern)
+add(TXMLFromPattern)
