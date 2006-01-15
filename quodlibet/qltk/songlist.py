@@ -831,9 +831,8 @@ class SongList(AllTreeView):
 
     def __song_updated(self, watcher, songs):
         model = self.get_model()
-        iters = model.find_all(songs)
-        for iter in iters:
-            model.row_changed(model.get_path(iter), iter)
+        for row in model:
+            if row[0] in songs: model.row_changed(row.path, row.iter)
 
     def __song_removed(self, watcher, songs):
         # The selected songs are removed from the library and should
