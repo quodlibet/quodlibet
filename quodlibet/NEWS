@@ -24,10 +24,12 @@ G_FILENAME_ENCODING.
  * Korean translation, by ChangBom Yoon and Byung-Hee HWANG.
  * Updated translations:
    * Finnish, by Jari Rahkonen.
-   * Portguese, by Alexandre Passos.
+   * Portuguese, by Alexandre Passos.
    * Italian, by Filippo Pappalardo.
    * Dutch, by Hans van Dok.
    * Galician, by Johám-Luís Miguéns Vila.
+   * French, by Joshua Kwan.
+   * Polish, by Tomasz Torcz.
 
 0.16 - would it make a difference if it never really came up often?
  * Context menu plugins can make themselves insensitive. (#66)
@@ -60,7 +62,7 @@ G_FILENAME_ENCODING.
    * Italian, by Filippo Pappalardo.
    * Dutch, by Hans van Dok.
    * Finnish, by Jari Rahkonen.
-   * Portguese, by Alexandre Passos. (#388)
+   * Portuguese, by Alexandre Passos. (#388)
    * French, by Joshua Kwan.
    * Polish, by Tomasz Torcz.
    * German, by Rüdiger Arp.
