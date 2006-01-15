@@ -263,6 +263,8 @@ class RCMTreeView(gtk.TreeView):
         selection = self.get_selection()
         if not selection.path_is_selected(path):
             self.set_cursor(path, col, 0)
+        else:
+            col.focus_cell(col.get_cell_renderers()[0])
         self.emit('popup-menu')
         return True
 
@@ -275,6 +277,10 @@ class HintedTreeView(gtk.TreeView):
         try: tvh = HintedTreeView.hints
         except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
         tvh.connect_view(self)
+
+class RCMHintedTreeView(HintedTreeView, RCMTreeView):
+    """A TreeView that has hints and a context menu."""
+    pass
 
 class AllTreeView(HintedTreeView, RCMTreeView, MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection

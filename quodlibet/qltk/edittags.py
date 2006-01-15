@@ -12,7 +12,7 @@ import gtk, pango
 
 import qltk
 from qltk.wlw import WritingWindow
-from qltk.views import HintedTreeView, RCMTreeView
+from qltk.views import RCMHintedTreeView
 from massagers import Massager
 
 import const
@@ -204,15 +204,13 @@ class AddTagDialog(gtk.Dialog):
 TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE = range(6)
 
 class EditTags(gtk.VBox):
-    class TV(HintedTreeView, RCMTreeView): pass
-
     def __init__(self, parent, watcher):
         super(EditTags, self).__init__(spacing=12)
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
         model = gtk.ListStore(str, str, bool, bool, bool, str)
-        view = self.TV(model)
+        view = RCMHintedTreeView(model)
         selection = view.get_selection()
         render = gtk.CellRendererPixbuf()
         column = gtk.TreeViewColumn(_("Write"), render)

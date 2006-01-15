@@ -20,7 +20,7 @@ import formats
 from library import library
 from browsers._base import Browser
 from formats._audio import AudioFile
-from qltk.views import AllTreeView
+from qltk.views import RCMHintedTreeView
 from qltk.wlw import WaitLoadWindow
 
 if sys.version_info < (2, 4): from sets import Set as set
@@ -244,7 +244,7 @@ class Playlists(gtk.VBox, Browser):
     def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=6)
         self.__main = bool(player)
-        self.__view = view = AllTreeView()
+        self.__view = view = RCMHintedTreeView()
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.connect('editing-started', self.__start_editing)
