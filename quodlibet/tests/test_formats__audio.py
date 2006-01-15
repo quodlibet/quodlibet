@@ -1,7 +1,6 @@
 import os, config
 
-from unittest import TestCase
-from tests import registerCase
+from tests import TestCase, add
 from formats._audio import AudioFile
 
 try: from sets import Set as set
@@ -230,36 +229,44 @@ class TAudioFile(TestCase):
 
     def tearDown(self):
         os.unlink(quux["~filename"])
+add(TAudioFile)
 
-class ReplayGain(TestCase):
-    def test_replaygain(self):
-        song = AudioFile({"replaygain_album_gain": "-1.00 dB",
-                          "replaygain_album_peak": "1.1",
-                          "replaygain_track_gain": "+1.0 dB",
-                          "replaygain_track_peak": "0.9"})
+class Treplay_gain(TestCase):
+    def setUp(self):
+        self.song = AudioFile({"replaygain_album_gain": "-1.00 dB",
+                               "replaygain_album_peak": "1.1",
+                               "replaygain_track_gain": "+1.0 dB",
+                               "replaygain_track_peak": "0.9"})
 
+    def test_nogain(self):
         config.set("settings", "gain", 0)
-        self.failUnlessEqual(song.replay_gain(), 1)
+        self.failUnlessEqual(self.song.replay_gain(), 1)
 
+    def test_trackgain(self):
         config.set("settings", "gain", 1)
-        self.failUnless(song.replay_gain() > 1)
-        radio_rg = song.replay_gain()
+        self.failUnless(self.song.replay_gain() > 1)
 
+    def test_albumgain(self):
         config.set("settings", "gain", 2)
-        self.failUnless(song.replay_gain() < 1)
+        self.failUnless(self.song.replay_gain() < 1)
 
-        # verify complete ignorance of RG when tags aren't right
-        song["replaygain_album_gain"] = "fdsodgbdf"
-        self.failUnlessEqual(song.replay_gain(), 1)
+    def test_invalid(self):
+        self.song["replaygain_album_gain"] = "fdsodgbdf"
+        self.failUnlessEqual(self.song.replay_gain(), 1)
 
-        del(song["replaygain_album_gain"])
-        del(song["replaygain_album_peak"])
+    def test_track_fallback(self):
+        config.set("settings", "gain", 1)
+        radio_rg = self.song.replay_gain()
+        config.set("settings", "gain", 2)
+        del(self.song["replaygain_album_gain"])
+        del(self.song["replaygain_album_peak"])
         # verify defaulting to track when album is present
-        self.failUnlessAlmostEqual(song.replay_gain(), radio_rg)
+        self.failUnlessAlmostEqual(self.song.replay_gain(), radio_rg)
+add(Treplay_gain)
 
 # Special test case for find_cover since it has to create/remove
 # various files.
-class FindCoverTest(TestCase):
+class Tfind_cover(TestCase):
     def setUp(self):
         self.dir = os.path.realpath(quux("~dirname"))
         self.files = [os.path.join(self.dir, "12345.jpg"),
@@ -275,7 +282,7 @@ class FindCoverTest(TestCase):
 
     def test_labelid(self):
         quux["labelid"] = "12345"
-        self.failUnlessEqual(quux.find_cover().name,
+        self.failUnlessEqual(os.path.abspath(quux.find_cover().name),
                              os.path.join(self.dir, "12345.jpg"))
         del(quux["labelid"])
 
@@ -285,15 +292,10 @@ class FindCoverTest(TestCase):
                   "jacketcoverfrontfolder.jpeg"]]
         for f in files:
             file(f, "w").close()
-            self.failUnless(quux.find_cover().name == f)
-        self.test_labelid() # labelid must work with other files present
-
-        for f in files: os.unlink(f)
-        self.failIf(quux.find_cover())
+            self.files.append(f)
+            self.failUnlessEqual(os.path.abspath(quux.find_cover().name), f)
+        self.test_labelid() # labelid must work with other files present        
 
     def tearDown(self):
-        for f in self.files: os.unlink(f)
-
-registerCase(TAudioFile)
-registerCase(FindCoverTest)
-registerCase(ReplayGain)
+        map(os.unlink, self.files)
+add(Tfind_cover)
