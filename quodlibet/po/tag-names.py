@@ -51,6 +51,7 @@ _("title")
 _("track")
 _("version")
 _("website")
+_("year")
 # Beats per minute; I don't know if other languages use a different word.
 _("BPM")
 
