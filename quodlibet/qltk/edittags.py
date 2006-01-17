@@ -370,9 +370,12 @@ class EditTags(gtk.VBox):
         menu.append(b)
 
         menu.show_all()
-        menu.set_sensitive(can_change)
+        # Setting the menu itself to be insensitive causes it to not
+        # be dismissed; see #473.
+        for c in menu.get_children():
+            c.set_sensitive(can_change and c.get_property('sensitive'))
         menu.connect('selection-done', lambda m: m.destroy())
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
+        menu.popup(None, None, None, 3, gtk.get_current_event_time())
 
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()
