@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 21:14-0600\n"
+"POT-Creation-Date: 2006-01-17 23:43-0600\n"
 "PO-Revision-Date: 2006-01-14 21:50-0600\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: spanish\n"
@@ -366,8 +366,8 @@ msgstr "[Codificación inválida]"
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../util.py:421 ../util.py:428 ../qltk/edittags.py:403
-#: ../qltk/edittags.py:525 ../qltk/tagsfrompath.py:166
+#: ../util.py:421 ../util.py:428 ../qltk/edittags.py:406
+#: ../qltk/edittags.py:528 ../qltk/tagsfrompath.py:166
 msgid "Invalid tag"
 msgstr "Etiqueta inválida"
 
@@ -531,74 +531,79 @@ msgstr "versión"
 msgid "website"
 msgstr "sitio web"
 
+#: ../po/tag-names.py:54
+#, fuzzy
+msgid "year"
+msgstr "%d año"
+
 #. Beats per minute; I don't know if other languages use a different word.
-#: ../po/tag-names.py:55
+#: ../po/tag-names.py:56
 msgid "BPM"
 msgstr "BPM"
 
-#: ../po/tag-names.py:57 ../qltk/information.py:310
+#: ../po/tag-names.py:58 ../qltk/information.py:310
 msgid "performers"
 msgstr "intérpretes"
 
-#: ../po/tag-names.py:58
+#: ../po/tag-names.py:59
 msgid "lyricists"
 msgstr "letristas"
 
-#: ../po/tag-names.py:59
+#: ../po/tag-names.py:60
 msgid "arrangers"
 msgstr "arreglistas"
 
-#: ../po/tag-names.py:60
+#: ../po/tag-names.py:61
 msgid "composers"
 msgstr "compositores"
 
-#: ../po/tag-names.py:61
+#: ../po/tag-names.py:62
 msgid "conductors"
 msgstr "directores"
 
-#: ../po/tag-names.py:62
+#: ../po/tag-names.py:63
 msgid "authors"
 msgstr "autores"
 
-#: ../po/tag-names.py:63 ../qltk/information.py:121 ../qltk/information.py:304
+#: ../po/tag-names.py:64 ../qltk/information.py:121 ../qltk/information.py:304
 #: ../qltk/information.py:442
 msgid "artists"
 msgstr "artistas"
 
-#: ../po/tag-names.py:64 ../qltk/information.py:459
+#: ../po/tag-names.py:65 ../qltk/information.py:459
 msgid "albums"
 msgstr "álbumes"
 
 #. Not really tag names, but this is the best place for them so far.
-#: ../po/tag-names.py:68
+#: ../po/tag-names.py:69
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: ../po/tag-names.py:69
+#: ../po/tag-names.py:70
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
-#: ../po/tag-names.py:70
+#: ../po/tag-names.py:71
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: ../po/tag-names.py:71
+#: ../po/tag-names.py:72
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d día"
 msgstr[1] "%d días"
 
-#: ../po/tag-names.py:72
+#: ../po/tag-names.py:73
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -690,7 +695,7 @@ msgstr ""
 msgid "Unable to edit song"
 msgstr "Imposible editar la canción"
 
-#: ../plugins/__init__.py:306 ../qltk/edittags.py:479
+#: ../plugins/__init__.py:306 ../qltk/edittags.py:482
 #: ../qltk/tagsfrompath.py:250 ../qltk/tracknumbers.py:136
 #, python-format
 msgid ""
@@ -859,7 +864,7 @@ msgstr "Etiqueta"
 msgid "Value"
 msgstr "Valor"
 
-#: ../qltk/edittags.py:404 ../qltk/edittags.py:526 ../qltk/tagsfrompath.py:167
+#: ../qltk/edittags.py:407 ../qltk/edittags.py:529 ../qltk/tagsfrompath.py:167
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -870,12 +875,12 @@ msgstr ""
 "\n"
 "Los ficheros actualmente seleccionados no soportan la edición de la etiqueta."
 
-#: ../qltk/edittags.py:444 ../qltk/tagsfrompath.py:224
+#: ../qltk/edittags.py:447 ../qltk/tagsfrompath.py:224
 #: ../qltk/tracknumbers.py:123
 msgid "Tag may not be accurate"
 msgstr "La etiqueta puede no ser correcta"
 
-#: ../qltk/edittags.py:445 ../qltk/tagsfrompath.py:225
+#: ../qltk/edittags.py:448 ../qltk/tagsfrompath.py:225
 #: ../qltk/tracknumbers.py:124
 #, python-format
 msgid ""
@@ -889,19 +894,19 @@ msgstr ""
 "\n"
 "Guardar esta canción de todos modos?"
 
-#: ../qltk/edittags.py:478 ../qltk/tracknumbers.py:135
+#: ../qltk/edittags.py:481 ../qltk/tracknumbers.py:135
 msgid "Unable to save song"
 msgstr "Imposible guardar la canción"
 
-#: ../qltk/edittags.py:505 ../qltk/edittags.py:539
+#: ../qltk/edittags.py:508 ../qltk/edittags.py:542
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: ../qltk/edittags.py:512
+#: ../qltk/edittags.py:515
 msgid "Unable to retag multiple values"
 msgstr "Imposible renombrar una etiqueta"
 
-#: ../qltk/edittags.py:513
+#: ../qltk/edittags.py:516
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr ""
 "No se permite editando el nombre de una etiqueta con múltiples valores."
