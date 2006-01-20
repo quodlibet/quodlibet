@@ -96,7 +96,7 @@ class Limit(gtk.HBox):
         label.set_use_underline(True)
         self.pack_start(limit)
 
-        self.__weight = gtk.CheckButton("_Weight")
+        self.__weight = gtk.CheckButton(_("_Weight"))
         self.pack_start(self.__weight)
 
     def limit(self, songs):
