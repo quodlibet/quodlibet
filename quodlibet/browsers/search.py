@@ -87,20 +87,32 @@ class Limit(gtk.HBox):
         super(Limit, self).__init__(spacing=3)
         label = gtk.Label(_("_Limit:"))
         self.pack_start(label)
-        limit = gtk.SpinButton()
+
+        self.__limit = limit = gtk.SpinButton()
         limit.set_numeric(True)
         limit.set_range(0, 99999)
         limit.set_increments(5, 50)
         label.set_mnemonic_widget(limit)
         label.set_use_underline(True)
         self.pack_start(limit)
-        self.__limit = limit
 
-    def __get_value(self):
-        if not self.get_property('visible'): return 0
-        else: return self.__limit.get_value_as_int()
-    value = property(__get_value)
+        self.__weight = gtk.CheckButton("_Weight")
+        self.pack_start(self.__weight)
 
+    def limit(self, songs):
+        limit = self.__limit.get_value_as_int()
+        if not limit or len(songs) < limit: return songs
+        else:
+            if self.__weight.get_active():
+                songs = [(song.get("~#rating", 0.5), song) for song in songs]
+                def choose((r1, s1), (r2, s2)):
+                    if r1 or r2: return cmp(random.random(), r1/(r1+r2))
+                    else: return random.randint(-1, 1)
+                songs.sort(choose)
+                songs = [song for (rating, song) in songs]
+            else: random.shuffle(songs)
+            return songs[:limit]
+        
 # Like EmptyBar, but the user can also enter a query manually. This
 # is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
@@ -168,10 +180,8 @@ class SearchBar(EmptyBar):
             except Query.error: pass
             else:
                 self.__combo.prepend_text(self._text)
-                val = self.__limit.value
-                if val and len(songs) > val:
-                    random.shuffle(songs)
-                    songs = songs[:val]
+                if self.__limit.get_property('visible'):
+                    songs = self.__limit.limit(songs)
                 self.emit('songs-selected', songs, None)
                 if self.__save: self.save()
                 self.__combo.write(QUERIES)
