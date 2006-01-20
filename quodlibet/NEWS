@@ -11,8 +11,13 @@ Quod Libet 0.16 and later use G_FILENAME_ENCODING. If you use non-UTF-8
 filenames and don't use G_BROKEN_FILENAMES, you'll need to start setting
 G_FILENAME_ENCODING.
 
+0.18 -
+ * Updated translations:
+  * Bulgarian, by Rostislav Raykov.
+
 0.17.1 - I'd like to have some nightmares, please!
  * Updated German translation, by Rüdiger Arp.
+ * Updated Russian translation, by Sergey Fedoseev.
 
 0.17 - the grizzly icing on the prospector cake!
  * Lyrics plugin merged into Information dialog. (#196)
