@@ -342,6 +342,9 @@ class Ttagsplit(TestCase):
         self.failUnlessEqual(util.tagsplit("~#bar"), ["~#bar"])
     def test_two_numeric(self):
         self.failUnlessEqual(util.tagsplit("~#foo~~#bar"), ["~#foo", "~#bar"])
+    def test_two_synth_start(self):
+        self.failUnlessEqual(
+            util.tagsplit("~~people~album"), ["~people", "album"])
 add(Ttagsplit)
 
 class Tformat_time_long(TestCase):

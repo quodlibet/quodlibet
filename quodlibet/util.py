@@ -439,7 +439,9 @@ def tagsplit(tag):
         tags = []
         front = ""
         for part in tag.split("~"):
-            if part: tags.append(front + part)
+            if part:
+                tags.append(front + part)
+                front = ""
             else: front = "~"
         return tags
     else: return [tag]
