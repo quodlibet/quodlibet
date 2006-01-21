@@ -13,6 +13,7 @@ import gtk, pango
 import qltk
 from qltk.wlw import WritingWindow
 from qltk.views import RCMHintedTreeView
+from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from massagers import Massager
 
 import const
@@ -121,19 +122,8 @@ class AddTagDialog(gtk.Dialog):
         table.set_col_spacings(6)
         table.set_border_width(6)
 
-        if can_change == True:
-            model = gtk.ListStore(str, str)
-            self.__tag = gtk.ComboBoxEntry(model, column=0)
-            self.__tag.clear()
-            text = gtk.CellRendererText()
-            self.__tag.pack_start(text)
-            self.__tag.add_attribute(text, 'text', 1)
-            for t in can:
-                model.append(row=[t, "%s (%s)" % (tag(t), t)])
-        else:
-            self.__tag = gtk.combo_box_new_text()
-            for t in can: self.__tag.append_text(t)
-            self.__tag.set_active(0)
+        if can_change == True: self.__tag = TagsComboBoxEntry()
+        else: self.__tag = TagsComboBox(can_change)
 
         label = gtk.Label()
         label.set_alignment(0.0, 0.5)
@@ -171,9 +161,9 @@ class AddTagDialog(gtk.Dialog):
                 'changed', self.__validate, add, invalid, tips, valuebox)
 
     def get_tag(self):
-        try: return self.__tag.child.get_text().lower().strip()
+        try: return self.__tag.tag
         except AttributeError:
-            return self.__tag.get_model()[self.__tag.get_active()][0]
+            return self.__tag.tag
 
     def get_value(self):
         return self.__val.get_text().decode("utf-8")
