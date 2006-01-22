@@ -45,6 +45,9 @@ class Preferences(qltk.Window):
         align.add(gtk.HBox(spacing=6))
 
         model = gtk.ListStore(str)
+        for t in config.get("browsers", "panes").split():
+            model.append(row=[t])
+
         view = gtk.TreeView(model)
         view.set_reorderable(True)
         view.set_headers_visible(False)
@@ -96,9 +99,6 @@ class Preferences(qltk.Window):
         box.set_layout(gtk.BUTTONBOX_END)
         box.pack_start(apply)
         self.child.pack_start(box, expand=False)
-
-        for t in config.get("browsers", "panes").split():
-            model.append(row=[t])
 
         self.connect_object('delete-event', Preferences.__delete_event, self)
         self.show_all()
