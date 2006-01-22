@@ -22,13 +22,124 @@ from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
 from qltk.information import Information
 from qltk.properties import SongProperties
+from qltk.tagscombobox import TagsComboBoxEntry
 from util import tag
 from parse import Query
+
+class Preferences(qltk.Window):
+    def __init__(self, *args, **kwargs):
+        super(Preferences, self).__init__(*args, **kwargs)
+        self.set_border_width(12)
+        self.set_resizable(False)
+        self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
+        vb = gtk.VBox(spacing=0)
+        gpa = gtk.RadioButton(None, "_" + tag("genre~~people~album"))
+        gpa.headers = ["genre", "~people", "album"]
+        pa = gtk.RadioButton(gpa, "_" + tag("~~people~album"))
+        pa.headers = ["~people", "album"]
+        custom = gtk.RadioButton(gpa, _("_Custom"))
+        custom.headers = []
+
+        align = gtk.Alignment()
+        align.set_padding(0, 0, 12, 0)
+        align.add(gtk.HBox(spacing=6))
+
+        model = gtk.ListStore(str)
+        view = gtk.TreeView(model)
+        view.set_reorderable(True)
+        view.set_headers_visible(False)
+        view.set_size_request(-1, 100)
+        col = gtk.TreeViewColumn("Tags", gtk.CellRendererText(), text=0)
+        view.append_column(col)
+
+        for button in [gpa, pa, custom]:
+            vb.pack_start(button, expand=False)
+            button.connect('toggled', self.__toggled, align, model)
+
+        align.set_sensitive(False)
+        current = config.get("browsers", "panes").split()
+        if current == gpa.headers: gpa.set_active(True)
+        elif current == pa.headers: pa.set_active(True)
+        else: custom.set_active(True)
+
+        vb_1 = gtk.VBox(spacing=6)
+        cb = TagsComboBoxEntry(
+            ["genre", "grouping", "~people", "artist", "album", "~year"])
+        vb_1.pack_start(cb, expand=False)
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.add(view)
+        vb_1.pack_start(sw)
+        align.child.pack_start(vb_1, expand=True, fill=True)
+
+        vb_2 = gtk.VBox(spacing=6)
+        add = gtk.Button(stock=gtk.STOCK_ADD)
+        add.connect('clicked', self.__add, model, cb)
+        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+        remove.connect('clicked', self.__remove, view.get_selection())
+        view.get_selection().connect('changed', self.__changed, remove)
+        vb_2.pack_start(add, expand=False)
+        vb_2.pack_start(remove, expand=False)
+        align.child.pack_start(vb_2, expand=False, fill=False)
+
+        vb.pack_start(align)
+
+        self.add(gtk.VBox(spacing=12))
+        self.child.pack_start(vb)
+
+        apply = gtk.Button(stock=gtk.STOCK_APPLY)
+        model.connect('row-deleted', self.__row_deleted, apply)
+        model.connect('row-inserted', self.__row_inserted, apply)
+        apply.connect('clicked', self.__apply, model)
+        box = gtk.HButtonBox()
+        box.set_layout(gtk.BUTTONBOX_END)
+        box.pack_start(apply)
+        self.child.pack_start(box, expand=False)
+
+        for t in config.get("browsers", "panes").split():
+            model.append(row=[t])
+
+        self.connect_object('delete-event', Preferences.__delete_event, self)
+        self.show_all()
+
+    def __add(self, button, model, cb):
+        model.append(row=[cb.tag])
+
+    def __remove(self, button, selection):
+        model, iter = selection.get_selected()
+        if iter: model.remove(iter)
+
+    def __changed(self, selection, remove):
+        remove.set_sensitive(bool(selection.get_selected()[1]))
+
+    def __row_deleted(self, model, path, button):
+        button.set_sensitive(len(model) > 0)
+
+    def __row_inserted(self, model, path, iter, button):
+        button.set_sensitive(len(model) > 0)
+
+    def __apply(self, button, model):
+        headers = "\t".join([row[0] for row in model])
+        config.set("browsers", "panes", headers)
+        PanedBrowser.set_all_panes()
+
+    def __delete_event(self, event):
+        self.hide()
+        return True
+
+    def __toggled(self, button, align, model):
+        if button.headers:
+            model.clear()
+            for h in button.headers:
+                model.append(row=[h])
+        align.set_sensitive(not bool(button.headers))
 
 class PanedBrowser(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
+    __prefs_window = None
     __browsers = {}
 
     def set_all_panes(klass):
@@ -199,6 +310,12 @@ class PanedBrowser(gtk.VBox, Browser):
         hb2.pack_start(clr, expand=False)
         hb.pack_start(label, expand=False)
         hb.pack_start(hb2)
+
+        prefs = gtk.Button()
+        prefs.add(
+            gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
+        prefs.connect('clicked', self.__preferences)
+        hb.pack_start(prefs, expand=False)
         self.pack_start(hb, expand=False)
         self.__refill_id = None
         self.__filter = None
@@ -309,6 +426,11 @@ class PanedBrowser(gtk.VBox, Browser):
         self.__panes[-1].inhibit()
         self.activate()
         self.__panes[-1].uninhibit()
+
+    def __preferences(self, activator):
+        if PanedBrowser.__prefs_window is None:
+            PanedBrowser.__prefs_window = Preferences()
+        PanedBrowser.__prefs_window.present()
 
     def fill(self, songs):
         if self.__save: self.save()

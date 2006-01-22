@@ -153,42 +153,8 @@ class PreferencesWindow(qltk.Window):
             f = qltk.Frame(_("Search Library"), bold=True, child=c)
             self.pack_start(f, expand=False)
 
-            t = gtk.Table(2, 4)
-            t.set_col_spacings(3)
-            t.set_row_spacings(3)
-            cbes = [gtk.combo_box_entry_new_text() for i in range(3)]
-            values = ["", "genre", "artist", "~people", "album"]
-            current = config.get("browsers", "panes").split()
-            for i, c in enumerate(cbes):
-                for v in values:
-                    c.append_text(v)
-                    try: c.child.set_text(current[i])
-                    except IndexError: pass
-                lbl = gtk.Label(_("_Pane %d:") % (i + 1))
-                lbl.set_use_underline(True)
-                lbl.set_mnemonic_widget(c)
-                t.attach(lbl, 0, 1, i, i + 1, xoptions=0)
-                t.attach(c, 1, 2, i, i + 1)
-            b = gtk.Button(stock=gtk.STOCK_APPLY)
-            b.connect('clicked', self.__update_panes, cbes)
-            bbox = gtk.HButtonBox()
-            bbox.set_layout(gtk.BUTTONBOX_END)
-            bbox.pack_start(b)
-            t.attach(bbox, 0, 2, 3, 4)
-            self.pack_start(
-                qltk.Frame(_("Paned Browser"), bold=True, child=t),
-                expand=False)
-            self.show_all()
-
         def _entry(self, entry, name, section="settings"):
             config.set(section, name, entry.get_text())
-
-        def __update_panes(self, button, cbes):
-            panes = " ".join([c.child.get_text() for c in cbes]).lower()
-            config.set('browsers', 'panes', panes)
-            import browsers
-            try: browsers.paned.PanedBrowser.set_all_panes()
-            except AttributeError: pass
 
     class Player(gtk.VBox):
         def __init__(self):
