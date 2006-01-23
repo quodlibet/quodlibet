@@ -8,12 +8,12 @@
 # $Id$
 
 import os
-import gobject, gtk, pango
+import gtk, pango
 import const
 import qltk
 import util
+from qltk.textedit import PatternEdit
 from parse import XMLFromPattern
-from qltk.textedit import TextEdit
 
 class SongInfo(gtk.Label):
     # Translators: Only worry about "by", "Disc", and "Track" below.
@@ -48,33 +48,20 @@ by <~people>><album|
         menu.append(item)
 
     def __edit(self, watcher, playlist):
-        w = TextEdit(self, SongInfo._pattern)
-        w.buffer.set_text(self._pattern)
-        w.apply.connect_object(
-            'clicked', self.__set, w, w.buffer, watcher, playlist)
+        w = PatternEdit(self, SongInfo._pattern)
+        w.text = self._pattern
+        w.apply.connect_object('clicked', self.__set, w, watcher, playlist)
 
-    def __set(self, window, buffer, watcher, playlist):
-        try:
-            text = buffer.get_text(*buffer.get_bounds()).decode('utf-8')
-            from formats._audio import AudioFile
-            f = AudioFile({"~filename":"dummy"})
-            pango.parse_markup(XMLFromPattern(text) % f, "\u0000")
-        except (ValueError, gobject.GError), e:
-            qltk.ErrorMessage(
-                window, _("Invalid pattern"),
-                _("The pattern you entered was invalid. Make sure you enter "
-                  "&lt; and &gt; as \\&lt; and \\&gt; and that your tags are "
-                  "balanced.\n\n%s") % util.escape(str(e))).run()
+    def __set(self, edit, watcher, playlist):
+        self._pattern = edit.text.rstrip()
+        if (self._pattern == SongInfo._pattern):
+            try: os.unlink(os.path.join(const.DIR, "songinfo"))
+            except OSError: pass
         else:
-            self._pattern = text.rstrip()
-            if (text == SongInfo._pattern):
-                try: os.unlink(os.path.join(const.DIR, "songinfo"))
-                except OSError: pass
-            else:
-                f = file(os.path.join(const.DIR, "songinfo"), "w")
-                f.write(self._pattern + "\n")
-                f.close()
-            self.__song_started(watcher, playlist.song)
+            f = file(os.path.join(const.DIR, "songinfo"), "w")
+            f.write(self._pattern + "\n")
+            f.close()
+        self.__song_started(watcher, playlist.song)
 
     def __check_change(self, watcher, songs, playlist):
         if playlist.song in songs:
