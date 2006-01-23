@@ -31,6 +31,7 @@ class Tiscommand(TestCase):
     def test_empty(self): self.failIf(util.iscommand(""))
     def test_symlink(self): self.failUnless(util.iscommand("pidof"))
     def test_dir(self): self.failIf(util.iscommand("/bin"))
+    def test_dir_in_path(self): self.failIf(util.iscommand("X11"))
 add(Tiscommand)
 
 class Tmtime(TestCase):
