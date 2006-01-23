@@ -29,6 +29,8 @@ class Tiscommand(TestCase):
     def test_notpartial(self): self.failIf(util.iscommand("zzzzzzzzz"))
     def test_notfull(self): self.failIf(util.iscommand("/bin/zzzzzzzzz"))
     def test_empty(self): self.failIf(util.iscommand(""))
+    def test_symlink(self): self.failUnless(util.iscommand("pidof"))
+    def test_dir(self): self.failIf(util.iscommand("/bin"))
 add(Tiscommand)
 
 class Tmtime(TestCase):

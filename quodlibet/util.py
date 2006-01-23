@@ -315,13 +315,15 @@ def title(string):
 def iscommand(s):
     """True if 's' exists in the user's path, or is a fully-qualified
     existing path."""
+
     if s == "" or os.path.sep in s:
-        return os.path.exists(s)
+        return (os.path.isfile(s) and os.access(s, os.X_OK))
     else:
         s = s.split()[0]
         for p in os.environ["PATH"].split(os.path.pathsep):
             p2 = os.path.join(p, s)
-            if os.path.exists(p2): return True
+            if (os.path.isfile(p2) and os.access(p2, os.X_OK)):
+                return True
         else: return False
 
 def capitalize(str):
