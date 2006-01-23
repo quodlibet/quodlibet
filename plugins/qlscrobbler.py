@@ -210,7 +210,8 @@ class QLScrobbler(object):
 			username = config.get("plugins", "scrobbler_username")
 			password = config.get("plugins", "scrobbler_password")
 		except:
-			if self.need_config == False:
+			if (self.need_config == False and
+			    getattr(self, 'PMEnFlag', False)):
 				self.quick_dialog("Please visit the Preferences window to set QLScrobbler up. Until then, songs will not be submitted.", gtk.MESSAGE_INFO)
 				self.need_config = True
 				return
