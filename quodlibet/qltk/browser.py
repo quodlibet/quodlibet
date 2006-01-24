@@ -27,6 +27,7 @@ class LibraryBrowser(Window):
         self.browser = browser = Kind(watcher, None)
         browser.connect_object('songs-selected', SongList.set_songs, view)
         if browser.reordered: view.enable_drop()
+        if browser.accelerators: self.add_accel_group(browser.accelerators)
 
         if Kind.expand:
             container = Kind.expand()

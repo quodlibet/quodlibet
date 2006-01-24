@@ -66,6 +66,10 @@ class Browser(object):
     # def reordered(self, songlist): ...
     reordered = None
 
+    # An AccelGroup that is added to / removed from the window where
+    # the browser is.
+    accelerators = None
+
     # Return an initial context menu appropriate to the browser.
     # songs is the list of selected songs.
     def Menu(self, songs, songlist): return None

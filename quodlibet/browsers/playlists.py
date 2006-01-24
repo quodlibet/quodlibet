@@ -288,7 +288,19 @@ class Playlists(gtk.VBox, Browser):
         s = view.get_model().connect('row-changed', self.__check_current)
         self.connect_object('destroy', view.get_model().disconnect, s)
 
+        self.accelerators = gtk.AccelGroup()
+        keyval, mod = gtk.accelerator_parse("F2")
+        self.accelerators.connect_group(keyval, mod, 0, self.__rename)
+
         self.show_all()
+
+    def __rename(self, group, acceleratable, keyval, modifier):
+        model, iter = self.__view.get_selection().get_selected()
+        if iter:
+            self.__render.set_property('editable', True)
+            self.__view.set_cursor(model.get_path(iter),
+                                   self.__view.get_columns()[0],
+                                   start_editing=True)
 
     def __play(self, view, path, column, player):
         player.reset()
@@ -388,6 +400,9 @@ class Playlists(gtk.VBox, Browser):
         model, iter = view.get_selection().get_selected()
         menu = gtk.Menu()
         ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
+        keyval, mod = gtk.accelerator_parse("F2")
+        ren.add_accelerator(
+            'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)
         def rename(path):
             self.__render.set_property('editable', True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
