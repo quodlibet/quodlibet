@@ -31,14 +31,37 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
         dt = DirectoryTree(initial=os.environ["HOME"])
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+                   ("text/uri-list", 0, 2)]
+        dt.drag_source_set(gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+        dt.connect('drag-data-get', self.__drag_data_get)
+
         sel = dt.get_selection()
         sel.unselect_all()
-        sel.connect('changed', self.__find_songs)
+        sel.connect('changed', self.__songs_selected)
         if player: dt.connect('row-activated', self.__play, player)
         self.__save = bool(player)
         self.add(dt)
         self.__refresh_library()
         self.show_all()
+
+    def __drag_data_get(self, view, ctx, sel, tid, etime):
+        songs = self.__find_songs(view.get_selection())
+        if tid == 1:
+            cant_add = filter(lambda s: not s.can_add, songs)
+            if cant_add:
+                qltk.ErrorMessage(
+                    qltk.get_top_parent(self), _("Unable to copy songs"),
+                    _("The files selected cannot be copied to other "
+                      "song lists or the queue.")).run()
+                ctx.drag_abort(etime)
+                return
+            self.__add_songs(view, songs)
+            filenames = [song("~filename") for song in songs]
+            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+        else:
+            uris = [song("~uri") for song in songs]
+            sel.set_uris(uris)
 
     def __refresh_library(self):
         for fn, song in self.__lib.items():
@@ -109,7 +132,10 @@ class FileSystem(Browser, gtk.ScrolledWindow):
                     if not self.__lib[fn].valid():
                         self.__lib.reload(self.__lib[fn])
                     if fn in self.__lib: songs.append(self.__lib[fn])
+        return songs
 
+    def __songs_selected(self, selection):
+        songs = self.__find_songs(selection)
         if self.__save: self.save()
         self.emit('songs-selected', songs, None)
 
