@@ -18,6 +18,7 @@ class LibraryBrowser(Window):
         self.set_title(_("Library Browser"))
 
         view = SongList(watcher)
+        self.add_accel_group(view.accelerators)
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)

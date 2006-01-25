@@ -111,6 +111,7 @@ class QuodLibetWindow(gtk.Window):
         from qltk.queue import QueueExpander
         self.songlist = MainSongList(
             watcher, player, self.ui.get_widget("/Menu/View/SongList"))
+        self.add_accel_group(self.songlist.accelerators)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.qexpander = QueueExpander(
@@ -340,7 +341,7 @@ class QuodLibetWindow(gtk.Window):
             ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
              None, self.__bottom40),
             ("Control", None, _("_Control")),
-            ("Properties", stock.EDIT_TAGS, None, "<Alt>Return", None,
+            ("EditTags", stock.EDIT_TAGS, None, "", None,
              self.__current_song_prop),
             ("Information", gtk.STOCK_INFO, None, None, None,
              self.__current_song_info),
@@ -440,9 +441,6 @@ class QuodLibetWindow(gtk.Window):
             self.ui.get_widget("/Menu/Filters/Bottom"),
             _("The 40 songs you've played least (more than 40 may "
               "be chosen if there are ties)"))
-        tips.set_tip(
-            self.ui.get_widget("/Menu/Control/Properties"),
-            _("View and edit tags in the playing song"))
 
     def __browser_configure(self, paned, event, browser):
         if paned.get_property('position-set'):
@@ -524,7 +522,7 @@ class QuodLibetWindow(gtk.Window):
     def __song_started(self, watcher, song, player):
         self.__update_title(watcher, [song], player)
 
-        for wid in ["Jump", "Next", "Properties", "Information"]:
+        for wid in ["Jump", "Next", "EditTags", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
             self.ui.get_widget('/Menu/Filters/'+wid).set_sensitive(bool(song))

@@ -90,7 +90,7 @@ MENU = """<ui>
       <menuitem action='PlayPause'/>
       <menuitem action='Next'/>
       <separator/>
-      <menuitem action='Properties'/>
+      <menuitem action='EditTags'/>
       <menuitem action='Information'/>
       <separator/>
       <menuitem action='Jump'/>

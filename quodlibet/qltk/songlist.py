@@ -494,6 +494,8 @@ class SongList(AllTreeView):
         
         b = gtk.ImageMenuItem(stock.ENQUEUE)
         b.connect('activate', self.__enqueue, songs)
+        b.add_accelerator(
+            'activate', self.accelerators, ord('Q'), 0, gtk.ACCEL_VISIBLE)
         menu.append(b)
         buttons.append(b)
         b.set_sensitive(can_add)
@@ -513,6 +515,9 @@ class SongList(AllTreeView):
         b.set_sensitive(is_file)
 
         b = gtk.ImageMenuItem(stock.EDIT_TAGS)
+        key, val = gtk.accelerator_parse("<alt>Return")
+        b.add_accelerator(
+            'activate', self.accelerators, key, val, gtk.ACCEL_VISIBLE)
         b.connect_object('activate', SongProperties, watcher, songs)
         menu.append(b)
 
@@ -563,6 +568,12 @@ class SongList(AllTreeView):
         # Enabling this screws up rating and enqueuing
         #self.set_search_column(0)
         #self.set_search_equal_func(self.__search_func)
+
+        self.accelerators = gtk.AccelGroup()
+        key, mod = gtk.accelerator_parse("<alt>Return")
+        self.accelerators.connect_group(
+            key, mod, 0, lambda *args: self.__song_properties(watcher))
+        self.accelerators.connect
 
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
@@ -838,6 +849,14 @@ class SongList(AllTreeView):
         # The selected songs are removed from the library and should
         # be removed from the view.
         map(self.model.remove, self.model.find_all(songs))
+
+    def __song_properties(self, watcher):
+        model, rows = self.get_selection().get_selected_rows()
+        if rows: songs = [model[row][0] for row in rows]
+        else:
+            from player import playlist
+            songs = [playlist.song]
+        SongProperties(watcher, songs)
 
     # Build a new filter around our list model, set the headers to their
     # new values.
