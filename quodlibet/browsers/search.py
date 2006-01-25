@@ -13,6 +13,7 @@ import gobject, gtk
 import const
 import config
 
+import qltk
 from qltk.completion import LibraryTagCompletion
 from qltk.cbes import ComboBoxEntrySave
 from qltk.songlist import SongList
@@ -127,6 +128,7 @@ class SearchBar(EmptyBar):
 
         hb2 = gtk.HBox(spacing=3)
         l = gtk.Label(_("_Search:"))
+        l.connect('mnemonic-activate', self.__mnemonic_activate)
         tips = Tooltips(self)
         combo = ComboBoxEntrySave(
             QUERIES, model="searchbar", count=15)
@@ -160,6 +162,14 @@ class SearchBar(EmptyBar):
         self.show_all()
         self.__combo = combo
         self.__limit.hide()
+
+    def __mnemonic_activate(self, label, group_cycling):
+        # If our mnemonic widget already has the focus, switch to
+        # the song list instead. (#254)
+        widget = label.get_mnemonic_widget()
+        if widget.is_focus():
+            qltk.get_top_parent(widget).songlist.grab_focus()
+            return True
 
     def __menu(self, entry, menu, hb):
         sep = gtk.SeparatorMenuItem()

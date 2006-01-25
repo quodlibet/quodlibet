@@ -300,6 +300,7 @@ class PanedBrowser(gtk.VBox, Browser):
         hb = gtk.HBox(spacing=6)
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
+        label.connect('mnemonic-activate', self.__mnemonic_activate)
         search = ValidatingEntry(Query.is_valid_color)
         label.set_mnemonic_widget(search)
         label.set_use_underline(True)
@@ -331,6 +332,14 @@ class PanedBrowser(gtk.VBox, Browser):
     def __destroy(self, s2):
         try: del(self.__browsers[self])
         except KeyError: pass
+
+    def __mnemonic_activate(self, label, group_cycling):
+        # If our mnemonic widget already has the focus, switch to
+        # the song list instead. (#254)
+        widget = label.get_mnemonic_widget()
+        if widget.is_focus():
+            qltk.get_top_parent(widget).songlist.grab_focus()
+            return True
 
     def __filter_changed(self, entry):
         if self.__refill_id is not None:
