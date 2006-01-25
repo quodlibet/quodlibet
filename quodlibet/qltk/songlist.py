@@ -485,9 +485,11 @@ class SongList(AllTreeView):
             i.connect('activate', self.__add_to_playlist, None, songs)
             submenu.append(i)
             submenu.append(gtk.SeparatorMenuItem())
-        
+            submenu.set_size_request(int(i.size_request()[0] * 2), -1)
+
             for playlist in playlists:
                 i = gtk.MenuItem(playlist.name)
+                i.child.set_ellipsize(pango.ELLIPSIZE_END)
                 i.connect('activate', self.__add_to_playlist, playlist, songs)
                 submenu.append(i)
             b.set_submenu(submenu)
