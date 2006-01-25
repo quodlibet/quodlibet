@@ -523,8 +523,10 @@ class SongList(AllTreeView):
         b.connect_object('activate', SongProperties, watcher, songs)
         menu.append(b)
 
-        try: b = gtk.ImageMenuItem(gtk.STOCK_INFO)
-        except AttributeError: b = gtk.ImageMenuItem(gtk.STOCK_DIALOG_INFO)
+        b = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        b.add_accelerator(
+            'activate', self.accelerators, ord('I'),
+            gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
         b.connect_object('activate', Information, watcher, songs)
         menu.append(b)
 
@@ -575,6 +577,9 @@ class SongList(AllTreeView):
         key, mod = gtk.accelerator_parse("<alt>Return")
         self.accelerators.connect_group(
             key, mod, 0, lambda *args: self.__song_properties(watcher))
+        key, mod = gtk.accelerator_parse("<control>I")
+        self.accelerators.connect_group(
+            key, mod, 0, lambda *args: self.__information(watcher))
         self.accelerators.connect
 
     def __search_func(self, model, column, key, iter, *args):
@@ -747,7 +752,7 @@ class SongList(AllTreeView):
         if event.string in ['0', '1', '2', '3', '4']:
             rating = min(1.0, int(event.string) * util.RATING_PRECISION)
             self.__set_rating(rating, self.get_selected_songs(), watcher)
-        elif event.string == 'Q':
+        elif event.string in ['Q', 'q']:
             self.__enqueue(None, self.get_selected_songs())
 
     def __redraw_current(self, watcher, song=None):
@@ -859,6 +864,14 @@ class SongList(AllTreeView):
             from player import playlist
             songs = [playlist.song]
         SongProperties(watcher, songs)
+
+    def __information(self, watcher):
+        model, rows = self.get_selection().get_selected_rows()
+        if rows: songs = [model[row][0] for row in rows]
+        else:
+            from player import playlist
+            songs = [playlist.song]
+        Information(watcher, songs)
 
     # Build a new filter around our list model, set the headers to their
     # new values.
