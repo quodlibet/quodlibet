@@ -4,8 +4,12 @@ from qltk.renamefiles import SpacesToUnderscores, StripWindowsIncompat, StripDia
 class TFilter(TestCase):
     def setUp(self): self.c = self.Kind()
     def tearDown(self): self.c.destroy()
-    def test_empty(self): self.failUnlessEqual(self.c.filter("", u""), "")
-    def test_safe(self): self.failUnlessEqual(self.c.filter("", u"safe"), "safe")
+    def test_empty(self):
+        v = self.c.filter("", u"")
+        self.failUnlessEqual(v, "")
+        self.failUnless(isinstance(v, unicode))
+    def test_safe(self):
+        self.failUnlessEqual(self.c.filter("", u"safe"), "safe")
 
 class TSpacesToUnderscores(TFilter):
     Kind = SpacesToUnderscores

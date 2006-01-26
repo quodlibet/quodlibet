@@ -58,7 +58,7 @@ class StripWindowsIncompat(FilterCheckButton):
     BAD = '\:*?;"<>|'
     _order = 1.1
     def filter(self, original, filename):
-        return "".join(map(lambda s: (s in self.BAD and "_") or s, filename))
+        return u"".join(map(lambda s: (s in self.BAD and "_") or s, filename))
 
 class StripDiacriticals(FilterCheckButton):
     _label = _("Strip _diacritical marks")
