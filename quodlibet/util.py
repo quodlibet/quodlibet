@@ -44,6 +44,21 @@ def ctypes_init():
             elif ctypes.sizeof(kind) == 4: ctypes.c_uint32 = kind
             elif ctypes.sizeof(kind) == 8: ctypes.c_uint64 = kind
 
+class InstanceTracker(object):
+    """A mixin for GObjects to return a list of all alive objects
+    of a given type. Note that it must be used with a GObject or
+    something with a connect method and destroy signal."""
+    __kinds = {}
+
+    def _register_instance(self, klass=None):
+        """Register this object to be returned in the active instance list."""
+        if klass is None: klass = type(self)
+        self.__kinds.setdefault(klass, []).append(self)
+        self.connect('destroy', self.__kinds[klass].remove)
+
+    def instances(klass): return klass.__kinds.get(klass, [])
+    instances = classmethod(instances)
+
 class OptionParser(object):
     def __init__(self, name, version, description=None, usage=None):
         self.__name = name

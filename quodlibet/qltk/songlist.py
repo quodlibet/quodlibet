@@ -271,12 +271,8 @@ class PlaylistModel(gtk.ListStore):
 
 gobject.type_register(PlaylistModel)
 
-class SongList(AllTreeView):
+class SongList(AllTreeView, util.InstanceTracker):
     # A TreeView containing a list of songs.
-
-    # When created SongLists add themselves to this dict so they get
-    # informed when headers are updated.
-    __songlistviews = {}
 
     headers = [] # The list of current headers.
     star = list(Query.STAR)
@@ -546,13 +542,12 @@ class SongList(AllTreeView):
 
     def __init__(self, watcher):
         super(SongList, self).__init__()
+        self._register_instance(SongList)
         self.set_model(PlaylistModel())
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        self.__songlistviews[self] = None     # register self
         self.set_column_headers(self.headers)
-        self.connect_object('destroy', SongList.__destroy, self)
         sigs = [watcher.connect('changed', self.__song_updated),
                 watcher.connect('removed', self.__song_removed),
                 watcher.connect('paused', self.__redraw_current),
@@ -763,7 +758,8 @@ class SongList(AllTreeView):
         try: headers.remove("~current")
         except ValueError: pass
         cls.headers = headers
-        for listview in cls.__songlistviews:
+        for listview in cls.instances():
+            print "setting column header", listview
             listview.set_column_headers(headers)
 
         star = list(Query.STAR)
@@ -900,7 +896,3 @@ class SongList(AllTreeView):
             column.connect('clicked', self.set_sort_by)
             column.set_reorderable(True)
             self.append_column(column)
-
-    def __destroy(self):
-        del(self.__songlistviews[self])
-        self.set_model(None)

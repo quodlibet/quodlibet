@@ -135,15 +135,14 @@ class Preferences(qltk.Window):
                 model.append(row=[h])
         align.set_sensitive(not bool(button.headers))
 
-class PanedBrowser(gtk.VBox, Browser):
+class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
     __prefs_window = None
-    __browsers = {}
 
     def set_all_panes(klass):
-        for browser in klass.__browsers: browser.refresh_panes()
+        for browser in klass.instances(): browser.refresh_panes()
     set_all_panes = classmethod(set_all_panes)
 
     class Pane(AllTreeView):
@@ -294,9 +293,9 @@ class PanedBrowser(gtk.VBox, Browser):
                 else: return list(reduce(set.union, songs, set()))
 
     def __init__(self, watcher, player):
-        gtk.VBox.__init__(self, spacing=6)
+        super(PanedBrowser, self).__init__(spacing=6)
+        self._register_instance()
         self.__save = player
-        self.__browsers[self] = self
         hb = gtk.HBox(spacing=6)
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
@@ -325,13 +324,8 @@ class PanedBrowser(gtk.VBox, Browser):
                   watcher.connect('removed', self.__refresh)
                   ]:
             self.connect_object('destroy', watcher.disconnect, s)
-        self.connect('destroy', self.__destroy)
         self.refresh_panes(restore=False)
         self.show_all()
-
-    def __destroy(self, s2):
-        try: del(self.__browsers[self])
-        except KeyError: pass
 
     def __mnemonic_activate(self, label, group_cycling):
         # If our mnemonic widget already has the focus, switch to
