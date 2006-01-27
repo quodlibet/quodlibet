@@ -24,6 +24,7 @@ class TextEditBox(gtk.VBox):
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.add(gtk.TextView())
         self.pack_start(sw)
         self.buffer = sw.child.get_buffer()

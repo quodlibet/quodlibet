@@ -7,6 +7,7 @@
 #
 # $Id$
 
+import os
 import sys
 import gobject, gtk, pango
 import config
@@ -18,6 +19,7 @@ from qltk.completion import EntryWordCompletion
 from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
 from qltk.ccb import ConfigCheckButton
+from qltk.textedit import PatternEditBox
 from parse import Query, XMLFromPattern
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
@@ -58,29 +60,92 @@ class Preferences(qltk.Window):
         self.set_border_width(12)
         self.set_title(_("Album List Preferences") + " - Quod Libet")
         self.add(gtk.VBox(spacing=6))
-        self.set_resizable(False)
-        cb = ConfigCheckButton(
-            _("Show album covers"), "browsers", "album_covers")
-        cb.set_active(config.getboolean("browsers", "album_covers"))
-        self.child.pack_start(cb)
-        cb.connect('toggled', lambda s: AlbumList.toggle_covers())
+        self.set_default_size(300, 200)
         self.connect_object('delete-event', Preferences.__delete_event, self)
+
+        cb = ConfigCheckButton(
+            _("Show album _covers"), "browsers", "album_covers")
+        cb.set_active(config.getboolean("browsers", "album_covers"))
+        cb.connect('toggled', lambda s: AlbumList.toggle_covers())
+        self.child.pack_start(cb, expand=False)
+
+        vbox = gtk.VBox(spacing=6)
+        label = gtk.Label()
+        label.set_alignment(0.0, 0.5)
+        edit = PatternEditBox(PATTERN)
+        edit.text = AlbumList._Album._pattern_text
+        edit.apply.connect('clicked', self.__set_pattern, edit)
+        edit.buffer.connect_object(
+            'changed', self.__preview_pattern, edit, label)
+        vbox.pack_start(label, expand=False)
+        vbox.pack_start(edit)
+        self.__preview_pattern(edit, label)
+        f = qltk.Frame(label=_("Album Display"), bold=True, child=vbox)
+        self.child.pack_start(f)
+
         self.child.show_all()
 
     def __delete_event(self, event):
         self.hide()
         return True
 
+    def __set_pattern(self, apply, edit):
+        AlbumList.refresh_pattern(edit.text)
+
+    def __preview_pattern(self, edit, label):
+        from util import tag
+        album = AlbumList._Album(tag("album"), tag("labelid"))
+        album.date = "2004-10-31"
+        album.length = 6319
+        album.discs = 2
+        album.tracks = 5
+        album.people = [tag("artist"), tag("performer"), tag("arranger")]
+        album.genre = tag("genre")
+        try: text = XMLFromPattern(edit.text) % album
+        except:
+            text = _("Invalid pattern")
+            edit.apply.set_sensitive(False)
+        try: pango.parse_markup(text, u"\u0000")
+        except gobject.GError:
+            text = _("Invalid pattern")
+            edit.apply.set_sensitive(False)
+        else: edit.apply.set_sensitive(True)
+        label.set_markup(text)
+
 class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
     __model = None
+
+    def init(klass, watcher):
+        pattern_fn = os.path.join(const.DIR, "album_pattern")
+        try:
+            klass._Album._pattern_text = file(pattern_fn).read().rstrip()
+        except EnvironmentError: pass
+        else:
+            klass._Album._pattern = XMLFromPattern(klass._Album._pattern_text)
+    init = classmethod(init)
 
     def toggle_covers(klass):
         on = config.getboolean("browsers", "album_covers")
         for albumlist in klass.instances():
             albumlist.__cover_column.set_visible(on)
     toggle_covers = classmethod(toggle_covers)
+
+    def refresh_pattern(klass, pattern_text):
+        if pattern_text == klass._Album._pattern_text: return
+        klass._Album._pattern_text = pattern_text
+        klass._Album._pattern = XMLFromPattern(pattern_text)
+        for row in klass.__model:
+            album = row[0]
+            if album is not None:
+                album.markup = album._pattern % album
+                klass.__model.row_changed(row.path, row.iter)
+        pattern_fn = os.path.join(const.DIR, "album_pattern")
+        f = file(pattern_fn, "w")
+        f.write(pattern_text  + "\n")
+        f.close()
+    refresh_pattern = classmethod(refresh_pattern)
 
     def _init_model(klass, watcher):
         klass.__model = model = klass._AlbumStore(object)
@@ -146,7 +211,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         __covers = {}
         __pending_covers = []
 
-        __pattern = XMLFromPattern(PATTERN)
+        _pattern_text = PATTERN
+        _pattern = XMLFromPattern(PATTERN)
 
         def clear_cache(klass): klass.__covers.clear()
         clear_cache = classmethod(clear_cache)
@@ -163,14 +229,17 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             # cover = None indicates not gotten cover, cover = False
             # indicates a failure to find a cover.
             self.cover = self.__covers.get(self.title)
-            self.genre = []
+            self.genre = u""
 
-        def get(self, key, default=""):
-            if key == "~#length": return self.length
+        def get(self, key, default="", connector=u" - "):
+            if "~" in key[1:]:
+                return connector.join(map(self.get, util.tagsplit(key)))
+            elif key == "~#length": return self.length
             elif key == "~#tracks": return self.tracks
             elif key == "~#discs": return self.discs
-            elif key == "~length": return self.__length
-            elif key == "~long-length": return self.__long_length
+            elif key == "~length": return util.format_time(self.length)
+            elif key == "~long-length":
+                return util.format_time_long(self.length)
             elif key == "labelid": return self.labelid
             elif key == "date": return self.date
             elif key == "~#date":
@@ -233,7 +302,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self.discs = 1
             else: self.date = song.comma("date")
 
-            self.markup = self.__pattern % self
+            self.markup = self._pattern % self
 
             if self.title and self.cover is None:
                 self.cover = False
