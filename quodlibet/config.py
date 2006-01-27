@@ -60,6 +60,7 @@ def init(*rc_files):
           "background": "", # "global" filter for SearchBar
           "albums": "", # album list
           "album_sort": "0", # album sorting mode, default is title
+          "album_covers": "1", # album cover display, on/off
           },
 
         # Kind of a dumping ground right now, should probably be

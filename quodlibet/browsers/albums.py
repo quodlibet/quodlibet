@@ -17,6 +17,7 @@ import stock
 from qltk.completion import EntryWordCompletion
 from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
+from qltk.ccb import ConfigCheckButton
 from parse import Query, XMLFromPattern
 from formats._audio import PEOPLE
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
@@ -51,10 +52,35 @@ class AlbumTagCompletion(EntryWordCompletion):
             for suffix in ["avg", "max", "min", "sum"]:
                 self.__model.append(row=["#(%s:%s" % (tag, suffix)])
 
-class AlbumList(Browser, gtk.VBox):
+class Preferences(qltk.Window):
+    def __init__(self):
+        super(Preferences, self).__init__()
+        self.set_border_width(12)
+        self.set_title(_("Album List Preferences") + " - Quod Libet")
+        self.add(gtk.VBox(spacing=6))
+        self.set_resizable(False)
+        cb = ConfigCheckButton(
+            _("Show album covers"), "browsers", "album_covers")
+        cb.set_active(config.getboolean("browsers", "album_covers"))
+        self.child.pack_start(cb)
+        cb.connect('toggled', lambda s: AlbumList.toggle_covers())
+        self.connect_object('delete-event', Preferences.__delete_event, self)
+        self.child.show_all()
+
+    def __delete_event(self, event):
+        self.hide()
+        return True
+
+class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
     __model = None
+
+    def toggle_covers(klass):
+        on = config.getboolean("browsers", "album_covers")
+        for albumlist in klass.instances():
+            albumlist.__cover_column.set_visible(on)
+    toggle_covers = classmethod(toggle_covers)
 
     def _init_model(klass, watcher):
         klass.__model = model = klass._AlbumStore(object)
@@ -342,7 +368,7 @@ class AlbumList(Browser, gtk.VBox):
 
     def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=6)
-
+        self._register_instance()
         if self.__model is None: AlbumList._init_model(watcher)
         self.__save = bool(player)
 
@@ -354,7 +380,8 @@ class AlbumList(Browser, gtk.VBox):
         model_filter = model_sort.filter_new()
 
         render = gtk.CellRendererPixbuf()
-        column = gtk.TreeViewColumn("covers", render)
+        self.__cover_column = column = gtk.TreeViewColumn("covers", render)
+        column.set_visible(config.getboolean("browsers", "album_covers"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
         render.set_property('xpad', 2)
         render.set_property('ypad', 2)
@@ -403,6 +430,11 @@ class AlbumList(Browser, gtk.VBox):
         hb = gtk.HBox(spacing=6)
         hb.pack_start(self.SortCombo(model_sort), expand=False)
         hb.pack_start(e)
+        prefs = gtk.Button()
+        prefs.add(
+            gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
+        prefs.connect('clicked', self.__preferences)
+        hb.pack_start(prefs, expand=False)
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
         view.set_model(model_filter)
@@ -502,6 +534,16 @@ class AlbumList(Browser, gtk.VBox):
     def __play_selection(self, view, indices, col, player):
         player.reset()
         player.next()
+
+    def __preferences(self, button):
+        try: prefs = AlbumList.__prefs_win
+        except AttributeError: prefs = AlbumList.__prefs_win = Preferences()
+        win = qltk.get_top_parent(self)
+        top, left = win.get_position()
+        w, h = win.get_size()
+        dw, dh = prefs.get_size()
+        prefs.move((left + w // 2) - dw // 2, (top + h // 2) - dh // 2)
+        prefs.present()
 
     def filter(self, key, values):
         assert(key == "album")
