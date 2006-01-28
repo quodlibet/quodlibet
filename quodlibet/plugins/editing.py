@@ -98,13 +98,37 @@ class EditTagsPlugin(gtk.ImageMenuItem):
 
     The '_order' attribute decides the sort order of the plugin. The
     default items have orders between 0 and 1. Plugins have order 2.0 by
-    default. Plugins with equal orders are sorted by class name."""
+    default. Plugins with equal orders are sorted by class name.
+
+    How to Handle Submenus
+    ----------------------
+    If the menu item is given a submenu, magic happens. In particular,
+    the callbacks are proxied to the submenu's items, and are attached,
+    via connect_object, to make sure activated is called on the original
+    item.
+
+    So, to handle submenus,
+      1. Make a submenu and attach it to your menu item.2
+      2. To each item in the submenu, attach its 'activate' signal to
+         something appropriate to prepare the original item's
+         activated method,
+      3. Because that method will be called after the subitem is
+         clicked on, and your activate handler runs.
+    """
 
     tags = []
     needs = []
     _order = 2.0
 
     def activated(self, tag, value): return [(tag, value)]
+
+    def connect(self, signal, callback, *args, **kwargs):
+        if self.get_submenu():
+            for item in self.get_submenu().get_children():
+                item.connect_object(signal, callback, self, *args, **kwargs)
+        else:
+            super(EditTagsPlugin, self).connect(
+                signal, callback, *args, **kwargs)
 
 class EditingPlugins(Manager):
     __PATHS = [os.path.join("./plugins", "editing"),
