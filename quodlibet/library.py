@@ -277,8 +277,9 @@ class Library(dict):
 
     def rebuild(self, force=False):
         changed, removed = [], []
-
-        for fn, song in self.items():
+        fns = self.keys()
+        fns.sort()
+        for fn in fns:
             song = self[fn]
             if force or not song.valid():
                 self.reload(song, changed, removed)
