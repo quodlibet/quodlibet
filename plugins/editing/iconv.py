@@ -45,6 +45,4 @@ class Iconv(EditTagsPlugin):
 
     def activated(self, tag, value):
         try: return [(tag, self.__value)]
-        except AttributeError: [(tag, value)]
-
-                             
+        except AttributeError: return [(tag, value)]
