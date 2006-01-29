@@ -6,19 +6,20 @@
 #
 # $Id$
 
+import config
 import gobject
 import library, player
-from widgets import widgets
+import widgets
 
 class RandomAlbum(object):
     PLUGIN_NAME = 'Random Album Playback'
     PLUGIN_DESC = ("When your playlist reaches its end a new album will "
                    "be chosen randomly and started. It requires that your "
                    "active browser supports filtering by album.")
-    PLUGIN_VERSION = '0.13'
+    PLUGIN_VERSION = '0.14'
 
     def plugin_on_song_started(self, song):
-        if song is None:
+        if (song is None and config.get("memory", "order") != "onesong"):
             browser = widgets.main.browser
             album = library.library.random("album")
             if browser.can_filter('album') and album:
