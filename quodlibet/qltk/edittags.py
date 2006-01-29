@@ -366,6 +366,7 @@ class EditTags(gtk.VBox):
             c.set_sensitive(can_change and c.get_property('sensitive'))
         menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, 3, gtk.get_current_event_time())
+        return True
 
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()
