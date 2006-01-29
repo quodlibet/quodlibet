@@ -22,8 +22,10 @@ class Iconv(EditTagsPlugin):
         self.set_image(
             gtk.image_new_from_stock(gtk.STOCK_CONVERT, gtk.ICON_SIZE_MENU))
         submenu = gtk.Menu()
+        sizes = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         for enc in ENCODINGS:
             item = gtk.MenuItem("dummy")
+            item.remove(item.child)
             try: new = value.encode('latin1').decode(enc, 'replace')
             except UnicodeEncodeError:
                 new = _("[Invalid Encoding]")
@@ -33,9 +35,17 @@ class Iconv(EditTagsPlugin):
                 else:
                     item.value = new
                     item.connect('activate', self.__convert)
-            text = "<b>_%s</b>:\t%s" % (enc, util.escape(new))
-            item.child.set_markup(text)
-            item.child.set_use_underline(True)
+            vb = gtk.HBox(spacing=3)
+            encoding = gtk.Label()
+            encoding.set_markup("<b>_%s:</b>" % enc)
+            encoding.set_alignment(0.0, 0.5)
+            sizes.add_widget(encoding)
+            result = gtk.Label(new)
+            result.set_alignment(0.0, 0.5)
+            vb.pack_start(encoding, expand=False)
+            vb.pack_start(result)
+            item.add(vb)
+            encoding.set_use_underline(True)
             submenu.append(item)
         self.set_submenu(submenu)
 
