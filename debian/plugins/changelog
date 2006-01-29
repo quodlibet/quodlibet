@@ -1,4 +1,14 @@
-quodlibet-plugins (20051201-1) unstable; urgency=low
+quodlibet-plugins (20060128-1) unstable; urgency=low
+
+  * I don't know why I said "include albumart.py now" in the last release,
+    but it's totally not true. My bad. closes: #345401
+  * New upstream Subversion snapshot.
+    - educate randomalbum.py about QL's one-song mode, closes: #349301
+    - let animosd.py actually hide itself automatically, closes: #344467
+
+ -- Joshua Kwan <joshk@triplehelix.org>  Sat, 28 Jan 2006 23:07:36 -0800
+
+quodlibet-plugins (20051218-1) unstable; urgency=low
 
   * New upstream Subversion snapshot.
   * Use ${depends:Python} to ensure the correct version of Python
@@ -6,7 +16,7 @@ quodlibet-plugins (20051201-1) unstable; urgency=low
   * Include albumart.py now.
   * Depend on quodlibet >= 0.16 for /usr/share/quodlibet/plugins.
 
- -- Joshua Kwan <joshk@triplehelix.org>  Thu,  1 Dec 2005 15:08:00 -0800
+ -- Joshua Kwan <joshk@triplehelix.org>  Sun, 18 Dec 2005 20:22:11 -0800
 
 quodlibet-plugins (20050925-1) unstable; urgency=low
 

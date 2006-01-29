@@ -16,7 +16,6 @@ Description: various contributed plugins for Quod Libet
  .
  Notable plugins in this package include:
  .
-  - albumart.py: Retrieve album art for an album from Amazon.com.
   - animosd.py, osd.py: Display track information on-screen when the current
     track changes. (animosd.py is new and less tested.)
   - brainz.py, cddb.py: Retag your albums from data found on MusicBrainz and
