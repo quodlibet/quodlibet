@@ -70,20 +70,20 @@ class SongWatcher(gtk.Object):
         try: self.time = (0, song["~#length"] * 1000)
         except (AttributeError, TypeError): self.time = (0, 1)
         self.song = song
-        gobject.idle_add(self.emit, 'song-started', song)
+        self.emit('song-started', song)
 
     def song_ended(self, song, stopped):
-        gobject.idle_add(self.emit, 'song-ended', song, stopped)
+        self.emit('song-ended', song, stopped)
 
     def refresh(self):
         gobject.idle_add(self.emit, 'refresh')
 
     def set_paused(self, paused):
-        if paused: gobject.idle_add(self.emit, 'paused')
-        else: gobject.idle_add(self.emit, 'unpaused')
+        if paused: self.emit('paused')
+        else: self.emit('unpaused')
 
     def seek(self, song, position_in_msec):
-        gobject.idle_add(self.emit, 'seek', song, position_in_msec)
+        self.emit('seek', song, position_in_msec)
 
     def error(self, code, lock=False):
         from widgets import main
