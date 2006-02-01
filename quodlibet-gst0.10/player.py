@@ -62,9 +62,28 @@ class PlaylistPlayer(object):
         self.bin.set_property('video-sink', None)
         self.bin.set_property('audio-sink', device)
         self.__device = device
-        self.bin.connect_object('eos', self.__end, False)
-        self.bin.connect('found-tag', self.__tag)
+        bus = self.bin.get_bus()
+        bus.add_signal_watch()
+        bus.connect('message', self.__message)
+        #bus.connect_object('eos', self.__end, False)
+        #self.bin.connect('found-tag', self.__tag)
         self.paused = True
+
+    def __message(self, bus, message):
+        if message.type == gst.MESSAGE_EOS:
+            self.__end(False)
+        elif message.type == gst.MESSAGE_ERROR:
+            err, debug = message.parse_error()
+            self.info.error("%s" % err, debug)
+        else:
+            print '%s: %s:' % (message.src.get_path_string(),
+                               message.type.value_nicks[1])
+            if message.structure:
+                print '    %s' % message.structure.to_string()
+            else:
+                print '    (no structure)'
+        return True
+
 
     def setup(self, info, source, song):
         """Connect to a SongWatcher, a PlaylistModel, and load a song."""
@@ -76,7 +95,7 @@ class PlaylistPlayer(object):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
         if self.bin.get_property('uri'):
-            p = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
+            p = self.bin.query_position(gst.FORMAT_TIME)[0]
             p //= gst.MSECOND
             return p
         else: return 0
@@ -122,11 +141,11 @@ class PlaylistPlayer(object):
         # This is believed to be a GStreamer bug. If it happens, try again
         # after pausing a little.
         st = self.bin.set_state(gst.STATE_NULL)
-        if st != gst.STATE_SUCCESS:
+        if not st:
             import time
             time.sleep(0.01)
             st = self.bin.set_state(gst.STATE_NULL)
-        if st != gst.STATE_SUCCESS:
+        if not st:
             expected = gst.element_state_get_name(gst.STATE_SUCCESS)
             found = gst.element_state_get_name(st)
             self.error(
@@ -137,7 +156,7 @@ class PlaylistPlayer(object):
         self.__length = song["~#length"] * 1000
         if self.__paused: st = self.bin.set_state(gst.STATE_PAUSED)
         else: st = self.bin.set_state(gst.STATE_PLAYING)
-        if st != gst.STATE_SUCCESS:
+        if not st:
             expected = gst.element_state_get_name(gst.STATE_SUCCESS)
             found = gst.element_state_get_name(st)
             self.error(
@@ -156,11 +175,12 @@ class PlaylistPlayer(object):
                 self.paused = True
                 pos = self.__length
 
-            ms = pos * gst.MSECOND
+            gst_time = pos * gst.MSECOND
             event = gst.event_new_seek(
-                gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
-            self.bin.send_event(event)
-            self.info.seek(self.song, pos)
+                1.0, gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH,
+                gst.SEEK_TYPE_SET, gst_time, gst.SEEK_TYPE_NONE, 0)
+            if self.bin.send_event(event):
+                self.info.seek(self.song, pos)
 
     def remove(self, song):
         if self.song is song: self.__end(False)
@@ -262,6 +282,6 @@ def init(pipeline):
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(gst.URI_SRC, "file://", ""):
         global playlist
-        playlist = PlaylistPlayer(pipeline or "gconf")
+        playlist = PlaylistPlayer(pipeline or "gconfaudiosink")
         return playlist
     else: raise NoSourceError
