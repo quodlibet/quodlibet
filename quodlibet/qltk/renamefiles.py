@@ -73,7 +73,7 @@ class StripNonASCII(FilterCheckButton):
     _key = "ascii"
     _order = 1.3
     def filter(self, original, filename):
-        return "".join(map(lambda s: (s <= "~" and s) or "_", filename))
+        return u"".join(map(lambda s: (s <= "~" and s) or u"_", filename))
 
 class RenameFiles(EditPane):
     title = _("Rename Files")
