@@ -46,6 +46,9 @@ if __name__ == "__main__":
     except: gtk.window_set_default_icon_from_file("exfalso.png")
     util.gtk_init()
 
+    import pygst
+    pygst.require("0.10")
+
     import stock
     stock.init()
 
