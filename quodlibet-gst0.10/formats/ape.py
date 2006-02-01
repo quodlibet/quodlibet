@@ -9,8 +9,9 @@
 import gst
 from formats._apev2 import APEv2File
 
-if gst.element_factory_make('monkeysdec'): extensions = [".ape"]
-else: extensions = []
+try: gst.element_factory_make('monkeysdec') or ""+1
+except: extensions = []
+else: extensions = [".ape"]
 
 class APEFile(APEv2File):
     format = "MonkeysAudio"

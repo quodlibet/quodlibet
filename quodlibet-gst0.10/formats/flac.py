@@ -13,8 +13,9 @@ from formats._vorbis import VCFile
 try: import mutagen.flac
 except: extensions = []
 else:
-    if gst.element_factory_make('flacdec'): extensions = [".flac"]
-    else: extensions = []
+    try: gst.element_factory_make('flacdec') or ""+1
+    except: extensions = []
+    else: extensions = [".flac"]
 
 class FLACFile(VCFile):
     format = "FLAC"

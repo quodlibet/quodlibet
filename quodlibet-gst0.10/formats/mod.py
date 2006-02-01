@@ -10,18 +10,18 @@ import os
 import gst
 from formats._audio import AudioFile
 
+extensions = [
+    '.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med', '.mod', '.mt2',
+    '.mtm', '.okt', '.s3m', '.stm', '.ult', '.gdm', '.xm']
 try:
     import ctypes
     _modplug = ctypes.cdll.LoadLibrary("libmodplug.so.0")
 except: extensions = []
 else:
-    if (gst.element_factory_make("modplug") or
-        gst.element_factory_make("mikmod")):
-        _modplug.ModPlug_GetName.restype = ctypes.c_char_p
-        extensions = ['.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med',
-                      '.mod', '.mt2', '.mtm', '.okt', '.s3m', '.stm', '.ult',
-                      '.gdm', '.xm']
-    else: extensions = []
+    try: gst.element_factory_make("modplug") or ""+1
+    except:
+        try: gst.element_factory_make("mikmod") or ""+1
+        except: extensions = []
 
 class ModFile(AudioFile):
 

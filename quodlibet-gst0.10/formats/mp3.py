@@ -14,8 +14,9 @@ import gst
 try: import mutagen.id3, mad
 except ImportError: extensions = []
 else:
-    if gst.element_factory_make("mad"): extensions = [".mp3", ".mp2"]
-    else: extensions = []
+    try: gst.element_factory_make("mad") or ""+1
+    except: extensions = []
+    else: extensions = [".mp3", ".mp2"]
 
 def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
 
