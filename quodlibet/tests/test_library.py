@@ -4,12 +4,12 @@ from formats._audio import AudioFile as AF
 import library
 
 CORPUS = [
-    AF({"~filename": "/tmp/foo", "title": "A"}),
+    AF({"~filename": "/tmp/foo", "title": "A", "random": "A"}),
     AF({"~filename": "/tmp/foo2", "title": "B", "artist": "woo"}),
-    AF({"~filename": "/tmp/foo3", "title": "C"}),
-    AF({"~filename": "/tmp/foo4", "title": "D"}),
+    AF({"~filename": "/tmp/foo3", "title": "C", "random": "B"}),
+    AF({"~filename": "/tmp/foo4", "title": "D", "random": "C"}),
     AF({"~filename": "/tmp/foo5", "title": "E"}),
-    AF({"~filename": "/tmp/foo6", "title": "F"}),
+    AF({"~filename": "/tmp/foo6", "title": "F", "random": "A"}),
     ]
 
 class TLibrary(TestCase):
@@ -41,6 +41,14 @@ class TLibrary(TestCase):
         self.failUnless(self.lib.random('title') in "ABCDEF")
         self.failUnlessEqual(self.lib.random('artist'), "woo")
         self.failUnlessEqual(self.lib.random('album'), None)
+
+    def test_random_go_away_501(self):
+        results = {}
+        for i in range(1000):
+            val = self.lib.random('random')
+            results[val] = results.get(val, 0) + 1
+        for v in results.values():
+            self.failIf(300 < val < 350, "statistically unlikely outcome")
 
     def test_remove(self):
         song = CORPUS[1]
