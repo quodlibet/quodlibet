@@ -1,0 +1,14 @@
+%%
+headers
+#include <Python.h>
+
+#include "pygobject.h"
+#include "eggtrayicon.h"
+%%
+modulename trayicon
+%%
+import gtk.Plug as PyGtkPlug_Type
+%%
+ignore-glob
+  *_get_type
+%%

@@ -1,0 +1,192 @@
+.TH quodlibet 1 "November 26th, 2005"
+.SH NAME
+quodlibet \- audio library manager and player
+.br
+exfalso \- audio tag editor
+.SH SYNOPSIS
+\fBquodlibet\fR [ \fB\-\-print\-playing\fR | \fB\-\-refresh\-library\fR | \fIcontrol\fR ]
+.br
+\fBexfalso\fR [ \fIdirectory\fR ]
+.SH DESCRIPTION
+Quod Libet is a music management program. It provides several different ways
+to view your audio library, as well as support for Internet radio and
+audio feeds. It has extremely flexible metadata tag editing and searching
+capabilities.
+.PP
+Ex Falso is a tag editor with the same tag editing interface as Quod Libet,
+but it does not play files.
+.PP
+This manual page is only a short reference for Quod Libet.
+Complete documentation is available at
+http://www.sacredchao.net/quodlibet/wiki/Guide.
+.SH EX\ FALSO\ OPTIONS
+Ex Falso may be given a directory to open on the command line.
+.SH QUOD\ LIBET\ OPTIONS
+.IP \-\-enqueue\ \fIfilename\fR|\fIquery\fR 4
+Enqueue a filename or query results.
+.IP \-\-filter\ \fItag\fR=\fIvalue\fR 4
+Filter on a tag value
+.IP \-\-focus 4
+Focus the running player
+.IP \-\-hide\-window 4
+Hide main window
+.IP \-\-next 4
+Jump to next song
+.IP \-\-open\-browser=\fIBrowserName\fR 4
+Open a new browser
+.IP \-\-order=\fBinorder\fR|\fBshuffle\fR|\fBweighted\fR|\fBonesong\fR|\fBtoggle\fR 4
+Set or toggle the playback order
+.IP \-\-pause 4
+Pause playback
+.IP \-\-play 4
+Start playback
+.IP \-\-play\-file=\fIfilename\fR 4
+Play a file
+.IP \-\-play\-pause 4
+Toggle play/pause mode
+.IP \-\-previous 4
+Jump to previous song
+.IP \-\-print-playlist 4
+Print the current playlist
+.IP \-\-print-queue 4
+Print the contents of the queue
+.IP \-\-print\-playing 4
+Print out information about the currently playing song. You may provide
+in a string like the kind described in the \fBRENAMING FILES\fR section
+below.
+.IP \-\-query=\fIsearch\-string\fR 4
+Search your audio library
+.IP \-\-quit 4
+Exit Quod Libet
+.IP \-\-random=\fItag\fR 4
+Filter on a random value
+.IP \-\-refresh\-library 4
+Rescan your library and exit
+.IP \-\-repeat=\fBoff\fR|\fBon\fR|\fBt\fR 4
+Turn repeat off, on, or toggle
+.IP \-\-seek=\fI[+|\-][HH:]MM:SS\fR 4
+Seek within the playing song
+.IP \-\-set\-browser=\fIBrowserName\fR 4
+Set the current browser
+.IP \-\-set\-rating=\fB0.0\fR..\fB1.0\fR 4
+Rate the playing song
+.IP \-\-show\-window 4
+Hide main window
+.IP \-\-start\-playing 4
+Begin playing immediately
+.IP \-\-status 4
+Print playing status
+.IP \-\-toggle\-window 4
+Toggle main window visibility
+.IP \-\-volume=\fB+\fR|\fB\-\fR|\fB0\fR..\fB100\fR 4
+Set the volume
+.SH ALBUM COVERS
+Album covers should be put in the same directory as the songs they
+apply to, and have "folder", "front", or "cover" in their filenames.
+If you want to store multiple albums in the same directory but keep
+distinct cover images, the name of the appropriate image file must
+contain the \fBlabelid\fI tag value, e.g. \fICOCX\-32760 cover.jpg\fR.
+.SH TIED TAGS
+Many places in EF/QL allow you to use "tied tags". Tied tags are two tag
+names joined together with a "~" like "title~version" or "album~part".
+Tied tags result in "nice" displays even when one of the tags is missing;
+for example, "title~version" will result in \fITitle\ \-\ Version\fR when
+a version tag is present, but only \fITitle\fR when one isn't. You can
+tie any number of tags together.
+.SH SEARCH SYNTAX
+All of Quod Libet's search boxes support advanced searches of the
+following forms:
+.RS 4
+tag = value
+.br
+tag = !value
+.br
+tag = "value"
+.br
+tag = /value/
+.br
+tag = &(value1, value2)
+.br
+tag = |(value1, value2)
+.br
+!tag = value
+.br
+|(tag1 = value1, tag2 = value2)
+.br
+&(tag1 = value1, tag2 = value2)
+.br
+#(numerictag < value)
+.br
+#(numerictag = value)
+.br
+#(numerictag > value)
+.RE
+The '\fBc\fR' postfix on strings or regular expressions makes the search
+case-sensitive. Numeric values may be given as integers, floating-point
+numbers, MM:SS format, or simple English, e.g. "3 days", "2 hours".
+.PP
+See http://www.sacredchao.net/quodlibet/wiki/Guide/Searching.
+.PP
+All internal tags begin with a ~ character. Non-numeric internal tags
+are ~basename, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
+Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
+~#laststarted, ~#length, ~#mtime, ~#playcount, ~#skipcount, and ~#track.
+.PP
+See http://www.sacredchao.net/quodlibet/wiki/Guide/InternalTags.
+.SH RENAMING FILES
+Ex Falso / Quod Libet allow you to rename files based on their tags. In some
+cases you may wish to alter the filename depending on whether some
+tags are present or missing, in addition to their values. A common
+pattern might be
+.RS 4
+<tracknumber>. <title~version>
+.RE
+You can use a '|' to only text when a tag is present:
+.RS 4
+<tracknumber|<tracknumber>. ><title~version>
+.RE
+You can also specify literal text to use if the tag is missing by adding
+another '|':
+.RS 4
+<album|<album>|No Album> \- <title>
+.RE
+See http://www.sacredchao.net/quodlibet/wiki/Guide/Renaming.
+.SH AUDIO BACKENDS
+Quod Libet uses GStreamer for audio playback. It tries to read your GConf
+GStreamer configuration, but if that fails it falls back to osssink. You
+can change the \fBpipeline\fR option in \fI~/.quodlibet/config\fR to use
+a different sink, or pass options to the sink. For example, you might use
+\fBesdsink\fR or \fBalsasink device=hw:1\fR.
+.PP
+See http://www.sacredchao.net/quodlibet/wiki/Guide/AudioBackends.
+.SH FILES
+.IP \fI~/.quodlibet/songs\fR 4
+A pickled Python dict of cached metadata. Deleting this file will remove
+all songs from your library.
+.IP \fI~/.quodlibet/config\fR 4
+Quod Libet's configuration file. This file is overwritten when Quod Libet
+exits.
+.IP \fI~/.quodlibet/current\fR 4
+A "key=value" file containing information about the currently playing song.
+.IP \fI~/.quodlibet/control\fR 4
+A FIFO connected to the most-recently-started instance of the program.
+\-\-next, \-\-previous, etc., use this to control the player.
+.IP \fI~/.quodlibet/plugins/\fR 4
+Put plugins (from http://www.sacredchao.net/quodlibet/wiki/Plugins) here.
+.IP \fI~/.quodlibet/browsers/\fR 4
+Put custom library browsers here.
+.PP
+See http://www.sacredchao.net/quodlibet/wiki/Guide/Extending.
+.SH BUGS
+See https://www.sacredchao.net/quodlibet/report/1 for a list of
+all currently open bugs and feature requests.
+.SH AUTHORS
+Joe Wreschnig and Michael Urman are the primary authors of Ex Falso and
+Quod Libet.
+.SH SEE ALSO
+http://www.sacredchao.net/quodlibet/wiki/Guide,
+.br
+http://www.sacredchao.net/quodlibet/wiki/FAQ,
+.br
+.BR regex (7),
+.BR gst-launch (1)

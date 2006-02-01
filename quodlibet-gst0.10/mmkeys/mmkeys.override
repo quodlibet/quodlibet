@@ -1,0 +1,15 @@
+/* Copyright 2004 Joe Wreschnig. Released under the terms of the GNU GPL. */
+%%
+headers
+#include <Python.h>
+
+#include "pygobject.h"
+#include "mmkeys.h"
+%%
+modulename mmkeys
+%%
+import gtk.Plug as PyGtkPlug_Type
+%%
+ignore-glob
+  *_get_type
+%%

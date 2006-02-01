@@ -1,0 +1,37 @@
+Notification area icon as a PyGTK object
+----------------------------------------
+This module lets you put a simple icon in a FreeDesktop.org-compatible
+notification area, and receive the 'activate' event when the left button
+is pressed, and 'popup-menu' when the right button is pressed.
+
+This code was ripped from libegg CVS, and so when it breaks you get
+both pieces.
+
+Compiling:
+----------
+(Requires the PyGTK and Python development libraries.)
+$ make statusicon.so
+
+Usage:
+------
+import statusicon
+picture = gtk.gdk.pixbuf_new_from_file_at_size("icon.png", 16, 16)
+icon = statusicon.StatusIcon(picture)
+icon.connect("activate", toggle_hideshow)
+icon.set_tooltip("Click to hide or show the main window", "magic")
+
+Currently only the pixbuf-based constructor is exposed to Python,
+and set_tooltip still requires its second argument which I don't
+actually understand. :) Patches for further functionality
+appreciated, but I only implemented what I needed.
+
+License:
+--------
+Copyright (C) 2003 Sun Microsystems, Inc.
+Copyright (C) 2002 Anders Carlsson <andersca@gnu.org>
+Python bindings by Joe Wreschnig <piman@sacredchao.net>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
