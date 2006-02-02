@@ -17,23 +17,12 @@ class NoSourceError(ValueError): pass
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
-    * If requested, look the pipeline up in GConf.
     * Try making the pipeline.
     * If it fails, fall back to alsasink.
     * If that fails, fall back to osssink.
     * Otherwise, complain loudly."""
 
-    if pipeline == "gconf":
-        # We can't use gconfaudiosink/autoaudiosink -- querying its
-        # current time fails.
-        try: import gconf
-        except ImportError: pipeline = "alsasink"
-        else:
-            c = gconf.client_get_default()
-            val = c.get("/system/gstreamer/0.8/default/audiosink")
-            if val.type == gconf.VALUE_STRING: pipeline = val.get_string()
-            else: pipeline = "alsasink"
-
+    if pipeline == "gconf": pipeline = "gconfaudiosink"
     try: pipe = gst.parse_launch(pipeline)
     except gobject.GError, err:
         if pipeline != "osssink":
@@ -89,7 +78,8 @@ class PlaylistPlayer(object):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
         if self.bin.get_property('uri'):
-            p = self.bin.query_position(gst.FORMAT_TIME)[0]
+            try: p = self.bin.query_position(gst.FORMAT_TIME)[0]
+            except gst.QueryError: p = 0
             p //= gst.MSECOND
             return p
         else: return 0
