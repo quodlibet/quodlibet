@@ -75,7 +75,7 @@ class PlaylistPlayer(object):
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
             self.info.error("%s" % err, debug)
-        else:
+        elif message.type != gst.MESSAGE_STATE_CHANGED:
             print '%s: %s:' % (message.src.get_path_string(),
                                message.type.value_nicks[1])
             if message.structure:
