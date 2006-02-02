@@ -146,8 +146,7 @@ class PlaylistPlayer(object):
             time.sleep(0.01)
             st = self.bin.set_state(gst.STATE_NULL)
         if not st:
-            self.error(
-                _('GStreamer status not expected') % (found, expected), lock)
+            self.error(_('GStreamer status not expected'), False)
             return
 
         self.bin.set_property('uri', song("~uri"))
@@ -155,8 +154,7 @@ class PlaylistPlayer(object):
         if self.__paused: st = self.bin.set_state(gst.STATE_PAUSED)
         else: st = self.bin.set_state(gst.STATE_PLAYING)
         if not st:
-            self.error(
-                _('GStreamer status not expected') % (found, expected), lock)
+            self.error(_('GStreamer status not expected'), False)
             return
 
     def quit(self):
