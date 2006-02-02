@@ -114,30 +114,11 @@ class PlaylistPlayer(object):
         config.set("memory", "song", "")
 
     def __load_song(self, song, lock):
-        # Under as-yet-undetermined conditions, the initial set_state()
-        # can mysteriously fail -- if you turn GStreamer debugging on you
-        # get diagnostics like this:
-        #   alsa( 1481) gstalsa.c(1632):gst_alsa_open_audio:<alsasink0> 
-        #   ALSA device "default" is already in use by another program.
-        # 
-        # This is believed to be a GStreamer bug. If it happens, try again
-        # after pausing a little.
-        st = self.bin.set_state(gst.STATE_NULL)
-        if not st:
-            import time
-            time.sleep(0.01)
-            st = self.bin.set_state(gst.STATE_NULL)
-        if not st:
-            self.error(_('GStreamer status not expected'), False)
-            return
-
+        if not self.bin.set_state(gst.STATE_NULL): return
         self.bin.set_property('uri', song("~uri"))
         self.__length = song["~#length"] * 1000
-        if self.__paused: st = self.bin.set_state(gst.STATE_PAUSED)
-        else: st = self.bin.set_state(gst.STATE_PLAYING)
-        if not st:
-            self.error(_('GStreamer status not expected'), False)
-            return
+        if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
+        else: self.bin.set_state(gst.STATE_PLAYING)
 
     def quit(self):
         """Shut down the playbin."""
