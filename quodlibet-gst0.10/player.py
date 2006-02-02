@@ -54,8 +54,6 @@ class PlaylistPlayer(object):
         bus = self.bin.get_bus()
         bus.add_signal_watch()
         bus.connect('message', self.__message)
-        #bus.connect_object('eos', self.__end, False)
-        #self.bin.connect('found-tag', self.__tag)
         self.paused = True
 
     def __message(self, bus, message):
@@ -65,7 +63,7 @@ class PlaylistPlayer(object):
             self.__tag(message.parse_tag())
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
-            self.info.error("%s" % err, debug)
+            self.error("%s" % err, True)
         return True
 
     def setup(self, info, source, song):
