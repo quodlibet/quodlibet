@@ -72,18 +72,12 @@ class PlaylistPlayer(object):
     def __message(self, bus, message):
         if message.type == gst.MESSAGE_EOS:
             self.__end(False)
+        elif message.type == gst.MESSAGE_TAG:
+            self.__tag(message.parse_tag())
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
             self.info.error("%s" % err, debug)
-        elif message.type != gst.MESSAGE_STATE_CHANGED:
-            print '%s: %s:' % (message.src.get_path_string(),
-                               message.type.value_nicks[1])
-            if message.structure:
-                print '    %s' % message.structure.to_string()
-            else:
-                print '    (no structure)'
         return True
-
 
     def setup(self, info, source, song):
         """Connect to a SongWatcher, a PlaylistModel, and load a song."""
@@ -200,7 +194,7 @@ class PlaylistPlayer(object):
             self.__source.next_ended()
             self.__get_song(True)
 
-    def __tag(self, pipeline, source, tags):
+    def __tag(self, tags):
         if self.song and self.song.fill_metadata:
             if self.song.multisong:
                 proxy = type(self.song)(self.song["~filename"])
