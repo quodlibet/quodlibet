@@ -9,8 +9,11 @@
 
 import os
 import gtk
+import gst
 import const
 import formats
+
+def fver(tup): return ".".join(map(str, tup))
 
 class AboutWindow(gtk.AboutDialog):
     def __init__(self, parent, player, run=True):
@@ -19,8 +22,14 @@ class AboutWindow(gtk.AboutDialog):
         self.set_version(const.VERSION)
         self.set_authors(const.AUTHORS)
         fmts = ", ".join(formats.modules)
-        text = "%s\n%s" % (_("Supported formats: %s"), _("Audio device: %s"))
-        self.set_comments(text % (fmts, player.name))
+        text = []
+        text.append(_("Supported formats: %s") % fmts)
+        text.append(_("Audio device: %s") % player.name)
+        text.append("GTK+: %s / PyGTK: %s" %(
+            fver(gtk.gtk_version), fver(gtk.pygtk_version)))
+        text.append("GStreamer+: %s / PyGSt: %s" %(
+            fver(gst.gst_version), fver(gst.pygst_version)))
+        self.set_comments("\n".join(text))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
         self.set_translator_credits(_('translator-credits'))
