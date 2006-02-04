@@ -83,8 +83,8 @@ class PlaylistPlayer(object):
     def __set_paused(self, paused):
         if paused != self.__paused:
             self.__paused = paused
-            if self.info: self.info.set_paused(paused)
             if self.song:
+                if self.info: self.info.set_paused(paused)
                 if self.__paused:
                    if not self.song.is_file:
                        self.bin.set_state(gst.STATE_NULL)
