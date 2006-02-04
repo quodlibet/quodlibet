@@ -14,11 +14,12 @@ try:
     _wavpack = ctypes.cdll.LoadLibrary("libwavpack.so.0")
 except: extensions = []
 else:
-    if gst.element_factory_make('wavpackdec'):
+    try: gst.element_factory_make('wavpackdec') or ""+1
+    except: extensions = []
+    else:
         extensions = [".wv"]
         _wavpack.WavpackGetSampleRate.restype = ctypes.c_uint32
         _wavpack.WavpackGetNumSamples.restype = ctypes.c_uint32
-    else: extensions = []
 
 class WavpackFile(APEv2File):
     format = "Wavpack"

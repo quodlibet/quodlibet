@@ -16,7 +16,9 @@ try:
     _mpcdec = ctypes.cdll.LoadLibrary("libmpcdec.so.3")
 except: extensions = []
 else:
-    if gst.element_factory_make('musepackdec'):
+    try: gst.element_factory_make('musepackdec') or ""+1
+    except: extensions = []
+    else:
         extensions = [".mpc", ".mp+"]
         def _get_errno(): return ctypes.c_int.in_dll(_libc, "errno").value
         mpc_bool_t = ctypes.c_uint8
@@ -78,8 +80,6 @@ else:
             ctypes.POINTER(_MPCStreamInfo), ctypes.POINTER(_MPCReader)]
 
         _mpcdec.mpc_streaminfo_get_length.restype = ctypes.c_double
-
-    else: extensions = []
 
 class MPCFile(APEv2File):
     format = "Musepack"

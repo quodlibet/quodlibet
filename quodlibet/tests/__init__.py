@@ -12,6 +12,11 @@ const.CONFIG = "./const-config"
 const.CURRENT = "./const-current"
 const.LIBRARY = "./const-songs"
 
+import pygtk
+pygtk.require("2.0")
+import pygst
+pygst.require("0.10")
+
 import util; util.ctypes_init(); util.gtk_init()
 import config; config.init()
 import library; library.init()

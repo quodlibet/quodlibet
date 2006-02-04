@@ -13,25 +13,27 @@ if __name__ == "__main__":
         raise SystemExit("%s requires at least Python 2.3."
                          "(http://www.python.org)" % NAME)
 
-    print "Checking for PyGTK >= 2.6:",
+    print "Checking for PyGTK >= 2.8:",
     try:
         import pygtk
         pygtk.require('2.0')
         import gtk
-        if gtk.pygtk_version < (2, 6) or gtk.gtk_version < (2, 6):
+        if gtk.pygtk_version < (2, 8) or gtk.gtk_version < (2, 8):
             raise ImportError
     except ImportError:
-        raise SystemExit("not found\n%s requires PyGTK 2.6. "
+        raise SystemExit("not found\n%s requires PyGTK 2.8. "
                          "(http://www.pygtk.org)" % NAME)
     else: print "found"
 
-    print "Checking for PyGSt >= 0.8.2:",
+    print "Checking for PyGSt >= 0.10.1:",
     try:
+        import pygst
+        pygst.require("0.10")
         import gst
-        if gst.pygst_version < (0, 8, 1):
+        if gst.pygst_version < (0, 10, 1):
             raise ImportError
     except ImportError:
-        raise SystemExit("not found\n%s requires PyGSt 0.8.1. "
+        raise SystemExit("not found\n%s requires gst-python 0.10.1. "
                          "(http://gstreamer.freedesktop.org)" % NAME)
     else: print "found"
 

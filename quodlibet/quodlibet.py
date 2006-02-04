@@ -306,6 +306,8 @@ if __name__ == "__main__":
     # Initialize GTK.
     import pygtk
     pygtk.require('2.0')
+    import pygst
+    pygst.require('0.10')
     import gtk
     util.gtk_init()
 

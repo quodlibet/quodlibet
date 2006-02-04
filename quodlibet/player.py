@@ -10,30 +10,17 @@ import os, sys, locale
 import config
 import gobject, gst
 
-os.environ['PYGTK_USE_GIL_STATE_API'] = '' # from jdahlin
-
 class NoSinkError(ValueError): pass
 class NoSourceError(ValueError): pass
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
-    * If requested, look the pipeline up in GConf.
     * Try making the pipeline.
     * If it fails, fall back to alsasink.
     * If that fails, fall back to osssink.
     * Otherwise, complain loudly."""
 
-    if pipeline == "gconf":
-        # We can't use gconfaudiosink/autoaudiosink -- querying its
-        # current time fails.
-        try: import gconf
-        except ImportError: pipeline = "alsasink"
-        else:
-            c = gconf.client_get_default()
-            val = c.get("/system/gstreamer/0.8/default/audiosink")
-            if val.type == gconf.VALUE_STRING: pipeline = val.get_string()
-            else: pipeline = "alsasink"
-
+    if pipeline == "gconf": pipeline = "gconfaudiosink"
     try: pipe = gst.parse_launch(pipeline)
     except gobject.GError, err:
         if pipeline != "osssink":
@@ -62,9 +49,20 @@ class PlaylistPlayer(object):
         self.bin.set_property('video-sink', None)
         self.bin.set_property('audio-sink', device)
         self.__device = device
-        self.bin.connect_object('eos', self.__end, False)
-        self.bin.connect('found-tag', self.__tag)
+        bus = self.bin.get_bus()
+        bus.add_signal_watch()
+        bus.connect('message', self.__message)
         self.paused = True
+
+    def __message(self, bus, message):
+        if message.type == gst.MESSAGE_EOS:
+            self.__end(False)
+        elif message.type == gst.MESSAGE_TAG:
+            self.__tag(message.parse_tag())
+        elif message.type == gst.MESSAGE_ERROR:
+            err, debug = message.parse_error()
+            self.error("%s" % err, True)
+        return True
 
     def setup(self, info, source, song):
         """Connect to a SongWatcher, a PlaylistModel, and load a song."""
@@ -76,7 +74,8 @@ class PlaylistPlayer(object):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
         if self.bin.get_property('uri'):
-            p = self.bin.query(gst.QUERY_POSITION, gst.FORMAT_TIME)
+            try: p = self.bin.query_position(gst.FORMAT_TIME)[0]
+            except gst.QueryError: p = 0
             p //= gst.MSECOND
             return p
         else: return 0
@@ -84,8 +83,8 @@ class PlaylistPlayer(object):
     def __set_paused(self, paused):
         if paused != self.__paused:
             self.__paused = paused
-            if self.info: self.info.set_paused(paused)
             if self.song:
+                if self.info: self.info.set_paused(paused)
                 if self.__paused:
                    if not self.song.is_file:
                        self.bin.set_state(gst.STATE_NULL)
@@ -113,36 +112,11 @@ class PlaylistPlayer(object):
         config.set("memory", "song", "")
 
     def __load_song(self, song, lock):
-        # Under as-yet-undetermined conditions, the initial set_state()
-        # can mysteriously fail -- if you turn GStreamer debugging on you
-        # get diagnostics like this:
-        #   alsa( 1481) gstalsa.c(1632):gst_alsa_open_audio:<alsasink0> 
-        #   ALSA device "default" is already in use by another program.
-        # 
-        # This is believed to be a GStreamer bug. If it happens, try again
-        # after pausing a little.
-        st = self.bin.set_state(gst.STATE_NULL)
-        if st != gst.STATE_SUCCESS:
-            import time
-            time.sleep(0.01)
-            st = self.bin.set_state(gst.STATE_NULL)
-        if st != gst.STATE_SUCCESS:
-            expected = gst.element_state_get_name(gst.STATE_SUCCESS)
-            found = gst.element_state_get_name(st)
-            self.error(
-                _('GStreamer status %r != %r') % (found, expected), lock)
-            return
-
+        if not self.bin.set_state(gst.STATE_NULL): return
         self.bin.set_property('uri', song("~uri"))
         self.__length = song["~#length"] * 1000
-        if self.__paused: st = self.bin.set_state(gst.STATE_PAUSED)
-        else: st = self.bin.set_state(gst.STATE_PLAYING)
-        if st != gst.STATE_SUCCESS:
-            expected = gst.element_state_get_name(gst.STATE_SUCCESS)
-            found = gst.element_state_get_name(st)
-            self.error(
-                _('GStreamer status %r != %r') % (found, expected), lock)
-            return
+        if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
+        else: self.bin.set_state(gst.STATE_PLAYING)
 
     def quit(self):
         """Shut down the playbin."""
@@ -156,11 +130,12 @@ class PlaylistPlayer(object):
                 self.paused = True
                 pos = self.__length
 
-            ms = pos * gst.MSECOND
+            gst_time = pos * gst.MSECOND
             event = gst.event_new_seek(
-                gst.FORMAT_TIME|gst.SEEK_METHOD_SET|gst.SEEK_FLAG_FLUSH, ms)
-            self.bin.send_event(event)
-            self.info.seek(self.song, pos)
+                1.0, gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH,
+                gst.SEEK_TYPE_SET, gst_time, gst.SEEK_TYPE_NONE, 0)
+            if self.bin.send_event(event):
+                self.info.seek(self.song, pos)
 
     def remove(self, song):
         if self.song is song: self.__end(False)
@@ -184,12 +159,9 @@ class PlaylistPlayer(object):
         self.song = None
         if not stopped:
             self.__source.next_ended()
-            # Avoids a deadlock if the song ends and the user presses a
-            # a button that calls __end at the same time; both threads
-            # end up waiting for something inside GSt.
-            gobject.idle_add(self.__get_song, True)
+            self.__get_song(True)
 
-    def __tag(self, pipeline, source, tags):
+    def __tag(self, tags):
         if self.song and self.song.fill_metadata:
             if self.song.multisong:
                 proxy = type(self.song)(self.song["~filename"])
@@ -262,6 +234,6 @@ def init(pipeline):
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(gst.URI_SRC, "file://", ""):
         global playlist
-        playlist = PlaylistPlayer(pipeline or "gconf")
+        playlist = PlaylistPlayer(pipeline or "gconfaudiosink")
         return playlist
     else: raise NoSourceError
