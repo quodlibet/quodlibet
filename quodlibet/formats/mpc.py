@@ -16,7 +16,7 @@ try:
     _mpcdec = ctypes.cdll.LoadLibrary("libmpcdec.so.3")
 except: extensions = []
 else:
-    try: gst.element_factory_make('musepackdec') or ""+1
+    try: gst.element_factory_make('musepackdec')
     except: extensions = []
     else:
         extensions = [".mpc", ".mp+"]

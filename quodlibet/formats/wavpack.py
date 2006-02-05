@@ -14,7 +14,7 @@ try:
     _wavpack = ctypes.cdll.LoadLibrary("libwavpack.so.0")
 except: extensions = []
 else:
-    try: gst.element_factory_make('wavpackdec') or ""+1
+    try: gst.element_factory_make('wavpackdec')
     except: extensions = []
     else:
         extensions = [".wv"]

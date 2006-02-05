@@ -12,7 +12,7 @@ from formats._vorbis import VCFile
 try: import ogg.vorbis
 except ImportError: extensions = []
 else:
-    try: gst.element_factory_make('vorbisdec') or ""+1
+    try: gst.element_factory_make('vorbisdec')
     except: extensions = []
     else: extensions = [".ogg"]
 

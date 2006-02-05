@@ -18,9 +18,9 @@ try:
     _modplug = ctypes.cdll.LoadLibrary("libmodplug.so.0")
 except: extensions = []
 else:
-    try: gst.element_factory_make("modplug") or ""+1
+    try: gst.element_factory_make("modplug")
     except:
-        try: gst.element_factory_make("mikmod") or ""+1
+        try: gst.element_factory_make("mikmod")
         except: extensions = []
 
 class ModFile(AudioFile):

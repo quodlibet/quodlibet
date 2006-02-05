@@ -9,7 +9,7 @@
 import gst
 from formats._apev2 import APEv2File
 
-try: gst.element_factory_make('monkeysdec') or ""+1
+try: gst.element_factory_make('monkeysdec')
 except: extensions = []
 else: extensions = [".ape"]
 

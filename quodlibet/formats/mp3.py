@@ -14,7 +14,7 @@ import gst
 try: import mutagen.id3, mad
 except ImportError: extensions = []
 else:
-    try: gst.element_factory_make("mad") or ""+1
+    try: gst.element_factory_make("mad")
     except: extensions = []
     else: extensions = [".mp3", ".mp2"]
 

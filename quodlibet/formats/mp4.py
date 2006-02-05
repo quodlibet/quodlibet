@@ -23,7 +23,7 @@ else:
     _mp4v2.MP4ConvertFromTrackDuration.restype = ctypes.c_uint64
     _mp4v2.MP4FindTrackId.restype = ctypes.c_uint32
     _mp4v2.MP4GetNumberOfTracks.restype = ctypes.c_uint32
-    try: gst.element_factory_make("faad") or ""+1
+    try: gst.element_factory_make("faad")
     except: extensions = []
     else: extensions = ['.mp4', '.m4a']
 

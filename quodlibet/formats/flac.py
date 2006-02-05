@@ -13,7 +13,7 @@ from formats._vorbis import VCFile
 try: import mutagen.flac
 except: extensions = []
 else:
-    try: gst.element_factory_make('flacdec') or ""+1
+    try: gst.element_factory_make('flacdec')
     except: extensions = []
     else: extensions = [".flac"]
 
