@@ -759,7 +759,6 @@ class SongList(AllTreeView, util.InstanceTracker):
         except ValueError: pass
         cls.headers = headers
         for listview in cls.instances():
-            print "setting column header", listview
             listview.set_column_headers(headers)
 
         star = list(Query.STAR)
