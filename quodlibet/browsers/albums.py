@@ -159,8 +159,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def __changed_songs(klass, watcher, changed, model):
         changed = filter(lambda x: x.get("~filename") in library, changed)
         if not changed: return
-        klass.__remove_songs(watcher, changed, model)
-        klass.__add_songs(watcher, changed, model)
+        to_update = klass.__remove_songs(watcher, changed, model, False)
+        to_update.update(klass.__add_songs(watcher, changed, model, False))
+        klass.__update(to_update, model)
     __changed_songs = classmethod(__changed_songs)
 
     def __update(klass, changed, model):
@@ -179,15 +180,16 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         if to_remove: map(model.remove, to_remove)
     __update = classmethod(__update)
 
-    def __remove_songs(klass, watcher, removed, model):
+    def __remove_songs(klass, watcher, removed, model, update=True):
         albums = model.get_albums()
         changed = set()
         for album in albums.itervalues():
             if True in map(album.remove, removed): changed.add(album.title)
-        klass.__update(changed, model)
+        if update: klass.__update(changed, model)
+        else: return changed
     __remove_songs = classmethod(__remove_songs)
 
-    def __add_songs(klass, watcher, added, model):
+    def __add_songs(klass, watcher, added, model, update=True):
         albums = model.get_albums()
         changed = set()
         new = []
@@ -203,7 +205,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         for album in new:
             album._model = model
             album._iter = model.append(row=[album])
-        klass.__update(changed, model)
+        if update: klass.__update(changed, model)
+        else: return changed
     __add_songs = classmethod(__add_songs)
 
     # Something like an AudioFile, but for a whole album.
