@@ -180,7 +180,7 @@ class TAudioFile(TestCase):
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
-        self.failUnlessEqual(dump.count("\n"), len(bar_1_1))
+        self.failUnlessEqual(dump.count("\n"), len(bar_1_1) + 1)
         for key, value in bar_1_1.items():
             self.failUnless(key in dump)
             self.failUnless(value in dump)
@@ -188,7 +188,7 @@ class TAudioFile(TestCase):
     def test_to_dump_long(self):
         b = AudioFile(bar_1_1); b["~#length"] = 200000000000L
         dump = b.to_dump()
-        self.failUnlessEqual(dump.count("\n"), len(b))
+        self.failUnlessEqual(dump.count("\n"), len(b) + 1)
 
     def test_add(self):
         song = AudioFile()

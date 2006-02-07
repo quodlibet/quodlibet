@@ -117,7 +117,7 @@ class AudioFile(dict):
                 try: return self["~uri"]
                 except KeyError: return to_uri(self["~filename"])
             elif key == "format":
-                return self.format
+                return self.get("~format", self.format)
             elif key == "year":
                 return self.get("date", default)[:4]
             elif key == "#year":
@@ -260,19 +260,21 @@ class AudioFile(dict):
 
     def to_dump(self):
         """A string of 'key=value' lines, similar to vorbiscomment output."""
-        s = ""
+        s = []
         for k in self.keys():
             if isinstance(self[k], int) or isinstance(self[k], long):
-                s += "%s=%d\n" % (k, self[k])
+                s.append("%s=%d" % (k, self[k]))
             elif isinstance(self[k], float):
-                s += "%s=%f\n" % (k, self[k])
+                s.append("%s=%f" % (k, self[k]))
             else:
                 for v2 in self.list(k):
                     if isinstance(v2, str):
-                        s += "%s=%s\n" % (k, v2)
+                        s.append("%s=%s" % (k, v2))
                     else:
-                        s += "%s=%s\n" % (k, util.encode(v2))
-        return s
+                        s.append("%s=%s" % (k, util.encode(v2)))
+        s.append("~format=%s" % self.format)
+        s.append("")
+        return "\n".join(s)
 
     def change(self, key, old_value, new_value):
         """Change 'old_value' to 'new_value' for the given metadata key.
