@@ -26,7 +26,7 @@ class VCFile(AudioFile):
             del(self["playcount"])
 
         if "totaltracks" in self:
-            self["tracktotal"].setdefault(self["totaltracks"])
+            self.setdefault("tracktotal", self["totaltracks"])
             del(self["totaltracks"])
 
         # tracktotal is incredibly stupid; use tracknumber=x/y instead.
