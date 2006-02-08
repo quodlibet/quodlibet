@@ -73,10 +73,15 @@ class PluginWindow(qltk.Window):
 
         tv.set_headers_visible(False)
 
+        bbox = gtk.HBox(homogeneous=True)
+        errors = qltk.Button(_("Show _Errors"), gtk.STOCK_DIALOG_WARNING)
+        errors.set_focus_on_click(False)
+        bbox.pack_start(errors)
         refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
         refresh.set_focus_on_click(False)
+        bbox.pack_start(refresh)
         vbox.pack_start(sw)
-        vbox.pack_start(refresh, expand=False)
+        vbox.pack_start(bbox, expand=False)
         vbox.set_size_request(250, -1)
         hbox.pack_start(vbox, expand=False)
 
@@ -102,7 +107,8 @@ class PluginWindow(qltk.Window):
         self.add(hbox)
 
         selection.connect('changed', self.__preferences, prefs)
-        refresh.connect('clicked', self.__refresh, tv, desc, pm)
+        refresh.connect('clicked', self.__refresh, tv, desc, pm, errors)
+        errors.connect('clicked', self.__show_errors, pm)
         tv.get_selection().emit('changed')
         refresh.clicked()
         hbox.set_size_request(550, 350)
@@ -153,7 +159,7 @@ class PluginWindow(qltk.Window):
         pm.save()
         model[path][0] = model[path][0]
 
-    def __refresh(self, activator, view, desc, pm):
+    def __refresh(self, activator, view, desc, pm, errors):
         model, sel = view.get_selection().get_selected()
         if sel: sel = model[sel][0]
         model.clear()
@@ -165,3 +171,43 @@ class PluginWindow(qltk.Window):
             if plugin is sel: view.get_selection().select_iter(it)
         if not plugins:
             desc.set_text(_("No plugins found."))
+        errors.set_sensitive(bool(len(pm.list_failures())))
+
+    def __show_errors(self, activator, pm):
+        try: self.__win.present()
+        except AttributeError:
+            self.__win = qltk.Window()
+            self.__win.set_title(_("Quod Libet Plugin Load Errors"))
+            self.__win.set_border_width(12)
+            self.__win.set_resizable(False)
+            self.__win.set_transient_for(qltk.get_top_parent(self))
+
+            vbox = gtk.VBox(spacing=6)
+            self.__win.add(vbox)
+            
+            failures = pm.list_failures()
+            keys = failures.keys();
+            keys.sort()
+            show_expanded = len(keys) <= 3
+            for key in keys:
+                expander = gtk.Expander("<b>%s</b>" % key)
+                expander.set_use_markup(True)
+                if show_expanded: expander.set_expanded(True)
+
+                frame = gtk.Frame()
+                frame.set_shadow_type(gtk.SHADOW_IN)
+
+                # second line is always the __rescan line; don't show it
+                message = failures[key][0:1] + failures[key][2:]
+                failure = gtk.Label(''.join(message).strip())
+                failure.set_padding(3, 3)
+                failure.set_selectable(True)
+
+                vbox.pack_start(expander, expand=False)
+                expander.add(frame)
+                frame.add(failure)
+
+            vbox.show_all()
+            def delwin(*args): del self.__win
+            self.__win.connect("destroy", delwin)
+            self.__win.present()

@@ -25,6 +25,11 @@ class Window(gtk.Window):
         self.add_accelerator(
             'close-accel', ag, ord('w'), gtk.gdk.CONTROL_MASK, 0)
 
+    def set_transient_for(self, parent):
+        gtk.Window.set_transient_for(self, parent)
+        if parent is not None:
+            self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+
     do_close_accel = gtk.Window.destroy
 gobject.type_register(Window)
 

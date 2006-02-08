@@ -9,7 +9,7 @@
 
 import os, sys, dircache, imp
 
-from traceback import print_exc
+from traceback import format_exception
 
 class Manager(object):
     """A generalized plugin manager. It scans directories for importable
@@ -29,6 +29,7 @@ class Manager(object):
         self.scan.extend(folders)
         self.__files = {}
         self.__plugins = {}
+        self.__failures = {}
 
     def rescan(self):
         """Check directories for new or changed plugins."""
@@ -57,20 +58,23 @@ class Manager(object):
                             try:
                                 mod = imp.load_module(name, *modinfo)
                             except Exception, err:
-                                print_exc()
+                                self.__failures[name] = \
+                                    format_exception(*sys.exc_info())
                                 try: del sys.modules[name]
                                 except KeyError: pass
                             else: info[0] = mod; self._load(name, mod)
                         else:
                             try: mod = reload(info[0])
                             except Exception, err:
-                                print_exc()
+                                self.__failures[name] = \
+                                    format_exception(*sys.exc_info())
                             else: info[0] = mod; self._load(name, mod)
                 finally:
                     del sys.path[0:1]
                 info[1] = modified
 
     def _load(self, name, module):
+        self.__failures.pop(name, None)
         try: objs = [getattr(module, attr) for attr in module.__all__]
         except AttributeError:
             objs = [getattr(module, attr) for attr in vars(module)
@@ -88,3 +92,6 @@ class Manager(object):
                 except TypeError: pass
 
         return kinds
+
+    def list_failures(self):
+        return self.__failures.copy()
