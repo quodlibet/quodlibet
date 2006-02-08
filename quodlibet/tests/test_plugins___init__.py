@@ -1,7 +1,6 @@
 from unittest import TestCase
 from tests import registerCase
 import os, sys
-sys.modules['dircache'] = os # cheat the dircache effects
 from tempfile import mkstemp, mkdtemp
 from plugins import PluginManager
 

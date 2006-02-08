@@ -7,7 +7,7 @@
 #
 # $Id$
 
-import os, sys, dircache, imp
+import os, sys, imp
 
 from traceback import format_exception
 
@@ -36,7 +36,7 @@ class Manager(object):
 
         justscanned = {}
         for scandir in self.scan:
-            try: names = dircache.listdir(scandir)
+            try: names = os.listdir(scandir)
             except OSError: continue
             for name in names:
                 pathname = os.path.realpath(os.path.join(scandir, name))
