@@ -73,7 +73,7 @@ class PluginWindow(qltk.Window):
 
         tv.set_headers_visible(False)
 
-        bbox = gtk.HBox(homogeneous=True)
+        bbox = gtk.HBox(homogeneous=True, spacing=12)
         errors = qltk.Button(_("Show _Errors"), gtk.STOCK_DIALOG_WARNING)
         errors.set_focus_on_click(False)
         bbox.pack_start(errors)
