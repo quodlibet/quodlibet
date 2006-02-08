@@ -1,8 +1,37 @@
-quodlibet (0.XX-Y) unstable; urgency=low
+quodlibet (0.18-1) unstable; urgency=low
 
-  * modplug element is in gstreamer0.8-misc, not gstreamer0.8-modplug.
+  * New upstream release.
+  * Depend on GStreamer 0.10.
 
  -- Joe Wreschnig <piman@debian.org>  
+
+quodlibet (0.17.1-2) unstable; urgency=low
+
+  * (Build-)Dep on pygtk >= 2.8. (Closes: #349057)
+
+ -- Joe Wreschnig <piman@debian.org>  Fri, 20 Jan 2006 14:11:33 -0600
+
+quodlibet (0.17.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Build-Dep on intltool.
+
+ -- Joe Wreschnig <piman@debian.org>  Thu, 19 Jan 2006 15:06:44 -0600
+
+quodlibet (0.17-1) unstable; urgency=low
+
+  * New upstream release.
+    * Plugin system for 'Edit Tags' dialog. (Closes: #343975)
+  * Build-Dep on debhelper >= 5.0.17 to avoid python-support.
+  * Drop dependency on pyflac.
+
+ -- Joe Wreschnig <piman@debian.org>  Tue, 17 Jan 2006 23:51:14 -0600
+
+quodlibet (0.16-2) unstable; urgency=low
+
+  * Recommend python-feedparser.
+
+ -- Joe Wreschnig <piman@debian.org>  Fri, 30 Dec 2005 12:06:38 -0600
 
 quodlibet (0.16-1) unstable; urgency=low
 
@@ -18,6 +47,7 @@ quodlibet (0.16-1) unstable; urgency=low
   * Stop/Pause import dialog when loading playlists. (Closes: #340345)
   * Tray icon tooltip is configurable. (Closes: #341062)
   * debian/compat: Level 5.
+  * Include FAQ.html from the website.
 
  -- Joe Wreschnig <piman@debian.org>  Sun, 18 Dec 2005 20:56:49 -0600
 
