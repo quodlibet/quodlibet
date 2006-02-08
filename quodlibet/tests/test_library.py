@@ -48,7 +48,7 @@ class TLibrary(TestCase):
             val = self.lib.random('random')
             results[val] = results.get(val, 0) + 1
         for v in results.values():
-            self.failUnless(300 < v < 350, "statistically unlikely outcome")
+            self.failUnless(250 < v < 400, "statistically unlikely outcome")
 
     def test_remove(self):
         song = CORPUS[1]
