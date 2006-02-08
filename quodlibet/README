@@ -34,7 +34,7 @@ and search and foramtting pattern syntax.
 
 Quod Libet depends on the Python runtime and associated libraries.
  Python (>= 2.3):	http://www.python.org
- PyGTK (>= 2.6):	http://www.pygtk.org
+ PyGTK (>= 2.8):	http://www.pygtk.org
  PyGSt (>= 0.10):	http://gstreamer.freedesktop.org/
 
 All file formats depend on their appropriate GStreamer decoding modules
