@@ -31,10 +31,10 @@ class Preferences(qltk.Window):
         vbox = gtk.VBox(spacing=12)
 
         combo = gtk.combo_box_new_text()
-        combo.append_text(_("Scroll wheel adjusts volume;\n"
+        combo.append_text(_("Scroll wheel adjusts volume\n"
                             "Shift and scroll wheel changes song"))
-        combo.append_text(_("Scroll wheel changes song;\n"
-                            "Shift and scroll adjusts volume"))
+        combo.append_text(_("Scroll wheel changes song\n"
+                            "Shift and scroll wheel adjusts volume"))
         try: combo.set_active(int(
             config.getboolean("plugins", "icon_modifier_swap")))
         except: combo.set_active(0)
