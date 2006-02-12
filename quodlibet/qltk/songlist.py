@@ -70,7 +70,7 @@ class PlaylistMux(object):
 class PlaylistModel(gtk.ListStore):
     order = OFF
     repeat = False
-    __path = None
+    __iter = None
     __old_value = None
     __sig = None
 
@@ -79,7 +79,7 @@ class PlaylistModel(gtk.ListStore):
         }
 
     def __init__(self):
-        gtk.ListStore.__init__(self, object)
+        super(PlaylistModel, self).__init__(object)
         self.__played = []
 
     def set(self, songs):
@@ -91,7 +91,7 @@ class PlaylistModel(gtk.ListStore):
         if oldsong is None: oldsong = self.__old_value
         else: self.__old_value = oldsong
         self.__played = []
-        self.__path = None
+        self.__iter = None
         self.clear()
         songs = songs[:]
         if self.__set_idle(oldsong, songs):
@@ -102,44 +102,41 @@ class PlaylistModel(gtk.ListStore):
         del(songs[:100])
         for song in to_add:
             iter = self.append(row=[song])
-            if song == oldsong: self.__path = self.get_path(iter)[0]
+            if song == oldsong:
+                self.__iter = iter
         if songs: return True
         else:
-            if self.current is not None: self.__old_value = None
+            if self.__iter is not None:
+                self.__old_value = None
             self.__sig = None
             self.emit('songs-set')
             return False
 
     def remove(self, iter):
-        oldpath = self.__path
-        iterpath = self.get_path(iter)[0]
-        gtk.ListStore.remove(self, iter)
-        if self.is_empty(): self.__path = None
-        elif oldpath >= iterpath:
-            # If the iter removed was before the path, we decrease
-            # by one. Otherwise, we're still the same path.
-            self.__path = min(oldpath, len(self)) - 1
+        if self.__iter and self[iter].path == self[self.__iter].path:
+            self.__iter = self.iter_next(iter)
+        super(PlaylistModel, self).remove(iter)
 
     def get(self):
         return [row[0] for row in self]
 
     def get_current(self):
-        if self.__path is None: return None
+        if self.__iter is None: return None
         elif self.is_empty(): return None
-        else: return self[(self.__path,)][0]
+        else: return self[self.__iter][0]
 
     current = property(get_current)
 
     def get_current_path(self):
-        if self.__path is None: return None
+        if self.__iter is None: return None
         elif self.is_empty(): return None
-        else: return (self.__path,)
+        else: return self[self.__iter].path
     current_path = property(get_current_path)
 
     def get_current_iter(self):
-        if self.__path is None: return None
+        if self.__iter is None: return None
         elif self.is_empty(): return None
-        else: return self.get_iter(self.__path)
+        else: return self.__iter
     current_iter = property(get_current_iter)
 
     def next(self):
@@ -153,21 +150,22 @@ class PlaylistModel(gtk.ListStore):
         #  - If repeat is on, the next song is the first song.
         # Else, if the current song is no song, the next song is the first.
         # Else, the next song is the next song.
-        if self.is_empty(): self.__path = None
-        elif self.__path >= len(self) - 1:
-            if self.repeat: self.__path = 0
-            else: self.__path = None
-        elif self.__path is None: self.__path = 0
+        if self.is_empty(): self.__iter = None
+        elif self.__iter is None:
+            self.__iter = self.get_iter_first()
         else:
-            self.__path += 1
+            next = self.iter_next(self.__iter)
+            if next is None and self.repeat:
+                self.__iter = self.get_iter_first()
+            else: self.__iter = next
 
     def next_ended(self):
         if self.order != ONESONG: self.next()
-        elif not self.repeat: self.__path = None
+        elif not self.repeat: self.__iter = None
 
     def __next_shuffle(self):
-        if self.__path is not None:
-            self.__played.append(self.__path)
+        if self.__iter is not None:
+            self.__played.append(self[self.__iter].path[0])
 
         if self.order == SHUFFLE: self.__next_shuffle_regular()
         elif self.order == WEIGHTED: self.__next_shuffle_weighted()
@@ -177,14 +175,15 @@ class PlaylistModel(gtk.ListStore):
         played = set(self.__played)
         songs = set(range(len(self)))
         remaining = songs.difference(played)
+
         if remaining:
-            self.__path = random.choice(list(remaining))
+            self.__iter = self[random.choice(list(remaining))].iter
         elif self.repeat:
             self.__played = []
-            self.__path = random.choice(list(songs))
+            self.__iter = self[random.choice(list(songs))].iter
         else:
             self.__played = []
-            self.__path = None
+            self.__iter = None
 
     def __next_shuffle_weighted(self):
         songs = self.get()
@@ -194,10 +193,10 @@ class PlaylistModel(gtk.ListStore):
         for i, song in enumerate(songs):
             current += song.get("~#rating", 2)
             if current >= choice:
-                self.__path = i
+                self.__iter = self.get_iter((i,))
                 break
 
-        else: self.__path = 0
+        else: self.__iter = self.get_iter_first()
 
     def previous(self):
         if self.order in [SHUFFLE, WEIGHTED]:
@@ -207,27 +206,29 @@ class PlaylistModel(gtk.ListStore):
         # If we're empty, the last song is no song.
         # Else if the current song is none, the previous is the last.
         # Else the previous song is the previous song.
-        if self.is_empty(): self.__path = None
-        elif self.__path == 0: pass
-        elif self.__path is None: self.__path = len(self) - 1
-        else: self.__path  = max(0, self.__path - 1)
+        if self.is_empty(): self.__iter = None
+        elif self.__iter is None:
+            self.__iter = self[(len(self) - 1,)].iter
+        else:
+            newpath = self[self.__iter].path[0] - 1
+            self.__iter = self[(max(0, newpath),)].iter
 
     def __previous_shuffle(self):
         try: path = self.__played.pop(-1)
         except IndexError: pass
-        else: self.__path = path
+        else: self.__iter = self.get_iter(path)
 
     def go_to(self, song):
-        if self.order and self.__path is not None:
-            self.__played.append(self.__path)
+        if self.order and self.__iter is not None:
+            self.__played.append(self.get_path(self.__iter)[0])
 
-        self.__path = None
+        self.__iter = None
         if isinstance(song, gtk.TreeIter):
-            self.__path = self.get_path(song)[0]
+            self.__iter = song
         else:
             for row in self:
                 if row[0] == song:
-                    self.__path = row.path[0]
+                    self.__iter = row.iter
                     break
 
     def find(self, song):
@@ -246,28 +247,6 @@ class PlaylistModel(gtk.ListStore):
     def reset(self):
         self.__played = []
         self.go_to(None)
-
-    def insert_before(self, iter, row):
-        citer = self.current_iter
-        r = super(PlaylistModel, self).insert_before(iter, row)
-        if citer is not None: self.__path = self.get_path(citer)[0]
-        return r
-
-    def insert_after(self, iter, row):
-        citer = self.current_iter
-        r = super(PlaylistModel, self).insert_after(iter, row)
-        if citer is not None: self.__path = self.get_path(citer)[0]
-        return r
-
-    def move_before(self, iter, position):
-        citer = self.current_iter
-        super(PlaylistModel, self).move_before(iter, position)
-        if citer is not None: self.__path = self.get_path(citer)[0]
-
-    def move_after(self, iter, position):
-        citer = self.current_iter
-        super(PlaylistModel, self).move_after(iter, position)
-        if citer is not None: self.__path = self.get_path(citer)[0]
 
 gobject.type_register(PlaylistModel)
 
