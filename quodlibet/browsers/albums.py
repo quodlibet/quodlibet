@@ -382,17 +382,18 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     class SortCombo(gtk.ComboBox):
         def __init__(self, model):
             # Contains string to display, function to do sorting
-            cbmodel = gtk.ListStore(str, object)
+            cbmodel = gtk.ListStore(str)
             gtk.ComboBox.__init__(self, cbmodel)
             cell = gtk.CellRendererText()
             self.pack_start(cell, True)
             self.add_attribute(cell, 'text', 0)
+            model.set_sort_func(100, self.__compare_title)
+            model.set_sort_func(101, self.__compare_artist)
+            model.set_sort_func(102, self.__compare_date)
 
-            for text, func in [
-                (_("Sort by title"), self.__compare_title),
-                (_("Sort by artist"), self.__compare_artist),
-                (_("Sort by date"), self.__compare_date),
-                ]: cbmodel.append(row=[text, func])
+            for text in [
+                _("Sort by title"), _("Sort by artist"), _("Sort by date")
+                ]: cbmodel.append(row=[text])
 
             self.connect_object('changed', self.__set_cmp_func, model)
             try: active = config.getint('browsers', 'album_sort')
@@ -402,7 +403,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def __set_cmp_func(self, model):
             active = self.get_active()
             config.set("browsers", "album_sort", str(active))
-            model.set_default_sort_func(self.get_model()[(active,)][1])
+            model.set_sort_column_id(100 + active, gtk.SORT_ASCENDING)
 
         def __compare_title(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
