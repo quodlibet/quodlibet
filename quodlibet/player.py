@@ -23,11 +23,11 @@ def GStreamerSink(pipeline):
     if pipeline == "gconf": pipeline = "gconfaudiosink"
     try: pipe = gst.parse_launch(pipeline)
     except gobject.GError, err:
-        if pipeline != "osssink":
-            print "%r failed, falling back to osssink (%s)." % (pipeline, err)
-            try: pipe = gst.parse_launch("osssink")
+        if pipeline != "autosink":
+            print "%r failed, falling back to autosink (%s)." % (pipeline, err)
+            try: pipe = gst.parse_launch("autosink")
             except gobject.GError: pipe = None
-            else: pipeline = "osssink"
+            else: pipeline = "autosink"
         else: pipe = None
     locale.getlocale(locale.LC_NUMERIC)
     if pipe: return pipe, pipeline
