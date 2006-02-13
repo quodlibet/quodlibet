@@ -21,6 +21,8 @@ class _TagsCombo(object):
         self.add_attribute(render, 'text', 1)
 
         if can_change is None: can_change = self.__tags
+        can_change = list(can_change)
+        can_change.sort()
 
         model = self.get_model()
         for t in can_change:
