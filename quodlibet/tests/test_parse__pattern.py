@@ -10,7 +10,8 @@ class _TPattern(TestCase):
         s1 = { 'tracknumber': '5/6', 'artist':'Artist', 'title':'Title5',
                '~filename':'/path/to/a.mp3', 'xmltest': "<&>"}
         s2 = { 'tracknumber': '6', 'artist':'Artist', 'title':'Title6',
-               '~filename': '/path/to/b.ogg', 'discnumber':'2' }
+               '~filename': '/path/to/b.ogg', 'discnumber':'2',
+               'unislash': u"foo\uff0fbar" }
         s3 = { 'title': 'test/subdir', 'genre':'/\n/',
                '~filename':'/one/more/a.flac', 'version': 'Instrumental'}
         self.a = self.AudioFile(s1)
@@ -127,6 +128,10 @@ class TFileFromPattern(_TPattern):
         s.assertEquals(pat.format(s.a), '/a/b/.mp3')
         s.assertEquals(pat.format(s.b), '/a/b/.ogg')
         s.assertEquals(pat.format(s.c), '/a/b/_, _.flac')
+
+    def test_unicode_slash_removal(s):
+        pat = FileFromPattern(u'/a/b/<unislash>')
+        s.assertEquals(pat.format(s.b), '/a/b/foo_bar.ogg')
 
     def test_directory_rooting(s):
         s.assertRaises(ValueError, FileFromPattern, 'a/<b>')

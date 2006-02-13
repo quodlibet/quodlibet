@@ -177,6 +177,7 @@ class FileFromPattern(Pattern):
     _formatters = [_number,
                    (lambda k, s: s.lstrip(".")),
                    (lambda k, s: s.replace("/", "_")),
+                   (lambda k, s: s.replace(u"\uff0f", "_")),
                    (lambda k, s: s.strip()),
                    ]
 
