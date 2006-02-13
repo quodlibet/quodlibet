@@ -37,6 +37,7 @@ def GetAACTrack(infile):
     else: return -1
 
 class MP4File(AudioFile):
+    multiple_values = False
     format = "MPEG-4 AAC"
 
     def __init__(self, filename):
@@ -73,14 +74,57 @@ class MP4File(AudioFile):
 
         cur, total = ctypes.c_uint16(), ctypes.c_uint16()
         if _mp4v2.MP4GetMetadataTrack(f, byref(cur), byref(total)):
-            self["tracknumber"] = "%d/%d" % (cur.value, total.value)
+            if total.value:
+                self["tracknumber"] = "%d/%d" % (cur.value, total.value)
+            else:
+                self["tracknumber"] = "%d" % cur.value
         if _mp4v2.MP4GetMetadataDisk(f, byref(cur), byref(total)):
-            self["discnumber"] = "%d/%d" % (cur.value, total.value)
-        
+            if total.value:
+                self["discnumber"] = "%d/%d" % (cur.value, total.value)
+            else:
+                self["discnumber"] = "%d" % cur.value
+
+    def write(self):
+        try:
+            filename = self["~filename"]
+            f = _mp4v2.MP4Modify(
+                filename, ctypes.c_uint32(0), ctypes.c_uint32(0))
+            if not f: raise IOError("%s not an MP4 file" % filename)
+            elif not _mp4v2.MP4MetadataDelete(f):
+                raise IOError("unable to remove metadata in %s" % filename)
+            for key, func in [
+                ("title", _mp4v2.MP4SetMetadataName),
+                ("artist", _mp4v2.MP4SetMetadataArtist),
+                ("composer", _mp4v2.MP4SetMetadataWriter),
+                ("comment", _mp4v2.MP4SetMetadataComment),
+                ("date", _mp4v2.MP4SetMetadataYear),
+                ("album", _mp4v2.MP4SetMetadataAlbum),
+                ("encoder", _mp4v2.MP4SetMetadataTool),
+                ("genre", _mp4v2.MP4SetMetadataGenre)]:
+                if key in self and not func(f, self[key].encode("utf-8")):
+                    raise IOError("unable to set %s in %s" % (key, filename))
+
+            track, tracks = self("~#track"), self("~#tracks", 0)
+            if track:
+                if not _mp4v2.MP4SetMetadataTrack(
+                    f, ctypes.c_uint16(track), ctypes.c_uint16(tracks)):
+                    raise IOError("unable to set track in %s" % filename)
+
+            disc, discs = self("~#disc"), self("~#discs", 0)
+            if disc:
+                if not _mp4v2.MP4SetMetadataDisk(
+                    f, ctypes.c_uint16(disc), ctypes.c_uint16(discs)):
+                    raise IOError("unable to set track in %s" % filename)
+
+        finally:
+            _mp4v2.MP4Close(f)
+            self.sanitize()
 
     def can_change(self, key=None):
-        if key is None: return []
-        else: return False
+        OK = ["title", "artist", "composer", "comment", "date", "encoder",
+              "genre", "tracknumber", "discnumber", "album"]
+        if key is None: return AudioFile.can_change(self, key) and OK
+        else: return AudioFile.can_change(self, key) and (key in OK)
 
     def get_format_cover(self):
         try:
