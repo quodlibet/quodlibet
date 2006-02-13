@@ -44,6 +44,14 @@ class TAudioFile(TestCase):
         self.failIf("~filename" in quux.realkeys())
         self.failUnless("album" in quux.realkeys())
 
+    def test_trackdisc(self):
+        self.failUnlessEqual(bar_1_1("~#track"), 1)
+        self.failUnlessEqual(bar_1_1("~#disc"), 1)
+        self.failUnlessEqual(bar_1_1("~#tracks"), 3)
+        self.failUnlessEqual(bar_1_1("~#discs"), 2)
+        self.failIf(bar_1_2("~#discs"))
+        self.failIf(bar_2_1("~#tracks"))
+
     def test_call(self):
         # real keys should lookup the same
         for key in bar_1_1.realkeys():

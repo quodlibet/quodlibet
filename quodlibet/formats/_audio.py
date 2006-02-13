@@ -35,6 +35,7 @@ class AudioFile(dict):
     multisong = False
     can_add = True
     is_file = True
+    multiple_values = True
 
     format = "Unknown Audio File"
 
@@ -123,10 +124,19 @@ class AudioFile(dict):
             elif key == "#year":
                 try: return int(self.get("date", default)[:4])
                 except (ValueError, TypeError, KeyError): return default
+            elif key == "#tracks":
+                try: return int(self["tracknumber"].split("/")[1])
+                except (ValueError, IndexError, TypeError, KeyError):
+                    return default
+            elif key == "#discs":
+                try: return int(self["discnumber"].split("/")[1])
+                except (ValueError, IndexError, TypeError, KeyError):
+                    return default
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default
             else: return dict.get(self, "~" + key, default)
+
         elif key == "title":
             v = dict.get(self, "title")
             if v is None:
