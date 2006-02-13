@@ -13,7 +13,7 @@ class TagsCombo(TestCase):
 
     def test_some(self):
         self.some.set_active(2)
-        self.failUnlessEqual(self.some.tag, "~people")
+        self.failUnlessEqual(self.some.tag, "foobar")
 
     def test_all(self):
         tags = list(USEFUL_TAGS)
