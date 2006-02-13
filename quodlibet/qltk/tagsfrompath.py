@@ -201,6 +201,7 @@ class TagsFromPath(EditPane):
                 text = match.get(h, '')
                 for f in self.filters:
                     if f.active: text = f.filter(h, text)
+                if not song.multiple_values: text = u", ".join(text)
                 row.append(text)
             model.append(row=row)
 
@@ -232,12 +233,12 @@ class TagsFromPath(EditPane):
 
             for i, h in enumerate(pattern.headers):
                 if row[i + 2]:
-                    if not add or h not in song:
-                        song[h] = row[i + 2].decode("utf-8")
+                    text = row[i + 2].decode("utf-8")
+                    if not add or h not in song or not song.multiple_values:
+                        song[h] = text
                         changed = True
                     else:
-                        vals = row[i + 2].decode("utf-8")
-                        for val in vals.split("\n"):
+                        for val in text.split("\n"):
                             if val not in song.list(h):
                                 song.add(h, val)
                                 changed = True

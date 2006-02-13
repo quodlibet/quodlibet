@@ -69,6 +69,9 @@ class AudioFileGroup(dict):
     def realkeys(self):
         return filter(lambda s: s and "~" not in s and "=" not in s, self)
 
+    is_file = True
+    multiple_values = True
+
     def __init__(self, songs):
         keys = {}
         first = {}
@@ -77,6 +80,8 @@ class AudioFileGroup(dict):
         self.__songs = songs
 
         for song in songs:
+            self.is_file &= song.is_file
+            self.multiple_values &= song.multiple_values
             for comment, val in song.iteritems():
                 keys[comment] = keys.get(comment, 0) + 1
                 first.setdefault(comment, val)

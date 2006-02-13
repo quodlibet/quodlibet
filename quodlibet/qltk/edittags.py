@@ -374,6 +374,14 @@ class EditTags(gtk.VBox):
             bool(rows and min([model[row][CANEDIT] for row in rows])))
 
     def __add_new_tag(self, model, comment, value):
+        if (comment in self.__songinfo and not self.__songinfo.multiple_values):
+            title = _("Unable to add tag")
+            msg = _("Unable to add <b>%s</b>\n\nThe files currently"
+                    " selected do not support multiple values."
+                    ) % util.escape(comment)
+            qltk.ErrorMessage(None, title, msg).run()
+            return
+
         edited = True
         edit = True
         orig = None
@@ -389,18 +397,18 @@ class EditTags(gtk.VBox):
         while True:
             resp = add.run()
             if resp != gtk.RESPONSE_OK: break
-            comment = add.get_tag()
+            tag = add.get_tag()
             value = add.get_value()
-            if comment in Massager.fmt:
-                value = Massager.fmt[comment].validate(value)
-            if not self.__songinfo.can_change(comment):
+            if tag in Massager.fmt:
+                value = Massager.fmt[tag].validate(value)
+            if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                         " selected do not support editing this tag."
-                        ) % util.escape(comment)
+                        ) % util.escape(tag)
                 qltk.ErrorMessage(None, title, msg).run()
             else:
-                self.__add_new_tag(model, comment, value)
+                self.__add_new_tag(model, tag, value)
                 break
 
         add.destroy()
