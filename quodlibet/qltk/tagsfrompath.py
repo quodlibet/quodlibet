@@ -39,7 +39,7 @@ class TagsFromPattern(object):
             if not piece: continue
             if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
                 piece = piece.lower()   # canonicalize to lowercase tag names
-                pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+'))
+                pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+?'))
                 self.headers.append(piece[1:-1].encode("ascii", "replace"))
             else:
                 pieces[i] = sre.escape(piece)

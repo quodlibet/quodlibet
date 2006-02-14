@@ -40,6 +40,12 @@ class TTagsFromPattern(TestCase):
         pat = TagsFromPattern('<tracknumber> - <title>')
         self.assertEquals(pat.match({"~filename":self.f1}), tracktitle)
 
+    def test_nongreedy(self):
+        pat = TagsFromPattern('<artist> - <title>')
+        dic = pat.match("Prefuse 73 - The End of Biters - International.ogg")
+        self.assertEquals(dic["artist"], "Prefuse 73")
+        self.assertEquals(dic["title"], "The End of Biters - International")
+
     def test_empty(self):
         pat = TagsFromPattern('')
         self.assertEquals(pat.match(self.f1), self.nomatch)
