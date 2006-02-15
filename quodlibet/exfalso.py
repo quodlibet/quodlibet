@@ -10,6 +10,11 @@
 
 import os, sys
 
+class fakegst(object):
+    def element_factory_make(self, element_name):
+        if element_name in ["monkeysdec"]:
+            raise ValueError("unsupported fake module")
+
 if __name__ == "__main__":
     basedir = os.path.dirname(os.path.realpath(__file__))
     if not os.path.exists(os.path.join(basedir, "exfalso.py")):
@@ -46,8 +51,9 @@ if __name__ == "__main__":
     except: gtk.window_set_default_icon_from_file("exfalso.png")
     util.gtk_init()
 
-    import pygst
-    pygst.require("0.10")
+    sys.modules["gst"] = fakegst()
+    import gst
+    assert isinstance(gst, fakegst)
 
     import stock
     stock.init()
