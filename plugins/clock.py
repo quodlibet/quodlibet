@@ -38,49 +38,6 @@ class ClockPlug(object):
         hb.show_all()
         return hb
 
-class Alarm(ClockPlug):
-    PLUGIN_NAME = "Alarm"
-    PLUGIN_DESC = "Wake you up with loud music."
-    PLUGIN_ICON = gtk.STOCK_DIALOG_INFO
-    PLUGIN_VERSION = "0.11"
-
-    message = "Wake up at:"
-
-    def __init__(self):
-        self._starttime = -1
-        self._enabled = False
-        self.__gid = 0
-
-    def __start_playing(self):
-        gtk.threads_enter()
-        if player.playlist.info.song is None:
-            player.playlist.reset()
-        player.playlist.paused = False
-        gtk.threads_leave()
-
-    def __poll(self):
-        if self._enabled and self._starttime > 0:
-            time_ = time.localtime()[3] * 60 + time.localtime()[4]
-            if self._starttime < time_ and (time_ - self._starttime) < 2:
-                self._enabled = False
-                gobject.idle_add(self.__start_playing)
-        return True
-
-    def plugin_on_paused(self):
-        self.__gid = gobject.timeout_add(10000, self.__poll)
-
-    def plugin_on_song_started(self, song):
-        if song is None:
-            self.__gid = gobject.timeout_add(10000, self.__poll)
-        elif self.__gid:
-            gobject.source_remove(self.__gid)
-            self.__gid = 0
-
-    def plugin_on_unpaused(self):
-        if self.__gid:
-            gobject.source_remove(self.__gid)
-            self.__gid = 0
-
 class Lullaby(ClockPlug):
     PLUGIN_NAME = "Lullaby"
     PLUGIN_DESC = "Turn off your music after you go to sleep."
