@@ -17,6 +17,28 @@ import config
 import util
 
 from qltk.cbes import ComboBoxEntrySave
+from qltk.ccb import ConfigCheckButton
+
+class FilterCheckButton(ConfigCheckButton):
+    __gsignals__ = {
+        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        }
+
+    def __init__(self):
+        super(FilterCheckButton, self).__init__(
+            self._label, self._section, self._key)
+        try: self.set_active(config.getboolean(self._section, self._key))
+        except: pass
+        self.connect_object('toggled', self.emit, 'preview')
+    active = property(lambda s: s.get_active())
+
+    def filter(self, original, filename): raise NotImplementedError
+    def filter_list(self, origs, names): return map(self.filter, origs, names)
+
+    def __cmp__(self, other):
+        return (cmp(self._order, other._order) or
+                cmp(type(self).__name__, type(other).__name__))
+gobject.type_register(FilterCheckButton)
 
 class EditPane(gtk.VBox):
     def __init__(self, cbes, cbes_defaults, plugins):

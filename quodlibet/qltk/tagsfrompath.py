@@ -16,7 +16,7 @@ import qltk
 from qltk.wlw import WritingWindow
 from qltk.cbes import ComboBoxEntrySave
 from qltk.ccb import ConfigCheckButton
-from qltk._editpane import EditPane
+from qltk._editpane import EditPane, FilterCheckButton
 
 import const
 import config
@@ -71,37 +71,23 @@ class TagsFromPattern(object):
         if match is None: return {}
         else: return match.groupdict()
 
-class FilterCheckButton(ConfigCheckButton):
-    __gsignals__ = {
-        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-        }
-
-    def __init__(self):
-        super(FilterCheckButton, self).__init__(
-            self._label, "tagsfrompath", self._key)
-        try: self.set_active(config.getboolean("tagsfrompath", self._key))
-        except: pass
-        self.connect_object('toggled', self.emit, 'preview')
-    active = property(lambda s: s.get_active())
-
-    def filter(self, tag, value): raise NotImplementedError
-gobject.type_register(FilterCheckButton)
-
 class UnderscoresToSpaces(FilterCheckButton):
     _label = _("Replace _underscores with spaces")
+    _section = "tagsfrompath"
     _key = "underscores"
     _order = 1.0
-
     def filter(self, tag, value): return value.replace("_", " ")
 
 class TitleCase(FilterCheckButton):
     _label = _("_Title-case tags")
+    _section = "tagsfrompath"
     _key = "titlecase"
     _order = 1.1
     def filter(self, tag, value): return util.title(value)
 
 class SplitTag(FilterCheckButton):
     _label = _("Split into multiple _values")
+    _section = "tagsfrompath"
     _key = "split"
     _order = 1.2
     def filter(self, tag, value):

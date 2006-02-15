@@ -15,8 +15,7 @@ import stock
 import qltk
 from qltk.wlw import WritingWindow
 from qltk.cbes import ComboBoxEntrySave
-from qltk.ccb import ConfigCheckButton
-from qltk._editpane import EditPane
+from qltk._editpane import EditPane, FilterCheckButton
 import const
 import config
 import util
@@ -25,35 +24,16 @@ import unicodedata
 from library import library
 from parse import FileFromPattern
 
-class FilterCheckButton(ConfigCheckButton):
-    __gsignals__ = {
-        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-        }
-
-    def __init__(self):
-        super(FilterCheckButton, self).__init__(
-            self._label, "rename", self._key)
-        try: self.set_active(config.getboolean("rename", self._key))
-        except: pass
-        self.connect_object('toggled', self.emit, 'preview')
-    active = property(lambda s: s.get_active())
-
-    def filter(self, original, filename): raise NotImplementedError
-    def filter_list(self, origs, names): return map(self.filter, origs, names)
-
-    def __cmp__(self, other):
-        return (cmp(self._order, other._order) or
-                cmp(type(self).__name__, type(other).__name__))
-gobject.type_register(FilterCheckButton)
-
 class SpacesToUnderscores(FilterCheckButton):
     _label = _("Replace spaces with _underscores")
+    _section = "rename"
     _key = "spaces"
     _order = 1.0
     def filter(self, original, filename): return filename.replace(" ", "_")
 
 class StripWindowsIncompat(FilterCheckButton):
     _label = _("Strip _Windows-incompatible characters")
+    _section = "rename"
     _key = "windows"
     BAD = '\:*?;"<>|'
     _order = 1.1
@@ -62,6 +42,7 @@ class StripWindowsIncompat(FilterCheckButton):
 
 class StripDiacriticals(FilterCheckButton):
     _label = _("Strip _diacritical marks")
+    _section = "rename"
     _key = "diacriticals"
     _order = 1.2
     def filter(self, original, filename):
@@ -70,6 +51,7 @@ class StripDiacriticals(FilterCheckButton):
 
 class StripNonASCII(FilterCheckButton):
     _label = _("Strip non-_ASCII characters")
+    _section = "rename"
     _key = "ascii"
     _order = 1.3
     def filter(self, original, filename):
