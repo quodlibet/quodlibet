@@ -16,16 +16,16 @@ class Alarm(object):
     PLUGIN_NAME = "Alarm Clock"
     PLUGIN_DESC = "Wake you up with loud music."
     PLUGIN_ICON = gtk.STOCK_DIALOG_INFO
-    PLUGIN_VERSION = "0.12"
+    PLUGIN_VERSION = "0.18"
 
-    __times = ["HH:MM"] * 7
+    _pref_name = "alarm_times"
+    _times = ["HH:MM"] * 7
 
     def __init__(self):
-        try: self.__times = config.get("plugins", "alarm_times").split()[:7]
+        try: self._times = config.get("plugins", self._pref_name).split()[:7]
         except: pass
-        else: self.__times = (self.__times + ["HH:MM"] * 7)[:7]
-        print "Alarms set for", self.__times
-        gobject.timeout_add(30000, self.__check)
+        else: self._times = (self._times + ["HH:MM"] * 7)[:7]
+        gobject.timeout_add(30000, self._check)
 
     def is_valid_time(time):
         try: hour, minute = map(int, time.split(":"))
@@ -36,31 +36,31 @@ class Alarm(object):
     def plugin_on_song_started(self, song):
         pass
 
-    def __entry_changed(self, entries):
-        self.__times = map(ValidatingEntry.get_text, entries)
-        config.set("plugins", "alarm_times", " ".join(self.__times))
+    def _entry_changed(self, entries):
+        self._times = map(ValidatingEntry.get_text, entries)
+        config.set("plugins", self._pref_name, " ".join(self._times))
 
-    def __ready(self):
+    def _ready(self):
         tdata = time.localtime()
-        goal = self.__times[tdata.tm_wday]
+        goal = self._times[tdata.tm_wday]
         try: ghour, gminute = map(int, goal.split(":"))
         except: return False
         else: return (tdata.tm_hour, tdata.tm_min) == (ghour, gminute)
 
-    def __fire(self):
+    def _fire(self):
         if getattr(self, "PMEnFlag", False):
             if player.playlist.paused:
                 if player.playlist.song is None:
                     player.playlist.next()
                 else: player.playlist.paused = False
-        gobject.timeout_add(60000, self.__longer_check)
+        gobject.timeout_add(60000, self._longer_check)
 
-    def __longer_check(self):
-        if self.__ready(): self.__fire()
-        else: gobject.timeout_add(30000, self.__check)
+    def _longer_check(self):
+        if self._ready(): self._fire()
+        else: gobject.timeout_add(30000, self._check)
 
-    def __check(self):
-        if self.__ready(): self.__fire()
+    def _check(self):
+        if self._ready(): self._fire()
         else: return True
 
     def PluginPreferences(self, parent):
@@ -69,7 +69,7 @@ class Alarm(object):
         entries = []
         for i in range(7):
             e = ValidatingEntry(Alarm.is_valid_time)
-            e.set_text(self.__times[i])
+            e.set_text(self._times[i])
             e.set_max_length(5)
             e.set_width_chars(6)
             day = gtk.Label(time.strftime("_%A:", (0, 0, 0, 0, 0, 0, i, 0, 0)))
@@ -80,5 +80,25 @@ class Alarm(object):
             t.attach(e, 1, 2, i, i + 1, xoptions=gtk.FILL)
             entries.append(e)
         for e in entries:
-            e.connect_object('changed', self.__entry_changed, entries)
+            e.connect_object('changed', self._entry_changed, entries)
         return t
+
+class Lullaby(Alarm):
+    PLUGIN_NAME = "Lullaby"
+    PLUGIN_DESC = "Fade out and pause your music."
+    PLUGIN_ICON = gtk.STOCK_MEDIA_PAUSE
+    PLUGIN_VERSION = "0.18"
+
+    _pref_name = "lullaby_times"
+
+    def _fire(self):
+        if getattr(self, "PMEnFlag", False):
+            gobject.timeout_add(500, self._fade_out)
+        else: gobject.timeout_add(30000, self._check)
+
+    def _fade_out(self):
+        from widgets import main
+        main.volume -= 0.005
+        if main.volume.get_value() == 0: player.playlist.paused = True
+        if player.playlist.paused: gobject.timeout_add(30000, self._check)
+        else: return True
