@@ -308,7 +308,7 @@ class Playlists(gtk.VBox, Browser):
 
     def __check_current(self, model, path, iter):
         model, citer = self.__view.get_selection().get_selected()
-        if citer and model.get_path(citer) == path: self.activate()
+        if citer and model.get_path(citer) == path: self.activate(resort=False)
 
     def __drag_motion(self, view, ctx, x, y, time):
         if "text/x-quodlibet-songs" in ctx.targets:
@@ -420,13 +420,13 @@ class Playlists(gtk.VBox, Browser):
         menu.connect('selection-done', lambda m: m.destroy())
         return menu
 
-    def activate(self, *args):
+    def activate(self, widget=None, resort=True):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
         name = iter and model[iter][0].name or ""
         if self.__main: config.set("browsers", "playlist", name)
-        self.emit('songs-selected', songs, True)
+        self.emit('songs-selected', songs, resort)
 
     def __new_playlist(self, activator):
         playlist = Playlist.new()
