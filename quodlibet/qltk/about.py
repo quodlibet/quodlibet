@@ -27,8 +27,8 @@ class AboutWindow(gtk.AboutDialog):
         text.append(_("Audio device: %s") % player.name)
         text.append("GTK+: %s / PyGTK: %s" %(
             fver(gtk.gtk_version), fver(gtk.pygtk_version)))
-        text.append("GStreamer+: %s / PyGSt: %s" %(
-            fver(gst.gst_version), fver(gst.pygst_version)))
+        text.append("GStreamer: %s / PyGSt: %s" %(
+            fver(gst.version()), fver(gst.pygst_version)))
         self.set_comments("\n".join(text))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
