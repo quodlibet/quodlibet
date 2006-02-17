@@ -15,10 +15,9 @@ class NoSourceError(ValueError): pass
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
-    * Try making the pipeline.
-    * If it fails, fall back to alsasink.
-    * If that fails, fall back to osssink.
-    * Otherwise, complain loudly."""
+    * Try making the pipeline (defaulting to gconfaudiosink).
+    * If it fails, fall back to autoasink.
+    * If that fails, complain loudly."""
 
     if pipeline == "gconf": pipeline = "gconfaudiosink"
     try: pipe = gst.parse_launch(pipeline)
