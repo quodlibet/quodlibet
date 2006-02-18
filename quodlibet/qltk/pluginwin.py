@@ -179,11 +179,15 @@ class PluginWindow(qltk.Window):
             self.__win = qltk.Window()
             self.__win.set_title(_("Quod Libet Plugin Load Errors"))
             self.__win.set_border_width(12)
-            self.__win.set_resizable(False)
             self.__win.set_transient_for(qltk.get_top_parent(self))
+            self.__win.set_default_size(400, 250)
 
+            scrolledwin = gtk.ScrolledWindow()
+            self.__win.add(scrolledwin)
             vbox = gtk.VBox(spacing=6)
-            self.__win.add(vbox)
+            scrolledwin.add_with_viewport(vbox)
+            scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            scrolledwin.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
             
             failures = pm.list_failures()
             keys = failures.keys();
@@ -194,20 +198,17 @@ class PluginWindow(qltk.Window):
                 expander.set_use_markup(True)
                 if show_expanded: expander.set_expanded(True)
 
-                frame = gtk.Frame()
-                frame.set_shadow_type(gtk.SHADOW_IN)
-
                 # second line is always the __rescan line; don't show it
                 message = failures[key][0:1] + failures[key][2:]
                 failure = gtk.Label(''.join(message).strip())
+                failure.set_alignment(0, 0)
                 failure.set_padding(3, 3)
                 failure.set_selectable(True)
 
                 vbox.pack_start(expander, expand=False)
-                expander.add(frame)
-                frame.add(failure)
+                expander.add(failure)
 
-            vbox.show_all()
+            scrolledwin.show_all()
             def delwin(*args): del self.__win
             self.__win.connect("destroy", delwin)
             self.__win.present()
