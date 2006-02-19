@@ -8,7 +8,7 @@ all:
 
 po: $(addsuffix .mo, $(ALL_LINGUAS))
 
-quodlibet.pot: ../*.py ../formats/*.py ../browsers/*.py ../qltk/*.py
+quodlibet.pot: ../*.py ../formats/*.py ../browsers/*.py ../qltk/*.py tag-names.py
 	intltool-update --pot --gettext-package=$(NAME)
 
 %.po: quodlibet.pot
