@@ -63,6 +63,8 @@ _("conductors")
 _("authors")
 _("artists")
 _("albums")
+_("tracks")
+_("discs")
 
 # Not really tag names, but this is the best place for them so far.
 
