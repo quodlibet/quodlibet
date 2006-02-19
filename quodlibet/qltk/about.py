@@ -35,7 +35,7 @@ class AboutWindow(gtk.AboutDialog):
         self.set_translator_credits(_('translator-credits'))
         self.set_website("http://www.sacredchao.net/quodlibet")
         self.set_copyright(
-            "Copyright © 2004-2005 Joe Wreschnig, Michael Urman, & others\n"
+            "Copyright © 2004-2006 Joe Wreschnig, Michael Urman, & others\n"
             "<quodlibet@lists.sacredchao.net>")
         if run: gtk.AboutDialog.run(self)
         self.destroy()
