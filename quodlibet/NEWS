@@ -11,7 +11,31 @@ Quod Libet 0.16 and later use G_FILENAME_ENCODING. If you use non-UTF-8
 filenames and don't use G_BROKEN_FILENAMES, you'll need to start setting
 G_FILENAME_ENCODING.
 
+Quod Libet now uses GStreamer 0.10. GStreamer 0.8 *will not work*.
+See http://www.sacredchao.net/quodlibet/wiki/Development/GStreamer0.10
+for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
+
 0.18 -
+ * MP4 iTunes metadata can be written. (#199)
+ * Alt+s switches between search entry and song list. (#254)
+ * GStreamer 0.10 port. (#406)
+ * Album covers can be switched off in the Album List. (#466)
+ * The Album List text can be changed with a pattern. (#467)
+ * "Limit" in the Search view can take ratings into account. (#469)
+ * UI Changes:
+   * Alt+Enter / Ctrl+I shows tags/information for selected songs. (#462)
+   * DnD to playlists/the queue from the File System view. (#481)
+   * F2 renames playlists. (#482)
+   * "Add a Tag" autocompletes tag names.
+ * Bug Fixes:
+   * ID3v1 tags no longer interfere with APEv2 tags. (#395)
+   * Playing albums with one song no longer skips forwards. (#503)
+   * "Tags From Path" patterns are no longer greedy. (#519)
+   * Internet Radio supports the ~people tag. (#520)
+ * Plugin errors are captured in a dialog. ([2817])
+ * New synthetic numeric tags, ~#tracks and ~#discs. ([2828])
+ * Ex Falso no longer depends on GStreamer. ([2837])
+ * New Lithuanian translation by Jonas Slivka. ([2780])
  * Updated translations:
   * Bulgarian, by Rostislav Raykov.
   * Finnish, by Jari Rahkonen.
