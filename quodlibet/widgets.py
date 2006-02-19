@@ -128,8 +128,8 @@ def save_library(window, player):
 
 def no_sink_quit(sink):
     header = _("Unable to open audio device")
-    body = _("Quod Libet tried to access the 'alsasink', 'osssink', and "
-             "'%(sink)s' drivers but could not open any of them. Set your "
+    body = _("Quod Libet tried to access the 'autosink' and "
+             "'%(sink)s' drivers but could not open them. Set your "
              "GStreamer pipeline by changing the\n"
              "    <b>pipeline = %(sink)s</b>\n"
              "line in ~/.quodlibet/config.") % {"sink": sink}
