@@ -177,7 +177,7 @@ class PluginWindow(qltk.Window):
         try: self.__win.present()
         except AttributeError:
             self.__win = qltk.Window()
-            self.__win.set_title(_("Quod Libet Plugin Load Errors"))
+            self.__win.set_title(_("Plugin Errors") + "- Quod Libet")
             self.__win.set_border_width(12)
             self.__win.set_transient_for(qltk.get_top_parent(self))
             self.__win.set_default_size(400, 250)
