@@ -2,8 +2,9 @@ quodlibet (0.18-1) unstable; urgency=low
 
   * New upstream release.
   * Depend on GStreamer 0.10.
+  * Split into quodlibet, exfalso packages. (Closes: #306882)
 
- -- Joe Wreschnig <piman@debian.org>  
+ -- Joe Wreschnig <piman@debian.org>  Mon, 20 Feb 2006 00:15:31 -0600
 
 quodlibet (0.17.1-2) unstable; urgency=low
 

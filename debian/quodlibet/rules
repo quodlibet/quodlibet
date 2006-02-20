@@ -1,4 +1,6 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+#export DH_VERBOSE=1
 
 CFLAGS = -Wall -g
 
@@ -34,20 +36,19 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/quodlibet PREFIX=/usr
-	-mkdir -p $(CURDIR)/debian/quodlibet-ext/usr/lib/quodlibet
-	mv $(CURDIR)/debian/quodlibet/usr/lib/quodlibet/*.so $(CURDIR)/debian/quodlibet-ext/usr/lib/quodlibet
-	rm -r $(CURDIR)/debian/quodlibet/usr/lib/
-	rm $(CURDIR)/debian/quodlibet/usr/share/man/man1/exfalso.1
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp PREFIX=/usr
 
 binary-indep: build install
 	dh_testdir -i
 	dh_testroot -i
+	dh_installdirs -i
+	dh_install -i --sourcedir=$(CURDIR)/debian/tmp
+	rm $(CURDIR)/debian/exfalso/usr/share/quodlibet/quodlibet.*
+	rm $(CURDIR)/debian/exfalso/usr/share/quodlibet/rhythmbox-*.png
 	dh_installchangelogs -i
 	dh_installdocs -i
 	dh_installmenu -i
 	dh_installman -i
-	ln -sf quodlibet.1.gz $(CURDIR)/debian/quodlibet/usr/share/man/man1/exfalso.1.gz
 	dh_link -i
 	dh_strip -i
 	dh_compress -i
@@ -63,6 +64,8 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir -a
 	dh_testroot -a
+	dh_installdirs -a
+	dh_install -a --sourcedir=$(CURDIR)/debian/tmp
 	dh_installchangelogs -a
 	dh_installdocs -a
 	dh_link -a

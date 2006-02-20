@@ -1,0 +1,4 @@
+?package(exfalso):needs="X11" \
+ section="Apps/Sound" \
+ title="Ex Falso" \
+ command="/usr/bin/exfalso"
