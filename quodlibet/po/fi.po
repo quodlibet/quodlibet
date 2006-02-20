@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-18 23:21-0600\n"
-"PO-Revision-Date: 2006-02-19 09:38+0200\n"
+"PO-Revision-Date: 2006-02-19 18:40+0200\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -567,7 +567,7 @@ msgstr "albumit"
 
 #: ../po/tag-names.py:66
 msgid "tracks"
-msgstr "raitaa"
+msgstr "raidat"
 
 #: ../po/tag-names.py:67
 msgid "discs"
@@ -673,8 +673,8 @@ msgid ""
 "    <b>pipeline = %(sink)s</b>\n"
 "line in ~/.quodlibet/config."
 msgstr ""
-"Quod Libet yritti käyttää ajureita 'autosink' ja '%(sink)s', mutta "
-"niidenavaaminen ei onnistunut. Aseta GStreamerin pipeline rivillä\n"
+"Quod Libet yritti käyttää ajureita 'autosink' ja '%(sink)s', mutta niiden "
+"avaaminen ei onnistunut. Aseta GStreamerin pipeline rivillä\n"
 "    <b>pipeline = %(sink)s</b>\n"
 "tiedostossa ~/.quodlibet/config."
 
@@ -1063,11 +1063,11 @@ msgstr "Tuottanut %s"
 
 #: ../qltk/information.py:340
 msgid "Track unavailable"
-msgstr "Raita ei saatavilla"
+msgstr "Raita ei ole käytettävissä"
 
 #: ../qltk/information.py:347
 msgid "Track List"
-msgstr "Kappalelista"
+msgstr "Kappaleet"
 
 #: ../qltk/information.py:385 ../qltk/information.py:456
 #, python-format
@@ -1710,7 +1710,7 @@ msgid ""
 "%s"
 msgstr ""
 "Syöttämäsi hakukaava ei kelpaa. Varmista, että syötät merkit &lt; ja &gt; "
-"muodossa \\&lt; ja \\&gt; ja että nimikkeitä ei jää sulkematta.\n"
+"muodossa \\&lt; ja \\&gt; ja että tunnisteita ei jää sulkematta.\n"
 "\n"
 "%s"
 
