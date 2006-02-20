@@ -1,1 +1,48 @@
-.so quodlibet.1
+.TH exfalso 1 "February 20th, 2006"
+.SH NAME
+exfalso \- audio tag editor
+.SH SYNOPSIS
+\fBexfalso\fR [ \fIdirectory\fR ]
+.SH DESCRIPTION
+Ex Falso displays and edits audio metadata tags. Supported formats include
+MP3, Ogg Vorbis, FLAC, Musepack (MPC), WavPack, and MOD/XM/IT.
+.PP
+This manual page is only a short reference for Ex Falso.
+Complete documentation is available at
+http://www.sacredchao.net/quodlibet/wiki/Guide.
+.SH OPTIONS
+Ex Falso may be given a directory to open on the command line.
+.SH TIED TAGS
+Many places in Ex Falso allow you to use "tied tags". Tied tags are two tag
+names joined together with a "~" like "title~version" or "album~part".
+Tied tags result in "nice" displays even when one of the tags is missing;
+for example, "title~version" will result in \fITitle\ \-\ Version\fR when
+a version tag is present, but only \fITitle\fR when one isn't. You can
+tie any number of tags together.
+.SH RENAMING FILES
+Ex Falso allows you to rename files based on their tags. In some
+cases you may wish to alter the filename depending on whether some
+tags are present or missing, in addition to their values. A common
+pattern might be
+.RS 4
+<tracknumber>. <title~version>
+.RE
+You can use a '|' to only text when a tag is present:
+.RS 4
+<tracknumber|<tracknumber>. ><title~version>
+.RE
+You can also specify literal text to use if the tag is missing by adding
+another '|':
+.RS 4
+<album|<album>|No Album> \- <title>
+.RE
+See http://www.sacredchao.net/quodlibet/wiki/Guide/Renaming.
+.SH BUGS
+See https://www.sacredchao.net/quodlibet/report/1 for a list of
+all currently open bugs and feature requests.
+.SH AUTHORS
+Joe Wreschnig and Michael Urman are the primary authors of Ex Falso.
+.SH SEE ALSO
+http://www.sacredchao.net/quodlibet/wiki/Guide,
+.br
+http://www.sacredchao.net/quodlibet/wiki/FAQ,

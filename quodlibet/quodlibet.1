@@ -1,8 +1,6 @@
 .TH quodlibet 1 "November 26th, 2005"
 .SH NAME
 quodlibet \- audio library manager and player
-.br
-exfalso \- audio tag editor
 .SH SYNOPSIS
 \fBquodlibet\fR [ \fB\-\-print\-playing\fR | \fB\-\-refresh\-library\fR | \fIcontrol\fR ]
 .br
@@ -13,14 +11,9 @@ to view your audio library, as well as support for Internet radio and
 audio feeds. It has extremely flexible metadata tag editing and searching
 capabilities.
 .PP
-Ex Falso is a tag editor with the same tag editing interface as Quod Libet,
-but it does not play files.
-.PP
 This manual page is only a short reference for Quod Libet.
 Complete documentation is available at
 http://www.sacredchao.net/quodlibet/wiki/Guide.
-.SH EX\ FALSO\ OPTIONS
-Ex Falso may be given a directory to open on the command line.
 .SH QUOD\ LIBET\ OPTIONS
 .IP \-\-enqueue\ \fIfilename\fR|\fIquery\fR 4
 Enqueue a filename or query results.
@@ -87,7 +80,7 @@ If you want to store multiple albums in the same directory but keep
 distinct cover images, the name of the appropriate image file must
 contain the \fBlabelid\fI tag value, e.g. \fICOCX\-32760 cover.jpg\fR.
 .SH TIED TAGS
-Many places in EF/QL allow you to use "tied tags". Tied tags are two tag
+Many places in Quod Libet allow you to use "tied tags". Tied tags are two tag
 names joined together with a "~" like "title~version" or "album~part".
 Tied tags result in "nice" displays even when one of the tags is missing;
 for example, "title~version" will result in \fITitle\ \-\ Version\fR when
@@ -134,7 +127,7 @@ Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
 .PP
 See http://www.sacredchao.net/quodlibet/wiki/Guide/InternalTags.
 .SH RENAMING FILES
-Ex Falso / Quod Libet allow you to rename files based on their tags. In some
+Quod Libet allows you to rename files based on their tags. In some
 cases you may wish to alter the filename depending on whether some
 tags are present or missing, in addition to their values. A common
 pattern might be
@@ -181,8 +174,7 @@ See http://www.sacredchao.net/quodlibet/wiki/Guide/Extending.
 See https://www.sacredchao.net/quodlibet/report/1 for a list of
 all currently open bugs and feature requests.
 .SH AUTHORS
-Joe Wreschnig and Michael Urman are the primary authors of Ex Falso and
-Quod Libet.
+Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 .SH SEE ALSO
 http://www.sacredchao.net/quodlibet/wiki/Guide,
 .br
