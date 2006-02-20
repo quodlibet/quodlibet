@@ -39,6 +39,7 @@ for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
  * Updated translations:
   * Bulgarian, by Rostislav Raykov.
   * Finnish, by Jari Rahkonen.
+  * Korean, by Byung-Hee HWANG and ChangBom Yoon.
 
 0.17.1 - I'd like to have some nightmares, please!
  * Updated German translation, by Rüdiger Arp.
