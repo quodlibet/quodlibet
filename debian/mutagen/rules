@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+#export DH_VERBOSE=1
+
+clean:
+	dh_testdir
+	dh_testroot
+	python ./setup.py clean
+	rm -rf build
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+	python ./setup.py install --prefix debian/python-mutagen/usr
+	install -D -m 755 tools/* $(CURDIR)/debian/python-mutagen/usr/bin
+
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installman man/*.1
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_python
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure

@@ -1,0 +1,19 @@
+This package was debianized by Joe Wreschnig <piman@debian.org> on
+Tue, 21 Feb 2006 02:24:36 -0600
+
+It was downloaded from
+	http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
+
+Authors: Michael Urman and Joe Wreschnig
+
+License:
+
+Copyright (C) 2005  Michael Urman
+Copyright 2005 Joe Wreschnig <piman@sacredchao.net>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 as
+published by the Free Software Foundation.
+
+On Debian systems, the GNU GPL version 2 can be found in
+/usr/share/common-licenses/GPL-2.

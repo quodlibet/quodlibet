@@ -1,0 +1,5 @@
+mutagen (0.9-1) unstable; urgency=low
+
+  * Initial release. (Closes: #353505)
+
+ -- Joe Wreschnig <piman@debian.org>  Tue, 21 Feb 2006 03:06:14 -0600
