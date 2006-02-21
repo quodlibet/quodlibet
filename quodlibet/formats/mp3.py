@@ -78,6 +78,10 @@ class MP3File(AudioFile):
             elif frame.FrameID == "TCON":
                 self["genre"] = "\n".join(frame.genres)
                 continue
+            elif frame.FrameID == "TLEN":
+                try: self["~#length"] = +frame // 1000
+                except ValueError: pass
+                continue
             elif (frame.FrameID == "UFID" and
                   frame.owner == "http://musicbrainz.org"):
                 self["musicbrainz_trackid"] = frame.data
@@ -131,7 +135,7 @@ class MP3File(AudioFile):
             audio.read()
         self["~#bitrate"] = bitrate/5
         audio.seek_time(audio.total_time()); audio.read()
-        self["~#length"] = audio.total_time() / 1000
+        self.setdefault("~#length", int(audio.total_time() // 1000))
 
         self.sanitize(filename)
 
