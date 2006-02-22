@@ -484,7 +484,7 @@ class Playlists(gtk.VBox, Browser):
         else:
             playlist = Playlist.fromsongs(songs)
             gobject.idle_add(self.__select_playlist, playlist)
-        Playlists.changed(playlist)
+        Playlists.changed(playlist, refresh=False)
 
 gobject.type_register(Playlists)
 
