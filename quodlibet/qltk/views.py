@@ -88,6 +88,7 @@ class TreeViewHints(gtk.Window):
         cellw = col.cell_get_position(renderer)[1]
 
         label = self.__label
+        label.set_ellipsize(pango.ELLIPSIZE_NONE)
         label.set_text(renderer.get_property('text'))
         w, h0 = label.get_layout().get_pixel_size()
         try: markup = renderer.markup
