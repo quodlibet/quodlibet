@@ -37,10 +37,11 @@ for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
  * Ex Falso no longer depends on GStreamer. ([2837])
  * New Lithuanian translation by Jonas Slivka. ([2780])
  * Updated translations:
-  * Bulgarian, by Rostislav Raykov.
-  * Finnish, by Jari Rahkonen.
-  * Korean, by Byung-Hee HWANG and ChangBom Yoon.
-  * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Bulgarian, by Rostislav Raykov.
+   * Finnish, by Jari Rahkonen.
+   * Korean, by Byung-Hee HWANG and ChangBom Yoon.
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Hebrew, by Roee Haimovich.
 
 0.17.1 - I'd like to have some nightmares, please!
  * Updated German translation, by Rüdiger Arp.
