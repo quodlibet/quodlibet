@@ -2,7 +2,6 @@
 stock.py
 library.py
 quodlibet.py
-util.py
 po/tag-names.py
 formats/_audio.py
 exfalso.py
@@ -47,5 +46,6 @@ browsers/search.py
 browsers/filesystem.py
 browsers/iradio.py
 browsers/audiofeeds.py
+util/__init__.py
 exfalso.desktop.in
 quodlibet.desktop.in
