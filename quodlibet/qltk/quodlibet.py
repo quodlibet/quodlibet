@@ -32,6 +32,7 @@ from qltk.getstring import GetStringDialog
 from qltk.browser import LibraryBrowser
 from qltk.msg import ErrorMessage
 from qltk.information import Information
+from util.uri import URI
 from parse import Query
 
 class MainSongList(SongList):
@@ -250,10 +251,11 @@ class QuodLibetWindow(gtk.Window):
         error = False
         from formats.remote import RemoteFile
         for uri in uris:
-            from urllib import splittype as split, url2pathname as topath
-            type, loc = split(uri)
-            if type == "file":
-                loc = os.path.normpath(topath(loc))
+            try: uri = URI(uri)
+            except ValueError: continue
+
+            if uri.is_filename:
+                loc = os.path.normpath(uri.filename)
                 if os.path.isdir(loc): dirs.append(loc)
                 else:
                     loc = os.path.realpath(loc)

@@ -22,7 +22,7 @@ from browsers._base import Browser
 from formats._audio import AudioFile
 from qltk.views import RCMHintedTreeView
 from qltk.wlw import WaitLoadWindow
-
+from util.uri import URI
 if sys.version_info < (2, 4): from sets import Set as set
 
 PLAYLISTS = os.path.join(const.DIR, "playlists")
@@ -58,22 +58,23 @@ def __ParsePlaylist(name, plfilename, files):
         None, len(files), _("Importing playlist.\n\n%d/%d songs added."),
         (0, 0))
     for i, filename in enumerate(files):
-        type, path = urllib.splittype(filename)
-        if type is None:
+        try: uri = URI(filename)
+        except ValueError:
             # Plain filename.
             filename = os.path.realpath(os.path.join(
                 os.path.dirname(plfilename), filename))
             if filename in library: songs.append(library[filename])
             else: songs.append(formats.MusicFile(filename))
-        elif type == "file":
-            # URI-encoded local filename.
-            filename = os.path.realpath(os.path.join(
-                os.path.dirname(plfilename), urllib.url2pathname(path)))
-            if filename in library: songs.append(library[filename])
-            else: songs.append(formats.MusicFile(filename))
         else:
-            # Who knows! Hand it off to GStreamer.
-            songs.append(formats.remote.RemoteFile(filename))
+            if uri.scheme == "file":
+                # URI-encoded local filename.
+                filename = os.path.realpath(os.path.join(
+                    os.path.dirname(plfilename), uri.filename))
+                if filename in library: songs.append(library[filename])
+                else: songs.append(formats.MusicFile(filename))
+            else:
+                # Who knows! Hand it off to GStreamer.
+                songs.append(formats.remote.RemoteFile(uri))
         if win.step(i, len(files)): break
     win.destroy()
     playlist.extend(filter(None, songs))

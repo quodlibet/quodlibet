@@ -33,8 +33,8 @@ class TParsePlaylist(TestCase):
         name = makename()
         target = self.prefix
         target += os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg")
-        import urllib
-        target = "file://" + urllib.pathname2url(target)
+        from util.uri import URI
+        target = URI.frompath(target)
         f = file(name, "w")
         f.write(target)
         f.close()

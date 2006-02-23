@@ -22,6 +22,7 @@ from qltk.properties import SongProperties
 from qltk.information import Information
 from qltk.views import AllTreeView
 from qltk.delete import DeleteDialog
+from util.uri import URI
 from parse import Query
 
 if sys.version_info < (2, 4): from sets import Set as set
@@ -624,9 +625,11 @@ class SongList(AllTreeView, util.InstanceTracker):
             filenames = sel.data.split("\x00")
             move = (ctx.get_source_widget() == view)
         elif info == 2:
-            from urllib import splittype as split, url2pathname as topath
-            filenames = [os.path.normpath(topath(split(s)[1]))
-                         for s in sel.get_uris()]
+            def to_filename(s):
+                try: return URI(s).filename
+                except ValueError: return None
+
+            filenames = map(to_filename, sel.get_uris())
             move = False
         else:
             ctx.finish(False, False, etime)

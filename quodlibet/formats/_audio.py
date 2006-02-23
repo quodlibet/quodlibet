@@ -15,9 +15,7 @@ import shutil
 import time
 
 import util, config
-
-from urllib import pathname2url
-def to_uri(filename): return "file://" + pathname2url(filename)
+from util.uri import URI
 
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
            "~#skipcount ~#rating").split()
@@ -116,7 +114,8 @@ class AudioFile(dict):
                         if index(person)==i])
             elif key == "uri":
                 try: return self["~uri"]
-                except KeyError: return to_uri(self["~filename"])
+                except KeyError:
+                    return URI.frompath(self["~filename"])
             elif key == "format":
                 return self.get("~format", self.format)
             elif key == "year":
