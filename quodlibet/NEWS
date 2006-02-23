@@ -42,6 +42,7 @@ for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
    * Korean, by Byung-Hee HWANG and ChangBom Yoon.
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
    * Hebrew, by Roee Haimovich.
+   * German, by Rüdiger Arp.
 
 0.17.1 - I'd like to have some nightmares, please!
  * Updated German translation, by Rüdiger Arp.
