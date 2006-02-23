@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-17 23:43-0600\n"
+"POT-Creation-Date: 2006-02-23 23:43-0600\n"
 "PO-Revision-Date: 2005-12-11 14:06+0200\n"
 "Last-Translator: Tomasz Torcz <zdzichu@irc.pl>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
@@ -528,9 +528,8 @@ msgid "website"
 msgstr "strona www"
 
 #: ../po/tag-names.py:54
-#, fuzzy
 msgid "year"
-msgstr "%d rok"
+msgstr "rok"
 
 #. Beats per minute; I don't know if other languages use a different word.
 #: ../po/tag-names.py:56
@@ -771,7 +770,7 @@ msgstr "Usuń Pliki"
 
 #: ../qltk/delete.py:34
 msgid "_Move to Trash"
-msgstr "_Przesuń do Śmietnika"
+msgstr "_Przenieś do Śmietnika"
 
 #: ../qltk/delete.py:50
 msgid "Permanently delete this file?"
@@ -913,8 +912,7 @@ msgstr "Nie można zmienić wielokrotnych znaczników"
 
 #: ../qltk/edittags.py:516
 msgid "Changing the name of a tag with multiple values is not supported."
-msgstr ""
-"Zmiana nazwy znacznika z wielokrotnymi wartościami nie jest obsługiwana."
+msgstr "Zmiana nazwy znacznika z wieloma wartościami nie jest obsługiwana."
 
 #: ../qltk/exfalso.py:126 ../qltk/properties.py:110 ../qltk/songlist.py:532
 #: ../browsers/playlists.py:100
@@ -1136,7 +1134,7 @@ msgstr "_Pobieranie"
 #: ../qltk/lyrics.py:49
 #, python-format
 msgid "Lyrics provided by %s."
-msgstr "Słowa utwórów dostarcza %s."
+msgstr "Słowa utworów dostarcza %s."
 
 #: ../qltk/lyrics.py:63
 msgid ""
@@ -1306,8 +1304,7 @@ msgstr "Automatyczny _skok do bieżącego utworu"
 
 #: ../qltk/prefs.py:202
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr ""
-"W chwili zmiany odtwarzanego utworu, lista zostanie przesunięta na nowy utwór"
+msgstr "W chwili zmiany odtwarzanego utworu, lista zostanie przesunięta na nowy utwór"
 
 #: ../qltk/prefs.py:207
 msgid "_Volume Normalization"
