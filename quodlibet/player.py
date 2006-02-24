@@ -23,7 +23,6 @@ def GStreamerSink(pipeline):
     try: pipe = gst.parse_launch(pipeline)
     except gobject.GError, err:
         if pipeline != "autoaudiosink":
-            print "%r failed, falling back to autoaudiosink (%s)." % (pipeline, err)
             try: pipe = gst.parse_launch("autoaudiosink")
             except gobject.GError: pipe = None
             else: pipeline = "autoaudiosink"
