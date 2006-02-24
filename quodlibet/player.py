@@ -16,17 +16,17 @@ class NoSourceError(ValueError): pass
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
     * Try making the pipeline (defaulting to gconfaudiosink).
-    * If it fails, fall back to autoasink.
+    * If it fails, fall back to autoaudiosink.
     * If that fails, complain loudly."""
 
     if pipeline == "gconf": pipeline = "gconfaudiosink"
     try: pipe = gst.parse_launch(pipeline)
     except gobject.GError, err:
-        if pipeline != "autosink":
-            print "%r failed, falling back to autosink (%s)." % (pipeline, err)
-            try: pipe = gst.parse_launch("autosink")
+        if pipeline != "autoaudiosink":
+            print "%r failed, falling back to autoaudiosink (%s)." % (pipeline, err)
+            try: pipe = gst.parse_launch("autoaudiosink")
             except gobject.GError: pipe = None
-            else: pipeline = "autosink"
+            else: pipeline = "autoaudiosink"
         else: pipe = None
     locale.getlocale(locale.LC_NUMERIC)
     if pipe: return pipe, pipeline
