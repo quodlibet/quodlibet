@@ -12,7 +12,7 @@ quodlibet.pot: ../*.py ../formats/*.py ../browsers/*.py ../qltk/*.py tag-names.p
 	intltool-update --pot --gettext-package=$(NAME)
 
 %.po: quodlibet.pot
-	intltool-update --dist --gettext-package=$(NAME) `echo $@ | sed s/.po//`
+	intltool-update --dist --gettext-package=$(NAME) $*
 
 %.mo: %.po
 	msgfmt -o $@ $<
