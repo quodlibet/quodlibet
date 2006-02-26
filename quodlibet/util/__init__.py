@@ -335,7 +335,7 @@ def iscommand(s):
         return (os.path.isfile(s) and os.access(s, os.X_OK))
     else:
         s = s.split()[0]
-        for p in os.environ["PATH"].split(os.path.pathsep):
+        for p in os.defpath.split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if (os.path.isfile(p2) and os.access(p2, os.X_OK)):
                 return True
