@@ -584,10 +584,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     def __properties(self, activator, view, watcher):
         songs = self.__get_selected_songs(view.get_selection())
+        songs.sort()
         if songs: SongProperties(watcher, songs)
 
     def __information(self, activator, view, watcher):
         songs = self.__get_selected_songs(view.get_selection())
+        songs.sort()
         if songs: Information(watcher, songs)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
