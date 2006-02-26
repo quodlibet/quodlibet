@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import os, sys, sre, string, locale
+import os, sys, sre, locale
 
 def gettext_install(domain, localedir=None, unicode=False):
     import gettext, __builtin__
@@ -223,7 +223,7 @@ def parse_time(timestr):
 
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
-                          sre.split(":|\\.", timestr), 0)
+                          sre.split(r":|\.", timestr), 0)
     except (ValueError, sre.error):
         return 0
 
@@ -309,7 +309,6 @@ def encode(s, charset="utf-8"):
     """Encode a string; if an error occurs, replace characters and append
     a note to the string."""
     try: return s.encode(charset)
-    # FIXME: Can *this* happen?
     except UnicodeError:
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
 
@@ -328,8 +327,8 @@ def title(string):
     return new_string
 
 def iscommand(s):
-    """True if 's' exists in the user's path, or is a fully-qualified
-    existing path."""
+    """True if an executable file 's' exists in the user's path, or is a
+    fully-qualified existing executable file."""
 
     if s == "" or os.path.sep in s:
         return (os.path.isfile(s) and os.access(s, os.X_OK))
@@ -352,7 +351,7 @@ def split_value(s, splitters=["/", "&", ","]):
         spl = sre.compile(r"\b\s*%s\s*\b" % sre.escape(spl), sre.UNICODE)
         new_values = []
         for v in values:
-            new_values.extend(map(string.strip, spl.split(v)))
+            new_values.extend([st.strip() for st in spl.split(v)])
         values = new_values
     return values
 
@@ -366,9 +365,10 @@ def split_people(s, splitters=["/", "&", ","]):
     if not subtitle:
         parts = s.split(" ")
         if len(parts) > 2:
-            for feat in ["feat.", "featuring", "feat", "with", "w/"]:
+            for feat in ["feat.", "featuring", "feat", "ft", "ft.",
+                         "with", "w/"]:
                 try:
-                    i = map(string.lower, parts).index(feat)
+                    i = [p.lower() for p in parts].index(feat)
                     orig = " ".join(parts[:i])
                     others = " ".join(parts[i+1:])
                     return (orig, split_value(others, splitters))
