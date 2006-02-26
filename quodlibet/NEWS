@@ -1,19 +1,11 @@
-Quod Libet is only upwards-compatible; your library will remain intact
-if you upgrade to the next version. Skipping a version or downgrading
-may require you to re-add any songs in the library.
-
-Reloading your library after upgrading is always a good idea.
-0.16 fixes a serious bug in APEv2 handling. Please reload your
-Musepack files, and then use the "Force Write" plugin on them (or,
-edit their tags and save them again).
-
-Quod Libet 0.16 and later use G_FILENAME_ENCODING. If you use non-UTF-8
-filenames and don't use G_BROKEN_FILENAMES, you'll need to start setting
-G_FILENAME_ENCODING.
-
 Quod Libet now uses GStreamer 0.10. GStreamer 0.8 *will not work*.
 See http://www.sacredchao.net/quodlibet/wiki/Development/GStreamer0.10
 for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
+
+0.18 is probably the last version of Quod Libet that will include
+Mutagen. Future versions will require you to download it separately.
+This will let us desynchronize the Mutagen and Quod Libet release
+schedules, so tagging bugs can be fixed more quickly.
 
 0.18 -
  * MP4 iTunes metadata can be written. (#199)
@@ -26,12 +18,16 @@ for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
    * Alt+Enter / Ctrl+I shows tags/information for selected songs. (#462)
    * DnD to playlists/the queue from the File System view. (#481)
    * F2 renames playlists. (#482)
-   * "Add a Tag" autocompletes tag names.
+   * "Add a Tag" autocompletes tag names. (#493)
  * Bug Fixes:
    * ID3v1 tags no longer interfere with APEv2 tags. (#395)
    * Playing albums with one song no longer skips forwards. (#503)
-   * "Tags From Path" patterns are no longer greedy. (#519)
+   * 'totaltracks' Vorbis tags are read properly. (#511)
+   * Adding songs to a playlist doesn't unsort it. (#512)
+   * "Tags From Path" patterns are no longer greedy. (#519, thanks to
+     Decklin Foster)
    * Internet Radio supports the ~people tag. (#520)
+   * '~format' is usable from --print-playing. ([2810])
  * Plugin errors are captured in a dialog. ([2817])
  * New synthetic numeric tags, ~#tracks and ~#discs. ([2828])
  * Ex Falso no longer depends on GStreamer. ([2837])
@@ -43,6 +39,8 @@ for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
    * Hebrew, by Roee Haimovich.
    * German, by Rüdiger Arp.
+   * Polish, by Tomasz Torcz.
+   * Russian, by Sergey Fedoseev.
 
 0.17.1 - I'd like to have some nightmares, please!
  * Updated German translation, by Rüdiger Arp.
