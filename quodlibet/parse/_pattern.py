@@ -179,6 +179,7 @@ class FileFromPattern(Pattern):
                    (lambda k, s: s.replace("/", "_")),
                    (lambda k, s: s.replace(u"\uff0f", "_")),
                    (lambda k, s: s.strip()),
+                   (lambda k, s: (len(s) > 100 and s[:100] + "...") or s),
                    ]
 
     def _post(self, value, song):
