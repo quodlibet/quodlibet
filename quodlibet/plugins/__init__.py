@@ -112,6 +112,7 @@ class SongWrapper(object):
         return self._song.rename(newname)
     def website(self): return self._song.website()
     def valid(self): return self._song.valid()
+    def exists(self): return self._song.exists()
     def find_cover(self): return self._song.find_cover()
 
 def ListWrapper(songs):
@@ -315,7 +316,7 @@ class PluginManager(Manager):
             if song._was_updated():
                 self.watcher.changed([song._song])
                 updated = True
-            elif not song.valid():
+            elif not song.valid() and song.exists():
                 self.watcher.reload(song._song)
                 updated = True
         if updated:
