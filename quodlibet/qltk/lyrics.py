@@ -33,7 +33,7 @@ class LyricsPane(gtk.VBox):
         delete = gtk.Button(stock=gtk.STOCK_DELETE)
         add = gtk.Button(stock=gtk.STOCK_ADD)
         view.set_wrap_mode(gtk.WRAP_WORD)
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
         lyricname = self.__lyricname(song)
         buffer = view.get_buffer()
