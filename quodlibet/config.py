@@ -78,7 +78,10 @@ def init(*rc_files):
           "pipeline": "", # GStreamer audio pipeline
 
           # initial column headers
-          "headers": "~#track ~title~version ~album~part artist ~#length"
+          "headers": "~#track ~title~version ~album~part artist ~#length",
+
+          # hack to disable hints, see bug #526
+          "disable_hints": "false",
           },
 
         "rename":
