@@ -97,7 +97,9 @@ class Feed(list):
     __fill_af = staticmethod(__fill_af)
 
     def parse(self):
-        doc = feedparser.parse(self.uri)
+        try: doc = feedparser.parse(self.uri)
+        except: return False
+
         try: album = doc.channel.title
         except AttributeError: return False
 
@@ -291,10 +293,50 @@ class AudioFeeds(Browser, gtk.VBox):
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         view.connect('popup-menu', self.__popup_menu)
 
+        targets = [("text/uri-list", 0, 1), ("text/x-moz-url", 0, 2)]
+        view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
+        view.connect('drag-data-received', self.__drag_data_received)
+        view.connect('drag-motion', self.__drag_motion)
+
         self.connect_object('destroy', self.__save, view)
 
         self.pack_start(new, expand=False)
         self.show_all()
+
+    def __drag_motion(self, view, ctx, x, y, time):
+        if "text/x-quodlibet-songs" not in ctx.targets:
+            view.get_parent().drag_highlight()
+            return True
+        return False
+
+    def __drag_leave(self, view, ctx, time):
+        view.get_parent().drag_unhighlight()
+
+    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
+        view.emit_stop_by_name('drag-data-received')
+        targets = [("text/uri-list", 0, 1), ("text/x-moz-url", 0, 2)]
+        view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
+        if tid == 1:
+            uri = sel.get_uris()[0]
+        elif tid == 2:
+            uri = sel.data.decode('ucs-2', 'replace').split('\n')[0]
+        else:
+            ctx.finish(False, False, etime)
+            return
+
+        ctx.finish(True, False, etime)
+
+        feed = Feed(uri.encode("ascii", "replace"))
+        feed.changed = feed.parse()
+        if feed:
+            self.__feeds.append(row=[feed])
+            AudioFeeds.write()
+        else:
+            ErrorMessage(
+                self, _("Unable to add feed"),
+                _("<b>%s</b> could not be added. The server may be down, "
+                  "or the location may not be an audio feed.") %(
+                util.escape(feed.uri))).run()
 
     def __menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
