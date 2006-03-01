@@ -304,7 +304,7 @@ class QLBrainz(object):
 			elif len(candidates) == 0:
 				name = GetStringDialog(
 					None, _("Couldn't locate album by name"),
-					_("Couldn't find an album with the name \"%s\ (and a "
+					_("Couldn't find an album with the name \"%s\" (and a "
 					  "matching number of tracks.) You might not have selected "
 					  "the entire album. To retry with another possible album "
 					  "name, enter it here.") %
