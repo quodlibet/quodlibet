@@ -186,6 +186,13 @@ class TPlaylistModel(TestCase):
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 101)
 
+    def test_next_nosong_536(self):
+        self.pl.go_to(1)
+        self.pl.repeat = True
+        self.pl.order = 1
+        self.pl.set([])
+        self.pl.next()
+
     def shutDown(self):
         self.pl.destroy()
 add(TPlaylistModel)

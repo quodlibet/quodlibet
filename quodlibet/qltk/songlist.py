@@ -179,7 +179,7 @@ class PlaylistModel(gtk.ListStore):
 
         if remaining:
             self.__iter = self[random.choice(list(remaining))].iter
-        elif self.repeat:
+        elif self.repeat and not self.is_empty():
             self.__played = []
             self.__iter = self[random.choice(list(songs))].iter
         else:
