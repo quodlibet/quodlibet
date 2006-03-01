@@ -64,15 +64,4 @@ if __name__ == "__main__":
     w.connect('destroy', gtk.main_quit)
     w.show()
 
-    if (os.path.exists(const.CONTROL) and
-        not config.getboolean('exfalso', 'shutup')):
-        from qltk.msg import WarningMessage
-        WarningMessage(
-            w, _("Quod Libet is running"),
-            _("It looks like you are running Quod Libet right now. "
-              "If you edit songs also in Quod Libet's library while it is "
-              "running, you may need to refresh or re-add them.\n\n"
-              "If you are not running Quod Libet, or are editing songs "
-              "outside of its library, you may ignore this warning.")).run()
-
     gtk.main()

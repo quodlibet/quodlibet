@@ -107,10 +107,6 @@ def init(*rc_files):
           "id3encoding": "", # ID3 encodings to try
           "alltags": "true", # show all comments, or just "human" ones
           },
-
-        "exfalso":
-        { "shutup": "false", # don't whine about QL running.
-          }
         }
 
     for section, values in initial.iteritems():
