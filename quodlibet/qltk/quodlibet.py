@@ -243,7 +243,7 @@ class QuodLibetWindow(gtk.Window):
     def __drag_data_received(self, ctx, x, y, sel, tid, etime):
         if tid == 1: uris = sel.get_uris()
         if tid == 2:
-            uri = sel.data.decode('ucs-2', 'replace').split('\n')[0]
+            uri = sel.data.decode('utf16', 'replace').split('\n')[0]
             uris = [uri.encode('ascii', 'replace')]
 
         dirs = []

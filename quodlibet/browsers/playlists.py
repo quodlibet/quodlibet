@@ -360,7 +360,7 @@ class Playlists(gtk.VBox, Browser):
                 uri = sel.get_uris()[0]
                 name = os.path.basename(uri)
             elif tid == 2:
-                uri, name = sel.data.decode('ucs-2', 'replace').split('\n')
+                uri, name = sel.data.decode('utf16', 'replace').split('\n')
             else:
                 ctx.finish(False, False, etime)
                 return

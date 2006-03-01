@@ -319,7 +319,7 @@ class AudioFeeds(Browser, gtk.VBox):
         if tid == 1:
             uri = sel.get_uris()[0]
         elif tid == 2:
-            uri = sel.data.decode('ucs-2', 'replace').split('\n')[0]
+            uri = sel.data.decode('utf16', 'replace').split('\n')[0]
         else:
             ctx.finish(False, False, etime)
             return
