@@ -84,7 +84,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             if tail:
                 def isvisibledir(t):
                     return (t[0] != "." and
-                            os.access(os.path.join(head, t), os.R_OK))
+                            os.access(os.path.join(head, t), os.R_OK)
+                            and os.path.isdir(os.path.join(head, t)))
                 try: dirs = filter(isvisibledir, dircache.listdir(head))
                 except OSError: break
                 try: path.insert(0, dirs.index(tail))
