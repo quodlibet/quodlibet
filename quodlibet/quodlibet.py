@@ -139,9 +139,10 @@ def enable_periodic_save():
         if (time.time() - util.mtime(const.CONFIG)) > 15*60:
             config.write(const.CONFIG)
         thread = Thread(target=save)
-        gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
+        gobject.timeout_add(
+            5*60000, thread.start, priority=gobject.PRIORITY_LOW)
     thread = Thread(target=save)
-    gobject.timeout_add(5*60, thread.start, priority=gobject.PRIORITY_LOW)
+    gobject.timeout_add(5*60000, thread.start, priority=gobject.PRIORITY_LOW)
 
 def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause",
