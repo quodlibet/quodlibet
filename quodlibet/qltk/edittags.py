@@ -291,9 +291,16 @@ class EditTags(gtk.VBox):
 
         view.connect('popup-menu', self.__popup_menu, parent)
         view.connect('button-press-event', self.__button_press)
+        view.connect('key-press-event', self.__view_key_press_event)
         selection.connect('changed', self.__tag_select, remove)
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         self.show_all()
+
+    def __view_key_press_event(self, view, event):
+        # We can't use a real accelerator to this because it would
+        # interfere with typeahead and row editing.
+        if event.keyval == gtk.accelerator_parse("Delete")[0]:
+            self.__remove_tag(view, view)
 
     def __enable_save(self, *args):
         buttons = args[-1]
@@ -357,6 +364,9 @@ class EditTags(gtk.VBox):
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         b.connect('activate', self.__remove_tag, view)
+        keyval, mod = gtk.accelerator_parse("Delete")
+        b.add_accelerator(
+            'activate', gtk.AccelGroup(), keyval, mod, gtk.ACCEL_VISIBLE)
         menu.append(b)
 
         menu.show_all()
@@ -415,7 +425,9 @@ class EditTags(gtk.VBox):
 
     def __remove_tag(self, activator, view):
         model, paths = view.get_selection().get_selected_rows()
-        rows = map(model.__getitem__, paths)
+        # Since the iteration can modify path numbers, we need accurate
+        # rows (= iters) before we start.
+        rows = [model[path] for path in paths]
         for row in rows:
             if row[ORIGVALUE] is not None:
                 row[EDITED] = row[DELETED] = True
