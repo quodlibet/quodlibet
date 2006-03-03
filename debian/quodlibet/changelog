@@ -3,9 +3,12 @@ quodlibet (0.18-1) unstable; urgency=low
   * New upstream release.
   * Depend on GStreamer 0.10.
   * Split into quodlibet, exfalso packages. (Closes: #306882)
+  * Increase delay between library saves. (Closes: #349157)
+  * Configuration key to disable TreeViewHints. (Closes: #350593)
   * Depend on the new external Mutagen package.
+  * Remove FAQ.html until it can be more easily updated.
 
- -- Joe Wreschnig <piman@debian.org>  Mon, 20 Feb 2006 00:15:31 -0600
+ -- Joe Wreschnig <piman@debian.org>  Fri, 03 Mar 2006 00:35:48 -0600
 
 quodlibet (0.17.1-2) unstable; urgency=low
 
