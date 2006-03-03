@@ -22,7 +22,7 @@ class QLLastfm(object):
     PLUGIN_NAME = "Last.fm Submission"
     PLUGIN_DESC = "Submit songs to Last.fm via lastfmsubmitd."
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.1"
+    PLUGIN_VERSION = "0.2"
 
     __exclude = ""
     __song = None
@@ -133,5 +133,5 @@ class QLLastfm(object):
         try:
             writer = lastfm.queue.Writer(lastfm.FIFO, self.__log)
             print >>writer, lastfm.marshaller.dump(data)
-            self.__log.info("Sent %s", lastfm.logger.short_name(data))
+            self.__log.info("Sent %s", lastfm.logger.repr(data))
         except IOError, e: self.__log.error("Error: %s" % e)
