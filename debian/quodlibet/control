@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: exfalso
 Architecture: all
-Depends: ${python:Depends}, python-ctypes, python-mutagen (>= 0.9)
+Depends: ${python:Depends}, python-ctypes, python-mutagen (>= 0.9),
 	python-gtk2 (>= 2.8), libgtk2.0-0 (>= 2.8.8-1),
 	python-pymad, python-pyvorbis
 Suggests: libmp4v2-0, quodlibet-plugins

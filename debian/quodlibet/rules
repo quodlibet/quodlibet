@@ -29,6 +29,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp configure-stamp
 	-$(MAKE) clean
+	-rm po/*.mo
 	dh_clean 
 
 install: build
