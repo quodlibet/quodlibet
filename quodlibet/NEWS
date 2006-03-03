@@ -7,7 +7,7 @@ Mutagen. Future versions will require you to download it separately.
 This will let us desynchronize the Mutagen and Quod Libet release
 schedules, so tagging bugs can be fixed more quickly.
 
-0.18 -
+0.18 - "Babies Sporting Monocles"?
  * MP4 iTunes metadata can be written. (#199)
  * Alt+s switches between search entry and song list. (#254)
  * GStreamer 0.10 port. (#406)
@@ -19,6 +19,7 @@ schedules, so tagging bugs can be fixed more quickly.
    * DnD to playlists/the queue from the File System view. (#481)
    * F2 renames playlists. (#482)
    * "Add a Tag" autocompletes tag names. (#493)
+   * RSS links can be dragged to the Audio Feeds sidebar. (#523)
  * Bug Fixes:
    * ID3v1 tags no longer interfere with APEv2 tags. (#395)
    * Playing albums with one song no longer skips forwards. (#503)
@@ -27,6 +28,8 @@ schedules, so tagging bugs can be fixed more quickly.
    * "Tags From Path" patterns are no longer greedy. (#519, thanks to
      Decklin Foster)
    * Internet Radio supports the ~people tag. (#520)
+   * Word-wrap in lyrics pane works properly. (#531)
+   * Ex Falso properly opens an initial directory. (#537, thanks to ch.trassl)
    * '~format' is usable from --print-playing. ([2810])
  * Plugin errors are captured in a dialog. ([2817])
  * New synthetic numeric tags, ~#tracks and ~#discs. ([2828])
@@ -41,6 +44,7 @@ schedules, so tagging bugs can be fixed more quickly.
    * German, by Rüdiger Arp.
    * Polish, by Tomasz Torcz.
    * Russian, by Sergey Fedoseev.
+   * French, by Joshua Kwan.
 
 0.17.1 - I'd like to have some nightmares, please!
  * Updated German translation, by Rüdiger Arp.

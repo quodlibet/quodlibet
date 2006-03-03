@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-23 13:30-0600\n"
+"POT-Creation-Date: 2006-03-03 00:22-0600\n"
 "PO-Revision-Date: 2005-07-31 17:22:56-0500\n"
 "Last-Translator: johnny5 <johnny5@i12.com>\n"
 "Language-Team: Hebrew\n"
@@ -121,183 +121,183 @@ msgstr ""
 
 # If not in command line
 # msgstr "לא ניתן לכתוב אל %s ולכן הוא הוסר"
-#: ../quodlibet.py:157
+#: ../quodlibet.py:158
 msgid "a music library and player"
 msgstr ""
 
-#: ../quodlibet.py:158
+#: ../quodlibet.py:159
 msgid "[ --refresh-library | --print-playing | control ]"
 msgstr ""
 
-#: ../quodlibet.py:160
+#: ../quodlibet.py:161
 msgid "Rescan your library and exit"
 msgstr ""
 
-#: ../quodlibet.py:161
+#: ../quodlibet.py:162
 msgid "Print the playing song and exit"
 msgstr ""
 
-#: ../quodlibet.py:162
+#: ../quodlibet.py:163
 msgid "Begin playing immediately"
 msgstr ""
 
-#: ../quodlibet.py:165
+#: ../quodlibet.py:166
 msgid "Jump to next song"
 msgstr ""
 
-#: ../quodlibet.py:166
+#: ../quodlibet.py:167
 msgid "Jump to previous song"
 msgstr ""
 
-#: ../quodlibet.py:167
+#: ../quodlibet.py:168
 msgid "Start playback"
 msgstr ""
 
-#: ../quodlibet.py:168
+#: ../quodlibet.py:169
 msgid "Pause playback"
 msgstr ""
 
-#: ../quodlibet.py:169
+#: ../quodlibet.py:170
 msgid "Toggle play/pause mode"
 msgstr ""
 
-#: ../quodlibet.py:170
+#: ../quodlibet.py:171
 msgid "Turn up volume"
 msgstr ""
 
-#: ../quodlibet.py:171
+#: ../quodlibet.py:172
 msgid "Turn down volume"
 msgstr ""
 
-#: ../quodlibet.py:172
+#: ../quodlibet.py:173
 msgid "Print player status"
 msgstr ""
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:174
 msgid "Hide main window"
 msgstr ""
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:175
 msgid "Show main window"
 msgstr ""
 
-#: ../quodlibet.py:175
+#: ../quodlibet.py:176
 msgid "Toggle main window visibility"
 msgstr ""
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:177
 msgid "Focus the running player"
 msgstr ""
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:178
 msgid "Print the current playlist"
 msgstr ""
 
-#: ../quodlibet.py:178
+#: ../quodlibet.py:179
 msgid "Print the contents of the queue"
 msgstr ""
 
-#: ../quodlibet.py:179
+#: ../quodlibet.py:180
 msgid "Exit Quod Libet"
 msgstr ""
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "Seek within the playing song"
 msgstr ""
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "[+|-][HH:]MM:SS"
 msgstr ""
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "Set or toggle the playback order"
 msgstr ""
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:187
 msgid "Turn repeat off, on, or toggle it"
 msgstr ""
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:188
 msgid "Set the volume"
 msgstr ""
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:189
 msgid "Search your audio library"
 msgstr ""
 
-#: ../quodlibet.py:188 ../quodlibet.py:198
+#: ../quodlibet.py:189 ../quodlibet.py:199
 msgid "query"
 msgstr ""
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:190
 msgid "Play a file"
 msgstr ""
 
 #. just file name, foo.ogg
-#: ../quodlibet.py:189 ../quodlibet.py:198 ../po/tag-names.py:22
+#: ../quodlibet.py:190 ../quodlibet.py:199 ../po/tag-names.py:22
 msgid "filename"
 msgstr "שם קובץ"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:191
 msgid "Rate the playing song"
 msgstr ""
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:192
 msgid "Set the current browser"
 msgstr ""
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:193
 msgid "Open a new browser"
 msgstr ""
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:194
 msgid "Show or hide the queue"
 msgstr ""
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:195
 msgid "Show or hide the main song list"
 msgstr ""
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "Filter on a random value"
 msgstr ""
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "tag"
 msgstr ""
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "Filter on a tag value"
 msgstr ""
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "tag=value"
 msgstr ""
 
-#: ../quodlibet.py:197
+#: ../quodlibet.py:198
 msgid "Enqueue a file or query"
 msgstr ""
 
-#: ../quodlibet.py:229
+#: ../quodlibet.py:230
 #, python-format
 msgid "E: Invalid argument for '%s'."
 msgstr ""
 
-#: ../quodlibet.py:231 ../util/__init__.py:158
+#: ../quodlibet.py:232 ../util/__init__.py:158
 #, python-format
 msgid "E: Try %s --help."
 msgstr ""
 
-#: ../quodlibet.py:252
+#: ../quodlibet.py:253
 msgid "Loaded song library."
 msgstr "ספרית השירים הוטענה"
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:261
+#: ../quodlibet.py:262
 msgid "Opening audio device."
 msgstr ""
 
-#: ../quodlibet.py:301
+#: ../quodlibet.py:302
 msgid "Quod Libet is already running."
 msgstr ""
 
@@ -551,32 +551,13 @@ msgstr[1] "%d שנים"
 #: ../qltk/information.py:156 ../qltk/information.py:181
 #: ../browsers/paned.py:247 ../browsers/audiofeeds.py:36
 #: ../browsers/audiofeeds.py:46 ../browsers/audiofeeds.py:47
-#: ../browsers/audiofeeds.py:105
+#: ../browsers/audiofeeds.py:107
 msgid "Unknown"
 msgstr "לא ידוע"
 
 #: ../exfalso.py:37
 msgid "an audio tag editor"
 msgstr "עורך תגיות שירים"
-
-#: ../exfalso.py:71
-msgid "Quod Libet is running"
-msgstr ""
-
-#: ../exfalso.py:72
-msgid ""
-"It looks like you are running Quod Libet right now. If you edit songs also "
-"in Quod Libet's library while it is running, you may need to refresh or re-"
-"add them.\n"
-"\n"
-"If you are not running Quod Libet, or are editing songs outside of its "
-"library, you may ignore this warning."
-msgstr ""
-"נראה כי Quod Libet עובד כרגע. באם יערכו שירים בספרית השירים של Quod Libet "
-"כאשר הוא פעיל, יתכן ויהיה צורך לטעון אותה מחדש או להוסיף את השירים שוב\n"
-"\n"
-"אם Quod Liet איננה עובדת כרגע או שיערכו שירים שאינם בספרית השירים שלה אז "
-"ניתן להתעלם מהודעה זו"
 
 #: ../widgets.py:40
 msgid "Unable to start web browser"
@@ -627,11 +608,11 @@ msgstr ""
 "לא ניתן היה למצוא את ישום ה GStreamer מסוג filesrc.בדוק אם התקנת GStreamer "
 "שלך תקינה"
 
-#: ../plugins/__init__.py:305 ../qltk/tagsfrompath.py:236
+#: ../plugins/__init__.py:306 ../qltk/tagsfrompath.py:236
 msgid "Unable to edit song"
 msgstr "לא ניתן לערוך שיר"
 
-#: ../plugins/__init__.py:306 ../qltk/edittags.py:481
+#: ../plugins/__init__.py:307 ../qltk/edittags.py:481
 #: ../qltk/tagsfrompath.py:237 ../qltk/tracknumbers.py:136
 #, python-format
 msgid ""
@@ -677,7 +658,7 @@ msgstr "Roee Haimovich, johnny5@i12.com"
 msgid "Library Browser"
 msgstr "דפדפן הספריה"
 
-#: ../qltk/chooser.py:39 ../qltk/filesel.py:198
+#: ../qltk/chooser.py:39 ../qltk/filesel.py:199
 msgid "Songs"
 msgstr "שירים"
 
@@ -874,19 +855,19 @@ msgstr "תיקיות"
 msgid "New Folder..."
 msgstr "תיקיה חדשה..."
 
-#: ../qltk/filesel.py:123
+#: ../qltk/filesel.py:124
 msgid "New Folder"
 msgstr "תיקיה חדשה"
 
-#: ../qltk/filesel.py:123
+#: ../qltk/filesel.py:124
 msgid "Enter a name for the new folder:"
 msgstr "הזן שם עבור התיקיה החדשה:"
 
-#: ../qltk/filesel.py:132
+#: ../qltk/filesel.py:133
 msgid "Unable to create folder"
 msgstr "לא ניתן ליצור תיקיה חדשה"
 
-#: ../qltk/filesel.py:145
+#: ../qltk/filesel.py:146
 msgid "Unable to delete folder"
 msgstr "לא ניתן למחוק תיקיה"
 
@@ -1724,7 +1705,7 @@ msgstr "לפי _דירוג"
 msgid "_One Song"
 msgstr "_שיר בודד"
 
-#: ../qltk/views.py:232
+#: ../qltk/views.py:233
 #, python-format
 msgid "and %d more..."
 msgstr "%d נותרו..."
@@ -1785,7 +1766,7 @@ msgid_plural "%d albums"
 msgstr[0] "%d אלבום"
 msgstr[1] "%d אלבומים"
 
-#: ../browsers/albums.py:688
+#: ../browsers/albums.py:690
 msgid "_Album List"
 msgstr "רשימת א_לבומים"
 
@@ -1985,31 +1966,31 @@ msgstr[1] "%(count)d תחנות"
 msgid "_Internet Radio"
 msgstr "רדיו _אינטרנט"
 
-#: ../browsers/audiofeeds.py:150
+#: ../browsers/audiofeeds.py:152
 msgid "New Feed"
 msgstr "ערוץ חדש"
 
-#: ../browsers/audiofeeds.py:151
+#: ../browsers/audiofeeds.py:153
 msgid "Enter the location of an audio feed:"
 msgstr "הכנס את הכתובת אינטנרט של ערוץ השמע"
 
-#: ../browsers/audiofeeds.py:219 ../browsers/audiofeeds.py:228
+#: ../browsers/audiofeeds.py:221 ../browsers/audiofeeds.py:230
 msgid "_Download..."
 msgstr "_הורדה..."
 
-#: ../browsers/audiofeeds.py:237
+#: ../browsers/audiofeeds.py:239
 msgid "Download Files"
 msgstr "הורד קבצים"
 
-#: ../browsers/audiofeeds.py:256
+#: ../browsers/audiofeeds.py:258
 msgid "Download File"
 msgstr "הורד קובץ"
 
-#: ../browsers/audiofeeds.py:350
+#: ../browsers/audiofeeds.py:336 ../browsers/audiofeeds.py:392
 msgid "Unable to add feed"
 msgstr "לא ניתן להוסיף את הערוץ המבוקש"
 
-#: ../browsers/audiofeeds.py:351
+#: ../browsers/audiofeeds.py:337 ../browsers/audiofeeds.py:393
 #, python-format
 msgid ""
 "<b>%s</b> could not be added. The server may be down, or the location may "
@@ -2018,7 +1999,7 @@ msgstr ""
 "לא ניתן היה לוסיף את <b>%s</b>. יתכן שהשרת לא זמין כעת או שהנתיב אינו נתיב "
 "לערוץ שמע"
 
-#: ../browsers/audiofeeds.py:375
+#: ../browsers/audiofeeds.py:417
 msgid "_Audio Feeds"
 msgstr "_ערוצי שמע"
 
@@ -2064,7 +2045,7 @@ msgstr ""
 msgid "E: '%s' is not a unique prefix."
 msgstr ""
 
-#: ../util/__init__.py:306 ../util/__init__.py:314
+#: ../util/__init__.py:306 ../util/__init__.py:313
 msgid "[Invalid Encoding]"
 msgstr "[קידוד לא נתמך]"
 
@@ -2083,6 +2064,20 @@ msgstr ""
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "נגן מוסיקה"
+
+#~ msgid ""
+#~ "It looks like you are running Quod Libet right now. If you edit songs "
+#~ "also in Quod Libet's library while it is running, you may need to refresh "
+#~ "or re-add them.\n"
+#~ "\n"
+#~ "If you are not running Quod Libet, or are editing songs outside of its "
+#~ "library, you may ignore this warning."
+#~ msgstr ""
+#~ "נראה כי Quod Libet עובד כרגע. באם יערכו שירים בספרית השירים של Quod Libet "
+#~ "כאשר הוא פעיל, יתכן ויהיה צורך לטעון אותה מחדש או להוסיף את השירים שוב\n"
+#~ "\n"
+#~ "אם Quod Liet איננה עובדת כרגע או שיערכו שירים שאינם בספרית השירים שלה אז "
+#~ "ניתן להתעלם מהודעה זו"
 
 #~ msgid "GStreamer status %r != %r"
 #~ msgstr "סטטוס GStreamer %r != %r"

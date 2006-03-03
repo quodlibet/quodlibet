@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-23 20:44+0100\n"
+"POT-Creation-Date: 2006-03-03 00:22-0600\n"
 "PO-Revision-Date: 2005-12-11 14:06+0200\n"
 "Last-Translator: Tomasz Torcz <zdzichu@irc.pl>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
@@ -124,183 +124,183 @@ msgstr "Quod Libet nie działa."
 msgid "Unable to write to %s. Removing it."
 msgstr "Nie można zapisać do pliku %s. Usuwanie go."
 
-#: ../quodlibet.py:157
+#: ../quodlibet.py:158
 msgid "a music library and player"
 msgstr "biblioteka muzyki i odtwarzacz"
 
-#: ../quodlibet.py:158
+#: ../quodlibet.py:159
 msgid "[ --refresh-library | --print-playing | control ]"
 msgstr "[ --refresh-library | --print-playing | control ]"
 
-#: ../quodlibet.py:160
+#: ../quodlibet.py:161
 msgid "Rescan your library and exit"
 msgstr "Skanuje ponownie zbiory i kończy"
 
-#: ../quodlibet.py:161
+#: ../quodlibet.py:162
 msgid "Print the playing song and exit"
 msgstr "Wypisuje tytuł odtwarzanego utworu i kończy"
 
-#: ../quodlibet.py:162
+#: ../quodlibet.py:163
 msgid "Begin playing immediately"
 msgstr "Natychmiast zaczyna odtwarzanie"
 
-#: ../quodlibet.py:165
+#: ../quodlibet.py:166
 msgid "Jump to next song"
 msgstr "Przechodzi do następnego utworu"
 
-#: ../quodlibet.py:166
+#: ../quodlibet.py:167
 msgid "Jump to previous song"
 msgstr "Przechodzi do poprzedniego utwóru"
 
-#: ../quodlibet.py:167
+#: ../quodlibet.py:168
 msgid "Start playback"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../quodlibet.py:168
+#: ../quodlibet.py:169
 msgid "Pause playback"
 msgstr "Zatrzymuje odtwarzanie"
 
-#: ../quodlibet.py:169
+#: ../quodlibet.py:170
 msgid "Toggle play/pause mode"
 msgstr "Przełącza odtwarzanie/pauzę"
 
-#: ../quodlibet.py:170
+#: ../quodlibet.py:171
 msgid "Turn up volume"
 msgstr "Głośniej"
 
-#: ../quodlibet.py:171
+#: ../quodlibet.py:172
 msgid "Turn down volume"
 msgstr "Ciszej"
 
-#: ../quodlibet.py:172
+#: ../quodlibet.py:173
 msgid "Print player status"
 msgstr "Wypisuje status odtwarzacza"
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:174
 msgid "Hide main window"
 msgstr "Ukrywa główne okno"
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:175
 msgid "Show main window"
 msgstr "Wyświetla główne okno"
 
-#: ../quodlibet.py:175
+#: ../quodlibet.py:176
 msgid "Toggle main window visibility"
 msgstr "Przełącza widoczność głównego okna"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:177
 msgid "Focus the running player"
 msgstr "Przenosi działającego QL na pierwszy plan"
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:178
 msgid "Print the current playlist"
 msgstr "Wypisuje bieżącą listę utworów"
 
-#: ../quodlibet.py:178
+#: ../quodlibet.py:179
 msgid "Print the contents of the queue"
 msgstr "Wypisuje zawartość kolejki"
 
-#: ../quodlibet.py:179
+#: ../quodlibet.py:180
 msgid "Exit Quod Libet"
 msgstr "Kończy Quod Libet"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "Seek within the playing song"
 msgstr "Szuka w odtwarzanym utworze"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][GG:]MM:SS"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "Set or toggle the playback order"
 msgstr "Ustawia kolejność odtwarzania"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:187
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Włącza, wyłącza lub przełącza stan powtarzania"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:188
 msgid "Set the volume"
 msgstr "Ustawia głośność"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:189
 msgid "Search your audio library"
 msgstr "Przeszukuje bibliotekę"
 
-#: ../quodlibet.py:188 ../quodlibet.py:198
+#: ../quodlibet.py:189 ../quodlibet.py:199
 msgid "query"
 msgstr "zapytanie"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:190
 msgid "Play a file"
 msgstr "Odtwarza plik"
 
 #. just file name, foo.ogg
-#: ../quodlibet.py:189 ../quodlibet.py:198 ../po/tag-names.py:22
+#: ../quodlibet.py:190 ../quodlibet.py:199 ../po/tag-names.py:22
 msgid "filename"
 msgstr "nazwa pliku"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:191
 msgid "Rate the playing song"
 msgstr "Ocenia odtwarzany utwór"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:192
 msgid "Set the current browser"
 msgstr "Ustawia bieżącą przeglądarkę"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:193
 msgid "Open a new browser"
 msgstr "Otwiera nową przeglądarkę"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:194
 msgid "Show or hide the queue"
 msgstr "Wyświetla lub ukrywa kolejkę"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:195
 msgid "Show or hide the main song list"
 msgstr "Wyświetla lub ukrywa główną listę utworów"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "Filter on a random value"
 msgstr "Filtruje losowo"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "tag"
 msgstr "znacznik"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "Filter on a tag value"
 msgstr "Filtruje wg. znacznika"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "tag=value"
 msgstr "znacznik=wartość"
 
-#: ../quodlibet.py:197
+#: ../quodlibet.py:198
 msgid "Enqueue a file or query"
 msgstr "Dodaje do kolejki plik lub zapytanie"
 
-#: ../quodlibet.py:229
+#: ../quodlibet.py:230
 #, python-format
 msgid "E: Invalid argument for '%s'."
 msgstr "E: Niepoprawny argument dla '%s'."
 
-#: ../quodlibet.py:231 ../util/__init__.py:158
+#: ../quodlibet.py:232 ../util/__init__.py:158
 #, python-format
 msgid "E: Try %s --help."
 msgstr "E: Spróbuj %s --help."
 
-#: ../quodlibet.py:252
+#: ../quodlibet.py:253
 msgid "Loaded song library."
 msgstr "Załadowano bibliotekę utworów."
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:261
+#: ../quodlibet.py:262
 msgid "Opening audio device."
 msgstr "Otwieranie urządzenia audio."
 
-#: ../quodlibet.py:301
+#: ../quodlibet.py:302
 msgid "Quod Libet is already running."
 msgstr "Quod Libet już działa."
 
@@ -559,35 +559,13 @@ msgstr[2] "%d lat"
 #: ../qltk/information.py:156 ../qltk/information.py:181
 #: ../browsers/paned.py:247 ../browsers/audiofeeds.py:36
 #: ../browsers/audiofeeds.py:46 ../browsers/audiofeeds.py:47
-#: ../browsers/audiofeeds.py:105
+#: ../browsers/audiofeeds.py:107
 msgid "Unknown"
 msgstr "Nieznany"
 
 #: ../exfalso.py:37
 msgid "an audio tag editor"
 msgstr "edytor znaczników audio"
-
-#: ../exfalso.py:71
-msgid "Quod Libet is running"
-msgstr "Quod Libet działa"
-
-#: ../exfalso.py:72
-msgid ""
-"It looks like you are running Quod Libet right now. If you edit songs also "
-"in Quod Libet's library while it is running, you may need to refresh or re-"
-"add them.\n"
-"\n"
-"If you are not running Quod Libet, or are editing songs outside of its "
-"library, you may ignore this warning."
-msgstr ""
-"Wygląda na to, że jest obecnie uruchomiony Quod Libet. Jeśli będziesz "
-"modyfikował znaczniki utworów znajdujących się w biliotece Quod Libet "
-"trakcie jego działania, to będziesz musiał je odświeżyć lub ponownie "
-"dodać. \n"
-"\n"
-"Jeśli Quod Libet w tej chwili nie jest uruchomiony lub masz zamiar "
-"modyfikować znaczniki w utworach spoza biblioteki, to możesz zignorować to "
-"ostrzeżenie."
 
 #: ../widgets.py:40
 msgid "Unable to start web browser"
@@ -613,16 +591,17 @@ msgstr "Nie można zapisać biblioteki."
 msgid "Unable to open audio device"
 msgstr "Nie można otworzyć urządzenia audio"
 
-#: ../widgets.py:131
 # python-format
+#: ../widgets.py:131
+#, python-format
 msgid ""
 "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
 "not open them. Set your GStreamer pipeline by changing the\n"
 "    <b>pipeline = %(sink)s</b>\n"
 "line in ~/.quodlibet/config."
 msgstr ""
-"Quod Libet mnie mógł użyć 'autosink' ani sterownika '%(sink)s'. "
-"Musisz samodzielnie podać wyjście GStreamer zmieniając linijkę\n"
+"Quod Libet mnie mógł użyć 'autosink' ani sterownika '%(sink)s'. Musisz "
+"samodzielnie podać wyjście GStreamer zmieniając linijkę\n"
 "    <b>pipeline = %(sink)s</b>\n"
 "w pliku ~/.quodlibet/config."
 
@@ -638,11 +617,11 @@ msgstr ""
 "Quod Libet nie odnalazł elementr 'filesrc' GStreamera. Sprawdź, czy "
 "poprawnie zainstalowano GStreamer."
 
-#: ../plugins/__init__.py:305 ../qltk/tagsfrompath.py:236
+#: ../plugins/__init__.py:306 ../qltk/tagsfrompath.py:236
 msgid "Unable to edit song"
 msgstr "Nie można zmodyfkiwować utworu"
 
-#: ../plugins/__init__.py:306 ../qltk/edittags.py:481
+#: ../plugins/__init__.py:307 ../qltk/edittags.py:481
 #: ../qltk/tagsfrompath.py:237 ../qltk/tracknumbers.py:136
 #, python-format
 msgid ""
@@ -692,7 +671,7 @@ msgstr ""
 msgid "Library Browser"
 msgstr "Przeglądarka biblioteki"
 
-#: ../qltk/chooser.py:39 ../qltk/filesel.py:198
+#: ../qltk/chooser.py:39 ../qltk/filesel.py:199
 msgid "Songs"
 msgstr "Utwory"
 
@@ -811,8 +790,9 @@ msgstr "Wartość"
 msgid "Unable to add tag"
 msgstr "Nie można dodać znacznika"
 
-#: ../qltk/edittags.py:379
 # python-format
+#: ../qltk/edittags.py:379
+#, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
 "\n"
@@ -891,19 +871,19 @@ msgstr "Katalogi"
 msgid "New Folder..."
 msgstr "Nowy Katalog..."
 
-#: ../qltk/filesel.py:123
+#: ../qltk/filesel.py:124
 msgid "New Folder"
 msgstr "Nowy katalog"
 
-#: ../qltk/filesel.py:123
+#: ../qltk/filesel.py:124
 msgid "Enter a name for the new folder:"
 msgstr "Wpisz nazwę dla nowego katalogu:"
 
-#: ../qltk/filesel.py:132
+#: ../qltk/filesel.py:133
 msgid "Unable to create folder"
 msgstr "Nie można utworzyć katalogu"
 
-#: ../qltk/filesel.py:145
+#: ../qltk/filesel.py:146
 msgid "Unable to delete folder"
 msgstr "Nie można usunąć katalogu"
 
@@ -1817,7 +1797,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d albumy"
 msgstr[2] "%d albumów"
 
-#: ../browsers/albums.py:688
+#: ../browsers/albums.py:690
 msgid "_Album List"
 msgstr "Lista _Albumów"
 
@@ -2024,31 +2004,31 @@ msgstr[2] "%(count)d nowych stacji"
 msgid "_Internet Radio"
 msgstr "Radio _Internetowe"
 
-#: ../browsers/audiofeeds.py:150
+#: ../browsers/audiofeeds.py:152
 msgid "New Feed"
 msgstr "Nowy kanał"
 
-#: ../browsers/audiofeeds.py:151
+#: ../browsers/audiofeeds.py:153
 msgid "Enter the location of an audio feed:"
 msgstr "Proszę podać adres kanału audio."
 
-#: ../browsers/audiofeeds.py:219 ../browsers/audiofeeds.py:228
+#: ../browsers/audiofeeds.py:221 ../browsers/audiofeeds.py:230
 msgid "_Download..."
 msgstr "_Pobierz..."
 
-#: ../browsers/audiofeeds.py:237
+#: ../browsers/audiofeeds.py:239
 msgid "Download Files"
 msgstr "Pobierz Pliki"
 
-#: ../browsers/audiofeeds.py:256
+#: ../browsers/audiofeeds.py:258
 msgid "Download File"
 msgstr "Pobierz Plik"
 
-#: ../browsers/audiofeeds.py:350
+#: ../browsers/audiofeeds.py:336 ../browsers/audiofeeds.py:392
 msgid "Unable to add feed"
 msgstr "Nie można dodać kanału"
 
-#: ../browsers/audiofeeds.py:351
+#: ../browsers/audiofeeds.py:337 ../browsers/audiofeeds.py:393
 #, python-format
 msgid ""
 "<b>%s</b> could not be added. The server may be down, or the location may "
@@ -2057,7 +2037,7 @@ msgstr ""
 "Nie można dodać <b>%s</b>. Sprawdź, czy serwer jest dostępny i czy jest to "
 "adres kanału audio."
 
-#: ../browsers/audiofeeds.py:375
+#: ../browsers/audiofeeds.py:417
 msgid "_Audio Feeds"
 msgstr "Kanały _Audio"
 
@@ -2108,7 +2088,7 @@ msgstr "E: Opcja `%s' wymaga podania argumentu."
 msgid "E: '%s' is not a unique prefix."
 msgstr "E: '%s' nie jest unikalnym prefiksem."
 
-#: ../util/__init__.py:306 ../util/__init__.py:314
+#: ../util/__init__.py:306 ../util/__init__.py:313
 msgid "[Invalid Encoding]"
 msgstr "[Błędne Kodowanie]"
 
@@ -2127,6 +2107,26 @@ msgstr "Słuchanie, przeglądanie lub edycja kolekcji muzycznej"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "Odtwarzacz Muzyczny"
+
+#~ msgid "Quod Libet is running"
+#~ msgstr "Quod Libet działa"
+
+#~ msgid ""
+#~ "It looks like you are running Quod Libet right now. If you edit songs "
+#~ "also in Quod Libet's library while it is running, you may need to refresh "
+#~ "or re-add them.\n"
+#~ "\n"
+#~ "If you are not running Quod Libet, or are editing songs outside of its "
+#~ "library, you may ignore this warning."
+#~ msgstr ""
+#~ "Wygląda na to, że jest obecnie uruchomiony Quod Libet. Jeśli będziesz "
+#~ "modyfikował znaczniki utworów znajdujących się w biliotece Quod Libet "
+#~ "trakcie jego działania, to będziesz musiał je odświeżyć lub ponownie "
+#~ "dodać. \n"
+#~ "\n"
+#~ "Jeśli Quod Libet w tej chwili nie jest uruchomiony lub masz zamiar "
+#~ "modyfikować znaczniki w utworach spoza biblioteki, to możesz zignorować "
+#~ "to ostrzeżenie."
 
 #~ msgid "GStreamer status %r != %r"
 #~ msgstr "GStreamer status %r != %r"

@@ -7,14 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-26 14:24+0200\n"
+"POT-Creation-Date: 2006-03-03 00:22-0600\n"
 "PO-Revision-Date: 2006-02-26 14:35+0200\n"
 "Last-Translator: Jonas <jonas.slivka@gmail.com>\n"
 "Language-Team: Lithuanian <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.1\n"
 
 #: ../stock.py:35
@@ -121,183 +122,183 @@ msgstr "Quod Libet nėra paleistas."
 msgid "Unable to write to %s. Removing it."
 msgstr "Negalima rašyti į %s. Pašalinama."
 
-#: ../quodlibet.py:157
+#: ../quodlibet.py:158
 msgid "a music library and player"
 msgstr "muzikos biblioteka ir grotuvas"
 
-#: ../quodlibet.py:158
+#: ../quodlibet.py:159
 msgid "[ --refresh-library | --print-playing | control ]"
 msgstr ""
 
-#: ../quodlibet.py:160
+#: ../quodlibet.py:161
 msgid "Rescan your library and exit"
 msgstr "Iš naujo nuskaityti biblioteką ir išeiti"
 
-#: ../quodlibet.py:161
+#: ../quodlibet.py:162
 msgid "Print the playing song and exit"
 msgstr "Parašyti dabar grojamos dainos pavadinimą ir išeiti"
 
-#: ../quodlibet.py:162
+#: ../quodlibet.py:163
 msgid "Begin playing immediately"
 msgstr "Iškart pradėti groti"
 
-#: ../quodlibet.py:165
+#: ../quodlibet.py:166
 msgid "Jump to next song"
 msgstr "Peršokti į kitą dainą"
 
-#: ../quodlibet.py:166
+#: ../quodlibet.py:167
 msgid "Jump to previous song"
 msgstr "Peršokti į praėjusią dainą"
 
-#: ../quodlibet.py:167
+#: ../quodlibet.py:168
 msgid "Start playback"
 msgstr "Pradėti grojimą"
 
-#: ../quodlibet.py:168
+#: ../quodlibet.py:169
 msgid "Pause playback"
 msgstr "Pristabdyti grojimą"
 
-#: ../quodlibet.py:169
+#: ../quodlibet.py:170
 msgid "Toggle play/pause mode"
 msgstr "Perjungti grojimo/pauzės režimą"
 
-#: ../quodlibet.py:170
+#: ../quodlibet.py:171
 msgid "Turn up volume"
 msgstr "Pagarsinti"
 
-#: ../quodlibet.py:171
+#: ../quodlibet.py:172
 msgid "Turn down volume"
 msgstr "Pritildyti"
 
-#: ../quodlibet.py:172
+#: ../quodlibet.py:173
 msgid "Print player status"
 msgstr "Parašyti apie grotuvo būseną"
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:174
 msgid "Hide main window"
 msgstr "Slėpti pagrindinį langą"
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:175
 msgid "Show main window"
 msgstr "Rodyti pagrindinį langą"
 
-#: ../quodlibet.py:175
+#: ../quodlibet.py:176
 msgid "Toggle main window visibility"
 msgstr "Perjungti pagrindinio lango matomumą"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:177
 msgid "Focus the running player"
 msgstr "Fokusuoti grojantį grotuvą"
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:178
 msgid "Print the current playlist"
 msgstr "Parašyti dabartinį grojaraštį"
 
-#: ../quodlibet.py:178
+#: ../quodlibet.py:179
 msgid "Print the contents of the queue"
 msgstr "Parašyti eilės turinį"
 
-#: ../quodlibet.py:179
+#: ../quodlibet.py:180
 msgid "Exit Quod Libet"
 msgstr "Išjungti Quod Libet"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "Seek within the playing song"
 msgstr "Peršokti grojamoje dainoje"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "[+|-][HH:]MM:SS"
 msgstr ""
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "Set or toggle the playback order"
 msgstr "Įjungti ar perjungti grojimo tvarką"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:187
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Išjungti/įjungti kartojimo veikseną"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:188
 msgid "Set the volume"
 msgstr "Nustatyti garsumą"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:189
 msgid "Search your audio library"
 msgstr "Ieškoti jūsų garsų bibliotekoje"
 
-#: ../quodlibet.py:188 ../quodlibet.py:198
+#: ../quodlibet.py:189 ../quodlibet.py:199
 msgid "query"
 msgstr "užklausa"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:190
 msgid "Play a file"
 msgstr "Groti bylą"
 
 #. just file name, foo.ogg
-#: ../quodlibet.py:189 ../quodlibet.py:198 ../po/tag-names.py:22
+#: ../quodlibet.py:190 ../quodlibet.py:199 ../po/tag-names.py:22
 msgid "filename"
 msgstr "bylos vardas"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:191
 msgid "Rate the playing song"
 msgstr "Įvertinti grojamą dainą"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:192
 msgid "Set the current browser"
 msgstr "Nustatyti dabartinę naršyklę"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:193
 msgid "Open a new browser"
 msgstr "Atverti naują naršyklę"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:194
 msgid "Show or hide the queue"
 msgstr "Rodyti ar slepti eilę"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:195
 msgid "Show or hide the main song list"
 msgstr "Rodyti ar slėpti pagrindinį dainų sąrašą"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "Filter on a random value"
 msgstr "Filtruoti pagal atsitiktinę reikšmę"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "tag"
 msgstr "žymė"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "Filter on a tag value"
 msgstr "Filtruoti pagal žymės reikšmę"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "tag=value"
 msgstr "žymė=reikšmė"
 
-#: ../quodlibet.py:197
+#: ../quodlibet.py:198
 msgid "Enqueue a file or query"
 msgstr "Pridėti į eilę bylą ar užklausą"
 
-#: ../quodlibet.py:229
+#: ../quodlibet.py:230
 #, python-format
 msgid "E: Invalid argument for '%s'."
 msgstr "E: netaisyklingas „%s“ argumentas."
 
-#: ../quodlibet.py:231 ../util/__init__.py:158
+#: ../quodlibet.py:232 ../util/__init__.py:158
 #, python-format
 msgid "E: Try %s --help."
 msgstr "E: Pamėginkite „%s“ --help"
 
-#: ../quodlibet.py:252
+#: ../quodlibet.py:253
 msgid "Loaded song library."
 msgstr "Garsų biblioteka įkrauta."
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:261
+#: ../quodlibet.py:262
 msgid "Opening audio device."
 msgstr "Atveriamas garso įrenginys."
 
-#: ../quodlibet.py:301
+#: ../quodlibet.py:302
 msgid "Quod Libet is already running."
 msgstr "Quod Libet jau paleistas."
 
@@ -556,33 +557,13 @@ msgstr[2] "%d metų"
 #: ../qltk/information.py:156 ../qltk/information.py:181
 #: ../browsers/paned.py:247 ../browsers/audiofeeds.py:36
 #: ../browsers/audiofeeds.py:46 ../browsers/audiofeeds.py:47
-#: ../browsers/audiofeeds.py:105
+#: ../browsers/audiofeeds.py:107
 msgid "Unknown"
 msgstr "Nežinoma"
 
 #: ../exfalso.py:37
 msgid "an audio tag editor"
 msgstr "audio žymių redaktorius"
-
-#: ../exfalso.py:71
-msgid "Quod Libet is running"
-msgstr "Grotuvas Quod Libet yra paleistas"
-
-#: ../exfalso.py:72
-msgid ""
-"It looks like you are running Quod Libet right now. If you edit songs also "
-"in Quod Libet's library while it is running, you may need to refresh or re-"
-"add them.\n"
-"\n"
-"If you are not running Quod Libet, or are editing songs outside of its "
-"library, you may ignore this warning."
-msgstr ""
-"Panašu, kad Quod Libet grotuvas jau paleistas. Jei redaguosite dainas, "
-"kurios yra Quod Libet bibliotekoje, kol Quod Libet paleistas, Jums reikės "
-"atnaujinti jas ar pridėti iš naujo.\n"
-"\n"
-"Jei nėra paleistas Quod Libet arba redaguojate dainas, kurių nėra "
-"bibliotekoje, galite nepaisyti šio įspėjimo."
 
 #: ../widgets.py:40
 msgid "Unable to start web browser"
@@ -616,9 +597,9 @@ msgid ""
 "    <b>pipeline = %(sink)s</b>\n"
 "line in ~/.quodlibet/config."
 msgstr ""
-"„Quod Libet“ pamėgino pasiekti „alsasink“, „osssink“ ir „%(sink)s“ tvarkykles, "
-"tačiau nė vienos negalėjo atverti. Nustatykite „GStreamer“ garso patiektį "
-"pakeisdami\n"
+"„Quod Libet“ pamėgino pasiekti „alsasink“, „osssink“ ir „%(sink)s“ "
+"tvarkykles, tačiau nė vienos negalėjo atverti. Nustatykite „GStreamer“ garso "
+"patiektį pakeisdami\n"
 "    <b>pipeline = %(sink)s</b>\n"
 "eilutę „~/.quodlibet/config“ byloje."
 
@@ -634,11 +615,11 @@ msgstr ""
 "Quod Libet negalėjo rasti „filesrc“ GStreamer elemento. Patikrinkite, ar "
 "GStreamer tinkamai įdiegtas."
 
-#: ../plugins/__init__.py:305 ../qltk/tagsfrompath.py:236
+#: ../plugins/__init__.py:306 ../qltk/tagsfrompath.py:236
 msgid "Unable to edit song"
 msgstr "Negalima redaguoti dainos"
 
-#: ../plugins/__init__.py:306 ../qltk/edittags.py:481
+#: ../plugins/__init__.py:307 ../qltk/edittags.py:481
 #: ../qltk/tagsfrompath.py:237 ../qltk/tracknumbers.py:136
 #, python-format
 msgid ""
@@ -687,7 +668,7 @@ msgstr "Jonas Slivka <jonas.slivka@gmail.com>"
 msgid "Library Browser"
 msgstr "Bibliotekos naršyklė"
 
-#: ../qltk/chooser.py:39 ../qltk/filesel.py:198
+#: ../qltk/chooser.py:39 ../qltk/filesel.py:199
 msgid "Songs"
 msgstr "Dainos"
 
@@ -885,19 +866,19 @@ msgstr "Aplankai"
 msgid "New Folder..."
 msgstr "Naujas aplankas..."
 
-#: ../qltk/filesel.py:123
+#: ../qltk/filesel.py:124
 msgid "New Folder"
 msgstr "Naujas aplankas"
 
-#: ../qltk/filesel.py:123
+#: ../qltk/filesel.py:124
 msgid "Enter a name for the new folder:"
 msgstr "Įveskite naujo aplanko vardą:"
 
-#: ../qltk/filesel.py:132
+#: ../qltk/filesel.py:133
 msgid "Unable to create folder"
 msgstr "Negalima sukurti aplanko"
 
-#: ../qltk/filesel.py:145
+#: ../qltk/filesel.py:146
 msgid "Unable to delete folder"
 msgstr "Negalima ištrinti aplanko"
 
@@ -1810,7 +1791,7 @@ msgstr[0] "%d albumas"
 msgstr[1] "%d albumai"
 msgstr[2] "%d albumų"
 
-#: ../browsers/albums.py:688
+#: ../browsers/albums.py:690
 msgid "_Album List"
 msgstr "_Albumų sąrašas"
 
@@ -2015,31 +1996,31 @@ msgstr[2] "%(count)d stočių"
 msgid "_Internet Radio"
 msgstr "_Interneto radijas"
 
-#: ../browsers/audiofeeds.py:150
+#: ../browsers/audiofeeds.py:152
 msgid "New Feed"
 msgstr "Naujas kanalas"
 
-#: ../browsers/audiofeeds.py:151
+#: ../browsers/audiofeeds.py:153
 msgid "Enter the location of an audio feed:"
 msgstr "Įveskite garso kanalo vietą:"
 
-#: ../browsers/audiofeeds.py:219 ../browsers/audiofeeds.py:228
+#: ../browsers/audiofeeds.py:221 ../browsers/audiofeeds.py:230
 msgid "_Download..."
 msgstr "_Atsiųsti..."
 
-#: ../browsers/audiofeeds.py:237
+#: ../browsers/audiofeeds.py:239
 msgid "Download Files"
 msgstr "Atsiųsti bylas"
 
-#: ../browsers/audiofeeds.py:256
+#: ../browsers/audiofeeds.py:258
 msgid "Download File"
 msgstr "Atsiųsti bylą"
 
-#: ../browsers/audiofeeds.py:350
+#: ../browsers/audiofeeds.py:336 ../browsers/audiofeeds.py:392
 msgid "Unable to add feed"
 msgstr "Negalima pridėti kanalo"
 
-#: ../browsers/audiofeeds.py:351
+#: ../browsers/audiofeeds.py:337 ../browsers/audiofeeds.py:393
 #, python-format
 msgid ""
 "<b>%s</b> could not be added. The server may be down, or the location may "
@@ -2048,7 +2029,7 @@ msgstr ""
 "<b>%s</b> negali būti pridėta. Serveris gali neveikti arba nurodyta vieta "
 "nėra garso kanalas."
 
-#: ../browsers/audiofeeds.py:375
+#: ../browsers/audiofeeds.py:417
 msgid "_Audio Feeds"
 msgstr "_Audio kanalai"
 
@@ -2100,7 +2081,7 @@ msgstr "E: Pasirinkimas „%s“ reikalauja argumento."
 msgid "E: '%s' is not a unique prefix."
 msgstr "E: „%s“ nėra unikalus priešdėlis."
 
-#: ../util/__init__.py:306 ../util/__init__.py:314
+#: ../util/__init__.py:306 ../util/__init__.py:313
 msgid "[Invalid Encoding]"
 msgstr "[Netaisyklinga koduotė]"
 
@@ -2120,3 +2101,20 @@ msgstr "Klausykite, naršykite ar redaguokite savo muzikos kolekciją"
 msgid "Music Player"
 msgstr "Muzikos grotuvas"
 
+#~ msgid "Quod Libet is running"
+#~ msgstr "Grotuvas Quod Libet yra paleistas"
+
+#~ msgid ""
+#~ "It looks like you are running Quod Libet right now. If you edit songs "
+#~ "also in Quod Libet's library while it is running, you may need to refresh "
+#~ "or re-add them.\n"
+#~ "\n"
+#~ "If you are not running Quod Libet, or are editing songs outside of its "
+#~ "library, you may ignore this warning."
+#~ msgstr ""
+#~ "Panašu, kad Quod Libet grotuvas jau paleistas. Jei redaguosite dainas, "
+#~ "kurios yra Quod Libet bibliotekoje, kol Quod Libet paleistas, Jums reikės "
+#~ "atnaujinti jas ar pridėti iš naujo.\n"
+#~ "\n"
+#~ "Jei nėra paleistas Quod Libet arba redaguojate dainas, kurių nėra "
+#~ "bibliotekoje, galite nepaisyti šio įspėjimo."
