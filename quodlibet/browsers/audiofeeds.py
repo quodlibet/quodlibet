@@ -88,6 +88,9 @@ class Feed(list):
                     if value and value not in af.list("performer"):
                         af.add("performer", value)
 
+        try: af["~#length"] = util.parse_time(feed.itunes_duration)
+        except (AttributeError, ValueError): pass
+
         try: values = dict(feed.categories).values()
         except AttributeError: pass
         else:
