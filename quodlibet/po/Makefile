@@ -24,9 +24,7 @@ check-%: %.po
 
 clean:
 	rm -f untitled.pot messages.mo quodlibet.gmo notexist missing
-
-mo-clean: distclean
-	rm -f *.mo quodlibet.pot
+	rm -f *.mo
 
 distclean: clean
 	rm -f *~
