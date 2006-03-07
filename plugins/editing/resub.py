@@ -26,5 +26,3 @@ class RegExpSub(gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
         to = self._to.get_text().decode('utf-8')
         try: return sre.sub(fr, to, value)
         except: return value
-
-gobject.type_register(RegExpSub)

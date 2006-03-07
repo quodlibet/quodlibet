@@ -26,4 +26,3 @@ class Kakasi(RenameFilesPlugin, gtk.CheckButton):
         except: return values
 
 if not util.iscommand("kakasi"): del(Kakasi)
-else: gobject.type_register(Kakasi)
