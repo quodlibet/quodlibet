@@ -38,9 +38,11 @@ class AudioFile(dict):
     format = "Unknown Audio File"
 
     def __sort_key(self):
-        return (self.get("album"), self.get("labelid"),
+        return (self.get("album"),
+                self.get("labelid"), self.get("musicbrainz_albumid"),
                 self("~#disc"), self("~#track"),
-                self.get("artist"), self.get("title"),
+                self.get("artist"), self.get("musicbrainz_artistid"),
+                self.get("title"),
                 self.get("~filename"))
     sort_key = property(__sort_key)
 
