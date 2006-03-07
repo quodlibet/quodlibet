@@ -439,6 +439,4 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         if self.__save: self.save()
         self.emit('songs-selected', list(songs), None)
 
-gobject.type_register(PanedBrowser)
-
 browsers = [(3, _("_Paned Browser"), PanedBrowser, True)]

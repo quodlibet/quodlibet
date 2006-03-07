@@ -126,5 +126,3 @@ class ExFalsoWindow(gtk.Window):
             self.set_title("%s - Ex Falso" % (_("%(title)s and %(count)d more")
                 % {'title': files[0].comma("title"), 'count': len(files) - 1}))
         self.__cache = dict([(song["~filename"], song) for song in files])
-
-gobject.type_register(ExFalsoWindow)

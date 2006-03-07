@@ -685,6 +685,4 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                     confval = "\n" + confval[:-1]
                 config.set("browsers", "albums", confval)
 
-gobject.type_register(AlbumList)
-
 browsers = [(4, _("_Album List"), AlbumList, True)]

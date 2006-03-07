@@ -249,8 +249,6 @@ class PlaylistModel(gtk.ListStore):
         self.__played = []
         self.go_to(None)
 
-gobject.type_register(PlaylistModel)
-
 class SongList(AllTreeView, util.InstanceTracker):
     # A TreeView containing a list of songs.
 

@@ -31,7 +31,6 @@ class Window(gtk.Window):
             self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
 
     do_close_accel = gtk.Window.destroy
-gobject.type_register(Window)
 
 class Notebook(gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no

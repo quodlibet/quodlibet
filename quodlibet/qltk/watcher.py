@@ -104,4 +104,3 @@ class SongWatcher(gtk.Object):
             self.removed([song])
         else: self.changed([song])
 
-gobject.type_register(SongWatcher)

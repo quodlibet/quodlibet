@@ -408,8 +408,6 @@ class AudioFeeds(Browser, gtk.VBox):
                 selection.unselect_all()
                 map(selection.select_path, paths)
 
-gobject.type_register(AudioFeeds)
-
 try: import feedparser
 except ImportError:
     try: import _feedparser as feedparser

@@ -282,8 +282,6 @@ class InternetRadio(gtk.HBox, Browser):
     def statusbar(self, i):
         return ngettext("%(count)d station", "%(count)d stations", i)
 
-gobject.type_register(InternetRadio)
-
 import gst
 if gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
     browsers = [(15, _("_Internet Radio"), InternetRadio, True)]

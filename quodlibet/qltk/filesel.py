@@ -258,5 +258,3 @@ class FileSelector(gtk.VPaned):
                 fselect.select_path(row.path)
         fselect.handler_unblock(self.__sig)
         fselect.emit('changed')
-
-gobject.type_register(FileSelector)

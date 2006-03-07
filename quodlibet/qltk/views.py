@@ -162,8 +162,6 @@ class TreeViewHints(gtk.Window):
     def do_motion_notify_event(self, event): return self.__event(event)
     def do_scroll_event(self, event): return self.__event(event)
 
-gobject.type_register(TreeViewHints)
-
 class MultiDragTreeView(gtk.TreeView):
     """TreeView with multirow drag support:
     * Selections don't change until button-release-event...

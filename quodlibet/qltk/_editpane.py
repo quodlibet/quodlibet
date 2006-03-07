@@ -38,7 +38,6 @@ class FilterCheckButton(ConfigCheckButton):
     def __cmp__(self, other):
         return (cmp(self._order, other._order) or
                 cmp(type(self).__name__, type(other).__name__))
-gobject.type_register(FilterCheckButton)
 
 class EditPane(gtk.VBox):
     def __init__(self, cbes, cbes_defaults, plugins):

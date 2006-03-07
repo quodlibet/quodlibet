@@ -140,5 +140,3 @@ class SongProperties(qltk.Window):
             model, rows = selection.get_selected_rows()
             songs = [model[row][0] for row in rows]
             self.emit('changed', songs)
-
-gobject.type_register(SongProperties)

@@ -139,5 +139,4 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         if self.__save: self.save()
         self.emit('songs-selected', songs, None)
 
-gobject.type_register(FileSystem)
 browsers = [(10, _("_File System"), FileSystem, True)]
