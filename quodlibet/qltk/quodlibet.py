@@ -171,7 +171,7 @@ class QuodLibetWindow(gtk.Window):
 
         # song list
         self.song_scroller = sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.add(self.songlist)
 

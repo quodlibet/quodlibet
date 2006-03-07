@@ -24,7 +24,7 @@ class LibraryBrowser(Window):
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.add(view)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
 
         self.browser = browser = Kind(watcher, None)
         browser.connect_object('songs-selected', SongList.set_songs, view)
