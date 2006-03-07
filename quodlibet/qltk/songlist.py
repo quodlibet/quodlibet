@@ -263,7 +263,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         def _cdf(self, column, cell, model, iter, tag):
             try:
-                song = model[iter][0]
+                song = model.get_value(iter, 0)
                 cell.set_property('text', song.comma(tag))
             except AttributeError: pass
 
@@ -280,7 +280,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         # The '~#' keys that are dates.
         def _cdf(self, column, cell, model, iter, tag):
             try:
-                stamp = model[iter][0](tag)
+                stamp = model.get_value(iter, 0)(tag)
                 if not stamp: cell.set_property('text', _("Never"))
                 else:
                     date = datetime.datetime.fromtimestamp(stamp).date()
@@ -314,7 +314,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         # a function call).
         def _cdf(self, column, cell, model, iter, tag):
             try:
-                song = model[iter][0]
+                song = model.get_value(iter, 0)
                 cell.set_property(
                     'text', util.format_rating(song.get("~#rating", 0.5)))
             except AttributeError: pass
@@ -336,7 +336,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         # Used for any tag without a '~' except 'title'.
         def _cdf(self, column, cell, model, iter, tag):
             try:
-                song = model[iter][0]
+                song = model.get_value(iter, 0)
                 cell.set_property(
                     'text', song.get(tag, "").replace("\n", ", "))
             except AttributeError: pass
@@ -346,7 +346,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         # decoded safely (and also more slowly).
         def _cdf(self, column, cell, model, iter, tag, code=util.fscoding):
             try:
-                song = model[iter][0]
+                song = model.get_value(iter, 0)
                 cell.set_property('text', util.unexpand(
                     song.comma(tag).decode(code, 'replace')))
             except AttributeError: pass
@@ -356,7 +356,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         _render.set_property('xalign', 1.0)
         def _cdf(self, column, cell, model, iter, tag):
             try:
-                song = model[iter][0]
+                song = model.get_value(iter, 0)
                 cell.set_property(
                     'text', util.format_time(song.get("~#length", 0)))
             except AttributeError: pass
@@ -374,7 +374,7 @@ class SongList(AllTreeView, util.InstanceTracker):
     class PatternColumn(WideTextColumn):
         def _cdf(self, column, cell, model, iter, tag):
             try:
-                song = model[iter][0]
+                song = model.get_value(iter, 0)
                 cell.set_property('text', self.__pattern % song)
             except AttributeError: pass
 
@@ -557,7 +557,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
-            value = model[iter][0](column.header_name)
+            value = model.get_value(iter, 0)(column.header_name)
             if not isinstance(value, basestring): continue
             elif key in value.lower() or key in value: return False
         else: return True
