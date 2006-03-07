@@ -94,7 +94,8 @@ class Preferences(qltk.Window):
 
     def __preview_pattern(self, edit, label):
         from util import tag
-        album = AlbumList._Album(tag("album"), tag("labelid"))
+        album = AlbumList._Album(
+            tag("album"), tag("labelid"), tag("musicbrainz_albumid"))
         album.date = "2004-10-31"
         album.length = 6319
         album.discs = 2
@@ -195,10 +196,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         new = []
         for song in added:
             labelid = song.get("labelid", "")
+            mbid = song.get("musicbrainz_albumid", "")
             for alb in song("album").split("\n"):
-                key = alb + "\u0000" + labelid
+                key = (alb, labelid, mbid)
                 if key not in albums:
-                    albums[key] = klass._Album(alb, labelid)
+                    albums[key] = klass._Album(alb, labelid, mbid)
                     new.append(albums[key])
                 albums[key].songs.add(song)
                 changed.add(alb)
@@ -220,7 +222,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def clear_cache(klass): klass.__covers.clear()
         clear_cache = classmethod(clear_cache)
 
-        def __init__(self, title, labelid):
+        def __init__(self, title, labelid, mbid):
             self.length = 0
             self.discs = 1
             self.tracks = 0
@@ -228,7 +230,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.people = []
             self.title = title
             self.labelid = labelid
+            self.mbid = mbid
             self.songs = set()
+            self.key = (self.title, self.labelid, self.mbid)
             # cover = None indicates not gotten cover, cover = False
             # indicates a failure to find a cover.
             self.cover = self.__covers.get(self.title)
@@ -437,7 +441,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             albums = [row[0] for row in self]
             try: albums.remove(None)
             except ValueError: pass
-            return dict([(a.title + "\u0000" + a.labelid, a) for a in albums])
+            return dict([(a.key, a) for a in albums])
 
     def __init__(self, watcher, player):
         gtk.VBox.__init__(self, spacing=6)
