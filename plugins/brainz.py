@@ -7,6 +7,7 @@ import musicbrainz, os, gtk
 try: from musicbrainz.queries import *
 except:
 	MBE_AlbumGetAlbumArtistId = musicbrainz.MBE_AlbumGetAlbumArtistId
+	MBE_AlbumGetArtistId = musicbrainz.MBE_AlbumGetAlbumArtistId
 	MBE_AlbumGetAlbumId = musicbrainz.MBE_AlbumGetAlbumId
 	MBE_AlbumGetAlbumName = musicbrainz.MBE_AlbumGetAlbumName
 	MBE_AlbumGetArtistName = musicbrainz.MBE_AlbumGetArtistName
@@ -151,7 +152,7 @@ class QLBrainz(object):
 	PLUGIN_NAME = 'MusicBrainz lookup'
 	PLUGIN_ICON = 'gtk-cdrom'
 	PLUGIN_DESC = 'Retag an album based on a MusicBrainz search.'
-	PLUGIN_VERSION = '0.2'
+	PLUGIN_VERSION = '0.3'
 
 	# MusicBrainz constant, for now.
 	VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
@@ -189,6 +190,8 @@ class QLBrainz(object):
 				track_data = {}
 					
 				track_data['musicbrainz_trackid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetTrackId, j))
+				track_data['musicbrainz_albumid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetAlbumId, j))
+				track_data['musicbrainz_artistid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetArtistId, j))
 
 				# VA album is possible, just obliquely cover all cases
 				track_data['artist'] = self.mb.GetResultData1(MBE_AlbumGetArtistName, j)
@@ -260,10 +263,10 @@ class QLBrainz(object):
 
 		if AskAction(None, _("Save the following information?"),
 			"\n".join(message)).run():
-			for i in range(0, len(album)):
-				for key in ['artist', 'title', 'album', 'musicbrainz_trackid', 'tracknumber']:
-					if key not in album[i] or album[i][key] != candidate.tracklist[i][key]:
-						album[i][key] = candidate.tracklist[i][key]
+			for i, track_data in enumerate(candidate.tracklist):
+				for key, val in track_data.items():
+					if val != album[i].get(key):
+						album[i][key] = val
 
 	def __get_album_trm(self, album):
 		trm_this_album = []
