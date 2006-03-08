@@ -460,17 +460,22 @@ def tagsplit(tag):
         return tags
     else: return [tag]
 
-HEADERS_FILTER = { "tracknumber": "track",
-                   "discnumber": "disc",
-                   "labelid": "label ID",
-                   "bpm": "BPM",
-                   "isrc": "ISRC",
-                   "lastplayed": "last played",
-                   "filename": "full name",
-                   "playcount": "plays",
-                   "skipcount": "skips",
-                   "mtime": "modified",
-                   "mountpoint": "mount point",
-                   "basename": "filename",
-                   "dirname": "directory" }
+HEADERS_FILTER = {
+    "tracknumber": "track",
+    "discnumber": "disc",
+    "labelid": "label ID",
+    "bpm": "BPM",
+    "isrc": "ISRC",
+    "lastplayed": "last played",
+    "filename": "full name",
+    "playcount": "plays",
+    "skipcount": "skips",
+    "mtime": "modified",
+    "mountpoint": "mount point",
+    "basename": "filename",
+    "dirname": "directory",
+    "musicbrainz_trackid": "MusicBrainz track ID",
+    "musicbrainz_albumid": "MusicBrainz album ID",
+    "musicbrainz_artistid": "MusicBrainz artist ID",
+    }
 

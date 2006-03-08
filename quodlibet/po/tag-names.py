@@ -55,6 +55,10 @@ _("year")
 # Beats per minute; I don't know if other languages use a different word.
 _("BPM")
 
+_("MusicBrainz track ID")
+_("MusicBrainz artist ID")
+_("MusicBrainz album ID")
+
 _("performers")
 _("lyricists")
 _("arrangers")
