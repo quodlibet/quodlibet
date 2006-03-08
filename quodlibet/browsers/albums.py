@@ -170,7 +170,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         to_remove = []
         for row in model:
             album = row[0]
-            if album is not None and album.title in changed:
+            if album is not None and album.key in changed:
                 if album.songs:
                     to_change.append((row.path, row.iter))
                     album.finalize()
@@ -182,10 +182,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     __update = classmethod(__update)
 
     def __remove_songs(klass, watcher, removed, model, update=True):
-        albums = model.get_albums()
         changed = set()
-        for album in albums.itervalues():
-            if True in map(album.remove, removed): changed.add(album.title)
+        for row in model:
+            album = row[0]
+            if album is not None and True in map(album.remove, removed):
+                changed.add(album.key)
         if update: klass.__update(changed, model)
         else: return changed
     __remove_songs = classmethod(__remove_songs)
@@ -203,7 +204,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                     albums[key] = klass._Album(alb, labelid, mbid)
                     new.append(albums[key])
                 albums[key].songs.add(song)
-                changed.add(alb)
+                changed.add(key)
         for album in new:
             album._model = model
             album._iter = model.append(row=[album])
