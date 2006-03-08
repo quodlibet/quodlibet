@@ -477,5 +477,10 @@ HEADERS_FILTER = {
     "musicbrainz_trackid": "MusicBrainz track ID",
     "musicbrainz_albumid": "MusicBrainz album ID",
     "musicbrainz_artistid": "MusicBrainz artist ID",
+    "replaygain_track_gain": "track gain",
+    "replaygain_track_peak": "track peak",
+    "replaygain_album_gain": "album gain",
+    "replaygain_album_peak": "album peak",
+
     }
 

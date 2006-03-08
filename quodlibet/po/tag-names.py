@@ -52,12 +52,19 @@ _("track")
 _("version")
 _("website")
 _("year")
-# Beats per minute; I don't know if other languages use a different word.
+# beats per minute
 _("BPM")
 
 _("MusicBrainz track ID")
 _("MusicBrainz artist ID")
 _("MusicBrainz album ID")
+
+# refers to a volume adjustment and not "to get/acquire".
+_("track gain")
+# refers to a volume adjustment and not "to get/acquire".
+_("album gain")
+_("track peak")
+_("album peak")
 
 _("performers")
 _("lyricists")
