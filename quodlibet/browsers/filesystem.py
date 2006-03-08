@@ -24,10 +24,18 @@ from qltk.filesel import DirectoryTree
 class FileSystem(Browser, gtk.ScrolledWindow):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
-    __lib = Library()
+    __lib = None
+
+    def __added(klass, watcher, songs):
+        map(klass.__lib.remove, songs)
+    __added = classmethod(__added)
 
     def __init__(self, watcher, player):
-        gtk.ScrolledWindow.__init__(self)
+        super(FileSystem, self).__init__()
+        if self.__lib is None:
+            FileSystem.__lib = Library()
+            watcher.connect('added', FileSystem.__added)
+
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
         dt = DirectoryTree(initial=os.environ["HOME"])
@@ -40,9 +48,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         sel.unselect_all()
         sel.connect('changed', self.__songs_selected)
         if player: dt.connect('row-activated', self.__play, player)
-        self.__save = bool(player)
+        else: self.save = lambda: None
         self.add(dt)
-        self.__refresh_library()
         self.show_all()
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
@@ -62,11 +69,6 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         else:
             uris = [song("~uri") for song in songs]
             sel.set_uris(uris)
-
-    def __refresh_library(self):
-        for fn, song in self.__lib.items():
-            if fn in glibrary: self.__lib.remove(song)
-            elif not song.valid(): self.__lib.reload(song)
 
     def __play(self, view, indices, column, player):
         player.reset()
@@ -92,7 +94,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         config.set("browsers", "filesystem", paths)
 
     def activate(self):
-        self.__find_songs(self.child.get_selection())
+        self.__songs_selected(self.child.get_selection())
 
     def Menu(self, songs, songlist):
         m = gtk.Menu()
@@ -112,7 +114,6 @@ class FileSystem(Browser, gtk.ScrolledWindow):
             if song["~filename"] not in glibrary:
                 glibrary[song["~filename"]] = song
                 added.append(song)
-        self.__refresh_library()
         if added:
             from widgets import watcher
             watcher.added(added)
@@ -136,7 +137,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
 
     def __songs_selected(self, selection):
         songs = self.__find_songs(selection)
-        if self.__save: self.save()
+        self.save()
         self.emit('songs-selected', songs, None)
 
 browsers = [(10, _("_File System"), FileSystem, True)]
