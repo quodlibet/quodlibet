@@ -23,15 +23,16 @@ class FLACFile(VCFile):
     def __init__(self, filename):
         f = mutagen.flac.FLAC(filename)
         self["~#length"] = int(f.info.length)
-        for key, value in f.vc.items(): self[key] = "\n".join(value)
+        for key, value in f.tags.items():
+            self[key] = "\n".join(value)
+        self._post_read()
         self.sanitize(filename)
 
     def write(self):
         f = mutagen.flac.FLAC(self["~filename"])
-        if f.vc is None: f.add_vorbiscomment()
-        del(f.vc[:])
-        for key in self.realkeys(): f.vc[key] = self.list(key)
-        self._prep_write(f.vc)
+        if f.tags is None: f.add_tags()
+        self._prep_write(f.tags)
+        for key in self.realkeys(): f.tags[key] = self.list(key)
         f.save()
         self.sanitize()
 

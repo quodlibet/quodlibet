@@ -8,22 +8,21 @@
 
 from formats._audio import AudioFile
 
+DEFAULT_EMAIL = "quodlibet@lists.sacredchao.net"
+EMAIL = DEFAULT_EMAIL
+
 class VCFile(AudioFile):
-    def sanitize(self, *args, **kwargs):
+    def _post_read(self):
         try: del(self["vendor"])
         except KeyError: pass
 
-        try: del(self["vendor"])
-        except KeyError: pass
-
-        if "rating" in self:
-            try: self["~#rating"] = float(self["rating"])
-            except ValueError: pass
-            del(self["rating"])
-        if "playcount" in self:
-            try: self["~#playcount"] = int(self["playcount"])
-            except ValueError: pass
-            del(self["playcount"])
+        for keyed_key in ["rating", "playcount"]:
+            for subkey in ["", ":"+DEFAULT_EMAIL, ":"+EMAIL]:
+                key = keyed_key + subkey
+                if key in self:
+                    try: self["~#"+keyed_key] = float(self[key])
+                    except ValueError: pass
+                    del(self[key])
 
         if "totaltracks" in self:
             self.setdefault("tracktotal", self["totaltracks"])
@@ -39,17 +38,21 @@ class VCFile(AudioFile):
                 self["discnumber"] += "/" + self["disctotal"]
             del(self["disctotal"])
 
-        AudioFile.sanitize(self, *args, **kwargs)
-
     def can_change(self, k=None):
         if k is None: return AudioFile.can_change(self, None)
         else: return (AudioFile.can_change(self, k) and
                       k not in ["vendor", "totaltracks", "tracktotal",
-                                "rating", "playcount"])
+                                "rating", "playcount"] and
+                      not k.startswith("rating:") and
+                      not k.startswith("playcount:"))
 
     def _prep_write(self, comments):
+        for key in comments.keys():
+            if key.startswith("rating:") or key.startswith("playcount:"):
+                if key.split(":", 1)[1] == DEFAULT_EMAIL:
+                    del(comments[key])
+            else: del(comments[key])
         if self["~#rating"] != 0.5:
-            comments["rating"] = str(self["~#rating"])
+            comments["rating:" + EMAIL] = str(self["~#rating"])
         if self["~#playcount"] != 0:
-            comments["playcount"] = str(self["~#playcount"])
-        
+            comments["playcount:" + EMAIL] = str(self["~#playcount"])

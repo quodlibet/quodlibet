@@ -26,6 +26,7 @@ class OggFile(VCFile):
             if not isinstance(v, list): v = [v]
             v = u"\n".join(map(unicode, v))
             self[k.lower()] = v
+        self._post_read()
 
         self["~#length"] = int(f.time_total(-1))
         self["~#bitrate"] = int(f.bitrate(-1))
@@ -34,11 +35,10 @@ class OggFile(VCFile):
     def write(self):
         f = ogg.vorbis.VorbisFile(self['~filename'])
         comments = f.comment()
-        comments.clear()
+        self._prep_write(comments)
         for key in self.realkeys():
             value = self.list(key)
             for line in value: comments[key] = line
-        self._prep_write(comments)
         comments.write_to(self['~filename'])
         self.sanitize()
 
