@@ -229,11 +229,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.tracks = 0
             self.date = ""
             self.people = []
-            self.title = title
-            self.labelid = labelid
-            self.mbid = mbid
             self.songs = set()
-            self.key = (self.title, self.labelid, self.mbid)
+            self.title = title
+            self.key = (title, labelid, mbid)
             # cover = None indicates not gotten cover, cover = False
             # indicates a failure to find a cover.
             self.cover = self.__covers.get(self.title)
@@ -248,7 +246,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             elif key == "~length": return util.format_time(self.length)
             elif key == "~long-length":
                 return util.format_time_long(self.length)
-            elif key == "labelid": return self.labelid
+            elif key == "labelid": return self.key[1]
+            elif key == "musicbrainz_albumid": return self.key[2]
             elif key == "date": return self.date
             elif key == "~#date":
                 try: return int(self.date[:4])
@@ -415,7 +414,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             if (a1 and a2) is None: return cmp(a1, a2)
             elif not a1.title: return 1
             elif not a2.title: return -1
-            else: return cmp(a1.title, a2.title) or cmp(a1.labelid, a2.labelid)
+            else: return cmp(a1.key, a2.key)
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
@@ -425,17 +424,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             else: return (cmp(a1.people and a1.people[0],
                               a2.people and a2.people[0]) or
                           cmp(a1.date, a2.date) or
-                          cmp(a1.title, a2.title) or
-                          cmp(a1.labelid, a2.labelid))
+                          cmp(a1.key, a2.key))
 
         def __compare_date(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
-            elif a1.title == "": return 1
-            elif a2.title == "": return -1
-            return (cmp(a1.date, a2.date) or
-                    cmp(a1.title, a2.title) or
-                    cmp(a1.labelid, a2.labelid))
+            elif not a1.title: return 1
+            elif not a2.title: return -1
+            return (cmp(a1.date, a2.date) or cmp(a1.key, a2.key))
 
     class _AlbumStore(gtk.ListStore):
         def get_albums(self):
