@@ -191,7 +191,7 @@ class QLBrainz(object):
 					
 				track_data['musicbrainz_trackid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetTrackId, j))
 				track_data['musicbrainz_albumid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetAlbumId, j))
-				track_data['musicbrainz_artistid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetArtistId, j))
+				track_data['musicbrainz_albumartistid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetArtistId, j))
 
 				# VA album is possible, just obliquely cover all cases
 				track_data['artist'] = self.mb.GetResultData1(MBE_AlbumGetArtistName, j)
