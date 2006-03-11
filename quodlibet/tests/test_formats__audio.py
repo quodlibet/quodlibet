@@ -235,6 +235,24 @@ class TAudioFile(TestCase):
         song.change("foo", "finally", "we're done")
         self.failUnlessEqual(song["foo"], "we're done")
 
+    def test_bookmarks_none(self):
+        self.failUnlessEqual([], AudioFile().bookmarks)
+
+    def test_bookmarks_simple(self):
+        af = AudioFile({"~bookmark": "1:20 Mark 1"})
+        self.failUnlessEqual([(80, "Mark 1")], af.bookmarks)
+
+    def test_bookmarks_two(self):
+        af = AudioFile({"~bookmark": "1:40 Mark 2\n1:20 Mark 1"})
+        self.failUnlessEqual([(80, "Mark 1"), (100, "Mark 2")], af.bookmarks)
+
+    def test_bookmark_invalid(self):
+        af = AudioFile({"~bookmark": ("Not Valid\n1:40 Mark 2\n"
+                                      "-20 Not Valid 2\n1:20 Mark 1")})
+        self.failUnlessEqual(
+            [(80, "Mark 1"), (100, "Mark 2"), (-1, "Not Valid"),
+             (-1, "-20 Not Valid 2")], af.bookmarks)
+
     def tearDown(self):
         os.unlink(quux["~filename"])
 add(TAudioFile)

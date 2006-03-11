@@ -18,7 +18,7 @@ import util, config
 from util.uri import URI
 
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
-           "~#skipcount ~#rating").split()
+           "~#skipcount ~#rating ~bookmark").split()
 PEOPLE = "artist author composer performer lyricist arranger conductor".split()
 
 class AudioFile(dict):
@@ -92,21 +92,19 @@ class AudioFile(dict):
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
-                parts = filter(None, map(self.__call__, util.tagsplit(key)))
-                return connector.join(parts)
-            elif key == "basename": return os.path.basename(self["~filename"])
-            elif key == "dirname": return os.path.dirname(self["~filename"])
-            elif key == "length":
-                if self.get("~#length", 0) == 0: return default
-                else: return util.format_time(self.get("~#length", 0))
-            elif key == "rating":
-                return util.format_rating(self.get("~#rating", 0))
+                return connector.join(
+                    filter(None, map(self.__call__, util.tagsplit("~" + key))))
             elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default
             elif key == "#disc":
                 try: return int(self["discnumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default
+            elif key == "length":
+                if self.get("~#length", 0) == 0: return default
+                else: return util.format_time(self.get("~#length", 0))
+            elif key == "rating":
+                return util.format_rating(self.get("~#rating", 0))
             elif key == "people":
                 join = "\n".join
                 people = filter(None, map(self.get, PEOPLE))
@@ -114,6 +112,8 @@ class AudioFile(dict):
                 index = people.index
                 return join([person for (i,person) in enumerate(people)
                         if index(person)==i])
+            elif key == "basename": return os.path.basename(self["~filename"])
+            elif key == "dirname": return os.path.dirname(self["~filename"])
             elif key == "uri":
                 try: return self["~uri"]
                 except KeyError:
@@ -366,3 +366,18 @@ class AudioFile(dict):
     def write(self):
         """Write metadata back to the file."""
         raise NotImplementedError
+
+    def __bookmarks(self):
+        marks = []
+        invalid = []
+        for line in self.list("~bookmark"):
+            try: time, mark = line.split(" ", 1)
+            except: invalid.append((-1, line))
+            else:
+                time = util.parse_time(time)
+                if time > 0: marks.append((time, mark))
+                else: invalid.append((-1, line))
+        marks.sort()
+        marks.extend(invalid)
+        return marks
+    bookmarks = property(__bookmarks)
