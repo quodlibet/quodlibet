@@ -157,12 +157,10 @@ class TAudioFile(TestCase):
         quux.rename(dir + old_fn)
         self.failUnless(quux.exists())
 
-        # rename to existing files
+    def test_rename_to_existing(self):
         quux.rename(quux("~basename"))
-        self.failUnlessRaises(ValueError,
-                              lambda: quux.rename("/dev/null"))
-        self.failUnlessRaises(ValueError,
-                              lambda: quux.rename("silence-44-s.ogg"))
+        self.failUnlessRaises(ValueError, quux.rename, "/dev/null")
+        self.failUnlessRaises(ValueError, quux.rename, "silence-44-s.ogg")
 
     def test_website(self):
         song = AudioFile()
@@ -252,6 +250,27 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(
             [(80, "Mark 1"), (100, "Mark 2"), (-1, "Not Valid"),
              (-1, "-20 Not Valid 2")], af.bookmarks)
+
+    def test_set_bookmarks_none(self):
+        af = AudioFile({"bookmark": "foo"})
+        af.bookmarks = []
+        self.failUnlessEqual([], AudioFile().bookmarks)
+        self.failIf("~bookmark" in af)
+
+    def test_set_bookmarks_simple(self):
+        af = AudioFile()
+        af.bookmarks = [(120, "A mark"), (140, "Mark twain")]
+        self.failUnlessEqual(af["~bookmark"], "2:00 A mark\n2:20 Mark twain")
+
+    def test_set_bookmarks_invalid_value(self):
+        self.failUnlessRaises(
+            ValueError, setattr, AudioFile(), 'bookmarks', "huh?")
+    def test_set_bookmarks_invalid_time(self):
+        self.failUnlessRaises(
+            TypeError, setattr, AudioFile(), 'bookmarks', [("notint", "!")])
+    def test_set_bookmarks_unrealistic_time(self):
+        self.failUnlessRaises(
+            ValueError, setattr, AudioFile(), 'bookmarks', [(-1, "!")])
 
     def tearDown(self):
         os.unlink(quux["~filename"])

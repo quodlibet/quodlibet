@@ -367,7 +367,7 @@ class AudioFile(dict):
         """Write metadata back to the file."""
         raise NotImplementedError
 
-    def __bookmarks(self):
+    def __get_bookmarks(self):
         marks = []
         invalid = []
         for line in self.list("~bookmark"):
@@ -380,4 +380,21 @@ class AudioFile(dict):
         marks.sort()
         marks.extend(invalid)
         return marks
-    bookmarks = property(__bookmarks)
+
+    def __set_bookmarks(self, marks):
+        result = []
+        for time, mark in marks:
+            if time <= 0: raise ValueError("mark times must be positive")
+            result.append(u"%s %s" % (util.format_time(time), mark))
+        result = u"\n".join(result)
+        if result: self["~bookmark"] = result
+        elif "~bookmark" in self: del(self["~bookmark"])
+
+    bookmarks = property(
+        __get_bookmarks, __set_bookmarks,
+        doc="""Parse and return song position bookmarks, or set them.
+        Accessing this returns a copy, so song.bookmarks.append(...)
+        will not work; you need to do
+           marks = song.bookmarks
+           marks.append(...)
+           song.bookmarks = marks""")
