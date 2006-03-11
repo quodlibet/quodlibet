@@ -13,6 +13,7 @@ import stock
 import config
 import util
 
+import qltk
 from qltk.sliderbutton import HSlider
 from qltk.sliderbutton import VSlider
 from qltk.ccb import ConfigCheckMenuItem
@@ -46,22 +47,56 @@ class SeekBar(HSlider):
         c.connect_object('toggled', self.scale.emit, 'value-changed')
         self.__remaining = c
         m.append(c)
+        m.append(gtk.SeparatorMenuItem())
+        i = qltk.MenuItem(_("Edit Bookmarks..."), gtk.STOCK_EDIT)
+        i.connect_object('activate', self.__new_bookmark, player)
+        m.append(i)
         m.show_all()
-        self.child.connect_object('button-press-event', self.__check_menu, m)
-        self.connect_object('popup-menu', self.__popup_menu, m)
+        self.child.connect_object(
+            'button-press-event', self.__check_menu, m, player)
+        self.connect_object('popup-menu', self.__popup_menu, m, player)
 
         gobject.timeout_add(1000, self.__check_time, player)
-        watcher.connect('song-started', self.__song_changed, l)
+        watcher.connect('song-started', self.__song_changed, l, m)
         watcher.connect_object('seek', self.__seeked, player)
 
-    def __check_menu(self, menu, event):
+    def __check_menu(self, menu, event, player):
         if event.button == 3:
-            menu.popup(None, None, None, event.button, event.time)
-            return True
+            return self.__popup_menu(menu, player)
 
-    def __popup_menu(self, menu):
+    def __popup_menu(self, menu, player):
+        for child in menu.get_children()[2:-1]:
+            menu.remove(child)
+            child.destroy()
+
+        try: marks = player.song.bookmarks
+        except AttributeError: pass # song is None
+        else:
+            marks.reverse()
+            sizes = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+            if self.__seekable:
+                # Translators: Refers to the beginning of the playing song.
+                marks.insert(0, (0, _("Beginning")))
+            for time, mark in marks:
+                i = gtk.MenuItem()
+                i.connect_object('activate', player.seek, time * 1000)
+                i.set_sensitive(time >= 0 and self.__seekable)
+                i.add(gtk.HBox(spacing=12))
+                if time < 0: l = gtk.Label(_("N/A"))
+                else: l = gtk.Label(util.format_time(time))
+                l.set_alignment(0.0, 0.5)
+                sizes.add_widget(l)
+                i.child.pack_start(l, expand=False)
+                m = gtk.Label(mark)
+                m.set_alignment(0.0, 0.5)
+                i.child.pack_start(m)
+                i.show_all()
+                menu.insert(i, 2)
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
+
+    def __new_bookmark(self, player):
+        pass
 
     def __seeked(self, player, song, ms):
         # If it's not paused, we'll grab it in our next update.
@@ -99,7 +134,7 @@ class SeekBar(HSlider):
         value -= self.__remaining.get_active() * max
         timer.set_text(util.format_time(value))
 
-    def __song_changed(self, watcher, song, label):
+    def __song_changed(self, watcher, song, label, menu):
         if song and song.get("~#length", 0) > 0:
             length = song["~#length"]
             self.scale.set_range(0, length)
@@ -109,6 +144,10 @@ class SeekBar(HSlider):
             self.scale.set_range(0, 1)
             self.scale.set_value(0)
             self.__seekable = False
+        for child in menu.get_children()[2:-1]:
+            menu.remove(child)
+            child.destroy()
+        menu.get_children()[-1].set_sensitive(self.__seekable)
         self.scale.emit('value-changed')
 
 class Volume(VSlider):
