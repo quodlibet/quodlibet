@@ -50,7 +50,7 @@ class EditBookmarks(qltk.Window):
         self.add(gtk.VBox(spacing=6))
 
         hb = gtk.HBox(spacing=12)
-        time = ValidatingEntry(lambda s: util.parse_time(s) > 0)
+        time = gtk.Entry()
         time.set_width_chars(5)
         name = gtk.Entry()
         name.set_text(_("Bookmark Name"))
@@ -69,9 +69,8 @@ class EditBookmarks(qltk.Window):
 
         render = gtk.CellRendererText()
         def cdf(column, cell, model, iter):
-            if model[iter][0] > 0:
-                cell.set_property('text', util.format_time(model[iter][0]))
-            else: cell.set_property('text', _("N/A"))
+            if model[iter][0] < 0: cell.set_property('text', _("N/A"))
+            else: cell.set_property('text', util.format_time(model[iter][0]))
         col = gtk.TreeViewColumn(_("Time"), render)
         col.set_cell_data_func(render, cdf)
         sw.child.append_column(col)
@@ -112,12 +111,14 @@ class EditBookmarks(qltk.Window):
         name.grab_focus()
 
     def __check_entry(self, add, time, name):
-        add.set_sensitive(
-            bool(util.parse_time(time.get_text()) > 0 and name.get_text()))
+        try: t = util.parse_time(time.get_text(), None)
+        except: add.set_sensitive(False)
+        else: add.set_sensitive(bool(name.get_text()))
 
     def __add(self, model, time, name):
-        if util.parse_time(time.get_text()) > 0:
-            model.append([util.parse_time(time.get_text()), name.get_text()])
+        try: time = util.parse_time(time.get_text(), None)
+        except: pass
+        else: model.append([time, name.get_text()])
 
     def __check_selection(self, selection, remove):
         remove.set_sensitive(bool(selection.get_selected_rows()[1]))

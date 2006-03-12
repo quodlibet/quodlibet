@@ -213,6 +213,9 @@ class Tparse_time(TestCase):
     def test_invalid(self):
         self.failUnlessEqual(util.parse_time("not a time"), 0)
 
+    def test_except(self):
+        self.failUnlessRaises(ValueError, util.parse_time, "not a time", None)
+
     def test_empty(self):
         self.failUnlessEqual(util.parse_time(""), 0)
 

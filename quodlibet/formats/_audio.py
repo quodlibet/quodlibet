@@ -374,9 +374,11 @@ class AudioFile(dict):
             try: time, mark = line.split(" ", 1)
             except: invalid.append((-1, line))
             else:
-                time = util.parse_time(time)
-                if time > 0: marks.append((time, mark))
-                else: invalid.append((-1, line))
+                try: time = util.parse_time(time, None)
+                except: invalid.append((-1, line))
+                else:
+                    if time >= 0: marks.append((time, mark))
+                    else: invalid.append((-1, line))
         marks.sort()
         marks.extend(invalid)
         return marks
@@ -384,7 +386,7 @@ class AudioFile(dict):
     def __set_bookmarks(self, marks):
         result = []
         for time, mark in marks:
-            if time <= 0: raise ValueError("mark times must be positive")
+            if time < 0: raise ValueError("mark times must be positive")
             result.append(u"%s %s" % (util.format_time(time), mark))
         result = u"\n".join(result)
         if result: self["~bookmark"] = result

@@ -211,7 +211,7 @@ def re_esc(str):
         lambda a: (a in "/.^$*+?{,}\\[]|()<>#=!:" and "\\" + a) or a, str))
 sre.escape = re_esc
 
-def parse_time(timestr):
+def parse_time(timestr, err=(ValueError, sre.error)):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
     if timestr[0:1] == "-":
         m = -1
@@ -221,8 +221,7 @@ def parse_time(timestr):
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
                           sre.split(r":|\.", timestr), 0)
-    except (ValueError, sre.error):
-        return 0
+    except err: return 0
 
 RATING_PRECISION = 0.25
 def format_rating(value):
