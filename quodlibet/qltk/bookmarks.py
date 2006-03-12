@@ -7,7 +7,6 @@
 #
 # $Id$
 
-# FIXME: When a song is removed, prevent editing its bookmarks.
 # FIXME: Only allow one bookmark window per song.
 
 import gtk
@@ -106,9 +105,18 @@ class EditBookmarks(qltk.Window):
 
         name.connect_object('activate', gtk.Button.clicked, add)
 
+        s = watcher.connect('removed', self.__check_lock, song, model)
+        self.connect_object('destroy', watcher.disconnect, s)
+
         self.__fill(model, song)
         self.show_all()
         name.grab_focus()
+
+    def __check_lock(self, watcher, songs, song, model):
+        if song in songs:
+            model.clear()
+            for c in self.child.get_children()[:-1]:
+                c.set_sensitive(False)
 
     def __check_entry(self, add, time, name):
         try: t = util.parse_time(time.get_text(), None)
