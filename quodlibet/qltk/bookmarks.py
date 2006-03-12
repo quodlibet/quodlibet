@@ -20,7 +20,7 @@ from qltk.entry import ValidatingEntry
 def MenuItems(marks, player, seekable):
     sizes = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
     items = []
-    if marks and marks[0][0] != 0:
+    if not marks or marks[0][0] != 0:
         # Translators: Refers to the beginning of the playing song.
         marks.insert(0, (0, _("Beginning")))
     for time, mark in marks:
