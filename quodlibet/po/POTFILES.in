@@ -11,6 +11,7 @@ player.py
 massagers.py
 qltk/_editpane.py
 qltk/about.py
+qltk/bookmarks.py
 qltk/browser.py
 qltk/chooser.py
 qltk/controls.py

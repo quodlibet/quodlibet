@@ -14,6 +14,7 @@ import config
 import util
 
 import qltk
+import qltk.bookmarks
 from qltk.sliderbutton import HSlider
 from qltk.sliderbutton import VSlider
 from qltk.ccb import ConfigCheckMenuItem
@@ -48,8 +49,9 @@ class SeekBar(HSlider):
         self.__remaining = c
         m.append(c)
         m.append(gtk.SeparatorMenuItem())
-        i = qltk.MenuItem(_("Edit Bookmarks..."), gtk.STOCK_EDIT)
-        i.connect_object('activate', self.__new_bookmark, player)
+        i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
+        i.connect_object(
+            'activate', qltk.bookmarks.EditBookmarks, self, watcher, player)
         m.append(i)
         m.show_all()
         self.child.connect_object(
@@ -72,31 +74,11 @@ class SeekBar(HSlider):
         try: marks = player.song.bookmarks
         except AttributeError: pass # song is None
         else:
-            marks.reverse()
-            sizes = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-            if self.__seekable:
-                # Translators: Refers to the beginning of the playing song.
-                marks.insert(0, (0, _("Beginning")))
-            for time, mark in marks:
-                i = gtk.MenuItem()
-                i.connect_object('activate', player.seek, time * 1000)
-                i.set_sensitive(time >= 0 and self.__seekable)
-                i.add(gtk.HBox(spacing=12))
-                if time < 0: l = gtk.Label(_("N/A"))
-                else: l = gtk.Label(util.format_time(time))
-                l.set_alignment(0.0, 0.5)
-                sizes.add_widget(l)
-                i.child.pack_start(l, expand=False)
-                m = gtk.Label(mark)
-                m.set_alignment(0.0, 0.5)
-                i.child.pack_start(m)
-                i.show_all()
-                menu.insert(i, 2)
+            items = qltk.bookmarks.MenuItems(marks, player, self.__seekable)
+            items.reverse()
+            for i in items: menu.insert(i, 2)
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
-
-    def __new_bookmark(self, player):
-        pass
 
     def __seeked(self, player, song, ms):
         # If it's not paused, we'll grab it in our next update.
