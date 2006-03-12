@@ -11,7 +11,9 @@ import config
 import tempfile
 import gst
 
-try: import mutagen.id3, mad
+try:
+    import mutagen.id3
+    from mutagen.mp3 import MP3
 except ImportError: extensions = []
 else:
     try: gst.element_factory_make("mad")
@@ -68,8 +70,8 @@ class MP3File(AudioFile):
     format = "MP3"
 
     def __init__(self, filename):
-        try: tag = ID3hack(filename)
-        except mutagen.id3.error: tag = {}
+        mp3 = MP3(filename, ID3=ID3hack)
+        tag = mp3.tags or {}
 
         for frame in tag.values():
             if frame.FrameID == "APIC" and len(frame.data):
@@ -126,16 +128,8 @@ class MP3File(AudioFile):
             else: self[name] = text
             self[name] = self[name].strip()
 
-        audio = mad.MadFile(filename)
-        audio.seek_time(audio.total_time()/2)
-        audio.read()
-        bitrate = 0
-        for i in range(5):
-            bitrate += audio.bitrate()
-            audio.read()
-        self["~#bitrate"] = bitrate/5
-        audio.seek_time(audio.total_time()); audio.read()
-        self.setdefault("~#length", int(audio.total_time() // 1000))
+        self.setdefault("~#length", int(mp3.info.length))
+        self.setdefault("~#bitrate", int(mp3.info.bitrate))
 
         self.sanitize(filename)
 

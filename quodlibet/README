@@ -40,7 +40,6 @@ Quod Libet depends on the Python runtime and associated libraries.
 All file formats depend on their appropriate GStreamer decoding modules
 being available as well as the libraries listed below.
 	Ogg Vorbis: 	http://www.andrewchatham.com/pyogg/
-	MP3:		http://spacepants.org/src/pymad
 
 The following formats all depend on ctypes, available at
 http://starship.python.net/crew/theller/ctypes/, as well as the libraries

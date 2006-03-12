@@ -45,13 +45,6 @@ if __name__ == "__main__":
                "(http://www.andrewchatham.com/pyogg/)" % NAME)
     else: print "found"
 
-    print "Checking for MAD:",
-    try: import mad
-    except ImportError:
-        print ("not found\n%s recommends MAD/pymad. "
-               "(http://www.mars.org/home/rob/proj/mpeg/)" % NAME)
-    else: print "found"
-
     print "Checking for egg.trayicon:",
     try: import egg.trayicon
     except ImportError:
