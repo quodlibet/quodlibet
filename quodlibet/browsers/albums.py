@@ -271,17 +271,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
             # Otherwise, if the tag isn't one provided by the album
             # object, look in songs for it.
-            if key[:2] == "~#":
-                # Numeric keys can't really have multiple values in
-                # the normal query model, so just use the one from
-                # the first song, and hope it's accurate.
-                if self.songs: return self.songs[0](key, default)
-                else: return default
-            else:
-                values = set()
-                for song in self.songs: values.update(song.list(key))
-                value = u"\n".join(list(values))
-                return value or default
+            values = set()
+            for song in self.songs: values.update(song.list(key))
+            value = u"\n".join(list(values))
+            return value or default
 
         __call__ = get
         def comma(self, *args): return self.get(*args).replace("\n", ", ")
