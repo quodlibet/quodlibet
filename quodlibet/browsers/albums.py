@@ -227,7 +227,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.length = 0
             self.discs = 1
             self.tracks = 0
-            self.date = ""
             self.people = []
             self.songs = set()
             self.title = title
@@ -235,7 +234,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             # cover = None indicates not gotten cover, cover = False
             # indicates a failure to find a cover.
             self.cover = self.__covers.get(self.title)
-            self.genre = u""
 
         def get(self, key, default="", connector=u" - "):
             if "~" in key[1:]:
@@ -248,15 +246,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 return util.format_time_long(self.length)
             elif key == "labelid": return self.key[1]
             elif key == "musicbrainz_albumid": return self.key[2]
-            elif key == "date": return self.date
-            elif key == "~#date":
-                try: return int(self.date[:4])
-                except (TypeError, ValueError): return 0
             elif key in ["cover", "~cover"]: return (self.cover and "y") or ""
             elif key in ["title", "album"]: return self.title
-            elif key in ["people", "artist", "artists"]:
+            elif key == "people":
                 return "\n".join(self.people)
-            elif key == "genre": return self.genre
             elif key.startswith("~#") and key[-4:-3] != ":": key += ":avg"
             elif key == "~tracks":
                 return ngettext(
@@ -268,14 +261,27 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 else: return default
 
             if key.startswith("~#") and key[-4:-3] == ":":
-                # Using key.<func> runs the resulting list of values
+                # Using key:<func> runs the resulting list of values
                 # through the function before returning it.
                 func = key[-3:]
                 key = key[:-4]
                 func = {"max": max, "min": min, "sum": sum,
                         "avg": lambda s: float(sum(s)) / len(s)}.get(func)
                 if func: return func([song(key, 0) for song in self.songs])
-            return default
+
+            # Otherwise, if the tag isn't one provided by the album
+            # object, look in songs for it.
+            if key[:2] == "~#":
+                # Numeric keys can't really have multiple values in
+                # the normal query model, so just use the one from
+                # the first song, and hope it's accurate.
+                if self.songs: return self.songs[0](key, default)
+                else: return default
+            else:
+                values = set()
+                for song in self.songs: values.update(song.list(key))
+                value = u"\n".join(list(values))
+                return value or default
 
         __call__ = get
         def comma(self, *args): return self.get(*args).replace("\n", ", ")
@@ -285,19 +291,16 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.tracks = len(self.songs)
             self.length = 0
             people = {}
-            genre = set()
             for song in self.songs:
                 # Rank people by "relevance" -- artists before composers
                 # before performers, then by number of appearances.
                 for w, key in enumerate(ELPOEP):
                     for person in song.list(key):
                         people[person] = people.get(person, 0) - 1000 ** w
-                genre.update(song("genre").split("\n"))
 
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
 
-            self.genre = "\n".join(filter(None, genre))
             self.people = [(num, person) for (person, num) in people.items()]
             self.people.sort()
             self.people = [person for (num, person) in self.people[:100]]
@@ -372,7 +375,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             text = self.get_text().decode('utf-8')
             if Query.is_parsable(text):
                 if not text: self.__filter = None
-                else: self.__filter = Query(text).search
+                else:
+                    self.__filter = Query(
+                        text, star=["people", "album"]).search
                 self.__refill_id = gobject.timeout_add(
                     500, self.__refilter, model)
 
