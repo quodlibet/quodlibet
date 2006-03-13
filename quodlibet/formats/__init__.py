@@ -63,5 +63,5 @@ USEFUL_TAGS = (
 
     # Other tags we like
     "arranger author composer conductor lyricist discnumber labelid part "
-    "website language bpm"
+    "website language bpm albumartist"
     ).split()

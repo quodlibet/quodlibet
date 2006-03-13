@@ -18,7 +18,8 @@ class APEv2File(AudioFile):
               "track": "tracknumber",
               "catalog": "labelid",
               "year": "date",
-              "record location": "location"
+              "record location": "location",
+              "album artist": "albumartist",
               }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
 

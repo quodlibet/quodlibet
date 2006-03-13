@@ -6,6 +6,7 @@
 # date the song was added to the library
 _("added")
 _("album")
+_("album artist")
 _("arranger")
 _("artist")
 _("author")

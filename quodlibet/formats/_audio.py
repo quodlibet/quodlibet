@@ -19,7 +19,8 @@ from util.uri import URI
 
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
            "~#skipcount ~#rating ~bookmark").split()
-PEOPLE = "artist author composer performer lyricist arranger conductor".split()
+PEOPLE = ("albumartist artist author composer performer lyricist "
+          "arranger conductor").split()
 
 class AudioFile(dict):
     """An audio file. It looks like a dict, but implements synthetic

@@ -480,6 +480,6 @@ HEADERS_FILTER = {
     "replaygain_track_peak": "track peak",
     "replaygain_album_gain": "album gain",
     "replaygain_album_peak": "album peak",
-
+    "albumartist": "album artist",
     }
 
