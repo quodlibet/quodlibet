@@ -24,12 +24,15 @@ class Manager(object):
     If a module does not define __all__, any object that has a name beginning
     with '_' is skipped."""
 
-    def __init__(self, folders=[]):
+    instances = {}
+
+    def __init__(self, folders=[], name=None):
         self.scan = []
         self.scan.extend(folders)
         self.__files = {}
         self.__plugins = {}
         self.__failures = {}
+        if name: self.instances[name] = self
 
     def rescan(self):
         """Check directories for new or changed plugins."""

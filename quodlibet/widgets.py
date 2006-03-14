@@ -66,13 +66,16 @@ def init():
 
     # plugin support
     from plugins import PluginManager
-    SongList.pm = PluginManager(watcher, ["./plugins", const.PLUGINS])
+    SongList.pm = PluginManager(
+        watcher, ["./plugins", const.PLUGINS], _("Player"))
     AlbumList.pm = SongList.pm
     SongList.pm.rescan()
 
     from plugins.editing import EditingPlugins
     from qltk.properties import SongProperties
-    SongProperties.plugins = EditingPlugins()
+    SongProperties.plugins = EditingPlugins(
+        [os.path.join("./plugins", "editing"),
+         os.path.join(const.PLUGINS, "editing")], _("Editing"))
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted").split()

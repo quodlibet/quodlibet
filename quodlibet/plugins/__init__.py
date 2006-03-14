@@ -138,8 +138,8 @@ class PluginManager(Manager):
     all_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
                   for s in gobject.signal_list_names(SongWatcher)]
 
-    def __init__(self, watcher=None, folders=[]):
-        super(PluginManager, self).__init__(folders)
+    def __init__(self, watcher=None, folders=[], name=None):
+        super(PluginManager, self).__init__(folders, name)
         self.byfile = {}
         self.plugins = {}
         self.watcher = watcher

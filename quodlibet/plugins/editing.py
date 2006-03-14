@@ -131,12 +131,6 @@ class EditTagsPlugin(gtk.ImageMenuItem):
                 signal, callback, *args, **kwargs)
 
 class EditingPlugins(Manager):
-    __PATHS = [os.path.join("./plugins", "editing"),
-               os.path.join(const.PLUGINS, "editing")]
-
-    def __init__(self):
-        super(EditingPlugins, self).__init__(self.__PATHS)
-
     def RenamePlugins(self):
         return super(EditingPlugins, self).find_subclasses(RenameFilesPlugin)
 
