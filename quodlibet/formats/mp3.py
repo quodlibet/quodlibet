@@ -59,8 +59,16 @@ class MP3File(AudioFile):
             "TDRC": "date",
             "WOAR": "website",
             }
-
     SDI = dict([(v, k) for k, v in IDS.iteritems()])
+
+    # http://musicbrainz.org/docs/specs/metadata_tags.html
+    BRAINZ = {
+        u"MusicBrainz Artist Id": "musicbrainz_artistid",
+        u"MusicBrainz Album Id": "musicbrainz_albumid",
+        u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
+        u"MusicBrainz TRM Id": "musicbrainz_trmid",
+        }
+    ZNIARB = dict([(v, k) for k, v in BRAINZ.iteritems()])
 
     CODECS = ["utf-8"]
     try: CODECS.extend(config.get("editing", "id3encoding").strip().split())
@@ -100,6 +108,8 @@ class MP3File(AudioFile):
                     # Some versions of Foobar2000 write broken ReplayGain
                     # tags in this format.
                     name = frame.desc
+                elif frame.desc in self.BRAINZ:
+                    name = self.BRAINZ[frame.desc]
                 elif frame.desc == "ID3v1 Comment": continue
                 elif frame.desc == "": name = "comment"
                 else: continue
@@ -177,7 +187,8 @@ class MP3File(AudioFile):
 
         dontwrite = ["genre", "comment", "replaygain_album_peak",
                      "replaygain_track_peak", "replaygain_album_gain",
-                     "replaygain_track_gain", "musicbrainz_trackid"]
+                     "replaygain_track_gain", "musicbrainz_trackid",
+                     ] + self.BRAINZ.values()
 
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(owner="http://musicbrainz.org",
@@ -226,6 +237,16 @@ class MP3File(AudioFile):
                 try: peak = float(self["replaygain_%s_peak" % k])
                 except (ValueError, KeyError): peak = 0
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=peak)
+                tag.loaded_frame(f)
+
+        for key in self.BRAINZ:
+            try: del(tag["TXXX:" + key])
+            except KeyError: pass
+        for key in self.ZNIARB:
+            if key in self:
+                f = mutagen.id3.TXXX(
+                    encoding=0, text=self[key].split("\n"),
+                    desc=self.ZNIARB[key])
                 tag.loaded_frame(f)
 
         if self["~#rating"] != 0.5 or self["~#playcount"] != 0:
