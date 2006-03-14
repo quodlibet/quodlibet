@@ -63,7 +63,7 @@ class ExFalsoWindow(gtk.Window):
         self.child.pack2(nb, resize=True, shrink=False)
         fs.connect('changed', self.__changed)
         self.__cache = {}
-        s = watcher.connect_object('refresh', FileSelector.rescan, fs)
+        s = watcher.connect_object('changed', FileSelector.rescan, fs)
         self.connect_object('destroy', watcher.disconnect, s)
         self.__save = None
         self.connect_object('changed', self.set_pending, None)

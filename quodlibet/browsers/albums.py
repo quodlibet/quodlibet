@@ -223,10 +223,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def clear_cache(klass): klass.__covers.clear()
         clear_cache = classmethod(clear_cache)
 
+        length = 0
+        discs = 1
+        tracks = 0
+        date = ""
+
         def __init__(self, title, labelid, mbid):
-            self.length = 0
-            self.discs = 1
-            self.tracks = 0
             self.people = []
             self.songs = set()
             self.title = title

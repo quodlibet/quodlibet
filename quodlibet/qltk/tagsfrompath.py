@@ -247,7 +247,6 @@ class TagsFromPath(EditPane):
 
         win.destroy()
         watcher.changed(was_changed)
-        watcher.refresh()
         self.save.set_sensitive(False)
 
     def __row_edited(self, renderer, path, new, model, colnum):

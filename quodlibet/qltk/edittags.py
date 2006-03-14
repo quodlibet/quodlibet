@@ -503,7 +503,6 @@ class EditTags(gtk.VBox):
 
         win.destroy()
         watcher.changed(was_changed)
-        watcher.refresh()
         for b in [save, revert]: b.set_sensitive(False)
 
     def __edit_tag_name(self, renderer, path, new, model):

@@ -213,7 +213,7 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.get_selection().connect('changed', self.__set_time)
 
         watcher.connect('removed', self.__set_time)
-        watcher.connect('refresh', self.__refresh)
+        watcher.connect('added', self.__set_time)
         watcher.connect('changed', self.__update_title, player)
         watcher.connect('song-started', self.__song_started, player)
         watcher.connect_after('song-ended', self.__song_ended, player)
@@ -636,7 +636,6 @@ class QuodLibetWindow(gtk.Window):
         widgets.watcher.removed(r)
         if c or r or s:
             library.save(const.LIBRARY)
-            widgets.watcher.refresh()
         self.__keys.unblock()
 
     # Set up the preferences window.
@@ -687,7 +686,6 @@ class QuodLibetWindow(gtk.Window):
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
                 if self.scan_dirs(fns):
-                    widgets.watcher.refresh()
                     self.browser.activate()
                     library.save(const.LIBRARY)
             else:
@@ -810,9 +808,6 @@ class QuodLibetWindow(gtk.Window):
         if self.browser.can_filter(None):
             self.browser.set_text(query.encode('utf-8'))
             self.browser.activate()
-
-    def __refresh(self, watcher):
-        self.__set_time()
 
     def __set_time(self, *args, **kwargs):
         statusbar = self.__statusbar

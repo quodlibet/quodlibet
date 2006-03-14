@@ -25,10 +25,6 @@ class SongWatcher(gtk.Object):
         # Songs were added.
         'added': SIG_PYOBJECT,
 
-        # A group of changes has been finished; all library views should
-        # do a global refresh if necessary. This signal is deprecated.
-        'refresh': SIG_NONE,
-
         # A new song started playing (or the current one was restarted).
         'song-started': SIG_PYOBJECT,
 
@@ -58,13 +54,13 @@ class SongWatcher(gtk.Object):
     song = None
 
     def changed(self, songs):
-        gobject.idle_add(self.emit, 'changed', songs)
+        if songs: gobject.idle_add(self.emit, 'changed', songs)
 
     def added(self, songs):
-        gobject.idle_add(self.emit, 'added', songs)
+        if songs: gobject.idle_add(self.emit, 'added', songs)
 
     def removed(self, songs):
-        gobject.idle_add(self.emit, 'removed', songs)
+        if songs: gobject.idle_add(self.emit, 'removed', songs)
 
     def song_started(self, song):
         try: self.time = (0, song["~#length"] * 1000)
@@ -74,9 +70,6 @@ class SongWatcher(gtk.Object):
 
     def song_ended(self, song, stopped):
         gobject.idle_add(self.emit, 'song-ended', song, stopped)
-
-    def refresh(self):
-        gobject.idle_add(self.emit, 'refresh')
 
     def set_paused(self, paused):
         if paused: gobject.idle_add(self.emit, 'paused')
@@ -103,4 +96,3 @@ class SongWatcher(gtk.Object):
             if library: library.remove(song)
             self.removed([song])
         else: self.changed([song])
-

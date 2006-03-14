@@ -320,7 +320,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__refill_id = None
         self.__filter = None
         search.connect('changed', self.__filter_changed)
-        for s in [watcher.connect('refresh', self.__refresh),
+        for s in [watcher.connect('changed', self.__refresh),
+                  watcher.connect('added', self.__refresh),
                   watcher.connect('removed', self.__refresh)
                   ]:
             self.connect_object('destroy', watcher.disconnect, s)

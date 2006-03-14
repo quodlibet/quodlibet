@@ -142,7 +142,6 @@ class TrackNumbers(gtk.VBox):
             was_changed.append(song)
             if win.step(): break
         watcher.changed(was_changed)
-        watcher.refresh()
         win.destroy()
 
     def __revert_files(self, *args):

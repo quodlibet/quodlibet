@@ -144,7 +144,6 @@ class FIFOControl(object):
         if added: watcher.added(added)
         if changed: watcher.changed(changed)
         if removed: watcher.removed(removed)
-        if added or changed or removed: watcher.refresh()
         if window.browser.can_filter(None):
             window.browser.set_text(
                 "filename = /^%s/c" % sre.escape(filename))

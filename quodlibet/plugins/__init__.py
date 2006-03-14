@@ -31,7 +31,6 @@ characteristics:
         obj.plugin_on_song_ended(song, stopped)
         obj.plugin_on_changed(song)
         obj.plugin_on_removed(song)
-        obj.plugin_on_refresh()
         obj.plugin_on_paused()
         obj.plugin_on_unpaused()
         obj.plugin_on_seek(song, msec)
@@ -293,7 +292,6 @@ class PluginManager(Manager):
                 self.check_change_and_refresh(sum(args, []))
 
     def check_change_and_refresh(self, args):
-        updated = False
         songs = filter(None, args)
         needs_write = filter(lambda s: s._needs_write, songs)
 
@@ -313,14 +311,12 @@ class PluginManager(Manager):
             while gtk.events_pending(): gtk.main_iteration()
 
         for song in songs:
-            if song._was_updated():
-                self.watcher.changed([song._song])
-                updated = True
+            changed = []
+            needs_reload = []
+            if song._was_updated(): changed.append(song._song)
             elif not song.valid() and song.exists():
                 self.watcher.reload(song._song)
-                updated = True
-        if updated:
-            self.watcher.refresh()
+        self.watcher.changed(changed)
 
     def invoke_event(self, event, *args):
         try:

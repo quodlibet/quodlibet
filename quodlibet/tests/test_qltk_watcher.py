@@ -39,14 +39,6 @@ class TSongWatcher(TestCase):
         while gtk.events_pending(): gtk.main_iteration()
         self.failUnlessEqual(4, self.__count)
 
-    def __refresh_cb(self, watcher): self.__refreshed = True
-    def test_refresh(self):
-        self.__refreshed = False
-        self.watcher.connect('refresh', self.__refresh_cb)
-        self.watcher.refresh()
-        while gtk.events_pending(): gtk.main_iteration()
-        self.failUnless(self.__refreshed)
-
     def __ended_cb(self, watcher, song, stopped):
         if song & 1: self.failIf(stopped)
         else: self.failUnless(stopped)

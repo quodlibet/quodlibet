@@ -130,7 +130,6 @@ class RenameFiles(EditPane):
 
         win.destroy()
         watcher.changed(was_changed)
-        watcher.refresh()
         self.save.set_sensitive(False)
 
     def __preview(self, songs):
