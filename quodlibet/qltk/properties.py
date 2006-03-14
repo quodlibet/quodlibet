@@ -78,10 +78,8 @@ class SongProperties(qltk.Window):
         self.connect_object('destroy', fview.set_model, None)
         self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
 
-        # Although connecting 'changed' would be a better idea, it results
-        # in segfaults as the model is updated while songs are being saved
-        # as the sorted model goes nuts.
-        s1 = watcher.connect('refresh', self.__refresh, fbasemodel, selection)
+        s1 = watcher.connect(
+            'changed', self.__refresh, fbasemodel, fview)
         s2 = watcher.connect(
             'removed', self.__remove, fbasemodel, selection, csig)
         self.connect_object('destroy', watcher.disconnect, s1)
@@ -112,9 +110,11 @@ class SongProperties(qltk.Window):
             self.set_title("%s - %s" % (title, _("Properties")))
         else: self.set_title(_("Properties"))
 
-    def __refresh(self, watcher, model, selection):
+    def __refresh(self, watcher, songs, model, view):
+        view.freeze_notify()
         self.__refill(model)
-        selection.emit('changed')
+        view.thaw_notify()
+        view.get_selection().emit('changed')
 
     def __refill(self, model):
         for row in model:
