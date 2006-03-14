@@ -108,6 +108,8 @@ MENU = """<ui>
 </ui>"""
 
 MACHINE_TAGS = (
-    "musicbrainz_trackid replaygain_album_peak replaygain_track_peak "
+    "musicbrainz_trackid musicbrainz_trmid musicbrainz_albumid "
+    "musicbrainz_albumartistid musicbrainz_artistid "
     "replaygain_track_gain replaygain_album_gain"
+    "replaygain_album_peak replaygain_track_peak "
     ).split()
