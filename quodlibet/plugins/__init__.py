@@ -310,8 +310,8 @@ class PluginManager(Manager):
             win.destroy()
             while gtk.events_pending(): gtk.main_iteration()
 
+        changed = []
         for song in songs:
-            changed = []
             needs_reload = []
             if song._was_updated(): changed.append(song._song)
             elif not song.valid() and song.exists():
