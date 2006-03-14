@@ -11,6 +11,9 @@ import os, sys, imp
 
 from traceback import format_exception
 
+if sys.version_info < (2, 4):
+    from sets import Set as set
+
 class Manager(object):
     """A generalized plugin manager. It scans directories for importable
     modules/packages and extracts all objects from them.
@@ -25,6 +28,8 @@ class Manager(object):
     with '_' is skipped."""
 
     instances = {}
+
+    Kinds = []
 
     def __init__(self, folders=[], name=None):
         self.scan = []
@@ -75,6 +80,23 @@ class Manager(object):
                 finally:
                     del sys.path[0:1]
                 info[1] = modified
+        self.restore()
+
+    def restore(self):
+        import config
+        key = "active_" + str(type(self).__name__)
+        try: possible = config.get("plugins", key).splitlines()
+        except config.error: pass
+        else:
+            for plugin in self.list():
+                self.enable(plugin, plugin.PLUGIN_NAME in possible)
+
+    def save(self):
+        import config
+        key = "active_" + str(type(self).__name__)
+        active = [plugin.PLUGIN_NAME for plugin in self.list()
+                  if self.enabled(plugin)]
+        config.set("plugins", key, "\n".join(active))
 
     def _load(self, name, module):
         self.__failures.pop(name, None)
@@ -84,7 +106,16 @@ class Manager(object):
                     if not attr.startswith("_")]
         self.__plugins[name] = objs
 
-    def find_subclasses(self, Kind):
+    def enable(self, plugin, enabled): plugin.PMEnFlag = bool(enabled)
+    def enabled(self, plugin): return getattr(plugin, 'PMEnFlag', False)
+
+    def list(self):
+        kinds = set()
+        for Kind in self.Kinds:
+            kinds.update(self.find_subclasses(Kind, all=True))
+        return list(kinds)
+
+    def find_subclasses(self, Kind, all=False):
         """Return all classes in all plugins that subclass 'Kind'."""
         kinds = []
         for plugin in self.__plugins.values():
@@ -93,6 +124,14 @@ class Manager(object):
                     if issubclass(obj, Kind) and obj is not Kind:
                         kinds.append(obj)
                 except TypeError: pass
+
+        for Kind in kinds:
+            try: Kind.PLUGIN_NAME
+            except AttributeError:
+                Kind.PLUGIN_NAME = Kind.__name__
+
+        if not all:
+            kinds = filter(self.enabled, kinds)
 
         return kinds
 

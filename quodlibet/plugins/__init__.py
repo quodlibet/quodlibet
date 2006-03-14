@@ -152,10 +152,6 @@ class PluginManager(Manager):
                 def handler(watcher, *args): invoke(args[-1], *args[:-1])
                 watcher.connect(event, handler, event)
 
-    def rescan(self):
-        super(PluginManager, self).rescan()
-        self.restore()
-
     def _load(self, name, mod):        
         for pluginname in self.byfile.get(name, []):
             try: del self.plugins[pluginname]
@@ -214,9 +210,6 @@ class PluginManager(Manager):
         for bin, attr in self.all_events:
             if hascallable(obj, attr):
                 self.events[bin].setdefault(name, []).append(obj)
-
-    def enable(self, plugin, enabled): plugin.PMEnFlag = bool(enabled)
-    def enabled(self, plugin): return getattr(plugin, 'PMEnFlag', False)
 
     def list(self, selection=None):
 

@@ -5,7 +5,7 @@ from qltk.watcher import SongWatcher
 
 class TPluginWindow(TestCase):
     def setUp(self):
-        self.win = PluginWindow(None, PluginManager(SongWatcher(), []))
+        self.win = PluginWindow(None)
 
     def test_ctr(self):
         pass

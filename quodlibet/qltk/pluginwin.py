@@ -13,17 +13,18 @@ import config
 import qltk
 import util
 
+from plugins import Manager
 from qltk.views import HintedTreeView
 
 class PluginWindow(qltk.Window):
     __window = None
 
-    def __new__(klass, parent, pm):
+    def __new__(klass, parent):
         if klass.__window is None:
             return super(PluginWindow, klass).__new__(klass)
         else: return klass.__window
 
-    def __init__(self, parent, pm):
+    def __init__(self, parent):
         if type(self).__window: return
         else: type(self).__window = self
         super(PluginWindow, self).__init__()
@@ -38,16 +39,17 @@ class PluginWindow(qltk.Window):
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         tv = HintedTreeView()
-        model = gtk.ListStore(object)
+        model = gtk.ListStore(object, object)
         tv.set_model(model)
         tv.set_rules_hint(True)
 
         render = gtk.CellRendererToggle()
-        def cell_data(col, render, model, iter, pm):
-            render.set_active(pm.enabled(model[iter][0]))
-        render.connect('toggled', self.__toggled, model, pm)
+        def cell_data(col, render, model, iter):
+            row = model[iter]
+            render.set_active(row[1].enabled(row[0]))
+        render.connect('toggled', self.__toggled, model)
         column = gtk.TreeViewColumn("enabled", render)
-        column.set_cell_data_func(render, cell_data, pm)
+        column.set_cell_data_func(render, cell_data)
         tv.append_column(column)
 
         render = gtk.CellRendererPixbuf()
@@ -107,8 +109,8 @@ class PluginWindow(qltk.Window):
         self.add(hbox)
 
         selection.connect('changed', self.__preferences, prefs)
-        refresh.connect('clicked', self.__refresh, tv, desc, pm, errors)
-        errors.connect('clicked', self.__show_errors, pm)
+        refresh.connect('clicked', self.__refresh, tv, desc, errors)
+        errors.connect('clicked', self.__show_errors)
         tv.get_selection().emit('changed')
         refresh.clicked()
         hbox.set_size_request(550, 350)
@@ -153,27 +155,36 @@ class PluginWindow(qltk.Window):
                 frame.show_all()
         else: frame.hide()
 
-    def __toggled(self, render, path, model, pm):
+    def __toggled(self, render, path, model):
         render.set_active(not render.get_active())
-        pm.enable(model[path][0], render.get_active())
+        row = model[path]
+        pm = row[1]
+        pm.enable(row[0], render.get_active())
         pm.save()
-        model[path][0] = model[path][0]
+        model.row_changed(row.path, row.iter)
 
-    def __refresh(self, activator, view, desc, pm, errors):
+    def __refresh(self, activator, view, desc, errors):
         model, sel = view.get_selection().get_selected()
         if sel: sel = model[sel][0]
+        plugins = []
+        failures = False
         model.clear()
-        pm.rescan()
-        plugins = pm.list()
-        plugins.sort(lambda a, b: cmp(a.PLUGIN_NAME, b.PLUGIN_NAME))
+        for pm in Manager.instances.values():
+            pm.rescan()
+            for plugin in pm.list():
+                plugins.append((plugin.PLUGIN_NAME, plugin, pm))
+            failures = failures or bool(pm.list_failures())
+
+        plugins.sort()
         for plugin in plugins:
-            it = model.append(row=[plugin])
-            if plugin is sel: view.get_selection().select_iter(it)
+            it = model.append(row=plugin[1:])
+            if plugin[1] is sel:
+                view.get_selection().select_iter(it)
         if not plugins:
             desc.set_text(_("No plugins found."))
-        errors.set_sensitive(bool(len(pm.list_failures())))
+        errors.set_sensitive(failures)
 
-    def __show_errors(self, activator, pm):
+    def __show_errors(self, activator):
         try: self.__win.present()
         except AttributeError:
             self.__win = qltk.Window()
@@ -188,8 +199,10 @@ class PluginWindow(qltk.Window):
             scrolledwin.add_with_viewport(vbox)
             scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrolledwin.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
-            
-            failures = pm.list_failures()
+
+            failures = {}
+            for pm in Manager.instances.values():
+                failures.update(pm.list_failures())
             keys = failures.keys();
             keys.sort()
             show_expanded = len(keys) <= 3

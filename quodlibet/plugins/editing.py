@@ -131,6 +131,8 @@ class EditTagsPlugin(gtk.ImageMenuItem):
                 signal, callback, *args, **kwargs)
 
 class EditingPlugins(Manager):
+    Kinds = [EditTagsPlugin, RenameFilesPlugin, TagsFromPathPlugin]
+
     def RenamePlugins(self):
         return super(EditingPlugins, self).find_subclasses(RenameFilesPlugin)
 

@@ -10,7 +10,7 @@
 import os
 
 # We don't need/want variable interpolation.
-from ConfigParser import RawConfigParser as ConfigParser
+from ConfigParser import RawConfigParser as ConfigParser, Error as error
 
 _config = ConfigParser()
 get = _config.get

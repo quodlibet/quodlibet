@@ -645,7 +645,7 @@ class QuodLibetWindow(gtk.Window):
 
     def __plugins(self, activator):
         from qltk.pluginwin import PluginWindow
-        PluginWindow(self, SongList.pm)
+        PluginWindow(self)
 
     def open_location(self, action):
         name = GetStringDialog(self, _("Add a Location"),
