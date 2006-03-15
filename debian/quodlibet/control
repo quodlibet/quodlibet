@@ -26,7 +26,8 @@ Description: audio tag editor for GTK+
 Package: quodlibet
 Architecture: all
 Depends: ${python:Depends}, exfalso (= ${Source-Version}),
-	python-gst0.10, gstreamer0.10-plugins-good, gstreamer0.10-plugins-ugly
+	gstreamer0.10-plugins-base (>= 0.10.3), python-gst0.10,
+	gstreamer0.10-plugins-good, gstreamer0.10-plugins-ugly
 Recommends: quodlibet-ext (= ${Source-Version}),
 	gstreamer0.10-alsa, gstreamer0.10-gnomevfs,
 	python-feedparser

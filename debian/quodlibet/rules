@@ -45,8 +45,8 @@ binary-indep: build install
 	dh_installdirs -i
 	rm -r $(CURDIR)/debian/tmp/usr/share/quodlibet/mutagen
 	dh_install -i --sourcedir=$(CURDIR)/debian/tmp
-	rm $(CURDIR)/debian/exfalso/usr/share/quodlibet/quodlibet.*
-	rm $(CURDIR)/debian/exfalso/usr/share/quodlibet/rhythmbox-*.png
+	rm $(CURDIR)/debian/exfalso/usr/share/quodlibet/quodlibet.py
+	rm $(CURDIR)/debian/exfalso/usr/share/quodlibet/quodlibet.svg
 	dh_installchangelogs -i
 	dh_installdocs -i
 	dh_installmenu -i

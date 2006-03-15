@@ -1,3 +1,15 @@
+quodlibet (0.18-3) unstable; urgency=low
+
+  * Depend on gstreamer0.10-plugins-base (>= 0.10.3).
+
+ -- Joe Wreschnig <piman@debian.org>  Sun,  5 Mar 2006 19:47:06 -0600
+
+quodlibet (0.18-2) unstable; urgency=low
+
+  * Move required stock icons from quodlibet to exfalso.
+
+ -- Joe Wreschnig <piman@debian.org>  Fri,  3 Mar 2006 02:00:17 -0600
+
 quodlibet (0.18-1) unstable; urgency=low
 
   * New upstream release.

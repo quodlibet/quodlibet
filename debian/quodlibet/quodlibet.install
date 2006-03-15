@@ -1,11 +1,6 @@
 usr/share/quodlibet/quodlibet.py
-usr/share/quodlibet/quodlibet.png
 usr/share/quodlibet/quodlibet.svg
 usr/share/pixmaps/quodlibet.png
-usr/share/quodlibet/rhythmbox-volume-max.png
-usr/share/quodlibet/rhythmbox-volume-medium.png
-usr/share/quodlibet/rhythmbox-volume-min.png
-usr/share/quodlibet/rhythmbox-volume-zero.png
 usr/share/man/man1/quodlibet.1
 usr/share/applications/quodlibet.desktop
 usr/bin/quodlibet
