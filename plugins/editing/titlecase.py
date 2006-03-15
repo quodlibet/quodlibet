@@ -4,6 +4,10 @@ import util
 from plugins.editing import EditTagsPlugin
 
 class TitleCase(EditTagsPlugin):
+    PLUGIN_NAME = "Title Case"
+    PLUGIN_DESC = "Title-case tag values in the tag editor."
+    PLUGIN_ICON = gtk.STOCK_SPELL_CHECK
+
     def __init__(self, tag, value):
         super(TitleCase, self).__init__(_("Title-_case Value"))
         self.set_image(

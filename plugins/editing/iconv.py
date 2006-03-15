@@ -17,6 +17,10 @@ if util.fscoding not in ENCODINGS + ["utf-8", "latin1"]:
     ENCODINGS.append(util.fscoding)
 
 class Iconv(EditTagsPlugin):
+    PLUGIN_NAME = "Convert Encodings"
+    PLUGIN_DESC = "Fix misinterpreted tag value encodings in the tag editor."
+    PLUGIN_ICON = gtk.STOCK_CONVERT
+
     def __init__(self, tag, value):
         super(Iconv, self).__init__("_Convert From...")
         self.set_image(

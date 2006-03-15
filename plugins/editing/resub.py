@@ -3,6 +3,11 @@ import gtk, gobject
 from plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
 
 class RegExpSub(gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
+    PLUGIN_NAME = "Regex Substitution"
+    PLUGIN_DESC = ("Allow arbitrary regex substitutions (s///) when "
+                   "tagging or renaming files.")
+    PLUGIN_ICON = gtk.STOCK_FIND_AND_REPLACE
+
     __gsignals__ = {
         "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
         }
