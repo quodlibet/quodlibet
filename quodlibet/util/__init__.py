@@ -481,5 +481,8 @@ HEADERS_FILTER = {
     "replaygain_album_gain": "album gain",
     "replaygain_album_peak": "album peak",
     "albumartist": "album artist",
+    "originaldate": "original release date",
+    "originalalbum": "original album",
+    "originalartist": "original artist",
+    "recordingdate": "recording date",
     }
-
