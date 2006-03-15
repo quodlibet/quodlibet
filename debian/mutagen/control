@@ -2,7 +2,7 @@ Source: mutagen
 Section: python
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
-Build-Depends: debhelper (>= 5.0.17), python-dev (>= 2.3)
+Build-Depends-Indep: debhelper (>= 5.0.17), python-dev (>= 2.3)
 Standards-Version: 3.6.2
 
 Package: python-mutagen

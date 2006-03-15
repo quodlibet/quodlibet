@@ -1,3 +1,9 @@
+mutagen (1.0-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joe Wreschnig <piman@debian.org>  Mon, 13 Mar 2006 16:20:14 -0600
+
 mutagen (0.9-1) unstable; urgency=low
 
   * Initial release. (Closes: #353505)
