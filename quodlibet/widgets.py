@@ -23,6 +23,7 @@ from library import library
 
 from qltk.songlist import SongList
 from browsers._base import Browser
+from qltk.songsmenu import SongsMenu
 from qltk.msg import ErrorMessage
 
 # FIXME: This is now deprecated in favor of the global main and
@@ -66,7 +67,7 @@ def init():
 
     # plugin support
     from plugins import PluginManager
-    Browser.pm = SongList.pm = PluginManager(
+    SongsMenu.pm = Browser.pm = SongList.pm = PluginManager(
         watcher, ["./plugins", const.PLUGINS], _("Player"))
     SongList.pm.rescan()
 

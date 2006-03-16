@@ -21,6 +21,7 @@ import formats
 from library import library
 from browsers._base import Browser
 from formats._audio import AudioFile
+from qltk.songsmenu import SongsMenu
 from qltk.views import RCMHintedTreeView
 from qltk.wlw import WaitLoadWindow
 from util.uri import URI
@@ -259,12 +260,10 @@ class Playlists(gtk.VBox, Browser):
     def Menu(self, songs, songlist):
         model, rows = songlist.get_selection().get_selected_rows()
         iters = map(model.get_iter, rows)
-        m = gtk.Menu()
         i = qltk.MenuItem(_("_Remove from Playlist"), gtk.STOCK_REMOVE)
         i.connect_object('activate', self.__remove, iters, model)
         i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
-        m.append(i)
-        return m
+        return [i]
 
     __lists = gtk.TreeModelSort(gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
@@ -299,7 +298,7 @@ class Playlists(gtk.VBox, Browser):
         hb.pack_start(importpl)
         self.pack_start(hb, expand=False)
 
-        view.connect('popup-menu', self.__popup_menu)
+        view.connect('popup-menu', self.__popup_menu, watcher)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 0),
                    ("text/uri-list", 0, 1),
@@ -419,9 +418,20 @@ class Playlists(gtk.VBox, Browser):
             if row[0] is playlist:
                 view.get_selection().select_iter(row.iter)
 
-    def __popup_menu(self, view):
+    def __popup_menu(self, view, watcher):
         model, iter = view.get_selection().get_selected()
-        menu = gtk.Menu()
+        songs = list(model[iter][0])
+        menu = SongsMenu(watcher, songs, playlists=False, remove=False)
+        menu.preseparate()
+
+        rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        def remove(model, iter):
+            model[iter][0].delete()
+            model.get_model().remove(
+                model.convert_iter_to_child_iter(None, iter))
+        rem.connect_object('activate', remove, model, iter)
+        menu.prepend(rem)
+
         ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
         keyval, mod = gtk.accelerator_parse("F2")
         ren.add_accelerator(
@@ -430,25 +440,9 @@ class Playlists(gtk.VBox, Browser):
             self.__render.set_property('editable', True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
         ren.connect_object('activate', rename, model.get_path(iter))
-        menu.append(ren)
-
-        rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        def remove(model, iter):
-            model[iter][0].delete()
-            model.get_model().remove(
-                model.convert_iter_to_child_iter(None, iter))
-        rem.connect_object('activate', remove, model, iter)
-        menu.append(rem)
-
-        submenu = self.pm.create_plugins_menu(model[iter][0])
-        if submenu is not None:
-            menu.append(gtk.SeparatorMenuItem())
-            b = gtk.ImageMenuItem(stock.PLUGINS)
-            b.set_submenu(submenu)
-            menu.append(b)
+        menu.prepend(ren)
 
         menu.show_all()
-        menu.connect('selection-done', lambda m: m.destroy())
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 

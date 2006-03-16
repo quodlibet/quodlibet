@@ -14,7 +14,7 @@ import config
 import const
 import qltk
 import util
-import stock
+
 from qltk.completion import EntryWordCompletion
 from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
@@ -22,14 +22,13 @@ from qltk.ccb import ConfigCheckButton
 from qltk.textedit import PatternEditBox
 from parse import Query, XMLFromPattern
 from formats._audio import PEOPLE
-ELPOEP = list(PEOPLE); ELPOEP.reverse()
 
-if sys.version_info < (2, 4): from sets import Set as set
 from library import library
 from browsers._base import Browser
-from qltk.properties import SongProperties
-from qltk.information import Information
+from qltk.songsmenu import SongsMenu
+if sys.version_info < (2, 4): from sets import Set as set
 
+ELPOEP = list(PEOPLE); ELPOEP.reverse()
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><title|\<i\><title>\</i\>|%s>\</b\><date| (<date>)>
 \<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
@@ -519,45 +518,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         songs = self.__get_selected_songs(view.get_selection())
         songs.sort()
 
-        menu = gtk.Menu()
+        menu = SongsMenu(watcher, songs)
+
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
-        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
-        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-        queue = gtk.ImageMenuItem(stock.ENQUEUE)
-        rem = gtk.ImageMenuItem(stock.REMOVE)
-        
-        menu.append(button)
-        menu.append(gtk.SeparatorMenuItem())
-
-        submenu = self.pm.create_plugins_menu(songs)
-        if submenu is not None:
-            b = gtk.ImageMenuItem(stock.PLUGINS)
-            menu.append(b)
-            b.set_submenu(submenu)
-        menu.append(gtk.SeparatorMenuItem())
-
-        import browsers
-        try: submenu = browsers.playlists.Menu(songs)
-        except AttributeError: pass
-        else:
-            playlists = gtk.ImageMenuItem(stock.PLAYLISTS)
-            playlists.set_submenu(submenu)
-            menu.append(playlists)
-        menu.append(queue)
-        menu.append(gtk.SeparatorMenuItem())
-
-        menu.append(rem)
-        menu.append(props)
-        menu.append(info)
-
-        menu.show_all()
-        
         button.connect('activate', self.__refresh_album, view.get_selection())
-        queue.connect('activate', self.__enqueue, view)
-        rem.connect('activate', self.__remove, view.get_selection(), watcher)
-        props.connect('activate', self.__properties, view, watcher)
-        info.connect('activate', self.__information, view, watcher)
-        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
+        menu.prepend(gtk.SeparatorMenuItem())
+        menu.prepend(button)
+        menu.show_all()
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 
@@ -573,13 +540,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             for album in albums:
                 album.cover = None
                 album.finalize()
-
-    def __remove(self, menuitem, selection, watcher):
-        songs = self.__get_selected_songs(selection)
-        if songs:
-            map(library.remove, songs)
-            watcher.removed(songs)
-            selection.unselect_all()
 
     def __get_selected_albums(self, selection):
         model, rows = selection.get_selected_rows()
@@ -597,16 +557,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         map(songs.update, [album.songs for album in albums])
         return list(songs)
 
-    def __properties(self, activator, view, watcher):
-        songs = self.__get_selected_songs(view.get_selection())
-        songs.sort()
-        if songs: SongProperties(watcher, songs)
-
-    def __information(self, activator, view, watcher):
-        songs = self.__get_selected_songs(view.get_selection())
-        songs.sort()
-        if songs: Information(watcher, songs)
-
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())
         songs.sort()
@@ -615,12 +565,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
         else: sel.set_uris([song("~uri") for song in songs])
         
-    def __enqueue(self, item, view):
-        songs = self.__get_selected_songs(view.get_selection())
-        songs.sort()
-        from widgets import main
-        main.playlist.enqueue(songs)
-
     def __play_selection(self, view, indices, col, player):
         player.reset()
         player.next()

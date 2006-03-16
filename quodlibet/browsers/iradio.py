@@ -192,12 +192,9 @@ class InternetRadio(gtk.HBox, Browser):
             self.__refill_id = gobject.timeout_add(500, self.activate)
 
     def Menu(self, songs, songlist):
-        m = gtk.Menu()
         rem = qltk.MenuItem(_("_Remove Station"), gtk.STOCK_REMOVE)
-        m.append(rem)
         rem.connect('activate', self.__remove, songs)
-        rem.show()
-        return m
+        return [rem]
 
     def __remove(self, button, songs):
         map(self.__stations.remove, songs)

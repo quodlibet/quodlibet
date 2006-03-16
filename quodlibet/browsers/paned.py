@@ -14,19 +14,18 @@ import config
 import qltk
 import util
 
-if sys.version_info < (2, 4): from sets import Set as set
+from util import tag
+from parse import Query
 from library import library
 from browsers._base import Browser
 from qltk.songlist import SongList
 from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
-from qltk.information import Information
-from qltk.properties import SongProperties
+from qltk.songsmenu import SongsMenu
 from qltk.tagscombobox import TagsComboBoxEntry
-from util import tag
-from parse import Query
 
 from formats._audio import PEOPLE
+if sys.version_info < (2, 4): from sets import Set as set
 
 class Preferences(qltk.Window):
     def __init__(self, *args, **kwargs):
@@ -170,31 +169,13 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             self.connect_object('destroy', self.__destroy, model)
             self.connect('popup-menu', self.__popup_menu)
 
-        def __Menu(self):
+        def __popup_menu(self, view):
             from widgets import main, watcher
-
-            menu = gtk.Menu()
             songs = self.__get_songs()
             songs.sort()
-
-            enqueue = gtk.ImageMenuItem(stock.ENQUEUE)
-            enqueue.connect_object('activate', main.playlist.enqueue, songs)
-            menu.append(enqueue)
-
-            props = gtk.ImageMenuItem(stock.EDIT_TAGS)
-            props.connect_object('activate', SongProperties, watcher, songs)
-            menu.append(props)
-
-            info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-            info.connect_object('activate', Information, watcher, songs)
-            menu.append(info)
+            menu = SongsMenu(watcher, songs)
             menu.show_all()
-            menu.connect('selection-done', lambda m: m.destroy())
-            return menu
-
-        def __popup_menu(self, view):
-            self.__Menu().popup(
-                None, None, None, 0, gtk.get_current_event_time())
+            menu.popup(None, None, None, 0, gtk.get_current_event_time())
             return True
 
         def __destroy(self, model):

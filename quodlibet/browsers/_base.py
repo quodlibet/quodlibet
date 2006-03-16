@@ -70,9 +70,10 @@ class Browser(object):
     # the browser is.
     accelerators = None
 
-    # Return an initial context menu appropriate to the browser.
-    # songs is the list of selected songs.
-    def Menu(self, songs, songlist): return None
+    # Returns a list of items to be inserted into the SongList context
+    # menu when this browser is active. songs is the list of selected
+    # songs; songlist is the SongList instance.
+    def Menu(self, songs, songlist): return []
 
     def statusbar(self, i):
         return ngettext(

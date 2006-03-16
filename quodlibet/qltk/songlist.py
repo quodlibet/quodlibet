@@ -384,12 +384,12 @@ class SongList(AllTreeView, util.InstanceTracker):
             self.__pattern = Pattern(pattern)
 
     def Menu(self, header, browser, watcher):
+        from qltk.songsmenu import SongsMenu
         songs = self.get_selected_songs()
         if not songs: return
-        header = util.tagsplit(header)[0]
 
-        menu = browser.Menu(songs, self)
-        if menu is None: menu = gtk.Menu()
+        menu = SongsMenu(watcher, songs, delete=True, accels=self.accelerators)
+
         can_filter = browser.can_filter
 
         def Filter(t):
@@ -400,6 +400,15 @@ class SongList(AllTreeView, util.InstanceTracker):
             b.connect_object('activate', self.__filter_on, t, songs, browser)
             return b
 
+        header = util.tagsplit(header)[0]
+
+        if can_filter("album") or can_filter("artist") or can_filter(header):
+            menu.preseparate()
+
+        if can_filter("artist"): menu.prepend(Filter("artist"))
+        if can_filter("album"): menu.prepend(Filter("album"))
+        if (header not in ["artist", "album"] and can_filter(header)):
+            menu.prepend(Filter(header))
         if header == "~#rating":
             item = gtk.MenuItem(_("_Rating"))
             m2 = gtk.Menu()
@@ -410,88 +419,15 @@ class SongList(AllTreeView, util.InstanceTracker):
                 m2.append(itm)
                 itm.connect_object(
                     'activate', self.__set_rating, i, songs, watcher)
-            menu.append(item)
+            menu.preseparate()
+            menu.prepend(item)
 
-        if (menu.get_children() and
-            not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
-            menu.append(gtk.SeparatorMenuItem())
+        items = browser.Menu(songs, self)
+        items.reverse()
+        if items:
+            menu.preseparate()
+            map(menu.prepend, items)
 
-        if can_filter("artist"): menu.append(Filter("artist"))
-        if can_filter("album"): menu.append(Filter("album"))
-        if (header not in ["artist", "album"] and can_filter(header)):
-            menu.append(Filter(header))
-
-        if (menu.get_children() and
-            not isinstance(menu.get_children()[-1], gtk.SeparatorMenuItem)):
-            menu.append(gtk.SeparatorMenuItem())
-
-        submenu = self.pm.create_plugins_menu(songs)
-        if submenu is not None:
-            b = gtk.ImageMenuItem(stock.PLUGINS)
-            menu.append(b)
-            b.set_submenu(submenu)
-
-            if (menu.get_children() and
-                not isinstance(menu.get_children()[-1],
-                               gtk.SeparatorMenuItem)):
-                menu.append(gtk.SeparatorMenuItem())
-
-        buttons = []
-
-        in_lib = True
-        can_add = True
-        is_file = True
-        for song in songs:
-            if song.get("~filename") not in library: in_lib = False
-            if not song.can_add: can_add = False
-            if not song.is_file: is_file = False
-
-        import browsers
-        try: submenu = browsers.playlists.Menu(songs)
-        except AttributeError: pass
-        else:
-            b = gtk.ImageMenuItem(stock.PLAYLISTS)
-            b.set_sensitive(can_add)
-            b.set_submenu(submenu)
-            menu.append(b)
-
-        b = gtk.ImageMenuItem(stock.ENQUEUE)
-        b.connect('activate', self.__enqueue, songs)
-        b.add_accelerator(
-            'activate', self.accelerators, ord('Q'), 0, gtk.ACCEL_VISIBLE)
-        menu.append(b)
-        buttons.append(b)
-        b.set_sensitive(can_add)
-
-        menu.append(gtk.SeparatorMenuItem())
-
-        b = gtk.ImageMenuItem(stock.REMOVE)
-        b.connect('activate', self.__remove, songs, watcher)
-        menu.append(b)
-        buttons.append(b)
-        b.set_sensitive(in_lib)
-
-        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        b.connect('activate', self.__delete, songs, watcher)
-        menu.append(b)
-        buttons.append(b)
-        b.set_sensitive(is_file)
-
-        b = gtk.ImageMenuItem(stock.EDIT_TAGS)
-        key, val = gtk.accelerator_parse("<alt>Return")
-        b.add_accelerator(
-            'activate', self.accelerators, key, val, gtk.ACCEL_VISIBLE)
-        b.connect_object('activate', SongProperties, watcher, songs)
-        menu.append(b)
-
-        b = gtk.ImageMenuItem(gtk.STOCK_INFO)
-        b.add_accelerator(
-            'activate', self.accelerators, ord('I'),
-            gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
-        b.connect_object('activate', Information, watcher, songs)
-        menu.append(b)
-
-        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
         menu.show_all()
         return menu
 
@@ -672,29 +608,6 @@ class SongList(AllTreeView, util.InstanceTracker):
             if (rating <= util.RATING_PRECISION and
                 song["~#rating"] == util.RATING_PRECISION): rating = 0
             self.__set_rating(rating, [song], watcher)
-
-    def __remove(self, item, songs, watcher):
-        # User requested that the selected songs be removed.
-        map(library.remove, songs)
-        watcher.removed(songs)
-
-    def __enqueue(self, item, songs):
-        songs = filter(lambda s: s.can_add, songs)
-        if songs:
-            from widgets import main, watcher
-            added = filter(library.add_song, songs)
-            main.playlist.enqueue(songs)
-            if added: watcher.added(added)
-
-    def __delete(self, item, songs, watcher):
-        files = [song["~filename"] for song in songs]
-        d = DeleteDialog(self, files)
-        removed = d.run()
-        d.destroy()
-        removed = filter(None, map(library.get, removed))
-        if removed:
-            map(library.remove, removed)
-            watcher.removed(removed)
 
     def __set_rating(self, value, songs, watcher):
         for song in songs: song["~#rating"] = value

@@ -105,8 +105,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
             if song["~filename"] not in glibrary:
                 i.set_sensitive(True)
                 break
-        m.append(i)
-        return m
+        return [i]
 
     def __add_songs(self, item, songs):
         added = []
