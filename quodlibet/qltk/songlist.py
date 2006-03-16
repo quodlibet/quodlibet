@@ -646,6 +646,9 @@ class SongList(AllTreeView, util.InstanceTracker):
                         header.get_sort_order() == gtk.SORT_DESCENDING)
         else: return "album", False
 
+    def is_sorted(self):
+        return max([col.get_sort_indicator() for col in self.get_columns()])
+
     # Resort based on the header clicked.
     def set_sort_by(self, header, tag=None, order=None, refresh=True):
         if header and tag is None: tag = header.header_name

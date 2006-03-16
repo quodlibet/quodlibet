@@ -335,7 +335,9 @@ class Playlists(gtk.VBox, Browser):
 
     def __check_current(self, model, path, iter):
         model, citer = self.__view.get_selection().get_selected()
-        if citer and model.get_path(citer) == path: self.activate(resort=False)
+        if citer and model.get_path(citer) == path:
+            songlist = qltk.get_top_parent(self).songlist
+            self.activate(resort=not songlist.is_sorted())
 
     def __drag_motion(self, view, ctx, x, y, time):
         if "text/x-quodlibet-songs" in ctx.targets:
