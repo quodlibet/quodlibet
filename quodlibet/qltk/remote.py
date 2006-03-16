@@ -59,16 +59,17 @@ class FIFOControl(object):
             except AttributeError: raise KeyError, key
 
     def __process(self, source, condition, *args):
-        command = source.read().rstrip("\n")
-        if command == "":
+        commands = source.read().rstrip("\n").splitlines()
+        if commands == []:
             self.__open(*args)
             return False
         else:
-            try:
-                try: cmd, arg = command.split(' ', 1)
-                except: self[command](*args)
-                else: self[cmd](arg, *args)
-            except: print "W: Invalid command %s received." % command
+            for command in commands:
+                try:
+                    try: cmd, arg = command.split(' ', 1)
+                    except: self[command](*args)
+                    else: self[cmd](arg, *args)
+                except: print "W: Invalid command %s received." % command
             return True
 
     def _previous(self, watcher, window, player): player.previous()
