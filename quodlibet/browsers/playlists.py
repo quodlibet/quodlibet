@@ -14,6 +14,7 @@ from tempfile import NamedTemporaryFile
 
 import config
 import const
+import stock
 import qltk
 import util
 import formats
@@ -174,6 +175,32 @@ class Playlist(list):
     def __cmp__(self, other):
         try: return cmp(self.name, other.name)
         except AttributeError: return -1
+
+class Menu(gtk.Menu):
+    def __init__(self, songs):
+        super(Menu, self).__init__()
+        i = gtk.MenuItem(_("_New Playlist"))
+        i.connect_object('activate', self.__add_to_playlist, None, songs)
+        self.append(i)
+        self.append(gtk.SeparatorMenuItem())
+        self.set_size_request(int(i.size_request()[0] * 2), -1)
+
+        for playlist in Playlists.playlists():
+            i = gtk.MenuItem(playlist.name)
+            i.child.set_ellipsize(pango.ELLIPSIZE_END)
+            i.connect_object(
+                'activate', self.__add_to_playlist, playlist, songs)
+            self.append(i)
+
+    def __add_to_playlist(playlist, songs):
+        if playlist is None:
+            if len(songs) == 1: title = songs[0].comma("title")
+            else: title = _("%(title)s and %(count)d more") % (
+                {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+            playlist = Playlist.new(title)
+        playlist.extend(songs)
+        Playlists.changed(playlist)
+    __add_to_playlist = staticmethod(__add_to_playlist)
 
 class Playlists(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
@@ -393,11 +420,6 @@ class Playlists(gtk.VBox, Browser):
                 view.get_selection().select_iter(row.iter)
 
     def __popup_menu(self, view):
-        self.__menu(view).popup(
-            None, None, None, 0, gtk.get_current_event_time())
-        return True
-
-    def __menu(self, view):
         model, iter = view.get_selection().get_selected()
         menu = gtk.Menu()
         ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
@@ -417,9 +439,18 @@ class Playlists(gtk.VBox, Browser):
                 model.convert_iter_to_child_iter(None, iter))
         rem.connect_object('activate', remove, model, iter)
         menu.append(rem)
+
+        submenu = self.pm.create_plugins_menu(model[iter][0])
+        if submenu is not None:
+            menu.append(gtk.SeparatorMenuItem())
+            b = gtk.ImageMenuItem(stock.PLUGINS)
+            b.set_submenu(submenu)
+            menu.append(b)
+
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
-        return menu
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
+        return True
 
     def activate(self, widget=None, resort=True):
         model, iter = self.__view.get_selection().get_selected()

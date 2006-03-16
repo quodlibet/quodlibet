@@ -515,6 +515,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.show_all()
         
     def __popup(self, view, watcher):
+        # Build plugins Menu
+        songs = self.__get_selected_songs(view.get_selection())
+        songs.sort()
+
         menu = gtk.Menu()
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         props = gtk.ImageMenuItem(stock.EDIT_TAGS)
@@ -523,19 +527,29 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         rem = gtk.ImageMenuItem(stock.REMOVE)
         
         menu.append(button)
-        menu.append(queue)
-        menu.append(rem)
-        menu.append(props)
-        menu.append(info)
-        # Build plugins Menu
-        songs = self.__get_selected_songs(view.get_selection())
-        songs.sort()
-        
+        menu.append(gtk.SeparatorMenuItem())
+
         submenu = self.pm.create_plugins_menu(songs)
         if submenu is not None:
             b = gtk.ImageMenuItem(stock.PLUGINS)
             menu.append(b)
             b.set_submenu(submenu)
+        menu.append(gtk.SeparatorMenuItem())
+
+        import browsers
+        try: submenu = browsers.playlists.Menu(songs)
+        except AttributeError: pass
+        else:
+            playlists = gtk.ImageMenuItem(stock.PLAYLISTS)
+            playlists.set_submenu(submenu)
+            menu.append(playlists)
+        menu.append(queue)
+        menu.append(gtk.SeparatorMenuItem())
+
+        menu.append(rem)
+        menu.append(props)
+        menu.append(info)
+
         menu.show_all()
         
         button.connect('activate', self.__refresh_album, view.get_selection())

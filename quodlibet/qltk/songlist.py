@@ -446,28 +446,15 @@ class SongList(AllTreeView, util.InstanceTracker):
             if not song.can_add: can_add = False
             if not song.is_file: is_file = False
 
-
         import browsers
-        try: playlists = browsers.playlists.Playlists.playlists()
+        try: submenu = browsers.playlists.Menu(songs)
         except AttributeError: pass
-        else:            
-            b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
-            menu.append(b)
+        else:
+            b = gtk.ImageMenuItem(stock.PLAYLISTS)
             b.set_sensitive(can_add)
-            submenu = gtk.Menu()
-            i = gtk.MenuItem(_("_New Playlist"))
-            i.connect('activate', self.__add_to_playlist, None, songs)
-            submenu.append(i)
-            submenu.append(gtk.SeparatorMenuItem())
-            submenu.set_size_request(int(i.size_request()[0] * 2), -1)
-
-            for playlist in playlists:
-                i = gtk.MenuItem(playlist.name)
-                i.child.set_ellipsize(pango.ELLIPSIZE_END)
-                i.connect('activate', self.__add_to_playlist, playlist, songs)
-                submenu.append(i)
             b.set_submenu(submenu)
-        
+            menu.append(b)
+
         b = gtk.ImageMenuItem(stock.ENQUEUE)
         b.connect('activate', self.__enqueue, songs)
         b.add_accelerator(
@@ -507,16 +494,6 @@ class SongList(AllTreeView, util.InstanceTracker):
         menu.connect_object('selection-done', gtk.Menu.destroy, menu)
         menu.show_all()
         return menu
-
-    def __add_to_playlist(self, activator, playlist, songs):
-        import browsers
-        if playlist is None:
-            if len(songs) == 1: title = songs[0].comma("title")
-            else: title = _("%(title)s and %(count)d more") % (
-                {'title':songs[0].comma("title"), 'count':len(songs) - 1})
-            playlist = browsers.playlists.Playlist.new(title)
-        playlist.extend(songs)
-        browsers.playlists.Playlists.changed(playlist)
 
     def __init__(self, watcher):
         super(SongList, self).__init__()

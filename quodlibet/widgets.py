@@ -22,7 +22,7 @@ from util import to
 from library import library
 
 from qltk.songlist import SongList
-from browsers.albums import AlbumList
+from browsers._base import Browser
 from qltk.msg import ErrorMessage
 
 # FIXME: This is now deprecated in favor of the global main and
@@ -66,9 +66,8 @@ def init():
 
     # plugin support
     from plugins import PluginManager
-    SongList.pm = PluginManager(
+    Browser.pm = SongList.pm = PluginManager(
         watcher, ["./plugins", const.PLUGINS], _("Player"))
-    AlbumList.pm = SongList.pm
     SongList.pm.rescan()
 
     from plugins.editing import EditingPlugins
