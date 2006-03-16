@@ -123,11 +123,11 @@ class Library(dict):
         self.__masked_files = {}
         dict.__init__(self, initial)
 
-    def random(self, tag):
+    def tag_values(self, tag):
+        # Return a list of all values for the given tag.
         songs = set()
         for song in self.values(): songs.update(song.list(tag))
-        if songs: return random.choice(list(songs))
-        else: return None
+        return list(songs)
 
     def rename(self, song, newfn):
         assert song.is_file

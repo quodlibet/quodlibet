@@ -37,19 +37,6 @@ class TLibrary(TestCase):
     def test_add_fn_invalid(self):
         self.failIf(self.lib.add("/does/not/exist"))
 
-    def test_random(self):
-        self.failUnless(self.lib.random('title') in "ABCDEF")
-        self.failUnlessEqual(self.lib.random('artist'), "woo")
-        self.failUnlessEqual(self.lib.random('album'), None)
-
-    def test_random_go_away_501(self):
-        results = {}
-        for i in range(1000):
-            val = self.lib.random('random')
-            results[val] = results.get(val, 0) + 1
-        for v in results.values():
-            self.failUnless(250 < v < 400, "statistically unlikely outcome")
-
     def test_remove(self):
         song = CORPUS[1]
         self.failUnless(song["~filename"] in self.lib)

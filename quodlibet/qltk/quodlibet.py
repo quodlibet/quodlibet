@@ -580,8 +580,11 @@ class QuodLibetWindow(gtk.Window):
 
     def __random(self, item, key):
         if self.browser.can_filter(key):
-            value = library.random(key)
-            if value is not None: self.browser.filter(key, [value])
+            values = self.browser.list(key)
+            if values:
+                import random
+                value = random.choice(values)
+                self.browser.filter(key, [value])
 
     def lastplayed_day(self, menuitem):
         self.__make_query("#(lastplayed > today)")

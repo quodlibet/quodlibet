@@ -26,6 +26,8 @@ from qltk.tagscombobox import TagsComboBoxEntry
 from util import tag
 from parse import Query
 
+from formats._audio import PEOPLE
+
 class Preferences(qltk.Window):
     def __init__(self, *args, **kwargs):
         super(Preferences, self).__init__(*args, **kwargs)
@@ -393,7 +395,6 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__save.next()
 
     def can_filter(self, key):
-        from formats._audio import PEOPLE
         for pane in self.__panes:
             if (key in pane.tags or
                 (key in PEOPLE and "~people" in pane.tags)):
@@ -401,7 +402,6 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         else: return False
 
     def filter(self, key, values):
-        from formats._audio import PEOPLE
         self.__panes[-1].inhibit()
         for pane in self.__panes:
             if (key in pane.tags or
@@ -410,6 +410,14 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             else: pane.set_selected(None, True)
         self.__panes[-1].uninhibit()
         self.__panes[-1].get_selection().emit('changed')
+
+    def list(self, key):
+        for pane in self.__panes:
+            if (key in pane.tags or
+                (key in PEOPLE and "~people" in pane.tags)):
+                return [util.unescape(row[0]) for row in pane.get_model()
+                        if row[0] and not row[0].startswith("<")]
+        else: return []
 
     def save(self):
         selected = []

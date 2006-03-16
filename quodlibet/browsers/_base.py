@@ -77,3 +77,7 @@ class Browser(object):
     def statusbar(self, i):
         return ngettext(
             "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)
+
+    def list(self, tag):
+        from library import library
+        return library.tag_values(tag)

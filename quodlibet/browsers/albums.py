@@ -642,6 +642,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def can_filter(self, key):
         return (key == "album")
 
+    def list(self, key):
+        assert (key == "album")
+        view = self.get_children()[1].child
+        model = view.get_model()
+        return [row[0].title for row in model if row[0]]
+
     def restore(self):
         albums = config.get("browsers", "albums").split("\n")
         view = self.get_children()[1].child

@@ -175,9 +175,11 @@ class FIFOControl(object):
 
     def _random(self, tag, watcher, window, player):
         if window.browser.can_filter(tag):
-            from library import library
-            value = library.random(tag)
-            if value: window.browser.filter(tag, [value])
+            import random
+            values = window.browser.list(tag)
+            if values:
+                value = random.choice(values)
+                window.browser.filter(tag, [value])
 
     def _filter(self, value, watcher, window, player):
         tag, values = value.split('=', 1)
