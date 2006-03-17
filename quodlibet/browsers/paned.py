@@ -252,7 +252,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         def inhibit(self): self.get_selection().handler_block(self.__sig)
         def uninhibit(self): self.get_selection().handler_unblock(self.__sig)
 
-        def fill(self, songs, inhibit=False):
+        def fill(self, songs):
             selected = self.get_selected()
             model = self.get_model()
             model.clear()
