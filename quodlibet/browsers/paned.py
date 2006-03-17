@@ -27,6 +27,8 @@ from qltk.tagscombobox import TagsComboBoxEntry
 from formats._audio import PEOPLE
 if sys.version_info < (2, 4): from sets import Set as set
 
+UNKNOWN = "<b>%s</b>" % _("Unknown")
+
 class Preferences(qltk.Window):
     def __init__(self, *args, **kwargs):
         super(Preferences, self).__init__(*args, **kwargs)
@@ -188,48 +190,73 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 self.scroll_to_cell(rows[0][0], use_align=True, row_align=0.5)
             self.__next.fill(self.__get_songs())
 
-        def __removed(self, watcher, songs):
+        def _remove(self, songs):
+            self.inhibit()
             model = self.get_model()
             to_remove = []
             for row in model:
                 data = row[1]
+                if data is None: continue
                 for song in songs:
                     if song in data: data.remove(song)
                 if not model[row.iter][1]: to_remove.append(row.iter)
             map(model.remove, to_remove)
+            self.uninhibit()
+
+        def _add(self, songs):
+            self.inhibit()
+            model = self.get_model()
+            values = {}
+            new = {}
+            for row in model:
+                value = row[0]
+                data = row[1]
+                if value[:1] != "<":
+                    value = util.unescape(value)
+                    values[value] = data
+                elif data is not None:
+                    values[""] = data
+
+            for song in songs:
+                for val in (song.list(self.__mytag) or [""]):
+                    if val in values: values[val].add(song)
+                    else:
+                        if val not in new: new[val] = set()
+                        new[val].add(song)
+
+            if new:
+                keys = new.keys()
+                keys.sort()
+                if keys[0] == "":
+                    unknown = new[""]
+                    keys.pop(0)
+                else: unknown = set()
+                for row in model:
+                    if row[0][0] == "<": continue
+                    elif not keys: break
+
+                    if util.unescape(row[0]) > keys[0]:
+                        key = keys.pop(0)
+                        model.insert_before(
+                            row.iter, row=[util.escape(key), new[key]])
+                else:
+                    for key in keys:
+                        model.append(row=[util.escape(key), new[key]])
+                if unknown:
+                    model.append(row=[UNKNOWN, new[""]])
+
+                if (len(values) + len(new)) > 1 and model[(0,)][1] is not None:
+                    model.insert(0, row=["<b>%s</b>" % _("All"), None])
+            self.uninhibit()
 
         def inhibit(self): self.get_selection().handler_block(self.__sig)
         def uninhibit(self): self.get_selection().handler_unblock(self.__sig)
 
         def fill(self, songs, inhibit=False):
             selected = self.get_selected()
-            self.inhibit()
-            values = {}
-            unknown = set()
-            for song in songs:
-                songvals = song.list(self.__mytag)
-                if songvals:
-                    for val in songvals:
-                        values.setdefault(val, set()).add(song)
-                else: unknown.add(song)
-            keys = values.keys()
-            keys.sort()
-
             model = self.get_model()
             model.clear()
-            for k in keys: model.append(row=[util.escape(k), values[k]])
-
-            column = self.get_columns()[0]
-            if len(model) <= 1: column.set_title(tag(self.__mytag))
-            else:
-                column.set_title("%s (%d)" % (tag(self.__mytag), len(model)))
-
-            if len(keys) + bool(unknown) > 1:
-                model.insert(0, row=["<b>%s</b>" % _("All"), songs])
-            if unknown:
-                model.append(row=["<b>%s</b>" % _("Unknown"), unknown])
-
-            self.uninhibit()
+            self._add(songs)
             if selected: self.set_selected(selected, jump=True)
             else: self.set_selected(None, jump=True)
 
@@ -268,8 +295,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
         def __get_songs(self):
             model, rows = self.get_selection().get_selected_rows()
-            # No reason to look further if "All" is selected.
-            if rows and rows[0][0] == 0: return list(model[(0,)][1])
+            if rows and rows[0] == (0,):
+                songs = [(row[1] or set()) for row in model]
+                return list(reduce(set.union, songs, set()))
             else:
                 songs = [model[row][1] for row in rows]
                 if len(songs) == 1: return list(songs[0])
@@ -303,9 +331,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__refill_id = None
         self.__filter = None
         search.connect('changed', self.__filter_changed)
-        for s in [watcher.connect('changed', self.__refresh),
-                  watcher.connect('added', self.__refresh),
-                  watcher.connect('removed', self.__refresh)
+        for s in [watcher.connect('changed', self.__changed),
+                  watcher.connect('added', self.__added),
+                  watcher.connect('removed', self.__removed)
                   ]:
             self.connect_object('destroy', watcher.disconnect, s)
         self.refresh_panes(restore=False)
@@ -330,6 +358,16 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             if text: self.__filter = Query(text, star.keys()).search
             else: self.__filter = None
             self.__refill_id = gobject.timeout_add(500, self.activate)
+
+    def __added(self, watcher, songs):
+        for pane in self.__panes: pane._add(songs)
+
+    def __removed(self, watcher, songs):
+        for pane in self.__panes: pane._remove(songs)
+
+    def __changed(self, watcher, songs):
+        self.__removed(watcher, songs)
+        self.__added(watcher, songs)
 
     def activate(self):
         self.__panes[0].fill(filter(self.__filter, library.values()))
