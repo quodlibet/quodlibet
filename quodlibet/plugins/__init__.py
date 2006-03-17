@@ -114,6 +114,10 @@ class SongWrapper(object):
     def exists(self): return self._song.exists()
     def find_cover(self): return self._song.find_cover()
 
+    bookmarks = property(lambda s: s._song.bookmarks,
+                         lambda s, v: setattr(s._song, 'bookmarks', v))
+                         
+
 def ListWrapper(songs):
     return [(song and SongWrapper(song)) for song in songs]
 

@@ -96,7 +96,8 @@ class TSongWrapper(TestCase):
         "~filename": "does not/exist",
         "title": "more songs",
         "discnumber": "2/2", "tracknumber": "1",
-        "artist": "Foo\nI have two artists", "album": "Bar" })
+        "artist": "Foo\nI have two artists", "album": "Bar",
+        "~bookmark": "2:10 A bookmark" })
     pwrap = SongWrapper(psong)
 
     def setUp(self):
@@ -189,6 +190,12 @@ class TSongWrapper(TestCase):
         self.failIf(self.wrap._was_updated())
         self.wrap["version"] = "bar"
         self.failUnless(self.wrap._was_updated())
+
+    def test_bookmark(self):
+        self.failUnlessEqual(self.psong.bookmarks, self.pwrap.bookmarks)
+        self.pwrap.bookmarks = [(43, "another mark")]
+        self.failUnlessEqual(self.psong["~bookmark"], "0:43 another mark")
+        self.failUnlessEqual(self.psong.bookmarks, self.pwrap.bookmarks)
 
 registerCase(TPluginManager)
 registerCase(TSongWrapper)
