@@ -3,7 +3,7 @@
 
 import os
 
-VERSION = "0.18"
+VERSION = "0.19"
 
 HOME    = os.path.expanduser("~")
 DIR     = os.path.join(HOME, ".quodlibet")

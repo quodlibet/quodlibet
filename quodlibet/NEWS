@@ -1,11 +1,9 @@
-Quod Libet now uses GStreamer 0.10. GStreamer 0.8 *will not work*.
+Quod Libet now uses GStreamer 0.10, GTK+ 2.8, and PyGTK 2.8.
 See http://www.sacredchao.net/quodlibet/wiki/Development/GStreamer0.10
-for the upgrade requirements. We also require PyGTK and GTK+ 2.8.
+for the upgrade requirements.
 
-0.18 is probably the last version of Quod Libet that will include
-Mutagen. Future versions will require you to download it separately.
-This will let us desynchronize the Mutagen and Quod Libet release
-schedules, so tagging bugs can be fixed more quickly.
+Mutagen is no longer distributed with Quod Libet. To download Mutagen,
+see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 
 0.18 - "Babies Sporting Monocles"?
  * MP4 iTunes metadata can be written. (#199)

@@ -37,6 +37,15 @@ if __name__ == "__main__":
                          "(http://gstreamer.freedesktop.org)" % NAME)
     else: print "found"
 
+    print "Checking for Mutagen >= 1.0:",
+    try:
+        import mutagen
+        if mutagen.version < (1, 0, 0):
+            raise ImportError
+    except ImportError:
+        raise SystemExit("not found\n%s requires Mutagen 1.0. "
+                         "(http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen)" % NAME)
+    else: print "found"
 
     print "Checking for ogg.vorbis:",
     try: import ogg.vorbis
