@@ -255,8 +255,10 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         def fill(self, songs):
             selected = self.get_selected()
             model = self.get_model()
+            self.inhibit()
             model.clear()
             self._add(songs)
+            self.uninhibit()
             if selected: self.set_selected(selected, jump=True)
             else: self.set_selected(None, jump=True)
 
@@ -452,11 +454,6 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 pane.set_selected(values.split("\t"), True)
             self.__panes[-1].uninhibit()
             self.__panes[-1].set_selected(selected[-1].split("\t"), True)
-
-    def __refresh(self, watcher, songs=None):
-        self.__panes[-1].inhibit()
-        self.activate()
-        self.__panes[-1].uninhibit()
 
     def __preferences(self, activator):
         if PanedBrowser.__prefs_window is None:
