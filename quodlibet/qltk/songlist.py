@@ -618,7 +618,15 @@ class SongList(AllTreeView, util.InstanceTracker):
             rating = min(1.0, int(event.string) * util.RATING_PRECISION)
             self.__set_rating(rating, self.get_selected_songs(), watcher)
         elif event.string in ['Q', 'q']:
-            self.__enqueue(None, self.get_selected_songs())
+            self.__enqueue(self.get_selected_songs(), watcher)
+
+    def __enqueue(self, songs, watcher):
+        songs = filter(lambda s: s.can_add, songs)
+        if songs:
+            from widgets import main
+            added = filter(library.add_song, songs)
+            main.playlist.enqueue(songs)
+            if added: watcher.added(added)
 
     def __redraw_current(self, watcher, song=None):
         iter = self.model.current_iter
