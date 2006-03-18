@@ -678,10 +678,15 @@ class QuodLibetWindow(gtk.Window):
         if action.get_name() == "AddFolders":
             from qltk.chooser import FolderChooser
             chooser = FolderChooser(self, _("Add Music"), self.last_dir)
+            cb = gtk.CheckButton(_("Watch this folder for new songs"))
+            cb.set_active(not config.get("settings", "scan"))
+            cb.show()
+            chooser.set_extra_widget(cb)
         else:
             from qltk.chooser import FileChooser
             chooser = FileChooser(
                 self, _("Add Music"), formats.filter, self.last_dir)
+            cb = None
         
         fns = chooser.run()
         chooser.destroy()
@@ -713,6 +718,13 @@ class QuodLibetWindow(gtk.Window):
                 if added:
                     widgets.watcher.added(added)
                     self.browser.activate()
+
+        if cb and cb.get_active():
+            dirs = config.get("settings", "scan").split(":")
+            for fn in fns:
+                if fn not in dirs: dirs.append(fn)
+            dirs = ":".join(dirs)
+            config.set("settings", "scan", dirs)
 
     def scan_dirs(self, fns):
         win = WaitLoadWindow(self, 0,
