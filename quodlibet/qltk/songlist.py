@@ -453,7 +453,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.disable_drop()
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-data-get', self.__drag_data_get, watcher)
-        self.connect('drag-data-received', self.__drag_data_received)
+        self.connect('drag-data-received', self.__drag_data_received, watcher)
 
         # Enabling this screws up rating and enqueuing
         #self.set_search_column(0)
@@ -530,7 +530,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             sel.set_uris(uris)
             self.__drag_iters = []
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime):
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, watcher):
         model = view.get_model()
         if info == 1:
             filenames = sel.data.split("\x00")
@@ -546,10 +546,16 @@ class SongList(AllTreeView, util.InstanceTracker):
             ctx.finish(False, False, etime)
             return
 
+        added = []
+        for filename in filenames:
+            if filename not in library and library.add(filename):
+                added.append(library[filename])
         songs = filter(None, map(library.get, filenames))
         if not songs:
             ctx.finish(bool(not filenames), False, etime)
             return
+
+        watcher.added(added)
 
         try: path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
