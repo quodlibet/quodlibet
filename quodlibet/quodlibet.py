@@ -199,6 +199,10 @@ def process_arguments():
         _("filename"),_( "query"))),
         ]: options.add(opt, help=help, arg=arg)
 
+    options.add("sm-config-prefix", arg="dummy")
+    options.add("sm-client-id", arg="prefix")
+    options.add("screen", arg="dummy")
+
     def is_time(str):
         if str[0] not in "+-0123456789": return False
         elif str[0] in "+-": str = str[1:]

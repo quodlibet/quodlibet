@@ -46,6 +46,9 @@ def website_wrap(activator, link):
 def init():
     global main, watcher
 
+    import qltk.session
+    qltk.session.init()
+
     stock.init()
 
     try:
@@ -105,6 +108,7 @@ def init():
     song = library.get(config.get("memory", "song"))
     player.playlist.setup(watcher, main.playlist, song)
     main.show()
+
     return main
 
 def save_library(window, player):
