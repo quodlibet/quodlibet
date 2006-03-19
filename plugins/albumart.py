@@ -15,6 +15,7 @@ import gobject
 import pango
 import util
 import qltk
+import config
 
 if sys.version_info < (2, 4): from sets import Set as set
 
@@ -32,7 +33,7 @@ __all__ = ["plugin_album"]
 PLUGIN_NAME = "Download Album art"
 PLUGIN_DESC = "Downloads album covers from Amazon.com"
 PLUGIN_ICON = gtk.STOCK_FIND
-PLUGIN_VERSION = "0.21"
+PLUGIN_VERSION = "0.22"
 
 class AlbumArtWindow(gtk.Window):
     def __init__(self, songs):
@@ -80,13 +81,25 @@ class AlbumArtWindow(gtk.Window):
         vbox.pack_start(frame)
         self.button = button = gtk.Button(stock=gtk.STOCK_SAVE)
         button.set_sensitive(False)
-        fname = self.__get_fname(songs)
-        def save_cb(button, fname):
+        def save_cb(button, combo):
             model, path = selection.get_selected()
             data = model[path][0]["cover_data"]
+            fname = self.__get_fname(songs, combo)
             self.__save_cover(data, fname)
-        button.connect("clicked", save_cb, fname)
+        combo = gtk.combo_box_new_text()
+        try: set_fn = config.get("plugins", "cover_fn")
+        except config.error: set_fn = ".folder.jpg"
+        active = -1
+        for i, fn in enumerate([".folder.jpg", "folder.jpg", "cover.jpg"]):
+            combo.append_text(fn)
+            if fn == set_fn: active = i
+        if active == -1:
+            combo.append_text(set_fn)
+            combo.set_active(len(combo.get_model()) - 1)
+        else: combo.set_active(active)
+        button.connect("clicked", save_cb, combo)
         bbox = gtk.HButtonBox()
+        bbox.pack_start(combo)
         bbox.pack_start(button, expand=False, fill=False)
         bbox.set_layout(gtk.BUTTONBOX_SPREAD)
         vbox.pack_start(bbox, expand=False, fill=False)
@@ -248,11 +261,12 @@ class AlbumArtWindow(gtk.Window):
         f.close()
         self.destroy()
 
-    def __get_fname(self, songs):
+    def __get_fname(self, songs, combo):
+        append = combo.get_model()[(combo.get_active(),)][0]
         dirname = songs[0]("~dirname")
-        fname = os.path.join(dirname, ".folder.jpg")
-
+        fname = os.path.join(dirname, append)
         print "Will save to", fname
+        config.set("plugins", "cover_fn", append)
         return fname
 
     def PluginPreferences(parent):
