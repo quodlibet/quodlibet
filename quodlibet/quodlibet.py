@@ -282,9 +282,6 @@ def load_player():
 
 if __name__ == "__main__":
     basedir = os.path.dirname(os.path.realpath(__file__))
-    if not os.path.exists(os.path.join(basedir, "quodlibet.py")):
-        if os.path.exists(os.path.join(os.getcwd(), "quodlibet.py")):
-            basedir = os.getcwd()
     if basedir.endswith("/share/quodlibet"):
         sys.path.append(basedir[:-15] + "lib/quodlibet")
 
@@ -299,9 +296,6 @@ if __name__ == "__main__":
         if os.path.exists(const.CONTROL):
             print to(_("Quod Libet is already running."))
             control('focus')
-
-    # Get to the right directory for our data.
-    os.chdir(basedir)
 
     # Initialize GTK.
     util.gtk_init()

@@ -13,6 +13,8 @@ CURRENT = os.path.join(DIR, "current")
 LIBRARY = os.path.join(DIR, "songs")
 PLUGINS = os.path.join(DIR, "plugins")
 
+WD = os.path.dirname(os.path.realpath(__file__))
+
 AUTHORS = """\
 Joe Wreschnig
 Michael Urman
@@ -113,3 +115,5 @@ MACHINE_TAGS = (
     "replaygain_track_gain replaygain_album_gain"
     "replaygain_album_peak replaygain_track_peak "
     ).split()
+
+del(os)

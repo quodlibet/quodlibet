@@ -6,6 +6,7 @@
 #
 # $Id$
 
+import os
 import gtk
 
 QL_ICON = 'quodlibet'
@@ -26,9 +27,11 @@ VOLUME_MAX = 'rhythmbox-volume-max'
 _ICONS = [QL_ICON, EF_ICON, VOLUME_OFF, VOLUME_MIN, VOLUME_MED, VOLUME_MAX]
 
 def init():
+    basedir = os.path.dirname(os.path.realpath(__file__))
+
     factory = gtk.IconFactory()
     for fn in _ICONS:
-        pb = gtk.gdk.pixbuf_new_from_file(fn+".png")
+        pb = gtk.gdk.pixbuf_new_from_file(os.path.join(basedir, fn + ".png"))
         factory.add(fn, gtk.IconSet(pb))
     factory.add_default()
 

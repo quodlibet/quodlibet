@@ -16,11 +16,6 @@ class fakegst(object):
             raise ValueError("unsupported fake module")
 
 def main(argv):
-    basedir = os.path.dirname(os.path.realpath(__file__))
-    if not os.path.exists(os.path.join(basedir, "exfalso.py")):
-        if os.path.exists(os.path.join(os.getcwd(), "exfalso.py")):
-            basedir = os.getcwd()
-
     import util
     util.gettext_install("quodlibet", unicode=True)
     util.ctypes_init()
@@ -33,23 +28,20 @@ def main(argv):
     import config
     config.init(const.CONFIG)
 
-    sys.argv.append(os.path.abspath("."))
-    opts, args = opts.parse()
-    args[0] = os.path.realpath(args[0])
-    os.chdir(basedir)
-
-    import pygtk
-    pygtk.require('2.0')
-    import gtk
-    try: gtk.window_set_default_icon_from_file("exfalso.svg")
-    except: gtk.window_set_default_icon_from_file("exfalso.png")
     util.gtk_init()
-
-    sys.modules["gst"] = fakegst()
+    import gtk
+    icon = os.path.join(const.WD, "exfalso.")
+    try: gtk.window_set_default_icon_from_file(icon + "svg")
+    except: gtk.window_set_default_icon_from_file(icon + "png")
 
     import stock
     stock.init()
 
+    sys.modules["gst"] = fakegst()
+
+    sys.argv.append(os.path.abspath("."))
+    opts, args = opts.parse()
+    args[0] = os.path.realpath(args[0])
     from qltk.exfalso import ExFalsoWindow
     from qltk.watcher import SongWatcher
     w = ExFalsoWindow(SongWatcher(), args[0])
