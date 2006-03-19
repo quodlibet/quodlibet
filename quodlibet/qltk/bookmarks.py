@@ -39,26 +39,20 @@ def MenuItems(marks, player, seekable):
         items.append(i)
     return items
 
-class EditBookmarks(qltk.Window):
-    def __init__(self, parent, watcher, player):
-        super(EditBookmarks, self).__init__()
-        self.set_transient_for(qltk.get_top_parent(parent))
-        self.set_border_width(12)
-        self.set_default_size(350, 250)
-        self.set_title(_("Bookmarks") + " - %s" % player.song.comma("title"))
-        self.add(gtk.VBox(spacing=6))
+class EditBookmarksPane(gtk.VBox):
+    def __init__(self, watcher, song, close=False):
+        super(EditBookmarksPane, self).__init__(spacing=6)
 
         hb = gtk.HBox(spacing=12)
-        time = gtk.Entry()
+        self.time = time = gtk.Entry()
         time.set_width_chars(5)
-        name = gtk.Entry()
-        name.set_text(_("Bookmark Name"))
+        self.markname = name = gtk.Entry()
         add = gtk.Button(stock=gtk.STOCK_ADD)
         add.get_image().set_from_icon_name(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         hb.pack_start(time, expand=False)
         hb.pack_start(name)
-        hb.pack_start(add)
-        self.child.pack_start(hb, expand=False)
+        hb.pack_start(add, expand=False)
+        self.pack_start(hb, expand=False)
 
         model = gtk.ListStore(int, str)
         sw = gtk.ScrolledWindow()
@@ -78,20 +72,20 @@ class EditBookmarks(qltk.Window):
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         col = gtk.TreeViewColumn(_("Bookmark Name"), render, text=1)
         sw.child.append_column(col)
-        self.child.pack_start(sw)
+        self.pack_start(sw)
 
         hbox = gtk.HButtonBox()
         remove = gtk.Button(stock=gtk.STOCK_REMOVE)
         remove.set_sensitive(False)
         hbox.pack_start(remove)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
-        close.connect_object('clicked', qltk.Window.destroy, self)
-        hbox.pack_start(close)
-        self.child.pack_start(hbox, expand=False)
+        if close:
+            self.close = gtk.Button(stock=gtk.STOCK_CLOSE)
+            hbox.pack_start(self.close)
+        else: hbox.set_layout(gtk.BUTTONBOX_END)
+        self.pack_start(hbox, expand=False)
 
         add.connect_object('clicked', self.__add, model, time, name)
 
-        song = player.song
         model.connect('row-changed', self.__set_bookmarks, watcher, song)
 
         selection = sw.child.get_selection()
@@ -101,22 +95,12 @@ class EditBookmarks(qltk.Window):
 
         time.connect_object('changed', self.__check_entry, add, time, name)
         name.connect_object('changed', self.__check_entry, add, time, name)
-        time.set_text(util.format_time(player.get_position() // 1000))
-
         name.connect_object('activate', gtk.Button.clicked, add)
 
-        s = watcher.connect('removed', self.__check_lock, song, model)
-        self.connect_object('destroy', watcher.disconnect, s)
+        time.set_text(_("MM:SS"))
+        name.set_text(_("Bookmark Name"))
 
         self.__fill(model, song)
-        self.show_all()
-        name.grab_focus()
-
-    def __check_lock(self, watcher, songs, song, model):
-        if song in songs:
-            model.clear()
-            for c in self.child.get_children()[:-1]:
-                c.set_sensitive(False)
 
     def __check_entry(self, add, time, name):
         try: t = util.parse_time(time.get_text(), None)
@@ -140,9 +124,36 @@ class EditBookmarks(qltk.Window):
     def __set_bookmarks(self, model, a, b, watcher, song):
         try: song.bookmarks = [(r[0], r[1].decode('utf-8')) for r in model]
         except (AttributeError, ValueError): pass
-        else: watcher.changed([song])
+        else:
+            if watcher: watcher.changed([song])
 
     def __fill(self, model, song):
         model.clear()
         for time, mark in song.bookmarks:
             model.append([time, mark])
+
+class EditBookmarks(qltk.Window):
+    def __init__(self, parent, watcher, player):
+        super(EditBookmarks, self).__init__()
+        self.set_transient_for(qltk.get_top_parent(parent))
+        self.set_border_width(12)
+        self.set_default_size(350, 250)
+        self.set_title(_("Bookmarks") + " - %s" % player.song.comma("title"))
+
+        self.add(EditBookmarksPane(watcher, player.song, close=True))
+
+        s = watcher.connect('removed', self.__check_lock, player.song)
+        self.connect_object('destroy', watcher.disconnect, s)
+
+        position = player.get_position() // 1000
+        self.child.time.set_text(util.format_time(position))
+        self.child.markname.grab_focus()
+
+        self.child.close.connect_object('clicked', qltk.Window.destroy, self)
+
+        self.show_all()
+
+    def __check_lock(self, watcher, songs, song, model):
+        if song in songs:
+            for c in self.child.get_children()[:-1]:
+                c.set_sensitive(False)

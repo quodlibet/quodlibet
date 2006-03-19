@@ -16,6 +16,7 @@ import qltk
 from qltk.cover import CoverImage
 from qltk.x import Window
 from qltk.lyrics import LyricsPane
+from qltk.bookmarks import EditBookmarksPane
 
 import util; from util import tag
 
@@ -67,6 +68,11 @@ class OneSong(qltk.Notebook):
         lyrics = LyricsPane(song)
         lyrics.title = _("Lyrics")
         self.append_page(lyrics)
+
+        bookmarks = EditBookmarksPane(None, song)
+        bookmarks.title = _("Bookmarks")
+        bookmarks.set_border_width(12)
+        self.append_page(bookmarks)
 
     def _title(self, song, box):
         l = Label()
