@@ -88,7 +88,7 @@ class AlbumArtWindow(gtk.Window):
             self.__save_cover(data, fname)
         combo = gtk.combo_box_new_text()
         try: set_fn = config.get("plugins", "cover_fn")
-        except config.error: set_fn = ".folder.jpg"
+        except: set_fn = ".folder.jpg"
         active = -1
         for i, fn in enumerate([".folder.jpg", "folder.jpg", "cover.jpg"]):
             combo.append_text(fn)
