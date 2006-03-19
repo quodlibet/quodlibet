@@ -287,14 +287,8 @@ if __name__ == "__main__":
             basedir = os.getcwd()
     if basedir.endswith("/share/quodlibet"):
         sys.path.append(basedir[:-15] + "lib/quodlibet")
-    i18ndir = "/usr/share/locale"
 
-    import locale, gettext, util
-    try: locale.setlocale(locale.LC_ALL, '')
-    except: pass
-
-    gettext.bindtextdomain("quodlibet")
-    gettext.textdomain("quodlibet")
+    import locale, util
     util.gettext_install("quodlibet", unicode=True)
     util.ctypes_init()
 
@@ -308,13 +302,13 @@ if __name__ == "__main__":
 
     # Get to the right directory for our data.
     os.chdir(basedir)
+
     # Initialize GTK.
-    import pygtk
-    pygtk.require('2.0')
+    util.gtk_init()
+    import gtk
+
     import pygst
     pygst.require('0.10')
-    import gtk
-    util.gtk_init()
 
     # Load configuration data and scan the library for new/changed songs.
     import config

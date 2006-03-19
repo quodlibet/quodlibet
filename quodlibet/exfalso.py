@@ -15,19 +15,13 @@ class fakegst(object):
         if element_name in ["monkeysdec"]:
             raise ValueError("unsupported fake module")
 
-if __name__ == "__main__":
+def main(argv):
     basedir = os.path.dirname(os.path.realpath(__file__))
     if not os.path.exists(os.path.join(basedir, "exfalso.py")):
         if os.path.exists(os.path.join(os.getcwd(), "exfalso.py")):
             basedir = os.getcwd()
-    if basedir.endswith("/share/quodlibet"):
-        sys.path.append(basedir[:-15] + "lib/quodlibet")
 
-    import locale, gettext, util
-    try: locale.setlocale(locale.LC_ALL, '')
-    except: pass
-    gettext.bindtextdomain("quodlibet")
-    gettext.textdomain("quodlibet")
+    import util
     util.gettext_install("quodlibet", unicode=True)
     util.ctypes_init()
 
@@ -52,8 +46,6 @@ if __name__ == "__main__":
     util.gtk_init()
 
     sys.modules["gst"] = fakegst()
-    import gst
-    assert isinstance(gst, fakegst)
 
     import stock
     stock.init()
@@ -65,3 +57,6 @@ if __name__ == "__main__":
     w.show()
 
     gtk.main()
+
+if __name__ == "__main__":
+    main(sys.argv)

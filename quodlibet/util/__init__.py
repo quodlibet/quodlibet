@@ -10,13 +10,23 @@ import os, sys, sre, locale
 
 def gettext_install(domain, localedir=None, unicode=False):
     import gettext, __builtin__
+
+    try: locale.setlocale(locale.LC_ALL, '')
+    except: pass
+
+    gettext.bindtextdomain("quodlibet")
+    gettext.textdomain("quodlibet")
+
     t = gettext.translation(domain, localedir, fallback=True)
     if unicode: gettext, ngettext = t.ugettext, t.ungettext
     else: gettext, ngettext = t.gettext, t.ngettext
+
     __builtin__.__dict__["_"] = gettext
     __builtin__.__dict__["ngettext"] = ngettext
 
 def gtk_init():
+    import pygtk
+    pygtk.require('2.0')
     import gtk, gobject
     # http://bugzilla.gnome.org/show_bug.cgi?id=318953
     if gtk.gtk_version < (2, 8, 8):
