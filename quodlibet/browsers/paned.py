@@ -316,11 +316,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         search = ValidatingEntry(Query.is_valid_color)
         label.set_mnemonic_widget(search)
         label.set_use_underline(True)
-        clr = gtk.Button()
-        clr.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU))
-        clr.connect_object('clicked', search.set_text, "")
+        clear = qltk.ClearButton(search)
         hb2.pack_start(search)
-        hb2.pack_start(clr, expand=False)
+        hb2.pack_start(clear, expand=False)
         hb.pack_start(label, expand=False)
         hb.pack_start(hb2)
 

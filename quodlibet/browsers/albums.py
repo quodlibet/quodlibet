@@ -489,6 +489,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
         e = self.FilterEntry(model_filter)
+        hb2 = gtk.HBox()
+        hb2.pack_start(e)
+        hb2.pack_start(qltk.ClearButton(e), expand=False)
 
         if player: view.connect('row-activated', self.__play_selection, player)
         view.get_selection().connect('changed', self.__selection_changed, e)
@@ -502,7 +505,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         hb = gtk.HBox(spacing=6)
         hb.pack_start(self.SortCombo(model_sort), expand=False)
-        hb.pack_start(e)
+        hb.pack_start(hb2)
         prefs = gtk.Button()
         prefs.add(
             gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))

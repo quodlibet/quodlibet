@@ -133,10 +133,7 @@ class SearchBar(EmptyBar):
         combo.child.set_completion(LibraryTagCompletion(watcher, library))
         l.set_mnemonic_widget(combo.child)
         l.set_use_underline(True)
-        clear = gtk.Button()
-        clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR,gtk.ICON_SIZE_MENU))
-        tips.set_tip(clear, _("Clear search"))
-        clear.connect_object('clicked', self.set_text, "")
+        clear = qltk.ClearButton(self, tips)
 
         search = gtk.Button()
         hb = gtk.HBox(spacing=3)

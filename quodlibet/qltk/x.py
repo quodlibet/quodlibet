@@ -121,3 +121,14 @@ def Tooltips(parent=None):
         parent.connect_object('destroy', gtk.Tooltips.destroy, tips)
     tips.enable()
     return tips
+
+def ClearButton(entry=None, tips=None):
+    clear = gtk.Button()
+    clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU))
+    if tips is None:
+        tips = Tooltips(clear)
+        tips.enable()
+    tips.set_tip(clear, _("Clear search"))
+    if entry is not None: clear.connect_object('clicked', entry.set_text, '')
+    return clear
+
