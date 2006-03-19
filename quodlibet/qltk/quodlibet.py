@@ -347,7 +347,6 @@ class QuodLibetWindow(gtk.Window):
              self.__current_song_prop),
             ("Information", gtk.STOCK_INFO, None, None, None,
              self.__current_song_info),
-            ("Rating", None, _("_Rating")),
 
             ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to Playing Song"),
              "<control>J", None, self.__jump_to_current),
