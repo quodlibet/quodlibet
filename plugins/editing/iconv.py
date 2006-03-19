@@ -28,12 +28,14 @@ class Iconv(EditTagsPlugin):
         submenu = gtk.Menu()
         sizes = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         for enc in ENCODINGS:
-            item = gtk.MenuItem("dummy")
-            item.remove(item.child)
+            item = gtk.MenuItem()
             try: new = value.encode('latin1').decode(enc, 'replace')
             except UnicodeEncodeError:
                 new = _("[Invalid Encoding]")
                 item.set_sensitive(False)
+            except LookupError:
+                item.destroy()
+                continue
             else:
                 if new == value: item.set_sensitive(False)
                 else:
