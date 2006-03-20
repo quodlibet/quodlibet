@@ -64,6 +64,8 @@ class EditBookmarksPane(gtk.VBox):
         def cdf(column, cell, model, iter):
             if model[iter][0] < 0: cell.set_property('text', _("N/A"))
             else: cell.set_property('text', util.format_time(model[iter][0]))
+        render.set_property('editable', True)
+        render.connect('edited', self.__edit_time, model)
         col = gtk.TreeViewColumn(_("Time"), render)
         col.set_cell_data_func(render, cdf)
         sw.child.append_column(col)
@@ -71,6 +73,8 @@ class EditBookmarksPane(gtk.VBox):
         render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         col = gtk.TreeViewColumn(_("Bookmark Name"), render, text=1)
+        render.set_property('editable', True)
+        render.connect('edited', self.__edit_name, model)
         sw.child.append_column(col)
         self.pack_start(sw)
 
@@ -86,6 +90,7 @@ class EditBookmarksPane(gtk.VBox):
 
         add.connect_object('clicked', self.__add, model, time, name)
 
+        model.set_sort_column_id(0, gtk.SORT_ASCENDING)
         model.connect('row-changed', self.__set_bookmarks, watcher, song)
 
         selection = sw.child.get_selection()
@@ -98,9 +103,18 @@ class EditBookmarksPane(gtk.VBox):
         name.connect_object('activate', gtk.Button.clicked, add)
 
         time.set_text(_("MM:SS"))
+        time.connect_object('activate', gtk.Entry.grab_focus, name)
         name.set_text(_("Bookmark Name"))
 
         self.__fill(model, song)
+
+    def __edit_name(self, render, path, new, model):
+        if new: model[path][1] = new
+
+    def __edit_time(self, render, path, new, model):
+        try: time = util.parse_time(new, None)
+        except: pass
+        else: model[path][0] = time
 
     def __check_entry(self, add, time, name):
         try: t = util.parse_time(time.get_text(), None)
