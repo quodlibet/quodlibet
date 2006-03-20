@@ -49,7 +49,7 @@ class ExFalsoWindow(gtk.Window):
         self.pm.rescan()
         self.plugins = EditingPlugins(
             [os.path.join("./plugins", "editing"),
-             os.path.join(const.PLUGINS, "editing")], _("Editing"))
+             os.path.join(const.PLUGINS, "editing")], "editing")
         self.plugins.rescan()
 
         hp = gtk.HPaned()

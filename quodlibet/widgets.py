@@ -72,14 +72,14 @@ def init():
     # plugin support
     from plugins import PluginManager
     SongsMenu.pm = Browser.pm = SongList.pm = PluginManager(
-        watcher, ["./plugins", const.PLUGINS], _("Player"))
+        watcher, ["./plugins", const.PLUGINS], "legacy")
     SongList.pm.rescan()
 
     from plugins.editing import EditingPlugins
     from qltk.properties import SongProperties
     SongProperties.plugins = EditingPlugins(
         [os.path.join("./plugins", "editing"),
-         os.path.join(const.PLUGINS, "editing")], _("Editing"))
+         os.path.join(const.PLUGINS, "editing")], "editing")
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted").split()
