@@ -69,7 +69,12 @@ def init():
     from qltk.watcher import SongWatcher
     watcher = widgets.watcher = SongWatcher()
 
-    # plugin support
+    from plugins.songsmenu import SongsMenuPlugins
+    SongsMenu.plugins = Browser.plugins = SongList.plugins = SongsMenuPlugins(
+        [os.path.join("./plugins", "songsmenu"),
+         os.path.join(const.PLUGINS, "songsmenu")], "songsmenu")
+    SongList.plugins.rescan()
+
     from plugins import PluginManager
     SongsMenu.pm = Browser.pm = SongList.pm = PluginManager(
         watcher, ["./plugins", const.PLUGINS], "legacy")

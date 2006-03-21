@@ -5,6 +5,9 @@ for the upgrade requirements.
 Mutagen is no longer distributed with Quod Libet. To download Mutagen,
 see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 
+Context menu plugins for 0.18 and earlier should be (trivially) updated.
+See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
+
 0.18 - "Babies Sporting Monocles"?
  * MP4 iTunes metadata can be written. (#199)
  * Alt+s switches between search entry and song list. (#254)

@@ -20,18 +20,8 @@ from qltk.tagsfrompath import TagsFromPath
 from qltk.renamefiles import RenameFiles
 from qltk.tracknumbers import TrackNumbers
 
-from plugins import PluginManager
 from plugins.editing import EditingPlugins
-
-class EFPluginManager(PluginManager):
-    # Ex Falso doesn't send events; it also should enable all
-    # invokable plugins since there's no configuration.
-    def rescan(self):
-        super(EFPluginManager, self).rescan()
-        for plugin in self.plugins.values(): self.enable(plugin, True)
-        return []
-
-    def invoke_event(self, event, *args): pass
+from plugins.songsmenu import SongsMenuPlugins
 
 class ExFalsoWindow(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
@@ -45,8 +35,12 @@ class ExFalsoWindow(gtk.Window):
         self.set_default_size(700, 500)
 
         # plugin support
-        self.pm = EFPluginManager(watcher, ["./plugins", const.PLUGINS])
+        self.__watcher = watcher
+        self.pm = SongsMenuPlugins(
+            [os.path.join("./plugins", "songsmenu"),
+             os.path.join(const.PLUGINS, "songsmenu")], "songsmenu")
         self.pm.rescan()
+
         self.plugins = EditingPlugins(
             [os.path.join("./plugins", "editing"),
              os.path.join(const.PLUGINS, "editing")], "editing")
@@ -93,7 +87,7 @@ class ExFalsoWindow(gtk.Window):
         filenames = [model[row][0] for row in rows]
         songs = map(self.__cache.__getitem__, filenames)
         songs.sort()
-        menu = self.pm.create_plugins_menu(songs)
+        menu = self.pm.Menu(self.__watcher, self, songs)
         if menu is None: menu = gtk.Menu()
         else: menu.prepend(gtk.SeparatorMenuItem())
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)

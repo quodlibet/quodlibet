@@ -21,10 +21,7 @@ class Manager(object):
     Objects are cached and not imported again unless their mtime changes.
 
     If a module defines __all__, only objects whose names are listed in
-    __all__ will be detected. This makes using __all__ in a module-as-plugin
-    impossible.
-
-    If a module does not define __all__, any object that has a name beginning
+    __all__ will be detected. Otherwise, any object that has a name beginning
     with '_' is skipped."""
 
     instances = {}
@@ -104,6 +101,7 @@ class Manager(object):
         except AttributeError:
             objs = [getattr(module, attr) for attr in vars(module)
                     if not attr.startswith("_")]
+        objs = filter(lambda x: isinstance(x, type), objs)
         self.__plugins[name] = objs
 
     def enable(self, plugin, enabled): plugin.PMEnFlag = bool(enabled)
