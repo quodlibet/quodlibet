@@ -7,17 +7,20 @@
 WIKI_URL = "http://%s.wikipedia.org/wiki/"
 from util import website
 from urllib import quote
-import gtk,config
+import gtk, config
 
 try: config.get("plugins", __name__)
 except: config.set("plugins", __name__, "en")
 
+from plugins.songsmenu import SongsMenuPlugin
+
 class WikiSearch(object):
-    PLUGIN_ICON = 'gtk-open'
-    PLUGIN_VERSION = '0.13'
+    PLUGIN_ICON = gtk.STOCK_OPEN
+    PLUGIN_VERSION = '0.14'
 
     def changed(self, e):
         config.set("plugins", __name__, e.get_text())
+    changed = classmethod(changed)
 
     def PluginPreferences(self, parent):
         hb = gtk.HBox(spacing=3)
@@ -31,6 +34,7 @@ class WikiSearch(object):
         hb.pack_start(gtk.Label(".wikipedia.org"), expand=False)
         hb.show_all()
         return hb
+    PluginPreferences = classmethod(PluginPreferences)
 
     def plugin_songs(self, songs):
         l = dict.fromkeys([song(self.k) for song in songs]).keys()
@@ -38,12 +42,12 @@ class WikiSearch(object):
             a = quote(str(a).title().replace(' ', '_'))
             website(WIKI_URL % config.get('plugins', __name__) + a)
 
-class WikiArtist(WikiSearch):
-    PLUGIN_NAME = 'Search artist in wikipedia'
-    PLUGIN_DESC = 'Search artist in wikipedia'
+class WikiArtist(WikiSearch, SongsMenuPlugin):
+    PLUGIN_NAME = 'Search artist in Wikipedia'
+    PLUGIN_DESC = 'Search artist in Wikipedia'
     k = 'artist'
 
-class WikiAlbum(WikiSearch):
-    PLUGIN_NAME = 'Search album in wikipedia'
-    PLUGIN_DESC = 'Search album in wikipedia'
+class WikiAlbum(WikiSearch, SongsMenuPlugin):
+    PLUGIN_NAME = 'Search album in Wikipedia'
+    PLUGIN_DESC = 'Search album in Wikipedia'
     k = 'album'

@@ -7,14 +7,15 @@
 # $Id$
 
 import util
+from plugins.songsmenu import SongsMenuPlugin
 
-class SplitTags(object):
+class SplitTags(SongsMenuPlugin):
     PLUGIN_NAME = "Split Tags"
     PLUGIN_HINT = "Split out version and disc number"
     PLUGIN_DESC = ("Split the disc number from the album and the version "
                    "from the title at the same time.")
     PLUGIN_ICON = 'gtk-find-and-replace'
-    PLUGIN_VERSION = "0.11"
+    PLUGIN_VERSION = "0.12"
 
     def plugin_song(self, song):
         if ("title" in song and

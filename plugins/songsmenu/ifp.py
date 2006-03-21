@@ -7,8 +7,9 @@
 # $Id$
 
 import os, gtk, util, qltk
+from plugins.songsmenu import SongsMenuPlugin
 
-class IFPUpload(object):
+class IFPUpload(SongsMenuPlugin):
     PLUGIN_NAME = "Send to iFP"
     PLUGIN_DESC = "Upload songs to an iRiver iFP device"
     PLUGIN_VERSION = "0.11"

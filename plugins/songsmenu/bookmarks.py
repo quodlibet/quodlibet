@@ -13,6 +13,7 @@
 import gobject, gtk
 import qltk
 from qltk.views import HintedTreeView
+from plugins.songsmenu import SongsMenuPlugin
 
 class GoToDialog(qltk.Window):
     def __init__(self, songs):
@@ -56,7 +57,7 @@ class GoToDialog(qltk.Window):
         gobject.timeout_add(200, player.seek, time * 1000)
         self.destroy()
 
-class Bookmarks(object):
+class Bookmarks(SongsMenuPlugin):
     PLUGIN_NAME = "Go to Bookmark..."
     PLUGIN_DESC = "List all bookmarks in the selected files."
     PLUGIN_ICON = gtk.STOCK_JUMP_TO

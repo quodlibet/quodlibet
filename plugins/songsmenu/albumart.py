@@ -17,23 +17,21 @@ import util
 import qltk
 import config
 
+from plugins.songsmenu import SongsMenuPlugin
+
 if sys.version_info < (2, 4): from sets import Set as set
 
 try:
     import amazon
 except ImportError:
-    qltk.ErrorMessage(None, "Module not found",
-                      "<b>Unable to load amazon.py</b>\n"
-                      "Please make sure amazon.py is in your plugins folder. "
-                      "A compatible version can be found in the Quod Libet "
-                      "Subversion repository.").run()
-
-__all__ = ["plugin_album"]
-
-PLUGIN_NAME = "Download Album art"
-PLUGIN_DESC = "Downloads album covers from Amazon.com"
-PLUGIN_ICON = gtk.STOCK_FIND
-PLUGIN_VERSION = "0.22"
+    try: import _amazon as amazon
+    except ImportError:
+        qltk.ErrorMessage(
+            None, "Module not found",
+            "<b>Unable to load amazon.py</b>\n"
+            "Please make sure amazon.py is in your plugins folder. "
+            "A compatible version can be found in the Quod Libet "
+            "Subversion repository.").run()
 
 class AlbumArtWindow(gtk.Window):
     def __init__(self, songs):
@@ -269,9 +267,16 @@ class AlbumArtWindow(gtk.Window):
         config.set("plugins", "cover_fn", append)
         return fname
 
+class SongsMenuPlugin(SongsMenuPlugin):
+    PLUGIN_NAME = "Download Album art"
+    PLUGIN_DESC = "Downloads album covers from Amazon.com"
+    PLUGIN_ICON = gtk.STOCK_FIND
+    PLUGIN_VERSION = "0.23"
+
     def PluginPreferences(parent):
         b = gtk.Button("Visit Amazon.com")
         b.connect('clicked', lambda s: util.website('http://www.amazon.com/'))
         return b
+    PluginPreferences = staticmethod(PluginPreferences)
 
-plugin_album = AlbumArtWindow
+    plugin_album = AlbumArtWindow

@@ -12,6 +12,8 @@ from os.path import splitext, extsep, dirname
 from const import HOME as lastfolder
 __all__ = ['Export', 'Import']
 
+from plugins.songsmenu import SongsMenuPlugin
+
 def filechooser(save, title):
     chooser = gtk.FileChooserDialog(
         title=(save and "Export %s Metadata to ..." or "Import %s Metadata from ...") % title,
@@ -27,7 +29,7 @@ def filechooser(save, title):
     chooser.set_current_folder(lastfolder)
     return chooser
 
-class Export(object):
+class Export(SongsMenuPlugin):
 
     PLUGIN_NAME = "ExportMeta"
     PLUGIN_DESC = "Export Metadata"
@@ -59,7 +61,7 @@ class Export(object):
                     print>>out, '%s=%s' % (key, val.encode('utf-8'))
             print>>out
 
-class Import(object):
+class Import(SongsMenuPlugin):
 
     PLUGIN_NAME = "ImportMeta"
     PLUGIN_DESC = "Import Metadata"

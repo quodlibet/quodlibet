@@ -15,6 +15,8 @@
 
 import gtk, pango, gobject, os, sre
 
+from plugins.songsmenu import SongsMenuPlugin
+
 VORBIS_PROGRESS = sre.compile(r'(?P<percent>\d+)% - (?P<file>.+)')
 VORBIS_ALBUM = sre.compile(r'Recommended Album Gain:\s+(?P<albumgain>[-+]?\d+\.\d+)\s+dB')
 VORBIS_TRACK = sre.compile(r'(?P<gain>[-+]?\d\.\d+) dB \|\s+(?P<peak>\d+) \|\s+(?P<scale>\d+\.\d+) \|\s+(?P<newpeak>\d+) \| (?P<file>.+)')
@@ -24,13 +26,14 @@ MP3_ALBUM = sre.compile(r'(?P<gain>[-+]?\d+\.\d+)dB\s+volume adjustment')
 MP3_TRACK = sre.compile(r'(?P<level>[-+]?\d+\.\d+)dBFS\s+(?P<peak>[-+]?\d+\.\d+)dBFS\s+(?P<gain>[-+]?\d+\.\d+)dB\s+(?P<file>.+)')
 
 __all__ = ['ReplayGain']
-class ReplayGain(object):
+
+class ReplayGain(SongsMenuPlugin):
 
     PLUGIN_NAME = 'ReplayGain'
     PLUGIN_DESC = ('Invokes vorbisgain or normalize-audio on selected '
                    'songs, grouped by album')
     PLUGIN_ICON = gtk.STOCK_CDROM
-    PLUGIN_VERSION = "0.15"
+    PLUGIN_VERSION = "0.16"
 
     class VorbisGainer(object):
         def __init__(self, gain):

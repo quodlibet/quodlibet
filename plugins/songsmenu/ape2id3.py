@@ -10,7 +10,9 @@ import mutagen.apev2
 from formats._apev2 import APEv2File
 from formats.mp3 import MP3File
 
-class APEv2toID3v2(object):
+from plugins.songsmenu import SongsMenuPlugin
+
+class APEv2toID3v2(SongsMenuPlugin):
     PLUGIN_NAME = "APEv2 to ID3v2"
     PLUGIN_DESC = ("Convert your APEv2 tags to ID3v2 tags. This will delete "
                    "the APEv2 tags after conversion.")

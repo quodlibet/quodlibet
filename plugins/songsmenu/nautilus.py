@@ -6,13 +6,15 @@
 #
 # $Id$
 
-import bonobo; from qltk import ConfirmAction
+import bonobo
+from qltk import ConfirmAction
+from plugins.songsmenu import SongsMenuPlugin
 
-class ViewNautilus(object):
+class ViewNautilus(SongsMenuPlugin):
     PLUGIN_NAME = 'View in Nautilus'
     PLUGIN_DESC = 'View directories in Nautilus.'
     PLUGIN_ICON = 'gtk-open'
-    PLUGIN_VERSION = '0.13'
+    PLUGIN_VERSION = '0.14'
 
     def plugin_songs(self, songs):
         dirs = dict.fromkeys([song('~dirname') for song in songs]).keys()

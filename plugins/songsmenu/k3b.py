@@ -9,12 +9,13 @@
 import os
 import util
 from qltk import ErrorMessage
+from plugins.songsmenu import SongsMenuPlugin
 
-class K3b(object):
+class K3b(SongsMenuPlugin):
     PLUGIN_NAME = 'Burn CD'
     PLUGIN_DESC = 'Burn CDs with K3b.'
     PLUGIN_ICON = 'gtk-cdrom'
-    PLUGIN_VERSION = '0.13'
+    PLUGIN_VERSION = '0.14'
 
     def plugin_songs(self, songs):
         if not util.iscommand("k3b"):
