@@ -243,6 +243,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             elif key == "~#tracks": return self.tracks
             elif key == "~#discs": return self.discs
             elif key == "~length": return util.format_time(self.length)
+            elif key == "date": return self.date
             elif key == "~long-length":
                 return util.format_time_long(self.length)
             elif key == "labelid": return self.key[1]
@@ -420,9 +421,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             if (a1 and a2) is None: return cmp(a1, a2)
             elif not a1.title: return 1
             elif not a2.title: return -1
+            elif not a1.people and a2.people: return 1
+            elif not a2.people and a1.people: return -1
             else: return (cmp(a1.people and a1.people[0],
                               a2.people and a2.people[0]) or
-                          cmp(a1.date, a2.date) or
+                          cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
                           cmp(a1.key, a2.key))
 
         def __compare_date(self, model, i1, i2):
@@ -430,7 +433,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             if (a1 and a2) is None: return cmp(a1, a2)
             elif not a1.title: return 1
             elif not a2.title: return -1
-            return (cmp(a1.date, a2.date) or cmp(a1.key, a2.key))
+            elif not a1.date and a2.date: return 1
+            elif not a2.date and a1.date: return -1
+            else: return (cmp(a1.date, a2.date) or cmp(a1.key, a2.key))
 
     class _AlbumStore(gtk.ListStore):
         def get_albums(self):
@@ -486,6 +491,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         view.set_rules_hint(True)
+        view.set_search_equal_func(self.__search_func)
+        view.set_search_column(0)
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
         e = self.FilterEntry(model_filter)
@@ -515,6 +522,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.pack_start(sw, expand=True)
         view.set_model(model_filter)
         self.show_all()
+
+    def __search_func(self, model, column, key, iter):
+        try: value = model[iter][0].title
+        except AttributeError: return True
+        else:
+            key = key.decode('utf-8')
+            return not (value.startswith(key) or value.lower().startswith(key))
         
     def __popup(self, view, watcher):
         # Build plugins Menu
