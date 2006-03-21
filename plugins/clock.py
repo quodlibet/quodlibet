@@ -16,7 +16,7 @@ class Alarm(object):
     PLUGIN_NAME = "Alarm Clock"
     PLUGIN_DESC = "Wake you up with loud music."
     PLUGIN_ICON = gtk.STOCK_DIALOG_INFO
-    PLUGIN_VERSION = "0.18"
+    PLUGIN_VERSION = "0.19"
 
     _pref_name = "alarm_times"
     _times = ["HH:MM"] * 7
@@ -72,7 +72,8 @@ class Alarm(object):
             e.set_text(self._times[i])
             e.set_max_length(5)
             e.set_width_chars(6)
-            day = gtk.Label(time.strftime("_%A:", (0, 0, 0, 0, 0, 0, i, 0, 0)))
+            day = gtk.Label(
+                time.strftime("_%A:", (2000, 1, 1, 0, 0, 0, i, 1, 0)))
             day.set_mnemonic_widget(e)
             day.set_use_underline(True)
             day.set_alignment(0.0, 0.5)
