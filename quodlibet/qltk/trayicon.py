@@ -7,13 +7,16 @@
 #
 # $Id$
 
-import gtk, pango
+import os
+import gtk
+import pango
 
-import config
-import browsers
-import util
-import qltk
+import const
 import stock
+import config
+import qltk
+import util
+import browsers
 
 from qltk.properties import SongProperties
 from qltk.browser import LibraryBrowser
@@ -131,9 +134,10 @@ class TrayIcon(object):
         self.__mapped = False
         self.__icon = icon = trayicon.TrayIcon("quodlibet")
         self.__tips.enable()
-        try: p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.svg", 16, 16)
+        filename = os.path.join(const.WD, "quodlibet.")
+        try: p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "svg", 16, 16)
         except:
-            p = gtk.gdk.pixbuf_new_from_file_at_size("quodlibet.png", 16, 16)
+            p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "png", 16, 16)
         img = gtk.Image()
         if p: img.set_from_pixbuf(p)
         eb = gtk.EventBox(); eb.add(img)
