@@ -246,12 +246,14 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             elif removable and row[0] == text:
                 model.remove(row.iter)
                 return
+            elif row[0] == text:
+                return True
 
     def prepend_text(self, text):
+        if self.__remove_if_present(text):
+            return
+
         model = self.get_model()
-
-        self.__remove_if_present(text)
-
         for row in model:
             if row[0] is None:
                 model.insert_after(row.iter, row=[text, text])
