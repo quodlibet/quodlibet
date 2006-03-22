@@ -14,64 +14,101 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
     and can save itself to (and load itself from) a filename or file-like."""
 
     models = {}
-    
-    def __init__(self, f=None, initial=[], count=10, model=None):
+
+    def __init__(self, filename=None, initial=[], count=10, model=None):
         self.count = count
-        if model:
-            try:
-                gtk.ComboBoxEntry.__init__(self, self.models[model], 0)
-            except KeyError:
-                gtk.ComboBoxEntry.__init__(self, gtk.ListStore(str), 0)
-                self.models[model] = self.get_model()
-                self.__fill(f, initial)
-        else:
-            gtk.ComboBoxEntry.__init__(self, gtk.ListStore(str), 0)
-            self.__fill(f, initial)
+        try: model = self.models[model]
+        except KeyError:
+            model = self.models[model] = gtk.ListStore(str, str)
+        else: model = gtk.ListStore(str, str)
+
+        super(ComboBoxEntrySave, self).__init__(model, 0)
+        self.clear()
+        render = gtk.CellRendererText()
+        self.pack_start(render, True)
+        self.add_attribute(render, 'text', 1)
+
+        self.set_row_separator_func(self.__separator_func)
+
+        if len(model) == 0:
+            self.__fill(filename, initial)
         self.connect_object('destroy', self.set_model, None)
 
-    def __fill(self, f, initial):
-        if f is not None and not hasattr(f, 'readlines'):
-            if os.path.exists(f):
-                for line in file(f).readlines():
-                    self.append_text(line.strip())
-        elif f is not None:
-            for line in f.readlines():
-                self.append_text(line.strip())
-        for c in initial: self.append_text(c)
+    def __fill(self, filename, initial):
+        model = self.get_model()
+        model.append(row=[None, None])
 
-    def prepend_text(self, text):
-        try: self.remove_text(self.get_text().index(text))
-        except ValueError: pass
-        gtk.ComboBoxEntry.prepend_text(self, text)
-        while len(self.get_model()) > self.count:
-            self.remove_text(self.count)
+        if filename is None: return
 
-    def insert_text(self, position, text):
-        try: self.remove_text(self.get_text().index(text))
-        except ValueError: pass
-        if position >= self.count: return
-        else:
-            gtk.ComboBoxEntry.insert_text(self, position, text)
-            while len(self.get_model()) > self.count:
-                self.remove_text(self.count)
+        if os.path.exists(filename):
+            for line in file(filename).readlines():
+                line = line.strip()
+                model.append(row=[line, line])
 
-    def append_text(self, text):
-        if text not in self.get_text():
-            if len(self.get_model()) < self.count:
-                gtk.ComboBoxEntry.append_text(self, text)
+        for c in initial:
+            model.append(row=[c, c])
+
+        self.__shorten()
+
+    def __separator_func(self, model, iter):
+        return model[iter][0] is None
+
+    def __shorten(self):
+        model = self.get_model()
+        for row in model:
+            if row[0] is None:
+                offset = row.path[0] + 1
+                break
+        to_remove = (len(model) - offset) - self.count
+        while to_remove > 0:
+            model.remove(model.get_iter((len(model) - 1,)))
+            to_remove -= 1
 
     def get_text(self):
-        """Return a list of all entries in the history."""
-        return [m[0] for m in self.get_model()]
+        text = []
+        add = False
+        for row in self.get_model():
+            if row[0] is None: add = True
+            elif add: text.append(row[0])
+        return text
 
-    def write(self, f, create=True):
-        """Save to f, a filename or file-like. If create is True, any
-        needed parent directories will be created."""
+    def write(self, filename, create=True):
+        """Save to a filename. If create is True, any needed parent
+        directories will be created."""
         try:
-            if not hasattr(f, 'read'):
-                if ("/" in f and create and
-                    not os.path.isdir(os.path.dirname(f))):
-                    os.makedirs(os.path.dirname(f))
-                f = file(f, "w")
-            f.write("\n".join(self.get_text()) + "\n")
+            if create:
+                if not os.path.isdir(os.path.dirname(filename)):
+                    os.makedirs(os.path.dirname(filename))
+
+            saved = file(filename + ".saved", "wU")
+            memory = file(filename, "wU")
+            target = saved
+            for row in self.get_model():
+                if row[0] is None: target = memory
+                else:
+                    target.write(row[0] + "\n")
+                    if target is saved:
+                        target.write(row[1] + "\n")
+            saved.close()
+            memory.close()
         except EnvironmentError: pass
+
+    def __remove_if_present(self, text):
+        removable = False
+        model = self.get_model()
+        for row in model:
+            if row[0] is None: removable = True
+            elif removable and row[0] == text:
+                model.remove(row.iter)
+                return
+
+    def prepend_text(self, text):
+        model = self.get_model()
+
+        self.__remove_if_present(text)
+
+        for row in model:
+            if row[0] is None:
+                model.insert_after(row.iter, row=[text, text])
+                break
+        self.__shorten()
