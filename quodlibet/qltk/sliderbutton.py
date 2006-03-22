@@ -77,7 +77,7 @@ class _PopupSlider(gtk.EventBox):
             if pointer == gtk.gdk.GRAB_SUCCESS:
                 gtk.gdk.pointer_ungrab(gtk.get_current_event_time())
             if keyboard == gtk.gdk.GRAB_SUCCESS:
-                gtk.gdk.keyboark_ungrab(gtk.get_current_event_time())
+                gtk.gdk.keyboard_ungrab(gtk.get_current_event_time())
 
     def __scroll(self, widget, ev, hscale):
         adj = self.__adj
