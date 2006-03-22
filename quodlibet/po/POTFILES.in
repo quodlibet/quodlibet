@@ -13,6 +13,7 @@ qltk/_editpane.py
 qltk/about.py
 qltk/bookmarks.py
 qltk/browser.py
+qltk/cbes.py
 qltk/chooser.py
 qltk/controls.py
 qltk/delete.py
@@ -32,6 +33,7 @@ qltk/queue.py
 qltk/quodlibet.py
 qltk/renamefiles.py
 qltk/songlist.py
+qltk/songsmenu.py
 qltk/tagsfrompath.py
 qltk/textedit.py
 qltk/tracknumbers.py
@@ -48,6 +50,7 @@ browsers/search.py
 browsers/filesystem.py
 browsers/iradio.py
 browsers/audiofeeds.py
+plugins/songsmenu.py
 util/__init__.py
 exfalso.desktop.in
 quodlibet.desktop.in
