@@ -128,8 +128,7 @@ class SearchBar(EmptyBar):
         l = gtk.Label(_("_Search:"))
         l.connect('mnemonic-activate', self.__mnemonic_activate)
         tips = Tooltips(self)
-        combo = ComboBoxEntrySave(
-            QUERIES, model="searchbar", count=15)
+        combo = ComboBoxEntrySave(QUERIES, model="searchbar", count=8)
         combo.child.set_completion(LibraryTagCompletion(watcher, library))
         l.set_mnemonic_widget(combo.child)
         l.set_use_underline(True)

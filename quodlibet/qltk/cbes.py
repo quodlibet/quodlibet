@@ -15,7 +15,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
     models = {}
 
-    def __init__(self, filename=None, initial=[], count=10, model=None):
+    def __init__(self, filename=None, initial=[], count=5, model=None):
         self.count = count
         try: model = self.models[model]
         except KeyError:
@@ -40,8 +40,15 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
         if filename is None: return
 
+        if os.path.exists(filename + ".saved"):
+            fileobj = file(filename + ".saved", "rU")
+            lines = list(fileobj.readlines())
+            lines.reverse()
+            while len(lines) > 1:
+                model.prepend(row=[lines.pop(1).strip(), lines.pop(0).strip()])
+
         if os.path.exists(filename):
-            for line in file(filename).readlines():
+            for line in file(filename, "rU").readlines():
                 line = line.strip()
                 model.append(row=[line, line])
 

@@ -14,7 +14,6 @@ import gtk, pango, gobject
 import stock
 import qltk
 from qltk.wlw import WritingWindow
-from qltk.cbes import ComboBoxEntrySave
 from qltk._editpane import EditPane, FilterCheckButton
 import const
 import config

@@ -14,7 +14,6 @@ import gtk, gobject
 import stock
 import qltk
 from qltk.wlw import WritingWindow
-from qltk.cbes import ComboBoxEntrySave
 from qltk.ccb import ConfigCheckButton
 from qltk._editpane import EditPane, FilterCheckButton
 
