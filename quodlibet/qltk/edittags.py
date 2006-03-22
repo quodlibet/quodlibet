@@ -160,6 +160,10 @@ class AddTagDialog(gtk.Dialog):
             entry.connect(
                 'changed', self.__validate, add, invalid, tips, valuebox)
 
+        if can_change == True:
+            self.__tag.child.connect_object(
+                'activate', gtk.Entry.grab_focus, self.__val)
+
     def get_tag(self):
         try: return self.__tag.tag
         except AttributeError:
@@ -185,8 +189,6 @@ class AddTagDialog(gtk.Dialog):
 
     def run(self):
         self.show()
-        try: self.__tag.child.set_activates_default(True)
-        except AttributeError: pass
         self.__val.set_activates_default(True)
         self.__tag.grab_focus()
         return gtk.Dialog.run(self)
