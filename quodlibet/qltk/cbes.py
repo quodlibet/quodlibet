@@ -15,7 +15,7 @@ class CBESEditor(qltk.Window):
     def __init__(self, cbes, initial=""):
         super(CBESEditor, self).__init__()
         self.set_border_width(12)
-        self.set_title(_("Edit Saved Values"))
+        self.set_title(_("Saved Values"))
         self.set_transient_for(qltk.get_top_parent(cbes))
         self.set_default_size(400, 300)
 
