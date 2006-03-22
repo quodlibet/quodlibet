@@ -64,14 +64,6 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             model.remove(model.get_iter((len(model) - 1,)))
             to_remove -= 1
 
-    def get_text(self):
-        text = []
-        add = False
-        for row in self.get_model():
-            if row[0] is None: add = True
-            elif add: text.append(row[0])
-        return text
-
     def write(self, filename, create=True):
         """Save to a filename. If create is True, any needed parent
         directories will be created."""
