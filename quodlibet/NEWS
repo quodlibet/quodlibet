@@ -39,6 +39,8 @@ See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
    * FIFO misses some commands. (#548)
    * Stupid 'refresh' signal finally gone. (#563)
    * Error when seeking and keyboard can't be grabbed. (#572)
+ * Updated translations:
+   * Finnish, by Jari Rahkonen.
 
 0.18 - "Babies Sporting Monocles"?
  * MP4 iTunes metadata can be written. (#199)

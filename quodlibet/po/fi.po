@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-03 00:22-0600\n"
-"PO-Revision-Date: 2006-02-19 18:40+0200\n"
+"POT-Creation-Date: 2006-03-23 12:29-0600\n"
+"PO-Revision-Date: 2006-03-23 22:02+0200\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../stock.py:35
+#: ../stock.py:39
 msgid "Edit _Tags"
 msgstr "Muokkaa t_unnisteita"
 
-#: ../stock.py:36
+#: ../stock.py:40
 msgid "_Plugins"
 msgstr "Liitä_nnäiset"
 
-#: ../stock.py:37
+#: ../stock.py:41
 msgid "_Preview"
 msgstr "_Esikatsele"
 
-#: ../stock.py:38
+#: ../stock.py:42
 msgid "Add to _Queue"
 msgstr "Lisää _jonoon"
 
-#: ../stock.py:54
+#: ../stock.py:43
+msgid "_Add to Playlist"
+msgstr "_Lisää soittolistaan"
+
+#: ../stock.py:60
 msgid "_Information"
 msgstr "T_iedot"
 
@@ -41,31 +45,31 @@ msgstr "T_iedot"
 #. as is the case in e.g. Finnish. It should be disambiguated as
 #. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
 #. Don't literally translate "ql-remove".
-#: ../stock.py:61 ../stock.py:65
+#: ../stock.py:67 ../stock.py:71
 msgid "ql-remove"
-msgstr "P_oista Kirjastosta"
+msgstr "P_oista kirjastosta"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:70
+#: ../stock.py:76
 msgid "gtk-media-next"
 msgstr "S_euraava"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:73
+#: ../stock.py:79
 msgid "gtk-media-previous"
 msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:76
+#: ../stock.py:82
 msgid "gtk-media-play"
 msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:79
+#: ../stock.py:85
 msgid "gtk-media-pause"
 msgstr ""
 
@@ -157,7 +161,7 @@ msgstr "Keskeytä soitto"
 
 #: ../quodlibet.py:170
 msgid "Toggle play/pause mode"
-msgstr "Vaihda soitto- ja keskeytystilojen välillä"
+msgstr "Keskeytä soitto tai jatka sitä"
 
 #: ../quodlibet.py:171
 msgid "Turn up volume"
@@ -232,7 +236,7 @@ msgid "Play a file"
 msgstr "Soita tiedosto"
 
 #. just file name, foo.ogg
-#: ../quodlibet.py:190 ../quodlibet.py:199 ../po/tag-names.py:22
+#: ../quodlibet.py:190 ../quodlibet.py:199 ../po/tag-names.py:23
 msgid "filename"
 msgstr "tiedostonimi"
 
@@ -276,26 +280,26 @@ msgstr "tunniste=arvo"
 msgid "Enqueue a file or query"
 msgstr "Lisää tiedosto tai kysely soittojonoon"
 
-#: ../quodlibet.py:230
+#: ../quodlibet.py:234
 #, python-format
 msgid "E: Invalid argument for '%s'."
 msgstr "VIRHE: Virheellinen argumentti valitsimelle \"%s\""
 
-#: ../quodlibet.py:232 ../util/__init__.py:158
+#: ../quodlibet.py:236 ../util/__init__.py:165
 #, python-format
 msgid "E: Try %s --help."
 msgstr "VIRHE: Kokeile kirjoittaa %s --help"
 
-#: ../quodlibet.py:253
+#: ../quodlibet.py:257
 msgid "Loaded song library."
 msgstr "Musiikkikirjasto ladattu."
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:262
+#: ../quodlibet.py:266
 msgid "Opening audio device."
 msgstr "Avataan äänilaite."
 
-#: ../quodlibet.py:302
+#: ../quodlibet.py:297
 msgid "Quod Libet is already running."
 msgstr "Quod Libet on jo käynnissä"
 
@@ -303,7 +307,7 @@ msgstr "Quod Libet on jo käynnissä"
 #. Note that although tag names are translated in the main list view,
 #. they are *not* when editing tags.
 #. date the song was added to the library
-#: ../po/tag-names.py:7 ../qltk/information.py:164
+#: ../po/tag-names.py:7 ../qltk/information.py:170
 msgid "added"
 msgstr "lisätty"
 
@@ -312,256 +316,306 @@ msgid "album"
 msgstr "albumi"
 
 #: ../po/tag-names.py:9
+msgid "album artist"
+msgstr "albumin artisti"
+
+#: ../po/tag-names.py:10
 msgid "arranger"
 msgstr "sovittaja"
 
-#: ../po/tag-names.py:10 ../qltk/information.py:120 ../qltk/information.py:303
+#: ../po/tag-names.py:11 ../qltk/information.py:126 ../qltk/information.py:309
 msgid "artist"
 msgstr "artisti"
 
-#: ../po/tag-names.py:11
+#: ../po/tag-names.py:12
 msgid "author"
 msgstr "kirjoittaja"
 
-#: ../po/tag-names.py:12
+#: ../po/tag-names.py:13
 msgid "composer"
 msgstr "säveltäjä"
 
-#: ../po/tag-names.py:13
+#: ../po/tag-names.py:14
 msgid "conductor"
 msgstr "kapellimestari"
 
-#: ../po/tag-names.py:14
+#: ../po/tag-names.py:15
 msgid "contact"
 msgstr "yhteys"
 
-#: ../po/tag-names.py:15
+#: ../po/tag-names.py:16
 msgid "copyright"
 msgstr "tekijänoikeus"
 
-#: ../po/tag-names.py:16
+#: ../po/tag-names.py:17
 msgid "date"
 msgstr "päivämäärä"
 
-#: ../po/tag-names.py:17
+#: ../po/tag-names.py:18
 msgid "description"
 msgstr "kuvaus"
 
 #. just path, /.../...
-#: ../po/tag-names.py:19 ../exfalso.py:37
+#: ../po/tag-names.py:20 ../exfalso.py:26
 msgid "directory"
 msgstr "hakemisto"
 
-#: ../po/tag-names.py:20
+#: ../po/tag-names.py:21
 msgid "disc"
 msgstr "levy"
 
 #. as in "file format"
-#: ../po/tag-names.py:24
+#: ../po/tag-names.py:25
 msgid "format"
 msgstr "muoto"
 
 #. file name plus path, /.../.../foo.ogg
-#: ../po/tag-names.py:26
+#: ../po/tag-names.py:27
 msgid "full name"
 msgstr "täydellinen nimi"
 
-#: ../po/tag-names.py:27
+#: ../po/tag-names.py:28
 msgid "genre"
 msgstr "tyylilaji"
 
-#: ../po/tag-names.py:28
+#: ../po/tag-names.py:29
 msgid "grouping"
 msgstr "ryhmittely"
 
 #. alternately, "catalog number", "catalog ID", "label number"
-#: ../po/tag-names.py:30
+#: ../po/tag-names.py:31
 msgid "label ID"
 msgstr "nimikkeen tunniste"
 
-#: ../po/tag-names.py:31
+#: ../po/tag-names.py:32
 msgid "language"
 msgstr "kieli"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:33 ../qltk/information.py:165
+#: ../po/tag-names.py:34 ../qltk/information.py:171
 msgid "last played"
-msgstr "Soitettu"
+msgstr "soitettu"
 
-#: ../po/tag-names.py:34 ../qltk/information.py:196
+#: ../po/tag-names.py:35 ../qltk/information.py:202
 msgid "length"
 msgstr "kesto"
 
-#: ../po/tag-names.py:35
+#: ../po/tag-names.py:36
 msgid "license"
 msgstr "lisenssi"
 
-#: ../po/tag-names.py:36
+#: ../po/tag-names.py:37
 msgid "location"
 msgstr "sijainti"
 
-#: ../po/tag-names.py:37
+#: ../po/tag-names.py:38
 msgid "lyricist"
 msgstr "sanoittaja"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:39 ../qltk/information.py:198
+#: ../po/tag-names.py:40 ../qltk/information.py:204
 msgid "modified"
 msgstr "muokattu"
 
-#: ../po/tag-names.py:40
+#: ../po/tag-names.py:41
 msgid "mount point"
 msgstr "liitoskohta"
 
 #. alternately, "record label"
-#: ../po/tag-names.py:42
+#: ../po/tag-names.py:43
 msgid "organization"
 msgstr "organisaatio"
 
-#. alternately, "movement", "section"
 #: ../po/tag-names.py:44
+msgid "original release date"
+msgstr "alkuperäinen julkaisupvm"
+
+#: ../po/tag-names.py:45
+msgid "original artist"
+msgstr "alkuperäinen artisti"
+
+#: ../po/tag-names.py:46
+msgid "original album"
+msgstr "alkuperäinen albumi"
+
+#. alternately, "movement", "section"
+#: ../po/tag-names.py:48
 msgid "part"
 msgstr "osa"
 
-#: ../po/tag-names.py:45
+#: ../po/tag-names.py:49
 msgid "people"
 msgstr "henkilöt"
 
-#: ../po/tag-names.py:46 ../qltk/information.py:309
+#: ../po/tag-names.py:50 ../qltk/information.py:315
 msgid "performer"
 msgstr "esittäjä"
 
-#: ../po/tag-names.py:47 ../qltk/information.py:166
+#: ../po/tag-names.py:51 ../qltk/information.py:172
 msgid "plays"
 msgstr "soittokertoja"
 
-#: ../po/tag-names.py:48 ../qltk/information.py:168
+#: ../po/tag-names.py:52 ../qltk/information.py:174
 msgid "rating"
 msgstr "arvosana"
 
-#: ../po/tag-names.py:49 ../qltk/information.py:167
-msgid "skips"
-msgstr "hypätty yli"
+#: ../po/tag-names.py:53
+msgid "recording date"
+msgstr "nauhoituspäivämäärä"
 
-#: ../po/tag-names.py:50
+#: ../po/tag-names.py:54 ../qltk/information.py:173
+msgid "skips"
+msgstr "ohituksia"
+
+#: ../po/tag-names.py:55
 msgid "title"
 msgstr "nimi"
 
-#: ../po/tag-names.py:51
+#: ../po/tag-names.py:56
 msgid "track"
 msgstr "raita"
 
-#: ../po/tag-names.py:52
+#: ../po/tag-names.py:57
 msgid "version"
 msgstr "versio"
 
-#: ../po/tag-names.py:53
+#: ../po/tag-names.py:58
 msgid "website"
 msgstr "web-sivusto"
 
-#: ../po/tag-names.py:54
+#: ../po/tag-names.py:59
 msgid "year"
 msgstr "vuosi"
 
-#. Beats per minute; I don't know if other languages use a different word.
-#: ../po/tag-names.py:56
+#. beats per minute
+#: ../po/tag-names.py:61
 msgid "BPM"
 msgstr "BPM"
 
-#: ../po/tag-names.py:58 ../qltk/information.py:310
+#: ../po/tag-names.py:63
+msgid "MusicBrainz track ID"
+msgstr "MusicBrainz raidan tunniste"
+
+#: ../po/tag-names.py:64
+msgid "MusicBrainz artist ID"
+msgstr "MusicBrainz artistin tunniste"
+
+#: ../po/tag-names.py:65
+msgid "MusicBrainz album ID"
+msgstr "MusicBrainz albumin tunniste"
+
+#. refers to a volume adjustment and not "to get/acquire".
+#: ../po/tag-names.py:68
+msgid "track gain"
+msgstr "raidan voimakkuus"
+
+#. refers to a volume adjustment and not "to get/acquire".
+#: ../po/tag-names.py:70
+msgid "album gain"
+msgstr "albumin voimakkuus"
+
+#: ../po/tag-names.py:71
+msgid "track peak"
+msgstr "raidan huippu"
+
+#: ../po/tag-names.py:72
+msgid "album peak"
+msgstr "albumin huippu"
+
+#: ../po/tag-names.py:74 ../qltk/information.py:316
 msgid "performers"
 msgstr "esittäjää"
 
-#: ../po/tag-names.py:59
+#: ../po/tag-names.py:75
 msgid "lyricists"
 msgstr "sanoittajaa"
 
-#: ../po/tag-names.py:60
+#: ../po/tag-names.py:76
 msgid "arrangers"
 msgstr "sovittajaa"
 
-#: ../po/tag-names.py:61
+#: ../po/tag-names.py:77
 msgid "composers"
 msgstr "säveltäjää"
 
-#: ../po/tag-names.py:62
+#: ../po/tag-names.py:78
 msgid "conductors"
 msgstr "orkesterinjohtajaa"
 
-#: ../po/tag-names.py:63
+#: ../po/tag-names.py:79
 msgid "authors"
 msgstr "kirjoittajaa"
 
-#: ../po/tag-names.py:64 ../qltk/information.py:121 ../qltk/information.py:304
-#: ../qltk/information.py:442
+#: ../po/tag-names.py:80 ../qltk/information.py:127 ../qltk/information.py:310
+#: ../qltk/information.py:448
 msgid "artists"
 msgstr "artistit"
 
-#: ../po/tag-names.py:65 ../qltk/information.py:459
+#: ../po/tag-names.py:81 ../qltk/information.py:465
 msgid "albums"
 msgstr "albumit"
 
-#: ../po/tag-names.py:66
+#: ../po/tag-names.py:82
 msgid "tracks"
 msgstr "raidat"
 
-#: ../po/tag-names.py:67
+#: ../po/tag-names.py:83
 msgid "discs"
 msgstr "levyt"
 
 #. Not really tag names, but this is the best place for them so far.
-#: ../po/tag-names.py:71
+#: ../po/tag-names.py:87
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekunti"
 msgstr[1] "%d sekuntia"
 
-#: ../po/tag-names.py:72
+#: ../po/tag-names.py:88
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuutti"
 msgstr[1] "%d minuuttia"
 
-#: ../po/tag-names.py:73
+#: ../po/tag-names.py:89
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d tunti"
 msgstr[1] "%d tuntia"
 
-#: ../po/tag-names.py:74
+#: ../po/tag-names.py:90
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d päivä"
 msgstr[1] "%d päivää"
 
-#: ../po/tag-names.py:75
+#: ../po/tag-names.py:91
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d vuosi"
 msgstr[1] "%d vuotta"
 
-#: ../formats/_audio.py:144 ../qltk/information.py:149
-#: ../qltk/information.py:156 ../qltk/information.py:181
-#: ../browsers/paned.py:247 ../browsers/audiofeeds.py:36
+#: ../formats/_audio.py:147 ../qltk/information.py:155
+#: ../qltk/information.py:162 ../qltk/information.py:187
+#: ../browsers/paned.py:30 ../browsers/audiofeeds.py:36
 #: ../browsers/audiofeeds.py:46 ../browsers/audiofeeds.py:47
-#: ../browsers/audiofeeds.py:107
+#: ../browsers/audiofeeds.py:110
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../exfalso.py:37
+#: ../exfalso.py:26
 msgid "an audio tag editor"
 msgstr "äänitiedostojen tunniste-editori"
 
-#: ../widgets.py:40
+#: ../widgets.py:41
 msgid "Unable to start web browser"
 msgstr "Web-selainta ei voi käynnistää"
 
-#: ../widgets.py:41
+#: ../widgets.py:42
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -569,19 +623,19 @@ msgstr ""
 "Web-selainta ei löydy. Aseta $BROWSER-muuttujasi, tai varmista, että /usr/"
 "bin/sensible-browser on olemassa."
 
-#: ../widgets.py:123
+#: ../widgets.py:136
 msgid "Saving library."
 msgstr "Tallennetaan kirjasto."
 
-#: ../widgets.py:127
+#: ../widgets.py:140
 msgid "Unable to save library"
 msgstr "Kirjastoa ei voi tallentaa"
 
-#: ../widgets.py:130
+#: ../widgets.py:143
 msgid "Unable to open audio device"
 msgstr "Äänilaitetta ei voi avata"
 
-#: ../widgets.py:131
+#: ../widgets.py:144
 #, python-format
 msgid ""
 "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
@@ -594,11 +648,11 @@ msgstr ""
 "    <b>pipeline = %(sink)s</b>\n"
 "tiedostossa ~/.quodlibet/config."
 
-#: ../widgets.py:140
+#: ../widgets.py:153
 msgid "Unable to open files"
 msgstr "Tiedostojen avaaminen ei onnistu"
 
-#: ../widgets.py:141
+#: ../widgets.py:154
 msgid ""
 "Quod Libet could not find the 'filesrc' GStreamer element. Check your "
 "GStreamer installation."
@@ -606,12 +660,14 @@ msgstr ""
 "Quod Libet ei löytänyt GStreamerin 'filesrc' -elementtiä. Tarkista GStreamer-"
 "asennuksesi."
 
-#: ../plugins/__init__.py:306 ../qltk/tagsfrompath.py:236
+#: ../plugins/__init__.py:301 ../qltk/tagsfrompath.py:235
+#: ../plugins/songsmenu.py:155
 msgid "Unable to edit song"
 msgstr "Kappaleen muokkaaminen epäonnistui"
 
-#: ../plugins/__init__.py:307 ../qltk/edittags.py:481
-#: ../qltk/tagsfrompath.py:237 ../qltk/tracknumbers.py:136
+#: ../plugins/__init__.py:302 ../qltk/edittags.py:495
+#: ../qltk/tagsfrompath.py:236 ../qltk/tracknumbers.py:136
+#: ../plugins/songsmenu.py:156
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -630,17 +686,17 @@ msgstr ""
 
 #: ../massagers.py:40
 msgid "ReplayGain gains must be entered in 'x.yy dB' format."
-msgstr "ReplayGainin lisäykset täytyy syöttää muodossa 'x.yy dB'."
+msgstr "ReplayGainin voimakkuudet syötetään muodossa 'x.yy dB'."
 
 #: ../massagers.py:54
 msgid "ReplayGain peaks must be entered in 'x.yy' format."
-msgstr "ReplayGainin huiput täytyy syöttää muodossa 'x.yy'."
+msgstr "ReplayGainin huiput syötetään muodossa 'x.yy'."
 
 #: ../massagers.py:66
 msgid "MusicBrainz IDs must be in UUID format."
 msgstr "MusicBrainz-kappaletunnisteiden on oltava UUID-muodossa."
 
-#: ../qltk/_editpane.py:71
+#: ../qltk/_editpane.py:70
 msgid "_More options..."
 msgstr "_Lisäasetukset"
 
@@ -655,19 +711,64 @@ msgstr "Äänilaite: %s"
 msgid "translator-credits"
 msgstr "Jari Rahkonen <jari.rahkonen@pp1.inet.fi>"
 
+#. Translators: Refers to the beginning of the playing song.
+#: ../qltk/bookmarks.py:25
+msgid "Beginning"
+msgstr "Alku"
+
+#: ../qltk/bookmarks.py:31 ../qltk/bookmarks.py:66
+msgid "N/A"
+msgstr "-"
+
+#: ../qltk/bookmarks.py:70
+msgid "Time"
+msgstr "Aika"
+
+#: ../qltk/bookmarks.py:76 ../qltk/bookmarks.py:108
+msgid "Bookmark Name"
+msgstr "Kirjanmerkin nimi"
+
+#: ../qltk/bookmarks.py:106
+msgid "MM:SS"
+msgstr "MM:SS"
+
+#: ../qltk/bookmarks.py:180 ../qltk/information.py:73
+msgid "Bookmarks"
+msgstr "Kirjanmerkit"
+
 #: ../qltk/browser.py:18
 msgid "Library Browser"
 msgstr "Kirjaston selain"
+
+#: ../qltk/cbes.py:20
+msgid "Saved Values"
+msgstr "Tallennetut arvot"
+
+#: ../qltk/cbes.py:31
+msgid "_Name:"
+msgstr "_Nimi:"
+
+#: ../qltk/cbes.py:39 ../qltk/edittags.py:138
+msgid "_Value:"
+msgstr "_Arvo:"
+
+#: ../qltk/cbes.py:197
+msgid "Edit saved values..."
+msgstr "Muokkaa tallennettuja arvoja..."
 
 #: ../qltk/chooser.py:39 ../qltk/filesel.py:199
 msgid "Songs"
 msgstr "Kappaleet"
 
-#: ../qltk/controls.py:44
+#: ../qltk/controls.py:46
 msgid "Display remaining time"
 msgstr "Näytä jäljellä oleva aika"
 
-#: ../qltk/controls.py:150
+#: ../qltk/controls.py:52
+msgid "_Edit Bookmarks..."
+msgstr "_Muokkaa kirjanmerkkejä..."
+
+#: ../qltk/controls.py:171
 msgid "Stop after this song"
 msgstr "Pysäytä tämän kappaleen jälkeen"
 
@@ -753,31 +854,27 @@ msgstr "Lisää tunniste"
 msgid "_Tag:"
 msgstr "_Tunniste:"
 
-#: ../qltk/edittags.py:138
-msgid "_Value:"
-msgstr "_Arvo:"
-
-#: ../qltk/edittags.py:199
+#: ../qltk/edittags.py:201
 msgid "Edit Tags"
 msgstr "Muokkaa tunnisteita"
 
-#: ../qltk/edittags.py:206
+#: ../qltk/edittags.py:208
 msgid "Write"
 msgstr "Kirjoita"
 
-#: ../qltk/edittags.py:226
+#: ../qltk/edittags.py:228
 msgid "Tag"
 msgstr "Tunniste"
 
-#: ../qltk/edittags.py:238
+#: ../qltk/edittags.py:240
 msgid "Value"
 msgstr "Arvo"
 
-#: ../qltk/edittags.py:378
+#: ../qltk/edittags.py:390
 msgid "Unable to add tag"
 msgstr "Tunnistetta ei voi lisätä"
 
-#: ../qltk/edittags.py:379
+#: ../qltk/edittags.py:391
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -791,12 +888,12 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:405 ../qltk/edittags.py:527 ../qltk/tagsfrompath.py:152
-#: ../util/__init__.py:438 ../util/__init__.py:445
+#: ../qltk/edittags.py:417 ../qltk/edittags.py:540 ../qltk/tagsfrompath.py:151
+#: ../util/__init__.py:444 ../util/__init__.py:451
 msgid "Invalid tag"
 msgstr "Virheellinen tunniste"
 
-#: ../qltk/edittags.py:406 ../qltk/edittags.py:528 ../qltk/tagsfrompath.py:153
+#: ../qltk/edittags.py:418 ../qltk/edittags.py:541 ../qltk/tagsfrompath.py:152
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -807,12 +904,12 @@ msgstr ""
 "\n"
 "Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
 
-#: ../qltk/edittags.py:446 ../qltk/tagsfrompath.py:211
+#: ../qltk/edittags.py:460 ../qltk/tagsfrompath.py:210
 #: ../qltk/tracknumbers.py:123
 msgid "Tag may not be accurate"
 msgstr "Tunniste saattaa olla epätarkka"
 
-#: ../qltk/edittags.py:447 ../qltk/tagsfrompath.py:212
+#: ../qltk/edittags.py:461 ../qltk/tagsfrompath.py:211
 #: ../qltk/tracknumbers.py:124
 #, python-format
 msgid ""
@@ -826,24 +923,24 @@ msgstr ""
 "\n"
 "Tallennetaanko kappale siitä huolimatta?"
 
-#: ../qltk/edittags.py:480 ../qltk/tracknumbers.py:135
+#: ../qltk/edittags.py:494 ../qltk/tracknumbers.py:135
 msgid "Unable to save song"
 msgstr "Kappaletta ei voi tallentaa"
 
-#: ../qltk/edittags.py:507 ../qltk/edittags.py:541
+#: ../qltk/edittags.py:520 ../qltk/edittags.py:554
 msgid "Invalid value"
 msgstr "Virheellinen arvo"
 
-#: ../qltk/edittags.py:514
+#: ../qltk/edittags.py:527
 msgid "Unable to retag multiple values"
 msgstr "Useiden arvojen tunnisteen uudelleenasettaminen ei onnistu."
 
-#: ../qltk/edittags.py:515
+#: ../qltk/edittags.py:528
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr "Jos tunnisteella on useita arvoja, sen nimen muuttamista ei tueta."
 
-#: ../qltk/exfalso.py:126 ../qltk/properties.py:110 ../qltk/songlist.py:517
-#: ../browsers/playlists.py:101
+#: ../qltk/exfalso.py:122 ../qltk/properties.py:108
+#: ../browsers/playlists.py:103 ../browsers/playlists.py:199
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s ja %(count)d muuta"
@@ -866,11 +963,11 @@ msgstr "Anna uuden kansion nimi:"
 
 #: ../qltk/filesel.py:133
 msgid "Unable to create folder"
-msgstr "Kansion luominen epäonnistui"
+msgstr "Kansiota ei voi luoda"
 
 #: ../qltk/filesel.py:146
 msgid "Unable to delete folder"
-msgstr "Kansion poistaminen epäonnistui"
+msgstr "Kansiota ei voi poistaa"
 
 #. Translators: Only worry about "by", "Disc", and "Track" below.
 #: ../qltk/info.py:20
@@ -893,140 +990,140 @@ msgstr ""
 msgid "_Edit Display..."
 msgstr "_Muokkaa näkymää..."
 
-#: ../qltk/info.py:72 ../qltk/trayicon.py:106 ../qltk/trayicon.py:221
+#: ../qltk/info.py:72 ../qltk/trayicon.py:109 ../qltk/trayicon.py:225
 msgid "Not playing"
 msgstr "Soitto katkaistu"
 
-#: ../qltk/information.py:50
+#: ../qltk/information.py:51
 msgid "No songs are selected."
 msgstr "Ei kappaleita valittuna"
 
-#: ../qltk/information.py:51
+#: ../qltk/information.py:52
 msgid "No Songs"
 msgstr "Ei kappaleita"
 
-#: ../qltk/information.py:64 ../qltk/information.py:217
-#: ../qltk/information.py:353 ../qltk/information.py:412
+#: ../qltk/information.py:65 ../qltk/information.py:223
+#: ../qltk/information.py:359 ../qltk/information.py:418
 msgid "Information"
 msgstr "Tiedot"
 
-#: ../qltk/information.py:68
+#: ../qltk/information.py:69
 msgid "Lyrics"
 msgstr "Sanat"
 
-#: ../qltk/information.py:90 ../qltk/information.py:330
+#: ../qltk/information.py:96 ../qltk/information.py:336
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
 
-#: ../qltk/information.py:95
+#: ../qltk/information.py:101
 #, python-format
 msgid "Track %s"
 msgstr "Raita %s"
 
-#: ../qltk/information.py:146 ../qltk/information.py:157
-#: ../qltk/songlist.py:286
+#: ../qltk/information.py:152 ../qltk/information.py:163
+#: ../qltk/songlist.py:284
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: ../qltk/information.py:147
+#: ../qltk/information.py:153
 #, python-format
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "%d kerran"
 msgstr[1] "%d kertaa"
 
-#: ../qltk/information.py:177 ../qltk/prefs.py:193
+#: ../qltk/information.py:183 ../qltk/prefs.py:193
 msgid "Library"
 msgstr "Kirjasto"
 
-#: ../qltk/information.py:190
+#: ../qltk/information.py:196
 #, python-format
 msgid "%d kbps"
 msgstr "%d kb/s"
 
-#: ../qltk/information.py:197
+#: ../qltk/information.py:203
 msgid "file size"
 msgstr "tiedostokoko"
 
-#: ../qltk/information.py:200
+#: ../qltk/information.py:206
 msgid "bitrate"
 msgstr "bittinopeus"
 
-#: ../qltk/information.py:211 ../qltk/properties.py:56
-#: ../qltk/renamefiles.py:71 ../qltk/tagsfrompath.py:169
+#: ../qltk/information.py:217 ../qltk/properties.py:56
+#: ../qltk/renamefiles.py:70 ../qltk/tagsfrompath.py:168
 #: ../qltk/tracknumbers.py:60
 msgid "File"
 msgstr "Tiedosto"
 
-#: ../qltk/information.py:260 ../browsers/albums.py:263
+#: ../qltk/information.py:266 ../browsers/albums.py:262
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d levy"
 msgstr[1] "%d levyä"
 
-#: ../qltk/information.py:262 ../browsers/albums.py:259
+#: ../qltk/information.py:268 ../browsers/albums.py:258
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d raita"
 msgstr[1] "%d raitaa"
 
-#: ../qltk/information.py:264
+#: ../qltk/information.py:270
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d valittu"
 msgstr[1] "%d valittu"
 
-#: ../qltk/information.py:277
+#: ../qltk/information.py:283
 #, python-format
 msgid "Produced by %s"
 msgstr "Tuottanut %s"
 
-#: ../qltk/information.py:340
+#: ../qltk/information.py:346
 msgid "Track unavailable"
 msgstr "Raita ei ole käytettävissä"
 
-#: ../qltk/information.py:347
+#: ../qltk/information.py:353
 msgid "Track List"
 msgstr "Kappaleet"
 
-#: ../qltk/information.py:385 ../qltk/information.py:456
+#: ../qltk/information.py:391 ../qltk/information.py:462
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "%d albumiton kappale"
 msgstr[1] "%d albumitonta kappaletta"
 
-#: ../qltk/information.py:389
+#: ../qltk/information.py:395
 msgid "Selected Discography"
 msgstr "Valittu diskografia"
 
-#: ../qltk/information.py:424 ../browsers/playlists.py:170
+#: ../qltk/information.py:430 ../browsers/playlists.py:172
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d kappale"
 msgstr[1] "%d kappaletta"
 
-#: ../qltk/information.py:439
+#: ../qltk/information.py:445
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] "%d kappale, jonka artisti tuntematon"
 msgstr[1] "%d kappaletta, joiden artisti tuntematon"
 
-#: ../qltk/information.py:472
+#: ../qltk/information.py:478
 msgid "Total length:"
 msgstr "Kesto yhteensä:"
 
-#: ../qltk/information.py:476
+#: ../qltk/information.py:482
 msgid "Total size:"
 msgstr "Koko yhteensä:"
 
-#: ../qltk/information.py:479
+#: ../qltk/information.py:485
 msgid "Files"
 msgstr "Tiedostot"
 
@@ -1091,23 +1188,23 @@ msgstr "Painotettu"
 msgid "One Song"
 msgstr "Yksi kappale"
 
-#: ../qltk/pluginwin.py:30
+#: ../qltk/pluginwin.py:31
 msgid "Quod Libet Plugins"
 msgstr "Quod Libetin liitännäiset"
 
-#: ../qltk/pluginwin.py:77
+#: ../qltk/pluginwin.py:79
 msgid "Show _Errors"
 msgstr "Näytä _Virheet"
 
-#: ../qltk/pluginwin.py:99
+#: ../qltk/pluginwin.py:101
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: ../qltk/pluginwin.py:173
+#: ../qltk/pluginwin.py:184
 msgid "No plugins found."
 msgstr "Liitännäisiä ei löytynyt."
 
-#: ../qltk/pluginwin.py:180
+#: ../qltk/pluginwin.py:191
 msgid "Plugin Errors"
 msgstr "Liitännäisten virheet"
 
@@ -1135,8 +1232,7 @@ msgstr "_Raita"
 msgid "_Artist"
 msgstr "_Artisti"
 
-#: ../qltk/prefs.py:47 ../qltk/quodlibet.py:350 ../qltk/songlist.py:406
-#: ../qltk/trayicon.py:282
+#: ../qltk/prefs.py:47 ../qltk/songlist.py:413 ../qltk/trayicon.py:286
 msgid "_Rating"
 msgstr "Ar_vosana"
 
@@ -1260,11 +1356,11 @@ msgstr "Valitse hakemistot"
 msgid "Quod Libet Preferences"
 msgstr "Quod Libetin asetukset"
 
-#: ../qltk/properties.py:112 ../qltk/properties.py:113
+#: ../qltk/properties.py:110 ../qltk/properties.py:111
 msgid "Properties"
 msgstr "Ominaisuudet"
 
-#: ../qltk/queue.py:35 ../qltk/quodlibet.py:408
+#: ../qltk/queue.py:35 ../qltk/quodlibet.py:407
 msgid "_Queue"
 msgstr "J_ono"
 
@@ -1276,7 +1372,7 @@ msgstr "Satunnainen al_bumi"
 msgid "Remove all songs from the queue"
 msgstr "Poista kaikki kappaleet jonosta"
 
-#: ../qltk/queue.py:89 ../browsers/_base.py:79
+#: ../qltk/queue.py:89 ../browsers/_base.py:80
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -1287,7 +1383,7 @@ msgstr[1] "%(count)d kappaletta (%(time)s)"
 msgid "_Order:"
 msgstr "_Soittotapa:"
 
-#: ../qltk/quodlibet.py:160 ../qltk/trayicon.py:237
+#: ../qltk/quodlibet.py:160 ../qltk/trayicon.py:241
 msgid "_Repeat"
 msgstr "Soiton_toisto"
 
@@ -1295,7 +1391,7 @@ msgstr "Soiton_toisto"
 msgid "Restart the playlist when finished"
 msgstr "Aloita soittolista alusta, kun kaikki kappaleet on soitettu"
 
-#: ../qltk/quodlibet.py:164 ../util/__init__.py:264
+#: ../qltk/quodlibet.py:164 ../util/__init__.py:270
 msgid "No time information"
 msgstr "Ei aikatietoa"
 
@@ -1303,7 +1399,7 @@ msgstr "Ei aikatietoa"
 msgid "Unable to add songs"
 msgstr "Kappaleita ei voi lisätä"
 
-#: ../qltk/quodlibet.py:276 ../qltk/quodlibet.py:664
+#: ../qltk/quodlibet.py:276 ../qltk/quodlibet.py:665
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "Kohteen <b>%s</b> käyttämää protokollaa ei tueta."
@@ -1324,7 +1420,7 @@ msgstr "Lisää _tiedosto..."
 msgid "_Add a Location..."
 msgstr "Lisää s_ijainti..."
 
-#: ../qltk/quodlibet.py:326 ../qltk/trayicon.py:256
+#: ../qltk/quodlibet.py:326 ../qltk/trayicon.py:260
 msgid "_Browse Library"
 msgstr "_Selaa kirjastoa"
 
@@ -1360,63 +1456,63 @@ msgstr "_Viimeiset 40"
 msgid "_Control"
 msgstr "O_hjaus"
 
-#: ../qltk/quodlibet.py:352
+#: ../qltk/quodlibet.py:351
 msgid "_Jump to Playing Song"
 msgstr "_Hyppää soivaan kappaleeseen"
 
-#: ../qltk/quodlibet.py:355
+#: ../qltk/quodlibet.py:354
 msgid "_View"
 msgstr "_Näytä"
 
-#: ../qltk/quodlibet.py:356
+#: ../qltk/quodlibet.py:355
 msgid "_Help"
 msgstr "_Ohje"
 
-#: ../qltk/quodlibet.py:376
+#: ../qltk/quodlibet.py:375
 msgid "Re_fresh Library"
 msgstr "_Virkistä kirjasto"
 
-#: ../qltk/quodlibet.py:380
+#: ../qltk/quodlibet.py:379
 msgid "Re_load Library"
 msgstr "Lataa kirjasto _uudelleen"
 
-#: ../qltk/quodlibet.py:385
+#: ../qltk/quodlibet.py:384
 msgid "Filter on _Genre"
 msgstr "Suodata t_yylilajin perusteella"
 
-#: ../qltk/quodlibet.py:386
+#: ../qltk/quodlibet.py:385
 msgid "Filter on _Artist"
 msgstr "Suodata _artistin perusteella"
 
-#: ../qltk/quodlibet.py:387
+#: ../qltk/quodlibet.py:386
 msgid "Filter on Al_bum"
 msgstr "Suodata al_bumin perusteella"
 
-#: ../qltk/quodlibet.py:394
+#: ../qltk/quodlibet.py:393
 msgid "Random _Genre"
 msgstr "Satunnainen _tyylilaji"
 
-#: ../qltk/quodlibet.py:395
+#: ../qltk/quodlibet.py:394
 msgid "Random _Artist"
 msgstr "Satunnainen a_rtisti"
 
-#: ../qltk/quodlibet.py:396
+#: ../qltk/quodlibet.py:395
 msgid "Random Al_bum"
 msgstr "Satunnainen alb_umi"
 
-#: ../qltk/quodlibet.py:403
+#: ../qltk/quodlibet.py:402
 msgid "Song _List"
 msgstr "_Kappalelista"
 
-#: ../qltk/quodlibet.py:434
+#: ../qltk/quodlibet.py:433
 msgid "Check for changes in your library"
 msgstr "Etsi muutoksia kirjastostasi"
 
-#: ../qltk/quodlibet.py:437
+#: ../qltk/quodlibet.py:436
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Lataa kaikki kirjaston kappaleet uudelleen (tämä saattaa kestää kauan)"
 
-#: ../qltk/quodlibet.py:440
+#: ../qltk/quodlibet.py:439
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -1424,7 +1520,7 @@ msgstr ""
 "40 eniten soittamaasi kappaletta (tasapelitilanteissa saatetaan valita "
 "enemmän kuin 40)"
 
-#: ../qltk/quodlibet.py:444
+#: ../qltk/quodlibet.py:443
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1432,7 +1528,7 @@ msgstr ""
 "40 vähiten soittamaasi kappaletta (tasapelitilanteissa saatetaan valita "
 "enemmän kuin 40)"
 
-#: ../qltk/quodlibet.py:616
+#: ../qltk/quodlibet.py:618
 #, python-format
 msgid ""
 "Scanning your library. This may take several minutes.\n"
@@ -1445,28 +1541,32 @@ msgstr ""
 "%d kappaletta ladattu uudelleen\n"
 "%d kappaletta poistettu"
 
-#: ../qltk/quodlibet.py:652
+#: ../qltk/quodlibet.py:653
 msgid "Add a Location"
 msgstr "Lisää sijainti"
 
-#: ../qltk/quodlibet.py:653
+#: ../qltk/quodlibet.py:654
 msgid "Enter the location of an audio file:"
 msgstr "Syötä äänitiedoston sijainti:"
 
-#: ../qltk/quodlibet.py:658 ../qltk/quodlibet.py:663
+#: ../qltk/quodlibet.py:659 ../qltk/quodlibet.py:664
 msgid "Unable to add location"
 msgstr "Sijaintia ei voi lisätä"
 
-#: ../qltk/quodlibet.py:659
+#: ../qltk/quodlibet.py:660
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> ei ole kelvollinen sijainti."
 
-#: ../qltk/quodlibet.py:678 ../qltk/quodlibet.py:682
+#: ../qltk/quodlibet.py:679 ../qltk/quodlibet.py:687
 msgid "Add Music"
 msgstr "Lisää musiikkia"
 
-#: ../qltk/quodlibet.py:703
+#: ../qltk/quodlibet.py:680
+msgid "Watch this folder for new songs"
+msgstr "Tarkkaile tätä kansiota uusien kappaleitten varalta"
+
+#: ../qltk/quodlibet.py:708
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1475,11 +1575,11 @@ msgstr ""
 "Kohdetta %s ei voitu lisätä kirjastoosi.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:708
+#: ../qltk/quodlibet.py:713
 msgid "Unable to add song"
 msgstr "Kappaletta ei voitu lisätä"
 
-#: ../qltk/quodlibet.py:718
+#: ../qltk/quodlibet.py:730
 #, python-format
 msgid ""
 "Scanning for new songs and adding them to your library.\n"
@@ -1490,39 +1590,39 @@ msgstr ""
 "\n"
 "%d kappaletta lisätty"
 
-#: ../qltk/renamefiles.py:28
+#: ../qltk/renamefiles.py:27
 msgid "Replace spaces with _underscores"
 msgstr "Korvaa _välilyönnit alaviivoilla"
 
-#: ../qltk/renamefiles.py:35
+#: ../qltk/renamefiles.py:34
 msgid "Strip _Windows-incompatible characters"
 msgstr "Poista _Windows-yhteensopimattomat merkit"
 
-#: ../qltk/renamefiles.py:44
+#: ../qltk/renamefiles.py:43
 msgid "Strip _diacritical marks"
 msgstr "Poista ta_rkkeet"
 
-#: ../qltk/renamefiles.py:53
+#: ../qltk/renamefiles.py:52
 msgid "Strip non-_ASCII characters"
 msgstr "Poista _ASCII:hin kuulumattomat merkit"
 
-#: ../qltk/renamefiles.py:61
+#: ../qltk/renamefiles.py:60
 msgid "Rename Files"
 msgstr "Nimeä tiedostot"
 
-#: ../qltk/renamefiles.py:77
+#: ../qltk/renamefiles.py:76
 msgid "New Name"
 msgstr "Uusi nimi"
 
-#: ../qltk/renamefiles.py:112
+#: ../qltk/renamefiles.py:111
 msgid "_Continue"
 msgstr "_Jatka"
 
-#: ../qltk/renamefiles.py:114
+#: ../qltk/renamefiles.py:113
 msgid "Unable to rename file"
 msgstr "Tiedoston nimeäminen ei onnistu"
 
-#: ../qltk/renamefiles.py:115
+#: ../qltk/renamefiles.py:114
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1533,11 +1633,11 @@ msgstr ""
 "Kohdetiedosto on mahdollisesti jo olemassa, tai sinulla ei ole oikeuksia "
 "uuden tiedoston luomiseen tai vanhan poistamiseen."
 
-#: ../qltk/renamefiles.py:147
+#: ../qltk/renamefiles.py:145
 msgid "Path is not absolute"
 msgstr "Polku ei ole absoluuttinen"
 
-#: ../qltk/renamefiles.py:148
+#: ../qltk/renamefiles.py:146
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1550,58 +1650,54 @@ msgstr ""
 "sisältää merkin /, mutta ei ala juurihakemistosta. Välttääksesi hakemistojen "
 "väärinnimeämistä, aloita kaavasi merkeillä / tai ~/."
 
-#: ../qltk/songlist.py:401
+#: ../qltk/songlist.py:399
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Suodata sarakkeen \"%s\" perusteella"
 
-#: ../qltk/songlist.py:456
-msgid "_Add to Playlist"
-msgstr "_Lisää soittolistaan"
-
-#: ../qltk/songlist.py:460
-msgid "_New Playlist"
-msgstr "_Uusi soittolista"
-
-#: ../qltk/songlist.py:605 ../browsers/filesystem.py:54
+#: ../qltk/songlist.py:516 ../browsers/filesystem.py:61
 msgid "Unable to copy songs"
 msgstr "Kappaleiden kopiointi epäonnistui"
 
-#: ../qltk/songlist.py:606 ../browsers/filesystem.py:55
+#: ../qltk/songlist.py:517 ../browsers/filesystem.py:62
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Valittuja tiedostoja ei voi kopioida toisiin soittolistoihin tai jonoon."
 
-#: ../qltk/tagsfrompath.py:75
+#: ../qltk/songsmenu.py:33
+msgid "Old Plugins"
+msgstr "Vanhat liitännäiset"
+
+#: ../qltk/tagsfrompath.py:74
 msgid "Replace _underscores with spaces"
 msgstr "Korvaa alaviivat _välilyönneillä"
 
-#: ../qltk/tagsfrompath.py:82
+#: ../qltk/tagsfrompath.py:81
 msgid "_Title-case tags"
 msgstr "_Isot alkukirjaimet tunnisteisiin"
 
-#: ../qltk/tagsfrompath.py:89
+#: ../qltk/tagsfrompath.py:88
 msgid "Split into multiple _values"
 msgstr "Jaa _useampaan arvoon"
 
-#: ../qltk/tagsfrompath.py:99
+#: ../qltk/tagsfrompath.py:98
 msgid "Tags From Path"
 msgstr "Tunnisteet polusta"
 
-#: ../qltk/tagsfrompath.py:109
+#: ../qltk/tagsfrompath.py:108
 msgid "Tags replace existing ones"
 msgstr "Tunnisteet korvaavat olemassaolevat"
 
-#: ../qltk/tagsfrompath.py:110
+#: ../qltk/tagsfrompath.py:109
 msgid "Tags are added to existing ones"
 msgstr "Tunnisteet lisätään olemassaoleviin"
 
-#: ../qltk/tagsfrompath.py:134 ../qltk/textedit.py:66
+#: ../qltk/tagsfrompath.py:133 ../qltk/textedit.py:66
 #: ../browsers/albums.py:106 ../browsers/albums.py:110
 msgid "Invalid pattern"
 msgstr "Virheellinen hakukaava"
 
-#: ../qltk/tagsfrompath.py:135
+#: ../qltk/tagsfrompath.py:134
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1614,11 +1710,11 @@ msgstr ""
 "on virheellinen. Se saattaa sisältää saman tunnisteen kahdesti tai "
 "parittomia pienemmyys/suuremmuusmerkkejä (&lt; / &gt;)."
 
-#: ../qltk/tagsfrompath.py:156
+#: ../qltk/tagsfrompath.py:155
 msgid "Invalid tags"
 msgstr "Tunnisteet eivät kelpaa"
 
-#: ../qltk/tagsfrompath.py:157
+#: ../qltk/tagsfrompath.py:156
 #, python-format
 msgid ""
 "Invalid tags <b>%s</b>\n"
@@ -1662,11 +1758,11 @@ msgstr "Raitoja _yhteensä:"
 msgid "Track"
 msgstr "Raita"
 
-#: ../qltk/trayicon.py:30
+#: ../qltk/trayicon.py:33
 msgid "Tray Icon Preferences"
 msgstr "Järjestelmäkuvakkeen asetukset"
 
-#: ../qltk/trayicon.py:34
+#: ../qltk/trayicon.py:37
 msgid ""
 "Scroll wheel adjusts volume\n"
 "Shift and scroll wheel changes song"
@@ -1674,7 +1770,7 @@ msgstr ""
 "Hiiren vierityspainike säätää äänenvoimakkuutta\n"
 "Vaihto + vieritys vaihtaa kappaletta"
 
-#: ../qltk/trayicon.py:36
+#: ../qltk/trayicon.py:39
 msgid ""
 "Scroll wheel changes song\n"
 "Shift and scroll wheel adjusts volume"
@@ -1682,44 +1778,44 @@ msgstr ""
 "Hiiren vierityspainike vaihtaa kappaletta\n"
 "Vaihto + vieritys säätää äänenvoimakkuutta"
 
-#: ../qltk/trayicon.py:43
+#: ../qltk/trayicon.py:46
 msgid "Scroll Wheel"
 msgstr "Vierityspainike"
 
-#: ../qltk/trayicon.py:72
+#: ../qltk/trayicon.py:75
 msgid "Tooltip Display"
 msgstr "Työkaluvihje"
 
-#: ../qltk/trayicon.py:235
+#: ../qltk/trayicon.py:239
 msgid "Play _Order"
 msgstr "Soitt_ojärjestys"
 
-#: ../qltk/trayicon.py:246
+#: ../qltk/trayicon.py:250
 msgid "_In Order"
 msgstr "_Järjestyksessä"
 
-#: ../qltk/trayicon.py:246
+#: ../qltk/trayicon.py:250
 msgid "_Shuffle"
 msgstr "_Sekoita"
 
-#: ../qltk/trayicon.py:246
+#: ../qltk/trayicon.py:250
 msgid "_Weighted"
 msgstr "_Painotettu"
 
-#: ../qltk/trayicon.py:246
+#: ../qltk/trayicon.py:250
 msgid "_One Song"
 msgstr "_Yksi kappale"
 
-#: ../qltk/views.py:233
+#: ../qltk/views.py:231
 #, python-format
 msgid "and %d more..."
 msgstr "ja %d muuta..."
 
-#: ../qltk/watcher.py:93
+#: ../qltk/watcher.py:86
 msgid "Unable to play song"
 msgstr "Kappaletta ei voi soittaa"
 
-#: ../qltk/watcher.py:94
+#: ../qltk/watcher.py:87
 msgid "GStreamer was unable to load the selected song."
 msgstr "GStreamer ei voinut avata valittua kappaletta."
 
@@ -1732,71 +1828,75 @@ msgstr "Tallennetaan muuttamasi kappaleet."
 msgid "%d/%d songs saved"
 msgstr "%d/%d kappaletta tallennettu"
 
-#: ../browsers/albums.py:33
+#: ../qltk/x.py:131
+msgid "Clear search"
+msgstr "Tyhjennä haku"
+
+#: ../browsers/albums.py:32
 msgid "Songs not in an album"
 msgstr "Kappaleet, jotka eivät ole millään albumilla"
 
-#: ../browsers/albums.py:61
+#: ../browsers/albums.py:60
 msgid "Album List Preferences"
 msgstr "Albumilistan asetukset"
 
-#: ../browsers/albums.py:67
+#: ../browsers/albums.py:66
 msgid "Show album _covers"
 msgstr "Näytä albumien _kannet"
 
-#: ../browsers/albums.py:83
+#: ../browsers/albums.py:82
 msgid "Album Display"
 msgstr "Albuminäkymä"
 
-#: ../browsers/albums.py:395
+#: ../browsers/albums.py:399
 msgid "Sort by title"
 msgstr "Järjestys: nimi"
 
-#: ../browsers/albums.py:395
+#: ../browsers/albums.py:399
 msgid "Sort by artist"
 msgstr "Järjestys: artisti"
 
-#: ../browsers/albums.py:395
+#: ../browsers/albums.py:399
 msgid "Sort by date"
 msgstr "Järjestys: päivämäärä"
 
-#: ../browsers/albums.py:478
+#: ../browsers/albums.py:483
 msgid "All Albums"
 msgstr "Kaikki albumit"
 
-#: ../browsers/albums.py:479
+#: ../browsers/albums.py:484
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
-#: ../browsers/albums.py:690
+#: ../browsers/albums.py:670
 msgid "_Album List"
 msgstr "_Albumilista"
 
-#: ../browsers/paned.py:34
+#: ../browsers/paned.py:37
 msgid "Paned Browser Preferences"
 msgstr "Paneeliselaimen asetukset"
 
-#: ../browsers/paned.py:40
+#: ../browsers/paned.py:43
 msgid "_Custom"
 msgstr "_Mukautettu"
 
-#: ../browsers/paned.py:245
+#: ../browsers/paned.py:249
 msgid "All"
 msgstr "Kaikki"
 
-#: ../browsers/paned.py:301 ../browsers/search.py:130
+#: ../browsers/paned.py:314 ../browsers/search.py:128
 #: ../browsers/iradio.py:165
 msgid "_Search:"
 msgstr "_Hae:"
 
-#: ../browsers/paned.py:444
+#: ../browsers/paned.py:465
 msgid "_Paned Browser"
 msgstr "_Paneeliselain"
 
-#: ../browsers/playlists.py:58
+#: ../browsers/playlists.py:60
 #, python-format
 msgid ""
 "Importing playlist.\n"
@@ -1807,88 +1907,88 @@ msgstr ""
 "\n"
 "%d/%d kappaletta lisätty."
 
-#: ../browsers/playlists.py:87 ../browsers/playlists.py:367
+#: ../browsers/playlists.py:89 ../browsers/playlists.py:395
 msgid "New Playlist"
 msgstr "Uusi soittolista"
 
-#: ../browsers/playlists.py:126
+#: ../browsers/playlists.py:128
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "Soittolista on jo olemassa nimellä %s."
 
-#: ../browsers/playlists.py:236
+#: ../browsers/playlists.py:183
+msgid "_New Playlist"
+msgstr "_Uusi soittolista"
+
+#: ../browsers/playlists.py:263
 msgid "_Remove from Playlist"
 msgstr "_Poista Soittolistalta"
 
-#: ../browsers/playlists.py:267
+#: ../browsers/playlists.py:293
 msgid "_Import"
 msgstr "_Tuo"
 
-#: ../browsers/playlists.py:384 ../browsers/playlists.py:463
+#: ../browsers/playlists.py:412 ../browsers/playlists.py:490
 msgid "Unable to import playlist"
 msgstr "Soittolistan tuonti ei onnistu"
 
-#: ../browsers/playlists.py:385 ../browsers/playlists.py:464
+#: ../browsers/playlists.py:413 ../browsers/playlists.py:491
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet voi tuoda vain M3U- ja PLS-muotoisia soittolistoja."
 
-#: ../browsers/playlists.py:403
+#: ../browsers/playlists.py:437
 msgid "_Rename"
 msgstr "_Nimeä"
 
-#: ../browsers/playlists.py:444
+#: ../browsers/playlists.py:471
 msgid "Unable to rename playlist"
 msgstr "Soittolistan nimeäminen ei onnistu"
 
-#: ../browsers/playlists.py:452
+#: ../browsers/playlists.py:479
 msgid "Import Playlist"
 msgstr "Tuo soittolista"
 
-#: ../browsers/playlists.py:492
+#: ../browsers/playlists.py:517
 msgid "_Playlists"
 msgstr "_Soittolistat"
 
-#: ../browsers/search.py:89
+#: ../browsers/search.py:87
 msgid "_Limit:"
 msgstr "_Rajoite:"
 
-#: ../browsers/search.py:100
+#: ../browsers/search.py:98
 msgid "_Weight"
 msgstr "_Painoarvo"
 
-#: ../browsers/search.py:140
-msgid "Clear search"
-msgstr "Tyhjennä haku"
-
-#: ../browsers/search.py:147
+#: ../browsers/search.py:141
 msgid "Search"
 msgstr "Hae"
 
-#: ../browsers/search.py:149
+#: ../browsers/search.py:143
 msgid "Search your library"
 msgstr "Hae kirjastostasi"
 
-#: ../browsers/search.py:177
+#: ../browsers/search.py:171
 msgid "_Limit Results"
 msgstr "Tulosten _määrä"
 
-#: ../browsers/search.py:220
+#: ../browsers/search.py:214
 msgid "_Disable Browser"
 msgstr "S_ulje selain"
 
-#: ../browsers/search.py:221
+#: ../browsers/search.py:215
 msgid "_Search Library"
 msgstr "_Hae kirjastosta"
 
-#: ../browsers/filesystem.py:99
+#: ../browsers/filesystem.py:101
 msgid "_Add to Library"
 msgstr "_Lisää kirjastoon"
 
-#: ../browsers/filesystem.py:143
+#: ../browsers/filesystem.py:142
 msgid "_File System"
 msgstr "Suo_dattimet"
 
-#: ../browsers/iradio.py:78 ../browsers/iradio.py:258
+#: ../browsers/iradio.py:78 ../browsers/iradio.py:255
 msgid "Unsupported file type"
 msgstr "Tiedostomuotoa ei tueta"
 
@@ -1932,75 +2032,75 @@ msgstr "_Kanavat..."
 msgid "_New Station"
 msgstr "_Uusi kanava"
 
-#: ../browsers/iradio.py:196
+#: ../browsers/iradio.py:195
 msgid "_Remove Station"
 msgstr "_Poista kanava"
 
-#: ../browsers/iradio.py:225
+#: ../browsers/iradio.py:222
 msgid "Unable to add station"
 msgstr "Kanavaa ei voitu lisätä"
 
-#: ../browsers/iradio.py:230
+#: ../browsers/iradio.py:227
 msgid "No stations found"
 msgstr "Kanavia ei löytynyt."
 
-#: ../browsers/iradio.py:231
+#: ../browsers/iradio.py:228
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Internetradiokanavia ei löytynyt sijainnista %s."
 
-#: ../browsers/iradio.py:239 ../browsers/iradio.py:268
+#: ../browsers/iradio.py:236 ../browsers/iradio.py:265
 msgid "No new stations"
 msgstr "Ei uusia kanavia"
 
-#: ../browsers/iradio.py:240
+#: ../browsers/iradio.py:237
 msgid "All stations listed are already in your library."
 msgstr "Kaikki luetellut kanavat ovat jo kirjastossasi."
 
-#: ../browsers/iradio.py:259
+#: ../browsers/iradio.py:256
 msgid "M3U playlists cannot be loaded."
 msgstr "M3U-soittolistoja ei voi avata."
 
-#: ../browsers/iradio.py:269
+#: ../browsers/iradio.py:266
 msgid "This station is already in your library."
 msgstr "Kanava on jo kirjastossasi."
 
-#: ../browsers/iradio.py:283
+#: ../browsers/iradio.py:280
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
 msgstr[0] "%(count)d kanava"
 msgstr[1] "%(count)d kanavaa"
 
-#: ../browsers/iradio.py:289
+#: ../browsers/iradio.py:284
 msgid "_Internet Radio"
 msgstr "I_nternetradio"
 
-#: ../browsers/audiofeeds.py:152
+#: ../browsers/audiofeeds.py:155
 msgid "New Feed"
 msgstr "Uusi syöte"
 
-#: ../browsers/audiofeeds.py:153
+#: ../browsers/audiofeeds.py:156
 msgid "Enter the location of an audio feed:"
 msgstr "Syötä äänisyötteen sijainti:"
 
-#: ../browsers/audiofeeds.py:221 ../browsers/audiofeeds.py:230
+#: ../browsers/audiofeeds.py:224 ../browsers/audiofeeds.py:230
 msgid "_Download..."
 msgstr "_Lataa..."
 
-#: ../browsers/audiofeeds.py:239
+#: ../browsers/audiofeeds.py:237
 msgid "Download Files"
 msgstr "Lataa tiedostoja"
 
-#: ../browsers/audiofeeds.py:258
+#: ../browsers/audiofeeds.py:256
 msgid "Download File"
 msgstr "Lataa tiedosto"
 
-#: ../browsers/audiofeeds.py:336 ../browsers/audiofeeds.py:392
+#: ../browsers/audiofeeds.py:334 ../browsers/audiofeeds.py:390
 msgid "Unable to add feed"
 msgstr "Syötettä ei voitu lisätä"
 
-#: ../browsers/audiofeeds.py:337 ../browsers/audiofeeds.py:393
+#: ../browsers/audiofeeds.py:335 ../browsers/audiofeeds.py:391
 #, python-format
 msgid ""
 "<b>%s</b> could not be added. The server may be down, or the location may "
@@ -2009,28 +2109,28 @@ msgstr ""
 "Sijainnin <b>%s</b> lisääminen ei onnistunut. Ehkä palvelin ei ole linjoilla "
 "tai sijainti ei ole äänisyöte."
 
-#: ../browsers/audiofeeds.py:417
+#: ../browsers/audiofeeds.py:413
 msgid "_Audio Feeds"
 msgstr "Äänis_yötteet"
 
-#: ../util/__init__.py:73
+#: ../util/__init__.py:80
 msgid "Display brief usage information"
 msgstr "Näytä lyhyt käyttöohje"
 
-#: ../util/__init__.py:75
+#: ../util/__init__.py:82
 msgid "Display version and copyright"
 msgstr "Näytä versio ja tekijänoikeustiedot"
 
-#: ../util/__init__.py:111 ../util/__init__.py:112
+#: ../util/__init__.py:118 ../util/__init__.py:119
 #, python-format
 msgid "Usage: %s %s"
 msgstr "Käyttö: %s %s"
 
-#: ../util/__init__.py:112
+#: ../util/__init__.py:119
 msgid "[options]"
 msgstr "[valitsimet]"
 
-#: ../util/__init__.py:133
+#: ../util/__init__.py:140
 #, python-format
 msgid ""
 "%s %s - <quodlibet@lists.sacredchao.net>\n"
@@ -2046,22 +2146,22 @@ msgstr ""
 "takuuta EI ole; ei edes koskien KAUPPAKELPOISUUTTA tai TIETTYYN TEHTÄVÄÄN\n"
 "SOVELTUVUUTTA.\n"
 
-#: ../util/__init__.py:150
+#: ../util/__init__.py:157
 #, python-format
 msgid "E: Option '%s' not recognized."
 msgstr "VIRHE: Valitsin '%s' ei kelpaa."
 
-#: ../util/__init__.py:153
+#: ../util/__init__.py:160
 #, python-format
 msgid "E: Option '%s' requires an argument."
 msgstr "VIRHE: Valitsin '%s' vaatii argumentin."
 
-#: ../util/__init__.py:156
+#: ../util/__init__.py:163
 #, python-format
 msgid "E: '%s' is not a unique prefix."
 msgstr "VIRHE: '%s' ei ole ainutkertainen etuliite."
 
-#: ../util/__init__.py:306 ../util/__init__.py:313
+#: ../util/__init__.py:312 ../util/__init__.py:319
 msgid "[Invalid Encoding]"
 msgstr "[Virheellinen koodaus]"
 
