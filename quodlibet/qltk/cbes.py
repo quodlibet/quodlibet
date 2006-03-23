@@ -11,6 +11,8 @@ import gtk
 import pango
 import qltk
 
+from qltk.views import RCMHintedTreeView
+
 class CBESEditor(qltk.Window):
     def __init__(self, cbes, initial=""):
         super(CBESEditor, self).__init__()
@@ -43,8 +45,6 @@ class CBESEditor(qltk.Window):
         l.set_alignment(0.0, 0.5)
         t.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
         t.attach(value, 1, 2, 1, 2)
-        update = qltk.Button(_("_Replace"), gtk.STOCK_FIND_AND_REPLACE)
-        t.attach(update, 2, 3, 1, 2, xoptions=gtk.FILL)
 
         self.child.pack_start(t, expand=False)
 
@@ -53,7 +53,7 @@ class CBESEditor(qltk.Window):
             if row[2] is not None: break
             else: model.append((row[0], row[1]))
 
-        view = gtk.TreeView(model)
+        view = RCMHintedTreeView(model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
         view.set_rules_hint(True)
@@ -68,47 +68,38 @@ class CBESEditor(qltk.Window):
         sw.add(view)
         self.child.pack_start(sw)
 
-        bbox = gtk.HButtonBox()
-        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-        remove.set_sensitive(False)
-        bbox.pack_start(remove)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
-        bbox.pack_start(close)
-        self.child.pack_start(bbox, expand=False)
+        menu = gtk.Menu()
+        remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        menu.append(remove)
+        menu.show_all()
 
         selection = view.get_selection()
         name.connect_object('activate', gtk.Entry.grab_focus, value)
-        value.connect_object(
-            'activate', self.__dtrt, selection, name, value, model)
-        value.connect('changed', self.__changed, [add, update])
+        value.connect('activate', self.__dtrt, add)
+        value.connect('changed', self.__changed, [add])
         add.connect_object(
             'clicked', self.__add, selection, name, value, model)
-        update.connect_object(
-            'clicked', self.__update, selection, name, value, model)
-        selection.connect(
-            'changed', self.__set_text, name, value, [update, remove])
-        close.connect_object('clicked', qltk.Window.destroy, self)
-        remove.connect_object('clicked', self.__remove, selection)
+        selection.connect('changed', self.__set_text, name, value)
         self.connect_object('destroy', self.__finish, model, cbes)
+        view.connect('popup-menu', self.__popup, menu)
+        remove.connect_object('activate', self.__remove, view.get_selection())
 
         name.grab_focus()
         value.set_text(initial)
         self.show_all()
 
-    def __dtrt(self, selection, name, value, model):
-        if value.get_text():
-            if selection.get_selected()[1] is None:
-                self.__add(selection, name, value, model)
-            else: self.__update(selection, name, value, model)
+    def __dtrt(self, value, add):
+        if value.get_text(): add.clicked()
+
+    def __popup(self, view, menu):
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
 
     def __remove(self, selection):
         model, iter = selection.get_selected()
         if iter is not None: model.remove(iter)
 
-    def __set_text(self, selection, name, value, buttons):
+    def __set_text(self, selection, name, value):
         model, iter = selection.get_selected()
-        for button in buttons:
-            button.set_sensitive(bool(iter))
         if iter is not None:
             name.set_text(model[iter][1])
             value.set_text(model[iter][0])
@@ -127,16 +118,10 @@ class CBESEditor(qltk.Window):
         iter = model.append(row=[value, name])
         selection.select_iter(iter)
 
-    def __update(self, selection, name, value, model):
-        model, iter = selection.get_selected()
-        value = value.get_text()
-        name = name.get_text() or value
-        model.set(iter, 0, value, 1, name)
-
     def __finish(self, model, cbes):
         cbes_model = cbes.get_model()
         iter = cbes_model.get_iter_first()
-        while cbes_model.get_value(iter, 2) is None:
+        while cbes_model[iter][2] is None:
             cbes_model.remove(iter)
             iter = cbes_model.get_iter_first()
         for row in model:
