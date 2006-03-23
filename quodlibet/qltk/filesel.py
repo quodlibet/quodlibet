@@ -234,7 +234,7 @@ class FileSelector(gtk.VPaned):
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.pack2(sw, resize=True)
 
-    def rescan(self):
+    def rescan(self, *args):
         self.get_child1().child.get_selection().emit('changed')
 
     def __changed(self, selection):
