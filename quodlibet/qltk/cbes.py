@@ -35,8 +35,6 @@ class CBESEditor(qltk.Window):
         l.set_alignment(0.0, 0.5)
         t.attach(l, 0, 1, 0, 1, xoptions=gtk.FILL)
         t.attach(name, 1, 2, 0, 1)
-        add = gtk.Button(stock=gtk.STOCK_ADD)
-        t.attach(add, 2, 3, 0, 1, xoptions=gtk.FILL)
 
         l = gtk.Label(_("_Value:"))
         value = gtk.Entry()
@@ -45,6 +43,9 @@ class CBESEditor(qltk.Window):
         l.set_alignment(0.0, 0.5)
         t.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
         t.attach(value, 1, 2, 1, 2)
+        add = gtk.Button(stock=gtk.STOCK_ADD)
+        add.set_sensitive(False)
+        t.attach(add, 2, 3, 1, 2, xoptions=gtk.FILL)
 
         self.child.pack_start(t, expand=False)
 
@@ -70,36 +71,54 @@ class CBESEditor(qltk.Window):
 
         menu = gtk.Menu()
         remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        keyval, mod = gtk.accelerator_parse("Delete")
+        remove.add_accelerator(
+            'activate', gtk.AccelGroup(), keyval, mod, gtk.ACCEL_VISIBLE)
         menu.append(remove)
         menu.show_all()
 
+        bbox = gtk.HButtonBox()
+        rem_b = gtk.Button(stock=gtk.STOCK_REMOVE)
+        rem_b.set_sensitive(False)
+        bbox.pack_start(rem_b)
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        bbox.pack_start(close)
+        self.child.pack_start(bbox, expand=False)
+
         selection = view.get_selection()
         name.connect_object('activate', gtk.Entry.grab_focus, value)
-        value.connect('activate', self.__dtrt, add)
+        value.connect_object('activate', gtk.Button.clicked, add)
         value.connect('changed', self.__changed, [add])
         add.connect_object(
             'clicked', self.__add, selection, name, value, model)
-        selection.connect('changed', self.__set_text, name, value)
+        selection.connect('changed', self.__set_text, name, value, rem_b)
         self.connect_object('destroy', self.__finish, model, cbes)
         view.connect('popup-menu', self.__popup, menu)
         remove.connect_object('activate', self.__remove, view.get_selection())
+        rem_b.connect_object('clicked', self.__remove, view.get_selection())
+        close.connect_object('clicked', qltk.Window.destroy, self)
+        view.connect('key-press-event', self.__view_key_press)
+        self.connect_object('destroy', gtk.Menu.destroy, menu)
 
         name.grab_focus()
         value.set_text(initial)
         self.show_all()
 
-    def __dtrt(self, value, add):
-        if value.get_text(): add.clicked()
+    def __view_key_press(self, view, event):
+        if event.keyval == gtk.accelerator_parse("Delete")[0]:
+            self.__remove(view.get_selection())
 
     def __popup(self, view, menu):
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
+        return True
 
     def __remove(self, selection):
         model, iter = selection.get_selected()
         if iter is not None: model.remove(iter)
 
-    def __set_text(self, selection, name, value):
+    def __set_text(self, selection, name, value, remove):
         model, iter = selection.get_selected()
+        remove.set_sensitive(bool(iter))
         if iter is not None:
             name.set_text(model[iter][1])
             value.set_text(model[iter][0])
@@ -114,9 +133,10 @@ class CBESEditor(qltk.Window):
 
     def __add(self, selection, name, value, model):
         value = value.get_text()
-        name = name.get_text() or value
-        iter = model.append(row=[value, name])
-        selection.select_iter(iter)
+        if value:
+            name = name.get_text() or value
+            iter = model.append(row=[value, name])
+            selection.select_iter(iter)
 
     def __finish(self, model, cbes):
         cbes_model = cbes.get_model()

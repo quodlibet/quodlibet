@@ -15,6 +15,7 @@ import qltk
 import util
 
 from qltk.entry import ValidatingEntry
+from qltk.views import RCMHintedTreeView
 
 def MenuItems(marks, player, seekable):
     sizes = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
@@ -58,7 +59,7 @@ class EditBookmarksPane(gtk.VBox):
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.add(gtk.TreeView(model))
+        sw.add(RCMHintedTreeView(model))
 
         render = gtk.CellRendererText()
         def cdf(column, cell, model, iter):
@@ -106,7 +107,31 @@ class EditBookmarksPane(gtk.VBox):
         time.connect_object('activate', gtk.Entry.grab_focus, name)
         name.set_text(_("Bookmark Name"))
 
+        menu = gtk.Menu()
+        remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        remove.connect('activate', self.__remove, selection, watcher, song)
+        keyval, mod = gtk.accelerator_parse("Delete")
+        remove.add_accelerator(
+            'activate', gtk.AccelGroup(), keyval, mod, gtk.ACCEL_VISIBLE)
+        menu.append(remove)
+        menu.show_all()
+        sw.child.connect('popup-menu', self.__popup, menu)
+        sw.child.connect('key-press-event', self.__view_key_press, remove)
+        self.connect_object('destroy', gtk.Menu.destroy, menu)
+
         self.__fill(model, song)
+
+    def __view_key_press(self, view, event, remove):
+        if event.keyval == gtk.accelerator_parse("Delete")[0]:
+            remove.activate()
+
+    def __popup(self, view, menu):
+        menu.popup(None, None, None, 0, gtk.get_current_event_time())
+        return True
+
+    def __remove(self, selection):
+        model, iter = selection.get_selected()
+        if iter is not None: model.remove(iter)
 
     def __edit_name(self, render, path, new, model):
         if new: model[path][1] = new
