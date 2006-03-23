@@ -104,6 +104,8 @@ class MP3File(AudioFile):
                 self["~#playcount"] = frame.count
                 self["~#rating"] = frame.rating / 255.0
                 continue
+            elif frame.FrameID == "COMM" and frame.desc == "":
+                name = "comment"
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
@@ -114,7 +116,6 @@ class MP3File(AudioFile):
                 elif frame.desc in self.BRAINZ:
                     name = self.BRAINZ[frame.desc]
                 elif frame.desc == "ID3v1 Comment": continue
-                elif frame.desc == "": name = "comment"
                 else: continue
             elif frame.FrameID == "RVA2":
                 self.__process_rg(frame)
