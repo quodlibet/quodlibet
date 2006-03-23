@@ -8,6 +8,38 @@ see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
+0.19
+ * Simple X session management. (#18)
+ * Require Mutagen 1.0; drops Pymad. (#405)
+ * WAV support. (#456)
+ * New plugin types can be enabled/disabled. (#517)
+ * Album List can search and display any tags. (#549, #560)
+ * "Bookmark" time offsets within songs. (#554)
+ * Song menu plugins require minor but incompatible updates.
+ * Searches, tagging patterns, and file renaming patterns can be given
+   aliases and saved.
+ * Tag Editing:
+   * MusicBrainz TXXX, artist/album/albumartist support. (#539)
+   * Added albumartist, originalartist, originalalbum, originaldate,
+     recordingdate. (#495, #546)
+   * Ratings, playcount Ogg Vorbis format changed. (#544)
+ * UI Changes:
+   * Drops from e.g. Nautilus add to playlists/queue. (#496)
+   * Clear button in Album List. (#509)
+   * Horizontal scrollbar when absolutely necessary for the song list. (#542)
+   * "Random" options use filtered lists. (#550)
+   * Album sort is once again and forever default. (#552)
+   * 'Add to Playlist' resorts playlist properly. (#568)
+   * Enter in 'Add a Tag' moves from tag to value. (Debian bug #343974)
+   * Standard context menu for all browsers.
+   * 'Delete' key works in Edit Tags.
+   * Type-ahead search works in the Album List.
+ * Bug fixes:
+   * Double-appearances in the filesystem view. (#545)
+   * FIFO misses some commands. (#548)
+   * Stupid 'refresh' signal finally gone. (#563)
+   * Error when seeking and keyboard can't be grabbed. (#572)
+
 0.18 - "Babies Sporting Monocles"?
  * MP4 iTunes metadata can be written. (#199)
  * Alt+s switches between search entry and song list. (#254)
