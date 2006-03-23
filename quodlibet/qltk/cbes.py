@@ -50,7 +50,7 @@ class CBESEditor(qltk.Window):
 
         model = gtk.ListStore(str, str)
         for row in cbes.get_model():
-            if row[0] is None: break
+            if row[2] is not None: break
             else: model.append((row[0], row[1]))
 
         view = gtk.TreeView(model)
@@ -136,12 +136,14 @@ class CBESEditor(qltk.Window):
     def __finish(self, model, cbes):
         cbes_model = cbes.get_model()
         iter = cbes_model.get_iter_first()
-        while cbes_model.get_value(iter, 0) is not None:
+        while cbes_model.get_value(iter, 2) is None:
             cbes_model.remove(iter)
             iter = cbes_model.get_iter_first()
         for row in model:
-            cbes_model.insert_before(iter, row=[row[0], row[1]])
+            cbes_model.insert_before(iter, row=[row[0], row[1], None])
         cbes.write()
+
+ICONS = {gtk.STOCK_EDIT: CBESEditor}
 
 class ComboBoxEntrySave(gtk.ComboBoxEntry):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
@@ -154,11 +156,16 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         self.filename = filename
         try: model = self.models[model]
         except KeyError:
-            model = self.models[model] = gtk.ListStore(str, str)
-        else: model = gtk.ListStore(str, str)
+            model = self.models[model] = gtk.ListStore(str, str, str)
+        else: model = gtk.ListStore(str, str, str)
 
         super(ComboBoxEntrySave, self).__init__(model, 0)
         self.clear()
+
+        render = gtk.CellRendererPixbuf()
+        self.pack_start(render, False)
+        self.add_attribute(render, 'stock-id', 2)
+
         render = gtk.CellRendererText()
         self.pack_start(render, True)
         self.add_attribute(render, 'text', 1)
@@ -168,20 +175,22 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         if len(model) == 0:
             self.__fill(filename, initial)
         self.connect_object('destroy', self.set_model, None)
-        self.child.connect('populate-popup', self.__popup)
+        self.connect_object('changed', self.__changed, model)
 
-    def __popup(self, entry, menu):
-        item = gtk.ImageMenuItem(stock_id=gtk.STOCK_EDIT)
-        item.child.set_text(_("_Edit Saved Values..."))
-        item.child.set_use_underline(True)
-        item.connect_object(
-            'activate', CBESEditor, self, self.child.get_text())
-        item.show_all()
-        menu.prepend(item)
+    def __changed(self, model):
+        iter = self.get_active_iter()
+        if iter:
+            if model[iter][2] in ICONS:
+                Kind = ICONS[model[iter][2]]
+                Kind(self, self.child.get_text())
+                self.set_active(-1)
+        model[self.__special_iter][0] = self.child.get_text()
 
     def __fill(self, filename, initial):
         model = self.get_model()
-        model.append(row=[None, None])
+        self.__special_iter = model.append(
+            row=["", _("Edit saved values..."), gtk.STOCK_EDIT])
+        model.append(row=[None, None, None])
 
         if filename is None: return
 
@@ -190,26 +199,27 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:
-                model.prepend(row=[lines.pop(1).strip(), lines.pop(0).strip()])
+                model.prepend(
+                    row=[lines.pop(1).strip(), lines.pop(0).strip(), None])
 
         if os.path.exists(filename):
             for line in file(filename, "rU").readlines():
                 line = line.strip()
-                model.append(row=[line, line])
+                model.append(row=[line, line, None])
 
         for c in initial:
-            model.append(row=[c, c])
+            model.append(row=[c, c, None])
 
         self.__shorten()
 
     def __separator_func(self, model, iter):
-        return model[iter][0] is None
+        return model[iter][1] is None
 
     def __shorten(self):
         model = self.get_model()
         for row in model:
             if row[0] is None:
-                offset = row.path[0] + 1
+                offset = row.path[0] + 2
                 break
         to_remove = (len(model) - offset) - self.count
         while to_remove > 0:
@@ -230,7 +240,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             target = saved
             for row in self.get_model():
                 if row[0] is None: target = memory
-                else:
+                elif row[2] is None:
                     target.write(row[0] + "\n")
                     if target is saved:
                         target.write(row[1] + "\n")
@@ -256,6 +266,6 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         model = self.get_model()
         for row in model:
             if row[0] is None:
-                model.insert_after(row.iter, row=[text, text])
+                model.insert_after(row.iter, row=[text, text, None])
                 break
         self.__shorten()
