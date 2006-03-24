@@ -41,6 +41,7 @@ See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
    * Error when seeking and keyboard can't be grabbed. (#572)
  * Updated translations:
    * Finnish, by Jari Rahkonen.
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
 
 0.18 - "Babies Sporting Monocles"?
  * MP4 iTunes metadata can be written. (#199)
