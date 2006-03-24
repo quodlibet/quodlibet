@@ -115,7 +115,6 @@ class MP3File(AudioFile):
                     name = frame.desc
                 elif frame.desc in self.BRAINZ:
                     name = self.BRAINZ[frame.desc]
-                elif frame.desc == "ID3v1 Comment": continue
                 else: continue
             elif frame.FrameID == "RVA2":
                 self.__process_rg(frame)
@@ -217,14 +216,13 @@ class MP3File(AudioFile):
             try: del(tag["TCON"])
             except KeyError: pass
 
+        tag.delall("COMM:")
         if "comment" in self:
             if not isascii(self["comment"]): enc = 1
             else: enc = 3
             t = self["comment"].split("\n")
             tag.loaded_frame(mutagen.id3.COMM(
                 encoding=enc, text=t, desc=u"", lang="\x00\x00\x00"))
-        else:
-            tag.delall("COMM:")
 
         for k in ["normalize", "album", "track"]:
             try: del(tag["RVA2:"+k])
