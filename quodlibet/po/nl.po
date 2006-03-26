@@ -2,23 +2,22 @@
 # English translation of Quod Libet.
 # Copyright (C) 2005 THE Quod Libet'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Quod Libet package.
-# dok <dok@xs4all.nl>, 2005.
+#
 # dok <dok@xs4all.nl>, 2005.
 # Hans van Dok <dok@xs4all.nl>, 2005, 2006.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-03 00:22-0600\n"
-"PO-Revision-Date: 2006-01-09 20:11+0100\n"
+"PO-Revision-Date: 2006-03-26 21:50+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.10.2\n"
+"X-Generator: KBabel 1.11.1\n"
 
 #: ../stock.py:35
 msgid "Edit _Tags"
@@ -463,9 +462,8 @@ msgid "website"
 msgstr "website"
 
 #: ../po/tag-names.py:54
-#, fuzzy
 msgid "year"
-msgstr "%d jaar"
+msgstr "jaar"
 
 #. Beats per minute; I don't know if other languages use a different word.
 #: ../po/tag-names.py:56
@@ -506,14 +504,12 @@ msgid "albums"
 msgstr "albums"
 
 #: ../po/tag-names.py:66
-#, fuzzy
 msgid "tracks"
-msgstr "track"
+msgstr "tracks"
 
 #: ../po/tag-names.py:67
-#, fuzzy
 msgid "discs"
-msgstr "disc"
+msgstr "discs"
 
 #. Not really tag names, but this is the best place for them so far.
 #: ../po/tag-names.py:71
@@ -588,15 +584,14 @@ msgid "Unable to open audio device"
 msgstr "Niet in staat om audio device te openen"
 
 #: ../widgets.py:131
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
 "not open them. Set your GStreamer pipeline by changing the\n"
 "    <b>pipeline = %(sink)s</b>\n"
 "line in ~/.quodlibet/config."
 msgstr ""
-"Quod Libet probeerde toegang the krijgen tot de 'alsasink', 'osssink', en '%"
-"(sink)s' drivers maar kon geen van allen openen. Set je GStreamer pipeline "
+"Quod Libet probeerde toegang the krijgen tot de 'autosink' en '%(sink)s' drivers maar kon ze niet openen. Set je GStreamer pipeline "
 "door de regel\n"
 "    <b>pipeline = %(sink)s</b>\n"
 "aan te passen in ~/.quodlibet/config."
@@ -781,20 +776,19 @@ msgid "Value"
 msgstr "Waarde"
 
 #: ../qltk/edittags.py:378
-#, fuzzy
 msgid "Unable to add tag"
-msgstr "Niet in staat om song toe te voegen"
+msgstr "Niet in staat om tag toe te voegen"
 
 #: ../qltk/edittags.py:379
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
 "\n"
 "The files currently selected do not support multiple values."
 msgstr ""
-"Ongeldige tags <b>%s</b>\n"
+"Niet in staat om <b>%s</b> toe te voegen\n"
 "\n"
-"De geselecteerde bestanden ondersteunen het bewerken van deze tags niet."
+"De geselecteerde bestanden ondersteunen meerdere waarden niet."
 
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
@@ -1108,7 +1102,7 @@ msgstr "Quod Libet Plugins"
 
 #: ../qltk/pluginwin.py:77
 msgid "Show _Errors"
-msgstr ""
+msgstr "Laat _Errors zien"
 
 #: ../qltk/pluginwin.py:99
 msgid "Preferences"
@@ -1119,9 +1113,8 @@ msgid "No plugins found."
 msgstr "Geen plugins gevonden"
 
 #: ../qltk/pluginwin.py:180
-#, fuzzy
 msgid "Plugin Errors"
-msgstr "_Plugins"
+msgstr "Plugin Fouten"
 
 #: ../qltk/prefs.py:33
 msgid "Song List"
@@ -1218,8 +1211,7 @@ msgstr "Ga automatisch naar song die gespeeld wordt"
 
 #: ../qltk/prefs.py:168
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr ""
-"Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
+msgstr "Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
 
 #: ../qltk/prefs.py:173
 msgid "_Volume Normalization"
@@ -1683,21 +1675,19 @@ msgid "Tray Icon Preferences"
 msgstr "Tray Icoon Voorkeuren"
 
 #: ../qltk/trayicon.py:34
-#, fuzzy
 msgid ""
 "Scroll wheel adjusts volume\n"
 "Shift and scroll wheel changes song"
 msgstr ""
-"Scroll wiel past volume aan;\n"
+"Scrollwiel past volume aan\n"
 "Shift en scroll wiel verandert song"
 
 #: ../qltk/trayicon.py:36
-#, fuzzy
 msgid ""
 "Scroll wheel changes song\n"
 "Shift and scroll wheel adjusts volume"
 msgstr ""
-"Scroll wiel verandert song;\n"
+"Scrollwiel verandert song\n"
 "Shift en scroll wiel verandert volume "
 
 #: ../qltk/trayicon.py:43
@@ -1755,18 +1745,16 @@ msgid "Songs not in an album"
 msgstr "Songs niet in een album"
 
 #: ../browsers/albums.py:61
-#, fuzzy
 msgid "Album List Preferences"
-msgstr "Quod Libet Voorkeuren"
+msgstr "Albumlijst Voorkeuren"
 
 #: ../browsers/albums.py:67
 msgid "Show album _covers"
-msgstr ""
+msgstr "Laat album_covers zien"
 
 #: ../browsers/albums.py:83
-#, fuzzy
 msgid "Album Display"
-msgstr "_Albumlijst"
+msgstr "Album Weergave"
 
 #: ../browsers/albums.py:395
 msgid "Sort by title"
@@ -1796,13 +1784,12 @@ msgid "_Album List"
 msgstr "_Albumlijst"
 
 #: ../browsers/paned.py:34
-#, fuzzy
 msgid "Paned Browser Preferences"
-msgstr "Paned browser"
+msgstr "Paned Browser Voorkeuren"
 
 #: ../browsers/paned.py:40
 msgid "_Custom"
-msgstr ""
+msgstr "_Aangepast"
 
 #: ../browsers/paned.py:245
 msgid "All"
@@ -1851,8 +1838,7 @@ msgstr "Niet in staat om speellijst importeren"
 
 #: ../browsers/playlists.py:385 ../browsers/playlists.py:464
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
-msgstr ""
-"Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
+msgstr "Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
 
 #: ../browsers/playlists.py:403
 msgid "_Rename"
@@ -1875,7 +1861,6 @@ msgid "_Limit:"
 msgstr "_Limiet:"
 
 #: ../browsers/search.py:100
-#, fuzzy
 msgid "_Weight"
 msgstr "_Gewogen"
 
@@ -2103,29 +2088,3 @@ msgstr "Luister naar, browse, of bewerk je audio verzameling"
 msgid "Music Player"
 msgstr "Muziek Speler"
 
-#~ msgid "Quod Libet is running"
-#~ msgstr "Quod Libet werkt"
-
-#~ msgid ""
-#~ "It looks like you are running Quod Libet right now. If you edit songs "
-#~ "also in Quod Libet's library while it is running, you may need to refresh "
-#~ "or re-add them.\n"
-#~ "\n"
-#~ "If you are not running Quod Libet, or are editing songs outside of its "
-#~ "library, you may ignore this warning."
-#~ msgstr ""
-#~ "Het lijkt erop dat Quod Libet nu draait. Als je songs aanpast die in Quod "
-#~ "Libet's bibliotheek zitten terwijl het draait, dan kan het nodig zijn dat "
-#~ "je moet refreshen of de songs opnieuw moet toevoegen.\n"
-#~ "\n"
-#~ "Als Quod Libet nu niet draait, of als je songs aanpast die niet in de "
-#~ "bibliotheek zitten, dan kun je deze waarschuwing vergeten."
-
-#~ msgid "GStreamer status %r != %r"
-#~ msgstr "GStreamer status %r != %r"
-
-#~ msgid "_Pane %d:"
-#~ msgstr "_Pane %d:"
-
-#~ msgid "View and edit tags in the playing song"
-#~ msgstr "Bekijk en bewerk tags in de spelende song"
