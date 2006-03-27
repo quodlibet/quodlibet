@@ -16,11 +16,12 @@ class VCFile(AudioFile):
         try: del(self["vendor"])
         except KeyError: pass
 
-        for keyed_key in ["rating", "playcount"]:
+        maps = {"rating": float, "playcount": int}
+        for keyed_key, func in maps.items():
             for subkey in ["", ":"+DEFAULT_EMAIL, ":"+EMAIL]:
                 key = keyed_key + subkey
                 if key in self:
-                    try: self["~#"+keyed_key] = float(self[key])
+                    try: self["~#"+keyed_key] = func(self[key])
                     except ValueError: pass
                     del(self[key])
 
