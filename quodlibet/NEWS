@@ -23,6 +23,7 @@ See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
    * Added albumartist, originalartist, originalalbum, originaldate,
      recordingdate. (#495, #546)
    * Ratings, playcount Ogg Vorbis format changed. (#544)
+   * COMM tags in Ex Falso are deleted properly. (#573)
  * UI Changes:
    * Drops from e.g. Nautilus add to playlists/queue. (#496)
    * Clear button in Album List. (#509)
@@ -42,6 +43,8 @@ See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
  * Updated translations:
    * Finnish, by Jari Rahkonen.
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Polish, by Tomasz Torcz.
+   * Dutch, by Hans van Dok.
 
 0.18 - "Babies Sporting Monocles"?
  * MP4 iTunes metadata can be written. (#199)

@@ -33,9 +33,10 @@ and search and foramtting pattern syntax.
 ==[ Source
 
 Quod Libet depends on the Python runtime and associated libraries.
- Python (>= 2.3):	http://www.python.org
- PyGTK (>= 2.8):	http://www.pygtk.org
- PyGSt (>= 0.10):	http://gstreamer.freedesktop.org/
+ Python (>= 2.3):  http://www.python.org
+ PyGTK (>= 2.8):   http://www.pygtk.org
+ PyGSt (>= 0.10):  http://gstreamer.freedesktop.org/
+ Mutagen (>= 1.0): http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
 
 All file formats depend on their appropriate GStreamer decoding modules
 being available as well as the libraries listed below.
@@ -48,9 +49,10 @@ listed:
 	MOD/XM/IT:	http://modplug-xmms.sourceforge.net/#download
 	Wavpack:	http://www.wavpack.com/
 
-Internet Radio depends on GNOME-VFS support in GStreamer.
+Internet Radio depends on GNOME-VFS or neonhttpsrc support in GStreamer.
 
-Audio Feed support depends on GNOME-VFS and http://www.feedparser.org/.
+Audio Feed support depends on GNOME-VFS or neonhttpsrc, and
+Universal Feed Parser from http://www.feedparser.org/.
 
 To compile the status icon and multimedia key support, run
  $ make extensions
