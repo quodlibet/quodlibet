@@ -70,13 +70,13 @@ def init():
     watcher = widgets.watcher = SongWatcher()
 
     from plugins.songsmenu import SongsMenuPlugins
-    SongsMenu.plugins = Browser.plugins = SongList.plugins = SongsMenuPlugins(
+    SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join("./plugins", "songsmenu"),
          os.path.join(const.PLUGINS, "songsmenu")], "songsmenu")
-    SongList.plugins.rescan()
+    SongsMenu.plugins.rescan()
 
     from plugins import PluginManager
-    SongsMenu.pm = Browser.pm = SongList.pm = PluginManager(
+    SongList.pm = PluginManager(
         watcher, ["./plugins", const.PLUGINS], "legacy")
     SongList.pm.rescan()
 
