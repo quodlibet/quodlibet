@@ -74,4 +74,4 @@ class TSongsMenuPlugins(TestCase):
         self.pm.enable(plug, False)
         self.failIf(self.pm.enabled(plug))
 
-registerCase(TPluginManager)
+registerCase(TSongsMenuPlugins)
