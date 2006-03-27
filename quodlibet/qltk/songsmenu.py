@@ -25,15 +25,6 @@ class SongsMenu(gtk.Menu):
 
         if plugins:
             submenu = self.plugins.Menu(watcher, self, songs)
-            if submenu is None:
-                submenu = self.pm.create_plugins_menu(songs)
-            else:
-                subsubmenu = self.pm.create_plugins_menu(songs)
-                if subsubmenu is not None:
-                    item = gtk.MenuItem(_("Old Plugins"))
-                    item.set_submenu(subsubmenu)
-                    submenu.prepend(gtk.SeparatorMenuItem())
-                    submenu.prepend(item)
             if submenu is not None:
                 b = gtk.ImageMenuItem(stock.PLUGINS)
                 self.append(b)

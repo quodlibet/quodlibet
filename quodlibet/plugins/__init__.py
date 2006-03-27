@@ -14,19 +14,9 @@ characteristics:
     Attributes:
         obj.PLUGIN_NAME (required)
         obj.PLUGIN_DESC (required)
-        obj.PLUGIN_HINT (optional)
         obj.PLUGIN_ICON (optional)
 
     Callables: (one or more required)
-        # manually invoked
-        obj.plugin_single_song(song)
-        obj.plugin_song(song)
-        obj.plugin_songs(songs)
-        obj.plugin_single_album(album)
-        obj.plugin_album(album)
-        obj.plugin_albums(albums)
-
-        # event based callbacks
         obj.plugin_on_song_started(song)
         obj.plugin_on_song_ended(song, stopped)
         obj.plugin_on_changed(song)
@@ -42,18 +32,6 @@ characteristics:
 
     If a module defines __all__, only plugins whose names are listed in __all__
     will be detected. This makes using __all__ in a module-as-plugin impossible.
-
-    For manually invoked callbacks:
-        The single_ variant is only called if a single song/album is selected.
-
-        The singular tense is called once for each selected song/album, but the
-        plural tense is called with a list of songs/albums.
-
-        An album is a list of songs all with the same album tag.
-
-        To make your plugin insensitive if unsupported songs are selected, use
-            obj.plugin_handles(songs)
-        And return False if your plugin's entry should be insensitive.
 """
 
 import util; from util import mtime
@@ -116,28 +94,12 @@ class SongWrapper(object):
 
     bookmarks = property(lambda s: s._song.bookmarks,
                          lambda s, v: setattr(s._song, 'bookmarks', v))
-                         
 
 def ListWrapper(songs):
     return [(song and SongWrapper(song)) for song in songs]
 
 class PluginManager(Manager):
-    """Manage SongList context menu and event plugins."""
-
-    # by being in here, you can tweak the behavior by subclassing and
-    # overriding these class attributes
-    all_callables = [
-        'plugin_single_song', 'plugin_song', 'plugin_songs',
-        'plugin_single_album', 'plugin_album', 'plugin_albums',
-    ]
-
-    callables = {
-        'song_callables': all_callables[0:3],
-        'album_callables': all_callables[3:6],
-        'single': all_callables[0::3],
-        'mapped': all_callables[1::3],
-        'plural': all_callables[2::3],
-    }
+    """Manage event plugins."""
 
     all_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
                   for s in gobject.signal_list_names(SongWatcher)]
@@ -172,7 +134,7 @@ class PluginManager(Manager):
             try: obj = obj()
             except TypeError:
                 if obj is not mod: continue # let the module through
-            except (KeyboardInterrupt,MemoryError):
+            except (KeyboardInterrupt, MemoryError):
                 raise
             except:
                 print_exc()
@@ -185,7 +147,6 @@ class PluginManager(Manager):
             except AttributeError:
                 continue
 
-            self.load_invokables(obj, name)
             self.load_events(obj, name)
 
     def restore(self):
@@ -200,94 +161,19 @@ class PluginManager(Manager):
                   if self.enabled(plugin)]
         config.set("plugins", "active", "\n".join(active))
 
-    def load_invokables(self, obj, name):
-        # if an object doesn't have at least one plugin method skip it
-        for attr in self.all_callables:
-            if hascallable(obj, attr): break
-        else: return
-
-        pluginname = name + '.' + obj.PLUGIN_NAME
-        self.byfile[name].append(pluginname)
-        self.plugins[pluginname] = obj
-
     def load_events(self, obj, name):
         for bin, attr in self.all_events:
             if hascallable(obj, attr):
                 self.events[bin].setdefault(name, []).append(obj)
 
-    def list(self, selection=None):
-
-        if selection is None:
-            called = self.plugins.values()
-            signaled = [plugin for handlers in self.events.values()
-                        for ps in handlers.values() for plugin in ps]
-            plugins = [(p.PLUGIN_NAME, p)
-                        for p in dict.fromkeys(called + signaled).keys()]
-            plugins.sort()
-            return [p for (pn, p) in plugins]
-
-        if len(selection) == 0:
-            return []
-
-        elif len(selection) == 1:
-            plugins = []
-            for plugin in self.plugins.values():
-                if not self.enabled(plugin): continue
-                for fn in self.all_callables:
-                    if hascallable(plugin, fn): break
-                else: continue
-                plugins.append(plugin)
-            return plugins
-
-        else:
-            albums = True
-            album = selection[-1].comma('album')
-            for song in selection:
-                if album != song.comma('album'): break
-            else: albums = False
-
-            plugins = []
-            for plugin in self.plugins.values():
-                if not self.enabled(plugin): continue
-                for fn in self.all_callables[1:]:
-                    if not hascallable(plugin, fn): continue
-                    elif albums and fn in self.callables['single']: continue
-                    else: break
-                else: continue
-                plugins.append(plugin)
-            return plugins
+    def list(self):
+        plugins = [plugin for handlers in self.events.values()
+                   for ps in handlers.values() for plugin in ps]
+        plugins = [(p.PLUGIN_NAME, p) for p in
+                   dict.fromkeys(plugins).keys()]
+        plugins.sort()
+        return [p for (pn, p) in plugins]
                     
-    def invoke(self, plugin, selection):
-        for fn in self.all_callables:
-            if not hascallable(plugin, fn): continue
-
-            if fn in self.callables['song_callables']:
-                args = ListWrapper(selection)
-
-            elif fn in self.callables['album_callables']:
-                albums = {}
-                for song in selection:
-                    albums.setdefault(song.comma('album'),[]).append(song)
-                args = [ListWrapper(album) for album in albums.values()]
-
-            if fn in self.callables['single']:
-                if len(selection) == 1:
-                    try: getattr(plugin, fn)(args[0])
-                    except Exception: print_exc()
-
-            elif fn in self.callables['mapped']:
-                try: map(getattr(plugin, fn), args)
-                except Exception: print_exc()
-
-            elif fn in self.callables['plural']:
-                try: getattr(plugin, fn)(args)
-                except Exception: print_exc()
-
-            if fn in self.callables['song_callables']:
-                self.check_change_and_refresh(args)
-            elif fn in self.callables['album_callables']:
-                self.check_change_and_refresh(sum(args, []))
-
     def check_change_and_refresh(self, args):
         songs = filter(None, args)
         needs_write = filter(lambda s: s._needs_write, songs)
@@ -334,27 +220,3 @@ class PluginManager(Manager):
                     self.check_change_and_refresh(args[0])
                 else:
                     self.check_change_and_refresh([args[0]])
-
-    def create_plugins_menu(self, songs):
-        menu = gtk.Menu()
-        plugins = [(plugin.PLUGIN_NAME, plugin) for plugin in self.list(songs)]
-        plugins.sort()
-        for name, plugin in plugins:
-            if hasattr(plugin, 'PLUGIN_ICON'):
-                b = qltk.MenuItem(name, plugin.PLUGIN_ICON)
-            else:
-                b = gtk.MenuItem(name)
-            b.connect('activate', self.__plugin_activate, plugin, songs)
-            b.set_sensitive(
-                getattr(plugin, 'plugin_handles', lambda s: True)(songs))
-                                    
-            menu.append(b)
-
-        if menu.get_children():
-            menu.show_all()
-            return menu
-        else:
-            menu.destroy()
-
-    def __plugin_activate(self, event, plugin, songs):
-        self.invoke(plugin, songs)
