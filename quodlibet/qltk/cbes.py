@@ -14,7 +14,7 @@ import qltk
 from qltk.views import RCMHintedTreeView
 
 class CBESEditor(qltk.Window):
-    def __init__(self, cbes, initial=""):
+    def __init__(self, cbes):
         super(CBESEditor, self).__init__()
         self.set_border_width(12)
         self.set_title(_("Saved Values"))
@@ -101,7 +101,7 @@ class CBESEditor(qltk.Window):
         self.connect_object('destroy', gtk.Menu.destroy, menu)
 
         name.grab_focus()
-        value.set_text(initial)
+        value.set_text(cbes.child.get_text())
         self.show_all()
 
     def __view_key_press(self, view, event):
@@ -187,7 +187,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         if iter:
             if model[iter][2] in ICONS:
                 Kind = ICONS[model[iter][2]]
-                Kind(self, self.child.get_text())
+                Kind(self)
                 self.set_active(-1)
         model[self.__special_iter][0] = self.child.get_text()
 
@@ -224,7 +224,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         model = self.get_model()
         for row in model:
             if row[0] is None:
-                offset = row.path[0] + 2
+                offset = row.path[0] + 1
                 break
         to_remove = (len(model) - offset) - self.count
         while to_remove > 0:
@@ -258,7 +258,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         model = self.get_model()
         for row in model:
             if row[0] is None: removable = True
-            elif removable and row[0] == text:
+            elif removable and row[0] == text and row[2] is None:
                 model.remove(row.iter)
                 return
             elif row[0] == text:
