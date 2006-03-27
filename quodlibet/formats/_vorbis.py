@@ -56,4 +56,4 @@ class VCFile(AudioFile):
         if self["~#rating"] != 0.5:
             comments["rating:" + EMAIL] = str(self["~#rating"])
         if self["~#playcount"] != 0:
-            comments["playcount:" + EMAIL] = str(self["~#playcount"])
+            comments["playcount:" + EMAIL] = str(int(self["~#playcount"]))
