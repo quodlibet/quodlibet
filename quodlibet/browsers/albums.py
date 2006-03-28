@@ -198,7 +198,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             labelid = song.get("labelid", "")
             mbid = song.get("musicbrainz_albumid", "")
             for alb in song("album").split("\n"):
-                key = (alb, labelid, mbid)
+                key = (alb, labelid or mbid)
                 if key not in albums:
                     albums[key] = klass._Album(alb, labelid, mbid)
                     new.append(albums[key])
@@ -231,7 +231,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.people = []
             self.songs = set()
             self.title = title
-            self.key = (title, labelid, mbid)
+            # The key uniquely identifies the album; this way, albums
+            # with different MBIDs or different label IDs but the same
+            # title are different, and albums with different MBIDs
+            # but the same label ID are the same (since MB uses separate
+            # MBIDs for each disc).
+            self.key = (title, labelid or mbid)
             # cover = None indicates not gotten cover, cover = False
             # indicates a failure to find a cover.
             self.cover = self.__covers.get(self.title)
@@ -246,8 +251,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             elif key == "date": return self.date
             elif key == "~long-length":
                 return util.format_time_long(self.length)
-            elif key == "labelid": return self.key[1]
-            elif key == "musicbrainz_albumid": return self.key[2]
             elif key in ["cover", "~cover"]: return (self.cover and "y") or ""
             elif key in ["title", "album"]: return self.title
             elif key == "people":
