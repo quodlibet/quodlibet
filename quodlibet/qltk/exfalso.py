@@ -11,8 +11,12 @@ import os
 import gtk, gobject
 
 import const
+import config
+import stock
 import formats
 import qltk
+
+from qltk.ccb import ConfigCheckButton
 from qltk.filesel import FileSelector
 from qltk.delete import DeleteDialog
 from qltk.edittags import EditTags
@@ -23,15 +27,16 @@ from qltk.tracknumbers import TrackNumbers
 from plugins.editing import EditingPlugins
 from plugins.songsmenu import SongsMenuPlugins
 
+from qltk.pluginwin import PluginWindow
+
 class ExFalsoWindow(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (object,))
                      }
 
     def __init__(self, watcher, dir=None):
-        gtk.Window.__init__(self)
+        super(ExFalsoWindow, self).__init__()
         self.set_title("Ex Falso")
-        self.set_border_width(12)
         self.set_default_size(700, 500)
 
         # plugin support
@@ -45,18 +50,21 @@ class ExFalsoWindow(gtk.Window):
             [os.path.join("./plugins", "editing"),
              os.path.join(const.PLUGINS, "editing")], "editing")
         self.plugins.rescan()
+        self.add(gtk.VBox())
+        self.__setup_menubar()
 
         hp = gtk.HPaned()
+        hp.set_border_width(6)
         hp.set_position(250)
-        self.add(hp)
+        self.child.pack_start(hp)
         fs = FileSelector(dir)
         fs.show_all()
-        self.child.pack1(fs, resize=True, shrink=False)
+        hp.pack1(fs, resize=True, shrink=False)
         nb = qltk.Notebook()
         nb.show()
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
             nb.append_page(Page(self, watcher))
-        self.child.pack2(nb, resize=True, shrink=False)
+        hp.pack2(nb, resize=True, shrink=False)
         fs.connect('changed', self.__changed)
         self.__cache = {}
         s = watcher.connect_object('changed', FileSelector.rescan, fs)
@@ -68,7 +76,32 @@ class ExFalsoWindow(gtk.Window):
         fs.get_children()[1].child.connect('popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
-        self.child.show()
+        self.child.show_all()
+
+    def __setup_menubar(self):
+        ag = gtk.AccelGroup()
+
+        mb = gtk.MenuBar()
+        music = gtk.MenuItem(_("_Music"))
+
+        submenu = gtk.Menu()
+        item = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES, ag)
+        item.connect_object('activate', PreferencesWindow, self)
+        submenu.append(item)
+        item = gtk.ImageMenuItem(stock.PLUGINS, ag)
+        item.connect_object('activate', PluginWindow, self)
+        submenu.append(item)
+        submenu.append(gtk.SeparatorMenuItem())
+        item = gtk.ImageMenuItem(gtk.STOCK_QUIT, ag)
+        item.connect('activate', gtk.main_quit)
+        submenu.append(item)
+        music.set_submenu(submenu)
+
+        mb.append(music)
+
+        mb.show_all()
+        self.add_accel_group(ag)
+        self.child.pack_start(mb, expand=False)
 
     def set_pending(self, button, *excess):
         self.__save = button
@@ -122,3 +155,50 @@ class ExFalsoWindow(gtk.Window):
             self.set_title("%s - Ex Falso" % (_("%(title)s and %(count)d more")
                 % {'title': files[0].comma("title"), 'count': len(files) - 1}))
         self.__cache = dict([(song["~filename"], song) for song in files])
+
+class PreferencesWindow(gtk.Window):
+    __window = None
+
+    def __new__(klass, parent):
+        if klass.__window is None:
+            return super(PreferencesWindow, klass).__new__(klass)
+        else: return klass.__window
+
+    def __init__(self, parent):
+        if type(self).__window: return
+        else: type(self).__window = self
+        super(PreferencesWindow, self).__init__()
+        # FIXME: Change to "Ex Falso Preferences" after 0.19.
+        self.set_title(_("Preferences"))
+        self.set_border_width(12)
+        self.set_resizable(False)
+        self.set_transient_for(parent)
+
+        f = qltk.Frame(_("Tag Editing"), bold=True)
+        vbox = gtk.VBox(spacing=6)
+        hb = gtk.HBox(spacing=6)
+        e = gtk.Entry()
+        e.set_text(config.get("editing", "split_on"))
+        e.connect('changed', self.__changed, 'editing', 'split_on')
+        l = gtk.Label(_("Split _on:"))
+        l.set_use_underline(True)
+        l.set_mnemonic_widget(e)
+        hb.pack_start(l, expand=False)
+        hb.pack_start(e)
+        cb = ConfigCheckButton(
+            _("Show _programmatic tags"), 'editing', 'alltags')
+        cb.set_active(config.getboolean("editing", 'alltags'))
+        vbox.pack_start(hb, expand=False)
+        vbox.pack_start(cb, expand=False)
+        f.child.add(vbox)
+        self.add(f)
+
+        self.connect_object('destroy', PreferencesWindow.__destroy, self)
+        self.show_all()
+
+    def __changed(self, entry, section, name):
+        config.set(section, name, entry.get_text())
+
+    def __destroy(self):
+        type(self).__window = None
+        config.write(const.CONFIG)
