@@ -53,6 +53,12 @@ class TComboBoxEntrySave(TestCase):
             if row[2] != None:
                 self.failUnlessEqual("foobar", row[0])
 
+    def test_set_text_then_prepend(self):
+        self.cbes.child.set_text("foobar")
+        self.cbes.prepend_text("foobar")
+        self.memory = "foobar\npattern 1\n"
+        self.test_save()
+
     def tearDown(self):
         self.cbes.destroy()
         self.cbes2.destroy()

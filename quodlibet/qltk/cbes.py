@@ -254,19 +254,24 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         except EnvironmentError: pass
 
     def __remove_if_present(self, text):
+        # Removes an item from the list if it's present in the remembered
+        # values, or returns true if it's in the saved values.
         removable = False
         model = self.get_model()
         for row in model:
-            if row[0] is None: removable = True
-            elif removable and row[0] == text and row[2] is None:
-                model.remove(row.iter)
-                return
-            elif row[0] == text:
-                return True
+            if row[0] is None:
+                # Not found in the saved values, so if we find it from now
+                # on, remove it and return false.
+                removable = True
+            elif row[2] is None and row[0] == text:
+                # Found the value, and it's not the magic value -- remove
+                # it if necessary, and return whether or not to continue.
+                if removable: model.remove(row.iter)
+                return not removable
 
     def prepend_text(self, text):
-        if self.__remove_if_present(text):
-            return
+        # If we find the value in the saved values, don't prepend it.
+        if self.__remove_if_present(text): return
 
         model = self.get_model()
         for row in model:
