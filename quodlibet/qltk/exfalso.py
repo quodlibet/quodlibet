@@ -56,6 +56,7 @@ class ExFalsoWindow(gtk.Window):
         hp = gtk.HPaned()
         hp.set_border_width(6)
         hp.set_position(250)
+        hp.show()
         self.child.pack_start(hp)
         fs = FileSelector(dir)
         fs.show_all()
@@ -76,7 +77,7 @@ class ExFalsoWindow(gtk.Window):
         fs.get_children()[1].child.connect('popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
-        self.child.show_all()
+        self.child.show()
 
     def __setup_menubar(self):
         ag = gtk.AccelGroup()
