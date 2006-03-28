@@ -18,6 +18,7 @@ try:
     _modplug = ctypes.cdll.LoadLibrary("libmodplug.so.0")
 except: extensions = []
 else:
+    _modplug.ModPlug_GetName.restype = ctypes.c_char_p
     try: gst.element_factory_make("modplug")
     except:
         try: gst.element_factory_make("mikmod")
