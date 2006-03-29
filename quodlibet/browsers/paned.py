@@ -366,6 +366,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         for pane in self.__panes: pane._remove(songs)
 
     def __changed(self, watcher, songs):
+        songs = filter(lambda x: x.get("~filename") in library, songs)
         self.__removed(watcher, songs)
         self.__added(watcher, songs)
 
