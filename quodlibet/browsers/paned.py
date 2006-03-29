@@ -212,7 +212,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 value = row[0]
                 data = row[1]
                 if value[:1] != "<":
-                    value = util.unescape(value)
+                    value = util.unescape(value).decode('utf-8')
                     values[value] = data
                 elif data is not None:
                     values[""] = data
