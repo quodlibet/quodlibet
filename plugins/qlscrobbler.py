@@ -17,7 +17,7 @@ class QLScrobbler(object):
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
 	PLUGIN_ICON = gtk.STOCK_CONNECT
-	PLUGIN_VERSION = "0.7"
+	PLUGIN_VERSION = "0.8"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -341,7 +341,7 @@ class QLScrobbler(object):
 					store["artist"] = performer[:performer.rindex("(")].strip()
 				else:
 					store["artist"] = performer
-			elif "musicbrainz_trackid" in self.song:
+			if "musicbrainz_trackid" in self.song:
 				store["mbid"] = self.song["musicbrainz_trackid"]
 
 			self.queue.append(store)
