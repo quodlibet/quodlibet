@@ -266,6 +266,7 @@ class Library(dict):
                 self.update(songs)
                 added.extend(songs.values())
                 del(self.__masked_files[mp])
+                yield added, changed, removed
 
         for d in dirs:
             print to(_("Checking %s") % util.fsdecode(d))

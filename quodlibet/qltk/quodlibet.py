@@ -632,8 +632,8 @@ class QuodLibetWindow(gtk.Window):
             iter += 1
         else:
             window.destroy()
-            if config.get("settings", "scan"):
-                s = self.scan_dirs(config.get("settings", "scan").split(":"))
+            dirs = config.get("settings", "scan").split(":")
+            s = self.scan_dirs(dirs)
         widgets.watcher.changed(c)
         widgets.watcher.removed(r)
         if c or r or s:
