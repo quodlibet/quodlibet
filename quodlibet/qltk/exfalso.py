@@ -164,7 +164,7 @@ class ExFalsoWindow(gtk.Window):
         model, rows = selection.get_selected_rows()
         files = []
 
-        if len(rows) < 2: count = len(model)
+        if len(rows) < 2: count = len(model or [])
         else: count = len(rows)
         label.set_text(ngettext("%d song", "%d songs", count) % count)
 
