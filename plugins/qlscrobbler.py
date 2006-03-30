@@ -376,7 +376,7 @@ class QLScrobbler(object):
 		}
 		
 		# Flush the cache
-		for i in range(len(self.queue)):
+		for i in range(min(len(self.queue), 10)):
 			print to("Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title']))
 			data["a[%d]" % i] = self.queue[i]['artist'].encode('utf-8')
 			data["t[%d]" % i] = self.queue[i]['title'].encode('utf-8')
@@ -419,7 +419,7 @@ class QLScrobbler(object):
 				self.quick_dialog("Your Audioscrobbler login data is incorrect, so you must re-enter it before any songs will be submitted.\n\nThis message will not be shown again.", gtk.MESSAGE_ERROR)
 				self.broken = True
 		elif status == "OK":
-			self.queue = []
+			self.queue = self.queue[10:]
 		elif status.startswith("FAILED"):
 			if status.startswith("FAILED Plugin bug"):
 				print "Plugin bug!? Ridiculous! Dumping queue contents."
