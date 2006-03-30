@@ -8,7 +8,7 @@
 # $Id$
 
 import os
-import gtk, gobject
+import gtk, gobject, pango
 
 import const
 import config
@@ -50,23 +50,45 @@ class ExFalsoWindow(gtk.Window):
             [os.path.join("./plugins", "editing"),
              os.path.join(const.PLUGINS, "editing")], "editing")
         self.plugins.rescan()
-        self.add(gtk.VBox())
-        self.__setup_menubar()
+        #self.__setup_menubar()
 
         hp = gtk.HPaned()
         hp.set_border_width(6)
         hp.set_position(250)
         hp.show()
-        self.child.pack_start(hp)
+        self.add(hp)
+
+        vb = gtk.VBox(spacing=6)
+
+        bbox = gtk.HBox(spacing=6)
+        prefs = gtk.Button()
+        prefs.add(gtk.image_new_from_stock(
+            gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_BUTTON))
+        prefs.connect_object('clicked', PreferencesWindow, self)
+        bbox.pack_start(prefs, expand=False)
+        plugins = gtk.Button(stock=stock.PLUGINS)
+        plugins.connect_object('clicked', PluginWindow, self)
+        bbox.pack_start(plugins, expand=False)
+
+        l = gtk.Label()
+        l.set_alignment(1.0, 0.5)
+        l.set_ellipsize(pango.ELLIPSIZE_END)
+        bbox.pack_start(l)
+
         fs = FileSelector(dir)
-        fs.show_all()
-        hp.pack1(fs, resize=True, shrink=False)
+
+        vb.pack_start(fs)
+        vb.pack_start(bbox, expand=False)
+        vb.show_all()
+
+        hp.pack1(vb, resize=True, shrink=False)
+
         nb = qltk.Notebook()
         nb.show()
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
             nb.append_page(Page(self, watcher))
         hp.pack2(nb, resize=True, shrink=False)
-        fs.connect('changed', self.__changed)
+        fs.connect('changed', self.__changed, l)
         self.__cache = {}
         s = watcher.connect_object('changed', FileSelector.rescan, fs)
         self.connect_object('destroy', watcher.disconnect, s)
@@ -138,9 +160,14 @@ class ExFalsoWindow(gtk.Window):
         d.destroy()
         fs.rescan()
 
-    def __changed(self, selector, selection):
+    def __changed(self, selector, selection, label):
         model, rows = selection.get_selected_rows()
         files = []
+
+        if len(rows) < 2: count = len(model)
+        else: count = len(rows)
+        label.set_text(ngettext("%d song", "%d songs", count) % count)
+
         for row in rows:
             filename = model[row][0]
             if not os.path.exists(filename): pass
