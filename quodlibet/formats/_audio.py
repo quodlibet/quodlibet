@@ -40,7 +40,7 @@ class AudioFile(dict):
 
     def __sort_key(self):
         return (self.get("album"),
-                self.get("labelid"), self.get("musicbrainz_albumid"),
+                self.get("labelid") or self.get("musicbrainz_albumid"),
                 self("~#disc"), self("~#track"),
                 self.get("artist"), self.get("musicbrainz_artistid"),
                 self.get("title"),
