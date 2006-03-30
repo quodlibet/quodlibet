@@ -50,7 +50,6 @@ class ExFalsoWindow(gtk.Window):
             [os.path.join("./plugins", "editing"),
              os.path.join(const.PLUGINS, "editing")], "editing")
         self.plugins.rescan()
-        #self.__setup_menubar()
 
         hp = gtk.HPaned()
         hp.set_border_width(6)
@@ -101,30 +100,10 @@ class ExFalsoWindow(gtk.Window):
 
         self.child.show()
 
-    def __setup_menubar(self):
         ag = gtk.AccelGroup()
-
-        mb = gtk.MenuBar()
-        music = gtk.MenuItem(_("_Music"))
-
-        submenu = gtk.Menu()
-        item = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES, ag)
-        item.connect_object('activate', PreferencesWindow, self)
-        submenu.append(item)
-        item = gtk.ImageMenuItem(stock.PLUGINS, ag)
-        item.connect_object('activate', PluginWindow, self)
-        submenu.append(item)
-        submenu.append(gtk.SeparatorMenuItem())
-        item = gtk.ImageMenuItem(gtk.STOCK_QUIT, ag)
-        item.connect('activate', gtk.main_quit)
-        submenu.append(item)
-        music.set_submenu(submenu)
-
-        mb.append(music)
-
-        mb.show_all()
+        key, mod = gtk.accelerator_parse("<control>Q")
+        ag.connect_group(key, mod, 0, gtk.main_quit)
         self.add_accel_group(ag)
-        self.child.pack_start(mb, expand=False)
 
     def set_pending(self, button, *excess):
         self.__save = button
