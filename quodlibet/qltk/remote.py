@@ -155,6 +155,11 @@ class FIFOControl(object):
         if window.get_property('visible'): window.hide()
         else: window.present()
 
+    def _hide_window(self, watcher, window, player):
+        window.hide()
+
+    _show_window = _focus
+
     def _set_rating(self, value, watcher, window, player):
         song = player.song
         if song:
