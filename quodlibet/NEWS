@@ -8,7 +8,7 @@ see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
-0.19
+0.19 - i'm really thirsty you guys
  * Simple X session management. (#18)
  * Require Mutagen 1.0; drops Pymad. (#405)
  * WAV support. (#456)
