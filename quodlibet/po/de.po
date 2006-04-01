@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.19\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-30 11:16-0600\n"
+"POT-Creation-Date: 2006-04-01 00:08-0600\n"
 "PO-Revision-Date: 2006-03-25 17:59+0100\n"
 "Last-Translator: Ruediger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN\n"
@@ -94,12 +94,12 @@ msgstr[1] "unterschiedlich in %d Titeln"
 msgid "W: %s is not a QL song database."
 msgstr "W: %s ist keine QL-Titeldatenbank."
 
-#: ../library.py:271
+#: ../library.py:272
 #, python-format
 msgid "Checking %s"
 msgstr "%s wird geprüft"
 
-#: ../library.py:296 ../qltk/about.py:26
+#: ../library.py:297 ../qltk/about.py:26
 #, python-format
 msgid "Supported formats: %s"
 msgstr "Unterstützte Formate: %s"

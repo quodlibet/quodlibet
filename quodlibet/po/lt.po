@@ -7,14 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-29 12:27+0300\n"
+"POT-Creation-Date: 2006-04-01 00:08-0600\n"
 "PO-Revision-Date: 2006-03-29 12:32+0300\n"
 "Last-Translator: Jonas <jonas.slivka@gmail.com>\n"
 "Language-Team: Lithuanian <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.2\n"
 
 #: ../stock.py:39
@@ -94,12 +95,12 @@ msgstr[2] "skirtinga tarp %d dainų"
 msgid "W: %s is not a QL song database."
 msgstr "W: %s nėra QL dainų duomenų bazė."
 
-#: ../library.py:271
+#: ../library.py:272
 #, python-format
 msgid "Checking %s"
 msgstr "Tikrinama %s"
 
-#: ../library.py:296 ../qltk/about.py:26
+#: ../library.py:297 ../qltk/about.py:26
 #, python-format
 msgid "Supported formats: %s"
 msgstr "Palaikomi formatai: %s"
@@ -948,30 +949,35 @@ msgstr "Negalima iš naujo pakeisti keletos žymų reikšmių"
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr "Žymės su keletu reikšmių vardo pakeitimas nėra palaikomas."
 
-#: ../qltk/exfalso.py:86 ../qltk/quodlibet.py:319
-msgid "_Music"
-msgstr "_Muzika"
+#: ../qltk/exfalso.py:148 ../qltk/information.py:430
+#: ../browsers/playlists.py:172
+#, python-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "%d daina"
+msgstr[1] "%d dainos"
+msgstr[2] "%d dainų"
 
-#: ../qltk/exfalso.py:156 ../qltk/properties.py:108
+#: ../qltk/exfalso.py:162 ../qltk/properties.py:108
 #: ../browsers/playlists.py:103 ../browsers/playlists.py:199
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s ir dar %(count)d"
 
 #. FIXME: Change to "Ex Falso Preferences" after 0.19.
-#: ../qltk/exfalso.py:173 ../qltk/pluginwin.py:101
+#: ../qltk/exfalso.py:179 ../qltk/pluginwin.py:101
 msgid "Preferences"
 msgstr "Pasirinktys"
 
-#: ../qltk/exfalso.py:178 ../qltk/prefs.py:210
+#: ../qltk/exfalso.py:184 ../qltk/prefs.py:210
 msgid "Tag Editing"
 msgstr "Žymių redagavimas"
 
-#: ../qltk/exfalso.py:184 ../qltk/prefs.py:217
+#: ../qltk/exfalso.py:190 ../qltk/prefs.py:217
 msgid "Split _on:"
 msgstr "At_skirti ties:"
 
-#: ../qltk/exfalso.py:190 ../qltk/prefs.py:223
+#: ../qltk/exfalso.py:196 ../qltk/prefs.py:223
 msgid "Show _programmatic tags"
 msgstr "Rodyti programuojamas žymes"
 
@@ -1135,14 +1141,6 @@ msgstr[2] "%d dainų be jokio albumo"
 #: ../qltk/information.py:395
 msgid "Selected Discography"
 msgstr "Pasirinkta diskografija"
-
-#: ../qltk/information.py:430 ../browsers/playlists.py:172
-#, python-format
-msgid "%d song"
-msgid_plural "%d songs"
-msgstr[0] "%d daina"
-msgstr[1] "%d dainos"
-msgstr[2] "%d dainų"
 
 #: ../qltk/information.py:445
 #, python-format
@@ -1426,6 +1424,10 @@ msgstr "Negalima pridėti dainų"
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> naudoja nepalaikomą protokolą."
+
+#: ../qltk/quodlibet.py:319
+msgid "_Music"
+msgstr "_Muzika"
 
 #: ../qltk/quodlibet.py:320
 msgid "_Add a Folder..."
@@ -1908,7 +1910,7 @@ msgstr "Viskas"
 msgid "_Search:"
 msgstr "_Paieška:"
 
-#: ../browsers/paned.py:465
+#: ../browsers/paned.py:466
 msgid "_Paned Browser"
 msgstr "_Langų naršyklė"
 
@@ -2196,4 +2198,3 @@ msgstr "Klausykite, naršykite ar redaguokite savo muzikos kolekciją"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "Muzikos grotuvas"
-
