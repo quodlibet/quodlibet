@@ -19,5 +19,10 @@ def init():
     client = gnome.ui.master_client()
     client.set_restart_style(gnome.ui.RESTART_IF_RUNNING)
     command = os.path.normpath(os.path.join(os.getcwd(), sys.argv[0]))
-    client.set_restart_command([command] + sys.argv[1:])
+    try: client.set_restart_command([command] + sys.argv[1:])
+    except TypeError:
+        # Fedora systems have a broken gnome-python wrapper for this function.
+        # http://www.sacredchao.net/quodlibet/ticket/591
+        # http://trac.gajim.org/ticket/929
+        client.set_restart_command(len(sys.argv), [command] + sys.argv[1:])
     client.connect('die', gtk.main_quit)
