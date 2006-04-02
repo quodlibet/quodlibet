@@ -1,3 +1,15 @@
+quodlibet (0.19-1) unstable; urgency=low
+
+  * New upstream version.
+    * Implement {show,hide}-window. (Closes: #360238)
+    * Enter (almost as good as tab) to move the cursor. (Closes: #343974)
+  * debian/control, exfalso:
+    * Drop pymad dependency, depend on Mutagen 1.0.
+    * Conflict with old-style plugins.
+  * debian/rules: No need to remove mutagen, it's no longer present.
+
+ -- Joe Wreschnig <piman@debian.org>  Sat,  1 Apr 2006 00:15:30 -0600
+
 quodlibet (0.18-3) unstable; urgency=low
 
   * Depend on gstreamer0.10-plugins-base (>= 0.10.3).

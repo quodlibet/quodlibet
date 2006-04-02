@@ -7,11 +7,11 @@ Standards-Version: 3.6.2
 
 Package: exfalso
 Architecture: all
-Depends: ${python:Depends}, python-ctypes, python-mutagen (>= 0.9),
+Depends: ${python:Depends}, python-ctypes, python-mutagen (>= 1.0),
 	python-gtk2 (>= 2.8), libgtk2.0-0 (>= 2.8.8-1),
-	python-pymad, python-pyvorbis
+	python-pyvorbis
 Suggests: libmp4v2-0, quodlibet-plugins
-Conflicts: quodlibet-plugins (<< 20051217), quodlibet (<< 0.18)
+Conflicts: quodlibet-plugins (<< 20060401), quodlibet (<< 0.18)
 Description: audio tag editor for GTK+
  Ex Falso displays and edits audio metadata tags. Supported formats include
  MP3, Ogg Vorbis, FLAC, Musepack (MPC), WavPack, and MOD/XM/IT.
