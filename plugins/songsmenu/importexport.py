@@ -10,6 +10,7 @@ import gtk
 from qltk import ErrorMessage
 from os.path import splitext, extsep, dirname
 from const import HOME as lastfolder
+from library import library
 __all__ = ['Export', 'Import']
 
 from plugins.songsmenu import SongsMenuPlugin
@@ -67,18 +68,35 @@ class Import(SongsMenuPlugin):
     PLUGIN_DESC = "Import Metadata"
     PLUGIN_ICON = 'gtk-open'
 
+    # Note: the usage of plugin_album here is sometimes NOT what you want. It
+    # supports fixing up tags on several already-known albums just by walking
+    # them via the plugin system and just selecting a new .tags; this mimics
+    # export of several albums.
+    #
+    # However if one of the songs in your album is different from the rest (e.g.
+    # one isn't tagged, or only one is) it will be passed in as two different
+    # invocations, neither of which has the right size. If you find yourself in
+    # that scenario a lot more than the previous one, change this to
+    #   def plugin_songs(self, songs):
+    # and comment out the songs.sort line for safety.
     def plugin_album(self, songs):
 
         songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or cmp(a('~basename'), b('~basename')) or cmp(a, b))
 
         chooser = filechooser(save=False, title=songs[0]('album'))
+        box = gtk.HBox()
+        rename = gtk.CheckButton("Rename Files")
+        rename.set_active(False)
+        box.pack_start(rename)
         append = gtk.CheckButton("Append Metadata")
         append.set_active(True)
-        append.show()
-        chooser.set_extra_widget(append)
+        box.pack_start(append)
+        box.show_all()
+        chooser.set_extra_widget(box)
 
         resp = chooser.run()
         append = append.get_active()
+        rename = rename.get_active()
         fn = chooser.get_filename()
         chooser.destroy()
         if resp != gtk.RESPONSE_ACCEPT: return
@@ -87,9 +105,11 @@ class Import(SongsMenuPlugin):
         lastfolder = dirname(fn)
 
         metadata = []
+        names = []
         index = 0
         for line in open(fn, 'rU'):
             if index == len(metadata):
+                names.append(line[:line.rfind('.')])
                 metadata.append({})
             elif line == '\n':
                 index = len(metadata)
@@ -99,11 +119,17 @@ class Import(SongsMenuPlugin):
                 try: metadata[index][key].append(value)
                 except KeyError: metadata[index][key] = [value]
 
-        if len(songs) != len(metadata):
+        if not (len(songs) == len(metadata) == len(names)):
             ErrorMessage(None, "Songs mismatch", "There are %(select)d songs selected, but %(meta)d songs in the file. Aborting." % dict(select=len(songs), meta=len(metadata))).run()
             return
 
-        for song, meta in zip(songs, metadata):
+        for song, meta, name in zip(songs, metadata, names):
             for key, values in meta.iteritems():
-                if append: values = song.list(key) + values
+                if append and key in song:
+                    values = song.list(key) + values
                 song[key] = '\n'.join(values)
+            if rename:
+                origname = song['~filename']
+                newname = name + origname[origname.rfind('.'):]
+                if library is not None: library.rename(origname, newname)
+                else: song.rename(newname) # ex falso case doesn't use library
