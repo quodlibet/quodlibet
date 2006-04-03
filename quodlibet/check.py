@@ -3,7 +3,7 @@
 # public domain
 
 NAME = "Quod Libet"
-
+import os
 import sys
 
 if __name__ == "__main__":
@@ -71,3 +71,8 @@ if __name__ == "__main__":
     print "\nYour system meets the requirements to install %s." % NAME
     print "Type 'make install' (as root) to install it."
     print "You may want to make some extensions first; see the README file."
+
+    if sys.argv[1:] and os.path.isdir(sys.argv[1]):
+        print "\nIt looks like you might have Quod Libet installed already."
+        print "Installing directly over an old version is not supported."
+        print "Please remove %s before continuing." % sys.argv[1]

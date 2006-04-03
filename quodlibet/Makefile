@@ -10,7 +10,7 @@ TODEP = lib/quodlibet
 all:
 	@/bin/echo -n "Checking for Python... "
 	@which python || ( echo "Not found." && /bin/false )
-	@./check.py
+	@./check.py $(DESTDIR)$(PREFIX)/$(TO)
 
 make-install-dirs:
 	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
