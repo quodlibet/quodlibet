@@ -20,7 +20,9 @@ class QLScrobbler(object):
 	PLUGIN_VERSION = "0.8"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
-	DUMP = os.path.join(const.DIR, "scrobbler_cache")
+	try: DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
+	except AttributeError:
+		DUMP = os.path.join(const.DIR, "scrobbler_cache")
 
 	# things that could change
 	

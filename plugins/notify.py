@@ -56,7 +56,10 @@ by <~people>>'''
                     newcover.fill(0x000000ff)
                     iconf.copy_area(0, 0, w, h, newcover, 1, 1)
                     try:
-                        coverart = os.path.join(const.DIR, "cover.png")
+                        # FIXME: This should be using a TemporaryFile anyway.
+                        try: coverart = os.path.join(const.USERDIR, "cover.png")
+                        except AttributeError:
+                            os.path.join(const.DIR, "cover.png")
                         newcover.save(coverart, "png", {})
                         icon = coverart
                     except:
