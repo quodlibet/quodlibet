@@ -15,6 +15,7 @@
 
 import gtk, pango, gobject, os, sre
 
+from _subprocobj import Subprocess
 from plugins.songsmenu import SongsMenuPlugin
 
 VORBIS_PROGRESS = sre.compile(r'(?P<percent>\d+)% - (?P<file>.+)')
@@ -42,7 +43,6 @@ class ReplayGain(SongsMenuPlugin):
             self.args = ['--album', '--skip', ]#'--display-only']
 
         def run(self, songs):
-            from _subprocobj import Subprocess
             files = [song['~filename'] for song in songs]
             win = self.gain.get_window()
             win.process = Subprocess(
@@ -91,7 +91,6 @@ class ReplayGain(SongsMenuPlugin):
             self.args2 = ['-n', '-b']
 
         def run(self, songs):
-            from _subprocobj import Subprocess
             files = [song['~filename'] for song in songs]
             self.__files = [(song('~basename'), song['~filename'], song)
                             for song in songs]
