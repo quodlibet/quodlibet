@@ -24,7 +24,7 @@ by <~people>><album|
 \\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
 <part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
 
-    __filename = os.path.join(const.DIR, "songinfo")
+    __filename = os.path.join(const.USERDIR, "songinfo")
 
     def __init__(self, watcher, playlist):
         gtk.Label.__init__(self)
@@ -55,10 +55,10 @@ by <~people>><album|
     def __set(self, edit, watcher, playlist):
         self._pattern = edit.text.rstrip()
         if (self._pattern == SongInfo._pattern):
-            try: os.unlink(os.path.join(const.DIR, "songinfo"))
+            try: os.unlink(os.path.join(const.USERDIR, "songinfo"))
             except OSError: pass
         else:
-            f = file(os.path.join(const.DIR, "songinfo"), "w")
+            f = file(os.path.join(const.USERDIR, "songinfo"), "w")
             f.write(self._pattern + "\n")
             f.close()
         self.__song_started(watcher, playlist.song)

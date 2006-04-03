@@ -3,17 +3,16 @@
 
 import os
 
-VERSION = "0.19"
+VERSION = "0.19.1"
 
 HOME    = os.path.expanduser("~")
-DIR     = os.path.join(HOME, ".quodlibet")
-CONTROL = os.path.join(DIR, "control")
-CONFIG  = os.path.join(DIR, "config")
-CURRENT = os.path.join(DIR, "current")
-LIBRARY = os.path.join(DIR, "songs")
-PLUGINS = os.path.join(DIR, "plugins")
+USERDIR = os.path.join(HOME, ".quodlibet")
+CONTROL = os.path.join(USERDIR, "control")
+CONFIG  = os.path.join(USERDIR, "config")
+CURRENT = os.path.join(USERDIR, "current")
+LIBRARY = os.path.join(USERDIR, "songs")
 
-WD = os.path.dirname(os.path.realpath(__file__))
+BASEDIR = os.path.dirname(os.path.realpath(__file__))
 
 AUTHORS = """\
 Joe Wreschnig
@@ -34,7 +33,7 @@ Decklin Foster
 Anders Carlsson (trayicon)
 Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")
 
-TBP = os.path.join(DIR, "lists", "tagpatterns")
+TBP = os.path.join(USERDIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\
 <tracknumber>. <title>
 <tracknumber> - <title>
@@ -42,7 +41,7 @@ TBP_EXAMPLES = """\
 <artist> - <album>/<tracknumber>. <title>
 <artist>/<album>/<tracknumber> - <title>"""
 
-NBP = os.path.join(DIR, "lists", "renamepatterns")
+NBP = os.path.join(USERDIR, "lists", "renamepatterns")
 NBP_EXAMPLES = """\
 <tracknumber>. <title>
 <tracknumber|<tracknumber>. ><title>

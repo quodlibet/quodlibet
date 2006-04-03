@@ -42,13 +42,13 @@ class ExFalsoWindow(gtk.Window):
         # plugin support
         self.__watcher = watcher
         self.pm = SongsMenuPlugins(
-            [os.path.join("./plugins", "songsmenu"),
-             os.path.join(const.PLUGINS, "songsmenu")], "songsmenu")
+            [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
+             os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
         self.pm.rescan()
 
         self.plugins = EditingPlugins(
-            [os.path.join("./plugins", "editing"),
-             os.path.join(const.PLUGINS, "editing")], "editing")
+            [os.path.join(const.BASEDIR, "plugins", "editing"),
+             os.path.join(const.USERDIR, "plugins", "editing")], "editing")
         self.plugins.rescan()
 
         hp = gtk.HPaned()

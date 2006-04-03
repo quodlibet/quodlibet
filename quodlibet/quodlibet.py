@@ -16,8 +16,9 @@ play = False
 
 def main():
     import player
-    import util; util.mkdir(const.DIR)
+    import util;
     import signal, widgets
+    util.mkdir(const.USERDIR)
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
     try: ratings = config.getint("settings", "ratings")

@@ -134,7 +134,7 @@ class TrayIcon(object):
         self.__mapped = False
         self.__icon = icon = trayicon.TrayIcon("quodlibet")
         self.__tips.enable()
-        filename = os.path.join(const.WD, "quodlibet.")
+        filename = os.path.join(const.BASEDIR, "quodlibet.")
         try: p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "svg", 16, 16)
         except:
             p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "png", 16, 16)

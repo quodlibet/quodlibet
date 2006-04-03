@@ -22,7 +22,7 @@ from browsers._base import Browser
 from library import library
 from parse import Query
 
-QUERIES = os.path.join(const.DIR, "lists", "queries")
+QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 
 # A browser that the user only interacts with indirectly, via the
 # Filter menu. The HBox remains empty.

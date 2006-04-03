@@ -21,7 +21,7 @@ from qltk.properties import SongProperties
 from qltk.information import Information
 from library import library
 
-QUEUE = os.path.join(const.DIR, "queue")
+QUEUE = os.path.join(const.USERDIR, "queue")
 
 class QueueExpander(gtk.Expander):
     def __init__(self, menu, watcher):

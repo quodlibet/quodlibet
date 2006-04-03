@@ -51,7 +51,7 @@ def init():
 
     stock.init()
 
-    icon = os.path.join(const.WD, "quodlibet.")
+    icon = os.path.join(const.BASEDIR, "quodlibet.")
     try:
         pb = gtk.gdk.pixbuf_new_from_file_at_size(icon + "svg", 64, 64)
         gtk.window_set_default_icon(pb)
@@ -71,20 +71,21 @@ def init():
 
     from plugins.songsmenu import SongsMenuPlugins
     SongsMenu.plugins = SongsMenuPlugins(
-        [os.path.join("./plugins", "songsmenu"),
-         os.path.join(const.PLUGINS, "songsmenu")], "songsmenu")
+        [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
+         os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
 
     from plugins import PluginManager
-    SongList.pm = PluginManager(
-        watcher, ["./plugins", const.PLUGINS], "legacy")
+    SongList.pm = PluginManager(watcher, [
+        os.path.join(const.BASEDIR, "plugins"),
+        os.path.join(const.USERDIR, "plugins")], "legacy")
     SongList.pm.rescan()
 
     from plugins.editing import EditingPlugins
     from qltk.properties import SongProperties
     SongProperties.plugins = EditingPlugins(
-        [os.path.join("./plugins", "editing"),
-         os.path.join(const.PLUGINS, "editing")], "editing")
+        [os.path.join(const.BASEDIR, "plugins", "editing"),
+         os.path.join(const.USERDIR, "plugins", "editing")], "editing")
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted").split()

@@ -25,7 +25,7 @@ from qltk.msg import ErrorMessage
 from qltk.downloader import DownloadWindow
 import formats; from formats.remote import RemoteFile
 
-FEEDS = os.path.join(const.DIR, "feeds")
+FEEDS = os.path.join(const.USERDIR, "feeds")
 
 if sys.version_info < (2, 4): from sets import Set as set
 

@@ -118,7 +118,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     __model = None
 
     def init(klass, watcher):
-        pattern_fn = os.path.join(const.DIR, "album_pattern")
+        pattern_fn = os.path.join(const.USERDIR, "album_pattern")
         try:
             klass._Album._pattern_text = file(pattern_fn).read().rstrip()
         except EnvironmentError: pass
@@ -141,7 +141,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             if album is not None:
                 album.markup = album._pattern % album
                 klass.__model.row_changed(row.path, row.iter)
-        pattern_fn = os.path.join(const.DIR, "album_pattern")
+        pattern_fn = os.path.join(const.USERDIR, "album_pattern")
         f = file(pattern_fn, "w")
         f.write(pattern_text  + "\n")
         f.close()

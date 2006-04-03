@@ -97,7 +97,7 @@ class QuodLibetWindow(gtk.Window):
         self.__create_menu(tips, player)
         self.add_accel_group(self.ui.get_accel_group())
 
-        accel_fn = os.path.join(const.DIR, "accels")
+        accel_fn = os.path.join(const.USERDIR, "accels")
         gtk.accel_map_load(accel_fn)
         accelgroup = gtk.accel_groups_from_object(self)[0]
         accelgroup.connect('accel-changed',

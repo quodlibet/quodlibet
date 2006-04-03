@@ -12,7 +12,7 @@ import const
 from os.path import dirname, basename, isdir, join
 from glob import glob
 
-BROWSERS = os.path.join(const.DIR, "browsers")
+BROWSERS = os.path.join(const.USERDIR, "browsers")
 
 base = dirname(__file__)
 self = basename(base)

@@ -43,7 +43,7 @@ class FIFOControl(object):
     def __open(self, *args):
         try:
             if not os.path.exists(const.CONTROL):
-                util.mkdir(const.DIR)
+                util.mkdir(const.USERDIR)
                 os.mkfifo(const.CONTROL, 0600)
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)

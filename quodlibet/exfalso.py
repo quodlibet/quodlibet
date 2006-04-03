@@ -30,7 +30,7 @@ def main(argv):
 
     util.gtk_init()
     import gtk
-    icon = os.path.join(const.WD, "exfalso.")
+    icon = os.path.join(const.BASEDIR, "exfalso.")
     try: gtk.window_set_default_icon_from_file(icon + "svg")
     except: gtk.window_set_default_icon_from_file(icon + "png")
 

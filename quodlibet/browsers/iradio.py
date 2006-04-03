@@ -25,7 +25,7 @@ from qltk.getstring import GetStringDialog
 from qltk.entry import ValidatingEntry
 from parse import Query
 
-STATIONS = os.path.join(const.DIR, "stations")
+STATIONS = os.path.join(const.USERDIR, "stations")
 
 class IRFile(RemoteFile):
     multisong = True
