@@ -8,6 +8,11 @@ see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
+0.19.1
+ * Work around broken Fedora/Mandrive GNOME bindings. (#593)
+ * Fix global plugin directory scanning.
+ * Add originalartist to ~people.
+
 0.19 - i'm really thirsty you guys
  * Simple X session management. (#18)
  * Require Mutagen 1.0; drops Pymad. (#405)
