@@ -12,6 +12,7 @@ See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
  * Work around broken Fedora/Mandrive GNOME bindings. (#593)
  * Fix global plugin directory scanning.
  * Add originalartist to ~people.
+ * Updated Italian translation, by Filippo Pappalardo.
 
 0.19 - i'm really thirsty you guys
  * Simple X session management. (#18)
