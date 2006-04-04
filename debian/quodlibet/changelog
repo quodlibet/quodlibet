@@ -1,3 +1,9 @@
+quodlibet (0.19.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Joe Wreschnig <piman@debian.org>  Tue,  4 Apr 2006 15:00:05 -0500
+
 quodlibet (0.19-1) unstable; urgency=low
 
   * New upstream version.
