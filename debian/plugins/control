@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: quodlibet-plugins
 Architecture: all
-Depends: quodlibet (>= 0.16), ${python:Depends}
+Depends: exfalso (>= 0.19), ${python:Depends}
 Suggests: k3b, python-gnome2, python-cddb, python-musicbrainz
 Description: various contributed plugins for Quod Libet
  This package contains a number of contributed plugins for the Quod
@@ -16,14 +16,10 @@ Description: various contributed plugins for Quod Libet
  .
  Notable plugins in this package include:
  .
-  - animosd.py, osd.py: Display track information on-screen when the current
-    track changes. (animosd.py is new and less tested.)
-  - brainz.py, cddb.py: Retag your albums from data found on MusicBrainz and
-    FreeDB, respectively.
-  - clock.py: Stop and begin playing music at specified times.
-  - html.py: Generate a HTML playlist of sorts from a list of tracks.
-  - jep118.py: Generate a Jabber User Tunes file to ~/.quodlibet/jabber.
-  - k3b.py: Burn tracks to a CD with k3b.
-  - lyrics.py: Search for song lyrics for a particular track.
-  - qlscrobbler.py: Submit listening data to the Audioscrobbler service
-    (see www.last.fm for more information.)
+  - Animated On-Screen Display
+  - MusicBrainz and CDDB/FreeDB tag lookups
+  - Alarm clock and lullaby, start and stop playing music at specified times
+  - Export a playlist as HTML
+  - Export a Jabber JEP-118 file
+  - Burn CDs with K3b
+  - AudioScrobbler/Last.fm submission (http://www.last.fm)

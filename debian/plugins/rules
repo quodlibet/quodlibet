@@ -14,8 +14,8 @@ binary: binary-indep
 binary-indep:
 	dh_clean -k
 	dh_installdirs $(U)
-	for plugin in $(filter-out $(EXCLUDE), $(wildcard *.py)); do \
-		install -m 644 -o 0 -g 0 $$plugin $(P)/; \
+	for plugin in $(filter-out $(EXCLUDE), $(wildcard */*.py *.py)); do \
+		install -D -m 644 -o 0 -g 0 $$plugin $(P)/$$plugin; \
 	done
 	dh_installchangelogs
 	dh_installdocs

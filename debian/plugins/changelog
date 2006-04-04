@@ -1,3 +1,13 @@
+quodlibet-plugins (20060404-0.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * New SVN snapshot for Quod Libet 0.19.
+  * Depends: exfalso (>= 0.19)
+  * Remove (currently broken) ReplayGain plugin.
+  * Clean up long description a bit.
+
+ -- Joe Wreschnig <piman@debian.org>  Tue,  4 Apr 2006 15:03:56 -0500
+
 quodlibet-plugins (20060128-1) unstable; urgency=low
 
   * I don't know why I said "include albumart.py now" in the last release,
