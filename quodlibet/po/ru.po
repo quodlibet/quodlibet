@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-01 00:08-0600\n"
+"POT-Creation-Date: 2006-04-03 21:15-0500\n"
 "PO-Revision-Date: 2006-02-24 17:35+0500\n"
 "Last-Translator: Andrey Fedoseev andrey.fedoseev@gmail.com>\n"
 "Language-Team: Russian\n"
@@ -109,204 +109,204 @@ msgstr "Проверяется %s"
 msgid "Supported formats: %s"
 msgstr "Поддерживаемые форматы: %s"
 
-#: ../quodlibet.py:70
+#: ../quodlibet.py:71
 msgid "The library cannot be refreshed while Quod Libet is running."
 msgstr "Библиотека не может быть обновлена, когда Quod Libet запущен."
 
-#: ../quodlibet.py:74
+#: ../quodlibet.py:75
 msgid "Loading, scanning, and saving your library."
 msgstr "Загрузка, сканирование и сохранение библиотеки."
 
-#: ../quodlibet.py:102
+#: ../quodlibet.py:103
 msgid "No song is currently playing."
 msgstr "Не проигрывает на данный момент."
 
-#: ../quodlibet.py:110
+#: ../quodlibet.py:111
 msgid "Quod Libet is not running."
 msgstr "Quod Libet не запущен."
 
-#: ../quodlibet.py:122
+#: ../quodlibet.py:123
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Запись в %s невозможна, файл будет удалён."
 
-#: ../quodlibet.py:158
+#: ../quodlibet.py:159
 msgid "a music library and player"
 msgstr "музыкальный проигрыватель и библиотека"
 
-#: ../quodlibet.py:159
+#: ../quodlibet.py:160
 msgid "[ --refresh-library | --print-playing | control ]"
 msgstr "[ --refresh-library | --print-playing | команда ]"
 
-#: ../quodlibet.py:161
+#: ../quodlibet.py:162
 msgid "Rescan your library and exit"
 msgstr "Просканировать библиотеку заново и выйти"
 
-#: ../quodlibet.py:162
+#: ../quodlibet.py:163
 msgid "Print the playing song and exit"
 msgstr "Вывести, какая песня проигрывается, и выйти"
 
-#: ../quodlibet.py:163
+#: ../quodlibet.py:164
 msgid "Begin playing immediately"
 msgstr "Сразу начать воспроизведение"
 
-#: ../quodlibet.py:166
+#: ../quodlibet.py:167
 msgid "Jump to next song"
 msgstr "Перейти к следующей песне"
 
-#: ../quodlibet.py:167
+#: ../quodlibet.py:168
 msgid "Jump to previous song"
 msgstr "Перейти к предыдущей песне"
 
-#: ../quodlibet.py:168
+#: ../quodlibet.py:169
 msgid "Start playback"
 msgstr "Начать воспроизведение"
 
-#: ../quodlibet.py:169
+#: ../quodlibet.py:170
 msgid "Pause playback"
 msgstr "Приостановить воспроизведение"
 
-#: ../quodlibet.py:170
+#: ../quodlibet.py:171
 msgid "Toggle play/pause mode"
 msgstr "Переключить режим воспроизведения/паузы"
 
-#: ../quodlibet.py:171
+#: ../quodlibet.py:172
 msgid "Turn up volume"
 msgstr "Увеличить громкость"
 
-#: ../quodlibet.py:172
+#: ../quodlibet.py:173
 msgid "Turn down volume"
 msgstr "Уменьшить громкость"
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:174
 msgid "Print player status"
 msgstr "Вывести состояние воспроизведения"
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:175
 msgid "Hide main window"
 msgstr "Скрыть главное окно"
 
-#: ../quodlibet.py:175
+#: ../quodlibet.py:176
 msgid "Show main window"
 msgstr "Показать главное окно"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:177
 msgid "Toggle main window visibility"
 msgstr "Показать/скрыть главное окно"
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:178
 msgid "Focus the running player"
 msgstr "Поместить фокус на окно Quod Libet"
 
-#: ../quodlibet.py:178
+#: ../quodlibet.py:179
 msgid "Print the current playlist"
 msgstr "Вывести текущий список воспроизведения"
 
-#: ../quodlibet.py:179
+#: ../quodlibet.py:180
 msgid "Print the contents of the queue"
 msgstr "Вывести содержимое очереди"
 
-#: ../quodlibet.py:180
+#: ../quodlibet.py:181
 msgid "Exit Quod Libet"
 msgstr "Выйти из Quod Libet"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "Seek within the playing song"
 msgstr "Переместиться по проигрываемой песне"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ЧЧ:]ММ:СС"
 
-#: ../quodlibet.py:185
+#: ../quodlibet.py:186
 msgid "Set or toggle the playback order"
 msgstr "Переключить порядок проигрывания"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:188
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Включить, выключить или переключить повторяющееся воспроизведение"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:189
 msgid "Set the volume"
 msgstr "Установить громкость"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:190
 msgid "Search your audio library"
 msgstr "Искать в библиотеке"
 
-#: ../quodlibet.py:189 ../quodlibet.py:199
+#: ../quodlibet.py:190 ../quodlibet.py:200
 msgid "query"
 msgstr "запрос"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:191
 msgid "Play a file"
 msgstr "Воспроизвести файл"
 
 #. just file name, foo.ogg
-#: ../quodlibet.py:190 ../quodlibet.py:199 ../po/tag-names.py:23
+#: ../quodlibet.py:191 ../quodlibet.py:200 ../po/tag-names.py:23
 msgid "filename"
 msgstr "имя файла"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:192
 msgid "Rate the playing song"
 msgstr "Оценить проигрываемую песню"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:193
 msgid "Set the current browser"
 msgstr "Установить режим просмотра библиотеки"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:194
 msgid "Open a new browser"
 msgstr "Открыть новый браузер"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:195
 msgid "Show or hide the queue"
 msgstr "Показать/скрыть очередь"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "Show or hide the main song list"
 msgstr "Показать/скрыть список песен"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "Filter on a random value"
 msgstr "Фильтровать по случайному параметру"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "tag"
 msgstr "тег"
 
-#: ../quodlibet.py:197
+#: ../quodlibet.py:198
 msgid "Filter on a tag value"
 msgstr "Фильтровать по значению тега"
 
-#: ../quodlibet.py:197
+#: ../quodlibet.py:198
 msgid "tag=value"
 msgstr "тег=значение"
 
-#: ../quodlibet.py:198
+#: ../quodlibet.py:199
 msgid "Enqueue a file or query"
 msgstr "Добавить в очередь файл или результат поиска"
 
-#: ../quodlibet.py:234
+#: ../quodlibet.py:235
 #, python-format
 msgid "E: Invalid argument for '%s'."
 msgstr "E: Недопустимый аргумент для параметра '%s'."
 
-#: ../quodlibet.py:236 ../util/__init__.py:165
+#: ../quodlibet.py:237 ../util/__init__.py:165
 #, python-format
 msgid "E: Try %s --help."
 msgstr "E: Попробуйте %s --help."
 
-#: ../quodlibet.py:257
+#: ../quodlibet.py:258
 msgid "Loaded song library."
 msgstr "Библиотека песен загружена."
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:266
+#: ../quodlibet.py:267
 msgid "Opening audio device."
 msgstr "Открытие аудио-устройства."
 
-#: ../quodlibet.py:297
+#: ../quodlibet.py:298
 msgid "Quod Libet is already running."
 msgstr "Quod Libet уже запущен."
 
@@ -644,19 +644,19 @@ msgstr ""
 "Не удалось найти веб-браузер. Присвойте значение переменной $BROWSER или "
 "убедитесь, что /usr/bin/sensible-browser существует."
 
-#: ../widgets.py:136
+#: ../widgets.py:137
 msgid "Saving library."
 msgstr "Сохранение библиотеки."
 
-#: ../widgets.py:140
+#: ../widgets.py:141
 msgid "Unable to save library"
 msgstr "Не удалось сохранить библиотеку"
 
-#: ../widgets.py:143
+#: ../widgets.py:144
 msgid "Unable to open audio device"
 msgstr "Не удалось открыть аудио-устройство"
 
-#: ../widgets.py:144
+#: ../widgets.py:145
 #, python-format
 msgid ""
 "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
@@ -665,11 +665,11 @@ msgid ""
 "line in ~/.quodlibet/config."
 msgstr ""
 
-#: ../widgets.py:153
+#: ../widgets.py:154
 msgid "Unable to open files"
 msgstr "Не удалось открыть файлы"
 
-#: ../widgets.py:154
+#: ../widgets.py:155
 msgid ""
 "Quod Libet could not find the 'filesrc' GStreamer element. Check your "
 "GStreamer installation."
