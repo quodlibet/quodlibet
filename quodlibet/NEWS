@@ -13,6 +13,7 @@ See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
  * Fix global plugin directory scanning.
  * Add originalartist to ~people.
  * Updated Italian translation, by Filippo Pappalardo.
+ * Updated Korean translation, by Byung-Hee HWANG and ChangBom Yoon.
 
 0.19 - i'm really thirsty you guys
  * Simple X session management. (#18)
