@@ -226,7 +226,7 @@ class InternetRadio(gtk.HBox, Browser):
                 qltk.ErrorMessage(
                     None, _("No stations found"),
                     _("No Internet radio stations were found at %s.") %
-                    uri).run()
+                    util.escape(uri)).run()
                 return
 
             irfs = filter(
