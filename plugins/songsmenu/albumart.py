@@ -24,14 +24,7 @@ if sys.version_info < (2, 4): from sets import Set as set
 try:
     import amazon
 except ImportError:
-    try: import _amazon as amazon
-    except ImportError:
-        qltk.ErrorMessage(
-            None, "Module not found",
-            "<b>Unable to load amazon.py</b>\n"
-            "Please make sure amazon.py is in your plugins folder. "
-            "A compatible version can be found in the Quod Libet "
-            "Subversion repository.").run()
+    import _amazon as amazon
 
 class AlbumArtWindow(gtk.Window):
     def __init__(self, songs):
@@ -121,10 +114,10 @@ class AlbumArtWindow(gtk.Window):
         amazon.setLicense("0RKH4ZH1JCFZHMND91G2")
 
         try:
-            query = songs[0]("artist") + "+" + songs[0]("album")
-            query.encode("latin1")
-            bags = amazon.searchByKeyword(artist + '+' + album, type="lite", 
-                                          product_line="music")
+            query = songs[0]("artist") + " " + songs[0]("album")
+            query = query.encode("latin1", 'replace')
+            bags = amazon.searchByKeyword(
+                query, type="lite", product_line="music")
         except amazon.AmazonError, msg:
             dialog = qltk.Message(gtk.MESSAGE_ERROR, None, "Search error", msg)
             dialog.connect('response', self.__destroy_cb)
@@ -267,11 +260,11 @@ class AlbumArtWindow(gtk.Window):
         config.set("plugins", "cover_fn", append)
         return fname
 
-class SongsMenuPlugin(SongsMenuPlugin):
+class DownloadAlbumArt(SongsMenuPlugin):
     PLUGIN_NAME = "Download Album art"
     PLUGIN_DESC = "Downloads album covers from Amazon.com"
     PLUGIN_ICON = gtk.STOCK_FIND
-    PLUGIN_VERSION = "0.23"
+    PLUGIN_VERSION = "0.24"
 
     def PluginPreferences(parent):
         b = gtk.Button("Visit Amazon.com")
