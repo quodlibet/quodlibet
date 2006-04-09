@@ -23,7 +23,7 @@ class FLACFile(VCFile):
     def __init__(self, filename):
         f = mutagen.flac.FLAC(filename)
         self["~#length"] = int(f.info.length)
-        for key, value in f.tags.items():
+        for key, value in (f.tags or {}).items():
             self[key] = "\n".join(value)
         self._post_read()
         self.sanitize(filename)
