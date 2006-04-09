@@ -170,6 +170,8 @@ class AudioFeeds(Browser, gtk.VBox):
 
     expand = qltk.RHPaned
 
+    __last_folder = const.HOME
+
     def cell_data(col, render, model, iter):
         if model[iter][0].changed:
             render.markup = "<b>%s</b>" % util.escape(model[iter][0].name)
@@ -238,10 +240,12 @@ class AudioFeeds(Browser, gtk.VBox):
             action=gtk.FILE_CHOOSER_ACTION_CREATE_FOLDER,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                      gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        chooser.set_current_folder(self.__last_folder)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
             target = chooser.get_filename()
             if target:
+                type(self).__last_folder = os.path.dirname(target)
                 for i, source in enumerate(sources):
                     base = os.path.basename(source)
                     if not base:
@@ -257,12 +261,15 @@ class AudioFeeds(Browser, gtk.VBox):
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                      gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        chooser.set_current_folder(self.__last_folder)
         name = os.path.basename(source)
         if name: chooser.set_current_name(name)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
             target = chooser.get_filename()
-            if target: DownloadWindow.download(source, target)
+            if target:
+                type(self).__last_folder = os.path.dirname(target)
+                DownloadWindow.download(source, target)
         chooser.destroy()
 
     def __init__(self, watcher, main):
