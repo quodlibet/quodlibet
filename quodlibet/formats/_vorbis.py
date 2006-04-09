@@ -50,7 +50,7 @@ class VCFile(AudioFile):
     def _prep_write(self, comments):
         for key in comments.keys():
             if key.startswith("rating:") or key.startswith("playcount:"):
-                if key.split(":", 1)[1] == DEFAULT_EMAIL:
+                if key.split(":", 1)[1] in [DEFAULT_EMAIL, EMAIL]:
                     del(comments[key])
             else: del(comments[key])
         if self["~#rating"] != 0.5:
