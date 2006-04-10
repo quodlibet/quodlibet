@@ -1730,6 +1730,8 @@ msgid ""
 msgstr ""
 "Mönstret är ogiltigt. Säkerställ att du skriver &lt; och &gt; som \\&lt; och "
 "&gt; och att hakarna är balanserade."
+"\n"
+"%s"
 
 #: ../qltk/textedit.py:80
 msgid "Edit Display"
