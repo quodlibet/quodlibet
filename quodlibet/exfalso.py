@@ -12,7 +12,7 @@ import os, sys
 
 class fakegst(object):
     def element_factory_make(self, element_name):
-        if element_name in ["monkeysdec"]:
+        if element_name in ["monkeysdec", "mikmod", "modplug", "wavparse"]:
             raise ValueError("unsupported fake module")
 
 def main(argv):
