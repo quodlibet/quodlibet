@@ -92,25 +92,33 @@ class SongsMenuPlugins(Manager):
         albums = albums.values()
         map(list.sort, albums)
 
+        attrs = ['plugin_song', 'plugin_songs',
+                 'plugin_album', 'plugin_albums']
+            
+        if len(songs) == 1: attrs.append('plugin_single_song')
+        if len(albums) == 1: attrs.append('plugin_single_album')
+
         items = []
         kinds = self.find_subclasses(SongsMenuPlugin)
         kinds.sort(lambda a, b: cmp(a.PLUGIN_NAME, b.PLUGIN_NAME))
         for Kind in kinds:
             connected = False
-            attrs = ['plugin_song', 'plugin_songs',
-                     'plugin_album', 'plugin_albums']
-            
-            if len(songs) == 1: attrs.append('plugin_single_song')
-            if len(albums) == 1: attrs.append('plugin_single_album')
             usable = max([callable(getattr(Kind, s)) for s in attrs])
-            if usable: items.append(Kind(songs))
+            if usable:
+                try: items.append(Kind(songs))
+                except: print_exc()
 
         if items:
             menu = gtk.Menu()
             for item in items:
-                menu.append(item)
-                item.connect(
-                    'activate', self.__handle, watcher, parent, songs, albums)
+                try:
+                    menu.append(item)
+                    item.connect('activate', self.__handle,
+                                 watcher, parent, songs, albums)
+                except:
+                    print_exc()
+                    item.destroy()
+
         else: menu = None
         return menu
 
