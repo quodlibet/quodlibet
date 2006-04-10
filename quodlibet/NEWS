@@ -8,6 +8,9 @@ see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
+0.20
+ * New Norwegian Bokmål translation, by Andreas Bertheussen.
+
 0.19.1 - It's our secret! Our secret IDENTITY!
  * Work around broken Fedora/Mandrive GNOME bindings. (#593)
  * Fix global plugin directory scanning.
