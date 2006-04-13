@@ -166,7 +166,7 @@ class AudioFeeds(Browser, gtk.VBox):
 
     __feeds = gtk.ListStore(object) # unread
 
-    headers = ("title artist performer ~people date website language "
+    headers = ("title artist performer ~people album date website language "
                "copyright organization license contact").split()
 
     expand = qltk.RHPaned
