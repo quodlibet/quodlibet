@@ -569,6 +569,11 @@ class QuodLibetWindow(gtk.Window):
             path = self.songlist.model.current_path
             self.songlist.scroll_to_cell(
                 path[0], use_align=True, row_align=0.5)
+            if explicit:
+                iter = self.songlist.model.current_iter
+                selection = self.songlist.get_selection()
+                selection.unselect_all()
+                selection.select_path(path)
         if explicit: self.browser.scroll(player.playlist.song)
 
     def __next_song(self, *args): player.playlist.next()
