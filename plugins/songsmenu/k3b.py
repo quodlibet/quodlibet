@@ -31,4 +31,4 @@ class K3b(SongsMenuPlugin):
                 else: filelist = ("%r " * len(files)) % tuple(files)
                 os.system('k3b --audiocd %s &' % filelist)
             else:
-                util.spawn(["k3b", "--audiocd", files])
+                util.spawn(["k3b", "--audiocd"] + files)
