@@ -427,14 +427,18 @@ def unexpand(filename):
 
 def website(site):
     site = site.replace("\\", "\\\\").replace("\"", "\\\"")
-    for s in (["sensible-browser", "gnome-open"] +
+    for prog in (["sensible-browser", "gnome-open"] +
               os.environ.get("BROWSER","").split(":")):
-        if iscommand(s):
-            if "%s" in s:
-                s = s.replace("%s", '"' + site + '"')
-                s = s.replace("%%", "%")
-            else: s += " \"%s\"" % site
-            if os.system(s + " &") == 0: return True
+        if iscommand(prog):
+            args = prog.split()
+            for i, arg in enumerate(args):
+                if arg == "%s":
+                    args[i] = site
+                    break
+            else: args.append(site)
+            try: spawn(args)
+            except gobject.GError: return False
+            else: return True
     else: return False
 
 def tag(name, cap=True):
