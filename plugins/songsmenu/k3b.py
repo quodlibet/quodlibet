@@ -15,7 +15,7 @@ class K3b(SongsMenuPlugin):
     PLUGIN_NAME = 'Burn CD'
     PLUGIN_DESC = 'Burn CDs with K3b.'
     PLUGIN_ICON = 'gtk-cdrom'
-    PLUGIN_VERSION = '0.14'
+    PLUGIN_VERSION = '0.15'
 
     def plugin_songs(self, songs):
         if not util.iscommand("k3b"):
@@ -25,6 +25,10 @@ class K3b(SongsMenuPlugin):
                 "You can get K3b at http://k3b.sourceforge.net.").run()
         else:
             files = [song['~filename'] for song in songs]
-            if len(files) == 1: filelist = "%r" % files[0]
-            else: filelist = ("%r " * len(files)) % tuple(files)
-            os.system('k3b --audiocd %s &' % filelist)
+            try: util.spawn
+            except:
+                if len(files) == 1: filelist = "%r" % files[0]
+                else: filelist = ("%r " * len(files)) % tuple(files)
+                os.system('k3b --audiocd %s &' % filelist)
+            else:
+                util.spawn(["k3b", "--audiocd", files])
