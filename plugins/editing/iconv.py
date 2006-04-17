@@ -12,7 +12,7 @@ import gtk
 import util
 from plugins.editing import EditTagsPlugin
 
-ENCODINGS = "Shift-JIS Big5 CP1251 EUC-KR EUC-JP UTF16BE UTF16LE ISO-2022-JP GB2312 EUC-CN EUC-TW".split()
+ENCODINGS = "Shift-JIS Big5 CP1251 EUC-KR EUC-JP UTF16BE UTF16LE ISO-2022-JP GB2312 EUC-CN EUC-TW GBK".split()
 if util.fscoding not in ENCODINGS + ["utf-8", "latin1"]:
     ENCODINGS.append(util.fscoding)
 

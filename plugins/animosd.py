@@ -10,6 +10,7 @@
 import gtk, gobject, pango
 import config
 import qltk
+from qltk.textedit import PatternEdit
 from parse import XMLFromPattern
 
 def Label(text):
@@ -20,7 +21,7 @@ def Label(text):
 class AnimOsd(object):
     PLUGIN_NAME = "Animated On-Screen Display"
     PLUGIN_DESC = "Display song information on your screen when it changes."
-    PLUGIN_VERSION = "0.14.2"
+    PLUGIN_VERSION = "0.15"
 
     def PluginPreferences(self, parent):
         def set_text(button):
@@ -52,6 +53,16 @@ class AnimOsd(object):
             value = button.get_active() / 2.0
             config.set("plugins", "animosd_pos_y", str(value))
             self.conf.pos = 0.5, value
+
+        def edit_string(button):
+            w = PatternEdit(button, AnimOsd.conf.string)
+            w.child.text = self.conf.string
+            w.apply.connect_object_after('clicked', set_string, w)
+
+        def set_string(window):
+            value = window.child.text
+            config.set("plugins", "animosd_string", value)
+            self.conf.string = value
 
         vb = gtk.VBox(spacing=6)
 
@@ -99,6 +110,10 @@ class AnimOsd(object):
 
         f = qltk.Frame(label=_("Colors"), bold=True, child=t, border=12)
         vb.pack_start(f, expand=False, fill=False)
+
+	string = qltk.Button(_("_Edit Display"), gtk.STOCK_EDIT)
+	string.connect('clicked', edit_string)
+        vb.pack_start(string, expand=False)
         return vb
 
     # mu's default settings - this needs to be configurable
@@ -156,6 +171,8 @@ by <~people>>'''
         except: config.set("plugins", "animosd_delay", str(self.conf.delay))
         try: self.conf.pos = 0.5, config.getfloat("plugins", "animosd_pos_y")
         except: config.set("plugins", "animosd_pos_y", str(self.conf.pos[1]))
+        try: self.conf.string = config.get("plugins", "animosd_string")
+        except: config.set("plugins", "animosd_string", self.conf.string)
 
     # for rapid debugging
     def plugin_single_song(self, song): self.plugin_on_song_started(song)
