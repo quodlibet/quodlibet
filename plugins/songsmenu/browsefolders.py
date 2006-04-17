@@ -45,5 +45,5 @@ class BrowseFolders(SongsMenuPlugin):
         except Exception, err:
             ErrorMessage(
                 self.plugin_window,
-                _("Unable to start %s" % util.escape(program)),
+                _("Unable to start %s" % util.escape(program_name)),
                 util.escape(str(err))).run()
