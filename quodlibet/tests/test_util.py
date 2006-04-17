@@ -387,3 +387,19 @@ class Tformat_time_long(TestCase):
     def test_drop_zero(s):
         s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 add(Tformat_time_long)
+
+class Tspawn(TestCase):
+    def test_simple(self):
+        self.failUnless(util.spawn(["ls", "."], stdout=True))
+
+    def test_invalid(self):
+        import gobject
+        self.failUnlessRaises(gobject.GError, util.spawn, ["not a command"])
+
+    def test_types(self):
+        self.failUnlessRaises(TypeError, util.spawn, [u"ls"])
+
+    def test_get_output(self):
+        fileobj = util.spawn(["echo", "'$1'", '"$2"', ">3"], stdout=True)
+        self.failUnlessEqual(fileobj.read().split(), ["'$1'", '"$2"', ">3"])
+add(Tspawn)

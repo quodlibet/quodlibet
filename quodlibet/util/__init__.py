@@ -469,6 +469,23 @@ def tagsplit(tag):
         return tags
     else: return [tag]
 
+def spawn(argv, stdout=False):
+    """Asynchronously run a program. argv[0] is the executable name, which
+    must be fully qualified or in the path. If stdout is True, return
+    a file object corresponding to the child's standard output; otherwise,
+    return the child's process ID.
+
+    argv must be strictly str objects to avoid encoding confusion."""
+
+    import gobject
+    types = map(type, argv)
+    if not (min(types) == max(types) == str):
+        raise TypeError("executables and arguments must be str objects")
+    args = gobject.spawn_async(
+        argv, flags=gobject.SPAWN_SEARCH_PATH, standard_output=stdout)
+    if stdout: return os.fdopen(args[2])
+    else: return args[0]
+
 HEADERS_FILTER = {
     "tracknumber": "track",
     "discnumber": "disc",
