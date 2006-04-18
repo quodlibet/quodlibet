@@ -8,7 +8,6 @@
 
 import gtk
 import stock
-import browsers
 
 from qltk.delete import DeleteDialog
 from qltk.properties import SongProperties
@@ -42,6 +41,7 @@ class SongsMenu(gtk.Menu):
         self.separate()
 
         if playlists:
+            import browsers
             try: submenu = browsers.playlists.Menu(songs)
             except AttributeError: pass
             else:
