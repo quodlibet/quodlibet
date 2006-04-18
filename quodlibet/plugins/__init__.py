@@ -95,6 +95,8 @@ class SongWrapper(object):
     bookmarks = property(lambda s: s._song.bookmarks,
                          lambda s, v: setattr(s._song, 'bookmarks', v))
 
+    album_key = property(lambda s: s._song.album_key)
+
 def ListWrapper(songs):
     def wrap(song):
         if song is None: return None
