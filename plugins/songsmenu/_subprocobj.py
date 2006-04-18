@@ -129,5 +129,3 @@ class Subprocess(gobject.GObject):
         elif cond & (gobject.IO_ERR|gobject.IO_HUP|gobject.IO_NVAL):
             self.output_eof(fd)
             return False
-
-gobject.type_register(Subprocess)
