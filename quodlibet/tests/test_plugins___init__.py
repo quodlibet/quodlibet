@@ -17,7 +17,7 @@ class TSongWrapper(TestCase):
     pwrap = SongWrapper(psong)
 
     def setUp(self):
-        self.wrap = self.SongWrapper(self.AudioFile(
+        self.wrap = SongWrapper(AudioFile(
             {"title": "woo", "~filename": "/dev/null"}))
 
     def test_slots(self):
@@ -25,7 +25,7 @@ class TSongWrapper(TestCase):
         self.failUnlessRaises(AttributeError, breakme)
 
     def test_cmp(self):
-        songs = [self.SongWrapper(self.AudioFile({"tracknumber": str(i)}))
+        songs = [SongWrapper(AudioFile({"tracknumber": str(i)}))
                  for i in range(10)]
         songs.reverse()
         songs.sort()
