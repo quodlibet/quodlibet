@@ -3,9 +3,10 @@ from tests import registerCase
 import os, sys
 from tempfile import mkstemp, mkdtemp
 
+from formats._audio import AudioFile
+from plugins import SongWrapper, ListWrapper
+
 class TSongWrapper(TestCase):
-    from plugins import SongWrapper
-    from formats._audio import AudioFile
 
     psong = AudioFile({
         "~filename": "does not/exist",
@@ -113,3 +114,23 @@ class TSongWrapper(TestCase):
         self.failUnlessEqual(self.psong.bookmarks, self.pwrap.bookmarks)
 
 registerCase(TSongWrapper)
+
+class TListWrapper(TestCase):
+    from formats._audio import AudioFile
+
+    def test_empty(self):
+        wrapped = ListWrapper([])
+        self.failUnlessEqual(wrapped, [])
+
+    def test_empty_song(self):
+        wrapped = ListWrapper([{}])
+        self.failUnless(len(wrapped) == 1)
+        self.failIf(isinstance(wrapped[0], dict))
+
+    def test_none(self):
+        wrapped = ListWrapper([None, None])
+        self.failUnless(len(wrapped) == 2)
+        self.failUnlessEqual(wrapped, [None, None])
+registerCase(TListWrapper)
+
+        

@@ -84,4 +84,8 @@ class TSongsMenuPlugins(TestCase):
         menu = self.pm.Menu(None, None, [AudioFile()])
         self.failIf(menu.get_children())
 
+    def test_Menu(self):
+        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
+        menu = self.pm.Menu(None, None, [AudioFile()])
+
 registerCase(TSongsMenuPlugins)
