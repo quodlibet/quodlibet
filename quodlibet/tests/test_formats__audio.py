@@ -272,6 +272,24 @@ class TAudioFile(TestCase):
         self.failUnlessRaises(
             ValueError, setattr, AudioFile(), 'bookmarks', [(-1, "!")])
 
+    def test_album_key(self):
+        self.failUnlessEqual(AudioFile().album_key, (None, None))
+
+        album = AudioFile(album="foo")
+        self.failUnlessEqual(album.album_key, ("foo", None))
+
+        labelid = AudioFile(labelid="foo")
+        self.failUnlessEqual(labelid.album_key, (None, "foo"))
+
+        mbid = AudioFile(musicbrainz_albumid="foo")
+        self.failUnlessEqual(mbid.album_key, (None, "foo"))
+
+        title_id = AudioFile(album="foo", labelid="bar")
+        self.failUnlessEqual(title_id.album_key, ("foo", "bar"))
+
+        all = AudioFile(album="foo", labelid="bar", musicbrainz_albumid="quux")
+        self.failUnlessEqual(all.album_key, ("foo", "bar"))
+
     def tearDown(self):
         os.unlink(quux["~filename"])
 add(TAudioFile)

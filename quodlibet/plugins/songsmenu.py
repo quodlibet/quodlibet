@@ -83,8 +83,7 @@ class SongsMenuPlugins(Manager):
 
         albums = {}
         for song in songs:
-            key = (song.get("album"), song.get("labelid"),
-                   song.get("musicbrainz_albumid"))
+            key = song.album_key
             if key not in albums:
                 albums[key] = []
             albums[key].append(song)

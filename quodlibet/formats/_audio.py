@@ -47,6 +47,11 @@ class AudioFile(dict):
                 self.get("~filename"))
     sort_key = property(__sort_key)
 
+    def __album_key(self):
+        return (self.get("album"),
+                self.get("labelid") or self.get("musicbrainz_albumid"))
+    album_key = property(__album_key)
+
     def __cmp__(self, other):
         if not other: return -1
         try: return cmp(self.sort_key, other.sort_key)

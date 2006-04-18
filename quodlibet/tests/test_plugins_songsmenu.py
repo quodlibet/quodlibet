@@ -3,6 +3,7 @@ from tests import registerCase
 import os, sys
 from tempfile import mkstemp, mkdtemp
 from plugins.songsmenu import SongsMenuPlugins
+from formats._audio import AudioFile
 
 class TSongsMenuPlugins(TestCase):
 
@@ -80,7 +81,7 @@ class TSongsMenuPlugins(TestCase):
         self.pm.rescan()
         plug = self.pm.list()[0]
         self.pm.enable(plug, True)
-        menu = self.pm.Menu(None, None, [{}])
+        menu = self.pm.Menu(None, None, [AudioFile()])
         self.failIf(menu.get_children())
 
 registerCase(TSongsMenuPlugins)

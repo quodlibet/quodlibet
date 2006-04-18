@@ -198,7 +198,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             labelid = song.get("labelid", "")
             mbid = song.get("musicbrainz_albumid", "")
             for alb in song("album").split("\n"):
-                key = (alb, labelid or mbid)
+                key = song.album_key
                 if key not in albums:
                     albums[key] = klass._Album(alb, labelid, mbid)
                     new.append(albums[key])
