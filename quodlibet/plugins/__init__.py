@@ -96,7 +96,10 @@ class SongWrapper(object):
                          lambda s, v: setattr(s._song, 'bookmarks', v))
 
 def ListWrapper(songs):
-    return [(song and SongWrapper(song)) for song in songs]
+    def wrap(song):
+        if song is None: return None
+        else: return SongWrapper(song)
+    return map(wrap, songs)
 
 class PluginManager(Manager):
     """Manage event plugins."""
