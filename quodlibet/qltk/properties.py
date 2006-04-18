@@ -94,13 +94,7 @@ class SongProperties(qltk.Window):
         self.show()
 
     def __remove(self, watcher, songs, model, selection, sig):
-        to_remove = [row.iter for row in model if row[0] in songs]
-        if to_remove:
-            selection.handler_block(sig)
-            map(model.remove, to_remove)
-            selection.handler_unblock(sig)
-            self.__refill(model)
-            selection.emit('changed')
+        map(model.remove, [row.iter for row in model if row[0] in songs])
 
     def __set_title(self, songs):
         if songs:
@@ -112,16 +106,18 @@ class SongProperties(qltk.Window):
 
     def __refresh(self, watcher, songs, model, view):
         view.freeze_notify()
-        self.__refill(model)
-        view.thaw_notify()
-        view.get_selection().emit('changed')
-
-    def __refill(self, model):
+        rows = view.get_selection().get_selected_rows()[1]
+        is_one_song = len(model) == 1
+        changed = False
         for row in model:
             song = row[0]
-            row[1] = song("~basename")
-            row[2] = song("~dirname")
-            row[3] = song["~filename"]
+            if song in songs:
+                model.set(row.iter, 1, song("~basename"),
+                          2, song("~dirname"), 3, song["~filename"])
+                changed = changed or (row.path in rows) or is_one_song
+        view.thaw_notify()
+        if changed:
+            view.get_selection().emit('changed')
 
     def set_pending(self, button, *excess):
         self.__save = button
