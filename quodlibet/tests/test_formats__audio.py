@@ -273,16 +273,16 @@ class TAudioFile(TestCase):
             ValueError, setattr, AudioFile(), 'bookmarks', [(-1, "!")])
 
     def test_album_key(self):
-        self.failUnlessEqual(AudioFile().album_key, (None, None))
+        self.failUnlessEqual(AudioFile().album_key, ("", ""))
 
         album = AudioFile(album="foo")
-        self.failUnlessEqual(album.album_key, ("foo", None))
+        self.failUnlessEqual(album.album_key, ("foo", ""))
 
         labelid = AudioFile(labelid="foo")
-        self.failUnlessEqual(labelid.album_key, (None, "foo"))
+        self.failUnlessEqual(labelid.album_key, ("", "foo"))
 
         mbid = AudioFile(musicbrainz_albumid="foo")
-        self.failUnlessEqual(mbid.album_key, (None, "foo"))
+        self.failUnlessEqual(mbid.album_key, ("", "foo"))
 
         title_id = AudioFile(album="foo", labelid="bar")
         self.failUnlessEqual(title_id.album_key, ("foo", "bar"))

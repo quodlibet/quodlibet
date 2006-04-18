@@ -48,8 +48,8 @@ class AudioFile(dict):
     sort_key = property(__sort_key)
 
     def __album_key(self):
-        return (self.get("album"),
-                self.get("labelid") or self.get("musicbrainz_albumid"))
+        return (self.get("album", ""),
+                self.get("labelid") or self.get("musicbrainz_albumid") or "")
     album_key = property(__album_key)
 
     def __cmp__(self, other):
