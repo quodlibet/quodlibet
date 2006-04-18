@@ -190,7 +190,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 self.scroll_to_cell(rows[0][0], use_align=True, row_align=0.5)
             self.__next.fill(self.__get_songs())
 
-        def _remove(self, songs):
+        def _remove(self, songs, remove_if_empty=True):
             self.inhibit()
             model = self.get_model()
             to_remove = []
@@ -200,8 +200,24 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 for song in songs:
                     if song in data: data.remove(song)
                 if not model[row.iter][1]: to_remove.append(row.iter)
-            map(model.remove, to_remove)
+            if remove_if_empty: map(model.remove, to_remove)
             self.uninhibit()
+
+        def _matches(self, song):
+            try: model, rows = self.get_selection().get_selected_rows()
+            except (AttributeError, TypeError): return False
+            else:
+                if not rows or model[rows[0]][1] is None: return True
+                else:
+                    for row in rows:
+                        if model[row][0] == "<":
+                            if not bool(song.list(self.__mytag)):
+                                return True
+                        else:
+                            value = util.unescape(model[row][0])
+                            if value in song.list(self.__mytag):
+                                return True
+                    else: return False
 
         def _add(self, songs):
             self.inhibit()
@@ -360,15 +376,19 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             self.__refill_id = gobject.timeout_add(500, self.activate)
 
     def __added(self, watcher, songs):
-        for pane in self.__panes: pane._add(songs)
+        for pane in self.__panes:            
+            pane._add(songs)
+            songs = filter(pane._matches, songs)
 
-    def __removed(self, watcher, songs):
-        for pane in self.__panes: pane._remove(songs)
+    def __removed(self, watcher, songs, remove_if_empty=True):
+        for pane in self.__panes:
+            pane._remove(songs, remove_if_empty)
 
     def __changed(self, watcher, songs):
         songs = filter(lambda x: x.get("~filename") in library, songs)
-        self.__removed(watcher, songs)
+        self.__removed(watcher, songs, False)
         self.__added(watcher, songs)
+        self.__removed(watcher, [])
 
     def activate(self):
         self.__panes[0].fill(filter(self.__filter, library.values()))
