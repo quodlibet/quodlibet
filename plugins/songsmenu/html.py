@@ -45,7 +45,7 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_ICON = gtk.STOCK_CONVERT
     PLUGIN_VERSION = "0.16"
 
-    def plugin_songs(songs):
+    def plugin_songs(self, songs):
         if not songs: return
 
         chooser = gtk.FileChooserDialog(
