@@ -1,3 +1,17 @@
+mutagen (1.2-1) unstable; urgency=low
+
+  * New upstream version.
+  * debian/control: Suggest python-pyvorbis.
+  * debian/docs: Add TUTORIAL.
+
+ -- Joe Wreschnig <piman@debian.org>  Sun, 23 Apr 2006 01:09:14 -0500
+
+mutagen (1.1-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joe Wreschnig <piman@debian.org>  Tue,  4 Apr 2006 01:06:20 -0500
+
 mutagen (1.0-1) unstable; urgency=low
 
   * New upstream version.
