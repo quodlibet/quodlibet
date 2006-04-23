@@ -49,7 +49,9 @@ class MainSongList(SongList):
                  pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
             try:
                 if model.get_path(iter) != model.current_path: stock = ''
-                else: stock = pixbuf[player.playlist.paused]
+                elif model.sourced:
+                    stock = pixbuf[player.playlist.paused]
+                else: stock = gtk.STOCK_MEDIA_STOP
                 cell.set_property('stock-id', stock)
             except AttributeError: pass
 

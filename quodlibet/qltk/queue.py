@@ -32,8 +32,15 @@ class QueueExpander(gtk.Expander):
         self.queue = PlayQueue(watcher)
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
+
+        hb2 = gtk.HBox(spacing=3)
+        state = gtk.image_new_from_stock(
+            gtk.STOCK_MEDIA_STOP, gtk.ICON_SIZE_MENU)
+        hb2.pack_start(state)
+
         l = gtk.Label(_("_Queue"))
-        hb.pack_start(l)
+        hb2.pack_start(l)
+        hb.pack_start(hb2)
         l.set_use_underline(True)
 
         clear = gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU)
@@ -74,6 +81,21 @@ class QueueExpander(gtk.Expander):
         tips.set_tip(b, _("Remove all songs from the queue"))
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, l2)
+
+        watcher.connect('song-started', self.__update_state_icon, state)
+        watcher.connect('paused', self.__update_state_icon_pause,
+                        state, gtk.STOCK_MEDIA_PAUSE)
+        watcher.connect('unpaused', self.__update_state_icon_pause,
+                        state, gtk.STOCK_MEDIA_PLAY)
+
+    def __update_state_icon(self, watcher, song, state):
+        if self.model.sourced: icon = gtk.STOCK_MEDIA_PLAY
+        else: icon = gtk.STOCK_MEDIA_STOP
+        state.set_from_stock(icon, gtk.ICON_SIZE_MENU)
+
+    def __update_state_icon_pause(self, watcher, state, icon):
+        if self.model.sourced:
+            state.set_from_stock(icon, gtk.ICON_SIZE_MENU)
 
     def __clear_queue(self, activator):
         self.model.clear()

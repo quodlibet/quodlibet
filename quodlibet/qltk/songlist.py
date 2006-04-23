@@ -30,6 +30,7 @@ if sys.version_info < (2, 4): from sets import Set as set
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
 
 class PlaylistMux(object):
+
     def __init__(self, watcher, q, pl):
         self.q = q
         self.pl = pl
@@ -48,15 +49,24 @@ class PlaylistMux(object):
     current = property(get_current)
 
     def next(self):
-        if self.q.is_empty(): self.pl.next()
-        elif self.q.current is None: self.q.next()
-
-    def is_from_queue(self):
-        pass
+        if self.q.is_empty():
+            self.pl.next()
+            self.q.sourced = False
+            self.pl.sourced = True
+        elif self.q.current is None:
+            self.q.next()
+            self.q.sourced = True
+            self.pl.sourced = False
 
     def next_ended(self):
-        if self.q.is_empty(): self.pl.next_ended()
-        elif self.q.current is None: self.q.next()
+        if self.q.is_empty():
+            self.pl.next_ended()
+            self.q.sourced = False
+            self.pl.sourced = True
+        elif self.q.current is None:
+            self.q.next()
+            self.q.sourced = True
+            self.pl.sourced = False
 
     def previous(self):
         self.pl.previous()
@@ -77,6 +87,7 @@ class PlaylistMux(object):
 class PlaylistModel(gtk.ListStore):
     order = OFF
     repeat = False
+    sourced = False
     __iter = None
     __old_value = None
     __sig = None
@@ -232,10 +243,12 @@ class PlaylistModel(gtk.ListStore):
         self.__iter = None
         if isinstance(song, gtk.TreeIter):
             self.__iter = song
+            self.sourced = True
         else:
             for row in self:
                 if row[0] == song:
                     self.__iter = row.iter
+                    self.sourced = True
                     break
 
     def find(self, song):
