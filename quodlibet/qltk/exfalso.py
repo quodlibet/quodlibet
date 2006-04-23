@@ -163,7 +163,7 @@ class ExFalsoWindow(gtk.Window):
                 % {'title': files[0].comma("title"), 'count': len(files) - 1}))
         self.__cache = dict([(song["~filename"], song) for song in files])
 
-class PreferencesWindow(gtk.Window):
+class PreferencesWindow(qltk.Window):
     __window = None
 
     def __new__(klass, parent):
