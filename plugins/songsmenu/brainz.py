@@ -46,6 +46,10 @@ class AskAction(ConfirmAction):
     def __init__(self, *args, **kwargs):
         kwargs["buttons"] = gtk.BUTTONS_YES_NO
         Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
+        self.cb = gtk.CheckButton(_("Overwrite existing tags."))
+        self.cb.set_active(True)
+        self.vbox.pack_start(self.cb, expand=False)
+        self.cb.show()
 
 class AlbumChooser(gtk.Dialog):
     active_candidate = None
@@ -256,10 +260,14 @@ class QLBrainz(object):
                 message.append("<b>%d.</b> %s" % (i + 1,
                     escape(candidate.tracklist[i]['title'])))
 
-        if AskAction(None, _("Save the following information?"),
-            "\n".join(message)).run():
+        action = AskAction(None, _("Save the following information?"),
+                           "\n".join(message))
+        if action.run():
+            overwrite = action.cb.get_active()
             for i, track_data in enumerate(candidate.tracklist):
                 for key, val in track_data.items():
+                    if not overwrite and album[i].get(key):
+                        continue
                     if val != album[i].get(key):
                         album[i][key] = val
 
