@@ -51,6 +51,9 @@ class PlaylistMux(object):
         if self.q.is_empty(): self.pl.next()
         elif self.q.current is None: self.q.next()
 
+    def is_from_queue(self):
+        pass
+
     def next_ended(self):
         if self.q.is_empty(): self.pl.next_ended()
         elif self.q.current is None: self.q.next()
@@ -64,6 +67,9 @@ class PlaylistMux(object):
 
     def reset(self):
         self.pl.reset()
+        self.q.go_to(None)
+        if not self.pl.is_empty():
+            self.pl.go_to(self.pl.get_iter((0,)))
 
     def enqueue(self, songs):
         for song in songs: self.q.append(row=[song])

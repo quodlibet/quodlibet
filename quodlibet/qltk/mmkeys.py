@@ -31,7 +31,6 @@ class MmKeys(object):
     def __play_pause(self, keys, key, player):
         if player.song is None:
             player.reset()
-            player.next()
         else: player.paused ^= True
 
     def block(self): map(self.__keys.handler_block, self.__sigs)

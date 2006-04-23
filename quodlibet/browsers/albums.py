@@ -587,7 +587,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         
     def __play_selection(self, view, indices, col, player):
         player.reset()
-        player.next()
 
     def __preferences(self, button):
         try: prefs = AlbumList.__prefs_win

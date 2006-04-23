@@ -207,6 +207,10 @@ class PlaylistPlayer(object):
 
     def reset(self):
         self.__source.reset()
+        if self.__source.current is not None:
+            self.__end()
+            self.__get_song()
+            if self.song: self.paused = False
 
     def next(self):
         self.__source.next()

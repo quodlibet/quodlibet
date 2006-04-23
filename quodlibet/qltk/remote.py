@@ -80,7 +80,6 @@ class FIFOControl(object):
     def _play_pause(self, watcher, window, player):
         if player.song is None:
             player.reset()
-            player.next()
         else: player.paused ^= True
 
     def _focus(self, watcher, window, player): window.present()

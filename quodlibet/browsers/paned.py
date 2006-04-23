@@ -432,7 +432,6 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
     def __start(self, view, indices, col):
         self.__save.reset()
-        self.__save.next()
 
     def can_filter(self, key):
         for pane in self.__panes:

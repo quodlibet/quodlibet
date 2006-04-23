@@ -72,7 +72,6 @@ class FileSystem(Browser, gtk.ScrolledWindow):
 
     def __play(self, view, indices, column, player):
         player.reset()
-        player.next()
 
     def can_filter(self, key):
         return (key == "~dirname")

@@ -331,7 +331,6 @@ class Playlists(gtk.VBox, Browser):
 
     def __play(self, view, path, column, player):
         player.reset()
-        player.next()
 
     def __check_current(self, model, path, iter):
         model, citer = self.__view.get_selection().get_selected()

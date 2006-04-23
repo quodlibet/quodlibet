@@ -560,7 +560,6 @@ class QuodLibetWindow(gtk.Window):
     def __play_pause(self, *args):
         if player.playlist.song is None:
             player.playlist.reset()
-            player.playlist.next()
         else: player.playlist.paused ^= True
 
     def __jump_to_current(self, explicit):
