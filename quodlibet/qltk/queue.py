@@ -19,6 +19,7 @@ from qltk.ccb import ConfigCheckButton
 from qltk.x import Tooltips
 from qltk.properties import SongProperties
 from qltk.information import Information
+from qltk.songsmenu import SongsMenu        
 from library import library
 
 QUEUE = os.path.join(const.USERDIR, "queue")
@@ -156,16 +157,7 @@ class PlayQueue(SongList):
         self.model = self.get_model()
         self.connect('row-activated', self.__go_to)
 
-        menu = gtk.Menu()
-        rem = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
-        rem.connect('activate', self.__remove)
-        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
-        props.connect_object('activate', self.__properties, watcher)
-        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
-        info.connect_object('activate', self.__information, watcher)
-        menu.append(rem); menu.append(props); menu.append(info)
-        menu.show_all()
-        self.connect_object('popup-menu', self.__popup, menu)
+        self.connect_object('popup-menu', self.__popup, watcher)
         self.enable_drop()
         self.connect_object('destroy', self.__write, self.model)
         self.__fill()
@@ -189,15 +181,19 @@ class PlayQueue(SongList):
         f.write(filenames)
         f.close()
 
-    def __popup(self, menu):
+    def __popup(self, watcher):
+        songs = self.get_selected_songs()
+        if not songs: return
+
+        menu = SongsMenu(
+            watcher, songs, queue=False, remove=False, delete=False)
+        menu.preseparate()
+        remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        remove.connect('activate', self.__remove)
+        menu.prepend(remove)
+        menu.show_all()
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
-
-    def __properties(self, watcher):
-        SongProperties(watcher, self.get_selected_songs())
-
-    def __information(self, watcher):
-        Information(watcher, self.get_selected_songs())
 
     def __remove(self, item):
         model, paths = self.get_selection().get_selected_rows()
