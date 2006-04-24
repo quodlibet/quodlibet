@@ -164,7 +164,7 @@ class QLScrobbler(object):
 		# Check to see if this song is not something we'd like to submit
 		#    e.g. "Hit Me Baby One More Time"
 		if self.exclude != "" and parse.Query(self.exclude).search(song):
-			print "Not submitting: %s - %s" % (song["artist"], song["title"])
+			print to("Not submitting: %s - %s" % (song["artist"], song["title"]))
 			return
 
 		self.song = song
@@ -352,7 +352,7 @@ class QLScrobbler(object):
 		# Just note to stdout if either of these are true..
 		# locked means another instance if s_s_h is dealing with sending.
 		if self.offline or self.locked:
-			print "Queuing: %s - %s" % (store["artist"], store["title"])
+			print to("Queuing: %s - %s" % (store["artist"], store["title"]))
 			return
 
 		self.locked = True
@@ -427,7 +427,7 @@ class QLScrobbler(object):
 				print "Plugin bug!? Ridiculous! Dumping queue contents."
 				for item in self.queue:
 					for key in item:
-						print "%s = %s" % (key, item[key])
+						print to("%s = %s" % (key, item[key]))
 			# possibly handle other specific cases here for debugging later
 		else:
 			print "Unknown response from server: %s" % status
