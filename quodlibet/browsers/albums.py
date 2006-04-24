@@ -534,10 +534,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             return not (value.startswith(key) or value.lower().startswith(key))
         
     def __popup(self, view, watcher):
-        # Build plugins Menu
         songs = self.__get_selected_songs(view.get_selection())
-        songs.sort()
-
         menu = SongsMenu(watcher, songs)
 
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
@@ -572,14 +569,20 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model, rows = selection.get_selected_rows()
         if not model or not rows: return []
         albums = [model[row][0] for row in rows]
-        if None in albums: albums = [row[0] for row in model if row[0]]
-        songs = set()
-        map(songs.update, [album.songs for album in albums])
-        return list(songs)
+        if None in albums:
+            albums = [row[0] for row in model if row[0]]
+        # Sort first by how the albums appear in the model itself,
+        # then within the album using the default order.
+        songs = []
+        song_dict = set() # Avoid n**2 checks for duplicates.
+        for album in albums:
+            new_songs = list(album.songs)
+            new_songs.sort()
+            songs.extend(filter(lambda s: s not in song_dict, new_songs))
+        return songs
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())
-        songs.sort()
         if tid == 1:
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
