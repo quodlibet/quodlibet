@@ -428,18 +428,18 @@ class SongList(AllTreeView, util.InstanceTracker):
         if can_filter("album"): menu.prepend(Filter("album"))
         if (header not in ["artist", "album"] and can_filter(header)):
             menu.prepend(Filter(header))
-        if header == "~#rating":
-            item = gtk.MenuItem(_("_Rating"))
-            m2 = gtk.Menu()
-            item.set_submenu(m2)
-            for i in range(0, int(1.0/util.RATING_PRECISION)+1):
-                i *= util.RATING_PRECISION
-                itm = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
-                m2.append(itm)
-                itm.connect_object(
-                    'activate', self.__set_rating, i, songs, watcher)
-            menu.preseparate()
-            menu.prepend(item)
+
+        item = gtk.MenuItem(_("_Rating"))
+        m2 = gtk.Menu()
+        item.set_submenu(m2)
+        for i in range(0, int(1.0/util.RATING_PRECISION)+1):
+            i *= util.RATING_PRECISION
+            itm = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
+            m2.append(itm)
+            itm.connect_object(
+                'activate', self.__set_rating, i, songs, watcher)
+        menu.preseparate()
+        menu.prepend(item)
 
         items = browser.Menu(songs, self)
         items.reverse()
