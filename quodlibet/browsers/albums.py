@@ -609,7 +609,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         for row in model:
             if row[0] is not None and row[0].title in values:
                 selection.select_path(row.path)
-                first = first or row.path[0]
+                if first is None:
+                    view.set_cursor(row.path)
+                    first = row.path[0]
         if first:
             view.scroll_to_cell(first, use_align=True, row_align=0.5)
 
