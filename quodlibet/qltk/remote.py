@@ -130,16 +130,17 @@ class FIFOControl(object):
         if song:
             if song != True: watcher.added([song])
             else: song = library[filename]
-            if (song not in window.playlist.pl
-                and window.browser.can_filter("filename")):
-                window.browser.filter(
-                    "filename", [filename])
-            player.go_to(library[filename])
-            player.paused = False
+            if song not in window.playlist.pl:
+                queue = window.playlist.q
+                queue.insert_before(queue.get_iter_first(), row=[song])
+                player.next()
+            else:
+                player.go_to(library[filename])
+                player.paused = False
 
     def _add_directory(self, value, watcher, window, player):
         from library import library
-        filename = os.path.realpath(value)
+        filename = os.path.normpath(os.path.realpath(value))
         for added, changed, removed in library.scan([filename]): pass
         if added: watcher.added(added)
         if changed: watcher.changed(changed)
@@ -148,7 +149,16 @@ class FIFOControl(object):
             window.browser.set_text(
                 "filename = /^%s/c" % sre.escape(filename))
             window.browser.activate()
-            player.next()
+        else:
+            basepath = filename + "/"
+            songs = [song for (filename, song) in library.iteritems()
+                     if filename.startswith(basepath)]
+            songs.sort()
+            songs.reverse()
+            queue = window.playlist.q
+            for song in songs:
+                queue.insert_before(queue.get_iter_first(), row=[song])
+        player.next()
 
     def _toggle_window(self, watcher, window, player):
         if window.get_property('visible'): window.hide()
