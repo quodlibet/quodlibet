@@ -8,6 +8,7 @@
 
 import os
 import gtk
+import const
 
 QL_ICON = 'quodlibet'
 EF_ICON = 'exfalso'
@@ -27,11 +28,10 @@ VOLUME_MAX = 'rhythmbox-volume-max'
 _ICONS = [QL_ICON, EF_ICON, VOLUME_OFF, VOLUME_MIN, VOLUME_MED, VOLUME_MAX]
 
 def init():
-    basedir = os.path.dirname(os.path.realpath(__file__))
-
     factory = gtk.IconFactory()
     for fn in _ICONS:
-        pb = gtk.gdk.pixbuf_new_from_file(os.path.join(basedir, fn + ".png"))
+        icon_filename = os.path.join(const.BASEDIR, fn + ".png")
+        pb = gtk.gdk.pixbuf_new_from_file(icon_filename)
         factory.add(fn, gtk.IconSet(pb))
     factory.add_default()
 
@@ -85,6 +85,6 @@ def init():
         (gtk.STOCK_MEDIA_PAUSE, _('gtk-media-pause'))
         ]:
         if key != name: # translated, so re-register with a good name
-            gtk.stock_add([(key, name,)+gtk.stock_lookup(key)[2:]])
+            gtk.stock_add([(key, name) + gtk.stock_lookup(key)[2:]])
 
     icons.add_default()
