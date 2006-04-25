@@ -504,9 +504,14 @@ HEADERS_FILTER = {
     "mountpoint": "mount point",
     "basename": "filename",
     "dirname": "directory",
+
     "musicbrainz_trackid": "MusicBrainz track ID",
     "musicbrainz_albumid": "MusicBrainz album ID",
     "musicbrainz_artistid": "MusicBrainz artist ID",
+    "musicbrainz_albumartistid": "MusicBrainz album artist ID",
+    "musicbrainz_trmid": "MusicBrainz TRM ID",
+    "musicip_puid": "MusicIP PUID",
+
     "replaygain_track_gain": "track gain",
     "replaygain_track_peak": "track peak",
     "replaygain_album_gain": "album gain",
