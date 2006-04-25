@@ -65,11 +65,13 @@ class MP3File(AudioFile):
     SDI = dict([(v, k) for k, v in IDS.iteritems()])
 
     # http://musicbrainz.org/docs/specs/metadata_tags.html
+    # http://bugs.musicbrainz.org/ticket/1383
     BRAINZ = {
         u"MusicBrainz Artist Id": "musicbrainz_artistid",
         u"MusicBrainz Album Id": "musicbrainz_albumid",
         u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
         u"MusicBrainz TRM Id": "musicbrainz_trmid",
+        u"MusicIP PUID": "musicip_puid",
         }
     ZNIARB = dict([(v, k) for k, v in BRAINZ.iteritems()])
 

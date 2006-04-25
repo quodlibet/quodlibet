@@ -56,7 +56,8 @@ class PeakMassager(Massager):
 
 class MBIDMassager(Massager):
     tags = ["musicbrainz_trackid", "musicbrainz_albumid",
-            "musicbrainz_artistid"]
+            "musicbrainz_artistid", "musicbrainz_albumartistid",
+            "musicbrainz_trmid", "musicip_puid"]
     error = _("MusicBrainz IDs must be in UUID format.")
     def validate(self, value):
         value = value.encode('ascii', 'replace')
