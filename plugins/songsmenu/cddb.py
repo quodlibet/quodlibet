@@ -90,8 +90,9 @@ def query(category, discid, xcode='utf8:utf8'):
         elif key == 'DGENRE': discinfo['genre'] = value
         elif key == 'DTITLE':
             dtitle = value.strip().split(' / ', 1)
-            if len(dtitle) == 2: discinfo['artist'], discinfo['title'] = dtitle
-            else: discinfo['title' ] = dtitle
+            if len(dtitle) == 2:
+                discinfo['artist'], discinfo['title'] = dtitle
+            else: discinfo['title'] = dtitle[0]
         elif key == 'DYEAR': discinfo['year'] = value
 
     return discinfo, tracktitles
