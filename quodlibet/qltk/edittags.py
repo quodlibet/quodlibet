@@ -14,11 +14,11 @@ import qltk
 from qltk.wlw import WritingWindow
 from qltk.views import RCMHintedTreeView
 from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
-from massagers import Massager
 
 import const
 import config
 import util
+import util.massagers
 import formats
 
 from util import tag
@@ -175,7 +175,7 @@ class AddTagDialog(gtk.Dialog):
     def __validate(self, editable, add, invalid, tips, box):
         tag = self.get_tag()
         value = self.get_value()
-        fmt = Massager.fmt.get(tag)
+        fmt = util.massagers.tags.get(tag)
         if fmt: valid = bool(fmt.validate(value))
         else: valid = True
         add.set_sensitive(valid)
@@ -411,8 +411,8 @@ class EditTags(gtk.VBox):
             if resp != gtk.RESPONSE_OK: break
             tag = add.get_tag()
             value = add.get_value()
-            if tag in Massager.fmt:
-                value = Massager.fmt[tag].validate(value)
+            if tag in util.massagers.tags:
+                value = util.massagers.tags[tag].validate(value)
             if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -512,8 +512,8 @@ class EditTags(gtk.VBox):
         row = model[path]
         if new == row[TAG]: return
         elif self.__songinfo.can_change(new):
-            if new in Massager.fmt:
-                fmt = Massager.fmt[new]
+            if new in util.massagers.tags:
+                fmt = util.massagers.tags[new]
                 value = fmt.validate(util.unescape(row[VALUE]))
                 if not value:
                     qltk.WarningMessage(
@@ -546,8 +546,8 @@ class EditTags(gtk.VBox):
     def __edit_tag(self, renderer, path, new, model):
         new = ', '.join(new.splitlines())
         row = model[path]
-        if row[TAG] in Massager.fmt:
-            fmt = Massager.fmt[row[TAG]]
+        if row[TAG] in util.massagers.tags:
+            fmt = util.massagers.tags[row[TAG]]
             newnew = fmt.validate(new)
             if not newnew:
                 qltk.WarningMessage(

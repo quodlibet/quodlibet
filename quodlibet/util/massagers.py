@@ -11,19 +11,13 @@ import sre
 import locale
 
 class Massager(object):
-    """Massage a tag value from various "okay" formats to the
-    "correct" format."""
+    """Massage a tag value from various 'okay' formats to the
+    'correct' format."""
 
     tags = []
     error = "Metaerror. This should be overridden in subclasses."
-    def validate(self, value): raise NotImplementedError
-
-    def init(klass):
-        klass.fmt = {}
-        for f in globals().values():
-            if isinstance(f, type) and issubclass(f, klass):
-                for t in f.tags: klass.fmt[t] = f()
-    init = classmethod(init)
+    def validate(self, value):
+        raise NotImplementedError
 
 class DateMassager(Massager):
     tags = ["date"]
@@ -74,4 +68,10 @@ class MBIDMassager(Massager):
             else: return "-".join([value[:8], value[8:12], value[12:16],
                                    value[16:20], value[20:]])
 
-Massager.init()
+tags = {}
+for f in globals().values():
+    if isinstance(f, type) and issubclass(f, Massager):
+        for t in f.tags:
+            tags[t] = f()
+del(f)
+del(t)

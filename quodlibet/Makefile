@@ -1,4 +1,4 @@
-MODULES = config.py const.py library.py massagers.py player.py stock.py widgets.py
+MODULES = config.py const.py library.py player.py stock.py widgets.py
 MODULE_DIRS = browsers formats qltk parse plugins util
 PROGRAMS = exfalso quodlibet
 SUBDIRS = trayicon mmkeys po

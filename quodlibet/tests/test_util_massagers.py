@@ -1,16 +1,17 @@
 from tests import TestCase, add
-from massagers import Massager
+import util.massagers
 
 class TMassagers(TestCase):
     def validate(self, key, values):
         for val in values:
-            self.failUnless(Massager.fmt[key].validate(val))
+            self.failUnless(util.massagers.tags[key].validate(val))
     def invalidate(self, key, values):
         for val in values:
-            self.failIf(Massager.fmt[key].validate(val))
+            self.failIf(util.massagers.tags[key].validate(val))
     def equivs(self, key, equivs):
         for value, normed in equivs.items():
-            self.failUnlessEqual(normed, Massager.fmt[key].validate(value))
+            self.failUnlessEqual(
+                normed, util.massagers.tags[key].validate(value))
 
     def test_date_valid(self):
         self.validate("date", ["2002-10-12", "2000", "1200-10", "0000-00-00",
