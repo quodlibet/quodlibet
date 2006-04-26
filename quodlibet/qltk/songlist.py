@@ -6,29 +6,31 @@
 #
 # $Id$
 
-import sys
-import random
-import locale
-import time
 import datetime
+import locale
+import random
+import sys
+import time
 
 import gobject
 import gtk
 import pango
 
-import qltk
 import player
+import qltk
 import util
 
 from library import library
-from parse import Query
-from qltk.properties import SongProperties
+from parse import Query, Pattern
 from qltk.information import Information
+from qltk.properties import SongProperties
+from qltk.songsmenu import SongsMenu
 from qltk.views import AllTreeView
 from util import tag
 from util.uri import URI
 
-if sys.version_info < (2, 4): from sets import Set as set
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
 
@@ -402,11 +404,9 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         def __init__(self, pattern):
             SongList.WideTextColumn.__init__(self, pattern)
-            from parse import Pattern
             self.__pattern = Pattern(pattern)
 
     def Menu(self, header, browser, watcher):
-        from qltk.songsmenu import SongsMenu
         songs = self.get_selected_songs()
         if not songs: return
 

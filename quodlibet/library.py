@@ -6,11 +6,11 @@
 #
 # $Id$
 
+import cPickle as pickle
 import fcntl
 import os
 import shutil
 import sys
-import cPickle as pickle
 
 import formats
 import util

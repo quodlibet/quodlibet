@@ -6,10 +6,13 @@
 #
 # $Id$
 
-from formats._audio import AudioFile
-import config
 import tempfile
+
 import gst
+
+import config
+
+from formats._audio import AudioFile
 
 try:
     import mutagen.id3

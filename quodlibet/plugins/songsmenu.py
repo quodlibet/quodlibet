@@ -12,7 +12,9 @@ import qltk
 import util
 
 from traceback import print_exc
+
 from plugins import ListWrapper, Manager
+from qltk.wlw import WritingWindow
 
 __all__ = [] # trick out old plugin manager
 
@@ -153,7 +155,6 @@ class SongsMenuPlugins(Manager):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
-            from qltk.wlw import WritingWindow
             win = WritingWindow(parent, len(needs_write))
             for song in needs_write:
                 try: song._song.write()

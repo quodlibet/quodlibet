@@ -7,8 +7,8 @@
 #
 # $Id$
 
-import sre
 import locale
+import sre
 
 class Massager(object):
     """Massage a tag value from various 'okay' formats to the

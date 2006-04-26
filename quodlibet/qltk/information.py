@@ -17,10 +17,10 @@ import pango
 import qltk
 import util
 
-from qltk.cover import CoverImage
-from qltk.x import Window
-from qltk.lyrics import LyricsPane
 from qltk.bookmarks import EditBookmarksPane
+from qltk.cover import CoverImage
+from qltk.lyrics import LyricsPane
+from qltk.x import Window
 from util import tag
 
 if sys.version_info < (2, 4):

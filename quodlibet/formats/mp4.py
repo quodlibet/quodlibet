@@ -8,8 +8,10 @@
 
 # Based on quodlibet/formats/mpc.py by Joe Wreschnig, Michael Urman
 
-import gst
 import tempfile
+
+import gst
+
 from formats._audio import AudioFile
 
 try:

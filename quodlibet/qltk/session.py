@@ -8,7 +8,9 @@
 
 import os
 import sys
+
 import gtk
+
 import const
 
 def init():

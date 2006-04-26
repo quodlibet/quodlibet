@@ -7,6 +7,7 @@
 # $Id$
 
 import sys
+
 import gtk
 
 from const import MACHINE_TAGS

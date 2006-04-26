@@ -9,15 +9,16 @@
 
 import os
 import sre
+
 import gtk
 
-import const
 import config
+import const
 import qltk
 import util
 
-from qltk.wlw import WritingWindow
 from qltk._editpane import EditPane, FilterCheckButton
+from qltk.wlw import WritingWindow
 
 class TagsFromPattern(object):
     def __init__(self, pattern):

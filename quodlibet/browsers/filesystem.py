@@ -15,8 +15,8 @@ import os
 
 import gtk
 
-import formats
 import config
+import formats
 import qltk
 
 from browsers._base import Browser

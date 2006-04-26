@@ -6,8 +6,8 @@
 #
 # $Id$
 
-from util.uri import URI
 from formats._audio import AudioFile
+from util.uri import URI
 
 extensions = []
 

@@ -22,8 +22,8 @@ from browsers._base import Browser
 from formats.remote import RemoteFile
 from library import Library
 from parse import Query
-from qltk.getstring import GetStringDialog
 from qltk.entry import ValidatingEntry
+from qltk.getstring import GetStringDialog
 
 SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
               "Master.qlpls?format=txt")

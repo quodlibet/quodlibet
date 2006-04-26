@@ -10,6 +10,8 @@ import gobject
 import gtk
 import pango
 
+import config
+
 class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
@@ -275,7 +277,6 @@ class HintedTreeView(gtk.TreeView):
 
     def __init__(self, *args):
         super(HintedTreeView, self).__init__(*args)
-        import config
         if not config.state('disable_hints'):
             try: tvh = HintedTreeView.hints
             except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()

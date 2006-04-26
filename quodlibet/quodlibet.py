@@ -11,6 +11,7 @@
 # $Id$
 
 import os
+import signal
 import sys
 
 global play
@@ -18,8 +19,9 @@ play = False
 
 def main():
     import player
-    import util;
-    import signal, widgets
+    import util
+    import widgets
+
     util.mkdir(const.USERDIR)
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
@@ -48,7 +50,6 @@ def print_fifo(command):
             # mkfifo fails if the file exists, so this is safe.
             os.mkfifo(filename, 0600)
 
-            import signal
             signal.signal(signal.SIGALRM, lambda: "" + 2)
             signal.alarm(1)
             f = file(const.CONTROL, "w")
@@ -68,10 +69,14 @@ def print_fifo(command):
             raise SystemExit("not-running")
 
 def refresh_cache():
+    import config
+    import const
+    import library
+
     if isrunning():
         raise SystemExit(to(_(
             "The library cannot be refreshed while Quod Libet is running.")))
-    import library, config, const
+
     config.init(const.CONFIG)
     lib = library.init()
     print to(_("Loading, scanning, and saving your library."))
@@ -82,8 +87,10 @@ def refresh_cache():
 
 def print_playing(fstring = "<artist~album~tracknumber~title>"):
     import util
-    from parse import Pattern
+
     from formats._audio import AudioFile
+    from parse import Pattern
+
     try:
         fn = file(const.CURRENT)
         data = {}
@@ -113,7 +120,6 @@ def control(c):
         raise SystemExit(to(_("Quod Libet is not running.")))
     else:
         try:
-            import signal
             # This is a total abuse of Python! Hooray!
             signal.signal(signal.SIGALRM, lambda: "" + 2)
             signal.alarm(1)
@@ -133,9 +139,13 @@ def enable_periodic_save():
     # Check every 5 minutes to see if the library/config on disk are
     # over 15 minutes old; if so, update them. This function can, in theory,
     # break if saving the library takes more than 5 minutes.
-    import gobject, time, util
-    from library import library
+    import time
+    import gobject
+    import util
+
     from threading import Thread
+    from library import library
+
     def save():
         if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
             library.save(const.LIBRARY)

@@ -7,35 +7,46 @@
 #
 # $Id$
 
-import os
-import sys
 import locale
+import os
+import random
+import sys
 
 import gobject
+import gst
 import gtk
 import pango
-import gst
-
 
 import browsers
-import const
 import config
+import const
 import formats
 import player
 import qltk
+import qltk.about
 import stock
 import util
 import widgets
 
+from formats.remote import RemoteFile
 from library import library
 from parse import Query
-from qltk.properties import SongProperties
-from qltk.songlist import SongList
-from qltk.wlw import WaitLoadWindow
-from qltk.getstring import GetStringDialog
 from qltk.browser import LibraryBrowser
-from qltk.msg import ErrorMessage
+from qltk.chooser import FolderChooser, FileChooser
+from qltk.controls import PlayControls
+from qltk.cover import CoverImage
+from qltk.getstring import GetStringDialog
+from qltk.info import SongInfo
 from qltk.information import Information
+from qltk.mmkeys import MmKeys
+from qltk.msg import ErrorMessage
+from qltk.playorder import PlayOrder
+from qltk.pluginwin import PluginWindow
+from qltk.properties import SongProperties
+from qltk.prefs import PreferencesWindow
+from qltk.queue import QueueExpander
+from qltk.songlist import SongList, PlaylistMux
+from qltk.wlw import WaitLoadWindow
 from util.uri import URI
 
 if sys.version_info < (2, 4):
@@ -117,7 +128,6 @@ class QuodLibetWindow(gtk.Window):
         self.child.pack_start(realvbox)
 
         # get the playlist up before other stuff
-        from qltk.queue import QueueExpander
         self.songlist = MainSongList(
             watcher, player, self.ui.get_widget("/Menu/View/SongList"))
         self.add_accel_group(self.songlist.accelerators)
@@ -125,7 +135,6 @@ class QuodLibetWindow(gtk.Window):
             'drag-data-received', self.__songlist_drag_data_recv)
         self.qexpander = QueueExpander(
             self.ui.get_widget("/Menu/View/Queue"), watcher)
-        from qltk.songlist import PlaylistMux
         self.playlist = PlaylistMux(
             watcher, self.qexpander.model, self.songlist.model)
 
@@ -133,18 +142,15 @@ class QuodLibetWindow(gtk.Window):
         hbox = gtk.HBox(spacing=6)
 
         # play controls
-        from qltk.controls import PlayControls
         t = PlayControls(watcher, player)
         self.volume = t.volume
         hbox.pack_start(t, expand=False, fill=False)
 
         # song text
-        from qltk.info import SongInfo
         text = SongInfo(watcher, player)
         hbox.pack_start(text)
 
         # cover image
-        from qltk.cover import CoverImage
         self.image = CoverImage()
         watcher.connect('song-started', self.image.set_song)
         hbox.pack_start(self.image, expand=False)
@@ -156,7 +162,6 @@ class QuodLibetWindow(gtk.Window):
         align.set_padding(0, 6, 6, 6)
         hbox = gtk.HBox(spacing=12)
         hb = gtk.HBox(spacing=3)
-        from qltk.playorder import PlayOrder
         label = gtk.Label(_("_Order:"))
         self.order = order = PlayOrder(self.songlist.model)
         label.set_mnemonic_widget(order)
@@ -197,7 +202,6 @@ class QuodLibetWindow(gtk.Window):
 
         self.browser = None
 
-        from qltk.mmkeys import MmKeys
         self.__keys = MmKeys(player)
 
         self.child.show_all()
@@ -257,7 +261,6 @@ class QuodLibetWindow(gtk.Window):
         dirs = []
         files = []
         error = False
-        from formats.remote import RemoteFile
         for uri in uris:
             try: uri = URI(uri)
             except ValueError: continue
@@ -374,7 +377,6 @@ class QuodLibetWindow(gtk.Window):
 
         ag.add_actions(actions)
 
-        import qltk.about
         act = gtk.Action("About", None, None, gtk.STOCK_ABOUT)
         act.connect_object('activate', qltk.about.show, self, player)
         ag.add_action(act)
@@ -593,7 +595,6 @@ class QuodLibetWindow(gtk.Window):
         if self.browser.can_filter(key):
             values = self.browser.list(key)
             if values:
-                import random
                 value = random.choice(values)
                 self.browser.filter(key, [value])
 
@@ -654,11 +655,9 @@ class QuodLibetWindow(gtk.Window):
 
     # Set up the preferences window.
     def __preferences(self, activator):
-        from qltk.prefs import PreferencesWindow
         PreferencesWindow(self)
 
     def __plugins(self, activator):
-        from qltk.pluginwin import PluginWindow
         PluginWindow(self)
 
     def open_location(self, action):
@@ -677,7 +676,6 @@ class QuodLibetWindow(gtk.Window):
                     _("<b>%s</b> uses an unsupported protocol.") %(
                     util.escape(name))).run()
             else:
-                from formats.remote import RemoteFile
                 if name not in library:
                     song = library.add_song(RemoteFile(name))
                     if song: widgets.watcher.added([song])
@@ -687,14 +685,12 @@ class QuodLibetWindow(gtk.Window):
             self.last_dir = os.environ["HOME"]
 
         if action.get_name() == "AddFolders":
-            from qltk.chooser import FolderChooser
             chooser = FolderChooser(self, _("Add Music"), self.last_dir)
             cb = gtk.CheckButton(_("Watch this folder for new songs"))
             cb.set_active(not config.get("settings", "scan"))
             cb.show()
             chooser.set_extra_widget(cb)
         else:
-            from qltk.chooser import FileChooser
             chooser = FileChooser(
                 self, _("Add Music"), formats.filter, self.last_dir)
             cb = None

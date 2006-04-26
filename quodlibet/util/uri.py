@@ -11,8 +11,8 @@
 #  * Coerce a URI to Unicode (via an encoding for the path and
 #    Punycode for the domain) and back.
 
-from urlparse import urlparse, urlunparse
 from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
+from urlparse import urlparse, urlunparse
 
 class URI(str):
     """A full URI string. This object provides several convenience

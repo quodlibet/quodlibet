@@ -8,8 +8,8 @@
 # $Id$
 
 import os
-import urllib
 import sys
+import urllib
 
 import gobject
 import gtk
@@ -23,9 +23,9 @@ import util
 
 from tempfile import NamedTemporaryFile
 
-from library import library
 from browsers._base import Browser
 from formats._audio import AudioFile
+from library import library
 from qltk.songsmenu import SongsMenu
 from qltk.views import RCMHintedTreeView
 from qltk.wlw import WaitLoadWindow

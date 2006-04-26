@@ -7,6 +7,7 @@
 # $Id$
 
 import gtk
+
 from qltk import get_top_parent
 
 class WaitLoadWindow(gtk.Window):

@@ -8,21 +8,24 @@
 # $Id$
 
 import os
+
 import gtk
 import pango
 
-import const
-import stock
-import config
-import qltk
-import util
 import browsers
+import config
+import const
+import qltk
+import stock
+import util
 
-from qltk.properties import SongProperties
+from parse import Pattern
 from qltk.browser import LibraryBrowser
 from qltk.controls import StopAfterMenu
 from qltk.information import Information
-from parse import Pattern
+from qltk.properties import SongProperties
+
+from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 
 class Preferences(qltk.Window):
     """A small window to configure the tray icon's tooltip."""
@@ -200,7 +203,6 @@ class TrayIcon(object):
         if player.song: player.paused ^= True
 
     def __scroll(self, widget, event, window, player):
-        from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
         try: event.state ^= config.getboolean("plugins", "icon_modifier_swap")
         except: pass
         if event.direction in [SCROLL_LEFT, SCROLL_RIGHT]:

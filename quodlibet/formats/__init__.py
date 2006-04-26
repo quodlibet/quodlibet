@@ -7,8 +7,10 @@
 # $Id$
 
 import sys
-from os.path import dirname, basename, join
+import traceback
+
 from glob import glob
+from os.path import dirname, basename, join
 
 base = dirname(__file__)
 self = basename(base)
@@ -36,19 +38,18 @@ def MusicFile(filename):
                 # nothing, and if we're not it lets us access them elsewhere.
                 # WARNING: Not threadsafe. Don't add files from threads
                 # other than the main one.
-                import sys
                 sys.last_type = sys.last_value = sys.last_traceback = None
                 return _infos[ext](filename)
             except:
                 print ("W: Error loading %s") % filename
-                import sys, traceback
                 traceback.print_exc()
                 lt, lv, tb = sys.exc_info()
                 sys.last_type, sys.last_value, sys.last_traceback = lt, lv, tb
                 return None
     else: return None
 
-def supported(song): return type(song) in _infos.values()
+def supported(song):
+    return type(song) in _infos.values()
 
 def filter(filename):
     for ext in _infos.keys():

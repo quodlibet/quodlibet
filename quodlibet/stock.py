@@ -7,7 +7,9 @@
 # $Id$
 
 import os
+
 import gtk
+
 import const
 
 QL_ICON = 'quodlibet'

@@ -7,6 +7,7 @@
 # $Id$
 
 import gst
+
 from formats._vorbis import VCFile
 
 try: import ogg.vorbis

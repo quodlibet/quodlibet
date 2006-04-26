@@ -29,6 +29,7 @@ from qltk.entry import ValidatingEntry
 from qltk.songsmenu import SongsMenu
 from qltk.textedit import PatternEditBox
 from qltk.views import AllTreeView
+from util import tag
 
 if sys.version_info < (2, 4):
     from sets import Set as set
@@ -97,9 +98,9 @@ class Preferences(qltk.Window):
         AlbumList.refresh_pattern(edit.text)
 
     def __preview_pattern(self, edit, label):
-        from util import tag
         album = AlbumList._Album(
-            tag("album"), tag("labelid"), tag("musicbrainz_albumid"))
+            util.tag("album"), util.tag("labelid"),
+            util.tag("musicbrainz_albumid"))
         album.date = "2004-10-31"
         album.length = 6319
         album.discs = 2

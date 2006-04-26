@@ -6,8 +6,12 @@
 #
 # $Id$
 
+import traceback
+
 import gobject
 import gtk
+
+from qltk.msg import ErrorMessage
 
 # Everything connects to this to get updates about the library and player.
 # FIXME: This should be split up. The player should manage its signals
@@ -81,7 +85,6 @@ class SongWatcher(gtk.Object):
 
     def error(self, code, lock=False):
         from widgets import main
-        from qltk.msg import ErrorMessage
         if lock: gtk.threads_enter()
         ErrorMessage(
             main, _("Unable to play song"),
@@ -92,7 +95,7 @@ class SongWatcher(gtk.Object):
     def reload(self, song):
         try: song.reload()
         except Exception, err:
-            import traceback; traceback.print_exc()
+            traceback.print_exc()
             from library import library
             if library: library.remove(song)
             self.removed([song])

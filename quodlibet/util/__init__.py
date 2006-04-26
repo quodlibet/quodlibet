@@ -6,10 +6,10 @@
 #
 # $Id$
 
-import os
-import sys
-import sre
 import locale
+import os
+import sre
+import sys
 
 def gettext_install(domain, localedir=None, unicode=False):
     import gettext, __builtin__

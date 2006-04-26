@@ -7,6 +7,7 @@
 # $Id$
 
 import gtk
+
 import stock
 
 from library import library
@@ -41,6 +42,9 @@ class SongsMenu(gtk.Menu):
         self.separate()
 
         if playlists:
+            # Needed here to avoid a circular import; most browsers use
+            # a SongsMenu, but SongsMenu needs access to the playlist
+            # browser for this item.
             import browsers
             try: submenu = browsers.playlists.Menu(songs)
             except AttributeError: pass

@@ -7,19 +7,22 @@
 #
 # $Id$
 
+import traceback
+
 import gtk
 import pango
 
 import qltk
 
-import const
 import config
+import const
 import formats
 import util
 import util.massagers
 
-from qltk.views import RCMHintedTreeView
+from library import AudioFileGroup
 from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
+from qltk.views import RCMHintedTreeView
 from qltk.wlw import WritingWindow
 
 class SplitValues(gtk.ImageMenuItem):
@@ -349,7 +352,7 @@ class EditTags(gtk.VBox):
 
                 try: b = Item(row[TAG], text)
                 except:
-                    import traceback; traceback.print_exc()
+                    traceback.print_exc()
                 else:
                     b.connect('activate', self.__menu_activate, view)
 
@@ -589,7 +592,6 @@ class EditTags(gtk.VBox):
     def __update(self, songs, view, buttonbox, model, add, buttons):
         if songs is None: songs = self.__songs
 
-        from library import AudioFileGroup
         self.__songinfo = songinfo = AudioFileGroup(songs)
         self.__songs = songs
         view.set_model(None)

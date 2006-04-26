@@ -17,8 +17,8 @@ import util
 
 from library import library
 from parse import FileFromPattern
-from qltk.wlw import WritingWindow
 from qltk._editpane import EditPane, FilterCheckButton
+from qltk.wlw import WritingWindow
 
 class SpacesToUnderscores(FilterCheckButton):
     _label = _("Replace spaces with _underscores")

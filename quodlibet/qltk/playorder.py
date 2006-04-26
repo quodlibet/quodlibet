@@ -7,6 +7,7 @@
 # $Id$
 
 import gtk
+
 import config
 
 _ORDERS = ["inorder", "shuffle", "weighted", "onesong"]

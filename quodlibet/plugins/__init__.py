@@ -37,14 +37,15 @@ characteristics:
 import gobject
 import gtk
 
+import config
 import qltk
 import util
 
 from traceback import print_exc
 
+from plugins._manager import Manager
 from qltk.watcher import SongWatcher
 from qltk.wlw import WritingWindow
-from plugins._manager import Manager
 
 def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
@@ -159,13 +160,11 @@ class PluginManager(Manager):
             self.load_events(obj, name)
 
     def restore(self):
-        import config
         possible = config.get("plugins", "active").split("\n")
         for plugin in self.list():
             self.enable(plugin, plugin.PLUGIN_NAME in possible)
 
     def save(self):
-        import config
         active = [plugin.PLUGIN_NAME for plugin in self.list()
                   if self.enabled(plugin)]
         config.set("plugins", "active", "\n".join(active))

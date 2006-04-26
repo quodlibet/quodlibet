@@ -7,6 +7,8 @@
 #
 # $Id$
 
+import traceback
+
 import gtk
 import pango
 
@@ -143,7 +145,7 @@ class PluginWindow(qltk.Window):
             try:
                 prefs = model[iter][0].PluginPreferences(self)
             except:
-                import traceback; traceback.print_exc()
+                traceback.print_exc()
                 frame.hide()
             else:
                 if isinstance(prefs, gtk.Window):

@@ -7,6 +7,7 @@
 # $Id$
 
 import gtk
+
 from util import tag
 
 class _TagsCombo(object):

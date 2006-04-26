@@ -9,14 +9,14 @@
 
 import gtk
 
-import const
 import config
+import const
 import qltk
 import util
 
 from parse import Query
-from qltk.chooser import FolderChooser
 from qltk.ccb import ConfigCheckButton
+from qltk.chooser import FolderChooser
 from qltk.entry import ValidatingEntry
 from qltk.songlist import SongList
 

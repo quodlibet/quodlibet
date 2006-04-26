@@ -14,6 +14,9 @@ import pango
 import qltk
 import util
 
+from formats._audio import AudioFile
+from parse import XMLFromPattern
+
 class TextEditBox(gtk.VBox):
     """A simple text editing area with a default value, a revert button,
     and an apply button. The 'buffer' attribute is the text buffer, the
@@ -60,8 +63,6 @@ class PatternEditBox(TextEditBox):
 
     def __check_markup(self, apply):
         try:
-            from formats._audio import AudioFile
-            from parse import XMLFromPattern
             f = AudioFile({"~filename":"dummy"})
             pango.parse_markup(XMLFromPattern(self.text) % f, u"\u0000")
         except (ValueError, gobject.GError), e:

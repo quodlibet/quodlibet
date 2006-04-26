@@ -7,6 +7,7 @@
 # $Id$
 
 import gtk
+
 import config
 
 class ValidatingEntry(gtk.Entry):

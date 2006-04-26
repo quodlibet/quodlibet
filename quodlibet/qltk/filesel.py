@@ -9,6 +9,7 @@
 
 import dircache
 import os
+import urlparse
 
 import gobject
 import gtk
@@ -51,7 +52,6 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         try: f = file(os.path.join(os.environ["HOME"], ".gtk-bookmarks"))
         except EnvironmentError: pass
         else:
-            import urlparse
             for line in f.readlines():
                 folders.append(urlparse.urlsplit(line.rstrip())[2])
             folders = filter(os.path.isdir, folders)

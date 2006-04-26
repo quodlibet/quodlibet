@@ -21,11 +21,11 @@ from browsers._base import Browser
 from formats._audio import PEOPLE
 from library import library
 from parse import Query
-from qltk.songlist import SongList
-from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
+from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu
 from qltk.tagscombobox import TagsComboBoxEntry
+from qltk.views import AllTreeView
 from util import tag
 
 if sys.version_info < (2, 4):

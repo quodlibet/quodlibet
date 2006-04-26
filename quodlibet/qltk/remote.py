@@ -8,6 +8,7 @@
 # $Id$
 
 import os
+import random
 import sre
 
 import gobject
@@ -18,6 +19,7 @@ import const
 import util
 
 from qltk.browser import LibraryBrowser
+from qltk.properties import SongProperties
 
 class FSInterface(object):
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
@@ -193,7 +195,6 @@ class FIFOControl(object):
 
     def _random(self, tag, watcher, window, player):
         if window.browser.can_filter(tag):
-            import random
             values = window.browser.list(tag)
             if values:
                 value = random.choice(values)
@@ -210,7 +211,6 @@ class FIFOControl(object):
             # no value given, use the current song; slide arguments
             # to the right.
             value, watcher, window, player = None, value, watcher, window
-        from qltk.properties import SongProperties
         if value:
             from library import library
             if value in library: songs = [library[value]]

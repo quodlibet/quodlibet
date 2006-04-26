@@ -7,9 +7,9 @@
 #
 # $Id$
 
+import gobject
 import gtk
 import pango
-import gobject
 
 import qltk
 import util

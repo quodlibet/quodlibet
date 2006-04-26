@@ -7,6 +7,8 @@
 #
 # $Id$
 
+import traceback
+
 import gobject
 import gtk
 
@@ -92,7 +94,6 @@ class EditPane(gtk.VBox):
         for Kind in plugins:
             try: f = Kind()
             except:
-                import traceback
                 traceback.print_exc()
                 continue
             else: instances.append(f)
@@ -101,7 +102,6 @@ class EditPane(gtk.VBox):
         for f in instances:
             try: vbox.pack_start(f)
             except:
-                import traceback
                 traceback.print_exc()
                 f.destroy()
             else:
@@ -111,7 +111,6 @@ class EditPane(gtk.VBox):
                     try: f.connect_object(
                         'changed', self._changed, self.combo.child)
                     except:
-                        import traceback
                         traceback.print_exc()
                     else: self.filters.append(f)
                 else: self.filters.append(f)

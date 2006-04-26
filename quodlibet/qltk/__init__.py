@@ -13,6 +13,6 @@ def get_top_parent(widget):
     return widget and widget.get_ancestor(gtk.Window)
 
 # Legacy plugin/code support.
+from qltk.getstring import GetStringDialog
 from qltk.msg import *
 from qltk.x import *
-from qltk.getstring import GetStringDialog

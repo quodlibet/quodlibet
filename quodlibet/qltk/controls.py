@@ -12,13 +12,12 @@ import gtk
 
 import config
 import qltk
+import qltk.bookmarks
 import stock
 import util
 
-import qltk.bookmarks
-from qltk.sliderbutton import HSlider
-from qltk.sliderbutton import VSlider
 from qltk.ccb import ConfigCheckMenuItem
+from qltk.sliderbutton import HSlider, VSlider
 
 SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
 

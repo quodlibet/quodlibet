@@ -7,10 +7,11 @@
 #
 # $Id$
 
+import cPickle as pickle
 import os
 import sys
+import threading
 import time
-import cPickle as pickle
 
 import gobject
 import gtk
@@ -23,15 +24,17 @@ import qltk
 import util
 
 from browsers._base import Browser
-from qltk.views import AllTreeView
+from formats._audio import AudioFile
+from formats.remote import RemoteFile
+from qltk.downloader import DownloadWindow
 from qltk.getstring import GetStringDialog
 from qltk.msg import ErrorMessage
-from qltk.downloader import DownloadWindow
-from formats.remote import RemoteFile
+from qltk.views import AllTreeView
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
 
-if sys.version_info < (2, 4): from sets import Set as set
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 class InvalidFeed(ValueError): pass
 
@@ -113,7 +116,6 @@ class Feed(list):
         if album: self.name = album
         else: self.name = _("Unknown")
 
-        from formats._audio import AudioFile
         defaults = AudioFile({"feed": self.uri})
         try: self.__fill_af(doc.channel, defaults)
         except: return False
@@ -209,7 +211,6 @@ class AudioFeeds(Browser, gtk.VBox):
     init = classmethod(init)
 
     def __do_check(klass):
-        import threading
         thread = threading.Thread(target=klass.__check, args=())
         thread.setDaemon(True)
         thread.start()

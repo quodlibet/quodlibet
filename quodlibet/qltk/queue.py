@@ -11,15 +11,15 @@ import os
 
 import gtk
 
-import const
 import config
+import const
 import util
 
 from library import library
-from qltk.songlist import SongList
 from qltk.ccb import ConfigCheckButton
-from qltk.x import Tooltips
+from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu        
+from qltk.x import Tooltips
 
 QUEUE = os.path.join(const.USERDIR, "queue")
 

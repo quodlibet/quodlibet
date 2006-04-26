@@ -15,15 +15,24 @@ import browsers
 import config
 import const
 import player
+import qltk.session
 import stock
 import util
 
 from library import library
-from util import to
-
+from plugins import PluginManager
+from plugins.editing import EditingPlugins
+from plugins.songsmenu import SongsMenuPlugins
+from qltk.count import CountManager
 from qltk.msg import ErrorMessage
+from qltk.properties import SongProperties
+from qltk.quodlibet import QuodLibetWindow
+from qltk.remote import FSInterface, FIFOControl
 from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu
+from qltk.trayicon import TrayIcon
+from qltk.watcher import SongWatcher
+from util import to
 
 # FIXME: This is now deprecated in favor of the global main and
 # watcher variables, removing the "widgets.widgets" problem.
@@ -45,7 +54,6 @@ def website_wrap(activator, link):
 def init():
     global main, watcher
 
-    import qltk.session
     qltk.session.init()
 
     stock.init()
@@ -65,23 +73,18 @@ def init():
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    from qltk.watcher import SongWatcher
     watcher = widgets.watcher = SongWatcher()
 
-    from plugins.songsmenu import SongsMenuPlugins
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
 
-    from plugins import PluginManager
     SongList.pm = PluginManager(watcher, [
         os.path.join(const.BASEDIR, "plugins"),
         os.path.join(const.USERDIR, "plugins")], "legacy")
     SongList.pm.rescan()
 
-    from plugins.editing import EditingPlugins
-    from qltk.properties import SongProperties
     SongProperties.plugins = EditingPlugins(
         [os.path.join(const.BASEDIR, "plugins", "editing"),
          os.path.join(const.USERDIR, "plugins", "editing")], "editing")
@@ -93,21 +96,17 @@ def init():
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(watcher)
 
-    from qltk.quodlibet import QuodLibetWindow
     main = widgets.main = QuodLibetWindow(watcher, player.playlist)
     main.connect('destroy', gtk.main_quit)
 
     gtk.about_dialog_set_url_hook(website_wrap)
 
     # These stay alive in the watcher/other callbacks.
-    from qltk.remote import FSInterface, FIFOControl
     FSInterface(watcher)
     FIFOControl(watcher, main, player.playlist)
 
-    from qltk.count import CountManager
     CountManager(watcher, main.playlist)
 
-    from qltk.trayicon import TrayIcon
     TrayIcon(watcher, main, player.playlist)
 
     flag = main.songlist.get_columns()[-1].get_clickable

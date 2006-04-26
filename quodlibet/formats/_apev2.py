@@ -7,6 +7,7 @@
 # $Id$
 
 from formats._audio import AudioFile
+
 try: import mutagen.apev2
 except ImportError: pass
 

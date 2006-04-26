@@ -7,7 +7,9 @@
 # $Id$
 
 import os
+
 import gst
+
 from formats._audio import AudioFile
 
 try:

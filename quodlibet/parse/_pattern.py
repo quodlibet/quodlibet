@@ -16,6 +16,7 @@
 
 import os
 import sre
+
 import util
 
 class _Dummy(dict):

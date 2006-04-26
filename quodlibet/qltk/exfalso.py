@@ -13,8 +13,8 @@ import gobject
 import gtk
 import pango
 
-import const
 import config
+import const
 import formats
 import qltk
 import stock
@@ -23,13 +23,12 @@ from qltk.ccb import ConfigCheckButton
 from qltk.delete import DeleteDialog
 from qltk.edittags import EditTags
 from qltk.filesel import FileSelector
+from qltk.pluginwin import PluginWindow
 from qltk.renamefiles import RenameFiles
 from qltk.tagsfrompath import TagsFromPath
 from qltk.tracknumbers import TrackNumbers
-
 from plugins.editing import EditingPlugins
 from plugins.songsmenu import SongsMenuPlugins
-from qltk.pluginwin import PluginWindow
 
 class ExFalsoWindow(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,

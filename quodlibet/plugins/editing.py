@@ -8,6 +8,7 @@
 # $Id$
 
 import gtk
+
 from plugins._manager import Manager
 
 class RenameFilesPlugin(object):

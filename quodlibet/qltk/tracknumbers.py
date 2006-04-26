@@ -13,8 +13,8 @@ import qltk
 import stock
 import util
 
-from qltk.wlw import WritingWindow
 from qltk.views import HintedTreeView
+from qltk.wlw import WritingWindow
 
 class TrackNumbers(gtk.VBox):
     def __init__(self, prop, watcher):

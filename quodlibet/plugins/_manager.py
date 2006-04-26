@@ -7,9 +7,11 @@
 #
 # $Id$
 
+import imp
 import os
 import sys
-import imp
+
+import config
 
 from traceback import format_exception
 
@@ -82,7 +84,6 @@ class Manager(object):
         self.restore()
 
     def restore(self):
-        import config
         key = "active_" + str(type(self).__name__)
         try: possible = config.get("plugins", key).splitlines()
         except config.error: pass
@@ -91,7 +92,6 @@ class Manager(object):
                 self.enable(plugin, plugin.PLUGIN_NAME in possible)
 
     def save(self):
-        import config
         key = "active_" + str(type(self).__name__)
         active = [plugin.PLUGIN_NAME for plugin in self.list()
                   if self.enabled(plugin)]

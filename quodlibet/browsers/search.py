@@ -19,10 +19,10 @@ import qltk
 from browsers._base import Browser
 from library import library
 from parse import Query
-from qltk.completion import LibraryTagCompletion
 from qltk.cbes import ComboBoxEntrySave
+from qltk.completion import LibraryTagCompletion
 from qltk.songlist import SongList
-from qltk import Tooltips
+from qltk.x import Tooltips
 
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 

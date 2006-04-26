@@ -7,8 +7,8 @@
 #
 # $Id$
 
-import gtk
 import gst
+import gtk
 
 import const
 import formats
