@@ -114,10 +114,9 @@ class SongsMenu(gtk.Menu):
     def __delete(self, item, songs, watcher):
         files = [song["~filename"] for song in songs]
         d = DeleteDialog(None, files)
-        removed = d.run()
+        removed = dict.fromkeys(d.run())
         d.destroy()
-        removed = filter(None, map(library.get, removed))
+        removed = filter(lambda s: s["~filename"] in removed, songs)
         if removed:
             map(library.remove, removed)
             watcher.removed(removed)
-
