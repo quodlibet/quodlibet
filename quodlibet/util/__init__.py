@@ -6,7 +6,10 @@
 #
 # $Id$
 
-import os, sys, sre, locale
+import os
+import sys
+import sre
+import locale
 
 def gettext_install(domain, localedir=None, unicode=False):
     import gettext, __builtin__
@@ -27,7 +30,7 @@ def gettext_install(domain, localedir=None, unicode=False):
 def gtk_init():
     import pygtk
     pygtk.require('2.0')
-    import gtk, gobject
+    import gtk
     # http://bugzilla.gnome.org/show_bug.cgi?id=318953
     if gtk.gtk_version < (2, 8, 8):
         class TVProxy(gtk.TreeView):
@@ -437,7 +440,7 @@ def website(site):
                     break
             else: args.append(site)
             try: spawn(args)
-            except gobject.GError: return False
+            except RuntimeError: return False
             else: return True
     else: return False
 
