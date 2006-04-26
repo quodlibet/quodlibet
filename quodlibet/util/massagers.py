@@ -45,7 +45,7 @@ class GainMassager(Massager):
 
 class PeakMassager(Massager):
     tags = ["replaygain_album_peak", "replaygain_track_peak"]
-    error = _("ReplayGain peaks must be entered in 'x.yy' format.")
+    error = _("Replay Gain peaks must be entered in 'x.yy' format.")
     def validate(self, value):
         value = value.strip()
         try: f = float(value)
