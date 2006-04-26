@@ -7,8 +7,8 @@
 #
 # $Id$
 
-import os, sys
-import gtk, pango
+import gtk
+import pango
 
 import qltk
 from qltk.wlw import WritingWindow
@@ -20,8 +20,6 @@ import config
 import util
 import util.massagers
 import formats
-
-from util import tag
 
 import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
 
@@ -511,7 +509,19 @@ class EditTags(gtk.VBox):
         new = ' '.join(new.splitlines())
         row = model[path]
         if new == row[TAG]: return
-        elif self.__songinfo.can_change(new):
+        elif not self.__songinfo.can_change(row[TAG]):
+            title = _("Invalid tag")
+            msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
+                    " selected do not support editing this tag."
+                    ) % util.escape(row[TAG])
+            qltk.ErrorMessage(None, title, msg).run()            
+        elif not self.__songinfo.can_change(new):
+            title = _("Invalid tag")
+            msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
+                    " selected do not support editing this tag."
+                    ) % util.escape(new)
+            qltk.ErrorMessage(None, title, msg).run()            
+        else:
             if new in util.massagers.tags:
                 fmt = util.massagers.tags[new]
                 value = fmt.validate(util.unescape(row[VALUE]))
@@ -536,12 +546,6 @@ class EditTags(gtk.VBox):
             else:
                 row[DELETED] = row[EDITED] = True
                 self.__add_new_tag(model, new, value)
-        elif not self.__songinfo.can_change(row[TAG]):
-            title = _("Invalid tag")
-            msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
-                    " selected do not support editing this tag."
-                    ) % util.escape(comment)
-            qltk.ErrorMessage(None, title, msg).run()            
 
     def __edit_tag(self, renderer, path, new, model):
         new = ', '.join(new.splitlines())
