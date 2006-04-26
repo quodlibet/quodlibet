@@ -9,10 +9,13 @@ Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
 0.20
- * New Norwegian Bokmål translation, by Andreas Bertheussen.
- * New Swedish translation, by Erik Christiansson.
+ * New translations:
+   * Norwegian Bokmål, by Andreas Bertheussen.
+   * Swedish, by Erik Christiansson.
  * Updated translations:
    * Polish, by Tomasz Torcz.
+   * Dutch, by Hans van Dok.
+   * Finnish, by Jari Rahkonen.
 
 0.19.1 - It's our secret! Our secret IDENTITY!
  * Work around broken Fedora/Mandrive GNOME bindings. (#593)
