@@ -7,6 +7,7 @@
 # $Id$
 
 import gst
+
 from formats._apev2 import APEv2File
 
 try:
@@ -22,7 +23,7 @@ else:
         _wavpack.WavpackGetNumSamples.restype = ctypes.c_uint32
 
 class WavpackFile(APEv2File):
-    format = "Wavpack"
+    format = "WavPack"
     
     def __init__(self, filename):
         super(WavpackFile, self).__init__(filename)
