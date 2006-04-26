@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-04-03 21:15-0500\n"
-"PO-Revision-Date: 2006-03-26 21:50+0200\n"
+"PO-Revision-Date: 2006-04-26 21:54+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.1\n"
+"X-Generator: KBabel 1.11.2\n"
 
 #: ../stock.py:39
 msgid "Edit _Tags"
@@ -318,9 +318,8 @@ msgid "album"
 msgstr "album"
 
 #: ../po/tag-names.py:9
-#, fuzzy
 msgid "album artist"
-msgstr "_Albumlijst"
+msgstr "albumartiest"
 
 #: ../po/tag-names.py:10
 msgid "arranger"
@@ -431,17 +430,15 @@ msgstr "organisatie"
 
 #: ../po/tag-names.py:44
 msgid "original release date"
-msgstr ""
+msgstr "originele release datum"
 
 #: ../po/tag-names.py:45
-#, fuzzy
 msgid "original artist"
-msgstr "Sorteer op artiest"
+msgstr "originele artiest"
 
 #: ../po/tag-names.py:46
-#, fuzzy
 msgid "original album"
-msgstr "Songs niet in een album"
+msgstr "originele album"
 
 #. alternately, "movement", "section"
 #: ../po/tag-names.py:48
@@ -466,7 +463,7 @@ msgstr "cijfer"
 
 #: ../po/tag-names.py:53
 msgid "recording date"
-msgstr ""
+msgstr "opnamedatum"
 
 #: ../po/tag-names.py:54 ../qltk/information.py:173
 msgid "skips"
@@ -499,37 +496,33 @@ msgstr "BPM"
 
 #: ../po/tag-names.py:63
 msgid "MusicBrainz track ID"
-msgstr ""
+msgstr "MusicBrainz track ID"
 
 #: ../po/tag-names.py:64
 msgid "MusicBrainz artist ID"
-msgstr ""
+msgstr "MusicBrainz artiest ID"
 
 #: ../po/tag-names.py:65
 msgid "MusicBrainz album ID"
-msgstr ""
+msgstr "MusicBrainz album ID"
 
 #. refers to a volume adjustment and not "to get/acquire".
 #: ../po/tag-names.py:68
-#, fuzzy
 msgid "track gain"
-msgstr "track"
+msgstr "track gain"
 
 #. refers to a volume adjustment and not "to get/acquire".
 #: ../po/tag-names.py:70
-#, fuzzy
 msgid "album gain"
-msgstr "album"
+msgstr "album gain"
 
 #: ../po/tag-names.py:71
-#, fuzzy
 msgid "track peak"
-msgstr "track"
+msgstr "track peak"
 
 #: ../po/tag-names.py:72
-#, fuzzy
 msgid "album peak"
-msgstr "album"
+msgstr "album peak"
 
 #: ../po/tag-names.py:74 ../qltk/information.py:316
 msgid "performers"
@@ -699,7 +692,7 @@ msgstr "ReplayGain moet worden ingevoerd in 'x.yy dB' formaat."
 
 #: ../massagers.py:54
 msgid "ReplayGain peaks must be entered in 'x.yy' format."
-msgstr "ReplayGain pieken moeten worden ingevoerd in 'x.yy' formaat."
+msgstr "ReplayGain peaks moeten worden ingevoerd in 'x.yy' formaat."
 
 #: ../massagers.py:66
 msgid "MusicBrainz IDs must be in UUID format."
@@ -723,28 +716,27 @@ msgstr "Hans van Dok"
 #. Translators: Refers to the beginning of the playing song.
 #: ../qltk/bookmarks.py:25
 msgid "Beginning"
-msgstr ""
+msgstr "Begin"
 
 #: ../qltk/bookmarks.py:31 ../qltk/bookmarks.py:66
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: ../qltk/bookmarks.py:70
-#, fuzzy
 msgid "Time"
-msgstr "Titel"
+msgstr "Tijd"
 
 #: ../qltk/bookmarks.py:76 ../qltk/bookmarks.py:108
 msgid "Bookmark Name"
-msgstr ""
+msgstr "Bookmark Naam"
 
 #: ../qltk/bookmarks.py:106
 msgid "MM:SS"
-msgstr ""
+msgstr "MM:SS"
 
 #: ../qltk/bookmarks.py:180 ../qltk/information.py:73
 msgid "Bookmarks"
-msgstr ""
+msgstr "Bookmarks"
 
 #: ../qltk/browser.py:18
 msgid "Library Browser"
@@ -752,12 +744,11 @@ msgstr "Bibliotheek Browser"
 
 #: ../qltk/cbes.py:20
 msgid "Saved Values"
-msgstr ""
+msgstr "Opgeslagen Waarden"
 
 #: ../qltk/cbes.py:31
-#, fuzzy
 msgid "_Name:"
-msgstr "_Waarde:"
+msgstr "_Naam:"
 
 #: ../qltk/cbes.py:39 ../qltk/edittags.py:138
 msgid "_Value:"
@@ -765,7 +756,7 @@ msgstr "_Waarde:"
 
 #: ../qltk/cbes.py:197
 msgid "Edit saved values..."
-msgstr ""
+msgstr "Bewerk opgeslagen waarden..."
 
 #: ../qltk/chooser.py:39 ../qltk/filesel.py:199
 msgid "Songs"
@@ -777,7 +768,7 @@ msgstr "Laat resterende tijd zien"
 
 #: ../qltk/controls.py:52
 msgid "_Edit Bookmarks..."
-msgstr ""
+msgstr "_Bewerk Bookmarks..."
 
 #: ../qltk/controls.py:171
 msgid "Stop after this song"
@@ -1330,8 +1321,7 @@ msgstr "Ga automatisch naar song die gespeeld wordt"
 
 #: ../qltk/prefs.py:168
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr ""
-"Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
+msgstr "Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
 
 #: ../qltk/prefs.py:173
 msgid "_Volume Normalization"
@@ -1583,7 +1573,7 @@ msgstr "Voeg Muziek Toe"
 
 #: ../qltk/quodlibet.py:680
 msgid "Watch this folder for new songs"
-msgstr ""
+msgstr "Bewaak deze folder voor nieuwe songs"
 
 #: ../qltk/quodlibet.py:708
 #, python-format
@@ -1950,8 +1940,7 @@ msgstr "Niet in staat om speellijst importeren"
 
 #: ../browsers/playlists.py:413 ../browsers/playlists.py:491
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
-msgstr ""
-"Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
+msgstr "Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
 
 #: ../browsers/playlists.py:437
 msgid "_Rename"
@@ -2196,3 +2185,4 @@ msgstr "Luister naar, browse, of bewerk je audio verzameling"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "Muziek Speler"
+
