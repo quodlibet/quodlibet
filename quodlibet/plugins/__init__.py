@@ -51,13 +51,15 @@ def hascallable(obj, attr):
     return callable(getattr(obj, attr, None))
 
 class SongWrapper(object):
-    __slots__ = ['_song', '_updated', '_mtime', '_needs_write']
+    __slots__ = ['_song', '_updated', '_needs_write']
+
     def __init__(self, song):
         self._song = song
         self._updated = False
         self._needs_write = False
 
-    def _was_updated(self): return self._updated
+    def _was_updated(self):
+        return self._updated
 
     def __setitem__(self, key, value):
         if key in self and self[key] == value: return
@@ -71,36 +73,37 @@ class SongWrapper(object):
         self._needs_write = True
         return retval
 
-    def __getitem__(self, *args): return self._song.__getitem__(*args)
+    def __getattr__(self, attr):
+        return getattr(self._song, attr)
+
+    def __setattr__(self, attr, value):
+        # Don't set our attributes on the song. However, we only want to
+        # set attributes the song already has. So, if the attribute
+        # isn't one of ours, and isn't one of the song's, hand it off
+        # to our parent's attribute handler for error handling.
+        if attr in self.__slots__:
+            return super(SongWrapper, self).__setattr__(attr, value)
+        elif hasattr(self._song, attr):
+            return setattr(self._song, attr, value)
+        else:
+            return super(SongWrapper, self).__setattr__(attr, value)
+
     def __cmp__(self, other):
         try: return cmp(self._song, other._song)
         except: return cmp(self._song, other)
+
+    def __getitem__(self, *args): return self._song.__getitem__(*args)
     def __contains__(self, key): return key in self._song
     def __call__(self, *args): return self._song(*args)
-    def get(self, key, default=None): return self._song.get(key, default)
-    def realkeys(self): return self._song.realkeys()
-    def can_change(self, key): return self._song.can_change(key)
-    def keys(self): return self._song.keys()
-    def values(self): return self._song.values()
-    def items(self): return self._song.items()
+
     def update(self, other):
         self._updated = True
         self._needs_write = True
         return self._song.update(other)
-    def comma(self, key): return self._song.comma(key)
-    def list(self, key): return self._song.list(key)
+
     def rename(self, newname):
         self._updated = True
         return self._song.rename(newname)
-    def website(self): return self._song.website()
-    def valid(self): return self._song.valid()
-    def exists(self): return self._song.exists()
-    def find_cover(self): return self._song.find_cover()
-
-    bookmarks = property(lambda s: s._song.bookmarks,
-                         lambda s, v: setattr(s._song, 'bookmarks', v))
-
-    album_key = property(lambda s: s._song.album_key)
 
 def ListWrapper(songs):
     def wrap(song):
