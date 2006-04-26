@@ -21,7 +21,7 @@ class TParsePlaylist(TestCase):
         f = file(name, "w")
         target = self.prefix
         target += os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg")
-        f.write(os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg"))
+        f.write(target)
         f.close()
         list = self.Parse(name)
         os.unlink(name)
@@ -31,10 +31,10 @@ class TParsePlaylist(TestCase):
 
     def test_parse_onesong_uri(self):
         name = makename()
-        target = self.prefix
-        target += os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg")
+        target = os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg")
         from util.uri import URI
         target = URI.frompath(target)
+        target = self.prefix + target
         f = file(name, "w")
         f.write(target)
         f.close()
@@ -50,9 +50,9 @@ class TParseM3U(TParsePlaylist):
 add(TParseM3U)
 
 class TParsePLS(TParsePlaylist):
-    Parse = staticmethod(ParseM3U)
+    Parse = staticmethod(ParsePLS)
     prefix = "File1="
-add(TParseM3U)
+add(TParsePLS)
 
 class TPlaylist(TestCase):
     def test_make(self):
