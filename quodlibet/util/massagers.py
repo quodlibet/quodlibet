@@ -31,7 +31,7 @@ class DateMassager(Massager):
 
 class GainMassager(Massager):
     tags = ["replaygain_album_gain", "replaygain_track_gain"]
-    error = _("ReplayGain gains must be entered in 'x.yy dB' format.")
+    error = _("Replay Gain gains must be entered in 'x.yy dB' format.")
     __match = sre.compile(r"^[+-]\d+\.?\d+?\s+dB$").match
 
     def validate(self, value):

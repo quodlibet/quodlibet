@@ -350,8 +350,8 @@ class AudioFile(dict):
         else: return None
 
     def replay_gain(self):
-        """Return the recommended ReplayGain scale factor as a floating
-        point number, based on the current settings."""
+        """Return the recommended Replay Gain scale factor as a
+        floating point number, based on the current settings."""
 
         gain = config.getint("settings", "gain")
         try:

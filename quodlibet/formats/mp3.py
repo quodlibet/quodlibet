@@ -112,7 +112,7 @@ class MP3File(AudioFile):
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
                 elif frame.desc.startswith("replaygain_"):
-                    # Some versions of Foobar2000 write broken ReplayGain
+                    # Some versions of Foobar2000 write broken Replay Gain
                     # tags in this format.
                     name = frame.desc
                 elif frame.desc in self.BRAINZ:
