@@ -7,17 +7,17 @@
 #
 # $Id$
 
-import os
 import gtk
 import gst
 import const
 import formats
 
-def fver(tup): return ".".join(map(str, tup))
+def __fver(tup):
+    return ".".join(map(str, tup))
 
-class AboutWindow(gtk.AboutDialog):
-    def __init__(self, parent, player, run=True):
-        gtk.AboutDialog.__init__(self)
+class AboutQuodLibet(gtk.AboutDialog):
+    def __init__(self, parent, player):
+        super(AboutQuodLibet, self).__init__()
         self.set_name("Quod Libet")
         self.set_version(const.VERSION)
         self.set_authors(const.AUTHORS)
@@ -26,9 +26,9 @@ class AboutWindow(gtk.AboutDialog):
         text.append(_("Supported formats: %s") % fmts)
         text.append(_("Audio device: %s") % player.name)
         text.append("GTK+: %s / PyGTK: %s" %(
-            fver(gtk.gtk_version), fver(gtk.pygtk_version)))
+            __fver(gtk.gtk_version), __fver(gtk.pygtk_version)))
         text.append("GStreamer: %s / PyGSt: %s" %(
-            fver(gst.version()), fver(gst.pygst_version)))
+            __fver(gst.version()), __fver(gst.pygst_version)))
         self.set_comments("\n".join(text))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
@@ -37,6 +37,9 @@ class AboutWindow(gtk.AboutDialog):
         self.set_copyright(
             "Copyright © 2004-2006 Joe Wreschnig, Michael Urman, & others\n"
             "<quodlibet@lists.sacredchao.net>")
-        if run: gtk.AboutDialog.run(self)
-        self.destroy()
+        self.child.show_all()
 
+def show(window, player):
+    about = AboutQuodLibet(window, player)
+    about.run()
+    about.destroy()

@@ -368,9 +368,9 @@ class QuodLibetWindow(gtk.Window):
 
         ag.add_actions(actions)
 
-        from qltk.about import AboutWindow
+        import qltk.about
         act = gtk.Action("About", None, None, gtk.STOCK_ABOUT)
-        act.connect_object('activate', AboutWindow, self, player)
+        act.connect_object('activate', qltk.about.show, self, player)
         ag.add_action(act)
 
         act = gtk.Action(

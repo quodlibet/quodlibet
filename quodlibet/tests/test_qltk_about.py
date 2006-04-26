@@ -1,8 +1,8 @@
 from tests import add, TestCase
-from qltk.about import AboutWindow
+from qltk.about import AboutQuodLibet
 
-class TAboutWindow(TestCase):
+class TAboutQuodLibet(TestCase):
     def test_ctr(self):
         from player import PlaylistPlayer
-        AboutWindow(None, PlaylistPlayer("fakesink"), run=False).destroy()
-add(TAboutWindow)
+        AboutQuodLibet(None, PlaylistPlayer("fakesink")).destroy()
+add(TAboutQuodLibet)
