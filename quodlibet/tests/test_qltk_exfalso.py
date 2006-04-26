@@ -1,7 +1,6 @@
 from tests import TestCase, add
 from qltk.exfalso import ExFalsoWindow
 from qltk.watcher import SongWatcher
-from tempfile import mkdtemp
 
 class TExFalsoWindow(TestCase):
     def setUp(self):

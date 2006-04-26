@@ -9,18 +9,20 @@
 
 import os
 import random
-import gobject, gtk
-import const
-import config
 
+import gtk
+
+import config
+import const
 import qltk
+
+from browsers._base import Browser
+from library import library
+from parse import Query
 from qltk.completion import LibraryTagCompletion
 from qltk.cbes import ComboBoxEntrySave
 from qltk.songlist import SongList
 from qltk import Tooltips
-from browsers._base import Browser
-from library import library
-from parse import Query
 
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 

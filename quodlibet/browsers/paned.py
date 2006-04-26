@@ -8,24 +8,28 @@
 # $Id$
 
 import sys
-import gobject, gtk, pango
-import stock
+
+import gobject
+import gtk
+import pango
+
 import config
 import qltk
 import util
 
-from util import tag
-from parse import Query
-from library import library
 from browsers._base import Browser
+from formats._audio import PEOPLE
+from library import library
+from parse import Query
 from qltk.songlist import SongList
 from qltk.views import AllTreeView
 from qltk.entry import ValidatingEntry
 from qltk.songsmenu import SongsMenu
 from qltk.tagscombobox import TagsComboBoxEntry
+from util import tag
 
-from formats._audio import PEOPLE
-if sys.version_info < (2, 4): from sets import Set as set
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 UNKNOWN = "<b>%s</b>" % _("Unknown")
 
@@ -172,7 +176,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             self.connect('popup-menu', self.__popup_menu)
 
         def __popup_menu(self, view):
-            from widgets import main, watcher
+            from widgets import watcher
             songs = self.__get_songs()
             songs.sort()
             menu = SongsMenu(watcher, songs)

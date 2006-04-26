@@ -1,7 +1,5 @@
-import gobject, gtk
 from tests import TestCase, add
 
-import widgets
 from player import PlaylistPlayer
 from browsers.iradio import InternetRadio
 from qltk.watcher import SongWatcher

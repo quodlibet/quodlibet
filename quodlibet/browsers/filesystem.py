@@ -12,10 +12,12 @@
 # needs them to be there.
 
 import os
-import gobject, gtk
-import qltk
+
+import gtk
+
 import formats
 import config
+import qltk
 
 from browsers._base import Browser
 from library import Library, library as glibrary

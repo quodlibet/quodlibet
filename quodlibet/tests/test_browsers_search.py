@@ -1,4 +1,4 @@
-import gobject, gtk
+import gtk
 from tests import TestCase, add
 
 import widgets
@@ -92,7 +92,6 @@ add(TEmptyBar)
 class TSearchBar(TEmptyBar):
     Bar = SearchBar
     def setUp(self):
-        import qltk
         widgets.watcher = SongWatcher()
         super(TSearchBar, self).setUp()
 

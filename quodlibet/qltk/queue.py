@@ -8,19 +8,18 @@
 # $Id$
 
 import os
+
 import gtk
+
 import const
 import config
 import util
-import stock
 
+from library import library
 from qltk.songlist import SongList
 from qltk.ccb import ConfigCheckButton
 from qltk.x import Tooltips
-from qltk.properties import SongProperties
-from qltk.information import Information
 from qltk.songsmenu import SongsMenu        
-from library import library
 
 QUEUE = os.path.join(const.USERDIR, "queue")
 

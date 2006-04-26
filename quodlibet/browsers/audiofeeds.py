@@ -7,23 +7,27 @@
 #
 # $Id$
 
-import os, sys
+import os
+import sys
 import time
+import cPickle as pickle
 
-import gobject, gtk, pango
-import const
+import gobject
+import gtk
+import pango
+
 import config
+import const
+import formats
 import qltk
 import util
-
-import cPickle as pickle
 
 from browsers._base import Browser
 from qltk.views import AllTreeView
 from qltk.getstring import GetStringDialog
 from qltk.msg import ErrorMessage
 from qltk.downloader import DownloadWindow
-import formats; from formats.remote import RemoteFile
+from formats.remote import RemoteFile
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
 
@@ -411,12 +415,12 @@ class AudioFeeds(Browser, gtk.VBox):
                 selection.unselect_all()
                 map(selection.select_path, paths)
 
-try: import feedparser
+try:
+    import feedparser
+    import gst
+    if not gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
+        raise ImportError
 except ImportError:
-    try: import _feedparser as feedparser
-    except ImportError: feedparser = None
-
-import gst
-if feedparser and gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
+    browsers = []
+else:
     browsers = [(20, _("_Audio Feeds"), AudioFeeds, True)]
-else: browsers = []

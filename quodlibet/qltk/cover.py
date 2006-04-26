@@ -7,7 +7,8 @@
 #
 # $Id$
 
-import gobject, gtk
+import gobject
+import gtk
 
 class BigCenteredImage(gtk.Window):
     """Load an image and display it, scaling down to 1/2 the screen's

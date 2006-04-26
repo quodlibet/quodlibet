@@ -6,8 +6,8 @@
 #
 # $Id$
 
-import os, sys
-from os.path import dirname, basename, isdir, join
+import sys
+from os.path import dirname, basename, join
 from glob import glob
 
 base = dirname(__file__)

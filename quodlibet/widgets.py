@@ -10,21 +10,20 @@
 import os
 
 import gtk
-import stock
 
 import browsers
-import const
 import config
+import const
 import player
+import stock
 import util
 
-from util import to
 from library import library
+from util import to
 
-from qltk.songlist import SongList
-from browsers._base import Browser
-from qltk.songsmenu import SongsMenu
 from qltk.msg import ErrorMessage
+from qltk.songlist import SongList
+from qltk.songsmenu import SongsMenu
 
 # FIXME: This is now deprecated in favor of the global main and
 # watcher variables, removing the "widgets.widgets" problem.

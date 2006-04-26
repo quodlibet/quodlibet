@@ -6,7 +6,8 @@
 #
 # $Id$
 
-import gobject, gtk
+import gobject
+import gtk
 
 # Everything connects to this to get updates about the library and player.
 # FIXME: This should be split up. The player should manage its signals

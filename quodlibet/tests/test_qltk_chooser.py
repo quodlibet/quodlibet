@@ -1,4 +1,4 @@
-import os, gtk
+import os
 from tests import add, TestCase
 from qltk.chooser import FolderChooser, FileChooser
 

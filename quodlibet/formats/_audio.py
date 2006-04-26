@@ -14,7 +14,9 @@ import os
 import shutil
 import time
 
-import util, config
+import config
+import util
+
 from util.uri import URI
 
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "

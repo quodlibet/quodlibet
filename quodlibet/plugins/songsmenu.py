@@ -6,8 +6,8 @@
 #
 # $Id$
 
-import os
 import gtk
+
 import qltk
 import util
 

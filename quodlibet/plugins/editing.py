@@ -7,9 +7,7 @@
 #
 # $Id$
 
-import os
 import gtk
-import const
 from plugins._manager import Manager
 
 class RenameFilesPlugin(object):

@@ -10,10 +10,10 @@
 # but it could use some cleaning up. It builds the requisite match.*
 # objects as it goes, which is where the interesting stuff will happen.
 
-import string
-import _match as match
 import sre
 import sys
+
+import parse._match as match
 
 if sys.version_info < (2, 4):
     from sets import Set as set
@@ -162,7 +162,7 @@ class QueryParser(object):
         return s
 
     def QueryPart(self):
-        names = map(string.lower, self._match_list(self._match_string))
+        names = [s.lower() for s in self._match_list(self._match_string)]
         self.match(EQUALS)
         res = self.RegexpSet()
         return match.Tag(names, res)

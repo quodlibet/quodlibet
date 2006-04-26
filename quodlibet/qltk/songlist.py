@@ -6,24 +6,27 @@
 #
 # $Id$
 
-import os, sys
+import sys
 import random
 import locale
-import time, datetime
+import time
+import datetime
 
-import gobject, gtk, pango
+import gobject
+import gtk
+import pango
 
-import stock
 import qltk
 import player
-import util; from util import tag
+import util
+
 from library import library
+from parse import Query
 from qltk.properties import SongProperties
 from qltk.information import Information
 from qltk.views import AllTreeView
-from qltk.delete import DeleteDialog
+from util import tag
 from util.uri import URI
-from parse import Query
 
 if sys.version_info < (2, 4): from sets import Set as set
 

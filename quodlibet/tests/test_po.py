@@ -1,4 +1,6 @@
-import os, glob
+import os
+import glob
+
 from tests import add, TestCase
 
 class PO(TestCase):

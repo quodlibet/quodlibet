@@ -10,7 +10,9 @@
 #
 # $Id$
 
-import os, sys
+import os
+import sys
+
 global play
 play = False
 

@@ -1,8 +1,10 @@
+import os
+import formats
+
 from unittest import TestCase
 from tests import registerCase
 from shutil import copyfileobj
-from tempfile import mkstemp, mkdtemp
-import os, formats
+from tempfile import mkstemp
 
 class TestMetaData(TestCase):
     base = 'tests/data/silence-44-s'

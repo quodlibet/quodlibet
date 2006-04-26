@@ -7,8 +7,11 @@
 #
 # $Id$
 
-import os, sys
+import os
+import sys
+
 import const
+
 from os.path import dirname, basename, isdir, join
 from glob import glob
 

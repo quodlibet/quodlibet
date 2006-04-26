@@ -1,6 +1,6 @@
 import gtk
 from tests import TestCase, add
-from qltk.sliderbutton import HSlider, VSlider
+from qltk.sliderbutton import VSlider
 
 class dummy(object): pass
 

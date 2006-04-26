@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 sys.modules['dircache'] = os # cheat the dircache effects
 from tests import TestCase, add
 from qltk.filesel import DirectoryTree, FileSelector

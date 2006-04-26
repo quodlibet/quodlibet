@@ -7,14 +7,11 @@
 #
 # $Id$
 
-import os, sys
-import gtk, pango, gobject
+import gobject
+import gtk
 
-import stock
-import qltk
-import const
 import config
-import util
+import stock
 
 from qltk.cbes import ComboBoxEntrySave
 from qltk.ccb import ConfigCheckButton

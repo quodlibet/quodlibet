@@ -7,7 +7,10 @@
 #
 # $Id$
 
-import gobject, gtk, pango
+import gobject
+import gtk
+import pango
+
 import qltk
 import util
 

@@ -11,10 +11,10 @@
 
 import gtk
 import pango
+
 import qltk
 import util
 
-from qltk.entry import ValidatingEntry
 from qltk.views import RCMHintedTreeView
 
 def MenuItems(marks, player, seekable):

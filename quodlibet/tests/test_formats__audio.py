@@ -1,10 +1,8 @@
-import os, config
+import os
+import config
 
 from tests import TestCase, add
 from formats._audio import AudioFile
-
-try: from sets import Set as set
-except ImportError: pass
 
 bar_1_1 = AudioFile({
     "title": "A song",

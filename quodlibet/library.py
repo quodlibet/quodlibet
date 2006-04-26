@@ -6,15 +6,18 @@
 #
 # $Id$
 
-import os, sys
-import cPickle as pickle
-import util; from util import to
 import fcntl
-import random
+import os
 import shutil
+import sys
+import cPickle as pickle
+
 import formats
+import util
+
 from formats import MusicFile
 from parse import Query
+from util import to
 
 if sys.version_info < (2, 4):
     from sets import Set as set

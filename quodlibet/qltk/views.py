@@ -6,7 +6,9 @@
 #
 # $Id$
 
-import gobject, gtk, pango
+import gobject
+import gtk
+import pango
 
 class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated

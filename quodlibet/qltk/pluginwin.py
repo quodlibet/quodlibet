@@ -7,9 +7,11 @@
 #
 # $Id$
 
-import gtk, pango
-import const
+import gtk
+import pango
+
 import config
+import const
 import qltk
 import util
 

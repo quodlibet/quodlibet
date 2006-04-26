@@ -8,7 +8,11 @@
 
 import os
 import urllib
-import gobject, gtk, pango
+
+import gobject
+import gtk
+import pango
+
 import util
 
 from qltk.views import AllTreeView

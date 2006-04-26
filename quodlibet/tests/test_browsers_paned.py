@@ -1,4 +1,3 @@
-import gobject, gtk
 from tests import TestCase, add
 
 import config
@@ -23,7 +22,6 @@ class TPanedBrowser(TestCase):
     Bar = PanedBrowser
 
     def setUp(self):
-        import qltk
         config.set("browsers", "panes", "artist")
         widgets.library = browsers.paned.library = Library()
         widgets.watcher = SongWatcher()

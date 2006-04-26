@@ -7,13 +7,14 @@
 #
 # $Id$
 
-import gobject, gtk
+import gobject
+import gtk
 
-import stock
 import config
+import qltk
+import stock
 import util
 
-import qltk
 import qltk.bookmarks
 from qltk.sliderbutton import HSlider
 from qltk.sliderbutton import VSlider

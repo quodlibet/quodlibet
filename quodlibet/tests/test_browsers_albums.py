@@ -1,4 +1,3 @@
-import gobject, gtk
 from tests import TestCase, add
 
 import widgets

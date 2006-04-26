@@ -7,9 +7,10 @@
 # $Id$
 
 import gtk
+import util
+
 from qltk.x import Window
 from qltk.songlist import SongList
-import util
 
 class LibraryBrowser(Window):
     def __init__(self, Kind, watcher):

@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
@@ -8,20 +7,24 @@
 #
 # $Id$
 
-import os, sys
-import time
 import locale
-import gtk, pango
+import sys
+import time
+
+import gtk
+import pango
+
 import qltk
+import util
+
 from qltk.cover import CoverImage
 from qltk.x import Window
 from qltk.lyrics import LyricsPane
 from qltk.bookmarks import EditBookmarksPane
+from util import tag
 
-import util; from util import tag
-
-if sys.version_info < (2, 4): from sets import Set as set
-import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 def Label(*args):
     l = gtk.Label(*args)

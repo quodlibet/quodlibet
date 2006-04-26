@@ -9,10 +9,10 @@
 import gtk
 import stock
 
-from qltk.delete import DeleteDialog
-from qltk.properties import SongProperties
-from qltk.information import Information
 from library import library
+from qltk.delete import DeleteDialog
+from qltk.information import Information
+from qltk.properties import SongProperties
 
 class SongsMenu(gtk.Menu):
     __accels = gtk.AccelGroup()

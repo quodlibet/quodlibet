@@ -1,4 +1,7 @@
-import unittest, os, sys, glob
+import os
+import sys
+import glob
+import unittest
 from unittest import TestCase
 suites = []
 add = registerCase = suites.append

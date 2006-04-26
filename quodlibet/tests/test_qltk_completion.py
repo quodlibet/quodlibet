@@ -1,4 +1,4 @@
-import os, gtk
+import gtk
 from tests import add, TestCase
 from qltk.completion import EntryWordCompletion, LibraryTagCompletion
 from qltk.watcher import SongWatcher

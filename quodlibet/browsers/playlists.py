@@ -7,17 +7,22 @@
 #
 # $Id$
 
-import os, sys
+import os
 import urllib
-import gobject, pango, gtk
-from tempfile import NamedTemporaryFile
+import sys
+
+import gobject
+import gtk
+import pango
 
 import config
 import const
-import stock
+import formats
 import qltk
 import util
-import formats
+
+from tempfile import NamedTemporaryFile
+
 from library import library
 from browsers._base import Browser
 from formats._audio import AudioFile
@@ -25,7 +30,9 @@ from qltk.songsmenu import SongsMenu
 from qltk.views import RCMHintedTreeView
 from qltk.wlw import WaitLoadWindow
 from util.uri import URI
-if sys.version_info < (2, 4): from sets import Set as set
+
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
 if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)

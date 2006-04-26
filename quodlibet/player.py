@@ -6,9 +6,12 @@
 #
 # $Id$
 
-import os, sys, locale
+import locale
+
+import gobject
+import gst
+
 import config
-import gobject, gst
 
 class NoSinkError(ValueError): pass
 class NoSourceError(ValueError): pass

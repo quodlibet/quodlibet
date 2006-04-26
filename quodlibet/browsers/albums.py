@@ -9,24 +9,29 @@
 
 import os
 import sys
-import gobject, gtk, pango
+
+import gobject
+import gtk
+import pango
+
 import config
 import const
 import qltk
 import util
 
-from qltk.completion import EntryWordCompletion
-from qltk.views import AllTreeView
-from qltk.entry import ValidatingEntry
-from qltk.ccb import ConfigCheckButton
-from qltk.textedit import PatternEditBox
-from parse import Query, XMLFromPattern
-from formats._audio import PEOPLE
-
-from library import library
 from browsers._base import Browser
+from formats._audio import PEOPLE
+from library import library
+from parse import Query, XMLFromPattern
+from qltk.ccb import ConfigCheckButton
+from qltk.completion import EntryWordCompletion
+from qltk.entry import ValidatingEntry
 from qltk.songsmenu import SongsMenu
-if sys.version_info < (2, 4): from sets import Set as set
+from qltk.textedit import PatternEditBox
+from qltk.views import AllTreeView
+
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
 EMPTY = _("Songs not in an album")

@@ -6,10 +6,8 @@
 #
 # $Id$
 
-import sys
 from util.uri import URI
 from formats._audio import AudioFile
-if sys.version_info < (2, 4): from sets import Set as set
 
 extensions = []
 

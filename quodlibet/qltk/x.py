@@ -9,7 +9,9 @@
 # Things that are more or less direct wrappers around GTK widgets to
 # ease constructors.
 
-import gobject, gtk
+import gobject
+import gtk
+
 import util
 
 class Window(gtk.Window):

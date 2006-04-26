@@ -1,7 +1,5 @@
 from tests import add, TestCase
 from qltk.pluginwin import PluginWindow
-from plugins import PluginManager
-from qltk.watcher import SongWatcher
 
 class TPluginWindow(TestCase):
     def setUp(self):

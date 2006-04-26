@@ -1,2 +1,2 @@
-from _query import Query
-from _pattern import Pattern, FileFromPattern, XMLFromPattern
+from parse._query import Query
+from parse._pattern import Pattern, FileFromPattern, XMLFromPattern

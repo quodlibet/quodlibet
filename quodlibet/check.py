@@ -2,9 +2,10 @@
 # check.py -- check for system requirements
 # public domain
 
-NAME = "Quod Libet"
 import os
 import sys
+
+NAME = "Quod Libet"
 
 if __name__ == "__main__":
     print "Checking Python version:",

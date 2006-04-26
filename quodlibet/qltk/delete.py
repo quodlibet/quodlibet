@@ -7,13 +7,16 @@
 # $Id$
 
 import os
-import gtk
-import util
 import shutil
-from qltk.wlw import WaitLoadWindow
-from qltk.msg import ErrorMessage
-from qltk.x import Button
+
+import gtk
+
+import util
+
 from qltk import get_top_parent
+from qltk.msg import ErrorMessage
+from qltk.wlw import WaitLoadWindow
+from qltk.x import Button
 
 class DeleteDialog(gtk.Dialog):
     def __init__(self, parent, files):

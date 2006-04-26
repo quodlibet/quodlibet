@@ -1,4 +1,5 @@
-import os, gtk
+import os
+import gtk
 import const
 from tests import add, TestCase
 from qltk.remote import FSInterface

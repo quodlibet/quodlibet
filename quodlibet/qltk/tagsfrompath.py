@@ -9,19 +9,15 @@
 
 import os
 import sre
-import gtk, gobject
-
-import stock
-import qltk
-from qltk.wlw import WritingWindow
-from qltk.ccb import ConfigCheckButton
-from qltk._editpane import EditPane, FilterCheckButton
+import gtk
 
 import const
 import config
+import qltk
 import util
 
-import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
+from qltk.wlw import WritingWindow
+from qltk._editpane import EditPane, FilterCheckButton
 
 class TagsFromPattern(object):
     def __init__(self, pattern):

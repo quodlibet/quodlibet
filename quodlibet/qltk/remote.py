@@ -9,7 +9,10 @@
 
 import os
 import sre
-import gobject, gtk
+
+import gobject
+import gtk
+
 import browsers
 import const
 import util

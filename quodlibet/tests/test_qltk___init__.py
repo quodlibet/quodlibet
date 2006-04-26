@@ -1,5 +1,6 @@
+import gtk
+import qltk
 from tests import TestCase, add
-import gtk, qltk
 
 class get_top_parent(TestCase):
     def test_none(self):
@@ -17,4 +18,3 @@ class get_top_parent(TestCase):
         self.failUnlessEqual(qltk.get_top_parent(l), w)
         w.destroy(); l.destroy()
 add(get_top_parent)
-

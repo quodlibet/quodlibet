@@ -7,17 +7,18 @@
 #
 # $Id$
 
-import os
 import dircache
+import os
 
-import gobject, gtk
+import gobject
+import gtk
 
 import formats
 import qltk
 import util
 
-from qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 from qltk.getstring import GetStringDialog
+from qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)

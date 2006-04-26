@@ -10,7 +10,9 @@ import sys
 import gtk
 
 from const import MACHINE_TAGS
-if sys.version_info < (2, 4): from sets import Set as set
+
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 class EntryWordCompletion(gtk.EntryCompletion):
     """Entry completion for simple words, where a word boundry is

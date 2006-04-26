@@ -1,10 +1,7 @@
-import os
 import shutil
-import tempfile
-
 import formats._vorbis
 
-from tests import TestCase, add
+from tests import TestCase
 
 class TVCFile(TestCase):
     # Mixin to test Vorbis writing features

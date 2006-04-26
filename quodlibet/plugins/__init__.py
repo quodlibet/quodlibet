@@ -34,10 +34,14 @@ characteristics:
     will be detected. This makes using __all__ in a module-as-plugin impossible.
 """
 
-import util; from util import mtime
+import gobject
+import gtk
+
+import qltk
+import util
+
 from traceback import print_exc
 
-import gobject, gtk, qltk
 from qltk.watcher import SongWatcher
 from qltk.wlw import WritingWindow
 from plugins._manager import Manager

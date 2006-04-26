@@ -7,21 +7,18 @@
 #
 # $Id$
 
-import os, sys
-import sre
-import gtk, pango, gobject
-
-import stock
-import qltk
-from qltk.wlw import WritingWindow
-from qltk._editpane import EditPane, FilterCheckButton
-import const
-import config
-import util
 import unicodedata
+
+import gtk
+
+import const
+import qltk
+import util
 
 from library import library
 from parse import FileFromPattern
+from qltk.wlw import WritingWindow
+from qltk._editpane import EditPane, FilterCheckButton
 
 class SpacesToUnderscores(FilterCheckButton):
     _label = _("Replace spaces with _underscores")

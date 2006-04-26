@@ -1,5 +1,4 @@
 import gtk
-import const
 from tests import add, TestCase
 from qltk.watcher import SongWatcher
 from qltk.queue import QueueExpander

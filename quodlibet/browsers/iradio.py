@@ -7,12 +7,12 @@
 #
 # $Id$
 
-SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
-              "Master.qlpls?format=txt")
-
 import os
-import gobject, gtk, pango
 import urllib
+
+import gobject
+import gtk
+import pango
 
 import const
 import qltk
@@ -21,10 +21,12 @@ import util
 from browsers._base import Browser
 from formats.remote import RemoteFile
 from library import Library
+from parse import Query
 from qltk.getstring import GetStringDialog
 from qltk.entry import ValidatingEntry
-from parse import Query
 
+SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
+              "Master.qlpls?format=txt")
 STATIONS = os.path.join(const.USERDIR, "stations")
 
 class IRFile(RemoteFile):

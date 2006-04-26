@@ -8,25 +8,27 @@
 # $Id$
 
 import os
-import gtk, gobject, pango
+
+import gobject
+import gtk
+import pango
 
 import const
 import config
-import stock
 import formats
 import qltk
+import stock
 
 from qltk.ccb import ConfigCheckButton
-from qltk.filesel import FileSelector
 from qltk.delete import DeleteDialog
 from qltk.edittags import EditTags
-from qltk.tagsfrompath import TagsFromPath
+from qltk.filesel import FileSelector
 from qltk.renamefiles import RenameFiles
+from qltk.tagsfrompath import TagsFromPath
 from qltk.tracknumbers import TrackNumbers
 
 from plugins.editing import EditingPlugins
 from plugins.songsmenu import SongsMenuPlugins
-
 from qltk.pluginwin import PluginWindow
 
 class ExFalsoWindow(gtk.Window):

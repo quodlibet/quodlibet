@@ -7,24 +7,28 @@
 #
 # $Id$
 
-import os, sys
+import os
+import sys
+import locale
 
-import gtk, pango, gobject, gst
-import stock
-import qltk
+import gobject
+import gtk
+import pango
+import gst
+
 
 import browsers
 import const
 import config
-import player
 import formats
+import player
+import qltk
+import stock
 import util
-import locale
 import widgets
 
 from library import library
-
-if sys.version_info < (2, 4): from sets import Set as set
+from parse import Query
 from qltk.properties import SongProperties
 from qltk.songlist import SongList
 from qltk.wlw import WaitLoadWindow
@@ -33,7 +37,9 @@ from qltk.browser import LibraryBrowser
 from qltk.msg import ErrorMessage
 from qltk.information import Information
 from util.uri import URI
-from parse import Query
+
+if sys.version_info < (2, 4):
+    from sets import Set as set
 
 class MainSongList(SongList):
     # The SongList that represents the current playlist.

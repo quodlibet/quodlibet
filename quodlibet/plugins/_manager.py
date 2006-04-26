@@ -7,7 +7,9 @@
 #
 # $Id$
 
-import os, sys, imp
+import os
+import sys
+import imp
 
 from traceback import format_exception
 

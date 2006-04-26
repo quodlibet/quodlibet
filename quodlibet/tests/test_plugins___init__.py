@@ -1,6 +1,7 @@
+import os
+
 from unittest import TestCase
 from tests import registerCase
-import os, sys
 from tempfile import mkstemp, mkdtemp
 
 from formats._audio import AudioFile

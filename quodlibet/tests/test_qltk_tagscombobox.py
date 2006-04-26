@@ -1,5 +1,4 @@
 from tests import TestCase, add
-from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 
 from formats import USEFUL_TAGS
 

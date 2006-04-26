@@ -11,17 +11,16 @@ import gtk
 import pango
 
 import qltk
-from qltk.wlw import WritingWindow
-from qltk.views import RCMHintedTreeView
-from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 
 import const
 import config
+import formats
 import util
 import util.massagers
-import formats
 
-import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
+from qltk.views import RCMHintedTreeView
+from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
+from qltk.wlw import WritingWindow
 
 class SplitValues(gtk.ImageMenuItem):
     tags = False

@@ -7,8 +7,10 @@
 # $Id$
 
 import os
+
 import gtk
 import pango
+
 import qltk
 
 from qltk.views import RCMHintedTreeView

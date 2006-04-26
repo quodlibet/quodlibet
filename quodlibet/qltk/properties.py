@@ -7,18 +7,18 @@
 #
 # $Id$
 
-import gtk, pango, gobject
+import gtk
+import pango
+import gobject
 
 import qltk
-from qltk.views import HintedTreeView
-from qltk.edittags import EditTags
-from qltk.tagsfrompath import TagsFromPath
-from qltk.renamefiles import RenameFiles
-from qltk.tracknumbers import TrackNumbers
-
 import util
 
-import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
+from qltk.edittags import EditTags
+from qltk.renamefiles import RenameFiles
+from qltk.tagsfrompath import TagsFromPath
+from qltk.tracknumbers import TrackNumbers
+from qltk.views import HintedTreeView
 
 class SongProperties(qltk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,

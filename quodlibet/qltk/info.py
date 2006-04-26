@@ -8,12 +8,15 @@
 # $Id$
 
 import os
-import gtk, pango
+
+import gtk
+import pango
+
 import const
 import qltk
-import util
-from qltk.textedit import PatternEdit
+
 from parse import XMLFromPattern
+from qltk.textedit import PatternEdit
 
 class SongInfo(gtk.Label):
     # Translators: Only worry about "by", "Disc", and "Track" below.

@@ -11,11 +11,14 @@
 # - Make purpose of 'Add' button clearer.
 # - Indicate when the match was fuzzy in the buffer text.
 
-import os
 import locale
+import os
 import threading
 import urllib
-import gtk, gobject
+
+import gobject
+import gtk
+
 import qltk
 import util
 

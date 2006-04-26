@@ -8,15 +8,17 @@
 # $Id$
 
 import gtk
+
 import const
 import config
 import qltk
 import util
-from qltk.songlist import SongList
-from qltk.chooser import FolderChooser
-from qltk.entry import ValidatingEntry
-from qltk.ccb import ConfigCheckButton
+
 from parse import Query
+from qltk.chooser import FolderChooser
+from qltk.ccb import ConfigCheckButton
+from qltk.entry import ValidatingEntry
+from qltk.songlist import SongList
 
 class PreferencesWindow(qltk.Window):
     __window = None

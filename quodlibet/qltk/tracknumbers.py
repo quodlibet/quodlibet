@@ -8,14 +8,13 @@
 # $Id$
 
 import gtk
-import stock
-import qltk
-from qltk.wlw import WritingWindow
-from qltk.views import HintedTreeView
 
+import qltk
+import stock
 import util
 
-import __builtin__; __builtin__.__dict__.setdefault("_", lambda a: a)
+from qltk.wlw import WritingWindow
+from qltk.views import HintedTreeView
 
 class TrackNumbers(gtk.VBox):
     def __init__(self, prop, watcher):

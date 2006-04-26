@@ -7,6 +7,7 @@
 # $Id$
 
 # Simple proxy to a Python ConfigParser.
+
 import os
 
 # We don't need/want variable interpolation.

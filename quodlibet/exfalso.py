@@ -8,7 +8,8 @@
 #
 # $Id$
 
-import os, sys
+import os
+import sys
 
 class fakegst(object):
     def element_factory_make(self, element_name):
