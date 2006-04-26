@@ -59,7 +59,7 @@ def query(category, discid, xcode='utf8:utf8'):
                 if len(dtitle) == 2:
                     discinfo['artist'], discinfo['title'] = dtitle
                 else:
-                    discinfo['title' ] = dtitle
+                    discinfo['title'] = dtitle[0].strip()
             elif line.startswith("DYEAR"):
                 discinfo['year'] = line.split('=', 1)[1].strip()
     except EnvironmentError: pass
@@ -92,7 +92,7 @@ def query(category, discid, xcode='utf8:utf8'):
             dtitle = value.strip().split(' / ', 1)
             if len(dtitle) == 2:
                 discinfo['artist'], discinfo['title'] = dtitle
-            else: discinfo['title'] = dtitle[0]
+            else: discinfo['title'] = dtitle[0].strip()
         elif key == 'DYEAR': discinfo['year'] = value
 
     return discinfo, tracktitles
