@@ -1,4 +1,5 @@
 from tests import TestCase, add
+
 from util.uri import URI
 
 class TURI(TestCase):

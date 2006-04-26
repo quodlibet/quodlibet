@@ -1,7 +1,7 @@
+from tests import TestCase, add
+
 import os
 import glob
-
-from tests import add, TestCase
 
 class PO(TestCase):
     def test_pos(self):

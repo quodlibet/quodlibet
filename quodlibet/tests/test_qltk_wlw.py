@@ -1,5 +1,6 @@
-import gtk
 from tests import TestCase, add
+
+import gtk
 from qltk.wlw import WaitLoadWindow
 
 class TWaitLoadWindow(TestCase):

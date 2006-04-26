@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
-from player import PlaylistPlayer
 from browsers.filesystem import FileSystem
+from player import PlaylistPlayer
 from qltk.watcher import SongWatcher
 
 class TFileSystem(TestCase):

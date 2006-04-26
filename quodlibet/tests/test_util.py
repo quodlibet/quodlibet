@@ -1,9 +1,8 @@
-import os
+from tests import TestCase, add
 
+import os
 import util
 from util import format_time_long as f_t_l
-
-from tests import TestCase, add
 
 class Tmkdir(TestCase):
     def test_exists(self):

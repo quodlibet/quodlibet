@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
-from player import PlaylistPlayer
 from browsers.audiofeeds import AudioFeeds
+from player import PlaylistPlayer
 from qltk.watcher import SongWatcher
 
 class TAudioFeeds(TestCase):

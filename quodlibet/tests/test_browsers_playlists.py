@@ -1,11 +1,14 @@
+from tests import TestCase, add
+
 import os
-from tests import add, TestCase
-from qltk.watcher import SongWatcher
+import tempfile
+
 from browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
 from player import PlaylistPlayer
+from qltk.watcher import SongWatcher
 
-import tempfile
-def makename(): return tempfile.mkstemp()[1]
+def makename():
+    return tempfile.mkstemp()[1]
 
 class TParsePlaylist(TestCase):
     def test_parse_empty(self):

@@ -1,15 +1,16 @@
 from tests import TestCase, add
 
-import widgets
 import browsers.albums
-from player import PlaylistPlayer
-from browsers.albums import AlbumList
-from qltk.watcher import SongWatcher
+import widgets
 
+from browsers.albums import AlbumList
 from library import Library
+from player import PlaylistPlayer
+from qltk.watcher import SongWatcher
 
 class TAlbumList(TestCase):
     Bar = AlbumList
+
     def setUp(self):
         widgets.library = browsers.albums.library = Library()
         widgets.watcher = SongWatcher()

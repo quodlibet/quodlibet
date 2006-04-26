@@ -1,11 +1,11 @@
+from tests import TestCase, add
+
 import os
 
-from unittest import TestCase
-from tests import registerCase
-
 from tempfile import mkstemp, mkdtemp
-from plugins.songsmenu import SongsMenuPlugins
+
 from formats._audio import AudioFile
+from plugins.songsmenu import SongsMenuPlugins
 
 class TSongsMenuPlugins(TestCase):
 
@@ -90,4 +90,4 @@ class TSongsMenuPlugins(TestCase):
         self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
         menu = self.pm.Menu(None, None, [AudioFile()])
 
-registerCase(TSongsMenuPlugins)
+add(TSongsMenuPlugins)

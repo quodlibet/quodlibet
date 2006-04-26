@@ -1,4 +1,5 @@
 from tests import TestCase, add
+
 from player import PlaylistPlayer
 from qltk.controls import PlayControls, Volume
 from qltk.watcher import SongWatcher

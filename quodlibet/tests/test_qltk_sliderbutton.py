@@ -1,8 +1,8 @@
-import gtk
 from tests import TestCase, add
-from qltk.sliderbutton import VSlider
 
-class dummy(object): pass
+import gtk
+
+from qltk.sliderbutton import VSlider
 
 class TVSlider(TestCase):
     Kind = VSlider

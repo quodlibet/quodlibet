@@ -1,28 +1,35 @@
 import os
-import sys
 import glob
+import sys
 import unittest
+
 from unittest import TestCase
+
 suites = []
-add = registerCase = suites.append
+add = suites.append
+
 import __builtin__
 __builtin__.__dict__.setdefault("_", lambda a: a)
 __builtin__.__dict__.setdefault(
     "ngettext", lambda a, b, c: (c == 1 and a) or b)
 
 import const
-const.CONFIG = "./const-config"
-const.CURRENT = "./const-current"
-const.LIBRARY = "./const-songs"
+const.CONFIG = os.path.join(const.BASEDIR, 'tests', 'data', "config")
+const.CURRENT = os.path.join(const.BASEDIR, 'tests', 'data', "current")
+const.LIBRARY = os.path.join(const.BASEDIR, 'tests', 'data', "library")
 
-import pygtk
-pygtk.require("2.0")
 import pygst
 pygst.require("0.10")
 
-import util; util.ctypes_init(); util.gtk_init()
-import config; config.init()
-import library; library.init()
+import util
+util.ctypes_init()
+util.gtk_init()
+
+import library
+library.init()
+
+import config
+config.init()
 
 class Mock(object):
     # A generic mocking object.
@@ -63,7 +70,7 @@ class Result(unittest.TestResult):
             sys.stdout.write(self.separator2 + "\n")
             sys.stdout.write("%s\n" % err)
 
-class Runner:
+class Runner(object):
     def run(self, test):
         suite = unittest.makeSuite(test)
         result = Result()
@@ -86,4 +93,3 @@ def unit(run=[]):
 
 if __name__ == "__main__":
     unit(sys.argv[1:])
-

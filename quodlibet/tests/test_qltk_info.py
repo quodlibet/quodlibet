@@ -1,7 +1,8 @@
-from tests import add, TestCase
+from tests import TestCase, add
+
+from player import PlaylistPlayer
 from qltk.info import SongInfo
 from qltk.watcher import SongWatcher
-from player import PlaylistPlayer
 
 class TSongInfo(TestCase):
     def setUp(self):

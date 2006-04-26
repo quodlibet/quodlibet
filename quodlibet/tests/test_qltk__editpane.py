@@ -1,7 +1,9 @@
-from tests import add, TestCase
+from tests import TestCase, add
+
 from qltk._editpane import FilterCheckButton
 
-class FCB(FilterCheckButton): _section = _key = _label = "foo"
+class FCB(FilterCheckButton):
+    _section = _key = _label = "foo"
 
 class FCB2(FCB): _order = 1.0
 class FCB3(FCB): _order = 1.2

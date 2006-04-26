@@ -1,5 +1,7 @@
-import os
 from tests import TestCase, add
+
+import os
+
 from formats.mod import ModFile
 
 class TModFile(TestCase):

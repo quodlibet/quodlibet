@@ -1,4 +1,5 @@
 from tests import TestCase, add
+
 from qltk.textedit import TextEditBox, TextEdit
 
 class TTextEditBox(TestCase):

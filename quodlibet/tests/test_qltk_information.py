@@ -1,6 +1,8 @@
-from tests import add, TestCase
-from qltk.information import Information
+from tests import TestCase, add
+
 from formats._audio import AudioFile
+from qltk.information import Information
+from qltk.watcher import SongWatcher
 
 def AF(*args, **kwargs):
     a = AudioFile(*args, **kwargs)
@@ -9,7 +11,6 @@ def AF(*args, **kwargs):
 
 class TInformation(TestCase):
     def setUp(self):
-        from qltk.watcher import SongWatcher
         self.watcher = SongWatcher()
 
     def test_none(self):

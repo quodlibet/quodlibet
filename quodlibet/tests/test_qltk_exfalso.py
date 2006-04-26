@@ -1,4 +1,5 @@
 from tests import TestCase, add
+
 from qltk.exfalso import ExFalsoWindow
 from qltk.watcher import SongWatcher
 

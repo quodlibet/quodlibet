@@ -1,4 +1,5 @@
 from tests import TestCase, add
+
 from qltk.tagsfrompath import TagsFromPattern
 from qltk.tagsfrompath import TitleCase, SplitTag, UnderscoresToSpaces
 

@@ -1,20 +1,21 @@
-import gtk
 from tests import TestCase, add
+
+import gtk
 
 import widgets
 import browsers.search
+
 from browsers.search import EmptyBar, SearchBar
-from formats._audio import AudioFile as AF
+from formats._audio import AudioFile
+from library import Library
 from qltk.watcher import SongWatcher
 
-import __builtin__
-__builtin__.__dict__['_'] = lambda a: a
-
-from library import Library
-
-SONGS = [AF({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
-         AF({"title": "two", "artist": "mu", "~filename": "/dev/zero"}),
-         AF({"title": "three", "artist": "boris", "~filename": "/bin/ls"})
+SONGS = [AudioFile(
+    {"title": "one", "artist": "piman", "~filename": "/dev/null"}),
+         AudioFile(
+    {"title": "two", "artist": "mu", "~filename": "/dev/zero"}),
+         AudioFile(
+    {"title": "three", "artist": "boris", "~filename": "/bin/ls"})
          ]
 SONGS.sort()
 

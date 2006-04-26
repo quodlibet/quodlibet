@@ -1,5 +1,6 @@
-import gtk
 from tests import add, TestCase
+
+import gtk
 from qltk.watcher import SongWatcher
 
 class TSongWatcher(TestCase):

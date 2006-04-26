@@ -1,9 +1,10 @@
+from tests import TestCase, add
+
 import gtk
 
-from tests import add, TestCase
+from formats._audio import AudioFile
 from qltk.properties import SongProperties
 from qltk.watcher import SongWatcher
-from formats._audio import AudioFile
 
 class DummyPlugins(object):
     def rescan(self): pass

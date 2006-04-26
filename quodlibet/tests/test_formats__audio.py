@@ -1,7 +1,9 @@
+from tests import TestCase, add
+
 import os
+
 import config
 
-from tests import TestCase, add
 from formats._audio import AudioFile
 
 bar_1_1 = AudioFile({

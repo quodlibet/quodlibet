@@ -1,7 +1,8 @@
+from tests import TestCase, add
+
 import os
 import tempfile
 
-from tests import TestCase, add
 from qltk.cbes import ComboBoxEntrySave
 
 class TComboBoxEntrySave(TestCase):

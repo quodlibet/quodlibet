@@ -1,9 +1,11 @@
+from tests import add
+
 import os
 import shutil
 import tempfile
 
-from tests import add
 from mutagen.flac import FLAC
+
 from formats.flac import FLACFile
 from tests.test_formats__vorbis import TVCFile
 

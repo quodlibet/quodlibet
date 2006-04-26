@@ -1,8 +1,9 @@
+from tests import TestCase, add
+
 import os
+
 import formats
 
-from unittest import TestCase
-from tests import registerCase
 from shutil import copyfileobj
 from tempfile import mkstemp
 
@@ -84,4 +85,4 @@ for ext in formats._infos.keys():
 
         testcase = type('MetaData' + ext, (TestMetaData,), extra_tests)
         testcase.ext = ext
-        registerCase(testcase)
+        add(testcase)

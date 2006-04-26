@@ -1,7 +1,10 @@
+from tests import TestCase, add
+
 import gtk
-from tests import add, TestCase
-from qltk.ccb import ConfigCheckButton, ConfigCheckMenuItem
+
 import config
+
+from qltk.ccb import ConfigCheckButton, ConfigCheckMenuItem
 
 class TConfigCheckButton(TestCase):
     def test_toggle(self):

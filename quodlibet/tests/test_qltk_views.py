@@ -1,4 +1,4 @@
-from tests import add, TestCase
+from tests import TestCase, add
 from qltk.views import AllTreeView
 
 class THintedTreeView(TestCase):

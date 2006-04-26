@@ -1,6 +1,7 @@
+from tests import TestCase, add
+
 import gtk
 import stock
-from tests import TestCase, add
 stock.init()
 
 class TStock(TestCase):

@@ -1,8 +1,9 @@
+from tests import add
+
 import os
 import shutil
 import tempfile
 
-from tests import add
 from formats.oggvorbis import OggFile
 from tests.test_formats__vorbis import TVCFile
 

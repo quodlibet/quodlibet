@@ -1,15 +1,16 @@
 from tests import TestCase, add
-from formats._audio import AudioFile as AF
 
 import library
 
+from formats._audio import AudioFile
+
 CORPUS = [
-    AF({"~filename": "/tmp/foo", "title": "A", "random": "A"}),
-    AF({"~filename": "/tmp/foo2", "title": "B", "artist": "woo"}),
-    AF({"~filename": "/tmp/foo3", "title": "C", "random": "B"}),
-    AF({"~filename": "/tmp/foo4", "title": "D", "random": "C"}),
-    AF({"~filename": "/tmp/foo5", "title": "E"}),
-    AF({"~filename": "/tmp/foo6", "title": "F", "random": "A"}),
+    AudioFile({"~filename": "/tmp/foo", "title": "A", "random": "A"}),
+    AudioFile({"~filename": "/tmp/foo2", "title": "B", "artist": "woo"}),
+    AudioFile({"~filename": "/tmp/foo3", "title": "C", "random": "B"}),
+    AudioFile({"~filename": "/tmp/foo4", "title": "D", "random": "C"}),
+    AudioFile({"~filename": "/tmp/foo5", "title": "E"}),
+    AudioFile({"~filename": "/tmp/foo6", "title": "F", "random": "A"}),
     ]
 
 class TLibrary(TestCase):

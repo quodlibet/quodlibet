@@ -1,7 +1,9 @@
+from tests import TestCase, add
+
 import gtk
-from tests import add, TestCase
-from qltk.watcher import SongWatcher
+
 from qltk.queue import QueueExpander
+from qltk.watcher import SongWatcher
 
 class TQueueExpander(TestCase):
     def setUp(self):

@@ -1,7 +1,8 @@
 from tests import TestCase, add
-from parse import FileFromPattern, XMLFromPattern, Pattern
 
 import os
+
+from parse import FileFromPattern, XMLFromPattern, Pattern
 
 class _TPattern(TestCase):
     from formats._audio import AudioFile

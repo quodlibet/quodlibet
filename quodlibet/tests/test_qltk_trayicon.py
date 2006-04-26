@@ -1,8 +1,10 @@
+from tests import TestCase, add
+
 import gtk
-from tests import add, TestCase
+
+from player import PlaylistPlayer
 from qltk.trayicon import TrayIcon
 from qltk.watcher import SongWatcher
-from player import PlaylistPlayer
 
 class TTrayIcon(TestCase):
     def setUp(self):

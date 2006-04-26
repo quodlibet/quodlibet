@@ -1,7 +1,7 @@
+from tests import TestCase, add
+
 import os
 
-from unittest import TestCase
-from tests import registerCase
 from tempfile import mkstemp, mkdtemp
 
 from formats._audio import AudioFile
@@ -114,11 +114,9 @@ class TSongWrapper(TestCase):
         self.failUnlessEqual(self.psong["~bookmark"], "0:43 another mark")
         self.failUnlessEqual(self.psong.bookmarks, self.pwrap.bookmarks)
 
-registerCase(TSongWrapper)
+add(TSongWrapper)
 
 class TListWrapper(TestCase):
-    from formats._audio import AudioFile
-
     def test_empty(self):
         wrapped = ListWrapper([])
         self.failUnlessEqual(wrapped, [])
@@ -132,6 +130,6 @@ class TListWrapper(TestCase):
         wrapped = ListWrapper([None, None])
         self.failUnless(len(wrapped) == 2)
         self.failUnlessEqual(wrapped, [None, None])
-registerCase(TListWrapper)
+add(TListWrapper)
 
         

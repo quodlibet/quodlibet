@@ -1,14 +1,18 @@
+from tests import TestCase, add
+
 import gtk
-from tests import add, TestCase
+
+from formats._audio import AudioFile
 from qltk.count import CountManager
 from qltk.watcher import SongWatcher
-from formats._audio import AudioFile as AF
 
 class TCountManager(TestCase):
     def setUp(self):
         self.w = SongWatcher()
-        self.s1 = AF({"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
-        self.s2 = AF({"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
+        self.s1 = AudioFile(
+            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
+        self.s2 = AudioFile(
+            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
         self.cm = CountManager(self.w, self)
         self.current = None
 

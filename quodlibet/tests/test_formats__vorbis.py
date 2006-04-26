@@ -1,7 +1,8 @@
-import shutil
-import formats._vorbis
-
 from tests import TestCase
+
+import shutil
+
+import formats._vorbis
 
 class TVCFile(TestCase):
     # Mixin to test Vorbis writing features

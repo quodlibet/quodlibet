@@ -1,8 +1,10 @@
+from tests import TestCase, add
+
 import gtk
-from tests import add, TestCase
+
+from library import Library
 from qltk.completion import EntryWordCompletion, LibraryTagCompletion
 from qltk.watcher import SongWatcher
-from library import Library
 
 class TEntryWordCompletion(TestCase):
     def test_ctr(self):

@@ -1,7 +1,8 @@
-from tests import add, TestCase
+from tests import TestCase, add
+
+from formats._audio import AudioFile
 from qltk.songsmenu import SongsMenu
 from qltk.watcher import SongWatcher
-from formats._audio import AudioFile
 
 class TSongsMenu(TestCase):
     def setUp(self):

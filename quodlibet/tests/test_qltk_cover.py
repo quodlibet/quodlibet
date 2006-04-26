@@ -1,6 +1,7 @@
-from tests import add, TestCase
-from qltk.cover import CoverImage
+from tests import TestCase, add
+
 from formats._audio import AudioFile
+from qltk.cover import CoverImage
 
 class TCoverImage(TestCase):
     def setUp(self): self.c = CoverImage()

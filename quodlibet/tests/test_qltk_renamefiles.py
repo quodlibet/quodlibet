@@ -1,5 +1,7 @@
-from tests import add, TestCase
-from qltk.renamefiles import SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals, StripNonASCII
+from tests import TestCase, add
+
+from qltk.renamefiles import SpacesToUnderscores, StripWindowsIncompat
+from qltk.renamefiles import StripDiacriticals, StripNonASCII
 
 class TFilter(TestCase):
     def setUp(self): self.c = self.Kind()

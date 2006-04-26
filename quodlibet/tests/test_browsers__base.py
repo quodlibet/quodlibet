@@ -1,4 +1,5 @@
-from tests import add, TestCase
+from tests import TestCase, add
+
 from browsers._base import Browser
 
 class TBrowser(TestCase):

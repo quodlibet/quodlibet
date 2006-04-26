@@ -1,5 +1,6 @@
-import gtk
 from tests import TestCase, add
+
+import gtk
 from qltk import x
 
 class Window(TestCase):

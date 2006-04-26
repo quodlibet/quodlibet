@@ -1,5 +1,6 @@
+from tests import TestCase, add
+
 import os
-from tests import add, TestCase
 from qltk.chooser import FolderChooser, FileChooser
 
 class TFolderChooser(TestCase):

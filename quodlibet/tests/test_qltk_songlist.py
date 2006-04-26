@@ -1,6 +1,8 @@
 from tests import TestCase, add
-from qltk.songlist import PlaylistModel, PlaylistMux, SongList
+
 import gtk
+
+from qltk.songlist import PlaylistModel, PlaylistMux, SongList
 from qltk.watcher import SongWatcher
 
 class TPlaylistModel(TestCase):

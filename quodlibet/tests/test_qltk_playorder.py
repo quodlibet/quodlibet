@@ -1,4 +1,5 @@
-from tests import add, TestCase
+from tests import TestCase, add
+
 from qltk.playorder import PlayOrder
 
 class TPlayOrder(TestCase):
