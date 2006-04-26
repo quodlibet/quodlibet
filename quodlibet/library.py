@@ -124,7 +124,7 @@ class AudioFileGroup(dict):
 class Library(dict):
     def __init__(self, initial={}):
         self.__masked_files = {}
-        dict.__init__(self, initial)
+        super(Library, self).__init__(initial)
 
     def tag_values(self, tag):
         # Return a list of all values for the given tag.

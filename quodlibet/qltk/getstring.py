@@ -11,7 +11,7 @@ import gtk
 class GetStringDialog(gtk.Dialog):
     def __init__(
         self, parent, title, text, options=[], okbutton=gtk.STOCK_OPEN):
-        gtk.Dialog.__init__(self, title, parent)
+        super(GetStringDialog, self).__init__(title, parent)
         self.set_border_width(6)
         self.set_has_separator(False)
         self.set_resizable(False)
@@ -43,7 +43,7 @@ class GetStringDialog(gtk.Dialog):
         self._val.set_text("")
         self._val.set_activates_default(True)
         self._val.grab_focus()
-        resp = gtk.Dialog.run(self)
+        resp = super(GetStringDialog, self).run()
         if resp == gtk.RESPONSE_OK:
             value = self._val.get_text()
         else: value = None

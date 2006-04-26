@@ -192,7 +192,7 @@ class FileSelector(gtk.VPaned):
                      }
 
     def __init__(self, initial=None, filter=formats.filter):
-        gtk.VPaned.__init__(self)
+        super(FileSelector, self).__init__()
         self.__filter = filter
 
         dirlist = DirectoryTree(initial)

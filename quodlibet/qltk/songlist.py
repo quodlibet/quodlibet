@@ -292,7 +292,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             except AttributeError: pass
 
         def __init__(self, t):
-            gtk.TreeViewColumn.__init__(self, tag(t), self._render)
+            super(SongList.TextColumn, self).__init__(tag(t), self._render)
             self.header_name = t
             self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
             self.set_visible(True)
@@ -327,7 +327,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         _render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
         def __init__(self, tag):
-            SongList.TextColumn.__init__(self, tag)
+            super(SongList.WideTextColumn, self).__init__(tag)
             self.set_expand(True)
             self.set_resizable(True)
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
@@ -344,7 +344,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             except AttributeError: pass
 
         def __init__(self):
-            SongList.TextColumn.__init__(self, "~#rating")
+            super(SongList.RatingColumn, self).__init__("~#rating")
             self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
 
             # Neither of TreeViewColumn or CellRendererText is a GTK
@@ -386,7 +386,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             except AttributeError: pass
 
         def __init__(self, tag="~#length"):
-            SongList.TextColumn.__init__(self, tag)
+            super(SongList.LengthColumn, self).__init__(tag)
             self.set_alignment(1.0)
 
     class NumericColumn(TextColumn):
@@ -403,7 +403,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             except AttributeError: pass
 
         def __init__(self, pattern):
-            SongList.WideTextColumn.__init__(self, pattern)
+            super(SongList.PatternColumn, self).__init__(pattern)
             self.__pattern = Pattern(pattern)
 
     def Menu(self, header, browser, watcher):

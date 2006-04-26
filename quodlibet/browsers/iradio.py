@@ -87,7 +87,7 @@ def ParsePLS(file):
 
 class ChooseNewStations(gtk.Dialog):
     def __init__(self, irfs):
-        gtk.Dialog.__init__(self, title=_("Choose New Stations"))
+        super(ChooseNewStations, self).__init__(title=_("Choose New Stations"))
         self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                          gtk.STOCK_ADD, gtk.RESPONSE_OK)
         self.set_default_size(400, 300)
@@ -147,7 +147,7 @@ class InternetRadio(gtk.HBox, Browser):
     headers = "title artist ~people grouping genre website".split()
 
     def __init__(self, watcher, player):
-        gtk.HBox.__init__(self, spacing=12)
+        super(InternetRadio, self).__init__(spacing=12)
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         self.__search = gtk.Entry()
         self.pack_start(add, expand=False)

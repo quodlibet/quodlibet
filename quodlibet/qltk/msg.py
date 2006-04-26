@@ -18,13 +18,13 @@ class Message(gtk.MessageDialog):
         self, kind, parent, title, description, buttons=gtk.BUTTONS_OK):
         parent = get_top_parent(parent)
         text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
-        gtk.MessageDialog.__init__(
-            self, parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        super(Message, self).__init__(
+            parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             kind, buttons)
         self.set_markup(text)
 
     def run(self, destroy=True):
-        resp = gtk.MessageDialog.run(self)
+        resp = super(Message, self).run()
         if destroy: self.destroy()
         return resp
 
@@ -33,11 +33,12 @@ class ConfirmAction(Message):
 
     def __init__(self, *args, **kwargs):
         kwargs["buttons"] = gtk.BUTTONS_YES_NO
-        Message.__init__(self, gtk.MESSAGE_WARNING, *args, **kwargs)
+        super(ConfirmAction, self).__init__(
+            gtk.MESSAGE_WARNING, *args, **kwargs)
 
     def run(self, destroy = True):
         """Returns True if yes was clicked, False otherwise."""
-        resp = gtk.MessageDialog.run(self)
+        resp = super(Message, self).run()
         if destroy: self.destroy()
         if resp == gtk.RESPONSE_YES: return True
         else: return False
@@ -49,8 +50,8 @@ class CancelRevertSave(gtk.MessageDialog):
                         "files, or revert and discard changes?")
         text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
         parent = get_top_parent(parent)
-        gtk.MessageDialog.__init__(
-            self, parent, flags=0, type=gtk.MESSAGE_WARNING,
+        super(CancelRevertSave, self).__init__(
+            parent, flags=0, type=gtk.MESSAGE_WARNING,
             buttons=gtk.BUTTONS_NONE)
         self.add_buttons(gtk.STOCK_SAVE, gtk.RESPONSE_YES,
                          gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
@@ -59,16 +60,17 @@ class CancelRevertSave(gtk.MessageDialog):
         self.set_markup(text)
 
     def run(self):
-        resp = gtk.MessageDialog.run(self)
+        resp = super(Message, self).run()
         self.destroy()
         return resp
 
 class ErrorMessage(Message):
     """Like Message, but uses an error-indicating picture."""
     def __init__(self, *args, **kwargs):
-        Message.__init__(self, gtk.MESSAGE_ERROR, *args, **kwargs)
+        super(ErrorMessage, self).__init__(gtk.MESSAGE_ERROR, *args, **kwargs)
 
 class WarningMessage(Message):
     """Like Message, but uses an warning-indicating picture."""
     def __init__(self, *args, **kwargs):
-        Message.__init__(self, gtk.MESSAGE_WARNING, *args, **kwargs)
+        super(WarningMessage, self).__init__(
+            gtk.MESSAGE_ERROR, *args, **kwargs)

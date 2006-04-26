@@ -17,7 +17,7 @@ class ConfigCheckButton(gtk.CheckButton):
     It is *not* set to the current config value initially."""
 
     def __init__(self, label, section, option):
-        gtk.CheckButton.__init__(self, label)
+        super(ConfigCheckButton, self).__init__(label)
         self.connect('toggled', ConfigCheckButton.__toggled, section, option)
 
     def __toggled(self, section, option):

@@ -40,8 +40,9 @@ class VCFile(AudioFile):
             del(self["disctotal"])
 
     def can_change(self, k=None):
-        if k is None: return AudioFile.can_change(self, None)
-        else: return (AudioFile.can_change(self, k) and
+        if k is None:
+            super(VCFile, self).can_change(None)
+        else: return (super(VCFile, self).can_change(k) and
                       k not in ["vendor", "totaltracks", "tracktotal",
                                 "rating", "playcount"] and
                       not k.startswith("rating:") and

@@ -32,7 +32,7 @@ class SeekBar(HSlider):
         hbox.pack_start(l)
         hbox.pack_start(
             gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
-        super(type(self), self).__init__(hbox)
+        super(SeekBar, self).__init__(hbox)
 
         self.scale.connect('button-press-event', self.__seek_lock)
         self.scale.connect('button-release-event', self.__seek_unlock, player)

@@ -18,7 +18,7 @@ from qltk.wlw import WritingWindow
 
 class TrackNumbers(gtk.VBox):
     def __init__(self, prop, watcher):
-        gtk.VBox.__init__(self, spacing=6)
+        super(TrackNumbers, self).__init__(spacing=6)
         self.title = _("Track Numbers")
         self.set_border_width(12)
         hbox = gtk.HBox(spacing=18)

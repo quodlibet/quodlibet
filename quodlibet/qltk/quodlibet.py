@@ -73,7 +73,7 @@ class MainSongList(SongList):
             except AttributeError: pass
 
         def __init__(self):
-            gtk.TreeViewColumn.__init__(self, "", self._render)
+            super(MainSongList.CurrentColumn, self).__init__("", self._render)
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_fixed_width(24)
             self.set_cell_data_func(self._render, self._cdf)
@@ -96,13 +96,13 @@ class MainSongList(SongList):
         if player.song: player.paused = False
 
     def set_sort_by(self, *args, **kwargs):
-        SongList.set_sort_by(self, *args, **kwargs)
+        super(MainSongList, self).set_sort_by(*args, **kwargs)
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
 class QuodLibetWindow(gtk.Window):
     def __init__(self, watcher, player):
-        gtk.Window.__init__(self)
+        super(QuodLibetWindow, self).__init__()
         self.last_dir = os.path.expanduser("~")
 
         tips = qltk.Tooltips(self)

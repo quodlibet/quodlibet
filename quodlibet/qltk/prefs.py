@@ -30,7 +30,7 @@ class PreferencesWindow(qltk.Window):
 
     class SongList(gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing=12)
+            super(PreferencesWindow.SongList, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Song List")
             vbox = gtk.VBox(spacing=12)
@@ -131,7 +131,7 @@ class PreferencesWindow(qltk.Window):
 
     class Browsers(gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing=12)
+            super(PreferencesWindow.Browsers, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
             tips = qltk.Tooltips(self)
@@ -160,7 +160,7 @@ class PreferencesWindow(qltk.Window):
 
     class Player(gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing=12)
+            super(PreferencesWindow.Player, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Player")
 
@@ -190,7 +190,7 @@ class PreferencesWindow(qltk.Window):
 
     class Library(gtk.VBox):
         def __init__(self):
-            gtk.VBox.__init__(self, spacing=12)
+            super(PreferencesWindow.Library, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Library")
             f = qltk.Frame(_("Scan _Directories"), bold=True)

@@ -35,4 +35,3 @@ class MmKeys(object):
 
     def block(self): map(self.__keys.handler_block, self.__sigs)
     def unblock(self): map(self.__keys.handler_unblock, self.__sigs)
-

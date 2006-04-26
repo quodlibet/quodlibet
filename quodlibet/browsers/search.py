@@ -32,7 +32,7 @@ class EmptyBar(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
 
     def __init__(self, watcher, player):
-        gtk.HBox.__init__(self)
+        super(EmptyBar, self).__init__()
         # When _text is None, calls to activate are ignored. This is to
         # avoid the song list changing when the user switches browses and
         # then refreshes.
@@ -119,7 +119,8 @@ class Limit(gtk.HBox):
 class SearchBar(EmptyBar):
 
     def __init__(self, watcher, player):
-        EmptyBar.__init__(self, watcher, player)
+        super(SearchBar, self).__init__(watcher, player)
+
         self.__save = bool(player)
         self.set_spacing(12)
 

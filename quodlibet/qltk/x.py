@@ -28,7 +28,7 @@ class Window(gtk.Window):
             'close-accel', ag, ord('w'), gtk.gdk.CONTROL_MASK, 0)
 
     def set_transient_for(self, parent):
-        gtk.Window.set_transient_for(self, parent)
+        super(Window, self).set_transient_for(parent)
         if parent is not None:
             self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
 

@@ -17,7 +17,7 @@ class BigCenteredImage(gtk.Window):
     This might leak memory, but it could just be Python's GC being dumb."""
 
     def __init__(self, title, filename):
-        gtk.Window.__init__(self)
+        super(BigCenteredImage, self).__init__()
         width = gtk.gdk.screen_width() / 2
         height = gtk.gdk.screen_height() / 2
         pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
@@ -49,7 +49,7 @@ class BigCenteredImage(gtk.Window):
 
 class CoverImage(gtk.Frame):
     def __init__(self, size=None, song=None):
-        gtk.Frame.__init__(self)
+        super(CoverImage, self).__init__()
         self.add(gtk.EventBox())
         self.child.add(gtk.Image())
         self.__size = size or [100, 71]
@@ -82,7 +82,8 @@ class CoverImage(gtk.Frame):
                     self.show()
 
     def show(self):
-        if self.__albumfn: gtk.Frame.show(self)
+        if self.__albumfn:
+            super(CoverImage, self).show()
 
     def __nonzero__(self): return bool(self.__albumfn)
 

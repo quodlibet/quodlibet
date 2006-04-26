@@ -22,7 +22,7 @@ class TreeViewHints(gtk.Window):
         'override')
 
     def __init__(self):
-        gtk.Window.__init__(self, gtk.WINDOW_POPUP)
+        super(TreeViewHints, self).__init__(gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
         label.set_alignment(0.5, 0.5)
         self.realize()

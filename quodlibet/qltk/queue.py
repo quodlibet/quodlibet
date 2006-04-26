@@ -25,7 +25,7 @@ QUEUE = os.path.join(const.USERDIR, "queue")
 
 class QueueExpander(gtk.Expander):
     def __init__(self, menu, watcher):
-        gtk.Expander.__init__(self)
+        super(QueueExpander, self).__init__()
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
@@ -146,7 +146,7 @@ class PlayQueue(SongList):
         # Match MainSongList column sizes by default.
         header_name = "~current"
         def __init__(self):
-            gtk.TreeViewColumn.__init__(self)
+            super(PlayQueue.CurrentColumn, self).__init__()
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_fixed_width(24)
 

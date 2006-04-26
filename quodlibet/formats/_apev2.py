@@ -38,7 +38,7 @@ class APEv2File(AudioFile):
 
     def can_change(self, key=None):
         if key is None: return True
-        else: return (AudioFile.can_change(self, key) and
+        else: return (super(APEv2File, self).can_change(key) and
                       key not in self.IGNORE and key not in self.TRANS)
 
     def write(self):

@@ -454,7 +454,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             return dict([(a.key, a) for a in albums])
 
     def __init__(self, watcher, player):
-        gtk.VBox.__init__(self, spacing=6)
+        super(AlbumList, self).__init__(spacing=6)
         self._register_instance()
         if self.__model is None: AlbumList._init_model(watcher)
         self.__save = bool(player)

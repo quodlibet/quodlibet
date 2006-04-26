@@ -77,11 +77,11 @@ class QueryLexeme(object):
         self.lexeme = lexeme
 
     def __repr__(self):
-        return (object.__repr__(self).split()[0] +
+        return (super(QueryLexeme, self).__repr__().split()[0] +
                 " type=" + repr(self.type) + " (" +
-                str(QueryLexeme._reverse[self.type]) +
+                str(self._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
-
+    
 # Parse the input. One lookahead token, start symbol is Query.
 class QueryParser(object):
     def __init__(self, tokens):

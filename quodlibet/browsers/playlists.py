@@ -276,7 +276,7 @@ class Playlists(gtk.VBox, Browser):
     __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
 
     def __init__(self, watcher, player):
-        gtk.VBox.__init__(self, spacing=6)
+        super(Playlists, self).__init__(spacing=6)
         self.__main = bool(player)
         self.__view = view = RCMHintedTreeView()
         self.__render = render = gtk.CellRendererText()

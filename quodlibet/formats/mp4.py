@@ -125,8 +125,8 @@ class MP4File(AudioFile):
     def can_change(self, key=None):
         OK = ["title", "artist", "composer", "comment", "date", "encoder",
               "genre", "tracknumber", "discnumber", "album"]
-        if key is None: return AudioFile.can_change(self, key) and OK
-        else: return AudioFile.can_change(self, key) and (key in OK)
+        if key is None: return super(MP4File, self).can_change(key) and OK
+        else: return super(MP4File, self).can_change(key) and (key in OK)
 
     def get_format_cover(self):
         try:

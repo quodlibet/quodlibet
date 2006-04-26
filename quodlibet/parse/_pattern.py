@@ -38,9 +38,9 @@ class PatternLexeme(object):
         self.lexeme = lexeme
 
     def __repr__(self):
-        return (object.__repr__(self).split()[0] +
+        return (super(PatternLexeme, self).__repr__().split()[0] +
                 " type=" + repr(self.type) + " (" +
-                str(PatternLexeme._reverse[self.type]) +
+                str(self._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
 
 class PatternLexer(sre.Scanner):

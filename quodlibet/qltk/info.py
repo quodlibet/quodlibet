@@ -30,7 +30,7 @@ by <~people>><album|
     __filename = os.path.join(const.USERDIR, "songinfo")
 
     def __init__(self, watcher, playlist):
-        gtk.Label.__init__(self)
+        super(SongInfo, self).__init__()
         self.set_ellipsize(pango.ELLIPSIZE_END)
         self.set_selectable(True)
         self.set_alignment(0.0, 0.0)

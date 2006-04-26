@@ -21,7 +21,7 @@ class ValidatingEntry(gtk.Entry):
     change color."""
 
     def __init__(self, validator=None, *args):
-        gtk.Entry.__init__(self, *args)
+        super(ValidatingEntry, self).__init__(*args)
         if validator: self.connect_object('changed', self.__color, validator)
 
     def __color(self, validator):
