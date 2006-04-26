@@ -12,7 +12,7 @@ import gst
 import const
 import formats
 
-def __fver(tup):
+def _fver(tup):
     return ".".join(map(str, tup))
 
 class AboutQuodLibet(gtk.AboutDialog):
@@ -26,9 +26,9 @@ class AboutQuodLibet(gtk.AboutDialog):
         text.append(_("Supported formats: %s") % fmts)
         text.append(_("Audio device: %s") % player.name)
         text.append("GTK+: %s / PyGTK: %s" %(
-            __fver(gtk.gtk_version), __fver(gtk.pygtk_version)))
+            _fver(gtk.gtk_version), _fver(gtk.pygtk_version)))
         text.append("GStreamer: %s / PyGSt: %s" %(
-            __fver(gst.version()), __fver(gst.pygst_version)))
+            _fver(gst.version()), _fver(gst.pygst_version)))
         self.set_comments("\n".join(text))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
