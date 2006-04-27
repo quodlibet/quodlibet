@@ -23,6 +23,10 @@ class TStripWindowsIncompat(TFilter):
     Kind = StripWindowsIncompat
     def test_conv(self):
         self.failUnlessEqual(self.c.filter("", 'foo\\:*?;"<>|'), "foo_________")
+
+    def test_ends_with_dots_or_spaces(self):
+        self.failUnlessEqual(self.c.filter("", 'foo. . '), "foo. ._")
+        self.failUnlessEqual(self.c.filter("", 'foo. /bar .'), "foo._/bar _")
 add(TStripWindowsIncompat)
 
 class TStripDiacriticals(TFilter):
