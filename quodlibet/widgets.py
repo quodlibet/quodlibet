@@ -34,12 +34,6 @@ from qltk.trayicon import TrayIcon
 from qltk.watcher import SongWatcher
 from util import to
 
-# FIXME: This is now deprecated in favor of the global main and
-# watcher variables, removing the "widgets.widgets" problem.
-class __widgets(object):
-    __slots__ = ["watcher", "main"]
-widgets = __widgets()
-
 global main, watcher
 main = watcher = None
 
@@ -73,7 +67,7 @@ def init():
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    watcher = widgets.watcher = SongWatcher()
+    watcher = SongWatcher()
 
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
@@ -96,7 +90,7 @@ def init():
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(watcher)
 
-    main = widgets.main = QuodLibetWindow(watcher, player.playlist)
+    main = QuodLibetWindow(watcher, player.playlist)
     main.connect('destroy', gtk.main_quit)
 
     gtk.about_dialog_set_url_hook(website_wrap)
