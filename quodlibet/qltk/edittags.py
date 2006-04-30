@@ -385,12 +385,12 @@ class EditTags(gtk.VBox):
         remove.set_sensitive(
             bool(rows and min([model[row][CANEDIT] for row in rows])))
 
-    def __add_new_tag(self, model, comment, value):
-        if (comment in self.__songinfo and not self.__songinfo.multiple_values):
+    def __add_new_tag(self, model, tag, value):
+        if (tag in self.__songinfo and not self.__songinfo.multiple_values):
             title = _("Unable to add tag")
             msg = _("Unable to add <b>%s</b>\n\nThe files currently"
                     " selected do not support multiple values."
-                    ) % util.escape(comment)
+                    ) % util.escape(tag)
             qltk.ErrorMessage(None, title, msg).run()
             return
 
@@ -398,8 +398,8 @@ class EditTags(gtk.VBox):
         edit = True
         orig = None
         deleted = False
-        iters = [row.iter for row in model if row[TAG] == comment]
-        row = [comment, util.escape(value), True, True, False, None]
+        iters = [row.iter for row in model if row[TAG] == tag]
+        row = [tag, util.escape(value), True, True, False, None]
         if len(iters): model.insert_after(iters[-1], row=row)
         else: model.append(row=row)
 
@@ -507,31 +507,51 @@ class EditTags(gtk.VBox):
         watcher.changed(was_changed)
         for b in [save, revert]: b.set_sensitive(False)
 
-    def __edit_tag_name(self, renderer, path, new, model):
-        new = ' '.join(new.splitlines())
+    def __edit_tag(self, renderer, path, new_value, model):
+        new_value = ', '.join(new_value.splitlines())
         row = model[path]
-        if new == row[TAG]: return
+        if row[TAG] in util.massagers.tags:
+            fmt = util.massagers.tags[row[TAG]]
+            new_validated = fmt.validate(new_value)
+            if not new_validated:
+                qltk.WarningMessage(
+                    None, _("Invalid value"), _("Invalid value") +
+                    (": <b>%s</b>\n\n%s" % (new_value, fmt.error))).run()
+                return
+            else: new_value = new_validated
+        if row[VALUE].replace('<i>','').replace('</i>','') != new_value:
+            row[VALUE] = util.escape(new_value)
+            row[EDITED] = True
+            row[DELETED] = False
+
+    def __edit_tag_name(self, renderer, path, new_tag, model):
+        new_tag = ' '.join(new_tag.splitlines()).lower()
+        row = model[path]
+        if new_tag == row[TAG]:
+            return
         elif not self.__songinfo.can_change(row[TAG]):
+            # Can't remove the old tag.
             title = _("Invalid tag")
             msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                     " selected do not support editing this tag."
                     ) % util.escape(row[TAG])
-            qltk.ErrorMessage(None, title, msg).run()            
-        elif not self.__songinfo.can_change(new):
+            qltk.ErrorMessage(self, title, msg).run()            
+        elif not self.__songinfo.can_change(new_tag):
+            # Can't add the new tag.
             title = _("Invalid tag")
             msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                     " selected do not support editing this tag."
-                    ) % util.escape(new)
-            qltk.ErrorMessage(None, title, msg).run()            
+                    ) % util.escape(new_tag)
+            qltk.ErrorMessage(self, title, msg).run()
         else:
-            if new in util.massagers.tags:
-                fmt = util.massagers.tags[new]
+            if new_tag in util.massagers.tags:
+                fmt = util.massagers.tags[new_tag]
                 value = fmt.validate(util.unescape(row[VALUE]))
                 if not value:
                     qltk.WarningMessage(
                         None, _("Invalid value"), _("Invalid value") +
                         (": <b>%s</b>\n\n%s" % (row[VALUE], fmt.error))).run()
-                return
+                    return
             else:
                 value = row[VALUE]
                 idx = value.find('<i>')
@@ -541,30 +561,23 @@ class EditTags(gtk.VBox):
                             "values is not supported.")
                     qltk.ErrorMessage(None, title, msg).run()
                     return
-                elif idx >= 0: value = value[:idx].strip()
+                elif idx >= 0:
+                    # Strip off "(missing from...)", the tag will be
+                    # added to all songs.
+                    value = value[:idx].strip()
                 value = util.unescape(value)
 
-            if row[ORIGVALUE] is None: row[0] = new
+            if row[ORIGVALUE] is None:
+                # The tag hasn't been saved yet, so we can just update
+                # the name in the model, and the value, since it
+                # may have been re-validated.
+                row[TAG] = new_tag
+                row[VALUE] = value
             else:
+                # The tag has been saved, so delete the old tag and
+                # add a new one with the old (or sanitized) value.
                 row[DELETED] = row[EDITED] = True
-                self.__add_new_tag(model, new, value)
-
-    def __edit_tag(self, renderer, path, new, model):
-        new = ', '.join(new.splitlines())
-        row = model[path]
-        if row[TAG] in util.massagers.tags:
-            fmt = util.massagers.tags[row[TAG]]
-            newnew = fmt.validate(new)
-            if not newnew:
-                qltk.WarningMessage(
-                    None, _("Invalid value"), _("Invalid value") +
-                    (": <b>%s</b>\n\n%s" % (new, fmt.error))).run()
-                return
-            else: new = newnew
-        if row[VALUE].replace('<i>','').replace('</i>','') != new:
-            row[VALUE] = util.escape(new)
-            row[EDITED] = True
-            row[DELETED] = False
+                self.__add_new_tag(model, new_tag, value)
 
     def __button_press(self, view, event):
         if event.button not in [1, 2]: return False
@@ -605,24 +618,24 @@ class EditTags(gtk.VBox):
             keys = filter(lambda k: k not in const.MACHINE_TAGS, keys)
 
         # reverse order here so insertion puts them in proper order.
-        for comment in ['album', 'artist', 'title']:
-            try: keys.remove(comment)
+        for tag in ['album', 'artist', 'title']:
+            try: keys.remove(tag)
             except ValueError: pass
-            else: keys.insert(0, comment)
+            else: keys.insert(0, tag)
 
-        for comment in keys:
+        for tag in keys:
             # Handle with care.
-            orig_value = songinfo[comment].split("\n")
-            value = songinfo[comment].safenicestr()
+            orig_value = songinfo[tag].split("\n")
+            value = songinfo[tag].safenicestr()
             edited = False
-            edit = songinfo.can_change(comment)
+            edit = songinfo.can_change(tag)
             deleted = False
             if value[0:1] == "<": # "different etc."
-                model.append(row=[comment, value, edited, edit, deleted,
+                model.append(row=[tag, value, edited, edit, deleted,
                                   "\n".join(orig_value)])
             else:
                 for i, v in enumerate(value.split("\n")):
-                    model.append(row=[comment, v, edited, edit, deleted,
+                    model.append(row=[tag, v, edited, edit, deleted,
                                       orig_value[i]])
 
         buttonbox.set_sensitive(bool(songinfo.can_change()))
