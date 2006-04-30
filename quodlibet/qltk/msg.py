@@ -60,7 +60,7 @@ class CancelRevertSave(gtk.MessageDialog):
         self.set_markup(text)
 
     def run(self):
-        resp = super(Message, self).run()
+        resp = super(CancelRevertSave, self).run()
         self.destroy()
         return resp
 
