@@ -48,6 +48,9 @@ class BigCenteredImage(gtk.Window):
     def __destroy(self, *args): self.destroy()
 
 class CoverImage(gtk.Frame):
+    __albumfn = None
+    __current_bci = None
+
     def __init__(self, size=None, song=None):
         super(CoverImage, self).__init__()
         self.add(gtk.EventBox())
@@ -55,7 +58,6 @@ class CoverImage(gtk.Frame):
         self.__size = size or [100, 71]
         self.child.connect('button-press-event', self.__show_cover)
         self.child.show_all()
-        self.__albumfn = None
         self.set_song(self, song)
 
     def set_song(self, activator, song):
@@ -85,10 +87,20 @@ class CoverImage(gtk.Frame):
         if self.__albumfn:
             super(CoverImage, self).show()
 
-    def __nonzero__(self): return bool(self.__albumfn)
+    def __nonzero__(self):
+        return bool(self.__albumfn)
 
     def __show_cover(self, box, event):
+        """Show the cover as a detached BigCenteredImage.
+        If one is already showing, destroy it instead"""
         if (self.__song and event.button == 1 and
             event.type == gtk.gdk.BUTTON_PRESS):
-            cover = self.__song.find_cover()
-            BigCenteredImage(self.__song.comma("album"), cover.name)
+            if self.__current_bci is None:
+                # We're not displaying it yet; display it.
+                cover = self.__song.find_cover()
+                self.__current_bci = BigCenteredImage(
+                    self.__song.comma("album"), cover.name)
+            else:
+                # We're displaying it; destroy it.
+                self.__current_bci.destroy()
+                self.__current_bci = None
