@@ -43,8 +43,8 @@ class AudioFile(dict):
     def __sort_key(self):
         return (self.get("album"),
                 self.get("labelid") or self.get("musicbrainz_albumid"),
-                self("~#disc") or self.get("discnumber"),
-                self("~#track") or self.get("tracknumber"),
+                self("~#disc", self.get("discnumber")),
+                self("~#track", self.get("tracknumber")),
                 self.get("artist"), self.get("musicbrainz_artistid"),
                 self.get("title"),
                 self.get("~filename"))
