@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-26 16:37-0500\n"
+"POT-Creation-Date: 2006-05-01 16:27-0500\n"
 "PO-Revision-Date: 2006-04-26 09:43+0300\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -611,7 +611,7 @@ msgid_plural "%d years"
 msgstr[0] "%d vuosi"
 msgstr[1] "%d vuotta"
 
-#: ../formats/_audio.py:154 ../qltk/information.py:173
+#: ../formats/_audio.py:155 ../qltk/information.py:173
 #: ../qltk/information.py:180 ../qltk/information.py:205
 #: ../browsers/paned.py:34 ../browsers/audiofeeds.py:43
 #: ../browsers/audiofeeds.py:53 ../browsers/audiofeeds.py:54
@@ -623,11 +623,11 @@ msgstr "Tuntematon"
 msgid "an audio tag editor"
 msgstr "äänitiedostojen tunniste-editori"
 
-#: ../widgets.py:49
+#: ../widgets.py:43
 msgid "Unable to start web browser"
 msgstr "Web-selainta ei voi käynnistää"
 
-#: ../widgets.py:50
+#: ../widgets.py:44
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -635,19 +635,19 @@ msgstr ""
 "Web-selainta ei löydy. Aseta $BROWSER-muuttujasi, tai varmista, että /usr/"
 "bin/sensible-browser on olemassa."
 
-#: ../widgets.py:136
+#: ../widgets.py:130
 msgid "Saving library."
 msgstr "Tallennetaan kirjasto."
 
-#: ../widgets.py:140
+#: ../widgets.py:134
 msgid "Unable to save library"
 msgstr "Kirjastoa ei voi tallentaa"
 
-#: ../widgets.py:143
+#: ../widgets.py:137
 msgid "Unable to open audio device"
 msgstr "Äänilaitetta ei voi avata"
 
-#: ../widgets.py:144
+#: ../widgets.py:138
 #, python-format
 msgid ""
 "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
@@ -660,11 +660,11 @@ msgstr ""
 "    <b>pipeline = %(sink)s</b>\n"
 "tiedostossa ~/.quodlibet/config."
 
-#: ../widgets.py:153
+#: ../widgets.py:147
 msgid "Unable to open files"
 msgstr "Tiedostojen avaaminen ei onnistu"
 
-#: ../widgets.py:154
+#: ../widgets.py:148
 msgid ""
 "Quod Libet could not find the 'filesrc' GStreamer element. Check your "
 "GStreamer installation."
@@ -672,12 +672,12 @@ msgstr ""
 "Quod Libet ei löytänyt GStreamerin 'filesrc' -elementtiä. Tarkista GStreamer-"
 "asennuksesi."
 
-#: ../plugins/__init__.py:195 ../qltk/tagsfrompath.py:232
+#: ../plugins/__init__.py:198 ../qltk/tagsfrompath.py:232
 #: ../plugins/songsmenu.py:163
 msgid "Unable to edit song"
 msgstr "Kappaleen muokkaaminen epäonnistui"
 
-#: ../plugins/__init__.py:196 ../qltk/edittags.py:495
+#: ../plugins/__init__.py:199 ../qltk/edittags.py:495
 #: ../qltk/tagsfrompath.py:233 ../qltk/tracknumbers.py:135
 #: ../plugins/songsmenu.py:164
 #, python-format
@@ -877,15 +877,17 @@ msgstr ""
 "\n"
 "Valitut tiedostot eivät tue useita arvoja samalle tunnisteelle."
 
+#. Can't remove the old tag.
+#. Can't add the new tag.
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:417 ../qltk/edittags.py:515 ../qltk/edittags.py:521
+#: ../qltk/edittags.py:417 ../qltk/edittags.py:534 ../qltk/edittags.py:541
 #: ../qltk/tagsfrompath.py:148 ../util/__init__.py:451 ../util/__init__.py:458
 msgid "Invalid tag"
 msgstr "Virheellinen tunniste"
 
-#: ../qltk/edittags.py:418 ../qltk/edittags.py:516 ../qltk/edittags.py:522
+#: ../qltk/edittags.py:418 ../qltk/edittags.py:535 ../qltk/edittags.py:542
 #: ../qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
@@ -920,15 +922,15 @@ msgstr ""
 msgid "Unable to save song"
 msgstr "Kappaletta ei voi tallentaa"
 
-#: ../qltk/edittags.py:532 ../qltk/edittags.py:560
+#: ../qltk/edittags.py:518 ../qltk/edittags.py:552
 msgid "Invalid value"
 msgstr "Virheellinen arvo"
 
-#: ../qltk/edittags.py:539
+#: ../qltk/edittags.py:559
 msgid "Unable to retag multiple values"
 msgstr "Useiden arvojen tunnisteen uudelleenasettaminen ei onnistu."
 
-#: ../qltk/edittags.py:540
+#: ../qltk/edittags.py:560
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr "Jos tunnisteella on useita arvoja, sen nimen muuttamista ei tueta."
 
@@ -1069,7 +1071,7 @@ msgid "bitrate"
 msgstr "bittinopeus"
 
 #: ../qltk/information.py:235 ../qltk/properties.py:56
-#: ../qltk/renamefiles.py:67 ../qltk/tagsfrompath.py:165
+#: ../qltk/renamefiles.py:73 ../qltk/tagsfrompath.py:165
 #: ../qltk/tracknumbers.py:59
 msgid "File"
 msgstr "Tiedosto"
@@ -1171,11 +1173,11 @@ msgstr "Laulun sanojen lataaminen ei onnistu"
 msgid "No lyrics found for this song."
 msgstr "Kappaleelle ei löydy sanoja."
 
-#: ../qltk/msg.py:47
+#: ../qltk/msg.py:48
 msgid "Discard tag changes?"
 msgstr "Hylkää muutokset tunnisteisiin?"
 
-#: ../qltk/msg.py:48
+#: ../qltk/msg.py:49
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -1585,39 +1587,39 @@ msgstr ""
 "\n"
 "%d kappaletta lisätty"
 
-#: ../qltk/renamefiles.py:24
+#: ../qltk/renamefiles.py:26
 msgid "Replace spaces with _underscores"
 msgstr "Korvaa _välilyönnit alaviivoilla"
 
-#: ../qltk/renamefiles.py:31
+#: ../qltk/renamefiles.py:33
 msgid "Strip _Windows-incompatible characters"
 msgstr "Poista _Windows-yhteensopimattomat merkit"
 
-#: ../qltk/renamefiles.py:40
+#: ../qltk/renamefiles.py:46
 msgid "Strip _diacritical marks"
 msgstr "Poista ta_rkkeet"
 
-#: ../qltk/renamefiles.py:49
+#: ../qltk/renamefiles.py:55
 msgid "Strip non-_ASCII characters"
 msgstr "Poista _ASCII:hin kuulumattomat merkit"
 
-#: ../qltk/renamefiles.py:57
+#: ../qltk/renamefiles.py:63
 msgid "Rename Files"
 msgstr "Nimeä tiedostot"
 
-#: ../qltk/renamefiles.py:73
+#: ../qltk/renamefiles.py:79
 msgid "New Name"
 msgstr "Uusi nimi"
 
-#: ../qltk/renamefiles.py:108
+#: ../qltk/renamefiles.py:114
 msgid "_Continue"
 msgstr "_Jatka"
 
-#: ../qltk/renamefiles.py:110
+#: ../qltk/renamefiles.py:116
 msgid "Unable to rename file"
 msgstr "Tiedoston nimeäminen ei onnistu"
 
-#: ../qltk/renamefiles.py:111
+#: ../qltk/renamefiles.py:117
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1628,11 +1630,11 @@ msgstr ""
 "Kohdetiedosto on mahdollisesti jo olemassa, tai sinulla ei ole oikeuksia "
 "uuden tiedoston luomiseen tai vanhan poistamiseen."
 
-#: ../qltk/renamefiles.py:142
+#: ../qltk/renamefiles.py:148
 msgid "Path is not absolute"
 msgstr "Polku ei ole absoluuttinen"
 
-#: ../qltk/renamefiles.py:143
+#: ../qltk/renamefiles.py:149
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1878,7 +1880,7 @@ msgstr "_Mukautettu"
 msgid "All"
 msgstr "Kaikki"
 
-#: ../browsers/paned.py:334 ../browsers/search.py:130
+#: ../browsers/paned.py:334 ../browsers/search.py:131
 #: ../browsers/iradio.py:167
 msgid "_Search:"
 msgstr "_Hae:"
@@ -1951,23 +1953,23 @@ msgstr "_Rajoite:"
 msgid "_Weight"
 msgstr "_Painoarvo"
 
-#: ../browsers/search.py:143
+#: ../browsers/search.py:144
 msgid "Search"
 msgstr "Hae"
 
-#: ../browsers/search.py:145
+#: ../browsers/search.py:146
 msgid "Search your library"
 msgstr "Hae kirjastostasi"
 
-#: ../browsers/search.py:173
+#: ../browsers/search.py:174
 msgid "_Limit Results"
 msgstr "Tulosten _määrä"
 
-#: ../browsers/search.py:216
+#: ../browsers/search.py:217
 msgid "_Disable Browser"
 msgstr "S_ulje selain"
 
-#: ../browsers/search.py:217
+#: ../browsers/search.py:218
 msgid "_Search Library"
 msgstr "_Hae kirjastosta"
 

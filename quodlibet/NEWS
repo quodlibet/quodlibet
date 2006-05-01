@@ -4,7 +4,7 @@ see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
-0.20
+0.20 - Feelings are boring. Kissing is awesome!
  * Bug Fixes:
    * --play-file will use the queue. (#457)
    * Audio Feeds remember download locations. (#589)

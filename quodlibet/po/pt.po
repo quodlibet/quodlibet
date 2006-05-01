@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-28 02:40-0500\n"
+"POT-Creation-Date: 2006-05-01 16:27-0500\n"
 "PO-Revision-Date: 2005-12-02 20:41-0600\n"
 "Last-Translator: Alexandre Passos <alexandre.tp@gmail.com>\n"
 "Language-Team: Alexandre Passos <alexandre.tp@gmail.com>\n"
@@ -610,7 +610,7 @@ msgid_plural "%d years"
 msgstr[0] "%d ano"
 msgstr[1] "%d anos"
 
-#: ../formats/_audio.py:154 ../qltk/information.py:173
+#: ../formats/_audio.py:155 ../qltk/information.py:173
 #: ../qltk/information.py:180 ../qltk/information.py:205
 #: ../browsers/paned.py:34 ../browsers/audiofeeds.py:43
 #: ../browsers/audiofeeds.py:53 ../browsers/audiofeeds.py:54
@@ -622,11 +622,11 @@ msgstr "Desconhecido"
 msgid "an audio tag editor"
 msgstr "um editor de informações de músicas"
 
-#: ../widgets.py:49
+#: ../widgets.py:43
 msgid "Unable to start web browser"
 msgstr "Impossível abrir um navegador"
 
-#: ../widgets.py:50
+#: ../widgets.py:44
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -634,19 +634,19 @@ msgstr ""
 "Um navegador de internet não foi encontrado. Por favor defina a variável "
 "$BROWSER, ou garanta que /usr/bin/sensible-browser exista."
 
-#: ../widgets.py:136
+#: ../widgets.py:130
 msgid "Saving library."
 msgstr "Gravando biblioteca."
 
-#: ../widgets.py:140
+#: ../widgets.py:134
 msgid "Unable to save library"
 msgstr "Impossível gravar biblioteca"
 
-#: ../widgets.py:143
+#: ../widgets.py:137
 msgid "Unable to open audio device"
 msgstr "Impossível abrir dispositivo de som"
 
-#: ../widgets.py:144
+#: ../widgets.py:138
 #, python-format
 msgid ""
 "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
@@ -660,11 +660,11 @@ msgstr ""
 "   <b>pipeline = %(sink)s</b>\n"
 "no seu arquivo ~/.quodlibet/config."
 
-#: ../widgets.py:153
+#: ../widgets.py:147
 msgid "Unable to open files"
 msgstr "Impossível abrir arquivo"
 
-#: ../widgets.py:154
+#: ../widgets.py:148
 msgid ""
 "Quod Libet could not find the 'filesrc' GStreamer element. Check your "
 "GStreamer installation."
@@ -877,15 +877,17 @@ msgstr ""
 "\n"
 "Os arquivos selecionados não suportam essas tags."
 
+#. Can't remove the old tag.
+#. Can't add the new tag.
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:417 ../qltk/edittags.py:515 ../qltk/edittags.py:521
+#: ../qltk/edittags.py:417 ../qltk/edittags.py:534 ../qltk/edittags.py:541
 #: ../qltk/tagsfrompath.py:148 ../util/__init__.py:451 ../util/__init__.py:458
 msgid "Invalid tag"
 msgstr "tag inválida"
 
-#: ../qltk/edittags.py:418 ../qltk/edittags.py:516 ../qltk/edittags.py:522
+#: ../qltk/edittags.py:418 ../qltk/edittags.py:535 ../qltk/edittags.py:542
 #: ../qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
@@ -920,15 +922,15 @@ msgstr ""
 msgid "Unable to save song"
 msgstr "Impossível gravar música"
 
-#: ../qltk/edittags.py:532 ../qltk/edittags.py:560
+#: ../qltk/edittags.py:518 ../qltk/edittags.py:552
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: ../qltk/edittags.py:539
+#: ../qltk/edittags.py:559
 msgid "Unable to retag multiple values"
 msgstr "Impossível alterar as tags de múltiplos valores"
 
-#: ../qltk/edittags.py:540
+#: ../qltk/edittags.py:560
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr "Mudar o nome de uma tag com valores múltiplos não é possível."
 
