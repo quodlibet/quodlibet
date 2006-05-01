@@ -90,6 +90,9 @@ class CoverImage(gtk.Frame):
     def __nonzero__(self):
         return bool(self.__albumfn)
 
+    def __reset_bci(self, bci):
+        self.__current_bci = None
+
     def __show_cover(self, box, event):
         """Show the cover as a detached BigCenteredImage.
         If one is already showing, destroy it instead"""
@@ -100,7 +103,7 @@ class CoverImage(gtk.Frame):
                 cover = self.__song.find_cover()
                 self.__current_bci = BigCenteredImage(
                     self.__song.comma("album"), cover.name)
+                self.__current_bci.connect('destroy', self.__reset_bci)
             else:
                 # We're displaying it; destroy it.
                 self.__current_bci.destroy()
-                self.__current_bci = None
