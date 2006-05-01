@@ -1,7 +1,3 @@
-Quod Libet now uses GStreamer 0.10, GTK+ 2.8, and PyGTK 2.8.
-See http://www.sacredchao.net/quodlibet/wiki/Development/GStreamer0.10
-for the upgrade requirements.
-
 Mutagen is no longer distributed with Quod Libet. To download Mutagen,
 see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 
@@ -9,6 +5,24 @@ Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
 0.20
+ * Bug Fixes:
+   * --play-file will use the queue. (#457)
+   * Audio Feeds remember download locations. (#589)
+   * Song changes don't revert tag edits. (#597)
+   * Browser song activation takes precedence over the queue. (#622)
+   * Albums drag-and-drop in listed order. (#623)
+   * Only reset relevant parts of Information windows on song change. (#624)
+   * Deleting files not in the library removes them. (#638)
+   * Non-numeric disc/track numbers sort properly. (#643)
+   * Paned Browser no longer adds incorrect entries. (Debian bug #361131)
+   * Ex Falso no longer loads WAV or MOD files.
+   * Allow more headers in Internet Radio and Audio Feeds.
+   * New process launching method, util.spawn.
+ * UI Changes:
+   * Indicator to show when songs come from the queue. (#437)
+   * Rating submenu always appears in the song list. (#598)
+   * Album covers hide when clicked again. (#647)
+   * Select current song when jumping to it.
  * New translations:
    * Norwegian Bokmål, by Andreas Bertheussen.
    * Swedish, by Erik Christiansson.
