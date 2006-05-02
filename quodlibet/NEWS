@@ -4,6 +4,9 @@ see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
 Context menu plugins for 0.18 and earlier should be (trivially) updated.
 See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
 
+0.20.1 - Thanks for the eye-opener, dinosaur zombies!
+ * Vorbis/FLAC tag editing works again.
+
 0.20 - Feelings are boring. Kissing is awesome!
  * Bug Fixes:
    * --play-file will use the queue. (#457)
