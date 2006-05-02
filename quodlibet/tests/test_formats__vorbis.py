@@ -85,3 +85,6 @@ class TVCFile(TestCase):
     def test_parameter(self):
         for bad in ["rating", "playcount", "rating:foo", "playcount:bar"]:
             self.failIf(self.song.can_change(bad))
+
+    def test_can_change(self):
+        self.failUnless(self.song.can_change())

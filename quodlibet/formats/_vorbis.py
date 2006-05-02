@@ -41,7 +41,7 @@ class VCFile(AudioFile):
 
     def can_change(self, k=None):
         if k is None:
-            super(VCFile, self).can_change(None)
+            return super(VCFile, self).can_change(None)
         else: return (super(VCFile, self).can_change(k) and
                       k not in ["vendor", "totaltracks", "tracktotal",
                                 "rating", "playcount"] and
