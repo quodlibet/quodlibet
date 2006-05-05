@@ -201,8 +201,9 @@ class PreferencesWindow(qltk.Window):
             f.get_label_widget().set_mnemonic_widget(e)
             hb.pack_start(e)
             tips = qltk.Tooltips(self)
-            tips.set_tip(e, _("Songs placed in these folders will "
-                              "be added to your library"))
+            tips.set_tip(
+                e, _("Songs placed in these folders (separated by ':') "
+                     "will be added to your library"))
             hb.pack_start(b, expand=False)
             b.connect('clicked', self.__select, e, const.HOME)
             e.connect('changed', self.__changed, 'settings', 'scan')
