@@ -399,12 +399,12 @@ class SongList(AllTreeView, util.InstanceTracker):
         def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model.get_value(iter, 0)
-                cell.set_property('text', self.__pattern % song)
+                cell.set_property('text', self._pattern % song)
             except AttributeError: pass
 
         def __init__(self, pattern):
-            super(SongList.PatternColumn, self).__init__(pattern)
-            self.__pattern = Pattern(pattern)
+            super(SongList.PatternColumn, self).__init__(_("pattern"))
+            self._pattern = Pattern(pattern)
 
     def Menu(self, header, browser, watcher):
         songs = self.get_selected_songs()
@@ -678,8 +678,10 @@ class SongList(AllTreeView, util.InstanceTracker):
     def get_sort_by(self):
         for header in self.get_columns():
             if header.get_sort_indicator():
-                return (header.header_name,
-                        header.get_sort_order() == gtk.SORT_DESCENDING)
+                try: tag = header._pattern.format
+                except Attributeerror: tag = header.header_name
+                sort = header.get_sort_order()
+                return (tag, sort == gtk.SORT_DESCENDING)
         else: return "album", False
 
     def is_sorted(self):
@@ -724,7 +726,11 @@ class SongList(AllTreeView, util.InstanceTracker):
             elif tag == "~length": tag = "~#length"
             elif tag == "~album~part": tag = "album"
 
-            songs = [(song(tag), song.sort_key, song) for song in songs]
+            if callable(tag):
+                # A pattern is currently selected.
+                songs = [(tag(song), song.sort_key, song) for song in songs]
+            else:
+                songs = [(song(tag), song.sort_key, song) for song in songs]
             songs.sort()
             if reverse: songs.reverse()
             songs = [song[2] for song in songs]
@@ -796,10 +802,10 @@ class SongList(AllTreeView, util.InstanceTracker):
             elif t.startswith("~#"): column = self.NumericColumn(t)
             elif t in ["~filename", "~basename", "~dirname"]:
                 column = self.FSColumn(t)
-            elif "~" not in t and t != "title":
-                column = self.NonSynthTextColumn(t)
             elif t.startswith("<"):
                 column = self.PatternColumn(t)
+            elif "~" not in t and t != "title":
+                column = self.NonSynthTextColumn(t)
             else: column = self.WideTextColumn(t)
             column.connect('clicked', self.set_sort_by)
             column.set_reorderable(True)
