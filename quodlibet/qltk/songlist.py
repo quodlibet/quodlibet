@@ -679,7 +679,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         for header in self.get_columns():
             if header.get_sort_indicator():
                 try: tag = header._pattern.format
-                except Attributeerror: tag = header.header_name
+                except AttributeError: tag = header.header_name
                 sort = header.get_sort_order()
                 return (tag, sort == gtk.SORT_DESCENDING)
         else: return "album", False
