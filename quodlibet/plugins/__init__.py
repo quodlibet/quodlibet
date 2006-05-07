@@ -43,6 +43,7 @@ import util
 
 from traceback import print_exc
 
+from player import PlaylistPlayer
 from plugins._manager import Manager
 from qltk.watcher import SongWatcher
 from qltk.wlw import WritingWindow
@@ -114,10 +115,14 @@ def ListWrapper(songs):
 class PluginManager(Manager):
     """Manage event plugins."""
 
-    all_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                  for s in gobject.signal_list_names(SongWatcher)]
+    library_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
+                      for s in gobject.signal_list_names(SongWatcher)]
+    player_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
+                     for s in gobject.signal_list_names(PlaylistPlayer)]
+    player_events.remove(('error', 'plugin_on_error'))
+    all_events = library_events + player_events
 
-    def __init__(self, watcher=None, folders=[], name=None):
+    def __init__(self, watcher=None, player=None, folders=[], name=None):
         super(PluginManager, self).__init__(folders, name)
         self.byfile = {}
         self.plugins = {}
@@ -127,9 +132,14 @@ class PluginManager(Manager):
         invoke = self.invoke_event
         for event, handle in self.all_events:
             self.events[event] = {}
-            if watcher:
+        if watcher:
+            for event, handle in self.library_events:
                 def handler(watcher, *args): invoke(args[-1], *args[:-1])
                 watcher.connect(event, handler, event)
+        if player:
+            for event, handle in self.player_events:
+                def handler(player, *args): invoke(args[-1], *args[:-1])
+                player.connect(event, handler, event)
 
     def _load(self, name, mod):        
         for pluginname in self.byfile.get(name, []):

@@ -10,6 +10,7 @@ import locale
 
 import gobject
 import gst
+import gtk
 
 import config
 
@@ -34,12 +35,11 @@ def GStreamerSink(pipeline):
     if pipe: return pipe, pipeline
     else: raise NoSinkError(pipeline)
 
-class PlaylistPlayer(gobject.GObject):
+class PlaylistPlayer(gtk.Object):
     """Interfaces between a QL PlaylistModel and a GSt playbin."""
 
     __paused = False
     song = None
-    info = None
     __length = 1
     __volume = 1.0
 
@@ -212,9 +212,8 @@ class PlaylistPlayer(gobject.GObject):
                     if proxy.get(k) == value: continue
                     # If the title changes for a stream, we want to change
                     # *only* the proxy.
-                    elif k == "title":
-                        if value == self.info.song.get("title"): continue
-                        elif self.song.multisong: proxy[k] = value
+                    elif k == "title" and self.song.multisong:
+                        proxy[k] = value
                     # Otherwise, if any other tag changes, or the song isn't
                     # a stream, change the actual song.
                     else: self.song[k] = value
@@ -223,8 +222,9 @@ class PlaylistPlayer(gobject.GObject):
             if changed:
                 if self.song.multisong:
                     self.emit('song-started', proxy)
-                elif self.info is not None:
-                    self.info.changed([proxy])
+                else:
+                    from widgets import watcher
+                    watcher.changed([proxy])
 
     def reset(self):
         self.__source.reset()

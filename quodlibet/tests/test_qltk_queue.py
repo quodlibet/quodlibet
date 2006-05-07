@@ -9,8 +9,7 @@ from qltk.watcher import SongWatcher
 class TQueueExpander(TestCase):
     def setUp(self):
         player = PlaylistPlayer('fakesink')
-        self.queue = QueueExpander(
-            gtk.CheckMenuItem(), SongWatcher(player), player)
+        self.queue = QueueExpander(gtk.CheckMenuItem(), SongWatcher(), player)
 
     def test_ctr(self):
         pass

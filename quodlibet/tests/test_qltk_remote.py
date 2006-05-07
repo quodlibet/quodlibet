@@ -7,12 +7,12 @@ import const
 
 from formats._audio import AudioFile
 from qltk.remote import FSInterface
-from qltk.watcher import SongWatcher
+from player import PlaylistPlayer
 
 class TFSInterface(TestCase):
     def setUp(self):
-        self.w = SongWatcher()
-        self.fs = FSInterface(self.w)
+        self.p = PlaylistPlayer("fakesink")
+        self.fs = FSInterface(self.p)
 
     def do(self):
         while gtk.events_pending(): gtk.main_iteration()
@@ -22,19 +22,19 @@ class TFSInterface(TestCase):
         self.failIf(os.path.exists(const.CURRENT))
 
     def test_start(self):
-        self.w.song_started(AudioFile({"woo": "bar", "~#length": 10}))
+        self.p.emit('song_started', AudioFile({"woo": "bar", "~#length": 10}))
         self.do()
         self.failUnless("woo=bar\n" in file(const.CURRENT).read())
 
     def test_song_ended(self):
-        self.w.song_started(AudioFile({"woo": "bar", "~#length": 10}))
+        self.p.emit('song-started', AudioFile({"woo": "bar", "~#length": 10}))
         self.do()
-        self.w.song_ended({}, False)
+        self.p.emit('song-ended', {}, False)
         self.do()
         self.failIf(os.path.exists(const.CURRENT))
 
     def tearDown(self):
-        self.w.destroy()
+        self.p.destroy()
         try: os.unlink(const.CURRENT)
         except EnvironmentError: pass
 add(TFSInterface)

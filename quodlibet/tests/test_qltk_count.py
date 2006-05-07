@@ -10,7 +10,7 @@ from qltk.watcher import SongWatcher
 class TCountManager(TestCase):
     def setUp(self):
         self.p = PlaylistPlayer('fakesink')
-        self.w = SongWatcher(self.p)
+        self.w = SongWatcher()
         self.s1 = AudioFile(
             {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
         self.s2 = AudioFile(

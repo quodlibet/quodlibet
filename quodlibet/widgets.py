@@ -66,14 +66,16 @@ def init():
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    watcher = SongWatcher(player.playlist)
+    player.playlist.connect('error', player_error)
+
+    watcher = SongWatcher()
 
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
     
-    pm = PluginManager(watcher, [
+    pm = PluginManager(watcher, player.playlist, [
         os.path.join(const.BASEDIR, "plugins"),
         os.path.join(const.USERDIR, "plugins")], "legacy")
     pm.rescan()
@@ -130,6 +132,14 @@ def save_library(window, player):
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
         ErrorMessage(None, _("Unable to save library"), err).run()
+
+def player_error(player, code, lock):
+    if lock: gtk.threads_enter()
+    ErrorMessage(
+        main, _("Unable to play song"),
+        _("GStreamer was unable to load the selected song.")
+        + "\n\n" + code).run()
+    if lock: gtk.threads_leave()
 
 def no_sink_quit(sink):
     header = _("Unable to open audio device")

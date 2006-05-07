@@ -2,6 +2,7 @@ from tests import TestCase, add
 
 import gtk
 
+from player import PlaylistPlayer
 from qltk.songlist import PlaylistModel, PlaylistMux, SongList
 from qltk.watcher import SongWatcher
 
@@ -199,12 +200,12 @@ class TPlaylistModel(TestCase):
         self.pl.destroy()
 add(TPlaylistModel)
 
-class Mux(TestCase):
+class TPlaylistMux(TestCase):
     def setUp(self):
         self.q = PlaylistModel()
         self.pl = PlaylistModel()
-        self.w = SongWatcher()
-        self.mux = PlaylistMux(self.w, self.q, self.pl)
+        self.p = PlaylistPlayer('fakesink')
+        self.mux = PlaylistMux(self.p, self.q, self.pl)
         self.failUnless(self.pl.current is None)
 
     def test_only_pl(self):
@@ -268,7 +269,7 @@ class Mux(TestCase):
     def next(self):
         self.mux.next()
         song = self.mux.current
-        self.w.song_started(self.mux.current)
+        self.p.emit('song-started', self.mux.current)
         while gtk.events_pending(): gtk.main_iteration()
         return song
 
@@ -286,8 +287,8 @@ class Mux(TestCase):
         self.failUnlessEqual(self.next(), 11)
 
     def tearDown(self):
-        self.w.destroy()
-add(Mux)
+        self.p.destroy()
+add(TPlaylistMux)
 
 class TSongList(TestCase):
     HEADERS = ["acolumn", "~#lastplayed", "~foo~bar", "~#rating",
