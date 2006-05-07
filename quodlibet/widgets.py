@@ -113,7 +113,8 @@ def init():
     return main
 
 def save_library(window, player):
-    player.quit()
+    window.destroy()
+    player.destroy()
 
     # If something goes wrong here, it'll probably be caught
     # saving the library anyway.
@@ -125,8 +126,6 @@ def save_library(window, player):
         # CONTROL by FIFOControl.
         try: os.unlink(fn)
         except EnvironmentError: pass
-
-    window.destroy()
 
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:

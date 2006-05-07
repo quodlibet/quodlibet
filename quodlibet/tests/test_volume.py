@@ -13,7 +13,7 @@ class PlayerVolume(TestCase):
             self.failUnlessAlmostEqual(self.p.volume, i)
 
     def tearDown(self):
-        self.p.quit()
+        self.p.destroy()
 add(PlayerVolume)
 
 class CombinedVolume(TestCase):
@@ -27,6 +27,6 @@ class CombinedVolume(TestCase):
             self.failUnlessAlmostEqual(self.p.volume, self.v.get_value())
 
     def tearDown(self):
-        self.p.quit()
+        self.p.destroy()
         self.v.destroy()
 add(CombinedVolume)

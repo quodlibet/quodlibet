@@ -20,7 +20,7 @@ class TMainSongList(TestCase):
     def tearDown(self):
         self.list.destroy()
         self.watcher.destroy()
-        self.player.quit()
+        self.player.destroy()
 add(TMainSongList)
 
 class TQuodLibetWindow(TestCase):
@@ -36,7 +36,7 @@ class TQuodLibetWindow(TestCase):
     def tearDown(self):
         self.win.destroy()
         self.watcher.destroy()
-        self.player.quit()
+        self.player.destroy()
         del(widgets.main)
         del(widgets.watcher)
 add(TQuodLibetWindow)

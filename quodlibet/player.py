@@ -66,6 +66,7 @@ class PlaylistPlayer(gtk.Object):
         bus = self.bin.get_bus()
         bus.add_signal_watch()
         bus.connect('message', self.__message)
+        self.connect_object('destroy', self.bin.set_state, gst.STATE_NULL)
         self.paused = True
 
     def __message(self, bus, message):
@@ -130,10 +131,6 @@ class PlaylistPlayer(gtk.Object):
         self.__length = song["~#length"] * 1000
         if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
         else: self.bin.set_state(gst.STATE_PLAYING)
-
-    def quit(self):
-        """Shut down the playbin."""
-        self.bin.set_state(gst.STATE_NULL)
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
