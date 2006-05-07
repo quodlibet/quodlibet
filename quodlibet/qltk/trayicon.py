@@ -30,7 +30,7 @@ from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 class Preferences(qltk.Window):
     """A small window to configure the tray icon's tooltip."""
 
-    def __init__(self, activator, watcher):
+    def __init__(self, activator, player):
         super(Preferences, self).__init__()
         self.set_border_width(12)
         self.set_title(_("Tray Icon Preferences") + " - Quod Libet")
@@ -79,7 +79,7 @@ class Preferences(qltk.Window):
 
         for cb in cbs: cb.connect('toggled', self.__changed_cb, cbs, entry)
         entry.connect(
-            'changed', self.__changed_entry, cbs, preview, watcher, tips)
+            'changed', self.__changed_entry, cbs, preview, player, tips)
         entry.set_text(config.get("plugins", "icon_tooltip"))
 
         self.add(vbox)
@@ -93,7 +93,7 @@ class Preferences(qltk.Window):
         text = "<%s>" % "~".join([cb.tag for cb in cbs if cb.get_active()])
         entry.set_text(text)
 
-    def __changed_entry(self, entry, cbs, label, watcher, tips):
+    def __changed_entry(self, entry, cbs, label, player, tips):
         text = entry.get_text()
         if text[0:1] == "<" and text[-1:] == ">":
             parts = text[1:-1].split("~")
@@ -153,18 +153,18 @@ class TrayIcon(object):
         icon.connect('button-press-event', self.__button, window, player)
         icon.connect('scroll-event', self.__scroll, window, player)
 
-        watcher.connect('song-started', self.__song_started)
-        watcher.connect('paused', self.__set_paused, player)
-        watcher.connect('unpaused', self.__set_paused, player)
+        player.connect('song-started', self.__song_started)
+        player.connect('paused', self.__set_paused)
+        player.connect('unpaused', self.__set_paused)
 
         icon.show_all()
 
-    def __preferences(self, watcher):
-        p = Preferences(self, watcher)
-        p.connect_object('destroy', self.__prefs_destroy, watcher)
+    def __preferences(self, player):
+        p = Preferences(self, player)
+        p.connect_object('destroy', self.__prefs_destroy, player)
 
-    def __prefs_destroy(self, watcher):
-        self.__song_started(watcher, watcher.song)
+    def __prefs_destroy(self, player):
+        self.__song_started(player, player.song)
 
     def __enabled(self):
         return (self.__icon  and self.__mapped and
@@ -216,7 +216,7 @@ class TrayIcon(object):
             elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]:
                 window.volume -= 0.05
 
-    def __song_started(self, watcher, song):
+    def __song_started(self, player, song):
         items = self.__menu.sensitives
         for item in items: item.set_sensitive(bool(song))
         if song:
@@ -257,7 +257,7 @@ class TrayIcon(object):
         orders.set_submenu(submenu)
 
         preferences = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
-        preferences.connect_object('activate', self.__preferences, watcher)
+        preferences.connect_object('activate', self.__preferences, player)
 
         browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
         m2 = gtk.Menu()
@@ -316,7 +316,7 @@ class TrayIcon(object):
         self.__menu.popup(None, None, None, event.button, event.time)
         return True
 
-    def __set_paused(self, watcher, player):
+    def __set_paused(self, player):
         playpause = self.__menu.get_children()[0]
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
         img = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)

@@ -2,12 +2,15 @@ from tests import TestCase, add
 
 import gtk
 
+from player import PlaylistPlayer
 from qltk.queue import QueueExpander
 from qltk.watcher import SongWatcher
 
 class TQueueExpander(TestCase):
     def setUp(self):
-        self.queue = QueueExpander(gtk.CheckMenuItem(), SongWatcher())
+        player = PlaylistPlayer('fakesink')
+        self.queue = QueueExpander(
+            gtk.CheckMenuItem(), SongWatcher(player), player)
 
     def test_ctr(self):
         pass

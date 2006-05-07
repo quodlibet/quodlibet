@@ -95,10 +95,10 @@ def init():
     gtk.about_dialog_set_url_hook(website_wrap)
 
     # These stay alive in the watcher/other callbacks.
-    FSInterface(watcher)
+    FSInterface(player.playlist)
     FIFOControl(watcher, main, player.playlist)
 
-    CountManager(watcher, main.playlist)
+    CountManager(watcher, player.playlist, main.playlist)
 
     TrayIcon(watcher, main, player.playlist)
 

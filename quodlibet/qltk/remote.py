@@ -23,11 +23,11 @@ from qltk.properties import SongProperties
 
 class FSInterface(object):
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
-    def __init__(self, watcher):
-        watcher.connect('song-started', self.__started)
-        watcher.connect('song-ended', self.__ended)
+    def __init__(self, player):
+        player.connect('song-started', self.__started)
+        player.connect('song-ended', self.__ended)
 
-    def __started(self, watcher, song):
+    def __started(self, player, song):
         if song:
             try: f = file(const.CURRENT, "w")
             except EnvironmentError: pass
@@ -35,7 +35,7 @@ class FSInterface(object):
                 f.write(song.to_dump())
                 f.close()
 
-    def __ended(self, watcher, song, stopped):
+    def __ended(self, player, song, stopped):
         try: os.unlink(const.CURRENT)
         except EnvironmentError: pass
 

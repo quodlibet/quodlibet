@@ -453,7 +453,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         menu.show_all()
         return menu
 
-    def __init__(self, watcher):
+    def __init__(self, watcher, player=None):
         super(SongList, self).__init__()
         self._register_instance(SongList)
         self.set_model(PlaylistModel())
@@ -462,12 +462,14 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.set_column_headers(self.headers)
         sigs = [watcher.connect('changed', self.__song_updated),
-                watcher.connect('removed', self.__song_removed),
-                watcher.connect('paused', self.__redraw_current),
-                watcher.connect('unpaused', self.__redraw_current)
-                ]
+                watcher.connect('removed', self.__song_removed)]
         for sig in sigs:
             self.connect_object('destroy', watcher.disconnect, sig)
+        if player:
+            sigs = [player.connect('paused', self.__redraw_current),
+                    player.connect('unpaused', self.__redraw_current)]
+            for sig in sigs:
+                self.connect_object('destroy', player.disconnect, sig)
 
         self.connect('button-press-event', self.__button_press, watcher)
         self.connect('key-press-event', self.__key_press, watcher)
@@ -656,7 +658,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             main.playlist.enqueue(songs)
             if added: watcher.added(added)
 
-    def __redraw_current(self, watcher, song=None):
+    def __redraw_current(self, player, song=None):
         iter = self.model.current_iter
         if iter: self.model.row_changed(self.model.get_path(iter), iter)
 

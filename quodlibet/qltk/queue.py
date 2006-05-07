@@ -24,12 +24,12 @@ from qltk.x import Tooltips
 QUEUE = os.path.join(const.USERDIR, "queue")
 
 class QueueExpander(gtk.Expander):
-    def __init__(self, menu, watcher):
+    def __init__(self, menu, watcher, player):
         super(QueueExpander, self).__init__()
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.queue = PlayQueue(watcher)
+        self.queue = PlayQueue(watcher, player)
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
 
@@ -82,18 +82,18 @@ class QueueExpander(gtk.Expander):
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, l2)
 
-        watcher.connect('song-started', self.__update_state_icon, state)
-        watcher.connect('paused', self.__update_state_icon_pause,
+        player.connect('song-started', self.__update_state_icon, state)
+        player.connect('paused', self.__update_state_icon_pause,
                         state, gtk.STOCK_MEDIA_PAUSE)
-        watcher.connect('unpaused', self.__update_state_icon_pause,
+        player.connect('unpaused', self.__update_state_icon_pause,
                         state, gtk.STOCK_MEDIA_PLAY)
 
-    def __update_state_icon(self, watcher, song, state):
+    def __update_state_icon(self, player, song, state):
         if self.model.sourced: icon = gtk.STOCK_MEDIA_PLAY
         else: icon = gtk.STOCK_MEDIA_STOP
         state.set_from_stock(icon, gtk.ICON_SIZE_MENU)
 
-    def __update_state_icon_pause(self, watcher, state, icon):
+    def __update_state_icon_pause(self, player, state, icon):
         if self.model.sourced:
             state.set_from_stock(icon, gtk.ICON_SIZE_MENU)
 
@@ -150,20 +150,19 @@ class PlayQueue(SongList):
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_fixed_width(24)
 
-    def __init__(self, watcher):
-        super(PlayQueue, self).__init__(watcher)
+    def __init__(self, watcher, player):
+        super(PlayQueue, self).__init__(watcher, player)
         self.set_size_request(-1, 120)
         self.model = self.get_model()
-        self.connect('row-activated', self.__go_to)
+        self.connect('row-activated', self.__go_to, player)
 
         self.connect_object('popup-menu', self.__popup, watcher)
         self.enable_drop()
         self.connect_object('destroy', self.__write, self.model)
         self.__fill()
 
-    def __go_to(self, view, path, column):
+    def __go_to(self, view, path, column, player):
         self.model.go_to(self.model.get_iter(path))
-        from player import playlist as player
         player.next()
 
     def __fill(self):

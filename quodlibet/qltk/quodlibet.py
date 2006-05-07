@@ -80,7 +80,7 @@ class MainSongList(SongList):
             self.header_name = "~current"
 
     def __init__(self, watcher, player, visible):
-        super(MainSongList, self).__init__(watcher)
+        super(MainSongList, self).__init__(watcher, player)
         self.set_rules_hint(True)
         s = watcher.connect_object('removed', map, player.remove)
         self.connect_object('destroy', watcher.disconnect, s)
@@ -134,7 +134,7 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.qexpander = QueueExpander(
-            self.ui.get_widget("/Menu/View/Queue"), watcher)
+            self.ui.get_widget("/Menu/View/Queue"), watcher, player)
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 

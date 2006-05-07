@@ -10,9 +10,9 @@
 import time
 
 class CountManager(object):
-    def __init__(self, watcher, pl):
-        watcher.connect('song-ended', self.__end, pl)
-        watcher.connect('song-started', self.__start)
+    def __init__(self, watcher, player, pl):
+        player.connect_object('song-ended', self.__end, watcher, pl)
+        player.connect_object('song-started', self.__start, watcher)
 
     def __start(self, watcher, song):
         if song is not None:
