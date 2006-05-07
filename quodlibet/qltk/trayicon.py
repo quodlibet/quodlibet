@@ -229,7 +229,7 @@ class TrayIcon(object):
     def __Menu(self, watcher, window, player):
         playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__play_pause, player)
-        safter = StopAfterMenu(watcher, player)
+        safter = StopAfterMenu(player)
         playpause.connect(
             'button-press-event', self.__play_button_press, safter)
 

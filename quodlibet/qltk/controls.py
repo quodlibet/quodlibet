@@ -26,7 +26,7 @@ class SeekBar(HSlider):
     __sig = None
     __seekable = True
 
-    def __init__(self, watcher, player):
+    def __init__(self, player):
         hbox = gtk.HBox(spacing=3)
         l = gtk.Label("0:00")
         hbox.pack_start(l)
@@ -51,7 +51,7 @@ class SeekBar(HSlider):
         m.append(gtk.SeparatorMenuItem())
         i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
         i.connect_object(
-            'activate', qltk.bookmarks.EditBookmarks, self, watcher, player)
+            'activate', qltk.bookmarks.EditBookmarks, self, player)
         m.append(i)
         m.show_all()
         self.child.connect_object(
@@ -59,8 +59,8 @@ class SeekBar(HSlider):
         self.connect_object('popup-menu', self.__popup_menu, m, player)
 
         gobject.timeout_add(1000, self.__check_time, player)
-        watcher.connect('song-started', self.__song_changed, l, m)
-        watcher.connect_object('seek', self.__seeked, player)
+        player.connect('song-started', self.__song_changed, l, m)
+        player.connect('seek', self.__seeked)
 
     def __check_menu(self, menu, event, player):
         if event.button == 3:
@@ -116,7 +116,7 @@ class SeekBar(HSlider):
         value -= self.__remaining.get_active() * max
         timer.set_text(util.format_time(value))
 
-    def __song_changed(self, watcher, song, label, menu):
+    def __song_changed(self, player, song, label, menu):
         if song and song.get("~#length", 0) > 0:
             length = song["~#length"]
             self.scale.set_range(0, length)
@@ -166,21 +166,21 @@ class Volume(VSlider):
         config.set("memory", "volume", str(slider.get_value()))
 
 class StopAfterMenu(gtk.Menu):
-    def __init__(self, watcher, player):
-        gtk.Menu.__init__(self)
+    def __init__(self, player):
+        super(StopAfterMenu, self).__init__()
         self.__item = gtk.CheckMenuItem(_("Stop after this song"))
         self.__item.set_active(False)
         self.append(self.__item)
 
-        watcher.connect('paused', self.__paused)
-        watcher.connect('song-ended', self.__ended, player)
+        player.connect('paused', self.__paused)
+        player.connect('song-ended', self.__ended)
         
         self.__item.show()
 
-    def __paused(self, watcher):
+    def __paused(self, player):
         self.active = False
 
-    def __ended(self, watcher, song, stopped, player):
+    def __ended(self, player, song, stopped):
         if stopped: self.active = False
         elif self.active: player.paused = True
 
@@ -189,7 +189,7 @@ class StopAfterMenu(gtk.Menu):
     active = property(__get_active, __set_active)
 
 class PlayControls(gtk.VBox):
-    def __init__(self, watcher, player):
+    def __init__(self, player):
         gtk.VBox.__init__(self, spacing=3)
         hbox = gtk.HBox(spacing=3)
         prev = gtk.Button()
@@ -199,7 +199,7 @@ class PlayControls(gtk.VBox):
         play = gtk.ToggleButton()
         play.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY, SIZE))
         hbox.pack_start(play)
-        safter = StopAfterMenu(watcher, player)
+        safter = StopAfterMenu(player)
 
         next = gtk.Button()
         next.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_NEXT, SIZE))
@@ -210,17 +210,17 @@ class PlayControls(gtk.VBox):
         hbox = gtk.HBox(spacing=3)
         self.volume = Volume(player)
         hbox.pack_start(self.volume, expand=False)
-        hbox.pack_start(SeekBar(watcher, player))
+        hbox.pack_start(SeekBar(player))
         self.pack_start(hbox, expand=False, fill=False)
 
         prev.connect_object('clicked', self.__previous, player)
-        play.connect('toggled', self.__playpause, watcher, player)
+        play.connect('toggled', self.__playpause, player)
         play.connect('button-press-event', self.__play_button_press, safter)
         play.connect_object('popup-menu', self.__popup, safter)
         next.connect_object('clicked', self.__next, player)
-        watcher.connect('song-started', self.__song_started, next)
-        watcher.connect_object('paused', play.set_active, False)
-        watcher.connect_object('unpaused', play.set_active, True)
+        player.connect('song-started', self.__song_started, next)
+        player.connect_object('paused', play.set_active, False)
+        player.connect_object('unpaused', play.set_active, True)
         self.show_all()
 
     def __play_button_press(self, activator, event, safter):
@@ -232,10 +232,10 @@ class PlayControls(gtk.VBox):
         safter.popup(None, None, None, button, time)
         return True
 
-    def __song_started(self, watcher, song, next):
+    def __song_started(self, player, song, next):
         next.set_sensitive(bool(song))
 
-    def __playpause(self, button, watcher, player):
+    def __playpause(self, button, player):
         if button.get_active() and player.song is None:
             player.reset()
         else: player.paused = not button.get_active()
