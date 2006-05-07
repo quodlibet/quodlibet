@@ -152,7 +152,7 @@ class QuodLibetWindow(gtk.Window):
 
         # cover image
         self.image = CoverImage()
-        watcher.connect('song-started', self.image.set_song)
+        player.connect('song-started', self.image.set_song)
         hbox.pack_start(self.image, expand=False)
 
         realvbox.pack_start(hbox, expand=False)
@@ -226,11 +226,11 @@ class QuodLibetWindow(gtk.Window):
 
         watcher.connect('removed', self.__set_time)
         watcher.connect('added', self.__set_time)
-        watcher.connect('changed', self.__update_title, player)
-        watcher.connect('song-started', self.__song_started, player)
-        watcher.connect_after('song-ended', self.__song_ended, player)
-        watcher.connect('paused', self.__update_paused, True)
-        watcher.connect('unpaused', self.__update_paused, False)
+        watcher.connect_object('changed', self.__update_title, player)
+        player.connect('song-started', self.__song_started)
+        player.connect_after('song-ended', self.__song_ended)
+        player.connect('paused', self.__update_paused, True)
+        player.connect('unpaused', self.__update_paused, False)
 
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
@@ -505,7 +505,7 @@ class QuodLibetWindow(gtk.Window):
         self.__hide_headers()
         self.__refresh_size()
 
-    def __update_paused(self, watcher, paused):
+    def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
         if paused: key = gtk.STOCK_MEDIA_PLAY
         else: key = gtk.STOCK_MEDIA_PAUSE
@@ -514,7 +514,7 @@ class QuodLibetWindow(gtk.Window):
         menu.child.set_text(text)
         menu.child.set_use_underline(True)
 
-    def __song_ended(self, watcher, song, stopped, player):
+    def __song_ended(self, player, song, stopped):
         if song is None: return
         if not self.browser.dynamic(song):
             player.remove(song)
@@ -523,15 +523,15 @@ class QuodLibetWindow(gtk.Window):
                 self.songlist.model.remove(iter)
                 self.__set_time()
 
-    def __update_title(self, watcher, songs, player):
+    def __update_title(self, player, songs):
         if player.song in songs:
             song = player.song
             if song:
                 self.set_title("Quod Libet - " + song.comma("~title~version"))
             else: self.set_title("Quod Libet")
 
-    def __song_started(self, watcher, song, player):
-        self.__update_title(watcher, [song], player)
+    def __song_started(self, player, song):
+        self.__update_title(player, [song])
 
         for wid in ["Jump", "Next", "EditTags", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
