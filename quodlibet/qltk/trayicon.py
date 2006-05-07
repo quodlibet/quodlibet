@@ -109,8 +109,8 @@ class Preferences(qltk.Window):
         else:
             for cb in cbs: cb.set_inconsistent(True)
 
-        if watcher.song is None: text = _("Not playing")
-        else: text = Pattern(entry.get_text()) % watcher.song
+        if player.song is None: text = _("Not playing")
+        else: text = Pattern(entry.get_text()) % player.song
         label.set_text(text)
         tips.set_tip(label.get_parent(), text)
         config.set("plugins", "icon_tooltip", entry.get_text())
