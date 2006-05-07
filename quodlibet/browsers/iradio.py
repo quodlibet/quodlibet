@@ -148,6 +148,8 @@ class InternetRadio(gtk.HBox, Browser):
 
     def __init__(self, watcher, player):
         super(InternetRadio, self).__init__(spacing=12)
+        self.commands = {"add-station": self.__add_station_remote}
+
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         self.__search = gtk.Entry()
         self.pack_start(add, expand=False)
@@ -211,10 +213,21 @@ class InternetRadio(gtk.HBox, Browser):
             klass.__stations.save(STATIONS)
     __changed = classmethod(__changed)
 
+    def __add_station_remote(self, *args):
+        gtk.threads_enter()
+        if len(args) == 3:
+            self.__add(None, args[0])
+        else:
+            self.__add_station(args[0], args[1])
+        gtk.threads_leave()
+
     def __add(self, button, watcher):
         uri = (AddNewStation(qltk.get_top_parent(self)).run() or "").strip()
         if uri == "": return
-        elif uri.lower().endswith(".pls") or uri == SACREDCHAO:
+        else: self.__add_station(uri, watcher)
+
+    def __add_station(self, uri, watcher):
+        if uri.lower().endswith(".pls") or uri == SACREDCHAO:
             if isinstance(uri, unicode): uri = uri.encode('utf-8')
             try: sock = urllib.urlopen(uri)
             except EnvironmentError, e:
