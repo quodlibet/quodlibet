@@ -32,7 +32,6 @@ from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu
 from qltk.trayicon import TrayIcon
 from qltk.watcher import SongWatcher
-from util import to
 
 global main, watcher
 main = watcher = None
@@ -73,11 +72,11 @@ def init():
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
-
-    SongList.pm = PluginManager(watcher, [
+    
+    pm = PluginManager(watcher, [
         os.path.join(const.BASEDIR, "plugins"),
         os.path.join(const.USERDIR, "plugins")], "legacy")
-    SongList.pm.rescan()
+    pm.rescan()
 
     SongProperties.plugins = EditingPlugins(
         [os.path.join(const.BASEDIR, "plugins", "editing"),
@@ -127,7 +126,6 @@ def save_library(window, player):
 
     window.destroy()
 
-    print to(_("Saving library."))
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
