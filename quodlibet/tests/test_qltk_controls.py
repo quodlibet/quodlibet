@@ -6,7 +6,7 @@ from qltk.watcher import SongWatcher
 
 class TPlayControls(TestCase):
     def test_ctr(self):
-        PlayControls(SongWatcher(), PlaylistPlayer('fakesink')).destroy()
+        PlayControls(PlaylistPlayer('fakesink')).destroy()
 add(TPlayControls)
 
 class TVolume(TestCase):
