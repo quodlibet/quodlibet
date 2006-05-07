@@ -227,9 +227,7 @@ class QuodLibetWindow(gtk.Window):
         watcher.connect('removed', self.__set_time)
         watcher.connect('added', self.__set_time)
         watcher.connect_object('changed', self.__update_title, player)
-        # We still need to use the watcher (or some other idle_add method)
-        # here to avoid hitting the recursion limit.
-        watcher.connect_object_after('song-ended', self.__song_ended, player)
+        player.connect('song-ended', self.__song_ended)
         player.connect('song-started', self.__song_started)
         player.connect('paused', self.__update_paused, True)
         player.connect('unpaused', self.__update_paused, False)

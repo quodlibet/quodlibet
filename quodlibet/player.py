@@ -168,8 +168,12 @@ class PlaylistPlayer(gobject.GObject):
             self.bin.set_property('uri', '')
 
     def __end(self, stopped=True):
-        self.emit('song-ended', self.song, stopped)
+        song = self.song
+        # We need to set self.song to None before calling our signal
+        # handlers. Otherwise, if they try to end the song they're given
+        # (e.g. by removing it), then we get in an infinite loop.
         self.song = None
+        self.emit('song-ended', song, stopped)
         if not stopped:
             self.__source.next_ended()
             self.__get_song(True)
