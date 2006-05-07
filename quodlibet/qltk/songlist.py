@@ -36,12 +36,12 @@ OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
 
 class PlaylistMux(object):
 
-    def __init__(self, watcher, q, pl):
+    def __init__(self, player, q, pl):
         self.q = q
         self.pl = pl
-        watcher.connect('song-started', self.__check_q)
+        player.connect('song-started', self.__check_q)
 
-    def __check_q(self, watcher, song):
+    def __check_q(self, player, song):
         if song is not None:
             iter = self.q.find(song)
             if iter: self.q.remove(iter)

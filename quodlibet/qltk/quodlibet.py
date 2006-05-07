@@ -136,7 +136,7 @@ class QuodLibetWindow(gtk.Window):
         self.qexpander = QueueExpander(
             self.ui.get_widget("/Menu/View/Queue"), watcher)
         self.playlist = PlaylistMux(
-            watcher, self.qexpander.model, self.songlist.model)
+            player, self.qexpander.model, self.songlist.model)
 
         # song info (top part of window)
         hbox = gtk.HBox(spacing=6)
