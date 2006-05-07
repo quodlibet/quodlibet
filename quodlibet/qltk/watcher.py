@@ -58,6 +58,19 @@ class SongWatcher(gtk.Object):
     # the currently playing song.
     song = None
 
+    def __init__(self, player=None):
+        super(SongWatcher, self).__init__()
+        if player:
+            player.connect_object(
+                'song-started', SongWatcher.song_started, self)
+            player.connect_object('song-ended', SongWatcher.song_ended, self)
+            player.connect_object('seek', SongWatcher.seek, self)
+            player.connect_object('paused', SongWatcher.set_paused, self, True)
+            player.connect_object(
+                'unpaused', SongWatcher.set_paused, self, False)
+            player.connect_object('error', SongWatcher.error, self)
+            player.info = self
+
     def changed(self, songs):
         if songs: gobject.idle_add(self.emit, 'changed', songs)
 

@@ -66,7 +66,7 @@ def init():
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    watcher = SongWatcher()
+    watcher = SongWatcher(player.playlist)
 
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
@@ -105,7 +105,7 @@ def init():
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()
     song = library.get(config.get("memory", "song"))
-    player.playlist.setup(watcher, main.playlist, song)
+    player.playlist.setup(main.playlist, song)
     main.show()
 
     return main

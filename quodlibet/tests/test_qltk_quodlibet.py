@@ -25,10 +25,10 @@ add(TMainSongList)
 
 class TQuodLibetWindow(TestCase):
     def setUp(self):
-        widgets.watcher = self.watcher = SongWatcher()
         self.player = PlaylistPlayer('fakesink')
+        widgets.watcher = self.watcher = SongWatcher(self.player)
         widgets.main = self.win = QuodLibetWindow(self.watcher, self.player)
-        self.player.setup(self.watcher, self.win.playlist, None)
+        self.player.setup(self.win.playlist, None)
 
     def test_ctr(self):
         pass

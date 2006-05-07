@@ -2,10 +2,11 @@ from tests import add, TestCase
 
 import gtk
 from qltk.watcher import SongWatcher
+from player import PlaylistPlayer
 
 class TSongWatcher(TestCase):
     def setUp(self):
-        self.watcher = SongWatcher()
+        self.watcher = SongWatcher(PlaylistPlayer("fakesink"))
 
     def __changed(self, watcher, song, expected):
         self.failUnlessEqual(expected.pop(0), song)

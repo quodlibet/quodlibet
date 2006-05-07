@@ -34,7 +34,7 @@ def GStreamerSink(pipeline):
     if pipe: return pipe, pipeline
     else: raise NoSinkError(pipeline)
 
-class PlaylistPlayer(object):
+class PlaylistPlayer(gobject.GObject):
     """Interfaces between a QL PlaylistModel and a GSt playbin."""
 
     __paused = False
@@ -43,7 +43,20 @@ class PlaylistPlayer(object):
     __length = 1
     __volume = 1.0
 
+    __gsignals__ = {
+        'song-started':
+        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        'song-ended':
+        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, bool)),
+        'seek':
+        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, int)),
+        'paused': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'unpaused': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, bool)),
+        }
+
     def __init__(self, sinkname):
+        super(PlaylistPlayer, self).__init__()
         device, sinkname = GStreamerSink(sinkname)
         self.name = sinkname
         self.bin = gst.element_factory_make('playbin')
@@ -65,10 +78,9 @@ class PlaylistPlayer(object):
             self.error("%s" % err, True)
         return True
 
-    def setup(self, info, source, song):
+    def setup(self, source, song):
         """Connect to a SongWatcher, a PlaylistModel, and load a song."""
         self.__source = source
-        self.info = info
         self.go_to(song)
 
     def get_position(self):
@@ -85,7 +97,7 @@ class PlaylistPlayer(object):
         if paused != self.__paused:
             self.__paused = paused
             if self.song:
-                if self.info: self.info.set_paused(paused)
+                self.emit((paused and 'paused') or 'unpaused')
                 if self.__paused:
                    if not self.song.is_file:
                        self.bin.set_state(gst.STATE_NULL)
@@ -108,8 +120,8 @@ class PlaylistPlayer(object):
         self.bin.set_state(gst.STATE_NULL)
         self.song = None
         self.paused = True
-        self.info.error(code, lock)
-        self.info.song_started(None)
+        self.emit('error', code, lock)
+        self.emit('song-started', None)
         config.set("memory", "song", "")
 
     def __load_song(self, song, lock):
@@ -136,7 +148,7 @@ class PlaylistPlayer(object):
                 1.0, gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH,
                 gst.SEEK_TYPE_SET, gst_time, gst.SEEK_TYPE_NONE, 0)
             if self.bin.send_event(event):
-                self.info.seek(self.song, pos)
+                self.emit('seek', self.song, pos)
 
     def remove(self, song):
         if self.song is song: self.__end(False)
@@ -144,7 +156,7 @@ class PlaylistPlayer(object):
     def __get_song(self, lock=False):
         song = self.__source.current
         self.song = song
-        self.info.song_started(song)
+        self.emit('song-started', song)
         self.volume = self.__volume
         if song is not None:
             config.set("memory", "song", song["~filename"])
@@ -156,7 +168,7 @@ class PlaylistPlayer(object):
             self.bin.set_property('uri', '')
 
     def __end(self, stopped=True):
-        self.info.song_ended(self.song, stopped)
+        self.emit('song-ended', self.song, stopped)
         self.song = None
         if not stopped:
             self.__source.next_ended()
@@ -205,8 +217,10 @@ class PlaylistPlayer(object):
                     changed = True
 
             if changed:
-                if self.song.multisong: self.info.song_started(proxy)
-                else: self.info.changed([proxy])
+                if self.song.multisong:
+                    self.emit('song-started', proxy)
+                elif self.info is not None:
+                    self.info.changed([proxy])
 
     def reset(self):
         self.__source.reset()
