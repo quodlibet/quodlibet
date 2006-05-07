@@ -9,6 +9,7 @@
 
 import os
 import sys
+import traceback
 
 import const
 
@@ -40,7 +41,11 @@ if isdir(BROWSERS):
 
 browsers = []
 for name in modules:
-    browser = __import__(name, globals(), locals(), self)
+    try: browser = __import__(name, {}, {}, self)
+    except Exception, err:
+        traceback.print_exc()
+        continue
+
     try: browsers.extend(browser.browsers)
     except AttributeError:
         print "W: %s doesn't contain any browsers." % browser.__name__

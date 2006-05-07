@@ -19,7 +19,11 @@ modules = ["%s.%s" % (self, basename(m)) for m in modules]
 
 _infos = {}
 for i, name in enumerate(modules):
-    format = __import__(name, globals(), locals(), self)
+    try: format = __import__(name, {}, {}, self)
+    except Exception, err:
+        traceback.print_exc()
+        continue
+    format = __import__(name, {}, {}, self)
     for ext in format.extensions:
         _infos[ext] = format.info
     # Migrate pre-0.16 library, which was using an undocumented "feature".
