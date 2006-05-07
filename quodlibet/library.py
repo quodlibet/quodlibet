@@ -162,18 +162,6 @@ class Library(dict):
         if text == "": songs = self.values()
         else:
             songs = filter(Query(text, star).search, self.itervalues())
-
-        if sort is None: pass
-        elif callable(sort):
-            songs.sort(sort)
-        else:
-            header = str(sort) # sanity check
-            if header == "~#track": header = "album"
-            elif header == "~#disc": header = "album"
-            elif header == "~length": header = "~#length"
-            songs = [(song(header), song) for song in songs]
-            songs.sort()
-            songs = [song[1] for song in songs]
         return songs
 
     def save(self, fn):

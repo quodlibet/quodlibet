@@ -80,9 +80,6 @@ class TLibrary(TestCase):
         songs = self.lib.query("artist = /./")
         self.failUnlessEqual(songs, [CORPUS[1]])
         songs = self.lib.query("title = !/./")
-    def test_query_sorted(self):
-        songs = self.lib.query("title = /./", "title")
-        self.failUnlessEqual(songs, CORPUS[1:])
     def test_query_simple(self):
         songs = self.lib.query("C")
         self.failUnlessEqual(songs, [CORPUS[2]])
