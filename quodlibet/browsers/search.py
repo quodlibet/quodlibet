@@ -38,6 +38,7 @@ class EmptyBar(gtk.HBox, Browser):
         # then refreshes.
         self._text = None
         self.__main = bool(player)
+        self.commands = {"query": self.__query}
 
     def dynamic(self, song):
         if self._text is not None:
@@ -50,6 +51,10 @@ class EmptyBar(gtk.HBox, Browser):
         self._text = text
 
     status = property(lambda s: s._text)
+
+    def __query(self, text, watcher, window, player):
+        self.set_text(text)
+        self.activate()
 
     def save(self):
         config.set("browsers", "query_text", self._text.encode('utf-8'))

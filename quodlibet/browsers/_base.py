@@ -33,6 +33,9 @@ class Browser(object):
     # A list of column headers to display; None means all are okay.
     headers = None
 
+    # Per-browser remote commands.
+    commands = {}
+
     # Called after library and MainWindow initialization, before the
     # GTK main loop starts.
     def init(klass, watcher): pass

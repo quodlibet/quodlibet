@@ -72,9 +72,18 @@ class FIFOControl(object):
             for command in commands:
                 try:
                     try: cmd, arg = command.split(' ', 1)
-                    except: self[command](*args)
+                    except ValueError: self[command](*args)
                     else: self[cmd](arg, *args)
-                except: print "W: Invalid command %s received." % command
+                except KeyError:
+                    commands = args[1].browser.commands
+                    try:
+                        try: cmd, arg = command.split(' ', 1)
+                        except ValueError: commands[command](*args)
+                        else: commands[cmd](arg, *args)
+                    except:
+                        print "W: Invalid command %s received." % command
+                except:
+                    print "W: Invalid command %s received." % command
             return True
 
     def _previous(self, watcher, window, player): player.previous()
@@ -113,11 +122,6 @@ class FIFOControl(object):
         elif value in ["1", "on"]: repeat.set_active(True)
         elif value in ["t", "toggle"]:
             repeat.set_active(not repeat.get_active())
-
-    def _query(self, value, watcher, window, player):
-        if window.browser.can_filter(None):
-            window.browser.set_text(value)
-            window.browser.activate()
 
     def _seek(self, time, watcher, window, player):
         seek_to = player.get_position()
