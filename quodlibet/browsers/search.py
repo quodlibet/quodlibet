@@ -37,13 +37,13 @@ class EmptyBar(gtk.HBox, Browser):
         # avoid the song list changing when the user switches browses and
         # then refreshes.
         self._text = None
+        self._filter = None
         self.__main = bool(player)
         self.commands = {"query": self.__query}
 
     def dynamic(self, song):
-        if self._text is not None:
-            try: return Query(self._text, SongList.star).search(song)
-            except Query.error: return True
+        if self._filter is not None:
+            return self._filter(song)
         else: return True
 
     def set_text(self, text):
@@ -65,9 +65,10 @@ class EmptyBar(gtk.HBox, Browser):
 
     def activate(self):
         if self._text is not None:
-            try: songs = library.query(self._text, star=SongList.star)
+            try: self._filter = Query(self._text, star=SongList.star).search
             except Query.error: pass
             else:
+                songs = filter(self._filter, library.itervalues())
                 self.emit('songs-selected', songs, None)
                 if self.__main: self.save()
 
@@ -188,9 +189,10 @@ class SearchBar(EmptyBar):
 
     def activate(self):
         if self._text is not None:
-            try: songs = library.query(self._text, star=SongList.star)
+            try: self._filter = Query(self._text, star=SongList.star).search
             except Query.error: pass
             else:
+                songs = filter(self._filter, library.itervalues())
                 self.__combo.prepend_text(self._text)
                 if self.__limit.get_property('visible'):
                     songs = self.__limit.limit(songs)

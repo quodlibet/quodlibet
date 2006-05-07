@@ -55,6 +55,8 @@ class TEmptyBar(TestCase):
     def test_dynamic(self):
         self.failUnless(self.bar.dynamic(SONGS[0]))
         self.bar.set_text("this does not match any song")
+        self.expected = []
+        self.bar.activate()
         self.failIf(self.bar.dynamic(SONGS[0]))
 
     def test_filter(self):
