@@ -41,7 +41,7 @@ class SongProperties(qltk.Window):
         for page in pages: notebook.append_page(page)
         self.set_border_width(12)
 
-        fbasemodel = gtk.ListStore(object, str, str, str)
+        fbasemodel = gtk.ListStore(object, str)
         fmodel = gtk.TreeModelSort(fbasemodel)
         fview = HintedTreeView(fmodel)
         fview.connect('button-press-event', self.__pre_selection_changed)
@@ -64,19 +64,17 @@ class SongProperties(qltk.Window):
             sw.show_all()
             paned.pack1(sw, shrink=True, resize=True)
 
+        # Invisible selections behave a little strangely. So, when
+        # handling this selection, there's a lot of if len(model) == 1
+        # checks that "hardcode" the first row being selected.
+
         for song in songs:
-            fbasemodel.append(
-                row = [song,
-                       util.fsdecode(song("~basename")),
-                       util.fsdecode(song("~dirname")),
-                       song["~filename"]])
+            fbasemodel.append(row=[song, util.fsdecode(song("~basename"))])
 
         self.connect_object('changed', SongProperties.__set_title, self)
 
         selection.select_all()
         paned.pack2(notebook, shrink=False, resize=True)
-        self.connect_object('destroy', fview.set_model, None)
-        self.connect_object('destroy', gtk.ListStore.clear, fbasemodel)
 
         s1 = watcher.connect(
             'changed', self.__refresh, fbasemodel, fview)
@@ -94,7 +92,25 @@ class SongProperties(qltk.Window):
         self.show()
 
     def __remove(self, watcher, songs, model, selection, sig):
-        map(model.remove, [row.iter for row in model if row[0] in songs])
+        # If the handler is unblocked, then the selection gets updated
+        # with some half-gone rows and we get a null-type error. So,
+        # block the changed handler. Instead, track changes manually.
+        # We can't just unconditionally emit a changed signal on the
+        # selection or we risk voiding edits on a selection that
+        # doesn't include the removed songs.
+        selection.handler_block(sig)
+        if len(model) == 1: rows = [(0,)]
+        else: rows = selection.get_selected_rows()[1]
+        to_remove = []
+        changed = False
+        for row in model:
+            if row[0] in songs:
+                to_remove.append(row.iter)
+                changed = changed or (row.path in rows)
+        map(model.remove, to_remove)
+        selection.handler_unblock(sig)
+        if changed:
+            selection.emit('changed')
 
     def __set_title(self, songs):
         if songs:
@@ -106,15 +122,14 @@ class SongProperties(qltk.Window):
 
     def __refresh(self, watcher, songs, model, view):
         view.freeze_notify()
-        rows = view.get_selection().get_selected_rows()[1]
-        is_one_song = len(model) == 1
+        if len(model) == 1: rows = [(0,)]
+        else: rows = view.get_selection().get_selected_rows()[1]
         changed = False
         for row in model:
             song = row[0]
             if song in songs:
-                model.set(row.iter, 1, song("~basename"),
-                          2, song("~dirname"), 3, song["~filename"])
-                changed = changed or (row.path in rows) or is_one_song
+                row[1] = song("~basename")
+                changed = changed or (row.path in rows)
         view.thaw_notify()
         if changed:
             view.get_selection().emit('changed')
@@ -131,7 +146,8 @@ class SongProperties(qltk.Window):
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()
-        if model and len(model) == 1: self.emit('changed', [model[(0,)][0]])
+        if len(model) == 1:
+            self.emit('changed', [model[(0,)][0]])
         else:
             model, rows = selection.get_selected_rows()
             songs = [model[row][0] for row in rows]
