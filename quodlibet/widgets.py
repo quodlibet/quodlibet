@@ -19,7 +19,6 @@ import qltk.session
 import stock
 import util
 
-from library import library
 from plugins import PluginManager
 from plugins.editing import EditingPlugins
 from plugins.songsmenu import SongsMenuPlugins
@@ -44,7 +43,7 @@ def website_wrap(activator, link):
               "your $BROWSER variable, or make sure "
               "/usr/bin/sensible-browser exists.")).run()
 
-def init():
+def init(player, library):
     global main, watcher
 
     qltk.session.init()
@@ -66,7 +65,7 @@ def init():
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    player.playlist.connect('error', player_error)
+    player.connect('error', player_error)
 
     watcher = SongWatcher()
 
@@ -75,7 +74,7 @@ def init():
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
     
-    pm = PluginManager(watcher, player.playlist, [
+    pm = PluginManager(watcher, player, [
         os.path.join(const.BASEDIR, "plugins"),
         os.path.join(const.USERDIR, "plugins")], "legacy")
     pm.rescan()
@@ -91,28 +90,28 @@ def init():
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(watcher)
 
-    main = QuodLibetWindow(watcher, player.playlist)
+    main = QuodLibetWindow(watcher, player)
     main.connect('destroy', gtk.main_quit)
 
     gtk.about_dialog_set_url_hook(website_wrap)
 
     # These stay alive in the watcher/other callbacks.
-    FSInterface(player.playlist)
-    FIFOControl(watcher, main, player.playlist)
+    FSInterface(player)
+    FIFOControl(watcher, main, player)
 
-    CountManager(watcher, player.playlist, main.playlist)
+    CountManager(watcher, player, main.playlist)
 
-    TrayIcon(watcher, main, player.playlist)
+    TrayIcon(watcher, main, player)
 
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()
     song = library.get(config.get("memory", "song"))
-    player.playlist.setup(main.playlist, song)
+    player.setup(main.playlist, song)
     main.show()
 
     return main
 
-def save_library(window, player):
+def save_library(window, player, library):
     window.destroy()
     player.destroy()
 

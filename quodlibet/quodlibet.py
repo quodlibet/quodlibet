@@ -18,7 +18,11 @@ global play
 play = False
 
 def main():
-    import player
+    # Load configuration data and scan the library for new/changed songs.
+    config.init(const.CONFIG)
+    library = load_library()
+    player = load_player()
+
     import util
     import widgets
 
@@ -30,10 +34,10 @@ def main():
     else: util.RATING_PRECISION = 1.0/ratings
 
     locale.getlocale(locale.LC_NUMERIC)
-    window = widgets.init()
+    window = widgets.init(player, library)
     if "--debug" not in sys.argv:
-        enable_periodic_save()
-        gtk.quit_add(1, widgets.save_library, window, player.playlist)
+        enable_periodic_save(library)
+        gtk.quit_add(1, widgets.save_library, window, player, library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
     if play: player.playlist.paused = False
@@ -135,7 +139,7 @@ def control(c):
         else:
             raise SystemExit
 
-def enable_periodic_save():
+def enable_periodic_save(library):
     # Check every 5 minutes to see if the library/config on disk are
     # over 15 minutes old; if so, update them. This function can, in theory,
     # break if saving the library takes more than 5 minutes.
@@ -144,7 +148,6 @@ def enable_periodic_save():
     import util
 
     from threading import Thread
-    from library import library
 
     def save():
         if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
@@ -273,13 +276,14 @@ def load_library():
     if config.get("settings", "scan"):
         for a, c, r in library.scan(config.get("settings", "scan").split(":")):
             pass
+    return library
 
 def load_player():
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
     import player
     sink = config.get("settings", "pipeline")
-    try: player.init(sink)
+    try: playlist = player.init(sink)
     except player.NoSinkError:
         import widgets, gobject
         gobject.idle_add(widgets.no_sink_quit, sink)
@@ -292,6 +296,7 @@ def load_player():
         gtk.main()
         config.write(const.CONFIG)
         raise SystemExit(True)
+    else: return playlist
 
 if __name__ == "__main__":
     basedir = os.path.dirname(os.path.realpath(__file__))
@@ -317,9 +322,5 @@ if __name__ == "__main__":
     import pygst
     pygst.require('0.10')
 
-    # Load configuration data and scan the library for new/changed songs.
     import config
-    config.init(const.CONFIG)
-    load_library()
-    load_player()
     main()
