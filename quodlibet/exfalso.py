@@ -19,7 +19,7 @@ class fakegst(object):
 def main(argv):
     import util
     util.python_init()
-    util.gettext_install("quodlibet", unicode=True)
+    util.gettext_install()
     util.ctypes_init()
 
     import const
