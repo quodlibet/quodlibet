@@ -62,7 +62,6 @@ class PlaylistPlayer(gtk.Object):
         self.bin = gst.element_factory_make('playbin')
         self.bin.set_property('video-sink', None)
         self.bin.set_property('audio-sink', device)
-        self.__device = device
         bus = self.bin.get_bus()
         bus.add_signal_watch()
         bus.connect('message', self.__message)
@@ -71,6 +70,7 @@ class PlaylistPlayer(gtk.Object):
 
     def __message(self, bus, message):
         if message.type == gst.MESSAGE_EOS:
+            self.__source.next_ended()
             self.__end(False)
         elif message.type == gst.MESSAGE_TAG:
             self.__tag(message.parse_tag())
@@ -80,7 +80,7 @@ class PlaylistPlayer(gtk.Object):
         return True
 
     def setup(self, source, song):
-        """Connect to a SongWatcher, a PlaylistModel, and load a song."""
+        """Connect to a PlaylistModel, and load a song."""
         self.__source = source
         self.go_to(song)
 
@@ -107,14 +107,13 @@ class PlaylistPlayer(gtk.Object):
     def __get_paused(self): return self.__paused
     paused = property(__get_paused, __set_paused)
 
-    def set_volume(self, v):
+    def __set_volume(self, v):
         self.__volume = v
         if self.song is None: self.bin.set_property('volume', v)
         else:
             v = max(0.0, min(4.0, v * self.song.replay_gain()))
             self.bin.set_property('volume', v)
-    def get_volume(self): return self.__volume
-    volume = property(get_volume, set_volume)
+    volume = property(lambda s: s.__volume, __set_volume)
 
     def error(self, code, lock):
         self.bin.set_property('uri', '')
@@ -124,13 +123,6 @@ class PlaylistPlayer(gtk.Object):
         self.emit('error', code, lock)
         self.emit('song-started', None)
         config.set("memory", "song", "")
-
-    def __load_song(self, song, lock):
-        if not self.bin.set_state(gst.STATE_NULL): return
-        self.bin.set_property('uri', song("~uri"))
-        self.__length = song["~#length"] * 1000
-        if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
-        else: self.bin.set_state(gst.STATE_PLAYING)
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -148,32 +140,37 @@ class PlaylistPlayer(gtk.Object):
                 self.emit('seek', self.song, pos)
 
     def remove(self, song):
-        if self.song is song: self.__end(False)
+        if self.song is song:
+            self.__end(False)
 
-    def __get_song(self, lock=False):
-        song = self.__source.current
-        self.song = song
-        self.emit('song-started', song)
+    def __end(self, stopped):
+        # We need to set self.song to None before calling our signal
+        # handlers. Otherwise, if they try to end the song they're given
+        # (e.g. by removing it), then we get in an infinite loop.
+        song = self.song
+        self.song = None
+        self.emit('song-ended', song, stopped)
+
+        # Then, set up the next song.
+        self.song = self.__source.current
+        self.emit('song-started', self.song)
+
+        # Reset Replay Gain levels based on the new song.
         self.volume = self.__volume
-        if song is not None:
-            config.set("memory", "song", song["~filename"])
-            self.__load_song(song, lock)
+
+        if self.song is not None:
+            config.set("memory", "song", self.song["~filename"])
+            # Changing the URI in a playbin requires "resetting" it.
+            if not self.bin.set_state(gst.STATE_NULL): return
+            self.bin.set_property('uri', self.song("~uri"))
+            self.__length = self.song["~#length"] * 1000
+            if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
+            else: self.bin.set_state(gst.STATE_PLAYING)
         else:
             config.set("memory", "song", "")
             self.paused = True
             self.bin.set_state(gst.STATE_NULL)
             self.bin.set_property('uri', '')
-
-    def __end(self, stopped=True):
-        song = self.song
-        # We need to set self.song to None before calling our signal
-        # handlers. Otherwise, if they try to end the song they're given
-        # (e.g. by removing it), then we get in an infinite loop.
-        self.song = None
-        self.emit('song-ended', song, stopped)
-        if not stopped:
-            self.__source.next_ended()
-            self.__get_song(True)
 
     def __tag(self, tags):
         if self.song and self.song.fill_metadata:
@@ -226,26 +223,22 @@ class PlaylistPlayer(gtk.Object):
     def reset(self):
         self.__source.reset()
         if self.__source.current is not None:
-            self.__end()
-            self.__get_song()
+            self.__end(True)
             if self.song: self.paused = False
 
     def next(self):
         self.__source.next()
-        self.__end()
-        self.__get_song()
+        self.__end(True)
         if self.song: self.paused = False
 
     def previous(self):
         self.__source.previous()
-        self.__end()
-        self.__get_song()
+        self.__end(True)
         if self.song: self.paused = False
 
     def go_to(self, song):
         self.__source.go_to(song)
-        self.__end()
-        self.__get_song()
+        self.__end(True)
 
 global playlist
 playlist = None
