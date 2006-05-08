@@ -7,26 +7,24 @@
 # $Id$
 
 import __builtin__
+import gettext
 import locale
 import os
 import sre
 import sys
 
-def gettext_install(domain, localedir=None, unicode=False):
-    import gettext
+from const import FSCODING as fscoding
+from util.i18n import GlibTranslations
 
+def gettext_install():
     try: locale.setlocale(locale.LC_ALL, '')
-    except: pass
+    except locale.Error: pass
+    try:
+        t = gettext.translation("quodlibet", class_=GlibTranslations)
+    except IOError:
+        t = GlibTranslations()
 
-    gettext.bindtextdomain("quodlibet")
-    gettext.textdomain("quodlibet")
-
-    t = gettext.translation(domain, localedir, fallback=True)
-    if unicode: gettext, ngettext = t.ugettext, t.ungettext
-    else: gettext, ngettext = t.gettext, t.ngettext
-
-    __builtin__.__dict__["_"] = gettext
-    __builtin__.__dict__["ngettext"] = ngettext
+    t.install()
 
 def python_init():
     sre.escape = re_esc
@@ -295,14 +293,6 @@ def format_time_long(time):
     time_str.reverse()
     if len(time_str) > 2: time_str.pop()
     return ", ".join(time_str)
-
-# http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
-if "G_FILENAME_ENCODING" in os.environ:
-    fscoding = os.environ["G_FILENAME_ENCODING"].split(",")[0]
-    if fscoding == "@locale": fscoding = locale.getpreferredencoding()
-elif "G_BROKEN_FILENAMES" in os.environ:
-    fscoding = locale.getpreferredencoding()
-else: fscoding = "utf-8"
 
 def fsdecode(s):
     """Decoding a string according to the filesystem encoding."""

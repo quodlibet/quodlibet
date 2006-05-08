@@ -305,7 +305,7 @@ if __name__ == "__main__":
 
     import locale, util
     util.python_init()
-    util.gettext_install("quodlibet", unicode=True)
+    util.gettext_install()
     util.ctypes_init()
 
     from util import to

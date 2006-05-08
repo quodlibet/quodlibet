@@ -8,10 +8,8 @@ from unittest import TestCase
 suites = []
 add = suites.append
 
-import __builtin__
-__builtin__.__dict__.setdefault("_", lambda a: a)
-__builtin__.__dict__.setdefault(
-    "ngettext", lambda a, b, c: (c == 1 and a) or b)
+from util.i18n import GlibTranslations
+GlibTranslations().install()
 
 import const
 const.CONFIG = os.path.join(const.BASEDIR, 'tests', 'data', "config")

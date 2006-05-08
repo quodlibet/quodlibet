@@ -3,7 +3,7 @@
 
 import os
 
-VERSION = "0.20.1"
+VERSION = "0.21"
 
 HOME    = os.path.expanduser("~")
 USERDIR = os.path.join(HOME, ".quodlibet")
@@ -114,5 +114,13 @@ MACHINE_TAGS = (
     "replaygain_track_gain replaygain_album_gain "
     "replaygain_album_peak replaygain_track_peak "
     ).split()
+
+# http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
+if "G_FILENAME_ENCODING" in os.environ:
+    FSCODING = os.environ["G_FILENAME_ENCODING"].split(",")[0]
+    if FSCODING == "@locale": FSCODING = locale.getpreferredencoding()
+elif "G_BROKEN_FILENAMES" in os.environ:
+    FSCODING = locale.getpreferredencoding()
+else: FSCODING = "utf-8"
 
 del(os)

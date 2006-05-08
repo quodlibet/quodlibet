@@ -14,7 +14,6 @@ import gtk
 import browsers
 import config
 import const
-import player
 import qltk.session
 import stock
 import util
