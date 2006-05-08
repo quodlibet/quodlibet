@@ -40,7 +40,7 @@ def main():
         gtk.quit_add(1, widgets.save_library, window, player, library)
     for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
-    if play: player.playlist.paused = False
+    if play: player.paused = False
     gtk.main()
 
 def print_fifo(command):
