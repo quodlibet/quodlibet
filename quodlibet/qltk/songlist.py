@@ -117,23 +117,22 @@ class PlaylistModel(gtk.ListStore):
         self.__iter = None
         self.clear()
         songs = songs[:]
-        if self.__set_idle(oldsong, songs):
-            self.__sig = gobject.idle_add(self.__set_idle, oldsong, songs)
+        next = self.__set_idle(oldsong, songs).next
+        if next():
+            self.__sig = gobject.idle_add(next)
 
     def __set_idle(self, oldsong, songs):
-        to_add = songs[:100]
-        del(songs[:100])
-        for song in to_add:
+        for count, song in enumerate(songs):
             iter = self.append(row=[song])
             if song == oldsong:
                 self.__iter = iter
-        if songs: return True
-        else:
-            if self.__iter is not None:
-                self.__old_value = None
-            self.__sig = None
-            self.emit('songs-set')
-            return False
+            if count and count % 100 == 0:
+                yield True
+        if self.__iter is not None:
+            self.__old_value = None
+        self.__sig = None
+        self.emit('songs-set')
+        yield False
 
     def remove(self, iter):
         if self.__iter and self[iter].path == self[self.__iter].path:
