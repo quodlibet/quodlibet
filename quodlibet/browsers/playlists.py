@@ -31,9 +31,6 @@ from qltk.views import RCMHintedTreeView
 from qltk.wlw import WaitLoadWindow
 from util.uri import URI
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
 if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)
 

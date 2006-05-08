@@ -33,9 +33,6 @@ from qltk.views import AllTreeView
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 class InvalidFeed(ValueError): pass
 
 class Feed(list):

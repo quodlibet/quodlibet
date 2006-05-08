@@ -28,9 +28,6 @@ from qltk.tagscombobox import TagsComboBoxEntry
 from qltk.views import AllTreeView
 from util import tag
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 UNKNOWN = "<b>%s</b>" % _("Unknown")
 
 class Preferences(qltk.Window):

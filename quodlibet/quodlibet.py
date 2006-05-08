@@ -304,6 +304,7 @@ if __name__ == "__main__":
         sys.path.append(basedir[:-15] + "lib/quodlibet")
 
     import locale, util
+    util.python_init()
     util.gettext_install("quodlibet", unicode=True)
     util.ctypes_init()
 

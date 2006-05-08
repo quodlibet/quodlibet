@@ -15,9 +15,6 @@ import config
 
 from traceback import format_exception
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 class Manager(object):
     """A generalized plugin manager. It scans directories for importable
     modules/packages and extracts all objects from them.

@@ -31,9 +31,6 @@ from qltk.textedit import PatternEditBox
 from qltk.views import AllTreeView
 from util import tag
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><title|\<i\><title>\</i\>|%s>\</b\><date| (<date>)>

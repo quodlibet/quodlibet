@@ -29,9 +29,6 @@ from qltk.views import AllTreeView
 from util import tag
 from util.uri import URI
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
 
 class PlaylistMux(object):

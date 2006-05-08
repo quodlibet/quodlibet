@@ -6,13 +6,14 @@
 #
 # $Id$
 
+import __builtin__
 import locale
 import os
 import sre
 import sys
 
 def gettext_install(domain, localedir=None, unicode=False):
-    import gettext, __builtin__
+    import gettext
 
     try: locale.setlocale(locale.LC_ALL, '')
     except: pass
@@ -26,6 +27,18 @@ def gettext_install(domain, localedir=None, unicode=False):
 
     __builtin__.__dict__["_"] = gettext
     __builtin__.__dict__["ngettext"] = ngettext
+
+def python_init():
+    sre.escape = re_esc
+
+    try: set
+    except NameError:
+        import sets
+        __builtin__.__dict__["set"] = sets.Set
+
+def re_esc(str, BAD="/.^$*+?{,\\[]|()<>#=!:"):
+    needs_escape = lambda c: (c in BAD and "\\" + c) or c
+    return "".join(map(needs_escape, str))
 
 def gtk_init():
     import pygtk
@@ -218,11 +231,6 @@ def escape(str):
 def unescape(str):
     """Unescape a string in a manner suitable for XML/Pango."""
     return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
-
-def re_esc(str):
-    return "".join(map(
-        lambda a: (a in "/.^$*+?{,}\\[]|()<>#=!:" and "\\" + a) or a, str))
-sre.escape = re_esc
 
 def parse_time(timestr, err=(ValueError, sre.error)):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""

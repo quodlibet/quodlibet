@@ -15,9 +15,6 @@ import sys
 
 import parse._match as match
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
  CLOSERE, REMODS, COMMA, TAG, RE, RELOP, NUMCMP, EOF) = range(15)

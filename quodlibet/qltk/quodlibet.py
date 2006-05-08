@@ -49,9 +49,6 @@ from qltk.songlist import SongList, PlaylistMux
 from qltk.wlw import WaitLoadWindow
 from util.uri import URI
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
 

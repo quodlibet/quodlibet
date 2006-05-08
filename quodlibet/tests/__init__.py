@@ -22,6 +22,7 @@ import pygst
 pygst.require("0.10")
 
 import util
+util.python_init()
 util.ctypes_init()
 util.gtk_init()
 

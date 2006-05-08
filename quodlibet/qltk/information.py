@@ -23,9 +23,6 @@ from qltk.lyrics import LyricsPane
 from qltk.x import Window
 from util import tag
 
-if sys.version_info < (2, 4):
-    from sets import Set as set
-
 def Label(*args):
     l = gtk.Label(*args)
     l.set_selectable(True)
