@@ -16,6 +16,7 @@ import gobject
 import gtk
 import pango
 
+import const
 import player
 import qltk
 import util
@@ -364,7 +365,7 @@ class SongList(AllTreeView, util.InstanceTracker):
     class FSColumn(WideTextColumn):
         # Contains text in the filesystem encoding, so needs to be
         # decoded safely (and also more slowly).
-        def _cdf(self, column, cell, model, iter, tag, code=util.fscoding):
+        def _cdf(self, column, cell, model, iter, tag, code=const.FSCODING):
             try:
                 song = model.get_value(iter, 0)
                 cell.set_property('text', util.unexpand(

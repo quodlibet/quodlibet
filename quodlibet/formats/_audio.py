@@ -15,6 +15,7 @@ import shutil
 import time
 
 import config
+import const
 import util
 
 from util.uri import URI
@@ -152,7 +153,7 @@ class AudioFile(dict):
             if v is None:
                 return "%s [%s]" %(
                     os.path.basename(self["~filename"]).decode(
-                    util.fscoding, "replace"), _("Unknown"))
+                    const.FSCODING, "replace"), _("Unknown"))
             else: return v
         else: return dict.get(self, key, default)
 

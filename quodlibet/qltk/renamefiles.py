@@ -104,7 +104,7 @@ class RenameFiles(EditPane):
             oldname = row[1]
             newname = row[2].decode('utf-8')
             try:
-                newname = newname.encode(util.fscoding, "replace")
+                newname = util.fsencode(newname)
                 if library: library.rename(song, newname)
                 else: song.rename(newname)
                 was_changed.append(song)
@@ -157,15 +157,14 @@ class RenameFiles(EditPane):
                 self.combo.prepend_text(self.combo.child.get_text())
                 self.combo.write(const.NBP)
 
-        code = util.fscoding
         orignames = [song["~filename"] for song in songs]
-        newnames = [pattern.format(song).encode(
-            code, "replace").decode(code) for song in self.__songs]
+        newnames = [util.fsencode(util.fsdecode(pattern.format(song)))
+                    for song in self.__songs]
         for f in self.filters:
             if f.active: newnames = f.filter_list(orignames, newnames)
 
         for song, newname in zip(self.__songs, newnames):
-            basename = song("~basename").decode(code, "replace")
+            basename = util.fsdecode(song("~basename"))
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)
         self.save.set_sensitive(bool(self.combo.child.get_text()))

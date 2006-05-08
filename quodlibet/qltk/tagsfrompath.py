@@ -56,7 +56,7 @@ class TagsFromPattern(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = song['~filename'].decode(util.fscoding, "replace")
+            song = util.fsdecode(song['~filename'])
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep
@@ -175,8 +175,7 @@ class TagsFromPath(EditPane):
             self.view.append_column(col)
 
         for song in songs:
-            basename = song("~basename")
-            basename = basename.decode(util.fscoding, "replace")
+            basename = util.fsdecode(song("~basename"))
             row = [song, basename]
             match = pattern.match(song)
             for h in pattern.headers:
