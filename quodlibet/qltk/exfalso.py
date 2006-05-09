@@ -176,8 +176,7 @@ class PreferencesWindow(qltk.Window):
         if type(self).__window: return
         else: type(self).__window = self
         super(PreferencesWindow, self).__init__()
-        # FIXME: Change to "Ex Falso Preferences" after 0.19.
-        self.set_title(_("Preferences"))
+        self.set_title(_("Ex Falso Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
