@@ -181,7 +181,6 @@ class PreferencesWindow(qltk.Window):
         self.set_resizable(False)
         self.set_transient_for(parent)
 
-        f = qltk.Frame(_("Tag Editing"), bold=True)
         vbox = gtk.VBox(spacing=6)
         hb = gtk.HBox(spacing=6)
         e = gtk.Entry()
@@ -197,7 +196,7 @@ class PreferencesWindow(qltk.Window):
         cb.set_active(config.getboolean("editing", 'alltags'))
         vbox.pack_start(hb, expand=False)
         vbox.pack_start(cb, expand=False)
-        f.child.add(vbox)
+        f = qltk.Frame(_("Tag Editing"), child=vbox)
         self.add(f)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)

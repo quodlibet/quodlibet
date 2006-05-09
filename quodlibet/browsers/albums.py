@@ -82,7 +82,7 @@ class Preferences(qltk.Window):
         vbox.pack_start(label, expand=False)
         vbox.pack_start(edit)
         self.__preview_pattern(edit, label)
-        f = qltk.Frame(label=_("Album Display"), bold=True, child=vbox)
+        f = qltk.Frame(_("Album Display"), child=vbox)
         self.child.pack_start(f)
 
         self.child.show_all()

@@ -45,8 +45,7 @@ class Preferences(qltk.Window):
             config.getboolean("plugins", "icon_modifier_swap")))
         except: combo.set_active(0)
         combo.connect('changed', self.__changed_combo)
-        vbox.pack_start(
-            qltk.Frame(child=combo, label=_("Scroll Wheel"), bold=True))
+        vbox.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo))
 
         box = gtk.VBox(spacing=12)
         table = gtk.Table(2, 4)
@@ -74,8 +73,9 @@ class Preferences(qltk.Window):
         ev.add(preview)
         box.pack_start(ev, expand=False)
 
-        vbox.pack_start(
-            qltk.Frame(child=box, label=_("Tooltip Display"), bold=True))
+        frame = qltk.Frame(_("Tooltip Display"), child=box)
+        frame.get_label_widget().set_mnemonic_widget(entry)
+        vbox.pack_start(frame)
 
         for cb in cbs: cb.connect('toggled', self.__changed_cb, cbs, entry)
         entry.connect(

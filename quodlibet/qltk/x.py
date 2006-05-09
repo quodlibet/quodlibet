@@ -43,60 +43,52 @@ class Notebook(gtk.Notebook):
     
     def append_page(self, page, label=None):
         if label is not None:
-            if not isinstance(label, gtk.Widget): label = gtk.Label(label)
-            gtk.Notebook.append_page(self, page, label)
+            if not isinstance(label, gtk.Widget):
+                label = gtk.Label(label)
+            super(Notebook, self).append_page(page, label)
         else:
             if hasattr(page, 'title'):
                 title = page.title
-                if not isinstance(title, gtk.Widget): title = gtk.Label(title)
-                gtk.Notebook.append_page(self, page, title)
+                if not isinstance(title, gtk.Widget):
+                    title = gtk.Label(title)
+                super(Notebook, self).append_page(page, title)
             else: raise TypeError("no page.title and no label given")
 
-def Frame(label=None, border=0, bold=False, child=None):
+def Frame(label, child=None):
     """A gtk.Frame with no shadow, 12px left padding, and 3px top padding."""
-
-    if isinstance(label, basestring):
-        format = "%s"
-        if bold: format  = "<b>%s</b>" % format
-        markup = util.escape(label)
-        markup = format % markup
-        label = gtk.Label()
-        label.set_markup(markup)
-        label.set_use_underline(True)
-
     frame = gtk.Frame()
-    frame.set_border_width(border)
+    label_w = gtk.Label()
+    label_w.set_markup("<b>%s</b>" % util.escape(label))
     align = gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
     align.set_padding(3, 0, 12, 0)
     frame.add(align)
-    if child: align.add(child)
     frame.set_shadow_type(gtk.SHADOW_NONE)
-    frame.set_label_widget(label)
+    frame.set_label_widget(label_w)
+    if child:
+        align.add(child)
+        label_w.set_mnemonic_widget(child)
+        label_w.set_use_underline(True)
     return frame
 
 def MenuItem(label, stock_id):
     """An ImageMenuItem with a custom label and stock image."""
-
-    i = gtk.ImageMenuItem(label)
-    i.get_image().set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
-    return i
+    item = gtk.ImageMenuItem(label)
+    item.get_image().set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
+    return item
 
 def Button(label, stock_id, size=gtk.ICON_SIZE_BUTTON):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button."""
-
     align = gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
     hbox = gtk.HBox(spacing=2)
-    i = gtk.Image()
-    i.set_from_stock(stock_id, size)
-    hbox.pack_start(i)
-    l = gtk.Label(label)
-    l.set_use_underline(True)
-    hbox.pack_start(l)
+    hbox.pack_start(gtk.image_new_from_stock(stock_id, size))
+    label = gtk.Label(label)
+    label.set_use_underline(True)
+    hbox.pack_start(label)
     align.add(hbox)
-    b = gtk.Button()
-    b.add(align)
-    return b
+    button = gtk.Button()
+    button.add(align)
+    return button
 
 class RPaned(object):
     """A Paned that supports relative (percentage) width/height setting."""
@@ -118,7 +110,8 @@ def Tooltips(parent=None):
     """A Tooltip whose lifetime is tied to another widget's. When the
     parent widget is destroyed, so is the tooltip object.
 
-    It is also enabled by default."""
+    It is also enabled by default.
+    """
 
     tips = gtk.Tooltips()
     if parent is not None:
@@ -133,6 +126,6 @@ def ClearButton(entry=None, tips=None):
         tips = Tooltips(clear)
         tips.enable()
     tips.set_tip(clear, _("Clear search"))
-    if entry is not None: clear.connect_object('clicked', entry.set_text, '')
+    if entry is not None:
+        clear.connect_object('clicked', entry.set_text, '')
     return clear
-

@@ -105,7 +105,7 @@ class PreferencesWindow(qltk.Window):
             b.pack_start(apply)
             vbox.pack_start(b)
 
-            frame = qltk.Frame(_("Visible Columns"), bold=True, child=vbox)
+            frame = qltk.Frame(_("Visible Columns"), child=vbox)
             self.pack_start(frame, expand=False)
             self.show_all()
 
@@ -152,7 +152,7 @@ class PreferencesWindow(qltk.Window):
             hb.pack_start(e)
             self.pack_start(hb, expand=False)
 
-            f = qltk.Frame(_("Search Library"), bold=True, child=c)
+            f = qltk.Frame(_("Search Library"), child=c)
             self.pack_start(f, expand=False)
 
         def _entry(self, entry, name, section="settings"):
@@ -172,13 +172,12 @@ class PreferencesWindow(qltk.Window):
             c.set_active(config.state("jump"))
             self.pack_start(c, expand=False)
 
-            f = qltk.Frame(_("_Volume Normalization"), bold=True)
             cb = gtk.combo_box_new_text()
             cb.append_text(_("No volume adjustment"))
             cb.append_text(_('Per-song ("Radio") volume adjustment'))
             cb.append_text(_('Per-album ("Audiophile") volume adjustment'))
+            f = qltk.Frame(_("_Volume Normalization"), child=cb)
             f.get_label_widget().set_mnemonic_widget(cb)
-            f.child.add(cb)
             cb.set_active(config.getint("settings", "gain"))
             cb.connect('changed', self.__changed, "settings", "gain")
             self.pack_start(f, expand=False)
@@ -193,12 +192,10 @@ class PreferencesWindow(qltk.Window):
             super(PreferencesWindow.Library, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Library")
-            f = qltk.Frame(_("Scan _Directories"), bold=True)
             hb = gtk.HBox(spacing=6)
             b = qltk.Button(_("_Select"), gtk.STOCK_OPEN)
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "scan")))
-            f.get_label_widget().set_mnemonic_widget(e)
             hb.pack_start(e)
             tips = qltk.Tooltips(self)
             tips.set_tip(
@@ -207,10 +204,10 @@ class PreferencesWindow(qltk.Window):
             hb.pack_start(b, expand=False)
             b.connect('clicked', self.__select, e, const.HOME)
             e.connect('changed', self.__changed, 'settings', 'scan')
-            f.child.add(hb)
+            f = qltk.Frame(_("Scan _Directories"), child=hb)
+            f.get_label_widget().set_mnemonic_widget(e)
             self.pack_start(f, expand=False)
 
-            f = qltk.Frame(_("Tag Editing"), bold=True)
             vbox = gtk.VBox(spacing=6)
             hb = gtk.HBox(spacing=6)
             e = gtk.Entry()
@@ -227,7 +224,7 @@ class PreferencesWindow(qltk.Window):
             cb.set_active(config.getboolean("editing", 'alltags'))
             vbox.pack_start(hb, expand=False)
             vbox.pack_start(cb, expand=False)
-            f.child.add(vbox)
+            f = qltk.Frame(_("Tag Editing"), child=vbox)
             self.pack_start(f)
             self.show_all()
 
