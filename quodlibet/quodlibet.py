@@ -38,7 +38,8 @@ def main():
     if "--debug" not in sys.argv:
         enable_periodic_save(library)
         gtk.quit_add(1, widgets.save_library, window, player, library)
-    for sig in SIGNALS: signal.signal(sig, gtk.main_quit)
+    for sig in SIGNALS:
+        signal.signal(sig, gtk.main_quit)
     gtk.threads_init()
     if play: player.paused = False
     gtk.main()
@@ -72,24 +73,7 @@ def print_fifo(command):
             except EnvironmentError: pass
             raise SystemExit("not-running")
 
-def refresh_cache():
-    import config
-    import const
-    import library
-
-    if isrunning():
-        raise SystemExit(to(_(
-            "The library cannot be refreshed while Quod Libet is running.")))
-
-    config.init(const.CONFIG)
-    lib = library.init()
-    print to(_("Loading, scanning, and saving your library."))
-    lib.load(const.LIBRARY)
-    for x, y in lib.rebuild(): pass
-    lib.save(const.LIBRARY)
-    raise SystemExit
-
-def print_playing(fstring = "<artist~album~tracknumber~title>"):
+def print_playing(fstring="<artist~album~tracknumber~title>"):
     import util
 
     from formats._audio import AudioFile
@@ -135,7 +119,8 @@ def control(c):
             print to(_("Unable to write to %s. Removing it.") % const.CONTROL)
             try: os.unlink(const.CONTROL)
             except OSError: pass
-            if c != 'focus': raise SystemExit(True)
+            if c != 'focus':
+                raise SystemExit(True)
         else:
             raise SystemExit
 
@@ -172,9 +157,8 @@ def process_arguments():
     options = OptionParser(
         "Quod Libet", const.VERSION, 
         _("a music library and player"),
-        _("[ --refresh-library | --print-playing | control ]"))
+        _("[ --print-playing | control ]"))
 
-    options.add("refresh-library", help=_("Rescan your library and exit"))
     options.add("print-playing", help=_("Print the playing song and exit"))
     options.add("start-playing", help=_("Begin playing immediately"))
 
@@ -242,8 +226,7 @@ def process_arguments():
     opts, args = options.parse()
 
     for command, arg in opts.items():
-        if command == "refresh-library": refresh_cache()
-        elif command in controls: control(command)
+        if command in controls: control(command)
         elif command in controls_opt:
             if command in validators and not validators[command](arg):
                 sys.stderr.write(
@@ -312,7 +295,7 @@ if __name__ == "__main__":
     import const
     if "--debug" not in sys.argv:
         process_arguments()
-        if os.path.exists(const.CONTROL):
+        if isrunning():
             print to(_("Quod Libet is already running."))
             control('focus')
 
