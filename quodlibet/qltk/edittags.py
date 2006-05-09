@@ -108,8 +108,8 @@ class AddTagDialog(gtk.Dialog):
         if can_change == True: can = formats.USEFUL_TAGS
         else: can = list(can_change)
         can.sort()
-
-        gtk.Dialog.__init__(self, _("Add a Tag"), parent)
+        super(AddTagDialog, self).__init__(
+            _("Add a Tag"), qltk.get_top_parent(parent))
         self.set_border_width(6)
         self.set_has_separator(False)
         self.set_resizable(False)
@@ -191,7 +191,7 @@ class AddTagDialog(gtk.Dialog):
         self.show()
         self.__val.set_activates_default(True)
         self.__tag.grab_focus()
-        return gtk.Dialog.run(self)
+        return super(AddTagDialog, self).run()
 
 TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE = range(6)
 
@@ -284,8 +284,7 @@ class EditTags(gtk.VBox):
             'clicked', self.__update, None, *UPDATE_ARGS)
         revert.connect_object('clicked', parent.set_pending, None)
 
-        save.connect(
-            'clicked', self.__save_files, revert, model, parent, watcher)
+        save.connect('clicked', self.__save_files, revert, model, watcher)
         save.connect_object('clicked', parent.set_pending, None)
         for sig in ['row-inserted', 'row-deleted', 'row-changed']:
             model.connect(sig, self.__enable_save, [save, revert])
@@ -391,7 +390,7 @@ class EditTags(gtk.VBox):
             msg = _("Unable to add <b>%s</b>\n\nThe files currently"
                     " selected do not support multiple values."
                     ) % util.escape(tag)
-            qltk.ErrorMessage(None, title, msg).run()
+            qltk.ErrorMessage(self, title, msg).run()
             return
 
         edited = True
@@ -404,7 +403,7 @@ class EditTags(gtk.VBox):
         else: model.append(row=row)
 
     def __add_tag(self, activator, model):
-        add = AddTagDialog(None, self.__songinfo.can_change())
+        add = AddTagDialog(self, self.__songinfo.can_change())
 
         while True:
             resp = add.run()
@@ -418,7 +417,7 @@ class EditTags(gtk.VBox):
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                         " selected do not support editing this tag."
                         ) % util.escape(tag)
-                qltk.ErrorMessage(None, title, msg).run()
+                qltk.ErrorMessage(self, title, msg).run()
             else:
                 self.__add_new_tag(model, tag, value)
                 break
@@ -435,7 +434,7 @@ class EditTags(gtk.VBox):
                 row[EDITED] = row[DELETED] = True
             else: model.remove(row.iter)
 
-    def __save_files(self, save, revert, model, parent, watcher):
+    def __save_files(self, save, revert, model, watcher):
         updated = {}
         deleted = {}
         added = {}
@@ -454,10 +453,10 @@ class EditTags(gtk.VBox):
                     deleted[row[TAG]].append(util.decode(row[ORIGVALUE]))
 
         was_changed = []
-        win = WritingWindow(parent, len(self.__songs))
+        win = WritingWindow(self, len(self.__songs))
         for song in self.__songs:
             if not song.valid() and not qltk.ConfirmAction(
-                None, _("Tag may not be accurate"),
+                self, _("Tag may not be accurate"),
                 _("<b>%s</b> changed while the program was running. "
                   "Saving without refreshing your library may "
                   "overwrite other changes to the song.\n\n"
@@ -491,7 +490,7 @@ class EditTags(gtk.VBox):
                 try: song.write()
                 except:
                     qltk.ErrorMessage(
-                        None, _("Unable to save song"),
+                        self, _("Unable to save song"),
                         _("Saving <b>%s</b> failed. The file "
                           "may be read-only, corrupted, or you "
                           "do not have permission to edit it.")%(
@@ -515,8 +514,9 @@ class EditTags(gtk.VBox):
             new_validated = fmt.validate(new_value)
             if not new_validated:
                 qltk.WarningMessage(
-                    None, _("Invalid value"), _("Invalid value") +
-                    (": <b>%s</b>\n\n%s" % (new_value, fmt.error))).run()
+                    self, _("Invalid value"),
+                    _("Invalid value: <b>%(value)s</b>\n\n%(error)s") %{
+                    "value": new_value, "error": fmt.error}).run()
                 return
             else: new_value = new_validated
         if row[VALUE].replace('<i>','').replace('</i>','') != new_value:
@@ -549,8 +549,9 @@ class EditTags(gtk.VBox):
                 value = fmt.validate(util.unescape(row[VALUE]))
                 if not value:
                     qltk.WarningMessage(
-                        None, _("Invalid value"), _("Invalid value") +
-                        (": <b>%s</b>\n\n%s" % (row[VALUE], fmt.error))).run()
+                        self, _("Invalid value"),
+                        _("Invalid value: <b>%(value)s</b>\n\n%(error)s") %{
+                        "value": row[VALUE], "error": fmt.error}).run()
                     return
             else:
                 value = row[VALUE]
@@ -559,7 +560,7 @@ class EditTags(gtk.VBox):
                     title = _("Unable to retag multiple values")
                     msg = _("Changing the name of a tag with multiple "
                             "values is not supported.")
-                    qltk.ErrorMessage(None, title, msg).run()
+                    qltk.ErrorMessage(self, title, msg).run()
                     return
                 elif idx >= 0:
                     # Strip off "(missing from...)", the tag will be
