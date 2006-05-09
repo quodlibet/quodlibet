@@ -26,6 +26,11 @@ class FSInterface(object):
     def __init__(self, player):
         player.connect('song-started', self.__started)
         player.connect('song-ended', self.__ended)
+        gtk.quit_add(1, self.__cleanup)
+
+    def __cleanup(self):
+        try: os.unlink(const.CURRENT)
+        except EnvironmentError: pass
 
     def __started(self, player, song):
         if song:
@@ -44,6 +49,11 @@ class FIFOControl(object):
 
     def __init__(self, watcher, window, player):
         self.__open(watcher, window, player)
+        gtk.quit_add(1, self.__cleanup)
+
+    def __cleanup(self):
+        try: os.unlink(const.CONTROL)
+        except EnvironmentError: pass
 
     def __open(self, *args):
         try:

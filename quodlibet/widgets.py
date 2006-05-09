@@ -119,12 +119,6 @@ def save_library(window, player, library):
     try: config.write(const.CONFIG)
     except EnvironmentError, err: pass
 
-    for fn in [const.CONTROL, const.CURRENT]:
-        # FIXME: CURRENT should be handled by FSInterface,
-        # CONTROL by FIFOControl.
-        try: os.unlink(fn)
-        except EnvironmentError: pass
-
     try: library.save(const.LIBRARY)
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
