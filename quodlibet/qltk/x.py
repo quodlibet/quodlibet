@@ -32,7 +32,8 @@ class Window(gtk.Window):
         if parent is not None:
             self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
 
-    do_close_accel = gtk.Window.destroy
+    def do_close_accel(self):
+        self.emit('delete-event', gtk.gdk.Event(gtk.gdk.DELETE))
 
 class Notebook(gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no
