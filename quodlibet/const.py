@@ -2,6 +2,7 @@
 # Constants used in various parts of QL, mostly strings.
 
 import os
+import locale
 
 VERSION = "0.21"
 
