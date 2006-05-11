@@ -80,7 +80,7 @@ class AudioFileGroup(dict):
         first = {}
         all = {}
         total = len(songs)
-        self.__songs = songs
+        self.songs = songs
 
         for song in songs:
             self.is_file &= song.is_file
@@ -111,14 +111,14 @@ class AudioFileGroup(dict):
     def can_change(self, k=None):
         if k is None:
             can = True
-            for song in self.__songs:
+            for song in self.songs:
                 cantoo = song.can_change()
                 if can is True: can = cantoo
                 elif cantoo is True: pass
                 else: can = set(can) | set(cantoo)
         else:
-            if not self.__songs: return False
-            can = min([song.can_change(k) for song in self.__songs])
+            if not self.songs: return False
+            can = min([song.can_change(k) for song in self.songs])
         return can
 
 class Library(dict):

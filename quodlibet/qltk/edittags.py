@@ -453,8 +453,9 @@ class EditTags(gtk.VBox):
                     deleted[row[TAG]].append(util.decode(row[ORIGVALUE]))
 
         was_changed = []
-        win = WritingWindow(self, len(self.__songs))
-        for song in self.__songs:
+        songs = self.__songinfo.songs
+        win = WritingWindow(self, len(songs))
+        for song in songs:
             if not song.valid() and not qltk.ConfirmAction(
                 self, _("Tag may not be accurate"),
                 _("<b>%s</b> changed while the program was running. "
@@ -604,10 +605,10 @@ class EditTags(gtk.VBox):
         else: return False
 
     def __update(self, songs, view, buttonbox, model, add, buttons):
-        if songs is None: songs = self.__songs
+        if songs is None:
+            songs = self.__songinfo.songs
 
         self.__songinfo = songinfo = AudioFileGroup(songs)
-        self.__songs = songs
         view.set_model(None)
         model.clear()
         view.set_model(model)

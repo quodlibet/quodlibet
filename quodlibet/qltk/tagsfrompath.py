@@ -119,8 +119,8 @@ class TagsFromPath(EditPane):
         config.set("tagsfrompath", "add", str(bool(combo.get_active())))
 
     def __preview(self, songs):
-        if songs is None: songs = self.__songs
-        else: self.__songs = songs
+        if songs is None:
+            songs = [row[0] for row in self.view.get_model()]
 
         if songs: pattern_text = self.combo.child.get_text().decode("utf-8")
         else: pattern_text = ""
@@ -194,12 +194,13 @@ class TagsFromPath(EditPane):
     def __save(self, addreplace, watcher):
         pattern_text = self.combo.child.get_text().decode('utf-8')
         pattern = TagsFromPattern(pattern_text)
+        model = self.view.get_model()
         add = bool(addreplace.get_active())
-        win = WritingWindow(self, len(self.__songs))
+        win = WritingWindow(self, len(model))
 
         was_changed = []
 
-        for row in self.view.get_model():
+        for row in model:
             song = row[0]
             changed = False
             if not song.valid() and not qltk.ConfirmAction(

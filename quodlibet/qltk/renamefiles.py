@@ -95,11 +95,12 @@ class RenameFiles(EditPane):
             self.save.set_sensitive(True)
 
     def __rename(self, watcher):
-        win = WritingWindow(self, len(self.__songs))
+        model = self.view.get_model()
+        win = WritingWindow(self, len(model))
         was_changed = []
         skip_all = False
 
-        for row in self.view.get_model():
+        for row in model:
             song = row[0]
             oldname = row[1]
             newname = row[2].decode('utf-8')
@@ -135,9 +136,9 @@ class RenameFiles(EditPane):
         self.save.set_sensitive(False)
 
     def __preview(self, songs):
-        if songs is None: songs = self.__songs
-        else: self.__songs = songs
         model = self.view.get_model()
+        if songs is None:
+            songs = [row[0] for row in model]
         model.clear()
         pattern = self.combo.child.get_text().decode("utf-8")
 
@@ -158,12 +159,12 @@ class RenameFiles(EditPane):
                 self.combo.write(const.NBP)
 
         orignames = [song["~filename"] for song in songs]
-        newnames = [util.fsencode(util.fsdecode(pattern.format(song)))
-                    for song in self.__songs]
+        newnames = [util.fsdecode(util.fsencode(pattern.format(song)))
+                    for song in songs]
         for f in self.filters:
             if f.active: newnames = f.filter_list(orignames, newnames)
 
-        for song, newname in zip(self.__songs, newnames):
+        for song, newname in zip(songs, newnames):
             basename = util.fsdecode(song("~basename"))
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)

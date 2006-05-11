@@ -78,15 +78,13 @@ class TrackNumbers(gtk.VBox):
         save.connect_object(
             'clicked', self.__save_files, prop, model, watcher)
         revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
-        revert.connect_object(
-            'clicked', self.__revert_files, spin_total, model,
-            save, revert)
         bbox.pack_start(revert)
         bbox.pack_start(save)
         self.pack_start(bbox, expand=False)
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect('clicked', self.__preview_tracks, *preview_args)
+        revert.connect_object('clicked', self.__update, None, *preview_args)
         spin_total.connect(
             'value-changed', self.__preview_tracks, *preview_args)
         spin_start.connect(
@@ -110,7 +108,7 @@ class TrackNumbers(gtk.VBox):
             save.set_sensitive(True)
 
     def __save_files(self, parent, model, watcher):
-        win = WritingWindow(parent, len(self.__songs))
+        win = WritingWindow(parent, len(model))
         was_changed = []
         for row in model:
             song = row[0]
@@ -143,9 +141,6 @@ class TrackNumbers(gtk.VBox):
         watcher.changed(was_changed)
         win.destroy()
 
-    def __revert_files(self, *args):
-        self.__update(self.__songs, *args)
-
     def __preview_tracks(self, ctx, start, total, model, save, revert):
         start = start.get_value_as_int()
         total = total.get_value_as_int()
@@ -157,11 +152,13 @@ class TrackNumbers(gtk.VBox):
         revert.set_sensitive(True)
 
     def __update(self, songs, total, model, save, revert):
-        songs = songs[:]
+        if songs is None:
+            songs = [row[0] for row in model]
+        else:
+            songs = songs[:]
         songs.sort(lambda a, b: (cmp(a("~#track"), b("~#track")) or
                                  cmp(a("~basename"), b("~basename")) or
                                  cmp(a, b)))
-        self.__songs = songs
         model.clear()
         total.set_value(len(songs))
         for song in songs:
