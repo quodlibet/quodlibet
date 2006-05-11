@@ -6,6 +6,8 @@
 #
 # $Id$
 
+import gtk
+
 def get_top_parent(widget):
     """Return the ultimate parent of a widget; the assumption that code
     using this makes is that it will be a gtk.Window, i.e. the widget
