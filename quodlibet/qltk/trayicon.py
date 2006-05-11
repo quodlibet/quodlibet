@@ -116,10 +116,8 @@ class Preferences(qltk.Window):
         config.set("plugins", "icon_tooltip", entry.get_text())
 
 class TrayIcon(object):
-    __icon = False
+    __icon = None
     __mapped = False
-    __tips = gtk.Tooltips()
-    __tips.enable()
     __menu = None
     __pattern = Pattern(
         "<album|<album~discnumber~part~tracknumber~title~version>|"
@@ -136,7 +134,7 @@ class TrayIcon(object):
 
         self.__mapped = False
         self.__icon = icon = trayicon.TrayIcon("quodlibet")
-        self.__tips.enable()
+        self.__tips = qltk.Tooltips(self.__icon)
         filename = os.path.join(const.BASEDIR, "quodlibet.")
         try: p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "svg", 16, 16)
         except:
