@@ -6,7 +6,10 @@
 #
 # $Id$
 
+import gobject
 import gtk
+import pango
+
 import util
 
 from qltk.songlist import SongList
@@ -15,8 +18,9 @@ from qltk.x import Window
 class LibraryBrowser(Window):
     def __init__(self, Kind, watcher):
         super(LibraryBrowser, self).__init__()
-        self.set_border_width(12)
+        self.set_border_width(6)
         self.set_title(_("Library Browser"))
+        self.add(gtk.VBox(spacing=6))
 
         view = SongList(watcher)
         self.add_accel_group(view.accelerators)
@@ -28,31 +32,47 @@ class LibraryBrowser(Window):
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
 
         self.browser = browser = Kind(watcher, None)
-        browser.connect_object('songs-selected', SongList.set_songs, view)
-        if browser.reordered: view.enable_drop()
-        if browser.accelerators: self.add_accel_group(browser.accelerators)
+        if browser.reordered:
+            view.enable_drop()
+        if browser.accelerators:
+            self.add_accel_group(browser.accelerators)
 
         if Kind.expand:
             container = Kind.expand()
             container.pack1(browser, resize=True)
             container.pack2(sw, resize=True)
-            self.add(container)
+            self.child.pack_start(container)
         else:
             vbox = gtk.VBox(spacing=6)
             vbox.pack_start(browser, expand=False)
             vbox.pack_start(sw)
-            self.add(vbox)
+            self.child.pack_start(vbox)
 
+        self.__statusbar = gtk.Label()
+        self.__statusbar.set_text(_("No time information"))
+        # GTK (2.8?) rounding error, 1.0 clips the rightmost pixel.
+        self.__statusbar.set_alignment(0.999999, 0.5)
+        self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
+        self.child.pack_end(self.__statusbar, expand=False)
+
+        browser.connect('songs-selected', self.__browser_cb)
         view.connect('popup-menu', self.__menu, watcher)
         view.connect('drag-data-received', self.__drag_data_recv)
         view.connect('row-activated', self.__enqueue)
+        view.get_selection().connect('changed', self.__set_time)
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
         self.set_default_size(500, 300)
         sw.show_all()
+        for c in self.child.get_children():
+            c.show()
         self.child.show()
         self.show()
+
+    def __browser_cb(self, browser, songs, sorted):
+        self.__set_time(songs=songs)
+        self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column):
         from widgets import main
@@ -79,3 +99,16 @@ class LibraryBrowser(Window):
         view.Menu(header, self.browser, watcher).popup(
             None, None, None, 0, gtk.get_current_event_time())
         return True
+
+    def __set_time(self, *args, **kwargs):
+        statusbar = self.__statusbar
+        songs = kwargs.get("songs") or self.songlist.get_selected_songs()
+        if "songs" not in kwargs and len(songs) <= 1:
+            songs = self.songlist.get_songs()
+
+        i = len(songs)
+        length = sum([song["~#length"] for song in songs])
+        t = self.browser.statusbar(i) % {
+            'count': i, 'time': util.format_time_long(length)}
+        statusbar.set_text(t)
+        gobject.idle_add(statusbar.queue_resize)
