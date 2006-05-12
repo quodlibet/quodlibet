@@ -11,13 +11,10 @@ import traceback
 import gobject
 import gtk
 
-from qltk.msg import ErrorMessage
-
 # Everything connects to this to get updates about the library and player.
 # FIXME: The library should manage its signals itself.
 class SongWatcher(gtk.Object):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
-    SIG_NONE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
     
     __gsignals__ = {
         # Songs have changed.
