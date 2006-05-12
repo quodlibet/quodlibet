@@ -13,10 +13,13 @@ from formats._apev2 import APEv2File
 try:
     import ctypes
     _wavpack = ctypes.cdll.LoadLibrary("libwavpack.so.0")
-except: extensions = []
+except (ImportError, OSError):
+    extensions = []
 else:
-    try: gst.element_factory_make('wavpackdec')
-    except: extensions = []
+    try:
+        gst.element_factory_make('wavpackdec')
+    except gst.PluginNotFoundError:
+        extensions = []
     else:
         extensions = [".wv"]
         _wavpack.WavpackGetSampleRate.restype = ctypes.c_uint32

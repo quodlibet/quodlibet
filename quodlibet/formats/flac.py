@@ -10,11 +10,13 @@ import gst
 
 from formats._vorbis import VCFile
 
-try: import mutagen.flac
-except: extensions = []
+try:
+    import mutagen.flac
+except ImportError:
+    extensions = []
 else:
     try: gst.element_factory_make('flacdec')
-    except: extensions = []
+    except gst.PluginNotFoundError: extensions = []
     else: extensions = [".flac"]
 
 class FLACFile(VCFile):

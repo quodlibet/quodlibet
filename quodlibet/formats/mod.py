@@ -18,13 +18,15 @@ extensions = [
 try:
     import ctypes
     _modplug = ctypes.cdll.LoadLibrary("libmodplug.so.0")
-except: extensions = []
+except (ImportError, OSError):
+    extensions = []
 else:
     _modplug.ModPlug_GetName.restype = ctypes.c_char_p
     try: gst.element_factory_make("modplug")
-    except:
+    except gst.PluginNotFoundError:
         try: gst.element_factory_make("mikmod")
-        except: extensions = []
+        except gst.PluginNotFoundError:
+            extensions = []
 
 class ModFile(AudioFile):
 

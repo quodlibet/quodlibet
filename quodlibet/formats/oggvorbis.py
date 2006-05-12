@@ -10,11 +10,13 @@ import gst
 
 from formats._vorbis import VCFile
 
-try: import ogg.vorbis
-except ImportError: extensions = []
+try:
+    import ogg.vorbis
+except ImportError:
+    extensions = []
 else:
     try: gst.element_factory_make('vorbisdec')
-    except: extensions = []
+    except gst.PluginNotFoundError: extensions = []
     else: extensions = [".ogg"]
 
 class OggFile(VCFile):

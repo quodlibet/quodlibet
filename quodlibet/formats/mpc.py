@@ -16,10 +16,13 @@ try:
     import ctypes
     _libc = ctypes.cdll.LoadLibrary("libc.so.6")
     _mpcdec = ctypes.cdll.LoadLibrary("libmpcdec.so.3")
-except: extensions = []
+except (ImportError, OSError):
+    extensions = []
 else:
-    try: gst.element_factory_make('musepackdec')
-    except: extensions = []
+    try:
+        gst.element_factory_make('musepackdec')
+    except gst.PluginNotFoundError:
+        extensions = []
     else:
         extensions = [".mpc", ".mp+"]
         def _get_errno(): return ctypes.c_int.in_dll(_libc, "errno").value

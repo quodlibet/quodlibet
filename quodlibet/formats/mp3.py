@@ -17,10 +17,11 @@ from formats._audio import AudioFile
 try:
     import mutagen.id3
     from mutagen.mp3 import MP3
-except ImportError: extensions = []
+except ImportError:
+    extensions = []
 else:
     try: gst.element_factory_make("mad")
-    except: extensions = []
+    except gst.PluginNotFoundError: extensions = []
     else: extensions = [".mp3", ".mp2"]
 
 def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))

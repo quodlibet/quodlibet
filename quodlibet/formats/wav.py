@@ -15,8 +15,10 @@ from formats._audio import AudioFile
 try:
     import wave
     gst.element_factory_make('wavparse')
-except: extensions = []
-else: extensions = [".wav"]
+except (ImportError, gst.PluginNotFoundError):
+    extensions = []
+else:
+    extensions = [".wav"]
 
 class WAVEFile(AudioFile):
     format = "WAVE"
