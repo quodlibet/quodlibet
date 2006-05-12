@@ -12,9 +12,14 @@ import os
 import sys
 
 class fakegst(object):
+    URI_SRC = 0
+
     def element_factory_make(self, element_name):
         if element_name in ["monkeysdec", "mikmod", "modplug", "wavparse"]:
             raise ValueError("unsupported fake module")
+
+    def element_make_from_uri(self, type_, uri, arg):
+        return None
 
 def main(argv):
     import util
