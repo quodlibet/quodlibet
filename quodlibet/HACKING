@@ -9,15 +9,21 @@ mutagen/*	- Mutagen tag reading/editing library
 qltk/*		- GTK+ widget subclasses/extensions
 tests/*		- Unit/regression tests
 
-Basic Patch Guidelines
-----------------------
-Quod Libet uses 4 space indents and fairly standard Python style
-guidelines. No tabs. Currently we are limiting the code to features
-in PyGTK 2.8 and Python 2.3.
+Submitting Patches
+------------------
+If you don't follow these guidelines, your patch will be turned down.
+The following will lead to an almost automatic rejection:
+ * Mixing tabs and spaces.
+ * Not using 4 space indents.
+ * Lines longer than 79 characters.
+ * Sending whole files rather than patches.
 
-Please prepare your patches against the Subversion release, or at
-least the most recent release. You can update a checked-out version
-to the latest trunk using `svn switch' and `svn update'.
+Currently we are limiting the code to features in PyGTK 2.8 and Python
+2.3 (with the exception of the set builtin type).
+
+Please prepare your patches against the Subversion release, or the
+most recent release. You can update a checked-out version to the
+latest trunk using `svn switch' and `svn update'.
 
 Translation
 -----------
