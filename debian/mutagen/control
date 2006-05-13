@@ -3,11 +3,11 @@ Section: python
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
 Build-Depends-Indep: debhelper (>= 5.0.17), python-dev (>= 2.3)
-Standards-Version: 3.6.2
+Standards-Version: 3.7.2
 
 Package: python-mutagen
 Architecture: all
-Depends: ${python:Depends}
+Depends: python (>= 2.3), python-support (>= 0.2)
 Suggests: python-pyvorbis
 Description: audio metadata editing library
  Mutagen is an audio metadata tag reader and writer implemented in pure

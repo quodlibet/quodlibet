@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 #export DH_VERBOSE=1
 
+PREFIX := debian/python-mutagen/usr
+
 clean:
 	dh_testdir
 	dh_testroot
@@ -13,7 +15,8 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	python ./setup.py install --prefix debian/python-mutagen/usr
+	python ./setup.py install --prefix $(PREFIX) --no-compile \
+		--install-lib $(PREFIX)/share/python-support/python-mutagen
 	install -D -m 755 tools/* $(CURDIR)/debian/python-mutagen/usr/bin
 
 binary-indep: build install
