@@ -470,7 +470,10 @@ class QuodLibetWindow(gtk.Window):
             self.browser.destroy()
         self.browser = Browser(widgets.watcher, player)
         self.browser.connect('songs-selected', self.__browser_cb)
-        if self.browser.reordered: self.songlist.enable_drop()
+        if self.browser.reordered:
+            self.songlist.enable_drop()
+        elif self.browser.dropped:
+            self.songlist.enable_drop(False)
         else: self.songlist.disable_drop()
         if self.browser.accelerators:
             self.add_accel_group(self.browser.accelerators)

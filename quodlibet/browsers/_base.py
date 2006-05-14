@@ -69,6 +69,13 @@ class Browser(object):
     # def reordered(self, songlist): ...
     reordered = None
 
+    # Called with the SongList and a list of songs when songs are dropped
+    # but the song list does not support reordering. Adding the songs to
+    # the list is the browser's responsibility. This function should
+    # return True if the drop was successful.
+    # def dropped(self, songlist, songs): ... return True
+    dropped = None
+
     # An AccelGroup that is added to / removed from the window where
     # the browser is.
     accelerators = None

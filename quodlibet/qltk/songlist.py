@@ -473,6 +473,8 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         self.disable_drop()
         self.connect('drag-motion', self.__drag_motion)
+        self.connect(
+            'drag-leave', lambda s, ctx, time: s.parent.drag_unhighlight())
         self.connect('drag-data-get', self.__drag_data_get, watcher)
         self.connect('drag-data-received', self.__drag_data_received, watcher)
 
@@ -496,7 +498,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             elif key in value.lower() or key in value: return False
         else: return True
 
-    def enable_drop(self):
+    def enable_drop(self, by_row=True):
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
         self.drag_source_set(
@@ -504,6 +506,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
         self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
                            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
+        self.__drop_by_row = by_row
 
     def disable_drop(self):
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
@@ -513,15 +516,20 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.drag_dest_unset()
 
     def __drag_motion(self, view, ctx, x, y, time):
-        try: self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
-        except TypeError:
-            if len(self.get_model()) == 0: path = 0
-            else: path = len(self.get_model()) - 1
-            self.set_drag_dest_row(path, gtk.TREE_VIEW_DROP_AFTER)
-        if ctx.get_source_widget() == self: kind = gtk.gdk.ACTION_MOVE
-        else: kind = gtk.gdk.ACTION_COPY
-        ctx.drag_status(kind, time)
-        return True
+        if self.__drop_by_row:
+            try: self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
+            except TypeError:
+                if len(self.get_model()) == 0: path = 0
+                else: path = len(self.get_model()) - 1
+                self.set_drag_dest_row(path, gtk.TREE_VIEW_DROP_AFTER)
+            if ctx.get_source_widget() == self: kind = gtk.gdk.ACTION_MOVE
+            else: kind = gtk.gdk.ACTION_COPY
+            ctx.drag_status(kind, time)
+            return True
+        else:
+            self.parent.drag_highlight()
+            ctx.drag_status(gtk.gdk.ACTION_COPY, time)
+            return True
 
     def __drag_data_delete(self, view, ctx):
         map(view.get_model(), self.__drag_iters)
@@ -551,6 +559,11 @@ class SongList(AllTreeView, util.InstanceTracker):
             sel.set_uris(uris)
             self.__drag_iters = []
 
+    def __drag_data_browser_dropped(self, songs):
+        window = qltk.get_top_parent(self)
+        try: return False #window.browser.dropped(self, songs)
+        except (TypeError, AttributeError): return False
+
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime, watcher):
         model = view.get_model()
         if info == 1:
@@ -574,6 +587,11 @@ class SongList(AllTreeView, util.InstanceTracker):
         songs = filter(None, map(library.get, filenames))
         if not songs:
             ctx.finish(bool(not filenames), False, etime)
+            return
+
+        if not self.__drop_by_row:
+            success = self.__drag_data_browser_dropped(songs)
+            ctx.finish(success, False, etime)
             return
 
         watcher.added(added)
