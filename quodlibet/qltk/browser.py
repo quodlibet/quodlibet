@@ -34,6 +34,8 @@ class LibraryBrowser(Window):
         self.browser = browser = Kind(watcher, None)
         if browser.reordered:
             view.enable_drop()
+        elif browser.dropped:
+            view.enable_drop(False)
         if browser.accelerators:
             self.add_accel_group(browser.accelerators)
 
