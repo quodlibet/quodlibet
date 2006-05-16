@@ -561,8 +561,9 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     def __drag_data_browser_dropped(self, songs):
         window = qltk.get_top_parent(self)
-        try: return False #window.browser.dropped(self, songs)
-        except (TypeError, AttributeError): return False
+        if callable(window.browser.dropped):
+            return window.browser.dropped(self, songs)
+        else: return False
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime, watcher):
         model = view.get_model()
