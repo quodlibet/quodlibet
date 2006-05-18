@@ -121,7 +121,7 @@ class PlaylistPlayer(gtk.Object):
         self.bin.set_state(gst.STATE_NULL)
         self.song = None
         self.paused = True
-        self.emit('error', mssage, lock)
+        self.emit('error', message, lock)
         self.emit('song-started', None)
         config.set("memory", "song", "")
 
