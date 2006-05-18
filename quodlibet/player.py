@@ -76,7 +76,8 @@ class PlaylistPlayer(gtk.Object):
             self.__tag(message.parse_tag())
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
-            self.error("%s" % err, True)
+            err = str(err).decode(locale.getpreferredencoding(), 'replace')
+            self.error(err, True)
         return True
 
     def setup(self, source, song):
@@ -115,12 +116,12 @@ class PlaylistPlayer(gtk.Object):
             self.bin.set_property('volume', v)
     volume = property(lambda s: s.__volume, __set_volume)
 
-    def error(self, code, lock):
+    def error(self, message, lock):
         self.bin.set_property('uri', '')
         self.bin.set_state(gst.STATE_NULL)
         self.song = None
         self.paused = True
-        self.emit('error', code, lock)
+        self.emit('error', mssage, lock)
         self.emit('song-started', None)
         config.set("memory", "song", "")
 
