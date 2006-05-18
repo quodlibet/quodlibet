@@ -657,8 +657,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view = self.get_children()[1].child
         model = view.get_model()
         values = song.list("album")
+        album_key = song.album_key
         for row in model:
-            if row[0] is not None and row[0].title in values:
+            if row[0] is not None and row[0].key == album_key:
                 view.scroll_to_cell(row.path[0], use_align=True, row_align=0.5)
                 break
 
