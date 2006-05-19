@@ -33,10 +33,18 @@ for name in modules:
         continue
 
     for klass in device.__dict__.values():
-        if hasattr(klass, '__base__') and issubclass(klass, Device):
+        if type(klass) != type or klass == Device: continue
+        if issubclass(klass, Device):
             devices.append(klass)
             break
     else:
         print "W: %s doesn't contain any devices." % device.__name__
 
 devices.sort()
+
+# Return a constructor for a device given by a string
+def get(name):
+    try: return devices[[d.__name__ for d in devices].index(name)]
+    except Exception, err:
+        print "W: Removing unsupported device %s." % name
+        return Device

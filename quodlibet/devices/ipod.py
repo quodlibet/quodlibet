@@ -12,21 +12,26 @@ except ImportError: raise NotImplementedError
 
 import os
 import popen2
+import time
 import gtk
+
 import const
+import util
 
 from devices._base import Device
 from formats._audio import AudioFile
 from qltk.entry import ValidatingEntry
+from qltk.msg import ErrorMessage
+from qltk.wlw import WaitLoadWindow
 
-# Wraps an itdb_track in an AudioFile instance
+# Wraps an itdb_track from libgpod in an AudioFile instance
 class IPodSong(AudioFile):
     is_file = False
 
     def __init__(self, track):
         super(IPodSong, self).__init__()
         self.sanitize(gpod.itdb_filename_on_ipod(track))
-        self.__track = track
+        self.itdb_track = track
 
         for key in ['artist', 'album', 'title', 'genre', 'grouping']:
             value = getattr(track, key)
@@ -50,12 +55,11 @@ class IPodDevice(Device):
     name = _("iPod")
     description = _("First to fifth generation iPods")
     icon = os.path.join(const.BASEDIR, "device-ipod.png")
-
-    ejectable = True
     writable = True
 
     mountpoint = ""
     gain = 0.0
+    covers = True
 
     __itdb = None
 
@@ -79,6 +83,10 @@ class IPodDevice(Device):
         spin.set_increments(0.1, 1)
         spin.set_value(float(self.gain))
         dialog.add_property(_("Volume gain (dB)"), spin, 'gain')
+
+        check = gtk.CheckButton()
+        check.set_active(self.covers)
+        dialog.add_property(_("Copy album covers"), check, 'covers')
 
         if self.is_connected():
             details = self.__get_details()
@@ -146,7 +154,11 @@ class IPodDevice(Device):
         songs = []
         if self.__load_db():
             for track in gpod.sw_get_tracks(self.__itdb):
-                songs.append(IPodSong(track))
+                filename = gpod.itdb_filename_on_ipod(track)
+                if filename: songs.append(IPodSong(track))
+                else:
+                    # Handle database corruption
+                    self.__remove_track(track)
         return songs
 
     def __create_db(self):
@@ -170,18 +182,85 @@ class IPodDevice(Device):
             self.__itdb = self.create_db()
         return self.__itdb
 
-    def __save_db(self):
-        return
-        if gpod.itdb_write(self.__itdb, None) == 1:
-            return True
+    def copy(self, songlist, song):
+        track = gpod.itdb_track_new()
+
+        # String keys, we only store the first one
+        for key in ['artist', 'album', 'title', 'genre', 'grouping']:
+            try: setattr(track, key, str(song.list(key)[0]))
+            except: continue
+        # Numeric keys
+        for key in ['bitrate', 'playcount', 'year']:
+            try: setattr(track, key, int(song('~#'+key)))
+            except: continue
+        # Keys where the names differ
+        for key, value in {
+            'cd_nr':         song('~#disc'),
+            'cds':           song('~#discs'),
+            'rating':        song('~#rating') * 100,
+            'time_added':    self.__mactime(time.time()),
+            'time_modified': self.__mactime(util.mtime(song('~filename'))),
+            'track_nr':      song('~#track'),
+            'tracklen':      song('~#length') * 1000,
+            'tracks':        song('~#tracks'),
+            'size':          util.size(song('~filename')),
+            'soundcheck':    self.__soundcheck(song),
+        }.items():
+            try: setattr(track, key, int(value))
+            except: continue
+        track.filetype = song('~format')
+
+        if self.covers:
+            cover = song.find_cover()
+            if cover: gpod.itdb_track_set_thumbnails(track, cover.name)
+
+        # Add the track to the master playlist
+        gpod.itdb_track_add(self.__itdb, track, -1)
+        master = gpod.itdb_playlist_mpl(self.__itdb)
+        gpod.itdb_playlist_add_track(master, track, -1)
+
+        # Copy the actual file
+        if gpod.itdb_cp_track_to_ipod(track, song['~filename'], None) == 1:
+            return IPodSong(track)
         else:
             return False
 
-    def copy(self, songs):
-        pass
+    def __mactime(self, time):
+        time = int(time)
+        if time == 0: return time
+        else: return time + 2082844800
 
-    def delete(self, songs):
-        pass
+    def __soundcheck(self, song):
+        if 'replaygain_album_gain' in song:
+            db = float(song['replaygain_album_gain'].split()[0])
+        elif 'replaygain_track_gain' in song:
+            db = float(song['replaygain_track_gain'].split()[0])
+        else: db = 0.0
+
+        soundcheck = int(round(1000 * 10.**(-0.1 * (db + float(self.gain)))))
+        return soundcheck
+
+    def delete(self, songlist, song):
+        try:
+            track = song.itdb_track
+            filename = gpod.itdb_filename_on_ipod(track)
+            if filename: os.remove(filename)
+            self.__remove_track(track)
+        except IOError, exc: return exc.args[-1]
+        else: return True
+
+    def __remove_track(self, track):
+        master = gpod.itdb_playlist_mpl(self.__itdb)
+        gpod.itdb_playlist_remove_track(master, track)
+        gpod.itdb_track_remove(track)
+
+    def cleanup(self, wlw, action):
+        wlw._WaitLoadWindow__text = _("<b>Saving iPod database...</b>")
+        wlw.count = 0
+        wlw.step()
+        if gpod.itdb_write(self.__itdb, None) != 1:
+            ErrorMessage(browser, _("Unable to save iPod database"),
+                _("The song database could not be saved on your iPod.")).run()
 
     # This list is taken from
     # http://en.wikipedia.org/wiki/List_of_iPod_model_numbers

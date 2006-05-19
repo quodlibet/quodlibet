@@ -8,7 +8,10 @@
 # $Id$
 
 import os
+import shutil
 import gtk
+import copy
+from popen2 import Popen4 as popen
 
 import util
 import const
@@ -16,21 +19,27 @@ import const
 from devices._base import Device
 from library import Library
 from parse import FileFromPattern
+from qltk import ConfirmAction
 from qltk.entry import ValidatingEntry
 from qltk.wlw import WaitLoadWindow
 
-class USBDevice(Device):
-    name = _("USB Device")
-    description = _("Music players or flash drives which connect over USB")
-    icon = os.path.join(const.BASEDIR, "device-usb.png")
-
-    ejectable = True
+class StorageDevice(Device):
+    name = _("Removable Storage")
+    description = _("All mountable devices, such as USB music players "
+                    "or external hard drives")
     writable = True
 
     mountpoint = ""
     pattern = ""
+    covers = True
 
     __library = None
+    __pattern = None
+
+    # Don't pickle the compiled pattern
+    def __getstate__(self):
+        self.__pattern = None
+        return self.__dict__
 
     def Properties(self, dialog):
         entry = ValidatingEntry(os.path.ismount)
@@ -40,6 +49,10 @@ class USBDevice(Device):
         entry = gtk.Entry()
         entry.set_text(self.pattern)
         dialog.add_property(_("Rename pattern"), entry, 'pattern')
+
+        check = gtk.CheckButton()
+        check.set_active(self.covers)
+        dialog.add_property(_("Copy album covers"), check, 'covers')
 
     def is_connected(self):
         return os.path.ismount(self.mountpoint)
@@ -88,7 +101,51 @@ class USBDevice(Device):
     def eject(self):
         for prog in ("pumount", "umount"):
             if util.iscommand(prog):
-                pipe = popen2.Popen4("%s %s" % (prog, self.mountpoint))
+                pipe = popen("%s %s" % (prog, self.mountpoint))
                 if pipe.wait() == 0: return True
                 else: return pipe.fromchild.read()
-        else: return _("Unable to find an umount command.")
+        else: return _("Couldn't find an umount command.")
+
+    def copy(self, songlist, song):
+        if not self.__pattern:
+            self.__pattern = FileFromPattern(
+                os.path.join(self.mountpoint, self.pattern))
+
+        utarget = self.__pattern.format(song)
+        target = util.fsencode(utarget)
+        dirname = os.path.dirname(target)
+
+        if os.path.exists(target):
+            if ConfirmAction(
+                songlist, _("File exists"),
+                _("Overwrite the file <b>%s</b>?") % util.escape(utarget),
+                ).run():
+                # Remove the current song
+                try: del self.__library[utarget]
+                except KeyError: pass
+                model = songlist.get_model()
+                for row in model:
+                    if row[0]["~filename"] == utarget: model.remove(row.iter)
+            else: return False
+
+        try:
+            if not os.path.isdir(dirname):
+                os.makedirs(dirname)
+            shutil.copyfile(util.fsencode(song["~filename"]), target)
+
+            if self.covers:
+                cover = song.find_cover()
+                if cover:
+                    filename = os.path.join(dirname,
+                        os.path.basename(cover.name))
+                    if os.path.isfile(filename): os.remove(filename)
+                    shutil.copyfile(cover.name, filename)
+
+            song = copy.deepcopy(song)
+            song.sanitize(utarget)
+            self.__library[utarget] = song
+            return song
+        except (IOError, Error), exc: return exc.args[-1]
+
+    def cleanup(self, wlw, action):
+        self.__pattern = None
