@@ -146,16 +146,21 @@ class TrayIcon(object):
 
         window.connect('delete-event', self.__window_delete)
 
-        icon.connect('map-event', self.__map, True)
-        icon.connect('unmap-event', self.__map, False)
+        icon.connect('map-event', self.__map, True, window)
+        icon.connect('unmap-event', self.__map, False, window)
         icon.connect('button-press-event', self.__button, window, player)
         icon.connect('scroll-event', self.__scroll, window, player)
+        icon.connect('destroy', self.__destroy, window)
 
         player.connect('song-started', self.__song_started)
         player.connect('paused', self.__set_paused)
         player.connect('unpaused', self.__set_paused)
 
         icon.show_all()
+
+    def __destroy(self, icon, window):
+        self.__icon = None
+        self.__show_window(window)
 
     def __preferences(self, player):
         p = Preferences(self, player)
@@ -178,8 +183,10 @@ class TrayIcon(object):
         if self.__icon: self.__tips.set_tip(self.__icon, tooltip)
     tooltip = property(None, __set_tooltip)
 
-    def __map(self, icon, event, value):
+    def __map(self, icon, event, value, window):
         self.__mapped = value
+        if not value:
+            self.__show_window(window)
 
     def __hide_window(self, window):
         window.__position = window.get_position()
