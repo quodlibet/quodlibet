@@ -98,8 +98,9 @@ class LibraryBrowser(Window):
     def __menu(self, view, watcher):
         path, col = view.get_cursor()
         header = col.header_name
-        view.Menu(header, self.browser, watcher).popup(
-            None, None, None, 0, gtk.get_current_event_time())
+        menu = view.Menu(header, self.browser, watcher)
+        if menu is not None:
+            menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 
     def __set_time(self, *args, **kwargs):

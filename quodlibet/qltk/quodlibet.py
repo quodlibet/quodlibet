@@ -751,8 +751,9 @@ class QuodLibetWindow(gtk.Window):
         path, col = songlist.get_cursor()
         header = col.header_name
         menu = self.songlist.Menu(header, self.browser, widgets.watcher)
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        if menu is not None:
+            menu.popup(None, None, None, 0, gtk.get_current_event_time())
+            return True
 
     def __current_song_prop(self, *args):
         song = player.playlist.song
