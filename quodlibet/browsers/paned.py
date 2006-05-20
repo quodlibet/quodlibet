@@ -327,6 +327,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self._register_instance()
         self.__save = player
         hb = gtk.HBox(spacing=6)
+
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
         label.connect('mnemonic-activate', self.__mnemonic_activate)
@@ -339,10 +340,17 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         hb.pack_start(label, expand=False)
         hb.pack_start(hb2)
 
+        self.accelerators = gtk.AccelGroup()
+        keyval, mod = gtk.accelerator_parse("<control>Home")
+        self.accelerators.connect_group(keyval, mod, 0, self.__all)
+        select = gtk.Button(_("Select _All"))
+        hb.pack_start(select, expand=False)
+
         prefs = gtk.Button()
         prefs.add(
             gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
         prefs.connect('clicked', self.__preferences)
+        select.connect('clicked', self.__all)
         hb.pack_start(prefs, expand=False)
         self.pack_start(hb, expand=False)
         self.__refill_id = None
@@ -355,6 +363,13 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             self.connect_object('destroy', watcher.disconnect, s)
         self.refresh_panes(restore=False)
         self.show_all()
+
+    def __all(self, *args):
+        self.__panes[-1].inhibit()
+        for pane in self.__panes:
+            pane.set_selected(None, True)
+        self.__panes[-1].uninhibit()
+        self.activate()
 
     def __mnemonic_activate(self, label, group_cycling):
         # If our mnemonic widget already has the focus, switch to
