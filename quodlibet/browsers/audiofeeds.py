@@ -124,6 +124,7 @@ class Feed(list):
                 for enclosure in entry.enclosures:
                     try:
                         if ("audio" in enclosure.type or
+                            "ogg" in enclosure.type or
                             formats.filter(enclosure.url)):
                             uri = enclosure.url.encode('ascii', 'replace')
                             try: size = enclosure.length
