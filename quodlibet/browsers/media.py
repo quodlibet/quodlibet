@@ -188,8 +188,6 @@ class DeleteDialog(gtk.Dialog):
         base = "<b>%s</b>" % util.escape(songs[0]["title"])
         l = ngettext("Permanently delete this song?",
                      "Permanently delete these songs?", len(songs))
-        #if len(songs) == 1: l = _("Permanently delete this song?")
-        #else: l = _("Permanently delete these songs?")
         exp = gtk.Expander()
         exp.set_use_markup(True)
         if len(songs) == 1:
@@ -330,7 +328,7 @@ class MediaDevices(Browser, gtk.VBox):
         view.set_rules_hint(True)
         view.set_headers_visible(False)
         view.get_selection().set_mode(gtk.SELECTION_BROWSE)
-        view.get_selection().connect_after('changed', self.__changed)
+        view.get_selection().connect('changed', self.__changed)
         view.connect('popup-menu', self.__popup_menu, watcher)
         if player: view.connect('row-activated', self.__play, player)
         swin.add(view)
@@ -416,7 +414,7 @@ class MediaDevices(Browser, gtk.VBox):
             device = model[iter][0]
             status = device.eject()
             if status == True:
-                self.__changed(self.__view.get_selection())
+                self.__refresh(device)
             else:
                 qltk.ErrorMessage(
                     self, _("Unable to eject device"),
@@ -425,7 +423,7 @@ class MediaDevices(Browser, gtk.VBox):
 
     def __properties(self, device):
         DeviceProperties(self, device).run()
-        self.__changed(self.__view.get_selection())
+        self.select(device)
 
     def __rename(self, group, acceleratable, keyval, modifier):
         model, iter = self.__view.get_selection().get_selected()
@@ -446,17 +444,14 @@ class MediaDevices(Browser, gtk.VBox):
 
         if device.is_connected(): songs = device.list(self)
         else: songs = []
-        menu = SongsMenu(watcher, songs, playlists=False, remove=False)
+        menu = SongsMenu(watcher, songs, playlists=False,
+                         devices=False, remove=False)
+
         menu.preseparate()
 
         delete = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         delete.connect_object('activate', model.remove, iter)
         menu.prepend(delete)
-
-        if device.eject:
-            eject = qltk.MenuItem(_("_Eject"), gtk.STOCK_DISCONNECT)
-            eject.connect_object('activate', self.__eject, None)
-            menu.prepend(eject)
 
         ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
         keyval, mod = gtk.accelerator_parse("F2")
@@ -467,6 +462,18 @@ class MediaDevices(Browser, gtk.VBox):
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
         ren.connect_object('activate', rename, model.get_path(iter))
         menu.prepend(ren)
+
+        menu.preseparate()
+
+        eject = qltk.MenuItem(_("_Eject"), gtk.STOCK_DISCONNECT)
+        eject.set_sensitive(device.eject and device.is_connected())
+        eject.connect_object('activate', self.__eject, None)
+        menu.prepend(eject)
+
+        refresh = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        refresh.set_sensitive(device.is_connected())
+        refresh.connect_object('activate', self.__refresh, device, True)
+        menu.prepend(refresh)
 
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
         props.connect_object( 'activate', self.__properties, model[iter][0])
@@ -490,16 +497,17 @@ class MediaDevices(Browser, gtk.VBox):
 
     def __changed(self, selection):
         model, iter = selection.get_selected()
-        if not iter: return
+        if iter:
+            device = model[iter][0]
+            if device: self.__refresh(device, rescan=True)
 
-        device = model[iter][0]
+    def __refresh(self, device, rescan=False):
         self.__device_icon.set_from_file(device.icon)
         self.__set_name(device.name)
 
         songs = []
         if device.is_connected():
             self.header.show_all()
-            self.__device_icon.set_sensitive(True)
             self.__eject_button.set_sensitive(bool(device.eject))
             try: space, free = device.get_space()
             except NotImplementedError:
@@ -516,15 +524,10 @@ class MediaDevices(Browser, gtk.VBox):
                 self.__progress.set_text("%.f%%" % round(fraction * 100))
                 self.__progress.show()
 
-            try: songs = device.list(self, rescan=True)
+            try: songs = device.list(self, rescan)
             except NotImplementedError: pass
         else:
-            self.__device_icon.set_sensitive(False)
-            self.__device_name.set_markup(
-                self.__device_name.get_label() +
-                " (%s)" % _("Disconnected"))
-            self.__device_space.set_text("")
-            self.__progress.hide()
+            self.header.hide()
         self.emit('songs-selected', songs, True)
 
     def activate(self):

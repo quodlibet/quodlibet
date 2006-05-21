@@ -65,6 +65,7 @@ class IPodDevice(Device):
     covers = True
 
     __itdb = None
+    __cache = []
 
     def __init__(self):
         mountpoint = os.getenv('IPOD_MOUNTPOINT') # gtkpod uses this
@@ -73,6 +74,7 @@ class IPodDevice(Device):
     # We don't want to pickle the iTunesDB
     def __getstate__(self):
         self.__itdb = None
+        self.__cache = []
         return self.__dict__
 
     def Properties(self, dialog):
@@ -154,15 +156,15 @@ class IPodDevice(Device):
         return (space, free)
 
     def list(self, browser, rescan=False):
-        songs = []
-        if self.__load_db():
+        if rescan and self.__load_db():
+            self.__cache = []
             for track in gpod.sw_get_tracks(self.__itdb):
                 filename = gpod.itdb_filename_on_ipod(track)
-                if filename: songs.append(IPodSong(track))
+                if filename: self.__cache.append(IPodSong(track))
                 else:
                     # Handle database corruption
                     self.__remove_track(track)
-        return songs
+        return self.__cache
 
     def __create_db(self):
         db = gpod.itdb_new();
