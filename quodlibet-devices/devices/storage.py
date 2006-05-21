@@ -122,7 +122,7 @@ class StorageDevice(Device):
                 _("Overwrite the file <b>%s</b>?") % util.escape(utarget),
                 ).run():
                 # Remove the current song
-                try: del self.__library[utarget]
+                try: del self.__library[target]
                 except KeyError: pass
                 model = songlist.get_model()
                 for row in model:
@@ -143,8 +143,8 @@ class StorageDevice(Device):
                     shutil.copyfile(cover.name, filename)
 
             song = copy.deepcopy(song)
-            song.sanitize(utarget)
-            self.__library[utarget] = song
+            song.sanitize(target)
+            self.__library[target] = song
             return song
         except IOError, exc:
             return str(exc).decode(locale.getpreferredencoding(), 'replace')

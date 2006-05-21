@@ -47,7 +47,7 @@ class DeviceProperties(gtk.Dialog):
         table.set_col_spacings(8)
         self.vbox.pack_start(table, expand=False)
 
-        self.add_property(_("Device Type"), device.__class__.name)
+        self.add_property(_("Device Type:"), device.__class__.name)
 
         entry = gtk.Entry()
         entry.set_text(device.name)

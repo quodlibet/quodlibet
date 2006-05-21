@@ -10,8 +10,6 @@
 import os
 import traceback
 
-import const
-
 from os.path import dirname, basename, isdir, join
 from glob import glob
 
@@ -23,10 +21,10 @@ modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
 modules = ["%s.%s" % (self, basename(m)) for m in modules]
 
 devices = []
-for name in modules:
-    try: device = __import__(name, {}, {}, self)
+for _name in modules:
+    try: device = __import__(_name, {}, {}, self)
     except NotImplementedError:
-        print "W: %s not supported." % name
+        print "W: %s not supported." % _name
         continue
     except Exception, err:
         traceback.print_exc()
