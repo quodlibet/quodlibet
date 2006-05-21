@@ -531,6 +531,7 @@ class MediaDevices(Browser, gtk.VBox):
         self.__changed(self.__view.get_selection())
 
     def save(self):
+        selection = self.__view.get_selection()
         model, iter = selection.get_selected()
         config.set('browsers', 'media', model[iter][0].name)
 

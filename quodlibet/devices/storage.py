@@ -7,6 +7,7 @@
 #
 # $Id$
 
+import locale
 import os
 import shutil
 import gtk
@@ -145,7 +146,8 @@ class StorageDevice(Device):
             song.sanitize(utarget)
             self.__library[utarget] = song
             return song
-        except (IOError, Error), exc: return exc.args[-1]
+        except IOError, exc:
+            return str(exc).decode(locale.getpreferredencoding(), 'replace')
 
     def cleanup(self, wlw, action):
         self.__pattern = None

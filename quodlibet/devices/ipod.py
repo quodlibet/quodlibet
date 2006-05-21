@@ -8,14 +8,17 @@
 # $Id$
 
 try: import gpod
-except ImportError: raise NotImplementedError
+except ImportError:
+    raise NotImplementedError
 
+import locale
 import os
 import popen2
 import time
 import gtk
 
 import const
+import qltk
 import util
 
 from devices._base import Device
@@ -246,7 +249,8 @@ class IPodDevice(Device):
             filename = gpod.itdb_filename_on_ipod(track)
             if filename: os.remove(filename)
             self.__remove_track(track)
-        except IOError, exc: return exc.args[-1]
+        except IOError, exc:
+            return str(exc).decode(locale.getpreferredencoding(), 'replace')
         else: return True
 
     def __remove_track(self, track):
@@ -255,6 +259,7 @@ class IPodDevice(Device):
         gpod.itdb_track_remove(track)
 
     def cleanup(self, wlw, action):
+        browser = wlw.get_transient_parent()
         wlw._WaitLoadWindow__text = _("<b>Saving iPod database...</b>")
         wlw.count = 0
         wlw.step()
