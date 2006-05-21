@@ -1,0 +1,9 @@
+eggtrayicon.c
+eggtrayicon.h
+Makefile
+MANIFEST
+README
+setup.py
+trayicon.defs
+trayiconmodule.c
+trayicon.override

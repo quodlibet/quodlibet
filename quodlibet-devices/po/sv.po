@@ -1,0 +1,2195 @@
+# Swedish translation of Quod Libet 0.19
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Erik Christiansson <spam.erik@alphafish.com>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Quod Libet 0.19\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-05-01 16:27-0500\n"
+"PO-Revision-Date: 2006-04-11 00:51+0200\n"
+"Last-Translator: Erik Christiansson <spam.erik@alphafish.com>\n"
+"Language-Team: SWEDISH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../stock.py:41
+msgid "Edit _Tags"
+msgstr "Redigera _taggar"
+
+#: ../stock.py:42
+msgid "_Plugins"
+msgstr "_Insticksmoduler"
+
+#: ../stock.py:43
+msgid "_Preview"
+msgstr "_Förhandsgranska"
+
+#: ../stock.py:44
+msgid "Add to _Queue"
+msgstr "Lägg till i _kö"
+
+#: ../stock.py:45
+msgid "_Add to Playlist"
+msgstr "_Lägg till i spellista"
+
+#: ../stock.py:62
+msgid "_Information"
+msgstr "_Information"
+
+#. Translators: Only translate this if it conflicts with "Delete",
+#. as is the case in e.g. Finnish. It should be disambiguated as
+#. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
+#. Don't literally translate "ql-remove".
+#: ../stock.py:69 ../stock.py:73
+msgid "ql-remove"
+msgstr ""
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#: ../stock.py:78
+msgid "gtk-media-next"
+msgstr ""
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#: ../stock.py:81
+msgid "gtk-media-previous"
+msgstr ""
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#: ../stock.py:84
+msgid "gtk-media-play"
+msgstr ""
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#: ../stock.py:87
+msgid "gtk-media-pause"
+msgstr ""
+
+#: ../library.py:44 ../library.py:55
+#, python-format
+msgid "missing from %d song"
+msgid_plural "missing from %d songs"
+msgstr[0] "saknas från %d låt"
+msgstr[1] "saknas från %d låtar"
+
+#: ../library.py:48 ../library.py:52
+#, python-format
+msgid "different across %d song"
+msgid_plural "different across %d songs"
+msgstr[0] "skiljer sig mellan %d låt"
+msgstr[1] "skiljer sig mellan %d låtar"
+
+#: ../library.py:206
+#, python-format
+msgid "W: %s is not a QL song database."
+msgstr "W: %s är ej en QL-låtdatabas."
+
+#: ../library.py:275
+#, python-format
+msgid "Checking %s"
+msgstr "Kontrollerar %s"
+
+#: ../library.py:300 ../qltk/about.py:27
+#, python-format
+msgid "Supported formats: %s"
+msgstr "Format som stödjs: %s"
+
+#: ../quodlibet.py:78
+msgid "The library cannot be refreshed while Quod Libet is running."
+msgstr "Biblioteket kan inte uppdateras när Quod Libet körs"
+
+#: ../quodlibet.py:82
+msgid "Loading, scanning, and saving your library."
+msgstr "Läser hem, skannar och sparar bilblioteket"
+
+#: ../quodlibet.py:112
+msgid "No song is currently playing."
+msgstr "Ingen låt spelas för tillfället"
+
+#: ../quodlibet.py:120
+msgid "Quod Libet is not running."
+msgstr "Quod Libet körs inte"
+
+#: ../quodlibet.py:131
+#, python-format
+msgid "Unable to write to %s. Removing it."
+msgstr "Kan ej skriva till %s. Tar bort det."
+
+#: ../quodlibet.py:171
+msgid "a music library and player"
+msgstr "musikbibliotek och -spelare"
+
+#: ../quodlibet.py:172
+msgid "[ --refresh-library | --print-playing | control ]"
+msgstr "[ -refresh-library | --print-playing | kontroll ]"
+
+#: ../quodlibet.py:174
+msgid "Rescan your library and exit"
+msgstr "Skannar om biblioteket och avslutar"
+
+#: ../quodlibet.py:175
+msgid "Print the playing song and exit"
+msgstr "Skriver ut den låt som spelas och avslutar"
+
+#: ../quodlibet.py:176
+msgid "Begin playing immediately"
+msgstr "Börja spela omgående"
+
+#: ../quodlibet.py:179
+msgid "Jump to next song"
+msgstr "Hoppa till nästa låt"
+
+#: ../quodlibet.py:180
+msgid "Jump to previous song"
+msgstr "Hoppa till föregående låt"
+
+#: ../quodlibet.py:181
+msgid "Start playback"
+msgstr "Starta uppspelning"
+
+#: ../quodlibet.py:182
+msgid "Pause playback"
+msgstr "Pausa uppspelning"
+
+#: ../quodlibet.py:183
+msgid "Toggle play/pause mode"
+msgstr "Växla spelnings-/paus-läge"
+
+#: ../quodlibet.py:184
+msgid "Turn up volume"
+msgstr "Höj volymen"
+
+#: ../quodlibet.py:185
+msgid "Turn down volume"
+msgstr "Sänk volymen"
+
+#: ../quodlibet.py:186
+msgid "Print player status"
+msgstr "Skriv ut spelarstatus"
+
+#: ../quodlibet.py:187
+msgid "Hide main window"
+msgstr "Dölj huvudfönstret"
+
+#: ../quodlibet.py:188
+msgid "Show main window"
+msgstr "Visa huvudfönstret"
+
+#: ../quodlibet.py:189
+msgid "Toggle main window visibility"
+msgstr "Växla synlighet för huvudfönstret"
+
+#: ../quodlibet.py:190
+msgid "Focus the running player"
+msgstr "Fokuserar på den spelare som körs"
+
+#: ../quodlibet.py:191
+msgid "Print the current playlist"
+msgstr "Skriv ut nuvarande spellista"
+
+#: ../quodlibet.py:192
+msgid "Print the contents of the queue"
+msgstr "Skriv ut innehållet i kön"
+
+#: ../quodlibet.py:193
+msgid "Exit Quod Libet"
+msgstr "Avsluta Quod Libet"
+
+#: ../quodlibet.py:197
+msgid "Seek within the playing song"
+msgstr "Sök innom spelande låt"
+
+#: ../quodlibet.py:197
+msgid "[+|-][HH:]MM:SS"
+msgstr "[+|-][HH:]MM:SS"
+
+#: ../quodlibet.py:198
+msgid "Set or toggle the playback order"
+msgstr "Ange eller växla spelordningen"
+
+#: ../quodlibet.py:200
+msgid "Turn repeat off, on, or toggle it"
+msgstr "Stäng av, på eller växla repetering"
+
+#: ../quodlibet.py:201
+msgid "Set the volume"
+msgstr "Ställ in volymen"
+
+#: ../quodlibet.py:202
+msgid "Search your audio library"
+msgstr "Sök i ljudbiblioteket"
+
+#: ../quodlibet.py:202 ../quodlibet.py:212
+msgid "query"
+msgstr "fråga"
+
+#: ../quodlibet.py:203
+msgid "Play a file"
+msgstr "Spela en fil"
+
+#. just file name, foo.ogg
+#: ../quodlibet.py:203 ../quodlibet.py:212 ../po/tag-names.py:23
+msgid "filename"
+msgstr "filnamn"
+
+#: ../quodlibet.py:204
+msgid "Rate the playing song"
+msgstr "Betygsätt den spelande låten"
+
+#: ../quodlibet.py:205
+msgid "Set the current browser"
+msgstr "Ange nuvarande bläddrare"
+
+#: ../quodlibet.py:206
+msgid "Open a new browser"
+msgstr "Öppna ny bläddrare"
+
+#: ../quodlibet.py:207
+msgid "Show or hide the queue"
+msgstr "Visa eller dölj bläddraren"
+
+#: ../quodlibet.py:208
+msgid "Show or hide the main song list"
+msgstr "Visa eller dölj huvudlåtfönstret"
+
+#: ../quodlibet.py:209
+msgid "Filter on a random value"
+msgstr "Filtrera på slumpvis värde"
+
+#: ../quodlibet.py:209
+msgid "tag"
+msgstr "tagg"
+
+#: ../quodlibet.py:210
+msgid "Filter on a tag value"
+msgstr "Filtrera på ett taggvärde"
+
+#: ../quodlibet.py:210
+msgid "tag=value"
+msgstr "tagg=värde"
+
+#: ../quodlibet.py:211
+msgid "Enqueue a file or query"
+msgstr "Kölägg en fil eller fråga"
+
+#: ../quodlibet.py:247
+#, python-format
+msgid "E: Invalid argument for '%s'."
+msgstr "E: Ogiltigt argument för '%s'."
+
+#: ../quodlibet.py:249 ../util/__init__.py:168
+#, python-format
+msgid "E: Try %s --help."
+msgstr "E: Försök %s --help"
+
+#: ../quodlibet.py:270
+msgid "Loaded song library."
+msgstr "Låtbibliotek laddat."
+
+#. Try to initialize the playlist and audio output.
+#: ../quodlibet.py:279
+msgid "Opening audio device."
+msgstr "Öppnar ljudenhet"
+
+#: ../quodlibet.py:310
+msgid "Quod Libet is already running."
+msgstr "Quod Libet körs redan."
+
+#. Translations for tag names
+#. Note that although tag names are translated in the main list view,
+#. they are *not* when editing tags.
+#. date the song was added to the library
+#: ../po/tag-names.py:7 ../qltk/information.py:188
+msgid "added"
+msgstr "tillagd"
+
+#: ../po/tag-names.py:8
+msgid "album"
+msgstr "album"
+
+#: ../po/tag-names.py:9
+msgid "album artist"
+msgstr "album artist"
+
+#: ../po/tag-names.py:10
+msgid "arranger"
+msgstr "arrangör"
+
+#: ../po/tag-names.py:11 ../qltk/information.py:144 ../qltk/information.py:327
+msgid "artist"
+msgstr "artist"
+
+#: ../po/tag-names.py:12
+msgid "author"
+msgstr "författare"
+
+#: ../po/tag-names.py:13
+msgid "composer"
+msgstr "kompositör"
+
+#: ../po/tag-names.py:14
+msgid "conductor"
+msgstr "dirigent"
+
+#: ../po/tag-names.py:15
+msgid "contact"
+msgstr "kontakt"
+
+#: ../po/tag-names.py:16
+msgid "copyright"
+msgstr "copyright"
+
+#: ../po/tag-names.py:17
+msgid "date"
+msgstr "datum"
+
+#: ../po/tag-names.py:18
+msgid "description"
+msgstr "beskrivning"
+
+#. just path, /.../...
+#: ../po/tag-names.py:20 ../exfalso.py:27
+msgid "directory"
+msgstr "mapp"
+
+#: ../po/tag-names.py:21
+msgid "disc"
+msgstr "skiva"
+
+#. as in "file format"
+#: ../po/tag-names.py:25
+msgid "format"
+msgstr "format"
+
+#. file name plus path, /.../.../foo.ogg
+#: ../po/tag-names.py:27
+msgid "full name"
+msgstr "fullt namn"
+
+#: ../po/tag-names.py:28
+msgid "genre"
+msgstr "genre"
+
+#: ../po/tag-names.py:29
+msgid "grouping"
+msgstr "gruppering"
+
+#. alternately, "catalog number", "catalog ID", "label number"
+#: ../po/tag-names.py:31
+msgid "label ID"
+msgstr "katalognummer"
+
+#: ../po/tag-names.py:32
+msgid "language"
+msgstr "språk"
+
+#. date the song was last heard on
+#: ../po/tag-names.py:34 ../qltk/information.py:189
+msgid "last played"
+msgstr "senast spelad"
+
+#: ../po/tag-names.py:35 ../qltk/information.py:220
+msgid "length"
+msgstr "längd"
+
+#: ../po/tag-names.py:36
+msgid "license"
+msgstr "licens"
+
+#: ../po/tag-names.py:37
+msgid "location"
+msgstr "plats"
+
+#: ../po/tag-names.py:38
+msgid "lyricist"
+msgstr "lyrist"
+
+#. date song was last modified/edited
+#: ../po/tag-names.py:40 ../qltk/information.py:222
+msgid "modified"
+msgstr "ändrad"
+
+#: ../po/tag-names.py:41
+msgid "mount point"
+msgstr "monteringspunkt"
+
+#. alternately, "record label"
+#: ../po/tag-names.py:43
+msgid "organization"
+msgstr "organisation"
+
+#: ../po/tag-names.py:44
+msgid "original release date"
+msgstr "ursprungligt släppdatum"
+
+#: ../po/tag-names.py:45
+msgid "original artist"
+msgstr "ursprunglig artist"
+
+#: ../po/tag-names.py:46
+msgid "original album"
+msgstr "ursprungligt album"
+
+#. alternately, "movement", "section"
+#: ../po/tag-names.py:48
+msgid "part"
+msgstr "del"
+
+#: ../po/tag-names.py:49
+msgid "people"
+msgstr "personer"
+
+#: ../po/tag-names.py:50 ../qltk/information.py:333
+msgid "performer"
+msgstr "uppträdande"
+
+#: ../po/tag-names.py:51 ../qltk/information.py:190
+msgid "plays"
+msgstr "spelningar"
+
+#: ../po/tag-names.py:52 ../qltk/information.py:192
+msgid "rating"
+msgstr "betyg"
+
+#: ../po/tag-names.py:53
+msgid "recording date"
+msgstr "inspelningsdatum"
+
+#: ../po/tag-names.py:54 ../qltk/information.py:191
+msgid "skips"
+msgstr "överhoppningar"
+
+#: ../po/tag-names.py:55
+msgid "title"
+msgstr "titel"
+
+#: ../po/tag-names.py:56
+msgid "track"
+msgstr "spår"
+
+#: ../po/tag-names.py:57
+msgid "version"
+msgstr "version"
+
+#: ../po/tag-names.py:58
+msgid "website"
+msgstr "webbsida"
+
+#: ../po/tag-names.py:59
+msgid "year"
+msgstr "år"
+
+#. beats per minute
+#: ../po/tag-names.py:61
+msgid "BPM"
+msgstr "BPM"
+
+#: ../po/tag-names.py:63
+msgid "MusicBrainz track ID"
+msgstr "MusicBrainz spår-ID"
+
+#: ../po/tag-names.py:64
+msgid "MusicBrainz artist ID"
+msgstr "MusicBrainz artist-ID"
+
+#: ../po/tag-names.py:65
+msgid "MusicBrainz album ID"
+msgstr "MusicBrainz album-ID"
+
+#: ../po/tag-names.py:66
+#, fuzzy
+msgid "MusicBrainz album artist ID"
+msgstr "MusicBrainz artist-ID"
+
+#: ../po/tag-names.py:67
+#, fuzzy
+msgid "MusicBrainz TRM ID"
+msgstr "MusicBrainz spår-ID"
+
+#: ../po/tag-names.py:68
+msgid "MusicIP PUID"
+msgstr ""
+
+#. refers to a volume adjustment and not "to get/acquire".
+#: ../po/tag-names.py:71
+msgid "track gain"
+msgstr "spårförstärkning"
+
+#. refers to a volume adjustment and not "to get/acquire".
+#: ../po/tag-names.py:73
+msgid "album gain"
+msgstr "albumförstärkning"
+
+#: ../po/tag-names.py:74
+msgid "track peak"
+msgstr "spårtopp"
+
+#: ../po/tag-names.py:75
+msgid "album peak"
+msgstr "albumtopp"
+
+#: ../po/tag-names.py:77 ../qltk/information.py:334
+msgid "performers"
+msgstr "uppträdande"
+
+#: ../po/tag-names.py:78
+msgid "lyricists"
+msgstr "lyrister"
+
+#: ../po/tag-names.py:79
+msgid "arrangers"
+msgstr "arrangörer"
+
+#: ../po/tag-names.py:80
+msgid "composers"
+msgstr "kompositörer"
+
+#: ../po/tag-names.py:81
+msgid "conductors"
+msgstr "dirigenter"
+
+#: ../po/tag-names.py:82
+msgid "authors"
+msgstr "författare"
+
+#: ../po/tag-names.py:83 ../qltk/information.py:145 ../qltk/information.py:328
+#: ../qltk/information.py:466
+msgid "artists"
+msgstr "artister"
+
+#: ../po/tag-names.py:84 ../qltk/information.py:483
+msgid "albums"
+msgstr "album"
+
+#: ../po/tag-names.py:85
+msgid "tracks"
+msgstr "spår"
+
+#: ../po/tag-names.py:86
+msgid "discs"
+msgstr "skivor"
+
+#. Not really tag names, but this is the best place for them so far.
+#: ../po/tag-names.py:90
+#, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d sekund"
+msgstr[1] "%d sekunder"
+
+#: ../po/tag-names.py:91
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minut"
+msgstr[1] "%d minuter"
+
+#: ../po/tag-names.py:92
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d timma"
+msgstr[1] "%d timmar"
+
+#: ../po/tag-names.py:93
+#, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d dag"
+msgstr[1] "%d dagar"
+
+#: ../po/tag-names.py:94
+#, python-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] "%d år"
+msgstr[1] "%d år"
+
+#: ../formats/_audio.py:155 ../qltk/information.py:173
+#: ../qltk/information.py:180 ../qltk/information.py:205
+#: ../browsers/paned.py:34 ../browsers/audiofeeds.py:43
+#: ../browsers/audiofeeds.py:53 ../browsers/audiofeeds.py:54
+#: ../browsers/audiofeeds.py:117
+msgid "Unknown"
+msgstr "Okännd"
+
+#: ../exfalso.py:27
+msgid "an audio tag editor"
+msgstr "en ljudtaggsredigerare"
+
+#: ../widgets.py:43
+msgid "Unable to start web browser"
+msgstr "Kunde ej starta webbläsare"
+
+#: ../widgets.py:44
+msgid ""
+"A web browser could not be found. Please set your $BROWSER variable, or make "
+"sure /usr/bin/sensible-browser exists."
+msgstr ""
+"Ingen webbläsare kunde hittas. Ställ in din $BROWSER-variabel eller "
+"säkerställ att /usr/bin/sensible-browser finns."
+
+#: ../widgets.py:130
+msgid "Saving library."
+msgstr "Sparar bibliotek."
+
+#: ../widgets.py:134
+msgid "Unable to save library"
+msgstr "Kunde ej spara bibliotek"
+
+#: ../widgets.py:137
+msgid "Unable to open audio device"
+msgstr "Kunde ej öppna ljudenhet"
+
+#: ../widgets.py:138
+#, python-format
+msgid ""
+"Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
+"not open them. Set your GStreamer pipeline by changing the\n"
+"    <b>pipeline = %(sink)s</b>\n"
+"line in ~/.quodlibet/config."
+msgstr ""
+"Quod Libet försöktre komma åt drivrutinerna 'autosink' och '%(sink)s' men "
+"kunde inte öppna dem. Konfigurera din GStreamer-pipeline genom att ändra "
+"raden\n"
+"....<b>pipeline = %(sink)s</b>\n"
+"i ~/.quodlibet/config."
+
+#: ../widgets.py:147
+msgid "Unable to open files"
+msgstr "Kunde ej öppna filer"
+
+#: ../widgets.py:148
+msgid ""
+"Quod Libet could not find the 'filesrc' GStreamer element. Check your "
+"GStreamer installation."
+msgstr ""
+"Quod Libet kunde ej hitta GStreamer-elementet 'filesrc'. Kontrollera din "
+"GStreamer-installation."
+
+#: ../plugins/__init__.py:198 ../qltk/tagsfrompath.py:232
+#: ../plugins/songsmenu.py:163
+msgid "Unable to edit song"
+msgstr "Kunde ej redigera låt"
+
+#: ../plugins/__init__.py:199 ../qltk/edittags.py:495
+#: ../qltk/tagsfrompath.py:233 ../qltk/tracknumbers.py:135
+#: ../plugins/songsmenu.py:164
+#, python-format
+msgid ""
+"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
+"have permission to edit it."
+msgstr ""
+"Sparning av filen <b>%s</b> misslyckades. Filen kan vara skrivskyddad, "
+"korrupt eller så har du inte tillstånd att redigera den."
+
+#: ../qltk/_editpane.py:69
+msgid "_More options..."
+msgstr "_Fler alternativ"
+
+#: ../qltk/about.py:28
+#, python-format
+msgid "Audio device: %s"
+msgstr "Ljudenhet: %s"
+
+#. Translators: Replace this with your name/email to have it appear
+#. in the "About" dialog.
+#: ../qltk/about.py:36
+msgid "translator-credits"
+msgstr "Erik Christiansson"
+
+#. Translators: Refers to the beginning of the playing song.
+#: ../qltk/bookmarks.py:25
+msgid "Beginning"
+msgstr "Början"
+
+#: ../qltk/bookmarks.py:31 ../qltk/bookmarks.py:66
+msgid "N/A"
+msgstr "N/A"
+
+#: ../qltk/bookmarks.py:70
+msgid "Time"
+msgstr "Tid"
+
+#: ../qltk/bookmarks.py:76 ../qltk/bookmarks.py:108
+msgid "Bookmark Name"
+msgstr "Bokmärkesnamn"
+
+#: ../qltk/bookmarks.py:106
+msgid "MM:SS"
+msgstr "MM:SS"
+
+#: ../qltk/bookmarks.py:180 ../qltk/information.py:76
+msgid "Bookmarks"
+msgstr "Bokmärken"
+
+#: ../qltk/browser.py:19
+msgid "Library Browser"
+msgstr "Biblioteksbläddrare"
+
+#: ../qltk/cbes.py:22
+msgid "Saved Values"
+msgstr "Sparade värden"
+
+#: ../qltk/cbes.py:33
+msgid "_Name:"
+msgstr "_Namn:"
+
+#: ../qltk/cbes.py:41 ../qltk/edittags.py:138
+msgid "_Value:"
+msgstr "_Värde:"
+
+#: ../qltk/cbes.py:199
+msgid "Edit saved values..."
+msgstr "Redigera sparade värden..."
+
+#: ../qltk/chooser.py:40 ../qltk/filesel.py:200
+msgid "Songs"
+msgstr "Låtar"
+
+#: ../qltk/controls.py:46
+msgid "Display remaining time"
+msgstr "Visa återstående tid"
+
+#: ../qltk/controls.py:52
+msgid "_Edit Bookmarks..."
+msgstr "_Redigera bokmärken"
+
+#: ../qltk/controls.py:171
+msgid "Stop after this song"
+msgstr "Stoppa efter denna låt"
+
+#: ../qltk/delete.py:24
+msgid "Delete Files"
+msgstr "Ta bort filer"
+
+#: ../qltk/delete.py:37
+msgid "_Move to Trash"
+msgstr "_Flytta till papperskorgen"
+
+#: ../qltk/delete.py:53
+msgid "Permanently delete this file?"
+msgstr "Ta bort filen permanent?"
+
+#: ../qltk/delete.py:54
+msgid "Permanently delete these files?"
+msgstr "Ta bort filerna permanent?"
+
+#: ../qltk/delete.py:58
+#, python-format
+msgid "%(title)s and %(count)d more..."
+msgid_plural "%(title)s and %(count)d more..."
+msgstr[0] "%(title)s och %(count)d till..."
+msgstr[1] "%(title)s och %(count)d till..."
+
+#: ../qltk/delete.py:82
+#, python-format
+msgid "Moving %d/%d."
+msgstr "Flyttar %d/%d"
+
+#: ../qltk/delete.py:83
+#, python-format
+msgid "Deleting %d/%d."
+msgstr "Tar bort %d/%d"
+
+#: ../qltk/delete.py:102
+msgid "Unable to delete file"
+msgstr "Kunde ej ta bort fil"
+
+#: ../qltk/delete.py:103
+#, python-format
+msgid "Deleting <b>%s</b> failed."
+msgstr "Borttagning av <b>%s</b> misslyckades."
+
+#: ../qltk/downloader.py:32
+msgid "Downloads"
+msgstr "Hämtningar"
+
+#: ../qltk/downloader.py:45
+msgid "Filename"
+msgstr "Filnamn"
+
+#: ../qltk/downloader.py:54
+msgid "Size"
+msgstr "Storlek"
+
+#: ../qltk/edittags.py:34
+msgid "Split into _Multiple Values"
+msgstr "Dela till flera värden"
+
+#: ../qltk/edittags.py:52
+msgid "Split Disc out of _Album"
+msgstr "Hämta skiva ur _album"
+
+#: ../qltk/edittags.py:67
+msgid "Split _Version out of Title"
+msgstr "Hämta _version ur titel"
+
+#: ../qltk/edittags.py:100
+msgid "Split Arranger out of Ar_tist"
+msgstr "Hämta arrangör ur ar_tist"
+
+#: ../qltk/edittags.py:104
+msgid "Split _Performer out of Artist"
+msgstr "Hämta _uppträdande ut artist"
+
+#: ../qltk/edittags.py:112
+msgid "Add a Tag"
+msgstr "Lägg till en tagg"
+
+#: ../qltk/edittags.py:130
+msgid "_Tag:"
+msgstr "_Tagg:"
+
+#: ../qltk/edittags.py:201
+msgid "Edit Tags"
+msgstr "Redigera taggar"
+
+#: ../qltk/edittags.py:208
+msgid "Write"
+msgstr "Skriv"
+
+#: ../qltk/edittags.py:228
+msgid "Tag"
+msgstr "Tagg"
+
+#: ../qltk/edittags.py:240
+msgid "Value"
+msgstr "Värde"
+
+#: ../qltk/edittags.py:390
+msgid "Unable to add tag"
+msgstr "Kunde ej lägga till tagg"
+
+#: ../qltk/edittags.py:391
+#, python-format
+msgid ""
+"Unable to add <b>%s</b>\n"
+"\n"
+"The files currently selected do not support multiple values."
+msgstr ""
+"Kunde ej lägga till <b>%s</b>\n"
+"\n"
+"Den valda filen har ej stöd för flera värden."
+
+#. Can't remove the old tag.
+#. Can't add the new tag.
+#. Return a 'natural' version of the tag for human-readable bits.
+#. Strips ~ and ~# from the start and runs it through a map (which
+#. the user can configure).
+#: ../qltk/edittags.py:417 ../qltk/edittags.py:534 ../qltk/edittags.py:541
+#: ../qltk/tagsfrompath.py:148 ../util/__init__.py:451 ../util/__init__.py:458
+msgid "Invalid tag"
+msgstr "Ogiltig tall"
+
+#: ../qltk/edittags.py:418 ../qltk/edittags.py:535 ../qltk/edittags.py:542
+#: ../qltk/tagsfrompath.py:149
+#, python-format
+msgid ""
+"Invalid tag <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing this tag."
+msgstr ""
+"Ogiltig tagg <b>%s</b>\n"
+"\n"
+"Den valda filen har ej stöd för att redigera den här taggen."
+
+#: ../qltk/edittags.py:460 ../qltk/tagsfrompath.py:207
+#: ../qltk/tracknumbers.py:122
+msgid "Tag may not be accurate"
+msgstr "Taggen är möjligtvis ej korrekt"
+
+#: ../qltk/edittags.py:461 ../qltk/tagsfrompath.py:208
+#: ../qltk/tracknumbers.py:123
+#, python-format
+msgid ""
+"<b>%s</b> changed while the program was running. Saving without refreshing "
+"your library may overwrite other changes to the song.\n"
+"\n"
+"Save this song anyway?"
+msgstr ""
+"<b>%s</b> har ändrats utanför programet. Att spara utan att uppdatera "
+"bilbioteket kan skriva över andra ändringar.\n"
+"\n"
+"Spara ändå?"
+
+#: ../qltk/edittags.py:494 ../qltk/tracknumbers.py:134
+msgid "Unable to save song"
+msgstr "Kunde ej spara låt"
+
+#: ../qltk/edittags.py:518 ../qltk/edittags.py:552
+msgid "Invalid value"
+msgstr "Ogiltigt värde"
+
+#: ../qltk/edittags.py:559
+msgid "Unable to retag multiple values"
+msgstr "Kan ej tagga om flera värden"
+
+#: ../qltk/edittags.py:560
+msgid "Changing the name of a tag with multiple values is not supported."
+msgstr "Det går ej att byta namn på en tagg med flera värden."
+
+#: ../qltk/exfalso.py:149 ../qltk/information.py:448
+#: ../browsers/playlists.py:179
+#, python-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "%d låt"
+msgstr[1] "%d låtar"
+
+#: ../qltk/exfalso.py:163 ../qltk/properties.py:102
+#: ../browsers/playlists.py:110 ../browsers/playlists.py:206
+#, python-format
+msgid "%(title)s and %(count)d more"
+msgstr "%(title)s och %(count)d till"
+
+#. FIXME: Change to "Ex Falso Preferences" after 0.19.
+#: ../qltk/exfalso.py:180 ../qltk/pluginwin.py:105
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: ../qltk/exfalso.py:185 ../qltk/prefs.py:212
+msgid "Tag Editing"
+msgstr "Taggredigering"
+
+#: ../qltk/exfalso.py:191 ../qltk/prefs.py:219
+msgid "Split _on:"
+msgstr "Dela _på:"
+
+#: ../qltk/exfalso.py:197 ../qltk/prefs.py:225
+msgid "Show _programmatic tags"
+msgstr "Ta bort _programmatiska taggar"
+
+#: ../qltk/filesel.py:38
+msgid "Folders"
+msgstr "Mappar"
+
+#: ../qltk/filesel.py:69
+msgid "New Folder..."
+msgstr "Ny mapp..."
+
+#: ../qltk/filesel.py:125
+msgid "New Folder"
+msgstr "Ny mapp"
+
+#: ../qltk/filesel.py:125
+msgid "Enter a name for the new folder:"
+msgstr "Namn på den nya mappen:"
+
+#: ../qltk/filesel.py:134
+msgid "Unable to create folder"
+msgstr "Kunde ej skapa mapp"
+
+#: ../qltk/filesel.py:147
+msgid "Unable to delete folder"
+msgstr "Kunde ej ta bort mapp"
+
+#. Translators: Only worry about "by", "Disc", and "Track" below.
+#: ../qltk/info.py:23
+msgid ""
+"\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)"
+"><version|\n"
+"\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
+"by <~people>><album|\n"
+"\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b\\><part>"
+"\\</b\\>><tracknumber| - Track <tracknumber>>>"
+msgstr ""
+"\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)"
+"><version|\n"
+"\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
+"av <~people>><album|\n"
+"\\<b\\><album>\\</b\\><discnumber| - Skiva <discnumber>><part| - \\<b"
+"\\><part>\\</b\\>><tracknumber| - Spår <tracknumber>>>"
+
+#: ../qltk/info.py:48
+msgid "_Edit Display..."
+msgstr "_Redigera visning..."
+
+#: ../qltk/info.py:75 ../qltk/trayicon.py:112 ../qltk/trayicon.py:227
+msgid "Not playing"
+msgstr "Spelar ej"
+
+#: ../qltk/information.py:54
+msgid "No songs are selected."
+msgstr "Inga låtar är valda."
+
+#: ../qltk/information.py:55
+msgid "No Songs"
+msgstr "Inga låtar"
+
+#: ../qltk/information.py:68 ../qltk/information.py:241
+#: ../qltk/information.py:377 ../qltk/information.py:436
+msgid "Information"
+msgstr "Information"
+
+#: ../qltk/information.py:72
+msgid "Lyrics"
+msgstr "Text"
+
+#: ../qltk/information.py:114 ../qltk/information.py:354
+#, python-format
+msgid "Disc %s"
+msgstr "Skiva %s"
+
+#: ../qltk/information.py:119
+#, python-format
+msgid "Track %s"
+msgstr "Spår %s"
+
+#: ../qltk/information.py:170 ../qltk/information.py:181
+#: ../qltk/songlist.py:308
+msgid "Never"
+msgstr "Aldrig"
+
+#: ../qltk/information.py:171
+#, python-format
+msgid "%d time"
+msgid_plural "%d times"
+msgstr[0] "%d gång"
+msgstr[1] "%d gånger"
+
+#: ../qltk/information.py:201 ../qltk/prefs.py:195
+msgid "Library"
+msgstr "Bibliotek"
+
+#: ../qltk/information.py:214
+#, python-format
+msgid "%d kbps"
+msgstr "%d kbit/s"
+
+#: ../qltk/information.py:221
+msgid "file size"
+msgstr "filstorlek"
+
+#: ../qltk/information.py:224
+msgid "bitrate"
+msgstr "bitrate"
+
+#: ../qltk/information.py:235 ../qltk/properties.py:56
+#: ../qltk/renamefiles.py:73 ../qltk/tagsfrompath.py:165
+#: ../qltk/tracknumbers.py:59
+msgid "File"
+msgstr "Fil"
+
+#: ../qltk/information.py:284 ../browsers/albums.py:271
+#, python-format
+msgid "%d disc"
+msgid_plural "%d discs"
+msgstr[0] "%d skiva"
+msgstr[1] "%d skivor"
+
+#: ../qltk/information.py:286 ../browsers/albums.py:267
+#, python-format
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d spår"
+msgstr[1] "%d spår"
+
+#: ../qltk/information.py:288
+#, python-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%d vald"
+msgstr[1] "%d valda"
+
+#: ../qltk/information.py:301
+#, python-format
+msgid "Produced by %s"
+msgstr "Producerad av %s"
+
+#: ../qltk/information.py:364
+msgid "Track unavailable"
+msgstr "Spår otillgängligt"
+
+#: ../qltk/information.py:371
+msgid "Track List"
+msgstr "Spårlista"
+
+#: ../qltk/information.py:409 ../qltk/information.py:480
+#, python-format
+msgid "%d song with no album"
+msgid_plural "%d songs with no album"
+msgstr[0] "%d låt utan album"
+msgstr[1] "%d låtar utan album"
+
+#: ../qltk/information.py:413
+msgid "Selected Discography"
+msgstr "Vald discografi"
+
+#: ../qltk/information.py:463
+#, python-format
+msgid "%d song with no artist"
+msgid_plural "%d songs with no artist"
+msgstr[0] "%d låt utan artist"
+msgstr[1] "%d låtar utan artist"
+
+#: ../qltk/information.py:496
+msgid "Total length:"
+msgstr "Total längd:"
+
+#: ../qltk/information.py:500
+msgid "Total size:"
+msgstr "Total storlek:"
+
+#: ../qltk/information.py:503
+msgid "Files"
+msgstr "Filer"
+
+#: ../qltk/lyrics.py:34
+msgid "_Download"
+msgstr "_Hämta"
+
+#: ../qltk/lyrics.py:52
+#, python-format
+msgid "Lyrics provided by %s."
+msgstr "Texter från %s."
+
+#: ../qltk/lyrics.py:66
+msgid ""
+"No lyrics found.\n"
+"\n"
+"You can click the Download button to have Quod Libet search for lyrics "
+"online.  You can also enter them yourself and click save."
+msgstr ""
+"Texter hittades inte.\n"
+"\n"
+"Klicka på kanppen Hämta för att låte Quod Libet söka efter texten på "
+"internet. Du kan också skriva in texten själv och klicka på Spara."
+
+#: ../qltk/lyrics.py:85
+msgid "Searching for lyrics..."
+msgstr "Söker efter text..."
+
+#: ../qltk/lyrics.py:105 ../qltk/lyrics.py:138 ../qltk/lyrics.py:151
+msgid "Unable to download lyrics."
+msgstr "Kunde ej hämta text."
+
+#: ../qltk/lyrics.py:121
+msgid "No lyrics found for this song."
+msgstr "Ingen text hittades för denna låt."
+
+#: ../qltk/msg.py:48
+msgid "Discard tag changes?"
+msgstr "Förkasta taggändringar?"
+
+#: ../qltk/msg.py:49
+msgid ""
+"Tags have been changed but not saved. Save these files, or revert and "
+"discard changes?"
+msgstr ""
+"Taggar har ändrats men ej sparade. Spara filerna eller återgå och förkasta "
+"ändringarna?"
+
+#: ../qltk/playorder.py:14
+msgid "In Order"
+msgstr "I ordning"
+
+#: ../qltk/playorder.py:15
+msgid "Shuffle"
+msgstr "Blanda"
+
+#: ../qltk/playorder.py:16
+msgid "Weighted"
+msgstr "Viktad"
+
+#: ../qltk/playorder.py:17
+msgid "One Song"
+msgstr "En låt"
+
+#: ../qltk/pluginwin.py:35
+msgid "Quod Libet Plugins"
+msgstr "Quod Libet-insticksmoduler"
+
+#: ../qltk/pluginwin.py:83
+msgid "Show _Errors"
+msgstr "Visa _fel"
+
+#: ../qltk/pluginwin.py:188
+msgid "No plugins found."
+msgstr "Inga insticksmoduler hittades."
+
+#: ../qltk/pluginwin.py:195
+msgid "Plugin Errors"
+msgstr "Insticksmodulfel"
+
+#: ../qltk/prefs.py:35
+msgid "Song List"
+msgstr "Låtlista"
+
+#: ../qltk/prefs.py:44
+msgid "_Disc"
+msgstr "_Skiva"
+
+#: ../qltk/prefs.py:45
+msgid "Al_bum"
+msgstr "Al_bum"
+
+#: ../qltk/prefs.py:46
+msgid "_Filename"
+msgstr "_Filnamn"
+
+#: ../qltk/prefs.py:47
+msgid "_Track"
+msgstr "Sp_år"
+
+#: ../qltk/prefs.py:48
+msgid "_Artist"
+msgstr "_Artist"
+
+#: ../qltk/prefs.py:49 ../qltk/songlist.py:435 ../qltk/trayicon.py:288
+msgid "_Rating"
+msgstr "_Betyg"
+
+#: ../qltk/prefs.py:51
+msgid "_Date"
+msgstr "_Datum"
+
+#: ../qltk/prefs.py:52
+msgid "_Length"
+msgstr "_Längd"
+
+#: ../qltk/prefs.py:64
+msgid "Title includes _version"
+msgstr "Titel innehåller _version"
+
+#: ../qltk/prefs.py:69
+msgid "Album includes _part"
+msgstr "Album innehåller _del"
+
+#: ../qltk/prefs.py:74
+msgid "Filename includes _folder"
+msgstr "Filnamn innehåller _mapp"
+
+#: ../qltk/prefs.py:88
+msgid "_Others:"
+msgstr "_Andra:"
+
+#: ../qltk/prefs.py:94
+msgid "Other columns to display, separated by spaces"
+msgstr "Andra kolumner att visa, separerade med mellanslag"
+
+#: ../qltk/prefs.py:108
+msgid "Visible Columns"
+msgstr "Synliga kolumner"
+
+#: ../qltk/prefs.py:136
+msgid "Browsers"
+msgstr "Bläddrare"
+
+#: ../qltk/prefs.py:139
+msgid "Color _search terms"
+msgstr "Färglägg _söktermer"
+
+#: ../qltk/prefs.py:142
+msgid ""
+"Display simple searches in blue, advanced ones in green, and invalid ones in "
+"red"
+msgstr "Visa enkla sökningar i blått, avancerade i grönt och ogiltiga i rött"
+
+#: ../qltk/prefs.py:145
+msgid "_Global filter:"
+msgstr "_Globalt filter:"
+
+#: ../qltk/prefs.py:155
+msgid "Search Library"
+msgstr "Sök i bibliotek"
+
+#: ../qltk/prefs.py:165
+msgid "Player"
+msgstr "Spelare"
+
+#: ../qltk/prefs.py:169
+msgid "_Jump to playing song automatically"
+msgstr "_Hoppa automatiskt till spelande låt"
+
+#: ../qltk/prefs.py:170
+msgid "When the playing song changes, scroll to it in the song list"
+msgstr "När en låt spelas, skrolla till den i låtlistan"
+
+#: ../qltk/prefs.py:175
+msgid "_Volume Normalization"
+msgstr "_Volymnormalisering"
+
+#: ../qltk/prefs.py:177
+msgid "No volume adjustment"
+msgstr "Ingen volymjusterning"
+
+#: ../qltk/prefs.py:178
+msgid "Per-song (\"Radio\") volume adjustment"
+msgstr "Låtvis (\"radio\") volymjustering"
+
+#: ../qltk/prefs.py:179
+msgid "Per-album (\"Audiophile\") volume adjustment"
+msgstr "Albumvis (\"audiofil\") volymjustering"
+
+#: ../qltk/prefs.py:196
+msgid "Scan _Directories"
+msgstr "Skanna _mappar"
+
+#: ../qltk/prefs.py:198
+msgid "_Select"
+msgstr "_Välj"
+
+#: ../qltk/prefs.py:204
+msgid "Songs placed in these folders will be added to your library"
+msgstr "Låtar i de här mapparna kommer att läggas till i biblioteket"
+
+#: ../qltk/prefs.py:218
+msgid "Separators for splitting tags"
+msgstr "Avgränsare för taggdelning"
+
+#: ../qltk/prefs.py:234
+msgid "Select Directories"
+msgstr "Välj mappar"
+
+#: ../qltk/prefs.py:246
+msgid "Quod Libet Preferences"
+msgstr "Inställningar för Quod Libet"
+
+#: ../qltk/properties.py:104 ../qltk/properties.py:105
+msgid "Properties"
+msgstr "Egenskaper"
+
+#: ../qltk/queue.py:41 ../qltk/quodlibet.py:417
+msgid "_Queue"
+msgstr "_Kö"
+
+#: ../qltk/queue.py:58
+msgid "_Random"
+msgstr "_Slumpvis"
+
+#: ../qltk/queue.py:81
+msgid "Remove all songs from the queue"
+msgstr "Ta bort alla låtar från kön"
+
+#: ../qltk/queue.py:111 ../browsers/_base.py:80
+#, python-format
+msgid "%(count)d song (%(time)s)"
+msgid_plural "%(count)d songs (%(time)s)"
+msgstr[0] "%(count)d låt (%(time)s)"
+msgstr[1] "%(count)d låtar (%(time)s)"
+
+#: ../qltk/quodlibet.py:165
+msgid "_Order:"
+msgstr "_Ordning:"
+
+#: ../qltk/quodlibet.py:173 ../qltk/trayicon.py:243
+msgid "_Repeat"
+msgstr "_Repetera"
+
+#: ../qltk/quodlibet.py:174
+msgid "Restart the playlist when finished"
+msgstr "Starta om spellistan vid slut"
+
+#: ../qltk/quodlibet.py:177 ../util/__init__.py:273
+msgid "No time information"
+msgstr "Ingen tidsinformation"
+
+#: ../qltk/quodlibet.py:286
+msgid "Unable to add songs"
+msgstr "Kunde ej lägga till låtar"
+
+#: ../qltk/quodlibet.py:287 ../qltk/quodlibet.py:676
+#, python-format
+msgid "<b>%s</b> uses an unsupported protocol."
+msgstr "<b>%s</b> använder ett protokoll som inte stödjs"
+
+#: ../qltk/quodlibet.py:330
+msgid "_Music"
+msgstr "_Musik"
+
+#: ../qltk/quodlibet.py:331
+msgid "_Add a Folder..."
+msgstr "Lägg _till mapp.."
+
+#: ../qltk/quodlibet.py:333
+msgid "_Add a File..."
+msgstr "Lägg _till fil..."
+
+#: ../qltk/quodlibet.py:335
+msgid "_Add a Location..."
+msgstr "Lägg _till plats..."
+
+#: ../qltk/quodlibet.py:337 ../qltk/trayicon.py:262
+msgid "_Browse Library"
+msgstr "_Bläddra i bibliotek"
+
+#: ../qltk/quodlibet.py:343
+msgid "_Filters"
+msgstr "_Filter"
+
+#: ../qltk/quodlibet.py:345
+msgid "Not Played To_day"
+msgstr "Ej spelad i_dag"
+
+#: ../qltk/quodlibet.py:347
+msgid "Not Played in a _Week"
+msgstr "Ej spelad på en _vecka"
+
+#: ../qltk/quodlibet.py:349
+msgid "Not Played in a _Month"
+msgstr "Ej spelad på en _månad"
+
+#: ../qltk/quodlibet.py:351
+msgid "_Never Played"
+msgstr "_Aldrig spelad"
+
+#: ../qltk/quodlibet.py:353
+msgid "_Top 40"
+msgstr "40 _högsta"
+
+#: ../qltk/quodlibet.py:354
+msgid "B_ottom 40"
+msgstr "40 _lägsta"
+
+#: ../qltk/quodlibet.py:356
+msgid "_Control"
+msgstr "_Kontroll"
+
+#: ../qltk/quodlibet.py:362
+msgid "_Jump to Playing Song"
+msgstr "_Hoppa till spelande låt"
+
+#: ../qltk/quodlibet.py:365
+msgid "_View"
+msgstr "_Visa"
+
+#: ../qltk/quodlibet.py:366
+msgid "_Help"
+msgstr "_Hjälp"
+
+#: ../qltk/quodlibet.py:385
+msgid "Re_fresh Library"
+msgstr "Uppdatera biblioteket"
+
+#: ../qltk/quodlibet.py:389
+msgid "Re_load Library"
+msgstr "Ladda om biblioteket"
+
+#: ../qltk/quodlibet.py:394
+msgid "Filter on _Genre"
+msgstr "Filtrera på _genre"
+
+#: ../qltk/quodlibet.py:395
+msgid "Filter on _Artist"
+msgstr "Filtrera på _artist"
+
+#: ../qltk/quodlibet.py:396
+msgid "Filter on Al_bum"
+msgstr "Filtrera på al_bum"
+
+#: ../qltk/quodlibet.py:403
+msgid "Random _Genre"
+msgstr "Slumpvis _genre"
+
+#: ../qltk/quodlibet.py:404
+msgid "Random _Artist"
+msgstr "Slumpvis _artist"
+
+#: ../qltk/quodlibet.py:405
+msgid "Random Al_bum"
+msgstr "Slumpvis al_bum"
+
+#: ../qltk/quodlibet.py:412
+msgid "Song _List"
+msgstr "Låt_lista"
+
+#: ../qltk/quodlibet.py:443
+msgid "Check for changes in your library"
+msgstr "Kontrollera ändringar i biblioteket"
+
+#: ../qltk/quodlibet.py:446
+msgid "Reload all songs in your library (this can take a long time)"
+msgstr "Ladda om alla låtar i bilbioteket (kan ta lång tid)"
+
+#: ../qltk/quodlibet.py:449
+msgid ""
+"The 40 songs you've played most (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"De 40 mesta spelade låtarna (mer än 40 kan väljas om flera låtar är spelade "
+"lika mycket)"
+
+#: ../qltk/quodlibet.py:453
+msgid ""
+"The 40 songs you've played least (more than 40 may be chosen if there are "
+"ties)"
+msgstr ""
+"De 40 minst spelade låtarna (mer än 40 kan väljas om flera låtar är spelade "
+"lika mycket)"
+
+#: ../qltk/quodlibet.py:631
+#, python-format
+msgid ""
+"Scanning your library. This may take several minutes.\n"
+"\n"
+"%d songs reloaded\n"
+"%d songs removed"
+msgstr ""
+"Skannar biblioteket. Detta kan ta flera minuter.\n"
+"\n"
+"%d låtar omladdade\n"
+"%d låtar borttagna"
+
+#: ../qltk/quodlibet.py:664
+msgid "Add a Location"
+msgstr "Lägg till en plats"
+
+#: ../qltk/quodlibet.py:665
+msgid "Enter the location of an audio file:"
+msgstr "Ange platsen för en ljudfil:"
+
+#: ../qltk/quodlibet.py:670 ../qltk/quodlibet.py:675
+msgid "Unable to add location"
+msgstr "Kan lägga till plats"
+
+#: ../qltk/quodlibet.py:671
+#, python-format
+msgid "<b>%s</b> is not a valid location."
+msgstr "<b>%s</b> är ej en giltig plats."
+
+#: ../qltk/quodlibet.py:688 ../qltk/quodlibet.py:695
+msgid "Add Music"
+msgstr "Lägg till musik"
+
+#: ../qltk/quodlibet.py:689
+msgid "Watch this folder for new songs"
+msgstr "Vaka över denna mapp för nya låtar"
+
+#: ../qltk/quodlibet.py:716
+#, python-format
+msgid ""
+"%s could not be added to your library.\n"
+"\n"
+msgstr ""
+"%s kunde ej läggas till i biblioteket.\n"
+"\n"
+
+#: ../qltk/quodlibet.py:721
+msgid "Unable to add song"
+msgstr "Kunde ej lägga till låt"
+
+#: ../qltk/quodlibet.py:738
+#, python-format
+msgid ""
+"Scanning for new songs and adding them to your library.\n"
+"\n"
+"%d songs added"
+msgstr ""
+"Söker efter nya låtar och lägger till dem i biblioteket.\n"
+"\n"
+"%d låtar tillagda"
+
+#: ../qltk/renamefiles.py:26
+msgid "Replace spaces with _underscores"
+msgstr "Ersätt mellanslag med _understreck"
+
+#: ../qltk/renamefiles.py:33
+msgid "Strip _Windows-incompatible characters"
+msgstr "Ta bort _Windows-inkompatibla "
+
+#: ../qltk/renamefiles.py:46
+msgid "Strip _diacritical marks"
+msgstr "Ta bort diakritiska tecken"
+
+#: ../qltk/renamefiles.py:55
+msgid "Strip non-_ASCII characters"
+msgstr "Ta bort icke-ASCII-tecken"
+
+#: ../qltk/renamefiles.py:63
+msgid "Rename Files"
+msgstr "Byt namn på filer"
+
+#: ../qltk/renamefiles.py:79
+msgid "New Name"
+msgstr "Nytt namn"
+
+#: ../qltk/renamefiles.py:114
+msgid "_Continue"
+msgstr "_Fortsätt"
+
+#: ../qltk/renamefiles.py:116
+msgid "Unable to rename file"
+msgstr "Kunde ej byta namn på fil"
+
+#: ../qltk/renamefiles.py:117
+#, python-format
+msgid ""
+"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
+"exists, or you do not have permission to make the new file or remove the old "
+"one."
+msgstr ""
+"Namnbyte av <b>%s</b> till <b>%s</n> misslyckades. Möjligtvis finns redan "
+"målfilen eller så har du inte rättigheter att skapa den nya filen eller ta "
+"bort den gamla."
+
+#: ../qltk/renamefiles.py:148
+msgid "Path is not absolute"
+msgstr "Sökvägen är ej absolut"
+
+#: ../qltk/renamefiles.py:149
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed folders, root "
+"your pattern by starting it with / or ~/."
+msgstr ""
+"Mönstret\t<b>%s</b>\n"
+"innehåller / men startar inte från roten. För att undvika feldöpta mappar "
+"ska mönster börja med / eller ~/."
+
+#: ../qltk/songlist.py:421
+#, python-format
+msgid "_Filter on %s"
+msgstr "_Filtrera på %s"
+
+#: ../qltk/songlist.py:538 ../browsers/filesystem.py:63
+msgid "Unable to copy songs"
+msgstr "Kunde ej kopiera låtar"
+
+#: ../qltk/songlist.py:539 ../browsers/filesystem.py:64
+msgid "The files selected cannot be copied to other song lists or the queue."
+msgstr ""
+"De valda filerna kan inte kopieras till andra låtlistor eller till kön."
+
+#: ../qltk/tagsfrompath.py:71
+msgid "Replace _underscores with spaces"
+msgstr "Ersätt _understreck med mellanslag"
+
+#: ../qltk/tagsfrompath.py:78
+msgid "_Title-case tags"
+msgstr "Första bokstaven i varje ord _versal"
+
+#: ../qltk/tagsfrompath.py:85
+msgid "Split into multiple _values"
+msgstr "Dela till flera _värden"
+
+#: ../qltk/tagsfrompath.py:95
+msgid "Tags From Path"
+msgstr "Taggar från sökväg"
+
+#: ../qltk/tagsfrompath.py:105
+msgid "Tags replace existing ones"
+msgstr "Taggar ersätter redan existerande"
+
+#: ../qltk/tagsfrompath.py:106
+msgid "Tags are added to existing ones"
+msgstr "Taggar läggs till till redan existerande"
+
+#: ../qltk/tagsfrompath.py:130 ../qltk/textedit.py:70
+#: ../browsers/albums.py:112 ../browsers/albums.py:116
+msgid "Invalid pattern"
+msgstr "Ogiltigt mönster"
+
+#: ../qltk/tagsfrompath.py:131
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; / &gt;)."
+msgstr ""
+"Mönstret\n"
+"\t<b>%s</b>\n"
+"är ogiltigt. Möjligtvis innehåller det samma tagg två gånger eller "
+"obalanserade hakar (&lt; / &gt;)."
+
+#: ../qltk/tagsfrompath.py:152
+msgid "Invalid tags"
+msgstr "Ogiltiga taggar"
+
+#: ../qltk/tagsfrompath.py:153
+#, python-format
+msgid ""
+"Invalid tags <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing these tags."
+msgstr ""
+"Ogiltiga taggar <b>%s</b>\n"
+"\n"
+"Filen har inte stöd för att redigera dessa taggar."
+
+#: ../qltk/textedit.py:71
+#, python-format
+msgid ""
+"The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
+"\\&lt; and \\&gt; and that your tags are balanced.\n"
+"\n"
+"%s"
+msgstr ""
+"Mönstret är ogiltigt. Säkerställ att du skriver &lt; och &gt; som \\&lt; och "
+"&gt; och att hakarna är balanserade.\n"
+"%s"
+
+#: ../qltk/textedit.py:84
+msgid "Edit Display"
+msgstr "Redigera visning"
+
+#: ../qltk/tracknumbers.py:22
+msgid "Track Numbers"
+msgstr "Spårnummer"
+
+#: ../qltk/tracknumbers.py:28
+msgid "Start fro_m:"
+msgstr "Börja frå_n"
+
+#: ../qltk/tracknumbers.py:39
+msgid "_Total tracks:"
+msgstr "_Antal spår:"
+
+#: ../qltk/tracknumbers.py:64
+msgid "Track"
+msgstr "Spår"
+
+#: ../qltk/trayicon.py:36
+msgid "Tray Icon Preferences"
+msgstr "Inställningar för notifieringsikon"
+
+#: ../qltk/trayicon.py:40
+msgid ""
+"Scroll wheel adjusts volume\n"
+"Shift and scroll wheel changes song"
+msgstr ""
+"Skrollhjulet justerar volymen\n"
+"Skift och skrollhjulet byter låt"
+
+#: ../qltk/trayicon.py:42
+msgid ""
+"Scroll wheel changes song\n"
+"Shift and scroll wheel adjusts volume"
+msgstr ""
+"Skrollhjulet byter låt\n"
+"Skift och skrollhjulet justerar volymen"
+
+#: ../qltk/trayicon.py:49
+msgid "Scroll Wheel"
+msgstr "Rullhjul"
+
+#: ../qltk/trayicon.py:78
+msgid "Tooltip Display"
+msgstr "Hjälptextvisning"
+
+#: ../qltk/trayicon.py:241
+msgid "Play _Order"
+msgstr "Spel_ordning"
+
+#: ../qltk/trayicon.py:252
+msgid "_In Order"
+msgstr "_I ordning"
+
+#: ../qltk/trayicon.py:252
+msgid "_Shuffle"
+msgstr "_Blanda"
+
+#: ../qltk/trayicon.py:252
+msgid "_Weighted"
+msgstr "_Viktad"
+
+#: ../qltk/trayicon.py:252
+msgid "_One Song"
+msgstr "_En låt"
+
+#: ../qltk/views.py:235
+#, python-format
+msgid "and %d more..."
+msgstr "och %d till..."
+
+#: ../qltk/watcher.py:90
+msgid "Unable to play song"
+msgstr "Kan ej spela låt"
+
+#: ../qltk/watcher.py:91
+msgid "GStreamer was unable to load the selected song."
+msgstr "GStreamer kunde ej ladda den valda låten."
+
+#: ../qltk/wlw.py:130
+msgid "Saving the songs you changed."
+msgstr "Sparar låtarna du ändrade."
+
+#: ../qltk/wlw.py:131
+#, python-format
+msgid "%d/%d songs saved"
+msgstr "%d/%d låtar sparade"
+
+#: ../qltk/x.py:133
+msgid "Clear search"
+msgstr "Töm sökning"
+
+#: ../browsers/albums.py:38
+msgid "Songs not in an album"
+msgstr "Låtar utan album"
+
+#: ../browsers/albums.py:66
+msgid "Album List Preferences"
+msgstr "Inställningar för albumlista"
+
+#: ../browsers/albums.py:72
+msgid "Show album _covers"
+msgstr "Visa album_omslag"
+
+#: ../browsers/albums.py:88
+msgid "Album Display"
+msgstr "Albumvisning"
+
+#: ../browsers/albums.py:408
+msgid "Sort by title"
+msgstr "Sortera efter titel"
+
+#: ../browsers/albums.py:408
+msgid "Sort by artist"
+msgstr "Sortera efter artist"
+
+#: ../browsers/albums.py:408
+msgid "Sort by date"
+msgstr "Sortera efter datum"
+
+#: ../browsers/albums.py:492
+msgid "All Albums"
+msgstr "Alla album"
+
+#: ../browsers/albums.py:493
+#, python-format
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d album"
+msgstr[1] "%d album"
+
+#: ../browsers/albums.py:683
+msgid "_Album List"
+msgstr "_Albumlista"
+
+#: ../browsers/paned.py:41
+msgid "Paned Browser Preferences"
+msgstr "Inställningar för panelbläddrare"
+
+#: ../browsers/paned.py:47
+msgid "_Custom"
+msgstr "_Anpassad"
+
+#: ../browsers/paned.py:269
+msgid "All"
+msgstr "Alla"
+
+#: ../browsers/paned.py:334 ../browsers/search.py:131
+#: ../browsers/iradio.py:167
+msgid "_Search:"
+msgstr "_Sök:"
+
+#: ../browsers/paned.py:489
+msgid "_Paned Browser"
+msgstr "_Panelbläddrare"
+
+#: ../browsers/playlists.py:67
+#, python-format
+msgid ""
+"Importing playlist.\n"
+"\n"
+"%d/%d songs added."
+msgstr ""
+"Importerar spellista.\n"
+"\n"
+"%d/%d låtar tillagda."
+
+#: ../browsers/playlists.py:96 ../browsers/playlists.py:401
+msgid "New Playlist"
+msgstr "Ny spellista"
+
+#: ../browsers/playlists.py:135
+#, python-format
+msgid "A playlist named %s already exists."
+msgstr "En spellista med namnet %s finns redan."
+
+#: ../browsers/playlists.py:190
+msgid "_New Playlist"
+msgstr "_Ny spellista"
+
+#: ../browsers/playlists.py:270
+msgid "_Remove from Playlist"
+msgstr "Ta _bort från spellista"
+
+#: ../browsers/playlists.py:300
+msgid "_Import"
+msgstr "_Importera"
+
+#: ../browsers/playlists.py:418 ../browsers/playlists.py:496
+msgid "Unable to import playlist"
+msgstr "Kan ej importera spellistor"
+
+#: ../browsers/playlists.py:419 ../browsers/playlists.py:497
+msgid "Quod Libet can only import playlists in the M3U and PLS formats."
+msgstr "Quod Libet kan endast importera spellistor i M3U- och PLS-format."
+
+#: ../browsers/playlists.py:443
+msgid "_Rename"
+msgstr "_Byt namn"
+
+#: ../browsers/playlists.py:477
+msgid "Unable to rename playlist"
+msgstr "Kan ej byta namn på spellista"
+
+#: ../browsers/playlists.py:485
+msgid "Import Playlist"
+msgstr "Importera spellista"
+
+#: ../browsers/playlists.py:523
+msgid "_Playlists"
+msgstr "Spellistor"
+
+#: ../browsers/search.py:89
+msgid "_Limit:"
+msgstr "_Gräns:"
+
+#: ../browsers/search.py:100
+msgid "_Weight"
+msgstr "_Vikt"
+
+#: ../browsers/search.py:144
+msgid "Search"
+msgstr "Sök"
+
+#: ../browsers/search.py:146
+msgid "Search your library"
+msgstr "Sök i ditt bibliotek"
+
+#: ../browsers/search.py:174
+msgid "_Limit Results"
+msgstr "_Begränsa resultat"
+
+#: ../browsers/search.py:217
+msgid "_Disable Browser"
+msgstr "_Inaktivera bläddrare"
+
+#: ../browsers/search.py:218
+msgid "_Search Library"
+msgstr "_Sök i bibliotek"
+
+#: ../browsers/filesystem.py:102
+msgid "_Add to Library"
+msgstr "Lägg _till i bibliotek"
+
+#: ../browsers/filesystem.py:143
+msgid "_File System"
+msgstr "_Filsystem"
+
+#: ../browsers/iradio.py:80 ../browsers/iradio.py:257
+msgid "Unsupported file type"
+msgstr "Filtypen stödjs ej"
+
+#: ../browsers/iradio.py:81
+#, python-format
+msgid ""
+"Station lists can only contain locations of stations, not other station "
+"lists or playlists. The following locations cannot be loaded:\n"
+"%s"
+msgstr ""
+"Stationslistor kan endast innehålla stationsplatser, ej andra stationslistor "
+"eller spellistor. Följande platser kan ej laddas:\n"
+"%s"
+
+#: ../browsers/iradio.py:90
+msgid "Choose New Stations"
+msgstr "Välj nya stationer"
+
+#: ../browsers/iradio.py:100
+msgid "Add"
+msgstr "Lägg till"
+
+#: ../browsers/iradio.py:104
+msgid "Title"
+msgstr "Titel"
+
+#: ../browsers/iradio.py:130
+msgid "New Station"
+msgstr "Ny station"
+
+#: ../browsers/iradio.py:131
+msgid "Enter the location of an Internet radio station:"
+msgstr "Ange adressen till en internetradiostation:"
+
+#: ../browsers/iradio.py:133
+msgid "_Stations..."
+msgstr "_Stationer..."
+
+#: ../browsers/iradio.py:151
+msgid "_New Station"
+msgstr "_Ny station"
+
+#: ../browsers/iradio.py:197
+msgid "_Remove Station"
+msgstr "_Ta bort station"
+
+#: ../browsers/iradio.py:224
+msgid "Unable to add station"
+msgstr "Kunde ej lägga till station"
+
+#: ../browsers/iradio.py:229
+msgid "No stations found"
+msgstr "Inga stationer funna"
+
+#: ../browsers/iradio.py:230
+#, python-format
+msgid "No Internet radio stations were found at %s."
+msgstr "Inga internetradiostationer hittades på %s"
+
+#: ../browsers/iradio.py:238 ../browsers/iradio.py:267
+msgid "No new stations"
+msgstr "Inga nya stationer"
+
+#: ../browsers/iradio.py:239
+msgid "All stations listed are already in your library."
+msgstr "Alla listade stationer finns redan i biblioteket"
+
+#: ../browsers/iradio.py:258
+msgid "M3U playlists cannot be loaded."
+msgstr "M3U-spellistor kan ej laddas."
+
+#: ../browsers/iradio.py:268
+msgid "This station is already in your library."
+msgstr "Stationen finns redan i biblioteket."
+
+#: ../browsers/iradio.py:282
+#, python-format
+msgid "%(count)d station"
+msgid_plural "%(count)d stations"
+msgstr[0] "%(count)d station"
+msgstr[1] "%(count)d stationer"
+
+#: ../browsers/iradio.py:286
+msgid "_Internet Radio"
+msgstr "_Internetradio"
+
+#: ../browsers/audiofeeds.py:161
+msgid "New Feed"
+msgstr "Ny feed"
+
+#: ../browsers/audiofeeds.py:162
+msgid "Enter the location of an audio feed:"
+msgstr "Ange platsen för en ljud-feed:"
+
+#: ../browsers/audiofeeds.py:232 ../browsers/audiofeeds.py:238
+msgid "_Download..."
+msgstr "_Hämta..."
+
+#: ../browsers/audiofeeds.py:245
+msgid "Download Files"
+msgstr "Hämta filer"
+
+#: ../browsers/audiofeeds.py:266
+msgid "Download File"
+msgstr "Hämta fil"
+
+#: ../browsers/audiofeeds.py:347 ../browsers/audiofeeds.py:403
+msgid "Unable to add feed"
+msgstr "Kunde ej lägga till feed"
+
+#: ../browsers/audiofeeds.py:348 ../browsers/audiofeeds.py:404
+#, python-format
+msgid ""
+"<b>%s</b> could not be added. The server may be down, or the location may "
+"not be an audio feed."
+msgstr ""
+"<b>%s</b> kunde ej läggas till. Servern kan vara nere eller så innehåller "
+"platsen ej en ljudfeed."
+
+#: ../browsers/audiofeeds.py:427
+msgid "_Audio Feeds"
+msgstr "_Ljudfeeds"
+
+#: ../util/__init__.py:83
+msgid "Display brief usage information"
+msgstr "Visa kortfattad användningsinformation"
+
+#: ../util/__init__.py:85
+msgid "Display version and copyright"
+msgstr "Visa version och copyright"
+
+#: ../util/__init__.py:121 ../util/__init__.py:122
+#, python-format
+msgid "Usage: %s %s"
+msgstr "Användning: %s %s"
+
+#: ../util/__init__.py:122
+msgid "[options]"
+msgstr "[alternativ]"
+
+#: ../util/__init__.py:143
+#, python-format
+msgid ""
+"%s %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others\n"
+"\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"%s %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman med flera\n"
+"\n"
+"Detta är fri mjukvara, se källkoden för kopieringsvillkor. Quod Libet "
+"distribueras\n"
+"i hopp om att det ska vara användbart, men UTAN NÅGON GARANTI, även utan\n"
+"underförstådd garanti vid KÖP eller LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL.\n"
+
+#: ../util/__init__.py:160
+#, python-format
+msgid "E: Option '%s' not recognized."
+msgstr "E: Alternativet '%s' känns ej igen."
+
+#: ../util/__init__.py:163
+#, python-format
+msgid "E: Option '%s' requires an argument."
+msgstr "E: Alternativet '%s' kräver ett argument."
+
+#: ../util/__init__.py:166
+#, python-format
+msgid "E: '%s' is not a unique prefix."
+msgstr "E: '%s' är ej ett unikt prefix."
+
+#: ../util/__init__.py:315 ../util/__init__.py:322
+msgid "[Invalid Encoding]"
+msgstr "[Oglitig kodning]"
+
+#: ../util/massagers.py:24
+msgid ""
+"The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
+"format."
+msgstr ""
+"Datumet måste skrivas in på formatet 'YYYY', 'YYYY-MM-DD' eller 'YYYY-MM-DD "
+"HH:MM:SS'."
+
+#: ../util/massagers.py:34
+#, fuzzy
+msgid "Replay Gain gains must be entered in 'x.yy dB' format."
+msgstr "ReplayGain-förstärkningar måste anges på formen 'x.yy dB'."
+
+#: ../util/massagers.py:48
+#, fuzzy
+msgid "Replay Gain peaks must be entered in 'x.yy' format."
+msgstr "ReplayGain-toppar måste anges på formen 'x.yy'."
+
+#: ../util/massagers.py:61
+msgid "MusicBrainz IDs must be in UUID format."
+msgstr "MusicBrainz ID måste vara på UUID-format."
+
+#: ../exfalso.desktop.in.h:1
+msgid "Audio tag editor"
+msgstr "Ljudtaggsredigerare"
+
+#: ../exfalso.desktop.in.h:2
+msgid "Edit tags in your audio files"
+msgstr "Redigera taggar i ljudfiler"
+
+#: ../quodlibet.desktop.in.h:1
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "Lyssna på, bläddra i eller redigera din ljudsamling"
+
+#: ../quodlibet.desktop.in.h:2
+msgid "Music Player"
+msgstr "Musikspelare"

@@ -1,0 +1,435 @@
+Mutagen is no longer distributed with Quod Libet. To download Mutagen,
+see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
+
+Context menu plugins for 0.18 and earlier should be (trivially) updated.
+See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
+
+0.21
+ * New Simplified Chinese translation by Emfox Zhou.
+
+0.20.1 - Thanks for the eye-opener, dinosaur zombies!
+ * Vorbis/FLAC tag editing works again.
+
+0.20 - Feelings are boring. Kissing is awesome!
+ * Bug Fixes:
+   * --play-file will use the queue. (#457)
+   * Audio Feeds remember download locations. (#589)
+   * Song changes don't revert tag edits. (#597)
+   * Browser song activation takes precedence over the queue. (#622)
+   * Albums drag-and-drop in listed order. (#623)
+   * Only reset relevant parts of Information windows on song change. (#624)
+   * Deleting files not in the library removes them. (#638)
+   * Non-numeric disc/track numbers sort properly. (#643)
+   * Paned Browser no longer adds incorrect entries. (Debian bug #361131)
+   * Ex Falso no longer loads WAV or MOD files.
+   * Allow more headers in Internet Radio and Audio Feeds.
+   * New process launching method, util.spawn.
+ * UI Changes:
+   * Indicator to show when songs come from the queue. (#437)
+   * Rating submenu always appears in the song list. (#598)
+   * Album covers hide when clicked again. (#647)
+   * Select current song when jumping to it.
+ * New translations:
+   * Norwegian Bokmål, by Andreas Bertheussen.
+   * Swedish, by Erik Christiansson.
+ * Updated translations:
+   * Polish, by Tomasz Torcz.
+   * Dutch, by Hans van Dok.
+   * Finnish, by Jari Rahkonen.
+   * French, by Olivier Gambier.
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Hebrew, by Roee Haimovich.
+   * Portuguese, by Alexandre Passos.
+
+0.19.1 - It's our secret! Our secret IDENTITY!
+ * Work around broken Fedora/Mandrive GNOME bindings. (#593)
+ * Fix global plugin directory scanning.
+ * Add originalartist to ~people.
+ * Updated Italian translation, by Filippo Pappalardo.
+ * Updated Korean translation, by Byung-Hee HWANG and ChangBom Yoon.
+
+0.19 - i'm really thirsty you guys
+ * Simple X session management. (#18)
+ * Require Mutagen 1.0; drops Pymad. (#405)
+ * WAV support. (#456)
+ * New plugin types can be enabled/disabled. (#517)
+ * Album List can search and display any tags. (#549, #560)
+ * "Bookmark" time offsets within songs. (#554)
+ * Song menu plugins require minor but incompatible updates.
+ * Searches, tagging patterns, and file renaming patterns can be given
+   aliases and saved.
+ * Tag Editing:
+   * MusicBrainz TXXX, artist/album/albumartist support. (#539)
+   * Added albumartist, originalartist, originalalbum, originaldate,
+     recordingdate. (#495, #546)
+   * Ratings, playcount Ogg Vorbis format changed. (#544)
+   * COMM tags in Ex Falso are deleted properly. (#573)
+ * UI Changes:
+   * Drops from e.g. Nautilus add to playlists/queue. (#496)
+   * Clear button in Album List. (#509)
+   * Horizontal scrollbar when absolutely necessary for the song list. (#542)
+   * "Random" options use filtered lists. (#550)
+   * Album sort is once again and forever default. (#552)
+   * 'Add to Playlist' resorts playlist properly. (#568)
+   * Enter in 'Add a Tag' moves from tag to value. (Debian bug #343974)
+   * Standard context menu for all browsers.
+   * 'Delete' key works in Edit Tags.
+   * Type-ahead search works in the Album List.
+ * Bug fixes:
+   * Double-appearances in the filesystem view. (#545)
+   * FIFO misses some commands. (#548)
+   * Stupid 'refresh' signal finally gone. (#563)
+   * Error when seeking and keyboard can't be grabbed. (#572)
+ * Updated translations:
+   * Finnish, by Jari Rahkonen.
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Polish, by Tomasz Torcz.
+   * Dutch, by Hans van Dok.
+   * German, by Rüdiger Arp.
+   * Lithuanian, by Jonas Slivka.
+   * Hebrew, by Roee Haimovich.
+
+0.18 - "Babies Sporting Monocles"?
+ * MP4 iTunes metadata can be written. (#199)
+ * Alt+s switches between search entry and song list. (#254)
+ * GStreamer 0.10 port. (#406)
+ * Album covers can be switched off in the Album List. (#466)
+ * The Album List text can be changed with a pattern. (#467)
+ * "Limit" in the Search view can take ratings into account. (#469)
+ * UI Changes:
+   * Alt+Enter / Ctrl+I shows tags/information for selected songs. (#462)
+   * DnD to playlists/the queue from the File System view. (#481)
+   * F2 renames playlists. (#482)
+   * "Add a Tag" autocompletes tag names. (#493)
+   * RSS links can be dragged to the Audio Feeds sidebar. (#523)
+ * Bug Fixes:
+   * ID3v1 tags no longer interfere with APEv2 tags. (#395)
+   * Playing albums with one song no longer skips forwards. (#503)
+   * 'totaltracks' Vorbis tags are read properly. (#511)
+   * Adding songs to a playlist doesn't unsort it. (#512)
+   * "Tags From Path" patterns are no longer greedy. (#519, thanks to
+     Decklin Foster)
+   * Internet Radio supports the ~people tag. (#520)
+   * Word-wrap in lyrics pane works properly. (#531)
+   * Ex Falso properly opens an initial directory. (#537, thanks to ch.trassl)
+   * '~format' is usable from --print-playing. ([2810])
+ * Plugin errors are captured in a dialog. ([2817])
+ * New synthetic numeric tags, ~#tracks and ~#discs. ([2828])
+ * Ex Falso no longer depends on GStreamer. ([2837])
+ * New Lithuanian translation by Jonas Slivka. ([2780])
+ * Updated translations:
+   * Bulgarian, by Rostislav Raykov.
+   * Finnish, by Jari Rahkonen.
+   * Korean, by Byung-Hee HWANG and ChangBom Yoon.
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Hebrew, by Roee Haimovich.
+   * German, by Rüdiger Arp.
+   * Polish, by Tomasz Torcz.
+   * Russian, by Sergey Fedoseev.
+   * French, by Joshua Kwan.
+
+0.17.1 - I'd like to have some nightmares, please!
+ * Updated German translation, by Rüdiger Arp.
+ * Updated Russian translation, by Sergey Fedoseev.
+
+0.17 - the grizzly icing on the prospector cake!
+ * Lyrics plugin merged into Information dialog. (#196)
+ * "Edit Tags" now correctly removes all copies of multiple values,
+   and displays "(missing from...)" for all missing values. (#253)
+ * More FIFO commands (song list and queue visibility). (#414)
+ * FLAC support no longer depends on pyflac. (#424)
+ * Load audio feeds without author information. (#430)
+ * ~#year, ~year internal tags. (#444)
+ * Numeric searches are rounded to two decimal places. (#448)
+ * New plugin architecture for tag editing dialogs.
+ * Korean translation, by ChangBom Yoon and Byung-Hee HWANG.
+ * Updated translations:
+   * Russian, by Sergey Fedoseev.
+   * Finnish, by Jari Rahkonen.
+   * Portuguese, by Alexandre Passos.
+   * Italian, by Filippo Pappalardo.
+   * Dutch, by Hans van Dok.
+   * Galician, by Johám-Luís Miguéns Vila.
+   * French, by Joshua Kwan.
+   * Polish, by Tomasz Torcz.
+
+0.16 - would it make a difference if it never really came up often?
+ * Context menu plugins can make themselves insensitive. (#66)
+ * More command-line and FIFO options. (#75, #363)
+ * Read-only M4A support. (#199, thanks to Alexey Bobyakov)
+ * Wavpack support. (#257)
+ * Audio Feed (Podcast) support (requires http://www.feedparser.org). (#322)
+ * "One Song" (and repeat) play mode. (#351)
+ * Improved and configurable tray icon. (#360)
+ * New install system that is more FHS-compliant. (#362)
+ * ~#laststarted internal tag. (#392)
+ * Accents are stripped when renaming to ASCII filenames. (#415)
+ * UI improvements:
+   * Ex Falso lists are searchable in GTK 2.8.8+. (#291)
+   * ^W closes transient windows. (#326)
+   * More DnD support. (#337)
+   * HIG-compliance for strings.
+   * Double-click files in browsers to enqueue them. (#341)
+   * Rename Files error dialog has a "Continue" button. (#354)
+   * Ctrl-Left/Right changed to Ctrl-,/.. (#355)
+   * Playlist imports have a progress bar. (#368)
+   * New icon that is not all black. (#371, thanks to Tobias and Fabien)
+   * Paned Browser entries have context menus. (#375)
+   * Volume icons follow GTK+/GNOME theme. (#389)
+ * More memory and CPU optimizations. (#335, #346, #350)
+ * GStreamer error handling. (thanks to Zack Weinberg and Bastian Kleineidam)
+ * Musepack, MOD support migrated to Mutagen/ctypes modules.
+ * Updated translations:
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Italian, by Filippo Pappalardo.
+   * Dutch, by Hans van Dok.
+   * Finnish, by Jari Rahkonen.
+   * Portuguese, by Alexandre Passos. (#388)
+   * French, by Joshua Kwan.
+   * Polish, by Tomasz Torcz.
+   * German, by Rüdiger Arp.
+   * Hebrew, by Roee Haimovich.
+
+0.15 - Maybe I will.
+ * An 'artist' tag can be stored in the library for MODs. (#277)
+ * 'All Albums' remains on the album list after a search. (#282)
+ * The Play Queue displays its total time and has a clear button. (#297, #304)
+ * Songs can be enqueued multiple times.
+ * '~people' includes more people. (#298)
+ * Files can be added from remote URIs (e.g. HTTP). (#304)
+ * "Dumb" searches match any visible tags. (#306)
+ * Ratings are now searched with values of 0.0 to 1.0, and the number of
+   visible notes is configurable. (#307)
+ * Useless columns are not displayed in Internet Radio. (#309)
+ * A single album cover can be refreshed in the Album List. (#310)
+ * Playlists have been rewritten: (#324)
+   * Songs may now be in a playlist multiple times.
+   * Playlists can be reordered directly, without a special window.
+   * Songs can be added to playlists directly from the context menu.
+   * M3U and PLS playlists (along with their songs) can be imported.
+   * The interface is much more attractive.
+ * Drag-and-drop is generally more usable, faster, and attractive.
+ * Many optimizations, especially during startup.
+ * Updated translations:
+   * Russian, by Sergey Fedoseev.
+   * Galician, by Johám-Luís Miguéns Vila.
+   * Dutch, by Hans van Dok.
+   * French, by Joshua Kwan and Fabien Devaux.
+   * Hebrew, by Roee Haimovich.
+   * Finnish, by Jari Rahkonen.
+   * Polish, by Tomasz Torcz.
+   * Italian, by Filippo Pappalardo.
+ * New translations:
+   * Spanish and Portuguese, by Johám-Luís Miguéns Vila.
+
+0.14 - I'm almost certain!
+ * Internet radio / Shoutcast browser. (#88)
+ * Album List separates albums with different labelids. (#198)
+ * Ex Falso displays all available plugins in its menu. (#240)
+ * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins. (#262)
+ * New Album List search keys and sorting options. (#280, #281)
+ * New translations:
+   * Galician, by Johám-Luís Miguéns Vila.
+   * Italian, by Filippo Pappalardo.
+ * Updated translations:
+   * Finnish, by Jari Rahkonen.
+   * Polish, by Tomasz Torcz.
+   * Dutch, by Hans van Dok.
+   * Hebrew, by Roee Haimovich.
+   * German, by Rüdiger Arp.
+   * Russian, by Nikolai Prokoschenko.
+ * Many bug fixes.
+
+0.13.1 - People will fall for this for sure!
+ * Fix playlist creation. (#250)
+ * Unplay when no song is playing.
+
+0.13 - So, um... let's- fletcherize?
+ * The GStreamer backend is cleaned up, and is now the only backend.
+   This results in lower background CPU usage and many fixes to
+   our audio processing. Gapless playback is gone.
+ * A play queue was added. (#69, #104)
+ * A file system browser has been added. This can view, edit, and play
+   files outside of your library. (#125)
+ * The Paned Browser has a search entry. (#163)
+ * Search Library lets you limit the number of results. (#166)
+ * {{{~/.quodlibet/browsers}}} is now scanned for custom browsers.
+ * Synthetic tags ('''~dirname''', '''~basename''', &c.) can be searched.
+ * Similarly, synthetic tags can be used in the Paned Browser.
+ * New synthetic tags, '''~people''' and '''~playlist'''.
+ * If the tray icon is visible, closing QL's main window will minimize it.
+   To actually quit, choose '''Quit''' from the Music menu or icon.
+ * Search Library and the Album List search entry have tag completion. (#153)
+ * Ex Falso supports plugins.
+ * Updated Russian translation by Nikolai Prokoschenko and Sergey Fedoseev.
+ * Updated French translation by Joshua Kwan.
+ * Updated Finnish translation by Jari Rahkonen.
+ * Updated Dutch translation by Hans van Dok.
+ * Updated Hebrew translation by Roee Haimovich.
+
+0.12 - focus ENTIRELY on the sexy bits.
+ * New Mutagen ID3 reader/writer. (#3)
+ * Experimental GStreamer backend. (#4)
+ * Drag-and-drop to playlists. (#22, #23)
+ * Weighted random playback. (#60)
+ * MP3 and Musepack ReplayGain support. (#86)
+ * Larger plugin manager window. (#105)
+ * Automatic mount point detection. (#106)
+ * Support for multiple soundcards. (#157)
+ * Localization enhancements. (#85, #102, #161)
+ * Translation updates:
+   * Dutch, thanks to Hans van Dok.
+   * Finnish, thanks to Jari Rahkonen.
+   * French, thanks to Joshua Kwan.
+   * German, thanks to Rüdiger Arp.
+   * Hebrew, thanks to Roee Haimovich. (#170)
+   * Russian, thanks to Sergey Fedoseev and Nikolai Prokoschenko.
+   * Polish, thanks to Witold Kieraś.
+ * The usual round of interface tweaks and bug fixes.
+
+0.11 - spicy burnsauce with a side of ZING!
+ * Plugins (either appearing in the right-click menu, or triggered on a
+   player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins. (#5)
+ * Browse songs by album, with a cover display. (#6)
+ * "Library Browser" added to search/edit files without disturbing your
+   playlist. (#10)
+ * Played songs are automatically removed from dynamic playlists. (#20)
+ * "Background filters" for the paned browser and search entry. (#36)
+ * Create/remove empty folders from within Ex Falso. (#40)
+ * '0' to '4' keys or mouse clicks can set song ratings.
+ * Depends on PyGTK 2.6 (as well as GTK 2.6).
+ * --status to print the player's status.
+ * Russian translation, thanks to Sergey and Andrey Fedoseev.
+ * Partial French translation, thanks to Joshua Kwan.
+ * OSD moved to a plugin.
+
+0.10.1 - What if I said I'm not really kidding?
+ * The main window stays hidden when the song changes.
+
+0.10 - As it turns out, my life is NOT THAT INTERESTING!
+ * --seek supports +/- prefix to seek relative to the current position.
+ * Added Ex Falso, a tag editor based on QL (without audio playback).
+ * Switched MP3 genres from TIT1 to TCON.
+ * The library is saved automatically every 15 minutes.
+ * Tag by Pattern/Rename Files save patterns used.
+ * Adding tags with specific formats ('date') is less prone to error.
+ * Several display bugs and non-HIG windows were fixed.
+ * Pane-based (Rhythmbox/iTunes-style) library browser.
+ * Tag by Pattern/Rename Files previews can be manually edited before saving.
+ * Kind of browser (none, search, playlists, paned), song list sort order,
+   and what you were browsing are remembered when you exit.
+ * At least one lockup-causing bug was fixed.
+ * Song ratings, on a 0 to 4 scale.
+ * Masked directories work again.
+ * No more dependency on Glade.
+ * A new icon and website.
+
+0.9 - I don't want any trouble, cephalopods!
+ * Major updates to the Properties dialog:
+   - A new detailed 'Information' tab was added.
+   - Middle click pastes current PRIMARY clipboard text in 'Edit Tags'.
+   - Text in the 'Rename Files' dialog can be conditionalized.
+ * Non-UTF-8 filesystem encodings support (via CHARSET/G_BROKEN_FILENAMES).
+ * New numeric keys "added" and "skipcount" can be searched on.
+ * The --print-playing format string syntax has changed to match the one
+   now used in 'Rename Files'.
+ * New query language enhancements (ternary relation operators, string
+   comparisons, and Lynx-like case-sensitivity).
+ * The tray icon now pauses/unpauses on middle click, adjusts volume with
+   the scroll wheel, and skips forward/backward on buttons 6/7.
+ * This release depends on GTK 2.6 for its new media icons.
+ * PMP support was removed.
+ * Updated German translation (thanks, Bastian!)
+
+0.8.1 - Our story takes a sudden dive...
+ * Fix a crash when encoding information is not available.
+
+0.8 - I make jokes about whomever I please!
+ * New/reloaded libraries take 20% less disk space.
+ * Double-clicking an album cover displays it in a larger window.
+ * --shuffle, --repeat, and --volume (--volume-up and --volume-down are
+   deprecated and will be removed).
+ * Any tag name can be written to (and read from) an MP3 file.
+ * Playlists containing arbitrary songs can be created.
+ * The libmodplug Python wrapper must be downloaded separately.
+ * The MPC/MP+ format is supported (with a separate wrapper).
+ * FLAC supports ReplayGain.
+ * Internal changes made some things faster and others slower.
+ * Polish translation, thanks to Michal Nowikowski.
+ * German translation, thanks to Bastian Kleineidam.
+
+0.7 - I'm going to ho-ho-hoard all these nuts!
+ * Default to proper 'alsa09' driver (rather than 'alsa').
+ * "Random Foo" searches are now anchored with ^...$.
+ * Tag By Pattern values can be edited before being saved.
+ * Right-clicking on the status icon brings up a menu.
+ * --play, --pause, --seek-to, --query, --play-file.
+ * OSD (gosd) support, thanks to Iñigo Serna and Gustavo J. A. M. Carneiro.
+   A library reload is needed to use it.
+ * FreeDesktop-style .folder.png files supported for album covers.
+ * Playlist/search UI elements can be hidden.
+ * Dragging playlist columns reorders them.
+ * Library rebuilds no longer lose play counts.
+ * Configurable menu accelerators when gtk-can-change-accels is set.
+ * Delete songs (or move them to the trash) from the player.
+
+0.6 - People laugh at typos in heaven?!
+ * Many new filtering options (top 40, not played in X days).
+ * Mass-set track numbers.
+ * Tag by Pattern can replace or add new tags.
+ * Maskable mount points. This lets you add files from an NFS share or
+   portable device and not have to readd them if you unmount and remount it.
+ * Support for sending files to PMPs from the context menu.
+ * --next, --previous, --play-pause, --volume-up, --volume-down.
+ * MOD/IT/XM/etc. support, using libmodplug and an included C extension.
+ * Right-clicking the status icon will pause/unpause.
+ * Seeking in FLACs.
+ * Bug fixes (including at least one crash).
+
+0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
+ * The ao audio backend is back; see the "AUDIO BACKENDS" section in the
+   manual page for instructions on using it. This should let ALSA users
+   use software mixing.
+ * ID3 APIC (embedded picture) support.
+ * VorbisGain (http://sjeng.org/vorbisgain.html) support.
+ * A context menu for common operations was added to the properties dialog.
+ * Tag values can be set from filename patterns, or vice-versa.
+ * Dates can be saved in MP3s now.
+ * --print-playing option, with a format string.
+ * More UI tweaks.
+ * Translation template update.
+ * Many bug fixes; please reload your library. You can now reload your
+   library from the "Music" menu.
+
+0.4 - The Power of Language
+ * Many bug fixes, primarily due to unit testing.
+ * Tweaks to cover detection to pick 'frontcover' over 'backcover'.
+ * Tweaks to song display, including proper support for the 'author' tag.
+ * Remember size between invokations.
+ * A freedesktop.org-compatible system tray icon, using the Egg status
+   icon code by Anders Carlsson and Sun.
+ * Multimedia key support, provided they're mapped (e.g. by Acme), using
+   the MmKeys object from Muine by Lee Willis and Jan Arne Petersen.
+ * UI tweaks to the main window.
+ * Button to link to a song's website, or a Google search.
+ * Infrastructure is in place for i18n/l10n, but I'm totally new to
+   this, so I could've done something horribly wrong.
+
+0.3
+ * Handle mono MP3s correctly.
+ * Crash less, especially when editing tags.
+ * Many smaller bug fixes.
+
+0.2
+ * Song properties dialog, featuring mass tag editing/addition/removal.
+ * Build/installation scripts.
+ * Interface tweaks for HIG compliance and accessibility.
+ * Try to save the library when ^C is pressed.
+ * ~/.quodlibet/current interface to currently-playing song.
+ * Save current query and song on exit.
+ * An icon.
+ * FLAC support. Writing to FLAC tags could be *very* buggy, so if you
+   value your tags, please back them up.
+
+0.1
+ * Initial release.

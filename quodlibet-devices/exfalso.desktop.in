@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Ex Falso
+_GenericName=Audio tag editor
+_Comment=Edit tags in your audio files
+Exec=exfalso
+Terminal=false
+Type=Application
+Icon=exfalso.png
+Categories=Application;AudioVideo;GTK
