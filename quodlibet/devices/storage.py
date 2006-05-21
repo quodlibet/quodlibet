@@ -25,8 +25,8 @@ from qltk.wlw import WaitLoadWindow
 
 class StorageDevice(Device):
     name = _("Removable Storage")
-    description = _("All mountable devices, such as USB music players "
-                    "or external hard drives")
+    description = _("Any mountable device, such as a USB music player "
+                    "or an external hard drive")
     writable = True
 
     mountpoint = ""
@@ -44,11 +44,11 @@ class StorageDevice(Device):
     def Properties(self, dialog):
         entry = ValidatingEntry(os.path.ismount)
         entry.set_text(self.mountpoint)
-        dialog.add_property(_("Mountpoint"), entry, 'mountpoint')
+        dialog.add_property(_("_Mount Point:"), entry, 'mountpoint')
 
         entry = gtk.Entry()
         entry.set_text(self.pattern)
-        dialog.add_property(_("Rename pattern"), entry, 'pattern')
+        dialog.add_property(_("_Filename Pattern:"), entry, 'pattern')
 
         check = gtk.CheckButton()
         check.set_active(self.covers)
@@ -104,7 +104,7 @@ class StorageDevice(Device):
                 pipe = popen("%s %s" % (prog, self.mountpoint))
                 if pipe.wait() == 0: return True
                 else: return pipe.fromchild.read()
-        else: return _("Couldn't find an umount command.")
+        else: return _("No unmounting command was found.")
 
     def copy(self, songlist, song):
         if not self.__pattern:

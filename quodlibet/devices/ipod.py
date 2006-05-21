@@ -75,27 +75,27 @@ class IPodDevice(Device):
     def Properties(self, dialog):
         entry = ValidatingEntry(os.path.ismount)
         entry.set_text(self.mountpoint)
-        dialog.add_property(_("Mountpoint"), entry, 'mountpoint')
+        dialog.add_property(_("_Mount Point:"), entry, 'mountpoint')
 
         spin = gtk.SpinButton()
         spin.set_range(-20, 20)
         spin.set_digits(1)
         spin.set_increments(0.1, 1)
         spin.set_value(float(self.gain))
-        dialog.add_property(_("Volume gain (dB)"), spin, 'gain')
+        dialog.add_property(_("_Volume Gain (dB):"), spin, 'gain')
 
         check = gtk.CheckButton()
         check.set_active(self.covers)
-        dialog.add_property(_("Copy album covers"), check, 'covers')
+        dialog.add_property(_("_Copy album covers"), check, 'covers')
 
         if self.is_connected():
             details = self.__get_details()
             dialog.add_separator()
-            dialog.add_property(_("Model"),
+            dialog.add_property(_("Model:"),
                 details.get('model', '-'))
-            dialog.add_property(_("Capacity"),
+            dialog.add_property(_("Capacity:"),
                 details.get('space', '-'))
-            dialog.add_property(_("Firmware Version"),
+            dialog.add_property(_("Firmware:"),
                 details.get('firmware', '-'))
 
     def __get_details(self):
@@ -177,7 +177,7 @@ class IPodDevice(Device):
         self.__itdb = gpod.itdb_parse(self.mountpoint, None)
         if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
             qltk.get_top_parent(self), _("Uninitialized iPod"),
-            _("Do you want to create an empty iTunesDB on this iPod?")
+            _("Do you want to create an empty database on this iPod?")
             ).run():
             self.__itdb = self.create_db()
         return self.__itdb

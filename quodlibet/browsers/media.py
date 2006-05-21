@@ -51,20 +51,22 @@ class DeviceProperties(gtk.Dialog):
 
         entry = gtk.Entry()
         entry.set_text(device.name)
-        self.add_property(_("Name"), entry, 'name')
+        self.add_property(_("_Name:"), entry, 'name')
 
         device.Properties(self)
         self.show_all()
 
     def add_property(self, title, value, attr=None):
         label = gtk.Label()
-        label.set_markup("<b>%s:</b>" % util.escape(title))
+        label.set_markup("<b>%s</b>" % util.escape(title))
         label.set_alignment(0.0, 0.5)
         self.__table.attach(
             label, 0, 1, self.__pos, self.__pos + 1, xoptions=gtk.FILL)
 
         if isinstance(value, gtk.Widget):
             widget = value
+            label.set_mnemonic_widget(widget)
+            label.set_use_underline(True)
             if attr:
                 if isinstance(widget, (gtk.Entry, gtk.SpinButton)):
                     widget.connect('changed', self.__changed, attr)
