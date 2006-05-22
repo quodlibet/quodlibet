@@ -125,3 +125,4 @@ elif "G_BROKEN_FILENAMES" in os.environ:
 else: FSCODING = "utf-8"
 
 del(os)
+del(locale)

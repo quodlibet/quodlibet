@@ -13,9 +13,6 @@ EMAIL = DEFAULT_EMAIL
 
 class VCFile(AudioFile):
     def _post_read(self):
-        try: del(self["vendor"])
-        except KeyError: pass
-
         maps = {"rating": float, "playcount": int}
         for keyed_key, func in maps.items():
             for subkey in ["", ":"+DEFAULT_EMAIL, ":"+EMAIL]:
@@ -43,7 +40,7 @@ class VCFile(AudioFile):
         if k is None:
             return super(VCFile, self).can_change(None)
         else: return (super(VCFile, self).can_change(k) and
-                      k not in ["vendor", "totaltracks", "tracktotal",
+                      k not in ["totaltracks", "tracktotal", "disctotal",
                                 "rating", "playcount"] and
                       not k.startswith("rating:") and
                       not k.startswith("playcount:"))

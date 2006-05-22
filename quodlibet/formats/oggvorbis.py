@@ -11,7 +11,7 @@ import gst
 from formats._vorbis import VCFile
 
 try:
-    import ogg.vorbis
+    import mutagen.oggvorbis
 except ImportError:
     extensions = []
 else:
@@ -20,29 +20,23 @@ else:
     else: extensions = [".ogg"]
 
 class OggFile(VCFile):
-
     format = "Ogg Vorbis"
 
     def __init__(self, filename):
-        f = ogg.vorbis.VorbisFile(filename)
-        for k, v in f.comment().as_dict().iteritems():
-            if not isinstance(v, list): v = [v]
-            v = u"\n".join(map(unicode, v))
-            self[k.lower()] = v
+        f = mutagen.oggvorbis.OggVorbis(filename)
+        self["~#length"] = int(f.info.length)
+        for key, value in (f.tags or {}).items():
+            self[key] = "\n".join(value)
         self._post_read()
-
-        self["~#length"] = int(f.time_total(-1))
-        self["~#bitrate"] = int(f.bitrate(-1))
         self.sanitize(filename)
 
     def write(self):
-        f = ogg.vorbis.VorbisFile(self['~filename'])
-        comments = f.comment()
-        self._prep_write(comments)
-        for key in self.realkeys():
-            value = self.list(key)
-            for line in value: comments[key] = line
-        comments.write_to(self['~filename'])
+        f = mutagen.oggvorbis.OggVorbis(self["~filename"])
+        if f.tags is None:
+            f.add_tags()
+        self._prep_write(f.tags)
+        for key in self.realkeys(): f.tags[key] = self.list(key)
+        f.save()
         self.sanitize()
 
 info = OggFile
