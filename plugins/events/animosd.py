@@ -18,10 +18,12 @@ def Label(text):
     l.set_alignment(0.0, 0.5)
     return l
 
-class AnimOsd(object):
+from plugins.events import EventPlugin
+
+class AnimOsd(EventPlugin):
     PLUGIN_NAME = "Animated On-Screen Display"
     PLUGIN_DESC = "Display song information on your screen when it changes."
-    PLUGIN_VERSION = "0.15"
+    PLUGIN_VERSION = "0.21"
 
     def PluginPreferences(self, parent):
         def set_text(button):
@@ -108,7 +110,8 @@ class AnimOsd(object):
         t.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
         t.attach(b, 1, 2, 1, 2)
 
-        f = qltk.Frame(label=_("Colors"), bold=True, child=t, border=12)
+        f = qltk.Frame(label=_("Colors"), child=t)
+        f.set_border_width(12)
         vb.pack_start(f, expand=False, fill=False)
 
 	string = qltk.Button(_("_Edit Display"), gtk.STOCK_EDIT)
@@ -116,7 +119,6 @@ class AnimOsd(object):
         vb.pack_start(string, expand=False)
         return vb
 
-    # mu's default settings - this needs to be configurable
     class conf(object):
         pos = 0.5, 0.0 # position of window 0--1 horizontal, 0--1 vertical
         margin = 16 # never any closer to the screen edge than this

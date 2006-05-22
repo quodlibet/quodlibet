@@ -9,10 +9,12 @@ from string import join
 from qltk import Frame
 import gtk, config
 
-class GajimStatusMessage(object):
+from plugins.events import EventPlugin
+
+class GajimStatusMessage(EventPlugin):
     PLUGIN_NAME = 'Gajim status message'
     PLUGIN_DESC = 'Change Gajim status message according to what you are listening now.'
-    PLUGIN_VERSION = '0.3'
+    PLUGIN_VERSION = '0.4'
 
     c_a = __name__+'_accounts'
     c_p = __name__+'_paused'
@@ -128,7 +130,7 @@ class GajimStatusMessage(object):
 
         vb.pack_start(hb)
         vb.pack_start(c)
-        vb.pack_start(Frame(label="Statuses for which status message\nwill be changed", bold=True))
+        vb.pack_start(Frame(label="Statuses for which status message\nwill be changed"))
         vb.pack_start(table)
 
         return vb

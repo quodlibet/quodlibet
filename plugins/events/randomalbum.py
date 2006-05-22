@@ -12,12 +12,14 @@ import player
 import random
 import widgets
 
-class RandomAlbum(object):
+from plugins.events import EventPlugin
+
+class RandomAlbum(EventPlugin):
     PLUGIN_NAME = 'Random Album Playback'
     PLUGIN_DESC = ("When your playlist reaches its end a new album will "
                    "be chosen randomly and started. It requires that your "
                    "active browser supports filtering by album.")
-    PLUGIN_VERSION = '0.15'
+    PLUGIN_VERSION = '0.21'
 
     def plugin_on_song_started(self, song):
         if (song is None and config.get("memory", "order") != "onesong"):

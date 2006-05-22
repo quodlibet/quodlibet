@@ -16,9 +16,11 @@ import lastfm.marshaller
 import config
 import player
 import parse
+
+from plugins.events import EventPlugin
 from qltk.entry import ValidatingEntry
 
-class QLLastfm(object):
+class QLLastfm(EventPlugin):
     PLUGIN_NAME = "Last.fm Submission"
     PLUGIN_DESC = "Submit songs to Last.fm via lastfmsubmitd."
     PLUGIN_ICON = gtk.STOCK_CONNECT

@@ -6,7 +6,10 @@
 #
 # $Id$
 
-import os, util
+import os
+import util
+
+from plugins.events import EventPlugin
 
 outfile = os.path.expanduser("~/.quodlibet/jabber")
 format = """\
@@ -18,7 +21,7 @@ format = """\
  <length>%d</length>
 </tune>"""
     
-class JEP118(object):
+class JEP118(EventPlugin):
     PLUGIN_NAME = "JEP-118"
     PLUGIN_DESC = "Output a Jabber User Tunes file to ~/.quodlibet/jabber"
     PLUGIN_ICON = 'gtk-save'

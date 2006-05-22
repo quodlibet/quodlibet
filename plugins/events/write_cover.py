@@ -6,18 +6,23 @@
 #
 # $Id$
 
-import os, config, shutil, gtk
+import os
+import config
+import shutil
+import gtk
+
+from plugins.events import EventPlugin
 
 try: config.get("plugins", __name__)
 except:
     out = os.path.expanduser("~/.quodlibet/current.cover")
     config.set("plugins", __name__, out)
 
-class PictureSaver(object):
+class PictureSaver(EventPlugin):
     PLUGIN_NAME = "Picture Saver"
     PLUGIN_DESC = "The cover image of the current song is saved to a file."
     PLUGIN_ICON = gtk.STOCK_SAVE
-    PLUGIN_VERSION = "0.13"
+    PLUGIN_VERSION = "0.21"
 
     def plugin_on_song_started(self, song):
         outfile = config.get("plugins", __name__)
