@@ -12,20 +12,26 @@ from qltk.entry import ValidatingEntry
 import config
 import player
 
-class Alarm(object):
+from plugins.events import EventPlugin
+
+class Alarm(EventPlugin):
     PLUGIN_NAME = "Alarm Clock"
     PLUGIN_DESC = "Wake you up with loud music."
     PLUGIN_ICON = gtk.STOCK_DIALOG_INFO
-    PLUGIN_VERSION = "0.19"
+    PLUGIN_VERSION = "0.21"
 
     _pref_name = "alarm_times"
     _times = ["HH:MM"] * 7
+    _enabled = False
 
     def __init__(self):
         try: self._times = config.get("plugins", self._pref_name).split()[:7]
         except: pass
         else: self._times = (self._times + ["HH:MM"] * 7)[:7]
         gobject.timeout_add(30000, self._check)
+
+    def enabled(self): self._enabled = True
+    def disabled(self): self._enabled = False
 
     def is_valid_time(time):
         try: hour, minute = map(int, time.split(":"))
@@ -48,7 +54,7 @@ class Alarm(object):
         else: return (tdata.tm_hour, tdata.tm_min) == (ghour, gminute)
 
     def _fire(self):
-        if getattr(self, "PMEnFlag", False):
+        if self._enabled:
             if player.playlist.paused:
                 if player.playlist.song is None:
                     player.playlist.next()
@@ -93,7 +99,7 @@ class Lullaby(Alarm):
     _pref_name = "lullaby_times"
 
     def _fire(self):
-        if getattr(self, "PMEnFlag", False):
+        if self._enabled:
             gobject.timeout_add(500, self._fade_out)
         else: gobject.timeout_add(30000, self._check)
 

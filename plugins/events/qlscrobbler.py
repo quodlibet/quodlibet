@@ -12,12 +12,14 @@ from qltk.msg import Message, WarningMessage
 from qltk.entry import ValidatingEntry
 from util import to
 
-class QLScrobbler(object):
+from plugins.events import EventPlugin
+
+class QLScrobbler(EventPlugin):
 	# session invariants
 	PLUGIN_NAME = "QLScrobbler"
 	PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
 	PLUGIN_ICON = gtk.STOCK_CONNECT
-	PLUGIN_VERSION = "0.8"
+	PLUGIN_VERSION = "0.8.1"
 	CLIENT = "qlb"
 	PROTOCOL_VERSION = "1.1"
 	try: DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
@@ -46,7 +48,7 @@ class QLScrobbler(object):
 	already_submitted = False
 	locked = False
 	flushing = False
-	disabled = False
+	__enabled = False
 	offline = False
 
 	# we need to store this because not all events get the song
@@ -302,17 +304,20 @@ class QLScrobbler(object):
 		bg.setDaemon(True)
 		bg.start()
 
+	def enabled(self):
+		self.__enabled = True
+
+	def disabled(self):
+		self.__enabled = False
+
 	def submit_song_helper(self):
-		enabled = getattr(self, 'PMEnFlag', False)
-		if enabled and self.disabled:
+		if self.__enabled:
 			print "Plugin re-enabled - accepting new songs."
-			self.disabled = False
 			if self.submission_tid != -1:
 				gobject.source_remove(self.submission_tid);
 				self.submission_tid = -1
-		elif not enabled and not self.disabled: #if we've already printed
+		else:
 			print "Plugin disabled - not accepting any new songs."
-			self.disabled = True
 			if len(self.queue) > 0:
 				self.submission_tid = gobject.timeout_add(120 * 1000, self.submit_song_helper)
 				print "Attempts will continue to submit the last %d songs." % len(self.queue)
@@ -442,7 +447,7 @@ class QLScrobbler(object):
 			gobject.timeout_add(interval_secs * 1000, self.clear_waiting)
 			print "Server says to wait for %d seconds." % interval_secs
 
-		if self.disabled and len(self.queue) == 0 and self.submission_tid != -1:
+		if not self.__enabled and len(self.queue) == 0 and self.submission_tid != -1:
 			print "All songs submitted, disabling retries."
 			gobject.source_remove(self.submission_tid)
 			self.submission_tid = -1
