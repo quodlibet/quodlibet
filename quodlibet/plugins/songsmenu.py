@@ -149,30 +149,4 @@ class SongsMenuPlugins(Manager):
 
         del(plugin.plugin_window)
 
-        self.__check_change(watcher, parent, filter(None, songs))
-
-    def __check_change(self, watcher, parent, songs):
-        needs_write = filter(lambda s: s._needs_write, songs)
-
-        if needs_write:
-            win = WritingWindow(parent, len(needs_write))
-            for song in needs_write:
-                try: song._song.write()
-                except Exception:
-                    qltk.ErrorMessage(
-                        None, _("Unable to edit song"),
-                        _("Saving <b>%s</b> failed. The file "
-                          "may be read-only, corrupted, or you "
-                          "do not have permission to edit it.")%(
-                        util.escape(song('~basename')))).run()
-                win.step()
-            win.destroy()
-            while gtk.events_pending(): gtk.main_iteration()
-
-        changed = []
-        for song in songs:
-            needs_reload = []
-            if song._was_updated(): changed.append(song._song)
-            elif not song.valid() and song.exists():
-                watcher.reload(song._song)
-        watcher.changed(changed)
+        self._check_change(watcher, parent, filter(None, songs))

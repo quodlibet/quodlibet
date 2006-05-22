@@ -9,7 +9,7 @@
 
 import gtk
 
-from plugins._manager import Manager
+from plugins import Manager
 
 class RenameFilesPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be

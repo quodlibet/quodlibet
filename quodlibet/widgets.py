@@ -18,9 +18,9 @@ import qltk.session
 import stock
 import util
 
-from plugins import PluginManager
 from plugins.editing import EditingPlugins
 from plugins.songsmenu import SongsMenuPlugins
+from plugins.events import EventPlugins
 from qltk.count import CountManager
 from qltk.msg import ErrorMessage
 from qltk.properties import SongProperties
@@ -73,10 +73,10 @@ def init(player, library):
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
     
-    pm = PluginManager(watcher, player, [
-        os.path.join(const.BASEDIR, "plugins"),
-        os.path.join(const.USERDIR, "plugins")], "legacy")
-    pm.rescan()
+    events = EventPlugins(watcher, player, [
+        os.path.join(const.BASEDIR, "plugins", "events"),
+        os.path.join(const.USERDIR, "plugins", "events")], "events")
+    events.rescan()
 
     SongProperties.plugins = EditingPlugins(
         [os.path.join(const.BASEDIR, "plugins", "editing"),
