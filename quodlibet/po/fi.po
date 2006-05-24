@@ -931,7 +931,7 @@ msgid ""
 msgstr ""
 "Arvo ei kelpaa: <b>%(value)s</b>\n"
 "\n"
-"%s(error)s"
+"%(error)s"
 
 #: ../qltk/edittags.py:561
 msgid "Unable to retag multiple values"
