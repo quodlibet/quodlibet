@@ -226,10 +226,30 @@ class PreferencesWindow(qltk.Window):
             l.set_mnemonic_widget(e)
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
+            vbox.pack_start(hb, expand=False)
+
+            vb2 = gtk.VBox(spacing=0)
+            cb = ConfigCheckButton(
+                _("Save ratings and play counts"), "editing", "save_to_songs")
+            cb.set_active(config.getboolean("editing", "save_to_songs"))
+            vb2.pack_start(cb)
+            hb = gtk.HBox(spacing=3)
+            lab = gtk.Label(_("_Email:"))
+            entry = gtk.Entry()
+            tips.set_tip(entry, _("Ratings and play counts will be set for "
+                                  "this email address"))
+            entry.set_text(config.get("editing", "save_email"))
+            entry.connect('changed', self.__changed, 'editing', 'save_email')
+            hb.pack_start(lab, expand=False)
+            hb.pack_start(entry)
+            lab.set_mnemonic_widget(entry)
+            lab.set_use_underline(True)
+            vb2.pack_start(hb)
+            vbox.pack_start(vb2, expand=False)
+
             cb = ConfigCheckButton(
                 _("Show _programmatic tags"), 'editing', 'alltags')
             cb.set_active(config.getboolean("editing", 'alltags'))
-            vbox.pack_start(hb, expand=False)
             vbox.pack_start(cb, expand=False)
             f = qltk.Frame(_("Tag Editing"), child=vbox)
             self.pack_start(f)

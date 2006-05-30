@@ -13,6 +13,8 @@ CONFIG  = os.path.join(USERDIR, "config")
 CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
 
+EMAIL = "quodlibet@lists.sacredchao.net"
+
 BASEDIR = os.path.dirname(os.path.realpath(__file__))
 
 AUTHORS = """\

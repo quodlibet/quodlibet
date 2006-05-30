@@ -10,6 +10,8 @@
 
 import os
 
+import const
+
 # We don't need/want variable interpolation.
 from ConfigParser import RawConfigParser as ConfigParser, Error as error
 
@@ -109,6 +111,8 @@ def init(*rc_files):
         "editing":
         { "split_on": "& , /", # words to split on
           "id3encoding": "", # ID3 encodings to try
+          "save_to_songs": "true",
+          "save_email": os.environ.get("EMAIL", const.EMAIL),
           "alltags": "true", # show all comments, or just "human" ones
           },
         }
