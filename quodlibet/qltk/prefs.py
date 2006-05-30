@@ -7,6 +7,7 @@
 #
 # $Id$
 
+import os
 import gtk
 
 import config
@@ -202,7 +203,13 @@ class PreferencesWindow(qltk.Window):
                 e, _("Songs placed in these folders (separated by ':') "
                      "will be added to your library"))
             hb.pack_start(b, expand=False)
-            b.connect('clicked', self.__select, e, const.HOME)
+            scandirs = config.get("settings", "scan").split(":")
+            if scandirs and os.path.isdir(scandirs[-1]):
+                # start with last added directory
+                initial = scandirs[-1]
+            else:
+                initial = const.HOME
+            b.connect('clicked', self.__select, e, initial)
             e.connect('changed', self.__changed, 'settings', 'scan')
             f = qltk.Frame(_("Scan _Directories"), child=hb)
             f.get_label_widget().set_mnemonic_widget(e)
