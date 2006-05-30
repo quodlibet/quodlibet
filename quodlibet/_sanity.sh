@@ -15,4 +15,7 @@ elif [ "$1" = "--sanity" ]; then
  done
 else
  python -c "import tests; tests.unit('$*'.split())"
+ if [ "$1" = "--trace" ]; then
+   rm `grep -L '>>>>>>' coverage/*.cover`
+ fi
 fi
