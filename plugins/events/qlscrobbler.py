@@ -202,7 +202,7 @@ class QLScrobbler(EventPlugin):
 		if self.timeout_id == -2: # change delta based on current progress
 			# assumption is that self.already_submitted == 0, therefore
 			# delay - progress > 0
-			progress = int(player.playlist.info.time[0] / 1000)
+			progress = int(player.playlist.get_position() / 1000)
 			delay -= progress
 
 		self.timeout_id = gobject.timeout_add(delay * 1000, self.submit_song)
