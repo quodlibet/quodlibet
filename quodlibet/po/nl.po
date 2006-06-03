@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-05-01 16:27-0500\n"
-"PO-Revision-Date: 2006-04-26 21:54+0200\n"
+"PO-Revision-Date: 2006-06-03 21:00+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -507,18 +507,16 @@ msgid "MusicBrainz album ID"
 msgstr "MusicBrainz album ID"
 
 #: ../po/tag-names.py:66
-#, fuzzy
 msgid "MusicBrainz album artist ID"
-msgstr "MusicBrainz artiest ID"
+msgstr "MusicBrainz album artiest ID"
 
 #: ../po/tag-names.py:67
-#, fuzzy
 msgid "MusicBrainz TRM ID"
-msgstr "MusicBrainz track ID"
+msgstr "MusicBrainz TRM ID"
 
 #: ../po/tag-names.py:68
 msgid "MusicIP PUID"
-msgstr ""
+msgstr "MusicIP PUID"
 
 #. refers to a volume adjustment and not "to get/acquire".
 #: ../po/tag-names.py:71
@@ -1318,8 +1316,7 @@ msgstr "Ga automatisch naar song die gespeeld wordt"
 
 #: ../qltk/prefs.py:170
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr ""
-"Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
+msgstr "Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
 
 #: ../qltk/prefs.py:175
 msgid "_Volume Normalization"
@@ -1938,8 +1935,7 @@ msgstr "Niet in staat om speellijst importeren"
 
 #: ../browsers/playlists.py:419 ../browsers/playlists.py:497
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
-msgstr ""
-"Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
+msgstr "Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
 
 #: ../browsers/playlists.py:443
 msgid "_Rename"
@@ -2178,14 +2174,12 @@ msgstr ""
 "SS' formaat."
 
 #: ../util/massagers.py:34
-#, fuzzy
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
-msgstr "ReplayGain moet worden ingevoerd in 'x.yy dB' formaat."
+msgstr "Replay Gain gains moeten worden ingevoerd in 'x.yy dB' formaat."
 
 #: ../util/massagers.py:48
-#, fuzzy
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
-msgstr "ReplayGain peaks moeten worden ingevoerd in 'x.yy' formaat."
+msgstr "Replay Gain peaks moeten worden ingevoerd in 'x.yy' formaat."
 
 #: ../util/massagers.py:61
 msgid "MusicBrainz IDs must be in UUID format."
@@ -2206,3 +2200,4 @@ msgstr "Luister naar, browse, of bewerk je audio verzameling"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "Muziek Speler"
+
