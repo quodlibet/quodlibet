@@ -63,11 +63,11 @@ by <~people>><album|
             f = file(os.path.join(const.USERDIR, "songinfo"), "w")
             f.write(self._pattern + "\n")
             f.close()
-        self.__song_started(player, player.song)
+        self.__song_started(player, player.info)
 
     def __check_change(self, player, songs):
         if player.song in songs:
-            self.__song_started(player, player.song)
+            self.__song_started(player, player.info)
 
     def __song_started(self, activator, song):
         if song: t = XMLFromPattern(self._pattern) % song
