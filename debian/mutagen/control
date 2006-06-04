@@ -2,18 +2,18 @@ Source: mutagen
 Section: python
 Priority: optional
 Maintainer: Joe Wreschnig <piman@debian.org>
-Build-Depends-Indep: debhelper (>= 5.0.17), python-dev (>= 2.3)
+Build-Depends: debhelper (>= 5.0.17), python-dev (>= 2.3)
 Standards-Version: 3.7.2
 
 Package: python-mutagen
 Architecture: all
 Depends: python (>= 2.3), python-support (>= 0.2)
-Suggests: python-pyvorbis
 Description: audio metadata editing library
- Mutagen is an audio metadata tag reader and writer implemented in pure
- Python. It supports reading ID3v1.1, ID3v2.2, ID3v2.3, ID3v2.4, APEv2,
- and FLAC, and writing ID3v1.1, ID3v2.4, APEv2, and FLAC.
- .
- If pyvorbis is installed, it can read and write Ogg Vorbis comments.
+ Mutagen is a Python module to handle audio metadata. It supports
+ reading ID3 (all versions), APEv2, Ogg Vorbis, FLAC, and Ogg FLAC, and
+ writing ID3v1.1, ID3v2.4, APEv2, Ogg Vorbis, FLAC, and Ogg FLAC. It
+ can also read MPEG audio and Xing headers, FLAC stream info blocks,
+ and Ogg Vorbis and Ogg FLAC stream headers. Finally, it includes a
+ module to handle generic Ogg bitstreams.
  .
   Homepage: http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen

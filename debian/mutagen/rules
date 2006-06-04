@@ -7,8 +7,11 @@ clean:
 	dh_testdir
 	dh_testroot
 	python ./setup.py clean
-	rm -rf build
-	dh_clean 
+	rm -rf build/
+	dh_clean
+
+build:
+	./setup.py build
 
 install: build
 	dh_testdir
@@ -17,14 +20,15 @@ install: build
 	dh_installdirs
 	python ./setup.py install --prefix $(PREFIX) --no-compile \
 		--install-lib $(PREFIX)/share/python-support/python-mutagen
-	install -D -m 755 tools/* $(CURDIR)/debian/python-mutagen/usr/bin
+
+binary-arch: build install
 
 binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs
-	dh_installman man/*.1
+	dh_installman
 	dh_link
 	dh_strip
 	dh_compress
