@@ -9,7 +9,7 @@ Ex Falso is a tag editor with the same tag editing interface as Quod Libet,
 but it does not play files.
 
 Supported file formats include Ogg Vorbis, MP3, FLAC, MOD/XM/IT, Musepack,
-and Wavpack.
+Wavpack, and MPEG-4 AAC.
 
 To report bugs, suggest features, ask a question, get the latest version,
 or help us out, visit http://www.sacredchao.net/quodlibet.
@@ -36,17 +36,14 @@ Quod Libet depends on the Python runtime and associated libraries.
  Python (>= 2.3):  http://www.python.org
  PyGTK (>= 2.8):   http://www.pygtk.org
  PyGSt (>= 0.10):  http://gstreamer.freedesktop.org/
- Mutagen (>= 1.0): http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
-
-All file formats depend on their appropriate GStreamer decoding modules
-being available as well as the libraries listed below.
-	Ogg Vorbis: 	http://www.andrewchatham.com/pyogg/
+ Mutagen (>= 1.2): http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
 
 The following formats all depend on ctypes, available at
 http://starship.python.net/crew/theller/ctypes/, as well as the libraries
 listed:
 	Musepack:	http://www.musepack.net/index.php?pg=src
 	MOD/XM/IT:	http://modplug-xmms.sourceforge.net/#download
+        MPEG-4 AAC:	http://www.audiocoding.com/ (libmp4)
 	Wavpack:	http://www.wavpack.com/
 
 Internet Radio depends on GNOME-VFS or neonhttpsrc support in GStreamer.
