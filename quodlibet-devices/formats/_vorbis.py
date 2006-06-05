@@ -6,19 +6,20 @@
 #
 # $Id$
 
-from formats._audio import AudioFile
+import config
+import const
 
-DEFAULT_EMAIL = "quodlibet@lists.sacredchao.net"
-EMAIL = DEFAULT_EMAIL
+from formats._audio import AudioFile
 
 class VCFile(AudioFile):
     def _post_read(self):
+        email = config.get("editing", "save_email").strip()
         maps = {"rating": float, "playcount": int}
         for keyed_key, func in maps.items():
-            for subkey in ["", ":"+DEFAULT_EMAIL, ":"+EMAIL]:
+            for subkey in ["", ":" + const.EMAIL, ":" + email]:
                 key = keyed_key + subkey
                 if key in self:
-                    try: self["~#"+keyed_key] = func(self[key])
+                    try: self["~#" + keyed_key] = func(self[key])
                     except ValueError: pass
                     del(self[key])
 
@@ -46,12 +47,16 @@ class VCFile(AudioFile):
                       not k.startswith("playcount:"))
 
     def _prep_write(self, comments):
+        email = config.get("editing", "save_email").strip()
         for key in comments.keys():
             if key.startswith("rating:") or key.startswith("playcount:"):
-                if key.split(":", 1)[1] in [DEFAULT_EMAIL, EMAIL]:
+                if key.split(":", 1)[1] in [const.EMAIL, email]:
                     del(comments[key])
             else: del(comments[key])
-        if self["~#rating"] != 0.5:
-            comments["rating:" + EMAIL] = str(self["~#rating"])
-        if self["~#playcount"] != 0:
-            comments["playcount:" + EMAIL] = str(int(self["~#playcount"]))
+
+        if config.getboolean("editing", "save_to_songs"):
+            email = email or const.EMAIL
+            if self["~#rating"] != 0.5:
+                comments["rating:" + email] = str(self["~#rating"])
+            if self["~#playcount"] != 0:
+                comments["playcount:" + email] = str(int(self["~#playcount"]))

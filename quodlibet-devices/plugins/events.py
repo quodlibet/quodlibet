@@ -29,8 +29,9 @@ class EventPlugin(object):
     Callables:
         obj.plugin_on_song_started(song)
         obj.plugin_on_song_ended(song, stopped)
-        obj.plugin_on_changed(song)
-        obj.plugin_on_removed(song)
+        obj.plugin_on_added([song1, song2, ...])
+        obj.plugin_on_changed([song1, song2, ...])
+        obj.plugin_on_removed([song1, song2, ...])
         obj.plugin_on_paused()
         obj.plugin_on_unpaused()
         obj.plugin_on_seek(song, msec)

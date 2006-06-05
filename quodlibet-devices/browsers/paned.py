@@ -153,6 +153,14 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         __render = gtk.CellRendererText()
         __render.set_property('ellipsize', pango.ELLIPSIZE_END)
 
+        __render_count = gtk.CellRendererText()
+        __render_count.set_property('xalign', 1.0)
+
+        def __count_cdf(column, cell, model, iter):
+            try: cell.set_property('text', "(%d)" % (len(model[iter][1])))
+            except TypeError: cell.set_property('text', '')
+        __count_cdf = staticmethod(__count_cdf)
+
         def __init__(self, mytag, next):
             super(PanedBrowser.Pane, self).__init__()
             self.tags = util.tagsplit(mytag)
@@ -163,6 +171,10 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             column = gtk.TreeViewColumn(tag(mytag), self.__render, markup=0)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
+
+            column.pack_start(self.__render_count, expand=False)
+            column.set_cell_data_func(self.__render_count, self.__count_cdf)
+
             self.append_column(column)
             self.set_model(model)
 
@@ -361,8 +373,12 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                   watcher.connect('removed', self.__removed)
                   ]:
             self.connect_object('destroy', watcher.disconnect, s)
+        self.connect_object('destroy', type(self).__destroy, self)
         self.refresh_panes(restore=False)
         self.show_all()
+
+    def __destroy(self):
+        self.__save = None
 
     def __all(self, *args):
         self.__panes[-1].inhibit()

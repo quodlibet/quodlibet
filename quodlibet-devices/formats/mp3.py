@@ -11,6 +11,7 @@ import tempfile
 import gst
 
 import config
+import const
 
 from formats._audio import AudioFile
 
@@ -105,10 +106,15 @@ class MP3File(AudioFile):
                   frame.owner == "http://musicbrainz.org"):
                 self["musicbrainz_trackid"] = frame.data
                 continue
-            elif (frame.FrameID == "POPM" and
-                frame.email == "quodlibet@lists.sacredchao.net"):
-                self["~#playcount"] = frame.count
-                self["~#rating"] = frame.rating / 255.0
+            elif frame.FrameID == "POPM":
+                count = frame.count
+                rating = frame.rating / 255.0
+                if frame.email == const.EMAIL:
+                    self.setdefault("~#playcount", count)
+                    self.setdefault("~#rating", rating)
+                elif frame.email == config.get("settings", "save_email"):
+                    self["~#playcount"] = count
+                    self["~#rating"] = rating
                 continue
             elif frame.FrameID == "COMM" and frame.desc == "":
                 name = "comment"
@@ -177,8 +183,11 @@ class MP3File(AudioFile):
         except mutagen.id3.error: tag = mutagen.id3.ID3()
         tag.delall("COMM:QuodLibet:")
         tag.delall("TXXX:QuodLibet:")
-        tag.delall("UFID:http://musicbrainz.org")
-        tag.delall("POPM:quodlibet@lists.sacredchao.net")
+        for key in ["UFID:http://musicbrainz.org",
+                    "POPM:%s" % const.EMAIL,
+                    "POPM:%s" % config.get("editing", "save_email")]:
+            if key in tag:
+                del(tag[key])
 
         for key, id3name in self.SDI.items():
             tag.delall(id3name)
@@ -257,8 +266,11 @@ class MP3File(AudioFile):
                     desc=self.ZNIARB[key])
                 tag.loaded_frame(f)
 
-        if self["~#rating"] != 0.5 or self["~#playcount"] != 0:
-            t = mutagen.id3.POPM(email="quodlibet@lists.sacredchao.net",
+        if (config.getboolean("editing", "save_to_songs") and
+            (self["~#rating"] != 0.5 or self["~#playcount"] != 0)):
+            email = config.get("editing", "save_email").strip()
+            email = email or const.EMAIL
+            t = mutagen.id3.POPM(email=email,
                                  rating=int(255*self["~#rating"]),
                                  count=self["~#playcount"])
             tag.loaded_frame(t)

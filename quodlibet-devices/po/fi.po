@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-22 13:50-0500\n"
-"PO-Revision-Date: 2006-05-22 18:32+0300\n"
+"POT-Creation-Date: 2006-06-02 17:37-0500\n"
+"PO-Revision-Date: 2006-06-01 10:20+0300\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp2.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -959,15 +959,15 @@ msgstr "%(title)s ja %(count)d muuta"
 msgid "Ex Falso Preferences"
 msgstr "Ex Falson Asetukset"
 
-#: ../qltk/exfalso.py:189 ../qltk/prefs.py:217
+#: ../qltk/exfalso.py:189 ../qltk/prefs.py:224
 msgid "Split _on:"
 msgstr "_Erotin:"
 
-#: ../qltk/exfalso.py:195 ../qltk/prefs.py:223
+#: ../qltk/exfalso.py:195 ../qltk/prefs.py:251
 msgid "Show _programmatic tags"
 msgstr "Näytä _ohjelmalliset tunnisteet"
 
-#: ../qltk/exfalso.py:199 ../qltk/prefs.py:227
+#: ../qltk/exfalso.py:199 ../qltk/prefs.py:254
 msgid "Tag Editing"
 msgstr "Tunnisteiden muokkaus"
 
@@ -1048,7 +1048,7 @@ msgid "Track %s"
 msgstr "Raita %s"
 
 #: ../qltk/information.py:167 ../qltk/information.py:178
-#: ../qltk/songlist.py:305
+#: ../qltk/songlist.py:307
 msgid "Never"
 msgstr "Ei koskaan"
 
@@ -1059,7 +1059,7 @@ msgid_plural "%d times"
 msgstr[0] "%d kerran"
 msgstr[1] "%d kertaa"
 
-#: ../qltk/information.py:198 ../qltk/prefs.py:194
+#: ../qltk/information.py:198 ../qltk/prefs.py:195
 msgid "Library"
 msgstr "Kirjasto"
 
@@ -1227,75 +1227,75 @@ msgstr "Liitännäisiä ei löytynyt."
 msgid "Plugin Errors"
 msgstr "Liitännäisten virheet"
 
-#: ../qltk/prefs.py:35
+#: ../qltk/prefs.py:36
 msgid "Song List"
 msgstr "Kappalelista"
 
-#: ../qltk/prefs.py:44
+#: ../qltk/prefs.py:45
 msgid "_Disc"
 msgstr "_Levy"
 
-#: ../qltk/prefs.py:45
+#: ../qltk/prefs.py:46
 msgid "Al_bum"
 msgstr "Al_bumi"
 
-#: ../qltk/prefs.py:46
+#: ../qltk/prefs.py:47
 msgid "_Filename"
 msgstr "Tie_dostonimi"
 
-#: ../qltk/prefs.py:47
+#: ../qltk/prefs.py:48
 msgid "_Track"
 msgstr "_Raita"
 
-#: ../qltk/prefs.py:48
+#: ../qltk/prefs.py:49
 msgid "_Artist"
 msgstr "_Artisti"
 
-#: ../qltk/prefs.py:49 ../qltk/songlist.py:432 ../qltk/trayicon.py:293
+#: ../qltk/prefs.py:50 ../qltk/songlist.py:434 ../qltk/trayicon.py:293
 msgid "_Rating"
 msgstr "Ar_vosana"
 
-#: ../qltk/prefs.py:51
+#: ../qltk/prefs.py:52
 msgid "_Date"
 msgstr "_Päivämäärä"
 
-#: ../qltk/prefs.py:52
+#: ../qltk/prefs.py:53
 msgid "_Length"
 msgstr "_Kesto"
 
-#: ../qltk/prefs.py:64
+#: ../qltk/prefs.py:65
 msgid "Title includes _version"
 msgstr "Nimi sisältää v_ersion"
 
-#: ../qltk/prefs.py:69
+#: ../qltk/prefs.py:70
 msgid "Album includes _part"
 msgstr "Albumi sisältää _osan"
 
-#: ../qltk/prefs.py:74
+#: ../qltk/prefs.py:75
 msgid "Filename includes _folder"
 msgstr "Tiedostonimi sisältää hake_miston"
 
-#: ../qltk/prefs.py:88
+#: ../qltk/prefs.py:89
 msgid "_Others:"
 msgstr "M_uut:"
 
-#: ../qltk/prefs.py:94
+#: ../qltk/prefs.py:95
 msgid "Other columns to display, separated by spaces"
 msgstr "Muut näytettävät sarakkeet välilyönneillä erotettuna"
 
-#: ../qltk/prefs.py:108
+#: ../qltk/prefs.py:109
 msgid "Visible Columns"
 msgstr "Näytettävät sarakkeet"
 
-#: ../qltk/prefs.py:136
+#: ../qltk/prefs.py:137
 msgid "Browsers"
 msgstr "Selaimet"
 
-#: ../qltk/prefs.py:139
+#: ../qltk/prefs.py:140
 msgid "Color _search terms"
 msgstr "Väritä _hakuehdot"
 
-#: ../qltk/prefs.py:142
+#: ../qltk/prefs.py:143
 msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
@@ -1303,47 +1303,47 @@ msgstr ""
 "Näytä yksinkertaiset haut sinisinä, erityishaut vihreinä ja virheelliset "
 "haut punaisina"
 
-#: ../qltk/prefs.py:145
+#: ../qltk/prefs.py:146
 msgid "_Global filter:"
 msgstr "_Yleissuodatin:"
 
-#: ../qltk/prefs.py:155
+#: ../qltk/prefs.py:156
 msgid "Search Library"
 msgstr "Hae kirjastosta"
 
-#: ../qltk/prefs.py:165
+#: ../qltk/prefs.py:166
 msgid "Player"
 msgstr "Soitin"
 
-#: ../qltk/prefs.py:169
+#: ../qltk/prefs.py:170
 msgid "_Jump to playing song automatically"
 msgstr "_Hyppää soivaan kappaleeseen automaattisesti"
 
-#: ../qltk/prefs.py:170
+#: ../qltk/prefs.py:171
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Kun soitettava kappale vaihtuu, vieritä soittolistaa sen kohdalle"
 
-#: ../qltk/prefs.py:176
+#: ../qltk/prefs.py:177
 msgid "No volume adjustment"
 msgstr "Ei äänenvoimakkuuden säätöä"
 
-#: ../qltk/prefs.py:177
+#: ../qltk/prefs.py:178
 msgid "Per-song (\"Radio\") volume adjustment"
 msgstr "Kappalekohtainen (\"Radio\") äänenvoimakkuuden säätö"
 
-#: ../qltk/prefs.py:178
+#: ../qltk/prefs.py:179
 msgid "Per-album (\"Audiophile\") volume adjustment"
 msgstr "Albumikohtainen (\"Audiofiili\") äänenvoimakkuuden säätö"
 
-#: ../qltk/prefs.py:179
+#: ../qltk/prefs.py:180
 msgid "_Volume Normalization"
 msgstr "_Äänenvoimakkuuden normalisointi"
 
-#: ../qltk/prefs.py:196
+#: ../qltk/prefs.py:197
 msgid "_Select"
 msgstr "_Valitse"
 
-#: ../qltk/prefs.py:202
+#: ../qltk/prefs.py:203
 msgid ""
 "Songs placed in these folders (separated by ':') will be added to your "
 "library"
@@ -1351,19 +1351,31 @@ msgstr ""
 "Näissä (kaksoispisteellä erotetuissa) hakemistoissa olevat kappaleet "
 "lisätään kirjastoosi"
 
-#: ../qltk/prefs.py:207
+#: ../qltk/prefs.py:214
 msgid "Scan _Directories"
 msgstr "Käy läpi _hakemistot"
 
-#: ../qltk/prefs.py:216
+#: ../qltk/prefs.py:223
 msgid "Separators for splitting tags"
 msgstr "Erottimet tunnisteiden katkaisemiseen"
 
-#: ../qltk/prefs.py:232
+#: ../qltk/prefs.py:233
+msgid "Save ratings and play counts"
+msgstr "Tallenna arvosanat ja soittomäärät"
+
+#: ../qltk/prefs.py:237
+msgid "_Email:"
+msgstr "_Sähköposti:"
+
+#: ../qltk/prefs.py:239
+msgid "Ratings and play counts will be set for this email address"
+msgstr "Arvosanat ja soittomäärät asetetaan tälle osoitteelle"
+
+#: ../qltk/prefs.py:259
 msgid "Select Directories"
 msgstr "Valitse hakemistot"
 
-#: ../qltk/prefs.py:244
+#: ../qltk/prefs.py:271
 msgid "Quod Libet Preferences"
 msgstr "Quod Libetin asetukset"
 
@@ -1657,20 +1669,20 @@ msgstr ""
 "sisältää merkin /, mutta ei ala juurihakemistosta. Välttääksesi hakemistojen "
 "väärinnimeämistä, aloita kaavasi merkeillä / tai ~/."
 
-#: ../qltk/songlist.py:403
+#: ../qltk/songlist.py:405
 msgid "pattern"
 msgstr "hakukaava"
 
-#: ../qltk/songlist.py:418
+#: ../qltk/songlist.py:420
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Suodata sarakkeen \"%s\" perusteella"
 
-#: ../qltk/songlist.py:545 ../browsers/filesystem.py:63
+#: ../qltk/songlist.py:547 ../browsers/filesystem.py:63
 msgid "Unable to copy songs"
 msgstr "Kappaleiden kopiointi epäonnistui"
 
-#: ../qltk/songlist.py:546 ../browsers/filesystem.py:64
+#: ../qltk/songlist.py:548 ../browsers/filesystem.py:64
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Valittuja tiedostoja ei voi kopioida toisiin soittolistoihin tai jonoon."
@@ -1882,20 +1894,20 @@ msgstr "Paneeliselaimen asetukset"
 msgid "_Custom"
 msgstr "_Mukautettu"
 
-#: ../browsers/paned.py:266
+#: ../browsers/paned.py:278
 msgid "All"
 msgstr "Kaikki"
 
-#: ../browsers/paned.py:332 ../browsers/search.py:137
+#: ../browsers/paned.py:344 ../browsers/search.py:137
 #: ../browsers/iradio.py:169
 msgid "_Search:"
 msgstr "_Hae:"
 
-#: ../browsers/paned.py:346
+#: ../browsers/paned.py:358
 msgid "Select _All"
 msgstr "Valitse _Kaikki"
 
-#: ../browsers/paned.py:501
+#: ../browsers/paned.py:513
 msgid "_Paned Browser"
 msgstr "_Paneeliselain"
 

@@ -418,12 +418,12 @@ def find_subtitle(title):
                 return title.rstrip(), subtitle
     else: return title, None
 
-def unexpand(filename):
+def unexpand(filename, HOME=os.path.expanduser("~")):
     """Replace the user's home directory with ~/, if it appears at the
     start of the path name."""
-    if filename == os.path.expanduser("~"): return "~"
-    elif filename.startswith(os.path.expanduser("~/")):
-        filename = filename.replace(os.path.expanduser("~/"), "~/", 1)
+    if filename == HOME: return "~"
+    elif filename.startswith(HOME + "/"):
+        filename = filename.replace(HOME, "~", 1)
     return filename
 
 def website(site):
