@@ -172,8 +172,7 @@ class QuodLibetWindow(gtk.Window):
         hbox.pack_start(repeat, expand=False)
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
-        # GTK (2.8?) rounding error, 1.0 clips the rightmost pixel.
-        self.__statusbar.set_alignment(0.999999, 0.5)
+        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
         hbox.pack_start(self.__statusbar)
         align.add(hbox)
@@ -525,14 +524,12 @@ class QuodLibetWindow(gtk.Window):
 
     def __update_title(self, player, songs):
         if player.song in songs:
-            song = player.song
+            song = player.info
             if song:
                 self.set_title("Quod Libet - " + song.comma("~title~version"))
             else: self.set_title("Quod Libet")
 
     def __song_started(self, player, song):
-        self.__update_title(player, [song])
-
         for wid in ["Jump", "Next", "EditTags", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:

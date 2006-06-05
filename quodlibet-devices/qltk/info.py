@@ -35,7 +35,6 @@ by <~people>><album|
         self.set_selectable(True)
         self.set_alignment(0.0, 0.0)
         self.set_direction(gtk.TEXT_DIR_LTR)
-        player.connect('song-started', self.__song_started)
         watcher.connect_object('changed', self.__check_change, player)
 
         self.connect_object('populate-popup', self.__menu, player)
@@ -63,11 +62,11 @@ by <~people>><album|
             f = file(os.path.join(const.USERDIR, "songinfo"), "w")
             f.write(self._pattern + "\n")
             f.close()
-        self.__song_started(player, player.song)
+        self.__song_started(player, player.info)
 
     def __check_change(self, player, songs):
         if player.song in songs:
-            self.__song_started(player, player.song)
+            self.__song_started(player, player.info)
 
     def __song_started(self, activator, song):
         if song: t = XMLFromPattern(self._pattern) % song

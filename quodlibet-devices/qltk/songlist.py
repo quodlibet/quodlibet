@@ -43,7 +43,7 @@ class PlaylistMux(object):
         if song is not None:
             iter = self.q.find(song)
             if iter: self.q.remove(iter)
-            self.q.go_to(None)
+            self.q.reset()
 
     def get_current(self):
         if self.q.current is not None: return self.q.current
@@ -267,8 +267,10 @@ class PlaylistModel(gtk.ListStore):
         return not bool(len(self))
 
     def reset(self):
-        self.__played = []
         self.go_to(None)
+        # Must be done after go_to, since go_to can append to the
+        # played song list.
+        self.__played = []
 
 class SongList(AllTreeView, util.InstanceTracker):
     # A TreeView containing a list of songs.

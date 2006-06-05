@@ -44,7 +44,8 @@ app-install-%: make-install-dirs %.desktop
 	ln -sf ../$(TO)/$*.py $(DESTDIR)$(PREFIX)/bin/$*
 
 clean:
-	rm -f *.pyc */*.pyc $(EXTENSIONS) messages.mo
+	rm -f *.py[co] */*.py[co] $(EXTENSIONS) messages.mo
+	rm -rf coverage
 	for D in $(SUBDIRS); do cd $$D && make clean && cd ..; done
 
 distclean: clean

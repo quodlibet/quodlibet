@@ -8,34 +8,9 @@ from unittest import TestCase
 suites = []
 add = suites.append
 
-from util.i18n import GlibTranslations
-GlibTranslations().install()
-
-import const
-const.CONFIG = os.path.join(const.BASEDIR, 'tests', 'data', "config")
-const.CURRENT = os.path.join(const.BASEDIR, 'tests', 'data', "current")
-const.LIBRARY = os.path.join(const.BASEDIR, 'tests', 'data', "library")
-
-import pygst
-pygst.require("0.10")
-
-import util
-util.python_init()
-util.ctypes_init()
-util.gtk_init()
-
-import library
-library.init()
-
-import config
-config.init()
-
 class Mock(object):
     # A generic mocking object.
     def __init__(self, **kwargs): self.__dict__.update(kwargs)
-
-for fn in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
-    __import__(fn[:-3].replace("/", "."), globals(), locals(), "tests")
 
 class Result(unittest.TestResult):
 
@@ -76,15 +51,70 @@ class Runner(object):
         suite(result)
         result.printErrors()
 
-def unit(run=[]):
-    runner = Runner()
-    if not run: map(runner.run, suites)
+def import_module (modname, tracer=None):
+    if tracer is None:
+        mod = __import__(modname)
     else:
-        for t in suites:
-            if (t.__name__ in run or
-                (t.__name__.startswith("T") and t.__name__[1:] in run)):
-                runner.run(t)
+        mod = tracer.runfunc(__import__, modname)
+    return mod
 
+def init (tracer=None):
+    import pygst
+    pygst.require("0.10")
+
+    const = import_module("const", tracer=tracer)
+    const.CONFIG = os.path.join(const.BASEDIR, 'tests', 'data', "config")
+    const.CURRENT = os.path.join(const.BASEDIR, 'tests', 'data', "current")
+    const.LIBRARY = os.path.join(const.BASEDIR, 'tests', 'data', "library")
+
+    util = import_module("util", tracer=tracer)
+    util.python_init()
+    util.ctypes_init()
+    util.gtk_init()
+
+    ui18n = import_module("util.i18n", tracer=tracer)
+    ui18n.GlibTranslations().install()
+
+    library = import_module("library", tracer=tracer)
+    library.init()
+
+    config = import_module("config", tracer=tracer)
+    config.init()
+
+    # get test suites
+    for fn in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
+        args = (fn[:-3].replace("/", "."), globals(), locals(), "tests")
+        if tracer is None:
+            __import__(*args)
+        else:
+            tracer.runfunc(__import__, *args)
+
+def unit(run=[]):
+    if run and run[0] == "--trace":
+        run.pop()
+        import trace
+        ignoremods = ['tests']
+        ignoredirs = [sys.prefix, sys.exec_prefix]
+        tracer = trace.Trace(count=True, trace=False,
+                             ignoremods=ignoremods, ignoredirs=ignoredirs)
+    else:
+        tracer = None
+    init(tracer=tracer)
+    # filter tests
+    if run:
+        torun = [t for t in suites if (t.__name__ in run or
+                 (t.__name__.startswith("T") and t.__name__[1:] in run))]
+    else:
+        torun = suites
+    # run tests
+    runner = Runner()
+    if tracer is None:
+        map(runner.run, torun)
+    else:
+        map(lambda t: tracer.runfunc(runner.run, t), torun)
+        results = tracer.results()
+        results.write_results(show_missing=True, coverdir='coverage')
+    import const
     for f in [const.CONFIG, const.CURRENT, const.LIBRARY]:
        try: os.unlink(f)
        except OSError: pass

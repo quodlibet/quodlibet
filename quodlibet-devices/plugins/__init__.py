@@ -16,36 +16,23 @@ characteristics:
         obj.PLUGIN_DESC (required)
         obj.PLUGIN_ICON (optional)
 
-    Callables: (one or more required)
-        obj.plugin_on_song_started(song)
-        obj.plugin_on_song_ended(song, stopped)
-        obj.plugin_on_changed(song)
-        obj.plugin_on_removed(song)
-        obj.plugin_on_paused()
-        obj.plugin_on_unpaused()
-        obj.plugin_on_seek(song, msec)
-
-    All matching provided callables on a single object are called in the above
-    order if they match until one returns a true value.  A plugin should
-    generally only provide one of the manually invoked callables, but it's quite
-    reasonable to provide many event-based callbacks.
-
     If a module defines __all__, only plugins whose names are listed in __all__
     will be detected. This makes using __all__ in a module-as-plugin impossible.
 """
 
-import gobject
+import glob
+import imp
+import os
+import sys
+
 import gtk
 
 import config
 import qltk
 import util
 
-from traceback import print_exc
+from traceback import format_exception
 
-from player import PlaylistPlayer
-from plugins._manager import Manager
-from qltk.watcher import SongWatcher
 from qltk.wlw import WritingWindow
 
 def hascallable(obj, attr):
@@ -112,95 +99,134 @@ def ListWrapper(songs):
         else: return SongWrapper(song)
     return map(wrap, songs)
 
-class PluginManager(Manager):
-    """Manage event plugins."""
+class Manager(object):
+    """A generalized plugin manager. It scans directories for importable
+    modules/packages and extracts all objects from them.
 
-    library_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                      for s in gobject.signal_list_names(SongWatcher)]
-    player_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                     for s in gobject.signal_list_names(PlaylistPlayer)]
-    player_events.remove(('error', 'plugin_on_error'))
-    all_events = library_events + player_events
+    Objects are cached and not imported again unless their mtime changes.
 
-    def __init__(self, watcher=None, player=None, folders=[], name=None):
-        super(PluginManager, self).__init__(folders, name)
-        self.byfile = {}
-        self.plugins = {}
-        self.watcher = watcher
+    If a module defines __all__, only objects whose names are listed in
+    __all__ will be detected. Otherwise, any object that has a name beginning
+    with '_' is skipped."""
 
-        self.events = {}
-        invoke = self.invoke_event
-        for event, handle in self.all_events:
-            self.events[event] = {}
-        if watcher:
-            for event, handle in self.library_events:
-                def handler(watcher, *args): invoke(args[-1], *args[:-1])
-                watcher.connect(event, handler, event)
-        if player:
-            for event, handle in self.player_events:
-                def handler(player, *args): invoke(args[-1], *args[:-1])
-                player.connect(event, handler, event)
+    instances = {}
 
-    def _load(self, name, mod):        
-        for pluginname in self.byfile.get(name, []):
-            try: del self.plugins[pluginname]
-            except KeyError: pass
+    Kinds = []
 
-        for events in self.events.values():
-            try: del events[name]
-            except KeyError: pass
+    def __init__(self, folders=[], name=None):
+        self.scan = []
+        self.scan.extend(folders)
+        self.__files = {}
+        self._plugins = {}
+        self.__failures = {}
+        if name: self.instances[name] = self
 
-        self.byfile[name] = []
-        objects = [mod] + [getattr(mod, attr) for attr in
-                            getattr(mod, '__all__', vars(mod))]
-        for obj in objects:
-            try: obj = obj()
-            except TypeError:
-                if obj is not mod: continue # let the module through
-            except (KeyboardInterrupt, MemoryError):
-                raise
-            except:
-                print_exc()
-                continue
+    def rescan(self):
+        """Check directories for new or changed plugins."""
 
-            # if an object doesn't have all required metadata, skip it
-            try:
-                for attr in ['PLUGIN_NAME', 'PLUGIN_DESC']:
-                    getattr(obj, attr)
-            except AttributeError:
-                continue
+        for scandir in self.scan:
+            try: names = glob.glob(os.path.join(scandir, "[!_]*.py"))
+            except OSError: continue
+            for pathname in names:
+                name = os.path.basename(pathname)
+                name = name[:name.rfind(".")]
+                try: modified = os.path.getmtime(pathname)
+                except EnvironmentError: continue
+                info = self.__files.setdefault(name, [None, None])
 
-            self.load_events(obj, name)
+                try:
+                    sys.path.insert(0, scandir)
+                    if info[1] is None or info[1] != modified:
+                        if info[0] is None:
+                            try: modinfo = imp.find_module(name)
+                            except ImportError: continue
+                            try:
+                                mod = imp.load_module(name, *modinfo)
+                            except Exception, err:
+                                self.__failures[name] = \
+                                    format_exception(*sys.exc_info())
+                                try: del sys.modules[name]
+                                except KeyError: pass
+                            else:
+                                info[0] = mod
+                                self._load(name, mod)
+                        else:
+                            try: mod = reload(info[0])
+                            except Exception, err:
+                                self.__failures[name] = \
+                                    format_exception(*sys.exc_info())
+                            else:
+                                info[0] = mod
+                                self._load(name, mod)
+                finally:
+                    del sys.path[0:1]
+                info[1] = modified
+        self.restore()
 
     def restore(self):
-        possible = config.get("plugins", "active").split("\n")
-        for plugin in self.list():
-            self.enable(plugin, plugin.PLUGIN_NAME in possible)
+        key = "active_" + str(type(self).__name__)
+        try: possible = config.get("plugins", key).splitlines()
+        except config.error: pass
+        else:
+            for plugin in self.list():
+                self.enable(plugin, plugin.PLUGIN_NAME in possible)
 
     def save(self):
+        key = "active_" + str(type(self).__name__)
         active = [plugin.PLUGIN_NAME for plugin in self.list()
                   if self.enabled(plugin)]
-        config.set("plugins", "active", "\n".join(active))
+        config.set("plugins", key, "\n".join(active))
 
-    def load_events(self, obj, name):
-        for bin, attr in self.all_events:
-            if hascallable(obj, attr):
-                self.events[bin].setdefault(name, []).append(obj)
+    def _load(self, name, module):
+        self.__failures.pop(name, None)
+        try: objs = [getattr(module, attr) for attr in module.__all__]
+        except AttributeError:
+            objs = [getattr(module, attr) for attr in vars(module)
+                    if not attr.startswith("_")]
+        objs = filter(lambda x: isinstance(x, type), objs)
+        self._plugins[name] = objs
+
+    def enable(self, plugin, enabled):
+        plugin.__enabled = bool(enabled)
+
+    def enabled(self, plugin):
+        try: return plugin.__enabled
+        except AttributeError: return False
 
     def list(self):
-        plugins = [plugin for handlers in self.events.values()
-                   for ps in handlers.values() for plugin in ps]
-        plugins = [(p.PLUGIN_NAME, p) for p in
-                   dict.fromkeys(plugins).keys()]
-        plugins.sort()
-        return [p for (pn, p) in plugins]
-                    
-    def check_change_and_refresh(self, args):
-        songs = filter(None, args)
+        kinds = set()
+        for Kind in self.Kinds:
+            kinds.update(self.find_subclasses(Kind, all=True))
+        return list(kinds)
+
+    def find_subclasses(self, Kind, all=False):
+        """Return all classes in all plugins that subclass 'Kind'."""
+        kinds = []
+        for plugin in self._plugins.values():
+            for obj in plugin:
+                try:
+                    if issubclass(obj, Kind) and obj is not Kind:
+                        kinds.append(obj)
+                except TypeError: pass
+
+        for Kind in kinds:
+            try: Kind.PLUGIN_NAME
+            except AttributeError:
+                Kind.PLUGIN_NAME = Kind.__name__
+
+        if not all:
+            kinds = filter(self.enabled, kinds)
+
+        return kinds
+
+    def list_failures(self):
+        return self.__failures.copy()
+
+    def _check_change(self, watcher, parent, songs):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
-            win = WritingWindow(None, len(needs_write))
+            win = WritingWindow(parent, len(needs_write))
             for song in needs_write:
                 try: song._song.write()
                 except Exception:
@@ -212,32 +238,13 @@ class PluginManager(Manager):
                         util.escape(song('~basename')))).run()
                 win.step()
             win.destroy()
-            while gtk.events_pending(): gtk.main_iteration()
+            while gtk.events_pending():
+                gtk.main_iteration()
 
         changed = []
         for song in songs:
             needs_reload = []
             if song._was_updated(): changed.append(song._song)
             elif not song.valid() and song.exists():
-                self.watcher.reload(song._song)
-        self.watcher.changed(changed)
-
-    def invoke_event(self, event, *args):
-        try:
-            args = list(args)
-            if args and args[0]:
-                if isinstance(args[0], dict): args[0] = SongWrapper(args[0])
-                elif isinstance(args[0], list): args[0] = ListWrapper(args[0])
-            for plugins in self.events[event].values():
-                for plugin in plugins:
-                    if not self.enabled(plugin): continue
-                    handler = getattr(plugin, 'plugin_on_' + event, None)
-                    if handler is not None:
-                        try: handler(*args)
-                        except Exception: print_exc()
-        finally:
-            if event not in ["removed", "changed"] and args:
-                if isinstance(args[0], list):
-                    self.check_change_and_refresh(args[0])
-                else:
-                    self.check_change_and_refresh([args[0]])
+                watcher.reload(song._song)
+        watcher.changed(changed)

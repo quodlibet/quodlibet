@@ -36,10 +36,24 @@ def GStreamerSink(pipeline):
     else: raise NoSinkError(pipeline)
 
 class PlaylistPlayer(gtk.Object):
-    """Interfaces between a QL PlaylistModel and a GSt playbin."""
+    """Interfaces between a QL PlaylistModel and a GSt playbin.
+
+    Attributes:
+    paused -- True or False, set to pause/unpause the player
+    volume -- current volume, 0.0 to 1.0
+
+    song -- current song, or None if not playing
+    info -- current stream information, or None if not playing. This is
+            usually the same as song, unless the user is listening to
+            a stream with multiple songs in it.
+
+    If you're going to show things, use .info. If you're going to
+    change things, use .song.
+    """
 
     __paused = False
     song = None
+    info = None
     __length = 1
     __volume = 1.0
 
@@ -119,7 +133,7 @@ class PlaylistPlayer(gtk.Object):
     def error(self, message, lock):
         self.bin.set_property('uri', '')
         self.bin.set_state(gst.STATE_NULL)
-        self.song = None
+        self.song = self.info = None
         self.paused = True
         self.emit('error', message, lock)
         self.emit('song-started', None)
@@ -149,11 +163,11 @@ class PlaylistPlayer(gtk.Object):
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
         song = self.song
-        self.song = None
+        self.song = self.info = None
         self.emit('song-ended', song, stopped)
 
         # Then, set up the next song.
-        self.song = self.__source.current
+        self.song = self.info = self.__source.current
         self.emit('song-started', self.song)
 
         # Reset Replay Gain levels based on the new song.
@@ -174,52 +188,56 @@ class PlaylistPlayer(gtk.Object):
             self.bin.set_property('uri', '')
 
     def __tag(self, tags):
-        if self.song and self.song.fill_metadata:
-            if self.song.multisong:
-                proxy = type(self.song)(self.song["~filename"])
-                proxy.multisong = False
-                proxy.update(self.song)
-            else: proxy = self.song
+        if self.song and self.song.multisong:
+            self.__fill_stream(tags)
+        elif self.song and self.song.fill_metadata:
+            pass
 
-            changed = False
-            for k in tags.keys():
-                value = str(tags[k]).strip()
-                if not value: continue
-                if k == "bitrate":
-                    try: bitrate = int(value)
-                    except (ValueError, TypeError): pass
-                    else:
-                        if bitrate != self.song.get("~#bitrate"):
-                            changed = True
-                            proxy["~#bitrate"] = bitrate
-                elif k == "duration":
-                    try: length = int(long(value) / gst.SECOND)
-                    except (ValueError, TypeError): pass
-                    else:
-                        if length != self.song.get("~#length"):
-                            changed = True
-                            proxy["~#length"] = length
-                elif k in ["emphasis", "mode", "layer"]: continue
-                elif isinstance(value, basestring):
-                    value = unicode(value, errors='replace')
-                    k = {"track-number": "tracknumber",
-                         "location": "website"}.get(k, k)
-                    if proxy.get(k) == value: continue
-                    # If the title changes for a stream, we want to change
-                    # *only* the proxy.
-                    elif k == "title" and self.song.multisong:
-                        proxy[k] = value
-                    # Otherwise, if any other tag changes, or the song isn't
-                    # a stream, change the actual song.
-                    else: self.song[k] = value
-                    changed = True
+    def __fill_stream(self, tags):
+        changed = False
+        started = False
+        if self.info is self.song:
+            self.info = type(self.song)(self.song["~filename"])
+            self.info.multisong = False
 
-            if changed:
-                if self.song.multisong:
-                    self.emit('song-started', proxy)
+        for k in tags.keys():
+            value = str(tags[k]).strip()
+            if not value: continue
+            if k == "bitrate":
+                try: bitrate = int(value)
+                except (ValueError, TypeError): pass
                 else:
-                    from widgets import watcher
-                    watcher.changed([proxy])
+                    if bitrate != self.song.get("~#bitrate"):
+                        changed = True
+                        self.song["~#bitrate"] = bitrate
+                        self.info["~#bitrate"] = bitrate
+            elif k == "duration":
+                try: length = int(long(value) / gst.SECOND)
+                except (ValueError, TypeError): pass
+                else:
+                    if length != self.song.get("~#length"):
+                        changed = True
+                        self.info["~#length"] = length
+            elif k in ["emphasis", "mode", "layer"]:
+                continue
+            elif isinstance(value, basestring):
+                value = unicode(value, errors='replace')
+                k = {"track-number": "tracknumber",
+                     "location": "website"}.get(k, k)
+                if self.info.get(k) == value:
+                    continue
+                elif k == "title":
+                    self.info[k] = value
+                    started = True
+                else:
+                    self.song[k] = self.info[k] = value
+                changed = True
+
+        if started:
+            self.emit('song-started', self.info)
+        elif changed:
+            from widgets import watcher
+            watcher.changed([self.song])
 
     def reset(self):
         self.__source.reset()

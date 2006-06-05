@@ -1,11 +1,39 @@
-Mutagen is no longer distributed with Quod Libet. To download Mutagen,
-see http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen.
+Context menu plugins for 0.18 and earlier should be (trivially)
+updated. Event plugins for 0.20.1 and earlier should be (slightly less
+trivially) updated. For information on the new plugin API, see
+http://www.sacredchao.net/quodlibet/wiki/Plugins.
 
-Context menu plugins for 0.18 and earlier should be (trivially) updated.
-See http://www.sacredchao.net/quodlibet/wiki/Plugins/SongsMenu.
+Quod Libet 0.21 requires Ogg Vorbis support in Mutagen. This requires
+either Mutagen 1.2 and pyvorbis, or Mutagen 1.3 or later.
 
 0.21
- * New Simplified Chinese translation by Emfox Zhou.
+ * Bug Fixes:
+   * Queue behaves correctly when randomizing two songs. (#666)
+   * GStreamer error messages are properly localized. (#669)
+   * Tray icon is more resiliant to panel crashes. (#673)
+   * "Jump..." distinguishes between identically-named albums. (#674)
+   * application/ogg is recognized in audio feeds. (#682)
+   * .pyo files are removed on clean. (#697)
+   * util.unexpand caches the value of $HOME. (#702)
+ * UI Changes:
+   * Improved tooltips in Preferences. (#653)
+   * The Paned Browser shows song totals (#639), and has a button to
+     reset all selections. (#640)
+   * Saving play count / rating tags can be turned off, or adjusted
+     to a different email address. (#667)
+   * The last-entered directory is used for Scan Directories
+     configuration. (#698)
+ * pyvorbis is no longer required if you use Mutagen 1.3.
+ * Event plugins were redesigned, incompatibly. (#603)
+ * Test coverage data can be generated using trace.py. (#702)
+ * New Simplified Chinese translation by Emfox Zhou. (#653)
+ * New Hungarian translation by SZERVÁC Attila.
+ * Updated translations:
+   * Finnish, by Jari Rahkonen.
+   * Korean, by Byung-Hee HWANG and ChangBom Yoon.
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
+   * Norwegian Bokmål, by Andreas Bertheussen.
+   * Italian, by Filippo Pappalardo.
 
 0.20.1 - Thanks for the eye-opener, dinosaur zombies!
  * Vorbis/FLAC tag editing works again.

@@ -286,6 +286,22 @@ class TPlaylistMux(TestCase):
         self.failUnlessEqual(self.mux.current, 7)
         self.failUnlessEqual(self.next(), 11)
 
+    def test_random_queue_666(self):
+        # For some reason this bug only appears intermittently...
+        for i in range(5):
+            self.mux.go_to(None)
+            self.pl.set([1])
+            self.failUnless(self.mux.current is None)
+            self.q.order = 1
+            self.failUnless(self.next() == 1)
+            self.q.set([10, 11])
+            value = self.next()
+            self.failUnless(
+                value in [10, 11], "got %r, expected 10 or 11" % value)
+            if value == 10: next = 11
+            else: next = 10
+            self.failUnlessEqual(self.next(), next)
+
     def tearDown(self):
         self.p.destroy()
 add(TPlaylistMux)

@@ -10,6 +10,7 @@
 import os
 import sys
 import cPickle as pickle
+from ConfigParser import RawConfigParser
 
 import gtk
 import gtk.gdk as gdk
@@ -33,7 +34,6 @@ DEVICES = os.path.join(const.USERDIR, "devices")
 class DeviceProperties(gtk.Dialog):
     def __init__(self, parent, device):
         self.__device = device
-        self.__pos = 0
 
         super(DeviceProperties, self).__init__(
             _("Device Properties"), qltk.get_top_parent(parent),
@@ -41,51 +41,46 @@ class DeviceProperties(gtk.Dialog):
         self.set_default_size(400, -1)
         self.connect('response', self.__close)
 
-        self.__table = table = gtk.Table()
+        table = gtk.Table()
         table.set_border_width(8)
         table.set_row_spacings(8)
         table.set_col_spacings(8)
         self.vbox.pack_start(table, expand=False)
 
-        self.add_property(_("Device Type:"), device.__class__.name)
+        props = []
+        props.append((_("Device Type:"), device.__class__.name, None))
 
         entry = gtk.Entry()
         entry.set_text(device.name)
-        self.add_property(_("_Name:"), entry, 'name')
+        props.append((_("_Name:"), entry, 'name'))
 
-        device.Properties(self)
-        self.show_all()
-
-    def add_property(self, title, value, attr=None):
-        label = gtk.Label()
-        label.set_markup("<b>%s</b>" % util.escape(title))
-        label.set_alignment(0.0, 0.5)
-        self.__table.attach(
-            label, 0, 1, self.__pos, self.__pos + 1, xoptions=gtk.FILL)
-
-        if isinstance(value, gtk.Widget):
-            widget = value
-            label.set_mnemonic_widget(widget)
-            label.set_use_underline(True)
-            if attr:
-                if isinstance(widget, (gtk.Entry, gtk.SpinButton)):
-                    widget.connect('changed', self.__changed, attr)
-                elif isinstance(widget, gtk.CheckButton):
-                    widget.connect('toggled', self.__changed, attr)
+        y = 0
+        for title, value, attr in props + device.Properties():
+            if title == None:
+                self.__table.attach(gtk.HSeparator(), 0, 2, y, y + 1)
+            else:
+                if attr and isinstance(value, gtk.CheckButton):
+                    value.set_label(title)
+                    value.set_use_underline(True)
+                    value.connect('toggled', self.__changed, attr)
+                    table.attach(value, 0, 2, y, y + 1, xoptions=gtk.FILL)
                 else:
-                    raise NotImplementedError
-        else:
-            widget = gtk.Label(value)
-            widget.set_selectable(True)
-            widget.set_alignment(0.0, 0.5)
-        self.__table.attach(widget, 1, 2, self.__pos, self.__pos + 1)
-        self.__table.show_all()
-
-        self.__pos += 1
-
-    def add_separator(self):
-        self.__table.attach(gtk.HSeparator(), 0, 2, self.__pos, self.__pos + 1)
-        self.__pos += 1
+                    label = gtk.Label()
+                    label.set_markup("<b>%s</b>" % util.escape(title))
+                    label.set_alignment(0.0, 0.5)
+                    table.attach(label, 0, 1, y, y + 1, xoptions=gtk.FILL)
+                    if attr and isinstance(value, gtk.Widget):
+                        widget = value
+                        label.set_mnemonic_widget(widget)
+                        label.set_use_underline(True)
+                        widget.connect('changed', self.__changed, attr)
+                    else:
+                        widget = gtk.Label(value)
+                        widget.set_selectable(True)
+                        widget.set_alignment(0.0, 0.5)
+                    table.attach(widget, 1, 2, y, y + 1)
+            y += 1
+        self.show_all()
 
     def __changed(self, widget, attr):
         if isinstance(widget, gtk.Entry):
@@ -217,7 +212,6 @@ class DeleteDialog(gtk.Dialog):
 
     def run(self):
         response = super(DeleteDialog, self).run()
-        print response
         self.destroy()
         if response == gtk.RESPONSE_OK: return True
         else: return False

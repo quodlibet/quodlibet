@@ -77,31 +77,30 @@ class IPodDevice(Device):
         self.__cache = []
         return self.__dict__
 
-    def Properties(self, dialog):
+    def Properties(self):
+        props = []
         entry = ValidatingEntry(os.path.ismount)
         entry.set_text(self.mountpoint)
-        dialog.add_property(_("_Mount Point:"), entry, 'mountpoint')
+        props.append((_("_Mount Point:"), entry, 'mountpoint'))
 
         spin = gtk.SpinButton()
         spin.set_range(-20, 20)
         spin.set_digits(1)
         spin.set_increments(0.1, 1)
         spin.set_value(float(self.gain))
-        dialog.add_property(_("_Volume Gain (dB):"), spin, 'gain')
+        props.append((_("_Volume Gain (dB):"), spin, 'gain'))
 
         check = gtk.CheckButton()
         check.set_active(self.covers)
-        dialog.add_property(_("_Copy album covers"), check, 'covers')
+        props.append((_("Copy _album covers"), check, 'covers'))
 
         if self.is_connected():
             details = self.__get_details()
-            dialog.add_separator()
-            dialog.add_property(_("Model:"),
-                details.get('model', '-'))
-            dialog.add_property(_("Capacity:"),
-                details.get('space', '-'))
-            dialog.add_property(_("Firmware:"),
-                details.get('firmware', '-'))
+            props.append((None, None, None))
+            props.append((_("Model:"), details.get('model', '-'), None))
+            props.append((_("Capacity:"), details.get('space', '-'), None))
+            props.append((_("Firmware:"), details.get('firmware', '-'), None))
+        return props
 
     def __get_details(self):
         details = {}
@@ -122,7 +121,6 @@ class IPodDevice(Device):
                 details['model'], details['space'] = info
             elif parts[0] == "visibleBuildID":
                 details['firmware'] = parts[2].strip("()")
-
         return details
 
     def is_connected(self):
@@ -261,12 +259,12 @@ class IPodDevice(Device):
         gpod.itdb_track_remove(track)
 
     def cleanup(self, wlw, action):
-        browser = wlw.get_transient_parent()
         wlw._WaitLoadWindow__text = _("<b>Saving iPod database...</b>")
         wlw.count = 0
         wlw.step()
         if gpod.itdb_write(self.__itdb, None) != 1:
-            ErrorMessage(browser, _("Unable to save iPod database"),
+            ErrorMessage(wlw.get_transient_for(),
+                _("Unable to save iPod database"),
                 _("The song database could not be saved on your iPod.")).run()
 
     # This list is taken from

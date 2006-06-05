@@ -109,8 +109,8 @@ class Preferences(qltk.Window):
         else:
             for cb in cbs: cb.set_inconsistent(True)
 
-        if player.song is None: text = _("Not playing")
-        else: text = Pattern(entry.get_text()) % player.song
+        if player.info is None: text = _("Not playing")
+        else: text = Pattern(entry.get_text()) % player.info
         label.set_text(text)
         tips.set_tip(label.get_parent(), text)
         config.set("plugins", "icon_tooltip", entry.get_text())
@@ -167,7 +167,7 @@ class TrayIcon(object):
         p.connect_object('destroy', self.__prefs_destroy, player)
 
     def __prefs_destroy(self, player):
-        self.__song_started(player, player.song)
+        self.__song_started(player, player.info)
 
     def __enabled(self):
         return (self.__icon  and self.__mapped and

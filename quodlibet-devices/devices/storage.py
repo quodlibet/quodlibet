@@ -42,18 +42,21 @@ class StorageDevice(Device):
         self.__pattern = None
         return self.__dict__
 
-    def Properties(self, dialog):
+    def Properties(self):
+        props = []
         entry = ValidatingEntry(os.path.ismount)
         entry.set_text(self.mountpoint)
-        dialog.add_property(_("_Mount Point:"), entry, 'mountpoint')
+        props.append((_("_Mount Point:"), entry, 'mountpoint'))
 
         entry = gtk.Entry()
         entry.set_text(self.pattern)
-        dialog.add_property(_("_Filename Pattern:"), entry, 'pattern')
+        props.append((_("_Filename Pattern:"), entry, 'pattern'))
 
         check = gtk.CheckButton()
         check.set_active(self.covers)
-        dialog.add_property(_("Copy album covers"), check, 'covers')
+        props.append((_("Copy _album covers"), check, 'covers'))
+
+        return props
 
     def is_connected(self):
         return os.path.ismount(self.mountpoint)

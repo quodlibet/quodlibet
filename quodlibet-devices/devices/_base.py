@@ -41,10 +41,13 @@ class Device(object):
     # If the delete was successful, it should return True.
     # If the delete failed, it should return False or a string describing the
     # error.
-    def delete(self, songlist, song): raise NotImplementedError
+    #
+    # def delete(self, songlist, song): ... return True
+    delete = None
 
     # This will be called once after all songs have been copied/deleted.
     # The WaitLoadWindow can be (ab)used to display status messages.
+    #
     # def cleanup(self, wlw, action='copy'/'delete'): ...
     cleanup = None
 
@@ -53,12 +56,26 @@ class Device(object):
 
     # Eject the device, should return True on success.
     # If the device is not ejectable, set it to None.
+    #
     # def eject(self): ... return True
     eject = None
 
     # Returns a tuple with the size of this device and the free space.
     def get_space(self): raise NotImplementedError
 
-    # Use dialog.add_property() to add device-specific parameters to the device
-    # properties dialog. See browsers/media.py for details.
-    def Properties(self, dialog): return
+    # Returns a list of tuples for device-specific settings which should be
+    # displayed in the properties dialog.
+    #
+    # The first value should be a string and will be used as a title.
+    # Include an underline for changeable settings.
+    #
+    # The second value should be an appropriate gtk.Widget for the setting.
+    # It can also be a string, in which case it will be displayed with a Label
+    # and won't be changeable.
+    #
+    # The third value is the name of the object's attribute which should be
+    # set when the widget is changed. If the second value is a string, this
+    # will be ignored.
+    #
+    # Separators can be added by passing (None, None, None).
+    def Properties(self): return []
