@@ -71,7 +71,7 @@ class ExFalsoWindow(gtk.Window):
         bbox.pack_start(plugins, expand=False)
 
         l = gtk.Label()
-        l.set_alignment(1.0, 0.5)
+        l.set_justify(gtk.JUSTIFY_RIGHT)
         l.set_ellipsize(pango.ELLIPSIZE_END)
         bbox.pack_start(l)
 
