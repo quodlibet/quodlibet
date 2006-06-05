@@ -373,8 +373,12 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                   watcher.connect('removed', self.__removed)
                   ]:
             self.connect_object('destroy', watcher.disconnect, s)
+        self.connect_object('destroy', type(self).__destroy, self)
         self.refresh_panes(restore=False)
         self.show_all()
+
+    def __destroy(self):
+        self.__save = None
 
     def __all(self, *args):
         self.__panes[-1].inhibit()
