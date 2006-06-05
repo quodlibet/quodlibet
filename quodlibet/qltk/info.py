@@ -35,7 +35,6 @@ by <~people>><album|
         self.set_selectable(True)
         self.set_alignment(0.0, 0.0)
         self.set_direction(gtk.TEXT_DIR_LTR)
-        player.connect('song-started', self.__song_started)
         watcher.connect_object('changed', self.__check_change, player)
 
         self.connect_object('populate-popup', self.__menu, player)

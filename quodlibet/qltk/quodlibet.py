@@ -530,8 +530,6 @@ class QuodLibetWindow(gtk.Window):
             else: self.set_title("Quod Libet")
 
     def __song_started(self, player, song):
-        self.__update_title(player, [song])
-
         for wid in ["Jump", "Next", "EditTags", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
