@@ -843,4 +843,3 @@ class QuodLibetWindow(gtk.Window):
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         statusbar.set_text(t)
-        gobject.idle_add(statusbar.queue_resize)

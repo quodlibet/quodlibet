@@ -52,8 +52,7 @@ class LibraryBrowser(Window):
 
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
-        # GTK (2.8?) rounding error, 1.0 clips the rightmost pixel.
-        self.__statusbar.set_alignment(0.999999, 0.5)
+        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
         self.child.pack_end(self.__statusbar, expand=False)
 
@@ -114,4 +113,3 @@ class LibraryBrowser(Window):
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         statusbar.set_text(t)
-        gobject.idle_add(statusbar.queue_resize)
