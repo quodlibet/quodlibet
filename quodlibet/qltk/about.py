@@ -9,6 +9,7 @@
 
 import gst
 import gtk
+import mutagen
 
 import const
 import formats
@@ -26,6 +27,7 @@ class AboutQuodLibet(gtk.AboutDialog):
         text = []
         text.append(_("Supported formats: %s") % fmts)
         text.append(_("Audio device: %s") % player.name)
+        text.append("Mutagen: %s" % _fver(mutagen.version))
         text.append("GTK+: %s / PyGTK: %s" %(
             _fver(gtk.gtk_version), _fver(gtk.pygtk_version)))
         text.append("GStreamer: %s / PyGSt: %s" %(
