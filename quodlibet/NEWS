@@ -35,6 +35,7 @@ either Mutagen 1.2 and pyvorbis, or Mutagen 1.3 or later.
    * Norwegian Bokmål, by Andreas Bertheussen.
    * Italian, by Filippo Pappalardo.
    * Polish, by Tomasz Torcz
+   * Lithuanian, by Jonas Slivka.
 
 0.20.1 - Thanks for the eye-opener, dinosaur zombies!
  * Vorbis/FLAC tag editing works again.
