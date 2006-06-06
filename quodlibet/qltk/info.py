@@ -57,7 +57,7 @@ by <~people>><album|
     def __set(self, edit, player):
         self._pattern = edit.text.rstrip()
         if (self._pattern == SongInfo._pattern):
-            try: os.unlink(os.path.join(const.USERDIR, "songinfo"))
+            try: os.unlink(self.__PATTERN_FILENAME)
             except OSError: pass
         else:
             pattern_file = file(os.path.join(const.USERDIR, "songinfo"), "w")
