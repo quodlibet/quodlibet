@@ -13,6 +13,7 @@ import gst
 import gtk
 
 import config
+import const
 
 class NoSinkError(ValueError): pass
 class NoSourceError(ValueError): pass
@@ -90,7 +91,7 @@ class PlaylistPlayer(gtk.Object):
             self.__tag(message.parse_tag())
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
-            err = str(err).decode(locale.getpreferredencoding(), 'replace')
+            err = str(err).decode(const.ENCODING, 'replace')
             self.error(err, True)
         return True
 

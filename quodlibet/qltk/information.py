@@ -7,13 +7,12 @@
 #
 # $Id$
 
-import locale
-import sys
 import time
 
 import gtk
 import pango
 
+import const
 import qltk
 import util
 
@@ -167,9 +166,11 @@ class OneSong(qltk.Notebook):
             if i == 0: return _("Never")
             else: return ngettext("%d time", "%d times", i) % i
         def ftime(t):
-            if t == 0: return _("Unknown")
-            else: return time.strftime("%c", time.localtime(t)).decode(
-                locale.getpreferredencoding())
+            if t == 0:
+                return _("Unknown")
+            else:
+                timestr = time.strftime("%c", time.localtime(t))
+                return timestr.decode(const.ENCODING)
 
         playcount = counter(song.get("~#playcount", 0))
         skipcount = counter(song.get("~#skipcount", 0))
@@ -199,9 +200,11 @@ class OneSong(qltk.Notebook):
 
     def _file(self, song, box):
         def ftime(t):
-            if t == 0: return _("Unknown")
-            else: return time.strftime("%c", time.localtime(t)).decode(
-                locale.getpreferredencoding())
+            if t == 0:
+                return _("Unknown")
+            else:
+                timestr = time.strftime("%c", time.localtime(t))
+                return timestr.decode(const.ENCODING)
 
         fn = util.fsdecode(util.unexpand(song["~filename"]))
         length = util.format_time_long(song["~#length"])

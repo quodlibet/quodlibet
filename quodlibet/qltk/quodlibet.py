@@ -7,7 +7,6 @@
 #
 # $Id$
 
-import locale
 import os
 import random
 import sys
@@ -716,8 +715,8 @@ class QuodLibetWindow(gtk.Window):
                         msg = _("%s could not be added to your library.\n\n")
                         msg %= util.escape(util.fsdecode(
                             os.path.basename(filename)))
-                        msg += util.escape(util.fsdecode(
-                            "".join(tb).decode(locale.getpreferredencoding())))
+                        msg += util.escape("".join(tb).decode(
+                            const.ENCODING, "replace"))
                         d = ErrorMessage(self, _("Unable to add song"), msg)
                         d.label.set_selectable(True)
                         d.run()

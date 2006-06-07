@@ -13,7 +13,7 @@ import os
 import sre
 import sys
 
-from const import FSCODING as fscoding
+from const import FSCODING as fscoding, ENCODING
 from util.i18n import GlibTranslations
 
 def gettext_install():
@@ -201,9 +201,10 @@ def to(string, frm="utf-8"):
     """Convert a string to the system encoding; used if you need to
     print to stdout. If you pass in a str (rather than a unicode) you
     should specify the encoding it's in with 'frm'."""
-    enc = locale.getpreferredencoding()
-    if isinstance(string, unicode): return string.encode(enc, "replace")
-    else: return string.decode(frm).encode(enc, "replace")
+    if isinstance(string, unicode):
+        return string.encode(ENCODING, "replace")
+    else:
+        return string.decode(frm).encode(ENCODING, "replace")
 
 def mtime(filename):
     """Return the mtime of a file, or 0 if an error occurs."""
