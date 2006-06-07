@@ -171,21 +171,22 @@ class StopAfterMenu(gtk.Menu):
         self.__item = gtk.CheckMenuItem(_("Stop after this song"))
         self.__item.set_active(False)
         self.append(self.__item)
-
         player.connect('paused', self.__paused)
         player.connect('song-ended', self.__ended)
-        
         self.__item.show()
 
     def __paused(self, player):
         self.active = False
 
     def __ended(self, player, song, stopped):
-        if stopped: self.active = False
-        elif self.active: player.paused = True
+        if self.active:
+            player.paused = True
+        self.active = False
 
-    def __get_active(self): return self.__item.get_active()
-    def __set_active(self, v): return self.__item.set_active(v)
+    def __get_active(self):
+        return self.__item.get_active()
+    def __set_active(self, active):
+        return self.__item.set_active(active)
     active = property(__get_active, __set_active)
 
 class PlayControls(gtk.VBox):

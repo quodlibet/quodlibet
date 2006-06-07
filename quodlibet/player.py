@@ -119,6 +119,10 @@ class PlaylistPlayer(gtk.Object):
                        self.bin.set_state(gst.STATE_NULL)
                    else: self.bin.set_state(gst.STATE_PAUSED)
                 else: self.bin.set_state(gst.STATE_PLAYING)
+            elif paused is True:
+                # Something wants us to pause between songs, or when
+                # we've got no song playing (probably StopAfterMenu).
+                self.emit('paused')
     def __get_paused(self): return self.__paused
     paused = property(__get_paused, __set_paused)
 
