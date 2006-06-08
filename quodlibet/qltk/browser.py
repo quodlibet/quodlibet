@@ -6,7 +6,6 @@
 #
 # $Id$
 
-import gobject
 import gtk
 import pango
 

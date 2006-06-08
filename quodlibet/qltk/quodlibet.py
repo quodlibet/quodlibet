@@ -11,7 +11,6 @@ import os
 import random
 import sys
 
-import gobject
 import gst
 import gtk
 import pango
