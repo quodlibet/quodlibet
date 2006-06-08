@@ -138,7 +138,7 @@ class QuodLibetWindow(gtk.Window):
         hbox = gtk.HBox(spacing=6)
 
         # play controls
-        t = PlayControls(player)
+        t = PlayControls(player, watcher)
         self.volume = t.volume
         hbox.pack_start(t, expand=False, fill=False)
 
