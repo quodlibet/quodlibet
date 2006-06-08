@@ -33,7 +33,7 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
 
     All matching provided callables on a single object are called in the
     above order if they match until one returns a true value. They are
-    not called with true AudioFile objects, but rather wrappers that
+    not called with real AudioFile objects, but rather wrappers that
     automatically detect metadata or disk changes, and save or reload
     the files as appropriate.
 
@@ -42,8 +42,8 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
     The singular tense is called once for each selected song/album, but the
     plural tense is called with a list of songs/albums.
 
-    An album is a list of songs all with the same album, labelid, and
-    musicbrainz_albumid tags (like in the Album List).
+    An album is a list of songs all with the same album, labelid,
+    and/or musicbrainz_albumid tags (like in the Album List).
 
     To make your plugin insensitive if unsupported songs are selected,
     a method that takes a list of songs and returns True or False to set
@@ -126,27 +126,39 @@ class SongsMenuPlugins(Manager):
     def __handle(self, plugin, watcher, parent, songs, albums):
         plugin.plugin_window = parent
 
-        if len(songs) == 1 and callable(plugin.plugin_single_song):
-            try: plugin.plugin_single_song(songs[0])
-            except Exception: print_exc()
-        if len(albums) == 1 and callable(plugin.plugin_single_album):
-            try: plugin.plugin_single_album(albums[0])
-            except Exception: print_exc()
+        try:
+            if len(songs) == 1 and callable(plugin.plugin_single_song):
+                try: ret = plugin.plugin_single_song(songs[0])
+                except Exception: print_exc()
+                else:
+                    if ret: return
+            if callable(plugin.plugin_song):
+                try: ret = map(plugin.plugin_song, songs)
+                except Exception: print_exc()
+                else:
+                    if max(ret): return
+            if callable(plugin.plugin_songs):
+                try: ret = plugin.plugin_songs(songs)
+                except Exception: print_exc()
+                else:
+                    if ret: return
 
-        if callable(plugin.plugin_songs):
-            try: plugin.plugin_songs(songs)
-            except Exception: print_exc()
-        if callable(plugin.plugin_song):
-            try: map(plugin.plugin_song, songs)
-            except Exception: print_exc()
+            if len(albums) == 1 and callable(plugin.plugin_single_album):
+                try: ret = plugin.plugin_single_album(albums[0])
+                except Exception: print_exc()
+                else:
+                    if ret: return
+            if callable(plugin.plugin_album):
+                try: ret = map(plugin.plugin_album, albums)
+                except Exception: print_exc()
+                else:
+                    if max(ret): return
+            if callable(plugin.plugin_albums):
+                try: ret = plugin.plugin_albums(albums)
+                except Exception: print_exc()
+                else:
+                    if ret: return
 
-        if callable(plugin.plugin_albums):
-            try: plugin.plugin_albums(albums)
-            except Exception: print_exc()
-        if callable(plugin.plugin_album):
-            try: map(plugin.plugin_album, albums)
-            except Exception: print_exc()
-
-        del(plugin.plugin_window)
-
-        self._check_change(watcher, parent, filter(None, songs))
+        finally:
+            del(plugin.plugin_window)
+            self._check_change(watcher, parent, filter(None, songs))
