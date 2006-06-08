@@ -23,7 +23,8 @@ except:
     MBS_SelectTrack = musicbrainz.MBS_SelectTrack
     MBS_SelectTrmid = musicbrainz.MBS_SelectTrmid
 
-from qltk import GetStringDialog, ErrorMessage, ConfirmAction, Message
+from qltk import ErrorMessage, ConfirmAction, Message
+from qltk.getstring import GetStringDialog
 from util import tag, escape
 
 from plugins.songsmenu import SongsMenuPlugin
