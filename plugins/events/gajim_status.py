@@ -7,6 +7,7 @@
 from os import system, popen
 from string import join
 import gtk, config
+import dbus
 
 from plugins.events import EventPlugin
 from parse import XMLFromPattern
@@ -15,7 +16,7 @@ from qltk import Frame
 class GajimStatusMessage(EventPlugin):
     PLUGIN_NAME = 'Gajim status message'
     PLUGIN_DESC = 'Change Gajim status message according to what you are listening now.'
-    PLUGIN_VERSION = '0.5'
+    PLUGIN_VERSION = '0.6'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'
@@ -23,22 +24,24 @@ class GajimStatusMessage(EventPlugin):
     c_pattern = __name__+'_pattern'
 
     def __init__(self):
-        self.gajim_accounts = [x.strip() for x in popen("gajim-remote list_accounts").readlines()]
         try:
-            self.accounts = self.check_accounts(config.get('plugins', self.c_accounts))
+            self.accounts = config.get('plugins', self.c_accounts).split()
         except:
             self.accounts = []
         config.set('plugins', self.c_accounts, join(self.accounts))
+	
         try:
             self.paused = config.getboolean('plugins', self.c_paused)
         except:
             self.paused = True
             config.set('plugins', self.c_paused, 'True')
+	    
         try:
             self.statuses = config.get('plugins', self.c_statuses)
         except:
             self.statuses = 'online chat'
             config.set('plugins', self.c_statuses, self.statuses)
+	    
         try:
             self.pattern = config.get('plugins', self.c_pattern)
         except:
@@ -47,16 +50,19 @@ class GajimStatusMessage(EventPlugin):
 
         gtk.quit_add(0, self.quit)
 
+        self.interface = dbus.Interface(dbus.SessionBus().get_object('org.gajim.dbus', '/org/gajim/dbus/RemoteObject'), 'org.gajim.dbus.RemoteInterface')
+
     def quit(self):
         self.change_status(self.accounts, '')
 
     def change_status(self, accounts, status):
         if accounts == []:
-            accounts = self.gajim_accounts
+            t = self.interface.get_status()
+            self.interface.change_status(t, status)
         for account in accounts:
-            t = popen("gajim-remote get_status "+account).readline().strip()
+            t = self.interface.get_status()
             if t in self.statuses:
-                system("gajim-remote change_status "+t+" '"+status+"' "+account)
+                self.interface.change_status(t, status, account)
 
     def plugin_on_song_started(self, song):
         if song:
@@ -89,18 +95,6 @@ class GajimStatusMessage(EventPlugin):
             if b.get_active():
                 self.statuses = self.statuses + b.get_name()
         config.set('plugins', self.c_statuses, self.statuses)
-
-    def check_accounts(self, accounts):
-        if self.gajim_accounts == []:
-            return accounts.split()
-        else:
-            checked = []
-            for a in accounts.split():
-                if a in self.gajim_accounts:
-                    checked.append(a)
-                else:
-                    print("Gajim hasn't account "+a)
-            return checked
 
     def PluginPreferences(self, parent):
         vb = gtk.VBox(spacing=3)
