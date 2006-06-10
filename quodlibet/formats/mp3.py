@@ -112,7 +112,7 @@ class MP3File(AudioFile):
                 if frame.email == const.EMAIL:
                     self.setdefault("~#playcount", count)
                     self.setdefault("~#rating", rating)
-                elif frame.email == config.get("settings", "save_email"):
+                elif frame.email == config.get("editing", "save_email"):
                     self["~#playcount"] = count
                     self["~#rating"] = rating
                 continue
