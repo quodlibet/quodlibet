@@ -172,8 +172,7 @@ class FIFOControl(object):
             basepath = filename + "/"
             songs = [song for (filename, song) in library.iteritems()
                      if filename.startswith(basepath)]
-            songs.sort()
-            songs.reverse()
+            songs.sort(reverse=True)
             queue = window.playlist.q
             for song in songs:
                 queue.insert_before(queue.get_iter_first(), row=[song])

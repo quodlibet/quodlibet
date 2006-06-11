@@ -105,9 +105,10 @@ class SplitPerformer(SplitPerson):
 
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change):
-        if can_change == True: can = formats.USEFUL_TAGS
-        else: can = list(can_change)
-        can.sort()
+        if can_change == True:
+            can = sorted(formats.USEFUL_TAGS)
+        else:
+            can = sorted(can_change)
         super(AddTagDialog, self).__init__(
             _("Add a Tag"), qltk.get_top_parent(parent))
         self.set_border_width(6)
@@ -338,8 +339,7 @@ class EditTags(gtk.VBox):
         items = [SplitDisc, SplitTitle, SplitPerformer, SplitArranger,
                  SplitValues]
         items.extend(parent.plugins.EditTagsPlugins())
-        items.sort(lambda a, b:
-                   (cmp(a._order, b._order) or cmp(a.__name__, b.__name__)))
+        items.sort(key=lambda item: (item._order, item.__name__))
 
         if len(rows) == 1:
             row = model[rows[0]]
@@ -613,8 +613,7 @@ class EditTags(gtk.VBox):
         model.clear()
         view.set_model(model)
 
-        keys = songinfo.realkeys()
-        keys.sort()
+        keys = sorted(songinfo.realkeys())
 
         if not config.getboolean("editing", "alltags"):
             keys = filter(lambda k: k not in const.MACHINE_TAGS, keys)

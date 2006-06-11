@@ -120,9 +120,8 @@ class ExFalsoWindow(gtk.Window):
         view.grab_focus()
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        filenames = [model[row][0] for row in rows]
+        filenames = sorted([model[row][0] for row in rows])
         songs = map(self.__cache.__getitem__, filenames)
-        songs.sort()
         menu = self.pm.Menu(self.__watcher, self, songs)
         if menu is None: menu = gtk.Menu()
         else: menu.prepend(gtk.SeparatorMenuItem())

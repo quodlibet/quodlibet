@@ -242,9 +242,8 @@ class OneAlbum(qltk.Notebook):
         vbox = gtk.VBox(spacing=12)
         vbox.set_border_width(12)
         swin.add_with_viewport(vbox)
-        songs = list(songs)
         # Needed to get proper track/disc/part ordering
-        songs.sort()
+        songs = sorted(songs)
         self._title(songs, vbox)
         self._album(songs, vbox)
         self._people(songs, vbox)
@@ -320,8 +319,8 @@ class OneAlbum(qltk.Notebook):
             artists.update(song.list("artist"))
             performers.update(song.list("performer"))
 
-        artists = list(artists); artists.sort()
-        performers = list(performers); performers.sort()
+        artists = sorted(artists)
+        performers = sorted(performers)
 
         if artists:
             if len(artists) == 1: title = _("artist")
@@ -456,8 +455,7 @@ class ManySongs(qltk.Notebook):
         for song in songs:
             if "artist" in song: artists.update(song.list("artist"))
             else: none += 1
-        artists = list(artists)
-        artists.sort()
+        artists = sorted(artists)
         num_artists = len(artists)
 
         if none: artists.append(ngettext("%d song with no artist",
@@ -473,8 +471,7 @@ class ManySongs(qltk.Notebook):
         for song in songs:
             if "album" in song: albums.update(song.list("album"))
             else: none += 1
-        albums = list(albums)
-        albums.sort()
+        albums = sorted(albums)
         num_albums = len(albums)
 
         if none: albums.append(ngettext("%d song with no album",
