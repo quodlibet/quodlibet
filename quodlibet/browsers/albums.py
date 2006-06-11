@@ -302,8 +302,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
 
-            self.people.sort(key=people.__getitem__)
-            self.people = self.people[:100]
+            self.people = sorted(people.keys(), key=people.__getitem__)[:100]
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
 
