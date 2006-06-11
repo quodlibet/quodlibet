@@ -33,7 +33,7 @@ and search and foramtting pattern syntax.
 ==[ Source
 
 Quod Libet depends on the Python runtime and associated libraries.
- Python (>= 2.3):  http://www.python.org
+ Python (>= 2.4):  http://www.python.org
  PyGTK (>= 2.8):   http://www.pygtk.org
  PyGSt (>= 0.10):  http://gstreamer.freedesktop.org/
  Mutagen (>= 1.2): http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen

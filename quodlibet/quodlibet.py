@@ -34,7 +34,6 @@ def main():
     else: util.RATING_PRECISION = 1.0/ratings
 
     window = widgets.init(player, library)
-    locale.getlocale(locale.LC_NUMERIC)
     if "--debug" not in sys.argv:
         enable_periodic_save(library)
         gtk.quit_add(1, widgets.save_library, window, player, library)

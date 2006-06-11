@@ -29,11 +29,6 @@ def gettext_install():
 def python_init():
     sre.escape = re_esc
 
-    try: set
-    except NameError:
-        import sets
-        __builtin__.__dict__["set"] = sets.Set
-
 def re_esc(str, BAD="/.^$*+?{,\\[]|()<>#=!:"):
     needs_escape = lambda c: (c in BAD and "\\" + c) or c
     return "".join(map(needs_escape, str))

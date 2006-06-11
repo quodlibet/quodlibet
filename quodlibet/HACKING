@@ -19,7 +19,7 @@ The following will lead to an almost automatic rejection:
  * Sending whole files rather than patches.
 
 Currently we are limiting the code to features in PyGTK 2.8 and Python
-2.3 (with the exception of the set builtin type).
+2.4.
 
 Please prepare your patches against the Subversion release, or the
 most recent release. You can update a checked-out version to the

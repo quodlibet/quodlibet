@@ -10,8 +10,8 @@ NAME = "Quod Libet"
 if __name__ == "__main__":
     print "Checking Python version:",
     print ".".join(map(str, sys.version_info[:2]))
-    if sys.version_info < (2, 3):
-        raise SystemExit("%s requires at least Python 2.3."
+    if sys.version_info < (2, 4):
+        raise SystemExit("%s requires at least Python 2.4."
                          "(http://www.python.org)" % NAME)
 
     print "Checking for PyGTK >= 2.8:",

@@ -32,7 +32,6 @@ def GStreamerSink(pipeline):
             except gobject.GError: pipe = None
             else: pipeline = "autoaudiosink"
         else: pipe = None
-    locale.getlocale(locale.LC_NUMERIC)
     if pipe: return pipe, pipeline
     else: raise NoSinkError(pipeline)
 

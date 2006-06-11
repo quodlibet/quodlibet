@@ -747,12 +747,10 @@ class SongList(AllTreeView, util.InstanceTracker):
 
             if callable(tag):
                 # A pattern is currently selected.
-                songs = [(tag(song), song.sort_key, song) for song in songs]
+                sort_func = lambda song: (tag(song), song.sort_key, song)
             else:
-                songs = [(song(tag), song.sort_key, song) for song in songs]
-            songs.sort()
-            if reverse: songs.reverse()
-            songs = [song[2] for song in songs]
+                sort_func = lambda song: (song(tag), song.sort_key, song)
+            songs.sort(key=sort_func, reverse=reverse)
         else:
             self.set_sort_by(None, refresh=False)
 
