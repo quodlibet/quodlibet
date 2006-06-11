@@ -302,9 +302,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
 
-            self.people = [(num, person) for (person, num) in people.items()]
-            self.people.sort()
-            self.people = [person for (num, person) in self.people[:100]]
+            self.people.sort(key=people.__getitem__)
+            self.people = self.people[:100]
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
 
@@ -577,11 +576,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         # Sort first by how the albums appear in the model itself,
         # then within the album using the default order.
         songs = []
-        song_dict = set() # Avoid n**2 checks for duplicates.
         for album in albums:
-            new_songs = list(album.songs)
-            new_songs.sort()
-            songs.extend(filter(lambda s: s not in song_dict, new_songs))
+            songs.extend(sorted(album.songs))
         return songs
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):

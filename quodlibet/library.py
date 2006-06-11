@@ -172,9 +172,7 @@ class Library(dict):
         for v in self.__masked_files.values(): songs.extend(v.values())
         # Cold cache start without sorting: 11.9 +/- 0.2s
         # Cold cache start with sorting: 10.5 +/- 0.1s
-        songs = [(song.get("~filename"), song) for song in songs]
-        songs.sort()
-        songs = [s[1] for s in songs]
+        songs.sort(key=lambda song: song.get("~filename"))
         pickle.dump(songs, f, pickle.HIGHEST_PROTOCOL)
         f.close()
         os.rename(fn + ".tmp", fn)
@@ -274,9 +272,7 @@ class Library(dict):
 
     def rebuild(self, force=False):
         changed, removed = [], []
-        fns = self.keys()
-        fns.sort()
-        for fn in fns:
+        for fn in sorted(self.keys()):
             song = self[fn]
             if force or not song.valid():
                 self.reload(song, changed, removed)

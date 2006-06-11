@@ -130,8 +130,7 @@ class OptionParser(object):
         if self.__description:
             s += "%s - %s\n" % (self.__name, self.__description)
         s += "\n"
-        keys = self.__help.keys()
-        keys.sort()
+        keys = sorted(self.__help.keys())
         try: keys.remove("help")
         except ValueError: pass
         try: keys.remove("version")

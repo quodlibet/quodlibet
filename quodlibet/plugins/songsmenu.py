@@ -101,7 +101,7 @@ class SongsMenuPlugins(Manager):
 
         items = []
         kinds = self.find_subclasses(SongsMenuPlugin)
-        kinds.sort(lambda a, b: cmp(a.PLUGIN_NAME, b.PLUGIN_NAME))
+        kinds.sort(key=lambda plugin: plugin.PLUGIN_NAME)
         for Kind in kinds:
             connected = False
             usable = max([callable(getattr(Kind, s)) for s in attrs])

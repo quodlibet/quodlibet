@@ -111,12 +111,12 @@ class Limit(gtk.HBox):
         if not limit or len(songs) < limit: return songs
         else:
             if self.__weight.get_active():
-                songs = [(song.get("~#rating", 0.5), song) for song in songs]
-                def choose((r1, s1), (r2, s2)):
+                def choose(r1, r2):
                     if r1 or r2: return cmp(random.random(), r1/(r1+r2))
                     else: return random.randint(-1, 1)
-                songs.sort(choose)
-                songs = [song for (rating, song) in songs]
+                def rating(song):
+                    return song.get("~#rating", 0.5)
+                songs.sort(cmp=choose, key=rating)
             else: random.shuffle(songs)
             return songs[:limit]
         

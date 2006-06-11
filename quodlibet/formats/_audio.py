@@ -335,8 +335,7 @@ class AudioFile(dict):
         try: fns = os.listdir(base)
         except EnvironmentError:  return None
         images = []
-        fns.sort()
-        for fn in fns:
+        for fn in sorted(fns):
             lfn = fn.lower()
             if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
                 score = 0
