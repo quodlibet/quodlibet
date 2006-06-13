@@ -143,6 +143,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
+    name = _("Paned Browser")
+
     __prefs_window = None
 
     def set_all_panes(klass):

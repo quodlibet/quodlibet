@@ -31,6 +31,8 @@ QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 class EmptyBar(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
 
+    name = _("Disable Browser")
+
     def __init__(self, watcher, player):
         super(EmptyBar, self).__init__()
         # When _text is None, calls to activate are ignored. This is to
@@ -123,6 +125,8 @@ class Limit(gtk.HBox):
 # Like EmptyBar, but the user can also enter a query manually. This
 # is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
+
+    name = _("Search Library")
 
     def __init__(self, watcher, player):
         super(SearchBar, self).__init__(watcher, player)

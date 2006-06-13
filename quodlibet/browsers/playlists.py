@@ -211,6 +211,8 @@ class Playlists(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
 
+    name = _("Playlists")
+
     def init(klass, watcher):
         model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):

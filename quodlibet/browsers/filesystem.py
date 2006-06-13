@@ -28,6 +28,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     expand = qltk.RHPaned
     __lib = None
 
+    name = "File System"
+
     def __added(klass, watcher, songs):
         map(klass.__lib.remove, songs)
     __added = classmethod(__added)

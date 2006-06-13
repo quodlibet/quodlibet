@@ -146,6 +146,8 @@ class InternetRadio(gtk.HBox, Browser):
 
     headers = "title artist ~people grouping genre website".split()
 
+    name = _("Internet Radio")
+
     def __init__(self, watcher, player):
         super(InternetRadio, self).__init__(spacing=12)
         self.commands = {"add-station": self.__add_station_remote}

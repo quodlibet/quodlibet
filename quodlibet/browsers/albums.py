@@ -120,6 +120,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
     __model = None
 
+    name = _("Album List")
+
     def init(klass, watcher):
         pattern_fn = os.path.join(const.USERDIR, "album_pattern")
         try:

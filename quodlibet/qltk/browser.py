@@ -18,7 +18,7 @@ class LibraryBrowser(Window):
     def __init__(self, Kind, watcher):
         super(LibraryBrowser, self).__init__()
         self.set_border_width(6)
-        self.set_title(_("Library Browser"))
+        self.set_title("Quod Libet - " + Kind.name)
         self.add(gtk.VBox(spacing=6))
 
         view = SongList(watcher)
