@@ -32,6 +32,7 @@ Zack Weinberg
 Bastian Kleineidam
 Eduardo Gonzalez
 Decklin Foster
+Federico Pelloni
 
 Anders Carlsson (trayicon)
 Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")

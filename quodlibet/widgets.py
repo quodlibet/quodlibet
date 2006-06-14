@@ -31,6 +31,11 @@ from qltk.songsmenu import SongsMenu
 from qltk.trayicon import TrayIcon
 from qltk.watcher import SongWatcher
 
+try:
+    from qltk.dbus_ import DBusHandler
+except None:
+    DBusHandler = lambda player: None
+
 global main, watcher
 main = watcher = None
 
@@ -97,9 +102,8 @@ def init(player, library):
     # These stay alive in the watcher/other callbacks.
     FSInterface(player)
     FIFOControl(watcher, main, player)
-
+    DBusHandler(player)
     CountManager(watcher, player, main.playlist)
-
     TrayIcon(watcher, main, player)
 
     flag = main.songlist.get_columns()[-1].get_clickable
