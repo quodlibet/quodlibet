@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,6 +11,10 @@ import os
 
 import gtk
 import pango
+try:
+    import egg.trayicon as trayicon
+except ImportError:
+    import _trayicon as trayicon
 
 import browsers
 import config
@@ -20,6 +24,7 @@ import stock
 import util
 
 from parse import Pattern
+from plugins.events import EventPlugin
 from qltk.browser import LibraryBrowser
 from qltk.controls import StopAfterMenu
 from qltk.information import Information
@@ -27,14 +32,13 @@ from qltk.properties import SongProperties
 
 from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 
-class Preferences(qltk.Window):
+class Preferences(gtk.VBox):
     """A small window to configure the tray icon's tooltip."""
 
     def __init__(self, activator, player):
-        super(Preferences, self).__init__()
-        self.set_border_width(12)
-        self.set_title(_("Tray Icon Preferences") + " - Quod Libet")
-        vbox = gtk.VBox(spacing=12)
+        super(Preferences, self).__init__(spacing=12)
+
+        self.set_border_width(6)
 
         combo = gtk.combo_box_new_text()
         combo.append_text(_("Scroll wheel adjusts volume\n"
@@ -45,7 +49,7 @@ class Preferences(qltk.Window):
             config.getboolean("plugins", "icon_modifier_swap")))
         except: combo.set_active(0)
         combo.connect('changed', self.__changed_combo)
-        vbox.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo))
+        self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo))
 
         box = gtk.VBox(spacing=12)
         table = gtk.Table(2, 4)
@@ -75,14 +79,13 @@ class Preferences(qltk.Window):
 
         frame = qltk.Frame(_("Tooltip Display"), child=box)
         frame.get_label_widget().set_mnemonic_widget(entry)
-        vbox.pack_start(frame)
+        self.pack_start(frame)
 
         for cb in cbs: cb.connect('toggled', self.__changed_cb, cbs, entry)
         entry.connect(
             'changed', self.__changed_entry, cbs, preview, player, tips)
         entry.set_text(config.get("plugins", "icon_tooltip"))
 
-        self.add(vbox)
         self.show_all()
 
     def __changed_combo(self, combo):
@@ -115,7 +118,7 @@ class Preferences(qltk.Window):
         tips.set_tip(label.get_parent(), text)
         config.set("plugins", "icon_tooltip", entry.get_text())
 
-class TrayIcon(object):
+class TrayIcon(EventPlugin):
     __icon = None
     __mapped = False
     __menu = None
@@ -123,18 +126,19 @@ class TrayIcon(object):
         "<album|<album~discnumber~part~tracknumber~title~version>|"
         "<artist~title~version>>")
 
-    def __init__(self, watcher, window, player):
-        try: import egg.trayicon as trayicon
-        except ImportError:
-            try: import _trayicon as trayicon
-            except: return
+    PLUGIN_NAME = "Tray Icon"
+    PLUGIN_DESC = "Control Quod Libet from the system tray."
+    PLUGIN_VERSION = "0.22"
+
+    def enabled(self):
+        from widgets import main as window, watcher
+        from player import playlist as player
 
         self.__menu = self.__Menu(watcher, window, player)
         self.__menu.show_all()
-
-        self.__mapped = False
         self.__icon = icon = trayicon.TrayIcon("quodlibet")
         self.__tips = qltk.Tooltips(self.__icon)
+
         filename = os.path.join(const.BASEDIR, "quodlibet.")
         try: p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "svg", 16, 16)
         except:
@@ -152,30 +156,33 @@ class TrayIcon(object):
         icon.connect('scroll-event', self.__scroll, window, player)
         icon.connect('destroy', self.__destroy, window)
 
-        player.connect('song-started', self.__song_started)
-        player.connect('paused', self.__set_paused)
-        player.connect('unpaused', self.__set_paused)
-
         icon.show_all()
+        self.plugin_on_song_started(player.song)
+
+    def disabled(self):
+        self.__icon.destroy()
+        self.__menu.destroy()
 
     def __destroy(self, icon, window):
         self.__icon = None
         self.__show_window(window)
 
-    def __preferences(self, player):
+    def PluginPreferences(self, parent):
+        from player import playlist as player
         p = Preferences(self, player)
         p.connect_object('destroy', self.__prefs_destroy, player)
+        return p
 
     def __prefs_destroy(self, player):
-        self.__song_started(player, player.info)
+        self.plugin_on_song_started(player.info)
 
     def __enabled(self):
         return (self.__icon  and self.__mapped and
                 self.__icon.get_property('visible'))
-    enabled = property(__enabled)
+    is_enabled = property(__enabled)
 
     def __window_delete(self, window, event):
-        if self.enabled:
+        if self.is_enabled:
             self.__hide_window(window)
             return True
 
@@ -221,7 +228,7 @@ class TrayIcon(object):
             elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]:
                 window.volume -= 0.05
 
-    def __song_started(self, player, song):
+    def plugin_on_song_started(self, song):
         items = self.__menu.sensitives
         for item in items: item.set_sensitive(bool(song))
         if song:
@@ -261,9 +268,6 @@ class TrayIcon(object):
         map(submenu.append, items)
         orders.set_submenu(submenu)
 
-        preferences = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
-        preferences.connect_object('activate', self.__preferences, player)
-
         browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
         m2 = gtk.Menu()
         for id, label, Kind in browsers.get_browsers():
@@ -299,7 +303,7 @@ class TrayIcon(object):
         menu = gtk.Menu()
         for item in [playpause,
                      gtk.SeparatorMenuItem(), previous, next, orders,
-                     gtk.SeparatorMenuItem(), preferences, browse,
+                     gtk.SeparatorMenuItem(), browse,
                      gtk.SeparatorMenuItem(), props, info, ratings,
                      gtk.SeparatorMenuItem(), quit]:
             menu.append(item)
@@ -321,19 +325,23 @@ class TrayIcon(object):
         self.__menu.popup(None, None, None, event.button, event.time)
         return True
 
-    def __set_paused(self, player):
+    def plugin_on_paused(self):
+        from player import playlist as player
         playpause = self.__menu.get_children()[0]
         stock = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
         img = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
         playpause.set_image(img)
         playpause.child.set_text(gtk.stock_lookup(stock)[1])
         playpause.child.set_use_underline(True)
+    plugin_on_unpaused = plugin_on_paused
 
     def __properties(self, watcher, player):
-        if player.song: SongProperties(watcher, [player.song])
+        if player.song:
+            SongProperties(watcher, [player.song])
 
     def __information(self, watcher, player):
-        if player.song: Information(watcher, [player.song])
+        if player.song:
+            Information(watcher, [player.song])
 
     def destroy(self):
         if self.__icon: self.__icon.destroy()

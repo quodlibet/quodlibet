@@ -28,7 +28,6 @@ from qltk.quodlibet import QuodLibetWindow
 from qltk.remote import FSInterface, FIFOControl
 from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu
-from qltk.trayicon import TrayIcon
 from qltk.watcher import SongWatcher
 
 try:
@@ -104,7 +103,6 @@ def init(player, library):
     FIFOControl(watcher, main, player)
     DBusHandler(player)
     CountManager(watcher, player, main.playlist)
-    TrayIcon(watcher, main, player)
 
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()
