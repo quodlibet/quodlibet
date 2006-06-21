@@ -47,7 +47,7 @@ class Preferences(gtk.VBox):
                             "Shift and scroll wheel adjusts volume"))
         try: combo.set_active(int(
             config.getboolean("plugins", "icon_modifier_swap")))
-        except: combo.set_active(0)
+        except config.error: combo.set_active(0)
         combo.connect('changed', self.__changed_combo)
         self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo))
 
@@ -55,7 +55,6 @@ class Preferences(gtk.VBox):
         table = gtk.Table(2, 4)
         table.set_row_spacings(6)
         table.set_col_spacings(12)
-        current = config.get("plugins", "icon_tooltip")[1:-1].split("~")
         tips = qltk.Tooltips(self)
 
         cbs = []
@@ -81,10 +80,16 @@ class Preferences(gtk.VBox):
         frame.get_label_widget().set_mnemonic_widget(entry)
         self.pack_start(frame)
 
-        for cb in cbs: cb.connect('toggled', self.__changed_cb, cbs, entry)
+        for cb in cbs:
+            cb.connect('toggled', self.__changed_cb, cbs, entry)
         entry.connect(
             'changed', self.__changed_entry, cbs, preview, player, tips)
-        entry.set_text(config.get("plugins", "icon_tooltip"))
+        try:
+            entry.set_text(config.get("plugins", "icon_tooltip"))
+        except:
+            entry.set_text(
+                "<album|<album~discnumber~part~tracknumber~title~version>|"
+                "<artist~title~version>>")
 
         self.show_all()
 
@@ -101,9 +106,11 @@ class Preferences(gtk.VBox):
         if text[0:1] == "<" and text[-1:] == ">":
             parts = text[1:-1].split("~")
             for cb in cbs:
-                if parts and parts[0] == cb.tag: parts.pop(0)
+                if parts and parts[0] == cb.tag:
+                    parts.pop(0)
             if parts:
-                for cb in cbs: cb.set_inconsistent(True)
+                for cb in cbs:
+                    cb.set_inconsistent(True)
             else:
                 parts = text[1:-1].split("~")
                 for cb in cbs:
@@ -128,7 +135,7 @@ class TrayIcon(EventPlugin):
 
     PLUGIN_NAME = "Tray Icon"
     PLUGIN_DESC = "Control Quod Libet from the system tray."
-    PLUGIN_VERSION = "0.22"
+    PLUGIN_VERSION = "0.22.1"
 
     def enabled(self):
         from widgets import main as window, watcher
@@ -155,6 +162,13 @@ class TrayIcon(EventPlugin):
         icon.connect('button-press-event', self.__button, window, player)
         icon.connect('scroll-event', self.__scroll, window, player)
         icon.connect('destroy', self.__destroy, window)
+
+        def intercept_show():
+            window.show = gtk.Window.show
+        try:
+            if not config.getboolean("plugins", "icon_window_visible"):
+                window.show = intercept_show
+        except config.error: pass
 
         icon.show_all()
         self.plugin_on_song_started(player.song)
@@ -198,11 +212,13 @@ class TrayIcon(EventPlugin):
     def __hide_window(self, window):
         window.__position = window.get_position()
         window.hide()
+        config.set("plugins", "icon_window_visible", "false")
 
     def __show_window(self, window):
         try: window.move(*window.__position)
         except AttributeError: pass
         window.present()
+        config.set("plugins", "icon_window_visible", "true")
 
     def __button(self, icon, event, window, player):
         if event.button == 1:
@@ -216,7 +232,7 @@ class TrayIcon(EventPlugin):
 
     def __scroll(self, widget, event, window, player):
         try: event.state ^= config.getboolean("plugins", "icon_modifier_swap")
-        except: pass
+        except config.error: pass
         if event.direction in [SCROLL_LEFT, SCROLL_RIGHT]:
             event.state = gtk.gdk.SHIFT_MASK
         if event.state & gtk.gdk.SHIFT_MASK:
@@ -234,7 +250,7 @@ class TrayIcon(EventPlugin):
         if song:
             try:
                 p = Pattern(config.get("plugins", "icon_tooltip"))
-            except ValueError: p = self.__pattern
+            except (ValueError, config.error): p = self.__pattern
             self.tooltip = p % song
         else: self.tooltip = _("Not playing")
 
