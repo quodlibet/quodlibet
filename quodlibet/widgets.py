@@ -73,6 +73,16 @@ def init(player, library):
 
     watcher = SongWatcher()
 
+    in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
+             "~#added ~#bitrate ~current ~#laststarted ~basename "
+             "~dirname").split()
+    for Kind in zip(*browsers.browsers)[2]:
+        if Kind.headers is not None: Kind.headers.extend(in_all)
+        Kind.init(watcher)
+
+    main = QuodLibetWindow(watcher, player)
+    main.connect('destroy', gtk.main_quit)
+
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
@@ -86,16 +96,6 @@ def init(player, library):
     SongProperties.plugins = EditingPlugins(
         [os.path.join(const.BASEDIR, "plugins", "editing"),
          os.path.join(const.USERDIR, "plugins", "editing")], "editing")
-
-    in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
-             "~#added ~#bitrate ~current ~#laststarted ~basename "
-             "~dirname").split()
-    for Kind in zip(*browsers.browsers)[2]:
-        if Kind.headers is not None: Kind.headers.extend(in_all)
-        Kind.init(watcher)
-
-    main = QuodLibetWindow(watcher, player)
-    main.connect('destroy', gtk.main_quit)
 
     gtk.about_dialog_set_url_hook(website_wrap)
 
