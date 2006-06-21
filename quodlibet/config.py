@@ -100,13 +100,7 @@ def init(*rc_files):
           "add": "false",
           },
 
-        "plugins":
-        { "icon_tooltip":
-          "<album|<album~discnumber~part~tracknumber~title~version>|"
-          "<artist~title~version>>", # tooltip for the tray icon
-          "icon_modifier_swap": "false",
-          "active": "", # activated plugins
-          },
+        "plugins": { },
 
         "editing":
         { "split_on": "& , /", # words to split on
