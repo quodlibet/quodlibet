@@ -412,14 +412,20 @@ class QuodLibetWindow(gtk.Window):
              self.showhide_playqueue,
              config.getboolean("memory", "queue"))])
 
-        ag.add_radio_actions([
-            (a, None, l, None, None, i) for (i, (a, l, K)) in
-            enumerate(browsers.get_view_browsers())
-            ], browsers.index(config.get("memory", "browser")),
-                             self.select_browser, player)
+        view_actions = []
+        for i, Kind in enumerate(browsers.browsers):
+            action = "View" + Kind.__name__
+            label = Kind.accelerated_name
+            view_actions.append((action, None, label, None, None, i))
+        current = browsers.index(config.get("memory", "browser"))
+        ag.add_radio_actions(
+            view_actions, current, self.select_browser, player)
 
-        for id, label, Kind in browsers.get_browsers():
-            act = gtk.Action(id, label, None, None)
+        for Kind in browsers.browsers:
+            if not Kind.in_menu: continue
+            action = "Browser" + Kind.__name__
+            label = Kind.accelerated_name
+            act = gtk.Action(action, label, None, None)
             act.connect_object(
                 'activate', LibraryBrowser, Kind, widgets.watcher)
             ag.add_action(act)

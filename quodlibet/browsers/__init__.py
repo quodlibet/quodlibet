@@ -16,6 +16,8 @@ import const
 from os.path import dirname, basename, isdir, join
 from glob import glob
 
+from browsers._base import Browser
+
 BROWSERS = os.path.join(const.USERDIR, "browsers")
 
 base = dirname(__file__)
@@ -49,25 +51,30 @@ for name in modules:
     try: browsers.extend(browser.browsers)
     except AttributeError:
         print "W: %s doesn't contain any browsers." % browser.__name__
+
+def is_browser(Kind):
+    return isinstance(Kind, type) and issubclass(Kind, Browser)
+browsers = filter(is_browser, browsers)
+
 if not browsers:
     raise SystemExit("No browsers found!")
 
 try: sys.path.remove(BROWSERS)
 except ValueError: pass
 
-browsers.sort()
+browsers.sort(key=lambda Kind: Kind.priority)
 
 # Return the name of the ith browser.
-def name(i): return browsers[i][2].__name__
+def name(i): return browsers[i].__name__
 
 # Return a constructor for a browser, either given by number, a string
 # of the number, or the name. Defaults to the first browser if all else
 # fails.
 def get(i):
-    try: return browsers[int(i)][2]
+    try: return browsers[int(i)]
     except (IndexError, ValueError, TypeError):
         try: return get(index(i))
-        except (IndexError, ValueError): return browsers[0][2]
+        except (IndexError, ValueError): return browsers[0]
 # Return the index of a browser given its name. Defaults to the first
 # browser if all else fails.
 def index(i):
@@ -76,21 +83,17 @@ def index(i):
         try: return map(name, range(len(browsers))).index(i)
         except: return 0
 
-def get_browsers():
-    return [(("Browser%s" % b[2].__name__), b[1], b[2])
-            for b in browsers if b[3]]
-    
-def get_view_browsers():
-    return [(("View%s" % b[2].__name__), b[1], b[2]) for b in browsers]
-
 def BrowseLibrary():
     items = []
-    for action, label, Kind in get_browsers():
-        items.append("<menuitem action='%s'/>" % action)
+    for Kind in browsers:
+        if Kind.in_menu:
+            item = "Browser" + Kind.__name__
+            items.append("<menuitem action='%s'/>" % item)
     return "\n".join(items)
 
 def ViewBrowser():
     items = []
-    for action, label, Kind in get_view_browsers():
-        items.append("<menuitem action='%s'/>" % action)
+    for Kind in browsers:
+        item = "View" + Kind.__name__
+        items.append("<menuitem action='%s'/>" % item)
     return "\n".join(items)

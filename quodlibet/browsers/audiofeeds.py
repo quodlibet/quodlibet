@@ -172,10 +172,11 @@ class AudioFeeds(Browser, gtk.VBox):
 
     headers = ("title artist performer ~people album date website language "
                "copyright organization license contact").split()
+    expand = qltk.RHPaned
 
     name = _("Audio Feeds")
-
-    expand = qltk.RHPaned
+    accelerated_name = _("_Audio Feeds")
+    priority = 20
 
     __last_folder = const.HOME
 
@@ -424,4 +425,4 @@ try:
 except ImportError:
     browsers = []
 else:
-    browsers = [(20, _("_Audio Feeds"), AudioFeeds, True)]
+    browsers = [AudioFeeds]

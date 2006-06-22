@@ -20,10 +20,4 @@ class TBrowsers(TestCase):
     def test_get_invalid(self):
         self.failUnless(
             browsers.get("DoesNotExist") is browsers.search.EmptyBar)
-
-    def test_all(self):
-        for i in range(len(browsers.get_view_browsers())):
-            name = browsers.name(i)
-            self.failUnlessEqual(browsers.get(i), browsers.get(name))
-            self.failUnlessEqual(browsers.index(name), i)
 add(TBrowsers)

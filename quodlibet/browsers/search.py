@@ -32,6 +32,9 @@ class EmptyBar(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
 
     name = _("Disable Browser")
+    accelerated_name = _("_Disable Browser")
+    priority = 0
+    in_menu = False
 
     def __init__(self, watcher, player):
         super(EmptyBar, self).__init__()
@@ -127,6 +130,8 @@ class Limit(gtk.HBox):
 class SearchBar(EmptyBar):
 
     name = _("Search Library")
+    accelerated_name = _("_Search Library")
+    priority = 1
 
     def __init__(self, watcher, player):
         super(SearchBar, self).__init__(watcher, player)
@@ -224,7 +229,4 @@ class SearchBar(EmptyBar):
         if color and textbox.get_property('sensitive'):
             textbox.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(color))
 
-browsers = [
-    (0, _("_Disable Browser"), EmptyBar, False),
-    (1, _("_Search Library"), SearchBar, True)
-    ]
+browsers = [EmptyBar, SearchBar]

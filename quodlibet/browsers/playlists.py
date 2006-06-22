@@ -212,6 +212,8 @@ class Playlists(gtk.VBox, Browser):
     expand = qltk.RHPaned
 
     name = _("Playlists")
+    accelerated_name = _("_Playlists")
+    priority = 2
 
     def init(klass, watcher):
         model = klass.__lists.get_model()
@@ -519,4 +521,4 @@ class Playlists(gtk.VBox, Browser):
             gobject.idle_add(self.__select_playlist, playlist)
         Playlists.changed(playlist, refresh=False)
 
-browsers = [(2, _("_Playlists"), Playlists, True)]
+browsers = [Playlists]

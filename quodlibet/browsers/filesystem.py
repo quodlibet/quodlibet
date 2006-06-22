@@ -29,6 +29,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     __lib = None
 
     name = _("File System")
+    accelerated_name = _("_File System")
+    priority = 10
 
     def __added(klass, watcher, songs):
         map(klass.__lib.remove, songs)
@@ -142,4 +144,4 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         self.save()
         self.emit('songs-selected', songs, None)
 
-browsers = [(10, _("_File System"), FileSystem, True)]
+browsers = [FileSystem]

@@ -121,6 +121,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     __model = None
 
     name = _("Album List")
+    accelerated_name = _("_Album List")
+    priority = 4
 
     def init(klass, watcher):
         pattern_fn = os.path.join(const.USERDIR, "album_pattern")
@@ -675,4 +677,4 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                     confval = "\n" + confval[:-1]
                 config.set("browsers", "albums", confval)
 
-browsers = [(4, _("_Album List"), AlbumList, True)]
+browsers = [AlbumList]

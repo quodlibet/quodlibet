@@ -147,6 +147,8 @@ class InternetRadio(gtk.HBox, Browser):
     headers = "title artist ~people grouping genre website".split()
 
     name = _("Internet Radio")
+    accelerated_name = _("_Internet Radio")
+    priority = 15
 
     def __init__(self, watcher, player):
         super(InternetRadio, self).__init__(spacing=12)
@@ -297,5 +299,5 @@ class InternetRadio(gtk.HBox, Browser):
 
 import gst
 if gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
-    browsers = [(15, _("_Internet Radio"), InternetRadio, True)]
+    browsers = [InternetRadio]
 else: browsers = []

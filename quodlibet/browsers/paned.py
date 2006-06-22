@@ -144,6 +144,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
     expand = qltk.RVPaned
 
     name = _("Paned Browser")
+    accelerated_name = _("_Paned Browser")
+    priority = 3
 
     __prefs_window = None
 
@@ -513,4 +515,4 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         if self.__save: self.save()
         self.emit('songs-selected', list(songs), None)
 
-browsers = [(3, _("_Paned Browser"), PanedBrowser, True)]
+browsers = [PanedBrowser]

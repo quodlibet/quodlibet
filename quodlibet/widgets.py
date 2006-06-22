@@ -75,7 +75,7 @@ def init(player, library):
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted ~basename "
              "~dirname").split()
-    for Kind in zip(*browsers.browsers)[2]:
+    for Kind in browsers.browsers:
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(watcher)
 
