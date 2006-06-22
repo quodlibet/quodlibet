@@ -36,7 +36,6 @@ qltk/songsmenu.py
 qltk/tagsfrompath.py
 qltk/textedit.py
 qltk/tracknumbers.py
-qltk/trayicon.py
 qltk/views.py
 qltk/watcher.py
 qltk/wlw.py
