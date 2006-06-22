@@ -286,8 +286,8 @@ class TrayIcon(EventPlugin):
 
         browse = qltk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
         m2 = gtk.Menu()
-        for id, label, Kind in browsers.get_browsers():
-            i = gtk.MenuItem(label)
+        for Kind in browsers.browsers:
+            i = gtk.MenuItem(Kind.accelerated_name)
             i.connect_object('activate', LibraryBrowser, Kind, watcher)
             m2.append(i)
         browse.set_submenu(m2)
