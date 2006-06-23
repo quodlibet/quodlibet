@@ -6,8 +6,6 @@
 #
 # $Id$
 
-import locale
-
 import gobject
 import gst
 import gtk

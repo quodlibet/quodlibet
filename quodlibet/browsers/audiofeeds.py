@@ -9,7 +9,6 @@
 
 import cPickle as pickle
 import os
-import sys
 import threading
 import time
 

@@ -6,7 +6,6 @@
 #
 # $Id$
 
-import __builtin__
 import gettext
 import locale
 import os

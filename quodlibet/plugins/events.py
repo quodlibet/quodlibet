@@ -10,15 +10,10 @@
 import traceback
 
 import gobject
-import gtk
-
-import qltk
-import util
 
 from player import PlaylistPlayer
 from plugins import Manager, SongWrapper, ListWrapper
 from qltk.watcher import SongWatcher
-from qltk.wlw import WritingWindow
 
 class EventPlugin(object):
     """Plugins that run in the background and receive events.

@@ -9,12 +9,10 @@
 import gtk
 
 import qltk
-import util
 
 from traceback import print_exc
 
 from plugins import ListWrapper, Manager
-from qltk.wlw import WritingWindow
 
 __all__ = [] # trick out old plugin manager
 

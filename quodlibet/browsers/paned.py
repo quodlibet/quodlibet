@@ -7,8 +7,6 @@
 #
 # $Id$
 
-import sys
-
 import gobject
 import gtk
 import pango

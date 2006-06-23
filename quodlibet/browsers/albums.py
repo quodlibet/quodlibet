@@ -8,7 +8,6 @@
 # $Id$
 
 import os
-import sys
 
 import gobject
 import gtk

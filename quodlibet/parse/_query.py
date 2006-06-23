@@ -11,7 +11,6 @@
 # objects as it goes, which is where the interesting stuff will happen.
 
 import sre
-import sys
 
 import parse._match as match
 

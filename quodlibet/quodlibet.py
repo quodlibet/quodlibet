@@ -285,7 +285,7 @@ if __name__ == "__main__":
     if basedir.endswith("/share/quodlibet"):
         sys.path.append(basedir[:-15] + "lib/quodlibet")
 
-    import locale, util
+    import util
     util.python_init()
     util.gettext_install()
     util.ctypes_init()
