@@ -21,7 +21,6 @@ set = _config.set
 getboolean = _config.getboolean
 getint = _config.getint
 getfloat = _config.getfloat
-write = _config.write
 options = _config.options
 
 def write(filename):
