@@ -29,19 +29,19 @@ class GajimStatusMessage(EventPlugin):
         except:
             self.accounts = []
         config.set('plugins', self.c_accounts, join(self.accounts))
-	
+
         try:
             self.paused = config.getboolean('plugins', self.c_paused)
         except:
             self.paused = True
             config.set('plugins', self.c_paused, 'True')
-	    
+
         try:
             self.statuses = config.get('plugins', self.c_statuses)
         except:
             self.statuses = 'online chat'
             config.set('plugins', self.c_statuses, self.statuses)
-	    
+
         try:
             self.pattern = config.get('plugins', self.c_pattern)
         except:
@@ -53,7 +53,8 @@ class GajimStatusMessage(EventPlugin):
         self.interface = dbus.Interface(dbus.SessionBus().get_object('org.gajim.dbus', '/org/gajim/dbus/RemoteObject'), 'org.gajim.dbus.RemoteInterface')
 
     def quit(self):
-        self.change_status(self.accounts, '')
+        try: self.change_status(self.accounts, '')
+        except dbus.DBusException: pass
 
     def change_status(self, accounts, status):
         if accounts == []:
