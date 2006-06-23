@@ -89,8 +89,7 @@ class DownloadWindow(qltk.Window):
             menu.append(item)
             menu.connect('selection-done', lambda m: m.destroy())
             menu.show_all()
-            menu.popup(None, None, None, 0, gtk.get_current_event_time())
-            return True
+            return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __stop_download(self, iters):
         for iter in iters:

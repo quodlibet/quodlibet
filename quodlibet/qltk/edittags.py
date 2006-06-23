@@ -333,6 +333,7 @@ class EditTags(gtk.VBox):
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
 
+        view.ensure_popup_selection()
         model, rows = view.get_selection().get_selected_rows()
         can_change = min([model[path][CANEDIT] for path in rows])
 
@@ -376,8 +377,7 @@ class EditTags(gtk.VBox):
         for c in menu.get_children():
             c.set_sensitive(can_change and c.get_property('sensitive'))
         menu.connect('selection-done', lambda m: m.destroy())
-        menu.popup(None, None, None, 3, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 3, gtk.get_current_event_time())
 
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()

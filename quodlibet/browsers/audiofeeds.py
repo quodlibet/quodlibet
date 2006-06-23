@@ -371,9 +371,8 @@ class AudioFeeds(Browser, gtk.VBox):
         AudioFeeds.write()
 
     def __popup_menu(self, view):
-        self.__menu(view).popup(
-            None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(self.__menu(view), 0,
+                gtk.get_current_event_time())
 
     def __refresh(self, feeds):
         changed = filter(Feed.parse, feeds)

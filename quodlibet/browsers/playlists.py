@@ -429,6 +429,8 @@ class Playlists(gtk.VBox, Browser):
 
     def __popup_menu(self, view, watcher):
         model, iter = view.get_selection().get_selected()
+        if iter is None:
+            return
         songs = list(model[iter][0])
         menu = SongsMenu(watcher, songs, playlists=False, remove=False)
         menu.preseparate()
@@ -452,8 +454,7 @@ class Playlists(gtk.VBox, Browser):
         menu.prepend(ren)
 
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def activate(self, widget=None, resort=True):
         model, iter = self.__view.get_selection().get_selected()

@@ -192,8 +192,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             from widgets import watcher
             menu = SongsMenu(watcher, sorted(self.__get_songs()))
             menu.show_all()
-            menu.popup(None, None, None, 0, gtk.get_current_event_time())
-            return True
+            return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
         def __destroy(self, model):
             self.set_model(None)

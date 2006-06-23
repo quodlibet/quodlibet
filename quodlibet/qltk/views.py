@@ -268,8 +268,53 @@ class RCMTreeView(gtk.TreeView):
             self.set_cursor(path, col, 0)
         else:
             col.focus_cell(col.get_cell_renderers()[0])
+        self.__position_at_mouse = True
         self.emit('popup-menu')
         return True
+
+    def ensure_popup_selection(self):
+        try:
+            self.__position_at_mouse
+        except AttributeError:
+            path, col = self.get_cursor()
+            if path is None:
+                return False
+            self.scroll_to_cell(path, col)
+            # ensure current cursor path is selected, just like right-click
+            selection = self.get_selection()
+            if not selection.path_is_selected(path):
+                selection.unselect_all()
+                selection.select_path(path)
+            return True
+
+    def popup_menu(self, menu, button, time):
+        try:
+            del self.__position_at_mouse
+        except AttributeError:
+            # suppress menu if the cursor isn't on a real path
+            if not self.ensure_popup_selection():
+                return False
+            pos_func = self.__popup_position
+        else:
+            pos_func = None
+
+        menu.popup(None, None, pos_func, button, time)
+        return True
+
+    def __popup_position(self, menu):
+        path, col = self.get_cursor()
+        if col is None:
+            col = self.get_column(0)
+        rect = self.get_cell_area(path, col)
+        dx, dy1 = self.window.get_origin()
+        dy2 = self.get_bin_window().get_position()[1]
+        # wtf is last return param?
+        if gtk.widget_get_default_direction() == gtk.TEXT_DIR_LTR: 
+            return (rect.x + dx, rect.y + dy1 + dy2 + rect.height, 0)
+        else:
+            menu.realize()
+            return (rect.x + dx - menu.allocation.width + rect.width, 
+                    rect.y + dy1 + dy2 + rect.height, 0)
 
 class HintedTreeView(gtk.TreeView):
     """A TreeView that pops up a tooltip when you hover over a cell that

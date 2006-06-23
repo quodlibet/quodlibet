@@ -130,8 +130,7 @@ class ExFalsoWindow(gtk.Window):
         menu.prepend(b)
         menu.connect_object('selection-done', gtk.Menu.destroy, menu)
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, gtk.get_current_event_time()) 
 
     def __delete(self, item, files, fs):
         d = DeleteDialog(self, files)

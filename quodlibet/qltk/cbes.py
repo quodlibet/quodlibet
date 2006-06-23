@@ -111,8 +111,7 @@ class CBESEditor(qltk.Window):
             self.__remove(view.get_selection())
 
     def __popup(self, view, menu):
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __remove(self, selection):
         model, iter = selection.get_selected()

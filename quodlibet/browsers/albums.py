@@ -547,8 +547,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         menu.prepend(gtk.SeparatorMenuItem())
         menu.prepend(button)
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __refresh_album(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
