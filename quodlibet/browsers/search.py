@@ -132,6 +132,7 @@ class SearchBar(EmptyBar):
     name = _("Search Library")
     accelerated_name = _("_Search Library")
     priority = 1
+    in_menu = True
 
     def __init__(self, watcher, player):
         super(SearchBar, self).__init__(watcher, player)
