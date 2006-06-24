@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -e
-
-#DEBHELPER#
-
-if which update-python-modules >/dev/null 2>&1; then
-        update-python-modules -c -i /usr/share/python-support/python-mutagen
-fi
