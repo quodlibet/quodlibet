@@ -305,16 +305,30 @@ class RCMTreeView(gtk.TreeView):
         path, col = self.get_cursor()
         if col is None:
             col = self.get_column(0)
+
+        # get a rectangle describing the cell render area (assume 3 px pad)
         rect = self.get_cell_area(path, col)
-        dx, dy1 = self.window.get_origin()
-        dy2 = self.get_bin_window().get_position()[1]
-        # wtf is last return param?
+        rect.x += 3
+        rect.width -= 6
+        rect.y += 3
+        rect.height -= 6
+        dx, dy = self.window.get_origin()
+        dy += self.get_bin_window().get_position()[1]
+
+        # fit menu to screen, aligned per text direction
+        screen_width = gtk.gdk.screen_width()
+        screen_height = gtk.gdk.screen_height()
+        menu.realize()
+        ma = menu.allocation
+        menu_y = rect.y + rect.height + dy
+        if menu_y + ma.height > screen_height and rect.y + dy - ma.height > 0:
+            menu_y = rect.y + dy - ma.height
         if gtk.widget_get_default_direction() == gtk.TEXT_DIR_LTR: 
-            return (rect.x + dx, rect.y + dy1 + dy2 + rect.height, 0)
+            menu_x = min(rect.x + dx, screen_width - ma.width)
         else:
-            menu.realize()
-            return (rect.x + dx - menu.allocation.width + rect.width, 
-                    rect.y + dy1 + dy2 + rect.height, 0)
+            menu_x = max(0, rect.x + dx - ma.width + rect.width)
+
+        return (menu_x, menu_y, True) # x, y, move_within_screen
 
 class HintedTreeView(gtk.TreeView):
     """A TreeView that pops up a tooltip when you hover over a cell that
