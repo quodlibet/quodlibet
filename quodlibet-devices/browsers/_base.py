@@ -20,6 +20,15 @@ class Browser(object):
         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object))
         }
 
+    # The browser's name, without an accelerator.
+    name = _("Library Browser")
+    # The name, with an accelerator.
+    accelerated_name = _("Library Browser")
+    # Priority in the menu list (0 is first, higher numbers come later)
+    priority = 100
+    # Whether the browser should appear in the Music->Browse menu.
+    in_menu = True
+
     # Packing options. False if the browser should be packed into the
     # window's VBox with expand=False. Otherwise, this should be
     # a function that returns an object like an RPaned; the browser

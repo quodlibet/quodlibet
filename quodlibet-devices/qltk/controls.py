@@ -26,7 +26,7 @@ class SeekBar(HSlider):
     __sig = None
     __seekable = True
 
-    def __init__(self, player):
+    def __init__(self, player, watcher):
         hbox = gtk.HBox(spacing=3)
         l = gtk.Label("0:00")
         hbox.pack_start(l)
@@ -51,12 +51,13 @@ class SeekBar(HSlider):
         m.append(gtk.SeparatorMenuItem())
         i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
         i.connect_object(
-            'activate', qltk.bookmarks.EditBookmarks, self, player)
+            'activate', qltk.bookmarks.EditBookmarks, self, watcher, player)
         m.append(i)
         m.show_all()
         self.child.connect_object(
             'button-press-event', self.__check_menu, m, player)
-        self.connect_object('popup-menu', self.__popup_menu, m, player)
+        self.connect_object('popup-menu', self.__popup_menu, m, player,
+                self.child.child)
 
         gobject.timeout_add(1000, self.__check_time, player)
         player.connect('song-started', self.__song_changed, l, m)
@@ -66,7 +67,7 @@ class SeekBar(HSlider):
         if event.button == 3:
             return self.__popup_menu(menu, player)
 
-    def __popup_menu(self, menu, player):
+    def __popup_menu(self, menu, player, widget=None):
         for child in menu.get_children()[2:-1]:
             menu.remove(child)
             child.destroy()
@@ -77,8 +78,12 @@ class SeekBar(HSlider):
             items = qltk.bookmarks.MenuItems(marks, player, self.__seekable)
             items.reverse()
             for i in items: menu.insert(i, 2)
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        time = gtk.get_current_event_time()
+        if widget:
+            return qltk.popup_menu_under_widget(menu, widget, 3, time)
+        else:
+            menu.popup(None, None, None, 3, time)
+            return True
 
     def __seeked(self, player, song, ms):
         # If it's not paused, we'll grab it in our next update.
@@ -171,25 +176,26 @@ class StopAfterMenu(gtk.Menu):
         self.__item = gtk.CheckMenuItem(_("Stop after this song"))
         self.__item.set_active(False)
         self.append(self.__item)
-
         player.connect('paused', self.__paused)
         player.connect('song-ended', self.__ended)
-        
         self.__item.show()
 
     def __paused(self, player):
         self.active = False
 
     def __ended(self, player, song, stopped):
-        if stopped: self.active = False
-        elif self.active: player.paused = True
+        if self.active:
+            player.paused = True
+        self.active = False
 
-    def __get_active(self): return self.__item.get_active()
-    def __set_active(self, v): return self.__item.set_active(v)
+    def __get_active(self):
+        return self.__item.get_active()
+    def __set_active(self, active):
+        return self.__item.set_active(active)
     active = property(__get_active, __set_active)
 
 class PlayControls(gtk.VBox):
-    def __init__(self, player):
+    def __init__(self, player, watcher):
         gtk.VBox.__init__(self, spacing=3)
         hbox = gtk.HBox(spacing=3)
         prev = gtk.Button()
@@ -210,13 +216,13 @@ class PlayControls(gtk.VBox):
         hbox = gtk.HBox(spacing=3)
         self.volume = Volume(player)
         hbox.pack_start(self.volume, expand=False)
-        hbox.pack_start(SeekBar(player))
+        hbox.pack_start(SeekBar(player, watcher))
         self.pack_start(hbox, expand=False, fill=False)
 
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
         play.connect('button-press-event', self.__play_button_press, safter)
-        play.connect_object('popup-menu', self.__popup, safter)
+        play.connect_object('popup-menu', self.__popup, safter, play.child)
         next.connect_object('clicked', self.__next, player)
         player.connect('song-started', self.__song_started, next)
         player.connect_object('paused', play.set_active, False)
@@ -225,11 +231,14 @@ class PlayControls(gtk.VBox):
 
     def __play_button_press(self, activator, event, safter):
         if event.button == 3:
-            return self.__popup(safter, event.button, event.time)
-            
-    def __popup(self, safter, button=3, time=None):
+            return self.__popup(safter, None, event.button, event.time)
+
+    def __popup(self, safter, widget, button=3, time=None):
         time = time or gtk.get_current_event_time()
-        safter.popup(None, None, None, button, time)
+        if widget:
+            return qltk.popup_menu_under_widget(safter, widget, button, time)
+        else:
+            safter.popup(None, None, None, button, time)
         return True
 
     def __song_started(self, player, song, next):

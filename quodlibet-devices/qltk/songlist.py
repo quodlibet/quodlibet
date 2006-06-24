@@ -7,9 +7,7 @@
 # $Id$
 
 import datetime
-import locale
 import random
-import sys
 import time
 
 import gobject
@@ -304,18 +302,19 @@ class SongList(AllTreeView, util.InstanceTracker):
         def _cdf(self, column, cell, model, iter, tag):
             try:
                 stamp = model.get_value(iter, 0)(tag)
-                if not stamp: cell.set_property('text', _("Never"))
+                if not stamp:
+                    cell.set_property('text', _("Never"))
                 else:
                     date = datetime.datetime.fromtimestamp(stamp).date()
                     today = datetime.datetime.now().date()
                     days = (today - date).days
                     stamp = time.localtime(stamp)
-                    if days == 0: rep = time.strftime("%X", stamp).decode(
-                        locale.getpreferredencoding())
-                    elif days < 7: rep = time.strftime("%A", stamp).decode(
-                        locale.getpreferredencoding())
-                    else: rep = time.strftime("%x", stamp).decode(
-                        locale.getpreferredencoding())
+                    if days == 0:
+                        rep = time.strftime("%X", stamp).decode(const.ENCODING)
+                    elif days < 7:
+                        rep = time.strftime("%A", stamp).decode(const.ENCODING)
+                    else:
+                        rep = time.strftime("%x", stamp).decode(const.ENCODING)
                     cell.set_property('text', rep)
             except AttributeError: pass
 
@@ -748,12 +747,10 @@ class SongList(AllTreeView, util.InstanceTracker):
 
             if callable(tag):
                 # A pattern is currently selected.
-                songs = [(tag(song), song.sort_key, song) for song in songs]
+                sort_func = lambda song: (tag(song), song.sort_key, song)
             else:
-                songs = [(song(tag), song.sort_key, song) for song in songs]
-            songs.sort()
-            if reverse: songs.reverse()
-            songs = [song[2] for song in songs]
+                sort_func = lambda song: (song(tag), song.sort_key, song)
+            songs.sort(key=sort_func, reverse=reverse)
         else:
             self.set_sort_by(None, refresh=False)
 

@@ -120,9 +120,8 @@ class ExFalsoWindow(gtk.Window):
         view.grab_focus()
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        filenames = [model[row][0] for row in rows]
+        filenames = sorted([model[row][0] for row in rows])
         songs = map(self.__cache.__getitem__, filenames)
-        songs.sort()
         menu = self.pm.Menu(self.__watcher, self, songs)
         if menu is None: menu = gtk.Menu()
         else: menu.prepend(gtk.SeparatorMenuItem())
@@ -131,8 +130,7 @@ class ExFalsoWindow(gtk.Window):
         menu.prepend(b)
         menu.connect_object('selection-done', gtk.Menu.destroy, menu)
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, gtk.get_current_event_time()) 
 
     def __delete(self, item, files, fs):
         d = DeleteDialog(self, files)

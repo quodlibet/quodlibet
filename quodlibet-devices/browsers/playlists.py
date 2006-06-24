@@ -8,7 +8,6 @@
 # $Id$
 
 import os
-import sys
 import urllib
 
 import gobject
@@ -210,6 +209,10 @@ class Menu(gtk.Menu):
 class Playlists(gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
+
+    name = _("Playlists")
+    accelerated_name = _("_Playlists")
+    priority = 2
 
     def init(klass, watcher):
         model = klass.__lists.get_model()
@@ -425,6 +428,8 @@ class Playlists(gtk.VBox, Browser):
 
     def __popup_menu(self, view, watcher):
         model, iter = view.get_selection().get_selected()
+        if iter is None:
+            return
         songs = list(model[iter][0])
         menu = SongsMenu(watcher, songs, playlists=False, remove=False)
         menu.preseparate()
@@ -448,8 +453,7 @@ class Playlists(gtk.VBox, Browser):
         menu.prepend(ren)
 
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def activate(self, widget=None, resort=True):
         model, iter = self.__view.get_selection().get_selected()
@@ -517,4 +521,4 @@ class Playlists(gtk.VBox, Browser):
             gobject.idle_add(self.__select_playlist, playlist)
         Playlists.changed(playlist, refresh=False)
 
-browsers = [(2, _("_Playlists"), Playlists, True)]
+browsers = [Playlists]

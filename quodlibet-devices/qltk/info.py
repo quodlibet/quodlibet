@@ -27,20 +27,21 @@ by <~people>><album|
 \\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
 <part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
 
-    __filename = os.path.join(const.USERDIR, "songinfo")
+    __PATTERN_FILENAME = os.path.join(const.USERDIR, "songinfo")
 
     def __init__(self, watcher, player):
         super(SongInfo, self).__init__()
         self.set_ellipsize(pango.ELLIPSIZE_END)
         self.set_selectable(True)
         self.set_alignment(0.0, 0.0)
-        self.set_direction(gtk.TEXT_DIR_LTR)
         watcher.connect_object('changed', self.__check_change, player)
+        player.connect('song-started', self.__check_started)
 
         self.connect_object('populate-popup', self.__menu, player)
 
-        try: self._pattern = file(self.__filename).read().rstrip()
+        try: self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
         except EnvironmentError: pass
+        self._compiled = XMLFromPattern(self._pattern)
 
     def __menu(self, player, menu):
         item = qltk.MenuItem(_("_Edit Display..."), gtk.STOCK_EDIT)
@@ -49,27 +50,33 @@ by <~people>><album|
         menu.append(item)
 
     def __edit(self, player):
-        w = PatternEdit(self, SongInfo._pattern)
-        w.text = self._pattern
-        w.apply.connect_object('clicked', self.__set, w, player)
+        editor = PatternEdit(self, SongInfo._pattern)
+        editor.text = self._pattern
+        editor.apply.connect_object('clicked', self.__set, editor, player)
 
     def __set(self, edit, player):
         self._pattern = edit.text.rstrip()
         if (self._pattern == SongInfo._pattern):
-            try: os.unlink(os.path.join(const.USERDIR, "songinfo"))
+            try: os.unlink(self.__PATTERN_FILENAME)
             except OSError: pass
         else:
-            f = file(os.path.join(const.USERDIR, "songinfo"), "w")
-            f.write(self._pattern + "\n")
-            f.close()
-        self.__song_started(player, player.info)
+            pattern_file = file(os.path.join(const.USERDIR, "songinfo"), "w")
+            pattern_file.write(self._pattern + "\n")
+            pattern_file.close()
+        self._compiled = XMLFromPattern(self._pattern)
+        self.__update_info(player)
 
     def __check_change(self, player, songs):
         if player.song in songs:
-            self.__song_started(player, player.info)
+            self.__update_info(player)
 
-    def __song_started(self, activator, song):
-        if song: t = XMLFromPattern(self._pattern) % song
-        else: t = "<span size='xx-large'>%s</span>" % _("Not playing")
-        self.set_markup(t)
+    def __check_started(self, player, song):
+        if player.song is None:
+            self.__update_info(player)
 
+    def __update_info(self, player):
+        if player.info is not None:
+            text = self._compiled % player.info
+        else:
+            text = "<span size='xx-large'>%s</span>" % _("Not playing")
+        self.set_markup(text)

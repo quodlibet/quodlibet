@@ -155,10 +155,9 @@ class TrackNumbers(gtk.VBox):
         if songs is None:
             songs = [row[0] for row in model]
         else:
-            songs = songs[:]
-        songs.sort(lambda a, b: (cmp(a("~#track"), b("~#track")) or
-                                 cmp(a("~basename"), b("~basename")) or
-                                 cmp(a, b)))
+            songs = list(songs)
+        songs.sort(
+            key=lambda song: (song("~#track"), song("~basename"), song))
         model.clear()
         total.set_value(len(songs))
         for song in songs:

@@ -31,6 +31,11 @@ QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 class EmptyBar(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
 
+    name = _("Disable Browser")
+    accelerated_name = _("_Disable Browser")
+    priority = 0
+    in_menu = False
+
     def __init__(self, watcher, player):
         super(EmptyBar, self).__init__()
         # When _text is None, calls to activate are ignored. This is to
@@ -111,18 +116,23 @@ class Limit(gtk.HBox):
         if not limit or len(songs) < limit: return songs
         else:
             if self.__weight.get_active():
-                songs = [(song.get("~#rating", 0.5), song) for song in songs]
-                def choose((r1, s1), (r2, s2)):
+                def choose(r1, r2):
                     if r1 or r2: return cmp(random.random(), r1/(r1+r2))
                     else: return random.randint(-1, 1)
-                songs.sort(choose)
-                songs = [song for (rating, song) in songs]
+                def rating(song):
+                    return song.get("~#rating", 0.5)
+                songs.sort(cmp=choose, key=rating)
             else: random.shuffle(songs)
             return songs[:limit]
         
 # Like EmptyBar, but the user can also enter a query manually. This
 # is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
+
+    name = _("Search Library")
+    accelerated_name = _("_Search Library")
+    priority = 1
+    in_menu = True
 
     def __init__(self, watcher, player):
         super(SearchBar, self).__init__(watcher, player)
@@ -220,7 +230,4 @@ class SearchBar(EmptyBar):
         if color and textbox.get_property('sensitive'):
             textbox.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(color))
 
-browsers = [
-    (0, _("_Disable Browser"), EmptyBar, False),
-    (1, _("_Search Library"), SearchBar, True)
-    ]
+browsers = [EmptyBar, SearchBar]

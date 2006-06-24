@@ -9,7 +9,6 @@
 
 import cPickle as pickle
 import os
-import sys
 import threading
 import time
 
@@ -172,8 +171,11 @@ class AudioFeeds(Browser, gtk.VBox):
 
     headers = ("title artist performer ~people album date website language "
                "copyright organization license contact").split()
-
     expand = qltk.RHPaned
+
+    name = _("Audio Feeds")
+    accelerated_name = _("_Audio Feeds")
+    priority = 20
 
     __last_folder = const.HOME
 
@@ -368,9 +370,8 @@ class AudioFeeds(Browser, gtk.VBox):
         AudioFeeds.write()
 
     def __popup_menu(self, view):
-        self.__menu(view).popup(
-            None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(self.__menu(view), 0,
+                gtk.get_current_event_time())
 
     def __refresh(self, feeds):
         changed = filter(Feed.parse, feeds)
@@ -422,4 +423,4 @@ try:
 except ImportError:
     browsers = []
 else:
-    browsers = [(20, _("_Audio Feeds"), AudioFeeds, True)]
+    browsers = [AudioFeeds]

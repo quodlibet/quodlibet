@@ -33,8 +33,8 @@ class WaitLoadWindow(gtk.Window):
         """
 
         super(WaitLoadWindow, self).__init__()
+        parent = get_top_parent(parent)
         if parent:
-            parent = get_top_parent(parent)
             sig = parent.connect('configure-event', self.__recenter)
             self.connect_object(
                 'destroy', WaitLoadWindow.__disconnect, self, sig)
@@ -115,7 +115,7 @@ class WaitLoadWindow(gtk.Window):
         x, y = parent.get_position()
         dx, dy = parent.get_size()
         dx2, dy2 = self.get_size()
-        self.move(x + dx/2 - dx2/2, y + dy/2 - dy2/2)
+        self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
 
     def __disconnect(self, sig):
         self.get_transient_for().window.set_cursor(None)

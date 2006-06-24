@@ -6,7 +6,6 @@
 #
 # $Id$
 
-import gobject
 import gtk
 import pango
 
@@ -19,7 +18,7 @@ class LibraryBrowser(Window):
     def __init__(self, Kind, watcher):
         super(LibraryBrowser, self).__init__()
         self.set_border_width(6)
-        self.set_title(_("Library Browser"))
+        self.set_title("Quod Libet - " + Kind.name)
         self.add(gtk.VBox(spacing=6))
 
         view = SongList(watcher)
@@ -52,8 +51,7 @@ class LibraryBrowser(Window):
 
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
-        # GTK (2.8?) rounding error, 1.0 clips the rightmost pixel.
-        self.__statusbar.set_alignment(0.999999, 0.5)
+        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
         self.child.pack_end(self.__statusbar, expand=False)
 
@@ -100,7 +98,7 @@ class LibraryBrowser(Window):
         header = col.header_name
         menu = view.Menu(header, self.browser, watcher)
         if menu is not None:
-            menu.popup(None, None, None, 0, gtk.get_current_event_time())
+            view.popup_menu(menu, 0, gtk.get_current_event_time())
         return True
 
     def __set_time(self, *args, **kwargs):
@@ -114,4 +112,3 @@ class LibraryBrowser(Window):
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         statusbar.set_text(t)
-        gobject.idle_add(statusbar.queue_resize)

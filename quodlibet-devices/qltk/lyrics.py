@@ -11,7 +11,6 @@
 # - Make purpose of 'Add' button clearer.
 # - Indicate when the match was fuzzy in the buffer text.
 
-import locale
 import os
 import threading
 import urllib
@@ -19,6 +18,7 @@ import urllib
 import gobject
 import gtk
 
+import const
 import qltk
 import util
 
@@ -101,7 +101,7 @@ class LyricsPane(gtk.VBox):
                 urllib.quote(title.encode('utf-8'))))        
             xmldoc = minidom.parse(sock).documentElement
         except Exception, err:
-            try: err = err.strerror.decode(locale.getpreferredencoding())
+            try: err = err.strerror.decode(const.ENCODING, 'replace')
             except: err = _("Unable to download lyrics.")
             gobject.idle_add(buffer.set_text, err)
             return
@@ -134,7 +134,7 @@ class LyricsPane(gtk.VBox):
                     urllib.quote(songlist[0][0].encode('utf-8'))))
                 xmldoc = minidom.parse(sock).documentElement
             except Exception, err:
-                try: err = err.strerror.decode(locale.getpreferredencoding())
+                try: err = err.strerror.decode(const.ENCODING, 'replace')
                 except: err = _("Unable to download lyrics.")
                 gobject.idle_add(buffer.set_text, err)
                 return

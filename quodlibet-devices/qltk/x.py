@@ -42,17 +42,14 @@ class Notebook(gtk.Notebook):
     a widget) is used."""
     
     def append_page(self, page, label=None):
-        if label is not None:
-            if not isinstance(label, gtk.Widget):
-                label = gtk.Label(label)
-            super(Notebook, self).append_page(page, label)
-        else:
-            if hasattr(page, 'title'):
-                title = page.title
-                if not isinstance(title, gtk.Widget):
-                    title = gtk.Label(title)
-                super(Notebook, self).append_page(page, title)
-            else: raise TypeError("no page.title and no label given")
+        if label is None:
+            try: label = page.title
+            except AttributeError:
+                raise TypeError("no page.title and no label given")
+
+        if not isinstance(label, gtk.Widget):
+            label = gtk.Label(label)
+        super(Notebook, self).append_page(page, label)
 
 def Frame(label, child=None):
     """A gtk.Frame with no shadow, 12px left padding, and 3px top padding."""

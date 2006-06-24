@@ -112,8 +112,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             selection = self.get_selection()
             selection.unselect_all()
             selection.select_path(path)
-            menu.popup(None, None, None, 0, gtk.get_current_event_time())
-            return True
+            return self.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __mkdir(self, button):
         model, rows = self.get_selection().get_selected_rows()
@@ -251,8 +250,11 @@ class FileSelector(gtk.VPaned):
         dmodel, rows = selection.get_selected_rows()
         dirs = [dmodel[row][0] for row in rows]
         for dir in dirs:
-            for file in filter(self.__filter, dircache.listdir(dir)):
-                fmodel.append([os.path.join(dir, file)])
+            try:
+                for file in filter(self.__filter, dircache.listdir(dir)):
+                    fmodel.append([os.path.join(dir, file)])
+            except OSError:
+                pass
 
         for row in fmodel:
             if row[0] in selected:

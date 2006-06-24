@@ -207,10 +207,9 @@ class PluginWindow(qltk.Window):
             failures = {}
             for pm in Manager.instances.values():
                 failures.update(pm.list_failures())
-            keys = failures.keys();
-            keys.sort()
+            keys = failures.keys()
             show_expanded = len(keys) <= 3
-            for key in keys:
+            for key in sorted(keys):
                 expander = gtk.Expander("<b>%s</b>" % key)
                 expander.set_use_markup(True)
                 if show_expanded: expander.set_expanded(True)

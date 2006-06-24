@@ -10,15 +10,10 @@
 import traceback
 
 import gobject
-import gtk
-
-import qltk
-import util
 
 from player import PlaylistPlayer
 from plugins import Manager, SongWrapper, ListWrapper
 from qltk.watcher import SongWatcher
-from qltk.wlw import WritingWindow
 
 class EventPlugin(object):
     """Plugins that run in the background and receive events.
@@ -105,8 +100,11 @@ class EventPlugins(Manager):
     def enable(self, plugin, enabled):
         if self.enabled(plugin) != enabled:
             super(EventPlugins, self).enable(plugin, enabled)
-            if enabled: plugin.enabled()
-            else: plugin.disabled()
+            try:
+                if enabled: plugin.enabled()
+                else: plugin.disabled()
+            except:
+                traceback.print_exc()
 
     def __invoke(self, watcher, event, *args):
         try:

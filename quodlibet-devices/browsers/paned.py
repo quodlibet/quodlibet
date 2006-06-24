@@ -7,8 +7,6 @@
 #
 # $Id$
 
-import sys
-
 import gobject
 import gtk
 import pango
@@ -143,6 +141,10 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RVPaned
 
+    name = _("Paned Browser")
+    accelerated_name = _("_Paned Browser")
+    priority = 3
+
     __prefs_window = None
 
     def set_all_panes(klass):
@@ -186,12 +188,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
         def __popup_menu(self, view):
             from widgets import watcher
-            songs = self.__get_songs()
-            songs.sort()
-            menu = SongsMenu(watcher, songs)
+            menu = SongsMenu(watcher, sorted(self.__get_songs()))
             menu.show_all()
-            menu.popup(None, None, None, 0, gtk.get_current_event_time())
-            return True
+            return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
         def __destroy(self, model):
             self.set_model(None)
@@ -254,8 +253,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                         new[val].add(song)
 
             if new:
-                keys = new.keys()
-                keys.sort()
+                keys = sorted(new.keys())
                 if keys[0] == "":
                     unknown = new[""]
                     keys.pop(0)
@@ -328,11 +326,11 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             model, rows = self.get_selection().get_selected_rows()
             if rows and rows[0] == (0,):
                 songs = [(row[1] or set()) for row in model]
-                return list(reduce(set.union, songs, set()))
+                return reduce(set.union, songs, set())
             else:
                 songs = [model[row][1] for row in rows]
-                if len(songs) == 1: return list(songs[0])
-                else: return list(reduce(set.union, songs, set()))
+                if len(songs) == 1: return songs[0]
+                else: return reduce(set.union, songs, set())
 
     def __init__(self, watcher, player):
         super(PanedBrowser, self).__init__(spacing=6)
@@ -514,4 +512,4 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         if self.__save: self.save()
         self.emit('songs-selected', list(songs), None)
 
-browsers = [(3, _("_Paned Browser"), PanedBrowser, True)]
+browsers = [PanedBrowser]

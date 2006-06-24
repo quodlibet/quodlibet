@@ -8,7 +8,6 @@
 # $Id$
 
 import os
-import sys
 
 import gobject
 import gtk
@@ -119,6 +118,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
     __model = None
+
+    name = _("Album List")
+    accelerated_name = _("_Album List")
+    priority = 4
 
     def init(klass, watcher):
         pattern_fn = os.path.join(const.USERDIR, "album_pattern")
@@ -302,9 +305,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
 
-            self.people = [(num, person) for (person, num) in people.items()]
-            self.people.sort()
-            self.people = [person for (num, person) in self.people[:100]]
+            self.people = sorted(people.keys(), key=people.__getitem__)[:100]
             self.__long_length = util.format_time_long(self.length)
             self.__length = util.format_time(self.length)
 
@@ -545,8 +546,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         menu.prepend(gtk.SeparatorMenuItem())
         menu.prepend(button)
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __refresh_album(self, menuitem, selection):
         model, rows = selection.get_selected_rows()
@@ -577,11 +577,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         # Sort first by how the albums appear in the model itself,
         # then within the album using the default order.
         songs = []
-        song_dict = set() # Avoid n**2 checks for duplicates.
         for album in albums:
-            new_songs = list(album.songs)
-            new_songs.sort()
-            songs.extend(filter(lambda s: s not in song_dict, new_songs))
+            songs.extend(sorted(album.songs))
         return songs
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
@@ -678,4 +675,4 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                     confval = "\n" + confval[:-1]
                 config.set("browsers", "albums", confval)
 
-browsers = [(4, _("_Album List"), AlbumList, True)]
+browsers = [AlbumList]

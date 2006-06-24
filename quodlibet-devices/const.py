@@ -32,6 +32,7 @@ Zack Weinberg
 Bastian Kleineidam
 Eduardo Gonzalez
 Decklin Foster
+Federico Pelloni
 
 Anders Carlsson (trayicon)
 Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")
@@ -118,12 +119,15 @@ MACHINE_TAGS = (
     "replaygain_album_peak replaygain_track_peak "
     ).split()
 
+ENCODING = locale.getpreferredencoding()
+
 # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
 if "G_FILENAME_ENCODING" in os.environ:
     FSCODING = os.environ["G_FILENAME_ENCODING"].split(",")[0]
-    if FSCODING == "@locale": FSCODING = locale.getpreferredencoding()
+    if FSCODING == "@locale":
+        FSCODING = ENCODING
 elif "G_BROKEN_FILENAMES" in os.environ:
-    FSCODING = locale.getpreferredencoding()
+    FSCODING = ENCODING
 else: FSCODING = "utf-8"
 
 del(os)

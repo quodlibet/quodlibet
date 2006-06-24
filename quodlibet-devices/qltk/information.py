@@ -7,13 +7,12 @@
 #
 # $Id$
 
-import locale
-import sys
 import time
 
 import gtk
 import pango
 
+import const
 import qltk
 import util
 
@@ -167,9 +166,11 @@ class OneSong(qltk.Notebook):
             if i == 0: return _("Never")
             else: return ngettext("%d time", "%d times", i) % i
         def ftime(t):
-            if t == 0: return _("Unknown")
-            else: return time.strftime("%c", time.localtime(t)).decode(
-                locale.getpreferredencoding())
+            if t == 0:
+                return _("Unknown")
+            else:
+                timestr = time.strftime("%c", time.localtime(t))
+                return timestr.decode(const.ENCODING)
 
         playcount = counter(song.get("~#playcount", 0))
         skipcount = counter(song.get("~#skipcount", 0))
@@ -199,9 +200,11 @@ class OneSong(qltk.Notebook):
 
     def _file(self, song, box):
         def ftime(t):
-            if t == 0: return _("Unknown")
-            else: return time.strftime("%c", time.localtime(t)).decode(
-                locale.getpreferredencoding())
+            if t == 0:
+                return _("Unknown")
+            else:
+                timestr = time.strftime("%c", time.localtime(t))
+                return timestr.decode(const.ENCODING)
 
         fn = util.fsdecode(util.unexpand(song["~filename"]))
         length = util.format_time_long(song["~#length"])
@@ -239,9 +242,8 @@ class OneAlbum(qltk.Notebook):
         vbox = gtk.VBox(spacing=12)
         vbox.set_border_width(12)
         swin.add_with_viewport(vbox)
-        songs = list(songs)
         # Needed to get proper track/disc/part ordering
-        songs.sort()
+        songs = sorted(songs)
         self._title(songs, vbox)
         self._album(songs, vbox)
         self._people(songs, vbox)
@@ -317,8 +319,8 @@ class OneAlbum(qltk.Notebook):
             artists.update(song.list("artist"))
             performers.update(song.list("performer"))
 
-        artists = list(artists); artists.sort()
-        performers = list(performers); performers.sort()
+        artists = sorted(artists)
+        performers = sorted(performers)
 
         if artists:
             if len(artists) == 1: title = _("artist")
@@ -453,8 +455,7 @@ class ManySongs(qltk.Notebook):
         for song in songs:
             if "artist" in song: artists.update(song.list("artist"))
             else: none += 1
-        artists = list(artists)
-        artists.sort()
+        artists = sorted(artists)
         num_artists = len(artists)
 
         if none: artists.append(ngettext("%d song with no artist",
@@ -470,8 +471,7 @@ class ManySongs(qltk.Notebook):
         for song in songs:
             if "album" in song: albums.update(song.list("album"))
             else: none += 1
-        albums = list(albums)
-        albums.sort()
+        albums = sorted(albums)
         num_albums = len(albums)
 
         if none: albums.append(ngettext("%d song with no album",

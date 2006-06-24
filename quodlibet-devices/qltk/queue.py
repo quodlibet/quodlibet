@@ -190,8 +190,7 @@ class PlayQueue(SongList):
         remove.connect('activate', self.__remove)
         menu.prepend(remove)
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
-        return True
+        return self.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __remove(self, item):
         model, paths = self.get_selection().get_selected_rows()

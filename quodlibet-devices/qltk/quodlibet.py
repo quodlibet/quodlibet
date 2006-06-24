@@ -7,12 +7,10 @@
 #
 # $Id$
 
-import locale
 import os
 import random
 import sys
 
-import gobject
 import gst
 import gtk
 import pango
@@ -139,7 +137,7 @@ class QuodLibetWindow(gtk.Window):
         hbox = gtk.HBox(spacing=6)
 
         # play controls
-        t = PlayControls(player)
+        t = PlayControls(player, watcher)
         self.volume = t.volume
         hbox.pack_start(t, expand=False, fill=False)
 
@@ -414,14 +412,20 @@ class QuodLibetWindow(gtk.Window):
              self.showhide_playqueue,
              config.getboolean("memory", "queue"))])
 
-        ag.add_radio_actions([
-            (a, None, l, None, None, i) for (i, (a, l, K)) in
-            enumerate(browsers.get_view_browsers())
-            ], browsers.index(config.get("memory", "browser")),
-                             self.select_browser, player)
+        view_actions = []
+        for i, Kind in enumerate(browsers.browsers):
+            action = "View" + Kind.__name__
+            label = Kind.accelerated_name
+            view_actions.append((action, None, label, None, None, i))
+        current = browsers.index(config.get("memory", "browser"))
+        ag.add_radio_actions(
+            view_actions, current, self.select_browser, player)
 
-        for id, label, Kind in browsers.get_browsers():
-            act = gtk.Action(id, label, None, None)
+        for Kind in browsers.browsers:
+            if not Kind.in_menu: continue
+            action = "Browser" + Kind.__name__
+            label = Kind.accelerated_name
+            act = gtk.Action(action, label, None, None)
             act.connect_object(
                 'activate', LibraryBrowser, Kind, widgets.watcher)
             ag.add_action(act)
@@ -530,6 +534,9 @@ class QuodLibetWindow(gtk.Window):
             else: self.set_title("Quod Libet")
 
     def __song_started(self, player, song):
+        if song is None:
+            self.__update_title(player, [song])
+
         for wid in ["Jump", "Next", "EditTags", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
@@ -713,8 +720,8 @@ class QuodLibetWindow(gtk.Window):
                         msg = _("%s could not be added to your library.\n\n")
                         msg %= util.escape(util.fsdecode(
                             os.path.basename(filename)))
-                        msg += util.escape(util.fsdecode(
-                            "".join(tb).decode(locale.getpreferredencoding())))
+                        msg += util.escape("".join(tb).decode(
+                            const.ENCODING, "replace"))
                         d = ErrorMessage(self, _("Unable to add song"), msg)
                         d.label.set_selectable(True)
                         d.run()
@@ -749,8 +756,8 @@ class QuodLibetWindow(gtk.Window):
         header = col.header_name
         menu = self.songlist.Menu(header, self.browser, widgets.watcher)
         if menu is not None:
-            menu.popup(None, None, None, 0, gtk.get_current_event_time())
-            return True
+            return self.songlist.popup_menu(menu, 0,
+                    gtk.get_current_event_time())
 
     def __current_song_prop(self, *args):
         song = player.playlist.song
@@ -840,4 +847,3 @@ class QuodLibetWindow(gtk.Window):
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         statusbar.set_text(t)
-        gobject.idle_add(statusbar.queue_resize)

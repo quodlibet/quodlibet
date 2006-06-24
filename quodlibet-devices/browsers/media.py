@@ -262,6 +262,10 @@ class MediaDevices(Browser, gtk.VBox):
 
     expand = CustomPaned
 
+    name = _("Media Devices")
+    accelerated_name = _("_Media Devices")
+    priority = 25
+
     def cell_data(col, render, model, iter):
         device = model[iter][0]
         if device.is_connected():
@@ -645,4 +649,4 @@ class MediaDevices(Browser, gtk.VBox):
         if device.cleanup: device.cleanup(wlw, 'delete')
         wlw.destroy()
 
-browsers = [(25, _("_Media Devices"), MediaDevices, True)]
+browsers = [MediaDevices]

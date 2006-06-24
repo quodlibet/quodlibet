@@ -12,8 +12,7 @@ from util import tag
 
 class _TagsCombo(object):
     from formats import USEFUL_TAGS as __tags
-    __tags = list(__tags)
-    __tags.sort()
+    __tags = sorted(__tags)
 
     def _fill_model(self, can_change):
         self.clear()
@@ -21,9 +20,9 @@ class _TagsCombo(object):
         self.pack_start(render, True)
         self.add_attribute(render, 'text', 1)
 
-        if can_change is None: can_change = self.__tags
-        can_change = list(can_change)
-        can_change.sort()
+        if can_change is None:
+            can_change = self.__tags
+        can_change = sorted(can_change)
 
         model = self.get_model()
         for t in can_change:

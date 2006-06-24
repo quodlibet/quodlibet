@@ -6,13 +6,12 @@
 #
 # $Id$
 
-import locale
-
 import gobject
 import gst
 import gtk
 
 import config
+import const
 
 class NoSinkError(ValueError): pass
 class NoSourceError(ValueError): pass
@@ -31,7 +30,6 @@ def GStreamerSink(pipeline):
             except gobject.GError: pipe = None
             else: pipeline = "autoaudiosink"
         else: pipe = None
-    locale.getlocale(locale.LC_NUMERIC)
     if pipe: return pipe, pipeline
     else: raise NoSinkError(pipeline)
 
@@ -90,7 +88,7 @@ class PlaylistPlayer(gtk.Object):
             self.__tag(message.parse_tag())
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
-            err = str(err).decode(locale.getpreferredencoding(), 'replace')
+            err = str(err).decode(const.ENCODING, 'replace')
             self.error(err, True)
         return True
 
@@ -119,6 +117,10 @@ class PlaylistPlayer(gtk.Object):
                        self.bin.set_state(gst.STATE_NULL)
                    else: self.bin.set_state(gst.STATE_PAUSED)
                 else: self.bin.set_state(gst.STATE_PLAYING)
+            elif paused is True:
+                # Something wants us to pause between songs, or when
+                # we've got no song playing (probably StopAfterMenu).
+                self.emit('paused')
     def __get_paused(self): return self.__paused
     paused = property(__get_paused, __set_paused)
 

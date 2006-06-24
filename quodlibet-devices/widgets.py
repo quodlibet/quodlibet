@@ -28,8 +28,12 @@ from qltk.quodlibet import QuodLibetWindow
 from qltk.remote import FSInterface, FIFOControl
 from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu
-from qltk.trayicon import TrayIcon
 from qltk.watcher import SongWatcher
+
+try:
+    from qltk.dbus_ import DBusHandler
+except None:
+    DBusHandler = lambda player: None
 
 global main, watcher
 main = watcher = None
@@ -68,6 +72,16 @@ def init(player, library):
 
     watcher = SongWatcher()
 
+    in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
+             "~#added ~#bitrate ~current ~#laststarted ~basename "
+             "~dirname").split()
+    for Kind in browsers.browsers:
+        if Kind.headers is not None: Kind.headers.extend(in_all)
+        Kind.init(watcher)
+
+    main = QuodLibetWindow(watcher, player)
+    main.connect('destroy', gtk.main_quit)
+
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
@@ -82,25 +96,13 @@ def init(player, library):
         [os.path.join(const.BASEDIR, "plugins", "editing"),
          os.path.join(const.USERDIR, "plugins", "editing")], "editing")
 
-    in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
-             "~#added ~#bitrate ~current ~#laststarted ~basename "
-             "~dirname").split()
-    for Kind in zip(*browsers.browsers)[2]:
-        if Kind.headers is not None: Kind.headers.extend(in_all)
-        Kind.init(watcher)
-
-    main = QuodLibetWindow(watcher, player)
-    main.connect('destroy', gtk.main_quit)
-
     gtk.about_dialog_set_url_hook(website_wrap)
 
     # These stay alive in the watcher/other callbacks.
     FSInterface(player)
     FIFOControl(watcher, main, player)
-
+    DBusHandler(player)
     CountManager(watcher, player, main.playlist)
-
-    TrayIcon(watcher, main, player)
 
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()
