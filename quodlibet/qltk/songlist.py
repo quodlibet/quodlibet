@@ -777,7 +777,8 @@ class SongList(AllTreeView, util.InstanceTracker):
     def __song_updated(self, watcher, songs):
         model = self.get_model()
         for row in model:
-            if row[0] in songs: model.row_changed(row.path, row.iter)
+            if row[0] in songs:
+                model.row_changed(row.path, row.iter)
 
     def __song_removed(self, watcher, songs):
         # The selected songs are removed from the library and should
@@ -786,18 +787,24 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     def __song_properties(self, watcher):
         model, rows = self.get_selection().get_selected_rows()
-        if rows: songs = [model[row][0] for row in rows]
+        if rows:
+            songs = [model[row][0] for row in rows]
         else:
             from player import playlist
-            songs = [playlist.song]
+            if playlist.song:
+                songs = [playlist.song]
+            else: return
         SongProperties(watcher, songs)
 
     def __information(self, watcher):
         model, rows = self.get_selection().get_selected_rows()
-        if rows: songs = [model[row][0] for row in rows]
+        if rows:
+            songs = [model[row][0] for row in rows]
         else:
             from player import playlist
-            songs = [playlist.song]
+            if playlist.song:
+                songs = [playlist.song]
+            else: return
         Information(watcher, songs)
 
     # Build a new filter around our list model, set the headers to their
