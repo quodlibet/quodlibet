@@ -24,9 +24,7 @@ else:
     _modplug.ModPlug_GetName.restype = ctypes.c_char_p
     try: gst.element_factory_make("modplug")
     except gst.PluginNotFoundError:
-        try: gst.element_factory_make("mikmod")
-        except gst.PluginNotFoundError:
-            extensions = []
+        extensions = []
 
 class ModFile(AudioFile):
 
