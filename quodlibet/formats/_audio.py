@@ -143,6 +143,10 @@ class AudioFile(dict):
                 try: return int(self["discnumber"].split("/")[1])
                 except (ValueError, IndexError, TypeError, KeyError):
                     return default
+            elif key == "lyrics":
+                try: fileobj = file(self.lyric_filename, "rU")
+                except EnvironmentError: return default
+                else: return fileobj.read().decode("utf-8", "replace")
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default
@@ -156,6 +160,11 @@ class AudioFile(dict):
                     const.FSCODING, "replace"), _("Unknown"))
             else: return v
         else: return dict.get(self, key, default)
+
+    lyric_filename = property(lambda self: util.fsencode(
+        os.path.join(os.path.expanduser("~/.lyrics"),
+                     self.comma("artist").replace('/', '')[:128],
+                     self.comma("title").replace('/', '')[:128] + '.lyric')))
 
     def comma(self, key):
         """Get all values of a tag, separated by commas. Synthetic
