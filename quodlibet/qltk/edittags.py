@@ -20,7 +20,8 @@ import formats
 import util
 import util.massagers
 
-from library import AudioFileGroup
+from library import AudioFileGroup, library
+from qltk.completion import LibraryValueCompletion
 from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from qltk.views import RCMHintedTreeView
 from qltk.wlw import WritingWindow
@@ -135,6 +136,8 @@ class AddTagDialog(gtk.Dialog):
         table.attach(self.__tag, 1, 2, 0, 1)
 
         self.__val = gtk.Entry()
+        if library is not None:
+            self.__val.set_completion(LibraryValueCompletion("", library))
         label = gtk.Label()
         label.set_text(_("_Value:"))
         label.set_alignment(0.0, 0.5)
@@ -160,10 +163,17 @@ class AddTagDialog(gtk.Dialog):
         for entry in [self.__tag, self.__val]:
             entry.connect(
                 'changed', self.__validate, add, invalid, tips, valuebox)
+        self.__tag.connect('changed', self.__set_value_completion)
+        self.__set_value_completion(self.__tag)
 
         if can_change == True:
             self.__tag.child.connect_object(
                 'activate', gtk.Entry.grab_focus, self.__val)
+
+    def __set_value_completion(self, tag):
+        completion = self.__val.get_completion()
+        if completion:
+            completion.set_tag(self.__tag.tag, library)
 
     def get_tag(self):
         try: return self.__tag.tag
@@ -236,6 +246,7 @@ class EditTags(gtk.VBox):
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_tag, model)
+        render.connect('editing-started', self.__value_editing_started, model)
         render.markup = 1
         column = gtk.TreeViewColumn(
             _('Value'), render, markup=1, editable=3, strikethrough=4)
@@ -642,3 +653,15 @@ class EditTags(gtk.VBox):
         buttonbox.set_sensitive(bool(songinfo.can_change()))
         for b in buttons: b.set_sensitive(False)
         add.set_sensitive(bool(songs))
+
+    def __value_editing_started(self, render, editable, path, model):
+        if library is None:
+            return
+
+        try:
+            if not editable.get_completion():
+                tag = model[path][TAG]
+                completion = LibraryValueCompletion(tag, library)
+                editable.set_completion(completion)
+        except AttributeError:
+            pass

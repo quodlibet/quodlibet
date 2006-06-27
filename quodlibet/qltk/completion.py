@@ -9,6 +9,7 @@
 import gtk
 
 import const
+import formats
 
 class EntryWordCompletion(gtk.EntryCompletion):
     """Entry completion for simple words, where a word boundry is
@@ -102,3 +103,27 @@ class LibraryTagCompletion(EntryWordCompletion):
         for tag in tags:
             model.append([tag])
     __refreshmodel = classmethod(__refreshmodel)
+
+class LibraryValueCompletion(gtk.EntryCompletion):
+    """Entry completion for a library value, for a specific tag."""
+
+    def __init__(self, tag, library):
+        super(LibraryValueCompletion, self).__init__()
+        self.set_model(gtk.ListStore(str))
+        self.set_text_column(0)
+        self.set_tag(tag, library)
+
+    def set_tag(self, tag, library):
+        model = self.get_model()
+        model.clear()
+
+        if tag is None:
+            return
+        elif tag in ("bpm date discnumber isrc originaldate recordingdate "
+                     "tracknumber").split() + const.MACHINE_TAGS:
+            return
+        elif tag in formats._audio.PEOPLE:
+            tag = "~people"
+
+        for value in sorted(library.tag_values(tag)):
+            model.append(row=[value])
