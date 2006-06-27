@@ -127,3 +127,4 @@ class LibraryValueCompletion(gtk.EntryCompletion):
 
         for value in sorted(library.tag_values(tag)):
             model.append(row=[value])
+        self.set_minimum_key_length(int(len(model) > 40))
