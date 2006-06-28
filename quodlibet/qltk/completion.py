@@ -8,7 +8,6 @@
 
 import gtk
 
-import const
 import formats
 
 class EntryWordCompletion(gtk.EntryCompletion):
@@ -91,7 +90,7 @@ class LibraryTagCompletion(EntryWordCompletion):
         # ignoring removed.
         for song in library.itervalues():
             for tag in song.keys():
-                if not (tag.startswith("~#") or tag in const.MACHINE_TAGS):
+                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
         tags.update(["~dirname", "~basename", "~people", "~format"])
         for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
@@ -120,9 +119,9 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         if tag is None:
             return
         elif tag in ("bpm date discnumber isrc originaldate recordingdate "
-                     "tracknumber").split() + const.MACHINE_TAGS:
+                     "tracknumber").split() + formats.MACHINE_TAGS:
             return
-        elif tag in formats._audio.PEOPLE:
+        elif tag in formats.PEOPLE:
             tag = "~people"
 
         for value in sorted(library.tag_values(tag)):

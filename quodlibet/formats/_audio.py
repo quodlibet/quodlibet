@@ -20,6 +20,22 @@ import util
 
 from util.uri import URI
 
+USEFUL_TAGS = (
+    # Ogg Vorbis spec tags
+    "title version album tracknumber artist genre performer copyright "
+    "license organization description location contact isrc date "
+
+    # Other tags we like
+    "arranger author composer conductor lyricist discnumber labelid part "
+    "website language bpm albumartist originaldate originalalbum "
+    "originalartist recordingdate"
+    ).split()
+MACHINE_TAGS = (
+    "musicbrainz_trackid musicbrainz_trmid musicbrainz_albumid "
+    "musicbrainz_albumartistid musicbrainz_artistid musicip_puid "
+    "replaygain_track_gain replaygain_album_gain "
+    "replaygain_album_peak replaygain_track_peak "
+    ).split()
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
            "~#skipcount ~#rating ~bookmark").split()
 PEOPLE = ("albumartist artist author composer performer originalartist "

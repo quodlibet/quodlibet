@@ -112,13 +112,6 @@ MENU = """<ui>
   </menubar>
 </ui>"""
 
-MACHINE_TAGS = (
-    "musicbrainz_trackid musicbrainz_trmid musicbrainz_albumid "
-    "musicbrainz_albumartistid musicbrainz_artistid musicip_puid "
-    "replaygain_track_gain replaygain_album_gain "
-    "replaygain_album_peak replaygain_track_peak "
-    ).split()
-
 ENCODING = locale.getpreferredencoding()
 
 # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html

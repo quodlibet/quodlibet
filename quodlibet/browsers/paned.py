@@ -16,7 +16,7 @@ import qltk
 import util
 
 from browsers._base import Browser
-from formats._audio import PEOPLE
+from formats import PEOPLE
 from library import library
 from parse import Query
 from qltk.entry import ValidatingEntry

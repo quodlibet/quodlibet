@@ -15,7 +15,6 @@ import pango
 import qltk
 
 import config
-import const
 import formats
 import util
 import util.massagers
@@ -627,7 +626,7 @@ class EditTags(gtk.VBox):
         keys = sorted(songinfo.realkeys())
 
         if not config.getboolean("editing", "alltags"):
-            keys = filter(lambda k: k not in const.MACHINE_TAGS, keys)
+            keys = filter(lambda k: k not in formats.MACHINE_TAGS, keys)
 
         # reverse order here so insertion puts them in proper order.
         for tag in ['album', 'artist', 'title']:
