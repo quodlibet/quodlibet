@@ -17,6 +17,14 @@ _TRANS = {"inorder": _("In Order"),
           "onesong": _("One Song")
           }
 
+# Canonical accelerated versions, in case we need them (e.g. the tray
+# icon uses them right now).
+
+_("_In Order")
+_("_Shuffle")
+_("_Weighted")
+_("_One Song")
+
 class PlayOrder(gtk.ComboBox):
     def __init__(self, model):
         super(PlayOrder, self).__init__(gtk.ListStore(str))
@@ -37,4 +45,3 @@ class PlayOrder(gtk.ComboBox):
     def __changed_order(self, model):
         model.order = self.get_active()
         config.set("memory", "order", _ORDERS[self.get_active()])
-
