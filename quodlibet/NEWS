@@ -11,6 +11,8 @@ Quod Libet 0.22 requires Python 2.4 or later.
 0.22
  * The tray icon is now an optional plugin. (#724)
  * Python 2.4 is now required.
+ * Updated Translations:
+   * Galician and Spanish, by Johám-Luís Miguéns Vila.
 
 0.21 - Faith, AND the possibility of weaponized kissing??
  * Bug Fixes:
