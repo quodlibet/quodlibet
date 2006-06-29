@@ -42,13 +42,13 @@ class Subprocess(gobject.GObject):
                 '', gobject.PARAM_READABLE),
 
         'stdin' : (int, 'stdin', "child's stdin file descriptor",
-                ~sys.maxint, sys.maxint, -1, gobject.PARAM_READABLE),
+                -1, 0x7fffffff, -1, gobject.PARAM_READABLE),
 
         'stdout' : (int, 'stdout', "child's stdout file descriptor",
-                ~sys.maxint, sys.maxint, -1, gobject.PARAM_READABLE),
+                -1, 0x7fffffff, -1, gobject.PARAM_READABLE),
 
         'stderr' : (int, 'stderr', "child's stderr file descriptor",
-                ~sys.maxint, sys.maxint, -1, gobject.PARAM_READABLE),
+                -1, 0x7fffffff, -1, gobject.PARAM_READABLE),
     }
 
     def __init__(self, process=[], cmd='', newlines='\n', stdin=None):
