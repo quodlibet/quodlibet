@@ -19,13 +19,18 @@ from parse import XMLFromPattern
 from qltk.textedit import PatternEdit
 
 class SongInfo(gtk.Label):
-    # Translators: Only worry about "by", "Disc", and "Track" below.
-    _pattern = _("""\
-\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)><version|
+    _pattern = """\
+\\<span weight='bold' size='large'\\><title>\\</span\\>\
+<~length| (<~length>)><version|
 \\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
-by <~people>><album|
-\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
-<part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
+%(people)s><album|
+\\<b\\><album>\\</b\\><discnumber| - %(disc)s>\
+<part| - \\<b\\><part>\\</b\\>><tracknumber| - %(track)s>>""" % {
+        # Translators: As in "by Artist Name"
+        "people": _("by %s") % "<~people>",
+        "disc": _("Disc %s") % "<discnumber>",
+        "track": _("Track %s") % "<tracknumber>"
+        }
 
     __PATTERN_FILENAME = os.path.join(const.USERDIR, "songinfo")
 
