@@ -6,6 +6,7 @@
 #
 # $Id$
 
+import gobject
 import gtk
 
 import formats
@@ -106,6 +107,8 @@ class LibraryTagCompletion(EntryWordCompletion):
 class LibraryValueCompletion(gtk.EntryCompletion):
     """Entry completion for a library value, for a specific tag."""
 
+    __sig = None
+
     def __init__(self, tag, library):
         super(LibraryValueCompletion, self).__init__()
         self.set_model(gtk.ListStore(str))
@@ -113,9 +116,6 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         self.set_tag(tag, library)
 
     def set_tag(self, tag, library):
-        model = self.get_model()
-        model.clear()
-
         if tag is None:
             return
         elif tag in ("bpm date discnumber isrc originaldate recordingdate "
@@ -124,6 +124,21 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         elif tag in formats.PEOPLE:
             tag = "~people"
 
-        for value in sorted(library.tag_values(tag)):
+        if self.__sig is not None:
+            gobject.source_remove(self.__sig)
+        next = self.__fill_tag(tag, library).next
+        self.__sig = gobject.idle_add(next)
+
+    def __fill_tag(self, tag, library):
+        model = self.get_model()
+        model.clear()
+        yield True
+        values = sorted(library.tag_values(tag))
+        self.set_minimum_key_length(int(len(values) > 100))
+        yield True
+        for count, value in enumerate(values):
             model.append(row=[value])
-        self.set_minimum_key_length(int(len(model) > 40))
+            if count % 1000 == 0:
+                yield True
+        self.__sig = None
+        yield False
