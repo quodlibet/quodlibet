@@ -14,6 +14,7 @@ import urlparse
 import gobject
 import gtk
 
+import const
 import formats
 import qltk
 import util
@@ -47,9 +48,9 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         column.set_attributes(render, text=0)
         self.append_column(column)
         self.set_search_equal_func(search_func, True)
-        folders = [os.environ["HOME"], "/"]
+        folders = [const.HOME, "/"]
         # Read in the GTK bookmarks list; gjc says this is the right way
-        try: f = file(os.path.join(os.environ["HOME"], ".gtk-bookmarks"))
+        try: f = file(os.path.join(const.HOME, ".gtk-bookmarks"))
         except EnvironmentError: pass
         else:
             for line in f.readlines():
@@ -81,7 +82,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def go_to(self, initial):
         path = []
         head, tail = os.path.split(initial)
-        while head != os.path.dirname(os.environ["HOME"]) and tail != '':
+        while head != os.path.dirname(const.HOME) and tail != '':
             if tail:
                 def isvisibledir(t):
                     return (t[0] != "." and
@@ -93,7 +94,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 except ValueError: break
             head, tail = os.path.split(head)
 
-        if initial.startswith(os.environ["HOME"]): path.insert(0, 0)
+        if initial.startswith(const.HOME):
+            path.insert(0, 0)
         else: path.insert(0, 1)
         for i in range(len(path)):
             self.expand_row(tuple(path[:i+1]), False)

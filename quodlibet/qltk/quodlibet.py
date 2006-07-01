@@ -686,7 +686,7 @@ class QuodLibetWindow(gtk.Window):
 
     def open_chooser(self, action):
         if not os.path.exists(self.last_dir):
-            self.last_dir = os.environ["HOME"]
+            self.last_dir = const.HOME
 
         if action.get_name() == "AddFolders":
             chooser = FolderChooser(self, _("Add Music"), self.last_dir)

@@ -16,6 +16,7 @@ import os
 import gtk
 
 import config
+import const
 import formats
 import qltk
 
@@ -44,7 +45,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
 
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
-        dt = DirectoryTree(initial=os.environ["HOME"])
+        dt = DirectoryTree(initial=const.HOME)
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
         dt.drag_source_set(gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
