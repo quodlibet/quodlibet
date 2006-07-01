@@ -32,7 +32,7 @@ from qltk.watcher import SongWatcher
 
 try:
     from qltk.dbus_ import DBusHandler
-except None:
+except ImportError:
     DBusHandler = lambda player: None
 
 global main, watcher
