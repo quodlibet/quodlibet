@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-06-28 11:09+0200\n"
-"PO-Revision-Date: 2006-07-02 13:35+0200\n"
+"PO-Revision-Date: 2006-07-02 22:40+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1466,11 +1466,11 @@ msgstr "_Filters"
 
 #: ../qltk/quodlibet.py:339
 msgid "Not Played To_day"
-msgstr "_Vandaag Niet Ge_speeld"
+msgstr "Vandaag Niet Ge_speeld"
 
 #: ../qltk/quodlibet.py:341
 msgid "Not Played in a _Week"
-msgstr "_Een _Week Niet Gespeeld"
+msgstr "Een _Week Niet Gespeeld"
 
 #: ../qltk/quodlibet.py:343
 msgid "Not Played in a _Month"
