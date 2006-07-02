@@ -51,7 +51,7 @@ msgstr "_Informacje"
 #. a sample translation would be "_Remove from Library".
 #: ../stock.py:70 ../stock.py:74
 msgid "ql-remove"
-msgstr "Usuń z biblioteki"
+msgstr "Usuń z _biblioteki"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
