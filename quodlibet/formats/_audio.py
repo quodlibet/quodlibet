@@ -84,6 +84,10 @@ class AudioFile(dict):
         # renaming files. So now it uses identity.
         return hash(id(self))
 
+    def __eq__(self, other):
+        # And to preserve Python hash rules, we need a strict __eq__.
+        return self is other
+
     def reload(self):
         """Reload an audio file from disk. The caller is responsible for
         handling any errors."""

@@ -72,7 +72,7 @@ class SongInfo(gtk.Label):
         self.__update_info(player)
 
     def __check_change(self, player, songs):
-        if player.song in songs:
+        if player.info in songs:
             self.__update_info(player)
 
     def __check_started(self, player, song):
