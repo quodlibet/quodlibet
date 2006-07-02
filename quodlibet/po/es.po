@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-29 18:37-0500\n"
-"PO-Revision-Date: 2006-06-28 22:31+0200\n"
+"POT-Creation-Date: 2006-07-01 21:43-0500\n"
+"PO-Revision-Date: 2006-06-30 15:21+0200\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: spanish\n"
 "MIME-Version: 1.0\n"
@@ -48,34 +48,39 @@ msgstr "_Información"
 #. Translators: Only translate this if it conflicts with "Delete",
 #. as is the case in e.g. Finnish. It should be disambiguated as
 #. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
-#. Don't literally translate "ql-remove".
-#: ../stock.py:69 ../stock.py:73
+#. Don't literally translate "ql-remove". It needs an access key, so
+#. a sample translation would be "_Remove from Library".
+#: ../stock.py:70 ../stock.py:74
 msgid "ql-remove"
-msgstr "Eliminar"
+msgstr "_Eliminar"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:78
+#. This string needs an access key.
+#: ../stock.py:80
 msgid "gtk-media-next"
-msgstr "Siguiente"
+msgstr "_Siguiente"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:81
-msgid "gtk-media-previous"
-msgstr "Anterior"
-
-#. Translators: Only translate this if GTK does so incorrectly or not
-#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
 #: ../stock.py:84
-msgid "gtk-media-play"
-msgstr "Reproducir"
+msgid "gtk-media-previous"
+msgstr "_Anterior"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:87
+#. This string needs an access key.
+#: ../stock.py:88
+msgid "gtk-media-play"
+msgstr "_Reproducir"
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../stock.py:92
 msgid "gtk-media-pause"
-msgstr "Parar"
+msgstr "_Parar"
 
 #: ../library.py:44 ../library.py:55
 #, python-format
@@ -742,7 +747,7 @@ msgstr "_Valor"
 msgid "Edit saved values..."
 msgstr "Editar los valores guardados..."
 
-#: ../qltk/chooser.py:40 ../qltk/filesel.py:199
+#: ../qltk/chooser.py:40 ../qltk/filesel.py:201
 msgid "Songs"
 msgstr "Canciones"
 
@@ -969,52 +974,51 @@ msgstr "Muestra _mensajes adicionales para debug"
 msgid "Tag Editing"
 msgstr "Edición de etiquetas"
 
-#: ../qltk/filesel.py:38
+#: ../qltk/filesel.py:39
 msgid "Folders"
 msgstr "Directorios"
 
-#: ../qltk/filesel.py:69
+#: ../qltk/filesel.py:70
 msgid "New Folder..."
 msgstr "Nuevo directorio"
 
-#: ../qltk/filesel.py:124
+#: ../qltk/filesel.py:126
 msgid "New Folder"
 msgstr "Nuevo directorio"
 
-#: ../qltk/filesel.py:124
+#: ../qltk/filesel.py:126
 msgid "Enter a name for the new folder:"
 msgstr "Introduce un nombre para el nuevo directorio"
 
-#: ../qltk/filesel.py:133
+#: ../qltk/filesel.py:135
 msgid "Unable to create folder"
 msgstr "Imposible crear el directorio"
 
-#: ../qltk/filesel.py:146
+#: ../qltk/filesel.py:148
 msgid "Unable to delete folder"
 msgstr "Imposible eliminar el directorio"
 
-#. Translators: Only worry about "by", "Disc", and "Track" below.
-#: ../qltk/info.py:23
-msgid ""
-"\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)"
-"><version|\n"
-"\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-"by <~people>><album|\n"
-"\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b\\><part>"
-"\\</b\\>><tracknumber| - Track <tracknumber>>>"
+#. Translators: As in "by Artist Name"
+#: ../qltk/info.py:30
+#, python-format
+msgid "by %s"
 msgstr ""
-"\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)"
-"><version|\n"
-"\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-"por <~people>><album|\n"
-"\\<b\\><album>\\</b\\><discnumber| - Disco <discnumber>><part| - \\<b"
-"\\><part>\\</b\\>><tracknumber| - Pista <tracknumber>>>"
 
-#: ../qltk/info.py:47
+#: ../qltk/info.py:31 ../qltk/information.py:110 ../qltk/information.py:353
+#, python-format
+msgid "Disc %s"
+msgstr "Disco %s"
+
+#: ../qltk/info.py:32 ../qltk/information.py:115
+#, python-format
+msgid "Track %s"
+msgstr "Pista %s"
+
+#: ../qltk/info.py:52
 msgid "_Edit Display..."
 msgstr "_Editar vista"
 
-#: ../qltk/info.py:81
+#: ../qltk/info.py:86
 msgid "Not playing"
 msgstr "Sin reproducción"
 
@@ -1034,16 +1038,6 @@ msgstr "Información"
 #: ../qltk/information.py:68
 msgid "Lyrics"
 msgstr "Letras"
-
-#: ../qltk/information.py:110 ../qltk/information.py:353
-#, python-format
-msgid "Disc %s"
-msgstr "Disco %s"
-
-#: ../qltk/information.py:115
-#, python-format
-msgid "Track %s"
-msgstr "Pista %s"
 
 #: ../qltk/information.py:166 ../qltk/information.py:179
 #: ../qltk/songlist.py:306
@@ -1699,11 +1693,11 @@ msgstr "patrón"
 msgid "_Filter on %s"
 msgstr "_Filtrar por %s"
 
-#: ../qltk/songlist.py:546 ../browsers/filesystem.py:67
+#: ../qltk/songlist.py:546 ../browsers/filesystem.py:68
 msgid "Unable to copy songs"
 msgstr "Imposible copiar canciones"
 
-#: ../qltk/songlist.py:547 ../browsers/filesystem.py:68
+#: ../qltk/songlist.py:547 ../browsers/filesystem.py:69
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Los ficheros seleccionados no han podido ser copiados a otras listas de "
@@ -1833,7 +1827,7 @@ msgstr "Preferencias de la Lista de Álbumes"
 
 #: ../browsers/albums.py:68
 msgid "Show album _covers"
-msgstr "Mostrar carátulas"
+msgstr "Mostrar _carátulas"
 
 #: ../browsers/albums.py:84
 msgid "Album Display"
@@ -1939,11 +1933,11 @@ msgstr "_Eliminar de la Lista"
 msgid "_Import"
 msgstr "_Importar"
 
-#: ../browsers/playlists.py:418 ../browsers/playlists.py:497
+#: ../browsers/playlists.py:418 ../browsers/playlists.py:496
 msgid "Unable to import playlist"
 msgstr "Imposible importar la lista"
 
-#: ../browsers/playlists.py:419 ../browsers/playlists.py:498
+#: ../browsers/playlists.py:419 ../browsers/playlists.py:497
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet sólo puede importar listas en los formatos M3U y PLS."
 
@@ -1955,7 +1949,7 @@ msgstr "_Renombrar"
 msgid "Unable to rename playlist"
 msgstr "Imposible renombrar la lista"
 
-#: ../browsers/playlists.py:486
+#: ../browsers/playlists.py:485
 msgid "Import Playlist"
 msgstr "Importar lista"
 
@@ -1991,15 +1985,15 @@ msgstr "Buscar en la colección"
 msgid "_Limit Results"
 msgstr "_Limitar resultados"
 
-#: ../browsers/filesystem.py:31
+#: ../browsers/filesystem.py:32
 msgid "File System"
 msgstr "Sistema de Ficheros"
 
-#: ../browsers/filesystem.py:32
+#: ../browsers/filesystem.py:33
 msgid "_File System"
 msgstr "Sistema de _ficheros"
 
-#: ../browsers/filesystem.py:106
+#: ../browsers/filesystem.py:107
 msgid "_Add to Library"
 msgstr "_Añadir a la Colección"
 
@@ -2227,6 +2221,21 @@ msgstr "Escucha, navega o edita tu colección musical"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "Reproductor de música"
+
+#~ msgid ""
+#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
+#~ "(<~length>)><version|\n"
+#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
+#~ "by <~people>><album|\n"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b"
+#~ "\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
+#~ msgstr ""
+#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
+#~ "(<~length>)><version|\n"
+#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
+#~ "por <~people>><album|\n"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Disco <discnumber>><part| - \\<b"
+#~ "\\><part>\\</b\\>><tracknumber| - Pista <tracknumber>>>"
 
 #~ msgid "Tray Icon Preferences"
 #~ msgstr "Preferencias del Icono"
