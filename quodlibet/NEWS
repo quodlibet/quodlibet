@@ -18,6 +18,7 @@ Quod Libet 0.22+ requires Python 2.4 or later.
  * Updated Translations:
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
    * Italian, by Filippo Pappalardo.
+   * Hebrew, by Roee Haimovich.
 
 0.21.1 - Dude! It's not like you can't just make your own!
  * MP3s with POPM can be loaded again (Thanks, Hans van Dok)
