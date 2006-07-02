@@ -10,7 +10,6 @@ import gobject
 import gst
 import gtk
 
-import config
 import const
 
 class NoSinkError(ValueError): pass
@@ -139,7 +138,6 @@ class PlaylistPlayer(gtk.Object):
         self.paused = True
         self.emit('error', message, lock)
         self.emit('song-started', None)
-        config.set("memory", "song", "")
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -176,7 +174,6 @@ class PlaylistPlayer(gtk.Object):
         self.volume = self.__volume
 
         if self.song is not None:
-            config.set("memory", "song", self.song["~filename"])
             # Changing the URI in a playbin requires "resetting" it.
             if not self.bin.set_state(gst.STATE_NULL): return
             self.bin.set_property('uri', self.song("~uri"))
@@ -184,7 +181,7 @@ class PlaylistPlayer(gtk.Object):
             if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
             else: self.bin.set_state(gst.STATE_PLAYING)
         else:
-            config.set("memory", "song", "")
+            
             self.paused = True
             self.bin.set_state(gst.STATE_NULL)
             self.bin.set_property('uri', '')
