@@ -21,7 +21,7 @@ import util
 from plugins.editing import EditingPlugins
 from plugins.songsmenu import SongsMenuPlugins
 from plugins.events import EventPlugins
-from qltk.count import CountManager
+from qltk.tracker import SongTracker
 from qltk.msg import ErrorMessage
 from qltk.properties import SongProperties
 from qltk.quodlibet import QuodLibetWindow
@@ -102,7 +102,7 @@ def init(player, library):
     FSInterface(player)
     FIFOControl(watcher, main, player)
     DBusHandler(player)
-    CountManager(watcher, player, main.playlist)
+    SongTracker(watcher, player, main.playlist)
 
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()

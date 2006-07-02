@@ -4,10 +4,10 @@ import gtk
 
 from formats._audio import AudioFile
 from player import PlaylistPlayer
-from qltk.count import CountManager
+from qltk.tracker import SongTracker
 from qltk.watcher import SongWatcher
 
-class TCountManager(TestCase):
+class TSongTracker(TestCase):
     def setUp(self):
         self.p = PlaylistPlayer('fakesink')
         self.w = SongWatcher()
@@ -15,7 +15,7 @@ class TCountManager(TestCase):
             {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
         self.s2 = AudioFile(
             {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
-        self.cm = CountManager(self.w, self.p, self)
+        self.cm = SongTracker(self.w, self.p, self)
         self.current = None
 
     def do(self):
@@ -46,5 +46,5 @@ class TCountManager(TestCase):
     def tearDown(self):
         self.w.destroy()
 
-add(TCountManager)
+add(TSongTracker)
 
