@@ -77,11 +77,12 @@ class AudioFile(dict):
         try: return cmp(self.sort_key, other.sort_key)
         except AttributeError: return -1
 
-    def __eq__(self, other):
-        """AudioFiles are equal if they have the same filename."""
-
-        try: return self.get("~filename") == other.get("~filename")
-        except: return False
+    def __hash__(self):
+        # Dicts aren't hashable by default, so we need a hash
+        # function. Previously this used ~filename. That created a
+        # situation when an object could end up in two buckets by
+        # renaming files. So now it uses identity.
+        return hash(id(self))
 
     def reload(self):
         """Reload an audio file from disk. The caller is responsible for
@@ -95,9 +96,6 @@ class AudioFile(dict):
         self["~filename"] = fn
         self.__init__(fn)
         self.update(saved)
-
-    def __hash__(self):
-        return hash(self["~filename"])
 
     def realkeys(self):
         """Returns a list of keys that are not internal, i.e. they don't
