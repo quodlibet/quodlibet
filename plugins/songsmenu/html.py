@@ -43,7 +43,7 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_NAME = "Export to HTML"
     PLUGIN_DESC = "Export the selected song list to HTML."
     PLUGIN_ICON = gtk.STOCK_CONVERT
-    PLUGIN_VERSION = "0.16"
+    PLUGIN_VERSION = "0.17"
 
     def plugin_songs(self, songs):
         if not songs: return
@@ -53,6 +53,7 @@ class ExportToHTML(SongsMenuPlugin):
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                      gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+        chooser.set_default_response(gtk.RESPONSE_ACCEPT)
         resp = chooser.run()
         if resp != gtk.RESPONSE_ACCEPT:
             chooser.destroy()
