@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-07-02 14:32-0500\n"
-"PO-Revision-Date: 2006-07-02 14:34-0500\n"
+"PO-Revision-Date: 2006-07-02 22:30-0500\n"
 "Last-Translator: Alexandre Passos <alexandre.tp@gmail.com>\n"
 "Language-Team: Alexandre Passos <alexandre.tp@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -229,7 +229,7 @@ msgstr "Reproduz um arquivo"
 #. just file name, foo.ogg
 #: ../quodlibet.py:189 ../quodlibet.py:198 ../po/tag-names.py:23
 msgid "filename"
-msgstr "nome_de_arquivo"
+msgstr "nome de arquivo"
 
 #: ../quodlibet.py:190
 msgid "Rate the playing song"
