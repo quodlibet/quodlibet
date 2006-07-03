@@ -69,15 +69,15 @@ class SongFileLibrary(SongLibrary):
         elif song.exists():
             try:
                 song.reload()
-            except RuntimeError:
+            except StandardError:
                 traceback.print_exc()
-                return True, False
+                return False, True
             else:
                 self._contents[song.key] = song
-                return False, True
+                return True, False
         elif not song.mounted():
-            self._masked.setdefault(song["~mountpoint"], {})
-            self._masked[song["~mountpoint"]][song.key] = song
+            self._masked.setdefault(song.mountpoint, {})
+            self._masked[song.mountpoint][song.key] = song
             return False, False
         else:
             return False, False

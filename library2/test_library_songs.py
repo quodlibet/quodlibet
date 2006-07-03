@@ -46,6 +46,8 @@ class FakeSongFile(FakeSong):
     _exists = True
     _mounted = True
 
+    mountpoint = property(lambda self: int(self))
+
     def valid(self):
         return self._valid
 
@@ -66,6 +68,54 @@ class TSongFileLibrary(TSongLibrary):
     Fake = FakeSongFile
     Frange = staticmethod(FSFrange)
     Library = SongFileLibrary
+
+    def test__load_exists_invalid(self):
+        new = self.Fake(100)
+        new._valid = False
+        changed, removed = self.library._load(new)
+        self.failIf(removed)
+        self.failUnless(changed)
+        self.failUnless(new._valid)
+        self.failUnless(new in self.library)
+
+    def test__load_not_exists(self):
+        new = self.Fake(100)
+        new._valid = False
+        new._exists = False
+        changed, removed = self.library._load(new)
+        self.failIf(removed)
+        self.failIf(changed)
+        self.failIf(new._valid)
+        self.failIf(new in self.library)
+
+    def test__load_error_during_reload(self):
+        try:
+            import traceback
+            print_exc = traceback.print_exc
+            traceback.print_exc = lambda *args: None
+            new = self.Fake(100)
+            def error(): raise IOError
+            new.reload = error
+            new._valid = False
+            changed, removed = self.library._load(new)
+            self.failUnless(removed)
+            self.failIf(changed)
+            self.failIf(new._valid)
+            self.failIf(new in self.library)
+        finally:
+            traceback.print_exc = print_exc
+
+    def test__load_not_mounted(self):
+        new = self.Fake(100)
+        new._valid = False
+        new._exists = False
+        new._mounted = False
+        changed, removed = self.library._load(new)
+        self.failIf(removed)
+        self.failIf(changed)
+        self.failIf(new._valid)
+        self.failIf(new in self.library)
+        self.failUnlessEqual(new, self.library._masked[new][new])
 
 class TSongLibrarian(TLibrarian):
     Fake = FakeSong
