@@ -123,5 +123,28 @@ class TSongLibrarian(TLibrarian):
     Library = SongFileLibrary
     Librarian = SongLibrarian
 
+    def test_tag_values(self):
+        self.lib1.add(self.Frange(0, 30, 2))
+        self.lib2.add(self.Frange(1, 30, 2))
+        del(self.added[:])
+        self.failUnlessEqual(sorted(self.librarian.tag_values(20)), range(20))
+        self.failUnlessEqual(sorted(self.librarian.tag_values(0)), [])
+        self.failIf(self.changed or self.added or self.removed)
+
+    def test_rename(self):
+        new = self.Fake(10)
+        new.key = 30
+        self.lib1.add([new])
+        self.lib2.add([new])
+        self.librarian.rename(new, 20)
+        self.failUnlessEqual(new.key, 20)
+        self.failUnless(new in self.lib1)
+        self.failUnless(new in self.lib2)
+        self.failUnless(new.key in self.lib1)
+        self.failUnless(new.key in self.lib2)
+        self.failUnlessEqual(self.changed_1, [new])
+        self.failUnlessEqual(self.changed_2, [new])
+        self.failUnless(new in self.changed)
+
 if __name__ == "__main__":
     unittest.main()

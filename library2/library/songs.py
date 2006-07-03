@@ -28,9 +28,20 @@ class SongLibrarian(Librarian):
 
     def rename(self, song, newname):
         """Rename the song in all libraries it belongs to."""
+        # This needs to poke around inside the library directly.  If
+        # it uses add/remove to handle the songs it fires incorrect
+        # signals. If it uses the library's rename method, it breaks
+        # the call for future libraries because the item's key has
+        # changed. So, it needs to reimplement the method.
+        re_add = []
         for library in self.libraries.itervalues():
-            if song in library:
-                library.rename(song, newname)
+            if song.key in library:
+                del(library._contents[song.key])
+                re_add.append(library)
+        song.rename(newname)
+        for library in re_add:
+            library._contents[song.key] = song
+            library.changed([song])
 
 class SongLibrary(Library):
     """A library for songs.
