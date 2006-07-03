@@ -63,6 +63,10 @@ class DBusHandler(dbus.service.Object):
         pass
 
     @dbus.service.method('net.sacredchao.QuodLibet')
+    def CurrentSong(self):
+        return self.__dict(player.playlist.song)
+
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def Next(self):
         player.playlist.next()
 
