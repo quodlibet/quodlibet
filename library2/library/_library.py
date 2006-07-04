@@ -56,19 +56,25 @@ class Library(gtk.Object):
             self.librarian.register(self, name)
 
     def add(self, songs):
-        """Add a song."""
+        """Add songs. This causes an 'added' signal."""
         for song in songs:
             self._contents[song.key] = song
         self.emit('added', songs)
 
     def remove(self, songs):
-        """Remove a song."""
+        """Remove songs. This causes a 'removed' signal."""
         for song in songs:
             del(self._contents[song.key])
         self.emit('removed', songs)
 
     def changed(self, songs):
-        """Alert other users that these songs have changed."""
+        """Alert other users that these songs have changed.
+
+        This causes a 'changed' signal.
+
+        The song list is filtered to those songs actually in the
+        library.
+        """
         self.emit('changed', filter(self.__contains__, songs))
 
     def __iter__(self):
@@ -157,6 +163,12 @@ class Library(gtk.Object):
 class Librarian(gtk.Object):
     """The librarian is a nice interface to all active libraries.
 
+    Librarians are a kind of meta-library. When any of their
+    registered libraries fire a signal, they fire the same
+    signal. Likewise, they provide various methods equivalent to the
+    ones found in libraries that group the results of the real
+    libraries.
+
     Attributes:
     libraries -- a dict mapping library names to libraries
     """
@@ -168,11 +180,10 @@ class Librarian(gtk.Object):
         'added': SIG_PYOBJECT,
         }
 
-    libraries = {}
-    __signals = {}
-
     def __init__(self):
         super(Librarian, self).__init__()
+        self.libraries = {}
+        self.__signals = {}
 
     def register(self, library, name):
         """Register a library with this librarian."""

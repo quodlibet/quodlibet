@@ -12,6 +12,7 @@ These libraries require their items to be AudioFiles, or something
 close enough.
 """
 
+import os
 import traceback
 
 from library._library import Library, Librarian
@@ -27,7 +28,10 @@ class SongLibrarian(Librarian):
         return list(tags)
 
     def rename(self, song, newname):
-        """Rename the song in all libraries it belongs to."""
+        """Rename the song in all libraries it belongs to.
+
+        The 'changed' signal will fire for any library the song is in.
+        """
         # This needs to poke around inside the library directly.  If
         # it uses add/remove to handle the songs it fires incorrect
         # signals. If it uses the library's rename method, it breaks
@@ -53,7 +57,7 @@ class SongLibrary(Library):
     def tag_values(self, tag):
         """Return a list of all values for the given tag."""
         tags = set()
-        for song in self.values():
+        for song in self.itervalues():
             tags.update(song.list(tag))
         return list(tags)
 
@@ -62,6 +66,11 @@ class SongLibrary(Library):
 
         This requires a special method because it can change the
         song's key.
+
+        The 'changed' signal may fire for this library.
+
+        If the song exists in multiple libraries you cannot use this
+        method. Instead, use the librarian.
         """
         del(self._contents[song.key])
         song.rename(newname)
@@ -98,7 +107,12 @@ class FileLibrary(Library):
             return False, False
 
     def reload(self, item, changed=None, removed=None):
+        """Reload a song, possibly noting its status.
+
+        This function invalidates the song, then reloads it.
+        """
         item.invalidate()
+        del(self._contents[item.key])
         was_changed, was_removed = self._load(item)
         if was_changed and changed is not None:
             changed.append(item)
@@ -106,7 +120,18 @@ class FileLibrary(Library):
             removed.append(item)
 
     def rebuild(self, force=False):
-        changed, removed = []
+        """Reload or remove songs if they have changed or been deleted.
+
+        If force is true, reload even unchanged songs.
+
+        This function is an iterator that progressively yields lists
+        of (changed, removed) songs.
+
+        The 'removed' signal may fire for this library. The 'changed'
+        signal may fire for this library and any other library
+        sharing its songs available to its librarian.
+        """
+        changed, removed = [], []
         for i, (key, item) in enumerate(sorted(self.iteritems())):
             if force or not item.valid():
                 self.reload(item, changed, removed)
@@ -115,7 +140,7 @@ class FileLibrary(Library):
         yield changed, removed
         removed = filter(lambda item: item not in self, removed)
         if removed:
-            self.removed(removed)
+            self.remove(removed)
         if self.librarian and self in self.librarian.libraries.itervalues():
             if changed:
                 self.librarian.changed(changed)
@@ -124,7 +149,29 @@ class FileLibrary(Library):
             if changed:
                 self.changed(changed)
 
+    def add_filename(self, filename, signal=True):
+        """Add a file based on its filename.
+
+        Subclasses must override this to open the file correctly.
+        """
+        raise NotImplementedError
+
     def scan(self, paths):
+        """Scan filesystem paths and add files.
+
+        This function is an iterator that progressively yields a list
+        of added songs.
+
+        This function does not update or remove files, only add
+        them. To update or remove files, use the rebuild method.
+        It may also unmask songs, 'adding' them.
+
+        The 'added' signal may be fired for this library.
+
+        Item keys must be their filename for this method to work.
+        FIXME: Maybe this should be URIs instead.
+        """
+
         added = []
         for point, items in self._masked.items():
             if os.path.ismount(point):
@@ -133,18 +180,17 @@ class FileLibrary(Library):
                 del(self._masked[point])
                 yield added
 
-        # FIXME: This is a port of the old code. It should use URIs
-        # rather than filenames.
-        for path in directories:
-            fullpath = os.path.expanduser(path)
-            for path, dnames, fnames in os.walk(path):
+        for fullpath in paths:
+            fullpath = os.path.expanduser(fullpath)
+            for path, dnames, fnames in os.walk(fullpath):
                 for filename in fnames:
                     fullfilename = os.path.join(path, filename)
                     if fullfilename not in self._contents:
                         fullfilename = os.path.realpath(fullfilename)
                         if fullfilename not in self:
-                            if self.add_filename(fullfilename):
-                                added.append(self[fullfilename])
+                            item = self.add_filename(fullfilename, False)
+                            if item is not None:
+                                added.append(item)
                 yield added
 
         added = filter(lambda item: item not in self, added)
@@ -153,3 +199,25 @@ class FileLibrary(Library):
 
 class SongFileLibrary(SongLibrary, FileLibrary):
     """A library containing song files."""
+
+    def add_filename(self, filename, signal=True):
+        """Add a song to the library based on filename.
+
+        If 'signal' is true, the 'added' signal may fire.
+
+        If the song was added, it is returned. Otherwise, None
+        is returned.
+        """
+        try:
+            # FIXME: Move this back out to the global scope when this
+            # is merged into Quod Libet.
+            from formats import MusicFile
+            if filename not in self._contents:
+                song = MusicFile(filename)
+                if song:
+                    self._contents[song.key] = song
+                    if signal:
+                        self.add([song])
+                    return song
+        except StandardError:
+            traceback.print_exc()
