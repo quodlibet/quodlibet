@@ -68,27 +68,88 @@ class SongLibrary(Library):
         self._contents[song.key] = song
         self.changed([song])
 
-class SongFileLibrary(SongLibrary):
-    """A library containing song files on a local filesystem."""
+class FileLibrary(Library):
+    """A library containing items on a local(-ish) filesystem.
 
-    def _load(self, song):
-        # Check to see if the song is still on the filesystem, and
+    These must support the valid, exists, mounted, invalidate,
+    and reload methods, and have a mountpoint attribute.
+    """
+
+    def _load(self, item):
+        # Check to see if the item is still on the filesystem, and
         # if it's mtime has changed.
-        if song.valid():
-            self._contents[song.key] = song
+        if item.valid():
+            self._contents[item.key] = item
             return False, False
-        elif song.exists():
+        elif item.exists():
             try:
-                song.reload()
+                item.reload()
             except StandardError:
                 traceback.print_exc()
                 return False, True
             else:
-                self._contents[song.key] = song
+                self._contents[item.key] = item
                 return True, False
-        elif not song.mounted():
-            self._masked.setdefault(song.mountpoint, {})
-            self._masked[song.mountpoint][song.key] = song
+        elif not item.mounted():
+            self._masked.setdefault(item.mountpoint, {})
+            self._masked[item.mountpoint][item.key] = item
             return False, False
         else:
             return False, False
+
+    def reload(self, item, changed=None, removed=None):
+        item.invalidate()
+        was_changed, was_removed = self._load(item)
+        if was_changed and changed is not None:
+            changed.append(item)
+        elif was_removed and removed is not None:
+            removed.append(item)
+
+    def rebuild(self, force=False):
+        changed, removed = []
+        for i, (key, item) in enumerate(sorted(self.iteritems())):
+            if force or not item.valid():
+                self.reload(item, changed, removed)
+            if not (i & 7):
+                yield changed, removed
+        yield changed, removed
+        removed = filter(lambda item: item not in self, removed)
+        if removed:
+            self.removed(removed)
+        if self.librarian and self in self.librarian.libraries.itervalues():
+            if changed:
+                self.librarian.changed(changed)
+        else:
+            changed = filter(self.__contains__, changed)
+            if changed:
+                self.changed(changed)
+
+    def scan(self, paths):
+        added = []
+        for point, items in self._masked.items():
+            if os.path.ismount(point):
+                self._contents.update(items)
+                added.extend(items.values())
+                del(self._masked[point])
+                yield added
+
+        # FIXME: This is a port of the old code. It should use URIs
+        # rather than filenames.
+        for path in directories:
+            fullpath = os.path.expanduser(path)
+            for path, dnames, fnames in os.walk(path):
+                for filename in fnames:
+                    fullfilename = os.path.join(path, filename)
+                    if fullfilename not in self._contents:
+                        fullfilename = os.path.realpath(fullfilename)
+                        if fullfilename not in self:
+                            if self.add_filename(fullfilename):
+                                added.append(self[fullfilename])
+                yield added
+
+        added = filter(lambda item: item not in self, added)
+        if added:
+            self.add(added)
+
+class SongFileLibrary(SongLibrary, FileLibrary):
+    """A library containing song files."""
