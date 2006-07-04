@@ -1,4 +1,0 @@
-?package(quodlibet):needs="X11" \
- section="Apps/Sound" \
- title="Quod Libet" \
- command="/usr/bin/quodlibet"
