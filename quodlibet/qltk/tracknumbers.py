@@ -84,7 +84,7 @@ class TrackNumbers(gtk.VBox):
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect('clicked', self.__preview_tracks, *preview_args)
-        revert.connect_object('clicked', self.__update, None, *preview_args)
+        revert.connect_object('clicked', self.__update, None, *preview_args[1:])
         spin_total.connect(
             'value-changed', self.__preview_tracks, *preview_args)
         spin_start.connect(
