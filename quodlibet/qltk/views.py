@@ -341,38 +341,6 @@ class HintedTreeView(gtk.TreeView):
             except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
             tvh.connect_view(self)
 
-class TreeViewColumnButton(gtk.TreeViewColumn):
-    """A TreeViewColumn that forwards its header events:
-        button-press-event and popup-menu"""
-
-    __gsignals__ = {
-        'button-press-event': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                (object,)),
-        'popup-menu':  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-    }
-
-    def __init__(self, title="", *args, **kw):
-        super(TreeViewColumnButton, self).__init__(title, *args, **kw)
-        label = gtk.Label(title)
-        self.set_widget(label)
-        label.show()
-        label.__realize = label.connect('realize', self.__connect_menu_event)
-
-    def __connect_menu_event(self, widget):
-        widget.disconnect(widget.__realize)
-        del widget.__realize
-        button = widget.get_ancestor(gtk.Button)
-        if button:
-            button.connect('button-press-event', self.button_press_event)
-            button.connect('popup-menu', self.popup_menu)
-
-    def button_press_event(self, widget, event):
-        self.emit('button-press-event', event)
-
-    def popup_menu(self, widget):
-        self.emit('popup-menu')
-        return True
-
 class RCMHintedTreeView(HintedTreeView, RCMTreeView):
     """A TreeView that has hints and a context menu."""
     pass
