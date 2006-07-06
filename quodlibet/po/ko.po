@@ -1,14 +1,14 @@
 # Korean translation of Quod Libet
 # ChangBom Yoon <changbom.yoon@gmail.com>, 2006
 # Byung-Hee HWANG <bh@izb.knu.ac.kr>, 2006
-# $LUG: projects/quodlibet/ql_0_21_ko.po,v 1.5 2006/06/01 13:17:06 bh Exp $
-#
+# $LUG: projects/quodlibet/ql_0_22_ko.po,v 1.9 2006/07/06 05:02:38 bh Exp $
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Quod Libet 0.21\n"
+"Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-05 17:22-0500\n"
-"PO-Revision-Date: 2006-07-05 16:06-0500\n"
+"POT-Creation-Date: 2006-07-06 00:31-0500\n"
+"PO-Revision-Date: 2006-07-05 21:16+0900\n"
 "Last-Translator: ChangBom Yoon <changbom.yoon@gmail.com>\n"
 "Language-Team: The FreeBSD Korean Documentation Project <doc@kr.FreeBSD."
 "org>\n"
@@ -109,7 +109,7 @@ msgstr "지원 포맷: %s"
 
 #: ../quodlibet.py:99
 msgid "No song is currently playing."
-msgstr "현재 재생중인 노래가 없습니다."
+msgstr "라이브러리는 Quod Libet 이 실행되는 동안에 갱신할 수 없습니다."
 
 #: ../quodlibet.py:107
 msgid "Quod Libet is not running."
@@ -130,19 +130,19 @@ msgstr "[ --print-playing | control ]"
 
 #: ../quodlibet.py:161
 msgid "Print the playing song and exit"
-msgstr "재생중인 노래 표시 후 마침"
+msgstr "라이브러리 재검색 후 마침"
 
 #: ../quodlibet.py:162
 msgid "Begin playing immediately"
-msgstr "이미 재생을 시작했습니다"
+msgstr "재생중인 노래 표시 후 마침"
 
 #: ../quodlibet.py:165
 msgid "Jump to next song"
-msgstr "다음 노래로 건너뛰기"
+msgstr "다음 노래로 가기"
 
 #: ../quodlibet.py:166
 msgid "Jump to previous song"
-msgstr "이전 노래로 돌아가기"
+msgstr "이전 노래로 가기"
 
 #: ../quodlibet.py:167
 msgid "Start playback"
@@ -231,7 +231,7 @@ msgstr "파일 재생"
 #. just file name, foo.ogg
 #: ../quodlibet.py:189 ../quodlibet.py:198 ../po/tag-names.py:23
 msgid "filename"
-msgstr "파일이름"
+msgstr "파일명"
 
 #: ../quodlibet.py:190
 msgid "Rate the playing song"
@@ -290,7 +290,7 @@ msgstr "라이브러리 불러오기"
 #. Try to initialize the playlist and audio output.
 #: ../quodlibet.py:265
 msgid "Opening audio device."
-msgstr "오디오 출력 장치 열기."
+msgstr "오디오 장치 열기"
 
 #: ../quodlibet.py:298
 msgid "Quod Libet is already running."
@@ -434,11 +434,11 @@ msgstr "오리지널 앨범"
 #. alternately, "movement", "section"
 #: ../po/tag-names.py:48
 msgid "part"
-msgstr "파트"
+msgstr "파트(part)"
 
 #: ../po/tag-names.py:49
 msgid "people"
-msgstr "방창"
+msgstr "가수"
 
 #: ../po/tag-names.py:50 ../qltk/information.py:332
 msgid "performer"
@@ -545,7 +545,7 @@ msgstr "작곡"
 
 #: ../po/tag-names.py:81
 msgid "conductors"
-msgstr "지휘"
+msgstr "편곡"
 
 #: ../po/tag-names.py:82
 msgid "authors"
@@ -630,7 +630,7 @@ msgstr ""
 
 #: ../widgets.py:127
 msgid "Unable to save library"
-msgstr "라이브러리 저장 불가능"
+msgstr "라이브러리를 저장할 수 없습니다"
 
 #: ../widgets.py:132
 msgid "Unable to play song"
@@ -727,7 +727,7 @@ msgstr "북마크"
 
 #: ../qltk/browser.py:53 ../qltk/quodlibet.py:172 ../util/__init__.py:273
 msgid "No time information"
-msgstr "노래에 정보가 없습니다"
+msgstr "정보에 시간이 없습니다"
 
 #: ../qltk/cbes.py:22
 msgid "Saved Values"
@@ -759,7 +759,7 @@ msgstr "북마크 편집..."
 
 #: ../qltk/controls.py:176
 msgid "Stop after this song"
-msgstr "이 노래 후 정지"
+msgstr "이 노래후 정지"
 
 #: ../qltk/delete.py:30
 msgid "Delete Files"
@@ -771,11 +771,11 @@ msgstr "휴지통으로 이동"
 
 #: ../qltk/delete.py:56
 msgid "Permanently delete this file?"
-msgstr "영구히 이 파일을 지울까요?"
+msgstr "영구히 이 파일을 삭제할까요?"
 
 #: ../qltk/delete.py:57
 msgid "Permanently delete these files?"
-msgstr "영구히 이 파일을 지울까요?"
+msgstr "영구히 이 파일을 삭제할까요?"
 
 #: ../qltk/delete.py:61
 #, python-format
@@ -787,21 +787,21 @@ msgstr[1] "%(title)s and %(count)d more..."
 #: ../qltk/delete.py:85
 #, python-format
 msgid "Moving %d/%d."
-msgstr "%d/%d 옮기기"
+msgstr "%d/%d 이동"
 
 #: ../qltk/delete.py:86
 #, python-format
 msgid "Deleting %d/%d."
-msgstr "%d/%d 지우기"
+msgstr "%d/%d 삭제"
 
 #: ../qltk/delete.py:111
 msgid "Unable to delete file"
-msgstr "파일을 지울 수 없습니다"
+msgstr "파일 삭제에 실패했습니다"
 
 #: ../qltk/delete.py:112
 #, python-format
 msgid "Deleting <b>%s</b> failed."
-msgstr "<b>%s</b> 지우기에 실패했습니다."
+msgstr "<b>%s</b> 삭제 실패."
 
 #: ../qltk/downloader.py:37
 msgid "Downloads"
@@ -809,7 +809,7 @@ msgstr "내려받기"
 
 #: ../qltk/downloader.py:50
 msgid "Filename"
-msgstr "파일이름"
+msgstr "파일명"
 
 #: ../qltk/downloader.py:59
 msgid "Size"
@@ -841,7 +841,7 @@ msgstr "태그 추가"
 
 #: ../qltk/edittags.py:131
 msgid "_Tag:"
-msgstr "태그:"
+msgstr "태그"
 
 #: ../qltk/edittags.py:211
 msgid "Edit Tags"
@@ -894,12 +894,12 @@ msgid ""
 msgstr ""
 "유효하지 않은 태그 <b>%s</b>\n"
 "\n"
-"지금 선택한 파일은 이 태그의 편집을 지원하지 않습니다."
+"지금 선택한 파일은 이러한 태그의 편집을 지원하지 않습니다."
 
 #: ../qltk/edittags.py:470 ../qltk/tagsfrompath.py:207
 #: ../qltk/tracknumbers.py:120
 msgid "Tag may not be accurate"
-msgstr "Tag may not be accurate"
+msgstr "태그에 결함이 있습니다"
 
 #: ../qltk/edittags.py:471 ../qltk/tagsfrompath.py:208
 #: ../qltk/tracknumbers.py:121
@@ -929,6 +929,9 @@ msgid ""
 "\n"
 "%(error)s"
 msgstr ""
+"Invalid value: <b>%(value)s</b>\n"
+"\n"
+"%(error)s"
 
 #: ../qltk/edittags.py:571
 msgid "Unable to retag multiple values"
@@ -982,7 +985,7 @@ msgstr "새 폴더"
 
 #: ../qltk/filesel.py:126
 msgid "Enter a name for the new folder:"
-msgstr "새 폴더를 위한 이름을 입력하십시오:"
+msgstr "새 폴더의 이름을 입력하십시오:"
 
 #: ../qltk/filesel.py:135
 msgid "Unable to create folder"
@@ -990,31 +993,31 @@ msgstr "폴더를 생성할 수 없습니다"
 
 #: ../qltk/filesel.py:148
 msgid "Unable to delete folder"
-msgstr "폴더를 삭제할 수 없습니다"
+msgstr "폴더를 지울 수 없습니다"
 
 #. Translators: As in "by Artist Name"
 #: ../qltk/info.py:30
 #, python-format
 msgid "by %s"
-msgstr ""
+msgstr "아티스트: %s"
 
 #: ../qltk/info.py:31 ../qltk/information.py:110 ../qltk/information.py:353
 #, python-format
 msgid "Disc %s"
-msgstr "디스크 %s"
+msgstr "%s 디스크"
 
 #: ../qltk/info.py:32 ../qltk/information.py:115
 #, python-format
 msgid "Track %s"
-msgstr "트랙 %s"
+msgstr "%s 트랙"
 
 #: ../qltk/info.py:52
 msgid "_Edit Display..."
-msgstr "편집 표시..."
+msgstr "_Edit Display..."
 
 #: ../qltk/info.py:86
 msgid "Not playing"
-msgstr "노래가 재생중이 아닙니다"
+msgstr "Not playing"
 
 #: ../qltk/information.py:50
 msgid "No songs are selected."
@@ -1191,7 +1194,7 @@ msgstr "무거운거로"
 
 #: ../qltk/playorder.py:17
 msgid "One Song"
-msgstr "선택한 노래로"
+msgstr "선택한 노래"
 
 #. Canonical accelerated versions, in case we need them (e.g. the tray
 #. icon uses them right now).
@@ -1209,7 +1212,7 @@ msgstr "무거운거로"
 
 #: ../qltk/playorder.py:26
 msgid "_One Song"
-msgstr "선택한 노래로"
+msgstr "선택한 노래"
 
 #: ../qltk/pluginwin.py:35
 msgid "Quod Libet Plugins"
@@ -1225,7 +1228,7 @@ msgstr "설정"
 
 #: ../qltk/pluginwin.py:188
 msgid "No plugins found."
-msgstr "플러그인이 발견되지 않았습니다."
+msgstr "발견된 플러그인이 없습니다"
 
 #: ../qltk/pluginwin.py:195
 msgid "Plugin Errors"
@@ -1233,7 +1236,7 @@ msgstr "플러그인 에러"
 
 #: ../qltk/prefs.py:36
 msgid "Song List"
-msgstr "곡 목록"
+msgstr "노래 목록"
 
 #: ../qltk/prefs.py:45
 msgid "_Disc"
@@ -1245,7 +1248,7 @@ msgstr "앨범"
 
 #: ../qltk/prefs.py:47
 msgid "_Filename"
-msgstr "파일이름"
+msgstr "파일명"
 
 #: ../qltk/prefs.py:48
 msgid "_Track"
@@ -1269,11 +1272,11 @@ msgstr "길이"
 
 #: ../qltk/prefs.py:65
 msgid "Title includes _version"
-msgstr "버전을 포함하는 제목"
+msgstr "버전을 포함하는 파일이름"
 
 #: ../qltk/prefs.py:70
 msgid "Album includes _part"
-msgstr "파트를 포함하는 앨범"
+msgstr "파트(part)를 포함하는 파일이름"
 
 #: ../qltk/prefs.py:75
 msgid "Filename includes _folder"
@@ -1307,7 +1310,7 @@ msgstr "파랑색은 간단한 검색, 초록색은 복잡한 검색, 빨강색�
 
 #: ../qltk/prefs.py:146
 msgid "_Global filter:"
-msgstr "전역 필터:"
+msgstr "전역 필터"
 
 #: ../qltk/prefs.py:156 ../browsers/search.py:132
 msgid "Search Library"
@@ -1319,11 +1322,11 @@ msgstr "재생기"
 
 #: ../qltk/prefs.py:170
 msgid "_Jump to playing song automatically"
-msgstr "재생중인 노래를 자동으로 건너뛰기"
+msgstr "자동으로 현재 재생중인 노래로 가기"
 
 #: ../qltk/prefs.py:171
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr "재생중인 노래가 바뀔때, 노래 목록에 나타내기"
+msgstr "When the playing song changes, scroll to it in the song list"
 
 #: ../qltk/prefs.py:177
 msgid "No volume adjustment"
@@ -1346,11 +1349,12 @@ msgid "_Select"
 msgstr "선택"
 
 #: ../qltk/prefs.py:203
-#, fuzzy
 msgid ""
 "Songs placed in these folders (separated by ':') will be added to your "
 "library"
-msgstr "이 폴더로 이동된 노래는 라이브러리에 추가됩니다"
+msgstr ""
+"Songs placed in these folders (separated by ':') will be added to your "
+"library"
 
 #: ../qltk/prefs.py:214
 msgid "Scan _Directories"
@@ -1362,15 +1366,15 @@ msgstr "Separators for splitting tags"
 
 #: ../qltk/prefs.py:233
 msgid "Save ratings and play counts"
-msgstr ""
+msgstr "Save ratings and play counts"
 
 #: ../qltk/prefs.py:237
 msgid "_Email:"
-msgstr ""
+msgstr "_Email:"
 
 #: ../qltk/prefs.py:239
 msgid "Ratings and play counts will be set for this email address"
-msgstr ""
+msgstr "Ratings and play counts will be set for this email address"
 
 #: ../qltk/prefs.py:259
 msgid "Select Directories"
@@ -1390,7 +1394,7 @@ msgstr "대기열"
 
 #: ../qltk/queue.py:58
 msgid "_Random"
-msgstr "임의"
+msgstr "임의로"
 
 #: ../qltk/queue.py:81
 msgid "Remove all songs from the queue"
@@ -1405,7 +1409,7 @@ msgstr[1] "%(count)d songs (%(time)s)"
 
 #: ../qltk/quodlibet.py:160
 msgid "_Order:"
-msgstr "재생 순서:"
+msgstr "재생순서:"
 
 #: ../qltk/quodlibet.py:168
 msgid "_Repeat"
@@ -1413,7 +1417,7 @@ msgstr "반복"
 
 #: ../qltk/quodlibet.py:169
 msgid "Restart the playlist when finished"
-msgstr "완료하면 재생목록 재시작"
+msgstr "완료후 재생목록 재시작"
 
 #: ../qltk/quodlibet.py:280
 msgid "Unable to add songs"
@@ -1442,7 +1446,7 @@ msgstr "주소 추가..."
 
 #: ../qltk/quodlibet.py:331
 msgid "_Browse Library"
-msgstr "라이브러리 검색"
+msgstr "브라우저 라이브러리"
 
 #: ../qltk/quodlibet.py:337
 msgid "_Filters"
@@ -1474,11 +1478,11 @@ msgstr "B_ottom 40"
 
 #: ../qltk/quodlibet.py:350
 msgid "_Control"
-msgstr "조정"
+msgstr "제어"
 
 #: ../qltk/quodlibet.py:356
 msgid "_Jump to Playing Song"
-msgstr "재생중인 노래로 건너뛰기"
+msgstr "현재 재생중인 노래로 가기"
 
 #: ../qltk/quodlibet.py:359
 msgid "_View"
@@ -1498,15 +1502,15 @@ msgstr "라이브러리 새로불러오기"
 
 #: ../qltk/quodlibet.py:388
 msgid "Filter on _Genre"
-msgstr "Filter on _Genre"
+msgstr "장르 필터"
 
 #: ../qltk/quodlibet.py:389
 msgid "Filter on _Artist"
-msgstr "Filter on _Artist"
+msgstr "아티스트 필터"
 
 #: ../qltk/quodlibet.py:390
 msgid "Filter on Al_bum"
-msgstr "Filter on Al_bum"
+msgstr "앨범 필터"
 
 #: ../qltk/quodlibet.py:397
 msgid "Random _Genre"
@@ -1624,7 +1628,7 @@ msgstr "Strip non-_ASCII characters"
 
 #: ../qltk/renamefiles.py:63
 msgid "Rename Files"
-msgstr "파일이름 변경"
+msgstr "파일명 변경"
 
 #: ../qltk/renamefiles.py:79
 msgid "New Name"
@@ -1636,7 +1640,7 @@ msgstr "계속"
 
 #: ../qltk/renamefiles.py:117
 msgid "Unable to rename file"
-msgstr "파일이름 변경을 할 수 없습니다"
+msgstr "파일명 변경을 할 수 없습니다"
 
 #: ../qltk/renamefiles.py:118
 #, python-format
@@ -1650,7 +1654,7 @@ msgstr ""
 
 #: ../qltk/renamefiles.py:149
 msgid "Path is not absolute"
-msgstr "절대경로가 아닙니다"
+msgstr "절대 경로가 아닙니다"
 
 #: ../qltk/renamefiles.py:150
 #, python-format
@@ -1666,9 +1670,8 @@ msgstr ""
 "면, / 또는 ~/ 으로 시작하는 양식을취하십시오."
 
 #: ../qltk/songlist.py:404
-#, fuzzy
 msgid "pattern"
-msgstr "유효하지 않은 양식"
+msgstr "양식"
 
 #: ../qltk/songlist.py:419
 #, python-format
@@ -1727,7 +1730,7 @@ msgstr ""
 
 #: ../qltk/tagsfrompath.py:152
 msgid "Invalid tags"
-msgstr "유효하지 않은 태그"
+msgstr "유효하지 않은 양식"
 
 #: ../qltk/tagsfrompath.py:153
 #, python-format
@@ -1755,7 +1758,7 @@ msgstr ""
 
 #: ../qltk/textedit.py:84
 msgid "Edit Display"
-msgstr "편집 표시"
+msgstr "Edit Display"
 
 #: ../qltk/tracknumbers.py:22
 msgid "Track Numbers"
@@ -1763,7 +1766,7 @@ msgstr "트랙 번호"
 
 #: ../qltk/tracknumbers.py:28
 msgid "Start fro_m:"
-msgstr "시작:"
+msgstr "여기서 시작:"
 
 #: ../qltk/tracknumbers.py:39
 msgid "_Total tracks:"
@@ -1789,7 +1792,7 @@ msgstr "%d/%d 곡을 저장했습니다"
 
 #: ../qltk/x.py:125
 msgid "Clear search"
-msgstr "Clear search"
+msgstr "검색 초기화"
 
 #. The browser's name, without an accelerator.
 #. The name, with an accelerator.
@@ -1846,7 +1849,7 @@ msgstr[1] "%d 앨범"
 
 #: ../browsers/paned.py:36
 msgid "Paned Browser Preferences"
-msgstr "Paned Browser 설정"
+msgstr "Paned Browser Preferences"
 
 #: ../browsers/paned.py:42
 msgid "_Custom"
@@ -1871,7 +1874,7 @@ msgstr "검색:"
 
 #: ../browsers/paned.py:356
 msgid "Select _All"
-msgstr "선택"
+msgstr "모두 선택"
 
 #: ../browsers/playlists.py:63
 #, python-format
@@ -1907,7 +1910,7 @@ msgstr "재생목록"
 
 #: ../browsers/playlists.py:270
 msgid "_Remove from Playlist"
-msgstr "재생목록에서 제거"
+msgstr "재생목록으로부터 제거"
 
 #: ../browsers/playlists.py:300
 msgid "_Import"
@@ -1947,7 +1950,7 @@ msgstr "제한:"
 
 #: ../browsers/search.py:111
 msgid "_Weight"
-msgstr "무게"
+msgstr "중량"
 
 #: ../browsers/search.py:133
 msgid "_Search Library"
@@ -2111,7 +2114,7 @@ msgstr ""
 
 #: ../util/__init__.py:88
 msgid "Display brief usage information"
-msgstr "정보 사용법 개요 표시"
+msgstr "사용 정보 개요 표시"
 
 #: ../util/__init__.py:90
 msgid "Display version and copyright"
@@ -2195,57 +2198,3 @@ msgstr "듣기, 검색 및 오디오 모음 편집"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "음악 재생기"
-
-#~ msgid ""
-#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
-#~ "(<~length>)><version|\n"
-#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-#~ "by <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
-#~ msgstr ""
-#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
-#~ "(<~length>)><version|\n"
-#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-#~ "아티스트 <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - 디스크 <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - 트랙 <tracknumber>>>"
-
-#~ msgid "Tray Icon Preferences"
-#~ msgstr "트레이 아이콘 설정"
-
-#~ msgid ""
-#~ "Scroll wheel adjusts volume\n"
-#~ "Shift and scroll wheel changes song"
-#~ msgstr ""
-#~ "Scroll wheel adjusts volume\n"
-#~ "Shift and scroll wheel changes song"
-
-#~ msgid ""
-#~ "Scroll wheel changes song\n"
-#~ "Shift and scroll wheel adjusts volume"
-#~ msgstr ""
-#~ "Scroll wheel changes song\n"
-#~ "Shift and scroll wheel adjusts volume"
-
-#, fuzzy
-#~ msgid "Scroll _Wheel"
-#~ msgstr "Scroll Wheel"
-
-#~ msgid "Tooltip Display"
-#~ msgstr "Tooltip 표시"
-
-#~ msgid "Play _Order"
-#~ msgstr "재생 순서"
-
-#~ msgid "The library cannot be refreshed while Quod Libet is running."
-#~ msgstr "라이브러리는 Quod Libet 이 실행되는 동안에 갱신할 수 없습니다."
-
-#~ msgid "Loading, scanning, and saving your library."
-#~ msgstr "불러오기, 검색하기, 그리고 라이브러리 저장."
-
-#~ msgid "Rescan your library and exit"
-#~ msgstr "라이브러리 재검색 후 마침"
-
-#~ msgid "Saving library."
-#~ msgstr "라이브러리 저장"
