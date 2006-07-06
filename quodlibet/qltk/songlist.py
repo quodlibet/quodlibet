@@ -278,7 +278,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     CurrentColumn = None
 
-    class TextColumn(gtk.TreeViewColumn):
+    class TextColumn(qltk.views.TreeViewColumnButton):
         # Base class for other kinds of columns.
         _render = gtk.CellRendererText()
 
@@ -832,5 +832,125 @@ class SongList(AllTreeView, util.InstanceTracker):
                 column = self.NonSynthTextColumn(t)
             else: column = self.WideTextColumn(t)
             column.connect('clicked', self.set_sort_by)
+            column.connect('button-press-event', self.__showmenu)
+            column.connect('popup-menu', self.__showmenu)
             column.set_reorderable(True)
             self.append_column(column)
+
+    def __getmenu(self):
+        menu = gtk.Menu()
+        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
+
+        current = SongList.headers[:]
+        current_set = set(current)
+        current = zip(map(util.tag, current), current)
+        tips = qltk.Tooltips(menu)
+
+        def add_header_toggle(menu, (header, tag), active):
+            item = gtk.CheckMenuItem(header)
+            item.tag = tag
+            item.set_active(active)
+            item.connect('activate', self.__toggle_header_item)
+            item.show()
+            tips.set_tip(item, tag, tag)
+            menu.append(item)
+
+        for header in current:
+            add_header_toggle(menu, header, True)
+
+        sep = gtk.SeparatorMenuItem()
+        sep.show()
+        menu.append(sep)
+
+        trackinfo = """title version tracknumber genre description part language
+            bpm originalalbum ~title~version ~album~part ~#track ~#tracks
+            ~#playcount ~#skipcount ~#rating""".split()
+        peopleinfo = """artist ~people performer arranger author composer
+            conductor lyricist originalartist albumartist contact
+            website""".split()
+        albuminfo = """album discnumber labelid ~#disc ~#discs""".split()
+        dateinfo = """date originaldate recordingdate ~#laststarted
+            ~#lastplayed ~#added""".split()
+        fileinfo = """~filename ~basename ~dirname ~uri""".split()
+        copyinfo = """copyright license organization location isrc""".split()
+
+        for name, group in [
+            #(_("C_urrent Headers"), current),
+            (_("_Track Headers"), trackinfo),
+            (_("_Album Headers"), albuminfo),
+            (_("_People Headers"), peopleinfo),
+            (_("_Date Headers"), dateinfo),
+            (_("_File Headers"), fileinfo),
+            (_("_Copyright Headers"), copyinfo),
+        ]:
+            item = gtk.MenuItem(name)
+            item.show()
+            menu.append(item)
+            submenu = gtk.Menu()
+            item.set_submenu(submenu)
+            for header in sorted(zip(map(tag, group), group)):
+                add_header_toggle(submenu, header, header[1] in current_set)
+
+        sep = gtk.SeparatorMenuItem()
+        sep.show()
+        menu.append(sep)
+        custom = gtk.MenuItem(_("Add Custom Header..."))
+        custom.show()
+        custom.connect('activate', self.__add_custom_column)
+        menu.append(custom)
+
+        return menu
+
+    def __toggle_header_item(self, item):
+        headers = SongList.headers[:]
+        if item.get_active(): headers.append(item.tag)
+        else: headers.remove(item.tag)
+
+        SongList.set_all_column_headers(headers)
+        SongList.headers = headers
+
+    def __add_custom_column(self, item):
+        dlg = gtk.Dialog(_("Add Custom Header"), qltk.get_top_parent(self))
+        dlg.set_border_width(6)
+        dlg.set_has_separator(False)
+        dlg.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+        add = dlg.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
+        dlg.vbox.set_spacing(6)
+        dlg.set_default_response(gtk.RESPONSE_OK)
+        hbox = gtk.HBox()
+        hbox.set_spacing(6)
+        dlg.vbox.pack_start(hbox)
+
+        entry = gtk.Entry()
+        entry.set_activates_default(True)
+        label = gtk.Label()
+        label.set_text(_("_Header:"))
+        label.set_use_underline(True)
+        label.set_mnemonic_widget(entry)
+
+        hbox.pack_start(label)
+        hbox.pack_start(entry)
+        dlg.child.show_all()
+
+        resp = dlg.run()
+
+        if resp == gtk.RESPONSE_OK:
+            new = filter(None, entry.get_text().split())
+            headers = SongList.headers[:]
+            headers.extend(filter(lambda i: i not in headers, new))
+            SongList.set_all_column_headers(headers)
+            SongList.headers = headers
+
+        dlg.destroy()
+
+    def __showmenu(self, column, event=None):
+        time = gtk.get_current_event_time()
+        if event is not None and event.button != 3:
+            return
+
+        if event:
+            self.__getmenu().popup(None, None, None, event.button, time)
+            return True
+
+        widget = column.get_widget()
+        return qltk.popup_menu_under_widget(self.__getmenu(), widget, 3, time)
