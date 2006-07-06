@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-28 11:09+0200\n"
+"POT-Creation-Date: 2006-07-05 17:22-0500\n"
 "PO-Revision-Date: 2006-07-02 22:40+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -46,32 +46,37 @@ msgstr "_Informatie"
 #. Translators: Only translate this if it conflicts with "Delete",
 #. as is the case in e.g. Finnish. It should be disambiguated as
 #. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
-#. Don't literally translate "ql-remove".
-#: ../stock.py:69 ../stock.py:73
+#. Don't literally translate "ql-remove". It needs an access key, so
+#. a sample translation would be "_Remove from Library".
+#: ../stock.py:70 ../stock.py:74
 msgid "ql-remove"
 msgstr "ql-remove"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:78
+#. This string needs an access key.
+#: ../stock.py:80
 msgid "gtk-media-next"
 msgstr "gtk-media-next"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:81
+#. This string needs an access key.
+#: ../stock.py:84
 msgid "gtk-media-previous"
 msgstr "gtk-media-previous"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:84
+#. This string needs an access key.
+#: ../stock.py:88
 msgid "gtk-media-play"
 msgstr "gtk-media-play"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
-#: ../stock.py:87
+#. This string needs an access key.
+#: ../stock.py:92
 msgid "gtk-media-pause"
 msgstr "gtk-media-pause"
 
@@ -601,7 +606,7 @@ msgid_plural "%d years"
 msgstr[0] "%d jaar"
 msgstr[1] "%d jaren"
 
-#: ../formats/_audio.py:160 ../qltk/information.py:170
+#: ../formats/_audio.py:178 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
 #: ../browsers/paned.py:29 ../browsers/audiofeeds.py:39
 #: ../browsers/audiofeeds.py:49 ../browsers/audiofeeds.py:50
@@ -670,7 +675,7 @@ msgstr ""
 msgid "Unable to edit song"
 msgstr "Niet in staat om song aan te passen"
 
-#: ../plugins/__init__.py:235 ../qltk/edittags.py:506
+#: ../plugins/__init__.py:235 ../qltk/edittags.py:505
 #: ../qltk/tagsfrompath.py:233 ../qltk/tracknumbers.py:133
 #, python-format
 msgid ""
@@ -732,7 +737,7 @@ msgstr "Opgeslagen Waarden"
 msgid "_Name:"
 msgstr "_Naam:"
 
-#: ../qltk/cbes.py:41 ../qltk/edittags.py:142
+#: ../qltk/cbes.py:41 ../qltk/edittags.py:141
 msgid "_Value:"
 msgstr "_Waarde:"
 
@@ -740,7 +745,7 @@ msgstr "_Waarde:"
 msgid "Edit saved values..."
 msgstr "Bewerk opgeslagen waarden..."
 
-#: ../qltk/chooser.py:40 ../qltk/filesel.py:199
+#: ../qltk/chooser.py:40 ../qltk/filesel.py:201
 msgid "Songs"
 msgstr "Songs"
 
@@ -810,55 +815,55 @@ msgstr "Bestandsnaam"
 msgid "Size"
 msgstr "Grootte"
 
-#: ../qltk/edittags.py:35
+#: ../qltk/edittags.py:34
 msgid "Split into _Multiple Values"
 msgstr "Splits in _Verschillende Waarden"
 
-#: ../qltk/edittags.py:53
+#: ../qltk/edittags.py:52
 msgid "Split Disc out of _Album"
 msgstr "Splits Disc van _Album"
 
-#: ../qltk/edittags.py:68
+#: ../qltk/edittags.py:67
 msgid "Split _Version out of Title"
 msgstr "Splits _Versie uit Titel"
 
-#: ../qltk/edittags.py:101
+#: ../qltk/edittags.py:100
 msgid "Split Arranger out of Ar_tist"
 msgstr "Splits Arrangeerder van ar_tiest"
 
-#: ../qltk/edittags.py:105
+#: ../qltk/edittags.py:104
 msgid "Split _Performer out of Artist"
 msgstr "Splits _Uitvoerende van Artiest"
 
-#: ../qltk/edittags.py:114
+#: ../qltk/edittags.py:113
 msgid "Add a Tag"
 msgstr "Voeg een nieuwe tag toe"
 
-#: ../qltk/edittags.py:132
+#: ../qltk/edittags.py:131
 msgid "_Tag:"
 msgstr "_Tag:"
 
-#: ../qltk/edittags.py:212
+#: ../qltk/edittags.py:211
 msgid "Edit Tags"
 msgstr "Bewerk Tags"
 
-#: ../qltk/edittags.py:219
+#: ../qltk/edittags.py:218
 msgid "Write"
 msgstr "Schrijf"
 
-#: ../qltk/edittags.py:239
+#: ../qltk/edittags.py:238
 msgid "Tag"
 msgstr "Tag"
 
-#: ../qltk/edittags.py:252
+#: ../qltk/edittags.py:251
 msgid "Value"
 msgstr "Waarde"
 
-#: ../qltk/edittags.py:400
+#: ../qltk/edittags.py:399
 msgid "Unable to add tag"
 msgstr "Niet in staat om tag toe te voegen"
 
-#: ../qltk/edittags.py:401
+#: ../qltk/edittags.py:400
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -874,12 +879,12 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:427 ../qltk/edittags.py:546 ../qltk/edittags.py:553
+#: ../qltk/edittags.py:426 ../qltk/edittags.py:545 ../qltk/edittags.py:552
 #: ../qltk/tagsfrompath.py:148 ../util/__init__.py:443 ../util/__init__.py:450
 msgid "Invalid tag"
 msgstr "Ongeldige tag"
 
-#: ../qltk/edittags.py:428 ../qltk/edittags.py:547 ../qltk/edittags.py:554
+#: ../qltk/edittags.py:427 ../qltk/edittags.py:546 ../qltk/edittags.py:553
 #: ../qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
@@ -891,12 +896,12 @@ msgstr ""
 "\n"
 "De geselecteerde bestanden ondersteunen het bewerken van deze tag niet."
 
-#: ../qltk/edittags.py:471 ../qltk/tagsfrompath.py:207
+#: ../qltk/edittags.py:470 ../qltk/tagsfrompath.py:207
 #: ../qltk/tracknumbers.py:120
 msgid "Tag may not be accurate"
 msgstr "Tag is mogelijk niet juist"
 
-#: ../qltk/edittags.py:472 ../qltk/tagsfrompath.py:208
+#: ../qltk/edittags.py:471 ../qltk/tagsfrompath.py:208
 #: ../qltk/tracknumbers.py:121
 #, python-format
 msgid ""
@@ -911,15 +916,15 @@ msgstr ""
 "\n"
 "Deze tag toch opslaan?"
 
-#: ../qltk/edittags.py:505 ../qltk/tracknumbers.py:132
+#: ../qltk/edittags.py:504 ../qltk/tracknumbers.py:132
 msgid "Unable to save song"
 msgstr "Niet in staat om song op te slaan"
 
-#: ../qltk/edittags.py:529 ../qltk/edittags.py:564
+#: ../qltk/edittags.py:528 ../qltk/edittags.py:563
 msgid "Invalid value"
 msgstr "Ongeldige waarde"
 
-#: ../qltk/edittags.py:530 ../qltk/edittags.py:565
+#: ../qltk/edittags.py:529 ../qltk/edittags.py:564
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -930,11 +935,11 @@ msgstr ""
 "\n"
 "%(error)s"
 
-#: ../qltk/edittags.py:572
+#: ../qltk/edittags.py:571
 msgid "Unable to retag multiple values"
 msgstr "Niet in staan om meerdere waarden te hertaggen"
 
-#: ../qltk/edittags.py:573
+#: ../qltk/edittags.py:572
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr ""
 "Het veranderen van de naam van een tag met meerdere waarden wordt niet "
@@ -970,52 +975,51 @@ msgstr "Laat _programmatische commentaren zien"
 msgid "Tag Editing"
 msgstr "Tag Bewerken"
 
-#: ../qltk/filesel.py:38
+#: ../qltk/filesel.py:39
 msgid "Folders"
 msgstr "Folders"
 
-#: ../qltk/filesel.py:69
+#: ../qltk/filesel.py:70
 msgid "New Folder..."
 msgstr "Nieuwe folder"
 
-#: ../qltk/filesel.py:124
+#: ../qltk/filesel.py:126
 msgid "New Folder"
 msgstr "Nieuwe folder"
 
-#: ../qltk/filesel.py:124
+#: ../qltk/filesel.py:126
 msgid "Enter a name for the new folder:"
 msgstr "Voer een naam in voor de nieuwe folder:"
 
-#: ../qltk/filesel.py:133
+#: ../qltk/filesel.py:135
 msgid "Unable to create folder"
 msgstr "Niet in staat om folder te maken"
 
-#: ../qltk/filesel.py:146
+#: ../qltk/filesel.py:148
 msgid "Unable to delete folder"
 msgstr "Niet in staat om folder te verwijderen"
 
-#. Translators: Only worry about "by", "Disc", and "Track" below.
-#: ../qltk/info.py:23
-msgid ""
-"\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)"
-"><version|\n"
-"\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-"by <~people>><album|\n"
-"\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b\\><part>"
-"\\</b\\>><tracknumber| - Track <tracknumber>>>"
+#. Translators: As in "by Artist Name"
+#: ../qltk/info.py:30
+#, python-format
+msgid "by %s"
 msgstr ""
-"\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)"
-"><version|\n"
-"\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-"door <~people>><album|\n"
-"\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b\\><part>"
-"\\</b\\>><tracknumber| - Track <tracknumber>>>"
 
-#: ../qltk/info.py:47
+#: ../qltk/info.py:31 ../qltk/information.py:110 ../qltk/information.py:353
+#, python-format
+msgid "Disc %s"
+msgstr "Schijf %s"
+
+#: ../qltk/info.py:32 ../qltk/information.py:115
+#, python-format
+msgid "Track %s"
+msgstr "Track %s"
+
+#: ../qltk/info.py:52
 msgid "_Edit Display..."
 msgstr "_Bewerk Weergave..."
 
-#: ../qltk/info.py:81
+#: ../qltk/info.py:86
 msgid "Not playing"
 msgstr "Speelt niet"
 
@@ -1035,16 +1039,6 @@ msgstr "Informatie"
 #: ../qltk/information.py:68
 msgid "Lyrics"
 msgstr "Tekst"
-
-#: ../qltk/information.py:110 ../qltk/information.py:353
-#, python-format
-msgid "Disc %s"
-msgstr "Schijf %s"
-
-#: ../qltk/information.py:115
-#, python-format
-msgid "Track %s"
-msgstr "Track %s"
 
 #: ../qltk/information.py:166 ../qltk/information.py:179
 #: ../qltk/songlist.py:306
@@ -1338,7 +1332,8 @@ msgstr "_Ga automatisch naar song die gespeeld wordt"
 
 #: ../qltk/prefs.py:171
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr "Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
+msgstr ""
+"Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
 
 #: ../qltk/prefs.py:177
 msgid "No volume adjustment"
@@ -1365,8 +1360,8 @@ msgid ""
 "Songs placed in these folders (separated by ':') will be added to your "
 "library"
 msgstr ""
-"Alle songs in deze directories (gescheiden door ':') worden toegevoegd aan je "
-"collectie"
+"Alle songs in deze directories (gescheiden door ':') worden toegevoegd aan "
+"je collectie"
 
 #: ../qltk/prefs.py:214
 msgid "Scan _Directories"
@@ -1695,11 +1690,11 @@ msgstr "patroon"
 msgid "_Filter on %s"
 msgstr "_Filter op %s"
 
-#: ../qltk/songlist.py:546 ../browsers/filesystem.py:67
+#: ../qltk/songlist.py:546 ../browsers/filesystem.py:68
 msgid "Unable to copy songs"
 msgstr "Niet in staat om songs te kopiëren"
 
-#: ../qltk/songlist.py:547 ../browsers/filesystem.py:68
+#: ../qltk/songlist.py:547 ../browsers/filesystem.py:69
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "De geselecteerde bestanden kunnen niet worden gekopiëerd naar andere "
@@ -1935,13 +1930,14 @@ msgstr "_Verwijder uit Speellijst"
 msgid "_Import"
 msgstr "_Importeer"
 
-#: ../browsers/playlists.py:418 ../browsers/playlists.py:497
+#: ../browsers/playlists.py:418 ../browsers/playlists.py:496
 msgid "Unable to import playlist"
 msgstr "Niet in staat om speellijst importeren"
 
-#: ../browsers/playlists.py:419 ../browsers/playlists.py:498
+#: ../browsers/playlists.py:419 ../browsers/playlists.py:497
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
-msgstr "Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
+msgstr ""
+"Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
 
 #: ../browsers/playlists.py:445
 msgid "_Rename"
@@ -1951,7 +1947,7 @@ msgstr "_Hernoem"
 msgid "Unable to rename playlist"
 msgstr "Niet in staan om speellijst te hernoemen"
 
-#: ../browsers/playlists.py:486
+#: ../browsers/playlists.py:485
 msgid "Import Playlist"
 msgstr "Importeer Speellijst"
 
@@ -1987,15 +1983,15 @@ msgstr "Zoek in je audio collectie"
 msgid "_Limit Results"
 msgstr "_Beperk Resultaten"
 
-#: ../browsers/filesystem.py:31
+#: ../browsers/filesystem.py:32
 msgid "File System"
 msgstr "Bestandssysteem"
 
-#: ../browsers/filesystem.py:32
+#: ../browsers/filesystem.py:33
 msgid "_File System"
 msgstr "_Bestandssysteem"
 
-#: ../browsers/filesystem.py:106
+#: ../browsers/filesystem.py:107
 msgid "_Add to Library"
 msgstr "_Voeg toe aan Bibliotheek"
 
@@ -2219,3 +2215,17 @@ msgstr "Luister naar, browse, of bewerk je audio verzameling"
 msgid "Music Player"
 msgstr "Muziek Speler"
 
+#~ msgid ""
+#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
+#~ "(<~length>)><version|\n"
+#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
+#~ "by <~people>><album|\n"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b"
+#~ "\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
+#~ msgstr ""
+#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
+#~ "(<~length>)><version|\n"
+#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
+#~ "door <~people>><album|\n"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b"
+#~ "\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"

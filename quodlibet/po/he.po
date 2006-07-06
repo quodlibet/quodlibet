@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-01 22:10-0500\n"
+"POT-Creation-Date: 2006-07-05 17:22-0500\n"
 "PO-Revision-Date: 2006-07-01 22:10-0500\n"
 "Last-Translator: johnny5 <johnny5@i12.com>\n"
 "Language-Team: Hebrew\n"
@@ -606,7 +606,7 @@ msgid_plural "%d years"
 msgstr[0] "%d שנה"
 msgstr[1] "%d שנים"
 
-#: ../formats/_audio.py:176 ../qltk/information.py:170
+#: ../formats/_audio.py:178 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
 #: ../browsers/paned.py:29 ../browsers/audiofeeds.py:39
 #: ../browsers/audiofeeds.py:49 ../browsers/audiofeeds.py:50

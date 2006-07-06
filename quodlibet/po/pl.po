@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-01 20:01+0200\n"
+"POT-Creation-Date: 2006-07-05 17:22-0500\n"
 "PO-Revision-Date: 2006-04-26 18:32+0200\n"
 "Last-Translator: Tomasz Torcz <zdzichu@irc.pl>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
@@ -614,7 +614,7 @@ msgstr[0] "%d rok"
 msgstr[1] "%d lata"
 msgstr[2] "%d lat"
 
-#: ../formats/_audio.py:176 ../qltk/information.py:170
+#: ../formats/_audio.py:178 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
 #: ../browsers/paned.py:29 ../browsers/audiofeeds.py:39
 #: ../browsers/audiofeeds.py:49 ../browsers/audiofeeds.py:50
