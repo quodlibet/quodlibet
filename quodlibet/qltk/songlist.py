@@ -837,7 +837,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             column.set_reorderable(True)
             self.append_column(column)
 
-    def __getmenu(self):
+    def __getmenu(self, column):
         menu = gtk.Menu()
         menu.connect_object('selection-done', gtk.Menu.destroy, menu)
 
@@ -846,11 +846,12 @@ class SongList(AllTreeView, util.InstanceTracker):
         current = zip(map(util.tag, current), current)
         tips = qltk.Tooltips(menu)
 
-        def add_header_toggle(menu, (header, tag), active):
+        def add_header_toggle(menu, (header, tag), active,
+                column=column, tips=tips):
             item = gtk.CheckMenuItem(header)
             item.tag = tag
             item.set_active(active)
-            item.connect('activate', self.__toggle_header_item)
+            item.connect('activate', self.__toggle_header_item, column)
             item.show()
             tips.set_tip(item, tag, tag)
             menu.append(item)
@@ -862,13 +863,13 @@ class SongList(AllTreeView, util.InstanceTracker):
         sep.show()
         menu.append(sep)
 
-        trackinfo = """title version tracknumber genre description part language
-            bpm originalalbum ~title~version ~album~part ~#track ~#tracks
+        trackinfo = """title version genre description part language bpm
+            originalalbum ~title~version ~album~part ~#track ~#tracks
             ~#playcount ~#skipcount ~#rating""".split()
         peopleinfo = """artist ~people performer arranger author composer
             conductor lyricist originalartist albumartist contact
             website""".split()
-        albuminfo = """album discnumber labelid ~#disc ~#discs""".split()
+        albuminfo = """album labelid ~#disc ~#discs""".split()
         dateinfo = """date originaldate recordingdate ~#laststarted
             ~#lastplayed ~#added""".split()
         fileinfo = """~filename ~basename ~dirname ~uri""".split()
@@ -901,9 +902,10 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         return menu
 
-    def __toggle_header_item(self, item):
+    def __toggle_header_item(self, item, column):
         headers = SongList.headers[:]
-        if item.get_active(): headers.append(item.tag)
+        if item.get_active():
+            headers.insert(self.get_columns().index(column), item.tag)
         else: headers.remove(item.tag)
 
         SongList.set_all_column_headers(headers)
@@ -949,8 +951,9 @@ class SongList(AllTreeView, util.InstanceTracker):
             return
 
         if event:
-            self.__getmenu().popup(None, None, None, event.button, time)
+            self.__getmenu(column).popup(None, None, None, event.button, time)
             return True
 
         widget = column.get_widget()
-        return qltk.popup_menu_under_widget(self.__getmenu(), widget, 3, time)
+        return qltk.popup_menu_under_widget(self.__getmenu(column),
+                widget, 3, time)
