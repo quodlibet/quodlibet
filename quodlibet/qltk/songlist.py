@@ -861,7 +861,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         albuminfo = """album labelid ~#disc ~#discs""".split()
         dateinfo = """date originaldate recordingdate ~#laststarted
             ~#lastplayed ~#added""".split()
-        fileinfo = """~filename ~basename ~dirname ~uri""".split()
+        fileinfo = """~format ~filename ~basename ~dirname ~uri""".split()
         copyinfo = """copyright license organization location isrc""".split()
 
         for name, group in [
