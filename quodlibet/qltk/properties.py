@@ -25,7 +25,7 @@ class SongProperties(qltk.Window):
                                  gobject.TYPE_NONE, (object,))
                      }
 
-    def __init__(self, watcher, songs):
+    def __init__(self, library, songs):
         super(SongProperties, self).__init__()
         if len(songs) > 1: self.set_default_size(600, 400)
         else: self.set_default_size(400, 400)
@@ -34,10 +34,10 @@ class SongProperties(qltk.Window):
         paned = gtk.HPaned()
         notebook = qltk.Notebook()
         pages = []
-        pages.extend([Ctr(self, watcher) for Ctr in
+        pages.extend([Ctr(self, library) for Ctr in
                       [EditTags, TagsFromPath, RenameFiles]])
         if len(songs) > 1:
-            pages.append(TrackNumbers(self, watcher))
+            pages.append(TrackNumbers(self, library))
         for page in pages: notebook.append_page(page)
         self.set_border_width(12)
 
@@ -76,12 +76,12 @@ class SongProperties(qltk.Window):
         selection.select_all()
         paned.pack2(notebook, shrink=False, resize=True)
 
-        s1 = watcher.connect(
+        s1 = library.connect(
             'changed', self.__refresh, fbasemodel, fview)
-        s2 = watcher.connect(
+        s2 = library.connect(
             'removed', self.__remove, fbasemodel, selection, csig)
-        self.connect_object('destroy', watcher.disconnect, s1)
-        self.connect_object('destroy', watcher.disconnect, s2)
+        self.connect_object('destroy', library.disconnect, s1)
+        self.connect_object('destroy', library.disconnect, s2)
         self.connect_object('changed', self.set_pending, None)
 
         self.emit('changed', songs)
@@ -91,7 +91,7 @@ class SongProperties(qltk.Window):
         paned.show()
         self.show()
 
-    def __remove(self, watcher, songs, model, selection, sig):
+    def __remove(self, library, songs, model, selection, sig):
         # If the handler is unblocked, then the selection gets updated
         # with some half-gone rows and we get a null-type error. So,
         # block the changed handler. Instead, track changes manually.
@@ -120,7 +120,7 @@ class SongProperties(qltk.Window):
             self.set_title("%s - %s" % (title, _("Properties")))
         else: self.set_title(_("Properties"))
 
-    def __refresh(self, watcher, songs, model, view):
+    def __refresh(self, library, songs, model, view):
         view.freeze_notify()
         if len(model) == 1: rows = [(0,)]
         else: rows = view.get_selection().get_selected_rows()[1]

@@ -2,11 +2,11 @@ from tests import TestCase, add
 
 from player import PlaylistPlayer
 from qltk.controls import PlayControls, Volume
-from qltk.watcher import SongWatcher
+from library import SongLibrary
 
 class TPlayControls(TestCase):
     def test_ctr(self):
-        PlayControls(PlaylistPlayer('fakesink'), SongWatcher()).destroy()
+        PlayControls(PlaylistPlayer('fakesink'), SongLibrary()).destroy()
 add(TPlayControls)
 
 class TVolume(TestCase):

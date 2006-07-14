@@ -6,8 +6,7 @@ import browsers.paned
 
 from browsers.paned import PanedBrowser
 from formats._audio import AudioFile
-from library import Library
-from qltk.watcher import SongWatcher
+from library import SongLibrary
 
 SONGS = [
     AudioFile({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -21,12 +20,12 @@ class TPanedBrowser(TestCase):
 
     def setUp(self):
         config.set("browsers", "panes", "artist")
-        widgets.library = browsers.paned.library = Library()
-        widgets.watcher = SongWatcher()
+        library = SongLibrary()
+        PanedBrowser.init(library)
         for af in SONGS:
             af.sanitize()
-            browsers.paned.library.add_song(af)
-        self.bar = self.Bar(widgets.watcher, False)
+        library.add(SONGS)
+        self.bar = self.Bar(library, False)
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -46,7 +45,4 @@ class TPanedBrowser(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        widgets.library = browsers.search.library = Library()
-        widgets.watcher.destroy()
-        del(widgets.watcher)
 add(TPanedBrowser)

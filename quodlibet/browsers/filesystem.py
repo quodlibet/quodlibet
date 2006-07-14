@@ -21,27 +21,31 @@ import formats
 import qltk
 
 from browsers._base import Browser
-from library import Library, library as glibrary
+from library import SongFileLibrary
 from qltk.filesel import DirectoryTree
+from qltk.songsmenu import SongsMenu
 
 class FileSystem(Browser, gtk.ScrolledWindow):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
-    __lib = None
+    __library = None
 
     name = _("File System")
     accelerated_name = _("_File System")
     priority = 10
 
-    def __added(klass, watcher, songs):
-        map(klass.__lib.remove, songs)
+    def __added(klass, library, songs):
+        klass.__library.remove(songs)
     __added = classmethod(__added)
 
-    def __init__(self, watcher, player):
+    @classmethod
+    def init(klass, library):
+        klass.__glibrary = library
+
+    def __init__(self, library, player):
         super(FileSystem, self).__init__()
-        if self.__lib is None:
-            FileSystem.__lib = Library()
-            watcher.connect('added', FileSystem.__added)
+        if self.__library is None:
+            FileSystem.__library = SongFileLibrary("filesystem")
 
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
@@ -102,42 +106,48 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     def activate(self):
         self.__songs_selected(self.child.get_selection())
 
-    def Menu(self, songs, songlist):
-        m = gtk.Menu()
+    def Menu(self, songs, songlist, library):
+        menu = SongsMenu(library, songs, remove=self.__remove_songs,
+                         delete=True, accels=songlist.accelerators)
         i = qltk.MenuItem(_("_Add to Library"), gtk.STOCK_ADD)
         i.set_sensitive(False)
         i.connect('activate', self.__add_songs, songs)
         for song in songs:
-            if song["~filename"] not in glibrary:
+            if song not in self.__glibrary:
                 i.set_sensitive(True)
                 break
-        return [i]
+        menu.preseparate()
+        menu.prepend(i)
+        return menu
 
     def __add_songs(self, item, songs):
-        added = []
-        for song in songs:
-            if song["~filename"] not in glibrary:
-                glibrary[song["~filename"]] = song
-                added.append(song)
-        if added:
-            from widgets import watcher
-            watcher.added(added)
+        self.__library.librarian.move(songs, self.__library, self.__glibrary)
+
+    def __remove_songs(self, songs):
+        self.__library.librarian.move(songs, self.__glibrary, self.__library)
 
     def __find_songs(self, selection):
         model, rows = selection.get_selected_rows()
         dirs = [model[row][0] for row in rows]
         songs = []
+        to_add = []
         for dir in dirs:
             for file in filter(formats.filter, os.listdir(dir)):
                 fn = os.path.realpath(os.path.join(dir, file))
-                if fn in glibrary: songs.append(glibrary[fn])
-                elif fn not in self.__lib:
+                if fn in self.__glibrary:
+                    songs.append(self.__glibrary[fn])
+                elif fn not in self.__library:
                     song = formats.MusicFile(fn)
-                    if song: self.__lib[song["~filename"]] = song
-                if fn in self.__lib:
-                    if not self.__lib[fn].valid():
-                        self.__lib.reload(self.__lib[fn])
-                    if fn in self.__lib: songs.append(self.__lib[fn])
+                    if song:
+                        to_add.append(song)
+                        songs.append(song)
+                if fn in self.__library:
+                    song = self.__library[fn]
+                    if not song.valid():
+                        self.__library.reload(song)
+                    if song in self.__library:
+                        songs.append(song)
+        self.__library.add(to_add)
         return songs
 
     def __songs_selected(self, selection):

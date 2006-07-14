@@ -3,8 +3,8 @@ from tests import TestCase, add
 import gtk
 
 from player import PlaylistPlayer
+from library import SongLibrary
 from qltk.songlist import PlaylistModel, PlaylistMux, SongList
-from qltk.watcher import SongWatcher
 
 class TPlaylistModel(TestCase):
     def setUp(self):
@@ -310,7 +310,7 @@ class TSongList(TestCase):
     HEADERS = ["acolumn", "~#lastplayed", "~foo~bar", "~#rating",
                "~#length", "~dirname", "~#track"]
     def setUp(self):
-        self.songlist = SongList(SongWatcher())
+        self.songlist = SongList(SongLibrary())
 
     def test_set_all_column_headers(self):
         SongList.set_all_column_headers(self.HEADERS)

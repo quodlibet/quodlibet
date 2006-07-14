@@ -5,16 +5,18 @@ import gtk
 from formats._audio import AudioFile
 from player import PlaylistPlayer
 from qltk.tracker import SongTracker
-from qltk.watcher import SongWatcher
+from library import SongLibrary
 
 class TSongTracker(TestCase):
     def setUp(self):
         self.p = PlaylistPlayer('fakesink')
-        self.w = SongWatcher()
+        self.w = SongLibrary()
         self.s1 = AudioFile(
-            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
+            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
+             "~filename": "foo"})
         self.s2 = AudioFile(
-            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10})
+            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
+             "~filename": "foo"})
         self.cm = SongTracker(self.w, self.p, self)
         self.current = None
 

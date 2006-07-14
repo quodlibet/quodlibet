@@ -21,7 +21,7 @@ def main():
     # Load configuration data and scan the library for new/changed songs.
     config.init(const.CONFIG)
     library = load_library()
-    player = load_player()
+    player = load_player(library)
 
     import util
     import widgets
@@ -251,21 +251,17 @@ def process_arguments():
 
 def load_library():
     import library
-    library.init(const.LIBRARY)
+    paths = config.get("settings", "scan").split(":")
+    lib = library.init(const.LIBRARY, paths)
     print to(_("Loaded song library."))
-    from library import library
+    return lib
 
-    if config.get("settings", "scan"):
-        for a, c, r in library.scan(config.get("settings", "scan").split(":")):
-            pass
-    return library
-
-def load_player():
+def load_player(library):
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
     import player
     sink = config.get("settings", "pipeline")
-    try: playlist = player.init(sink)
+    try: playlist = player.init(sink, library.librarian)
     except player.NoSinkError:
         import widgets, gobject
         gobject.idle_add(widgets.no_sink_quit, sink)

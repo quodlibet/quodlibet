@@ -34,12 +34,12 @@ class SongInfo(gtk.Label):
 
     __PATTERN_FILENAME = os.path.join(const.USERDIR, "songinfo")
 
-    def __init__(self, watcher, player):
+    def __init__(self, library, player):
         super(SongInfo, self).__init__()
         self.set_ellipsize(pango.ELLIPSIZE_END)
         self.set_selectable(True)
         self.set_alignment(0.0, 0.0)
-        watcher.connect_object('changed', self.__check_change, player)
+        library.connect_object('changed', self.__check_change, player)
         player.connect('song-started', self.__check_started)
 
         self.connect_object('populate-popup', self.__menu, player)

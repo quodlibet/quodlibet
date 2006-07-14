@@ -6,28 +6,28 @@ import widgets
 
 from player import PlaylistPlayer
 from qltk.quodlibet import MainSongList, QuodLibetWindow
-from qltk.watcher import SongWatcher
+from library import SongLibrary
 
 class TMainSongList(TestCase):
     def setUp(self):
-        self.watcher = SongWatcher()
+        self.library = SongLibrary()
         self.player = PlaylistPlayer('fakesink')
-        self.list = MainSongList(self.watcher, self.player, gtk.CheckButton())
+        self.list = MainSongList(self.library, self.player, gtk.CheckButton())
 
     def test_ctr(self):
         pass
 
     def tearDown(self):
         self.list.destroy()
-        self.watcher.destroy()
+        self.library.destroy()
         self.player.destroy()
 add(TMainSongList)
 
 class TQuodLibetWindow(TestCase):
     def setUp(self):
         self.player = PlaylistPlayer('fakesink')
-        widgets.watcher = self.watcher = SongWatcher()
-        widgets.main = self.win = QuodLibetWindow(self.watcher, self.player)
+        self.library = SongLibrary()
+        widgets.main = self.win = QuodLibetWindow(self.library, self.player)
         self.player.setup(self.win.playlist, None)
 
     def test_ctr(self):
@@ -35,8 +35,7 @@ class TQuodLibetWindow(TestCase):
 
     def tearDown(self):
         self.win.destroy()
-        self.watcher.destroy()
+        self.library.destroy()
         self.player.destroy()
         del(widgets.main)
-        del(widgets.watcher)
 add(TQuodLibetWindow)

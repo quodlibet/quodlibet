@@ -12,15 +12,15 @@ import time
 import config
 
 class SongTracker(object):
-    def __init__(self, watcher, player, pl):
-        player.connect_object('song-ended', self.__end, watcher, pl)
-        player.connect_object('song-started', self.__start, watcher)
+    def __init__(self, librarian, player, pl):
+        player.connect_object('song-ended', self.__end, librarian, pl)
+        player.connect_object('song-started', self.__start, librarian)
         player.connect('error', self.__error)
 
     def __error(self, player, error, lock):
         config.set("memory", "song", "")
 
-    def __start(self, watcher, song):
+    def __start(self, librarian, song):
         if song is not None:
             if song.multisong:
                 song["~#lastplayed"] = int(time.time())
@@ -28,16 +28,16 @@ class SongTracker(object):
             else:
                 config.set("memory", "song", song["~filename"])
             song["~#laststarted"] = int(time.time())
-            watcher.changed([song])
+            librarian.changed([song])
 
-    def __end(self, watcher, song, ended, pl):
+    def __end(self, librarian, song, ended, pl):
         config.set("memory", "song", "")
         if song is None or song.multisong:
             return
         elif not ended:
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] = song.get("~#playcount", 0) + 1
-            watcher.changed([song])
+            librarian.changed([song])
         elif pl.current is not song:
             song["~#skipcount"] = song.get("~#skipcount", 0) + 1
-            watcher.changed([song])
+            librarian.changed([song])

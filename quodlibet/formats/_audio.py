@@ -67,6 +67,9 @@ class AudioFile(dict):
                 self.get("~filename"))
     sort_key = property(__sort_key)
 
+    key = property(lambda self: self["~filename"])
+    mountpoint = property(lambda self: self["~mountpoint"])
+
     def __album_key(self):
         return (self.get("album", ""),
                 self.get("labelid") or self.get("musicbrainz_albumid") or "")

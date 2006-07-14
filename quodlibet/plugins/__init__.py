@@ -222,7 +222,7 @@ class Manager(object):
     def list_failures(self):
         return self.__failures.copy()
 
-    def _check_change(self, watcher, parent, songs):
+    def _check_change(self, library, parent, songs):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
@@ -246,5 +246,5 @@ class Manager(object):
             needs_reload = []
             if song._was_updated(): changed.append(song._song)
             elif not song.valid() and song.exists():
-                watcher.reload(song._song)
-        watcher.changed(changed)
+                library.reload(song._song)
+        library.changed(changed)

@@ -7,8 +7,7 @@ import browsers.search
 
 from browsers.search import EmptyBar, SearchBar
 from formats._audio import AudioFile
-from library import Library
-from qltk.watcher import SongWatcher
+from library import SongLibrary
 
 SONGS = [AudioFile(
     {"title": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -22,11 +21,11 @@ SONGS.sort()
 class TEmptyBar(TestCase):
     Bar = EmptyBar
     def setUp(self):
-        browsers.search.library = Library()
+        browsers.search.library = SongLibrary()
         for af in SONGS:
             af.sanitize()
-            browsers.search.library.add_song(af)
-        self.bar = self.Bar(SongWatcher(), False)
+        browsers.search.library.add(SONGS)
+        self.bar = self.Bar(browsers.search.library, False)
         self.bar.connect('songs-selected', self._expected)
 
     def _expected(self, bar, songs, sort):
@@ -89,19 +88,16 @@ class TEmptyBar(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        browsers.search.library = Library()
+        browsers.search.library.destroy()
 add(TEmptyBar)
 
 class TSearchBar(TEmptyBar):
     Bar = SearchBar
     def setUp(self):
-        widgets.watcher = SongWatcher()
         super(TSearchBar, self).setUp()
 
     def test_ctr(self): pass
 
     def tearDown(self):
         super(TSearchBar, self).tearDown()
-        widgets.watcher.destroy()
-        del(widgets.watcher)
 add(TSearchBar)

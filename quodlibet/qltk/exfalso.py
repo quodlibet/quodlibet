@@ -35,13 +35,13 @@ class ExFalsoWindow(gtk.Window):
                                  gobject.TYPE_NONE, (object,))
                      }
 
-    def __init__(self, watcher, dir=None):
+    def __init__(self, library, dir=None):
         super(ExFalsoWindow, self).__init__()
         self.set_title("Ex Falso")
         self.set_default_size(700, 500)
 
         # plugin support
-        self.__watcher = watcher
+        self.__library = library
         self.pm = SongsMenuPlugins(
             [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
              os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
@@ -86,12 +86,11 @@ class ExFalsoWindow(gtk.Window):
         nb = qltk.Notebook()
         nb.show()
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
-            nb.append_page(Page(self, watcher))
+            nb.append_page(Page(self, self.__library))
         hp.pack2(nb, resize=True, shrink=False)
         fs.connect('changed', self.__changed, l)
-        self.__cache = {}
-        s = watcher.connect_object('changed', FileSelector.rescan, fs)
-        self.connect_object('destroy', watcher.disconnect, s)
+        s = self.__library.connect_object('changed', FileSelector.rescan, fs)
+        self.connect_object('destroy', self.__library.disconnect, s)
         self.__save = None
         self.connect_object('changed', self.set_pending, None)
         for c in fs.get_children():
@@ -121,8 +120,8 @@ class ExFalsoWindow(gtk.Window):
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         filenames = sorted([model[row][0] for row in rows])
-        songs = map(self.__cache.__getitem__, filenames)
-        menu = self.pm.Menu(self.__watcher, self, songs)
+        songs = map(self.__library.__getitem__, filenames)
+        menu = self.pm.Menu(self.__library, self, songs)
         if menu is None: menu = gtk.Menu()
         else: menu.prepend(gtk.SeparatorMenuItem())
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
@@ -134,8 +133,10 @@ class ExFalsoWindow(gtk.Window):
 
     def __delete(self, item, files, fs):
         d = DeleteDialog(self, files)
-        d.run()
+        removed = d.run()
         d.destroy()
+        removed = filter(None, map(self.__library.get, removed))
+        self.__library.remove(removed)
         fs.rescan()
 
     def __changed(self, selector, selection, label):
@@ -149,18 +150,18 @@ class ExFalsoWindow(gtk.Window):
         for row in rows:
             filename = model[row][0]
             if not os.path.exists(filename): pass
-            elif filename in self.__cache: files.append(self.__cache[filename])
+            elif filename in self.__library:
+                files.append(self.__library[filename])
             else: files.append(formats.MusicFile(model[row][0]))
         files = filter(None, files)
-        self.emit('changed', files)
-        self.__cache.clear()
         if len(files) == 0: self.set_title("Ex Falso")
         elif len(files) == 1:
             self.set_title("%s - Ex Falso" % files[0].comma("title"))
         else:
             self.set_title("%s - Ex Falso" % (_("%(title)s and %(count)d more")
                 % {'title': files[0].comma("title"), 'count': len(files) - 1}))
-        self.__cache = dict([(song["~filename"], song) for song in files])
+        self.__library.add(files)
+        self.emit('changed', files)
 
 class PreferencesWindow(qltk.Window):
     __window = None

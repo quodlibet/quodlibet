@@ -35,4 +35,6 @@ class RemoteFile(AudioFile):
         if k is None: return []
         else: return False
 
+    key = property(lambda self: self["~uri"])
+
 info = RemoteFile

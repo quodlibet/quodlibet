@@ -1,0 +1,277 @@
+# Copyright 2006 Joe Wreschnig
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+#
+# $Id$
+
+"""Base library classes.
+
+These classes are the most basic library classes. As such they are the
+least useful but most content-agnostic.
+"""
+
+import cPickle as pickle
+import fcntl
+import itertools
+import os
+import shutil
+import traceback
+
+import gobject
+import gtk
+
+class Library(gtk.Object):
+    """A Library contains useful objects.
+
+    The only required method these objects support is a .key
+    attribute, but specific types of libraries may require more
+    advanced interfaces.
+    """
+
+    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+    __gsignals__ = {
+        'changed': SIG_PYOBJECT,
+        'removed': SIG_PYOBJECT,
+        'added': SIG_PYOBJECT,
+        }
+    del(SIG_PYOBJECT)
+
+    librarian = None
+
+    def __init__(self, name=None):
+        super(Library, self).__init__()
+        self._contents = {}
+        self._masked = {}
+        for key in ['get', 'keys', 'values', 'items', 'iterkeys',
+                    'itervalues', 'iteritems', 'has_key']:
+            setattr(self, key, getattr(self._contents, key))
+        if self.librarian is not None and name is not None:
+            self.librarian.register(self, name)
+
+    def add(self, items):
+        """Add items. This causes an 'added' signal.
+
+        Return the list of items actually added, filtering out items
+        already in the library.
+        """
+        items = filter(lambda item: item not in self, items)
+        for item in items:
+            self._contents[item.key] = item
+        self.emit('added', items)
+        return items
+
+    def remove(self, items):
+        """Remove items. This causes a 'removed' signal."""
+        for item in items:
+            del(self._contents[item.key])
+        self.emit('removed', items)
+
+    def changed(self, items):
+        """Alert other users that these items have changed.
+
+        This causes a 'changed' signal. If a librarian is available
+        this function will call its changed method instead, and all
+        libraries that librarian manages may fire a 'changed' signal.
+
+        The item list may be filtered to those items actually in the
+        library. If a librarian is available, it will handle the
+        filtering instead. That means if this method is delegated to
+        the librarian, this library's changed signal may not fire, but
+        another's might.
+        """
+        if self.librarian and self in self.librarian.libraries.itervalues():
+            self.librarian.changed(items)
+        else:
+            items = filter(self.__contains__, items)
+            self._changed(items)
+
+    def _changed(self, items):
+        # Called by the changed method and Librarians.
+        self.emit('changed', items)
+
+    def __iter__(self):
+        """Iterate over the items in the library."""
+        return self._contents.itervalues()
+
+    def __len__(self):
+        """The number of items in the library."""
+        return len(self._contents)
+
+    def __getitem__(self, key):
+        """Find a item given its key."""
+        return self._contents[key]
+
+    def __contains__(self, item):
+        """Check if a key or item is in the library."""
+        try: return item in self._contents or item.key in self._contents
+        except AttributeError: return False
+
+    def load(self, filename, skip=False):
+        """Load a library from a file, containing a picked list.
+
+        Loading does not cause added, changed, or removed signals. It
+        does return a tuple of number (changed, removed).
+        """
+        try:
+            if os.path.exists(filename):
+                fileobj = file(filename, "rb")
+                try: items = pickle.load(fileobj)
+                except (pickle.PickleError, EnvironmentError):
+                    traceback.print_exc()
+                    try: shutil.copy(filename, filename + ".not-valid")
+                    except EnvironmentError:
+                        traceback.print_exc()
+                    items = []
+                fileobj.close()
+            else:
+                return 0, 0
+        except EnvironmentError:
+            return 0, 0
+
+        if skip:
+            for item in items:
+                self._contents[item.key] = item
+        else:
+            map(self._load, items)
+
+    def _load(self, item):
+        """Load a item. Return (changed, removed)."""
+        # Subclases should override this if they want to check
+        # item validity; see FileLibrary.
+        self._contents[item.key] = item
+        return False, False
+
+    def save(self, filename):
+        """Save the library to the given filename."""
+        if not os.path.isdir(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        fileobj = file(filename + ".tmp", "wb")
+        fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
+        items = self.values()
+        for masked in self._masked.values():
+            items.extend(masked.values())
+        # Item keys are often based on filenames, in which case
+        # sorting takes advantage of the filesystem cache when we
+        # reload/rescan the files.
+        items.sort(key=lambda item: item.key)
+        pickle.dump(items, fileobj, pickle.HIGHEST_PROTOCOL)
+        os.rename(filename + ".tmp", filename)
+        fileobj.close()
+
+    def masked(self, item):
+        """Return true if the item is in the library but masked."""
+        for point in self._masked.itervalues():
+            if item in point or item in point.itervalues():
+                return True
+        else: return False
+
+class Librarian(gtk.Object):
+    """The librarian is a nice interface to all active libraries.
+
+    Librarians are a kind of meta-library. When any of their
+    registered libraries fire a signal, they fire the same
+    signal. Likewise, they provide various methods equivalent to the
+    ones found in libraries that group the results of the real
+    libraries.
+
+    Attributes:
+    libraries -- a dict mapping library names to libraries
+    """
+
+    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+    __gsignals__ = {
+        'changed': SIG_PYOBJECT,
+        'removed': SIG_PYOBJECT,
+        'added': SIG_PYOBJECT,
+        }
+
+    def __init__(self):
+        super(Librarian, self).__init__()
+        self.libraries = {}
+        self.__signals = {}
+
+    def register(self, library, name):
+        """Register a library with this librarian."""
+        if name in self.libraries or name in self.__signals:
+            raise ValueError("library %r is already active" % name)
+
+        added_sig = library.connect('added', self.__added)
+        removed_sig = library.connect('removed', self.__removed)
+        changed_sig = library.connect('changed', self.__changed)
+        library.connect('destroy', self.__unregister, name)
+        self.libraries[name] = library
+        self.__signals[library] = [added_sig, removed_sig, changed_sig]
+
+    def __unregister(self, library, name):
+        # This function, unlike register, should be private.
+        # Libraries get unregistered at the discretion of the
+        # librarian, not the libraries.
+        del(self.libraries[name])
+        del(self.__signals[library])
+
+    # FIXME: We can be smarter about this -- queue a list of items
+    # and fire the signal after a short wait, to take advantage of
+    # a case where many libraries fire a signal at the same time (or
+    # one fires a signal often).
+
+    def __changed(self, library, items):
+        self.emit('changed', items)
+
+    def __added(self, library, items):
+        self.emit('added', items)
+
+    def __removed(self, library, items):
+        self.emit('removed', items)
+
+    def changed(self, items):
+        """Triage the items and inform their real libraries."""
+        for library in self.libraries.itervalues():
+            in_library = filter(library.__contains__, items)
+            if in_library:
+                library._changed(in_library)
+
+    def __getitem__(self, key):
+        """Find a item given its key."""
+        for library in self.libraries.itervalues():
+            try: return library[key]
+            except KeyError: pass
+        else: raise KeyError, key
+
+    def get(self, key, default=None):
+        try: return self[key]
+        except KeyError: return default
+
+    def remove(self, items):
+        """Remove items from all libraries."""
+        for library in self.libraries.itervalues():
+            library.remove(filter(library.__contains__, items))
+
+    def __contains__(self, item):
+        """Check if a key or item is in the library."""
+        for library in self.libraries.itervalues():
+            if item in library:
+                return True
+        else: return False
+
+    def __iter__(self):
+        """Iterate over all items in all libraries."""
+        return itertools.chain(*self.libraries.itervalues())
+
+    def move(self, items, from_, to):
+        """Move items from one library to another.
+
+        This causes 'removed' signals on the from library, and 'added'
+        signals on the 'to' library, but will not cause any signals
+        to be emitted via this librarian.
+        """
+        try:
+            from_.handler_block(self.__signals[from_][1])
+            to.handler_block(self.__signals[to][0])
+            from_.remove(items)
+            to.add(items)
+        finally:
+            from_.handler_unblock(self.__signals[from_][1])
+            to.handler_unblock(self.__signals[to][0])
+            

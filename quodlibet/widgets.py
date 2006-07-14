@@ -28,7 +28,6 @@ from qltk.quodlibet import QuodLibetWindow
 from qltk.remote import FSInterface, FIFOControl
 from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu
-from qltk.watcher import SongWatcher
 
 try:
     from qltk.dbus_ import DBusHandler
@@ -48,6 +47,8 @@ def website_wrap(activator, link):
 
 def init(player, library):
     global main, watcher
+
+    watcher = library.librarian
 
     qltk.session.init()
 
@@ -70,16 +71,14 @@ def init(player, library):
 
     player.connect('error', player_error)
 
-    watcher = SongWatcher()
-
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted ~basename "
              "~dirname").split()
     for Kind in browsers.browsers:
         if Kind.headers is not None: Kind.headers.extend(in_all)
-        Kind.init(watcher)
+        Kind.init(library)
 
-    main = QuodLibetWindow(watcher, player)
+    main = QuodLibetWindow(library, player)
     main.connect('destroy', gtk.main_quit)
 
     SongsMenu.plugins = SongsMenuPlugins(
@@ -87,7 +86,7 @@ def init(player, library):
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
     
-    events = EventPlugins(watcher, player, [
+    events = EventPlugins(library.librarian, player, [
         os.path.join(const.BASEDIR, "plugins", "events"),
         os.path.join(const.USERDIR, "plugins", "events")], "events")
     events.rescan()
@@ -98,11 +97,11 @@ def init(player, library):
 
     gtk.about_dialog_set_url_hook(website_wrap)
 
-    # These stay alive in the watcher/other callbacks.
+    # These stay alive in the library/player/other callbacks.
     FSInterface(player)
-    FIFOControl(watcher, main, player)
+    FIFOControl(library, main, player)
     DBusHandler(player)
-    SongTracker(watcher, player, main.playlist)
+    SongTracker(library.librarian, player, main.playlist)
 
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()

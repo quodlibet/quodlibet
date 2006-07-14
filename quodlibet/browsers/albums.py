@@ -20,7 +20,6 @@ import util
 
 from browsers._base import Browser
 from formats import PEOPLE
-from library import library
 from parse import Query, XMLFromPattern
 from qltk.ccb import ConfigCheckButton
 from qltk.completion import EntryWordCompletion
@@ -123,7 +122,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     accelerated_name = _("_Album List")
     priority = 4
 
-    def init(klass, watcher):
+    def init(klass, library):
         pattern_fn = os.path.join(const.USERDIR, "album_pattern")
         try:
             klass._Album._pattern_text = file(pattern_fn).read().rstrip()
@@ -153,20 +152,18 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         f.close()
     refresh_pattern = classmethod(refresh_pattern)
 
-    def _init_model(klass, watcher):
+    def _init_model(klass, library):
         klass.__model = model = klass._AlbumStore(object)
-        watcher.connect('removed', klass.__remove_songs, model)
-        watcher.connect('changed', klass.__changed_songs, model)
-        watcher.connect('added', klass.__add_songs, model)
-        klass.__add_songs(watcher, library.values(), model)
+        library.connect('removed', klass.__remove_songs, model)
+        library.connect('changed', klass.__changed_songs, model)
+        library.connect('added', klass.__add_songs, model)
+        klass.__add_songs(library, library.values(), model)
         model.append(row=[None])
     _init_model = classmethod(_init_model)
 
-    def __changed_songs(klass, watcher, changed, model):
-        changed = filter(lambda x: x.get("~filename") in library, changed)
-        if not changed: return
-        to_update = klass.__remove_songs(watcher, changed, model, False)
-        to_update.update(klass.__add_songs(watcher, changed, model, False))
+    def __changed_songs(klass, library, changed, model):
+        to_update = klass.__remove_songs(library, changed, model, False)
+        to_update.update(klass.__add_songs(library, changed, model, False))
         klass.__update(to_update, model)
     __changed_songs = classmethod(__changed_songs)
 
@@ -186,7 +183,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         if to_remove: map(model.remove, to_remove)
     __update = classmethod(__update)
 
-    def __remove_songs(klass, watcher, removed, model, update=True):
+    def __remove_songs(klass, library, removed, model, update=True):
         changed = set()
         for row in model:
             album = row[0]
@@ -196,7 +193,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         else: return changed
     __remove_songs = classmethod(__remove_songs)
 
-    def __add_songs(klass, watcher, added, model, update=True):
+    def __add_songs(klass, library, added, model, update=True):
         albums = model.get_albums()
         changed = set()
         new = []
@@ -451,10 +448,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             except ValueError: pass
             return dict([(a.key, a) for a in albums])
 
-    def __init__(self, watcher, player):
+    def __init__(self, library, player):
         super(AlbumList, self).__init__(spacing=6)
         self._register_instance()
-        if self.__model is None: AlbumList._init_model(watcher)
+        if self.__model is None: AlbumList._init_model(library)
         self.__save = bool(player)
 
         sw = gtk.ScrolledWindow()
@@ -515,7 +512,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view.drag_source_set(
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         view.connect("drag-data-get", self.__drag_data_get)
-        view.connect_object('popup-menu', self.__popup, view, watcher)
+        view.connect_object('popup-menu', self.__popup, view, library)
 
         hb = gtk.HBox(spacing=6)
         hb.pack_start(self.SortCombo(model_sort), expand=False)
@@ -537,9 +534,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             key = key.decode('utf-8')
             return not (value.startswith(key) or value.lower().startswith(key))
         
-    def __popup(self, view, watcher):
+    def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
-        menu = SongsMenu(watcher, songs)
+        menu = SongsMenu(library, songs)
 
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         button.connect('activate', self.__refresh_album, view.get_selection())

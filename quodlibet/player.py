@@ -66,7 +66,7 @@ class PlaylistPlayer(gtk.Object):
         'error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, bool)),
         }
 
-    def __init__(self, sinkname):
+    def __init__(self, sinkname, librarian=None):
         super(PlaylistPlayer, self).__init__()
         device, sinkname = GStreamerSink(sinkname)
         self.name = sinkname
@@ -75,16 +75,16 @@ class PlaylistPlayer(gtk.Object):
         self.bin.set_property('audio-sink', device)
         bus = self.bin.get_bus()
         bus.add_signal_watch()
-        bus.connect('message', self.__message)
+        bus.connect('message', self.__message, librarian)
         self.connect_object('destroy', self.bin.set_state, gst.STATE_NULL)
         self.paused = True
 
-    def __message(self, bus, message):
+    def __message(self, bus, message, librarian):
         if message.type == gst.MESSAGE_EOS:
             self.__source.next_ended()
             self.__end(False)
         elif message.type == gst.MESSAGE_TAG:
-            self.__tag(message.parse_tag())
+            self.__tag(message.parse_tag(), librarian)
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
             err = str(err).decode(const.ENCODING, 'replace')
@@ -186,13 +186,13 @@ class PlaylistPlayer(gtk.Object):
             self.bin.set_state(gst.STATE_NULL)
             self.bin.set_property('uri', '')
 
-    def __tag(self, tags):
+    def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
-            self.__fill_stream(tags)
+            self.__fill_stream(tags, librarian)
         elif self.song and self.song.fill_metadata:
             pass
 
-    def __fill_stream(self, tags):
+    def __fill_stream(self, tags, librarian):
         changed = False
         started = False
         if self.info is self.song:
@@ -234,9 +234,8 @@ class PlaylistPlayer(gtk.Object):
 
         if started:
             self.emit('song-started', self.info)
-        elif changed:
-            from widgets import watcher
-            watcher.changed([self.song])
+        elif changed and librarian is not None:
+            librarian.changed([self.song])
 
     def reset(self):
         self.__source.reset()
@@ -261,10 +260,10 @@ class PlaylistPlayer(gtk.Object):
 global playlist
 playlist = None
 
-def init(pipeline):
+def init(pipeline, librarian):
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(gst.URI_SRC, "file://", ""):
         global playlist
-        playlist = PlaylistPlayer(pipeline or "gconfaudiosink")
+        playlist = PlaylistPlayer(pipeline or "gconfaudiosink", librarian)
         return playlist
     else: raise NoSourceError

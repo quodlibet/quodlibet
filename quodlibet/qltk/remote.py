@@ -47,8 +47,8 @@ class FSInterface(object):
 class FIFOControl(object):
     """A FIFO to control the player/library from."""
 
-    def __init__(self, watcher, window, player):
-        self.__open(watcher, window, player)
+    def __init__(self, library, window, player):
+        self.__open(library, window, player)
         gtk.quit_add(1, self.__cleanup)
 
     def __cleanup(self):
@@ -96,26 +96,26 @@ class FIFOControl(object):
                     print "W: Invalid command %s received." % command
             return True
 
-    def _previous(self, watcher, window, player): player.previous()
-    def _next(self, watcher, window, player): player.next()
-    def _pause(self, watcher, window, player): player.paused = True
-    def _play(self, watcher, window, player):
+    def _previous(self, library, window, player): player.previous()
+    def _next(self, library, window, player): player.next()
+    def _pause(self, library, window, player): player.paused = True
+    def _play(self, library, window, player):
         if player.song: player.paused = False
-    def _play_pause(self, watcher, window, player):
+    def _play_pause(self, library, window, player):
         if player.song is None:
             player.reset()
         else: player.paused ^= True
 
-    def _focus(self, watcher, window, player): window.present()
+    def _focus(self, library, window, player): window.present()
 
-    def _volume(self, value, watcher, window, player):
+    def _volume(self, value, library, window, player):
         if value[0] == "+": window.volume += 0.05
         elif value == "-": window.volume -= 0.05
         else:
             try: window.volume.set_value(int(value) / 100.0)
             except ValueError: pass
 
-    def _order(self, value, watcher, window, player):
+    def _order(self, value, library, window, player):
         order = window.order
         try:
             order.set_active(
@@ -126,14 +126,14 @@ class FIFOControl(object):
                 if value in ["t", "toggle"]:
                     order.set_active(not order.get_active())
 
-    def _repeat(self, value, watcher, window, player):
+    def _repeat(self, value, library, window, player):
         repeat = window.repeat
         if value in ["0", "off"]: repeat.set_active(False)
         elif value in ["1", "on"]: repeat.set_active(True)
         elif value in ["t", "toggle"]:
             repeat.set_active(not repeat.get_active())
 
-    def _seek(self, time, watcher, window, player):
+    def _seek(self, time, library, window, player):
         seek_to = player.get_position()
         if time[0] == "+": seek_to += util.parse_time(time[1:]) * 1000
         elif time[0] == "-": seek_to -= util.parse_time(time[1:]) * 1000
@@ -142,13 +142,10 @@ class FIFOControl(object):
                       max(0, seek_to))
         player.seek(seek_to)
 
-    def _add_file(self, value, watcher, window, player):
-        from library import library
+    def _add_file(self, value, library, window, player):
         filename = os.path.realpath(value)
-        song = library.add(filename)
+        song = library.add_filename(filename)
         if song:
-            if song != True: watcher.added([song])
-            else: song = library[filename]
             if song not in window.playlist.pl:
                 queue = window.playlist.q
                 queue.insert_before(queue.get_iter_first(), row=[song])
@@ -157,13 +154,9 @@ class FIFOControl(object):
                 player.go_to(library[filename])
                 player.paused = False
 
-    def _add_directory(self, value, watcher, window, player):
-        from library import library
+    def _add_directory(self, value, library, window, player):
         filename = os.path.normpath(os.path.realpath(value))
-        for added, changed, removed in library.scan([filename]): pass
-        if added: watcher.added(added)
-        if changed: watcher.changed(changed)
-        if removed: watcher.removed(removed)
+        for added in library.scan([filename]): pass
         if window.browser.can_filter(None):
             window.browser.set_text(
                 "filename = /^%s/c" % sre.escape(filename))
@@ -178,70 +171,68 @@ class FIFOControl(object):
                 queue.insert_before(queue.get_iter_first(), row=[song])
         player.next()
 
-    def _toggle_window(self, watcher, window, player):
+    def _toggle_window(self, library, window, player):
         if window.get_property('visible'): window.hide()
         else: window.present()
 
-    def _hide_window(self, watcher, window, player):
+    def _hide_window(self, library, window, player):
         window.hide()
 
     _show_window = _focus
 
-    def _set_rating(self, value, watcher, window, player):
+    def _set_rating(self, value, library, window, player):
         song = player.song
         if song:
             try: song["~#rating"] = max(0.0, min(1.0, float(value)))
             except (ValueError, TypeError): pass
-            else: watcher.changed([song])
+            else: library.changed([song])
 
-    def _set_browser(self, value, watcher, window, player):
+    def _set_browser(self, value, library, window, player):
         Kind = browsers.get(value)
         if Kind is not browsers.search.EmptyBar:
-            window.select_browser(None, Kind, player)
+            window.select_browser(None, Kind, (library, player))
         else: print "W: Unknown browser type %r." % value
 
-    def _open_browser(self, value, watcher, window, player):
+    def _open_browser(self, value, library, window, player):
         Kind = browsers.get(value)
         if Kind is not browsers.search.EmptyBar:
-            LibraryBrowser(Kind, watcher)
+            LibraryBrowser(Kind, library)
         else: print "W: Unknown browser type %r." % value
 
-    def _random(self, tag, watcher, window, player):
+    def _random(self, tag, library, window, player):
         if window.browser.can_filter(tag):
             values = window.browser.list(tag)
             if values:
                 value = random.choice(values)
                 window.browser.filter(tag, [value])
 
-    def _filter(self, value, watcher, window, player):
+    def _filter(self, value, library, window, player):
         tag, values = value.split('=', 1)
         values = [v.decode("utf-8", "replace") for v in values.split("\x00")]
         if window.browser.can_filter(tag) and values:
             window.browser.filter(tag, values)
 
-    def _properties(self, value, watcher, window, player=None):
+    def _properties(self, value, library, window, player=None):
         if player is None:
             # no value given, use the current song; slide arguments
             # to the right.
-            value, watcher, window, player = None, value, watcher, window
+            value, library, window, player = None, value, library, window
         if value:
-            from library import library
             if value in library: songs = [library[value]]
             else: songs = library.query(value)
-            SongProperties(songs, watcher, 0)
-        else: SongProperties([player.song], watcher)
+            SongProperties(songs, library, 0)
+        else: SongProperties([player.song], library)
 
-    def _enqueue(self, value, watcher, window, player):
-        from library import library
+    def _enqueue(self, value, library, window, player):
         playlist = window.playlist
         if value in library: songs = [library[value]]
         else: songs = library.query(value)
         playlist.enqueue(songs)
 
-    def _quit(self, watcher, window, player):
+    def _quit(self, library, window, player):
         window.destroy()
 
-    def _status(self, value, watcher, window, player):
+    def _status(self, value, library, window, player):
         try: f = file(value, "w")
         except EnvironmentError: pass
         else:
@@ -256,19 +247,19 @@ class FIFOControl(object):
             except AttributeError: pass
             f.close()
 
-    def _song_list(self, value, watcher, window, player):
+    def _song_list(self, value, library, window, player):
         if value.startswith("t"):
             value = not window.song_scroller.get_property('visible')
         else: value = value not in ['0', 'off', 'false']
         window.songlist.set_property('visible', value)
 
-    def _queue(self, value, watcher, window, player):
+    def _queue(self, value, library, window, player):
         if value.startswith("t"):
             value = not window.qexpander.get_property('visible')
         else: value = value not in ['0', 'off', 'false']
         window.qexpander.set_property('visible', value)
 
-    def _dump_playlist(self, value, watcher, window, player):
+    def _dump_playlist(self, value, library, window, player):
         try: f = file(value, "w")
         except EnvironmentError: pass
         else:
@@ -276,7 +267,7 @@ class FIFOControl(object):
                 f.write(song("~uri") + "\n")
             f.close()
 
-    def _dump_queue(self, value, watcher, window, player):
+    def _dump_queue(self, value, library, window, player):
         try: f = file(value, "w")
         except EnvironmentError: pass
         else:

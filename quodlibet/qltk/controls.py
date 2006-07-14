@@ -26,7 +26,7 @@ class SeekBar(HSlider):
     __sig = None
     __seekable = True
 
-    def __init__(self, player, watcher):
+    def __init__(self, player, library):
         hbox = gtk.HBox(spacing=3)
         l = gtk.Label("0:00")
         hbox.pack_start(l)
@@ -51,7 +51,7 @@ class SeekBar(HSlider):
         m.append(gtk.SeparatorMenuItem())
         i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
         i.connect_object(
-            'activate', qltk.bookmarks.EditBookmarks, self, watcher, player)
+            'activate', qltk.bookmarks.EditBookmarks, self, library, player)
         m.append(i)
         m.show_all()
         self.child.connect_object(
@@ -195,7 +195,7 @@ class StopAfterMenu(gtk.Menu):
     active = property(__get_active, __set_active)
 
 class PlayControls(gtk.VBox):
-    def __init__(self, player, watcher):
+    def __init__(self, player, library):
         gtk.VBox.__init__(self, spacing=3)
         hbox = gtk.HBox(spacing=3)
         prev = gtk.Button()
@@ -216,7 +216,7 @@ class PlayControls(gtk.VBox):
         hbox = gtk.HBox(spacing=3)
         self.volume = Volume(player)
         hbox.pack_start(self.volume, expand=False)
-        hbox.pack_start(SeekBar(player, watcher))
+        hbox.pack_start(SeekBar(player, library))
         self.pack_start(hbox, expand=False, fill=False)
 
         prev.connect_object('clicked', self.__previous, player)

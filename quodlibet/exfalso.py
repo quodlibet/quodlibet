@@ -51,8 +51,8 @@ def main(argv):
     opts, args = opts.parse()
     args[0] = os.path.realpath(args[0])
     from qltk.exfalso import ExFalsoWindow
-    from qltk.watcher import SongWatcher
-    w = ExFalsoWindow(SongWatcher(), args[0])
+    from library import SongFileLibrary
+    w = ExFalsoWindow(SongFileLibrary("exfalso"), args[0])
     w.connect('destroy', gtk.main_quit)
     w.show()
 

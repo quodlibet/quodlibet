@@ -1,5 +1,5 @@
-MODULES = config.py const.py library.py player.py stock.py widgets.py
-MODULE_DIRS = browsers formats qltk parse plugins util
+MODULES = config.py const.py player.py stock.py widgets.py
+MODULE_DIRS = browsers formats qltk parse plugins util library
 PROGRAMS = exfalso quodlibet
 SUBDIRS = trayicon mmkeys po
 EXTENSIONS = _trayicon.so _mmkeys.so

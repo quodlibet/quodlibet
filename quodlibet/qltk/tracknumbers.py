@@ -17,7 +17,7 @@ from qltk.views import HintedTreeView
 from qltk.wlw import WritingWindow
 
 class TrackNumbers(gtk.VBox):
-    def __init__(self, prop, watcher):
+    def __init__(self, prop, library):
         super(TrackNumbers, self).__init__(spacing=6)
         self.title = _("Track Numbers")
         self.set_border_width(12)
@@ -76,7 +76,7 @@ class TrackNumbers(gtk.VBox):
         bbox.set_layout(gtk.BUTTONBOX_END)
         save = gtk.Button(stock=gtk.STOCK_SAVE)
         save.connect_object(
-            'clicked', self.__save_files, prop, model, watcher)
+            'clicked', self.__save_files, prop, model, library)
         revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
         bbox.pack_start(revert)
         bbox.pack_start(save)
@@ -107,7 +107,7 @@ class TrackNumbers(gtk.VBox):
             preview.set_sensitive(True)
             save.set_sensitive(True)
 
-    def __save_files(self, parent, model, watcher):
+    def __save_files(self, parent, model, library):
         win = WritingWindow(parent, len(model))
         was_changed = []
         for row in model:
@@ -134,11 +134,11 @@ class TrackNumbers(gtk.VBox):
                       "read-only, corrupted, or you do not have "
                       "permission to edit it.")%(
                     util.escape(util.fsdecode(song('~basename'))))).run()
-                watcher.reload(song)
+                library.reload(song)
                 break
             was_changed.append(song)
             if win.step(): break
-        watcher.changed(was_changed)
+        library.changed(was_changed)
         win.destroy()
 
     def __preview_tracks(self, ctx, start, total, model, save, revert):
