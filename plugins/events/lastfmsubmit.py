@@ -9,9 +9,6 @@ import gobject
 import gtk
 
 import lastfm
-import lastfm.logger
-import lastfm.queue
-import lastfm.marshaller
 
 import config
 import player
@@ -29,7 +26,7 @@ class QLLastfm(EventPlugin):
     __exclude = ""
     __song = None
     __timeout_id = -1
-    __log = lastfm.logger.getlog('quodlibet', lastfm.LOGFILE)
+    __log = lastfm.logger('quodlibet')
 
     def __init__(self):
         try: self.__exclude = config.get("plugins", "scrobbler_exclude")
@@ -52,7 +49,7 @@ class QLLastfm(EventPlugin):
         #  * submit 240 seconds in or at 50%, whichever comes first
         delay = int(min(self.__song["~#length"] / 2, 240))
 
-        progress = int(player.playlist.info.time[0] / 1000)
+        progress = int(player.playlist.get_position() // 1000)
         delay -= progress
         self.__timeout_id = gobject.timeout_add(delay * 1000, self.submit_song)
 
@@ -89,7 +86,7 @@ class QLLastfm(EventPlugin):
         if song["~#length"] < 30: return
         elif 'title' not in song: return
         elif not song("~artist~composer~performer"): return
-		
+
         # Check to see if this song is not something we'd like to submit
         # e.g. "Hit Me Baby One More Time"
         if self.__exclude != "" and parse.Query(self.__exclude).search(song):
@@ -107,7 +104,7 @@ class QLLastfm(EventPlugin):
 
     def plugin_on_unpaused(self):
         self.prepare()
-		
+
     def plugin_on_seek(self, song, msec):
         self.unprepare()
 
@@ -133,7 +130,6 @@ class QLLastfm(EventPlugin):
         for key in data.keys():
             if not data[key]: del(data[key])
         try:
-            writer = lastfm.queue.Writer(lastfm.FIFO, self.__log)
-            print >>writer, lastfm.marshaller.dump(data)
-            self.__log.info("Sent %s", lastfm.logger.repr(data))
+            lastfm.submit([data])
+            self.__log.info("Sent %s", lastfm.repr(data))
         except IOError, e: self.__log.error("Error: %s" % e)
