@@ -79,7 +79,7 @@ def info(filename):
     else:
         Kind = type(audio)
         for klass in globals().values():
-            if (isinstance(klass, type) and issubclass(klass, VCFile) and
+            if (isinstance(klass, type) and issubclass(klass, OggFile) and
                 Kind is klass.MutagenType):
                 return klass(filename, audio)
         else:
