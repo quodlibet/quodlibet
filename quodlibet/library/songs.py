@@ -236,15 +236,18 @@ class FileLibrary(Library):
         for i, (key, item) in enumerate(sorted(self.items())):
             if key in self._contents and not item.valid():
                 self.reload(item, changed, removed)
-            if len(removed) > 20 or len(changed) > 5 or i % 100 == 0:
-                # Flush every 5 reloaded songs, 20 removed ones, or 100
-                # checked ones. These numbers are pretty empirical...
+            if len(changed) > 5 or i % 100 == 0:
+                # These numbers are pretty empirical...
                 if changed:
                     self.emit('changed', changed)
                 if removed:
                     self.emit('removed', removed)
                 changed, removed = [], []
                 yield True
+        if removed:
+            self.emit('removed', removed)
+        if changed:
+            self.emit('changed', changed)
 
         added = []
         for fullpath in paths:
@@ -264,6 +267,8 @@ class FileLibrary(Library):
                                 added = []
                                 yield True
                 yield True
+        if added:
+            self.emit('added', added)
 
         self.__update_id = None
         yield False
