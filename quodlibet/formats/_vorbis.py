@@ -11,7 +11,23 @@ import const
 
 from formats._audio import AudioFile
 
-class VCFile(AudioFile):
+class MutagenVCFile(AudioFile):
+    format = "Unknown Mutagen + vorbiscomment"
+    MutagenType = None
+
+    def __init__(self, filename, audio=None):
+        # If we're done a type probe, use the results of that to avoid
+        # reopening the file.
+        if audio is None:
+            audio = self.MutagenType(filename)
+        self["~#length"] = int(audio.info.length)
+        try: self["~#bitrate"] = int(audio.info.bitrate)
+        except AttributeError: pass
+        for key, value in (audio.tags or {}).items():
+            self[key] = "\n".join(value)
+        self._post_read()
+        self.sanitize(filename)
+
     def _post_read(self):
         email = config.get("editing", "save_email").strip()
         maps = {"rating": float, "playcount": int}
@@ -39,8 +55,8 @@ class VCFile(AudioFile):
 
     def can_change(self, k=None):
         if k is None:
-            return super(VCFile, self).can_change(None)
-        else: return (super(VCFile, self).can_change(k) and
+            return super(MutagenVCFile, self).can_change(None)
+        else: return (super(MutagenVCFile, self).can_change(k) and
                       k not in ["totaltracks", "tracktotal", "disctotal",
                                 "rating", "playcount"] and
                       not k.startswith("rating:") and
@@ -60,3 +76,13 @@ class VCFile(AudioFile):
                 comments["rating:" + email] = str(self["~#rating"])
             if self["~#playcount"] != 0:
                 comments["playcount:" + email] = str(int(self["~#playcount"]))
+
+    def write(self):
+        audio = self.MutagenType(self["~filename"])
+        if audio.tags is None:
+            audio.add_tags()
+        self._prep_write(audio.tags)
+        for key in self.realkeys():
+            audio.tags[key] = self.list(key)
+        audio.save()
+        self.sanitize()

@@ -9,7 +9,7 @@
 import gst
 
 import mutagen
-from formats._vorbis import VCFile
+from formats._vorbis import MutagenVCFile
 
 ogg_formats = []
 try: from mutagen.oggvorbis import OggVorbis
@@ -25,36 +25,15 @@ except ImportError: OggSpeex = None
 else: ogg_formats.append(("speexdec", OggSpeex))
 
 # For historical reasons, the base class is for Ogg Vorbis.
-class OggFile(VCFile):
+class OggFile(MutagenVCFile):
     format = "Ogg Vorbis"
     MutagenType = OggVorbis
 
-    def __init__(self, filename, audio=None):
-        # If we're done a type probe, use the results of that to avoid
-        # reopening the file.
-        if audio is None:
-            audio = self.MutagenType(filename)
-        self["~#length"] = int(audio.info.length)
-        for key, value in (audio.tags or {}).items():
-            self[key] = "\n".join(value)
-        self._post_read()
-        self.sanitize(filename)
-
-    def write(self):
-        audio = self.MutagenType(self["~filename"])
-        if audio.tags is None:
-            audio.add_tags()
-        self._prep_write(audio.tags)
-        for key in self.realkeys():
-            audio.tags[key] = self.list(key)
-        audio.save()
-        self.sanitize()
-
-class OggFLACFile(OggFile):
+class OggFLACFile(MutagenVCFile):
     format = "Ogg FLAC"
     MutagenType = OggFLAC
 
-class OggSpeexFile(OggFile):
+class OggSpeexFile(MutagenVCFile):
     format = "Ogg Speex"
     MutagenType = OggSpeex
 
@@ -79,8 +58,7 @@ def info(filename):
     else:
         Kind = type(audio)
         for klass in globals().values():
-            if (isinstance(klass, type) and issubclass(klass, OggFile) and
-                Kind is klass.MutagenType):
+            if Kind is getattr(klass, 'MutagenType', None):
                 return klass(filename, audio)
         else:
             raise IOError("file type could not be determined")
