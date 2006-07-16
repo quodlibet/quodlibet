@@ -30,11 +30,13 @@ def search_func(model, column, key, iter, handledirs):
 
 class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def cell_data(column, cell, model, iter):
-        cell.set_property('text', util.fsdecode(
-            os.path.basename(model[iter][0])) or "/")
+        value = model[iter][0]
+        if value is not None:
+            cell.set_property('text', util.fsdecode(
+                os.path.basename(value) or "/"))
     cell_data = staticmethod(cell_data)
 
-    def __init__(self, initial=None):
+    def __init__(self, initial=None, folders=[const.HOME, "/"]):
         super(DirectoryTree, self).__init__(gtk.TreeStore(str))
         column = gtk.TreeViewColumn(_("Folders"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -48,21 +50,28 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         column.set_attributes(render, text=0)
         self.append_column(column)
         self.set_search_equal_func(search_func, True)
-        folders = [const.HOME, "/"]
+
         # Read in the GTK bookmarks list; gjc says this is the right way
         try: f = file(os.path.join(const.HOME, ".gtk-bookmarks"))
         except EnvironmentError: pass
         else:
+            folders.append(None)
             for line in f.readlines():
                 folders.append(urlparse.urlsplit(line.rstrip())[2])
-            folders = filter(os.path.isdir, folders)
+            def is_folder(filename):
+                return filename is None or os.path.isdir(filename)
+        folders = filter(is_folder, folders)
+        if folders[-1] is None:
+            folders.pop()
 
         for path in folders:
             niter = self.get_model().append(None, [path])
-            self.get_model().append(niter, ["dummy"])
+            if path is not None:
+                self.get_model().append(niter, ["dummy"])
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.connect(
             'test-expand-row', DirectoryTree.__expanded, self.get_model())
+        self.set_row_separator_func(lambda model, iter: model[iter][0] is None)
 
         if initial: self.go_to(initial)
 
@@ -184,15 +193,17 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
 class FileSelector(gtk.VPaned):
     def cell_data(column, cell, model, iter):
-        cell.set_property(
-            'text', util.fsdecode(os.path.basename(model[iter][0])))
+        value = model[iter][0]
+        if value is not None:
+            cell.set_property('text', util.fsdecode(os.path.basename(value)))
     cell_data = staticmethod(cell_data)
 
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (gtk.TreeSelection,))
                      }
 
-    def __init__(self, initial=None, filter=formats.filter):
+    def __init__(self, initial=None, filter=formats.filter,
+                 folders=[const.HOME, "/"]):
         super(FileSelector, self).__init__()
         self.__filter = filter
 

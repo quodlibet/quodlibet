@@ -41,15 +41,22 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     @classmethod
     def init(klass, library):
         klass.__glibrary = library
+        klass.__library = SongFileLibrary("filesystem")
 
     def __init__(self, library, player):
         super(FileSystem, self).__init__()
-        if self.__library is None:
-            FileSystem.__library = SongFileLibrary("filesystem")
-
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
-        dt = DirectoryTree(initial=const.HOME)
+
+        folders = filter(None, config.get("settings", "scan").split(":"))
+        if folders:
+            folders.append(None)
+        if const.HOME not in folders:
+            folders.append(const.HOME)
+        if "/" not in folders:
+            folders.append("/")
+
+        dt = DirectoryTree(initial=const.HOME, folders=folders)
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
         dt.drag_source_set(gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
