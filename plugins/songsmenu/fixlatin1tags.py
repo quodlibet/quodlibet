@@ -32,7 +32,8 @@ def convert2unicode(buf):
     return buf2
 
 class FixSongTags(SongsMenuPlugin):
-    PLUGIN_NAME = 'Fix song tags'
+    PLUGIN_ID = 'Fix song tags'
+    PLUGIN_NAME = _('Fix song tags')
     PLUGIN_DESC = ('Fix songs tags based on filename and directory, '
                    'guessing encoding')
     PLUGIN_ICON = 'gtk-edit'

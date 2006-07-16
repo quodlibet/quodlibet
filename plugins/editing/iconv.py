@@ -26,9 +26,11 @@ if locale.getpreferredencoding() not in ENCODINGS + ["utf-8", "latin1"]:
     ENCODINGS.append(util.fscoding)
 
 class Iconv(EditTagsPlugin):
-    PLUGIN_NAME = "Convert Encodings"
-    PLUGIN_DESC = "Fix misinterpreted tag value encodings in the tag editor."
+    PLUGIN_ID = "Convert Encodings"
+    PLUGIN_NAME = _("Convert Encodings")
+    PLUGIN_DESC = _("Fix misinterpreted tag value encodings in the tag editor.")
     PLUGIN_ICON = gtk.STOCK_CONVERT
+    PLUGIN_VERSION = "2"
 
     def __init__(self, tag, value):
         super(Iconv, self).__init__("_Convert Encoding...")

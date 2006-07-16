@@ -174,7 +174,6 @@ class QLBrainz(object):
         this_title = self.mb.GetResultData(MBE_AlbumGetAlbumName)
         this_artistid = self.mb.GetIDFromURL(self.mb.GetResultData(MBE_AlbumGetAlbumArtistId))
 
-#        print "Album has %d tracks" % this_numtracks
         if this_numtracks == tracks:
             new_candidate = AlbumCandidate()
             
@@ -200,20 +199,6 @@ class QLBrainz(object):
                 track_data['tracknumber'] = u"%d/%d" % (j, tracks)
 
                 new_candidate.tracklist.append(track_data)
-
-#                self.mb.Select1(MBS_SelectTrack, j - 1)
-
-#                for k in range(0, self.mb.GetResultInt(MBE_GetNumTrmids, j)):
-#                    self.mb.Select(MBS_SelectTrmid, k)
-
-#                self.mb.Select(MBS_Back)
-
-#            print "Album: %s" % new_candidate.tracklist[0]['album']
-#            k = 1
-#            for track in new_candidate.tracklist:
-#                print "%d. %s - %s (%s)" % (k, track['artist'], track['title'],
-#                    track['musicbrainz_trackid'])
-#                k = k + 1
 
             return new_candidate
         return None
@@ -329,10 +314,11 @@ class QLBrainz(object):
             if name: self.plugin_album(album, name)
 
 class QLBrainzPlugin(SongsMenuPlugin):
-    PLUGIN_NAME = 'MusicBrainz lookup'
+    PLUGIN_ID = 'MusicBrainz lookup'
+    PLUGIN_NAME = _('MusicBrainz Lookup')
     PLUGIN_ICON = 'gtk-cdrom'
     PLUGIN_DESC = 'Retag an album based on a MusicBrainz search.'
-    PLUGIN_VERSION = '0.3'
+    PLUGIN_VERSION = '0.4'
 
     def plugin_album(self, album):
         QLBrainz().plugin_album(album)

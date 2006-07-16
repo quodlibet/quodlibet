@@ -124,7 +124,8 @@ def make_info_label((disc, track), album, discid):
     return '\n'.join(message)
     
 class CDDBLookup(SongsMenuPlugin):
-    PLUGIN_NAME = 'CDDB lookup'
+    PLUGIN_ID = 'CDDB lookup'
+    PLUGIN_NAME = _('CDDB Lookup')
     PLUGIN_DESC = 'Look up album information in FreeDB (requires CDDB.py)'
     PLUGIN_ICON = 'gtk-cdrom'
 

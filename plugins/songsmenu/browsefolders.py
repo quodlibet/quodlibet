@@ -6,10 +6,11 @@ import util
 import config
 
 class BrowseFolders(SongsMenuPlugin):
-    PLUGIN_NAME = 'Browse Folders'
+    PLUGIN_ID = 'Browse Folders'
+    PLUGIN_NAME = _('Browse Folders')
     PLUGIN_DESC = "View the songs' folders in a file manager"
     PLUGIN_ICON = gtk.STOCK_OPEN
-    PLUGIN_VERSION = '1'
+    PLUGIN_VERSION = '2'
 
     try: config.get("plugins", __name__)
     except: config.set("plugins", __name__, "thunar")

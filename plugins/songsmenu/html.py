@@ -40,8 +40,9 @@ HTML = '''<?xml version="1.0" encoding="UTF-8"?>
 '''
 
 class ExportToHTML(SongsMenuPlugin):
-    PLUGIN_NAME = "Export to HTML"
-    PLUGIN_DESC = "Export the selected song list to HTML."
+    PLUGIN_ID = "Export to HTML"
+    PLUGIN_NAME = _("Export to HTML")
+    PLUGIN_DESC = _("Export the selected song list to HTML.")
     PLUGIN_ICON = gtk.STOCK_CONVERT
     PLUGIN_VERSION = "0.17"
 

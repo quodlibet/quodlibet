@@ -10,9 +10,10 @@ import os, gtk, util, qltk
 from plugins.songsmenu import SongsMenuPlugin
 
 class IFPUpload(SongsMenuPlugin):
-    PLUGIN_NAME = "Send to iFP"
-    PLUGIN_DESC = "Upload songs to an iRiver iFP device"
-    PLUGIN_VERSION = "0.11"
+    PLUGIN_ID = "Send to iFP"
+    PLUGIN_NAME = _("Send to iFP")
+    PLUGIN_DESC = _("Upload songs to an iRiver iFP device.")
+    PLUGIN_VERSION = "0.12"
     PLUGIN_ICON = gtk.STOCK_CONVERT
 
     def plugin_songs(self, songs):        

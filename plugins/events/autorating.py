@@ -9,8 +9,9 @@
 from plugins.events import EventPlugin
 
 class AutoRating(EventPlugin):
-    PLUGIN_NAME = "Automatic Rating"
-    PLUGIN_VERSION = "0.21"
+    PLUGIN_ID = "Automatic Rating"
+    PLUGIN_NAME = _("Automatic Rating")
+    PLUGIN_VERSION = "0.22"
     PLUGIN_DESC = ("Rate songs automatically when they are played or "
                    "skipped. This uses the 'accelerated' algorithm from "
                    "vux by Brian Nelson.")

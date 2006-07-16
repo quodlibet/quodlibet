@@ -19,7 +19,8 @@ except:
     config.set("plugins", __name__, out)
 
 class PictureSaver(EventPlugin):
-    PLUGIN_NAME = "Picture Saver"
+    PLUGIN_ID = "Picture Saver"
+    PLUGIN_NAME = _("Picture Saver")
     PLUGIN_DESC = "The cover image of the current song is saved to a file."
     PLUGIN_ICON = gtk.STOCK_SAVE
     PLUGIN_VERSION = "0.21"

@@ -11,10 +11,11 @@ from qltk import ConfirmAction
 from plugins.songsmenu import SongsMenuPlugin
 
 class ViewNautilus(SongsMenuPlugin):
-    PLUGIN_NAME = 'View in Nautilus'
-    PLUGIN_DESC = 'View directories in Nautilus.'
+    PLUGIN_ID = 'View in Nautilus'
+    PLUGIN_NAME = _('View in Nautilus')
+    PLUGIN_DESC = _('View directories in Nautilus.')
     PLUGIN_ICON = 'gtk-open'
-    PLUGIN_VERSION = '0.14'
+    PLUGIN_VERSION = '0.15'
 
     def plugin_songs(self, songs):
         dirs = dict.fromkeys([song('~dirname') for song in songs]).keys()

@@ -133,9 +133,10 @@ class TrayIcon(EventPlugin):
         "<album|<album~discnumber~part~tracknumber~title~version>|"
         "<artist~title~version>>")
 
-    PLUGIN_NAME = "Tray Icon"
-    PLUGIN_DESC = "Control Quod Libet from the system tray."
-    PLUGIN_VERSION = "0.22.1"
+    PLUGIN_ID = "Tray Icon"
+    PLUGIN_NAME = _("Tray Icon")
+    PLUGIN_DESC = _("Control Quod Libet from the system tray.")
+    PLUGIN_VERSION = "0.23"
 
     def enabled(self):
         from widgets import main as window, watcher

@@ -58,9 +58,10 @@ class GoToDialog(qltk.Window):
         self.destroy()
 
 class Bookmarks(SongsMenuPlugin):
-    PLUGIN_NAME = "Go to Bookmark..."
+    PLUGIN_ID = "Go to Bookmark..."
+    PLUGIN_NAME = _("Go to Bookmark...")
     PLUGIN_DESC = "List all bookmarks in the selected files."
     PLUGIN_ICON = gtk.STOCK_JUMP_TO
-    PLUGIN_VERSION = "0.2"
+    PLUGIN_VERSION = "0.3"
 
     plugin_songs = GoToDialog

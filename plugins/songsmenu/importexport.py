@@ -32,8 +32,8 @@ def filechooser(save, title):
 
 class Export(SongsMenuPlugin):
 
-    PLUGIN_NAME = "ExportMeta"
-    PLUGIN_DESC = "Export Metadata"
+    PLUGIN_ID = "ExportMeta"
+    PLUGIN_NAME = _("Export Metadata")
     PLUGIN_ICON = 'gtk-save'
 
     def plugin_album(self, songs):
@@ -64,8 +64,8 @@ class Export(SongsMenuPlugin):
 
 class Import(SongsMenuPlugin):
 
-    PLUGIN_NAME = "ImportMeta"
-    PLUGIN_DESC = "Import Metadata"
+    PLUGIN_ID = "ImportMeta"
+    PLUGIN_NAME = _("Import Metadata")
     PLUGIN_ICON = 'gtk-open'
 
     # Note: the usage of plugin_album here is sometimes NOT what you want. It

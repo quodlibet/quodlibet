@@ -3,9 +3,11 @@ import util
 from plugins.editing import RenameFilesPlugin
 
 class Kakasi(RenameFilesPlugin, gtk.CheckButton):
-    PLUGIN_NAME = "Kana/Kanji Simple Inverter"
-    PLUGIN_DESC = "Convert kana/kanji to romaji before renaming."
+    PLUGIN_ID = "Kana/Kanji Simple Inverter"
+    PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
+    PLUGIN_DESC = _("Convert kana/kanji to romaji before renaming.")
     PLUGIN_ICON = gtk.STOCK_CONVERT
+    PLUGIN_VERSION = "1"
 
     __gsignals__ = {
         "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())

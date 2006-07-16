@@ -9,7 +9,8 @@
 from plugins.songsmenu import SongsMenuPlugin
 
 class ResetLibrary(SongsMenuPlugin):
-    PLUGIN_NAME = "Reset Library Data"
+    PLUGIN_ID = "Reset Library Data"
+    PLUGIN_NAME = _("Reset Library Data")
     PLUGIN_VERSION = "1"
     PLUGIN_DESC = "Reset ratings, play counts, skip counts, and play times."
     PLUGIN_ICON = 'gtk-refresh'

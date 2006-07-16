@@ -21,9 +21,10 @@ def Label(text):
 from plugins.events import EventPlugin
 
 class AnimOsd(EventPlugin):
-    PLUGIN_NAME = "Animated On-Screen Display"
-    PLUGIN_DESC = "Display song information on your screen when it changes."
-    PLUGIN_VERSION = "0.21"
+    PLUGIN_ID = "Animated On-Screen Display"
+    PLUGIN_NAME = _("Animated On-Screen Display")
+    PLUGIN_DESC = _("Display song information on your screen when it changes.")
+    PLUGIN_VERSION = "0.22"
 
     def PluginPreferences(self, parent):
         def set_text(button):
@@ -114,8 +115,8 @@ class AnimOsd(EventPlugin):
         f.set_border_width(12)
         vb.pack_start(f, expand=False, fill=False)
 
-	string = qltk.Button(_("_Edit Display"), gtk.STOCK_EDIT)
-	string.connect('clicked', edit_string)
+        string = qltk.Button(_("_Edit Display"), gtk.STOCK_EDIT)
+        string.connect('clicked', edit_string)
         vb.pack_start(string, expand=False)
         return vb
 

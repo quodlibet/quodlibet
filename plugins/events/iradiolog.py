@@ -9,11 +9,12 @@
 from plugins.events import EventPlugin
 
 class IRadioLog(EventPlugin):
-    PLUGIN_NAME = "Internet Radio Log"
-    PLUGIN_DESC = ("Record the last 10 songs played on radio stations, "
-                   "and list them in the seek context menu.")
+    PLUGIN_ID = "Internet Radio Log"
+    PLUGIN_NAME = _("Internet Radio Log")
+    PLUGIN_DESC = _("Record the last 10 songs played on radio stations, "
+                    "and list them in the seek context menu.")
     PLUGIN_ICON = 'gtk-edit'
-    PLUGIN_VERSION = "0.21"
+    PLUGIN_VERSION = "0.22"
 
     def plugin_on_song_started(self, song):
         if song is None: return

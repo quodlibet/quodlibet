@@ -30,7 +30,8 @@ __all__ = ['ReplayGain']
 
 class ReplayGain(SongsMenuPlugin):
 
-    PLUGIN_NAME = 'ReplayGain'
+    PLUGIN_ID = 'ReplayGain'
+    PLUGIN_NAME = 'Replay Gain'
     PLUGIN_DESC = ('Invokes vorbisgain or normalize-audio on selected '
                    'songs, grouped by album')
     PLUGIN_ICON = gtk.STOCK_CDROM

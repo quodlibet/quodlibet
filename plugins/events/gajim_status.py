@@ -14,9 +14,10 @@ from parse import XMLFromPattern
 from qltk import Frame
 
 class GajimStatusMessage(EventPlugin):
-    PLUGIN_NAME = 'Gajim status message'
+    PLUGIN_ID = 'Gajim status message'
+    PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = 'Change Gajim status message according to what you are listening now.'
-    PLUGIN_VERSION = '0.6'
+    PLUGIN_VERSION = '0.6.1'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'

@@ -261,10 +261,11 @@ class AlbumArtWindow(gtk.Window):
         return fname
 
 class DownloadAlbumArt(SongsMenuPlugin):
-    PLUGIN_NAME = "Download Album art"
+    PLUGIN_ID = "Download Album art"
+    PLUGIN_NAME = _("Download Album Art")
     PLUGIN_DESC = "Downloads album covers from Amazon.com"
     PLUGIN_ICON = gtk.STOCK_FIND
-    PLUGIN_VERSION = "0.24"
+    PLUGIN_VERSION = "0.25"
 
     def PluginPreferences(parent):
         b = gtk.Button("Visit Amazon.com")

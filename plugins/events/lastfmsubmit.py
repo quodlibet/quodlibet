@@ -18,10 +18,11 @@ from plugins.events import EventPlugin
 from qltk.entry import ValidatingEntry
 
 class QLLastfm(EventPlugin):
-    PLUGIN_NAME = "Last.fm Submission"
+    PLUGIN_ID = "Last.fm Submission"
+    PLUGIN_NAME = _("Last.fm Submission")
     PLUGIN_DESC = "Submit songs to Last.fm via lastfmsubmitd."
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.2"
+    PLUGIN_VERSION = "0.3"
 
     __exclude = ""
     __song = None

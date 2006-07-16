@@ -13,11 +13,12 @@ from formats.mp3 import MP3File
 from plugins.songsmenu import SongsMenuPlugin
 
 class APEv2toID3v2(SongsMenuPlugin):
-    PLUGIN_NAME = "APEv2 to ID3v2"
+    PLUGIN_ID = "APEv2 to ID3v2"
+    PLUGIN_NAME = _("APEv2 to ID3v2")
     PLUGIN_DESC = ("Convert your APEv2 tags to ID3v2 tags. This will delete "
                    "the APEv2 tags after conversion.")
     PLUGIN_ICON = 'gtk-convert'
-    PLUGIN_VERSION = '0.1'
+    PLUGIN_VERSION = '0.2'
 
     def plugin_handles(self, songs):
         for song in songs:

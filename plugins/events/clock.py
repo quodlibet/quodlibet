@@ -15,10 +15,11 @@ import player
 from plugins.events import EventPlugin
 
 class Alarm(EventPlugin):
-    PLUGIN_NAME = "Alarm Clock"
-    PLUGIN_DESC = "Wake you up with loud music."
+    PLUGIN_ID = "Alarm Clock"
+    PLUGIN_NAME = _("Alarm Clock")
+    PLUGIN_DESC = _("Wake you up with loud music.")
     PLUGIN_ICON = gtk.STOCK_DIALOG_INFO
-    PLUGIN_VERSION = "0.21"
+    PLUGIN_VERSION = "0.22"
 
     _pref_name = "alarm_times"
     _times = ["HH:MM"] * 7
@@ -91,10 +92,11 @@ class Alarm(EventPlugin):
         return t
 
 class Lullaby(Alarm):
-    PLUGIN_NAME = "Lullaby"
-    PLUGIN_DESC = "Fade out and pause your music."
+    PLUGIN_ID = "Lullaby"
+    PLUGIN_NAME = _("Lullaby")
+    PLUGIN_DESC = _("Fade out and pause your music.")
     PLUGIN_ICON = gtk.STOCK_MEDIA_PAUSE
-    PLUGIN_VERSION = "0.18"
+    PLUGIN_VERSION = "0.19"
 
     _pref_name = "lullaby_times"
 

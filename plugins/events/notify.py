@@ -9,9 +9,10 @@ from plugins.events import EventPlugin
 # print "[notify] loading"
 
 class Notify(EventPlugin):
-    PLUGIN_NAME = "Notify"
+    PLUGIN_ID = "Notify"
+    PLUGIN_NAME = _("Notify")
     PLUGIN_DESC = "Display a notification when the song changes."
-    PLUGIN_VERSION = "0.4"
+    PLUGIN_VERSION = "0.5"
 
     def __init__(self):
         # print "[notify] connecting to D-Bus session bus"

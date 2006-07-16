@@ -43,11 +43,11 @@ class WikiSearch(object):
             website(WIKI_URL % config.get('plugins', __name__) + a)
 
 class WikiArtist(WikiSearch, SongsMenuPlugin):
-    PLUGIN_NAME = 'Search artist in Wikipedia'
-    PLUGIN_DESC = 'Search artist in Wikipedia'
+    PLUGIN_ID = 'Search artist in Wikipedia'
+    PLUGIN_NAME = _('Search artist in Wikipedia')
     k = 'artist'
 
 class WikiAlbum(WikiSearch, SongsMenuPlugin):
-    PLUGIN_NAME = 'Search album in Wikipedia'
-    PLUGIN_DESC = 'Search album in Wikipedia'
+    PLUGIN_ID = 'Search album in Wikipedia'
+    PLUGIN_NAME = _('Search album in Wikipedia')
     k = 'album'
