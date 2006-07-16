@@ -82,17 +82,23 @@ class EventPlugins(Manager):
         kinds = filter(is_plugin, objs)
 
         for Kind in kinds:
+            try: Kind.PLUGIN_ID
+            except AttributeError:
+                try: Kind.PLUGIN_ID = Kind.PLUGIN_NAME
+                except AttributeError:
+                    Kind.PLUGIN_ID = Kind.__name__
+
             try: Kind.PLUGIN_NAME
             except AttributeError:
-                Kind.PLUGIN_NAME = Kind.__name__
+                Kind.PLUGIN_NAME = Kind.PLUGIN_ID
 
             try: obj = Kind()
             except:
                 traceback.print_exc()
             else:
-                if obj.PLUGIN_NAME in self._plugins:
-                    self._plugins[obj.PLUGIN_NAME].destroy()
-                self._plugins[obj.PLUGIN_NAME] = obj
+                if obj.PLUGIN_ID in self._plugins:
+                    self._plugins[obj.PLUGIN_ID].destroy()
+                self._plugins[obj.PLUGIN_ID] = obj
 
     def list(self):
         return self._plugins.values()

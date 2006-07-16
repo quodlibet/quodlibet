@@ -99,9 +99,8 @@ class SongsMenuPlugins(Manager):
 
         items = []
         kinds = self.find_subclasses(SongsMenuPlugin)
-        kinds.sort(key=lambda plugin: plugin.PLUGIN_NAME)
+        kinds.sort(key=lambda plugin: plugin.PLUGIN_ID)
         for Kind in kinds:
-            connected = False
             usable = max([callable(getattr(Kind, s)) for s in attrs])
             if usable:
                 try: items.append(Kind(songs))
