@@ -223,7 +223,8 @@ class FileLibrary(Library):
             gobject.source_remove(self.__update_id)
             self.__update_id = None
         next = self.__update_in_background_real(paths).next
-        self.__update_id = gobject.idle_add(next)
+        self.__update_id = gobject.idle_add(
+            next, priority=gobject.PRIORITY_LOW)
     def __update_in_background_real(self, paths):
         for point, items in self._masked.items():
             if os.path.ismount(point):
@@ -236,13 +237,16 @@ class FileLibrary(Library):
         for i, (key, item) in enumerate(sorted(self.items())):
             if key in self._contents and not item.valid():
                 self.reload(item, changed, removed)
+            # These numbers are pretty empirical. We should yield more
+            # often than we emit signals; that way the main loop stays
+            # interactive and doesn't get bogged down in updates.
+            if len(changed) > 100:
+                self.emit('changed', changed)
+                changed = []
+            if len(removed) > 100:
+                self.emit('removed', removed)
+                removed = []
             if len(changed) > 5 or i % 100 == 0:
-                # These numbers are pretty empirical...
-                if changed:
-                    self.emit('changed', changed)
-                if removed:
-                    self.emit('removed', removed)
-                changed, removed = [], []
                 yield True
         if removed:
             self.emit('removed', removed)
@@ -255,17 +259,16 @@ class FileLibrary(Library):
             for i, (path, dnames, fnames) in enumerate(os.walk(fullpath)):
                 for filename in fnames:
                     fullfilename = os.path.join(path, filename)
+                    fullfilename = os.path.realpath(fullfilename)
                     if fullfilename not in self._contents:
-                        fullfilename = os.path.realpath(fullfilename)
-                        if fullfilename not in self._contents:
-                            item = self.add_filename(fullfilename, False)
-                            if item is not None:
-                                added.append(item)
-
+                        item = self.add_filename(fullfilename, False)
+                        if item is not None:
+                            added.append(item)
                             if len(added) > 5:
-                                self.emit('added', added)
-                                added = []
                                 yield True
+                if added:
+                    self.emit('added', added)
+                    added = []
                 yield True
         if added:
             self.emit('added', added)
