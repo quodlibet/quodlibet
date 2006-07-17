@@ -13,6 +13,16 @@
 import os
 import signal
 import sys
+import tempfile
+import time
+
+import config
+import const
+import util
+
+from threading import Thread
+
+from util import to
 
 global play
 play = False
@@ -23,7 +33,6 @@ def main():
     library = load_library()
     player = load_player(library)
 
-    import util
     import widgets
 
     util.mkdir(const.USERDIR)
@@ -47,8 +56,7 @@ def print_fifo(command):
     if not os.path.exists(const.CURRENT):
         raise SystemExit("not-running")
     else:
-        from tempfile import mkstemp
-        fd, filename = mkstemp()
+        fd, filename = tempfile.mkstemp()
         try:
             os.unlink(filename)
             # mkfifo fails if the file exists, so this is safe.
@@ -73,8 +81,6 @@ def print_fifo(command):
             raise SystemExit("not-running")
 
 def print_playing(fstring="<artist~album~tracknumber~title>"):
-    import util
-
     from formats._audio import AudioFile
     from parse import Pattern
 
@@ -127,11 +133,7 @@ def enable_periodic_save(library):
     # Check every 5 minutes to see if the library/config on disk are
     # over 15 minutes old; if so, update them. This function can, in theory,
     # break if saving the library takes more than 5 minutes.
-    import time
     import gobject
-    import util
-
-    from threading import Thread
 
     def save():
         if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
@@ -152,8 +154,7 @@ def process_arguments():
                     "set-rating", "set-browser", "open-browser", "random",
                     "song-list", "queue", "enqueue"]
 
-    from util import OptionParser
-    options = OptionParser(
+    options = util.OptionParser(
         "Quod Libet", const.VERSION, 
         _("a music library and player"),
         _("[ --print-playing | control ]"))
@@ -281,25 +282,21 @@ if __name__ == "__main__":
     if basedir.endswith("/share/quodlibet"):
         sys.path.append(basedir[:-15] + "lib/quodlibet")
 
-    import util
     util.python_init()
     util.gettext_install()
     util.ctypes_init()
 
-    from util import to
-    import const
     if "--debug" not in sys.argv:
         process_arguments()
         if isrunning():
             print to(_("Quod Libet is already running."))
             control('focus')
 
-    # Initialize GTK.
+    # GTK+ eats command line arguments and babies, so we have to delay
+    # imports until at least this late.
     util.gtk_init()
     import gtk
-
     import pygst
     pygst.require('0.10')
 
-    import config
     main()
