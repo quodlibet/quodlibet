@@ -882,7 +882,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         sep = gtk.SeparatorMenuItem()
         sep.show()
         menu.append(sep)
-        custom = gtk.MenuItem(_("Add _Custom Header..."))
+        custom = gtk.MenuItem(_("_Customize Headers..."))
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)
