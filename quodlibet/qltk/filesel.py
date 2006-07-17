@@ -22,6 +22,10 @@ import util
 from qltk.getstring import GetStringDialog
 from qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 
+try: WindowsError
+except NameError:
+    WindowsError = None
+
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
     if not handledirs or '/' not in key:
@@ -33,7 +37,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         value = model[iter][0]
         if value is not None:
             cell.set_property('text', util.fsdecode(
-                os.path.basename(value) or "/"))
+                os.path.basename(value) or value))
     cell_data = staticmethod(cell_data)
 
     def __init__(self, initial=None, folders=[const.HOME, "/"]):
@@ -179,14 +183,18 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 model.remove(model.iter_children(iter))
             folder = model[iter][0]
             for base in dircache.listdir(folder):
-                path = os.path.join(folder, base)
-                if (base[0] != "." and os.access(path, os.R_OK) and
-                    os.path.isdir(path)):
-                    niter = model.append(iter, [path])
-                    if filter(os.path.isdir,
-                              [os.path.join(path, d) for d in
-                               dircache.listdir(path) if d[0] != "."]):
-                        model.append(niter, ["dummy"])
+                try:
+                    path = os.path.join(folder, base)
+                    if (base[0] != "." and os.access(path, os.R_OK) and
+                        os.path.isdir(path)):
+                        niter = model.append(iter, [path])
+                        if filter(os.path.isdir,
+                                  [os.path.join(path, d) for d in
+                                   dircache.listdir(path) if d[0] != "."]):
+                            model.append(niter, ["dummy"])
+                except WindowsError:
+                    # Windows lies and says you can read unreadable dirs.
+                    pass
             if not model.iter_has_child(iter): return True
         finally:
             if window: window.set_cursor(None)

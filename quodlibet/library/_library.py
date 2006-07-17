@@ -13,7 +13,6 @@ least useful but most content-agnostic.
 """
 
 import cPickle as pickle
-import fcntl
 import itertools
 import os
 import shutil
@@ -21,6 +20,12 @@ import traceback
 
 import gobject
 import gtk
+
+# Windows doesn't have fcntl, just don't lock for now
+try:
+    import fcntl
+except ImportError:
+    fcntl = None 
 
 class Library(gtk.Object):
     """A Library contains useful objects.
@@ -148,7 +153,8 @@ class Library(gtk.Object):
         if not os.path.isdir(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
         fileobj = file(filename + ".tmp", "wb")
-        fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
+        if fcntl is not None:
+            fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
         items = self.values()
         for masked in self._masked.values():
             items.extend(masked.values())

@@ -74,8 +74,17 @@ class ExFalsoWindow(gtk.Window):
         l.set_justify(gtk.JUSTIFY_RIGHT)
         l.set_ellipsize(pango.ELLIPSIZE_END)
         bbox.pack_start(l)
+        
+        if os.name == "nt":
+            folders = [os.path.join(const.HOME, "My Documents")]
+            for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ":
+                # Skip the floppy drives to avoid waiting
+                if os.path.isdir(letter + ":\\"):
+                    folders.append(letter + ":\\")
+        else:
+            folders=[const.HOME, "/"]
 
-        fs = FileSelector(dir)
+        fs = FileSelector(dir, folders=folders)
 
         vb.pack_start(fs)
         vb.pack_start(bbox, expand=False)
