@@ -32,6 +32,8 @@ _("label ID")
 _("language")
 # date the song was last heard on
 _("last played")
+# date the song was last started on
+_("last started")
 _("length")
 _("license")
 _("location")

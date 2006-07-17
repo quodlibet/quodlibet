@@ -271,7 +271,7 @@ class PreferencesWindow(qltk.Window):
         self.set_title(_("Quod Libet Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)
-        self.set_transient_for(parent)
+        self.set_transient_for(qltk.get_top_parent(parent))
 
         self.add(qltk.Notebook())
         for Page in [self.SongList, self.Browsers, self.Player, self.Library]:

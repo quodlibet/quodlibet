@@ -306,14 +306,12 @@ class SongList(AllTreeView, util.InstanceTracker):
                     date = datetime.datetime.fromtimestamp(stamp).date()
                     today = datetime.datetime.now().date()
                     days = (today - date).days
+                    if days == 0: format = "%X"
+                    elif days < 7: format = "%A"
+                    else: format = "%x"
                     stamp = time.localtime(stamp)
-                    if days == 0:
-                        rep = time.strftime("%X", stamp).decode(const.ENCODING)
-                    elif days < 7:
-                        rep = time.strftime("%A", stamp).decode(const.ENCODING)
-                    else:
-                        rep = time.strftime("%x", stamp).decode(const.ENCODING)
-                    cell.set_property('text', rep)
+                    text = time.strftime(format, stamp).decode(const.ENCODING)
+                    cell.set_property('text', text)
             except AttributeError: pass
 
     class WideTextColumn(TextColumn):
@@ -852,26 +850,26 @@ class SongList(AllTreeView, util.InstanceTracker):
         sep.show()
         menu.append(sep)
 
-        trackinfo = """title version genre description part language bpm
-            originalalbum ~title~version ~album~part ~#track ~#tracks
+        trackinfo = """title genre ~title~version ~#track
             ~#playcount ~#skipcount ~#rating""".split()
         peopleinfo = """artist ~people performer arranger author composer
-            conductor lyricist originalartist albumartist contact
-            website""".split()
-        albuminfo = """album labelid ~#disc ~#discs""".split()
+            conductor lyricist originalartist""".split()
+        albuminfo = """album ~album~part labelid ~#disc ~#discs
+            ~#tracks albumartist""".split()
         dateinfo = """date originaldate recordingdate ~#laststarted
             ~#lastplayed ~#added""".split()
-        fileinfo = """~format ~filename ~basename ~dirname ~uri""".split()
-        copyinfo = """copyright license organization location isrc""".split()
+        fileinfo = """~format ~#bitrate ~filename ~basename ~dirname
+            ~uri""".split()
+        copyinfo = """copyright organization location isrc
+            contact website""".split()
 
         for name, group in [
-            #(_("C_urrent Headers"), current),
             (_("_Track Headers"), trackinfo),
             (_("_Album Headers"), albuminfo),
             (_("_People Headers"), peopleinfo),
             (_("_Date Headers"), dateinfo),
             (_("_File Headers"), fileinfo),
-            (_("_Copyright Headers"), copyinfo),
+            (_("_Production Headers"), copyinfo),
         ]:
             item = gtk.MenuItem(name)
             item.show()
@@ -884,7 +882,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         sep = gtk.SeparatorMenuItem()
         sep.show()
         menu.append(sep)
-        custom = gtk.MenuItem(_("Add Custom Header..."))
+        custom = gtk.MenuItem(_("Add _Custom Header..."))
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)
@@ -901,39 +899,12 @@ class SongList(AllTreeView, util.InstanceTracker):
         SongList.headers = headers
 
     def __add_custom_column(self, item):
-        dlg = gtk.Dialog(_("Add Custom Header"), qltk.get_top_parent(self))
-        dlg.set_border_width(6)
-        dlg.set_has_separator(False)
-        dlg.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        add = dlg.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        dlg.vbox.set_spacing(6)
-        dlg.set_default_response(gtk.RESPONSE_OK)
-        hbox = gtk.HBox()
-        hbox.set_spacing(6)
-        dlg.vbox.pack_start(hbox)
-
-        entry = gtk.Entry()
-        entry.set_activates_default(True)
-        label = gtk.Label()
-        label.set_text(_("_Header:"))
-        label.set_use_underline(True)
-        label.set_mnemonic_widget(entry)
-
-        hbox.pack_start(label)
-        hbox.pack_start(entry)
-        dlg.child.show_all()
-
-        resp = dlg.run()
-
-        if resp == gtk.RESPONSE_OK:
-            new = filter(None, entry.get_text().split())
-            headers = SongList.headers[:]
-            headers.extend(filter(lambda i: i not in headers, new))
-            SongList.set_all_column_headers(headers)
-            SongList.headers = headers
-
-        dlg.destroy()
-
+        # Prefs has to import SongList, so do this here to avoid
+        # a circular import.
+        from qltk.prefs import PreferencesWindow
+        win = PreferencesWindow(self)
+        win.child.set_current_page(0)
+        
     def __showmenu(self, column, event=None):
         time = gtk.get_current_event_time()
         if event is not None and event.button != 3:
