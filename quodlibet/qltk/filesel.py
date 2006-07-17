@@ -207,7 +207,7 @@ class FileSelector(gtk.VPaned):
         super(FileSelector, self).__init__()
         self.__filter = filter
 
-        dirlist = DirectoryTree(initial)
+        dirlist = DirectoryTree(initial, folders=folders)
         filelist = AllTreeView(gtk.ListStore(str))
         column = gtk.TreeViewColumn(_("Songs"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
