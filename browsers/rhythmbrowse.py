@@ -33,6 +33,8 @@ class Rhythmbrox(Browser, qltk.RHPaned):
     accelerated_name = _("_Rhythmbrox")
     priority = 10
 
+    __proxy_id = None
+
     def expand(self):
         return self
 
@@ -60,9 +62,10 @@ class Rhythmbrox(Browser, qltk.RHPaned):
 
     def pack_browser(self, browser):
         if self.get_child2():
-            for child in self.get_child2():
-                self.get_child2().remove(child)
+            self.get_child2().remove(self.browser)
+            self.get_child2().remove(self.__songlist)
             self.get_child2().destroy()
+            self.browser.disconnect(self.__proxy_id)
         browser.show()
         if browser.expand:
             container = browser.expand()
@@ -84,6 +87,10 @@ class Rhythmbrox(Browser, qltk.RHPaned):
             container.pack_start(self.__songlist)
         container.show()
         qltk.RHPaned.pack2(self, container, resize=True)
+        self.browser = browser
+        self.__proxy_id = self.browser.connect_object(
+            'songs-selected', self.emit, 'songs-selected')
+        self.browser.activate()
 
     def pack2(self, songlist, **kwargs):
         self.__songlist = songlist
