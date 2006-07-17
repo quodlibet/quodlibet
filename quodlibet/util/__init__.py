@@ -450,7 +450,15 @@ def tag(name, cap=True):
             except IndexError: return _("Invalid tag")
             else: return _(HEADERS_FILTER.get(tag, tag.replace("_", " ")))
         parts = map(readable, tagsplit(name))
-        if cap: parts = map(capitalize, parts)
+        if cap:
+            # Translators: If tag names, when capitalized, should not
+            # be title-cased ("Looks Like This"), but rather only have
+            # the first letter capitalized, translate this string as
+            # something other than "check|titlecase?".
+            if _("check|titlecase?") == "check|titlecase?":
+                parts = map(title, parts)
+            else:
+                parts = map(capitalize, parts)
         return " / ".join(parts)
 
 def tagsplit(tag):
@@ -492,6 +500,7 @@ HEADERS_FILTER = {
     "bpm": "BPM",
     "isrc": "ISRC",
     "lastplayed": "last played",
+    "laststarted": "last started",
     "filename": "full name",
     "playcount": "plays",
     "skipcount": "skips",
@@ -499,6 +508,7 @@ HEADERS_FILTER = {
     "mountpoint": "mount point",
     "basename": "filename",
     "dirname": "directory",
+    "uri": "URI",
 
     "musicbrainz_trackid": "MusicBrainz track ID",
     "musicbrainz_albumid": "MusicBrainz album ID",
