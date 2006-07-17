@@ -28,8 +28,10 @@ except NameError:
 
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
-    if not handledirs or '/' not in key:
-        check = os.path.basename(check) or '/'
+    if check is None:
+        return
+    elif not handledirs or os.sep not in key:
+        check = os.path.basename(check) or os.sep
     return key not in check.lower() and key not in check
 
 class DirectoryTree(RCMTreeView, MultiDragTreeView):
