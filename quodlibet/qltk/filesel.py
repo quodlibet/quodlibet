@@ -275,7 +275,9 @@ class FileSelector(gtk.VPaned):
         for dir in dirs:
             try:
                 for file in filter(self.__filter, dircache.listdir(dir)):
-                    fmodel.append([os.path.join(dir, file)])
+                    filename = os.path.join(dir, file)
+                    if os.access(filename, os.R_OK):
+                        fmodel.append([filename])
             except OSError:
                 pass
 

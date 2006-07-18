@@ -12,6 +12,7 @@ Quod Libet 0.22+ requires Python 2.4 or later.
  * Bug Fixes:
    * Updated files no longer incorrectly appear in the paned browser. (#750)
    * Disambiguate 'filename' string for translation. (#743)
+   * Hide unreadable files in Ex Falso. (#754)
  * Scan the library in the background when starting. (#390)
  * Ogg FLAC files can be loaded. (#735)
  * Plugin configuration IDs can be different from their names. (#742)
