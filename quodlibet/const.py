@@ -4,7 +4,7 @@
 import os
 import locale
 
-VERSION = "0.21"
+VERSION = "0.23"
 
 HOME    = os.path.expanduser("~")
 USERDIR = os.path.join(HOME, ".quodlibet")
