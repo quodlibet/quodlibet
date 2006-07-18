@@ -127,7 +127,7 @@ class PreferencesWindow(qltk.Window):
 
             headers.extend(others.get_text().split())
             if "~current" in headers: headers.remove("~current")
-            config.set("settings", "headers", " ".join(headers).lower())
+            headers = [header.lower() for header in headers]
             SongList.set_all_column_headers(headers)
 
     class Browsers(gtk.VBox):

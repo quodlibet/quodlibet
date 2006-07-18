@@ -14,6 +14,7 @@ import gobject
 import gtk
 import pango
 
+import config
 import const
 import player
 import qltk
@@ -667,6 +668,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         if iter: self.model.row_changed(self.model.get_path(iter), iter)
 
     def set_all_column_headers(cls, headers):
+        config.set("settings", "headers", " ".join(headers))
         try: headers.remove("~current")
         except ValueError: pass
         cls.headers = headers
