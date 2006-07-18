@@ -52,9 +52,12 @@ class Rhythmbrox(Browser, qltk.RHPaned):
 
         self.__paned = PanedBrowser(self.__library, self.__player)
         self.__iradio = InternetRadio(self.__library, self.__player)
-        model = gtk.ListStore(str, object)
-        model.append([_("Library"), self.__paned])
-        model.append([_("Radio Stations"), self.__iradio])
+        model = gtk.TreeStore(str, object)
+        model.append(None, [_("Library"), self.__paned])
+        model.append(None, [_("Radio Stations"), self.__iradio])
+        iter = model.append(None, [_("Playlists"), None])
+        for playlist in Playlists.playlists():
+            model.append(iter, [playlist.name, playlist])
 
         view.set_model(model)
         view.get_selection().connect('changed', self.__set_browser)
@@ -62,10 +65,19 @@ class Rhythmbrox(Browser, qltk.RHPaned):
 
     def pack_browser(self, browser):
         if self.get_child2():
-            self.get_child2().remove(self.browser)
-            self.get_child2().remove(self.__songlist)
-            self.get_child2().destroy()
-            self.browser.disconnect(self.__proxy_id)
+            if self.browser is None:
+                self.remove(self.get_child2())
+            else:
+                self.get_child2().remove(self.browser)
+                self.get_child2().remove(self.__songlist)
+                self.get_child2().destroy()
+                self.browser.disconnect(self.__proxy_id)
+
+        if browser is None:
+            qltk.RHPaned.pack2(self, self.__songlist, resize=True)
+            self.browser = None
+            return
+
         browser.show()
         if browser.expand:
             container = browser.expand()
@@ -105,6 +117,10 @@ class Rhythmbrox(Browser, qltk.RHPaned):
     def __set_browser(self, selection):
         model, iter = selection.get_selected()
         browser = model[iter][1]
-        self.pack_browser(browser)
+        if isinstance(browser, list):
+            self.pack_browser(None)
+            self.emit('songs-selected', list(browser), True)
+        else:
+            self.pack_browser(browser)
 
 browsers = [Rhythmbrox]
