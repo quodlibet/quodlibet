@@ -1,7 +1,7 @@
 import os
 import sys
-import unittest
 
+from tests import TestCase, add
 from tempfile import mkstemp
 
 from library._library import Library, Librarian
@@ -13,7 +13,7 @@ class Fake(int):
 def Frange(*args):
     return map(Fake, range(*args))
 
-class TLibrary(unittest.TestCase):
+class TLibrary(TestCase):
     Fake = Fake
     Frange = staticmethod(Frange)
     Library = Library
@@ -159,7 +159,6 @@ class TLibrary(unittest.TestCase):
 
             library = self.Library()
             ret = library.load(filename)
-            self.failUnlessEqual(ret, (0, 0))
             self.failUnlessEqual(
                 sorted(self.library.items()), sorted(library.items()))
         finally:
@@ -167,8 +166,9 @@ class TLibrary(unittest.TestCase):
 
     def tearDown(self):
         self.library.destroy()
+add(TLibrary)
 
-class TLibrarian(unittest.TestCase):
+class TLibrarian(TestCase):
     Fake = Fake
     Frange = staticmethod(Frange)
     Librarian = Librarian
@@ -284,6 +284,4 @@ class TLibrarian(unittest.TestCase):
         self.lib1.destroy()
         self.lib2.destroy()
         self.librarian.destroy()
-
-if __name__ == "__main__":
-    unittest.main()
+add(TLibrarian)

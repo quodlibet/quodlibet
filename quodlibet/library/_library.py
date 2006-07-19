@@ -116,8 +116,7 @@ class Library(gtk.Object):
     def load(self, filename, skip=False):
         """Load a library from a file, containing a picked list.
 
-        Loading does not cause added, changed, or removed signals. It
-        does return a tuple of number (changed, removed).
+        Loading does not cause added, changed, or removed signals.
         """
         try:
             if os.path.exists(filename):
@@ -130,10 +129,9 @@ class Library(gtk.Object):
                         traceback.print_exc()
                     items = []
                 fileobj.close()
-            else:
-                return 0, 0
+            else: return
         except EnvironmentError:
-            return 0, 0
+            return
 
         if skip:
             for item in items:
@@ -146,7 +144,6 @@ class Library(gtk.Object):
         # Subclases should override this if they want to check
         # item validity; see FileLibrary.
         self._contents[item.key] = item
-        return False, False
 
     def save(self, filename):
         """Save the library to the given filename."""
