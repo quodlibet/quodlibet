@@ -4,7 +4,6 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from os import system, popen
 from string import join
 import gtk, config
 import dbus
@@ -17,7 +16,7 @@ class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = 'Change Gajim status message according to what you are listening now.'
-    PLUGIN_VERSION = '0.6.1'
+    PLUGIN_VERSION = '0.6.2'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'
