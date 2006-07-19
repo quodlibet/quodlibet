@@ -853,7 +853,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         menu.append(sep)
 
         trackinfo = """title genre ~title~version ~#track
-            ~#playcount ~#skipcount ~#rating""".split()
+            ~#playcount ~#skipcount ~#rating ~#length""".split()
         peopleinfo = """artist ~people performer arranger author composer
             conductor lyricist originalartist""".split()
         albuminfo = """album ~album~part labelid ~#disc ~#discs
@@ -894,8 +894,11 @@ class SongList(AllTreeView, util.InstanceTracker):
     def __toggle_header_item(self, item, column):
         headers = SongList.headers[:]
         if item.get_active():
-            headers.insert(self.get_columns().index(column), item.tag)
-        else: headers.remove(item.tag)
+            try: headers.insert(self.get_columns().index(column), item.tag)
+            except ValueError: headers.append(item.tag)
+        else:
+            try: headers.remove(item.tag)
+            except ValueError: pass
 
         SongList.set_all_column_headers(headers)
         SongList.headers = headers
