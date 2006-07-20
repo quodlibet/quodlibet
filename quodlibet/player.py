@@ -10,6 +10,7 @@ import gobject
 import gst
 import gtk
 
+import config
 import const
 
 class NoSinkError(ValueError): pass
@@ -51,6 +52,7 @@ class PlaylistPlayer(gtk.Object):
     __paused = False
     song = None
     info = None
+    replaygain_profiles = []
     __length = 1
     __volume = 1.0
 
@@ -127,7 +129,9 @@ class PlaylistPlayer(gtk.Object):
         self.__volume = v
         if self.song is None: self.bin.set_property('volume', v)
         else:
-            v = max(0.0, min(4.0, v * self.song.replay_gain()))
+            if config.getboolean("player", "replaygain"):
+                profiles = self.replaygain_profiles
+                v = max(0.0, min(4.0, v * self.song.replay_gain(profiles)))
             self.bin.set_property('volume', v)
     volume = property(lambda s: s.__volume, __set_volume)
 

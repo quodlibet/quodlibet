@@ -158,7 +158,7 @@ class QuodLibetWindow(gtk.Window):
         hbox = gtk.HBox(spacing=12)
         hb = gtk.HBox(spacing=3)
         label = gtk.Label(_("_Order:"))
-        self.order = order = PlayOrder(self.songlist.model)
+        self.order = order = PlayOrder(self.songlist.model, player)
         label.set_mnemonic_widget(order)
         label.set_use_underline(True)
         hb.pack_start(label)

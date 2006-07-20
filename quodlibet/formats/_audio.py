@@ -14,7 +14,6 @@ import os
 import shutil
 import time
 
-import config
 import const
 import util
 
@@ -382,25 +381,28 @@ class AudioFile(dict):
             return self.get_format_cover()
         else: return None
 
-    def replay_gain(self):
-        """Return the recommended Replay Gain scale factor as a
-        floating point number, based on the current settings."""
+    def replay_gain(self, profiles):
+        """Return the recommended Replay Gain scale factor.
 
-        gain = config.getint("settings", "gain")
-        try:
-            if gain == 0: raise ValueError
-            elif gain == 2 and "replaygain_album_gain" in self:
-                db = float(self["replaygain_album_gain"].split()[0])
-                peak = float(self["replaygain_album_peak"])
-            elif gain > 0 and "replaygain_track_gain" in self:
-                db = float(self["replaygain_track_gain"].split()[0])
-                peak = float(self["replaygain_track_peak"])
-            else: raise ValueError
-            scale = 10.**(db / 20)
-            if scale * peak > 1: scale = 1.0 / peak # don't clip
-            return min(15, scale)
-        except (KeyError, ValueError):
-            return 1
+        profiles is a list of Replay Gain profile names ('album',
+        'track') to try before giving up. The special profile name
+        'none' will cause no scaling to occur.
+        """
+        for profile in profiles:
+            if profile is "none":
+                return 1.0
+            try:
+                db = float(self["replaygain_%s_gain" % profile].split()[0])
+                peak = float(self.get("replaygain_%s_peak" % profile, 1))
+            except (KeyError, ValueError):
+                continue
+            else:
+                scale = 10.**(db / 20)
+                if scale * peak > 1:
+                    scale = 1.0 / peak # don't clip
+                return min(15, scale)
+        else:
+            return 1.0
 
     def write(self):
         """Write metadata back to the file."""

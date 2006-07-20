@@ -170,23 +170,15 @@ class PreferencesWindow(qltk.Window):
                 _("_Jump to playing song automatically"), 'settings', 'jump')
             tips.set_tip(c, _("When the playing song changes, "
                               "scroll to it in the song list"))
-            c.set_active(config.state("jump"))
+            c.set_active(config.getboolean("settings", "jump"))
             self.pack_start(c, expand=False)
 
-            cb = gtk.combo_box_new_text()
-            cb.append_text(_("No volume adjustment"))
-            cb.append_text(_('Per-song ("Radio") volume adjustment'))
-            cb.append_text(_('Per-album ("Audiophile") volume adjustment'))
-            f = qltk.Frame(_("_Volume Normalization"), child=cb)
-            f.get_label_widget().set_mnemonic_widget(cb)
-            cb.set_active(config.getint("settings", "gain"))
-            cb.connect('changed', self.__changed, "settings", "gain")
-            self.pack_start(f, expand=False)
+            c = ConfigCheckButton(
+                _("_Replay Gain volume adjustment"), "player", "replaygain")
+            c.set_active(config.getboolean("player", "replaygain"))
+            self.pack_start(c, expand=False)
 
             self.show_all()
-
-        def __changed(self, cb, section, name):
-            config.set(section, name, str(cb.get_active()))
 
     class Library(gtk.VBox):
         def __init__(self):
