@@ -155,7 +155,7 @@ class PlaylistPlayer(gtk.Object):
     paused = property(__get_paused, __set_paused)
 
     def __set_volume(self, v):
-        self.props.volume = v
+        self.props.volume = min(1.0, max(0.0, v))
     volume = property(lambda s: s.__volume, __set_volume)
 
     def error(self, message, lock):
