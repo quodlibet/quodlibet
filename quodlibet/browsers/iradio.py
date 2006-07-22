@@ -86,6 +86,22 @@ def ParsePLS(file):
 
     return files
 
+def ParseM3U(fileobj):
+    files = []
+    pending_title = None
+    for line in fileobj:
+        line = line.strip()
+        if line.startswith("#EXTINF:"):
+            try: pending_title = line.split(",", 1)[1]
+            except IndexError: pending_title = None
+        elif line.startswith("http"):
+            irf = IRFile(line)
+            if pending_title:
+                irf["title"] = pending_title.decode('utf-8', 'replace')
+                pending_title = None
+            files.append(irf)
+    return files
+
 class ChooseNewStations(gtk.Dialog):
     def __init__(self, irfs):
         super(ChooseNewStations, self).__init__(title=_("Choose New Stations"))
@@ -141,6 +157,7 @@ class AddNewStation(GetStringDialog):
 class InternetRadio(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
     __stations = SongLibrary("iradio")
+    __stations.load(STATIONS)
     __sig = None
     __filter = None
     __refill_id = None
@@ -185,7 +202,6 @@ class InternetRadio(gtk.HBox, Browser):
         hb.pack_start(clear, expand=False)
         self.pack_start(hb)
 
-        self.__load_stations()
         self.show_all()
         gobject.idle_add(self.activate)
 
@@ -229,56 +245,47 @@ class InternetRadio(gtk.HBox, Browser):
         else: self.__add_station(uri)
 
     def __add_station(self, uri):
+        if isinstance(uri, unicode): uri = uri.encode('utf-8')
         if uri.lower().endswith(".pls") or uri == SACREDCHAO:
-            if isinstance(uri, unicode): uri = uri.encode('utf-8')
             try: sock = urllib.urlopen(uri)
             except EnvironmentError, e:
-                try: err = unicode(e.strerror, errors='replace')
+                try: err = e.strerror.decode(const.ENCODING, 'replace')
                 except TypeError:
-                    err = unicode(e.strerror[1], errors='replace')
+                    err = e.strerror[1].decode(const.ENCODING, 'replace')
                 qltk.ErrorMessage(None, _("Unable to add station"), err).run()
                 return
             irfs = ParsePLS(sock)
-            if not irfs:
-                qltk.ErrorMessage(
-                    None, _("No stations found"),
-                    _("No Internet radio stations were found at %s.") %
-                    util.escape(uri)).run()
-                return
-
-            irfs = filter(lambda station: station not in self.__stations, irfs)
-            if not irfs:
-                qltk.ErrorMessage(
-                    None, _("No new stations"),
-                    _("All stations listed are already in your library.")
-                    ).run()
-            elif len(irfs) == 1:
-                if self.__stations.add(irfs):
-                    self.__stations.save(STATIONS)
-            else:
-                d = ChooseNewStations(sorted(irfs))
-                if d.run() == gtk.RESPONSE_OK:
-                    irfs = d.get_irfs()
-                    if irfs:
-                        if self.__stations.add(irfs):
-                            self.__stations.save(STATIONS)
-                d.destroy()
         elif uri.lower().endswith(".m3u"):
-            qltk.WarningMessage(
-                None, _("Unsupported file type"),
-                _("M3U playlists cannot be loaded.")).run()
+            try: sock = urllib.urlopen(uri)
+            except EnvironmentError, e:
+                try: err = e.strerror.decode(const.ENCODING, 'replace')
+                except TypeError:
+                    err = e.strerror[1].decode(const.ENCODING, 'replace')
+                qltk.ErrorMessage(None, _("Unable to add station"), err).run()
+                return
+            irfs = ParseM3U(sock)
         else:
-            f = IRFile(uri)
-            if self.__stations.add([f]):
-                self.__stations.save(STATIONS)
-            else:
-                qltk.WarningMessage(
-                    None, _("Unable to add station"),
-                    _("<b>%s</b> is already in your library.") % uri).run()
+            irfs = [IRFile(uri)]
 
-    def __load_stations(self):
-        if not self.__stations:
-            self.__stations.load(STATIONS)
+        if not irfs:
+            qltk.ErrorMessage(
+                None, _("No stations found"),
+                _("No Internet radio stations were found at %s.") %
+                util.escape(uri)).run()
+            return
+
+        irfs = filter(lambda station: station not in self.__stations, irfs)
+        if not irfs:
+            qltk.WarningMessage(
+                None, _("Unable to add station"),
+                _("All stations listed are already in your library.")).run()
+        elif len(irfs) > 1:
+            d = ChooseNewStations(sorted(irfs))
+            if d.run() == gtk.RESPONSE_OK:
+                irfs = d.get_irfs()
+            d.destroy()
+        if irfs and self.__stations.add(irfs):
+            self.__stations.save(STATIONS)
 
     def restore(self): self.activate()
     def activate(self, *args):
