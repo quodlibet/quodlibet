@@ -109,11 +109,12 @@ class FIFOControl(object):
     def _focus(self, library, window, player): window.present()
 
     def _volume(self, value, library, window, player):
-        if value[0] == "+": window.volume += 0.05
-        elif value == "-": window.volume -= 0.05
+        if value[0] == "+": volume = player.volume + 0.05
+        elif value == "-": volume = player.volume - 0.05
         else:
-            try: window.volume.set_value(int(value) / 100.0)
-            except ValueError: pass
+            try: volume = (int(value) / 100.0)
+            except ValueError: return
+        player.volume = min(1.0, max(0.0, volume))
 
     def _order(self, value, library, window, player):
         order = window.order

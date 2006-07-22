@@ -146,6 +146,7 @@ class Volume(VSlider):
         self.get_value = self.scale.get_value
         self.scale.connect('value-changed', self.__volume_changed, device, i)
         self.set_value(config.getfloat("memory", "volume"))
+        device.connect('notify::volume', self.__volume_notify)
         self.__volume_changed(self.scale, device, i)
         self.show_all()
 
@@ -169,6 +170,9 @@ class Volume(VSlider):
 
         device.volume = val
         config.set("memory", "volume", str(slider.get_value()))
+
+    def __volume_notify(self, device, property):
+        self.scale.set_value(device.props.volume)
 
 class StopAfterMenu(gtk.Menu):
     def __init__(self, player):

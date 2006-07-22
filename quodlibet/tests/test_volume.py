@@ -3,20 +3,7 @@ from tests import TestCase, add
 from player import PlaylistPlayer
 from qltk.controls import Volume
 
-class PlayerVolume(TestCase):
-    def setUp(self):
-        self.p = PlaylistPlayer('fakesink')
-
-    def test_setget(self):
-        for i in [0.0, 1.2, 0.24, 1.0, 0.9]:
-            self.p.volume = i
-            self.failUnlessAlmostEqual(self.p.volume, i)
-
-    def tearDown(self):
-        self.p.destroy()
-add(PlayerVolume)
-
-class CombinedVolume(TestCase):
+class TVolume(TestCase):
     def setUp(self):
         self.p = PlaylistPlayer('fakesink')
         self.v = Volume(self.p)
@@ -26,7 +13,27 @@ class CombinedVolume(TestCase):
             self.v.set_value(i)
             self.failUnlessAlmostEqual(self.p.volume, self.v.get_value())
 
+    def test_add(self):
+        self.v.set_value(0.5)
+        self.v += 0.1
+        self.failUnlessAlmostEqual(self.p.volume, 0.6)
+
+    def test_sub(self):
+        self.v.set_value(0.5)
+        self.v -= 0.1
+        self.failUnlessAlmostEqual(self.p.volume, 0.4)
+
+    def test_add_boundry(self):
+        self.v.set_value(0.95)
+        self.v += 0.1
+        self.failUnlessAlmostEqual(self.p.volume, 1.0)
+
+    def test_sub_boundry(self):
+        self.v.set_value(0.05)
+        self.v -= 0.1
+        self.failUnlessAlmostEqual(self.p.volume, 0.0)
+
     def tearDown(self):
         self.p.destroy()
         self.v.destroy()
-add(CombinedVolume)
+add(TVolume)

@@ -68,6 +68,11 @@ class PlaylistPlayer(gtk.Object):
         'error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, bool)),
         }
 
+    __gproperties__ = {
+        'volume': (float, 'player volume', 'the volume of the player',
+                   0.0, 1.0, 1.0, gobject.PARAM_READWRITE)
+        }
+
     def __init__(self, sinkname, librarian=None):
         super(PlaylistPlayer, self).__init__()
         device, sinkname = GStreamerSink(sinkname)
@@ -92,6 +97,30 @@ class PlaylistPlayer(gtk.Object):
             err = str(err).decode(const.ENCODING, 'replace')
             self.error(err, True)
         return True
+
+    def do_song_started(self, song):
+        # Reset Replay Gain levels based on the new song.
+        self.volume = self.volume
+    def do_song_ended(self, song, stopped):
+        self.volume = self.volume
+
+    def do_get_property(self, property):
+        if property.name == 'volume':
+            return self.__volume
+        else: raise AttributeError
+
+    def do_set_property(self, property, v):
+        if property.name == 'volume':
+            self.__volume = v
+            if self.song is None:
+                self.bin.set_property('volume', v)
+            else:
+                if config.getboolean("player", "replaygain"):
+                    profiles = self.replaygain_profiles
+                    v = max(0.0, min(4.0, v * self.song.replay_gain(profiles)))
+                self.bin.set_property('volume', v)
+        else:
+            raise AttributeError
 
     def setup(self, source, song):
         """Connect to a PlaylistModel, and load a song."""
@@ -126,13 +155,7 @@ class PlaylistPlayer(gtk.Object):
     paused = property(__get_paused, __set_paused)
 
     def __set_volume(self, v):
-        self.__volume = v
-        if self.song is None: self.bin.set_property('volume', v)
-        else:
-            if config.getboolean("player", "replaygain"):
-                profiles = self.replaygain_profiles
-                v = max(0.0, min(4.0, v * self.song.replay_gain(profiles)))
-            self.bin.set_property('volume', v)
+        self.props.volume = v
     volume = property(lambda s: s.__volume, __set_volume)
 
     def error(self, message, lock):
@@ -173,9 +196,6 @@ class PlaylistPlayer(gtk.Object):
         # Then, set up the next song.
         self.song = self.info = self.__source.current
         self.emit('song-started', self.song)
-
-        # Reset Replay Gain levels based on the new song.
-        self.volume = self.__volume
 
         if self.song is not None:
             # Changing the URI in a playbin requires "resetting" it.
