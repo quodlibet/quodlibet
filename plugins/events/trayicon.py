@@ -241,9 +241,9 @@ class TrayIcon(EventPlugin):
             elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]: player.next()
         else:
             if event.direction in [SCROLL_UP, SCROLL_LEFT]:
-                window.volume += 0.05
+                player.volume += 0.05
             elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]:
-                window.volume -= 0.05
+                player.volume -= 0.05
 
     def plugin_on_song_started(self, song):
         items = self.__menu.sensitives

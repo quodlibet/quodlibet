@@ -96,18 +96,20 @@ class Lullaby(Alarm):
     PLUGIN_NAME = _("Lullaby")
     PLUGIN_DESC = _("Fade out and pause your music.")
     PLUGIN_ICON = gtk.STOCK_MEDIA_PAUSE
-    PLUGIN_VERSION = "0.19"
+    PLUGIN_VERSION = "0.20"
 
     _pref_name = "lullaby_times"
 
     def _fire(self):
         if self._enabled:
             gobject.timeout_add(500, self._fade_out)
+            self.__was_volume = player.playlist.volume
         else: gobject.timeout_add(30000, self._check)
 
     def _fade_out(self):
-        from widgets import main
-        main.volume -= 0.005
-        if main.volume.get_value() == 0: player.playlist.paused = True
-        if player.playlist.paused: gobject.timeout_add(30000, self._check)
+        player.playlist.volume -= 0.005
+        if player.playlist.get_value() == 0: player.playlist.paused = True
+        if player.playlist.paused:
+            player.playlist.volume = self.__was_volume
+            gobject.timeout_add(30000, self._check)
         else: return True
