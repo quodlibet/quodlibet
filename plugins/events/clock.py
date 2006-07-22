@@ -108,7 +108,8 @@ class Lullaby(Alarm):
 
     def _fade_out(self):
         player.playlist.volume -= 0.005
-        if player.playlist.get_value() == 0: player.playlist.paused = True
+        if player.playlist.volume == 0:
+            player.playlist.paused = True
         if player.playlist.paused:
             player.playlist.volume = self.__was_volume
             gobject.timeout_add(30000, self._check)
