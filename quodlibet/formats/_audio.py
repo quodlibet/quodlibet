@@ -142,8 +142,10 @@ class AudioFile(dict):
                 index = people.index
                 return join([person for (i,person) in enumerate(people)
                         if index(person)==i])
-            elif key == "basename": return os.path.basename(self["~filename"])
-            elif key == "dirname": return os.path.dirname(self["~filename"])
+            elif key == "basename":
+                return os.path.basename(self["~filename"]) or self["~filename"]
+            elif key == "dirname":
+                return os.path.dirname(self["~filename"]) or self["~filename"]
             elif key == "uri":
                 try: return self["~uri"]
                 except KeyError:
@@ -173,12 +175,12 @@ class AudioFile(dict):
             else: return dict.get(self, "~" + key, default)
 
         elif key == "title":
-            v = dict.get(self, "title")
-            if v is None:
-                return "%s [%s]" %(
-                    os.path.basename(self["~filename"]).decode(
-                    const.FSCODING, "replace"), _("Unknown"))
-            else: return v
+            title = dict.get(self, "title")
+            if title is None:
+                basename = self("~basename")
+                basename = basename.decode(const.FSCODING, "replace")
+                return "%s [%s]" % (basename, _("Unknown"))
+            else: return title
         else: return dict.get(self, key, default)
 
     lyric_filename = property(lambda self: util.fsencode(
