@@ -22,8 +22,8 @@ except (ImportError, OSError):
     extensions = []
 else:
     _modplug.ModPlug_GetName.restype = ctypes.c_char_p
-    try: gst.element_factory_make("modplug")
-    except gst.PluginNotFoundError:
+
+    if gst.registry_get_default().find_plugin("modplug") is None:
         extensions = []
 
 class ModFile(AudioFile):

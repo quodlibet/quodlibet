@@ -6,6 +6,10 @@
 #
 # $Id$
 
+import gst
+
+import mutagen
+
 import config
 import const
 
@@ -86,3 +90,62 @@ class MutagenVCFile(AudioFile):
             audio.tags[key] = self.list(key)
         audio.save()
         self.sanitize()
+
+ogg_formats = []
+try: from mutagen.oggvorbis import OggVorbis
+except ImportError: OggVorbis = None
+else: ogg_formats.append(("vorbis", OggVorbis))
+
+try: from mutagen.flac import FLAC
+except ImportError: FLAC = None
+else: ogg_formats.append(("flac", FLAC))
+
+try: from mutagen.oggflac import OggFLAC
+except ImportError: OggFLAC = None
+else: ogg_formats.append(("flac", OggFLAC))
+
+try: from mutagen.oggspeex import OggSpeex
+except ImportError: OggSpeex = None
+else: ogg_formats.append(("speex", OggSpeex))
+
+class OggFile(MutagenVCFile):
+    format = "Ogg Vorbis"
+    MutagenType = OggVorbis
+
+class OggFLACFile(MutagenVCFile):
+    format = "Ogg FLAC"
+    MutagenType = OggFLAC
+
+class OggSpeexFile(MutagenVCFile):
+    format = "Ogg Speex"
+    MutagenType = OggSpeex
+
+class FLACFile(MutagenVCFile):
+    format = "FLAC"
+    MutagenType = FLAC
+
+supported = []
+
+for plugin, Kind in ogg_formats:
+    if Kind is not None:
+        if gst.registry_get_default().find_plugin(plugin) is not None:
+            supported.append(Kind)
+
+extensions = [".ogg"]
+if FLAC in supported: extensions.append(".flac")
+if OggFLAC in supported: extensions.append(".oggflac")
+if OggSpeex in supported: extensions.append(".spx")
+
+def info(filename):
+    try: audio = mutagen.File(filename)
+    except AttributeError:
+        audio = OggVorbis(filename)
+    if audio is None:
+        raise IOError("file type could not be determined")
+    else:
+        Kind = type(audio)
+        for klass in globals().values():
+            if Kind is getattr(klass, 'MutagenType', None):
+                return klass(filename, audio)
+        else:
+            raise IOError("file type could not be determined")

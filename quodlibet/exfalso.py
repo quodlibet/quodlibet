@@ -22,6 +22,12 @@ class fakegst(object):
     def element_make_from_uri(self, type_, uri, arg):
         return None
 
+    def registry_get_default(self):
+        return self
+
+    def find_plugin(self, plugin):
+        return plugin not in ["wavparse", "modplug"]
+
 def main(argv):
     import util
     util.python_init()

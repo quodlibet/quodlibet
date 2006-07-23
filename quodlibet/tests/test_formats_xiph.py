@@ -1,10 +1,14 @@
-from tests import TestCase
+from tests import add, TestCase
 
+import os
 import shutil
+import tempfile
 
 import config
 import const
-import formats._vorbis
+
+from mutagen.flac import FLAC
+from formats.xiph import OggFile, FLACFile
 
 class TVCFile(TestCase):
     # Mixin to test Vorbis writing features
@@ -98,3 +102,29 @@ class TVCFile(TestCase):
 
     def test_can_change(self):
         self.failUnless(self.song.can_change())
+
+class TFLACFile(TVCFile):
+    def setUp(self):
+        self.filename = tempfile.mkstemp(".flac")[1]
+        shutil.copy(os.path.join('tests', 'data', 'empty.flac'), self.filename)
+        self.song = FLACFile(self.filename)
+
+    def test_save_empty(self):
+        self.song.write()
+        flac = FLAC(self.filename)
+        self.failIf(flac.tags)
+        self.failIf(flac.tags is None)
+
+    def tearDown(self):
+        os.unlink(self.filename)
+add(TFLACFile)
+
+class TOggFile(TVCFile):
+    def setUp(self):
+        self.filename = tempfile.mkstemp(".ogg")[1]
+        shutil.copy(os.path.join('tests', 'data', 'empty.ogg'), self.filename)
+        self.song = OggFile(self.filename)
+
+    def tearDown(self):
+        os.unlink(self.filename)
+add(TOggFile)

@@ -15,15 +15,15 @@ import const
 
 from formats._audio import AudioFile
 
+extensions = [".mp3", ".mp2"]
 try:
     import mutagen.id3
     from mutagen.mp3 import MP3
 except ImportError:
     extensions = []
 else:
-    try: gst.element_factory_make("mad")
-    except gst.PluginNotFoundError: extensions = []
-    else: extensions = [".mp3", ".mp2"]
+    if gst.registry_get_default().find_plugin("musepack") is None:
+        extensions = []
 
 def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
 

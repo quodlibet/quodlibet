@@ -29,6 +29,12 @@ for i, name in enumerate(modules):
     # Migrate pre-0.16 library, which was using an undocumented "feature".
     sys.modules[name.replace(".", "/")] = format
     modules[i] = (format.extensions and name.split(".")[1])
+
+try: sys.modules["formats.flac"] = sys.modules["formats.xiph"]
+except KeyError: pass
+try: sys.modules["formats.oggvorbis"] = sys.modules["formats.xiph"]
+except KeyError: pass
+
 modules = filter(None, modules)
 modules.sort()
 

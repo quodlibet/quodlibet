@@ -10,20 +10,17 @@ import gst
 
 from formats._apev2 import APEv2File
 
+extensions = [".wv"]
 try:
     import ctypes
     _wavpack = ctypes.cdll.LoadLibrary("libwavpack.so.0")
 except (ImportError, OSError):
     extensions = []
 else:
-    try:
-        gst.element_factory_make('wavpackdec')
-    except gst.PluginNotFoundError:
+    _wavpack.WavpackGetSampleRate.restype = ctypes.c_uint32
+    _wavpack.WavpackGetNumSamples.restype = ctypes.c_uint32
+    if gst.registry_get_default().find_plugin("wavpack") is None:
         extensions = []
-    else:
-        extensions = [".wv"]
-        _wavpack.WavpackGetSampleRate.restype = ctypes.c_uint32
-        _wavpack.WavpackGetNumSamples.restype = ctypes.c_uint32
 
 class WavpackFile(APEv2File):
     format = "WavPack"
