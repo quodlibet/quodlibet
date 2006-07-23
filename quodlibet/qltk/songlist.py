@@ -859,7 +859,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         albuminfo = """album ~album~part labelid ~#disc ~#discs
             ~#tracks albumartist""".split()
         dateinfo = """date originaldate recordingdate ~#laststarted
-            ~#lastplayed ~#added""".split()
+            ~#lastplayed ~#added ~#mtime""".split()
         fileinfo = """~format ~#bitrate ~filename ~basename ~dirname
             ~uri""".split()
         copyinfo = """copyright organization location isrc
