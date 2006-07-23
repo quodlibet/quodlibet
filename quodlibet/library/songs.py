@@ -329,7 +329,7 @@ class FileLibrary(Library):
 
     def masked(self, item):
         """Return true if the item is in the library but masked."""
-        try: point = item.point
+        try: point = item.mountpoint
         except AttributeError:
             # Checking a key.
             for point in self._masked.itervalues():
@@ -347,10 +347,10 @@ class FileLibrary(Library):
     def mask(self, point):
         removed = {}
         for item in self.itervalues():
-            if item.point == point:
+            if item.mountpoint == point:
                 removed[item.key] = item
         if removed:
-            self.remove(removed)
+            self.remove(removed.values())
         self._masked.setdefault(point, {}).update(removed)
 
 class SongFileLibrary(SongLibrary, FileLibrary):
