@@ -8,15 +8,20 @@
 
 import gst
 
-from mutagen.mp3 import MP3
+extensions = [".tta"]
+
+try:
+    from mutagen.tta import TTA
+except ImportError:
+    TTA = None
+    extensions = []
 from formats._id3 import ID3File
 
-extensions = [".mp3", ".mp2"]
 if gst.registry_get_default().find_plugin("mad") is None:
     extensions = []
 
-class MP3File(ID3File):
-    format = "MP3"
-    Kind = MP3
+class TTAFile(ID3File):
+    format = "True Audio"
+    Kind = TTA
 
-info = MP3File
+info = TTAFile
