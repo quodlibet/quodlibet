@@ -22,7 +22,7 @@ try:
 except ImportError:
     extensions = []
 else:
-    if gst.registry_get_default().find_plugin("musepack") is None:
+    if gst.registry_get_default().find_plugin("mad") is None:
         extensions = []
 
 def isascii(s): return ((len(s) == 0) or (ord(max(s)) < 128))
