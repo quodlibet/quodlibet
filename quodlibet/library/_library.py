@@ -163,13 +163,6 @@ class Library(gtk.Object):
         os.rename(filename + ".tmp", filename)
         fileobj.close()
 
-    def masked(self, item):
-        """Return true if the item is in the library but masked."""
-        for point in self._masked.itervalues():
-            if item in point or item in point.itervalues():
-                return True
-        else: return False
-
 class Librarian(gtk.Object):
     """The librarian is a nice interface to all active libraries.
 

@@ -327,6 +327,32 @@ class FileLibrary(Library):
         if added:
             self.emit('added', added)
 
+    def masked(self, item):
+        """Return true if the item is in the library but masked."""
+        try: point = item.point
+        except AttributeError:
+            # Checking a key.
+            for point in self._masked.itervalues():
+                if item in point:
+                    return True
+        else:
+            # Checking a full item.
+            return item in self._masked.get(point, {}).itervalues()
+
+    def unmask(self, point):
+        items = self._masked.pop(point, {})
+        if items:
+            self.add(items.values())
+
+    def mask(self, point):
+        removed = {}
+        for item in self.itervalues():
+            if item.point == point:
+                removed[item.key] = item
+        if removed:
+            self.remove(removed)
+        self._masked.setdefault(point, {}).update(removed)
+
 class SongFileLibrary(SongLibrary, FileLibrary):
     """A library containing song files."""
 
