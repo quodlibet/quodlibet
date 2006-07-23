@@ -12,6 +12,7 @@ import gtk
 
 import config
 import const
+import player
 import qltk
 import util
 
@@ -177,8 +178,11 @@ class PreferencesWindow(qltk.Window):
                 _("_Replay Gain volume adjustment"), "player", "replaygain")
             c.set_active(config.getboolean("player", "replaygain"))
             self.pack_start(c, expand=False)
-
+            c.connect('toggled', self.__toggled_gain)
             self.show_all()
+
+        def __toggled_gain(self, activator):
+            player.playlist.volume = player.playlist.volume
 
     class Library(gtk.VBox):
         def __init__(self):
