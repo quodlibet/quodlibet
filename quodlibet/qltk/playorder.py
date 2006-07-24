@@ -47,7 +47,7 @@ class PlayOrder(gtk.ComboBox):
         config.set("memory", "order", _ORDERS[self.get_active()])
 
         if model.order == 0:
-            player.replaygain_profiles = ["album", "track"]
+            player.replaygain_profiles[1] = ["album", "track"]
         else:
-            player.replaygain_profiles = ["track"]
+            player.replaygain_profiles[1] = ["track"]
         player.volume = player.volume

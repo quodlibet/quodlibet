@@ -213,6 +213,7 @@ class Playlists(gtk.VBox, Browser):
     name = _("Playlists")
     accelerated_name = _("_Playlists")
     priority = 2
+    replaygain_profiles = ["track"]
 
     def init(klass, library):
         model = klass.__lists.get_model()

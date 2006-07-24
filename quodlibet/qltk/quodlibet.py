@@ -502,6 +502,8 @@ class QuodLibetWindow(gtk.Window):
             c = gtk.VBox(spacing=6)
             c.pack_start(self.browser, expand=False)
             c.pack_start(self.songpane)
+        player.replaygain_profiles[0] = self.browser.replaygain_profiles
+        player.volume = player.volume
         self.__vbox.pack_end(c)
         c.show()
         self.__hide_menus()

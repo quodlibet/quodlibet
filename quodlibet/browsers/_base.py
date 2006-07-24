@@ -106,3 +106,6 @@ class Browser(object):
     def list(self, tag):
         from library import library
         return library.tag_values(tag)
+
+    # Replay Gain profiles for this browser.
+    replaygain_profiles = None

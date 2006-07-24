@@ -52,7 +52,9 @@ class PlaylistPlayer(gtk.Object):
     __paused = False
     song = None
     info = None
-    replaygain_profiles = []
+    # Replay Gain profiles are a list of values to be tried in order;
+    # Three things can set them: play order, browser, and a default.
+    replaygain_profiles = [None, None, ["none"]]
     __length = 1
     __volume = 1.0
 
@@ -116,7 +118,7 @@ class PlaylistPlayer(gtk.Object):
                 self.bin.set_property('volume', v)
             else:
                 if config.getboolean("player", "replaygain"):
-                    profiles = self.replaygain_profiles
+                    profiles = filter(None, self.replaygain_profiles)[0]
                     v = max(0.0, min(4.0, v * self.song.replay_gain(profiles)))
                 self.bin.set_property('volume', v)
         else:
