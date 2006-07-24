@@ -11,17 +11,17 @@ import gst
 extensions = [".tta"]
 
 try:
-    from mutagen.tta import TTA
+    from mutagen.trueaudio import TrueAudio
 except ImportError:
-    TTA = None
+    TrueAudio = None
     extensions = []
 from formats._id3 import ID3File
 
 if gst.registry_get_default().find_plugin("mad") is None:
     extensions = []
 
-class TTAFile(ID3File):
+class TrueAudioFile(ID3File):
     format = "True Audio"
-    Kind = TTA
+    Kind = TrueAudio
 
-info = TTAFile
+info = TrueAudioFile
