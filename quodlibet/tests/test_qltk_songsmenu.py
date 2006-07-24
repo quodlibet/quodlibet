@@ -49,12 +49,19 @@ class TSongsMenu(TestCase):
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
     def test_remove(self):
-        # FIXME: Mock a fake library to test should-be-sensitive case.
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, remove=True, delete=False, edit=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
+
+    def test_remove_sensitive(self):
+        self.library.add(self.songs)
+        self.menu = SongsMenu(
+            self.library, self.songs, plugins=False, playlists=False,
+            queue=False, remove=True, delete=False, edit=False)
+        self.failUnlessEqual(1, len(self.menu))
+        self.failUnless(self.menu.get_children()[0].props.sensitive)
 
     def test_delete(self):
         self.menu = SongsMenu(
