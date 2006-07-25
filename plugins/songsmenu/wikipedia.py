@@ -26,7 +26,7 @@ class WikiSearch(object):
         hb = gtk.HBox(spacing=3)
         hb.set_border_width(6)
         e = gtk.Entry(2)
-        e.set_property('width-request', 25)
+        e.set_width_chars(3)
         e.set_text(config.get('plugins', __name__))
         e.connect('changed', self.changed)
         hb.pack_start(gtk.Label("Search at http://"), expand=False)
