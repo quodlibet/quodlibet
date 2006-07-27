@@ -7,7 +7,6 @@
 #
 # $Id$
 
-import dircache
 import os
 import urlparse
 
@@ -103,7 +102,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                     return (t[0] != "." and
                             os.access(os.path.join(head, t), os.R_OK)
                             and os.path.isdir(os.path.join(head, t)))
-                try: dirs = filter(isvisibledir, dircache.listdir(head))
+                try: dirs = filter(isvisibledir, os.listdir(head))
                 except OSError: break
                 try: path.insert(0, dirs.index(tail))
                 except ValueError: break
@@ -184,7 +183,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             while model.iter_has_child(iter):
                 model.remove(model.iter_children(iter))
             folder = model[iter][0]
-            for base in dircache.listdir(folder):
+            for base in os.listdir(folder):
                 try:
                     path = os.path.join(folder, base)
                     if (base[0] != "." and os.access(path, os.R_OK) and
@@ -192,7 +191,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                         niter = model.append(iter, [path])
                         if filter(os.path.isdir,
                                   [os.path.join(path, d) for d in
-                                   dircache.listdir(path) if d[0] != "."]):
+                                   os.listdir(path) if d[0] != "."]):
                             model.append(niter, ["dummy"])
                 except WindowsError:
                     # Windows lies and says you can read unreadable dirs.
@@ -274,7 +273,7 @@ class FileSelector(gtk.VPaned):
         dirs = [dmodel[row][0] for row in rows]
         for dir in dirs:
             try:
-                for file in filter(self.__filter, dircache.listdir(dir)):
+                for file in filter(self.__filter, os.listdir(dir)):
                     filename = os.path.join(dir, file)
                     if os.access(filename, os.R_OK):
                         fmodel.append([filename])

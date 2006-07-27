@@ -99,10 +99,8 @@ class RenameFiles(EditPane):
         was_changed = []
         skip_all = False
 
-        for row in model:
-            song = row[0]
-            oldname = row[1]
-            newname = row[2].decode('utf-8')
+        rows = [(row[0], row[1], row[2].decode('utf-8')) for row in model]
+        for song, oldname, newname in rows:
             try:
                 newname = util.fsencode(newname)
                 library.rename(song, newname)
