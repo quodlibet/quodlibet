@@ -146,7 +146,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         songs = []
         to_add = []
         for dir in dirs:
-            for file in filter(formats.filter, os.listdir(dir)):
+            for file in filter(formats.filter, sorted(os.listdir(dir))):
                 fn = os.path.realpath(os.path.join(dir, file))
                 if fn in self.__glibrary:
                     songs.append(self.__glibrary[fn])
