@@ -6,6 +6,7 @@
 #
 # $Id$
 
+import os
 import gnomevfs
 
 import library
