@@ -90,6 +90,9 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         m = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         m.connect('activate', self.__refresh)
         menu.append(m)
+        m = qltk.MenuItem(_("Select All Subfolders"), gtk.STOCK_DIRECTORY)
+        m.connect('activate', self.__expand)
+        menu.append(m)
         menu.show_all()
         self.connect_object('popup-menu', self.__popup_menu, menu)
 
@@ -102,7 +105,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                     return (t[0] != "." and
                             os.access(os.path.join(head, t), os.R_OK)
                             and os.path.isdir(os.path.join(head, t)))
-                try: dirs = filter(isvisibledir, os.listdir(head))
+                try: dirs = filter(isvisibledir, sorted(os.listdir(head)))
                 except OSError: break
                 try: path.insert(0, dirs.index(tail))
                 except ValueError: break
@@ -166,6 +169,24 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             self.emit('test-expand-row', model.get_iter(prow), prow)
             if expanded: self.expand_row(prow, False)
 
+    def __expand(self, button):
+        selection = self.get_selection()
+        model, rows = selection.get_selected_rows()
+        for row in rows:
+            it = model.get_iter(row)
+            self.expand_row(row, False)
+            last = self.__select_children(it, model, selection)
+            selection.select_range(row, last)
+
+    def __select_children(self, iter, model, selection):
+        nchildren = model.iter_n_children(iter)
+        last = model.get_path(iter)
+        for i in xrange(nchildren):
+            child = model.iter_nth_child(iter, i)
+            self.expand_row(model.get_path(child), False)
+            last = self.__select_children(child, model, selection)
+        return last
+
     def __refresh(self, button):
         model, rows = self.get_selection().get_selected_rows()
         for row in rows:
@@ -183,7 +204,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             while model.iter_has_child(iter):
                 model.remove(model.iter_children(iter))
             folder = model[iter][0]
-            for base in os.listdir(folder):
+            for base in sorted(os.listdir(folder)):
                 try:
                     path = os.path.join(folder, base)
                     if (base[0] != "." and os.access(path, os.R_OK) and
@@ -191,7 +212,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                         niter = model.append(iter, [path])
                         if filter(os.path.isdir,
                                   [os.path.join(path, d) for d in
-                                   os.listdir(path) if d[0] != "."]):
+                                   sorted(os.listdir(path)) if d[0] != "."]):
                             model.append(niter, ["dummy"])
                 except WindowsError:
                     # Windows lies and says you can read unreadable dirs.
@@ -273,7 +294,7 @@ class FileSelector(gtk.VPaned):
         dirs = [dmodel[row][0] for row in rows]
         for dir in dirs:
             try:
-                for file in filter(self.__filter, os.listdir(dir)):
+                for file in filter(self.__filter, sorted(os.listdir(dir))):
                     filename = os.path.join(dir, file)
                     if os.access(filename, os.R_OK):
                         fmodel.append([filename])
