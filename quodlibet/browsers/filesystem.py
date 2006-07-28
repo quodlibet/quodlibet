@@ -42,6 +42,12 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     def init(klass, library):
         klass.__glibrary = library
         klass.__library = SongFileLibrary("filesystem")
+        library.connect('added', klass.__remove_because_added)
+
+    @classmethod
+    def __remove_because_added(klass, library, songs):
+        songs = filter(klass.__library.__contains__, songs)
+        klass.__library.remove(songs)
 
     def __init__(self, library, player):
         super(FileSystem, self).__init__()
