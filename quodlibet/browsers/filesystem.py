@@ -87,7 +87,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
                       "song lists or the queue.")).run()
                 ctx.drag_abort(etime)
                 return
-            self.__add_songs(view, songs)
+            to_add = filter(self.__library.__contains__, songs)
+            self.__add_songs(view, to_add)
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
         else:
