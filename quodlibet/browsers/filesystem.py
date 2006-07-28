@@ -13,6 +13,7 @@
 
 import os
 
+import gobject
 import gtk
 
 import config
@@ -33,6 +34,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     name = _("File System")
     accelerated_name = _("_File System")
     priority = 10
+
+    __fill_id = None
 
     def __added(klass, library, songs):
         klass.__library.remove(songs)
@@ -77,7 +80,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         self.show_all()
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
-        songs = self.__find_songs(view.get_selection())
+        for songs in self.__find_songs(view.get_selection()):
+            pass
         if tid == 1:
             cant_add = filter(lambda s: not s.can_add, songs)
             if cant_add:
@@ -135,9 +139,11 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         return menu
 
     def __add_songs(self, item, songs):
+        songs = filter(self.__library.__contains__, songs)
         self.__library.librarian.move(songs, self.__library, self.__glibrary)
 
     def __remove_songs(self, songs):
+        songs = filter(self.__glibrary.__contains__, songs)
         self.__library.librarian.move(songs, self.__glibrary, self.__library)
 
     def __find_songs(self, selection):
@@ -161,12 +167,23 @@ class FileSystem(Browser, gtk.ScrolledWindow):
                         self.__library.reload(song)
                     if song in self.__library:
                         songs.append(song)
+            if not len(to_add) & 0x7:
+                yield songs
         self.__library.add(to_add)
-        return songs
+        yield songs
 
     def __songs_selected(self, selection):
-        songs = self.__find_songs(selection)
+        if self.__fill_id is not None:
+            gobject.source_remove(self.__fill_id)
+        def songs_selected_iter():
+            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            for songs in self.__find_songs(selection):
+                yield True
+            self.window.set_cursor(None)
+            self.emit('songs-selected', songs, None)
+            yield False
         self.save()
-        self.emit('songs-selected', songs, None)
+        self.__fill_id = gobject.idle_add(
+            songs_selected_iter().next, priority=gobject.PRIORITY_LOW)
 
 browsers = [FileSystem]
