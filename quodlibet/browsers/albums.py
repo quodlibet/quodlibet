@@ -206,8 +206,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 albums[key].songs.add(song)
                 changed.add(key)
         for album in new:
-            album._model = model
-            album._iter = model.append(row=[album])
+            model.append(row=[album])
         if update: klass.__update(changed, model)
         else: return changed
 
@@ -222,31 +221,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         discs = 1
         tracks = 0
         date = ""
-
-        @classmethod
-        def __scan_covers(klass, model):
-            while klass.__pending_covers:
-                album = klass.__pending_covers.pop()
-                if album._iter is None or album.cover is not None:
-                    continue
-                song = list(album.songs)[0]
-                cover = song.find_cover()
-                if cover is not None:
-                    try:
-                        cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                            cover.name, 48, 48)
-                    except StandardError:
-                        continue
-                    else:
-                        # add a black outline
-                        w, h = cover.get_width(), cover.get_height()
-                        newcover = gtk.gdk.Pixbuf(
-                            gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
-                        newcover.fill(0x000000ff)
-                        cover.copy_area(0, 0, w, h, newcover, 1, 1)
-                        album.cover = newcover
-                        model[album._iter][0] = album
-                yield True
 
         def __init__(self, title, labelid, mbid):
             self.people = []
@@ -327,19 +301,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             else: self.date = song.comma("date")
 
             self.markup = self._pattern % self
-            if self.title and self.cover is None and cover:
-                if not self.__pending_covers:
-                    copool.add(self.__scan_covers, self._model)
-                self.__pending_covers.append(self)
             self._model[self._iter][0] = self
 
         def remove(self, song):
             try: self.songs.remove(song)
             except KeyError: return False
             else: return True
-
-        def __get_cover(self, song):
-            if self._iter is None: return
 
     # An auto-searching entry; it wraps is a TreeModelFilter whose parent
     # is the album list.
@@ -433,6 +400,47 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             else: return (cmp(a1.date, a2.date) or cmp(a1.key, a2.key))
 
     class _AlbumStore(gtk.ListStore):
+        __gsignals__ = { "row-changed": "override" }
+
+        def __init__(self, *args, **kwargs):
+            super(AlbumList._AlbumStore, self).__init__(*args, **kwargs)
+            self.__pending_covers = []
+
+        def do_row_changed(self, path, iter):
+            album = self[iter][0]
+            if album is None:
+                return
+            album._model = self
+            album._iter = iter
+            if album.title and album.cover is None:
+                if not self.__pending_covers:
+                    copool.add(self.__scan_covers)
+                self.__pending_covers.append(album)
+
+        def __scan_covers(self):
+            while self.__pending_covers:
+                album = self.__pending_covers.pop()
+                if album._iter is None or album.cover is not None:
+                    continue
+                song = list(album.songs)[0]
+                cover = song.find_cover()
+                if cover is not None:
+                    try:
+                        cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                            cover.name, 48, 48)
+                    except StandardError:
+                        continue
+                    else:
+                        # add a black outline
+                        w, h = cover.get_width(), cover.get_height()
+                        newcover = gtk.gdk.Pixbuf(
+                            gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
+                        newcover.fill(0x000000ff)
+                        cover.copy_area(0, 0, w, h, newcover, 1, 1)
+                        album.cover = newcover
+                        self[album._iter][0] = album
+                yield True
+
         def get_albums(self):
             albums = [row[0] for row in self]
             try: albums.remove(None)
@@ -540,14 +548,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         if None in albums:
-            for row in model:
-                if row[0]:
-                    row[0].cover = None
-                    row[0].finalize()
-        else:
-            for album in albums:
-                album.cover = None
-                album.finalize()
+            albums = [model[row][0] for row in model]
+        for album in albums:
+            album.cover = None
+            album.finalize()
 
     def __get_selected_albums(self, selection):
         model, rows = selection.get_selected_rows()
