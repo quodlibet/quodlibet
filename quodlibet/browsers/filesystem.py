@@ -176,10 +176,12 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         if self.__fill_id is not None:
             gobject.source_remove(self.__fill_id)
         def songs_selected_iter():
-            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            if self.window:
+                self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
             for songs in self.__find_songs(selection):
                 yield True
-            self.window.set_cursor(None)
+            if self.window:
+                self.window.set_cursor(None)
             self.emit('songs-selected', songs, None)
             yield False
         self.save()
