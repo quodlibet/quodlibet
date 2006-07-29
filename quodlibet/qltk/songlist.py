@@ -25,6 +25,7 @@ from qltk.information import Information
 from qltk.properties import SongProperties
 from qltk.views import AllTreeView
 from util import tag
+from util import copool
 from util.uri import URI
 
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
@@ -90,7 +91,6 @@ class PlaylistModel(gtk.ListStore):
     sourced = False
     __iter = None
     __old_value = None
-    __sig = None
 
     __gsignals__ = {
         'songs-set': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
@@ -101,22 +101,16 @@ class PlaylistModel(gtk.ListStore):
         self.__played = []
 
     def set(self, songs):
-        if self.__sig is not None:
-            gobject.source_remove(self.__sig)
-            self.__sig = None
-
         oldsong = self.current
         if oldsong is None: oldsong = self.__old_value
         else: self.__old_value = oldsong
         self.__played = []
         self.__iter = None
-        self.clear()
         songs = songs[:]
-        next = self.__set_idle(oldsong, songs).next
-        if next():
-            self.__sig = gobject.idle_add(next)
+        copool.add(self.__set_idle, oldsong, songs)
 
     def __set_idle(self, oldsong, songs):
+        self.clear()
         for count, song in enumerate(songs):
             iter = self.append(row=[song])
             if song == oldsong:
@@ -125,9 +119,7 @@ class PlaylistModel(gtk.ListStore):
                 yield True
         if self.__iter is not None:
             self.__old_value = None
-        self.__sig = None
         self.emit('songs-set')
-        yield False
 
     def remove(self, iter):
         if self.__iter and self[iter].path == self[self.__iter].path:

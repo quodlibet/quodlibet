@@ -11,6 +11,8 @@ import gtk
 
 import formats
 
+from util import copool
+
 class EntryWordCompletion(gtk.EntryCompletion):
     """Entry completion for simple words, where a word boundry is
     roughly equivalent to the separators in the QL query language.
@@ -67,8 +69,6 @@ class EntryWordCompletion(gtk.EntryCompletion):
 class LibraryTagCompletion(EntryWordCompletion):
     """A completion for text entries tied to a library's tag list."""
 
-    __sig = None
-
     def __init__(self, library):
         super(LibraryTagCompletion, self).__init__()
         try: model = self.__model
@@ -81,20 +81,15 @@ class LibraryTagCompletion(EntryWordCompletion):
         self.set_model(model)
         self.set_text_column(0)
 
+    @classmethod
     def __refreshmodel(klass, library, songs, model):
-        if klass.__sig is not None:
-            gobject.source_remove(klass.__sig)
-        next = klass.__refreshmodel_real(library, model).next
-        klass.__sig = gobject.idle_add(next)
-    __refreshmodel = classmethod(__refreshmodel)
+        copool.add(klass.__refreshmodel_real, library, model)
 
+    @classmethod
     def __refreshmodel_real(klass, library, model):
         tags = set()
         model.clear()
         yield True
-        # If rescanning the entire library ends up being too slow,
-        # optimize this by using 'songs' for added/changed, and
-        # ignoring removed.
         for count, song in enumerate(library):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
@@ -110,14 +105,9 @@ class LibraryTagCompletion(EntryWordCompletion):
         yield True
         for tag in tags:
             model.append([tag])
-        klass.__sig = None
-        yield False
-    __refreshmodel_real = classmethod(__refreshmodel_real)
 
 class LibraryValueCompletion(gtk.EntryCompletion):
     """Entry completion for a library value, for a specific tag."""
-
-    __sig = None
 
     def __init__(self, tag, library):
         super(LibraryValueCompletion, self).__init__()
@@ -133,11 +123,7 @@ class LibraryValueCompletion(gtk.EntryCompletion):
             return
         elif tag in formats.PEOPLE:
             tag = "~people"
-
-        if self.__sig is not None:
-            gobject.source_remove(self.__sig)
-        next = self.__fill_tag(tag, library).next
-        self.__sig = gobject.idle_add(next)
+        copool.add(self.__fill_tag, tag, library)
 
     def __fill_tag(self, tag, library):
         model = self.get_model()
@@ -150,5 +136,3 @@ class LibraryValueCompletion(gtk.EntryCompletion):
             model.append(row=[value])
             if count % 1000 == 0:
                 yield True
-        self.__sig = None
-        yield False

@@ -25,6 +25,7 @@ from browsers._base import Browser
 from library import SongFileLibrary
 from qltk.filesel import DirectoryTree
 from qltk.songsmenu import SongsMenu
+from util import copool
 
 class FileSystem(Browser, gtk.ScrolledWindow):
     __gsignals__ = Browser.__gsignals__
@@ -34,8 +35,6 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     name = _("File System")
     accelerated_name = _("_File System")
     priority = 10
-
-    __fill_id = None
 
     def __added(klass, library, songs):
         klass.__library.remove(songs)
@@ -73,7 +72,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
 
         sel = dt.get_selection()
         sel.unselect_all()
-        sel.connect('changed', self.__songs_selected)
+        sel.connect_object('changed', copool.add, self.__songs_selected, sel)
         if player: dt.connect('row-activated', self.__play, player)
         else: self.save = lambda: None
         self.add(dt)
@@ -122,7 +121,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         config.set("browsers", "filesystem", paths)
 
     def activate(self):
-        self.__songs_selected(self.child.get_selection())
+        copool.add(self.__songs_selected, self.child.get_selection())
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
@@ -173,19 +172,13 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         yield songs
 
     def __songs_selected(self, selection):
-        if self.__fill_id is not None:
-            gobject.source_remove(self.__fill_id)
-        def songs_selected_iter():
-            if self.window:
-                self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-            for songs in self.__find_songs(selection):
-                yield True
-            if self.window:
-                self.window.set_cursor(None)
-            self.emit('songs-selected', songs, None)
-            yield False
+        if self.window:
+            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        for songs in self.__find_songs(selection):
+            yield True
+        if self.window:
+            self.window.set_cursor(None)
+        self.emit('songs-selected', songs, None)
         self.save()
-        self.__fill_id = gobject.idle_add(
-            songs_selected_iter().next, priority=gobject.PRIORITY_LOW)
 
 browsers = [FileSystem]
