@@ -179,34 +179,7 @@ class FileLibrary(Library):
             elif was_removed:
                 self.emit('removed', [item])
 
-    def rebuild(self, force=False):
-        """Reload or remove songs if they have changed or been deleted.
-
-        If force is true, reload even unchanged songs.
-
-        This function is an iterator that progressively yields lists
-        of (changed, removed) songs.
-
-        The 'removed' signal may fire for this library. The 'changed'
-        signal may fire for this library and any other library
-        sharing its songs available to its librarian.
-        """
-        if self.__update_id is not None:
-            gobject.source_remove(self.__update_id)
-            self.__update_id = None
-        changed, removed = [], []
-        for i, (key, item) in enumerate(sorted(self.iteritems())):
-            if force or not item.valid():
-                self.reload(item, changed, removed)
-            if not (i & 7):
-                yield changed, removed
-        yield changed, removed
-        if removed:
-            self.emit('removed', removed)
-        if changed:
-            self.changed(changed)
-
-    def update_in_background(self, paths):
+    def rebuild(self, paths, progress=None, force=False):
         """Reload or remove songs if they have changed or been deleted.
 
         This function sets up GObject main loop idle handlers to
@@ -219,23 +192,33 @@ class FileLibrary(Library):
         Only items present in the library when the rebuild is started
         will be checked.
         """
+
         if self.__update_id is not None:
             gobject.source_remove(self.__update_id)
             self.__update_id = None
-        next = self.__update_in_background_real(paths).next
+        next = self.__update_in_background_real(paths, progress, force).next
         self.__update_id = gobject.idle_add(
             next, priority=gobject.PRIORITY_LOW)
-    def __update_in_background_real(self, paths):
-        for point, items in self._masked.items():
+    def __update_in_background_real(self, paths, progress, force):
+        if progress:
+            progress.show()
+            progress.set_fraction(0)
+        frac = 1.0 / (len(self._masked) or 1)
+        for i, (point, items) in enumerate(self._masked.items()):
             if os.path.ismount(point):
                 self._contents.update(items)
                 del(self._masked[point])
                 self.emit('added', items.values())
+                if progress:
+                    progress.set_fraction(i * frac)
                 yield True
 
+        if progress:
+            progress.set_fraction(0)
         changed, removed = [], []
+        frac = 1.0 / (len(self) or 1)
         for i, (key, item) in enumerate(sorted(self.items())):
-            if key in self._contents and not item.valid():
+            if key in self._contents and force or not item.valid():
                 self.reload(item, changed, removed)
             # These numbers are pretty empirical. We should yield more
             # often than we emit signals; that way the main loop stays
@@ -247,6 +230,8 @@ class FileLibrary(Library):
                 self.emit('removed', removed)
                 removed = []
             if len(changed) > 5 or i % 100 == 0:
+                if progress:
+                    progress.set_fraction(i * frac)
                 yield True
         if removed:
             self.emit('removed', removed)
@@ -254,6 +239,7 @@ class FileLibrary(Library):
             self.emit('changed', changed)
 
         added = []
+
         for fullpath in paths:
             fullpath = os.path.expanduser(fullpath)
             for i, (path, dnames, fnames) in enumerate(os.walk(fullpath)):
@@ -265,15 +251,21 @@ class FileLibrary(Library):
                         if item is not None:
                             added.append(item)
                             if len(added) > 5:
+                                if progress:
+                                    progress.pulse()
                                 yield True
                 if added:
                     self.emit('added', added)
                     added = []
+                if progress:
+                    progress.pulse()
                 yield True
         if added:
             self.emit('added', added)
 
         self.__update_id = None
+        if progress:
+            progress.hide()
         yield False
 
     def add_filename(self, filename, signal=True):

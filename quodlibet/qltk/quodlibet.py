@@ -172,7 +172,9 @@ class QuodLibetWindow(gtk.Window):
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
+        self.__progress = gtk.ProgressBar()
         hbox.pack_start(self.__statusbar)
+        hbox.pack_start(self.__progress, expand=False)
         align.add(hbox)
         self.child.pack_end(align, expand=False)
 
@@ -236,6 +238,7 @@ class QuodLibetWindow(gtk.Window):
             'drag-data-received', QuodLibetWindow.__drag_data_received, self)
 
         self.resize(*map(int, config.get("memory", "size").split()))
+        self.__rebuild(None, False)
 
     def __drag_motion(self, ctx, x, y, time):
         # Don't accept drops from QL itself, since it offers text/uri-list.
@@ -378,7 +381,7 @@ class QuodLibetWindow(gtk.Window):
 
         act = gtk.Action(
             "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
-        act.connect('activate', self.__rebuild)
+        act.connect('activate', self.__rebuild, False)
         ag.add_action(act)
         act = gtk.Action(
             "ReloadLibrary", _("Re_load Library"), None, gtk.STOCK_REFRESH)
@@ -631,28 +634,9 @@ class QuodLibetWindow(gtk.Window):
         else:
             self.__make_query("#(playcount < %d)" % (songs[-40] + 1))
 
-    def __rebuild(self, activator, hard=False):
-        self.__keys.block()
-        window = WaitLoadWindow(self, len(library) // 7,
-                                _("Scanning your library. "
-                                  "This may take several minutes.\n\n"
-                                  "%d songs reloaded\n%d songs removed"),
-                                (0, 0))
-        iter = 7
-        c = []
-        r = []
-        s = False
-        for c, r in library.rebuild(hard):
-            if window.step(len(c), len(r)):
-                window.destroy()
-                break
-        else:
-            window.destroy()
-            dirs = config.get("settings", "scan").split(":")
-            s = self.scan_dirs(dirs)
-        if c or r or s:
-            library.save(const.LIBRARY)
-        self.__keys.unblock()
+    def __rebuild(self, activator, force):
+        paths = config.get("settings", "scan").split(":")
+        library.rebuild(paths, self.__progress, force=force)
 
     # Set up the preferences window.
     def __preferences(self, activator):

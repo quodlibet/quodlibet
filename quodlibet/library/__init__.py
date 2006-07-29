@@ -22,7 +22,7 @@ from util import to
 
 librarian = library = None
 
-def init(cache_fn=None, paths=[]):
+def init(cache_fn=None):
     """Set up the library and return the main one.
 
     Create the 'global' main library, and also a librarian for
@@ -36,5 +36,4 @@ def init(cache_fn=None, paths=[]):
     librarian = library.librarian
     if cache_fn:
         library.load(cache_fn, skip=True)
-        library.update_in_background(paths)
     return library

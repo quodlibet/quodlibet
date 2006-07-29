@@ -252,8 +252,7 @@ def process_arguments():
 
 def load_library():
     import library
-    paths = config.get("settings", "scan").split(":")
-    lib = library.init(const.LIBRARY, paths)
+    lib = library.init(const.LIBRARY)
     print to(_("Loaded song library."))
     return lib
 
