@@ -221,6 +221,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         discs = 1
         tracks = 0
         date = ""
+        markup = ""
 
         def __init__(self, title, labelid, mbid):
             self.people = []
