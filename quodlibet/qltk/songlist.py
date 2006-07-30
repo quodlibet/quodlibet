@@ -108,6 +108,7 @@ class PlaylistModel(gtk.ListStore):
         self.__iter = None
         songs = songs[:]
         copool.add(self.__set_idle, oldsong, songs)
+        copool.step(self.__set_idle)
 
     def __set_idle(self, oldsong, songs):
         self.clear()

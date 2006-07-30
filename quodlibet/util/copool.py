@@ -63,3 +63,12 @@ def resume(funcid):
         del(__paused[funcid])
         idle_id = gobject.idle_add(func, priority=priority)
         __routines[funcid] = (idle_id, func, priority)
+
+def step(funcid):
+    """Force this function to iterate once."""
+    if funcid in __routines:
+        __routines[funcid][1]()
+    elif funcid in self.__paused:
+        __paused[funcid]()
+    else:
+        raise ValueError("no pooled routine %r" % funcid)
