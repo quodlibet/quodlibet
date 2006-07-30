@@ -724,7 +724,7 @@ class QuodLibetWindow(gtk.Window):
         if fns:
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
-                copool.add(library.scan, fns, self.__statubar.progress,
+                copool.add(library.scan, fns, self.__statusbar.progress,
                            funcid="library")
             else:
                 added = []
