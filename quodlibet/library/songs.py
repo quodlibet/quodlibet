@@ -119,8 +119,6 @@ class FileLibrary(Library):
     and have a mountpoint attribute.
     """
 
-    __update_id = None
-
     def _load(self, item, force=False):
         # Add an item, or refresh it if it's already in the library.
         # No signals will be fired. Return a tuple of booleans,
@@ -182,24 +180,15 @@ class FileLibrary(Library):
     def rebuild(self, paths, progress=None, force=False):
         """Reload or remove songs if they have changed or been deleted.
 
-        This function sets up GObject main loop idle handlers to
-        rebuild the library and will do so over the course of several
-        iterations of it. Starting a rebuild while the previous one is
-        running will stop the running one.
+        This generator rebuilds the library over the course of iteration.
 
-        Any filenames given will be scanned for new files.
+        Any paths given will be scanned for new files, using the 'scan'
+        method.
 
         Only items present in the library when the rebuild is started
         will be checked.
         """
 
-        if self.__update_id is not None:
-            gobject.source_remove(self.__update_id)
-            self.__update_id = None
-        next = self.__update_in_background_real(paths, progress, force).next
-        self.__update_id = gobject.idle_add(
-            next, priority=gobject.PRIORITY_LOW)
-    def __update_in_background_real(self, paths, progress, force):
         if progress:
             progress.show()
             progress.set_fraction(0)
@@ -238,35 +227,10 @@ class FileLibrary(Library):
         if changed:
             self.emit('changed', changed)
 
-        added = []
-
-        for fullpath in paths:
-            fullpath = os.path.expanduser(fullpath)
-            for i, (path, dnames, fnames) in enumerate(os.walk(fullpath)):
-                for filename in fnames:
-                    fullfilename = os.path.join(path, filename)
-                    fullfilename = os.path.realpath(fullfilename)
-                    if fullfilename not in self._contents:
-                        item = self.add_filename(fullfilename, False)
-                        if item is not None:
-                            added.append(item)
-                            if len(added) > 5:
-                                if progress:
-                                    progress.pulse()
-                                yield True
-                if added:
-                    self.emit('added', added)
-                    added = []
-                if progress:
-                    progress.pulse()
-                yield True
-        if added:
-            self.emit('added', added)
-
-        self.__update_id = None
+        for value in self.scan(paths, progress):
+            yield value
         if progress:
             progress.hide()
-        yield False
 
     def add_filename(self, filename, signal=True):
         """Add a file based on its filename.
@@ -275,34 +239,10 @@ class FileLibrary(Library):
         """
         raise NotImplementedError
 
-    def scan(self, paths):
-        """Scan filesystem paths and add files.
-
-        This function is an iterator that progressively yields a list
-        of added songs.
-
-        This function does not update or remove files, only add
-        them. To update or remove files, use the rebuild method.
-        It may also unmask songs, 'adding' them.
-
-        The 'added' signal may be fired for this library.
-
-        Item keys must be their filename for this method to work.
-        FIXME: Maybe this should be URIs instead.
-        """
-
-        if self.__update_id is not None:
-            gobject.source_remove(self.__update_id)
-            self.__update_id = None
-
+    def scan(self, paths, progress=None):
+        if progress:
+            progress.show()
         added = []
-        for point, items in self._masked.items():
-            if os.path.ismount(point):
-                self._contents.update(items)
-                added.extend(items.values())
-                del(self._masked[point])
-                yield added
-
         for fullpath in paths:
             fullpath = os.path.expanduser(fullpath)
             for path, dnames, fnames in os.walk(fullpath):
@@ -313,11 +253,20 @@ class FileLibrary(Library):
                         if fullfilename not in self._contents:
                             item = self.add_filename(fullfilename, False)
                             if item is not None:
-                                added.append(item)
-                yield added
-
+                                added.append(item)                
+                                if len(added) > 5:
+                                    self.emit('added', added)
+                                    added = []
+                                    if progress:
+                                        progress.pulse()
+                                    yield True
+                if progress:
+                    progress.pulse()
+                yield True
         if added:
             self.emit('added', added)
+        if progress:
+            progress.hide()
 
     def masked(self, item):
         """Return true if the item is in the library but masked."""

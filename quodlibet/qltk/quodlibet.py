@@ -45,6 +45,7 @@ from qltk.prefs import PreferencesWindow
 from qltk.queue import QueueExpander
 from qltk.songlist import SongList, PlaylistMux
 from qltk.wlw import WaitLoadWindow
+from util import copool
 from util.uri import URI
 
 class MainSongList(SongList):
@@ -285,7 +286,8 @@ class QuodLibetWindow(gtk.Window):
                 _("<b>%s</b> uses an unsupported protocol.") % uri).run()
         else:
             if dirs:
-                self.scan_dirs(dirs)
+                copool.add(
+                    library.scan, dirs, self.__progress, funcid="library")
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
@@ -636,7 +638,8 @@ class QuodLibetWindow(gtk.Window):
 
     def __rebuild(self, activator, force):
         paths = config.get("settings", "scan").split(":")
-        library.rebuild(paths, self.__progress, force=force)
+        copool.add(
+            library.rebuild, paths, self.__progress, force, funcid="library")
 
     # Set up the preferences window.
     def __preferences(self, activator):
@@ -684,9 +687,8 @@ class QuodLibetWindow(gtk.Window):
         if fns:
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
-                if self.scan_dirs(fns):
-                    self.browser.activate()
-                    library.save(const.LIBRARY)
+                copool.add(
+                    library.scan, fns, self.__progress, funcid="library")
             else:
                 added = []
                 self.last_dir = os.path.basename(fns[0])
@@ -715,18 +717,6 @@ class QuodLibetWindow(gtk.Window):
                 if fn not in dirs: dirs.append(fn)
             dirs = ":".join(dirs)
             config.set("settings", "scan", dirs)
-
-    def scan_dirs(self, fns):
-        win = WaitLoadWindow(self, 0,
-                             _("Scanning for new songs and "
-                               "adding them to your library.\n\n"
-                               "%d songs added"), 0)
-        added = []
-        for added in library.scan(fns):
-            if win.step(len(added)):
-                break
-        win.destroy()
-        return added
 
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
