@@ -1,4 +1,4 @@
-# Copyright 2006 Joe Wreschnig
+# Copyright 2006 Joe Wreschnig, Alexandre Passos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,6 +11,7 @@
 import gobject
 
 __routines = {}
+__paused = {}
 
 def __wrap(func, funcid, args, kwargs):
     for value in func(*args, **kwargs):
@@ -38,10 +39,27 @@ def add(func, *args, **kwargs):
         remove(funcid)
     priority = kwargs.pop("priority", gobject.PRIORITY_LOW)
     next = __wrap(func, funcid, args, kwargs).next
-    __routines[funcid] = gobject.idle_add(next, priority=priority)
+    idle_id = gobject.idle_add(next, priority=priority)
+    __routines[funcid] = (idle_id, next, priority)
 
 def remove(funcid):
     """Stop a registered routine."""
     if funcid in __routines:
-        gobject.source_remove(__routines[funcid])
+        gobject.source_remove(__routines[funcid][0])
         del(__routines[funcid])
+    if funcid in __paused:
+        del(__paused[funcid])
+
+def pause(funcid):
+    """Temporarily pause a registered routine."""
+    func = __routines[funcid]
+    remove(funcid)
+    __paused[funcid] = func
+
+def resume(funcid):
+    """Resume a paused routine."""
+    if funcid in __paused:
+        old_idle_id, func, priority = __paused[funcid]
+        del(__paused[funcid])
+        idle_id = gobject.idle_add(func, priority=priority)
+        __routines[funcid] = (idle_id, func, priority)

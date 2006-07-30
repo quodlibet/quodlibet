@@ -33,6 +33,7 @@ Bastian Kleineidam
 Eduardo Gonzalez
 Decklin Foster
 Federico Pelloni
+Alexandre Passos
 
 Anders Carlsson (trayicon)
 Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")

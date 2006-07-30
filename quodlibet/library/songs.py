@@ -17,6 +17,8 @@ import traceback
 
 import gobject
 
+import util
+
 from formats import MusicFile
 from library._library import Library, Librarian
 from parse import Query
@@ -191,6 +193,7 @@ class FileLibrary(Library):
 
         if progress:
             progress.show()
+            progress.set_text(_("Checking mount points"))
             progress.set_fraction(0)
         frac = 1.0 / (len(self._masked) or 1)
         for i, (point, items) in enumerate(self._masked.items()):
@@ -204,6 +207,7 @@ class FileLibrary(Library):
 
         if progress:
             progress.set_fraction(0)
+            progress.set_text(_("Scanning library"))
         changed, removed = [], []
         frac = 1.0 / (len(self) or 1)
         for i, (key, item) in enumerate(sorted(self.items())):
@@ -244,6 +248,9 @@ class FileLibrary(Library):
             progress.show()
         added = []
         for fullpath in paths:
+            if progress:
+                progress.set_text(_("Scanning %s") % (
+                    util.unexpand(util.fsdecode(fullpath))))
             fullpath = os.path.expanduser(fullpath)
             for path, dnames, fnames in os.walk(fullpath):
                 for filename in fnames:

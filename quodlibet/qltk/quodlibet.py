@@ -96,6 +96,47 @@ class MainSongList(SongList):
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
+class StatusBar(gtk.HBox):
+    def __init__(self):
+        super(StatusBar, self).__init__()
+        self.progress = gtk.ProgressBar()
+        self.count = gtk.Label(_("No time information"))
+        self.count.set_justify(gtk.JUSTIFY_RIGHT)
+        self.count.set_ellipsize(pango.ELLIPSIZE_START)
+        self.pack_start(self.count)
+        progress_label = gtk.Label()
+        progress_label.set_justify(gtk.JUSTIFY_RIGHT)
+        progress_label.set_ellipsize(pango.ELLIPSIZE_START)
+        # GtkProgressBar can't show text when pulsing. Proxy its set_text
+        # method to a label that can.
+        self.progress.set_text = progress_label.set_text
+        hb = gtk.HBox(spacing=12)
+        hb.pack_start(progress_label)
+        hb.pack_start(self.progress, expand=False)
+        pause = gtk.ToggleButton()
+        pause.add(gtk.image_new_from_stock(
+            gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU))
+        pause.connect('toggled', self.__pause)
+        hb.pack_start(pause, expand=False)
+        self.pack_start(hb)
+        self.progress.connect('notify::visible', self.__toggle, pause, hb)
+        self.count.show()
+
+    def __pause(self, pause):
+        if pause.get_active():
+            copool.pause("library")
+        else:
+            copool.resume("library")
+
+    def __toggle(self, bar, property, pause, hb):
+        if self.progress.props.visible:
+            self.count.hide()
+            pause.set_active(False)
+            hb.show_all()
+        else:
+            self.count.show()
+            hb.hide()
+
 class QuodLibetWindow(gtk.Window):
     def __init__(self, library, player):
         super(QuodLibetWindow, self).__init__()
@@ -169,13 +210,8 @@ class QuodLibetWindow(gtk.Window):
             _("_Repeat"), "settings", "repeat")
         tips.set_tip(repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
-        self.__statusbar = gtk.Label()
-        self.__statusbar.set_text(_("No time information"))
-        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
-        self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
-        self.__progress = gtk.ProgressBar()
+        self.__statusbar = StatusBar()
         hbox.pack_start(self.__statusbar)
-        hbox.pack_start(self.__progress, expand=False)
         align.add(hbox)
         self.child.pack_end(align, expand=False)
 
@@ -286,8 +322,8 @@ class QuodLibetWindow(gtk.Window):
                 _("<b>%s</b> uses an unsupported protocol.") % uri).run()
         else:
             if dirs:
-                copool.add(
-                    library.scan, dirs, self.__progress, funcid="library")
+                copool.add(library.scan, dirs, self.__status.bar.progress,
+                           funcid="library")
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
@@ -638,8 +674,8 @@ class QuodLibetWindow(gtk.Window):
 
     def __rebuild(self, activator, force):
         paths = config.get("settings", "scan").split(":")
-        copool.add(
-            library.rebuild, paths, self.__progress, force, funcid="library")
+        copool.add(library.rebuild, paths, self.__statusbar.progress, force,
+                   funcid="library")
 
     # Set up the preferences window.
     def __preferences(self, activator):
@@ -687,8 +723,8 @@ class QuodLibetWindow(gtk.Window):
         if fns:
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
-                copool.add(
-                    library.scan, fns, self.__progress, funcid="library")
+                copool.add(library.scan, fns, self.__statubar.progress,
+                           funcid="library")
             else:
                 added = []
                 self.last_dir = os.path.basename(fns[0])
@@ -804,13 +840,11 @@ class QuodLibetWindow(gtk.Window):
             self.browser.activate()
 
     def __set_time(self, *args, **kwargs):
-        statusbar = self.__statusbar
         songs = kwargs.get("songs") or self.songlist.get_selected_songs()
         if "songs" not in kwargs and len(songs) <= 1:
             songs = self.songlist.get_songs()
-
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
-        statusbar.set_text(t)
+        self.__statusbar.count.set_text(t)
