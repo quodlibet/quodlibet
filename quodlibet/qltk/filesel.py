@@ -81,7 +81,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         if initial: self.go_to(initial)
 
         menu = gtk.Menu()
-        m = qltk.MenuItem(_("New Folder..."), gtk.STOCK_NEW)
+        m = qltk.MenuItem(_("_New Folder..."), gtk.STOCK_NEW)
         m.connect('activate', self.__mkdir)
         menu.append(m)
         m = gtk.ImageMenuItem(gtk.STOCK_DELETE)
@@ -90,7 +90,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         m = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         m.connect('activate', self.__refresh)
         menu.append(m)
-        m = qltk.MenuItem(_("Select All Subfolders"), gtk.STOCK_DIRECTORY)
+        m = qltk.MenuItem(_("_Select All Subfolders"), gtk.STOCK_DIRECTORY)
         m.connect('activate', self.__expand)
         menu.append(m)
         menu.show_all()
