@@ -69,6 +69,15 @@ class MBIDMassager(Massager):
             else: return "-".join([value[:8], value[8:12], value[12:16],
                                    value[16:20], value[20:]])
 
+class MBAlbumStatus(Massager):
+    tags = ["musicbrainz_albumstatus"]
+    # Translators: Leave "official", "promotional", and "bootleg"
+    # untranslated. They are the three possible literal values.
+    error = _("MusicBrainz release status must be 'official', "
+              "'promotional', or 'bootleg'.")
+    def validate(self, value):
+        return value in ["official", "promotional", "bootleg"]
+
 tags = {}
 for f in globals().values():
     if isinstance(f, type) and issubclass(f, Massager):

@@ -59,14 +59,19 @@ class ID3File(AudioFile):
             }
     SDI = dict([(v, k) for k, v in IDS.iteritems()])
 
+    # At various times, information for this came from
     # http://musicbrainz.org/docs/specs/metadata_tags.html
     # http://bugs.musicbrainz.org/ticket/1383
+    # http://musicbrainz.org/doc/MusicBrainzTag
     BRAINZ = {
         u"MusicBrainz Artist Id": "musicbrainz_artistid",
         u"MusicBrainz Album Id": "musicbrainz_albumid",
         u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
         u"MusicBrainz TRM Id": "musicbrainz_trmid",
         u"MusicIP PUID": "musicip_puid",
+        u"MusicBrainz Album Status": "musicbrainz_albumstatus",
+        u"MusicBrainz Album Type": "musicbrainz_albumtype",
+        u"MusicBrainz Album Release Country": "releasecountry",
         }
     ZNIARB = dict([(v, k) for k, v in BRAINZ.iteritems()])
 
