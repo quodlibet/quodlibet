@@ -1,8 +1,3 @@
-Context menu plugins for 0.18 and earlier should be (trivially)
-updated. Event plugins for 0.20.1 and earlier should be (slightly less
-trivially) updated. For information on the new plugin API, see
-http://www.sacredchao.net/quodlibet/wiki/Plugins.
-
 Quod Libet 0.21+ requires Ogg Vorbis support in Mutagen. This requires
 either Mutagen 1.2 and pyvorbis, or Mutagen 1.3 or later.
 
@@ -13,13 +8,19 @@ Quod Libet 0.22+ requires Python 2.4 or later.
    * Updated files no longer incorrectly appear in the paned browser. (#750)
    * Disambiguate 'filename' string for translation. (#743)
    * Hide unreadable files in Ex Falso. (#754)
+   * Avoid (harmless) race condition when filling album list. (#757)
+ * "Select All Subfolders" menu item when browsing directories.
+   (#323, thanks to Alexandre Passos).
  * Scan the library in the background when starting. (#390)
- * Ogg FLAC files can be loaded. (#735)
+ * Ogg FLAC and Speex files can be loaded. (#735)
  * Plugin configuration IDs can be different from their names. (#742)
- * Scan directories are usable as File System roots. (#746)
  * Rewritten library code, many resulting UI improvements. (#746)
+ * Scan directories are used as File System roots. (#753)
+ * Replay Gain mode is chosen based on browser/play order. (#755)
+ * Internet Radio M3U support. (#756)
  * Ex Falso runs on Win32 (thanks to Ben Zeigler).
  * Song list headers can be changed via a context menu.
+ * True Audio (TTA) support.
  * New Japanese translation, by Yasushi Iwata.
  * Updated Translations:
    * German, by Rüdiger Arp.
