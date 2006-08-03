@@ -7,6 +7,8 @@ exfalso.py
 widgets.py
 plugins/__init__.py
 player.py
+library/__init__.py
+library/songs.py
 qltk/_editpane.py
 qltk/about.py
 qltk/bookmarks.py

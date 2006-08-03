@@ -62,20 +62,6 @@ _("year")
 # beats per minute
 _("BPM")
 
-_("MusicBrainz track ID")
-_("MusicBrainz artist ID")
-_("MusicBrainz album ID")
-_("MusicBrainz album artist ID")
-_("MusicBrainz TRM ID")
-_("MusicIP PUID")
-
-# refers to a volume adjustment and not "to get/acquire".
-_("track gain")
-# refers to a volume adjustment and not "to get/acquire".
-_("album gain")
-_("track peak")
-_("album peak")
-
 _("performers")
 _("lyricists")
 _("arrangers")
