@@ -17,7 +17,7 @@ except ImportError:
     extensions = []
 from formats._id3 import ID3File
 
-if gst.registry_get_default().find_plugin("mad") is None:
+if gst.registry_get_default().find_plugin("ttadec") is None:
     extensions = []
 
 class TrueAudioFile(ID3File):
