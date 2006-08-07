@@ -1,11 +1,11 @@
 from tests import TestCase, add
 
 from qltk.exfalso import ExFalsoWindow
-from qltk.watcher import SongWatcher
+from library import SongLibrary
 
 class TExFalsoWindow(TestCase):
     def setUp(self):
-        self.ef = ExFalsoWindow(SongWatcher())
+        self.ef = ExFalsoWindow(SongLibrary())
 
     def test_nothing(self):
         self.failUnless(self.ef.child)

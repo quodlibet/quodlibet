@@ -41,7 +41,7 @@ def MenuItems(marks, player, seekable):
     return items
 
 class EditBookmarksPane(gtk.VBox):
-    def __init__(self, watcher, song, close=False):
+    def __init__(self, library, song, close=False):
         super(EditBookmarksPane, self).__init__(spacing=6)
 
         hb = gtk.HBox(spacing=12)
@@ -92,12 +92,12 @@ class EditBookmarksPane(gtk.VBox):
         add.connect_object('clicked', self.__add, model, time, name)
 
         model.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        model.connect('row-changed', self.__set_bookmarks, watcher, song)
+        model.connect('row-changed', self.__set_bookmarks, library, song)
 
         selection = sw.child.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         selection.connect('changed', self.__check_selection, remove)
-        remove.connect('clicked', self.__remove, selection, watcher, song)
+        remove.connect('clicked', self.__remove, selection, library, song)
 
         time.connect_object('changed', self.__check_entry, add, time, name)
         name.connect_object('changed', self.__check_entry, add, time, name)
@@ -109,7 +109,7 @@ class EditBookmarksPane(gtk.VBox):
 
         menu = gtk.Menu()
         remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
-        remove.connect('activate', self.__remove, selection, watcher, song)
+        remove.connect('activate', self.__remove, selection, library, song)
         keyval, mod = gtk.accelerator_parse("Delete")
         remove.add_accelerator(
             'activate', gtk.AccelGroup(), keyval, mod, gtk.ACCEL_VISIBLE)
@@ -153,17 +153,18 @@ class EditBookmarksPane(gtk.VBox):
     def __check_selection(self, selection, remove):
         remove.set_sensitive(bool(selection.get_selected_rows()[1]))
 
-    def __remove(self, remove, selection, watcher, song):
+    def __remove(self, remove, selection, library, song):
         model, rows = selection.get_selected_rows()
         if model:
             map(model.remove, map(model.get_iter, rows))
-            self.__set_bookmarks(model, None, None, watcher, song)
+            self.__set_bookmarks(model, None, None, library, song)
 
-    def __set_bookmarks(self, model, a, b, watcher, song):
+    def __set_bookmarks(self, model, a, b, library, song):
         try: song.bookmarks = [(r[0], r[1].decode('utf-8')) for r in model]
         except (AttributeError, ValueError): pass
         else:
-            if watcher: watcher.changed([song])
+            if library is not None:
+                library.changed([song])
 
     def __fill(self, model, song):
         model.clear()
@@ -171,17 +172,17 @@ class EditBookmarksPane(gtk.VBox):
             model.append([time, mark])
 
 class EditBookmarks(qltk.Window):
-    def __init__(self, parent, watcher, player):
+    def __init__(self, parent, library, player):
         super(EditBookmarks, self).__init__()
         self.set_transient_for(qltk.get_top_parent(parent))
         self.set_border_width(12)
         self.set_default_size(350, 250)
         self.set_title(_("Bookmarks") + " - %s" % player.song.comma("title"))
 
-        self.add(EditBookmarksPane(watcher, player.song, close=True))
+        self.add(EditBookmarksPane(library, player.song, close=True))
 
-        s = watcher.connect('removed', self.__check_lock, player.song)
-        self.connect_object('destroy', watcher.disconnect, s)
+        s = library.connect('removed', self.__check_lock, player.song)
+        self.connect_object('destroy', library.disconnect, s)
 
         position = player.get_position() // 1000
         self.child.time.set_text(util.format_time(position))
@@ -191,7 +192,7 @@ class EditBookmarks(qltk.Window):
 
         self.show_all()
 
-    def __check_lock(self, watcher, songs, song, model):
+    def __check_lock(self, library, songs, song, model):
         if song in songs:
             for c in self.child.get_children()[:-1]:
                 c.set_sensitive(False)

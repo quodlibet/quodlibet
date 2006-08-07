@@ -14,12 +14,27 @@ import os
 import shutil
 import time
 
-import config
 import const
 import util
 
 from util.uri import URI
 
+USEFUL_TAGS = (
+    # Ogg Vorbis spec tags
+    "title version album tracknumber artist genre performer copyright "
+    "license organization description location contact isrc date "
+
+    # Other tags we like
+    "arranger author composer conductor lyricist discnumber labelid part "
+    "website language bpm albumartist originaldate originalalbum "
+    "originalartist recordingdate"
+    ).split()
+MACHINE_TAGS = (
+    "musicbrainz_trackid musicbrainz_trmid musicbrainz_albumid "
+    "musicbrainz_albumartistid musicbrainz_artistid musicip_puid "
+    "replaygain_track_gain replaygain_album_gain "
+    "replaygain_album_peak replaygain_track_peak "
+    ).split()
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
            "~#skipcount ~#rating ~bookmark").split()
 PEOPLE = ("albumartist artist author composer performer originalartist "
@@ -51,6 +66,9 @@ class AudioFile(dict):
                 self.get("~filename"))
     sort_key = property(__sort_key)
 
+    key = property(lambda self: self["~filename"])
+    mountpoint = property(lambda self: self["~mountpoint"])
+
     def __album_key(self):
         return (self.get("album", ""),
                 self.get("labelid") or self.get("musicbrainz_albumid") or "")
@@ -61,11 +79,16 @@ class AudioFile(dict):
         try: return cmp(self.sort_key, other.sort_key)
         except AttributeError: return -1
 
-    def __eq__(self, other):
-        """AudioFiles are equal if they have the same filename."""
+    def __hash__(self):
+        # Dicts aren't hashable by default, so we need a hash
+        # function. Previously this used ~filename. That created a
+        # situation when an object could end up in two buckets by
+        # renaming files. So now it uses identity.
+        return hash(id(self))
 
-        try: return self.get("~filename") == other.get("~filename")
-        except: return False
+    def __eq__(self, other):
+        # And to preserve Python hash rules, we need a strict __eq__.
+        return self is other
 
     def reload(self):
         """Reload an audio file from disk. The caller is responsible for
@@ -79,9 +102,6 @@ class AudioFile(dict):
         self["~filename"] = fn
         self.__init__(fn)
         self.update(saved)
-
-    def __hash__(self):
-        return hash(self["~filename"])
 
     def realkeys(self):
         """Returns a list of keys that are not internal, i.e. they don't
@@ -122,8 +142,10 @@ class AudioFile(dict):
                 index = people.index
                 return join([person for (i,person) in enumerate(people)
                         if index(person)==i])
-            elif key == "basename": return os.path.basename(self["~filename"])
-            elif key == "dirname": return os.path.dirname(self["~filename"])
+            elif key == "basename":
+                return os.path.basename(self["~filename"]) or self["~filename"]
+            elif key == "dirname":
+                return os.path.dirname(self["~filename"]) or self["~filename"]
             elif key == "uri":
                 try: return self["~uri"]
                 except KeyError:
@@ -143,19 +165,28 @@ class AudioFile(dict):
                 try: return int(self["discnumber"].split("/")[1])
                 except (ValueError, IndexError, TypeError, KeyError):
                     return default
+            elif key == "lyrics":
+                try: fileobj = file(self.lyric_filename, "rU")
+                except EnvironmentError: return default
+                else: return fileobj.read().decode("utf-8", "replace")
             elif key[0] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default
             else: return dict.get(self, "~" + key, default)
 
         elif key == "title":
-            v = dict.get(self, "title")
-            if v is None:
-                return "%s [%s]" %(
-                    os.path.basename(self["~filename"]).decode(
-                    const.FSCODING, "replace"), _("Unknown"))
-            else: return v
+            title = dict.get(self, "title")
+            if title is None:
+                basename = self("~basename")
+                basename = basename.decode(const.FSCODING, "replace")
+                return "%s [%s]" % (basename, _("Unknown"))
+            else: return title
         else: return dict.get(self, key, default)
+
+    lyric_filename = property(lambda self: util.fsencode(
+        os.path.join(os.path.expanduser("~/.lyrics"),
+                     self.comma("artist").replace('/', '')[:128],
+                     self.comma("title").replace('/', '')[:128] + '.lyric')))
 
     def comma(self, key):
         """Get all values of a tag, separated by commas. Synthetic
@@ -352,25 +383,28 @@ class AudioFile(dict):
             return self.get_format_cover()
         else: return None
 
-    def replay_gain(self):
-        """Return the recommended Replay Gain scale factor as a
-        floating point number, based on the current settings."""
+    def replay_gain(self, profiles):
+        """Return the recommended Replay Gain scale factor.
 
-        gain = config.getint("settings", "gain")
-        try:
-            if gain == 0: raise ValueError
-            elif gain == 2 and "replaygain_album_gain" in self:
-                db = float(self["replaygain_album_gain"].split()[0])
-                peak = float(self["replaygain_album_peak"])
-            elif gain > 0 and "replaygain_track_gain" in self:
-                db = float(self["replaygain_track_gain"].split()[0])
-                peak = float(self["replaygain_track_peak"])
-            else: raise ValueError
-            scale = 10.**(db / 20)
-            if scale * peak > 1: scale = 1.0 / peak # don't clip
-            return min(15, scale)
-        except (KeyError, ValueError):
-            return 1
+        profiles is a list of Replay Gain profile names ('album',
+        'track') to try before giving up. The special profile name
+        'none' will cause no scaling to occur.
+        """
+        for profile in profiles:
+            if profile is "none":
+                return 1.0
+            try:
+                db = float(self["replaygain_%s_gain" % profile].split()[0])
+                peak = float(self.get("replaygain_%s_peak" % profile, 1))
+            except (KeyError, ValueError):
+                continue
+            else:
+                scale = 10.**(db / 20)
+                if scale * peak > 1:
+                    scale = 1.0 / peak # don't clip
+                return min(15, scale)
+        else:
+            return 1.0
 
     def write(self):
         """Write metadata back to the file."""

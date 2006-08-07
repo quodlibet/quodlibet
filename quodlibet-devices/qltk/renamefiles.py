@@ -17,7 +17,6 @@ import const
 import qltk
 import util
 
-from library import library
 from parse import FileFromPattern
 from qltk._editpane import EditPane, FilterCheckButton
 from qltk.wlw import WritingWindow
@@ -64,7 +63,7 @@ class RenameFiles(EditPane):
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
                StripNonASCII]
 
-    def __init__(self, parent, watcher):
+    def __init__(self, parent, library):
         plugins = parent.plugins.RenamePlugins()
         super(RenameFiles, self).__init__(
             const.NBP, const.NBP_EXAMPLES.split("\n"), plugins)
@@ -83,7 +82,7 @@ class RenameFiles(EditPane):
         self.preview.connect_object('clicked', self.__preview, None)
 
         parent.connect_object('changed', self.__class__.__preview, self)
-        self.save.connect_object('clicked', self.__rename, watcher)
+        self.save.connect_object('clicked', self.__rename, library)
 
         render.connect('edited', self.__row_edited)
 
@@ -94,20 +93,17 @@ class RenameFiles(EditPane):
             self.preview.set_sensitive(True)
             self.save.set_sensitive(True)
 
-    def __rename(self, watcher):
+    def __rename(self, library):
         model = self.view.get_model()
         win = WritingWindow(self, len(model))
         was_changed = []
         skip_all = False
 
-        for row in model:
-            song = row[0]
-            oldname = row[1]
-            newname = row[2].decode('utf-8')
+        rows = [(row[0], row[1], row[2].decode('utf-8')) for row in model]
+        for song, oldname, newname in rows:
             try:
                 newname = util.fsencode(newname)
-                if library: library.rename(song, newname)
-                else: song.rename(newname)
+                library.rename(song, newname)
                 was_changed.append(song)
             except:
                 if skip_all: continue
@@ -127,12 +123,12 @@ class RenameFiles(EditPane):
                 resp = msg.run()
                 mods = gtk.gdk.display_get_default().get_pointer()[3]
                 skip_all |= mods & gtk.gdk.SHIFT_MASK
-                watcher.reload(song)
+                library.reload(song)
                 if resp != gtk.RESPONSE_OK: break
             if win.step(): break
 
         win.destroy()
-        watcher.changed(was_changed)
+        library.changed(was_changed)
         self.save.set_sensitive(False)
 
     def __preview(self, songs):

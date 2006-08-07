@@ -39,6 +39,7 @@ def init(*rc_files):
 
         "player":
         { "time_remaining": "false",
+          "replaygain": "on",
           },
 
         # State about the player, to restore on startup
@@ -70,7 +71,6 @@ def init(*rc_files):
         "settings":
         { "scan": "", # scan directories, :-separated
 
-          "gain": "2", # replaygain - none, radio, audiophile
           "jump": "true", # scroll song list on current song change
           "ratings": "4", # maximum rating value
 

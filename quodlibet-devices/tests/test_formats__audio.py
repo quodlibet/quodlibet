@@ -302,29 +302,25 @@ class Treplay_gain(TestCase):
                                "replaygain_track_peak": "0.9"})
 
     def test_nogain(self):
-        config.set("settings", "gain", 0)
-        self.failUnlessEqual(self.song.replay_gain(), 1)
+        self.failUnlessEqual(self.song.replay_gain(["none", "track"]), 1)
 
     def test_trackgain(self):
-        config.set("settings", "gain", 1)
-        self.failUnless(self.song.replay_gain() > 1)
+        self.failUnless(self.song.replay_gain(["track"]) > 1)
 
     def test_albumgain(self):
-        config.set("settings", "gain", 2)
-        self.failUnless(self.song.replay_gain() < 1)
+        self.failUnless(self.song.replay_gain(["album"]) < 1)
 
     def test_invalid(self):
         self.song["replaygain_album_gain"] = "fdsodgbdf"
-        self.failUnlessEqual(self.song.replay_gain(), 1)
+        self.failUnlessEqual(self.song.replay_gain(["album"]), 1)
 
     def test_track_fallback(self):
-        config.set("settings", "gain", 1)
-        radio_rg = self.song.replay_gain()
-        config.set("settings", "gain", 2)
+        radio_rg = self.song.replay_gain(["track"])
         del(self.song["replaygain_album_gain"])
         del(self.song["replaygain_album_peak"])
         # verify defaulting to track when album is present
-        self.failUnlessAlmostEqual(self.song.replay_gain(), radio_rg)
+        self.failUnlessAlmostEqual(
+            self.song.replay_gain(["album", "track"]), radio_rg)
 add(Treplay_gain)
 
 # Special test case for find_cover since it has to create/remove

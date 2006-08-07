@@ -29,6 +29,12 @@ for i, name in enumerate(modules):
     # Migrate pre-0.16 library, which was using an undocumented "feature".
     sys.modules[name.replace(".", "/")] = format
     modules[i] = (format.extensions and name.split(".")[1])
+
+try: sys.modules["formats.flac"] = sys.modules["formats.xiph"]
+except KeyError: pass
+try: sys.modules["formats.oggvorbis"] = sys.modules["formats.xiph"]
+except KeyError: pass
+
 modules = filter(None, modules)
 modules.sort()
 
@@ -60,14 +66,4 @@ def filter(filename):
         if filename.lower().endswith(ext): return True
     return False
 
-# Tags to display in the "Add Tag" dialogs
-USEFUL_TAGS = (
-    # Ogg Vorbis spec tags
-    "title version album tracknumber artist genre performer copyright "
-    "license organization description location contact isrc date "
-
-    # Other tags we like
-    "arranger author composer conductor lyricist discnumber labelid part "
-    "website language bpm albumartist originaldate originalalbum "
-    "originalartist recordingdate"
-    ).split()
+from formats._audio import USEFUL_TAGS, MACHINE_TAGS, PEOPLE

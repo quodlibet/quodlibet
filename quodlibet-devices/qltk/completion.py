@@ -6,9 +6,12 @@
 #
 # $Id$
 
+import gobject
 import gtk
 
-import const
+import formats
+
+from util import copool
 
 class EntryWordCompletion(gtk.EntryCompletion):
     """Entry completion for simple words, where a word boundry is
@@ -64,41 +67,72 @@ class EntryWordCompletion(gtk.EntryCompletion):
         return True
 
 class LibraryTagCompletion(EntryWordCompletion):
-    """A completion for text entries that is tied to a library and watcher.
+    """A completion for text entries tied to a library's tag list."""
 
-    FIXME: This needs to be abstracted to actually support multiple
-    libraries and watchers; right now all instances are tied to the first
-    library passed in (which is the main QL library).
-    """
-
-    def __init__(self, watcher, lib):
+    def __init__(self, library):
         super(LibraryTagCompletion, self).__init__()
         try: model = self.__model
         except AttributeError:
             model = type(self).__model = gtk.ListStore(str)
-            watcher.connect('changed', self.__refreshmodel, lib, model)
-            watcher.connect('added', self.__refreshmodel, lib, model)
-            watcher.connect('removed', self.__refreshmodel, lib, model)
-            self.__refreshmodel(None, None, lib, model)
+            library.connect('changed', self.__refreshmodel, model)
+            library.connect('added', self.__refreshmodel, model)
+            library.connect('removed', self.__refreshmodel, model)
+            self.__refreshmodel(library, None, model)
         self.set_model(model)
         self.set_text_column(0)
 
-    def __refreshmodel(klass, watcher, songs, library, model):
+    @classmethod
+    def __refreshmodel(klass, library, songs, model):
+        copool.add(klass.__refreshmodel_real, library, model)
+
+    @classmethod
+    def __refreshmodel_real(klass, library, model):
         tags = set()
-        # If rescanning the entire library ends up being too slow,
-        # optimize this by using 'songs' for added/changed, and
-        # ignoring removed.
-        for song in library.itervalues():
+        model.clear()
+        yield True
+        for count, song in enumerate(library):
             for tag in song.keys():
-                if not (tag.startswith("~#") or tag in const.MACHINE_TAGS):
+                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
+            if count % 1000 == 0:
+                yield True
         tags.update(["~dirname", "~basename", "~people", "~format"])
         for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
                     "mtime", "added", "rating", "length"]:
             tags.add("#(" + tag)
         for tag in ["date", "bpm"]:
             if tag in tags: tags.add("#(" + tag)
-        model.clear()
+        yield True
         for tag in tags:
             model.append([tag])
-    __refreshmodel = classmethod(__refreshmodel)
+
+class LibraryValueCompletion(gtk.EntryCompletion):
+    """Entry completion for a library value, for a specific tag."""
+
+    def __init__(self, tag, library):
+        super(LibraryValueCompletion, self).__init__()
+        self.set_model(gtk.ListStore(str))
+        self.set_text_column(0)
+        self.set_tag(tag, library)
+
+    def set_tag(self, tag, library):
+        if tag is None:
+            return
+        elif tag in ("bpm date discnumber isrc originaldate recordingdate "
+                     "tracknumber").split() + formats.MACHINE_TAGS:
+            return
+        elif tag in formats.PEOPLE:
+            tag = "~people"
+        copool.add(self.__fill_tag, tag, library)
+
+    def __fill_tag(self, tag, library):
+        model = self.get_model()
+        model.clear()
+        yield True
+        values = sorted(library.tag_values(tag))
+        self.set_minimum_key_length(int(len(values) > 100))
+        yield True
+        for count, value in enumerate(values):
+            model.append(row=[value])
+            if count % 1000 == 0:
+                yield True

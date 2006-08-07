@@ -1,8 +1,8 @@
 from tests import TestCase, add
 
 from formats._audio import AudioFile
+from library import SongLibrary
 from qltk.information import Information
-from qltk.watcher import SongWatcher
 
 def AF(*args, **kwargs):
     a = AudioFile(*args, **kwargs)
@@ -11,30 +11,30 @@ def AF(*args, **kwargs):
 
 class TInformation(TestCase):
     def setUp(self):
-        self.watcher = SongWatcher()
+        self.library = SongLibrary()
 
     def test_none(self):
-        Information(self.watcher, []).destroy()
+        Information(self.library, []).destroy()
 
     def test_one(self):
         f = AF({"~filename": "/dev/null"})
-        Information(self.watcher, [f]).destroy()
+        Information(self.library, [f]).destroy()
 
     def test_two(self):
         f = AF({"~filename": "/dev/null"})
         f2 = AF({"~filename": "/dev/null2"})
-        Information(self.watcher, [f, f2]).destroy()
+        Information(self.library, [f, f2]).destroy()
 
     def test_album(self):
         f = AF({"~filename": "/dev/null", "album": "woo"})
         f2 = AF({"~filename": "/dev/null2", "album": "woo"})
-        Information(self.watcher, [f, f2]).destroy()
+        Information(self.library, [f, f2]).destroy()
 
     def test_artist(self):
         f = AF({"~filename": "/dev/null", "artist": "woo"})
         f2 = AF({"~filename": "/dev/null2", "artist": "woo"})
-        Information(self.watcher, [f, f2]).destroy()
+        Information(self.library, [f, f2]).destroy()
 
     def tearDown(self):
-        self.watcher.destroy()
+        self.library.destroy()
 add(TInformation)

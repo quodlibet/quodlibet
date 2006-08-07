@@ -11,9 +11,9 @@ import traceback
 
 import gobject
 
+from library import SongLibrarian
 from player import PlaylistPlayer
 from plugins import Manager, SongWrapper, ListWrapper
-from qltk.watcher import SongWatcher
 
 class EventPlugin(object):
     """Plugins that run in the background and receive events.
@@ -47,26 +47,26 @@ class EventPlugin(object):
 
 class EventPlugins(Manager):
     library_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                      for s in gobject.signal_list_names(SongWatcher)]
+                      for s in gobject.signal_list_names(SongLibrarian)]
     player_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
                      for s in gobject.signal_list_names(PlaylistPlayer)]
     player_events.remove(('error', 'plugin_on_error'))
     all_events = library_events + player_events
 
-    def __init__(self, watcher=None, player=None, folders=[], name=None):
+    def __init__(self, librarian=None, player=None, folders=[], name=None):
         super(EventPlugins, self).__init__(folders, name)
-        self.watcher = watcher
+        self.librarian = librarian
 
-        if watcher:
+        if librarian:
             for event, handle in self.library_events:
-                def handler(watcher, *args):
-                    self.__invoke(watcher, args[-1], *args[:-1])
-                watcher.connect(event, handler, event)
+                def handler(librarian, *args):
+                    self.__invoke(librarian, args[-1], *args[:-1])
+                librarian.connect(event, handler, event)
         if player:
             for event, handle in self.player_events:
-                def handler(watcher, *args):
-                    self.__invoke(watcher, args[-1], *args[:-1])
-                player.connect_object(event, handler, watcher, event)
+                def handler(player, *args):
+                    self.__invoke(player, args[-1], *args[:-1])
+                player.connect_object(event, handler, librarian, event)
 
     def _load(self, name, module):
         try: objs = [getattr(module, attr) for attr in module.__all__]
@@ -82,17 +82,23 @@ class EventPlugins(Manager):
         kinds = filter(is_plugin, objs)
 
         for Kind in kinds:
+            try: Kind.PLUGIN_ID
+            except AttributeError:
+                try: Kind.PLUGIN_ID = Kind.PLUGIN_NAME
+                except AttributeError:
+                    Kind.PLUGIN_ID = Kind.__name__
+
             try: Kind.PLUGIN_NAME
             except AttributeError:
-                Kind.PLUGIN_NAME = Kind.__name__
+                Kind.PLUGIN_NAME = Kind.PLUGIN_ID
 
             try: obj = Kind()
             except:
                 traceback.print_exc()
             else:
-                if obj.PLUGIN_NAME in self._plugins:
-                    self._plugins[obj.PLUGIN_NAME].destroy()
-                self._plugins[obj.PLUGIN_NAME] = obj
+                if obj.PLUGIN_ID in self._plugins:
+                    self._plugins[obj.PLUGIN_ID].destroy()
+                self._plugins[obj.PLUGIN_ID] = obj
 
     def list(self):
         return self._plugins.values()
@@ -106,7 +112,7 @@ class EventPlugins(Manager):
             except:
                 traceback.print_exc()
 
-    def __invoke(self, watcher, event, *args):
+    def __invoke(self, librarian, event, *args):
         try:
             args = list(args)
             if args and args[0]:
@@ -129,4 +135,4 @@ class EventPlugins(Manager):
                 if not isinstance(songs, list):
                     songs = [songs]
                 songs = filter(None, songs)
-                self._check_change(watcher, main, songs)
+                self._check_change(librarian, main, songs)

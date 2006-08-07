@@ -12,9 +12,14 @@ Plugins are objects (generally classes or modules) that have the following
 characteristics:
 
     Attributes:
-        obj.PLUGIN_NAME (required)
+        obj.PLUGIN_ID (required)
+        obj.PLUGIN_NAME (required, defaults to ID)
         obj.PLUGIN_DESC (required)
         obj.PLUGIN_ICON (optional)
+
+    The name should be a human-readable name, potentially marked for
+    translation. The ID does not need to be human readable, and should
+    be the same regardless of locale.
 
     If a module defines __all__, only plugins whose names are listed in __all__
     will be detected. This makes using __all__ in a module-as-plugin impossible.
@@ -169,11 +174,11 @@ class Manager(object):
         except config.error: pass
         else:
             for plugin in self.list():
-                self.enable(plugin, plugin.PLUGIN_NAME in possible)
+                self.enable(plugin, plugin.PLUGIN_ID in possible)
 
     def save(self):
         key = "active_" + str(type(self).__name__)
-        active = [plugin.PLUGIN_NAME for plugin in self.list()
+        active = [plugin.PLUGIN_ID for plugin in self.list()
                   if self.enabled(plugin)]
         config.set("plugins", key, "\n".join(active))
 
@@ -210,9 +215,15 @@ class Manager(object):
                 except TypeError: pass
 
         for Kind in kinds:
+            try: Kind.PLUGIN_ID
+            except AttributeError:
+                try: Kind.PLUGIN_ID = Kind.PLUGIN_NAME
+                except AttributeError:
+                    Kind.PLUGIN_ID = Kind.__name__
+
             try: Kind.PLUGIN_NAME
             except AttributeError:
-                Kind.PLUGIN_NAME = Kind.__name__
+                Kind.PLUGIN_NAME = Kind.PLUGIN_ID
 
         if not all:
             kinds = filter(self.enabled, kinds)
@@ -222,7 +233,7 @@ class Manager(object):
     def list_failures(self):
         return self.__failures.copy()
 
-    def _check_change(self, watcher, parent, songs):
+    def _check_change(self, library, parent, songs):
         needs_write = filter(lambda s: s._needs_write, songs)
 
         if needs_write:
@@ -246,5 +257,5 @@ class Manager(object):
             needs_reload = []
             if song._was_updated(): changed.append(song._song)
             elif not song.valid() and song.exists():
-                watcher.reload(song._song)
-        watcher.changed(changed)
+                library.reload(song._song)
+        library.changed(changed)

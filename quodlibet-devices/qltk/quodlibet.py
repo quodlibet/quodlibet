@@ -27,7 +27,7 @@ import util
 import widgets
 
 from formats.remote import RemoteFile
-from library import library
+from library import library, librarian
 from parse import Query
 from qltk.browser import LibraryBrowser
 from qltk.chooser import FolderChooser, FileChooser
@@ -45,6 +45,7 @@ from qltk.prefs import PreferencesWindow
 from qltk.queue import QueueExpander
 from qltk.songlist import SongList, PlaylistMux
 from qltk.wlw import WaitLoadWindow
+from util import copool
 from util.uri import URI
 
 class MainSongList(SongList):
@@ -74,11 +75,11 @@ class MainSongList(SongList):
             self.set_cell_data_func(self._render, self._cdf)
             self.header_name = "~current"
 
-    def __init__(self, watcher, player, visible):
-        super(MainSongList, self).__init__(watcher, player)
+    def __init__(self, library, player, visible):
+        super(MainSongList, self).__init__(library, player)
         self.set_rules_hint(True)
-        s = watcher.connect_object('removed', map, player.remove)
-        self.connect_object('destroy', watcher.disconnect, s)
+        s = library.librarian.connect_object('removed', map, player.remove)
+        self.connect_object('destroy', library.librarian.disconnect, s)
         self.connect_object('row-activated', self.__select_song, player)
         self.connect_object('notify::visible', self.__visibility, visible)
 
@@ -95,8 +96,49 @@ class MainSongList(SongList):
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
+class StatusBar(gtk.HBox):
+    def __init__(self):
+        super(StatusBar, self).__init__()
+        self.progress = gtk.ProgressBar()
+        self.count = gtk.Label(_("No time information"))
+        self.count.set_justify(gtk.JUSTIFY_RIGHT)
+        self.count.set_ellipsize(pango.ELLIPSIZE_START)
+        self.pack_start(self.count)
+        progress_label = gtk.Label()
+        progress_label.set_justify(gtk.JUSTIFY_RIGHT)
+        progress_label.set_ellipsize(pango.ELLIPSIZE_START)
+        # GtkProgressBar can't show text when pulsing. Proxy its set_text
+        # method to a label that can.
+        self.progress.set_text = progress_label.set_text
+        hb = gtk.HBox(spacing=12)
+        hb.pack_start(progress_label)
+        hb.pack_start(self.progress, expand=False)
+        pause = gtk.ToggleButton()
+        pause.add(gtk.image_new_from_stock(
+            gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU))
+        pause.connect('toggled', self.__pause)
+        hb.pack_start(pause, expand=False)
+        self.pack_start(hb)
+        self.progress.connect('notify::visible', self.__toggle, pause, hb)
+        self.count.show()
+
+    def __pause(self, pause):
+        if pause.get_active():
+            copool.pause("library")
+        else:
+            copool.resume("library")
+
+    def __toggle(self, bar, property, pause, hb):
+        if self.progress.props.visible:
+            self.count.hide()
+            pause.set_active(False)
+            hb.show_all()
+        else:
+            self.count.show()
+            hb.hide()
+
 class QuodLibetWindow(gtk.Window):
-    def __init__(self, watcher, player):
+    def __init__(self, library, player):
         super(QuodLibetWindow, self).__init__()
         self.last_dir = os.path.expanduser("~")
 
@@ -124,12 +166,12 @@ class QuodLibetWindow(gtk.Window):
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(
-            watcher, player, self.ui.get_widget("/Menu/View/SongList"))
+            library, player, self.ui.get_widget("/Menu/View/SongList"))
         self.add_accel_group(self.songlist.accelerators)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.qexpander = QueueExpander(
-            self.ui.get_widget("/Menu/View/Queue"), watcher, player)
+            self.ui.get_widget("/Menu/View/Queue"), library, player)
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 
@@ -137,12 +179,12 @@ class QuodLibetWindow(gtk.Window):
         hbox = gtk.HBox(spacing=6)
 
         # play controls
-        t = PlayControls(player, watcher)
+        t = PlayControls(player, library.librarian)
         self.volume = t.volume
         hbox.pack_start(t, expand=False, fill=False)
 
         # song text
-        text = SongInfo(watcher, player)
+        text = SongInfo(library.librarian, player)
         hbox.pack_start(text)
 
         # cover image
@@ -158,7 +200,8 @@ class QuodLibetWindow(gtk.Window):
         hbox = gtk.HBox(spacing=12)
         hb = gtk.HBox(spacing=3)
         label = gtk.Label(_("_Order:"))
-        self.order = order = PlayOrder(self.songlist.model)
+        label.set_size_request(-1, 28)
+        self.order = order = PlayOrder(self.songlist.model, player)
         label.set_mnemonic_widget(order)
         label.set_use_underline(True)
         hb.pack_start(label)
@@ -168,10 +211,7 @@ class QuodLibetWindow(gtk.Window):
             _("_Repeat"), "settings", "repeat")
         tips.set_tip(repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
-        self.__statusbar = gtk.Label()
-        self.__statusbar.set_text(_("No time information"))
-        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
-        self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
+        self.__statusbar = StatusBar()
         hbox.pack_start(self.__statusbar)
         align.add(hbox)
         self.child.pack_end(align, expand=False)
@@ -200,7 +240,8 @@ class QuodLibetWindow(gtk.Window):
 
         self.child.show_all()
         sw.show_all()
-        self.select_browser(self, config.get("memory", "browser"), player)
+        self.select_browser(
+            self, config.get("memory", "browser"), library, player)
         self.browser.restore()
         self.browser.activate()
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
@@ -218,9 +259,9 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.connect('columns-changed', self.__hide_headers)
         self.songlist.get_selection().connect('changed', self.__set_time)
 
-        watcher.connect('removed', self.__set_time)
-        watcher.connect('added', self.__set_time)
-        watcher.connect_object('changed', self.__update_title, player)
+        library.librarian.connect('removed', self.__set_time)
+        library.librarian.connect('added', self.__set_time)
+        library.librarian.connect_object('changed', self.__update_title, player)
         player.connect('song-ended', self.__song_ended)
         player.connect('song-started', self.__song_started)
         player.connect('paused', self.__update_paused, True)
@@ -235,6 +276,7 @@ class QuodLibetWindow(gtk.Window):
             'drag-data-received', QuodLibetWindow.__drag_data_received, self)
 
         self.resize(*map(int, config.get("memory", "size").split()))
+        self.__rebuild(None, False)
 
     def __drag_motion(self, ctx, x, y, time):
         # Don't accept drops from QL itself, since it offers text/uri-list.
@@ -265,12 +307,12 @@ class QuodLibetWindow(gtk.Window):
                 else:
                     loc = os.path.realpath(loc)
                     if loc not in library:
-                        song = library.add(loc)
+                        song = library.add_filename(loc)
                         if song: files.append(song)
             elif gst.element_make_from_uri(gst.URI_SRC, uri, ''):
                 if uri not in library:
                     files.append(RemoteFile(uri))
-                    library.add_song(files[-1])
+                    library.add([files[-1]])
             else:
                 error = True
                 break
@@ -280,8 +322,9 @@ class QuodLibetWindow(gtk.Window):
                 self, _("Unable to add songs"),
                 _("<b>%s</b> uses an unsupported protocol.") % uri).run()
         else:
-            if dirs: self.scan_dirs(dirs)
-            if files: widgets.watcher.added(files)
+            if dirs:
+                copool.add(library.scan, dirs, self.__status.bar.progress,
+                           funcid="library")
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
@@ -377,7 +420,7 @@ class QuodLibetWindow(gtk.Window):
 
         act = gtk.Action(
             "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
-        act.connect('activate', self.__rebuild)
+        act.connect('activate', self.__rebuild, False)
         ag.add_action(act)
         act = gtk.Action(
             "ReloadLibrary", _("Re_load Library"), None, gtk.STOCK_REFRESH)
@@ -419,15 +462,14 @@ class QuodLibetWindow(gtk.Window):
             view_actions.append((action, None, label, None, None, i))
         current = browsers.index(config.get("memory", "browser"))
         ag.add_radio_actions(
-            view_actions, current, self.select_browser, player)
+            view_actions, current, self.select_browser, (library, player))
 
         for Kind in browsers.browsers:
             if not Kind.in_menu: continue
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
             act = gtk.Action(action, label, None, None)
-            act.connect_object(
-                'activate', LibraryBrowser, Kind, widgets.watcher)
+            act.connect_object('activate', LibraryBrowser, Kind, library)
             ag.add_action(act)
 
         self.ui = gtk.UIManager()
@@ -458,7 +500,7 @@ class QuodLibetWindow(gtk.Window):
             key = "%s_pos" % browser.__class__.__name__
             config.set("browsers", key, str(paned.get_relative()))
 
-    def select_browser(self, activator, current, player):
+    def select_browser(self, activator, current, library, player):
         if isinstance(current, gtk.RadioAction):
             current = current.get_current_value()
         Browser = browsers.get(current)
@@ -471,7 +513,7 @@ class QuodLibetWindow(gtk.Window):
             if self.browser.accelerators:
                 self.remove_accel_group(self.browser.accelerators)
             self.browser.destroy()
-        self.browser = Browser(widgets.watcher, player)
+        self.browser = Browser(library, player)
         self.browser.connect('songs-selected', self.__browser_cb)
         if self.browser.reordered:
             self.songlist.enable_drop()
@@ -502,6 +544,8 @@ class QuodLibetWindow(gtk.Window):
             c = gtk.VBox(spacing=6)
             c.pack_start(self.browser, expand=False)
             c.pack_start(self.songpane)
+        player.replaygain_profiles[0] = self.browser.replaygain_profiles
+        player.volume = player.volume
         self.__vbox.pack_end(c)
         c.show()
         self.__hide_menus()
@@ -612,7 +656,7 @@ class QuodLibetWindow(gtk.Window):
         self.__make_query("#(playcount = 0)")
 
     def __top40(self, menuitem):
-        songs = [song["~#playcount"] for song in library.itervalues()]
+        songs = [song["~#playcount"] for song in library]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -621,7 +665,7 @@ class QuodLibetWindow(gtk.Window):
             self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def __bottom40(self, menuitem):
-        songs = [song["~#playcount"] for song in library.itervalues()]
+        songs = [song["~#playcount"] for song in library]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -629,33 +673,10 @@ class QuodLibetWindow(gtk.Window):
         else:
             self.__make_query("#(playcount < %d)" % (songs[-40] + 1))
 
-    def __rebuild(self, activator, hard=False):
-        self.__keys.block()
-        window = WaitLoadWindow(self, len(library) // 7,
-                                _("Scanning your library. "
-                                  "This may take several minutes.\n\n"
-                                  "%d songs reloaded\n%d songs removed"),
-                                (0, 0))
-        iter = 7
-        c = []
-        r = []
-        s = False
-        for c, r in library.rebuild(hard):
-            if iter == 7:
-                if window.step(len(c), len(r)):
-                    window.destroy()
-                    break
-                iter = 0
-            iter += 1
-        else:
-            window.destroy()
-            dirs = config.get("settings", "scan").split(":")
-            s = self.scan_dirs(dirs)
-        widgets.watcher.changed(c)
-        widgets.watcher.removed(r)
-        if c or r or s:
-            library.save(const.LIBRARY)
-        self.__keys.unblock()
+    def __rebuild(self, activator, force):
+        paths = config.get("settings", "scan").split(":")
+        copool.add(library.rebuild, paths, self.__statusbar.progress, force,
+                   funcid="library")
 
     # Set up the preferences window.
     def __preferences(self, activator):
@@ -681,12 +702,11 @@ class QuodLibetWindow(gtk.Window):
                     util.escape(name))).run()
             else:
                 if name not in library:
-                    song = library.add_song(RemoteFile(name))
-                    if song: widgets.watcher.added([song])
+                    song = library.add([RemoteFile(name)])
 
     def open_chooser(self, action):
         if not os.path.exists(self.last_dir):
-            self.last_dir = os.environ["HOME"]
+            self.last_dir = const.HOME
 
         if action.get_name() == "AddFolders":
             chooser = FolderChooser(self, _("Add Music"), self.last_dir)
@@ -704,15 +724,14 @@ class QuodLibetWindow(gtk.Window):
         if fns:
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
-                if self.scan_dirs(fns):
-                    self.browser.activate()
-                    library.save(const.LIBRARY)
+                copool.add(library.scan, fns, self.__statusbar.progress,
+                           funcid="library")
             else:
                 added = []
                 self.last_dir = os.path.basename(fns[0])
                 for filename in map(os.path.realpath, fns):
                     if filename in library: continue
-                    song = library.add(filename)
+                    song = library.add_filename(filename)
                     if song: added.append(song)
                     else:
                         from traceback import format_exception_only as feo
@@ -727,7 +746,6 @@ class QuodLibetWindow(gtk.Window):
                         d.run()
                         continue
                 if added:
-                    widgets.watcher.added(added)
                     self.browser.activate()
 
         if cb and cb.get_active():
@@ -737,35 +755,21 @@ class QuodLibetWindow(gtk.Window):
             dirs = ":".join(dirs)
             config.set("settings", "scan", dirs)
 
-    def scan_dirs(self, fns):
-        win = WaitLoadWindow(self, 0,
-                             _("Scanning for new songs and "
-                               "adding them to your library.\n\n"
-                               "%d songs added"), 0)
-        added, changed, removed = [], [], []
-        for added, changed, removed in library.scan(fns):
-            if win.step(len(added)): break
-        widgets.watcher.changed(changed)
-        widgets.watcher.added(added)
-        widgets.watcher.removed(removed)
-        win.destroy()
-        return (added or changed or removed)
-
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
         header = col.header_name
-        menu = self.songlist.Menu(header, self.browser, widgets.watcher)
+        menu = self.songlist.Menu(header, self.browser, library)
         if menu is not None:
             return self.songlist.popup_menu(menu, 0,
                     gtk.get_current_event_time())
 
     def __current_song_prop(self, *args):
         song = player.playlist.song
-        if song: SongProperties(widgets.watcher, [song])
+        if song: SongProperties(librarian, [song])
 
     def __current_song_info(self, *args):
         song = player.playlist.song
-        if song: Information(widgets.watcher, [song])
+        if song: Information(librarian, [song])
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Filters/FilterGenre",
@@ -837,13 +841,11 @@ class QuodLibetWindow(gtk.Window):
             self.browser.activate()
 
     def __set_time(self, *args, **kwargs):
-        statusbar = self.__statusbar
         songs = kwargs.get("songs") or self.songlist.get_selected_songs()
         if "songs" not in kwargs and len(songs) <= 1:
             songs = self.songlist.get_songs()
-
         i = len(songs)
         length = sum([song["~#length"] for song in songs])
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
-        statusbar.set_text(t)
+        self.__statusbar.count.set_text(t)

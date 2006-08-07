@@ -14,18 +14,18 @@ import gobject
 import gtk
 import pango
 
+import config
 import const
 import player
 import qltk
 import util
 
-from library import library
 from parse import Query, Pattern
 from qltk.information import Information
 from qltk.properties import SongProperties
-from qltk.songsmenu import SongsMenu
 from qltk.views import AllTreeView
 from util import tag
+from util import copool
 from util.uri import URI
 
 OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
@@ -91,7 +91,6 @@ class PlaylistModel(gtk.ListStore):
     sourced = False
     __iter = None
     __old_value = None
-    __sig = None
 
     __gsignals__ = {
         'songs-set': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
@@ -102,22 +101,17 @@ class PlaylistModel(gtk.ListStore):
         self.__played = []
 
     def set(self, songs):
-        if self.__sig is not None:
-            gobject.source_remove(self.__sig)
-            self.__sig = None
-
         oldsong = self.current
         if oldsong is None: oldsong = self.__old_value
         else: self.__old_value = oldsong
         self.__played = []
         self.__iter = None
-        self.clear()
         songs = songs[:]
-        next = self.__set_idle(oldsong, songs).next
-        if next():
-            self.__sig = gobject.idle_add(next)
+        copool.add(self.__set_idle, oldsong, songs)
+        copool.step(self.__set_idle)
 
     def __set_idle(self, oldsong, songs):
+        self.clear()
         for count, song in enumerate(songs):
             iter = self.append(row=[song])
             if song == oldsong:
@@ -126,9 +120,7 @@ class PlaylistModel(gtk.ListStore):
                 yield True
         if self.__iter is not None:
             self.__old_value = None
-        self.__sig = None
         self.emit('songs-set')
-        yield False
 
     def remove(self, iter):
         if self.__iter and self[iter].path == self[self.__iter].path:
@@ -278,7 +270,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     CurrentColumn = None
 
-    class TextColumn(gtk.TreeViewColumn):
+    class TextColumn(qltk.views.TreeViewColumnButton):
         # Base class for other kinds of columns.
         _render = gtk.CellRendererText()
 
@@ -308,14 +300,12 @@ class SongList(AllTreeView, util.InstanceTracker):
                     date = datetime.datetime.fromtimestamp(stamp).date()
                     today = datetime.datetime.now().date()
                     days = (today - date).days
+                    if days == 0: format = "%X"
+                    elif days < 7: format = "%A"
+                    else: format = "%x"
                     stamp = time.localtime(stamp)
-                    if days == 0:
-                        rep = time.strftime("%X", stamp).decode(const.ENCODING)
-                    elif days < 7:
-                        rep = time.strftime("%A", stamp).decode(const.ENCODING)
-                    else:
-                        rep = time.strftime("%x", stamp).decode(const.ENCODING)
-                    cell.set_property('text', rep)
+                    text = time.strftime(format, stamp).decode(const.ENCODING)
+                    cell.set_property('text', text)
             except AttributeError: pass
 
     class WideTextColumn(TextColumn):
@@ -404,13 +394,13 @@ class SongList(AllTreeView, util.InstanceTracker):
             super(SongList.PatternColumn, self).__init__(_("pattern"))
             self._pattern = Pattern(pattern)
 
-    def Menu(self, header, browser, watcher):
+    def Menu(self, header, browser, library):
         songs = self.get_selected_songs()
         if not songs: return
 
-        menu = SongsMenu(watcher, songs, delete=True, accels=self.accelerators)
-
         can_filter = browser.can_filter
+
+        menu = browser.Menu(songs, self, library)
 
         def Filter(t):
             # Translators: The substituted string is the name of the
@@ -438,20 +428,13 @@ class SongList(AllTreeView, util.InstanceTracker):
             itm = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
             m2.append(itm)
             itm.connect_object(
-                'activate', self.__set_rating, i, songs, watcher)
+                'activate', self.__set_rating, i, songs, library)
         menu.preseparate()
         menu.prepend(item)
-
-        items = browser.Menu(songs, self)
-        items.reverse()
-        if items:
-            menu.preseparate()
-            map(menu.prepend, items)
-
         menu.show_all()
         return menu
 
-    def __init__(self, watcher, player=None):
+    def __init__(self, library, player=None):
         super(SongList, self).__init__()
         self._register_instance(SongList)
         self.set_model(PlaylistModel())
@@ -459,25 +442,26 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.set_column_headers(self.headers)
-        sigs = [watcher.connect('changed', self.__song_updated),
-                watcher.connect('removed', self.__song_removed)]
+        librarian = library.librarian
+        sigs = [librarian.connect('changed', self.__song_updated),
+                librarian.connect('removed', self.__song_removed)]
         for sig in sigs:
-            self.connect_object('destroy', watcher.disconnect, sig)
+            self.connect_object('destroy', librarian.disconnect, sig)
         if player:
             sigs = [player.connect('paused', self.__redraw_current),
                     player.connect('unpaused', self.__redraw_current)]
             for sig in sigs:
                 self.connect_object('destroy', player.disconnect, sig)
 
-        self.connect('button-press-event', self.__button_press, watcher)
-        self.connect('key-press-event', self.__key_press, watcher)
+        self.connect('button-press-event', self.__button_press, librarian)
+        self.connect('key-press-event', self.__key_press, librarian)
 
         self.disable_drop()
         self.connect('drag-motion', self.__drag_motion)
         self.connect(
             'drag-leave', lambda s, ctx, time: s.parent.drag_unhighlight())
-        self.connect('drag-data-get', self.__drag_data_get, watcher)
-        self.connect('drag-data-received', self.__drag_data_received, watcher)
+        self.connect('drag-data-get', self.__drag_data_get)
+        self.connect('drag-data-received', self.__drag_data_received, library)
 
         # Enabling this screws up rating and enqueuing
         #self.set_search_column(0)
@@ -486,11 +470,10 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.accelerators = gtk.AccelGroup()
         key, mod = gtk.accelerator_parse("<alt>Return")
         self.accelerators.connect_group(
-            key, mod, 0, lambda *args: self.__song_properties(watcher))
+            key, mod, 0, lambda *args: self.__song_properties(librarian))
         key, mod = gtk.accelerator_parse("<control>I")
         self.accelerators.connect_group(
-            key, mod, 0, lambda *args: self.__information(watcher))
-        self.accelerators.connect
+            key, mod, 0, lambda *args: self.__information(librarian))
 
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
@@ -536,7 +519,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         map(view.get_model(), self.__drag_iters)
         self.__drag_iters = []
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime, watcher):
+    def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
         if tid == 1:
             songs = [model[path][0] for path in paths
@@ -548,10 +531,8 @@ class SongList(AllTreeView, util.InstanceTracker):
                       "song lists or the queue.")).run()
                 ctx.drag_abort(etime)
                 return
-            added = filter(library.add_song, songs)
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
-            if added: watcher.added(added)
             if ctx.action == gtk.gdk.ACTION_MOVE:
                 self.__drag_iters = map(model.get_iter, paths)
             else: self.__drag_iters = []
@@ -566,7 +547,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             return window.browser.dropped(self, songs)
         else: return False
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, watcher):
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
         model = view.get_model()
         if info == 1:
             filenames = sel.data.split("\x00")
@@ -582,10 +563,13 @@ class SongList(AllTreeView, util.InstanceTracker):
             ctx.finish(False, False, etime)
             return
 
-        added = []
+        to_add = []
         for filename in filenames:
-            if filename not in library and library.add(filename):
-                added.append(library[filename])
+            if filename not in library.librarian:
+                library.add_filename(filename)
+            elif filename not in library:
+                to_add.append(library.librarian[filename])
+        library.add(to_add)
         songs = filter(None, map(library.get, filenames))
         if not songs:
             ctx.finish(bool(not filenames), False, etime)
@@ -595,8 +579,6 @@ class SongList(AllTreeView, util.InstanceTracker):
             success = self.__drag_data_browser_dropped(songs)
             ctx.finish(success, False, etime)
             return
-
-        watcher.added(added)
 
         try: path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
@@ -639,7 +621,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             for song in songs: values.update(song.list(header))
         browser.filter(header, list(values))
 
-    def __button_press(self, view, event, watcher):
+    def __button_press(self, view, event, librarian):
         if event.button != 1: return
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
@@ -654,32 +636,32 @@ class SongList(AllTreeView, util.InstanceTracker):
             rating = max(0.0, min(1.0, count * util.RATING_PRECISION))
             if (rating <= util.RATING_PRECISION and
                 song["~#rating"] == util.RATING_PRECISION): rating = 0
-            self.__set_rating(rating, [song], watcher)
+            self.__set_rating(rating, [song], librarian)
 
-    def __set_rating(self, value, songs, watcher):
-        for song in songs: song["~#rating"] = value
-        watcher.changed(songs)
+    def __set_rating(self, value, songs, librarian):
+        for song in songs:
+            song["~#rating"] = value
+        librarian.changed(songs)
 
-    def __key_press(self, songlist, event, watcher):
+    def __key_press(self, songlist, event, librarian):
         if event.string in ['0', '1', '2', '3', '4']:
             rating = min(1.0, int(event.string) * util.RATING_PRECISION)
-            self.__set_rating(rating, self.get_selected_songs(), watcher)
+            self.__set_rating(rating, self.get_selected_songs(), librarian)
         elif event.string in ['Q', 'q']:
-            self.__enqueue(self.get_selected_songs(), watcher)
+            self.__enqueue(self.get_selected_songs())
 
-    def __enqueue(self, songs, watcher):
+    def __enqueue(self, songs):
         songs = filter(lambda s: s.can_add, songs)
         if songs:
             from widgets import main
-            added = filter(library.add_song, songs)
             main.playlist.enqueue(songs)
-            if added: watcher.added(added)
 
     def __redraw_current(self, player, song=None):
         iter = self.model.current_iter
         if iter: self.model.row_changed(self.model.get_path(iter), iter)
 
     def set_all_column_headers(cls, headers):
+        config.set("settings", "headers", " ".join(headers))
         try: headers.remove("~current")
         except ValueError: pass
         cls.headers = headers
@@ -774,31 +756,38 @@ class SongList(AllTreeView, util.InstanceTracker):
         model, rows = self.get_selection().get_selected_rows()
         return [model[row][0] for row in rows]
 
-    def __song_updated(self, watcher, songs):
+    def __song_updated(self, librarian, songs):
         model = self.get_model()
         for row in model:
-            if row[0] in songs: model.row_changed(row.path, row.iter)
+            if row[0] in songs:
+                model.row_changed(row.path, row.iter)
 
-    def __song_removed(self, watcher, songs):
+    def __song_removed(self, librarian, songs):
         # The selected songs are removed from the library and should
         # be removed from the view.
         map(self.model.remove, self.model.find_all(songs))
 
-    def __song_properties(self, watcher):
+    def __song_properties(self, librarian):
         model, rows = self.get_selection().get_selected_rows()
-        if rows: songs = [model[row][0] for row in rows]
+        if rows:
+            songs = [model[row][0] for row in rows]
         else:
             from player import playlist
-            songs = [playlist.song]
-        SongProperties(watcher, songs)
+            if playlist.song:
+                songs = [playlist.song]
+            else: return
+        SongProperties(librarian, songs)
 
-    def __information(self, watcher):
+    def __information(self, librarian):
         model, rows = self.get_selection().get_selected_rows()
-        if rows: songs = [model[row][0] for row in rows]
+        if rows:
+            songs = [model[row][0] for row in rows]
         else:
             from player import playlist
-            songs = [playlist.song]
-        Information(watcher, songs)
+            if playlist.song:
+                songs = [playlist.song]
+            else: return
+        Information(librarian, songs)
 
     # Build a new filter around our list model, set the headers to their
     # new values.
@@ -825,5 +814,104 @@ class SongList(AllTreeView, util.InstanceTracker):
                 column = self.NonSynthTextColumn(t)
             else: column = self.WideTextColumn(t)
             column.connect('clicked', self.set_sort_by)
+            column.connect('button-press-event', self.__showmenu)
+            column.connect('popup-menu', self.__showmenu)
             column.set_reorderable(True)
             self.append_column(column)
+
+    def __getmenu(self, column):
+        menu = gtk.Menu()
+        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
+
+        current = SongList.headers[:]
+        current_set = set(current)
+        current = zip(map(util.tag, current), current)
+        tips = qltk.Tooltips(menu)
+
+        def add_header_toggle(menu, (header, tag), active,
+                column=column, tips=tips):
+            item = gtk.CheckMenuItem(header)
+            item.tag = tag
+            item.set_active(active)
+            item.connect('activate', self.__toggle_header_item, column)
+            item.show()
+            tips.set_tip(item, tag, tag)
+            menu.append(item)
+
+        for header in current:
+            add_header_toggle(menu, header, True)
+
+        sep = gtk.SeparatorMenuItem()
+        sep.show()
+        menu.append(sep)
+
+        trackinfo = """title genre ~title~version ~#track
+            ~#playcount ~#skipcount ~#rating ~#length""".split()
+        peopleinfo = """artist ~people performer arranger author composer
+            conductor lyricist originalartist""".split()
+        albuminfo = """album ~album~part labelid ~#disc ~#discs
+            ~#tracks albumartist""".split()
+        dateinfo = """date originaldate recordingdate ~#laststarted
+            ~#lastplayed ~#added ~#mtime""".split()
+        fileinfo = """~format ~#bitrate ~filename ~basename ~dirname
+            ~uri""".split()
+        copyinfo = """copyright organization location isrc
+            contact website""".split()
+
+        for name, group in [
+            (_("_Track Headers"), trackinfo),
+            (_("_Album Headers"), albuminfo),
+            (_("_People Headers"), peopleinfo),
+            (_("_Date Headers"), dateinfo),
+            (_("_File Headers"), fileinfo),
+            (_("_Production Headers"), copyinfo),
+        ]:
+            item = gtk.MenuItem(name)
+            item.show()
+            menu.append(item)
+            submenu = gtk.Menu()
+            item.set_submenu(submenu)
+            for header in sorted(zip(map(tag, group), group)):
+                add_header_toggle(submenu, header, header[1] in current_set)
+
+        sep = gtk.SeparatorMenuItem()
+        sep.show()
+        menu.append(sep)
+        custom = gtk.MenuItem(_("_Customize Headers..."))
+        custom.show()
+        custom.connect('activate', self.__add_custom_column)
+        menu.append(custom)
+
+        return menu
+
+    def __toggle_header_item(self, item, column):
+        headers = SongList.headers[:]
+        if item.get_active():
+            try: headers.insert(self.get_columns().index(column), item.tag)
+            except ValueError: headers.append(item.tag)
+        else:
+            try: headers.remove(item.tag)
+            except ValueError: pass
+
+        SongList.set_all_column_headers(headers)
+        SongList.headers = headers
+
+    def __add_custom_column(self, item):
+        # Prefs has to import SongList, so do this here to avoid
+        # a circular import.
+        from qltk.prefs import PreferencesWindow
+        win = PreferencesWindow(self)
+        win.child.set_current_page(0)
+        
+    def __showmenu(self, column, event=None):
+        time = gtk.get_current_event_time()
+        if event is not None and event.button != 3:
+            return
+
+        if event:
+            self.__getmenu(column).popup(None, None, None, event.button, time)
+            return True
+
+        widget = column.get_widget()
+        return qltk.popup_menu_under_widget(self.__getmenu(column),
+                widget, 3, time)

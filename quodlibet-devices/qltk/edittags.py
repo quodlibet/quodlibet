@@ -15,15 +15,106 @@ import pango
 import qltk
 
 import config
-import const
 import formats
 import util
 import util.massagers
 
-from library import AudioFileGroup
+from qltk.completion import LibraryValueCompletion
 from qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from qltk.views import RCMHintedTreeView
 from qltk.wlw import WritingWindow
+
+class AudioFileGroup(dict):
+
+    class Comment(unicode):
+        complete = True
+        def __repr__(self):
+            return '%s %s' % (str(self), self.paren())
+
+        def __str__(self):
+            return util.escape(self)
+
+        def paren(self):
+            if self.shared:
+                return ngettext('missing from %d song',
+                                'missing from %d songs',
+                                self.missing) % self.missing
+            elif self.complete:
+                return ngettext('different across %d song',
+                                'different across %d songs',
+                                self.total) % self.total
+            else:
+                d = ngettext('different across %d song',
+                              'different across %d songs',
+                              self.have) % self.have
+                m = ngettext('missing from %d song',
+                              'missing from %d songs',
+                              self.missing) % self.missing
+                return ", ".join([d, m])
+
+        def safenicestr(self):
+            if self.shared and self.complete: return str(self)
+            elif self.shared:
+                return "\n".join(['%s <i>(%s)</i>' % (s, self.paren())
+                                  for s in str(self).split("\n")])
+            else: return '<i>(%s)</i>' % self.paren()
+
+    class SharedComment(Comment): shared = True
+    class UnsharedComment(Comment): shared = False
+    class PartialSharedComment(SharedComment): complete = False
+    class PartialUnsharedComment(UnsharedComment): complete = False
+
+    def realkeys(self):
+        return filter(lambda s: s and "~" not in s and "=" not in s, self)
+
+    is_file = True
+    multiple_values = True
+
+    def __init__(self, songs):
+        keys = {}
+        first = {}
+        all = {}
+        total = len(songs)
+        self.songs = songs
+
+        for song in songs:
+            self.is_file &= song.is_file
+            self.multiple_values &= song.multiple_values
+            for comment, val in song.iteritems():
+                keys[comment] = keys.get(comment, 0) + 1
+                first.setdefault(comment, val)
+                all[comment] = all.get(comment, True) and first[comment] == val
+
+        # collect comment representations
+        for comment, count in keys.iteritems():
+            if count < total:
+                if all[comment]:
+                    value = self.PartialSharedComment(first[comment])
+                else:
+                    value = self.PartialUnsharedComment(first[comment])
+            else:
+                decoded = first[comment]
+                if isinstance(decoded, str): decoded = util.decode(decoded)
+                if all[comment]: value = self.SharedComment(decoded)
+                else: value = self.UnsharedComment(decoded)
+            value.have = count
+            value.total = total
+            value.missing = total - count
+
+            self[comment] = value
+
+    def can_change(self, k=None):
+        if k is None:
+            can = True
+            for song in self.songs:
+                cantoo = song.can_change()
+                if can is True: can = cantoo
+                elif cantoo is True: pass
+                else: can = set(can) | set(cantoo)
+        else:
+            if not self.songs: return False
+            can = min([song.can_change(k) for song in self.songs])
+        return can
 
 class SplitValues(gtk.ImageMenuItem):
     tags = False
@@ -104,7 +195,7 @@ class SplitPerformer(SplitPerson):
     title = _("Split _Performer out of Artist")
 
 class AddTagDialog(gtk.Dialog):
-    def __init__(self, parent, can_change):
+    def __init__(self, parent, can_change, library):
         if can_change == True:
             can = sorted(formats.USEFUL_TAGS)
         else:
@@ -135,6 +226,7 @@ class AddTagDialog(gtk.Dialog):
         table.attach(self.__tag, 1, 2, 0, 1)
 
         self.__val = gtk.Entry()
+        self.__val.set_completion(LibraryValueCompletion("", library))
         label = gtk.Label()
         label.set_text(_("_Value:"))
         label.set_alignment(0.0, 0.5)
@@ -160,10 +252,17 @@ class AddTagDialog(gtk.Dialog):
         for entry in [self.__tag, self.__val]:
             entry.connect(
                 'changed', self.__validate, add, invalid, tips, valuebox)
+        self.__tag.connect('changed', self.__set_value_completion, library)
+        self.__set_value_completion(self.__tag, library)
 
         if can_change == True:
             self.__tag.child.connect_object(
                 'activate', gtk.Entry.grab_focus, self.__val)
+
+    def __set_value_completion(self, tag, library):
+        completion = self.__val.get_completion()
+        if completion:
+            completion.set_tag(self.__tag.tag, library)
 
     def get_tag(self):
         try: return self.__tag.tag
@@ -197,7 +296,7 @@ class AddTagDialog(gtk.Dialog):
 TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE = range(6)
 
 class EditTags(gtk.VBox):
-    def __init__(self, parent, watcher):
+    def __init__(self, parent, library):
         super(EditTags, self).__init__(spacing=12)
         self.title = _("Edit Tags")
         self.set_border_width(12)
@@ -236,6 +335,8 @@ class EditTags(gtk.VBox):
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_tag, model)
+        render.connect(
+            'editing-started', self.__value_editing_started, model, library)
         render.markup = 1
         column = gtk.TreeViewColumn(
             _('Value'), render, markup=1, editable=3, strikethrough=4)
@@ -254,7 +355,7 @@ class EditTags(gtk.VBox):
         bbox1.set_layout(gtk.BUTTONBOX_START)
         add = gtk.Button(stock=gtk.STOCK_ADD)
         add.set_focus_on_click(False)
-        add.connect('clicked', self.__add_tag, model)
+        add.connect('clicked', self.__add_tag, model, library)
         remove = gtk.Button(stock=gtk.STOCK_REMOVE)
         remove.set_focus_on_click(False)
         remove.connect('clicked', self.__remove_tag, view)
@@ -285,7 +386,7 @@ class EditTags(gtk.VBox):
             'clicked', self.__update, None, *UPDATE_ARGS)
         revert.connect_object('clicked', parent.set_pending, None)
 
-        save.connect('clicked', self.__save_files, revert, model, watcher)
+        save.connect('clicked', self.__save_files, revert, model, library)
         save.connect_object('clicked', parent.set_pending, None)
         for sig in ['row-inserted', 'row-deleted', 'row-changed']:
             model.connect(sig, self.__enable_save, [save, revert])
@@ -402,8 +503,8 @@ class EditTags(gtk.VBox):
         if len(iters): model.insert_after(iters[-1], row=row)
         else: model.append(row=row)
 
-    def __add_tag(self, activator, model):
-        add = AddTagDialog(self, self.__songinfo.can_change())
+    def __add_tag(self, activator, model, library):
+        add = AddTagDialog(self, self.__songinfo.can_change(), library)
 
         while True:
             resp = add.run()
@@ -434,7 +535,7 @@ class EditTags(gtk.VBox):
                 row[EDITED] = row[DELETED] = True
             else: model.remove(row.iter)
 
-    def __save_files(self, save, revert, model, watcher):
+    def __save_files(self, save, revert, model, library):
         updated = {}
         deleted = {}
         added = {}
@@ -497,14 +598,14 @@ class EditTags(gtk.VBox):
                           "do not have permission to edit it.")%(
                         util.escape(util.fsdecode(
                         song('~basename'))))).run()
-                    watcher.reload(song)
+                    library.reload(song)
                     break
                 was_changed.append(song)
 
             if win.step(): break
 
         win.destroy()
-        watcher.changed(was_changed)
+        library.changed(was_changed)
         for b in [save, revert]: b.set_sensitive(False)
 
     def __edit_tag(self, renderer, path, new_value, model):
@@ -616,7 +717,7 @@ class EditTags(gtk.VBox):
         keys = sorted(songinfo.realkeys())
 
         if not config.getboolean("editing", "alltags"):
-            keys = filter(lambda k: k not in const.MACHINE_TAGS, keys)
+            keys = filter(lambda k: k not in formats.MACHINE_TAGS, keys)
 
         # reverse order here so insertion puts them in proper order.
         for tag in ['album', 'artist', 'title']:
@@ -642,3 +743,12 @@ class EditTags(gtk.VBox):
         buttonbox.set_sensitive(bool(songinfo.can_change()))
         for b in buttons: b.set_sensitive(False)
         add.set_sensitive(bool(songs))
+
+    def __value_editing_started(self, render, editable, path, model, library):
+        try:
+            if not editable.get_completion():
+                tag = model[path][TAG]
+                completion = LibraryValueCompletion(tag, library)
+                editable.set_completion(completion)
+        except AttributeError:
+            pass

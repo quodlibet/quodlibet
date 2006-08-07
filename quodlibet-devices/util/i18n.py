@@ -55,6 +55,6 @@ class GlibTranslations(gettext.GNUTranslations):
             _N = lambda s: s
 
         __builtin__.__dict__["_"] = _
-        __builtin__.__dict__["_Q"] = _Q
-        __builtin__.__dict__["_N"] = _N
+        __builtin__.__dict__["Q_"] = _Q
+        __builtin__.__dict__["N_"] = _N
         __builtin__.__dict__["ngettext"] = ngettext

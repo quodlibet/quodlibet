@@ -5,9 +5,13 @@ Source Layout
 -------------
 browsers/*	- Things in the View menu
 formats/*	- File format support
-mutagen/*	- Mutagen tag reading/editing library
+library/*	- Library management code
 qltk/*		- GTK+ widget subclasses/extensions
 tests/*		- Unit/regression tests
+util/*		- General utility functions and setup code
+
+If you want to get a full overview of QL's code, good places to start
+are browsers/_base.py, formats/_audio.py, and library/_library.py.
 
 Submitting Patches
 ------------------

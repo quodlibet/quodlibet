@@ -14,6 +14,7 @@ import gst
 
 from formats._audio import AudioFile
 
+extensions = ['.mp4', '.m4a']
 try:
     import ctypes
     _mp4v2 = ctypes.cdll.LoadLibrary("libmp4v2.so.0")
@@ -27,9 +28,8 @@ else:
     _mp4v2.MP4FindTrackId.restype = ctypes.c_uint32
     _mp4v2.MP4GetNumberOfTracks.restype = ctypes.c_uint32
 
-    try: gst.element_factory_make("faad")
-    except gst.PluginNotFoundError: extensions = []
-    else: extensions = ['.mp4', '.m4a']
+    if gst.registry_get_default().find_plugin("faad") is None:
+        extensions = []
 
 def GetAACTrack(infile):
     numtracks = _mp4v2.MP4GetNumberOfTracks(infile, None, ctypes.c_uint8(0))

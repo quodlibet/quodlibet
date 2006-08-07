@@ -20,10 +20,11 @@ import util
 
 from browsers._base import Browser
 from formats.remote import RemoteFile
-from library import Library
+from library import SongLibrary
 from parse import Query
 from qltk.entry import ValidatingEntry
 from qltk.getstring import GetStringDialog
+from qltk.songsmenu import SongsMenu
 
 SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
               "Master.qlpls?format=txt")
@@ -85,6 +86,22 @@ def ParsePLS(file):
 
     return files
 
+def ParseM3U(fileobj):
+    files = []
+    pending_title = None
+    for line in fileobj:
+        line = line.strip()
+        if line.startswith("#EXTINF:"):
+            try: pending_title = line.split(",", 1)[1]
+            except IndexError: pending_title = None
+        elif line.startswith("http"):
+            irf = IRFile(line)
+            if pending_title:
+                irf["title"] = pending_title.decode('utf-8', 'replace')
+                pending_title = None
+            files.append(irf)
+    return files
+
 class ChooseNewStations(gtk.Dialog):
     def __init__(self, irfs):
         super(ChooseNewStations, self).__init__(title=_("Choose New Stations"))
@@ -139,7 +156,8 @@ class AddNewStation(GetStringDialog):
 
 class InternetRadio(gtk.HBox, Browser):
     __gsignals__ = Browser.__gsignals__
-    __stations = Library()
+    __stations = SongLibrary("iradio")
+    __stations.load(STATIONS)
     __sig = None
     __filter = None
     __refill_id = None
@@ -150,22 +168,22 @@ class InternetRadio(gtk.HBox, Browser):
     accelerated_name = _("_Internet Radio")
     priority = 15
 
-    def __init__(self, watcher, player):
+    def __init__(self, library, player):
         super(InternetRadio, self).__init__(spacing=12)
         self.commands = {"add-station": self.__add_station_remote}
 
         add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         self.__search = gtk.Entry()
         self.pack_start(add, expand=False)
-        add.connect('clicked', self.__add, watcher)
+        add.connect('clicked', self.__add)
         if InternetRadio.__sig is None:
-            InternetRadio.__sig = watcher.connect(
+            InternetRadio.__sig = library.connect(
                 'changed', InternetRadio.__changed)
 
-        for s in [watcher.connect('removed', self.activate),
-                  watcher.connect('added', self.activate),
+        for s in [self.__stations.connect('removed', self.activate),
+                  self.__stations.connect('added', self.activate)
                   ]:
-            self.connect_object('destroy', watcher.disconnect, s)
+            self.connect_object('destroy', self.__stations.disconnect, s)
         self.connect_object('destroy', self.__stations.save, STATIONS)
         self.connect_object('destroy', self.emit, 'songs-selected', [], None)
 
@@ -184,7 +202,6 @@ class InternetRadio(gtk.HBox, Browser):
         hb.pack_start(clear, expand=False)
         self.pack_start(hb)
 
-        self.__load_stations()
         self.show_all()
         gobject.idle_add(self.activate)
 
@@ -199,21 +216,18 @@ class InternetRadio(gtk.HBox, Browser):
             else: self.__filter = None
             self.__refill_id = gobject.timeout_add(500, self.activate)
 
-    def Menu(self, songs, songlist):
-        rem = qltk.MenuItem(_("_Remove Station"), gtk.STOCK_REMOVE)
-        rem.connect('activate', self.__remove, songs)
-        return [rem]
+    def Menu(self, songs, songlist, library):
+        menu = SongsMenu(self.__stations, songs, playlists=False,
+                         queue=False, accels=songlist.accelerators)
+        return menu
 
     def __remove(self, button, songs):
-        map(self.__stations.remove, songs)
-        from widgets import watcher
-        watcher.removed(songs)
+        self.__stations.remove(songs)
         self.__stations.save(STATIONS)
         self.activate()
 
-    def __changed(klass, watcher, songs):
-        lib = klass.__stations.values()
-        if filter(lambda s: s in lib, songs):
+    def __changed(klass, library, songs):
+        if filter(lambda s: s in klass.__stations, songs):
             klass.__stations.save(STATIONS)
     __changed = classmethod(__changed)
 
@@ -225,72 +239,58 @@ class InternetRadio(gtk.HBox, Browser):
             self.__add_station(args[0], args[1])
         gtk.threads_leave()
 
-    def __add(self, button, watcher):
+    def __add(self, button):
         uri = (AddNewStation(qltk.get_top_parent(self)).run() or "").strip()
         if uri == "": return
-        else: self.__add_station(uri, watcher)
+        else: self.__add_station(uri)
 
-    def __add_station(self, uri, watcher):
+    def __add_station(self, uri):
+        if isinstance(uri, unicode): uri = uri.encode('utf-8')
         if uri.lower().endswith(".pls") or uri == SACREDCHAO:
-            if isinstance(uri, unicode): uri = uri.encode('utf-8')
             try: sock = urllib.urlopen(uri)
             except EnvironmentError, e:
-                try: err = unicode(e.strerror, errors='replace')
+                try: err = e.strerror.decode(const.ENCODING, 'replace')
                 except TypeError:
-                    err = unicode(e.strerror[1], errors='replace')
+                    err = e.strerror[1].decode(const.ENCODING, 'replace')
                 qltk.ErrorMessage(None, _("Unable to add station"), err).run()
                 return
             irfs = ParsePLS(sock)
-            if not irfs:
-                qltk.ErrorMessage(
-                    None, _("No stations found"),
-                    _("No Internet radio stations were found at %s.") %
-                    util.escape(uri)).run()
-                return
-
-            irfs = filter(
-                lambda s: not self.__stations.has_key(s["~uri"]), irfs)
-            if not irfs:
-                qltk.ErrorMessage(
-                    None, _("No new stations"),
-                    _("All stations listed are already in your library.")
-                    ).run()
-            elif len(irfs) == 1:
-                if self.__stations.add_song(irfs[0]):
-                    self.__stations.save(STATIONS)
-                    watcher.added(irfs)
-            else:
-                d = ChooseNewStations(sorted(irfs))
-                if d.run() == gtk.RESPONSE_OK:
-                    irfs = d.get_irfs()
-                    if irfs:
-                        added = filter(self.__stations.add_song, irfs)
-                        self.__stations.save(STATIONS)
-                        watcher.added(added)
-                d.destroy()
         elif uri.lower().endswith(".m3u"):
-            qltk.WarningMessage(
-                None, _("Unsupported file type"),
-                _("M3U playlists cannot be loaded.")).run()
+            try: sock = urllib.urlopen(uri)
+            except EnvironmentError, e:
+                try: err = e.strerror.decode(const.ENCODING, 'replace')
+                except TypeError:
+                    err = e.strerror[1].decode(const.ENCODING, 'replace')
+                qltk.ErrorMessage(None, _("Unable to add station"), err).run()
+                return
+            irfs = ParseM3U(sock)
         else:
-            if uri not in self.__stations:
-                f = IRFile(uri)
-                if self.__stations.add_song(f):
-                    self.__stations.save(STATIONS)
-                    watcher.added([f])
-                else:
-                    qltk.WarningMessage(
-                        None, _("No new stations"),
-                        _("This station is already in your library.") %
-                        uri).run()
+            irfs = [IRFile(uri)]
 
-    def __load_stations(self):
-        if not self.__stations: self.__stations.load(STATIONS)
+        if not irfs:
+            qltk.ErrorMessage(
+                None, _("No stations found"),
+                _("No Internet radio stations were found at %s.") %
+                util.escape(uri)).run()
+            return
+
+        irfs = filter(lambda station: station not in self.__stations, irfs)
+        if not irfs:
+            qltk.WarningMessage(
+                None, _("Unable to add station"),
+                _("All stations listed are already in your library.")).run()
+        elif len(irfs) > 1:
+            d = ChooseNewStations(sorted(irfs))
+            if d.run() == gtk.RESPONSE_OK:
+                irfs = d.get_irfs()
+            d.destroy()
+        if irfs and self.__stations.add(irfs):
+            self.__stations.save(STATIONS)
 
     def restore(self): self.activate()
     def activate(self, *args):
         self.emit('songs-selected',
-                  filter(self.__filter, self.__stations.values()), None)
+                  filter(self.__filter, self.__stations), None)
         
     def save(self): pass
 

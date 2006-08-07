@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.4
 # -*- coding: utf-8 -*-
 
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
@@ -13,6 +13,16 @@
 import os
 import signal
 import sys
+import tempfile
+import time
+
+import config
+import const
+import util
+
+from threading import Thread
+
+from util import to
 
 global play
 play = False
@@ -21,9 +31,8 @@ def main():
     # Load configuration data and scan the library for new/changed songs.
     config.init(const.CONFIG)
     library = load_library()
-    player = load_player()
+    player = load_player(library)
 
-    import util
     import widgets
 
     util.mkdir(const.USERDIR)
@@ -47,8 +56,7 @@ def print_fifo(command):
     if not os.path.exists(const.CURRENT):
         raise SystemExit("not-running")
     else:
-        from tempfile import mkstemp
-        fd, filename = mkstemp()
+        fd, filename = tempfile.mkstemp()
         try:
             os.unlink(filename)
             # mkfifo fails if the file exists, so this is safe.
@@ -73,8 +81,6 @@ def print_fifo(command):
             raise SystemExit("not-running")
 
 def print_playing(fstring="<artist~album~tracknumber~title>"):
-    import util
-
     from formats._audio import AudioFile
     from parse import Pattern
 
@@ -127,11 +133,7 @@ def enable_periodic_save(library):
     # Check every 5 minutes to see if the library/config on disk are
     # over 15 minutes old; if so, update them. This function can, in theory,
     # break if saving the library takes more than 5 minutes.
-    import time
     import gobject
-    import util
-
-    from threading import Thread
 
     def save():
         if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
@@ -152,8 +154,7 @@ def process_arguments():
                     "set-rating", "set-browser", "open-browser", "random",
                     "song-list", "queue", "enqueue"]
 
-    from util import OptionParser
-    options = OptionParser(
+    options = util.OptionParser(
         "Quod Libet", const.VERSION, 
         _("a music library and player"),
         _("[ --print-playing | control ]"))
@@ -186,16 +187,16 @@ def process_arguments():
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "+|-|0..100"),
         ("query", _("Search your audio library"), _("query")),
-        ("play-file", _("Play a file"), _("filename")),
+        ("play-file", _("Play a file"), Q_("command|filename")),
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
         ("queue", _("Show or hide the queue"), "on|off|t"),
         ("song-list", _("Show or hide the main song list"), "on|off|t"),
-        ("random", _("Filter on a random value"), _("tag")),
+        ("random", _("Filter on a random value"), Q_("command|tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
         ("enqueue", _("Enqueue a file or query"), "%s|%s" %(
-        _("filename"),_( "query"))),
+        Q_("command|filename"), _("query"))),
         ]: options.add(opt, help=help, arg=arg)
 
     options.add("sm-config-prefix", arg="dummy")
@@ -251,21 +252,16 @@ def process_arguments():
 
 def load_library():
     import library
-    library.init(const.LIBRARY)
+    lib = library.init(const.LIBRARY)
     print to(_("Loaded song library."))
-    from library import library
+    return lib
 
-    if config.get("settings", "scan"):
-        for a, c, r in library.scan(config.get("settings", "scan").split(":")):
-            pass
-    return library
-
-def load_player():
+def load_player(library):
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
     import player
     sink = config.get("settings", "pipeline")
-    try: playlist = player.init(sink)
+    try: playlist = player.init(sink, library.librarian)
     except player.NoSinkError:
         import widgets, gobject
         gobject.idle_add(widgets.no_sink_quit, sink)
@@ -285,25 +281,21 @@ if __name__ == "__main__":
     if basedir.endswith("/share/quodlibet"):
         sys.path.append(basedir[:-15] + "lib/quodlibet")
 
-    import util
     util.python_init()
     util.gettext_install()
     util.ctypes_init()
 
-    from util import to
-    import const
     if "--debug" not in sys.argv:
         process_arguments()
         if isrunning():
             print to(_("Quod Libet is already running."))
             control('focus')
 
-    # Initialize GTK.
+    # GTK+ eats command line arguments and babies, so we have to delay
+    # imports until at least this late.
     util.gtk_init()
     import gtk
-
     import pygst
     pygst.require('0.10')
 
-    import config
     main()

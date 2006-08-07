@@ -4,17 +4,14 @@ import browsers.albums
 import widgets
 
 from browsers.albums import AlbumList
-from library import Library
+from library import SongLibrary
 from player import PlaylistPlayer
-from qltk.watcher import SongWatcher
 
 class TAlbumList(TestCase):
     Bar = AlbumList
 
     def setUp(self):
-        widgets.library = browsers.albums.library = Library()
-        widgets.watcher = SongWatcher()
-        self.bar = self.Bar(widgets.watcher, PlaylistPlayer('fakesink'))
+        self.bar = self.Bar(SongLibrary(), PlaylistPlayer('fakesink'))
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -23,7 +20,4 @@ class TAlbumList(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        widgets.library = browsers.search.library = Library()
-        widgets.watcher.destroy()
-        del(widgets.watcher)
 add(TAlbumList)

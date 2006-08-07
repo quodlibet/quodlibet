@@ -16,14 +16,16 @@ def get_top_parent(widget):
 
 def popup_menu_under_widget(menu, widget, button, time):
     def pos_func(menu, widget=widget):
+        screen = widget.get_screen()
         ref = get_top_parent(widget)
+        menu.set_screen(screen)
         x, y = widget.translate_coordinates(ref, 0, 0)
         dx, dy = ref.window.get_origin()
         wa = widget.allocation
 
         # fit menu to screen, aligned per text direction
-        screen_width = gtk.gdk.screen_width()
-        screen_height = gtk.gdk.screen_height()
+        screen_width = screen.get_width()
+        screen_height = screen.get_height()
         menu.realize()
         ma = menu.allocation
         menu_y = y + dy + wa.height

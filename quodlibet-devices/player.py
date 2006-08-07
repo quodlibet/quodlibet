@@ -52,6 +52,9 @@ class PlaylistPlayer(gtk.Object):
     __paused = False
     song = None
     info = None
+    # Replay Gain profiles are a list of values to be tried in order;
+    # Three things can set them: play order, browser, and a default.
+    replaygain_profiles = [None, None, ["none"]]
     __length = 1
     __volume = 1.0
 
@@ -67,7 +70,12 @@ class PlaylistPlayer(gtk.Object):
         'error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, bool)),
         }
 
-    def __init__(self, sinkname):
+    __gproperties__ = {
+        'volume': (float, 'player volume', 'the volume of the player',
+                   0.0, 1.0, 1.0, gobject.PARAM_READWRITE)
+        }
+
+    def __init__(self, sinkname, librarian=None):
         super(PlaylistPlayer, self).__init__()
         device, sinkname = GStreamerSink(sinkname)
         self.name = sinkname
@@ -76,21 +84,45 @@ class PlaylistPlayer(gtk.Object):
         self.bin.set_property('audio-sink', device)
         bus = self.bin.get_bus()
         bus.add_signal_watch()
-        bus.connect('message', self.__message)
+        bus.connect('message', self.__message, librarian)
         self.connect_object('destroy', self.bin.set_state, gst.STATE_NULL)
         self.paused = True
 
-    def __message(self, bus, message):
+    def __message(self, bus, message, librarian):
         if message.type == gst.MESSAGE_EOS:
             self.__source.next_ended()
             self.__end(False)
         elif message.type == gst.MESSAGE_TAG:
-            self.__tag(message.parse_tag())
+            self.__tag(message.parse_tag(), librarian)
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
             err = str(err).decode(const.ENCODING, 'replace')
             self.error(err, True)
         return True
+
+    def do_song_started(self, song):
+        # Reset Replay Gain levels based on the new song.
+        self.volume = self.volume
+    def do_song_ended(self, song, stopped):
+        self.volume = self.volume
+
+    def do_get_property(self, property):
+        if property.name == 'volume':
+            return self.__volume
+        else: raise AttributeError
+
+    def do_set_property(self, property, v):
+        if property.name == 'volume':
+            self.__volume = v
+            if self.song is None:
+                self.bin.set_property('volume', v)
+            else:
+                if config.getboolean("player", "replaygain"):
+                    profiles = filter(None, self.replaygain_profiles)[0]
+                    v = max(0.0, min(4.0, v * self.song.replay_gain(profiles)))
+                self.bin.set_property('volume', v)
+        else:
+            raise AttributeError
 
     def setup(self, source, song):
         """Connect to a PlaylistModel, and load a song."""
@@ -125,11 +157,7 @@ class PlaylistPlayer(gtk.Object):
     paused = property(__get_paused, __set_paused)
 
     def __set_volume(self, v):
-        self.__volume = v
-        if self.song is None: self.bin.set_property('volume', v)
-        else:
-            v = max(0.0, min(4.0, v * self.song.replay_gain()))
-            self.bin.set_property('volume', v)
+        self.props.volume = min(1.0, max(0.0, v))
     volume = property(lambda s: s.__volume, __set_volume)
 
     def error(self, message, lock):
@@ -139,7 +167,6 @@ class PlaylistPlayer(gtk.Object):
         self.paused = True
         self.emit('error', message, lock)
         self.emit('song-started', None)
-        config.set("memory", "song", "")
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -172,11 +199,7 @@ class PlaylistPlayer(gtk.Object):
         self.song = self.info = self.__source.current
         self.emit('song-started', self.song)
 
-        # Reset Replay Gain levels based on the new song.
-        self.volume = self.__volume
-
         if self.song is not None:
-            config.set("memory", "song", self.song["~filename"])
             # Changing the URI in a playbin requires "resetting" it.
             if not self.bin.set_state(gst.STATE_NULL): return
             self.bin.set_property('uri', self.song("~uri"))
@@ -184,18 +207,18 @@ class PlaylistPlayer(gtk.Object):
             if self.__paused: self.bin.set_state(gst.STATE_PAUSED)
             else: self.bin.set_state(gst.STATE_PLAYING)
         else:
-            config.set("memory", "song", "")
+            
             self.paused = True
             self.bin.set_state(gst.STATE_NULL)
             self.bin.set_property('uri', '')
 
-    def __tag(self, tags):
+    def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
-            self.__fill_stream(tags)
+            self.__fill_stream(tags, librarian)
         elif self.song and self.song.fill_metadata:
             pass
 
-    def __fill_stream(self, tags):
+    def __fill_stream(self, tags, librarian):
         changed = False
         started = False
         if self.info is self.song:
@@ -237,9 +260,8 @@ class PlaylistPlayer(gtk.Object):
 
         if started:
             self.emit('song-started', self.info)
-        elif changed:
-            from widgets import watcher
-            watcher.changed([self.song])
+        elif changed and librarian is not None:
+            librarian.changed([self.song])
 
     def reset(self):
         self.__source.reset()
@@ -264,10 +286,10 @@ class PlaylistPlayer(gtk.Object):
 global playlist
 playlist = None
 
-def init(pipeline):
+def init(pipeline, librarian):
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(gst.URI_SRC, "file://", ""):
         global playlist
-        playlist = PlaylistPlayer(pipeline or "gconfaudiosink")
+        playlist = PlaylistPlayer(pipeline or "gconfaudiosink", librarian)
         return playlist
     else: raise NoSourceError

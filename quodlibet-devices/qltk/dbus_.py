@@ -37,18 +37,14 @@ class DBusHandler(dbus.service.Object):
         return dict
 
     def __song_started(self, player, song):
-        if song is None:
-            return
-        else:
+        if song is not None:
             song = self.__dict(song)
-        self.SongStarted(song)
+            self.SongStarted(song)
 
     def __song_ended(self, player, song, skipped):
-        if song is None:
-            return
-        else:
+        if song is not None:
             song = self.__dict(song)
-        self.SongEnded(song, skipped)
+            self.SongEnded(song, skipped)
 
     @dbus.service.signal('net.sacredchao.QuodLibet')
     def SongStarted(self, song):
@@ -59,11 +55,16 @@ class DBusHandler(dbus.service.Object):
         pass
 
     @dbus.service.signal('net.sacredchao.QuodLibet')
-    def Paused(self): pass
+    def Paused(self):
+        pass
 
     @dbus.service.signal('net.sacredchao.QuodLibet')
     def Unpaused(self):
         pass
+
+    @dbus.service.method('net.sacredchao.QuodLibet')
+    def CurrentSong(self):
+        return self.__dict(player.playlist.song)
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Next(self):
@@ -79,9 +80,15 @@ class DBusHandler(dbus.service.Object):
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Play(self):
-        player.playlist.paused = False
+        if player.playlist.song is None:
+            player.playlist.reset()
+        else:
+            player.playlist.paused = False
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def PlayPause(self):
-        player.playlist.paused = not player.playlist.paused
+        if player.playlist.song is None:
+            player.playlist.reset()
+        else:
+            player.playlist.paused ^= True
         return player.playlist.paused

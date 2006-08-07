@@ -213,15 +213,16 @@ class Playlists(gtk.VBox, Browser):
     name = _("Playlists")
     accelerated_name = _("_Playlists")
     priority = 2
+    replaygain_profiles = ["track"]
 
-    def init(klass, watcher):
+    def init(klass, library):
         model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):
             try: model.append(row=[Playlist(Playlist.unquote(playlist))])
             except EnvironmentError: pass
-        watcher.connect('removed', klass.__removed)
-        watcher.connect('added', klass.__added)
-        watcher.connect('changed', klass.__changed)
+        library.connect('removed', klass.__removed)
+        library.connect('added', klass.__added)
+        library.connect('changed', klass.__changed)
     init = classmethod(init)
 
     def playlists(klass): return [row[0] for row in klass.__lists]
@@ -240,18 +241,19 @@ class Playlists(gtk.VBox, Browser):
             playlist.write()
     changed = classmethod(changed)
 
-    def __removed(klass, watcher, songs):
+    def __removed(klass, library, songs):
         for playlist in klass.playlists():
             if playlist.remove_songs(songs): Playlists.changed(playlist)
     __removed = classmethod(__removed)
 
-    def __added(klass, watcher, songs):
+    def __added(klass, library, songs):
         filenames = set([song("~filename") for song in songs])
         for playlist in klass.playlists():
-            if playlist.add_songs(filenames): Playlists.changed(playlist)
+            if playlist.add_songs(filenames):
+                Playlists.changed(playlist)
     __added = classmethod(__added)
 
-    def __changed(klass, watcher, songs):
+    def __changed(klass, library, songs):
         for playlist in klass.playlists():
             for song in songs:
                 if song in playlist:
@@ -264,18 +266,21 @@ class Playlists(gtk.VBox, Browser):
         render.set_property('markup', render.markup)
     cell_data = staticmethod(cell_data)
 
-    def Menu(self, songs, songlist):
+    def Menu(self, songs, songlist, library):
+        menu = super(Playlists, self).Menu(songs, songlist, library)
         model, rows = songlist.get_selection().get_selected_rows()
         iters = map(model.get_iter, rows)
         i = qltk.MenuItem(_("_Remove from Playlist"), gtk.STOCK_REMOVE)
         i.connect_object('activate', self.__remove, iters, model)
         i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
-        return [i]
+        menu.preseparate()
+        menu.prepend(i)
+        return menu
 
     __lists = gtk.TreeModelSort(gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
 
-    def __init__(self, watcher, player):
+    def __init__(self, library, player):
         super(Playlists, self).__init__(spacing=6)
         self.__main = bool(player)
         self.__view = view = RCMHintedTreeView()
@@ -298,21 +303,21 @@ class Playlists(gtk.VBox, Browser):
         newpl = gtk.Button(stock=gtk.STOCK_NEW)
         newpl.connect('clicked', self.__new_playlist)
         importpl = qltk.Button(_("_Import"), gtk.STOCK_ADD)
-        importpl.connect('clicked', self.__import, watcher)
+        importpl.connect('clicked', self.__import, library)
         hb = gtk.HBox(spacing=6)
         hb.set_homogeneous(True)
         hb.pack_start(newpl)
         hb.pack_start(importpl)
         self.pack_start(hb, expand=False)
 
-        view.connect('popup-menu', self.__popup_menu, watcher)
+        view.connect('popup-menu', self.__popup_menu, library)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 0),
                    ("text/uri-list", 0, 1),
                    ("text/x-moz-url", 0, 2)]
         view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
                            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_DEFAULT)
-        view.connect('drag-data-received', self.__drag_data_received, watcher)
+        view.connect('drag-data-received', self.__drag_data_received, library)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
         if player: view.connect('row-activated', self.__play, player)
@@ -372,7 +377,7 @@ class Playlists(gtk.VBox, Browser):
             Playlists.changed(playlist)
             self.activate()
 
-    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime, watcher):
+    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime, library):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
         model = view.get_model()
@@ -407,7 +412,7 @@ class Playlists(gtk.VBox, Browser):
             elif uri.lower().endswith('.m3u'): playlist = ParseM3U(f.name)
             else: playlist = None
             if playlist:
-                watcher.added(filter(library.add_song, playlist))
+                library.add_filename(playlist)
                 if name: playlist.rename(name)
                 Playlists.changed(playlist)
                 ctx.finish(True, False, etime)
@@ -426,12 +431,12 @@ class Playlists(gtk.VBox, Browser):
             if row[0] is playlist:
                 view.get_selection().select_iter(row.iter)
 
-    def __popup_menu(self, view, watcher):
+    def __popup_menu(self, view, library):
         model, iter = view.get_selection().get_selected()
         if iter is None:
             return
         songs = list(model[iter][0])
-        menu = SongsMenu(watcher, songs, playlists=False, remove=False)
+        menu = SongsMenu(library, songs, playlists=False, remove=False)
         menu.preseparate()
 
         rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
@@ -479,11 +484,10 @@ class Playlists(gtk.VBox, Browser):
         else: self.__lists[path] = self.__lists[path]
         render.set_property('editable', not self.__main)
 
-    def __import(self, activator, watcher):
+    def __import(self, activator, library):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
         from qltk.chooser import FileChooser
-        chooser = FileChooser(
-            self, _("Import Playlist"), filt, os.getenv("HOME"))
+        chooser = FileChooser(self, _("Import Playlist"), filt, const.HOME)
         files = chooser.run()
         chooser.destroy()
         for filename in files:
@@ -499,7 +503,7 @@ class Playlists(gtk.VBox, Browser):
                       "and PLS formats.")).run()
                 return
             Playlists.changed(playlist)
-            watcher.added(filter(library.add_song, playlist))
+            library.add(playlist)
 
     def restore(self):
         try: name = config.get("browsers", "playlist")

@@ -1,12 +1,12 @@
 from tests import TestCase, add
 
+from library import SongLibrary
 from browsers.iradio import InternetRadio
 from player import PlaylistPlayer
-from qltk.watcher import SongWatcher
 
 class TInternetRadio(TestCase):
     def setUp(self):
-        self.bar = InternetRadio(SongWatcher(), PlaylistPlayer('fakesink'))
+        self.bar = InternetRadio(SongLibrary(), PlaylistPlayer('fakesink'))
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:

@@ -95,7 +95,7 @@ class TagsFromPath(EditPane):
     title = _("Tags From Path")
     FILTERS = [UnderscoresToSpaces, TitleCase, SplitTag]
         
-    def __init__(self, parent, watcher):
+    def __init__(self, parent, library):
         plugins = parent.plugins.TagsFromPathPlugins()
         super(TagsFromPath, self).__init__(
             const.TBP, const.TBP_EXAMPLES.split("\n"), plugins)
@@ -113,7 +113,7 @@ class TagsFromPath(EditPane):
         parent.connect_object('changed', self.__class__.__preview, self)
 
         # Save changes
-        self.save.connect_object('clicked', self.__save, addreplace, watcher)
+        self.save.connect_object('clicked', self.__save, addreplace, library)
 
     def __add_changed(self, combo):
         config.set("tagsfrompath", "add", str(bool(combo.get_active())))
@@ -191,7 +191,7 @@ class TagsFromPath(EditPane):
         self.preview.set_sensitive(False)
         self.save.set_sensitive(len(pattern.headers) > 0)
 
-    def __save(self, addreplace, watcher):
+    def __save(self, addreplace, library):
         pattern_text = self.combo.child.get_text().decode('utf-8')
         pattern = TagsFromPattern(pattern_text)
         model = self.view.get_model()
@@ -235,14 +235,14 @@ class TagsFromPath(EditPane):
                           "do not have permission to edit it.")%(
                         util.escape(util.fsdecode(song('~basename'))))
                         ).run()
-                    watcher.reload(song)
+                    library.reload(song)
                     break
                 was_changed.append(song)
 
             if win.step(): break
 
         win.destroy()
-        watcher.changed(was_changed)
+        library.changed(was_changed)
         self.save.set_sensitive(False)
 
     def __row_edited(self, renderer, path, new, model, colnum):

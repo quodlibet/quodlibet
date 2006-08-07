@@ -19,22 +19,27 @@ from parse import XMLFromPattern
 from qltk.textedit import PatternEdit
 
 class SongInfo(gtk.Label):
-    # Translators: Only worry about "by", "Disc", and "Track" below.
-    _pattern = _("""\
-\\<span weight='bold' size='large'\\><title>\\</span\\><~length| (<~length>)><version|
+    _pattern = """\
+\\<span weight='bold' size='large'\\><title>\\</span\\>\
+<~length| (<~length>)><version|
 \\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
-by <~people>><album|
-\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>>\
-<part| - \\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>""")
+%(people)s><album|
+\\<b\\><album>\\</b\\><discnumber| - %(disc)s>\
+<part| - \\<b\\><part>\\</b\\>><tracknumber| - %(track)s>>""" % {
+        # Translators: As in "by Artist Name"
+        "people": _("by %s") % "<~people>",
+        "disc": _("Disc %s") % "<discnumber>",
+        "track": _("Track %s") % "<tracknumber>"
+        }
 
     __PATTERN_FILENAME = os.path.join(const.USERDIR, "songinfo")
 
-    def __init__(self, watcher, player):
+    def __init__(self, library, player):
         super(SongInfo, self).__init__()
         self.set_ellipsize(pango.ELLIPSIZE_END)
         self.set_selectable(True)
         self.set_alignment(0.0, 0.0)
-        watcher.connect_object('changed', self.__check_change, player)
+        library.connect_object('changed', self.__check_change, player)
         player.connect('song-started', self.__check_started)
 
         self.connect_object('populate-popup', self.__menu, player)
@@ -67,7 +72,7 @@ by <~people>><album|
         self.__update_info(player)
 
     def __check_change(self, player, songs):
-        if player.song in songs:
+        if player.info in songs:
             self.__update_info(player)
 
     def __check_started(self, player, song):

@@ -4,7 +4,7 @@ from qltk.browser import LibraryBrowser
 
 class TLibraryBrowser(TestCase):
     def test_ctr(self):
-        from qltk.watcher import SongWatcher
+        from library import SongLibrary
         from browsers.search import EmptyBar
-        LibraryBrowser(EmptyBar, SongWatcher()).destroy()
+        LibraryBrowser(EmptyBar, SongLibrary()).destroy()
 add(TLibraryBrowser)

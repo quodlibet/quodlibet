@@ -65,7 +65,8 @@ def init():
     # Translators: Only translate this if it conflicts with "Delete",
     # as is the case in e.g. Finnish. It should be disambiguated as
     # "Remove from Library" (as opposed to, from playlist, from disk, etc.)
-    # Don't literally translate "ql-remove".
+    # Don't literally translate "ql-remove". It needs an access key, so
+    # a sample translation would be "_Remove from Library".
     if _("ql-remove") == "ql-remove":
         gtk.stock_add([(REMOVE,)+gtk.stock_lookup(gtk.STOCK_REMOVE)[1:]])
     else:
@@ -75,15 +76,19 @@ def init():
     for key, name in [
         # Translators: Only translate this if GTK does so incorrectly or not
         # at all. Don't literally translate media/next/previous/play/pause.
+        # This string needs an access key.
         (gtk.STOCK_MEDIA_NEXT, _('gtk-media-next')),
         # Translators: Only translate this if GTK does so incorrectly or not
         # at all. Don't literally translate media/next/previous/play/pause.
+        # This string needs an access key.
         (gtk.STOCK_MEDIA_PREVIOUS, _('gtk-media-previous')),
         # Translators: Only translate this if GTK does so incorrectly or not
         # at all. Don't literally translate media/next/previous/play/pause.
+        # This string needs an access key.
         (gtk.STOCK_MEDIA_PLAY, _('gtk-media-play')),
         # Translators: Only translate this if GTK does so incorrectly or not
         # at all. Don't literally translate media/next/previous/play/pause.
+        # This string needs an access key.
         (gtk.STOCK_MEDIA_PAUSE, _('gtk-media-pause'))
         ]:
         if key != name: # translated, so re-register with a good name

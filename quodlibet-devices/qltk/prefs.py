@@ -12,6 +12,7 @@ import gtk
 
 import config
 import const
+import player
 import qltk
 import util
 
@@ -127,7 +128,7 @@ class PreferencesWindow(qltk.Window):
 
             headers.extend(others.get_text().split())
             if "~current" in headers: headers.remove("~current")
-            config.set("settings", "headers", " ".join(headers).lower())
+            headers = [header.lower() for header in headers]
             SongList.set_all_column_headers(headers)
 
     class Browsers(gtk.VBox):
@@ -170,23 +171,18 @@ class PreferencesWindow(qltk.Window):
                 _("_Jump to playing song automatically"), 'settings', 'jump')
             tips.set_tip(c, _("When the playing song changes, "
                               "scroll to it in the song list"))
-            c.set_active(config.state("jump"))
+            c.set_active(config.getboolean("settings", "jump"))
             self.pack_start(c, expand=False)
 
-            cb = gtk.combo_box_new_text()
-            cb.append_text(_("No volume adjustment"))
-            cb.append_text(_('Per-song ("Radio") volume adjustment'))
-            cb.append_text(_('Per-album ("Audiophile") volume adjustment'))
-            f = qltk.Frame(_("_Volume Normalization"), child=cb)
-            f.get_label_widget().set_mnemonic_widget(cb)
-            cb.set_active(config.getint("settings", "gain"))
-            cb.connect('changed', self.__changed, "settings", "gain")
-            self.pack_start(f, expand=False)
-
+            c = ConfigCheckButton(
+                _("_Replay Gain volume adjustment"), "player", "replaygain")
+            c.set_active(config.getboolean("player", "replaygain"))
+            self.pack_start(c, expand=False)
+            c.connect('toggled', self.__toggled_gain)
             self.show_all()
 
-        def __changed(self, cb, section, name):
-            config.set(section, name, str(cb.get_active()))
+        def __toggled_gain(self, activator):
+            player.playlist.volume = player.playlist.volume
 
     class Library(gtk.VBox):
         def __init__(self):
@@ -271,7 +267,7 @@ class PreferencesWindow(qltk.Window):
         self.set_title(_("Quod Libet Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)
-        self.set_transient_for(parent)
+        self.set_transient_for(qltk.get_top_parent(parent))
 
         self.add(qltk.Notebook())
         for Page in [self.SongList, self.Browsers, self.Player, self.Library]:

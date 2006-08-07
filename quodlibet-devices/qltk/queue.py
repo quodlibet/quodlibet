@@ -15,7 +15,6 @@ import config
 import const
 import util
 
-from library import library
 from qltk.ccb import ConfigCheckButton
 from qltk.songlist import SongList
 from qltk.songsmenu import SongsMenu        
@@ -24,12 +23,12 @@ from qltk.x import Tooltips
 QUEUE = os.path.join(const.USERDIR, "queue")
 
 class QueueExpander(gtk.Expander):
-    def __init__(self, menu, watcher, player):
+    def __init__(self, menu, library, player):
         super(QueueExpander, self).__init__()
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        self.queue = PlayQueue(watcher, player)
+        self.queue = PlayQueue(library, player)
         sw.add(self.queue)
         hb = gtk.HBox(spacing=12)
 
@@ -68,7 +67,8 @@ class QueueExpander(gtk.Expander):
         self.drag_dest_set(
             gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
         self.connect('drag-motion', self.__motion)
-        self.connect('drag-data-received', self.__drag_data_received)
+        self.connect_object(
+            'drag-data-received', self.__drag_data_received, library)
 
         self.model = self.queue.model
         self.show_all()
@@ -115,14 +115,14 @@ class QueueExpander(gtk.Expander):
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):
-        # Interfere as little as possible with the current size.
-        if not self.get_property('visible'): self.set_expanded(False)
+        if not self.get_property('visible'):
+            self.set_expanded(False)
         self.__update_count(model, path, lab)
         self.show()
 
-    def __drag_data_received(self, qex, ctx, x, y, sel, info, etime):
+    def __drag_data_received(self, library, ctx, x, y, sel, info, etime):
         filenames = sel.data.split("\x00")
-        songs = filter(None, map(library.get, filenames))
+        songs = filter(None, map(library.librarian.get, filenames))
         for song in songs: self.model.append(row=[song])
         ctx.finish(bool(songs), False, etime)
 
@@ -150,28 +150,29 @@ class PlayQueue(SongList):
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_fixed_width(24)
 
-    def __init__(self, watcher, player):
-        super(PlayQueue, self).__init__(watcher, player)
+    def __init__(self, library, player):
+        super(PlayQueue, self).__init__(library, player)
         self.set_size_request(-1, 120)
         self.model = self.get_model()
         self.connect('row-activated', self.__go_to, player)
 
-        self.connect_object('popup-menu', self.__popup, watcher)
+        self.connect_object('popup-menu', self.__popup, library)
         self.enable_drop()
         self.connect_object('destroy', self.__write, self.model)
-        self.__fill()
+        self.__fill(library)
 
     def __go_to(self, view, path, column, player):
         self.model.go_to(self.model.get_iter(path))
         player.next()
 
-    def __fill(self):
+    def __fill(self, library):
         try: filenames = file(QUEUE, "rU").readlines()
         except EnvironmentError: pass
         else:
-            for fn in map(str.strip, filenames):
-                if fn in library:
-                    self.model.append([library[fn]])
+            filenames = map(str.strip, filenames)
+            songs = filter(None, map(library.librarian.get, filenames))
+            for song in songs:
+                self.model.append([song])
 
     def __write(self, model):
         filenames = "\n".join([row[0]["~filename"] for row in model])
@@ -179,12 +180,12 @@ class PlayQueue(SongList):
         f.write(filenames)
         f.close()
 
-    def __popup(self, watcher):
+    def __popup(self, library):
         songs = self.get_selected_songs()
         if not songs: return
 
         menu = SongsMenu(
-            watcher, songs, queue=False, remove=False, delete=False)
+            library, songs, queue=False, remove=False, delete=False)
         menu.preseparate()
         remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         remove.connect('activate', self.__remove)

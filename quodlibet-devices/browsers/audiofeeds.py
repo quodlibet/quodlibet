@@ -28,6 +28,7 @@ from formats.remote import RemoteFile
 from qltk.downloader import DownloadWindow
 from qltk.getstring import GetStringDialog
 from qltk.msg import ErrorMessage
+from qltk.songsmenu import SongsMenu
 from qltk.views import AllTreeView
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
@@ -201,7 +202,7 @@ class AudioFeeds(Browser, gtk.VBox):
         f.close()
     write = classmethod(write)
 
-    def init(klass, watcher):
+    def init(klass, library):
         try: feeds = pickle.load(file(FEEDS, "rb"))
         except (EnvironmentError, EOFError): pass
         else:
@@ -227,7 +228,8 @@ class AudioFeeds(Browser, gtk.VBox):
         gobject.timeout_add(60*60*1000, klass.__do_check)
     __check = classmethod(__check)
 
-    def Menu(self, songs, songlist):
+    def Menu(self, songs, songlist, library):
+        menu = SongsMenu(library, songs, accels=songlist.accelerators)
         if len(songs) == 1:
             item = qltk.MenuItem(_("_Download..."), gtk.STOCK_CONNECT)
             item.connect('activate', self.__download, songs[0]("~uri"))
@@ -238,7 +240,9 @@ class AudioFeeds(Browser, gtk.VBox):
             item = qltk.MenuItem(_("_Download..."), gtk.STOCK_CONNECT)
             item.connect('activate', self.__download_many, uris)
             item.set_sensitive(bool(songs))
-        return [item]
+        menu.preseparate()
+        menu.prepend(item)
+        return menu
 
     def __download_many(self, activator, sources):
         chooser = gtk.FileChooserDialog(
@@ -278,7 +282,7 @@ class AudioFeeds(Browser, gtk.VBox):
                 DownloadWindow.download(source, target)
         chooser.destroy()
 
-    def __init__(self, watcher, main):
+    def __init__(self, library, main):
         super(AudioFeeds, self).__init__(spacing=6)
         self.__main = bool(main)
 

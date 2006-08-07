@@ -1,6 +1,5 @@
 [encoding: UTF-8]
 stock.py
-library.py
 quodlibet.py
 po/tag-names.py
 formats/_audio.py
@@ -8,6 +7,8 @@ exfalso.py
 widgets.py
 plugins/__init__.py
 player.py
+library/__init__.py
+library/songs.py
 qltk/_editpane.py
 qltk/about.py
 qltk/bookmarks.py
@@ -37,7 +38,6 @@ qltk/tagsfrompath.py
 qltk/textedit.py
 qltk/tracknumbers.py
 qltk/views.py
-qltk/watcher.py
 qltk/wlw.py
 qltk/x.py
 browsers/_base.py

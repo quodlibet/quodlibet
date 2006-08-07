@@ -15,13 +15,13 @@ from qltk.songlist import SongList
 from qltk.x import Window
 
 class LibraryBrowser(Window):
-    def __init__(self, Kind, watcher):
+    def __init__(self, Kind, library):
         super(LibraryBrowser, self).__init__()
         self.set_border_width(6)
         self.set_title("Quod Libet - " + Kind.name)
         self.add(gtk.VBox(spacing=6))
 
-        view = SongList(watcher)
+        view = SongList(library)
         self.add_accel_group(view.accelerators)
         self.songlist = view
 
@@ -30,7 +30,7 @@ class LibraryBrowser(Window):
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
 
-        self.browser = browser = Kind(watcher, None)
+        self.browser = browser = Kind(library, None)
         if browser.reordered:
             view.enable_drop()
         elif browser.dropped:
@@ -56,7 +56,7 @@ class LibraryBrowser(Window):
         self.child.pack_end(self.__statusbar, expand=False)
 
         browser.connect('songs-selected', self.__browser_cb)
-        view.connect('popup-menu', self.__menu, watcher)
+        view.connect('popup-menu', self.__menu, library)
         view.connect('drag-data-received', self.__drag_data_recv)
         view.connect('row-activated', self.__enqueue)
         view.get_selection().connect('changed', self.__set_time)
@@ -93,10 +93,10 @@ class LibraryBrowser(Window):
                     break
             else: header.set_visible(False)
 
-    def __menu(self, view, watcher):
+    def __menu(self, view, library):
         path, col = view.get_cursor()
         header = col.header_name
-        menu = view.Menu(header, self.browser, watcher)
+        menu = view.Menu(header, self.browser, library)
         if menu is not None:
             view.popup_menu(menu, 0, gtk.get_current_event_time())
         return True

@@ -51,7 +51,7 @@ class NoSongs(gtk.Label):
         self.title = _("No Songs")
 
 class OneSong(qltk.Notebook):
-    def __init__(self, watcher, song):
+    def __init__(self, library, song):
         super(OneSong, self).__init__()
         vbox = gtk.VBox(spacing=12)
         vbox.set_border_width(12)
@@ -73,10 +73,10 @@ class OneSong(qltk.Notebook):
         bookmarks.set_border_width(12)
         self.append_page(bookmarks)
 
-        s = watcher.connect('changed', self.__check_changed, vbox, song)
-        self.connect_object('destroy', watcher.disconnect, s)
+        s = library.connect('changed', self.__check_changed, vbox, song)
+        self.connect_object('destroy', library.disconnect, s)
 
-    def __check_changed(self, watcher, songs, vbox, song):
+    def __check_changed(self, library, songs, vbox, song):
         if song in songs:
             for c in vbox.get_children():
                 vbox.remove(c)
@@ -501,39 +501,39 @@ class ManySongs(qltk.Notebook):
                        expand=False, fill=False)
 
 class Information(Window):
-    def __init__(self, watcher, songs):
+    def __init__(self, library, songs):
         super(Information, self).__init__()
         self.set_border_width(12)
         self.set_default_size(400, 400)
         if len(songs) > 1:
-            sig = watcher.connect('changed', self.__check_changed)
-            self.connect_object('destroy', watcher.disconnect, sig)
+            sig = library.connect('changed', self.__check_changed)
+            self.connect_object('destroy', library.disconnect, sig)
         if len(songs) > 0:
-            sig = watcher.connect('removed', self.__check_removed)
-            self.connect_object('destroy', watcher.disconnect, sig)
+            sig = library.connect('removed', self.__check_removed)
+            self.connect_object('destroy', library.disconnect, sig)
         self.__songs = songs
-        self.__update(watcher)
+        self.__update(library)
         self.show_all()
 
-    def __check_changed(self, watcher, songs):
+    def __check_changed(self, library, songs):
         changed = set(songs)
         for song in self.__songs:
             if song in changed:
-                self.__update(watcher)
+                self.__update(library)
                 break
 
-    def __check_removed(self, watcher, songs):
+    def __check_removed(self, library, songs):
         gone = set(songs)
         old = len(self.__songs)
         self.__songs = filter(lambda s: s not in gone, self.__songs)
-        if len(self.__songs) != old: self.__update(watcher)
+        if len(self.__songs) != old: self.__update(library)
 
-    def __update(self, watcher):
+    def __update(self, library):
         songs = self.__songs
         if self.child: self.child.destroy()
         self.__songs = songs
         if not songs: self.add(NoSongs())
-        elif len(songs) == 1: self.add(OneSong(watcher, songs[0]))
+        elif len(songs) == 1: self.add(OneSong(library, songs[0]))
         else:
             tags = [(s.get("artist"), s.get("album")) for s in songs]
             artists, albums = zip(*tags)

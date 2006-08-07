@@ -38,7 +38,7 @@ class LyricsPane(gtk.VBox):
         view.set_wrap_mode(gtk.WRAP_WORD)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        lyricname = self.__lyricname(song)
+        lyricname = song.lyric_filename
         buffer = view.get_buffer()
 
         refresh.connect('clicked', self.__refresh, add, buffer, song)
@@ -151,12 +151,6 @@ class LyricsPane(gtk.VBox):
             gobject.idle_add(buffer.set_text, _("Unable to download lyrics."))
             xmldoc.unlink()
             return
-
-    def __lyricname(self, song):
-        return util.fsencode(os.path.join(
-            os.path.expanduser("~/.lyrics"),
-            song.comma("artist").replace('/', '')[:128],
-            song.comma("title").replace('/', '')[:128] + '.lyric'))
 
     def __save(self, save, lyricname, buffer, delete):
         try: os.makedirs(os.path.dirname(lyricname))

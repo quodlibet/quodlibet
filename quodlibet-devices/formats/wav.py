@@ -7,18 +7,16 @@
 # $Id$
 
 import os
+import wave
 
 import gst
 
 from formats._audio import AudioFile
 
-try:
-    import wave
-    gst.element_factory_make('wavparse')
-except (ImportError, gst.PluginNotFoundError):
+extensions = [".wav"]
+
+if gst.registry_get_default().find_plugin("wavparse") is None:
     extensions = []
-else:
-    extensions = [".wav"]
 
 class WAVEFile(AudioFile):
     format = "WAVE"

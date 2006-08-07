@@ -77,7 +77,7 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
 class SongsMenuPlugins(Manager):
     Kinds = [SongsMenuPlugin]
 
-    def Menu(self, watcher, parent, songs):
+    def Menu(self, library, parent, songs):
         songs = ListWrapper(songs)
         parent = qltk.get_top_parent(parent)
 
@@ -99,9 +99,8 @@ class SongsMenuPlugins(Manager):
 
         items = []
         kinds = self.find_subclasses(SongsMenuPlugin)
-        kinds.sort(key=lambda plugin: plugin.PLUGIN_NAME)
+        kinds.sort(key=lambda plugin: plugin.PLUGIN_ID)
         for Kind in kinds:
-            connected = False
             usable = max([callable(getattr(Kind, s)) for s in attrs])
             if usable:
                 try: items.append(Kind(songs))
@@ -113,7 +112,7 @@ class SongsMenuPlugins(Manager):
                 try:
                     menu.append(item)
                     item.connect('activate', self.__handle,
-                                 watcher, parent, songs, albums)
+                                 library, parent, songs, albums)
                 except:
                     print_exc()
                     item.destroy()
@@ -121,7 +120,7 @@ class SongsMenuPlugins(Manager):
         else: menu = None
         return menu
 
-    def __handle(self, plugin, watcher, parent, songs, albums):
+    def __handle(self, plugin, library, parent, songs, albums):
         plugin.plugin_window = parent
 
         try:
@@ -159,4 +158,4 @@ class SongsMenuPlugins(Manager):
 
         finally:
             del(plugin.plugin_window)
-            self._check_change(watcher, parent, filter(None, songs))
+            self._check_change(library, parent, filter(None, songs))

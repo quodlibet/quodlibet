@@ -9,6 +9,8 @@
 
 import gobject
 
+from qltk.songsmenu import SongsMenu
+
 # Browers are how the audio library is presented to the user; they
 # create the list of songs that MainSongList is filled with, and pass
 # them back via a callback function.
@@ -47,7 +49,7 @@ class Browser(object):
 
     # Called after library and MainWindow initialization, before the
     # GTK main loop starts.
-    def init(klass, watcher): pass
+    def init(klass, library): pass
     init = classmethod(init)
 
     # Returns true if the song should remain on the song list. Used to
@@ -89,10 +91,13 @@ class Browser(object):
     # the browser is.
     accelerators = None
 
-    # Returns a list of items to be inserted into the SongList context
-    # menu when this browser is active. songs is the list of selected
-    # songs; songlist is the SongList instance.
-    def Menu(self, songs, songlist): return []
+    # CHANGED IN 0.23:
+    # This method now returns a gtk.Menu, probably a SongsMenu. After this
+    # menu is returned the SongList may modify it further.
+    def Menu(self, songs, songlist, library):
+        menu = SongsMenu(
+            library, songs, delete=True, accels=songlist.accelerators)
+        return menu
 
     def statusbar(self, i):
         return ngettext(
@@ -101,3 +106,6 @@ class Browser(object):
     def list(self, tag):
         from library import library
         return library.tag_values(tag)
+
+    # Replay Gain profiles for this browser.
+    replaygain_profiles = None

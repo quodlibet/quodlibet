@@ -16,8 +16,7 @@ import qltk
 import util
 
 from browsers._base import Browser
-from formats._audio import PEOPLE
-from library import library
+from formats import PEOPLE
 from parse import Query
 from qltk.entry import ValidatingEntry
 from qltk.songlist import SongList
@@ -163,7 +162,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             except TypeError: cell.set_property('text', '')
         __count_cdf = staticmethod(__count_cdf)
 
-        def __init__(self, mytag, next):
+        def __init__(self, mytag, next, library):
             super(PanedBrowser.Pane, self).__init__()
             self.tags = util.tagsplit(mytag)
             self.__next = next
@@ -184,11 +183,10 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__changed)
             self.connect_object('destroy', self.__destroy, model)
-            self.connect('popup-menu', self.__popup_menu)
+            self.connect('popup-menu', self.__popup_menu, library)
 
-        def __popup_menu(self, view):
-            from widgets import watcher
-            menu = SongsMenu(watcher, sorted(self.__get_songs()))
+        def __popup_menu(self, view, library):
+            menu = SongsMenu(library, sorted(self.__get_songs()))
             menu.show_all()
             return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
@@ -332,7 +330,11 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 if len(songs) == 1: return songs[0]
                 else: return reduce(set.union, songs, set())
 
-    def __init__(self, watcher, player):
+    @classmethod
+    def init(klass, library):
+        klass.__library = library
+
+    def __init__(self, library, player):
         super(PanedBrowser, self).__init__(spacing=6)
         self._register_instance()
         self.__save = player
@@ -366,11 +368,11 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__refill_id = None
         self.__filter = None
         search.connect('changed', self.__filter_changed)
-        for s in [watcher.connect('changed', self.__changed),
-                  watcher.connect('added', self.__added),
-                  watcher.connect('removed', self.__removed)
+        for s in [library.connect('changed', self.__changed),
+                  library.connect('added', self.__added),
+                  library.connect('removed', self.__removed)
                   ]:
-            self.connect_object('destroy', watcher.disconnect, s)
+            self.connect_object('destroy', library.disconnect, s)
         self.connect_object('destroy', type(self).__destroy, self)
         self.refresh_panes(restore=False)
         self.show_all()
@@ -405,23 +407,24 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             else: self.__filter = None
             self.__refill_id = gobject.timeout_add(500, self.activate)
 
-    def __added(self, watcher, songs):
-        for pane in self.__panes:            
+    def __added(self, library, songs):
+        songs = filter(self.__filter, songs)
+        for pane in self.__panes:
             pane._add(songs)
             songs = filter(pane._matches, songs)
 
-    def __removed(self, watcher, songs, remove_if_empty=True):
+    def __removed(self, library, songs, remove_if_empty=True):
+        songs = filter(self.__filter, songs)
         for pane in self.__panes:
             pane._remove(songs, remove_if_empty)
 
-    def __changed(self, watcher, songs):
-        songs = filter(lambda x: x.get("~filename") in library, songs)
-        self.__removed(watcher, songs, False)
-        self.__added(watcher, songs)
-        self.__removed(watcher, [])
+    def __changed(self, library, songs):
+        self.__removed(library, songs, False)
+        self.__added(library, songs)
+        self.__removed(library, [])
 
     def activate(self):
-        self.__panes[0].fill(filter(self.__filter, library.values()))
+        self.__panes[0].fill(filter(self.__filter, self.__library))
 
     def scroll(self, song):
         for pane in self.__panes:
@@ -439,7 +442,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__panes = [self]
         panes = config.get("browsers", "panes").split(); panes.reverse()
         for pane in panes:
-            self.__panes.insert(0, self.Pane(pane, self.__panes[0]))
+            self.__panes.insert(
+                0, self.Pane(pane, self.__panes[0], self.__library))
         self.__panes.pop() # remove self
 
         for pane in self.__panes:

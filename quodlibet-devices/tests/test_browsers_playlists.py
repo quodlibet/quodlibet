@@ -5,7 +5,7 @@ import tempfile
 
 from browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
 from player import PlaylistPlayer
-from qltk.watcher import SongWatcher
+from library import SongLibrary
 
 def makename():
     return tempfile.mkstemp()[1]
@@ -94,7 +94,8 @@ add(TPlaylist)
 
 class TPlaylists(TestCase):
     def setUp(self):
-        self.bar = Playlists(SongWatcher(), PlaylistPlayer('fakesink'))
+        self.library = SongLibrary()
+        self.bar = Playlists(SongLibrary(), PlaylistPlayer('fakesink'))
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -102,4 +103,5 @@ class TPlaylists(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
+        self.library.destroy()
 add(TPlaylists)

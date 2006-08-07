@@ -4,7 +4,7 @@
 import os
 import locale
 
-VERSION = "0.21"
+VERSION = "0.23"
 
 HOME    = os.path.expanduser("~")
 USERDIR = os.path.join(HOME, ".quodlibet")
@@ -33,6 +33,7 @@ Bastian Kleineidam
 Eduardo Gonzalez
 Decklin Foster
 Federico Pelloni
+Alexandre Passos
 
 Anders Carlsson (trayicon)
 Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")
@@ -111,13 +112,6 @@ MENU = """<ui>
     </menu>
   </menubar>
 </ui>"""
-
-MACHINE_TAGS = (
-    "musicbrainz_trackid musicbrainz_trmid musicbrainz_albumid "
-    "musicbrainz_albumartistid musicbrainz_artistid musicip_puid "
-    "replaygain_track_gain replaygain_album_gain "
-    "replaygain_album_peak replaygain_track_peak "
-    ).split()
 
 ENCODING = locale.getpreferredencoding()
 

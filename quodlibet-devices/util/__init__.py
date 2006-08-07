@@ -450,7 +450,15 @@ def tag(name, cap=True):
             except IndexError: return _("Invalid tag")
             else: return _(HEADERS_FILTER.get(tag, tag.replace("_", " ")))
         parts = map(readable, tagsplit(name))
-        if cap: parts = map(capitalize, parts)
+        if cap:
+            # Translators: If tag names, when capitalized, should not
+            # be title-cased ("Looks Like This"), but rather only have
+            # the first letter capitalized, translate this string as
+            # something other than "check|titlecase?".
+            if _("check|titlecase?") == "check|titlecase?":
+                parts = map(title, parts)
+            else:
+                parts = map(capitalize, parts)
         return " / ".join(parts)
 
 def tagsplit(tag):
@@ -485,35 +493,48 @@ def spawn(argv, stdout=False):
     if stdout: return os.fdopen(args[2])
     else: return args[0]
 
+N_ = lambda value: value
+
 HEADERS_FILTER = {
-    "tracknumber": "track",
-    "discnumber": "disc",
-    "labelid": "label ID",
-    "bpm": "BPM",
+    "tracknumber": N_("track"),
+    "discnumber": N_("disc"),
+    "labelid": N_("label ID"),
+    "bpm": N_("BPM"),
     "isrc": "ISRC",
-    "lastplayed": "last played",
-    "filename": "full name",
-    "playcount": "plays",
-    "skipcount": "skips",
-    "mtime": "modified",
-    "mountpoint": "mount point",
-    "basename": "filename",
-    "dirname": "directory",
+    "lastplayed": N_("last played"),
+    "laststarted": N_("last started"),
+    "filename": N_("full name"),
+    "playcount": N_("plays"),
+    "skipcount": N_("skips"),
+    "mtime": N_("modified"),
+    "mountpoint": N_("mount point"),
+    "basename": N_("filename"),
+    "dirname": N_("directory"),
+    "uri": "URI",
 
-    "musicbrainz_trackid": "MusicBrainz track ID",
-    "musicbrainz_albumid": "MusicBrainz album ID",
-    "musicbrainz_artistid": "MusicBrainz artist ID",
-    "musicbrainz_albumartistid": "MusicBrainz album artist ID",
-    "musicbrainz_trmid": "MusicBrainz TRM ID",
-    "musicip_puid": "MusicIP PUID",
+    # http://musicbrainz.org/doc/MusicBrainzTag
+    "musicbrainz_trackid": N_("MusicBrainz track ID"),
+    "musicbrainz_albumid": N_("MusicBrainz album ID"),
+    "musicbrainz_artistid": N_("MusicBrainz artist ID"),
+    "musicbrainz_albumartistid": N_("MusicBrainz album artist ID"),
+    "musicbrainz_trmid": N_("MusicBrainz TRM ID"),
+    "musicip_puid": N_("MusicIP PUID"),
+    "musicbrainz_albumstatus": N_("MusicBrainz album status"),
+    "musicbrainz_albumtype": N_("MusicBrainz album type"),
 
-    "replaygain_track_gain": "track gain",
-    "replaygain_track_peak": "track peak",
-    "replaygain_album_gain": "album gain",
-    "replaygain_album_peak": "album peak",
-    "albumartist": "album artist",
-    "originaldate": "original release date",
-    "originalalbum": "original album",
-    "originalartist": "original artist",
-    "recordingdate": "recording date",
+    # Translators: A volume adjustment, not "to get/acquire".
+    "replaygain_track_gain": N_("track gain"),
+    "replaygain_track_peak": N_("track peak"),
+    # Translators: A volume adjustment, not "to get/acquire".
+    "replaygain_album_gain": N_("album gain"),
+    "replaygain_album_peak": N_("album peak"),
+
+    "albumartist": N_("album artist"),
+    "originaldate": N_("original release date"),
+    "originalalbum": N_("original album"),
+    "originalartist": N_("original artist"),
+    "recordingdate": N_("recording date"),
+    "releasecountry": N_("release country"),
     }
+
+del(N_)

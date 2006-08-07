@@ -7,13 +7,13 @@
 #
 # $Id$
 
-import dircache
 import os
 import urlparse
 
 import gobject
 import gtk
 
+import const
 import formats
 import qltk
 import util
@@ -21,19 +21,27 @@ import util
 from qltk.getstring import GetStringDialog
 from qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 
+try: WindowsError
+except NameError:
+    WindowsError = None
+
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
-    if not handledirs or '/' not in key:
-        check = os.path.basename(check) or '/'
+    if check is None:
+        return
+    elif not handledirs or os.sep not in key:
+        check = os.path.basename(check) or os.sep
     return key not in check.lower() and key not in check
 
 class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def cell_data(column, cell, model, iter):
-        cell.set_property('text', util.fsdecode(
-            os.path.basename(model[iter][0])) or "/")
+        value = model[iter][0]
+        if value is not None:
+            cell.set_property('text', util.fsdecode(
+                os.path.basename(value) or value))
     cell_data = staticmethod(cell_data)
 
-    def __init__(self, initial=None):
+    def __init__(self, initial=None, folders=[const.HOME, "/"]):
         super(DirectoryTree, self).__init__(gtk.TreeStore(str))
         column = gtk.TreeViewColumn(_("Folders"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -47,26 +55,33 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         column.set_attributes(render, text=0)
         self.append_column(column)
         self.set_search_equal_func(search_func, True)
-        folders = [os.environ["HOME"], "/"]
+
         # Read in the GTK bookmarks list; gjc says this is the right way
-        try: f = file(os.path.join(os.environ["HOME"], ".gtk-bookmarks"))
+        try: f = file(os.path.join(const.HOME, ".gtk-bookmarks"))
         except EnvironmentError: pass
         else:
+            folders.append(None)
             for line in f.readlines():
                 folders.append(urlparse.urlsplit(line.rstrip())[2])
-            folders = filter(os.path.isdir, folders)
+            def is_folder(filename):
+                return filename is None or os.path.isdir(filename)
+        folders = filter(is_folder, folders)
+        if folders[-1] is None:
+            folders.pop()
 
         for path in folders:
             niter = self.get_model().append(None, [path])
-            self.get_model().append(niter, ["dummy"])
+            if path is not None:
+                self.get_model().append(niter, ["dummy"])
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.connect(
             'test-expand-row', DirectoryTree.__expanded, self.get_model())
+        self.set_row_separator_func(lambda model, iter: model[iter][0] is None)
 
         if initial: self.go_to(initial)
 
         menu = gtk.Menu()
-        m = qltk.MenuItem(_("New Folder..."), gtk.STOCK_NEW)
+        m = qltk.MenuItem(_("_New Folder..."), gtk.STOCK_NEW)
         m.connect('activate', self.__mkdir)
         menu.append(m)
         m = gtk.ImageMenuItem(gtk.STOCK_DELETE)
@@ -75,25 +90,29 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         m = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         m.connect('activate', self.__refresh)
         menu.append(m)
+        m = qltk.MenuItem(_("_Select All Subfolders"), gtk.STOCK_DIRECTORY)
+        m.connect('activate', self.__expand)
+        menu.append(m)
         menu.show_all()
         self.connect_object('popup-menu', self.__popup_menu, menu)
 
     def go_to(self, initial):
         path = []
         head, tail = os.path.split(initial)
-        while head != os.path.dirname(os.environ["HOME"]) and tail != '':
+        while head != os.path.dirname(const.HOME) and tail != '':
             if tail:
                 def isvisibledir(t):
                     return (t[0] != "." and
                             os.access(os.path.join(head, t), os.R_OK)
                             and os.path.isdir(os.path.join(head, t)))
-                try: dirs = filter(isvisibledir, dircache.listdir(head))
+                try: dirs = filter(isvisibledir, sorted(os.listdir(head)))
                 except OSError: break
                 try: path.insert(0, dirs.index(tail))
                 except ValueError: break
             head, tail = os.path.split(head)
 
-        if initial.startswith(os.environ["HOME"]): path.insert(0, 0)
+        if initial.startswith(const.HOME):
+            path.insert(0, 0)
         else: path.insert(0, 1)
         for i in range(len(path)):
             self.expand_row(tuple(path[:i+1]), False)
@@ -150,6 +169,24 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             self.emit('test-expand-row', model.get_iter(prow), prow)
             if expanded: self.expand_row(prow, False)
 
+    def __expand(self, button):
+        selection = self.get_selection()
+        model, rows = selection.get_selected_rows()
+        for row in rows:
+            it = model.get_iter(row)
+            self.expand_row(row, False)
+            last = self.__select_children(it, model, selection)
+            selection.select_range(row, last)
+
+    def __select_children(self, iter, model, selection):
+        nchildren = model.iter_n_children(iter)
+        last = model.get_path(iter)
+        for i in xrange(nchildren):
+            child = model.iter_nth_child(iter, i)
+            self.expand_row(model.get_path(child), False)
+            last = self.__select_children(child, model, selection)
+        return last
+
     def __refresh(self, button):
         model, rows = self.get_selection().get_selected_rows()
         for row in rows:
@@ -167,34 +204,40 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             while model.iter_has_child(iter):
                 model.remove(model.iter_children(iter))
             folder = model[iter][0]
-            for base in dircache.listdir(folder):
-                path = os.path.join(folder, base)
-                if (base[0] != "." and os.access(path, os.R_OK) and
-                    os.path.isdir(path)):
-                    niter = model.append(iter, [path])
-                    if filter(os.path.isdir,
-                              [os.path.join(path, d) for d in
-                               dircache.listdir(path) if d[0] != "."]):
-                        model.append(niter, ["dummy"])
+            for base in sorted(os.listdir(folder)):
+                try:
+                    path = os.path.join(folder, base)
+                    if (base[0] != "." and os.access(path, os.R_OK) and
+                        os.path.isdir(path)):
+                        niter = model.append(iter, [path])
+                        if filter(os.path.isdir,
+                                  [os.path.join(path, d) for d in
+                                   sorted(os.listdir(path)) if d[0] != "."]):
+                            model.append(niter, ["dummy"])
+                except WindowsError:
+                    # Windows lies and says you can read unreadable dirs.
+                    pass
             if not model.iter_has_child(iter): return True
         finally:
             if window: window.set_cursor(None)
 
 class FileSelector(gtk.VPaned):
     def cell_data(column, cell, model, iter):
-        cell.set_property(
-            'text', util.fsdecode(os.path.basename(model[iter][0])))
+        value = model[iter][0]
+        if value is not None:
+            cell.set_property('text', util.fsdecode(os.path.basename(value)))
     cell_data = staticmethod(cell_data)
 
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (gtk.TreeSelection,))
                      }
 
-    def __init__(self, initial=None, filter=formats.filter):
+    def __init__(self, initial=None, filter=formats.filter,
+                 folders=[const.HOME, "/"]):
         super(FileSelector, self).__init__()
         self.__filter = filter
 
-        dirlist = DirectoryTree(initial)
+        dirlist = DirectoryTree(initial, folders=folders)
         filelist = AllTreeView(gtk.ListStore(str))
         column = gtk.TreeViewColumn(_("Songs"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -251,8 +294,10 @@ class FileSelector(gtk.VPaned):
         dirs = [dmodel[row][0] for row in rows]
         for dir in dirs:
             try:
-                for file in filter(self.__filter, dircache.listdir(dir)):
-                    fmodel.append([os.path.join(dir, file)])
+                for file in filter(self.__filter, sorted(os.listdir(dir))):
+                    filename = os.path.join(dir, file)
+                    if os.access(filename, os.R_OK):
+                        fmodel.append([filename])
             except OSError:
                 pass
 

@@ -17,14 +17,22 @@ _TRANS = {"inorder": _("In Order"),
           "onesong": _("One Song")
           }
 
+# Canonical accelerated versions, in case we need them (e.g. the tray
+# icon uses them right now).
+
+_("_In Order")
+_("_Shuffle")
+_("_Weighted")
+_("_One Song")
+
 class PlayOrder(gtk.ComboBox):
-    def __init__(self, model):
+    def __init__(self, model, player):
         super(PlayOrder, self).__init__(gtk.ListStore(str))
         cell = gtk.CellRendererText()
         self.pack_start(cell, True)
         self.add_attribute(cell, 'text', 0)
         for order in _ORDERS: self.append_text(_TRANS[order])
-        self.connect_object('changed', self.__changed_order, model)
+        self.connect_object('changed', self.__changed_order, model, player)
         self.set_active(config.get("memory", "order"))
 
     def set_active(self, value):
@@ -34,7 +42,12 @@ class PlayOrder(gtk.ComboBox):
     def get_active_name(self):
         return _ORDERS[self.get_active()]
 
-    def __changed_order(self, model):
+    def __changed_order(self, model, player):
         model.order = self.get_active()
         config.set("memory", "order", _ORDERS[self.get_active()])
 
+        if model.order == 0:
+            player.replaygain_profiles[1] = ["album", "track"]
+        else:
+            player.replaygain_profiles[1] = ["track"]
+        player.volume = player.volume

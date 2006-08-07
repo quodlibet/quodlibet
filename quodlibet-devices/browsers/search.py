@@ -17,7 +17,6 @@ import const
 import qltk
 
 from browsers._base import Browser
-from library import library
 from parse import Query
 from qltk.cbes import ComboBoxEntrySave
 from qltk.completion import LibraryTagCompletion
@@ -36,13 +35,14 @@ class EmptyBar(gtk.HBox, Browser):
     priority = 0
     in_menu = False
 
-    def __init__(self, watcher, player):
+    def __init__(self, library, player):
         super(EmptyBar, self).__init__()
         # When _text is None, calls to activate are ignored. This is to
         # avoid the song list changing when the user switches browses and
         # then refreshes.
         self._text = None
         self._filter = None
+        self._library = library
         self.__main = bool(player)
         self.commands = {"query": self.__query}
 
@@ -57,7 +57,7 @@ class EmptyBar(gtk.HBox, Browser):
 
     status = property(lambda s: s._text)
 
-    def __query(self, text, watcher, window, player):
+    def __query(self, text, library, window, player):
         self.set_text(text)
         self.activate()
 
@@ -73,7 +73,7 @@ class EmptyBar(gtk.HBox, Browser):
             try: self._filter = Query(self._text, star=SongList.star).search
             except Query.error: pass
             else:
-                songs = filter(self._filter, library.itervalues())
+                songs = filter(self._filter, self._library)
                 self.emit('songs-selected', songs, None)
                 if self.__main: self.save()
 
@@ -134,8 +134,8 @@ class SearchBar(EmptyBar):
     priority = 1
     in_menu = True
 
-    def __init__(self, watcher, player):
-        super(SearchBar, self).__init__(watcher, player)
+    def __init__(self, library, player):
+        super(SearchBar, self).__init__(library, player)
 
         self.__save = bool(player)
         self.set_spacing(12)
@@ -148,7 +148,7 @@ class SearchBar(EmptyBar):
         l.connect('mnemonic-activate', self.__mnemonic_activate)
         tips = Tooltips(self)
         combo = ComboBoxEntrySave(QUERIES, model="searchbar", count=8)
-        combo.child.set_completion(LibraryTagCompletion(watcher, library))
+        combo.child.set_completion(LibraryTagCompletion(library.librarian))
         l.set_mnemonic_widget(combo.child)
         l.set_use_underline(True)
         clear = qltk.ClearButton(self, tips)
@@ -202,7 +202,7 @@ class SearchBar(EmptyBar):
             try: self._filter = Query(self._text, star=SongList.star).search
             except Query.error: pass
             else:
-                songs = filter(self._filter, library.itervalues())
+                songs = filter(self._filter, self._library.itervalues())
                 self.__combo.prepend_text(self._text)
                 if self.__limit.get_property('visible'):
                     songs = self.__limit.limit(songs)
