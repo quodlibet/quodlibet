@@ -57,7 +57,7 @@ class DeviceProperties(gtk.Dialog):
         y = 0
         for title, value, attr in props + device.Properties():
             if title == None:
-                self.__table.attach(gtk.HSeparator(), 0, 2, y, y + 1)
+                table.attach(gtk.HSeparator(), 0, 2, y, y + 1)
             else:
                 if attr and isinstance(value, gtk.CheckButton):
                     value.set_label(title)
