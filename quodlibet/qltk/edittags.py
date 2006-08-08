@@ -329,6 +329,8 @@ class EditTags(gtk.VBox):
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_tag_name, model)
+        render.connect(
+            'editing-started', self.__tag_editing_started, model, library)
         view.append_column(column)
 
         render = gtk.CellRendererText()
@@ -749,6 +751,17 @@ class EditTags(gtk.VBox):
             if not editable.get_completion():
                 tag = model[path][TAG]
                 completion = LibraryValueCompletion(tag, library)
+                editable.set_completion(completion)
+        except AttributeError:
+            pass
+
+    def __tag_editing_started(self, render, editable, path, model, library):
+        try:
+            if not editable.get_completion():
+                tags = self.__songinfo.can_change()
+                if tags == True:
+                    from formats import USEFUL_TAGS as tags
+                completion = qltk.EntryCompletion(tags)
                 editable.set_completion(completion)
         except AttributeError:
             pass
