@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Quod Libet 0.16\n"
+"Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:51-0300\n"
 "PO-Revision-Date: 2006-07-02 22:30-0500\n"
@@ -1631,31 +1631,31 @@ msgstr ""
 
 #: ../qltk/songlist.py:862
 msgid "_Track Headers"
-msgstr "Cabeçhlhos de Faixa"
+msgstr "Cabeçahlhos de Faixa"
 
 #: ../qltk/songlist.py:863
 msgid "_Album Headers"
-msgstr "Cabeçlhos de Á_lbuns"
+msgstr "Cabeçalhos de Á_lbuns"
 
 #: ../qltk/songlist.py:864
 msgid "_People Headers"
-msgstr "CabeçCalhos de _Pessoas"
+msgstr "Cabeçalhos de _Pessoas"
 
 #: ../qltk/songlist.py:865
 msgid "_Date Headers"
-msgstr "CabeçCalhos de _Data"
+msgstr "Cabeçalhos de _Data"
 
 #: ../qltk/songlist.py:866
 msgid "_File Headers"
-msgstr "CaebçCalhos de _Filtros"
+msgstr "Caebçalhos de _Filtros"
 
 #: ../qltk/songlist.py:867
 msgid "_Production Headers"
-msgstr "CabeçCalhos de P_roduçCãCo"
+msgstr "Cabeçalhos de P_rodução"
 
 #: ../qltk/songlist.py:880
 msgid "_Customize Headers..."
-msgstr "Per_sonalizar CabeçCalhos"
+msgstr "Per_sonalizar Cabeçalhos"
 
 #: ../qltk/tagsfrompath.py:71
 msgid "Replace _underscores with spaces"
