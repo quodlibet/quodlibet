@@ -1136,7 +1136,7 @@ msgstr "Arquivos"
 
 #: ../qltk/lyrics.py:34
 msgid "_Download"
-msgstr "_Downloads"
+msgstr "_Download"
 
 #: ../qltk/lyrics.py:52
 #, python-format
