@@ -22,6 +22,7 @@ Quod Libet 0.22+ requires Python 2.4 or later.
  * Song list headers can be changed via a context menu.
  * True Audio (TTA) support.
  * New Japanese translation, by Yasushi Iwata.
+ * New Traditional Chinese translation, by Hsin-lin Cheng.
  * Updated Translations:
    * German, by Rüdiger Arp.
    * Polish, by Tomasz Torcz
