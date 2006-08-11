@@ -120,6 +120,8 @@ class StatusBar(gtk.HBox):
         hb.pack_start(pause, expand=False)
         self.pack_start(hb)
         self.progress.connect('notify::visible', self.__toggle, pause, hb)
+        self.progress.connect_object(
+            'notify::fraction', lambda *args: args[0].set_active(False), pause)
         self.count.show()
 
     def __pause(self, pause):

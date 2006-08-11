@@ -70,10 +70,24 @@ class Tcopool(TestCase):
         gtk.main_iteration()
         gtk.main_iteration()
 
+    def test_pause_restart_pause(self):
+        copool.add(self.__set_buffer, funcid="test")
+        gtk.main_iteration()
+        gtk.main_iteration()
+        self.failUnless(self.buffer)
+        copool.pause("test")
+        self.buffer = None
+        gtk.main_iteration()
+        gtk.main_iteration()
+        self.failIf(self.buffer)
+        copool.add(self.__set_buffer, funcid="test")
+        gtk.main_iteration()
+        gtk.main_iteration()
+        self.failUnless(self.buffer)
+        copool.pause("test")
+        self.buffer = None
+        gtk.main_iteration()
+        gtk.main_iteration()
+        self.failIf(self.buffer)
+
 add(Tcopool)
-
-
-
-
-
-
