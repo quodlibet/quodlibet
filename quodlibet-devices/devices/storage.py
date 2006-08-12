@@ -12,66 +12,46 @@ import os
 import shutil
 import gtk
 import copy
-from popen2 import Popen4 as popen
 
 import util
 import const
 
 from devices._base import Device
-from library import Library
+from library import SongFileLibrary
 from parse import FileFromPattern
 from qltk import ConfirmAction
 from qltk.entry import ValidatingEntry
 from qltk.wlw import WaitLoadWindow
 
 class StorageDevice(Device):
-    name = _("Removable Storage")
-    description = _("Any mountable device, such as a USB music player "
-                    "or an external hard drive")
-    writable = True
+    type = "generic"
 
-    mountpoint = ""
-    pattern = ""
-    covers = True
+    defaults = {
+        'pattern': "",
+        'covers': True,
+    }
 
     __library = None
     __pattern = None
 
-    # Don't pickle the compiled pattern
-    def __getstate__(self):
-        self.__pattern = None
-        return self.__dict__
-
     def Properties(self):
         props = []
-        entry = ValidatingEntry(os.path.ismount)
-        entry.set_text(self.mountpoint)
-        props.append((_("_Mount Point:"), entry, 'mountpoint'))
 
         entry = gtk.Entry()
-        entry.set_text(self.pattern)
+        entry.set_text(self['pattern'])
         props.append((_("_Filename Pattern:"), entry, 'pattern'))
 
         check = gtk.CheckButton()
-        check.set_active(self.covers)
+        check.set_active(self['covers'])
         props.append((_("Copy _album covers"), check, 'covers'))
 
         return props
-
-    def is_connected(self):
-        return os.path.ismount(self.mountpoint)
-
-    def get_space(self):
-        info = os.statvfs(self.mountpoint)
-        space = info.f_bsize * info.f_blocks
-        free = info.f_bsize * info.f_bavail
-        return (space, free)
 
     def list(self, browser, rescan=False):
         if self.__library and not rescan:
             return self.__library.values()
         elif not self.__library:
-            self.__library = Library()
+            self.__library = SongFileLibrary()
 
         library = self.__library
 
@@ -96,24 +76,16 @@ class StorageDevice(Device):
                                    "adding them to your library.\n\n"
                                    "%d songs added"), 0)
             a, c, r = [], [], []
-            for a, c, r in library.scan([self.mountpoint]):
+            for a, c, r in library.scan([self.mountpoint()]):
                 if win.step(len(a)): break
             win.destroy()
 
         return library.values()
 
-    def eject(self):
-        for prog in ("pumount", "umount"):
-            if util.iscommand(prog):
-                pipe = popen("%s %s" % (prog, self.mountpoint))
-                if pipe.wait() == 0: return True
-                else: return pipe.fromchild.read()
-        else: return _("No unmounting command was found.")
-
     def copy(self, songlist, song):
         if not self.__pattern:
             self.__pattern = FileFromPattern(
-                os.path.join(self.mountpoint, self.pattern))
+                os.path.join(self.mountpoint(), self['pattern']))
 
         utarget = self.__pattern.format(song)
         target = util.fsencode(utarget)
@@ -137,7 +109,7 @@ class StorageDevice(Device):
                 os.makedirs(dirname)
             shutil.copyfile(util.fsencode(song["~filename"]), target)
 
-            if self.covers:
+            if self['covers']:
                 cover = song.find_cover()
                 if cover:
                     filename = os.path.join(dirname,
@@ -154,3 +126,5 @@ class StorageDevice(Device):
 
     def cleanup(self, wlw, action):
         self.__pattern = None
+
+devices = [StorageDevice]

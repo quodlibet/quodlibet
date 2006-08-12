@@ -1,7 +1,7 @@
 top_srcdir = ../
 NAME = quodlibet
 ALL_LINGUAS = en_GB en_CA de pl ru fr fi nl he bg gl it es pt ko lt nb \
-              sv zh_CN hu ja
+              sv zh_CN hu ja zh_TW
 PREFIX ?= /usr
 PO_DIR ?= $(PREFIX)/share/locale
 
@@ -9,7 +9,7 @@ all:
 
 po: $(addsuffix .mo, $(ALL_LINGUAS))
 
-quodlibet.pot: ../*.py ../formats/*.py ../browsers/*.py ../qltk/*.py ../plugins/*.py tag-names.py ../util/*.py
+quodlibet.pot: ../*.py ../formats/*.py ../browsers/*.py ../qltk/*.py ../plugins/*.py tag-names.py ../util/*.py ../library/*.py
 	intltool-update --pot --gettext-package=$(NAME)
 
 %.po: quodlibet.pot

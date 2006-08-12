@@ -35,7 +35,7 @@ def add(func, *args, **kwargs):
     be usable as a hash key.
     """
     funcid = kwargs.pop("funcid", func)
-    if funcid in __routines:
+    if funcid in __routines or funcid in __paused:
         remove(funcid)
     priority = kwargs.pop("priority", gobject.PRIORITY_LOW)
     next = __wrap(func, funcid, args, kwargs).next
@@ -49,6 +49,11 @@ def remove(funcid):
         del(__routines[funcid])
     if funcid in __paused:
         del(__paused[funcid])
+
+def remove_all():
+    """Stop all running routines."""
+    for funcid in __routines.keys():
+        remove(funcid)
 
 def pause(funcid):
     """Temporarily pause a registered routine."""
@@ -72,3 +77,4 @@ def step(funcid):
         __paused[funcid]()
     else:
         raise ValueError("no pooled routine %r" % funcid)
+

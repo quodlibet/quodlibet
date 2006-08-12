@@ -198,7 +198,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         window = self.window
         if window:
             window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-            while gtk.events_pending(): gtk.main_iteration()
+            gtk.main_iteration()
         try:
             if model is None: return
             while model.iter_has_child(iter):

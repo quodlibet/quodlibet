@@ -7,13 +7,8 @@
 #
 # $Id$
 
-try: import gpod
-except ImportError:
-    raise NotImplementedError
-
 import locale
 import os
-import popen2
 import time
 import gtk
 
@@ -52,46 +47,33 @@ class IPodSong(AudioFile):
         self['~format'] = track.filetype
         self['tracknumber'] = "%d/%d" % (track.track_nr, track.tracks)
 
+    # Disable all tag editing
     def can_change(self, k=None): return []
 
 class IPodDevice(Device):
-    name = _("iPod")
-    description = _("First to fifth generation iPods")
     icon = os.path.join(const.BASEDIR, "device-ipod.png")
-    writable = True
+    type = "ipod"
 
-    mountpoint = ""
-    gain = 0.0
-    covers = True
+    defaults = {
+        'gain': 0.0,
+        'covers': True,
+    }
 
     __itdb = None
     __cache = []
 
-    def __init__(self):
-        mountpoint = os.getenv('IPOD_MOUNTPOINT') # gtkpod uses this
-        if mountpoint: self.mountpoint = mountpoint
-
-    # We don't want to pickle the iTunesDB
-    def __getstate__(self):
-        self.__itdb = None
-        self.__cache = []
-        return self.__dict__
-
     def Properties(self):
         props = []
-        entry = ValidatingEntry(os.path.ismount)
-        entry.set_text(self.mountpoint)
-        props.append((_("_Mount Point:"), entry, 'mountpoint'))
 
         spin = gtk.SpinButton()
         spin.set_range(-20, 20)
         spin.set_digits(1)
         spin.set_increments(0.1, 1)
-        spin.set_value(float(self.gain))
+        spin.set_value(float(self['gain']))
         props.append((_("_Volume Gain (dB):"), spin, 'gain'))
 
         check = gtk.CheckButton()
-        check.set_active(self.covers)
+        check.set_active(self['covers'])
         props.append((_("Copy _album covers"), check, 'covers'))
 
         if self.is_connected():
@@ -105,7 +87,7 @@ class IPodDevice(Device):
     def __get_details(self):
         details = {}
 
-        try: file = open(os.path.join(self.mountpoint,
+        try: file = open(os.path.join(self.mountpoint(),
                          "iPod_Control", "Device", "SysInfo"))
         except IOError: return details
 
@@ -123,36 +105,6 @@ class IPodDevice(Device):
                 details['firmware'] = parts[2].strip("()")
         return details
 
-    def is_connected(self):
-        return os.path.ismount(self.mountpoint) and \
-               os.path.isdir(os.path.join(self.mountpoint, "iPod_Control"))
-
-    def eject(self):
-        dev = self.__get_device()
-        if dev:
-            pipe = popen2.Popen4("eject %s" % dev)
-            if pipe.wait() == 0: return True
-            else: return pipe.fromchild.read()
-        else:
-            return _("Unable to find a device for %s") % self.mountpoint
-
-    def __get_device(self):
-        try: file = open("/etc/mtab")
-        except IOError: return None
-
-        while True:
-            line = file.readline()
-            parts = line.split()
-            if len(parts) < 2: continue
-            if parts[1] == self.mountpoint: return parts[0]
-        else: return None
-
-    def get_space(self):
-        info = os.statvfs(self.mountpoint)
-        space = info.f_bsize * info.f_blocks
-        free = info.f_bsize * info.f_bavail
-        return (space, free)
-
     def list(self, browser, rescan=False):
         if rescan and self.__load_db():
             self.__cache = []
@@ -166,7 +118,7 @@ class IPodDevice(Device):
 
     def __create_db(self):
         db = gpod.itdb_new();
-        gpod.itdb_set_mountpoint(self.mountpoint)
+        gpod.itdb_set_mountpoint(self.mountpoint())
 
         master = gpod.itdb_playlist_new('iPod', False)
         gpod.itdb_playlist_set_mpl(master)
@@ -177,7 +129,7 @@ class IPodDevice(Device):
     def __load_db(self):
         if self.__itdb: return self.__itdb
 
-        self.__itdb = gpod.itdb_parse(self.mountpoint, None)
+        self.__itdb = gpod.itdb_parse(self.mountpoint(), None)
         if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
             qltk.get_top_parent(self), _("Uninitialized iPod"),
             _("Do you want to create an empty database on this iPod?")
@@ -213,7 +165,7 @@ class IPodDevice(Device):
             except: continue
         track.filetype = song('~format')
 
-        if self.covers:
+        if self['covers']:
             cover = song.find_cover()
             if cover: gpod.itdb_track_set_thumbnails(track, cover.name)
 
@@ -240,7 +192,7 @@ class IPodDevice(Device):
             db = float(song['replaygain_track_gain'].split()[0])
         else: db = 0.0
 
-        soundcheck = int(round(1000 * 10.**(-0.1 * (db + float(self.gain)))))
+        soundcheck = int(round(1000 * 10.**(-0.1 * (db + float(self['gain'])))))
         return soundcheck
 
     def delete(self, songlist, song):
@@ -330,3 +282,9 @@ class IPodDevice(Device):
         'M9805': ('iPod mini pink', '6GB'),
         'M9807': ('iPod mini green', '6GB'),
     }
+
+try: import gpod
+except ImportError:
+    devices = []
+else:
+    devices = [IPodDevice]

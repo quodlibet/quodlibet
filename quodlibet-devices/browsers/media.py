@@ -9,15 +9,12 @@
 
 import os
 import sys
-import cPickle as pickle
-from ConfigParser import RawConfigParser
 
 import gtk
 import gtk.gdk as gdk
 import pango
 
 import config
-import const
 import qltk
 import util
 import devices
@@ -28,8 +25,6 @@ from qltk.views import AllTreeView
 from qltk.songsmenu import SongsMenu
 from qltk.wlw import WaitLoadWindow
 from qltk.browser import LibraryBrowser
-
-DEVICES = os.path.join(const.USERDIR, "devices")
 
 class DeviceProperties(gtk.Dialog):
     def __init__(self, parent, device):
@@ -48,32 +43,31 @@ class DeviceProperties(gtk.Dialog):
         self.vbox.pack_start(table, expand=False)
 
         props = []
-        props.append((_("Device Type:"), device.__class__.name, None))
 
         entry = gtk.Entry()
-        entry.set_text(device.name)
+        entry.set_text(device['name'])
         props.append((_("_Name:"), entry, 'name'))
 
         y = 0
-        for title, value, attr in props + device.Properties():
+        for title, value, key in props + device.Properties():
             if title == None:
                 table.attach(gtk.HSeparator(), 0, 2, y, y + 1)
             else:
-                if attr and isinstance(value, gtk.CheckButton):
+                if key and isinstance(value, gtk.CheckButton):
                     value.set_label(title)
                     value.set_use_underline(True)
-                    value.connect('toggled', self.__changed, attr)
+                    value.connect('toggled', self.__changed, key)
                     table.attach(value, 0, 2, y, y + 1, xoptions=gtk.FILL)
                 else:
                     label = gtk.Label()
                     label.set_markup("<b>%s</b>" % util.escape(title))
                     label.set_alignment(0.0, 0.5)
                     table.attach(label, 0, 1, y, y + 1, xoptions=gtk.FILL)
-                    if attr and isinstance(value, gtk.Widget):
+                    if key and isinstance(value, gtk.Widget):
                         widget = value
                         label.set_mnemonic_widget(widget)
                         label.set_use_underline(True)
-                        widget.connect('changed', self.__changed, attr)
+                        widget.connect('changed', self.__changed, key)
                     else:
                         widget = gtk.Label(value)
                         widget.set_selectable(True)
@@ -82,7 +76,7 @@ class DeviceProperties(gtk.Dialog):
             y += 1
         self.show_all()
 
-    def __changed(self, widget, attr):
+    def __changed(self, widget, key):
         if isinstance(widget, gtk.Entry):
             value = widget.get_text()
         elif isinstance(widget, gtk.SpinButton):
@@ -91,73 +85,15 @@ class DeviceProperties(gtk.Dialog):
             value = widget.get_active()
         else:
             raise NotImplementedError
-        setattr(self.__device, attr, value)
+        self.__device[key] = value
 
     def __close(self, dialog, response):
         dialog.destroy()
-        MediaDevices.write()
-
-class AddDeviceDialog(gtk.Dialog):
-    def __init__(self, parent):
-        super(AddDeviceDialog, self).__init__(
-            _("Add Device"), qltk.get_top_parent(parent),
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                     gtk.STOCK_ADD, gtk.RESPONSE_OK))
-        self.set_default_response(gtk.RESPONSE_OK)
-        self.set_default_size(400, 200)
-
-        model = gtk.ListStore(object, gdk.Pixbuf)
-        for device in devices.devices:
-            pixbuf = gdk.pixbuf_new_from_file_at_size(
-                device.icon, 24, 24)
-            model.append(row=[device, pixbuf])
-
-        swin = gtk.ScrolledWindow()
-        swin.set_border_width(8)
-        swin.set_shadow_type(gtk.SHADOW_IN)
-        swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.vbox.pack_start(swin)
-
-        self.__view = view = AllTreeView(model)
-        view.set_rules_hint(True)
-        view.set_headers_visible(False)
-        view.connect('row-activated', self.__select)
-        swin.add(view)
-
-        col = gtk.TreeViewColumn("Devices")
-        view.append_column(col)
-
-        render = gtk.CellRendererPixbuf()
-        col.pack_start(render, expand=False)
-        col.add_attribute(render, 'pixbuf', 1)
-
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        col.pack_start(render)
-        col.set_cell_data_func(render, AddDeviceDialog.cell_data)
-
-        self.show_all()
-
-    def __select(self, view, path, col):
-        self.response(gtk.RESPONSE_OK)
-
-    def cell_data(col, render, model, iter):
-        device = model[iter][0]
-        render.markup = "<b>%s</b>\n%s" % (util.escape(device.name),
-                                           util.escape(device.description))
-        render.set_property('markup', render.markup)
-    cell_data = staticmethod(cell_data)
-
-    def run(self):
-        response = super(AddDeviceDialog, self).run()
-        model, iter = self.__view.get_selection().get_selected()
-        self.destroy()
-        if response == gtk.RESPONSE_OK and iter:
-            return model[iter][0]
-        else: return None
+        devices.write()
 
 # A delete dialog for devices which implement a custom delete method.
 # Adapted from qltk.DeleteDialog, which only works with files.
+# TODO: combine with qltk.DeleteDialog
 class DeleteDialog(gtk.Dialog):
     def __init__(self, parent, songs):
         super(DeleteDialog, self).__init__(
@@ -218,25 +154,30 @@ class DeleteDialog(gtk.Dialog):
 
 # This will be included in SongsMenu
 class Menu(gtk.Menu):
-    def __init__(self, songs, watcher):
+    def __init__(self, songs, library):
         super(Menu, self).__init__()
         for device, pixbuf in MediaDevices.devices():
             x, y = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
             pixbuf = pixbuf.scale_simple(x, y, gtk.gdk.INTERP_BILINEAR)
-            i = gtk.ImageMenuItem(device.name)
+            i = gtk.ImageMenuItem(device['name'])
             i.set_sensitive(device.is_connected())
             i.get_image().set_from_pixbuf(pixbuf)
             i.connect_object(
-                'activate', self.__copy_to_device, device, songs, watcher)
+                'activate', self.__copy_to_device, device, songs, library)
             self.append(i)
 
-    def __copy_to_device(device, songs, watcher):
-        win = LibraryBrowser(MediaDevices, watcher)
-        win.browser.select(device)
-        win.browser.dropped(win.songlist, songs)
+    def __copy_to_device(device, songs, library):
+        if len(MediaDevices.browsers) > 0:
+            browser = MediaDevices.browsers[0]
+        else:
+            win = LibraryBrowser(MediaDevices, library)
+            browser = win.browser
+        browser.select(device)
+        browser.dropped(win.songlist, songs)
     __copy_to_device = staticmethod(__copy_to_device)
 
 # A custom paned to allow a browser-controlled widget above the songlist.
+# FIXME: find something more sensible
 class CustomPaned(qltk.RHPaned):
     def pack2(self, child, resize=True, shrink=True):
         self.__songpane = child
@@ -266,53 +207,56 @@ class MediaDevices(Browser, gtk.VBox):
     accelerated_name = _("_Media Devices")
     priority = 25
 
+    browsers = []
+
     def cell_data(col, render, model, iter):
         device = model[iter][0]
         if device.is_connected():
-            render.markup = "<b>%s</b>" % util.escape(device.name)
+            render.markup = "<b>%s</b>" % util.escape(device['name'])
         else:
-            render.markup = util.escape(device.name)
+            render.markup = util.escape(device['name'])
         render.set_property('markup', render.markup)
     cell_data = staticmethod(cell_data)
 
-    def init(klass, watcher):
-        try:
-            # Use a custom unpickler to avoid losing all devices
-            # when one of them isn't importable anymore.
-            def find_global(module, name):
-                if module.split('.')[0] == 'devices': return devices.get(name)
-                else:
-                    # This is the find_class function from pickle.Unpickler
-                    __import__(module)
-                    mod = sys.modules[module]
-                    klass = getattr(mod, name)
-                    return klass
-            pickler = pickle.Unpickler(file(DEVICES, "rb"))
-            pickler.find_global = find_global
-            devs = pickler.load()
-        except IOError: pass
-        else:
-            for device in devs:
-                if type(device) == devices._base.Device: continue
-                pixbuf = gdk.pixbuf_new_from_file_at_size(
-                    device.icon, 24, 24)
-                klass.__devices.append(row=[device, pixbuf])
+    def init(klass, library):
+        devices._hal.connect_to_signal(
+            'DeviceAdded', klass.__hal_device_added)
+        devices._hal.connect_to_signal(
+            'DeviceRemoved', klass.__hal_device_removed)
+        for udi in devices.discover():
+            klass.__hal_device_added(udi)
     init = classmethod(init)
 
     def devices(klass):
         return [(row[0], row[1]) for row in klass.__devices]
     devices = classmethod(devices)
 
-    def write(klass):
-        devices = [row[0] for row in klass.__devices]
-        f = file(DEVICES, "wb")
-        pickle.dump(devices, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
-    write = classmethod(write)
+    def __hal_device_added(klass, udi):
+        print 'device connected: %s' % udi
+        device = devices.get_by_udi(udi)
+        if device != None:
+            klass.__add_device(device)
+    __hal_device_added = classmethod(__hal_device_added)
 
-    def __init__(self, watcher, player):
+    def __hal_device_removed(klass, udi):
+        print 'device disconnected: %s' % udi
+        for row in klass.__devices:
+            if row[0].udi == udi:
+                klass.__devices.remove(row.iter)
+                break
+    __hal_device_removed = classmethod(__hal_device_removed)
+
+    def __add_device(klass, device):
+        pixbuf = gdk.pixbuf_new_from_file_at_size(
+            device.icon, 24, 24)
+        print "adding device: %s" % device.__class__
+        klass.__devices.append(row=[device, pixbuf])
+    __add_device = classmethod(__add_device)
+
+    def __init__(self, library, player):
         super(MediaDevices, self).__init__(spacing=6)
-        self.__main = bool(player)
+        MediaDevices.browsers.insert(0, self)
+        self.connect('destroy', MediaDevices.browsers.remove)
 
         # Device list on the left pane
         swin = gtk.ScrolledWindow()
@@ -327,10 +271,9 @@ class MediaDevices(Browser, gtk.VBox):
         view.set_headers_visible(False)
         view.get_selection().set_mode(gtk.SELECTION_BROWSE)
         view.get_selection().connect('changed', self.__changed)
-        view.connect('popup-menu', self.__popup_menu, watcher)
+        view.connect('popup-menu', self.__popup_menu, library)
         if player: view.connect('row-activated', self.__play, player)
         swin.add(view)
-        self.connect('destroy', lambda w: MediaDevices.write())
 
         col = gtk.TreeViewColumn("Devices")
         view.append_column(col)
@@ -344,10 +287,6 @@ class MediaDevices(Browser, gtk.VBox):
         render.connect('edited', self.__edited)
         col.pack_start(render)
         col.set_cell_data_func(render, MediaDevices.cell_data)
-
-        add = qltk.Button(_("_Add Device"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
-        add.connect('clicked', self.__add_device)
-        self.pack_start(add, expand=False)
 
         self.__eject_button = eject = qltk.Button(
             _("_Eject"), gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
@@ -393,31 +332,49 @@ class MediaDevices(Browser, gtk.VBox):
                 items.append(delete)
         return items
 
+    def activate(self):
+        self.__changed(self.__view.get_selection())
+
+    def save(self):
+        selection = self.__view.get_selection()
+        model, iter = selection.get_selected()
+        config.set('browsers', 'media', model[iter][0]['name'])
+
+    def restore(self):
+        try: name = config.get('browsers', 'media')
+        except: pass
+        else:
+            for row in self.__devices:
+                if row[0]['name'] == name: break
+            else: return
+            selection = self.__view.get_selection()
+            selection.unselect_all()
+            selection.select_iter(row.iter)
+
+    def select(self, device):
+        for row in self.__devices:
+            if row[0] == device: break
+        else: return
+        selection = self.__view.get_selection()
+        selection.unselect_all()
+        selection.select_iter(row.iter)
+
+    def dropped(self, songlist, songs):
+        self.__copy_songs(self, songlist, songs)
+
     def __play(self, view, path, column, player):
         player.reset()
-
-    def __add_device(self, button):
-        device = AddDeviceDialog(self).run()
-        if device is not None:
-            device = device()
-            pixbuf = gdk.pixbuf_new_from_file_at_size(
-                device.icon, 24, 24)
-            self.__devices.append(row=[device, pixbuf])
-            self.__properties(device)
-            MediaDevices.write()
 
     def __eject(self, button):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             device = model[iter][0]
             status = device.eject()
-            if status == True:
-                self.__refresh(device)
-            else:
+            if status != True:
                 qltk.ErrorMessage(
                     self, _("Unable to eject device"),
                     _("Ejecting <b>%s</b> failed with the following error:\n\n"
-                      + status) % device.name).run()
+                      + status) % device['name']).run()
 
     def __properties(self, device):
         DeviceProperties(self, device).run()
@@ -432,24 +389,21 @@ class MediaDevices(Browser, gtk.VBox):
                                    start_editing=True)
 
     def __edited(self, render, path, newname):
-        self.__devices[path][0].name = newname
+        self.__devices[path][0]['name'] = newname
         self.__set_name(newname)
         render.set_property('editable', False)
+        devices.write()
 
-    def __popup_menu(self, view, watcher):
+    def __popup_menu(self, view, library):
         model, iter = view.get_selection().get_selected()
         device = model[iter][0]
 
         if device.is_connected(): songs = device.list(self)
         else: songs = []
-        menu = SongsMenu(watcher, songs, playlists=False,
+        menu = SongsMenu(library, songs, playlists=False,
                          devices=False, remove=False)
 
         menu.preseparate()
-
-        delete = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        delete.connect_object('activate', model.remove, iter)
-        menu.prepend(delete)
 
         ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
         keyval, mod = gtk.accelerator_parse("F2")
@@ -481,14 +435,6 @@ class MediaDevices(Browser, gtk.VBox):
         menu.popup(None, None, None, 0, gtk.get_current_event_time())
         return True
 
-    def select(self, device):
-        for row in self.__devices:
-            if row[0] == device: break
-        else: return
-        selection = self.__view.get_selection()
-        selection.unselect_all()
-        selection.select_iter(row.iter)
-
     def __set_name(self, name):
         self.__device_name.set_markup(
             '<span size="x-large"><b>%s</b></span>' % util.escape(name))
@@ -501,26 +447,13 @@ class MediaDevices(Browser, gtk.VBox):
 
     def __refresh(self, device, rescan=False):
         self.__device_icon.set_from_file(device.icon)
-        self.__set_name(device.name)
+        self.__set_name(device['name'])
 
         songs = []
         if device.is_connected():
             self.header.show_all()
             self.__eject_button.set_sensitive(bool(device.eject))
-            try: space, free = device.get_space()
-            except NotImplementedError:
-                self.__device_space.set_text("")
-                self.__progress.hide()
-            else:
-                used = space - free
-                fraction = float(used) / space
-
-                self.__device_space.set_markup(
-                    _("<b>%s</b> used, <b>%s</b> available") %
-                        (util.format_size(used), util.format_size(free)))
-                self.__progress.set_fraction(fraction)
-                self.__progress.set_text("%.f%%" % round(fraction * 100))
-                self.__progress.show()
+            self.__refresh_space(device)
 
             try: songs = device.list(self, rescan)
             except NotImplementedError: pass
@@ -528,31 +461,28 @@ class MediaDevices(Browser, gtk.VBox):
             self.header.hide()
         self.emit('songs-selected', songs, True)
 
-    def activate(self):
-        self.__changed(self.__view.get_selection())
-
-    def save(self):
-        selection = self.__view.get_selection()
-        model, iter = selection.get_selected()
-        config.set('browsers', 'media', model[iter][0].name)
-
-    def restore(self):
-        try: name = config.get('browsers', 'media')
-        except: pass
+    def __refresh_space(self, device):
+        try: space, free = device.get_space()
+        except NotImplementedError:
+            self.__device_space.set_text("")
+            self.__progress.hide()
         else:
-            for row in self.__devices:
-                if row[0].name == name: break
-            else: return
-            selection = self.__view.get_selection()
-            selection.unselect_all()
-            selection.select_iter(row.iter)
+            used = space - free
+            fraction = float(used) / space
+
+            self.__device_space.set_markup(
+                _("<b>%s</b> used, <b>%s</b> available") %
+                    (util.format_size(used), util.format_size(free)))
+            self.__progress.set_fraction(fraction)
+            self.__progress.set_text("%.f%%" % round(fraction * 100))
+            self.__progress.show()
 
     def __check_device(self, device, message):
         if not device.writable:
             qltk.WarningMessage(
                 self, message,
                 _("The device <b>%s</b> is read-only.")
-                    % util.escape(device.name)
+                    % util.escape(device['name'])
             ).run()
             return False
 
@@ -560,13 +490,13 @@ class MediaDevices(Browser, gtk.VBox):
             qltk.WarningMessage(
                 self, message,
                 _("The device <b>%s</b> is not connected.")
-                    % util.escape(device.name)
+                    % util.escape(device['name'])
             ).run()
             return False
 
         return True
 
-    def dropped(self, songlist, songs):
+    def __copy_songs(self, songlist, songs):
         model, iter = self.__view.get_selection().get_selected()
         if not iter: return False
 
@@ -577,7 +507,7 @@ class MediaDevices(Browser, gtk.VBox):
         wlw = WaitLoadWindow(
             self, len(songs),
             _("Copying %d songs to device <b>%s</b>\n\n"
-              "Copying <b>%%s</b>") % (len(songs), util.escape(device.name)),
+              "Copying <b>%%s</b>") % (len(songs), util.escape(device['name'])),
             "", 0)
 
         model = songlist.get_model()
@@ -599,6 +529,7 @@ class MediaDevices(Browser, gtk.VBox):
             status = device.copy(songlist, song)
             if isinstance(status, AudioFile):
                 model.append([status])
+                self.__refresh_space(device)
             else:
                 msg = _("The song <b>%s</b> could not be copied.")
                 if type(status) == str:
@@ -612,7 +543,7 @@ class MediaDevices(Browser, gtk.VBox):
         wlw.destroy()
         return True
 
-    def __delete(self, songlist, songs):
+    def __delete_songs(self, songlist, songs):
         model, iter = self.__view.get_selection().get_selected()
         if not iter: return False
 
@@ -625,7 +556,7 @@ class MediaDevices(Browser, gtk.VBox):
         wlw = WaitLoadWindow(
             self, len(songs),
             _("Deleting %d songs from device <b>%s</b>\n\n"
-              "Deleting <b>%%s</b>") % (len(songs), util.escape(device.name)),
+              "Deleting <b>%%s</b>") % (len(songs), util.escape(device['name'])),
             "", 0)
 
         model = songlist.get_model()
@@ -637,6 +568,7 @@ class MediaDevices(Browser, gtk.VBox):
             status = device.delete(songlist, song)
             if status:
                 model.remove(model.find(song))
+                self.__refresh_space(device)
             else:
                 msg = _("The song <b>%s</b> could not be deleted.")
                 if type(status) == str:

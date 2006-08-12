@@ -126,3 +126,13 @@ def ClearButton(entry=None, tips=None):
     if entry is not None:
         clear.connect_object('clicked', entry.set_text, '')
     return clear
+
+def EntryCompletion(words):
+    """Simple string completion."""
+    model = gtk.ListStore(str)
+    for word in sorted(words):
+        model.append(row=[word])
+    comp = gtk.EntryCompletion()
+    comp.set_model(model)
+    comp.set_text_column(0)
+    return comp
