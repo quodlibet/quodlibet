@@ -418,16 +418,16 @@ class QuodLibetWindow(gtk.Window):
 
         act = gtk.Action("About", None, None, gtk.STOCK_ABOUT)
         act.connect_object('activate', qltk.about.show, self, player)
-        ag.add_action(act)
+        ag.add_action_with_accel(act, None)
 
         act = gtk.Action(
             "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, False)
-        ag.add_action(act)
+        ag.add_action_with_accel(act, None)
         act = gtk.Action(
             "ReloadLibrary", _("Re_load Library"), None, gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, True)
-        ag.add_action(act)
+        ag.add_action_with_accel(act, None)
 
         for tag_, lab in [
             ("genre", _("Filter on _Genre")),
@@ -436,7 +436,7 @@ class QuodLibetWindow(gtk.Window):
             act = gtk.Action(
                 "Filter%s" % util.capitalize(tag_), lab, None, gtk.STOCK_INDEX)
             act.connect_object('activate', self.__filter_on, tag_, None, player)
-            ag.add_action(act)
+            ag.add_action_with_accel(act, None)
 
         for (tag_, accel, label) in [
             ("genre", "G", _("Random _Genre")),
@@ -472,7 +472,7 @@ class QuodLibetWindow(gtk.Window):
             label = Kind.accelerated_name
             act = gtk.Action(action, label, None, None)
             act.connect_object('activate', LibraryBrowser, Kind, library)
-            ag.add_action(act)
+            ag.add_action_with_accel(act, None)
 
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, -1)
