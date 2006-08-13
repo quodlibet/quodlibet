@@ -76,7 +76,7 @@ class StorageDevice(Device):
                                    "adding them to your library.\n\n"
                                    "%d songs added"), 0)
             a, c, r = [], [], []
-            for a, c, r in library.scan([self.mountpoint()]):
+            for a, c, r in library.scan([self.mountpoint]):
                 if win.step(len(a)): break
             win.destroy()
 
@@ -85,7 +85,7 @@ class StorageDevice(Device):
     def copy(self, songlist, song):
         if not self.__pattern:
             self.__pattern = FileFromPattern(
-                os.path.join(self.mountpoint(), self['pattern']))
+                os.path.join(self.mountpoint, self['pattern']))
 
         utarget = self.__pattern.format(song)
         target = util.fsencode(utarget)

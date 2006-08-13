@@ -57,6 +57,9 @@ class IPodDevice(Device):
     defaults = {
         'gain': 0.0,
         'covers': True,
+        'all_tags': False,
+        'title_version': False,
+        'album_part': False,
     }
 
     __itdb = None
@@ -76,18 +79,31 @@ class IPodDevice(Device):
         check.set_active(self['covers'])
         props.append((_("Copy _album covers"), check, 'covers'))
 
+        check = gtk.CheckButton()
+        check.set_active(self['all_tags'])
+        props.append((_("Combine tags with _multiple values"), check, 'all_tags'))
+
+        check = gtk.CheckButton()
+        check.set_active(self['title_version'])
+        props.append((_("Title includes _version"), check, 'title_version'))
+
+        check = gtk.CheckButton()
+        check.set_active(self['album_part'])
+        props.append((_("Album includes _part"), check, 'album_part'))
+
         if self.is_connected():
             details = self.__get_details()
             props.append((None, None, None))
             props.append((_("Model:"), details.get('model', '-'), None))
             props.append((_("Capacity:"), details.get('space', '-'), None))
             props.append((_("Firmware:"), details.get('firmware', '-'), None))
+
         return props
 
     def __get_details(self):
         details = {}
 
-        try: file = open(os.path.join(self.mountpoint(),
+        try: file = open(os.path.join(self.mountpoint,
                          "iPod_Control", "Device", "SysInfo"))
         except IOError: return details
 
@@ -118,7 +134,7 @@ class IPodDevice(Device):
 
     def __create_db(self):
         db = gpod.itdb_new();
-        gpod.itdb_set_mountpoint(self.mountpoint())
+        gpod.itdb_set_mountpoint(self.mountpoint)
 
         master = gpod.itdb_playlist_new('iPod', False)
         gpod.itdb_playlist_set_mpl(master)
@@ -129,7 +145,7 @@ class IPodDevice(Device):
     def __load_db(self):
         if self.__itdb: return self.__itdb
 
-        self.__itdb = gpod.itdb_parse(self.mountpoint(), None)
+        self.__itdb = gpod.itdb_parse(self.mountpoint, None)
         if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
             qltk.get_top_parent(self), _("Uninitialized iPod"),
             _("Do you want to create an empty database on this iPod?")
@@ -140,15 +156,28 @@ class IPodDevice(Device):
     def copy(self, songlist, song):
         track = gpod.itdb_track_new()
 
-        # String keys, we only store the first one
-        for key in ['artist', 'album', 'title', 'genre', 'grouping']:
-            try: setattr(track, key, str(song.list(key)[0]))
-            except: continue
+        if self['all_tags']: tag = song.comma
+        else: tag = lambda key: song.list(key)[0]
+
+        title = tag('title')
+        if self['title_version']:
+            title = " - ".join([title, song('version')])
+        track.title = str(title)
+
+        album = tag('album')
+        if self['album_part']:
+            album = " - ".join([album, song('part')])
+        track.album = str(album)
+
+        # String keys
+        for key in ['artist', 'genre', 'grouping']:
+            try: setattr(track, key, str(tag(key)))
+            except IndexError: continue
         # Numeric keys
         for key in ['bitrate', 'playcount', 'year']:
             try: setattr(track, key, int(song('~#'+key)))
-            except: continue
-        # Keys where the names differ
+            except ValueError: continue
+        # Numeric keys where the names differ
         for key, value in {
             'cd_nr':         song('~#disc'),
             'cds':           song('~#discs'),
@@ -162,7 +191,7 @@ class IPodDevice(Device):
             'soundcheck':    self.__soundcheck(song),
         }.items():
             try: setattr(track, key, int(value))
-            except: continue
+            except ValueError: continue
         track.filetype = song('~format')
 
         if self['covers']:
@@ -211,6 +240,7 @@ class IPodDevice(Device):
         gpod.itdb_track_remove(track)
 
     def cleanup(self, wlw, action):
+        return
         wlw._WaitLoadWindow__text = _("<b>Saving iPod database...</b>")
         wlw.count = 0
         wlw.step()

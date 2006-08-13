@@ -39,12 +39,12 @@ devices.sort()
 
 DEVICES = os.path.join(const.USERDIR, "devices")
 
-_config = ConfigParser()
-_config.read(DEVICES)
+config = ConfigParser()
+config.read(DEVICES)
 
 def write():
     f = file(DEVICES, 'w')
-    _config.write(f)
+    config.write(f)
     f.close()
 
 # Return a constructor for a device given by a string
@@ -69,13 +69,11 @@ def get_by_udi(udi):
         klass = get_by_type(interface.GetProperty('portable_audio_player.type'))
         if klass:
             device = klass(udi)
-            device.name = '%s %s' % (interface.GetProperty('info.vendor'),
-                                    interface.GetProperty('info.product'))
             return device
         else:
             print "W: unsupported device %s" % udi
 
-# Get a HAL interface for the given UDI
+# Return a HAL interface for the given UDI
 def get_interface(udi, interface='Device'):
     interface = 'org.freedesktop.Hal.' + interface
     return dbus.Interface(

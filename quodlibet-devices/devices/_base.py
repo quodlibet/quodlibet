@@ -27,38 +27,71 @@ class Device(dict):
     defaults = None
 
     def __init__(self, udi):
-        self.udi = udi
-        self.__device = devices.get_interface(udi)
+        device = devices.get_interface(udi)
 
-        # Find device volume.
-        # FIXME: should we support more than one volume?
-        for vol_udi in devices._hal.FindDeviceStringMatch(
-            'info.parent', udi):
-            volume = devices.get_interface(vol_udi)
-            if volume.GetProperty('volume.is_mounted'):
-                self.__volume = volume
-                break
+        self.udi = udi
+        self.dev = device.GetProperty('block.device')
+        self.mountpoint = ''
 
         # Load default properties.
         if self.defaults: self.update(self.defaults)
 
         # Load configured properties.
-        if devices._config.has_section(udi):
-            self.update(dict(devices._config.items(udi)))
+        if devices.config.has_section(udi):
+            for key in devices.config.options(udi):
+                t = type(self.defaults.get(key))
+                if t == int:
+                    value = devices.config.getint(udi, key)
+                elif t == float:
+                    value = devices.config.getfloat(udi, key)
+                elif t == bool:
+                    value = devices.config.getboolean(udi, key)
+                else:
+                    value = devices.config.get(udi, key)
+                dict.__setitem__(self, key, value)
+            #self.update(dict(devices.config.items(udi)))
 
         # Set a sensible name if none is set.
         if not self.has_key('name'):
             dict.__setitem__(self, 'name', "%s %s" % (
-                self.__device.GetProperty('info.vendor'),
-                self.__device.GetProperty('info.product')))
+                device.GetProperty('info.vendor'),
+                device.GetProperty('info.product')))
 
     # Store all changed properties in the ConfigParser.
     def __setitem__(self, key, value):
         print "__setitem__ hook called: %s => %s" % (key, value)
-        if not devices._config.has_section(self.udi):
-            devices._config.add_section(self.udi)
-        devices._config.set(self.udi, key, value)
+        if not devices.config.has_section(self.udi):
+            devices.config.add_section(self.udi)
+        devices.config.set(self.udi, key, value)
         dict.__setitem__(self, key, value)
+
+    # Should return True if the device is connected.
+    def is_connected(self):
+        if not self.mountpoint:
+            for vol_udi in devices._hal.FindDeviceStringMatch(
+                'info.parent', self.udi):
+                volume = devices.get_interface(vol_udi)
+                if volume.GetProperty('volume.is_mounted'):
+                    self.mountpoint = str(volume.GetProperty(
+                        'volume.mount_point'))
+                    break
+        return os.path.ismount(self.mountpoint)
+
+    # Eject the device, should return True on success.
+    # If the eject failed, it should return False or a string describing the
+    # error.
+    # If the device is not ejectable, set it to None.
+    def eject(self):
+        pipe = popen2.Popen4("eject %s" % self.dev)
+        if pipe.wait() == 0: return True
+        else: return pipe.fromchild.read()
+
+    # Returns a tuple with the size of this device and the free space.
+    def get_space(self):
+        info = os.statvfs(self.mountpoint)
+        space = info.f_bsize * info.f_blocks
+        free = info.f_bsize * info.f_bavail
+        return (space, free)
 
     # Returns a list of AudioFile instances representing the songs
     # on this device. If rescan is False the list can be cached.
@@ -86,31 +119,6 @@ class Device(dict):
     #
     # def cleanup(self, wlw, action='copy'/'delete'): ...
     cleanup = None
-
-    # Should return True if the device is connected.
-    def is_connected(self):
-        return self.__volume.GetProperty('volume.is_mounted')
-
-    # Return the mountpoint of the device's volume.
-    def mountpoint(self):
-        return str(self.__volume.GetProperty('volume.mount_point'))
-
-    # Eject the device, should return True on success.
-    # If the eject failed, it should return False or a string describing the
-    # error.
-    # If the device is not ejectable, set it to None.
-    def eject(self):
-        dev = self.__interface.GetProperty('block.dev')
-        pipe = popen2.Popen4("eject %s" % dev)
-        if pipe.wait() == 0: return True
-        else: return pipe.fromchild.read()
-
-    # Returns a tuple with the size of this device and the free space.
-    def get_space(self):
-        info = os.statvfs(self.mountpoint())
-        space = info.f_bsize * info.f_blocks
-        free = info.f_bsize * info.f_bavail
-        return (space, free)
 
     # Returns a list of tuples for device-specific settings which should be
     # displayed in the properties dialog.

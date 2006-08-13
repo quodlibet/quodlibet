@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-05 17:22-0500\n"
-"PO-Revision-Date: 2006-07-05 23:47+0100\n"
-"Last-Translator: SZERVÑC Attila <sas@321.hu>\n"
+"POT-Creation-Date: 2006-08-12 01:16-0500\n"
+"PO-Revision-Date: 2006-08-12 07:12+0100\n"
+"Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -74,219 +74,191 @@ msgstr "gtk-media-play"
 msgid "gtk-media-pause"
 msgstr "gtk-media-pause"
 
-#: ../library.py:44 ../library.py:55
-#, python-format
-msgid "missing from %d song"
-msgid_plural "missing from %d songs"
-msgstr[0] "hiányzik %d dalból"
-
-#: ../library.py:48 ../library.py:52
-#, python-format
-msgid "different across %d song"
-msgid_plural "different across %d songs"
-msgstr[0] "eltér %d dal közt"
-
-#: ../library.py:192
-#, python-format
-msgid "W: %s is not a QL song database."
-msgstr "F: %s nem QL dal adatbázis."
-
-#: ../library.py:261
-#, python-format
-msgid "Checking %s"
-msgstr "%s ellenőrzése"
-
-#: ../library.py:284 ../qltk/about.py:28
-#, python-format
-msgid "Supported formats: %s"
-msgstr "Támogatott formátumok: %s"
-
-#: ../quodlibet.py:99
+#: ../quodlibet.py:105
 msgid "No song is currently playing."
 msgstr "Nem fut dal."
 
-#: ../quodlibet.py:107
+#: ../quodlibet.py:113
 msgid "Quod Libet is not running."
 msgstr "A Quod Libet nem fut."
 
-#: ../quodlibet.py:118
+#: ../quodlibet.py:124
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "%s írása sikertelen. Eltávolítom."
 
-#: ../quodlibet.py:158
+#: ../quodlibet.py:159
 msgid "a music library and player"
 msgstr "egy zenekönyvtár és lejátszó"
 
-#: ../quodlibet.py:159
+#: ../quodlibet.py:160
 msgid "[ --print-playing | control ]"
 msgstr "[ --print-playing | vezérlő ]"
 
-#: ../quodlibet.py:161
+#: ../quodlibet.py:162
 msgid "Print the playing song and exit"
 msgstr "Kiírja a most forgó dalt és kilép"
 
-#: ../quodlibet.py:162
+#: ../quodlibet.py:163
 msgid "Begin playing immediately"
 msgstr "Lejátszás kezdése azonnal"
 
-#: ../quodlibet.py:165
+#: ../quodlibet.py:166
 msgid "Jump to next song"
 msgstr "Ugrás a következő dalra"
 
-#: ../quodlibet.py:166
+#: ../quodlibet.py:167
 msgid "Jump to previous song"
 msgstr "Ugrás az előző dalra"
 
-#: ../quodlibet.py:167
+#: ../quodlibet.py:168
 msgid "Start playback"
 msgstr "Lejátszás indítása"
 
-#: ../quodlibet.py:168
+#: ../quodlibet.py:169
 msgid "Pause playback"
 msgstr "Lejátszás szünete"
 
-#: ../quodlibet.py:169
+#: ../quodlibet.py:170
 msgid "Toggle play/pause mode"
 msgstr "Lejátszás/szünet váltása"
 
-#: ../quodlibet.py:170
+#: ../quodlibet.py:171
 msgid "Turn up volume"
 msgstr "Hang be"
 
-#: ../quodlibet.py:171
+#: ../quodlibet.py:172
 msgid "Turn down volume"
 msgstr "Hang ki"
 
-#: ../quodlibet.py:172
+#: ../quodlibet.py:173
 msgid "Print player status"
 msgstr "Lejátszó állapot kiírása"
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:174
 msgid "Hide main window"
 msgstr "Főablak rejtése"
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:175
 msgid "Show main window"
 msgstr "Főablak mutatása"
 
-#: ../quodlibet.py:175
+#: ../quodlibet.py:176
 msgid "Toggle main window visibility"
 msgstr "Főablak mutatásának váltása"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:177
 msgid "Focus the running player"
 msgstr "Fókusz a futó lejátszóra"
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:178
 msgid "Print the current playlist"
 msgstr "Mostani lista kiírása"
 
-#: ../quodlibet.py:178
+#: ../quodlibet.py:179
 msgid "Print the contents of the queue"
 msgstr "Sor tartalmának kiírása"
 
-#: ../quodlibet.py:179
+#: ../quodlibet.py:180
 msgid "Exit Quod Libet"
 msgstr "Quod Libet bezárása"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "Seek within the playing song"
 msgstr "Ugrás a forgó dalban"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ÓÓ:]PP:MM"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "Set or toggle the playback order"
 msgstr "Sorrend beállítása/váltása"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:187
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Ismétlés be/ki/váltás"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:188
 msgid "Set the volume"
 msgstr "Hangerő beállítása"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:189
 msgid "Search your audio library"
 msgstr "Daltár keresése"
 
-#: ../quodlibet.py:188 ../quodlibet.py:198
+#: ../quodlibet.py:189 ../quodlibet.py:199
 msgid "query"
 msgstr "lekérés"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:190
 msgid "Play a file"
 msgstr "Fájl lejátszása"
 
-#. just file name, foo.ogg
-#: ../quodlibet.py:189 ../quodlibet.py:198 ../po/tag-names.py:23
-msgid "filename"
+#: ../quodlibet.py:190 ../quodlibet.py:199
+msgid "command|filename"
 msgstr "fájlnév"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:191
 msgid "Rate the playing song"
 msgstr "E dal értéke"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:192
 msgid "Set the current browser"
 msgstr "E böngésző beállítása"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:193
 msgid "Open a new browser"
 msgstr "Új böngésző megnyitása"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:194
 msgid "Show or hide the queue"
 msgstr "Sor mutatása/rejtése"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:195
 msgid "Show or hide the main song list"
 msgstr "Fő dal lista mutatása/rejtése"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "Filter on a random value"
 msgstr "Szűrő egy véletlen értéken"
 
-#: ../quodlibet.py:195
-msgid "tag"
+#: ../quodlibet.py:196
+msgid "command|tag"
 msgstr "tag"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "Filter on a tag value"
 msgstr "Szűrő egy tag értéken"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:197
 msgid "tag=value"
 msgstr "tag=érték"
 
-#: ../quodlibet.py:197
+#: ../quodlibet.py:198
 msgid "Enqueue a file or query"
 msgstr "Fájl vagy lekérés a lejátszósorba"
 
-#: ../quodlibet.py:232
+#: ../quodlibet.py:233
 #, python-format
 msgid "E: Invalid argument for '%s'."
 msgstr "E: Rossz argumentum ehhez: '%s'."
 
-#: ../quodlibet.py:234 ../util/__init__.py:172
+#: ../quodlibet.py:235 ../util/__init__.py:172
 #, python-format
 msgid "E: Try %s --help."
 msgstr "E: Próbáld ezt: %s --help."
 
-#: ../quodlibet.py:255
+#: ../quodlibet.py:256
 msgid "Loaded song library."
 msgstr "Daltár betöltve."
 
 #. Try to initialize the playlist and audio output.
-#: ../quodlibet.py:265
+#: ../quodlibet.py:261
 msgid "Opening audio device."
 msgstr "Hang eszköz megnyitása."
 
-#: ../quodlibet.py:298
+#: ../quodlibet.py:291
 msgid "Quod Libet is already running."
 msgstr "A Quod Libet már fut."
 
@@ -302,7 +274,7 @@ msgstr "hozzáadva"
 msgid "album"
 msgstr "album"
 
-#: ../po/tag-names.py:9
+#: ../po/tag-names.py:9 ../util/__init__.py:532
 msgid "album artist"
 msgstr "album művész"
 
@@ -343,13 +315,18 @@ msgid "description"
 msgstr "leírás"
 
 #. just path, /.../...
-#: ../po/tag-names.py:20 ../exfalso.py:34
+#: ../po/tag-names.py:20 ../exfalso.py:40 ../util/__init__.py:512
 msgid "directory"
 msgstr "könyvtár"
 
-#: ../po/tag-names.py:21
+#: ../po/tag-names.py:21 ../util/__init__.py:500
 msgid "disc"
 msgstr "lemez"
+
+#. just file name, foo.ogg
+#: ../po/tag-names.py:23 ../util/__init__.py:511
+msgid "filename"
+msgstr "fájlnév"
 
 #. as in "file format"
 #: ../po/tag-names.py:25
@@ -357,7 +334,7 @@ msgid "format"
 msgstr "formátum"
 
 #. file name plus path, /.../.../foo.ogg
-#: ../po/tag-names.py:27
+#: ../po/tag-names.py:27 ../util/__init__.py:506
 msgid "full name"
 msgstr "pontos elérés"
 
@@ -371,7 +348,7 @@ msgstr "csoport"
 
 # label ID
 #. alternately, "catalog number", "catalog ID", "label number"
-#: ../po/tag-names.py:31
+#: ../po/tag-names.py:31 ../util/__init__.py:501
 msgid "label ID"
 msgstr "címke ID"
 
@@ -380,237 +357,200 @@ msgid "language"
 msgstr "nyelv"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:34 ../qltk/information.py:187
+#: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:504
 msgid "last played"
 msgstr "utolsó lejátszás"
 
-#: ../po/tag-names.py:35 ../qltk/information.py:220
+#. date the song was last started on
+#: ../po/tag-names.py:36 ../util/__init__.py:505
+msgid "last started"
+msgstr "utolsó indítás"
+
+#: ../po/tag-names.py:37 ../qltk/information.py:220
 msgid "length"
 msgstr "hossz"
 
-#: ../po/tag-names.py:36
+#: ../po/tag-names.py:38
 msgid "license"
 msgstr "licenc"
 
-#: ../po/tag-names.py:37
+#: ../po/tag-names.py:39
 msgid "location"
 msgstr "hely"
 
-#: ../po/tag-names.py:38
+#: ../po/tag-names.py:40
 msgid "lyricist"
 msgstr "szövegíró"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:40 ../qltk/information.py:222
+#: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:509
 msgid "modified"
 msgstr "módosítva"
 
-#: ../po/tag-names.py:41
+#: ../po/tag-names.py:43 ../util/__init__.py:510
 msgid "mount point"
 msgstr "csatolási pont"
 
 #. alternately, "record label"
-#: ../po/tag-names.py:43
+#: ../po/tag-names.py:45
 msgid "organization"
 msgstr "szervezet"
 
-#: ../po/tag-names.py:44
+#: ../po/tag-names.py:46 ../util/__init__.py:533
 msgid "original release date"
 msgstr "eredeti kiadási dátum"
 
-#: ../po/tag-names.py:45
+#: ../po/tag-names.py:47 ../util/__init__.py:535
 msgid "original artist"
 msgstr "eredeti művész"
 
-#: ../po/tag-names.py:46
+#: ../po/tag-names.py:48 ../util/__init__.py:534
 msgid "original album"
 msgstr "eredeti album"
 
 #. alternately, "movement", "section"
-#: ../po/tag-names.py:48
+#: ../po/tag-names.py:50
 msgid "part"
 msgstr "rész"
 
-#: ../po/tag-names.py:49
+#: ../po/tag-names.py:51
 msgid "people"
 msgstr "személyek"
 
-#: ../po/tag-names.py:50 ../qltk/information.py:332
+#: ../po/tag-names.py:52 ../qltk/information.py:332
 msgid "performer"
 msgstr "előadó"
 
-#: ../po/tag-names.py:51 ../qltk/information.py:188
+#: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:507
 msgid "plays"
 msgstr "lejátszás"
 
-#: ../po/tag-names.py:52 ../qltk/information.py:190
+#: ../po/tag-names.py:54 ../qltk/information.py:190
 msgid "rating"
 msgstr "érték"
 
-#: ../po/tag-names.py:53
+#: ../po/tag-names.py:55 ../util/__init__.py:536
 msgid "recording date"
 msgstr "rögzítési dátum"
 
-#: ../po/tag-names.py:54 ../qltk/information.py:189
+#: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:508
 msgid "skips"
 msgstr "kihagyás"
 
-#: ../po/tag-names.py:55
+#: ../po/tag-names.py:57
 msgid "title"
 msgstr "cím"
 
-#: ../po/tag-names.py:56
+#: ../po/tag-names.py:58 ../util/__init__.py:499
 msgid "track"
 msgstr "szám"
 
-#: ../po/tag-names.py:57
+#: ../po/tag-names.py:59
 msgid "version"
 msgstr "verzió"
 
-#: ../po/tag-names.py:58
+#: ../po/tag-names.py:60
 msgid "website"
 msgstr "weblap"
 
-#: ../po/tag-names.py:59
+#: ../po/tag-names.py:61
 msgid "year"
 msgstr "év"
 
 #. beats per minute
-#: ../po/tag-names.py:61
+#: ../po/tag-names.py:63 ../util/__init__.py:502
 msgid "BPM"
 msgstr "BPM"
 
-#: ../po/tag-names.py:63
-msgid "MusicBrainz track ID"
-msgstr "MusicBrainz track ID"
-
-#: ../po/tag-names.py:64
-msgid "MusicBrainz artist ID"
-msgstr "MusicBrainz artist ID"
-
-#: ../po/tag-names.py:65
-msgid "MusicBrainz album ID"
-msgstr "MusicBrainz album ID"
-
-#: ../po/tag-names.py:66
-msgid "MusicBrainz album artist ID"
-msgstr "MusicBrainz album művész ID"
-
-#: ../po/tag-names.py:67
-msgid "MusicBrainz TRM ID"
-msgstr "MusicBrainz TRM ID"
-
-#: ../po/tag-names.py:68
-msgid "MusicIP PUID"
-msgstr "MusicIP PUID"
-
-#. refers to a volume adjustment and not "to get/acquire".
-#: ../po/tag-names.py:71
-msgid "track gain"
-msgstr ""
-
-#. refers to a volume adjustment and not "to get/acquire".
-#: ../po/tag-names.py:73
-msgid "album gain"
-msgstr ""
-
-#: ../po/tag-names.py:74
-msgid "track peak"
-msgstr "szám csúcs"
-
-#: ../po/tag-names.py:75
-msgid "album peak"
-msgstr "album csúcs"
-
-#: ../po/tag-names.py:77 ../qltk/information.py:333
+#: ../po/tag-names.py:65 ../qltk/information.py:333
 msgid "performers"
 msgstr "előadók"
 
-#: ../po/tag-names.py:78
+#: ../po/tag-names.py:66
 msgid "lyricists"
 msgstr "szövegírók"
 
-#: ../po/tag-names.py:79
+#: ../po/tag-names.py:67
 msgid "arrangers"
 msgstr "hangszerelők"
 
-#: ../po/tag-names.py:80
+#: ../po/tag-names.py:68
 msgid "composers"
 msgstr "zeneszerzők"
 
-#: ../po/tag-names.py:81
+#: ../po/tag-names.py:69
 msgid "conductors"
 msgstr "karmesterek"
 
-#: ../po/tag-names.py:82
+#: ../po/tag-names.py:70
 msgid "authors"
 msgstr "szerzők"
 
-#: ../po/tag-names.py:83 ../qltk/information.py:141 ../qltk/information.py:327
+#: ../po/tag-names.py:71 ../qltk/information.py:141 ../qltk/information.py:327
 #: ../qltk/information.py:464
 msgid "artists"
 msgstr "művészek"
 
-#: ../po/tag-names.py:84 ../qltk/information.py:480
+#: ../po/tag-names.py:72 ../qltk/information.py:480
 msgid "albums"
 msgstr "albumok"
 
-#: ../po/tag-names.py:85
+#: ../po/tag-names.py:73
 msgid "tracks"
 msgstr "számok"
 
-#: ../po/tag-names.py:86
+#: ../po/tag-names.py:74
 msgid "discs"
 msgstr "lemezek"
 
 #. Not really tag names, but this is the best place for them so far.
-#: ../po/tag-names.py:90
+#: ../po/tag-names.py:78
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d mp."
 
-#: ../po/tag-names.py:91
+#: ../po/tag-names.py:79
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d perc"
 
-#: ../po/tag-names.py:92
+#: ../po/tag-names.py:80
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d óra"
 
-#: ../po/tag-names.py:93
+#: ../po/tag-names.py:81
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d nap"
 
-#: ../po/tag-names.py:94
+#: ../po/tag-names.py:82
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d év"
 
-#: ../formats/_audio.py:178 ../qltk/information.py:170
+#: ../formats/_audio.py:182 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
-#: ../browsers/paned.py:29 ../browsers/audiofeeds.py:39
-#: ../browsers/audiofeeds.py:49 ../browsers/audiofeeds.py:50
-#: ../browsers/audiofeeds.py:113
+#: ../browsers/paned.py:28 ../browsers/audiofeeds.py:40
+#: ../browsers/audiofeeds.py:50 ../browsers/audiofeeds.py:51
+#: ../browsers/audiofeeds.py:114
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../exfalso.py:34
+#: ../exfalso.py:40
 msgid "an audio tag editor"
 msgstr "egy hang tag szerkesztő"
 
-#: ../widgets.py:44
+#: ../widgets.py:43
 msgid "Unable to start web browser"
 msgstr "Web böngésző indítása sikertelen"
 
-#: ../widgets.py:45
+#: ../widgets.py:44
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -618,23 +558,23 @@ msgstr ""
 "Nem lelek web böngészőt. Állítsd be a $BROWSER változót, vagy nézd meg, "
 "létezik-e /usr/bin/sensible-browser."
 
-#: ../widgets.py:127
+#: ../widgets.py:126
 msgid "Unable to save library"
 msgstr "Daltár mentése sikertelen"
 
-#: ../widgets.py:132
+#: ../widgets.py:131
 msgid "Unable to play song"
 msgstr "Dal lejátszása sikertelen"
 
-#: ../widgets.py:133
+#: ../widgets.py:132
 msgid "GStreamer was unable to load the selected song."
 msgstr "A GStreamer nem tudta betölteni a kijelölt dalt"
 
-#: ../widgets.py:138
+#: ../widgets.py:137
 msgid "Unable to open audio device"
 msgstr "Hang eszköz megnyitása sikertelen"
 
-#: ../widgets.py:139
+#: ../widgets.py:138
 #, python-format
 msgid ""
 "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
@@ -647,11 +587,11 @@ msgstr ""
 "    <b>pipeline = %(sink)s</b>\n"
 "sor cseréjével a ~/.quodlibet/config-ban."
 
-#: ../widgets.py:148
+#: ../widgets.py:147
 msgid "Unable to open files"
 msgstr "Fájlok megnyitása sikertelen"
 
-#: ../widgets.py:149
+#: ../widgets.py:148
 msgid ""
 "Quod Libet could not find the 'filesrc' GStreamer element. Check your "
 "GStreamer installation."
@@ -659,11 +599,11 @@ msgstr ""
 "A Quod Libet nem leli a 'filesrc' GStreamer elemet. Ellenőrizd a GStreamer "
 "telepítést."
 
-#: ../plugins/__init__.py:234 ../qltk/tagsfrompath.py:232
+#: ../plugins/__init__.py:245 ../qltk/tagsfrompath.py:232
 msgid "Unable to edit song"
 msgstr "A dal szerkesztése sikertelen"
 
-#: ../plugins/__init__.py:235 ../qltk/edittags.py:505
+#: ../plugins/__init__.py:246 ../qltk/edittags.py:598
 #: ../qltk/tagsfrompath.py:233 ../qltk/tracknumbers.py:133
 #, python-format
 msgid ""
@@ -672,6 +612,24 @@ msgid ""
 msgstr ""
 "<b>%s</b> mentése sikertelen. Lehet, hogy a fájl csak-olvasható, hibás, vagy "
 "nincs jogod szerkeszteni."
+
+#: ../library/__init__.py:33 ../qltk/about.py:28
+#, python-format
+msgid "Supported formats: %s"
+msgstr "Támogatott formátumok: %s"
+
+#: ../library/songs.py:196
+msgid "Checking mount points"
+msgstr "Csatolási pontok ellenőrzése"
+
+#: ../library/songs.py:210
+msgid "Scanning library"
+msgstr "Daltár átnézése"
+
+#: ../library/songs.py:252
+#, python-format
+msgid "Scanning %s"
+msgstr "%s átnézése"
 
 #: ../qltk/_editpane.py:69
 msgid "_More options..."
@@ -709,11 +667,11 @@ msgstr "Könyvjelző név"
 msgid "MM:SS"
 msgstr "PP:MM"
 
-#: ../qltk/bookmarks.py:179 ../qltk/information.py:72
+#: ../qltk/bookmarks.py:180 ../qltk/information.py:72
 msgid "Bookmarks"
 msgstr "Könyvjelzők"
 
-#: ../qltk/browser.py:53 ../qltk/quodlibet.py:172 ../util/__init__.py:273
+#: ../qltk/browser.py:53 ../qltk/quodlibet.py:103 ../util/__init__.py:273
 msgid "No time information"
 msgstr "Nincs idő adat"
 
@@ -725,7 +683,7 @@ msgstr "Mentett értékek"
 msgid "_Name:"
 msgstr "_Név:"
 
-#: ../qltk/cbes.py:41 ../qltk/edittags.py:141
+#: ../qltk/cbes.py:41 ../qltk/edittags.py:231
 msgid "_Value:"
 msgstr "Érték:"
 
@@ -733,7 +691,7 @@ msgstr "Érték:"
 msgid "Edit saved values..."
 msgstr "Mentett értékek szerkesztése..."
 
-#: ../qltk/chooser.py:40 ../qltk/filesel.py:201
+#: ../qltk/chooser.py:40 ../qltk/filesel.py:242
 msgid "Songs"
 msgstr "Dalok"
 
@@ -745,7 +703,7 @@ msgstr "Maradék idő kiírása"
 msgid "_Edit Bookmarks..."
 msgstr "Könyvjelzők sz_erkesztése..."
 
-#: ../qltk/controls.py:176
+#: ../qltk/controls.py:180
 msgid "Stop after this song"
 msgstr "Stop e szám után"
 
@@ -802,55 +760,67 @@ msgstr "Fájlnév"
 msgid "Size"
 msgstr "Méret"
 
-#: ../qltk/edittags.py:34
+#: ../qltk/edittags.py:39 ../qltk/edittags.py:50
+#, python-format
+msgid "missing from %d song"
+msgid_plural "missing from %d songs"
+msgstr[0] "hiányzik %d dalból"
+
+#: ../qltk/edittags.py:43 ../qltk/edittags.py:47
+#, python-format
+msgid "different across %d song"
+msgid_plural "different across %d songs"
+msgstr[0] "eltér %d dal közt"
+
+#: ../qltk/edittags.py:125
 msgid "Split into _Multiple Values"
 msgstr "Több értékre szedés"
 
-#: ../qltk/edittags.py:52
+#: ../qltk/edittags.py:143
 msgid "Split Disc out of _Album"
 msgstr "_Album és lemez elválasztása"
 
-#: ../qltk/edittags.py:67
+#: ../qltk/edittags.py:158
 msgid "Split _Version out of Title"
 msgstr "_Verzió és cím elválasztása"
 
-#: ../qltk/edittags.py:100
+#: ../qltk/edittags.py:191
 msgid "Split Arranger out of Ar_tist"
 msgstr "A hangszerelőt és a többi Művészt ne mossuk egybe !"
 
-#: ../qltk/edittags.py:104
+#: ../qltk/edittags.py:195
 msgid "Split _Performer out of Artist"
 msgstr "Az előadót és a többi Művészt ne mossuk egybe !"
 
-#: ../qltk/edittags.py:113
+#: ../qltk/edittags.py:204
 msgid "Add a Tag"
 msgstr "Tag hozzáadása"
 
-#: ../qltk/edittags.py:131
+#: ../qltk/edittags.py:222
 msgid "_Tag:"
 msgstr "_Tag:"
 
-#: ../qltk/edittags.py:211
+#: ../qltk/edittags.py:301
 msgid "Edit Tags"
 msgstr "Tag szerkesztés"
 
-#: ../qltk/edittags.py:218
+#: ../qltk/edittags.py:308
 msgid "Write"
 msgstr "Ír"
 
-#: ../qltk/edittags.py:238
+#: ../qltk/edittags.py:328
 msgid "Tag"
 msgstr "Tag"
 
-#: ../qltk/edittags.py:251
+#: ../qltk/edittags.py:344
 msgid "Value"
 msgstr "Érték"
 
-#: ../qltk/edittags.py:399
+#: ../qltk/edittags.py:492
 msgid "Unable to add tag"
 msgstr "Tag hozzáadása sikertelen"
 
-#: ../qltk/edittags.py:400
+#: ../qltk/edittags.py:493
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -866,12 +836,12 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:426 ../qltk/edittags.py:545 ../qltk/edittags.py:552
+#: ../qltk/edittags.py:519 ../qltk/edittags.py:638 ../qltk/edittags.py:645
 #: ../qltk/tagsfrompath.py:148 ../util/__init__.py:443 ../util/__init__.py:450
 msgid "Invalid tag"
 msgstr "Rossz tag"
 
-#: ../qltk/edittags.py:427 ../qltk/edittags.py:546 ../qltk/edittags.py:553
+#: ../qltk/edittags.py:520 ../qltk/edittags.py:639 ../qltk/edittags.py:646
 #: ../qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
@@ -883,12 +853,12 @@ msgstr ""
 "\n"
 "A kijelölt fájlok nem támogatják e tag szerkesztését."
 
-#: ../qltk/edittags.py:470 ../qltk/tagsfrompath.py:207
+#: ../qltk/edittags.py:563 ../qltk/tagsfrompath.py:207
 #: ../qltk/tracknumbers.py:120
 msgid "Tag may not be accurate"
 msgstr "A tag pontatlannak hat"
 
-#: ../qltk/edittags.py:471 ../qltk/tagsfrompath.py:208
+#: ../qltk/edittags.py:564 ../qltk/tagsfrompath.py:208
 #: ../qltk/tracknumbers.py:121
 #, python-format
 msgid ""
@@ -902,15 +872,15 @@ msgstr ""
 "\n"
 "Mégis mentes e dalt?"
 
-#: ../qltk/edittags.py:504 ../qltk/tracknumbers.py:132
+#: ../qltk/edittags.py:597 ../qltk/tracknumbers.py:132
 msgid "Unable to save song"
 msgstr "Dal mentése sikertelen"
 
-#: ../qltk/edittags.py:528 ../qltk/edittags.py:563
+#: ../qltk/edittags.py:621 ../qltk/edittags.py:656
 msgid "Invalid value"
 msgstr "Rossz érték"
 
-#: ../qltk/edittags.py:529 ../qltk/edittags.py:564
+#: ../qltk/edittags.py:622 ../qltk/edittags.py:657
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -921,64 +891,68 @@ msgstr ""
 "\n"
 "%(error)s"
 
-#: ../qltk/edittags.py:571
+#: ../qltk/edittags.py:664
 msgid "Unable to retag multiple values"
 msgstr "Nem lehet újratagolni több értéket"
 
-#: ../qltk/edittags.py:572
+#: ../qltk/edittags.py:665
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr "Egy tag nevének váltása több értékkel nem támogatott."
 
-#: ../qltk/exfalso.py:147 ../qltk/information.py:447
+#: ../qltk/exfalso.py:157 ../qltk/information.py:447
 #: ../browsers/playlists.py:175
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d dal"
 
-#: ../qltk/exfalso.py:161 ../qltk/properties.py:118
+#: ../qltk/exfalso.py:170 ../qltk/properties.py:118
 #: ../browsers/playlists.py:106 ../browsers/playlists.py:202
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s és %(count)d még"
 
-#: ../qltk/exfalso.py:177
+#: ../qltk/exfalso.py:187
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso jellemzők"
 
-#: ../qltk/exfalso.py:187 ../qltk/prefs.py:224
+#: ../qltk/exfalso.py:197 ../qltk/prefs.py:220
 msgid "Split _on:"
 msgstr "Vágás így:"
 
-#: ../qltk/exfalso.py:193 ../qltk/prefs.py:251
+#: ../qltk/exfalso.py:203 ../qltk/prefs.py:247
 msgid "Show _programmatic tags"
-msgstr ""
+msgstr "_Programozható tagok mutatása"
 
-#: ../qltk/exfalso.py:197 ../qltk/prefs.py:254
+#: ../qltk/exfalso.py:207 ../qltk/prefs.py:250
 msgid "Tag Editing"
 msgstr "Tag szerkesztés"
 
-#: ../qltk/filesel.py:39
+#: ../qltk/filesel.py:46
 msgid "Folders"
 msgstr "Mappák"
 
-#: ../qltk/filesel.py:70
-msgid "New Folder..."
-msgstr "Új mappa..."
+#: ../qltk/filesel.py:84
+msgid "_New Folder..."
+msgstr "Ú_j mappa..."
 
-#: ../qltk/filesel.py:126
+#: ../qltk/filesel.py:93
+msgid "_Select All Subfolders"
+msgstr "Alkönyvtárak kijelölé_se"
+
+#: ../qltk/filesel.py:143
 msgid "New Folder"
 msgstr "Új mappa"
 
-#: ../qltk/filesel.py:126
+#: ../qltk/filesel.py:143
 msgid "Enter a name for the new folder:"
 msgstr "Adj nevet az új mappának:"
 
-#: ../qltk/filesel.py:135
+#: ../qltk/filesel.py:152
 msgid "Unable to create folder"
 msgstr "Mappa létrehozása sikertelen"
 
-#: ../qltk/filesel.py:148
+#: ../qltk/filesel.py:165
 msgid "Unable to delete folder"
 msgstr "Mappa törlése sikertelen"
 
@@ -1024,7 +998,7 @@ msgid "Lyrics"
 msgstr "Szövegek"
 
 #: ../qltk/information.py:166 ../qltk/information.py:179
-#: ../qltk/songlist.py:306
+#: ../qltk/songlist.py:298
 msgid "Never"
 msgstr "Soha"
 
@@ -1034,7 +1008,7 @@ msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "%dx"
 
-#: ../qltk/information.py:199 ../qltk/prefs.py:195
+#: ../qltk/information.py:199 ../qltk/prefs.py:191
 msgid "Library"
 msgstr "Daltár"
 
@@ -1052,18 +1026,18 @@ msgid "bitrate"
 msgstr "bitarány"
 
 #: ../qltk/information.py:235 ../qltk/properties.py:56
-#: ../qltk/renamefiles.py:73 ../qltk/tagsfrompath.py:165
+#: ../qltk/renamefiles.py:72 ../qltk/tagsfrompath.py:165
 #: ../qltk/tracknumbers.py:59
 msgid "File"
 msgstr "Fájl"
 
-#: ../qltk/information.py:283 ../browsers/albums.py:271
+#: ../qltk/information.py:283 ../browsers/albums.py:259
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d lemez"
 
-#: ../qltk/information.py:285 ../browsers/albums.py:267
+#: ../qltk/information.py:285 ../browsers/albums.py:255
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -1209,157 +1183,146 @@ msgstr "Jellemzők"
 
 #: ../qltk/pluginwin.py:188
 msgid "No plugins found."
-msgstr ""
+msgstr "Beillesztések nem találhatók"
 
 #: ../qltk/pluginwin.py:195
 msgid "Plugin Errors"
 msgstr "Plugin hibák"
 
-#: ../qltk/prefs.py:36
+#: ../qltk/prefs.py:37
 msgid "Song List"
 msgstr "Dal lista"
 
-#: ../qltk/prefs.py:45
+#: ../qltk/prefs.py:46
 msgid "_Disc"
 msgstr "_Lemez"
 
-#: ../qltk/prefs.py:46
+#: ../qltk/prefs.py:47
 msgid "Al_bum"
 msgstr "_Album"
 
-#: ../qltk/prefs.py:47
+#: ../qltk/prefs.py:48
 msgid "_Filename"
 msgstr "_Fájlnév"
 
-#: ../qltk/prefs.py:48
+#: ../qltk/prefs.py:49
 msgid "_Track"
 msgstr "_Szám"
 
-#: ../qltk/prefs.py:49
+#: ../qltk/prefs.py:50
 msgid "_Artist"
 msgstr "_Művész"
 
-#: ../qltk/prefs.py:50 ../qltk/songlist.py:433
+#: ../qltk/prefs.py:51 ../qltk/songlist.py:423
 msgid "_Rating"
 msgstr "É_rték"
 
-#: ../qltk/prefs.py:52
+#: ../qltk/prefs.py:53
 msgid "_Date"
 msgstr "_Dátum"
 
-#: ../qltk/prefs.py:53
+#: ../qltk/prefs.py:54
 msgid "_Length"
 msgstr "_Hossz"
 
-#: ../qltk/prefs.py:65
+#: ../qltk/prefs.py:66
 msgid "Title includes _version"
 msgstr "_Verzió a címben"
 
-#: ../qltk/prefs.py:70
+#: ../qltk/prefs.py:71
 msgid "Album includes _part"
 msgstr ""
 
-#: ../qltk/prefs.py:75
+#: ../qltk/prefs.py:76
 msgid "Filename includes _folder"
 msgstr "Mappa a _fájlnévben"
 
-#: ../qltk/prefs.py:89
+#: ../qltk/prefs.py:90
 msgid "_Others:"
 msgstr "Más_ok:"
 
-#: ../qltk/prefs.py:95
+#: ../qltk/prefs.py:96
 msgid "Other columns to display, separated by spaces"
 msgstr "Más látható oszlopok szóközökkel elválasztva"
 
-#: ../qltk/prefs.py:109
+#: ../qltk/prefs.py:110
 msgid "Visible Columns"
 msgstr "Látható oszlopok"
 
-#: ../qltk/prefs.py:137
+#: ../qltk/prefs.py:138
 msgid "Browsers"
 msgstr "Böngészők"
 
-#: ../qltk/prefs.py:140
+#: ../qltk/prefs.py:141
 msgid "Color _search terms"
 msgstr "Színes kere_ső kifejezések"
 
-#: ../qltk/prefs.py:143
+#: ../qltk/prefs.py:144
 msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
 msgstr "Egyszerű keresések kékkel, haladók zölddel, érvénytelenek pirossal"
 
-#: ../qltk/prefs.py:146
+#: ../qltk/prefs.py:147
 msgid "_Global filter:"
 msgstr "_Globális szűrő:"
 
-#: ../qltk/prefs.py:156 ../browsers/search.py:132
+#: ../qltk/prefs.py:157 ../browsers/search.py:132
 msgid "Search Library"
 msgstr "Daltár keresése"
 
-#: ../qltk/prefs.py:166
+#: ../qltk/prefs.py:167
 msgid "Player"
 msgstr "Lejátszó"
 
-#: ../qltk/prefs.py:170
+#: ../qltk/prefs.py:171
 msgid "_Jump to playing song automatically"
 msgstr "Automatikus ugrás a forgó dalra"
 
-#: ../qltk/prefs.py:171
+#: ../qltk/prefs.py:172
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr "A dal váltásakor a lista görgetése"
 
-#: ../qltk/prefs.py:177
-msgid "No volume adjustment"
+#: ../qltk/prefs.py:178
+#, fuzzy
+msgid "_Replay Gain volume adjustment"
 msgstr "Nincs hangerő kezelés"
 
-#: ../qltk/prefs.py:178
-msgid "Per-song (\"Radio\") volume adjustment"
-msgstr "Dalonkénti (\"Radio\") hangerő kezelés"
-
-#: ../qltk/prefs.py:179
-msgid "Per-album (\"Audiophile\") volume adjustment"
-msgstr "Albumonkénti (\"Audiophile\") hangerő kezelés"
-
-#: ../qltk/prefs.py:180
-msgid "_Volume Normalization"
-msgstr "Hangerő normalizálás"
-
-#: ../qltk/prefs.py:197
+#: ../qltk/prefs.py:193
 msgid "_Select"
 msgstr "Vála_szt"
 
-#: ../qltk/prefs.py:203
+#: ../qltk/prefs.py:199
 msgid ""
 "Songs placed in these folders (separated by ':') will be added to your "
 "library"
 msgstr "E mappákban levő dalok (':'-tal elválasztva) a daltárhoz adódnak"
 
-#: ../qltk/prefs.py:214
+#: ../qltk/prefs.py:210
 msgid "Scan _Directories"
 msgstr "Könyvtárak átnézése"
 
-#: ../qltk/prefs.py:223
+#: ../qltk/prefs.py:219
 msgid "Separators for splitting tags"
 msgstr "Tagok elválasztói"
 
-#: ../qltk/prefs.py:233
+#: ../qltk/prefs.py:229
 msgid "Save ratings and play counts"
 msgstr "Értékek és lejátszások mentése"
 
-#: ../qltk/prefs.py:237
+#: ../qltk/prefs.py:233
 msgid "_Email:"
 msgstr "_Email:"
 
-#: ../qltk/prefs.py:239
+#: ../qltk/prefs.py:235
 msgid "Ratings and play counts will be set for this email address"
 msgstr "Értékekhez és lejátszásokhoz beállítandó email cím"
 
-#: ../qltk/prefs.py:259
+#: ../qltk/prefs.py:255
 msgid "Select Directories"
 msgstr "Könyvtárak kijelölése"
 
-#: ../qltk/prefs.py:271
+#: ../qltk/prefs.py:267
 msgid "Quod Libet Preferences"
 msgstr "Quod Libet beállítások"
 
@@ -1367,11 +1330,11 @@ msgstr "Quod Libet beállítások"
 msgid "Properties"
 msgstr "Tulajdonságok"
 
-#: ../qltk/queue.py:41 ../qltk/quodlibet.py:411
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:456
 msgid "_Queue"
 msgstr "Lejátszósor"
 
-#: ../qltk/queue.py:58
+#: ../qltk/queue.py:57
 msgid "_Random"
 msgstr "Véletlen"
 
@@ -1379,192 +1342,179 @@ msgstr "Véletlen"
 msgid "Remove all songs from the queue"
 msgstr "Minden dal törlése a sorból"
 
-#: ../qltk/queue.py:111 ../browsers/_base.py:99
+#: ../qltk/queue.py:111 ../browsers/_base.py:104
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d dal (%(time)s)"
 
-#: ../qltk/quodlibet.py:160
+#: ../qltk/quodlibet.py:204
 msgid "_Order:"
 msgstr "S_orrend:"
 
-#: ../qltk/quodlibet.py:168
+#: ../qltk/quodlibet.py:213
 msgid "_Repeat"
 msgstr "Ismétlés"
 
-#: ../qltk/quodlibet.py:169
+#: ../qltk/quodlibet.py:214
 msgid "Restart the playlist when finished"
 msgstr "Lista újraindítása befejezéskor"
 
-#: ../qltk/quodlibet.py:280
+#: ../qltk/quodlibet.py:324
 msgid "Unable to add songs"
 msgstr "Dalok hozzáadása sikertelen"
 
-#: ../qltk/quodlibet.py:281 ../qltk/quodlibet.py:680
+#: ../qltk/quodlibet.py:325 ../qltk/quodlibet.py:703
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> nem támogatott protokollt használ"
 
-#: ../qltk/quodlibet.py:324
+#: ../qltk/quodlibet.py:369
 msgid "_Music"
 msgstr "_Zene"
 
-#: ../qltk/quodlibet.py:325
+#: ../qltk/quodlibet.py:370
 msgid "_Add a Folder..."
 msgstr "Mappa hozzá_adása..."
 
-#: ../qltk/quodlibet.py:327
+#: ../qltk/quodlibet.py:372
 msgid "_Add a File..."
 msgstr "Fájl hozzá_adása..."
 
-#: ../qltk/quodlibet.py:329
+#: ../qltk/quodlibet.py:374
 msgid "_Add a Location..."
 msgstr "Hely hozzá_adása..."
 
-#: ../qltk/quodlibet.py:331
+#: ../qltk/quodlibet.py:376
 msgid "_Browse Library"
 msgstr "Daltár _böngészése"
 
-#: ../qltk/quodlibet.py:337
+#: ../qltk/quodlibet.py:382
 msgid "_Filters"
 msgstr "Szűrők"
 
-#: ../qltk/quodlibet.py:339
+#: ../qltk/quodlibet.py:384
 msgid "Not Played To_day"
 msgstr "_Ma még nem játszott"
 
-#: ../qltk/quodlibet.py:341
+#: ../qltk/quodlibet.py:386
 msgid "Not Played in a _Week"
 msgstr "1 hé_ten belül nem játszott"
 
-#: ../qltk/quodlibet.py:343
+#: ../qltk/quodlibet.py:388
 msgid "Not Played in a _Month"
 msgstr "1 _hónapon belül nem játszott"
 
-#: ../qltk/quodlibet.py:345
+#: ../qltk/quodlibet.py:390
 msgid "_Never Played"
 msgstr "Soha _nem játszott"
 
-#: ../qltk/quodlibet.py:347
+#: ../qltk/quodlibet.py:392
 msgid "_Top 40"
 msgstr "40 legmenőbb"
 
-#: ../qltk/quodlibet.py:348
+#: ../qltk/quodlibet.py:393
 msgid "B_ottom 40"
 msgstr "40 legritkább"
 
-#: ../qltk/quodlibet.py:350
+#: ../qltk/quodlibet.py:395
 msgid "_Control"
 msgstr "_Vezérlés"
 
-#: ../qltk/quodlibet.py:356
+#: ../qltk/quodlibet.py:401
 msgid "_Jump to Playing Song"
 msgstr "_Ugrás a lejátszásra"
 
-#: ../qltk/quodlibet.py:359
+#: ../qltk/quodlibet.py:404
 msgid "_View"
 msgstr "_Nézet"
 
-#: ../qltk/quodlibet.py:360
+#: ../qltk/quodlibet.py:405
 msgid "_Help"
 msgstr "_Súgó"
 
-#: ../qltk/quodlibet.py:379
+#: ../qltk/quodlibet.py:424
 msgid "Re_fresh Library"
 msgstr "Daltár _frissítése"
 
-#: ../qltk/quodlibet.py:383
+#: ../qltk/quodlibet.py:428
 msgid "Re_load Library"
 msgstr "Daltár újratö_ltése"
 
-#: ../qltk/quodlibet.py:388
+#: ../qltk/quodlibet.py:433
 msgid "Filter on _Genre"
 msgstr "Szűrő a _műfajon"
 
-#: ../qltk/quodlibet.py:389
+#: ../qltk/quodlibet.py:434
 msgid "Filter on _Artist"
 msgstr "Szűrő a _szerzőn/előadón"
 
-#: ../qltk/quodlibet.py:390
+#: ../qltk/quodlibet.py:435
 msgid "Filter on Al_bum"
 msgstr "Szűrő az _albumon"
 
-#: ../qltk/quodlibet.py:397
+#: ../qltk/quodlibet.py:442
 msgid "Random _Genre"
 msgstr "Véletlen _műfaj"
 
-#: ../qltk/quodlibet.py:398
+#: ../qltk/quodlibet.py:443
 msgid "Random _Artist"
 msgstr "Véletlen _szerző/előadó"
 
-#: ../qltk/quodlibet.py:399
+#: ../qltk/quodlibet.py:444
 msgid "Random Al_bum"
 msgstr "Véletlen _album"
 
-#: ../qltk/quodlibet.py:406
+#: ../qltk/quodlibet.py:451
 msgid "Song _List"
 msgstr "Dal _lista"
 
-#: ../qltk/quodlibet.py:443
+#: ../qltk/quodlibet.py:487
 msgid "Check for changes in your library"
 msgstr "Változások átnézése a daltárban"
 
-#: ../qltk/quodlibet.py:446
+#: ../qltk/quodlibet.py:490
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Minden dal újratöltése a daltárban (sokáig tarthat)"
 
-#: ../qltk/quodlibet.py:449
+#: ../qltk/quodlibet.py:493
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
 msgstr "A legtöbbet lejátszott 40 dal (csomókban több is kijelölhető)"
 
-#: ../qltk/quodlibet.py:453
+#: ../qltk/quodlibet.py:497
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
 msgstr "A legutóbb lejátszott 40 dal (csomókban több is kijelölhető)"
 
-#: ../qltk/quodlibet.py:635
-#, python-format
-msgid ""
-"Scanning your library. This may take several minutes.\n"
-"\n"
-"%d songs reloaded\n"
-"%d songs removed"
-msgstr ""
-"Daltár átnézése. Ez pár percig eltarthat.\n"
-"\n"
-"%d dal újratöltve\n"
-"%d dal eltávolítva"
-
-#: ../qltk/quodlibet.py:668
+#: ../qltk/quodlibet.py:691
 msgid "Add a Location"
 msgstr "Hely hozzáadása"
 
-#: ../qltk/quodlibet.py:669
+#: ../qltk/quodlibet.py:692
 msgid "Enter the location of an audio file:"
 msgstr "Add meg egy hang fájl helyét:"
 
-#: ../qltk/quodlibet.py:674 ../qltk/quodlibet.py:679
+#: ../qltk/quodlibet.py:697 ../qltk/quodlibet.py:702
 msgid "Unable to add location"
 msgstr "Hely hozzáadása sikertelen"
 
-#: ../qltk/quodlibet.py:675
+#: ../qltk/quodlibet.py:698
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> nem egy érvényes hely"
 
-#: ../qltk/quodlibet.py:692 ../qltk/quodlibet.py:699
+#: ../qltk/quodlibet.py:714 ../qltk/quodlibet.py:721
 msgid "Add Music"
 msgstr "Zene hozzáadása"
 
-#: ../qltk/quodlibet.py:693
+#: ../qltk/quodlibet.py:715
 msgid "Watch this folder for new songs"
 msgstr "Új dalok keresése e mappában"
 
-#: ../qltk/quodlibet.py:720
+#: ../qltk/quodlibet.py:741
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1573,54 +1523,43 @@ msgstr ""
 "%s-t nem tudtam hozzáadni a daltárhoz.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:725
+#: ../qltk/quodlibet.py:746
 msgid "Unable to add song"
 msgstr "Dal hozzáadása sikertelen"
 
-#: ../qltk/quodlibet.py:742
-#, python-format
-msgid ""
-"Scanning for new songs and adding them to your library.\n"
-"\n"
-"%d songs added"
-msgstr ""
-"Új dalok keresése és daltárhoz adása.\n"
-"\n"
-"%d dal csatolva"
-
-#: ../qltk/renamefiles.py:26
+#: ../qltk/renamefiles.py:25
 msgid "Replace spaces with _underscores"
 msgstr "Szóközök helyett aláhúzások !"
 
-#: ../qltk/renamefiles.py:33
+#: ../qltk/renamefiles.py:32
 msgid "Strip _Windows-incompatible characters"
 msgstr "w$-inkompatibilis jeleket mellőz"
 
-#: ../qltk/renamefiles.py:46
+#: ../qltk/renamefiles.py:45
 msgid "Strip _diacritical marks"
 msgstr "Mellékjelek ki"
 
-#: ../qltk/renamefiles.py:55
+#: ../qltk/renamefiles.py:54
 msgid "Strip non-_ASCII characters"
 msgstr "Nem-_ASCII karakterek ki"
 
-#: ../qltk/renamefiles.py:63
+#: ../qltk/renamefiles.py:62
 msgid "Rename Files"
 msgstr "Fájlok átnevezése"
 
-#: ../qltk/renamefiles.py:79
+#: ../qltk/renamefiles.py:78
 msgid "New Name"
 msgstr "Új név"
 
-#: ../qltk/renamefiles.py:115
+#: ../qltk/renamefiles.py:111
 msgid "_Continue"
 msgstr "Tovább"
 
-#: ../qltk/renamefiles.py:117
+#: ../qltk/renamefiles.py:113
 msgid "Unable to rename file"
 msgstr "Fájl átnevezése sikertelen"
 
-#: ../qltk/renamefiles.py:118
+#: ../qltk/renamefiles.py:114
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1630,11 +1569,11 @@ msgstr ""
 "<b>%s</b> átnevezése erre: <b>%s</b> sikertelen. A cél fájl talán létezik, "
 "nincs jogod az új fájl létrehozására vagy a régi törlésére."
 
-#: ../qltk/renamefiles.py:149
+#: ../qltk/renamefiles.py:145
 msgid "Path is not absolute"
 msgstr "Az ösvény nem abszolút"
 
-#: ../qltk/renamefiles.py:150
+#: ../qltk/renamefiles.py:146
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1647,22 +1586,50 @@ msgstr ""
 "tartalmaz /-t de nem indul gyökértől. Könyvtárnév-tévesztés ellen, adj "
 "gyökeret a mintának /-rel vagy ~/-rel kezdéssel."
 
-#: ../qltk/songlist.py:404
+#: ../qltk/songlist.py:394
 msgid "pattern"
 msgstr "minta"
 
-#: ../qltk/songlist.py:419
+#: ../qltk/songlist.py:409
 #, python-format
 msgid "_Filter on %s"
 msgstr "Szűrő itt: %s"
 
-#: ../qltk/songlist.py:546 ../browsers/filesystem.py:68
+#: ../qltk/songlist.py:529 ../browsers/filesystem.py:88
 msgid "Unable to copy songs"
 msgstr "Dalok másolása sikertelen"
 
-#: ../qltk/songlist.py:547 ../browsers/filesystem.py:69
+#: ../qltk/songlist.py:530 ../browsers/filesystem.py:89
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "A kijelölt fájlok nem másolhatók más dal listába vagy sorba."
+
+#: ../qltk/songlist.py:862
+msgid "_Track Headers"
+msgstr "_Sáv fejlécek"
+
+#: ../qltk/songlist.py:863
+msgid "_Album Headers"
+msgstr "_Album fejlécek"
+
+#: ../qltk/songlist.py:864
+msgid "_People Headers"
+msgstr "Személ_y fejlécek"
+
+#: ../qltk/songlist.py:865
+msgid "_Date Headers"
+msgstr "_Dátum fejlécek"
+
+#: ../qltk/songlist.py:866
+msgid "_File Headers"
+msgstr "_Fájl fejlécek"
+
+#: ../qltk/songlist.py:867
+msgid "_Production Headers"
+msgstr "_Termék fejlécek"
+
+#: ../qltk/songlist.py:880
+msgid "_Customize Headers..."
+msgstr "_Egyéni fejlécek..."
 
 #: ../qltk/tagsfrompath.py:71
 msgid "Replace _underscores with spaces"
@@ -1689,7 +1656,7 @@ msgid "Tags are added to existing ones"
 msgstr "Létezőkhöz adandó tagok"
 
 #: ../qltk/tagsfrompath.py:130 ../qltk/textedit.py:70
-#: ../browsers/albums.py:108 ../browsers/albums.py:112
+#: ../browsers/albums.py:107 ../browsers/albums.py:111
 msgid "Invalid pattern"
 msgstr "Hibás minta"
 
@@ -1773,83 +1740,83 @@ msgstr "Keresés törlése"
 
 #. The browser's name, without an accelerator.
 #. The name, with an accelerator.
-#: ../browsers/_base.py:24 ../browsers/_base.py:26
+#: ../browsers/_base.py:26 ../browsers/_base.py:28
 msgid "Library Browser"
 msgstr "Daltár böngésző"
 
-#: ../browsers/albums.py:34
+#: ../browsers/albums.py:33
 msgid "Songs not in an album"
 msgstr "Dalok albumon kívül"
 
-#: ../browsers/albums.py:62
+#: ../browsers/albums.py:61
 msgid "Album List Preferences"
 msgstr "Album lista jellemzők"
 
-#: ../browsers/albums.py:68
+#: ../browsers/albums.py:67
 msgid "Show album _covers"
 msgstr "Album borítók mutatása"
 
-#: ../browsers/albums.py:84
+#: ../browsers/albums.py:83
 msgid "Album Display"
 msgstr "Album kiírás"
 
-#: ../browsers/albums.py:122
+#: ../browsers/albums.py:121
 msgid "Album List"
 msgstr "Album lista"
 
-#: ../browsers/albums.py:123
+#: ../browsers/albums.py:122
 msgid "_Album List"
 msgstr "_Album lista"
 
-#: ../browsers/albums.py:406
+#: ../browsers/albums.py:362
 msgid "Sort by title"
 msgstr "Rendezés cím szerint"
 
-#: ../browsers/albums.py:406
+#: ../browsers/albums.py:362
 msgid "Sort by artist"
 msgstr "Rendezés művész szerint"
 
-#: ../browsers/albums.py:406
+#: ../browsers/albums.py:362
 msgid "Sort by date"
 msgstr "Rendezés dátum szerint"
 
-#: ../browsers/albums.py:490
+#: ../browsers/albums.py:487
 msgid "All Albums"
 msgstr "Minden album"
 
-#: ../browsers/albums.py:491
+#: ../browsers/albums.py:488
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../browsers/paned.py:36
+#: ../browsers/paned.py:35
 msgid "Paned Browser Preferences"
 msgstr "Paneles böngésző beállítások"
 
-#: ../browsers/paned.py:42
+#: ../browsers/paned.py:41
 msgid "_Custom"
 msgstr "Egyedi"
 
-#: ../browsers/paned.py:144
+#: ../browsers/paned.py:143
 msgid "Paned Browser"
 msgstr "Paneles böngésző"
 
-#: ../browsers/paned.py:145
+#: ../browsers/paned.py:144
 msgid "_Paned Browser"
 msgstr "_Paneles böngésző"
 
-#: ../browsers/paned.py:276
+#: ../browsers/paned.py:274
 msgid "All"
 msgstr "Minden"
 
-#: ../browsers/paned.py:342 ../browsers/search.py:147
-#: ../browsers/iradio.py:173
+#: ../browsers/paned.py:344 ../browsers/search.py:147
+#: ../browsers/iradio.py:191
 msgid "_Search:"
 msgstr "Kere_s:"
 
-#: ../browsers/paned.py:356
+#: ../browsers/paned.py:358
 msgid "Select _All"
 msgstr "Mindent kijelöl"
 
@@ -1864,7 +1831,7 @@ msgstr ""
 "\n"
 "%d/%d dal behozva."
 
-#: ../browsers/playlists.py:92 ../browsers/playlists.py:401
+#: ../browsers/playlists.py:92 ../browsers/playlists.py:406
 msgid "New Playlist"
 msgstr "Új lista"
 
@@ -1885,39 +1852,39 @@ msgstr "Listák"
 msgid "_Playlists"
 msgstr "Listák"
 
-#: ../browsers/playlists.py:270
+#: ../browsers/playlists.py:273
 msgid "_Remove from Playlist"
 msgstr "Tö_rlés a listáról"
 
-#: ../browsers/playlists.py:300
+#: ../browsers/playlists.py:305
 msgid "_Import"
 msgstr "_Import"
 
-#: ../browsers/playlists.py:418 ../browsers/playlists.py:496
+#: ../browsers/playlists.py:423 ../browsers/playlists.py:501
 msgid "Unable to import playlist"
 msgstr "Lista importálása sikertelen"
 
-#: ../browsers/playlists.py:419 ../browsers/playlists.py:497
+#: ../browsers/playlists.py:424 ../browsers/playlists.py:502
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "A Quod Libet csak PLS és M3U listákat tud importálni"
 
-#: ../browsers/playlists.py:445
+#: ../browsers/playlists.py:450
 msgid "_Rename"
 msgstr "Átnevez"
 
-#: ../browsers/playlists.py:478
+#: ../browsers/playlists.py:483
 msgid "Unable to rename playlist"
 msgstr "Lista átnevezése sikertelen"
 
-#: ../browsers/playlists.py:485
+#: ../browsers/playlists.py:490
 msgid "Import Playlist"
 msgstr "Listák importálása"
 
-#: ../browsers/search.py:34
+#: ../browsers/search.py:33
 msgid "Disable Browser"
 msgstr "Böngésző kikapcsolása"
 
-#: ../browsers/search.py:35
+#: ../browsers/search.py:34
 msgid "_Disable Browser"
 msgstr "Böngésző kikapcsolása"
 
@@ -1945,23 +1912,23 @@ msgstr "Daltár keresése"
 msgid "_Limit Results"
 msgstr "Eredmény kor_lát"
 
-#: ../browsers/filesystem.py:32
+#: ../browsers/filesystem.py:35
 msgid "File System"
 msgstr "Fájlrendszer"
 
-#: ../browsers/filesystem.py:33
+#: ../browsers/filesystem.py:36
 msgid "_File System"
 msgstr "_Fájlrendszer"
 
-#: ../browsers/filesystem.py:107
+#: ../browsers/filesystem.py:129
 msgid "_Add to Library"
 msgstr "Daltárhoz _adás"
 
-#: ../browsers/iradio.py:80 ../browsers/iradio.py:273
+#: ../browsers/iradio.py:81
 msgid "Unsupported file type"
 msgstr "Nem támogatott fájl típus"
 
-#: ../browsers/iradio.py:81
+#: ../browsers/iradio.py:82
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -1972,74 +1939,59 @@ msgstr ""
 "listákat vagy lejátszó-listákat nem. Az alábbi helyek nem tölthetők be:\n"
 "%s"
 
-#: ../browsers/iradio.py:90
+#: ../browsers/iradio.py:107
 msgid "Choose New Stations"
 msgstr "Válassz új állomásokat"
 
-#: ../browsers/iradio.py:100
+#: ../browsers/iradio.py:117
 msgid "Add"
 msgstr "Hozzáad"
 
-#: ../browsers/iradio.py:104
+#: ../browsers/iradio.py:121
 msgid "Title"
 msgstr "Cím"
 
-#: ../browsers/iradio.py:130
+#: ../browsers/iradio.py:147
 msgid "New Station"
 msgstr "Új állomás"
 
-#: ../browsers/iradio.py:131
+#: ../browsers/iradio.py:148
 msgid "Enter the location of an Internet radio station:"
 msgstr "Add meg egy Internet rádió állomás helyét:"
 
-#: ../browsers/iradio.py:133
+#: ../browsers/iradio.py:150
 msgid "_Stations..."
 msgstr "Állomá_sok..."
 
-#: ../browsers/iradio.py:149
+#: ../browsers/iradio.py:167
 msgid "Internet Radio"
 msgstr "Internet Rádió"
 
-#: ../browsers/iradio.py:150
+#: ../browsers/iradio.py:168
 msgid "_Internet Radio"
 msgstr "_Internet Rádió"
 
-#: ../browsers/iradio.py:157
+#: ../browsers/iradio.py:175
 msgid "_New Station"
 msgstr "Új állomás"
 
-#: ../browsers/iradio.py:203
-msgid "_Remove Station"
-msgstr "Állomás tö_rlése"
-
-#: ../browsers/iradio.py:241
+#: ../browsers/iradio.py:255 ../browsers/iradio.py:264
+#: ../browsers/iradio.py:280
 msgid "Unable to add station"
 msgstr "Állomás hozzáadása sikertelen"
 
-#: ../browsers/iradio.py:246
+#: ../browsers/iradio.py:272
 msgid "No stations found"
 msgstr "Nem leltem állomást"
 
-#: ../browsers/iradio.py:247
+#: ../browsers/iradio.py:273
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Nem leltem Internet rádió állomást itt: %s."
 
-#: ../browsers/iradio.py:255 ../browsers/iradio.py:283
-msgid "No new stations"
-msgstr "Nincs új állomás"
-
-#: ../browsers/iradio.py:256
+#: ../browsers/iradio.py:281
 msgid "All stations listed are already in your library."
 msgstr "Már minden kiírt állomás a daltárban van."
-
-#: ../browsers/iradio.py:274
-msgid "M3U playlists cannot be loaded."
-msgstr "M3U listák nem tölthetők be."
-
-#: ../browsers/iradio.py:284
-msgid "This station is already in your library."
-msgstr "Az állomás már a daltárban van."
 
 #: ../browsers/iradio.py:298
 #, python-format
@@ -2047,39 +1999,39 @@ msgid "%(count)d station"
 msgid_plural "%(count)d stations"
 msgstr[0] "%(count)d állomás"
 
-#: ../browsers/audiofeeds.py:158
+#: ../browsers/audiofeeds.py:159
 msgid "New Feed"
 msgstr "Új forrás"
 
-#: ../browsers/audiofeeds.py:159
+#: ../browsers/audiofeeds.py:160
 msgid "Enter the location of an audio feed:"
 msgstr "Add meg a hangforrás helyét:"
 
-#: ../browsers/audiofeeds.py:176
+#: ../browsers/audiofeeds.py:177
 msgid "Audio Feeds"
 msgstr "Hangforrások"
 
-#: ../browsers/audiofeeds.py:177
+#: ../browsers/audiofeeds.py:178
 msgid "_Audio Feeds"
 msgstr "H_angforrások"
 
-#: ../browsers/audiofeeds.py:232 ../browsers/audiofeeds.py:238
+#: ../browsers/audiofeeds.py:234 ../browsers/audiofeeds.py:240
 msgid "_Download..."
 msgstr "Letöltés..."
 
-#: ../browsers/audiofeeds.py:245
+#: ../browsers/audiofeeds.py:249
 msgid "Download Files"
 msgstr "Fájlok letöltése"
 
-#: ../browsers/audiofeeds.py:266
+#: ../browsers/audiofeeds.py:270
 msgid "Download File"
 msgstr "Fájl letöltése"
 
-#: ../browsers/audiofeeds.py:347 ../browsers/audiofeeds.py:402
+#: ../browsers/audiofeeds.py:351 ../browsers/audiofeeds.py:406
 msgid "Unable to add feed"
 msgstr "Forrás hozzáadása sikertelen"
 
-#: ../browsers/audiofeeds.py:348 ../browsers/audiofeeds.py:403
+#: ../browsers/audiofeeds.py:352 ../browsers/audiofeeds.py:407
 #, python-format
 msgid ""
 "<b>%s</b> could not be added. The server may be down, or the location may "
@@ -2139,6 +2091,69 @@ msgstr "E: '%s' nem egyedi előtag."
 msgid "[Invalid Encoding]"
 msgstr "[Hibás kódolás]"
 
+#. Translators: If tag names, when capitalized, should not
+#. be title-cased ("Looks Like This"), but rather only have
+#. the first letter capitalized, translate this string as
+#. something other than "check|titlecase?".
+#: ../util/__init__.py:458
+msgid "check|titlecase?"
+msgstr "cím-nagybetű"
+
+#. http://musicbrainz.org/doc/MusicBrainzTag
+#: ../util/__init__.py:516
+msgid "MusicBrainz track ID"
+msgstr "MusicBrainz track ID"
+
+#: ../util/__init__.py:517
+msgid "MusicBrainz album ID"
+msgstr "MusicBrainz album ID"
+
+#: ../util/__init__.py:518
+msgid "MusicBrainz artist ID"
+msgstr "MusicBrainz artist ID"
+
+#: ../util/__init__.py:519
+msgid "MusicBrainz album artist ID"
+msgstr "MusicBrainz album művész ID"
+
+#: ../util/__init__.py:520
+msgid "MusicBrainz TRM ID"
+msgstr "MusicBrainz TRM ID"
+
+#: ../util/__init__.py:521
+msgid "MusicIP PUID"
+msgstr "MusicIP PUID"
+
+#: ../util/__init__.py:522
+msgid "MusicBrainz album status"
+msgstr "MusicBrainz album állapot"
+
+#: ../util/__init__.py:523
+msgid "MusicBrainz album type"
+msgstr "MusicBrainz album típus"
+
+#. Translators: A volume adjustment, not "to get/acquire".
+#: ../util/__init__.py:526
+msgid "track gain"
+msgstr ""
+
+#: ../util/__init__.py:527
+msgid "track peak"
+msgstr "szám csúcs"
+
+#. Translators: A volume adjustment, not "to get/acquire".
+#: ../util/__init__.py:529
+msgid "album gain"
+msgstr ""
+
+#: ../util/__init__.py:530
+msgid "album peak"
+msgstr "album csúcs"
+
+#: ../util/__init__.py:537
+msgid "release country"
+msgstr "megjelenés országa"
+
 #: ../util/massagers.py:24
 msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
@@ -2158,6 +2173,15 @@ msgstr ""
 #: ../util/massagers.py:61
 msgid "MusicBrainz IDs must be in UUID format."
 msgstr "A MusicBrainz ID-knek UUID formátumúaknak kell lenniük"
+
+#. Translators: Leave "official", "promotional", and "bootleg"
+#. untranslated. They are the three possible literal values.
+#: ../util/massagers.py:76
+msgid ""
+"MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
+msgstr ""
+"A MusicBrainz kiadási állapot 'official', 'promotional' vagy 'bootleg' kell "
+"legyen"
 
 #: ../exfalso.desktop.in.h:1
 msgid "Audio tag editor"

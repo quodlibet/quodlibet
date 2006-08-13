@@ -173,7 +173,7 @@ class Menu(gtk.Menu):
             win = LibraryBrowser(MediaDevices, library)
             browser = win.browser
         browser.select(device)
-        browser.dropped(win.songlist, songs)
+        browser.dropped(browser.get_toplevel().songlist, songs)
     __copy_to_device = staticmethod(__copy_to_device)
 
 # A custom paned to allow a browser-controlled widget above the songlist.
@@ -320,17 +320,17 @@ class MediaDevices(Browser, gtk.VBox):
 
         self.show_all()
 
-    def Menu(self, songs, songlist):
-        items = []
+    def Menu(self, songs, songlist, library):
+        menu = super(MediaDevices, self).Menu(songs, songlist, library)
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             device = model[iter][0]
             if device.delete:
                 delete = gtk.ImageMenuItem(gtk.STOCK_DELETE)
                 delete.connect_object('activate',
-                    self.__delete, songlist, songs)
-                items.append(delete)
-        return items
+                    self.__delete_songs, songlist, songs)
+                menu.append(delete)
+        return menu
 
     def activate(self):
         self.__changed(self.__view.get_selection())
@@ -360,7 +360,7 @@ class MediaDevices(Browser, gtk.VBox):
         selection.select_iter(row.iter)
 
     def dropped(self, songlist, songs):
-        self.__copy_songs(self, songlist, songs)
+        return self.__copy_songs(songlist, songs)
 
     def __play(self, view, path, column, player):
         player.reset()
@@ -478,14 +478,6 @@ class MediaDevices(Browser, gtk.VBox):
             self.__progress.show()
 
     def __check_device(self, device, message):
-        if not device.writable:
-            qltk.WarningMessage(
-                self, message,
-                _("The device <b>%s</b> is read-only.")
-                    % util.escape(device['name'])
-            ).run()
-            return False
-
         if not device.is_connected():
             qltk.WarningMessage(
                 self, message,
