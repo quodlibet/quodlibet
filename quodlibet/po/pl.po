@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-03 19:31+0200\n"
+"POT-Creation-Date: 2006-08-14 14:12-0500\n"
 "PO-Revision-Date: 2006-04-26 18:32+0200\n"
 "Last-Translator: Tomasz Torcz <zdzichu@irc.pl>\n"
 "Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
@@ -620,7 +620,7 @@ msgstr ""
 msgid "Unable to edit song"
 msgstr "Nie można zmodyfkiwować utworu"
 
-#: ../plugins/__init__.py:246 ../qltk/edittags.py:596
+#: ../plugins/__init__.py:246 ../qltk/edittags.py:598
 #: ../qltk/tagsfrompath.py:233 ../qltk/tracknumbers.py:133
 #, python-format
 msgid ""
@@ -643,8 +643,9 @@ msgstr "Sprawdzanie punktów montowania"
 msgid "Scanning library"
 msgstr "Skanowanie biblioteki"
 
-#: ../library/songs.py:252
 # python-format
+#: ../library/songs.py:252
+#, python-format
 msgid "Scanning %s"
 msgstr "Skanowanie %s"
 
@@ -838,16 +839,16 @@ msgstr "Zapisane"
 msgid "Tag"
 msgstr "Znacznik"
 
-#: ../qltk/edittags.py:342
+#: ../qltk/edittags.py:344
 msgid "Value"
 msgstr "Wartość"
 
-#: ../qltk/edittags.py:490
+#: ../qltk/edittags.py:492
 msgid "Unable to add tag"
 msgstr "Nie można dodać znacznika"
 
 # python-format
-#: ../qltk/edittags.py:491
+#: ../qltk/edittags.py:493
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -863,12 +864,12 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:517 ../qltk/edittags.py:636 ../qltk/edittags.py:643
+#: ../qltk/edittags.py:519 ../qltk/edittags.py:638 ../qltk/edittags.py:645
 #: ../qltk/tagsfrompath.py:148 ../util/__init__.py:443 ../util/__init__.py:450
 msgid "Invalid tag"
 msgstr "Błędny znacznik"
 
-#: ../qltk/edittags.py:518 ../qltk/edittags.py:637 ../qltk/edittags.py:644
+#: ../qltk/edittags.py:520 ../qltk/edittags.py:639 ../qltk/edittags.py:646
 #: ../qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
@@ -880,12 +881,12 @@ msgstr ""
 "\n"
 "Nie można zmienić tego znacznika w zaznaczonym pliku."
 
-#: ../qltk/edittags.py:561 ../qltk/tagsfrompath.py:207
+#: ../qltk/edittags.py:563 ../qltk/tagsfrompath.py:207
 #: ../qltk/tracknumbers.py:120
 msgid "Tag may not be accurate"
 msgstr "Znacznik może być niewłaściwy"
 
-#: ../qltk/edittags.py:562 ../qltk/tagsfrompath.py:208
+#: ../qltk/edittags.py:564 ../qltk/tagsfrompath.py:208
 #: ../qltk/tracknumbers.py:121
 #, python-format
 msgid ""
@@ -900,15 +901,15 @@ msgstr ""
 "\n"
 "Czy zapisać mimo to?"
 
-#: ../qltk/edittags.py:595 ../qltk/tracknumbers.py:132
+#: ../qltk/edittags.py:597 ../qltk/tracknumbers.py:132
 msgid "Unable to save song"
 msgstr "Nie można zapisać utworu"
 
-#: ../qltk/edittags.py:619 ../qltk/edittags.py:654
+#: ../qltk/edittags.py:621 ../qltk/edittags.py:656
 msgid "Invalid value"
 msgstr "Niepoprawna wartość"
 
-#: ../qltk/edittags.py:620 ../qltk/edittags.py:655
+#: ../qltk/edittags.py:622 ../qltk/edittags.py:657
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -919,11 +920,11 @@ msgstr ""
 "\n"
 "%(error)s"
 
-#: ../qltk/edittags.py:662
+#: ../qltk/edittags.py:664
 msgid "Unable to retag multiple values"
 msgstr "Nie można zmienić wielokrotnych znaczników"
 
-#: ../qltk/edittags.py:663
+#: ../qltk/edittags.py:665
 msgid "Changing the name of a tag with multiple values is not supported."
 msgstr "Zmiana nazwy znacznika z wieloma wartościami nie jest obsługiwana."
 
@@ -1376,7 +1377,7 @@ msgstr "Ustawienia Quod Libet"
 msgid "Properties"
 msgstr "Właściwości"
 
-#: ../qltk/queue.py:40 ../qltk/quodlibet.py:454
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:456
 msgid "_Queue"
 msgstr "_Kolejka"
 
@@ -1396,136 +1397,136 @@ msgstr[0] "%(count)d utwór (%(time)s)"
 msgstr[1] "%(count)d utwory (%(time)s)"
 msgstr[2] "%(count)d utworów (%(time)s)"
 
-#: ../qltk/quodlibet.py:202
+#: ../qltk/quodlibet.py:204
 msgid "_Order:"
 msgstr "K_olejność:"
 
-#: ../qltk/quodlibet.py:211
+#: ../qltk/quodlibet.py:213
 msgid "_Repeat"
 msgstr "Powta_rzanie"
 
-#: ../qltk/quodlibet.py:212
+#: ../qltk/quodlibet.py:214
 msgid "Restart the playlist when finished"
 msgstr "Odtwarzanie od początku listy po odtworzeniu wszystkich utworów"
 
-#: ../qltk/quodlibet.py:322
+#: ../qltk/quodlibet.py:324
 msgid "Unable to add songs"
 msgstr "Nie można dodać utworów"
 
-#: ../qltk/quodlibet.py:323 ../qltk/quodlibet.py:701
+#: ../qltk/quodlibet.py:325 ../qltk/quodlibet.py:703
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> używa nieobsługiwanego protokołu."
 
-#: ../qltk/quodlibet.py:367
+#: ../qltk/quodlibet.py:369
 msgid "_Music"
 msgstr "_Muzyka"
 
-#: ../qltk/quodlibet.py:368
+#: ../qltk/quodlibet.py:370
 msgid "_Add a Folder..."
 msgstr "Dod_aj katalog..."
 
-#: ../qltk/quodlibet.py:370
+#: ../qltk/quodlibet.py:372
 msgid "_Add a File..."
 msgstr "_Dodaj plik..."
 
-#: ../qltk/quodlibet.py:372
+#: ../qltk/quodlibet.py:374
 msgid "_Add a Location..."
 msgstr "_Dodaj adres..."
 
-#: ../qltk/quodlibet.py:374
+#: ../qltk/quodlibet.py:376
 msgid "_Browse Library"
 msgstr "_Przeglądaj bibliotekę"
 
-#: ../qltk/quodlibet.py:380
+#: ../qltk/quodlibet.py:382
 msgid "_Filters"
 msgstr "_Filtr"
 
-#: ../qltk/quodlibet.py:382
+#: ../qltk/quodlibet.py:384
 msgid "Not Played To_day"
 msgstr "Nie odtwarzane _dzisiaj"
 
-#: ../qltk/quodlibet.py:384
+#: ../qltk/quodlibet.py:386
 msgid "Not Played in a _Week"
 msgstr "Nie odtwarzane w tym _tygodniu"
 
-#: ../qltk/quodlibet.py:386
+#: ../qltk/quodlibet.py:388
 msgid "Not Played in a _Month"
 msgstr "Nie odtwarzane w tym _miesiącu"
 
-#: ../qltk/quodlibet.py:388
+#: ../qltk/quodlibet.py:390
 msgid "_Never Played"
 msgstr "_Nigdy nie odtwarzane"
 
-#: ../qltk/quodlibet.py:390
+#: ../qltk/quodlibet.py:392
 msgid "_Top 40"
 msgstr "40 _popularnych"
 
-#: ../qltk/quodlibet.py:391
+#: ../qltk/quodlibet.py:393
 msgid "B_ottom 40"
 msgstr "40 _niepopularnych"
 
-#: ../qltk/quodlibet.py:393
+#: ../qltk/quodlibet.py:395
 msgid "_Control"
 msgstr "_Sterowanie"
 
-#: ../qltk/quodlibet.py:399
+#: ../qltk/quodlibet.py:401
 msgid "_Jump to Playing Song"
 msgstr "_Skocz do odtwarzanego utworu"
 
-#: ../qltk/quodlibet.py:402
+#: ../qltk/quodlibet.py:404
 msgid "_View"
 msgstr "_Widok"
 
-#: ../qltk/quodlibet.py:403
+#: ../qltk/quodlibet.py:405
 msgid "_Help"
 msgstr "_Pomoc"
 
-#: ../qltk/quodlibet.py:422
+#: ../qltk/quodlibet.py:424
 msgid "Re_fresh Library"
 msgstr "_Odśwież bibliotekę"
 
-#: ../qltk/quodlibet.py:426
+#: ../qltk/quodlibet.py:428
 msgid "Re_load Library"
 msgstr "_Załaduj ponownie bibliotekę"
 
-#: ../qltk/quodlibet.py:431
+#: ../qltk/quodlibet.py:433
 msgid "Filter on _Genre"
 msgstr "Filtruj _rodzaj"
 
-#: ../qltk/quodlibet.py:432
+#: ../qltk/quodlibet.py:434
 msgid "Filter on _Artist"
 msgstr "Filtruj _artystów"
 
-#: ../qltk/quodlibet.py:433
+#: ../qltk/quodlibet.py:435
 msgid "Filter on Al_bum"
 msgstr "Filtruj al_bum"
 
-#: ../qltk/quodlibet.py:440
+#: ../qltk/quodlibet.py:442
 msgid "Random _Genre"
 msgstr "Losuj _rodzaj"
 
-#: ../qltk/quodlibet.py:441
+#: ../qltk/quodlibet.py:443
 msgid "Random _Artist"
 msgstr "Losuj _artystę"
 
-#: ../qltk/quodlibet.py:442
+#: ../qltk/quodlibet.py:444
 msgid "Random Al_bum"
 msgstr "Losuj al_bum"
 
-#: ../qltk/quodlibet.py:449
+#: ../qltk/quodlibet.py:451
 msgid "Song _List"
 msgstr "_Lista utworów"
 
-#: ../qltk/quodlibet.py:485
+#: ../qltk/quodlibet.py:487
 msgid "Check for changes in your library"
 msgstr "Sprawdź, czy zaszły zmiany w bibliotece"
 
-#: ../qltk/quodlibet.py:488
+#: ../qltk/quodlibet.py:490
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Przeładowuje wszystkie utwory w bibliotece (to może chwilę potrwać)"
 
-#: ../qltk/quodlibet.py:491
+#: ../qltk/quodlibet.py:493
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -1533,7 +1534,7 @@ msgstr ""
 "40 najczęściej odtwarzanych utworów (może być więcej jeśli utwory mają tę "
 "samą liczbę odtworzeń)"
 
-#: ../qltk/quodlibet.py:495
+#: ../qltk/quodlibet.py:497
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1541,32 +1542,32 @@ msgstr ""
 "40 najrzadziej odtwarzanych utworów (może być więcej jeśli utwory mają tę "
 "samą liczbę odtworzeń)"
 
-#: ../qltk/quodlibet.py:689
+#: ../qltk/quodlibet.py:691
 msgid "Add a Location"
 msgstr "Dodaj adres"
 
-#: ../qltk/quodlibet.py:690
+#: ../qltk/quodlibet.py:692
 msgid "Enter the location of an audio file:"
 msgstr "Proszę podać adres internetowej stacji radiowej:"
 
-#: ../qltk/quodlibet.py:695 ../qltk/quodlibet.py:700
+#: ../qltk/quodlibet.py:697 ../qltk/quodlibet.py:702
 msgid "Unable to add location"
 msgstr "Nie można dodać stacji"
 
-#: ../qltk/quodlibet.py:696
+#: ../qltk/quodlibet.py:698
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> nie jest prawidłowym położeniem."
 
-#: ../qltk/quodlibet.py:712 ../qltk/quodlibet.py:719
+#: ../qltk/quodlibet.py:714 ../qltk/quodlibet.py:721
 msgid "Add Music"
 msgstr "Dodaj Utwory"
 
-#: ../qltk/quodlibet.py:713
+#: ../qltk/quodlibet.py:715
 msgid "Watch this folder for new songs"
 msgstr "Śledź zmiany w tym folderze"
 
-#: ../qltk/quodlibet.py:739
+#: ../qltk/quodlibet.py:741
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1575,7 +1576,7 @@ msgstr ""
 "Nie można dodać do biblioteki %s.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:744
+#: ../qltk/quodlibet.py:746
 msgid "Unable to add song"
 msgstr "Nie można dodać utworu"
 
@@ -2236,7 +2237,9 @@ msgstr "Identyfikatory MusicBrainz muszą być w formacie UUID."
 #: ../util/massagers.py:76
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
-msgstr "Status wydania MusicBrainz może być jedynie 'official', 'promotional', lub 'bootleg'."
+msgstr ""
+"Status wydania MusicBrainz może być jedynie 'official', 'promotional', lub "
+"'bootleg'."
 
 #: ../exfalso.desktop.in.h:1
 msgid "Audio tag editor"

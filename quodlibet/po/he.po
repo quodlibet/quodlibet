@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-09 19:11-0500\n"
+"POT-Creation-Date: 2006-08-14 14:12-0500\n"
 "PO-Revision-Date: 2006-07-01 22:10-0500\n"
 "Last-Translator: johnny5 <johnny5@i12.com>\n"
 "Language-Team: Hebrew\n"
@@ -1347,7 +1347,7 @@ msgstr "מאפייני Quod Libet"
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: ../qltk/queue.py:40 ../qltk/quodlibet.py:454
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:456
 msgid "_Queue"
 msgstr "_סדר השמעה"
 
@@ -1366,136 +1366,136 @@ msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "שיר %(count)d (%(time)s)"
 msgstr[1] "%(count)d שירים (%(time)s)"
 
-#: ../qltk/quodlibet.py:202
+#: ../qltk/quodlibet.py:204
 msgid "_Order:"
 msgstr "_אופן השמעה:"
 
-#: ../qltk/quodlibet.py:211
+#: ../qltk/quodlibet.py:213
 msgid "_Repeat"
 msgstr "_חזור"
 
-#: ../qltk/quodlibet.py:212
+#: ../qltk/quodlibet.py:214
 msgid "Restart the playlist when finished"
 msgstr "התחל מחדש את רשימת הניגון בהגיעה לסופה"
 
-#: ../qltk/quodlibet.py:322
+#: ../qltk/quodlibet.py:324
 msgid "Unable to add songs"
 msgstr "לא ניתן להוסיף שיר או שירים"
 
-#: ../qltk/quodlibet.py:323 ../qltk/quodlibet.py:701
+#: ../qltk/quodlibet.py:325 ../qltk/quodlibet.py:703
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "ב <b>%s</b> מתבצע שימוש בתסדיר אשר אינו נתמך"
 
-#: ../qltk/quodlibet.py:367
+#: ../qltk/quodlibet.py:369
 msgid "_Music"
 msgstr "_מוסיקה"
 
-#: ../qltk/quodlibet.py:368
+#: ../qltk/quodlibet.py:370
 msgid "_Add a Folder..."
 msgstr "הוסף _תיקיה..."
 
-#: ../qltk/quodlibet.py:370
+#: ../qltk/quodlibet.py:372
 msgid "_Add a File..."
 msgstr "ה_וסף קובץ..."
 
-#: ../qltk/quodlibet.py:372
+#: ../qltk/quodlibet.py:374
 msgid "_Add a Location..."
 msgstr "הוסף _נתיב לקובץ..."
 
-#: ../qltk/quodlibet.py:374
+#: ../qltk/quodlibet.py:376
 msgid "_Browse Library"
 msgstr "_עיין בספרית השירים"
 
-#: ../qltk/quodlibet.py:380
+#: ../qltk/quodlibet.py:382
 msgid "_Filters"
 msgstr "מ_סננים"
 
-#: ../qltk/quodlibet.py:382
+#: ../qltk/quodlibet.py:384
 msgid "Not Played To_day"
 msgstr "לא נוגנו ה_יום"
 
-#: ../qltk/quodlibet.py:384
+#: ../qltk/quodlibet.py:386
 msgid "Not Played in a _Week"
 msgstr "לא נוגנו ב_שבוע האחרון"
 
-#: ../qltk/quodlibet.py:386
+#: ../qltk/quodlibet.py:388
 msgid "Not Played in a _Month"
 msgstr "לא נוגנו ב_חודש האחרון"
 
-#: ../qltk/quodlibet.py:388
+#: ../qltk/quodlibet.py:390
 msgid "_Never Played"
 msgstr "לא נוגנו מ_עולם"
 
-#: ../qltk/quodlibet.py:390
+#: ../qltk/quodlibet.py:392
 msgid "_Top 40"
 msgstr "40 ה_פופולארים"
 
-#: ../qltk/quodlibet.py:391
+#: ../qltk/quodlibet.py:393
 msgid "B_ottom 40"
 msgstr "40 _הלא פופלארים"
 
-#: ../qltk/quodlibet.py:393
+#: ../qltk/quodlibet.py:395
 msgid "_Control"
 msgstr "_בקרה"
 
-#: ../qltk/quodlibet.py:399
+#: ../qltk/quodlibet.py:401
 msgid "_Jump to Playing Song"
 msgstr "_דלג לשיר מושמע"
 
-#: ../qltk/quodlibet.py:402
+#: ../qltk/quodlibet.py:404
 msgid "_View"
 msgstr "_תצוגה"
 
-#: ../qltk/quodlibet.py:403
+#: ../qltk/quodlibet.py:405
 msgid "_Help"
 msgstr "_עזרה"
 
-#: ../qltk/quodlibet.py:422
+#: ../qltk/quodlibet.py:424
 msgid "Re_fresh Library"
 msgstr "_רענן ספרית שירים"
 
-#: ../qltk/quodlibet.py:426
+#: ../qltk/quodlibet.py:428
 msgid "Re_load Library"
 msgstr "_טען מחדש את ספרית השירים"
 
-#: ../qltk/quodlibet.py:431
+#: ../qltk/quodlibet.py:433
 msgid "Filter on _Genre"
 msgstr "סנן לפי _סגנון"
 
-#: ../qltk/quodlibet.py:432
+#: ../qltk/quodlibet.py:434
 msgid "Filter on _Artist"
 msgstr "סנן לפי _אמן"
 
-#: ../qltk/quodlibet.py:433
+#: ../qltk/quodlibet.py:435
 msgid "Filter on Al_bum"
 msgstr "סנן לפי א_לבום"
 
-#: ../qltk/quodlibet.py:440
+#: ../qltk/quodlibet.py:442
 msgid "Random _Genre"
 msgstr "ס_גנון אקראי"
 
-#: ../qltk/quodlibet.py:441
+#: ../qltk/quodlibet.py:443
 msgid "Random _Artist"
 msgstr "א_מן אקראי"
 
-#: ../qltk/quodlibet.py:442
+#: ../qltk/quodlibet.py:444
 msgid "Random Al_bum"
 msgstr "אל_בום אקראי"
 
-#: ../qltk/quodlibet.py:449
+#: ../qltk/quodlibet.py:451
 msgid "Song _List"
 msgstr "רשימת _שירים"
 
-#: ../qltk/quodlibet.py:485
+#: ../qltk/quodlibet.py:487
 msgid "Check for changes in your library"
 msgstr "בדוק אם נעשו שינויים בספרית השירים"
 
-#: ../qltk/quodlibet.py:488
+#: ../qltk/quodlibet.py:490
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "טען את כל השירים בספרית השירים (פעולה זו עלולה לקחת משך זמן ארוך)"
 
-#: ../qltk/quodlibet.py:491
+#: ../qltk/quodlibet.py:493
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -1503,7 +1503,7 @@ msgstr ""
 "40 השירים שהושמעו מספר הפעמים הרב ביותר (ניתן לבחור יותר מ 40 שירים אם ישנם "
 "קשרים בינם)"
 
-#: ../qltk/quodlibet.py:495
+#: ../qltk/quodlibet.py:497
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1511,32 +1511,32 @@ msgstr ""
 "40 השירים שהושמעו מספר הפעמים המועט ביותר (ניתן לבחור יותר מ 40 שירים אם "
 "ישנם קשרים בינם)"
 
-#: ../qltk/quodlibet.py:689
+#: ../qltk/quodlibet.py:691
 msgid "Add a Location"
 msgstr "הוסף כתובת"
 
-#: ../qltk/quodlibet.py:690
+#: ../qltk/quodlibet.py:692
 msgid "Enter the location of an audio file:"
 msgstr "הכנס את הכתובת אינטנרט של קובץ המוסיקה:"
 
-#: ../qltk/quodlibet.py:695 ../qltk/quodlibet.py:700
+#: ../qltk/quodlibet.py:697 ../qltk/quodlibet.py:702
 msgid "Unable to add location"
 msgstr "לא ניתן להוסיף את הנתיב שצוין"
 
-#: ../qltk/quodlibet.py:696
+#: ../qltk/quodlibet.py:698
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "הנתיב <b>%s</b> אינו נתיב חוקי"
 
-#: ../qltk/quodlibet.py:712 ../qltk/quodlibet.py:719
+#: ../qltk/quodlibet.py:714 ../qltk/quodlibet.py:721
 msgid "Add Music"
 msgstr "הוסף מוסיקה"
 
-#: ../qltk/quodlibet.py:713
+#: ../qltk/quodlibet.py:715
 msgid "Watch this folder for new songs"
 msgstr "עקוב אחר שירים חדשים בתיקייה זו"
 
-#: ../qltk/quodlibet.py:739
+#: ../qltk/quodlibet.py:741
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1545,7 +1545,7 @@ msgstr ""
 "לא ניתן להוסיף את %s לספריה שלך\n"
 "\n"
 
-#: ../qltk/quodlibet.py:744
+#: ../qltk/quodlibet.py:746
 msgid "Unable to add song"
 msgstr "לא ניתן להוסיף שיר"
 

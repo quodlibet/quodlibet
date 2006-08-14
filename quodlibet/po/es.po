@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-08 03:08-0500\n"
+"POT-Creation-Date: 2006-08-14 14:12-0500\n"
 "PO-Revision-Date: 2006-08-08 15:19+0200\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: spanish\n"
@@ -1357,7 +1357,7 @@ msgstr "Preferencias de Quod Libet"
 msgid "Properties"
 msgstr "Propiedades"
 
-#: ../qltk/queue.py:40 ../qltk/quodlibet.py:454
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:456
 msgid "_Queue"
 msgstr "_Cola de reproducción"
 
@@ -1376,138 +1376,138 @@ msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d canción (%(time)s)"
 msgstr[1] "%(count)d canciones (%(time)s)"
 
-#: ../qltk/quodlibet.py:202
+#: ../qltk/quodlibet.py:204
 msgid "_Order:"
 msgstr "_Orden"
 
-#: ../qltk/quodlibet.py:211
+#: ../qltk/quodlibet.py:213
 msgid "_Repeat"
 msgstr "_Repetir"
 
-#: ../qltk/quodlibet.py:212
+#: ../qltk/quodlibet.py:214
 msgid "Restart the playlist when finished"
 msgstr "Reinicia la lista de reproducción al terminar"
 
-#: ../qltk/quodlibet.py:322
+#: ../qltk/quodlibet.py:324
 msgid "Unable to add songs"
 msgstr "Imposible añadir canciónes"
 
-#: ../qltk/quodlibet.py:323 ../qltk/quodlibet.py:701
+#: ../qltk/quodlibet.py:325 ../qltk/quodlibet.py:703
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> utiliza un protocolo no soportado."
 
-#: ../qltk/quodlibet.py:367
+#: ../qltk/quodlibet.py:369
 msgid "_Music"
 msgstr "_Música"
 
-#: ../qltk/quodlibet.py:368
+#: ../qltk/quodlibet.py:370
 msgid "_Add a Folder..."
 msgstr "_Añadir un directorio..."
 
-#: ../qltk/quodlibet.py:370
+#: ../qltk/quodlibet.py:372
 msgid "_Add a File..."
 msgstr "_Añadir un fichero..."
 
-#: ../qltk/quodlibet.py:372
+#: ../qltk/quodlibet.py:374
 msgid "_Add a Location..."
 msgstr "_Añadir una dirección..."
 
-#: ../qltk/quodlibet.py:374
+#: ../qltk/quodlibet.py:376
 msgid "_Browse Library"
 msgstr "_Navegar por la colección"
 
-#: ../qltk/quodlibet.py:380
+#: ../qltk/quodlibet.py:382
 msgid "_Filters"
 msgstr "_Filtros"
 
-#: ../qltk/quodlibet.py:382
+#: ../qltk/quodlibet.py:384
 msgid "Not Played To_day"
 msgstr "No reproducidas ho_y"
 
-#: ../qltk/quodlibet.py:384
+#: ../qltk/quodlibet.py:386
 msgid "Not Played in a _Week"
 msgstr "No reproducidas en una s_emana"
 
-#: ../qltk/quodlibet.py:386
+#: ../qltk/quodlibet.py:388
 msgid "Not Played in a _Month"
 msgstr "No reproducidas en un _mes"
 
-#: ../qltk/quodlibet.py:388
+#: ../qltk/quodlibet.py:390
 msgid "_Never Played"
 msgstr "_Nunca reproducidas"
 
-#: ../qltk/quodlibet.py:390
+#: ../qltk/quodlibet.py:392
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: ../qltk/quodlibet.py:391
+#: ../qltk/quodlibet.py:393
 msgid "B_ottom 40"
 msgstr "Úl_timas 40"
 
-#: ../qltk/quodlibet.py:393
+#: ../qltk/quodlibet.py:395
 msgid "_Control"
 msgstr "_Control"
 
-#: ../qltk/quodlibet.py:399
+#: ../qltk/quodlibet.py:401
 msgid "_Jump to Playing Song"
 msgstr "_Saltar a la canción reproducida"
 
-#: ../qltk/quodlibet.py:402
+#: ../qltk/quodlibet.py:404
 msgid "_View"
 msgstr "_Ver"
 
-#: ../qltk/quodlibet.py:403
+#: ../qltk/quodlibet.py:405
 msgid "_Help"
 msgstr "_Ayuda"
 
-#: ../qltk/quodlibet.py:422
+#: ../qltk/quodlibet.py:424
 msgid "Re_fresh Library"
 msgstr "Ac_tualizar la colección"
 
-#: ../qltk/quodlibet.py:426
+#: ../qltk/quodlibet.py:428
 msgid "Re_load Library"
 msgstr "Rec_argar la colección"
 
-#: ../qltk/quodlibet.py:431
+#: ../qltk/quodlibet.py:433
 msgid "Filter on _Genre"
 msgstr "Filtrar por _género"
 
-#: ../qltk/quodlibet.py:432
+#: ../qltk/quodlibet.py:434
 msgid "Filter on _Artist"
 msgstr "Filtrar por _artista"
 
-#: ../qltk/quodlibet.py:433
+#: ../qltk/quodlibet.py:435
 msgid "Filter on Al_bum"
 msgstr "Filtrar por ál_bum"
 
-#: ../qltk/quodlibet.py:440
+#: ../qltk/quodlibet.py:442
 msgid "Random _Genre"
 msgstr "_Género aleatorio"
 
-#: ../qltk/quodlibet.py:441
+#: ../qltk/quodlibet.py:443
 msgid "Random _Artist"
 msgstr "_Artista aleatorio"
 
-#: ../qltk/quodlibet.py:442
+#: ../qltk/quodlibet.py:444
 msgid "Random Al_bum"
 msgstr "Ál_bum aleatorio"
 
-#: ../qltk/quodlibet.py:449
+#: ../qltk/quodlibet.py:451
 msgid "Song _List"
 msgstr "_Lista de canciones"
 
-#: ../qltk/quodlibet.py:485
+#: ../qltk/quodlibet.py:487
 msgid "Check for changes in your library"
 msgstr "Busca cambios en la colección"
 
-#: ../qltk/quodlibet.py:488
+#: ../qltk/quodlibet.py:490
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr ""
 "Recarga todas las canciones en tu colección (puede llevar mucho tiempo... un "
 "cafetito?)"
 
-#: ../qltk/quodlibet.py:491
+#: ../qltk/quodlibet.py:493
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -1515,7 +1515,7 @@ msgstr ""
 "Las 40 canciones que más has escuchado (pueden ser mostradas más de 40 si "
 "algunas se han escuchado el mismo número de veces)"
 
-#: ../qltk/quodlibet.py:495
+#: ../qltk/quodlibet.py:497
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1523,32 +1523,32 @@ msgstr ""
 "Las 40 canciones que menos has escuchado (pueden ser mostradas más de 40 si "
 "algunas se han escuchado el mismo número de veces)"
 
-#: ../qltk/quodlibet.py:689
+#: ../qltk/quodlibet.py:691
 msgid "Add a Location"
 msgstr "Añadir una dirección"
 
-#: ../qltk/quodlibet.py:690
+#: ../qltk/quodlibet.py:692
 msgid "Enter the location of an audio file:"
 msgstr "Introduce la localización del fichero de audio"
 
-#: ../qltk/quodlibet.py:695 ../qltk/quodlibet.py:700
+#: ../qltk/quodlibet.py:697 ../qltk/quodlibet.py:702
 msgid "Unable to add location"
 msgstr "Imposible añadir dirección"
 
-#: ../qltk/quodlibet.py:696
+#: ../qltk/quodlibet.py:698
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> no es una dirección válida."
 
-#: ../qltk/quodlibet.py:712 ../qltk/quodlibet.py:719
+#: ../qltk/quodlibet.py:714 ../qltk/quodlibet.py:721
 msgid "Add Music"
 msgstr "Añadir Música"
 
-#: ../qltk/quodlibet.py:713
+#: ../qltk/quodlibet.py:715
 msgid "Watch this folder for new songs"
 msgstr "Monitorizar este directorio en busca de nuevas canciones"
 
-#: ../qltk/quodlibet.py:739
+#: ../qltk/quodlibet.py:741
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1557,7 +1557,7 @@ msgstr ""
 "%s no se pudo añadir a tu colección.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:744
+#: ../qltk/quodlibet.py:746
 msgid "Unable to add song"
 msgstr "Imposible añadir canción"
 
