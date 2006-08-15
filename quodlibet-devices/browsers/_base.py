@@ -37,6 +37,11 @@ class Browser(object):
     # and MainSongList are both packed into it.
     expand = False # Packing options
 
+    # Do your own packing. Should return a Widget with self and songlist
+    # packed inside.
+    #def packing(self, songlist): return ...
+    packing = False
+
     # If true, the global filter will be applied by MainSongList to
     # the songs returned.
     background = True

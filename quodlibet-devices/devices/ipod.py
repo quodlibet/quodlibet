@@ -29,7 +29,7 @@ class IPodSong(AudioFile):
     def __init__(self, track):
         super(IPodSong, self).__init__()
         self.sanitize(gpod.itdb_filename_on_ipod(track))
-        self.itdb_track = track
+        self.itdb_id = track.id
 
         for key in ['artist', 'album', 'title', 'genre', 'grouping']:
             value = getattr(track, key)
@@ -63,33 +63,26 @@ class IPodDevice(Device):
     }
 
     __itdb = None
-    __cache = []
 
     def Properties(self):
         props = []
 
-        spin = gtk.SpinButton()
-        spin.set_range(-20, 20)
-        spin.set_digits(1)
-        spin.set_increments(0.1, 1)
-        spin.set_value(float(self['gain']))
-        props.append((_("_Volume Gain (dB):"), spin, 'gain'))
+        gain = gtk.SpinButton()
+        gain.set_range(-20, 20)
+        gain.set_digits(1)
+        gain.set_increments(0.1, 1)
+        gain.set_value(float(self['gain']))
+        props.append((_("_Volume Gain (dB):"), gain, 'gain'))
 
-        check = gtk.CheckButton()
-        check.set_active(self['covers'])
-        props.append((_("Copy _album covers"), check, 'covers'))
-
-        check = gtk.CheckButton()
-        check.set_active(self['all_tags'])
-        props.append((_("Combine tags with _multiple values"), check, 'all_tags'))
-
-        check = gtk.CheckButton()
-        check.set_active(self['title_version'])
-        props.append((_("Title includes _version"), check, 'title_version'))
-
-        check = gtk.CheckButton()
-        check.set_active(self['album_part'])
-        props.append((_("Album includes _part"), check, 'album_part'))
+        for key, label in [
+            ['covers', _("Copy _album covers")],
+            ['all_tags', _("Combine tags with _multiple values")],
+            ['title_version', _("Title includes _version")],
+            ['album_part', _("Album includes _part")],
+        ]:
+            check = gtk.CheckButton()
+            check.set_active(self[key])
+            props.append((label, check, key))
 
         if self.is_connected():
             details = self.__get_details()
@@ -104,7 +97,7 @@ class IPodDevice(Device):
         details = {}
 
         try: file = open(os.path.join(self.mountpoint,
-                         "iPod_Control", "Device", "SysInfo"))
+            "iPod_Control", "Device", "SysInfo"))
         except IOError: return details
 
         while True:
@@ -121,41 +114,23 @@ class IPodDevice(Device):
                 details['firmware'] = parts[2].strip("()")
         return details
 
-    def list(self, browser, rescan=False):
-        if rescan and self.__load_db():
-            self.__cache = []
-            for track in gpod.sw_get_tracks(self.__itdb):
-                filename = gpod.itdb_filename_on_ipod(track)
-                if filename: self.__cache.append(IPodSong(track))
-                else:
-                    # Handle database corruption
-                    self.__remove_track(track)
-        return self.__cache
-
-    def __create_db(self):
-        db = gpod.itdb_new();
-        gpod.itdb_set_mountpoint(self.mountpoint)
-
-        master = gpod.itdb_playlist_new('iPod', False)
-        gpod.itdb_playlist_set_mpl(master)
-        gpod.itdb_playlist_add(db, master, 0)
-
-        return db
-
-    def __load_db(self):
-        if self.__itdb: return self.__itdb
-
-        self.__itdb = gpod.itdb_parse(self.mountpoint, None)
-        if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
-            qltk.get_top_parent(self), _("Uninitialized iPod"),
-            _("Do you want to create an empty database on this iPod?")
-            ).run():
-            self.__itdb = self.create_db()
-        return self.__itdb
+    def list(self, browser):
+        self.__load_db()
+        songs = []
+        for track in gpod.sw_get_tracks(self.__itdb):
+            filename = gpod.itdb_filename_on_ipod(track)
+            if filename:
+                songs.append(IPodSong(track))
+            else: # Remove orphaned iTunesDB track
+                self.__remove_track(track)
+        self.__close_db()
+        return songs
 
     def copy(self, songlist, song):
+        self.__load_db()
         track = gpod.itdb_track_new()
 
+        # Either combine tags with comma, or only take the first value
         if self['all_tags']: tag = song.comma
         else: tag = lambda key: song.list(key)[0]
 
@@ -194,6 +169,7 @@ class IPodDevice(Device):
             except ValueError: continue
         track.filetype = song('~format')
 
+        # Associate a cover with the track
         if self['covers']:
             cover = song.find_cover()
             if cover: gpod.itdb_track_set_thumbnails(track, cover.name)
@@ -209,38 +185,18 @@ class IPodDevice(Device):
         else:
             return False
 
-    def __mactime(self, time):
-        time = int(time)
-        if time == 0: return time
-        else: return time + 2082844800
-
-    def __soundcheck(self, song):
-        if 'replaygain_album_gain' in song:
-            db = float(song['replaygain_album_gain'].split()[0])
-        elif 'replaygain_track_gain' in song:
-            db = float(song['replaygain_track_gain'].split()[0])
-        else: db = 0.0
-
-        soundcheck = int(round(1000 * 10.**(-0.1 * (db + float(self['gain'])))))
-        return soundcheck
-
     def delete(self, songlist, song):
+        self.__load_db()
         try:
-            track = song.itdb_track
-            filename = gpod.itdb_filename_on_ipod(track)
-            if filename: os.remove(filename)
-            self.__remove_track(track)
+            track = gpod.itdb_track_by_id(self.__itdb, song.itdb_id)
+            if track and gpod.itdb_filename_on_ipod(track) == song['~filename']:
+                os.remove(song['~filename'])
+                self.__remove_track(track)
         except IOError, exc:
             return str(exc).decode(locale.getpreferredencoding(), 'replace')
         else: return True
 
-    def __remove_track(self, track):
-        master = gpod.itdb_playlist_mpl(self.__itdb)
-        gpod.itdb_playlist_remove_track(master, track)
-        gpod.itdb_track_remove(track)
-
     def cleanup(self, wlw, action):
-        return
         wlw._WaitLoadWindow__text = _("<b>Saving iPod database...</b>")
         wlw.count = 0
         wlw.step()
@@ -248,6 +204,55 @@ class IPodDevice(Device):
             ErrorMessage(wlw.get_transient_for(),
                 _("Unable to save iPod database"),
                 _("The song database could not be saved on your iPod.")).run()
+        self.__close_db()
+
+    def __load_db(self):
+        if self.__itdb: return self.__itdb
+
+        self.__itdb = gpod.itdb_parse(self.mountpoint, None)
+        if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
+            qltk.get_top_parent(self), _("Uninitialized iPod"),
+            _("Do you want to create an empty database on this iPod?")
+            ).run():
+            self.__itdb = self.create_db()
+
+        return self.__itdb
+
+    def __create_db(self):
+        db = gpod.itdb_new();
+        gpod.itdb_set_mountpoint(self.mountpoint)
+
+        master = gpod.itdb_playlist_new('iPod', False)
+        gpod.itdb_playlist_set_mpl(master)
+        gpod.itdb_playlist_add(db, master, 0)
+
+        return db
+
+    def __close_db(self):
+        if self.__itdb: gpod.itdb_free(self.__itdb)
+        self.__itdb = None
+
+    def __remove_track(self, track):
+        master = gpod.itdb_playlist_mpl(self.__itdb)
+        gpod.itdb_playlist_remove_track(master, track)
+        gpod.itdb_track_remove(track)
+
+    def __mactime(self, time):
+        time = int(time)
+        if time == 0: return time
+        else: return time + 2082844800
+
+    # Convert ReplayGain values to Apple Soundcheck values
+    def __soundcheck(self, song):
+        if 'replaygain_album_gain' in song:
+            db = float(song['replaygain_album_gain'].split()[0])
+        elif 'replaygain_track_gain' in song:
+            db = float(song['replaygain_track_gain'].split()[0])
+        else: db = 0.0
+
+        soundcheck = int(round(1000 * 10.**(
+            -0.1 * (db + float(self['gain'])))))
+        return soundcheck
 
     # This list is taken from
     # http://en.wikipedia.org/wiki/List_of_iPod_model_numbers

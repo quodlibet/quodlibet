@@ -25,7 +25,7 @@ class DeleteDialog(gtk.Dialog):
     # used by anything.
     __TRASH = os.path.expanduser("~/.Trash")
 
-    def __init__(self, parent, files):
+    def __init__(self, parent, files, trash=True, askonly=False):
         super(DeleteDialog, self).__init__(
             _("Delete Files"), get_top_parent(parent))
         self.set_border_width(6)
@@ -36,9 +36,11 @@ class DeleteDialog(gtk.Dialog):
 
         self.__files = files
 
-        if os.path.isdir(self.__TRASH):
+        if trash and os.path.isdir(self.__TRASH):
             b = Button(_("_Move to Trash"), gtk.STOCK_DELETE)
             self.add_action_widget(b, 0)
+
+        self.__askonly = askonly
 
         self.add_button(gtk.STOCK_CANCEL, 1)
         self.add_button(gtk.STOCK_DELETE, 2)
@@ -81,6 +83,10 @@ class DeleteDialog(gtk.Dialog):
 
     def run(self):
         resp = super(DeleteDialog, self).run()
+        if self.__askonly:
+            self.destroy()
+            return resp
+
         if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return []
         elif resp == 0: s = _("Moving %d/%d.")
         elif resp == 2: s = _("Deleting %d/%d.")

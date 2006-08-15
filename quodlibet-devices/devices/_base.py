@@ -94,8 +94,8 @@ class Device(dict):
         return (space, free)
 
     # Returns a list of AudioFile instances representing the songs
-    # on this device. If rescan is False the list can be cached.
-    def list(self, songlist, rescan=False): return []
+    # on this device.
+    def list(self, songlist): return []
 
     # Copies a song to the device. This will be called once for each song.
     # If the copy was successful, it should return an AudioFile instance,
@@ -118,7 +118,7 @@ class Device(dict):
     # The WaitLoadWindow can be (ab)used to display status messages.
     #
     # def cleanup(self, wlw, action='copy'/'delete'): ...
-    cleanup = None
+    #cleanup = None
 
     # Returns a list of tuples for device-specific settings which should be
     # displayed in the properties dialog.

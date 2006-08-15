@@ -43,6 +43,8 @@ class LibraryBrowser(Window):
             container.pack1(browser, resize=True)
             container.pack2(sw, resize=True)
             self.child.pack_start(container)
+        elif browser.packing:
+            self.child.pack_start(browser.packing(sw))
         else:
             vbox = gtk.VBox(spacing=6)
             vbox.pack_start(browser, expand=False)

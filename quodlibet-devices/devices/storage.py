@@ -47,7 +47,7 @@ class StorageDevice(Device):
 
         return props
 
-    def list(self, browser, rescan=False):
+    def list(self, browser):
         if self.__library and not rescan:
             return self.__library.values()
         elif not self.__library:

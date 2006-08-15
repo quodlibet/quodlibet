@@ -542,6 +542,8 @@ class QuodLibetWindow(gtk.Window):
                 del(paned._size_sig)
             sig = c.connect('size-allocate', set_size, val)
             c._size_sig = sig
+        elif self.browser.packing:
+            c = self.browser.packing(self.songpane)
         else:
             c = gtk.VBox(spacing=6)
             c.pack_start(self.browser, expand=False)
