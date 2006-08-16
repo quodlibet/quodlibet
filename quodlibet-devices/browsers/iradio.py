@@ -283,6 +283,8 @@ class InternetRadio(gtk.HBox, Browser):
             d = ChooseNewStations(sorted(irfs))
             if d.run() == gtk.RESPONSE_OK:
                 irfs = d.get_irfs()
+            else:
+                irfs = []
             d.destroy()
         if irfs and self.__stations.add(irfs):
             self.__stations.save(STATIONS)

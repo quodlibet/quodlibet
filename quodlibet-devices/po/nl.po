@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-11 18:50+0200\n"
+"POT-Creation-Date: 2006-08-14 14:12-0500\n"
 "PO-Revision-Date: 2006-08-11 18:57+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -1306,7 +1306,8 @@ msgstr "_Ga automatisch naar song die gespeeld wordt"
 
 #: ../qltk/prefs.py:172
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr "Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
+msgstr ""
+"Als de song die gespeeld wordt verandert, scroll ernaar in de songlijst"
 
 #: ../qltk/prefs.py:178
 msgid "_Replay Gain volume adjustment"
@@ -1901,7 +1902,8 @@ msgstr "Niet in staat om speellijst importeren"
 
 #: ../browsers/playlists.py:424 ../browsers/playlists.py:502
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
-msgstr "Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
+msgstr ""
+"Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
 
 #: ../browsers/playlists.py:450
 msgid "_Rename"
@@ -2214,8 +2216,10 @@ msgstr "MusicBrainz IDs moeten in UUID formaat zijn."
 #. Translators: Leave "official", "promotional", and "bootleg"
 #. untranslated. They are the three possible literal values.
 #: ../util/massagers.py:76
-msgid "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
-msgstr "MusicBrainz release status moet zijn: 'official', 'promotional', of 'bootleg'"
+msgid ""
+"MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
+msgstr ""
+"MusicBrainz release status moet zijn: 'official', 'promotional', of 'bootleg'"
 
 #: ../exfalso.desktop.in.h:1
 msgid "Audio tag editor"
@@ -2232,4 +2236,3 @@ msgstr "Luister naar, browse, of bewerk je audio verzameling"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "Muziek Speler"
-
