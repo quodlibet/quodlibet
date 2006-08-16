@@ -102,9 +102,10 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         while head != os.path.dirname(const.HOME) and tail != '':
             if tail:
                 def isvisibledir(t):
-                    return (t[0] != "." and
-                            os.access(os.path.join(head, t), os.R_OK)
-                            and os.path.isdir(os.path.join(head, t)))
+                    joined = os.path.join(head, t)
+                    return (not t.startswith(".") and
+                            os.access(joined, os.X_OK) and
+                            os.path.isdir(joined))
                 try: dirs = filter(isvisibledir, sorted(os.listdir(head)))
                 except OSError: break
                 try: path.insert(0, dirs.index(tail))
@@ -200,26 +201,27 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
             gtk.main_iteration()
         try:
-            if model is None: return
+            if model is None:
+                return
             while model.iter_has_child(iter):
                 model.remove(model.iter_children(iter))
             folder = model[iter][0]
-            for base in sorted(os.listdir(folder)):
+            for path in util.listdir(folder):
                 try:
-                    path = os.path.join(folder, base)
-                    if (base[0] != "." and os.access(path, os.R_OK) and
-                        os.path.isdir(path)):
-                        niter = model.append(iter, [path])
-                        if filter(os.path.isdir,
-                                  [os.path.join(path, d) for d in
-                                   sorted(os.listdir(path)) if d[0] != "."]):
+                    for filename in util.listdir(path):
+                        if os.path.isdir(filename):
+                            niter = model.append(iter, [path])
                             model.append(niter, ["dummy"])
-                except WindowsError:
-                    # Windows lies and says you can read unreadable dirs.
+                            break
+                    else:
+                        model.append(iter, [path])
+                except OSError:
                     pass
-            if not model.iter_has_child(iter): return True
+            if not model.iter_has_child(iter):
+                return True
         finally:
-            if window: window.set_cursor(None)
+            if window:
+                window.set_cursor(None)
 
 class FileSelector(gtk.VPaned):
     def cell_data(column, cell, model, iter):

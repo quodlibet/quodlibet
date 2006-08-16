@@ -42,6 +42,19 @@ def gtk_init():
             def set_search_equal_func(self, func, *args): pass
         gtk.TreeView = TVProxy
 
+def listdir(path, hidden=False):
+    """List files in a directory, sorted, fully-qualified.
+
+    If hidden is false, Unix-style hidden files are not returned.
+    """
+    if hidden: filt = None
+    else: filt = lambda base: not base.startswith(".")
+    if path.endswith(os.sep): join = "".join
+    else: join = os.sep.join
+    return [join([path, basename])
+            for basename in sorted(os.listdir(path))
+            if filt(basename)]
+
 def ctypes_init():
     try: import ctypes
     except ImportError: pass
