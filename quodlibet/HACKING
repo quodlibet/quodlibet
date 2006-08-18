@@ -42,6 +42,9 @@ can't break any unit tests, and if you change tests in a non-obvious way
 (e.g. a patch that removes an entry point and also removes a test for it
 is obvious) you should explain why.
 
+These tests are not included in released versions, since they are fairly 
+large and have more dependencies than Quod Libet itself.
+
 Submitting
 ----------
 If your patch fixes a known bug with a ticket, you should attach it to
