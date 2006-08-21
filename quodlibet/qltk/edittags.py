@@ -293,7 +293,20 @@ class AddTagDialog(gtk.Dialog):
         self.__tag.grab_focus()
         return super(AddTagDialog, self).run()
 
-TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE = range(6)
+TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE, RENAMED, ORIGTAG = range(8)
+
+def is_special(string):
+    return string.endswith("</i>")
+
+def is_different(string):
+    return is_special(string) and string.startswith("<i>")
+
+def is_missing(string):
+    return is_special(string) and not string.startswith("<i>")
+
+def strip_missing(string):
+    try: return string[:string.index(" <i>")]
+    except ValueError: return string
 
 class EditTags(gtk.VBox):
     def __init__(self, parent, library):
@@ -301,7 +314,7 @@ class EditTags(gtk.VBox):
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
-        model = gtk.ListStore(str, str, bool, bool, bool, str)
+        model = gtk.ListStore(str, str, bool, bool, bool, str, bool, str)
         view = RCMHintedTreeView(model)
         selection = view.get_selection()
         render = gtk.CellRendererPixbuf()
@@ -501,7 +514,7 @@ class EditTags(gtk.VBox):
         orig = None
         deleted = False
         iters = [row.iter for row in model if row[TAG] == tag]
-        row = [tag, util.escape(value), True, True, False, None]
+        row = [tag, util.escape(value), True, True, False, None, False, None]
         if len(iters): model.insert_after(iters[-1], row=row)
         else: model.append(row=row)
 
@@ -541,8 +554,9 @@ class EditTags(gtk.VBox):
         updated = {}
         deleted = {}
         added = {}
+        renamed = {}
         for row in model:
-            if row[EDITED] and not row[DELETED]:
+            if row[EDITED] and not (row[DELETED] or row[RENAMED]):
                 if row[ORIGVALUE] is not None:
                     updated.setdefault(row[TAG], [])
                     updated[row[TAG]].append((util.decode(row[VALUE]),
@@ -555,6 +569,11 @@ class EditTags(gtk.VBox):
                     deleted.setdefault(row[TAG], [])
                     deleted[row[TAG]].append(util.decode(row[ORIGVALUE]))
 
+            if row[EDITED] and row[RENAMED] and not row[DELETED]:
+                renamed.setdefault(row[TAG], [])
+                renamed[row[TAG]].append((util.decode(row[ORIGTAG]),
+                                         util.decode(row[VALUE])))
+                
         was_changed = []
         songs = self.__songinfo.songs
         win = WritingWindow(self, len(songs))
@@ -589,6 +608,26 @@ class EditTags(gtk.VBox):
                     if song.can_change(key) and key in song:
                         song.remove(key, value)
                         changed = True
+            save_rename = []
+            for new_tag, values in renamed.iteritems():
+                for old_tag, value in values:
+                    old_tag = util.unescape(old_tag)
+                    value = util.unescape(value)
+                    if (song.can_change(new_tag) and
+                        song.can_change(old_tag) and old_tag in song):
+                        if not is_special(value):
+                            song.remove(old_tag, value)
+                            save_rename.append((new_tag, value))
+                        elif is_missing(value):
+                            value = strip_missing(value)
+                            song.remove(old_tag, value)
+                            save_rename.append((new_tag, value))
+                        else:
+                            save_rename.append((new_tag, song[old_tag]))
+                            song.remove(old_tag, None)
+                        changed = True
+            for tag, value in save_rename:
+                song.add(tag, value)
 
             if changed:
                 try: song.write()
@@ -660,16 +699,6 @@ class EditTags(gtk.VBox):
             else:
                 value = row[VALUE]
                 idx = value.find('<i>')
-                if idx == 0:
-                    title = _("Unable to retag multiple values")
-                    msg = _("Changing the name of a tag with multiple "
-                            "values is not supported.")
-                    qltk.ErrorMessage(self, title, msg).run()
-                    return
-                elif idx >= 0:
-                    # Strip off "(missing from...)", the tag will be
-                    # added to all songs.
-                    value = value[:idx].strip()
                 value = util.unescape(value)
 
             if row[ORIGVALUE] is None:
@@ -681,8 +710,9 @@ class EditTags(gtk.VBox):
             else:
                 # The tag has been saved, so delete the old tag and
                 # add a new one with the old (or sanitized) value.
-                row[DELETED] = row[EDITED] = True
-                self.__add_new_tag(model, new_tag, value)
+                row[RENAMED] = row[EDITED] = True
+                row[ORIGTAG] = row[TAG]
+                row[TAG] = new_tag
 
     def __button_press(self, view, event):
         if event.button not in [1, 2]: return False
@@ -734,13 +764,16 @@ class EditTags(gtk.VBox):
             edited = False
             edit = songinfo.can_change(tag)
             deleted = False
+            renamed = False
+            newtag = ""
             if value[0:1] == "<": # "different etc."
                 model.append(row=[tag, value, edited, edit, deleted,
-                                  "\n".join(orig_value)])
+                                  "\n".join(orig_value), renamed,
+                                  newtag])
             else:
                 for i, v in enumerate(value.split("\n")):
                     model.append(row=[tag, v, edited, edit, deleted,
-                                      orig_value[i]])
+                                      orig_value[i], renamed, newtag])
 
         buttonbox.set_sensitive(bool(songinfo.can_change()))
         for b in buttons: b.set_sensitive(False)
