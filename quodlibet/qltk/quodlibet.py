@@ -24,7 +24,6 @@ import qltk
 import qltk.about
 import stock
 import util
-import widgets
 
 from formats.remote import RemoteFile
 from library import library, librarian
@@ -44,7 +43,6 @@ from qltk.properties import SongProperties
 from qltk.prefs import PreferencesWindow
 from qltk.queue import QueueExpander
 from qltk.songlist import SongList, PlaylistMux
-from qltk.wlw import WaitLoadWindow
 from util import copool
 from util.uri import URI
 

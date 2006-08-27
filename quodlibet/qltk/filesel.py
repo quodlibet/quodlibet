@@ -21,10 +21,6 @@ import util
 from qltk.getstring import GetStringDialog
 from qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 
-try: WindowsError
-except NameError:
-    WindowsError = None
-
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
     if check is None:
