@@ -119,7 +119,7 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         if tag is None:
             return
         elif tag in ("bpm date discnumber isrc originaldate recordingdate "
-                     "tracknumber").split() + formats.MACHINE_TAGS:
+                     "tracknumber title").split() + formats.MACHINE_TAGS:
             return
         elif tag in formats.PEOPLE:
             tag = "~people"
