@@ -184,6 +184,13 @@ class TAudioFile(TestCase):
         q.sanitize()
         self.failUnlessRaises(ValueError, b.sanitize)
 
+    def test_performers(self):
+        q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B")])
+        self.failUnless("A (vocals)" in q.list("~performers"))
+        self.failUnless("B (guitar)" in q.list("~performers"))
+        self.failUnless("A (vocals)" in q.list("~people"))
+        self.failUnless("B (guitar)" in q.list("~people"))
+
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
         self.failUnlessEqual(dump.count("\n"), len(bar_1_1) + 1)

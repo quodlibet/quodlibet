@@ -63,6 +63,11 @@ class TestMetaData(TestCase):
         self._test_tag('genre', [u'Pop', u'Rock\nClassical', u'Big Bird',
              u'\u30a2\u30cb\u30e1\u30b5\u30f3\u30c8\u30e9',])
 
+    def test_odd_performer(self):
+        values = [u"A Person", u"Another"]
+        self._test_tag("performer:vocals", values)
+        self._test_tag("performer:guitar", values)
+
     def test_wackjob(self): # undefined tag
         self._test_tag('wackjob', [u'Jelly\nDanish', u'Muppet',
              u'\u30cf\u30f3\u30d0\u30fc\u30ac\u30fc'])

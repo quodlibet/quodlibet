@@ -126,6 +126,11 @@ class ID3File(AudioFile):
             elif frame.FrameID == "RVA2":
                 self.__process_rg(frame)
                 continue
+            elif frame.FrameID == "TMCL":
+                for role, name in frame.people:
+                    role = role.encode('utf-8')
+                    self.add("performer:" + role, name)
+                continue
             else: name = self.IDS.get(frame.FrameID, "").lower()
 
             if not name: continue
@@ -180,6 +185,7 @@ class ID3File(AudioFile):
         tag.delall("COMM:QuodLibet:")
         tag.delall("TXXX:QuodLibet:")
         for key in ["UFID:http://musicbrainz.org",
+                    "TMCL",
                     "POPM:%s" % const.EMAIL,
                     "POPM:%s" % config.get("editing", "save_email")]:
             if key in tag:
@@ -187,7 +193,6 @@ class ID3File(AudioFile):
 
         for key, id3name in self.SDI.items():
             tag.delall(id3name)
-
             if key not in self: continue
             elif not isascii(self[key]): enc = 1
             else: enc = 3
@@ -207,22 +212,32 @@ class ID3File(AudioFile):
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(owner="http://musicbrainz.org",
                   data=self["musicbrainz_trackid"])
-            tag.loaded_frame(f)
+            tag.add(f)
             
+        mcl = mutagen.id3.TMCL(encoding=3, people=[])
+
         for key in filter(lambda x: x not in self.SDI and x not in dontwrite,
                           self.realkeys()):
             if not isascii(self[key]): enc = 1
             else: enc = 3
+
+            if key.startswith("performer:"):
+                mcl.people.append([key.split(":", 1)[1], self[key]])
+                continue
+
             f = mutagen.id3.TXXX(
                 encoding=enc, text=self[key].split("\n"),
                 desc=u"QuodLibet::%s" % key)
-            tag.loaded_frame(f)
+            tag.add(f)
+
+        if mcl.people:
+            tag.add(mcl)
 
         if "genre" in self:
             if not isascii(self["genre"]): enc = 1
             else: enc = 3
             t = self["genre"].split("\n")
-            tag.loaded_frame(mutagen.id3.TCON(encoding=enc, text=t))
+            tag.add(mutagen.id3.TCON(encoding=enc, text=t))
         else:
             try: del(tag["TCON"])
             except KeyError: pass
@@ -232,7 +247,7 @@ class ID3File(AudioFile):
             if not isascii(self["comment"]): enc = 1
             else: enc = 3
             t = self["comment"].split("\n")
-            tag.loaded_frame(mutagen.id3.COMM(
+            tag.add(mutagen.id3.COMM(
                 encoding=enc, text=t, desc=u"", lang="\x00\x00\x00"))
 
         for k in ["normalize", "album", "track"]:
@@ -250,7 +265,7 @@ class ID3File(AudioFile):
                 try: peak = float(self["replaygain_%s_peak" % k])
                 except (ValueError, KeyError): peak = 0
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=peak)
-                tag.loaded_frame(f)
+                tag.add(f)
 
         for key in self.BRAINZ:
             try: del(tag["TXXX:" + key])
@@ -260,7 +275,7 @@ class ID3File(AudioFile):
                 f = mutagen.id3.TXXX(
                     encoding=0, text=self[key].split("\n"),
                     desc=self.ZNIARB[key])
-                tag.loaded_frame(f)
+                tag.add(f)
 
         if (config.getboolean("editing", "save_to_songs") and
             (self["~#rating"] != 0.5 or self["~#playcount"] != 0)):
@@ -269,7 +284,7 @@ class ID3File(AudioFile):
             t = mutagen.id3.POPM(email=email,
                                  rating=int(255*self["~#rating"]),
                                  count=self["~#playcount"])
-            tag.loaded_frame(t)
+            tag.add(t)
 
         tag.save(self["~filename"])
         self.sanitize()
