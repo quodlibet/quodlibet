@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-14 14:12-0500\n"
+"POT-Creation-Date: 2006-08-27 22:35-0700\n"
 "PO-Revision-Date: 2006-07-01 22:10-0500\n"
 "Last-Translator: johnny5 <johnny5@i12.com>\n"
 "Language-Team: Hebrew\n"
@@ -250,7 +250,7 @@ msgstr ""
 msgid "E: Invalid argument for '%s'."
 msgstr ""
 
-#: ../quodlibet.py:235 ../util/__init__.py:172
+#: ../quodlibet.py:235 ../util/__init__.py:185
 #, python-format
 msgid "E: Try %s --help."
 msgstr ""
@@ -280,7 +280,7 @@ msgstr "נוסף"
 msgid "album"
 msgstr "אלבום"
 
-#: ../po/tag-names.py:9 ../util/__init__.py:532
+#: ../po/tag-names.py:9 ../util/__init__.py:545
 msgid "album artist"
 msgstr "אמן האלבום"
 
@@ -321,16 +321,16 @@ msgid "description"
 msgstr "תיאור"
 
 #. just path, /.../...
-#: ../po/tag-names.py:20 ../exfalso.py:40 ../util/__init__.py:512
+#: ../po/tag-names.py:20 ../exfalso.py:40 ../util/__init__.py:525
 msgid "directory"
 msgstr "ספריה"
 
-#: ../po/tag-names.py:21 ../util/__init__.py:500
+#: ../po/tag-names.py:21 ../util/__init__.py:513
 msgid "disc"
 msgstr "תקליטור"
 
 #. just file name, foo.ogg
-#: ../po/tag-names.py:23 ../util/__init__.py:511
+#: ../po/tag-names.py:23 ../util/__init__.py:524
 msgid "filename"
 msgstr "שם קובץ"
 
@@ -340,7 +340,7 @@ msgid "format"
 msgstr "תסדיר"
 
 #. file name plus path, /.../.../foo.ogg
-#: ../po/tag-names.py:27 ../util/__init__.py:506
+#: ../po/tag-names.py:27 ../util/__init__.py:519
 msgid "full name"
 msgstr "שם מלא"
 
@@ -353,7 +353,7 @@ msgid "grouping"
 msgstr "איגוד"
 
 #. alternately, "catalog number", "catalog ID", "label number"
-#: ../po/tag-names.py:31 ../util/__init__.py:501
+#: ../po/tag-names.py:31 ../util/__init__.py:514
 msgid "label ID"
 msgstr "זיהוי תגית"
 
@@ -362,12 +362,12 @@ msgid "language"
 msgstr "שפה"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:504
+#: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:517
 msgid "last played"
 msgstr "הושמע לאחרונה"
 
 #. date the song was last started on
-#: ../po/tag-names.py:36 ../util/__init__.py:505
+#: ../po/tag-names.py:36 ../util/__init__.py:518
 #, fuzzy
 msgid "last started"
 msgstr "נוגן לאחרונה"
@@ -389,11 +389,11 @@ msgid "lyricist"
 msgstr "מילים"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:509
+#: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:522
 msgid "modified"
 msgstr "שונה לאחרונה"
 
-#: ../po/tag-names.py:43 ../util/__init__.py:510
+#: ../po/tag-names.py:43 ../util/__init__.py:523
 msgid "mount point"
 msgstr "נקודת עגינה"
 
@@ -402,15 +402,15 @@ msgstr "נקודת עגינה"
 msgid "organization"
 msgstr "ארגון"
 
-#: ../po/tag-names.py:46 ../util/__init__.py:533
+#: ../po/tag-names.py:46 ../util/__init__.py:546
 msgid "original release date"
 msgstr "תאריך הפצה מקורי"
 
-#: ../po/tag-names.py:47 ../util/__init__.py:535
+#: ../po/tag-names.py:47 ../util/__init__.py:548
 msgid "original artist"
 msgstr "אמן מקורי"
 
-#: ../po/tag-names.py:48 ../util/__init__.py:534
+#: ../po/tag-names.py:48 ../util/__init__.py:547
 msgid "original album"
 msgstr "אלבום מקורי"
 
@@ -427,7 +427,7 @@ msgstr "יוצרים"
 msgid "performer"
 msgstr "מבצע"
 
-#: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:507
+#: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:520
 msgid "plays"
 msgstr "נוגן"
 
@@ -435,11 +435,11 @@ msgstr "נוגן"
 msgid "rating"
 msgstr "דירוג"
 
-#: ../po/tag-names.py:55 ../util/__init__.py:536
+#: ../po/tag-names.py:55 ../util/__init__.py:549
 msgid "recording date"
 msgstr "הוקלט"
 
-#: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:508
+#: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:521
 msgid "skips"
 msgstr "דולג"
 
@@ -447,7 +447,7 @@ msgstr "דולג"
 msgid "title"
 msgstr "שם"
 
-#: ../po/tag-names.py:58 ../util/__init__.py:499
+#: ../po/tag-names.py:58 ../util/__init__.py:512
 msgid "track"
 msgstr "רצועה"
 
@@ -464,7 +464,7 @@ msgid "year"
 msgstr "שנה"
 
 #. beats per minute
-#: ../po/tag-names.py:63 ../util/__init__.py:502
+#: ../po/tag-names.py:63 ../util/__init__.py:515
 msgid "BPM"
 msgstr ""
 
@@ -545,7 +545,7 @@ msgid_plural "%d years"
 msgstr[0] "%d שנה"
 msgstr[1] "%d שנים"
 
-#: ../formats/_audio.py:182 ../qltk/information.py:170
+#: ../formats/_audio.py:191 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
 #: ../browsers/paned.py:28 ../browsers/audiofeeds.py:40
 #: ../browsers/audiofeeds.py:50 ../browsers/audiofeeds.py:51
@@ -614,7 +614,7 @@ msgstr ""
 msgid "Unable to edit song"
 msgstr "לא ניתן לערוך שיר"
 
-#: ../plugins/__init__.py:246 ../qltk/edittags.py:598
+#: ../plugins/__init__.py:246 ../qltk/edittags.py:637
 #: ../qltk/tagsfrompath.py:233 ../qltk/tracknumbers.py:133
 #, python-format
 msgid ""
@@ -681,7 +681,7 @@ msgstr ""
 msgid "Bookmarks"
 msgstr "סימניות"
 
-#: ../qltk/browser.py:53 ../qltk/quodlibet.py:103 ../util/__init__.py:273
+#: ../qltk/browser.py:53 ../qltk/quodlibet.py:101 ../util/__init__.py:286
 msgid "No time information"
 msgstr "נתוני זמן חסרים"
 
@@ -701,7 +701,7 @@ msgstr "_ערך:"
 msgid "Edit saved values..."
 msgstr "ערוך ערכים שמורים"
 
-#: ../qltk/chooser.py:40 ../qltk/filesel.py:242
+#: ../qltk/chooser.py:40 ../qltk/filesel.py:241
 msgid "Songs"
 msgstr "שירים"
 
@@ -813,27 +813,27 @@ msgstr "הוסף תגית"
 msgid "_Tag:"
 msgstr "_תגית:"
 
-#: ../qltk/edittags.py:301
+#: ../qltk/edittags.py:314
 msgid "Edit Tags"
 msgstr "ערוך תגיות"
 
-#: ../qltk/edittags.py:308
+#: ../qltk/edittags.py:321
 msgid "Write"
 msgstr "שמור"
 
-#: ../qltk/edittags.py:328
+#: ../qltk/edittags.py:341
 msgid "Tag"
 msgstr "תגית"
 
-#: ../qltk/edittags.py:344
+#: ../qltk/edittags.py:357
 msgid "Value"
 msgstr "ערך"
 
-#: ../qltk/edittags.py:492
+#: ../qltk/edittags.py:505
 msgid "Unable to add tag"
 msgstr "לא ניתן להוסיף תגית"
 
-#: ../qltk/edittags.py:493
+#: ../qltk/edittags.py:506
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -849,12 +849,12 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:519 ../qltk/edittags.py:638 ../qltk/edittags.py:645
-#: ../qltk/tagsfrompath.py:148 ../util/__init__.py:443 ../util/__init__.py:450
+#: ../qltk/edittags.py:532 ../qltk/edittags.py:677 ../qltk/edittags.py:684
+#: ../qltk/tagsfrompath.py:148 ../util/__init__.py:456 ../util/__init__.py:463
 msgid "Invalid tag"
 msgstr "תגית שגויה"
 
-#: ../qltk/edittags.py:520 ../qltk/edittags.py:639 ../qltk/edittags.py:646
+#: ../qltk/edittags.py:533 ../qltk/edittags.py:678 ../qltk/edittags.py:685
 #: ../qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
@@ -866,12 +866,12 @@ msgstr ""
 "\n"
 "הקבצים שנבחרו אינם תומכים בעריכת התגית הזו"
 
-#: ../qltk/edittags.py:563 ../qltk/tagsfrompath.py:207
+#: ../qltk/edittags.py:582 ../qltk/tagsfrompath.py:207
 #: ../qltk/tracknumbers.py:120
 msgid "Tag may not be accurate"
 msgstr "יתכן שהתגית לא תהייה מדוייקת"
 
-#: ../qltk/edittags.py:564 ../qltk/tagsfrompath.py:208
+#: ../qltk/edittags.py:583 ../qltk/tagsfrompath.py:208
 #: ../qltk/tracknumbers.py:121
 #, python-format
 msgid ""
@@ -885,28 +885,20 @@ msgstr ""
 "\n"
 "האם ברצונך לשמור את השיר?"
 
-#: ../qltk/edittags.py:597 ../qltk/tracknumbers.py:132
+#: ../qltk/edittags.py:636 ../qltk/tracknumbers.py:132
 msgid "Unable to save song"
 msgstr "לא ניתן לשמור שיר"
 
-#: ../qltk/edittags.py:621 ../qltk/edittags.py:656
+#: ../qltk/edittags.py:660 ../qltk/edittags.py:695
 msgid "Invalid value"
 msgstr "ערך שגוי"
 
-#: ../qltk/edittags.py:622 ../qltk/edittags.py:657
+#: ../qltk/edittags.py:661 ../qltk/edittags.py:696
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
 "\n"
 "%(error)s"
-msgstr ""
-
-#: ../qltk/edittags.py:664
-msgid "Unable to retag multiple values"
-msgstr "לא ניתן לערוך ערכים כפולים"
-
-#: ../qltk/edittags.py:665
-msgid "Changing the name of a tag with multiple values is not supported."
 msgstr ""
 
 #: ../qltk/exfalso.py:157 ../qltk/information.py:447
@@ -939,31 +931,31 @@ msgstr "_הצג תגיות תיכנותיות"
 msgid "Tag Editing"
 msgstr "עריכת תגיות שיר"
 
-#: ../qltk/filesel.py:46
+#: ../qltk/filesel.py:42
 msgid "Folders"
 msgstr "תיקיות"
 
-#: ../qltk/filesel.py:84
+#: ../qltk/filesel.py:81
 msgid "_New Folder..."
 msgstr "_תיקיה חדשה..."
 
-#: ../qltk/filesel.py:93
+#: ../qltk/filesel.py:90
 msgid "_Select All Subfolders"
 msgstr "בח_ר הכל את כל תתי התיקיות"
 
-#: ../qltk/filesel.py:143
+#: ../qltk/filesel.py:141
 msgid "New Folder"
 msgstr "תיקיה חדשה"
 
-#: ../qltk/filesel.py:143
+#: ../qltk/filesel.py:141
 msgid "Enter a name for the new folder:"
 msgstr "הזן שם עבור התיקיה החדשה:"
 
-#: ../qltk/filesel.py:152
+#: ../qltk/filesel.py:150
 msgid "Unable to create folder"
 msgstr "לא ניתן ליצור תיקיה חדשה"
 
-#: ../qltk/filesel.py:165
+#: ../qltk/filesel.py:163
 msgid "Unable to delete folder"
 msgstr "לא ניתן למחוק תיקיה"
 
@@ -1347,7 +1339,7 @@ msgstr "מאפייני Quod Libet"
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: ../qltk/queue.py:40 ../qltk/quodlibet.py:456
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:454
 msgid "_Queue"
 msgstr "_סדר השמעה"
 
@@ -1366,136 +1358,136 @@ msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "שיר %(count)d (%(time)s)"
 msgstr[1] "%(count)d שירים (%(time)s)"
 
-#: ../qltk/quodlibet.py:204
+#: ../qltk/quodlibet.py:202
 msgid "_Order:"
 msgstr "_אופן השמעה:"
 
-#: ../qltk/quodlibet.py:213
+#: ../qltk/quodlibet.py:211
 msgid "_Repeat"
 msgstr "_חזור"
 
-#: ../qltk/quodlibet.py:214
+#: ../qltk/quodlibet.py:212
 msgid "Restart the playlist when finished"
 msgstr "התחל מחדש את רשימת הניגון בהגיעה לסופה"
 
-#: ../qltk/quodlibet.py:324
+#: ../qltk/quodlibet.py:322
 msgid "Unable to add songs"
 msgstr "לא ניתן להוסיף שיר או שירים"
 
-#: ../qltk/quodlibet.py:325 ../qltk/quodlibet.py:703
+#: ../qltk/quodlibet.py:323 ../qltk/quodlibet.py:701
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "ב <b>%s</b> מתבצע שימוש בתסדיר אשר אינו נתמך"
 
-#: ../qltk/quodlibet.py:369
+#: ../qltk/quodlibet.py:367
 msgid "_Music"
 msgstr "_מוסיקה"
 
-#: ../qltk/quodlibet.py:370
+#: ../qltk/quodlibet.py:368
 msgid "_Add a Folder..."
 msgstr "הוסף _תיקיה..."
 
-#: ../qltk/quodlibet.py:372
+#: ../qltk/quodlibet.py:370
 msgid "_Add a File..."
 msgstr "ה_וסף קובץ..."
 
-#: ../qltk/quodlibet.py:374
+#: ../qltk/quodlibet.py:372
 msgid "_Add a Location..."
 msgstr "הוסף _נתיב לקובץ..."
 
-#: ../qltk/quodlibet.py:376
+#: ../qltk/quodlibet.py:374
 msgid "_Browse Library"
 msgstr "_עיין בספרית השירים"
 
-#: ../qltk/quodlibet.py:382
+#: ../qltk/quodlibet.py:380
 msgid "_Filters"
 msgstr "מ_סננים"
 
-#: ../qltk/quodlibet.py:384
+#: ../qltk/quodlibet.py:382
 msgid "Not Played To_day"
 msgstr "לא נוגנו ה_יום"
 
-#: ../qltk/quodlibet.py:386
+#: ../qltk/quodlibet.py:384
 msgid "Not Played in a _Week"
 msgstr "לא נוגנו ב_שבוע האחרון"
 
-#: ../qltk/quodlibet.py:388
+#: ../qltk/quodlibet.py:386
 msgid "Not Played in a _Month"
 msgstr "לא נוגנו ב_חודש האחרון"
 
-#: ../qltk/quodlibet.py:390
+#: ../qltk/quodlibet.py:388
 msgid "_Never Played"
 msgstr "לא נוגנו מ_עולם"
 
-#: ../qltk/quodlibet.py:392
+#: ../qltk/quodlibet.py:390
 msgid "_Top 40"
 msgstr "40 ה_פופולארים"
 
-#: ../qltk/quodlibet.py:393
+#: ../qltk/quodlibet.py:391
 msgid "B_ottom 40"
 msgstr "40 _הלא פופלארים"
 
-#: ../qltk/quodlibet.py:395
+#: ../qltk/quodlibet.py:393
 msgid "_Control"
 msgstr "_בקרה"
 
-#: ../qltk/quodlibet.py:401
+#: ../qltk/quodlibet.py:399
 msgid "_Jump to Playing Song"
 msgstr "_דלג לשיר מושמע"
 
-#: ../qltk/quodlibet.py:404
+#: ../qltk/quodlibet.py:402
 msgid "_View"
 msgstr "_תצוגה"
 
-#: ../qltk/quodlibet.py:405
+#: ../qltk/quodlibet.py:403
 msgid "_Help"
 msgstr "_עזרה"
 
-#: ../qltk/quodlibet.py:424
+#: ../qltk/quodlibet.py:422
 msgid "Re_fresh Library"
 msgstr "_רענן ספרית שירים"
 
-#: ../qltk/quodlibet.py:428
+#: ../qltk/quodlibet.py:426
 msgid "Re_load Library"
 msgstr "_טען מחדש את ספרית השירים"
 
-#: ../qltk/quodlibet.py:433
+#: ../qltk/quodlibet.py:431
 msgid "Filter on _Genre"
 msgstr "סנן לפי _סגנון"
 
-#: ../qltk/quodlibet.py:434
+#: ../qltk/quodlibet.py:432
 msgid "Filter on _Artist"
 msgstr "סנן לפי _אמן"
 
-#: ../qltk/quodlibet.py:435
+#: ../qltk/quodlibet.py:433
 msgid "Filter on Al_bum"
 msgstr "סנן לפי א_לבום"
 
-#: ../qltk/quodlibet.py:442
+#: ../qltk/quodlibet.py:440
 msgid "Random _Genre"
 msgstr "ס_גנון אקראי"
 
-#: ../qltk/quodlibet.py:443
+#: ../qltk/quodlibet.py:441
 msgid "Random _Artist"
 msgstr "א_מן אקראי"
 
-#: ../qltk/quodlibet.py:444
+#: ../qltk/quodlibet.py:442
 msgid "Random Al_bum"
 msgstr "אל_בום אקראי"
 
-#: ../qltk/quodlibet.py:451
+#: ../qltk/quodlibet.py:449
 msgid "Song _List"
 msgstr "רשימת _שירים"
 
-#: ../qltk/quodlibet.py:487
+#: ../qltk/quodlibet.py:485
 msgid "Check for changes in your library"
 msgstr "בדוק אם נעשו שינויים בספרית השירים"
 
-#: ../qltk/quodlibet.py:490
+#: ../qltk/quodlibet.py:488
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "טען את כל השירים בספרית השירים (פעולה זו עלולה לקחת משך זמן ארוך)"
 
-#: ../qltk/quodlibet.py:493
+#: ../qltk/quodlibet.py:491
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -1503,7 +1495,7 @@ msgstr ""
 "40 השירים שהושמעו מספר הפעמים הרב ביותר (ניתן לבחור יותר מ 40 שירים אם ישנם "
 "קשרים בינם)"
 
-#: ../qltk/quodlibet.py:497
+#: ../qltk/quodlibet.py:495
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1511,32 +1503,32 @@ msgstr ""
 "40 השירים שהושמעו מספר הפעמים המועט ביותר (ניתן לבחור יותר מ 40 שירים אם "
 "ישנם קשרים בינם)"
 
-#: ../qltk/quodlibet.py:691
+#: ../qltk/quodlibet.py:689
 msgid "Add a Location"
 msgstr "הוסף כתובת"
 
-#: ../qltk/quodlibet.py:692
+#: ../qltk/quodlibet.py:690
 msgid "Enter the location of an audio file:"
 msgstr "הכנס את הכתובת אינטנרט של קובץ המוסיקה:"
 
-#: ../qltk/quodlibet.py:697 ../qltk/quodlibet.py:702
+#: ../qltk/quodlibet.py:695 ../qltk/quodlibet.py:700
 msgid "Unable to add location"
 msgstr "לא ניתן להוסיף את הנתיב שצוין"
 
-#: ../qltk/quodlibet.py:698
+#: ../qltk/quodlibet.py:696
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "הנתיב <b>%s</b> אינו נתיב חוקי"
 
-#: ../qltk/quodlibet.py:714 ../qltk/quodlibet.py:721
+#: ../qltk/quodlibet.py:712 ../qltk/quodlibet.py:719
 msgid "Add Music"
 msgstr "הוסף מוסיקה"
 
-#: ../qltk/quodlibet.py:715
+#: ../qltk/quodlibet.py:713
 msgid "Watch this folder for new songs"
 msgstr "עקוב אחר שירים חדשים בתיקייה זו"
 
-#: ../qltk/quodlibet.py:741
+#: ../qltk/quodlibet.py:739
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1545,7 +1537,7 @@ msgstr ""
 "לא ניתן להוסיף את %s לספריה שלך\n"
 "\n"
 
-#: ../qltk/quodlibet.py:746
+#: ../qltk/quodlibet.py:744
 msgid "Unable to add song"
 msgstr "לא ניתן להוסיף שיר"
 
@@ -2014,7 +2006,7 @@ msgstr "לא נמצאו תחנות ב %s"
 msgid "All stations listed are already in your library."
 msgstr "כל התחנות שנבחרו כבר נמצאות בספריה שלך"
 
-#: ../browsers/iradio.py:298
+#: ../browsers/iradio.py:300
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -2062,24 +2054,24 @@ msgstr ""
 "לא ניתן היה לוסיף את <b>%s</b>. יתכן שהשרת לא זמין כעת או שהנתיב אינו נתיב "
 "לערוץ שמע"
 
-#: ../util/__init__.py:88
+#: ../util/__init__.py:101
 msgid "Display brief usage information"
 msgstr ""
 
-#: ../util/__init__.py:90
+#: ../util/__init__.py:103
 msgid "Display version and copyright"
 msgstr ""
 
-#: ../util/__init__.py:126 ../util/__init__.py:127
+#: ../util/__init__.py:139 ../util/__init__.py:140
 #, python-format
 msgid "Usage: %s %s"
 msgstr ""
 
-#: ../util/__init__.py:127
+#: ../util/__init__.py:140
 msgid "[options]"
 msgstr ""
 
-#: ../util/__init__.py:147
+#: ../util/__init__.py:160
 #, python-format
 msgid ""
 "%s %s - <quodlibet@lists.sacredchao.net>\n"
@@ -2089,22 +2081,22 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 msgstr ""
 
-#: ../util/__init__.py:164
+#: ../util/__init__.py:177
 #, python-format
 msgid "E: Option '%s' not recognized."
 msgstr ""
 
-#: ../util/__init__.py:167
+#: ../util/__init__.py:180
 #, python-format
 msgid "E: Option '%s' requires an argument."
 msgstr ""
 
-#: ../util/__init__.py:170
+#: ../util/__init__.py:183
 #, python-format
 msgid "E: '%s' is not a unique prefix."
 msgstr ""
 
-#: ../util/__init__.py:307 ../util/__init__.py:314
+#: ../util/__init__.py:320 ../util/__init__.py:327
 msgid "[Invalid Encoding]"
 msgstr "[קידוד לא נתמך]"
 
@@ -2112,62 +2104,62 @@ msgstr "[קידוד לא נתמך]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../util/__init__.py:458
+#: ../util/__init__.py:471
 msgid "check|titlecase?"
 msgstr "לא_רלוונטי_בעברית"
 
 #. http://musicbrainz.org/doc/MusicBrainzTag
-#: ../util/__init__.py:516
+#: ../util/__init__.py:529
 msgid "MusicBrainz track ID"
 msgstr "סימון רצועה של MusicBrainz"
 
-#: ../util/__init__.py:517
+#: ../util/__init__.py:530
 msgid "MusicBrainz album ID"
 msgstr "סימון אלבום של MusicBrainz"
 
-#: ../util/__init__.py:518
+#: ../util/__init__.py:531
 msgid "MusicBrainz artist ID"
 msgstr "סימון אמן של MusicBrainz"
 
-#: ../util/__init__.py:519
+#: ../util/__init__.py:532
 msgid "MusicBrainz album artist ID"
 msgstr "סימון MusicBrainz של אלבום אמן"
 
-#: ../util/__init__.py:520
+#: ../util/__init__.py:533
 msgid "MusicBrainz TRM ID"
 msgstr "סימון TRM של MusicBrainz"
 
-#: ../util/__init__.py:521
+#: ../util/__init__.py:534
 msgid "MusicIP PUID"
 msgstr "סימון PUID של MusicIP"
 
-#: ../util/__init__.py:522
+#: ../util/__init__.py:535
 msgid "MusicBrainz album status"
 msgstr "סימון MusicBrainz של מצב אלבום "
 
-#: ../util/__init__.py:523
+#: ../util/__init__.py:536
 msgid "MusicBrainz album type"
 msgstr "סימון סוג אלבום של MusicBrainz"
 
 #. Translators: A volume adjustment, not "to get/acquire".
-#: ../util/__init__.py:526
+#: ../util/__init__.py:539
 msgid "track gain"
 msgstr "הגברת רצועה"
 
-#: ../util/__init__.py:527
+#: ../util/__init__.py:540
 msgid "track peak"
 msgstr "עוצמת רצועה מקסימלית"
 
 #. Translators: A volume adjustment, not "to get/acquire".
-#: ../util/__init__.py:529
+#: ../util/__init__.py:542
 msgid "album gain"
 msgstr "הגברת אלבום"
 
-#: ../util/__init__.py:530
+#: ../util/__init__.py:543
 msgid "album peak"
 msgstr "עוצמת אלבום מקסימלית"
 
-#: ../util/__init__.py:537
+#: ../util/__init__.py:550
 msgid "release country"
 msgstr "ארץ מקור"
 
@@ -2213,6 +2205,9 @@ msgstr "האזן, עיין וערוך את אוסף המוסיקה שלך"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "נגן מוסיקה"
+
+#~ msgid "Unable to retag multiple values"
+#~ msgstr "לא ניתן לערוך ערכים כפולים"
 
 #~ msgid ""
 #~ "Scanning your library. This may take several minutes.\n"
