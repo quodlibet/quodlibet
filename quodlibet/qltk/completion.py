@@ -90,7 +90,9 @@ class LibraryTagCompletion(EntryWordCompletion):
         tags = set()
         model.clear()
         yield True
-        for count, song in enumerate(library):
+        # Iterate over a new list since this function and the
+        # library updater are copooled with different IDs.
+        for count, song in enumerate(library.values()):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
