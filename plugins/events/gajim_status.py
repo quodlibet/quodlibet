@@ -16,7 +16,7 @@ class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = 'Change Gajim status message according to what you are listening now.'
-    PLUGIN_VERSION = '0.6.2'
+    PLUGIN_VERSION = '0.7'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'
@@ -28,7 +28,7 @@ class GajimStatusMessage(EventPlugin):
             self.accounts = config.get('plugins', self.c_accounts).split()
         except:
             self.accounts = []
-        config.set('plugins', self.c_accounts, join(self.accounts))
+            config.set('plugins', self.c_accounts, '')
 
         try:
             self.paused = config.getboolean('plugins', self.c_paused)
@@ -50,20 +50,25 @@ class GajimStatusMessage(EventPlugin):
 
         gtk.quit_add(0, self.quit)
 
-        self.interface = dbus.Interface(dbus.SessionBus().get_object('org.gajim.dbus', '/org/gajim/dbus/RemoteObject'), 'org.gajim.dbus.RemoteInterface')
+        self.interface = dbus.Interface(dbus.SessionBus().get_object('org.gajim.dbus',
+        '/org/gajim/dbus/RemoteObject'),
+        'org.gajim.dbus.RemoteInterface')
+    
+        self.current = ''
 
     def quit(self):
         try: self.change_status(self.accounts, '')
         except dbus.DBusException: pass
 
-    def change_status(self, accounts, status):
+    def change_status(self, accounts, status_message):
         if accounts == []:
-            t = self.interface.get_status()
-            self.interface.change_status(t, status)
+            status = self.interface.get_status()
+            if status in self.statuses:
+                self.interface.change_status(status, status_message)
         for account in accounts:
-            t = self.interface.get_status()
-            if t in self.statuses:
-                self.interface.change_status(t, status, account)
+            status = self.interface.get_status(account)
+            if status in self.statuses:
+                self.interface.change_status(status, status_message, account)
 
     def plugin_on_song_started(self, song):
         if song:
@@ -80,8 +85,8 @@ class GajimStatusMessage(EventPlugin):
         self.change_status(self.accounts, self.current)
 
     def accounts_e_changed(self, e):
-        self.accounts = self.check_accounts(e.get_text())
-        config.set('plugins', self.c_accounts, join(self.accounts))
+        self.accounts = e.get_text().split()
+        config.set('plugins', self.c_accounts, e.get_text())
 
     def pattern_e_changed(self, e):
         self.pattern = e.get_text()
