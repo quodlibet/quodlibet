@@ -241,8 +241,8 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
                 if not os.path.isdir(os.path.dirname(filename)):
                     os.makedirs(os.path.dirname(filename))
 
-            saved = file(filename + ".saved", "wU")
-            memory = file(filename, "wU")
+            saved = file(filename + ".saved", "w")
+            memory = file(filename, "w")
             target = saved
             for row in self.get_model():
                 if row[0] is None: target = memory

@@ -9,7 +9,7 @@
 
 import os
 import random
-import sre
+import re
 
 import gobject
 import gtk
@@ -162,7 +162,7 @@ class FIFOControl(object):
         for added in library.scan([filename]): pass
         if window.browser.can_filter(None):
             window.browser.set_text(
-                "filename = /^%s/c" % sre.escape(filename))
+                "filename = /^%s/c" % re.escape(filename))
             window.browser.activate()
         else:
             basepath = filename + "/"

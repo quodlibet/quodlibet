@@ -9,7 +9,7 @@
 import gettext
 import locale
 import os
-import sre
+import re
 import sys
 
 from const import FSCODING as fscoding, ENCODING
@@ -26,7 +26,13 @@ def gettext_install():
     t.install()
 
 def python_init():
-    sre.escape = re_esc
+    re.escape = re_esc
+    # Python 2.4 has sre.Scanner but not re.Scanner. Python 2.5 has
+    # deprecated sre and moved Scanner to re.
+    try: re.Scanner
+    except AttributeError:
+        from sre import Scanner
+        re.Scanner = Scanner
 
 def re_esc(str, BAD="/.^$*+?{,\\[]|()<>#=!:"):
     needs_escape = lambda c: (c in BAD and "\\" + c) or c
@@ -237,7 +243,7 @@ def unescape(str):
     """Unescape a string in a manner suitable for XML/Pango."""
     return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
 
-def parse_time(timestr, err=(ValueError, sre.error)):
+def parse_time(timestr, err=(ValueError, re.error)):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
     if timestr[0:1] == "-":
         m = -1
@@ -246,7 +252,7 @@ def parse_time(timestr, err=(ValueError, sre.error)):
 
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
-                          sre.split(r":|\.", timestr), 0)
+                          re.split(r":|\.", timestr), 0)
     except err: return 0
 
 RATING_PRECISION = 0.25
@@ -362,7 +368,7 @@ def split_value(s, splitters=["/", "&", ","]):
     if not splitters: return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
-        spl = sre.compile(r"\b\s*%s\s*\b" % sre.escape(spl), sre.UNICODE)
+        spl = re.compile(r"\b\s*%s\s*\b" % re.escape(spl), re.UNICODE)
         new_values = []
         for v in values:
             new_values.extend([st.strip() for st in spl.split(v)])
