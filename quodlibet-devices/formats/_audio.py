@@ -37,7 +37,7 @@ MACHINE_TAGS = (
     ).split()
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
            "~#skipcount ~#rating ~bookmark").split()
-PEOPLE = ("albumartist artist author composer performer originalartist "
+PEOPLE = ("albumartist artist author composer ~performers originalartist "
           "lyricist arranger conductor").split()
 
 class AudioFile(dict):
@@ -137,11 +137,20 @@ class AudioFile(dict):
                 return util.format_rating(self.get("~#rating", 0))
             elif key == "people":
                 join = "\n".join
-                people = filter(None, map(self.get, PEOPLE))
+                people = filter(None, map(self.__call__, PEOPLE))
                 people = join(people).split("\n")
                 index = people.index
                 return join([person for (i,person) in enumerate(people)
                         if index(person)==i])
+            elif key == "performers":
+                values = []
+                for key in self.realkeys():
+                    if key.startswith("performer:"):
+                        role = key.split(":", 1)[1]
+                        for value in self.list(key):
+                            values.append("%s (%s)" % (value, role))
+                    values.extend(self.list("performer"))
+                return "\n".join(values)
             elif key == "basename":
                 return os.path.basename(self["~filename"]) or self["~filename"]
             elif key == "dirname":

@@ -9,17 +9,19 @@
 
 import os
 import random
-import sre
+import re
 
 import gobject
 import gtk
 
 import browsers
+import config
 import const
 import util
 
 from qltk.browser import LibraryBrowser
 from qltk.properties import SongProperties
+from util import copool
 
 class FSInterface(object):
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
@@ -160,7 +162,7 @@ class FIFOControl(object):
         for added in library.scan([filename]): pass
         if window.browser.can_filter(None):
             window.browser.set_text(
-                "filename = /^%s/c" % sre.escape(filename))
+                "filename = /^%s/c" % re.escape(filename))
             window.browser.activate()
         else:
             basepath = filename + "/"
@@ -275,3 +277,8 @@ class FIFOControl(object):
             for song in window.playlist.q.get():
                 f.write(song("~uri") + "\n")
             f.close()
+
+    def _refresh(self, library, window, player):
+        paths = config.get("settings", "scan").split(":")
+        progress = window.statusbar.progress
+        copool.add(library.rebuild, paths, progress, False, funcid="library")

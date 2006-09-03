@@ -21,10 +21,6 @@ import util
 from qltk.getstring import GetStringDialog
 from qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 
-try: WindowsError
-except NameError:
-    WindowsError = None
-
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
     if check is None:
@@ -63,8 +59,9 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             folders.append(None)
             for line in f.readlines():
                 folders.append(urlparse.urlsplit(line.rstrip())[2])
-            def is_folder(filename):
-                return filename is None or os.path.isdir(filename)
+
+        def is_folder(filename):
+            return filename is None or os.path.isdir(filename)
         folders = filter(is_folder, folders)
         if folders[-1] is None:
             folders.pop()

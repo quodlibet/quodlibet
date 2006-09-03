@@ -15,7 +15,7 @@
 # every time. The Song proxy might also get in the way.
 
 import os
-import sre
+import re
 
 import util
 
@@ -43,16 +43,16 @@ class PatternLexeme(object):
                 str(self._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
 
-class PatternLexer(sre.Scanner):
+class PatternLexer(re.Scanner):
     def __init__(self, s):
         self.string = s.strip()
-        sre.Scanner.__init__(self,
+        re.Scanner.__init__(self,
                              [(r"([^<>|\\]|\\.)+", self.text),
                               (r"[<>|]", self.table),
                               ])
 
     def text(self, scanner, string):
-        return PatternLexeme(TEXT, sre.sub(r"\\(.)", r"\1", string))
+        return PatternLexeme(TEXT, re.sub(r"\\(.)", r"\1", string))
     def table(self, scanner, string):
         return PatternLexeme(
             {"|": COND, "<": OPEN, ">": CLOSE}[string], string)

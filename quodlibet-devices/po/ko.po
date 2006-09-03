@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-14 14:12-0500\n"
+"POT-Creation-Date: 2006-08-27 22:35-0700\n"
 "PO-Revision-Date: 2006-08-09 16:45+0900\n"
 "Last-Translator: ChangBom Yoon <changbom.yoon@gmail.com>\n"
 "Language-Team: The FreeBSD Korean Documentation Project <doc@kr.FreeBSD."
@@ -248,7 +248,7 @@ msgstr "Enqueue a file or query"
 msgid "E: Invalid argument for '%s'."
 msgstr "에러: '%s' 에 유효하지 않은 인자."
 
-#: ../quodlibet.py:235 ../util/__init__.py:172
+#: ../quodlibet.py:235 ../util/__init__.py:185
 #, python-format
 msgid "E: Try %s --help."
 msgstr "에러: %s --help 를 시도해 보십시오."
@@ -278,7 +278,7 @@ msgstr "추가"
 msgid "album"
 msgstr "앨범"
 
-#: ../po/tag-names.py:9 ../util/__init__.py:532
+#: ../po/tag-names.py:9 ../util/__init__.py:545
 msgid "album artist"
 msgstr "앨범 아티스트"
 
@@ -319,16 +319,16 @@ msgid "description"
 msgstr "설명"
 
 #. just path, /.../...
-#: ../po/tag-names.py:20 ../exfalso.py:40 ../util/__init__.py:512
+#: ../po/tag-names.py:20 ../exfalso.py:40 ../util/__init__.py:525
 msgid "directory"
 msgstr "디렉토리"
 
-#: ../po/tag-names.py:21 ../util/__init__.py:500
+#: ../po/tag-names.py:21 ../util/__init__.py:513
 msgid "disc"
 msgstr "디스크"
 
 #. just file name, foo.ogg
-#: ../po/tag-names.py:23 ../util/__init__.py:511
+#: ../po/tag-names.py:23 ../util/__init__.py:524
 msgid "filename"
 msgstr "파일이름"
 
@@ -338,7 +338,7 @@ msgid "format"
 msgstr "포맷"
 
 #. file name plus path, /.../.../foo.ogg
-#: ../po/tag-names.py:27 ../util/__init__.py:506
+#: ../po/tag-names.py:27 ../util/__init__.py:519
 msgid "full name"
 msgstr "성명(FullName)"
 
@@ -351,7 +351,7 @@ msgid "grouping"
 msgstr "그룹"
 
 #. alternately, "catalog number", "catalog ID", "label number"
-#: ../po/tag-names.py:31 ../util/__init__.py:501
+#: ../po/tag-names.py:31 ../util/__init__.py:514
 msgid "label ID"
 msgstr "라벨 ID"
 
@@ -360,12 +360,12 @@ msgid "language"
 msgstr "언어"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:504
+#: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:517
 msgid "last played"
 msgstr "마지막 재생"
 
 #. date the song was last started on
-#: ../po/tag-names.py:36 ../util/__init__.py:505
+#: ../po/tag-names.py:36 ../util/__init__.py:518
 msgid "last started"
 msgstr "마지막 시작"
 
@@ -386,11 +386,11 @@ msgid "lyricist"
 msgstr "작사"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:509
+#: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:522
 msgid "modified"
 msgstr "수정"
 
-#: ../po/tag-names.py:43 ../util/__init__.py:510
+#: ../po/tag-names.py:43 ../util/__init__.py:523
 msgid "mount point"
 msgstr "마운트 지점"
 
@@ -399,15 +399,15 @@ msgstr "마운트 지점"
 msgid "organization"
 msgstr "조직"
 
-#: ../po/tag-names.py:46 ../util/__init__.py:533
+#: ../po/tag-names.py:46 ../util/__init__.py:546
 msgid "original release date"
 msgstr "오리지널 출시 날짜"
 
-#: ../po/tag-names.py:47 ../util/__init__.py:535
+#: ../po/tag-names.py:47 ../util/__init__.py:548
 msgid "original artist"
 msgstr "오리지널 아티스트"
 
-#: ../po/tag-names.py:48 ../util/__init__.py:534
+#: ../po/tag-names.py:48 ../util/__init__.py:547
 msgid "original album"
 msgstr "오리지널 앨범"
 
@@ -424,7 +424,7 @@ msgstr "가수"
 msgid "performer"
 msgstr "연주"
 
-#: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:507
+#: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:520
 msgid "plays"
 msgstr "재생"
 
@@ -432,11 +432,11 @@ msgstr "재생"
 msgid "rating"
 msgstr "재생율"
 
-#: ../po/tag-names.py:55 ../util/__init__.py:536
+#: ../po/tag-names.py:55 ../util/__init__.py:549
 msgid "recording date"
 msgstr "녹음 날짜"
 
-#: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:508
+#: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:521
 msgid "skips"
 msgstr "통과"
 
@@ -444,7 +444,7 @@ msgstr "통과"
 msgid "title"
 msgstr "제목"
 
-#: ../po/tag-names.py:58 ../util/__init__.py:499
+#: ../po/tag-names.py:58 ../util/__init__.py:512
 msgid "track"
 msgstr "트랙"
 
@@ -461,7 +461,7 @@ msgid "year"
 msgstr "년"
 
 #. beats per minute
-#: ../po/tag-names.py:63 ../util/__init__.py:502
+#: ../po/tag-names.py:63 ../util/__init__.py:515
 msgid "BPM"
 msgstr "BPM"
 
@@ -542,7 +542,7 @@ msgid_plural "%d years"
 msgstr[0] "%d 년"
 msgstr[1] "%d 년"
 
-#: ../formats/_audio.py:182 ../qltk/information.py:170
+#: ../formats/_audio.py:191 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
 #: ../browsers/paned.py:28 ../browsers/audiofeeds.py:40
 #: ../browsers/audiofeeds.py:50 ../browsers/audiofeeds.py:51
@@ -611,7 +611,7 @@ msgstr ""
 msgid "Unable to edit song"
 msgstr "노래를 편집할 수 없습니다"
 
-#: ../plugins/__init__.py:246 ../qltk/edittags.py:598
+#: ../plugins/__init__.py:246 ../qltk/edittags.py:637
 #: ../qltk/tagsfrompath.py:233 ../qltk/tracknumbers.py:133
 #, python-format
 msgid ""
@@ -681,7 +681,7 @@ msgstr "MM:SS"
 msgid "Bookmarks"
 msgstr "북마크"
 
-#: ../qltk/browser.py:53 ../qltk/quodlibet.py:103 ../util/__init__.py:273
+#: ../qltk/browser.py:53 ../qltk/quodlibet.py:101 ../util/__init__.py:286
 msgid "No time information"
 msgstr "정보에 시간이 없습니다"
 
@@ -701,7 +701,7 @@ msgstr "값:"
 msgid "Edit saved values..."
 msgstr "저장된 값 편집..."
 
-#: ../qltk/chooser.py:40 ../qltk/filesel.py:242
+#: ../qltk/chooser.py:40 ../qltk/filesel.py:241
 msgid "Songs"
 msgstr "노래"
 
@@ -813,27 +813,27 @@ msgstr "태그 추가"
 msgid "_Tag:"
 msgstr "태그:"
 
-#: ../qltk/edittags.py:301
+#: ../qltk/edittags.py:314
 msgid "Edit Tags"
 msgstr "태그 편집:"
 
-#: ../qltk/edittags.py:308
+#: ../qltk/edittags.py:321
 msgid "Write"
 msgstr "쓰기"
 
-#: ../qltk/edittags.py:328
+#: ../qltk/edittags.py:341
 msgid "Tag"
 msgstr "태그"
 
-#: ../qltk/edittags.py:344
+#: ../qltk/edittags.py:357
 msgid "Value"
 msgstr "값"
 
-#: ../qltk/edittags.py:492
+#: ../qltk/edittags.py:505
 msgid "Unable to add tag"
 msgstr "태그를 추가할 수 없습니다"
 
-#: ../qltk/edittags.py:493
+#: ../qltk/edittags.py:506
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -849,12 +849,12 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:519 ../qltk/edittags.py:638 ../qltk/edittags.py:645
-#: ../qltk/tagsfrompath.py:148 ../util/__init__.py:443 ../util/__init__.py:450
+#: ../qltk/edittags.py:532 ../qltk/edittags.py:677 ../qltk/edittags.py:684
+#: ../qltk/tagsfrompath.py:148 ../util/__init__.py:456 ../util/__init__.py:463
 msgid "Invalid tag"
 msgstr "유효하지 않은 태그"
 
-#: ../qltk/edittags.py:520 ../qltk/edittags.py:639 ../qltk/edittags.py:646
+#: ../qltk/edittags.py:533 ../qltk/edittags.py:678 ../qltk/edittags.py:685
 #: ../qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
@@ -866,12 +866,12 @@ msgstr ""
 "\n"
 "지금 선택한 파일은 이러한 태그의 편집을 지원하지 않습니다."
 
-#: ../qltk/edittags.py:563 ../qltk/tagsfrompath.py:207
+#: ../qltk/edittags.py:582 ../qltk/tagsfrompath.py:207
 #: ../qltk/tracknumbers.py:120
 msgid "Tag may not be accurate"
 msgstr "태그에 결함이 있습니다"
 
-#: ../qltk/edittags.py:564 ../qltk/tagsfrompath.py:208
+#: ../qltk/edittags.py:583 ../qltk/tagsfrompath.py:208
 #: ../qltk/tracknumbers.py:121
 #, python-format
 msgid ""
@@ -884,15 +884,15 @@ msgstr ""
 "를 저장하면 그 노래에 변경사항을 덮어씁니다.\n"
 "어쨌든 이 노래를저장할까요?"
 
-#: ../qltk/edittags.py:597 ../qltk/tracknumbers.py:132
+#: ../qltk/edittags.py:636 ../qltk/tracknumbers.py:132
 msgid "Unable to save song"
 msgstr "노래를 저장할 수 없습니다"
 
-#: ../qltk/edittags.py:621 ../qltk/edittags.py:656
+#: ../qltk/edittags.py:660 ../qltk/edittags.py:695
 msgid "Invalid value"
 msgstr "유효하지 않은 값"
 
-#: ../qltk/edittags.py:622 ../qltk/edittags.py:657
+#: ../qltk/edittags.py:661 ../qltk/edittags.py:696
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -902,14 +902,6 @@ msgstr ""
 "Invalid value: <b>%(value)s</b>\n"
 "\n"
 "%(error)s"
-
-#: ../qltk/edittags.py:664
-msgid "Unable to retag multiple values"
-msgstr "Unable to retag multiple values"
-
-#: ../qltk/edittags.py:665
-msgid "Changing the name of a tag with multiple values is not supported."
-msgstr "Changing the name of a tag with multiple values is not supported."
 
 #: ../qltk/exfalso.py:157 ../qltk/information.py:447
 #: ../browsers/playlists.py:175
@@ -941,31 +933,31 @@ msgstr "Show _programmatic tags"
 msgid "Tag Editing"
 msgstr "태그 편집"
 
-#: ../qltk/filesel.py:46
+#: ../qltk/filesel.py:42
 msgid "Folders"
 msgstr "폴더"
 
-#: ../qltk/filesel.py:84
+#: ../qltk/filesel.py:81
 msgid "_New Folder..."
 msgstr "새 폴더"
 
-#: ../qltk/filesel.py:93
+#: ../qltk/filesel.py:90
 msgid "_Select All Subfolders"
 msgstr "하위폴더 모두 선택"
 
-#: ../qltk/filesel.py:143
+#: ../qltk/filesel.py:141
 msgid "New Folder"
 msgstr "새 폴더"
 
-#: ../qltk/filesel.py:143
+#: ../qltk/filesel.py:141
 msgid "Enter a name for the new folder:"
 msgstr "새 폴더 이름을 입력하십시오:"
 
-#: ../qltk/filesel.py:152
+#: ../qltk/filesel.py:150
 msgid "Unable to create folder"
 msgstr "폴더를 생성할 수 없습니다"
 
-#: ../qltk/filesel.py:165
+#: ../qltk/filesel.py:163
 msgid "Unable to delete folder"
 msgstr "폴더를 지울 수 없습니다"
 
@@ -1350,7 +1342,7 @@ msgstr "Quod Libet 설정"
 msgid "Properties"
 msgstr "등록정보"
 
-#: ../qltk/queue.py:40 ../qltk/quodlibet.py:456
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:454
 msgid "_Queue"
 msgstr "대기열"
 
@@ -1369,173 +1361,173 @@ msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d song (%(time)s)"
 msgstr[1] "%(count)d songs (%(time)s)"
 
-#: ../qltk/quodlibet.py:204
+#: ../qltk/quodlibet.py:202
 msgid "_Order:"
 msgstr "재생순서:"
 
-#: ../qltk/quodlibet.py:213
+#: ../qltk/quodlibet.py:211
 msgid "_Repeat"
 msgstr "반복"
 
-#: ../qltk/quodlibet.py:214
+#: ../qltk/quodlibet.py:212
 msgid "Restart the playlist when finished"
 msgstr "완료후 재생목록 재시작"
 
-#: ../qltk/quodlibet.py:324
+#: ../qltk/quodlibet.py:322
 msgid "Unable to add songs"
 msgstr "노래를 추가할 수 없습니다"
 
-#: ../qltk/quodlibet.py:325 ../qltk/quodlibet.py:703
+#: ../qltk/quodlibet.py:323 ../qltk/quodlibet.py:701
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> 는 지원하지 않는 프로토콜을 사용하고 있습니다."
 
-#: ../qltk/quodlibet.py:369
+#: ../qltk/quodlibet.py:367
 msgid "_Music"
 msgstr "음악"
 
-#: ../qltk/quodlibet.py:370
+#: ../qltk/quodlibet.py:368
 msgid "_Add a Folder..."
 msgstr "폴더 추가..."
 
-#: ../qltk/quodlibet.py:372
+#: ../qltk/quodlibet.py:370
 msgid "_Add a File..."
 msgstr "파일 추가..."
 
-#: ../qltk/quodlibet.py:374
+#: ../qltk/quodlibet.py:372
 msgid "_Add a Location..."
 msgstr "주소 추가..."
 
-#: ../qltk/quodlibet.py:376
+#: ../qltk/quodlibet.py:374
 msgid "_Browse Library"
 msgstr "라이브러리 브라우저"
 
-#: ../qltk/quodlibet.py:382
+#: ../qltk/quodlibet.py:380
 msgid "_Filters"
 msgstr "필터"
 
-#: ../qltk/quodlibet.py:384
+#: ../qltk/quodlibet.py:382
 msgid "Not Played To_day"
 msgstr "Not Played To_day"
 
-#: ../qltk/quodlibet.py:386
+#: ../qltk/quodlibet.py:384
 msgid "Not Played in a _Week"
 msgstr "Not Played in a _Week"
 
-#: ../qltk/quodlibet.py:388
+#: ../qltk/quodlibet.py:386
 msgid "Not Played in a _Month"
 msgstr "Not Played in a _Month"
 
-#: ../qltk/quodlibet.py:390
+#: ../qltk/quodlibet.py:388
 msgid "_Never Played"
 msgstr "_Never Played"
 
-#: ../qltk/quodlibet.py:392
+#: ../qltk/quodlibet.py:390
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: ../qltk/quodlibet.py:393
+#: ../qltk/quodlibet.py:391
 msgid "B_ottom 40"
 msgstr "B_ottom 40"
 
-#: ../qltk/quodlibet.py:395
+#: ../qltk/quodlibet.py:393
 msgid "_Control"
 msgstr "조정"
 
-#: ../qltk/quodlibet.py:401
+#: ../qltk/quodlibet.py:399
 msgid "_Jump to Playing Song"
 msgstr "현재 재생중인 노래로 가기"
 
-#: ../qltk/quodlibet.py:404
+#: ../qltk/quodlibet.py:402
 msgid "_View"
 msgstr "보기"
 
-#: ../qltk/quodlibet.py:405
+#: ../qltk/quodlibet.py:403
 msgid "_Help"
 msgstr "도움말"
 
-#: ../qltk/quodlibet.py:424
+#: ../qltk/quodlibet.py:422
 msgid "Re_fresh Library"
 msgstr "라이브러리 새로고침"
 
-#: ../qltk/quodlibet.py:428
+#: ../qltk/quodlibet.py:426
 msgid "Re_load Library"
 msgstr "라이브러리 새로불러오기"
 
-#: ../qltk/quodlibet.py:433
+#: ../qltk/quodlibet.py:431
 msgid "Filter on _Genre"
 msgstr "장르 필터"
 
-#: ../qltk/quodlibet.py:434
+#: ../qltk/quodlibet.py:432
 msgid "Filter on _Artist"
 msgstr "아티스트 필터"
 
-#: ../qltk/quodlibet.py:435
+#: ../qltk/quodlibet.py:433
 msgid "Filter on Al_bum"
 msgstr "앨범 필터"
 
-#: ../qltk/quodlibet.py:442
+#: ../qltk/quodlibet.py:440
 msgid "Random _Genre"
 msgstr "임의의 장르"
 
-#: ../qltk/quodlibet.py:443
+#: ../qltk/quodlibet.py:441
 msgid "Random _Artist"
 msgstr "임의의 아티스트"
 
-#: ../qltk/quodlibet.py:444
+#: ../qltk/quodlibet.py:442
 msgid "Random Al_bum"
 msgstr "임의의 앨범"
 
-#: ../qltk/quodlibet.py:451
+#: ../qltk/quodlibet.py:449
 msgid "Song _List"
 msgstr "노래 목록"
 
-#: ../qltk/quodlibet.py:487
+#: ../qltk/quodlibet.py:485
 msgid "Check for changes in your library"
 msgstr "라이브러리 변경 체크"
 
-#: ../qltk/quodlibet.py:490
+#: ../qltk/quodlibet.py:488
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "라이브러리의 모든 노래를 새로불러오기"
 
-#: ../qltk/quodlibet.py:493
+#: ../qltk/quodlibet.py:491
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
 msgstr "최대 40 곡이 재생되었습니다"
 
-#: ../qltk/quodlibet.py:497
+#: ../qltk/quodlibet.py:495
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
 msgstr "최소 40 곡이 재생되었습니다"
 
-#: ../qltk/quodlibet.py:691
+#: ../qltk/quodlibet.py:689
 msgid "Add a Location"
 msgstr "주소 추가"
 
-#: ../qltk/quodlibet.py:692
+#: ../qltk/quodlibet.py:690
 msgid "Enter the location of an audio file:"
 msgstr "오디오 파일의 주소를 입력하십시오:"
 
-#: ../qltk/quodlibet.py:697 ../qltk/quodlibet.py:702
+#: ../qltk/quodlibet.py:695 ../qltk/quodlibet.py:700
 msgid "Unable to add location"
 msgstr "주소를 추가할 수 없습니다"
 
-#: ../qltk/quodlibet.py:698
+#: ../qltk/quodlibet.py:696
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> 는 유효하지 않은 주소입니다."
 
-#: ../qltk/quodlibet.py:714 ../qltk/quodlibet.py:721
+#: ../qltk/quodlibet.py:712 ../qltk/quodlibet.py:719
 msgid "Add Music"
 msgstr "음악 추가"
 
-#: ../qltk/quodlibet.py:715
+#: ../qltk/quodlibet.py:713
 msgid "Watch this folder for new songs"
 msgstr "새 노래를 위해 이 폴더 감시"
 
-#: ../qltk/quodlibet.py:741
+#: ../qltk/quodlibet.py:739
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1544,7 +1536,7 @@ msgstr ""
 "%s 는 라이브러리에 추가할 수 없습니다.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:746
+#: ../qltk/quodlibet.py:744
 msgid "Unable to add song"
 msgstr "노래를 추가할 수 없습니다"
 
@@ -2015,7 +2007,7 @@ msgstr "%s 에서 발견된 인터넷 라디오 방송국이 없습니다."
 msgid "All stations listed are already in your library."
 msgstr "목록에 있는 모든 방송국은 이미 라이브러리에 존재합니다."
 
-#: ../browsers/iradio.py:298
+#: ../browsers/iradio.py:300
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -2063,24 +2055,24 @@ msgstr ""
 "<b>%s</b> 는 추가할 수 없습니다. 서버가 죽었거나 입력한 주소는오디오 피드가 "
 "아닙니다."
 
-#: ../util/__init__.py:88
+#: ../util/__init__.py:101
 msgid "Display brief usage information"
 msgstr "사용 정보 개요 표시"
 
-#: ../util/__init__.py:90
+#: ../util/__init__.py:103
 msgid "Display version and copyright"
 msgstr "버전 및 저작권 표시"
 
-#: ../util/__init__.py:126 ../util/__init__.py:127
+#: ../util/__init__.py:139 ../util/__init__.py:140
 #, python-format
 msgid "Usage: %s %s"
 msgstr "사용법: %s %s"
 
-#: ../util/__init__.py:127
+#: ../util/__init__.py:140
 msgid "[options]"
 msgstr "[옵션]"
 
-#: ../util/__init__.py:147
+#: ../util/__init__.py:160
 #, python-format
 msgid ""
 "%s %s - <quodlibet@lists.sacredchao.net>\n"
@@ -2095,22 +2087,22 @@ msgstr ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 
-#: ../util/__init__.py:164
+#: ../util/__init__.py:177
 #, python-format
 msgid "E: Option '%s' not recognized."
 msgstr "에러: '%s' 는 알 수 없는 옵션입니다."
 
-#: ../util/__init__.py:167
+#: ../util/__init__.py:180
 #, python-format
 msgid "E: Option '%s' requires an argument."
 msgstr "에러: '%s' 는 인자를 요구하는 옵션입니다."
 
-#: ../util/__init__.py:170
+#: ../util/__init__.py:183
 #, python-format
 msgid "E: '%s' is not a unique prefix."
 msgstr "에러: '%s' 는 유일한 prefix 가 아닙니다."
 
-#: ../util/__init__.py:307 ../util/__init__.py:314
+#: ../util/__init__.py:320 ../util/__init__.py:327
 msgid "[Invalid Encoding]"
 msgstr "[유효하지 않은 인코딩]"
 
@@ -2118,62 +2110,62 @@ msgstr "[유효하지 않은 인코딩]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../util/__init__.py:458
+#: ../util/__init__.py:471
 msgid "check|titlecase?"
 msgstr "check|titlecase?"
 
 #. http://musicbrainz.org/doc/MusicBrainzTag
-#: ../util/__init__.py:516
+#: ../util/__init__.py:529
 msgid "MusicBrainz track ID"
 msgstr "MusicBrainz track ID"
 
-#: ../util/__init__.py:517
+#: ../util/__init__.py:530
 msgid "MusicBrainz album ID"
 msgstr "MusicBrainz album ID"
 
-#: ../util/__init__.py:518
+#: ../util/__init__.py:531
 msgid "MusicBrainz artist ID"
 msgstr "MusicBrainz artist ID"
 
-#: ../util/__init__.py:519
+#: ../util/__init__.py:532
 msgid "MusicBrainz album artist ID"
 msgstr "MusicBrainz album artist ID"
 
-#: ../util/__init__.py:520
+#: ../util/__init__.py:533
 msgid "MusicBrainz TRM ID"
 msgstr "MusicBrainz TRM ID"
 
-#: ../util/__init__.py:521
+#: ../util/__init__.py:534
 msgid "MusicIP PUID"
 msgstr "MusicIP PUID"
 
-#: ../util/__init__.py:522
+#: ../util/__init__.py:535
 msgid "MusicBrainz album status"
 msgstr "MusicBrainz album status"
 
-#: ../util/__init__.py:523
+#: ../util/__init__.py:536
 msgid "MusicBrainz album type"
 msgstr "MusicBrainz album type"
 
 #. Translators: A volume adjustment, not "to get/acquire".
-#: ../util/__init__.py:526
+#: ../util/__init__.py:539
 msgid "track gain"
 msgstr "track gain"
 
-#: ../util/__init__.py:527
+#: ../util/__init__.py:540
 msgid "track peak"
 msgstr "track peak"
 
 #. Translators: A volume adjustment, not "to get/acquire".
-#: ../util/__init__.py:529
+#: ../util/__init__.py:542
 msgid "album gain"
 msgstr "album gain"
 
-#: ../util/__init__.py:530
+#: ../util/__init__.py:543
 msgid "album peak"
 msgstr "album peak"
 
-#: ../util/__init__.py:537
+#: ../util/__init__.py:550
 msgid "release country"
 msgstr "출시 국가"
 
@@ -2220,3 +2212,9 @@ msgstr "듣기, 검색 및 오디오 모음 편집"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "음악 재생기"
+
+#~ msgid "Unable to retag multiple values"
+#~ msgstr "Unable to retag multiple values"
+
+#~ msgid "Changing the name of a tag with multiple values is not supported."
+#~ msgstr "Changing the name of a tag with multiple values is not supported."

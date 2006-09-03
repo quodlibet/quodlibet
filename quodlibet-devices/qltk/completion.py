@@ -90,7 +90,9 @@ class LibraryTagCompletion(EntryWordCompletion):
         tags = set()
         model.clear()
         yield True
-        for count, song in enumerate(library):
+        # Iterate over a new list since this function and the
+        # library updater are copooled with different IDs.
+        for count, song in enumerate(list(library)):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
@@ -119,7 +121,7 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         if tag is None:
             return
         elif tag in ("bpm date discnumber isrc originaldate recordingdate "
-                     "tracknumber").split() + formats.MACHINE_TAGS:
+                     "tracknumber title").split() + formats.MACHINE_TAGS:
             return
         elif tag in formats.PEOPLE:
             tag = "~people"

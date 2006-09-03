@@ -8,7 +8,7 @@
 # $Id$
 
 import os
-import sre
+import re
 
 import gtk
 
@@ -29,7 +29,7 @@ class TagsFromPattern(object):
         self.slashes = len(pattern) - len(pattern.replace(os.path.sep,'')) + 1
         self.pattern = None
         # patterns look like <tagname> non regexy stuff <tagname> ...
-        pieces = sre.split(r'(<[A-Za-z0-9_]+>)', pattern)
+        pieces = re.split(r'(<[A-Za-z0-9_]+>)', pattern)
         override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d\d??' }
         for i, piece in enumerate(pieces):
             if not piece: continue
@@ -38,7 +38,7 @@ class TagsFromPattern(object):
                 pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+?'))
                 self.headers.append(piece[1:-1].encode("ascii", "replace"))
             else:
-                pieces[i] = sre.escape(piece)
+                pieces[i] = re.escape(piece)
 
         # some slight magic to anchor searches "nicely"
         # nicely means if it starts with a <tag>, anchor with a /
@@ -52,7 +52,7 @@ class TagsFromPattern(object):
                 and not pattern.endswith('<discnumber>'):
             pieces.append(r'(?:\.\w+)$')
 
-        self.pattern = sre.compile(''.join(pieces))
+        self.pattern = re.compile(''.join(pieces))
 
     def match(self, song):
         if isinstance(song, dict):
@@ -125,7 +125,7 @@ class TagsFromPath(EditPane):
         if songs: pattern_text = self.combo.child.get_text().decode("utf-8")
         else: pattern_text = ""
         try: pattern = TagsFromPattern(pattern_text)
-        except sre.error:
+        except re.error:
             qltk.ErrorMessage(
                 self, _("Invalid pattern"),
                 _("The pattern\n\t<b>%s</b>\nis invalid. "

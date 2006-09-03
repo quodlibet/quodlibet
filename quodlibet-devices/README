@@ -53,6 +53,7 @@ Universal Feed Parser from http://www.feedparser.org/.
 
 To compile the status icon and multimedia key support, run
  $ make extensions
+(You will also need the Tray Icon plugin to display the status icon.)
 
 To install EF/QL system-wide, run
  # make install

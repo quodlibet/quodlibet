@@ -8,7 +8,7 @@
 # $Id$
 
 import locale
-import sre
+import re
 
 class Massager(object):
     """Massage a tag value from various 'okay' formats to the
@@ -23,7 +23,7 @@ class DateMassager(Massager):
     tags = ["date"]
     error = _("The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
               "'YYYY-MM-DD HH:MM:SS' format.")
-    __match = sre.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
+    __match = re.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
                           "([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
     def validate(self, value):
         value = value.strip().replace(".", "-").replace("/", "-")
@@ -32,7 +32,7 @@ class DateMassager(Massager):
 class GainMassager(Massager):
     tags = ["replaygain_album_gain", "replaygain_track_gain"]
     error = _("Replay Gain gains must be entered in 'x.yy dB' format.")
-    __match = sre.compile(r"^[+-]\d+\.?\d+?\s+dB$").match
+    __match = re.compile(r"^[+-]\d+\.?\d+?\s+dB$").match
 
     def validate(self, value):
         if self.__match(value): return value

@@ -8,7 +8,7 @@
 # $Id$
 
 import os
-import sre
+import re
 import unicodedata
 
 import gtk
@@ -38,7 +38,7 @@ class StripWindowsIncompat(FilterCheckButton):
         new = u"".join(map(lambda s: (s in self.BAD and "_") or s, filename))
         parts = new.split(os.sep)
         def fix_end(string):
-            return sre.sub(r'[\. ]$', "_", string)
+            return re.sub(r'[\. ]$', "_", string)
         return unicode(os.sep).join(map(fix_end, parts))
 
 class StripDiacriticals(FilterCheckButton):

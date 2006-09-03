@@ -10,7 +10,7 @@
 # but it could use some cleaning up. It builds the requisite match.*
 # objects as it goes, which is where the interesting stuff will happen.
 
-import sre
+import re
 
 import parse._match as match
 
@@ -22,10 +22,10 @@ class error(ValueError): pass
 class ParseError(error): pass
 class LexerError(error): pass
 
-class QueryLexer(sre.Scanner):
+class QueryLexer(re.Scanner):
     def __init__(self, s):
         self.string = s.strip()
-        sre.Scanner.__init__(self,
+        re.Scanner.__init__(self,
                              [(r"/([^/\\]|\\.)*/", self.regexp),
                               (r'"([^"\\]|\\.)*"', self.str_to_re),
                               (r"'([^'\\]|\\.)*'", self.str_to_re),
@@ -42,7 +42,7 @@ class QueryLexer(sre.Scanner):
         if isinstance(string, unicode): string = string.encode('utf-8')
         string = string[1:-1].decode('string_escape')
         string = string.decode('utf-8')
-        return QueryLexeme(RE, "^%s$" % sre.escape(string))
+        return QueryLexeme(RE, "^%s$" % re.escape(string))
 
     def tag(self, scanner, string):
         return QueryLexeme(TAG, string.strip())
@@ -190,24 +190,24 @@ class QueryParser(object):
     def MatchTag(self):
         tag = self.lookahead.lexeme
         self.match(TAG)
-        try: return sre.compile(sre.escape(tag), sre.IGNORECASE | sre.UNICODE)
-        except sre.error:
+        try: return re.compile(re.escape(tag), re.IGNORECASE | re.UNICODE)
+        except re.error:
             raise ParseError("The regular expression was invalid")
 
     def Regexp(self):
-        re = self.lookahead.lexeme
+        regex = self.lookahead.lexeme
         self.match(RE)
-        mods = sre.MULTILINE | sre.UNICODE | sre.IGNORECASE
+        mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
         if self.lookahead.type == TAG:
             s = self.lookahead.lexeme.lower()
-            if "c" in s: mods &= ~sre.IGNORECASE
-            if "i" in s: mods |= sre.IGNORECASE
-            if "s" in s: mods |= sre.DOTALL
-            if "l" in s: mods = (mods & ~sre.UNICODE) | sre.LOCALE
+            if "c" in s: mods &= ~re.IGNORECASE
+            if "i" in s: mods |= re.IGNORECASE
+            if "s" in s: mods |= re.DOTALL
+            if "l" in s: mods = (mods & ~re.UNICODE) | re.LOCALE
             self.match(TAG)
-        try: return sre.compile(re, mods)
-        except sre.error:
-            raise ParseError("The regular expression /%s/ is invalid." % re)
+        try: return re.compile(regex, mods)
+        except re.error:
+            raise ParseError("The regular expression /%s/ is invalid." % regex)
 
     def match(self, *tokens):
         if tokens == [EOF] and self.lookahead.type == EOF:
@@ -227,7 +227,7 @@ def Query(string, star=STAR):
     if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])
     elif not set("#=").intersection(string):
-        parts = ["%s = /%s/" % (", ".join(star), sre.escape(p))
+        parts = ["%s = /%s/" % (", ".join(star), re.escape(p))
                  for p in string.split()]
         string = "&(" + ",".join(parts) + ")"
     return QueryParser(QueryLexer(string)).StartQuery()

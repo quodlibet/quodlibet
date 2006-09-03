@@ -24,7 +24,6 @@ import qltk
 import qltk.about
 import stock
 import util
-import widgets
 
 from formats.remote import RemoteFile
 from library import library, librarian
@@ -44,7 +43,6 @@ from qltk.properties import SongProperties
 from qltk.prefs import PreferencesWindow
 from qltk.queue import QueueExpander
 from qltk.songlist import SongList, PlaylistMux
-from qltk.wlw import WaitLoadWindow
 from util import copool
 from util.uri import URI
 
@@ -213,8 +211,8 @@ class QuodLibetWindow(gtk.Window):
             _("_Repeat"), "settings", "repeat")
         tips.set_tip(repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
-        self.__statusbar = StatusBar()
-        hbox.pack_start(self.__statusbar)
+        self.statusbar = StatusBar()
+        hbox.pack_start(self.statusbar)
         align.add(hbox)
         self.child.pack_end(align, expand=False)
 
@@ -679,7 +677,7 @@ class QuodLibetWindow(gtk.Window):
 
     def __rebuild(self, activator, force):
         paths = config.get("settings", "scan").split(":")
-        copool.add(library.rebuild, paths, self.__statusbar.progress, force,
+        copool.add(library.rebuild, paths, self.statusbar.progress, force,
                    funcid="library")
 
     # Set up the preferences window.
@@ -728,7 +726,7 @@ class QuodLibetWindow(gtk.Window):
         if fns:
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
-                copool.add(library.scan, fns, self.__statusbar.progress,
+                copool.add(library.scan, fns, self.statusbar.progress,
                            funcid="library")
             else:
                 added = []
@@ -852,4 +850,4 @@ class QuodLibetWindow(gtk.Window):
         length = sum([song["~#length"] for song in songs])
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
-        self.__statusbar.count.set_text(t)
+        self.statusbar.count.set_text(t)
