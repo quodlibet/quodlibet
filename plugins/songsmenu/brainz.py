@@ -1,7 +1,7 @@
 # (C) 2005 Joshua Kwan <joshk@triplehelix.org>
 # redistributable under the terms of the GNU GPL, version 2 or later
 
-import musicbrainz, os, gtk
+import musicbrainz, os, gtk, re
 
 # New musicbrainz python bindings don't have this layout. Grr!
 try: from musicbrainz.queries import *
@@ -205,9 +205,16 @@ class QLBrainz(object):
 
     def __lookup_by_album_name(self, album, tracks):
         candidates = {}
-        
-        self.mb.QueryWithArgs(MBQ_FindAlbumByName, [album])
 
+        # If the <album> string is an MB ID, try to get this album, else
+        # search for the name.
+        if re.match(r'^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$', album):
+            print "ID Query: %s" % album
+            self.mb.QueryWithArgs(musicbrainz.MBQ_GetAlbumById, [album])
+        else:
+            print "Name Query: %s" % album
+            self.mb.QueryWithArgs(MBQ_FindAlbumByName, [album])
+        
         n_albums = self.mb.GetResultInt(MBE_GetNumAlbums)
 
         print "Found %d albums" % n_albums
@@ -299,7 +306,8 @@ class QLBrainz(object):
                     _("Couldn't find an album with the name \"%s\" (and a "
                       "matching number of tracks.) You might not have selected "
                       "the entire album. To retry with another possible album "
-                      "name, enter it here.") %
+                      "name, enter it here. You can also try to look up the album"
+                      "ID yourself and enter this instead.") %
                       album_name, [], gtk.STOCK_OK).run()
                 # recursion. well...
                 if name: self.plugin_album(album, name)
