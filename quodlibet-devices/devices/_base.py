@@ -12,6 +12,7 @@ import popen2
 
 import devices
 import const
+import util
 
 class Device(dict):
     # The default icon for this device.
@@ -49,7 +50,6 @@ class Device(dict):
                 else:
                     value = devices.config.get(udi, key)
                 dict.__setitem__(self, key, value)
-            #self.update(dict(devices.config.items(udi)))
 
         # Set a sensible name if none is set.
         if not self.has_key('name'):
@@ -82,9 +82,12 @@ class Device(dict):
     # error.
     # If the device is not ejectable, set it to None.
     def eject(self):
-        pipe = popen2.Popen4("eject %s" % self.dev)
-        if pipe.wait() == 0: return True
-        else: return pipe.fromchild.read()
+        if util.iscommand("eject"):
+            pipe = popen2.Popen4("eject %s" % self.dev)
+            if pipe.wait() == 0: return True
+            else: return pipe.fromchild.read()
+        else:
+            return _("No eject command found.")
 
     # Returns a tuple with the size of this device and the free space.
     def get_space(self):
@@ -115,10 +118,11 @@ class Device(dict):
     delete = None
 
     # This will be called once after all songs have been copied/deleted.
-    # The WaitLoadWindow can be (ab)used to display status messages.
+    # Should return True if no errors occured, or else False.
+    # The WaitLoadBar can be used to display messages.
     #
-    # def cleanup(self, wlw, action='copy'/'delete'): ...
-    #cleanup = None
+    # def cleanup(self, wlb, action='copy'|'delete'): ...
+    cleanup = None
 
     # Returns a list of tuples for device-specific settings which should be
     # displayed in the properties dialog.

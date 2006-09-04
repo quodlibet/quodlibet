@@ -18,8 +18,8 @@ class SongsMenu(gtk.Menu):
     __accels = gtk.AccelGroup()
 
     def __init__(self, library, songs, plugins=True, playlists=True,
-                 queue=True, devices=True, remove=True, delete=False, edit=True,
-                 accels=None):
+                 queue=True, devices=True, remove=True, delete=False,
+                 edit=True, accels=None):
         super(SongsMenu, self).__init__()
 
         # The library may actually be a librarian; if it is, use it,

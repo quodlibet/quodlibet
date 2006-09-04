@@ -32,15 +32,24 @@ class Browser(object):
     in_menu = True
 
     # Packing options. False if the browser should be packed into the
-    # window's VBox with expand=False. Otherwise, this should be
-    # a function that returns an object like an RPaned; the browser
-    # and MainSongList are both packed into it.
-    expand = False # Packing options
+    # window's VBox with expand=False. A subclass of Paned to automatically
+    # pack the browser into the first and the MainSongList into the second
+    # pane.
+    #
+    # For custom packing, define a function that returns a Widget with the
+    # browser and MainSongList both packed into it. You also need to define
+    # unpack() below if the browser and songlist are not directly inside
+    # the returned container.
+    #
+    # If the end-result is a subclass of RPaned, the position will be
+    # automatically saved.
+    #def expand(self, songlist): return ...
+    expand = False
 
-    # Do your own packing. Should return a Widget with self and songlist
-    # packed inside.
-    #def packing(self, songlist): return ...
-    packing = False
+    # Unpack the browser and songlist when switching browsers in the main
+    # window. The container will be automatically destroyed.
+    #def unpack(self, songlist): ...
+    unpack = False
 
     # If true, the global filter will be applied by MainSongList to
     # the songs returned.

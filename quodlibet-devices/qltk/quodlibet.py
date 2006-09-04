@@ -43,6 +43,7 @@ from qltk.properties import SongProperties
 from qltk.prefs import PreferencesWindow
 from qltk.queue import QueueExpander
 from qltk.songlist import SongList, PlaylistMux
+from qltk.x import RPaned
 from util import copool
 from util.uri import URI
 
@@ -507,8 +508,11 @@ class QuodLibetWindow(gtk.Window):
         config.set("memory", "browser", Browser.__name__)
         if self.browser:
             c = self.__vbox.get_children()[-1]
-            c.remove(self.songpane)
-            c.remove(self.browser)
+            if self.browser.unpack:
+                self.browser.unpack(self.songpane)
+            else:
+                c.remove(self.songpane)
+                c.remove(self.browser)
             c.destroy()
             if self.browser.accelerators:
                 self.remove_accel_group(self.browser.accelerators)
@@ -523,10 +527,21 @@ class QuodLibetWindow(gtk.Window):
         if self.browser.accelerators:
             self.add_accel_group(self.browser.accelerators)
 
-        if self.browser.expand:
+        try:
+            issubclass(self.browser.expand, gtk.Paned)
             c = self.browser.expand()
             c.pack1(self.browser, resize=True)
             c.pack2(self.songpane, resize=True)
+        except TypeError:
+            if callable(self.browser.expand):
+                c = self.browser.expand(self.songpane)
+            else:
+                c = gtk.VBox(spacing=6)
+                c.pack_start(self.browser, expand=False)
+                c.pack_start(self.songpane)
+
+        # Save position if container is a RPaned
+        if isinstance(c, RPaned):
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
@@ -540,12 +555,7 @@ class QuodLibetWindow(gtk.Window):
                 del(paned._size_sig)
             sig = c.connect('size-allocate', set_size, val)
             c._size_sig = sig
-        elif self.browser.packing:
-            c = self.browser.packing(self.songpane)
-        else:
-            c = gtk.VBox(spacing=6)
-            c.pack_start(self.browser, expand=False)
-            c.pack_start(self.songpane)
+
         player.replaygain_profiles[0] = self.browser.replaygain_profiles
         player.volume = player.volume
         self.__vbox.pack_end(c)

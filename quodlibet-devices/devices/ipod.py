@@ -18,9 +18,6 @@ import util
 
 from devices._base import Device
 from formats._audio import AudioFile
-from qltk.entry import ValidatingEntry
-from qltk.msg import ErrorMessage
-from qltk.wlw import WaitLoadWindow
 
 # Wraps an itdb_track from libgpod in an AudioFile instance
 class IPodSong(AudioFile):
@@ -117,12 +114,17 @@ class IPodDevice(Device):
     def list(self, browser):
         self.__load_db()
         songs = []
+        orphaned = False
         for track in gpod.sw_get_tracks(self.__itdb):
             filename = gpod.itdb_filename_on_ipod(track)
             if filename:
                 songs.append(IPodSong(track))
             else: # Remove orphaned iTunesDB track
+                orphaned = True
+                print _("W: removing orphaned iPod track")
                 self.__remove_track(track)
+        if orphaned:
+            gpod.itdb_write(self.__itdb, None)
         self.__close_db()
         return songs
 
@@ -167,7 +169,9 @@ class IPodDevice(Device):
         }.items():
             try: setattr(track, key, int(value))
             except ValueError: continue
+
         track.filetype = song('~format')
+        track.comment = song('~filename')
 
         # Associate a cover with the track
         if self['covers']:
@@ -196,15 +200,15 @@ class IPodDevice(Device):
             return str(exc).decode(locale.getpreferredencoding(), 'replace')
         else: return True
 
-    def cleanup(self, wlw, action):
-        wlw._WaitLoadWindow__text = _("<b>Saving iPod database...</b>")
-        wlw.count = 0
-        wlw.step()
-        if gpod.itdb_write(self.__itdb, None) != 1:
-            ErrorMessage(wlw.get_transient_for(),
-                _("Unable to save iPod database"),
-                _("The song database could not be saved on your iPod.")).run()
-        self.__close_db()
+    def cleanup(self, wlb, action):
+        try:
+            wlb.set_label("<b>Saving iPod database...</b>")
+            if gpod.itdb_write(self.__itdb, None) != 1:
+                wlb.set_label(_("Unable to save iPod database"))
+                return False
+            return True
+        finally:
+            self.__close_db()
 
     def __load_db(self):
         if self.__itdb: return self.__itdb
