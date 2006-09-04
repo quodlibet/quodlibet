@@ -8,6 +8,7 @@
 # $Id$
 
 import gobject
+import gtk
 
 from qltk.songsmenu import SongsMenu
 
@@ -34,22 +35,29 @@ class Browser(object):
     # Packing options. False if the browser should be packed into the
     # window's VBox with expand=False. A subclass of Paned to automatically
     # pack the browser into the first and the MainSongList into the second
-    # pane.
-    #
+    # pane. If you override the pack() method this will not be called.
+    expand = None
+
     # For custom packing, define a function that returns a Widget with the
-    # browser and MainSongList both packed into it. You also need to define
-    # unpack() below if the browser and songlist are not directly inside
-    # the returned container.
-    #
-    # If the end-result is a subclass of RPaned, the position will be
-    # automatically saved.
-    #def expand(self, songlist): return ...
-    expand = False
+    # browser and MainSongList both packed into it. If you need
+    # a custom pack() method, you probably also need a custom unpack()
+    # method.
+    def pack(self, songpane):
+        if self.expand is not None:
+            container = self.expand()
+            container.pack1(self, resize=True)
+            container.pack2(songpane, resize=True)
+        else:
+            container = gtk.VBox(spacing=6)
+            container.pack_start(self, expand=False)
+            container.pack_start(songpane)
+        return container
 
     # Unpack the browser and songlist when switching browsers in the main
-    # window. The container will be automatically destroyed.
-    #def unpack(self, songlist): ...
-    unpack = False
+    # window. The container will be automatically destroyed afterwards.
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
 
     # If true, the global filter will be applied by MainSongList to
     # the songs returned.

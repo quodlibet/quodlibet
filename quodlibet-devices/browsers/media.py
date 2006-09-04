@@ -248,14 +248,16 @@ class MediaDevices(Browser, gtk.VBox):
 
         self.show_all()
 
-    def expand(self, songlist):
+    def pack(self, songpane):
         self.__vbox = vbox = gtk.VBox(spacing=6)
         vbox.pack_start(self.__header, expand=False)
-        vbox.pack_start(songlist)
+        vbox.pack_start(songpane)
         vbox.pack_start(self.__statusbar, expand=False)
 
-        vbox.show_all()
+        vbox.show()
+        self.__header.show_all()
         self.__header.hide()
+        self.__statusbar.show_all()
         self.__statusbar.hide()
 
         self.__paned = paned = qltk.RHPaned()
@@ -263,8 +265,8 @@ class MediaDevices(Browser, gtk.VBox):
         paned.pack2(vbox)
         return paned
 
-    def unpack(self, songlist):
-        self.__vbox.remove(songlist)
+    def unpack(self, container, songpane):
+        self.__vbox.remove(songpane)
         self.__paned.remove(self)
 
     def Menu(self, songs, songlist, library):
