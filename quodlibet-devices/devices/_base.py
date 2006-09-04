@@ -18,13 +18,15 @@ class Device(dict):
     # The default icon for this device.
     icon = os.path.join(const.BASEDIR, "device-generic.png")
 
-    # The value of the HAL-property 'portable_audio_player.type' for this device.
+    # The value of the HAL-property 'portable_audio_player.type' for
+    # this device.
     type = ""
 
     # The UDI of this device
     udi = None
 
-    # Set this to a hash with default values for user-configurable properties
+    # Set this to a hash with default values for user-configurable
+    # properties.
     defaults = None
 
     def __init__(self, udi):
@@ -53,9 +55,11 @@ class Device(dict):
 
         # Set a sensible name if none is set.
         if not self.has_key('name'):
-            dict.__setitem__(self, 'name', "%s %s" % (
-                device.GetProperty('info.vendor'),
-                device.GetProperty('info.product')))
+            try: vendor = device.GetProperty('info.vendor') + " "
+            except dbus.DBusException: vendor = ""
+            try: name = device.GetProperty('info.product')
+            except dbus.DBusException: name = _("Unknown Device")
+            dict.__setitem__(self, 'name', vendor + name)
 
     # Store all changed properties in the ConfigParser.
     def __setitem__(self, key, value):
@@ -77,9 +81,8 @@ class Device(dict):
                     break
         return os.path.ismount(self.mountpoint)
 
-    # Eject the device, should return True on success.
-    # If the eject failed, it should return False or a string describing the
-    # error.
+    # Eject the device, should return True on success. If the eject
+    # failed, it should return False or a string describing the error.
     # If the device is not ejectable, set it to None.
     def eject(self):
         if util.iscommand("eject"):
@@ -100,43 +103,41 @@ class Device(dict):
     # on this device.
     def list(self, songlist): return []
 
-    # Copies a song to the device. This will be called once for each song.
-    # If the copy was successful, it should return an AudioFile instance,
-    # which will be added to the songlist.
-    # If the copy failed, it should return False or a string describing the
-    # error.
+    # Copies a song to the device. This will be called once for each
+    # song. If the copy was successful, it should return an AudioFile
+    # instance, which will be added to the songlist. If the copy
+    # failed, it should return False or a string describing the error.
     def copy(self, songlist, song): raise NotImplementedError
 
-    # Deletes a song from the device. This will be called once for each song.
-    # This is not needed if the device is file-based, i.e. the songs returned
-    # by list() have is_file set to True.
-    # If the delete was successful, it should return True.
-    # If the delete failed, it should return False or a string describing the
-    # error.
+    # Deletes a song from the device. This will be called once for
+    # each song. This is not needed if the device is file-based,
+    # i.e. the songs returned by list() have is_file set to True. If
+    # the delete was successful, it should return True. If the delete
+    # failed, it should return False or a string describing the error.
     #
     # def delete(self, songlist, song): ... return True
     delete = None
 
-    # This will be called once after all songs have been copied/deleted.
-    # Should return True if no errors occured, or else False.
-    # The WaitLoadBar can be used to display messages.
+    # This will be called once after all songs have been
+    # copied/deleted. Should return True if no errors occured, or
+    # else False. The WaitLoadBar can be used to display messages.
     #
     # def cleanup(self, wlb, action='copy'|'delete'): ...
     cleanup = None
 
-    # Returns a list of tuples for device-specific settings which should be
-    # displayed in the properties dialog.
+    # Returns a list of tuples for device-specific settings which
+    # should be displayed in the properties dialog.
     #
     # The first value should be a string and will be used as a title.
     # Include an underline for changeable settings.
     #
-    # The second value should be an appropriate gtk.Widget for the setting.
-    # It can also be a string, in which case it will be displayed with a Label
-    # and won't be changeable.
+    # The second value should be an appropriate gtk.Widget for the
+    # setting. It can also be a string, in which case it will be
+    # displayed with a Label and won't be changeable.
     #
     # The third value is the name of the object's key which should be
-    # set when the widget is changed. If the second value is a string, this
-    # will be ignored.
+    # set when the widget is changed. If the second value is a string,
+    # this will be ignored.
     #
     # Separators can be added by passing (None, None, None).
     def Properties(self): return []
