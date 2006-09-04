@@ -17,9 +17,10 @@ class AutoRating(EventPlugin):
                    "vux by Brian Nelson.")
 
     def plugin_on_song_ended(self, song, skipped):
-        rating = song["~#rating"]
-        invrating = 1.0 - rating
-        delta = min(rating, invrating) / 2.0
-        if skipped: rating -= delta
-        else: rating += delta
-        song["~#rating"] = rating
+        if song is not None:
+            rating = song["~#rating"]
+            invrating = 1.0 - rating
+            delta = min(rating, invrating) / 2.0
+            if skipped: rating -= delta
+            else: rating += delta
+            song["~#rating"] = rating
