@@ -116,15 +116,13 @@ class Menu(gtk.Menu):
         browser.select(device)
         browser.dropped(browser.get_toplevel().songlist, songs)
 
-class MediaDevices(Browser, gtk.VBox):
+class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
 
     name = _("Media Devices")
     accelerated_name = _("_Media Devices")
     priority = 25
     replaygain_profiles = ['track']
-
-    instances = []
 
     __devices = gtk.ListStore(object, gdk.Pixbuf)
     __busy = False
@@ -172,8 +170,7 @@ class MediaDevices(Browser, gtk.VBox):
 
     def __init__(self, library, player):
         super(MediaDevices, self).__init__(spacing=6)
-        MediaDevices.instances.insert(0, self)
-        self.connect('destroy', MediaDevices.instances.remove)
+        self._register_instance()
 
         self.__cache = {}
         self.__last = None
