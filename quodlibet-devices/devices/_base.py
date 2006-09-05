@@ -55,10 +55,12 @@ class Device(dict):
 
         # Set a sensible name if none is set.
         if not self.has_key('name'):
+            # These can raise a D-Bus exception, except I'd rather
+            # not have this module depend directly on D-Bus...
             try: vendor = device.GetProperty('info.vendor') + " "
-            except dbus.DBusException: vendor = ""
+            except Exception: vendor = ""
             try: name = device.GetProperty('info.product')
-            except dbus.DBusException: name = _("Unknown Device")
+            except Exception: name = _("Unknown Device")
             dict.__setitem__(self, 'name', vendor + name)
 
     # Store all changed properties in the ConfigParser.
