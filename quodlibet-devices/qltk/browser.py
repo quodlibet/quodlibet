@@ -38,19 +38,7 @@ class LibraryBrowser(Window):
         if browser.accelerators:
             self.add_accel_group(browser.accelerators)
 
-        try:
-            issubclass(browser.expand, gtk.Paned)
-            c = browser.expand()
-            c.pack1(browser, resize=True)
-            c.pack2(sw, resize=True)
-        except TypeError:
-            if callable(browser.expand):
-                c = browser.expand(sw)
-            else:
-                c = gtk.VBox(spacing=6)
-                c.pack_start(browser, expand=False)
-                c.pack_start(sw)
-        self.child.pack_start(c)
+        self.child.pack_start(browser.pack(sw))
 
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
