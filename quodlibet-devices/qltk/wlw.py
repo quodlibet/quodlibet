@@ -32,6 +32,8 @@ class WaitLoadBase(object):
 
         self._progress = gtk.ProgressBar()
         self._progress.set_pulse_step(0.08)
+        self.pulse = self._progress.pulse
+        self.set_fraction = self._progress.set_fraction
 
         self.setup(count, text, initial)
 
@@ -63,7 +65,7 @@ class WaitLoadBase(object):
     def __cancel_clicked(self, button):
         self._quit = True
 
-    def set_label(self, text):
+    def set_text(self, text):
         self._label.set_markup(text)
         while gtk.events_pending():
             gtk.main_iteration()

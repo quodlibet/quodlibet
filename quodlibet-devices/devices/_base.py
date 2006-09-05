@@ -102,8 +102,8 @@ class Device(dict):
         return (space, free)
 
     # Returns a list of AudioFile instances representing the songs
-    # on this device.
-    def list(self, songlist): return []
+    # on this device. The WaitLoadBar can be used to display messages.
+    def list(self, wlb): return []
 
     # Copies a song to the device. This will be called once for each
     # song. If the copy was successful, it should return an AudioFile

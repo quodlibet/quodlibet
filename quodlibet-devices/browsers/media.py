@@ -420,7 +420,7 @@ class MediaDevices(Browser, gtk.VBox):
 
     def __list_songs(self, device, rescan=False):
         if rescan or not device.udi in self.__cache:
-            self.__cache[device.udi] = device.list(self)
+            self.__cache[device.udi] = device.list(self.__statusbar)
         return self.__cache[device.udi]
 
     def __check_device(self, device, message):

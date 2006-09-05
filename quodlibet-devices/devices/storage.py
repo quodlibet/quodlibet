@@ -21,7 +21,6 @@ from library import SongFileLibrary
 from parse import FileFromPattern
 from qltk import ConfirmAction
 from qltk.entry import ValidatingEntry
-from qltk.wlw import WaitLoadWindow
 
 class StorageDevice(Device):
     type = "generic"
@@ -47,39 +46,14 @@ class StorageDevice(Device):
 
         return props
 
-    def list(self, browser):
+    def list(self, wlb):
         if self.__library and not rescan:
             return self.__library.values()
         elif not self.__library:
             self.__library = SongFileLibrary()
 
         library = self.__library
-
-        win = WaitLoadWindow(browser, len(library) // 7,
-                             _("Scanning your library. "
-                               "This may take several minutes.\n\n"
-                               "%d songs reloaded\n%d songs removed"),
-                             (0, 0))
-        iter = 7
-        c, r = [], []
-        for c, r in library.rebuild():
-            if iter == 7:
-                if win.step(len(c), len(r)):
-                    win.destroy()
-                    break
-                iter = 0
-            iter += 1
-        else:
-            win.destroy()
-            win = WaitLoadWindow(browser, 0,
-                                 _("Scanning for new songs and "
-                                   "adding them to your library.\n\n"
-                                   "%d songs added"), 0)
-            a, c, r = [], [], []
-            for a, c, r in library.scan([self.mountpoint]):
-                if win.step(len(a)): break
-            win.destroy()
-
+        library.rebuild(self.mountpoint, wlb)
         return library.values()
 
     def copy(self, songlist, song):

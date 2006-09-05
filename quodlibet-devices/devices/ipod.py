@@ -111,7 +111,7 @@ class IPodDevice(Device):
                 details['firmware'] = parts[2].strip("()")
         return details
 
-    def list(self, browser):
+    def list(self, wlb):
         self.__load_db()
         songs = []
         orphaned = False
