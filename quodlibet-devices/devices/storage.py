@@ -26,7 +26,7 @@ class StorageDevice(Device):
     type = "generic"
 
     defaults = {
-        'pattern': "",
+        'pattern': "<artist>/<album>/<title>",
         'covers': True,
     }
 
@@ -76,9 +76,12 @@ class StorageDevice(Device):
                 songlist, _("File exists"),
                 _("Overwrite the file <b>%s</b>?") % util.escape(utarget),
                 ).run():
-                # Remove the current song
-                try: del self.__library[target]
-                except KeyError: pass
+                try:
+                    # Remove the current song
+                    song = self.__library[target]
+                    self.__library.remove(song)
+                except KeyError:
+                    pass
                 model = songlist.get_model()
                 for row in model:
                     if row[0]["~filename"] == utarget: model.remove(row.iter)
@@ -99,12 +102,13 @@ class StorageDevice(Device):
 
             song = copy.deepcopy(song)
             song.sanitize(target)
-            self.__library[target] = song
+            self.__library.add([song])
             return song
         except IOError, exc:
             return str(exc).decode(locale.getpreferredencoding(), 'replace')
 
-    def cleanup(self, wlw, action):
+    def cleanup(self, wlb, action):
         self.__pattern = None
+        return True
 
 devices = [StorageDevice]

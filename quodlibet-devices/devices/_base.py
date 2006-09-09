@@ -65,7 +65,6 @@ class Device(dict):
 
     # Store all changed properties in the ConfigParser.
     def __setitem__(self, key, value):
-        print "__setitem__ hook called: %s => %s" % (key, value)
         if not devices.config.has_section(self.udi):
             devices.config.add_section(self.udi)
         devices.config.set(self.udi, key, value)

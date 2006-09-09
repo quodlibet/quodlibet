@@ -240,7 +240,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         table.attach(label, 1, 2, 1, 2)
 
         self.__progress = progress = gtk.ProgressBar()
-        progress.set_size_request(100, -1)
+        progress.set_size_request(150, -1)
         table.attach(progress, 2, 3, 1, 2, xoptions=0, yoptions=0)
 
         self.accelerators = gtk.AccelGroup()
@@ -487,7 +487,9 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                     self, _("Unable to copy song"),
                     msg % label).run()
 
-        if device.cleanup and device.cleanup(wlb, 'copy'):
+        if device.cleanup and not device.cleanup(wlb, 'copy'):
+            pass
+        else:
             wlb.hide()
 
         self.__busy = False
@@ -532,7 +534,9 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                     self, _("Unable to delete song"),
                     msg % label).run()
 
-        if device.cleanup and device.cleanup(wlb, 'delete'):
+        if device.cleanup and not device.cleanup(wlb, 'delete'):
+            pass
+        else:
             wlb.hide()
 
         self.__busy = False
