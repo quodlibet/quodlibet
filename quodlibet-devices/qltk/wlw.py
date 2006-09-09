@@ -53,17 +53,17 @@ class WaitLoadBase(object):
         self.current = 0
         self.count = count
         self._text = text
-        self._paused = False
-        self._quit = False
+        self.paused = False
+        self.quit = False
 
         self._label.set_markup(self._text % initial)
         self._progress.set_fraction(0.0)
 
     def __pause_clicked(self, button):
-        self._paused = button.get_active()
+        self.paused = button.get_active()
 
     def __cancel_clicked(self, button):
-        self._quit = True
+        self.quit = True
 
     def set_text(self, text):
         self._label.set_markup(text)
@@ -87,9 +87,9 @@ class WaitLoadBase(object):
         else:
             self._progress.pulse()
 
-        while not self._quit and (self._paused or gtk.events_pending()):
+        while not self.quit and (self.paused or gtk.events_pending()):
             gtk.main_iteration()
-        return self._quit
+        return self.quit
 
 class WaitLoadWindow(WaitLoadBase, gtk.Window):
     """A window with a progress bar and some nice updating text,

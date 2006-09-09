@@ -45,6 +45,11 @@ class DeviceProperties(gtk.Dialog):
 
         props = []
 
+        props.append((_("Device:"), device.dev, None))
+        props.append((_("Mountpoint:"),
+            device.mountpoint or _("<i>Not mounted</i>"), None))
+        props.append((None, None, None))
+
         entry = gtk.Entry()
         entry.set_text(device['name'])
         props.append((_("_Name:"), entry, 'name'))
@@ -71,6 +76,7 @@ class DeviceProperties(gtk.Dialog):
                         widget.connect('changed', self.__changed, key)
                     else:
                         widget = gtk.Label(value)
+                        widget.set_use_markup(True)
                         widget.set_selectable(True)
                         widget.set_alignment(0.0, 0.5)
                     table.attach(widget, 1, 2, y, y + 1)
@@ -234,7 +240,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         table.attach(label, 1, 2, 1, 2)
 
         self.__progress = progress = gtk.ProgressBar()
-        progress.set_size_request(200, -1)
+        progress.set_size_request(100, -1)
         table.attach(progress, 2, 3, 1, 2, xoptions=0, yoptions=0)
 
         self.accelerators = gtk.AccelGroup()
@@ -312,8 +318,10 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         model, iter = view.get_selection().get_selected()
         device = model[iter][0]
 
-        if device.is_connected(): songs = self.__list_songs(device)
-        else: songs = []
+        if device.is_connected() and not self.__busy:
+            songs = self.__list_songs(device)
+        else:
+            songs = []
         menu = SongsMenu(library, songs, playlists=False,
                          devices=False, remove=False)
 
@@ -417,7 +425,9 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     def __list_songs(self, device, rescan=False):
         if rescan or not device.udi in self.__cache:
+            self.__busy = True
             self.__cache[device.udi] = device.list(self.__statusbar)
+            self.__busy = False
         return self.__cache[device.udi]
 
     def __check_device(self, device, message):

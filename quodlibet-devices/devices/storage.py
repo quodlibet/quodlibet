@@ -47,14 +47,20 @@ class StorageDevice(Device):
         return props
 
     def list(self, wlb):
-        if self.__library and not rescan:
-            return self.__library.values()
-        elif not self.__library:
+        if not self.__library:
             self.__library = SongFileLibrary()
 
-        library = self.__library
-        library.rebuild(self.mountpoint, wlb)
-        return library.values()
+        next = self.__library.rebuild([self.mountpoint], wlb).next
+        while True:
+            if wlb.quit:
+                wlb.hide()
+                break
+            if not wlb.paused:
+                try: next()
+                except StopIteration: break
+            gtk.main_iteration()
+
+        return self.__library.values()
 
     def copy(self, songlist, song):
         if not self.__pattern:

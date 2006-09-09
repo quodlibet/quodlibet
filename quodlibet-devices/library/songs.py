@@ -260,7 +260,7 @@ class FileLibrary(Library):
                         if fullfilename not in self._contents:
                             item = self.add_filename(fullfilename, False)
                             if item is not None:
-                                added.append(item)                
+                                added.append(item)
                                 if len(added) > 5:
                                     self.emit('added', added)
                                     added = []
