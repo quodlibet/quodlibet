@@ -161,6 +161,14 @@ class PlayQueue(SongList):
         self.connect_object('destroy', self.__write, self.model)
         self.__fill(library)
 
+        self.connect('key-press-event', self.__delete_key_pressed)
+
+    def __delete_key_pressed(self, widget, event):
+        if (event.keyval, event.state) == gtk.accelerator_parse("Delete"):
+            self.__remove(None)
+            return True
+        return False
+
     def __go_to(self, view, path, column, player):
         self.model.go_to(self.model.get_iter(path))
         player.next()
