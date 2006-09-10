@@ -136,7 +136,7 @@ class TrayIcon(EventPlugin):
     PLUGIN_ID = "Tray Icon"
     PLUGIN_NAME = _("Tray Icon")
     PLUGIN_DESC = _("Control Quod Libet from the system tray.")
-    PLUGIN_VERSION = "0.23"
+    PLUGIN_VERSION = "0.23.1"
 
     def enabled(self):
         from widgets import main as window, watcher
@@ -229,7 +229,10 @@ class TrayIcon(EventPlugin):
         elif event.button == 3: self.__popup(event, window)
 
     def __play_pause(self, activator, player):
-        if player.song: player.paused ^= True
+        if player.song:
+            player.paused ^= True
+        else:
+            player.reset()
 
     def __scroll(self, widget, event, window, player):
         try: event.state ^= config.getboolean("plugins", "icon_modifier_swap")
