@@ -114,8 +114,8 @@ class Menu(gtk.Menu):
 
     @staticmethod
     def __copy_to_device(device, songs, library):
-        if len(MediaDevices.instances) > 0:
-            browser = MediaDevices.instances[0]
+        if len(MediaDevices.instances()) > 0:
+            browser = MediaDevices.instances()[0]
         else:
             win = LibraryBrowser(MediaDevices, library)
             browser = win.browser

@@ -202,9 +202,9 @@ class IPodDevice(Device):
 
     def cleanup(self, wlb, action):
         try:
-            wlb.set_label("<b>Saving iPod database...</b>")
+            wlb.set_text("<b>Saving iPod database...</b>")
             if gpod.itdb_write(self.__itdb, None) != 1:
-                wlb.set_label(_("Unable to save iPod database"))
+                wlb.set_text(_("Unable to save iPod database"))
                 return False
             return True
         finally:
