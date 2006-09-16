@@ -60,6 +60,7 @@ class IPodDevice(Device):
     }
 
     __itdb = None
+    __covers = []
 
     def Properties(self):
         props = []
@@ -176,7 +177,12 @@ class IPodDevice(Device):
         # Associate a cover with the track
         if self['covers']:
             cover = song.find_cover()
-            if cover: gpod.itdb_track_set_thumbnails(track, cover.name)
+            if cover:
+                # libgpod will copy the file later when the iTunesDB
+                # is saved, so we have to keep a reference around in
+                # case the cover is a temporary file.
+                self.__covers.append(cover)
+                gpod.itdb_track_set_thumbnails(track, cover.name)
 
         # Add the track to the master playlist
         gpod.itdb_track_add(self.__itdb, track, -1)
@@ -209,6 +215,7 @@ class IPodDevice(Device):
             return True
         finally:
             self.__close_db()
+            self.__covers = []
 
     def __load_db(self):
         if self.__itdb: return self.__itdb
