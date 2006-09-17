@@ -9,6 +9,7 @@
 import gtk
 import pango
 
+import config
 import util
 
 from qltk.songlist import SongList
@@ -20,6 +21,13 @@ class LibraryBrowser(Window):
         self.set_border_width(6)
         self.set_title("Quod Libet - " + Kind.name)
         self.add(gtk.VBox(spacing=6))
+        name = Kind.__name__
+        cfg_name = "browser_size_" + name
+        try: x, y = map(int, config.get('memory', cfg_name).split())
+        except (config.error, ValueError):
+            x, y = 500, 300
+        self.set_default_size(x, y)
+        self.connect('configure-event', LibraryBrowser.__save_size, cfg_name)
 
         view = SongList(library)
         self.add_accel_group(view.accelerators)
@@ -54,7 +62,6 @@ class LibraryBrowser(Window):
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
-        self.set_default_size(500, 300)
         sw.show_all()
         for c in self.child.get_children():
             c.show()
@@ -103,3 +110,6 @@ class LibraryBrowser(Window):
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         statusbar.set_text(t)
+
+    def __save_size(self, event, cfg_name):
+        config.set('memory', cfg_name, '%d %d' %(event.width, event.height))
