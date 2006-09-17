@@ -22,6 +22,8 @@ from parse import FileFromPattern
 from qltk import ConfirmAction
 from qltk.entry import ValidatingEntry
 
+CACHE = os.path.join(const.USERDIR, 'cache')
+
 class StorageDevice(Device):
     type = "generic"
 
@@ -33,11 +35,20 @@ class StorageDevice(Device):
     __library = None
     __pattern = None
 
+    def __init__(self, udi):
+        super(StorageDevice, self).__init__(udi)
+        self.__library_path = os.path.join(CACHE, os.path.basename(udi))
+
+    def __set_pattern(self, widget=None):
+        self.__pattern = FileFromPattern(
+            os.path.join(self.mountpoint, self['pattern']))
+
     def Properties(self):
         props = []
 
         entry = gtk.Entry()
         entry.set_text(self['pattern'])
+        entry.connect_after('changed', self.__set_pattern)
         props.append((_("_Filename Pattern:"), entry, 'pattern'))
 
         check = gtk.CheckButton()
@@ -47,8 +58,7 @@ class StorageDevice(Device):
         return props
 
     def list(self, wlb):
-        if not self.__library:
-            self.__library = SongFileLibrary()
+        self.__load_library()
 
         next = self.__library.rebuild([self.mountpoint], wlb).next
         while True:
@@ -60,12 +70,12 @@ class StorageDevice(Device):
                 except StopIteration: break
             gtk.main_iteration()
 
+        self.__save_library()
         return self.__library.values()
 
     def copy(self, songlist, song):
         if not self.__pattern:
-            self.__pattern = FileFromPattern(
-                os.path.join(self.mountpoint, self['pattern']))
+            self.__set_pattern()
 
         utarget = self.__pattern.format(song)
         target = util.fsencode(utarget)
@@ -108,7 +118,16 @@ class StorageDevice(Device):
             return str(exc).decode(locale.getpreferredencoding(), 'replace')
 
     def cleanup(self, wlb, action):
-        self.__pattern = None
+        self.__save_library()
         return True
+
+    def __load_library(self):
+        if not self.__library:
+            self.__library = SongFileLibrary()
+            if os.path.isfile(self.__library_path):
+                self.__library.load(self.__library_path)
+
+    def __save_library(self):
+        self.__library.save(self.__library_path)
 
 devices = [StorageDevice]
