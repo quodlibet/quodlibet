@@ -104,7 +104,7 @@ class Menu(gtk.Menu):
         super(Menu, self).__init__()
         for device, pixbuf in MediaDevices.devices():
             x, y = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-            pixbuf = pixbuf.scale_simple(x, y, gtk.gdk.INTERP_BILINEAR)
+            pixbuf = pixbuf.scale_simple(x, y, gdk.INTERP_BILINEAR)
             i = gtk.ImageMenuItem(device['name'])
             i.set_sensitive(device.is_connected())
             i.get_image().set_from_pixbuf(pixbuf)
@@ -379,7 +379,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     def __set_name(self, device):
         self.__device_name.set_markup(
-            '<span size="x-large"><b>%s</b></span>' % util.escape(device['name']))
+            '<span size="x-large"><b>%s</b></span>' %
+                util.escape(device['name']))
 
     def __refresh(self, rescan=False):
         model, iter = self.__view.get_selection().get_selected()
@@ -547,7 +548,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             device = model[iter][0]
             status = device.eject()
             if status == True:
-                self.__refresh()
+                self.__refresh(True)
             else:
                 qltk.ErrorMessage(
                     self, _("Unable to eject device"),

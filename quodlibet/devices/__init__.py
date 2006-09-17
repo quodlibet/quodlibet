@@ -81,15 +81,7 @@ def get_interface(udi, interface='Device'):
 
 # Discover devices with HAL
 def discover():
-    udis = []
-    for udi in _hal.FindDeviceByCapability('portable_audio_player'):
-        device = get_interface(udi)
-        for vol_udi in _hal.FindDeviceStringMatch('info.parent', udi):
-            volume = get_interface(vol_udi)
-            if volume.GetProperty('volume.is_mounted'):
-                udis.append(udi)
-                break
-    return udis
+    return _hal.FindDeviceByCapability('portable_audio_player')
 
 _dbus = dbus.SystemBus()
 _hal = get_interface('/org/freedesktop/Hal/Manager', 'Manager')
