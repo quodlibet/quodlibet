@@ -373,7 +373,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     def __edited(self, render, path, newname):
         self.__devices[path][0]['name'] = newname
-        self.__set_name(newname)
+        self.__set_name(self.__devices[path][0])
         render.set_property('editable', False)
         devices.write()
 
