@@ -43,6 +43,7 @@ from qltk.properties import SongProperties
 from qltk.prefs import PreferencesWindow
 from qltk.queue import QueueExpander
 from qltk.songlist import SongList, PlaylistMux
+from qltk.x import RPaned
 from util import copool
 from util.uri import URI
 
@@ -506,12 +507,11 @@ class QuodLibetWindow(gtk.Window):
         Browser = browsers.get(current)
         config.set("memory", "browser", Browser.__name__)
         if self.browser:
-            c = self.__vbox.get_children()[-1]
-            c.remove(self.songpane)
-            c.remove(self.browser)
-            c.destroy()
+            container = self.browser.__container
+            self.browser.unpack(container, self.songpane)
             if self.browser.accelerators:
                 self.remove_accel_group(self.browser.accelerators)
+            container.destroy()
             self.browser.destroy()
         self.browser = Browser(library, player)
         self.browser.connect('songs-selected', self.__browser_cb)
@@ -523,31 +523,27 @@ class QuodLibetWindow(gtk.Window):
         if self.browser.accelerators:
             self.add_accel_group(self.browser.accelerators)
 
-        if self.browser.expand:
-            c = self.browser.expand()
-            c.pack1(self.browser, resize=True)
-            c.pack2(self.songpane, resize=True)
+        container = self.browser.__container = self.browser.pack(self.songpane)
+        # Save position if container is a RPaned
+        if isinstance(container, RPaned):
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
             except: val = 0.4
-            c.connect(
+            container.connect(
                 'notify::position', self.__browser_configure, self.browser)
             def set_size(paned, alloc, pos):
                 paned.set_relative(pos)
                 paned.disconnect(paned._size_sig)
                 # The signal disconnects itself! I hate GTK sizing.
                 del(paned._size_sig)
-            sig = c.connect('size-allocate', set_size, val)
-            c._size_sig = sig
-        else:
-            c = gtk.VBox(spacing=6)
-            c.pack_start(self.browser, expand=False)
-            c.pack_start(self.songpane)
+            sig = container.connect('size-allocate', set_size, val)
+            container._size_sig = sig
+
         player.replaygain_profiles[0] = self.browser.replaygain_profiles
         player.volume = player.volume
-        self.__vbox.pack_end(c)
-        c.show()
+        self.__vbox.pack_end(container)
+        container.show()
         self.__hide_menus()
         self.__hide_headers()
         self.__refresh_size()

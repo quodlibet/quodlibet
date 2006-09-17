@@ -6,7 +6,7 @@
 #
 # $Id$
 
-"""Manager a pool of routines using Python iterators."""
+"""Manage a pool of routines using Python iterators."""
 
 import gobject
 

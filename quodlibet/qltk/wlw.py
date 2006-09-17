@@ -7,10 +7,91 @@
 # $Id$
 
 import gtk
+import pango
 
 from qltk import get_top_parent
 
-class WaitLoadWindow(gtk.Window):
+class WaitLoadBase(object):
+    """Abstract class providing a label, a progressbar, pause/stop buttons,
+    and the stepping logic."""
+
+    def __init__(self, count=0, text="", initial=(), limit=5):
+        """count: the total amount of items expected, or 0 for unknown/indefinite
+        text: text to display in the label; may contain % formats
+        initial: initial values for % formats (text % initial)
+        limit: count must be greater than limit (or 0) for pause/stop to appear
+
+        The current iteration of the counter can be gotten as
+        self.current. count can be gotten as self.count.
+        """
+
+        super(WaitLoadBase, self).__init__()
+
+        self._label = gtk.Label()
+        self._label.set_use_markup(True)
+
+        self._progress = gtk.ProgressBar()
+        self._progress.set_pulse_step(0.08)
+        self.pulse = self._progress.pulse
+        self.set_fraction = self._progress.set_fraction
+
+        self.setup(count, text, initial)
+
+        if self.count > limit or self.count == 0:
+            # Add stop/pause buttons. count = 0 means an indefinite
+            # number of steps.
+            self._cancel_button = gtk.Button(stock=gtk.STOCK_STOP)
+            self._pause_button = gtk.ToggleButton(gtk.STOCK_MEDIA_PAUSE)
+            self._pause_button.set_use_stock(True)
+            self._cancel_button.connect('clicked', self.__cancel_clicked)
+            self._pause_button.connect('clicked', self.__pause_clicked)
+        else:
+            self._cancel_button = None
+            self._pause_button = None
+
+    def setup(self, count=0, text="", initial=()):
+        self.current = 0
+        self.count = count
+        self._text = text
+        self.paused = False
+        self.quit = False
+
+        self._label.set_markup(self._text % initial)
+        self._progress.set_fraction(0.0)
+
+    def __pause_clicked(self, button):
+        self.paused = button.get_active()
+
+    def __cancel_clicked(self, button):
+        self.quit = True
+
+    def set_text(self, text):
+        self._label.set_markup(text)
+        while gtk.events_pending():
+            gtk.main_iteration()
+
+    def step(self, *values):
+        """Advance the counter by one. Arguments are applied to the
+        originally-supplied text as a format string.
+
+        This function doesn't return if the dialog is paused (though
+        the GTK main loop will still run), and returns True if stop
+        was pressed.
+        """
+
+        self._label.set_markup(self._text % values)
+        if self.count:
+            self.current += 1
+            self._progress.set_fraction(
+                max(0, min(1, self.current / float(self.count))))
+        else:
+            self._progress.pulse()
+
+        while not self.quit and (self.paused or gtk.events_pending()):
+            gtk.main_iteration()
+        return self.quit
+
+class WaitLoadWindow(WaitLoadBase, gtk.Window):
     """A window with a progress bar and some nice updating text,
     as well as pause/stop buttons.
 
@@ -21,18 +102,12 @@ class WaitLoadWindow(gtk.Window):
     w.destroy()
     """
 
-    def __init__(self, parent, count, text, initial=(), limit=5):
-        """parent: the parent window, or None
-        count: the total amount of items expected, or 0 for unknown/indefinite
-        text: text to display in the window; may contain % formats
-        initial: initial values for % formats (text % initial)
-        limit: count must be greater than limit (or 0) for pause/stop to appear
-
-        The current iteration of the counter can be gotten as
-        window.current. count can be gotten as window.count.
-        """
+    def __init__(self, parent, *args):
+        """parent: the parent window, or None"""
 
         super(WaitLoadWindow, self).__init__()
+        self.setup(*args)
+
         parent = get_top_parent(parent)
         if parent:
             sig = parent.connect('configure-event', self.__recenter)
@@ -48,68 +123,25 @@ class WaitLoadWindow(gtk.Window):
         self.child.set_shadow_type(gtk.SHADOW_OUT)
         vbox = gtk.VBox(spacing=12)
         vbox.set_border_width(12)
-        self.__label = gtk.Label()
-        self.__label.set_size_request(170, -1)
-        self.__label.set_use_markup(True)
-        self.__label.set_line_wrap(True)
-        self.__label.set_justify(gtk.JUSTIFY_CENTER)
-        vbox.pack_start(self.__label)
-        self.__progress = gtk.ProgressBar()
-        self.__progress.set_pulse_step(0.08)
-        vbox.pack_start(self.__progress)
+        self._label.set_size_request(170, -1)
+        self._label.set_line_wrap(True)
+        self._label.set_justify(gtk.JUSTIFY_CENTER)
+        vbox.pack_start(self._label)
+        vbox.pack_start(self._progress)
 
-        self.current = 0
-        self.count = count
-        if self.count > limit or self.count == 0:
+        if self._cancel_button and self._pause_button:
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
             hbox = gtk.HBox(spacing=6, homogeneous=True)
-            b1 = gtk.Button(stock=gtk.STOCK_STOP)
-            b2 = gtk.ToggleButton(gtk.STOCK_MEDIA_PAUSE)
-            b2.set_use_stock(True)
-            b1.connect('clicked', self.__cancel_clicked)
-            b2.connect('clicked', self.__pause_clicked)
-            hbox.pack_start(b1)
-            hbox.pack_start(b2)
+            hbox.pack_start(self._cancel_button)
+            hbox.pack_start(self._pause_button)
             vbox.pack_start(hbox)
 
         self.child.add(vbox)
 
-        self.__text = text
-        self.__paused = False
-        self.__quit = False
-
-        self.__label.set_markup(self.__text % initial)
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         while gtk.events_pending(): gtk.main_iteration()
         self.show_all()
-
-    def __pause_clicked(self, button):
-        self.__paused = button.get_active()
-
-    def __cancel_clicked(self, button):
-        self.__quit = True
-
-    def step(self, *values):
-        """Advance the counter by one. Arguments are applied to the
-        originally-supplied text as a format string.
-
-        This function doesn't return if the dialog is paused (though
-        the GTK main loop will still run), and returns True if stop
-        was pressed.
-        """
-
-        self.__label.set_markup(self.__text % values)
-        if self.count:
-            self.current += 1
-            self.__progress.set_fraction(
-                max(0, min(1, self.current / float(self.count))))
-        else:
-            self.__progress.pulse()
-
-        while not self.__quit and (self.__paused or gtk.events_pending()):
-            gtk.main_iteration()
-        return self.__quit
 
     def __recenter(self, parent, event):
         x, y = parent.get_position()
@@ -132,3 +164,28 @@ class WritingWindow(WaitLoadWindow):
 
     def step(self):
         return super(WritingWindow, self).step(self.current + 1, self.count)
+
+class WaitLoadBar(WaitLoadBase, gtk.HBox):
+    def __init__(self):
+        super(WaitLoadBar, self).__init__()
+
+        self._label.set_alignment(0.0, 0.5)
+        self._label.set_ellipsize(pango.ELLIPSIZE_END)
+
+        self._cancel_button.remove(self._cancel_button.child)
+        self._cancel_button.add(gtk.image_new_from_stock(
+            gtk.STOCK_STOP, gtk.ICON_SIZE_MENU))
+        self._pause_button.remove(self._pause_button.child)
+        self._pause_button.add(gtk.image_new_from_stock(
+            gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU))
+
+        self.pack_start(self._label)
+        self.pack_start(self._progress, expand=False, padding=6)
+        self.pack_start(self._pause_button, expand=False)
+        self.pack_start(self._cancel_button, expand=False)
+
+        self.show_all()
+
+    def step(self, *values):
+        self._progress.set_text(_("%d of %d") % (self.current + 1, self.count))
+        return super(WaitLoadBar, self).step(*values)

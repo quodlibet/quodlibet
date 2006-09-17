@@ -21,6 +21,7 @@ PREVIEW = 'ql-preview'
 REMOVE = 'ql-remove'
 ENQUEUE = 'ql-enqueue'
 PLAYLISTS = 'ql-add-to-playlist'
+DEVICES = 'ql-copy-to-device'
 
 VOLUME_OFF = 'rhythmbox-volume-zero'
 VOLUME_MIN = 'rhythmbox-volume-min'
@@ -43,6 +44,7 @@ def init():
         (PREVIEW, _("_Preview"), 0, 0, ""),
         (ENQUEUE, _("Add to _Queue"), 0, 0, ""),
         (PLAYLISTS, _("_Add to Playlist"), 0, 0, ""),
+        (DEVICES, _("_Copy to Device"), 0, 0, ""),
         ])
 
     icons = gtk.IconFactory()
@@ -52,6 +54,7 @@ def init():
     icons.add(PREVIEW, lookup(gtk.STOCK_CONVERT))
     icons.add(ENQUEUE, lookup(gtk.STOCK_ADD))
     icons.add(PLAYLISTS, lookup(gtk.STOCK_ADD))
+    icons.add(DEVICES, lookup(gtk.STOCK_COPY))
 
     # Introduced in GTK 2.8
     try: gtk.STOCK_INFO

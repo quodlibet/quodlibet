@@ -18,8 +18,8 @@ class SongsMenu(gtk.Menu):
     __accels = gtk.AccelGroup()
 
     def __init__(self, library, songs, plugins=True, playlists=True,
-                 queue=True, remove=True, delete=False, edit=True,
-                 accels=None):
+                 queue=True, devices=True, remove=True, delete=False,
+                 edit=True, accels=None):
         super(SongsMenu, self).__init__()
 
         # The library may actually be a librarian; if it is, use it,
@@ -64,6 +64,16 @@ class SongsMenu(gtk.Menu):
                     'activate', accels, ord('Q'), 0, gtk.ACCEL_VISIBLE)
             self.append(b)
             b.set_sensitive(can_add)
+
+        if devices:
+            import browsers
+            try: submenu = browsers.media.Menu(songs, library)
+            except AttributeError: pass
+            else:
+                b = gtk.ImageMenuItem(stock.DEVICES)
+                b.set_sensitive(can_add and len(submenu) > 0)
+                b.set_submenu(submenu)
+                self.append(b)
 
         if remove:
             self.separate()
