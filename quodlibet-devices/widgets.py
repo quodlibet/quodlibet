@@ -126,12 +126,12 @@ def save_library(window, player, library):
         ErrorMessage(None, _("Unable to save library"), err).run()
 
 def player_error(player, code, lock):
-    if lock: gtk.threads_enter()
+    if lock: gtk.gdk.threads_enter()
     ErrorMessage(
         main, _("Unable to play song"),
         _("GStreamer was unable to load the selected song.")
         + "\n\n" + code).run()
-    if lock: gtk.threads_leave()
+    if lock: gtk.gdk.threads_leave()
 
 def no_sink_quit(sink):
     header = _("Unable to open audio device")
