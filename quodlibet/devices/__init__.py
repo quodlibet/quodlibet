@@ -12,7 +12,7 @@ import traceback
 import dbus
 import dbus.glib
 
-from os.path import dirname, basename, isdir, join
+from os.path import dirname, basename, join
 from glob import glob
 from ConfigParser import RawConfigParser as ConfigParser
 

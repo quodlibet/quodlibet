@@ -20,8 +20,6 @@ from devices._base import Device
 from library import SongFileLibrary
 from parse import FileFromPattern
 from qltk import ConfirmAction
-from qltk.entry import ValidatingEntry
-from qltk.renamefiles import StripWindowsIncompat
 
 CACHE = os.path.join(const.USERDIR, 'cache')
 

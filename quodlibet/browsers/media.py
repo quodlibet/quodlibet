@@ -307,6 +307,11 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         for row in self.__devices:
             if row[0] == device: break
         else: return
+
+        # Force a full refresh
+        try: del self.__cache[device.udi]
+        except KeyError: pass
+
         selection = self.__view.get_selection()
         selection.unselect_all()
         selection.select_iter(row.iter)
@@ -463,6 +468,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             if wlb.step(label):
                 wlb.hide()
                 break
+
+            songlist.scroll_to_cell(model[-1].path)
             while gtk.events_pending(): gtk.main_iteration()
 
             space, free = device.get_space()
@@ -474,12 +481,11 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 ).run()
                 break
 
-            status = song
-            import time
-            time.sleep(0.5)
             status = device.copy(songlist, song)
             if isinstance(status, AudioFile):
                 model.append([status])
+                try: self.__cache[device.udi].append(song)
+                except KeyError: pass
                 self.__refresh_space(device)
             else:
                 msg = _("The song <b>%s</b> could not be copied.")
@@ -527,6 +533,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             status = device.delete(songlist, song)
             if status:
                 model.remove(model.find(song))
+                try: self.__cache[device.udi].remove(song)
+                except (KeyError, ValueError): pass
                 self.__refresh_space(device)
             else:
                 msg = _("The song <b>%s</b> could not be deleted.")
