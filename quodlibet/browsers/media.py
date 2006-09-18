@@ -407,6 +407,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 self.__refresh_button.set_sensitive(False)
                 self.__header.hide()
             self.emit('songs-selected', songs, True)
+        else:
+            self.__last = None
 
     def __refresh_space(self, device):
         try: space, free = device.get_space()

@@ -125,7 +125,7 @@ class IPodDevice(Device):
                 print _("W: removing orphaned iPod track")
                 self.__remove_track(track)
         if orphaned:
-            gpod.itdb_write(self.__itdb, None)
+            self.__save_db()
         self.__close_db()
         return songs
 
@@ -209,7 +209,7 @@ class IPodDevice(Device):
     def cleanup(self, wlb, action):
         try:
             wlb.set_text("<b>Saving iPod database...</b>")
-            if gpod.itdb_write(self.__itdb, None) != 1:
+            if not self.__save_db():
                 wlb.set_text(_("Unable to save iPod database"))
                 return False
             return True
@@ -228,6 +228,13 @@ class IPodDevice(Device):
             self.__itdb = self.create_db()
 
         return self.__itdb
+
+    def __save_db(self):
+        if gpod.itdb_write(self.__itdb, None) == 1 and \
+           gpod.itdb_shuffle_write(self.__itdb, None) == 1:
+            return True
+        else:
+            return False
 
     def __create_db(self):
         db = gpod.itdb_new();
