@@ -35,11 +35,7 @@ class StripWindowsIncompat(FilterCheckButton):
     BAD = '\:*?;"<>|'
     _order = 1.1
     def filter(self, original, filename):
-        new = u"".join(map(lambda s: (s in self.BAD and "_") or s, filename))
-        parts = new.split(os.sep)
-        def fix_end(string):
-            return re.sub(r'[\. ]$', "_", string)
-        return unicode(os.sep).join(map(fix_end, parts))
+        return util.strip_win32_incompat(filename)
 
 class StripDiacriticals(FilterCheckButton):
     _label = _("Strip _diacritical marks")

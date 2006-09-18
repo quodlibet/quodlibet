@@ -48,6 +48,17 @@ def gtk_init():
             def set_search_equal_func(self, func, *args): pass
         gtk.TreeView = TVProxy
 
+def strip_win32_incompat(string, BAD = '\:*?;"<>|'):
+    """Strip Win32-incompatible characters.
+
+    This only works correctly on Unicode strings.
+    """
+    new = u"".join(map(lambda s: (s in BAD and "_") or s, string))
+    parts = new.split(os.sep)
+    def fix_end(string):
+        return re.sub(r'[\. ]$', "_", string)
+    return unicode(os.sep).join(map(fix_end, parts))
+
 def listdir(path, hidden=False):
     """List files in a directory, sorted, fully-qualified.
 

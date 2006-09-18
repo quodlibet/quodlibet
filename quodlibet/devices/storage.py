@@ -21,6 +21,7 @@ from library import SongFileLibrary
 from parse import FileFromPattern
 from qltk import ConfirmAction
 from qltk.entry import ValidatingEntry
+from qltk.renamefiles import StripWindowsIncompat
 
 CACHE = os.path.join(const.USERDIR, 'cache')
 
@@ -77,7 +78,7 @@ class StorageDevice(Device):
         if not self.__pattern:
             self.__set_pattern()
 
-        utarget = self.__pattern.format(song)
+        utarget = util.strip_win32_incompat(self.__pattern.format(song))
         target = util.fsencode(utarget)
         dirname = os.path.dirname(target)
 
