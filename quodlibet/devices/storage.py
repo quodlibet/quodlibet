@@ -104,12 +104,12 @@ class StorageDevice(Device):
             shutil.copyfile(util.fsencode(song["~filename"]), target)
 
             if self['covers']:
+                coverfile = os.path.join(dirname, "folder.jpg")
                 cover = song.find_cover()
-                if cover:
-                    filename = os.path.join(dirname,
-                        os.path.basename(cover.name))
-                    if os.path.isfile(filename): os.remove(filename)
-                    shutil.copyfile(cover.name, filename)
+                if cover and util.mtime(cover.name) > util.mtime(coverfile):
+                    image = gtk.gdk.pixbuf_new_from_file_at_size(
+                        cover.name, 200, 200)
+                    image.save(coverfile, "jpeg")
 
             song = copy.deepcopy(song)
             song.sanitize(target)
