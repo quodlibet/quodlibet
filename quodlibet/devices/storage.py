@@ -59,6 +59,7 @@ class StorageDevice(Device):
     def list(self, wlb):
         self.__load_library()
 
+        wlb.setup()
         next = self.__library.rebuild([self.mountpoint], wlb).next
         while True:
             if wlb.quit:
