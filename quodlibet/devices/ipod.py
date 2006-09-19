@@ -93,23 +93,35 @@ class IPodDevice(Device):
 
     def __get_details(self):
         details = {}
+        sysinfo = os.path.join(self.mountpoint,
+            'iPod_Control', 'Device', 'SysInfo')
 
-        try: file = open(os.path.join(self.mountpoint,
-            "iPod_Control", "Device", "SysInfo"))
-        except IOError: return details
+        if os.path.isfile(sysinfo):
+            file = open(sysinfo)
+            while True:
+                line = file.readline()
+                if not line: break
+                parts = line.split()
+                if len(parts) == 0: continue
 
-        while True:
-            line = file.readline()
-            if not line: break
-            parts = line.split()
-            if len(parts) == 0: continue
+                parts[0] = parts[0].rstrip(":")
+                if parts[0] == "ModelNumStr":
+                    info = self.__models.get(parts[1], ('-', '-'))
+                    details['model'], details['space'] = info
+                elif parts[0] == "visibleBuildID":
+                    details['firmware'] = parts[2].strip("()")
+            file.close()
+        else:
+            # Assume an iPod shuffle
+            info = os.statvfs(self.mountpoint)
+            space = info.f_bsize * info.f_blocks
+            if space > 512 * 1024 * 1024:
+                model = 'M9725'
+            else:
+                model = 'M9724'
+            info = self.__models.get(model, ('-', '-'))
+            details['model'], details['space'] = info
 
-            parts[0] = parts[0].rstrip(":")
-            if parts[0] == "ModelNumStr":
-                info = self.__models.get(parts[1], ('-', '-'))
-                details['model'], details['space'] = info
-            elif parts[0] == "visibleBuildID":
-                details['firmware'] = parts[2].strip("()")
         return details
 
     def list(self, wlb):
