@@ -273,15 +273,23 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__paned.remove(self)
 
     def Menu(self, songs, songlist, library):
-        menu = super(MediaDevices, self).Menu(songs, songlist, library)
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             device = model[iter][0]
-            if device.delete:
-                delete = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-                delete.connect_object('activate',
-                    self.__delete_songs, songlist, songs)
-                menu.append(delete)
+            delete = not device.delete
+        else:
+            delete = False
+
+        menu = SongsMenu(library, songs, delete=delete,
+            accels=songlist.accelerators)
+        if iter and device.delete:
+            delete = qltk.MenuItem(_("_Delete from device"),
+                gtk.STOCK_DELETE)
+            delete.connect_object('activate',
+                self.__delete_songs, songlist, songs)
+            menu.preseparate()
+            menu.prepend(delete)
+
         return menu
 
     def activate(self):
@@ -469,7 +477,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 wlb.hide()
                 break
 
-            songlist.scroll_to_cell(model[-1].path)
+            if len(model) > 0:
+                songlist.scroll_to_cell(model[-1].path)
             while gtk.events_pending(): gtk.main_iteration()
 
             space, free = device.get_space()
@@ -489,7 +498,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 self.__refresh_space(device)
             else:
                 msg = _("The song <b>%s</b> could not be copied.")
-                if type(status) == str:
+                if type(status) == unicode:
                     msg += "\n\n"
                     msg += _("<b>Error:</b> %s") % util.escape(status)
                 qltk.WarningMessage(
@@ -529,16 +538,15 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 wlb.hide()
                 break
 
-            status = True
             status = device.delete(songlist, song)
-            if status:
+            if status == True:
                 model.remove(model.find(song))
                 try: self.__cache[device.udi].remove(song)
                 except (KeyError, ValueError): pass
                 self.__refresh_space(device)
             else:
                 msg = _("The song <b>%s</b> could not be deleted.")
-                if type(status) == str:
+                if type(status) == unicode:
                     msg += "\n\n"
                     msg += _("<b>Error:</b> %s") % status
                 qltk.WarningMessage(

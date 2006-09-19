@@ -12,6 +12,7 @@ import os
 import shutil
 import gtk
 import copy
+from glob import glob
 
 import util
 import const
@@ -24,11 +25,12 @@ from qltk import ConfirmAction
 CACHE = os.path.join(const.USERDIR, 'cache')
 
 class StorageDevice(Device):
-    type = "generic"
+    type = 'generic'
 
     defaults = {
-        'pattern': "<artist>/<album>/<title>",
+        'pattern': '<artist>/<album>/<title>',
         'covers': True,
+        'unclutter': True,
     }
 
     __library = None
@@ -53,6 +55,11 @@ class StorageDevice(Device):
         check = gtk.CheckButton()
         check.set_active(self['covers'])
         props.append((_("Copy _album covers"), check, 'covers'))
+
+        check = gtk.CheckButton()
+        check.set_active(self['unclutter'])
+        props.append((_("_Remove unused covers and directories"),
+            check, 'unclutter'))
 
         return props
 
@@ -94,27 +101,46 @@ class StorageDevice(Device):
                     pass
                 model = songlist.get_model()
                 for row in model:
-                    if row[0]["~filename"] == utarget: model.remove(row.iter)
+                    if row[0]['~filename'] == utarget: model.remove(row.iter)
             else: return False
 
         try:
             if not os.path.isdir(dirname):
                 os.makedirs(dirname)
-            shutil.copyfile(util.fsencode(song["~filename"]), target)
+            shutil.copyfile(util.fsencode(song['~filename']), target)
 
             if self['covers']:
-                coverfile = os.path.join(dirname, "folder.jpg")
+                coverfile = os.path.join(dirname, 'folder.jpg')
                 cover = song.find_cover()
                 if cover and util.mtime(cover.name) > util.mtime(coverfile):
                     image = gtk.gdk.pixbuf_new_from_file_at_size(
                         cover.name, 200, 200)
-                    image.save(coverfile, "jpeg")
+                    image.save(coverfile, 'jpeg')
 
             song = copy.deepcopy(song)
             song.sanitize(target)
             self.__library.add([song])
             return song
-        except IOError, exc:
+        except (OSError, IOError), exc:
+            return str(exc).decode(locale.getpreferredencoding(), 'replace')
+
+    def delete(self, songlist, song):
+        try:
+            path = song['~filename']
+            dir = os.path.dirname(path)
+
+            os.unlink(path)
+
+            if self['unclutter']:
+                files = glob(dir+'/*')
+                if len(files) == 1 and os.path.isfile(files[0]) and \
+                    os.path.basename(files[0]) == 'folder.jpg':
+                    os.unlink(files[0])
+                try: os.removedirs(os.path.dirname(path))
+                except OSError: pass
+
+            return True
+        except (OSError, IOError), exc:
             return str(exc).decode(locale.getpreferredencoding(), 'replace')
 
     def cleanup(self, wlb, action):
@@ -122,8 +148,8 @@ class StorageDevice(Device):
         return True
 
     def __load_library(self):
-        if not self.__library:
-            self.__library = SongFileLibrary()
+        if self.__library is None:
+            self.__library = SongFileLibrary(self.udi)
             if os.path.isfile(self.__library_path):
                 self.__library.load(self.__library_path)
 

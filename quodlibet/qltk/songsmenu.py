@@ -135,4 +135,6 @@ class SongsMenu(gtk.Menu):
         d.destroy()
         removed = filter(lambda s: s["~filename"] in removed, songs)
         if removed:
-            library.remove(removed)
+            try: library.librarian.remove(removed)
+            except AttributeError:
+                library.remove(removed)
