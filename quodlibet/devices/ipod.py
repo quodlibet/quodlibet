@@ -84,15 +84,19 @@ class IPodDevice(Device):
 
         if self.is_connected():
             details = self.__get_details()
-            props.append((None, None, None))
-            props.append((_("Model:"), details.get('model', '-'), None))
-            props.append((_("Capacity:"), details.get('space', '-'), None))
-            props.append((_("Firmware:"), details.get('firmware', '-'), None))
+            if len(details) > 0:
+                props.append((None, None, None))
+            if 'model' in details:
+                props.append((_("Model:"), details['model'], None))
+            if 'space' in details:
+                props.append((_("Capacity:"), details['space'], None))
+            if 'firmware' in details:
+                props.append((_("Firmware:"), details['firmware'], None))
 
         return props
 
     def __get_details(self):
-        details = {}
+        d = {}
         sysinfo = os.path.join(self.mountpoint,
             'iPod_Control', 'Device', 'SysInfo')
 
@@ -102,14 +106,13 @@ class IPodDevice(Device):
                 line = file.readline()
                 if not line: break
                 parts = line.split()
-                if len(parts) == 0: continue
+                if len(parts) < 2: continue
 
                 parts[0] = parts[0].rstrip(":")
-                if parts[0] == "ModelNumStr":
-                    info = self.__models.get(parts[1], ('-', '-'))
-                    details['model'], details['space'] = info
+                if parts[0] == "ModelNumStr" and parts[1] in self.__models:
+                    d['model'], d['space'] = self.__models[parts[1]]
                 elif parts[0] == "visibleBuildID":
-                    details['firmware'] = parts[2].strip("()")
+                    d['firmware'] = parts[2].strip("()")
             file.close()
         else:
             # Assume an iPod shuffle
@@ -119,10 +122,10 @@ class IPodDevice(Device):
                 model = 'M9725'
             else:
                 model = 'M9724'
-            info = self.__models.get(model, ('-', '-'))
-            details['model'], details['space'] = info
+            if model in self.__models:
+                d['model'], d['space'] = self.__models[model]
 
-        return details
+        return d
 
     def list(self, wlb):
         self.__load_db()
