@@ -182,7 +182,8 @@ class TagsFromPath(EditPane):
                 text = match.get(h, '')
                 for f in self.filters:
                     if f.active: text = f.filter(h, text)
-                if not song.multiple_values: text = u", ".join(text)
+                if not song.multiple_values:
+                    text = u", ".join(text.split("\n"))
                 row.append(text)
             model.append(row=row)
 
