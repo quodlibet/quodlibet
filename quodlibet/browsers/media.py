@@ -422,6 +422,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             self.emit('songs-selected', songs, device.ordered)
         else:
             self.__last = None
+            self.emit('songs-selected', [], False)
 
     def __refresh_space(self, device):
         try: space, free = device.get_space()
