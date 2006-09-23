@@ -29,8 +29,6 @@ from qltk.delete import DeleteDialog
 
 class DeviceProperties(gtk.Dialog):
     def __init__(self, parent, device):
-        self.__device = device
-
         super(DeviceProperties, self).__init__(
             _("Device Properties"), qltk.get_top_parent(parent),
             buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
@@ -46,8 +44,10 @@ class DeviceProperties(gtk.Dialog):
         props = []
 
         props.append((_("Device:"), device.dev, None))
-        props.append((_("Mountpoint:"),
-            device.mountpoint or _("<i>Not mounted</i>"), None))
+        mountpoint = util.escape(
+            device.mountpoint or ("<i>%s</i>" % _("Not mounted")))
+        props.append((_("Mount Point:"), mountpoint, None))
+                      
         props.append((None, None, None))
 
         entry = gtk.Entry()
@@ -62,7 +62,7 @@ class DeviceProperties(gtk.Dialog):
                 if key and isinstance(value, gtk.CheckButton):
                     value.set_label(title)
                     value.set_use_underline(True)
-                    value.connect('toggled', self.__changed, key)
+                    value.connect('toggled', self.__changed, key, device)
                     table.attach(value, 0, 2, y, y + 1, xoptions=gtk.FILL)
                 else:
                     label = gtk.Label()
@@ -73,7 +73,7 @@ class DeviceProperties(gtk.Dialog):
                         widget = value
                         label.set_mnemonic_widget(widget)
                         label.set_use_underline(True)
-                        widget.connect('changed', self.__changed, key)
+                        widget.connect('changed', self.__changed, key, device)
                     else:
                         widget = gtk.Label(value)
                         widget.set_use_markup(True)
@@ -83,7 +83,7 @@ class DeviceProperties(gtk.Dialog):
             y += 1
         self.show_all()
 
-    def __changed(self, widget, key):
+    def __changed(self, widget, key, device):
         if isinstance(widget, gtk.Entry):
             value = widget.get_text()
         elif isinstance(widget, gtk.SpinButton):
@@ -92,7 +92,7 @@ class DeviceProperties(gtk.Dialog):
             value = widget.get_active()
         else:
             raise NotImplementedError
-        self.__device[key] = value
+        device[key] = value
 
     def __close(self, dialog, response):
         dialog.destroy()
@@ -132,6 +132,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     __devices = gtk.ListStore(object, gdk.Pixbuf)
     __busy = False
+    __last = None
 
     @staticmethod
     def cell_data(col, render, model, iter):
@@ -170,8 +171,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     @classmethod
     def __add_device(klass, device):
-        pixbuf = gdk.pixbuf_new_from_file_at_size(
-            device.icon, 24, 24)
+        pixbuf = gdk.pixbuf_new_from_file_at_size(device.icon, 24, 24)
         klass.__devices.append(row=[device, pixbuf])
 
     def __init__(self, library, player):
@@ -179,7 +179,6 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self._register_instance()
 
         self.__cache = {}
-        self.__last = None
 
         # Device list on the left pane
         swin = gtk.ScrolledWindow()
@@ -287,10 +286,9 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         menu = SongsMenu(library, songs, delete=delete,
             accels=songlist.accelerators)
         if iter and device.delete:
-            delete = qltk.MenuItem(_("_Delete from device"),
-                gtk.STOCK_DELETE)
-            delete.connect_object('activate',
-                self.__delete_songs, songlist, songs)
+            delete = qltk.MenuItem(_("_Delete from Device"), gtk.STOCK_DELETE)
+            delete.connect_object(
+                'activate', self.__delete_songs, songlist, songs)
             menu.preseparate()
             menu.prepend(delete)
 
@@ -306,7 +304,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     def restore(self):
         try: name = config.get('browsers', 'media')
-        except: pass
+        except config.error: pass
         else:
             for row in self.__devices:
                 if row[0]['name'] == name: break
