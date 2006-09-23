@@ -104,6 +104,10 @@ class Device(dict):
     # on this device. The WaitLoadBar can be used to display messages.
     def list(self, wlb): return []
 
+    # Whether the order of the files returned by list() is meaningful.
+    # If it is, refreshing will reset the song list sort order.
+    ordered = False
+
     # Copies a song to the device. This will be called once for each
     # song. If the copy was successful, it should return an AudioFile
     # instance, which will be added to the songlist. If the copy

@@ -419,7 +419,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 self.__eject_button.set_sensitive(False)
                 self.__refresh_button.set_sensitive(False)
                 self.__header.hide()
-            self.emit('songs-selected', songs, True)
+            self.emit('songs-selected', songs, device.ordered)
         else:
             self.__last = None
 

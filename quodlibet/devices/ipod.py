@@ -51,6 +51,8 @@ class IPodDevice(Device):
     icon = os.path.join(const.BASEDIR, "device-ipod.png")
     type = "ipod"
 
+    ordered = True
+
     defaults = {
         'gain': 0.0,
         'covers': True,
