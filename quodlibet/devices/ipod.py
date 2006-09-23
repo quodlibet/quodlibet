@@ -30,22 +30,39 @@ class IPodSong(AudioFile):
 
         for key in ['artist', 'album', 'title', 'genre', 'grouping']:
             value = getattr(track, key)
-            if value: self[key] = value
-        for key in ['bitrate', 'playcount', 'year']:
+            if value:
+                try: self[key] = unicode(value)
+                except UnicodeDecodeError:
+                    self[key] = unicode(value, errors='replace')
+        for key in ['bitrate', 'playcount']:
             value = getattr(track, key)
-            if value != 0: self['~#'+key] = value
+            if value:
+                self['~#'+key] = value
+
+        try: self["date"] = unicode(track.year)
+        except AttributeError: pass
+
+        if track.cds:
+            self["discnumber"] = u"%d/%d" % (track.cd_nr, track.cds)
+        elif track.cd_nr:
+            self["discnumber"] = u"%d" % track.cd_nr
+
+        if track.tracks:
+            self['tracknumber'] = u"%d/%d" % (track.track_nr, track.tracks)
+        elif track.track_nr:
+            self['tracknumber'] = u"%d" % track.track_nr
+
         for key, value in {
-            '~#disc': track.cd_nr,
-            '~#discs': track.cds,
             '~#rating': track.rating / 100.0,
             '~#length': track.tracklen / 1000.0,
         }.items():
-            if value != 0: self[key] = value
-        self['~format'] = track.filetype
-        self['tracknumber'] = "%d/%d" % (track.track_nr, track.tracks)
+            if value != 0:
+                self[key] = value
+        self['~format'] = u"iPod: %s" % track.filetype
 
     # Disable all tag editing
-    def can_change(self, k=None): return []
+    def can_change(self, k=None):
+        return []
 
 class IPodDevice(Device):
     icon = os.path.join(const.BASEDIR, "device-ipod.png")
@@ -75,7 +92,7 @@ class IPodDevice(Device):
         props.append((_("_Volume Gain (dB):"), gain, 'gain'))
 
         for key, label in [
-            ['covers', _("Copy _album covers")],
+            ['covers', _("_Copy album covers")],
             ['all_tags', _("Combine tags with _multiple values")],
             ['title_version', _("Title includes _version")],
             ['album_part', _("Album includes _part")],
