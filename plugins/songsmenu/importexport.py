@@ -28,6 +28,7 @@ def filechooser(save, title):
         chooser.add_filter(filter)
 
     chooser.set_current_folder(lastfolder)
+    chooser.set_default_response(gtk.RESPONSE_ACCEPT)
     return chooser
 
 class Export(SongsMenuPlugin):
@@ -43,10 +44,10 @@ class Export(SongsMenuPlugin):
         chooser = filechooser(save=True, title=songs[0]('album'))
         resp = chooser.run()
         fn = chooser.get_filename()
-        base, ext = splitext(fn)
-        if not ext: fn = extsep.join([fn, 'tags'])
         chooser.destroy()
         if resp != gtk.RESPONSE_ACCEPT: return
+        base, ext = splitext(fn)
+        if not ext: fn = extsep.join([fn, 'tags'])
 
         global lastfolder
         lastfolder = dirname(fn)
