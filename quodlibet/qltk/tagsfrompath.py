@@ -50,7 +50,7 @@ class TagsFromPattern(object):
             pieces.insert(0, os.path.sep)
         if pattern.endswith('>') and not pattern.endswith('<tracknumber>')\
                 and not pattern.endswith('<discnumber>'):
-            pieces.append(r'(?:\.\w+)$')
+            pieces.append(r'(?:\.[A-Za-z0-9_+]+)$')
 
         self.pattern = re.compile(''.join(pieces))
 

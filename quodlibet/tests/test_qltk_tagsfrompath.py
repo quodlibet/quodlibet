@@ -36,6 +36,18 @@ class TTagsFromPattern(TestCase):
         self.b2 = '/path/01 - Artist - Title'
         self.nomatch = {}
 
+    def test_songtypes(self):
+        import formats
+        pat = TagsFromPattern('<tracknumber>. <title>')
+        tracktitle = {'tracknumber': '01', 'title': 'Title' }
+        for ext, kind in formats._infos.iteritems():
+            f = formats._audio.AudioFile()
+            if not isinstance(kind, type):
+                continue
+            f.__class__ = kind
+            f["~filename"] = '/path/Artist - Album/01. Title' + ext
+            self.assertEquals(pat.match(f), tracktitle, ext)
+
     def test_dict(self):
         tracktitle = {'tracknumber': '01', 'title': 'Title' }
         pat = TagsFromPattern('<tracknumber> - <title>')
