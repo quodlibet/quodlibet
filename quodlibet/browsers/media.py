@@ -211,17 +211,21 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         col.pack_start(render)
         col.set_cell_data_func(render, MediaDevices.cell_data)
 
+        hbox = gtk.HBox(spacing=6)
+        hbox.set_homogeneous(True)
+        self.pack_start(hbox, expand=False)
+
         self.__refresh_button = refresh = qltk.Button(
             _("_Refresh"), gtk.STOCK_REFRESH, gtk.ICON_SIZE_MENU)
         refresh.connect_object('clicked', self.__refresh, True)
         refresh.set_sensitive(False)
-        self.pack_start(refresh, expand=False)
+        hbox.pack_start(refresh)
 
         self.__eject_button = eject = qltk.Button(
             _("_Eject"), gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
         eject.connect('clicked', self.__eject)
         eject.set_sensitive(False)
-        self.pack_start(eject, expand=False)
+        hbox.pack_start(eject)
 
         # Device info on the right pane
         self.__header = table = gtk.Table()
