@@ -12,13 +12,10 @@ from formats._apev2 import APEv2File
 
 extensions = [".wv"]
 try:
-    import ctypes
-    _wavpack = ctypes.cdll.LoadLibrary("libwavpack.so.0")
-except (ImportError, OSError):
+    from mutagen.wavpack import WavPack
+except ImportError:
     extensions = []
 else:
-    _wavpack.WavpackGetSampleRate.restype = ctypes.c_uint32
-    _wavpack.WavpackGetNumSamples.restype = ctypes.c_uint32
     if gst.registry_get_default().find_plugin("wavpack") is None:
         extensions = []
 
@@ -26,14 +23,9 @@ class WavpackFile(APEv2File):
     format = "WavPack"
     
     def __init__(self, filename):
-        super(WavpackFile, self).__init__(filename)
-        b = ctypes.create_string_buffer(50)
-        f = _wavpack.WavpackOpenFileInput(filename, ctypes.byref(b), 0, 0)
-        if not f: raise IOError("Not a valid Wavpack file")
-        rate = _wavpack.WavpackGetSampleRate(f)
-        samples = _wavpack.WavpackGetNumSamples(f)
-        self["~#length"] = samples // rate
-        _wavpack.WavpackCloseFile(f)
+        audio = WavPack(filename)
+        super(WavpackFile, self).__init__(filename, audio)
+        self["~#length"] = int(audio.info.length)
         self.sanitize(filename)
 
 info = WavpackFile

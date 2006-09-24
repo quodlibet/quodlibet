@@ -27,9 +27,12 @@ class APEv2File(AudioFile):
               }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
 
-    def __init__(self, filename):
-        try: tag = mutagen.apev2.APEv2(filename)
-        except mutagen.apev2.APENoHeaderError: tag = {}
+    def __init__(self, filename, audio=None):
+        if audio:
+            tag = audio.tags or {}
+        else:
+            try: tag = mutagen.apev2.APEv2(filename)
+            except mutagen.apev2.APENoHeaderError: tag = {}
         for key, value in tag.items():
             key = self.TRANS.get(key.lower(), key.lower())
             if (value.kind == mutagen.apev2.TEXT and
