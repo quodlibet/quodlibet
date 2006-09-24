@@ -47,7 +47,7 @@ class DeviceProperties(gtk.Dialog):
         mountpoint = util.escape(
             device.mountpoint or ("<i>%s</i>" % _("Not mounted")))
         props.append((_("Mount Point:"), mountpoint, None))
-                      
+
         props.append((None, None, None))
 
         entry = gtk.Entry()
@@ -187,7 +187,6 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.pack_start(swin)
 
         self.__view = view = AllTreeView()
-        view.set_reorderable(True)
         view.set_model(self.__devices)
         view.set_rules_hint(True)
         view.set_headers_visible(False)
