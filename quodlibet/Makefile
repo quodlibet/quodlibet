@@ -17,15 +17,10 @@ make-install-dirs:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)
 
-# Failure to build POT/MO files is non-fatal in case there is a clock
-# skew on the user's system and they don't have intltool/gettext installed;
-# then at least the QL install will not fail mysteriously, it will just
-# have (potentially) outdated translations. Ideally any developers
-# installing the SVN version will have intltool and so it will build fine.
 install: make-install-dirs install-dirs install-programs
-	install -m 644 $(MODULES) rhythmbox-*.png $(DESTDIR)$(PREFIX)/$(TO)
-	-for E in $(EXTENSIONS); do (test -e $$E && install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E); done
-	-cd po && make install-po DESTDIR=$(DESTDIR)
+	install -m 644 $(MODULES) audio-*.png media-*.png device-*.png $(DESTDIR)$(PREFIX)/$(TO)
+	for E in $(EXTENSIONS); do (test -e $$E && install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E); done
+	cd po && make install-po DESTDIR=$(DESTDIR)
 
 install-dirs: $(addprefix dir-install-, $(MODULE_DIRS))
 

@@ -15,9 +15,10 @@ import gtk.gdk as gdk
 import pango
 
 import config
-import qltk
-import util
 import devices
+import qltk
+import stock
+import util
 
 from browsers._base import Browser
 from formats._audio import AudioFile
@@ -213,14 +214,12 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         hbox.set_homogeneous(True)
         self.pack_start(hbox, expand=False)
 
-        self.__refresh_button = refresh = qltk.Button(
-            _("_Refresh"), gtk.STOCK_REFRESH, gtk.ICON_SIZE_MENU)
+        self.__refresh_button = refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
         refresh.connect_object('clicked', self.__refresh, True)
         refresh.set_sensitive(False)
         hbox.pack_start(refresh)
 
-        self.__eject_button = eject = qltk.Button(
-            _("_Eject"), gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
+        self.__eject_button = eject = gtk.Button(stock=stock.EJECT)
         eject.connect('clicked', self.__eject)
         eject.set_sensitive(False)
         hbox.pack_start(eject)
@@ -358,7 +357,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         menu.preseparate()
 
-        eject = qltk.MenuItem(_("_Eject"), gtk.STOCK_DISCONNECT)
+        eject = gtk.ImageMenuItem(stock.EJECT)
         eject.set_sensitive(
             not self.__busy and device.eject and device.is_connected())
         eject.connect_object('activate', self.__eject, None)
