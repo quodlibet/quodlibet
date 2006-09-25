@@ -16,7 +16,7 @@ import util
 
 class Device(dict):
     # The default icon for this device.
-    icon = os.path.join(const.BASEDIR, "device-generic.png")
+    icon = 'device-generic'
 
     # The value of the HAL-property 'portable_audio_player.type' for
     # this device.

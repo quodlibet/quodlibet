@@ -14,6 +14,7 @@ import gtk
 
 import const
 import qltk
+import stock
 import util
 
 from devices._base import Device
@@ -65,7 +66,7 @@ class IPodSong(AudioFile):
         return []
 
 class IPodDevice(Device):
-    icon = os.path.join(const.BASEDIR, "device-ipod.png")
+    icon = stock.IPOD
     type = "ipod"
 
     ordered = True

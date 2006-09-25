@@ -42,7 +42,6 @@ def init():
         icon_filename = os.path.join(const.BASEDIR, fn + ".png")
         pb = gtk.gdk.pixbuf_new_from_file(icon_filename)
         factory.add(fn, gtk.IconSet(pb))
-    factory.add_default()
 
     gtk.stock_add([
         (EDIT_TAGS, _("Edit _Tags"), 0, 0, ""),
@@ -102,3 +101,5 @@ def init():
         ]:
         if key != name: # translated, so re-register with a good name
             gtk.stock_add([(key, name) + gtk.stock_lookup(key)[2:]])
+
+    factory.add_default()

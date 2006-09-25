@@ -103,12 +103,9 @@ class DeviceProperties(gtk.Dialog):
 class Menu(gtk.Menu):
     def __init__(self, songs, library):
         super(Menu, self).__init__()
-        for device, pixbuf in MediaDevices.devices():
-            x, y = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-            pixbuf = pixbuf.scale_simple(x, y, gdk.INTERP_BILINEAR)
-            i = gtk.ImageMenuItem(device['name'])
+        for device in MediaDevices.devices():
+            i = qltk.MenuItem(device['name'], device.icon)
             i.set_sensitive(device.is_connected())
-            i.get_image().set_from_pixbuf(pixbuf)
             i.connect_object(
                 'activate', self.__copy_to_device, device, songs, library)
             self.append(i)
@@ -131,7 +128,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
     priority = 25
     replaygain_profiles = ['track']
 
-    __devices = gtk.ListStore(object, gdk.Pixbuf)
+    __devices = gtk.ListStore(object, str)
     __busy = False
     __last = None
 
@@ -155,7 +152,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     @classmethod
     def devices(klass):
-        return [(row[0], row[1]) for row in klass.__devices]
+        return [row[0] for row in klass.__devices]
 
     @classmethod
     def __hal_device_added(klass, udi):
@@ -172,8 +169,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     @classmethod
     def __add_device(klass, device):
-        pixbuf = gdk.pixbuf_new_from_file_at_size(device.icon, 24, 24)
-        klass.__devices.append(row=[device, pixbuf])
+        klass.__devices.append(row=[device, device.icon])
 
     def __init__(self, library, player):
         super(MediaDevices, self).__init__(spacing=6)
@@ -202,7 +198,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         render = gtk.CellRendererPixbuf()
         col.pack_start(render, expand=False)
-        col.add_attribute(render, 'pixbuf', 1)
+        col.add_attribute(render, 'stock-id', 1)
 
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
@@ -403,7 +399,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             self.__last = path
 
             device = model[iter][0]
-            self.__device_icon.set_from_file(device.icon)
+            self.__device_icon.set_from_stock(device.icon, gtk.ICON_SIZE_DIALOG)
             self.__set_name(device)
 
             songs = []
