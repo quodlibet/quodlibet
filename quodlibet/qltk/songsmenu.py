@@ -82,14 +82,17 @@ class SongsMenu(gtk.Menu):
                 b.connect_object('activate', remove, songs)
             else:
                 b.connect_object('activate', library.remove, songs)
-            b.set_sensitive(in_lib)
+                b.set_sensitive(in_lib)
             self.append(b)
 
         if delete:
             b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-            b.connect('activate', self.__delete, songs, librarian)
+            if callable(delete):
+                b.connect_object('activate', delete, songs)
+            else:
+                b.connect('activate', self.__delete, songs, librarian)
+                b.set_sensitive(is_file)
             self.append(b)
-            b.set_sensitive(is_file)
 
         if edit:
             b = gtk.ImageMenuItem(stock.EDIT_TAGS)
