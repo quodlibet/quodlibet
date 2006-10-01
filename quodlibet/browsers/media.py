@@ -273,19 +273,12 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             device = model[iter][0]
-            delete = not device.delete
+            delete = device.delete and self.__delete_songs
         else:
             delete = False
 
-        menu = SongsMenu(library, songs, delete=delete,
+        menu = SongsMenu(library, songs, delete=delete, remove=False,
             accels=songlist.accelerators)
-        if iter and device.delete:
-            delete = qltk.MenuItem(_("_Delete from Device"), gtk.STOCK_DELETE)
-            delete.connect_object(
-                'activate', self.__delete_songs, songlist, songs)
-            menu.preseparate()
-            menu.prepend(delete)
-
         return menu
 
     def activate(self):
@@ -510,9 +503,11 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = False
         return True
 
-    def __delete_songs(self, songlist, songs):
+    def __delete_songs(self, songs):
         model, iter = self.__view.get_selection().get_selected()
-        if not iter: return False
+        if not iter:
+            return False
+        songlist = qltk.get_top_parent(self).songlist
 
         device = model[iter][0]
         if not self.__check_device(device, _("Unable to delete songs")):

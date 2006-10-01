@@ -75,8 +75,10 @@ class SongsMenu(gtk.Menu):
                 b.set_submenu(submenu)
                 self.append(b)
 
-        if remove:
+        if remove or delete or edit:
             self.separate()
+
+        if remove:
             b = gtk.ImageMenuItem(stock.REMOVE)
             if callable(remove):
                 b.connect_object('activate', remove, songs)
