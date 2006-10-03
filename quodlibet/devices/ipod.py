@@ -93,7 +93,7 @@ class IPodDevice(Device):
         props.append((_("_Volume Gain (dB):"), gain, 'gain'))
 
         for key, label in [
-            ['covers', _("_Copy album covers")],
+            ['covers', _("C_opy album covers")],
             ['all_tags', _("Combine tags with _multiple values")],
             ['title_version', _("Title includes _version")],
             ['album_part', _("Album includes _part")],
