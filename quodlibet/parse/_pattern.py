@@ -20,7 +20,7 @@ import re
 import util
 
 class _Dummy(dict):
-    def comma(self, *args): return u""
+    def comma(self, *args): return u"_"
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)

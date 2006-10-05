@@ -131,12 +131,11 @@ class RenameFiles(EditPane):
         model = self.view.get_model()
         if songs is None:
             songs = [row[0] for row in model]
-        model.clear()
         pattern = self.combo.child.get_text().decode("utf-8")
 
         try:
             pattern = FileFromPattern(pattern)
-        except ValueError: 
+        except ValueError:
             qltk.ErrorMessage(
                 self, _("Path is not absolute"),
                 _("The pattern\n\t<b>%s</b>\ncontains / but "
@@ -156,6 +155,7 @@ class RenameFiles(EditPane):
         for f in self.filters:
             if f.active: newnames = f.filter_list(orignames, newnames)
 
+        model.clear()
         for song, newname in zip(songs, newnames):
             basename = util.fsdecode(song("~basename"))
             model.append(row=[song, basename, newname])

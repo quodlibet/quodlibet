@@ -136,6 +136,7 @@ class TFileFromPattern(_TPattern):
 
     def test_directory_rooting(s):
         s.assertRaises(ValueError, FileFromPattern, 'a/<b>')
+        s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')
 
 class TXMLFromPattern(_TPattern):
