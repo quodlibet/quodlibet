@@ -4,6 +4,9 @@ is strongly recommended.
 
 Quod Libet 0.22+ requires Python 2.4 or later.
 
+0.24
+ * New Romanian translation, by Mugurel Tudor.
+
 0.23.1 - UNPOPULAR LIFE GOALS
  * Multivalued tag renaming. (#793)
  * Fix crash when ~/.gtk-bookmarks is not present. (#801, #804)
