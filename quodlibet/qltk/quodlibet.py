@@ -567,11 +567,10 @@ class QuodLibetWindow(gtk.Window):
                 self.__set_time()
 
     def __update_title(self, player, songs):
-        if player.song in songs:
-            song = player.info
-            if song:
-                self.set_title("Quod Libet - " + song.comma("~title~version"))
-            else: self.set_title("Quod Libet")
+        song = player.info
+        if song:
+            self.set_title("Quod Libet - " + song.comma("~title~version"))
+        else: self.set_title("Quod Libet")
 
     def __song_started(self, player, song):
         if song is None:
