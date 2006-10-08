@@ -80,7 +80,7 @@ class PlaylistMux(object):
         self.pl.reset()
         self.q.go_to(None)
         if not self.pl.is_empty():
-            self.pl.go_to(self.pl.get_iter((0,)))
+            self.next()
 
     def enqueue(self, songs):
         for song in songs: self.q.append(row=[song])
