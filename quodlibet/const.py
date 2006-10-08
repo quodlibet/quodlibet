@@ -113,7 +113,8 @@ MENU = """<ui>
   </menubar>
 </ui>"""
 
-ENCODING = locale.getpreferredencoding()
+try: ENCODING = locale.getpreferredencoding()
+except locale.Error: ENCODING = "utf-8"
 
 # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
 if "G_FILENAME_ENCODING" in os.environ:

@@ -122,7 +122,7 @@ class StorageDevice(Device):
             self.__library.add([song])
             return song
         except (OSError, IOError), exc:
-            return str(exc).decode(locale.getpreferredencoding(), 'replace')
+            return str(exc).decode(const.ENCODING, 'replace')
 
     def delete(self, songlist, song):
         try:
@@ -141,7 +141,7 @@ class StorageDevice(Device):
 
             return True
         except (OSError, IOError), exc:
-            return str(exc).decode(locale.getpreferredencoding(), 'replace')
+            return str(exc).decode(const.ENCODING, 'replace')
 
     def cleanup(self, wlb, action):
         self.__save_library()

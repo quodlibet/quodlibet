@@ -238,7 +238,7 @@ class IPodDevice(Device):
                 os.remove(song['~filename'])
                 self.__remove_track(track)
         except IOError, exc:
-            return str(exc).decode(locale.getpreferredencoding(), 'replace')
+            return str(exc).decode(const.ENCODING, 'replace')
         else: return True
 
     def cleanup(self, wlb, action):
