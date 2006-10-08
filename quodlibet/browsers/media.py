@@ -330,11 +330,11 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         menu.preseparate()
 
         props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
-        props.connect_object( 'activate', self.__properties, model[iter][0])
+        props.connect_object('activate', self.__properties, model[iter][0])
         props.set_sensitive(not self.__busy)
         menu.prepend(props)
 
-        ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
+        ren = gtk.ImageMenuItem(stock.RENAME)
         keyval, mod = gtk.accelerator_parse("F2")
         ren.add_accelerator(
             'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)
@@ -440,8 +440,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         if not device.is_connected():
             qltk.WarningMessage(
                 self, message,
-                _("The device <b>%s</b> is not connected.")
-                    % util.escape(device['name'])
+                _("<b>%s</b> is not connected.") % util.escape(device['name'])
             ).run()
             return False
         return True
@@ -476,7 +475,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 wlb.hide()
                 qltk.WarningMessage(
                     self, _("Unable to copy song"),
-                    _("The device has not enough free space for this song.")
+                    _("There is not enough free space for this song.")
                 ).run()
                 break
 
@@ -487,13 +486,10 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 except KeyError: pass
                 self.__refresh_space(device)
             else:
-                msg = _("The song <b>%s</b> could not be copied.")
+                msg = _("<b>%s</b> could not be copied.") % label
                 if type(status) == unicode:
-                    msg += "\n\n"
-                    msg += _("<b>Error:</b> %s") % util.escape(status)
-                qltk.WarningMessage(
-                    self, _("Unable to copy song"),
-                    msg % label).run()
+                    msg += "\n\n" + util.escape(status)
+                qltk.WarningMessage(self, _("Unable to copy song"), msg).run()
 
         if device.cleanup and not device.cleanup(wlb, 'copy'):
             pass
@@ -537,13 +533,11 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 except (KeyError, ValueError): pass
                 self.__refresh_space(device)
             else:
-                msg = _("The song <b>%s</b> could not be deleted.")
+                msg = _("<b>%s</b> could not be deleted.") % label
                 if type(status) == unicode:
-                    msg += "\n\n"
-                    msg += _("<b>Error:</b> %s") % status
+                    msg += "\n\n%s" % status
                 qltk.WarningMessage(
-                    self, _("Unable to delete song"),
-                    msg % label).run()
+                    self, _("Unable to delete song"), msg).run()
 
         if device.cleanup and not device.cleanup(wlb, 'delete'):
             pass
@@ -560,9 +554,9 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             if status == True:
                 self.__refresh(True)
             else:
-                qltk.ErrorMessage(
-                    self, _("Unable to eject device"),
-                    _("Ejecting <b>%s</b> failed with the following error:\n\n"
-                      + status) % device['name']).run()
+                msg = _("Ejecting <b>%s</b> failed.") % device['name']
+                if status:
+                    msg += "\n\n%s" % status
+                qltk.ErrorMessage(self, _("Unable to eject device"), msg).run()
 
 browsers = [MediaDevices]

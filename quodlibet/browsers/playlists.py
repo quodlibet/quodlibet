@@ -18,6 +18,7 @@ import config
 import const
 import formats
 import qltk
+import stock
 import util
 
 from tempfile import NamedTemporaryFile
@@ -447,7 +448,7 @@ class Playlists(gtk.VBox, Browser):
         rem.connect_object('activate', remove, model, iter)
         menu.prepend(rem)
 
-        ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
+        ren = gtk.ImageMenuItem(stock.RENAME)
         keyval, mod = gtk.accelerator_parse("F2")
         ren.add_accelerator(
             'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)

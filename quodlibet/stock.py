@@ -22,6 +22,7 @@ REMOVE = 'ql-remove'
 ENQUEUE = 'ql-enqueue'
 PLAYLISTS = 'ql-add-to-playlist'
 DEVICES = 'ql-copy-to-device'
+RENAME = 'ql-rename'
 
 IPOD = 'device-ipod'
 STORAGE = 'device-generic'
@@ -51,6 +52,7 @@ def init():
         (PLAYLISTS, _("_Add to Playlist"), 0, 0, ""),
         (DEVICES, _("_Copy to Device"), 0, 0, ""),
         (EJECT, _("_Eject"), 0, 0, ""),
+        (RENAME, _("_Rename"), 0, 0, ""),
         ])
 
     lookup = gtk.icon_factory_lookup_default
@@ -60,6 +62,7 @@ def init():
     factory.add(ENQUEUE, lookup(gtk.STOCK_ADD))
     factory.add(PLAYLISTS, lookup(gtk.STOCK_ADD))
     factory.add(DEVICES, lookup(gtk.STOCK_COPY))
+    factory.add(RENAME, lookup(gtk.STOCK_EDIT))
 
     # Introduced in GTK 2.8
     try: gtk.STOCK_INFO
