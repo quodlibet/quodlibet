@@ -91,7 +91,7 @@ class StorageDevice(Device):
         if os.path.exists(target):
             if ConfirmAction(
                 songlist, _("File exists"),
-                _("Overwrite the file <b>%s</b>?") % util.escape(utarget),
+                _("Overwrite <b>%s</b>?") % util.escape(utarget),
                 ).run():
                 try:
                     # Remove the current song
