@@ -1,11 +1,18 @@
-Quod Libet 0.21+ requires Ogg Vorbis support in Mutagen. This requires
-either Mutagen 1.2 and pyvorbis, or Mutagen 1.3 or later. Mutagen 1.6
-is strongly recommended.
-
 Quod Libet 0.22+ requires Python 2.4 or later.
 
+Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
+
 0.24
+ * Media device (iPod and UMS so far) support. (Markus Koller)
+ * Delete removes songs from the queue. (#819, sciyoshi)
+ * Per-browser window memory. (#836)
+ * Use Mutagen for WavPack and Musepack support. (#838)
+ * Keep filenames when given invalid patterns. (#853, Markus Koller)
+ * Python 2.5 and GTK+ 2.10 compatibility.
+ * Fix Rename Files support on MP4 files.
  * New Romanian translation, by Mugurel Tudor.
+ * Updated translations:
+   * Traditional Chinese, by Hsin-lin Cheng.
 
 0.23.1 - UNPOPULAR LIFE GOALS
  * Multivalued tag renaming. (#793)
