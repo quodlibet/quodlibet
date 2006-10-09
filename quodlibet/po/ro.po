@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-04 21:19-0700\n"
+"POT-Creation-Date: 2006-10-08 19:15-0700\n"
 "PO-Revision-Date: 2006-10-04 22:48+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@gnome.ro>\n"
 "Language-Team: Română <gnomero@lists.sourceforge.net>\n"
@@ -21,35 +21,39 @@ msgstr ""
 "2:1))\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../stock.py:47
+#: ../stock.py:48
 msgid "Edit _Tags"
 msgstr "Editare _etichete"
 
-#: ../stock.py:48
+#: ../stock.py:49
 msgid "_Plugins"
 msgstr "_Module"
 
-#: ../stock.py:49
+#: ../stock.py:50
 msgid "_Preview"
 msgstr "_Previzualizare"
 
-#: ../stock.py:50
+#: ../stock.py:51
 msgid "Add to _Queue"
 msgstr "Adaugă în _coadă"
 
-#: ../stock.py:51
+#: ../stock.py:52
 msgid "_Add to Playlist"
 msgstr "_Adaugă în listă"
 
-#: ../stock.py:52
+#: ../stock.py:53
 msgid "_Copy to Device"
 msgstr "_Copiază către dispozitiv"
 
-#: ../stock.py:53
+#: ../stock.py:54
 msgid "_Eject"
 msgstr "_Ejectare"
 
-#: ../stock.py:70
+#: ../stock.py:55
+msgid "_Rename"
+msgstr "_Redenumeşte"
+
+#: ../stock.py:73
 msgid "_Information"
 msgstr "_Informaţii"
 
@@ -58,35 +62,35 @@ msgstr "_Informaţii"
 #. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
 #. Don't literally translate "ql-remove". It needs an access key, so
 #. a sample translation would be "_Remove from Library".
-#: ../stock.py:78 ../stock.py:82
+#: ../stock.py:81 ../stock.py:85
 msgid "ql-remove"
 msgstr "ql-remove"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
-#: ../stock.py:88
+#: ../stock.py:91
 msgid "gtk-media-next"
 msgstr "gtk-media-next"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
-#: ../stock.py:92
+#: ../stock.py:95
 msgid "gtk-media-previous"
 msgstr "gtk-media-previous"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
-#: ../stock.py:96
+#: ../stock.py:99
 msgid "gtk-media-play"
 msgstr "gtk-media-play"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
-#: ../stock.py:100
+#: ../stock.py:103
 msgid "gtk-media-pause"
 msgstr "gtk-media-pause"
 
@@ -705,7 +709,7 @@ msgstr "Durată necunoscută"
 msgid "Saved Values"
 msgstr "Valori salvate"
 
-#: ../qltk/cbes.py:33
+#: ../qltk/cbes.py:33 ../browsers/media.py:56
 msgid "_Name:"
 msgstr "_Nume:"
 
@@ -925,7 +929,7 @@ msgstr ""
 "%(error)s"
 
 #: ../qltk/exfalso.py:157 ../qltk/information.py:447
-#: ../browsers/playlists.py:175
+#: ../browsers/playlists.py:176
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -934,7 +938,7 @@ msgstr[1] "%d piese"
 msgstr[2] "%d de piese"
 
 #: ../qltk/exfalso.py:170 ../qltk/properties.py:118
-#: ../browsers/playlists.py:106 ../browsers/playlists.py:202
+#: ../browsers/playlists.py:107 ../browsers/playlists.py:203
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgstr "%(title)s şi %(count)d în plus"
@@ -1265,11 +1269,11 @@ msgstr "_Dată"
 msgid "_Length"
 msgstr "D_urată"
 
-#: ../qltk/prefs.py:66
+#: ../qltk/prefs.py:66 ../devices/ipod.py:98
 msgid "Title includes _version"
 msgstr "Titlul include ver_siunea"
 
-#: ../qltk/prefs.py:71
+#: ../qltk/prefs.py:71 ../devices/ipod.py:99
 msgid "Album includes _part"
 msgstr "Albumul include pa_rtea"
 
@@ -1410,7 +1414,7 @@ msgstr "Repetă lista"
 msgid "Unable to add songs"
 msgstr "Nu s-au putut adăuga piesele"
 
-#: ../qltk/quodlibet.py:324 ../qltk/quodlibet.py:697
+#: ../qltk/quodlibet.py:324 ../qltk/quodlibet.py:696
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> foloseşte un protocol nesuportat."
@@ -1535,32 +1539,32 @@ msgid ""
 "ties)"
 msgstr "Cele mai rar redate 40 de piese (mai mult de 40 în anumite cazuri)"
 
-#: ../qltk/quodlibet.py:685
+#: ../qltk/quodlibet.py:684
 msgid "Add a Location"
 msgstr "Adăugare locaţie"
 
-#: ../qltk/quodlibet.py:686
+#: ../qltk/quodlibet.py:685
 msgid "Enter the location of an audio file:"
 msgstr "Introduceţi locaţia unui fişier audio:"
 
-#: ../qltk/quodlibet.py:691 ../qltk/quodlibet.py:696
+#: ../qltk/quodlibet.py:690 ../qltk/quodlibet.py:695
 msgid "Unable to add location"
 msgstr "Nu s-a putut adăuga locaţia"
 
-#: ../qltk/quodlibet.py:692
+#: ../qltk/quodlibet.py:691
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> nu este o locaţie validă."
 
-#: ../qltk/quodlibet.py:708 ../qltk/quodlibet.py:715
+#: ../qltk/quodlibet.py:707 ../qltk/quodlibet.py:714
 msgid "Add Music"
 msgstr "Adăugare muzică"
 
-#: ../qltk/quodlibet.py:709
+#: ../qltk/quodlibet.py:708
 msgid "Watch this folder for new songs"
 msgstr "Monitorizează acest director pentru piese noi"
 
-#: ../qltk/quodlibet.py:735
+#: ../qltk/quodlibet.py:734
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1569,7 +1573,7 @@ msgstr ""
 "%s nu a putut fi adăugat la colecţie.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:740
+#: ../qltk/quodlibet.py:739
 msgid "Unable to add song"
 msgstr "Nu s-a putut adăuga piesa"
 
@@ -1616,11 +1620,11 @@ msgstr ""
 "fişierul ţintă să existe deja sau poate nu aveţi drepturile necesare pentru "
 "a crea noul fişier sau a-l şterge pe cel vechi."
 
-#: ../qltk/renamefiles.py:141
+#: ../qltk/renamefiles.py:140
 msgid "Path is not absolute"
 msgstr "Calea nu este una absolută"
 
-#: ../qltk/renamefiles.py:142
+#: ../qltk/renamefiles.py:141
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1643,6 +1647,7 @@ msgid "_Filter on %s"
 msgstr "_Filtrare după %s"
 
 #: ../qltk/songlist.py:529 ../browsers/filesystem.py:88
+#: ../browsers/media.py:453
 msgid "Unable to copy songs"
 msgstr "Nu s-au putut copia piesele"
 
@@ -1875,7 +1880,7 @@ msgstr "_Caută:"
 msgid "Select _All"
 msgstr "Selectează t_ot"
 
-#: ../browsers/playlists.py:63
+#: ../browsers/playlists.py:64
 #, python-format
 msgid ""
 "Importing playlist.\n"
@@ -1886,53 +1891,49 @@ msgstr ""
 "\n"
 "%d/%d piese adăugate."
 
-#: ../browsers/playlists.py:92 ../browsers/playlists.py:406
+#: ../browsers/playlists.py:93 ../browsers/playlists.py:407
 msgid "New Playlist"
 msgstr "Listă nouă"
 
-#: ../browsers/playlists.py:131
+#: ../browsers/playlists.py:132
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "O listă cu numele „%s” există deja."
 
-#: ../browsers/playlists.py:186
+#: ../browsers/playlists.py:187
 msgid "_New Playlist"
 msgstr "Listă _nouă"
 
-#: ../browsers/playlists.py:213
+#: ../browsers/playlists.py:214
 msgid "Playlists"
 msgstr "Liste"
 
-#: ../browsers/playlists.py:214
+#: ../browsers/playlists.py:215
 msgid "_Playlists"
 msgstr "_Liste"
 
-#: ../browsers/playlists.py:273
+#: ../browsers/playlists.py:274
 msgid "_Remove from Playlist"
 msgstr "Şte_rge din listă"
 
-#: ../browsers/playlists.py:305
+#: ../browsers/playlists.py:306
 msgid "_Import"
 msgstr "_Importă"
 
-#: ../browsers/playlists.py:423 ../browsers/playlists.py:501
+#: ../browsers/playlists.py:424 ../browsers/playlists.py:502
 msgid "Unable to import playlist"
 msgstr "Nu s-a putut importa lista de redare"
 
-#: ../browsers/playlists.py:424 ../browsers/playlists.py:502
+#: ../browsers/playlists.py:425 ../browsers/playlists.py:503
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr ""
 "Quod Libet poate importa liste de redare doar în formatele M3U sau PLS."
 
-#: ../browsers/playlists.py:450
-msgid "_Rename"
-msgstr "_Redenumeşte"
-
-#: ../browsers/playlists.py:483
+#: ../browsers/playlists.py:484
 msgid "Unable to rename playlist"
 msgstr "Nu s-a putut redenumi lista"
 
-#: ../browsers/playlists.py:490
+#: ../browsers/playlists.py:491
 msgid "Import Playlist"
 msgstr "Importă lista"
 
@@ -2258,3 +2259,166 @@ msgstr "Ascultaţi, editaţi sau cautaţi în propria colecţie audio"
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
 msgstr "Redare audio"
+
+#: ../browsers/media.py:34
+#, fuzzy
+msgid "Device Properties"
+msgstr "Proprietăţi"
+
+#: ../browsers/media.py:47
+msgid "Device:"
+msgstr ""
+
+#: ../browsers/media.py:49
+msgid "Not mounted"
+msgstr ""
+
+#: ../browsers/media.py:50
+#, fuzzy
+msgid "Mount Point:"
+msgstr "punct de montare"
+
+#: ../browsers/media.py:126
+#, fuzzy
+msgid "Media Devices"
+msgstr "Dispozitiv audio: %s"
+
+#: ../browsers/media.py:127
+#, fuzzy
+msgid "_Media Devices"
+msgstr "Dispozitiv audio: %s"
+
+#: ../browsers/media.py:426
+#, python-format
+msgid "<b>%s</b> used, <b>%s</b> available"
+msgstr ""
+
+#: ../browsers/media.py:443
+#, fuzzy, python-format
+msgid "<b>%s</b> is not connected."
+msgstr "<b>%s</b> nu este o locaţie validă."
+
+#: ../browsers/media.py:459
+#, fuzzy, python-format
+msgid "Copying <b>%s</b>"
+msgstr "Ştergerea <b>%s</b> a eşuat."
+
+#: ../browsers/media.py:477 ../browsers/media.py:492
+#, fuzzy
+msgid "Unable to copy song"
+msgstr "Nu s-au putut copia piesele"
+
+#: ../browsers/media.py:478
+msgid "There is not enough free space for this song."
+msgstr ""
+
+#: ../browsers/media.py:489
+#, python-format
+msgid "<b>%s</b> could not be copied."
+msgstr ""
+
+#: ../browsers/media.py:509
+#, fuzzy
+msgid "Unable to delete songs"
+msgstr "Nu s-au putut adăuga piesele"
+
+#: ../browsers/media.py:519
+#, fuzzy, python-format
+msgid "Deleting <b>%s</b>"
+msgstr "Ştergerea <b>%s</b> a eşuat."
+
+#: ../browsers/media.py:536
+#, fuzzy, python-format
+msgid "<b>%s</b> could not be deleted."
+msgstr "<b>%s</b> nu este o locaţie validă."
+
+#: ../browsers/media.py:540
+#, fuzzy
+msgid "Unable to delete song"
+msgstr "Nu s-a putut edita piesa"
+
+#: ../browsers/media.py:557
+#, fuzzy, python-format
+msgid "Ejecting <b>%s</b> failed."
+msgstr "Ştergerea <b>%s</b> a eşuat."
+
+#: ../browsers/media.py:560
+#, fuzzy
+msgid "Unable to eject device"
+msgstr "Nu s-a putut şterge fişierul"
+
+#: ../devices/_base.py:63
+#, fuzzy
+msgid "Unknown Device"
+msgstr "Necunoscut"
+
+#: ../devices/_base.py:94
+#, fuzzy
+msgid "No eject command found."
+msgstr "Nici s-a găsit nici o staţie"
+
+#: ../devices/ipod.py:93
+msgid "_Volume Gain (dB):"
+msgstr ""
+
+#: ../devices/ipod.py:96 ../devices/storage.py:57
+#, fuzzy
+msgid "Copy _album covers"
+msgstr "Arată _coperţile albumelor"
+
+#: ../devices/ipod.py:97
+#, fuzzy
+msgid "Combine tags with _multiple values"
+msgstr "Separă în valori m_ultiple"
+
+#: ../devices/ipod.py:110
+msgid "Model:"
+msgstr ""
+
+#: ../devices/ipod.py:112
+msgid "Capacity:"
+msgstr ""
+
+#: ../devices/ipod.py:114
+msgid "Firmware:"
+msgstr ""
+
+#: ../devices/ipod.py:160
+msgid "W: removing orphaned iPod track"
+msgstr ""
+
+#: ../devices/ipod.py:248
+#, fuzzy
+msgid "Unable to save iPod database"
+msgstr "Nu s-a putut salva colecţia"
+
+#: ../devices/ipod.py:260
+msgid "Uninitialized iPod"
+msgstr ""
+
+#: ../devices/ipod.py:261
+msgid "Do you want to create an empty database on this iPod?"
+msgstr ""
+
+#: ../devices/storage.py:53
+#, fuzzy
+msgid "_Filename Pattern:"
+msgstr "Nume _fişier"
+
+#: ../devices/storage.py:61
+msgid "_Remove unused covers and directories"
+msgstr ""
+
+#: ../devices/storage.py:93
+#, fuzzy
+msgid "File exists"
+msgstr "Sistem de fişiere"
+
+#: ../devices/storage.py:94
+#, fuzzy, python-format
+msgid "Overwrite <b>%s</b>?"
+msgstr "Ştergerea <b>%s</b> a eşuat."
+
+#, fuzzy
+#~ msgid "C_opy album covers"
+#~ msgstr "Arată _coperţile albumelor"

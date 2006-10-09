@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 18:49-0700\n"
+"POT-Creation-Date: 2006-10-08 19:15-0700\n"
 "PO-Revision-Date: 2006-09-24 01:37+0800\n"
 "Last-Translator: Hsin-lin Cheng <lancetw@gmail.com>\n"
 "Language-Team: Hsin-lin Cheng <lancetw@gmail.com>\n"
@@ -2301,9 +2301,9 @@ msgstr "未發現站台"
 msgid "_Volume Gain (dB):"
 msgstr ""
 
-#: ../devices/ipod.py:96
+#: ../devices/ipod.py:96 ../devices/storage.py:57
 #, fuzzy
-msgid "C_opy album covers"
+msgid "Copy _album covers"
 msgstr "顯示專輯封面 (_c)"
 
 #: ../devices/ipod.py:97
@@ -2345,11 +2345,6 @@ msgstr ""
 msgid "_Filename Pattern:"
 msgstr "檔名 (_F)"
 
-#: ../devices/storage.py:57
-#, fuzzy
-msgid "Copy _album covers"
-msgstr "顯示專輯封面 (_c)"
-
 #: ../devices/storage.py:61
 msgid "_Remove unused covers and directories"
 msgstr ""
@@ -2360,9 +2355,13 @@ msgid "File exists"
 msgstr "檔案系統"
 
 #: ../devices/storage.py:94
-#, python-format
-msgid "Overwrite the file <b>%s</b>?"
-msgstr ""
+#, fuzzy, python-format
+msgid "Overwrite <b>%s</b>?"
+msgstr "刪除 <b>%s</b> 失敗。"
+
+#, fuzzy
+#~ msgid "C_opy album covers"
+#~ msgstr "顯示專輯封面 (_c)"
 
 #~ msgid "Unable to retag multiple values"
 #~ msgstr "無法重新標籤多重設定值"
