@@ -53,3 +53,7 @@ util/__init__.py
 util/massagers.py
 exfalso.desktop.in
 quodlibet.desktop.in
+browsers/media.py
+devices/_base.py
+devices/ipod.py
+devices/storage.py
