@@ -9,14 +9,14 @@ import gtk, config
 import dbus
 
 from plugins.events import EventPlugin
-from parse import XMLFromPattern
+from parse import Pattern
 from qltk import Frame
 
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = 'Change Gajim status message according to what you are listening now.'
-    PLUGIN_VERSION = '0.7'
+    PLUGIN_VERSION = '0.7.1'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'
@@ -72,7 +72,7 @@ class GajimStatusMessage(EventPlugin):
 
     def plugin_on_song_started(self, song):
         if song:
-            self.current = XMLFromPattern(self.pattern) % song
+            self.current = Pattern(self.pattern) % song
         else:
             self.current = ''
         self.change_status(self.accounts, self.current)
