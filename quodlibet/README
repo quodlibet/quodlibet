@@ -51,6 +51,9 @@ Internet Radio depends on GNOME-VFS or neonhttpsrc support in GStreamer.
 Audio Feed support depends on GNOME-VFS or neonhttpsrc, and
 Universal Feed Parser from http://www.feedparser.org/.
 
+iPod support depends on libgpod and its Python bindings, available from
+http://www.gtkpod.org/.
+
 To compile the status icon and multimedia key support, run
  $ make extensions
 (You will also need the Tray Icon plugin to display the status icon.)
