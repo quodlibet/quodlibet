@@ -10,10 +10,10 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Quod Libet 0.23\n"
+"Project-Id-Version: Quod Libet SVN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 19:15-0700\n"
-"PO-Revision-Date: 2006-08-03 22:57+0200\n"
+"POT-Creation-Date: 2006-10-09 12:57+0200\n"
+"PO-Revision-Date: 2006-10-09 13:33+0200\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: galician\n"
 "MIME-Version: 1.0\n"
@@ -43,12 +43,11 @@ msgstr "_Engadir à Lista"
 
 #: ../stock.py:53
 msgid "_Copy to Device"
-msgstr ""
+msgstr "_Copiar ao dispositivo"
 
 #: ../stock.py:54
-#, fuzzy
 msgid "_Eject"
-msgstr "_Seleccionar"
+msgstr "_Expulsar"
 
 #: ../stock.py:55
 msgid "_Rename"
@@ -1782,7 +1781,7 @@ msgstr "%d/%d canções guardadas"
 #: ../qltk/wlw.py:190
 #, python-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d de %d"
 
 #: ../qltk/x.py:125
 msgid "Clear search"
@@ -2250,167 +2249,152 @@ msgid "Music Player"
 msgstr "Reprodutor de Som"
 
 #: ../browsers/media.py:34
-#, fuzzy
 msgid "Device Properties"
-msgstr "Propriedades"
+msgstr "Propriedades do dispositivo"
 
 #: ../browsers/media.py:47
 msgid "Device:"
-msgstr ""
+msgstr "Dispositivo:"
 
 #: ../browsers/media.py:49
 msgid "Not mounted"
-msgstr ""
+msgstr "Nom está montado"
 
 #: ../browsers/media.py:50
-#, fuzzy
 msgid "Mount Point:"
-msgstr "ponto de montagem"
+msgstr "Ponto de montagem:"
 
 #: ../browsers/media.py:126
-#, fuzzy
 msgid "Media Devices"
-msgstr "Dispositivo de áudio: %s"
+msgstr "Dispositivos externos"
 
 #: ../browsers/media.py:127
-#, fuzzy
 msgid "_Media Devices"
-msgstr "Dispositivo de áudio: %s"
+msgstr "Dispositivos _externos"
 
 #: ../browsers/media.py:426
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
-msgstr ""
+msgstr "<b>%s</b> utilizado, <b>%s</b> disponível"
 
 #: ../browsers/media.py:443
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> is not connected."
-msgstr "<b>%s</b> nom é umha localizaçom válida."
+msgstr "<b>%s</b> nom está conectado."
 
 #: ../browsers/media.py:459
-#, fuzzy, python-format
+#, python-format
 msgid "Copying <b>%s</b>"
-msgstr "A eliminaçom de <b>%s</b> errou."
+msgstr "A copiar <b>%s</b>"
 
 #: ../browsers/media.py:477 ../browsers/media.py:492
-#, fuzzy
 msgid "Unable to copy song"
-msgstr "Impossível copiar canções"
+msgstr "Impossível copiar cançom"
 
 #: ../browsers/media.py:478
 msgid "There is not enough free space for this song."
-msgstr ""
+msgstr "Nom há suficiente espaço livre para esta cançom."
 
 #: ../browsers/media.py:489
 #, python-format
 msgid "<b>%s</b> could not be copied."
-msgstr ""
+msgstr "<b>%s</b> nom puido ser copiada."
 
 #: ../browsers/media.py:509
-#, fuzzy
 msgid "Unable to delete songs"
-msgstr "Impossível engadir canções"
+msgstr "Impossível eliminar as canções"
 
 #: ../browsers/media.py:519
-#, fuzzy, python-format
+#, python-format
 msgid "Deleting <b>%s</b>"
-msgstr "A eliminaçom de <b>%s</b> errou."
+msgstr "A eliminar <b>%s</b>"
 
 #: ../browsers/media.py:536
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> could not be deleted."
-msgstr "<b>%s</b> nom é umha localizaçom válida."
+msgstr "<b>%s</b> nom puido ser eliminada."
 
 #: ../browsers/media.py:540
-#, fuzzy
 msgid "Unable to delete song"
-msgstr "Impossível editar a etiqueta da cançom"
+msgstr "Impossível eliminar a  cançom"
 
 #: ../browsers/media.py:557
-#, fuzzy, python-format
+#, python-format
 msgid "Ejecting <b>%s</b> failed."
-msgstr "A eliminaçom de <b>%s</b> errou."
+msgstr "A expulsom de <b>%s</b> errou."
 
 #: ../browsers/media.py:560
-#, fuzzy
 msgid "Unable to eject device"
-msgstr "Impossível eliminar o ficheiro"
+msgstr "Impossível expulsar o dispositivo"
 
 #: ../devices/_base.py:63
-#, fuzzy
 msgid "Unknown Device"
-msgstr "Desconhecido"
+msgstr "Dispositivo desconhecido"
 
 #: ../devices/_base.py:94
-#, fuzzy
 msgid "No eject command found."
-msgstr "Nom fôrom atopadas emisoras"
+msgstr "Nom foi encontrado o comando para expulsar."
 
 #: ../devices/ipod.py:93
 msgid "_Volume Gain (dB):"
-msgstr ""
+msgstr "Ganância do _volume (dB)"
 
 #: ../devices/ipod.py:96 ../devices/storage.py:57
-#, fuzzy
 msgid "Copy _album covers"
-msgstr "Mostrar _cobertas dos discos"
+msgstr "Copiar as _cobertas dos discos"
 
 #: ../devices/ipod.py:97
-#, fuzzy
 msgid "Combine tags with _multiple values"
-msgstr "Dividir em múltiplos _valores"
+msgstr "Combinar as etiquetas com múltiplos _valores"
 
 #: ../devices/ipod.py:110
 msgid "Model:"
-msgstr ""
+msgstr "Modelo:"
 
 #: ../devices/ipod.py:112
 msgid "Capacity:"
-msgstr ""
+msgstr "Capacidade:"
 
 #: ../devices/ipod.py:114
 msgid "Firmware:"
-msgstr ""
+msgstr "Firmware:"
 
 #: ../devices/ipod.py:160
 msgid "W: removing orphaned iPod track"
-msgstr ""
+msgstr "A: a eliminar pista do iPod orfã"
 
 #: ../devices/ipod.py:248
-#, fuzzy
 msgid "Unable to save iPod database"
-msgstr "Impossível guardar a colecçom"
+msgstr "Impossível guardar a base de dados do iPod"
 
 #: ../devices/ipod.py:260
 msgid "Uninitialized iPod"
-msgstr ""
+msgstr "iPod nom configurado"
 
 #: ../devices/ipod.py:261
 msgid "Do you want to create an empty database on this iPod?"
-msgstr ""
+msgstr "Ques criar umha base de dados vazia neste iPod?"
 
 #: ../devices/storage.py:53
-#, fuzzy
 msgid "_Filename Pattern:"
-msgstr "_Nome"
+msgstr "Padrom para _nome:"
 
 #: ../devices/storage.py:61
 msgid "_Remove unused covers and directories"
-msgstr ""
+msgstr "_Eliminar cobertas e cartafoles sem utilizar"
 
 #: ../devices/storage.py:93
-#, fuzzy
 msgid "File exists"
-msgstr "Sistema de Ficheiros"
+msgstr "O ficheiro já existe"
 
 #: ../devices/storage.py:94
-#, fuzzy, python-format
+#, python-format
 msgid "Overwrite <b>%s</b>?"
-msgstr "A eliminaçom de <b>%s</b> errou."
+msgstr "Sobreescrever <b>%s</b>?"
 
 #, fuzzy
 #~ msgid "C_opy album covers"
-#~ msgstr "Mostrar _cobertas dos discos"
+#~ msgstr "Copiar as _cobertas dos discos"
 
 #~ msgid "Unable to retag multiple values"
 #~ msgstr "Impossível modificar distintos valores da etiqueta"
