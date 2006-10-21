@@ -285,6 +285,11 @@ class Playlists(gtk.VBox, Browser):
         super(Playlists, self).__init__(spacing=6)
         self.__main = bool(player)
         self.__view = view = RCMHintedTreeView()
+        self.__view.set_enable_search(True)
+        self.__view.set_search_column(0)
+        self.__view.set_search_equal_func(
+            lambda model, col, key, iter:
+            not model[iter][col].name.lower().startswith(key.lower()))
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.connect('editing-started', self.__start_editing)
