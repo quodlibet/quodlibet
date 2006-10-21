@@ -149,7 +149,7 @@ class AudioFile(dict):
                         role = key.split(":", 1)[1]
                         for value in self.list(key):
                             values.append("%s (%s)" % (value, role))
-                    values.extend(self.list("performer"))
+                values.extend(self.list("performer"))
                 return "\n".join(values)
             elif key == "basename":
                 return os.path.basename(self["~filename"]) or self["~filename"]
