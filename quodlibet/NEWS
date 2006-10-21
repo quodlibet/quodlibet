@@ -4,10 +4,11 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
 
 0.24
  * Media device (iPod and UMS so far) support. (Markus Koller)
- * Delete removes songs from the queue. (#819, sciyoshi)
- * Per-browser window memory. (#836)
- * Use Mutagen for WavPack and Musepack support. (#838)
- * Keep filenames when given invalid patterns. (#853, Markus Koller)
+ * Delete removes songs from the queue. (#0.819, sciyoshi)
+ * Per-browser window memory. (#0.836)
+ * Use Mutagen for WavPack and Musepack support. (#0.838)
+ * Keep filenames when given invalid patterns. (#0.853, Markus Koller)
+ * Don't duplicate performers in ~performers. (Martin Bergström)
  * Python 2.5 and GTK+ 2.10 compatibility.
  * Fix Rename Files support on MP4 files.
  * New Romanian translation, by Mugurel Tudor.
@@ -19,27 +20,27 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
    * Hebrew, by Roee Haimovich.
 
 0.23.1 - UNPOPULAR LIFE GOALS
- * Multivalued tag renaming. (#793)
- * Fix crash when ~/.gtk-bookmarks is not present. (#801, #804)
- * Disable 'title' completion. (#802, hopefully temporarily)
+ * Multivalued tag renaming. (#0.793)
+ * Fix crash when ~/.gtk-bookmarks is not present. (#0.801, #0.804)
+ * Disable 'title' completion. (#0.802, hopefully temporarily)
  * Parse "performer:role" tags and offer a ~performers synthetic tag.
  * Updated Swedish translation, by Erik Christiansson.
 
 0.23 - THE NARRATIVE OF LIFE.
  * Bug Fixes:
-   * Updated files no longer incorrectly appear in the paned browser. (#750)
-   * Disambiguate 'filename' string for translation. (#743)
-   * Hide unreadable files in Ex Falso. (#754)
-   * Avoid (harmless) race condition when filling album list. (#757)
+   * Updated files no longer incorrectly appear in the paned browser. (#0.750)
+   * Disambiguate 'filename' string for translation. (#0.743)
+   * Hide unreadable files in Ex Falso. (#0.754)
+   * Avoid (harmless) race condition when filling album list. (#0.757)
  * "Select All Subfolders" menu item when browsing directories.
-   (#323, thanks to Alexandre Passos).
- * Scan the library in the background when starting. (#390)
- * Ogg FLAC and Speex files can be loaded. (#735)
- * Plugin configuration IDs can be different from their names. (#742)
- * Rewritten library code, many resulting UI improvements. (#746)
- * Scan directories are used as File System roots. (#753)
- * Replay Gain mode is chosen based on browser/play order. (#755)
- * Internet Radio M3U support. (#756)
+   (#0.323, thanks to Alexandre Passos).
+ * Scan the library in the background when starting. (#0.390)
+ * Ogg FLAC and Speex files can be loaded. (#0.735)
+ * Plugin configuration IDs can be different from their names. (#0.742)
+ * Rewritten library code, many resulting UI improvements. (#0.746)
+ * Scan directories are used as File System roots. (#0.753)
+ * Replay Gain mode is chosen based on browser/play order. (#0.755)
+ * Internet Radio M3U support. (#0.756)
  * Ex Falso runs on Win32 (thanks to Ben Zeigler).
  * Song list headers can be changed via a context menu.
  * True Audio (TTA) support.
@@ -59,15 +60,15 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
 
 0.22 - Man, forget television, books, films, short films, to a lesser
        extent plays and other theatre, and the remaining popular media!
- * The tray icon is now an optional plugin. (#596)
- * A D-BUS interface is available. (#670, thanks to Federico Pelloni)
- * Tag editing values are autocompleted. (#706)
- * Library Browser windows have more useful titles. (#710)
- * New "~lyrics" synthetic tag. (#723)
+ * The tray icon is now an optional plugin. (#0.596)
+ * A D-BUS interface is available. (#0.670, thanks to Federico Pelloni)
+ * Tag editing values are autocompleted. (#0.706)
+ * Library Browser windows have more useful titles. (#0.710)
+ * New "~lyrics" synthetic tag. (#0.723)
  * Python 2.4 is now required.
  * Updated Translations:
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
-   * Italian, by Filippo Pappalardo. (#725)
+   * Italian, by Filippo Pappalardo. (#0.725)
    * Hebrew, by Roee Haimovich.
    * Finnish, by Jari Rahkonen.
    * Dutch, by Hans van Dok.
@@ -83,26 +84,26 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
 
 0.21 - Faith, AND the possibility of weaponized kissing??
  * Bug Fixes:
-   * Queue behaves correctly when randomizing two songs. (#666)
-   * GStreamer error messages are properly localized. (#669)
-   * Tray icon is more resiliant to panel crashes. (#673)
-   * "Jump..." distinguishes between identically-named albums. (#674)
-   * application/ogg is recognized in audio feeds. (#682)
-   * .pyo files are removed on clean. (#697)
-   * util.unexpand caches the value of $HOME. (#702)
-   * Fix plugin function call ordering. (#714)
+   * Queue behaves correctly when randomizing two songs. (#0.666)
+   * GStreamer error messages are properly localized. (#0.669)
+   * Tray icon is more resiliant to panel crashes. (#0.673)
+   * "Jump..." distinguishes between identically-named albums. (#0.674)
+   * application/ogg is recognized in audio feeds. (#0.682)
+   * .pyo files are removed on clean. (#0.697)
+   * util.unexpand caches the value of $HOME. (#0.702)
+   * Fix plugin function call ordering. (#0.714)
  * UI Changes:
-   * Improved tooltips in Preferences. (#653)
-   * The Paned Browser shows song totals (#639), and has a button to
-     reset all selections. (#640)
+   * Improved tooltips in Preferences. (#0.653)
+   * The Paned Browser shows song totals (#0.639), and has a button to
+     reset all selections. (#0.640)
    * Saving play count / rating tags can be turned off, or adjusted
-     to a different email address. (#667)
+     to a different email address. (#0.667)
    * The last-entered directory is used for Scan Directories
-     configuration. (#698)
+     configuration. (#0.698)
  * pyvorbis is no longer required if you use Mutagen 1.3.
- * Event plugins were redesigned, incompatibly. (#603)
- * Test coverage data can be generated using trace.py. (#702)
- * New Simplified Chinese translation by Emfox Zhou. (#653)
+ * Event plugins were redesigned, incompatibly. (#0.603)
+ * Test coverage data can be generated using trace.py. (#0.702)
+ * New Simplified Chinese translation by Emfox Zhou. (#0.653)
  * New Hungarian translation by SZERVÁC Attila.
  * Updated translations:
    * Finnish, by Jari Rahkonen.
@@ -119,22 +120,22 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
 
 0.20 - Feelings are boring. Kissing is awesome!
  * Bug Fixes:
-   * --play-file will use the queue. (#457)
-   * Audio Feeds remember download locations. (#589)
-   * Song changes don't revert tag edits. (#597)
-   * Browser song activation takes precedence over the queue. (#622)
-   * Albums drag-and-drop in listed order. (#623)
-   * Only reset relevant parts of Information windows on song change. (#624)
-   * Deleting files not in the library removes them. (#638)
-   * Non-numeric disc/track numbers sort properly. (#643)
-   * Paned Browser no longer adds incorrect entries. (Debian bug #361131)
+   * --play-file will use the queue. (#0.457)
+   * Audio Feeds remember download locations. (#0.589)
+   * Song changes don't revert tag edits. (#0.597)
+   * Browser song activation takes precedence over the queue. (#0.622)
+   * Albums drag-and-drop in listed order. (#0.623)
+   * Only reset relevant parts of Information windows on song change. (#0.624)
+   * Deleting files not in the library removes them. (#0.638)
+   * Non-numeric disc/track numbers sort properly. (#0.643)
+   * Paned Browser no longer adds incorrect entries. (Debian bug #0.361131)
    * Ex Falso no longer loads WAV or MOD files.
    * Allow more headers in Internet Radio and Audio Feeds.
    * New process launching method, util.spawn.
  * UI Changes:
-   * Indicator to show when songs come from the queue. (#437)
-   * Rating submenu always appears in the song list. (#598)
-   * Album covers hide when clicked again. (#647)
+   * Indicator to show when songs come from the queue. (#0.437)
+   * Rating submenu always appears in the song list. (#0.598)
+   * Album covers hide when clicked again. (#0.647)
    * Select current song when jumping to it.
  * New translations:
    * Norwegian Bokmål, by Andreas Bertheussen.
@@ -149,44 +150,44 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
    * Portuguese, by Alexandre Passos.
 
 0.19.1 - It's our secret! Our secret IDENTITY!
- * Work around broken Fedora/Mandrive GNOME bindings. (#593)
+ * Work around broken Fedora/Mandrive GNOME bindings. (#0.593)
  * Fix global plugin directory scanning.
  * Add originalartist to ~people.
  * Updated Italian translation, by Filippo Pappalardo.
  * Updated Korean translation, by Byung-Hee HWANG and ChangBom Yoon.
 
 0.19 - i'm really thirsty you guys
- * Simple X session management. (#18)
- * Require Mutagen 1.0; drops Pymad. (#405)
- * WAV support. (#456)
- * New plugin types can be enabled/disabled. (#517)
- * Album List can search and display any tags. (#549, #560)
- * "Bookmark" time offsets within songs. (#554)
+ * Simple X session management. (#0.18)
+ * Require Mutagen 1.0; drops Pymad. (#0.405)
+ * WAV support. (#0.456)
+ * New plugin types can be enabled/disabled. (#0.517)
+ * Album List can search and display any tags. (#0.549, #0.560)
+ * "Bookmark" time offsets within songs. (#0.554)
  * Song menu plugins require minor but incompatible updates.
  * Searches, tagging patterns, and file renaming patterns can be given
    aliases and saved.
  * Tag Editing:
-   * MusicBrainz TXXX, artist/album/albumartist support. (#539)
+   * MusicBrainz TXXX, artist/album/albumartist support. (#0.539)
    * Added albumartist, originalartist, originalalbum, originaldate,
-     recordingdate. (#495, #546)
-   * Ratings, playcount Ogg Vorbis format changed. (#544)
-   * COMM tags in Ex Falso are deleted properly. (#573)
+     recordingdate. (#0.495, #0.546)
+   * Ratings, playcount Ogg Vorbis format changed. (#0.544)
+   * COMM tags in Ex Falso are deleted properly. (#0.573)
  * UI Changes:
-   * Drops from e.g. Nautilus add to playlists/queue. (#496)
-   * Clear button in Album List. (#509)
-   * Horizontal scrollbar when absolutely necessary for the song list. (#542)
-   * "Random" options use filtered lists. (#550)
-   * Album sort is once again and forever default. (#552)
-   * 'Add to Playlist' resorts playlist properly. (#568)
-   * Enter in 'Add a Tag' moves from tag to value. (Debian bug #343974)
+   * Drops from e.g. Nautilus add to playlists/queue. (#0.496)
+   * Clear button in Album List. (#0.509)
+   * Horizontal scrollbar when absolutely necessary for the song list. (#0.542)
+   * "Random" options use filtered lists. (#0.550)
+   * Album sort is once again and forever default. (#0.552)
+   * 'Add to Playlist' resorts playlist properly. (#0.568)
+   * Enter in 'Add a Tag' moves from tag to value. (Debian bug #0.343974)
    * Standard context menu for all browsers.
    * 'Delete' key works in Edit Tags.
    * Type-ahead search works in the Album List.
  * Bug fixes:
-   * Double-appearances in the filesystem view. (#545)
-   * FIFO misses some commands. (#548)
-   * Stupid 'refresh' signal finally gone. (#563)
-   * Error when seeking and keyboard can't be grabbed. (#572)
+   * Double-appearances in the filesystem view. (#0.545)
+   * FIFO misses some commands. (#0.548)
+   * Stupid 'refresh' signal finally gone. (#0.563)
+   * Error when seeking and keyboard can't be grabbed. (#0.572)
  * Updated translations:
    * Finnish, by Jari Rahkonen.
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
@@ -197,28 +198,28 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
    * Hebrew, by Roee Haimovich.
 
 0.18 - "Babies Sporting Monocles"?
- * MP4 iTunes metadata can be written. (#199)
- * Alt+s switches between search entry and song list. (#254)
- * GStreamer 0.10 port. (#406)
- * Album covers can be switched off in the Album List. (#466)
- * The Album List text can be changed with a pattern. (#467)
- * "Limit" in the Search view can take ratings into account. (#469)
+ * MP4 iTunes metadata can be written. (#0.199)
+ * Alt+s switches between search entry and song list. (#0.254)
+ * GStreamer 0.10 port. (#0.406)
+ * Album covers can be switched off in the Album List. (#0.466)
+ * The Album List text can be changed with a pattern. (#0.467)
+ * "Limit" in the Search view can take ratings into account. (#0.469)
  * UI Changes:
-   * Alt+Enter / Ctrl+I shows tags/information for selected songs. (#462)
-   * DnD to playlists/the queue from the File System view. (#481)
-   * F2 renames playlists. (#482)
-   * "Add a Tag" autocompletes tag names. (#493)
-   * RSS links can be dragged to the Audio Feeds sidebar. (#523)
+   * Alt+Enter / Ctrl+I shows tags/information for selected songs. (#0.462)
+   * DnD to playlists/the queue from the File System view. (#0.481)
+   * F2 renames playlists. (#0.482)
+   * "Add a Tag" autocompletes tag names. (#0.493)
+   * RSS links can be dragged to the Audio Feeds sidebar. (#0.523)
  * Bug Fixes:
-   * ID3v1 tags no longer interfere with APEv2 tags. (#395)
-   * Playing albums with one song no longer skips forwards. (#503)
-   * 'totaltracks' Vorbis tags are read properly. (#511)
-   * Adding songs to a playlist doesn't unsort it. (#512)
-   * "Tags From Path" patterns are no longer greedy. (#519, thanks to
+   * ID3v1 tags no longer interfere with APEv2 tags. (#0.395)
+   * Playing albums with one song no longer skips forwards. (#0.503)
+   * 'totaltracks' Vorbis tags are read properly. (#0.511)
+   * Adding songs to a playlist doesn't unsort it. (#0.512)
+   * "Tags From Path" patterns are no longer greedy. (#0.519, thanks to
      Decklin Foster)
-   * Internet Radio supports the ~people tag. (#520)
-   * Word-wrap in lyrics pane works properly. (#531)
-   * Ex Falso properly opens an initial directory. (#537, thanks to ch.trassl)
+   * Internet Radio supports the ~people tag. (#0.520)
+   * Word-wrap in lyrics pane works properly. (#0.531)
+   * Ex Falso properly opens an initial directory. (#0.537, thanks to ch.trassl)
    * '~format' is usable from --print-playing. ([2810])
  * Plugin errors are captured in a dialog. ([2817])
  * New synthetic numeric tags, ~#tracks and ~#discs. ([2828])
@@ -240,14 +241,14 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
  * Updated Russian translation, by Sergey Fedoseev.
 
 0.17 - the grizzly icing on the prospector cake!
- * Lyrics plugin merged into Information dialog. (#196)
+ * Lyrics plugin merged into Information dialog. (#0.196)
  * "Edit Tags" now correctly removes all copies of multiple values,
-   and displays "(missing from...)" for all missing values. (#253)
- * More FIFO commands (song list and queue visibility). (#414)
- * FLAC support no longer depends on pyflac. (#424)
- * Load audio feeds without author information. (#430)
- * ~#year, ~year internal tags. (#444)
- * Numeric searches are rounded to two decimal places. (#448)
+   and displays "(missing from...)" for all missing values. (#0.253)
+ * More FIFO commands (song list and queue visibility). (#0.414)
+ * FLAC support no longer depends on pyflac. (#0.424)
+ * Load audio feeds without author information. (#0.430)
+ * ~#year, ~year internal tags. (#0.444)
+ * Numeric searches are rounded to two decimal places. (#0.448)
  * New plugin architecture for tag editing dialogs.
  * Korean translation, by ChangBom Yoon and Byung-Hee HWANG.
  * Updated translations:
@@ -261,29 +262,29 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
    * Polish, by Tomasz Torcz.
 
 0.16 - would it make a difference if it never really came up often?
- * Context menu plugins can make themselves insensitive. (#66)
- * More command-line and FIFO options. (#75, #363)
- * Read-only M4A support. (#199, thanks to Alexey Bobyakov)
- * Wavpack support. (#257)
- * Audio Feed (Podcast) support (requires http://www.feedparser.org). (#322)
- * "One Song" (and repeat) play mode. (#351)
- * Improved and configurable tray icon. (#360)
- * New install system that is more FHS-compliant. (#362)
- * ~#laststarted internal tag. (#392)
- * Accents are stripped when renaming to ASCII filenames. (#415)
+ * Context menu plugins can make themselves insensitive. (#0.66)
+ * More command-line and FIFO options. (#0.75, #0.363)
+ * Read-only M4A support. (#0.199, thanks to Alexey Bobyakov)
+ * Wavpack support. (#0.257)
+ * Audio Feed (Podcast) support (requires http://www.feedparser.org). (#0.322)
+ * "One Song" (and repeat) play mode. (#0.351)
+ * Improved and configurable tray icon. (#0.360)
+ * New install system that is more FHS-compliant. (#0.362)
+ * ~#0.laststarted internal tag. (#0.392)
+ * Accents are stripped when renaming to ASCII filenames. (#0.415)
  * UI improvements:
-   * Ex Falso lists are searchable in GTK 2.8.8+. (#291)
-   * ^W closes transient windows. (#326)
-   * More DnD support. (#337)
+   * Ex Falso lists are searchable in GTK 2.8.8+. (#0.291)
+   * ^W closes transient windows. (#0.326)
+   * More DnD support. (#0.337)
    * HIG-compliance for strings.
-   * Double-click files in browsers to enqueue them. (#341)
-   * Rename Files error dialog has a "Continue" button. (#354)
-   * Ctrl-Left/Right changed to Ctrl-,/.. (#355)
-   * Playlist imports have a progress bar. (#368)
-   * New icon that is not all black. (#371, thanks to Tobias and Fabien)
-   * Paned Browser entries have context menus. (#375)
-   * Volume icons follow GTK+/GNOME theme. (#389)
- * More memory and CPU optimizations. (#335, #346, #350)
+   * Double-click files in browsers to enqueue them. (#0.341)
+   * Rename Files error dialog has a "Continue" button. (#0.354)
+   * Ctrl-Left/Right changed to Ctrl-,/.. (#0.355)
+   * Playlist imports have a progress bar. (#0.368)
+   * New icon that is not all black. (#0.371, thanks to Tobias and Fabien)
+   * Paned Browser entries have context menus. (#0.375)
+   * Volume icons follow GTK+/GNOME theme. (#0.389)
+ * More memory and CPU optimizations. (#0.335, #0.346, #0.350)
  * GStreamer error handling. (thanks to Zack Weinberg and Bastian Kleineidam)
  * Musepack, MOD support migrated to Mutagen/ctypes modules.
  * Updated translations:
@@ -291,25 +292,26 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
    * Italian, by Filippo Pappalardo.
    * Dutch, by Hans van Dok.
    * Finnish, by Jari Rahkonen.
-   * Portuguese, by Alexandre Passos. (#388)
+   * Portuguese, by Alexandre Passos. (#0.388)
    * French, by Joshua Kwan.
    * Polish, by Tomasz Torcz.
    * German, by Rüdiger Arp.
    * Hebrew, by Roee Haimovich.
 
 0.15 - Maybe I will.
- * An 'artist' tag can be stored in the library for MODs. (#277)
- * 'All Albums' remains on the album list after a search. (#282)
- * The Play Queue displays its total time and has a clear button. (#297, #304)
+ * An 'artist' tag can be stored in the library for MODs. (#0.277)
+ * 'All Albums' remains on the album list after a search. (#0.282)
+ * The Play Queue displays its total time and has a clear button.
+   (#0.297, #0.304)
  * Songs can be enqueued multiple times.
- * '~people' includes more people. (#298)
- * Files can be added from remote URIs (e.g. HTTP). (#304)
- * "Dumb" searches match any visible tags. (#306)
+ * '~people' includes more people. (#0.298)
+ * Files can be added from remote URIs (e.g. HTTP). (#0.304)
+ * "Dumb" searches match any visible tags. (#0.306)
  * Ratings are now searched with values of 0.0 to 1.0, and the number of
-   visible notes is configurable. (#307)
- * Useless columns are not displayed in Internet Radio. (#309)
- * A single album cover can be refreshed in the Album List. (#310)
- * Playlists have been rewritten: (#324)
+   visible notes is configurable. (#0.307)
+ * Useless columns are not displayed in Internet Radio. (#0.309)
+ * A single album cover can be refreshed in the Album List. (#0.310)
+ * Playlists have been rewritten: (#0.324)
    * Songs may now be in a playlist multiple times.
    * Playlists can be reordered directly, without a special window.
    * Songs can be added to playlists directly from the context menu.
@@ -330,11 +332,11 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
    * Spanish and Portuguese, by Johám-Luís Miguéns Vila.
 
 0.14 - I'm almost certain!
- * Internet radio / Shoutcast browser. (#88)
- * Album List separates albums with different labelids. (#198)
- * Ex Falso displays all available plugins in its menu. (#240)
- * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins. (#262)
- * New Album List search keys and sorting options. (#280, #281)
+ * Internet radio / Shoutcast browser. (#0.88)
+ * Album List separates albums with different labelids. (#0.198)
+ * Ex Falso displays all available plugins in its menu. (#0.240)
+ * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins. (#0.262)
+ * New Album List search keys and sorting options. (#0.280, #0.281)
  * New translations:
    * Galician, by Johám-Luís Miguéns Vila.
    * Italian, by Filippo Pappalardo.
@@ -348,25 +350,25 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
  * Many bug fixes.
 
 0.13.1 - People will fall for this for sure!
- * Fix playlist creation. (#250)
+ * Fix playlist creation. (#0.250)
  * Unplay when no song is playing.
 
 0.13 - So, um... let's- fletcherize?
  * The GStreamer backend is cleaned up, and is now the only backend.
    This results in lower background CPU usage and many fixes to
    our audio processing. Gapless playback is gone.
- * A play queue was added. (#69, #104)
+ * A play queue was added. (#0.69, #0.104)
  * A file system browser has been added. This can view, edit, and play
-   files outside of your library. (#125)
- * The Paned Browser has a search entry. (#163)
- * Search Library lets you limit the number of results. (#166)
+   files outside of your library. (#0.125)
+ * The Paned Browser has a search entry. (#0.163)
+ * Search Library lets you limit the number of results. (#0.166)
  * {{{~/.quodlibet/browsers}}} is now scanned for custom browsers.
  * Synthetic tags ('''~dirname''', '''~basename''', &c.) can be searched.
  * Similarly, synthetic tags can be used in the Paned Browser.
  * New synthetic tags, '''~people''' and '''~playlist'''.
  * If the tray icon is visible, closing QL's main window will minimize it.
    To actually quit, choose '''Quit''' from the Music menu or icon.
- * Search Library and the Album List search entry have tag completion. (#153)
+ * Search Library and the Album List search entry have tag completion. (#0.153)
  * Ex Falso supports plugins.
  * Updated Russian translation by Nikolai Prokoschenko and Sergey Fedoseev.
  * Updated French translation by Joshua Kwan.
@@ -375,34 +377,34 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
  * Updated Hebrew translation by Roee Haimovich.
 
 0.12 - focus ENTIRELY on the sexy bits.
- * New Mutagen ID3 reader/writer. (#3)
- * Experimental GStreamer backend. (#4)
- * Drag-and-drop to playlists. (#22, #23)
- * Weighted random playback. (#60)
- * MP3 and Musepack ReplayGain support. (#86)
- * Larger plugin manager window. (#105)
- * Automatic mount point detection. (#106)
- * Support for multiple soundcards. (#157)
- * Localization enhancements. (#85, #102, #161)
+ * New Mutagen ID3 reader/writer. (#0.3)
+ * Experimental GStreamer backend. (#0.4)
+ * Drag-and-drop to playlists. (#0.22, #0.23)
+ * Weighted random playback. (#0.60)
+ * MP3 and Musepack ReplayGain support. (#0.86)
+ * Larger plugin manager window. (#0.105)
+ * Automatic mount point detection. (#0.106)
+ * Support for multiple soundcards. (#0.157)
+ * Localization enhancements. (#0.85, #0.102, #0.161)
  * Translation updates:
    * Dutch, thanks to Hans van Dok.
    * Finnish, thanks to Jari Rahkonen.
    * French, thanks to Joshua Kwan.
    * German, thanks to Rüdiger Arp.
-   * Hebrew, thanks to Roee Haimovich. (#170)
+   * Hebrew, thanks to Roee Haimovich. (#0.170)
    * Russian, thanks to Sergey Fedoseev and Nikolai Prokoschenko.
    * Polish, thanks to Witold Kieraś.
  * The usual round of interface tweaks and bug fixes.
 
 0.11 - spicy burnsauce with a side of ZING!
  * Plugins (either appearing in the right-click menu, or triggered on a
-   player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins. (#5)
- * Browse songs by album, with a cover display. (#6)
+   player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins. (#0.5)
+ * Browse songs by album, with a cover display. (#0.6)
  * "Library Browser" added to search/edit files without disturbing your
-   playlist. (#10)
- * Played songs are automatically removed from dynamic playlists. (#20)
- * "Background filters" for the paned browser and search entry. (#36)
- * Create/remove empty folders from within Ex Falso. (#40)
+   playlist. (#0.10)
+ * Played songs are automatically removed from dynamic playlists. (#0.20)
+ * "Background filters" for the paned browser and search entry. (#0.36)
+ * Create/remove empty folders from within Ex Falso. (#0.40)
  * '0' to '4' keys or mouse clicks can set song ratings.
  * Depends on PyGTK 2.6 (as well as GTK 2.6).
  * --status to print the player's status.
