@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 19:15-0700\n"
-"PO-Revision-Date: 2006-10-04 22:48+0300\n"
+"POT-Creation-Date: 2006-10-20 20:37-0700\n"
+"PO-Revision-Date: 2006-10-10 20:08+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@gnome.ro>\n"
 "Language-Team: Română <gnomero@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -64,35 +64,35 @@ msgstr "_Informaţii"
 #. a sample translation would be "_Remove from Library".
 #: ../stock.py:81 ../stock.py:85
 msgid "ql-remove"
-msgstr "ql-remove"
+msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
 #: ../stock.py:91
 msgid "gtk-media-next"
-msgstr "gtk-media-next"
+msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
 #: ../stock.py:95
 msgid "gtk-media-previous"
-msgstr "gtk-media-previous"
+msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
 #: ../stock.py:99
 msgid "gtk-media-play"
-msgstr "gtk-media-play"
+msgstr ""
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
 #. This string needs an access key.
 #: ../stock.py:103
 msgid "gtk-media-pause"
-msgstr "gtk-media-pause"
+msgstr ""
 
 #: ../quodlibet.py:105
 msgid "No song is currently playing."
@@ -2261,164 +2261,145 @@ msgid "Music Player"
 msgstr "Redare audio"
 
 #: ../browsers/media.py:34
-#, fuzzy
 msgid "Device Properties"
-msgstr "Proprietăţi"
+msgstr "Proprietăţi dispozitiv"
 
 #: ../browsers/media.py:47
 msgid "Device:"
-msgstr ""
+msgstr "Dispozitiv:"
 
 #: ../browsers/media.py:49
 msgid "Not mounted"
-msgstr ""
+msgstr "Nu este montat"
 
 #: ../browsers/media.py:50
-#, fuzzy
 msgid "Mount Point:"
-msgstr "punct de montare"
+msgstr "Punct de montare:"
 
 #: ../browsers/media.py:126
-#, fuzzy
 msgid "Media Devices"
-msgstr "Dispozitiv audio: %s"
+msgstr "Dispozitive media"
 
 #: ../browsers/media.py:127
-#, fuzzy
 msgid "_Media Devices"
-msgstr "Dispozitiv audio: %s"
+msgstr "Dispozitive _media"
 
 #: ../browsers/media.py:426
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
-msgstr ""
+msgstr "<b>%s</b> folosit, <b>%s</b> disponibil"
 
 #: ../browsers/media.py:443
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> is not connected."
-msgstr "<b>%s</b> nu este o locaţie validă."
+msgstr "<b>%s</b> nu este conectat."
 
 #: ../browsers/media.py:459
-#, fuzzy, python-format
+#, python-format
 msgid "Copying <b>%s</b>"
-msgstr "Ştergerea <b>%s</b> a eşuat."
+msgstr "Copiez <b>%s</b>"
 
 #: ../browsers/media.py:477 ../browsers/media.py:492
-#, fuzzy
 msgid "Unable to copy song"
-msgstr "Nu s-au putut copia piesele"
+msgstr "Nu s-a putut copia piesa"
 
 #: ../browsers/media.py:478
 msgid "There is not enough free space for this song."
-msgstr ""
+msgstr "Nu există suficient spaţiu disponibil pentru această piesă."
 
 #: ../browsers/media.py:489
 #, python-format
 msgid "<b>%s</b> could not be copied."
-msgstr ""
+msgstr "<b>%s</b> nu a putut fi copiat."
 
 #: ../browsers/media.py:509
-#, fuzzy
 msgid "Unable to delete songs"
-msgstr "Nu s-au putut adăuga piesele"
+msgstr "Nu s-au putut şterge piesele"
 
 #: ../browsers/media.py:519
-#, fuzzy, python-format
+#, python-format
 msgid "Deleting <b>%s</b>"
-msgstr "Ştergerea <b>%s</b> a eşuat."
+msgstr "Şterg <b>%s</b>"
 
 #: ../browsers/media.py:536
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> could not be deleted."
-msgstr "<b>%s</b> nu este o locaţie validă."
+msgstr "<b>%s</b> nu a putut fi şters."
 
 #: ../browsers/media.py:540
-#, fuzzy
 msgid "Unable to delete song"
-msgstr "Nu s-a putut edita piesa"
+msgstr "Nu s-a putut şterge piesa"
 
 #: ../browsers/media.py:557
-#, fuzzy, python-format
+#, python-format
 msgid "Ejecting <b>%s</b> failed."
-msgstr "Ştergerea <b>%s</b> a eşuat."
+msgstr "Ejectarea <b>%s</b> a eşuat."
 
 #: ../browsers/media.py:560
-#, fuzzy
 msgid "Unable to eject device"
-msgstr "Nu s-a putut şterge fişierul"
+msgstr "Nu s-a putut ejecta dispozitivul"
 
 #: ../devices/_base.py:63
-#, fuzzy
 msgid "Unknown Device"
-msgstr "Necunoscut"
+msgstr "Dispozitiv necunoscut"
 
 #: ../devices/_base.py:94
-#, fuzzy
 msgid "No eject command found."
-msgstr "Nici s-a găsit nici o staţie"
+msgstr "Nu s-a găsit comanda eject."
 
 #: ../devices/ipod.py:93
 msgid "_Volume Gain (dB):"
-msgstr ""
+msgstr "_Volume Gain (dB):"
 
 #: ../devices/ipod.py:96 ../devices/storage.py:57
-#, fuzzy
 msgid "Copy _album covers"
-msgstr "Arată _coperţile albumelor"
+msgstr "Copiază coperţile _albumelor"
 
 #: ../devices/ipod.py:97
-#, fuzzy
 msgid "Combine tags with _multiple values"
-msgstr "Separă în valori m_ultiple"
+msgstr "Combină etichetele cu valori m_ultiple"
 
 #: ../devices/ipod.py:110
 msgid "Model:"
-msgstr ""
+msgstr "Model:"
 
 #: ../devices/ipod.py:112
 msgid "Capacity:"
-msgstr ""
+msgstr "Capacitate:"
 
 #: ../devices/ipod.py:114
 msgid "Firmware:"
-msgstr ""
+msgstr "Firmware:"
 
 #: ../devices/ipod.py:160
 msgid "W: removing orphaned iPod track"
-msgstr ""
+msgstr "W: sterg pista orfană din iPod"
 
 #: ../devices/ipod.py:248
-#, fuzzy
 msgid "Unable to save iPod database"
-msgstr "Nu s-a putut salva colecţia"
+msgstr "Nu s-a putut salva baza de date iPod"
 
 #: ../devices/ipod.py:260
 msgid "Uninitialized iPod"
-msgstr ""
+msgstr "iPod neiniţializat"
 
 #: ../devices/ipod.py:261
 msgid "Do you want to create an empty database on this iPod?"
-msgstr ""
+msgstr "Doriţi să creaţi o bază de date goală pe acest iPod?"
 
 #: ../devices/storage.py:53
-#, fuzzy
 msgid "_Filename Pattern:"
-msgstr "Nume _fişier"
+msgstr "Model nume _fişier:"
 
 #: ../devices/storage.py:61
 msgid "_Remove unused covers and directories"
-msgstr ""
+msgstr "Ş_terge directoarele şi coperţile nefolosite"
 
 #: ../devices/storage.py:93
-#, fuzzy
 msgid "File exists"
-msgstr "Sistem de fişiere"
+msgstr "Fişierul există"
 
 #: ../devices/storage.py:94
-#, fuzzy, python-format
+#, python-format
 msgid "Overwrite <b>%s</b>?"
-msgstr "Ştergerea <b>%s</b> a eşuat."
-
-#, fuzzy
-#~ msgid "C_opy album covers"
-#~ msgstr "Arată _coperţile albumelor"
+msgstr "Suprascriu <b>%s</b>?"
