@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 19:15-0700\n"
-"PO-Revision-Date: 2006-08-07 14:08+0900\n"
+"POT-Creation-Date: 2006-10-08 19:25-0700\n"
+"PO-Revision-Date: 2006-10-14 15:39+0900\n"
 "Last-Translator: Yasushi Iwata <yasusii@lowlife.jp>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -38,12 +38,12 @@ msgstr "プレイリストへ追加(_A)"
 
 #: ../stock.py:53
 msgid "_Copy to Device"
-msgstr ""
+msgstr "デバイスへ追加(_D)"
 
 #: ../stock.py:54
 #, fuzzy
 msgid "_Eject"
-msgstr "フォルダの選択"
+msgstr "イジェクト(_E)"
 
 #: ../stock.py:55
 msgid "_Rename"
@@ -137,7 +137,7 @@ msgstr "一時停止"
 
 #: ../quodlibet.py:170
 msgid "Toggle play/pause mode"
-msgstr "再生/一時停止の切り替え"
+msgstr "再生/一時停止の切替"
 
 #: ../quodlibet.py:171
 msgid "Turn up volume"
@@ -189,11 +189,11 @@ msgstr ""
 
 #: ../quodlibet.py:185
 msgid "Set or toggle the playback order"
-msgstr "再生順のセットまたは切り替え"
+msgstr "再生順のセットまたは切替"
 
 #: ../quodlibet.py:187
 msgid "Turn repeat off, on, or toggle it"
-msgstr "リピートのオン/オフまたは切り替え"
+msgstr "リピートのオン/オフまたは切替"
 
 #: ../quodlibet.py:188
 msgid "Set the volume"
@@ -296,7 +296,7 @@ msgstr "アルバムアーティスト"
 
 #: ../po/tag-names.py:10
 msgid "arranger"
-msgstr "編曲者"
+msgstr "アレンジャー"
 
 #: ../po/tag-names.py:11 ../qltk/information.py:140 ../qltk/information.py:326
 msgid "artist"
@@ -789,7 +789,7 @@ msgstr[0] "%d曲が欠落しています"
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
-msgstr[0] "%d曲に違いがみつかりました"
+msgstr[0] "%d曲の内容がそれぞれ異なっています"
 
 #: ../qltk/edittags.py:125
 msgid "Split into _Multiple Values"
@@ -1299,7 +1299,7 @@ msgstr "再生する曲が変わったときにソングリストをスクロー
 #: ../qltk/prefs.py:178
 #, fuzzy
 msgid "_Replay Gain volume adjustment"
-msgstr "音量の調整をしない"
+msgstr "リプレイの度に音量調整をする(_R)"
 
 #: ../qltk/prefs.py:193
 msgid "_Select"
@@ -1381,7 +1381,7 @@ msgstr "曲を追加できません"
 #: ../qltk/quodlibet.py:324 ../qltk/quodlibet.py:696
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
-msgstr "<b>%s</b> で使われているプロトコルをサポートしていません"
+msgstr "<b>%s</b>で使われているプロトコルをサポートしていません。"
 
 #: ../qltk/quodlibet.py:368
 msgid "_Music"
@@ -1626,7 +1626,7 @@ msgstr "選択されたファイルのソングリストまたはキューへの
 #: ../qltk/songlist.py:862
 #, fuzzy
 msgid "_Track Headers"
-msgstr "トラック番号"
+msgstr "トラック番号(_T)"
 
 #: ../qltk/songlist.py:863
 #, fuzzy
@@ -2254,7 +2254,7 @@ msgstr "オーディオデバイス: %s"
 #: ../browsers/media.py:426
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
-msgstr ""
+msgstr "使用中<b>%s</b>、利用可能<b>%s</b>"
 
 #: ../browsers/media.py:443
 #, fuzzy, python-format
@@ -2273,12 +2273,12 @@ msgstr "曲のコピーができません"
 
 #: ../browsers/media.py:478
 msgid "There is not enough free space for this song."
-msgstr ""
+msgstr "この曲を保存するための空き領域が不足しています"
 
 #: ../browsers/media.py:489
 #, python-format
 msgid "<b>%s</b> could not be copied."
-msgstr ""
+msgstr "<b>%s</b>のコピーに失敗しました。"
 
 #: ../browsers/media.py:509
 #, fuzzy
@@ -2303,7 +2303,7 @@ msgstr "曲の編集に失敗しました"
 #: ../browsers/media.py:557
 #, fuzzy, python-format
 msgid "Ejecting <b>%s</b> failed."
-msgstr "<b>%s</b>の削除失敗。"
+msgstr "<b>%s</b>のイジェクト失敗。"
 
 #: ../browsers/media.py:560
 #, fuzzy
@@ -2313,7 +2313,7 @@ msgstr "ファイルを削除できませんでした。"
 #: ../devices/_base.py:63
 #, fuzzy
 msgid "Unknown Device"
-msgstr "不明"
+msgstr "不明なデバイス"
 
 #: ../devices/_base.py:94
 #, fuzzy
@@ -2322,7 +2322,7 @@ msgstr "ラジオ局が見つかりません"
 
 #: ../devices/ipod.py:93
 msgid "_Volume Gain (dB):"
-msgstr ""
+msgstr "ボリュームゲイン(dB)"
 
 #: ../devices/ipod.py:96 ../devices/storage.py:57
 #, fuzzy
@@ -2336,19 +2336,19 @@ msgstr "複数の値に分割する(_v)"
 
 #: ../devices/ipod.py:110
 msgid "Model:"
-msgstr ""
+msgstr "モデル"
 
 #: ../devices/ipod.py:112
 msgid "Capacity:"
-msgstr ""
+msgstr "容量"
 
 #: ../devices/ipod.py:114
 msgid "Firmware:"
-msgstr ""
+msgstr "ファームウェア"
 
 #: ../devices/ipod.py:160
 msgid "W: removing orphaned iPod track"
-msgstr ""
+msgstr "警告: 関連付けされていない iPod トラックを削除します"
 
 #: ../devices/ipod.py:248
 #, fuzzy
@@ -2357,34 +2357,30 @@ msgstr "ライブラリの保存に失敗しました"
 
 #: ../devices/ipod.py:260
 msgid "Uninitialized iPod"
-msgstr ""
+msgstr "初期化されていない iPod"
 
 #: ../devices/ipod.py:261
 msgid "Do you want to create an empty database on this iPod?"
-msgstr ""
+msgstr "iPodに空のデータベースを新規作成しますか？"
 
 #: ../devices/storage.py:53
 #, fuzzy
 msgid "_Filename Pattern:"
-msgstr "ファイル名(_F)"
+msgstr "ファイル名のパターン(_F)"
 
 #: ../devices/storage.py:61
 msgid "_Remove unused covers and directories"
-msgstr ""
+msgstr "使われていないカバーアートとディレクトリを削除(_R)"
 
 #: ../devices/storage.py:93
 #, fuzzy
 msgid "File exists"
-msgstr "ファイルシステム"
+msgstr "同名のファイルが存在します"
 
 #: ../devices/storage.py:94
-#, fuzzy, python-format
+#, python-format
 msgid "Overwrite <b>%s</b>?"
-msgstr "<b>%s</b>の削除失敗。"
-
-#, fuzzy
-#~ msgid "C_opy album covers"
-#~ msgstr "アルバムのカバーを表示する(_c)"
+msgstr "<b>%s</b>を上書きしますか？"
 
 #~ msgid "Unable to retag multiple values"
 #~ msgstr "複数の値によるタグの付け直しはできません"
@@ -2393,7 +2389,7 @@ msgstr "<b>%s</b>の削除失敗。"
 #~ msgstr "複数の値を持つタグ名の変更はサポートされていません。"
 
 #~ msgid "W: %s is not a QL song database."
-#~ msgstr "W: %sはQuod Libetのデータベースではありません"
+#~ msgstr "警告: %sはQuod Libetのデータベースではありません"
 
 #~ msgid "Per-song (\"Radio\") volume adjustment"
 #~ msgstr "曲単位の(\"Radio\")音量調整"
