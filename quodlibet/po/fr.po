@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 19:15-0700\n"
-"PO-Revision-Date: 2006-08-08 15:12+0200\n"
+"POT-Creation-Date: 2006-10-22 02:19+0200\n"
+"PO-Revision-Date: 2006-10-22 02:35+0200\n"
 "Last-Translator: Guillaume Ayoub <lize@invox.org>\n"
 "Language-Team: Français\n"
 "MIME-Version: 1.0\n"
@@ -35,12 +35,11 @@ msgstr "_Ajouter à la liste de lecture"
 
 #: ../stock.py:53
 msgid "_Copy to Device"
-msgstr ""
+msgstr "_Copier sur le périphérique"
 
 #: ../stock.py:54
-#, fuzzy
 msgid "_Eject"
-msgstr "_Choisir"
+msgstr "_Éjecter"
 
 #: ../stock.py:55
 msgid "_Rename"
@@ -768,7 +767,7 @@ msgstr "Impossible de supprimer le fichier"
 #: ../qltk/delete.py:118
 #, python-format
 msgid "Deleting <b>%s</b> failed."
-msgstr "La suppression de <b>%s</b> à échouée."
+msgstr "La suppression de <b>%s</b> a échoué."
 
 #: ../qltk/downloader.py:37
 msgid "Downloads"
@@ -1786,7 +1785,7 @@ msgstr "%d/%d chansons sauvegardées"
 #: ../qltk/wlw.py:190
 #, python-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d sur %d"
 
 #: ../qltk/x.py:125
 msgid "Clear search"
@@ -1885,7 +1884,7 @@ msgstr ""
 "\n"
 "%d/%d chansons ajoutées."
 
-#: ../browsers/playlists.py:93 ../browsers/playlists.py:407
+#: ../browsers/playlists.py:93 ../browsers/playlists.py:412
 msgid "New Playlist"
 msgstr "Créer une liste de lecture..."
 
@@ -1910,24 +1909,24 @@ msgstr "_Listes de lecture"
 msgid "_Remove from Playlist"
 msgstr "Supp_rimer de la liste de lecture"
 
-#: ../browsers/playlists.py:306
+#: ../browsers/playlists.py:311
 msgid "_Import"
 msgstr "_Importer"
 
-#: ../browsers/playlists.py:424 ../browsers/playlists.py:502
+#: ../browsers/playlists.py:429 ../browsers/playlists.py:507
 msgid "Unable to import playlist"
 msgstr "Impossible d'importer la liste de lecture"
 
-#: ../browsers/playlists.py:425 ../browsers/playlists.py:503
+#: ../browsers/playlists.py:430 ../browsers/playlists.py:508
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr ""
 "Quod Libet ne peut importer que des listes de lecture au format M3U ou PLS."
 
-#: ../browsers/playlists.py:484
+#: ../browsers/playlists.py:489
 msgid "Unable to rename playlist"
 msgstr "Impossible de renommer la liste de lecture"
 
-#: ../browsers/playlists.py:491
+#: ../browsers/playlists.py:496
 msgid "Import Playlist"
 msgstr "Importer une liste de lecture"
 
@@ -2255,170 +2254,145 @@ msgid "Music Player"
 msgstr "Lecteur"
 
 #: ../browsers/media.py:34
-#, fuzzy
 msgid "Device Properties"
-msgstr "Propriétés"
+msgstr "Propriétés du périphérique"
 
 #: ../browsers/media.py:47
 msgid "Device:"
-msgstr ""
+msgstr "Périphérique :"
 
 #: ../browsers/media.py:49
 msgid "Not mounted"
-msgstr ""
+msgstr "Pas monté"
 
 #: ../browsers/media.py:50
-#, fuzzy
 msgid "Mount Point:"
-msgstr "point de montage"
+msgstr "Point de montage :"
 
 #: ../browsers/media.py:126
-#, fuzzy
 msgid "Media Devices"
-msgstr "Périphérique audio: %s"
+msgstr "Périphériques multimedia"
 
 #: ../browsers/media.py:127
-#, fuzzy
 msgid "_Media Devices"
-msgstr "Périphérique audio: %s"
+msgstr "Périphériques _multimedia"
 
 #: ../browsers/media.py:426
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
-msgstr ""
+msgstr "<b>%s</b> utilisé(s), <b>%s</b> disponible(s)"
 
 #: ../browsers/media.py:443
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> is not connected."
-msgstr "<b>%s</b> n'est pas un chemin valide."
+msgstr "<b>%s</b> n'est pas connecté."
 
 #: ../browsers/media.py:459
-#, fuzzy, python-format
+#, python-format
 msgid "Copying <b>%s</b>"
-msgstr "La suppression de <b>%s</b> à échouée."
+msgstr "Copie de <b>%s</b>"
 
 #: ../browsers/media.py:477 ../browsers/media.py:492
-#, fuzzy
 msgid "Unable to copy song"
-msgstr "Impossible de copier les chansons"
+msgstr "Impossible de copier la chanson"
 
 #: ../browsers/media.py:478
 msgid "There is not enough free space for this song."
-msgstr ""
+msgstr "Il n'y a pas assez de place pour cette chanson"
 
 #: ../browsers/media.py:489
 #, python-format
 msgid "<b>%s</b> could not be copied."
-msgstr ""
+msgstr "<b>%s</b> n'a pas pu être copié."
 
 #: ../browsers/media.py:509
-#, fuzzy
 msgid "Unable to delete songs"
-msgstr "Impossible d'ajouter les chansons"
+msgstr "Impossible de supprimer les chansons"
 
 #: ../browsers/media.py:519
-#, fuzzy, python-format
+#, python-format
 msgid "Deleting <b>%s</b>"
-msgstr "La suppression de <b>%s</b> à échouée."
+msgstr "Suppression de <b>%s</b>"
 
 #: ../browsers/media.py:536
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> could not be deleted."
-msgstr "<b>%s</b> n'est pas un chemin valide."
+msgstr "<b>%s</b> ne peut pas être supprimé."
 
 #: ../browsers/media.py:540
-#, fuzzy
 msgid "Unable to delete song"
-msgstr "Impossible d'éditer la chanson"
+msgstr "Impossible de supprimer la chanson"
 
 #: ../browsers/media.py:557
-#, fuzzy, python-format
+#, python-format
 msgid "Ejecting <b>%s</b> failed."
-msgstr "La suppression de <b>%s</b> à échouée."
+msgstr "L'éjection de <b>%s</b> a échoué."
 
 #: ../browsers/media.py:560
-#, fuzzy
 msgid "Unable to eject device"
-msgstr "Impossible de supprimer le fichier"
+msgstr "Impossible d'éjecter le périphérique"
 
 #: ../devices/_base.py:63
-#, fuzzy
 msgid "Unknown Device"
-msgstr "Inconnu(e)"
+msgstr "Périphérique inconnu"
 
 #: ../devices/_base.py:94
-#, fuzzy
 msgid "No eject command found."
-msgstr "Pas de radio trouvée."
+msgstr "Pas de commande d'éjection trouvée."
 
 #: ../devices/ipod.py:93
 msgid "_Volume Gain (dB):"
-msgstr ""
+msgstr "Gain du _volume (dB) :"
 
 #: ../devices/ipod.py:96 ../devices/storage.py:57
-#, fuzzy
 msgid "Copy _album covers"
-msgstr "Montrer les _jaquettes des albums"
+msgstr "Copier les jaquettes des _albums"
 
 #: ../devices/ipod.py:97
-#, fuzzy
 msgid "Combine tags with _multiple values"
-msgstr "Séparer en plusieurs _valeurs"
+msgstr "Combiner les tags à valeurs _multiples"
 
 #: ../devices/ipod.py:110
 msgid "Model:"
-msgstr ""
+msgstr "Modèle :"
 
 #: ../devices/ipod.py:112
 msgid "Capacity:"
-msgstr ""
+msgstr "Capacité :"
 
 #: ../devices/ipod.py:114
 msgid "Firmware:"
-msgstr ""
+msgstr "Firmware :"
 
 #: ../devices/ipod.py:160
 msgid "W: removing orphaned iPod track"
-msgstr ""
+msgstr "W: suppression d'une piste orpheline de l'iPod"
 
 #: ../devices/ipod.py:248
-#, fuzzy
 msgid "Unable to save iPod database"
-msgstr "Impossible d'enregistrer la bibliothèque de données."
+msgstr "Impossible d'enregistrer la base de données de l'iPod"
 
 #: ../devices/ipod.py:260
 msgid "Uninitialized iPod"
-msgstr ""
+msgstr "iPod non initialisé"
 
 #: ../devices/ipod.py:261
 msgid "Do you want to create an empty database on this iPod?"
-msgstr ""
+msgstr "Voulez-vous créer une base de données vide sur cet iPod ?"
 
 #: ../devices/storage.py:53
-#, fuzzy
 msgid "_Filename Pattern:"
-msgstr "Nom de _fichier"
+msgstr "Motif du nom de _fichier"
 
 #: ../devices/storage.py:61
 msgid "_Remove unused covers and directories"
-msgstr ""
+msgstr "Enleve_r les jaquettes et les dossiers inutilisés"
 
 #: ../devices/storage.py:93
-#, fuzzy
 msgid "File exists"
-msgstr "Système de fichiers"
+msgstr "Le fichier existe"
 
 #: ../devices/storage.py:94
-#, fuzzy, python-format
+#, python-format
 msgid "Overwrite <b>%s</b>?"
-msgstr "La suppression de <b>%s</b> à échouée."
-
-#, fuzzy
-#~ msgid "C_opy album covers"
-#~ msgstr "Montrer les _jaquettes des albums"
-
-#~ msgid "Unable to retag multiple values"
-#~ msgstr "Impossible de changer des étiquettes aux valeurs multiples"
-
-#~ msgid "Changing the name of a tag with multiple values is not supported."
-#~ msgstr "Renommer une étiquette à valeurs multiples n'est pas supporté."
+msgstr "Écraser <b>%s</b> ?"
