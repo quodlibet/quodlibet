@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet SVN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-09 12:57+0200\n"
-"PO-Revision-Date: 2006-10-09 13:30+0200\n"
+"POT-Creation-Date: 2006-10-23 23:01+0200\n"
+"PO-Revision-Date: 2006-10-23 23:00+0200\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: spanish\n"
 "MIME-Version: 1.0\n"
@@ -181,7 +181,7 @@ msgstr "Muestra los canciones en la cola"
 
 #: ../quodlibet.py:180
 msgid "Exit Quod Libet"
-msgstr "Salir del Quod Libet"
+msgstr "Salir de Quod Libet"
 
 #: ../quodlibet.py:184
 msgid "Seek within the playing song"
@@ -217,7 +217,7 @@ msgstr "Reproducir un fichero"
 
 #: ../quodlibet.py:190 ../quodlibet.py:199
 msgid "command|filename"
-msgstr "fichero"
+msgstr "Fichero"
 
 #: ../quodlibet.py:191
 msgid "Rate the playing song"
@@ -288,60 +288,60 @@ msgstr "Quod Libet ya está siendo ejecutado"
 #. date the song was added to the library
 #: ../po/tag-names.py:7 ../qltk/information.py:186
 msgid "added"
-msgstr "añadida"
+msgstr "Añadida"
 
 #: ../po/tag-names.py:8
 msgid "album"
-msgstr "álbum"
+msgstr "Álbum"
 
 #: ../po/tag-names.py:9 ../util/__init__.py:562
 msgid "album artist"
-msgstr "artista del álbum"
+msgstr "Artista del álbum"
 
 #: ../po/tag-names.py:10
 msgid "arranger"
-msgstr "arreglista"
+msgstr "Arreglista"
 
 #: ../po/tag-names.py:11 ../qltk/information.py:140 ../qltk/information.py:326
 msgid "artist"
-msgstr "artista"
+msgstr "Artista"
 
 #: ../po/tag-names.py:12
 msgid "author"
-msgstr "autor"
+msgstr "Autor"
 
 #: ../po/tag-names.py:13
 msgid "composer"
-msgstr "compositor"
+msgstr "Compositor"
 
 #: ../po/tag-names.py:14
 msgid "conductor"
-msgstr "director"
+msgstr "Director"
 
 #: ../po/tag-names.py:15
 msgid "contact"
-msgstr "contacto"
+msgstr "Contacto"
 
 #: ../po/tag-names.py:16
 msgid "copyright"
-msgstr "copyright"
+msgstr "Copyright"
 
 #: ../po/tag-names.py:17
 msgid "date"
-msgstr "fecha"
+msgstr "Fecha"
 
 #: ../po/tag-names.py:18
 msgid "description"
-msgstr "descripción"
+msgstr "Descripción"
 
 #. just path, /.../...
 #: ../po/tag-names.py:20 ../exfalso.py:40 ../util/__init__.py:542
 msgid "directory"
-msgstr "directorio"
+msgstr "Directorio"
 
 #: ../po/tag-names.py:21 ../util/__init__.py:530
 msgid "disc"
-msgstr "disco"
+msgstr "Disco"
 
 #. just file name, foo.ogg
 #: ../po/tag-names.py:23 ../util/__init__.py:541
@@ -351,20 +351,20 @@ msgstr "Nombre del fichero"
 #. as in "file format"
 #: ../po/tag-names.py:25
 msgid "format"
-msgstr "formato"
+msgstr "Formato"
 
 #. file name plus path, /.../.../foo.ogg
 #: ../po/tag-names.py:27 ../util/__init__.py:536
 msgid "full name"
-msgstr "nombre completo"
+msgstr "Nombre completo"
 
 #: ../po/tag-names.py:28
 msgid "genre"
-msgstr "género"
+msgstr "Estilo"
 
 #: ../po/tag-names.py:29
 msgid "grouping"
-msgstr "conjunto"
+msgstr "Conjunto"
 
 #. alternately, "catalog number", "catalog ID", "label number"
 #: ../po/tag-names.py:31 ../util/__init__.py:531
@@ -373,108 +373,108 @@ msgstr "ID de la etiqueta"
 
 #: ../po/tag-names.py:32
 msgid "language"
-msgstr "idioma"
+msgstr "Idioma"
 
 #. date the song was last heard on
 #: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:534
 msgid "last played"
-msgstr "última vez"
+msgstr "Última reproducción"
 
 #. date the song was last started on
 #: ../po/tag-names.py:36 ../util/__init__.py:535
 msgid "last started"
-msgstr "última vez"
+msgstr "Última vez comenzada"
 
 #: ../po/tag-names.py:37 ../qltk/information.py:220
 msgid "length"
-msgstr "duración"
+msgstr "Duración"
 
 #: ../po/tag-names.py:38
 msgid "license"
-msgstr "licencia"
+msgstr "Licencia"
 
 #: ../po/tag-names.py:39
 msgid "location"
-msgstr "ubicación"
+msgstr "Ubicación"
 
 #: ../po/tag-names.py:40
 msgid "lyricist"
-msgstr "letrista"
+msgstr "Letras"
 
 #. date song was last modified/edited
 #: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:539
 msgid "modified"
-msgstr "modificado"
+msgstr "Modificada"
 
 #: ../po/tag-names.py:43 ../util/__init__.py:540
 msgid "mount point"
-msgstr "punto de montaje"
+msgstr "Punto de montaje"
 
 #. alternately, "record label"
 #: ../po/tag-names.py:45
 msgid "organization"
-msgstr "organización"
+msgstr "Organización"
 
 #: ../po/tag-names.py:46 ../util/__init__.py:563
 msgid "original release date"
-msgstr "fecha de publicación"
+msgstr "Fecha de publicación"
 
 #: ../po/tag-names.py:47 ../util/__init__.py:565
 msgid "original artist"
-msgstr "artista original"
+msgstr "Artista original"
 
 #: ../po/tag-names.py:48 ../util/__init__.py:564
 msgid "original album"
-msgstr "álbum original"
+msgstr "Álbum original"
 
 #. alternately, "movement", "section"
 #: ../po/tag-names.py:50
 msgid "part"
-msgstr "parte"
+msgstr "Parte"
 
 #: ../po/tag-names.py:51
 msgid "people"
-msgstr "gente"
+msgstr "Gente"
 
 #: ../po/tag-names.py:52 ../qltk/information.py:332
 msgid "performer"
-msgstr "intérprete"
+msgstr "Intérprete"
 
 #: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:537
 msgid "plays"
-msgstr "contador"
+msgstr "Contador"
 
 #: ../po/tag-names.py:54 ../qltk/information.py:190
 msgid "rating"
-msgstr "calificación"
+msgstr "Calificación"
 
 #: ../po/tag-names.py:55 ../util/__init__.py:566
 msgid "recording date"
-msgstr "fecha de grabación"
+msgstr "Fecha de grabación"
 
 #: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:538
 msgid "skips"
-msgstr "saltada"
+msgstr "Saltada"
 
 #: ../po/tag-names.py:57
 msgid "title"
-msgstr "título"
+msgstr "Título"
 
 #: ../po/tag-names.py:58 ../util/__init__.py:529
 msgid "track"
-msgstr "pista"
+msgstr "Pista"
 
 #: ../po/tag-names.py:59
 msgid "version"
-msgstr "versión"
+msgstr "Versión"
 
 #: ../po/tag-names.py:60
 msgid "website"
-msgstr "sitio web"
+msgstr "Sitio web"
 
 #: ../po/tag-names.py:61
 msgid "year"
-msgstr "año"
+msgstr "Año"
 
 #. beats per minute
 #: ../po/tag-names.py:63 ../util/__init__.py:532
@@ -483,44 +483,44 @@ msgstr "BPM"
 
 #: ../po/tag-names.py:65 ../qltk/information.py:333
 msgid "performers"
-msgstr "intérpretes"
+msgstr "Intérpretes"
 
 #: ../po/tag-names.py:66
 msgid "lyricists"
-msgstr "letristas"
+msgstr "Letras"
 
 #: ../po/tag-names.py:67
 msgid "arrangers"
-msgstr "arreglistas"
+msgstr "Arreglistas"
 
 #: ../po/tag-names.py:68
 msgid "composers"
-msgstr "compositores"
+msgstr "Compositores"
 
 #: ../po/tag-names.py:69
 msgid "conductors"
-msgstr "directores"
+msgstr "Directores"
 
 #: ../po/tag-names.py:70
 msgid "authors"
-msgstr "autores"
+msgstr "Autores"
 
 #: ../po/tag-names.py:71 ../qltk/information.py:141 ../qltk/information.py:327
 #: ../qltk/information.py:464
 msgid "artists"
-msgstr "artistas"
+msgstr "Artistas"
 
 #: ../po/tag-names.py:72 ../qltk/information.py:480
 msgid "albums"
-msgstr "álbumes"
+msgstr "Álbumes"
 
 #: ../po/tag-names.py:73
 msgid "tracks"
-msgstr "pistas"
+msgstr "Pistas"
 
 #: ../po/tag-names.py:74
 msgid "discs"
-msgstr "discos"
+msgstr "Discos"
 
 #. Not really tag names, but this is the best place for them so far.
 #: ../po/tag-names.py:78
@@ -1880,7 +1880,7 @@ msgstr ""
 "\n"
 "%d/%d canciones añadidas."
 
-#: ../browsers/playlists.py:93 ../browsers/playlists.py:407
+#: ../browsers/playlists.py:93 ../browsers/playlists.py:412
 msgid "New Playlist"
 msgstr "Nueva Lista"
 
@@ -1905,23 +1905,23 @@ msgstr "_Listas"
 msgid "_Remove from Playlist"
 msgstr "_Eliminar de la Lista"
 
-#: ../browsers/playlists.py:306
+#: ../browsers/playlists.py:311
 msgid "_Import"
 msgstr "_Importar"
 
-#: ../browsers/playlists.py:424 ../browsers/playlists.py:502
+#: ../browsers/playlists.py:429 ../browsers/playlists.py:507
 msgid "Unable to import playlist"
 msgstr "Imposible importar la lista"
 
-#: ../browsers/playlists.py:425 ../browsers/playlists.py:503
+#: ../browsers/playlists.py:430 ../browsers/playlists.py:508
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet sólo puede importar listas en los formatos M3U y PLS."
 
-#: ../browsers/playlists.py:484
+#: ../browsers/playlists.py:489
 msgid "Unable to rename playlist"
 msgstr "Imposible renombrar la lista"
 
-#: ../browsers/playlists.py:491
+#: ../browsers/playlists.py:496
 msgid "Import Playlist"
 msgstr "Importar lista"
 

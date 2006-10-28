@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Quod Libet 0.23.1\n"
+"Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 19:15-0700\n"
-"PO-Revision-Date: 2006-09-24 01:37+0800\n"
+"POT-Creation-Date: 2006-10-08 19:25-0700\n"
+"PO-Revision-Date: 2006-10-23 12:55+0800\n"
 "Last-Translator: Hsin-lin Cheng <lancetw@gmail.com>\n"
 "Language-Team: Hsin-lin Cheng <lancetw@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -41,9 +41,8 @@ msgid "_Copy to Device"
 msgstr "複製到裝置 (_C)"
 
 #: ../stock.py:54
-#, fuzzy
 msgid "_Eject"
-msgstr "選取 (_S)"
+msgstr "退出 (_E)"
 
 #: ../stock.py:55
 msgid "_Rename"
@@ -801,7 +800,7 @@ msgstr "從標題分離版本 (_V)"
 
 #: ../qltk/edittags.py:191
 msgid "Split Arranger out of Ar_tist"
-msgstr "從演出者分離組織者 (_t)"
+msgstr "從演出者分離組織者 (_T)"
 
 #: ../qltk/edittags.py:195
 msgid "Split _Performer out of Artist"
@@ -925,7 +924,7 @@ msgstr "Ex Falso 偏好設定"
 
 #: ../qltk/exfalso.py:197 ../qltk/prefs.py:220
 msgid "Split _on:"
-msgstr "分隔標記 (_o)"
+msgstr "分隔標記 (_O)"
 
 #: ../qltk/exfalso.py:203 ../qltk/prefs.py:247
 msgid "Show _programmatic tags"
@@ -1204,7 +1203,7 @@ msgstr "唱片 (_D)"
 
 #: ../qltk/prefs.py:47
 msgid "Al_bum"
-msgstr "專輯 (_b)"
+msgstr "專輯 (_B)"
 
 #: ../qltk/prefs.py:48
 msgid "_Filename"
@@ -1232,15 +1231,15 @@ msgstr "長度 (_L)"
 
 #: ../qltk/prefs.py:66 ../devices/ipod.py:98
 msgid "Title includes _version"
-msgstr "標題包含版本 (_v)"
+msgstr "標題包含版本 (_V)"
 
 #: ../qltk/prefs.py:71 ../devices/ipod.py:99
 msgid "Album includes _part"
-msgstr "專輯包含部份 (_p)"
+msgstr "專輯包含部份 (_P)"
 
 #: ../qltk/prefs.py:76
 msgid "Filename includes _folder"
-msgstr "檔名包含資料夾 (_f)"
+msgstr "檔名包含資料夾 (_F)"
 
 #: ../qltk/prefs.py:90
 msgid "_Others:"
@@ -1260,7 +1259,7 @@ msgstr "瀏覽器"
 
 #: ../qltk/prefs.py:141
 msgid "Color _search terms"
-msgstr "以顏色標示搜尋項目 (_s)"
+msgstr "以顏色標示搜尋項目 (_S)"
 
 #: ../qltk/prefs.py:144
 msgid ""
@@ -1282,11 +1281,11 @@ msgstr "播放器"
 
 #: ../qltk/prefs.py:171
 msgid "_Jump to playing song automatically"
-msgstr "自動跳到播放中的曲目。(_J)"
+msgstr "自動跳到播放中的曲目 (_J)"
 
 #: ../qltk/prefs.py:172
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr "當變更播放中的曲目時，捲動清單到該曲目位置。"
+msgstr "當變更播放中的曲目時，捲動清單到該曲目位置"
 
 #: ../qltk/prefs.py:178
 msgid "_Replay Gain volume adjustment"
@@ -1399,7 +1398,7 @@ msgstr "篩選 (_F)"
 
 #: ../qltk/quodlibet.py:383
 msgid "Not Played To_day"
-msgstr "本日沒有播放紀錄 (_d)"
+msgstr "本日沒有播放紀錄 (_D)"
 
 #: ../qltk/quodlibet.py:385
 msgid "Not Played in a _Week"
@@ -1419,7 +1418,7 @@ msgstr "前 40 名 (_T)"
 
 #: ../qltk/quodlibet.py:392
 msgid "B_ottom 40"
-msgstr "倒數 40 名 (_o)"
+msgstr "倒數 40 名 (_O)"
 
 #: ../qltk/quodlibet.py:394
 msgid "_Control"
@@ -1439,11 +1438,11 @@ msgstr "說明 (_H)"
 
 #: ../qltk/quodlibet.py:423
 msgid "Re_fresh Library"
-msgstr "重新整理資料庫 (_f)"
+msgstr "重新整理資料庫 (_F)"
 
 #: ../qltk/quodlibet.py:427
 msgid "Re_load Library"
-msgstr "重新載入資料庫 (_l)"
+msgstr "重新載入資料庫 (_L)"
 
 #: ../qltk/quodlibet.py:432
 msgid "Filter on _Genre"
@@ -1455,7 +1454,7 @@ msgstr "依演出者篩選 (_A)"
 
 #: ../qltk/quodlibet.py:434
 msgid "Filter on Al_bum"
-msgstr "依專輯篩選 (_b)"
+msgstr "依專輯篩選 (_B)"
 
 #: ../qltk/quodlibet.py:441
 msgid "Random _Genre"
@@ -1467,7 +1466,7 @@ msgstr "隨機演出者 (_A)"
 
 #: ../qltk/quodlibet.py:443
 msgid "Random Al_bum"
-msgstr "隨機專輯 (_b)"
+msgstr "隨機專輯 (_B)"
 
 #: ../qltk/quodlibet.py:450
 msgid "Song _List"
@@ -1533,15 +1532,15 @@ msgstr "無法加入曲目"
 
 #: ../qltk/renamefiles.py:25
 msgid "Replace spaces with _underscores"
-msgstr "以底線替換空白 (_u)"
+msgstr "以底線替換空白 (_U)"
 
 #: ../qltk/renamefiles.py:32
 msgid "Strip _Windows-incompatible characters"
-msgstr "刪除 Windows 不相容字元 (_W)"
+msgstr "刪除不相容 Windows 的字元 (_W)"
 
 #: ../qltk/renamefiles.py:41
 msgid "Strip _diacritical marks"
-msgstr "刪除發音標記 (_d)"
+msgstr "刪除發音標記 (_D)"
 
 #: ../qltk/renamefiles.py:50
 msgid "Strip non-_ASCII characters"
@@ -1638,7 +1637,7 @@ msgstr "設置檔頭... (_C)"
 
 #: ../qltk/tagsfrompath.py:71
 msgid "Replace _underscores with spaces"
-msgstr "以空白替換底線 (_u)"
+msgstr "以空白替換底線 (_U)"
 
 #: ../qltk/tagsfrompath.py:78
 msgid "_Title-case tags"
@@ -1764,7 +1763,7 @@ msgstr "專輯清單偏好設定"
 
 #: ../browsers/albums.py:67
 msgid "Show album _covers"
-msgstr "顯示專輯封面 (_c)"
+msgstr "顯示專輯封面 (_C)"
 
 #: ../browsers/albums.py:83
 msgid "Album Display"
@@ -2201,167 +2200,148 @@ msgid "Music Player"
 msgstr "音樂播放器"
 
 #: ../browsers/media.py:34
-#, fuzzy
 msgid "Device Properties"
-msgstr "屬性"
+msgstr "裝置屬性"
 
 #: ../browsers/media.py:47
 msgid "Device:"
-msgstr ""
+msgstr "裝置："
 
 #: ../browsers/media.py:49
 msgid "Not mounted"
-msgstr ""
+msgstr "未掛載"
 
 #: ../browsers/media.py:50
-#, fuzzy
 msgid "Mount Point:"
-msgstr "掛載點"
+msgstr "掛載點："
 
 #: ../browsers/media.py:126
-#, fuzzy
 msgid "Media Devices"
-msgstr "音訊裝置：%s"
+msgstr "媒體裝置"
 
 #: ../browsers/media.py:127
-#, fuzzy
 msgid "_Media Devices"
-msgstr "音訊裝置：%s"
+msgstr "媒體裝置 (_M)"
 
 #: ../browsers/media.py:426
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
-msgstr ""
+msgstr "<b>%s</b> 已使用，<b>%s</b> 可用"
 
 #: ../browsers/media.py:443
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> is not connected."
-msgstr "<b>%s</b> 不是有效的位置。"
+msgstr "<b>%s</b> 未連線。"
 
 #: ../browsers/media.py:459
-#, fuzzy, python-format
+#, python-format
 msgid "Copying <b>%s</b>"
-msgstr "刪除 <b>%s</b> 失敗。"
+msgstr "正在複製 <b>%s</b>"
 
 #: ../browsers/media.py:477 ../browsers/media.py:492
-#, fuzzy
 msgid "Unable to copy song"
 msgstr "無法複製曲目"
 
 #: ../browsers/media.py:478
 msgid "There is not enough free space for this song."
-msgstr ""
+msgstr "沒有足夠的空間給這首曲目。"
 
 #: ../browsers/media.py:489
 #, python-format
 msgid "<b>%s</b> could not be copied."
-msgstr ""
+msgstr "無法複製 <b>%s</b>。"
 
 #: ../browsers/media.py:509
-#, fuzzy
 msgid "Unable to delete songs"
-msgstr "無法加入曲目"
+msgstr "無法刪除曲目"
 
 #: ../browsers/media.py:519
-#, fuzzy, python-format
+#, python-format
 msgid "Deleting <b>%s</b>"
-msgstr "刪除 <b>%s</b> 失敗。"
+msgstr "正在刪除 <b>%s</b>"
 
 #: ../browsers/media.py:536
-#, fuzzy, python-format
+#, python-format
 msgid "<b>%s</b> could not be deleted."
-msgstr "<b>%s</b> 不是有效的位置。"
+msgstr "無法刪除 <b>%s</b>。"
 
 #: ../browsers/media.py:540
-#, fuzzy
 msgid "Unable to delete song"
-msgstr "無法編輯曲目"
+msgstr "無法刪除曲目"
 
 #: ../browsers/media.py:557
-#, fuzzy, python-format
+#, python-format
 msgid "Ejecting <b>%s</b> failed."
-msgstr "刪除 <b>%s</b> 失敗。"
+msgstr "退出 <b>%s</b> 失敗。"
 
 #: ../browsers/media.py:560
-#, fuzzy
 msgid "Unable to eject device"
-msgstr "無法刪除檔案"
+msgstr "無法退出裝置"
 
 #: ../devices/_base.py:63
-#, fuzzy
 msgid "Unknown Device"
-msgstr "未知"
+msgstr "未知的裝置"
 
 #: ../devices/_base.py:94
-#, fuzzy
 msgid "No eject command found."
-msgstr "未發現站台"
+msgstr "未發現退出（裝置）指令。"
 
 #: ../devices/ipod.py:93
 msgid "_Volume Gain (dB):"
-msgstr ""
+msgstr "音量增益 (dB)：(_V)"
 
 #: ../devices/ipod.py:96 ../devices/storage.py:57
-#, fuzzy
 msgid "Copy _album covers"
-msgstr "顯示專輯封面 (_c)"
+msgstr "複製專輯封面 (_A)"
 
 #: ../devices/ipod.py:97
-#, fuzzy
 msgid "Combine tags with _multiple values"
-msgstr "分割多重設定值"
+msgstr "以多個設定值合併標籤"
 
 #: ../devices/ipod.py:110
 msgid "Model:"
-msgstr ""
+msgstr "模式；"
 
 #: ../devices/ipod.py:112
 msgid "Capacity:"
-msgstr ""
+msgstr "容量："
 
 #: ../devices/ipod.py:114
 msgid "Firmware:"
-msgstr ""
+msgstr "韌體"
 
 #: ../devices/ipod.py:160
 msgid "W: removing orphaned iPod track"
-msgstr ""
+msgstr "警告：正在移除孤立的 iPod 音軌"
 
 #: ../devices/ipod.py:248
-#, fuzzy
 msgid "Unable to save iPod database"
-msgstr "無法儲存到資料庫"
+msgstr "無法儲存 iPod 資料庫"
 
 #: ../devices/ipod.py:260
 msgid "Uninitialized iPod"
-msgstr ""
+msgstr "iPod 尚未初始化"
 
 #: ../devices/ipod.py:261
 msgid "Do you want to create an empty database on this iPod?"
-msgstr ""
+msgstr "您是否要在這 iPod 上建立一個空的資料庫？"
 
 #: ../devices/storage.py:53
-#, fuzzy
 msgid "_Filename Pattern:"
-msgstr "檔名 (_F)"
+msgstr "檔名型態 (_F)"
 
 #: ../devices/storage.py:61
 msgid "_Remove unused covers and directories"
-msgstr ""
+msgstr "移除不在使用的專輯封面與目錄 (_R)"
 
 #: ../devices/storage.py:93
-#, fuzzy
 msgid "File exists"
-msgstr "檔案系統"
+msgstr "檔案已存在"
 
 #: ../devices/storage.py:94
-#, fuzzy, python-format
+#, python-format
 msgid "Overwrite <b>%s</b>?"
-msgstr "刪除 <b>%s</b> 失敗。"
-
-#, fuzzy
-#~ msgid "C_opy album covers"
-#~ msgstr "顯示專輯封面 (_c)"
+msgstr "是否複寫 <b>%s</b>？"
 
 #~ msgid "Unable to retag multiple values"
 #~ msgstr "無法重新標籤多重設定值"
