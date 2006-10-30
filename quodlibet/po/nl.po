@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 19:15-0700\n"
+"POT-Creation-Date: 2006-10-29 17:25-0800\n"
 "PO-Revision-Date: 2006-08-11 18:57+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -1876,7 +1876,7 @@ msgstr ""
 "\n"
 "%d/%d songs toegevoegd."
 
-#: ../browsers/playlists.py:93 ../browsers/playlists.py:407
+#: ../browsers/playlists.py:93 ../browsers/playlists.py:412
 msgid "New Playlist"
 msgstr "Nieuwe Speellijst"
 
@@ -1901,24 +1901,24 @@ msgstr "_Speellijsten"
 msgid "_Remove from Playlist"
 msgstr "_Verwijder uit Speellijst"
 
-#: ../browsers/playlists.py:306
+#: ../browsers/playlists.py:311
 msgid "_Import"
 msgstr "_Importeer"
 
-#: ../browsers/playlists.py:424 ../browsers/playlists.py:502
+#: ../browsers/playlists.py:429 ../browsers/playlists.py:507
 msgid "Unable to import playlist"
 msgstr "Niet in staat om speellijst importeren"
 
-#: ../browsers/playlists.py:425 ../browsers/playlists.py:503
+#: ../browsers/playlists.py:430 ../browsers/playlists.py:508
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr ""
 "Quod Libet kan aleen speellijsten in de M3U en PLS formaten importeren."
 
-#: ../browsers/playlists.py:484
+#: ../browsers/playlists.py:489
 msgid "Unable to rename playlist"
 msgstr "Niet in staan om speellijst te hernoemen"
 
-#: ../browsers/playlists.py:491
+#: ../browsers/playlists.py:496
 msgid "Import Playlist"
 msgstr "Importeer Speellijst"
 

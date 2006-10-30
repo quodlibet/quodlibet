@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 19:15-0700\n"
+"POT-Creation-Date: 2006-10-29 17:25-0800\n"
 "PO-Revision-Date: 2006-07-05 20:35-0500\n"
 "Last-Translator: Andreas Bertheussen <andreasmarcel@gmail.com>\n"
 "Language-Team: Norsk Bokmål <nb@li.org>\n"
@@ -1882,7 +1882,7 @@ msgstr ""
 "\n"
 "%d/%d spor lagt til."
 
-#: ../browsers/playlists.py:93 ../browsers/playlists.py:407
+#: ../browsers/playlists.py:93 ../browsers/playlists.py:412
 msgid "New Playlist"
 msgstr "Ny Spilleliste"
 
@@ -1907,23 +1907,23 @@ msgstr "Spille_lister"
 msgid "_Remove from Playlist"
 msgstr "_Fjern fra Spilleliste"
 
-#: ../browsers/playlists.py:306
+#: ../browsers/playlists.py:311
 msgid "_Import"
 msgstr "_Importer"
 
-#: ../browsers/playlists.py:424 ../browsers/playlists.py:502
+#: ../browsers/playlists.py:429 ../browsers/playlists.py:507
 msgid "Unable to import playlist"
 msgstr "Kan ikke importere spilleliste"
 
-#: ../browsers/playlists.py:425 ../browsers/playlists.py:503
+#: ../browsers/playlists.py:430 ../browsers/playlists.py:508
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet kan kun importere M3U og PLS-spillelister."
 
-#: ../browsers/playlists.py:484
+#: ../browsers/playlists.py:489
 msgid "Unable to rename playlist"
 msgstr "Kan ikke gi spilleliste nytt navn"
 
-#: ../browsers/playlists.py:491
+#: ../browsers/playlists.py:496
 msgid "Import Playlist"
 msgstr "Importer Spilleliste"
 
