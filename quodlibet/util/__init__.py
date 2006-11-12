@@ -23,7 +23,7 @@ def gettext_install():
     except IOError:
         t = GlibTranslations()
 
-    t.install()
+    t.install(unicode=True)
 
 def python_init():
     re.escape = re_esc
