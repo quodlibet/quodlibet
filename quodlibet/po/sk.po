@@ -1,0 +1,2360 @@
+# Slovak translations for Quod Libet/Ex Falso
+# Lukáš Lalinský <lalinsky@gmail.com>, 2006.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: sk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-31 09:27+0100\n"
+"PO-Revision-Date: 2006-11-08 19:59+0100\n"
+"Last-Translator: Lukáš Lalinský <lalinsky@gmail.com>\n"
+"Language-Team: Slovak <sk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: ../stock.py:48
+msgid "Edit _Tags"
+msgstr "Upraviť _tagy"
+
+#: ../stock.py:49
+msgid "_Plugins"
+msgstr "_Zásuvné moduly"
+
+#: ../stock.py:50
+msgid "_Preview"
+msgstr "_Náhľad"
+
+#: ../stock.py:51
+msgid "Add to _Queue"
+msgstr "Pridať do _rady"
+
+#: ../stock.py:52
+msgid "_Add to Playlist"
+msgstr "_Pridať do playlistu"
+
+#: ../stock.py:53
+msgid "_Copy to Device"
+msgstr "_Kopírovať na zariadenie"
+
+#: ../stock.py:54
+msgid "_Eject"
+msgstr "_Vysunúť"
+
+#: ../stock.py:55
+msgid "_Rename"
+msgstr "_Premenovať"
+
+#: ../stock.py:73
+msgid "_Information"
+msgstr "_Informácie"
+
+#. Translators: Only translate this if it conflicts with "Delete",
+#. as is the case in e.g. Finnish. It should be disambiguated as
+#. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
+#. Don't literally translate "ql-remove". It needs an access key, so
+#. a sample translation would be "_Remove from Library".
+#: ../stock.py:81 ../stock.py:85
+msgid "ql-remove"
+msgstr ""
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../stock.py:91
+msgid "gtk-media-next"
+msgstr "_Nasledujúca"
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../stock.py:95
+msgid "gtk-media-previous"
+msgstr "Pre_dchádzajúca"
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../stock.py:99
+msgid "gtk-media-play"
+msgstr ""
+
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../stock.py:103
+msgid "gtk-media-pause"
+msgstr ""
+
+#: ../quodlibet.py:105
+msgid "No song is currently playing."
+msgstr "Momentálne nehrá žiadna skladba."
+
+#: ../quodlibet.py:113
+msgid "Quod Libet is not running."
+msgstr "Quod Libet nie je spustený."
+
+#: ../quodlibet.py:124
+#, python-format
+msgid "Unable to write to %s. Removing it."
+msgstr "Nepodarilo sa zapísať do %s. Odstraňujem to."
+
+#: ../quodlibet.py:159
+msgid "a music library and player"
+msgstr "hudobná prehrávač"
+
+#: ../quodlibet.py:160
+msgid "[ --print-playing | control ]"
+msgstr ""
+
+#: ../quodlibet.py:162
+msgid "Print the playing song and exit"
+msgstr "Vypíše hrajúcu skladbu a skončí"
+
+#: ../quodlibet.py:163
+msgid "Begin playing immediately"
+msgstr "Začať prehrávanie okamžite"
+
+#: ../quodlibet.py:166
+msgid "Jump to next song"
+msgstr "Preskočiť na nasledujúcu skladbu"
+
+#: ../quodlibet.py:167
+msgid "Jump to previous song"
+msgstr "Preskočiť na predchádzajúcu skladbu"
+
+#: ../quodlibet.py:168
+msgid "Start playback"
+msgstr "Spustiť prehrávanie"
+
+#: ../quodlibet.py:169
+msgid "Pause playback"
+msgstr "Pozastaviť prehrávanie"
+
+#: ../quodlibet.py:170
+msgid "Toggle play/pause mode"
+msgstr "Prepnúť mód prehrávania/pauzy"
+
+#: ../quodlibet.py:171
+msgid "Turn up volume"
+msgstr "Zvýšiť hlasitosť"
+
+#: ../quodlibet.py:172
+msgid "Turn down volume"
+msgstr "Znižiť hlasitosť"
+
+#: ../quodlibet.py:173
+msgid "Print player status"
+msgstr "Vypísať stav prehrávača"
+
+#: ../quodlibet.py:174
+msgid "Hide main window"
+msgstr "Schovať hlavné okno"
+
+#: ../quodlibet.py:175
+msgid "Show main window"
+msgstr "Zobraziť hlavné okno"
+
+#: ../quodlibet.py:176
+msgid "Toggle main window visibility"
+msgstr "Prepnúť viditelnosť hlavného okna"
+
+#: ../quodlibet.py:177
+msgid "Focus the running player"
+msgstr ""
+
+#: ../quodlibet.py:178
+msgid "Print the current playlist"
+msgstr "Vypísať aktuálny playlist"
+
+#: ../quodlibet.py:179
+msgid "Print the contents of the queue"
+msgstr "Vypísať obsah fronty"
+
+#: ../quodlibet.py:180
+msgid "Exit Quod Libet"
+msgstr "Ukončiť Quod Libet"
+
+#: ../quodlibet.py:184
+msgid "Seek within the playing song"
+msgstr "Presunúť pozíciu hrajúcej skladby"
+
+#: ../quodlibet.py:184
+msgid "[+|-][HH:]MM:SS"
+msgstr "[+|-][HH:]MM:SS"
+
+#: ../quodlibet.py:185
+msgid "Set or toggle the playback order"
+msgstr "Nastaviť alebo prepnúť poradie prehrávania"
+
+#: ../quodlibet.py:187
+msgid "Turn repeat off, on, or toggle it"
+msgstr "Zapnúť alebo vypnúť opakovanie"
+
+#: ../quodlibet.py:188
+msgid "Set the volume"
+msgstr "Nastaviť hlasitosť"
+
+#: ../quodlibet.py:189
+msgid "Search your audio library"
+msgstr "Vyhľadávať v hudobnej knižnici"
+
+#: ../quodlibet.py:189 ../quodlibet.py:199
+msgid "query"
+msgstr "dotaz"
+
+#: ../quodlibet.py:190
+msgid "Play a file"
+msgstr "Prehrať súbor"
+
+#: ../quodlibet.py:190 ../quodlibet.py:199
+msgid "command|filename"
+msgstr ""
+
+#: ../quodlibet.py:191
+msgid "Rate the playing song"
+msgstr "Ohodnotiť hrajúcu skladbu"
+
+#: ../quodlibet.py:192
+msgid "Set the current browser"
+msgstr "Nastaviť aktuálny prehliadač"
+
+#: ../quodlibet.py:193
+msgid "Open a new browser"
+msgstr "Otvoriť nový prehrávač"
+
+#: ../quodlibet.py:194
+msgid "Show or hide the queue"
+msgstr "Zobraziť alebo skryť frontu"
+
+#: ../quodlibet.py:195
+msgid "Show or hide the main song list"
+msgstr "Zobraziť alebo skryť hlavný zoznam skladieb"
+
+#: ../quodlibet.py:196
+msgid "Filter on a random value"
+msgstr "Filter na náhodnej hodnote"
+
+#: ../quodlibet.py:196
+msgid "command|tag"
+msgstr ""
+
+#: ../quodlibet.py:197
+msgid "Filter on a tag value"
+msgstr "Filter na hodnote tagu"
+
+#: ../quodlibet.py:197
+msgid "tag=value"
+msgstr "tag=hodnota"
+
+#: ../quodlibet.py:198
+msgid "Enqueue a file or query"
+msgstr "Pridať do fronty"
+
+#: ../quodlibet.py:233
+#, python-format
+msgid "E: Invalid argument for '%s'."
+msgstr "E: Neplatný argument pre '%s'."
+
+#: ../quodlibet.py:235 ../util/__init__.py:202
+#, python-format
+msgid "E: Try %s --help."
+msgstr "E: Skúste  %s --help."
+
+#: ../quodlibet.py:256
+msgid "Loaded song library."
+msgstr "Načítaná knižnica skladieb."
+
+#. Try to initialize the playlist and audio output.
+#: ../quodlibet.py:261
+msgid "Opening audio device."
+msgstr "Otváranie audio zariadenia."
+
+#: ../quodlibet.py:291
+msgid "Quod Libet is already running."
+msgstr "Quod Libet už beží."
+
+#. Translations for tag names
+#. Note that although tag names are translated in the main list view,
+#. they are *not* when editing tags.
+#. date the song was added to the library
+#: ../po/tag-names.py:7 ../qltk/information.py:186
+msgid "added"
+msgstr "pridané"
+
+#: ../po/tag-names.py:8
+msgid "album"
+msgstr "album"
+
+#: ../po/tag-names.py:9 ../util/__init__.py:562
+msgid "album artist"
+msgstr "interpret albumu"
+
+#: ../po/tag-names.py:10
+msgid "arranger"
+msgstr "aranžér"
+
+#: ../po/tag-names.py:11 ../qltk/information.py:140 ../qltk/information.py:326
+msgid "artist"
+msgstr "interpret"
+
+#: ../po/tag-names.py:12
+msgid "author"
+msgstr "autor"
+
+#: ../po/tag-names.py:13
+msgid "composer"
+msgstr "skladateľ"
+
+#: ../po/tag-names.py:14
+msgid "conductor"
+msgstr "dirigent"
+
+#: ../po/tag-names.py:15
+msgid "contact"
+msgstr "kontakt"
+
+#: ../po/tag-names.py:16
+msgid "copyright"
+msgstr "copyright"
+
+#: ../po/tag-names.py:17
+msgid "date"
+msgstr "dátum"
+
+#: ../po/tag-names.py:18
+msgid "description"
+msgstr "popis"
+
+#. just path, /.../...
+#: ../po/tag-names.py:20 ../exfalso.py:40 ../util/__init__.py:542
+msgid "directory"
+msgstr "adresár"
+
+#: ../po/tag-names.py:21 ../util/__init__.py:530
+msgid "disc"
+msgstr "disk"
+
+#. just file name, foo.ogg
+#: ../po/tag-names.py:23 ../util/__init__.py:541
+msgid "filename"
+msgstr "názov súboru"
+
+#. as in "file format"
+#: ../po/tag-names.py:25
+msgid "format"
+msgstr "formát"
+
+#. file name plus path, /.../.../foo.ogg
+#: ../po/tag-names.py:27 ../util/__init__.py:536
+msgid "full name"
+msgstr "celý názov"
+
+#: ../po/tag-names.py:28
+msgid "genre"
+msgstr "žáner"
+
+#: ../po/tag-names.py:29
+msgid "grouping"
+msgstr "zoskupenie"
+
+#. alternately, "catalog number", "catalog ID", "label number"
+#: ../po/tag-names.py:31 ../util/__init__.py:531
+msgid "label ID"
+msgstr "katalógové číslo"
+
+#: ../po/tag-names.py:32
+msgid "language"
+msgstr "jazyk"
+
+#. date the song was last heard on
+#: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:534
+msgid "last played"
+msgstr "naposledy prehrané"
+
+#. date the song was last started on
+#: ../po/tag-names.py:36 ../util/__init__.py:535
+msgid "last started"
+msgstr "naposledy spustené"
+
+#: ../po/tag-names.py:37 ../qltk/information.py:220
+msgid "length"
+msgstr "dĺžka"
+
+#: ../po/tag-names.py:38
+msgid "license"
+msgstr "licencia"
+
+#: ../po/tag-names.py:39
+msgid "location"
+msgstr "miesto"
+
+#: ../po/tag-names.py:40
+msgid "lyricist"
+msgstr "autor textu"
+
+#. date song was last modified/edited
+#: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:539
+msgid "modified"
+msgstr "upravené"
+
+#: ../po/tag-names.py:43 ../util/__init__.py:540
+msgid "mount point"
+msgstr "prípojný bod"
+
+#. alternately, "record label"
+#: ../po/tag-names.py:45
+msgid "organization"
+msgstr "organizácia"
+
+#: ../po/tag-names.py:46 ../util/__init__.py:563
+msgid "original release date"
+msgstr "originálny dátum vydania"
+
+#: ../po/tag-names.py:47 ../util/__init__.py:565
+msgid "original artist"
+msgstr "pôvodný interpret"
+
+#: ../po/tag-names.py:48 ../util/__init__.py:564
+msgid "original album"
+msgstr "pôvodný album"
+
+#. alternately, "movement", "section"
+#: ../po/tag-names.py:50
+msgid "part"
+msgstr "časť"
+
+#: ../po/tag-names.py:51
+msgid "people"
+msgstr "ľudia"
+
+#: ../po/tag-names.py:52 ../qltk/information.py:332
+msgid "performer"
+msgstr "hudobník"
+
+#: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:537
+msgid "plays"
+msgstr "prehraní"
+
+#: ../po/tag-names.py:54 ../qltk/information.py:190
+msgid "rating"
+msgstr "hodnotenie"
+
+#: ../po/tag-names.py:55 ../util/__init__.py:566
+msgid "recording date"
+msgstr "dátum nahrania"
+
+#: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:538
+msgid "skips"
+msgstr "preskočení"
+
+#: ../po/tag-names.py:57
+msgid "title"
+msgstr "názov"
+
+#: ../po/tag-names.py:58 ../util/__init__.py:529
+msgid "track"
+msgstr "skladba"
+
+#: ../po/tag-names.py:59
+msgid "version"
+msgstr "verzia"
+
+#: ../po/tag-names.py:60
+msgid "website"
+msgstr "webstránka"
+
+#: ../po/tag-names.py:61
+msgid "year"
+msgstr "rok"
+
+#. beats per minute
+#: ../po/tag-names.py:63 ../util/__init__.py:532
+msgid "BPM"
+msgstr "BPM"
+
+#: ../po/tag-names.py:65 ../qltk/information.py:333
+msgid "performers"
+msgstr "hudobníci"
+
+#: ../po/tag-names.py:66
+msgid "lyricists"
+msgstr "autori textu"
+
+#: ../po/tag-names.py:67
+msgid "arrangers"
+msgstr "aranžéri"
+
+#: ../po/tag-names.py:68
+msgid "composers"
+msgstr "skladatelia"
+
+#: ../po/tag-names.py:69
+msgid "conductors"
+msgstr "dirigenti"
+
+#: ../po/tag-names.py:70
+msgid "authors"
+msgstr "autori"
+
+#: ../po/tag-names.py:71 ../qltk/information.py:141 ../qltk/information.py:327
+#: ../qltk/information.py:464
+msgid "artists"
+msgstr "interpreti"
+
+#: ../po/tag-names.py:72 ../qltk/information.py:480
+msgid "albums"
+msgstr "albumy"
+
+#: ../po/tag-names.py:73
+msgid "tracks"
+msgstr "skladby"
+
+#: ../po/tag-names.py:74
+msgid "discs"
+msgstr "disky"
+
+#. Not really tag names, but this is the best place for them so far.
+#: ../po/tag-names.py:78
+#, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d sekunda"
+msgstr[1] "%d sekundy"
+msgstr[2] "%d sekúnd"
+
+#: ../po/tag-names.py:79
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minúta"
+msgstr[1] "%d minúty"
+msgstr[2] "%d minút"
+
+#: ../po/tag-names.py:80
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d hodina"
+msgstr[1] "%d hodiny"
+msgstr[2] "%d hodín"
+
+#: ../po/tag-names.py:81
+#, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d deň"
+msgstr[1] "%d dni"
+msgstr[2] "%d dní"
+
+#: ../po/tag-names.py:82
+#, python-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] "%d rok"
+msgstr[1] "%d roky"
+msgstr[2] "%d rokov"
+
+#: ../formats/_audio.py:191 ../qltk/information.py:170
+#: ../qltk/information.py:178 ../qltk/information.py:204
+#: ../browsers/paned.py:28 ../browsers/audiofeeds.py:40
+#: ../browsers/audiofeeds.py:50 ../browsers/audiofeeds.py:51
+#: ../browsers/audiofeeds.py:114
+msgid "Unknown"
+msgstr "Neznáme"
+
+#: ../exfalso.py:40
+msgid "an audio tag editor"
+msgstr "editor audio tagov"
+
+#: ../widgets.py:43
+msgid "Unable to start web browser"
+msgstr "Neporadilo sa spustit webový prehliadač"
+
+#: ../widgets.py:44
+msgid ""
+"A web browser could not be found. Please set your $BROWSER variable, or make "
+"sure /usr/bin/sensible-browser exists."
+msgstr "Nepodarilo sa nájst žiadny webový prehliadač. Nastavte prosím premennú $BROWSER, alebo sa uistite že súbor /usr/bin/sensible-browser existuje."
+
+#: ../widgets.py:126
+msgid "Unable to save library"
+msgstr "Neporadilo sa uložiť knižnicu"
+
+#: ../widgets.py:131
+msgid "Unable to play song"
+msgstr "Neporadilo sa prehrať skladbu"
+
+#: ../widgets.py:132
+msgid "GStreamer was unable to load the selected song."
+msgstr "GStreamer nemohol načítať vybranú skladbu."
+
+#: ../widgets.py:137
+msgid "Unable to open audio device"
+msgstr "Neporadilo sa otvoriť audio zariadenie"
+
+#: ../widgets.py:138
+#, python-format
+msgid ""
+"Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
+"not open them. Set your GStreamer pipeline by changing the\n"
+"    <b>pipeline = %(sink)s</b>\n"
+"line in ~/.quodlibet/config."
+msgstr ""
+"Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
+"not open them. Set your GStreamer pipeline by changing the\n"
+"    <b>pipeline = %(sink)s</b>\n"
+"line in ~/.quodlibet/config."
+
+#: ../widgets.py:147
+msgid "Unable to open files"
+msgstr "Neporadilo sa otvoriť súbory"
+
+#: ../widgets.py:148
+msgid ""
+"Quod Libet could not find the 'filesrc' GStreamer element. Check your "
+"GStreamer installation."
+msgstr "Quod Libet nenašiel GStreamer element 'filesrc'. Skontrolujte svoju inštaláciu GStreameru."
+
+#: ../plugins/__init__.py:245 ../qltk/tagsfrompath.py:233
+msgid "Unable to edit song"
+msgstr "Neporadilo sa editovať skladbu"
+
+#: ../plugins/__init__.py:246 ../qltk/edittags.py:637
+#: ../qltk/tagsfrompath.py:234 ../qltk/tracknumbers.py:133
+#, python-format
+msgid ""
+"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
+"have permission to edit it."
+msgstr "Ukladanie <b>%s</b> zlyhalo. Súbor je možno len pre čítanie alebo nemáte práva na jeho zmenu."
+
+#: ../library/__init__.py:33 ../qltk/about.py:28
+#, python-format
+msgid "Supported formats: %s"
+msgstr "Podporované formáty: %s"
+
+#: ../library/songs.py:196
+msgid "Checking mount points"
+msgstr "Kontrola prípojných bodov"
+
+#: ../library/songs.py:210
+msgid "Scanning library"
+msgstr "Skenovanie knižnice"
+
+#: ../library/songs.py:252
+#, python-format
+msgid "Scanning %s"
+msgstr "Skenovanie %s"
+
+#: ../qltk/_editpane.py:69
+msgid "_More options..."
+msgstr "_Viac možností..."
+
+#: ../qltk/about.py:29
+#, python-format
+msgid "Audio device: %s"
+msgstr "Audio zariadenie: %s"
+
+#. Translators: Replace this with your name/email to have it appear
+#. in the "About" dialog.
+#: ../qltk/about.py:38
+msgid "translator-credits"
+msgstr "Lukáš Lalinský <lalinsky@gmail.com>"
+
+#. Translators: Refers to the beginning of the playing song.
+#: ../qltk/bookmarks.py:25
+msgid "Beginning"
+msgstr "Začiatok"
+
+#: ../qltk/bookmarks.py:31 ../qltk/bookmarks.py:66
+msgid "N/A"
+msgstr "N/A"
+
+#: ../qltk/bookmarks.py:70
+msgid "Time"
+msgstr "Čas"
+
+#: ../qltk/bookmarks.py:76 ../qltk/bookmarks.py:108
+msgid "Bookmark Name"
+msgstr "Názov záložky"
+
+#: ../qltk/bookmarks.py:106
+msgid "MM:SS"
+msgstr "MM:SS"
+
+#: ../qltk/bookmarks.py:180 ../qltk/information.py:72
+msgid "Bookmarks"
+msgstr "Záložky"
+
+#: ../qltk/browser.py:52 ../qltk/quodlibet.py:102 ../util/__init__.py:303
+msgid "No time information"
+msgstr "Žiadna informácia o čase"
+
+#: ../qltk/cbes.py:22
+msgid "Saved Values"
+msgstr "Uložené hodnoty"
+
+#: ../qltk/cbes.py:33 ../browsers/media.py:56
+msgid "_Name:"
+msgstr "_Názov:"
+
+#: ../qltk/cbes.py:41 ../qltk/edittags.py:231
+msgid "_Value:"
+msgstr "_Hodnota:"
+
+#: ../qltk/cbes.py:198
+msgid "Edit saved values..."
+msgstr "Upraviť uložené hodnoty..."
+
+#: ../qltk/chooser.py:40 ../qltk/filesel.py:241
+msgid "Songs"
+msgstr "Skladby"
+
+#: ../qltk/controls.py:46
+msgid "Display remaining time"
+msgstr "Zobraziť zostávajúci čas"
+
+#: ../qltk/controls.py:52
+msgid "_Edit Bookmarks..."
+msgstr "_Upraviť záložky..."
+
+#: ../qltk/controls.py:180
+msgid "Stop after this song"
+msgstr "Skončiť po tejto skladbe"
+
+#: ../qltk/delete.py:30
+msgid "Delete Files"
+msgstr "Odstrániť súbory"
+
+#: ../qltk/delete.py:40
+msgid "_Move to Trash"
+msgstr "_Presunúť do koša"
+
+#: ../qltk/delete.py:58
+msgid "Permanently delete this file?"
+msgstr "Vymazať tento súbor natrvalo?"
+
+#: ../qltk/delete.py:59
+msgid "Permanently delete these files?"
+msgstr "Vymazať tieto súbory natrvalo?"
+
+#: ../qltk/delete.py:63
+#, python-format
+msgid "%(title)s and %(count)d more..."
+msgid_plural "%(title)s and %(count)d more..."
+msgstr[0] "%(title)s a %(count)d viac..."
+msgstr[1] "%(title)s a %(count)d viac..."
+msgstr[2] "%(title)s a %(count)d viac..."
+
+#: ../qltk/delete.py:91
+#, python-format
+msgid "Moving %d/%d."
+msgstr "Presúvanie %d/%d."
+
+#: ../qltk/delete.py:92
+#, python-format
+msgid "Deleting %d/%d."
+msgstr "Odstraňovanie %d/%d."
+
+#: ../qltk/delete.py:117
+msgid "Unable to delete file"
+msgstr "Nepodarilo sa odstrániť súbor"
+
+#: ../qltk/delete.py:118
+#, python-format
+msgid "Deleting <b>%s</b> failed."
+msgstr "Odstraňovanie <b>%s</b> zlyhalo."
+
+#: ../qltk/downloader.py:37
+msgid "Downloads"
+msgstr "Sťahovania"
+
+#: ../qltk/downloader.py:50
+msgid "Filename"
+msgstr "Názov súboru"
+
+#: ../qltk/downloader.py:59
+msgid "Size"
+msgstr "Veľkosť"
+
+#: ../qltk/edittags.py:39 ../qltk/edittags.py:50
+#, python-format
+msgid "missing from %d song"
+msgid_plural "missing from %d songs"
+msgstr[0] "chýba v %d skladbe"
+msgstr[1] "chýba v %d skladbách"
+msgstr[2] "chýba v %d skladbách"
+
+#: ../qltk/edittags.py:43 ../qltk/edittags.py:47
+#, python-format
+msgid "different across %d song"
+msgid_plural "different across %d songs"
+msgstr[0] "rôzne v %d skladbe"
+msgstr[1] "rôzne v %d skladbách"
+msgstr[2] "rôzne v %d skladbách"
+
+#: ../qltk/edittags.py:125
+msgid "Split into _Multiple Values"
+msgstr "Rozdeliť na _viacero hodnôt"
+
+#: ../qltk/edittags.py:143
+msgid "Split Disc out of _Album"
+msgstr "Oddeliť disk z _albumu"
+
+#: ../qltk/edittags.py:158
+msgid "Split _Version out of Title"
+msgstr "Oddeliť _verziu z názvu"
+
+#: ../qltk/edittags.py:191
+msgid "Split Arranger out of Ar_tist"
+msgstr "Oddeliť aranžéra z in_terpreta"
+
+#: ../qltk/edittags.py:195
+msgid "Split _Performer out of Artist"
+msgstr "Oddeliť _hudobníka z interpreta"
+
+#: ../qltk/edittags.py:204
+msgid "Add a Tag"
+msgstr "Pridať tag"
+
+#: ../qltk/edittags.py:222
+msgid "_Tag:"
+msgstr "_Tag:"
+
+#: ../qltk/edittags.py:314
+msgid "Edit Tags"
+msgstr "Upraviť tagy"
+
+#: ../qltk/edittags.py:321
+msgid "Write"
+msgstr "Zapísať"
+
+#: ../qltk/edittags.py:341
+msgid "Tag"
+msgstr "Tag"
+
+#: ../qltk/edittags.py:357
+msgid "Value"
+msgstr "Hodnota"
+
+#: ../qltk/edittags.py:505
+msgid "Unable to add tag"
+msgstr "Nepodarilo sa pridať tag"
+
+#: ../qltk/edittags.py:506
+#, python-format
+msgid ""
+"Unable to add <b>%s</b>\n"
+"\n"
+"The files currently selected do not support multiple values."
+msgstr ""
+"Nepodarilo sa pridať <b>%s</b>\n"
+"\n"
+"The files currently selected do not support multiple values."
+
+#. Can't remove the old tag.
+#. Can't add the new tag.
+#. Return a 'natural' version of the tag for human-readable bits.
+#. Strips ~ and ~# from the start and runs it through a map (which
+#. the user can configure).
+#: ../qltk/edittags.py:532 ../qltk/edittags.py:677 ../qltk/edittags.py:684
+#: ../qltk/tagsfrompath.py:148 ../util/__init__.py:473 ../util/__init__.py:480
+msgid "Invalid tag"
+msgstr "Neplatný tag"
+
+#: ../qltk/edittags.py:533 ../qltk/edittags.py:678 ../qltk/edittags.py:685
+#: ../qltk/tagsfrompath.py:149
+#, python-format
+msgid ""
+"Invalid tag <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing this tag."
+msgstr ""
+"Neplatný tag <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing this tag."
+
+#: ../qltk/edittags.py:582 ../qltk/tagsfrompath.py:208
+#: ../qltk/tracknumbers.py:120
+msgid "Tag may not be accurate"
+msgstr "Tag môže byť nepresný"
+
+#: ../qltk/edittags.py:583 ../qltk/tagsfrompath.py:209
+#: ../qltk/tracknumbers.py:121
+#, python-format
+msgid ""
+"<b>%s</b> changed while the program was running. Saving without refreshing "
+"your library may overwrite other changes to the song.\n"
+"\n"
+"Save this song anyway?"
+msgstr ""
+"<b>%s</b> zmenené počas behu programu. Uloženie bez obnovenia knižnice môže prepísať zmeny v skladbe.\n"
+"\n"
+"Uložiť túto skladba aj tak?"
+
+#: ../qltk/edittags.py:636 ../qltk/tracknumbers.py:132
+msgid "Unable to save song"
+msgstr "Nepodarilo sa uložiť skladbu"
+
+#: ../qltk/edittags.py:660 ../qltk/edittags.py:695
+msgid "Invalid value"
+msgstr "Neplatná hodnota"
+
+#: ../qltk/edittags.py:661 ../qltk/edittags.py:696
+#, python-format
+msgid ""
+"Invalid value: <b>%(value)s</b>\n"
+"\n"
+"%(error)s"
+msgstr ""
+"Neplarná hodnota: <b>%(value)s</b>\n"
+"\n"
+"%(error)s"
+
+#: ../qltk/exfalso.py:157 ../qltk/information.py:447
+#: ../browsers/playlists.py:176
+#, python-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "%d skladba"
+msgstr[1] "%d skladby"
+msgstr[2] "%d skladieb"
+
+#: ../qltk/exfalso.py:170 ../qltk/properties.py:118
+#: ../browsers/playlists.py:107 ../browsers/playlists.py:203
+#, python-format
+msgid "%(title)s and %(count)d more"
+msgstr "%(title)s a %(count)d viac"
+
+#: ../qltk/exfalso.py:187
+msgid "Ex Falso Preferences"
+msgstr "Možnosti Ex Falso"
+
+#: ../qltk/exfalso.py:197 ../qltk/prefs.py:220
+msgid "Split _on:"
+msgstr "R_ozdeliť na:"
+
+#: ../qltk/exfalso.py:203 ../qltk/prefs.py:247
+msgid "Show _programmatic tags"
+msgstr "Zobraziť _programové tagy"
+
+#: ../qltk/exfalso.py:207 ../qltk/prefs.py:250
+msgid "Tag Editing"
+msgstr "Editácia tagov"
+
+#: ../qltk/filesel.py:42
+msgid "Folders"
+msgstr "Zložky"
+
+#: ../qltk/filesel.py:81
+msgid "_New Folder..."
+msgstr "_Nová zložka..."
+
+#: ../qltk/filesel.py:90
+msgid "_Select All Subfolders"
+msgstr "_Vybrať všetky podzložky..."
+
+#: ../qltk/filesel.py:141
+msgid "New Folder"
+msgstr "Nová zložka"
+
+#: ../qltk/filesel.py:141
+msgid "Enter a name for the new folder:"
+msgstr "Vložte názov novej zložky:"
+
+#: ../qltk/filesel.py:150
+msgid "Unable to create folder"
+msgstr "Nepodarilo sa vytvoriť zložku"
+
+#: ../qltk/filesel.py:163
+msgid "Unable to delete folder"
+msgstr "Nepodarilo sa odstrániť zložku"
+
+#. Translators: As in "by Artist Name"
+#: ../qltk/info.py:30
+#, python-format
+msgid "by %s"
+msgstr "od %s"
+
+#: ../qltk/info.py:31 ../qltk/information.py:110 ../qltk/information.py:353
+#, python-format
+msgid "Disc %s"
+msgstr "Disk %s"
+
+#: ../qltk/info.py:32 ../qltk/information.py:115
+#, python-format
+msgid "Track %s"
+msgstr "Skladba %s"
+
+#: ../qltk/info.py:52
+msgid "_Edit Display..."
+msgstr "_Upraviť zobrazenie..."
+
+#: ../qltk/info.py:86
+msgid "Not playing"
+msgstr "Nehrá"
+
+#: ../qltk/information.py:50
+msgid "No songs are selected."
+msgstr "Nie sú vybrané žiadne skladby."
+
+#: ../qltk/information.py:51
+msgid "No Songs"
+msgstr "Žiadne skladby"
+
+#: ../qltk/information.py:64 ../qltk/information.py:241
+#: ../qltk/information.py:376 ../qltk/information.py:435
+msgid "Information"
+msgstr "Informácie"
+
+#: ../qltk/information.py:68
+msgid "Lyrics"
+msgstr "Text"
+
+#: ../qltk/information.py:166 ../qltk/information.py:179
+#: ../qltk/songlist.py:298
+msgid "Never"
+msgstr "Nikdy"
+
+#: ../qltk/information.py:167
+#, python-format
+msgid "%d time"
+msgid_plural "%d times"
+msgstr[0] "%d krát"
+msgstr[1] "%d krát"
+msgstr[2] "%d krát"
+
+#: ../qltk/information.py:199 ../qltk/prefs.py:191
+msgid "Library"
+msgstr "Knižnica"
+
+#: ../qltk/information.py:214
+#, python-format
+msgid "%d kbps"
+msgstr "%d kbps"
+
+#: ../qltk/information.py:221
+msgid "file size"
+msgstr "veľkosť súboru"
+
+#: ../qltk/information.py:224
+msgid "bitrate"
+msgstr "bitrate"
+
+#: ../qltk/information.py:235 ../qltk/properties.py:56
+#: ../qltk/renamefiles.py:68 ../qltk/tagsfrompath.py:165
+#: ../qltk/tracknumbers.py:59
+msgid "File"
+msgstr "Súbor"
+
+#: ../qltk/information.py:283 ../browsers/albums.py:259
+#, python-format
+msgid "%d disc"
+msgid_plural "%d discs"
+msgstr[0] "%d disk"
+msgstr[1] "%d disky"
+msgstr[2] "%d diskov"
+
+#: ../qltk/information.py:285 ../browsers/albums.py:255
+#, python-format
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d skladba"
+msgstr[1] "%d skladby"
+msgstr[2] "%d skladieb"
+
+#: ../qltk/information.py:287
+#, python-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%d vybraná"
+msgstr[1] "%d vybrané"
+msgstr[2] "%d vybraných"
+
+#: ../qltk/information.py:300
+#, python-format
+msgid "Produced by %s"
+msgstr "Vytvorené v %s"
+
+#: ../qltk/information.py:363
+msgid "Track unavailable"
+msgstr "Skladba nedostupná"
+
+#: ../qltk/information.py:370
+msgid "Track List"
+msgstr "Zoznam skladieb"
+
+#: ../qltk/information.py:408 ../qltk/information.py:477
+#, python-format
+msgid "%d song with no album"
+msgid_plural "%d songs with no album"
+msgstr[0] "%d skladba bez albumu"
+msgstr[1] "%d skladby bez albumu"
+msgstr[2] "%d skladieb bez albumu"
+
+#: ../qltk/information.py:412
+msgid "Selected Discography"
+msgstr "Vybraná diskografia"
+
+#: ../qltk/information.py:461
+#, python-format
+msgid "%d song with no artist"
+msgid_plural "%d songs with no artist"
+msgstr[0] "%d skladba bez interpreta"
+msgstr[1] "%d skladby bez interpreta"
+msgstr[2] "%d skladieb bez interpreta"
+
+#: ../qltk/information.py:493
+msgid "Total length:"
+msgstr "Celková dľžka:"
+
+#: ../qltk/information.py:497
+msgid "Total size:"
+msgstr "Celková veľkosť:"
+
+#: ../qltk/information.py:500
+msgid "Files"
+msgstr "Súbory"
+
+#: ../qltk/lyrics.py:34
+msgid "_Download"
+msgstr "_Sťahovanie"
+
+#: ../qltk/lyrics.py:52
+#, python-format
+msgid "Lyrics provided by %s."
+msgstr "Text od %s."
+
+#: ../qltk/lyrics.py:66
+msgid ""
+"No lyrics found.\n"
+"\n"
+"You can click the Download button to have Quod Libet search for lyrics "
+"online.  You can also enter them yourself and click save."
+msgstr ""
+"Žiadny text nenájdený.\n"
+"\n"
+"You can click the Download button to have Quod Libet search for lyrics "
+"online.  You can also enter them yourself and click save."
+
+#: ../qltk/lyrics.py:85
+msgid "Searching for lyrics..."
+msgstr "Vyhľadávanie textov..."
+
+#: ../qltk/lyrics.py:105 ../qltk/lyrics.py:138 ../qltk/lyrics.py:151
+msgid "Unable to download lyrics."
+msgstr "Neporadilo sa stiahnuť text."
+
+#: ../qltk/lyrics.py:121
+msgid "No lyrics found for this song."
+msgstr "Nenájdený žiadny text pre túto skladbu."
+
+#: ../qltk/msg.py:48
+msgid "Discard tag changes?"
+msgstr "Zahodiť zmeny v tagoch?"
+
+#: ../qltk/msg.py:49
+msgid ""
+"Tags have been changed but not saved. Save these files, or revert and "
+"discard changes?"
+msgstr "Tagy boli zmenéné ale nie uložené. Uložiť tieto súbory, alebo zahodiť zmeny?"
+
+#: ../qltk/playorder.py:14
+msgid "In Order"
+msgstr "V poradí"
+
+#: ../qltk/playorder.py:15
+msgid "Shuffle"
+msgstr "Náhodne"
+
+#: ../qltk/playorder.py:16
+msgid "Weighted"
+msgstr "Podľa váhy"
+
+#: ../qltk/playorder.py:17
+msgid "One Song"
+msgstr "Jedna skladba"
+
+#. Canonical accelerated versions, in case we need them (e.g. the tray
+#. icon uses them right now).
+#: ../qltk/playorder.py:23
+msgid "_In Order"
+msgstr "_V poradí"
+
+#: ../qltk/playorder.py:24
+msgid "_Shuffle"
+msgstr "_Náhodne"
+
+#: ../qltk/playorder.py:25
+msgid "_Weighted"
+msgstr "_Podľa váhy"
+
+#: ../qltk/playorder.py:26
+msgid "_One Song"
+msgstr "_Jedna skladba"
+
+#: ../qltk/pluginwin.py:35
+msgid "Quod Libet Plugins"
+msgstr "Zásuvné moduly Quod Libet"
+
+#: ../qltk/pluginwin.py:83
+msgid "Show _Errors"
+msgstr "Zobraziť _chyby"
+
+#: ../qltk/pluginwin.py:105
+msgid "Preferences"
+msgstr "Nastavenie"
+
+#: ../qltk/pluginwin.py:188
+msgid "No plugins found."
+msgstr "Nenájdené žiadne zásuvné moduly."
+
+#: ../qltk/pluginwin.py:195
+msgid "Plugin Errors"
+msgstr "Chyby zásuvných modulov"
+
+#: ../qltk/prefs.py:37
+msgid "Song List"
+msgstr "Zoznam skladieb"
+
+#: ../qltk/prefs.py:46
+msgid "_Disc"
+msgstr "_Disk"
+
+#: ../qltk/prefs.py:47
+msgid "Al_bum"
+msgstr "_Album"
+
+#: ../qltk/prefs.py:48
+msgid "_Filename"
+msgstr "Názob _súboru"
+
+#: ../qltk/prefs.py:49
+msgid "_Track"
+msgstr "_Skladba"
+
+#: ../qltk/prefs.py:50
+msgid "_Artist"
+msgstr "_Interpret"
+
+#: ../qltk/prefs.py:51 ../qltk/songlist.py:423
+msgid "_Rating"
+msgstr "_Hodnotenie"
+
+#: ../qltk/prefs.py:53
+msgid "_Date"
+msgstr "_Dátum"
+
+#: ../qltk/prefs.py:54
+msgid "_Length"
+msgstr "_Dľžka"
+
+#: ../qltk/prefs.py:66 ../devices/ipod.py:98
+msgid "Title includes _version"
+msgstr "Názov obsahuje _verziu"
+
+#: ../qltk/prefs.py:71 ../devices/ipod.py:99
+msgid "Album includes _part"
+msgstr "Album obsahuje ča_sť"
+
+#: ../qltk/prefs.py:76
+msgid "Filename includes _folder"
+msgstr "Názov súboru obsahuje _zložku"
+
+#: ../qltk/prefs.py:90
+msgid "_Others:"
+msgstr "_Ostatné:"
+
+#: ../qltk/prefs.py:96
+msgid "Other columns to display, separated by spaces"
+msgstr "Ostatné stĺpce, oddelené medzerami"
+
+#: ../qltk/prefs.py:110
+msgid "Visible Columns"
+msgstr "Viditeľné stĺpce"
+
+#: ../qltk/prefs.py:138
+msgid "Browsers"
+msgstr "Prehliadače"
+
+#: ../qltk/prefs.py:141
+msgid "Color _search terms"
+msgstr "Farebne označovať _vyhľadávanie"
+
+#: ../qltk/prefs.py:144
+msgid ""
+"Display simple searches in blue, advanced ones in green, and invalid ones in "
+"red"
+msgstr "Zobraziť jednoduche vyhľadávanie modro, rozšírené zeleno a neplatné červeno"
+
+#: ../qltk/prefs.py:147
+msgid "_Global filter:"
+msgstr "_Globálny filter:"
+
+#: ../qltk/prefs.py:157 ../browsers/search.py:132
+msgid "Search Library"
+msgstr "Vyhľadávať v knižnici"
+
+#: ../qltk/prefs.py:167
+msgid "Player"
+msgstr "Prehrávač"
+
+#: ../qltk/prefs.py:171
+msgid "_Jump to playing song automatically"
+msgstr "Automaticky _preskočiť na hrajúcu skladbu"
+
+#: ../qltk/prefs.py:172
+msgid "When the playing song changes, scroll to it in the song list"
+msgstr ""
+
+#: ../qltk/prefs.py:178
+msgid "_Replay Gain volume adjustment"
+msgstr "_Prispôsobiť hlasitosť podľa Replay Gain"
+
+#: ../qltk/prefs.py:193
+msgid "_Select"
+msgstr "_Výber"
+
+#: ../qltk/prefs.py:199
+msgid ""
+"Songs placed in these folders (separated by ':') will be added to your "
+"library"
+msgstr "Skladby uložené v týchto zložkách (oddelené pomocou ':') budú pridané do Vašej knižnice"
+
+#: ../qltk/prefs.py:210
+msgid "Scan _Directories"
+msgstr "Prehľadávať _adresáre"
+
+#: ../qltk/prefs.py:219
+msgid "Separators for splitting tags"
+msgstr "Oddelovače na delenie tagov"
+
+#: ../qltk/prefs.py:229
+msgid "Save ratings and play counts"
+msgstr "Ukladať hodnotenia a počty hraní"
+
+#: ../qltk/prefs.py:233
+msgid "_Email:"
+msgstr "_Email:"
+
+#: ../qltk/prefs.py:235
+msgid "Ratings and play counts will be set for this email address"
+msgstr "Hodnotenia a počty hraní budú nastavené pre túto emailovú adresu"
+
+#: ../qltk/prefs.py:255
+msgid "Select Directories"
+msgstr "Vyberte adresáre"
+
+#: ../qltk/prefs.py:267
+msgid "Quod Libet Preferences"
+msgstr "Nastavenie Quod Libet"
+
+#: ../qltk/properties.py:120 ../qltk/properties.py:121
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:455
+msgid "_Queue"
+msgstr "_Fronta"
+
+#: ../qltk/queue.py:57
+msgid "_Random"
+msgstr "_Náhodne"
+
+#: ../qltk/queue.py:81
+msgid "Remove all songs from the queue"
+msgstr "Odstrániť všetky skladby z fronty"
+
+#: ../qltk/queue.py:111 ../browsers/_base.py:126
+#, python-format
+msgid "%(count)d song (%(time)s)"
+msgid_plural "%(count)d songs (%(time)s)"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: ../qltk/quodlibet.py:203
+msgid "_Order:"
+msgstr "_Poradie:"
+
+#: ../qltk/quodlibet.py:212
+msgid "_Repeat"
+msgstr "_Opakovať"
+
+#: ../qltk/quodlibet.py:213
+msgid "Restart the playlist when finished"
+msgstr "Reštartovať playlist po skončení"
+
+#: ../qltk/quodlibet.py:323
+msgid "Unable to add songs"
+msgstr "Neporadilo sa pridať skladby"
+
+#: ../qltk/quodlibet.py:324 ../qltk/quodlibet.py:696
+#, python-format
+msgid "<b>%s</b> uses an unsupported protocol."
+msgstr "<b>%s</b> používa nepodporovaný protokol."
+
+#: ../qltk/quodlibet.py:368
+msgid "_Music"
+msgstr "_Hudba"
+
+#: ../qltk/quodlibet.py:369
+msgid "_Add a Folder..."
+msgstr "Pridať _zložku..."
+
+#: ../qltk/quodlibet.py:371
+msgid "_Add a File..."
+msgstr "Pridať _súbor..."
+
+#: ../qltk/quodlibet.py:373
+msgid "_Add a Location..."
+msgstr "Pridať _umiestnenie..."
+
+#: ../qltk/quodlibet.py:375
+msgid "_Browse Library"
+msgstr "_Prehliadať knižnicu"
+
+#: ../qltk/quodlibet.py:381
+msgid "_Filters"
+msgstr "_Filtre"
+
+#: ../qltk/quodlibet.py:383
+msgid "Not Played To_day"
+msgstr "Nehrané _dnes"
+
+#: ../qltk/quodlibet.py:385
+msgid "Not Played in a _Week"
+msgstr "Nehrané za posledný _týždeň"
+
+#: ../qltk/quodlibet.py:387
+msgid "Not Played in a _Month"
+msgstr "Nehrané za posledný _mesiac"
+
+#: ../qltk/quodlibet.py:389
+msgid "_Never Played"
+msgstr "_Nehrané nikdy"
+
+#: ../qltk/quodlibet.py:391
+msgid "_Top 40"
+msgstr "_Top 40"
+
+#: ../qltk/quodlibet.py:392
+msgid "B_ottom 40"
+msgstr "_Spodných 40"
+
+#: ../qltk/quodlibet.py:394
+msgid "_Control"
+msgstr "_Ovládanie"
+
+#: ../qltk/quodlibet.py:400
+msgid "_Jump to Playing Song"
+msgstr "_Preskočiť na hrajúcu skladbu"
+
+#: ../qltk/quodlibet.py:403
+msgid "_View"
+msgstr "_Zobraziť"
+
+#: ../qltk/quodlibet.py:404
+msgid "_Help"
+msgstr "_Pomocník"
+
+#: ../qltk/quodlibet.py:423
+msgid "Re_fresh Library"
+msgstr "O_bnoviť knižnicu"
+
+#: ../qltk/quodlibet.py:427
+msgid "Re_load Library"
+msgstr "Z_novunačítať knižnicu"
+
+#: ../qltk/quodlibet.py:432
+msgid "Filter on _Genre"
+msgstr "Filter na žá_ner"
+
+#: ../qltk/quodlibet.py:433
+msgid "Filter on _Artist"
+msgstr "Filter na _interpreta"
+
+#: ../qltk/quodlibet.py:434
+msgid "Filter on Al_bum"
+msgstr "Filter na _album"
+
+#: ../qltk/quodlibet.py:441
+msgid "Random _Genre"
+msgstr "Náhodný žá_ner"
+
+#: ../qltk/quodlibet.py:442
+msgid "Random _Artist"
+msgstr "Náhodný int_erpret"
+
+#: ../qltk/quodlibet.py:443
+msgid "Random Al_bum"
+msgstr "Náhodný al_bum"
+
+#: ../qltk/quodlibet.py:450
+msgid "Song _List"
+msgstr "_Zoznam skladieb"
+
+#: ../qltk/quodlibet.py:486
+msgid "Check for changes in your library"
+msgstr "Skontrolovať zmeny v knižnici"
+
+#: ../qltk/quodlibet.py:489
+msgid "Reload all songs in your library (this can take a long time)"
+msgstr "Znovunačítať všetky skladby v knižnici (toto môže trvať dlho)"
+
+#: ../qltk/quodlibet.py:492
+msgid ""
+"The 40 songs you've played most (more than 40 may be chosen if there are "
+"ties)"
+msgstr "40 skladieb ktoré ste hrali najviac"
+
+#: ../qltk/quodlibet.py:496
+msgid ""
+"The 40 songs you've played least (more than 40 may be chosen if there are "
+"ties)"
+msgstr "40 skladieb ktoré ste hrali najmenej"
+
+#: ../qltk/quodlibet.py:684
+msgid "Add a Location"
+msgstr "Pridať umiestnenie"
+
+#: ../qltk/quodlibet.py:685
+msgid "Enter the location of an audio file:"
+msgstr "Vložte umiestnenie audio súboru:"
+
+#: ../qltk/quodlibet.py:690 ../qltk/quodlibet.py:695
+msgid "Unable to add location"
+msgstr "Nepodarilo sa pridať umiestnenie"
+
+#: ../qltk/quodlibet.py:691
+#, python-format
+msgid "<b>%s</b> is not a valid location."
+msgstr "<b>%s</b> nie je platné umiestnenie."
+
+#: ../qltk/quodlibet.py:707 ../qltk/quodlibet.py:714
+msgid "Add Music"
+msgstr "Pridať hudbu"
+
+#: ../qltk/quodlibet.py:708
+msgid "Watch this folder for new songs"
+msgstr "Sledovať túto zložku pre nové skladby"
+
+#: ../qltk/quodlibet.py:734
+#, python-format
+msgid ""
+"%s could not be added to your library.\n"
+"\n"
+msgstr ""
+"%s nemôže byť pridané do knižnice.\n"
+"\n"
+
+#: ../qltk/quodlibet.py:739
+msgid "Unable to add song"
+msgstr "Neporadilo sa pridať skladby"
+
+#: ../qltk/renamefiles.py:25
+msgid "Replace spaces with _underscores"
+msgstr "Nahradiť medzery _podtržítkami"
+
+#: ../qltk/renamefiles.py:32
+msgid "Strip _Windows-incompatible characters"
+msgstr "Odstrániť znaky nekompatibilné s _Windows"
+
+#: ../qltk/renamefiles.py:41
+msgid "Strip _diacritical marks"
+msgstr "Odstrániť _diakritiku"
+
+#: ../qltk/renamefiles.py:50
+msgid "Strip non-_ASCII characters"
+msgstr "Odstrániť ne-_ASCII znaky"
+
+#: ../qltk/renamefiles.py:58
+msgid "Rename Files"
+msgstr "Premenovať súbory"
+
+#: ../qltk/renamefiles.py:74
+msgid "New Name"
+msgstr "Nový názov"
+
+#: ../qltk/renamefiles.py:107
+msgid "_Continue"
+msgstr "_Pokračovať"
+
+#: ../qltk/renamefiles.py:109
+msgid "Unable to rename file"
+msgstr "Nepodarilo sa premenovať súbory"
+
+#: ../qltk/renamefiles.py:110
+#, python-format
+msgid ""
+"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
+"exists, or you do not have permission to make the new file or remove the old "
+"one."
+msgstr "Premenovanie <b>%s</b> do <b>%s</b> zlyhalo. Možno cieľový súbor už existuje alebo nemáte právo vytvoriť nový súbor alebo odstrániť starý."
+
+#: ../qltk/renamefiles.py:140
+msgid "Path is not absolute"
+msgstr "Cesta nie je absolútna"
+
+#: ../qltk/renamefiles.py:141
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed folders, root "
+"your pattern by starting it with / or ~/."
+msgstr ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"contains / but does not start from root. To avoid misnamed folders, root "
+"your pattern by starting it with / or ~/."
+
+#: ../qltk/songlist.py:394
+msgid "pattern"
+msgstr "vzorka"
+
+#: ../qltk/songlist.py:409
+#, python-format
+msgid "_Filter on %s"
+msgstr "_Filter na %s"
+
+#: ../qltk/songlist.py:529 ../browsers/filesystem.py:88
+#: ../browsers/media.py:453
+msgid "Unable to copy songs"
+msgstr "Nepodarilo sa skopírovať skladby"
+
+#: ../qltk/songlist.py:530 ../browsers/filesystem.py:89
+msgid "The files selected cannot be copied to other song lists or the queue."
+msgstr "Vybrané súbory nemôžu byť kopírované do iného zoznamu skladieb alebo fronty."
+
+#: ../qltk/songlist.py:862
+msgid "_Track Headers"
+msgstr "Hlavičky _skladby"
+
+#: ../qltk/songlist.py:863
+msgid "_Album Headers"
+msgstr "Hlavičky _albumu"
+
+#: ../qltk/songlist.py:864
+msgid "_People Headers"
+msgstr "Hlavičky ľ_udí"
+
+#: ../qltk/songlist.py:865
+msgid "_Date Headers"
+msgstr "Hlavičky _dátumu"
+
+#: ../qltk/songlist.py:866
+msgid "_File Headers"
+msgstr "Hlavičky _súboru"
+
+#: ../qltk/songlist.py:867
+msgid "_Production Headers"
+msgstr "Hlavičky _produkcie"
+
+#: ../qltk/songlist.py:880
+msgid "_Customize Headers..."
+msgstr "_Vlastné hlavičky..."
+
+#: ../qltk/tagsfrompath.py:71
+msgid "Replace _underscores with spaces"
+msgstr "Nahradiť _podržítko medzerami"
+
+#: ../qltk/tagsfrompath.py:78
+msgid "_Title-case tags"
+msgstr "_Každé slovo začína veľkým písmenom"
+
+#: ../qltk/tagsfrompath.py:85
+msgid "Split into multiple _values"
+msgstr "Rozdeliť na viacero hodnôt"
+
+#: ../qltk/tagsfrompath.py:95
+msgid "Tags From Path"
+msgstr "Tagy z cesty"
+
+#: ../qltk/tagsfrompath.py:105
+msgid "Tags replace existing ones"
+msgstr "Nahradiť pôvodné tagy"
+
+#: ../qltk/tagsfrompath.py:106
+msgid "Tags are added to existing ones"
+msgstr "Pridať k pôvodným tagom"
+
+#: ../qltk/tagsfrompath.py:130 ../qltk/textedit.py:70
+#: ../browsers/albums.py:107 ../browsers/albums.py:111
+msgid "Invalid pattern"
+msgstr "Neplatná vzorka"
+
+#: ../qltk/tagsfrompath.py:131
+#, python-format
+msgid ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; / &gt;)."
+msgstr ""
+"The pattern\n"
+"\t<b>%s</b>\n"
+"is invalid. Possibly it contains the same tag twice or it has unbalanced "
+"brackets (&lt; / &gt;)."
+
+#: ../qltk/tagsfrompath.py:152
+msgid "Invalid tags"
+msgstr "Neplatné tagy"
+
+#: ../qltk/tagsfrompath.py:153
+#, python-format
+msgid ""
+"Invalid tags <b>%s</b>\n"
+"\n"
+"The files currently selected do not support editing these tags."
+msgstr ""
+
+#: ../qltk/textedit.py:71
+#, python-format
+msgid ""
+"The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
+"\\&lt; and \\&gt; and that your tags are balanced.\n"
+"\n"
+"%s"
+msgstr ""
+
+#: ../qltk/textedit.py:84
+msgid "Edit Display"
+msgstr "Upraviť zobrazenie"
+
+#: ../qltk/tracknumbers.py:22
+msgid "Track Numbers"
+msgstr "Čísla skladieb"
+
+#: ../qltk/tracknumbers.py:28
+msgid "Start fro_m:"
+msgstr "Začať _od:"
+
+#: ../qltk/tracknumbers.py:39
+msgid "_Total tracks:"
+msgstr "_Celkový počet:"
+
+#: ../qltk/tracknumbers.py:64
+msgid "Track"
+msgstr "Skladba"
+
+#: ../qltk/views.py:235
+#, python-format
+msgid "and %d more..."
+msgstr "a %d viac..."
+
+#: ../qltk/wlw.py:162
+msgid "Saving the songs you changed."
+msgstr "Ukladanie skladieb, ktoré ste zmenili."
+
+#: ../qltk/wlw.py:163
+#, python-format
+msgid "%d/%d songs saved"
+msgstr "%d/%d skladieb uložených"
+
+#: ../qltk/wlw.py:190
+#, python-format
+msgid "%d of %d"
+msgstr "%d z %d"
+
+#: ../qltk/x.py:125
+msgid "Clear search"
+msgstr "Vyčistiť vyhľadávanie"
+
+#. The browser's name, without an accelerator.
+#. The name, with an accelerator.
+#: ../browsers/_base.py:27 ../browsers/_base.py:29
+msgid "Library Browser"
+msgstr "Prehliadať knižnice"
+
+#: ../browsers/albums.py:33
+msgid "Songs not in an album"
+msgstr "Skladby bez albumu"
+
+#: ../browsers/albums.py:61
+msgid "Album List Preferences"
+msgstr "Nastavenie zoznamu albumov"
+
+#: ../browsers/albums.py:67
+msgid "Show album _covers"
+msgstr "Zobraziť _obaly albumov"
+
+#: ../browsers/albums.py:83
+msgid "Album Display"
+msgstr "Zobrazenie albumov"
+
+#: ../browsers/albums.py:121
+msgid "Album List"
+msgstr "Zoznam albumov"
+
+#: ../browsers/albums.py:122
+msgid "_Album List"
+msgstr "Zoznam _albumov"
+
+#: ../browsers/albums.py:362
+msgid "Sort by title"
+msgstr "Zoradiť podľa názvu"
+
+#: ../browsers/albums.py:362
+msgid "Sort by artist"
+msgstr "Zoradiť podľa interpreta"
+
+#: ../browsers/albums.py:362
+msgid "Sort by date"
+msgstr "Zoradiť podľa dátumu"
+
+#: ../browsers/albums.py:487
+msgid "All Albums"
+msgstr "Všetky albumy"
+
+#: ../browsers/albums.py:488
+#, python-format
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d album"
+msgstr[1] "%d albumy"
+msgstr[2] "%d albumov"
+
+#: ../browsers/paned.py:35
+msgid "Paned Browser Preferences"
+msgstr "Nastavenie prehliadača"
+
+#: ../browsers/paned.py:41
+msgid "_Custom"
+msgstr "_Vlastné"
+
+#: ../browsers/paned.py:143
+msgid "Paned Browser"
+msgstr "Prehliadač"
+
+#: ../browsers/paned.py:144
+msgid "_Paned Browser"
+msgstr "_Prehliadač"
+
+#: ../browsers/paned.py:274
+msgid "All"
+msgstr "Všetko"
+
+#: ../browsers/paned.py:344 ../browsers/search.py:147
+#: ../browsers/iradio.py:191
+msgid "_Search:"
+msgstr "_Vyhľadať:"
+
+#: ../browsers/paned.py:358
+msgid "Select _All"
+msgstr "Označiť _všetko:"
+
+#: ../browsers/playlists.py:64
+#, python-format
+msgid ""
+"Importing playlist.\n"
+"\n"
+"%d/%d songs added."
+msgstr ""
+"Importovanie playlistu.\n"
+"\n"
+"%d/%d skladieb pridaných."
+
+#: ../browsers/playlists.py:93 ../browsers/playlists.py:412
+msgid "New Playlist"
+msgstr "Nový playlist"
+
+#: ../browsers/playlists.py:132
+#, python-format
+msgid "A playlist named %s already exists."
+msgstr "Playlist s názvom %s už existuje."
+
+#: ../browsers/playlists.py:187
+msgid "_New Playlist"
+msgstr "_Nový playlist"
+
+#: ../browsers/playlists.py:214
+msgid "Playlists"
+msgstr "Playlisty"
+
+#: ../browsers/playlists.py:215
+msgid "_Playlists"
+msgstr "_Playlisty"
+
+#: ../browsers/playlists.py:274
+msgid "_Remove from Playlist"
+msgstr "_Odstrániť z playlistu"
+
+#: ../browsers/playlists.py:311
+msgid "_Import"
+msgstr "_Import"
+
+#: ../browsers/playlists.py:429 ../browsers/playlists.py:507
+msgid "Unable to import playlist"
+msgstr "Nepodarilo sa importovať playlist"
+
+#: ../browsers/playlists.py:430 ../browsers/playlists.py:508
+msgid "Quod Libet can only import playlists in the M3U and PLS formats."
+msgstr "Quod Libet môže importovať iba playlist vo formáte M3U alebo PLS."
+
+#: ../browsers/playlists.py:489
+msgid "Unable to rename playlist"
+msgstr "Neporadilo sa premenovať playlist"
+
+#: ../browsers/playlists.py:496
+msgid "Import Playlist"
+msgstr "Importovať playlist"
+
+#: ../browsers/search.py:33
+msgid "Disable Browser"
+msgstr "Vypnúť prehliadač"
+
+#: ../browsers/search.py:34
+msgid "_Disable Browser"
+msgstr "_Vypnúť prehliadač"
+
+#: ../browsers/search.py:100
+msgid "_Limit:"
+msgstr "_Limit:"
+
+#: ../browsers/search.py:111
+msgid "_Weight"
+msgstr "_Váha"
+
+#: ../browsers/search.py:133
+msgid "_Search Library"
+msgstr "_Vyhľadávať v knižnici"
+
+#: ../browsers/search.py:160
+msgid "Search"
+msgstr "Vyhľadávať"
+
+#: ../browsers/search.py:162
+msgid "Search your library"
+msgstr "Vyhľadávať v knižnici"
+
+#: ../browsers/search.py:190
+msgid "_Limit Results"
+msgstr "_Obmedziť výsledky"
+
+#: ../browsers/filesystem.py:35
+msgid "File System"
+msgstr "Súborový systém"
+
+#: ../browsers/filesystem.py:36
+msgid "_File System"
+msgstr "_Súborový systém"
+
+#: ../browsers/filesystem.py:129
+msgid "_Add to Library"
+msgstr "_Pridať do knižnice"
+
+#: ../browsers/iradio.py:81
+msgid "Unsupported file type"
+msgstr "Nepodporovaný typ súboru"
+
+#: ../browsers/iradio.py:82
+#, python-format
+msgid ""
+"Station lists can only contain locations of stations, not other station "
+"lists or playlists. The following locations cannot be loaded:\n"
+"%s"
+msgstr ""
+
+#: ../browsers/iradio.py:107
+msgid "Choose New Stations"
+msgstr "Zvoľte nové stanice"
+
+#: ../browsers/iradio.py:117
+msgid "Add"
+msgstr "Pridať"
+
+#: ../browsers/iradio.py:121
+msgid "Title"
+msgstr "Názov"
+
+#: ../browsers/iradio.py:147
+msgid "New Station"
+msgstr "Nová stanica"
+
+#: ../browsers/iradio.py:148
+msgid "Enter the location of an Internet radio station:"
+msgstr "Vložte umiestnenie Internetovej rádio stanice:"
+
+#: ../browsers/iradio.py:150
+msgid "_Stations..."
+msgstr "_Stanice:"
+
+#: ../browsers/iradio.py:167
+msgid "Internet Radio"
+msgstr "Internetové rádio"
+
+#: ../browsers/iradio.py:168
+msgid "_Internet Radio"
+msgstr "_Internetové rádio"
+
+#: ../browsers/iradio.py:175
+msgid "_New Station"
+msgstr "_Nová stanica"
+
+#: ../browsers/iradio.py:255 ../browsers/iradio.py:264
+#: ../browsers/iradio.py:280
+msgid "Unable to add station"
+msgstr "Nepodarilo sa pridať stanicu"
+
+#: ../browsers/iradio.py:272
+msgid "No stations found"
+msgstr "Nenájdené žiadne stanice."
+
+#: ../browsers/iradio.py:273
+#, python-format
+msgid "No Internet radio stations were found at %s."
+msgstr "Na %s nebola nájdená žiadna Internetová rádio stanica."
+
+#: ../browsers/iradio.py:281
+msgid "All stations listed are already in your library."
+msgstr "Všetky stanice už sú v knižnici."
+
+#: ../browsers/iradio.py:300
+#, python-format
+msgid "%(count)d station"
+msgid_plural "%(count)d stations"
+msgstr[0] "%(count)d stanica"
+msgstr[1] "%(count)d stanice"
+msgstr[2] "%(count)d staníc"
+
+#: ../browsers/audiofeeds.py:159
+msgid "New Feed"
+msgstr "Pridať kanál"
+
+#: ../browsers/audiofeeds.py:160
+msgid "Enter the location of an audio feed:"
+msgstr "Vložte umiestnenie audio kanálu:"
+
+#: ../browsers/audiofeeds.py:177
+msgid "Audio Feeds"
+msgstr "Audio kanály"
+
+#: ../browsers/audiofeeds.py:178
+msgid "_Audio Feeds"
+msgstr "_Audio kanály"
+
+#: ../browsers/audiofeeds.py:234 ../browsers/audiofeeds.py:240
+msgid "_Download..."
+msgstr "_Sťahovania..."
+
+#: ../browsers/audiofeeds.py:249
+msgid "Download Files"
+msgstr "Sťiahnuť súbory"
+
+#: ../browsers/audiofeeds.py:270
+msgid "Download File"
+msgstr "Sťiahnuť súbor"
+
+#: ../browsers/audiofeeds.py:351 ../browsers/audiofeeds.py:406
+msgid "Unable to add feed"
+msgstr "Nepodarilo sa pridať kanál"
+
+#: ../browsers/audiofeeds.py:352 ../browsers/audiofeeds.py:407
+#, python-format
+msgid ""
+"<b>%s</b> could not be added. The server may be down, or the location may "
+"not be an audio feed."
+msgstr ""
+"<b>%s</b> nemôže byť pridané. The server may be down, or the location may "
+"not be an audio feed."
+
+#: ../util/__init__.py:118
+msgid "Display brief usage information"
+msgstr "Zobraziť krátku informáciu o použití"
+
+#: ../util/__init__.py:120
+msgid "Display version and copyright"
+msgstr "Zobraziť verziu a copyright"
+
+#: ../util/__init__.py:156 ../util/__init__.py:157
+#, python-format
+msgid "Usage: %s %s"
+msgstr "Použitie: %s %s"
+
+#: ../util/__init__.py:157
+msgid "[options]"
+msgstr "[možnosti]"
+
+#: ../util/__init__.py:177
+#, python-format
+msgid ""
+"%s %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others\n"
+"\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"%s %s - <quodlibet@lists.sacredchao.net>\n"
+"Copyright 2004-2005 Joe Wreschnig, Michael Urman a ďalší\n"
+"\n"
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+
+#: ../util/__init__.py:194
+#, python-format
+msgid "E: Option '%s' not recognized."
+msgstr "E: Možnosť '%s' nerospoznaná."
+
+#: ../util/__init__.py:197
+#, python-format
+msgid "E: Option '%s' requires an argument."
+msgstr "E: Možnosť '%s' vyžaduje parameter."
+
+#: ../util/__init__.py:200
+#, python-format
+msgid "E: '%s' is not a unique prefix."
+msgstr "E: '%s' nie je unikátny prefix."
+
+#: ../util/__init__.py:337 ../util/__init__.py:344
+msgid "[Invalid Encoding]"
+msgstr "[Neplatné kódovanie]"
+
+#. Translators: If tag names, when capitalized, should not
+#. be title-cased ("Looks Like This"), but rather only have
+#. the first letter capitalized, translate this string as
+#. something other than "check|titlecase?".
+#: ../util/__init__.py:488
+msgid "check|titlecase?"
+msgstr "nope"
+
+#. http://musicbrainz.org/doc/MusicBrainzTag
+#: ../util/__init__.py:546
+msgid "MusicBrainz track ID"
+msgstr "MusicBrainz ID skladby"
+
+#: ../util/__init__.py:547
+msgid "MusicBrainz album ID"
+msgstr "MusicBrainz ID albumu"
+
+#: ../util/__init__.py:548
+msgid "MusicBrainz artist ID"
+msgstr "MusicBrainz artist ID"
+
+#: ../util/__init__.py:549
+msgid "MusicBrainz album artist ID"
+msgstr "MusicBrainz album artist ID"
+
+#: ../util/__init__.py:550
+msgid "MusicBrainz TRM ID"
+msgstr "MusicBrainz TRM ID"
+
+#: ../util/__init__.py:551
+msgid "MusicIP PUID"
+msgstr "MusicIP PUID"
+
+#: ../util/__init__.py:552
+msgid "MusicBrainz album status"
+msgstr "MusicBrainz status albumu"
+
+#: ../util/__init__.py:553
+msgid "MusicBrainz album type"
+msgstr "MusicBrainz typ albumu"
+
+#. Translators: A volume adjustment, not "to get/acquire".
+#: ../util/__init__.py:556
+msgid "track gain"
+msgstr ""
+
+#: ../util/__init__.py:557
+msgid "track peak"
+msgstr ""
+
+#. Translators: A volume adjustment, not "to get/acquire".
+#: ../util/__init__.py:559
+msgid "album gain"
+msgstr ""
+
+#: ../util/__init__.py:560
+msgid "album peak"
+msgstr ""
+
+#: ../util/__init__.py:567
+msgid "release country"
+msgstr "krajina vydania"
+
+#: ../util/massagers.py:24
+msgid ""
+"The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
+"format."
+msgstr "Dátum musí byť vo formáte 'RRRR', 'RRRR-MM-DD' alebo 'RRRR-MM-DD HH:MM:SS'."
+
+#: ../util/massagers.py:34
+msgid "Replay Gain gains must be entered in 'x.yy dB' format."
+msgstr ""
+
+#: ../util/massagers.py:48
+msgid "Replay Gain peaks must be entered in 'x.yy' format."
+msgstr ""
+
+#: ../util/massagers.py:61
+msgid "MusicBrainz IDs must be in UUID format."
+msgstr "MusicBrainz ID musia byť v UUID formáte."
+
+#. Translators: Leave "official", "promotional", and "bootleg"
+#. untranslated. They are the three possible literal values.
+#: ../util/massagers.py:76
+msgid "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
+msgstr "MusicBrainz status albumu musí byť 'official', 'promotional', or 'bootleg'"
+
+#: ../exfalso.desktop.in.h:1
+msgid "Audio tag editor"
+msgstr "Editor audio tagov"
+
+#: ../exfalso.desktop.in.h:2
+msgid "Edit tags in your audio files"
+msgstr "Upraviť tagy vo vašich audio súboroch"
+
+#: ../quodlibet.desktop.in.h:1
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "Počúvajte, prehliadajte, alebo upravujte svoju hudobnú kolekciu"
+
+#: ../quodlibet.desktop.in.h:2
+msgid "Music Player"
+msgstr "Hudobný prehrávač"
+
+#: ../browsers/media.py:34
+msgid "Device Properties"
+msgstr "Vlastnosti zariadenia"
+
+#: ../browsers/media.py:47
+msgid "Device:"
+msgstr "Zariadenie:"
+
+#: ../browsers/media.py:49
+msgid "Not mounted"
+msgstr "Nepripojené"
+
+#: ../browsers/media.py:50
+msgid "Mount Point:"
+msgstr "Prípojný bod:"
+
+#: ../browsers/media.py:126
+msgid "Media Devices"
+msgstr "Média zariadenia"
+
+#: ../browsers/media.py:127
+msgid "_Media Devices"
+msgstr "_Média zariadenia"
+
+#: ../browsers/media.py:426
+#, python-format
+msgid "<b>%s</b> used, <b>%s</b> available"
+msgstr "<b>%s</b> použité, <b>%s</b> dostupné"
+
+#: ../browsers/media.py:443
+#, python-format
+msgid "<b>%s</b> is not connected."
+msgstr "<b>%s</b> nie je pripojené."
+
+#: ../browsers/media.py:459
+#, python-format
+msgid "Copying <b>%s</b>"
+msgstr "Kopírovanie <b>%s</b>"
+
+#: ../browsers/media.py:477 ../browsers/media.py:492
+msgid "Unable to copy song"
+msgstr "Neporadilo sa kopírovať skladbu"
+
+#: ../browsers/media.py:478
+msgid "There is not enough free space for this song."
+msgstr "Na túto skladbu nie je dost voľného miesta"
+
+#: ../browsers/media.py:489
+#, python-format
+msgid "<b>%s</b> could not be copied."
+msgstr "<b>%s</b> nemôže byť skopírované."
+
+#: ../browsers/media.py:509
+msgid "Unable to delete songs"
+msgstr "Nedajú sa odstrániť skladby"
+
+#: ../browsers/media.py:519
+#, python-format
+msgid "Deleting <b>%s</b>"
+msgstr "Odstraňovanie <b>%s</b>"
+
+#: ../browsers/media.py:536
+#, python-format
+msgid "<b>%s</b> could not be deleted."
+msgstr "<b>%s</b> nemôže byť odstránené."
+
+#: ../browsers/media.py:540
+msgid "Unable to delete song"
+msgstr "Nedá sa odstrániť skladba"
+
+#: ../browsers/media.py:557
+#, python-format
+msgid "Ejecting <b>%s</b> failed."
+msgstr "Vysúvanie <b>%s</b> zlyhalo."
+
+#: ../browsers/media.py:560
+msgid "Unable to eject device"
+msgstr "Neporadilo sa vysunúť zariadenie"
+
+#: ../devices/_base.py:63
+msgid "Unknown Device"
+msgstr "Neznáme zariadenie"
+
+#: ../devices/_base.py:94
+msgid "No eject command found."
+msgstr "Príkaz na vysunutie nenájdený."
+
+#: ../devices/ipod.py:93
+msgid "_Volume Gain (dB):"
+msgstr "_Hlasitosť (dB):"
+
+#: ../devices/ipod.py:96 ../devices/storage.py:57
+msgid "Copy _album covers"
+msgstr "Kopírovať obaly _albumov"
+
+#: ../devices/ipod.py:97
+msgid "Combine tags with _multiple values"
+msgstr "Kombinovať tagy z _viacerých hodnôt"
+
+#: ../devices/ipod.py:110
+msgid "Model:"
+msgstr "Model:"
+
+#: ../devices/ipod.py:112
+msgid "Capacity:"
+msgstr "Kapacita:"
+
+#: ../devices/ipod.py:114
+msgid "Firmware:"
+msgstr "Firmware:"
+
+#: ../devices/ipod.py:160
+msgid "W: removing orphaned iPod track"
+msgstr "W: odstraňovanie ositorené iPod skladby"
+
+#: ../devices/ipod.py:248
+msgid "Unable to save iPod database"
+msgstr "Neporadilo sa uložiť iPod databázu"
+
+#: ../devices/ipod.py:260
+msgid "Uninitialized iPod"
+msgstr "Neinicializovaný iPod"
+
+#: ../devices/ipod.py:261
+msgid "Do you want to create an empty database on this iPod?"
+msgstr "Chcete vytvoriť prázdnu databázu na tomto iPod-e?"
+
+#: ../devices/storage.py:53
+msgid "_Filename Pattern:"
+msgstr "_Formát názvu súboru:"
+
+#: ../devices/storage.py:61
+msgid "_Remove unused covers and directories"
+msgstr "_Odstrániť nepoužívané obaly a adresáre"
+
+#: ../devices/storage.py:93
+msgid "File exists"
+msgstr "Súbor existuje"
+
+#: ../devices/storage.py:94
+#, python-format
+msgid "Overwrite <b>%s</b>?"
+msgstr "Prepísať <b>%s</b>?"
+
