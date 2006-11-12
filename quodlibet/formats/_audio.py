@@ -382,7 +382,8 @@ class AudioFile(dict):
                 # check for the album label number
                 if self.get("labelid", lfn + ".").lower() in lfn: score += 100
                 matches = filter(lambda s: s in lfn,
-                                 ["front", "cover", "jacket", "folder"])
+                                 ["front", "cover", "jacket", "folder",
+                                  "albumart"])
                 score += len(matches)
                 if score: images.append((score, os.path.join(base, fn)))
         # Highest score wins.
