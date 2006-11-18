@@ -2,6 +2,9 @@ Quod Libet 0.22+ requires Python 2.4 or later.
 
 Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
 
+Ticket numbers prepended with "0." refer to the old, unavailable
+Trac ticket list.
+
 0.24
  * Media device (iPod and UMS so far) support. (Markus Koller)
  * Delete removes songs from the queue. (#0.819, sciyoshi)
@@ -12,6 +15,7 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
  * Python 2.5 and GTK+ 2.10 compatibility.
  * Fix Rename Files support on MP4 files.
  * New Romanian translation, by Mugurel Tudor.
+ * New Slovak translation, by Lukáš Lalinský.
  * Updated translations:
    * Traditional Chinese, by Hsin-lin Cheng.
    * Japanese, by Yasushi Iwata.

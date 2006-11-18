@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-10-29 17:25-0800\n"
-"PO-Revision-Date: 2006-08-09 16:45+0900\n"
+"PO-Revision-Date: 2006-11-18 00:57-0800\n"
 "Last-Translator: ChangBom Yoon <changbom.yoon@gmail.com>\n"
 "Language-Team: The FreeBSD Korean Documentation Project <doc@kr.FreeBSD."
 "org>\n"
@@ -525,35 +525,30 @@ msgstr "디스크"
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d 초"
-msgstr[1] "%d 초"
 
 #: ../po/tag-names.py:79
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d 분"
-msgstr[1] "%d 분"
 
 #: ../po/tag-names.py:80
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d 시간"
-msgstr[1] "%d 시간"
 
 #: ../po/tag-names.py:81
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d 일"
-msgstr[1] "%d 일"
 
 #: ../po/tag-names.py:82
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d 년"
-msgstr[1] "%d 년"
 
 #: ../formats/_audio.py:191 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
@@ -751,7 +746,6 @@ msgstr "이 파일을 영구히 지울까요?"
 msgid "%(title)s and %(count)d more..."
 msgid_plural "%(title)s and %(count)d more..."
 msgstr[0] "%(title)s and %(count)d more..."
-msgstr[1] "%(title)s and %(count)d more..."
 
 #: ../qltk/delete.py:91
 #, python-format
@@ -789,14 +783,12 @@ msgstr "크기"
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
 msgstr[0] "missing from %d song"
-msgstr[1] "missing from %d songs"
 
 #: ../qltk/edittags.py:43 ../qltk/edittags.py:47
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
 msgstr[0] "different across %d song"
-msgstr[1] "different across %d songs"
 
 #: ../qltk/edittags.py:125
 msgid "Split into _Multiple Values"
@@ -922,7 +914,6 @@ msgstr ""
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d 곡"
-msgstr[1] "%d 곡"
 
 #: ../qltk/exfalso.py:170 ../qltk/properties.py:118
 #: ../browsers/playlists.py:107 ../browsers/playlists.py:203
@@ -1025,7 +1016,6 @@ msgstr "Never"
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "%d 회"
-msgstr[1] "%d 회"
 
 #: ../qltk/information.py:199 ../qltk/prefs.py:191
 msgid "Library"
@@ -1055,21 +1045,18 @@ msgstr "파일"
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d 디스크"
-msgstr[1] "%d 디스크"
 
 #: ../qltk/information.py:285 ../browsers/albums.py:255
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d 트랙"
-msgstr[1] "%d 트랙"
 
 #: ../qltk/information.py:287
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d 선택"
-msgstr[1] "%d 선택"
 
 #: ../qltk/information.py:300
 #, python-format
@@ -1089,7 +1076,6 @@ msgstr "트랙 목록"
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "앨범이 없는 노래 %d 곡"
-msgstr[1] "앨범이 없는 노래 %d 곡"
 
 #: ../qltk/information.py:412
 msgid "Selected Discography"
@@ -1100,7 +1086,6 @@ msgstr "Selected Discography"
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] "아티스트가 없는 노래 %d 곡"
-msgstr[1] "아티스트가 없는 노래 %d 곡"
 
 #: ../qltk/information.py:493
 msgid "Total length:"
@@ -1372,7 +1357,6 @@ msgstr "대기열의 모든 노래 지우기"
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d song (%(time)s)"
-msgstr[1] "%(count)d songs (%(time)s)"
 
 #: ../qltk/quodlibet.py:203
 msgid "_Order:"
@@ -1822,7 +1806,6 @@ msgstr "모든 앨범"
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d 앨범"
-msgstr[1] "%d 앨범"
 
 #: ../browsers/paned.py:35
 msgid "Paned Browser Preferences"
@@ -2027,7 +2010,6 @@ msgstr "목록에 있는 모든 방송국은 이미 라이브러리에 존재합
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
 msgstr[0] "%(count)d station"
-msgstr[1] "%(count)d stations"
 
 #: ../browsers/audiofeeds.py:159
 msgid "New Feed"

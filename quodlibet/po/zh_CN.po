@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-10-29 17:25-0800\n"
-"PO-Revision-Date: 2006-07-05 21:04-0500\n"
+"PO-Revision-Date: 2006-11-18 00:56-0800\n"
 "Last-Translator: Emfox Zhou <EmfoxZhou@gmail.com>\n"
 "Language-Team: Emfox Zhou <EmfoxZhou@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -526,35 +526,30 @@ msgstr "唱片"
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d 秒"
-msgstr[1] ""
 
 #: ../po/tag-names.py:79
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d 分"
-msgstr[1] ""
 
 #: ../po/tag-names.py:80
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d 小时"
-msgstr[1] ""
 
 #: ../po/tag-names.py:81
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d 天"
-msgstr[1] ""
 
 #: ../po/tag-names.py:82
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d 年"
-msgstr[1] ""
 
 #: ../formats/_audio.py:191 ../qltk/information.py:170
 #: ../qltk/information.py:178 ../qltk/information.py:204
@@ -745,7 +740,6 @@ msgstr "永远删除这些文件？"
 msgid "%(title)s and %(count)d more..."
 msgid_plural "%(title)s and %(count)d more..."
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../qltk/delete.py:91
 #, python-format
@@ -783,14 +777,12 @@ msgstr "大小"
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../qltk/edittags.py:43 ../qltk/edittags.py:47
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../qltk/edittags.py:125
 msgid "Split into _Multiple Values"
@@ -906,7 +898,6 @@ msgstr ""
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../qltk/exfalso.py:170 ../qltk/properties.py:118
 #: ../browsers/playlists.py:107 ../browsers/playlists.py:203
@@ -1011,7 +1002,6 @@ msgstr "从来没有"
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "%d 时间"
-msgstr[1] ""
 
 #: ../qltk/information.py:199 ../qltk/prefs.py:191
 msgid "Library"
@@ -1041,21 +1031,18 @@ msgstr "文件"
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d 唱片"
-msgstr[1] ""
 
 #: ../qltk/information.py:285 ../browsers/albums.py:255
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d 音轨"
-msgstr[1] ""
 
 #: ../qltk/information.py:287
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d 选中"
-msgstr[1] ""
 
 #: ../qltk/information.py:300
 #, python-format
@@ -1075,7 +1062,6 @@ msgstr "音轨列表"
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "%d 首曲目没有专辑信息"
-msgstr[1] ""
 
 #: ../qltk/information.py:412
 msgid "Selected Discography"
@@ -1086,7 +1072,6 @@ msgstr ""
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../qltk/information.py:493
 msgid "Total length:"
@@ -1351,7 +1336,6 @@ msgstr "删除队列里的所有曲目"
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../qltk/quodlibet.py:203
 msgid "_Order:"
@@ -1787,7 +1771,6 @@ msgstr "所以专辑"
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../browsers/paned.py:35
 msgid "Paned Browser Preferences"
@@ -1993,7 +1976,6 @@ msgstr "所有列出的站点都已经在您的库里。"
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../browsers/audiofeeds.py:159
 msgid "New Feed"
