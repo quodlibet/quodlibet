@@ -86,6 +86,9 @@ class OneSong(qltk.Notebook):
             self._people(song, vbox)
             self._library(song, vbox)
             self._file(song, vbox)
+            parent = qltk.get_top_parent(self)
+            if parent:
+                parent.set_title(self.title + " - Quod Libet")
             vbox.show_all()
 
     def _title(self, song, box):
