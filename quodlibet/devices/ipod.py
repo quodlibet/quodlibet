@@ -27,7 +27,6 @@ class IPodSong(AudioFile):
     def __init__(self, track):
         super(IPodSong, self).__init__()
         self.sanitize(gpod.itdb_filename_on_ipod(track))
-        self.itdb_id = track.id
 
         for key in ['artist', 'album', 'title', 'genre', 'grouping']:
             value = getattr(track, key)
@@ -54,7 +53,7 @@ class IPodSong(AudioFile):
             self['tracknumber'] = u"%d" % track.track_nr
 
         for key, value in {
-            '~#rating': track.rating / 100.0,
+            '~#rating': min(1.0, track.rating / 100.0),
             '~#length': track.tracklen / 1000.0,
         }.items():
             if value != 0:
@@ -202,7 +201,7 @@ class IPodDevice(Device):
         for key, value in {
             'cd_nr':         song('~#disc'),
             'cds':           song('~#discs'),
-            'rating':        song('~#rating') * 100,
+            'rating':        min(100, song('~#rating') * 100),
             'time_added':    self.__mactime(time.time()),
             'time_modified': self.__mactime(util.mtime(song('~filename'))),
             'track_nr':      song('~#track'),
@@ -241,13 +240,15 @@ class IPodDevice(Device):
     def delete(self, songlist, song):
         self.__load_db()
         try:
-            track = gpod.itdb_track_by_id(self.__itdb, song.itdb_id)
-            if track and gpod.itdb_filename_on_ipod(track) == song['~filename']:
-                os.remove(song['~filename'])
-                self.__remove_track(track)
+            for track in gpod.sw_get_tracks(self.__itdb):
+                if gpod.itdb_filename_on_ipod(track) == song['~filename']:
+                    os.remove(song['~filename'])
+                    self.__remove_track(track)
+                    return True
+            else:
+                return False
         except IOError, exc:
             return str(exc).decode(const.ENCODING, 'replace')
-        else: return True
 
     def cleanup(self, wlb, action):
         try:
