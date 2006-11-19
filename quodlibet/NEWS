@@ -5,7 +5,7 @@ Quod Libet 0.24 requires Mutagen 1.8 for Musepack and WavPack support.
 Ticket numbers prepended with "0." refer to the old, unavailable
 Trac ticket list.
 
-0.24
+0.24 - One wonders if our conversation today would be an appropriate epitaph.
  * Media device (iPod and UMS so far) support. (Markus Koller)
  * Delete removes songs from the queue. (#0.819, sciyoshi)
  * Per-browser window memory. (#0.836)

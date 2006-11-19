@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet SVN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-29 17:25-0800\n"
+"POT-Creation-Date: 2006-11-18 17:59-0800\n"
 "PO-Revision-Date: 2006-10-23 23:00+0200\n"
 "Last-Translator: galiza_ceive <galiza.ceive@gmail.com>\n"
 "Language-Team: spanish\n"
@@ -286,7 +286,7 @@ msgstr "Quod Libet ya está siendo ejecutado"
 #. Note that although tag names are translated in the main list view,
 #. they are *not* when editing tags.
 #. date the song was added to the library
-#: ../po/tag-names.py:7 ../qltk/information.py:186
+#: ../po/tag-names.py:7 ../qltk/information.py:189
 msgid "added"
 msgstr "Añadida"
 
@@ -302,7 +302,7 @@ msgstr "Artista del álbum"
 msgid "arranger"
 msgstr "Arreglista"
 
-#: ../po/tag-names.py:11 ../qltk/information.py:140 ../qltk/information.py:326
+#: ../po/tag-names.py:11 ../qltk/information.py:143 ../qltk/information.py:329
 msgid "artist"
 msgstr "Artista"
 
@@ -376,7 +376,7 @@ msgid "language"
 msgstr "Idioma"
 
 #. date the song was last heard on
-#: ../po/tag-names.py:34 ../qltk/information.py:187 ../util/__init__.py:534
+#: ../po/tag-names.py:34 ../qltk/information.py:190 ../util/__init__.py:534
 msgid "last played"
 msgstr "Última reproducción"
 
@@ -385,7 +385,7 @@ msgstr "Última reproducción"
 msgid "last started"
 msgstr "Última vez comenzada"
 
-#: ../po/tag-names.py:37 ../qltk/information.py:220
+#: ../po/tag-names.py:37 ../qltk/information.py:223
 msgid "length"
 msgstr "Duración"
 
@@ -402,7 +402,7 @@ msgid "lyricist"
 msgstr "Letras"
 
 #. date song was last modified/edited
-#: ../po/tag-names.py:42 ../qltk/information.py:222 ../util/__init__.py:539
+#: ../po/tag-names.py:42 ../qltk/information.py:225 ../util/__init__.py:539
 msgid "modified"
 msgstr "Modificada"
 
@@ -436,15 +436,15 @@ msgstr "Parte"
 msgid "people"
 msgstr "Gente"
 
-#: ../po/tag-names.py:52 ../qltk/information.py:332
+#: ../po/tag-names.py:52 ../qltk/information.py:335
 msgid "performer"
 msgstr "Intérprete"
 
-#: ../po/tag-names.py:53 ../qltk/information.py:188 ../util/__init__.py:537
+#: ../po/tag-names.py:53 ../qltk/information.py:191 ../util/__init__.py:537
 msgid "plays"
 msgstr "Contador"
 
-#: ../po/tag-names.py:54 ../qltk/information.py:190
+#: ../po/tag-names.py:54 ../qltk/information.py:193
 msgid "rating"
 msgstr "Calificación"
 
@@ -452,7 +452,7 @@ msgstr "Calificación"
 msgid "recording date"
 msgstr "Fecha de grabación"
 
-#: ../po/tag-names.py:56 ../qltk/information.py:189 ../util/__init__.py:538
+#: ../po/tag-names.py:56 ../qltk/information.py:192 ../util/__init__.py:538
 msgid "skips"
 msgstr "Saltada"
 
@@ -481,7 +481,7 @@ msgstr "Año"
 msgid "BPM"
 msgstr "BPM"
 
-#: ../po/tag-names.py:65 ../qltk/information.py:333
+#: ../po/tag-names.py:65 ../qltk/information.py:336
 msgid "performers"
 msgstr "Intérpretes"
 
@@ -505,12 +505,12 @@ msgstr "Directores"
 msgid "authors"
 msgstr "Autores"
 
-#: ../po/tag-names.py:71 ../qltk/information.py:141 ../qltk/information.py:327
-#: ../qltk/information.py:464
+#: ../po/tag-names.py:71 ../qltk/information.py:144 ../qltk/information.py:330
+#: ../qltk/information.py:467
 msgid "artists"
 msgstr "Artistas"
 
-#: ../po/tag-names.py:72 ../qltk/information.py:480
+#: ../po/tag-names.py:72 ../qltk/information.py:483
 msgid "albums"
 msgstr "Álbumes"
 
@@ -558,8 +558,8 @@ msgid_plural "%d years"
 msgstr[0] "%d año"
 msgstr[1] "%d años"
 
-#: ../formats/_audio.py:191 ../qltk/information.py:170
-#: ../qltk/information.py:178 ../qltk/information.py:204
+#: ../formats/_audio.py:191 ../qltk/information.py:173
+#: ../qltk/information.py:181 ../qltk/information.py:207
 #: ../browsers/paned.py:28 ../browsers/audiofeeds.py:40
 #: ../browsers/audiofeeds.py:50 ../browsers/audiofeeds.py:51
 #: ../browsers/audiofeeds.py:114
@@ -918,7 +918,7 @@ msgstr ""
 "\n"
 "%(error)s"
 
-#: ../qltk/exfalso.py:157 ../qltk/information.py:447
+#: ../qltk/exfalso.py:157 ../qltk/information.py:450
 #: ../browsers/playlists.py:176
 #, python-format
 msgid "%d song"
@@ -982,12 +982,12 @@ msgstr "Imposible eliminar el directorio"
 msgid "by %s"
 msgstr "por %s"
 
-#: ../qltk/info.py:31 ../qltk/information.py:110 ../qltk/information.py:353
+#: ../qltk/info.py:31 ../qltk/information.py:113 ../qltk/information.py:356
 #, python-format
 msgid "Disc %s"
 msgstr "Disco %s"
 
-#: ../qltk/info.py:32 ../qltk/information.py:115
+#: ../qltk/info.py:32 ../qltk/information.py:118
 #, python-format
 msgid "Track %s"
 msgstr "Pista %s"
@@ -1008,8 +1008,8 @@ msgstr "No se ha seleccionado canción alguna"
 msgid "No Songs"
 msgstr "Sin Canciones"
 
-#: ../qltk/information.py:64 ../qltk/information.py:241
-#: ../qltk/information.py:376 ../qltk/information.py:435
+#: ../qltk/information.py:64 ../qltk/information.py:244
+#: ../qltk/information.py:379 ../qltk/information.py:438
 msgid "Information"
 msgstr "Información"
 
@@ -1017,102 +1017,102 @@ msgstr "Información"
 msgid "Lyrics"
 msgstr "Letras"
 
-#: ../qltk/information.py:166 ../qltk/information.py:179
+#: ../qltk/information.py:169 ../qltk/information.py:182
 #: ../qltk/songlist.py:298
 msgid "Never"
 msgstr "Nunca"
 
-#: ../qltk/information.py:167
+#: ../qltk/information.py:170
 #, python-format
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] " %d vez"
 msgstr[1] " %d veces"
 
-#: ../qltk/information.py:199 ../qltk/prefs.py:191
+#: ../qltk/information.py:202 ../qltk/prefs.py:191
 msgid "Library"
 msgstr "Colección"
 
-#: ../qltk/information.py:214
+#: ../qltk/information.py:217
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: ../qltk/information.py:221
+#: ../qltk/information.py:224
 msgid "file size"
 msgstr "tamaño del fichero"
 
-#: ../qltk/information.py:224
+#: ../qltk/information.py:227
 msgid "bitrate"
 msgstr "bitrate"
 
-#: ../qltk/information.py:235 ../qltk/properties.py:56
+#: ../qltk/information.py:238 ../qltk/properties.py:56
 #: ../qltk/renamefiles.py:68 ../qltk/tagsfrompath.py:165
 #: ../qltk/tracknumbers.py:59
 msgid "File"
 msgstr "Fichero"
 
-#: ../qltk/information.py:283 ../browsers/albums.py:259
+#: ../qltk/information.py:286 ../browsers/albums.py:259
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d disco"
 msgstr[1] "%d discos"
 
-#: ../qltk/information.py:285 ../browsers/albums.py:255
+#: ../qltk/information.py:288 ../browsers/albums.py:255
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d pista"
 msgstr[1] "%d pistas"
 
-#: ../qltk/information.py:287
+#: ../qltk/information.py:290
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d seleccionada"
 msgstr[1] "%d seleccionadas"
 
-#: ../qltk/information.py:300
+#: ../qltk/information.py:303
 #, python-format
 msgid "Produced by %s"
 msgstr "Producido por %s"
 
-#: ../qltk/information.py:363
+#: ../qltk/information.py:366
 msgid "Track unavailable"
 msgstr "Pista no disponible"
 
-#: ../qltk/information.py:370
+#: ../qltk/information.py:373
 msgid "Track List"
 msgstr "Lista de pistas"
 
-#: ../qltk/information.py:408 ../qltk/information.py:477
+#: ../qltk/information.py:411 ../qltk/information.py:480
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "%d canción sin álbum"
 msgstr[1] "%d canciones sin álbum"
 
-#: ../qltk/information.py:412
+#: ../qltk/information.py:415
 msgid "Selected Discography"
 msgstr "Discografía seleccionada"
 
-#: ../qltk/information.py:461
+#: ../qltk/information.py:464
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] "%d canción sin artista"
 msgstr[1] "%d canciones sin artista"
 
-#: ../qltk/information.py:493
+#: ../qltk/information.py:496
 msgid "Total length:"
 msgstr "Duración total:"
 
-#: ../qltk/information.py:497
+#: ../qltk/information.py:500
 msgid "Total size:"
 msgstr "Tamaño total:"
 
-#: ../qltk/information.py:500
+#: ../qltk/information.py:503
 msgid "Files"
 msgstr "Ficheros"
 
