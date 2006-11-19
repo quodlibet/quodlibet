@@ -172,15 +172,23 @@ class IPodDevice(Device):
         if self['all_tags']: tag = song.comma
         else: tag = lambda key: song.list(key)[0]
 
-        title = tag('title')
-        if self['title_version']:
-            title = " - ".join([title, song('version')])
-        track.title = str(title)
+        try:
+            title = tag('title')
+        except IndexError:
+            pass
+        else:
+            if self['title_version']:
+                title = " - ".join([title, song('version')])
+            track.title = str(title)
 
-        album = tag('album')
-        if self['album_part']:
-            album = " - ".join([album, song('part')])
-        track.album = str(album)
+        try:
+            album = tag('album')
+        except IndexError:
+            pass
+        else:
+            if self['album_part']:
+                album = " - ".join([album, song('part')])
+            track.album = str(album)
 
         # String keys
         for key in ['artist', 'genre', 'grouping']:
