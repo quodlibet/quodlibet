@@ -151,9 +151,11 @@ class TrayIcon(EventPlugin):
         try: p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "svg", 16, 16)
         except:
             p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "png", 16, 16)
-        img = gtk.Image()
-        if p: img.set_from_pixbuf(p)
-        eb = gtk.EventBox(); eb.add(img)
+        self.__image = gtk.Image()
+        if p:
+            self.__image.set_from_pixbuf(p)
+            self.__pixbuf = p
+        eb = gtk.EventBox(); eb.add(self.__image)
         icon.add(eb)
 
         window.connect('delete-event', self.__window_delete)
@@ -172,6 +174,7 @@ class TrayIcon(EventPlugin):
         except config.error: pass
 
         icon.show_all()
+        self.plugin_on_paused()
         self.plugin_on_song_started(player.song)
 
     def disabled(self):
@@ -354,6 +357,20 @@ class TrayIcon(EventPlugin):
         playpause.set_image(img)
         playpause.child.set_text(gtk.stock_lookup(stock)[1])
         playpause.child.set_use_underline(True)
+
+        if player.paused:
+            base = self.__pixbuf.copy()
+            overlay = self.__image.render_icon(gtk.STOCK_MEDIA_PAUSE,
+                    gtk.ICON_SIZE_MENU)
+            w, h = base.get_width(), base.get_height()
+            overlay.composite(base, w // 3, h // 3, 2 * w // 3, 2 * h // 3,
+                    w // 3, h // 3, 0.75, 0.75, gtk.gdk.INTERP_BILINEAR, 255)
+            #overlay.composite(base, 0, 0, w, h, 0, 0, 1, 1,
+                    #gtk.gdk.INTERP_BILINEAR, 92)
+            self.__image.set_from_pixbuf(base)
+        else:
+            self.__image.set_from_pixbuf(self.__pixbuf)
+
     plugin_on_unpaused = plugin_on_paused
 
     def __properties(self, watcher, player):
