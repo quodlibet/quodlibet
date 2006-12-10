@@ -23,7 +23,7 @@ install: make-install-dirs install-dirs install-programs
 
 	for E in $(EXTENSIONS); \
 		if test -e $$E; then \
-			install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E); \
+			install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E; \
 		fi; \
 	done
 
