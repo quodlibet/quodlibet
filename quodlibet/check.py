@@ -38,13 +38,13 @@ if __name__ == "__main__":
                          "(http://gstreamer.freedesktop.org)" % NAME)
     else: print "found"
 
-    print "Checking for Mutagen >= 1.6:",
+    print "Checking for Mutagen >= 1.9:",
     try:
         import mutagen
-        if mutagen.version < (1, 6):
+        if mutagen.version < (1, 9):
             raise ImportError
     except ImportError:
-        raise SystemExit("not found\n%s requires Mutagen 1.6.\n"
+        raise SystemExit("not found\n%s requires Mutagen 1.9.\n"
                          "(http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen)" % NAME)
     else: print "found"
 

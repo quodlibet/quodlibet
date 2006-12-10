@@ -36,7 +36,7 @@ Quod Libet depends on the Python runtime and associated libraries.
  Python (>= 2.4):  http://www.python.org
  PyGTK (>= 2.8):   http://www.pygtk.org
  PyGSt (>= 0.10):  http://gstreamer.freedesktop.org/
- Mutagen (>= 1.2): http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
+ Mutagen (>= 1.9): http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
 
 The following formats all depend on ctypes, available at
 http://starship.python.net/crew/theller/ctypes/, as well as the libraries
