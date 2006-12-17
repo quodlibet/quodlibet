@@ -14,6 +14,13 @@ from util import to
 
 from plugins.events import EventPlugin
 
+# Set this to True to enable logging
+verbose = False
+
+def log(msg):
+    if verbose:
+        print "[qlscrobbler]", msg
+
 class QLScrobbler(EventPlugin):
     # session invariants
     PLUGIN_ID = "QLScrobbler"
@@ -71,7 +78,7 @@ class QLScrobbler(EventPlugin):
         gtk.quit_add(0, self.dump_queue)
 
     def read_dump(self, dump):
-        print "Loading dumped queue."
+        log("Loading dumped queue.")
     
         current = {}
 
@@ -108,12 +115,12 @@ class QLScrobbler(EventPlugin):
         if len(self.queue) > 0:
             self.flushing = True
             self.submit_song()
-        else: print "Queue was empty!"
+        else: log("Queue was empty!")
 
     def dump_queue(self):
         if len(self.queue) == 0: return 0
         
-        print "Dumping offline queue, will submit next time."
+        log("Dumping offline queue, will submit next time.")
 
         dump = open(self.DUMP, 'w')
         
@@ -163,7 +170,7 @@ class QLScrobbler(EventPlugin):
         # Check to see if this song is not something we'd like to submit
         #    e.g. "Hit Me Baby One More Time"
         if self.exclude != "" and parse.Query(self.exclude).search(song):
-            print to("Not submitting: %s - %s" % (song["artist"], song["title"]))
+            log(to("Not submitting: %s - %s" % (song["artist"], song["title"])))
             return
 
         self.song = song
@@ -247,21 +254,21 @@ class QLScrobbler(EventPlugin):
         # construct url
         url = "http://post.audioscrobbler.com/?hs=true&p=%s&c=%s&v=%s&u=%s" % ( self.PROTOCOL_VERSION, self.CLIENT, self.PLUGIN_VERSION, self.username )
         
-        print "Sending handshake to Audioscrobbler."
+        log("Sending handshake to Audioscrobbler.")
 
         resp = None
 
         try:
             resp = urllib2.urlopen(url);
         except:
-            print "Server not responding, handshake failed."
+            log("Server not responding, handshake failed.")
             return # challenge_sent is NOT set to 1
             
         # check response
         lines = resp.read().rstrip().split("\n")
         status = lines.pop(0)
 
-        print "Handshake status: %s" % status
+        log("Handshake status: %s" % status)
             
         if status == "UPTODATE" or status.startswith("UPDATE"):
             if status.startswith("UPDATE"):
@@ -271,7 +278,7 @@ class QLScrobbler(EventPlugin):
             # Scan for submit URL and challenge.
             self.challenge = lines.pop(0)
 
-            print "Challenge: %s" % self.challenge
+            log("Challenge: %s" % self.challenge)
 
             # determine password
             hasher = md5.new()
@@ -294,7 +301,7 @@ class QLScrobbler(EventPlugin):
         if interval > 1:
             self.waiting = True
             gobject.timeout_add(interval * 1000, self.clear_waiting)
-            print "Server says to wait for %d seconds." % interval
+            log("Server says to wait for %d seconds." % interval)
     
     def submit_song(self):
         bg = threading.Thread(None, self.submit_song_helper)
@@ -309,15 +316,15 @@ class QLScrobbler(EventPlugin):
 
     def submit_song_helper(self):
         if self.__enabled:
-            print "Plugin re-enabled - accepting new songs."
+            log("Plugin re-enabled - accepting new songs.")
             if self.submission_tid != -1:
                 gobject.source_remove(self.submission_tid);
                 self.submission_tid = -1
         else:
-            print "Plugin disabled - not accepting any new songs."
+            log("Plugin disabled - not accepting any new songs.")
             if len(self.queue) > 0:
                 self.submission_tid = gobject.timeout_add(120 * 1000, self.submit_song_helper)
-                print "Attempts will continue to submit the last %d songs." % len(self.queue)
+                log("Attempts will continue to submit the last %d songs." % len(self.queue))
 
         if self.already_submitted == True or self.broken == True: return
 
@@ -354,7 +361,7 @@ class QLScrobbler(EventPlugin):
         # Just note to stdout if either of these are true..
         # locked means another instance if s_s_h is dealing with sending.
         if self.offline or self.locked:
-            print to("Queuing: %s - %s" % (store["artist"], store["title"]))
+            log(to("Queuing: %s - %s" % (store["artist"], store["title"])))
             return
 
         self.locked = True
@@ -381,7 +388,7 @@ class QLScrobbler(EventPlugin):
         
         # Flush the cache
         for i in range(min(len(self.queue), 10)):
-            print to("Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title']))
+            log(to("Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title'])))
             data["a[%d]" % i] = self.queue[i]['artist'].encode('utf-8')
             data["t[%d]" % i] = self.queue[i]['title'].encode('utf-8')
             data["l[%d]" % i] = str(self.queue[i]['length'])
@@ -397,7 +404,7 @@ class QLScrobbler(EventPlugin):
             data_str = urllib.urlencode(data)
             resp = urllib2.urlopen("http://" + host + "/" + file, data_str)
         except:
-            print "Audioscrobbler server not responding, will try later."
+            log("Audioscrobbler server not responding, will try later.")
             self.locked = False
             return # preserve the queue, yadda yadda
 
@@ -408,15 +415,15 @@ class QLScrobbler(EventPlugin):
         except:
             try: status = lines[0]
             except:
-                print "Truncated server response, will try later..."
+                log("Truncated server response, will try later...")
                 self.locked = False
                 return
             interval = None
         
-        print "Submission status: %s" % status
+        log("Submission status: %s" % status)
 
         if status == "BADAUTH":
-            print "Attempting to re-authenticate."
+            log("Attempting to re-authenticate.")
             self.challenge_sent = False
             self.send_handshake()
             if self.challenge_sent == False:
@@ -426,15 +433,15 @@ class QLScrobbler(EventPlugin):
             self.queue = self.queue[10:]
         elif status.startswith("FAILED"):
             if status.startswith("FAILED Plugin bug"):
-                print "Plugin bug!? Ridiculous! Dumping queue contents."
+                log("Plugin bug!? Ridiculous! Dumping queue contents.")
                 for item in self.queue:
                     for key in item:
-                        print to("%s = %s" % (key, item[key]))
+                        log(to("%s = %s" % (key, item[key])))
             # possibly handle other specific cases here for debugging later
         else:
-            print "Unknown response from server: %s" % status
-            print "Dumping full response:"
-            print resp_save
+            log("Unknown response from server: %s" % status)
+            log("Dumping full response:")
+            log(resp_save)
 
         if interval != None: interval_secs = int(interval.split()[1])
         else: interval_secs = 0
@@ -442,10 +449,10 @@ class QLScrobbler(EventPlugin):
         if interval_secs > 1:
             self.waiting = True
             gobject.timeout_add(interval_secs * 1000, self.clear_waiting)
-            print "Server says to wait for %d seconds." % interval_secs
+            log("Server says to wait for %d seconds." % interval_secs)
 
         if not self.__enabled and len(self.queue) == 0 and self.submission_tid != -1:
-            print "All songs submitted, disabling retries."
+            log("All songs submitted, disabling retries.")
             gobject.source_remove(self.submission_tid)
             self.submission_tid = -1
 
