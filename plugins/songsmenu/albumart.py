@@ -256,7 +256,7 @@ class AlbumArtWindow(gtk.Window):
         append = combo.get_model()[(combo.get_active(),)][0]
         dirname = songs[0]("~dirname")
         fname = os.path.join(dirname, append)
-        print "Will save to", fname
+        #print "Will save to", fname
         config.set("plugins", "cover_fn", append)
         return fname
 
