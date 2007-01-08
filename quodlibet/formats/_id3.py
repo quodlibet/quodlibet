@@ -56,6 +56,8 @@ class ID3File(AudioFile):
             "TOAL": "originalalbum",
             "TOPE": "originalartist",
             "WOAR": "website",
+            # "language" should not make to TLAN. TLAN requires
+            # an ISO language code, and QL tags are freeform.
             }
     SDI = dict([(v, k) for k, v in IDS.iteritems()])
 
