@@ -65,7 +65,7 @@ class SongsMenu(gtk.Menu):
             self.append(b)
             b.set_sensitive(can_add)
 
-        if devices:
+        if devices and browsers.media.MediaDevices in browsers.browsers:
             import browsers
             try: submenu = browsers.media.Menu(songs, library)
             except AttributeError: pass
