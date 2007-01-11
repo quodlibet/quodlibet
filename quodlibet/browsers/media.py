@@ -559,4 +559,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                     msg += "\n\n%s" % status
                 qltk.ErrorMessage(self, _("Unable to eject device"), msg).run()
 
-browsers = [MediaDevices]
+if devices.init():
+    browsers = [MediaDevices]
+else:
+    print "W: couldn't connect to HAL, disabling MediaDevices browser"
+    browsers = []

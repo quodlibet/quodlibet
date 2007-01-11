@@ -47,6 +47,9 @@ def write():
     config.write(f)
     f.close()
 
+_dbus = None
+_hal = None
+
 # Return a constructor for a device given by a string
 def get(name):
     try: return devices[[d.__name__ for d in devices].index(name)]
@@ -83,5 +86,15 @@ def get_interface(udi, interface='Device'):
 def discover():
     return _hal.FindDeviceByCapability('portable_audio_player')
 
-_dbus = dbus.SystemBus()
-_hal = get_interface('/org/freedesktop/Hal/Manager', 'Manager')
+def init():
+    global _dbus, _hal
+    try:
+        _dbus = dbus.SystemBus()
+        ns = 'org.freedesktop.DBus'
+        interface = dbus.Interface(
+            _dbus.get_object(ns, '/org/freedesktop/DBus'), ns)
+        if 'org.freedesktop.Hal' in interface.ListNames():
+            _hal = get_interface('/org/freedesktop/Hal/Manager', 'Manager')
+            return True
+    except dbus.DBusException:
+        pass
