@@ -453,7 +453,7 @@ msgstr "data nagrania"
 
 #: ../po/tag-names.py:56 ../qltk/information.py:192 ../util/__init__.py:538
 msgid "skips"
-msgstr "pomienięć"
+msgstr "pominięć"
 
 #: ../po/tag-names.py:57
 msgid "title"
