@@ -15,8 +15,9 @@ from qltk import Frame
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
-    PLUGIN_DESC = 'Change Gajim status message according to what you are listening now.'
-    PLUGIN_VERSION = '0.7.1'
+    PLUGIN_DESC = _("Change Gajim status message according to what "
+                    "you are listening now.")
+    PLUGIN_VERSION = '0.7.2'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'
@@ -50,9 +51,10 @@ class GajimStatusMessage(EventPlugin):
 
         gtk.quit_add(0, self.quit)
 
-        self.interface = dbus.Interface(dbus.SessionBus().get_object('org.gajim.dbus',
-        '/org/gajim/dbus/RemoteObject'),
-        'org.gajim.dbus.RemoteInterface')
+        self.interface = dbus.Interface(
+        dbus.SessionBus().get_object('org.gajim.dbus',
+            '/org/gajim/dbus/RemoteObject'),
+            'org.gajim.dbus.RemoteInterface')
     
         self.current = ''
 
@@ -62,9 +64,7 @@ class GajimStatusMessage(EventPlugin):
 
     def change_status(self, accounts, status_message):
         if accounts == []:
-            status = self.interface.get_status()
-            if status in self.statuses:
-                self.interface.change_status(status, status_message)
+            accounts = ['']
         for account in accounts:
             status = self.interface.get_status(account)
             if status in self.statuses:
@@ -115,14 +115,17 @@ class GajimStatusMessage(EventPlugin):
         accounts_e = gtk.Entry()
         accounts_e.set_text(join(self.accounts))
         accounts_e.connect('changed', self.accounts_e_changed)
-        tooltips(accounts_e, "List accounts, separated by spaces, for changing status message. If none is specified status message of all accounts will be changed.")
+        tooltips(accounts_e, "List accounts, separated by spaces, for "
+                             "changing status message. If none is specified "
+                             "status message of all accounts will be changed.")
         hb.pack_start(gtk.Label("Accounts:"), expand=False)
         hb.pack_start(accounts_e)
 
         c = gtk.CheckButton(label="Add '[paused]'")
         c.set_active(self.paused)
         c.connect('toggled', self.c_changed)
-        tooltips(c, "If checked, '[paused]' will be added to status message on pause.")
+        tooltips(c, "If checked, '[paused]' will be added to "
+                    "status message on pause.")
 
         table = gtk.Table()
         self.list = []
@@ -145,7 +148,8 @@ class GajimStatusMessage(EventPlugin):
         vb.pack_start(pattern_e)
         vb.pack_start(hb)
         vb.pack_start(c)
-        vb.pack_start(Frame(label="Statuses for which status message\nwill be changed"))
+        vb.pack_start(Frame(label="Statuses for which status message\n"
+                                  "will be changed"))
         vb.pack_start(table)
 
         return vb
