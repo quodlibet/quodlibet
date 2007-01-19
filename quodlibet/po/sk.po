@@ -27,7 +27,7 @@ msgstr "_Náhľad"
 
 #: ../stock.py:51
 msgid "Add to _Queue"
-msgstr "Pridať do _rady"
+msgstr "Pridať do _fronty"
 
 #: ../stock.py:52
 msgid "_Add to Playlist"
@@ -56,7 +56,7 @@ msgstr "_Informácie"
 #. a sample translation would be "_Remove from Library".
 #: ../stock.py:81 ../stock.py:85
 msgid "ql-remove"
-msgstr ""
+msgstr "_Odstrániť z knižnice"
 
 #. Translators: Only translate this if GTK does so incorrectly or not
 #. at all. Don't literally translate media/next/previous/play/pause.
@@ -101,7 +101,7 @@ msgstr "Nepodarilo sa zapísať do %s. Odstraňujem to."
 
 #: ../quodlibet.py:159
 msgid "a music library and player"
-msgstr "hudobná prehrávač"
+msgstr "hudobný prehrávač"
 
 #: ../quodlibet.py:160
 msgid "[ --print-playing | control ]"
@@ -1380,9 +1380,9 @@ msgstr "Odstrániť všetky skladby z fronty"
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%(count)d skladba (%(time)s)"
+msgstr[1] "%(count)d skladby (%(time)s)"
+msgstr[2] "%(count)d skladieb (%(time)s)"
 
 #: ../qltk/quodlibet.py:203
 msgid "_Order:"
@@ -1807,15 +1807,15 @@ msgstr "Zoznam _albumov"
 
 #: ../browsers/albums.py:362
 msgid "Sort by title"
-msgstr "Zoradiť podľa názvu"
+msgstr "Podľa názvu"
 
 #: ../browsers/albums.py:362
 msgid "Sort by artist"
-msgstr "Zoradiť podľa interpreta"
+msgstr "Podľa interpreta"
 
 #: ../browsers/albums.py:362
 msgid "Sort by date"
-msgstr "Zoradiť podľa dátumu"
+msgstr "Podľa dátumu"
 
 #: ../browsers/albums.py:487
 msgid "All Albums"
@@ -2284,7 +2284,7 @@ msgstr "<b>%s</b> nemôže byť skopírované."
 
 #: ../browsers/media.py:509
 msgid "Unable to delete songs"
-msgstr "Nedajú sa odstrániť skladby"
+msgstr "Nepodarilo sa vymazať skladby"
 
 #: ../browsers/media.py:519
 #, python-format
