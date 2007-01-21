@@ -33,7 +33,7 @@ class MP4File(AudioFile):
         "aART": "albumartist",
         "\xa9wrt": "composer",
         "\xa9day": "date",
-        "\xa9cm": "comment",
+        "\xa9cmt": "comment",
         "\xa9grp": "grouping",
         "\xa9gen": "genre",
         "tmpo": "bpm",
