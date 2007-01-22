@@ -21,7 +21,7 @@ install: make-install-dirs install-dirs install-programs
 	install -m 644 $(MODULES) audio-*.png media-*.png device-*.png $(DESTDIR)$(PREFIX)/$(TO)
 	cd po && make install-po DESTDIR=$(DESTDIR)
 
-	for E in $(EXTENSIONS); \
+	for E in $(EXTENSIONS); do \
 		if test -e $$E; then \
 			install -m 755 -D $$E $(DESTDIR)$(PREFIX)/$(TODEP)/$$E; \
 		fi; \
