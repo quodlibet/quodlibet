@@ -176,7 +176,7 @@ class IPodDevice(Device):
         except IndexError:
             pass
         else:
-            if self['title_version']:
+            if self['title_version'] and song('version'):
                 title = " - ".join([title, song('version')])
             track.title = str(title)
 
@@ -185,7 +185,7 @@ class IPodDevice(Device):
         except IndexError:
             pass
         else:
-            if self['album_part']:
+            if self['album_part'] and song('part'):
                 album = " - ".join([album, song('part')])
             track.album = str(album)
 
@@ -266,10 +266,10 @@ class IPodDevice(Device):
 
         self.__itdb = gpod.itdb_parse(self.mountpoint, None)
         if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
-            qltk.get_top_parent(self), _("Uninitialized iPod"),
+            None, _("Uninitialized iPod"),
             _("Do you want to create an empty database on this iPod?")
             ).run():
-            self.__itdb = self.create_db()
+            self.__itdb = self.__create_db()
 
         return self.__itdb
 
@@ -282,7 +282,7 @@ class IPodDevice(Device):
 
     def __create_db(self):
         db = gpod.itdb_new();
-        gpod.itdb_set_mountpoint(self.mountpoint)
+        gpod.itdb_set_mountpoint(db, self.mountpoint)
 
         master = gpod.itdb_playlist_new('iPod', False)
         gpod.itdb_playlist_set_mpl(master)
