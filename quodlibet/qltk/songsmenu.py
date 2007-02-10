@@ -48,6 +48,9 @@ class SongsMenu(gtk.Menu):
             # Needed here to avoid a circular import; most browsers use
             # a SongsMenu, but SongsMenu needs access to the playlist
             # browser for this item.
+
+            # FIXME: Two things are now importing browsers, so we need
+            # some kind of inversion of control here.
             import browsers
             try: submenu = browsers.playlists.Menu(songs)
             except AttributeError: pass
@@ -65,15 +68,17 @@ class SongsMenu(gtk.Menu):
             self.append(b)
             b.set_sensitive(can_add)
 
-        if devices and browsers.media.MediaDevices in browsers.browsers:
+        if devices:
             import browsers
-            try: submenu = browsers.media.Menu(songs, library)
+            try: browsers.media
             except AttributeError: pass
             else:
-                b = gtk.ImageMenuItem(stock.DEVICES)
-                b.set_sensitive(can_add and len(submenu) > 0)
-                b.set_submenu(submenu)
-                self.append(b)
+                if browsers.media.MediaDevices in browsers.browsers:
+                    submenu = browsers.media.Menu(songs, library)
+                    b = gtk.ImageMenuItem(stock.DEVICES)
+                    b.set_sensitive(can_add and len(submenu) > 0)
+                    b.set_submenu(submenu)
+                    self.append(b)
 
         if remove or delete or edit:
             self.separate()
