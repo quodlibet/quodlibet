@@ -1,23 +1,25 @@
 # Copyright 2005-2006 Sergey Fedoseev <fedoseev.sergey@gmail.com>
+# Copyright 2007 Simon Morgan <zen84964@zen.co.uk>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
 from string import join
-import gtk, config
+import gtk
 import dbus
 
 from plugins.events import EventPlugin
 from parse import Pattern
 from qltk import Frame
+import config
 
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = _("Change Gajim status message according to what "
-                    "you are listening now.")
-    PLUGIN_VERSION = '0.7.2'
+                    "you are currently listening to.")
+    PLUGIN_VERSION = '0.7.3'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'
@@ -38,10 +40,10 @@ class GajimStatusMessage(EventPlugin):
             config.set('plugins', self.c_paused, 'True')
 
         try:
-            self.statuses = config.get('plugins', self.c_statuses)
+            self.statuses = config.get('plugins', self.c_statuses).split()
         except:
-            self.statuses = 'online chat'
-            config.set('plugins', self.c_statuses, self.statuses)
+            self.statuses = ['online', 'chat']
+            config.set('plugins', self.c_statuses, join(self.statuses))
 
         try:
             self.pattern = config.get('plugins', self.c_pattern)
@@ -55,18 +57,18 @@ class GajimStatusMessage(EventPlugin):
         dbus.SessionBus().get_object('org.gajim.dbus',
             '/org/gajim/dbus/RemoteObject'),
             'org.gajim.dbus.RemoteInterface')
-    
+
         self.current = ''
 
     def quit(self):
         try: self.change_status(self.accounts, '')
         except dbus.DBusException: pass
 
-    def change_status(self, accounts, status_message):
-        if accounts == []:
-            accounts = ['']
-        for account in accounts:
+    def change_status(self, enabled_accounts, status_message):
+        for account in self.interface.list_accounts():
             status = self.interface.get_status(account)
+            if enabled_accounts != [] and account not in enabled_accounts:
+                continue
             if status in self.statuses:
                 self.interface.change_status(status, status_message, account)
 
@@ -79,51 +81,55 @@ class GajimStatusMessage(EventPlugin):
 
     def plugin_on_paused(self):
         if self.paused and self.current != '':
-            self.change_status(self.accounts, self.current+" [paused]")
+            self.change_status(self.accounts, self.current + " [paused]")
 
     def plugin_on_unpaused(self):
         self.change_status(self.accounts, self.current)
 
-    def accounts_e_changed(self, e):
-        self.accounts = e.get_text().split()
-        config.set('plugins', self.c_accounts, e.get_text())
+    def accounts_changed(self, entry):
+        self.accounts = entry.get_text().split()
+        config.set('plugins', self.c_accounts, entry.get_text())
 
-    def pattern_e_changed(self, e):
-        self.pattern = e.get_text()
+    def pattern_changed(self, entry):
+        self.pattern = entry.get_text()
         config.set('plugins', self.c_pattern, self.pattern)
 
-    def c_changed(self, c):
+    def paused_changed(self, c):
         config.set('plugins', self.c_paused, str(c.get_active()))
 
-    def b_changed(self, b):
-        self.statuses = ''
-        for b in self.list:
-            if b.get_active():
-                self.statuses = self.statuses + b.get_name()
-        config.set('plugins', self.c_statuses, self.statuses)
+    def statuses_changed(self, b):
+        if b.get_active() and b.get_name() not in self.statuses:
+            self.statuses.append(b.get_name())
+        elif b.get_active() == False and b.get_name() in self.statuses:
+            self.statuses.remove(b.get_name())
+        config.set('plugins', self.c_statuses, join(self.statuses))
 
     def PluginPreferences(self, parent):
-        vb = gtk.VBox(spacing=3)
+        vb = gtk.VBox(spacing = 3)
         tooltips = gtk.Tooltips().set_tip
 
-        pattern_e = gtk.Entry()
-        pattern_e.set_text(self.pattern)
-        pattern_e.connect('changed', self.pattern_e_changed)
+        pattern_box = gtk.HBox(spacing = 3)
+        pattern_box.set_border_width(3)
+        pattern = gtk.Entry()
+        pattern.set_text(self.pattern)
+        pattern.connect('changed', self.pattern_changed)
+        pattern_box.pack_start(gtk.Label("Pattern:"), expand = False)
+        pattern_box.pack_start(pattern)
 
-        hb = gtk.HBox(spacing=3)
-        hb.set_border_width(6)
-        accounts_e = gtk.Entry()
-        accounts_e.set_text(join(self.accounts))
-        accounts_e.connect('changed', self.accounts_e_changed)
-        tooltips(accounts_e, "List accounts, separated by spaces, for "
-                             "changing status message. If none is specified "
+        accounts_box = gtk.HBox(spacing = 3)
+        accounts_box.set_border_width(3)
+        accounts = gtk.Entry()
+        accounts.set_text(join(self.accounts))
+        accounts.connect('changed', self.accounts_changed)
+        tooltips(accounts, "List accounts, separated by spaces, for "
+                             "changing status message. If none are specified, "
                              "status message of all accounts will be changed.")
-        hb.pack_start(gtk.Label("Accounts:"), expand=False)
-        hb.pack_start(accounts_e)
+        accounts_box.pack_start(gtk.Label("Accounts:"), expand = False)
+        accounts_box.pack_start(accounts)
 
         c = gtk.CheckButton(label="Add '[paused]'")
         c.set_active(self.paused)
-        c.connect('toggled', self.c_changed)
+        c.connect('toggled', self.paused_changed)
         tooltips(c, "If checked, '[paused]' will be added to "
                     "status message on pause.")
 
@@ -131,22 +137,22 @@ class GajimStatusMessage(EventPlugin):
         self.list = []
         i = 0
         j = 0
-        for a in ['online', 'offline', 'chat', 'away', 'xa', 'invisible']:
-            b = gtk.CheckButton(label=a)
-            b.set_name(a)
-            b.connect('toggled', self.b_changed)
-            self.list.append(b)
-            if a in self.statuses:
-                b.set_active(True)
-            table.attach(b, i, i+1, j, j+1)
+        for status in ['online', 'offline', 'chat', 'away', 'xa', 'invisible']:
+            button = gtk.CheckButton(label=status)
+            button.set_name(status)
+            if status in self.statuses:
+                button.set_active(True)
+            button.connect('toggled', self.statuses_changed)
+            self.list.append(button)
+            table.attach(button, i, i+1, j, j+1)
             if i == 2:
                 i = 0
                 j += 1
             else:
                 i += 1
 
-        vb.pack_start(pattern_e)
-        vb.pack_start(hb)
+        vb.pack_start(pattern_box)
+        vb.pack_start(accounts_box)
         vb.pack_start(c)
         vb.pack_start(Frame(label="Statuses for which status message\n"
                                   "will be changed"))
