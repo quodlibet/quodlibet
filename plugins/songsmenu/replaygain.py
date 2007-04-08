@@ -1,186 +1,32 @@
 #! /usr/bin/env python
 #
-#    VorbisGain plugin for Quod Libet
-#    Copyright (C) 2005  Michael Urman
+#    ReplayGain Album Analysis using gstreamer rganalysis element
+#    Copyright (C) 2005,2007  Michael Urman
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of version 2 of the GNU General Public License as
 #    published by the Free Software Foundation.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
 
-import gtk, pango, gobject, os, sre
-
-from _subprocobj import Subprocess
-from plugins.songsmenu import SongsMenuPlugin
-
-VORBIS_PROGRESS = sre.compile(r'(?P<percent>\d+)% - (?P<file>.+)')
-VORBIS_ALBUM = sre.compile(r'Recommended Album Gain:\s+(?P<albumgain>[-+]?\d+\.\d+)\s+dB')
-VORBIS_TRACK = sre.compile(r'(?P<gain>[-+]?\d\.\d+) dB \|\s+(?P<peak>\d+) \|\s+(?P<scale>\d+\.\d+) \|\s+(?P<newpeak>\d+) \| (?P<file>.+)')
-
-MP3_PROGRESS = sre.compile(r' (?P<file>.+?)\s+(?P<percent>\d+)% done, ETA.+batch')
-MP3_ALBUM = sre.compile(r'(?P<gain>[-+]?\d+\.\d+)dB\s+volume adjustment')
-MP3_TRACK = sre.compile(r'(?P<level>[-+]?\d+\.\d+)dBFS\s+(?P<peak>[-+]?\d+\.\d+)dBFS\s+(?P<gain>[-+]?\d+\.\d+)dB\s+(?P<file>.+)')
+import gtk
+import gobject
+import pango
+import gst
 
 __all__ = ['ReplayGain']
+from plugins.songsmenu import SongsMenuPlugin
 
 class ReplayGain(SongsMenuPlugin):
-
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = 'Replay Gain'
-    PLUGIN_DESC = ('Invokes vorbisgain or normalize-audio on selected '
-                   'songs, grouped by album')
+    PLUGIN_DESC = 'Analyzes ReplayGain with gstreamer, grouped by album'
     PLUGIN_ICON = gtk.STOCK_CDROM
-    PLUGIN_VERSION = "0.16"
+    PLUGIN_VERSION = "0.24"
 
-    class VorbisGainer(object):
-        def __init__(self, gain):
-            self.gain = gain
-            self.command = ['vorbisgain']
-            self.args = ['--album', '--skip', ]#'--display-only']
-
-        def run(self, songs):
-            files = [song['~filename'] for song in songs]
-            win = self.gain.get_window()
-            win.process = Subprocess(
-                self.command + self.args + files, newlines='\r\n')
-            win.ids = [
-                win.process.connect(
-                'output-line', self.__output, song('album')),
-                win.process.connect('output-eof', self.__eof),
-            ]
-            self.complete = False
-            win.process.start()
-
-        def __output(self, process, fd, line, album,
-                     progressre=VORBIS_PROGRESS,
-                     trackre=VORBIS_TRACK, albumre=VORBIS_ALBUM):
-
-            match = progressre.search(line)
-            if match:
-                d = match.groupdict()
-                p = d.get('percent','')
-                f = d.get('file', '')
-                self.gain.update_song(f, percent=p)
-
-            match = trackre.search(line)
-            if match:
-                d = match.groupdict()
-                g = d.get('gain', '')
-                f = d.get('file', '')
-                self.gain.update_song(f, gain=g)
-
-            match = albumre.search(line)
-            if match:
-                d = match.groupdict()
-                g = d.get('albumgain')
-                self.gain.update_album(album, gain=g)
-
-        def __eof(self, process, fd):
-            self.gain.set_buttons(True)
-            self.gain.complete = True
-
-    class MP3Gainer(object):
-        def __init__(self, gain):
-            self.gain = gain
-            self.command = ['normalize-audio']
-            self.args1 = ['-n']
-            self.args2 = ['-n', '-b']
-
-        def run(self, songs):
-            files = [song['~filename'] for song in songs]
-            self.__files = [(song('~basename'), song['~filename'], song)
-                            for song in songs]
-            win = self.gain.get_window()
-            win.process = Subprocess(self.command + self.args1 + files,
-                    newlines='\r\n')
-            win.ids = [
-                win.process.connect(
-                'output-line', self.__output, song('album')),
-                win.process.connect('output-eof', self.__eof1),
-            ]
-            self.__set_album = False
-            self.complete = False
-            win.process.start()
-
-            while not self.complete: gtk.main_iteration()
-            self.complete = 100
-            for id in win.ids: win.process.disconnect(id)
-
-            win.process = Subprocess(
-                self.command + self.args2 + files, newlines='\r\n')
-            win.ids = [
-                win.process.connect(
-                'output-line', self.__output, song('album')),
-                win.process.connect('output-eof', self.__eof2),
-            ]
-            win.process.start()
-
-        def __match_file(self, shortfile):
-            if not shortfile: return shortfile, None
-            for b, f, s in self.__files:
-                if b.startswith(shortfile): return f, s
-            for b, f, s in self.__files:
-                if f == shortfile: return f, s
-            return shortfile, None
-
-        def __output(self, process, fd, line, album, progressre=MP3_PROGRESS,
-                     trackre=MP3_TRACK, albumre=MP3_ALBUM):
-
-            match = progressre.search(line)
-            if match:
-                d = match.groupdict()
-                p = str(int((int(d.get('percent',''))+self.complete)*0.5))
-                f, s = self.__match_file(d.get('file', ''))
-                return self.gain.update_song(f, percent=p)
-            
-            match = trackre.search(line)
-            if match:
-                try:
-                    d = match.groupdict()
-                    g = d.get('gain', '')
-                    f, s = self.__match_file(d.get('file', ''))
-                    self.gain.update_song(f, gain=g)
-                    s['replaygain_track_gain'] = g + ' dB'
-                    s['replaygain_track_peak'] = '0' # unsupported; required
-                except:
-                    from traceback import print_exc
-                    print_exc()
-                return
-
-            match = albumre.search(line)
-            if match:
-                d = match.groupdict()
-                g = d.get('gain')
-                self.__set_album = True
-                self.gain.update_album(album, gain=g)
-                for b, f, s in self.__files:
-                    s['replaygain_album_gain'] = g + ' dB'
-                    s['replaygain_album_peak'] = '0' # unsupported; required
-                return
-
-        def __eof1(self, process, fd):
-            self.complete = True
-
-        def __eof2(self, process, fd):
-            if not self.__set_album:
-                for b, f, s in self.__files:
-                    s['replaygain_album_peak'] = '0'
-                    s['replaygain_album_gain'] = '0'
-            self.gain.set_buttons(True)
-            self.gain.complete = True
-
-    def get_window(self):
-        try: return ReplayGain.win
-        except AttributeError: pass
-
+    def plugin_album(self, songs):
         win = gtk.Dialog(title='ReplayGain',
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                    gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+                    gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         win.set_default_size(400, 300)
         win.set_border_width(6)
         swin = gtk.ScrolledWindow()
@@ -188,106 +34,203 @@ class ReplayGain(SongsMenuPlugin):
         swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         swin.set_shadow_type(gtk.SHADOW_IN)
         from qltk.views import HintedTreeView
-        ReplayGain.model = gtk.ListStore(object, str, str, int, str, str)
-        ReplayGain.view = view = HintedTreeView(ReplayGain.model)
+        model = gtk.ListStore(object, str, int, str, str)
+        view = HintedTreeView(model)
         swin.add(view)
 
-        columns = [gtk.TreeViewColumn(n.title()) for n in 
-                    ['track', 'progress', 'gain', 'album']]
-        for col in columns:
-            col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            col.set_resizable(True)
-            view.append_column(col)
-        columns[0].set_expand(True)
-        columns[0].set_fixed_width(1)
+        # Create a view of title/progress/gain/peak for each track + album
+        col = gtk.TreeViewColumn('Track', 
+            gobject.new(gtk.CellRendererText, ellipsize=pango.ELLIPSIZE_END),
+            text=1)
+        col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        col.set_expand(True)
+        col.set_fixed_width(120)
+        view.append_column(col)
 
-        def add(render, col, **kw):
-            expand = not isinstance(render, gtk.CellRendererPixbuf)
-            col.pack_start(render, expand=expand)
-            if col.get_title() == "Track" and expand:
-                render.set_property('ellipsize', pango.ELLIPSIZE_END)
-            for k, v in kw.items():
-                col.add_attribute(render, k, v)
+        col = gtk.TreeViewColumn('Progress',
+                gtk.CellRendererProgress(), value=2)
+        col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        view.append_column(col)
 
-        add(gtk.CellRendererPixbuf(), columns[0], stock_id=1)
-        add(gtk.CellRendererText(), columns[0], text=2)
-        add(gtk.CellRendererProgress(), columns[1], value=3)
-        add(gtk.CellRendererText(), columns[2], text=4)
-        add(gtk.CellRendererText(), columns[3], text=5)
+        col = gtk.TreeViewColumn('Gain', gtk.CellRendererText(), text=3)
+        col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        view.append_column(col)
+        
+        col = gtk.TreeViewColumn('Peak', gtk.CellRendererText(), text=4)
+        col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        view.append_column(col)
 
-        ReplayGain.win = win
-        win.ids = []
-        win.connect('response', self.__response)
-        win.connect('delete-event', self.__delete)
-        return win
+        for s in songs:
+            model.append([s, s('~tracknumber~title~version'), 0, "-", "-"])
+        model.append([None, "Full Album", 0, "-", "-"])
 
-    def add_song(self, song):
-        if song('~basename').endswith('.ogg'): pixbuf = gtk.STOCK_CDROM
-        elif song('~basename').endswith('.mp3'): pixbuf = gtk.STOCK_CDROM
-        else: pixbuf = gtk.STOCK_DIALOG_WARNING
-        self.model.append(
-            [song, pixbuf, song('~tracknumber~title~version'), 0, 0, 0])
+        win.vbox.show_all()
+        win.present()
+        win.finished = False
 
-    def update_song(self, song, percent=None, gain=None):
-        if not percent and not gain: return
-        for row in self.model:
-            if row[0]('~filename') == song:
-                self.view.scroll_to_cell(row.path)
-                if percent: row[3] = int(percent)
-                if gain: row[4] = gain
-                break
+        # kick off the analysis
+        analysis = Analysis(win, view, model)
+        analysis.next_song()
 
-    def update_album(self, album, gain):
-        for row in self.model:
-            if row[0]('album') == album:
-                row[5] = gain
+        # wait for the dialog to be closed
+        while not win.finished:
+            gtk.main_iteration()
 
-    def set_buttons(self, to):
+        win.hide()
+        win.destroy()
+
+class Analysis(object):
+
+    def __init__(self, win, view, model):
+        # bookkeeping
+        self.win = win
+        self.win.connect('response', self.response)
+        gobject.timeout_add(450, self.progress)
+        self.set_finished(False)
+        self.view = view
+        self.model = model
+        self.song = -1
+        self.album = len(model) - 1
+        self.current = None
+
+        # gst pipeline for replay gain analysis:
+        # filesrc!decodebin!audioconvert!audioresample!rganalysis!fakesink
+        self.pipe = gst.Pipeline("pipe")
+        self.filesrc = gst.element_factory_make("filesrc", "source")
+        self.pipe.add(self.filesrc)
+
+        self.decode = gst.element_factory_make("decodebin", "decode")
+        self.decode.connect("new-decoded-pad", self.new_decoded_pad)
+        self.decode.connect("removed-decoded-pad", self.removed_decoded_pad)
+        self.pipe.add(self.decode)
+        self.filesrc.link(self.decode)
+
+        self.convert = gst.element_factory_make("audioconvert", "convert")
+        self.pipe.add(self.convert)
+
+        self.resample = gst.element_factory_make("audioresample", "resample")
+        self.pipe.add(self.resample)
+        self.convert.link(self.resample)
+
+        self.analysis = gst.element_factory_make("rganalysis", "analysis")
+        self.analysis.set_property("num-tracks", self.album)
+        self.pipe.add(self.analysis)
+        self.resample.link(self.analysis)
+
+        self.sink = gst.element_factory_make("fakesink", "sink")
+        self.pipe.add(self.sink)
+        self.analysis.link(self.sink)
+
+        bus = self.pipe.get_bus()
+        bus.add_signal_watch()
+        bus.connect("message", self.bus_message)
+
+    def new_decoded_pad(self, dbin, pad, islast):
+        pad.link(self.convert.get_pad("sink"))
+
+    def removed_decoded_pad(self, dbin, pad):
+        pad.unlink(self.convert.get_pad("sink"))
+
+    def bus_message(self, bus, message):
+        if message.type == gst.MESSAGE_TAG:
+            if message.src == self.analysis:
+                tags = message.parse_tag()
+                track = self.model[self.song]
+                album = self.model[self.album]
+                try:
+                    track[3] = '%.2f dB' % tags[gst.TAG_TRACK_GAIN]
+                    track[4] = '%.4f' % tags[gst.TAG_TRACK_PEAK]
+                except KeyError: pass
+                try:
+                    album[3] = '%.2f dB' % tags[gst.TAG_ALBUM_GAIN]
+                    album[4] = '%.4f' % tags[gst.TAG_ALBUM_PEAK]
+                except KeyError: pass
+        elif message.type == gst.MESSAGE_EOS:
+            self.next_song()
+        elif message.type == gst.MESSAGE_ERROR:
+            self.win.response(gtk.RESPONSE_CANCEL)
+
+    def next_song(self):
+        if self.song >= 0:
+            # preserve rganalysis state across files
+            self.analysis.set_locked_state(True)
+            self.pipe.set_state(gst.STATE_NULL)
+        self.song += 1
+
+        if self.current: 
+            # make sure progress hits full
+            self.current[2] = 100
+            self.model[self.album][2] = int(100 * self.song / self.album)
+
+        if self.song >= self.album:
+            self.set_finished(True)
+        else:
+            self.view.scroll_to_cell(self.song)
+            self.current = self.model[self.song]
+            self.filesrc.set_property("location", self.current[0]['~filename'])
+            self.pipe.set_state(gst.STATE_PLAYING)
+            self.analysis.set_locked_state(False)
+
+    def progress(self):
+        song = self.current and self.current[0]
+        if not song:
+            return False
+
+        try:
+            p = self.pipe.query_position(gst.FORMAT_TIME)[0]
+        except gst.QueryError:
+            pass
+        else:
+            p //= gst.MSECOND * 10
+            self.current[2] = int(p / (song("~#length") or 2 * p))
+
+        return True
+
+    def set_finished(self, done):
+        # enable/disable the save button
         try:
             buttons = self.win.vbox.get_children()[2].get_children()
         except IndexError:
             pass
         else:
-            buttons[0].set_sensitive(to)
-            buttons[1].set_sensitive(not to)
+            buttons[0].set_sensitive(done)
 
-    def plugin_album(self, songs):
-        win = self.get_window()
-        win.show_all()
-        self.complete = True
+        if done:
+            self.current = None
+            self.analysis.set_locked_state(False)
 
-        songs.sort()
+    def response(self, win, response):
+        # kill the pipeline in case this is a cancel
+        self.pipe.set_state(gst.STATE_NULL)
+        self.set_finished(True)
+        self.win.finished = True
 
-        for song in songs: self.add_song(song)
+        # save only if response says to
+        if response != gtk.RESPONSE_OK:
+            return
 
-        mp3s = [ song for song in songs if song('~basename').endswith('.mp3')]
-        oggs = [ song for song in songs if song('~basename').endswith('.ogg')]
+        album = self.model[self.album]
+        albumgain = album[3]
+        albumpeak = album[4]
 
-        if len(mp3s) == len(songs): gainer = self.MP3Gainer(self)
-        elif len(oggs) == len(songs): gainer = self.VorbisGainer(self)
-        else: return
+        for track in self.model:
+            song = track[0]
+            if song is None:
+                break
 
-        self.set_buttons(False)
+            trackgain = track[3]
+            trackpeak = track[4]
 
-        self.complete = False
-        gainer.run(songs)
+            if trackgain != '-':
+                song['replaygain_track_gain'] = trackgain
+            if trackpeak != '-':
+                song['replaygain_track_peak'] = trackpeak
+            if albumgain != '-':
+                song['replaygain_album_gain'] = albumgain
+            if albumpeak != '-':
+                song['replaygain_album_peak'] = albumpeak
 
-        while not self.complete: gtk.main_iteration()
-        
-        self.complete = False
-
-    def __delete(self, win, event):
-        self.__response(win, gtk.RESPONSE_CANCEL)
-        return True
-
-    def __response(self, win, response):
-        win.hide()
-        self.model.clear()
-        if response != gtk.RESPONSE_CLOSE and not self.complete:
-            import signal
-            os.kill(win.process.pid, signal.SIGKILL)
-            win.process.wait()
-        for id in win.ids: win.process.disconnect(id)
-        del win.ids[:]
-        self.complete = True
-
+if not gst.registry_get_default().find_plugin("replaygain"):
+    __all__ = []
+    del ReplayGain
+    raise gst.PluginNotFoundError("replaygain")
