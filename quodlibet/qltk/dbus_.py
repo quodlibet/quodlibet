@@ -29,7 +29,7 @@ class DBusHandler(dbus.service.Object):
 
     def __dict(self, song):
         dict = {}
-        for key, value in song.items():
+        for key, value in (song or {}).items():
             if isinstance(value, unicode):
                 dict[key] = value.encode('utf-8')
             elif not isinstance(value, str):
@@ -61,6 +61,14 @@ class DBusHandler(dbus.service.Object):
     @dbus.service.signal('net.sacredchao.QuodLibet')
     def Unpaused(self):
         pass
+
+    @dbus.service.method('net.sacredchao.QuodLibet')
+    def GetPosition(self):
+        return player.playlist.get_position()
+
+    @dbus.service.method('net.sacredchao.QuodLibet')
+    def IsPlaying(self):
+        return not player.playlist.paused
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def CurrentSong(self):
