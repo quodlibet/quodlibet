@@ -34,6 +34,8 @@ VOLUME_MIN = 'audio-volume-low'
 VOLUME_MED = 'audio-volume-medium'
 VOLUME_MAX = 'audio-volume-high'
 
+NO_ALBUM = os.path.join(const.BASEDIR, 'missing-cover.svg')
+
 _ICONS = [QL_ICON, EF_ICON, VOLUME_OFF, VOLUME_MIN, VOLUME_MED, VOLUME_MAX,
           IPOD, STORAGE, EJECT]
 

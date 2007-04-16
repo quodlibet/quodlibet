@@ -18,7 +18,7 @@ make-install-dirs:
 	mkdir -p $(DESTDIR)$(PREFIX)/$(TO)
 
 install: make-install-dirs install-dirs install-programs
-	install -m 644 $(MODULES) audio-*.png media-*.png device-*.png $(DESTDIR)$(PREFIX)/$(TO)
+	install -m 644 $(MODULES) missing-cover.svg audio-*.png media-*.png device-*.png $(DESTDIR)$(PREFIX)/$(TO)
 	cd po && make install-po DESTDIR=$(DESTDIR)
 
 	for E in $(EXTENSIONS); do \

@@ -7,8 +7,13 @@
 #
 # $Id$
 
+import os
+
 import gobject
 import gtk
+
+import const
+import stock
 
 class BigCenteredImage(gtk.Window):
     """Load an image and display it, scaling down to 1/2 the screen's
@@ -50,6 +55,7 @@ class BigCenteredImage(gtk.Window):
 class CoverImage(gtk.Frame):
     __albumfn = None
     __current_bci = None
+    __no_album = None
 
     def __init__(self, size=None, song=None):
         super(CoverImage, self).__init__()
@@ -58,6 +64,14 @@ class CoverImage(gtk.Frame):
         self.__size = size or [100, 71]
         self.child.connect('button-press-event', self.__show_cover)
         self.child.show_all()
+
+        if self.__no_album is None:
+            try:
+                CoverImage.__no_album = gtk.gdk.pixbuf_new_from_file_at_size(
+                    stock.NO_ALBUM, *self.__size)
+            except RuntimeError:
+                pass
+
         self.set_song(self, song)
 
     def set_song(self, activator, song):
@@ -70,8 +84,7 @@ class CoverImage(gtk.Frame):
             cover = song.find_cover()
             if cover is None:
                 self.__albumfn = None
-                self.child.child.set_from_pixbuf(None)
-                self.hide()
+                self.child.child.set_from_pixbuf(self.__no_album)
             elif cover.name != self.__albumfn:
                 try:
                     pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(

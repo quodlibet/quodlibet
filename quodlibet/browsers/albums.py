@@ -16,6 +16,7 @@ import pango
 import config
 import const
 import qltk
+import stock
 import util
 
 from browsers._base import Browser
@@ -130,6 +131,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         except EnvironmentError: pass
         else:
             klass._Album._pattern = XMLFromPattern(klass._Album._pattern_text)
+        try:
+            klass._Album.cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                stock.NO_ALBUM, 48, 48)
+        except RuntimeError:
+            klass._Album.cover = None
 
     @classmethod
     def toggle_covers(klass):
@@ -233,7 +239,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             # but the same label ID are the same (since MB uses separate
             # MBIDs for each disc).
             self.key = (title, labelid or mbid)
-            self.cover = None
 
         def get(self, key, default="", connector=u" - "):
             if "~" in key[1:]:
@@ -413,7 +418,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 return
             album._model = self
             album._iter = iter
-            if album.title and album.cover is None:
+            if album.title and album.cover is type(album).cover:
                 if not self.__pending_covers:
                     copool.add(self.__scan_covers)
                 self.__pending_covers.append(album)
@@ -421,7 +426,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def __scan_covers(self):
             while self.__pending_covers:
                 album = self.__pending_covers.pop()
-                if album._iter is None or album.cover is not None:
+                if album._iter is None or album.cover is not type(album).cover:
                     continue
                 song = list(album.songs)[0]
                 cover = song.find_cover()
