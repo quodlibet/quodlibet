@@ -8,7 +8,7 @@ import dbus
 import dbus.service
 import dbus.glib
 
-from dbus.dbus_bindings import DBusException
+from dbus import DBusException
 
 import player
 
