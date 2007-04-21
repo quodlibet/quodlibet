@@ -128,7 +128,7 @@ class ExFalsoWindow(gtk.Window):
         view.grab_focus()
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        filenames = sorted([model[row][0] for row in rows])
+        filenames = sorted([os.path.realpath(model[row][0]) for row in rows])
         songs = map(self.__library.__getitem__, filenames)
         menu = self.pm.Menu(self.__library, self, songs)
         if menu is None: menu = gtk.Menu()
