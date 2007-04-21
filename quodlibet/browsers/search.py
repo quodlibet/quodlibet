@@ -94,6 +94,10 @@ class EmptyBar(gtk.HBox, Browser):
             else: self.set_text(u"%s = |(%s)" % (key, text))
         self.activate()
 
+    def unfilter(self):
+        self.set_text("")
+        self.activate()
+
 class Limit(gtk.HBox):
     def __init__(self):
         super(Limit, self).__init__(spacing=3)

@@ -149,7 +149,7 @@ def enable_periodic_save(library):
 def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause",
                 "hide-window", "show-window", "toggle-window",
-                "focus", "quit"]
+                "focus", "quit", "unfilter"]
     controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "random",
                     "song-list", "queue", "enqueue"]
@@ -175,6 +175,7 @@ def process_arguments():
         ("show-window", _("Show main window")),
         ("toggle-window", _("Toggle main window visibility")),
         ("focus", _("Focus the running player")),
+        ("unfilter", _("Remove active browser filters")),
         ("print-playlist", _("Print the current playlist")),
         ("print-queue", _("Print the contents of the queue")),
         ("quit", _("Exit Quod Libet")),

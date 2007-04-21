@@ -616,6 +616,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         if first:
             view.scroll_to_cell(first, use_align=True, row_align=0.5)
 
+    def unfilter(self):
+        view = self.get_children()[1].child
+        selection = view.get_selection()
+        selection.unselect_all()
+        selection.select_path((0,))
+
     def activate(self):
         self.get_children()[1].child.get_selection().emit('changed')
 

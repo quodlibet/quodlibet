@@ -215,6 +215,9 @@ class FIFOControl(object):
         if window.browser.can_filter(tag) and values:
             window.browser.filter(tag, values)
 
+    def _unfilter(self, library, window, player):
+        window.browser.unfilter()
+
     def _properties(self, value, library, window, player=None):
         if player is None:
             # no value given, use the current song; slide arguments

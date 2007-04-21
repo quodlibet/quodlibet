@@ -125,9 +125,15 @@ class Browser(object):
         return ngettext(
             "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)
 
+    # Return a list of values for the given tag. This needs to be
+    # here since not all browsers pull from the default library.
     def list(self, tag):
         from library import library
         return library.tag_values(tag)
+
+    # Reset all filters and display the whole library.
+    def unfilter(self):
+        pass
 
     # Replay Gain profiles for this browser.
     replaygain_profiles = None

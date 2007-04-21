@@ -484,6 +484,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__panes[-1].uninhibit()
         self.__panes[-1].get_selection().emit('changed')
 
+    def unfilter(self):
+        self.filter("", "")
+
     def list(self, key):
         for pane in self.__panes:
             if (key in pane.tags or
