@@ -152,7 +152,7 @@ def process_arguments():
                 "focus", "quit", "unfilter"]
     controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "random",
-                    "song-list", "queue", "enqueue"]
+                    "song-list", "queue", "enqueue", "unqueue"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION, 
@@ -197,6 +197,8 @@ def process_arguments():
         ("random", _("Filter on a random value"), Q_("command|tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
         ("enqueue", _("Enqueue a file or query"), "%s|%s" %(
+        Q_("command|filename"), _("query"))),
+        ("unqueue", _("Unqueue a file or query"), "%s|%s" %(
         Q_("command|filename"), _("query"))),
         ]: options.add(opt, help=help, arg=arg)
 

@@ -83,7 +83,11 @@ class PlaylistMux(object):
             self.next()
 
     def enqueue(self, songs):
-        for song in songs: self.q.append(row=[song])
+        for song in songs:
+            self.q.append(row=[song])
+
+    def unqueue(self, songs):
+        map(self.q.remove, filter(None, map(self.q.find, songs)))
 
 class PlaylistModel(gtk.ListStore):
     order = OFF
