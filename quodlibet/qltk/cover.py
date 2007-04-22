@@ -114,9 +114,10 @@ class CoverImage(gtk.Frame):
             if self.__current_bci is None:
                 # We're not displaying it yet; display it.
                 cover = self.__song.find_cover()
-                self.__current_bci = BigCenteredImage(
-                    self.__song.comma("album"), cover.name)
-                self.__current_bci.connect('destroy', self.__reset_bci)
+                if cover:
+                    self.__current_bci = BigCenteredImage(
+                        self.__song.comma("album"), cover.name)
+                    self.__current_bci.connect('destroy', self.__reset_bci)
             else:
                 # We're displaying it; destroy it.
                 self.__current_bci.destroy()
