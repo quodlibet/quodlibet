@@ -322,13 +322,15 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
         def __get_songs(self):
             model, rows = self.get_selection().get_selected_rows()
+            s = set()
             if rows and rows[0] == (0,):
-                songs = [(row[1] or set()) for row in model]
-                return reduce(set.union, songs, set())
+                for row in model:
+                    if row[1]:
+                        s.update(row[1])
             else:
-                songs = [model[row][1] for row in rows]
-                if len(songs) == 1: return songs[0]
-                else: return reduce(set.union, songs, set())
+                for row in rows:
+                    s.update(model[row][1])
+            return s
 
     @classmethod
     def init(klass, library):
@@ -424,7 +426,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__removed(library, [])
 
     def activate(self):
-        self.__panes[0].fill(filter(self.__filter, self.__library))
+        songs = filter(self.__filter, self.__library)
+        self.__panes[0].fill(songs)
 
     def scroll(self, song):
         for pane in self.__panes:
