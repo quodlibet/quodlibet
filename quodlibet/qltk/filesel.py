@@ -96,7 +96,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def go_to(self, initial):
         path = []
         head, tail = os.path.split(initial)
-        while head != os.path.dirname(const.HOME) and tail != '':
+        while os.path.join(head, tail) != const.HOME and tail != '':
             if tail:
                 def isvisibledir(t):
                     joined = os.path.join(head, t)
