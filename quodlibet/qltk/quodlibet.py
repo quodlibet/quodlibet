@@ -60,7 +60,10 @@ class MainSongList(SongList):
         def _cdf(self, column, cell, model, iter,
                  pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
             try:
-                if model.get_path(iter) != model.current_path: stock = ''
+                if model[iter][0].get("~error"):
+                    stock = gtk.STOCK_DIALOG_ERROR
+                elif model.get_path(iter) != model.current_path:
+                    stock = ''
                 elif model.sourced:
                     stock = pixbuf[player.playlist.paused]
                 else: stock = gtk.STOCK_MEDIA_STOP

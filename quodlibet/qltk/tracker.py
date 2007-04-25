@@ -41,3 +41,6 @@ class SongTracker(object):
         elif pl.current is not song:
             song["~#skipcount"] = song.get("~#skipcount", 0) + 1
             librarian.changed([song])
+
+        if not ended and song and "~error" in song:
+            del(song["~error"])

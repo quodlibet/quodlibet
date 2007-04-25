@@ -163,10 +163,15 @@ class PlaylistPlayer(gtk.Object):
     def error(self, message, lock):
         self.bin.set_property('uri', '')
         self.bin.set_state(gst.STATE_NULL)
-        self.song = self.info = None
-        self.paused = True
-        self.emit('error', message, lock)
-        self.emit('song-started', None)
+        if not self.song or not self.song.get("~error"):
+            if self.song:
+                self.song["~error"] = "1"
+            self.paused = True
+            self.emit('error', message, lock)
+            self.emit('song-started', None)
+            self.song = self.info = None
+        else:
+            self.next()
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
