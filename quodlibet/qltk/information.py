@@ -45,6 +45,28 @@ def SW():
     swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
     return swin
 
+class ErrorPane(gtk.VBox):
+    def __init__(self, song):
+        super(ErrorPane, self).__init__(spacing=6)
+        self.set_border_width(12)
+        sw = gtk.ScrolledWindow()
+        view = gtk.TextView()
+        view.get_buffer().set_text(song.get("~errors", ""))
+        view.set_wrap_mode(gtk.WRAP_WORD)
+        sw.add(view)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        button = qltk.Button(_("Clear Errors"), gtk.STOCK_DIALOG_ERROR)
+        button.connect('clicked', self.__clear_errors, song, view)
+        view.set_editable(False)
+        self.pack_start(sw, expand=True, fill=True)
+        self.pack_start(button, expand=False, fill=True)
+
+    def __clear_errors(self, button, song, view):
+        try: del(song["~errors"])
+        except KeyError: pass
+        view.get_buffer().set_text("")
+
 class NoSongs(gtk.Label):
     def __init__(self):
         super(NoSongs, self).__init__(_("No songs are selected."))
@@ -72,6 +94,11 @@ class OneSong(qltk.Notebook):
         bookmarks.title = _("Bookmarks")
         bookmarks.set_border_width(12)
         self.append_page(bookmarks)
+
+        if "~errors" in song:
+            errors = ErrorPane(song)
+            errors.title = _("Errors")
+            self.append_page(errors)
 
         s = library.connect('changed', self.__check_changed, vbox, song)
         self.connect_object('destroy', library.disconnect, s)

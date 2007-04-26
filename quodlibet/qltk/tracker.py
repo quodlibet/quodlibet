@@ -9,16 +9,20 @@
 
 import time
 
+import const
 import config
+import util
 
 class SongTracker(object):
     def __init__(self, librarian, player, pl):
         player.connect_object('song-ended', self.__end, librarian, pl)
         player.connect_object('song-started', self.__start, librarian)
-        player.connect('error', self.__error)
+        player.connect('error', self.__error, librarian)
 
-    def __error(self, player, error, lock):
-        config.set("memory", "song", "")
+    def __error(self, player, song, error, lock, librarian):
+        newstr = u"%s: %s\n\n" % (
+            util.decode(time.asctime(), const.ENCODING), error)
+        song["~errors"] = newstr + song.get("~errors", "")
 
     def __start(self, librarian, song):
         if song is not None:
@@ -42,5 +46,5 @@ class SongTracker(object):
             song["~#skipcount"] = song.get("~#skipcount", 0) + 1
             librarian.changed([song])
 
-        if not ended and song and "~error" in song:
-            del(song["~error"])
+        if not ended and song and "~errors" in song:
+            del(song["~errors"])

@@ -69,8 +69,6 @@ def init(player, library):
         val = config.get("header_maps", opt)
         util.HEADERS_FILTER[opt] = val
 
-    player.connect('error', player_error)
-
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted ~basename "
              "~dirname").split()
@@ -124,14 +122,6 @@ def save_library(window, player, library):
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
         ErrorMessage(None, _("Unable to save library"), err).run()
-
-def player_error(player, code, lock):
-    if lock: gtk.gdk.threads_enter()
-    ErrorMessage(
-        main, _("Unable to play song"),
-        _("GStreamer was unable to load the selected song.")
-        + "\n\n" + code).run()
-    if lock: gtk.gdk.threads_leave()
 
 def no_sink_quit(sink):
     header = _("Unable to open audio device")

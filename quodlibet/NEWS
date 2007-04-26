@@ -10,6 +10,8 @@ Trac ticket list.
  * Add --unfilter to reset browser filters.
  * Sort --enqueued files, and add --unqueue.
  * Basic SPC (SNES ROM audio) support.
+ * Errors when playing a song are now logged to a special ~errors tag.
+   It is visible from the Information screen, and can be reset.
  * Numerous bug fixes, especially in media device handling.
 
 0.24 - One wonders if our conversation today would be an appropriate epitaph.

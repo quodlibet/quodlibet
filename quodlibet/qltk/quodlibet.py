@@ -60,7 +60,7 @@ class MainSongList(SongList):
         def _cdf(self, column, cell, model, iter,
                  pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
             try:
-                if model[iter][0].get("~error"):
+                if model[iter][0].get("~errors"):
                     stock = gtk.STOCK_DIALOG_ERROR
                 elif model.get_path(iter) != model.current_path:
                     stock = ''

@@ -247,11 +247,6 @@ class PlaylistModel(gtk.ListStore):
                     self.sourced = True
                     break
 
-        if self.__iter:
-            song = self[self.__iter][0]
-            if song and "~error" in song:
-                del(song["~error"])
-
     def find(self, song):
         for row in self:
             if row[0] == song: return row.iter
