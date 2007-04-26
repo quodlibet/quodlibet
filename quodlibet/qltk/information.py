@@ -56,7 +56,7 @@ class ErrorPane(gtk.VBox):
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.set_shadow_type(gtk.SHADOW_IN)
-        button = qltk.Button(_("Clear Errors"), gtk.STOCK_DIALOG_ERROR)
+        button = qltk.Button(_("_Clear Errors"), gtk.STOCK_DIALOG_ERROR)
         button.connect('clicked', self.__clear_errors, song, view)
         view.set_editable(False)
         self.pack_start(sw, expand=True, fill=True)
