@@ -556,7 +556,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         if None in albums:
             albums = [model[row][0] for row in model]
         for album in albums:
-            album.cover = None
+            album.cover = type(album).cover
             album.finalize()
 
     def __get_selected_albums(self, selection):
