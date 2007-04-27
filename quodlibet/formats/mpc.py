@@ -39,10 +39,10 @@ class MPCFile(APEv2File):
                 self.setdefault("replaygain_album_gain", album_g)
             if audio.info.title_peak:
                 track_p = unicode(audio.info.title_peak * 2)
-                self.setdefault("replaygain_album_peak", album_p)
+                self.setdefault("replaygain_track_peak", track_p)
             if audio.info.album_peak:
                 album_p = unicode(audio.info.album_peak * 2)
-                self.setdefault("replaygain_track_peak", track_p)
+                self.setdefault("replaygain_album_peak", album_p)
         except AttributeError:
             pass
 
