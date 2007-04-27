@@ -19,6 +19,8 @@ _("description")
 # just path, /.../...
 _("directory")
 _("disc")
+# this tag contains a list of errors from playing the song
+_("errors")
 # just file name, foo.ogg
 _("filename")
 # as in "file format"
