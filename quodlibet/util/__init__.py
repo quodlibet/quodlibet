@@ -392,12 +392,13 @@ def split_title(s, splitters=["/", "&", ","]):
     else: return (title.strip(), split_value(subtitle, splitters))
 
 def split_people(s, splitters=["/", "&", ","]):
+    FEATURING = ["feat.", "featuring", "feat", "ft", "ft.", "with", "w/"]
+
     title, subtitle = find_subtitle(s)
     if not subtitle:
         parts = s.split(" ")
         if len(parts) > 2:
-            for feat in ["feat.", "featuring", "feat", "ft", "ft.",
-                         "with", "w/"]:
+            for feat in FEATURING:
                 try:
                     i = [p.lower() for p in parts].index(feat)
                     orig = " ".join(parts[:i])
@@ -406,7 +407,7 @@ def split_people(s, splitters=["/", "&", ","]):
                 except (ValueError, IndexError): pass
         return (s, [])
     else:
-        for feat in ["feat.", "featuring", "feat", "with", "w/"]:
+        for feat in FEATURING:
             if subtitle.startswith(feat):
                 subtitle = subtitle.replace(feat, "", 1).lstrip()
                 break
