@@ -35,5 +35,5 @@ def init(cache_fn=None):
     library = SongFileLibrary("main")
     librarian = library.librarian
     if cache_fn:
-        library.load(cache_fn, skip=True)
+        library.load(cache_fn, skip=formats.supported)
     return library

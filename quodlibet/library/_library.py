@@ -134,7 +134,7 @@ class Library(gtk.Object):
             return
 
         if skip:
-            for item in items:
+            for item in filter(skip, items):
                 self._contents[item.key] = item
         else:
             map(self._load, items)
