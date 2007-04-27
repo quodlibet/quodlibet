@@ -199,18 +199,18 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     @classmethod
     def __add_songs(klass, library, added, model, update=True):
         albums = model.get_albums()
-        changed = set()
-        new = []
+        changed = set() # Keys of changed albums
+        new = [] # Added album instances
         for song in added:
             labelid = song.get("labelid", "")
             mbid = song.get("musicbrainz_albumid", "")
-            for alb in song("album").split("\n"):
-                key = song.album_key
-                if key not in albums:
-                    albums[key] = klass._Album(alb, labelid, mbid)
-                    new.append(albums[key])
-                albums[key].songs.add(song)
-                changed.add(key)
+            key = song.album_key
+            if key not in albums:
+                new_album = klass._Album(song("album"), labelid, mbid)
+                albums[key] = new_album
+                new.append(new_album)
+            albums[key].songs.add(song)
+            changed.add(key)
         for album in new:
             model.append(row=[album])
         if update: klass.__update(changed, model)
