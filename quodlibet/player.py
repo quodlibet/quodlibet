@@ -287,7 +287,9 @@ playlist = None
 
 def init(pipeline, librarian):
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
-    if gst.element_make_from_uri(gst.URI_SRC, "file://", ""):
+    if gst.element_make_from_uri(
+        gst.URI_SRC,
+        "file:///Sebastian/Droge/please/choke/on/a/bucket/of/cocks", ""):
         global playlist
         playlist = PlaylistPlayer(pipeline or "gconfaudiosink", librarian)
         return playlist
