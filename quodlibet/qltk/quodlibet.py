@@ -103,11 +103,11 @@ class StatusBar(gtk.HBox):
         super(StatusBar, self).__init__()
         self.progress = gtk.ProgressBar()
         self.count = gtk.Label(_("No time information"))
-        self.count.set_justify(gtk.JUSTIFY_RIGHT)
+        self.count.set_alignment(1.0, 0.5)
         self.count.set_ellipsize(pango.ELLIPSIZE_START)
         self.pack_start(self.count)
         progress_label = gtk.Label()
-        progress_label.set_justify(gtk.JUSTIFY_RIGHT)
+        progress_label.set_alignment(1.0, 0.5)
         progress_label.set_ellipsize(pango.ELLIPSIZE_START)
         # GtkProgressBar can't show text when pulsing. Proxy its set_text
         # method to a label that can.
