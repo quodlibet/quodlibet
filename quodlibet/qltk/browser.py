@@ -50,7 +50,7 @@ class LibraryBrowser(Window):
 
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
-        self.__statusbar.set_justify(gtk.JUSTIFY_RIGHT)
+        self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
         self.child.pack_end(self.__statusbar, expand=False)
 
