@@ -63,7 +63,7 @@ class SongWrapper(object):
     def __delitem__(self, *args):
         retval = self._song.__delitem__(*args)
         self._updated = True
-        self._needs_write = True
+        self._needs_write = (self._needs_write or not key.startswith("~"))
         return retval
 
     def __getattr__(self, attr):
