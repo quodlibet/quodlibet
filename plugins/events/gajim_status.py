@@ -53,16 +53,21 @@ class GajimStatusMessage(EventPlugin):
 
         gtk.quit_add(0, self.quit)
 
-        self.interface = dbus.Interface(
-        dbus.SessionBus().get_object('org.gajim.dbus',
-            '/org/gajim/dbus/RemoteObject'),
-            'org.gajim.dbus.RemoteInterface')
+        try:
+            bus = dbus.SessionBus()
+            obj = bus.get_object(
+                'org.gajim.dbus', '/org/gajim/dbus/RemoteObject')
+            self.interface = dbus.Interface(
+                obj, 'org.gajim.dbus.RemoteInterface')
+        except dbus.DBusException:
+            self.interface = None
 
         self.current = ''
 
     def quit(self):
-        try: self.change_status(self.accounts, '')
-        except dbus.DBusException: pass
+        if self.interface:
+            try: self.change_status(self.accounts, '')
+            except dbus.DBusException: pass
 
     def change_status(self, enabled_accounts, status_message):
         for account in self.interface.list_accounts():
