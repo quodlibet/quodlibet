@@ -7,12 +7,9 @@
 #
 # $Id$
 
-import os
-
 import gobject
 import gtk
 
-import const
 import stock
 
 class BigCenteredImage(gtk.Window):

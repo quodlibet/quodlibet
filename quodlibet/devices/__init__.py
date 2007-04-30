@@ -17,7 +17,6 @@ from glob import glob
 from ConfigParser import RawConfigParser as ConfigParser
 
 import const
-from devices._base import Device
 
 base = dirname(__file__)
 self = basename(base)

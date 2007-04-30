@@ -60,8 +60,8 @@ class SongWrapper(object):
         self._needs_write = (self._needs_write or not key.startswith("~"))
         return self._song.__setitem__(key, value)
 
-    def __delitem__(self, *args):
-        retval = self._song.__delitem__(*args)
+    def __delitem__(self, key):
+        retval = self._song.__delitem__(key)
         self._updated = True
         self._needs_write = (self._needs_write or not key.startswith("~"))
         return retval

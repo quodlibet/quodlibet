@@ -8,10 +8,8 @@
 # $Id$
 
 import os
-import sys
 
 import gtk
-import gtk.gdk as gdk
 import pango
 
 import config
@@ -24,7 +22,7 @@ from browsers._base import Browser
 from formats._audio import AudioFile
 from qltk.views import AllTreeView
 from qltk.songsmenu import SongsMenu
-from qltk.wlw import WaitLoadWindow, WaitLoadBar
+from qltk.wlw import WaitLoadBar
 from qltk.browser import LibraryBrowser
 from qltk.delete import DeleteDialog
 

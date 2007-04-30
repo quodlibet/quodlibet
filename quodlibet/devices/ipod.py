@@ -7,7 +7,6 @@
 #
 # $Id$
 
-import locale
 import os
 import time
 import gtk

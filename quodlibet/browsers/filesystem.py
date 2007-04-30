@@ -13,7 +13,6 @@
 
 import os
 
-import gobject
 import gtk
 
 import config

@@ -73,7 +73,7 @@ def step(funcid):
     """Force this function to iterate once."""
     if funcid in __routines:
         __routines[funcid][1]()
-    elif funcid in self.__paused:
+    elif funcid in __paused:
         __paused[funcid]()
     else:
         raise ValueError("no pooled routine %r" % funcid)

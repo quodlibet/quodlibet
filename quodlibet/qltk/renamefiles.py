@@ -7,8 +7,6 @@
 #
 # $Id$
 
-import os
-import re
 import unicodedata
 
 import gtk

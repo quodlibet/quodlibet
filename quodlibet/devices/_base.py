@@ -11,7 +11,6 @@ import os
 import popen2
 
 import devices
-import const
 import util
 
 class Device(dict):

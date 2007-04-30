@@ -116,7 +116,7 @@ class MP4File(AudioFile):
         else: return super(MP4File, self).can_change(key) and (key in OK)
 
     def get_format_cover(self):
-        tag = mutagen.mp4.MP4(self["~filename"])
+        tag = MP4(self["~filename"])
         for cover in tag.get("covr", []):
             fn = tempfile.NamedTemporaryFile()
             fn.write(cover)

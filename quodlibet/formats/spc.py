@@ -7,7 +7,6 @@
 # $Id$
 
 import os
-import wave
 
 import gst
 

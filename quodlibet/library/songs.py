@@ -15,8 +15,6 @@ close enough.
 import os
 import traceback
 
-import gobject
-
 import util
 
 from formats import MusicFile
