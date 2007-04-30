@@ -59,7 +59,10 @@ def MusicFile(filename):
     else: return None
 
 def supported(song):
-    return type(song) in _infos.values()
+    for ext in _infos.keys():
+        if song.key.lower().endswith(ext):
+            return True
+    return False
 
 def filter(filename):
     for ext in _infos.keys():
