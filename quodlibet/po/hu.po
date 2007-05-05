@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-28 10:15-0700\n"
+"POT-Creation-Date: 2007-05-05 00:06-0700\n"
 "PO-Revision-Date: 2007-04-28 09:11+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: hu\n"
@@ -629,20 +629,20 @@ msgstr ""
 "<b>%s</b> mentése sikertelen. Lehet, hogy a fájl csak-olvasható, hibás, vagy "
 "nincs jogod szerkeszteni."
 
-#: ../library/__init__.py:33 ../qltk/about.py:28
+#: ../library/__init__.py:33 ../qltk/about.py:29
 #, python-format
 msgid "Supported formats: %s"
 msgstr "Támogatott formátumok: %s"
 
-#: ../library/songs.py:196
+#: ../library/songs.py:194
 msgid "Checking mount points"
 msgstr "Csatolási pontok ellenőrzése"
 
-#: ../library/songs.py:210
+#: ../library/songs.py:208
 msgid "Scanning library"
 msgstr "Daltár átnézése"
 
-#: ../library/songs.py:252
+#: ../library/songs.py:250
 #, python-format
 msgid "Scanning %s"
 msgstr "%s átnézése"
@@ -651,14 +651,14 @@ msgstr "%s átnézése"
 msgid "_More options..."
 msgstr "Több lehetőség..."
 
-#: ../qltk/about.py:29
+#: ../qltk/about.py:30
 #, python-format
 msgid "Audio device: %s"
 msgstr "Hang eszköz: %s"
 
 #. Translators: Replace this with your name/email to have it appear
 #. in the "About" dialog.
-#: ../qltk/about.py:38
+#: ../qltk/about.py:39
 msgid "translator-credits"
 msgstr "sas,"
 
@@ -687,7 +687,7 @@ msgstr "PP:MM"
 msgid "Bookmarks"
 msgstr "Könyvjelzők"
 
-#: ../qltk/browser.py:52 ../qltk/quodlibet.py:105 ../util/__init__.py:303
+#: ../qltk/browser.py:52 ../qltk/quodlibet.py:107 ../util/__init__.py:303
 msgid "No time information"
 msgstr "Nincs idő adat"
 
@@ -695,7 +695,7 @@ msgstr "Nincs idő adat"
 msgid "Saved Values"
 msgstr "Mentett értékek"
 
-#: ../qltk/cbes.py:33 ../browsers/media.py:56
+#: ../qltk/cbes.py:33 ../browsers/media.py:54
 msgid "_Name:"
 msgstr "_Név:"
 
@@ -1042,7 +1042,7 @@ msgid "bitrate"
 msgstr "bitarány"
 
 #: ../qltk/information.py:265 ../qltk/properties.py:56
-#: ../qltk/renamefiles.py:68 ../qltk/tagsfrompath.py:165
+#: ../qltk/renamefiles.py:66 ../qltk/tagsfrompath.py:165
 #: ../qltk/tracknumbers.py:59
 msgid "File"
 msgstr "Fájl"
@@ -1241,11 +1241,11 @@ msgstr "_Dátum"
 msgid "_Length"
 msgstr "_Hossz"
 
-#: ../qltk/prefs.py:66 ../devices/ipod.py:97
+#: ../qltk/prefs.py:66 ../devices/ipod.py:96
 msgid "Title includes _version"
 msgstr "_Verzió a címben"
 
-#: ../qltk/prefs.py:71 ../devices/ipod.py:98
+#: ../qltk/prefs.py:71 ../devices/ipod.py:97
 msgid "Album includes _part"
 msgstr ""
 
@@ -1345,7 +1345,7 @@ msgstr "Quod Libet beállítások"
 msgid "Properties"
 msgstr "Tulajdonságok"
 
-#: ../qltk/queue.py:40 ../qltk/quodlibet.py:458
+#: ../qltk/queue.py:40 ../qltk/quodlibet.py:460
 msgid "_Queue"
 msgstr "Lejátszósor"
 
@@ -1363,173 +1363,173 @@ msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d dal (%(time)s)"
 
-#: ../qltk/quodlibet.py:206
+#: ../qltk/quodlibet.py:208
 msgid "_Order:"
 msgstr "S_orrend:"
 
-#: ../qltk/quodlibet.py:215
+#: ../qltk/quodlibet.py:217
 msgid "_Repeat"
 msgstr "Ismétlés"
 
-#: ../qltk/quodlibet.py:216
+#: ../qltk/quodlibet.py:218
 msgid "Restart the playlist when finished"
 msgstr "Lista újraindítása befejezéskor"
 
-#: ../qltk/quodlibet.py:326
+#: ../qltk/quodlibet.py:328
 msgid "Unable to add songs"
 msgstr "Dalok hozzáadása sikertelen"
 
-#: ../qltk/quodlibet.py:327 ../qltk/quodlibet.py:699
+#: ../qltk/quodlibet.py:329 ../qltk/quodlibet.py:701
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> nem támogatott protokollt használ"
 
-#: ../qltk/quodlibet.py:371
+#: ../qltk/quodlibet.py:373
 msgid "_Music"
 msgstr "_Zene"
 
-#: ../qltk/quodlibet.py:372
+#: ../qltk/quodlibet.py:374
 msgid "_Add a Folder..."
 msgstr "Mappa hozzá_adása..."
 
-#: ../qltk/quodlibet.py:374
+#: ../qltk/quodlibet.py:376
 msgid "_Add a File..."
 msgstr "Fájl hozzá_adása..."
 
-#: ../qltk/quodlibet.py:376
+#: ../qltk/quodlibet.py:378
 msgid "_Add a Location..."
 msgstr "Hely hozzá_adása..."
 
-#: ../qltk/quodlibet.py:378
+#: ../qltk/quodlibet.py:380
 msgid "_Browse Library"
 msgstr "Daltár _böngészése"
 
-#: ../qltk/quodlibet.py:384
+#: ../qltk/quodlibet.py:386
 msgid "_Filters"
 msgstr "Szűrők"
 
-#: ../qltk/quodlibet.py:386
+#: ../qltk/quodlibet.py:388
 msgid "Not Played To_day"
 msgstr "_Ma még nem játszott"
 
-#: ../qltk/quodlibet.py:388
+#: ../qltk/quodlibet.py:390
 msgid "Not Played in a _Week"
 msgstr "1 hé_ten belül nem játszott"
 
-#: ../qltk/quodlibet.py:390
+#: ../qltk/quodlibet.py:392
 msgid "Not Played in a _Month"
 msgstr "1 _hónapon belül nem játszott"
 
-#: ../qltk/quodlibet.py:392
+#: ../qltk/quodlibet.py:394
 msgid "_Never Played"
 msgstr "Soha _nem játszott"
 
-#: ../qltk/quodlibet.py:394
+#: ../qltk/quodlibet.py:396
 msgid "_Top 40"
 msgstr "40 legmenőbb"
 
-#: ../qltk/quodlibet.py:395
+#: ../qltk/quodlibet.py:397
 msgid "B_ottom 40"
 msgstr "40 legritkább"
 
-#: ../qltk/quodlibet.py:397
+#: ../qltk/quodlibet.py:399
 msgid "_Control"
 msgstr "_Vezérlés"
 
-#: ../qltk/quodlibet.py:403
+#: ../qltk/quodlibet.py:405
 msgid "_Jump to Playing Song"
 msgstr "_Ugrás a lejátszásra"
 
-#: ../qltk/quodlibet.py:406
+#: ../qltk/quodlibet.py:408
 msgid "_View"
 msgstr "_Nézet"
 
-#: ../qltk/quodlibet.py:407
+#: ../qltk/quodlibet.py:409
 msgid "_Help"
 msgstr "_Súgó"
 
-#: ../qltk/quodlibet.py:426
+#: ../qltk/quodlibet.py:428
 msgid "Re_fresh Library"
 msgstr "Daltár _frissítése"
 
-#: ../qltk/quodlibet.py:430
+#: ../qltk/quodlibet.py:432
 msgid "Re_load Library"
 msgstr "Daltár újratö_ltése"
 
-#: ../qltk/quodlibet.py:435
+#: ../qltk/quodlibet.py:437
 msgid "Filter on _Genre"
 msgstr "Szűrő a _műfajon"
 
-#: ../qltk/quodlibet.py:436
+#: ../qltk/quodlibet.py:438
 msgid "Filter on _Artist"
 msgstr "Szűrő a _szerzőn/előadón"
 
-#: ../qltk/quodlibet.py:437
+#: ../qltk/quodlibet.py:439
 msgid "Filter on Al_bum"
 msgstr "Szűrő az _albumon"
 
-#: ../qltk/quodlibet.py:444
+#: ../qltk/quodlibet.py:446
 msgid "Random _Genre"
 msgstr "Véletlen _műfaj"
 
-#: ../qltk/quodlibet.py:445
+#: ../qltk/quodlibet.py:447
 msgid "Random _Artist"
 msgstr "Véletlen _szerző/előadó"
 
-#: ../qltk/quodlibet.py:446
+#: ../qltk/quodlibet.py:448
 msgid "Random Al_bum"
 msgstr "Véletlen _album"
 
-#: ../qltk/quodlibet.py:453
+#: ../qltk/quodlibet.py:455
 msgid "Song _List"
 msgstr "Dal _lista"
 
-#: ../qltk/quodlibet.py:489
+#: ../qltk/quodlibet.py:491
 msgid "Check for changes in your library"
 msgstr "Változások átnézése a daltárban"
 
-#: ../qltk/quodlibet.py:492
+#: ../qltk/quodlibet.py:494
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Minden dal újratöltése a daltárban (sokáig tarthat)"
 
-#: ../qltk/quodlibet.py:495
+#: ../qltk/quodlibet.py:497
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
 msgstr "A legtöbbet lejátszott 40 dal (csomókban több is kijelölhető)"
 
-#: ../qltk/quodlibet.py:499
+#: ../qltk/quodlibet.py:501
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
 msgstr "A legutóbb lejátszott 40 dal (csomókban több is kijelölhető)"
 
-#: ../qltk/quodlibet.py:687
+#: ../qltk/quodlibet.py:689
 msgid "Add a Location"
 msgstr "Hely hozzáadása"
 
-#: ../qltk/quodlibet.py:688
+#: ../qltk/quodlibet.py:690
 msgid "Enter the location of an audio file:"
 msgstr "Add meg egy hang fájl helyét:"
 
-#: ../qltk/quodlibet.py:693 ../qltk/quodlibet.py:698
+#: ../qltk/quodlibet.py:695 ../qltk/quodlibet.py:700
 msgid "Unable to add location"
 msgstr "Hely hozzáadása sikertelen"
 
-#: ../qltk/quodlibet.py:694
+#: ../qltk/quodlibet.py:696
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> nem egy érvényes hely"
 
-#: ../qltk/quodlibet.py:710 ../qltk/quodlibet.py:717
+#: ../qltk/quodlibet.py:712 ../qltk/quodlibet.py:719
 msgid "Add Music"
 msgstr "Zene hozzáadása"
 
-#: ../qltk/quodlibet.py:711
+#: ../qltk/quodlibet.py:713
 msgid "Watch this folder for new songs"
 msgstr "Új dalok keresése e mappában"
 
-#: ../qltk/quodlibet.py:737
+#: ../qltk/quodlibet.py:739
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1538,43 +1538,43 @@ msgstr ""
 "%s-t nem tudtam hozzáadni a daltárhoz.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:742
+#: ../qltk/quodlibet.py:744
 msgid "Unable to add song"
 msgstr "Dal hozzáadása sikertelen"
 
-#: ../qltk/renamefiles.py:25
+#: ../qltk/renamefiles.py:23
 msgid "Replace spaces with _underscores"
 msgstr "Szóközök helyett aláhúzások !"
 
-#: ../qltk/renamefiles.py:32
+#: ../qltk/renamefiles.py:30
 msgid "Strip _Windows-incompatible characters"
 msgstr "w$-inkompatibilis jeleket mellőz"
 
-#: ../qltk/renamefiles.py:41
+#: ../qltk/renamefiles.py:39
 msgid "Strip _diacritical marks"
 msgstr "Mellékjelek ki"
 
-#: ../qltk/renamefiles.py:50
+#: ../qltk/renamefiles.py:48
 msgid "Strip non-_ASCII characters"
 msgstr "Nem-_ASCII karakterek ki"
 
-#: ../qltk/renamefiles.py:58
+#: ../qltk/renamefiles.py:56
 msgid "Rename Files"
 msgstr "Fájlok átnevezése"
 
-#: ../qltk/renamefiles.py:74
+#: ../qltk/renamefiles.py:72
 msgid "New Name"
 msgstr "Új név"
 
-#: ../qltk/renamefiles.py:107
+#: ../qltk/renamefiles.py:105
 msgid "_Continue"
 msgstr "Tovább"
 
-#: ../qltk/renamefiles.py:109
+#: ../qltk/renamefiles.py:107
 msgid "Unable to rename file"
 msgstr "Fájl átnevezése sikertelen"
 
-#: ../qltk/renamefiles.py:110
+#: ../qltk/renamefiles.py:108
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1584,11 +1584,11 @@ msgstr ""
 "<b>%s</b> átnevezése erre: <b>%s</b> sikertelen. A cél fájl talán létezik, "
 "nincs jogod az új fájl létrehozására vagy a régi törlésére."
 
-#: ../qltk/renamefiles.py:140
+#: ../qltk/renamefiles.py:138
 msgid "Path is not absolute"
 msgstr "Az ösvény nem abszolút"
 
-#: ../qltk/renamefiles.py:141
+#: ../qltk/renamefiles.py:139
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1610,12 +1610,12 @@ msgstr "minta"
 msgid "_Filter on %s"
 msgstr "Szűrő itt: %s"
 
-#: ../qltk/songlist.py:533 ../browsers/filesystem.py:88
-#: ../browsers/media.py:453
+#: ../qltk/songlist.py:533 ../browsers/filesystem.py:87
+#: ../browsers/media.py:451
 msgid "Unable to copy songs"
 msgstr "Dalok másolása sikertelen"
 
-#: ../qltk/songlist.py:534 ../browsers/filesystem.py:89
+#: ../qltk/songlist.py:534 ../browsers/filesystem.py:88
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "A kijelölt fájlok nem másolhatók más dal listába vagy sorba."
 
@@ -1928,15 +1928,15 @@ msgstr "Daltár keresése"
 msgid "_Limit Results"
 msgstr "Eredmény kor_lát"
 
-#: ../browsers/filesystem.py:35
+#: ../browsers/filesystem.py:34
 msgid "File System"
 msgstr "Fájlrendszer"
 
-#: ../browsers/filesystem.py:36
+#: ../browsers/filesystem.py:35
 msgid "_File System"
 msgstr "_Fájlrendszer"
 
-#: ../browsers/filesystem.py:129
+#: ../browsers/filesystem.py:128
 msgid "_Add to Library"
 msgstr "Daltárhoz _adás"
 
@@ -2215,146 +2215,146 @@ msgstr "Hallgasd, böngészd vagy szerkeszd zenéidet"
 msgid "Music Player"
 msgstr "Zenelejátszó"
 
-#: ../browsers/media.py:34
+#: ../browsers/media.py:32
 msgid "Device Properties"
 msgstr "Eszköz Tulajdonságok"
 
-#: ../browsers/media.py:47
+#: ../browsers/media.py:45
 msgid "Device:"
 msgstr "Eszköz:"
 
-#: ../browsers/media.py:49
+#: ../browsers/media.py:47
 msgid "Not mounted"
 msgstr "Nincs csatolva"
 
-#: ../browsers/media.py:50
+#: ../browsers/media.py:48
 msgid "Mount Point:"
 msgstr "Csatolási pont:"
 
-#: ../browsers/media.py:126
+#: ../browsers/media.py:124
 msgid "Media Devices"
 msgstr "Média eszközök"
 
-#: ../browsers/media.py:127
+#: ../browsers/media.py:125
 msgid "_Media Devices"
 msgstr "_Média eszközök"
 
-#: ../browsers/media.py:426
+#: ../browsers/media.py:424
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
 msgstr "<b>%s</b> használt, <b>%s</b> elérhető"
 
-#: ../browsers/media.py:443
+#: ../browsers/media.py:441
 #, python-format
 msgid "<b>%s</b> is not connected."
 msgstr "<b>%s</b> nincs csatlakoztatva"
 
-#: ../browsers/media.py:459
+#: ../browsers/media.py:457
 #, python-format
 msgid "Copying <b>%s</b>"
 msgstr "<b>%s</b> másolása"
 
-#: ../browsers/media.py:477 ../browsers/media.py:492
+#: ../browsers/media.py:475 ../browsers/media.py:490
 msgid "Unable to copy song"
 msgstr "Dal másolása sikertelen"
 
-#: ../browsers/media.py:478
+#: ../browsers/media.py:476
 msgid "There is not enough free space for this song."
 msgstr "Nincs elég hely e dalhoz"
 
-#: ../browsers/media.py:489
+#: ../browsers/media.py:487
 #, python-format
 msgid "<b>%s</b> could not be copied."
 msgstr "<b>%s</b> másolása sikertelen"
 
-#: ../browsers/media.py:509
+#: ../browsers/media.py:507
 msgid "Unable to delete songs"
 msgstr "Dalok törlése meghiúsult"
 
-#: ../browsers/media.py:519
+#: ../browsers/media.py:517
 #, python-format
 msgid "Deleting <b>%s</b>"
 msgstr "<b>%s</b> törlése"
 
-#: ../browsers/media.py:536
+#: ../browsers/media.py:534
 #, python-format
 msgid "<b>%s</b> could not be deleted."
 msgstr "<b>%s</b> törlése sikertelen"
 
-#: ../browsers/media.py:540
+#: ../browsers/media.py:538
 msgid "Unable to delete song"
 msgstr "A dal törlése sikertelen"
 
-#: ../browsers/media.py:557
+#: ../browsers/media.py:555
 #, python-format
 msgid "Ejecting <b>%s</b> failed."
 msgstr "<b>%s</b> kinyitása sikertelen"
 
-#: ../browsers/media.py:560
+#: ../browsers/media.py:558
 msgid "Unable to eject device"
 msgstr "Nem tudom kinyitni az eszközt"
 
-#: ../devices/_base.py:63
+#: ../devices/_base.py:62
 msgid "Unknown Device"
 msgstr "Ismeretlen eszköz"
 
-#: ../devices/_base.py:94
+#: ../devices/_base.py:93
 msgid "No eject command found."
 msgstr "Nem találtam 'eject' parancsot"
 
-#: ../devices/ipod.py:92
+#: ../devices/ipod.py:91
 msgid "_Volume Gain (dB):"
 msgstr ""
 
-#: ../devices/ipod.py:95 ../devices/storage.py:57
+#: ../devices/ipod.py:94 ../devices/storage.py:56
 msgid "Copy _album covers"
 msgstr "_Album borítók másolása"
 
-#: ../devices/ipod.py:96
+#: ../devices/ipod.py:95
 msgid "Combine tags with _multiple values"
 msgstr "Tagok egyesítése több értékkel"
 
-#: ../devices/ipod.py:109
+#: ../devices/ipod.py:108
 msgid "Model:"
 msgstr "Modell:"
 
-#: ../devices/ipod.py:111
+#: ../devices/ipod.py:110
 msgid "Capacity:"
 msgstr "Kapacitás:"
 
-#: ../devices/ipod.py:113
+#: ../devices/ipod.py:112
 msgid "Firmware:"
 msgstr "Firmware:"
 
-#: ../devices/ipod.py:159
+#: ../devices/ipod.py:158
 msgid "W: removing orphaned iPod track"
 msgstr "F: elavult iPod sáv eltávolítása"
 
-#: ../devices/ipod.py:257
+#: ../devices/ipod.py:256
 msgid "Unable to save iPod database"
 msgstr "iPod adatbázis mentése sikertelen"
 
-#: ../devices/ipod.py:269
+#: ../devices/ipod.py:268
 msgid "Uninitialized iPod"
 msgstr "Iniciálatlan iPod"
 
-#: ../devices/ipod.py:270
+#: ../devices/ipod.py:269
 msgid "Do you want to create an empty database on this iPod?"
 msgstr "Készítesz egy üres adatbázist ezen az iPod-on?"
 
-#: ../devices/storage.py:53
+#: ../devices/storage.py:52
 msgid "_Filename Pattern:"
 msgstr "_Fájlnév minta:"
 
-#: ../devices/storage.py:61
+#: ../devices/storage.py:60
 msgid "_Remove unused covers and directories"
 msgstr "Nem használt borítók és mappák törlése"
 
-#: ../devices/storage.py:93
+#: ../devices/storage.py:92
 msgid "File exists"
 msgstr "A fájl létezik"
 
-#: ../devices/storage.py:94
+#: ../devices/storage.py:93
 #, python-format
 msgid "Overwrite <b>%s</b>?"
 msgstr "Felülírod: <b>%s</b>?"

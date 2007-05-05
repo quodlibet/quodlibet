@@ -1,18 +1,24 @@
 Quod Libet requires Python 2.4 or later and Mutagen 1.9 or later.
 
-Numbers prepended with "0." refer to the old, unavailable
-Trac ticket list.
-
-0.25
+1.0 - Yeah they just showed up one day -- staring.
  * Use Mutagen for ASF/WMA and MP4 support.
  * Add IsPlaying and GetPosition to the D-Bus API. (Mickael Royer)
  * Default "No Cover" image. (Jakub Steiner)
  * Add --unfilter to reset browser filters.
  * Sort --enqueued files, and add --unqueue.
  * Basic SPC (SNES ROM audio) support.
+ * Paned Browser speed improvements. (Robert Muth)
  * Errors when playing a song are now logged to a special ~errors tag.
    It is visible from the Information screen, and can be reset.
+ * APEv2 tags can now override Musepack stream Replay Gain settings.
  * Numerous bug fixes, especially in media device handling.
+ * Translation Updates:
+   * Hungarian. (SZERVÁC Attila)
+   * Finnish. (Jari Rahkonen)
+   * Galician and Spanish. (Johám-Luís Miguéns Vila)
+   * French. (Guillaume Ayoub)
+   * Dutch. (Hans van Dok)
+   * Japanese. (Yasushi Iwata)
 
 0.24 - One wonders if our conversation today would be an appropriate epitaph.
  * Media device (iPod and UMS so far) support. (Markus Koller)

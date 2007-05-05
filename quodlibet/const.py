@@ -4,7 +4,7 @@
 import os
 import locale
 
-VERSION = "0.25"
+VERSION = "1.0"
 
 HOME    = os.path.expanduser("~")
 USERDIR = os.path.join(HOME, ".quodlibet")
@@ -17,7 +17,7 @@ EMAIL = "quodlibet@lists.sacredchao.net"
 
 BASEDIR = os.path.dirname(os.path.realpath(__file__))
 
-AUTHORS = """\
+AUTHORS = sorted("""\
 Joe Wreschnig
 Michael Urman
 Iñigo Serna
@@ -34,9 +34,25 @@ Eduardo Gonzalez
 Decklin Foster
 Federico Pelloni
 Alexandre Passos
+Mickael Royer
+Robert Muth
+Markus Koller
+Martin Bergström
+Lukáš Lalinský
+Anders Carlsson
+Lee Willis
+Guillaume Chazarain
+Javier Kohen
+Erich Schubert
+David Kågedal
+Remi Vanicat
+Niklas Janlert
+Jan Arne Petersen""".split("\n"))
 
-Anders Carlsson (trayicon)
-Lee Willis, Jan Arne Petersen (mmkeys)""".split("\n")
+ARTISTS = sorted("""\
+Tobias
+Jakub Steiner
+Fabien Devaux""".split("\n"))
 
 TBP = os.path.join(USERDIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\
