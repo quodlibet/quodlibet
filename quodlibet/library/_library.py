@@ -122,7 +122,7 @@ class Library(gtk.Object):
             if os.path.exists(filename):
                 fileobj = file(filename, "rb")
                 try: items = pickle.load(fileobj)
-                except (pickle.PickleError, EnvironmentError):
+                except (pickle.PickleError, EnvironmentError, ImportError):
                     traceback.print_exc()
                     try: shutil.copy(filename, filename + ".not-valid")
                     except EnvironmentError:
