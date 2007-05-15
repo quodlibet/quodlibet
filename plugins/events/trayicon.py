@@ -147,7 +147,9 @@ class TrayIcon(EventPlugin):
         self.__icon = icon = trayicon.TrayIcon("quodlibet")
         self.__tips = qltk.Tooltips(self.__icon)
 
-        filename = os.path.join(const.BASEDIR, "quodlibet.")
+        try: filename = os.path.join(const.IMAGEDIR, "quodlibet.")
+        except AttributeError:
+            filename = os.path.join(const.BASEDIR, "quodlibet.")
         try: p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "svg", 16, 16)
         except:
             p = gtk.gdk.pixbuf_new_from_file_at_size(filename + "png", 16, 16)
