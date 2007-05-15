@@ -16,6 +16,7 @@ LIBRARY = os.path.join(USERDIR, "songs")
 EMAIL = "quodlibet@lists.sacredchao.net"
 
 BASEDIR = os.path.dirname(os.path.realpath(__file__))
+IMAGEDIR = BASEDIR
 
 AUTHORS = sorted("""\
 Joe Wreschnig
