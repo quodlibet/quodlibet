@@ -4,7 +4,8 @@
 import os
 import locale
 
-VERSION = "1.0"
+VERSION_TUPLE = (1, 1)
+VERSION = ".".join(map(str, VERSION_TUPLE))
 
 HOME    = os.path.expanduser("~")
 USERDIR = os.path.join(HOME, ".quodlibet")
