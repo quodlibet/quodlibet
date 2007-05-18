@@ -4,7 +4,7 @@ import sys
 from tests import TestCase, add
 from tempfile import mkstemp
 
-from library._library import Library, Librarian
+from quodlibet.library._library import Library, Librarian
 
 class Fake(int):
     def __init__(self, self2):

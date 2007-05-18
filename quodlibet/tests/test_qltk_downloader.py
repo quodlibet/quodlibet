@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from qltk.downloader import DownloadWindow
+from quodlibet.qltk.downloader import DownloadWindow
 
 class TDownloadWindow(TestCase):
     def setUp(self):

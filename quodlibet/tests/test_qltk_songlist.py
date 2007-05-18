@@ -2,9 +2,9 @@ from tests import TestCase, add
 
 import gtk
 
-from player import PlaylistPlayer
-from library import SongLibrary
-from qltk.songlist import PlaylistModel, PlaylistMux, SongList
+from quodlibet.player import PlaylistPlayer
+from quodlibet.library import SongLibrary
+from quodlibet.qltk.songlist import PlaylistModel, PlaylistMux, SongList
 
 def do_events():
     while gtk.events_pending():

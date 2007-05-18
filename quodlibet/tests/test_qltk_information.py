@@ -1,8 +1,8 @@
 from tests import TestCase, add
 
-from formats._audio import AudioFile
-from library import SongLibrary
-from qltk.information import Information
+from quodlibet.formats._audio import AudioFile
+from quodlibet.library import SongLibrary
+from quodlibet.qltk.information import Information
 
 def AF(*args, **kwargs):
     a = AudioFile(*args, **kwargs)

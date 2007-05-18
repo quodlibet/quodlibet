@@ -1,14 +1,15 @@
 See also http://www.sacredchao.net/quodlibet/wiki/Development for
 various proposals/roadmaps/guides.
 
-Source Layout
--------------
+Source Layout - quodlibet/
+--------------------------
 browsers/*	- Things in the View menu
 formats/*	- File format support
 library/*	- Library management code
 qltk/*		- GTK+ widget subclasses/extensions
-tests/*		- Unit/regression tests
 util/*		- General utility functions and setup code
+
+tests/*		- Unit/regression tests
 
 If you want to get a full overview of QL's code, good places to start
 are browsers/_base.py, formats/_audio.py, and library/_library.py.
@@ -22,8 +23,8 @@ The following will lead to an almost automatic rejection:
  * Lines longer than 79 characters.
  * Sending whole files rather than patches.
 
-Currently we are limiting the code to features in PyGTK 2.8 and Python
-2.4.
+Currently we are limiting the code to features in PyGTK 2.10 and
+Python 2.4.
 
 Please prepare your patches against the Subversion release, or the
 most recent release. You can update a checked-out version to the
@@ -37,13 +38,10 @@ help on IRC or the mailing list.
 
 Unit Tests
 ----------
-Quod Libet comes with tests. To run them, run ./_sanity.sh. Your patch
-can't break any unit tests, and if you change tests in a non-obvious way
-(e.g. a patch that removes an entry point and also removes a test for it
-is obvious) you should explain why.
-
-These tests are not included in released versions, since they are fairly 
-large and have more dependencies than Quod Libet itself.
+Quod Libet comes with tests. To run them, run ./setup.py test. Your
+patch can't break any unit tests, and if you change tests in a
+non-obvious way (e.g. a patch that removes an entry point and also
+removes a test for it is obvious) you should explain why.
 
 Submitting
 ----------

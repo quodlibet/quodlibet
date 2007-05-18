@@ -1,11 +1,11 @@
 from tests import TestCase, add
 
-import browsers.albums
-import widgets
+import quodlibet.browsers.albums
+import quodlibet.widgets
 
-from browsers.albums import AlbumList
-from library import SongLibrary
-from player import PlaylistPlayer
+from quodlibet.browsers.albums import AlbumList
+from quodlibet.library import SongLibrary
+from quodlibet.player import PlaylistPlayer
 
 class TAlbumList(TestCase):
     Bar = AlbumList

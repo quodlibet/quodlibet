@@ -1,7 +1,8 @@
 from tests import TestCase, add
 
 import os
-from qltk.chooser import FolderChooser, FileChooser
+
+from quodlibet.qltk.chooser import FolderChooser, FileChooser
 
 class TFolderChooser(TestCase):
     Kind = FolderChooser

@@ -4,8 +4,8 @@ import os
 
 from tempfile import mkstemp, mkdtemp
 
-from formats._audio import AudioFile
-from plugins import SongWrapper, ListWrapper
+from quodlibet.formats._audio import AudioFile
+from quodlibet.plugins import SongWrapper, ListWrapper
 
 class TSongWrapper(TestCase):
 

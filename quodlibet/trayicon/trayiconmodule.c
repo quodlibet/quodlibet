@@ -2,19 +2,19 @@
 
 #include <pygobject.h>
 
-void trayicon_register_classes (PyObject *d);
+void _trayicon_register_classes (PyObject *d);
 
-extern PyMethodDef trayicon_functions[];
+extern PyMethodDef _trayicon_functions[];
 
 DL_EXPORT(void) init_trayicon(void) {
     PyObject *m, *d;
 	
     init_pygobject();
 
-    m = Py_InitModule("_trayicon", trayicon_functions);
+    m = Py_InitModule("_trayicon", _trayicon_functions);
     d = PyModule_GetDict(m);
 	
-    trayicon_register_classes(d);
+    _trayicon_register_classes(d);
 
-    if (PyErr_Occurred()) Py_FatalError ("can't initialize module trayicon");
+    if (PyErr_Occurred()) Py_FatalError ("can't initialize module _trayicon");
 }

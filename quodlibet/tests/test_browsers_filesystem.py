@@ -1,8 +1,8 @@
 from tests import TestCase, add
 
-from browsers.filesystem import FileSystem
-from player import PlaylistPlayer
-from library import SongLibrary
+from quodlibet.browsers.filesystem import FileSystem
+from quodlibet.player import PlaylistPlayer
+from quodlibet.library import SongLibrary
 
 class TFileSystem(TestCase):
     def setUp(self):

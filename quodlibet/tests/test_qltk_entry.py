@@ -1,6 +1,7 @@
 from tests import add, TestCase
-from qltk.entry import ValidatingEntry
-from parse import Query
+
+from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.parse import Query
 
 class TValidatingEntry(TestCase):
     def setUp(self):

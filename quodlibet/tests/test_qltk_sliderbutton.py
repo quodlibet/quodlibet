@@ -2,7 +2,7 @@ from tests import TestCase, add
 
 import gtk
 
-from qltk.sliderbutton import VSlider
+from quodlibet.qltk.sliderbutton import VSlider
 
 class TVSlider(TestCase):
     Kind = VSlider

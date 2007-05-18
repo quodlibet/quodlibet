@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
-from player import PlaylistPlayer
-from qltk.controls import Volume
+from quodlibet.player import PlaylistPlayer
+from quodlibet.qltk.controls import Volume
 
 class TVolume(TestCase):
     def setUp(self):

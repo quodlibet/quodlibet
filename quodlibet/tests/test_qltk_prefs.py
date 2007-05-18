@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from qltk.prefs import PreferencesWindow
+from quodlibet.qltk.prefs import PreferencesWindow
 
 class TPreferencesWindow(TestCase):
     def setUp(self):

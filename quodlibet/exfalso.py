@@ -30,26 +30,26 @@ class fakegst(object):
         return plugin not in ["wavparse", "modplug"]
 
 def main(argv):
-    import util
+    from quodlibet import util
     util.python_init()
     util.gettext_install()
     util.ctypes_init()
 
-    import const
+    from quodlibet import const
     opts = util.OptionParser(
         "Ex Falso", const.VERSION,
         _("an audio tag editor"), "[%s]" % _("directory"))
 
-    import config
+    from quodlibet import config
     config.init(const.CONFIG)
 
     util.gtk_init()
     import gtk
-    icon = os.path.join(const.BASEDIR, "exfalso.")
+    icon = os.path.join(const.IMAGEDIR, "exfalso.")
     try: gtk.window_set_default_icon_from_file(icon + "svg")
     except: gtk.window_set_default_icon_from_file(icon + "png")
 
-    import stock
+    from quodlibet import stock
     stock.init()
 
     sys.modules["gst"] = fakegst()
@@ -57,8 +57,8 @@ def main(argv):
     sys.argv.append(os.path.abspath("."))
     opts, args = opts.parse()
     args[0] = os.path.realpath(args[0])
-    from qltk.exfalso import ExFalsoWindow
-    from library import SongFileLibrary
+    from quodlibet.qltk.exfalsowindow import ExFalsoWindow
+    from quodlibet.library import SongFileLibrary
     w = ExFalsoWindow(SongFileLibrary("exfalso"), args[0])
     w.connect('destroy', gtk.main_quit)
     w.show()

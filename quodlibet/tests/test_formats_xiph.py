@@ -4,11 +4,11 @@ import os
 import shutil
 import tempfile
 
-import config
-import const
+from quodlibet import config
+from quodlibet import const
 
 from mutagen.flac import FLAC
-from formats.xiph import OggFile, FLACFile
+from quodlibet.formats.xiph import OggFile, FLACFile
 
 class TVCFile(TestCase):
     # Mixin to test Vorbis writing features

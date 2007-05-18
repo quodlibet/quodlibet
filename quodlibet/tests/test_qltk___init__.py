@@ -2,7 +2,7 @@ from tests import TestCase, add
 
 import gtk
 
-import qltk
+from quodlibet import qltk
 
 class get_top_parent(TestCase):
     def test_none(self):

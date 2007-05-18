@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from formats import USEFUL_TAGS
+from quodlibet.formats import USEFUL_TAGS
 
 class TagsCombo(TestCase):
     def setUp(self):
@@ -26,11 +26,11 @@ class TagsCombo(TestCase):
         self.some.destroy()
 
 class TTagsComboBox(TagsCombo):
-    from qltk.tagscombobox import TagsComboBox as Kind
+    from quodlibet.qltk.tagscombobox import TagsComboBox as Kind
 add(TTagsComboBox)
 
 class TTagsComboBoxEntry(TagsCombo):
-    from qltk.tagscombobox import TagsComboBoxEntry as Kind
+    from quodlibet.qltk.tagscombobox import TagsComboBoxEntry as Kind
 
     def test_custom(self):
         self.all.child.set_text("a new tag")

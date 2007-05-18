@@ -1,8 +1,8 @@
 from tests import TestCase, add
 
 import os
-import util
-from util import format_time_long as f_t_l
+from quodlibet import util
+from quodlibet.util import format_time_long as f_t_l
 
 class Tmkdir(TestCase):
     def test_exists(self):

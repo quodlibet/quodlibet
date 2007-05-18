@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from qltk._editpane import FilterCheckButton
+from quodlibet.qltk._editpane import FilterCheckButton
 
 class FCB(FilterCheckButton):
     _section = _key = _label = "foo"

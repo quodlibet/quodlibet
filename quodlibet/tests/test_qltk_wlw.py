@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
 import gtk
-from qltk.wlw import WaitLoadWindow
+from quodlibet.qltk.wlw import WaitLoadWindow
 
 class TWaitLoadWindow(TestCase):
     class DummyConnector(gtk.Window):

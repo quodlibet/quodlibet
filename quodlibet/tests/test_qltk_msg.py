@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from qltk.msg import *
+from quodlibet.qltk.msg import *
 
 class _TMessage(TestCase):
     def setUp(self): self.win = self.Kind(None, "title", "description")

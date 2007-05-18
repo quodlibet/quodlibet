@@ -3,11 +3,11 @@ from tests import add, TestCase
 import os
 import gtk
 
-import const
+from quodlibet import const
 
-from formats._audio import AudioFile
-from qltk.remote import FSInterface
-from player import PlaylistPlayer
+from quodlibet.formats._audio import AudioFile
+from quodlibet.qltk.remote import FSInterface
+from quodlibet.player import PlaylistPlayer
 
 class TFSInterface(TestCase):
     def setUp(self):

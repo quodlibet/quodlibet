@@ -2,10 +2,10 @@ from tests import TestCase, add
 
 import gtk
 
-from formats._audio import AudioFile
-from player import PlaylistPlayer
-from qltk.tracker import SongTracker
-from library import SongLibrary
+from quodlibet.formats._audio import AudioFile
+from quodlibet.player import PlaylistPlayer
+from quodlibet.qltk.tracker import SongTracker
+from quodlibet.library import SongLibrary
 
 class TSongTracker(TestCase):
     def setUp(self):

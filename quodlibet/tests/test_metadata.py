@@ -2,7 +2,7 @@ from tests import TestCase, add
 
 import os
 
-import formats
+from quodlibet import formats
 
 from shutil import copyfileobj
 from tempfile import mkstemp

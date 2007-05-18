@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from tests import TestCase, add
 
-from parse import Query
+from quodlibet.parse import Query
 
 class TQuery_is_valid(TestCase):
     def test_re(self):
@@ -96,7 +96,7 @@ class TQuery_is_valid(TestCase):
 add(TQuery_is_valid)
 
 class TQuery(TestCase):
-    from formats._audio import AudioFile as AF
+    from quodlibet.formats._audio import AudioFile as AF
 
     def setUp(self):
         self.s1 = self.AF(

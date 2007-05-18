@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from qltk.delete import DeleteDialog
+from quodlibet.qltk.delete import DeleteDialog
 
 class TDeleteDialog(TestCase):
     def setUp(self):

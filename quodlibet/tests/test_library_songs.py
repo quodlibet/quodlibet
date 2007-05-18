@@ -4,7 +4,7 @@ import unittest
 
 from tempfile import mkstemp
 
-from library.songs import SongLibrary, SongFileLibrary, SongLibrarian
+from quodlibet.library.songs import SongLibrary, SongFileLibrary, SongLibrarian
 
 from test_library__library import Fake, TLibrary, TLibrarian
 

@@ -2,19 +2,19 @@
 
 #include <pygobject.h>
 
-void mmkeys_register_classes(PyObject *d);
+void _mmkeys_register_classes(PyObject *d);
 
-extern PyMethodDef mmkeys_functions[];
+extern PyMethodDef _mmkeys_functions[];
 
 DL_EXPORT(void) init_mmkeys(void) {
     PyObject *m, *d;
 	
     init_pygobject();
 
-    m = Py_InitModule("_mmkeys", mmkeys_functions);
+    m = Py_InitModule("_mmkeys", _mmkeys_functions);
     d = PyModule_GetDict(m);
 	
-    mmkeys_register_classes(d);
+    _mmkeys_register_classes(d);
 
     if (PyErr_Occurred()) Py_FatalError("can't initialise module mmkeys");
 }

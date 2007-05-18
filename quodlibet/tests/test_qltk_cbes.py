@@ -3,7 +3,7 @@ from tests import TestCase, add
 import os
 import tempfile
 
-from qltk.cbes import ComboBoxEntrySave
+from quodlibet.qltk.cbes import ComboBoxEntrySave
 
 class TComboBoxEntrySave(TestCase):
     memory = "pattern 1\npattern 2\n"

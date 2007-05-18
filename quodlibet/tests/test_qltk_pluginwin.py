@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from qltk.pluginwin import PluginWindow
+from quodlibet.qltk.pluginwin import PluginWindow
 
 class TPluginWindow(TestCase):
     def setUp(self):

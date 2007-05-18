@@ -2,11 +2,11 @@ from tests import TestCase, add
 
 import gtk
 
-import widgets
+from quodlibet import widgets
 
-from player import PlaylistPlayer
-from qltk.quodlibet import MainSongList, QuodLibetWindow
-from library import SongLibrary
+from quodlibet.player import PlaylistPlayer
+from quodlibet.qltk.quodlibetwindow import MainSongList, QuodLibetWindow
+from quodlibet.library import SongLibrary
 
 class TMainSongList(TestCase):
     def setUp(self):

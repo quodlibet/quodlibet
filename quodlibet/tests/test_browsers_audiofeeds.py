@@ -1,8 +1,8 @@
 from tests import TestCase, add
 
-from browsers.audiofeeds import AudioFeeds
-from player import PlaylistPlayer
-from library import SongLibrary
+from quodlibet.browsers.audiofeeds import AudioFeeds
+from quodlibet.player import PlaylistPlayer
+from quodlibet.library import SongLibrary
 
 class TAudioFeeds(TestCase):
     def setUp(self):

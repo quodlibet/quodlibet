@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
-from qltk.exfalso import ExFalsoWindow
-from library import SongLibrary
+from quodlibet.qltk.exfalsowindow import ExFalsoWindow
+from quodlibet.library import SongLibrary
 
 class TExFalsoWindow(TestCase):
     def setUp(self):

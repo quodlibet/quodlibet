@@ -26,39 +26,54 @@ For help, visit http://www.sacredchao.net/quodlibet/wiki/Guide.
 
 The manual page contains a brief synopsis of command-line options,
 and search and foramtting pattern syntax.
- $ man -l ./quodlibet.1
+ $ man -l ./man/quodlibet.1
 
 ====[ Requirements
 
 ==[ Source
 
 Quod Libet depends on the Python runtime and associated libraries.
- Python (>= 2.4):  http://www.python.org
- PyGTK (>= 2.8):   http://www.pygtk.org
- PyGSt (>= 0.10):  http://gstreamer.freedesktop.org/
- Mutagen (>= 1.9): http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
 
-The following formats all depend on ctypes, available at
-http://starship.python.net/crew/theller/ctypes/, as well as the libraries
-listed:
-	Musepack:	http://www.musepack.net/index.php?pg=src
-	MOD/XM/IT:	http://modplug-xmms.sourceforge.net/#download
-        MPEG-4 AAC:	http://www.audiocoding.com/ (libmp4)
-	Wavpack:	http://www.wavpack.com/
+    * Python (>= 2.4):		http://www.python.org
+    * PyGTK (>= 2.10):		http://www.pygtk.org
+    * PyGSt (>= 0.10.2):	http://gstreamer.freedesktop.org/
+    * Mutagen (>= 1.10):
+	http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen 
 
-Internet Radio depends on GNOME-VFS or neonhttpsrc support in GStreamer.
+Particular audio formats depend on various GStreamer decoding elements, 
+as well as other Python modules. GStreamer splits their downlads into 
+good, bad, ugly, and ffmpeg packages, each of which contains elements; 
+you probably want them all.
 
-Audio Feed support depends on GNOME-VFS or neonhttpsrc, and
-Universal Feed Parser from http://www.feedparser.org/.
+Format		Decoder
+------------------------------------------------------------------------
+ASF/WMA		ffmpeg		http://ffmpeg.mplayerhq.hu
+FLAC		flacdec		http://flac.sourceforge.net
+Musepack	musepackdec	http://www.musepack.net/index.php?pg=src
+MOD/XM/IT	modplug		http://modplug-xmms.sourceforge.net/
+MP3		mad		http://www.underbit.com/products/mad/
+MPEG-4 AAC	faad		http://www.audiocoding.com
+SPC700		spcdec		
+TrueAudio	ttadec		http://www.trueaudio.com
+Ogg Speex	speexdec	http://www.speex.org
+Ogg Vorbis	vorbisdec	ttp://www.vorbis.com
+Wave		wavparse
+WavPack		wavpackdec	http://www.wavpack.com
 
-iPod support depends on libgpod and its Python bindings, available from
-http://www.gtkpod.org/.
+Internet Radio depends on HTTP support in GStreamer; the most common way 
+to get this is to install the GNOME-VFS modules for GStreamer.
 
-To compile the status icon and multimedia key support, run
- $ make extensions
-(You will also need the Tray Icon plugin to display the status icon.)
+Audio Feed support depends on HTTP support and Universal Feed Parser
+(http://www.feedparser.org/).
 
-To install EF/QL system-wide, run
- # make install
+Many parts of Quod Libet benefit from D-Bus and its Python bindings
+(http://dbus.freedesktop.org/). iPod support depends on libgpod
+and its Python bindings (http://www.gtkpod.org/).
 
-For more information, see http://www.sacredchao.net/quodlibet/wiki/Download.
+Quod Libet requires the PyGTK development libraries, intltool, and the
+Python distutils suite to build and install. You can do this with
+ $ ./setup.py build
+ $ ./setup.py install
+
+For more information, see 
+http://www.sacredchao.net/quodlibet/wiki/Guide/Requirements.

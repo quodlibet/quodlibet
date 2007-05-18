@@ -3,9 +3,9 @@ from tests import TestCase, add
 import os
 import tempfile
 
-from browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
-from player import PlaylistPlayer
-from library import SongLibrary
+from quodlibet.browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
+from quodlibet.player import PlaylistPlayer
+from quodlibet.library import SongLibrary
 
 def makename():
     return tempfile.mkstemp()[1]
@@ -35,7 +35,7 @@ class TParsePlaylist(TestCase):
     def test_parse_onesong_uri(self):
         name = makename()
         target = os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg")
-        from util.uri import URI
+        from quodlibet.util.uri import URI
         target = URI.frompath(target)
         target = self.prefix + target
         f = file(name, "w")

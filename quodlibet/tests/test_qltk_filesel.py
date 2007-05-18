@@ -4,7 +4,7 @@ import os
 import sys
 sys.modules['dircache'] = os # cheat the dircache effects
 
-from qltk.filesel import DirectoryTree, FileSelector
+from quodlibet.qltk.filesel import DirectoryTree, FileSelector
 
 class TDirectoryTree(TestCase):
     def test_initial(self):

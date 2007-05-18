@@ -2,9 +2,9 @@ from tests import TestCase, add
 
 import gtk
 
-from player import PlaylistPlayer
-from qltk.queue import QueueExpander
-from library import SongLibrary
+from quodlibet.player import PlaylistPlayer
+from quodlibet.qltk.queue import QueueExpander
+from quodlibet.library import SongLibrary
 
 class TQueueExpander(TestCase):
     def setUp(self):

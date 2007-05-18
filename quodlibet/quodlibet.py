@@ -16,13 +16,13 @@ import sys
 import tempfile
 import time
 
-import config
-import const
-import util
+from quodlibet import config
+from quodlibet import const
+from quodlibet import util
 
 from threading import Thread
 
-from util import to
+from quodlibet.util import to
 
 global play
 play = False
@@ -33,7 +33,7 @@ def main():
     library = load_library()
     player = load_player(library)
 
-    import widgets
+    from quodlibet import widgets
 
     util.mkdir(const.USERDIR)
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
@@ -254,7 +254,7 @@ def process_arguments():
             play = True
 
 def load_library():
-    import library
+    from quodlibet import library
     lib = library.init(const.LIBRARY)
     print to(_("Loaded song library."))
     return lib
@@ -262,17 +262,19 @@ def load_library():
 def load_player(library):
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
-    import player
+    from quodlibet import player
     sink = config.get("settings", "pipeline")
     try: playlist = player.init(sink, library.librarian)
     except player.NoSinkError:
-        import widgets, gobject
+        from quodlibet import widgets
+        import gobject
         gobject.idle_add(widgets.no_sink_quit, sink)
         gtk.main()
         config.write(const.CONFIG)
         raise SystemExit(True)
     except player.NoSourceError:
-        import widgets, gobject
+        from quodlibet import widgets
+        import gobject
         gobject.idle_add(widgets.no_source_quit)
         gtk.main()
         config.write(const.CONFIG)
@@ -280,10 +282,6 @@ def load_player(library):
     else: return playlist
 
 if __name__ == "__main__":
-    basedir = os.path.dirname(os.path.realpath(__file__))
-    if basedir.endswith("/share/quodlibet"):
-        sys.path.append(basedir[:-15] + "lib/quodlibet")
-
     util.python_init()
     util.gettext_install()
     util.ctypes_init()

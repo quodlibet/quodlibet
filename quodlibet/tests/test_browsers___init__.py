@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-import browsers
+from quodlibet import browsers
 
 class TBrowsers(TestCase):
     def test_presence(self):

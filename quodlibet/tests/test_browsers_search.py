@@ -2,12 +2,12 @@ from tests import TestCase, add
 
 import gtk
 
-import widgets
-import browsers.search
+from quodlibet import widgets
+import quodlibet.browsers.search
 
-from browsers.search import EmptyBar, SearchBar
-from formats._audio import AudioFile
-from library import SongLibrary
+from quodlibet.browsers.search import EmptyBar, SearchBar
+from quodlibet.formats._audio import AudioFile
+from quodlibet.library import SongLibrary
 
 SONGS = [AudioFile(
     {"title": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -21,11 +21,11 @@ SONGS.sort()
 class TEmptyBar(TestCase):
     Bar = EmptyBar
     def setUp(self):
-        browsers.search.library = SongLibrary()
+        quodlibet.browsers.search.library = SongLibrary()
         for af in SONGS:
             af.sanitize()
-        browsers.search.library.add(SONGS)
-        self.bar = self.Bar(browsers.search.library, False)
+        quodlibet.browsers.search.library.add(SONGS)
+        self.bar = self.Bar(quodlibet.browsers.search.library, False)
         self.bar.connect('songs-selected', self._expected)
 
     def _expected(self, bar, songs, sort):
@@ -88,7 +88,7 @@ class TEmptyBar(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        browsers.search.library.destroy()
+        quodlibet.browsers.search.library.destroy()
 add(TEmptyBar)
 
 class TSearchBar(TEmptyBar):

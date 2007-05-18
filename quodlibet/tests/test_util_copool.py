@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
 import gtk
-from util import copool
+from quodlibet.util import copool
 
 class Tcopool(TestCase):
     def setUp(self):

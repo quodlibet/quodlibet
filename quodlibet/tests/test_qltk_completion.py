@@ -2,8 +2,8 @@ from tests import TestCase, add
 
 import gtk
 
-from library import SongLibrary
-from qltk.completion import EntryWordCompletion, LibraryTagCompletion
+from quodlibet.library import SongLibrary
+from quodlibet.qltk.completion import EntryWordCompletion, LibraryTagCompletion
 
 class TEntryWordCompletion(TestCase):
     def test_ctr(self):

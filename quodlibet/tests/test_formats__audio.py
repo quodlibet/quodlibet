@@ -2,9 +2,9 @@ from tests import TestCase, add
 
 import os
 
-import config
+from quodlibet import config
 
-from formats._audio import AudioFile
+from quodlibet.formats._audio import AudioFile
 
 bar_1_1 = AudioFile({
     "title": "A song",

@@ -2,7 +2,7 @@ from tests import TestCase, add
 
 import os
 
-from formats.mod import ModFile
+from quodlibet.formats.mod import ModFile
 
 class TModFile(TestCase):
     def setUp(self):

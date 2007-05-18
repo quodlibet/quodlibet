@@ -1,5 +1,5 @@
 from tests import TestCase, add
-from qltk.views import AllTreeView
+from quodlibet.qltk.views import AllTreeView
 
 class THintedTreeView(TestCase):
     def setUp(self): self.c = AllTreeView()

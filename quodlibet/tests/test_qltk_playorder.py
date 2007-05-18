@@ -1,7 +1,6 @@
 from tests import TestCase, add
 
-from qltk.playorder import PlayOrder
-
+from quodlibet.qltk.playorder import PlayOrder
 
 class TPlayOrder(TestCase):
     def setUp(self):

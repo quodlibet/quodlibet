@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from qltk.getstring import GetStringDialog
+from quodlibet.qltk.getstring import GetStringDialog
 
 class TGetStringDialog(TestCase):
     def setUp(self):

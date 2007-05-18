@@ -1,12 +1,11 @@
 from tests import TestCase, add
 
-import config
-import widgets
-import browsers.paned
+from quodlibet import config
+from quodlibet import widgets
 
-from browsers.paned import PanedBrowser
-from formats._audio import AudioFile
-from library import SongLibrary
+from quodlibet.browsers.paned import PanedBrowser
+from quodlibet.formats._audio import AudioFile
+from quodlibet.library import SongLibrary
 
 SONGS = [
     AudioFile({"title": "one", "artist": "piman", "~filename": "/dev/null"}),

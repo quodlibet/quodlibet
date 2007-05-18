@@ -2,10 +2,10 @@ from tests import TestCase, add
 
 import os
 
-from parse import FileFromPattern, XMLFromPattern, Pattern
+from quodlibet.parse import FileFromPattern, XMLFromPattern, Pattern
 
 class _TPattern(TestCase):
-    from formats._audio import AudioFile
+    from quodlibet.formats._audio import AudioFile
 
     def setUp(self):
         s1 = { 'tracknumber': '5/6', 'artist':'Artist', 'title':'Title5',
@@ -20,7 +20,7 @@ class _TPattern(TestCase):
         self.c = self.AudioFile(s3)
 
 class TPattern(_TPattern):
-    from formats._audio import AudioFile
+    from quodlibet.formats._audio import AudioFile
 
     def test_conditional_number_dot_title(s):
         pat = Pattern('<tracknumber|<tracknumber>. ><title>')

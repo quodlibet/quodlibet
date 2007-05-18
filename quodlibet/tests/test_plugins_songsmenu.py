@@ -4,8 +4,8 @@ import os
 
 from tempfile import mkstemp, mkdtemp
 
-from formats._audio import AudioFile
-from plugins.songsmenu import SongsMenuPlugins
+from quodlibet.formats._audio import AudioFile
+from quodlibet.plugins.songsmenu import SongsMenuPlugins
 
 class TSongsMenuPlugins(TestCase):
 

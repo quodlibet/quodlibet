@@ -1,8 +1,8 @@
 from tests import TestCase, add
 
-from library import SongLibrary
-from browsers.iradio import InternetRadio
-from player import PlaylistPlayer
+from quodlibet.library import SongLibrary
+from quodlibet.browsers.iradio import InternetRadio
+from quodlibet.player import PlaylistPlayer
 
 class TInternetRadio(TestCase):
     def setUp(self):

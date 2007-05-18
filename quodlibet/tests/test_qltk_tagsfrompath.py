@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
-from qltk.tagsfrompath import TagsFromPattern
-from qltk.tagsfrompath import TitleCase, SplitTag, UnderscoresToSpaces
+from quodlibet.qltk.tagsfrompath import TagsFromPattern
+from quodlibet.qltk.tagsfrompath import TitleCase, SplitTag, UnderscoresToSpaces
 
 class FilterTestCase(TestCase):
     def setUp(self): self.c = self.Kind()
@@ -37,7 +37,7 @@ class TTagsFromPattern(TestCase):
         self.nomatch = {}
 
     def test_songtypes(self):
-        import formats
+        from quodlibet import formats
         pat = TagsFromPattern('<tracknumber>. <title>')
         tracktitle = {'tracknumber': '01', 'title': 'Title' }
         for ext, kind in formats._infos.iteritems():

@@ -1,7 +1,7 @@
 from tests import TestCase, add
 
 import gtk
-from qltk import x
+from quodlibet.qltk import x
 
 class Window(TestCase):
     def test_ctr(self):

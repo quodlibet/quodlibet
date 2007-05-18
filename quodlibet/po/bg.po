@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-05 00:06-0700\n"
+"POT-Creation-Date: 2007-05-18 00:39-0700\n"
 "PO-Revision-Date: 2006-07-05 15:56-0500\n"
 "Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -16,79 +16,309 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../stock.py:50
-msgid "Edit _Tags"
-msgstr "Редактиране на _етикети"
+#: ../exfalso.desktop.in.h:1
+msgid "Audio tag editor"
+msgstr "Редактор на музикални етикети"
 
-#: ../stock.py:51
-msgid "_Plugins"
-msgstr "П_риставки"
+#: ../exfalso.desktop.in.h:2
+msgid "Edit tags in your audio files"
+msgstr "Редактиране на етикетите в аудио файловете Ви"
 
-#: ../stock.py:52
-msgid "_Preview"
-msgstr "Пре_глед"
+#. Translations for tag names
+#. Note that although tag names are translated in the main list view,
+#. they are *not* when editing tags.
+#. date the song was added to the library
+#: ../po/tag-names.py:7 ../quodlibet/qltk/information.py:216
+msgid "added"
+msgstr "добавенa"
 
-#: ../stock.py:53
-msgid "Add to _Queue"
-msgstr "Добавяне към _опашката"
+#: ../po/tag-names.py:8
+msgid "album"
+msgstr "албум"
 
-#: ../stock.py:54
-msgid "_Add to Playlist"
-msgstr "_Добавяне към списък"
+#: ../po/tag-names.py:9 ../quodlibet/util/__init__.py:583
+msgid "album artist"
+msgstr "Артист на албума"
 
-#: ../stock.py:55
-msgid "_Copy to Device"
-msgstr ""
+#: ../po/tag-names.py:10
+msgid "arranger"
+msgstr "аранжимент"
 
-#: ../stock.py:56
+#: ../po/tag-names.py:11 ../quodlibet/qltk/information.py:170
+#: ../quodlibet/qltk/information.py:356
+msgid "artist"
+msgstr "артист"
+
+#: ../po/tag-names.py:12
+msgid "author"
+msgstr "автор"
+
+#: ../po/tag-names.py:13
+msgid "composer"
+msgstr "композитор"
+
+#: ../po/tag-names.py:14
+msgid "conductor"
+msgstr "диригент"
+
+#: ../po/tag-names.py:15
+msgid "contact"
+msgstr "за контакт"
+
+#: ../po/tag-names.py:16
+msgid "copyright"
+msgstr "авторски права"
+
+#: ../po/tag-names.py:17
+msgid "date"
+msgstr "дата"
+
+#: ../po/tag-names.py:18
+msgid "description"
+msgstr "описание"
+
+#. just path, /.../...
+#: ../po/tag-names.py:20 ../quodlibet/util/__init__.py:563
+msgid "directory"
+msgstr "папка"
+
+#: ../po/tag-names.py:21 ../quodlibet/util/__init__.py:551
+msgid "disc"
+msgstr "диск"
+
+#. this tag contains a list of errors from playing the song
+#: ../po/tag-names.py:23
 #, fuzzy
-msgid "_Eject"
-msgstr "_Избор"
+msgid "errors"
+msgstr "изпълнители"
 
-#: ../stock.py:57
-msgid "_Rename"
-msgstr "_Преименуване"
+#. just file name, foo.ogg
+#: ../po/tag-names.py:25 ../quodlibet/util/__init__.py:562
+msgid "filename"
+msgstr "файлово име"
 
-#: ../stock.py:75
-msgid "_Information"
-msgstr "_Информация"
+#. as in "file format"
+#: ../po/tag-names.py:27
+msgid "format"
+msgstr "формат"
 
-#. Translators: Only translate this if it conflicts with "Delete",
-#. as is the case in e.g. Finnish. It should be disambiguated as
-#. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
-#. Don't literally translate "ql-remove". It needs an access key, so
-#. a sample translation would be "_Remove from Library".
-#: ../stock.py:83 ../stock.py:87
-msgid "ql-remove"
-msgstr ""
+#. file name plus path, /.../.../foo.ogg
+#: ../po/tag-names.py:29 ../quodlibet/util/__init__.py:557
+msgid "full name"
+msgstr "пълно име"
 
-#. Translators: Only translate this if GTK does so incorrectly or not
-#. at all. Don't literally translate media/next/previous/play/pause.
-#. This string needs an access key.
-#: ../stock.py:93
-msgid "gtk-media-next"
-msgstr "Следваща"
+#: ../po/tag-names.py:30
+msgid "genre"
+msgstr "жанр"
 
-#. Translators: Only translate this if GTK does so incorrectly or not
-#. at all. Don't literally translate media/next/previous/play/pause.
-#. This string needs an access key.
-#: ../stock.py:97
-msgid "gtk-media-previous"
-msgstr "Предишна"
+#: ../po/tag-names.py:31
+msgid "grouping"
+msgstr "групиране"
 
-#. Translators: Only translate this if GTK does so incorrectly or not
-#. at all. Don't literally translate media/next/previous/play/pause.
-#. This string needs an access key.
-#: ../stock.py:101
-msgid "gtk-media-play"
-msgstr ""
+#. alternately, "catalog number", "catalog ID", "label number"
+#: ../po/tag-names.py:33 ../quodlibet/util/__init__.py:552
+msgid "label ID"
+msgstr "каталожен номер"
 
-#. Translators: Only translate this if GTK does so incorrectly or not
-#. at all. Don't literally translate media/next/previous/play/pause.
-#. This string needs an access key.
-#: ../stock.py:105
-msgid "gtk-media-pause"
-msgstr ""
+#: ../po/tag-names.py:34
+msgid "language"
+msgstr "език"
+
+#. date the song was last heard on
+#: ../po/tag-names.py:36 ../quodlibet/qltk/information.py:217
+#: ../quodlibet/util/__init__.py:555
+msgid "last played"
+msgstr "последно слушана"
+
+#. date the song was last started on
+#: ../po/tag-names.py:38 ../quodlibet/util/__init__.py:556
+#, fuzzy
+msgid "last started"
+msgstr "последно слушана"
+
+#: ../po/tag-names.py:39 ../quodlibet/qltk/information.py:250
+msgid "length"
+msgstr "времетраене"
+
+#: ../po/tag-names.py:40
+msgid "license"
+msgstr "лиценз"
+
+#: ../po/tag-names.py:41
+msgid "location"
+msgstr "местонахождение"
+
+#: ../po/tag-names.py:42
+msgid "lyricist"
+msgstr "текстописец"
+
+#. date song was last modified/edited
+#: ../po/tag-names.py:44 ../quodlibet/qltk/information.py:252
+#: ../quodlibet/util/__init__.py:560
+msgid "modified"
+msgstr "променян"
+
+#: ../po/tag-names.py:45 ../quodlibet/util/__init__.py:561
+msgid "mount point"
+msgstr "точка на монтиране"
+
+#. alternately, "record label"
+#: ../po/tag-names.py:47
+msgid "organization"
+msgstr "организация"
+
+#: ../po/tag-names.py:48 ../quodlibet/util/__init__.py:584
+msgid "original release date"
+msgstr "оригинална дата на издаване"
+
+#: ../po/tag-names.py:49 ../quodlibet/util/__init__.py:586
+msgid "original artist"
+msgstr "оригинален артист"
+
+#: ../po/tag-names.py:50 ../quodlibet/util/__init__.py:585
+msgid "original album"
+msgstr "оригинален албум"
+
+#. alternately, "movement", "section"
+#: ../po/tag-names.py:52
+msgid "part"
+msgstr "част"
+
+#: ../po/tag-names.py:53
+msgid "people"
+msgstr "човека"
+
+#: ../po/tag-names.py:54 ../quodlibet/qltk/information.py:362
+msgid "performer"
+msgstr "изпълнител"
+
+#: ../po/tag-names.py:55 ../quodlibet/qltk/information.py:218
+#: ../quodlibet/util/__init__.py:558
+msgid "plays"
+msgstr "Прослушвания"
+
+#: ../po/tag-names.py:56 ../quodlibet/qltk/information.py:220
+msgid "rating"
+msgstr "оценка"
+
+#: ../po/tag-names.py:57 ../quodlibet/util/__init__.py:587
+msgid "recording date"
+msgstr "дата на запис"
+
+#: ../po/tag-names.py:58 ../quodlibet/qltk/information.py:219
+#: ../quodlibet/util/__init__.py:559
+msgid "skips"
+msgstr "пропускания"
+
+#: ../po/tag-names.py:59
+msgid "title"
+msgstr "заглавие"
+
+#: ../po/tag-names.py:60 ../quodlibet/util/__init__.py:550
+msgid "track"
+msgstr "номер"
+
+#: ../po/tag-names.py:61
+msgid "version"
+msgstr "версия"
+
+#: ../po/tag-names.py:62
+msgid "website"
+msgstr "интернет сайт"
+
+#: ../po/tag-names.py:63
+msgid "year"
+msgstr "година"
+
+#. beats per minute
+#: ../po/tag-names.py:65 ../quodlibet/util/__init__.py:553
+msgid "BPM"
+msgstr "BPM"
+
+#: ../po/tag-names.py:67 ../quodlibet/qltk/information.py:363
+msgid "performers"
+msgstr "изпълнители"
+
+#: ../po/tag-names.py:68
+msgid "lyricists"
+msgstr "текстописци"
+
+#: ../po/tag-names.py:69
+msgid "arrangers"
+msgstr "аранжименти"
+
+#: ../po/tag-names.py:70
+msgid "composers"
+msgstr "композитори"
+
+#: ../po/tag-names.py:71
+msgid "conductors"
+msgstr "диригенти"
+
+#: ../po/tag-names.py:72
+msgid "authors"
+msgstr "автори"
+
+#: ../po/tag-names.py:73 ../quodlibet/qltk/information.py:171
+#: ../quodlibet/qltk/information.py:357 ../quodlibet/qltk/information.py:494
+msgid "artists"
+msgstr "артисти"
+
+#: ../po/tag-names.py:74 ../quodlibet/qltk/information.py:510
+msgid "albums"
+msgstr "албуми"
+
+#: ../po/tag-names.py:75
+msgid "tracks"
+msgstr "песни"
+
+#: ../po/tag-names.py:76
+msgid "discs"
+msgstr "дискове"
+
+#. Not really tag names, but this is the best place for them so far.
+#: ../po/tag-names.py:80
+#, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d секунда"
+msgstr[1] "%d секунди"
+
+#: ../po/tag-names.py:81
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d минута"
+msgstr[1] "%d минути"
+
+#: ../po/tag-names.py:82
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d час"
+msgstr[1] "%d часа"
+
+#: ../po/tag-names.py:83
+#, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d ден"
+msgstr[1] "%d дни"
+
+#: ../po/tag-names.py:84
+#, python-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] "%d година"
+msgstr[1] "%d години"
+
+#: ../quodlibet.desktop.in.h:1
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "За слушане, разглеждане или редактиране на Вашата аудио колекция"
+
+#: ../quodlibet.desktop.in.h:2
+msgid "Music Player"
+msgstr "Слушане на музика"
 
 #: ../quodlibet.py:105
 msgid "No song is currently playing."
@@ -271,7 +501,7 @@ msgstr "Поставяне на файл или запитване на опаш
 msgid "E: Invalid argument for '%s'."
 msgstr "E: Невалиден аргумент за \"%s\"."
 
-#: ../quodlibet.py:238 ../util/__init__.py:202
+#: ../quodlibet.py:238 ../quodlibet/util/__init__.py:222
 #, python-format
 msgid "E: Try %s --help."
 msgstr "E: Опитайте %s --help."
@@ -285,352 +515,585 @@ msgstr "Заредена е фонотеката с песни."
 msgid "Opening audio device."
 msgstr "Отваряне на аудио устройството."
 
-#: ../quodlibet.py:294
+#: ../quodlibet.py:292
 msgid "Quod Libet is already running."
 msgstr "Quod Libet вече е стартиран."
 
-#. Translations for tag names
-#. Note that although tag names are translated in the main list view,
-#. they are *not* when editing tags.
-#. date the song was added to the library
-#: ../po/tag-names.py:7 ../qltk/information.py:216
-msgid "added"
-msgstr "добавенa"
+#. The browser's name, without an accelerator.
+#. The name, with an accelerator.
+#: ../quodlibet/browsers/_base.py:29 ../quodlibet/browsers/_base.py:31
+msgid "Library Browser"
+msgstr "Разглеждане на фонотеката"
 
-#: ../po/tag-names.py:8
-msgid "album"
-msgstr "албум"
+#: ../quodlibet/browsers/_base.py:128 ../quodlibet/qltk/queue.py:111
+#, python-format
+msgid "%(count)d song (%(time)s)"
+msgid_plural "%(count)d songs (%(time)s)"
+msgstr[0] ""
+msgstr[1] ""
 
-#: ../po/tag-names.py:9 ../util/__init__.py:563
-msgid "album artist"
-msgstr "Артист на албума"
+#: ../quodlibet/browsers/albums.py:34
+msgid "Songs not in an album"
+msgstr "Песните не са в албум"
 
-#: ../po/tag-names.py:10
-msgid "arranger"
-msgstr "аранжимент"
+#: ../quodlibet/browsers/albums.py:62
+msgid "Album List Preferences"
+msgstr "Настройки на списъка с албуми"
 
-#: ../po/tag-names.py:11 ../qltk/information.py:170 ../qltk/information.py:356
-msgid "artist"
-msgstr "артист"
+#: ../quodlibet/browsers/albums.py:68
+msgid "Show album _covers"
+msgstr "Показване на _обложките"
 
-#: ../po/tag-names.py:12
-msgid "author"
-msgstr "автор"
+#: ../quodlibet/browsers/albums.py:84
+msgid "Album Display"
+msgstr "Показване на албум"
 
-#: ../po/tag-names.py:13
-msgid "composer"
-msgstr "композитор"
+#: ../quodlibet/browsers/albums.py:108 ../quodlibet/browsers/albums.py:112
+#: ../quodlibet/qltk/tagsfrompath.py:130 ../quodlibet/qltk/textedit.py:70
+msgid "Invalid pattern"
+msgstr "Невалиден шаблон"
 
-#: ../po/tag-names.py:14
-msgid "conductor"
-msgstr "диригент"
-
-#: ../po/tag-names.py:15
-msgid "contact"
-msgstr "за контакт"
-
-#: ../po/tag-names.py:16
-msgid "copyright"
-msgstr "авторски права"
-
-#: ../po/tag-names.py:17
-msgid "date"
-msgstr "дата"
-
-#: ../po/tag-names.py:18
-msgid "description"
-msgstr "описание"
-
-#. just path, /.../...
-#: ../po/tag-names.py:20 ../exfalso.py:41 ../util/__init__.py:543
-msgid "directory"
-msgstr "папка"
-
-#: ../po/tag-names.py:21 ../util/__init__.py:531
-msgid "disc"
-msgstr "диск"
-
-#. this tag contains a list of errors from playing the song
-#: ../po/tag-names.py:23
+#: ../quodlibet/browsers/albums.py:122
 #, fuzzy
-msgid "errors"
-msgstr "изпълнители"
+msgid "Album List"
+msgstr "Спис_ък с албуми"
 
-#. just file name, foo.ogg
-#: ../po/tag-names.py:25 ../util/__init__.py:542
-msgid "filename"
-msgstr "файлово име"
+#: ../quodlibet/browsers/albums.py:123
+msgid "_Album List"
+msgstr "Спис_ък с албуми"
 
-#. as in "file format"
-#: ../po/tag-names.py:27
-msgid "format"
-msgstr "формат"
-
-#. file name plus path, /.../.../foo.ogg
-#: ../po/tag-names.py:29 ../util/__init__.py:537
-msgid "full name"
-msgstr "пълно име"
-
-#: ../po/tag-names.py:30
-msgid "genre"
-msgstr "жанр"
-
-#: ../po/tag-names.py:31
-msgid "grouping"
-msgstr "групиране"
-
-#. alternately, "catalog number", "catalog ID", "label number"
-#: ../po/tag-names.py:33 ../util/__init__.py:532
-msgid "label ID"
-msgstr "каталожен номер"
-
-#: ../po/tag-names.py:34
-msgid "language"
-msgstr "език"
-
-#. date the song was last heard on
-#: ../po/tag-names.py:36 ../qltk/information.py:217 ../util/__init__.py:535
-msgid "last played"
-msgstr "последно слушана"
-
-#. date the song was last started on
-#: ../po/tag-names.py:38 ../util/__init__.py:536
-#, fuzzy
-msgid "last started"
-msgstr "последно слушана"
-
-#: ../po/tag-names.py:39 ../qltk/information.py:250
-msgid "length"
-msgstr "времетраене"
-
-#: ../po/tag-names.py:40
-msgid "license"
-msgstr "лиценз"
-
-#: ../po/tag-names.py:41
-msgid "location"
-msgstr "местонахождение"
-
-#: ../po/tag-names.py:42
-msgid "lyricist"
-msgstr "текстописец"
-
-#. date song was last modified/edited
-#: ../po/tag-names.py:44 ../qltk/information.py:252 ../util/__init__.py:540
-msgid "modified"
-msgstr "променян"
-
-#: ../po/tag-names.py:45 ../util/__init__.py:541
-msgid "mount point"
-msgstr "точка на монтиране"
-
-#. alternately, "record label"
-#: ../po/tag-names.py:47
-msgid "organization"
-msgstr "организация"
-
-#: ../po/tag-names.py:48 ../util/__init__.py:564
-msgid "original release date"
-msgstr "оригинална дата на издаване"
-
-#: ../po/tag-names.py:49 ../util/__init__.py:566
-msgid "original artist"
-msgstr "оригинален артист"
-
-#: ../po/tag-names.py:50 ../util/__init__.py:565
-msgid "original album"
-msgstr "оригинален албум"
-
-#. alternately, "movement", "section"
-#: ../po/tag-names.py:52
-msgid "part"
-msgstr "част"
-
-#: ../po/tag-names.py:53
-msgid "people"
-msgstr "човека"
-
-#: ../po/tag-names.py:54 ../qltk/information.py:362
-msgid "performer"
-msgstr "изпълнител"
-
-#: ../po/tag-names.py:55 ../qltk/information.py:218 ../util/__init__.py:538
-msgid "plays"
-msgstr "Прослушвания"
-
-#: ../po/tag-names.py:56 ../qltk/information.py:220
-msgid "rating"
-msgstr "оценка"
-
-#: ../po/tag-names.py:57 ../util/__init__.py:567
-msgid "recording date"
-msgstr "дата на запис"
-
-#: ../po/tag-names.py:58 ../qltk/information.py:219 ../util/__init__.py:539
-msgid "skips"
-msgstr "пропускания"
-
-#: ../po/tag-names.py:59
-msgid "title"
-msgstr "заглавие"
-
-#: ../po/tag-names.py:60 ../util/__init__.py:530
-msgid "track"
-msgstr "номер"
-
-#: ../po/tag-names.py:61
-msgid "version"
-msgstr "версия"
-
-#: ../po/tag-names.py:62
-msgid "website"
-msgstr "интернет сайт"
-
-#: ../po/tag-names.py:63
-msgid "year"
-msgstr "година"
-
-#. beats per minute
-#: ../po/tag-names.py:65 ../util/__init__.py:533
-msgid "BPM"
-msgstr "BPM"
-
-#: ../po/tag-names.py:67 ../qltk/information.py:363
-msgid "performers"
-msgstr "изпълнители"
-
-#: ../po/tag-names.py:68
-msgid "lyricists"
-msgstr "текстописци"
-
-#: ../po/tag-names.py:69
-msgid "arrangers"
-msgstr "аранжименти"
-
-#: ../po/tag-names.py:70
-msgid "composers"
-msgstr "композитори"
-
-#: ../po/tag-names.py:71
-msgid "conductors"
-msgstr "диригенти"
-
-#: ../po/tag-names.py:72
-msgid "authors"
-msgstr "автори"
-
-#: ../po/tag-names.py:73 ../qltk/information.py:171 ../qltk/information.py:357
-#: ../qltk/information.py:494
-msgid "artists"
-msgstr "артисти"
-
-#: ../po/tag-names.py:74 ../qltk/information.py:510
-msgid "albums"
-msgstr "албуми"
-
-#: ../po/tag-names.py:75
-msgid "tracks"
-msgstr "песни"
-
-#: ../po/tag-names.py:76
-msgid "discs"
-msgstr "дискове"
-
-#. Not really tag names, but this is the best place for them so far.
-#: ../po/tag-names.py:80
+#: ../quodlibet/browsers/albums.py:260 ../quodlibet/qltk/information.py:315
 #, python-format
-msgid "%d second"
-msgid_plural "%d seconds"
-msgstr[0] "%d секунда"
-msgstr[1] "%d секунди"
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d песен"
+msgstr[1] "%d песни"
 
-#: ../po/tag-names.py:81
+#: ../quodlibet/browsers/albums.py:264 ../quodlibet/qltk/information.py:313
 #, python-format
-msgid "%d minute"
-msgid_plural "%d minutes"
-msgstr[0] "%d минута"
-msgstr[1] "%d минути"
+msgid "%d disc"
+msgid_plural "%d discs"
+msgstr[0] "%d диск"
+msgstr[1] "%d диска"
 
-#: ../po/tag-names.py:82
+#: ../quodlibet/browsers/albums.py:367
+msgid "Sort by title"
+msgstr "Сортиране по заглавие"
+
+#: ../quodlibet/browsers/albums.py:367
+msgid "Sort by artist"
+msgstr "Сортиране по артист"
+
+#: ../quodlibet/browsers/albums.py:367
+msgid "Sort by date"
+msgstr "Сортиране по дата"
+
+#: ../quodlibet/browsers/albums.py:492
+msgid "All Albums"
+msgstr "Всички албуми"
+
+#: ../quodlibet/browsers/albums.py:493
 #, python-format
-msgid "%d hour"
-msgid_plural "%d hours"
-msgstr[0] "%d час"
-msgstr[1] "%d часа"
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d албум"
+msgstr[1] "%d албума"
 
-#: ../po/tag-names.py:83
-#, python-format
-msgid "%d day"
-msgid_plural "%d days"
-msgstr[0] "%d ден"
-msgstr[1] "%d дни"
-
-#: ../po/tag-names.py:84
-#, python-format
-msgid "%d year"
-msgid_plural "%d years"
-msgstr[0] "%d година"
-msgstr[1] "%d години"
-
-#: ../formats/_audio.py:191 ../qltk/information.py:200
-#: ../qltk/information.py:208 ../qltk/information.py:234
-#: ../browsers/paned.py:28 ../browsers/audiofeeds.py:40
-#: ../browsers/audiofeeds.py:50 ../browsers/audiofeeds.py:51
-#: ../browsers/audiofeeds.py:114
+#: ../quodlibet/browsers/audiofeeds.py:40
+#: ../quodlibet/browsers/audiofeeds.py:50
+#: ../quodlibet/browsers/audiofeeds.py:51
+#: ../quodlibet/browsers/audiofeeds.py:114 ../quodlibet/browsers/paned.py:28
+#: ../quodlibet/formats/_audio.py:191 ../quodlibet/qltk/information.py:200
+#: ../quodlibet/qltk/information.py:208 ../quodlibet/qltk/information.py:234
 msgid "Unknown"
 msgstr "непознат"
 
-#: ../exfalso.py:41
-msgid "an audio tag editor"
-msgstr "редактор на музикални етикети"
+#: ../quodlibet/browsers/audiofeeds.py:159
+msgid "New Feed"
+msgstr "Нова емисия"
 
-#: ../widgets.py:43
-msgid "Unable to start web browser"
-msgstr "Неуспех при стартирането на интернет браузър"
+#: ../quodlibet/browsers/audiofeeds.py:160
+msgid "Enter the location of an audio feed:"
+msgstr "Въведете местоположението на аудио емисия:"
 
-#: ../widgets.py:44
-msgid ""
-"A web browser could not be found. Please set your $BROWSER variable, or make "
-"sure /usr/bin/sensible-browser exists."
-msgstr ""
-"Не може да бъде открит интернет браузърът. Настройте променливата $BROWSER "
-"или се уверете, че /usr/bin/sensible-browser съществува."
+#: ../quodlibet/browsers/audiofeeds.py:177
+#, fuzzy
+msgid "Audio Feeds"
+msgstr "_Аудио емисии"
 
-#: ../widgets.py:124
-msgid "Unable to save library"
-msgstr "Неуспех при запазване на фонотеката"
+#: ../quodlibet/browsers/audiofeeds.py:178
+msgid "_Audio Feeds"
+msgstr "_Аудио емисии"
 
-#: ../widgets.py:127
-msgid "Unable to open audio device"
-msgstr "Неуспех при отваряне на аудио устройството"
+#: ../quodlibet/browsers/audiofeeds.py:234
+#: ../quodlibet/browsers/audiofeeds.py:240
+msgid "_Download..."
+msgstr "Из_тегляне..."
 
-#: ../widgets.py:128
+#: ../quodlibet/browsers/audiofeeds.py:249
+msgid "Download Files"
+msgstr "Изтегляне на файлове"
+
+#: ../quodlibet/browsers/audiofeeds.py:270
+msgid "Download File"
+msgstr "Изтегляне на файл"
+
+#: ../quodlibet/browsers/audiofeeds.py:351
+#: ../quodlibet/browsers/audiofeeds.py:406
+msgid "Unable to add feed"
+msgstr "Неуспех при добавяне на емисията"
+
+#: ../quodlibet/browsers/audiofeeds.py:352
+#: ../quodlibet/browsers/audiofeeds.py:407
 #, python-format
 msgid ""
-"Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
-"not open them. Set your GStreamer pipeline by changing the\n"
-"    <b>pipeline = %(sink)s</b>\n"
-"line in ~/.quodlibet/config."
+"<b>%s</b> could not be added. The server may be down, or the location may "
+"not be an audio feed."
 msgstr ""
+"<b>%s</b> не може да бъде добавена. Сървърът може да не е на линия или "
+"местоположението да не е аудио емисия."
 
-#: ../widgets.py:137
-msgid "Unable to open files"
-msgstr "Неуспех при отваряне на файловете"
+#: ../quodlibet/browsers/filesystem.py:34
+#, fuzzy
+msgid "File System"
+msgstr "Ф_айлова система"
 
-#: ../widgets.py:138
+#: ../quodlibet/browsers/filesystem.py:35
+msgid "_File System"
+msgstr "Ф_айлова система"
+
+#: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/browsers/media.py:451
+#: ../quodlibet/qltk/songlist.py:533
+msgid "Unable to copy songs"
+msgstr "Неуспех при копиране на песните"
+
+#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:534
+msgid "The files selected cannot be copied to other song lists or the queue."
+msgstr ""
+"Избраните файлове не могат да бъдат копирани към други списъци с песни или "
+"към опашката."
+
+#: ../quodlibet/browsers/filesystem.py:128
+msgid "_Add to Library"
+msgstr "Пре_зареждане на фонотеката"
+
+#: ../quodlibet/browsers/iradio.py:81
+msgid "Unsupported file type"
+msgstr "Неподдържан вид файл"
+
+#: ../quodlibet/browsers/iradio.py:82
+#, python-format
 msgid ""
-"Quod Libet could not find the 'filesrc' GStreamer element. Check your "
-"GStreamer installation."
+"Station lists can only contain locations of stations, not other station "
+"lists or playlists. The following locations cannot be loaded:\n"
+"%s"
 msgstr ""
-"Quod Libet не може да открие елемента на GStreamer 'filesrc'. Проверете "
-"инсталацията си на GStreamer."
+"Списъците със станции могат да съдържат само местоположения на станции, не "
+"други списъци на станции или списъци на песни. Следните местоположения не "
+"могат да бъдат заредени:\n"
+"%s"
 
-#: ../plugins/__init__.py:245 ../qltk/tagsfrompath.py:233
+#: ../quodlibet/browsers/iradio.py:107
+msgid "Choose New Stations"
+msgstr "Избор на нови станции"
+
+#: ../quodlibet/browsers/iradio.py:117
+msgid "Add"
+msgstr "Добавяне"
+
+#: ../quodlibet/browsers/iradio.py:121
+msgid "Title"
+msgstr "Заглавие"
+
+#: ../quodlibet/browsers/iradio.py:147
+msgid "New Station"
+msgstr "Нова станция"
+
+#: ../quodlibet/browsers/iradio.py:148
+msgid "Enter the location of an Internet radio station:"
+msgstr "Въведете местоположението на радиостанция в Интернет:"
+
+#: ../quodlibet/browsers/iradio.py:150
+msgid "_Stations..."
+msgstr "_Станции..."
+
+#: ../quodlibet/browsers/iradio.py:166
+#, fuzzy
+msgid "Internet Radio"
+msgstr "_Радио по Интернет"
+
+#: ../quodlibet/browsers/iradio.py:167
+msgid "_Internet Radio"
+msgstr "_Радио по Интернет"
+
+#: ../quodlibet/browsers/iradio.py:178
+msgid "_New Station"
+msgstr "_Нова станция"
+
+#: ../quodlibet/browsers/iradio.py:194 ../quodlibet/browsers/paned.py:346
+#: ../quodlibet/browsers/search.py:151
+msgid "_Search:"
+msgstr "_Търсене:"
+
+#: ../quodlibet/browsers/iradio.py:258 ../quodlibet/browsers/iradio.py:267
+#: ../quodlibet/browsers/iradio.py:283
+msgid "Unable to add station"
+msgstr "Неуспех при добавяне на станцията"
+
+#: ../quodlibet/browsers/iradio.py:275
+msgid "No stations found"
+msgstr "Няма открити станции."
+
+#: ../quodlibet/browsers/iradio.py:276
+#, python-format
+msgid "No Internet radio stations were found at %s."
+msgstr "Няма открити Интернет радиостанции на %s."
+
+#: ../quodlibet/browsers/iradio.py:284
+msgid "All stations listed are already in your library."
+msgstr "Всички изписани станции са вече във фонотеката Ви."
+
+#: ../quodlibet/browsers/iradio.py:303
+#, python-format
+msgid "%(count)d station"
+msgid_plural "%(count)d stations"
+msgstr[0] "%(count)d станция"
+msgstr[1] "%(count)d станции"
+
+#: ../quodlibet/browsers/media.py:32
+#, fuzzy
+msgid "Device Properties"
+msgstr "Информация"
+
+#: ../quodlibet/browsers/media.py:45
+msgid "Device:"
+msgstr ""
+
+#: ../quodlibet/browsers/media.py:47
+msgid "Not mounted"
+msgstr ""
+
+#: ../quodlibet/browsers/media.py:48
+#, fuzzy
+msgid "Mount Point:"
+msgstr "точка на монтиране"
+
+#: ../quodlibet/browsers/media.py:54 ../quodlibet/qltk/cbes.py:33
+msgid "_Name:"
+msgstr "_Име:"
+
+#: ../quodlibet/browsers/media.py:124
+#, fuzzy
+msgid "Media Devices"
+msgstr "Аудио устройство: %s"
+
+#: ../quodlibet/browsers/media.py:125
+#, fuzzy
+msgid "_Media Devices"
+msgstr "Аудио устройство: %s"
+
+#: ../quodlibet/browsers/media.py:424
+#, python-format
+msgid "<b>%s</b> used, <b>%s</b> available"
+msgstr ""
+
+#: ../quodlibet/browsers/media.py:441
+#, fuzzy, python-format
+msgid "<b>%s</b> is not connected."
+msgstr "<b>%s</b> не е валидно местоположение."
+
+#: ../quodlibet/browsers/media.py:457
+#, fuzzy, python-format
+msgid "Copying <b>%s</b>"
+msgstr "Пропадна изтриването на <b>%s</b>."
+
+#: ../quodlibet/browsers/media.py:475 ../quodlibet/browsers/media.py:490
+#, fuzzy
+msgid "Unable to copy song"
+msgstr "Неуспех при копиране на песните"
+
+#: ../quodlibet/browsers/media.py:476
+msgid "There is not enough free space for this song."
+msgstr ""
+
+#: ../quodlibet/browsers/media.py:487
+#, python-format
+msgid "<b>%s</b> could not be copied."
+msgstr ""
+
+#: ../quodlibet/browsers/media.py:507
+#, fuzzy
+msgid "Unable to delete songs"
+msgstr "Неуспех при добавяне на песните"
+
+#: ../quodlibet/browsers/media.py:517
+#, fuzzy, python-format
+msgid "Deleting <b>%s</b>"
+msgstr "Пропадна изтриването на <b>%s</b>."
+
+#: ../quodlibet/browsers/media.py:534
+#, fuzzy, python-format
+msgid "<b>%s</b> could not be deleted."
+msgstr "<b>%s</b> не е валидно местоположение."
+
+#: ../quodlibet/browsers/media.py:538
+#, fuzzy
+msgid "Unable to delete song"
+msgstr "Неуспех при редактиране на песента"
+
+#: ../quodlibet/browsers/media.py:555
+#, fuzzy, python-format
+msgid "Ejecting <b>%s</b> failed."
+msgstr "Пропадна изтриването на <b>%s</b>."
+
+#: ../quodlibet/browsers/media.py:558
+#, fuzzy
+msgid "Unable to eject device"
+msgstr "Неуспех при изтриването на файл"
+
+#: ../quodlibet/browsers/paned.py:35
+msgid "Paned Browser Preferences"
+msgstr "Настройки на панели"
+
+#: ../quodlibet/browsers/paned.py:41
+msgid "_Custom"
+msgstr "_Лично"
+
+#: ../quodlibet/browsers/paned.py:143
+#, fuzzy
+msgid "Paned Browser"
+msgstr "_Изглед на панели"
+
+#: ../quodlibet/browsers/paned.py:144
+msgid "_Paned Browser"
+msgstr "_Изглед на панели"
+
+#: ../quodlibet/browsers/paned.py:274
+msgid "All"
+msgstr "Всички"
+
+#: ../quodlibet/browsers/paned.py:360
+msgid "Select _All"
+msgstr "_Избор на всички"
+
+#: ../quodlibet/browsers/playlists.py:64
+#, python-format
+msgid ""
+"Importing playlist.\n"
+"\n"
+"%d/%d songs added."
+msgstr ""
+"Внасяне на списък с песни.\n"
+"\n"
+"Добавени са %d/%d песни."
+
+#: ../quodlibet/browsers/playlists.py:93
+#: ../quodlibet/browsers/playlists.py:412
+msgid "New Playlist"
+msgstr "Нов списък с песни"
+
+#: ../quodlibet/browsers/playlists.py:107
+#: ../quodlibet/browsers/playlists.py:203
+#: ../quodlibet/qltk/exfalsowindow.py:170 ../quodlibet/qltk/properties.py:118
+#, python-format
+msgid "%(title)s and %(count)d more"
+msgstr ""
+
+#: ../quodlibet/browsers/playlists.py:132
+#, python-format
+msgid "A playlist named %s already exists."
+msgstr "Списък с песни с името %s, вече съществува."
+
+#: ../quodlibet/browsers/playlists.py:176
+#: ../quodlibet/qltk/exfalsowindow.py:157 ../quodlibet/qltk/information.py:477
+#, python-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "%d песен"
+msgstr[1] "%d песни"
+
+#: ../quodlibet/browsers/playlists.py:187
+msgid "_New Playlist"
+msgstr "_Нов списък с песни"
+
+#: ../quodlibet/browsers/playlists.py:214
+#, fuzzy
+msgid "Playlists"
+msgstr "Сп_исъци с песни"
+
+#: ../quodlibet/browsers/playlists.py:215
+msgid "_Playlists"
+msgstr "Сп_исъци с песни"
+
+#: ../quodlibet/browsers/playlists.py:274
+msgid "_Remove from Playlist"
+msgstr "Премахване от фонотеката"
+
+#: ../quodlibet/browsers/playlists.py:311
+msgid "_Import"
+msgstr "_Внасяне"
+
+#: ../quodlibet/browsers/playlists.py:429
+#: ../quodlibet/browsers/playlists.py:507
+msgid "Unable to import playlist"
+msgstr "Неуспех при внасяне на списъка"
+
+#: ../quodlibet/browsers/playlists.py:430
+#: ../quodlibet/browsers/playlists.py:508
+msgid "Quod Libet can only import playlists in the M3U and PLS formats."
+msgstr "Quod Libet може да внася само списъци с песни с формат M3U или PLS."
+
+#: ../quodlibet/browsers/playlists.py:489
+msgid "Unable to rename playlist"
+msgstr "Неуспех при преименуване на списъка."
+
+#: ../quodlibet/browsers/playlists.py:496
+msgid "Import Playlist"
+msgstr "Внасяне на списък с песни"
+
+#: ../quodlibet/browsers/search.py:33
+#, fuzzy
+msgid "Disable Browser"
+msgstr "_Изключване на разглеждането"
+
+#: ../quodlibet/browsers/search.py:34
+msgid "_Disable Browser"
+msgstr "_Изключване на разглеждането"
+
+#: ../quodlibet/browsers/search.py:104
+msgid "_Limit:"
+msgstr "_Ограничаване:"
+
+#: ../quodlibet/browsers/search.py:115
+msgid "_Weight"
+msgstr "_Тежест"
+
+#: ../quodlibet/browsers/search.py:136 ../quodlibet/qltk/prefs.py:157
+msgid "Search Library"
+msgstr "Търсене във фонотеката"
+
+#: ../quodlibet/browsers/search.py:137
+msgid "_Search Library"
+msgstr "Т_ърсене във фонотеката"
+
+#: ../quodlibet/browsers/search.py:164
+msgid "Search"
+msgstr "Търсене"
+
+#: ../quodlibet/browsers/search.py:166
+msgid "Search your library"
+msgstr "Търсене из фонотеката"
+
+#: ../quodlibet/browsers/search.py:194
+msgid "_Limit Results"
+msgstr "_Ограничаване на резултатите"
+
+#: ../quodlibet/devices/_base.py:63
+#, fuzzy
+msgid "Unknown Device"
+msgstr "непознат"
+
+#: ../quodlibet/devices/_base.py:94
+#, fuzzy
+msgid "No eject command found."
+msgstr "Няма открити станции."
+
+#: ../quodlibet/devices/ipod.py:91
+msgid "_Volume Gain (dB):"
+msgstr ""
+
+#: ../quodlibet/devices/ipod.py:94 ../quodlibet/devices/storage.py:56
+#, fuzzy
+msgid "Copy _album covers"
+msgstr "Показване на _обложките"
+
+#: ../quodlibet/devices/ipod.py:95
+#, fuzzy
+msgid "Combine tags with _multiple values"
+msgstr "Разделяне на _множество стойности"
+
+#: ../quodlibet/devices/ipod.py:96 ../quodlibet/qltk/prefs.py:66
+msgid "Title includes _version"
+msgstr "Заглавието включва _версията"
+
+#: ../quodlibet/devices/ipod.py:97 ../quodlibet/qltk/prefs.py:71
+msgid "Album includes _part"
+msgstr ""
+
+#: ../quodlibet/devices/ipod.py:108
+msgid "Model:"
+msgstr ""
+
+#: ../quodlibet/devices/ipod.py:110
+msgid "Capacity:"
+msgstr ""
+
+#: ../quodlibet/devices/ipod.py:112
+msgid "Firmware:"
+msgstr ""
+
+#: ../quodlibet/devices/ipod.py:158
+msgid "W: removing orphaned iPod track"
+msgstr ""
+
+#: ../quodlibet/devices/ipod.py:256
+#, fuzzy
+msgid "Unable to save iPod database"
+msgstr "Неуспех при запазване на фонотеката"
+
+#: ../quodlibet/devices/ipod.py:268
+msgid "Uninitialized iPod"
+msgstr ""
+
+#: ../quodlibet/devices/ipod.py:269
+msgid "Do you want to create an empty database on this iPod?"
+msgstr ""
+
+#: ../quodlibet/devices/storage.py:52
+#, fuzzy
+msgid "_Filename Pattern:"
+msgstr "_Файлово име"
+
+#: ../quodlibet/devices/storage.py:60
+msgid "_Remove unused covers and directories"
+msgstr ""
+
+#: ../quodlibet/devices/storage.py:92
+#, fuzzy
+msgid "File exists"
+msgstr "Ф_айлова система"
+
+#: ../quodlibet/devices/storage.py:93
+#, fuzzy, python-format
+msgid "Overwrite <b>%s</b>?"
+msgstr "Пропадна изтриването на <b>%s</b>."
+
+#: ../quodlibet/library/__init__.py:33 ../quodlibet/qltk/about.py:29
+#, python-format
+msgid "Supported formats: %s"
+msgstr "Поддържани формати: %s"
+
+#: ../quodlibet/library/songs.py:194
+#, fuzzy
+msgid "Checking mount points"
+msgstr "точка на монтиране"
+
+#: ../quodlibet/library/songs.py:208
+#, fuzzy
+msgid "Scanning library"
+msgstr "Запазване на фонотеката"
+
+#: ../quodlibet/library/songs.py:250
+#, fuzzy, python-format
+msgid "Scanning %s"
+msgstr "Проверяване на %s"
+
+#: ../quodlibet/plugins/__init__.py:245 ../quodlibet/qltk/tagsfrompath.py:233
 msgid "Unable to edit song"
 msgstr "Неуспех при редактиране на песента"
 
-#: ../plugins/__init__.py:246 ../qltk/edittags.py:637
-#: ../qltk/tagsfrompath.py:234 ../qltk/tracknumbers.py:133
+#: ../quodlibet/plugins/__init__.py:246 ../quodlibet/qltk/edittags.py:638
+#: ../quodlibet/qltk/tagsfrompath.py:234 ../quodlibet/qltk/tracknumbers.py:133
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -639,38 +1102,18 @@ msgstr ""
 "Запазването на <b>%s</b> пропадна. Файлът може би е само за четене, повреден "
 "или нямате права да го променяте."
 
-#: ../library/__init__.py:33 ../qltk/about.py:29
-#, python-format
-msgid "Supported formats: %s"
-msgstr "Поддържани формати: %s"
-
-#: ../library/songs.py:194
-#, fuzzy
-msgid "Checking mount points"
-msgstr "точка на монтиране"
-
-#: ../library/songs.py:208
-#, fuzzy
-msgid "Scanning library"
-msgstr "Запазване на фонотеката"
-
-#: ../library/songs.py:250
-#, fuzzy, python-format
-msgid "Scanning %s"
-msgstr "Проверяване на %s"
-
-#: ../qltk/_editpane.py:69
+#: ../quodlibet/qltk/_editpane.py:70
 msgid "_More options..."
 msgstr "О_ще опции..."
 
-#: ../qltk/about.py:30
+#: ../quodlibet/qltk/about.py:30
 #, python-format
 msgid "Audio device: %s"
 msgstr "Аудио устройство: %s"
 
 #. Translators: Replace this with your name/email to have it appear
 #. in the "About" dialog.
-#: ../qltk/about.py:39
+#: ../quodlibet/qltk/about.py:39
 msgid "translator-credits"
 msgstr ""
 "Ростислав \"zbrox\" Райков <zbrox@i-space.org>\n"
@@ -679,183 +1122,180 @@ msgstr ""
 "Докладвайте за грешки на http://gnome.cult.bg/bugs"
 
 #. Translators: Refers to the beginning of the playing song.
-#: ../qltk/bookmarks.py:25
+#: ../quodlibet/qltk/bookmarks.py:25
 msgid "Beginning"
 msgstr "Начало"
 
-#: ../qltk/bookmarks.py:31 ../qltk/bookmarks.py:66
+#: ../quodlibet/qltk/bookmarks.py:31 ../quodlibet/qltk/bookmarks.py:66
 msgid "N/A"
 msgstr "липсва"
 
-#: ../qltk/bookmarks.py:70
+#: ../quodlibet/qltk/bookmarks.py:70
 msgid "Time"
 msgstr "Време"
 
-#: ../qltk/bookmarks.py:76 ../qltk/bookmarks.py:108
+#: ../quodlibet/qltk/bookmarks.py:76 ../quodlibet/qltk/bookmarks.py:108
 msgid "Bookmark Name"
 msgstr "Име на отметка"
 
-#: ../qltk/bookmarks.py:106
+#: ../quodlibet/qltk/bookmarks.py:106
 msgid "MM:SS"
 msgstr "ММ:СС"
 
-#: ../qltk/bookmarks.py:180 ../qltk/information.py:94
+#: ../quodlibet/qltk/bookmarks.py:180 ../quodlibet/qltk/information.py:94
 msgid "Bookmarks"
 msgstr "Отметки"
 
-#: ../qltk/browser.py:52 ../qltk/quodlibet.py:107 ../util/__init__.py:303
+#: ../quodlibet/qltk/browser.py:52 ../quodlibet/qltk/quodlibetwindow.py:107
+#: ../quodlibet/util/__init__.py:323
 msgid "No time information"
 msgstr "Няма информация за времетраенето"
 
-#: ../qltk/cbes.py:22
+#: ../quodlibet/qltk/cbes.py:22
 msgid "Saved Values"
 msgstr "Запазени стойности"
 
-#: ../qltk/cbes.py:33 ../browsers/media.py:54
-msgid "_Name:"
-msgstr "_Име:"
-
-#: ../qltk/cbes.py:41 ../qltk/edittags.py:231
+#: ../quodlibet/qltk/cbes.py:41 ../quodlibet/qltk/edittags.py:232
 msgid "_Value:"
 msgstr "С_тойност:"
 
-#: ../qltk/cbes.py:198
+#: ../quodlibet/qltk/cbes.py:198
 msgid "Edit saved values..."
 msgstr "Запазване на редактираните стойности..."
 
-#: ../qltk/chooser.py:40 ../qltk/filesel.py:241
+#: ../quodlibet/qltk/chooser.py:40 ../quodlibet/qltk/filesel.py:241
 msgid "Songs"
 msgstr "Песни"
 
-#: ../qltk/controls.py:46
+#: ../quodlibet/qltk/controls.py:46
 msgid "Display remaining time"
 msgstr "Показване на оставащото време"
 
-#: ../qltk/controls.py:52
+#: ../quodlibet/qltk/controls.py:52
 msgid "_Edit Bookmarks..."
 msgstr "_Редактиране на отметки..."
 
-#: ../qltk/controls.py:180
+#: ../quodlibet/qltk/controls.py:180
 msgid "Stop after this song"
 msgstr "Спиране след тази песен"
 
-#: ../qltk/delete.py:30
+#: ../quodlibet/qltk/delete.py:30
 msgid "Delete Files"
 msgstr "Изтриване на файлове"
 
-#: ../qltk/delete.py:40
+#: ../quodlibet/qltk/delete.py:40
 msgid "_Move to Trash"
 msgstr "Преместване в _кошчето"
 
-#: ../qltk/delete.py:58
+#: ../quodlibet/qltk/delete.py:58
 msgid "Permanently delete this file?"
 msgstr "Изтриване на файла за постоянно?"
 
-#: ../qltk/delete.py:59
+#: ../quodlibet/qltk/delete.py:59
 msgid "Permanently delete these files?"
 msgstr "Изтриване на файловете за постоянно?"
 
-#: ../qltk/delete.py:63
+#: ../quodlibet/qltk/delete.py:63
 #, python-format
 msgid "%(title)s and %(count)d more..."
 msgid_plural "%(title)s and %(count)d more..."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../qltk/delete.py:91
+#: ../quodlibet/qltk/delete.py:91
 #, python-format
 msgid "Moving %d/%d."
 msgstr "Преместване на %d/%d."
 
-#: ../qltk/delete.py:92
+#: ../quodlibet/qltk/delete.py:92
 #, python-format
 msgid "Deleting %d/%d."
 msgstr "Изтриване на %d/%d."
 
-#: ../qltk/delete.py:117
+#: ../quodlibet/qltk/delete.py:117
 msgid "Unable to delete file"
 msgstr "Неуспех при изтриването на файл"
 
-#: ../qltk/delete.py:118
+#: ../quodlibet/qltk/delete.py:118
 #, python-format
 msgid "Deleting <b>%s</b> failed."
 msgstr "Пропадна изтриването на <b>%s</b>."
 
-#: ../qltk/downloader.py:37
+#: ../quodlibet/qltk/downloader.py:37
 msgid "Downloads"
 msgstr "Изтегляния"
 
-#: ../qltk/downloader.py:50
+#: ../quodlibet/qltk/downloader.py:50
 msgid "Filename"
 msgstr "Файлово име"
 
-#: ../qltk/downloader.py:59
+#: ../quodlibet/qltk/downloader.py:59
 msgid "Size"
 msgstr "Размер"
 
-#: ../qltk/edittags.py:39 ../qltk/edittags.py:50
+#: ../quodlibet/qltk/edittags.py:40 ../quodlibet/qltk/edittags.py:51
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
 msgstr[0] "липсва от %d песен"
 msgstr[1] "липсва от %d песни"
 
-#: ../qltk/edittags.py:43 ../qltk/edittags.py:47
+#: ../quodlibet/qltk/edittags.py:44 ../quodlibet/qltk/edittags.py:48
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
 msgstr[0] "различно при %d песен"
 msgstr[1] "различно при %d песни"
 
-#: ../qltk/edittags.py:125
+#: ../quodlibet/qltk/edittags.py:126
 msgid "Split into _Multiple Values"
 msgstr "Разделяне на _множество стойности"
 
-#: ../qltk/edittags.py:143
+#: ../quodlibet/qltk/edittags.py:144
 msgid "Split Disc out of _Album"
 msgstr "Номерът на диска извън етикета за _албум"
 
-#: ../qltk/edittags.py:158
+#: ../quodlibet/qltk/edittags.py:159
 msgid "Split _Version out of Title"
 msgstr "_Версията извън етикета за заглавието"
 
-#: ../qltk/edittags.py:191
+#: ../quodlibet/qltk/edittags.py:192
 msgid "Split Arranger out of Ar_tist"
 msgstr "_Аранжиментът извън етикета за артист"
 
-#: ../qltk/edittags.py:195
+#: ../quodlibet/qltk/edittags.py:196
 msgid "Split _Performer out of Artist"
 msgstr "Из_пълнителят извън етикета за артист"
 
-#: ../qltk/edittags.py:204
+#: ../quodlibet/qltk/edittags.py:205
 msgid "Add a Tag"
 msgstr "Добавяне на етикет"
 
-#: ../qltk/edittags.py:222
+#: ../quodlibet/qltk/edittags.py:223
 msgid "_Tag:"
 msgstr "_Етикет:"
 
-#: ../qltk/edittags.py:314
+#: ../quodlibet/qltk/edittags.py:315
 msgid "Edit Tags"
 msgstr "Редактиране на етикетите"
 
-#: ../qltk/edittags.py:321
+#: ../quodlibet/qltk/edittags.py:322
 msgid "Write"
 msgstr "Запис"
 
-#: ../qltk/edittags.py:341
+#: ../quodlibet/qltk/edittags.py:342
 msgid "Tag"
 msgstr "Етикет"
 
-#: ../qltk/edittags.py:357
+#: ../quodlibet/qltk/edittags.py:358
 msgid "Value"
 msgstr "Стойност"
 
-#: ../qltk/edittags.py:505
+#: ../quodlibet/qltk/edittags.py:506
 msgid "Unable to add tag"
 msgstr "Неуспех при добавяне на етикет"
 
-#: ../qltk/edittags.py:506
+#: ../quodlibet/qltk/edittags.py:507
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -871,13 +1311,14 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../qltk/edittags.py:532 ../qltk/edittags.py:677 ../qltk/edittags.py:684
-#: ../qltk/tagsfrompath.py:148 ../util/__init__.py:474 ../util/__init__.py:481
+#: ../quodlibet/qltk/edittags.py:533 ../quodlibet/qltk/edittags.py:678
+#: ../quodlibet/qltk/edittags.py:685 ../quodlibet/qltk/tagsfrompath.py:148
+#: ../quodlibet/util/__init__.py:494 ../quodlibet/util/__init__.py:501
 msgid "Invalid tag"
 msgstr "Невалиден етикет"
 
-#: ../qltk/edittags.py:533 ../qltk/edittags.py:678 ../qltk/edittags.py:685
-#: ../qltk/tagsfrompath.py:149
+#: ../quodlibet/qltk/edittags.py:534 ../quodlibet/qltk/edittags.py:679
+#: ../quodlibet/qltk/edittags.py:686 ../quodlibet/qltk/tagsfrompath.py:149
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -888,13 +1329,13 @@ msgstr ""
 "\n"
 "Избраните в момента файлове не поддържат редакцията на този етикет."
 
-#: ../qltk/edittags.py:582 ../qltk/tagsfrompath.py:208
-#: ../qltk/tracknumbers.py:120
+#: ../quodlibet/qltk/edittags.py:583 ../quodlibet/qltk/tagsfrompath.py:208
+#: ../quodlibet/qltk/tracknumbers.py:120
 msgid "Tag may not be accurate"
 msgstr "Етикетът може да не е точен"
 
-#: ../qltk/edittags.py:583 ../qltk/tagsfrompath.py:209
-#: ../qltk/tracknumbers.py:121
+#: ../quodlibet/qltk/edittags.py:584 ../quodlibet/qltk/tagsfrompath.py:209
+#: ../quodlibet/qltk/tracknumbers.py:121
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -907,15 +1348,15 @@ msgstr ""
 "\n"
 "Да се запази ли въпреки това?"
 
-#: ../qltk/edittags.py:636 ../qltk/tracknumbers.py:132
+#: ../quodlibet/qltk/edittags.py:637 ../quodlibet/qltk/tracknumbers.py:132
 msgid "Unable to save song"
 msgstr "Не може да се запази песента"
 
-#: ../qltk/edittags.py:660 ../qltk/edittags.py:695
+#: ../quodlibet/qltk/edittags.py:661 ../quodlibet/qltk/edittags.py:696
 msgid "Invalid value"
 msgstr "Невалидна стойност"
 
-#: ../qltk/edittags.py:661 ../qltk/edittags.py:696
+#: ../quodlibet/qltk/edittags.py:662 ../quodlibet/qltk/edittags.py:697
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -926,226 +1367,199 @@ msgstr ""
 "\n"
 "%(error)s"
 
-#: ../qltk/exfalso.py:157 ../qltk/information.py:477
-#: ../browsers/playlists.py:176
-#, python-format
-msgid "%d song"
-msgid_plural "%d songs"
-msgstr[0] "%d песен"
-msgstr[1] "%d песни"
-
-#: ../qltk/exfalso.py:170 ../qltk/properties.py:118
-#: ../browsers/playlists.py:107 ../browsers/playlists.py:203
-#, python-format
-msgid "%(title)s and %(count)d more"
-msgstr ""
-
-#: ../qltk/exfalso.py:187
+#: ../quodlibet/qltk/exfalsowindow.py:187
 msgid "Ex Falso Preferences"
 msgstr "Настройки на Ex Falso"
 
-#: ../qltk/exfalso.py:197 ../qltk/prefs.py:220
+#: ../quodlibet/qltk/exfalsowindow.py:197 ../quodlibet/qltk/prefs.py:220
 msgid "Split _on:"
 msgstr "Раз_деляне на:"
 
-#: ../qltk/exfalso.py:203 ../qltk/prefs.py:247
+#: ../quodlibet/qltk/exfalsowindow.py:203 ../quodlibet/qltk/prefs.py:247
 msgid "Show _programmatic tags"
 msgstr "Показване на про_граматични етикети"
 
-#: ../qltk/exfalso.py:207 ../qltk/prefs.py:250
+#: ../quodlibet/qltk/exfalsowindow.py:207 ../quodlibet/qltk/prefs.py:250
 msgid "Tag Editing"
 msgstr "Редактиране на етикети"
 
-#: ../qltk/filesel.py:42
+#: ../quodlibet/qltk/filesel.py:42
 msgid "Folders"
 msgstr "Папки"
 
-#: ../qltk/filesel.py:81
+#: ../quodlibet/qltk/filesel.py:81
 #, fuzzy
 msgid "_New Folder..."
 msgstr "Нова папка..."
 
-#: ../qltk/filesel.py:90
+#: ../quodlibet/qltk/filesel.py:90
 #, fuzzy
 msgid "_Select All Subfolders"
 msgstr "_Избор на всички"
 
-#: ../qltk/filesel.py:141
+#: ../quodlibet/qltk/filesel.py:141
 msgid "New Folder"
 msgstr "Нова папка"
 
-#: ../qltk/filesel.py:141
+#: ../quodlibet/qltk/filesel.py:141
 msgid "Enter a name for the new folder:"
 msgstr "Въведете име за новата папка:"
 
-#: ../qltk/filesel.py:150
+#: ../quodlibet/qltk/filesel.py:150
 msgid "Unable to create folder"
 msgstr "Неуспех при създаването на папка"
 
-#: ../qltk/filesel.py:163
+#: ../quodlibet/qltk/filesel.py:163
 msgid "Unable to delete folder"
 msgstr "Неуспех при изтриването на папка"
 
 #. Translators: As in "by Artist Name"
-#: ../qltk/info.py:30
+#: ../quodlibet/qltk/info.py:30
 #, python-format
 msgid "by %s"
 msgstr ""
 
-#: ../qltk/info.py:31 ../qltk/information.py:140 ../qltk/information.py:383
+#: ../quodlibet/qltk/info.py:31 ../quodlibet/qltk/information.py:140
+#: ../quodlibet/qltk/information.py:383
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
 
-#: ../qltk/info.py:32 ../qltk/information.py:145
+#: ../quodlibet/qltk/info.py:32 ../quodlibet/qltk/information.py:145
 #, python-format
 msgid "Track %s"
 msgstr "Песен номер %s"
 
-#: ../qltk/info.py:52
+#: ../quodlibet/qltk/info.py:52
 msgid "_Edit Display..."
 msgstr "_Редактиране на показваното"
 
-#: ../qltk/info.py:86
+#: ../quodlibet/qltk/info.py:86
 msgid "Not playing"
 msgstr "Не се изпълнява нищо"
 
-#: ../qltk/information.py:59
+#: ../quodlibet/qltk/information.py:59
 #, fuzzy
 msgid "_Clear Errors"
 msgstr "Грешки на приставките"
 
-#: ../qltk/information.py:72
+#: ../quodlibet/qltk/information.py:72
 msgid "No songs are selected."
 msgstr "Няма избрани песни."
 
-#: ../qltk/information.py:73
+#: ../quodlibet/qltk/information.py:73
 msgid "No Songs"
 msgstr "Няма песни"
 
-#: ../qltk/information.py:86 ../qltk/information.py:271
-#: ../qltk/information.py:406 ../qltk/information.py:465
+#: ../quodlibet/qltk/information.py:86 ../quodlibet/qltk/information.py:271
+#: ../quodlibet/qltk/information.py:406 ../quodlibet/qltk/information.py:465
 msgid "Information"
 msgstr "Информация"
 
-#: ../qltk/information.py:90
+#: ../quodlibet/qltk/information.py:90
 msgid "Lyrics"
 msgstr "Текст на песен"
 
-#: ../qltk/information.py:100
+#: ../quodlibet/qltk/information.py:100
 #, fuzzy
 msgid "Errors"
 msgstr "Показване на _грешки"
 
-#: ../qltk/information.py:196 ../qltk/information.py:209
-#: ../qltk/songlist.py:302
+#: ../quodlibet/qltk/information.py:196 ../quodlibet/qltk/information.py:209
+#: ../quodlibet/qltk/songlist.py:302
 msgid "Never"
 msgstr "Никога"
 
-#: ../qltk/information.py:197
+#: ../quodlibet/qltk/information.py:197
 #, python-format
 msgid "%d time"
 msgid_plural "%d times"
 msgstr[0] "%d път"
 msgstr[1] "%d пъти"
 
-#: ../qltk/information.py:229 ../qltk/prefs.py:191
+#: ../quodlibet/qltk/information.py:229 ../quodlibet/qltk/prefs.py:191
 msgid "Library"
 msgstr "Фонотека"
 
-#: ../qltk/information.py:244
+#: ../quodlibet/qltk/information.py:244
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: ../qltk/information.py:251
+#: ../quodlibet/qltk/information.py:251
 msgid "file size"
 msgstr "размер на файла"
 
-#: ../qltk/information.py:254
+#: ../quodlibet/qltk/information.py:254
 msgid "bitrate"
 msgstr ""
 
-#: ../qltk/information.py:265 ../qltk/properties.py:56
-#: ../qltk/renamefiles.py:66 ../qltk/tagsfrompath.py:165
-#: ../qltk/tracknumbers.py:59
+#: ../quodlibet/qltk/information.py:265 ../quodlibet/qltk/properties.py:56
+#: ../quodlibet/qltk/renamefiles.py:66 ../quodlibet/qltk/tagsfrompath.py:165
+#: ../quodlibet/qltk/tracknumbers.py:59
 msgid "File"
 msgstr "Файл"
 
-#: ../qltk/information.py:313 ../browsers/albums.py:264
-#, python-format
-msgid "%d disc"
-msgid_plural "%d discs"
-msgstr[0] "%d диск"
-msgstr[1] "%d диска"
-
-#: ../qltk/information.py:315 ../browsers/albums.py:260
-#, python-format
-msgid "%d track"
-msgid_plural "%d tracks"
-msgstr[0] "%d песен"
-msgstr[1] "%d песни"
-
-#: ../qltk/information.py:317
+#: ../quodlibet/qltk/information.py:317
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d избрана"
 msgstr[1] "%d избрани"
 
-#: ../qltk/information.py:330
+#: ../quodlibet/qltk/information.py:330
 #, python-format
 msgid "Produced by %s"
 msgstr "Продуцирано от %s"
 
-#: ../qltk/information.py:393
+#: ../quodlibet/qltk/information.py:393
 msgid "Track unavailable"
 msgstr "Песента е неналична"
 
-#: ../qltk/information.py:400
+#: ../quodlibet/qltk/information.py:400
 msgid "Track List"
 msgstr "Списък с песни"
 
-#: ../qltk/information.py:438 ../qltk/information.py:507
+#: ../quodlibet/qltk/information.py:438 ../quodlibet/qltk/information.py:507
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "%d песен без албум"
 msgstr[1] "%d песни без албум"
 
-#: ../qltk/information.py:442
+#: ../quodlibet/qltk/information.py:442
 msgid "Selected Discography"
 msgstr "Избор на дискография"
 
-#: ../qltk/information.py:491
+#: ../quodlibet/qltk/information.py:491
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] "%d песен без артист"
 msgstr[1] "%d песни без артист"
 
-#: ../qltk/information.py:523
+#: ../quodlibet/qltk/information.py:523
 msgid "Total length:"
 msgstr "Общо времетраене:"
 
-#: ../qltk/information.py:527
+#: ../quodlibet/qltk/information.py:527
 msgid "Total size:"
 msgstr "Общ размер:"
 
-#: ../qltk/information.py:530
+#: ../quodlibet/qltk/information.py:530
 msgid "Files"
 msgstr "Файлове"
 
-#: ../qltk/lyrics.py:34
+#: ../quodlibet/qltk/lyrics.py:34
 msgid "_Download"
 msgstr "Из_тегляне"
 
-#: ../qltk/lyrics.py:52
+#: ../quodlibet/qltk/lyrics.py:52
 #, python-format
 msgid "Lyrics provided by %s."
 msgstr "Текстът е предоставен чрез %s"
 
-#: ../qltk/lyrics.py:66
+#: ../quodlibet/qltk/lyrics.py:66
 msgid ""
 "No lyrics found.\n"
 "\n"
@@ -1157,23 +1571,24 @@ msgstr ""
 "Може да натиснете бутона \"Изтегляне\", за да се потърси текста в Интернет.  "
 "Също така може сами да въведете текста и да натиснете \"Запазване\"."
 
-#: ../qltk/lyrics.py:85
+#: ../quodlibet/qltk/lyrics.py:85
 msgid "Searching for lyrics..."
 msgstr "Търсене на текст на песента..."
 
-#: ../qltk/lyrics.py:105 ../qltk/lyrics.py:138 ../qltk/lyrics.py:151
+#: ../quodlibet/qltk/lyrics.py:105 ../quodlibet/qltk/lyrics.py:138
+#: ../quodlibet/qltk/lyrics.py:151
 msgid "Unable to download lyrics."
 msgstr "Неуспех при изтегляне на текстовете"
 
-#: ../qltk/lyrics.py:121
+#: ../quodlibet/qltk/lyrics.py:121
 msgid "No lyrics found for this song."
 msgstr "Няма открит текст за тази песен."
 
-#: ../qltk/msg.py:48
+#: ../quodlibet/qltk/msg.py:48
 msgid "Discard tag changes?"
 msgstr "Отказване от промените?"
 
-#: ../qltk/msg.py:49
+#: ../quodlibet/qltk/msg.py:49
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -1181,129 +1596,121 @@ msgstr ""
 "Етикетите бяха променени, но не бяха запазени. Ще запазите промените или ще "
 "се откажете от тях?"
 
-#: ../qltk/playorder.py:14
+#: ../quodlibet/qltk/playorder.py:14
 msgid "In Order"
 msgstr "Подред"
 
-#: ../qltk/playorder.py:15
+#: ../quodlibet/qltk/playorder.py:15
 msgid "Shuffle"
 msgstr "В разбъркан ред"
 
-#: ../qltk/playorder.py:16
+#: ../quodlibet/qltk/playorder.py:16
 msgid "Weighted"
 msgstr "Претеглен"
 
-#: ../qltk/playorder.py:17
+#: ../quodlibet/qltk/playorder.py:17
 msgid "One Song"
 msgstr "Една песен"
 
 #. Canonical accelerated versions, in case we need them (e.g. the tray
 #. icon uses them right now).
-#: ../qltk/playorder.py:23
+#: ../quodlibet/qltk/playorder.py:23
 msgid "_In Order"
 msgstr "П_одред"
 
-#: ../qltk/playorder.py:24
+#: ../quodlibet/qltk/playorder.py:24
 msgid "_Shuffle"
 msgstr "П_роизволен ред"
 
-#: ../qltk/playorder.py:25
+#: ../quodlibet/qltk/playorder.py:25
 msgid "_Weighted"
 msgstr "Пре_теглен"
 
-#: ../qltk/playorder.py:26
+#: ../quodlibet/qltk/playorder.py:26
 msgid "_One Song"
 msgstr "_Една песен"
 
-#: ../qltk/pluginwin.py:35
+#: ../quodlibet/qltk/pluginwin.py:35
 msgid "Quod Libet Plugins"
 msgstr "Приставки за Quod Libet"
 
-#: ../qltk/pluginwin.py:83
+#: ../quodlibet/qltk/pluginwin.py:83
 msgid "Show _Errors"
 msgstr "Показване на _грешки"
 
-#: ../qltk/pluginwin.py:105
+#: ../quodlibet/qltk/pluginwin.py:105
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../qltk/pluginwin.py:188
+#: ../quodlibet/qltk/pluginwin.py:188
 msgid "No plugins found."
 msgstr "Няма открити приставки."
 
-#: ../qltk/pluginwin.py:195
+#: ../quodlibet/qltk/pluginwin.py:195
 msgid "Plugin Errors"
 msgstr "Грешки на приставките"
 
-#: ../qltk/prefs.py:37
+#: ../quodlibet/qltk/prefs.py:37
 msgid "Song List"
 msgstr "Списък на песните"
 
-#: ../qltk/prefs.py:46
+#: ../quodlibet/qltk/prefs.py:46
 msgid "_Disc"
 msgstr "Д_иск"
 
-#: ../qltk/prefs.py:47
+#: ../quodlibet/qltk/prefs.py:47
 msgid "Al_bum"
 msgstr "Алб_ум"
 
-#: ../qltk/prefs.py:48
+#: ../quodlibet/qltk/prefs.py:48
 msgid "_Filename"
 msgstr "_Файлово име"
 
-#: ../qltk/prefs.py:49
+#: ../quodlibet/qltk/prefs.py:49
 msgid "_Track"
 msgstr "Песен н_омер"
 
-#: ../qltk/prefs.py:50
+#: ../quodlibet/qltk/prefs.py:50
 msgid "_Artist"
 msgstr "_Артист"
 
-#: ../qltk/prefs.py:51 ../qltk/songlist.py:427
+#: ../quodlibet/qltk/prefs.py:51 ../quodlibet/qltk/songlist.py:427
 msgid "_Rating"
 msgstr "_Оценка"
 
-#: ../qltk/prefs.py:53
+#: ../quodlibet/qltk/prefs.py:53
 msgid "_Date"
 msgstr "_Дата"
 
-#: ../qltk/prefs.py:54
+#: ../quodlibet/qltk/prefs.py:54
 msgid "_Length"
 msgstr "_Времетраене"
 
-#: ../qltk/prefs.py:66 ../devices/ipod.py:96
-msgid "Title includes _version"
-msgstr "Заглавието включва _версията"
-
-#: ../qltk/prefs.py:71 ../devices/ipod.py:97
-msgid "Album includes _part"
-msgstr ""
-
-#: ../qltk/prefs.py:76
+#: ../quodlibet/qltk/prefs.py:76
 msgid "Filename includes _folder"
 msgstr "Името на файла вклю_чва папката"
 
-#: ../qltk/prefs.py:90
+#: ../quodlibet/qltk/prefs.py:90
 msgid "_Others:"
 msgstr "_Други:"
 
-#: ../qltk/prefs.py:96
+#: ../quodlibet/qltk/prefs.py:96
 msgid "Other columns to display, separated by spaces"
 msgstr "Други колони, които да се показват, разделени от интервали"
 
-#: ../qltk/prefs.py:110
+#: ../quodlibet/qltk/prefs.py:110
 msgid "Visible Columns"
 msgstr "Видими колони"
 
-#: ../qltk/prefs.py:138
+#: ../quodlibet/qltk/prefs.py:138
 msgid "Browsers"
 msgstr "Разглеждане"
 
-#: ../qltk/prefs.py:141
+#: ../quodlibet/qltk/prefs.py:141
 msgid "Color _search terms"
 msgstr "Оцветяване на _търсените фрази"
 
-#: ../qltk/prefs.py:144
+#: ../quodlibet/qltk/prefs.py:144
 msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
@@ -1311,227 +1718,217 @@ msgstr ""
 "Показва простите търсения в синьо, разширените в зелено и невалидните в "
 "червено."
 
-#: ../qltk/prefs.py:147
+#: ../quodlibet/qltk/prefs.py:147
 msgid "_Global filter:"
 msgstr "_Глобален филтър:"
 
-#: ../qltk/prefs.py:157 ../browsers/search.py:136
-msgid "Search Library"
-msgstr "Търсене във фонотеката"
-
-#: ../qltk/prefs.py:167
+#: ../quodlibet/qltk/prefs.py:167
 msgid "Player"
 msgstr "Преслушване"
 
-#: ../qltk/prefs.py:171
+#: ../quodlibet/qltk/prefs.py:171
 msgid "_Jump to playing song automatically"
 msgstr "_Автоматично прескачане до текущата песен"
 
-#: ../qltk/prefs.py:172
+#: ../quodlibet/qltk/prefs.py:172
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr ""
 "Когато слушана песен се смени, автоматично да се селектира нея в списъка с "
 "песни"
 
-#: ../qltk/prefs.py:178
+#: ../quodlibet/qltk/prefs.py:178
 #, fuzzy
 msgid "_Replay Gain volume adjustment"
 msgstr "Без нагласяне на силата на звука"
 
-#: ../qltk/prefs.py:193
+#: ../quodlibet/qltk/prefs.py:193
 msgid "_Select"
 msgstr "_Избор"
 
-#: ../qltk/prefs.py:199
+#: ../quodlibet/qltk/prefs.py:199
 #, fuzzy
 msgid ""
 "Songs placed in these folders (separated by ':') will be added to your "
 "library"
 msgstr "Песните поставени в тези папки ще бъдат добавяни към фонотеката"
 
-#: ../qltk/prefs.py:210
+#: ../quodlibet/qltk/prefs.py:210
 msgid "Scan _Directories"
 msgstr "Сканиране на пап_ки"
 
-#: ../qltk/prefs.py:219
+#: ../quodlibet/qltk/prefs.py:219
 msgid "Separators for splitting tags"
 msgstr "Разделители за разделяне на етикети"
 
-#: ../qltk/prefs.py:229
+#: ../quodlibet/qltk/prefs.py:229
 msgid "Save ratings and play counts"
 msgstr "Запазване на оценките и броя на слушания"
 
-#: ../qltk/prefs.py:233
+#: ../quodlibet/qltk/prefs.py:233
 msgid "_Email:"
 msgstr "_Е-поща:"
 
-#: ../qltk/prefs.py:235
+#: ../quodlibet/qltk/prefs.py:235
 msgid "Ratings and play counts will be set for this email address"
 msgstr "Оценките и броя на слушанията ще бъдат настроени за тази е-поща"
 
-#: ../qltk/prefs.py:255
+#: ../quodlibet/qltk/prefs.py:255
 msgid "Select Directories"
 msgstr "Избор на папки"
 
-#: ../qltk/prefs.py:267
+#: ../quodlibet/qltk/prefs.py:267
 msgid "Quod Libet Preferences"
 msgstr "Настройки на Quod Libet"
 
-#: ../qltk/properties.py:120 ../qltk/properties.py:121
+#: ../quodlibet/qltk/properties.py:120 ../quodlibet/qltk/properties.py:121
 msgid "Properties"
 msgstr "Информация"
 
-#: ../qltk/queue.py:40 ../qltk/quodlibet.py:460
+#: ../quodlibet/qltk/queue.py:40 ../quodlibet/qltk/quodlibetwindow.py:460
 msgid "_Queue"
 msgstr "_Опашка"
 
-#: ../qltk/queue.py:57
+#: ../quodlibet/qltk/queue.py:57
 msgid "_Random"
 msgstr "Произв_олен"
 
-#: ../qltk/queue.py:81
+#: ../quodlibet/qltk/queue.py:81
 msgid "Remove all songs from the queue"
 msgstr "Премахване на всички песни от опашката"
 
-#: ../qltk/queue.py:111 ../browsers/_base.py:126
-#, python-format
-msgid "%(count)d song (%(time)s)"
-msgid_plural "%(count)d songs (%(time)s)"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../qltk/quodlibet.py:208
+#: ../quodlibet/qltk/quodlibetwindow.py:208
 msgid "_Order:"
 msgstr "Р_ед:"
 
-#: ../qltk/quodlibet.py:217
+#: ../quodlibet/qltk/quodlibetwindow.py:217
 msgid "_Repeat"
 msgstr "П_овтаряне"
 
-#: ../qltk/quodlibet.py:218
+#: ../quodlibet/qltk/quodlibetwindow.py:218
 msgid "Restart the playlist when finished"
 msgstr "Започване наново списъка с песни след приключване"
 
-#: ../qltk/quodlibet.py:328
+#: ../quodlibet/qltk/quodlibetwindow.py:328
 msgid "Unable to add songs"
 msgstr "Неуспех при добавяне на песните"
 
-#: ../qltk/quodlibet.py:329 ../qltk/quodlibet.py:701
+#: ../quodlibet/qltk/quodlibetwindow.py:329
+#: ../quodlibet/qltk/quodlibetwindow.py:701
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> използва неподдържан протокол."
 
-#: ../qltk/quodlibet.py:373
+#: ../quodlibet/qltk/quodlibetwindow.py:373
 msgid "_Music"
 msgstr "_Музика"
 
-#: ../qltk/quodlibet.py:374
+#: ../quodlibet/qltk/quodlibetwindow.py:374
 msgid "_Add a Folder..."
 msgstr "_Добавяне на папка..."
 
-#: ../qltk/quodlibet.py:376
+#: ../quodlibet/qltk/quodlibetwindow.py:376
 msgid "_Add a File..."
 msgstr "_Добавяне на файл..."
 
-#: ../qltk/quodlibet.py:378
+#: ../quodlibet/qltk/quodlibetwindow.py:378
 msgid "_Add a Location..."
 msgstr "_Добавяне на местоположение..."
 
-#: ../qltk/quodlibet.py:380
+#: ../quodlibet/qltk/quodlibetwindow.py:380
 msgid "_Browse Library"
 msgstr "Р_азглеждане на фонотеката"
 
-#: ../qltk/quodlibet.py:386
+#: ../quodlibet/qltk/quodlibetwindow.py:386
 msgid "_Filters"
 msgstr "_Филтри"
 
-#: ../qltk/quodlibet.py:388
+#: ../quodlibet/qltk/quodlibetwindow.py:388
 msgid "Not Played To_day"
 msgstr "Не е слушана _днес"
 
-#: ../qltk/quodlibet.py:390
+#: ../quodlibet/qltk/quodlibetwindow.py:390
 msgid "Not Played in a _Week"
 msgstr "Не е слушана 1 _седмица"
 
-#: ../qltk/quodlibet.py:392
+#: ../quodlibet/qltk/quodlibetwindow.py:392
 msgid "Not Played in a _Month"
 msgstr "Не е слушана 1 _месец"
 
-#: ../qltk/quodlibet.py:394
+#: ../quodlibet/qltk/quodlibetwindow.py:394
 msgid "_Never Played"
 msgstr "Н_икога не е слушано"
 
-#: ../qltk/quodlibet.py:396
+#: ../quodlibet/qltk/quodlibetwindow.py:396
 msgid "_Top 40"
 msgstr "_Топ 40"
 
-#: ../qltk/quodlibet.py:397
+#: ../quodlibet/qltk/quodlibetwindow.py:397
 msgid "B_ottom 40"
 msgstr "Пос_ледните 40"
 
-#: ../qltk/quodlibet.py:399
+#: ../quodlibet/qltk/quodlibetwindow.py:399
 msgid "_Control"
 msgstr "_Управление"
 
-#: ../qltk/quodlibet.py:405
+#: ../quodlibet/qltk/quodlibetwindow.py:405
 msgid "_Jump to Playing Song"
 msgstr "П_рескачане към текущата песен"
 
-#: ../qltk/quodlibet.py:408
+#: ../quodlibet/qltk/quodlibetwindow.py:408
 msgid "_View"
 msgstr "_Преглед"
 
-#: ../qltk/quodlibet.py:409
+#: ../quodlibet/qltk/quodlibetwindow.py:409
 msgid "_Help"
 msgstr "Помощ"
 
-#: ../qltk/quodlibet.py:428
+#: ../quodlibet/qltk/quodlibetwindow.py:428
 msgid "Re_fresh Library"
 msgstr "Опресн_яване на фонотеката"
 
-#: ../qltk/quodlibet.py:432
+#: ../quodlibet/qltk/quodlibetwindow.py:432
 msgid "Re_load Library"
 msgstr "Пре_зареждане на фонотеката"
 
-#: ../qltk/quodlibet.py:437
+#: ../quodlibet/qltk/quodlibetwindow.py:437
 msgid "Filter on _Genre"
 msgstr "Само този _жанр"
 
-#: ../qltk/quodlibet.py:438
+#: ../quodlibet/qltk/quodlibetwindow.py:438
 msgid "Filter on _Artist"
 msgstr "Само този _артист"
 
-#: ../qltk/quodlibet.py:439
+#: ../quodlibet/qltk/quodlibetwindow.py:439
 msgid "Filter on Al_bum"
 msgstr "Само този _албум"
 
-#: ../qltk/quodlibet.py:446
+#: ../quodlibet/qltk/quodlibetwindow.py:446
 msgid "Random _Genre"
 msgstr "Произволен _жанр"
 
-#: ../qltk/quodlibet.py:447
+#: ../quodlibet/qltk/quodlibetwindow.py:447
 msgid "Random _Artist"
 msgstr "Произволен _артист"
 
-#: ../qltk/quodlibet.py:448
+#: ../quodlibet/qltk/quodlibetwindow.py:448
 msgid "Random Al_bum"
 msgstr "Произволен _албум"
 
-#: ../qltk/quodlibet.py:455
+#: ../quodlibet/qltk/quodlibetwindow.py:455
 msgid "Song _List"
 msgstr "Списък с пес_ни"
 
-#: ../qltk/quodlibet.py:491
+#: ../quodlibet/qltk/quodlibetwindow.py:491
 msgid "Check for changes in your library"
 msgstr "Проверка за промени във фонотеката Ви"
 
-#: ../qltk/quodlibet.py:494
+#: ../quodlibet/qltk/quodlibetwindow.py:494
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr ""
 "Презареждане на всички песни от фонотеката ви (това може да отнеме много "
 "време)"
 
-#: ../qltk/quodlibet.py:497
+#: ../quodlibet/qltk/quodlibetwindow.py:497
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
@@ -1539,7 +1936,7 @@ msgstr ""
 "40те песни, които сте слушали най-много (може да са повече от 40, ако някой "
 "имат равен брой пускания)"
 
-#: ../qltk/quodlibet.py:501
+#: ../quodlibet/qltk/quodlibetwindow.py:501
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
@@ -1547,32 +1944,34 @@ msgstr ""
 "40те песни, които сте слушали най-малко (може да са повече от 40, ако някои "
 "имат равен брой пускания)"
 
-#: ../qltk/quodlibet.py:689
+#: ../quodlibet/qltk/quodlibetwindow.py:689
 msgid "Add a Location"
 msgstr "Добавяне на местоположение"
 
-#: ../qltk/quodlibet.py:690
+#: ../quodlibet/qltk/quodlibetwindow.py:690
 msgid "Enter the location of an audio file:"
 msgstr "Въведете местоположението на аудио файл:"
 
-#: ../qltk/quodlibet.py:695 ../qltk/quodlibet.py:700
+#: ../quodlibet/qltk/quodlibetwindow.py:695
+#: ../quodlibet/qltk/quodlibetwindow.py:700
 msgid "Unable to add location"
 msgstr "Неуспех при добавяне на местоположението"
 
-#: ../qltk/quodlibet.py:696
+#: ../quodlibet/qltk/quodlibetwindow.py:696
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> не е валидно местоположение."
 
-#: ../qltk/quodlibet.py:712 ../qltk/quodlibet.py:719
+#: ../quodlibet/qltk/quodlibetwindow.py:712
+#: ../quodlibet/qltk/quodlibetwindow.py:719
 msgid "Add Music"
 msgstr "Добавяне на музика"
 
-#: ../qltk/quodlibet.py:713
+#: ../quodlibet/qltk/quodlibetwindow.py:713
 msgid "Watch this folder for new songs"
 msgstr "Наблюдение на папката за нови песни"
 
-#: ../qltk/quodlibet.py:739
+#: ../quodlibet/qltk/quodlibetwindow.py:739
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1581,43 +1980,43 @@ msgstr ""
 "%s не може да се добави към фонотеката Ви.\n"
 "\n"
 
-#: ../qltk/quodlibet.py:744
+#: ../quodlibet/qltk/quodlibetwindow.py:744
 msgid "Unable to add song"
 msgstr "Неуспех при добавяне на песента"
 
-#: ../qltk/renamefiles.py:23
+#: ../quodlibet/qltk/renamefiles.py:23
 msgid "Replace spaces with _underscores"
 msgstr "Заменяне на интервалите с долни черти"
 
-#: ../qltk/renamefiles.py:30
+#: ../quodlibet/qltk/renamefiles.py:30
 msgid "Strip _Windows-incompatible characters"
 msgstr "Премахване на _несъвместимите с Windows символи"
 
-#: ../qltk/renamefiles.py:39
+#: ../quodlibet/qltk/renamefiles.py:39
 msgid "Strip _diacritical marks"
 msgstr "Премахване на _диакритичните знаци"
 
-#: ../qltk/renamefiles.py:48
+#: ../quodlibet/qltk/renamefiles.py:48
 msgid "Strip non-_ASCII characters"
 msgstr "Премахване на н_e-ASCII символите"
 
-#: ../qltk/renamefiles.py:56
+#: ../quodlibet/qltk/renamefiles.py:56
 msgid "Rename Files"
 msgstr "Преименуване на файлове"
 
-#: ../qltk/renamefiles.py:72
+#: ../quodlibet/qltk/renamefiles.py:72
 msgid "New Name"
 msgstr "Ново име"
 
-#: ../qltk/renamefiles.py:105
+#: ../quodlibet/qltk/renamefiles.py:105
 msgid "_Continue"
 msgstr "_Продължаване"
 
-#: ../qltk/renamefiles.py:107
+#: ../quodlibet/qltk/renamefiles.py:107
 msgid "Unable to rename file"
 msgstr "Неуспех при преименуване на файл."
 
-#: ../qltk/renamefiles.py:108
+#: ../quodlibet/qltk/renamefiles.py:108
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1628,11 +2027,11 @@ msgstr ""
 "файл с такова име или да нямате привилегиите да създадете нов файл или да "
 "премахвате стария."
 
-#: ../qltk/renamefiles.py:138
+#: ../quodlibet/qltk/renamefiles.py:138
 msgid "Path is not absolute"
 msgstr "Местоположението не е абсолютно"
 
-#: ../qltk/renamefiles.py:139
+#: ../quodlibet/qltk/renamefiles.py:139
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1645,87 +2044,71 @@ msgstr ""
 "съдържа /, но не започва от главната папка (root folder). За да се избегнат "
 "зле именувани папки, направете шаблона да започва с / или ~/."
 
-#: ../qltk/songlist.py:398
+#: ../quodlibet/qltk/songlist.py:398
 msgid "pattern"
 msgstr "шаблон"
 
-#: ../qltk/songlist.py:413
+#: ../quodlibet/qltk/songlist.py:413
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Само този %s"
 
-#: ../qltk/songlist.py:533 ../browsers/filesystem.py:87
-#: ../browsers/media.py:451
-msgid "Unable to copy songs"
-msgstr "Неуспех при копиране на песните"
-
-#: ../qltk/songlist.py:534 ../browsers/filesystem.py:88
-msgid "The files selected cannot be copied to other song lists or the queue."
-msgstr ""
-"Избраните файлове не могат да бъдат копирани към други списъци с песни или "
-"към опашката."
-
-#: ../qltk/songlist.py:866
+#: ../quodlibet/qltk/songlist.py:866
 #, fuzzy
 msgid "_Track Headers"
 msgstr "Номера на песните"
 
-#: ../qltk/songlist.py:867
+#: ../quodlibet/qltk/songlist.py:867
 #, fuzzy
 msgid "_Album Headers"
 msgstr "Спис_ък с албуми"
 
-#: ../qltk/songlist.py:868
+#: ../quodlibet/qltk/songlist.py:868
 msgid "_People Headers"
 msgstr ""
 
-#: ../qltk/songlist.py:869
+#: ../quodlibet/qltk/songlist.py:869
 msgid "_Date Headers"
 msgstr ""
 
-#: ../qltk/songlist.py:870
+#: ../quodlibet/qltk/songlist.py:870
 #, fuzzy
 msgid "_File Headers"
 msgstr "_Филтри"
 
-#: ../qltk/songlist.py:871
+#: ../quodlibet/qltk/songlist.py:871
 msgid "_Production Headers"
 msgstr ""
 
-#: ../qltk/songlist.py:884
+#: ../quodlibet/qltk/songlist.py:884
 msgid "_Customize Headers..."
 msgstr ""
 
-#: ../qltk/tagsfrompath.py:71
+#: ../quodlibet/qltk/tagsfrompath.py:71
 msgid "Replace _underscores with spaces"
 msgstr "Замяна на _долните черти с интервали"
 
-#: ../qltk/tagsfrompath.py:78
+#: ../quodlibet/qltk/tagsfrompath.py:78
 msgid "_Title-case tags"
 msgstr "_Етикети със регистър на заглавие"
 
-#: ../qltk/tagsfrompath.py:85
+#: ../quodlibet/qltk/tagsfrompath.py:85
 msgid "Split into multiple _values"
 msgstr "Разделяне на _множество стойности"
 
-#: ../qltk/tagsfrompath.py:95
+#: ../quodlibet/qltk/tagsfrompath.py:95
 msgid "Tags From Path"
 msgstr "Етикети от местоположението"
 
-#: ../qltk/tagsfrompath.py:105
+#: ../quodlibet/qltk/tagsfrompath.py:105
 msgid "Tags replace existing ones"
 msgstr "Етикетите заменят съществуващите"
 
-#: ../qltk/tagsfrompath.py:106
+#: ../quodlibet/qltk/tagsfrompath.py:106
 msgid "Tags are added to existing ones"
 msgstr "Етикетите се добавят към съществуващите"
 
-#: ../qltk/tagsfrompath.py:130 ../qltk/textedit.py:70
-#: ../browsers/albums.py:108 ../browsers/albums.py:112
-msgid "Invalid pattern"
-msgstr "Невалиден шаблон"
-
-#: ../qltk/tagsfrompath.py:131
+#: ../quodlibet/qltk/tagsfrompath.py:131
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1738,11 +2121,11 @@ msgstr ""
 "е невалиден. Възможно е да съдържа същия етикет два пъти или има "
 "небалансирани скоби (&lt; / &gt;)."
 
-#: ../qltk/tagsfrompath.py:152
+#: ../quodlibet/qltk/tagsfrompath.py:152
 msgid "Invalid tags"
 msgstr "Невалидни етикети"
 
-#: ../qltk/tagsfrompath.py:153
+#: ../quodlibet/qltk/tagsfrompath.py:153
 #, python-format
 msgid ""
 "Invalid tags <b>%s</b>\n"
@@ -1753,7 +2136,7 @@ msgstr ""
 "\n"
 "Избраните в момента файлове не поддържат редактиране на тези етикети."
 
-#: ../qltk/textedit.py:71
+#: ../quodlibet/qltk/textedit.py:71
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -1766,374 +2149,141 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../qltk/textedit.py:84
+#: ../quodlibet/qltk/textedit.py:84
 msgid "Edit Display"
 msgstr "Редактиране на показваното"
 
-#: ../qltk/tracknumbers.py:22
+#: ../quodlibet/qltk/tracknumbers.py:22
 msgid "Track Numbers"
 msgstr "Номера на песните"
 
-#: ../qltk/tracknumbers.py:28
+#: ../quodlibet/qltk/tracknumbers.py:28
 msgid "Start fro_m:"
 msgstr "Запо_чване от:"
 
-#: ../qltk/tracknumbers.py:39
+#: ../quodlibet/qltk/tracknumbers.py:39
 msgid "_Total tracks:"
 msgstr "_Общо песни:"
 
-#: ../qltk/tracknumbers.py:64
+#: ../quodlibet/qltk/tracknumbers.py:64
 msgid "Track"
 msgstr "Песен"
 
-#: ../qltk/views.py:235
+#: ../quodlibet/qltk/views.py:235
 #, python-format
 msgid "and %d more..."
 msgstr "и още %d..."
 
-#: ../qltk/wlw.py:162
+#: ../quodlibet/qltk/wlw.py:162
 msgid "Saving the songs you changed."
 msgstr "Запазване на песните, които сте променили."
 
-#: ../qltk/wlw.py:163
+#: ../quodlibet/qltk/wlw.py:163
 #, python-format
 msgid "%d/%d songs saved"
 msgstr "%d/%d песни запазени"
 
-#: ../qltk/wlw.py:190
+#: ../quodlibet/qltk/wlw.py:190
 #, python-format
 msgid "%d of %d"
 msgstr ""
 
-#: ../qltk/x.py:125
+#: ../quodlibet/qltk/x.py:125
 msgid "Clear search"
 msgstr "Изчистване на търсенето"
 
-#. The browser's name, without an accelerator.
-#. The name, with an accelerator.
-#: ../browsers/_base.py:27 ../browsers/_base.py:29
-msgid "Library Browser"
-msgstr "Разглеждане на фонотеката"
+#: ../quodlibet/stock.py:50
+msgid "Edit _Tags"
+msgstr "Редактиране на _етикети"
 
-#: ../browsers/albums.py:34
-msgid "Songs not in an album"
-msgstr "Песните не са в албум"
+#: ../quodlibet/stock.py:51
+msgid "_Plugins"
+msgstr "П_риставки"
 
-#: ../browsers/albums.py:62
-msgid "Album List Preferences"
-msgstr "Настройки на списъка с албуми"
+#: ../quodlibet/stock.py:52
+msgid "_Preview"
+msgstr "Пре_глед"
 
-#: ../browsers/albums.py:68
-msgid "Show album _covers"
-msgstr "Показване на _обложките"
+#: ../quodlibet/stock.py:53
+msgid "Add to _Queue"
+msgstr "Добавяне към _опашката"
 
-#: ../browsers/albums.py:84
-msgid "Album Display"
-msgstr "Показване на албум"
+#: ../quodlibet/stock.py:54
+msgid "_Add to Playlist"
+msgstr "_Добавяне към списък"
 
-#: ../browsers/albums.py:122
-#, fuzzy
-msgid "Album List"
-msgstr "Спис_ък с албуми"
-
-#: ../browsers/albums.py:123
-msgid "_Album List"
-msgstr "Спис_ък с албуми"
-
-#: ../browsers/albums.py:367
-msgid "Sort by title"
-msgstr "Сортиране по заглавие"
-
-#: ../browsers/albums.py:367
-msgid "Sort by artist"
-msgstr "Сортиране по артист"
-
-#: ../browsers/albums.py:367
-msgid "Sort by date"
-msgstr "Сортиране по дата"
-
-#: ../browsers/albums.py:492
-msgid "All Albums"
-msgstr "Всички албуми"
-
-#: ../browsers/albums.py:493
-#, python-format
-msgid "%d album"
-msgid_plural "%d albums"
-msgstr[0] "%d албум"
-msgstr[1] "%d албума"
-
-#: ../browsers/paned.py:35
-msgid "Paned Browser Preferences"
-msgstr "Настройки на панели"
-
-#: ../browsers/paned.py:41
-msgid "_Custom"
-msgstr "_Лично"
-
-#: ../browsers/paned.py:143
-#, fuzzy
-msgid "Paned Browser"
-msgstr "_Изглед на панели"
-
-#: ../browsers/paned.py:144
-msgid "_Paned Browser"
-msgstr "_Изглед на панели"
-
-#: ../browsers/paned.py:274
-msgid "All"
-msgstr "Всички"
-
-#: ../browsers/paned.py:346 ../browsers/search.py:151
-#: ../browsers/iradio.py:191
-msgid "_Search:"
-msgstr "_Търсене:"
-
-#: ../browsers/paned.py:360
-msgid "Select _All"
-msgstr "_Избор на всички"
-
-#: ../browsers/playlists.py:64
-#, python-format
-msgid ""
-"Importing playlist.\n"
-"\n"
-"%d/%d songs added."
+#: ../quodlibet/stock.py:55
+msgid "_Copy to Device"
 msgstr ""
-"Внасяне на списък с песни.\n"
-"\n"
-"Добавени са %d/%d песни."
 
-#: ../browsers/playlists.py:93 ../browsers/playlists.py:412
-msgid "New Playlist"
-msgstr "Нов списък с песни"
-
-#: ../browsers/playlists.py:132
-#, python-format
-msgid "A playlist named %s already exists."
-msgstr "Списък с песни с името %s, вече съществува."
-
-#: ../browsers/playlists.py:187
-msgid "_New Playlist"
-msgstr "_Нов списък с песни"
-
-#: ../browsers/playlists.py:214
+#: ../quodlibet/stock.py:56
 #, fuzzy
-msgid "Playlists"
-msgstr "Сп_исъци с песни"
+msgid "_Eject"
+msgstr "_Избор"
 
-#: ../browsers/playlists.py:215
-msgid "_Playlists"
-msgstr "Сп_исъци с песни"
+#: ../quodlibet/stock.py:57
+msgid "_Rename"
+msgstr "_Преименуване"
 
-#: ../browsers/playlists.py:274
-msgid "_Remove from Playlist"
-msgstr "Премахване от фонотеката"
+#: ../quodlibet/stock.py:75
+msgid "_Information"
+msgstr "_Информация"
 
-#: ../browsers/playlists.py:311
-msgid "_Import"
-msgstr "_Внасяне"
-
-#: ../browsers/playlists.py:429 ../browsers/playlists.py:507
-msgid "Unable to import playlist"
-msgstr "Неуспех при внасяне на списъка"
-
-#: ../browsers/playlists.py:430 ../browsers/playlists.py:508
-msgid "Quod Libet can only import playlists in the M3U and PLS formats."
-msgstr "Quod Libet може да внася само списъци с песни с формат M3U или PLS."
-
-#: ../browsers/playlists.py:489
-msgid "Unable to rename playlist"
-msgstr "Неуспех при преименуване на списъка."
-
-#: ../browsers/playlists.py:496
-msgid "Import Playlist"
-msgstr "Внасяне на списък с песни"
-
-#: ../browsers/search.py:33
-#, fuzzy
-msgid "Disable Browser"
-msgstr "_Изключване на разглеждането"
-
-#: ../browsers/search.py:34
-msgid "_Disable Browser"
-msgstr "_Изключване на разглеждането"
-
-#: ../browsers/search.py:104
-msgid "_Limit:"
-msgstr "_Ограничаване:"
-
-#: ../browsers/search.py:115
-msgid "_Weight"
-msgstr "_Тежест"
-
-#: ../browsers/search.py:137
-msgid "_Search Library"
-msgstr "Т_ърсене във фонотеката"
-
-#: ../browsers/search.py:164
-msgid "Search"
-msgstr "Търсене"
-
-#: ../browsers/search.py:166
-msgid "Search your library"
-msgstr "Търсене из фонотеката"
-
-#: ../browsers/search.py:194
-msgid "_Limit Results"
-msgstr "_Ограничаване на резултатите"
-
-#: ../browsers/filesystem.py:34
-#, fuzzy
-msgid "File System"
-msgstr "Ф_айлова система"
-
-#: ../browsers/filesystem.py:35
-msgid "_File System"
-msgstr "Ф_айлова система"
-
-#: ../browsers/filesystem.py:128
-msgid "_Add to Library"
-msgstr "Пре_зареждане на фонотеката"
-
-#: ../browsers/iradio.py:81
-msgid "Unsupported file type"
-msgstr "Неподдържан вид файл"
-
-#: ../browsers/iradio.py:82
-#, python-format
-msgid ""
-"Station lists can only contain locations of stations, not other station "
-"lists or playlists. The following locations cannot be loaded:\n"
-"%s"
+#. Translators: Only translate this if it conflicts with "Delete",
+#. as is the case in e.g. Finnish. It should be disambiguated as
+#. "Remove from Library" (as opposed to, from playlist, from disk, etc.)
+#. Don't literally translate "ql-remove". It needs an access key, so
+#. a sample translation would be "_Remove from Library".
+#: ../quodlibet/stock.py:83 ../quodlibet/stock.py:87
+msgid "ql-remove"
 msgstr ""
-"Списъците със станции могат да съдържат само местоположения на станции, не "
-"други списъци на станции или списъци на песни. Следните местоположения не "
-"могат да бъдат заредени:\n"
-"%s"
 
-#: ../browsers/iradio.py:107
-msgid "Choose New Stations"
-msgstr "Избор на нови станции"
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../quodlibet/stock.py:93
+msgid "gtk-media-next"
+msgstr "Следваща"
 
-#: ../browsers/iradio.py:117
-msgid "Add"
-msgstr "Добавяне"
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../quodlibet/stock.py:97
+msgid "gtk-media-previous"
+msgstr "Предишна"
 
-#: ../browsers/iradio.py:121
-msgid "Title"
-msgstr "Заглавие"
-
-#: ../browsers/iradio.py:147
-msgid "New Station"
-msgstr "Нова станция"
-
-#: ../browsers/iradio.py:148
-msgid "Enter the location of an Internet radio station:"
-msgstr "Въведете местоположението на радиостанция в Интернет:"
-
-#: ../browsers/iradio.py:150
-msgid "_Stations..."
-msgstr "_Станции..."
-
-#: ../browsers/iradio.py:167
-#, fuzzy
-msgid "Internet Radio"
-msgstr "_Радио по Интернет"
-
-#: ../browsers/iradio.py:168
-msgid "_Internet Radio"
-msgstr "_Радио по Интернет"
-
-#: ../browsers/iradio.py:175
-msgid "_New Station"
-msgstr "_Нова станция"
-
-#: ../browsers/iradio.py:255 ../browsers/iradio.py:264
-#: ../browsers/iradio.py:280
-msgid "Unable to add station"
-msgstr "Неуспех при добавяне на станцията"
-
-#: ../browsers/iradio.py:272
-msgid "No stations found"
-msgstr "Няма открити станции."
-
-#: ../browsers/iradio.py:273
-#, python-format
-msgid "No Internet radio stations were found at %s."
-msgstr "Няма открити Интернет радиостанции на %s."
-
-#: ../browsers/iradio.py:281
-msgid "All stations listed are already in your library."
-msgstr "Всички изписани станции са вече във фонотеката Ви."
-
-#: ../browsers/iradio.py:300
-#, python-format
-msgid "%(count)d station"
-msgid_plural "%(count)d stations"
-msgstr[0] "%(count)d станция"
-msgstr[1] "%(count)d станции"
-
-#: ../browsers/audiofeeds.py:159
-msgid "New Feed"
-msgstr "Нова емисия"
-
-#: ../browsers/audiofeeds.py:160
-msgid "Enter the location of an audio feed:"
-msgstr "Въведете местоположението на аудио емисия:"
-
-#: ../browsers/audiofeeds.py:177
-#, fuzzy
-msgid "Audio Feeds"
-msgstr "_Аудио емисии"
-
-#: ../browsers/audiofeeds.py:178
-msgid "_Audio Feeds"
-msgstr "_Аудио емисии"
-
-#: ../browsers/audiofeeds.py:234 ../browsers/audiofeeds.py:240
-msgid "_Download..."
-msgstr "Из_тегляне..."
-
-#: ../browsers/audiofeeds.py:249
-msgid "Download Files"
-msgstr "Изтегляне на файлове"
-
-#: ../browsers/audiofeeds.py:270
-msgid "Download File"
-msgstr "Изтегляне на файл"
-
-#: ../browsers/audiofeeds.py:351 ../browsers/audiofeeds.py:406
-msgid "Unable to add feed"
-msgstr "Неуспех при добавяне на емисията"
-
-#: ../browsers/audiofeeds.py:352 ../browsers/audiofeeds.py:407
-#, python-format
-msgid ""
-"<b>%s</b> could not be added. The server may be down, or the location may "
-"not be an audio feed."
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../quodlibet/stock.py:101
+msgid "gtk-media-play"
 msgstr ""
-"<b>%s</b> не може да бъде добавена. Сървърът може да не е на линия или "
-"местоположението да не е аудио емисия."
 
-#: ../util/__init__.py:118
+#. Translators: Only translate this if GTK does so incorrectly or not
+#. at all. Don't literally translate media/next/previous/play/pause.
+#. This string needs an access key.
+#: ../quodlibet/stock.py:105
+msgid "gtk-media-pause"
+msgstr ""
+
+#: ../quodlibet/util/__init__.py:138
 msgid "Display brief usage information"
 msgstr "Показване на кратка информация за употреба"
 
-#: ../util/__init__.py:120
+#: ../quodlibet/util/__init__.py:140
 msgid "Display version and copyright"
 msgstr "Показване на версията на запазените права"
 
-#: ../util/__init__.py:156 ../util/__init__.py:157
+#: ../quodlibet/util/__init__.py:176 ../quodlibet/util/__init__.py:177
 #, python-format
 msgid "Usage: %s %s"
 msgstr "Употреба: %s %s"
 
-#: ../util/__init__.py:157
+#: ../quodlibet/util/__init__.py:177
 msgid "[options]"
 msgstr "[опции]"
 
-#: ../util/__init__.py:177
+#: ../quodlibet/util/__init__.py:197
 #, python-format
 msgid ""
 "%s %s - <quodlibet@lists.sacredchao.net>\n"
@@ -2150,22 +2300,22 @@ msgstr ""
 "гаранция; нито дори за ПРОДАВАЕМОСТ или ПРИГОДЕНОСТ ЗА НЯКАКВА ОПРЕДЕЛЕНА "
 "ЦЕЛ.\n"
 
-#: ../util/__init__.py:194
+#: ../quodlibet/util/__init__.py:214
 #, python-format
 msgid "E: Option '%s' not recognized."
 msgstr "E: Опцията \"%s\" не е разпозната."
 
-#: ../util/__init__.py:197
+#: ../quodlibet/util/__init__.py:217
 #, python-format
 msgid "E: Option '%s' requires an argument."
 msgstr "E: Опцията \"%s\" изисква аргумент."
 
-#: ../util/__init__.py:200
+#: ../quodlibet/util/__init__.py:220
 #, python-format
 msgid "E: '%s' is not a unique prefix."
 msgstr "E: \"%s\" не е уникална представка."
 
-#: ../util/__init__.py:337 ../util/__init__.py:344
+#: ../quodlibet/util/__init__.py:357 ../quodlibet/util/__init__.py:364
 msgid "[Invalid Encoding]"
 msgstr "[невалидна кодировка]"
 
@@ -2173,72 +2323,72 @@ msgstr "[невалидна кодировка]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../util/__init__.py:489
+#: ../quodlibet/util/__init__.py:509
 msgid "check|titlecase?"
 msgstr ""
 
 #. http://musicbrainz.org/doc/MusicBrainzTag
-#: ../util/__init__.py:547
+#: ../quodlibet/util/__init__.py:567
 msgid "MusicBrainz track ID"
 msgstr "ID в MusicBrainz на песента"
 
-#: ../util/__init__.py:548
+#: ../quodlibet/util/__init__.py:568
 msgid "MusicBrainz album ID"
 msgstr "ID в MusicBrainz на албума"
 
-#: ../util/__init__.py:549
+#: ../quodlibet/util/__init__.py:569
 msgid "MusicBrainz artist ID"
 msgstr "ID в MusicBrainz на артиста"
 
-#: ../util/__init__.py:550
+#: ../quodlibet/util/__init__.py:570
 msgid "MusicBrainz album artist ID"
 msgstr "ID в MusicBrainz за артиста на албума"
 
-#: ../util/__init__.py:551
+#: ../quodlibet/util/__init__.py:571
 msgid "MusicBrainz TRM ID"
 msgstr ""
 
-#: ../util/__init__.py:552
+#: ../quodlibet/util/__init__.py:572
 msgid "MusicIP PUID"
 msgstr ""
 
-#: ../util/__init__.py:553
+#: ../quodlibet/util/__init__.py:573
 #, fuzzy
 msgid "MusicBrainz album status"
 msgstr "ID в MusicBrainz за артиста на албума"
 
-#: ../util/__init__.py:554
+#: ../quodlibet/util/__init__.py:574
 #, fuzzy
 msgid "MusicBrainz album type"
 msgstr "ID в MusicBrainz на албума"
 
 #. Translators: A volume adjustment, not "to get/acquire".
-#: ../util/__init__.py:557
+#: ../quodlibet/util/__init__.py:577
 #, fuzzy
 msgid "track gain"
 msgstr "номер"
 
-#: ../util/__init__.py:558
+#: ../quodlibet/util/__init__.py:578
 #, fuzzy
 msgid "track peak"
 msgstr "номер"
 
 #. Translators: A volume adjustment, not "to get/acquire".
-#: ../util/__init__.py:560
+#: ../quodlibet/util/__init__.py:580
 #, fuzzy
 msgid "album gain"
 msgstr "албум"
 
-#: ../util/__init__.py:561
+#: ../quodlibet/util/__init__.py:581
 #, fuzzy
 msgid "album peak"
 msgstr "албум"
 
-#: ../util/__init__.py:568
+#: ../quodlibet/util/__init__.py:588
 msgid "release country"
 msgstr ""
 
-#: ../util/massagers.py:24
+#: ../quodlibet/util/massagers.py:24
 msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
@@ -2246,199 +2396,68 @@ msgstr ""
 "Датата трябва да бъде въведета във един от следните формати: ГГГГ, ГГГГ-ММ-"
 "ДД или ГГГГ-ММ-ДД ЧЧ:ММ:СС."
 
-#: ../util/massagers.py:34
+#: ../quodlibet/util/massagers.py:34
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
 msgstr ""
 
-#: ../util/massagers.py:48
+#: ../quodlibet/util/massagers.py:48
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
 msgstr ""
 
-#: ../util/massagers.py:61
+#: ../quodlibet/util/massagers.py:61
 msgid "MusicBrainz IDs must be in UUID format."
 msgstr "MusicBrainz идентификаторите трябва да са във формата UUID."
 
 #. Translators: Leave "official", "promotional", and "bootleg"
 #. untranslated. They are the three possible literal values.
-#: ../util/massagers.py:76
+#: ../quodlibet/util/massagers.py:76
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
 msgstr ""
 
-#: ../exfalso.desktop.in.h:1
-msgid "Audio tag editor"
-msgstr "Редактор на музикални етикети"
+#: ../quodlibet/widgets.py:43
+msgid "Unable to start web browser"
+msgstr "Неуспех при стартирането на интернет браузър"
 
-#: ../exfalso.desktop.in.h:2
-msgid "Edit tags in your audio files"
-msgstr "Редактиране на етикетите в аудио файловете Ви"
-
-#: ../quodlibet.desktop.in.h:1
-msgid "Listen to, browse, or edit your audio collection"
-msgstr "За слушане, разглеждане или редактиране на Вашата аудио колекция"
-
-#: ../quodlibet.desktop.in.h:2
-msgid "Music Player"
-msgstr "Слушане на музика"
-
-#: ../browsers/media.py:32
-#, fuzzy
-msgid "Device Properties"
-msgstr "Информация"
-
-#: ../browsers/media.py:45
-msgid "Device:"
+#: ../quodlibet/widgets.py:44
+msgid ""
+"A web browser could not be found. Please set your $BROWSER variable, or make "
+"sure /usr/bin/sensible-browser exists."
 msgstr ""
+"Не може да бъде открит интернет браузърът. Настройте променливата $BROWSER "
+"или се уверете, че /usr/bin/sensible-browser съществува."
 
-#: ../browsers/media.py:47
-msgid "Not mounted"
-msgstr ""
-
-#: ../browsers/media.py:48
-#, fuzzy
-msgid "Mount Point:"
-msgstr "точка на монтиране"
-
-#: ../browsers/media.py:124
-#, fuzzy
-msgid "Media Devices"
-msgstr "Аудио устройство: %s"
-
-#: ../browsers/media.py:125
-#, fuzzy
-msgid "_Media Devices"
-msgstr "Аудио устройство: %s"
-
-#: ../browsers/media.py:424
-#, python-format
-msgid "<b>%s</b> used, <b>%s</b> available"
-msgstr ""
-
-#: ../browsers/media.py:441
-#, fuzzy, python-format
-msgid "<b>%s</b> is not connected."
-msgstr "<b>%s</b> не е валидно местоположение."
-
-#: ../browsers/media.py:457
-#, fuzzy, python-format
-msgid "Copying <b>%s</b>"
-msgstr "Пропадна изтриването на <b>%s</b>."
-
-#: ../browsers/media.py:475 ../browsers/media.py:490
-#, fuzzy
-msgid "Unable to copy song"
-msgstr "Неуспех при копиране на песните"
-
-#: ../browsers/media.py:476
-msgid "There is not enough free space for this song."
-msgstr ""
-
-#: ../browsers/media.py:487
-#, python-format
-msgid "<b>%s</b> could not be copied."
-msgstr ""
-
-#: ../browsers/media.py:507
-#, fuzzy
-msgid "Unable to delete songs"
-msgstr "Неуспех при добавяне на песните"
-
-#: ../browsers/media.py:517
-#, fuzzy, python-format
-msgid "Deleting <b>%s</b>"
-msgstr "Пропадна изтриването на <b>%s</b>."
-
-#: ../browsers/media.py:534
-#, fuzzy, python-format
-msgid "<b>%s</b> could not be deleted."
-msgstr "<b>%s</b> не е валидно местоположение."
-
-#: ../browsers/media.py:538
-#, fuzzy
-msgid "Unable to delete song"
-msgstr "Неуспех при редактиране на песента"
-
-#: ../browsers/media.py:555
-#, fuzzy, python-format
-msgid "Ejecting <b>%s</b> failed."
-msgstr "Пропадна изтриването на <b>%s</b>."
-
-#: ../browsers/media.py:558
-#, fuzzy
-msgid "Unable to eject device"
-msgstr "Неуспех при изтриването на файл"
-
-#: ../devices/_base.py:62
-#, fuzzy
-msgid "Unknown Device"
-msgstr "непознат"
-
-#: ../devices/_base.py:93
-#, fuzzy
-msgid "No eject command found."
-msgstr "Няма открити станции."
-
-#: ../devices/ipod.py:91
-msgid "_Volume Gain (dB):"
-msgstr ""
-
-#: ../devices/ipod.py:94 ../devices/storage.py:56
-#, fuzzy
-msgid "Copy _album covers"
-msgstr "Показване на _обложките"
-
-#: ../devices/ipod.py:95
-#, fuzzy
-msgid "Combine tags with _multiple values"
-msgstr "Разделяне на _множество стойности"
-
-#: ../devices/ipod.py:108
-msgid "Model:"
-msgstr ""
-
-#: ../devices/ipod.py:110
-msgid "Capacity:"
-msgstr ""
-
-#: ../devices/ipod.py:112
-msgid "Firmware:"
-msgstr ""
-
-#: ../devices/ipod.py:158
-msgid "W: removing orphaned iPod track"
-msgstr ""
-
-#: ../devices/ipod.py:256
-#, fuzzy
-msgid "Unable to save iPod database"
+#: ../quodlibet/widgets.py:124
+msgid "Unable to save library"
 msgstr "Неуспех при запазване на фонотеката"
 
-#: ../devices/ipod.py:268
-msgid "Uninitialized iPod"
+#: ../quodlibet/widgets.py:127
+msgid "Unable to open audio device"
+msgstr "Неуспех при отваряне на аудио устройството"
+
+#: ../quodlibet/widgets.py:128
+#, python-format
+msgid ""
+"Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but could "
+"not open them. Set your GStreamer pipeline by changing the\n"
+"    <b>pipeline = %(sink)s</b>\n"
+"line in ~/.quodlibet/config."
 msgstr ""
 
-#: ../devices/ipod.py:269
-msgid "Do you want to create an empty database on this iPod?"
+#: ../quodlibet/widgets.py:137
+msgid "Unable to open files"
+msgstr "Неуспех при отваряне на файловете"
+
+#: ../quodlibet/widgets.py:138
+msgid ""
+"Quod Libet could not find the 'filesrc' GStreamer element. Check your "
+"GStreamer installation."
 msgstr ""
+"Quod Libet не може да открие елемента на GStreamer 'filesrc'. Проверете "
+"инсталацията си на GStreamer."
 
-#: ../devices/storage.py:52
-#, fuzzy
-msgid "_Filename Pattern:"
-msgstr "_Файлово име"
-
-#: ../devices/storage.py:60
-msgid "_Remove unused covers and directories"
-msgstr ""
-
-#: ../devices/storage.py:92
-#, fuzzy
-msgid "File exists"
-msgstr "Ф_айлова система"
-
-#: ../devices/storage.py:93
-#, fuzzy, python-format
-msgid "Overwrite <b>%s</b>?"
-msgstr "Пропадна изтриването на <b>%s</b>."
+#~ msgid "an audio tag editor"
+#~ msgstr "редактор на музикални етикети"
 
 #~ msgid "Unable to play song"
 #~ msgstr "Неуспех при изпъление на песента"
