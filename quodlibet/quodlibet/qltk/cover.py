@@ -87,15 +87,11 @@ class CoverImage(gtk.Frame):
                     pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
                         cover.name, *self.__size)
                 except gobject.GError:
-                    self.hide()
+                    self.child.child.set_from_pixbuf(self.__no_album)
                 else:
                     self.child.child.set_from_pixbuf(pixbuf)
                     self.__albumfn = cover.name
-                    self.show()
-
-    def show(self):
-        if self.__albumfn:
-            super(CoverImage, self).show()
+            self.show()
 
     def __nonzero__(self):
         return bool(self.__albumfn)
