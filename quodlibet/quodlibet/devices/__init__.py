@@ -9,8 +9,11 @@
 
 import os
 import traceback
-import dbus
-import dbus.glib
+try:
+    import dbus
+    import dbus.glib
+except ImportError:
+    dbus = None
 
 from os.path import dirname, basename, join
 from glob import glob
@@ -87,6 +90,8 @@ def discover():
     return _hal.FindDeviceByCapability('portable_audio_player')
 
 def init():
+    if not dbus:
+        return
     global _dbus, _hal
     try:
         _dbus = dbus.SystemBus()
