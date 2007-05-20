@@ -11,6 +11,8 @@
 #  * Coerce a URI to Unicode (via an encoding for the path and
 #    Punycode for the domain) and back.
 
+import re
+
 from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
 from urlparse import urlparse, urlunparse
 
@@ -31,6 +33,11 @@ class URI(str):
 
         The URI returned will be equivalent, but not necessarily
         equal, to the value passed in."""
+
+        # URIs like file:////home/foo/... are valid, since
+        # //home/foo is a valid path. But urlparse parses this
+        # into a netloc of home and a path of /foo. Lame.
+        value = re.sub("^([A-Za-z]+):///+", "\\1:///", value)
 
         values = list(urlparse(value))
         if not escaped:

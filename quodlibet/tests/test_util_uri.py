@@ -7,6 +7,7 @@ class TURI(TestCase):
         s.http_uri = URI("http://www.example.com/~piman;woo?bar=quux#whee")
         s.rfile_uri = URI("file://example.com/home/piman/crazy")
         s.file_uri = URI.frompath("/home/piman/cr!azy")
+        s.extra_uri = URI("file:///////////home/piman")
 
     def test_type(s):
         s.failUnless(isinstance(s.http_uri, URI))
@@ -50,5 +51,11 @@ class TURI(TestCase):
         s.failUnless(s.file_uri.is_filename)
         s.failIf(s.rfile_uri.is_filename)
         s.failIf(s.http_uri.is_filename)
+
+    # test urlparse workaround
+    def test_urlparse_workaround(s):
+        s.failUnless(s.extra_uri.is_filename)
+        s.failIf(s.extra_uri.netloc)
+        s.failUnlessEqual(s.extra_uri.filename, "/home/piman")
 
 add(TURI)
