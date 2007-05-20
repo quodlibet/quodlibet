@@ -30,6 +30,7 @@ play = False
 def main():
     # Load configuration data and scan the library for new/changed songs.
     config.init(const.CONFIG)
+    backend = load_backend()
     library = load_library()
     player = load_player(library)
 
@@ -253,6 +254,11 @@ def process_arguments():
             global play
             play = True
 
+def load_backend():
+    from quodlibet import player
+    backend_name = config.get("player", "backend")
+    return player.init(backend_name)
+
 def load_library():
     from quodlibet import library
     lib = library.init(const.LIBRARY)
@@ -263,16 +269,15 @@ def load_player(library):
     # Try to initialize the playlist and audio output.
     print to(_("Opening audio device."))
     from quodlibet import player
-    sink = config.get("settings", "pipeline")
-    try: playlist = player.init(sink, library.librarian)
-    except player.NoSinkError:
+    try: playlist = player.init_device(library.librarian)
+    except player.backend.NoSinkError:
         from quodlibet import widgets
         import gobject
         gobject.idle_add(widgets.no_sink_quit, sink)
         gtk.main()
         config.write(const.CONFIG)
         raise SystemExit(True)
-    except player.NoSourceError:
+    except player.backend.NoSourceError:
         from quodlibet import widgets
         import gobject
         gobject.idle_add(widgets.no_source_quit)

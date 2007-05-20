@@ -40,6 +40,8 @@ def init(*rc_files):
         "player":
         { "time_remaining": "false",
           "replaygain": "on",
+          "backend": "gstbe",
+          "gst_pipeline": "",
           },
 
         # State about the player, to restore on startup
@@ -77,8 +79,6 @@ def init(*rc_files):
 
           # probably belong in memory
           "repeat": "false",
-
-          "pipeline": "", # GStreamer audio pipeline
 
           # initial column headers
           "headers": "~#track ~title~version ~album~part artist ~#length",

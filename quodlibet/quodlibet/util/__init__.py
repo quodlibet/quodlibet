@@ -36,9 +36,10 @@ def python_init():
         from sre import Scanner
         re.Scanner = Scanner
 
+    old_import = __import__
     # Set up import wrappers for Quod Libet 1.x compatibility.
-    def import_ql(module, globals, locals, fromlist, old_import=__import__):
-        try: return old_import(module, globals, locals, fromlist)
+    def import_ql(module, *args, **kwargs):
+        try: return old_import(module, *args, **kwargs)
         except ImportError:
             # If it looks like a plugin import error, forgive it, and
             # try prepending quodlibet to the module name.
@@ -47,7 +48,7 @@ def python_init():
                 if "plugins" in filename:
                     warnings.warn(
                         "enabling legacy plugin API", DeprecationWarning)
-                    old_import("quodlibet." + module, globals, locals, fromlist)
+                    old_import("quodlibet." + module, *args, **kwargs)
                     return sys.modules["quodlibet." + module]
             else:
                 raise

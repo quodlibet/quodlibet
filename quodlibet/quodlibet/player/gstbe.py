@@ -10,8 +10,8 @@ import gobject
 import gst
 import gtk
 
-import config
-import const
+from quodlibet import config
+from quodlibet import const
 
 class NoSinkError(ValueError): pass
 class NoSourceError(ValueError): pass
@@ -283,15 +283,11 @@ class PlaylistPlayer(gtk.Object):
         self.__source.go_to(song)
         self.__end(True)
 
-global playlist
-playlist = None
-
-def init(pipeline, librarian):
+def init(librarian):
+    pipeline = config.get("player", "gst_pipeline") or "gconfaudiosink"
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(
         gst.URI_SRC,
         "file:///Sebastian/Droge/please/choke/on/a/bucket/of/cocks", ""):
-        global playlist
-        playlist = PlaylistPlayer(pipeline or "gconfaudiosink", librarian)
-        return playlist
+        return PlaylistPlayer(pipeline, librarian)
     else: raise NoSourceError
