@@ -135,7 +135,7 @@ class SongsMenu(gtk.Menu):
     def __enqueue(self, item, songs):
         songs = filter(lambda s: s.can_add, songs)
         if songs:
-            from widgets import main
+            from quodlibet.widgets import main
             main.playlist.enqueue(songs)
 
     def __delete(self, item, songs, library):
