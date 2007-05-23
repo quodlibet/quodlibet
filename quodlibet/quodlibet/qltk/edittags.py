@@ -794,7 +794,7 @@ class EditTags(gtk.VBox):
             if not editable.get_completion():
                 tags = self.__songinfo.can_change()
                 if tags == True:
-                    from formats import USEFUL_TAGS as tags
+                    from quodlibet.formats import USEFUL_TAGS as tags
                 completion = qltk.EntryCompletion(tags)
                 editable.set_completion(completion)
         except AttributeError:
