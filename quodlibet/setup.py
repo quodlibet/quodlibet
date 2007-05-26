@@ -66,8 +66,11 @@ class test_cmd(Command):
         quodlibet.util.gtk_init()
         import quodlibet.config
         quodlibet.config.init()
+        import quodlibet.player
+        quodlibet.player.init("gstbe")
         import quodlibet.library
-        quodlibet.library.init()
+        library = quodlibet.library.init()
+        quodlibet.player.init_device("gstbe")
         import tests
         if tests.unit(self.to_run):
             raise SystemExit("Test failures are listed above.")

@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from quodlibet.player import GStreamerSink as Sink
+from quodlibet.player.gstbe import GStreamerSink as Sink
 
 class TGStreamerSink(TestCase):
     def test_simple(self):
