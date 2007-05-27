@@ -299,7 +299,7 @@ if __name__ == "__main__":
     # GTK+ eats command line arguments and babies, so we have to delay
     # imports until at least this late.
     quodlibet.gtk_init()
+    import gtk
     import pygst
     pygst.require('0.10')
-
     main()
