@@ -17,58 +17,6 @@ import warnings
 from quodlibet.const import FSCODING as fscoding, ENCODING
 from quodlibet.util.i18n import GlibTranslations
 
-def gettext_install():
-    try: locale.setlocale(locale.LC_ALL, '')
-    except locale.Error: pass
-    try:
-        t = gettext.translation("quodlibet", class_=GlibTranslations)
-    except IOError:
-        t = GlibTranslations()
-
-    t.install(unicode=True)
-
-def python_init():
-    re.escape = re_esc
-    # Python 2.4 has sre.Scanner but not re.Scanner. Python 2.5 has
-    # deprecated sre and moved Scanner to re.
-    try: re.Scanner
-    except AttributeError:
-        from sre import Scanner
-        re.Scanner = Scanner
-
-    old_import = __import__
-    # Set up import wrappers for Quod Libet 1.x compatibility.
-    def import_ql(module, *args, **kwargs):
-        try: return old_import(module, *args, **kwargs)
-        except ImportError:
-            # If it looks like a plugin import error, forgive it, and
-            # try prepending quodlibet to the module name.
-            tb = traceback.extract_stack()
-            for (filename, linenum, func, text) in tb:
-                if "plugins" in filename:
-                    warnings.warn(
-                        "enabling legacy plugin API", DeprecationWarning)
-                    old_import("quodlibet." + module, *args, **kwargs)
-                    return sys.modules["quodlibet." + module]
-            else:
-                raise
-    import __builtin__
-    __builtin__.__dict__["__import__"] = import_ql
-
-def re_esc(str, BAD="/.^$*+?{,\\[]|()<>#=!:"):
-    needs_escape = lambda c: (c in BAD and "\\" + c) or c
-    return "".join(map(needs_escape, str))
-
-def gtk_init():
-    import pygtk
-    pygtk.require('2.0')
-    import gtk
-    # http://bugzilla.gnome.org/show_bug.cgi?id=318953
-    if gtk.gtk_version < (2, 8, 8):
-        class TVProxy(gtk.TreeView):
-            def set_search_equal_func(self, func, *args): pass
-        gtk.TreeView = TVProxy
-
 def strip_win32_incompat(string, BAD = '\:*?;"<>|'):
     """Strip Win32-incompatible characters.
 
@@ -92,23 +40,6 @@ def listdir(path, hidden=False):
     return [join([path, basename])
             for basename in sorted(os.listdir(path))
             if filt(basename)]
-
-def ctypes_init():
-    try: import ctypes
-    except ImportError: pass
-    else:
-        ctypes.c_int8 = ctypes.c_byte
-        ctypes.c_uint8 = ctypes.c_ubyte
-        from ctypes import c_short, c_int, c_long, c_longlong
-        for kind in [c_short, c_int, c_long, c_longlong]:
-            if ctypes.sizeof(kind) == 2: ctypes.c_int16 = kind
-            elif ctypes.sizeof(kind) == 4: ctypes.c_int32 = kind
-            elif ctypes.sizeof(kind) == 8: ctypes.c_int64 = kind
-        from ctypes import c_ushort, c_uint, c_ulong, c_ulonglong
-        for kind in [c_ushort, c_uint, c_ulong, c_ulonglong]:
-            if ctypes.sizeof(kind) == 2: ctypes.c_uint16 = kind
-            elif ctypes.sizeof(kind) == 4: ctypes.c_uint32 = kind
-            elif ctypes.sizeof(kind) == 8: ctypes.c_uint64 = kind
 
 class InstanceTracker(object):
     """A mixin for GObjects to return a list of all alive objects

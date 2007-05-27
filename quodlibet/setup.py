@@ -59,11 +59,9 @@ class test_cmd(Command):
             self.to_run = self.to_run.split(",")
 
     def run(self):
-        import quodlibet.util
-        quodlibet.util.python_init()
-        quodlibet.util.gettext_install()
-        quodlibet.util.ctypes_init()
-        quodlibet.util.gtk_init()
+        import quodlibet
+        quodlibet.init()
+        quodlibet.gtk_init()
         import quodlibet.config
         quodlibet.config.init()
         import quodlibet.player

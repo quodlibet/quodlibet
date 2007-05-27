@@ -1,6 +1,8 @@
 from tests import TestCase, add
 
 import os
+import re
+
 from quodlibet import util
 from quodlibet.util import format_time_long as f_t_l
 
@@ -98,17 +100,17 @@ add(Tunescape)
 
 class Tre_esc(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(util.re_esc(""), "")
+        self.failUnlessEqual(re.escape(""), "")
 
     def test_safe(self):
-        self.failUnlessEqual(util.re_esc("fo o"), "fo o")
+        self.failUnlessEqual(re.escape("fo o"), "fo o")
 
     def test_unsafe(self):
-        self.failUnlessEqual(util.re_esc("!bar"), r"\!bar")
+        self.failUnlessEqual(re.escape("!bar"), r"\!bar")
 
     def test_many_unsafe(self):
         self.failUnlessEqual(
-            util.re_esc("*quux#argh?woo"), r"\*quux\#argh\?woo")
+            re.escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
 add(Tre_esc)
 
 class Tdecode(TestCase):

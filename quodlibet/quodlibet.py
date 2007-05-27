@@ -16,6 +16,8 @@ import sys
 import tempfile
 import time
 
+import quodlibet
+
 from quodlibet import config
 from quodlibet import const
 from quodlibet import util
@@ -287,10 +289,7 @@ def load_player(library):
     else: return playlist
 
 if __name__ == "__main__":
-    util.python_init()
-    util.gettext_install()
-    util.ctypes_init()
-
+    quodlibet.init()
     if "--debug" not in sys.argv:
         process_arguments()
         if isrunning():
@@ -299,8 +298,7 @@ if __name__ == "__main__":
 
     # GTK+ eats command line arguments and babies, so we have to delay
     # imports until at least this late.
-    util.gtk_init()
-    import gtk
+    quodlibet.gtk_init()
     import pygst
     pygst.require('0.10')
 

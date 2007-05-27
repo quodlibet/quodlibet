@@ -30,10 +30,10 @@ class fakegst(object):
         return plugin not in ["wavparse", "modplug"]
 
 def main(argv):
+    import quodlibet
+    quodlibet.init()
+
     from quodlibet import util
-    util.python_init()
-    util.gettext_install()
-    util.ctypes_init()
 
     from quodlibet import const
     opts = util.OptionParser(
@@ -43,7 +43,7 @@ def main(argv):
     from quodlibet import config
     config.init(const.CONFIG)
 
-    util.gtk_init()
+    quodlibet.gtk_init()
     import gtk
     icon = os.path.join(const.IMAGEDIR, "exfalso.")
     try: gtk.window_set_default_icon_from_file(icon + "svg")
