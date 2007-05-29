@@ -157,7 +157,8 @@ class LyricsPane(gtk.VBox):
         except EnvironmentError, err: pass
 
         try: f = file(lyricname, "w")
-        except EnvironmentError, err: print err
+        except EnvironmentError, err:
+            print_w(err.strerror.decode(const.ENCODING, "replace"))
         else:
             start, end = buffer.get_bounds()
             f.write(buffer.get_text(start, end))

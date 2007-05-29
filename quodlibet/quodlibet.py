@@ -24,8 +24,6 @@ from quodlibet import util
 
 from threading import Thread
 
-from quodlibet.util import to
-
 global play
 play = False
 
@@ -102,10 +100,10 @@ def print_playing(fstring="<artist~album~tracknumber~title>"):
                 if key != "~filename": val = util.decode(val)
                 if key in data: data[key] += "\n" + val
                 else: data[key] = val
-        print to(Pattern(fstring).format(AudioFile(data)))
+        print_(Pattern(fstring).format(AudioFile(data)))
         raise SystemExit
     except (OSError, IOError):
-        print to(_("No song is currently playing."))
+        print_(_("No song is currently playing."))
         raise SystemExit(True)
 
 def isrunning():
@@ -113,7 +111,7 @@ def isrunning():
 
 def control(c):
     if not isrunning():
-        raise SystemExit(to(_("Quod Libet is not running.")))
+        raise SystemExit(_("Quod Libet is not running."))
     else:
         try:
             # This is a total abuse of Python! Hooray!
@@ -124,7 +122,7 @@ def control(c):
             f.write(c)
             f.close()
         except (OSError, IOError, TypeError):
-            print to(_("Unable to write to %s. Removing it.") % const.CONTROL)
+            print_w(_("Unable to write to %s. Removing it.") % const.CONTROL)
             try: os.unlink(const.CONTROL)
             except OSError: pass
             if c != 'focus':
@@ -235,10 +233,9 @@ def process_arguments():
         if command in controls: control(command)
         elif command in controls_opt:
             if command in validators and not validators[command](arg):
-                sys.stderr.write(
-                    to(_("E: Invalid argument for '%s'.") % command))
-                sys.stderr.write("\n")
-                raise SystemExit(to(_("E: Try %s --help.") % sys.argv[0]))
+                print_e(_("Invalid argument for '%s'.") % command)
+                print_e(_("Try %s --help.") % sys.argv[0])
+                raise SystemExit(True)
             else: control(command + " " + arg)
         elif command == "status": print_fifo("status")
         elif command == "print-playlist": print_fifo("dump-playlist")
@@ -264,12 +261,12 @@ def load_backend():
 def load_library():
     from quodlibet import library
     lib = library.init(const.LIBRARY)
-    print to(_("Loaded song library."))
+    print_(_("Loaded song library."))
     return lib
 
 def load_player(library):
     # Try to initialize the playlist and audio output.
-    print to(_("Opening audio device."))
+    print_(_("Opening audio device."))
     from quodlibet import player
     try: playlist = player.init_device(library.librarian)
     except player.backend.NoSinkError:
@@ -289,11 +286,10 @@ def load_player(library):
     else: return playlist
 
 if __name__ == "__main__":
-    quodlibet.init()
     if "--debug" not in sys.argv:
         process_arguments()
         if isrunning():
-            print to(_("Quod Libet is already running."))
+            print_(_("Quod Libet is already running."))
             control('focus')
 
     # GTK+ eats command line arguments and babies, so we have to delay

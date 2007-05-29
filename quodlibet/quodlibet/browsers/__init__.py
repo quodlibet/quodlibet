@@ -51,7 +51,7 @@ for name in modules:
 
     try: browsers.extend(browser.browsers)
     except AttributeError:
-        print "W: %s doesn't contain any browsers." % browser.__name__
+        print_w(_("%r doesn't contain any browsers.") % browser.__name__)
 
 def is_browser(Kind):
     return isinstance(Kind, type) and issubclass(Kind, Browser)

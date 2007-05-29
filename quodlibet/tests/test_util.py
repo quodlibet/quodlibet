@@ -59,16 +59,6 @@ class Tunexpand(TestCase):
             util.unexpand(os.path.join(self.d, "la/la")), "~/la/la")
 add(Tunexpand)
 
-class Tto(TestCase):
-    def test_type(self):
-        self.assertEqual(type(util.to("foo")), str)
-        self.assertEqual(type(util.to(u"foo")), str)
-
-    def test_result(self):
-        self.assertEqual(util.to("foo"), "foo")
-        self.assertEqual(util.to(u"foo"), "foo")
-add(Tto)
-
 class Tformat_rating(TestCase):
     def test_empty(self):
         self.failUnlessEqual(util.format_rating(0), "")

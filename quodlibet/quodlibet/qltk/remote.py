@@ -93,9 +93,9 @@ class FIFOControl(object):
                         except ValueError: commands[command](*args)
                         else: commands[cmd](arg, *args)
                     except:
-                        print "W: Invalid command %s received." % command
+                        print_w(_("Invalid command %r received.") % command)
                 except:
-                    print "W: Invalid command %s received." % command
+                    print_w(_("Invalid command %r received.") % command)
             return True
 
     def _previous(self, library, window, player): player.previous()
@@ -194,13 +194,13 @@ class FIFOControl(object):
         Kind = browsers.get(value)
         if Kind is not browsers.search.EmptyBar:
             window.select_browser(None, value, library, player)
-        else: print "W: Unknown browser type %r." % value
+        else: print_w(_("Unknown browser %r.") % value)
 
     def _open_browser(self, value, library, window, player):
         Kind = browsers.get(value)
         if Kind is not browsers.search.EmptyBar:
             LibraryBrowser(Kind, library)
-        else: print "W: Unknown browser type %r." % value
+        else: print_w(_("Unknown browser %r.") % value)
 
     def _random(self, tag, library, window, player):
         if window.browser.can_filter(tag):

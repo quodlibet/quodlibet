@@ -36,7 +36,7 @@ for _name in modules:
 
     try: devices.extend(device.devices)
     except AttributeError:
-        print "W: %s doesn't contain any devices." % device.__name__
+        print_w(_("%r doesn't contain any devices.") % device.__name__)
 
 devices.sort()
 
@@ -77,7 +77,7 @@ def get_by_udi(udi):
             device = klass(udi)
             return device
         else:
-            print "W: unsupported device %s" % udi
+            print_w(_("%r is not a supported device.") % udi)
 
 # Return a HAL interface for the given UDI
 def get_interface(udi, interface='Device'):

@@ -30,12 +30,9 @@ class fakegst(object):
         return plugin not in ["wavparse", "modplug"]
 
 def main(argv):
-    import quodlibet
-    quodlibet.init()
-
     from quodlibet import util
-
     from quodlibet import const
+
     opts = util.OptionParser(
         "Ex Falso", const.VERSION,
         _("an audio tag editor"), "[%s]" % _("directory"))

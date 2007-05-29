@@ -60,7 +60,6 @@ class test_cmd(Command):
 
     def run(self):
         import quodlibet
-        quodlibet.init()
         quodlibet.gtk_init()
         import quodlibet.config
         quodlibet.config.init()

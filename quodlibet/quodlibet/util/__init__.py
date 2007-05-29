@@ -143,17 +143,18 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
             text = []
             if "not recognized" in s:
                 text.append(
-                    _("E: Option '%s' not recognized.") % s.split()[1])
+                    _("Option %r not recognized.") % s.split()[1])
             elif "requires argument" in s:
                 text.append(
-                    _("E: Option '%s' requires an argument.") % s.split()[1])
+                    _("Option %r requires an argument.") % s.split()[1])
             elif "unique prefix" in s:
                 text.append(
-                    _("E: '%s' is not a unique prefix.") % s.split()[1])
+                    _("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
-                text.append(_("E: Try %s --help.") % sys.argv[0])
+                text.append(_("Try %s --help.") % sys.argv[0])
 
-            raise SystemExit(to("\n".join(text)))
+            print_e("\n".join(text))
+            raise SystemExit(True)
         else:
             transopts = {}
             for o, a in opts:
@@ -162,24 +163,15 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
                 elif o.startswith("-"):
                     o = self.__translate_short.get(o[1:], o[1:])
                 if o == "help":
-                    print self.help()
+                    print_(self.help())
                     raise SystemExit
                 elif o == "version":
-                    print self.version()
+                    print_(self.version())
                     raise SystemExit
                 if self.__args[o]: transopts[o] = a
                 else: transopts[o] = True
 
             return transopts, args
-
-def to(string, frm="utf-8"):
-    """Convert a string to the system encoding; used if you need to
-    print to stdout. If you pass in a str (rather than a unicode) you
-    should specify the encoding it's in with 'frm'."""
-    if isinstance(string, unicode):
-        return string.encode(ENCODING, "replace")
-    else:
-        return string.decode(frm).encode(ENCODING, "replace")
 
 def mtime(filename):
     """Return the mtime of a file, or 0 if an error occurs."""

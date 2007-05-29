@@ -155,7 +155,7 @@ class IPodDevice(Device):
                 songs.append(IPodSong(track))
             else: # Remove orphaned iTunesDB track
                 orphaned = True
-                print _("W: removing orphaned iPod track")
+                print_w(_("Removing orphaned iPod track"))
                 self.__remove_track(track)
         if orphaned:
             self.__save_db()

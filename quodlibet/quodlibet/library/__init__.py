@@ -18,7 +18,6 @@ import quodlibet.formats as formats
 
 # FIXME: compatibility, remove before merging/release
 from quodlibet.library.songs import SongFileLibrary, SongLibrary, SongLibrarian
-from quodlibet.util import to
 
 librarian = library = None
 
@@ -30,7 +29,7 @@ def init(cache_fn=None):
     """
     global library, librarian
     s = ", ".join(formats.modules)
-    print to(_("Supported formats: %s")) % s
+    print_(_("Supported formats: %s") % s)
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
     library = SongFileLibrary("main")
     librarian = library.librarian

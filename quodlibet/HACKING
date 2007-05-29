@@ -14,6 +14,12 @@ tests/*		- Unit/regression tests
 If you want to get a full overview of QL's code, good places to start
 are browsers/_base.py, formats/_audio.py, and library/_library.py.
 
+Printing Text
+-------------
+All terminal output should go through the print_, print_w, print_e,
+or print_d functions. These will handle Unicode recoding. They also
+let us capture all output for debugging purposes.
+
 Submitting Patches
 ------------------
 If you don't follow these guidelines, your patch will be turned down.

@@ -560,5 +560,5 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 if devices.init():
     browsers = [MediaDevices]
 else:
-    print "W: couldn't connect to HAL, disabling MediaDevices browser"
+    print_w("Couldn't connect to HAL, disabling Media Devices browser.")
     browsers = []
