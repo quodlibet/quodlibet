@@ -28,30 +28,28 @@ global play
 play = False
 
 def main():
-    # Load configuration data and scan the library for new/changed songs.
     config.init(const.CONFIG)
-    backend = load_backend()
-    library = load_library()
+    backend, library, player = quodlibet.init(
+        backend=config.get("player", "backend"),
+        library=const.LIBRARY,
+        player=None
+        )
     player = load_player(library)
 
     from quodlibet import widgets
-
-    util.mkdir(const.USERDIR)
-    SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
 
     try: ratings = config.getint("settings", "ratings")
     except (ValueError, TypeError): pass
     else: util.RATING_PRECISION = 1.0/ratings
 
+    import gtk
     window = widgets.init(player, library)
     if "--debug" not in sys.argv:
         enable_periodic_save(library)
         gtk.quit_add(1, widgets.save_library, window, player, library)
-    for sig in SIGNALS:
-        signal.signal(sig, gtk.main_quit)
-    gtk.gdk.threads_init()
-    if play: player.paused = False
-    gtk.main()
+    if play:
+        player.paused = False
+    quodlibet.main(window)
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):
@@ -253,20 +251,10 @@ def process_arguments():
             global play
             play = True
 
-def load_backend():
-    from quodlibet import player
-    backend_name = config.get("player", "backend")
-    return player.init(backend_name)
-
-def load_library():
-    from quodlibet import library
-    lib = library.init(const.LIBRARY)
-    print_(_("Loaded song library."))
-    return lib
-
 def load_player(library):
     # Try to initialize the playlist and audio output.
     print_(_("Opening audio device."))
+    import gtk
     from quodlibet import player
     try: playlist = player.init_device(library.librarian)
     except player.backend.NoSinkError:
@@ -292,10 +280,4 @@ if __name__ == "__main__":
             print_(_("Quod Libet is already running."))
             control('focus')
 
-    # GTK+ eats command line arguments and babies, so we have to delay
-    # imports until at least this late.
-    quodlibet.gtk_init()
-    import gtk
-    import pygst
-    pygst.require('0.10')
     main()

@@ -60,13 +60,10 @@ class test_cmd(Command):
 
     def run(self):
         import quodlibet
-        quodlibet.gtk_init()
         import quodlibet.config
         quodlibet.config.init()
+        quodlibet.init(backend="gstbe")
         import quodlibet.player
-        quodlibet.player.init("gstbe")
-        import quodlibet.library
-        library = quodlibet.library.init()
         quodlibet.player.init_device("gstbe")
         import tests
         if tests.unit(self.to_run):

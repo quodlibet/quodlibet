@@ -30,6 +30,7 @@ class fakegst(object):
         return plugin not in ["wavparse", "modplug"]
 
 def main(argv):
+    import quodlibet
     from quodlibet import util
     from quodlibet import const
 
@@ -40,14 +41,7 @@ def main(argv):
     from quodlibet import config
     config.init(const.CONFIG)
 
-    quodlibet.gtk_init()
-    import gtk
-    icon = os.path.join(const.IMAGEDIR, "exfalso.")
-    try: gtk.window_set_default_icon_from_file(icon + "svg")
-    except: gtk.window_set_default_icon_from_file(icon + "png")
-
-    from quodlibet import stock
-    stock.init()
+    backend, library, player = quodlibet.init(icon="exfalso")
 
     sys.modules["gst"] = fakegst()
 
@@ -56,11 +50,8 @@ def main(argv):
     args[0] = os.path.realpath(args[0])
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
     from quodlibet.library import SongFileLibrary
-    w = ExFalsoWindow(SongFileLibrary("exfalso"), args[0])
-    w.connect('destroy', gtk.main_quit)
-    w.show()
-
-    gtk.main()
+    w = ExFalsoWindow(library, args[0])
+    quodlibet.main(w)
 
 if __name__ == "__main__":
     main(sys.argv)

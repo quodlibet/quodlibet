@@ -52,8 +52,6 @@ def init(player, library):
 
     session.init()
 
-    stock.init()
-
     icon = os.path.join(const.IMAGEDIR, "quodlibet.")
     try:
         pb = gtk.gdk.pixbuf_new_from_file_at_size(icon + "svg", 64, 64)

@@ -2,25 +2,39 @@ import __builtin__
 
 import gettext
 import locale
+import os
 import re
+import signal
 import sys
 import traceback
 import warnings
 
+import quodlibet.const
+import quodlibet.util
+
 from quodlibet.const import ENCODING
 from quodlibet.util.i18n import GlibTranslations
 
-def gtk_init():
+def _gtk_init(icon=None):
     import pygtk
     pygtk.require('2.0')
     import gtk
+
     # http://bugzilla.gnome.org/show_bug.cgi?id=318953
     if gtk.gtk_version < (2, 8, 8):
         class TVProxy(gtk.TreeView):
             def set_search_equal_func(self, func, *args): pass
         gtk.TreeView = TVProxy
 
-def gettext_install():
+    import quodlibet.stock
+    quodlibet.stock.init()
+
+    if icon:
+        icon = os.path.join(quodlibet.const.IMAGEDIR, icon)
+        try: gtk.window_set_default_icon_from_file(icon + ".svg")
+        except: gtk.window_set_default_icon_from_file(icon + ".png")
+
+def _gettext_init():
     try: locale.setlocale(locale.LC_ALL, '')
     except locale.Error: pass
     try:
@@ -54,7 +68,7 @@ def print_e(string):
     # terminal output. APT uses a similar output format.
     print_(string, prefix=_("E: "), output=sys.stderr)
 
-def python_init():
+def _python_init():
     # The default regex escaping function doesn't work for non-ASCII.
     # Use a blacklist of regex-specific characters instead.
     def re_esc(str, BAD="/.^$*+?{,\\[]|()<>#=!:"):
@@ -91,5 +105,38 @@ def python_init():
     __builtin__.__dict__["print_e"] = print_e
     __builtin__.__dict__["print_w"] = print_w
 
-python_init()
-gettext_install()
+_python_init()
+_gettext_init()
+
+def init(gtk=True, backend=None, library=None, player=None, icon=None):
+    if gtk:
+        _gtk_init(icon)
+
+    # We already imported this, but Python is dumb and thinks we're rebinding
+    # a local when we import it later.
+    import quodlibet.util
+    quodlibet.util.mkdir(const.USERDIR)
+
+    if backend:
+        print_(_("Initializing audio backend (%s)") % backend)
+        import quodlibet.player
+        backend = quodlibet.player.init(backend)
+    if library:
+        print_(_("Initializing main library (%s)") % util.unexpand(library))
+    import quodlibet.library
+    library = quodlibet.library.init(library)
+
+    return (backend, library, player)
+
+def main(window):
+    import gtk
+
+    SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
+    for sig in SIGNALS:
+        signal.signal(sig, gtk.main_quit)
+
+    window.connect('destroy', gtk.main_quit)
+    window.show()
+
+    gtk.gdk.threads_init()
+    gtk.main()
