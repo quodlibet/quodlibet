@@ -94,6 +94,7 @@ class Library(gtk.Object):
 
     def _changed(self, items):
         # Called by the changed method and Librarians.
+        print_d("%s: Changing %d items." % (type(self).__name__, len(items)))
         self.emit('changed', items)
 
     def __iter__(self):

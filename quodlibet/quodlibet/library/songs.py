@@ -31,7 +31,7 @@ class SongLibrarian(Librarian):
             tags.update(library.tag_values(tag))
         return list(tags)
 
-    def rename(self, song, newname):
+    def rename(self, song, newname, changed=None):
         """Rename the song in all libraries it belongs to.
 
         The 'changed' signal will fire for any library the song is in.
@@ -42,36 +42,39 @@ class SongLibrarian(Librarian):
         # the call for future libraries because the item's key has
         # changed. So, it needs to reimplement the method.
         re_add = []
+        print_d("%s: Renaming %r" % (type(self).__name__, song.key))
         for library in self.libraries.itervalues():
-            if song.key in library:
-                del(library._contents[song.key])
-                re_add.append(library)
+            try: del(library._contents[song.key])
+            except KeyError: pass
+            else: re_add.append(library)
         song.rename(newname)
         for library in re_add:
             library._contents[song.key] = song
-            library._changed([song])
+            if changed is None:
+                library._changed([song])
+            else:
+                print_d("%s: Delaying changed signal for %r." % (
+                    type(self).__name__, library))
+                changed.append(song)
 
-    def reload(self, item):
-        """Reload a song.
-
-        Unlike SongLibrary#reload, this function does not append to
-        lists and always emits signals. This is because a caller
-        wanting the list semantics wouldn't know where to send the
-        appropriate signals.
-        """
-        to_add = []
+    def reload(self, item, changed=None, removed=None):
+        """Reload a song."""
+        re_add = []
+        print_d("%s: Reloading %r" % (type(self).__name__, item.key))
         for library in self.libraries.itervalues():
             try: del(library._contents[item.key])
             except KeyError: pass
-            else: to_add = []
-        try: library = to_add[0]
+            else: re_add.append(library)
+        try: library = re_add[0]
         except IndexError: return
+        # Rely on the first library in the list to do the actual
+        # load, then just inform the other libraries what happened.
         was_changed, was_removed = library._load(item)
         if was_removed:
-            for library in to_add:
+            for library in re_add:
                 library.emit('removed', [item])
         elif was_changed:
-            for library in to_add:
+            for library in re_add:
                 library._contents[item.key] = item
                 library.emit('changed', [item])
 
@@ -89,7 +92,7 @@ class SongLibrary(Library):
             tags.update(song.list(tag))
         return list(tags)
 
-    def rename(self, song, newname):
+    def rename(self, song, newname, changed=None):
         """Rename a song.
 
         This requires a special method because it can change the
@@ -100,10 +103,16 @@ class SongLibrary(Library):
         If the song exists in multiple libraries you cannot use this
         method. Instead, use the librarian.
         """
+        print_d(
+            "%s: Renaming %r to %r" % (type(self).__name__, song.key, newname))
         del(self._contents[song.key])
         song.rename(newname)
         self._contents[song.key] = song
-        self.changed([song])
+        if changed is not None:
+            print_d("%s: Delaying changed signal." % (type(self).__name__))
+            changed.append(song)
+        else:
+            self.changed([song])
 
     def query(self, text, sort=None, star=Query.STAR):
         """Query the library and return matching songs."""

@@ -274,10 +274,8 @@ def load_player(library):
     else: return playlist
 
 if __name__ == "__main__":
-    if "--debug" not in sys.argv:
-        process_arguments()
-        if isrunning():
-            print_(_("Quod Libet is already running."))
-            control('focus')
-
+    process_arguments()
+    if isrunning() and not os.environ.get("QUODLIBET_DEBUG"):
+        print_(_("Quod Libet is already running."))
+        control('focus')
     main()

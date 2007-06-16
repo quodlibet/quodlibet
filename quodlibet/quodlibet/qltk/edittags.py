@@ -640,7 +640,7 @@ class EditTags(gtk.VBox):
                           "do not have permission to edit it.")%(
                         util.escape(util.fsdecode(
                         song('~basename'))))).run()
-                    library.reload(song)
+                    library.reload(song, changed=was_changed)
                     break
                 was_changed.append(song)
 

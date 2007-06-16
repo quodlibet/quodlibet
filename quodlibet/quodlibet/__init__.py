@@ -6,6 +6,7 @@ import os
 import re
 import signal
 import sys
+import time
 import traceback
 import warnings
 
@@ -54,7 +55,9 @@ def print_(string, frm="utf-8", prefix="", output=sys.stdout):
 
 def print_d(string):
     """Print debugging information."""
-    print_(string, prefix="D: ", output=sys.stdout)
+    if os.environ.get("QUODLIBET_DEBUG"):
+        prefix = "D: " + ("%0.2f" % time.time())[-6:] + ": "
+        print_(string, prefix=prefix, output=sys.stdout)
 
 def print_w(string):
     """Print warnings."""

@@ -97,9 +97,8 @@ class RenameFiles(EditPane):
         for song, oldname, newname in rows:
             try:
                 newname = util.fsencode(newname)
-                library.rename(song, newname)
-                was_changed.append(song)
-            except:
+                library.rename(song, newname, changed=was_changed)
+            except None:
                 if skip_all: continue
                 buttons = (gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
                            _("_Continue"), gtk.RESPONSE_OK)
@@ -117,7 +116,7 @@ class RenameFiles(EditPane):
                 resp = msg.run()
                 mods = gtk.gdk.display_get_default().get_pointer()[3]
                 skip_all |= mods & gtk.gdk.SHIFT_MASK
-                library.reload(song)
+                library.reload(song, changed=was_changed)
                 if resp != gtk.RESPONSE_OK: break
             if win.step(): break
 
