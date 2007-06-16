@@ -12,6 +12,7 @@ import warnings
 
 import quodlibet.const
 import quodlibet.util
+import quodlibet.util.logging
 
 from quodlibet.const import ENCODING
 from quodlibet.util.i18n import GlibTranslations
@@ -44,32 +45,44 @@ def _gettext_init():
         t = GlibTranslations()
     t.install(unicode=True)
 
-def print_(string, frm="utf-8", prefix="", output=sys.stdout):
+def print_(string, frm="utf-8", prefix="", output=sys.stdout, log=None):
     if prefix:
         string = prefix + ("\n" + prefix).join(string.splitlines())
+
+    quodlibet.util.logging.log(string, log)
+
     if isinstance(string, unicode):
         string = string.encode(ENCODING, "replace")
     else:
         string = string.decode(frm).encode(ENCODING, "replace")
-    print >>output, string
+
+    if output:
+        if isinstance(string, unicode):
+            string = string.encode(ENCODING, "replace")
+        else:
+            string = string.decode(frm).encode(ENCODING, "replace")
+        print >>output, string
 
 def print_d(string):
     """Print debugging information."""
     if os.environ.get("QUODLIBET_DEBUG"):
-        prefix = "D: " + ("%0.2f" % time.time())[-6:] + ": "
-        print_(string, prefix=prefix, output=sys.stdout)
+        output = sys.stderr
+    else:
+        output = None
+    string = ("%0.2f" % time.time())[-6:] + ": " + string
+    print_(string, prefix="D: ", log="Debug", output=output)
 
 def print_w(string):
     """Print warnings."""
     # Translators: "W" as in "Warning". It is prepended to
     # terminal output. APT uses a similar output format.
-    print_(string, prefix=_("W: "), output=sys.stderr)
+    print_(string, prefix=_("W: "), log="Warnings", output=sys.stderr)
 
 def print_e(string):
     """Print errors."""
     # Translators: "E" as in "Error". It is prepended to
     # terminal output. APT uses a similar output format.
-    print_(string, prefix=_("E: "), output=sys.stderr)
+    print_(string, prefix=_("E: "), log="Errors", output=sys.stderr)
 
 def _python_init():
     # The default regex escaping function doesn't work for non-ASCII.

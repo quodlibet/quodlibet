@@ -35,6 +35,7 @@ from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
+from quodlibet.qltk.logging import LoggingWindow
 from quodlibet.qltk.mmkeys import MmKeys
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.playorder import PlayOrder
@@ -407,6 +408,8 @@ class QuodLibetWindow(gtk.Window):
 
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
+            ("OutputLog", gtk.STOCK_EDIT, _("_Output Log"),
+             None, None, lambda *args: LoggingWindow()),
             ]
 
         actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, None,

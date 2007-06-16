@@ -13,6 +13,7 @@ CONTROL = os.path.join(USERDIR, "control")
 CONFIG  = os.path.join(USERDIR, "config")
 CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
+LOGDIR  = os.path.join(USERDIR, "logs")
 
 EMAIL = "quodlibet@lists.sacredchao.net"
 
@@ -127,6 +128,8 @@ MENU = """<ui>
     </menu>
     <menu action='Help'>
       <menuitem action='About'/>
+      <separator/>
+      <menuitem action='OutputLog'/>
     </menu>
   </menubar>
 </ui>"""
