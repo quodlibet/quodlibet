@@ -63,13 +63,22 @@ def print_(string, frm="utf-8", prefix="", output=sys.stdout, log=None):
             string = string.decode(frm).encode(ENCODING, "replace")
         print >>output, string
 
-def print_d(string):
+def print_d(string, context=""):
     """Print debugging information."""
     if os.environ.get("QUODLIBET_DEBUG"):
         output = sys.stderr
     else:
         output = None
-    string = ("%0.2f" % time.time())[-6:] + ": " + string
+
+    if context and not isinstance(context, str):
+        try:
+            context = type(context).__name__
+            context += "." + traceback.extract_stack()[-2][2] + ": "
+        except AttributeError:
+            context = "Unknown Context"
+
+    timestr = "%0.2f" % time.time()
+    string = "%s: %s%s" % (timestr[-6:], context, string)
     print_(string, prefix="D: ", log="Debug", output=output)
 
 def print_w(string):

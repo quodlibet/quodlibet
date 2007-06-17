@@ -62,14 +62,18 @@ class Library(gtk.Object):
         already in the library.
         """
         items = filter(lambda item: item not in self, items)
+        print_d("Adding %d items." % len(items), self)
         for item in items:
+            print_d("Adding %r." % item.key, self)
             self._contents[item.key] = item
         self.emit('added', items)
         return items
 
     def remove(self, items):
         """Remove items. This causes a 'removed' signal."""
+        print_d("Removing %d items." % len(items), self)
         for item in items:
+            print_d("Removing %r." % item.key, self)
             del(self._contents[item.key])
         self.emit('removed', items)
 
@@ -87,14 +91,16 @@ class Library(gtk.Object):
         another's might.
         """
         if self.librarian and self in self.librarian.libraries.itervalues():
+            print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
+            print_d("Changing %d items directly." % len(items), self)
             items = filter(self.__contains__, items)
             self._changed(items)
 
     def _changed(self, items):
         # Called by the changed method and Librarians.
-        print_d("%s: Changing %d items." % (type(self).__name__, len(items)))
+        print_d("Changing %d items." % len(items), self)
         self.emit('changed', items)
 
     def __iter__(self):
@@ -119,6 +125,7 @@ class Library(gtk.Object):
 
         Loading does not cause added, changed, or removed signals.
         """
+        print_d("Loading contents of %r." % filename, self)
         try:
             if os.path.exists(filename):
                 fileobj = file(filename, "rb")
@@ -139,15 +146,18 @@ class Library(gtk.Object):
                 self._contents[item.key] = item
         else:
             map(self._load, items)
+        print_d("Done loading contents of %r." % filename, self)
 
     def _load(self, item):
         """Load a item. Return (changed, removed)."""
         # Subclases should override this if they want to check
         # item validity; see FileLibrary.
+        print_d("Loading %r." % item.key, self)
         self._contents[item.key] = item
 
     def save(self, filename):
         """Save the library to the given filename."""
+        print_d("Saving contents to %r." % filename, self)
         if not os.path.isdir(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
         fileobj = file(filename + ".tmp", "wb")
@@ -163,6 +173,7 @@ class Library(gtk.Object):
         pickle.dump(items, fileobj, pickle.HIGHEST_PROTOCOL)
         os.rename(filename + ".tmp", filename)
         fileobj.close()
+        print_d("Done saving contents to %r." % filename, self)
 
 class Librarian(gtk.Object):
     """The librarian is a nice interface to all active libraries.

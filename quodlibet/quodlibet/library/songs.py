@@ -42,7 +42,7 @@ class SongLibrarian(Librarian):
         # the call for future libraries because the item's key has
         # changed. So, it needs to reimplement the method.
         re_add = []
-        print_d("%s: Renaming %r" % (type(self).__name__, song.key))
+        print_d("Renaming %r to %r" % (song.key, newname), self)
         for library in self.libraries.itervalues():
             try: del(library._contents[song.key])
             except KeyError: pass
@@ -53,14 +53,13 @@ class SongLibrarian(Librarian):
             if changed is None:
                 library._changed([song])
             else:
-                print_d("%s: Delaying changed signal for %r." % (
-                    type(self).__name__, library))
+                print_d("Delaying changed signal for %r." % library, self)
                 changed.append(song)
 
     def reload(self, item, changed=None, removed=None):
         """Reload a song."""
         re_add = []
-        print_d("%s: Reloading %r" % (type(self).__name__, item.key))
+        print_d("Reloading %r" % item.key, self)
         for library in self.libraries.itervalues():
             try: del(library._contents[item.key])
             except KeyError: pass
@@ -103,8 +102,7 @@ class SongLibrary(Library):
         If the song exists in multiple libraries you cannot use this
         method. Instead, use the librarian.
         """
-        print_d(
-            "%s: Renaming %r to %r" % (type(self).__name__, song.key, newname))
+        print_d("Renaming %r to %r" % (song.key, newname), self)
         del(self._contents[song.key])
         song.rename(newname)
         self._contents[song.key] = song
@@ -132,10 +130,12 @@ class FileLibrary(Library):
         # Add an item, or refresh it if it's already in the library.
         # No signals will be fired. Return a tuple of booleans,
         # (changed, removed)
+        print_d("Loading %r." % item.key, self)
         valid = item.valid()
 
         # The item is fine; add it if it's not present.
         if not force and valid:
+            print_d("%r is valid." % item.key, self)
             self._contents[item.key] = item
             return False, False
         else:
@@ -150,21 +150,25 @@ class FileLibrary(Library):
                 try:
                     item.reload()
                 except StandardError:
+                    print_d("Error reloading %r." % item.key, self)
                     traceback.print_exc()
                     return False, True
                 else:
+                    print_d("Reloaded %r." % item.key, self)
                     self._contents[item.key] = item
                     return True, False
             elif not item.mounted():
                 # We don't know if the item is okay or not, since
                 # it's not not mounted. If the item was present
                 # we need to mark it as removed.
+                print_d("Masking %r." % item.key, self)
                 self._masked.setdefault(item.mountpoint, {})
                 self._masked[item.mountpoint][item.key] = item
                 return False, present
             else:
                 # The item doesn't exist at all anymore. Mark it as
                 # removed if it was present, otherwise nothing.
+                print_d("Ignoring (so removing) %r." % item.key, self)
                 return False, present
 
     def reload(self, item, changed=None, removed=None):
@@ -197,6 +201,8 @@ class FileLibrary(Library):
         Only items present in the library when the rebuild is started
         will be checked.
         """
+
+        print_d("Rebuilding, force is %s." % force, self)
 
         if progress:
             progress.show()
@@ -233,6 +239,8 @@ class FileLibrary(Library):
                 if progress:
                     progress.set_fraction(i * frac)
                 yield True
+        print_d("Removing %d, changing %d." % (len(removed), len(changed)),
+                self)
         if removed:
             self.emit('removed', removed)
         if changed:
@@ -255,6 +263,7 @@ class FileLibrary(Library):
             progress.show()
         added = []
         for fullpath in paths:
+            print_d("Scanning %r." % fullpath, self)
             if progress:
                 progress.set_text(_("Scanning %s") % (
                     util.unexpand(util.fsdecode(fullpath))))
@@ -295,11 +304,13 @@ class FileLibrary(Library):
             return item in self._masked.get(point, {}).itervalues()
 
     def unmask(self, point):
+        print_d("Unmasking %r." % point, self)
         items = self._masked.pop(point, {})
         if items:
             self.add(items.values())
 
     def mask(self, point):
+        print_d("Masking %r." % point, self)
         removed = {}
         for item in self.itervalues():
             if item.mountpoint == point:
@@ -319,6 +330,7 @@ class SongFileLibrary(SongLibrary, FileLibrary):
         If the song was added, it is returned. Otherwise, None
         is returned.
         """
+        print_d("Adding %r based on filename." % filename, self)
         try:
             if filename not in self._contents:
                 song = MusicFile(filename)
