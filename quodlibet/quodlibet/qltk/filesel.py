@@ -29,6 +29,16 @@ def search_func(model, column, key, iter, handledirs):
         check = os.path.basename(check) or os.sep
     return key not in check.lower() and key not in check
 
+def filesel_filter(filename):
+    IMAGES = [".jpg", ".png", ".jpeg"]
+    if formats.filter(filename):
+        return True
+    else:
+        for ext in IMAGES:
+            if filename.lower().endswith(ext):
+                return True
+    return False
+
 class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def cell_data(column, cell, model, iter):
         value = model[iter][0]
@@ -231,7 +241,7 @@ class FileSelector(gtk.VPaned):
                                  gobject.TYPE_NONE, (gtk.TreeSelection,))
                      }
 
-    def __init__(self, initial=None, filter=formats.filter,
+    def __init__(self, initial=None, filter=filesel_filter,
                  folders=[const.HOME, "/"]):
         super(FileSelector, self).__init__()
         self.__filter = filter

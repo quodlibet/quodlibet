@@ -129,10 +129,13 @@ class ExFalsoWindow(gtk.Window):
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         filenames = sorted([os.path.realpath(model[row][0]) for row in rows])
-        songs = map(self.__library.__getitem__, filenames)
-        menu = self.pm.Menu(self.__library, self, songs)
-        if menu is None: menu = gtk.Menu()
-        else: menu.prepend(gtk.SeparatorMenuItem())
+        songs = map(self.__library.get, filenames)
+        if None not in songs:
+            menu = self.pm.Menu(self.__library, self, songs)
+            if menu is None: menu = gtk.Menu()
+            else: menu.prepend(gtk.SeparatorMenuItem())
+        else:
+            menu = gtk.Menu()
         b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
