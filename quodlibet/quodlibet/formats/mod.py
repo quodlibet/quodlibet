@@ -8,8 +8,7 @@
 
 import os
 
-import gst
-
+from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [
@@ -22,8 +21,7 @@ except (ImportError, OSError):
     extensions = []
 else:
     _modplug.ModPlug_GetName.restype = ctypes.c_char_p
-
-    if gst.registry_get_default().find_plugin("modplug") is None:
+    if not player.can_play_mime("audio/x-mod"):
         extensions = []
 
 class ModFile(AudioFile):

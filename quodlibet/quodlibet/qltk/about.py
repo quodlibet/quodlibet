@@ -7,15 +7,12 @@
 #
 # $Id$
 
-import gst
 import gtk
 import mutagen
 
 from quodlibet import const
 from quodlibet import formats
-
-def _fver(tup):
-    return ".".join(map(str, tup))
+from quodlibet.util import fver
 
 class AboutQuodLibet(gtk.AboutDialog):
     def __init__(self, parent, player):
@@ -28,11 +25,10 @@ class AboutQuodLibet(gtk.AboutDialog):
         text = []
         text.append(_("Supported formats: %s") % fmts)
         text.append(_("Audio device: %s") % player.name)
-        text.append("Mutagen: %s" % _fver(mutagen.version))
+        text.append("Mutagen: %s" % fver(mutagen.version))
         text.append("GTK+: %s / PyGTK: %s" %(
-            _fver(gtk.gtk_version), _fver(gtk.pygtk_version)))
-        text.append("GStreamer: %s / PyGSt: %s" %(
-            _fver(gst.version()), _fver(gst.pygst_version)))
+            fver(gtk.gtk_version), fver(gtk.pygtk_version)))
+        text.append(player.version_info)
         self.set_comments("\n".join(text))
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.

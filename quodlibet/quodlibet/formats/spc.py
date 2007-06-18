@@ -8,13 +8,11 @@
 
 import os
 
-import gst
-
+from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".spc"]
-
-if gst.registry_get_default().find_plugin("spcdec") is None:
+if not player.can_play_mime("audio/x-spc"):
     extensions = []
 
 class SPCFile(AudioFile):

@@ -8,14 +8,12 @@
 # $Id$
 
 import tempfile
-import gst
 
-from quodlibet import util
-
+from quodlibet import player, util
 from quodlibet.formats._audio import AudioFile
 
 extensions = ['.mp4', '.m4a']
-if gst.registry_get_default().find_plugin("faad") is None:
+if not player.can_play_mime("audio/x-m4a"):
     extensions = []
 
 try:

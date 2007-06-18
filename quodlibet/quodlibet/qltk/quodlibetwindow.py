@@ -11,7 +11,6 @@ import os
 import random
 import sys
 
-import gst
 import gtk
 import pango
 
@@ -316,7 +315,7 @@ class QuodLibetWindow(gtk.Window):
                     if loc not in library:
                         song = library.add_filename(loc)
                         if song: files.append(song)
-            elif gst.element_make_from_uri(gst.URI_SRC, uri, ''):
+            elif player_can_play_uri(uri):
                 if uri not in library:
                     files.append(RemoteFile(uri))
                     library.add([files[-1]])
@@ -693,12 +692,12 @@ class QuodLibetWindow(gtk.Window):
             _("Enter the location of an audio file:"),
             okbutton=gtk.STOCK_ADD).run()
         if name:
-            if not gst.uri_is_valid(name):
+            if not util.uri_is_valid(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
                     _("<b>%s</b> is not a valid location.") %(
                     util.escape(name))).run()
-            elif not gst.element_make_from_uri(gst.URI_SRC, name, ""):
+            elif not player.can_play_uri(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
                     _("<b>%s</b> uses an unsupported protocol.") %(

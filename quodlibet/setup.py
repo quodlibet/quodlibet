@@ -196,9 +196,29 @@ class check(Command):
             if gst.pygst_version < (0, 10, 2):
                 raise ImportError
         except ImportError:
-            raise SystemExit("not found\n%s requires gst-python 0.10.2. "
-                             "(http://gstreamer.freedesktop.org)" % self.NAME)
-        else: print "found"
+            have_pygst = False
+            print "not found"
+        else:
+            have_pygst = True
+            print "found"
+
+        print "Checking for xine-lib >= 1.1:",
+        try:
+            from quodlibet.player._xine import xine_check_version
+            if not xine_check_version(1, 1, 0):
+                raise ImportError
+        except ImportError:
+            have_xine = False
+            print "not found"
+        else:
+            have_xine = True
+            print "found"
+
+        if not have_pygst and not have_xine:
+            raise SystemExit("%s requires gst-python 0.10.2 "
+                             "(http://gstreamer.freedesktop.org)"
+                             " or xine-lib 1.1 "
+                             "(http://www.xinehq.de/)." % NAME)
 
         print "Checking for Mutagen >= 1.10:",
         try:

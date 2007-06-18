@@ -9,13 +9,12 @@
 import os
 import wave
 
-import gst
-
+from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".wav"]
 
-if gst.registry_get_default().find_plugin("wavparse") is None:
+if not player.can_play_mime("audio/x-wav"):
     extensions = []
 
 class WAVEFile(AudioFile):

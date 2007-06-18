@@ -6,8 +6,7 @@
 #
 # $Id$
 
-import gst
-
+from quodlibet import player
 from quodlibet.formats._apev2 import APEv2File
 
 extensions = [".mpc", ".mp+"]
@@ -16,7 +15,7 @@ try:
 except (ImportError, OSError):
     extensions = []
 else:
-    if gst.registry_get_default().find_plugin("musepack") is None:
+    if not player.can_play_mime("audio/x-musepack"):
         extensions = []
 
 class MPCFile(APEv2File):

@@ -421,8 +421,8 @@ class AudioFeeds(Browser, gtk.VBox):
 
 try:
     import feedparser
-    import gst
-    if not gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
+    from quodlibet import player
+    if not player.can_play_uri("http://"):
         raise ImportError
 except ImportError:
     browsers = []

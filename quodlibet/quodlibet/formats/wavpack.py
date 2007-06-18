@@ -6,8 +6,7 @@
 #
 # $Id$
 
-import gst
-
+from quodlibet import player
 from quodlibet.formats._apev2 import APEv2File
 
 extensions = [".wv"]
@@ -16,7 +15,7 @@ try:
 except ImportError:
     extensions = []
 else:
-    if gst.registry_get_default().find_plugin("wavpack") is None:
+    if not player.can_play_mime("audio/x-wavpack"):
         extensions = []
 
 class WavpackFile(APEv2File):

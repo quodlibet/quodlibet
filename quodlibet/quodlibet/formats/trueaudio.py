@@ -6,8 +6,6 @@
 #
 # $Id$
 
-import gst
-
 extensions = [".tta"]
 
 try:
@@ -17,7 +15,8 @@ except ImportError:
     extensions = []
 from quodlibet.formats._id3 import ID3File
 
-if gst.registry_get_default().find_plugin("tta") is None:
+from quodlibet import player
+if not player.can_play_mime("audio/x-tta"):
     extensions = []
 
 class TrueAudioFile(ID3File):

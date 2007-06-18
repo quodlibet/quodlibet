@@ -6,7 +6,7 @@
 #
 # $Id$
 
-import gst
+from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".wma"]
@@ -15,7 +15,8 @@ try:
 except ImportError:
     extensions = []
 else:
-    if gst.registry_get_default().find_plugin("ffmpeg") is None:
+    if (not player.can_play_mime("audio/x-wma") and
+        not player.can_play_mime("audio/x-ms-wma")):
         extensions = []
 
 class WMAFile(AudioFile):

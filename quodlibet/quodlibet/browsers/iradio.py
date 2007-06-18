@@ -302,7 +302,7 @@ class InternetRadio(gtk.HBox, Browser):
     def statusbar(self, i):
         return ngettext("%(count)d station", "%(count)d stations", i)
 
-import gst
-if gst.element_make_from_uri(gst.URI_SRC, "http://", ""):
+from quodlibet import player
+if player.can_play_uri("http://"):
     browsers = [InternetRadio]
 else: browsers = []

@@ -24,3 +24,17 @@ def init_device(librarian):
     playlist = device = backend.init(librarian)
     PlaylistPlayer = type(device)
     return device
+
+def can_play_mime(mime):
+    """Returns True if the player can play files with specified MIME type."""
+    global backend
+    if backend is not None:
+        return backend.can_play_mime(mime)
+    return True
+
+def can_play_uri(uri):
+    """Returns True if the player can play a stream at specified uri."""
+    global backend
+    if backend is not None:
+        return backend.can_play_uri(uri)
+    return True

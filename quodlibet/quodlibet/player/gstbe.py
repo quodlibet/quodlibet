@@ -13,6 +13,7 @@ import gtk
 from quodlibet import config
 from quodlibet import const
 
+from quodlibet.util import fver
 from quodlibet.player._base import BasePlayer
 
 class NoSinkError(ValueError): pass
@@ -43,6 +44,8 @@ class GStreamerPlayer(BasePlayer):
         super(GStreamerPlayer, self).__init__()
         device, sinkname = GStreamerSink(sinkname)
         self.name = sinkname
+        self.version_info = "GStreamer: %s / PyGSt: %s" % (
+            fver(gst.version()), fver(gst.pygst_version))
         self.bin = gst.element_factory_make('playbin')
         self.bin.set_property('video-sink', None)
         self.bin.set_property('audio-sink', device)
@@ -201,6 +204,30 @@ class GStreamerPlayer(BasePlayer):
             self.emit('song-started', self.info)
         elif changed and librarian is not None:
             librarian.changed([self.song])
+
+_mimetypes = None
+
+def _load_mimetypes():
+    global _mimetypes
+    _mimetypes = set()
+    def flt(f):
+        klass = f.get_klass()
+        return 'Decoder' in klass or 'Demux' in klass or 'Parse' in klass
+    factories = filter(flt, gst.registry_get_default().get_feature_list(gst.TYPE_ELEMENT_FACTORY))
+    for factory in factories:
+        caps = [t.get_caps() for t in factory.get_static_pad_templates() if t.name_template == 'sink']
+        for cap in caps:
+            for struct in cap:
+                _mimetypes.add(struct.get_name())
+
+def can_play_mime(mime):
+    global _mimetypes
+    if _mimetypes is None:
+        _load_mimetypes()
+    return mime in _mimetypes
+
+def can_play_uri(uri):
+    return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
 
 def init(librarian):
     pipeline = config.get("player", "gst_pipeline") or "gconfaudiosink"

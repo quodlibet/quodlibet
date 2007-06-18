@@ -12,6 +12,7 @@ import os
 import re
 import sys
 import traceback
+import urlparse
 import warnings
 
 from quodlibet.const import FSCODING as fscoding, ENCODING
@@ -467,6 +468,12 @@ def spawn(argv, stdout=False):
         argv, flags=gobject.SPAWN_SEARCH_PATH, standard_output=stdout)
     if stdout: return os.fdopen(args[2])
     else: return args[0]
+
+def fver(tup):
+    return ".".join(map(str, tup))
+
+def uri_is_valid(uri):
+    return bool(urlparse.urlparse(uri)[0])
 
 N_ = lambda value: value
 
