@@ -19,7 +19,7 @@ class GajimStatusMessage(EventPlugin):
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = _("Change Gajim status message according to what "
                     "you are currently listening to.")
-    PLUGIN_VERSION = '0.7.3'
+    PLUGIN_VERSION = '0.7.4'
 
     c_accounts = __name__+'_accounts'
     c_paused = __name__+'_paused'
@@ -53,29 +53,34 @@ class GajimStatusMessage(EventPlugin):
 
         gtk.quit_add(0, self.quit)
 
-        try:
-            bus = dbus.SessionBus()
-            obj = bus.get_object(
-                'org.gajim.dbus', '/org/gajim/dbus/RemoteObject')
-            self.interface = dbus.Interface(
-                obj, 'org.gajim.dbus.RemoteInterface')
-        except dbus.DBusException:
-            self.interface = None
-
+        self.interface = None
         self.current = ''
 
     def quit(self):
-        if self.interface:
-            try: self.change_status(self.accounts, '')
-            except dbus.DBusException: pass
+        if self.current != '':
+            self.change_status(self.accounts, '')
 
     def change_status(self, enabled_accounts, status_message):
-        for account in self.interface.list_accounts():
-            status = self.interface.get_status(account)
-            if enabled_accounts != [] and account not in enabled_accounts:
-                continue
-            if status in self.statuses:
-                self.interface.change_status(status, status_message, account)
+        if not self.interface:
+            try:
+                bus = dbus.SessionBus()
+                obj = bus.get_object(
+                    'org.gajim.dbus', '/org/gajim/dbus/RemoteObject')
+                self.interface = dbus.Interface(
+                obj, 'org.gajim.dbus.RemoteInterface')
+            except dbus.DBusException:
+                self.interface = None
+
+        if self.interface:
+            try:
+                for account in self.interface.list_accounts():
+                    status = self.interface.get_status(account)
+                    if enabled_accounts != [] and account not in enabled_accounts:
+                        continue
+                    if status in self.statuses:
+                        self.interface.change_status(status, status_message, account)
+            except dbus.DBusException:
+                self.interface = None
 
     def plugin_on_song_started(self, song):
         if song:
