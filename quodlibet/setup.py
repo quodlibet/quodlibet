@@ -212,9 +212,9 @@ class check(Command):
         else: print "found"
 
         print """\n\
-Your system meets the installation requirements. Run %s install to
+Your system meets the installation requirements. Run %(setup)s install to
 install it. You may want to make some extensions first; you can do that
-with %s build_gobject."""
+with %(setup)s build_gobject.""" % dict(setup=sys.argv[0])
 
 class build_gobject_ext(gdist_build_gobject_ext):
     def run(self):
@@ -224,7 +224,7 @@ class build_gobject_ext(gdist_build_gobject_ext):
             self.copy_file(os.path.join(self.build_lib, path), path)
 
 if __name__ == "__main__":
-    os.chdir(os.path.dirname(__file__))
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     from quodlibet import const
     cmd_classes = {"check": check, 'clean': clean, "test": test_cmd,
