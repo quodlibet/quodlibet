@@ -120,20 +120,3 @@ def save_library(window, player, library):
     except EnvironmentError, err:
         err = str(err).decode('utf-8', 'replace')
         ErrorMessage(None, _("Unable to save library"), err).run()
-
-def no_sink_quit(sink):
-    header = _("Unable to open audio device")
-    body = _("Quod Libet tried to access the 'autosink' and "
-             "'%(sink)s' drivers but could not open them. Set your "
-             "GStreamer pipeline by changing the\n"
-             "    <b>pipeline = %(sink)s</b>\n"
-             "line in ~/.quodlibet/config.") % {"sink": sink}
-    ErrorMessage(None, header, body).run()
-    gtk.main_quit()
-
-def no_source_quit():
-    header = _("Unable to open files")
-    body = _("Quod Libet could not find the 'filesrc' GStreamer element. "
-             "Check your GStreamer installation.")
-    ErrorMessage(None, header, body).run()
-    gtk.main_quit()

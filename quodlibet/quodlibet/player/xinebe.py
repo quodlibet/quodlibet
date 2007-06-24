@@ -10,11 +10,9 @@ import gobject
 import sys
 import time
 from quodlibet import config, const
+from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.player._xine import *
-
-class NoSinkError(ValueError): pass
-class NoSourceError(ValueError): pass
 
 class XinePlaylistPlayer(BasePlayer):
     """Xine playlist player."""
@@ -37,7 +35,10 @@ class XinePlaylistPlayer(BasePlayer):
         global _xine
         self._audio_port = xine_open_audio_driver(_xine, driver, None)
         if not self._audio_port:
-            raise NoSinkError
+            raise PlayerError(
+                _("Unable to create audio output"),
+                _("The audio device %r was not found. Check your Xine "
+                  "settings in ~/.quodlibet/config.") % driver)
         self._stream = xine_stream_new(_xine, self._audio_port, None)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_VIDEO, 1)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_SPU, 1)

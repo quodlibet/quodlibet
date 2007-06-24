@@ -144,7 +144,6 @@ def init(gtk=True, backend=None, library=None, player=None, icon=None):
 
     if backend:
         print_(_("Initializing audio backend (%s)") % backend)
-        import quodlibet.player
         backend = quodlibet.player.init(backend)
     if library:
         print_(_("Initializing main library (%s)") % util.unexpand(library))
@@ -165,3 +164,7 @@ def main(window):
 
     gtk.gdk.threads_init()
     gtk.main()
+
+def error_and_quit(error):
+    from qltk.msg import ErrorMessage
+    ErrorMessage(None, error.short_desc, error.long_desc).run()

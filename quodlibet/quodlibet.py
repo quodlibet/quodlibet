@@ -16,7 +16,7 @@ import sys
 import tempfile
 import time
 
-import quodlibet
+import quodlibet, quodlibet.player
 
 from quodlibet import config
 from quodlibet import const
@@ -29,12 +29,22 @@ play = False
 
 def main():
     config.init(const.CONFIG)
-    backend, library, player = quodlibet.init(
-        backend=config.get("player", "backend"),
-        library=const.LIBRARY,
-        player=None
-        )
-    player = load_player(library)
+
+    try:
+        backend, library, player = quodlibet.init(
+            backend=config.get("player", "backend"),
+            library=const.LIBRARY,
+            player=None
+            )
+        player = load_player(library)
+    except quodlibet.player.error, error:
+        import gobject
+        import gtk
+        gobject.idle_add(quodlibet.error_and_quit, error)
+        gobject.idle_add(gtk.main_quit)
+        gtk.main()
+        config.write(const.CONFIG)
+        raise SystemExit(True)
 
     from quodlibet import widgets
 
@@ -254,24 +264,8 @@ def process_arguments():
 def load_player(library):
     # Try to initialize the playlist and audio output.
     print_(_("Opening audio device."))
-    import gtk
     from quodlibet import player
-    try: playlist = player.init_device(library.librarian)
-    except player.backend.NoSinkError:
-        from quodlibet import widgets
-        import gobject
-        gobject.idle_add(widgets.no_sink_quit, sink)
-        gtk.main()
-        config.write(const.CONFIG)
-        raise SystemExit(True)
-    except player.backend.NoSourceError:
-        from quodlibet import widgets
-        import gobject
-        gobject.idle_add(widgets.no_source_quit)
-        gtk.main()
-        config.write(const.CONFIG)
-        raise SystemExit(True)
-    else: return playlist
+    return player.init_device(library.librarian)
 
 if __name__ == "__main__":
     process_arguments()

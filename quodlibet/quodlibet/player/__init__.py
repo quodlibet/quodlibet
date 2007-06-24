@@ -13,11 +13,23 @@ backend = None
 
 PlaylistPlayer = None
 
+class error(RuntimeError):
+    def __init__(self, short_desc, long_desc):
+        self.short_desc = short_desc
+        self.long_desc = long_desc
+
 def init(backend_name):
     global backend
     modulename = "quodlibet.player." + backend_name
-    backend = __import__(modulename, {}, {}, "quodlibet.player")
-    return backend
+
+    try:
+        backend = __import__(modulename, {}, {}, "quodlibet.player")
+    except ImportError:
+        raise error(
+            _("Invalid audio backend"),
+            _("The audio backend %r is not installed.") % backend_name)
+    else:
+        return backend
 
 def init_device(librarian):
     global playlist, device, PlaylistPlayer
@@ -27,14 +39,12 @@ def init_device(librarian):
 
 def can_play_mime(mime):
     """Returns True if the player can play files with specified MIME type."""
-    global backend
     if backend is not None:
         return backend.can_play_mime(mime)
     return True
 
 def can_play_uri(uri):
     """Returns True if the player can play a stream at specified uri."""
-    global backend
     if backend is not None:
         return backend.can_play_uri(uri)
     return True

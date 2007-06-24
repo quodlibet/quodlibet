@@ -14,10 +14,8 @@ from quodlibet import config
 from quodlibet import const
 
 from quodlibet.util import fver
+from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
-
-class NoSinkError(ValueError): pass
-class NoSourceError(ValueError): pass
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
@@ -34,7 +32,11 @@ def GStreamerSink(pipeline):
             else: pipeline = "autoaudiosink"
         else: pipe = None
     if pipe: return pipe, pipeline
-    else: raise NoSinkError(pipeline)
+    else:
+        raise PlayerError(
+            _("Unable to create audio output"),
+            _("The audio output pipeline %r could not be created. Check "
+              "your GStreamer settings in ~/.quodlibet/config.") % pipeline)
 
 class GStreamerPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
@@ -205,7 +207,7 @@ class GStreamerPlayer(BasePlayer):
         elif changed and librarian is not None:
             librarian.changed([self.song])
 
-_mimetypes = None
+_mimetypes = set()
 
 def _load_mimetypes():
     global _mimetypes
@@ -221,8 +223,7 @@ def _load_mimetypes():
                 _mimetypes.add(struct.get_name())
 
 def can_play_mime(mime):
-    global _mimetypes
-    if _mimetypes is None:
+    if not _mimetypes:
         _load_mimetypes()
     return mime in _mimetypes
 
@@ -236,4 +237,8 @@ def init(librarian):
         gst.URI_SRC,
         "file:///Sebastian/Droge/please/choke/on/a/bucket/of/cocks", ""):
         return GStreamerPlayer(pipeline, librarian)
-    else: raise NoSourceError
+    else:
+        raise PlayerError(
+            _("Unable to open input files"),
+            _("GStreamer has no element to handle reading files. Check "
+              "your GStreamer installation settings."))
