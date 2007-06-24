@@ -92,7 +92,9 @@ class MutagenVCFile(AudioFile):
 ogg_formats = []
 try: from mutagen.oggvorbis import OggVorbis
 except ImportError: OggVorbis = None
-else: ogg_formats.append(("audio/x-vorbis", ".ogg"))
+else:
+    ogg_formats.append(("audio/x-vorbis", ".ogg"))
+    ogg_formats.append(("audio/x-ogg", ".ogg"))
 
 try: from mutagen.flac import FLAC
 except ImportError: FLAC = None
