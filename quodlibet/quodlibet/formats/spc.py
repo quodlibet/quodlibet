@@ -8,12 +8,9 @@
 
 import os
 
-from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".spc"]
-if not player.can_play_mime("audio/x-spc"):
-    extensions = []
 
 class SPCFile(AudioFile):
     format = "SPC700 DSP Data"

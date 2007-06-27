@@ -207,26 +207,6 @@ class GStreamerPlayer(BasePlayer):
         elif changed and librarian is not None:
             librarian.changed([self.song])
 
-_mimetypes = set()
-
-def _load_mimetypes():
-    global _mimetypes
-    _mimetypes = set()
-    def flt(f):
-        klass = f.get_klass()
-        return 'Decoder' in klass or 'Demux' in klass or 'Parse' in klass
-    factories = filter(flt, gst.registry_get_default().get_feature_list(gst.TYPE_ELEMENT_FACTORY))
-    for factory in factories:
-        caps = [t.get_caps() for t in factory.get_static_pad_templates() if t.name_template == 'sink']
-        for cap in caps:
-            for struct in cap:
-                _mimetypes.add(struct.get_name())
-
-def can_play_mime(mime):
-    if not _mimetypes:
-        _load_mimetypes()
-    return mime in _mimetypes
-
 def can_play_uri(uri):
     return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
 

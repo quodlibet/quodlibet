@@ -6,7 +6,6 @@
 #
 # $Id$
 
-from quodlibet import player
 from quodlibet.formats._apev2 import APEv2File
 
 extensions = [".wv"]
@@ -14,9 +13,6 @@ try:
     from mutagen.wavpack import WavPack
 except ImportError:
     extensions = []
-else:
-    if not player.can_play_mime("audio/x-wavpack"):
-        extensions = []
 
 class WavpackFile(APEv2File):
     format = "WavPack"

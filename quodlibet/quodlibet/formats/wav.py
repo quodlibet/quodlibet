@@ -9,13 +9,9 @@
 import os
 import wave
 
-from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".wav"]
-
-if not player.can_play_mime("audio/x-wav"):
-    extensions = []
 
 class WAVEFile(AudioFile):
     format = "WAVE"

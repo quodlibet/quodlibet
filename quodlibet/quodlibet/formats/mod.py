@@ -8,7 +8,6 @@
 
 import os
 
-from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [
@@ -17,12 +16,9 @@ extensions = [
 try:
     import ctypes
     _modplug = ctypes.cdll.LoadLibrary("libmodplug.so.0")
+    _modplug.ModPlug_GetName.restype = ctypes.c_char_p
 except (ImportError, OSError):
     extensions = []
-else:
-    _modplug.ModPlug_GetName.restype = ctypes.c_char_p
-    if not player.can_play_mime("audio/x-mod"):
-        extensions = []
 
 class ModFile(AudioFile):
 

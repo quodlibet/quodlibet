@@ -9,12 +9,10 @@
 
 import tempfile
 
-from quodlibet import player, util
+from quodlibet import util
 from quodlibet.formats._audio import AudioFile
 
 extensions = ['.mp4', '.m4a']
-if not player.can_play_mime("audio/x-m4a"):
-    extensions = []
 
 try:
     from mutagen.mp4 import MP4

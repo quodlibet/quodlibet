@@ -7,12 +7,9 @@
 # $Id$
 
 from mutagen.mp3 import MP3
-from quodlibet import player
 from quodlibet.formats._id3 import ID3File
 
 extensions = [".mp3", ".mp2"]
-if not player.can_play_mime("audio/mpeg"):
-    extensions = []
 
 class MP3File(ID3File):
     format = "MP3"

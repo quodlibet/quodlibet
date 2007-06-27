@@ -6,7 +6,6 @@
 #
 # $Id$
 
-from quodlibet import player
 from quodlibet.formats._apev2 import APEv2File
 
 extensions = [".mpc", ".mp+"]
@@ -14,9 +13,6 @@ try:
     from mutagen.musepack import Musepack
 except (ImportError, OSError):
     extensions = []
-else:
-    if not player.can_play_mime("audio/x-musepack"):
-        extensions = []
 
 class MPCFile(APEv2File):
     format = "Musepack"

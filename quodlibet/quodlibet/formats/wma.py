@@ -6,7 +6,6 @@
 #
 # $Id$
 
-from quodlibet import player
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".wma"]
@@ -14,10 +13,6 @@ try:
     import mutagen.asf
 except ImportError:
     extensions = []
-else:
-    if (not player.can_play_mime("audio/x-wma") and
-        not player.can_play_mime("audio/x-ms-wma")):
-        extensions = []
 
 class WMAFile(AudioFile):
     multiple_values = False

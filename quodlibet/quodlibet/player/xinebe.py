@@ -204,10 +204,9 @@ class XinePlaylistPlayer(BasePlayer):
 
 _xine = None
 _plugins = None
-_mimetypes = None
 
 def _init_xine():
-    global _xine, _plugins, _mimetypes
+    global _xine, _plugins
     _xine = xine_new()
     if _xine:
         xine_config_load(_xine, xine_get_homedir() + "/.xine/config")
@@ -217,18 +216,11 @@ def _init_xine():
             if not plugin:
                 break
             _plugins.append(plugin.lower())
-        _mimetypes = set(m.split(':')[0] for m in xine_get_mime_types(_xine).split(';'))
 
 def _exit_xine():
     global _xine
     if _xine:
         xine_exit(_xine)
-
-def can_play_mime(mime):
-    global _xine, _mimetypes
-    if _xine is None:
-        _init_xine()
-    return mime in _mimetypes
 
 def can_play_uri(uri):
     global _xine, _plugins

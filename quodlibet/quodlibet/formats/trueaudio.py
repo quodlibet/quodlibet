@@ -15,10 +15,6 @@ except ImportError:
     extensions = []
 from quodlibet.formats._id3 import ID3File
 
-from quodlibet import player
-if not player.can_play_mime("audio/x-tta"):
-    extensions = []
-
 class TrueAudioFile(ID3File):
     format = "True Audio"
     Kind = TrueAudio
