@@ -143,6 +143,7 @@ def init(gtk=True, backend=None, library=None, player=None, icon=None):
     quodlibet.util.mkdir(const.USERDIR)
 
     if backend:
+        import quodlibet.player
         print_(_("Initializing audio backend (%s)") % backend)
         backend = quodlibet.player.init(backend)
     if library:

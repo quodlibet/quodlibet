@@ -115,8 +115,12 @@ class SongProperties(qltk.Window):
     def __set_title(self, songs):
         if songs:
             if len(songs) == 1: title = songs[0].comma("title")
-            else: title = _("%(title)s and %(count)d more") % (
-                    {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+            else:
+                title = ngettext(
+                    "%(title)s and %(count)d more",
+                    "%(title)s and %(count)d more",
+                    len(songs) - 1) % (
+                    {'title': songs[0].comma("title"), 'count': len(songs) - 1})
             self.set_title("%s - %s" % (title, _("Properties")))
         else: self.set_title(_("Properties"))
 

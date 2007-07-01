@@ -170,8 +170,12 @@ class ExFalsoWindow(gtk.Window):
         elif len(files) == 1:
             self.set_title("%s - Ex Falso" % files[0].comma("title"))
         else:
-            self.set_title("%s - Ex Falso" % (_("%(title)s and %(count)d more")
-                % {'title': files[0].comma("title"), 'count': len(files) - 1}))
+            self.set_title(
+                "%s - Ex Falso" %
+                (ngettext_("%(title)s and %(count)d more",
+                           "%(title)s and %(count)d more",
+                           len(files) - 1) % (
+                {'title': files[0].comma("title"), 'count': len(files) - 1})))
         self.__library.add(files)
         self.emit('changed', files)
 

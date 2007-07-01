@@ -103,9 +103,14 @@ class Playlist(list):
     new = classmethod(new)
 
     def fromsongs(klass, songs):
-        if len(songs) == 1: title = songs[0].comma("title")
-        else: title = _("%(title)s and %(count)d more") % (
-                {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+        if len(songs) == 1:
+            title = songs[0].comma("title")
+        else:
+            title = ngettext(
+                "%(title)s and %(count)d more",
+                "%(title)s and %(count)d more",
+                len(songs) - 1) % (
+                {'title': songs[0].comma("title"), 'count': len(songs) - 1})
         playlist = klass.new(title)
         playlist.extend(songs)
         return playlist
@@ -199,9 +204,14 @@ class Menu(gtk.Menu):
 
     def __add_to_playlist(playlist, songs):
         if playlist is None:
-            if len(songs) == 1: title = songs[0].comma("title")
-            else: title = _("%(title)s and %(count)d more") % (
-                {'title':songs[0].comma("title"), 'count':len(songs) - 1})
+            if len(songs) == 1:
+                title = songs[0].comma("title")
+            else:
+                title = ngettext(
+                    "%(title)s and %(count)d more",
+                    "%(title)s and %(count)d more",
+                    len(songs) - 1) % (
+                    {'title': songs[0].comma("title"), 'count': len(songs) - 1})
             playlist = Playlist.new(title)
         playlist.extend(songs)
         Playlists.changed(playlist)
