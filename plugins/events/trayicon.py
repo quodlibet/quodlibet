@@ -168,13 +168,6 @@ class TrayIcon(EventPlugin):
         icon.connect('scroll-event', self.__scroll, window, player)
         icon.connect('destroy', self.__destroy, window)
 
-        def intercept_show():
-            window.show = gtk.Window.show
-        try:
-            if not config.getboolean("plugins", "icon_window_visible"):
-                window.show = intercept_show
-        except config.error: pass
-
         icon.show_all()
         self.plugin_on_paused()
         self.plugin_on_song_started(player.song)
