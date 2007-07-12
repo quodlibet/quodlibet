@@ -71,7 +71,7 @@ def query(category, discid, xcode='utf8:utf8'):
     try: os.makedirs(path.join(path.expanduser("~"), '.cddb'))
     except EnvironmentError: pass
     try:
-        save = file(dump, 'wU')
+        save = file(dump, 'w')
         keys = info.keys()
         keys.sort()
         for key in keys:
