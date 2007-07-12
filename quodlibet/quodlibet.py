@@ -90,8 +90,8 @@ def print_fifo(command):
             raise SystemExit("not-running")
 
 def print_playing(fstring="<artist~album~tracknumber~title>"):
-    from formats._audio import AudioFile
-    from parse import Pattern
+    from quodlibet.formats._audio import AudioFile
+    from quodlibet.parse import Pattern
 
     try:
         fn = file(const.CURRENT)
