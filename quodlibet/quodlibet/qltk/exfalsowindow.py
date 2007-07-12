@@ -172,9 +172,9 @@ class ExFalsoWindow(gtk.Window):
         else:
             self.set_title(
                 "%s - Ex Falso" %
-                (ngettext_("%(title)s and %(count)d more",
-                           "%(title)s and %(count)d more",
-                           len(files) - 1) % (
+                (ngettext("%(title)s and %(count)d more",
+                          "%(title)s and %(count)d more",
+                          len(files) - 1) % (
                 {'title': files[0].comma("title"), 'count': len(files) - 1})))
         self.__library.add(files)
         self.emit('changed', files)
