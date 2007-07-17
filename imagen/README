@@ -1,0 +1,25 @@
+Imagen is a Python module to handle image metadata.
+
+Actually that's a lie, all it can do right now is chunk PNGs.
+
+Installing
+----------
+ $ ./setup.py build
+ $ su -c "./setup.py install"
+
+Documentation
+-------------
+The primary documentation for Imagen is the doc strings found in
+the source code.
+ $ pydoc imagen
+ $ pydoc imagen.<module>
+
+The tools/ directory contains several useful examples.
+
+The API-NOTES file lists parts of the API that are either unstable or 
+will be removed in the future.
+
+Testing the Module
+------------------
+To run our test suite,
+ $ ./setup.py test

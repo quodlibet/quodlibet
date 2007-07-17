@@ -1,0 +1,17 @@
+This file documents deprecated parts of the Imagen API. New code
+should not use these parts, and several months after being added here,
+they may be removed. Note that we do not intend to ever deprecate or
+remove large portions of the API after the first release.
+
+General:
+--------
+No modules, types, functions, or attributes beginning with '_' are
+considered public API. These can and do change drastically between
+Mutagen versions. This is the standard Python way of marking a
+function protected or private.
+
+Imagen's goal is to adhere as closely as possible to published
+specifications. If you try to abuse Mutagen to make it write things in
+a non-standard fashion, Joe will update Imagen to break your
+program. If you want to do nonstandard things, write your own broken
+library.
