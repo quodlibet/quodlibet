@@ -5,6 +5,12 @@ remove large portions of the API after the first release.
 
 General:
 --------
+Although many standards use Latin 1 or other text encodings, all
+strings in Imagen are either ASCII or UTF-8. When you pass strings to
+functions that can accept Unicode strings, it will assume you are
+passing in UTF-8 (or ASCII). Imagen will generally return non-ASCII
+strings as unicode objects.
+
 No modules, types, functions, or attributes beginning with '_' are
 considered public API. These can and do change drastically between
 Imagen versions. This is the standard Python way of marking a

@@ -11,3 +11,15 @@
 
 version = (0, 0, -1)
 version_string = ".".join(map(str, version))
+
+def utf8(string):
+    if isinstance(string, unicode):
+        return string.encode("utf-8")
+    else:
+        return string.decode("utf-8", "replace").encode("utf-8")
+
+def latin1(string):
+    if isinstance(string, unicode):
+        return string.encode("iso-8859-1")
+    else:
+        return string.decode("utf-8", "replace").encode("iso-8859-1")
