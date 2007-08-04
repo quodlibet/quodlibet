@@ -48,6 +48,15 @@ class TTagsFromPattern(TestCase):
             f["~filename"] = '/path/Artist - Album/01. Title' + ext
             self.assertEquals(pat.match(f), tracktitle, ext)
 
+    def test_skip(self):
+        pat = TagsFromPattern('<path>/<~>/<~>/<tracknumber> - <title>')
+        self.failUnlessEqual(len(pat.headers), 3)
+        song = pat.match({"~filename":self.f1})
+        self.failUnlessEqual(song.get("path"), "path")
+        self.failUnlessEqual(song.get("title"), "Title")
+        self.failIf(song.get("album"))
+        self.failIf(song.get("artist"))
+
     def test_dict(self):
         tracktitle = {'tracknumber': '01', 'title': 'Title' }
         pat = TagsFromPattern('<tracknumber> - <title>')

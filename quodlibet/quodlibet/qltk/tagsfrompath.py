@@ -29,14 +29,20 @@ class TagsFromPattern(object):
         self.slashes = len(pattern) - len(pattern.replace(os.path.sep,'')) + 1
         self.pattern = None
         # patterns look like <tagname> non regexy stuff <tagname> ...
-        pieces = re.split(r'(<[A-Za-z0-9_]+>)', pattern)
+        pieces = re.split(r'(<[A-Za-z0-9~_]+>)', pattern)
         override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d\d??' }
+        dummies_found = 0
         for i, piece in enumerate(pieces):
-            if not piece: continue
-            if piece[0]+piece[-1] == '<>' and piece[1:-1].isalnum():
+            if not piece:
+                continue
+            if piece[0]+piece[-1] == '<>':
                 piece = piece.lower()   # canonicalize to lowercase tag names
+                if "~" in piece:
+                    dummies_found += 1
+                    piece = "<QUOD_LIBET_DUMMY_%d>" % dummies_found
                 pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+?'))
-                self.headers.append(piece[1:-1].encode("ascii", "replace"))
+                if "QUOD_LIBET" not in piece:
+                    self.headers.append(piece[1:-1].encode("ascii", "replace"))
             else:
                 pieces[i] = re.escape(piece)
 
