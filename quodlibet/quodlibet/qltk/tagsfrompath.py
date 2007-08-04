@@ -176,7 +176,8 @@ class TagsFromPath(EditPane):
             render = gtk.CellRendererText()
             render.set_property('editable', True)
             render.connect('edited', self.__row_edited, model, i + 2)
-            col = gtk.TreeViewColumn(header, render, text=i + 2)
+            escaped_title = header.replace("_", "__")
+            col = gtk.TreeViewColumn(escaped_title, render, text=i + 2)
             col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             self.view.append_column(col)
 
