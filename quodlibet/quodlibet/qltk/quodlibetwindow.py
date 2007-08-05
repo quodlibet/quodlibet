@@ -677,8 +677,9 @@ class QuodLibetWindow(gtk.Window):
 
     def __rebuild(self, activator, force):
         paths = config.get("settings", "scan").split(":")
+        exclude = config.get("library", "exclude").split(":")
         copool.add(library.rebuild, paths, self.statusbar.progress, force,
-                   funcid="library")
+                   exclude, funcid="library")
 
     # Set up the preferences window.
     def __preferences(self, activator):

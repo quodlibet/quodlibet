@@ -44,6 +44,10 @@ def init(*rc_files):
           "gst_pipeline": "",
           },
 
+        "library":
+        { "exclude": "",
+         },
+
         # State about the player, to restore on startup
         "memory":
         { "size": "400 350", # player window size

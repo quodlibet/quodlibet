@@ -190,7 +190,7 @@ class FileLibrary(Library):
             elif was_removed:
                 self.emit('removed', [item])
 
-    def rebuild(self, paths, progress=None, force=False):
+    def rebuild(self, paths, progress=None, force=False, exclude=[]):
         """Reload or remove songs if they have changed or been deleted.
 
         This generator rebuilds the library over the course of iteration.
@@ -246,7 +246,7 @@ class FileLibrary(Library):
         if changed:
             self.emit('changed', changed)
 
-        for value in self.scan(paths, progress):
+        for value in self.scan(paths, progress, exclude):
             yield value
         if progress:
             progress.hide()
@@ -258,21 +258,28 @@ class FileLibrary(Library):
         """
         raise NotImplementedError
 
-    def scan(self, paths, progress=None):
+    def scan(self, paths, progress=None, exclude=[]):
         if progress:
             progress.show()
         added = []
+        exclude = [os.path.expanduser(path) for path in exclude if path]
         for fullpath in paths:
             print_d("Scanning %r." % fullpath, self)
             if progress:
                 progress.set_text(_("Scanning %s") % (
                     util.unexpand(util.fsdecode(fullpath))))
             fullpath = os.path.expanduser(fullpath)
+            if filter(fullpath.startswith, exclude):
+                continue
             for path, dnames, fnames in os.walk(fullpath):
                 for filename in fnames:
                     fullfilename = os.path.join(path, filename)
+                    if filter(fullfilename.startswith, exclude):
+                        continue
                     if fullfilename not in self._contents:
                         fullfilename = os.path.realpath(fullfilename)
+                        if filter(fullfilename.startswith, exclude):
+                            continue
                         if fullfilename not in self._contents:
                             item = self.add_filename(fullfilename, False)
                             if item is not None:
