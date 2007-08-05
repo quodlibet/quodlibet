@@ -92,9 +92,8 @@ msgstr "płyta"
 
 #. this tag contains a list of errors from playing the song
 #: ../po/tag-names.py:23
-#, fuzzy
 msgid "errors"
-msgstr "wykonawcy"
+msgstr "błędy"
 
 #. just file name, foo.ogg
 #: ../po/tag-names.py:25 ../quodlibet/util/__init__.py:562
@@ -122,7 +121,7 @@ msgstr "grupowanie"
 #. alternately, "catalog number", "catalog ID", "label number"
 #: ../po/tag-names.py:33 ../quodlibet/util/__init__.py:552
 msgid "label ID"
-msgstr ""
+msgstr "numer katalogowy"
 
 #: ../po/tag-names.py:34
 msgid "language"
@@ -407,7 +406,7 @@ msgstr "Przenosi działającego QL na pierwszy plan"
 
 #: ../quodlibet.py:178
 msgid "Remove active browser filters"
-msgstr ""
+msgstr "Usunięcie filtrowania w przeglądarce"
 
 #: ../quodlibet.py:179
 msgid "Print the current playlist"
@@ -498,9 +497,8 @@ msgid "Enqueue a file or query"
 msgstr "Dodaje do kolejki plik lub zapytanie"
 
 #: ../quodlibet.py:201
-#, fuzzy
 msgid "Unqueue a file or query"
-msgstr "Dodaje do kolejki plik lub zapytanie"
+msgstr "Usuwa z kolejki plik lub zapytanie"
 
 #: ../quodlibet.py:236
 #, python-format
@@ -1435,9 +1433,8 @@ msgid "Not playing"
 msgstr "Nie odtwarza"
 
 #: ../quodlibet/qltk/information.py:59
-#, fuzzy
 msgid "_Clear Errors"
-msgstr "Błędy wtyczek"
+msgstr "Wy_czyść błędy"
 
 #: ../quodlibet/qltk/information.py:72
 msgid "No songs are selected."
@@ -1457,9 +1454,8 @@ msgid "Lyrics"
 msgstr "Słowa"
 
 #: ../quodlibet/qltk/information.py:100
-#, fuzzy
 msgid "Errors"
-msgstr "Pokazuj bł_ędy"
+msgstr "Błędy"
 
 #: ../quodlibet/qltk/information.py:196 ../quodlibet/qltk/information.py:209
 #: ../quodlibet/qltk/songlist.py:302
