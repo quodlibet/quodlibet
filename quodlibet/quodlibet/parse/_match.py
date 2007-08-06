@@ -126,9 +126,10 @@ class Tag(object):
     def __search_synth(self, data):
         for name in self.__names:
             for re in self.__res:
-                if name.startswith('~') and re.search(data(name, "")):
-                    return True
-                if re.search(data.get(name, data.get("~"+name, ""))):
+                if name.startswith('~'):
+                    if re.search(data(name, "")):
+                        return True
+                elif re.search(data.get(name, data.get("~"+name, ""))):
                     return True
         return False
 

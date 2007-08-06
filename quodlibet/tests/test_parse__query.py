@@ -109,6 +109,11 @@ class TQuery(TestCase):
         self.s3 = self.AF({"artist": "piman\nmu"})
         self.s4 = self.AF({"title": u"Ångström"})
 
+    def test_2007_07_27_synth_search(self):
+        song = self.AF({"~filename": "foo/64K/bar.ogg"})
+        query = Query("~dirname = !64K")
+        self.failIf(query.search(song), "%r, %r" % (query, song))
+
     def test_empty(self):
         self.failIf(Query("foobar = /./").search(self.s1))
 
@@ -123,6 +128,11 @@ class TQuery(TestCase):
         self.failUnless(f(self.s1))
         self.failUnless(f(self.s2))
 
+    def test_not(self):
+        for s in ["album = !hate", "artist = !pi"]:
+            self.failIf(Query(s).search(self.s1))
+            self.failUnless(Query(s).search(self.s2))
+
     def test_abbrs(self):
         for s in ["b = /i hate/", "a = /pi*/", "t = /x.y/"]:
             self.failUnless(Query(s).search(self.s1))
@@ -132,6 +142,7 @@ class TQuery(TestCase):
         for k in self.s2.keys():
             v = self.s2[k]
             self.failUnless(Query('%s = "%s"' % (k, v)).search(self.s2))
+            self.failIf(Query('%s = !"%s"' % (k, v)).search(self.s2))
 
     def test_numcmp(self):
         self.failUnless(Query("#(track = 0)").search(self.s1))

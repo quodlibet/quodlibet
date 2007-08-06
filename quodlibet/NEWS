@@ -1,4 +1,16 @@
-Quod Libet requires Python 2.4 or later and Mutagen 1.9 or later.
+Quod Libet requires Python 2.4 or later and Mutagen 1.11 or later.
+
+2.0 -
+ * New distutils-based build/test/install system.
+ * Multiple audio backend support.
+   * Xine-based audio backend.
+ * Tag Editing:
+   * Tags From Path: "<~>" will eat a string but not save it.
+   * Track Numbers: Allow numbering up to 999.
+ * Show image files in Ex Falso.
+ * Direct output to console and to a debugging window.
+   * Functions are accessible to plugins as print_d, print_e, and print_w.
+ * Fix bug involving negation and synthetic tags.
 
 1.0 - Yeah they just showed up one day -- staring.
  * Use Mutagen for ASF/WMA and MP4 support.
