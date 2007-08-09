@@ -456,7 +456,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def __init__(self, library, player):
         super(AlbumList, self).__init__(spacing=6)
         self._register_instance()
-        if self.__model is None: AlbumList._init_model(library)
+        if self.__model is None:
+            self._init_model(library)
         self.__save = bool(player)
 
         sw = gtk.ScrolledWindow()
@@ -590,8 +591,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         player.reset()
 
     def __preferences(self, button):
-        try: prefs = AlbumList.__prefs_win
-        except AttributeError: prefs = AlbumList.__prefs_win = Preferences()
+        try: prefs = self.__prefs_win
+        except AttributeError: prefs = self.__prefs_win = Preferences()
         win = qltk.get_top_parent(self)
         top, left = win.get_position()
         w, h = win.get_size()
