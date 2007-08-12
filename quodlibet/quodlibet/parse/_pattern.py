@@ -130,7 +130,7 @@ class PatternParser(object):
         except StopIteration:
             self.lookahead = PatternLexeme(EOF, "")
 
-class Pattern(PatternParser):
+class _Pattern(PatternParser):
     _formatters = []
 
     def __init__(self, string):
@@ -175,7 +175,7 @@ def _number(key, value):
         except (TypeError, ValueError): return value
     else: return value
 
-class FileFromPattern(Pattern):
+class _FileFromPattern(_Pattern):
     _formatters = [_number,
                    (lambda k, s: s.lstrip(".")),
                    (lambda k, s: s.replace("/", "_")),
@@ -194,5 +194,18 @@ class FileFromPattern(Pattern):
                 raise ValueError("Pattern is not rooted")
         return value
 
-class XMLFromPattern(Pattern):
+class _XMLFromPattern(_Pattern):
     _formatters = [lambda k, s: util.escape(s)]
+
+def Pattern(string, Kind=_Pattern, MAX_CACHE_SIZE=100, cache={}):
+    if (Kind, string) not in cache:
+        if len(cache) > MAX_CACHE_SIZE:
+            cache.clear()
+        cache[(Kind, string)] = Kind(string)
+    return cache[(Kind, string)]
+
+def FileFromPattern(string):
+    return Pattern(string, _FileFromPattern)
+
+def XMLFromPattern(string):
+    return Pattern(string, _XMLFromPattern)
