@@ -300,8 +300,16 @@ class IPodDevice(Device):
 
     def __mactime(self, time):
         time = int(time)
-        if time == 0: return time
-        else: return time + 2082844800
+        if time == 0:
+            return time
+        else:
+            # libgpod >= 0.5.0 doesn't use mac-type timestamps anymore.  check
+            # if we're using a newer version by looking for a renamed constant.
+            if hasattr(gpod, 'ITDB_SPL_STRING_MAXLEN'):
+                offset = 0
+            else:
+                offset = 2082844800
+            return time + offset
 
     # Convert ReplayGain values to Apple Soundcheck values
     def __soundcheck(self, song):
