@@ -250,7 +250,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             elif key == "date": return self.date
             elif key == "~long-length":
                 return util.format_time_long(self.length)
-            elif key in ["cover", "~cover"]: return (self.cover and "y") or ""
+            elif key in ["cover", "~cover"]:
+                return ((self.cover != type(self).cover) and "y") or ""
             elif key in ["title", "album"]: return self.title
             elif key == "people":
                 return "\n".join(self.people)
