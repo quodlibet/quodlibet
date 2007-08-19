@@ -6,27 +6,19 @@
 #
 # $Id$
 
+import random
+
 import gtk
 
 from quodlibet import config
 
-_ORDERS = ["inorder", "shuffle", "weighted", "onesong"]
-_TRANS = {"inorder": _("In Order"),
-          "shuffle": _("Shuffle"),
-          "weighted": _("Weighted"),
-          "onesong": _("One Song")
-          }
-
-# Canonical accelerated versions, in case we need them (e.g. the tray
-# icon uses them right now).
-_("_Shuffle")
-_("_Weighted")
-
 class Order(object):
     name = "unknown_order"
     display_name = _("Unknown")
+    accelerated_name = _("_Unknown")
+    replaygain_profiles = ["track"]
 
-    def __init__(self, playlist, iter):
+    def __init__(self, playlist):
         self.playlist = playlist
 
     # Not called directly, but the default implementation of
@@ -50,9 +42,7 @@ class Order(object):
     def next_explicit(self, playlist, iter):
         return self.next(playlist, iter)
 
-    # Called when a song ends passively, e.g. it runs out of time, or
-    # the file could not be found. By default, do the same thing as an
-    # explicit end.
+    # Called when a song ends passively, e.g. it plays through.
     def next_implicit(self, playlist, iter):
         return self.next(playlist, iter)
 
@@ -73,6 +63,7 @@ class OrderInOrder(Order):
     name = "inorder"
     display_name = _("In Order")
     accelerated_name = _("_In Order")
+    replaygain_profiles = ["album", "track"]
 
     def next(self, playlist, iter):
         if iter is None:
@@ -111,8 +102,9 @@ class OrderRemembered(Order):
     # Shared class for all the shuffle modes that keep a memory
     # of their previously played songs.
 
-    # A list of previously played paths.
-    _played = []
+    def __init__(self, playlist):
+        super(OrderRemembered, self).__init__(playlist)
+        self._played = []
 
     def next(self, playlist, iter):
         if iter is not None:
@@ -128,8 +120,48 @@ class OrderRemembered(Order):
             self._played.append(playlist.get_path(iter)[0])
         return iter
 
-    def reset(self):
-        del(self.played[:])
+    def reset(self, playlist):
+        del(self._played[:])
+
+class OrderShuffle(OrderRemembered):
+    name = "shuffle"
+    display_name = _("Shuffle")
+    accelerated_name = _("_Shuffle")
+
+    def next(self, playlist, iter):
+        super(OrderShuffle, self).next(playlist, iter)
+        played = set(self._played)
+        songs = set(range(len(playlist)))
+        remaining = songs.difference(played)
+
+        if remaining:
+            return playlist.get_iter((random.choice(list(remaining)),))
+        elif playlist.repeat and not playlist.is_empty():
+            del(self._played[:])
+            return playlist.get_iter((random.choice(list(songs)),))
+        else:
+            del(self._played[:])
+            return None
+
+class OrderWeighted(OrderRemembered):
+    name = "Weighted"
+    display_name = _("Weighted")
+    accelerated_name = _("_Weighted")
+
+    def next(self, playlist, iter):
+        super(OrderShuffle, self).next(playlist, iter)
+        songs = playlist.get()
+        max_score = sum([song.get('~#rating', 2) for song in songs])
+        choice = random.random() * max_score
+        current = 0.0
+        for i, song in enumerate(songs):
+            current += song.get("~#rating", 2)
+            if current >= choice:
+                return playlist.get_iter((i,))
+        else:
+            return playlist.get_iter_first()
+
+ORDERS = [OrderInOrder, OrderShuffle, OrderWeighted, OrderOneSong]
 
 class PlayOrder(gtk.ComboBox):
     def __init__(self, model, player):
@@ -137,23 +169,28 @@ class PlayOrder(gtk.ComboBox):
         cell = gtk.CellRendererText()
         self.pack_start(cell, True)
         self.add_attribute(cell, 'text', 0)
-        for order in _ORDERS: self.append_text(_TRANS[order])
+        for order in ORDERS:
+            self.append_text(order.display_name)
         self.connect_object('changed', self.__changed_order, model, player)
         self.set_active(config.get("memory", "order"))
 
     def set_active(self, value):
-        try: super(PlayOrder, self).set_active(_ORDERS.index(value))
-        except: super(PlayOrder, self).set_active(int(value))
+        try: value = ORDERS.index(value)
+        except ValueError:
+            for i, Order in enumerate(ORDERS):
+                if Order.name == value:
+                    value = i
+                    break
+        try: value = int(value)
+        except ValueError: value = 0
+        super(PlayOrder, self).set_active(value)
 
     def get_active_name(self):
-        return _ORDERS[self.get_active()]
+        return ORDERS[self.get_active()].name
 
     def __changed_order(self, model, player):
-        model.order = self.get_active()
-        config.set("memory", "order", _ORDERS[self.get_active()])
-
-        if model.order == 0:
-            player.replaygain_profiles[1] = ["album", "track"]
-        else:
-            player.replaygain_profiles[1] = ["track"]
+        Order = ORDERS[self.get_active()]
+        model.order = Order(model)
+        config.set("memory", "order", Order.name)
+        player.replaygain_profiles[1] = Order.replaygain_profiles
         player.volume = player.volume

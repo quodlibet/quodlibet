@@ -27,8 +27,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import tag
 from quodlibet.util import copool
 from quodlibet.util.uri import URI
-
-OFF, SHUFFLE, WEIGHTED, ONESONG = range(4)
+from quodlibet.qltk.playorder import ORDERS
 
 class PlaylistMux(object):
 
@@ -90,7 +89,7 @@ class PlaylistMux(object):
         map(self.q.remove, filter(None, map(self.q.find, songs)))
 
 class PlaylistModel(gtk.ListStore):
-    order = OFF
+    order = None
     repeat = False
     sourced = False
     __iter = None
@@ -102,13 +101,13 @@ class PlaylistModel(gtk.ListStore):
 
     def __init__(self):
         super(PlaylistModel, self).__init__(object)
-        self.__played = []
+        self.order = ORDERS[0](self)
 
     def set(self, songs):
         oldsong = self.current
         if oldsong is None: oldsong = self.__old_value
         else: self.__old_value = oldsong
-        self.__played = []
+        self.order.reset(self)
         self.__iter = None
         songs = songs[:]
         copool.add(self.__set_idle, oldsong, songs)
@@ -154,88 +153,15 @@ class PlaylistModel(gtk.ListStore):
     current_iter = property(get_current_iter)
 
     def next(self):
-        if self.order in [WEIGHTED, SHUFFLE]:
-            self.__next_shuffle()
-            return
-        
-        # If we're empty, the next song is no song.
-        # If the current song is the last song,
-        #  - If repeat is off, the next song is no song.
-        #  - If repeat is on, the next song is the first song.
-        # Else, if the current song is no song, the next song is the first.
-        # Else, the next song is the next song.
-        if self.is_empty(): self.__iter = None
-        elif self.__iter is None:
-            self.__iter = self.get_iter_first()
-        else:
-            next = self.iter_next(self.__iter)
-            if next is None and self.repeat:
-                self.__iter = self.get_iter_first()
-            else: self.__iter = next
+        self.__iter = self.order.next_explicit(self, self.__iter)
 
     def next_ended(self):
-        if self.order != ONESONG: self.next()
-        elif not self.repeat: self.__iter = None
-
-    def __next_shuffle(self):
-        if self.__iter is not None:
-            self.__played.append(self[self.__iter].path[0])
-
-        if self.order == SHUFFLE: self.__next_shuffle_regular()
-        elif self.order == WEIGHTED: self.__next_shuffle_weighted()
-        else: raise ValueError("Invalid shuffle %d" % self.order)
-
-    def __next_shuffle_regular(self):
-        played = set(self.__played)
-        songs = set(range(len(self)))
-        remaining = songs.difference(played)
-
-        if remaining:
-            self.__iter = self[random.choice(list(remaining))].iter
-        elif self.repeat and not self.is_empty():
-            self.__played = []
-            self.__iter = self[random.choice(list(songs))].iter
-        else:
-            self.__played = []
-            self.__iter = None
-
-    def __next_shuffle_weighted(self):
-        songs = self.get()
-        max_score = sum([song.get('~#rating', 2) for song in songs])
-        choice = random.random() * max_score
-        current = 0.0
-        for i, song in enumerate(songs):
-            current += song.get("~#rating", 2)
-            if current >= choice:
-                self.__iter = self.get_iter((i,))
-                break
-
-        else: self.__iter = self.get_iter_first()
+        self.__iter = self.order.next_implicit(self, self.__iter)
 
     def previous(self):
-        if self.order in [SHUFFLE, WEIGHTED]:
-            self.__previous_shuffle()
-            return
-
-        # If we're empty, the last song is no song.
-        # Else if the current song is none, the previous is the last.
-        # Else the previous song is the previous song.
-        if self.is_empty(): self.__iter = None
-        elif self.__iter is None:
-            self.__iter = self[(len(self) - 1,)].iter
-        else:
-            newpath = self[self.__iter].path[0] - 1
-            self.__iter = self[(max(0, newpath),)].iter
-
-    def __previous_shuffle(self):
-        try: path = self.__played.pop(-1)
-        except IndexError: pass
-        else: self.__iter = self.get_iter(path)
+        self.__iter = self.order.previous_explicit(self, self.__iter)
 
     def go_to(self, song):
-        if self.order and self.__iter is not None:
-            self.__played.append(self.get_path(self.__iter)[0])
-
         self.__iter = None
         if isinstance(song, gtk.TreeIter):
             self.__iter = song
@@ -246,6 +172,7 @@ class PlaylistModel(gtk.ListStore):
                     self.__iter = row.iter
                     self.sourced = True
                     break
+        self.__iter = self.order.set_explicit(self, self.__iter)
 
     def find(self, song):
         for row in self:
@@ -255,16 +182,15 @@ class PlaylistModel(gtk.ListStore):
     def find_all(self, songs):
         return [row.iter for row in self if row[0] in songs]
 
-    def __contains__(self, song): return bool(self.find(song))
+    def __contains__(self, song):
+        return bool(self.find(song))
 
     def is_empty(self):
         return not bool(len(self))
 
     def reset(self):
         self.go_to(None)
-        # Must be done after go_to, since go_to can append to the
-        # played song list.
-        self.__played = []
+        self.order.reset(self)
 
 class SongList(AllTreeView, util.InstanceTracker):
     # A TreeView containing a list of songs.
