@@ -113,6 +113,12 @@ class ExFalsoWindow(gtk.Window):
         key, mod = gtk.accelerator_parse("<control>Q")
         ag.connect_group(key, mod, 0, gtk.main_quit)
         self.add_accel_group(ag)
+        self.connect('configure-event', ExFalsoWindow.__save_size)
+        self.resize(*map(int, config.get("memory", "exfalso_size").split()))
+
+    def __save_size(self, event):
+        config.set("memory", "exfalso_size",
+                   "%d %d" % (event.width, event.height))
 
     def set_pending(self, button, *excess):
         self.__save = button

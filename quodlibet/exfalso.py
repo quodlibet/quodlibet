@@ -52,6 +52,7 @@ def main(argv):
     from quodlibet.library import SongFileLibrary
     w = ExFalsoWindow(library, args[0])
     quodlibet.main(w)
+    config.write(const.CONFIG)
 
 if __name__ == "__main__":
     main(sys.argv)

@@ -51,6 +51,7 @@ def init(*rc_files):
         # State about the player, to restore on startup
         "memory":
         { "size": "400 350", # player window size
+          "exfalso_size": "700 500", # ex falso window size
           "browser_size": "500 300", # library browser window size
           "song": "", # filename of last song
           "volume": "1.0", # internal volume, [0.0, 1.0]

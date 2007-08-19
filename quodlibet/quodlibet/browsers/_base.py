@@ -115,8 +115,7 @@ class Browser(object):
     # the browser is.
     accelerators = None
 
-    # CHANGED IN 0.23:
-    # This method now returns a gtk.Menu, probably a SongsMenu. After this
+    # This method returns a gtk.Menu, probably a SongsMenu. After this
     # menu is returned the SongList may modify it further.
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(
