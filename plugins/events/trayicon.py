@@ -278,11 +278,19 @@ class TrayIcon(EventPlugin):
         items = [None]
         def set_order(widget, num):
             if widget.get_active(): window.order.set_active(num)
-        for i, s in enumerate(
-            [_("_In Order"), _("_Shuffle"), _("_Weighted"), _("_One Song")]):
-            items.append(gtk.RadioMenuItem(items[-1], s))
-            items[-1].connect('toggled', set_order, i)
-        items.remove(None)
+        try:
+            from quodlibet.qltk.playorder import ORDERS
+        except ImportError:
+            for i, s in enumerate([_("_In Order"), _("_Shuffle"),
+                                   _("_Weighted"), _("_One Song")]):
+                items.append(gtk.RadioMenuItem(items[-1], s))
+                items[-1].connect('toggled', set_order, i)
+        else:
+            for i, Kind in enumerate(ORDERS):
+                name = Kind.accelerated_name
+                items.append(gtk.RadioMenuItem(items[-1], name))
+                items[-1].connect('toggled', set_order, i)
+        items.pop(0)
         map(submenu.append, items)
         orders.set_submenu(submenu)
 
