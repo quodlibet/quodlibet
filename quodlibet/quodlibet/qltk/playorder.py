@@ -17,6 +17,7 @@ class Order(object):
     display_name = _("Unknown")
     accelerated_name = _("_Unknown")
     replaygain_profiles = ["track"]
+    priority = 100
 
     def __init__(self, playlist):
         self.playlist = playlist
@@ -64,6 +65,7 @@ class OrderInOrder(Order):
     display_name = _("In Order")
     accelerated_name = _("_In Order")
     replaygain_profiles = ["album", "track"]
+    priority = 0
 
     def next(self, playlist, iter):
         if iter is None:
@@ -86,17 +88,6 @@ class OrderInOrder(Order):
                 if playlist.repeat:
                     return playlist[(len(playlist) - 1,)].iter
         return None
-
-class OrderOneSong(OrderInOrder):
-    name = "onesong"
-    display_name = _("One Song")
-    accelerated_name = _("_One Song")
-
-    def next_implicit(self, playlist, iter):
-        if playlist.repeat:
-            return iter
-        else:
-            return None
 
 class OrderRemembered(Order):
     # Shared class for all the shuffle modes that keep a memory
@@ -127,6 +118,7 @@ class OrderShuffle(OrderRemembered):
     name = "shuffle"
     display_name = _("Shuffle")
     accelerated_name = _("_Shuffle")
+    priority = 1
 
     def next(self, playlist, iter):
         super(OrderShuffle, self).next(playlist, iter)
@@ -147,6 +139,7 @@ class OrderWeighted(OrderRemembered):
     name = "Weighted"
     display_name = _("Weighted")
     accelerated_name = _("_Weighted")
+    priority = 2
 
     def next(self, playlist, iter):
         super(OrderShuffle, self).next(playlist, iter)
@@ -161,7 +154,22 @@ class OrderWeighted(OrderRemembered):
         else:
             return playlist.get_iter_first()
 
+class OrderOneSong(OrderInOrder):
+    name = "onesong"
+    display_name = _("One Song")
+    accelerated_name = _("_One Song")
+    priority = 3
+
+    def next_implicit(self, playlist, iter):
+        if playlist.repeat:
+            return iter
+        else:
+            return None
+
 ORDERS = [OrderInOrder, OrderShuffle, OrderWeighted, OrderOneSong]
+
+ORDERS.sort(lambda K1, K2:
+            cmp(K1.priority, K2.priority) or cmp(K1.name, K2.name))
 
 class PlayOrder(gtk.ComboBox):
     def __init__(self, model, player):
