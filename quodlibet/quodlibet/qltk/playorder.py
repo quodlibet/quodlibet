@@ -142,7 +142,7 @@ class OrderWeighted(OrderRemembered):
     priority = 2
 
     def next(self, playlist, iter):
-        super(OrderShuffle, self).next(playlist, iter)
+        super(OrderWeighted, self).next(playlist, iter)
         songs = playlist.get()
         max_score = sum([song.get('~#rating', 2) for song in songs])
         choice = random.random() * max_score
