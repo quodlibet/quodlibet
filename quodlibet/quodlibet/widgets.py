@@ -20,6 +20,7 @@ from quodlibet import util
 from quodlibet.plugins.editing import EditingPlugins
 from quodlibet.plugins.songsmenu import SongsMenuPlugins
 from quodlibet.plugins.events import EventPlugins
+from quodlibet.plugins.playorder import PlayOrderPlugins
 from quodlibet.qltk import session
 from quodlibet.qltk.tracker import SongTracker
 from quodlibet.qltk.msg import ErrorMessage
@@ -74,22 +75,27 @@ def init(player, library):
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(library)
 
-    main = QuodLibetWindow(library, player)
-    main.connect('destroy', gtk.main_quit)
+    playorder = PlayOrderPlugins(
+        [os.path.join(const.BASEDIR, "plugins", "playorder"),
+         os.path.join(const.USERDIR, "plugins", "playorder")], "playorder")
+    playorder.rescan()
 
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
          os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
     SongsMenu.plugins.rescan()
     
+    SongProperties.plugins = EditingPlugins(
+        [os.path.join(const.BASEDIR, "plugins", "editing"),
+         os.path.join(const.USERDIR, "plugins", "editing")], "editing")
+
+    main = QuodLibetWindow(library, player)
+    main.connect('destroy', gtk.main_quit)
+
     events = EventPlugins(library.librarian, player, [
         os.path.join(const.BASEDIR, "plugins", "events"),
         os.path.join(const.USERDIR, "plugins", "events")], "events")
     events.rescan()
-
-    SongProperties.plugins = EditingPlugins(
-        [os.path.join(const.BASEDIR, "plugins", "editing"),
-         os.path.join(const.USERDIR, "plugins", "editing")], "editing")
 
     gtk.about_dialog_set_url_hook(website_wrap)
 

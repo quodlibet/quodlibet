@@ -166,10 +166,13 @@ class OrderOneSong(OrderInOrder):
         else:
             return None
 
-ORDERS = [OrderInOrder, OrderShuffle, OrderWeighted, OrderOneSong]
-
-ORDERS.sort(lambda K1, K2:
-            cmp(K1.priority, K2.priority) or cmp(K1.name, K2.name))
+ORDERS = []
+def set_orders(orders):
+    ORDERS[:] = [OrderInOrder, OrderShuffle, OrderWeighted, OrderOneSong]
+    ORDERS.extend(orders)
+    ORDERS.sort(lambda K1, K2:
+                cmp(K1.priority, K2.priority) or cmp(K1.name, K2.name))
+set_orders([])
 
 class PlayOrder(gtk.ComboBox):
     def __init__(self, model, player):
@@ -181,6 +184,16 @@ class PlayOrder(gtk.ComboBox):
             self.append_text(order.display_name)
         self.connect_object('changed', self.__changed_order, model, player)
         self.set_active(config.get("memory", "order"))
+
+    def refresh(self):
+        name = self.get_active_name()
+        self.get_model().clear()
+        for order in ORDERS:
+            self.append_text(order.display_name)
+        if name:
+            self.set_active(name)
+        else:
+            self.set_active(ORDERS[0]).name
 
     def set_active(self, value):
         try: value = ORDERS.index(value)
