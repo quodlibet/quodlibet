@@ -207,7 +207,8 @@ class PlayOrder(gtk.ComboBox):
         super(PlayOrder, self).set_active(value)
 
     def get_active_name(self):
-        return ORDERS[self.get_active()].name
+        try: return ORDERS[self.get_active()].name
+        except IndexError: return ORDERS[0].name
 
     def __changed_order(self, model, player):
         Order = ORDERS[self.get_active()]

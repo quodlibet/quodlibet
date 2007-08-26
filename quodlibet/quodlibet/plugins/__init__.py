@@ -198,10 +198,10 @@ class Manager(object):
         try: return plugin.__enabled
         except AttributeError: return False
 
-    def list(self):
+    def list(self, all=True):
         kinds = set()
         for Kind in self.Kinds:
-            kinds.update(self.find_subclasses(Kind, all=True))
+            kinds.update(self.find_subclasses(Kind, all=all))
         return list(kinds)
 
     def find_subclasses(self, Kind, all=False):

@@ -34,7 +34,7 @@ class PlayOrderPlugins(Manager):
     def enable(self, plugin, enabled):
         super(PlayOrderPlugins, self).enable(plugin, enabled)
         orders = self.list()
-        quodlibet.qltk.playorder.set_orders(self.list())
+        quodlibet.qltk.playorder.set_orders(self.list(False))
         for plugin in self.list():
             if plugin.name is None:
                 plugin.name = plugin.PLUGIN_ID
