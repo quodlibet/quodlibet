@@ -192,7 +192,7 @@ class PluginWindow(qltk.Window):
         try: self.__win.present()
         except AttributeError:
             self.__win = qltk.Window()
-            self.__win.set_title(_("Plugin Errors") + "- Quod Libet")
+            self.__win.set_title(_("Plugin Errors") + " - Quod Libet")
             self.__win.set_border_width(12)
             self.__win.set_transient_for(qltk.get_top_parent(self))
             self.__win.set_default_size(400, 250)
@@ -210,7 +210,7 @@ class PluginWindow(qltk.Window):
             keys = failures.keys()
             show_expanded = len(keys) <= 3
             for key in sorted(keys):
-                expander = gtk.Expander("<b>%s</b>" % key)
+                expander = gtk.Expander("<b>%s</b>" % util.escape(key))
                 expander.set_use_markup(True)
                 if show_expanded: expander.set_expanded(True)
 
