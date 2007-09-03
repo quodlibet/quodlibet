@@ -411,6 +411,12 @@ class QuodLibetWindow(gtk.Window):
              None, None, lambda *args: LoggingWindow()),
             ]
 
+        if "QUODLIBET_DEBUG" in os.environ:
+            from quodlibet.util import enc
+            actions.append(("DebugReload", gtk.STOCK_DIALOG_WARNING,
+                            _("_Edit and Continue"), None, None,
+                            lambda *args: enc.reload()))
+
         actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, None,
                         "<control>comma", None, self.__previous_song))
 

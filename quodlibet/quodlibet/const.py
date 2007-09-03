@@ -130,6 +130,7 @@ MENU = """<ui>
       <menuitem action='About'/>
       <separator/>
       <menuitem action='OutputLog'/>
+      <menuitem action='DebugReload'/>
     </menu>
   </menubar>
 </ui>"""
