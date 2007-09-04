@@ -74,6 +74,15 @@ NBP_EXAMPLES = """\
 /path/<artist> - <album>/<tracknumber>. <title>
 /path/<artist>/<album>/<tracknumber> - <title>"""
 
+if "QUODLIBET_DEBUG" in os.environ:
+    DEBUG = False
+    DEBUG_MENU = """\
+      <menuitem action='DebugReload'/>
+"""
+else:
+    DEBUG = True
+    DEBUG_MENU = ""
+
 MENU = """<ui>
   <menubar name='Menu'>
     <menu action='Music'>
@@ -82,7 +91,7 @@ MENU = """<ui>
       <menuitem action='AddLocation'/>
       <separator/>
       <menu action='BrowseLibrary'>
-      %s
+      %(browsers)s
       </menu>
       <separator/>
       <menuitem action='Preferences'/>
@@ -124,13 +133,13 @@ MENU = """<ui>
       <menuitem action='SongList'/>
       <menuitem action='Queue'/>
       <separator/>
-      %s
+      %(views)s
     </menu>
     <menu action='Help'>
       <menuitem action='About'/>
       <separator/>
       <menuitem action='OutputLog'/>
-      <menuitem action='DebugReload'/>
+      %(debug)s
     </menu>
   </menubar>
 </ui>"""
@@ -149,3 +158,4 @@ else: FSCODING = "utf-8"
 
 del(os)
 del(locale)
+

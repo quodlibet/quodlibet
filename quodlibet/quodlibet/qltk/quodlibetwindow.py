@@ -488,7 +488,9 @@ class QuodLibetWindow(gtk.Window):
 
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, -1)
-        menustr = const.MENU%(browsers.BrowseLibrary(), browsers.ViewBrowser())
+        menustr = const.MENU % {"browsers": browsers.BrowseLibrary(),
+                                "views": browsers.ViewBrowser(),
+                                "debug": const.DEBUG_MENU}
         self.ui.add_ui_from_string(menustr)
 
         # Cute. So. UIManager lets you attach tooltips, but when they're

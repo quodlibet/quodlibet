@@ -18,6 +18,7 @@ class BasePlayer(gtk.Object):
     """
 
     _paused = False
+    paused = False
     song = None
     info = None
     # Replay Gain profiles are a list of values to be tried in order;
