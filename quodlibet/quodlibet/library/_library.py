@@ -44,6 +44,7 @@ class Library(gtk.Object):
     del(SIG_PYOBJECT)
 
     librarian = None
+    dirty = False
 
     def __init__(self, name=None):
         super(Library, self).__init__()
@@ -66,6 +67,7 @@ class Library(gtk.Object):
         for item in items:
             print_d("Adding %r." % item.key, self)
             self._contents[item.key] = item
+        self.dirty = True
         self.emit('added', items)
         return items
 
@@ -75,6 +77,7 @@ class Library(gtk.Object):
         for item in items:
             print_d("Removing %r." % item.key, self)
             del(self._contents[item.key])
+        self.dirty = True
         self.emit('removed', items)
 
     def changed(self, items):
@@ -101,6 +104,7 @@ class Library(gtk.Object):
     def _changed(self, items):
         # Called by the changed method and Librarians.
         print_d("Changing %d items." % len(items), self)
+        self.dirty = True
         self.emit('changed', items)
 
     def __iter__(self):
@@ -153,6 +157,7 @@ class Library(gtk.Object):
         # Subclases should override this if they want to check
         # item validity; see FileLibrary.
         print_d("Loading %r." % item.key, self)
+        self.dirty = True
         self._contents[item.key] = item
 
     def save(self, filename):
@@ -173,6 +178,7 @@ class Library(gtk.Object):
         pickle.dump(items, fileobj, pickle.HIGHEST_PROTOCOL)
         os.rename(filename + ".tmp", filename)
         fileobj.close()
+        self.dirty = False
         print_d("Done saving contents to %r." % filename, self)
 
 class Librarian(gtk.Object):

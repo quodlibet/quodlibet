@@ -65,7 +65,7 @@ def print_(string, frm="utf-8", prefix="", output=sys.stdout, log=None):
 
 def print_d(string, context=""):
     """Print debugging information."""
-    if os.environ.get("QUODLIBET_DEBUG"):
+    if quodlibet.const.DEBUG:
         output = sys.stderr
     else:
         output = None

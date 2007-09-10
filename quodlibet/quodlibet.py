@@ -145,10 +145,11 @@ def enable_periodic_save(library):
     import gobject
 
     def save():
-        if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
-            library.save(const.LIBRARY)
-        if (time.time() - util.mtime(const.CONFIG)) > 15*60:
-            config.write(const.CONFIG)
+        if library.dirty:
+            if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
+                library.save(const.LIBRARY)
+            if (time.time() - util.mtime(const.CONFIG)) > 15*60:
+                config.write(const.CONFIG)
         thread = Thread(target=save)
         gobject.timeout_add(
             5*60000, thread.start, priority=gobject.PRIORITY_LOW)

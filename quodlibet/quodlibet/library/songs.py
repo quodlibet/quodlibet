@@ -342,6 +342,7 @@ class SongFileLibrary(SongLibrary, FileLibrary):
             if filename not in self._contents:
                 song = MusicFile(filename)
                 if song:
+                    self.dirty = True
                     self._contents[song.key] = song
                     if signal:
                         self.add([song])
