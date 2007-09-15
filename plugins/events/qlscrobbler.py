@@ -10,7 +10,8 @@ import player, config, const, widgets, parse
 import gobject, gtk
 from qltk.msg import Message, WarningMessage
 from qltk.entry import ValidatingEntry
-from util import to
+
+def to(string): print string.encode("ascii", "replace")
 
 from plugins.events import EventPlugin
 
