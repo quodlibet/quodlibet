@@ -412,8 +412,7 @@ class QuodLibetWindow(gtk.Window):
             ]
 
         if "QUODLIBET_DEBUG" in os.environ:
-            from quodlibet.util import enc
-            from quodlibet.debug import cause_error
+            from quodlibet.debug import cause_error, enc
             actions.append(("DebugReload", gtk.STOCK_DIALOG_WARNING,
                             _("_Edit and Continue"), None, None,
                             lambda *args: enc.reload()))
