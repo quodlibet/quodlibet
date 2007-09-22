@@ -17,6 +17,7 @@ class LoggingWindow(qltk.Window):
             view = gtk.TextView()
             sw = gtk.ScrolledWindow()
             sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            sw.set_shadow_type(gtk.SHADOW_IN)
             sw.add(view)
             buffer = view.get_buffer()
             buffer.set_text(text)
