@@ -14,8 +14,6 @@ from traceback import print_exc
 
 from quodlibet.plugins import ListWrapper, Manager
 
-__all__ = [] # trick out old plugin manager
-
 class SongsMenuPlugin(gtk.ImageMenuItem):
     """Plugins of this type are subclasses of gtk.ImageMenuItem.
     They will be added, in alphabetical order, to the "Plugins" menu
