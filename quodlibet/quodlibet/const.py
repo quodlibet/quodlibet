@@ -78,6 +78,7 @@ if "QUODLIBET_DEBUG" in os.environ:
     DEBUG = True
     DEBUG_MENU = """\
       <menuitem action='DebugReload'/>
+      <menuitem action='DebugCauseError'/>
 """
 else:
     DEBUG = False

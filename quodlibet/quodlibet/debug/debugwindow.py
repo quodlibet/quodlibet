@@ -74,7 +74,7 @@ class ExceptionDialog(gtk.Window):
                 model[iter][1], model[iter][2],
                 util.unexpand(util.escape(model[iter][0]))))
         render = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(str(value), render)
+        col = gtk.TreeViewColumn(str(value).replace("_", "__"), render)
         col.set_cell_data_func(render, cdf)
         col.set_visible(True)
         col.set_expand(True)
