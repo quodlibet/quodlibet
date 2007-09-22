@@ -1,5 +1,12 @@
 import __builtin__
 
+_dummy_gettext = lambda value: value
+_dummy_ngettext = lambda v1, v2, count: value == 1 and v1 or v2
+__builtin__.__dict__["_"] = _dummy_gettext
+__builtin__.__dict__["Q_"] = _dummy_gettext
+__builtin__.__dict__["N_"] = _dummy_gettext
+__builtin__.__dict__["ngettext"] = _dummy_ngettext
+
 import gettext
 import locale
 import os
@@ -129,6 +136,9 @@ def _python_init():
     __builtin__.__dict__["print_d"] = print_d
     __builtin__.__dict__["print_e"] = print_e
     __builtin__.__dict__["print_w"] = print_w
+
+del(_dummy_gettext)
+del(_dummy_ngettext)
 
 _python_init()
 _gettext_init()

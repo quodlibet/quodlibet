@@ -458,13 +458,14 @@ def spawn(argv, stdout=False):
     a file object corresponding to the child's standard output; otherwise,
     return the child's process ID.
 
-    argv must be strictly str objects to avoid encoding confusion."""
+    argv must be strictly str objects to avoid encoding confusion.
+    """
 
     import gobject
     types = map(type, argv)
     if not (min(types) == max(types) == str):
         raise TypeError("executables and arguments must be str objects")
-    print_d("About to run %r" % argv)
+    print_d("Running %r" % " ".join(argv))
     args = gobject.spawn_async(
         argv, flags=gobject.SPAWN_SEARCH_PATH, standard_output=stdout)
     if stdout: return os.fdopen(args[2])
@@ -475,8 +476,6 @@ def fver(tup):
 
 def uri_is_valid(uri):
     return bool(urlparse.urlparse(uri)[0])
-
-N_ = lambda value: value
 
 HEADERS_FILTER = {
     "tracknumber": N_("track"),
@@ -519,5 +518,3 @@ HEADERS_FILTER = {
     "recordingdate": N_("recording date"),
     "releasecountry": N_("release country"),
     }
-
-del(N_)

@@ -337,11 +337,11 @@ class SongFileLibrary(SongLibrary, FileLibrary):
         If the song was added, it is returned. Otherwise, None
         is returned.
         """
-        print_d("Adding %r based on filename." % filename, self)
         try:
             if filename not in self._contents:
                 song = MusicFile(filename)
                 if song:
+                    print_d("Adding %r based on filename." % filename, self)
                     self.dirty = True
                     self._contents[song.key] = song
                     if signal:

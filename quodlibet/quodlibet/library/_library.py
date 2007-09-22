@@ -63,6 +63,8 @@ class Library(gtk.Object):
         already in the library.
         """
         items = filter(lambda item: item not in self, items)
+        if not items:
+            return
         print_d("Adding %d items." % len(items), self)
         for item in items:
             print_d("Adding %r." % item.key, self)
@@ -73,6 +75,8 @@ class Library(gtk.Object):
 
     def remove(self, items):
         """Remove items. This causes a 'removed' signal."""
+        if not items:
+            return
         print_d("Removing %d items." % len(items), self)
         for item in items:
             print_d("Removing %r." % item.key, self)
@@ -93,16 +97,22 @@ class Library(gtk.Object):
         the librarian, this library's changed signal may not fire, but
         another's might.
         """
+        if not items:
+            return
         if self.librarian and self in self.librarian.libraries.itervalues():
             print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
-            print_d("Changing %d items directly." % len(items), self)
             items = filter(self.__contains__, items)
+            if not items:
+                return
+            print_d("Changing %d items directly." % len(items), self)
             self._changed(items)
 
     def _changed(self, items):
         # Called by the changed method and Librarians.
+        if not items:
+            return
         print_d("Changing %d items." % len(items), self)
         self.dirty = True
         self.emit('changed', items)
