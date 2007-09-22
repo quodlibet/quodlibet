@@ -75,12 +75,12 @@ NBP_EXAMPLES = """\
 /path/<artist>/<album>/<tracknumber> - <title>"""
 
 if "QUODLIBET_DEBUG" in os.environ:
-    DEBUG = False
+    DEBUG = True
     DEBUG_MENU = """\
       <menuitem action='DebugReload'/>
 """
 else:
-    DEBUG = True
+    DEBUG = False
     DEBUG_MENU = ""
 
 MENU = """<ui>

@@ -464,6 +464,7 @@ def spawn(argv, stdout=False):
     types = map(type, argv)
     if not (min(types) == max(types) == str):
         raise TypeError("executables and arguments must be str objects")
+    print_d("About to run %r" % argv)
     args = gobject.spawn_async(
         argv, flags=gobject.SPAWN_SEARCH_PATH, standard_output=stdout)
     if stdout: return os.fdopen(args[2])

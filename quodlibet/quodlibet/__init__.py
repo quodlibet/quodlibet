@@ -151,6 +151,10 @@ def init(gtk=True, backend=None, library=None, player=None, icon=None):
     import quodlibet.library
     library = quodlibet.library.init(library)
 
+    if const.DEBUG:
+        import quodlibet.debug
+        quodlibet.debug.init()
+
     return (backend, library, player)
 
 def main(window):
