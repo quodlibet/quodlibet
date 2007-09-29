@@ -263,15 +263,18 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         def __init__(self):
             super(SongList.RatingColumn, self).__init__("~#rating")
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
 
             # Neither of TreeViewColumn or CellRendererText is a GTK
             # widget, so we need a new one to use Pango. Lame.
             l = gtk.Label(util.format_rating(1.0))
-            # Magic offset constant tested on Sans 10 to Sans 26.
+            # Magic offset constant tested on Sans 10 to Sans 26. For
+            # some definition of "Sans" that probably isn't reliable.
             min_width = l.size_request()[0] + 10
             l.destroy()
             self.set_min_width(min_width)
+            self.set_resizable(False)
+            self.set_expand(False)
 
     class NonSynthTextColumn(WideTextColumn):
         # Optimize for non-synthesized keys by grabbing them directly.
