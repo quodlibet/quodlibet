@@ -109,20 +109,17 @@ class PlaylistModel(gtk.ListStore):
         else: self.__old_value = oldsong
         self.order.reset(self)
         self.__iter = None
-        songs = songs[:]
-        copool.add(self.__set_idle, oldsong, songs)
-        copool.step(self.__set_idle)
 
-    def __set_idle(self, oldsong, songs):
+        print_d("Clearing model.", context=self)
         self.clear()
-        for count, song in enumerate(songs):
+        print_d("Setting %d songs." % len(songs), context=self)
+        for song in songs:
             iter = self.append(row=[song])
             if song == oldsong:
                 self.__iter = iter
-            if count and count % 100 == 0:
-                yield True
         if self.__iter is not None:
             self.__old_value = None
+        print_d("Done filling model.", context=self)
         self.emit('songs-set')
 
     def remove(self, iter):
@@ -203,21 +200,34 @@ class SongList(AllTreeView, util.InstanceTracker):
     class TextColumn(qltk.views.TreeViewColumnButton):
         # Base class for other kinds of columns.
         _render = gtk.CellRendererText()
-
+        _label = gtk.Label().create_pango_layout("")
         def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model.get_value(iter, 0)
-                cell.set_property('text', song.comma(tag))
+                text = unicode(song.comma(tag))
+                cell.set_property('text', text)
+                self._update_layout(text, cell)
             except AttributeError: pass
+
+        def _update_layout(self, text, cell=None, pad=12):
+            if not self.get_resizable():
+                self._label.set_text(text)
+                width = self.get_fixed_width()
+                new_width = self._label.get_pixel_size()[0] + pad
+                if cell:
+                    new_width += cell.get_property('xpad')
+                if width < new_width:
+                    self.set_fixed_width(new_width)
 
         def __init__(self, t):
             super(SongList.TextColumn, self).__init__(tag(t), self._render)
             self.header_name = t
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_visible(True)
             self.set_clickable(True)
             self.set_sort_indicator(False)
             self.set_cell_data_func(self._render, self._cdf, t)
+            self._update_layout(tag(t))
 
     class DateColumn(TextColumn):
         # The '~#' keys that are dates.
@@ -236,6 +246,7 @@ class SongList(AllTreeView, util.InstanceTracker):
                     stamp = time.localtime(stamp)
                     text = time.strftime(format, stamp).decode(const.ENCODING)
                     cell.set_property('text', text)
+                self._update_layout(cell.get_property('text'), cell)
             except AttributeError: pass
 
     class WideTextColumn(TextColumn):
@@ -248,7 +259,6 @@ class SongList(AllTreeView, util.InstanceTracker):
             super(SongList.WideTextColumn, self).__init__(tag)
             self.set_expand(True)
             self.set_resizable(True)
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_fixed_width(1)
 
     class RatingColumn(TextColumn):
@@ -259,20 +269,13 @@ class SongList(AllTreeView, util.InstanceTracker):
                 song = model.get_value(iter, 0)
                 cell.set_property(
                     'text', util.format_rating(song.get("~#rating", 0.5)))
+                # No need to update layout, we know this width at
+                # at startup.
             except AttributeError: pass
 
         def __init__(self):
             super(SongList.RatingColumn, self).__init__("~#rating")
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-
-            # Neither of TreeViewColumn or CellRendererText is a GTK
-            # widget, so we need a new one to use Pango. Lame.
-            l = gtk.Label(util.format_rating(1.0))
-            # Magic offset constant tested on Sans 10 to Sans 26. For
-            # some definition of "Sans" that probably isn't reliable.
-            min_width = l.size_request()[0] + 10
-            l.destroy()
-            self.set_min_width(min_width)
+            self._update_layout(util.format_rating(1.0))
             self.set_resizable(False)
             self.set_expand(False)
 
@@ -302,8 +305,9 @@ class SongList(AllTreeView, util.InstanceTracker):
         def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model.get_value(iter, 0)
-                cell.set_property(
-                    'text', util.format_time(song.get("~#length", 0)))
+                text = util.format_time(song.get("~#length", 0))
+                cell.set_property('text', text)
+                self._update_layout(text, cell)
             except AttributeError: pass
 
         def __init__(self, tag="~#length"):
@@ -374,6 +378,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.set_fixed_height_mode(True)
         self.set_column_headers(self.headers)
         librarian = library.librarian
         sigs = [librarian.connect('changed', self.__song_updated),
@@ -643,7 +648,6 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     def set_model(self, model):
         super(SongList, self).set_model(model)
-        if model is not None: model.connect('songs-set', self.__songs_set)
         self.model = model
 
     def get_songs(self):
@@ -669,21 +673,16 @@ class SongList(AllTreeView, util.InstanceTracker):
         else:
             self.set_sort_by(None, refresh=False)
 
-        for column in self.get_columns():
-            column.set_clickable(False)
-            column.set_reorderable(False)
-
-        if self.window:
-            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-
+        # Doing set_model(None) resets the sort indicator, so we need to
+        # remember it before doing that.
+        sorts = map(gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
+        print_d("Detaching model.", context=self)
+        self.set_model(None)
         model.set(songs)
-
-    def __songs_set(self, songlist):
-        for column in self.get_columns():
-            if column.header_name not in["~current"]:
-                column.set_clickable(True)
-                column.set_reorderable(True)
-        if self.window: self.window.set_cursor(None)
+        print_d("Attaching model.", context=self)
+        self.set_model(model)
+        print_d("Model attached.", context=self)
+        map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
 
     def get_selected_songs(self):
         model, rows = self.get_selection().get_selected_rows()
