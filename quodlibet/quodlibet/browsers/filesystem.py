@@ -71,7 +71,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
 
         sel = dt.get_selection()
         sel.unselect_all()
-        sel.connect_object('changed', copool.add, self.__songs_selected, sel)
+        sel.connect_object('changed', copool.add, self.__songs_selected, dt)
         if player: dt.connect('row-activated', self.__play, player)
         else: self.save = lambda: None
         self.add(dt)
@@ -120,7 +120,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         config.set("browsers", "filesystem", paths)
 
     def activate(self):
-        copool.add(self.__songs_selected, self.child.get_selection())
+        copool.add(self.__songs_selected, self.child)
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
@@ -170,10 +170,10 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         self.__library.add(to_add)
         yield songs
 
-    def __songs_selected(self, selection):
+    def __songs_selected(self, view):
         if self.window:
             self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-        for songs in self.__find_songs(selection):
+        for songs in self.__find_songs(view.get_selection()):
             yield True
         if self.window:
             self.window.set_cursor(None)
