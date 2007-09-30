@@ -402,8 +402,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.connect('drag-data-received', self.__drag_data_received, library)
 
         # Enabling this screws up rating and enqueuing
-        #self.set_search_column(0)
-        #self.set_search_equal_func(self.__search_func)
+        self.set_search_equal_func(self.__search_func)
 
         self.accelerators = gtk.AccelGroup()
         key, mod = gtk.accelerator_parse("<alt>Return")
@@ -581,12 +580,19 @@ class SongList(AllTreeView, util.InstanceTracker):
             song["~#rating"] = value
         librarian.changed(songs)
 
-    def __key_press(self, songlist, event, librarian):
+    def __key_press(self, songlist, event, librarian,
+                    start_search=gtk.accelerator_parse("<control>F")):
         if event.string in ['0', '1', '2', '3', '4']:
             rating = min(1.0, int(event.string) * util.RATING_PRECISION)
             self.__set_rating(rating, self.get_selected_songs(), librarian)
+            return True
         elif event.string in ['Q', 'q']:
             self.__enqueue(self.get_selected_songs())
+            return True
+        elif (event.keyval, event.state) == start_search:
+            self.emit('start-interactive-search')
+            return True
+        return False
 
     def __enqueue(self, songs):
         songs = filter(lambda s: s.can_add, songs)
@@ -649,6 +655,7 @@ class SongList(AllTreeView, util.InstanceTracker):
     def set_model(self, model):
         super(SongList, self).set_model(model)
         self.model = model
+        self.set_search_column(0)
 
     def get_songs(self):
         try: return self.get_model().get()
