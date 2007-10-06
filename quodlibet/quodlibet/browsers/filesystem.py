@@ -108,11 +108,22 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         for v in values: self.child.go_to(v)
 
     def restore(self):
-        try: paths = config.get("browsers", "filesystem").split("\n")
-        except: pass
+        try:
+            paths = config.get("browsers", "filesystem").split("\n")
+        except StandardError:
+            pass
         else:
+            def select(model, path, iter, paths):
+                if model[iter][0] in paths:
+                    self.child.get_selection().select_path(path)
+                    paths.remove(model[iter][0])
+                else:
+                    for fpath in paths:
+                        if model[path][0] and fpath.startswith(model[path][0]):
+                            self.child.expand_row(path, False)
+                return not bool(paths)
             self.child.get_selection().unselect_all()
-            for path in paths: self.child.go_to(path)
+            self.child.get_model().foreach(select, paths)
 
     def save(self):
         model, rows = self.child.get_selection().get_selected_rows()
