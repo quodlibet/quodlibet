@@ -109,8 +109,13 @@ class SongsMenuPlugins(Manager):
             for item in items:
                 try:
                     menu.append(item)
-                    item.connect('activate', self.__handle,
-                                 library, parent, songs, albums)
+                    args = (library, parent, songs, albums)
+                    if item.get_submenu():
+                        for subitem in item.get_submenu().get_children():
+                            subitem.connect_object(
+                                'activate', self.__handle, item, *args)
+                    else:
+                        item.connect('activate', self.__handle, *args)
                 except:
                     print_exc()
                     item.destroy()
