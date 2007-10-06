@@ -387,7 +387,11 @@ class AudioFile(dict):
                 score += len(matches)
                 if score: images.append((score, os.path.join(base, fn)))
         # Highest score wins.
-        if images: return file(max(images)[1], "rb")
+        if images:
+            try:
+                return file(max(images)[1], "rb")
+            except IOError:
+                return None
         elif "~picture" in self:
             # Otherwise, we might have a picture stored in the metadata...
             return self.get_format_cover()
