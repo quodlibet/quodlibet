@@ -78,6 +78,7 @@ class EditBookmarksPane(gtk.VBox):
         render.connect('edited', self.__edit_name, model)
         sw.child.append_column(col)
         self.pack_start(sw)
+        self.accels = gtk.AccelGroup()
 
         hbox = gtk.HButtonBox()
         remove = gtk.Button(stock=gtk.STOCK_REMOVE)
@@ -112,7 +113,7 @@ class EditBookmarksPane(gtk.VBox):
         remove.connect('activate', self.__remove, selection, library, song)
         keyval, mod = gtk.accelerator_parse("Delete")
         remove.add_accelerator(
-            'activate', gtk.AccelGroup(), keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', self.accels, keyval, mod, gtk.ACCEL_VISIBLE)
         menu.append(remove)
         menu.show_all()
         sw.child.connect('popup-menu', self.__popup, menu)
