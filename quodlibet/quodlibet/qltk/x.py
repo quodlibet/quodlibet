@@ -22,10 +22,10 @@ class Window(gtk.Window):
         gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
     def __init__(self, *args, **kwargs):
         super(Window, self).__init__(*args, **kwargs)
-        ag = gtk.AccelGroup()
-        self.add_accel_group(ag)
+        self.__accels = gtk.AccelGroup()
+        self.add_accel_group(self.__accels)
         self.add_accelerator(
-            'close-accel', ag, ord('w'), gtk.gdk.CONTROL_MASK, 0)
+            'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
 
     def set_transient_for(self, parent):
         super(Window, self).set_transient_for(parent)

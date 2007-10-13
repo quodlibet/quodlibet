@@ -484,8 +484,9 @@ class EditTags(gtk.VBox):
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         b.connect('activate', self.__remove_tag, view)
         keyval, mod = gtk.accelerator_parse("Delete")
+        menu.__accels = gtk.AccelGroup()
         b.add_accelerator(
-            'activate', gtk.AccelGroup(), keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', menu.__accels, keyval, mod, gtk.ACCEL_VISIBLE)
         menu.append(b)
 
         menu.show_all()

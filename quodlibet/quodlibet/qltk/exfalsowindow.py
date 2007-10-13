@@ -109,10 +109,10 @@ class ExFalsoWindow(gtk.Window):
 
         self.child.show()
 
-        ag = gtk.AccelGroup()
+        self.__ag = gtk.AccelGroup()
         key, mod = gtk.accelerator_parse("<control>Q")
-        ag.connect_group(key, mod, 0, gtk.main_quit)
-        self.add_accel_group(ag)
+        self.__ag.connect_group(key, mod, 0, gtk.main_quit)
+        self.add_accel_group(self.__ag)
         self.connect('configure-event', ExFalsoWindow.__save_size)
         self.resize(*map(int, config.get("memory", "exfalso_size").split()))
 

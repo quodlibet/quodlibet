@@ -24,6 +24,7 @@ class CBESEditor(qltk.Window):
         self.set_default_size(400, 300)
 
         self.add(gtk.VBox(spacing=6))
+        self.accels = gtk.AccelGroup()
 
         t = gtk.Table(2, 3)
         t.set_row_spacings(3)
@@ -75,7 +76,7 @@ class CBESEditor(qltk.Window):
         remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         keyval, mod = gtk.accelerator_parse("Delete")
         remove.add_accelerator(
-            'activate', gtk.AccelGroup(), keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', self.accels, keyval, mod, gtk.ACCEL_VISIBLE)
         menu.append(remove)
         menu.show_all()
 
