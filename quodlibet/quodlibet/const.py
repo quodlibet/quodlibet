@@ -50,6 +50,7 @@ Erich Schubert
 David Kågedal
 Remi Vanicat
 Niklas Janlert
+Ari Pollak
 Jan Arne Petersen""".split("\n"))
 
 ARTISTS = sorted("""\
