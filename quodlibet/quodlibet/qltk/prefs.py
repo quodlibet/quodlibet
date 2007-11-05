@@ -68,11 +68,11 @@ class PreferencesWindow(qltk.Window):
                 buttons["title"].set_active(True)
                 tiv.set_active(True)
                 checks.remove("~title~version")
-            aip = gtk.CheckButton(_("Album includes _part"))
-            if "~album~part" in checks:
+            aip = gtk.CheckButton(_("Album includes _disc subtitle"))
+            if "~album~discsubtitle" in checks:
                 buttons["album"].set_active(True)
                 aip.set_active(True)
-                checks.remove("~album~part")
+                checks.remove("~album~discsubtitle")
             fip = gtk.CheckButton(_("Filename includes _folder"))
             if "~filename" in checks:
                 buttons["~basename"].set_active(True)
@@ -120,7 +120,7 @@ class PreferencesWindow(qltk.Window):
                 try: headers[headers.index("title")] = "~title~version"
                 except ValueError: pass
             if aip.get_active():
-                try: headers[headers.index("album")] = "~album~part"
+                try: headers[headers.index("album")] = "~album~discsubtitle"
                 except ValueError: pass
             if fip.get_active():
                 try: headers[headers.index("~basename")] = "~filename"

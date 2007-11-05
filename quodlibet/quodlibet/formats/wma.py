@@ -29,7 +29,7 @@ class WMAFile(AudioFile):
         "WM/ModifiedBy": "remixer",
         "WM/Producer": "producer",
         "WM/ContentGroupDescription": "grouping",
-        "WM/SubTitle": "part",
+        "WM/SubTitle": "discsubtitle",
         "WM/TrackNumber": "tracknumber",
         "WM/PartOfSet": "discnumber",
         "WM/BeatsPerMinute": "bpm",

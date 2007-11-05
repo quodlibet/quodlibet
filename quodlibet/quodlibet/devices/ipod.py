@@ -94,7 +94,7 @@ class IPodDevice(Device):
             ['covers', _("Copy _album covers")],
             ['all_tags', _("Combine tags with _multiple values")],
             ['title_version', _("Title includes _version")],
-            ['album_part', _("Album includes _part")],
+            ['album_part', _("Album includes _disc subtitle")],
         ]:
             check = gtk.CheckButton()
             check.set_active(self[key])
@@ -184,8 +184,8 @@ class IPodDevice(Device):
         except IndexError:
             pass
         else:
-            if self['album_part'] and song('part'):
-                album = " - ".join([album, song('part')])
+            if self['album_part'] and song('discsubtitle'):
+                album = " - ".join([album, song('discsubtitle')])
             track.album = str(album)
 
         # String keys

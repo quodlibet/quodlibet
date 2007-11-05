@@ -669,7 +669,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             if tag == "~#track": tag = "album"
             elif tag == "~#disc": tag = "album"
             elif tag == "~length": tag = "~#length"
-            elif tag == "~album~part": tag = "album"
+            elif tag == "~album~subtitle": tag = "album"
 
             if callable(tag):
                 # A pattern is currently selected.
@@ -788,7 +788,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             ~#playcount ~#skipcount ~#rating ~#length""".split()
         peopleinfo = """artist ~people performer arranger author composer
             conductor lyricist originalartist""".split()
-        albuminfo = """album ~album~part labelid ~#disc ~#discs
+        albuminfo = """album ~album~discsubtitle labelid ~#disc ~#discs
             ~#tracks albumartist""".split()
         dateinfo = """date originaldate recordingdate ~#laststarted
             ~#lastplayed ~#added ~#mtime""".split()

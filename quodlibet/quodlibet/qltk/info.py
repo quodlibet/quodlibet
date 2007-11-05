@@ -25,7 +25,7 @@ class SongInfo(gtk.Label):
 \\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
 %(people)s><album|
 \\<b\\><album>\\</b\\><discnumber| - %(disc)s>\
-<part| - \\<b\\><part>\\</b\\>><tracknumber| - %(track)s>>""" % {
+<discsubtitle| - \\<b\\><discsubtitle>\\</b\\>><tracknumber| - %(track)s>>"""%{
         # Translators: As in "by Artist Name"
         "people": _("by %s") % "<~people>",
         "disc": _("Disc %s") % "<discnumber>",

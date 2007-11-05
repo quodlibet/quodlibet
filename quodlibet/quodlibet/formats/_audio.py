@@ -25,9 +25,9 @@ USEFUL_TAGS = (
     "license organization description location contact isrc date "
 
     # Other tags we like
-    "arranger author composer conductor lyricist discnumber labelid part "
-    "website language bpm albumartist originaldate originalalbum "
-    "originalartist recordingdate"
+    "arranger author composer conductor lyricist discnumber labelid "
+    "discsubtitle website language bpm albumartist originaldate "
+    "originalalbum originalartist recordingdate"
     ).split()
 MACHINE_TAGS = (
     "musicbrainz_trackid musicbrainz_trmid musicbrainz_albumid "
@@ -71,7 +71,8 @@ class AudioFile(dict):
 
     def __album_key(self):
         return (self.get("album", ""),
-                self.get("labelid") or self.get("musicbrainz_albumid") or "")
+                self.get("album_grouping_key") or self.get("labelid") or
+                self.get("musicbrainz_albumid") or "")
     album_key = property(__album_key)
 
     def __cmp__(self, other):

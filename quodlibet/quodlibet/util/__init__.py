@@ -493,6 +493,7 @@ HEADERS_FILTER = {
     "basename": N_("filename"),
     "dirname": N_("directory"),
     "uri": "URI",
+    "discsubtitle": N_("disc subtitle"),
 
     # http://musicbrainz.org/doc/MusicBrainzTag
     "musicbrainz_trackid": N_("MusicBrainz track ID"),

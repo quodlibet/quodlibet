@@ -138,9 +138,9 @@ class OneSong(qltk.Notebook):
         secondary = []
         if "discnumber" in song:
             secondary.append(_("Disc %s") % song["discnumber"])
-        if "part" in song:
+        if "discsubtitle" in song:
             secondary.append("<i>%s</i>" %
-                             util.escape(song.comma("part")))
+                             util.escape(song.comma("discsubtitle")))
         if "tracknumber" in song:
             secondary.append(_("Track %s") % song["tracknumber"])
         if secondary: text.append(" - ".join(secondary))

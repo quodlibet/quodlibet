@@ -86,7 +86,7 @@ def init(*rc_files):
           "repeat": "false",
 
           # initial column headers
-          "headers": "~#track ~title~version ~album~part artist ~#length",
+          "headers": "~#track ~title~version ~album~discsubtitle ~#length",
 
           # hack to disable hints, see bug #526
           "disable_hints": "false",

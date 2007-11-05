@@ -64,6 +64,9 @@ _("year")
 # beats per minute
 _("BPM")
 
+# This used to be called "part"
+_("disc subtitle")
+
 _("performers")
 _("lyricists")
 _("arrangers")

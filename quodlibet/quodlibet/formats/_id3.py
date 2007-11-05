@@ -47,7 +47,7 @@ class ID3File(AudioFile):
             "TSRC": "isrc",
             "TCOP": "copyright",
             "TPUB": "organization",
-            "TSST": "part",
+            "TSST": "discsubtitle",
             "TOLY": "author",
             "TMOO": "mood",
             "TBPM": "bpm",
@@ -56,6 +56,11 @@ class ID3File(AudioFile):
             "TOAL": "originalalbum",
             "TOPE": "originalartist",
             "WOAR": "website",
+            "TSOP": "artistsort",
+            "TSOA": "albumsort",
+            "TSOT": "artistsort",
+            "TMED": "media",
+            "TCMP": "compilation",
             # "language" should not make to TLAN. TLAN requires
             # an ISO language code, and QL tags are freeform.
             }
@@ -65,17 +70,22 @@ class ID3File(AudioFile):
     # http://musicbrainz.org/docs/specs/metadata_tags.html
     # http://bugs.musicbrainz.org/ticket/1383
     # http://musicbrainz.org/doc/MusicBrainzTag
-    BRAINZ = {
+    TXXX_MAP = {
         u"MusicBrainz Artist Id": "musicbrainz_artistid",
         u"MusicBrainz Album Id": "musicbrainz_albumid",
         u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
         u"MusicBrainz TRM Id": "musicbrainz_trmid",
         u"MusicIP PUID": "musicip_puid",
+        u"MusicMagic Fingerprint": "musicip_fingerprint",
         u"MusicBrainz Album Status": "musicbrainz_albumstatus",
         u"MusicBrainz Album Type": "musicbrainz_albumtype",
         u"MusicBrainz Album Release Country": "releasecountry",
+        u"MusicBrainz Disc Id": "musicbrainz_discid",
+        u"ASIN": "asin",
+        u"ALBUMARTISTSORT": "albumartistsort",
+        u"BARCODE": "barcode",
         }
-    ZNIARB = dict([(v, k) for k, v in BRAINZ.iteritems()])
+    PAM_XXXT = dict([(v, k) for k, v in TXXX_MAP.iteritems()])
 
     CODECS = ["utf-8"]
     try: CODECS.extend(config.get("editing", "id3encoding").strip().split())
@@ -122,8 +132,8 @@ class ID3File(AudioFile):
                     # Some versions of Foobar2000 write broken Replay Gain
                     # tags in this format.
                     name = frame.desc
-                elif frame.desc in self.BRAINZ:
-                    name = self.BRAINZ[frame.desc]
+                elif frame.desc in self.TXXX_MAP:
+                    name = self.TXXX_MAP[frame.desc]
                 else: continue
             elif frame.FrameID == "RVA2":
                 self.__process_rg(frame)
@@ -134,6 +144,8 @@ class ID3File(AudioFile):
                     self.add("performer:" + role, name)
                 continue
             else: name = self.IDS.get(frame.FrameID, "").lower()
+
+            name = name.lower()
 
             if not name: continue
 
@@ -209,7 +221,7 @@ class ID3File(AudioFile):
         dontwrite = ["genre", "comment", "replaygain_album_peak",
                      "replaygain_track_peak", "replaygain_album_gain",
                      "replaygain_track_gain", "musicbrainz_trackid",
-                     ] + self.BRAINZ.values()
+                     ] + self.TXXX_MAP.values()
 
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(owner="http://musicbrainz.org",
@@ -269,14 +281,14 @@ class ID3File(AudioFile):
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=peak)
                 tag.add(f)
 
-        for key in self.BRAINZ:
+        for key in self.TXXX_MAP:
             try: del(tag["TXXX:" + key])
             except KeyError: pass
-        for key in self.ZNIARB:
+        for key in self.PAM_XXXT:
             if key in self:
                 f = mutagen.id3.TXXX(
                     encoding=0, text=self[key].split("\n"),
-                    desc=self.ZNIARB[key])
+                    desc=self.PAM_XXXT[key])
                 tag.add(f)
 
         if (config.getboolean("editing", "save_to_songs") and
