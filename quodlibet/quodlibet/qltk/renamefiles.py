@@ -98,7 +98,7 @@ class RenameFiles(EditPane):
             try:
                 newname = util.fsencode(newname)
                 library.rename(song, newname, changed=was_changed)
-            except None:
+            except StandardError:
                 if skip_all: continue
                 buttons = (gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
                            _("_Continue"), gtk.RESPONSE_OK)
