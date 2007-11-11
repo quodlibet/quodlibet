@@ -11,6 +11,7 @@
 # more readable, unless they're also faster.
 
 import os
+import glob
 import shutil
 import time
 
@@ -373,20 +374,30 @@ class AudioFile(dict):
         no cover is available."""
 
         base = self('~dirname')
-        try: fns = os.listdir(base)
-        except EnvironmentError:  return None
+        fns = []
+        # We can't pass 'base' alone to glob.glob because it probably
+        # contains confusing metacharacters, and Python's glob doesn't
+        # support any kind of escaping, so chdir and use relative
+        # paths with known safe strings.
+        olddir = os.getcwd()
+        os.chdir(base)
+        for subdir in ["", "scan", "scans", "images", "covers"]:
+            for ext in ["jpg", "jpeg", "png", "gif"]:
+                subdir = util.make_case_insensitive(subdir)
+                ext = util.make_case_insensitive(ext)
+                fns.extend(glob.glob(os.path.join(subdir, "*." + ext)))
+        os.chdir(olddir)
         images = []
         for fn in sorted(fns):
-            lfn = fn.lower()
-            if lfn[-4:] in ["jpeg", ".jpg", ".png", ".gif"]:
-                score = 0
-                # check for the album label number
-                if self.get("labelid", lfn + ".").lower() in lfn: score += 100
-                matches = filter(lambda s: s in lfn,
-                                 ["front", "cover", "jacket", "folder",
-                                  "albumart"])
-                score += len(matches)
-                if score: images.append((score, os.path.join(base, fn)))
+            score = 0
+            # check for the album label number
+            if self.get("labelid", fn + ".").lower() in fn: score += 100
+            matches = filter(lambda s: s in fn.lower(),
+                             ["front", "cover", "jacket", "folder",
+                              "albumart"])
+            score += len(matches)
+            if score:
+                images.append((score, os.path.join(base, fn)))
         # Highest score wins.
         if images:
             try:
