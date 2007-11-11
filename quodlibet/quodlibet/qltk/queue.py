@@ -19,6 +19,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu        
 from quodlibet.qltk.x import Tooltips
+from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 
 QUEUE = os.path.join(const.USERDIR, "queue")
 
@@ -127,7 +128,10 @@ class QueueExpander(gtk.Expander):
         ctx.finish(bool(songs), False, etime)
 
     def __queue_shuffle(self, button, model):
-        model.order = button.get_active()
+        if not button.get_active():
+            model.order = OrderInOrder(model)
+        else:
+            model.order = OrderShuffle(model)
 
     def __expand(self, cb, prop, clear):
         cb.set_property('visible', self.get_expanded())
