@@ -177,7 +177,7 @@ def main(window):
     window.connect('destroy', gtk.main_quit)
     window.show()
 
-    gtk.gdk.threads_init()
+    #gtk.gdk.threads_init()
     gtk.main()
 
 def error_and_quit(error):
