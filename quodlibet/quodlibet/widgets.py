@@ -66,7 +66,7 @@ def init(player, library):
             
     for opt in config.options("header_maps"):
         val = config.get("header_maps", opt)
-        util.HEADERS_FILTER[opt] = val
+        util.tags.add(opt, val)
 
     in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
              "~#added ~#bitrate ~current ~#laststarted ~basename "

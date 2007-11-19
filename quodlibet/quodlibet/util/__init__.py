@@ -418,13 +418,7 @@ def tag(name, cap=True):
     # the user can configure).
     if not name: return _("Invalid tag")
     else:
-        def readable(tag):
-            try:
-                if tag[0] == "~":
-                    if tag[1] == "#": tag = tag[2:]
-                    else: tag = tag[1:]
-            except IndexError: return _("Invalid tag")
-            else: return _(HEADERS_FILTER.get(tag, tag.replace("_", " ")))
+        from quodlibet.util.tags import readable
         parts = map(readable, tagsplit(name))
         if cap:
             # Translators: If tag names, when capitalized, should not
@@ -479,46 +473,3 @@ def uri_is_valid(uri):
 
 def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
-
-HEADERS_FILTER = {
-    "tracknumber": N_("track"),
-    "discnumber": N_("disc"),
-    "labelid": N_("label ID"),
-    "bpm": N_("BPM"),
-    "isrc": "ISRC",
-    "lastplayed": N_("last played"),
-    "laststarted": N_("last started"),
-    "filename": N_("full name"),
-    "playcount": N_("plays"),
-    "skipcount": N_("skips"),
-    "mtime": N_("modified"),
-    "mountpoint": N_("mount point"),
-    "basename": N_("filename"),
-    "dirname": N_("directory"),
-    "uri": "URI",
-    "discsubtitle": N_("disc subtitle"),
-
-    # http://musicbrainz.org/doc/MusicBrainzTag
-    "musicbrainz_trackid": N_("MusicBrainz track ID"),
-    "musicbrainz_albumid": N_("MusicBrainz album ID"),
-    "musicbrainz_artistid": N_("MusicBrainz artist ID"),
-    "musicbrainz_albumartistid": N_("MusicBrainz album artist ID"),
-    "musicbrainz_trmid": N_("MusicBrainz TRM ID"),
-    "musicip_puid": N_("MusicIP PUID"),
-    "musicbrainz_albumstatus": N_("MusicBrainz album status"),
-    "musicbrainz_albumtype": N_("MusicBrainz album type"),
-
-    # Translators: A volume adjustment, not "to get/acquire".
-    "replaygain_track_gain": N_("track gain"),
-    "replaygain_track_peak": N_("track peak"),
-    # Translators: A volume adjustment, not "to get/acquire".
-    "replaygain_album_gain": N_("album gain"),
-    "replaygain_album_peak": N_("album peak"),
-
-    "albumartist": N_("album artist"),
-    "originaldate": N_("original release date"),
-    "originalalbum": N_("original album"),
-    "originalartist": N_("original artist"),
-    "recordingdate": N_("recording date"),
-    "releasecountry": N_("release country"),
-    }

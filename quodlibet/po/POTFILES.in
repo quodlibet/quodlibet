@@ -1,5 +1,4 @@
 exfalso.desktop.in
-po/tag-names.py
 quodlibet.desktop.in
 quodlibet.py
 quodlibet/browsers/_base.py
@@ -52,3 +51,17 @@ quodlibet/stock.py
 quodlibet/util/__init__.py
 quodlibet/util/massagers.py
 quodlibet/widgets.py
+exfalso.py
+quodlibet/__init__.py
+quodlibet/browsers/__init__.py
+quodlibet/debug/debugwindow.py
+quodlibet/devices/__init__.py
+quodlibet/formats/__init__.py
+quodlibet/player/__init__.py
+quodlibet/player/gstbe.py
+quodlibet/player/xinebe.py
+quodlibet/qltk/logging.py
+quodlibet/qltk/remote.py
+quodlibet/qltk/tracker.py
+quodlibet/util/tags.py
+
