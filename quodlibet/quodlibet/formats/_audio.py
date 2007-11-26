@@ -366,14 +366,18 @@ class AudioFile(dict):
         # contains confusing metacharacters, and Python's glob doesn't
         # support any kind of escaping, so chdir and use relative
         # paths with known safe strings.
-        olddir = os.getcwd()
-        os.chdir(base)
-        for subdir in ["", "scan", "scans", "images", "covers"]:
-            for ext in ["jpg", "jpeg", "png", "gif"]:
-                subdir = util.make_case_insensitive(subdir)
-                ext = util.make_case_insensitive(ext)
-                fns.extend(glob.glob(os.path.join(subdir, "*." + ext)))
-        os.chdir(olddir)
+        try:
+            olddir = os.getcwd()
+            os.chdir(base)
+        except EnvironmentError:
+            pass
+        else:
+            for subdir in ["", "scan", "scans", "images", "covers"]:
+                for ext in ["jpg", "jpeg", "png", "gif"]:
+                    subdir = util.make_case_insensitive(subdir)
+                    ext = util.make_case_insensitive(ext)
+                    fns.extend(glob.glob(os.path.join(subdir, "*." + ext)))
+            os.chdir(olddir)
         images = []
         for fn in sorted(fns):
             score = 0
