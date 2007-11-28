@@ -126,7 +126,7 @@ class TagsFromPath(EditPane):
 
     def __preview(self, songs):
         if songs is None:
-            songs = [row[0] for row in self.view.get_model()]
+            songs = [row[0] for row in (self.view.get_model() or [])]
 
         if songs: pattern_text = self.combo.child.get_text().decode("utf-8")
         else: pattern_text = ""
@@ -208,7 +208,7 @@ class TagsFromPath(EditPane):
 
         was_changed = []
 
-        for row in model:
+        for row in (model or []):
             song = row[0]
             changed = False
             if not song.valid() and not qltk.ConfirmAction(
