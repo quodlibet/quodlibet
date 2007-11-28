@@ -54,7 +54,7 @@ def MusicFile(filename):
                 sys.last_type = sys.last_value = sys.last_traceback = None
                 return _infos[ext](filename)
             except:
-                print_w(_("Error loading %s") % filename)
+                print_w(_("Error loading %r") % filename)
                 traceback.print_exc()
                 lt, lv, tb = sys.exc_info()
                 sys.last_type, sys.last_value, sys.last_traceback = lt, lv, tb
