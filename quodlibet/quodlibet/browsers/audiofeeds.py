@@ -203,12 +203,16 @@ class AudioFeeds(Browser, gtk.VBox):
     write = classmethod(write)
 
     def init(klass, library):
+        try: sys.modules["browsers.audiofeeds"] = sys.modules["quodlibet.browsers.audiofeeds"]
+        except KeyError: pass
         try: feeds = pickle.load(file(FEEDS, "rb"))
         except (EnvironmentError, EOFError): pass
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
         gobject.idle_add(klass.__do_check)
+        try: del(sys.modules["browsers.audiofeeds"])
+        except KeyError: pass
     init = classmethod(init)
 
     def __do_check(klass):
