@@ -377,6 +377,7 @@ class AudioFile(dict):
                     subdir = util.make_case_insensitive(subdir)
                     ext = util.make_case_insensitive(ext)
                     fns.extend(glob.glob(os.path.join(subdir, "*." + ext)))
+                    fns.extend(glob.glob(os.path.join(subdir, ".*." + ext)))
             os.chdir(olddir)
         images = []
         for fn in sorted(fns):
