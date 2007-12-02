@@ -177,7 +177,9 @@ def main(window):
     window.connect('destroy', gtk.main_quit)
     window.show()
 
-    #gtk.gdk.threads_init()
+    # This has been known to cause segmentation faults in some Python,
+    # GTK+, and GStreamer versions.
+    gtk.gdk.threads_init()
     gtk.main()
 
 def error_and_quit(error):
