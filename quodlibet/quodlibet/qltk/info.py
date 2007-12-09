@@ -76,8 +76,7 @@ class SongInfo(gtk.Label):
             self.__update_info(player)
 
     def __check_started(self, player, song):
-        if player.song is None:
-            self.__update_info(player)
+        self.__update_info(player)
 
     def __update_info(self, player):
         if player.info is not None:
