@@ -53,7 +53,7 @@ TAGS = dict([
     T("labelid", _("label ID")),
     T("originaldate", _("original release date")),
     T("originalalbum", _("original album")),
-    T("originalartist", _("originalartist")),
+    T("originalartist", _("original artist")),
     T("recordingdate", _("recording date")),
     T("releasecountry", _("release country")),
 
