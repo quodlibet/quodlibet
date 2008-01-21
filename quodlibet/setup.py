@@ -125,6 +125,12 @@ class coverage_cmd(Command):
         pass
 
     def run(self):
+        # Wipe existing modules, to make sure coverage data is properly
+        # generated for them.
+        for key in sys.modules.keys():
+            if key.startswith('quodlibet'):
+                del(sys.modules[key])
+
         import trace
         tracer = trace.Trace(
             count=True, trace=False,

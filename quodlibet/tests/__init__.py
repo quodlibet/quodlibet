@@ -6,20 +6,15 @@ import sys
 import unittest
 
 from unittest import TestCase
-TestCase.uses_mmap = True
 suites = []
 add = suites.append
 
 class QLTest(TestCase):
-    requires_quodlibet_init = False
-
     def run(self, *args):
-        if self.requires_quodlibet_init:
-            import quodlibet
-            init_result = quodlibet.init(backend="nullbe")
+        import quodlibet
+        init_result = quodlibet.init(backend="nullbe")
         TestCase.run(self, *args)
-        if self.requires_quodlibet_init:
-            quodlibet.quit()
+        quodlibet.quit()
 
 for name in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
     module = __name__ + "." + os.path.basename(name)
