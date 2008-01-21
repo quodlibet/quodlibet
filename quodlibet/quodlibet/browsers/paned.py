@@ -338,6 +338,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
     def __init__(self, library, player):
         super(PanedBrowser, self).__init__(spacing=6)
+        eager_search = config.get("settings", "eager_search")
+
         self._register_instance()
         self.__save = player
         hb = gtk.HBox(spacing=6)
@@ -369,7 +371,10 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.pack_start(hb, expand=False)
         self.__refill_id = None
         self.__filter = None
-        search.connect('changed', self.__filter_changed)
+        if eager_search:
+            search.connect('changed', self.__filter_changed)
+        else:
+            search.connect('activate', self.__filter_changed)
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
                   library.connect('removed', self.__removed)
