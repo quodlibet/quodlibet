@@ -669,7 +669,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             if tag == "~#track": tag = "album"
             elif tag == "~#disc": tag = "album"
             elif tag == "~length": tag = "~#length"
-            elif tag == "~album~subtitle": tag = "album"
+            elif tag == "~album~discsubtitle": tag = "album"
 
             if callable(tag):
                 # A pattern is currently selected.
