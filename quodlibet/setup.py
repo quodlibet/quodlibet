@@ -49,24 +49,20 @@ class clean(gdist_clean):
 class test_cmd(Command):
     description = "run automated tests"
     user_options = [
-        ("to-run=", None, "list of tests to run (default all)")
+        ("to-run=", None, "list of tests to run (default all)"),
+        ("suite=", None, "test suite (folder) to run (default 'tests')"),
         ]
 
     def initialize_options(self):
         self.to_run = []
+        self.suite = "tests"
 
     def finalize_options(self):
         if self.to_run:
             self.to_run = self.to_run.split(",")
 
     def run(self):
-        import quodlibet
-        import quodlibet.config
-        quodlibet.config.init()
-        quodlibet.init(backend="gstbe")
-        import quodlibet.player
-        quodlibet.player.init_device("gstbe")
-        import tests
+        tests = __import__(self.suite)
         if tests.unit(self.to_run):
             raise SystemExit("Test failures are listed above.")
 
