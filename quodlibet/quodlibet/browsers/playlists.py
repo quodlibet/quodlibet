@@ -87,7 +87,7 @@ def __ParsePlaylist(name, plfilename, files):
     return playlist
 
 class Playlist(list):
-    quote = staticmethod(lambda text: urllib.quote(text, safe=""))    
+    quote = staticmethod(lambda text: urllib.quote(text, safe=""))
     unquote = staticmethod(urllib.unquote)
 
     def new(klass, base=_("New Playlist")):
@@ -151,6 +151,7 @@ class Playlist(list):
 
     def remove_songs(self, songs):
         changed = False
+        # TODO: document the "library.masked" business
         for song in songs:
             if library.masked(song("~filename")):
                 while True:
@@ -161,6 +162,17 @@ class Playlist(list):
                 while song in self: self.remove(song)
                 else: changed = True
         return changed
+
+    def has_songs(self, songs):
+        # TODO(rm): consider the "library.masked" business
+        some, all = False, True
+        for song in songs:
+            found = song in self
+            some = some or found
+            all = all and found
+            if some and not all:
+                break
+        return some, all
 
     def delete(self):
         del(self[:])
@@ -196,7 +208,11 @@ class Menu(gtk.Menu):
         self.set_size_request(int(i.size_request()[0] * 2), -1)
 
         for playlist in Playlists.playlists():
-            i = gtk.MenuItem(playlist.name)
+            name = playlist.name
+            i = gtk.CheckMenuItem(name)
+            some, all = playlist.has_songs(songs)
+            i.set_active(some)
+            i.set_inconsistent(some and not all)
             i.child.set_ellipsize(pango.ELLIPSIZE_END)
             i.connect_object(
                 'activate', self.__add_to_playlist, playlist, songs)
@@ -387,7 +403,7 @@ class Playlists(gtk.VBox, Browser):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             map(smodel.remove, iters)
-            playlist = model[iter][0]            
+            playlist = model[iter][0]
             del(playlist[:])
             for row in smodel: playlist.append(row[0])
             Playlists.changed(playlist)
