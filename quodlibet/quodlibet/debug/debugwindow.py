@@ -54,7 +54,6 @@ class ExceptionDialog(gtk.Window):
 
     def __init__(self, Kind, value, traceback, dump, minidump):
         window = self.__create_window(Kind, value, traceback, dump, minidump)
-        window.show_all()
 
     def __stack_row_activated(self, view, path, column):
         from quodlibet import util
@@ -96,6 +95,7 @@ An exception has occured in Quod Libet. A dump file has been saved to <b>%s</b> 
 
 Quod Libet may now be unstable. Closing it and restarting is recommended. Your library will be saved.""")
                           % (util.unexpand(dump), util.unexpand(minidump)))
+        label.set_selectable(True)
         label.set_use_markup(True)
         label.set_line_wrap(True)
         box = gtk.VBox(spacing=6)
@@ -121,6 +121,10 @@ Quod Libet may now be unstable. Closing it and restarting is recommended. Your l
         cancel.connect_object('clicked', gtk.Window.destroy, window)
         close.connect('clicked', gtk.main_quit)
 
+        window.show_all()
+        filename = util.unexpand(dump)
+        offset = label.get_text().find(filename)
+        label.select_region(offset, offset + len(filename))
         return window
 
     def __destroy(self, window):

@@ -167,10 +167,9 @@ def init(gtk=True, backend=None, library=None, icon=None):
     else:
         device = None
 
-    if const.DEBUG:
-        print_d("Initializing debugging extensions")
-        import quodlibet.debug
-        quodlibet.debug.init()
+    print_d("Initializing debugging extensions")
+    import quodlibet.debug
+    quodlibet.debug.init()
 
     print_d("Finished initialization.")
     return (backend, library, device)
