@@ -115,8 +115,8 @@ def init(*rc_files):
         { "split_on": "& , /", # words to split on
           "id3encoding": "", # ID3 encodings to try
           "save_to_songs": "true",
-          "save_email": os.environ.get("EMAIL", const.EMAIL),
-          "alltags": "true", # show all comments, or just "human" ones
+          "save_email": const.EMAIL,
+          "alltags": "true", # show all tags, or just "human-readable" ones
           },
         }
 

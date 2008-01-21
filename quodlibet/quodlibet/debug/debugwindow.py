@@ -48,7 +48,7 @@ class ExceptionDialog(gtk.Window):
 
         for logname in logging.names():
             print >>dumpobj, "=== LOG: %r\n%s\n\n" %(
-                logname, "\n".join(logging.contents(logname)))
+                logname, "\n".join(logging.contents(logname)[-50:]))
 
         dumpobj.close()
 

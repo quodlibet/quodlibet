@@ -15,7 +15,7 @@ CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
 LOGDIR  = os.path.join(USERDIR, "logs")
 
-EMAIL = "quodlibet@lists.sacredchao.net"
+EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
 BASEDIR = os.path.dirname(os.path.realpath(__file__))
 IMAGEDIR = os.path.join(BASEDIR, "images")
@@ -51,12 +51,16 @@ David Kågedal
 Remi Vanicat
 Niklas Janlert
 Ari Pollak
-Jan Arne Petersen""".split("\n"))
+Jan Arne Petersen
+Robert Muth
+Josh Lee
+""".strip().split("\n"))
 
 ARTISTS = sorted("""\
 Tobias
 Jakub Steiner
-Fabien Devaux""".split("\n"))
+Fabien Devaux
+""".strip().split("\n"))
 
 TBP = os.path.join(USERDIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\

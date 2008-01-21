@@ -95,3 +95,7 @@ class BasePlayer(gtk.Object):
     def go_to(self, song):
         self._source.go_to(song)
         self._end(True)
+
+    def destroy(self):
+        self.go_to(None)
+        super(BasePlayer, self).destroy()

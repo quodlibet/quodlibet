@@ -45,6 +45,7 @@ class Library(gtk.Object):
 
     librarian = None
     dirty = False
+    filename = None
 
     def __init__(self, name=None):
         super(Library, self).__init__()
@@ -139,6 +140,7 @@ class Library(gtk.Object):
 
         Loading does not cause added, changed, or removed signals.
         """
+        self.filename = filename
         print_d("Loading contents of %r." % filename, self)
         try:
             if os.path.exists(filename):
@@ -170,8 +172,10 @@ class Library(gtk.Object):
         self.dirty = True
         self._contents[item.key] = item
 
-    def save(self, filename):
+    def save(self, filename=None):
         """Save the library to the given filename."""
+        if filename is None:
+            filename = self.filename
         print_d("Saving contents to %r." % filename, self)
         if not os.path.isdir(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))

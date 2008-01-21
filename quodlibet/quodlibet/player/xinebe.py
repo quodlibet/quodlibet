@@ -60,6 +60,7 @@ class XinePlaylistPlayer(BasePlayer):
         if self._audio_port:
             xine_close_audio_driver(_xine, self._audio_port)
         _exit_xine()
+        super(BasePlayer, self).destroy()
 
     def _playback_finished(self):
         self._source.next_ended()

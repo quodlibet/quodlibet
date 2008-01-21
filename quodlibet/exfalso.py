@@ -26,11 +26,12 @@ def main(argv):
 
     from quodlibet import config
     config.init(const.CONFIG)
-    backend, library, player = quodlibet.init(icon="exfalso", player="nullbe")
+    backend, library, player = quodlibet.init(icon="exfalso", backend="nullbe")
 
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
     w = ExFalsoWindow(library, args[0])
     quodlibet.main(w)
+    quodlibet.quit((backend, library, player))
     config.write(const.CONFIG)
 
 if __name__ == "__main__":

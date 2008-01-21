@@ -112,17 +112,3 @@ def init(player, library):
     main.show()
 
     return main
-
-def save_library(window, player, library):
-    window.destroy()
-    player.destroy()
-
-    # If something goes wrong here, it'll probably be caught
-    # saving the library anyway.
-    try: config.write(const.CONFIG)
-    except EnvironmentError, err: pass
-
-    try: library.save(const.LIBRARY)
-    except EnvironmentError, err:
-        err = str(err).decode('utf-8', 'replace')
-        ErrorMessage(None, _("Unable to save library"), err).run()

@@ -34,9 +34,7 @@ def main():
         backend, library, player = quodlibet.init(
             backend=config.get("player", "backend"),
             library=const.LIBRARY,
-            player=None
             )
-        player = load_player(library)
     except quodlibet.player.error, error:
         import gobject
         import gtk
@@ -56,10 +54,12 @@ def main():
     window = widgets.init(player, library)
     if "--debug" not in sys.argv:
         enable_periodic_save(library)
-        gtk.quit_add(1, widgets.save_library, window, player, library)
     if play:
         player.paused = False
     quodlibet.main(window)
+    quodlibet.quit((backend, library, player), save=True)
+    try: config.write(const.CONFIG)
+    except EnvironemntError, err: pass
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):
@@ -262,12 +262,6 @@ def process_arguments():
         elif command == "start-playing":
             global play
             play = True
-
-def load_player(library):
-    # Try to initialize the playlist and audio output.
-    print_(_("Opening audio device."))
-    from quodlibet import player
-    return player.init_device(library.librarian)
 
 if __name__ == "__main__":
     process_arguments()

@@ -23,6 +23,8 @@ class NullPlayer(BasePlayer):
     def __init__(self, sinkname, librarian=None):
         super(NullPlayer, self).__init__()
         self._set_paused(True)
+        from quodlibet.qltk.songlist import PlaylistModel
+        self._source = PlaylistModel()
 
     def get_position(self):
         """Return the current playback position in milliseconds,

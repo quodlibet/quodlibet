@@ -143,7 +143,7 @@ del(_dummy_ngettext)
 _python_init()
 _gettext_init()
 
-def init(gtk=True, backend=None, library=None, player=None, icon=None):
+def init(gtk=True, backend=None, library=None, icon=None):
     if gtk:
         _gtk_init(icon)
 
@@ -158,14 +158,38 @@ def init(gtk=True, backend=None, library=None, player=None, icon=None):
         backend = quodlibet.player.init(backend)
     if library:
         print_(_("Initializing main library (%s)") % util.unexpand(library))
+
     import quodlibet.library
     library = quodlibet.library.init(library)
 
+    if backend:
+        device = quodlibet.player.init_device(library.librarian)
+    else:
+        device = None
+
     if const.DEBUG:
+        print_d("Initializing debugging extensions")
         import quodlibet.debug
         quodlibet.debug.init()
 
-    return (backend, library, player)
+    print_d("Finished initialization.")
+    return (backend, library, device)
+
+def quit((backend, library, device), save=False):
+    if device is not None:
+        print_d("Shutting down player device %r." % device.version_info)
+        quodlibet.player.quit(device)
+
+    if library is not None:
+        if save:
+            try: library.save()
+            except EnvironmentError, err:
+                from quodlibet.qltk.msg import ErrorMessage
+                err = str(err).decode('utf-8', 'replace')
+                ErrorMessage(None, _("Unable to save library"), err).run()
+            else:
+                library.destroy()
+    print_d("Finished shutdown.")
 
 def main(window):
     import gtk
@@ -183,5 +207,5 @@ def main(window):
     gtk.main()
 
 def error_and_quit(error):
-    from qltk.msg import ErrorMessage
+    from quodlibet.qltk.msg import ErrorMessage
     ErrorMessage(None, error.short_desc, error.long_desc).run()

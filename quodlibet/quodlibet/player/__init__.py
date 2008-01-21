@@ -31,6 +31,11 @@ def init(backend_name):
     else:
         return backend
 
+def quit(dev):
+    global backend, playlist, device, PlaylistPlayer
+    dev.destroy()
+    backend = playlist = device = PlaylistPlayer = None
+
 def init_device(librarian):
     global playlist, device, PlaylistPlayer
     playlist = device = backend.init(librarian)
