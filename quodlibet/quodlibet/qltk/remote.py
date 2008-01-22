@@ -232,6 +232,8 @@ class FIFOControl(object):
     def _enqueue(self, value, library, window, player):
         playlist = window.playlist
         if value in library: songs = [library[value]]
+        elif os.path.isfile(value):
+            songs = [library.add_filename(os.path.realpath(value))]
         else: songs = library.query(value)
         songs.sort()
         playlist.enqueue(songs)
