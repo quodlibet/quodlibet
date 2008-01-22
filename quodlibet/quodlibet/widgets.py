@@ -33,7 +33,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 try:
     from quodlibet.qltk.dbus_ import DBusHandler
 except ImportError:
-    DBusHandler = lambda player: None
+    DBusHandler = lambda player, library: None
 
 global main, watcher
 main = watcher = None
@@ -102,7 +102,7 @@ def init(player, library):
     # These stay alive in the library/player/other callbacks.
     FSInterface(player)
     FIFOControl(library, main, player)
-    DBusHandler(player)
+    DBusHandler(player, library)
     SongTracker(library.librarian, player, main.playlist)
 
     flag = main.songlist.get_columns()[-1].get_clickable
