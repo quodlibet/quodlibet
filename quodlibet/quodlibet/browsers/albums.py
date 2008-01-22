@@ -672,6 +672,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     def __selection_changed(self, selection, sort):
         if sort.inhibit: return
+        # Without this delay, GTK+ seems to sometimes call this function
+        # before model elements are totally filled in, leading to errors
+        # like "TypeError: unknown type (null)".
+        gobject.idle_add(self.__update_songs, selection.get_tree_view(), sort)
+
+    def __update_songs(self, view, sort):
+        selection = view.get_selection()
         songs = self.__get_selected_songs(selection)
         albums = self.__get_selected_albums(selection)
         if not songs: return
