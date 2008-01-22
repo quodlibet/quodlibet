@@ -69,7 +69,9 @@ class AlbumChooser(gtk.Dialog):
         model, iter = view.get_selection().get_selected()
 
         # This MAY be the parent node or not.
-        while model.iter_parent(iter) != None: iter = model.iter_parent(iter)
+        while iter and model.iter_parent(iter) != None:
+            iter = model.iter_parent(iter)
+        if iter is None: return
 
         selection.unselect_all()
         view.collapse_all()
