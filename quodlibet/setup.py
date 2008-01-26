@@ -14,7 +14,7 @@ from gdist.clean import clean as gdist_clean
 from gdist.gobject import build_gobject_ext as gdist_build_gobject_ext
 
 PACKAGES = ("browsers devices formats library parse plugins qltk "
-            "util player").split()
+            "util player debug").split()
 
 class clean(gdist_clean):
     def run(self):
