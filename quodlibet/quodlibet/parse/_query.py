@@ -224,6 +224,7 @@ class QueryParser(object):
 
 STAR = ["artist", "album", "title"]
 def Query(string, star=STAR):
+    string = string.strip()
     if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])
     elif not set("#=").intersection(string):
@@ -234,7 +235,7 @@ def Query(string, star=STAR):
 Query.STAR = STAR
 
 def is_valid(string):
-    if string == "": return True
+    if string.strip() == "": return True
     tokens = QueryLexer(string)
     try: QueryParser(tokens).StartQuery()
     except error: return False
