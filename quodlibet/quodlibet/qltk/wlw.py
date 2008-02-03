@@ -112,7 +112,7 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
         if parent:
             sig = parent.connect('configure-event', self.__recenter)
             self.connect_object(
-                'destroy', WaitLoadWindow.__disconnect, self, sig)
+                'destroy', WaitLoadWindow.__disconnect, self, sig, parent)
             self.set_transient_for(parent)
             parent.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         self.set_modal(True)
@@ -149,9 +149,9 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
         dx2, dy2 = self.get_size()
         self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
 
-    def __disconnect(self, sig):
-        self.get_transient_for().window.set_cursor(None)
-        self.get_transient_for().disconnect(sig)
+    def __disconnect(self, sig, parent):
+        parent.window.set_cursor(None)
+        parent.disconnect(sig)
 
 class WritingWindow(WaitLoadWindow):
     """A WaitLoadWindow that defaults to text suitable for saving files."""
