@@ -73,7 +73,7 @@ class OrderInOrder(Order):
         else:
             next = playlist.iter_next(iter)
             if next is None and playlist.repeat:
-                next = self.get_iter_first()
+                next = playlist.get_iter_first()
             return next
 
     def previous(self, playlist, iter):
