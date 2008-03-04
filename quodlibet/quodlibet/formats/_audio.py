@@ -28,6 +28,13 @@ MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
 PEOPLE = ("albumartist artist author composer ~performers originalartist "
           "lyricist arranger conductor").split()
 
+SORTS = {
+    "artistsort": "artist",
+    "albumsort": "album",
+    "albumartist": "albumartist",
+    }
+STROS = dict([(v, k) for (k, v) in SORTS.items()])
+
 class AudioFile(dict):
     """An audio file. It looks like a dict, but implements synthetic
     and tied tags via __call__ rather than __getitem__. This means
@@ -58,7 +65,7 @@ class AudioFile(dict):
     mountpoint = property(lambda self: self["~mountpoint"])
 
     def __album_key(self):
-        return (self.get("album", ""),
+        return (self.get("albumsort", ""),
                 self.get("album_grouping_key") or self.get("labelid") or
                 self.get("musicbrainz_albumid") or "")
     album_key = property(__album_key)
@@ -179,7 +186,10 @@ class AudioFile(dict):
                 basename = basename.decode(const.FSCODING, "replace")
                 return "%s [%s]" % (basename, _("Unknown"))
             else: return title
-        else: return dict.get(self, key, default)
+        elif key in SORTS:
+            try: return self[key]
+            except KeyError: key = SORTS[key]
+        return dict.get(self, key, default)
 
     lyric_filename = property(lambda self: util.fsencode(
         os.path.join(os.path.expanduser("~/.lyrics"),
