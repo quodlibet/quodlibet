@@ -28,6 +28,7 @@ from quodlibet.util import tag
 from quodlibet.util import copool
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
+from quodlibet.formats._audio import TAG_TO_SORT
 
 class PlaylistMux(object):
 
@@ -670,6 +671,8 @@ class SongList(AllTreeView, util.InstanceTracker):
             elif tag == "~#disc": tag = "album"
             elif tag == "~length": tag = "~#length"
             elif tag == "~album~discsubtitle": tag = "album"
+
+            tag = TAG_TO_SORT.get(tag, tag)
 
             if callable(tag):
                 # A pattern is currently selected.

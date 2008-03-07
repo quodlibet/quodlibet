@@ -28,6 +28,18 @@ MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
 PEOPLE = ("albumartist artist author composer ~performers originalartist "
           "lyricist arranger conductor").split()
 
+TAG_TO_SORT = {
+    "artist": "artistsort",
+    "album": "albumsort",
+    "albumartist": "albumartistsort",
+    "performersort": "performersort",
+    "~performerssort": "~performerssort"
+    }
+
+SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
+
+PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
+
 class AudioFile(dict):
     """An audio file. It looks like a dict, but implements synthetic
     and tied tags via __call__ rather than __getitem__. This means
@@ -45,11 +57,11 @@ class AudioFile(dict):
     format = "Unknown Audio File"
 
     def __sort_key(self):
-        return (self.get("album"),
+        return (self("albumsort", ""),
                 self.get("labelid") or self.get("musicbrainz_albumid"),
                 self("~#disc", self.get("discnumber")),
                 self("~#track", self.get("tracknumber")),
-                self.get("artist"), self.get("musicbrainz_artistid"),
+                self("artistsort"), self.get("musicbrainz_artistid"),
                 self.get("title"),
                 self.get("~filename"))
     sort_key = property(__sort_key)
@@ -58,7 +70,7 @@ class AudioFile(dict):
     mountpoint = property(lambda self: self["~mountpoint"])
 
     def __album_key(self):
-        return (self.get("album", ""),
+        return (self("albumsort", ""),
                 self.get("album_grouping_key") or self.get("labelid") or
                 self.get("musicbrainz_albumid") or "")
     album_key = property(__album_key)
@@ -129,8 +141,16 @@ class AudioFile(dict):
                 people = filter(None, map(self.__call__, PEOPLE))
                 people = join(people).split("\n")
                 index = people.index
-                return join([person for (i,person) in enumerate(people)
-                        if index(person)==i])
+                return join([person for (i, person) in enumerate(people)
+                        if index(person) == i])
+            elif key == "peoplesort":
+                join = "\n".join
+                people = filter(None, map(self.__call__, PEOPLE_SORT))
+                people = join(people).split("\n")
+                index = people.index
+                return (join([person for (i, person) in enumerate(people)
+                              if index(person) == i]) or
+                        self("~people", default, connector))
             elif key == "performers":
                 values = []
                 for key in self.realkeys():
@@ -140,6 +160,16 @@ class AudioFile(dict):
                             values.append("%s (%s)" % (value, role))
                 values.extend(self.list("performer"))
                 return "\n".join(values)
+            elif key == "performerssort":
+                values = []
+                for key in self.realkeys():
+                    if key.startswith("performersort:"):
+                        role = key.split(":", 1)[1]
+                        for value in self.list(key):
+                            values.append("%s (%s)" % (value, role))
+                values.extend(self.list("performersort"))
+                return ("\n".join(values) or
+                        self("~performers", default, connector))
             elif key == "basename":
                 return os.path.basename(self["~filename"]) or self["~filename"]
             elif key == "dirname":
@@ -179,7 +209,11 @@ class AudioFile(dict):
                 basename = basename.decode(const.FSCODING, "replace")
                 return "%s [%s]" % (basename, _("Unknown"))
             else: return title
-        else: return dict.get(self, key, default)
+        elif key in SORT_TO_TAG:
+            try: return self[key]
+            except KeyError:
+                key = SORT_TO_TAG[key]
+        return dict.get(self, key, default)
 
     lyric_filename = property(lambda self: util.fsencode(
         os.path.join(os.path.expanduser("~/.lyrics"),

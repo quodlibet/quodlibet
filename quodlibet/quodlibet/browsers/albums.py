@@ -20,7 +20,7 @@ from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.browsers._base import Browser
-from quodlibet.formats import PEOPLE
+from quodlibet.formats._audio import PEOPLE, PEOPLE_SORT
 from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.completion import EntryWordCompletion
@@ -31,6 +31,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import copool, tag
 
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
+ELPOEPSORT = list(PEOPLE_SORT); ELPOEPSORT.reverse()
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><title|\<i\><title>\</i\>|%s>\</b\><date| (<date>)>
 \<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
@@ -206,7 +207,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             mbid = song.get("musicbrainz_albumid", "")
             key = song.album_key
             if key not in albums:
-                new_album = klass._Album(song("album"), labelid, mbid)
+                new_album = klass._Album(
+                    song("album"), song("albumsort"), labelid, mbid)
                 albums[key] = new_album
                 new.append(new_album)
             albums[key].songs.add(song)
@@ -229,16 +231,18 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         date = ""
         markup = ""
 
-        def __init__(self, title, labelid, mbid):
+        def __init__(self, title, sort, labelid, mbid):
             self.people = []
+            self.peoplesort = []
             self.songs = set()
             self.title = title
+            self.sort = sort
             # The key uniquely identifies the album; this way, albums
             # with different MBIDs or different label IDs but the same
             # title are different, and albums with different MBIDs
             # but the same label ID are the same (since MB uses separate
             # MBIDs for each disc).
-            self.key = (title, labelid or mbid)
+            self.key = (sort, labelid or mbid)
 
         def get(self, key, default="", connector=u" - "):
             if "~" in key[1:]:
@@ -253,8 +257,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             elif key in ["cover", "~cover"]:
                 return ((self.cover != type(self).cover) and "y") or ""
             elif key in ["title", "album"]: return self.title
+            elif key == "albumsort": return self.sort
             elif key == "people":
                 return "\n".join(self.people)
+            elif key == "peoplesort":
+                return "\n".join(self.peoplesort)
             elif key.startswith("~#") and key[-4:-3] != ":": key += ":avg"
             elif key == "~tracks":
                 return ngettext(
@@ -294,17 +301,23 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.tracks = len(self.songs)
             self.length = 0
             people = {}
+            peoplesort = {}
             for song in self.songs:
                 # Rank people by "relevance" -- artists before composers
                 # before performers, then by number of appearances.
                 for w, key in enumerate(ELPOEP):
                     for person in song.list(key):
-                        people[person] = people.get(person, 0) - 1000 ** w
+                        people[person] = people.get(person, 0) - 100 ** w
+                for w, key in enumerate(ELPOEPSORT):
+                    for person in song.list(key):
+                        peoplesort[person] = peoplesort.get(person, 0) - 100**w
 
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
 
             self.people = sorted(people.keys(), key=people.__getitem__)[:100]
+            self.peoplesort = sorted(
+                peoplesort.keys(), key=peoplesort.__getitem__)[:100]
 
             if not self.title:
                 self.date = ""
@@ -385,27 +398,27 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def __compare_title(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
-            elif not a1.title: return 1
-            elif not a2.title: return -1
+            elif not a1.sort: return 1
+            elif not a2.sort: return -1
             else: return cmp(a1.key, a2.key)
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
-            elif not a1.title: return 1
-            elif not a2.title: return -1
-            elif not a1.people and a2.people: return 1
-            elif not a2.people and a1.people: return -1
-            else: return (cmp(a1.people and a1.people[0],
-                              a2.people and a2.people[0]) or
+            elif not a1.sort: return 1
+            elif not a2.sort: return -1
+            elif not a1.peoplesort and a2.peoplesort: return 1
+            elif not a2.peoplesort and a1.peoplesort: return -1
+            else: return (cmp(a1.peoplesort and a1.peoplesort[0],
+                              a2.peoplesort and a2.peoplesort[0]) or
                           cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
                           cmp(a1.key, a2.key))
 
         def __compare_date(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
-            elif not a1.title: return 1
-            elif not a2.title: return -1
+            elif not a1.titlesort: return 1
+            elif not a2.titlesort: return -1
             elif not a1.date and a2.date: return 1
             elif not a2.date and a1.date: return -1
             else: return (cmp(a1.date, a2.date) or cmp(a1.key, a2.key))
