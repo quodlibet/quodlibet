@@ -56,6 +56,11 @@ TAGS = dict([
     T("originalartist", _("original artist")),
     T("recordingdate", _("recording date")),
     T("releasecountry", _("release country")),
+    T("albumartistsort", _("album artist (sort)")),
+    T("artistsort", _("artist (sort)")),
+    T("albumsort", _("album (sort)")),
+    T("performersort", _("performer (sort)")),
+    T("performerssort", _("performers (sort)")),
 
     # http://musicbrainz.org/doc/MusicBrainzTag
 

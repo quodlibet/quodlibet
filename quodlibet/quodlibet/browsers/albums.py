@@ -309,7 +309,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                     for person in song.list(key):
                         people[person] = people.get(person, 0) - 100 ** w
                 for w, key in enumerate(ELPOEPSORT):
-                    for person in song.list(key):
+                    for person in (song.list(key) or song.list(ELPOEP[w])):
                         peoplesort[person] = peoplesort.get(person, 0) - 100**w
 
                 self.discs = max(self.discs, song("~#disc", 0))
@@ -417,8 +417,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def __compare_date(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
-            elif not a1.titlesort: return 1
-            elif not a2.titlesort: return -1
+            elif not a1.sort: return 1
+            elif not a2.sort: return -1
             elif not a1.date and a2.date: return 1
             elif not a2.date and a1.date: return -1
             else: return (cmp(a1.date, a2.date) or cmp(a1.key, a2.key))
