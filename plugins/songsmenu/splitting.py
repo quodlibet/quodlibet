@@ -30,3 +30,17 @@ class SplitTags(SongsMenuPlugin):
             album, disc = util.split_album(song["album"])
             if album: song["album"] = album
             if disc: song["discnumber"] = disc
+
+class SplitAlbum(SongsMenuPlugin):
+    PLUGIN_ID = "Split Album"
+    PLUGIN_NAME = _("Split Album")
+    PLUGIN_HINT = "Split out disc number"
+    PLUGIN_ICON = 'gtk-find-and-replace'
+    PLUGIN_VERSION = "0.13"
+
+    def plugin_song(self, song):
+        if ("album" in song and "discnumber" not in song and
+            song.can_change("album") and song.can_change("discnumber")):
+            album, disc = util.split_album(song["album"])
+            if album: song["album"] = album
+            if disc: song["discnumber"] = disc
