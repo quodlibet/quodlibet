@@ -61,4 +61,11 @@ class TMassagers(TestCase):
                      "fef1f0f4-dead-a5da-d0d0-86753099ffff"
                      })
 
+    def test_albumstatus(self):
+        self.validate("musicbrainz_albumstatus",
+                      ["official", "promotional", "bootleg"])
+        self.invalidate("musicbrainz_albumstatus",
+                        ["", "unofficial", "\x99"])
+        
+
 add(TMassagers)
