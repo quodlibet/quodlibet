@@ -88,8 +88,8 @@ class DeleteDialog(gtk.Dialog):
             return resp
 
         if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return []
-        elif resp == 0: s = _("Moving %d/%d.")
-        elif resp == 2: s = _("Deleting %d/%d.")
+        elif resp == 0: s = _("Moving %(current)d/%(total)d.")
+        elif resp == 2: s = _("Deleting %(current)d/%(total)d.")
         else: return []
         files = self.__files
         w = WaitLoadWindow(self, len(files), s, (0, len(files)))
@@ -118,6 +118,6 @@ class DeleteDialog(gtk.Dialog):
                     (_("Deleting <b>%s</b> failed.") % util.fsdecode(filename)
                      + ("\n\n" + s))).run()
                 break
-            else: w.step(w.current + 1, w.count)
+            else: w.step()
         w.destroy()
         return removed

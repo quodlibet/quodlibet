@@ -6,16 +6,20 @@
 #
 # $Id$
 
+import math
+import time
+
 import gtk
 import pango
 
 from quodlibet.qltk import get_top_parent
+from quodlibet import util
 
 class WaitLoadBase(object):
     """Abstract class providing a label, a progressbar, pause/stop buttons,
     and the stepping logic."""
 
-    def __init__(self, count=0, text="", initial=(), limit=5):
+    def __init__(self, count=0, text="", initial={}, limit=3):
         """count: the total amount of items expected, 0 for unknown/indefinite
         text: text to display in the label; may contain % formats
         initial: initial values for % formats (text % initial)
@@ -49,13 +53,17 @@ class WaitLoadBase(object):
             self._cancel_button = None
             self._pause_button = None
 
-    def setup(self, count=0, text="", initial=()):
+    def setup(self, count=0, text="", initial={}):
         self.current = 0
         self.count = count
         self._text = text
         self.paused = False
         self.quit = False
+        self._start_time = time.time()
 
+        initial.setdefault("total", self.count)
+        initial.setdefault("current", self.current)
+        initial.setdefault("remaining", _("Unknown"))
         self._label.set_markup(self._text % initial)
         self._progress.set_fraction(0.0)
 
@@ -65,12 +73,7 @@ class WaitLoadBase(object):
     def __cancel_clicked(self, button):
         self.quit = True
 
-    def set_text(self, text):
-        self._label.set_markup(text)
-        while gtk.events_pending():
-            gtk.main_iteration()
-
-    def step(self, *values):
+    def step(self, **values):
         """Advance the counter by one. Arguments are applied to the
         originally-supplied text as a format string.
 
@@ -79,13 +82,19 @@ class WaitLoadBase(object):
         was pressed.
         """
 
-        self._label.set_markup(self._text % values)
         if self.count:
             self.current += 1
             self._progress.set_fraction(
                 max(0, min(1, self.current / float(self.count))))
         else:
             self._progress.pulse()
+        values.setdefault("total", self.count)
+        values.setdefault("current", self.current)
+        if self.count:
+            t = (time.time() - self._start_time) / self.current
+            remaining = math.ceil((self.count - self.current) * t)
+            values.setdefault("remaining", util.format_time(remaining))
+        self._label.set_markup(self._text % values)
 
         while not self.quit and (self.paused or gtk.events_pending()):
             gtk.main_iteration()
@@ -97,8 +106,8 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
 
     Example:
 
-    w = WaitLoadWindow(None, 5, "%d/%d", (0, 5))
-    for i in range(1, 6): w.step(i, 5)
+    w = WaitLoadWindow(None, 5, "%(current)d/%(total)d")
+    for i in range(1, 6): w.step()
     w.destroy()
     """
 
@@ -160,10 +169,10 @@ class WritingWindow(WaitLoadWindow):
         super(WritingWindow, self).__init__(
             parent, count,
             (_("Saving the songs you changed.") + "\n\n" +
-             _("%d/%d songs saved")), (0, count))
+             _("%(current)d/%(total)d songs saved\n(%(remaining)s remaining)")))
 
     def step(self):
-        return super(WritingWindow, self).step(self.current + 1, self.count)
+        return super(WritingWindow, self).step()
 
 class WaitLoadBar(WaitLoadBase, gtk.HBox):
     def __init__(self):
@@ -186,6 +195,7 @@ class WaitLoadBar(WaitLoadBase, gtk.HBox):
 
         self.show_all()
 
-    def step(self, *values):
-        self._progress.set_text(_("%d of %d") % (self.current + 1, self.count))
-        return super(WaitLoadBar, self).step(*values)
+    def step(self, **values):
+        ret = super(WaitLoadBar, self).step(**values)
+        self._progress.set_text(_("%d of %d") % (self.current, self.count))
+        return ret

@@ -61,8 +61,8 @@ def __ParsePlaylist(name, plfilename, files):
     playlist = Playlist.new(name)
     songs = []
     win = WaitLoadWindow(
-        None, len(files), _("Importing playlist.\n\n%d/%d songs added."),
-        (0, 0))
+        None, len(files),
+        _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
     for i, filename in enumerate(files):
         try: uri = URI(filename)
         except ValueError:
@@ -81,7 +81,7 @@ def __ParsePlaylist(name, plfilename, files):
             else:
                 # Who knows! Hand it off to GStreamer.
                 songs.append(formats.remote.RemoteFile(uri))
-        if win.step(i, len(files)): break
+        if win.step(): break
     win.destroy()
     playlist.extend(filter(None, songs))
     return playlist

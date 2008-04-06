@@ -454,13 +454,13 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Copying <b>%s</b>"), "")
+        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), "")
         wlb.show()
 
         model = songlist.get_model()
         for song in songs:
             label = util.escape(song('~artist~title'))
-            if wlb.step(label):
+            if wlb.step(song=label):
                 wlb.hide()
                 break
 
@@ -514,13 +514,13 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Deleting <b>%s</b>"), "")
+        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), "")
         wlb.show()
 
         model = songlist.get_model()
         for song in songs:
             label = util.escape(song('~artist~title'))
-            if wlb.step(label):
+            if wlb.step(song=label):
                 wlb.hide()
                 break
 
