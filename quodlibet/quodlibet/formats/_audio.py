@@ -197,7 +197,7 @@ class AudioFile(dict):
                 try: fileobj = file(self.lyric_filename, "rU")
                 except EnvironmentError: return default
                 else: return fileobj.read().decode("utf-8", "replace")
-            elif key[0] == "#" and "~" + key not in self:
+            elif key[:1] == "#" and "~" + key not in self:
                 try: return int(self[key[1:]])
                 except (ValueError, TypeError, KeyError): return default
             else: return dict.get(self, "~" + key, default)
