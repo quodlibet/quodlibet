@@ -415,13 +415,12 @@ class AudioFile(dict):
             os.chdir(olddir)
         images = []
         for fn in sorted(fns):
+            lfn = fn.lower()
             score = 0
             # check for the album label number
-            if self.get("labelid", fn + ".").lower() in fn: score += 100
-            matches = filter(lambda s: s in fn.lower(),
-                             ["front", "cover", "jacket", "folder",
-                              "albumart"])
-            score += len(matches)
+            if self.get("labelid", fn + ".").lower() in lfn: score += 100
+            score += sum(map(lfn.__contains__,
+                    ["front", "cover", "jacket", "folder", "albumart"]))
             if score:
                 images.append((score, os.path.join(base, fn)))
         # Highest score wins.
