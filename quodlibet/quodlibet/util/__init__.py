@@ -15,6 +15,9 @@ import traceback
 import urlparse
 import warnings
 
+# title function was moved to a separate module
+from quodlibet.util.titlecase import title
+
 from quodlibet.const import FSCODING as fscoding, ENCODING
 from quodlibet.util.i18n import GlibTranslations
 
@@ -287,20 +290,6 @@ def encode(s, charset="utf-8"):
     try: return s.encode(charset)
     except UnicodeError:
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
-
-def title(string):
-    """Title-case a string using a less destructive method than str.title."""
-    if not string: return ""
-    new_string = string[0].capitalize()
-    cap = False
-    for s in string[1:]:
-        if s.isspace(): cap = True
-        elif cap and s.isalpha():
-            cap = False
-            s = s.capitalize()
-        else: cap = False
-        new_string += s
-    return new_string
 
 def iscommand(s):
     """True if an executable file 's' exists in the user's path, or is a

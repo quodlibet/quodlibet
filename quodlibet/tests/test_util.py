@@ -134,29 +134,6 @@ class Tcapitalize(TestCase):
         self.failUnlessEqual(util.capitalize("!aa B"), "!aa B")
 add(Tcapitalize)
 
-class Ttitle(TestCase):
-    def test_empty(self):
-        self.failUnlessEqual(util.title(""), "")
-
-    def test_oneword(self):
-        self.failUnlessEqual(util.title("foobar"), "Foobar")
-
-    def test_twowords(self):
-        self.failUnlessEqual(util.title("foo bar"), "Foo Bar")
-
-    def test_preserve(self):
-        self.failUnlessEqual(util.title("fooBar"), "FooBar")
-
-    def test_nonalphabet(self):
-        self.failUnlessEqual(util.title("foo 1bar"), "Foo 1bar")
-
-    def test_two_words_and_one_not(self):
-        self.failUnlessEqual(util.title("foo 1  bar"), "Foo 1  Bar")
-
-    def test_apostrophe(self):
-        self.failUnlessEqual(util.title("it's"), "It's")
-add(Ttitle)
-
 class Tsplit_value(TestCase):
     def test_single(self):
         self.failUnlessEqual(util.split_value("a b"), ["a b"])
