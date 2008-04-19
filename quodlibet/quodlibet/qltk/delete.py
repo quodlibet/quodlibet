@@ -92,7 +92,7 @@ class DeleteDialog(gtk.Dialog):
         elif resp == 2: s = _("Deleting %(current)d/%(total)d.")
         else: return []
         files = self.__files
-        w = WaitLoadWindow(self, len(files), s, (0, len(files)))
+        w = WaitLoadWindow(self, len(files), s)
         removed = []
         for filename in files:
             try:
