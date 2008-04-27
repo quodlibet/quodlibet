@@ -24,7 +24,7 @@ from quodlibet.qltk import ConfirmAction
 CACHE = os.path.join(const.USERDIR, 'cache')
 
 class StorageDevice(Device):
-    type = 'generic'
+    protocol = 'storage'
 
     defaults = {
         'pattern': '<artist>/<album>/<title>',

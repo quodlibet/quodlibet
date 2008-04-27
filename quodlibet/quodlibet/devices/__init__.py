@@ -59,11 +59,19 @@ def get(name):
     except ValueError:
         return None
 
-# Return a constructor for a device given by a HAL type
-def get_by_type(type):
-    try: return devices[[d.type for d in devices].index(type)]
-    except ValueError:
-        return None
+# Return a constructor for a device given by the supported access method protocols
+def get_by_protocols(protocols):
+    # Try the storage protocol last
+    if 'storage' in protocols:
+        protocols.remove('storage')
+        protocols.append('storage')
+
+    for protocol in protocols:
+        try: return devices[[d.protocol for d in devices].index(protocol)]
+        except ValueError:
+            pass
+
+    return None
 
 # Return a new device instance for the given UDI
 def get_by_udi(udi):
@@ -72,7 +80,7 @@ def get_by_udi(udi):
     except dbus.DBusException: return None
 
     if 'portable_audio_player' in capabilities:
-        klass = get_by_type(interface.GetProperty('portable_audio_player.type'))
+        klass = get_by_protocols(interface.GetProperty('portable_audio_player.access_method.protocols'))
         if klass:
             device = klass(udi)
             return device

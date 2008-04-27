@@ -454,7 +454,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), "")
+        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), { 'song': '' })
         wlb.show()
 
         model = songlist.get_model()
@@ -514,7 +514,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), "")
+        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), { 'song': '' })
         wlb.show()
 
         model = songlist.get_model()

@@ -38,6 +38,7 @@ class WaitLoadBase(object):
         self._progress.set_pulse_step(0.08)
         self.pulse = self._progress.pulse
         self.set_fraction = self._progress.set_fraction
+        self.set_text = self._label.set_markup
 
         self.setup(count, text, initial)
 

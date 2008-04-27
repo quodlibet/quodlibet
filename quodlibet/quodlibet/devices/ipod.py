@@ -65,7 +65,7 @@ class IPodSong(AudioFile):
 
 class IPodDevice(Device):
     icon = stock.IPOD
-    type = "ipod"
+    protocol = 'ipod'
 
     ordered = True
 
@@ -252,6 +252,10 @@ class IPodDevice(Device):
     def cleanup(self, wlb, action):
         try:
             wlb.set_text("<b>Saving iPod database...</b>")
+            # This can take a while, so update the UI first
+            while gtk.events_pending():
+                gtk.main_iteration()
+
             if not self.__save_db():
                 wlb.set_text(_("Unable to save iPod database"))
                 return False
