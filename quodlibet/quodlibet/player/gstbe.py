@@ -219,7 +219,7 @@ def init(librarian):
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(
         gst.URI_SRC,
-        "file:///Sebastian/Droge/please/choke/on/a/bucket/of/cookies", ""):
+        "file:///fake/path/for/gst", ""):
         return GStreamerPlayer(pipeline, librarian)
     else:
         raise PlayerError(
