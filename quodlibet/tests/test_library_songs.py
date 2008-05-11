@@ -6,7 +6,8 @@ from tempfile import mkstemp
 
 from quodlibet.library.songs import SongLibrary, SongFileLibrary, SongLibrarian
 
-from test_library__library import Fake, TLibrary, TLibrarian
+from tests import TestCase, add
+from tests.test_library__library import Fake, TLibrary, TLibrarian
 
 class FakeSong(Fake):
     def list(self, tag):
@@ -40,6 +41,7 @@ class TSongLibrary(TLibrary):
         self.failUnlessEqual(sorted(self.library.tag_values(10)), range(10))
         self.failUnlessEqual(sorted(self.library.tag_values(0)), [])
         self.failIf(self.changed or self.added or self.removed)
+add(TSongLibrary)
 
 class FakeSongFile(FakeSong):
     _valid = True
@@ -116,6 +118,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failIf(new._valid)
         self.failIf(new in self.library)
         self.failUnlessEqual(new, self.library._masked[new][new])
+add(TSongFileLibrary)
 
 class TSongLibrarian(TLibrarian):
     Fake = FakeSong
@@ -145,6 +148,7 @@ class TSongLibrarian(TLibrarian):
         self.failUnlessEqual(self.changed_1, [new])
         self.failUnlessEqual(self.changed_2, [new])
         self.failUnless(new in self.changed)
+add(TSongLibrarian)
 
 if __name__ == "__main__":
     unittest.main()
