@@ -96,7 +96,7 @@ class Preferences(qltk.Window):
 
     def __preview_pattern(self, edit, label):
         album = AlbumList._Album(
-            util.tag("album"), util.tag("labelid"),
+            util.tag("album"), util.tag("albumsort"), util.tag("labelid"),
             util.tag("musicbrainz_albumid"))
         album.date = "2004-10-31"
         album.length = 6319
