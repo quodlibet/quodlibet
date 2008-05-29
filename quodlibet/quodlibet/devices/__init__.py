@@ -59,7 +59,8 @@ def get(name):
     except ValueError:
         return None
 
-# Return a constructor for a device given by the supported access method protocols
+# Return a constructor for a device given by the supported
+# access method protocols
 def get_by_protocols(protocols):
     # Try the storage protocol last
     if 'storage' in protocols:
@@ -76,11 +77,25 @@ def get_by_protocols(protocols):
 # Return a new device instance for the given UDI
 def get_by_udi(udi):
     interface = get_interface(udi)
-    try: capabilities = interface.GetProperty('info.capabilities')
-    except dbus.DBusException: return None
+    try:
+        capabilities = interface.GetProperty('info.capabilities')
+    except dbus.DBusException:
+        return None
 
     if 'portable_audio_player' in capabilities:
-        klass = get_by_protocols(interface.GetProperty('portable_audio_player.access_method.protocols'))
+        try:
+            protocols = interface.GetProperty(
+                'portable_audio_player.access_method.protocols')
+        except dbus.DBusException:
+            try:
+                # Support older HAL versions which don't use the 'protocols' property
+                # and only store one access method as a string
+                protocols = [interface.GetProperty(
+                    'portable_audio_player.access_method')]
+            except dbus.DBusException:
+                return None
+
+        klass = get_by_protocols(protocols)
         if klass:
             device = klass(udi)
             return device
