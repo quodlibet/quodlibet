@@ -107,8 +107,6 @@ def init(player, library):
 
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()
-    song = library.get(config.get("memory", "song"))
-    player.setup(main.playlist, song)
     main.show()
 
     return main

@@ -11,6 +11,7 @@ import os
 import random
 import sys
 
+import gobject
 import gtk
 import pango
 
@@ -250,6 +251,11 @@ class QuodLibetWindow(gtk.Window):
             self, config.get("memory", "browser"), library, player)
         self.browser.restore()
         self.browser.activate()
+
+        def delayed_song_set():
+            song = library.get(config.get("memory", "song"))
+            player.setup(self.playlist, song)
+        gobject.idle_add(delayed_song_set)
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 

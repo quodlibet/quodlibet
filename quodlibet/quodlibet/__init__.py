@@ -144,6 +144,7 @@ _python_init()
 _gettext_init()
 
 def init(gtk=True, backend=None, library=None, icon=None):
+    print_d("Entering quodlibet.init")
     if gtk:
         _gtk_init(icon)
 
@@ -175,6 +176,7 @@ def init(gtk=True, backend=None, library=None, icon=None):
     return (backend, library, device)
 
 def quit((backend, library, device), save=False):
+    print_d("Entering quodlibet.quit")
     if device is not None:
         print_d("Shutting down player device %r." % device.version_info)
         quodlibet.player.quit(device)
@@ -191,6 +193,7 @@ def quit((backend, library, device), save=False):
     print_d("Finished shutdown.")
 
 def main(window):
+    print_d("Entering quodlibet.main")
     import gtk
 
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]

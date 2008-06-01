@@ -41,6 +41,7 @@ def add(func, *args, **kwargs):
     next = __wrap(func, funcid, args, kwargs).next
     idle_id = gobject.idle_add(next, priority=priority)
     __routines[funcid] = (idle_id, next, priority)
+    print_d("Added copool function %r with id %r" % (func, funcid))
 
 def remove(funcid):
     """Stop a registered routine."""

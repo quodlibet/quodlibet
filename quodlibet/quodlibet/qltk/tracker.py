@@ -53,7 +53,6 @@ class SongTracker(object):
             librarian.changed([song])
 
     def __end(self, librarian, song, ended, pl):
-        config.set("memory", "song", "")
         if song is None or song.multisong:
             return
         elif not ended:
