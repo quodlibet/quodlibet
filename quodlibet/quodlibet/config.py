@@ -129,3 +129,8 @@ def init(*rc_files):
 
 def state(arg):
     return _config.getboolean("settings", arg)
+
+def add_section(section):
+    if not _config.has_section(section):
+        _config.add_section(section)
+

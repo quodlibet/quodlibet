@@ -13,6 +13,11 @@ from quodlibet.formats.xiph import OggFile, FLACFile
 class TVCFile(TestCase):
     # Mixin to test Vorbis writing features
 
+    def setUp(self):
+        config.add_section("editing")
+        config.set("editing", "save_email", "")
+        config.set("editing", "save_to_songs", "1")
+
     def test_rating(self):
         self.song["~#rating"] = 0.2
         self.song.write()
@@ -105,6 +110,7 @@ class TVCFile(TestCase):
 
 class TFLACFile(TVCFile):
     def setUp(self):
+        TVCFile.setUp(self)
         self.filename = tempfile.mkstemp(".flac")[1]
         shutil.copy(os.path.join('tests', 'data', 'empty.flac'), self.filename)
         self.song = FLACFile(self.filename)
@@ -121,6 +127,7 @@ add(TFLACFile)
 
 class TOggFile(TVCFile):
     def setUp(self):
+        TVCFile.setUp(self)
         self.filename = tempfile.mkstemp(".ogg")[1]
         shutil.copy(os.path.join('tests', 'data', 'empty.ogg'), self.filename)
         self.song = OggFile(self.filename)
