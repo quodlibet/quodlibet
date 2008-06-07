@@ -4,11 +4,12 @@
 # Licensed under the terms of the GNU GPL v2.
 
 import time
+import sys
 
 import gobject
 import gtk
 
-import lastfm
+import lastfm.client, lastfm.marshaller
 
 import config
 import player
@@ -22,16 +23,20 @@ class QLLastfm(EventPlugin):
     PLUGIN_NAME = _("Last.fm Submission")
     PLUGIN_DESC = "Submit songs to Last.fm via lastfmsubmitd."
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.3"
+    PLUGIN_VERSION = "0.4"
 
     __exclude = ""
     __song = None
     __timeout_id = -1
-    __log = lastfm.logger('quodlibet')
+    __cli = None
 
     def __init__(self):
-        try: self.__exclude = config.get("plugins", "scrobbler_exclude")
-        except: pass
+        try:
+            self.__exclude = config.get("plugins", "scrobbler_exclude")
+        except:
+            pass
+        self.__cli = lastfm.client.Client('quodlibet')
+        self.__cli.open_log()
 
     def unprepare(self):
         if self.__timeout_id > 0:
@@ -131,6 +136,8 @@ class QLLastfm(EventPlugin):
         for key in data.keys():
             if not data[key]: del(data[key])
         try:
-            lastfm.submit([data])
-            self.__log.info("Sent %s", lastfm.repr(data))
-        except IOError, e: self.__log.error("Error: %s" % e)
+            self.__cli.submit(data)
+            self.__cli.log.info("Sent %s", lastfm.repr(data))
+        except IOError, e:
+            print >>sys.stderr, e
+            self.__cli.log.error("Error: %s" % e)

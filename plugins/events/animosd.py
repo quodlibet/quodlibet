@@ -141,6 +141,7 @@ by <~people>>'''
 
     def __init__(self):
         window = self.__window = gtk.Window(gtk.WINDOW_POPUP)
+        window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NOTIFICATION)
         window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         window.connect('button-press-event', self.__buttonpress)
         darea = self.__darea = gtk.DrawingArea()

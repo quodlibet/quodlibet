@@ -27,20 +27,26 @@ class DBusMMKey(EventPlugin):
     PLUGIN_NAME = _("DBus Multimedia Keys")
     PLUGIN_DESC = _("Enable DBus-based Multimedia Shortcut Keys.\n"
                     "By Ronny Haryanto")
-    PLUGIN_VERSION = "0.1"
+    PLUGIN_VERSION = "0.2"
 
     def __init__(self):
         self.mmkc = MMKeysControl(player)
         self.bus = None
-        self.bus_object = None
+        self.bus_object_old = None
+        self.bus_object_new = None
 
     def enabled(self):
         if self.bus is None or self.bus_object is None:
             self.bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-            self.bus_object = self.bus.get_object(
+            # Work around the gnome-settings-daemon dbus interface
+            # changing between 2.20 and 2.22 by connecting to both
+            # the old and new object.
+            self.bus_object_old = self.bus.get_object(
                 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon')
-            self.bus_object.connect_to_signal(
-                "MediaPlayerKeyPressed", self.mmkc.action)
+            self.bus_object_old.connect_to_signal("MediaPlayerKeyPressed", self.mmkc.action)
+            self.bus_object_new = self.bus.get_object(
+                'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/MediaKeys')
+            self.bus_object_new.connect_to_signal("MediaPlayerKeyPressed", self.mmkc.action)
         self.mmkc.set_enabled(True)
 
     def disabled(self):
