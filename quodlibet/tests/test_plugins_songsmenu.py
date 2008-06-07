@@ -27,7 +27,7 @@ class TSongsMenuPlugins(TestCase):
         if mod:
             indent = ''
         else:
-            file.write("from plugins.songsmenu import SongsMenuPlugin\n")
+            file.write("from quodlibet.plugins.songsmenu import SongsMenuPlugin\n")
             file.write("class %s(SongsMenuPlugin):\n" % name)
             indent = '    '
             file.write("%spass\n" % indent)
@@ -36,7 +36,10 @@ class TSongsMenuPlugins(TestCase):
         if desc: file.write("%sPLUGIN_DESC = %r\n" % (indent, desc))
         if icon: file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
         for f in (funcs or []):
-            file.write("%sdef %s(*args): return args\n" % (indent, f))
+            if f in ["__init__"]:
+                file.write("%sdef %s(*args): pass\n" % (indent, f))
+            else:
+                file.write("%sdef %s(*args): return args\n" % (indent, f))
         file.flush()
         file.close()
 
