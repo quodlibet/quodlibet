@@ -11,6 +11,7 @@ Quod Libet requires Python 2.4 or later and Mutagen 1.11 or later.
  * Show image files in Ex Falso.
  * Direct output to console and to a debugging window.
    * Functions are accessible to plugins as print_d, print_e, and print_w.
+ * default_rating configuration option. (Robert Muth)
  * Many bug fixes and performance improvements.
  
 1.0 - Yeah they just showed up one day -- staring.

@@ -80,6 +80,7 @@ def init(*rc_files):
         { "scan": "", # scan directories, :-separated
 
           "jump": "true", # scroll song list on current song change
+          "default_rating": "0.5", # initial rating of new song
           "ratings": "4", # maximum rating value
 
           # probably belong in memory

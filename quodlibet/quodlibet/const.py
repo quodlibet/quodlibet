@@ -49,10 +49,8 @@ Javier Kohen
 Erich Schubert
 David Kågedal
 Remi Vanicat
-Niklas Janlert
 Ari Pollak
 Jan Arne Petersen
-Robert Muth
 Josh Lee
 """.strip().split("\n"))
 

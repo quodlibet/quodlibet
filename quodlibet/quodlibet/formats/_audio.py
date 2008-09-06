@@ -15,6 +15,7 @@ import glob
 import shutil
 import time
 
+from quodlibet import config
 from quodlibet import const
 from quodlibet import util
 
@@ -337,7 +338,7 @@ class AudioFile(dict):
         self.setdefault("~#skipcount", 0)
         self.setdefault("~#length", 0)
         self.setdefault("~#bitrate", 0)
-        self.setdefault("~#rating", 0.5)
+        self.setdefault("~#rating", config.getfloat("settings", "default_rating"))
         self.setdefault("~#added", int(time.time()))
 
         self["~#mtime"] = util.mtime(self['~filename'])
