@@ -14,6 +14,9 @@ import pango
 
 from quodlibet import const
 from quodlibet import qltk
+from quodlibet import stock
+from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.information import Information
 
 from quodlibet.parse import XMLFromPattern
 from quodlibet.qltk.textedit import PatternEdit
@@ -42,17 +45,33 @@ class SongInfo(gtk.Label):
         library.connect_object('changed', self.__check_change, player)
         player.connect('song-started', self.__check_started)
 
-        self.connect_object('populate-popup', self.__menu, player)
+        self.connect_object('populate-popup', self.__menu, player, library)
 
         try: self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
         except EnvironmentError: pass
         self._compiled = XMLFromPattern(self._pattern)
 
-    def __menu(self, player, menu):
+    def __menu(self, player, menu, library):
         item = qltk.MenuItem(_("_Edit Display..."), gtk.STOCK_EDIT)
         item.show()
         item.connect_object('activate', self.__edit, player)
         menu.append(item)
+
+        sep = gtk.SeparatorMenuItem()
+        menu.append(sep)
+        sep.show()
+        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
+        props.connect_object(
+            'activate', SongProperties, library, [player.song])
+        props.show()
+        props.set_sensitive(bool(player.song))
+        menu.append(props)
+        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        info.connect_object(
+            'activate', Information, library, [player.song])
+        info.show()
+        menu.append(info)
+        info.set_sensitive(bool(player.song))
 
     def __edit(self, player):
         editor = PatternEdit(self, SongInfo._pattern)
