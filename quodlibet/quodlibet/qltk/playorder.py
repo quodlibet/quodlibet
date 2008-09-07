@@ -82,7 +82,7 @@ class OrderInOrder(Order):
         elif iter is None:
             return playlist[(len(playlist) - 1,)].iter
         else:
-            path = playlist.get_path(iter)[0]
+            path = max(1, playlist.get_path(iter)[0])
             try: return playlist.get_iter((path - 1,))
             except ValueError:
                 if playlist.repeat:

@@ -47,7 +47,8 @@ class BigCenteredImage(gtk.Window):
         self.child.child.connect('key-press-event', self.__destroy)
         self.show_all()
 
-    def __destroy(self, *args): self.destroy()
+    def __destroy(self, *args):
+        self.destroy()
 
 class CoverImage(gtk.Frame):
     __albumfn = None

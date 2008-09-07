@@ -26,6 +26,7 @@ class TestMetaData(TestCase):
         os.remove(self.filename)
         del self.filename
         del self.song
+        config.quit()
 
     def test_base_data(self):
         self.failUnlessEqual(self.song['artist'], 'piman\njzig')
@@ -73,9 +74,6 @@ class TestMetaData(TestCase):
     def test_wackjob(self): # undefined tag
         self._test_tag('wackjob', [u'Jelly\nDanish', u'Muppet',
              u'\u30cf\u30f3\u30d0\u30fc\u30ac\u30fc'])
-
-    def tearDown(self):
-        config.quit()
 
 tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
 'conductor', 'copyright', 'discnumber', 'encodedby', 'genre', 'isrc',

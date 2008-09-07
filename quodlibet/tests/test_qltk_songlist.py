@@ -2,9 +2,11 @@ from tests import TestCase, add
 
 import gtk
 
-from quodlibet.player import PlaylistPlayer
+from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.songlist import PlaylistModel, PlaylistMux, SongList
+from quodlibet.qltk.playorder import ORDERS
+import quodlibet.config
 
 def do_events():
     while gtk.events_pending():
@@ -25,7 +27,7 @@ class TPlaylistModel(TestCase):
     def test_get(self):
         self.assertEqual(self.pl.get(), range(10))
         self.pl.set(range(12))
-        gtk.main_iteration()
+        gtk.main_iteration(False)
         self.assertEqual(self.pl.get(), range(12))
 
     def test_next(self):
@@ -89,7 +91,7 @@ class TPlaylistModel(TestCase):
         self.assertEqual(self.pl.current, 4)
 
     def test_shuffle(self):
-        self.pl.order = 1
+        self.pl.order = ORDERS[1](self.pl)
         for i in range(5):
             numbers = [self.pl.current for i in range(10)
                        if self.pl.next() or True]
@@ -100,13 +102,13 @@ class TPlaylistModel(TestCase):
             self.assertEqual(self.pl.current, None)
 
     def test_weighted(self):
-        self.pl.order = 2
+        self.pl.order = ORDERS[2](self.pl)
         r0 = {'~#rating': 0}
         r1 = {'~#rating': 1}
         r2 = {'~#rating': 2}
         r3 = {'~#rating': 3}
         self.pl.set([r0, r1, r2, r3])
-        gtk.main_iteration()
+        gtk.main_iteration(False)
         songs = [self.pl.current for i in range(1000)
                  if self.pl.next() or True]
         self.assert_(songs.count(r1) > songs.count(r0))
@@ -114,7 +116,7 @@ class TPlaylistModel(TestCase):
         self.assert_(songs.count(r3) > songs.count(r2))
 
     def test_shuffle_repeat(self):
-        self.pl.order = 1
+        self.pl.order = ORDERS[1](self.pl)
         self.pl.repeat = True
         numbers = [self.pl.current for i in range(30)
                    if self.pl.next() or True]
@@ -126,7 +128,7 @@ class TPlaylistModel(TestCase):
 
     def test_onesong(self):
         self.pl.go_to(3)
-        self.pl.order = 3
+        self.pl.order = ORDERS[3](self.pl)
         self.failUnlessEqual(self.pl.current, 3)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 4)
@@ -135,7 +137,7 @@ class TPlaylistModel(TestCase):
 
     def test_onesong_repeat(self):
         self.pl.go_to(3)
-        self.pl.order = 3
+        self.pl.order = ORDERS[3](self.pl)
         self.pl.repeat = True
         self.failUnlessEqual(self.pl.current, 3)
         self.pl.next()
@@ -157,12 +159,12 @@ class TPlaylistModel(TestCase):
         self.pl.go_to(5)
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.set([5, 10, 15, 20])
-        gtk.main_iteration()
+        gtk.main_iteration(False)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 10)
 
     def test_go_to_order(self):
-        self.pl.order = 1
+        self.pl.order = ORDERS[1](self.pl)
         for i in range(5):
             self.pl.go_to(5)
             self.failUnlessEqual(self.pl.current, 5)
@@ -185,7 +187,7 @@ class TPlaylistModel(TestCase):
         self.failUnlessEqual(self.pl.current, 0)
 
     def test_reset_order(self):
-        self.pl.order = 1
+        self.pl.order = ORDERS[1](self.pl)
         self.pl.go_to(5)
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.reset()
@@ -194,16 +196,16 @@ class TPlaylistModel(TestCase):
     def test_restart(self):
         self.pl.go_to(1)
         self.pl.set([101, 102, 103, 104])
-        gtk.main_iteration()
+        gtk.main_iteration(False)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 101)
 
     def test_next_nosong_536(self):
         self.pl.go_to(1)
         self.pl.repeat = True
-        self.pl.order = 1
+        self.pl.order = ORDERS[1](self.pl)
         self.pl.set([])
-        gtk.main_iteration()
+        gtk.main_iteration(False)
         self.pl.next()
 
     def shutDown(self):
@@ -214,7 +216,7 @@ class TPlaylistMux(TestCase):
     def setUp(self):
         self.q = PlaylistModel()
         self.pl = PlaylistModel()
-        self.p = PlaylistPlayer('fakesink')
+        self.p = NullPlayer()
         self.mux = PlaylistMux(self.p, self.q, self.pl)
         self.failUnless(self.pl.current is None)
 
@@ -313,7 +315,7 @@ class TPlaylistMux(TestCase):
             self.pl.set([1])
             do_events()
             self.failUnless(self.mux.current is None)
-            self.q.order = 1
+            self.q.order = ORDERS[1](self.pl)
             self.failUnless(self.next() == 1)
             self.q.set([10, 11])
             do_events()
@@ -332,6 +334,7 @@ class TSongList(TestCase):
     HEADERS = ["acolumn", "~#lastplayed", "~foo~bar", "~#rating",
                "~#length", "~dirname", "~#track"]
     def setUp(self):
+        quodlibet.config.init()
         self.songlist = SongList(SongLibrary())
 
     def test_set_all_column_headers(self):
@@ -360,4 +363,5 @@ class TSongList(TestCase):
 
     def tearDown(self):
         self.songlist.destroy()
+        quodlibet.config.quit()
 add(TSongList)
