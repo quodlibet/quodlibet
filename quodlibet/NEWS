@@ -1,4 +1,5 @@
-Quod Libet requires Python 2.4 or later and Mutagen 1.11 or later.
+Quod Libet requires Python 2.4 or later and Mutagen 1.11 or later,
+but recommends Python 2.5 and Mutagen 1.14 or later.
 
 2.0 -
  * New distutils-based build/test/install system.

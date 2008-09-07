@@ -12,7 +12,7 @@ Supported file formats include Ogg Vorbis, MP3, FLAC, MOD/XM/IT, Musepack,
 Wavpack, and MPEG-4 AAC.
 
 To report bugs, suggest features, ask a question, get the latest version,
-or help us out, visit http://www.sacredchao.net/quodlibet.
+or help us out, visit http://code.google.com/p/quodlibet/.
 
 ====[ Using EF/QL
 To run the programs, use
@@ -22,7 +22,7 @@ or
 
 After installing, you can just run `quodlibet' or `exfalso'.
 
-For help, visit http://www.sacredchao.net/quodlibet/wiki/Guide.
+For help, visit http://code.google.com/p/quodlibet/wiki/Guide.
 
 The manual page contains a brief synopsis of command-line options,
 and search and foramtting pattern syntax.
@@ -37,8 +37,8 @@ Quod Libet depends on the Python runtime and associated libraries.
     * Python (>= 2.4):		http://www.python.org
     * PyGTK (>= 2.10):		http://www.pygtk.org
     * PyGSt (>= 0.10.2):	http://gstreamer.freedesktop.org/
-    * Mutagen (>= 1.10):
-	http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen 
+    * Mutagen (>= 1.14):
+	http://code.google.com/p/quodlibet/wiki/Mutagen
 
 Particular audio formats depend on various GStreamer decoding elements, 
 as well as other Python modules. GStreamer splits their downlads into 
@@ -76,4 +76,4 @@ Python distutils suite to build and install. You can do this with
  $ ./setup.py install
 
 For more information, see 
-http://www.sacredchao.net/quodlibet/wiki/Guide/Requirements.
+http://code.google.com/p/quodlibet/wiki/Guide_Requirements

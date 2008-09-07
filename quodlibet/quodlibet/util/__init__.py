@@ -131,7 +131,7 @@ class OptionParser(object):
 
     def version(self):
         return _("""\
-%s %s - <quodlibet@lists.sacredchao.net>
+%s %s - <quod-libet-development@googlegroups.com>
 Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
 
 This is free software; see the source for copying conditions.  There is NO

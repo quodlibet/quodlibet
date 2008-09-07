@@ -229,7 +229,7 @@ class check(Command):
                 raise ImportError
         except ImportError:
             raise SystemExit("not found\n%s requires Mutagen 1.10.\n"
-                "(http://www.sacredchao.net/quodlibet/wiki/Download)" %
+                "(http://code.google.com/p/quodlibet/downloads/list)" %
                 self.NAME)
         else: print "found"
 
@@ -258,10 +258,10 @@ if __name__ == "__main__":
         cmdclass=cmd_classes,
         name="quodlibet",
         version=const.VERSION,
-        url="http://www.sacredchao.net/quodlibet",
+        url="http://code.google.com/p/quodlibet/",
         description="a music library, tagger, and player",
         author="Joe Wreschnig, Michael Urman, & others",
-        author_email="quodlibet@lists.sacredchao.net",
+        author_email="quod-libet-development@googlegroups.com",
         license="GNU GPL v2",
         packages=["quodlibet"] + map("quodlibet.".__add__, PACKAGES),
         package_data={"quodlibet": ["images/*.png", "images/*.svg"]},

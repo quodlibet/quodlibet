@@ -50,6 +50,7 @@ def remove(funcid):
         del(__routines[funcid])
     if funcid in __paused:
         del(__paused[funcid])
+    print_d("Removed copool function id %r" % funcid)
 
 def remove_all():
     """Stop all running routines."""
