@@ -50,6 +50,10 @@ def main():
     except (ValueError, TypeError): pass
     else: util.RATING_PRECISION = 1.0/ratings
 
+    try: default_rating = config.getfloat("settings", "default_rating")
+    except (ValueError, TypeError): pass
+    else: const.DEFAULT_RATING = default_rating
+
     import gtk
     window = widgets.init(player, library)
     if "--debug" not in sys.argv:
@@ -60,6 +64,7 @@ def main():
     quodlibet.quit((backend, library, player), save=True)
     try: config.write(const.CONFIG)
     except EnvironemntError, err: pass
+    config.quit()
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):

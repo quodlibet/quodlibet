@@ -19,6 +19,7 @@ class NullPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
     version_info = "Null Player Backend"
+    name = "Null"
 
     def __init__(self, sinkname, librarian=None):
         super(NullPlayer, self).__init__()

@@ -15,6 +15,8 @@ CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
 LOGDIR  = os.path.join(USERDIR, "logs")
 
+DEFAULT_RATING = 0.5
+
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
 BASEDIR = os.path.dirname(os.path.realpath(__file__))

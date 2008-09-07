@@ -128,6 +128,10 @@ def init(*rc_files):
 
     _config.read(rc_files)
 
+def quit():
+    global _config
+    _config = ConfigParser()
+
 def state(arg):
     return _config.getboolean("settings", arg)
 

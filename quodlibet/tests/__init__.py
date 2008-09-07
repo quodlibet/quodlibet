@@ -9,13 +9,6 @@ from unittest import TestCase
 suites = []
 add = suites.append
 
-class QLTest(TestCase):
-    def run(self, *args):
-        import quodlibet
-        init_result = quodlibet.init(backend="nullbe")
-        TestCase.run(self, *args)
-        quodlibet.quit()
-
 for name in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
     module = __name__ + "." + os.path.basename(name)
     __import__(module[:-3], {}, {}, [])
