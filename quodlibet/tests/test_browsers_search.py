@@ -4,6 +4,7 @@ import gtk
 
 from quodlibet import widgets
 import quodlibet.browsers.search
+import quodlibet.config
 
 from quodlibet.browsers.search import EmptyBar, SearchBar
 from quodlibet.formats._audio import AudioFile
@@ -21,6 +22,7 @@ SONGS.sort()
 class TEmptyBar(TestCase):
     Bar = EmptyBar
     def setUp(self):
+        quodlibet.config.init()
         quodlibet.browsers.search.library = SongLibrary()
         for af in SONGS:
             af.sanitize()
@@ -89,15 +91,9 @@ class TEmptyBar(TestCase):
     def tearDown(self):
         self.bar.destroy()
         quodlibet.browsers.search.library.destroy()
+        quodlibet.config.quit()
 add(TEmptyBar)
 
 class TSearchBar(TEmptyBar):
     Bar = SearchBar
-    def setUp(self):
-        super(TSearchBar, self).setUp()
-
-    def test_ctr(self): pass
-
-    def tearDown(self):
-        super(TSearchBar, self).tearDown()
 add(TSearchBar)
