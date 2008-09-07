@@ -3,6 +3,7 @@ from tests import TestCase, add
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.information import Information
+import quodlibet.config
 
 def AF(*args, **kwargs):
     a = AudioFile(*args, **kwargs)
@@ -11,6 +12,7 @@ def AF(*args, **kwargs):
 
 class TInformation(TestCase):
     def setUp(self):
+        quodlibet.config.init()
         self.library = SongLibrary()
 
     def test_none(self):
@@ -37,4 +39,5 @@ class TInformation(TestCase):
 
     def tearDown(self):
         self.library.destroy()
+        quodlibet.config.quit()
 add(TInformation)

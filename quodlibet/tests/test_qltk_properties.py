@@ -5,6 +5,7 @@ import gtk
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.library import SongLibrary
+from quodlibet import config
 
 class DummyPlugins(object):
     def rescan(self): pass
@@ -21,6 +22,7 @@ class TSongProperties(TestCase):
 
     def setUp(self):
         SongProperties.plugins = DummyPlugins()
+        config.init()
         self.library = SongLibrary()
 
     def test_onesong(self):
@@ -47,4 +49,5 @@ class TSongProperties(TestCase):
         else: del(self.window)
         self.library.destroy()
         del(SongProperties.plugins)
+        config.quit()
 add(TSongProperties)
