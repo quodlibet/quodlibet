@@ -56,6 +56,9 @@ class Runner(object):
         return bool(result.failures + result.errors)
 
 def unit(run=[], filter_func=None):
+    import quodlibet.const
+    quodlibet.const.CONFIG = os.path.join(os.getcwd(), "config.temp")
+
     runner = Runner()
     failures = False
     use_suites = filter(filter_func, suites)
@@ -64,4 +67,6 @@ def unit(run=[], filter_func=None):
             or test.__name__ in run
             or test.__module__[11:] in run):
             failures |= runner.run(test)
+    try: os.remove(quodlibet.const.CONFIG)
+    except EnvironmentError: pass
     return failures
