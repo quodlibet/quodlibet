@@ -386,7 +386,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.set_fixed_height_mode(True)
         self.set_column_headers(self.headers)
-        librarian = library.librarian
+        librarian = library.librarian or library
         sigs = [librarian.connect('changed', self.__song_updated),
                 librarian.connect('removed', self.__song_removed)]
         for sig in sigs:

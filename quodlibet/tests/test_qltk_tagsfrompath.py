@@ -2,10 +2,15 @@ from tests import TestCase, add
 
 from quodlibet.qltk.tagsfrompath import TagsFromPattern
 from quodlibet.qltk.tagsfrompath import TitleCase, SplitTag, UnderscoresToSpaces
+import quodlibet.config
 
 class FilterTestCase(TestCase):
-    def setUp(self): self.c = self.Kind()
-    def tearDown(self): self.c.destroy()
+    def setUp(self):
+        quodlibet.config.init()
+        self.c = self.Kind()
+    def tearDown(self):
+        self.c.destroy()
+        quodlibet.config.quit()
 
 class TTitleCase(FilterTestCase):
     Kind = TitleCase
@@ -13,6 +18,7 @@ class TTitleCase(FilterTestCase):
         self.failUnlessEqual(self.c.filter("title", "foo bar"), "Foo Bar")
     def test_apostrophe(self):
         self.failUnlessEqual(self.c.filter("title", "IT's"), "IT's")
+
 add(TTitleCase)
 
 class TSplitTag(FilterTestCase):

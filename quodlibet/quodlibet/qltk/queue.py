@@ -123,7 +123,9 @@ class QueueExpander(gtk.Expander):
 
     def __drag_data_received(self, library, ctx, x, y, sel, info, etime):
         filenames = sel.data.split("\x00")
-        songs = filter(None, map(library.librarian.get, filenames))
+        if library.librarian:
+            library = librarian
+        songs = filter(None, map(library.get, filenames))
         for song in songs: self.model.append(row=[song])
         ctx.finish(bool(songs), False, etime)
 
@@ -182,7 +184,9 @@ class PlayQueue(SongList):
         except EnvironmentError: pass
         else:
             filenames = map(str.strip, filenames)
-            songs = filter(None, map(library.librarian.get, filenames))
+            if library.librarian:
+                library = library.librarian
+            songs = filter(None, map(library.get, filenames))
             for song in songs:
                 self.model.append([song])
 

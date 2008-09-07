@@ -3,6 +3,7 @@ from tests import TestCase, add
 import os
 
 from quodlibet import formats
+from quodlibet import config
 
 from shutil import copyfileobj
 from tempfile import mkstemp
@@ -12,6 +13,7 @@ class TestMetaData(TestCase):
 
     def setUp(self):
         """Copy the base silent file to a temp name/location and load it"""
+        config.init()
         fd, self.filename = mkstemp(suffix=self.ext, text=False)
         dst = os.fdopen(fd, 'w')
         src = open(self.base + self.ext, 'rb')
@@ -71,6 +73,9 @@ class TestMetaData(TestCase):
     def test_wackjob(self): # undefined tag
         self._test_tag('wackjob', [u'Jelly\nDanish', u'Muppet',
              u'\u30cf\u30f3\u30d0\u30fc\u30ac\u30fc'])
+
+    def tearDown(self):
+        config.quit()
 
 tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
 'conductor', 'copyright', 'discnumber', 'encodedby', 'genre', 'isrc',

@@ -198,10 +198,11 @@ class PlayOrder(gtk.ComboBox):
     def set_active(self, value):
         try: value = ORDERS.index(value)
         except ValueError:
-            for i, Order in enumerate(ORDERS):
-                if Order.name == value:
-                    value = i
-                    break
+            if isinstance(value, str):
+                for i, Order in enumerate(ORDERS):
+                    if Order.name.lower() == value.lower():
+                        value = i
+                        break
         try: value = int(value)
         except ValueError: value = 0
         super(PlayOrder, self).set_active(value)

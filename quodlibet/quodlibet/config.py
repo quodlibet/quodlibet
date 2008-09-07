@@ -32,9 +32,13 @@ def write(filename):
     _config.write(f)
     f.close()
 
-def init(*rc_files):
+def quit():
     for section in _config.sections():
         _config.remove_section(section)
+
+def init(*rc_files):
+    if len(_config.sections()):
+        raise ValueError("config initialized twice without quitting: %r" % _config.sections())
     initial = {
         # User-defined tag name -> human name mappings
         "header_maps": {},

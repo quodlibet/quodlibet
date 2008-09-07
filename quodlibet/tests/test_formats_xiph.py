@@ -14,7 +14,7 @@ class TVCFile(TestCase):
     # Mixin to test Vorbis writing features
 
     def setUp(self):
-        config.add_section("editing")
+        config.init()
         config.set("editing", "save_email", "")
         config.set("editing", "save_to_songs", "1")
 
@@ -123,6 +123,7 @@ class TFLACFile(TVCFile):
 
     def tearDown(self):
         os.unlink(self.filename)
+        config.quit()
 add(TFLACFile)
 
 class TOggFile(TVCFile):
@@ -134,4 +135,5 @@ class TOggFile(TVCFile):
 
     def tearDown(self):
         os.unlink(self.filename)
+        config.quit()
 add(TOggFile)

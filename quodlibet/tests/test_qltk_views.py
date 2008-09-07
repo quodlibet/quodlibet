@@ -12,4 +12,5 @@ class THintedTreeView(TestCase):
 
     def tearDown(self):
         self.c.destroy()
+        quodlibet.config.quit()
 add(THintedTreeView)
