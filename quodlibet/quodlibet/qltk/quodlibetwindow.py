@@ -26,7 +26,6 @@ from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.library import library, librarian
 from quodlibet.parse import Query
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
@@ -157,7 +156,8 @@ class QuodLibetWindow(gtk.Window):
         self.add(gtk.VBox())
 
         # create main menubar, load/restore accelerator groups
-        self.__create_menu(tips, player)
+        self.__library = library
+        self.__create_menu(tips, player, library)
         self.add_accel_group(self.ui.get_accel_group())
 
         accel_fn = os.path.join(const.USERDIR, "accels")
@@ -318,13 +318,13 @@ class QuodLibetWindow(gtk.Window):
                 if os.path.isdir(loc): dirs.append(loc)
                 else:
                     loc = os.path.realpath(loc)
-                    if loc not in library:
-                        song = library.add_filename(loc)
+                    if loc not in self.__library:
+                        song = self.__library.add_filename(loc)
                         if song: files.append(song)
             elif player_can_play_uri(uri):
-                if uri not in library:
+                if uri not in self.__library:
                     files.append(RemoteFile(uri))
-                    library.add([files[-1]])
+                    self.__library.add([files[-1]])
             else:
                 error = True
                 break
@@ -335,8 +335,9 @@ class QuodLibetWindow(gtk.Window):
                 _("<b>%s</b> uses an unsupported protocol.") % uri).run()
         else:
             if dirs:
-                copool.add(library.scan, dirs, self.__status.bar.progress,
-                           funcid="library")
+                copool.add(
+                    self.__library.scan, dirs, self.__status.bar.progress,
+                    funcid="library")
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
@@ -372,7 +373,7 @@ class QuodLibetWindow(gtk.Window):
         if not ssv:
             self.qexpander.set_expanded(True)
 
-    def __create_menu(self, tips, player):
+    def __create_menu(self, tips, player, library):
         ag = gtk.ActionGroup('QuodLibetWindowActions')
 
         actions = [
@@ -674,7 +675,7 @@ class QuodLibetWindow(gtk.Window):
         self.__make_query("#(playcount = 0)")
 
     def __top40(self, menuitem):
-        songs = [song["~#playcount"] for song in library]
+        songs = [song["~#playcount"] for song in self.__library]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -683,7 +684,7 @@ class QuodLibetWindow(gtk.Window):
             self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def __bottom40(self, menuitem):
-        songs = [song["~#playcount"] for song in library]
+        songs = [song["~#playcount"] for song in self.__library]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -694,7 +695,8 @@ class QuodLibetWindow(gtk.Window):
     def __rebuild(self, activator, force):
         paths = config.get("settings", "scan").split(":")
         exclude = config.get("library", "exclude").split(":")
-        copool.add(library.rebuild, paths, self.statusbar.progress, force,
+        copool.add(self.__library.rebuild,
+                   paths, self.statusbar.progress, force,
                    exclude, funcid="library")
 
     # Set up the preferences window.
@@ -720,8 +722,8 @@ class QuodLibetWindow(gtk.Window):
                     _("<b>%s</b> uses an unsupported protocol.") %(
                     util.escape(name))).run()
             else:
-                if name not in library:
-                    song = library.add([RemoteFile(name)])
+                if name not in self.__library:
+                    song = self.__library.add([RemoteFile(name)])
 
     def open_chooser(self, action):
         if not os.path.exists(self.last_dir):
@@ -743,14 +745,14 @@ class QuodLibetWindow(gtk.Window):
         if fns:
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
-                copool.add(library.scan, fns, self.statusbar.progress,
+                copool.add(self.__library.scan, fns, self.statusbar.progress,
                            funcid="library")
             else:
                 added = []
                 self.last_dir = os.path.basename(fns[0])
                 for filename in map(os.path.realpath, fns):
-                    if filename in library: continue
-                    song = library.add_filename(filename)
+                    if filename in self.__library: continue
+                    song = self.__library.add_filename(filename)
                     if song: added.append(song)
                     else:
                         from traceback import format_exception_only as feo
@@ -777,18 +779,18 @@ class QuodLibetWindow(gtk.Window):
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
         header = col.header_name
-        menu = self.songlist.Menu(header, self.browser, library)
+        menu = self.songlist.Menu(header, self.browser, self.__library)
         if menu is not None:
             return self.songlist.popup_menu(menu, 0,
                     gtk.get_current_event_time())
 
     def __current_song_prop(self, *args):
         song = player.playlist.song
-        if song: SongProperties(librarian, [song])
+        if song: SongProperties(self.__library.librarian, [song])
 
     def __current_song_info(self, *args):
         song = player.playlist.song
-        if song: Information(librarian, [song])
+        if song: Information(self.__library.librarian, [song])
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Filters/FilterGenre",
