@@ -7,6 +7,11 @@ from quodlibet import config
 from quodlibet.qltk.ccb import ConfigCheckButton, ConfigCheckMenuItem
 
 class TConfigCheckButton(TestCase):
+    def setUp(self):
+        config.init()
+    def tearDown(self):
+        config.quit()
+
     def test_toggle(self):
         config.set("memory", "bar", "on")
         c = ConfigCheckButton("dummy", "memory", "bar")
@@ -18,6 +23,11 @@ class TConfigCheckButton(TestCase):
 add(TConfigCheckButton)
 
 class TConfigCheckMenuItem(TestCase):
+    def setUp(self):
+        config.init()
+    def tearDown(self):
+        config.quit()
+
     def test_toggle(self):
         config.set("memory", "bar", "on")
         c = ConfigCheckMenuItem("dummy", "memory", "bar")
