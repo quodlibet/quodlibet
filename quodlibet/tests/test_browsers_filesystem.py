@@ -1,12 +1,14 @@
 from tests import TestCase, add
 
 from quodlibet.browsers.filesystem import FileSystem
-from quodlibet.player import PlaylistPlayer
+from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
+import quodlibet.config
 
 class TFileSystem(TestCase):
     def setUp(self):
-        self.bar = FileSystem(SongLibrary(), PlaylistPlayer('fakesink'))
+        quodlibet.config.init()
+        self.bar = FileSystem(SongLibrary(), NullPlayer())
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -15,4 +17,5 @@ class TFileSystem(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
+        quodlibet.config.quit()
 add(TFileSystem)

@@ -18,6 +18,7 @@ class TPanedBrowser(TestCase):
     Bar = PanedBrowser
 
     def setUp(self):
+        config.init()
         config.set("browsers", "panes", "artist")
         library = SongLibrary()
         PanedBrowser.init(library)
@@ -44,4 +45,5 @@ class TPanedBrowser(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
+        config.quit()
 add(TPanedBrowser)

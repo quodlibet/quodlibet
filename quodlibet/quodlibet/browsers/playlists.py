@@ -25,7 +25,6 @@ from tempfile import NamedTemporaryFile
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
-from quodlibet.library import library
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WaitLoadWindow
@@ -34,7 +33,7 @@ from quodlibet.util.uri import URI
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
 if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)
 
-def ParseM3U(filename):
+def ParseM3U(filename, library=[]):
     plname = util.fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
@@ -42,9 +41,9 @@ def ParseM3U(filename):
         line = line.strip()
         if line.startswith("#"): continue
         else: filenames.append(line)
-    return __ParsePlaylist(plname, filename, filenames)
+    return __ParsePlaylist(plname, filename, filenames, library)
 
-def ParsePLS(filename, name=""):
+def ParsePLS(filename, name="", library=[]):
     plname = util.fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
@@ -55,9 +54,9 @@ def ParsePLS(filename, name=""):
             try: line = line[line.index("=")+1:].strip()
             except ValueError: pass
             else: filenames.append(line)
-    return __ParsePlaylist(plname, filename, filenames)
+    return __ParsePlaylist(plname, filename, filenames, library)
 
-def __ParsePlaylist(name, plfilename, files):
+def __ParsePlaylist(name, plfilename, files, library):
     playlist = Playlist.new(name)
     songs = []
     win = WaitLoadWindow(
@@ -440,8 +439,10 @@ class Playlists(gtk.VBox, Browser):
             sock = urllib.urlopen(uri)
             f = NamedTemporaryFile()
             f.write(sock.read()); f.flush()
-            if uri.lower().endswith('.pls'): playlist = ParsePLS(f.name)
-            elif uri.lower().endswith('.m3u'): playlist = ParseM3U(f.name)
+            if uri.lower().endswith('.pls'):
+                playlist = ParsePLS(f.name, library=library)
+            elif uri.lower().endswith('.m3u'):
+                playlist = ParseM3U(f.name, library=library)
             else: playlist = None
             if playlist:
                 library.add_filename(playlist)
@@ -524,9 +525,9 @@ class Playlists(gtk.VBox, Browser):
         chooser.destroy()
         for filename in files:
             if filename.endswith(".m3u"):
-                playlist = ParseM3U(filename)
+                playlist = ParseM3U(filename, library=library)
             elif filename.endswith(".pls"):
-                playlist = ParsePLS(filename)
+                playlist = ParsePLS(filename, library=library)
             else:
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),

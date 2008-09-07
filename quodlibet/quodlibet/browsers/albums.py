@@ -563,13 +563,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         menu = SongsMenu(library, songs)
 
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
-        button.connect('activate', self.__refresh_album, view.get_selection())
+        button.connect('activate', self.__refresh_album, view)
         menu.prepend(gtk.SeparatorMenuItem())
         menu.prepend(button)
         menu.show_all()
         return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
-    def __refresh_album(self, menuitem, selection):
+    def __refresh_album(self, menuitem, view):
+        selection = view.get_selection()
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         if None in albums:
@@ -579,6 +580,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             album.finalize()
 
     def __get_selected_albums(self, selection):
+        if not selection:
+            return []
         model, rows = selection.get_selected_rows()
         if not model or not rows: return set([])
         albums = [model[row][0] for row in rows]
@@ -586,6 +589,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         else: return albums
 
     def __get_selected_songs(self, selection):
+        if not selection:
+            return []
         model, rows = selection.get_selected_rows()
         if not model or not rows: return []
         albums = [model[row][0] for row in rows]

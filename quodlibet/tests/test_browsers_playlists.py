@@ -4,13 +4,20 @@ import os
 import tempfile
 
 from quodlibet.browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
-from quodlibet.player import PlaylistPlayer
+from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
+import quodlibet.config
 
 def makename():
     return tempfile.mkstemp()[1]
 
 class TParsePlaylist(TestCase):
+    def setUp(self):
+        quodlibet.config.init()
+
+    def tearDown(self):
+        quodlibet.config.quit()
+
     def test_parse_empty(self):
         name = makename()
         file(name, "w").close()
@@ -94,8 +101,9 @@ add(TPlaylist)
 
 class TPlaylists(TestCase):
     def setUp(self):
+        quodlibet.config.init()
         self.library = SongLibrary()
-        self.bar = Playlists(SongLibrary(), PlaylistPlayer('fakesink'))
+        self.bar = Playlists(SongLibrary(), NullPlayer())
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -104,4 +112,5 @@ class TPlaylists(TestCase):
     def tearDown(self):
         self.bar.destroy()
         self.library.destroy()
+        quodlibet.config.quit()
 add(TPlaylists)
