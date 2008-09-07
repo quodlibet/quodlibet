@@ -1,11 +1,13 @@
 from tests import TestCase, add
 
-from quodlibet.player import PlaylistPlayer
+from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.controls import Volume
+import quodlibet.config
 
 class TVolume(TestCase):
     def setUp(self):
-        self.p = PlaylistPlayer('fakesink')
+        quodlibet.config.init()
+        self.p = NullPlayer()
         self.v = Volume(self.p)
 
     def test_setget(self):

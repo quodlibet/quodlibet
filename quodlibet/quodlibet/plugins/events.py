@@ -11,8 +11,6 @@ import traceback
 
 import gobject
 
-from quodlibet.library import SongLibrarian
-from quodlibet.player import PlaylistPlayer
 from quodlibet.plugins import Manager, SongWrapper, ListWrapper
 
 class EventPlugin(object):
@@ -46,15 +44,23 @@ class EventPlugin(object):
         pass
 
 class EventPlugins(Manager):
-    library_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                      for s in gobject.signal_list_names(SongLibrarian)]
-    player_events = [(s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                     for s in gobject.signal_list_names(PlaylistPlayer)]
-    player_events.remove(('error', 'plugin_on_error'))
-    all_events = library_events + player_events
+    library_events = []
+    player_events = []
 
     def __init__(self, librarian=None, player=None, folders=[], name=None):
         super(EventPlugins, self).__init__(folders, name)
+
+        if librarian:
+            self.library_events = [
+                (s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
+                for s in gobject.signal_list_names(librarian)]
+        if player:
+            self.player_events = [
+                (s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
+                for s in gobject.signal_list_names(player)]
+            self.player_events.remove(('error', 'plugin_on_error'))
+        self.all_events = self.library_events + self.player_events
+
         self.librarian = librarian
 
         if librarian:

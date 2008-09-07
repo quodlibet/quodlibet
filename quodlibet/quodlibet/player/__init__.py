@@ -7,11 +7,6 @@
 # $Id$
 
 global playlist, device, backend
-playlist = None
-device = None
-backend = None
-
-PlaylistPlayer = None
 
 class error(RuntimeError):
     def __init__(self, short_desc, long_desc):
@@ -32,12 +27,14 @@ def init(backend_name):
         return backend
 
 def quit(dev):
-    global backend, playlist, device, PlaylistPlayer
+    global backend, playlist, device
     dev.destroy()
-    backend = playlist = device = PlaylistPlayer = None
+    del(backend)
+    del(device)
+    del(playlist)
 
 def init_device(librarian):
-    global playlist, device, PlaylistPlayer
+    global playlist, device
     playlist = device = backend.init(librarian)
     PlaylistPlayer = type(device)
     return device

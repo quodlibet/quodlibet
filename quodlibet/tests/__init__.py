@@ -60,6 +60,8 @@ def unit(run=[], filter_func=None):
     failures = False
     use_suites = filter(filter_func, suites)
     for test in use_suites:
-        if not run or test.__name__ in run:
+        if (not run
+            or test.__name__ in run
+            or test.__module__[11:] in run):
             failures |= runner.run(test)
     return failures

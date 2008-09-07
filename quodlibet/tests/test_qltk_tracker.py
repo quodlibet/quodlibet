@@ -3,13 +3,13 @@ from tests import TestCase, add
 import gtk
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet.player import PlaylistPlayer
+from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.tracker import SongTracker
 from quodlibet.library import SongLibrary
 
 class TSongTracker(TestCase):
     def setUp(self):
-        self.p = PlaylistPlayer('fakesink')
+        self.p = NullPlayer()
         self.w = SongLibrary()
         self.s1 = AudioFile(
             {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,

@@ -33,6 +33,8 @@ def write(filename):
     f.close()
 
 def init(*rc_files):
+    for section in _config.sections():
+        _config.remove_section(section)
     initial = {
         # User-defined tag name -> human name mappings
         "header_maps": {},
@@ -127,10 +129,6 @@ def init(*rc_files):
             _config.set(section, key, value)
 
     _config.read(rc_files)
-
-def quit():
-    global _config
-    _config = ConfigParser()
 
 def state(arg):
     return _config.getboolean("settings", arg)

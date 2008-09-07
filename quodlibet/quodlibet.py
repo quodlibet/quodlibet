@@ -64,7 +64,6 @@ def main():
     quodlibet.quit((backend, library, player), save=True)
     try: config.write(const.CONFIG)
     except EnvironemntError, err: pass
-    config.quit()
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):

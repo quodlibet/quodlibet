@@ -14,6 +14,7 @@ from quodlibet import const
 from quodlibet.util import fver
 from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
+from quodlibet.qltk.songlist import PlaylistModel
 
 class NullPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
@@ -21,10 +22,9 @@ class NullPlayer(BasePlayer):
     version_info = "Null Player Backend"
     name = "Null"
 
-    def __init__(self, sinkname, librarian=None):
+    def __init__(self, sinkname="", librarian=None):
         super(NullPlayer, self).__init__()
         self._set_paused(True)
-        from quodlibet.qltk.songlist import PlaylistModel
         self._source = PlaylistModel()
 
     def get_position(self):

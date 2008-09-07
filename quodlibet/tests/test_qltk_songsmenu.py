@@ -3,10 +3,14 @@ from tests import TestCase, add
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.songsmenu import SongsMenu
+import quodlibet.player
 
 class TSongsMenu(TestCase):
     def setUp(self):
         self.library = SongLibrary()
+        backend = quodlibet.player.init("nullbe")
+        self.device = quodlibet.player.init_device(self.library)
+        
         self.songs = [AudioFile({"title": x}) for x in
                       ["song1", "song2", "song3"]]
         for song in self.songs: song.sanitize(song["title"])
@@ -84,6 +88,7 @@ class TSongsMenu(TestCase):
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
     def tearDown(self):
+        quodlibet.player.quit(self.device)
         self.library.destroy()
         try: self.menu.destroy()
         except AttributeError: pass
