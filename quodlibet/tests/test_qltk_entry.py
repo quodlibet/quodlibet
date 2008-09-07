@@ -2,9 +2,11 @@ from tests import add, TestCase
 
 from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.parse import Query
+import quodlibet.config
 
 class TValidatingEntry(TestCase):
     def setUp(self):
+        quodlibet.config.init()
         self.entry = ValidatingEntry(Query.is_valid_color)
 
     def test_changed_simple(self):
@@ -18,4 +20,5 @@ class TValidatingEntry(TestCase):
 
     def tearDown(self):
         self.entry.destroy()
+        quodlibet.config.quit()
 add(TValidatingEntry)
