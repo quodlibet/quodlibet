@@ -68,44 +68,48 @@ class EntryWordCompletion(gtk.EntryCompletion):
 class LibraryTagCompletion(EntryWordCompletion):
     """A completion for text entries tied to a library's tag list."""
 
+    __tags = set()
+
     def __init__(self, library):
         super(LibraryTagCompletion, self).__init__()
         try: model = self.__model
         except AttributeError:
             model = type(self).__model = gtk.ListStore(str)
-            library.connect('changed', self.__refreshmodel, model)
-            library.connect('added', self.__refreshmodel, model)
-            library.connect('removed', self.__refreshmodel, model)
-            self.__refreshmodel(library, None, model)
+            library.connect('changed', self.__update_song, model)
+            library.connect('added', self.__update_song, model)
+            library.connect('removed', self.__update_song, model)
+            self.__build_model(library, model)
         self.set_model(model)
         self.set_text_column(0)
 
     @classmethod
-    def __refreshmodel(klass, library, songs, model):
-        copool.add(klass.__refreshmodel_real, library, model)
+    def __update_song(klass, library, songs, model):
+        print_d("Updating tag model for %d songs" % len(songs))
+        for song in songs:
+            for tag in song.keys():
+                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
+                    klass.__tags.add(tag)
+                    model.append([tag])
+        print_d("Done updating tag model for %d songs" % len(songs))
 
     @classmethod
-    def __refreshmodel_real(klass, library, model):
-        tags = set()
+    def __build_model(klass, library, model):
+        print_d("Updating tag model for whole library")
+        tags = klass.__tags
         model.clear()
-        yield True
-        # Iterate over a new list since this function and the
-        # library updater are copooled with different IDs.
         for count, song in enumerate(list(library)):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
-            if count % 1000 == 0:
-                yield True
         tags.update(["~dirname", "~basename", "~people", "~format"])
         for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
                     "mtime", "added", "rating", "length"]:
             tags.add("#(" + tag)
         for tag in ["date", "bpm"]:
             if tag in tags: tags.add("#(" + tag)
-        yield True
         for tag in tags:
             model.append([tag])
+        print_d("Done updating tag model for whole library")
 
 class LibraryValueCompletion(gtk.EntryCompletion):
     """Entry completion for a library value, for a specific tag."""
