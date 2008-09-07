@@ -4,18 +4,20 @@ import os
 import tempfile
 
 from quodlibet.qltk.cbes import ComboBoxEntrySave
+import quodlibet.config
 
 class TComboBoxEntrySave(TestCase):
     memory = "pattern 1\npattern 2\n"
     saved = "pattern text\npattern name\n"
 
     def setUp(self):
+        quodlibet.config.init()
         self.fname = tempfile.mkstemp()[1]
-        f = file(self.fname, "wU")
+        f = file(self.fname, "w")
         f.write(self.memory)
         f.close()
 
-        f = file(self.fname + ".saved", "wU")
+        f = file(self.fname + ".saved", "w")
         f.write(self.saved)
         f.close()
         self.cbes = ComboBoxEntrySave(self.fname, count=2, model=self.fname)
@@ -65,5 +67,6 @@ class TComboBoxEntrySave(TestCase):
         self.cbes2.destroy()
         os.unlink(self.fname)
         os.unlink(self.fname + ".saved")
+        quodlibet.config.quit()
 
 add(TComboBoxEntrySave)

@@ -3,9 +3,16 @@ from tests import TestCase, add
 import os
 
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
+import quodlibet.config
 
 class TFolderChooser(TestCase):
     Kind = FolderChooser
+    def setUp(self):
+        quodlibet.config.init()
+
+    def tearDown(self):
+        quodlibet.config.quit()
+
     def test_init_nodir(self):
         f = self.Kind(None, "A file chooser")
         f.destroy()
