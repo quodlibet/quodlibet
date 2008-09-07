@@ -367,7 +367,7 @@ def split_album(s):
 
 def find_subtitle(title):
     if isinstance(title, str): title = title.decode('utf-8', 'replace')
-    for pair in [u"[]", u"()", u"~~", u"--", u"\u301c\u301c"]:
+    for pair in [u"[]", u"()", u"~~", u"--", u"\u301c\u301c", u'\uff08\uff09']:
         if pair[0] in title[:-1] and title.endswith(pair[1]):
             r = len(pair[1])
             l = title[0:-r].rindex(pair[0])
