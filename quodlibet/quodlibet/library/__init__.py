@@ -16,7 +16,6 @@ also be queried in various ways.
 
 import quodlibet.formats as formats
 
-# FIXME: compatibility, remove before merging/release
 from quodlibet.library.songs import SongFileLibrary, SongLibrary, SongLibrarian
 
 librarian = library = None

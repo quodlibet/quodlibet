@@ -13,6 +13,7 @@
 import re
 
 from quodlibet.parse import _match as match
+from quodlibet.parse._scanner import Scanner
 
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
@@ -22,18 +23,18 @@ class error(ValueError): pass
 class ParseError(error): pass
 class LexerError(error): pass
 
-class QueryLexer(re.Scanner):
+class QueryLexer(Scanner):
     def __init__(self, s):
         self.string = s.strip()
-        re.Scanner.__init__(self,
-                            [(r"/([^/\\]|\\.)*/", self.regexp),
-                             (r'"([^"\\]|\\.)*"', self.str_to_re),
-                             (r"'([^'\\]|\\.)*'", self.str_to_re),
-                             (r"([<>]=?)|(!=)", self.relop),
-                             (r"[=|()&!,#]", self.table),
-                             (r"\s+", None),
-                             (r"[^=)|&#/<>!,]+", self.tag)
-                             ])
+        Scanner.__init__(self,
+                         [(r"/([^/\\]|\\.)*/", self.regexp),
+                          (r'"([^"\\]|\\.)*"', self.str_to_re),
+                          (r"'([^'\\]|\\.)*'", self.str_to_re),
+                          (r"([<>]=?)|(!=)", self.relop),
+                          (r"[=|()&!,#]", self.table),
+                          (r"\s+", None),
+                          (r"[^=)|&#/<>!,]+", self.tag)
+                          ])
 
     def regexp(self, scanner, string):
         return QueryLexeme(RE, string[1:-1])

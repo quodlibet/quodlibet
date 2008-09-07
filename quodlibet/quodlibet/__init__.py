@@ -108,13 +108,6 @@ def _python_init():
         return "".join(map(needs_escape, str))
     re.escape = re_esc
 
-    # Python 2.4 has sre.Scanner but not re.Scanner. Python 2.5 has
-    # deprecated sre and moved Scanner to re.
-    try: re.Scanner
-    except AttributeError:
-        from sre import Scanner
-        re.Scanner = Scanner
-
     # Set up import wrappers for Quod Libet 1.x compatibility.
     old_import = __import__
     def import_ql(module, *args, **kwargs):

@@ -18,6 +18,7 @@ import os
 import re
 
 from quodlibet import util
+from quodlibet.parse._scanner import Scanner
 
 class _Dummy(dict):
     def comma(self, *args): return u"_"
@@ -43,13 +44,13 @@ class PatternLexeme(object):
                 str(self._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
 
-class PatternLexer(re.Scanner):
+class PatternLexer(Scanner):
     def __init__(self, s):
         self.string = s.strip()
-        re.Scanner.__init__(self,
-                            [(r"([^<>|\\]|\\.)+", self.text),
-                             (r"[<>|]", self.table),
-                             ])
+        Scanner.__init__(self,
+                         [(r"([^<>|\\]|\\.)+", self.text),
+                          (r"[<>|]", self.table),
+                          ])
 
     def text(self, scanner, string):
         return PatternLexeme(TEXT, re.sub(r"\\(.)", r"\1", string))
