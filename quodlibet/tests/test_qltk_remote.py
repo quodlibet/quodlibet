@@ -7,11 +7,11 @@ from quodlibet import const
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.remote import FSInterface
-from quodlibet.player import PlaylistPlayer
+from quodlibet.player.nullbe import NullPlayer
 
 class TFSInterface(TestCase):
     def setUp(self):
-        self.p = PlaylistPlayer("fakesink")
+        self.p = NullPlayer()
         self.fs = FSInterface(self.p)
 
     def do(self):
