@@ -4,7 +4,7 @@
 import os
 import locale
 
-VERSION_TUPLE = (2, 0)
+VERSION_TUPLE = (1, 99)
 VERSION = ".".join(map(str, VERSION_TUPLE))
 
 HOME    = os.path.expanduser("~")

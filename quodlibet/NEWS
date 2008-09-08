@@ -1,7 +1,7 @@
 Quod Libet requires Python 2.4 or later and Mutagen 1.11 or later,
 but recommends Python 2.5 and Mutagen 1.14 or later.
 
-2.0 -
+1.99 - It is impossible to know if my dream came true
  * New distutils-based build/test/install system.
  * Multiple audio backend support.
    * Xine-based audio backend.

@@ -6,6 +6,8 @@ include po/*.po
 include po/POTFILES.in
 include po/POTFILES.skip
 include man/*.1
+include quodlibet/images/*.png
+include quodlibet/images/*.svg
 include tests/data/*
 include tests/*.py
 include gdist/*.py
