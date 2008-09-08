@@ -304,13 +304,16 @@ class ID3File(AudioFile):
         self.sanitize()
 
     def get_format_cover(self):
-        tag = mutagen.id3.ID3(self["~filename"])
-        for frame in tag.getall("APIC"):
-            f = tempfile.NamedTemporaryFile()
-            f.write(frame.data)
-            f.flush()
-            f.seek(0, 0)
-            return f
-        else:
-            f.close()
+        try: tag = mutagen.id3.ID3(self["~filename"])
+        except (IOError, mutagen.error):
             return None
+        else:
+            for frame in tag.getall("APIC"):
+                f = tempfile.NamedTemporaryFile()
+                f.write(frame.data)
+                f.flush()
+                f.seek(0, 0)
+                return f
+            else:
+                f.close()
+                return None
