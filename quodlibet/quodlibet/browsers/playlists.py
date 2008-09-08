@@ -148,7 +148,7 @@ class Playlist(list):
                 changed = True
         return changed
 
-    def remove_songs(self, songs):
+    def remove_songs(self, songs, library):
         changed = False
         # TODO: document the "library.masked" business
         for song in songs:
@@ -269,7 +269,8 @@ class Playlists(gtk.VBox, Browser):
 
     def __removed(klass, library, songs):
         for playlist in klass.playlists():
-            if playlist.remove_songs(songs): Playlists.changed(playlist)
+            if playlist.remove_songs(songs, library):
+                Playlists.changed(playlist)
     __removed = classmethod(__removed)
 
     def __added(klass, library, songs):
