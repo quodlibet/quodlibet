@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the quodlibet package.
 # Rostislav "zbrox" Raykov <zbrox@i-space.org>, 2005
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
