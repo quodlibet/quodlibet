@@ -24,9 +24,7 @@ class MmKeys(object):
 
     def __previous(self, keys, key, player): player.previous()
     def __next(self, keys, key, player): player.next()
-    def __stop(self, keys, key, player):
-        player.paused = True
-        player.seek(0)
+    def __stop(self, keys, key, player): player.stop()
 
     def __play_pause(self, keys, key, player):
         if player.song is None:
