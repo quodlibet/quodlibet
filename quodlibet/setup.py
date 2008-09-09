@@ -98,7 +98,13 @@ class release(Command):
         target = "../../releases/quodlibet-%s" % VERSION
         if os.path.isdir(target):
             raise SystemExit("Quod Libet %s was already released." % VERSION)
-        self.spawn(["svn", "cp", os.getcwd(), target])
+
+        # This is so fucking weird, SVN refuses to branch
+        # trunk/quodlibet with some error about the files already
+        # existing. Releasing is more important than propre branch
+        # history.
+        self.spawn(["svn", "export", os.getcwd(), target])
+        self.spawn(["svn", "add", target])
 
         if self.all_the_way:
             if os.environ.get("USER") != "piman":
