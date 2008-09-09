@@ -110,7 +110,9 @@ class release(Command):
                 print "You're not Joe, so this definitely won't work."
             print "Copying tarball to kai."
             self.run_command("sdist")
+            self.spawn(["gpg", "-b", "dist/quodlibet-%s.tar.gz" % VERSION])
             self.spawn(["scp", "dist/quodlibet-%s.tar.gz" % VERSION,
+                        "dist/quodlibet-%s.tar.gz.sig" % VERSION,
                         "sacredchao.net:~piman/public_html/software"])
             self.run_command("register")
 
