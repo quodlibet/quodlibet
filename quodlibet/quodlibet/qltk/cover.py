@@ -75,7 +75,10 @@ class CoverImage(gtk.Frame):
     def set_song(self, activator, song):
         self.__song = song
         if song is None:
-            self.child.child.set_from_pixbuf(None)
+            # Sometimes called during shutdown when the child have
+            # already been destroyed.
+            if self.child and self.child.child:
+                self.child.child.set_from_pixbuf(None)
             self.__albumfn = None
             self.hide()
         else:
