@@ -33,7 +33,7 @@ from quodlibet.util.uri import URI
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
 if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)
 
-def ParseM3U(filename, library=[]):
+def ParseM3U(filename, library=None):
     plname = util.fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
@@ -43,7 +43,7 @@ def ParseM3U(filename, library=[]):
         else: filenames.append(line)
     return __ParsePlaylist(plname, filename, filenames, library)
 
-def ParsePLS(filename, name="", library=[]):
+def ParsePLS(filename, name="", library=None):
     plname = util.fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
@@ -57,7 +57,7 @@ def ParsePLS(filename, name="", library=[]):
     return __ParsePlaylist(plname, filename, filenames, library)
 
 def __ParsePlaylist(name, plfilename, files, library):
-    playlist = Playlist.new(name)
+    playlist = Playlist.new(name, library=library)
     songs = []
     win = WaitLoadWindow(
         None, len(files),
@@ -68,15 +68,19 @@ def __ParsePlaylist(name, plfilename, files, library):
             # Plain filename.
             filename = os.path.realpath(os.path.join(
                 os.path.dirname(plfilename), filename))
-            if filename in library: songs.append(library[filename])
-            else: songs.append(formats.MusicFile(filename))
+            if library and filename in library:
+                songs.append(library[filename])
+            else:
+                songs.append(formats.MusicFile(filename))
         else:
             if uri.scheme == "file":
                 # URI-encoded local filename.
                 filename = os.path.realpath(os.path.join(
                     os.path.dirname(plfilename), uri.filename))
-                if filename in library: songs.append(library[filename])
-                else: songs.append(formats.MusicFile(filename))
+                if library and filename in library:
+                    songs.append(library[filename])
+                else:
+                    songs.append(formats.MusicFile(filename))
             else:
                 # Who knows! Hand it off to GStreamer.
                 songs.append(formats.remote.RemoteFile(uri))
@@ -89,8 +93,8 @@ class Playlist(list):
     quote = staticmethod(lambda text: urllib.quote(text, safe=""))
     unquote = staticmethod(urllib.unquote)
 
-    def new(klass, base=_("New Playlist")):
-        p = Playlist("")
+    def new(klass, base=_("New Playlist"), library={}):
+        p = Playlist("", library=library)
         i = 0
         try: p.rename(base)
         except ValueError:
@@ -101,7 +105,7 @@ class Playlist(list):
         return p
     new = classmethod(new)
 
-    def fromsongs(klass, songs):
+    def fromsongs(klass, songs, library={}):
         if len(songs) == 1:
             title = songs[0].comma("title")
         else:
@@ -110,12 +114,12 @@ class Playlist(list):
                 "%(title)s and %(count)d more",
                 len(songs) - 1) % (
                 {'title': songs[0].comma("title"), 'count': len(songs) - 1})
-        playlist = klass.new(title)
+        playlist = klass.new(title, library=library)
         playlist.extend(songs)
         return playlist
     fromsongs = classmethod(fromsongs)
 
-    def __init__(self, name):
+    def __init__(self, name, library=None):
         super(Playlist, self).__init__()
         if isinstance(name, unicode): name = name.encode('utf-8')
         self.name = name
@@ -123,8 +127,10 @@ class Playlist(list):
         try:
             for line in file(os.path.join(PLAYLISTS, basename), "r"):
                 line = line.rstrip()
-                if line in library: self.append(library[line])
-                elif library.masked(line): self.append(line)
+                if line in library:
+                    self.append(library[line])
+                elif library and library.masked(line):
+                    self.append(line)
         except IOError:
             if self.name: self.write()
 
@@ -244,8 +250,11 @@ class Playlists(gtk.VBox, Browser):
     def init(klass, library):
         model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):
-            try: model.append(row=[Playlist(Playlist.unquote(playlist))])
-            except EnvironmentError: pass
+            try:
+                playlist = Playlist(Playlist.unquote(playlist), library=library)
+                model.append(row=[playlist])
+            except EnvironmentError:
+                pass
         library.connect('removed', klass.__removed)
         library.connect('added', klass.__added)
         library.connect('changed', klass.__changed)
@@ -419,7 +428,7 @@ class Playlists(gtk.VBox, Browser):
             if not songs: return True
             try: path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
-                playlist = Playlist.fromsongs(songs)
+                playlist = Playlist.fromsongs(songs, library)
                 gobject.idle_add(self.__select_playlist, playlist)
             else:
                 playlist = model[path][0]

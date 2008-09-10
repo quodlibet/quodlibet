@@ -1,6 +1,9 @@
 Quod Libet requires Python 2.4, PyGTK 2.10, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.14 or later.
 
+1.9999
+ * Actually fix playlist error.
+
 1.999 - It has been a memorable day
  * Fix playlist error when loading songs.
  * Unlock device when "stop" mmkey is pressed. (Javier Kohen, I#6)
