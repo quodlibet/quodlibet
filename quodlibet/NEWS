@@ -3,6 +3,7 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.14 or later.
 
 1.9999
  * Actually fix playlist error.
+ * Make Escape a synonym for Ctrl+W in QLTK Windows. (I#8)
 
 1.999 - It has been a memorable day
  * Fix playlist error when loading songs.

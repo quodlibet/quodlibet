@@ -26,6 +26,8 @@ class Window(gtk.Window):
         self.add_accel_group(self.__accels)
         self.add_accelerator(
             'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
+        esc, mod = gtk.accelerator_parse("Escape")
+        self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
 
     def set_transient_for(self, parent):
         super(Window, self).set_transient_for(parent)
