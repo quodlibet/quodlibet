@@ -305,7 +305,7 @@ class ID3File(AudioFile):
 
     def get_format_cover(self):
         try: tag = mutagen.id3.ID3(self["~filename"])
-        except (IOError, mutagen.error):
+        except (EnvironmentError, mutagen.id3.error):
             return None
         else:
             for frame in tag.getall("APIC"):
