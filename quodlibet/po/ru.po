@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-08 00:21-0700\n"
+"POT-Creation-Date: 2008-09-11 20:24-0700\n"
 "PO-Revision-Date: 2006-03-31 22:51+0600\n"
 "Last-Translator: Sergey Fedoseev <fedoseev.sergey@gmail.com>\n"
 "Language-Team: Russian\n"
@@ -598,13 +598,13 @@ msgstr ""
 "\n"
 "%d/%d песен добавлено."
 
-#: ../quodlibet/browsers/playlists.py:92
-#: ../quodlibet/browsers/playlists.py:438
+#: ../quodlibet/browsers/playlists.py:96
+#: ../quodlibet/browsers/playlists.py:447
 msgid "New Playlist"
 msgstr "Создать список воспроизведения"
 
-#: ../quodlibet/browsers/playlists.py:109
-#: ../quodlibet/browsers/playlists.py:226
+#: ../quodlibet/browsers/playlists.py:113
+#: ../quodlibet/browsers/playlists.py:232
 #: ../quodlibet/qltk/exfalsowindow.py:181 ../quodlibet/qltk/properties.py:120
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more"
@@ -613,12 +613,12 @@ msgstr[0] "%(title)s и %(count)d других"
 msgstr[1] "%(title)s и %(count)d других"
 msgstr[2] "%(title)s и %(count)d других"
 
-#: ../quodlibet/browsers/playlists.py:136
+#: ../quodlibet/browsers/playlists.py:142
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "Список воспроизведения, названный %s уже существует."
 
-#: ../quodlibet/browsers/playlists.py:192
+#: ../quodlibet/browsers/playlists.py:198
 #: ../quodlibet/qltk/exfalsowindow.py:166 ../quodlibet/qltk/information.py:477
 #, python-format
 msgid "%d song"
@@ -627,43 +627,43 @@ msgstr[0] "%d песня"
 msgstr[1] "%d песни"
 msgstr[2] "%d песен"
 
-#: ../quodlibet/browsers/playlists.py:203
+#: ../quodlibet/browsers/playlists.py:209
 msgid "_New Playlist"
 msgstr "_Создать список воспроизведения"
 
-#: ../quodlibet/browsers/playlists.py:239
+#: ../quodlibet/browsers/playlists.py:245
 msgid "Playlists"
 msgstr "Списки воспроизведения"
 
-#: ../quodlibet/browsers/playlists.py:240
+#: ../quodlibet/browsers/playlists.py:246
 msgid "_Playlists"
 msgstr "_Списки воспроизведения"
 
-#: ../quodlibet/browsers/playlists.py:300
+#: ../quodlibet/browsers/playlists.py:309
 msgid "_Remove from Playlist"
 msgstr "Удалить из _списка воспроизведения"
 
-#: ../quodlibet/browsers/playlists.py:337
+#: ../quodlibet/browsers/playlists.py:346
 msgid "_Import"
 msgstr "_Импортировать"
 
-#: ../quodlibet/browsers/playlists.py:457
-#: ../quodlibet/browsers/playlists.py:535
+#: ../quodlibet/browsers/playlists.py:466
+#: ../quodlibet/browsers/playlists.py:544
 msgid "Unable to import playlist"
 msgstr "Не удалось импортировать список воспроизведения"
 
-#: ../quodlibet/browsers/playlists.py:458
-#: ../quodlibet/browsers/playlists.py:536
+#: ../quodlibet/browsers/playlists.py:467
+#: ../quodlibet/browsers/playlists.py:545
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr ""
 "Quod Libet может импортировать списки воспроизведения только в форматах M3U "
 "и PLS."
 
-#: ../quodlibet/browsers/playlists.py:517
+#: ../quodlibet/browsers/playlists.py:526
 msgid "Unable to rename playlist"
 msgstr "Не удалось переименовать список воспроизведения"
 
-#: ../quodlibet/browsers/playlists.py:524
+#: ../quodlibet/browsers/playlists.py:533
 msgid "Import Playlist"
 msgstr "Импортировать список воспроизведения"
 
@@ -1974,7 +1974,7 @@ msgstr ""
 msgid "%d of %d"
 msgstr ""
 
-#: ../quodlibet/qltk/x.py:125
+#: ../quodlibet/qltk/x.py:127
 msgid "Clear search"
 msgstr "Очистить поле поиска"
 

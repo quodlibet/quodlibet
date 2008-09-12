@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-08 00:21-0700\n"
+"POT-Creation-Date: 2008-09-11 20:24-0700\n"
 "PO-Revision-Date: 2007-04-29 20:38+0900\n"
 "Last-Translator: Yasushi Iwata <yasusii@lowlife.jp>\n"
 "Language-Team: Japanese\n"
@@ -582,66 +582,66 @@ msgstr ""
 "\n"
 "%d/%d 曲を追加しました。"
 
-#: ../quodlibet/browsers/playlists.py:92
-#: ../quodlibet/browsers/playlists.py:438
+#: ../quodlibet/browsers/playlists.py:96
+#: ../quodlibet/browsers/playlists.py:447
 msgid "New Playlist"
 msgstr "新規プレイリスト"
 
-#: ../quodlibet/browsers/playlists.py:109
-#: ../quodlibet/browsers/playlists.py:226
+#: ../quodlibet/browsers/playlists.py:113
+#: ../quodlibet/browsers/playlists.py:232
 #: ../quodlibet/qltk/exfalsowindow.py:181 ../quodlibet/qltk/properties.py:120
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
 msgstr[0] ""
 
-#: ../quodlibet/browsers/playlists.py:136
+#: ../quodlibet/browsers/playlists.py:142
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "プレイリスト%sは既に存在します。"
 
-#: ../quodlibet/browsers/playlists.py:192
+#: ../quodlibet/browsers/playlists.py:198
 #: ../quodlibet/qltk/exfalsowindow.py:166 ../quodlibet/qltk/information.py:477
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d曲"
 
-#: ../quodlibet/browsers/playlists.py:203
+#: ../quodlibet/browsers/playlists.py:209
 msgid "_New Playlist"
 msgstr "新規プレイリスト(_N)"
 
-#: ../quodlibet/browsers/playlists.py:239
+#: ../quodlibet/browsers/playlists.py:245
 msgid "Playlists"
 msgstr "プレイリスト"
 
-#: ../quodlibet/browsers/playlists.py:240
+#: ../quodlibet/browsers/playlists.py:246
 msgid "_Playlists"
 msgstr "プレイリスト(_P)"
 
-#: ../quodlibet/browsers/playlists.py:300
+#: ../quodlibet/browsers/playlists.py:309
 msgid "_Remove from Playlist"
 msgstr "プレイリストから削除(_R)"
 
-#: ../quodlibet/browsers/playlists.py:337
+#: ../quodlibet/browsers/playlists.py:346
 msgid "_Import"
 msgstr "インポート(_I)"
 
-#: ../quodlibet/browsers/playlists.py:457
-#: ../quodlibet/browsers/playlists.py:535
+#: ../quodlibet/browsers/playlists.py:466
+#: ../quodlibet/browsers/playlists.py:544
 msgid "Unable to import playlist"
 msgstr "プレイリストをインポートできません"
 
-#: ../quodlibet/browsers/playlists.py:458
-#: ../quodlibet/browsers/playlists.py:536
+#: ../quodlibet/browsers/playlists.py:467
+#: ../quodlibet/browsers/playlists.py:545
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod LibetではM3UとPLS形式のプレイリストしかインポートできません。"
 
-#: ../quodlibet/browsers/playlists.py:517
+#: ../quodlibet/browsers/playlists.py:526
 msgid "Unable to rename playlist"
 msgstr "プレイリストの名前を変更できません"
 
-#: ../quodlibet/browsers/playlists.py:524
+#: ../quodlibet/browsers/playlists.py:533
 msgid "Import Playlist"
 msgstr "プレイリストのインポート"
 
@@ -1936,7 +1936,7 @@ msgstr ""
 msgid "%d of %d"
 msgstr ""
 
-#: ../quodlibet/qltk/x.py:125
+#: ../quodlibet/qltk/x.py:127
 msgid "Clear search"
 msgstr "検索条件をクリア"
 

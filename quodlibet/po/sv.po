@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-08 00:21-0700\n"
+"POT-Creation-Date: 2008-09-11 20:24-0700\n"
 "PO-Revision-Date: 2006-08-12 10:03+0200\n"
 "Last-Translator: Erik Christiansson <spam.erik@alphafish.com>\n"
 "Language-Team: SWEDISH\n"
@@ -587,13 +587,13 @@ msgstr ""
 "\n"
 "%d/%d låtar tillagda."
 
-#: ../quodlibet/browsers/playlists.py:92
-#: ../quodlibet/browsers/playlists.py:438
+#: ../quodlibet/browsers/playlists.py:96
+#: ../quodlibet/browsers/playlists.py:447
 msgid "New Playlist"
 msgstr "Ny spellista"
 
-#: ../quodlibet/browsers/playlists.py:109
-#: ../quodlibet/browsers/playlists.py:226
+#: ../quodlibet/browsers/playlists.py:113
+#: ../quodlibet/browsers/playlists.py:232
 #: ../quodlibet/qltk/exfalsowindow.py:181 ../quodlibet/qltk/properties.py:120
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more"
@@ -601,12 +601,12 @@ msgid_plural "%(title)s and %(count)d more"
 msgstr[0] "%(title)s och %(count)d till"
 msgstr[1] "%(title)s och %(count)d till"
 
-#: ../quodlibet/browsers/playlists.py:136
+#: ../quodlibet/browsers/playlists.py:142
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "En spellista med namnet %s finns redan."
 
-#: ../quodlibet/browsers/playlists.py:192
+#: ../quodlibet/browsers/playlists.py:198
 #: ../quodlibet/qltk/exfalsowindow.py:166 ../quodlibet/qltk/information.py:477
 #, python-format
 msgid "%d song"
@@ -614,41 +614,41 @@ msgid_plural "%d songs"
 msgstr[0] "%d låt"
 msgstr[1] "%d låtar"
 
-#: ../quodlibet/browsers/playlists.py:203
+#: ../quodlibet/browsers/playlists.py:209
 msgid "_New Playlist"
 msgstr "_Ny spellista"
 
-#: ../quodlibet/browsers/playlists.py:239
+#: ../quodlibet/browsers/playlists.py:245
 msgid "Playlists"
 msgstr "Spellistor"
 
-#: ../quodlibet/browsers/playlists.py:240
+#: ../quodlibet/browsers/playlists.py:246
 msgid "_Playlists"
 msgstr "Spellistor"
 
-#: ../quodlibet/browsers/playlists.py:300
+#: ../quodlibet/browsers/playlists.py:309
 msgid "_Remove from Playlist"
 msgstr "Ta _bort från spellista"
 
-#: ../quodlibet/browsers/playlists.py:337
+#: ../quodlibet/browsers/playlists.py:346
 msgid "_Import"
 msgstr "_Importera"
 
-#: ../quodlibet/browsers/playlists.py:457
-#: ../quodlibet/browsers/playlists.py:535
+#: ../quodlibet/browsers/playlists.py:466
+#: ../quodlibet/browsers/playlists.py:544
 msgid "Unable to import playlist"
 msgstr "Kan ej importera spellistor"
 
-#: ../quodlibet/browsers/playlists.py:458
-#: ../quodlibet/browsers/playlists.py:536
+#: ../quodlibet/browsers/playlists.py:467
+#: ../quodlibet/browsers/playlists.py:545
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet kan endast importera spellistor i M3U- och PLS-format."
 
-#: ../quodlibet/browsers/playlists.py:517
+#: ../quodlibet/browsers/playlists.py:526
 msgid "Unable to rename playlist"
 msgstr "Kan ej byta namn på spellista"
 
-#: ../quodlibet/browsers/playlists.py:524
+#: ../quodlibet/browsers/playlists.py:533
 msgid "Import Playlist"
 msgstr "Importera spellista"
 
@@ -1938,7 +1938,7 @@ msgstr ""
 msgid "%d of %d"
 msgstr ""
 
-#: ../quodlibet/qltk/x.py:125
+#: ../quodlibet/qltk/x.py:127
 msgid "Clear search"
 msgstr "Töm sökning"
 
