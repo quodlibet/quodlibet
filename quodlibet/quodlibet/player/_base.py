@@ -74,11 +74,7 @@ class BasePlayer(gtk.Object):
             self._end(False)
 
     def stop(self):
-        if not self.paused:
-            self._paused = True
-            if self.song:
-                self.emit('paused')
-                self.bin.set_state(gst.STATE_NULL)
+        self.paused = True
         self.seek(0)
 
     def reset(self):

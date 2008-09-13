@@ -103,8 +103,7 @@ class release(Command):
         # trunk/quodlibet with some error about the files already
         # existing. Releasing is more important than propre branch
         # history.
-        self.spawn(["svn", "export", os.getcwd(), target])
-        self.spawn(["svn", "add", target])
+        self.spawn(["svn", "cp", os.getcwd(), target])
 
         if self.all_the_way:
             if os.environ.get("USER") != "piman":

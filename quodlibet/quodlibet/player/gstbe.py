@@ -73,6 +73,15 @@ class GStreamerPlayer(BasePlayer):
             self.error(err, True)
         return True
 
+    def stop(self):
+        # On GStreamer, we can release the device when stopped.
+        if not self.paused:
+            self._paused = True
+            if self.song:
+                self.emit('paused')
+                self.bin.set_state(gst.STATE_NULL)
+        self.seek(0)
+
     def do_set_property(self, property, v):
         if property.name == 'volume':
             self._volume = v
