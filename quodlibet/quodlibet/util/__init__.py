@@ -6,20 +6,15 @@
 #
 # $Id$
 
-import gettext
-import locale
 import os
 import re
 import sys
-import traceback
 import urlparse
-import warnings
 
 # title function was moved to a separate module
 from quodlibet.util.titlecase import title
 
 from quodlibet.const import FSCODING as fscoding, ENCODING
-from quodlibet.util.i18n import GlibTranslations
 
 def strip_win32_incompat(string, BAD = '\:*?;"<>|'):
     """Strip Win32-incompatible characters.

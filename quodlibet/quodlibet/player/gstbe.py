@@ -12,7 +12,6 @@ import pygst
 pygst.require("0.10")
 
 import gst
-import gtk
 
 from quodlibet import config
 from quodlibet import const

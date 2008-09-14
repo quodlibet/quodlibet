@@ -1,7 +1,7 @@
 import __builtin__
 
 _dummy_gettext = lambda value: value
-_dummy_ngettext = lambda v1, v2, count: value == 1 and v1 or v2
+_dummy_ngettext = lambda v1, v2, count: (count == 1) and v1 or v2
 __builtin__.__dict__["_"] = _dummy_gettext
 __builtin__.__dict__["Q_"] = _dummy_gettext
 __builtin__.__dict__["N_"] = _dummy_gettext
@@ -144,14 +144,15 @@ def init(gtk=True, backend=None, library=None, icon=None):
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
     import quodlibet.util
-    quodlibet.util.mkdir(const.USERDIR)
+    quodlibet.util.mkdir(quodlibet.const.USERDIR)
 
     if backend:
         import quodlibet.player
         print_(_("Initializing audio backend (%s)") % backend)
         backend = quodlibet.player.init(backend)
     if library:
-        print_(_("Initializing main library (%s)") % util.unexpand(library))
+        print_(_("Initializing main library (%s)") % (
+            quodlibet.util.unexpand(library)))
 
     import quodlibet.library
     library = quodlibet.library.init(library)

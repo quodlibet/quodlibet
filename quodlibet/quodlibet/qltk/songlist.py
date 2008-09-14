@@ -7,7 +7,6 @@
 # $Id$
 
 import datetime
-import random
 import time
 
 import gobject
@@ -24,8 +23,6 @@ from quodlibet.parse import Query, Pattern
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.util import tag
-from quodlibet.util import copool
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.formats._audio import TAG_TO_SORT
@@ -226,14 +223,14 @@ class SongList(AllTreeView, util.InstanceTracker):
                     self.set_fixed_width(new_width)
 
         def __init__(self, t):
-            super(SongList.TextColumn, self).__init__(tag(t), self._render)
+            super(SongList.TextColumn, self).__init__(util.tag(t), self._render)
             self.header_name = t
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_visible(True)
             self.set_clickable(True)
             self.set_sort_indicator(False)
             self.set_cell_data_func(self._render, self._cdf, t)
-            self._update_layout(tag(t))
+            self._update_layout(util.tag(t))
 
     class DateColumn(TextColumn):
         # The '~#' keys that are dates.
@@ -349,7 +346,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = qltk.MenuItem(
-                _("_Filter on %s") % tag(t, True), gtk.STOCK_INDEX)
+                _("_Filter on %s") % util.tag(t, True), gtk.STOCK_INDEX)
             b.connect_object('activate', self.__filter_on, t, songs, browser)
             return b
 
@@ -681,7 +678,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
             if callable(tag):
                 # A pattern is currently selected.
-                sort_func = lambda song: (tag(song), song.sort_key, song)
+                sort_func = lambda song: (util.tag(song), song.sort_key, song)
             else:
                 sort_func = lambda song: (song(tag), song.sort_key, song)
             songs.sort(key=sort_func, reverse=reverse)

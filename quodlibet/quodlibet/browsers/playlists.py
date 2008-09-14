@@ -146,7 +146,7 @@ class Playlist(list):
             self.name = newname
             self.write()
 
-    def add_songs(self, filenames):
+    def add_songs(self, filenames, library):
         changed = False
         for i in range(len(self)):
             if isinstance(self[i], basestring) and self[i] in filenames:
@@ -285,7 +285,7 @@ class Playlists(gtk.VBox, Browser):
     def __added(klass, library, songs):
         filenames = set([song("~filename") for song in songs])
         for playlist in klass.playlists():
-            if playlist.add_songs(filenames):
+            if playlist.add_songs(filenames, library):
                 Playlists.changed(playlist)
     __added = classmethod(__added)
 

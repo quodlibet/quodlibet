@@ -54,7 +54,6 @@ def main():
     except (ValueError, TypeError): pass
     else: const.DEFAULT_RATING = default_rating
 
-    import gtk
     window = widgets.init(player, library)
     if "--debug" not in sys.argv:
         enable_periodic_save(library)
@@ -63,7 +62,7 @@ def main():
     quodlibet.main(window)
     quodlibet.quit((backend, library, player), save=True)
     try: config.write(const.CONFIG)
-    except EnvironemntError, err: pass
+    except EnvironmentError, err: pass
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):

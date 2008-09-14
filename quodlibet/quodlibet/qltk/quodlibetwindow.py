@@ -321,7 +321,7 @@ class QuodLibetWindow(gtk.Window):
                     if loc not in self.__library:
                         song = self.__library.add_filename(loc)
                         if song: files.append(song)
-            elif player_can_play_uri(uri):
+            elif player.can_play_uri(uri):
                 if uri not in self.__library:
                     files.append(RemoteFile(uri))
                     self.__library.add([files[-1]])

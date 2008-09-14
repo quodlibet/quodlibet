@@ -129,10 +129,6 @@ class EditBookmarksPane(gtk.VBox):
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
-    def __remove(self, selection):
-        model, iter = selection.get_selected()
-        if iter is not None: model.remove(iter)
-
     def __edit_name(self, render, path, new, model):
         if new: model[path][1] = new
 

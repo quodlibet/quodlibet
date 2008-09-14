@@ -124,7 +124,7 @@ class QueueExpander(gtk.Expander):
     def __drag_data_received(self, library, ctx, x, y, sel, info, etime):
         filenames = sel.data.split("\x00")
         if library.librarian:
-            library = librarian
+            library = library.librarian
         songs = filter(None, map(library.get, filenames))
         for song in songs: self.model.append(row=[song])
         ctx.finish(bool(songs), False, etime)

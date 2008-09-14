@@ -28,7 +28,7 @@ from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.util import copool, tag
+from quodlibet.util import copool
 
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
 ELPOEPSORT = list(PEOPLE_SORT); ELPOEPSORT.reverse()
@@ -102,8 +102,9 @@ class Preferences(qltk.Window):
         album.length = 6319
         album.discs = 2
         album.tracks = 5
-        album.people = [tag("artist"), tag("performer"), tag("arranger")]
-        album.genre = tag("genre")
+        album.people = [
+            util.tag("artist"), util.tag("performer"), util.tag("arranger")]
+        album.genre = util.tag("genre")
         try: text = XMLFromPattern(edit.text) % album
         except:
             text = _("Invalid pattern")

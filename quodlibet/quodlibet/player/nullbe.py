@@ -6,12 +6,6 @@
 #
 # $Id$
 
-import gobject
-
-from quodlibet import config
-from quodlibet import const
-
-from quodlibet.util import fver
 from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.songlist import PlaylistModel

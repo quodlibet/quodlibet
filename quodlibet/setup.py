@@ -227,7 +227,7 @@ class check(Command):
             raise SystemExit("%s requires gst-python 0.10.2 "
                              "(http://gstreamer.freedesktop.org)"
                              " or xine-lib 1.1 "
-                             "(http://www.xinehq.de/)." % NAME)
+                             "(http://www.xinehq.de/)." % self.NAME)
 
         print "Checking for Mutagen >= 1.10:",
         try:

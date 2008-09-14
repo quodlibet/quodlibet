@@ -7,9 +7,9 @@
 # $Id$
 
 import gobject
-import sys
 import time
-from quodlibet import config, const
+
+from quodlibet import config
 from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.player._xine import *

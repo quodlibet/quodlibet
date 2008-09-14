@@ -14,7 +14,6 @@ import gtk
 from quodlibet import browsers
 from quodlibet import config
 from quodlibet import const
-from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.plugins.editing import EditingPlugins
