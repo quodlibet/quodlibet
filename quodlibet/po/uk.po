@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-11 20:24-0700\n"
+"POT-Creation-Date: 2008-09-13 20:11-0700\n"
 "PO-Revision-Date: 2007-05-27 14:26+0200\n"
 "Last-Translator: Mykola Lynnyk <pydefiner@gmail.com>\n"
 "Language-Team: Ukrainian\n"
@@ -33,195 +33,195 @@ msgstr "Програма для прослуховування і керуван
 msgid "Music Player"
 msgstr "Музичний програвач"
 
-#: ../quodlibet.py:118
+#: ../quodlibet.py:117
 msgid "No song is currently playing."
 msgstr "На даний момент програвання не відбувається."
 
-#: ../quodlibet.py:126
+#: ../quodlibet.py:125
 msgid "Quod Libet is not running."
 msgstr "Quod Libet не запущено."
 
-#: ../quodlibet.py:137
+#: ../quodlibet.py:136
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Запис в %s не є можливим, файл буде видалено."
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:172
 msgid "a music library and player"
 msgstr "музична бібліотека та програвач"
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:173
 msgid "[ --print-playing | control ]"
 msgstr ""
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:175
 msgid "Print the playing song and exit"
 msgstr "Показати, яка пісня програється, і вийти"
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:176
 msgid "Begin playing immediately"
 msgstr "Відразу почати програвання"
 
-#: ../quodlibet.py:180
+#: ../quodlibet.py:179
 msgid "Jump to next song"
 msgstr "Перейти до наступної пісні"
 
-#: ../quodlibet.py:181
+#: ../quodlibet.py:180
 msgid "Jump to previous song"
 msgstr "Перейти до попередньої пісні"
 
-#: ../quodlibet.py:182
+#: ../quodlibet.py:181
 msgid "Start playback"
 msgstr "Почати програвання"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:182
 msgid "Pause playback"
 msgstr "Призупинити програвання"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:183
 msgid "Toggle play/pause mode"
 msgstr "Перемикнути режим програвання/паузи"
 
-#: ../quodlibet.py:185
+#: ../quodlibet.py:184
 msgid "Turn up volume"
 msgstr "Збільшити гучність"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:185
 msgid "Turn down volume"
 msgstr "Зменшити гучність"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:186
 msgid "Print player status"
 msgstr "Показати стан програвача"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:187
 msgid "Hide main window"
 msgstr "Сховати головне вікно"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:188
 msgid "Show main window"
 msgstr "Показати головне вікно"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:189
 msgid "Toggle main window visibility"
 msgstr "Показати/сховати головне вікно"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:190
 msgid "Focus the running player"
 msgstr "Помістити фокус на вікно Quod Libet"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:191
 msgid "Remove active browser filters"
 msgstr "Видалити фільтри активного переглядача"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:192
 #, fuzzy
 msgid "Refresh and rescan library"
 msgstr "_Оновити бібліотеку"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:193
 msgid "Print the current playlist"
 msgstr "Показати поточний список програвання"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:194
 msgid "Print the contents of the queue"
 msgstr "Показати вміст черги"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:195
 msgid "Exit Quod Libet"
 msgstr "Вийти з Quod Libet"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:199
 msgid "Seek within the playing song"
 msgstr "Переміститись всередині відтворюваної пісні"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:199
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ГГ:]ХХ:СС"
 
-#: ../quodlibet.py:201
+#: ../quodlibet.py:200
 msgid "Set or toggle the playback order"
 msgstr "Перемикнути порядок програвання"
 
-#: ../quodlibet.py:203
+#: ../quodlibet.py:202
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Увімкнути/вимкнути/перемикнути повторення"
 
-#: ../quodlibet.py:204
+#: ../quodlibet.py:203
 msgid "Set the volume"
 msgstr "Встановити гучність"
 
-#: ../quodlibet.py:205
+#: ../quodlibet.py:204
 msgid "Search your audio library"
 msgstr "Шукати в бібліотеці"
 
-#: ../quodlibet.py:205 ../quodlibet.py:215 ../quodlibet.py:217
+#: ../quodlibet.py:204 ../quodlibet.py:214 ../quodlibet.py:216
 msgid "query"
 msgstr "запит"
 
-#: ../quodlibet.py:206
+#: ../quodlibet.py:205
 msgid "Play a file"
 msgstr "Відтворити файл"
 
-#: ../quodlibet.py:206 ../quodlibet.py:215 ../quodlibet.py:217
+#: ../quodlibet.py:205 ../quodlibet.py:214 ../quodlibet.py:216
 msgid "command|filename"
 msgstr "команда|назва файлу"
 
-#: ../quodlibet.py:207
+#: ../quodlibet.py:206
 msgid "Rate the playing song"
 msgstr "Оцінити відтворювану пісню"
 
-#: ../quodlibet.py:208
+#: ../quodlibet.py:207
 msgid "Set the current browser"
 msgstr "Встановити режим перегляду бібліотеки"
 
-#: ../quodlibet.py:209
+#: ../quodlibet.py:208
 msgid "Open a new browser"
 msgstr "Відкрити новий переглядач"
 
-#: ../quodlibet.py:210
+#: ../quodlibet.py:209
 msgid "Show or hide the queue"
 msgstr "Показати/сховати чергу"
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:210
 msgid "Show or hide the main song list"
 msgstr "Показати/сховати список пісень"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:211
 msgid "Filter on a random value"
 msgstr "Фільтрувати за випадковим параметром"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:211
 msgid "command|tag"
 msgstr "команда|тег"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:212
 msgid "Filter on a tag value"
 msgstr "Фільтрувати за тегом"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:212
 msgid "tag=value"
 msgstr "тег=значення"
 
-#: ../quodlibet.py:214
+#: ../quodlibet.py:213
 msgid "Enqueue a file or query"
 msgstr "Додати в чергу файл або результат пошуку"
 
-#: ../quodlibet.py:216
+#: ../quodlibet.py:215
 msgid "Unqueue a file or query"
 msgstr "Видалити з черги файл або результат пошуку"
 
-#: ../quodlibet.py:250
+#: ../quodlibet.py:249
 #, fuzzy, python-format
 msgid "Invalid argument for '%s'."
 msgstr "E: Неправильний аргумент для '%s'."
 
-#: ../quodlibet.py:251 ../quodlibet/util/__init__.py:158
+#: ../quodlibet.py:250 ../quodlibet/util/__init__.py:153
 #, fuzzy, python-format
 msgid "Try %s --help."
 msgstr "E: Спробуйте %s --help."
 
-#: ../quodlibet.py:273
+#: ../quodlibet.py:272
 msgid "Quod Libet is already running."
 msgstr "Quod Libet вже запущено."
 
@@ -255,20 +255,20 @@ msgstr "Показувати _обкладинки альбомів"
 msgid "Album Display"
 msgstr "Перегляд альбомів"
 
-#: ../quodlibet/browsers/albums.py:109 ../quodlibet/browsers/albums.py:113
+#: ../quodlibet/browsers/albums.py:110 ../quodlibet/browsers/albums.py:114
 #: ../quodlibet/qltk/tagsfrompath.py:136 ../quodlibet/qltk/textedit.py:70
 msgid "Invalid pattern"
 msgstr "Неправильний шаблон"
 
-#: ../quodlibet/browsers/albums.py:123
+#: ../quodlibet/browsers/albums.py:124
 msgid "Album List"
 msgstr "Список альбомів"
 
-#: ../quodlibet/browsers/albums.py:124
+#: ../quodlibet/browsers/albums.py:125
 msgid "_Album List"
 msgstr "Список _альбомів"
 
-#: ../quodlibet/browsers/albums.py:268 ../quodlibet/qltk/information.py:315
+#: ../quodlibet/browsers/albums.py:269 ../quodlibet/qltk/information.py:315
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -276,7 +276,7 @@ msgstr[0] "%d трек"
 msgstr[1] "%d треки"
 msgstr[2] "%d треків"
 
-#: ../quodlibet/browsers/albums.py:272 ../quodlibet/qltk/information.py:313
+#: ../quodlibet/browsers/albums.py:273 ../quodlibet/qltk/information.py:313
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -284,23 +284,23 @@ msgstr[0] "%d диск"
 msgstr[1] "%d диски"
 msgstr[2] "%d дисків"
 
-#: ../quodlibet/browsers/albums.py:385
+#: ../quodlibet/browsers/albums.py:386
 msgid "Sort by title"
 msgstr "За назвою"
 
-#: ../quodlibet/browsers/albums.py:385
+#: ../quodlibet/browsers/albums.py:386
 msgid "Sort by artist"
 msgstr "За виконавцем"
 
-#: ../quodlibet/browsers/albums.py:385
+#: ../quodlibet/browsers/albums.py:386
 msgid "Sort by date"
 msgstr "За датою"
 
-#: ../quodlibet/browsers/albums.py:511
+#: ../quodlibet/browsers/albums.py:512
 msgid "All Albums"
 msgstr "Всі альбоми"
 
-#: ../quodlibet/browsers/albums.py:512
+#: ../quodlibet/browsers/albums.py:513
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -371,11 +371,11 @@ msgid "_File System"
 msgstr "_Файлова система"
 
 #: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/browsers/media.py:451
-#: ../quodlibet/qltk/songlist.py:472
+#: ../quodlibet/qltk/songlist.py:469
 msgid "Unable to copy songs"
 msgstr "Не вдалося скопіювати пісню"
 
-#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:473
+#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:470
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Вибрані файли не можуть бути скопійовані до іншого списку пісень або черги."
@@ -832,12 +832,12 @@ msgstr "Назва закладки"
 msgid "MM:SS"
 msgstr "ХХ:СС"
 
-#: ../quodlibet/qltk/bookmarks.py:181 ../quodlibet/qltk/information.py:94
+#: ../quodlibet/qltk/bookmarks.py:177 ../quodlibet/qltk/information.py:94
 msgid "Bookmarks"
 msgstr "Закладки"
 
 #: ../quodlibet/qltk/browser.py:52 ../quodlibet/qltk/quodlibetwindow.py:107
-#: ../quodlibet/util/__init__.py:251
+#: ../quodlibet/util/__init__.py:246
 msgid "No time information"
 msgstr "Немає інформації про час"
 
@@ -1006,7 +1006,7 @@ msgstr ""
 #. the user can configure).
 #: ../quodlibet/qltk/edittags.py:534 ../quodlibet/qltk/edittags.py:679
 #: ../quodlibet/qltk/edittags.py:686 ../quodlibet/qltk/tagsfrompath.py:154
-#: ../quodlibet/util/__init__.py:408 ../quodlibet/util/tags.py:115
+#: ../quodlibet/util/__init__.py:403 ../quodlibet/util/tags.py:115
 msgid "Invalid tag"
 msgstr "Неправильний тег"
 
@@ -1164,7 +1164,7 @@ msgid "artists"
 msgstr "виконавці"
 
 #: ../quodlibet/qltk/information.py:196 ../quodlibet/qltk/information.py:209
-#: ../quodlibet/qltk/songlist.py:244
+#: ../quodlibet/qltk/songlist.py:241
 msgid "Never"
 msgstr "Ніколи"
 
@@ -1419,7 +1419,7 @@ msgstr "_Номер треку"
 msgid "_Artist"
 msgstr "_Виконавець"
 
-#: ../quodlibet/qltk/prefs.py:51 ../quodlibet/qltk/songlist.py:366
+#: ../quodlibet/qltk/prefs.py:51 ../quodlibet/qltk/songlist.py:363
 msgid "_Rating"
 msgstr "_Рейтинг"
 
@@ -1800,40 +1800,40 @@ msgstr ""
 "містить /, але починається не з кореневого каталогу. Для запобігання помилок "
 "в назвах каталогів, почніть шаблон з кореневого каталогу."
 
-#: ../quodlibet/qltk/songlist.py:337
+#: ../quodlibet/qltk/songlist.py:334
 msgid "pattern"
 msgstr "шаблон"
 
-#: ../quodlibet/qltk/songlist.py:352
+#: ../quodlibet/qltk/songlist.py:349
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Фільтрувати по %s"
 
-#: ../quodlibet/qltk/songlist.py:809
+#: ../quodlibet/qltk/songlist.py:806
 msgid "_Track Headers"
 msgstr "_Трек"
 
-#: ../quodlibet/qltk/songlist.py:810
+#: ../quodlibet/qltk/songlist.py:807
 msgid "_Album Headers"
 msgstr "_Альбом"
 
-#: ../quodlibet/qltk/songlist.py:811
+#: ../quodlibet/qltk/songlist.py:808
 msgid "_People Headers"
 msgstr "_Люди"
 
-#: ../quodlibet/qltk/songlist.py:812
+#: ../quodlibet/qltk/songlist.py:809
 msgid "_Date Headers"
 msgstr "_Дата"
 
-#: ../quodlibet/qltk/songlist.py:813
+#: ../quodlibet/qltk/songlist.py:810
 msgid "_File Headers"
 msgstr "_Файл"
 
-#: ../quodlibet/qltk/songlist.py:814
+#: ../quodlibet/qltk/songlist.py:811
 msgid "_Production Headers"
 msgstr "_Виробництво"
 
-#: ../quodlibet/qltk/songlist.py:827
+#: ../quodlibet/qltk/songlist.py:824
 msgid "_Customize Headers..."
 msgstr "_Налаштувати заголовки..."
 
@@ -2020,24 +2020,24 @@ msgstr ""
 msgid "gtk-media-pause"
 msgstr ""
 
-#: ../quodlibet/util/__init__.py:74
+#: ../quodlibet/util/__init__.py:69
 msgid "Display brief usage information"
 msgstr "Вивести коротку інформацію з користування"
 
-#: ../quodlibet/util/__init__.py:76
+#: ../quodlibet/util/__init__.py:71
 msgid "Display version and copyright"
 msgstr "Вивести версію та інформацію про авторські права"
 
-#: ../quodlibet/util/__init__.py:112 ../quodlibet/util/__init__.py:113
+#: ../quodlibet/util/__init__.py:107 ../quodlibet/util/__init__.py:108
 #, python-format
 msgid "Usage: %s %s"
 msgstr "Використання: %s %s"
 
-#: ../quodlibet/util/__init__.py:113
+#: ../quodlibet/util/__init__.py:108
 msgid "[options]"
 msgstr "[параметри]"
 
-#: ../quodlibet/util/__init__.py:133
+#: ../quodlibet/util/__init__.py:128
 #, fuzzy, python-format
 msgid ""
 "%s %s - <quod-libet-development@googlegroups.com>\n"
@@ -2052,22 +2052,22 @@ msgstr ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 
-#: ../quodlibet/util/__init__.py:150
+#: ../quodlibet/util/__init__.py:145
 #, fuzzy, python-format
 msgid "Option %r not recognized."
 msgstr "E: Невідомий параметр '%s'"
 
-#: ../quodlibet/util/__init__.py:153
+#: ../quodlibet/util/__init__.py:148
 #, fuzzy, python-format
 msgid "Option %r requires an argument."
 msgstr "E: Параметр '%s' вимагає аргументу."
 
-#: ../quodlibet/util/__init__.py:156
+#: ../quodlibet/util/__init__.py:151
 #, fuzzy, python-format
 msgid "%r is not a unique prefix."
 msgstr "E: '%s' неоднозначний"
 
-#: ../quodlibet/util/__init__.py:285 ../quodlibet/util/__init__.py:292
+#: ../quodlibet/util/__init__.py:280 ../quodlibet/util/__init__.py:287
 msgid "[Invalid Encoding]"
 msgstr "[Неправильне кодування]"
 
@@ -2075,7 +2075,7 @@ msgstr "[Неправильне кодування]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../quodlibet/util/__init__.py:417
+#: ../quodlibet/util/__init__.py:412
 msgid "check|titlecase?"
 msgstr "check|titlecase?"
 
@@ -2109,11 +2109,11 @@ msgstr ""
 "Статус випуску MusicBrainz повинен бути 'official', 'promotional', або ж "
 "'bootleg'."
 
-#: ../quodlibet/widgets.py:44
+#: ../quodlibet/widgets.py:43
 msgid "Unable to start web browser"
 msgstr "Не вдалося запустити веб-бровзер"
 
-#: ../quodlibet/widgets.py:45
+#: ../quodlibet/widgets.py:44
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -2151,7 +2151,7 @@ msgstr ""
 msgid "Initializing main library (%s)"
 msgstr ""
 
-#: ../quodlibet/__init__.py:183
+#: ../quodlibet/__init__.py:184
 msgid "Unable to save library"
 msgstr "Не вдалося зберегти бібліотеку"
 
@@ -2203,24 +2203,24 @@ msgstr "Неправильне значення"
 msgid "The audio backend %r is not installed."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:41 ../quodlibet/player/xinebe.py:39
+#: ../quodlibet/player/gstbe.py:40 ../quodlibet/player/xinebe.py:39
 #, fuzzy
 msgid "Unable to create audio output"
 msgstr "Не вдалося створити каталог"
 
-#: ../quodlibet/player/gstbe.py:42
+#: ../quodlibet/player/gstbe.py:41
 #, python-format
 msgid ""
 "The audio output pipeline %r could not be created. Check your GStreamer "
 "settings in ~/.quodlibet/config."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:226
+#: ../quodlibet/player/gstbe.py:234
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "Не вдалося відкрити файл"
 
-#: ../quodlibet/player/gstbe.py:227
+#: ../quodlibet/player/gstbe.py:235
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."

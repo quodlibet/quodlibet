@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-11 20:24-0700\n"
+"POT-Creation-Date: 2008-09-13 20:11-0700\n"
 "PO-Revision-Date: 2007-04-28 16:55+0300\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -33,197 +33,197 @@ msgstr "Kuuntele, selaa tai muokkaa äänikokoelmaasi"
 msgid "Music Player"
 msgstr "Musiikkisoitin"
 
-#: ../quodlibet.py:118
+#: ../quodlibet.py:117
 msgid "No song is currently playing."
 msgstr "Ei kappaletta soitossa."
 
-#: ../quodlibet.py:126
+#: ../quodlibet.py:125
 msgid "Quod Libet is not running."
 msgstr "Quod Libet ei ole käynnissä."
 
-#: ../quodlibet.py:137
+#: ../quodlibet.py:136
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Kohteeseen %s ei voi kirjoittaa. Poistetaan."
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:172
 msgid "a music library and player"
 msgstr "musiikkikirjasto ja soitin"
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:173
 msgid "[ --print-playing | control ]"
 msgstr "[ --print-playing | control ]"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:175
 msgid "Print the playing song and exit"
 msgstr "Tulosta soiva kappale ja poistu"
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:176
 msgid "Begin playing immediately"
 msgstr "Aloita soitto välittömästi"
 
-#: ../quodlibet.py:180
+#: ../quodlibet.py:179
 msgid "Jump to next song"
 msgstr "Hyppää seuraavaan kappaleeseen"
 
-#: ../quodlibet.py:181
+#: ../quodlibet.py:180
 msgid "Jump to previous song"
 msgstr "Hyppää edelliseen kappaleeseen"
 
-#: ../quodlibet.py:182
+#: ../quodlibet.py:181
 msgid "Start playback"
 msgstr "Aloita soitto"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:182
 msgid "Pause playback"
 msgstr "Keskeytä soitto"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:183
 msgid "Toggle play/pause mode"
 msgstr "Keskeytä soitto tai jatka sitä"
 
-#: ../quodlibet.py:185
+#: ../quodlibet.py:184
 msgid "Turn up volume"
 msgstr "Lisää äänenvoimakkuutta"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:185
 msgid "Turn down volume"
 msgstr "Vähennä äänenvoimakkuutta"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:186
 msgid "Print player status"
 msgstr "Tulosta soittimen tila"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:187
 msgid "Hide main window"
 msgstr "Piilota pääikkuna"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:188
 msgid "Show main window"
 msgstr "Näytä pääikkuna"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:189
 msgid "Toggle main window visibility"
 msgstr "Piilota tai näytä pääikkuna"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:190
 msgid "Focus the running player"
 msgstr "Kohdista käynnissä olevaan soittimeen"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:191
 msgid "Remove active browser filters"
 msgstr "Poista aktiiviset selainsuodattimet"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:192
 #, fuzzy
 msgid "Refresh and rescan library"
 msgstr "_Virkistä kirjasto"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:193
 msgid "Print the current playlist"
 msgstr "Tulosta nykyinen soittolista"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:194
 msgid "Print the contents of the queue"
 msgstr "Tulosta jonon sisältö"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:195
 msgid "Exit Quod Libet"
 msgstr "Poistu Quod Libetistä"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:199
 msgid "Seek within the playing song"
 msgstr "Siirry soitettavassa kappaleessa"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:199
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: ../quodlibet.py:201
+#: ../quodlibet.py:200
 msgid "Set or toggle the playback order"
 msgstr "Aseta tai vaihda soittojärjestystä"
 
-#: ../quodlibet.py:203
+#: ../quodlibet.py:202
 msgid "Turn repeat off, on, or toggle it"
 msgstr ""
 "Aseta soitontoisto päälle, pois, tai vaihda\n"
 "                                   sen tilaa"
 
-#: ../quodlibet.py:204
+#: ../quodlibet.py:203
 msgid "Set the volume"
 msgstr "Aseta äänenvoimakkuus"
 
-#: ../quodlibet.py:205
+#: ../quodlibet.py:204
 msgid "Search your audio library"
 msgstr "Hae äänikirjastostasi"
 
-#: ../quodlibet.py:205 ../quodlibet.py:215 ../quodlibet.py:217
+#: ../quodlibet.py:204 ../quodlibet.py:214 ../quodlibet.py:216
 msgid "query"
 msgstr "kysely"
 
-#: ../quodlibet.py:206
+#: ../quodlibet.py:205
 msgid "Play a file"
 msgstr "Soita tiedosto"
 
-#: ../quodlibet.py:206 ../quodlibet.py:215 ../quodlibet.py:217
+#: ../quodlibet.py:205 ../quodlibet.py:214 ../quodlibet.py:216
 msgid "command|filename"
 msgstr "tiedostonimi"
 
-#: ../quodlibet.py:207
+#: ../quodlibet.py:206
 msgid "Rate the playing song"
 msgstr "Arvostele soiva kappale"
 
-#: ../quodlibet.py:208
+#: ../quodlibet.py:207
 msgid "Set the current browser"
 msgstr "Valitse nykyinen selain"
 
-#: ../quodlibet.py:209
+#: ../quodlibet.py:208
 msgid "Open a new browser"
 msgstr "Avaa uusi selain"
 
-#: ../quodlibet.py:210
+#: ../quodlibet.py:209
 msgid "Show or hide the queue"
 msgstr "Näytä tai piilota jono"
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:210
 msgid "Show or hide the main song list"
 msgstr "Näytä tai piilota soittolista"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:211
 msgid "Filter on a random value"
 msgstr "Suodata satunnaisen arvon perusteella"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:211
 msgid "command|tag"
 msgstr "tunniste"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:212
 msgid "Filter on a tag value"
 msgstr "Suodata tunnisteen arvon perusteella"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:212
 msgid "tag=value"
 msgstr "tunniste=arvo"
 
-#: ../quodlibet.py:214
+#: ../quodlibet.py:213
 msgid "Enqueue a file or query"
 msgstr "Lisää tiedosto tai kysely jonoon"
 
-#: ../quodlibet.py:216
+#: ../quodlibet.py:215
 msgid "Unqueue a file or query"
 msgstr "Poista tiedosto tai kysely jonosta"
 
-#: ../quodlibet.py:250
+#: ../quodlibet.py:249
 #, fuzzy, python-format
 msgid "Invalid argument for '%s'."
 msgstr "VIRHE: Virheellinen argumentti valitsimelle \"%s\""
 
-#: ../quodlibet.py:251 ../quodlibet/util/__init__.py:158
+#: ../quodlibet.py:250 ../quodlibet/util/__init__.py:153
 #, fuzzy, python-format
 msgid "Try %s --help."
 msgstr "VIRHE: Kokeile kirjoittaa %s --help"
 
-#: ../quodlibet.py:273
+#: ../quodlibet.py:272
 msgid "Quod Libet is already running."
 msgstr "Quod Libet on jo käynnissä"
 
@@ -256,50 +256,50 @@ msgstr "Näytä albumien _kannet"
 msgid "Album Display"
 msgstr "Albuminäkymä"
 
-#: ../quodlibet/browsers/albums.py:109 ../quodlibet/browsers/albums.py:113
+#: ../quodlibet/browsers/albums.py:110 ../quodlibet/browsers/albums.py:114
 #: ../quodlibet/qltk/tagsfrompath.py:136 ../quodlibet/qltk/textedit.py:70
 msgid "Invalid pattern"
 msgstr "Virheellinen hakukaava"
 
-#: ../quodlibet/browsers/albums.py:123
+#: ../quodlibet/browsers/albums.py:124
 msgid "Album List"
 msgstr "Albumilista"
 
-#: ../quodlibet/browsers/albums.py:124
+#: ../quodlibet/browsers/albums.py:125
 msgid "_Album List"
 msgstr "_Albumilista"
 
-#: ../quodlibet/browsers/albums.py:268 ../quodlibet/qltk/information.py:315
+#: ../quodlibet/browsers/albums.py:269 ../quodlibet/qltk/information.py:315
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d raita"
 msgstr[1] "%d raitaa"
 
-#: ../quodlibet/browsers/albums.py:272 ../quodlibet/qltk/information.py:313
+#: ../quodlibet/browsers/albums.py:273 ../quodlibet/qltk/information.py:313
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d levy"
 msgstr[1] "%d levyä"
 
-#: ../quodlibet/browsers/albums.py:385
+#: ../quodlibet/browsers/albums.py:386
 msgid "Sort by title"
 msgstr "Järjestys: nimi"
 
-#: ../quodlibet/browsers/albums.py:385
+#: ../quodlibet/browsers/albums.py:386
 msgid "Sort by artist"
 msgstr "Järjestys: artisti"
 
-#: ../quodlibet/browsers/albums.py:385
+#: ../quodlibet/browsers/albums.py:386
 msgid "Sort by date"
 msgstr "Järjestys: päivämäärä"
 
-#: ../quodlibet/browsers/albums.py:511
+#: ../quodlibet/browsers/albums.py:512
 msgid "All Albums"
 msgstr "Kaikki albumit"
 
-#: ../quodlibet/browsers/albums.py:512
+#: ../quodlibet/browsers/albums.py:513
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -369,11 +369,11 @@ msgid "_File System"
 msgstr "Tie_dostojärjestelmä"
 
 #: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/browsers/media.py:451
-#: ../quodlibet/qltk/songlist.py:472
+#: ../quodlibet/qltk/songlist.py:469
 msgid "Unable to copy songs"
 msgstr "Kappaleiden kopiointi epäonnistui"
 
-#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:473
+#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:470
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Valittuja tiedostoja ei voi kopioida toisiin soittolistoihin tai jonoon."
@@ -826,12 +826,12 @@ msgstr "Kirjanmerkin nimi"
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:181 ../quodlibet/qltk/information.py:94
+#: ../quodlibet/qltk/bookmarks.py:177 ../quodlibet/qltk/information.py:94
 msgid "Bookmarks"
 msgstr "Kirjanmerkit"
 
 #: ../quodlibet/qltk/browser.py:52 ../quodlibet/qltk/quodlibetwindow.py:107
-#: ../quodlibet/util/__init__.py:251
+#: ../quodlibet/util/__init__.py:246
 msgid "No time information"
 msgstr "Ei aikatietoa"
 
@@ -997,7 +997,7 @@ msgstr ""
 #. the user can configure).
 #: ../quodlibet/qltk/edittags.py:534 ../quodlibet/qltk/edittags.py:679
 #: ../quodlibet/qltk/edittags.py:686 ../quodlibet/qltk/tagsfrompath.py:154
-#: ../quodlibet/util/__init__.py:408 ../quodlibet/util/tags.py:115
+#: ../quodlibet/util/__init__.py:403 ../quodlibet/util/tags.py:115
 msgid "Invalid tag"
 msgstr "Virheellinen tunniste"
 
@@ -1155,7 +1155,7 @@ msgid "artists"
 msgstr "artistit"
 
 #: ../quodlibet/qltk/information.py:196 ../quodlibet/qltk/information.py:209
-#: ../quodlibet/qltk/songlist.py:244
+#: ../quodlibet/qltk/songlist.py:241
 msgid "Never"
 msgstr "Ei koskaan"
 
@@ -1405,7 +1405,7 @@ msgstr "_Raita"
 msgid "_Artist"
 msgstr "_Artisti"
 
-#: ../quodlibet/qltk/prefs.py:51 ../quodlibet/qltk/songlist.py:366
+#: ../quodlibet/qltk/prefs.py:51 ../quodlibet/qltk/songlist.py:363
 msgid "_Rating"
 msgstr "Ar_vosana"
 
@@ -1785,40 +1785,40 @@ msgstr ""
 "sisältää merkin /, mutta ei ala juurihakemistosta. Välttääksesi hakemistojen "
 "väärinnimeämistä, aloita kaavasi merkeillä / tai ~/."
 
-#: ../quodlibet/qltk/songlist.py:337
+#: ../quodlibet/qltk/songlist.py:334
 msgid "pattern"
 msgstr "hakukaava"
 
-#: ../quodlibet/qltk/songlist.py:352
+#: ../quodlibet/qltk/songlist.py:349
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Suodata sarakkeen \"%s\" perusteella"
 
-#: ../quodlibet/qltk/songlist.py:809
+#: ../quodlibet/qltk/songlist.py:806
 msgid "_Track Headers"
 msgstr "_Raitaotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:810
+#: ../quodlibet/qltk/songlist.py:807
 msgid "_Album Headers"
 msgstr "_Albumiotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:811
+#: ../quodlibet/qltk/songlist.py:808
 msgid "_People Headers"
 msgstr "_Tekijäotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:812
+#: ../quodlibet/qltk/songlist.py:809
 msgid "_Date Headers"
 msgstr "Ai_kaotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:813
+#: ../quodlibet/qltk/songlist.py:810
 msgid "_File Headers"
 msgstr "Tie_dosto-otsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:814
+#: ../quodlibet/qltk/songlist.py:811
 msgid "_Production Headers"
 msgstr "T_uotanto-otsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:827
+#: ../quodlibet/qltk/songlist.py:824
 msgid "_Customize Headers..."
 msgstr "_Mukauta otsakkeita..."
 
@@ -2005,24 +2005,24 @@ msgstr ""
 msgid "gtk-media-pause"
 msgstr ""
 
-#: ../quodlibet/util/__init__.py:74
+#: ../quodlibet/util/__init__.py:69
 msgid "Display brief usage information"
 msgstr "Näytä lyhyt käyttöohje"
 
-#: ../quodlibet/util/__init__.py:76
+#: ../quodlibet/util/__init__.py:71
 msgid "Display version and copyright"
 msgstr "Näytä versio ja tekijänoikeustiedot"
 
-#: ../quodlibet/util/__init__.py:112 ../quodlibet/util/__init__.py:113
+#: ../quodlibet/util/__init__.py:107 ../quodlibet/util/__init__.py:108
 #, python-format
 msgid "Usage: %s %s"
 msgstr "Käyttö: %s %s"
 
-#: ../quodlibet/util/__init__.py:113
+#: ../quodlibet/util/__init__.py:108
 msgid "[options]"
 msgstr "[valitsimet]"
 
-#: ../quodlibet/util/__init__.py:133
+#: ../quodlibet/util/__init__.py:128
 #, fuzzy, python-format
 msgid ""
 "%s %s - <quod-libet-development@googlegroups.com>\n"
@@ -2038,22 +2038,22 @@ msgstr ""
 "takuuta EI ole; ei edes koskien KAUPPAKELPOISUUTTA tai TIETTYYN TEHTÄVÄÄN\n"
 "SOVELTUVUUTTA.\n"
 
-#: ../quodlibet/util/__init__.py:150
+#: ../quodlibet/util/__init__.py:145
 #, fuzzy, python-format
 msgid "Option %r not recognized."
 msgstr "VIRHE: Valitsin '%s' ei kelpaa."
 
-#: ../quodlibet/util/__init__.py:153
+#: ../quodlibet/util/__init__.py:148
 #, fuzzy, python-format
 msgid "Option %r requires an argument."
 msgstr "VIRHE: Valitsin '%s' vaatii argumentin."
 
-#: ../quodlibet/util/__init__.py:156
+#: ../quodlibet/util/__init__.py:151
 #, fuzzy, python-format
 msgid "%r is not a unique prefix."
 msgstr "VIRHE: '%s' ei ole ainutkertainen etuliite."
 
-#: ../quodlibet/util/__init__.py:285 ../quodlibet/util/__init__.py:292
+#: ../quodlibet/util/__init__.py:280 ../quodlibet/util/__init__.py:287
 msgid "[Invalid Encoding]"
 msgstr "[Virheellinen koodaus]"
 
@@ -2061,7 +2061,7 @@ msgstr "[Virheellinen koodaus]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../quodlibet/util/__init__.py:417
+#: ../quodlibet/util/__init__.py:412
 msgid "check|titlecase?"
 msgstr "no"
 
@@ -2093,11 +2093,11 @@ msgid ""
 msgstr ""
 "MusicBrainz-julkaisun tilaksi kelpaa 'official', 'promotional' tai 'bootleg'."
 
-#: ../quodlibet/widgets.py:44
+#: ../quodlibet/widgets.py:43
 msgid "Unable to start web browser"
 msgstr "Web-selainta ei voi käynnistää"
 
-#: ../quodlibet/widgets.py:45
+#: ../quodlibet/widgets.py:44
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -2135,7 +2135,7 @@ msgstr ""
 msgid "Initializing main library (%s)"
 msgstr ""
 
-#: ../quodlibet/__init__.py:183
+#: ../quodlibet/__init__.py:184
 msgid "Unable to save library"
 msgstr "Kirjastoa ei voi tallentaa"
 
@@ -2187,24 +2187,24 @@ msgstr "Virheellinen arvo"
 msgid "The audio backend %r is not installed."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:41 ../quodlibet/player/xinebe.py:39
+#: ../quodlibet/player/gstbe.py:40 ../quodlibet/player/xinebe.py:39
 #, fuzzy
 msgid "Unable to create audio output"
 msgstr "Kansiota ei voi luoda"
 
-#: ../quodlibet/player/gstbe.py:42
+#: ../quodlibet/player/gstbe.py:41
 #, python-format
 msgid ""
 "The audio output pipeline %r could not be created. Check your GStreamer "
 "settings in ~/.quodlibet/config."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:226
+#: ../quodlibet/player/gstbe.py:234
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "Tiedostojen avaaminen ei onnistu"
 
-#: ../quodlibet/player/gstbe.py:227
+#: ../quodlibet/player/gstbe.py:235
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."

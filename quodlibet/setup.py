@@ -101,9 +101,10 @@ class release(Command):
 
         # This is so fucking weird, SVN refuses to branch
         # trunk/quodlibet with some error about the files already
-        # existing. Releasing is more important than propre branch
+        # existing. Releasing is more important than proper branch
         # history.
-        self.spawn(["svn", "cp", os.getcwd(), target])
+        self.spawn(["svn", "export", os.getcwd(), target])
+        self.spawn(["svn", "add", target])
 
         if self.all_the_way:
             if os.environ.get("USER") != "piman":
