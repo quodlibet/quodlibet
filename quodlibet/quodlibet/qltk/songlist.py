@@ -815,7 +815,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             menu.append(item)
             submenu = gtk.Menu()
             item.set_submenu(submenu)
-            for header in sorted(zip(map(tag, group), group)):
+            for header in sorted(zip(map(util.tag, group), group)):
                 add_header_toggle(submenu, header, header[1] in current_set)
 
         sep = gtk.SeparatorMenuItem()
