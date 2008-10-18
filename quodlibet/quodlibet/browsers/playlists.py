@@ -529,7 +529,7 @@ class Playlists(gtk.VBox, Browser):
 
     def __import(self, activator, library):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
-        from qltk.chooser import FileChooser
+        from quodlibet.qltk.chooser import FileChooser
         chooser = FileChooser(self, _("Import Playlist"), filt, const.HOME)
         files = chooser.run()
         chooser.destroy()
