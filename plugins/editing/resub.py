@@ -1,6 +1,6 @@
-import sre
+import re
 import gtk, gobject
-from plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
+from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
 
 class RegExpSub(gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
     PLUGIN_ID = "Regex Substitution"
@@ -31,5 +31,5 @@ class RegExpSub(gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
     def filter(self, orig_or_tag, value):
         fr = self._from.get_text().decode('utf-8')
         to = self._to.get_text().decode('utf-8')
-        try: return sre.sub(fr, to, value)
+        try: return re.sub(fr, to, value)
         except: return value
