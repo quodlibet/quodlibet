@@ -8,6 +8,7 @@
 import os
 
 from distutils.dep_util import newer
+from distutils.util import change_root
 from gdist.core import GCommand
 
 class build_shortcuts(GCommand):
@@ -53,12 +54,14 @@ class install_shortcuts(GCommand):
     skip_build = None
     shortcuts = None
     build_base = None
+    root = None
 
     def finalize_options(self):
         GCommand.finalize_options(self)
         self.set_undefined_options('build', ('build_base', 'build_base'))
         self.set_undefined_options(
             'install',
+            ('root', 'root'),
             ('install_base', 'prefix'),
             ('skip_build', 'skip_build'))
 
@@ -69,6 +72,7 @@ class install_shortcuts(GCommand):
         if not self.skip_build:
             self.run_command('build_shortcuts')
         basepath = os.path.join(self.prefix, 'share', 'applications')
+        basepath = change_root(self.root, basepath)
         srcpath = os.path.join(self.build_base, 'share', 'applications')
         self.mkpath(basepath)
         for shortcut in self.shortcuts:

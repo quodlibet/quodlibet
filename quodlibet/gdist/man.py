@@ -12,6 +12,7 @@ Commands to install Unix man pages.
 
 import os
 
+from distutils.util import change_root
 from gdist.core import GCommand
 
 class install_man(GCommand):
@@ -24,10 +25,11 @@ class install_man(GCommand):
 
     man_pages = None
     prefix = None
+    root = None
 
     def finalize_options(self):
         GCommand.finalize_options(self)
-        self.set_undefined_options('install', ('install_base', 'prefix'))
+        self.set_undefined_options('install', ('root', 'root'), ('install_base', 'prefix'))
         self.man_pages = self.distribution.man_pages
         for man_page in self.man_pages:
             if not man_page[-1].isdigit():
@@ -35,6 +37,7 @@ class install_man(GCommand):
 
     def run(self):
         basepath = os.path.join(self.prefix, 'share', 'man')
+        basepath = change_root(self.root, basepath)
         self.mkpath(basepath)
         for man_page in self.man_pages:
             manpath = os.path.join(basepath, "man" + man_page[-1])

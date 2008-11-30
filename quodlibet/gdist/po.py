@@ -15,6 +15,7 @@ import os
 import glob
 
 from distutils.dep_util import newer
+from distutils.util import change_root
 from gdist.core import GCommand
 
 class build_mo(GCommand):
@@ -77,12 +78,14 @@ class install_mo(GCommand):
     skip_build = None
     build_base = None
     install_base = None
+    root = None
 
     def finalize_options(self):
         GCommand.finalize_options(self)
         self.set_undefined_options('build', ('build_base', 'build_base'))
         self.set_undefined_options(
             'install',
+            ('root', 'root'),
             ('install_base', 'install_base'),
             ('skip_build', 'skip_build'))
 
@@ -91,6 +94,7 @@ class install_mo(GCommand):
             self.run_command('build_mo')
         src = os.path.join(self.build_base, "share", "locale")
         dest = os.path.join(self.install_base, "share", "locale")
+        dest = change_root(self.root, dest)
         self.copy_tree(src, dest)
 
 __all__ = ["build_mo", "install_mo"]
