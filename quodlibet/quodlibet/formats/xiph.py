@@ -93,7 +93,9 @@ extensions = []
 ogg_formats = []
 try: from mutagen.oggvorbis import OggVorbis
 except ImportError: OggVorbis = None
-else: extensions.append(".ogg")
+else:
+    extensions.append(".ogg")
+    extensions.append(".oga")
 
 try: from mutagen.flac import FLAC
 except ImportError: FLAC = None
