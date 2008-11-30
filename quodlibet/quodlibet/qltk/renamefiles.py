@@ -92,6 +92,7 @@ class RenameFiles(EditPane):
         win = WritingWindow(self, len(model))
         was_changed = []
         skip_all = False
+        self.view.freeze_child_notify()
 
         rows = [(row[0], row[1], row[2].decode('utf-8')) for row in model]
         for song, oldname, newname in rows:
@@ -120,6 +121,7 @@ class RenameFiles(EditPane):
                 if resp != gtk.RESPONSE_OK: break
             if win.step(): break
 
+        self.view.thaw_child_notify()
         win.destroy()
         library.changed(was_changed)
         self.save.set_sensitive(False)
