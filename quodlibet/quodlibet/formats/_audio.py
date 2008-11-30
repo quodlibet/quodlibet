@@ -22,6 +22,7 @@ from quodlibet.util.uri import URI
 
 from quodlibet.util.tags import STANDARD_TAGS as USEFUL_TAGS
 from quodlibet.util.tags import MACHINE_TAGS
+from quodlibet.util.titlecase import title
 
 MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
            "~#skipcount ~#rating ~bookmark").split()
@@ -151,16 +152,31 @@ class AudioFile(dict):
                 return (join([person for (i, person) in enumerate(people)
                               if index(person) == i]) or
                         self("~people", default, connector))
-            elif key == "performers":
-                values = []
+            elif key == "performers" or key == "performer":
+                performers = {}
                 for key in self.realkeys():
                     if key.startswith("performer:"):
                         role = key.split(":", 1)[1]
                         for value in self.list(key):
-                            values.append("%s (%s)" % (value, role))
+                            try:
+                                performers[str(value)]
+                            except:
+                                performers[str(value)] = []
+                            performers[str(value)].append(util.title(role))
+                values = []
+                if len(performers) > 0:
+                    for performer in performers:
+                        roles = ''
+                        i = 0
+                        for role in performers[performer]:
+                            if i > 0:
+                                roles += ', '                            
+                            roles += role
+                            i += 1
+                        values.append("%s (%s)" % (performer, roles))
                 values.extend(self.list("performer"))
                 return "\n".join(values)
-            elif key == "performerssort":
+            elif key == "performerssort" or key == "performersort":
                 values = []
                 for key in self.realkeys():
                     if key.startswith("performersort:"):

@@ -21,6 +21,7 @@ from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.x import Window
 from quodlibet.util import tag
+from quodlibet.util.titlecase import title
 
 def Label(*args):
     l = gtk.Label(*args)
@@ -188,6 +189,31 @@ class OneSong(qltk.Notebook):
                 if len(song.list(tag_)) == 1: name = tag(tag_)
                 else: name = _(names)
                 vb.pack_start(Frame(util.capitalize(name), l), expand=False)
+        performers = {}
+        for tag_ in song:
+            if "performer:" in tag_:
+                for person in song[tag_].split('\n'):
+                    try:
+                        performers[str(person)]
+                    except:
+                        performers[str(person)] = []
+                    performers[str(person)].append(util.title(tag_[tag_.find(":")+1 : ]))
+        if len(performers) > 0:
+            performerstr = ''
+            for performer in performers:
+                performerstr += performer + ' ('
+                i = 0
+                for part in performers[performer]:
+                    if i != 0:
+                        performerstr += ', '
+                    performerstr += part
+                    i += 1
+                performerstr += ')\n'
+            l = Label(performerstr)
+            l.set_ellipsize(pango.ELLIPSIZE_END)
+            if len(performers) == 1: name = tag("performer")
+            else: name = _("performers")
+            vb.pack_start(Frame(util.capitalize(name), l), expand=False)
         if not vb.get_children(): vb.destroy()
         else: box.pack_start(Frame(title, vb), expand=False, fill=False)
 
