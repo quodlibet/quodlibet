@@ -347,5 +347,7 @@ class SongFileLibrary(SongLibrary, FileLibrary):
                     if signal:
                         self.add([song])
                     return song
+            else:
+                return self._contents[filename]
         except StandardError:
             traceback.print_exc()
