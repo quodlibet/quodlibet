@@ -16,11 +16,13 @@ import sys
 import tempfile
 import time
 
-import quodlibet, quodlibet.player
+import quodlibet
+import quodlibet.player
 
 from quodlibet import config
 from quodlibet import const
 from quodlibet import util
+from quodlibet.util.uri import URI
 
 from threading import Thread
 
@@ -165,7 +167,7 @@ def process_arguments():
                 "focus", "quit", "unfilter", "refresh"]
     controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "random",
-                    "song-list", "queue", "enqueue", "unqueue"]
+                    "song-list", "queue"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION, 
@@ -255,8 +257,17 @@ def process_arguments():
         elif command == "print-queue": print_fifo("dump-queue")
         elif command == "volume-up": control("volume +")
         elif command == "volume-down": control("volume -")
+        elif command == "enqueue" or command == "unqueue":
+            try:
+                filename = URI(arg).filename
+            except ValueError:
+                filename = arg
+            control(command + " " + filename)
         elif command == "play-file":
-            filename = os.path.abspath(os.path.expanduser(arg))
+            try:
+                filename = URI(arg).filename
+            except ValueError:
+                filename = os.path.abspath(os.path.expanduser(arg))
             if os.path.isdir(filename): control("add-directory " + filename)
             else: control("add-file " + filename)
         elif command == "print-playing":
