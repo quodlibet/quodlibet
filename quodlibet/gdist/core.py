@@ -11,6 +11,7 @@ This module exists to avoid circular imports within gdist.
 """
 
 import os
+import subprocess
 
 from distutils.core import Command
 
@@ -26,8 +27,11 @@ class GCommand(Command):
         self.po_directory = self.distribution.po_directory
 
     def capture(self, args):
-        write, read = os.popen2(args, mode="r")
-        return read.read()
+        p = subprocess.Popen(args, stdout=subprocess.PIPE)
+        ret = p.wait()
+        if ret != 0:
+            raise SystemExit("External program %s exited with error %d." % (args[0], ret))
+        return p.stdout.read()
 
     def check_po(self):
         """Exit if translation is needed and not available"""
