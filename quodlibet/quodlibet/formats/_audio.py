@@ -290,6 +290,7 @@ class AudioFile(dict):
             if os.access(self["~filename"], os.W_OK): return True
             else: return []
         else: return (k and "=" not in k and "~" not in k
+                      and k.encode("ascii", "replace") == k
                       and os.access(self["~filename"], os.W_OK))
 
     def rename(self, newname):
