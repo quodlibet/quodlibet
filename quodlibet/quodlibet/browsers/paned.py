@@ -39,7 +39,7 @@ class Preferences(qltk.Window):
         pa = gtk.RadioButton(gpa, "_" + tag("~~people~album"))
         pa.headers = ["~people", "album"]
         custom = gtk.RadioButton(gpa, _("_Custom"))
-        custom.headers = []
+        custom.headers = config.get("browsers", "panes").split()
 
         align = gtk.Alignment()
         align.set_padding(0, 0, 12, 0)
@@ -134,7 +134,7 @@ class Preferences(qltk.Window):
             model.clear()
             for h in button.headers:
                 model.append(row=[h])
-        align.set_sensitive(not bool(button.headers))
+        align.set_sensitive(button.get_label() == _("_Custom"))
 
 class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
