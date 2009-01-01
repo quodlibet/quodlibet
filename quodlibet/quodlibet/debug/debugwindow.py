@@ -8,9 +8,10 @@ import gtk
 from quodlibet import const
 from quodlibet import util
 
+old_hook = sys.excepthook
+
 class ExceptionDialog(gtk.Window):
     running = False
-    old_hook = sys.excepthook
 
     @classmethod
     def excepthook(Kind, *args):
@@ -25,7 +26,7 @@ class ExceptionDialog(gtk.Window):
         if not Kind.running:
             Kind.running = True
             Kind(*full_args)
-        Kind.old_hook(*args)
+        old_hook(*args)
 
     @classmethod
     def __dump(self, Kind, value, trace, dump, minidump):
