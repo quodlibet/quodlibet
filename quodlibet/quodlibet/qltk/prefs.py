@@ -174,14 +174,56 @@ class PreferencesWindow(qltk.Window):
             c.set_active(config.getboolean("settings", "jump"))
             self.pack_start(c, expand=False)
 
-            c = ConfigCheckButton(
-                _("_Replay Gain volume adjustment"), "player", "replaygain")
+            vbox = gtk.VBox(spacing=6)
+            c = ConfigCheckButton(_("_Enable Replay Gain volume adjustment"),
+                                    "player", "replaygain")
             c.set_active(config.getboolean("player", "replaygain"))
-            self.pack_start(c, expand=False)
             c.connect('toggled', self.__toggled_gain)
+            vbox.pack_start(c, expand=False)
+            try:
+                fallback_gain = config.getfloat("player", "fallback_gain")
+            except:
+                fallback_gain = 0.0
+            adj = gtk.Adjustment(fallback_gain, -12.0, 12.0, 0.5, 0.5, 0.0)
+            s = gtk.SpinButton(adj)
+            s.set_digits(1)
+            s.connect('changed', self.__changed, 'player', 'fallback_gain')
+            tips.set_tip(s, _("If no Replay Gain information is available for"
+                              " a song, scale the volume by this value"))
+            l = gtk.Label(_("Fall-back gain (dB):"))
+            l.set_use_underline(True)
+            l.set_mnemonic_widget(s)
+
+            hb = gtk.HBox(spacing=6)
+            hb.pack_start(l, expand=False)
+            hb.pack_start(s)
+            vbox.pack_start(hb, expand=False)
+            try:
+                pre_amp_gain = config.getfloat("player", "pre_amp_gain")
+            except:
+                pre_amp_gain = 0
+            adj = gtk.Adjustment(pre_amp_gain, -6, 6, 0.5, 0.5, 0.0)
+            s = gtk.SpinButton(adj)
+            s.set_digits(1)
+            s.connect('changed', self.__changed, 'player', 'pre_amp_gain')
+            tips.set_tip(s, _("Scale the volume for all songs by this value, "
+                              "as long as the result will not clip"))
+            l = gtk.Label(_("Pre-amp gain (dB):"))
+            l.set_use_underline(True)
+            l.set_mnemonic_widget(s)
+            hb = gtk.HBox(spacing=6)
+            hb.pack_start(l, expand=False)
+            hb.pack_start(s)
+            vbox.pack_start(hb, expand=False)
+            f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vbox)
+            self.pack_start(f)
             self.show_all()
 
         def __toggled_gain(self, activator):
+            player.playlist.volume = player.playlist.volume
+
+        def __changed(self, entry, section, name):
+            config.set(section, name, entry.get_text())
             player.playlist.volume = player.playlist.volume
 
     class Library(gtk.VBox):

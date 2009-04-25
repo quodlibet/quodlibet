@@ -115,10 +115,12 @@ class XinePlaylistPlayer(BasePlayer):
     def do_set_property(self, property, v):
         if property.name == 'volume':
             self._volume = v
-            if self.song is not None:
-                if config.getboolean("player", "replaygain"):
-                    profiles = filter(None, self.replaygain_profiles)[0]
-                    v = max(0.0, min(4.0, v * self.song.replay_gain(profiles)))
+            if self.song and config.getboolean("player", "replaygain"):
+                profiles = filter(None, self.replaygain_profiles)[0]
+                fb_gain = config.getfloat("player", "fallback_gain")
+                pa_gain = config.getfloat("player", "pre_amp_gain")
+                scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
+                v = max(0.0, v * scale)
             v = min(100, int(v * 100))
             xine_set_param(self._stream, XINE_PARAM_AUDIO_VOLUME, v)
         else:

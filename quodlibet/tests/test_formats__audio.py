@@ -310,6 +310,10 @@ class TAudioFile(TestCase):
 add(TAudioFile)
 
 class Treplay_gain(TestCase):
+
+    # -6dB is approximately equal to half magnitude
+    minus_6db = 0.501187234
+
     def setUp(self):
         self.song = AudioFile({"replaygain_album_gain": "-1.00 dB",
                                "replaygain_album_peak": "1.1",
@@ -318,6 +322,33 @@ class Treplay_gain(TestCase):
 
     def test_nogain(self):
         self.failUnlessEqual(self.song.replay_gain(["none", "track"]), 1)
+
+    def test_fallback_track(self):
+        del(self.song["replaygain_track_gain"])
+        self.failUnlessAlmostEqual(
+            self.song.replay_gain(["track"], 0, -6.0), self.minus_6db)
+
+    def test_fallback_album(self):
+        del(self.song["replaygain_album_gain"])
+        self.failUnlessAlmostEqual(
+            self.song.replay_gain(["album"], 0, -6.0), self.minus_6db)
+
+    def test_fallback_and_preamp(self):
+        del(self.song["replaygain_track_gain"])
+        self.failUnlessEqual(self.song.replay_gain(["track"], 9, -9), 1)
+
+    def test_preamp_track(self):
+        self.failUnlessAlmostEqual(
+            self.song.replay_gain(["track"], -7.0, 0), self.minus_6db)
+
+    def test_preamp_album(self):
+        self.failUnlessAlmostEqual(
+            self.song.replay_gain(["album"], -5.0, 0), self.minus_6db)
+
+    def test_preamp_clip(self):
+        # Make sure excess pre-amp won't clip a track (with peak data)
+        self.failUnlessAlmostEqual(
+            self.song.replay_gain(["track"], 12.0, 0), 1.0 / 0.9)
 
     def test_trackgain(self):
         self.failUnless(self.song.replay_gain(["track"]) > 1)

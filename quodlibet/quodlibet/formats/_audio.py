@@ -456,12 +456,14 @@ class AudioFile(dict):
             return self.get_format_cover()
         else: return None
 
-    def replay_gain(self, profiles):
-        """Return the recommended Replay Gain scale factor.
+    def replay_gain(self, profiles, pre_amp_gain=0, fallback_gain=0):
+        """Return the computed Replay Gain scale factor.
 
         profiles is a list of Replay Gain profile names ('album',
         'track') to try before giving up. The special profile name
-        'none' will cause no scaling to occur.
+        'none' will cause no scaling to occur. pre_amp_gain will be
+        applied before checking for clipping. fallback_gain will be
+        used when the song does not have replaygain information.
         """
         for profile in profiles:
             if profile is "none":
@@ -472,12 +474,13 @@ class AudioFile(dict):
             except (KeyError, ValueError):
                 continue
             else:
+                db += pre_amp_gain
                 scale = 10.**(db / 20)
                 if scale * peak > 1:
                     scale = 1.0 / peak # don't clip
                 return min(15, scale)
         else:
-            return 1.0
+            return min(15, 10.**((fallback_gain+pre_amp_gain) / 20))
 
     def write(self):
         """Write metadata back to the file."""

@@ -46,6 +46,8 @@ def init(*rc_files):
         "player":
         { "time_remaining": "false",
           "replaygain": "on",
+          "fallback_gain" : "0.0",
+          "pre_amp_gain" : "0.0",
           "backend": "gstbe",
           "gst_pipeline": "",
           },
