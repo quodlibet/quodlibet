@@ -1,7 +1,9 @@
 # QLLibrefm: a Libre.fm client plugin for Quod Libet.
-# version 0.8
+# version 0.9
 # (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
-#             Joe Wreschnig <piman@sacredchao.net>
+#             Joe Wreschnig <piman@sacredchao.net>,
+# Modified by FOAD in 2009 with thanks to jrabbit and the information at
+# http://ideas.libre.fm/index.php/Client_Support#Quod_Libet
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
 import random
@@ -28,7 +30,7 @@ class QLLibrefm(EventPlugin):
     PLUGIN_NAME = _("Libre.fm Submission")
     PLUGIN_DESC = "Libre.fm client for Quod Libet"
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.8.1"
+    PLUGIN_VERSION = "0.9"
     CLIENT = "qlb"
     PROTOCOL_VERSION = "1.1"
     try: DUMP = os.path.join(const.USERDIR, "libre_cache")
@@ -493,11 +495,11 @@ class QLLibrefm(EventPlugin):
 
         table = gtk.Table(6, 3)
         table.set_col_spacings(3)
-        lt = gtk.Label(_("Please enter your Libre.fm\nusername and password."))
+        lt = gtk.Label(_("Please enter your Libre.fm username\nand password."))
         lu = gtk.Label(_("Username:"))
         lp = gtk.Label(_("Password:"))
         lv = gtk.Label(_("Exclude filter:"))
-        lvd = gtk.Label(_("Songs matching this filter will\nnot be sent to Libre.fm.\n"))
+        lvd = gtk.Label(_("Songs matching this filter will not be sent\nto Libre.fm.\n"))
         off = gtk.CheckButton(_("Offline mode (don't submit anything)"))
         ve = ValidatingEntry(parse.Query.is_valid_color)
         for l in [lt, lu, lp, lv, lvd]:
