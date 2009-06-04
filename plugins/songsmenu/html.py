@@ -80,6 +80,6 @@ class ExportToHTML(SongsMenuPlugin):
             s += '</tr>'
             songs_s += s
 
-        f = open(fn, 'wU')
+        f = open(fn, 'w')
         f.write((HTML % {'headers': cols_s, 'songs': songs_s}).encode('utf-8'))
         f.close()

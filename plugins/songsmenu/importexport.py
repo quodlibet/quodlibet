@@ -51,7 +51,7 @@ class Export(SongsMenuPlugin):
 
         global lastfolder
         lastfolder = dirname(fn)
-        out = open(fn, 'wU')
+        out = open(fn, 'w')
 
         for song in songs:
             print>>out, str(song('~basename'))
