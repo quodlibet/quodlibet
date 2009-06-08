@@ -35,6 +35,11 @@ class QLScrobbler(EventPlugin):
     except AttributeError:
         DUMP = os.path.join(const.DIR, "scrobbler_cache")
 
+    services = {
+            'Last.fm':  'http://post.audioscrobbler.com/',
+            'Libre.fm': 'http://turtle.libre.fm/'
+            }
+
     # things that could change
     
     username = ""
@@ -46,8 +51,9 @@ class QLScrobbler(EventPlugin):
     submission_tid = -1
 
     challenge = ""
+    base_url = ""
     submit_url = ""
-    
+
     # state management
     waiting = False
     challenge_sent = False
@@ -163,8 +169,8 @@ class QLScrobbler(EventPlugin):
         #    * don't submit when length < 00:30
         #     NOTE: >30:00 stipulation has been REMOVED as of Protocol1.1
         #    * don't submit if artist and title are not available
-        if song["~#length"] < 30: return
-        elif 'title' not in song: return
+        #if song["~#length"] < 30: return
+        if 'title' not in song: return
         elif "artist" not in song:
             if ("composer" not in song) and ("performer" not in song): return
         
@@ -215,9 +221,11 @@ class QLScrobbler(EventPlugin):
     def read_config(self):
         username = ""
         password = ""
+        url = ""
         try:
             username = config.get("plugins", "scrobbler_username")
             password = config.get("plugins", "scrobbler_password")
+            url = self._get_url(config.get("plugins", "scrobbler_service"))
         except:
             if (self.need_config == False and
                 getattr(self, 'PMEnFlag', False)):
@@ -235,7 +243,17 @@ class QLScrobbler(EventPlugin):
         hasher = md5.new()
         hasher.update(password);
         self.password = hasher.hexdigest()
+        self.base_url = url
         self.need_config = False
+
+    def _get_url(self, service):
+        if service in self.services:
+            return self.services[service]
+        else:
+            try:
+                return config.get("plugins", "scrobbler_url")
+            except:
+                return ""
 
     def __destroy_cb(self, dialog, response_id):
         dialog.destroy()
@@ -253,7 +271,9 @@ class QLScrobbler(EventPlugin):
 
     def send_handshake(self):
         # construct url
-        url = "http://post.audioscrobbler.com/?hs=true&p=%s&c=%s&v=%s&u=%s" % ( self.PROTOCOL_VERSION, self.CLIENT, self.PLUGIN_VERSION, self.username )
+        url = "%s/?hs=true&p=%s&c=%s&v=%s&u=%s" % ( self.base_url,
+                self.PROTOCOL_VERSION, self.CLIENT,
+                self.PLUGIN_VERSION, self.username )
         
         log("Sending handshake to Audioscrobbler.")
 
@@ -397,13 +417,12 @@ class QLScrobbler(EventPlugin):
             data["m[%d]" % i] = self.queue[i]['mbid']
             data["i[%d]" % i] = self.queue[i]['stamp']
         
-        (host, file) = self.submit_url[7:].split("/") 
 
         resp = None
         
         try:
             data_str = urllib.urlencode(data)
-            resp = urllib2.urlopen("http://" + host + "/" + file, data_str)
+            resp = urllib2.urlopen(self.submit_url, data_str)
         except:
             log("Audioscrobbler server not responding, will try later.")
             self.locked = False
@@ -471,52 +490,81 @@ class QLScrobbler(EventPlugin):
 
         def changed(entry, key):
             # having a function for each entry is unnecessary..
-            config.set("plugins", "scrobbler_" + key, entry.get_text())
+            if entry.get_property('sensitive'):
+                config.set("plugins", "scrobbler_" + key, entry.get_text())
+
+        def combo_changed(widget, urlent):
+            service = widget.get_active_text()
+            config.set("plugins", "scrobbler_service", service)
+            urlent.set_sensitive( (service not in self.services) )
+            urlent.set_text(self._get_url(service))
 
         def destroyed(*args):
             # if changed, let's say that things just got better and we should
             # try everything again
             newu = None
             newp = None
+            news = None
+            newsu = None
             try:
                 newu = config.get("plugins", "scrobbler_username")
                 newp = config.get("plugins", "scrobbler_password")
+                news = config.get("plugins", "scrobbler_service")
+                newsu = config.get("plugins", "scrobbler_url")
             except:
                 return
 
             try: self.exclude = config.get("plugins", "scrobbler_exclude")
             except: pass
 
-            if self.username != newu or self.password != newp:
+            if (self.username != newu or self.password != newp or self.service != news
+                    or (news == "Other..." and self.target != newsu)):
                 self.broken = False
 
         table = gtk.Table(6, 3)
         table.set_col_spacings(3)
-        lt = gtk.Label(_("Please enter your Audioscrobbler\nusername and password."))
+        table.set_border_width(6)
+        ls = gtk.Label(_("Service:"))
+        lsu = gtk.Label(_("URL:"))
         lu = gtk.Label(_("Username:"))
         lp = gtk.Label(_("Password:"))
         lv = gtk.Label(_("Exclude filter:"))
-        lvd = gtk.Label(_("Songs matching this filter will\nnot be sent to Audioscrobbler.\n"))
-        off = gtk.CheckButton(_("Offline mode (don't submit anything)"))
-        ve = ValidatingEntry(parse.Query.is_valid_color)
-        for l in [lt, lu, lp, lv, lvd]:
+        for l in [ls, lsu, lu, lp, lv]:
             l.set_line_wrap(True)
             l.set_alignment(0.0, 0.5)
-        table.attach(lt, 0, 2, 0, 1, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lu, 0, 1, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lp, 0, 1, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lv, 0, 1, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
-            
+        table.attach(ls,  0, 1, 0, 1, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(lsu, 0, 1, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(lu,  0, 1, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(lp,  0, 1, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(lv,  0, 1, 4, 5, xoptions=gtk.FILL | gtk.SHRINK)
+
+        serv = gtk.combo_box_new_text()
+        off = gtk.CheckButton(_("Offline mode (don't submit anything)"))
+        urlent = gtk.Entry()
         userent = gtk.Entry()
         pwent = gtk.Entry()
         pwent.set_visibility(False)
         pwent.set_invisible_char('*')
-        table.set_border_width(6)
-        
-        table.attach(ve, 1, 2, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lvd, 0, 2, 4, 5, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(off, 0, 2, 5, 7, xoptions=gtk.FILL | gtk.SHRINK)
+        ve = ValidatingEntry(parse.Query.is_valid_color)
+        ve.set_tooltip_text(_("Songs matching this filter will not be submitted."))
 
+        table.attach(serv,      2, 3, 0, 1, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(urlent,    2, 3, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(userent,   2, 3, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(pwent,     2, 3, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(ve,        2, 3, 4, 5, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(off,       0, 3, 5, 6, xoptions=gtk.FILL | gtk.SHRINK)
+
+        try: cur_service = config.get("plugins", "scrobbler_service")
+        except: cur_service = sorted(self.services.keys())[0]
+        for i, s in enumerate(sorted(self.services.keys()) + ["Other..."]):
+            serv.append_text(s)
+            if cur_service == s:
+                serv.set_active(i)
+        if serv.get_active() == -1:
+            serv.set_active(0)
+        urlent.set_sensitive( (cur_service not in self.services) )
+        urlent.set_text(self._get_url(cur_service))
         try: userent.set_text(config.get("plugins", "scrobbler_username"))
         except: pass
         try: pwent.set_text(config.get("plugins", "scrobbler_password"))
@@ -528,11 +576,12 @@ class QLScrobbler(EventPlugin):
         try: ve.set_text(config.get("plugins", "scrobbler_exclude"))
         except: pass
 
-        table.attach(userent, 1, 2, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(pwent, 1, 2, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
+        serv.connect('changed', combo_changed, urlent)
+        urlent.connect('changed', changed, 'url')
         pwent.connect('changed', changed, 'password')
         userent.connect('changed', changed, 'username')
         ve.connect('changed', changed, 'exclude')
         table.connect('destroy', destroyed)
         off.connect('toggled', toggled)
+
         return table
