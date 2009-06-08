@@ -7,8 +7,7 @@
 #
 # $Id$
 
-import os
-import popen2
+import os, subprocess
 
 import quodlibet.devices
 
@@ -87,9 +86,10 @@ class Device(dict):
     # If the device is not ejectable, set it to None.
     def eject(self):
         if util.iscommand("eject"):
-            pipe = popen2.Popen4("eject %s" % self.dev)
+            pipe = subprocess.Popen(['eject', self.dev],
+                    stderr=subprocess.PIPE, close_fds=True)
             if pipe.wait() == 0: return True
-            else: return pipe.fromchild.read()
+            else: return pipe.stderr.read()
         else:
             return _("No eject command found.")
 
