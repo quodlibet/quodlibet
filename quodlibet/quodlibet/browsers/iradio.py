@@ -9,6 +9,8 @@
 
 import os
 import urllib
+import re
+from xml.parsers import expat
 
 import gobject
 import gtk
@@ -25,9 +27,9 @@ from quodlibet.parse import Query
 from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.views import HintedTreeView
 
-SACREDCHAO = ("http://www.sacredchao.net/quodlibet/wiki/QL/"
-              "Master.qlpls?format=txt")
+ICECAST_YP = "http://dir.xiph.org/yp.xml"
 STATIONS = os.path.join(const.USERDIR, "stations")
 
 class IRFile(RemoteFile):
@@ -102,44 +104,135 @@ def ParseM3U(fileobj):
             files.append(irf)
     return files
 
+class YPParser(object):
+    _valid_keys = "server_name listen_url server_type bitrate genre"
+    def __init__(self):
+        self.parser = expat.ParserCreate()
+        self.parser.StartElementHandler = self.handle_start
+        self.parser.EndElementHandler = self.handle_end
+        self.parser.CharacterDataHandler = self.handle_char_data
+    def handle_start(self, name, attrs):
+        if name in self._valid_keys:
+            self._key = name
+            self._val = ''
+        if name == 'entry':
+            self._current = {}
+    def handle_char_data(self, data):
+        if self._key:
+            self._val = self._val + data
+    def handle_end(self, name):
+        if name == 'entry':
+            type = self._current.get("server_type")
+            if type.startswith("audio") or (type == "application/ogg" and
+                not self._current.get("listen_url").endswith("ogv")):
+                irf = IRFile(self._current.get("listen_url"))
+                irf["title"] = self._current.get("server_name", u"")
+                genres = self._current.get("genre", u"").split()
+                irf["genre"] = '\n'.join(filter(lambda s: len(s) > 1, genres))
+                try: br = int(self._current.get("bitrate", 0))
+                except: br = 0
+                if br > 1000: br = br / 1000
+                irf["~#bitrate"] = br
+                self.files.append(irf)
+            self._current = None
+        elif self._key and self._current is not None:
+            self._current[self._key] = self._val.strip()
+            self._key = None
+            self._val = None
+    def parse(self, fileobj):
+        self.files = []
+        self._key = None
+        self.parser.ParseFile(fileobj)
+        return self.files
+
 class ChooseNewStations(gtk.Dialog):
     def __init__(self, irfs):
         super(ChooseNewStations, self).__init__(title=_("Choose New Stations"))
         self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                          gtk.STOCK_ADD, gtk.RESPONSE_OK)
-        self.set_default_size(400, 300)
+        self.set_default_size(500, 400)
+        has_genre, has_bitrate = (False, False)
+        for song in irfs:
+            if song("genre"): has_genre = True
+            if song("~#bitrate"): has_bitrate = True
 
-        tv = gtk.TreeView()
-        model = gtk.ListStore(object, bool, str)
+        # (song, index, visible, checked, title, genres, bitrate)
+        listmodel = gtk.ListStore(object, int, bool, bool, str, str, int)
+        filtermodel = listmodel.filter_new()
+        filtermodel.set_visible_column(2)
+        model = gtk.TreeModelSort(filtermodel)
+        hbox_search = gtk.HBox()
+        lbl = gtk.Label(_('_Search:'))
+        lbl.set_use_underline(True)
+        hbox_search.pack_start(lbl, expand=False)
+        query = gtk.Entry()
+        lbl.set_mnemonic_widget(query)
+        def filter_visible(query, filter, listmodel):
+            iter = listmodel.get_iter_root()
+            qre_text = '|'.join(re.escape(query.get_text()).split())
+            query_re = re.compile(qre_text, flags = re.IGNORECASE)
+            while iter:
+                (title, genres) = listmodel.get(iter, 4, 5)
+                if query_re.search(title) or query_re.search(genres):
+                    listmodel.set_value(iter, 2, True)
+                else:
+                    listmodel.set_value(iter, 2, False)
+                iter = listmodel.iter_next(iter)
+            filter.refilter()
+        query.connect('changed', filter_visible, filtermodel, listmodel)
+        hbox_search.pack_start(query)
+        self.vbox.pack_start(hbox_search, expand=False)
+
+        tv = HintedTreeView()
         tv.set_model(model)
         render = gtk.CellRendererToggle()
         render.connect('toggled', self.__toggled)
-        c = gtk.TreeViewColumn(_("Add"), render, active=1)
+        c = gtk.TreeViewColumn(_("Add"), render, active=3)
         tv.append_column(c)
+        # These next two are out of model order so that resizing works better
+        if has_bitrate:
+            render = gtk.CellRendererText()
+            render.set_property('xalign', 1.0)
+            c = gtk.TreeViewColumn(_("Bitrate"), render, text=6)
+            c.set_sort_column_id(6)
+            tv.append_column(c)
+        if has_genre:
+            render = gtk.CellRendererText()
+            render.set_property('ellipsize', pango.ELLIPSIZE_END)
+            render.set_property('width', 100)
+            c = gtk.TreeViewColumn(_("Genre"), render, text=5)
+            c.set_property('resizable', True)
+            c.set_sort_column_id(5)
+            tv.append_column(c)
         render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        c = gtk.TreeViewColumn(_("Title"), render, text=2)
+        c = gtk.TreeViewColumn(_("Title"), render, text=4)
+        c.set_property('resizable', True)
+        c.set_sort_column_id(4)
         tv.append_column(c)
-
+        tv.set_search_column(4)
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.add(tv)
         sw.set_border_width(6)
-
         self.vbox.pack_start(sw)
 
-        for song in irfs:
-            model.append([song, False, song("~artist~title")])
+        for id, song in enumerate(irfs):
+            listmodel.append([song, id, True, False, song("~artist~title"),
+                              ', '.join(song("genre").split()), 
+                              song("~#bitrate", 0)])
+        self.listmodel = listmodel
         self.model = model
         self.connect_object('destroy', tv.set_model, None)
         self.child.show_all()
 
     def __toggled(self, toggle, path):
-        self.model[path][1] ^= True
+        listmodel_path = self.model[path][1]
+        self.listmodel[listmodel_path][3] ^= True
 
     def get_irfs(self):
-        return [row[0] for row in self.model if row[1]]
+        return [row[0] for row in self.model if row[2] and row[3]]
 
 class AddNewStation(GetStringDialog):
     def __init__(self, parent):
@@ -148,7 +241,7 @@ class AddNewStation(GetStringDialog):
             _("Enter the location of an Internet radio station:"),
             okbutton=gtk.STOCK_ADD)
         b = qltk.Button(_("_Stations..."), gtk.STOCK_CONNECT)
-        b.connect_object('clicked', self._val.set_text, SACREDCHAO)
+        b.connect_object('clicked', self._val.set_text, ICECAST_YP)
         b.connect_object('clicked', self.response, gtk.RESPONSE_OK)
         b.show_all()
         self.action_area.pack_start(b, expand=False)
@@ -249,7 +342,8 @@ class InternetRadio(gtk.HBox, Browser):
 
     def __add_station(self, uri):
         if isinstance(uri, unicode): uri = uri.encode('utf-8')
-        if uri.lower().endswith(".pls") or uri == SACREDCHAO:
+        if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u") \
+            or uri == ICECAST_YP:
             try: sock = urllib.urlopen(uri)
             except EnvironmentError, e:
                 try: err = e.strerror.decode(const.ENCODING, 'replace')
@@ -257,16 +351,14 @@ class InternetRadio(gtk.HBox, Browser):
                     err = e.strerror[1].decode(const.ENCODING, 'replace')
                 qltk.ErrorMessage(None, _("Unable to add station"), err).run()
                 return
-            irfs = ParsePLS(sock)
-        elif uri.lower().endswith(".m3u"):
-            try: sock = urllib.urlopen(uri)
-            except EnvironmentError, e:
-                try: err = e.strerror.decode(const.ENCODING, 'replace')
-                except TypeError:
-                    err = e.strerror[1].decode(const.ENCODING, 'replace')
-                qltk.ErrorMessage(None, _("Unable to add station"), err).run()
-                return
-            irfs = ParseM3U(sock)
+            if uri.lower().endswith(".pls"):
+                irfs = ParsePLS(sock)
+            elif uri.lower().endswith(".m3u"):
+                irfs = ParseM3U(sock)
+            elif uri == ICECAST_YP:
+                p = YPParser()
+                irfs = p.parse(sock)
+            sock.close()
         else:
             irfs = [IRFile(uri)]
 
