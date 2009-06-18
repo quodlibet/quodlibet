@@ -566,6 +566,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return True
+        if event.window != self.get_bin_window(): return False
         if col.header_name == "~#rating":
             song = view.get_model()[path][0]
             l = gtk.Label()
