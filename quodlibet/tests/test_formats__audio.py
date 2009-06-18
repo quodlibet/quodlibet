@@ -187,11 +187,11 @@ class TAudioFile(TestCase):
     def test_performers(self):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
                        ("performer", "C")])
-        self.failUnless("A (vocals)" in q.list("~performers"))
-        self.failUnless("B (guitar)" in q.list("~performers"))
+        self.failUnless("A (Vocals)" in q.list("~performers"))
+        self.failUnless("B (Guitar)" in q.list("~performers"))
         self.failUnless("C" in q.list("~performers"))
-        self.failUnless("A (vocals)" in q.list("~people"))
-        self.failUnless("B (guitar)" in q.list("~people"))
+        self.failUnless("A (Vocals)" in q.list("~people"))
+        self.failUnless("B (Guitar)" in q.list("~people"))
         self.failUnlessEqual(len(q.list("~performers")), 3)
 
     def test_to_dump(self):
