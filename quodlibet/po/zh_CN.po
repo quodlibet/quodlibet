@@ -292,7 +292,7 @@ msgstr "按日期排序"
 
 #: ../quodlibet/browsers/albums.py:512
 msgid "All Albums"
-msgstr "所以专辑"
+msgstr "所有专辑"
 
 #: ../quodlibet/browsers/albums.py:513
 #, python-format
