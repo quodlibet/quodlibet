@@ -446,20 +446,21 @@ class Playlists(gtk.VBox, Browser):
                 return
             name = name or os.path.basename(uri) or _("New Playlist")
             uri = uri.encode('utf-8')
-            sock = urllib.urlopen(uri)
-            f = NamedTemporaryFile()
-            f.write(sock.read()); f.flush()
-            if uri.lower().endswith('.pls'):
-                playlist = ParsePLS(f.name, library=library)
-            elif uri.lower().endswith('.m3u'):
-                playlist = ParseM3U(f.name, library=library)
-            else: playlist = None
-            if playlist:
+            try:
+                sock = urllib.urlopen(uri)
+                f = NamedTemporaryFile()
+                f.write(sock.read()); f.flush()
+                if uri.lower().endswith('.pls'):
+                    playlist = ParsePLS(f.name, library=library)
+                elif uri.lower().endswith('.m3u'):
+                    playlist = ParseM3U(f.name, library=library)
+                else:
+                    raise IOError
                 library.add_filename(playlist)
                 if name: playlist.rename(name)
                 Playlists.changed(playlist)
                 ctx.finish(True, False, etime)
-            else:
+            except IOError:
                 ctx.finish(False, False, etime)
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
@@ -560,12 +561,14 @@ class Playlists(gtk.VBox, Browser):
     def reordered(self, songlist):
         songs = songlist.get_songs()
         model, iter = self.__view.get_selection().get_selected()
+        playlist = None
         if iter:
             playlist = model[iter][0]
             playlist[:] = songs
-        else:
+        elif songs:
             playlist = Playlist.fromsongs(songs)
             gobject.idle_add(self.__select_playlist, playlist)
-        Playlists.changed(playlist, refresh=False)
+        if playlist:
+            Playlists.changed(playlist, refresh=False)
 
 browsers = [Playlists]

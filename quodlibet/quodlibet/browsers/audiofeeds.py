@@ -292,7 +292,6 @@ class AudioFeeds(Browser, gtk.VBox):
         self.__main = bool(main)
 
         self.__view = view = AllTreeView()
-        self.__view.set_reorderable(True)
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         col = gtk.TreeViewColumn("Audio Feeds", render)
@@ -317,6 +316,7 @@ class AudioFeeds(Browser, gtk.VBox):
         view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
         view.connect('drag-data-received', self.__drag_data_received)
         view.connect('drag-motion', self.__drag_motion)
+        view.connect('drag-leave', self.__drag_leave)
 
         self.connect_object('destroy', self.__save, view)
 
