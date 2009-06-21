@@ -687,6 +687,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         for row in model:
             if row[0] is not None and row[0].key == album_key:
                 view.scroll_to_cell(row.path[0], use_align=True, row_align=0.5)
+                sel = view.get_selection()
+                if row.path not in sel.get_selected_rows()[1]:
+                    sel.unselect_all()
+                    sel.select_path(row.path[0])
                 break
 
     def __selection_changed(self, selection, sort):

@@ -295,6 +295,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 if row[0] in values:
                     self.scroll_to_cell(
                         row.path[0], use_align=True, row_align=0.5)
+                    sel = self.get_selection()
+                    sel.unselect_all()
+                    sel.select_path(row.path[0])
                     break
 
         def get_selected(self):
