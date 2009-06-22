@@ -480,6 +480,7 @@ class Playlists(gtk.VBox, Browser):
         if iter is None:
             return
         songs = list(model[iter][0])
+        songs = filter(lambda s: isinstance(s, AudioFile), songs)
         menu = SongsMenu(library, songs, playlists=False, remove=False)
         menu.preseparate()
 
