@@ -83,7 +83,7 @@ class Preferences(qltk.Window):
         remove = gtk.Button(stock=gtk.STOCK_REMOVE)
 
         self.selection = view.get_selection()
-        remove.connect('clicked', self.__remove, vself.selection)
+        remove.connect('clicked', self.__remove, self.selection)
         self.selection.connect('changed', self.__changed, remove)
         vb_2.pack_start(add, expand=False)
         vb_2.pack_start(remove, expand=False)

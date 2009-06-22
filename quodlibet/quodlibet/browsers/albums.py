@@ -575,10 +575,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model, rows = selection.get_selected_rows()
         albums = [model[row][0] for row in rows]
         if None in albums:
-            albums = [model[row][0] for row in model]
+            albums = [row[0] for row in model]
         for album in albums:
-            album.cover = type(album).cover
-            album.finalize()
+            if album:
+                album.cover = type(album).cover
+                album.finalize()
 
     def __get_selected_albums(self, selection):
         if not selection:
