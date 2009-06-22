@@ -161,23 +161,25 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         songs = []
         to_add = []
         for dir in dirs:
-            for file in filter(formats.filter, sorted(os.listdir(dir))):
-                fn = os.path.realpath(os.path.join(dir, file))
-                if fn in self.__glibrary:
-                    songs.append(self.__glibrary[fn])
-                elif fn not in self.__library:
-                    song = formats.MusicFile(fn)
-                    if song:
-                        to_add.append(song)
-                        songs.append(song)
-                if fn in self.__library:
-                    song = self.__library[fn]
-                    if not song.valid():
-                        self.__library.reload(song)
-                    if song in self.__library:
-                        songs.append(song)
-            if not len(to_add) & 0x7:
-                yield songs
+            try:
+                for file in filter(formats.filter, sorted(os.listdir(dir))):
+                    fn = os.path.realpath(os.path.join(dir, file))
+                    if fn in self.__glibrary:
+                        songs.append(self.__glibrary[fn])
+                    elif fn not in self.__library:
+                        song = formats.MusicFile(fn)
+                        if song:
+                            to_add.append(song)
+                            songs.append(song)
+                    if fn in self.__library:
+                        song = self.__library[fn]
+                        if not song.valid():
+                            self.__library.reload(song)
+                        if song in self.__library:
+                            songs.append(song)
+                if not len(to_add) & 0x7:
+                    yield songs
+            except OSError: pass
         self.__library.add(to_add)
         yield songs
 

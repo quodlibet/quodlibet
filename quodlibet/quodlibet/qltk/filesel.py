@@ -226,6 +226,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                     pass
             if not model.iter_has_child(iter):
                 return True
+        except OSError:
+            pass
         finally:
             if window:
                 window.set_cursor(None)
