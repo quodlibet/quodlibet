@@ -183,6 +183,11 @@ class TAudioFile(TestCase):
         b = AudioFile(bar_1_1)
         q.sanitize()
         self.failUnlessRaises(ValueError, b.sanitize)
+        n = AudioFile({"artist": u"foo\0bar", "title": u"baz\0",
+                        "~filename": "whatever"})
+        n.sanitize()
+        self.failUnlessEqual(n["artist"], "foo\nbar")
+        self.failUnlessEqual(n["title"], "baz")
 
     def test_performers(self):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),

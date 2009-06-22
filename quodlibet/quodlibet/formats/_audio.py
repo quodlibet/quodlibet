@@ -331,7 +331,12 @@ class AudioFile(dict):
 
     def sanitize(self, filename=None):
         """Fill in metadata defaults. Find ~mountpoint, ~#mtime,
-        and ~#added."""
+        and ~#added. Check for null bytes in tags."""
+
+        # Replace nulls with newlines, trimming zero-length segments
+        for key, val in self.items():
+            if isinstance(val, basestring) and '\0' in val:
+                self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
 
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
