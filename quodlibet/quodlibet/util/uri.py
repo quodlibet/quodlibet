@@ -46,7 +46,8 @@ class URI(str):
             values[2] = quote_plus(values[2], safe="/~")
         value = urlunparse(values)
         obj = str.__new__(klass, value)
-        if not obj.scheme: raise ValueError("URIs must have a scheme")
+        if not obj.scheme:
+            raise ValueError("URIs must have a scheme, such as 'http://'")
         elif not (obj.netloc or obj.path):
             raise ValueError("URIs must have a network location or path")
         else: return obj

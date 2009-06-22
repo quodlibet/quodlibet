@@ -347,7 +347,7 @@ class InternetRadio(gtk.HBox, Browser):
             try: sock = urllib.urlopen(uri)
             except EnvironmentError, e:
                 try: err = e.strerror.decode(const.ENCODING, 'replace')
-                except TypeError:
+                except (TypeError, AttributeError):
                     err = e.strerror[1].decode(const.ENCODING, 'replace')
                 qltk.ErrorMessage(None, _("Unable to add station"), err).run()
                 return
@@ -360,7 +360,11 @@ class InternetRadio(gtk.HBox, Browser):
                 irfs = p.parse(sock)
             sock.close()
         else:
-            irfs = [IRFile(uri)]
+            try:
+                irfs = [IRFile(uri)]
+            except ValueError, err:
+                qltk.ErrorMessage(None, _("Unable to add station"), err).run()
+                return
 
         if not irfs:
             qltk.ErrorMessage(
