@@ -89,7 +89,6 @@ def init(player, library):
          os.path.join(const.USERDIR, "plugins", "editing")], "editing")
 
     main = QuodLibetWindow(library, player)
-    main.connect('destroy', gtk.main_quit)
 
     events = EventPlugins(library.librarian, player, [
         os.path.join(const.BASEDIR, "plugins", "events"),
@@ -106,6 +105,5 @@ def init(player, library):
 
     flag = main.songlist.get_columns()[-1].get_clickable
     while not flag(): gtk.main_iteration()
-    main.show()
 
     return main

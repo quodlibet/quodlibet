@@ -195,7 +195,7 @@ def main(window):
 
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
     for sig in SIGNALS:
-        signal.signal(sig, gtk.main_quit)
+        signal.signal(sig, window.destroy)
 
     window.connect('destroy', gtk.main_quit)
     window.show()

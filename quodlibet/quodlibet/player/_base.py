@@ -105,7 +105,3 @@ class BasePlayer(gtk.Object):
         print_d("Going to %r" % song, context=self)
         self._source.go_to(song)
         self._end(True)
-
-    def destroy(self):
-        self.go_to(None)
-        super(BasePlayer, self).destroy()

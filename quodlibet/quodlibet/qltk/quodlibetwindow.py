@@ -363,6 +363,9 @@ class QuodLibetWindow(gtk.Window):
         if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
             self.maximize()
 
+    def destroy(self, *args):
+        super(QuodLibetWindow, self).destroy()
+
     def __show_or(self, widget, prop):
         ssv = self.song_scroller.get_property('visible')
         qxv = self.qexpander.get_property('visible')
@@ -389,7 +392,7 @@ class QuodLibetWindow(gtk.Window):
              self.__preferences),
             ("Plugins", stock.PLUGINS, None, None, None,
              self.__plugins),
-            ("Quit", gtk.STOCK_QUIT, None, None, None, gtk.main_quit),
+            ("Quit", gtk.STOCK_QUIT, None, None, None, self.destroy),
             ('Filters', None, _("_Filters")),
 
             ("NotPlayedDay", gtk.STOCK_FIND, _("Not Played To_day"),
