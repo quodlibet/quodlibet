@@ -82,6 +82,13 @@ def get_by_udi(udi):
     except dbus.DBusException:
         return None
 
+    try:
+        media = interface.GetProperty('storage.removable.media_available')
+        if not media:
+            return None
+    except dbus.DBusException:
+        pass
+
     if 'portable_audio_player' in capabilities:
         try:
             protocols = interface.GetProperty(
