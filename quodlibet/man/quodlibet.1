@@ -13,7 +13,7 @@ capabilities.
 .PP
 This manual page is only a short reference for Quod Libet.
 Complete documentation is available at
-http://www.sacredchao.net/quodlibet/wiki/Guide.
+http://code.google.com/p/quodlibet/wiki/Guide.
 .SH QUOD\ LIBET\ OPTIONS
 .IP \-\-enqueue\ \fIfilename\fR|\fIquery\fR 4
 Enqueue a filename or query results.
@@ -120,14 +120,14 @@ The '\fBc\fR' postfix on strings or regular expressions makes the search
 case-sensitive. Numeric values may be given as integers, floating-point
 numbers, MM:SS format, or simple English, e.g. "3 days", "2 hours".
 .PP
-See http://www.sacredchao.net/quodlibet/wiki/Guide/Searching.
+See http://code.google.com/p/quodlibet/wiki/Guide_Searching.
 .PP
 All internal tags begin with a ~ character. Non-numeric internal tags
 are ~basename, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
 Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
 ~#laststarted, ~#length, ~#mtime, ~#playcount, ~#skipcount, and ~#track.
 .PP
-See http://www.sacredchao.net/quodlibet/wiki/Guide/InternalTags.
+See http://code.google.com/p/quodlibet/wiki/Guide_InternalTags.
 .SH RENAMING FILES
 Quod Libet allows you to rename files based on their tags. In some
 cases you may wish to alter the filename depending on whether some
@@ -145,7 +145,7 @@ another '|':
 .RS 4
 <album|<album>|No Album> \- <title>
 .RE
-See http://www.sacredchao.net/quodlibet/wiki/Guide/Renaming.
+See http://code.google.com/p/quodlibet/wiki/Guide_Renaming.
 .SH AUDIO BACKENDS
 Quod Libet uses GStreamer for audio playback. It tries to read your GConf
 GStreamer configuration, but if that fails it falls back to osssink. You
@@ -153,7 +153,7 @@ can change the \fBpipeline\fR option in \fI~/.quodlibet/config\fR to use
 a different sink, or pass options to the sink. For example, you might use
 \fBesdsink\fR or \fBalsasink device=hw:1\fR.
 .PP
-See http://www.sacredchao.net/quodlibet/wiki/Guide/AudioBackends.
+See http://code.google.com/p/quodlibet/wiki/Guide_AudioBackends.
 .SH FILES
 .IP \fI~/.quodlibet/songs\fR 4
 A pickled Python dict of cached metadata. Deleting this file will remove
@@ -167,20 +167,20 @@ A "key=value" file containing information about the currently playing song.
 A FIFO connected to the most-recently-started instance of the program.
 \-\-next, \-\-previous, etc., use this to control the player.
 .IP \fI~/.quodlibet/plugins/\fR 4
-Put plugins (from http://www.sacredchao.net/quodlibet/wiki/Plugins) here.
+Put plugins (from http://code.google.com/p/quodlibet/wiki/Guide_Plugins) here.
 .IP \fI~/.quodlibet/browsers/\fR 4
 Put custom library browsers here.
 .PP
-See http://www.sacredchao.net/quodlibet/wiki/Guide/Extending.
+See http://code.google.com/p/quodlibet/wiki/Guide_Extending.
 .SH BUGS
-See https://www.sacredchao.net/quodlibet/report/1 for a list of
+See http://code.google.com/p/quodlibet/issues/list for a list of
 all currently open bugs and feature requests.
 .SH AUTHORS
 Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 .SH SEE ALSO
-http://www.sacredchao.net/quodlibet/wiki/Guide,
+http://code.google.com/p/quodlibet/wiki/Guide,
 .br
-http://www.sacredchao.net/quodlibet/wiki/FAQ,
+http://code.google.com/p/quodlibet/wiki/FAQ,
 .br
 .BR regex (7),
 .BR gst-launch (1)
