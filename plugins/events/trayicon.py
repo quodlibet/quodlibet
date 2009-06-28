@@ -257,6 +257,7 @@ class TrayIcon(EventPlugin):
         else: self.tooltip = _("Not playing")
 
     def __Menu(self, watcher, window, player):
+        from widgets import main
         playpause = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PLAY)
         playpause.connect('activate', self.__play_pause, player)
         safter = StopAfterMenu(player)
@@ -325,7 +326,7 @@ class TrayIcon(EventPlugin):
         ratings.set_submenu(rating)
 
         quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        quit.connect('activate', gtk.main_quit)
+        quit.connect('activate', main.destroy)
 
         menu = gtk.Menu()
         for item in [playpause,

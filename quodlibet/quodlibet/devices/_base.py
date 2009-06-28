@@ -52,6 +52,9 @@ class Device(dict):
                     value = quodlibet.devices.config.get(udi, key)
                 dict.__setitem__(self, key, value)
 
+        # Sometimes a device shows up twice. The UDI identifies the right one.
+        dict.__setitem__(self, 'udi', str(udi))
+
         # Set a sensible name if none is set.
         if not self.has_key('name'):
             # These can raise a D-Bus exception, except I'd rather

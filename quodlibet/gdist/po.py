@@ -94,7 +94,8 @@ class install_mo(GCommand):
             self.run_command('build_mo')
         src = os.path.join(self.build_base, "share", "locale")
         dest = os.path.join(self.install_base, "share", "locale")
-        dest = change_root(self.root, dest)
+        if self.root != None:
+            dest = change_root(self.root, dest)
         self.copy_tree(src, dest)
 
 __all__ = ["build_mo", "install_mo"]

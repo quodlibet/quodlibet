@@ -94,8 +94,7 @@ class StorageDevice(Device):
                 ).run():
                 try:
                     # Remove the current song
-                    song = self.__library[target]
-                    self.__library.remove(song)
+                    self.__library.remove([self.__library[target]])
                 except KeyError:
                     pass
                 model = songlist.get_model()

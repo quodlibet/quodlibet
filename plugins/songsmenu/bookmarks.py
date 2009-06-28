@@ -52,7 +52,7 @@ class GoToDialog(qltk.Window):
             song = model[path[:1]][1]
 
         from player import playlist as player
-        player.go_to(song)
+        player.go_to(song._song)
         # Ugly hack to avoid trying to seek before GSt is ready.
         gobject.timeout_add(200, player.seek, time * 1000)
         self.destroy()

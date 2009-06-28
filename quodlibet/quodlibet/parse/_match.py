@@ -92,6 +92,7 @@ class Numcmp(object):
     def search(self, data):
         if self.__shortcircuit: num = data.get(self.__ftag, 0)
         else: num = data(self.__ftag, 0)
+        if not isinstance(num, (int, float, long)): num = 0
         num = round(num, 2)
         if   self.__op == ">":  return num >  self.__value
         elif self.__op == "<":  return num <  self.__value

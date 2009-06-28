@@ -60,7 +60,8 @@ class SongTracker(object):
             song["~#playcount"] = song.get("~#playcount", 0) + 1
             librarian.changed([song])
         elif pl.current is not song:
-            song["~#skipcount"] = song.get("~#skipcount", 0) + 1
+            if "~errors" not in song:
+                song["~#skipcount"] = song.get("~#skipcount", 0) + 1
             librarian.changed([song])
 
         if not ended and song and "~errors" in song:

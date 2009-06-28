@@ -68,7 +68,10 @@ def print_(string, frm="utf-8", prefix="", output=sys.stdout, log=None):
             string = string.encode(ENCODING, "replace")
         else:
             string = string.decode(frm).encode(ENCODING, "replace")
-        print >>output, string
+        try:
+            print >>output, string
+        except IOError, e:
+            pass
 
 def print_d(string, context=""):
     """Print debugging information."""
@@ -192,7 +195,7 @@ def main(window):
 
     SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
     for sig in SIGNALS:
-        signal.signal(sig, gtk.main_quit)
+        signal.signal(sig, window.destroy)
 
     window.connect('destroy', gtk.main_quit)
     window.show()

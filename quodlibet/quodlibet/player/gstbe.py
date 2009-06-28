@@ -26,7 +26,7 @@ def GStreamerSink(pipeline):
     * If it fails, fall back to autoaudiosink.
     * If that fails, complain loudly."""
 
-    if pipeline == "gconf": pipeline = "gconfaudiosink"
+    if pipeline == "gconf": pipeline = "gconfaudiosink profile=music"
     try: pipe = gst.parse_launch(pipeline)
     except gobject.GError, err:
         if pipeline != "autoaudiosink":
@@ -223,7 +223,8 @@ def can_play_uri(uri):
     return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
 
 def init(librarian):
-    pipeline = config.get("player", "gst_pipeline") or "gconfaudiosink"
+    pipeline = (config.get("player", "gst_pipeline") or
+                "gconfaudiosink profile = music")
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(
         gst.URI_SRC,

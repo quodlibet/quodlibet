@@ -72,7 +72,8 @@ class install_shortcuts(GCommand):
         if not self.skip_build:
             self.run_command('build_shortcuts')
         basepath = os.path.join(self.prefix, 'share', 'applications')
-        basepath = change_root(self.root, basepath)
+        if self.root != None:
+            basepath = change_root(self.root, basepath)
         srcpath = os.path.join(self.build_base, 'share', 'applications')
         self.mkpath(basepath)
         for shortcut in self.shortcuts:

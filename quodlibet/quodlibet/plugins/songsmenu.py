@@ -124,8 +124,9 @@ class SongsMenuPlugins(Manager):
         return menu
 
     def __handle(self, plugin, library, parent, songs, albums):
-        plugin.plugin_window = parent
+        if len(songs) == 0: return
 
+        plugin.plugin_window = parent
         try:
             if len(songs) == 1 and callable(plugin.plugin_single_song):
                 try: ret = plugin.plugin_single_song(songs[0])

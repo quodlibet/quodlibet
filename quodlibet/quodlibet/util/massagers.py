@@ -76,7 +76,7 @@ class MBAlbumStatus(Massager):
     error = _("MusicBrainz release status must be 'official', "
               "'promotional', or 'bootleg'.")
     def validate(self, value):
-        return value in ["official", "promotional", "bootleg"]
+        return value in ["official", "promotional", "bootleg"] and value
 
 tags = {}
 for f in globals().values():

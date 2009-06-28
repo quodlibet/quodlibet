@@ -34,7 +34,8 @@ class DBusHandler(dbus.service.Object):
         dict = {}
         for key, value in (song or {}).items():
             if isinstance(value, unicode):
-                dict[key] = value.encode('utf-8')
+                if '\x00' not in value:
+                    dict[key] = value.encode('utf-8')
             elif not isinstance(value, str):
                 dict[key] = str(value)
         return dict

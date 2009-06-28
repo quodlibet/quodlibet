@@ -37,7 +37,8 @@ class install_man(GCommand):
 
     def run(self):
         basepath = os.path.join(self.prefix, 'share', 'man')
-        basepath = change_root(self.root, basepath)
+        if self.root != None:
+          basepath = change_root(self.root, basepath)
         self.mkpath(basepath)
         for man_page in self.man_pages:
             manpath = os.path.join(basepath, "man" + man_page[-1])

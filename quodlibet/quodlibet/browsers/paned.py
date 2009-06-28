@@ -81,8 +81,10 @@ class Preferences(qltk.Window):
         add = gtk.Button(stock=gtk.STOCK_ADD)
         add.connect('clicked', self.__add, model, cb)
         remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-        remove.connect('clicked', self.__remove, view.get_selection())
-        view.get_selection().connect('changed', self.__changed, remove)
+
+        self.selection = view.get_selection()
+        remove.connect('clicked', self.__remove, self.selection)
+        self.selection.connect('changed', self.__changed, remove)
         vb_2.pack_start(add, expand=False)
         vb_2.pack_start(remove, expand=False)
         align.child.pack_start(vb_2, expand=False, fill=False)
@@ -293,6 +295,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 if row[0] in values:
                     self.scroll_to_cell(
                         row.path[0], use_align=True, row_align=0.5)
+                    sel = self.get_selection()
+                    sel.unselect_all()
+                    sel.select_path(row.path[0])
                     break
 
         def get_selected(self):

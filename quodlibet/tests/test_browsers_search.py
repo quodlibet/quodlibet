@@ -8,7 +8,7 @@ import quodlibet.config
 
 from quodlibet.browsers.search import EmptyBar, SearchBar
 from quodlibet.formats._audio import AudioFile
-from quodlibet.library import SongLibrary
+from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [AudioFile(
     {"title": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -24,6 +24,7 @@ class TEmptyBar(TestCase):
     def setUp(self):
         quodlibet.config.init()
         quodlibet.browsers.search.library = SongLibrary()
+        quodlibet.browsers.search.library.librarian = SongLibrarian()
         for af in SONGS:
             af.sanitize()
         quodlibet.browsers.search.library.add(SONGS)

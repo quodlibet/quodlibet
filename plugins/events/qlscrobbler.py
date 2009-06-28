@@ -347,7 +347,8 @@ class QLScrobbler(EventPlugin):
                 self.submission_tid = gobject.timeout_add(120 * 1000, self.submit_song_helper)
                 log("Attempts will continue to submit the last %d songs." % len(self.queue))
 
-        if self.already_submitted == True or self.broken == True: return
+        if (self.already_submitted == True or self.broken == True
+            or not self.song): return
 
         # Scope.
         store = {}
