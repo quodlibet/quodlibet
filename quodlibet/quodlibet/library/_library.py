@@ -79,16 +79,11 @@ class Library(gtk.Object):
         if not items:
             return
         print_d("Removing %d items." % len(items), self)
-        removed = []
         for item in items:
             print_d("Removing %r." % item.key, self)
-            try:
-                del(self._contents[item.key])
-                removed.append(item)
-            except KeyError:
-                print_d("Could not find/remove %r." % item.key, self)
+            del(self._contents[item.key])
         self.dirty = True
-        self.emit('removed', removed)
+        self.emit('removed', items)
 
     def changed(self, items):
         """Alert other users that these items have changed.
