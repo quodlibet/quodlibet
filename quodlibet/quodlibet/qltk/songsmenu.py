@@ -88,7 +88,7 @@ class SongsMenu(gtk.Menu):
             if callable(remove):
                 b.connect_object('activate', remove, songs)
             else:
-                b.connect_object('activate', library.remove, songs)
+                b.connect('activate', self.__remove, songs, library)
                 b.set_sensitive(in_lib)
             self.append(b)
 
@@ -130,7 +130,7 @@ class SongsMenu(gtk.Menu):
             self.prepend(gtk.SeparatorMenuItem())
 
     def __remove(self, item, songs, library):
-        library.remove(songs)
+        library.remove(set(songs))
 
     def __enqueue(self, item, songs):
         songs = filter(lambda s: s.can_add, songs)
@@ -139,6 +139,7 @@ class SongsMenu(gtk.Menu):
             main.playlist.enqueue(songs)
 
     def __delete(self, item, songs, library):
+        songs = set(songs)
         files = [song["~filename"] for song in songs]
         d = DeleteDialog(None, files)
         removed = dict.fromkeys(d.run())

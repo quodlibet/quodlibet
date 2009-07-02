@@ -157,7 +157,7 @@ class Playlist(list):
     def remove_songs(self, songs, library):
         changed = False
         # TODO: document the "library.masked" business
-        for song in set(songs):
+        for song in songs:
             if library.masked(song("~filename")):
                 while True:
                     try: self[self.index(song)] = song("~filename")
