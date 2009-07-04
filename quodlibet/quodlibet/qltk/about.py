@@ -33,9 +33,9 @@ class AboutQuodLibet(gtk.AboutDialog):
         # Translators: Replace this with your name/email to have it appear
         # in the "About" dialog.
         self.set_translator_credits(_('translator-credits'))
-        self.set_website("http://www.sacredchao.net/quodlibet")
+        self.set_website("http://code.google.com/p/quodlibet")
         self.set_copyright(
-            "Copyright © 2004-2007 Joe Wreschnig, Michael Urman, & others\n"
+            "Copyright © 2004-2009 Joe Wreschnig, Michael Urman, & others\n"
             "<quodlibet@lists.sacredchao.net>")
         self.child.show_all()
 
