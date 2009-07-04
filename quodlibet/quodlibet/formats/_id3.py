@@ -58,7 +58,9 @@ class ID3File(AudioFile):
             "WOAR": "website",
             "TSOP": "artistsort",
             "TSOA": "albumsort",
-            "TSOT": "artistsort",
+            "TSOT": "titlesort",
+            "TSO2": "albumartistsort",
+            "TSOC": "composersort",
             "TMED": "media",
             "TCMP": "compilation",
             # "language" should not make to TLAN. TLAN requires
