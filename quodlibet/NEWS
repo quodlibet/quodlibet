@@ -1,6 +1,20 @@
 Quod Libet requires Python 2.4, PyGTK 2.10, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.14 or later.
 
+2.1 - My God, Utahraptor, that's THE PERFECT SOLUTION.
+ * Bug fixes:
+   * Installer fixes [15, 27, 88]
+   * Right-click on menu causes crash [14]
+   * Removing a pane from the paned browser causes segfault [131]
+   * Null bytes in tags are now stripped on load [177, 242]
+   * zh_CN translation updated [156]
+ * Support .oga file extension for Ogg Vorbis files [52]
+ * Support libre.fm scrobbling in qlscrobbler plugin
+ * Get Internet Radio channel listing from yp.icecast.org [18]
+ * Ignore errors during playback for ~#skipcount [37]
+ * URIs supported for --play-file and --enqueue [17]
+ * Many minor fixes and enhancements.
+
 2.0 - Once upon a time there was a radical guy!
  * Make Escape a synonym for Ctrl+W in QLTK Windows. (I#8)
  * Actually fix playlist error.

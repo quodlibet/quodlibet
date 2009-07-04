@@ -32,9 +32,8 @@ The following will lead to an almost automatic rejection:
 Currently we are limiting the code to features in PyGTK 2.10 and
 Python 2.4.
 
-Please prepare your patches against the Subversion release, or the
-most recent release. You can update a checked-out version to the
-latest trunk using `svn switch' and `svn update'.
+Please prepare your patches against the latest Mercurial release,
+or the most recent release.
 
 Translation
 -----------
