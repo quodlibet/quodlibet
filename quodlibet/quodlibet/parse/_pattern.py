@@ -188,8 +188,9 @@ class _FileFromPattern(_Pattern):
     def _post(self, value, song):
         if value:
             fn = song.get("~filename", ".")
-            ext = fn[fn.rfind("."):]
-            if not value.endswith(ext): value += ext
+            ext = fn[fn.rfind("."):].lower()
+            val_ext = value[-len(ext):].lower()
+            if not ext == val_ext: value += ext.lower()
             value = os.path.expanduser(value)
             if "/" in value and not value.startswith("/"):
                 raise ValueError("Pattern is not rooted")

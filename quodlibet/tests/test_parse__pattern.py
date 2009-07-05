@@ -139,6 +139,17 @@ class TFileFromPattern(_TPattern):
         s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
         FileFromPattern('/<a>/<b>')
 
+    def test_ext_case_preservation(s):
+        x = s.AudioFile({ '~filename':'/tmp/Xx.Flac', 'title':'Xx' })
+        # If pattern has a particular ext, preserve case of ext
+        p1 = FileFromPattern('<~basename>')
+        s.assertEquals(p1.format(x), 'Xx.Flac')
+        p2 = FileFromPattern('<title>.FLAC')
+        s.assertEquals(p2.format(x), 'Xx.FLAC')
+        # If pattern doesn't have a particular ext, lowercase ext
+        p3 = FileFromPattern('<title>')
+        s.assertEquals(p3.format(x), 'Xx.flac')
+
 class TXMLFromPattern(_TPattern):
     def test_markup_passthrough(s):
         pat = XMLFromPattern(r'\<b\>&lt;<title>&gt;\</b\>')
