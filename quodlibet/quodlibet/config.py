@@ -54,7 +54,8 @@ def init(*rc_files):
 
         "library":
         { "exclude": "",
-         },
+          "refresh_on_start": "true",
+          },
 
         # State about the player, to restore on startup
         "memory":

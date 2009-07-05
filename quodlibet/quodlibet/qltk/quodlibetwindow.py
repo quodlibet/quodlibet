@@ -218,8 +218,7 @@ class QuodLibetWindow(gtk.Window):
             _("_Repeat"), "settings", "repeat")
         tips.set_tip(repeat, _("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
-        self.statusbar = StatusBar()
-        hbox.pack_start(self.statusbar)
+
         align.add(hbox)
         self.child.pack_end(align, expand=False)
 
@@ -247,6 +246,11 @@ class QuodLibetWindow(gtk.Window):
 
         self.child.show_all()
         sw.show_all()
+
+        self.statusbar = StatusBar()
+        hbox.pack_start(self.statusbar)
+        self.statusbar.show()
+
         self.select_browser(
             self, config.get("memory", "browser"), library, player)
         self.browser.restore()
@@ -288,7 +292,9 @@ class QuodLibetWindow(gtk.Window):
             'drag-data-received', QuodLibetWindow.__drag_data_received, self)
 
         self.resize(*map(int, config.get("memory", "size").split()))
-        self.__rebuild(None, False)
+
+        if config.getboolean('library', 'refresh_on_start'):
+            self.__rebuild(None, False)
 
     def __drag_motion(self, ctx, x, y, time):
         # Don't accept drops from QL itself, since it offers text/uri-list.

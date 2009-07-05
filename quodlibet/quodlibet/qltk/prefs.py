@@ -249,7 +249,14 @@ class PreferencesWindow(qltk.Window):
                 initial = const.HOME
             b.connect('clicked', self.__select, e, initial)
             e.connect('changed', self.__changed, 'settings', 'scan')
-            f = qltk.Frame(_("Scan _Directories"), child=hb)
+
+            cb = ConfigCheckButton(
+                _("_Refresh library on start"), "library", "refresh_on_start")
+            cb.set_active(config.getboolean("library", "refresh_on_start"))
+            vb3 = gtk.VBox(spacing=6)
+            vb3.pack_start(hb)
+            vb3.pack_start(cb)
+            f = qltk.Frame(_("Scan _Directories"), child=vb3)
             f.get_label_widget().set_mnemonic_widget(e)
             self.pack_start(f, expand=False)
 
@@ -268,7 +275,7 @@ class PreferencesWindow(qltk.Window):
 
             vb2 = gtk.VBox(spacing=0)
             cb = ConfigCheckButton(
-                _("Save ratings and play counts"), "editing", "save_to_songs")
+                _("Save ratings and play _counts"), "editing", "save_to_songs")
             cb.set_active(config.getboolean("editing", "save_to_songs"))
             vb2.pack_start(cb)
             hb = gtk.HBox(spacing=3)
