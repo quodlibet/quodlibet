@@ -96,18 +96,28 @@ except ImportError: OggVorbis = None
 else:
     extensions.append(".ogg")
     extensions.append(".oga")
+    ogg_formats.append(OggVorbis)
 
-try: from mutagen.flac import FLAC
+try: from mutagen.flac import FLAC, FLACNoHeaderError
 except ImportError: FLAC = None
-else: extensions.append(".flac")
+else:
+    extensions.append(".flac")
+    ogg_formats.append(FLAC)
 
 try: from mutagen.oggflac import OggFLAC
 except ImportError: OggFLAC = None
-else: extensions.append(".oggflac")
+else:
+    extensions.append(".oggflac")
+    ogg_formats.append(OggFLAC)
 
 try: from mutagen.oggspeex import OggSpeex
 except ImportError: OggSpeex = None
-else: extensions.append(".spx")
+else:
+    extensions.append(".spx")
+    ogg_formats.append(OggSpeex)
+
+try: from mutagen.id3 import ID3
+except ImportError: ID3 = None
 
 class OggFile(MutagenVCFile):
     format = "Ogg Vorbis"
@@ -125,16 +135,23 @@ class FLACFile(MutagenVCFile):
     format = "FLAC"
     MutagenType = FLAC
 
+    def write(self):
+        if ID3 is not None:
+            ID3().delete(filename=self["~filename"])
+        super(FLACFile, self).write()
+
 def info(filename):
-    try: audio = mutagen.File(filename)
+    try: audio = mutagen.File(filename, options = ogg_formats)
     except AttributeError:
         audio = OggVorbis(filename)
+    if audio is None and FLAC is not None:
+        # FLAC with ID3
+        try: audio = FLAC(filename)
+        except FLACNoHeaderError: pass
     if audio is None:
         raise IOError("file type could not be determined")
-    else:
-        Kind = type(audio)
-        for klass in globals().values():
-            if Kind is getattr(klass, 'MutagenType', None):
-                return klass(filename, audio)
-        else:
-            raise IOError("file type could not be determined")
+    Kind = type(audio)
+    for klass in globals().values():
+        if Kind is getattr(klass, 'MutagenType', None):
+            return klass(filename, audio)
+    raise IOError("file type could not be determined")

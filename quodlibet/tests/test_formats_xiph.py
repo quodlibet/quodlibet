@@ -4,11 +4,11 @@ import os
 import shutil
 import tempfile
 
-from quodlibet import config
-from quodlibet import const
+from quodlibet import config, const, formats
+from quodlibet.formats.xiph import OggFile, FLACFile
 
 from mutagen.flac import FLAC
-from quodlibet.formats.xiph import OggFile, FLACFile
+from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
 
 class TVCFile(TestCase):
     # Mixin to test Vorbis writing features
@@ -120,6 +120,18 @@ class TFLACFile(TVCFile):
         flac = FLAC(self.filename)
         self.failIf(flac.tags)
         self.failIf(flac.tags is None)
+
+    def test_strip_id3(self):
+        self.song["title"] = "Test"
+        self.song.write()
+        id3 = ID3()
+        id3.add(TIT2(encoding=2, text=u"Test but differently"))
+        id3.save(filename=self.filename)
+        song2 = formats.MusicFile(self.filename)
+        self.failUnlessEqual(type(self.song), type(song2))
+        self.failUnlessEqual(self.song["title"], song2["title"])
+        song2.write()
+        self.assertRaises(ID3NoHeaderError, ID3, self.filename)
 
     def tearDown(self):
         os.unlink(self.filename)
