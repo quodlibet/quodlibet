@@ -58,11 +58,6 @@ def print_(string, frm="utf-8", prefix="", output=sys.stdout, log=None):
 
     quodlibet.util.logging.log(string, log)
 
-    if isinstance(string, unicode):
-        string = string.encode(ENCODING, "replace")
-    else:
-        string = string.decode(frm).encode(ENCODING, "replace")
-
     if output:
         if isinstance(string, unicode):
             string = string.encode(ENCODING, "replace")
