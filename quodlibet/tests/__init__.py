@@ -50,6 +50,7 @@ class Runner(object):
         suite = unittest.makeSuite(test)
         pref = '%s (%d): ' % (test.__name__, len(suite._tests))
         print pref + " " * (25 - len(pref)),
+        sys.stdout.flush()
         result = Result()
         suite(result)
         result.printErrors()

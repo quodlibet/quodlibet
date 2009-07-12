@@ -62,12 +62,20 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
     plugin_album = None
     plugin_albums = None
 
+    __initialized = False
     def __init__(self, songs):
         super(SongsMenuPlugin, self).__init__(self.PLUGIN_NAME)
+        self.__initialized = True
         try: i = gtk.image_new_from_stock(self.PLUGIN_ICON, gtk.ICON_SIZE_MENU)
         except AttributeError: pass
         else: self.set_image(i)
         self.set_sensitive(bool(self.plugin_handles(songs)))
+
+    @property
+    def initialized(self):
+        # If the GObject __init__ method is bypassed, it can cause segfaults.
+        # This explicitly prevents a bad plugin from taking down the app.
+        return self.__initialized
 
     def plugin_handles(self, songs):
         return True
@@ -91,7 +99,7 @@ class SongsMenuPlugins(Manager):
 
         attrs = ['plugin_song', 'plugin_songs',
                  'plugin_album', 'plugin_albums']
-            
+
         if len(songs) == 1: attrs.append('plugin_single_song')
         if len(albums) == 1: attrs.append('plugin_single_album')
 
@@ -103,6 +111,7 @@ class SongsMenuPlugins(Manager):
             if usable:
                 try: items.append(Kind(songs))
                 except: print_exc()
+        items = filter(lambda i: i.initialized, items)
 
         if items:
             menu = gtk.Menu()

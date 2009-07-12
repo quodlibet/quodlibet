@@ -81,13 +81,13 @@ class TSongsMenuPlugins(TestCase):
         self.failIf(self.pm.enabled(plug))
 
     def test_ignores_broken_plugin(self):
-        self.create_plugin(name="Name", desc="Desc",
+        self.create_plugin(name="Broken", desc="Desc",
                            funcs=["__init__", "plugin_song"])
         self.pm.rescan()
         plug = self.pm.list()[0]
         self.pm.enable(plug, True)
         menu = self.pm.Menu(None, None, [AudioFile()])
-        self.failIf(menu.get_children())
+        self.failIf(menu and menu.get_children())
 
     def test_Menu(self):
         self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
