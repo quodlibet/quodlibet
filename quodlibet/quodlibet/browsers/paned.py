@@ -222,7 +222,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 if not rows or model[rows[0]][1] is None: return True
                 else:
                     for row in rows:
-                        if model[row][0] == "<":
+                        if model[row][0][:1] == "<":
                             if not bool(song.list(self.__mytag)):
                                 return True
                         else:
