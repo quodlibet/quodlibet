@@ -62,14 +62,16 @@ def MusicFile(filename):
     else: return None
 
 def supported(song):
+    lower = song.key.lower()
     for ext in _infos.keys():
-        if song.key.lower().endswith(ext):
+        if lower.endswith(ext):
             return True
     return False
 
 def filter(filename):
+    lower = filename.lower()
     for ext in _infos.keys():
-        if filename.lower().endswith(ext): return True
+        if lower.endswith(ext): return True
     return False
 
 from quodlibet.formats._audio import USEFUL_TAGS, MACHINE_TAGS, PEOPLE

@@ -412,6 +412,12 @@ class AudioFile(dict):
             except ValueError:
                 if key in self: del(self[key])
 
+    # These should remain outside the loop below for performance reasons
+    __cover_subdirs = map(util.make_case_insensitive,
+                          ["", "scan", "scans", "images", "covers"])
+    __cover_exts = map(util.make_case_insensitive,
+                       ["jpg", "jpeg", "png", "gif"])
+
     def find_cover(self):
         """Return a file-like containing cover image data, or None if
         no cover is available."""
@@ -428,10 +434,9 @@ class AudioFile(dict):
         except EnvironmentError:
             pass
         else:
-            for subdir in ["", "scan", "scans", "images", "covers"]:
-                for ext in ["jpg", "jpeg", "png", "gif"]:
-                    subdir = util.make_case_insensitive(subdir)
-                    ext = util.make_case_insensitive(ext)
+            dirs = os.listdir('.')
+            for subdir in self.__cover_subdirs:
+                for ext in self.__cover_exts:
                     fns.extend(glob.glob(os.path.join(subdir, "*." + ext)))
                     fns.extend(glob.glob(os.path.join(subdir, ".*." + ext)))
             os.chdir(olddir)
