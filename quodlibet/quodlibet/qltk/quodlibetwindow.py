@@ -273,7 +273,8 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.connect('columns-changed', self.__hide_headers)
-        self.songlist.get_selection().connect('changed', self.__set_time)
+        self.songlist.get_selection().connect(
+                'changed', util.DeferredSignal(self.__set_time))
 
         library.librarian.connect('removed', self.__set_time)
         library.librarian.connect('added', self.__set_time)

@@ -1,4 +1,4 @@
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman
+# Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -457,3 +457,34 @@ def uri_is_valid(uri):
 
 def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
+
+class DeferredSignal(object):
+    """A wrapper for connecting functions to signals.
+
+    Some signals may fire hundreds of times, but only require processing
+    once per group. This class pushes the call to the mainloop at idle
+    priority and prevents multiple calls from being inserted in the
+    mainloop at a time, greatly improving responsiveness in some places.
+
+    Example usage:
+
+    def func(widget, user_arg):
+        pass
+    widget.connect('signal', DeferredSignal(func), user_arg)
+    """
+
+    import gobject
+    __slots__ = ['func', 'dirty']
+    def __init__(self, func):
+        self.func = func
+        self.dirty = False
+
+    def __call__(self, *args):
+        if not self.dirty:
+            self.dirty = True
+            self.gobject.idle_add(self._wrap, *args)
+
+    def _wrap(self, *args):
+        self.func(*args)
+        self.dirty = False
+

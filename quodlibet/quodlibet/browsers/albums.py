@@ -329,9 +329,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.refresh()
 
         def remove(self, song):
-            try: self.songs.remove(song)
-            except KeyError: return False
-            else: return True
+            if song in self.songs:
+                self.songs.remove(song)
+                return True
+            else: return False
 
     # An auto-searching entry; it wraps is a TreeModelFilter whose parent
     # is the album list.
