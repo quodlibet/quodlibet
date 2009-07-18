@@ -113,7 +113,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                     return (not t.startswith(".") and
                             os.access(joined, os.X_OK) and
                             os.path.isdir(joined))
-                try: dirs = filter(isvisibledir, sorted(os.listdir(head)))
+                try: dirs = filter(isvisibledir,
+                                   sorted(os.listdir(util.fsnative(head))))
                 except OSError: break
                 try: path.insert(0, dirs.index(tail))
                 except ValueError: break
@@ -132,7 +133,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         except ValueError: return True
         directory = model[path][0]
         delete = menu.get_children()[1]
-        try: delete.set_sensitive(len(os.listdir(directory)) == 0)
+        try: delete.set_sensitive(len(os.listdir(util.fsnative(directory))) == 0)
         except OSError, err:
             if err.errno == 2: model.remove(model.get_iter(path))
         else:
@@ -151,7 +152,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             None, _("New Folder"), _("Enter a name for the new folder:")).run()
 
         if dir:
-            dir = util.fsencode(dir.decode('utf-8'))
+            dir = util.fsnative(dir.decode('utf-8'))
             fullpath = os.path.realpath(os.path.join(directory, dir))
             try: os.makedirs(fullpath)
             except EnvironmentError, err:
@@ -305,7 +306,8 @@ class FileSelector(gtk.VPaned):
         dirs = [dmodel[row][0] for row in rows]
         for dir in dirs:
             try:
-                for file in filter(self.__filter, sorted(os.listdir(dir))):
+                for file in filter(self.__filter,
+                                   sorted(os.listdir(util.fsencode(dir)))):
                     filename = os.path.join(dir, file)
                     if os.access(filename, os.R_OK):
                         fmodel.append([filename])

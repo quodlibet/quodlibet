@@ -7,6 +7,7 @@
 #
 # $Id$
 
+import sys
 import traceback
 
 import gtk
@@ -731,7 +732,8 @@ class EditTags(gtk.VBox):
             return True
         elif event.button == 2 and col == view.get_columns()[2]:
             display = gtk.gdk.display_manager_get().get_default_display()
-            clipboard = gtk.Clipboard(display, "PRIMARY")
+            clipboardname = ["PRIMARY", "CLIPBOARD"][sys.platform == "win32"]
+            clipboard = gtk.Clipboard(display, clipboardname)
             for rend in col.get_cell_renderers():
                 if rend.get_property('editable'):
                     clipboard.request_text(self.__paste, (rend, path[0]))

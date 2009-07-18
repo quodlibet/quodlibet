@@ -271,7 +271,7 @@ class FileLibrary(Library):
             fullpath = os.path.expanduser(fullpath)
             if filter(fullpath.startswith, exclude):
                 continue
-            for path, dnames, fnames in os.walk(fullpath):
+            for path, dnames, fnames in os.walk(util.fsnative(fullpath)):
                 for filename in fnames:
                     fullfilename = os.path.join(path, filename)
                     if filter(fullfilename.startswith, exclude):

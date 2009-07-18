@@ -54,6 +54,8 @@ class URI(str):
 
     def frompath(klass, value):
         """Construct a URI from an unescaped filename."""
+        # windows unicode path chars may break pathname2url; encode in UTF-8
+        if isinstance(value, unicode): value = value.encode("UTF-8")
         return klass("file://" + pathname2url(value), escaped=True)
     frompath = classmethod(frompath)
 

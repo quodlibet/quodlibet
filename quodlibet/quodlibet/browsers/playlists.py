@@ -92,6 +92,11 @@ def __ParsePlaylist(name, plfilename, files, library):
 class Playlist(list):
     quote = staticmethod(lambda text: urllib.quote(text, safe=""))
     unquote = staticmethod(urllib.unquote)
+    if os.name == "nt":
+        def quote(t): return urllib.quote(t.encode("utf-8"), safe="")
+        quote = staticmethod(quote)
+        def unquote(t): return urllib.unquote(t.encode("utf-8")).decode("utf-8")
+        unquote = staticmethod(unquote)
 
     def new(klass, base=_("New Playlist"), library={}):
         p = Playlist("", library=library)
@@ -121,12 +126,13 @@ class Playlist(list):
 
     def __init__(self, name, library=None):
         super(Playlist, self).__init__()
-        if isinstance(name, unicode): name = name.encode('utf-8')
+        if isinstance(name, unicode) and os.name != "nt":
+            name = name.encode('utf-8')
         self.name = name
         basename = self.quote(name)
         try:
             for line in file(os.path.join(PLAYLISTS, basename), "r"):
-                line = line.rstrip()
+                line = util.fsnative(line.rstrip())
                 if line in library:
                     self.append(library[line])
                 elif library and library.masked(line):
@@ -188,7 +194,7 @@ class Playlist(list):
         basename = self.quote(self.name)
         f = file(os.path.join(PLAYLISTS, basename), "w")
         for song in self:
-            try: f.write(song("~filename") + "\n")
+            try: f.write(util.fsencode(song("~filename")) + "\n")
             except TypeError: f.write(song + "\n")
         f.close()
 
@@ -249,7 +255,7 @@ class Playlists(gtk.VBox, Browser):
 
     def init(klass, library):
         model = klass.__lists.get_model()
-        for playlist in os.listdir(PLAYLISTS):
+        for playlist in os.listdir(util.fsnative(PLAYLISTS)):
             try:
                 playlist = Playlist(Playlist.unquote(playlist), library=library)
                 model.append(row=[playlist])

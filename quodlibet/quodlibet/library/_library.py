@@ -190,8 +190,11 @@ class Library(gtk.Object):
         # reload/rescan the files.
         items.sort(key=lambda item: item.key)
         pickle.dump(items, fileobj, pickle.HIGHEST_PROTOCOL)
-        os.rename(filename + ".tmp", filename)
         fileobj.close()
+        if os.name == "nt":
+            try: os.remove(filename)
+            except EnvironmentError: pass
+        os.rename(filename + ".tmp", filename)
         self.dirty = False
         print_d("Done saving contents to %r." % filename, self)
 

@@ -188,8 +188,8 @@ def main(window):
     print_d("Entering quodlibet.main")
     import gtk
 
-    SIGNALS = [signal.SIGINT, signal.SIGTERM, signal.SIGHUP]
-    for sig in SIGNALS:
+    SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
+    for sig in filter(None, SIGS):
         signal.signal(sig, window.destroy)
 
     window.connect('destroy', gtk.main_quit)

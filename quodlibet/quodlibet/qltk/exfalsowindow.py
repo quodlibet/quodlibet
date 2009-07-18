@@ -18,6 +18,7 @@ from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import stock
+from quodlibet import util
 
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.delete import DeleteDialog
@@ -76,13 +77,20 @@ class ExFalsoWindow(gtk.Window):
         bbox.pack_start(l)
         
         if os.name == "nt":
-            folders = [os.path.join(const.HOME, "My Documents")]
-            for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ":
-                # Skip the floppy drives to avoid waiting
-                if os.path.isdir(letter + ":\\"):
-                    folders.append(letter + ":\\")
+            # use HOME, Documents (if not under HOME), and non-floppy drives
+            folders = [const.HOME]
+            try: from win32com.shell import shell, shellcon as con
+            except ImportError, e: pass
+            else:
+                documents = shell.SHGetFolderPath(0, con.CSIDL_PERSONAL, 0, 0)
+                if not documents.startswith(const.HOME + os.sep):
+                    folders.append(documents)
+                music = shell.SHGetFolderPath(0, con.CSIDL_MYMUSIC, 0, 0)
+                folders.insert(0, music)
+            folders = filter(os.path.isdir, folders +
+                [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"])
         else:
-            folders=[const.HOME, "/"]
+            folders = [const.HOME, "/"]
 
         fs = FileSelector(dir, folders=folders)
 
@@ -166,11 +174,11 @@ class ExFalsoWindow(gtk.Window):
         label.set_text(ngettext("%d song", "%d songs", count) % count)
 
         for row in rows:
-            filename = model[row][0]
+            filename = util.fsnative(model[row][0])
             if not os.path.exists(filename): pass
             elif filename in self.__library:
                 files.append(self.__library[filename])
-            else: files.append(formats.MusicFile(model[row][0]))
+            else: files.append(formats.MusicFile(filename))
         files = filter(None, files)
         if len(files) == 0: self.set_title("Ex Falso")
         elif len(files) == 1:

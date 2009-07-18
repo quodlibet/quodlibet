@@ -58,7 +58,7 @@ def reload():
 
         if name.startswith("quodlibet."):
             name = name.replace(".", os.sep)
-            filename = os.path.join(const.BASEDIR, name[name.find("/")+1:])
+            filename = os.path.join(const.BASEDIR, name[name.find(os.sep)+1:])
             py = filename + ".py"
             pyc = filename + ".pyc"
             if util.mtime(pyc) and util.mtime(pyc) < util.mtime(py):

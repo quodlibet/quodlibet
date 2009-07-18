@@ -20,6 +20,7 @@ from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 
+from quodlibet import util
 from quodlibet.browsers._base import Browser
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import DirectoryTree
@@ -110,7 +111,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
     def restore(self):
         try:
             paths = config.get("browsers", "filesystem").split("\n")
-        except StandardError:
+        except config.error:
             pass
         else:
             def select(model, path, iter, paths):
@@ -162,7 +163,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         to_add = []
         for dir in dirs:
             try:
-                for file in filter(formats.filter, sorted(os.listdir(dir))):
+                for file in filter(formats.filter,
+                                   sorted(os.listdir(util.fsnative(dir)))):
                     fn = os.path.realpath(os.path.join(dir, file))
                     if fn in self.__glibrary:
                         songs.append(self.__glibrary[fn])

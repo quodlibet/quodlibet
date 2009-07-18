@@ -584,6 +584,7 @@ class QuodLibetWindow(gtk.Window):
 
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
+        if not menu or not menu.child: return # shutting down
         if paused: key = gtk.STOCK_MEDIA_PLAY
         else: key = gtk.STOCK_MEDIA_PAUSE
         text = gtk.stock_lookup(key)[1]

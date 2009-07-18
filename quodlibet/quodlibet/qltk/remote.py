@@ -66,7 +66,7 @@ class FIFOControl(object):
             f = os.fdopen(fifo, "r", 4096)
             gobject.io_add_watch(
                 f, gtk.gdk.INPUT_READ, self.__process, *args)
-        except EnvironmentError: pass
+        except (EnvironmentError, AttributeError): pass
 
     def __getitem__(self, key):
         key = key.replace("-", "_")

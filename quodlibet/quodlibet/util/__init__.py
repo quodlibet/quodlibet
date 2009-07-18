@@ -32,6 +32,7 @@ def listdir(path, hidden=False):
 
     If hidden is false, Unix-style hidden files are not returned.
     """
+    path = fsnative(path)
     if hidden: filt = None
     else: filt = lambda base: not base.startswith(".")
     if path.endswith(os.sep): join = "".join
@@ -271,6 +272,11 @@ def fsencode(s):
     errors."""
     if isinstance(s, str): return s
     else: return s.encode(fscoding, 'replace')
+
+if sys.platform == "win32":
+    fsnative = fsdecode # Decode a filename on windows
+else:
+    fsnative = fsencode # Encode it on other platforms
 
 def decode(s, charset="utf-8"):
     """Decode a string; if an error occurs, replace characters and append
