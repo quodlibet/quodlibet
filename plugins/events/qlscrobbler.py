@@ -225,7 +225,6 @@ class QLScrobbler(EventPlugin):
         try:
             username = config.get("plugins", "scrobbler_username")
             password = config.get("plugins", "scrobbler_password")
-            url = self._get_url(config.get("plugins", "scrobbler_service"))
         except:
             if (self.need_config == False and
                 getattr(self, 'PMEnFlag', False)):
@@ -233,6 +232,8 @@ class QLScrobbler(EventPlugin):
                 self.need_config = True
                 return
 
+        try: url = self._get_url(config.get("plugins", "scrobbler_service"))
+        except: url = self.services['Last.fm']
         try: self.offline = (config.get("plugins", "scrobbler_offline") == "true")
         except: pass
         try: self.exclude = config.get("plugins", "scrobbler_exclude")
@@ -253,7 +254,7 @@ class QLScrobbler(EventPlugin):
             try:
                 return config.get("plugins", "scrobbler_url")
             except:
-                return ""
+                return self.services['Last.fm']
 
     def __destroy_cb(self, dialog, response_id):
         dialog.destroy()
