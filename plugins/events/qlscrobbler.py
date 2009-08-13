@@ -1,17 +1,18 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.8
-# (C) 2005 by Joshua Kwan <joshk@triplehelix.org>,
-#             Joe Wreschnig <piman@sacredchao.net>
+# version 0.9.2
+# (C) 2005-2008 by Joshua Kwan <joshk@triplehelix.org>,
+#                  Joe Wreschnig <piman@sacredchao.net>,
+#                  Franz Pletyz <fpletz@franz-pletz.org>,
+#                  Nicholas J. Michalek <djphazer@gmail.com>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
 import random
-import md5, urllib, urllib2, time, threading, os
+import urllib, urllib2, time, threading, os
+from hashlib import md5
 import player, config, const, widgets, parse
 import gobject, gtk
 from qltk.msg import Message, WarningMessage
 from qltk.entry import ValidatingEntry
-
-def to(string): print string.encode("ascii", "replace")
 
 from plugins.events import EventPlugin
 
@@ -20,7 +21,10 @@ verbose = False
 
 def log(msg):
     if verbose:
-        print "[qlscrobbler]", msg
+        print_d("[qlscrobbler] %s" % msg)
+
+def timestamp():
+    return int(time.time())
 
 class QLScrobbler(EventPlugin):
     # session invariants
@@ -28,9 +32,9 @@ class QLScrobbler(EventPlugin):
     PLUGIN_NAME = _("AudioScrobbler Submission")
     PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.8.1"
+    PLUGIN_VERSION = "0.9.2"
     CLIENT = "qlb"
-    PROTOCOL_VERSION = "1.1"
+    PROTOCOL_VERSION = "1.2"
     try: DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
     except AttributeError:
         DUMP = os.path.join(const.DIR, "scrobbler_cache")
@@ -41,22 +45,25 @@ class QLScrobbler(EventPlugin):
             }
 
     # things that could change
-    
+
     username = ""
     password = ""
-    pwhash = ""
     exclude = ""
-    
+
     timeout_id = -1
     submission_tid = -1
 
+    start_time = 0
+    elapsed = 0
+
     challenge = ""
     base_url = ""
+    session_id = ""
+    nowplaying_url = ""
     submit_url = ""
 
     # state management
-    waiting = False
-    challenge_sent = False
+    handshake_sent = False
     broken = False
     need_config = False
     need_update = False
@@ -80,27 +87,27 @@ class QLScrobbler(EventPlugin):
 
         # Read configuration
         self.read_config()
-        
+
         # Set up exit hook to dump queue
         gtk.quit_add(0, self.dump_queue)
 
     def read_dump(self, dump):
         log("Loading dumped queue.")
-    
+
         current = {}
 
         for line in dump.readlines():
             key = ""
             value = ""
-            
+
             line = line.rstrip("\n")
             try: (key, value) = line.split(" = ", 1)
             except:
                 if line == "-":
-                    for key in ["album", "mbid"]:
+                    for key in ["album", "mbid", "tracknumber"]:
                         if key not in current:
                             current[key] = ""
-                    
+
                     for reqkey in ["artist", "title", "length", "stamp"]:
                         # discard if somehow invalid
                         if reqkey not in current:
@@ -110,7 +117,7 @@ class QLScrobbler(EventPlugin):
                         self.queue.append(current)
                         current = {}
                 continue
-                
+
             if key == "length": current[key] = int(value)
             else: current[key] = value
 
@@ -126,11 +133,11 @@ class QLScrobbler(EventPlugin):
 
     def dump_queue(self):
         if len(self.queue) == 0: return 0
-        
+
         log("Dumping offline queue, will submit next time.")
 
         dump = open(self.DUMP, 'w')
-        
+
         for item in self.queue:
             for key in item:
                 dump.write("%s = %s\n" % (key, item[key]))
@@ -139,7 +146,7 @@ class QLScrobbler(EventPlugin):
         dump.close()
 
         return 0
-        
+
     def plugin_on_removed(self, songs):
         try:
             if self.song in songs:
@@ -155,33 +162,33 @@ class QLScrobbler(EventPlugin):
         if self.timeout_id > 0:
             gobject.source_remove(self.timeout_id)
             self.timeout_id = -1
-    
+
     def plugin_on_song_started(self, song):
         if song is None: return
-        
+
         self.already_submitted = False
         if self.timeout_id > 0:
             gobject.source_remove(self.timeout_id)
-        
-        self.timeout_id = -1
+
+        self.timeout_id = -2
+        self.elapsed = 0
 
         # Protocol stipulation:
         #    * don't submit when length < 00:30
-        #     NOTE: >30:00 stipulation has been REMOVED as of Protocol1.1
         #    * don't submit if artist and title are not available
-        #if song["~#length"] < 30: return
-        if 'title' not in song: return
+        if song["~#length"] < 30: return
+        elif 'title' not in song: return
         elif "artist" not in song:
             if ("composer" not in song) and ("performer" not in song): return
-        
+
         # Check to see if this song is not something we'd like to submit
         #    e.g. "Hit Me Baby One More Time"
         if self.exclude != "" and parse.Query(self.exclude).search(song):
-            log(to("Not submitting: %s - %s" % (song["artist"], song["title"])))
+            log("Not submitting: %s - %s" % (song["artist"], song["title"]))
             return
 
         self.song = song
-        if player.playlist.paused == False:
+        if not player.playlist.paused:
             self.prepare()
 
     def plugin_on_paused(self):
@@ -189,35 +196,30 @@ class QLScrobbler(EventPlugin):
             gobject.source_remove(self.timeout_id)
             # special value that will tell on_unpaused to check song length
             self.timeout_id = -2
+            log("Song paused. Timer canceled.")
+
+            self.elapsed += timestamp() - self.start_time
 
     def plugin_on_unpaused(self):
-        if self.already_submitted == False and self.timeout_id == -1: self.prepare()
-        
-    def plugin_on_seek(self, song, msec):
-        if self.timeout_id > 0:
-            gobject.source_remove(self.timeout_id)
-            self.timeout_id = -1
-            
-        if msec == 0: #I think this is okay!
+        if not self.already_submitted and self.timeout_id == -2:
             self.prepare()
-        else:
-            self.already_submitted = True # cancel
-        
+
     def prepare(self):
         if self.song is None: return
 
+        self.start_time = timestamp()
         # Protocol stipulations:
         #    * submit 240 seconds in or at 50%, whichever comes first
-        delay = int(min(self.song["~#length"] / 2, 240))
+        delay = int(min(self.song["~#length"] / 2, 240)) - self.elapsed
+        log("(Re-)Preparing song, elapsed: %d, remaining: %d" % (self.elapsed, delay) )
 
-        if self.timeout_id == -2: # change delta based on current progress
-            # assumption is that self.already_submitted == 0, therefore
-            # delay - progress > 0
-            progress = int(player.playlist.get_position() / 1000)
-            delay -= progress
+        if delay <= 0:
+            self.submit_song()
+        else:
+            self.timeout_id = gobject.timeout_add(delay * 1000, self.submit_song)
+            self.now_playing()
+            log("Song now playing - submit timer set for: %s sec" % delay)
 
-        self.timeout_id = gobject.timeout_add(delay * 1000, self.submit_song)
-    
     def read_config(self):
         username = ""
         password = ""
@@ -225,25 +227,21 @@ class QLScrobbler(EventPlugin):
         try:
             username = config.get("plugins", "scrobbler_username")
             password = config.get("plugins", "scrobbler_password")
+            url = self._get_url(config.get("plugins", "scrobbler_service"))
         except:
-            if (self.need_config == False and
+            if (not self.need_config and
                 getattr(self, 'PMEnFlag', False)):
                 self.quick_dialog("Please visit the Preferences window to set QLScrobbler up. Until then, songs will not be submitted.", gtk.MESSAGE_INFO)
                 self.need_config = True
                 return
 
-        try: url = self._get_url(config.get("plugins", "scrobbler_service"))
-        except: url = self.services['Last.fm']
         try: self.offline = (config.get("plugins", "scrobbler_offline") == "true")
         except: pass
         try: self.exclude = config.get("plugins", "scrobbler_exclude")
         except: pass
-        
+
         self.username = username
-        
-        hasher = md5.new()
-        hasher.update(password);
-        self.password = hasher.hexdigest()
+        self.password = md5(password).hexdigest()
         self.base_url = url
         self.need_config = False
 
@@ -254,11 +252,11 @@ class QLScrobbler(EventPlugin):
             try:
                 return config.get("plugins", "scrobbler_url")
             except:
-                return self.services['Last.fm']
+                return ""
 
     def __destroy_cb(self, dialog, response_id):
         dialog.destroy()
-    
+
     def quick_dialog_helper(self, type, str):
         dialog = Message(gtk.MESSAGE_INFO, widgets.main, "QLScrobbler", str)
         dialog.connect('response', self.__destroy_cb)
@@ -266,162 +264,191 @@ class QLScrobbler(EventPlugin):
 
     def quick_dialog(self, str, type):
         gobject.idle_add(self.quick_dialog_helper, type, str)
-    
-    def clear_waiting(self):
-        self.waiting = False
 
     def send_handshake(self):
         # construct url
-        url = "%s/?hs=true&p=%s&c=%s&v=%s&u=%s" % ( self.base_url,
-                self.PROTOCOL_VERSION, self.CLIENT,
-                self.PLUGIN_VERSION, self.username )
-        
+        stamp = timestamp()
+        auth = md5(self.password + str(stamp)).hexdigest()
+        url = "%s/?hs=true&p=%s&c=%s&v=%s&u=%s&a=%s&t=%d" % ( self.base_url,
+                self.PROTOCOL_VERSION, self.CLIENT, self.PLUGIN_VERSION,
+                   self.username, auth, stamp)
+
         log("Sending handshake to Audioscrobbler.")
 
         resp = None
 
         try:
-            resp = urllib2.urlopen(url);
+            resp = urllib2.urlopen(url)
         except:
             log("Server not responding, handshake failed.")
-            return # challenge_sent is NOT set to 1
-            
+            return
+
         # check response
         lines = resp.read().rstrip().split("\n")
         status = lines.pop(0)
 
         log("Handshake status: %s" % status)
-            
-        if status == "UPTODATE" or status.startswith("UPDATE"):
-            if status.startswith("UPDATE"):
-                self.quick_dialog("A new plugin is available at %s! Please download it, or your Audioscrobbler stats may not be updated, and this message will be displayed every session." % status.split()[1], gtk.MESSAGE_INFO)
-                self.need_update = True
 
-            # Scan for submit URL and challenge.
-            self.challenge = lines.pop(0)
-
-            log("Challenge: %s" % self.challenge)
-
-            # determine password
-            hasher = md5.new()
-            hasher.update(self.password)
-            hasher.update(self.challenge)
-            self.pwhash = hasher.hexdigest()
-
-            self.submit_url = lines.pop(0)
-            
-            self.challenge_sent = True
-        elif status == "BADUSER":
+        if status == "OK":
+            self.session_id, self.nowplaying_url, self.submit_url = lines
+            self.handshake_sent = True
+            log("Session ID: %s, NP URL: %s, Submit URL: %s" % (self.session_id, self.nowplaying_url, self.submit_url) )
+        elif status == "BADAUTH":
             self.quick_dialog("Authentication failed: invalid username %s or bad password." % self.username, gtk.MESSAGE_ERROR)
-                
             self.broken = True
-
-        # Honor INTERVAL if available
-        try: interval = int(lines.pop(0).split()[1])
-        except: interval = 0
-
-        if interval > 1:
-            self.waiting = True
-            gobject.timeout_add(interval * 1000, self.clear_waiting)
-            log("Server says to wait for %d seconds." % interval)
+        elif status == "BANNED":
+            self.quick_dialog("Client is banned. Contact the author!", gtk.MESSAGE_ERROR)
+            self.broken = True
+        elif status == "BADTIME":
+            self.quick_dialog("Wrong system time. Please check!", gtk.MESSAGE_ERROR)
+        else:  # "FAILED"
+            self.quick_dialog(status, gtk.MESSAGE_ERROR)
+            self.broken = True
     
     def submit_song(self):
         bg = threading.Thread(None, self.submit_song_helper)
         bg.setDaemon(True)
         bg.start()
 
+    def now_playing(self):
+        bg = threading.Thread(None, self.now_playing_helper)
+        bg.setDaemon(True)
+        bg.start()
+
     def enabled(self):
         self.__enabled = True
+        log("Plugin enabled - accepting new songs.")
 
     def disabled(self):
         self.__enabled = False
+        log("Plugin disabled - not accepting any new songs.")
+
+    def get_song_info(self):
+        store = {
+            "length": str(self.song["~#length"]),
+            "album": self.song.comma("album"),
+            "mbid": "", # will be correctly set if available
+            "stamp": timestamp(),
+            "tracknumber": self.song.comma("tracknumber")
+        }
+
+        # When the version is present, append it in parentheses to the title
+        if "version" in self.song:
+            store["title"] = "%s (%s)" % (self.song.comma("title"), self.song.comma("version"))
+        else:
+            store["title"] = self.song.comma("title")
+
+        if "artist" in self.song:
+            store["artist"] = self.song.comma("artist")
+        elif "composer" in self.song:
+            store["artist"] = self.song.comma("composer")
+        elif "performer" in self.song:
+            performer = self.song.comma('performer')
+            if performer[-1] == ")" and "(" in performer:
+                store["artist"] = performer[:performer.rindex("(")].strip()
+            else:
+                store["artist"] = performer
+        if "musicbrainz_trackid" in self.song:
+            store["mbid"] = self.song["musicbrainz_trackid"]
+
+        return store
+
+    def now_playing_helper(self):
+        if self.broken or not self.__enabled or self.offline or \
+                self.locked:
+            return
+
+        # Read config, handshake, and send challenge if not already done
+        if not self.handshake_sent:
+            self.read_config()
+            if not self.broken and not self.need_config:
+                self.send_handshake()
+
+        if not self.handshake_sent:
+            return
+
+        song_info = self.get_song_info()
+
+        data = {
+            's': self.session_id,
+            'a': song_info['artist'].encode('utf-8'),
+            't': song_info['title'].encode('utf-8'),
+            'b': song_info['album'].encode('utf-8'),
+            'l': song_info['length'],
+            'n': song_info['tracknumber'],
+            'm': song_info['mbid']
+        }
+
+        try:
+            data_str = urllib.urlencode(data)
+            resp = urllib2.urlopen(self.nowplaying_url, data_str)
+        except:
+            log("Audioscrobbler server not responding, will try later.")
+            return
+
+        status = resp.read().strip().split("\n")[0]
+
+        log("NP: %s (%s - %s)" % (status, data["a"], data["t"]))
 
     def submit_song_helper(self):
         if self.__enabled:
-            log("Plugin re-enabled - accepting new songs.")
             if self.submission_tid != -1:
-                gobject.source_remove(self.submission_tid);
+                gobject.source_remove(self.submission_tid)
                 self.submission_tid = -1
         else:
-            log("Plugin disabled - not accepting any new songs.")
             if len(self.queue) > 0:
                 self.submission_tid = gobject.timeout_add(120 * 1000, self.submit_song_helper)
                 log("Attempts will continue to submit the last %d songs." % len(self.queue))
 
-        if (self.already_submitted == True or self.broken == True
-            or not self.song): return
+        if self.already_submitted or self.broken:
+            return
 
-        # Scope.
-        store = {}
-        
-        if self.flushing == False:
-            stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
-    
-            store = {
-                "title": self.song.comma("title"),
-                "length": str(self.song["~#length"]),
-                "album": self.song.comma("album"),
-                "mbid": "", # will be correctly set if available
-                "stamp": stamp
-            }
-
-            if "artist" in self.song:
-                store["artist"] = self.song.comma("artist")
-            elif "composer" in self.song:
-                store["artist"] = self.song.comma("composer")
-            elif "performer" in self.song:
-                performer = self.song.comma('performer')
-                if performer[-1] == ")" and "(" in performer:
-                    store["artist"] = performer[:performer.rindex("(")].strip()
-                else:
-                    store["artist"] = performer
-            if "musicbrainz_trackid" in self.song:
-                store["mbid"] = self.song["musicbrainz_trackid"]
-
-            self.queue.append(store)
-        else: self.flushing = False
+        if not self.flushing:
+            song_info = self.get_song_info()
+            self.queue.append(song_info)
+            log("Song queued for submission: %s - %s" % (song_info["artist"], song_info["title"]) )
+        else:
+            self.flushing = False
 
         # Just note to stdout if either of these are true..
         # locked means another instance if s_s_h is dealing with sending.
         if self.offline or self.locked:
-            log(to("Queuing: %s - %s" % (store["artist"], store["title"])))
+            # I don't think this is necessary or correct... -djphazer
+            #song_info = self.get_song_info()
+            #log("Queuing: %s - %s" % (song_info["artist"], song_info["title"]))
             return
 
         self.locked = True
 
-        while self.waiting == True: time.sleep(1)
-
         # Read config, handshake, and send challenge if not already done
-        if self.challenge_sent == False:
+        if not self.handshake_sent:
             self.read_config()
-            if self.broken == False and self.need_config == False:
+            if not self.broken and not self.need_config:
                 self.send_handshake()
-        
-        # INTERVAL may have been set during handshake.
-        while self.waiting == True: time.sleep(1)
-            
-        if self.challenge_sent == False:
+
+        if not self.handshake_sent:
             self.locked = False
             return
-        
+
         data = {
-            'u': self.username,
-            's': self.pwhash
+            's': self.session_id
         }
-        
+
         # Flush the cache
-        for i in range(min(len(self.queue), 10)):
-            log(to("Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title'])))
+        for i in range(min(len(self.queue), 20)):
+            log("Sending song: %s - %s" % (self.queue[i]['artist'], self.queue[i]['title']))
             data["a[%d]" % i] = self.queue[i]['artist'].encode('utf-8')
             data["t[%d]" % i] = self.queue[i]['title'].encode('utf-8')
             data["l[%d]" % i] = str(self.queue[i]['length'])
             data["b[%d]" % i] = self.queue[i]['album'].encode('utf-8')
+            data["n[%d]" % i] = self.queue[i]['tracknumber']
             data["m[%d]" % i] = self.queue[i]['mbid']
             data["i[%d]" % i] = self.queue[i]['stamp']
-        
+            data["o[%d]" % i] = "P"
+            data["r[%d]" % i] = ""
 
         resp = None
-        
+
         try:
             data_str = urllib.urlencode(data)
             resp = urllib2.urlopen(self.submit_url, data_str)
@@ -431,47 +458,28 @@ class QLScrobbler(EventPlugin):
             return # preserve the queue, yadda yadda
 
         resp_save = resp.read()
-        lines = resp_save.rstrip().split("\n")
-        
-        try: (status, interval) = lines
-        except:
-            try: status = lines[0]
-            except:
-                log("Truncated server response, will try later...")
-                self.locked = False
-                return
-            interval = None
-        
+        status = resp_save.rstrip().split("\n")[0]
+
         log("Submission status: %s" % status)
 
-        if status == "BADAUTH":
+        if status == "BADSESSION":
             log("Attempting to re-authenticate.")
-            self.challenge_sent = False
+            self.handshake_sent = False
             self.send_handshake()
-            if self.challenge_sent == False:
+            if not self.handshake_sent:
                 self.quick_dialog("Your Audioscrobbler login data is incorrect, so you must re-enter it before any songs will be submitted.\n\nThis message will not be shown again.", gtk.MESSAGE_ERROR)
                 self.broken = True
         elif status == "OK":
             self.queue = self.queue[10:]
         elif status.startswith("FAILED"):
-            if status.startswith("FAILED Plugin bug"):
-                log("Plugin bug!? Ridiculous! Dumping queue contents.")
-                for item in self.queue:
-                    for key in item:
-                        log(to("%s = %s" % (key, item[key])))
-            # possibly handle other specific cases here for debugging later
+            log("Submission %s, Dumping queue contents." % status)
+            for item in self.queue:
+                for key in item:
+                    log("%s: %s = %s" % (status, key, item[key]))
         else:
             log("Unknown response from server: %s" % status)
             log("Dumping full response:")
             log(resp_save)
-
-        if interval != None: interval_secs = int(interval.split()[1])
-        else: interval_secs = 0
-
-        if interval_secs > 1:
-            self.waiting = True
-            gobject.timeout_add(interval_secs * 1000, self.clear_waiting)
-            log("Server says to wait for %d seconds." % interval_secs)
 
         if not self.__enabled and len(self.queue) == 0 and self.submission_tid != -1:
             log("All songs submitted, disabling retries.")
@@ -550,12 +558,12 @@ class QLScrobbler(EventPlugin):
         ve = ValidatingEntry(parse.Query.is_valid_color)
         ve.set_tooltip_text(_("Songs matching this filter will not be submitted."))
 
-        table.attach(serv,      2, 3, 0, 1, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(urlent,    2, 3, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(userent,   2, 3, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(pwent,     2, 3, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(ve,        2, 3, 4, 5, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(off,       0, 3, 5, 6, xoptions=gtk.FILL | gtk.SHRINK)
+        table.attach(serv,      2, 3, 0, 1)
+        table.attach(urlent,    2, 3, 1, 2)
+        table.attach(userent,   2, 3, 2, 3)
+        table.attach(pwent,     2, 3, 3, 4)
+        table.attach(ve,        2, 3, 4, 5)
+        table.attach(off,       0, 3, 5, 6)
 
         try: cur_service = config.get("plugins", "scrobbler_service")
         except: cur_service = sorted(self.services.keys())[0]
