@@ -228,7 +228,7 @@ class PlayControls(gtk.VBox):
         play.connect('button-press-event', self.__play_button_press, safter)
         play.connect_object('popup-menu', self.__popup, safter, play.child)
         next.connect_object('clicked', self.__next, player)
-        player.connect('song-started', self.__song_started, next)
+        player.connect('song-started', self.__song_started, next, play)
         player.connect_object('paused', play.set_active, False)
         player.connect_object('unpaused', play.set_active, True)
         self.show_all()
@@ -245,8 +245,10 @@ class PlayControls(gtk.VBox):
             safter.popup(None, None, None, button, time)
         return True
 
-    def __song_started(self, player, song, next):
+    def __song_started(self, player, song, next, play):
         next.set_sensitive(bool(song))
+        if not player.paused:
+            play.set_active(bool(song))
 
     def __playpause(self, button, player):
         if button.get_active() and player.song is None:
