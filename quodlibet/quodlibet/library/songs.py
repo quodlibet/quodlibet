@@ -13,7 +13,6 @@ close enough.
 """
 
 import os
-import traceback
 
 from quodlibet import util
 
@@ -151,7 +150,7 @@ class FileLibrary(Library):
                     item.reload()
                 except StandardError:
                     print_d("Error reloading %r." % item.key, self)
-                    traceback.print_exc()
+                    util.print_exc()
                     return False, True
                 else:
                     print_d("Reloaded %r." % item.key, self)
@@ -350,4 +349,4 @@ class SongFileLibrary(SongLibrary, FileLibrary):
             else:
                 return self._contents[filename]
         except StandardError:
-            traceback.print_exc()
+            util.print_exc()

@@ -9,6 +9,7 @@
 import os
 import re
 import sys
+import traceback
 import urlparse
 
 # title function was moved to a separate module
@@ -463,6 +464,11 @@ def uri_is_valid(uri):
 
 def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
+
+def print_exc(limit=None, file=None):
+    """A wrapper preventing crashes on broken pipes in print_exc."""
+    if not file: file = sys.stderr
+    print_(traceback.format_exc(limit=limit), output=file)
 
 class DeferredSignal(object):
     """A wrapper for connecting functions to signals.

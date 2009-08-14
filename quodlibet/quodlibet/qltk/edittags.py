@@ -8,7 +8,6 @@
 # $Id$
 
 import sys
-import traceback
 
 import gtk
 import pango
@@ -470,7 +469,7 @@ class EditTags(gtk.VBox):
 
                 try: b = Item(row[TAG], text)
                 except:
-                    traceback.print_exc()
+                    util.print_exc()
                 else:
                     b.connect('activate', self.__menu_activate, view)
 

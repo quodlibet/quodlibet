@@ -16,7 +16,6 @@ import cPickle as pickle
 import itertools
 import os
 import shutil
-import traceback
 
 import gobject
 import gtk
@@ -26,6 +25,8 @@ try:
     import fcntl
 except ImportError:
     fcntl = None 
+
+from quodlibet import util
 
 class Library(gtk.Object):
     """A Library contains useful objects.
@@ -147,10 +148,10 @@ class Library(gtk.Object):
                 fileobj = file(filename, "rb")
                 try: items = pickle.load(fileobj)
                 except (pickle.PickleError, EnvironmentError, ImportError):
-                    traceback.print_exc()
+                    util.print_exc()
                     try: shutil.copy(filename, filename + ".not-valid")
                     except EnvironmentError:
-                        traceback.print_exc()
+                        util.print_exc()
                     items = []
                 fileobj.close()
             else: return

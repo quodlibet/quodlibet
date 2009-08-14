@@ -7,10 +7,10 @@
 # $Id$
 
 import sys
-import traceback
 
 from glob import glob
 from os.path import dirname, basename, join
+from quodlibet import util
 
 base = dirname(__file__)
 self = basename(base)
@@ -22,7 +22,7 @@ _infos = {}
 for i, name in enumerate(modules):
     try: format = __import__(name, {}, {}, self)
     except Exception, err:
-        traceback.print_exc()
+        util.print_exc()
         continue
     format = __import__(name, {}, {}, self)
     for ext in format.extensions:
@@ -55,7 +55,7 @@ def MusicFile(filename):
                 return _infos[ext](filename)
             except:
                 print_w(_("Error loading %r") % filename)
-                traceback.print_exc()
+                util.print_exc()
                 lt, lv, tb = sys.exc_info()
                 sys.last_type, sys.last_value, sys.last_traceback = lt, lv, tb
                 return None

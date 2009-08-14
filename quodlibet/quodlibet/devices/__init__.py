@@ -8,7 +8,6 @@
 # $Id$
 
 import os
-import traceback
 try:
     import dbus
     import dbus.glib
@@ -20,6 +19,7 @@ from glob import glob
 from ConfigParser import RawConfigParser as ConfigParser
 
 from quodlibet import const
+from quodlibet import util
 
 base = dirname(__file__)
 self = basename(base)
@@ -31,7 +31,7 @@ devices = []
 for _name in modules:
     try: device = __import__(_name, {}, {}, self)
     except Exception, err:
-        traceback.print_exc()
+        util.print_exc()
         continue
 
     try: devices.extend(device.devices)

@@ -7,8 +7,6 @@
 #
 # $Id$
 
-import traceback
-
 import gobject
 
 from quodlibet.plugins import Manager, SongWrapper, ListWrapper
@@ -100,7 +98,7 @@ class EventPlugins(Manager):
 
             try: obj = Kind()
             except:
-                traceback.print_exc()
+                util.print_exc()
             else:
                 if obj.PLUGIN_ID in self._plugins:
                     self._plugins[obj.PLUGIN_ID].destroy()
@@ -116,7 +114,7 @@ class EventPlugins(Manager):
                 if enabled: plugin.enabled()
                 else: plugin.disabled()
             except:
-                traceback.print_exc()
+                util.print_exc()
 
     def __invoke(self, librarian, event, *args):
         try:
@@ -133,7 +131,7 @@ class EventPlugins(Manager):
                 if handler is not None:
                     try: handler(*args)
                     except Exception:
-                        traceback.print_exc()
+                        util.print_exc()
         finally:
             if event not in ["removed", "changed"] and args:
                 from quodlibet.widgets import main

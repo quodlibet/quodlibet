@@ -9,9 +9,9 @@
 
 import os
 import sys
-import traceback
 
 from quodlibet import const
+from quodlibet import util
 
 from os.path import dirname, basename, isdir, join
 from glob import glob
@@ -46,7 +46,7 @@ browsers = []
 for name in modules:
     try: browser = __import__(name, {}, {}, self)
     except Exception, err:
-        traceback.print_exc()
+        util.print_exc()
         continue
 
     try: browsers.extend(browser.browsers)

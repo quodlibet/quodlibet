@@ -7,14 +7,12 @@
 #
 # $Id$
 
-import traceback
-
 import gobject
 import gtk
 
-
 from quodlibet import config
 from quodlibet import stock
+from quodlibet import util
 
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -95,7 +93,7 @@ class EditPane(gtk.VBox):
         for Kind in plugins:
             try: f = Kind()
             except:
-                traceback.print_exc()
+                util.print_exc()
                 continue
             else: instances.append(f)
         instances.sort()
@@ -103,7 +101,7 @@ class EditPane(gtk.VBox):
         for f in instances:
             try: vbox.pack_start(f)
             except:
-                traceback.print_exc()
+                util.print_exc()
                 f.destroy()
             else:
                 try: f.connect_object(
@@ -112,7 +110,7 @@ class EditPane(gtk.VBox):
                     try: f.connect_object(
                         'changed', self._changed, self.combo.child)
                     except:
-                        traceback.print_exc()
+                        util.print_exc()
                     else: self.filters.append(f)
                 else: self.filters.append(f)
 

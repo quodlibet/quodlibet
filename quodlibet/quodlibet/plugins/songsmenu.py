@@ -10,7 +10,7 @@ import gtk
 
 from quodlibet import qltk
 
-from traceback import print_exc
+from util import print_exc
 
 from quodlibet.plugins import ListWrapper, Manager
 
