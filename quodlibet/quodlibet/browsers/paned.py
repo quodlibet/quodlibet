@@ -200,7 +200,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             model, rows = selection.get_selected_rows()
             if jump and rows:
                 self.scroll_to_cell(rows[0][0], use_align=True, row_align=0.5)
-            self.__next.fill(self.__get_songs())
+            songs = self.__get_songs()
+            if not songs: return
+            self.__next.fill(songs)
 
         def _remove(self, songs, remove_if_empty=True):
             self.inhibit()

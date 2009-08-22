@@ -652,7 +652,15 @@ class QuodLibetWindow(gtk.Window):
 
     def __jump_to_current(self, explicit):
         if player.playlist.song is None: return
-        if explicit: self.browser.scroll(player.playlist.song)
+
+        if player.playlist.song != self.songlist.model.current and explicit:
+            self.browser.scroll(player.playlist.song)
+
+        #we need to wait until the browser has finished scrolling/filling
+        #and the songlist is ready
+        gobject.idle_add(self.__jump_to_current_in_list, explicit)
+
+    def __jump_to_current_in_list(self, explicit):
         if player.playlist.song == self.songlist.model.current:
             path = self.songlist.model.current_path
             self.songlist.scroll_to_cell(
