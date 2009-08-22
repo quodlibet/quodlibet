@@ -1,583 +1,1318 @@
-#Copyright 2005-2008 By:
+# -*- coding: utf-8 -*-
+
+# Copyright 2005-2009 By:
 # Eduardo Gonzalez, Niklas Janlert, Christoph Reiter, Antonio Riva
-#
-# Amazon API code by Mark Pilgrim.  Updated for AWS 4.0 by Kun Xi
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-# Last Modified: Wed May 21 21:16:48 EDT 2008 by <wm.eddie@gmail.com>
+# Sat, 01 Aug 2009 13:19:31 by Christoph Reiter <christoph.reiter@gmx.at>
+# - Fix coverparadise by handling bad HTML better
+# - Use AppEngine webapp proxy (by wm_eddie) for Amazon
+# - Increase search limit to 7 (from 5)
+# - Treeview hints and DND
+# - Some cleanup and version bump -> 0.5.1
+
+# Wed Mar 04 09:11:28 2009 by Christoph Reiter <christoph.reiter@gmx.at>
+# - Nearly complete rewrite
+# - search engines: darktown, coverparadise, amazon (no aws, because
+#    there was no search limit which would cause endless searching for
+#    common terms and loosing a dependency is always good) and discogs
+# - new: open with GIMP, image zooming mode, absolutely no UI freezes,
+#     enable/disable search engines
+# - Bumped version number to 0.5
+
+# Wed May 21 21:16:48 EDT 2008 by <wm.eddie@gmail.com>
 # - Some cleanup
 # - Added to SVN
 # - Bumped version number to 0.41
 
 # Tue 2008-05-13 19:40:12 (+0200) by <wxcover@users.sourceforge.net>
-# -Added walmart, darktown and buy.com cover searching.
-# -Few fixes
-# -Updated version number (0.25 -> 0.4)
+# - Added walmart, darktown and buy.com cover searching.
+# - Few fixes
+# - Updated version number (0.25 -> 0.4)
 
 # Mon 2008-05-05 14:54:27 (-0400)
-# Updated for new Amazon API by Jeremy Cantrell <jmcantrell@gmail.com>
+# - Updated for new Amazon API by Jeremy Cantrell <jmcantrell@gmail.com>
 
 import os
 import sys
-import urllib
-import re
 import time
 import threading
+import gzip
+
+import urllib
+import urllib2
+from HTMLParser import HTMLParser
 from cStringIO import StringIO
+from xml.dom import minidom
+
 import gtk
 import gobject
 import pango
-import util
-import qltk
-import config
 
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet import util
+from quodlibet import qltk
+from quodlibet import config
+from quodlibet.qltk.views import AllTreeView
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-if sys.version_info < (2, 4): from sets import Set as set
+#switch off, so that broken search engines wont crash the whole plugin
+debug = False
 
-try:
-    from pyaws import ecs
-except ImportError:
-    import _ecs as ecs
+class BasicHTMLParser(HTMLParser, object):
+    """Basic Parser, stores all tags in a 3 tuple with tagname, attrs and data
+    between the starttags. Ignores nesting but gives a consistent structure.
+    All in all an ugly hack."""
 
-class AlbumArtWindow(gtk.Window):
+    def __init__(self):
+        super(BasicHTMLParser, self).__init__()
+
+        self.data = []
+        self.__buffer = []
+        #to make the crappy HTMLParser ignore more stuff
+        self.CDATA_CONTENT_ELEMENTS = ()
+
+    def parse_url(self, url, post = {}, get = {}, enc = 'utf-8'):
+        """Will read the data and parse it into the data variable.
+        A tag will be ['tagname', {all attributes}, 'data until the next tag']
+        Only starttags are handled/used."""
+
+        self.data = []
+        post_params = urllib.urlencode(post)
+        get_params = urllib.urlencode(get)
+
+        if get: get_params = '?' + get_params
+
+        req = urllib2.urlopen('%s%s' % (url, get_params), post_params)
+
+        text = req.read().decode(enc, 'replace')
+        #strip script tags/content. HTMLParser doesn't handle them well
+        text = "".join([p.split("script>")[-1] for p in text.split("<script")])
+
+        self.feed(text)
+        req.close()
+        self.close()
+
+    def handle_starttag(self, tag, attrs):
+        if self.__buffer:
+            self.__buffer.append('')
+            self.data.append(self.__buffer)
+            self.__buffer = []
+        self.__buffer = [tag, dict(attrs)]
+
+    def handle_data(self, data):
+        if self.__buffer:
+            self.__buffer.append(data)
+            self.data.append(self.__buffer)
+            self.__buffer = []
+        else:
+            self.data.append(['', {}, data])
+
+class CoverParadiseParser(BasicHTMLParser):
+    """A class for searching covers from coverparadise.to"""
+
+    def __init__(self):
+        super(CoverParadiseParser, self).__init__()
+
+        self.cover_count = 0
+        self.page_step = 0
+        self.query = ''
+        self.root_url = 'http://coverparadise.to'
+
+        self.covers = []
+
+    def start(self, query, limit=10):
+        """Start the search and return a list of covers"""
+
+        self.cover_count = 0
+        self.page_step = 0
+        self.query = query
+        self.covers = []
+
+        #site only takes 3+ chars
+        if len(query) < 3:
+                return []
+
+        #parse the first page
+        self.__parse_search_list(0)
+
+        #if there are pagenumbers: its a list
+        if self.__parse_page_num():
+            if limit > 0:
+                self.limit = min(limit, self.cover_count)
+            else:
+                self.limit = self.cover_count
+
+            self.__extract_from_list()
+
+            #get the rest of the list
+            for offset in xrange(self.page_step, self.limit, self.page_step):
+                self.__parse_search_list(offset)
+                self.__extract_from_list()
+        #search went directly to the album page
+        else:
+            self.__extract_from_single()
+
+        #delete the parsing data
+        del self.data
+
+        return self.covers
+
+    def __extract_from_single(self):
+        """The site will directly return the album page if there is only
+        one search result"""
+
+        cover = {}
+
+        head_pos = 0
+        for i, entry in enumerate(self.data):
+            if entry[0] == 'div' and 'class' in entry[1] and \
+                entry[1]['class'] == 'BoxHeadline':
+                head_pos = i
+                break
+
+        cover['name'] = ''
+        for i in xrange(head_pos + 1, len(self.data)):
+            cover['name'] += self.data[i][2]
+            if self.data[i + 1][0].strip():
+                break
+
+        cover['name'] = cover['name'].strip()
+
+        if not cover['name']:
+            return
+
+        pic_pos = 0
+        for i in xrange(head_pos, len(self.data)):
+            if self.data[i][0] == 'img' and 'src' in self.data[i][1] and \
+                self.data[i][1]['src'].find('/thumbs/') != -1:
+                pic_pos = i
+                break
+
+        cover['thumbnail'] = self.data[pic_pos][1]['src']
+
+        cover['cover'] = cover['thumbnail'].replace('/thumbs/', '/')
+
+        sub_data = []
+        for i in xrange(pic_pos + 1, len(self.data)):
+            if self.data[i][0] == 'tr':
+                break
+            if not self.data[i][1] and self.data[i][2].strip():
+                sub_data.append(self.data[i])
+
+        cover['resolution'] = sub_data[-2][2].split(':')[1].strip()
+
+        cover['size'] = sub_data[-3][2].split(':')[1].strip().replace(',', '.')
+
+        cover['source'] = self.root_url
+
+        self.covers.append(cover)
+
+    def __parse_search_list(self, offset):
+        """Will parse a specific page of a search"""
+
+        search_url = self.root_url + '/?Module=SimpleSearch'
+        #Sektion 2 is for audio, Page is a search result offset
+        post_dic = {'SearchString' : self.query, 'Page': offset, 'Sektion' : 2}
+
+        self.parse_url(search_url, post = post_dic)
+
+    def __extract_from_list(self):
+        """Extracts all the needed information from the already parsed
+        search result page and adds the found cover to the list."""
+
+        table_pos = []
+        for i, entry in enumerate(self.data):
+            if entry[0] == 'div' and 'class' in entry[1] and \
+                entry[1]['class'] == 'ResultScroller':
+                table_pos.append(i)
+
+        table_pos = table_pos[-2:]
+
+        if len(table_pos) != 2:
+            return
+
+        tr_pos = []
+        for i in xrange(table_pos[0], table_pos[1]):
+            if self.data[i][0] == 'tr' and not self.data[i][1]:
+                tr_pos.append(i)
+
+        for tr in xrange(0, len(tr_pos) - 1):
+            cover = {}
+
+            album = self.data[tr_pos[tr] : tr_pos[tr + 1]]
+
+            name = []
+            for i, entry in enumerate(album):
+                if entry[0] == 'b':
+                    for a in xrange(i, len(album)):
+                        name.append(album[a][2])
+                        if album[a + 1][0] == 'b':
+                            break
+                    break
+
+            cover['name'] = ''.join(name).strip()
+
+            sub_data = [i[2] for i in album if i[0] == '' and i[2].strip()]
+
+            cover['size'] = sub_data[-1].strip().replace(',', '.')
+
+            cover['resolution'] = sub_data[-3].strip()
+
+            thumb_tag = [i[1] for i in album if i[0] == 'img'][0]
+            cover['thumbnail'] = thumb_tag['src']
+
+            cover['cover'] = cover['thumbnail'].replace('/thumbs/', '/')
+
+            cover['source'] = self.root_url
+
+            self.covers.append(cover)
+
+            if(len(self.covers) >= self.limit):
+                break
+
+    def __parse_page_num(self):
+        """Tries to find the number of found covers on an already parsed
+        search result page and how many results are on one page
+        (needed for result/page offset)"""
+
+        pos = 0
+
+        for i, entry in enumerate(self.data):
+            if entry[0] == 'div' and 'class' in entry[1] and \
+                entry[1]['class'] == 'BoxHeadline':
+                pos = i
+                break
+
+        text = self.data[pos][2]
+        nums = [int(i) for i in text.split() if i.isdigit()][-2:]
+
+        if len(nums) == 2:
+            self.page_step, self.cover_count = nums
+            return True
+        else:
+            return False
+
+class DiscogsParser():
+    """A class for searching covers from discogs.com"""
+
+    def __init__(self):
+        self.api_key = 'e404383a2a'
+        self.url = 'http://www.discogs.com'
+        self.cover_list = []
+        self.limit = 0
+        self.limit_count = 0
+
+    def __get_search_page(self, page, query):
+        """Returns the XML dom of a search result page. Starts with 1."""
+
+        search_url = self.url + '/search'
+        search_paras = {}
+        search_paras['type'] = 'releases'
+        search_paras['q'] = query
+        search_paras['f'] = 'xml'
+        search_paras['api_key'] = self.api_key
+        search_paras['page'] = page
+
+        real_url = '%s?%s' % (search_url, urllib.urlencode(search_paras))
+
+        request = urllib2.Request(real_url)
+        request.add_header('Accept-Encoding', 'gzip')
+
+        url_sock = urllib2.urlopen(request)
+        data = url_sock.read()
+
+        if url_sock.headers.get('content-encoding') == 'gzip':
+            xml_data = gzip.GzipFile(fileobj = StringIO(data)).read()
+        else:
+            xml_data = data
+
+        url_sock.close()
+
+        dom = minidom.parseString(xml_data)
+
+        return dom
+
+    def __parse_list(self, dom):
+        """Returns a list with the album name and the release ID.
+        Since the naming of releases in the specific release pages
+        seems complex.. use the one from the search result page."""
+
+        list = []
+        results = dom.getElementsByTagName('result')
+        for result in results:
+            uri_tag = result.getElementsByTagName('uri')[0]
+            id = uri_tag.firstChild.data.split('/')[-1]
+            name = result.getElementsByTagName('title')[0].firstChild.data
+            list.append((id, name))
+
+        return list
+
+    def __parse_release(self, id, name):
+        """Parse the release page and add the cover to the list."""
+
+        if len(self.cover_list) >= self.limit:
+            return
+
+        rel_url = self.url + '/release/'
+        rel_paras = {}
+        rel_paras['api_key'] = self.api_key
+        rel_paras['f'] = 'xml'
+
+        real_url = '%s%s?%s' % (rel_url, id ,urllib.urlencode(rel_paras))
+
+        request = urllib2.Request(real_url)
+        request.add_header('Accept-Encoding', 'gzip')
+
+        url_sock = urllib2.urlopen(request)
+        xml_data = gzip.GzipFile(fileobj = StringIO(url_sock.read())).read()
+        url_sock.close()
+
+        dom = minidom.parseString(xml_data)
+
+        imgs = dom.getElementsByTagName('image')
+
+        cover = {}
+
+        for img in imgs:
+            if img.getAttribute('type') == 'primary':
+                cover['cover'] = img.getAttribute('uri')
+
+                width = img.getAttribute('width')
+                height = img.getAttribute('height')
+                cover['resolution'] = '%s x %s px' % (width, height)
+
+                cover['thumbnail'] = img.getAttribute('uri150')
+
+                cover['name'] = name
+
+                cover['size'] = get_size_of_url(cover['cover'])
+
+                cover['source'] = self.url
+
+                break
+
+        if cover and len(self.cover_list) < self.limit:
+            self.cover_list.append(cover)
+
+    def start(self, query, limit=10):
+        """Start the search and return the covers"""
+
+        self.limit = limit
+        self.limit_count = 0
+        self.cover_list = []
+
+        page = 1
+        limit_stop = False
+
+        while 1:
+            dom = self.__get_search_page(page, query)
+
+            result = dom.getElementsByTagName('searchresults')
+
+            if not result:
+                break
+
+            #all = number of all results, end = last result number on the page
+            all = int(result[0].getAttribute('numResults'))
+            end = int(result[0].getAttribute('end'))
+
+            ids = self.__parse_list(dom)
+
+            thread_list = []
+            for id, name in ids:
+                self.limit_count += 1
+
+                thr = threading.Thread(target=self.__parse_release,
+                    args=(id, name))
+                thr.setDaemon(True)
+                thr.start()
+                thread_list.append(thr)
+
+                #Don't search forever if there are many entries with no image
+                #In the default case of limit=10 this will prevent searching
+                #the second result page...
+                if self.limit_count >= self.limit * 2:
+                    limit_stop = True
+                    break
+
+            for thread in thread_list:
+                thread.join()
+
+            if end >= all or limit_stop:
+                break
+
+            page += 1
+
+        return self.cover_list
+
+class AmazonParser():
+    """A class for searching covers from amazon"""
+
+    def __init__(self):
+        self.page_count = 0
+        self.covers = []
+        self.limit = 0
+
+    def __parse_page(self, page, query):
+        """Gets all item tags and calls the item parsing function for each"""
+
+        #Amazon now requires that all requests be signed.
+        #I have built a webapp on AppEngine for this purpose. -- wm_eddie
+        #url = 'http://webservices.amazon.com/onca/xml'
+        url = 'http://qlwebservices.appspot.com/onca/xml'
+
+        parameters = {}
+        parameters['Service'] = 'AWSECommerceService'
+        parameters['AWSAccessKeyId'] = '0RKH4ZH1JCFZHMND91G2' # Now Ignored.
+        parameters['Operation'] = 'ItemSearch'
+        parameters['ResponseGroup'] = 'Images,Small'
+        parameters['SearchIndex'] = 'Music'
+        parameters['Keywords'] = query
+        parameters['ItemPage'] = page
+
+        real_url = '%s?%s' % (url, urllib.urlencode(parameters))
+
+        url_sock = urllib.urlopen(real_url)
+        dom = minidom.parseString(url_sock.read())
+        url_sock.close()
+
+        pages = dom.getElementsByTagName('TotalPages')
+        if pages:
+            self.page_count = int(pages[0].firstChild.data)
+
+        items = dom.getElementsByTagName('Item')
+
+        for item in items:
+            self.__parse_item(item)
+            if len(self.covers) >= self.limit:
+                break
+
+    def __parse_item(self, item):
+        """Extract all information and add the covers to the list."""
+
+        large = item.getElementsByTagName('LargeImage')
+        small = item.getElementsByTagName('SmallImage')
+        title = item.getElementsByTagName('Title')
+
+        if large and small and title:
+            cover = {}
+
+            artist = item.getElementsByTagName('Artist')
+            creator = item.getElementsByTagName('Creator')
+
+            text = ''
+            if artist:
+                text = artist[0].firstChild.data
+            elif creator:
+                if len(creator) > 1:
+                    text = ', '.join([i.firstChild.data for i in creator])
+                else:
+                    text = creator[0].firstChild.data
+
+            title_text = title[0].firstChild.data
+
+            if len(text) and len(title_text):
+                text += ' - '
+
+            cover['name'] = text + title_text
+
+            url_tag = small[0].getElementsByTagName('URL')[0]
+            cover['thumbnail'] = url_tag.firstChild.data
+
+            url_tag = large[0].getElementsByTagName('URL')[0]
+            cover['cover'] = url_tag.firstChild.data
+
+            #Since we don't know the size, use the one from the HTML header.
+            cover['size'] = get_size_of_url(cover['cover'])
+
+            h_tag = large[0].getElementsByTagName('Height')[0]
+            height = h_tag.firstChild.data
+
+            w_tag = large[0].getElementsByTagName('Width')[0]
+            width = w_tag.firstChild.data
+
+            cover['resolution'] = '%s x %s px' % (width, height)
+
+            cover['source'] = 'http://www.amazon.com'
+
+            self.covers.append(cover)
+
+    def start(self, query, limit=10):
+        """Start the search and returns the covers"""
+
+        self.page_count = 0
+        self.covers = []
+        self.limit = limit
+        self.__parse_page(1, query)
+
+        if len(self.covers) < limit:
+            for page in xrange(2 ,self.page_count + 1):
+                self.__parse_page(page, query)
+                if len(self.covers) >= limit:
+                    break
+
+        return self.covers
+
+class DarktownParser(BasicHTMLParser):
+    """A class for searching covers from darktown.to"""
+
+    def __init__(self):
+        super(DarktownParser, self).__init__()
+
+        self.root_url = 'http://www.darktown.to'
+        self.page_count = 0
+        self.limit = 0
+        self.covers = []
+
+        self.main_links = []
+
+    def start(self, query, limit=10):
+        """Start the search and returns the covers"""
+
+        self.page_count = 0
+        self.limit = limit
+        #site only takes and returns latin-1
+        query = query.decode('utf-8').encode('latin-1')
+        self.covers = []
+        self.main_links = []
+
+        #get first page
+        self.__parse_page(1, query)
+
+        #look if there are more
+        self.__parse_page_count()
+
+        #parse all the cover urls from page 1
+        self.__parse_search_list()
+
+        #do the same for the rest until the limit is reached
+        for i in xrange(2, min(limit / 100, self.page_count) + 1):
+            self.__parse_page(i, query)
+            self.__parse_search_list()
+
+        #go to each url and get all the infos
+        self.__parse_all_covers()
+
+        #delete all the parsed data
+        del self.data
+
+        return self.covers
+
+    def __parse_all_covers(self):
+        """Reads all URLs and adds the covers to the list"""
+
+        for link in self.main_links:
+            self.parse_url(self.root_url + link, enc = 'latin-1')
+
+            cover = {}
+            cover['source'] = self.root_url
+
+            for tag in xrange(len(self.data)):
+                if self.data[tag][0] == 'img' and 'thumbnail' not in cover:
+                    cover['thumbnail'] = self.data[tag][1]['src']
+                elif self.data[tag][0] == 'a' and 'cover' not in cover:
+                    cover['cover'] = self.data[tag][1]['href']
+                elif self.data[tag][0] == 'font' and 'size' in \
+                    self.data[tag][1] and self.data[tag][1]['size'] == '4':
+                    cover['name'] = (self.data[tag][2] + ' - ' + \
+                        self.data[tag + 2][2]).strip()
+                    cover['size'] = self.data[tag + 13][2].strip()
+
+            self.covers.append(cover)
+
+    def __parse_page(self, page, query):
+        """Parses the search result page and saves the data to self.data"""
+
+        params = {'action': 'search', 'what': query, \
+            'category': 'audio', 'page': page}
+        self.parse_url(self.root_url + '/search.php',
+            get = params, enc = 'latin-1')
+
+    def __parse_page_count(self):
+        """Tries to figure out how many result pages we got."""
+
+        for i in self.data:
+            if 'href' in i[1]:
+                if i[1]['href'].startswith('/search.php') \
+                    and not i[2].isdigit():
+                    start = i[1]['href'].rfind('=') + 1
+                    self.page_count = int(i[1]['href'][start:])
+                    break
+                elif i[1]['href'].startswith('javascript:'):
+                    break
+
+    def __parse_search_list(self):
+        """Extracts all album urls from the result page"""
+
+        for tag in self.data:
+            if tag[0] == 'a':
+                split = tag[1]['href'].split('\'')
+                if len(split) > 1 and split[1].endswith('&type=Front'):
+                    self.main_links.append(split[1])
+
+            if len(self.main_links) >= self.limit:
+                break
+
+class CoverArea(gtk.VBox):
+    """The image display and saving part."""
+
+    def __init__(self, parent, dirname):
+        super(CoverArea, self).__init__()
+
+        self.connect('destroy', self.__save_config)
+
+        self.dirname = dirname
+        self.main_win = parent
+
+        self.data_cache = []
+        self.current_data = None
+        self.current_pixbuf = None
+
+        self.image = gtk.Image()
+        self.button = gtk.Button(stock=gtk.STOCK_SAVE)
+        self.button.set_sensitive(False)
+        self.button.connect('clicked', self.__save)
+
+        self.window_fit = gtk.CheckButton(_('Fit image to _window'))
+        self.window_fit.connect('toggled', self.__scale_pixbuf)
+
+        self.name_combo = gtk.combo_box_new_text()
+
+        self.cmd = qltk.entry.ValidatingEntry(util.iscommand)
+
+        #both labels
+        label_open = gtk.Label(_('_Program:'))
+        label_open.set_use_underline(True)
+        label_open.set_mnemonic_widget(self.cmd)
+        label_open.set_justify(gtk.JUSTIFY_LEFT)
+
+        self.open_check = gtk.CheckButton(_('_Edit image after saving'))
+        label_name = gtk.Label(_('File_name:'))
+        label_name.set_use_underline(True)
+        label_name.set_mnemonic_widget(self.name_combo)
+        label_name.set_justify(gtk.JUSTIFY_LEFT)
+
+        # set all stuff from the config
+        self.window_fit.set_active(cfg_get('fit', False))
+        self.open_check.set_active(cfg_get('edit', False))
+        self.cmd.set_text(cfg_get('edit_cmd', 'gimp'))
+
+        #create the filename combo box
+        fn_list = ['cover.jpg', 'folder.jpg', '.folder.jpg']
+
+        set_fn = cfg_get('fn', fn_list[0])
+
+        for i, fn in enumerate(fn_list):
+                self.name_combo.append_text(fn)
+                if fn == set_fn:
+                    self.name_combo.set_active(i)
+
+        if self.name_combo.get_active() < 0:
+            self.name_combo.set_active(0)
+
+        table = gtk.Table(rows=2, columns=2, homogeneous=False)
+        table.set_row_spacing(0, 5)
+        table.set_row_spacing(1, 5)
+        table.set_col_spacing(0, 5)
+        table.set_col_spacing(1, 5)
+
+        table.attach(label_open, 0, 1, 0, 1)
+        table.attach(label_name, 0, 1, 1, 2)
+
+        table.attach(self.cmd, 1, 2, 0, 1)
+        table.attach(self.name_combo, 1, 2, 1, 2)
+
+        self.scrolled = gtk.ScrolledWindow()
+        self.scrolled.add_with_viewport(self.image)
+        self.scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+        bbox = gtk.HButtonBox()
+        bbox.pack_start(self.button)
+
+        main_hbox = gtk.HBox()
+        main_hbox.pack_start(table, False, padding=5)
+        main_hbox.pack_start(bbox)
+
+        top_hbox = gtk.HBox()
+        top_hbox.pack_start(self.open_check)
+        top_hbox.pack_start(self.window_fit, False)
+
+        main_vbox = gtk.VBox()
+        main_vbox.pack_start(top_hbox, padding=2)
+        main_vbox.pack_start(main_hbox)
+
+        self.pack_start(self.scrolled)
+        self.pack_start(main_vbox, False, padding=5)
+
+        # 5 MB image cache size
+        self.max_cache_size = 1024 * 1024 * 5
+
+        #for managing fast selection switches of covers..
+        self.stop_loading = False
+        self.loading = False
+        self.current_job = 0
+
+    def __save(self, *data):
+        """save the cover, spawn the program to edit it if selected"""
+
+        filename = self.name_combo.get_active_text()
+        file_path = os.path.join(self.dirname, filename)
+
+        if os.path.exists(file_path) and not qltk.ConfirmAction(None,
+            _('File exists'), _('The file <b>%s</b> already exists.'
+            '\n\nOverwrite?') % util.escape(filename)).run():
+            return
+
+        try:
+            f = open(file_path, 'w')
+            f.write(self.current_data)
+            f.close()
+        except IOError:
+            qltk.ErrorMessage(None, _('Saving failed'),
+                _('Unable to save "%s".') % file_path).run()
+        else:
+            if self.open_check.get_active():
+                try:
+                    util.spawn([self.cmd.get_text(), file_path])
+                except:
+                    pass
+
+        self.main_win.destroy()
+
+    def __save_config(self, widget):
+        cfg_set('cover_fit', self.window_fit.get_active())
+        cfg_set('cover_edit', self.open_check.get_active())
+        cfg_set('cover_edit_cmd', self.cmd.get_text())
+        cfg_set('cover_fn', self.name_combo.get_active_text())
+
+    def __update(self, loader, *data):
+        """update the picture while it is loading"""
+
+        pixbuf = loader.get_pixbuf()
+        self.image.set_from_pixbuf(pixbuf)
+
+    def __scale_pixbuf(self, *data):
+        if not self.current_pixbuf:
+            return
+
+        pixbuf = self.current_pixbuf
+
+        if self.window_fit.get_active():
+            pb_width = pixbuf.get_width()
+            pb_height = pixbuf.get_height()
+
+            #substract 20 px because of the scrollbars
+            width = self.scrolled.allocation.width - 20
+            height = self.scrolled.allocation.height - 20
+
+            if pb_width > width or pb_height > height:
+                pb_ratio = float(pb_width) / pb_height
+                win_ratio = float(width) / height
+
+                if pb_ratio > win_ratio:
+                    scale_w = width
+                    scale_h = int(width / pb_ratio)
+                else:
+                    scale_w = int(height * pb_ratio)
+                    scale_h = height
+
+                #the size is wrong if the window is about to close
+                if scale_w <= 0 or scale_h <= 0:
+                    return
+
+                pixbuf = pixbuf.scale_simple(scale_w, scale_h,
+                    gtk.gdk.INTERP_BILINEAR)
+
+        gobject.idle_add(self.image.set_from_pixbuf, pixbuf)
+
+    def __close(self, loader, *data):
+        if self.stop_loading:
+            return
+
+        self.current_pixbuf = loader.get_pixbuf()
+
+        thr = threading.Thread(target=self.__scale_pixbuf)
+        thr.setDaemon(True)
+        thr.start()
+
+    def set_cover(self, url):
+        thr = threading.Thread(target=self.__set_async, args=(url,))
+        thr.setDaemon(True)
+        thr.start()
+
+    def __set_async(self, url):
+        """manages various stuff like fast switching of covers (aborting
+        old HTTP requests), managing the image cache etc."""
+
+        self.current_job += 1
+        job = self.current_job
+
+        self.stop_loading = True
+        while self.loading:
+            time.sleep(0.05)
+        self.stop_loading = False
+
+        if job != self.current_job:
+            return
+
+        self.loading = True
+
+        gobject.idle_add(self.button.set_sensitive, False)
+        self.current_pixbuf = None
+
+        pbloader = gtk.gdk.PixbufLoader()
+        pbloader.connect('closed', self.__close)
+
+        #look for cached images
+        raw_data = None
+        for entry in self.data_cache:
+            if entry[0] == url:
+                raw_data = entry[1]
+                break
+
+        if not raw_data:
+            pbloader.connect('area-updated', self.__update)
+
+            data_store = StringIO()
+            url_sock = urllib2.urlopen(url)
+
+            while not self.stop_loading:
+                tmp = url_sock.read(1024 * 10)
+                if not tmp:
+                        break
+                pbloader.write(tmp)
+                data_store.write(tmp)
+
+            url_sock.close()
+
+            if not self.stop_loading:
+                raw_data = data_store.getvalue()
+
+                self.data_cache.insert(0, (url, raw_data))
+
+                while 1:
+                    cache_sizes = [len(data[1]) for data in self.data_cache]
+                    if sum(cache_sizes) > self.max_cache_size:
+                        del self.data_cache[-1]
+                    else:
+                        break
+
+            data_store.close()
+        else:
+            #sleep for fast switching of cached images
+            time.sleep(0.05)
+            if not self.stop_loading:
+                pbloader.write(raw_data)
+
+        try:
+            pbloader.close()
+        except gobject.GError:
+            pass
+
+        self.current_data = raw_data
+
+        if not self.stop_loading:
+            gobject.idle_add(self.button.set_sensitive, True)
+
+        self.loading = False
+
+class AlbumArtWindow(qltk.Window):
+    """The main window including the search list"""
+
     def __init__(self, songs):
-        gtk.Window.__init__(self)
-        self.set_border_width(12)
-        self.set_title("Album Art Downloader")
-        self.set_default_size(850, 550)
+        super(AlbumArtWindow, self).__init__()
 
-        #TreeView stuff
-        self.liststore = liststore = gtk.ListStore(object, str)
-        treeview = gtk.TreeView(liststore)
-        treeview.set_headers_visible(False)
-        selection = treeview.get_selection()
-        selection.set_mode(gtk.SELECTION_SINGLE)
-        selection.connect("changed", self.__preview)
+        self.image_cache = []
+        self.image_cache_size = 10
+        self.search_lock = False
 
-        self.url = url = gtk.Entry()
-        url.set_text(songs[0]("artist") + " " + songs[0]("album"))
+        self.set_title(_('Album Art Downloader'))
+        self.set_icon_name(gtk.STOCK_FIND)
+        self.set_default_size(800, 550)
 
-        urlButton = gtk.Button("Search")
-        urlButton.connect("clicked", 
-                          self.__start_search, url, liststore)
-        url.connect("key-release-event", 
-                    self.key_start_search, url, liststore)
+        image = CoverArea(self, songs[0]('~dirname'))
 
-        urlBox = gtk.HBox()
-        urlBox.pack_start(url, expand=True, fill=True)
-        urlBox.pack_start(urlButton, expand=False, fill=False)
+        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, object)
+        self.treeview = treeview = AllTreeView(self.liststore)
+        self.treeview.set_headers_visible(False)
+        self.treeview.set_rules_hint(True)
 
-        rend = gtk.CellRendererPixbuf()
+        targets = [("text/uri-list", 0, 0)]
+        treeview.drag_source_set(
+            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+
+        treeselection = self.treeview.get_selection()
+        treeselection.set_mode(gtk.SELECTION_SINGLE)
+        treeselection.connect('changed', self.__select_callback, image)
+
+        self.treeview.connect("drag-data-get",
+            self.__drag_data_get, treeselection)
+
+        rend_pix = gtk.CellRendererPixbuf()
+        img_col = gtk.TreeViewColumn('Thumb')
+        img_col.pack_start(rend_pix, False)
+        img_col.add_attribute(rend_pix, 'pixbuf', 0)
+        treeview.append_column(img_col)
+
+        rend_pix.set_property('xpad', 2)
+        rend_pix.set_property('ypad', 2)
+        rend_pix.set_property('width', 56)
+        rend_pix.set_property('height', 56)
+
+        def escape_data(data):
+            for rep in ('\n','\t','\r', '\v'):
+                data = data.replace(rep, ' ')
+
+            return util.escape(' '.join(data.split()))
+
         def cell_data(column, cell, model, iter):
-            cell.set_property("pixbuf", model[iter][0]["thumb"])
-        tvcol1 = gtk.TreeViewColumn("Pixbuf", rend)
-        tvcol1.set_cell_data_func(rend, cell_data)
-        tvcol1.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
-        rend.set_property('xpad', 2)
-        rend.set_property('ypad', 2)
-        rend.set_property('width', 56)
-        rend.set_property('height', 56)
-        treeview.append_column(tvcol1)
+            cover = model[iter][1]
+
+            esc = escape_data
+
+            txt = '<b><i>%s</i></b>' % esc(cover['name'])
+            txt += _('\n<small>from <i>%s</i></small>') % esc(cover['source'])
+            if 'resolution' in cover:
+                txt += _('\nResolution: <i>%s</i>') % esc(cover['resolution'])
+            if 'size' in cover:
+                txt += _('\nSize: <i>%s</i>') % esc(cover['size'])
+
+            cell.markup = txt
+            cell.set_property('markup', cell.markup)
 
         rend = gtk.CellRendererText()
-        rend.set_property("ellipsize", pango.ELLIPSIZE_END)
-        tvcol2 = gtk.TreeViewColumn("Info", rend, markup=1)
-        treeview.append_column(tvcol2)
+        rend.set_property('ellipsize', pango.ELLIPSIZE_END)
+        info_col = gtk.TreeViewColumn('Info', rend)
+        info_col.set_cell_data_func(rend, cell_data)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.add(treeview)
+        treeview.append_column(info_col)
 
-        #Image frame and save button
-        self.image = image = gtk.Image()
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_IN)
-        frame.add(image)
-        scrolled = gtk.ScrolledWindow()
-        scrolled.add_with_viewport(frame)
-        scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        vbox = gtk.VBox(spacing=5)
-        vbox.pack_start(scrolled)
-        self.button = button = gtk.Button(stock=gtk.STOCK_SAVE)
-        button.set_sensitive(False)
-        def save_cb(button, combo):
-            model, path = selection.get_selected()
-            data = model[path][0]["cover_data"]
-            fname = self.__get_fname(songs, combo)
-            self.__save_cover(data, fname)
-        combo = gtk.combo_box_new_text()
-        try: set_fn = config.get("plugins", "cover_fn")
-        except: set_fn = ".folder.jpg"
-        active = -1
-        for i, fn in enumerate([".folder.jpg", "folder.jpg", "cover.jpg"]):
-            combo.append_text(fn)
-            if fn == set_fn: active = i
-        if active == -1:
-            combo.append_text(set_fn)
-            combo.set_active(len(combo.get_model()) - 1)
-        else: combo.set_active(active)
-        button.connect("clicked", save_cb, combo)
-        bbox = gtk.HButtonBox()
-        bbox.pack_start(combo)
-        bbox.pack_start(button, expand=False, fill=False)
-        bbox.set_layout(gtk.BUTTONBOX_SPREAD)
-        vbox.pack_start(bbox, expand=False, fill=False)
+        sw_list = gtk.ScrolledWindow()
+        sw_list.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw_list.set_shadow_type(gtk.SHADOW_IN)
+        sw_list.add(treeview)
+
+        self.search_field = gtk.Entry()
+        self.search_button = gtk.Button(stock=gtk.STOCK_FIND)
+        self.search_button.connect('clicked', self.start_search)
+        self.search_field.connect('activate', self.start_search)
+
+        widget_space = 5
+
+        search_hbox = gtk.HBox(False, widget_space)
+        search_hbox.pack_start(self.search_field)
+        search_hbox.pack_start(self.search_button, False)
+
+        self.progress = gtk.ProgressBar()
+
+        left_vbox = gtk.VBox(False, widget_space)
+        left_vbox.pack_start(search_hbox, False)
+        left_vbox.pack_start(sw_list)
 
         hpaned = gtk.HPaned()
-        hpaned.pack1(sw)
-        hpaned.pack2(vbox)
-        hpaned.set_position(300)
+        hpaned.set_border_width(widget_space)
+        hpaned.pack1(left_vbox)
+        hpaned.pack2(image)
+        hpaned.set_position(275)
 
-        vbox = gtk.VBox()
-        vbox.pack_start(urlBox, expand=False, fill=False)
-        vbox.pack_start(hpaned, expand=True, fill=True)
-        self.add(vbox)
-
-        #define search engines
-        self.engines = [self.__search_amazon, self.__search_walmart,
-                        self.__search_darktown, self.__search_buy]
-
-        #max covers per site
-        self.max_albums = 10
-
-        #for progress calculation
-        self.progress = 0
-
-        #use albumartist if available
-        if songs[0]("albumartist"):
-            artist = songs[0]("albumartist")
-        else:
-            artist = songs[0]("artist")
-        query = artist + " " + songs[0]("album")
-        query = query
-
-        #show search status row
-        iter = self.liststore.insert(0)
-        self.liststore.set(iter, 0, 
-                           {"bag":None,"thumb":None,"thumb_data":None})
-        self.liststore.set_value(iter, 1,
-                                 "<i><b>Searching progress: 0%</b></i>")
-
-        #start all search engines in seperate threads
-        for engine in self.engines:
-            thread = threading.Thread(target=self.__search,
-                                      args=(query, engine, iter))
-            thread.setDaemon(True)
-            thread.start()
+        self.add(hpaned)
 
         self.show_all()
 
-    def key_start_search(self, widget, event, entry, liststore):
-        if(event.keyval == 65293): # Enter/Return key
-            self.__start_search(widget, entry, liststore)
+        left_vbox.pack_start(self.progress, False)
 
-
-    def __start_search(self, widget, entry, liststore):
-        liststore.clear()
-        self.progress = 0
-        entry_text = unicode(entry.get_text(), "utf-8")
-        print "Search: %s\n" % entry_text
-
-        iter = liststore.insert(0)
-        liststore.set(iter, 0, {"bag":None, "thumb":None, "thumb_data":None})
-        liststore.set_value(iter, 1,
-                            "<i><b>Searching progress: 0%</b></i>")
-
-        for engine in self.engines:
-            thread = threading.Thread(target=self.__search, 
-                                      args=(entry_text, engine, iter))
-            thread.setDaemon(True)
-            thread.start()
-
-    def __destroy_cb(self, widget, *args):
-        widget.destroy()
-        #self.destroy()
-
-    def __search(self, query, engine, iter):
-
-        try:
-            bags = engine(query)
-            for bag in bags:
-                gobject.idle_add(self.__add_bag, self.liststore, bag)
-        except:
-            pass
-
-        self.progress += 1
-        self.liststore.set_value(iter, 1, "<i><b>Searching progress: "
-                                 +str(self.progress*100/len(self.engines))
-                                 +"%</b></i>")
-
-        if self.progress == len(self.engines):
-            time.sleep(2)
-            if self.liststore.iter_next(iter) == None:
-                self.liststore.set_value(iter, 1,
-                                         "<i><b>No albumart found</b></i>")
-            else:
-                self.liststore.remove(iter)
-
-    def __search_amazon(self, uquery):
-        ecs.setLicenseKey("0RKH4ZH1JCFZHMND91G2")
-        #ecs.setLocale("jp")
-        bags = []
-        try:
-            # XXX: I have no idea of all locales support utf-8, can't find
-            #      any documentation on encodings.
-
-            query = uquery.encode("utf-8", 'replace')
-
-            # WTF: When I try this code in the interpreter It doesn't 
-            #      have a .cache.  -- wm_eddie
-            #bags = ecs.ItemSearch(query, 
-            #                      SearchIndex='Music', 
-            #                      ResponseGroup='Images,Small').cache
-
-            for item in ecs.ItemSearch(query, 
-                                       SearchIndex='Music', 
-                                       ResponseGroup='Images,Small'):
-                bags.append(item);
-        except ecs.AWSException, msg:
-            dialog = qltk.Message(gtk.MESSAGE_ERROR, None, 
-                                  "Search error", msg)
-            dialog.connect('response', self.__destroy_cb)
-            gobject.idle_add(dialog.show)
-        except UnicodeEncodeError, msg:
-            dialog = qltk.Message(gtk.MESSAGE_ERROR, None, "Encoding error",
-                                  msg)
-            dialog.connect('response', self.__destroy_cb)
-            gobject.idle_add(dialog.show)
+        if songs[0]('albumartist'):
+            text = songs[0]('albumartist')
         else:
-            # Just keep the top x matches
-            return bags[:self.max_albums]
-        return []
+            text = songs[0]('artist')
 
-    def __search_darktown(self, uquery):
-        class item: pass
-        bags = []
+        text += ' - ' + songs[0]('album')
 
-        # wm_eddie: I'm guessing this site only accepts latin-1
-        query = uquery.encode("latin-1", "replace")
+        self.set_text(text)
+        self.start_search()
 
-        #Artists @ Darkdown often miss the leading "The", better remove it
-        #for better search results - also ' and . should be removed
-        if query[:4] == "The ":
-            query = query[4:]
-        query = query.replace("'"," ")
-        query = query.replace(".","")
+    def __drag_data_get(self, view, ctx, sel, tid, etime, treeselection):
+        model, iter = treeselection.get_selected()
+        if not iter:
+            return
+        cover = model.get_value(iter, 1)
+        sel.set_uris([cover['cover']])
 
-        mainUrl = urllib.urlopen('http://www.darktown.to/search.php?'
-                'action=search&what='+urllib.quote(query)+'&category=audio')
-        mainData = mainUrl.read()
-        mainRe = re.findall('javascript:openCentered\(\'(.*?)Front\'', 
-                            mainData)
+    def start_search(self, *data):
+        """Start the search using the text from the text entry"""
 
-        count = 0
-        for result in mainRe:
-            if count >= self.max_albums: break
-            count += 1
+        global engines, config_eng_prefix
 
-            resultUrl = urllib.urlopen('http://www.darktown.to'+result+'Front')
-            resultData = resultUrl.read()
+        text = self.search_field.get_text()
 
-            resultImgBig = re.findall('href="(.*?)">DOWNLOAD</a>', resultData)
-            resultImgSmall = re.findall(
-                'src="http://img.darktown.to/thumbnail.php(.*?)"', resultData)
-            resultArtist = re.findall(
-                '<b><font size=4>(.*?)</font', resultData)
-            resultTitle = re.findall('</font></b><br><b>(.*?)</b><br><br><b>',
-                                     resultData)
-
-            cover = item()
-            cover.SmallImage = item()
-            cover.LargeImage = item()
-            cover.SmallImage.URL = ('http://img.darktown.to/thumbnail.php' +
-                                    resultImgSmall[0])
-            cover.LargeImage.URL = resultImgBig[0]
-            cover.Artists = item()
-            cover.Artists.Artist = resultArtist[0].decode("latin1", "replace")
-            cover.ProductName = resultTitle[0].decode("latin1", "replace")
-
-            bags.append(cover)
-
-        return bags
-
-    def __search_walmart(self, uquery):
-        class item: pass
-        bags = []
-
-        query = uquery.encode("latin-1", "replace")
-
-        mainUrl = urllib.urlopen('http://www.walmart.com/search/search-ng.do?'
-                                 'search_constraint=4104&search_query='
-                                 +urllib.quote(query)+'&ic='
-                                 +str(self.max_albums)+'_0')
-
-        mainData = mainUrl.read()
-
-        #abort if nothing was found
-        if mainData.find('0 results found for') != -1:
-            return bags
-
-        countRe = re.findall('(\d*)(\s+)results found for', mainData)
-
-        #walmart will redirect to the specific album page
-        #if the query exactly matches the product title ... so 2 ways needed
-        if len(countRe):
-            #abort if it returns too much shit
-            if int(countRe[0][0]) > 50:
-                return bags
-
-            mainRe = re.findall(
-                '<div class="ItemPic"><a href=\'.*?\'><img src='
-                '\'(.*?)\' width="100" height="100" border="0" '
-                'alt=\'(.*?)\'', mainData)
-
-            artistRe = re.findall('Artist: <span class="BodySLtgry">'
-                                  '(<a href=\'.*?\'>|)(.*?)(</a>|)</span>',
-                                  mainData)
-
-            for num in xrange(len(mainRe)):
-                cover = item()
-                cover.SmallImage = item()
-                cover.LargeImage = item()
-                cover.SmallImage.URL = mainRe[num][0]
-                cover.LargeImage.URL = mainRe[num][0][:-11]+"500X500.jpg"
-                cover.Artists = item()
-                cover.Artists.Artist = artistRe[num][1]
-                cover.ProductName = mainRe[num][1]
-
-                bags.append(cover)
-
-        else:
-            mainRe = re.findall('<img src=\'(.*?)\' width="150" height="150" '
-                                'border="0" alt=\'(.*?)\'', mainData)
-            artistRe = re.findall(
-                '<span class="BodyXSLtgry">&gt;</span>&nbsp;'
-                '<a href="[^\"]*?">(.*?)</a>&nbsp;\s*', mainData)
-
-            cover = item()
-            cover.SmallImage = item()
-            cover.LargeImage = item()
-            cover.SmallImage.URL = mainRe[0][0][:-11]+"100X100.jpg"
-            cover.LargeImage.URL = mainRe[0][0][:-11]+"500X500.jpg"
-            cover.Artists = item()
-            cover.Artists.Artist = artistRe[-1]
-            cover.ProductName = mainRe[0][1]
-
-            bags.append(cover)
-
-        return bags[:self.max_albums]
-
-    def __search_buy(self, uquery):
-        class item: pass
-        bags = []
-
-        query = uquery.encode("latin-1", "replace")
-
-        mainUrl = urllib.urlopen(
-            'http://www.buy.com/retail/usersearchresults.asp?qu='
-            + urllib.quote(query)+'&querytype=music&store=6&als=3&loc=109')
-
-        mainData = mainUrl.read()
-
-        #abort if nothing was found
-        if mainData.find('We could not find an exact match for') != -1:
-            return bags
-
-        mainRe = re.findall(
-            'src="([^\"]*?)" /></a></td><td width="98%" valign="top" '
-            'class="list_middle"><table cellspacing="0" cellpadding="1" '
-            'border="0" width="100%"><tr><td colspan="2">'
-            '<span class="productDescription"><b>[0-9]+.&nbsp;</b></span>'
-            '<a title="([^\"]*?)" href="([^\"]*?)" class="medBlueText"><b>', 
-            mainData)
-
-        artistRe = re.findall(
-            '<span class="body"><b>Artist:</b></span>&nbsp;'
-            '<a href="[^\"]*?" class="bluetext" style="padding-right:4px;">'
-            '<b>(.*?)</b></a>',
-            mainData)
-
-        for num in xrange(len(mainRe)):
-            cover = item()
-            cover.SmallImage = item()
-            cover.LargeImage = item()
-            cover.SmallImage.URL = mainRe[num][0]
-            cover.LargeImage.URL = mainRe[num][0].replace(
-                'prod_images','large_images')
-            cover.Artists = item()
-            cover.Artists.Artist = artistRe[num]
-            cover.ProductName = mainRe[num][1]
-
-            bags.append(cover)
-
-        return bags[:self.max_albums]
-
-    def __add_bag(self, model, bag):
-        # Don't show this bag if there's no large image
-        if getattr(bag, 'LargeImage', None):
-            # Text part
-            title = util.escape(getattr(bag, "Title", ""))
-            artist = (getattr(bag, "Artists", None) and
-                      getattr(bag.Artists, "Artist", None) or "")
-            if isinstance(artist, list):
-                artist = ", ".join(artist)
-            artist = util.escape(artist)
-            if hasattr(bag, "ReleaseDate"):
-                date = "(%s)" % util.escape(bag.ReleaseDate)
-            else:
-                date = ""
-            markup = "<i><b>%s</b></i> %s\n%s" % (title, date, artist)
-
-            item = {"bag": bag, "thumb": None, "thumb_data": ""}
-            iter = model.append([item, markup])
-
-            # Image part
-            if getattr(bag, 'SmallImage', None):
-                urlinfo = urllib.urlopen(bag.SmallImage.URL)
-                sock = urlinfo.fp._sock
-                sock.setblocking(0)
-                data = StringIO()
-
-                loader = gtk.gdk.PixbufLoader()
-                loader.connect("closed", 
-                               self.__got_thumb_cb, data, item, model, iter)
-
-                gobject.io_add_watch(
-                    sock, gobject.IO_IN | gobject.IO_ERR | gobject.IO_HUP,
-                    self.__copy_image, loader, data)
-
-    def __got_thumb_cb(self, loader, data, item, model, iter):
-        cover = loader.get_pixbuf()
-        if cover.get_width() > 1:
-            w = h = 48
-            cover = cover.scale_simple(w, h, gtk.gdk.INTERP_NEAREST)
-            thumb = gtk.gdk.Pixbuf(
-                gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
-            thumb.fill(0x000000ff)
-            cover.copy_area(0, 0, w, h, thumb, 1, 1)
-            item["thumb"] = thumb
-            item["thumb_data"] = data.getvalue()
-            model.row_changed(model.get_path(iter), iter)
-
-    def __preview(self, selection):
-        model, path = selection.get_selected()
-        item = model[path][0]
-        self.image.hide()
-        self.button.set_sensitive(False)
-
-        if item["thumb"]: # nothing bigger if there's no thumbnail.
-            if "cover" not in item:
-                self.__get_cover(item, item["bag"].LargeImage.URL)
-            else:
-                self.image.set_from_pixbuf(item["cover"])
-                self.image.show()
-                self.button.set_sensitive(True)
-
-    def __get_cover(self, item, url):
-        data = StringIO()
-        print url
-        urlinfo = urllib.urlopen(url)
-        sock = urlinfo.fp._sock
-        sock.setblocking(0)
-        loader = gtk.gdk.PixbufLoader()
-        gobject.io_add_watch(
-            sock, gobject.IO_IN | gobject.IO_ERR | gobject.IO_HUP,
-            self.__copy_image, loader, data)
-        loader.connect("closed", self.__got_cover_cb, data, item, url)
-        def update(loader, x, y, w, h, image):
-            if (w, h) > (1, 1):
-                image.set_from_pixbuf(loader.get_pixbuf())
-                image.show()
-        loader.connect("area-updated", update, self.image)
-
-    def __got_cover_cb(self, loader, data, item, url):
-        cover = loader.get_pixbuf()
-        # For some reason we get a 1x1 image if the given size didn't exist
-        if cover.get_width() > 1:
-            item["cover"] = cover
-            item["cover_data"] = data.getvalue()
-            self.image.set_from_pixbuf(item["cover"])
-            self.button.set_sensitive(True)
-
-        elif ((url == item["bag"].LargeImage.URL) and 
-              getattr(item["bag"], 'MediumImage', None)):
-            self.__get_cover(item, item["bag"].MediumImage.URL)
-
-        elif ((url == item["bag"].LargeImage.URL) and 
-              getattr(item["bag"], 'SmallImage', None)):
-            self.__get_cover(item, item["bag"].SmallImage.URL)
-
-        else:
-            item["cover"] = item["thumb"]
-            item["cover_data"] = item["thumb_data"]
-            self.image.set_from_pixbuf(item["cover"])
-            self.button.set_sensitive(True)
-
-    def __copy_image(self, src, condition, loader, data):
-        if condition in (gobject.IO_ERR, gobject.IO_HUP):
-            loader.close()
-            src.close()
-            return False
-        else: # Read
-            buf = src.recv(1024)
-            if buf:
-                loader.write(buf)
-                data.write(buf)
-                return True # Run again
-            else:
-                loader.close()
-                src.close()
-                return False
-
-    def __save_cover(self, data, fname):
-        if os.path.exists(fname) and not qltk.ConfirmAction(None,
-            "File exists", "The file <b>%s</b> already exists."
-            "\n\nOverwrite?" %util.escape(fname)).run():
+        if not text or self.search_lock:
             return
 
-        f = open(fname, "w")
-        f.write(data)
-        f.close()
-        self.destroy()
+        self.search_lock = True
+        self.search_button.set_sensitive(False)
 
-    def __get_fname(self, songs, combo):
-        append = combo.get_model()[(combo.get_active(),)][0]
-        dirname = songs[0]("~dirname")
-        fname = os.path.join(dirname, append)
-        #print "Will save to", fname
-        config.set("plugins", "cover_fn", append)
-        return fname
+        self.progress.set_fraction(0)
+        self.progress.set_text(_('Searching...'))
+        self.progress.show()
+
+        self.liststore.clear()
+
+        search = CoverSearch(self.__search_callback)
+
+        for eng in engines:
+            if cfg_get(config_eng_prefix + eng['config_id'], True):
+                search.add_engine(eng['class'], eng['replace'])
+
+        search.start(text)
+
+        #focus the list
+        self.treeview.grab_focus()
+
+    def set_text(self, text):
+        """set the text and move the cursor to the end"""
+
+        self.search_field.set_text(text)
+        self.search_field.emit('move-cursor', gtk.MOVEMENT_BUFFER_ENDS,
+            0, False)
+
+    def __select_callback(self, selection, image):
+        model, iter = selection.get_selected()
+        if not iter:
+            return
+        cover = model.get_value(iter, 1)
+        image.set_cover(cover['cover'])
+
+    def __add_cover_to_list(self, cover):
+        try:
+            pbloader = gtk.gdk.PixbufLoader()
+            pbloader.write(urllib.urlopen(cover['thumbnail']).read())
+            pbloader.close()
+
+            size = 48
+
+            pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
+                gtk.gdk.INTERP_BILINEAR)
+
+            thumb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8,
+                size + 2, size + 2)
+            thumb.fill(0x000000ff)
+            pixbuf.copy_area(0, 0, size, size, thumb, 1, 1)
+        except gobject.GError, IOError:
+            pass
+        else:
+            self.liststore.append([thumb, cover])
+
+    def __search_callback(self, covers, progress):
+        for cover in covers:
+            self.__add_cover_to_list(cover)
+
+        if self.progress.get_fraction() < progress:
+            gobject.idle_add(self.progress.set_fraction, progress)
+
+        if progress >= 1:
+            gobject.idle_add(self.progress.set_text, _('Done'))
+
+            time.sleep(0.7)
+
+            gobject.idle_add(self.progress.hide)
+
+            self.search_button.set_sensitive(True)
+            self.search_lock = False
+
+class CoverSearch():
+    """Class for glueing the search eninges together. No UI stuff."""
+
+    def __init__(self, callback):
+        self.engine_list = []
+        self.callback = callback
+        self.finished = 0
+        self.overall_limit = 7
+
+    def add_engine(self, engine, query_replace):
+        """Adds a new search engine, query_replace is the string with witch
+        all special characters get replaced"""
+
+        self.engine_list.append((engine, query_replace))
+
+    def start(self, query):
+        """Start search. The callback function will be called after each of
+        the search engines has finished."""
+
+        for engine, replace in self.engine_list:
+            thr = threading.Thread(target=self.__search_thread,
+                args=(engine, query, replace))
+            thr.setDaemon(True)
+            thr.start()
+
+        #tell the other side that we are finished if there is nothing to do.
+        if not len(self.engine_list):
+            self.callback([], 1)
+
+    def __search_thread(self, engine, query, replace):
+        """Creates searching threads which call the callback function after
+        they are finished"""
+
+        global debug
+
+        clean_query = self.__cleanup_query(query, replace)
+
+        #Catch exceptions and print them in the warning console.
+        #Some engines might break over time since the web interfaces
+        #could change.
+
+        if debug:
+            eng_instance = engine()
+            result = eng_instance.start(clean_query, self.overall_limit)
+        else:
+            try:
+                eng_instance = engine()
+                result = eng_instance.start(clean_query, self.overall_limit)
+            except Exception, msg:
+                text = _('[AlbumArt] %s failed: "%s", "%s"') \
+                    % (engine.__name__, query, msg)
+                print_w(text)
+                result = []
+
+        self.finished += 1
+        #progress is between 0..1
+        progress = float(self.finished) / len(self.engine_list)
+        self.callback(result, progress)
+
+    def __cleanup_query(self, query, replace):
+        """split up at '-', remove some chars, only keep the longest words..
+        more false positives but much better results"""
+
+        query = query.lower()
+        if query.startswith("the "):
+            query = query[4:]
+
+        split = query.split('-')
+
+        replace_str = ('+', '&', ',', '.', '!', '´',
+            '\'', ':', ' and ', '(', ')')
+
+        new_query = ''
+        for part in split:
+            for stri in replace_str:
+                part = part.replace(stri, replace)
+
+            p_split = part.split()
+            p_split.sort(lambda x, y: len(y) - len(x))
+            p_split = p_split[:max(len(p_split) / 4, max(4 - len(p_split), 2))]
+
+            new_query += ' '.join(p_split) + ' '
+
+        return new_query.rstrip()
+
+#------------------------------------------------------------------------------
+def cfg_get(key, default):
+    try:
+        value = config.get('plugins', "cover_" + key)
+        try:
+            return type(default)(value)
+        except ValueError:
+            return default
+    except config.error:
+        return default
+
+config_eng_prefix = 'engine_'
+
+#------------------------------------------------------------------------------
+def cfg_set(key, value):
+    config.set('plugins', key, value)
+
+#------------------------------------------------------------------------------
+def get_size_of_url(url):
+    url_sock = urllib2.urlopen(url)
+    size =  url_sock.headers.get('content-length')
+    url_sock.close()
+
+    if size:
+        size = int(size) / 1024.0
+        if size < 1024:
+            return '%.2f KB' % size
+        else:
+            return '%.2f MB' % size / 1024
+    else:
+        return ''
+
+#------------------------------------------------------------------------------
+engines = []
+
+#-------
+eng = {}
+eng['class'] = DarktownParser
+eng['url'] = 'http://www.darktown.to/'
+eng['replace'] = ' '
+eng['config_id'] = 'darktown'
+
+engines.append(eng)
+
+#-------
+eng = {}
+eng['class'] = CoverParadiseParser
+eng['url'] = 'http://www.coverparadise.to/'
+eng['replace'] = '*'
+eng['config_id'] = 'coverparadise'
+
+engines.append(eng)
+
+#-------
+eng = {}
+eng['class'] = AmazonParser
+eng['url'] = 'http://www.amazon.com/'
+eng['replace'] = ' '
+eng['config_id'] = 'amazon'
+
+engines.append(eng)
+
+#-------
+eng = {}
+eng['class'] = DiscogsParser
+eng['url'] = 'http://www.discogs.com/'
+eng['replace'] = ' '
+eng['config_id'] = 'discogs'
+
+engines.append(eng)
+#------------------------------------------------------------------------------
+
+def change_config(checkb, id):
+    global config_eng_prefix
+
+    cfg_set(config_eng_prefix + id, checkb.get_active())
 
 class DownloadAlbumArt(SongsMenuPlugin):
-    PLUGIN_ID = "Download Album art"
-    PLUGIN_NAME = _("Download Album Art")
-    PLUGIN_DESC = "Downloads album covers from Amazon.com, " \
-                  "Walmart.com, Darktown.to and Buy.com"
+    PLUGIN_ID = 'Download Album art'
+    PLUGIN_NAME = _('Download Album Art')
+    PLUGIN_DESC = _('Download album covers from various websites')
     PLUGIN_ICON = gtk.STOCK_FIND
-    PLUGIN_VERSION = "0.41"
+    PLUGIN_VERSION = '0.5.1'
 
-    def PluginPreferences(parent):
+    def PluginPreferences(klass, window):
+        global engines, change_config, config_eng_prefix
+
         vbox = gtk.VBox(spacing=5)
         vbox.set_border_width(5)
-        bAM = gtk.Button("Visit Amazon.com")
-        bAM.connect('clicked', lambda s:util.website('http://www.amazon.com/'))
-        vbox.pack_start(bAM)
-        bWM = gtk.Button("Visit Walmart.com")
-        bWM.connect('clicked', lambda s:util.website('http://www.walmart.com/'))
-        vbox.pack_start(bWM)
-        bDT = gtk.Button("Visit Darktown.to")
-        bDT.connect('clicked', lambda s:util.website('http://www.darktown.to/'))
-        vbox.pack_start(bDT)
-        bBU = gtk.Button("Visit Buy.com")
-        bBU.connect('clicked', lambda s:util.website('http://www.buy.com/'))
-        vbox.pack_start(bBU)
+
+        for eng in engines:
+            check = gtk.CheckButton(eng['config_id'].title())
+            vbox.pack_start(check)
+            check.connect('toggled', change_config, eng['config_id'])
+
+            checked = cfg_get(config_eng_prefix + eng['config_id'], True)
+
+            check.set_active(checked)
+
+            button = gtk.Button(eng['url'])
+            button.connect('clicked',
+                lambda s:util.website(eng['url']))
+            vbox.pack_start(button)
+
         return vbox
 
-    PluginPreferences = staticmethod(PluginPreferences)
+    PluginPreferences = classmethod(PluginPreferences)
 
     plugin_album = AlbumArtWindow
