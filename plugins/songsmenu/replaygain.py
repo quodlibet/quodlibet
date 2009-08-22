@@ -215,7 +215,7 @@ class Analysis(object):
             pass
         else:
             p //= gst.MSECOND * 10
-            self.current[2] = sp = int(p / (song("~#length") or 2 * p))
+            self.current[2] = sp = int(p / (song("~#length") or 2 * p or 1))
             ap = int((sp + 100 * self.nsong) / self.nalbum)
             self.model[self.album][2] = ap
 
