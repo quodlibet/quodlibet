@@ -174,6 +174,13 @@ class PreferencesWindow(qltk.Window):
             c.set_active(config.getboolean("settings", "jump"))
             self.pack_start(c, expand=False)
 
+            c = ConfigCheckButton(
+                _("_Use rounded corners on thumbnails"), 'settings', 'round')
+            tips.set_tip(c, _("Round the corners of album artwork thumbnail "
+                              "images. May require restart to take effect."))
+            c.set_active(config.getboolean("settings", "round"))
+            self.pack_start(c, expand=False)
+
             vbox = gtk.VBox(spacing=6)
             c = ConfigCheckButton(_("_Enable Replay Gain volume adjustment"),
                                     "player", "replaygain")

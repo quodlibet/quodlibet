@@ -29,6 +29,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import copool
+from quodlibet.util import thumbnails
 
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
 ELPOEPSORT = list(PEOPLE_SORT); ELPOEPSORT.reverse()
@@ -144,6 +145,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         on = config.getboolean("browsers", "album_covers")
         for albumlist in klass.instances():
             albumlist.__cover_column.set_visible(on)
+            albumlist.__column.queue_resize()
 
     @classmethod
     def refresh_pattern(klass, pattern_text):
@@ -221,8 +223,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     # Something like an AudioFile, but for a whole album.
     class _Album(object):
-        __pending_covers = []
-
         _pattern_text = PATTERN
         _pattern = XMLFromPattern(PATTERN)
 
@@ -231,6 +231,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         tracks = 0
         date = ""
         markup = ""
+        scanned = False
 
         def __init__(self, title, sort, labelid, mbid):
             self.people = []
@@ -294,8 +295,25 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             return self.get(*args).replace("\n", ", ")
 
         def refresh(self):
-            if self._model:
+            if self._model and self._iter:
                 self._model[self._iter][0] = self
+
+        def scan_cover(self):
+            if self.scanned: return
+            self.scanned = True
+
+            song = list(self.songs)[0]
+            cover = song.find_cover()
+
+            if cover is not None:
+                try:
+                    round = config.getboolean("settings", "round")
+                    self.cover = thumbnails.get_thumbnail(cover.name, (48, 48))
+                    self.cover = thumbnails.add_border(self.cover, 30, round)
+                except gobject.GError:
+                    return
+                else:
+                    self.refresh()
 
         # All songs added, cache info.
         def finalize(self, cover=True):
@@ -430,7 +448,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         def __init__(self, *args, **kwargs):
             super(AlbumList._AlbumStore, self).__init__(*args, **kwargs)
-            self.__pending_covers = []
 
         def do_row_changed(self, path, iter):
             album = self[iter][0]
@@ -438,34 +455,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 return
             album._model = self
             album._iter = iter
-            if album.title and album.cover is type(album).cover:
-                if not self.__pending_covers:
-                    copool.add(self.__scan_covers)
-                self.__pending_covers.append(album)
-
-        def __scan_covers(self):
-            while self.__pending_covers:
-                album = self.__pending_covers.pop()
-                if album._iter is None or album.cover is not type(album).cover:
-                    continue
-                song = list(album.songs)[0]
-                cover = song.find_cover()
-                if cover is not None:
-                    try:
-                        cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                            cover.name, 48, 48)
-                    except StandardError:
-                        continue
-                    else:
-                        # add a black outline
-                        w, h = cover.get_width(), cover.get_height()
-                        newcover = gtk.gdk.Pixbuf(
-                            gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
-                        newcover.fill(0x000000ff)
-                        cover.copy_area(0, 0, w, h, newcover, 1, 1)
-                        album.cover = newcover
-                        album.refresh()
-                yield True
 
         def get_albums(self):
             albums = [row[0] for row in self]
@@ -487,6 +476,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model_sort = gtk.TreeModelSort(self.__model)
         model_filter = model_sort.filter_new()
 
+        self.__pending_covers = []
+        self.__scan_timeout = None
+        view.connect_object('expose-event', self.__update_visibility, view)
+
         render = gtk.CellRendererPixbuf()
         self.__cover_column = column = gtk.TreeViewColumn("covers", render)
         column.set_visible(config.getboolean("browsers", "album_covers"))
@@ -505,7 +498,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view.append_column(column)
 
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("albums", render)
+        self.__column = column = gtk.TreeViewColumn("albums", render)
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         def cell_data(column, cell, model, iter):
             album = model[iter][0]
@@ -553,13 +546,71 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view.set_model(model_filter)
         self.show_all()
 
+    def __update_visible_covers(self, view):
+        vrange = view.get_visible_range()
+        if vrange is None: return
+
+        model_filter = view.get_model()
+        model = model_filter.get_model()
+
+        #generate a path list so that cover scanning starts in the middle
+        #of the visible area and alternately moves up and down
+        preload_count = 8
+
+        start, end = vrange
+        start = start[0] - preload_count - 1
+        end = end[0] + preload_count
+
+        vlist = range(end, start, -1)
+        top = vlist[:len(vlist)/2]
+        bottom = vlist[len(vlist)/2:]
+        top.reverse()
+
+        vlist_new = []
+        for i in vlist:
+            if top: vlist_new.append(top.pop())
+            if bottom: vlist_new.append(bottom.pop())
+        vlist_new = filter(lambda s: s >= 0, vlist_new)
+
+        visible_albums = []
+        for path in vlist_new:
+            model_path = model_filter.convert_path_to_child_path(path)
+            try:
+                iter = model.get_iter(model_path)
+            except TypeError:
+                continue
+            album = model.get_value(iter, 0)
+            if album is not None and not album.scanned:
+                visible_albums.append(album)
+
+        if not self.__pending_covers and visible_albums:
+            copool.add(self.__scan_covers)
+        self.__pending_covers = visible_albums
+
+    def __scan_covers(self):
+        while self.__pending_covers:
+            album = self.__pending_covers.pop()
+            album.scan_cover()
+            yield
+
+    def __update_visibility(self, view, *args):
+        if not self.__cover_column.get_visible():
+            return
+
+        if self.__scan_timeout:
+            gobject.source_remove(self.__scan_timeout)
+            self.__scan_timeout = None
+
+        self.__scan_timeout = gobject.timeout_add(
+            50, self.__update_visible_covers, view)
+
     def __search_func(self, model, column, key, iter):
         try: value = model[iter][0].title
         except AttributeError: return True
         else:
             key = key.decode('utf-8')
             return not (value.startswith(key) or value.lower().startswith(key))
-        
+
     def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
         menu = SongsMenu(library, songs)
@@ -579,7 +630,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             albums = [row[0] for row in model]
         for album in albums:
             if album:
-                album.cover = type(album).cover
+                album.scanned = False
+                album.scan_cover()
                 album.finalize()
 
     def __get_selected_albums(self, selection):
@@ -612,7 +664,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
         else: sel.set_uris([song("~uri") for song in songs])
-        
+
     def __play_selection(self, view, indices, col, player):
         player.reset()
 

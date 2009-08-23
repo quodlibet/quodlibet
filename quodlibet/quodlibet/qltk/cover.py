@@ -10,7 +10,8 @@
 import gobject
 import gtk
 
-from quodlibet import stock
+from quodlibet import stock, config
+from quodlibet.util import thumbnails
 
 class BigCenteredImage(gtk.Window):
     """Load an image and display it, scaling down to 1/2 the screen's
@@ -22,15 +23,9 @@ class BigCenteredImage(gtk.Window):
         super(BigCenteredImage, self).__init__()
         width = gtk.gdk.screen_width() / 2
         height = gtk.gdk.screen_height() / 2
-        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
 
-        x_rat = pixbuf.get_width() / float(width)
-        y_rat = pixbuf.get_height() / float(height)
-        if x_rat > 1 or y_rat > 1:
-            if x_rat > y_rat: height = int(pixbuf.get_height() / x_rat)
-            else: width = int(pixbuf.get_width() / y_rat)
-            pixbuf = pixbuf.scale_simple(
-                width, height, gtk.gdk.INTERP_BILINEAR)
+        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+        pixbuf = thumbnails.scale(pixbuf, (width, height), scale_up=False)
 
         self.set_title(title)
         self.set_decorated(False)
@@ -50,18 +45,17 @@ class BigCenteredImage(gtk.Window):
     def __destroy(self, *args):
         self.destroy()
 
-class CoverImage(gtk.Frame):
+class CoverImage(gtk.EventBox):
     __albumfn = None
     __current_bci = None
     __no_album = None
 
     def __init__(self, size=None, song=None):
         super(CoverImage, self).__init__()
-        self.add(gtk.EventBox())
-        self.child.add(gtk.Image())
+        self.add(gtk.Image())
         self.__size = size or [100, 71]
-        self.child.connect('button-press-event', self.__show_cover)
-        self.child.show_all()
+        self.connect('button-press-event', self.__show_cover)
+        self.show_all()
 
         if self.__no_album is None:
             try:
@@ -77,23 +71,24 @@ class CoverImage(gtk.Frame):
         if song is None:
             # Sometimes called during shutdown when the child have
             # already been destroyed.
-            if self.child and self.child.child:
-                self.child.child.set_from_pixbuf(None)
+            if self.child:
+                self.child.set_from_pixbuf(None)
             self.__albumfn = None
             self.hide()
         else:
             cover = song.find_cover()
             if cover is None:
                 self.__albumfn = None
-                self.child.child.set_from_pixbuf(self.__no_album)
+                self.child.set_from_pixbuf(self.__no_album)
             elif cover.name != self.__albumfn:
                 try:
-                    pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                        cover.name, *self.__size)
+                    round_thumbs = config.getboolean("settings", "round")
+                    pixbuf = thumbnails.get_thumbnail(cover.name, self.__size)
+                    pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
                 except gobject.GError:
-                    self.child.child.set_from_pixbuf(self.__no_album)
+                    self.child.set_from_pixbuf(self.__no_album)
                 else:
-                    self.child.child.set_from_pixbuf(pixbuf)
+                    self.child.set_from_pixbuf(pixbuf)
                     self.__albumfn = cover.name
             self.show()
 
