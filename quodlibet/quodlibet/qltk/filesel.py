@@ -310,7 +310,8 @@ class FileSelector(gtk.VPaned):
                 for file in filter(self.__filter,
                                    sorted(os.listdir(util.fsencode(dir)))):
                     filename = os.path.join(dir, file)
-                    if os.access(filename, os.R_OK):
+                    if (os.access(filename, os.R_OK) and
+                            not os.path.isdir(filename)):
                         fmodel.append([filename])
             except OSError:
                 pass
