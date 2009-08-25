@@ -209,26 +209,27 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
             gtk.main_iteration()
         try:
-            if model is None:
-                return
-            while model.iter_has_child(iter):
-                model.remove(model.iter_children(iter))
-            folder = model[iter][0]
-            for path in util.listdir(folder):
-                try:
-                    for filename in util.listdir(path):
-                        if os.path.isdir(filename):
-                            niter = model.append(iter, [path])
-                            model.append(niter, ["dummy"])
-                            break
-                    else:
-                        model.append(iter, [path])
-                except OSError:
-                    pass
-            if not model.iter_has_child(iter):
-                return True
-        except OSError:
-            pass
+            try:
+                if model is None:
+                    return
+                while model.iter_has_child(iter):
+                    model.remove(model.iter_children(iter))
+                folder = model[iter][0]
+                for path in util.listdir(folder):
+                    try:
+                        for filename in util.listdir(path):
+                            if os.path.isdir(filename):
+                                niter = model.append(iter, [path])
+                                model.append(niter, ["dummy"])
+                                break
+                        else:
+                            model.append(iter, [path])
+                    except OSError:
+                        pass
+                if not model.iter_has_child(iter):
+                    return True
+            except OSError:
+                pass
         finally:
             if window:
                 window.set_cursor(None)
