@@ -663,6 +663,7 @@ class QuodLibetWindow(gtk.Window):
     def __jump_to_current_in_list(self, explicit):
         if player.playlist.song == self.songlist.model.current:
             path = self.songlist.model.current_path
+            if path is None: return
             self.songlist.scroll_to_cell(
                 path[0], use_align=True, row_align=0.5)
             if explicit:
