@@ -63,13 +63,19 @@ class Preferences(qltk.Window):
         self.set_border_width(12)
         self.set_title(_("Album List Preferences") + " - Quod Libet")
         self.add(gtk.VBox(spacing=6))
-        self.set_default_size(300, 200)
+        self.set_default_size(300, 250)
         self.connect_object('delete-event', Preferences.__delete_event, self)
 
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
         cb.connect('toggled', lambda s: AlbumList.toggle_covers())
+        self.child.pack_start(cb, expand=False)
+
+        cb = ConfigCheckButton(
+            _("Inline _search includes people"),
+            "browsers", "album_substrings")
+        cb.set_active(config.getboolean("browsers", "album_substrings"))
         self.child.pack_start(cb, expand=False)
 
         vbox = gtk.VBox(spacing=6)
@@ -605,11 +611,25 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             50, self.__update_visible_covers, view)
 
     def __search_func(self, model, column, key, iter):
-        try: value = model[iter][0].title
-        except AttributeError: return True
+        if config.getboolean("browsers", "album_substrings"):
+            key = key.lower()
+            vals = []
+            try: vals.append(model[iter][0].title.lower())
+            except AttributeError: pass
+            try:
+                for person in model[iter][0].people:
+                    vals.append(person.lower())
+            except AttributeError: pass
+            for val in vals:
+                if key in val: return False
+            return True
         else:
-            key = key.decode('utf-8')
-            return not (value.startswith(key) or value.lower().startswith(key))
+            try: value = model[iter][0].title
+            except AttributeError: return True
+            else:
+                key = key.decode('utf-8')
+                return not (value.startswith(key) or
+                            value.lower().startswith(key))
 
     def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
