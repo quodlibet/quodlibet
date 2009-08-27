@@ -210,9 +210,10 @@ class PreferencesWindow(qltk.Window):
             except:
                 pre_amp_gain = 0
             adj = gtk.Adjustment(pre_amp_gain, -6, 6, 0.5, 0.5, 0.0)
+            adj.connect('value-changed', self.__changed,
+                        'player', 'pre_amp_gain')
             s = gtk.SpinButton(adj)
             s.set_digits(1)
-            s.connect('changed', self.__changed, 'player', 'pre_amp_gain')
             tips.set_tip(s, _("Scale the volume for all songs by this value, "
                               "as long as the result will not clip"))
             l = gtk.Label(_("Pre-amp gain (dB):"))
@@ -229,8 +230,8 @@ class PreferencesWindow(qltk.Window):
         def __toggled_gain(self, activator):
             player.playlist.volume = player.playlist.volume
 
-        def __changed(self, entry, section, name):
-            config.set(section, name, entry.get_text())
+        def __changed(self, adj, section, name):
+            config.set(section, name, str(adj.get_value()))
             player.playlist.volume = player.playlist.volume
 
     class Library(gtk.VBox):
