@@ -364,7 +364,10 @@ class Playlists(gtk.VBox, Browser):
                    ("text/x-moz-url", 0, 2)]
         view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
                            gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_DEFAULT)
+        view.drag_source_set(gtk.gdk.BUTTON1_MASK, targets[:2],
+                             gtk.gdk.ACTION_COPY)
         view.connect('drag-data-received', self.__drag_data_received, library)
+        view.connect('drag-data-get', self.__drag_data_get)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
         if player: view.connect('row-activated', self.__play, player)
@@ -473,6 +476,17 @@ class Playlists(gtk.VBox, Browser):
                     _("Unable to import playlist"),
                     _("Quod Libet can only import playlists in the M3U "
                       "and PLS formats.")).run()
+
+    def __drag_data_get(self, view, ctx, sel, tid, etime):
+        model, iters = self.__view.get_selection().get_selected_rows()
+        songs = []
+        for iter in filter(lambda i: i, iters):
+            songs += list(model[iter][0])
+        if tid == 0:
+            filenames = [song("~filename") for song in songs]
+            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+        else:
+            sel.set_uris([song("~uri") for song in songs])
 
     def __select_playlist(self, playlist):
         view = self.__view
