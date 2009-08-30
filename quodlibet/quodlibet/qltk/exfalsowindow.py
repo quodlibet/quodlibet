@@ -111,7 +111,9 @@ class ExFalsoWindow(gtk.Window):
         self.__save = None
         self.connect_object('changed', self.set_pending, None)
         for c in fs.get_children():
-            c.child.connect('button-press-event', self.__pre_selection_changed)
+            c.child.connect('button-press-event',
+                self.__pre_selection_changed, fs, nb)
+            c.child.connect('focus', self.__pre_selection_changed, fs, nb)
         fs.get_children()[1].child.connect('popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
@@ -131,12 +133,14 @@ class ExFalsoWindow(gtk.Window):
     def set_pending(self, button, *excess):
         self.__save = button
 
-    def __pre_selection_changed(self, view, event):
+    def __pre_selection_changed(self, view, event, fs, nb):
         if self.__save:
             resp = qltk.CancelRevertSave(self).run()
             if resp == gtk.RESPONSE_YES: self.__save.clicked()
-            elif resp == gtk.RESPONSE_NO: return False
-            else: return True # cancel or closed
+            elif resp == gtk.RESPONSE_NO: FileSelector.rescan(fs)
+            else:
+                nb.grab_focus()
+                return True # cancel or closed
 
     def __popup_menu(self, view, fs):
         view.grab_focus()
