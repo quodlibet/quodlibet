@@ -73,14 +73,14 @@ Toggle main window visibility
 Remove active browser filters
 .IP \-\-unqueue=\fIfilename\fR|\fIquery\fR 4
 Unqueue a file or query
-.IP \-\-volume=\fB+\fR|\fB\-\fR|\fB0\fR..\fB100\fR 4
+.IP \-\-volume=(\fB+\fR|\fB\-\fR|)\fB0\fR..\fB100\fR 4
 Set the volume
 .SH ALBUM COVERS
 Album covers should be put in the same directory as the songs they
 apply to, and have "folder", "front", or "cover" in their filenames.
 If you want to store multiple albums in the same directory but keep
 distinct cover images, the name of the appropriate image file must
-contain the \fBlabelid\fI tag value, e.g. \fICOCX\-32760 cover.jpg\fR.
+contain the \fBlabelid\fR tag value, e.g. \fICOCX\-32760 cover.jpg\fR.
 .SH TIED TAGS
 Many places in Quod Libet allow you to use "tied tags". Tied tags are two tag
 names joined together with a "~" like "title~version" or "album~part".

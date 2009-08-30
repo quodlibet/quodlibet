@@ -111,8 +111,14 @@ class FIFOControl(object):
     def _focus(self, library, window, player): window.present()
 
     def _volume(self, value, library, window, player):
-        if value[0] == "+": volume = player.volume + 0.05
-        elif value == "-": volume = player.volume - 0.05
+        if value[0] in ('+', '-'):
+            if len(value) > 1:
+                try: change = (int(value[1:]) / 100.0)
+                except ValueError: return
+            else:
+                change = 0.05
+            if value[0] == '-': change = -change
+            volume = player.volume + change
         else:
             try: volume = (int(value) / 100.0)
             except ValueError: return

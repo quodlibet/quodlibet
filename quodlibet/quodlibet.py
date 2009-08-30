@@ -202,7 +202,7 @@ def process_arguments():
         ("order", _("Set or toggle the playback order"),
          "[order]|toggle"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
-        ("volume", _("Set the volume"), "+|-|0..100"),
+        ("volume", _("Set the volume"), "(+|-|)0..100"),
         ("query", _("Search your audio library"), _("query")),
         ("play-file", _("Play a file"), Q_("command|filename")),
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
@@ -222,6 +222,11 @@ def process_arguments():
     options.add("sm-client-id", arg="prefix")
     options.add("screen", arg="dummy")
 
+    def is_vol(str):
+        if str[0] in '+-':
+            if len(str) == 1: return True
+            str = str[1:]
+        return str.isdigit()
     def is_time(str):
         if str[0] not in "+-0123456789": return False
         elif str[0] in "+-": str = str[1:]
@@ -237,7 +242,7 @@ def process_arguments():
         "order": ["0", "1", "t", "toggle", "inorder", "shuffle",
                   "weighted", "onesong"].__contains__,
         "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
-        "volume": str.isdigit,
+        "volume": is_vol,
         "seek": is_time,
         "set-rating": is_float,
         }
