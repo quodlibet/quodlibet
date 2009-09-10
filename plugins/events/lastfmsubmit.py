@@ -138,6 +138,6 @@ class QLLastfm(EventPlugin):
         try:
             self.__cli.submit(data)
             self.__cli.log.info("Sent %s", lastfm.repr(data))
-        except IOError, e:
-            print >>sys.stderr, e
+        except (OSError, IOError), e:
+            print_e("[lastfmsubmit] Error: %s" % e)
             self.__cli.log.error("Error: %s" % e)
