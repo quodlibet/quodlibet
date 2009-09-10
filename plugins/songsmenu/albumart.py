@@ -696,7 +696,7 @@ class CoverArea(gtk.VBox):
         label_name.set_justify(gtk.JUSTIFY_LEFT)
 
         # set all stuff from the config
-        self.window_fit.set_active(cfg_get('fit', False))
+        self.window_fit.set_active(cfg_get('fit', True))
         self.open_check.set_active(cfg_get('edit', False))
         self.cmd.set_text(cfg_get('edit_cmd', 'gimp'))
 
@@ -783,16 +783,18 @@ class CoverArea(gtk.VBox):
         self.main_win.destroy()
 
     def __save_config(self, widget):
-        cfg_set('cover_fit', self.window_fit.get_active())
-        cfg_set('cover_edit', self.open_check.get_active())
-        cfg_set('cover_edit_cmd', self.cmd.get_text())
-        cfg_set('cover_fn', self.name_combo.get_active_text())
+        cfg_set('fit', self.window_fit.get_active())
+        cfg_set('edit', self.open_check.get_active())
+        cfg_set('edit_cmd', self.cmd.get_text())
+        cfg_set('fn', self.name_combo.get_active_text())
 
     def __update(self, loader, *data):
         """update the picture while it is loading"""
+        if self.stop_loading:
+            return
 
         pixbuf = loader.get_pixbuf()
-        self.image.set_from_pixbuf(pixbuf)
+        gobject.idle_add(self.image.set_from_pixbuf, pixbuf)
 
     def __scale_pixbuf(self, *data):
         if not self.current_pixbuf:
@@ -823,20 +825,24 @@ class CoverArea(gtk.VBox):
                 if scale_w <= 0 or scale_h <= 0:
                     return
 
-                pixbuf = pixbuf.scale_simple(scale_w, scale_h,
-                    gtk.gdk.INTERP_BILINEAR)
+                thr = threading.Thread(
+                    target=self.__scale_async,
+                    args=(pixbuf, scale_w, scale_h))
+                thr.setDaemon(True)
+                thr.start()
+        else:
+            self.image.set_from_pixbuf(pixbuf)
 
-        gobject.idle_add(self.image.set_from_pixbuf, pixbuf)
+    def __scale_async(self, pixbuf, w, h):
+            pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
+            gobject.idle_add(self.image.set_from_pixbuf, pixbuf)
 
     def __close(self, loader, *data):
         if self.stop_loading:
             return
 
         self.current_pixbuf = loader.get_pixbuf()
-
-        thr = threading.Thread(target=self.__scale_pixbuf)
-        thr.setDaemon(True)
-        thr.start()
+        gobject.idle_add(self.__scale_pixbuf)
 
     def set_cover(self, url):
         thr = threading.Thread(target=self.__set_async, args=(url,))
@@ -1210,19 +1216,24 @@ class CoverSearch():
 #------------------------------------------------------------------------------
 def cfg_get(key, default):
     try:
-        value = config.get('plugins', "cover_" + key)
+        if type(default) == bool:
+            value = config.getboolean('plugins', "cover_" + key)
+        else:
+            value = config.get('plugins', "cover_" + key)
         try:
             return type(default)(value)
         except ValueError:
             return default
-    except config.error:
+    except (config.error, AttributeError):
         return default
 
 config_eng_prefix = 'engine_'
 
 #------------------------------------------------------------------------------
 def cfg_set(key, value):
-    config.set('plugins', key, value)
+    if type(value) == bool:
+        value = str(bool(value)).lower()
+    config.set('plugins', "cover_" + key, value)
 
 #------------------------------------------------------------------------------
 def get_size_of_url(url):
