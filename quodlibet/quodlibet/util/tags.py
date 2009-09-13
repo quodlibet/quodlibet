@@ -22,6 +22,7 @@ def N_(name):
 TAGS = dict([
     N_("album"),
     N_("arranger"),
+    N_("artist"),
     N_("author"),
     N_("composer"),
     N_("conductor"),
