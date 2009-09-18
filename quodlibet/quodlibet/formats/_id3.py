@@ -317,5 +317,4 @@ class ID3File(AudioFile):
                 f.seek(0, 0)
                 return f
             else:
-                f.close()
                 return None
