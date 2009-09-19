@@ -175,7 +175,16 @@ class Volume(VSlider):
         self.scale.set_value(device.props.volume)
 
 class StopAfterMenu(gtk.Menu):
+    __menu = None
+
+    def __new__(klass, parent):
+        if klass.__menu is None:
+            return super(StopAfterMenu, klass).__new__(klass)
+        else: return klass.__menu
+
     def __init__(self, player):
+        if type(self).__menu: return
+        else: type(self).__menu = self
         super(StopAfterMenu, self).__init__()
         self.__item = gtk.CheckMenuItem(_("Stop after this song"))
         self.__item.set_active(False)
