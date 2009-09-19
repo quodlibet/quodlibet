@@ -522,6 +522,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view.set_rules_hint(True)
         view.set_search_equal_func(self.__search_func)
         view.set_search_column(0)
+        view.set_model(model_filter)
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
         e = self.FilterEntry(model_filter)
@@ -530,7 +531,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         hb2.pack_start(qltk.ClearButton(e), expand=False)
 
         if player: view.connect('row-activated', self.__play_selection, player)
-        view.get_selection().connect('changed', self.__selection_changed, e)
+        self.__sig = view.get_selection().connect('changed',
+            self.__selection_changed, e)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -549,7 +551,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         hb.pack_start(prefs, expand=False)
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
-        view.set_model(model_filter)
         self.show_all()
 
     def __update_visible_covers(self, view):
@@ -722,7 +723,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         selection.select_path((0,))
 
     def activate(self):
-        self.get_children()[1].child.get_selection().emit('changed')
+        view = self.get_children()[1].child
+        view.get_selection().emit('changed')
 
     def can_filter(self, key):
         return (key == "album")
@@ -733,6 +735,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model = view.get_model()
         return [row[0].title for row in model if row[0]]
 
+    def __inhibit(self):
+        view = self.get_children()[1].child
+        view.get_selection().handler_block(self.__sig)
+
+    def __uninhibit(self):
+        view = self.get_children()[1].child
+        view.get_selection().handler_unblock(self.__sig)
+
     def restore(self):
         albums = config.get("browsers", "albums").split("\n")
         view = self.get_children()[1].child
@@ -740,6 +750,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
         # otherwise all albums.
+        self.__inhibit()
         selection.unselect_all()
         if albums == [""]:  selection.select_path((0,))
         else:
@@ -752,6 +763,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
             if first:
                 view.scroll_to_cell(first[0], use_align=True, row_align=0.5)
+        self.__uninhibit()
 
     def scroll(self, song):
         view = self.get_children()[1].child
