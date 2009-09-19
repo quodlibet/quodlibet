@@ -305,7 +305,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self._model[self._iter][0] = self
 
         def scan_cover(self):
-            if self.scanned: return
+            if self.scanned or not self.songs: return
             self.scanned = True
 
             song = list(self.songs)[0]
@@ -562,7 +562,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         #generate a path list so that cover scanning starts in the middle
         #of the visible area and alternately moves up and down
-        preload_count = 8
+        preload_count = 20
 
         start, end = vrange
         start = start[0] - preload_count - 1
@@ -609,7 +609,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.__scan_timeout = None
 
         self.__scan_timeout = gobject.timeout_add(
-            50, self.__update_visible_covers, view)
+            20, self.__update_visible_covers, view)
 
     def __search_func(self, model, column, key, iter):
         if config.getboolean("browsers", "album_substrings"):
