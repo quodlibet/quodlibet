@@ -6,6 +6,8 @@
 #
 # $Id$
 
+import tempfile
+
 import mutagen
 
 from quodlibet import config
@@ -134,6 +136,34 @@ class OggSpeexFile(MutagenVCFile):
 class FLACFile(MutagenVCFile):
     format = "FLAC"
     MutagenType = FLAC
+
+    def __init__(self, filename, audio=None):
+        super(FLACFile, self).__init__(filename, audio)
+        if audio.pictures:
+            self["~picture"] = "y"
+
+    def get_format_cover(self):
+        try:
+            tag = FLAC(self["~filename"])
+        except EnvironmentError:
+            return None
+        else:
+            covers = tag.pictures
+            if not covers:
+                return None
+
+            for cover in covers:
+                if cover.type == 3:
+                    pic = cover
+                    break
+            else:
+                pic = covers[0]
+
+            fn = tempfile.NamedTemporaryFile()
+            fn.write(pic.data)
+            fn.flush()
+            fn.seek(0, 0)
+            return fn
 
     def write(self):
         if ID3 is not None:
