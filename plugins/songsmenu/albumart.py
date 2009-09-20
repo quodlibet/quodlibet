@@ -1318,8 +1318,7 @@ class DownloadAlbumArt(SongsMenuPlugin):
             check.set_active(checked)
 
             button = gtk.Button(eng['url'])
-            button.connect('clicked',
-                lambda s:util.website(eng['url']))
+            button.connect('clicked', lambda s:util.website(s.get_label()))
             vbox.pack_start(button)
 
         return vbox
