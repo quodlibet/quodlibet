@@ -124,7 +124,11 @@ class ExFalsoWindow(gtk.Window):
         self.__ag.connect_group(key, mod, 0, gtk.main_quit)
         self.add_accel_group(self.__ag)
         self.connect('configure-event', ExFalsoWindow.__save_size)
-        self.resize(*map(int, config.get("memory", "exfalso_size").split()))
+        x, y = map(int, config.get("memory", "exfalso_size").split())
+        screen = self.get_screen()
+        x = min(x, screen.get_width())
+        y = min(y, screen.get_height())
+        self.resize(x, y)
 
     def __save_size(self, event):
         config.set("memory", "exfalso_size",

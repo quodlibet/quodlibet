@@ -151,8 +151,11 @@ class QuodLibetWindow(gtk.Window):
         tips = qltk.Tooltips(self)
         self.set_title("Quod Libet")
 
-        self.set_default_size(
-            *map(int, config.get('memory', 'size').split()))
+        x, y = map(int, config.get('memory', 'size').split())
+        screen = self.get_screen()
+        x = min(x, screen.get_width())
+        y = min(y, screen.get_height())
+        self.set_default_size(x, y)
         self.add(gtk.VBox())
 
         # create main menubar, load/restore accelerator groups

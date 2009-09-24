@@ -26,6 +26,9 @@ class LibraryBrowser(Window):
         try: x, y = map(int, config.get('memory', cfg_name).split())
         except (config.error, ValueError):
             x, y = 500, 300
+        screen = self.get_screen()
+        x = min(x, screen.get_width())
+        y = min(y, screen.get_height())
         self.set_default_size(x, y)
         self.connect('configure-event', LibraryBrowser.__save_size, cfg_name)
 
