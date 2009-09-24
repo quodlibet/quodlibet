@@ -85,9 +85,11 @@ class LibraryTagCompletion(EntryWordCompletion):
     @classmethod
     def __update_song(klass, library, songs, model):
         print_d("Updating tag model for %d songs" % len(songs))
+        tags = klass.__tags
         for song in songs:
             for tag in song.keys():
-                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
+                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS
+                        or tag in tags):
                     klass.__tags.add(tag)
                     model.append([tag])
         print_d("Done updating tag model for %d songs" % len(songs))
