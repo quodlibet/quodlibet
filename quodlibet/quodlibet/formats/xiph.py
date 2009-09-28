@@ -138,6 +138,8 @@ class FLACFile(MutagenVCFile):
     MutagenType = FLAC
 
     def __init__(self, filename, audio=None):
+        if audio is None:
+            audio = FLAC(filename)
         super(FLACFile, self).__init__(filename, audio)
         if audio.pictures:
             self["~picture"] = "y"
