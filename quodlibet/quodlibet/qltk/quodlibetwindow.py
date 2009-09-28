@@ -148,7 +148,6 @@ class QuodLibetWindow(gtk.Window):
         super(QuodLibetWindow, self).__init__()
         self.last_dir = os.path.expanduser("~")
 
-        tips = qltk.Tooltips(self)
         self.set_title("Quod Libet")
 
         x, y = map(int, config.get('memory', 'size').split())
@@ -160,7 +159,7 @@ class QuodLibetWindow(gtk.Window):
 
         # create main menubar, load/restore accelerator groups
         self.__library = library
-        self.__create_menu(tips, player, library)
+        self.__create_menu(player, library)
         self.add_accel_group(self.ui.get_accel_group())
 
         accel_fn = os.path.join(const.USERDIR, "accels")
@@ -219,7 +218,7 @@ class QuodLibetWindow(gtk.Window):
         hbox.pack_start(hb, expand=False)
         self.repeat = repeat = qltk.ccb.ConfigCheckButton(
             _("_Repeat"), "settings", "repeat")
-        tips.set_tip(repeat, _("Restart the playlist when finished"))
+        repeat.set_tooltip_text(_("Restart the playlist when finished"))
         hbox.pack_start(repeat, expand=False)
 
         align.add(hbox)
@@ -386,7 +385,7 @@ class QuodLibetWindow(gtk.Window):
         if not ssv:
             self.qexpander.set_expanded(True)
 
-    def __create_menu(self, tips, player, library):
+    def __create_menu(self, player, library):
         ag = gtk.ActionGroup('QuodLibetWindowActions')
 
         actions = [
@@ -518,20 +517,20 @@ class QuodLibetWindow(gtk.Window):
         # Cute. So. UIManager lets you attach tooltips, but when they're
         # for menu items, they just get ignored. So here I get to actually
         # attach them.
-        tips.set_tip(
-            self.ui.get_widget("/Menu/Music/RefreshLibrary"),
-            _("Check for changes in your library"))
-        tips.set_tip(
-            self.ui.get_widget("/Menu/Music/ReloadLibrary"),
-            _("Reload all songs in your library (this can take a long time)"))
-        tips.set_tip(
-            self.ui.get_widget("/Menu/Filters/Top"),
-             _("The 40 songs you've played most (more than 40 may "
-               "be chosen if there are ties)"))
-        tips.set_tip(
-            self.ui.get_widget("/Menu/Filters/Bottom"),
-            _("The 40 songs you've played least (more than 40 may "
-              "be chosen if there are ties)"))
+        self.ui.get_widget("/Menu/Music/RefreshLibrary").set_tooltip_text(
+                _("Check for changes in your library"))
+
+        self.ui.get_widget("/Menu/Music/ReloadLibrary").set_tooltip_text(
+                _("Reload all songs in your library "
+                  "(this can take a long time)"))
+
+        self.ui.get_widget("/Menu/Filters/Top").set_tooltip_text(
+                _("The 40 songs you've played most (more than 40 may "
+                  "be chosen if there are ties)"))
+
+        self.ui.get_widget("/Menu/Filters/Bottom").set_tooltip_text(
+                _("The 40 songs you've played least (more than 40 may "
+                  "be chosen if there are ties)"))
 
     def __browser_configure(self, paned, event, browser):
         if paned.get_property('position-set'):

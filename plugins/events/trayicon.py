@@ -62,7 +62,6 @@ class Preferences(gtk.VBox):
         table = gtk.Table(2, 4)
         table.set_row_spacings(6)
         table.set_col_spacings(12)
-        tips = qltk.Tooltips(self)
 
         cbs = []
         for i, tag in enumerate([
@@ -90,7 +89,7 @@ class Preferences(gtk.VBox):
         for cb in cbs:
             cb.connect('toggled', self.__changed_cb, cbs, entry)
         entry.connect(
-            'changed', self.__changed_entry, cbs, preview, player, tips)
+            'changed', self.__changed_entry, cbs, preview, player)
         try:
             entry.set_text(config.get("plugins", "icon_tooltip"))
         except:
@@ -108,7 +107,7 @@ class Preferences(gtk.VBox):
         text = "<%s>" % "~".join([cb.tag for cb in cbs if cb.get_active()])
         entry.set_text(text)
 
-    def __changed_entry(self, entry, cbs, label, player, tips):
+    def __changed_entry(self, entry, cbs, label, player):
         text = entry.get_text()
         if text[0:1] == "<" and text[-1:] == ">":
             parts = text[1:-1].split("~")
@@ -129,7 +128,7 @@ class Preferences(gtk.VBox):
         if player.info is None: text = _("Not playing")
         else: text = Pattern(entry.get_text()) % player.info
         label.set_text(text)
-        tips.set_tip(label.get_parent(), text)
+        label.get_parent().set_tooltip_text(text)
         config.set("plugins", "icon_tooltip", entry.get_text())
 
 class EggTrayIconWrapper():
@@ -141,12 +140,10 @@ class EggTrayIconWrapper():
 
     def __init__(self):
         self.__icon = trayicon.TrayIcon("quodlibet")
-        self.__tips = qltk.Tooltips(self.__icon)
         self.__eb = gtk.EventBox()
         self.__image = gtk.Image()
         self.__eb.add(self.__image)
         self.__icon.add(self.__eb)
-        self.__tips = qltk.Tooltips(self.__icon)
         self.__icon.show_all()
 
     def destroy(self):
@@ -187,9 +184,6 @@ class EggTrayIconWrapper():
 
     def set_from_pixbuf(self, pb):
         self.__image.set_from_pixbuf(pb)
-
-    def set_tooltip(self, tip):
-        self.__tips.set_tip(self.__icon, tip)
 
     def place_menu(self, menu):
         (width, height) = menu.size_request()

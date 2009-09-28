@@ -467,7 +467,6 @@ class OneArtist(qltk.Notebook):
         l.set_ellipsize(pango.ELLIPSIZE_END)
         box.pack_start(Frame(_("Selected Discography"), l))
 
-        tips = qltk.Tooltips(self)
         covers = [ac for ac in covers if bool(ac[1])]
         t = gtk.Table(4, (len(covers) // 4) + 1)
         t.set_col_spacings(12)
@@ -476,7 +475,7 @@ class OneArtist(qltk.Notebook):
         for i, (album, cover, song) in enumerate(covers):
             if cover.name in added: continue
             cov = CoverImage([70, 70], song)
-            tips.set_tip(cov.child, album)
+            cov.child.set_tooltip_text(album)
             c = i % 4
             r = i // 4
             t.attach(cov, c, c + 1, r, r + 1,

@@ -18,7 +18,6 @@ from quodlibet import util
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu        
-from quodlibet.qltk.x import Tooltips
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 
 QUEUE = os.path.join(const.USERDIR, "queue")
@@ -46,6 +45,7 @@ class QueueExpander(gtk.Expander):
         clear = gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU)
         b = gtk.Button()
         b.add(clear)
+        b.set_tooltip_text(_("Remove all songs from the queue"))
         b.connect('clicked', self.__clear_queue)
         b.hide()
         b.set_relief(gtk.RELIEF_NONE)
@@ -73,13 +73,11 @@ class QueueExpander(gtk.Expander):
 
         self.model = self.queue.model
         self.show_all()
-        
+
         self.queue.model.connect_after('row-changed', self.__check_expand, l2)
         self.queue.model.connect_after('row-deleted', self.__update_count, l2)
         cb.hide()
 
-        tips = Tooltips(self)
-        tips.set_tip(b, _("Remove all songs from the queue"))
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, l2)
 

@@ -56,14 +56,3 @@ class RVPaned(TestCase):
     def test_ctr(self): x.RVPaned().destroy()
 add(RVPaned)
 
-class Tooltips(TestCase):
-    def test_ctr_none(self):
-        x.Tooltips().destroy()
-    def test_ctr_widget(self):
-        self.dead = False
-        l = gtk.Label()
-        t = x.Tooltips(l)
-        t.connect('destroy', lambda t: setattr(self, "dead", True))
-        l.destroy()
-        self.failUnless(self.dead)
-add(Tooltips)

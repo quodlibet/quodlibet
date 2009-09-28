@@ -248,11 +248,9 @@ class AddTagDialog(gtk.Dialog):
         self.child.show_all()
         invalid.hide()
 
-        tips = qltk.Tooltips(self)
-        tips.disable()
         for entry in [self.__tag, self.__val]:
             entry.connect(
-                'changed', self.__validate, add, invalid, tips, valuebox)
+                'changed', self.__validate, add, invalid, valuebox)
         self.__tag.connect('changed', self.__set_value_completion, library)
         self.__set_value_completion(self.__tag, library)
 
@@ -273,7 +271,7 @@ class AddTagDialog(gtk.Dialog):
     def get_value(self):
         return self.__val.get_text().decode("utf-8")
 
-    def __validate(self, editable, add, invalid, tips, box):
+    def __validate(self, editable, add, invalid, box):
         tag = self.get_tag()
         value = self.get_value()
         fmt = massagers.tags.get(tag)
@@ -282,11 +280,10 @@ class AddTagDialog(gtk.Dialog):
         add.set_sensitive(valid)
         if valid:
             invalid.hide()
-            tips.disable()
+            box.set_tooltip_text(None)
         else:
             invalid.show()
-            tips.set_tip(box, fmt.error)
-            tips.enable()
+            box.set_tooltip_text(fmt.error)
 
     def run(self):
         self.show()

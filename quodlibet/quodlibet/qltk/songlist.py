@@ -771,16 +771,14 @@ class SongList(AllTreeView, util.InstanceTracker):
         current = SongList.headers[:]
         current_set = set(current)
         current = zip(map(util.tag, current), current)
-        tips = qltk.Tooltips(menu)
 
-        def add_header_toggle(menu, (header, tag), active,
-                column=column, tips=tips):
+        def add_header_toggle(menu, (header, tag), active, column=column):
             item = gtk.CheckMenuItem(header)
             item.tag = tag
             item.set_active(active)
             item.connect('activate', self.__toggle_header_item, column)
             item.show()
-            tips.set_tip(item, tag, tag)
+            item.set_tooltip_text(tag)
             menu.append(item)
 
         for header in current:

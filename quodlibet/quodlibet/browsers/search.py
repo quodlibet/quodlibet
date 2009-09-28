@@ -21,7 +21,6 @@ from quodlibet.parse import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import Tooltips
 
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 
@@ -150,12 +149,11 @@ class SearchBar(EmptyBar):
         hb2 = gtk.HBox(spacing=3)
         l = gtk.Label(_("_Search:"))
         l.connect('mnemonic-activate', self.__mnemonic_activate)
-        tips = Tooltips(self)
         combo = ComboBoxEntrySave(QUERIES, model="searchbar", count=8)
         combo.child.set_completion(LibraryTagCompletion(library.librarian))
         l.set_mnemonic_widget(combo.child)
         l.set_use_underline(True)
-        clear = qltk.ClearButton(self, tips)
+        clear = qltk.ClearButton(self)
 
         search = gtk.Button()
         hb = gtk.HBox(spacing=3)
@@ -163,7 +161,7 @@ class SearchBar(EmptyBar):
             gtk.STOCK_FIND, gtk.ICON_SIZE_MENU), expand=False)
         hb.pack_start(gtk.Label(_("Search")))
         search.add(hb)
-        tips.set_tip(search, _("Search your library"))
+        search.set_tooltip_text(_("Search your library"))
         search.connect_object('clicked', self.__text_parse, combo.child)
         combo.child.connect('activate', self.__text_parse)
         combo.child.connect('changed', self.__test_filter)

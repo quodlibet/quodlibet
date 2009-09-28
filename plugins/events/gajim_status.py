@@ -116,7 +116,6 @@ class GajimStatusMessage(EventPlugin):
 
     def PluginPreferences(self, parent):
         vb = gtk.VBox(spacing = 3)
-        tooltips = gtk.Tooltips().set_tip
 
         pattern_box = gtk.HBox(spacing = 3)
         pattern_box.set_border_width(3)
@@ -131,7 +130,7 @@ class GajimStatusMessage(EventPlugin):
         accounts = gtk.Entry()
         accounts.set_text(join(self.accounts))
         accounts.connect('changed', self.accounts_changed)
-        tooltips(accounts, "List accounts, separated by spaces, for "
+        accounts.set_tooltip_text("List accounts, separated by spaces, for "
                              "changing status message. If none are specified, "
                              "status message of all accounts will be changed.")
         accounts_box.pack_start(gtk.Label("Accounts:"), expand = False)
@@ -140,8 +139,8 @@ class GajimStatusMessage(EventPlugin):
         c = gtk.CheckButton(label="Add '[paused]'")
         c.set_active(self.paused)
         c.connect('toggled', self.paused_changed)
-        tooltips(c, "If checked, '[paused]' will be added to "
-                    "status message on pause.")
+        c.set_tooltip_text("If checked, '[paused]' will be added to "
+                           "status message on pause.")
 
         table = gtk.Table()
         self.list = []

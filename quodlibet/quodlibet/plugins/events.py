@@ -9,6 +9,7 @@
 
 import gobject
 
+from quodlibet import util
 from quodlibet.plugins import Manager, SongWrapper, ListWrapper
 
 class EventPlugin(object):

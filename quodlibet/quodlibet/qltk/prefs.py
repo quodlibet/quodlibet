@@ -36,7 +36,6 @@ class PreferencesWindow(qltk.Window):
             self.set_border_width(12)
             self.title = _("Song List")
             vbox = gtk.VBox(spacing=12)
-            tips = qltk.Tooltips(self)
 
             buttons = {}
             table = gtk.Table(3, 3)
@@ -92,8 +91,8 @@ class PreferencesWindow(qltk.Window):
             others = gtk.Entry()
             if "~current" in checks: checks.remove("~current")
             others.set_text(" ".join(checks))
-            tips.set_tip(
-                others, _("Other columns to display, separated by spaces"))
+            others.set_tooltip_text(
+                _("Other columns to display, separated by spaces"))
             l.set_mnemonic_widget(others)
             l.set_use_underline(True)
             hbox.pack_start(others)
@@ -136,12 +135,10 @@ class PreferencesWindow(qltk.Window):
             super(PreferencesWindow.Browsers, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
-            tips = qltk.Tooltips(self)
             c = ConfigCheckButton(
                 _("Color _search terms"), 'browsers', 'color')
             c.set_active(config.getboolean("browsers", "color"))
-            tips.set_tip(
-                c, _("Display simple searches in blue, "
+            c.set_tooltip_text(_("Display simple searches in blue, "
                      "advanced ones in green, and invalid ones in red"))
             hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
@@ -166,18 +163,17 @@ class PreferencesWindow(qltk.Window):
             self.set_border_width(12)
             self.title = _("Player")
 
-            tips = qltk.Tooltips(self)
             c = ConfigCheckButton(
                 _("_Jump to playing song automatically"), 'settings', 'jump')
-            tips.set_tip(c, _("When the playing song changes, "
-                              "scroll to it in the song list"))
+            c.set_tooltip_text(_("When the playing song changes, "
+                                 "scroll to it in the song list"))
             c.set_active(config.getboolean("settings", "jump"))
             self.pack_start(c, expand=False)
 
             c = ConfigCheckButton(
                 _("_Use rounded corners on thumbnails"), 'settings', 'round')
-            tips.set_tip(c, _("Round the corners of album artwork thumbnail "
-                              "images. May require restart to take effect."))
+            c.set_tooltip_text(_("Round the corners of album artwork "
+                "thumbnail images. May require restart to take effect."))
             c.set_active(config.getboolean("settings", "round"))
             self.pack_start(c, expand=False)
 
@@ -195,8 +191,8 @@ class PreferencesWindow(qltk.Window):
             s = gtk.SpinButton(adj)
             s.set_digits(1)
             s.connect('changed', self.__changed, 'player', 'fallback_gain')
-            tips.set_tip(s, _("If no Replay Gain information is available for"
-                              " a song, scale the volume by this value"))
+            s.set_tooltip_text(_("If no Replay Gain information is available "
+                                 "for a song, scale the volume by this value"))
             l = gtk.Label(_("Fall-back gain (dB):"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(s)
@@ -214,8 +210,8 @@ class PreferencesWindow(qltk.Window):
                         'player', 'pre_amp_gain')
             s = gtk.SpinButton(adj)
             s.set_digits(1)
-            tips.set_tip(s, _("Scale the volume for all songs by this value, "
-                              "as long as the result will not clip"))
+            s.set_tooltip_text(_("Scale volume for all songs by this value, "
+                                 "as long as the result will not clip"))
             l = gtk.Label(_("Pre-amp gain (dB):"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(s)
@@ -244,10 +240,8 @@ class PreferencesWindow(qltk.Window):
             e = gtk.Entry()
             e.set_text(util.fsdecode(config.get("settings", "scan")))
             hb.pack_start(e)
-            tips = qltk.Tooltips(self)
-            tips.set_tip(
-                e, _("Songs placed in these folders (separated by ':') "
-                     "will be added to your library"))
+            e.set_tooltip_text(_("Songs placed in these folders (separated "
+                     "by ':') will be added to your library"))
             hb.pack_start(b, expand=False)
             scandirs = config.get("settings", "scan").split(":")
             if scandirs and os.path.isdir(scandirs[-1]):
@@ -273,7 +267,7 @@ class PreferencesWindow(qltk.Window):
             e = gtk.Entry()
             e.set_text(config.get("editing", "split_on"))
             e.connect('changed', self.__changed, 'editing', 'split_on')
-            tips.set_tip(e, _('Separators for splitting tags'))
+            e.set_tooltip_text(_('Separators for splitting tags'))
             l = gtk.Label(_("Split _on:"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(e)
@@ -289,8 +283,8 @@ class PreferencesWindow(qltk.Window):
             hb = gtk.HBox(spacing=3)
             lab = gtk.Label(_("_Email:"))
             entry = gtk.Entry()
-            tips.set_tip(entry, _("Ratings and play counts will be set for "
-                                  "this email address"))
+            entry.set_tooltip_text(_("Ratings and play counts will be set "
+                                     "for this email address"))
             entry.set_text(config.get("editing", "save_email"))
             entry.connect('changed', self.__changed, 'editing', 'save_email')
             hb.pack_start(lab, expand=False)

@@ -105,26 +105,10 @@ class RPaned(object):
 class RHPaned(RPaned, gtk.HPaned): pass
 class RVPaned(RPaned, gtk.VPaned): pass
 
-def Tooltips(parent=None):
-    """A Tooltip whose lifetime is tied to another widget's. When the
-    parent widget is destroyed, so is the tooltip object.
-
-    It is also enabled by default.
-    """
-
-    tips = gtk.Tooltips()
-    if parent is not None:
-        parent.connect_object('destroy', gtk.Tooltips.destroy, tips)
-    tips.enable()
-    return tips
-
-def ClearButton(entry=None, tips=None):
+def ClearButton(entry=None):
     clear = gtk.Button()
     clear.add(gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU))
-    if tips is None:
-        tips = Tooltips(clear)
-        tips.enable()
-    tips.set_tip(clear, _("Clear search"))
+    clear.set_tooltip_text(_("Clear search"))
     if entry is not None:
         clear.connect_object('clicked', entry.set_text, '')
     return clear
