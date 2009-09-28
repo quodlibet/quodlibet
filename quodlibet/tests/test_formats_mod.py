@@ -2,7 +2,7 @@ from tests import TestCase, add
 
 import os
 
-from quodlibet.formats.mod import ModFile
+from quodlibet.formats.mod import ModFile, extensions
 
 class TModFile(TestCase):
     def setUp(self):
@@ -13,4 +13,8 @@ class TModFile(TestCase):
 
     def test_title(self):
         self.failUnlessEqual("test song", self.song["title"])
-add(TModFile)
+
+if extensions:
+    add(TModFile)
+else:
+    print "WARNING: Skipping ModFile tests. Install ModPlug."
