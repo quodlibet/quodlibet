@@ -101,7 +101,9 @@ class RenameFiles(EditPane):
                 library.rename(song, newname, changed=was_changed)
             except StandardError:
                 if skip_all: continue
-                buttons = (gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
+                RESPONSE_SKIP_ALL = 1
+                buttons = (_("Ignore _All Errors"), RESPONSE_SKIP_ALL,
+                           gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
                            _("_Continue"), gtk.RESPONSE_OK)
                 msg = qltk.Message(
                     gtk.MESSAGE_ERROR, win, _("Unable to rename file"),
@@ -115,10 +117,13 @@ class RenameFiles(EditPane):
                 msg.add_buttons(*buttons)
                 msg.set_default_response(gtk.RESPONSE_OK)
                 resp = msg.run()
+                skip_all |= (resp == RESPONSE_SKIP_ALL)
+                # Preserve old behavior: shift-click is Ignore All
                 mods = gtk.gdk.display_get_default().get_pointer()[3]
                 skip_all |= mods & gtk.gdk.SHIFT_MASK
                 library.reload(song, changed=was_changed)
-                if resp != gtk.RESPONSE_OK: break
+                if resp != gtk.RESPONSE_OK and resp != RESPONSE_SKIP_ALL:
+                    break
             if win.step(): break
 
         self.view.thaw_child_notify()
