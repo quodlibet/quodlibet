@@ -16,20 +16,12 @@ class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
 
-    __gsignals__ = dict.fromkeys(
-        ['button-press-event', 'button-release-event',
-        'motion-notify-event', 'scroll-event'],
-        'override')
+    __empty_mask = gtk.gdk.Pixmap(None, 1, 1, 1)
 
     def __init__(self):
         super(TreeViewHints, self).__init__(gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
         label.set_alignment(0.5, 0.5)
-        self.realize()
-        self.add_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.BUTTON_PRESS_MASK |
-                gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.KEY_PRESS_MASK |
-                gtk.gdk.KEY_RELEASE_MASK | gtk.gdk.ENTER_NOTIFY_MASK |
-                gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK)
         self.add(label)
 
         self.set_app_paintable(True)
@@ -37,8 +29,6 @@ class TreeViewHints(gtk.Window):
         self.set_name("gtk-tooltips")
         self.set_border_width(1)
         self.connect('expose-event', self.__expose)
-        self.connect('enter-notify-event', self.__enter)
-        self.connect('leave-notify-event', self.__check_undisplay)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
@@ -50,6 +40,7 @@ class TreeViewHints(gtk.Window):
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
+            view.connect('leave-notify-event', self.__undisplay),
         ]
 
     def disconnect_view(self, view):
@@ -63,23 +54,21 @@ class TreeViewHints(gtk.Window):
         self.style.paint_flat_box(self.window,
                 gtk.STATE_NORMAL, gtk.SHADOW_OUT,
                 None, self, "tooltip", 0, 0, w, h)
-
-    def __enter(self, widget, event):
-        # on entry, kill the hiding timeout
-        try: gobject.source_remove(self.__timeout_id)
-        except AttributeError: pass
-        else: del self.__timeout_id
+        self.input_shape_combine_mask(self.__empty_mask, 0, 0)
 
     def __motion(self, view, event):
         # trigger over row area, not column headers
-        if event.window is not view.get_bin_window(): return
-        if event.get_state() & gtk.gdk.MODIFIER_MASK: return
+        if event.window is not view.get_bin_window(): return self.__undisplay()
+        suppress = (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK |
+                gtk.gdk.SUPER_MASK | gtk.gdk.HYPER_MASK | gtk.gdk.META_MASK)
+        if event.get_state() & suppress: return self.__undisplay()
 
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError: return # no hints where no rows exist
 
         if self.__current_path == path and self.__current_col == col: return
+        else: self.__undisplay()
 
         # need to handle more renderers later...
         try: renderer, = col.get_cell_renderers()
@@ -128,14 +117,10 @@ class TreeViewHints(gtk.Window):
         self.__current_path = path
         self.__current_col = col
         self.__time = event.time
-        self.__timeout(id=gobject.timeout_add(100, self.__undisplay))
         self.set_size_request(w, h)
         self.resize(w, h)
         self.move(x, y)
         self.show_all()
-
-    def __check_undisplay(self, ev1, event):
-        if self.__time < event.time + 50: self.__undisplay()
 
     def __undisplay(self, *args):
         if self.__current_renderer and self.__edit_id:
@@ -143,28 +128,6 @@ class TreeViewHints(gtk.Window):
         self.__current_renderer = self.__edit_id = None
         self.__current_path = self.__current_col = None
         self.hide()
-
-    def __timeout(self, ev=None, event=None, id=None):
-        try: gobject.source_remove(self.__timeout_id)
-        except AttributeError: pass
-        if id is not None: self.__timeout_id = id
-
-    def __event(self, event):
-        if event.type != gtk.gdk.SCROLL:
-            event.x += self.__dx
-            event.y += self.__dy 
-
-        # modifying event.window is a necessary evil, made okay because
-        # nobody else should tie to any TreeViewHints events ever.
-        event.window = self.__target.get_bin_window()
-
-        gtk.main_do_event(event)
-        return True
-
-    def do_button_press_event(self, event): return self.__event(event)
-    def do_button_release_event(self, event): return self.__event(event)
-    def do_motion_notify_event(self, event): return self.__event(event)
-    def do_scroll_event(self, event): return self.__event(event)
 
 class MultiDragTreeView(gtk.TreeView):
     """TreeView with multirow drag support:
