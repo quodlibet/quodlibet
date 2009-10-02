@@ -140,6 +140,7 @@ class EggTrayIconWrapper():
 
     def __init__(self):
         self.__icon = trayicon.TrayIcon("quodlibet")
+        self.__tips = gtk.Tooltips()
         self.__eb = gtk.EventBox()
         self.__image = gtk.Image()
         self.__eb.add(self.__image)
@@ -184,6 +185,9 @@ class EggTrayIconWrapper():
 
     def set_from_pixbuf(self, pb):
         self.__image.set_from_pixbuf(pb)
+
+    def set_tooltip(self, tip):
+        self.__tips.set_tip(self.__icon, tip)
 
     def place_menu(self, menu):
         (width, height) = menu.size_request()
