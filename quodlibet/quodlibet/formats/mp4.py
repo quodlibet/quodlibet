@@ -35,6 +35,12 @@ class MP4File(AudioFile):
         "\xa9gen": "genre",
         "tmpo": "bpm",
         "\xa9too": "encodedby",
+        "cprt": "copyright",
+        "soal": "albumsort",
+        "soaa": "albumartistsort",
+        "soar": "artistsort",
+        "sonm": "titlesort",
+        "soco": "composersort",
         "----:com.apple.iTunes:MusicBrainz Artist Id":
             "musicbrainz_artistid",
         "----:com.apple.iTunes:MusicBrainz Track Id": "musicbrainz_trackid",

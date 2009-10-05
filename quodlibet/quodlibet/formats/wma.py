@@ -18,6 +18,9 @@ class WMAFile(AudioFile):
     multiple_values = False
     format = "Windows Media Audio"
 
+    #http://msdn.microsoft.com/en-us/library/dd743066%28VS.85%29.aspx
+    #http://msdn.microsoft.com/en-us/library/dd743063%28VS.85%29.aspx
+    #http://msdn.microsoft.com/en-us/library/dd743220%28VS.85%29.aspx
     __translate = {
         "WM/AlbumTitle": "album",
         "Title": "title",
@@ -33,7 +36,7 @@ class WMAFile(AudioFile):
         "WM/TrackNumber": "tracknumber",
         "WM/PartOfSet": "discnumber",
         "WM/BeatsPerMinute": "bpm",
-        "WM/Copyright": "copyright",
+        "Copyright": "copyright",
         "WM/ISRC": "isrc",
         "WM/Mood": "mood",
         "WM/EncodedBy": "encodedby",
@@ -44,6 +47,14 @@ class WMAFile(AudioFile):
         "MusicBrainz/TRM Id": "musicbrainz_trmid",
         "MusicIP/PUID": "musicip_puid",
         "WM/Year": "date",
+        "WM/OriginalArtist": "originalartist",
+        "WM/OriginalAlbumTitle": "originalalbum",
+        "WM/AlbumSortOrder": "albumsort",
+        "WM/ArtistSortOrder": "artistsort",
+        "WM/Genre": "genre",
+        "WM/Publisher": "publisher",
+        "WM/AuthorURL": "website",
+        "Description": "comment"
     }
     __rtranslate = dict([(v, k) for k, v in __translate.iteritems()])
 
