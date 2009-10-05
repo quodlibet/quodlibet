@@ -85,7 +85,7 @@ class MP4File(AudioFile):
 
     def write(self):
         audio = MP4(self["~filename"])
-        for key in self.__rtranslate.keys() + self.__rtupletranslate.keys():
+        for key in self.__translate.keys() + self.__tupletranslate.keys():
             try: del(audio[key])
             except KeyError: pass
 

@@ -60,6 +60,10 @@ class WMAFile(AudioFile):
 
     def write(self):
         audio = mutagen.asf.ASF(self["~filename"])
+        for key in self.__translate.keys():
+            try: del(audio[key])
+            except KeyError: pass
+
         for key in self.realkeys():
             try: name = self.__rtranslate[key]
             except KeyError: continue
