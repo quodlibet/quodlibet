@@ -173,14 +173,13 @@ class FileSystem(Browser, gtk.ScrolledWindow):
                         if song:
                             to_add.append(song)
                             songs.append(song)
+                            yield songs
                     if fn in self.__library:
                         song = self.__library[fn]
                         if not song.valid():
                             self.__library.reload(song)
                         if song in self.__library:
                             songs.append(song)
-                if not len(to_add) & 0x7:
-                    yield songs
             except OSError: pass
         self.__library.add(to_add)
         yield songs
