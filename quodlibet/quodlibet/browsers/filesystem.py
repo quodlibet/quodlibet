@@ -114,17 +114,20 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         except config.error:
             pass
         else:
-            def select(model, path, iter, paths):
+            def select(model, path, iter, (paths, first)):
                 if model[iter][0] in paths:
                     self.child.get_selection().select_path(path)
                     paths.remove(model[iter][0])
+                    if not first: first.append(path)
                 else:
                     for fpath in paths:
                         if model[path][0] and fpath.startswith(model[path][0]):
                             self.child.expand_row(path, False)
                 return not bool(paths)
             self.child.get_selection().unselect_all()
-            self.child.get_model().foreach(select, paths)
+            first = []
+            self.child.get_model().foreach(select, (paths, first))
+            if first: self.child.scroll_to_cell(first[0], None, True, 0.5)
 
     def save(self):
         model, rows = self.child.get_selection().get_selected_rows()
