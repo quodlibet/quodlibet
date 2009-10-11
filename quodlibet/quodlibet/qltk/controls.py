@@ -190,7 +190,7 @@ class StopAfterMenu(gtk.Menu):
         self.__item.set_active(False)
         self.append(self.__item)
         player.connect('paused', self.__paused)
-        player.connect('song-ended', self.__ended)
+        player.connect_after('song-ended', self.__ended)
         self.__item.show()
 
     def __paused(self, player):
@@ -256,8 +256,6 @@ class PlayControls(gtk.VBox):
 
     def __song_started(self, player, song, next, play):
         next.set_sensitive(bool(song))
-        if not player.paused:
-            play.set_active(bool(song))
 
     def __playpause(self, button, player):
         if button.get_active() and player.song is None:

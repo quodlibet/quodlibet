@@ -7,11 +7,14 @@
 # $Id$
 
 import gobject
+import glib
 
 import pygst
 pygst.require("0.10")
 
 import gst
+if gst.pygst_version >= (0, 10, 10):
+    import gst.pbutils
 
 from quodlibet import config
 from quodlibet import const
@@ -24,13 +27,15 @@ def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
     * Try making the pipeline (defaulting to gconfaudiosink).
     * If it fails, fall back to autoaudiosink.
-    * If that fails, complain loudly."""
+    * If that fails, complain loudly.
+
+    Returns the pipeline's description and a list of disconnected elements."""
 
     if pipeline == "gconf": pipeline = "gconfaudiosink profile=music"
-    try: pipe = gst.parse_launch(pipeline)
+    try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
     except gobject.GError, err:
         if pipeline != "autoaudiosink":
-            try: pipe = gst.parse_launch("autoaudiosink")
+            try: pipe = [gst.parse_launch("autoaudiosink")]
             except gobject.GError: pipe = None
             else: pipeline = "autoaudiosink"
         else: pipe = None
@@ -47,22 +52,71 @@ class GStreamerPlayer(BasePlayer):
 
     def __init__(self, sinkname, librarian=None):
         super(GStreamerPlayer, self).__init__()
-        device, sinkname = GStreamerSink(sinkname)
-        self.name = sinkname
         self.version_info = "GStreamer: %s / PyGSt: %s" % (
             fver(gst.version()), fver(gst.pygst_version))
-        self.bin = gst.element_factory_make('playbin')
+        self.librarian = librarian
+        self.name = sinkname
+        self.bin = None
+        self.connect('destroy', lambda s: self.__destroy_pipeline())
+        self._in_gapless_transition = False
+        self.paused = True
+
+    def __init_pipeline(self):
+        if self.bin: return
+        pipeline, self.name = GStreamerSink(self.name)
+        if gst.version() >= (0, 10, 24):
+            self.bin = gst.element_factory_make('playbin2')
+            id = self.bin.connect('about-to-finish', self.__about_to_finish)
+            self.__atf_id = id
+            # The output buffer is necessary to run the song-ended and
+            # song-started events through QL's signal handlers before the
+            # playbin2 hits EOF inside a gapless transition.
+            bufbin = gst.Bin()
+            queue = gst.element_factory_make('queue')
+            queue.set_property('max-size-time', 500 * gst.MSECOND)
+            self._vol_element = vol = gst.element_factory_make('volume')
+            pipeline = [queue, vol] + pipeline
+            for idx, elem in enumerate(pipeline):
+                bufbin.add(elem)
+                if idx > 0:
+                    pipeline[idx-1].link(elem)
+            gpad = gst.GhostPad('sink', queue.get_pad('sink'))
+            bufbin.add_pad(gpad)
+            self.bin.set_property('audio-sink', bufbin)
+        else:
+            self.bin = gst.element_factory_make('playbin')
+            self.bin.set_property('audio-sink', pipeline[-1])
+            self._vol_element = self.bin
+            self.__atf_id = None
         self.bin.set_property('video-sink', None)
-        self.bin.set_property('audio-sink', device)
+        # ReplayGain information gets lost when destroying
+        self.volume = self.volume
         bus = self.bin.get_bus()
         bus.add_signal_watch()
-        bus.connect('message', self.__message, librarian)
-        self.connect_object('destroy', self.bin.set_state, gst.STATE_NULL)
-        self.paused = True
+        self.__bus_id = bus.connect('message', self.__message, self.librarian)
+        if gst.pygst_version >= (0, 10, 10):
+            self.__elem_id = bus.connect('message::element',
+                                         self.__message_elem)
+
+    def __destroy_pipeline(self):
+        if self.bin is None: return
+        self.bin.set_state(gst.STATE_NULL)
+        bus = self.bin.get_bus()
+        bus.disconnect(self.__bus_id)
+        if gst.pygst_version >= (0, 10, 10):
+            bus.disconnect(self.__elem_id)
+        bus.remove_signal_watch()
+        if self.__atf_id is not None:
+            self.bin.disconnect(self.__atf_id)
+        del self.bin
+        del self._vol_element
+        self.bin = None
+        return True
 
     def __message(self, bus, message, librarian):
         if message.type == gst.MESSAGE_EOS:
-            self._source.next_ended()
+            if not self._in_gapless_transition:
+                self._source.next_ended()
             self._end(False)
         elif message.type == gst.MESSAGE_TAG:
             self.__tag(message.parse_tag(), librarian)
@@ -72,17 +126,38 @@ class GStreamerPlayer(BasePlayer):
             self.error(err, True)
         return True
 
+    def __message_elem(self, bus, message):
+        if not message.structure.get_name().startswith('missing-'):
+            return True
+        d = gst.pbutils.missing_plugin_message_get_installer_detail(message)
+        ctx = gst.pbutils.InstallPluginsContext()
+        gobject.idle_add(self.stop)
+        gst.pbutils.install_plugins_async([d], ctx, self.__message_elem_cb)
+        return True
+
+    def __message_elem_cb(self, result):
+        gst.update_registry()
+
+    def __about_to_finish(self, pipeline):
+        self._in_gapless_transition = True
+        self._source.next_ended()
+        if self._source.current:
+            self.bin.set_property('uri', self._source.current("~uri"))
+            glib.timeout_add(0, self._end, False, True,
+                             priority = glib.PRIORITY_HIGH)
+
     def stop(self):
         # On GStreamer, we can release the device when stopped.
         if not self.paused:
             self._paused = True
             if self.song:
                 self.emit('paused')
-                self.bin.set_state(gst.STATE_NULL)
-        self.seek(0)
+        self.__destroy_pipeline()
 
     def do_set_property(self, property, v):
         if property.name == 'volume':
+            if self._in_gapless_transition:
+                return
             self._volume = v
             if self.song and config.getboolean("player", "replaygain"):
                 profiles = filter(None, self.replaygain_profiles)[0]
@@ -90,29 +165,31 @@ class GStreamerPlayer(BasePlayer):
                 pa_gain = config.getfloat("player", "pre_amp_gain")
                 scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
                 v = max(0.0, v * scale)
-            self.bin.set_property('volume', v)
+            if self.bin:
+                self._vol_element.set_property('volume', v)
         else:
             raise AttributeError
 
     def get_position(self):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
-        if self.bin.get_property('uri'):
+        if self.song and self.bin:
             try: p = self.bin.query_position(gst.FORMAT_TIME)[0]
             except gst.QueryError: p = 0
             p //= gst.MSECOND
             return p
-        else: return 0
-        
+        else:
+            return 0
+
     def _set_paused(self, paused):
         if paused != self._paused:
             self._paused = paused
             if self.song:
                 self.emit((paused and 'paused') or 'unpaused')
+                if not self.bin:
+                    self.__init_pipeline()
                 if self._paused:
-                   if not self.song.is_file:
-                       self.bin.set_state(gst.STATE_NULL)
-                   else: self.bin.set_state(gst.STATE_PAUSED)
+                    self.bin.set_state(gst.STATE_PAUSED)
                 else: self.bin.set_state(gst.STATE_PLAYING)
             elif paused is True:
                 # Something wants us to pause between songs, or when
@@ -122,15 +199,14 @@ class GStreamerPlayer(BasePlayer):
     paused = property(_get_paused, _set_paused)
 
     def error(self, message, lock):
-        self.bin.set_property('uri', '')
-        self.bin.set_state(gst.STATE_NULL)
+        print_w(message)
         self.emit('error', self.song, message, lock)
         if not self.paused:
             self.next()
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
-        if self.bin.get_property('uri'):
+        if self.song is not None:
             pos = max(0, int(pos))
             if pos >= self._length:
                 self.paused = True
@@ -143,7 +219,7 @@ class GStreamerPlayer(BasePlayer):
             if self.bin.send_event(event):
                 self.emit('seek', self.song, pos)
 
-    def _end(self, stopped):
+    def _end(self, stopped, gapless = False):
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
@@ -152,21 +228,27 @@ class GStreamerPlayer(BasePlayer):
         self.emit('song-ended', song, stopped)
 
         # Then, set up the next song.
+        self._in_gapless_transition = False
         self.song = self.info = self._source.current
         self.emit('song-started', self.song)
 
         if self.song is not None:
-            # Changing the URI in a playbin requires "resetting" it.
-            if not self.bin.set_state(gst.STATE_NULL): return
-            self.bin.set_property('uri', self.song("~uri"))
-            self._length = self.song["~#length"] * 1000
-            if self._paused: self.bin.set_state(gst.STATE_PAUSED)
-            else: self.bin.set_state(gst.STATE_PLAYING)
+            self._length = self.info["~#length"] * 1000
+            if not gapless:
+                # Due to extensive problems with playbin2, we destroy the
+                # entire pipeline and recreate it each time we're not in
+                # a gapless transition.
+                self.__destroy_pipeline()
+                self.__init_pipeline()
+                self.bin.set_property('uri', self.song("~uri"))
+            if self.bin:
+                if self._paused:
+                    self.bin.set_state(gst.STATE_PAUSED)
+                else:
+                    self.bin.set_state(gst.STATE_PLAYING)
         else:
-            
             self.paused = True
-            self.bin.set_state(gst.STATE_NULL)
-            self.bin.set_property('uri', '')
+            self.__destroy_pipeline()
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
@@ -224,7 +306,7 @@ def can_play_uri(uri):
 
 def init(librarian):
     pipeline = (config.get("player", "gst_pipeline") or
-                "gconfaudiosink profile = music")
+                "gconfaudiosink profile=music")
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(
         gst.URI_SRC,
@@ -234,4 +316,4 @@ def init(librarian):
         raise PlayerError(
             _("Unable to open input files"),
             _("GStreamer has no element to handle reading files. Check "
-              "your GStreamer installation settings."))
+                "your GStreamer installation settings."))
