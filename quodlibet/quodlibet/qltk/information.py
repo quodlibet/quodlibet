@@ -267,7 +267,7 @@ class OneSong(qltk.Notebook):
         size = util.format_size(util.size(song["~filename"]))
         mtime = ftime(util.mtime(song["~filename"]))
         if "~#bitrate" in song and song["~#bitrate"] != 0:
-            bitrate = _("%d kbps") % int(song["~#bitrate"]/1000)
+            bitrate = _("%d kbps") % int(song["~#bitrate"])
         else: bitrate = False
 
         t = gtk.Table(4, 2)

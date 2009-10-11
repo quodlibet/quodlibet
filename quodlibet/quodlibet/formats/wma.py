@@ -62,7 +62,7 @@ class WMAFile(AudioFile):
         if audio is None:
             audio = mutagen.asf.ASF(filename)
         self["~#length"] = int(audio.info.length)
-        self["~#bitrate"] = int(audio.info.bitrate)
+        self["~#bitrate"] = int(audio.info.bitrate / 1000)
         for name, values in audio.tags.items():
             try: name = self.__translate[name]
             except KeyError: continue

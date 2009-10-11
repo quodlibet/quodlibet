@@ -21,7 +21,7 @@ class MPCFile(APEv2File):
         audio = Musepack(filename)
         super(MPCFile, self).__init__(filename, audio)
         self["~#length"] = int(audio.info.length)
-        self["~#bitrate"] = int(audio.info.bitrate)
+        self["~#bitrate"] = int(audio.info.bitrate / 1000)
 
         try:
             if audio.info.title_gain:

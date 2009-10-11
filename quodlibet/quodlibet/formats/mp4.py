@@ -67,7 +67,7 @@ class MP4File(AudioFile):
         self.__covers = []
         audio = MP4(filename)
         self["~#length"] = int(audio.info.length)
-        self["~#bitrate"] = int(audio.info.bitrate)
+        self["~#bitrate"] = int(audio.info.bitrate / 1000)
         for key, values in audio.items():
             if key in self.__tupletranslate:
                 name = self.__tupletranslate[key]

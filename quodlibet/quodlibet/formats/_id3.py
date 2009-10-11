@@ -170,7 +170,7 @@ class ID3File(AudioFile):
             self[name] = self[name].strip()
 
         self.setdefault("~#length", int(audio.info.length))
-        try: self.setdefault("~#bitrate", int(audio.info.bitrate))
+        try: self.setdefault("~#bitrate", int(audio.info.bitrate / 1000))
         except AttributeError: pass
 
         self.sanitize(filename)

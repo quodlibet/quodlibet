@@ -25,7 +25,7 @@ class MutagenVCFile(AudioFile):
         if audio is None:
             audio = self.MutagenType(filename)
         self["~#length"] = int(audio.info.length)
-        try: self["~#bitrate"] = int(audio.info.bitrate)
+        try: self["~#bitrate"] = int(audio.info.bitrate / 1000)
         except AttributeError: pass
         for key, value in (audio.tags or {}).items():
             self[key] = "\n".join(value)
