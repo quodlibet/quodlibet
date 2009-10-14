@@ -108,26 +108,32 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         self.child.get_selection().unselect_all()
         for v in values: self.child.go_to(v)
 
+    def scroll(self, song):
+        self.__select_paths([song("~dirname")])
+
     def restore(self):
         try:
             paths = config.get("browsers", "filesystem").split("\n")
         except config.error:
             pass
         else:
-            def select(model, path, iter, (paths, first)):
-                if model[iter][0] in paths:
-                    self.child.get_selection().select_path(path)
-                    paths.remove(model[iter][0])
-                    if not first: first.append(path)
-                else:
-                    for fpath in paths:
-                        if model[path][0] and fpath.startswith(model[path][0]):
-                            self.child.expand_row(path, False)
-                return not bool(paths)
-            self.child.get_selection().unselect_all()
-            first = []
-            self.child.get_model().foreach(select, (paths, first))
-            if first: self.child.scroll_to_cell(first[0], None, True, 0.5)
+            self.__select_paths(paths)
+
+    def __select_paths(self, paths):
+        def select(model, path, iter, (paths, first)):
+            if model[iter][0] in paths:
+                self.child.get_selection().select_path(path)
+                paths.remove(model[iter][0])
+                if not first: first.append(path)
+            else:
+                for fpath in paths:
+                    if model[path][0] and fpath.startswith(model[path][0]):
+                        self.child.expand_row(path, False)
+            return not bool(paths)
+        first = []
+        self.child.get_selection().unselect_all()
+        self.child.get_model().foreach(select, (paths, first))
+        if first: self.child.scroll_to_cell(first[0], None, True, 0.5)
 
     def save(self):
         model, rows = self.child.get_selection().get_selected_rows()
