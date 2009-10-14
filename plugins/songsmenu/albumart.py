@@ -259,7 +259,7 @@ class CoverParadiseParser(BasicHTMLParser):
 
             cover['size'] = sub_data[-1].strip().replace(',', '.')
 
-            cover['resolution'] = sub_data[-3].strip()
+            cover['resolution'] = sub_data[-2].strip()
 
             thumb_tag = [i[1] for i in album if i[0] == 'img'][0]
             cover['thumbnail'] = thumb_tag['src']
