@@ -1,9 +1,10 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
 # version 0.9.2
-# (C) 2005-2008 by Joshua Kwan <joshk@triplehelix.org>,
+# (C) 2005-2009 by Joshua Kwan <joshk@triplehelix.org>,
 #                  Joe Wreschnig <piman@sacredchao.net>,
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
-#                  Nicholas J. Michalek <djphazer@gmail.com>
+#                  Nicholas J. Michalek <djphazer@gmail.com>,
+#                  Steven Robertson <steven@strobe.cc>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
 import random
@@ -227,7 +228,9 @@ class QLScrobbler(EventPlugin):
         try:
             username = config.get("plugins", "scrobbler_username")
             password = config.get("plugins", "scrobbler_password")
-            url = self._get_url(config.get("plugins", "scrobbler_service"))
+            try: service = config.get("plugins", "scrobbler_service")
+            except config.error: service = sorted(self.services.keys())[0]
+            url = self._get_url(service)
         except:
             if (not self.need_config and
                 getattr(self, 'PMEnFlag', False)):
