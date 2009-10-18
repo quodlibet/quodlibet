@@ -123,7 +123,7 @@ def init(*rc_files):
         "plugins": { },
 
         "editing":
-        { "split_on": "& , /", # words to split on
+        { "split_on": "/ & ,", # words to split on
           "id3encoding": "", # ID3 encodings to try
           "save_to_songs": "true",
           "save_email": const.EMAIL,

@@ -312,14 +312,17 @@ def capitalize(str):
     return str[:1].upper() + str[1:]
 
 def split_value(s, splitters=["/", "&", ","]):
+    """Splits a string. The first match in 'splitters' is used as the
+    separator; subsequent matches are intentionally ignored."""
     if not splitters: return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
         spl = re.compile(r"\b\s*%s\s*\b" % re.escape(spl), re.UNICODE)
+        if not filter(spl.search, values): continue
         new_values = []
         for v in values:
             new_values.extend([st.strip() for st in spl.split(v)])
-        values = new_values
+        return new_values
     return values
 
 def split_title(s, splitters=["/", "&", ","]):

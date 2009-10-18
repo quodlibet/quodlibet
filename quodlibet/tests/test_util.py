@@ -146,7 +146,7 @@ class Tsplit_value(TestCase):
 
     def test_two_splitters(self):
         self.failUnlessEqual(
-            util.split_value("a, b and c", [",", "and"]), ["a", "b", "c"])
+            util.split_value("a, b and c", [",", "and"]), ["a", "b and c"])
 
     def test_no_splitters(self):
         self.failUnlessEqual(util.split_value("a b", []), ["a b"])
