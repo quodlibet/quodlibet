@@ -139,7 +139,7 @@ class SeekBar(HSlider):
 
 class Volume(VSlider):
     def __init__(self, device):
-        i = gtk.image_new_from_stock(stock.VOLUME_MAX, SIZE)
+        i = gtk.Image()
         super(type(self), self).__init__(i)
         self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self.scale.set_inverted(True)
@@ -166,7 +166,11 @@ class Volume(VSlider):
         elif val < 0.33: img = stock.VOLUME_MIN
         elif val < 0.66: img = stock.VOLUME_MED
         else: img = stock.VOLUME_MAX
-        image.set_from_stock(img, SIZE)
+
+        if gtk.icon_theme_get_default().has_icon(img):
+            image.set_from_icon_name(img, SIZE)
+        else:
+            image.set_from_stock(img, SIZE)
 
         device.volume = val
         config.set("memory", "volume", str(slider.get_value()))
@@ -207,30 +211,32 @@ class StopAfterMenu(gtk.Menu):
         return self.__item.set_active(active)
     active = property(__get_active, __set_active)
 
-class PlayControls(gtk.VBox):
+class PlayControls(gtk.Table):
     def __init__(self, player, library):
-        gtk.VBox.__init__(self, spacing=3)
-        hbox = gtk.HBox(spacing=3)
+        gtk.Table.__init__(self, rows=2, columns=2, homogeneous=True)
+
+        self.set_row_spacings(3)
+        self.set_col_spacings(3)
+
         prev = gtk.Button()
         prev.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PREVIOUS, SIZE))
-        hbox.pack_start(prev)
+        self.attach(prev, 0, 1, 0, 1, yoptions=gtk.FILL)
 
         play = gtk.ToggleButton()
         play.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY, SIZE))
-        hbox.pack_start(play)
+        self.attach(play, 1, 2, 0, 1, yoptions=gtk.FILL)
+
         safter = StopAfterMenu(player)
 
         next = gtk.Button()
         next.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_NEXT, SIZE))
-        hbox.pack_start(next)
+        self.attach(next, 2, 3, 0, 1, yoptions=gtk.FILL)
 
-        self.pack_start(hbox, expand=False, fill=False)
-
-        hbox = gtk.HBox(spacing=3)
         self.volume = Volume(player)
-        hbox.pack_start(self.volume, expand=False)
-        hbox.pack_start(SeekBar(player, library))
-        self.pack_start(hbox, expand=False, fill=False)
+        self.attach(self.volume, 0, 1, 1, 2, yoptions=gtk.FILL)
+
+        seekbar = SeekBar(player, library)
+        self.attach(seekbar, 1, 3, 1, 2, yoptions=gtk.FILL)
 
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
