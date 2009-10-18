@@ -28,6 +28,7 @@ def _gtk_init(icon=None):
     import pygtk
     pygtk.require('2.0')
     import gtk
+    import glib
 
     # http://bugzilla.gnome.org/show_bug.cgi?id=318953
     if gtk.gtk_version < (2, 8, 8):
@@ -37,6 +38,9 @@ def _gtk_init(icon=None):
 
     import quodlibet.stock
     quodlibet.stock.init()
+
+    glib.set_application_name(_("Quod Libet").encode('utf-8'))
+    os.environ["PULSE_PROP_media.role"] = "music"
 
     if icon:
         icon = os.path.join(quodlibet.const.IMAGEDIR, icon)
