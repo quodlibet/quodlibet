@@ -232,8 +232,8 @@ class FIFOControl(object):
         if value:
             if value in library: songs = [library[value]]
             else: songs = library.query(value)
-            SongProperties(songs, library, 0)
-        else: SongProperties([player.song], library)
+            SongProperties(songs, library, parent=self)
+        else: SongProperties([player.song], library, parent=self)
 
     def _enqueue(self, value, library, window, player):
         playlist = window.playlist

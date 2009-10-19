@@ -17,17 +17,23 @@ from quodlibet import util
 class Window(gtk.Window):
     """A Window that binds the ^W accelerator to close. This should not
     be used for dialogs; Escape closes (cancels) those."""
-    
+
+    childs = []
+
     __gsignals__ = {"close-accel": (
         gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
     def __init__(self, *args, **kwargs):
         super(Window, self).__init__(*args, **kwargs)
+        type(self).childs.append(self)
         self.__accels = gtk.AccelGroup()
+        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        self.set_destroy_with_parent(True)
         self.add_accel_group(self.__accels)
         self.add_accelerator(
             'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
         esc, mod = gtk.accelerator_parse("Escape")
         self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
+        self.connect_object('destroy', type(self).childs.remove, self)
 
     def set_transient_for(self, parent):
         super(Window, self).set_transient_for(parent)
@@ -37,6 +43,34 @@ class Window(gtk.Window):
     def do_close_accel(self):
         if not self.emit('delete-event', gtk.gdk.Event(gtk.gdk.DELETE)):
             self.destroy()
+
+class UniqueWindow(Window):
+    """A wrapper for the window class to get a one instance per class window.
+    The is_not_unique method will return True if the window
+    is already there."""
+
+    __window = None
+
+    def __new__(klass, *args):
+        if klass.__window is None:
+            return super(UniqueWindow, klass).__new__(klass, *args)
+        else:
+            klass.__window.present()
+            return klass.__window
+
+    @classmethod
+    def is_not_unique(klass):
+        if klass.__window:
+            return True
+
+    def __init__(self, *args, **kwargs):
+        if type(self).__window: return
+        else: type(self).__window = self
+        super(UniqueWindow, self).__init__(*args, **kwargs)
+        self.connect_object('destroy', self.__destroy, self)
+
+    def __destroy(self, *args):
+        type(self).__window = None
 
 class Notebook(gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no

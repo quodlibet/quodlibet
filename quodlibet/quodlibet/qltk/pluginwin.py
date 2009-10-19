@@ -18,17 +18,9 @@ from quodlibet import util
 from quodlibet.plugins import Manager
 from quodlibet.qltk.views import HintedTreeView
 
-class PluginWindow(qltk.Window):
-    __window = None
-
-    def __new__(klass, parent):
-        if klass.__window is None:
-            return super(PluginWindow, klass).__new__(klass)
-        else: return klass.__window
-
+class PluginWindow(qltk.UniqueWindow):
     def __init__(self, parent):
-        if type(self).__window: return
-        else: type(self).__window = self
+        if self.is_not_unique(): return
         super(PluginWindow, self).__init__()
         self.set_title(_("Quod Libet Plugins"))
         self.set_border_width(12)
@@ -121,7 +113,6 @@ class PluginWindow(qltk.Window):
         self.show_all()
 
     def __destroy(self, *args):
-        type(self).__window = None
         config.write(const.CONFIG)
 
     def __description(self, selection, frame):

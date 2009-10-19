@@ -201,17 +201,9 @@ class ExFalsoWindow(gtk.Window):
         self.__library.add(files)
         self.emit('changed', files)
 
-class PreferencesWindow(qltk.Window):
-    __window = None
-
-    def __new__(klass, parent):
-        if klass.__window is None:
-            return super(PreferencesWindow, klass).__new__(klass)
-        else: return klass.__window
-
+class PreferencesWindow(qltk.UniqueWindow):
     def __init__(self, parent):
-        if type(self).__window: return
-        else: type(self).__window = self
+        if self.is_not_unique(): return
         super(PreferencesWindow, self).__init__()
         self.set_title(_("Ex Falso Preferences"))
         self.set_border_width(12)
@@ -243,5 +235,4 @@ class PreferencesWindow(qltk.Window):
         config.set(section, name, entry.get_text())
 
     def __destroy(self):
-        type(self).__window = None
         config.write(const.CONFIG)

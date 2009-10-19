@@ -314,7 +314,8 @@ class InternetRadio(gtk.HBox, Browser):
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(self.__stations, songs, playlists=False,
-                         queue=False, accels=songlist.accelerators)
+                         queue=False, accels=songlist.accelerators,
+                         parent=self)
         return menu
 
     def __remove(self, button, songs):

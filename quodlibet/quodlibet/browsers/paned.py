@@ -27,9 +27,12 @@ from quodlibet.util import tag
 
 UNKNOWN = "<b>%s</b>" % _("Unknown")
 
-class Preferences(qltk.Window):
-    def __init__(self, *args, **kwargs):
-        super(Preferences, self).__init__(*args, **kwargs)
+class Preferences(qltk.UniqueWindow):
+    def __init__(self, parent=None):
+        if self.is_not_unique(): return
+        super(Preferences, self).__init__()
+        self.set_transient_for(qltk.get_top_parent(parent))
+
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
@@ -103,7 +106,6 @@ class Preferences(qltk.Window):
         box.pack_start(apply)
         self.child.pack_start(box, expand=False)
 
-        self.connect_object('delete-event', Preferences.__delete_event, self)
         self.show_all()
 
     def __add(self, button, model, cb):
@@ -127,10 +129,6 @@ class Preferences(qltk.Window):
         config.set("browsers", "panes", headers)
         PanedBrowser.set_all_panes()
 
-    def __delete_event(self, event):
-        self.hide()
-        return True
-
     def __toggled(self, button, align, model):
         if button.headers:
             model.clear()
@@ -145,8 +143,6 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
     name = _("Paned Browser")
     accelerated_name = _("_Paned Browser")
     priority = 3
-
-    __prefs_window = None
 
     def set_all_panes(klass):
         for browser in klass.instances(): browser.refresh_panes()
@@ -188,7 +184,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             self.connect('popup-menu', self.__popup_menu, library)
 
         def __popup_menu(self, view, library):
-            menu = SongsMenu(library, sorted(self.__get_songs()))
+            menu = SongsMenu(library, sorted(self.__get_songs()), parent=self)
             menu.show_all()
             return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
@@ -372,7 +368,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         prefs = gtk.Button()
         prefs.add(
             gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
-        prefs.connect('clicked', self.__preferences)
+        prefs.connect('clicked', Preferences)
         select.connect('clicked', self.__all)
         hb.pack_start(prefs, expand=False)
         self.pack_start(hb, expand=False)
@@ -524,11 +520,6 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 pane.set_selected(values.split("\t"), True)
             self.__panes[-1].uninhibit()
             self.__panes[-1].set_selected(selected[-1].split("\t"), True)
-
-    def __preferences(self, activator):
-        if PanedBrowser.__prefs_window is None:
-            PanedBrowser.__prefs_window = Preferences()
-        PanedBrowser.__prefs_window.present()
 
     def fill(self, songs):
         if self.__save: self.save()

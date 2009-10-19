@@ -57,14 +57,15 @@ class AlbumTagCompletion(EntryWordCompletion):
             for suffix in ["avg", "max", "min", "sum"]:
                 self.__model.append(row=["#(%s:%s" % (tag, suffix)])
 
-class Preferences(qltk.Window):
-    def __init__(self):
+class Preferences(qltk.UniqueWindow):
+    def __init__(self, parent):
+        if self.is_not_unique(): return
         super(Preferences, self).__init__()
         self.set_border_width(12)
         self.set_title(_("Album List Preferences") + " - Quod Libet")
         self.add(gtk.VBox(spacing=6))
         self.set_default_size(300, 250)
-        self.connect_object('delete-event', Preferences.__delete_event, self)
+        self.set_transient_for(qltk.get_top_parent(parent))
 
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
@@ -92,11 +93,7 @@ class Preferences(qltk.Window):
         f = qltk.Frame(_("Album Display"), child=vbox)
         self.child.pack_start(f)
 
-        self.child.show_all()
-
-    def __delete_event(self, event):
-        self.hide()
-        return True
+        self.show_all()
 
     def __set_pattern(self, apply, edit):
         AlbumList.refresh_pattern(edit.text)
@@ -547,7 +544,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         prefs = gtk.Button()
         prefs.add(
             gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
-        prefs.connect('clicked', self.__preferences)
+        prefs.connect('clicked', Preferences)
         hb.pack_start(prefs, expand=False)
         self.pack_start(hb, expand=False)
         self.pack_start(sw, expand=True)
@@ -634,7 +631,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
-        menu = SongsMenu(library, songs)
+        menu = SongsMenu(library, songs, parent=self)
 
         button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
         button.connect('activate', self.__refresh_album, view)
@@ -688,16 +685,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     def __play_selection(self, view, indices, col, player):
         player.reset()
-
-    def __preferences(self, button):
-        try: prefs = self.__prefs_win
-        except AttributeError: prefs = self.__prefs_win = Preferences()
-        win = qltk.get_top_parent(self)
-        top, left = win.get_position()
-        w, h = win.get_size()
-        dw, dh = prefs.get_size()
-        prefs.move((left + w // 2) - dw // 2, (top + h // 2) - dh // 2)
-        prefs.present()
 
     def filter(self, key, values):
         assert(key == "album")

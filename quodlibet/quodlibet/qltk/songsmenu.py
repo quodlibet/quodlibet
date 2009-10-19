@@ -19,7 +19,7 @@ class SongsMenu(gtk.Menu):
 
     def __init__(self, library, songs, plugins=True, playlists=True,
                  queue=True, devices=True, remove=True, delete=False,
-                 edit=True, accels=None):
+                 edit=True, accels=None, parent=None):
         super(SongsMenu, self).__init__()
 
         # The library may actually be a librarian; if it is, use it,
@@ -107,14 +107,15 @@ class SongsMenu(gtk.Menu):
                 key, val = gtk.accelerator_parse("<alt>Return")
                 b.add_accelerator(
                     'activate', accels, key, val, gtk.ACCEL_VISIBLE)
-            b.connect_object('activate', SongProperties, librarian, songs)
+            b.connect_object(
+                'activate', SongProperties, librarian, songs, parent)
             self.append(b)
 
             b = gtk.ImageMenuItem(gtk.STOCK_INFO)
             if accels is not None:
                 b.add_accelerator('activate', accels, ord('I'),
                                   gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
-            b.connect_object('activate', Information, librarian, songs)
+            b.connect_object('activate', Information, librarian, songs, parent)
             self.append(b)
 
         self.connect_object('selection-done', gtk.Menu.destroy, self)

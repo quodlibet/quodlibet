@@ -119,7 +119,8 @@ class Browser(object):
     # menu is returned the SongList may modify it further.
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(
-            library, songs, delete=True, accels=songlist.accelerators)
+            library, songs, delete=True, accels=songlist.accelerators,
+            parent=self)
         return menu
 
     def statusbar(self, i):

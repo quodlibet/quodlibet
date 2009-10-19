@@ -10,17 +10,19 @@
 import gobject
 import gtk
 
+from quodlibet import qltk
 from quodlibet import stock, config
 from quodlibet.util import thumbnails
 
-class BigCenteredImage(gtk.Window):
+class BigCenteredImage(qltk.Window):
     """Load an image and display it, scaling down to 1/2 the screen's
     dimensions if necessary.
 
     This might leak memory, but it could just be Python's GC being dumb."""
 
-    def __init__(self, title, filename):
+    def __init__(self, title, filename, parent=None):
         super(BigCenteredImage, self).__init__()
+        self.set_transient_for(qltk.get_top_parent(parent))
         width = gtk.gdk.screen_width() / 2
         height = gtk.gdk.screen_height() / 2
 
@@ -108,7 +110,7 @@ class CoverImage(gtk.EventBox):
                 cover = self.__song.find_cover()
                 if cover:
                     self.__current_bci = BigCenteredImage(
-                        self.__song.comma("album"), cover.name)
+                        self.__song.comma("album"), cover.name, self)
                     self.__current_bci.connect('destroy', self.__reset_bci)
             else:
                 # We're displaying it; destroy it.

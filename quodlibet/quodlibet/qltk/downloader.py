@@ -18,25 +18,24 @@ from quodlibet import util
 
 from quodlibet.qltk.views import AllTreeView
 
-class DownloadWindow(qltk.Window):
-    __window = None
+class DownloadWindow(qltk.UniqueWindow):
     downloads = None
 
-    def download(klass, source, target):
+    def download(klass, source, target, parent=None):
         if klass.downloads is None:
             # source fileobj, target fileobj, I/O watch callback ID
             klass.downloads = gtk.ListStore(object, object, int)
-        if klass.__window is None:
-            klass.__window = DownloadWindow()
-        klass.__window._download(source, target)
-        klass.__window.present()
+        win = DownloadWindow(parent)
+        win._download(source, target)
     download = classmethod(download)
 
-    def __init__(self):
+    def __init__(self, parent=None):
+        if self.is_not_unique(): return
         super(DownloadWindow, self).__init__()
         self.set_title("Quod Libet - " + _("Downloads"))
         self.set_default_size(300, 150)
         self.set_border_width(12)
+        self.set_transient_for(qltk.get_top_parent(parent))
         self.__timeout = None
 
         view = AllTreeView()
@@ -71,7 +70,7 @@ class DownloadWindow(qltk.Window):
         self.add(sw)
         self.connect_object(
             'delete-event', DownloadWindow.__delete_event, self)
-        self.child.show_all()
+        self.show_all()
 
     def __update(self):
         for row in self.downloads:

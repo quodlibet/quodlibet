@@ -74,12 +74,13 @@ class PatternEditBox(TextEditBox):
             apply.stop_emission('clicked')
         return False
 
-class TextEdit(gtk.Window):
+class TextEdit(qltk.UniqueWindow):
     """A window with a text editing box in it."""
 
     Box = TextEditBox
 
     def __init__(self, parent, default=""):
+        if self.is_not_unique(): return
         super(TextEdit, self).__init__()
         self.set_title(_("Edit Display"))
         self.set_transient_for(qltk.get_top_parent(parent))
@@ -96,4 +97,3 @@ class TextEdit(gtk.Window):
 class PatternEdit(TextEdit):
     """A window with a pattern editing box in it."""
     Box = PatternEditBox
-    

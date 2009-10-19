@@ -5,11 +5,12 @@ import quodlibet.util.logging
 from quodlibet import qltk
 
 class LoggingWindow(qltk.Window):
-    def __init__(self):
-        super(qltk.Window, self).__init__()
+    def __init__(self, parent=None):
+        super(LoggingWindow, self).__init__()
         self.set_default_size(400, 400)
         self.set_title(_("Output Log"))
         self.set_border_width(12)
+        self.set_transient_for(qltk.get_top_parent(parent))
         notebook = qltk.Notebook()
 
         for logname in quodlibet.util.logging.names():

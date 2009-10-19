@@ -501,7 +501,8 @@ class Playlists(gtk.VBox, Browser):
             return
         songs = list(model[iter][0])
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
-        menu = SongsMenu(library, songs, playlists=False, remove=False)
+        menu = SongsMenu(
+            library, songs, playlists=False, remove=False, parent=self)
         menu.preseparate()
 
         rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)

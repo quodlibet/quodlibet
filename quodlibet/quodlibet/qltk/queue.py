@@ -199,7 +199,8 @@ class PlayQueue(SongList):
         if not songs: return
 
         menu = SongsMenu(
-            library, songs, queue=False, remove=False, delete=False)
+            library, songs, queue=False, remove=False, delete=False,
+            parent=self)
         menu.preseparate()
         remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
         remove.connect('activate', self.__remove)

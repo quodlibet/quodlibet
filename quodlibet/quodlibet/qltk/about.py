@@ -17,6 +17,7 @@ from quodlibet.util import fver
 class AboutQuodLibet(gtk.AboutDialog):
     def __init__(self, parent, player):
         super(AboutQuodLibet, self).__init__()
+        self.set_transient_for(parent)
         self.set_name("Quod Libet")
         self.set_version(const.VERSION)
         self.set_authors(const.AUTHORS)

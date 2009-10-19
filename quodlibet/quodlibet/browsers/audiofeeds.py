@@ -234,7 +234,8 @@ class AudioFeeds(Browser, gtk.VBox):
     __check = classmethod(__check)
 
     def Menu(self, songs, songlist, library):
-        menu = SongsMenu(library, songs, accels=songlist.accelerators)
+        menu = SongsMenu(
+            library, songs, accels=songlist.accelerators, parent=self)
         if len(songs) == 1:
             item = qltk.MenuItem(_("_Download..."), gtk.STOCK_CONNECT)
             item.connect('activate', self.__download, songs[0]("~uri"))
@@ -267,7 +268,7 @@ class AudioFeeds(Browser, gtk.VBox):
                         base = ("file%d" % i) + (
                             os.path.splitext(source)[1] or ".audio")
                     fulltarget = os.path.join(target, base)
-                    DownloadWindow.download(source, fulltarget)
+                    DownloadWindow.download(source, fulltarget, self)
         chooser.destroy()
 
     def __download(self, activator, source):
@@ -284,7 +285,7 @@ class AudioFeeds(Browser, gtk.VBox):
             target = chooser.get_filename()
             if target:
                 type(self).__last_folder = os.path.dirname(target)
-                DownloadWindow.download(source, target)
+                DownloadWindow.download(source, target, self)
         chooser.destroy()
 
     def __init__(self, library, main):

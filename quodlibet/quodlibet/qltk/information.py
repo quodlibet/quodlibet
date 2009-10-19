@@ -556,7 +556,7 @@ class ManySongs(qltk.Notebook):
                        expand=False, fill=False)
 
 class Information(Window):
-    def __init__(self, library, songs):
+    def __init__(self, library, songs, parent=None):
         super(Information, self).__init__()
         self.set_border_width(12)
         self.set_default_size(400, 400)
@@ -568,6 +568,7 @@ class Information(Window):
             self.connect_object('destroy', library.disconnect, sig)
         self.__songs = songs
         self.__update(library)
+        self.set_transient_for(qltk.get_top_parent(parent))
         self.show_all()
 
     def __check_changed(self, library, songs):

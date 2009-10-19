@@ -361,16 +361,19 @@ class QuodLibetWindow(gtk.Window):
         if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
             self.unmaximize()
         super(QuodLibetWindow, self).hide()
+        map(gtk.Window.hide, qltk.Window.childs)
 
     def present(self):
         super(QuodLibetWindow, self).present()
         if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
             self.maximize()
+        map(gtk.Window.present, qltk.Window.childs)
 
     def show(self):
         super(QuodLibetWindow, self).show()
         if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
             self.maximize()
+        map(gtk.Window.show, qltk.Window.childs)
 
     def destroy(self, *args):
         super(QuodLibetWindow, self).destroy()
@@ -427,7 +430,7 @@ class QuodLibetWindow(gtk.Window):
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
             ("OutputLog", gtk.STOCK_EDIT, _("_Output Log"),
-             None, None, lambda *args: LoggingWindow()),
+             None, None, lambda *args: LoggingWindow(self)),
             ]
 
         if "QUODLIBET_DEBUG" in os.environ:
@@ -808,11 +811,11 @@ class QuodLibetWindow(gtk.Window):
 
     def __current_song_prop(self, *args):
         song = player.playlist.song
-        if song: SongProperties(self.__library.librarian, [song])
+        if song: SongProperties(self.__library.librarian, [song], parent=self)
 
     def __current_song_info(self, *args):
         song = player.playlist.song
-        if song: Information(self.__library.librarian, [song])
+        if song: Information(self.__library.librarian, [song], self)
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Filters/FilterGenre",

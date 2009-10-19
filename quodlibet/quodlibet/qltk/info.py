@@ -62,13 +62,13 @@ class SongInfo(gtk.Label):
         sep.show()
         props = gtk.ImageMenuItem(stock.EDIT_TAGS)
         props.connect_object(
-            'activate', SongProperties, library, [player.song])
+            'activate', SongProperties, library, [player.song], self)
         props.show()
         props.set_sensitive(bool(player.song))
         menu.append(props)
         info = gtk.ImageMenuItem(gtk.STOCK_INFO)
         info.connect_object(
-            'activate', Information, library, [player.song])
+            'activate', Information, library, [player.song], self)
         info.show()
         menu.append(info)
         info.set_sensitive(bool(player.song))

@@ -145,7 +145,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
-                         delete=True, accels=songlist.accelerators)
+                         delete=True, accels=songlist.accelerators,
+                         parent=self)
         i = qltk.MenuItem(_("_Add to Library"), gtk.STOCK_ADD)
         i.set_sensitive(False)
         i.connect('activate', self.__add_songs, songs)

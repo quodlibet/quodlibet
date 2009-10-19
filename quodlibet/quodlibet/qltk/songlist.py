@@ -721,7 +721,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             if playlist.song:
                 songs = [playlist.song]
             else: return
-        SongProperties(librarian, songs)
+        SongProperties(librarian, songs, parent=self)
 
     def __information(self, librarian):
         model, rows = self.get_selection().get_selected_rows()
@@ -732,7 +732,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             if playlist.song:
                 songs = [playlist.song]
             else: return
-        Information(librarian, songs)
+        Information(librarian, songs, self)
 
     # Build a new filter around our list model, set the headers to their
     # new values.
