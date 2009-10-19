@@ -7,7 +7,6 @@
 # $Id$
 
 import gobject
-import glib
 
 import pygst
 pygst.require("0.10")
@@ -143,8 +142,8 @@ class GStreamerPlayer(BasePlayer):
         self._source.next_ended()
         if self._source.current:
             self.bin.set_property('uri', self._source.current("~uri"))
-            glib.timeout_add(0, self._end, False, True,
-                             priority = glib.PRIORITY_HIGH)
+            gobject.timeout_add(0, self._end, False, True,
+                             priority = gobject.PRIORITY_HIGH)
 
     def stop(self):
         # On GStreamer, we can release the device when stopped.
