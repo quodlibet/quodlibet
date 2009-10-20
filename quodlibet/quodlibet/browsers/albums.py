@@ -595,7 +595,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         while self.__pending_covers:
             album = self.__pending_covers.pop()
             album.scan_cover()
-            yield
+            yield True
 
     def __update_visibility(self, view, *args):
         if not self.__cover_column.get_visible():

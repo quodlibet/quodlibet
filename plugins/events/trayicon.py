@@ -131,7 +131,7 @@ class Preferences(gtk.VBox):
         label.get_parent().set_tooltip_text(text)
         config.set("plugins", "icon_tooltip", entry.get_text())
 
-class EggTrayIconWrapper():
+class EggTrayIconWrapper(object):
     __popup_sig = None
     __activate_sig = None
     __button_press_sig = None

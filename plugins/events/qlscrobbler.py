@@ -9,7 +9,10 @@
 
 import random
 import urllib, urllib2, time, threading, os
-from hashlib import md5
+try:
+  from hashlib import md5
+except ImportError:
+  from md5 import md5
 import player, config, const, widgets, parse
 import gobject, gtk
 from qltk.msg import Message, WarningMessage

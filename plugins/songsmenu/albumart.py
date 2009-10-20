@@ -295,7 +295,7 @@ class CoverParadiseParser(BasicHTMLParser):
         else:
             return False
 
-class DiscogsParser():
+class DiscogsParser(object):
     """A class for searching covers from discogs.com"""
 
     def __init__(self):
@@ -448,7 +448,7 @@ class DiscogsParser():
 
         return self.cover_list
 
-class AmazonParser():
+class AmazonParser(object):
     """A class for searching covers from amazon"""
 
     def __init__(self):
@@ -1128,7 +1128,7 @@ class AlbumArtWindow(qltk.Window):
             self.search_button.set_sensitive(True)
             self.search_lock = False
 
-class CoverSearch():
+class CoverSearch(object):
     """Class for glueing the search eninges together. No UI stuff."""
 
     def __init__(self, callback):
