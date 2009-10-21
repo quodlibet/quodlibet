@@ -61,16 +61,17 @@ def MusicFile(filename):
                 return None
     else: return None
 
-def supported(song):
-    lower = song.key.lower()
-    try:
-        #python 2.5 endswith supports tuples. Nice speedup.
-        return lower.endswith(tuple(_infos.keys()))
-    except TypeError:
+if sys.version_info < (2, 5):
+    def supported(song):
+        lower = song.key.lower()
         for ext in _infos.keys():
             if lower.endswith(ext):
                 return True
         return False
+else:
+    extensions = tuple(_infos.keys())
+    def supported(song):
+        return song.key.lower().endswith(extensions)
 
 def filter(filename):
     lower = filename.lower()
