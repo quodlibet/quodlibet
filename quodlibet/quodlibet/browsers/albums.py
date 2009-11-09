@@ -484,6 +484,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.__pending_covers = []
         self.__scan_timeout = None
         view.connect_object('expose-event', self.__update_visibility, view)
+        sw.get_vadjustment().connect("value-changed", self.__stop_cover_update)
 
         render = gtk.CellRendererPixbuf()
         self.__cover_column = column = gtk.TreeViewColumn("covers", render)
@@ -561,7 +562,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         #generate a path list so that cover scanning starts in the middle
         #of the visible area and alternately moves up and down
-        preload_count = 15
+        preload_count = 20
 
         start, end = vrange
         start = start[0] - preload_count - 1
@@ -599,6 +600,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             album.scan_cover()
             yield True
 
+    def __stop_cover_update(self, *args):
+        self.__pending_covers = []
+
     def __update_visibility(self, view, *args):
         if not self.__cover_column.get_visible():
             return
@@ -608,7 +612,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             self.__scan_timeout = None
 
         self.__scan_timeout = gobject.timeout_add(
-            150, self.__update_visible_covers, view)
+            50, self.__update_visible_covers, view)
 
     def __search_func(self, model, column, key, iter):
         if config.getboolean("browsers", "album_substrings"):
