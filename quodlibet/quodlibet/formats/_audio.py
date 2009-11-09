@@ -154,7 +154,7 @@ class AudioFile(dict):
                         self("~people", default, connector))
             elif key == "performers" or key == "performer":
                 performers = {}
-                for key in self.realkeys():
+                for key in self.keys():
                     if key.startswith("performer:"):
                         role = key.split(":", 1)[1]
                         for value in self.list(key):
@@ -178,7 +178,7 @@ class AudioFile(dict):
                 return "\n".join(values)
             elif key == "performerssort" or key == "performersort":
                 values = []
-                for key in self.realkeys():
+                for key in self.keys():
                     if key.startswith("performersort:"):
                         role = key.split(":", 1)[1]
                         for value in self.list(key):
