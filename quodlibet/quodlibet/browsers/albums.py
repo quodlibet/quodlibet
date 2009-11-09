@@ -20,7 +20,7 @@ from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.browsers._base import Browser
-from quodlibet.formats._audio import PEOPLE, PEOPLE_SORT
+from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT
 from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.completion import EntryWordCompletion
@@ -32,7 +32,7 @@ from quodlibet.util import copool
 from quodlibet.util import thumbnails
 
 ELPOEP = list(PEOPLE); ELPOEP.reverse()
-ELPOEPSORT = list(PEOPLE_SORT); ELPOEPSORT.reverse()
+PEOPLE_SCORE = [100**w for w in xrange(len(PEOPLE))]
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><title|\<i\><title>\</i\>|%s>\</b\><date| (<date>)>
 \<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
@@ -328,11 +328,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 # Rank people by "relevance" -- artists before composers
                 # before performers, then by number of appearances.
                 for w, key in enumerate(ELPOEP):
-                    for person in song.list(key):
-                        people[person] = people.get(person, 0) - 100 ** w
-                for w, key in enumerate(ELPOEPSORT):
-                    for person in (song.list(key) or song.list(ELPOEP[w])):
-                        peoplesort[person] = peoplesort.get(person, 0) - 100**w
+                    persons = song.list(key)
+                    for person in persons:
+                        people[person] = people.get(person, 0) - PEOPLE_SCORE[w]
+                    if key in TAG_TO_SORT:
+                        persons = song.list(TAG_TO_SORT[key]) or persons
+                    for person in persons:
+                        peoplesort[person] = peoplesort.get(person, 0) - PEOPLE_SCORE[w]
 
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
