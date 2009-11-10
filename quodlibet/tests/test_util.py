@@ -322,6 +322,24 @@ class Ttagsplit(TestCase):
             util.tagsplit("~~people~album"), ["~people", "album"])
 add(Ttagsplit)
 
+class Tpattern(TestCase):
+    def test_empty(self):
+        self.failUnlessEqual(util.pattern(""), "")
+    def test_basic(self):
+        self.failUnlessEqual(util.pattern("<title>"), "Title")
+    def test_basic_nocap(self):
+        self.failUnlessEqual(util.pattern("<title>", False), "title")
+    def test_internal(self):
+        self.failUnlessEqual(util.pattern("<~plays>"), "Plays")
+    def test_unknown(self):
+        self.failUnlessEqual(util.pattern("<foobarbaz>"), "Foobarbaz")
+    def test_condition(self):
+        self.failUnlessEqual(util.pattern("<~year|<~year> - <album>|<album>>"),
+                             "Year - Album")
+    def test_invalid(self):
+        self.failUnlessEqual(util.pattern("<date"), "<date")
+add(Tpattern)
+
 class Tformat_time_long(TestCase):
     def test_second(s):
         s.assertEquals(f_t_l(1).split(", ")[0], _("1 second"))

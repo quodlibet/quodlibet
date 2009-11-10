@@ -17,13 +17,13 @@ from quodlibet import util
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats import PEOPLE
-from quodlibet.parse import Query
+from quodlibet.parse import Query, Pattern
 from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.util import tag
+from quodlibet.util import tag, pattern
 
 UNKNOWN = "<b>%s</b>" % _("Unknown")
 
@@ -42,21 +42,23 @@ class Preferences(qltk.UniqueWindow):
         pa = gtk.RadioButton(gpa, "_" + tag("~~people~album"))
         pa.headers = ["~people", "album"]
         custom = gtk.RadioButton(gpa, _("_Custom"))
-        custom.headers = config.get("browsers", "panes").split()
+        custom.headers = config.get("browsers", "panes").split("\t")
 
         align = gtk.Alignment()
         align.set_padding(0, 0, 12, 0)
         align.add(gtk.HBox(spacing=6))
 
         model = gtk.ListStore(str)
-        for t in config.get("browsers", "panes").split():
+        for t in config.get("browsers", "panes").split("\t"):
             model.append(row=[t])
 
         view = gtk.TreeView(model)
         view.set_reorderable(True)
         view.set_headers_visible(False)
         view.set_size_request(-1, 100)
-        col = gtk.TreeViewColumn("Tags", gtk.CellRendererText(), text=0)
+        render = gtk.CellRendererText()
+        render.set_property("editable", True)
+        col = gtk.TreeViewColumn("Tags", render, text=0)
         view.append_column(col)
 
         for button in [gpa, pa, custom]:
@@ -64,7 +66,7 @@ class Preferences(qltk.UniqueWindow):
             button.connect('toggled', self.__toggled, align, model)
 
         align.set_sensitive(False)
-        current = config.get("browsers", "panes").split()
+        current = config.get("browsers", "panes").split("\t")
         if current == gpa.headers: gpa.set_active(True)
         elif current == pa.headers: pa.set_active(True)
         else: custom.set_active(True)
@@ -162,12 +164,20 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
         def __init__(self, mytag, next, library):
             super(PanedBrowser.Pane, self).__init__()
+
+            if '<' in mytag:
+                p = Pattern(mytag)
+                self.__format = lambda song: [p.format(song)]
+                title = pattern(mytag)
+            else:
+                self.__format = lambda song: song.list(mytag)
+                title = tag(mytag)
+
             self.tags = util.tagsplit(mytag)
             self.__next = next
-            self.__mytag = mytag
             model = gtk.ListStore(str, object)
 
-            column = gtk.TreeViewColumn(tag(mytag), self.__render, markup=0)
+            column = gtk.TreeViewColumn(title, self.__render, markup=0)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
 
@@ -221,11 +231,11 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 else:
                     for row in rows:
                         if model[row][0][:1] == "<":
-                            if not bool(song.list(self.__mytag)):
+                            if not bool(self.__format(song)):
                                 return True
                         else:
                             value = util.unescape(model[row][0])
-                            if value in song.list(self.__mytag):
+                            if value in self.__format(song):
                                 return True
                     else: return False
 
@@ -244,7 +254,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                     values[""] = data
 
             for song in songs:
-                for val in (song.list(self.__mytag) or [""]):
+                for val in (self.__format(song) or [""]):
                     if val in values: values[val].add(song)
                     else:
                         if val not in new: new[val] = set()
@@ -288,7 +298,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             else: self.set_selected(None, jump=True)
 
         def scroll(self, song):
-            values = map(util.escape, song.list(self.__mytag))
+            values = map(util.escape, self.__format(song))
             for row in self.get_model():
                 if row[0] in values:
                     self.scroll_to_cell(
@@ -451,7 +461,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         hbox.set_size_request(100, 100)
         # fill in the pane list. the last pane reports back to us.
         self.__panes = [self]
-        panes = config.get("browsers", "panes").split(); panes.reverse()
+        panes = config.get("browsers", "panes").split("\t"); panes.reverse()
         for pane in panes:
             self.__panes.insert(
                 0, self.Pane(pane, self.__panes[0], self.__library))
