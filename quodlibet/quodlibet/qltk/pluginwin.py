@@ -18,30 +18,55 @@ from quodlibet import util
 from quodlibet.plugins import Manager
 from quodlibet.qltk.views import HintedTreeView
 
+TAG, ALL, NO, DIS, EN, SEP = range(6)
+
 class PluginWindow(qltk.UniqueWindow):
     def __init__(self, parent):
         if self.is_not_unique(): return
         super(PluginWindow, self).__init__()
         self.set_title(_("Quod Libet Plugins"))
         self.set_border_width(12)
-        self.set_resizable(False)
+        self.set_default_size(625, 350)
         self.set_transient_for(parent)
 
-        hbox = gtk.HBox(spacing=12)        
+        hbox = gtk.HBox(spacing=12)
         vbox = gtk.VBox(spacing=6)
 
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         tv = HintedTreeView()
         model = gtk.ListStore(object, object)
-        tv.set_model(model)
+        filter = model.filter_new()
+
+        tv.set_model(filter)
         tv.set_rules_hint(True)
+
+        filter_entry = gtk.Entry()
+        filter_entry.connect("changed", lambda s: filter.refilter())
+
+        combo_store = gtk.ListStore(str, int)
+        filter_combo = gtk.ComboBox(combo_store)
+        cell = gtk.CellRendererText()
+        filter_combo.pack_start(cell, True)
+        filter_combo.add_attribute(cell, "text", 0)
+        filter_combo.connect("changed", lambda s: filter.refilter())
+
+        combo_sep = lambda model, iter: model[iter][1] == SEP
+        filter_combo.set_row_separator_func(combo_sep)
+
+        fb = gtk.HBox(spacing=6)
+        fb.pack_start(filter_combo, expand=False)
+
+        input = gtk.HBox()
+        input.pack_start(filter_entry)
+        input.pack_start(qltk.ClearButton(filter_entry), expand=False)
+        fb.pack_start(input)
 
         render = gtk.CellRendererToggle()
         def cell_data(col, render, model, iter):
             row = model[iter]
             render.set_active(row[1].enabled(row[0]))
-        render.connect('toggled', self.__toggled, model)
+        render.connect('toggled', self.__toggled, filter)
         column = gtk.TreeViewColumn("enabled", render)
         column.set_cell_data_func(render, cell_data)
         tv.append_column(column)
@@ -76,6 +101,7 @@ class PluginWindow(qltk.UniqueWindow):
         refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
         refresh.set_focus_on_click(False)
         bbox.pack_start(refresh)
+        vbox.pack_start(fb, expand=False)
         vbox.pack_start(sw)
         vbox.pack_start(bbox, expand=False)
         vbox.set_size_request(250, -1)
@@ -86,7 +112,7 @@ class PluginWindow(qltk.UniqueWindow):
         desc.set_alignment(0, 0)
         desc.set_padding(6, 6)
         desc.set_line_wrap(True)
-        desc.set_size_request(280, -1)
+        desc.set_size_request(self.get_default_size()[0] - 300, -1)
         selection.connect('changed', self.__description, desc)
 
         prefs = gtk.Frame()
@@ -101,16 +127,48 @@ class PluginWindow(qltk.UniqueWindow):
         hbox.pack_start(vb2, expand=True)
 
         self.add(hbox)
-
         selection.connect('changed', self.__preferences, prefs)
-        refresh.connect('clicked', self.__refresh, tv, desc, errors)
+        refresh.connect('clicked', self.__refresh, tv, desc, errors,
+            filter_combo, combo_store)
         errors.connect('clicked', self.__show_errors)
         tv.get_selection().emit('changed')
         refresh.clicked()
-        hbox.set_size_request(550, 350)
 
         self.connect('destroy', self.__destroy)
+        filter.set_visible_func(
+            self.__filter, (filter_entry, filter_combo, combo_store))
+
         self.show_all()
+        filter_entry.grab_focus()
+
+    def __filter(self, model, iter, widgets):
+        row = model[iter]
+        plugin = row[0]
+
+        if not plugin or not row[1]:
+            return False
+
+        entry, combo, model = widgets
+        plugin_tags = getattr(plugin, "PLUGIN_TAGS", ())
+        if isinstance(plugin_tags, basestring):
+            plugin_tags = [plugin_tags]
+
+        iter = combo.get_active_iter()
+        if iter:
+            enabled = row[1].enabled(plugin)
+            tag = model[iter][0]
+            flag = model[iter][1]
+            if flag == NO and plugin_tags or \
+                flag == TAG and not tag in plugin_tags or \
+                flag == EN and not enabled or \
+                flag == DIS and enabled:
+                return False
+
+        filter = entry.get_text().lower()
+        if not filter or filter in plugin.PLUGIN_NAME.lower() or \
+            filter in getattr(plugin, "PLUGIN_DESC" , "").lower():
+            return True
+        return False
 
     def __destroy(self, *args):
         config.write(const.CONFIG)
@@ -148,31 +206,68 @@ class PluginWindow(qltk.UniqueWindow):
                 frame.show_all()
         else: frame.hide()
 
-    def __toggled(self, render, path, model):
+    def __toggled(self, render, fpath, fmodel):
         render.set_active(not render.get_active())
+
+        path = fmodel.convert_path_to_child_path(fpath)
+        model = fmodel.get_model()
+
         row = model[path]
         pm = row[1]
         pm.enable(row[0], render.get_active())
         pm.save()
         model.row_changed(row.path, row.iter)
 
-    def __refresh(self, activator, view, desc, errors):
-        model, sel = view.get_selection().get_selected()
-        if sel: sel = model[sel][0]
+    def __refresh(self, activator, view, desc, errors, combo, combo_store):
+        fmodel, fiter = view.get_selection().get_selected()
+        model = fmodel.get_model()
+
+        selected = None
+        if fiter:
+            iter = fmodel.convert_iter_to_child_iter(fiter)
+            selected = model[iter][0]
+
         plugins = []
         failures = False
         model.clear()
+
         for pm in Manager.instances.values():
             pm.rescan()
             for plugin in pm.list():
                 plugins.append((plugin.PLUGIN_NAME, plugin, pm))
             failures = failures or bool(pm.list_failures())
 
+        tags = []
+        no_tags = False
+
         plugins.sort()
         for plugin in plugins:
             it = model.append(row=plugin[1:])
-            if plugin[1] is sel:
-                view.get_selection().select_iter(it)
+            if plugin[1] is selected:
+                fit = fmodel.convert_child_iter_to_iter(it)
+                view.get_selection().select_iter(fit)
+            plugin_tags = getattr(plugin[1], "PLUGIN_TAGS", ())
+            if isinstance(plugin_tags, basestring):
+                plugin_tags = [plugin_tags]
+            if not plugin_tags:
+                no_tags = True
+            tags.extend(plugin_tags)
+        tags = list(set(tags))
+
+        active = max(combo.get_active(), 0)
+        combo_store.clear()
+        combo_store.append([_("All"), ALL])
+        combo_store.append(["", SEP])
+        combo_store.append([_("Enabled"), EN])
+        combo_store.append([_("Disabled"), DIS])
+        if tags:
+            combo_store.append(["", SEP])
+            for tag in sorted(tags):
+                combo_store.append([tag, TAG])
+            if no_tags:
+                combo_store.append([_("No category"), NO])
+        combo.set_active(active)
+
         if not plugins:
             desc.set_text(_("No plugins found."))
         errors.set_sensitive(failures)
