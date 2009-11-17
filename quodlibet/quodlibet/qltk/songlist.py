@@ -568,6 +568,8 @@ class SongList(AllTreeView, util.InstanceTracker):
         except TypeError: return True
         if event.window != self.get_bin_window(): return False
         if col.header_name == "~#rating":
+            if not config.getboolean("browsers", "rating_click"): return
+
             song = view.get_model()[path][0]
             l = gtk.Label()
             l.set_text(util.format_rating(util.RATING_PRECISION))
@@ -580,6 +582,14 @@ class SongList(AllTreeView, util.InstanceTracker):
             self.__set_rating(rating, [song], librarian)
 
     def __set_rating(self, value, songs, librarian):
+        count = len(songs)
+        if (count > 1 and
+            config.getboolean("browsers", "rating_confirm_multiple")):
+            if not qltk.ConfirmAction(
+                self, _("Confirm rating"),
+                _("You are about to change the rating of %d songs.\n"
+                  "Do you wish to continue?") % count).run():
+                return;
         for song in songs:
             song["~#rating"] = value
         librarian.changed(songs)

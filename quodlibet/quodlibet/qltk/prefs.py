@@ -147,6 +147,29 @@ class PreferencesWindow(qltk.UniqueWindow):
             f = qltk.Frame(_("Search Library"), child=c)
             self.pack_start(f, expand=False)
 
+            c1 = ConfigCheckButton(
+                _("Confirm _multiple ratings"), 
+                'browsers', 'rating_confirm_multiple')
+            c1.set_active(
+                config.getboolean("browsers", "rating_confirm_multiple"))
+            c1.set_tooltip_text(_("Ask for confirmation before changin the "
+                     "rating of multiple songs at once"))
+
+            c2 = ConfigCheckButton(
+                _("Enable _one-click ratings"),
+               'browsers', 'rating_click')
+            c2.set_active(
+                config.getboolean("browsers", "rating_click"))
+            c2.set_tooltip_text(_("Enable rating by clicking on the rating  "
+                     "column in the song list"))
+
+            vbox = gtk.VBox(spacing=6)
+            vbox.pack_start(c1, expand=False)
+            vbox.pack_start(c2, expand=False)
+
+            f1 = qltk.Frame(_("Ratings"), child=vbox)
+            self.pack_start(f1, expand=False)          
+
         def _entry(self, entry, name, section="settings"):
             config.set(section, name, entry.get_text())
 
