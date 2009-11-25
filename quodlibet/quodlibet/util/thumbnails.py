@@ -95,7 +95,8 @@ def get_thumbnail(path, boundary):
 
     # embedded thumbnails come from /tmp/
     # and too big thumbnails make no sense
-    if path.startswith(tempfile.gettempdir()) or width > 256 or height > 256:
+    if path.startswith(tempfile.gettempdir()) or \
+        width > 256 or height > 256 or mtime(path) == 0:
         return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
 
     thumb_folder = os.path.expanduser('~/.thumbnails')
@@ -118,9 +119,9 @@ def get_thumbnail(path, boundary):
         os.chmod(cache_dir, 0700)
 
     uri = "file://" + urllib.pathname2url(path)
-    uri = hash.md5(uri).hexdigest() + ".png"
+    thumb_name = hash.md5(uri).hexdigest() + ".png"
 
-    thumb_path = os.path.join(cache_dir, uri)
+    thumb_path = os.path.join(cache_dir, thumb_name)
 
     if not os.path.exists(thumb_path) or mtime(thumb_path) != mtime(path):
         pb = gtk.gdk.pixbuf_new_from_file(path)
@@ -130,10 +131,17 @@ def get_thumbnail(path, boundary):
             return scale(pb, boundary)
 
         pb = scale(pb, (thumb_size, thumb_size))
-        pb.save(thumb_path, "png")
+        options = {
+            "tEXt::Thumb::Image::Width": str(pb.get_width()),
+            "tEXt::Thumb::Image::Height": str(pb.get_height()),
+            "tEXt::Thumb::URI": uri,
+            "tEXt::Thumb::MTime": str(int(mtime(path))),
+            "tEXt::Software": "Quodlibet"
+            }
+        pb.save(thumb_path, "png", options)
 
         #Copy the image's mtime to the thumbnail
         os.chmod(thumb_path, 0600)
-        os.utime(thumb_path, (-1, mtime(path)))
+        os.utime(thumb_path, (os.path.getatime(thumb_path), mtime(path)))
 
     return scale(gtk.gdk.pixbuf_new_from_file(thumb_path), boundary)
