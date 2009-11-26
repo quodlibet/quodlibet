@@ -123,25 +123,32 @@ def get_thumbnail(path, boundary):
 
     thumb_path = os.path.join(cache_dir, thumb_name)
 
-    if not os.path.exists(thumb_path) or mtime(thumb_path) != mtime(path):
+    pb = meta_mtime = None
+    if os.path.exists(thumb_path):
+        pb = gtk.gdk.pixbuf_new_from_file(thumb_path)
+        meta_mtime = pb.get_option("tEXt::Thumb::MTime")
+        meta_mtime = meta_mtime and int(meta_mtime)
+
+    if not pb or meta_mtime != int(mtime(path)):
         pb = gtk.gdk.pixbuf_new_from_file(path)
 
         #Too small picture, no thumbnail needed
         if pb.get_width() < thumb_size and pb.get_height() < thumb_size:
             return scale(pb, boundary)
 
-        pb = scale(pb, (thumb_size, thumb_size))
+        mime = gtk.gdk.pixbuf_get_file_info(path)[0]['mime_types'][0]
         options = {
             "tEXt::Thumb::Image::Width": str(pb.get_width()),
             "tEXt::Thumb::Image::Height": str(pb.get_height()),
             "tEXt::Thumb::URI": uri,
             "tEXt::Thumb::MTime": str(int(mtime(path))),
-            "tEXt::Software": "Quodlibet"
+            "tEXt::Thumb::Size": str(os.path.getsize(path)),
+            "tEXt::Thumb::Mimetype": mime,
+            "tEXt::Software": "QuodLibet"
             }
+
+        pb = scale(pb, (thumb_size, thumb_size))
         pb.save(thumb_path, "png", options)
-
-        #Copy the image's mtime to the thumbnail
         os.chmod(thumb_path, 0600)
-        os.utime(thumb_path, (os.path.getatime(thumb_path), mtime(path)))
 
-    return scale(gtk.gdk.pixbuf_new_from_file(thumb_path), boundary)
+    return scale(pb, boundary)

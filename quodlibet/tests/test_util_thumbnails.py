@@ -38,17 +38,27 @@ class TThumb(TestCase):
     def test_thumb(s):
         thumb = thumbnails.get_thumbnail(s.filename, (50, 60))
 
+        #check for right scaling
         s.failUnless(thumb)
         s.failUnlessEqual((thumb.get_width(), thumb.get_height()), (50, 3))
 
+        #test the thumbnail filename
         uri = "file://" + urllib.pathname2url(s.filename)
-        uri = hash.md5(uri).hexdigest() + ".png"
-
+        name = hash.md5(uri).hexdigest() + ".png"
         path = os.path.expanduser("~/.thumbnails")
-        path = os.path.join(path, "normal", uri)
+        path = os.path.join(path, "normal", name)
 
         s.failUnless(os.path.isfile(path))
-        s.failUnlessAlmostEqual(mtime(s.filename), mtime(path), places=3)
+
+        #check for metadata
+        thumb_pb = gtk.gdk.pixbuf_new_from_file(path)
+        meta_mtime = thumb_pb.get_option("tEXt::Thumb::MTime")
+        meta_uri = thumb_pb.get_option("tEXt::Thumb::URI")
+
+        s.failUnlessEqual(int(meta_mtime), mtime(s.filename))
+        s.failUnlessEqual(meta_uri, uri)
+
+        #check rights
         s.failUnlessEqual(os.stat(path).st_mode, 33152)
 
 add(TThumb)
