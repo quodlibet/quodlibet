@@ -270,11 +270,14 @@ class TrayIcon(EventPlugin):
         if self.__size <= 0:
             return
 
-        filename = os.path.join(const.IMAGEDIR, "quodlibet") + ".svg"
+        filename = os.path.join(const.IMAGEDIR, "quodlibet.")
 
         if not self.__pixbuf:
-            self.__pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename,
-                self.__size * 2, self.__size * 2)
+            try:
+                self.__pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                    filename + "svg", self.__size * 2, self.__size * 2)
+            except:
+                self.__pixbuf = gtk.gdk.pixbuf_new_from_file(filename + "png")
             self.__pixbuf = self.__pixbuf.scale_simple(
                 self.__size, self.__size, gtk.gdk.INTERP_BILINEAR)
 
