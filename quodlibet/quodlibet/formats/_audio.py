@@ -301,7 +301,8 @@ class AudioFile(dict):
         else: newname = os.path.join(self('~dirname'), newname)
         if not os.path.exists(newname):
             shutil.move(self['~filename'], newname)
-        elif newname != self['~filename']: raise ValueError
+        elif os.path.realpath(newname) != self['~filename']:
+            raise ValueError
         self.sanitize(newname)
 
     def website(self):
